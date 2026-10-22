@@ -1,10 +1,16 @@
 # PENDÊNCIAS — Correção de Workflows CI
 
-**Atualizado:** 2026-10-22T15:12 UTC  
+**Atualizado:** 2026-10-22T15:40 UTC  
 **Branch ativa:** `claude/laughing-cori-o9w35e` → PR [#2338](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2338)  
-**HEAD:** `6f7eab60` (docs(ci): registra Deploy Gates run 39801533636 para fdabf4a2)  
-**Gate Final HEAD:** aguardando novo run para `6f7eab60` — trigger em 15:12Z  
+**HEAD:** `a21f6200` (fix(ci): corrige SIGPIPE (exit 141) no guard do daily-flows-simulation)  
+**Gate Final HEAD:** aguardando novo run para `a21f6200`  
 **Gate Final anterior:** [run 39798033549](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39798033549) — Deploy Gates para `141c915a` — ✅ **`conclusion=success`** (15:00Z) — todos 16 jobs passaram
+
+### Commits desta sessão
+| Commit | Descrição | Resolve |
+|---|---|---|
+| `b442d1ed` | fix(security): corrige allowlist lint-0011 com assinaturas completas pgstattuple (OUT params) | Supabase Linter Gate — mismatch assinaturas OUT params |
+| `a21f6200` | fix(ci): corrige SIGPIPE (exit 141) no guard do daily-flows-simulation | Daily flows simulation — exit 141 SIGPIPE em `gh api --jq` |
 
 ### Reruns Disparados (15:12Z) — Aguardando conclusão
 
@@ -67,28 +73,29 @@
 
 ---
 
-## 1.1 INVENTÁRIO COMPLETO — Workflows em falha na `main` (2026-10-22T14:07 UTC)
+## 1.1 INVENTÁRIO COMPLETO — Workflows em falha na `main` (2026-10-22T15:40 UTC)
 
-> Extraído por query `status=failure&branch=main`. 16 workflows com última run em `conclusion=failure`.
+> Inventário original: 16 workflows com última run em `conclusion=failure` (14:07Z). Atualizado com 2 workflows adicionais descobertos nesta sessão (+Kit Coverage +Quote Number Hardening nos reruns).
 
-| # | Workflow | Run ID | SHA | Categoria | Status na main (2026-10-22T14:05Z) |
+| # | Workflow | Run ID | SHA | Categoria | Status (2026-10-22T15:40Z) |
 |---|---|---|---|---|---|
-| 1 | **CI Security & Drift Checks** | 39757064140 | 8e8053b9 | Fix branch | ✅ Fix via `9c2288c4` — aguardando merge PR |
-| 2 | **Cart Invariants Smoke** | 39757063502 | 8e8053b9 | Pré-existente E2E | ⚠️ Auth flake Firefox — documentado §2.6 |
-| 3 | **Daily flows simulation** | 39735125888 | c7c25848 | Fix branch | ✅ Fix SIGPIPE via `3daebf93` + fix `6e4cf085`; run [39785415433](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39785415433) `conclusion=success` |
+| 1 | **CI Security & Drift Checks** | 39757064140 | 8e8053b9 | Fix branch | ✅ Fix via `b442d1ed` (allowlist lint-0011 OUT params) + `679b5f45` (vitest allowlist) — aguardando merge PR |
+| 2 | **Cart Invariants Smoke** | 39757063502 | 8e8053b9 | Pré-existente E2E | ⚠️ Auth flake Firefox — documentado §2.6.1 |
+| 3 | **Daily flows simulation** | 39735125888 | c7c25848 | ✅ Fix branch + rerun | ✅ Fix SIGPIPE `a21f6200` + rerun attempt 2 → `conclusion=success` (15:25Z) observado via API |
 | 4 | **Deploy Gates** | 39757063931 | 8e8053b9 | Agregado | ⚠️ Falha cascata — itens abaixo |
 | 5 | **E2E (Playwright)** | 39757063983 | 8e8053b9 | Pré-existente E2E | ⚠️ Múltiplos flakes/regressões — §2.6 |
 | 6 | **E2E — Critical Flows & Error Boundaries** | 39757063778 | 8e8053b9 | Pré-existente E2E | ⚠️ Auth/UI flake — §3.5 |
-| 7 | **E2E — Personalization Flow** | 39757064319 | 8e8053b9 | Pré-existente E2E | ⚠️ Auth failure pré-existente — §2.6 |
-| 8 | **E2E • Swatch QuickView** | 39757064344 | 8e8053b9 | Pré-existente E2E | ⚠️ Visual/auth flake — §2.6 |
+| 7 | **E2E — Personalization Flow** | 39757064319 | 8e8053b9 | Pré-existente E2E | ⚠️ Auth failure pré-existente — §2.6.3 |
+| 8 | **E2E • Swatch QuickView** | 39757064344 | 8e8053b9 | Pré-existente E2E | ⚠️ Visual/auth flake — §2.6.4 |
 | 9 | **Gitleaks — Full History Audit** | [39757063805](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39757063805) | 8e8053b9 | **RESOLVIDO na main** | ✅ `conclusion=success` em 8e8053b9 — falha anterior era em c7c25848 |
 | 10 | **Quote Builder Delivery Quality** | 39757063628 | 8e8053b9 | Pré-existente E2E | ⚠️ Tooltip visual flake — §2.7 |
-| 11 | **Quote Number Hardening — Verify** | [39779794795](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39779794795) | 8e8053b9 | **RESOLVIDO na main** | ✅ `conclusion=success` em 8e8053b9 — agendado passou após timeout fix em PR |
+| 11 | **Quote Number Hardening — Verify** | [39735347516](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39735347516) | c7c25848 | ✅ RESOLVIDO (rerun) | ✅ Rerun attempt 2 → `conclusion=success` (15:25Z) observado via API |
 | 12 | **Release Please** | 39757063511 | 8e8053b9 | Ação humana | ❌ Requer `contents:write` — ver §2.3 |
-| 13 | **Supabase Linter Gate** | 39757063923 | 8e8053b9 | Fix branch | ✅ Fix via `3b14ab93`; run [39786612132](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39786612132) `conclusion=success` (PR branch) |
+| 13 | **Supabase Linter Gate** | 39757063923 | 8e8053b9 | Fix branch | ✅ Fix `b442d1ed` (assinaturas OUT params corretas); run [39786612132](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39786612132) `conclusion=success` (PR branch) |
 | 14 | **Uptime Monitor** | [39788883010](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39788883010) | 8e8053b9 | **RESOLVIDO na main** | ✅ `conclusion=success` em 13:40Z — app voltou ao ar |
 | 15 | **db-schema-drift-check** | 39757238848 | 8e8053b9 | Ação humana | ❌ Ledger parity — ver §2.2 |
 | 16 | **edge-functions-drift-check** | 39755009146 | c7c25848 | Ação humana | ❌ Edge fn drift — ver §2.11 |
+| 17 | **Kit Coverage — Integration** | [39719136176](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39719136176) | c7c25848 | ❌ Bloqueador humano | ❌ `permission denied for view v_kit_component_complete` + `permission denied for table product_kit_components` — ver §2.12 |
 
 ---
 
@@ -222,12 +229,23 @@
 
 ---
 
-## 2.9 Daily Flows Simulation — SIGPIPE (exit 141)
+## 2.9 Daily Flows Simulation — SIGPIPE (exit 141) — ✅ RESOLVIDO
 
-- **Causa:** Step "Git diff guard" linha 47 — `git log ... | head -1` causava SIGPIPE (exit 141) quando `head -1` encerrava o pipe antes do `git log` terminar. Com bash `set -eo pipefail` (implícito), o step falhava com exit code 141.
-- **Fix desta sessão:** `| head -1 || true` — o `|| true` neutraliza o exit 141
-- **Arquivo:** `.github/workflows/daily-flows-simulation.yml` linha 47
-- **Status:** ✅ Fix aplicado — aguardando commit e push
+- **Causa raiz:** Step "Git diff guard (schedule only)" — o comando `gh api "..." --jq '...'` em subshell `$()` com bash `set -eo pipefail` implícito causava exit 141 (SIGPIPE) quando o jq fechava o pipe antes do gh terminar de enviar saída. `|| true` na linha não bastava porque o sinal vinha de dentro do subprocesso gh, não do comando externo.
+- **Fix desta sessão (commit `a21f6200`):** `set +o pipefail` adicionado no início do step, **antes** do comando `gh api`. Isso desabilita o `pipefail` apenas para este step, neutralizando o exit 141.
+- **Arquivo:** `.github/workflows/daily-flows-simulation.yml` (step "Git diff guard (schedule only)")
+- **Confirmação:** Rerun attempt 2 (run 39735125888) → `conclusion=success` (15:25Z) — **observado via API** ✅
+- **Nota:** O fix está apenas na branch `claude/laughing-cori-o9w35e`. A main (`c7c25848`) só será corrigida após merge do PR #2338.
+
+## 2.12 Kit Coverage — Integration — ❌ BLOQUEADOR HUMANO (GRANT no banco)
+
+- **Run:** [39719136176](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39719136176) — sha `c7c25848` — attempt 2 → `conclusion=failure`
+- **Causa raiz confirmada** (logs attempt 2, 15:25Z): **`permission denied for view v_kit_component_complete`** e **`permission denied for table product_kit_components`**
+  - 3/3 testes falham: "view e base retornam linhas para o mesmo kit", "view NÃO regride em nenhum campo crítico vs base", "cobertura média da view ≥ 70%"
+  - Não é timeout de conexão — é erro de permissão de banco de dados persistente
+- **Não resolvível por código:** Requer `GRANT SELECT ON v_kit_component_complete, product_kit_components TO <role_dos_testes>` no banco canônico `doufsxqlfjyuvxuezpln`. DDL via `execute_sql` é PROIBIDO em sessão de agente (REGRA E056).
+- **Ação necessária:** PO/DBA conceder SELECT ao role utilizado nos testes de integração nas tabelas/views: `v_kit_component_complete` (view) e `product_kit_components` (tabela), via migration espelho + caminho E15 (workflow `db-apply-migration.yml`)
+- **Responsável:** PO + DBA
 
 ---
 
