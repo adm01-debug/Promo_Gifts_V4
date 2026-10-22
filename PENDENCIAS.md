@@ -1,8 +1,8 @@
 # PENDÊNCIAS — Correção de Workflows CI
 
-**Atualizado:** 2026-10-22T14:30 UTC  
+**Atualizado:** 2026-10-22T15:45 UTC  
 **Branch ativa:** `claude/laughing-cori-o9w35e` → PR [#2338](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2338)  
-**HEAD:** `7fa5c405` + pendentes de commit (quote-number retry + 3 novos bloqueios documentados)
+**HEAD:** `ac0ba1bf` (docs: atualiza RELATORIO_CI.md — HEAD c65aa646, webkit e cart-invariants confirmados pré-existentes)
 
 ---
 
@@ -178,10 +178,11 @@
 - **Causa:** Falhas pré-existentes confirmadas — commits anteriores (`175a75ad`) também os apresentam
 - **Status:** Não são regressões desta branch; não bloqueiam o Gate Final
 
-### 3.3 Gate Final (deploy-gates.yml) — Run 39784863088
+### 3.3 Gate Final (deploy-gates.yml) — Run 39786612440
 
-- **Status:** `queued` em 13:13 UTC → aguardando conclusão
-- **Head SHA:** `7fa5c405`
+- **Status:** `queued` em 15:45 UTC → aguardando conclusão
+- **Head SHA:** `ac0ba1bf` (commit mais recente)
+- **Nota:** Run `39784651433` para `3daebf93` foi **cancelado** (não falhou) — concorrência cancelou ao push de `7fa5c405`. Run `39784863088` para `7fa5c405` e run `39786185972` para `070bd2c7` foram superados por pushes subsequentes. Comportamento esperado do concurrency group.
 
 ### 3.4 Edge Integration Tests — All Functions (pré-existente)
 
@@ -206,7 +207,7 @@
 
 ---
 
-## 4. PROVA DE SUCESSO (atualizado 2026-10-22T15:00 UTC)
+## 4. PROVA DE SUCESSO (atualizado 2026-10-22T15:45 UTC)
 
 | Workflow | Status | Evidência |
 |---|---|---|
@@ -219,11 +220,11 @@
 | **Daily Flows Simulation** | ✅ **CONFIRMADO SUCCESS** | Run [39785415433](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39785415433) — commit `7fa5c405` |
 | **Gate 5 — Supabase Security Audit** | ✅ **CONFIRMADO SUCCESS** | Run [39784863177](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39784863177) — commit `7fa5c405` |
 | **CI Security & Drift Checks** | ⏳ `in_progress` | Run [39785427236](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39785427236) |
-| **Gate Final deploy-gates** | ⏳ `queued` | Run [39784863088](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39784863088) — HEAD `7fa5c405` |
+| **Gate Final deploy-gates** | ⏳ `queued` | Run [39786612440](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39786612440) — HEAD `ac0ba1bf` |
 | **Edge Integration Tests** | ⚠️ pré-existente | Bug em `validate-access` retorna 200 para number input — §3.4 |
 | **E2E — Critical Flows** | ⚠️ pré-existente | Auth failure admin routes — §3.5 |
 | **E2E (Playwright)** | ⚠️ pré-existentes | Documentadas §2.6–2.8 acima |
 | **Quote Builder Delivery Quality** | ⚠️ pré-existente | Flake tooltip — §2.7 |
 | **Gate 8 Security ACL** | ✅ retry + INCONCLUSIVE | Fix commits `6d6ed480`+`5216cfc7` |
-| **Quote Number Hardening** | ✅ fix timeout 544 | Retry Management API — commit pendente |
+| **Quote Number Hardening** | ✅ fix timeout 544 | Retry Management API — commit `070bd2c7` |
 | edge-functions-drift-check | ❌ ação humana | Drift detectado — sincronizar via deploy-edge-functions.yml — §2.11 |
