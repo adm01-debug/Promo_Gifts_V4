@@ -93,6 +93,7 @@ npm error 403 403 Forbidden - GET https://europe-west1-npm.pkg.dev/lovable-core-
 |---|---|---|---|
 | [39778555326](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39778555326) | `c58e3a56` | Cancelado por push seguinte (concorrência — comportamento esperado) | Gate 0, 0.5, E23, 5, E40 |
 | [39782946071](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39782946071) | `a23edb77` | Aguardando CI | A confirmar |
+| Novo run (HEAD `070bd2c7`) | `070bd2c7` | Aguardando CI (push às 14:3x UTC) | A confirmar |
 
 ---
 
@@ -123,4 +124,5 @@ npm error 403 403 Forbidden - GET https://europe-west1-npm.pkg.dev/lovable-core-
 | Gate 8 Security ACL | ❌ HTTP 500 transient | ✅ retry + INCONCLUSIVE (commits `6d6ed480`+`5216cfc7`) | ✓ Corrigido |
 | Supabase Linter Gate | ❌ AbortError timeout | Fix: retry 3× (commit `9c2288c4`) | Aguardando reexecução pós-merge |
 | db-schema-drift-check | ❌ Ledger parity + falso positivo | Fix falso positivo (commit `9c2288c4`); ledger parity → PO+DBA | Parcial |
-| Daily Flows Simulation | ❌ SIGPIPE exit 141 | Fix `\|\| true` após `head -1` | ✅ Aplicado — aguardando push |
+| Daily Flows Simulation | ❌ SIGPIPE exit 141 | Fix `\|\| true` após `head -1` | ✅ **CONFIRMADO** — run 39785415433 `conclusion=success` |
+| Supabase Linter Gate | ❌ AbortError timeout | Fix retry 3× (commit `9c2288c4`) | ✅ **CONFIRMADO** — run 39785411260 `conclusion=success` |
