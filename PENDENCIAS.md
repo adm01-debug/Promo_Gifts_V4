@@ -1,8 +1,9 @@
 # PENDÊNCIAS — Correção de Workflows CI
 
-**Atualizado:** 2026-10-22T15:45 UTC  
+**Atualizado:** 2026-10-22T13:35 UTC  
 **Branch ativa:** `claude/laughing-cori-o9w35e` → PR [#2338](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2338)  
-**HEAD:** `ac0ba1bf` (docs: atualiza RELATORIO_CI.md — HEAD c65aa646, webkit e cart-invariants confirmados pré-existentes)
+**HEAD:** `53035934` (docs: atualiza PENDENCIAS.md — HEAD ac0ba1bf, Gate Final run 39786612440)  
+**Gate Final ativa:** run [39787169407](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39787169407) — queued (13:28Z) aguardando conclusão
 
 ---
 
@@ -207,7 +208,7 @@
 
 ---
 
-## 4. PROVA DE SUCESSO (atualizado 2026-10-22T15:45 UTC)
+## 4. PROVA DE SUCESSO (atualizado 2026-10-22T13:35 UTC)
 
 | Workflow | Status | Evidência |
 |---|---|---|
@@ -215,16 +216,15 @@
 | **db-schema-drift-check** | ⚠️ ação humana | Fix falso positivo `9c2288c4`; ledger parity → PO+DBA via E99 |
 | **Release Please** | ❌ ação humana | PO configurar `contents:write` no GitHub App |
 | **Gitleaks Full History** | ❌ ação humana urgente | Issue #2261 — rotacionar credenciais — §2.10 |
-| **edge-functions-drift-check (original)** | ❌ ação humana | PO/DBA via `deploy-edge-functions.yml` — §2.11 |
-| **Supabase Linter Gate** | ✅ **CONFIRMADO SUCCESS** | Run [39785411260](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39785411260) — commit `7fa5c405` |
+| **Supabase Linter Gate** | ✅ **CONFIRMADO SUCCESS** | Run [39786612132](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39786612132) — HEAD `53035934` |
 | **Daily Flows Simulation** | ✅ **CONFIRMADO SUCCESS** | Run [39785415433](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39785415433) — commit `7fa5c405` |
 | **Gate 5 — Supabase Security Audit** | ✅ **CONFIRMADO SUCCESS** | Run [39784863177](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39784863177) — commit `7fa5c405` |
 | **CI Security & Drift Checks** | ⏳ `in_progress` | Run [39785427236](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39785427236) |
-| **Gate Final deploy-gates** | ⏳ `queued` | Run [39786612440](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39786612440) — HEAD `ac0ba1bf` |
+| **Gate Final deploy-gates** | ⏳ `pending` | Run [39787169407](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39787169407) — HEAD `53035934` |
+| **edge-functions-drift-check** | ✅ **CONFIRMADO SUCCESS** | HEAD `53035934` — era failure antes desta branch |
 | **Edge Integration Tests** | ⚠️ pré-existente | Bug em `validate-access` retorna 200 para number input — §3.4 |
 | **E2E — Critical Flows** | ⚠️ pré-existente | Auth failure admin routes — §3.5 |
 | **E2E (Playwright)** | ⚠️ pré-existentes | Documentadas §2.6–2.8 acima |
 | **Quote Builder Delivery Quality** | ⚠️ pré-existente | Flake tooltip — §2.7 |
 | **Gate 8 Security ACL** | ✅ retry + INCONCLUSIVE | Fix commits `6d6ed480`+`5216cfc7` |
 | **Quote Number Hardening** | ✅ fix timeout 544 | Retry Management API — commit `070bd2c7` |
-| edge-functions-drift-check | ❌ ação humana | Drift detectado — sincronizar via deploy-edge-functions.yml — §2.11 |

@@ -1,10 +1,11 @@
 # Relatório CI — Sessão de Correção de Workflows
 
-**Gerado:** 2026-10-22T14:00 UTC | **Atualizado:** 2026-10-22T13:25 UTC  
+**Gerado:** 2026-10-22T14:00 UTC | **Atualizado:** 2026-10-22T13:35 UTC  
 **Branch:** `claude/laughing-cori-o9w35e` → PR [#2338](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2338)  
-**HEAD atual:** `c65aa646` (fix daily-flows: git log -1 sem SIGPIPE)  
-**Commits desta sessão:** `9c2288c4` → `c58e3a56` → `6d6ed480` → `5216cfc7` → `0aad32d3` → `3daebf93` → `7fa5c405` → `070bd2c7` → `b55d179e` → `040b4a0a` → `c65aa646`  
-**Base (main):** `8e8053b9`
+**HEAD atual:** `53035934` (docs: atualiza PENDENCIAS.md — HEAD ac0ba1bf)  
+**Commits desta sessão:** `9c2288c4` → `c58e3a56` → `6d6ed480` → `5216cfc7` → `0aad32d3` → `3daebf93` → `7fa5c405` → `070bd2c7` → `b55d179e` → `040b4a0a` → `c65aa646` → `ac0ba1bf` → `53035934`  
+**Base (main):** `8e8053b9`  
+**Gate Final ativa:** run [39787169407](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39787169407) — queued (13:28Z)
 
 ---
 
