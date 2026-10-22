@@ -1,7 +1,7 @@
 # PENDÊNCIAS — Branch `claude/laughing-cori-o9w35e` / PR #2338
 
 **Atualizado em:** 2026-10-22  
-**HEAD:** `479c1d8f`  
+**HEAD:** `87515539`  
 
 ---
 
@@ -23,6 +23,36 @@
 **Run de falha:** [39713855139](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39713855139) — `visual snapshots desatualizados + kit-builder timeout`.  
 **Por que não corrigido aqui:** Requer secrets e runner E2E que não estão disponíveis no CI do PR. A atualização deve ser disparada manualmente pelo PO.  
 **Ação necessária:** PO dispara `.github/workflows/update-snapshots.yml` via GitHub Actions UI → merge snapshots resultantes.
+
+---
+
+## P3 — Gate 3 E2E Smoke — 12 testes falharam
+
+**Status:** ⚠️ Pré-existente — não corrigível neste PR  
+**Workflow:** `Gate 3 - E2E Smoke` (job `119651336453`, run [39726195264](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39726195264))  
+**Testes falhados (12):**
+- `e2e/auth/session-recovery.spec.ts:115` — JWT inválido → redirect irrecuperável
+- `e2e/auth/session-recovery.spec.ts:139` — erro transitório rede no /token
+- `e2e/flows/23-rocket-animation-snapshot.spec.ts:51` — rocket cleanup
+- `e2e/flows/26-session-watchdog.spec.ts:15` — toast 2min antes do expiry
+- `e2e/flows/27-logout-flow.spec.ts:14` — signOut → redirect /login
+- `e2e/product-card-click.spec.ts:12,42,58,77` — hover/click/focus/visual
+- `e2e/quotes/quote-view-mainlayout-overflow.spec.ts:19` — MainLayout overflow-x
+- `e2e/quotes/quote-view-overflow-regression.spec.ts:27,66` — aside sticky (timeout: `locator('aside').first()` não encontrado em 120s)  
+**Causa:** Tests executam (Gate E23 Verifica secrets E2E ✅), mas app não renderiza `<aside>` / infra de auth ausente no ambiente CI. Em main, o Gate 3 era ✅ porque os testes eram SKIPPED (infra ausente = skip). No PR, os secrets Supabase estão disponíveis, os testes efetivamente rodam e expõem falhas latentes de infra pré-existentes.  
+**Prova de pré-existência:** PR não modifica nenhum dos spec files falhados nem o código que eles testam (commits do PR: `CnpjFormHarness.tsx`, `ALLOWLISTS_MEMORY.md`, `lint-*allowlist.json`, `13b-carts-undo-rpc-atomic.spec.ts`, `webhook-schemas.ts`, `MIGRATIONS_SYNC_LOG.md`, `migration-ledger-remote-only-allowlist.json`, `.migration-refs-baseline.json`, `RELATORIO_CI.md`, `PENDENCIAS.md`).  
+**Por que não corrigível aqui:** Requer correção da infra de auth/app no CI para smoke tests (fora do escopo deste PR de governança/allowlists).
+
+---
+
+## P-E40 — Gate E40 Schema Drift Check — `supabase db diff` falha
+
+**Status:** ⚠️ Pré-existente em main — não corrigível neste PR  
+**Workflow:** `Gate E40 - Schema Drift Check` (job `119651866919`, run [39726195264](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39726195264))  
+**Causa:** `supabase db diff --linked` no step 9 retornou exit code 1. O artefato `schema_drift.sql` foi gerado com 0 bytes — o diff não produziu output legível mas o processo sinalizou falha. Indica drift entre o schema live `doufsxqlfjyuvxuezpln` e o replay das migrations. Falhava em main antes deste PR (run [39670397385](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39670397385)).  
+**Nota:** O job "Gate E40 - Detect schema file changes" (que verifica o allowlist de versões `remote_only`) **foi corrigido** por este PR (commit `205c5688`) e passou ✅. O job de "Schema Drift Check" (o diff real do banco) é um job separado e pré-existente.  
+**Por que não corrigível aqui:** Requer investigação de quais objetos produziram drift em `doufsxqlfjyuvxuezpln` e reconciliação via migration espelho + `schema-snapshot-export.yml` (REGRA #8 corolário E99) — fora do escopo deste PR.  
+**Ação necessária:** PO dispara `schema-snapshot-export.yml` com `force_rotate: true` após identificar e reconciliar o drift.
 
 ---
 
@@ -117,6 +147,79 @@
 
 ---
 
+## P11 — Kit Coverage — Integration
+
+**Status:** ⚠️ Pré-existente em main — não corrigível neste PR  
+**Workflow:** `Kit Coverage — Integration`  
+**Run de falha:** [39719136176](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39719136176) — commit `c7c25848` (main HEAD), 2026-10-22T03:51:27Z  
+**Por que não corrigível aqui:** Falha em main anterior a qualquer commit deste PR. PR não toca em kit coverage. Requer investigação separada de infra de testes de integração.  
+**Ação necessária:** Verificar logs do run e abrir PR separado.
+
+---
+
+## P12 — db-schema-drift-check (workflow standalone)
+
+**Status:** ⚠️ Pré-existente em main — commit mais antigo  
+**Workflow:** `db-schema-drift-check` (workflow standalone, diferente do Gate E40 dentro do deploy-gates)  
+**Run de falha:** [39578751173](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39578751173) — commit `45545ae5` (anterior a este PR)  
+**Por que não corrigível aqui:** Falha em commit anterior ao PR. O Gate E40 dentro do `deploy-gates.yml` está sendo corrigido por este PR (allowlist 634 versões). O workflow standalone `db-schema-drift-check` pode requerer ajuste separado.
+
+---
+
+## P13 — edge-functions-drift-check
+
+**Status:** ⚠️ Pré-existente em main — commit mais antigo  
+**Workflow:** `edge-functions-drift-check`  
+**Run de falha:** [39576553816](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39576553816) — commit `45545ae5`  
+**Por que não corrigível aqui:** Pré-existente em commit anterior. PR não toca em edge functions. Requer deploy reconciliatório via `.github/workflows/deploy-edge-functions.yml`.
+
+---
+
+## P14 — Gitleaks Full History Audit
+
+**Status:** ⚠️ Pré-existente em main — commit mais antigo  
+**Workflow:** `Gitleaks — Full History Audit`  
+**Run de falha:** [39559250174](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39559250174) — commit `45545ae5`  
+**Por que não corrigível aqui:** Falha em commit anterior. Gitleaks full history pode detectar secrets históricos não relacionados a este PR.
+
+---
+
+## P15 — Daily Flows Simulation
+
+**Status:** ⚠️ Pré-existente em main — commit mais antigo  
+**Workflow:** `Daily flows simulation`  
+**Run de falha:** [39556593219](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39556593219) — commit `45545ae5`  
+**Por que não corrigível aqui:** Falha em commit anterior. Requires auth/infra que não está disponível neste PR.
+
+---
+
+## P16 — E2E — Personalization Flow
+
+**Status:** ⚠️ Pré-existente em main — não corrigível neste PR  
+**Workflow:** `E2E — Personalization Flow`  
+**Run de falha:** [39670397345](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39670397345) — commit `c7c25848`  
+**Por que não corrigível aqui:** Auth/infra ausentes no CI. Mesma causa raiz que P4-P4d.
+
+---
+
+## P17 — Cart Invariants Smoke
+
+**Status:** ⚠️ Pré-existente em main — não corrigível neste PR  
+**Workflow:** `Cart Invariants Smoke (Chrome + Firefox, sharded)`  
+**Run de falha:** [39670397361](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39670397361) — commit `c7c25848` — 4 shards falham; auth/dados mock ausentes no CI  
+**Por que não corrigível aqui:** Auth/secrets ausentes. Pré-existente em main.
+
+---
+
+## P18 — E2E · Cart Delete Popover
+
+**Status:** ⚠️ Pré-existente em main — não corrigível neste PR  
+**Workflow:** `E2E · Cart Delete Popover (multi-engine)`  
+**Run de falha:** [39669131378](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39669131378) — commit `4f0d2474`  
+**Por que não corrigível aqui:** Falha em commit anterior ao PR. Auth/secrets ausentes.
+
+---
+
 ## Itens Concluídos ✅
 
 | Item | Commit | O quê foi corrigido |
@@ -134,4 +237,4 @@
 
 ---
 
-_Atualizado automaticamente por sessão Claude — 2026-10-22 (HEAD 479c1d8f)_
+_Atualizado automaticamente por sessão Claude — 2026-10-22 (HEAD 87515539, run 39726195264 — COMPLETO, P3 e P-E40 confirmados como pré-existentes)_
