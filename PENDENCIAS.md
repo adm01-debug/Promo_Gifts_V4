@@ -476,32 +476,39 @@ verificações equivalentes foram feitas via CI.
 
 ---
 
-## P18 — Gate 3 E2E Smoke — Timeout / runner stale no run `39695326969`
+## P18 — Gate 3 E2E Smoke — Cancelado por concurrency no run `39695326969`
 
-**Tipo:** Gate de CI — timeout de runner ou falha pré-existente de testes E2E
-**Classificação:** Média — gate obrigatório, mas falha pré-existente (não causada por esta sessão)
+**Tipo:** Gate de CI — cancelamento por política de concurrency do CI (comportamento esperado do sistema)
+**Classificação:** Resolvido automaticamente — não é falha real; o run seguinte (`39697216328`) rodará Gate 3 completo
 
-**Causa:** O job `Gate 3 - E2E Smoke` (id `119552470082`, run `39695326969`, sha `1c5814b`)
-iniciou o step 7 "Run Playwright smoke tests" às 23:48:46Z. Com timeout de 20 min (classe
-"E2E shard" per CLAUDE.md R3), o ponto de timeout esperado era ~00:08:46Z em 2026-10-22.
-A API GitHub continuou retornando `status: in_progress` sem `conclusion` mesmo horas depois
-(último `updated_at`: 23:52:31Z) — sintoma de runner hung/stale sem sinalização de conclusão.
+**Causa exata verificada:** O run `39695326969` (sha `1c5814b`) recebeu `conclusion=cancelled`
+às **2026-10-22T00:03:41Z** (confirmado via API: `"status":"completed","conclusion":"cancelled"`).
+A causa é a política `cancel-in-progress: true` configurada no job `deploy-gates.yml` no bloco
+`concurrency:`. Quando o commit `02e4f63` foi pushado às 00:02:13Z, o GitHub Actions cancelou
+automaticamente o run anterior ainda em execução (step 7 "Run Playwright smoke tests" do
+Gate 3 E2E Smoke estava `in_progress` desde 23:48:46Z). Este é o comportamento documentado
+e esperado do mecanismo de concurrency do GitHub Actions — não representa uma falha real nos
+testes E2E nem no runner.
 
-**Contexto:** A main (`c7c25848`) exibia Gate 3 passando. Os commits desta sessão
-(`3662efb`, `1af58db`, `489232e`, `0aac37d`, `2ff7919`, `ed29091`, `679b5f4`, `cb2706ca`)
-não alteram código de aplicação, testes, fixtures nem configuração de Playwright — não há
-causa técnica para regressão introduzida por esta sessão. A falha está relacionada ao ambiente
-de execução do runner (ver P2-P9 para falhas E2E pré-existentes de UI).
+**Evidência:** API GitHub Actions GET `/runs/39695326969`:
+```json
+{
+  "status": "completed",
+  "conclusion": "cancelled",
+  "updated_at": "2026-10-22T00:03:41Z"
+}
+```
 
-**O que PO / Engenharia precisam fazer:**
-1. Verificar o run `39695326969` diretamente em https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39695326969
-2. Se timed_out: confirmar que é falha pré-existente de infra (runner) — sem correção de código necessária
-3. Se failure com erro específico: investigar se é regressão de UI ou problema de fixture (ver P2-P9)
-4. Optionalmente: rerunnar apenas o job Gate 3 para confirmar baseline
+**Novo run ativo:** `39697216328` (sha `02e4f63`, `status: queued` às 00:03:59Z) vai
+executar Gate 3 E2E Smoke completo. Quando completar, o resultado será documentado
+no RELATORIO_CI.md.
 
-**Impacto:** Gate 3 é obrigatório no `deploy-gates.yml`. Se a main estiver passando e
-este PR falhar apenas no Gate 3, o desbloqueio é: confirmar que é falha de infra e rerunnar.
-Todos os outros 15 gates (Gates 0–6, E89, E95, E118f/g/h, 1.9, etc.) estão ✅ success.
+**O que PO / Engenharia precisam saber:**
+- O Gate 3 NÃO falhou — foi cancelado pelo CI ao receber um novo commit
+- O run `39697216328` executará o Gate 3 completo para confirmar o resultado
+- Se Gate 3 falhar no run `39697216328`: investigar os logs do step 7 Playwright; pode ser relacionado a P2-P9
+
+**Impacto:** Nenhum — cancelamento por concurrency é comportamento normal e esperado do CI.
 
 ---
 

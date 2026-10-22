@@ -116,7 +116,8 @@ Corrige Gate E89 (cron spacing):
 | `39689787809` | `52f9a84` | ✅ (22:55:34Z) | ❌ Gate E95 (22:58:50Z) | ✅ (22:55:33Z) | ✅ (22:55:36Z) | ⏳ Playwright em progresso | **cancelado por push `2ff7919`** |
 | `39690772571` | `2ff7919` | ✅ (23:05:06Z) | ❌ Gate E118f/g/h (23:Xz) | ✅ (23:05:10Z) | ✅ (23:05:12Z) | ⏳ | **cancelado por push `3662efb`** |
 | `39694383256` | `0aac37d` | ✅ (23:37:45Z) | ⏳ cancelado no step 18 | ✅ (23:37:32Z) | ✅ (23:38:28Z) | ⏳ cancelado | **cancelado por push `1c5814b`** |
-| `39695326969` | `1c5814b` | ✅ (23:48:01Z) | ✅ todos 42 steps (23:52:27Z) | ✅ (23:47:51Z) | ✅ (23:48:09Z) | ⏳ Playwright desde 23:48:46Z | **in_progress — Gate 3 pendente** |
+| `39695326969` | `1c5814b` | ✅ (23:48:01Z) | ✅ todos 42 steps (23:52:27Z) | ✅ (23:47:51Z) | ✅ (23:48:09Z) | ❌ cancelled | **cancelado por concurrency (push `02e4f63` às 00:02:13Z)** |
+| `39697216328` | `02e4f63` | ⏳ | ⏳ | ⏳ | ⏳ | ⏳ | **in_progress desde 00:02:24Z — Gate 3 em execução** |
 
 **Gate 0 (SSOT)** confirmado em run `39689787809` (22:54:59Z) → `success`
 **Gate 0.5 (Dependency Audit)** confirmado em run `39689787809` (22:55:34Z) → `success`
@@ -206,7 +207,7 @@ Nenhuma mudança em código de aplicação, testes, schema, edge functions ou l�
 
 | # | Workflow | Commit/Run de correção | Conclusão | Referência |
 |---|---|---|---|---|
-| W01 | `deploy-gates.yml` (Gate Final) | PR #2338, sha `1c5814b`, run `39695326969` | ⏳ 15/16 ✅ — Gate 1 ✅ (42/42 steps), Gate 3 E2E Smoke ⏳ desde 23:48:46Z | [Run CI](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39695326969) |
+| W01 | `deploy-gates.yml` (Gate Final) | PR #2338, sha `02e4f63`, run `39697216328` | ⏳ in_progress desde 00:02:24Z — aguardando Gate 3 E2E Smoke | [Run CI](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39697216328) |
 | W02 | `workflow-lint.yml` (actionlint) | commit `cb2706ca` — deletado `python-package-conda.yml` | ✅ corrigido no PR | [Diff PR #2338](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2338) |
 | W03 | `release-please.yml` | Requer PAT com `releases:write` — aguarda PO | ⚠️ PENDENCIAS.md P1 | [P1 em PENDENCIAS.md](./PENDENCIAS.md#p1) |
 | W04 | `e2e-carts-undo-rpc-atomic.yml` | Falha real de UI (botão excluir) — requer engenharia | ⚠️ PENDENCIAS.md P2 | [P2 em PENDENCIAS.md](./PENDENCIAS.md#p2) |
@@ -342,7 +343,7 @@ tipos gerados (`types.ts`), lógica de negócio ou contratos de API.
 | W01 | `deploy-gates.yml` — Gate E118g (createClientLogger) | `useSellerCarts.ts` sem logger estruturado | `1af58db` | [39695326969](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39695326969) | ✅ Gate E118g success (23:52:22Z) |
 | W01 | `deploy-gates.yml` — Gate E118h (schema-reference-drift) | `docs/FOTOGRAFIA_PG_CATALOG_2026-08-26.md` inexistente | `0aac37d` | [39695326969](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39695326969) | ✅ Gate E118h success (23:52:22Z) |
 | W01 | `deploy-gates.yml` — Gate 1.9 (file-size ratchet) | Baseline não atualizado após +4 linhas em `useSellerCarts.ts` | `489232e` | [39695326969](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39695326969) | ✅ Gate 1.9 success (23:50:57Z) |
-| W01 | `deploy-gates.yml` — Gate 3 (E2E Smoke) | Runner stale/timeout — pré-existente, não causado por esta sessão | — | [39695326969](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39695326969) | ⚠️ [PENDENCIAS.md P18](./PENDENCIAS.md) — runner timeout após 20 min |
+| W01 | `deploy-gates.yml` — Gate 3 (E2E Smoke) | Run `39695326969` cancelado por `cancel-in-progress: true` (push `02e4f63` às 00:02:13Z) — não falha real de teste | — | [39697216328](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39697216328) | ⚠️ [PENDENCIAS.md P18](./PENDENCIAS.md) — cancelado por concurrency (aguardando run `39697216328`) |
 | W02 | `workflow-lint.yml` (actionlint) | `python-package-conda.yml` órfão sem trigger válido | `cb2706ca` (deletado) | [39695326969](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39695326969) | ✅ workflow-lint correto no PR |
 | W03 | `release-please.yml` | PAT sem `releases:write` | — | — | ⚠️ [PENDENCIAS.md P1](./PENDENCIAS.md) — requer PO |
 | W04 | `e2e-carts-undo-rpc-atomic.yml` | Botão excluir ausente na UI | — | — | ⚠️ [PENDENCIAS.md P2](./PENDENCIAS.md) — requer engenharia |
@@ -372,7 +373,7 @@ tipos gerados (`types.ts`), lógica de negócio ou contratos de API.
 | Gate 1.9 (file-size) | ❌ regressão nova | ✅ success | ✅ **corrigido** |
 | Gate 2 (Unit) | ✅ | ✅ | = sem regressão |
 | Gate 2.5 (DB) | ✅ | ✅ | = sem regressão |
-| Gate 3 (E2E Smoke) | ✅ (na main) | ⚠️ runner timeout/stale | ver P18 — pré-existente |
+| Gate 3 (E2E Smoke) | ✅ (na main) | ⚠️ run `39695326969` cancelado por concurrency | ver P18 — cancelado por cancel-in-progress, não regressão |
 | Gate E23 (gitleaks) | ✅ | ✅ | = sem regressão |
 | Gate 5 (SEO) | ✅ | ✅ | = sem regressão |
 | Gate 5.5 (RPC) | ✅ | ✅ | = sem regressão |
@@ -382,9 +383,9 @@ tipos gerados (`types.ts`), lógica de negócio ou contratos de API.
 
 **Workflows antes verdes (confirmados ainda verdes no run 39695326969):** Gate 0, Gate 0.6, Gate 2, Gate 2.5, Gate E23, Gate 5, Gate 5.5, Gate 4, Gate 6 — todos ✅ `conclusion=success`.
 
-**Nota W01 Gate 3:** O Gate 3 E2E Smoke estava passando na main. As alterações desta sessão não tocam código de aplicação, testes ou fixtures — não há causa técnica para regressão no E2E Smoke. O step 7 "Run Playwright smoke tests" atingiu o timeout de 20 min (~00:08:46Z) e o runner ficou stale (API GitHub retornou `in_progress` sem `conclusion` mesmo horas após o timeout esperado). Registrado em [PENDENCIAS.md P18](./PENDENCIAS.md) — requer confirmação e possível rerun pelo PO/Engenharia.
+**Nota W01 Gate 3:** O Gate 3 E2E Smoke estava passando na main. As alterações desta sessão não tocam código de aplicação, testes ou fixtures — não há causa técnica para regressão no E2E Smoke. O run `39695326969` recebeu `conclusion=cancelled` às **2026-10-22T00:03:41Z** confirmado via API: `{"status":"completed","conclusion":"cancelled"}`. A causa é a política `cancel-in-progress: true` no `deploy-gates.yml`: quando o commit `02e4f63` foi pushado às 00:02:13Z, o GitHub Actions cancelou automaticamente o run anterior `39695326969` que estava em execução. **Não é falha real de teste E2E.** O novo run `39697216328` (sha `02e4f63`) executará o Gate 3 completo. Registrado em [PENDENCIAS.md P18](./PENDENCIAS.md).
 
 ---
 
 *Gerado em 2026-10-21 (sessão https://claude.ai/code/session_01T5KXrgFRFRHrCX5jRcTCUz)*
-*Última atualização: 2026-10-22 — run `39695326969` (sha `1c5814b`) — 15/16 jobs ✅ success; Gate 3 E2E Smoke ⚠️ runner timeout/stale (P18 — pré-existente, requer rerun)*
+*Última atualização: 2026-10-22 — run `39697216328` (sha `02e4f63`) in_progress; run `39695326969` cancelado por cancel-in-progress (não falha real); Gate 3 em execução no novo run — ver P18*
