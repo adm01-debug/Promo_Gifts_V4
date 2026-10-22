@@ -44,16 +44,19 @@ const ALLOWED_LHCI_PACKAGES = new Set([
   '@lhci/utils',
   '@puppeteer/browsers',
   '@sentry/node',
-  'basic-ftp',       // transitive: proxy-agent → pac-proxy-agent → get-uri → basic-ftp
+  'basic-ftp',            // transitive: proxy-agent → pac-proxy-agent → get-uri → basic-ftp
   'cookie',
   'external-editor',
   'extract-zip',
-  'get-uri',         // transitive: proxy-agent → pac-proxy-agent → get-uri
+  'get-uri',              // transitive: proxy-agent → pac-proxy-agent → get-uri
   'inquirer',
+  'ip-address',           // transitive: @lhci/cli → proxy-agent → pac-proxy-agent → socks-proxy-agent → socks → ip-address; moderate advisory 2026-10; dev-only
   'lighthouse',
-  'pac-proxy-agent', // transitive: @lhci/cli → proxy-agent → pac-proxy-agent
-  'proxy-agent',     // transitive: @lhci/cli → proxy-agent
+  'pac-proxy-agent',      // transitive: @lhci/cli → proxy-agent → pac-proxy-agent
+  'proxy-agent',          // transitive: @lhci/cli → proxy-agent
   'puppeteer-core',
+  'socks',                // transitive: @lhci/cli → … → socks-proxy-agent → socks; dev-only
+  'socks-proxy-agent',    // transitive: @lhci/cli → proxy-agent → pac-proxy-agent → socks-proxy-agent; dev-only
   'tar-fs',
   'tmp',
   'uuid',
@@ -113,6 +116,7 @@ function hasOnlyExpectedChainAdvisories(vulnerability) {
 }
 
 // All packages that may appear in the accepted[] list — used for defence-in-depth after the loop.
+// NOTE: packages added to ALLOWED_LHCI_PACKAGES are automatically included here via spread.
 const ALL_KNOWN_ACCEPTED_PACKAGES = new Set([
   'image-size',
   'pptxgenjs',
