@@ -1,6 +1,6 @@
 # Pendências de CI — Itens que requerem ação do PO/humano
 
-**Atualizado:** 2026-10-22 (v12 — P19 CORRIGIDO (bunx→npx); P20 atualizado com run `39699551037` (sha `0c7ccaf`) + classificação definitiva como não-required-check; RELATORIO_CI.md seção 10 atualizada com 12 successes SHA `0c7ccaf` e tabelas 10.1/10.2/10.3)
+**Atualizado:** 2026-10-22 (v13 — Gate 3 timeout: diagnóstico e fix; P18 atualizado com causa real (timeout 15 min) + correção (20 min, commit `1b13f7a`); Deploy Gates run `39700336039` (sha `e6405e0`) — Gate Final FALHOU por Gate 3 cancelado por timeout; nova run disparada pelo push do fix)
 **Sessão:** https://claude.ai/code/session_01T5KXrgFRFRHrCX5jRcTCUz
 
 ---
@@ -509,39 +509,38 @@ verificações equivalentes foram feitas via CI.
 
 ---
 
-## P18 — Gate 3 E2E Smoke — Cancelado por concurrency no run `39695326969`
+## P18 — Gate 3 E2E Smoke — Cancelado por TIMEOUT (não por concurrency)
 
-**Tipo:** Gate de CI — cancelamento por política de concurrency do CI (comportamento esperado do sistema)
-**Classificação:** Resolvido automaticamente — não é falha real; o run seguinte (`39697216328`) rodará Gate 3 completo
+**Tipo:** Gate de CI — job cancelado por `timeout-minutes: 15` insuficiente
+**Classificação:** ✅ CORRIGIDO (commit `1b13f7a`) — timeout aumentado para 20 min (classe E24)
 
-**Causa exata verificada:** O run `39695326969` (sha `1c5814b`) recebeu `conclusion=cancelled`
-às **2026-10-22T00:03:41Z** (confirmado via API: `"status":"completed","conclusion":"cancelled"`).
-A causa é a política `cancel-in-progress: true` configurada no job `deploy-gates.yml` no bloco
-`concurrency:`. Quando o commit `02e4f63` foi pushado às 00:02:13Z, o GitHub Actions cancelou
-automaticamente o run anterior ainda em execução (step 7 "Run Playwright smoke tests" do
-Gate 3 E2E Smoke estava `in_progress` desde 23:48:46Z). Este é o comportamento documentado
-e esperado do mecanismo de concurrency do GitHub Actions — não representa uma falha real nos
-testes E2E nem no runner.
+**Causa exata verificada (run `39700336039`, sha `e6405e0`):**
+O job `e2e-smoke` (id `119568119392`) foi configurado com `timeout-minutes: 15`.
+O step "Run Playwright smoke tests" rodou por **14 min 28 s** (00:34:48Z → 00:49:16Z)
+antes de ser cancelado pelo timeout do job (ativado em 00:49:18Z = 15 min 16 s após início).
 
-**Evidência:** API GitHub Actions GET `/runs/39695326969`:
-```json
-{
-  "status": "completed",
-  "conclusion": "cancelled",
-  "updated_at": "2026-10-22T00:03:41Z"
-}
+- Todos os outros 15 jobs do run: **success** ✅
+- Gate Final: **failure** ❌ — porque Gate 3 foi `cancelled`, não `success`
+- Step "Run Playwright smoke tests": `conclusion: cancelled`
+
+**Evidência:**
+```
+Job 119568119392 (Gate 3 - E2E Smoke):
+  started_at:   2026-10-22T00:34:02Z
+  completed_at: 2026-10-22T00:49:18Z
+  conclusion:   cancelled
+  
+  Step "Run Playwright smoke tests":
+    started:   00:34:48Z
+    completed: 00:49:16Z (14 min 28 s)
+    conclusion: cancelled
 ```
 
-**Novo run ativo:** `39697216328` (sha `02e4f63`, `status: queued` às 00:03:59Z) vai
-executar Gate 3 E2E Smoke completo. Quando completar, o resultado será documentado
-no RELATORIO_CI.md.
+**Correção aplicada:** commit `1b13f7a` — `timeout-minutes: 15` → `timeout-minutes: 20`
+- Alinha com classe canônica E24: "E2E shard ≤ 20 min"
+- Push em `1b13f7a` disparou nova run do Deploy Gates (SHA `1b13f7a`)
 
-**O que PO / Engenharia precisam saber:**
-- O Gate 3 NÃO falhou — foi cancelado pelo CI ao receber um novo commit
-- O run `39697216328` executará o Gate 3 completo para confirmar o resultado
-- Se Gate 3 falhar no run `39697216328`: investigar os logs do step 7 Playwright; pode ser relacionado a P2-P9
-
-**Impacto:** Nenhum — cancelamento por concurrency é comportamento normal e esperado do CI.
+**Impacto:** Gate Final estava bloqueado por este timeout. Após o fix, nova run rodando.
 
 ---
 
@@ -578,8 +577,7 @@ e `53195dcb`) — não foi introduzido por nenhum commit desta sessão.
 
 ---
 
-*Documento atualizado em 2026-10-22 (v12) — P19 CORRIGIDO (bunx → npx em cart-header-fuzz-report.mjs);
-P20 atualizado: run `39699551037` (sha `0c7ccaf`) adicionado; classificado como workflow dinâmico (não YAML, não required check);
-Cart Quality (run 39698881468, sha ea0fb09) → success; cart-header-quality-gate (run 39699540588, sha 0c7ccaf) → success;
-edge-functions-drift-check (run 39699540565, sha 0c7ccaf) → success;
-Deploy Gates (run 39698881450, sha ea0fb09) → in_progress (aguardando conclusão).*
+*Documento atualizado em 2026-10-22 (v13) — Gate 3 timeout diagnosticado e corrigido (commit `1b13f7a`):
+`timeout-minutes: 15` → `20` em `e2e-smoke` job (deploy-gates.yml); alinha com classe E24 (E2E shard ≤ 20 min).
+Deploy Gates run `39700336039` (sha `e6405e0`): Gate Final FAILURE — Gate 3 cancelado por timeout em 14:28 min.
+Nova run em progresso para SHA `1b13f7a`.*
