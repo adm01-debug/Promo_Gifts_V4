@@ -234,7 +234,7 @@
 | **Gate Final — PR branch `89cbf1e2`** | [39791769169](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39791769169) | 🚫 `cancelled` (concorrência) | Cancelado pelo push de `18455381` — comportamento esperado do concurrency group (cancel-in-progress=true); NÃO é failure |
 | **Gate Final — PR branch `18455381`** | [39793218590](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39793218590) | 🚫 `cancelled` (concorrência) | Cancelado pelo push de `0f1d53d2` — comportamento esperado do concurrency group; NÃO é failure. NOTA: run 39793218383 é "Freight Quest — Quality Gates" (workflow diferente), erroneamente identificado antes como Gate Final |
 | **Gate Final — PR branch `0f1d53d2`** | [39794023027](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39794023027) | 🚫 `cancelled` (concorrência) | Cancelado por este push (docs + RELATORIO_CI) — comportamento esperado de cancel-in-progress=true; NÃO é failure; mesmo padrão de 39791769169 e 39793218590 |
-| **Gate Final — PR branch HEAD (este commit)** | ⏳ novo run | ⏳ aguardando conclusão OBSERVADA | Run iniciado por este push — aguardando `conclusion` via API antes de atualizar |
+| **Gate Final — PR branch `e9c1b99a` (HEAD)** | [39796246518](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39796246518) | ⏳ `queued` (14:30Z) | Run iniciado por push `e9c1b99a`; SSOT Guard aguardando confirmação; aguardando conclusão OBSERVADA via API |
 
 ### 4B. Workflows com falhas pré-existentes (não causados por esta branch)
 
