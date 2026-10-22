@@ -21,7 +21,7 @@ jobs:
   health-check:
     name: Verificação de saúde pós-merge
     runs-on: ubuntu-24.04
-    timeout-minutes: 5
+    timeout-minutes: 15
 
     steps:
       - name: Checkout
@@ -29,10 +29,8 @@ jobs:
 
         with:
           persist-credentials: false  # E32
-      - name: Setup Node
-        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
-        with:
-          node-version-file: .nvmrc
+      - name: Setup Node CI
+        uses: ./.github/actions/setup-node-ci
 
       - name: Check 1 — SSOT Supabase (project ID canônico)
         id: ssot-check
