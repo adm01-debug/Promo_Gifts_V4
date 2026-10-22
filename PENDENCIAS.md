@@ -1,7 +1,7 @@
 # PENDÊNCIAS — Branch `claude/laughing-cori-o9w35e` / PR #2338
 
 **Atualizado em:** 2026-10-22  
-**HEAD:** `87515539`  
+**HEAD:** `1122aafd`  
 
 ---
 
@@ -39,8 +39,11 @@
 - `e2e/product-card-click.spec.ts:12,42,58,77` — hover/click/focus/visual
 - `e2e/quotes/quote-view-mainlayout-overflow.spec.ts:19` — MainLayout overflow-x
 - `e2e/quotes/quote-view-overflow-regression.spec.ts:27,66` — aside sticky (timeout: `locator('aside').first()` não encontrado em 120s)  
-**Causa:** Tests executam (Gate E23 Verifica secrets E2E ✅), mas app não renderiza `<aside>` / infra de auth ausente no ambiente CI. Em main, o Gate 3 era ✅ porque os testes eram SKIPPED (infra ausente = skip). No PR, os secrets Supabase estão disponíveis, os testes efetivamente rodam e expõem falhas latentes de infra pré-existentes.  
-**Prova de pré-existência:** PR não modifica nenhum dos spec files falhados nem o código que eles testam (commits do PR: `CnpjFormHarness.tsx`, `ALLOWLISTS_MEMORY.md`, `lint-*allowlist.json`, `13b-carts-undo-rpc-atomic.spec.ts`, `webhook-schemas.ts`, `MIGRATIONS_SYNC_LOG.md`, `migration-ledger-remote-only-allowlist.json`, `.migration-refs-baseline.json`, `RELATORIO_CI.md`, `PENDENCIAS.md`).  
+**Causa:** Tests executam (Gate E23 Verifica secrets E2E ✅), mas app não renderiza `<aside>` / infra de auth ausente no ambiente CI. No PR, os secrets Supabase estão disponíveis, os testes efetivamente rodam e expõem falhas latentes de infra pré-existentes.  
+**Prova de pré-existência (evidência concreta de main):**
+- Run [39669131225](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39669131225) (main SHA `4f0d2474`, 2026-10-21): Gate 3 step 7 "Run Playwright smoke tests" iniciou às 20:19:50 UTC e foi **CANCELLED às 20:34:17 UTC** (14 min de execução — timeout, nunca completou). Não é SKIPPED — foi iniciado e cancelado por timeout.
+- Run [39670397385](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39670397385) (main SHA `c7c25848`, 2026-10-21): step 7 idem — **CANCELLED** após ~14 min de execução. Nenhum dos spec files falhados neste PR foi bem-sucedido em main nesta data.
+- PR não modifica nenhum dos spec files falhados nem o código que eles testam (commits do PR: `CnpjFormHarness.tsx`, `ALLOWLISTS_MEMORY.md`, `lint-*allowlist.json`, `13b-carts-undo-rpc-atomic.spec.ts`, `webhook-schemas.ts`, `MIGRATIONS_SYNC_LOG.md`, `migration-ledger-remote-only-allowlist.json`, `.migration-refs-baseline.json`, `RELATORIO_CI.md`, `PENDENCIAS.md`).  
 **Por que não corrigível aqui:** Requer correção da infra de auth/app no CI para smoke tests (fora do escopo deste PR de governança/allowlists).
 
 ---
@@ -49,7 +52,18 @@
 
 **Status:** ⚠️ Pré-existente em main — não corrigível neste PR  
 **Workflow:** `Gate E40 - Schema Drift Check` (job `119651866919`, run [39726195264](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39726195264))  
-**Causa:** `supabase db diff --linked` no step 9 retornou exit code 1. O artefato `schema_drift.sql` foi gerado com 0 bytes — o diff não produziu output legível mas o processo sinalizou falha. Indica drift entre o schema live `doufsxqlfjyuvxuezpln` e o replay das migrations. Falhava em main antes deste PR (run [39670397385](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39670397385)).  
+**Causa:** `supabase db diff --linked` no step 9 retornou exit code 1. O artefato `schema_drift.sql` foi gerado com 0 bytes — o processo sinalizou falha antes de produzir output (falha de conectividade/timeout ao comparar shadow DB com produção `doufsxqlfjyuvxuezpln`, após pull do Docker image edge-runtime).  
+**Prova de pré-existência (evidência concreta — cron standalone):** O workflow `db-schema-drift-check.yml` (schedule diário) falhou **TODOS OS DIAS** de 2026-10-12 a 2026-10-21 — 10+ runs consecutivos com `conclusion=failure`:
+- [39578751173](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39578751173) — 2026-10-18 commit `45545ae5`
+- [39402321646](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39402321646) — 2026-10-17
+- [39232527293](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39232527293) — 2026-10-16
+- [39116043967](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39116043967) — 2026-10-15
+- [39021788502](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39021788502) — 2026-10-14
+- [38881956650](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/38881956650) — 2026-10-13
+- [38713880245](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/38713880245) — 2026-10-12
+- (+ runs 38543260346, 38377921549, 38232551702 anteriores)
+
+O PR adiciona dois arquivos em `supabase/migrations/` que ATIVAM o drift check via regex `^supabase/migrations/` no job `check-schema-paths` — mas o drift check falharia independentemente (conforme provado pelo cron). A falha NÃO é causada por código deste PR.  
 **Nota:** O job "Gate E40 - Detect schema file changes" (que verifica o allowlist de versões `remote_only`) **foi corrigido** por este PR (commit `205c5688`) e passou ✅. O job de "Schema Drift Check" (o diff real do banco) é um job separado e pré-existente.  
 **Por que não corrigível aqui:** Requer investigação de quais objetos produziram drift em `doufsxqlfjyuvxuezpln` e reconciliação via migration espelho + `schema-snapshot-export.yml` (REGRA #8 corolário E99) — fora do escopo deste PR.  
 **Ação necessária:** PO dispara `schema-snapshot-export.yml` com `force_rotate: true` após identificar e reconciliar o drift.
@@ -159,10 +173,10 @@
 
 ## P12 — db-schema-drift-check (workflow standalone)
 
-**Status:** ⚠️ Pré-existente em main — commit mais antigo  
+**Status:** ⚠️ Pré-existente em main — 10+ dias de falha consecutiva  
 **Workflow:** `db-schema-drift-check` (workflow standalone, diferente do Gate E40 dentro do deploy-gates)  
-**Run de falha:** [39578751173](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39578751173) — commit `45545ae5` (anterior a este PR)  
-**Por que não corrigível aqui:** Falha em commit anterior ao PR. O Gate E40 dentro do `deploy-gates.yml` está sendo corrigido por este PR (allowlist 634 versões). O workflow standalone `db-schema-drift-check` pode requerer ajuste separado.
+**Runs de falha (mais recentes → mais antigos):** [39578751173](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39578751173) (2026-10-18, commit `45545ae5`), [39402321646](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39402321646) (2026-10-17), [39232527293](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39232527293) (2026-10-16) — todos `conclusion=failure` antes de qualquer commit deste PR (ver P-E40 para lista completa).  
+**Por que não corrigível aqui:** Mesma causa de P-E40 — `supabase db diff --linked` falha de conectividade ao comparar shadow com produção. Falha pré-existente há 10+ dias. O Gate E40 (allowlist) dentro do `deploy-gates.yml` foi corrigido por este PR (commit `205c5688`). O diff de infra é infra/PO.
 
 ---
 
@@ -237,4 +251,4 @@
 
 ---
 
-_Atualizado automaticamente por sessão Claude — 2026-10-22 (HEAD 87515539, run 39726195264 — COMPLETO, P3 e P-E40 confirmados como pré-existentes)_
+_Atualizado automaticamente por sessão Claude — 2026-10-22 (HEAD 1122aafd, run 39726195264 — COMPLETO; P3 evidência concreta: Gate3 CANCELLED em main (runs 39669131225/39670397385 ~14min timeout, não SKIPPED); P-E40 evidência concreta: cron falhou 10+ dias consecutivos desde 2026-10-12 (IDs: 39578751173–38232551702))_
