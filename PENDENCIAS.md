@@ -1,12 +1,12 @@
 # PENDÊNCIAS — Correção de Workflows CI
 
-**Atualizado:** 2026-10-22T17:20 UTC  
+**Atualizado:** 2026-10-22T17:45 UTC  
 **Branch ativa:** `claude/laughing-cori-o9w35e` → PR [#2338](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2338)  
-**HEAD atual:** `a83e1c0d` (fix Docker registry `ghcr.io` → `public.ecr.aws`)  
-**Gate Final a83e1c0d att 1:** run [39818934114](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39818934114) — ❌ `failure` — **apenas Gate E40 step 10 falhou por rate limit transiente ECR** (`toomanyrequests: retry-after: 670µs`); 15/17 jobs ✅ — re-run (att 2) disparado ~17:15Z  
-**Gate Final a83e1c0d att 2:** run [39818934114](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39818934114) — ⏳ `in_progress` (17:15:34Z) — 15/16 ✅, aguardando Gate E40 Schema Drift (step 6 "Link canonical" ~17:16Z)  
+**HEAD atual:** `db65121a` (E104 — override SUPABASE_INTERNAL_IMAGE_REGISTRY para ECR Public)  
+**Gate Final db65121a (E104):** run [39824243692](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39824243692) — ⏳ `queued` (17:36Z) — aguardando conclusão (fix E104 override ECR)  
+**Gate Final a83e1c0d:** run [39818934114](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39818934114) — `cancelled` (superado por 5499c532)  
 **Gate Final precedente (sucesso):** run [39798033549](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39798033549) — `141c915a` — ✅ **`conclusion=success`** (15:00Z, 16 jobs)  
-**Gate Final b977f790:** run [39815181210](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39815181210) — ❌ `conclusion=failure` — causas: E40 (ledger parity) + Gate 5.5 (cancelled)  
+**Gate Final b977f790:** run [39815181210](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39815181210) — `cancelled` (superado por f6b11477)  
 **Gate 8 — Security (run 39815181224):** ❌ `conclusion=failure` — HTTP 504 transiente — **não bloqueia Gate Final** — ver §2.13
 
 ### Commits desta sessão
@@ -15,7 +15,7 @@
 | `b442d1ed` | fix(security): corrige allowlist lint-0011 com assinaturas completas pgstattuple (OUT params) | Supabase Linter Gate — mismatch assinaturas OUT params |
 | `a21f6200` | fix(ci): corrige SIGPIPE (exit 141) no guard do daily-flows-simulation | Daily flows simulation — exit 141 SIGPIPE em `gh api --jq` |
 | `f6b1147` | fix(ci): pre-pull com retry para ghcr.io rate limit no drift check | db-schema-drift-check — `toomanyrequests` (44000/min) ao puxar `ghcr.io/supabase/postgres:17.6.1.063` |
-| próximo | fix(ci): corrige registry Docker — ghcr.io → public.ecr.aws (CLI 2.101.0 usa ECR) | db-schema-drift-check — pre-pull aquecia cache errado (ghcr.io); CLI 2.101.0 usa public.ecr.aws |
+| `db65121a` | ci(drift-check): override SUPABASE_INTERNAL_IMAGE_REGISTRY para ECR Public (E104) | db-schema-drift-check — `supabase/setup-cli` action define `SUPABASE_INTERNAL_IMAGE_REGISTRY=ghcr.io` via `$GITHUB_ENV`, sobrescrevendo pre-pull ECR. Fix: novo step exporta `SUPABASE_INTERNAL_IMAGE_REGISTRY=public.ecr.aws` após setup-cli |
 
 ### Reruns Attempt 2 (15:12Z) — Conclusões Confirmadas
 
@@ -124,7 +124,7 @@
 - **Run original (falha):** [39757238848](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39757238848) — Ledger Parity
 - **Causa 1 (resolvida):** SESSION_NOISE_EXACT ignorava `set check_function_bodies = off;` — commit `9c2288c4`
 - **Causa 2 (resolvida):** Docker ghcr.io rate limit `toomanyrequests` (44000/min) ao puxar `ghcr.io/supabase/postgres:17.6.1.063` — 3 attempts consecutivos (runs 39810527986 att 1, 2, 3) — **commit `f6b1147` adiciona step pre-pull com 5 tentativas + backoff 30s**
-- **Causa 3 (corrigida — commit próximo):** Pre-pull usava registry errado. Supabase CLI 2.101.0 usa `public.ecr.aws` (Amazon ECR Public), não `ghcr.io`. O pre-pull de `f6b1147` aquecia o cache de um registry diferente do usado pelo CLI. Fix: `ghcr.io/supabase/postgres:17.6.1.063` → `public.ecr.aws/supabase/postgres:17.6.1.063`
+- **Causa 3 (corrigida — commit `db65121a`):** `supabase/setup-cli` action define `SUPABASE_INTERNAL_IMAGE_REGISTRY=ghcr.io` via `$GITHUB_ENV` **após** qualquer configuração prévia, fazendo o `supabase db diff` puxar TODAS as imagens de ghcr.io (postgres 17.6.1.063, realtime v2.86.3, etc.) com rate limit. Fix (E104): novo step "Override image registry to ECR Public" exporta `SUPABASE_INTERNAL_IMAGE_REGISTRY=public.ecr.aws` para `$GITHUB_ENV` imediatamente após setup-cli, garantindo que db diff e pre-pull usem o mesmo registry (ECR Public). Causa raiz confirmada nos logs do att 2 (job 119967665431): pre-pull ECR foi sucesso, mas db diff puxou `ghcr.io/supabase/postgres:17.6.1.063` com `toomanyrequests: allowed: 44000/minute`.
 - **Gate Final b977f790:** run [39815181210](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39815181210) — ❌ `conclusion=failure` — causas: `R_SCHEMA_DRIFT=failure` (Gate E40, ledger parity) + `R_RESTORE=cancelled` (Gate 5.5, consequência de E40)
 - **Outros gates em b977f790:** R_SSOT, R_DEP_AUDIT, R_DEP_REVIEW, R_LINT, R_UNIT, R_DB_INT, R_SECRETS, R_E2E, R_SEO, R_BUILD, R_SECRET_SCAN — todos ✅ `success`
 - **Pendência remanescente (ação humana):** O ledger parity propriamente dito requer identificar qual DDL foi aplicada out-of-band e criar migration espelho via caminho E15/E99
