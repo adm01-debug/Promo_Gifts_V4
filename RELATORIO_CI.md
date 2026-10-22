@@ -109,7 +109,7 @@
 | `305e4763` | `supabase/MIGRATIONS_SYNC_LOG.md` | Recibos E15 para migrations REVOKE |
 | `205c5688` | `scripts/migration-ledger-remote-only-allowlist.json` | Allowlist 634 versões remote_only (Gate E40) |
 | `988c0ca5` | `RELATORIO_CI.md`, `PENDENCIAS.md` | Diagnóstico completo atualizado |
-| `dc2baf69` | `.migration-refs-baseline.json` | Remove entrada stale Gate 1.3 (scripts/migration-ledger-remote-only-allowlist.json → supabase/migrations/20260712_legacy_initial.sql) |
+| `dc2baf69` | `.migration-refs-baseline.json` | Remove entrada stale Gate 1.3 (ref inválida: migration-ledger-remote-only-allowlist.json → 20260712_legacy_initial.sql) |
 
 ---
 
