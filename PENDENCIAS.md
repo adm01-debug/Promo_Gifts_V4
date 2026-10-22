@@ -150,8 +150,11 @@
 - **Run:** [39755009146](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39755009146)
 - **Causa:** "Drift detectado entre GitHub e canônico" — edge function(s) deployadas diretamente no Supabase (via MCP ou dashboard) sem commit no repo
 - **Evidência:** Step "Fail if drift detected" falhou; artefato `drift-report.csv` contém funções afetadas
-- **Fix possível:** Dispatch manual de `deploy-edge-functions.yml` (caminho único autorizado — REGRA #8 §corolário deploy de edge function)
-- **Ação necessária:** PO/DBA identificar funções drifted via artefato `drift-report.csv` e sincronizar via workflow `deploy-edge-functions.yml`
+- **Fix possível:** Depende do tipo de drift no `drift-report.csv`:
+  - **Função ausente no Supabase (in git, missing live):** dispatch de `deploy-edge-functions.yml` — publica a versão do repo.
+  - **Content drift (in Supabase differs from git):** **NÃO fazer deploy antes de reconciliar** — deploiar sobrescreveria a versão canônica live. Baixar a versão live do Supabase e commitar no repo primeiro; só então dispatch deploy.
+  - **Orphan (live, not in git):** decidir se deve ser incorporado ao repo ou removido do Supabase; nunca deploiar de git sem verificar.
+- **Ação necessária:** PO/DBA inspecionar artefato `drift-report.csv`, identificar o tipo de cada drift e aplicar a remediação específica acima
 - **Responsável:** PO + DBA
 
 ---
