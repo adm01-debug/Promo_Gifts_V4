@@ -1,9 +1,10 @@
 # PENDÊNCIAS — Correção de Workflows CI
 
-**Atualizado:** 2026-10-22T15:05 UTC  
+**Atualizado:** 2026-10-22T15:10 UTC  
 **Branch ativa:** `claude/laughing-cori-o9w35e` → PR [#2338](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2338)  
-**HEAD:** `141c915a` (docs(ci): motivos exatos E2E pré-existentes via API)  
-**Gate Final ativa:** [run 39798033549](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39798033549) — Deploy Gates para `141c915a` — ✅ **`conclusion=success`** (15:00Z) — todos 16 jobs passaram
+**HEAD:** `fdabf4a2` (docs(ci): atualiza PENDENCIAS.md — Deploy Gates e Gate 5 conclusion=success)  
+**Gate Final HEAD:** [run 39801533636](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39801533636) — Deploy Gates para `fdabf4a2` — 🔄 **queued** (15:05Z) — aguardando conclusão  
+**Gate Final anterior:** [run 39798033549](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39798033549) — Deploy Gates para `141c915a` — ✅ **`conclusion=success`** (15:00Z) — todos 16 jobs passaram
 
 ### Status Gates HEAD `141c915a` (run 39798033549 — ✅ CONCLUÍDO 15:00Z)
 
