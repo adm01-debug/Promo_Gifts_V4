@@ -2,6 +2,7 @@
  * TechniqueMultiSelector — Grid of available techniques to toggle.
  */
 import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
 import { invokeExternalRpc } from '@/lib/external-rpc';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Badge } from '@/components/ui/badge';
@@ -30,6 +31,7 @@ export function TechniqueMultiSelector({
   } = useQuery({
     queryKey: ['product-techniques-multi', productId],
     queryFn: async (): Promise<ProductTechnique[]> => {
+      if (!(await supabase.auth.getSession()).data.session) return []; // anon: sem EXECUTE
       try {
         const result = await invokeExternalRpc<CustomizationOptionsResponse>(
           'fn_get_product_customization_options',

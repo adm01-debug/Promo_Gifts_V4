@@ -11,6 +11,7 @@
 import { dbInvoke } from '@/lib/db/postgrest';
 import { useMemo } from 'react';
 import { useQuery, keepPreviousData } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
 import { invokeExternalRpc } from '@/lib/external-rpc';
 import { adaptCustomizationOptions } from '@/lib/personalization/adapters';
 
@@ -77,6 +78,7 @@ export function useProductCustomizationOptionsForMockup(productId: string | unde
     queryKey: ['mockup-customization-options', productId],
     queryFn: async () => {
       if (!productId) return null;
+      if (!(await supabase.auth.getSession()).data.session) return null; // anon: sem EXECUTE
 
       const raw = await invokeExternalRpc<Record<string, unknown>>(
         'fn_get_product_customization_options',
