@@ -7,6 +7,7 @@
  */
 
 import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
 import { invokeExternalRpc } from '@/lib/external-rpc';
 import { adaptCustomizationOptions } from '@/lib/personalization/adapters';
 import type { CustomizationOptionsResponse } from '@/types/customization';
@@ -85,6 +86,7 @@ export function useProductCustomizationOptions(
     queryKey: ['product-customization-options', productId],
     queryFn: async (): Promise<CustomizationOptionsResponse | null> => {
       if (!productId) return null;
+      if (!(await supabase.auth.getSession()).data.session) return null; // anon: sem EXECUTE
       try {
         const result = await invokeExternalRpc<Record<string, unknown>>(
           'fn_get_product_customization_options',

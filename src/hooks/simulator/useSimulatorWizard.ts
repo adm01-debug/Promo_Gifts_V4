@@ -7,6 +7,7 @@
 import { useCallback, useMemo, useEffect, useRef } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { toast } from 'sonner';
+import { supabase } from '@/integrations/supabase/client';
 import { invokeExternalRpc } from '@/lib/external-rpc';
 import type { CustomizationOptionsResponse, GravacaoLocation } from '@/types/customization';
 import {
@@ -46,6 +47,7 @@ export function useSimulatorWizard() {
     queryKey: ['wizard-locations-v6', state.selectedProduct?.id],
     queryFn: async (): Promise<EngravingLocation[]> => {
       if (!state.selectedProduct?.id) return [];
+      if (!(await supabase.auth.getSession()).data.session) return []; // anon: sem EXECUTE
       try {
         const result = await invokeExternalRpc<CustomizationOptionsResponse>(
           'fn_get_product_customization_options',
