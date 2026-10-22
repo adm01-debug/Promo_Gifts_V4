@@ -1,9 +1,10 @@
 # PENDÊNCIAS — Correção de Workflows CI
 
-**Atualizado:** 2026-10-22T17:45 UTC  
+**Atualizado:** 2026-10-22T18:10 UTC  
 **Branch ativa:** `claude/laughing-cori-o9w35e` → PR [#2338](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2338)  
-**HEAD atual:** `db65121a` (E104 — override SUPABASE_INTERNAL_IMAGE_REGISTRY para ECR Public)  
-**Gate Final db65121a (E104):** run [39824243692](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39824243692) — ⏳ `queued` (17:36Z) — aguardando conclusão (fix E104 override ECR)  
+**HEAD atual:** `e2bf7804` (docs — diagnósticos E104 + atualização PENDENCIAS.md)  
+**Gate Final e2bf7804:** run [39824526266](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39824526266) — ⏳ `queued` (17:38Z) — aguardando conclusão  
+**Gate Final db65121a (E104):** run [39824243692](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39824243692) — `cancelled` (superado por e2bf7804)  
 **Gate Final a83e1c0d:** run [39818934114](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39818934114) — `cancelled` (superado por 5499c532)  
 **Gate Final precedente (sucesso):** run [39798033549](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39798033549) — `141c915a` — ✅ **`conclusion=success`** (15:00Z, 16 jobs)  
 **Gate Final b977f790:** run [39815181210](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39815181210) — `cancelled` (superado por f6b11477)  
@@ -99,9 +100,12 @@
 | 12 | **Release Please** | 39757063511 | 8e8053b9 | Ação humana | ❌ Requer `contents:write` — ver §2.3 |
 | 13 | **Supabase Linter Gate** | 39757063923 | 8e8053b9 | Fix branch | ✅ Fix `b442d1ed` (assinaturas OUT params corretas); run [39786612132](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39786612132) `conclusion=success` (PR branch) |
 | 14 | **Uptime Monitor** | [39802177763](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39802177763) | 8e8053b9 | ✅ RESOLVIDO (transiente) | ✅ `conclusion=success` em 15:37Z — attempt 2 rerun confirmado — §2.1 |
-| 15 | **db-schema-drift-check** | 39757238848 | 8e8053b9 | Ação humana | ❌ Ledger parity — ver §2.2 |
+| 15 | **db-schema-drift-check** | 39757238848 | 8e8053b9 | Fix branch | ✅ Fix E104 commit `db65121a` (ECR Public override) — aguardando Gate Final e2bf7804 |
 | 16 | **edge-functions-drift-check** | 39755009146 | c7c25848 | Ação humana | ❌ Edge fn drift — ver §2.11 |
 | 17 | **Kit Coverage — Integration** | [39719136176](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39719136176) | c7c25848 | ❌ Bloqueador humano | ❌ `permission denied for view v_kit_component_complete` + `permission denied for table product_kit_components` — ver §2.12 |
+| 18 | **Nightly Full CI** | [39713855139](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39713855139) | c7c25848 | Pré-existente E2E | ❌ Playwright E2E (2) cancelled + E2E Visual Focused magazine-header falhou — ver §2.14 |
+| 19 | **Python Package using Conda** | [39670397287](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39670397287) | c7c25848 | Phantom workflow | ❌ `environment.yml` not found — workflow template padrão do GitHub não pertence a este projeto — ver §2.15 |
+| 20 | **E2E • Thumb QuickView** | [39670397261](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39670397261) | c7c25848 | Pré-existente E2E | ❌ Pré-existente visual/interação — ver §2.6 |
 
 ---
 
