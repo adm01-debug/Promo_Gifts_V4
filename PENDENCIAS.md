@@ -553,10 +553,11 @@
 - **Run:** [39839609746](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39839609746) — sha `57017ba7` — `conclusion=failure`
 - **Causa exata (log):** Step "Run Unit & Integration Tests" — `MockupProductSelector.test.tsx` timeout em `waitFor(() => expect(screen.getAllByTestId('mockup-product-row').length).toBeGreater...`
 - **Diferença da causa original (§2.5):** A causa original (composição com db-schema-drift-check e Supabase Linter Gate) foi resolvida. A nova falha é um teste unitário de componente com timeout de `waitFor`.
-- **Pré-existência:** Nenhum commit do PR #2338 toca `MockupProductSelector.test.tsx` nem o componente. Causa raiz: `waitFor` com polling de DOM aguarda `mockup-product-row` que pode não aparecer no runner CI em tempo suficiente.
+- **Causa raiz confirmada:** `@tanstack/react-virtual` v3 chama `getBoundingClientRect()` em `observeElementRect()` como primeira medição de `outerSize`. O stub global de `ResizeObserver` em `tests/setup.ts` é no-op (nunca dispara callback), então jsdom retorna `{ height: 0 }` → `outerSize=0` → `calculateRange` retorna `null` → nenhuma linha virtualizada → `waitFor` timeout.
+- **Fix aplicado:** Commit `30656bcd` (`fix(test): MockupProductSelector — mock getBoundingClientRect para react-virtual v3`) — adiciona `vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect')` no `beforeEach` para retornar `SCROLL_VIEWPORT_HEIGHT` no container e `MEASURED_ROW_HEIGHT` nas linhas. Cherry-pick do commit `3783729d` em `fix/ci-workflows` (local) para `claude/laughing-cori-o9w35e` (PR #2349).
 - **É required check?** NÃO — workflow separado do Gate Final. Gate Final ✅ passed.
-- **Ação necessária:** PO + dev investigar timeout do `waitFor` em `MockupProductSelector.test.tsx`; aumentar timeout ou estabilizar mock de dados.
-- **Responsável:** PO + dev de features
+- **Branch do fix:** `claude/laughing-cori-o9w35e` (commit `30656bcd`) — PR #2349 aguarda review.
+- **Responsável:** Fix enviado; review e merge via PO.
 
 ### 5.3 CI - Replenishment Module Quality Gate — Schema Ausente no CI
 
@@ -869,7 +870,7 @@ npm error 403 Forbidden - GET https://europe-west1-npm.pkg.dev/lovable-core-prod
 | # | Workflow | Run `57017ba7` | Conclusão | Classificação | Evidência (seção) |
 |---|---|---|---|---|---|
 | 1 | **Branch Protection Sentinel** | [39839609513](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39839609513) | ❌ failure | Comportamento esperado merge: 162 commits de agente sem padrão de subject | §5.1 |
-| 2 | **CI Security & Drift Checks** | [39839609746](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39839609746) | ❌ failure | Pré-existente: `MockupProductSelector.test.tsx` — `waitFor` timeout | §5.2 |
+| 2 | **CI Security & Drift Checks** | [39839609746](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39839609746) | ❌ failure | **FIX APLICADO** (`30656bcd`): `getBoundingClientRect` mock para react-virtual v3 — `outerSize=0` → nenhuma linha virtualizada → timeout. PR #2349. | §5.2 |
 | 3 | **CI - Replenishment Module Quality Gate** | [39839609825](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39839609825) | ❌ failure | Pré-existente: schema `v_products_public` ausente no CI | §5.3 |
 | 4 | **CI - Novo Orçamento E2E** | [39839609894](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39839609894) | ❌ failure | Pré-existente: snapshots ausentes + orçamentos de ambiente | §5.4 |
 | 5 | **E2E Cart — Matrix (E79)** | [39839609858](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39839609858) | ❌ failure | Pré-existente: `cart-delete-exh-8` timeout + `auth/v1/token` 504 | §5.5, §6.1 |
