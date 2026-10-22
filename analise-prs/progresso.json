@@ -2,16 +2,16 @@
   "baseline_sha": "8e8053b9ed85142e85809783cd3acf9a3077ecde",
   "total_open": 25,
   "analisadas": 25,
-  "mergeadas": 4,
-  "ultima_atualizacao": "2026-10-22T23:05Z",
+  "mergeadas": 5,
+  "ultima_atualizacao": "2026-10-22T23:31Z",
   "contagem_por_veredicto": {
-    "CI_PENDENTE": 1,
+    "CI_PENDENTE": 0,
     "AGUARDAR_REBASE": 5,
     "DECISAO_HUMANA": 2,
     "DRAFT": 2,
     "NAO_MERGEAR": 1,
     "FECHAR": 15,
-    "MERGEADA": 3,
+    "MERGEADA": 4,
     "MERGEADA_PELO_OWNER": 1
   },
   "main_atual": {
@@ -60,35 +60,160 @@
     "E2E PDF exportado · quote_number"
   ],
   "prs": {
-    "2338": {"veredicto": "MERGEADA", "acao": "MERGEADA", "head": "b48145b3", "merge_sha": "57017ba78eb68c6c72dba336f9c081c4519619c4", "merged_at": "2026-10-22T19:23Z", "gate_final_run": 39848498577},
-    "2351": {"veredicto": "MERGEADA", "acao": "MERGEADA", "head": "9bca9b5a", "merge_sha": "3e06378a5e4f53e00a2c6826fdf667692b307882", "merged_at": "2026-10-22T21:08Z", "gate_final_run": 39848498577},
-    "2354": {"veredicto": "MERGEADA", "acao": "MERGEADA", "head": "dcaf0bab", "merge_sha": "3e006427eb19247d2e99c03a8140193d3f763a8e", "merged_at": "2026-10-22T21:09Z", "gate_final_run": 39852198657},
-    "2316": {"veredicto": "AGUARDAR_REBASE", "acao": "conflito_semantico_com_2338", "base": "45545ae"},
-    "2315": {"veredicto": "AGUARDAR_REBASE", "acao": "rebase + resolver conflito com #2314", "base": "1ac6992"},
-    "2314": {"veredicto": "AGUARDAR_REBASE", "acao": "rebase + reconciliar valor com #2315", "base": "1ac6992"},
-    "2312": {"veredicto": "AGUARDAR_REBASE", "acao": "rebase em main", "base": "1ac6992"},
-    "2349": {"veredicto": "AGUARDAR_REBASE", "acao": "rebase em main (base stale: 57017ba7)", "head": "d8f7934d", "base": "57017ba7"},
-    "2320": {"veredicto": "DRAFT", "acao": "aguardar autor promover para ready"},
-    "2319": {"veredicto": "NAO_MERGEAR", "acao": "PR vazia de bot (Jules) — fechar", "files": 0},
-    "2352": {"veredicto": "MERGEADA_PELO_OWNER", "acao": "Mergeada pelo owner adm01-debug às 22:36 UTC (SHA 92a4d3bc). 6 migrations NÃO aplicadas em produção. Ver RELATORIO_VALIDACAO_EXAUSTIVA.md.", "head": "f38d5caf", "merge_sha": "92a4d3bc", "merged_at": "2026-10-22T22:36Z", "migrations_pendentes": ["20261022100001","20261022100010","20261022100020","20261022100021","20261022100022"], "migrations_aguardam_analise": ["20261022100011"]},
-    "2293": {"veredicto": "DECISAO_HUMANA", "acao": "recharts 2→3 major bump — depende de PO"},
-    "2290": {"veredicto": "DECISAO_HUMANA", "acao": "@eslint/js 9→10 major bump — depende de PO"},
-    "2322": {"veredicto": "FECHAR", "acao": "Webpack CI — runtime incompatível com Vite"},
-    "2323": {"veredicto": "FECHAR", "acao": "Deno CI — runtime incompatível com npm/Vite"},
-    "2324": {"veredicto": "FECHAR", "acao": "Jekyll Docker — stack errada (não é site Jekyll)"},
-    "2325": {"veredicto": "FECHAR", "acao": "npm publish — projeto não é pacote npm publicável"},
-    "2326": {"veredicto": "FECHAR", "acao": "npm publish GitHub Packages — projeto não é pacote npm publicável"},
-    "2327": {"veredicto": "FECHAR", "acao": "Codacy SAST — serviço não configurado no projeto"},
-    "2328": {"veredicto": "FECHAR", "acao": "Dependency Review — duplicata do Gate 0.6 já existente"},
-    "2329": {"veredicto": "FECHAR", "acao": "Python publish PyPI — projeto não é Python"},
-    "2330": {"veredicto": "FECHAR", "acao": "Node.js CI matrix — npm test não existe no projeto"},
-    "2331": {"veredicto": "FECHAR", "acao": "Manual greeting workflow — decorativo, sem valor operacional"},
-    "2333": {"veredicto": "FECHAR", "acao": "First-interaction bot — risco supply chain"},
-    "2334": {"veredicto": "FECHAR", "acao": "GitHub Pages static — projeto usa Vercel"},
-    "2335": {"veredicto": "FECHAR", "acao": "Next.js GitHub Pages — framework errado (Vite não Next.js)"},
-    "2336": {"veredicto": "FECHAR", "acao": "Arquivo em branco (1 byte) — workflow inválido"},
-    "2337": {"veredicto": "FECHAR", "acao": "Deno CI — duplicata byte-a-byte do PR #2323"},
-    "2356": {"veredicto": "CI_PENDENTE", "acao": "aguardar Gate Final SHA c5a008e5", "head": "c5a008e5", "branch": "claude/session-guard-remaining-callers", "ssot_gates": "SUCCESS"}
+    "2338": {
+      "veredicto": "MERGEADA",
+      "acao": "MERGEADA",
+      "head": "b48145b3",
+      "merge_sha": "57017ba78eb68c6c72dba336f9c081c4519619c4",
+      "merged_at": "2026-10-22T19:23Z",
+      "gate_final_run": 39848498577
+    },
+    "2351": {
+      "veredicto": "MERGEADA",
+      "acao": "MERGEADA",
+      "head": "9bca9b5a",
+      "merge_sha": "3e06378a5e4f53e00a2c6826fdf667692b307882",
+      "merged_at": "2026-10-22T21:08Z",
+      "gate_final_run": 39848498577
+    },
+    "2354": {
+      "veredicto": "MERGEADA",
+      "acao": "MERGEADA",
+      "head": "dcaf0bab",
+      "merge_sha": "3e006427eb19247d2e99c03a8140193d3f763a8e",
+      "merged_at": "2026-10-22T21:09Z",
+      "gate_final_run": 39852198657
+    },
+    "2316": {
+      "veredicto": "AGUARDAR_REBASE",
+      "acao": "conflito_semantico_com_2338",
+      "base": "45545ae"
+    },
+    "2315": {
+      "veredicto": "AGUARDAR_REBASE",
+      "acao": "rebase + resolver conflito com #2314",
+      "base": "1ac6992"
+    },
+    "2314": {
+      "veredicto": "AGUARDAR_REBASE",
+      "acao": "rebase + reconciliar valor com #2315",
+      "base": "1ac6992"
+    },
+    "2312": {
+      "veredicto": "AGUARDAR_REBASE",
+      "acao": "rebase em main",
+      "base": "1ac6992"
+    },
+    "2349": {
+      "veredicto": "AGUARDAR_REBASE",
+      "acao": "rebase em main (base stale: 57017ba7)",
+      "head": "d8f7934d",
+      "base": "57017ba7"
+    },
+    "2320": {
+      "veredicto": "DRAFT",
+      "acao": "aguardar autor promover para ready"
+    },
+    "2319": {
+      "veredicto": "NAO_MERGEAR",
+      "acao": "PR vazia de bot (Jules) — fechar",
+      "files": 0
+    },
+    "2352": {
+      "veredicto": "MERGEADA_PELO_OWNER",
+      "acao": "Mergeada pelo owner adm01-debug às 22:36 UTC (SHA 92a4d3bc). 6 migrations NÃO aplicadas em produção. Ver RELATORIO_VALIDACAO_EXAUSTIVA.md.",
+      "head": "f38d5caf",
+      "merge_sha": "92a4d3bc",
+      "merged_at": "2026-10-22T22:36Z",
+      "migrations_pendentes": [
+        "20261022100001",
+        "20261022100010",
+        "20261022100020",
+        "20261022100021",
+        "20261022100022"
+      ],
+      "migrations_aguardam_analise": [
+        "20261022100011"
+      ]
+    },
+    "2293": {
+      "veredicto": "DECISAO_HUMANA",
+      "acao": "recharts 2→3 major bump — depende de PO"
+    },
+    "2290": {
+      "veredicto": "DECISAO_HUMANA",
+      "acao": "@eslint/js 9→10 major bump — depende de PO"
+    },
+    "2322": {
+      "veredicto": "FECHAR",
+      "acao": "Webpack CI — runtime incompatível com Vite"
+    },
+    "2323": {
+      "veredicto": "FECHAR",
+      "acao": "Deno CI — runtime incompatível com npm/Vite"
+    },
+    "2324": {
+      "veredicto": "FECHAR",
+      "acao": "Jekyll Docker — stack errada (não é site Jekyll)"
+    },
+    "2325": {
+      "veredicto": "FECHAR",
+      "acao": "npm publish — projeto não é pacote npm publicável"
+    },
+    "2326": {
+      "veredicto": "FECHAR",
+      "acao": "npm publish GitHub Packages — projeto não é pacote npm publicável"
+    },
+    "2327": {
+      "veredicto": "FECHAR",
+      "acao": "Codacy SAST — serviço não configurado no projeto"
+    },
+    "2328": {
+      "veredicto": "FECHAR",
+      "acao": "Dependency Review — duplicata do Gate 0.6 já existente"
+    },
+    "2329": {
+      "veredicto": "FECHAR",
+      "acao": "Python publish PyPI — projeto não é Python"
+    },
+    "2330": {
+      "veredicto": "FECHAR",
+      "acao": "Node.js CI matrix — npm test não existe no projeto"
+    },
+    "2331": {
+      "veredicto": "FECHAR",
+      "acao": "Manual greeting workflow — decorativo, sem valor operacional"
+    },
+    "2333": {
+      "veredicto": "FECHAR",
+      "acao": "First-interaction bot — risco supply chain"
+    },
+    "2334": {
+      "veredicto": "FECHAR",
+      "acao": "GitHub Pages static — projeto usa Vercel"
+    },
+    "2335": {
+      "veredicto": "FECHAR",
+      "acao": "Next.js GitHub Pages — framework errado (Vite não Next.js)"
+    },
+    "2336": {
+      "veredicto": "FECHAR",
+      "acao": "Arquivo em branco (1 byte) — workflow inválido"
+    },
+    "2337": {
+      "veredicto": "FECHAR",
+      "acao": "Deno CI — duplicata byte-a-byte do PR #2323"
+    },
+    "2356": {
+      "veredicto": "MERGEADA",
+      "acao": "MERGEADA",
+      "head": "cfabab26",
+      "branch": "claude/session-guard-remaining-callers",
+      "merge_sha": "8bafc7d5a0a1f0f6a06d88adc6577098f873dfcb",
+      "merged_at": "2026-10-22T23:31Z",
+      "gate_final_run": 39869261220,
+      "fixes": "session guard para 5 callers de fn_get_product_customization_options + MANIFESTO_MIGRATIONS_RECONCILIADAS_2026-09-11.json"
+    }
   },
   "pendencias_humanas": [
     "Fechar 15 PRs de template (#2322–#2337 exceto #2332): requer escrita no GitHub além de merge",
@@ -97,7 +222,5 @@
     "Rebase PRs #2312, #2314, #2315, #2316, #2349 — autores precisam agir",
     "URGENTE — PR #2352 mergeada pelo owner: aplicar 5 migrations via db-apply-migration.yml: 20261022100001 (REVOKE fn_cron_guard), 20261022100010 (RLS wrapper), 20261022100020/100021/100022 (cron). NÃO aplicar 20261022100011 (DROP INDEX) sem pg_stat_reset + 24h."
   ],
-  "gaps_seguranca": [
-    "5 callers de fn_get_product_customization_options sem session guard: useProductCustomizationOptions.ts:113, useProductEngravingOptions.ts:34, useMockupTechniques.ts:88, TechniqueMultiSelector.tsx:65, useSimulatorWizard.ts:60"
-  ]
+  "gaps_seguranca": []
 }
