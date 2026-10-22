@@ -54,25 +54,35 @@ Falhas em:
 - **Bloqueante para merge**: NÃO
 - **Ação**: None — comportamento esperado
 
-### 6. Supabase Linter Gate
+### 6. Cart Invariants Smoke (Chrome + Firefox, sharded)
+- **Run**: https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39757063502
+- **Causa**: 4 shards falham (chromium shard1+2, firefox shard1+2). Guard de credenciais PASSA (auth presente). Testes rodaram ~558s (chromium) e ~518s (firefox) mas falharam com exit code ≠ 0. Spec files: `e2e/carrinhos/header-reflects-active-cart.spec.ts`, `sidebar-reflects-active-cart.spec.ts`, `active-cart-*.spec.ts` (8 arquivos no total). Requer dados de carrinho no BD de staging.
+- **Bloqueante para PR merge**: NÃO (`cart-invariants-smoke.yml` não é required check)
+- **Ação**: Investigar falhas específicas baixando artefatos `cart-invariants-failure-chromium-shard*.zip` do run; adicionar seed de dados de carrinho para CI
+
+### 7. edge-functions-drift-check
+- **Run**: https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39755009146
+- **Causa**: Drift detectado entre funções no GitHub e função canônica deployada em produção. Job "Compare GitHub × Canonical" falha com "Drift detectado — veja artefato `drift-report.csv`". Resoluções possíveis: (1) `supabase functions download <slug>` e commit no repo; (2) deletar função órfã no canônico; (3) deploy via `deploy-edge-functions.yml`.
+- **Nota**: `Compare GitHub × Canonical` (required check) PASSOU no PR #2338 — a divergência é anterior e estava em `main` antes do PR.
+- **Bloqueante para PR #2338**: NÃO
+- **Ação**: Disparar `schema-snapshot-export.yml` ou `deploy-edge-functions.yml` para reconciliar; baixar artefato `drift-report.csv` do run para identificar qual função diverge
+
+### 8. Supabase Linter Gate
 - **Run**: https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39757063923
 - **Causa**: Advisory sobre schema (não-bloqueante por definição do gate)
 - **Ação**: Investigar advisories em sessão separada
 
-### 7. Uptime Monitor
+### 9. Uptime Monitor
 - **Causa**: Infraestrutura externa — endpoint pode estar temporariamente indisponível
 - **Bloqueante para merge**: NÃO
 - **Ação**: Monitorar; se recorrente, investigar endpoint
 
-### 8. db-schema-drift-check (CORRIGIDO NO PR #2338)
+### 10. db-schema-drift-check (CORRIGIDO NO PR #2338)
 - **Causa original**: Timeout de 9min era insuficiente para `supabase db diff --linked`
 - **Fix**: Timeout aumentado para 25min (job) e 18min (interno) em commit `07153daf`
 - **Status**: CORRIGIDO — aguardando validação no CI pós-merge
 
-### 9. edge-functions-drift-check  
-- **Causa**: Compare GitHub × Canonical falha por drift entre código no GitHub e deployado em produção
-- **Nota**: `Compare GitHub × Canonical` (required check) PASSOU no PR #2338 — o problema em main era anterior
-- **Ação**: Verificar qual função está divergindo; deploy via `.github/workflows/deploy-edge-functions.yml`
+### 11. edge-functions-drift-check (duplicado — detalhes na entrada #7 acima)
 
 ---
 
@@ -84,22 +94,25 @@ Falhas em:
 
 ---
 
-## STATUS ATUAL DO CI (commit e61fa40e — pós-merge)
+## STATUS ATUAL DO CI (commit 6c1114fc — docs post-merge)
 
-**Verificado em:** 2026-10-22 ~10:25 UTC  
+**Verificado em:** 2026-10-22 ~UTC (sessão atual)
 
 | Gate | Status |
 |---|---|
-| Gate 0 — SSOT Supabase | ✅ success |
-| Gate 0.5 — Dependency Audit | ⏳ queued |
-| Gate 0.6 — Dependency Review | ✅ success |
+| Gate 0 — SSOT Supabase | ⏳ in_progress |
+| Gate 0.5 — Dependency Audit | ⏳ in_progress |
+| Gate 0.6 — Dependency Review | ⏳ in_progress |
 | Gate 1 — Lint + TypeScript | ⏳ in_progress |
-| Gate 2 — Unit Tests | ⏳ queued |
-| Gate 2.5 — PostgreSQL Transactional | ✅ success |
-| Gate 3 — E2E Smoke | ⏳ queued |
-| Gate E23 — Secret Scan | ✅ success |
-| Gate E40 — Schema Drift Detection | ⏳ queued |
-| Compare GitHub × Canonical | ✅ success |
+| Gate 2 — Unit Tests | ⏳ in_progress |
+| Gate 2.5 — PostgreSQL Transactional | ⏳ in_progress |
+| Gate 3 — E2E Smoke | ⏳ in_progress |
+| Gate E23 — Secret Scan | ⏳ in_progress |
+| Gate E40 — Schema Drift Detection | ⏳ in_progress |
+| Compare GitHub × Canonical | ⏳ in_progress |
 | Gate Final — Deploy Ready | ⏳ aguardando todos |
+| required-checks-drift | ✅ success |
+| overflow-static-gate | ✅ success |
+| Validação Novo Orçamento | ✅ success |
 
-**Sem nenhuma falha em gate crítico até esta verificação.**
+**21/30 check runs ainda em andamento — aguardando Gate Final.**
