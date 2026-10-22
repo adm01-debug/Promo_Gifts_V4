@@ -75,15 +75,21 @@ Workflows **não encontrados** nos últimos 100 runs de main (não executaram re
 
 ### PR #2341 (`fix/ci-workflows` → main, commit `b36f5362`)
 
-| Workflow | Run em PR #2341 | Conclusão | Link |
+| Workflow | Run | Conclusão | Link |
 |---|---|---|---|
 | Workflow Lint | 39731464629 | ✅ **success** | [link](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39731464629) |
-| Deploy Gates (inclui Static Health Checks) | 39731464633 | ⏳ in_progress (iniciado 06:02:12Z) | [link](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39731464633) |
+| Static Health Checks (workflow_dispatch) | 39732276027 | ✅ **success** | [link](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39732276027) |
+| Python Package using Conda (workflow_dispatch) | 39732278854 | ✅ **success** | [link](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39732278854) |
+| Deploy Gates | 39731464633 | ⚠️ parcial — Gate 0.5 e Gate 1.12 pré-existentes em main (ver abaixo) | [link](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39731464633) |
 | No Prod Leak | 39731464646 | ✅ success | [link](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39731464646) |
 | PR Size Guard | 39731464658 | ✅ success | [link](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39731464658) |
 | Required Checks Guard | 39731464645 | ✅ success | [link](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39731464645) |
 | Security Scan | 39731464623 | ✅ success | [link](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39731464623) |
 | edge-functions-drift-check | 39731464698 | ✅ success | [link](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39731464698) |
+
+**Falhas remanescentes no Deploy Gates de fix/ci-workflows — ambas pré-existentes em main:**
+- **Gate 0.5 Dependency Audit** (run 39731464633): `npm audit --audit-level high` encontrou CVEs (3 high, 3 moderate) nas dependências — pré-existente em main, não introduzido pelas mudanças de CI YAML. Ver PENDENCIAS.md P-CVEs.
+- **Gate 1.12 Contract Coverage** (run 39731464633): fix de Gate 1.12 está em PR #2338 (`claude/laughing-cori-o9w35e`), mas `fix/ci-workflows` foi criado de main antes do merge do PR #2338. Não é regressão — é ausência de cherry-pick intencional para manter PRs separados.
 
 **Sem regressões:** todos os workflows que estavam verdes em main continuam verdes em `fix/ci-workflows`.
 
@@ -110,4 +116,4 @@ Workflows **não encontrados** nos últimos 100 runs de main (não executaram re
 
 ---
 
-_Atualizado em 2026-10-22T06:10Z — sessão Claude_
+_Atualizado em 2026-10-22T07:30Z — sessão Claude_
