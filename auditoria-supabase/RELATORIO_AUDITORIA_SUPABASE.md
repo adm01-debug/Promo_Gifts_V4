@@ -40,11 +40,11 @@ O banco de produção está em **estado misto**: a cobertura de segurança de ba
 | Severidade | Quantidade | Ação |
 |---|---|---|
 | **CRÍTICO** | **1** | Intervir agora |
-| **ALTO** | **9** | Esta semana |
-| **MÉDIO** | **27** (+5 advisors) | Próximas 4 semanas |
+| **ALTO** | **13** | Esta semana |
+| **MÉDIO** | **28** (+5 advisors) | Próximas 4 semanas |
 | **BAIXO** | **9** | Próximo trimestre |
 | **INFO** | **13** (+1 RLS matrix) | Monitorar |
-| **NÃO VERIFICADO** | **3** | Verificar via Dashboard |
+| **NÃO VERIFICADO** | **6** | Verificar via Dashboard / npm |
 
 ---
 
@@ -1512,8 +1512,8 @@ Esta tabela consolida os achados com avaliação de risco de regressão para cad
 | 2 | Drift migrations | ✅ | `SELECT count(*) FROM supabase_migrations.schema_migrations` → 2538; `ls migrations/*.sql \| wc -l` → 2975; drift 446 (DRIFT-003 ALTO) |
 | 3 | Segurança RLS e grants | ✅ | 960 policies; 590 com auth.uid(); 0 tabelas sem policy; advisor: 507 precisam de índice |
 | 4 | Edge Functions R0/R1/R2 | ✅ | `list_edge_functions` → **109** total, 36 verify_jwt=false (33%); 5 R0 lidas; 8 R1; 23 R2 |
-| 5 | pg_cron status + 30d | ✅ | 142 jobs; top-8 exatos (zero `~`); overlap confirmado 5 jobs em `30 3 * * *`; CRON-NEW-001 query → `image-dimensions-backfill` SEM auth |
-| 6 | pg_net autenticação | ✅ | 18 jobs com `net.http_post`; 17 usam vault secret; 1 sem auth (`image-dimensions-backfill`) |
+| 5 | pg_cron status + 30d | ✅ | 142 jobs; top-8 exatos (zero `~`); overlap confirmado 5 jobs em `30 3 * * *`; CRON-NEW-001 query → `run-script` SEM auth (backfill-image-dimensions usa vault secret corretamente) |
+| 6 | pg_net autenticação | ✅ | 18 jobs com `net.http_post`; 17 usam vault secret; 1 sem auth (`run-script` → chama edge fn `run-script` sem headers) |
 | 7 | DB Functions exception | ✅ | 1119 PL/pgSQL; 107 com EXCEPTION+SEM RAISE (swallowing=9.6%); fn_cron_safe_run EXECUTE p_sql dinâmico |
 | 8 | Auth + Storage + Realtime | ✅ | ssl=on TLSv1.2; scram-sha-256; 11 buckets; 10 tabelas em realtime pub |
 | 9 | Performance pg_stat | ✅ | pg_stat_statements: v_products_public mean=959ms; tags Seq Scan mean=1580ms; user_organizations 2,879,073 seq scans/24h |
@@ -1528,11 +1528,11 @@ Esta tabela consolida os achados com avaliação de risco de regressão para cad
 | Severidade | Quantidade | Principais |
 |---|---|---|
 | **CRÍTICO** | 1 | CRON-001: cron startup timeout em massa |
-| **ALTO** | 12 | CRON-NEW-001, DRIFT-003, PERF-009, SEG-001/002/003/005, ADV-PERF-001, PERF-002, CRON-004 + 2 outros |
-| **MÉDIO** | 27 | AUTH-001, ST-001/003, SEG-004/006, INT-001/002, 20+ outros |
+| **ALTO** | 13 | CRON-NEW-001 (corrigido: `run-script` sem auth), PERF-010 (v_super_filtro_options custo 31K), DRIFT-003, PERF-009, SEG-001/002/003/005, ADV-PERF-001, PERF-002, CRON-004 + 2 outros |
+| **MÉDIO** | 28 | SEG-UPDATE-001 (17 UPDATE sem WITH CHECK), AUTH-001, ST-001/003, SEG-004/006, INT-001/002, 20+ outros |
 | **BAIXO** | 9 | Índices duplicados, realtime em auth.users, etc. |
 | **INFO** | 13 | Configurações corretas, boas práticas |
-| **NÃO VERIFICADO** | 5 | NV-001..NV-005 com razão técnica |
+| **NÃO VERIFICADO** | 6 | NV-001..NV-006 com razão técnica |
 
 ---
 
@@ -1542,7 +1542,7 @@ Esta tabela consolida os achados com avaliação de risco de regressão para cad
 |---|---|---|---|
 | 1 | CRON-001 | CRÍTICO | `SELECT j.jobname,r.return_message FROM cron.job_run_details r JOIN cron.job j ON j.jobid=r.jobid WHERE r.return_message='job startup timeout' AND r.start_time > now()-interval '24h'` → 10 jobs |
 | 2 | DRIFT-003 | ALTO | `SELECT count(*) FROM supabase_migrations.schema_migrations` → 2538; `ls migrations/*.sql \| wc -l` → 2975; formato timestamp: 2529 DB vs 2975 repo = **446 drift** |
-| 3 | CRON-NEW-001 | ALTO | `SELECT jobname, LEFT(command,400) FROM cron.job WHERE command ILIKE '%net.http_post%' AND command NOT ILIKE '%get_edge_function_secret%'` → `image-dimensions-backfill` sem vault secret |
+| 3 | CRON-NEW-001 | ALTO | `SELECT jobname, LEFT(command,400) FROM cron.job WHERE command ILIKE '%net.http_post%' AND command NOT ILIKE '%get_edge_function_secret%'` → `run-script` sem auth headers (chama `/functions/v1/run-script` sem Authorization nem x-cron-secret). Correção: `backfill-image-dimensions` usa vault secret corretamente — não é o cron problemático. |
 | 4 | PERF-009 | ALTO | `SELECT count(*) FILTER (WHERE prosrc LIKE '%EXCEPTION%' AND prosrc NOT LIKE '%RAISE%') FROM pg_proc WHERE nspname='public' AND prolang=plpgsql` → **107** funções swallowing |
 | 5 | SEG-001 | ALTO | `list_edge_functions` → 109 total; 36 verify_jwt=false; 5 R0 lidas: mcp-server (service_role), crm-db-bridge, external-db-inspect, e2e-cleanup, sync-external-db |
 | 6 | SEG-002 | ALTO | Confirmado: 36/109 = **33.0%** verify_jwt=false (contagem anterior 82 era incorreta) |
@@ -1552,6 +1552,8 @@ Esta tabela consolida os achados com avaliação de risco de regressão para cad
 | 10 | SEG-005 | ALTO | 193 views sem security_invoker — elevam contexto para o owner |
 | 11 | INT-001 | MÉDIO | stock_daily_summary: 2,6M rows, 914 MB, last_analyze=null, last_autovacuum=null |
 | 12 | ST-001 | MÉDIO | art-files bucket: INSERT/SELECT sem row-level isolation em WITH CHECK |
+| 13 | SEG-UPDATE-001 | MÉDIO | `SELECT count(*) FROM pg_policies WHERE cmd='UPDATE' AND with_check IS NULL AND schemaname='public'` → **17** políticas UPDATE sem WITH CHECK (permite atualizar linha para estado fora do USING scope) |
+| 14 | PERF-010 | ALTO | `EXPLAIN SELECT * FROM public.v_super_filtro_options WHERE ...` → custo estimado **31.002**, 7 Seq Scans + filtro após UNION ALL materializado; `pg_stat_statements` confirma 142 chamadas/24h mean **5.046 ms** |
 
 ---
 
@@ -1590,7 +1592,22 @@ base_tables=398, views=193, funcoes=1334, cron_jobs=142, rls_policies=960, migra
 | functions_public | 1.334 | 1.334 | **0** ✅ |
 | migrations_ledger | 2.538 | 2.538 | **0** ✅ |
 
-**Modo auditoria:** somente leitura. Zero INSERT/UPDATE/DELETE/DDL/GRANT executados.
+**Snapshot DEPOIS (sessão 3)** — 2026-10-22 15:xx UTC (evidência `sessao_3_2026_10_22_15h_evidencias_inventario` em progresso.json):
+
+```
+base_tables=398, views=193, funcoes=1334, cron_jobs=142, rls_policies=960, migrations_ledger=2538
+```
+
+| Métrica | Sessão 1 | Sessão 2 | Sessão 3 | Δ total |
+|---|---|---|---|---|
+| base_tables | 398 | 398 | 398 | **0** ✅ |
+| views | 193 | 193 | 193 | **0** ✅ |
+| cron_jobs | 142 | 142 | 142 | **0** ✅ |
+| rls_policies | 960 | 960 | 960 | **0** ✅ |
+| functions_public | 1.334 | 1.334 | 1.334 | **0** ✅ |
+| migrations_ledger | 2.538 | 2.538 | 2.538 | **0** ✅ |
+
+**Modo auditoria:** somente leitura. Zero INSERT/UPDATE/DELETE/DDL/GRANT executados em nenhuma das 3 sessões.
 
 ---
 
@@ -1610,6 +1627,22 @@ base_tables=398, views=193, funcoes=1334, cron_jobs=142, rls_policies=960, migra
 - Sessão anterior: 82 (contagem incompleta — MCP pode ter paginado)
 - Esta sessão: `list_edge_functions` → **109** confirmado
 - verify_jwt=false: 36 em ambas as contagens (36/82=43.9% → 36/109=33.0%)
+
+**CRON-NEW-001 — Correção de sessão anterior:**
+- Sessão anterior identificou `image-dimensions-backfill` como o cron sem autenticação. **INCORRETO.**
+- Sessão 3 confirmou: `backfill-image-dimensions` usa `get_edge_function_secret('BACKFILL_DIM_CRON_SECRET')` (vault secret) — autenticação correta.
+- O cron realmente sem autenticação é `run-script`: `SELECT net.http_post(url := '.../functions/v1/run-script', body := '{"script":"image-dimensions-worker"}'::jsonb)` — sem headers Authorization nem x-cron-secret.
+- Proposta `auditoria-supabase/propostas/P01_cron_auth_headers.sql` deve ser revisada para apontar para o job `run-script`, não `image-dimensions-backfill`.
+
+**SEG-UPDATE-001 — Novo achado sessão 3:**
+- 17 políticas UPDATE sem WITH CHECK em `pg_policies WHERE cmd='UPDATE' AND with_check IS NULL AND schemaname='public'`.
+- Impacto: usuário pode UPDATE uma linha para um estado que não atenderia ao USING original, efetivamente movendo a linha para fora do seu scope sem bloqueio.
+- Mitigação: adicionar `WITH CHECK (mesma_condição_do_USING)` em cada política afetada.
+
+**NV-006 — types.ts drift estrutural:**
+- Não verificado nesta sessão por falta de acesso ao Node.js runtime/npm para `check:types-inventory-drift`.
+- O script `scripts/extract-types-inventory.mjs` precisa ser executado localmente.
+- Workaround de sessão: `grep` manual mostrou 1.240 entradas em types.ts vs 398 base_tables no DB; divergência não quantificada estruturalmente sem o AST parser.
 
 **Migrations drift (2.975 repo vs 2.538 ledger):**
 - 2.529 com timestamp no ledger + 9 com formato antigo ("001"…) = 2.538 total

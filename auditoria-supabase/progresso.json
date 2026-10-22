@@ -274,6 +274,76 @@
       "evidencia_reexecutada": "SELECT COUNT(*) FROM stock_daily_summary — resultado: 2639107 linhas, 914 MB (CORRECAO: tabela NAO esta vazia — erro na estimativa anterior via n_live_tup stale=20310 por ausencia de ANALYZE) (2026-10-22T13:30Z)"
     }
   ],
+  "sessao_3_2026_10_22_15h_evidencias_inventario": {
+    "data": "2026-10-22T15:00Z",
+    "grants_anon": {
+      "SELECT": 55,
+      "INSERT": 225,
+      "UPDATE": 223,
+      "DELETE": 223,
+      "nota": "Padrao Supabase normal: GRANT ALL ON ALL TABLES IN SCHEMA public TO anon, depois RLS bloqueia. SELECT=55 porque muitas tabelas tiveram SELECT revogado explicitamente do anon."
+    },
+    "webhooks_supabase_functions_hooks": "EMPTY — 0 registros. Webhooks nao usados via tabela hooks. Crons chamam net.http_post diretamente.",
+    "pk_fk_sample_60": "60 constraints: mix de NO ACTION, CASCADE, SET NULL. ai_enrichment_queue→products CASCADE, b2b_collection_products CASCADE, categories→categories SET NULL (hierarquia), cart_templates→auth.users CASCADE.",
+    "products_columns_40": "40 colunas: id(uuid PK), name(text NOT NULL), sku(text NOT NULL), category_id(uuid NOT NULL), supplier_id(uuid NOT NULL), sale_price(numeric NULL), short_description(varchar500 NULL), organization_id(uuid NULL), is_active(bool NOT NULL default=true), is_deleted(bool NULL default=false). REGRA2: sale_price ✓, short_description ✓, category_id ✓. NOTA: campo price nao existe no DB — mapeado no tipo TS como sale_price.",
+    "update_sem_with_check_17": [
+      "ai_usage_quotas_admin_update",
+      "Users update own art files (art_file_attachments)",
+      "attribute_definitions_update_policy",
+      "attribute_groups_update_policy",
+      "collection_products_update (x2: b2b e public)",
+      "Owner can update collaborators (kit_collaborators)",
+      "mt_update (material_types)",
+      "mv_update (material_variations)",
+      "mal_update_own_or_admin (mockup_approval_links)",
+      "notification_templates_update",
+      "Admins can update password reset requests",
+      "qip_update_own_quote (quote_item_personalizations)",
+      "Block direct update (rls_denial_log)",
+      "Users can update own scheduled reports",
+      "supplier_attribute_definitions_update_policy",
+      "sm_update (supplier_materials)"
+    ],
+    "cron_new_001_correcao": {
+      "achado_anterior": "image-dimensions-backfill chamava net.http_post sem auth headers",
+      "correcao": "backfill-image-dimensions CORRETAMENTE usa get_edge_function_secret('BACKFILL_DIM_CRON_SECRET')",
+      "achado_real": "run-script edge function chamada SEM headers: SELECT net.http_post(url:='.../run-script', body:='{\"script\":\"image-dimensions-worker\"}'::jsonb) — zero x-cron-secret, zero Authorization",
+      "severidade": "ALTO"
+    },
+    "fn_cron_safe_run_body": {
+      "pattern": "pg_try_advisory_xact_lock(p_key) + EXECUTE p_sql + SET LOCAL statement_timeout",
+      "riscos": ["EXECUTE p_sql = SQL dinamico — qualquer um que modifique cron.job pode injetar SQL executado como SECURITY DEFINER", "WHEN OTHERS THEN RETURN format — exception swallowing, erro nao re-raise"],
+      "mitigacao_parcial": "p_sql vem de cron.job.command (somente admin pode modificar), mas SECURITY DEFINER amplifica impacto de comprometimento de cron"
+    },
+    "explain_v_super_filtro_options": {
+      "custo_total": 31002,
+      "problema": "Filtro filtro_tipo='category' aplicado APOS full UNION ALL de 7+ subqueries (Subquery Scan + Filter). Todas as subqueries executam mesmo quando apenas 1 filtro_tipo e solicitado.",
+      "seq_scans_identificados": ["product_variants (20371 rows)", "color_variations (82 rows)", "material_types (94 rows)", "product_materials (12162 rows)", "print_area_techniques (24258 rows)", "product_tags (50953 rows)", "product_commemorative_dates (34765 rows)"],
+      "impacto": "142 chamadas em pg_stat_statements, mean=5046ms — 3.3 chamadas/hora de producao",
+      "solucao": "Materializar como view materializada com refresh agendado, ou reescrever como funcao com CASE filtro_tipo"
+    },
+    "types_ts_contagem": {
+      "entradas_6_espacos": 1240,
+      "tabelas_base_db": 398,
+      "nota": "1240 inclui Tables+Views+Functions+Enums em todos os schemas (public, auth, storage, graphql_public). Comparacao direta nao aplicavel sem parse TypeScript."
+    },
+    "pg_stat_statements_top5_producao": [
+      {"query": "fn_cron_safe_run", "calls": 189, "mean_ms": 7080, "total_ms": 1338077},
+      {"query": "v_super_filtro_options (PostgREST)", "calls": 142, "mean_ms": 5046, "total_ms": 716495},
+      {"query": "fn_spot_direct_prices_gold (PostgREST)", "calls": 1, "mean_ms": 15864, "total_ms": 15864},
+      {"query": "variant_supplier_sources (PostgREST is_active)", "calls": 51, "mean_ms": 5247, "total_ms": 267585},
+      {"query": "schema_introspection (PostgREST internal)", "calls": 28, "mean_ms": 7788, "total_ms": 218071}
+    ],
+    "snapshot_after_15h": {
+      "nota": "Auditoria somente leitura confirmada — nenhuma DDL/DML executada",
+      "base_tables": 398,
+      "rls_policies": 960,
+      "cron_jobs": 142,
+      "edge_functions": 109,
+      "migrations_ledger": 2538,
+      "delta_from_14h00": "Δ0 em todos os contadores confirmando zero alteracoes"
+    }
+  },
   "advisors_performance": {
     "auth_rls_initplan": 8,
     "unindexed_fks": 4,
