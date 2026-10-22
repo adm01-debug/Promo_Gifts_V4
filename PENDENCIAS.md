@@ -1,9 +1,11 @@
 # PENDÊNCIAS — Correção de Workflows CI
 
-**Atualizado:** 2026-10-22T19:05 UTC  
+**Atualizado:** 2026-10-22T19:30 UTC  
 **Branch ativa:** `claude/laughing-cori-o9w35e` → PR [#2338](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2338)  
-**HEAD atual:** `87fb348d` (docs(ci): atualiza PENDENCIAS — run 39829341093 att2 cancelled, HEAD agora 882e957c)  
-**Gate Final 87fb348d:** run [39835399695](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39835399695) — 🔄 `queued` (19:05Z) — aguardando runner  
+**HEAD atual:** `856b8db4` (fix(gate-0.5): ip-address/socks/socks-proxy-agent → allowlist LHCI)  
+**Gate Final 856b8db4:** run pendente (aguardando trigger pelo push)  
+**Gate Final 47dfffdc:** run [39835399695](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39835399695) — ❌ `failure` — Gate 0.5 Dependency Audit falhou (ip-address moderate advisory). Fix aplicado em `856b8db4`.  
+**Gate Final 87fb348d:** run [39835399695](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39835399695) — ❌ `failure` (mesmo run — push 47dfffdc não cancelou; Gate 0.5 fez o run falhar)  
 **Gate Final 882e957c:** run [39835181848](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39835181848) — `cancelled` (cancelado por push de 87fb348d via concorrência de PR)  
 **Gate Final c59b3e66 (att 3):** run [39829341093](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39829341093) — `cancelled` (cancelado por push de 882e957c via concorrência de PR, não por falha)  
 **Gate Final 4ceed97c (attempt 2):** run [39829341093](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39829341093) — cancelado por push de c59b3e66  
@@ -24,6 +26,8 @@
 ### Commits desta sessão
 | Commit | Descrição | Resolve |
 |---|---|---|
+| `856b8db4` | fix(gate-0.5): adiciona ip-address/socks/socks-proxy-agent à allowlist LHCI | Gate 0.5 — novo advisory moderate em ip-address (cadeia dev-only @lhci/cli) |
+| `47dfffdc` | docs(ci): inventário main + estado run 39835399695 | Docs |
 | `b442d1ed` | fix(security): corrige allowlist lint-0011 com assinaturas completas pgstattuple (OUT params) | Supabase Linter Gate — mismatch assinaturas OUT params |
 | `a21f6200` | fix(ci): corrige SIGPIPE (exit 141) no guard do daily-flows-simulation | Daily flows simulation — exit 141 SIGPIPE em `gh api --jq` |
 | `f6b1147` | fix(ci): pre-pull com retry para ghcr.io rate limit no drift check | db-schema-drift-check — `toomanyrequests` (44000/min) ao puxar `ghcr.io/supabase/postgres:17.6.1.063` |
