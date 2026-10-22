@@ -517,7 +517,7 @@ jobs:
   e2e-smoke:
     name: Gate 3 - E2E Smoke
     runs-on: ubuntu-24.04
-    timeout-minutes: 15
+    timeout-minutes: 20  # E24: E2E shard ≤ 20 min (aumentado de 15 — smoke levava ~14.5 min na prática)
     needs: [ssot-gate, secrets-check]
     # E015: sem guard — Gate 3 sempre executa (authed ou public-only)
     env:
