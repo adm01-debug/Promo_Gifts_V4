@@ -3,7 +3,7 @@
   "total_open": 24,
   "analisadas": 24,
   "mergeadas": 0,
-  "ultima_atualizacao": "2026-10-22T18:55Z",
+  "ultima_atualizacao": "2026-10-22T19:15Z",
   "contagem_por_veredicto": {
     "CI_PENDENTE": 1,
     "AGUARDAR_REBASE": 4,
@@ -13,19 +13,26 @@
     "FECHAR": 15,
     "MERGEADA": 0
   },
-  "pr2338_head": "882e957c0292705308e8bf7fc2406a0412d01c59",
-  "pr2338_ci_status": "queued_pending_gate_final_not_yet_created",
-  "status": "aguardando_Gate_Final_head_882e957c",
+  "pr2338_head": "b48145b366041354dc0ee8a20a0bd6217b1289f1",
+  "pr2338_ci_status": "em_andamento_gate_final_nao_criado_ainda",
+  "status": "aguardando_Gate_Final_head_b48145b3",
   "proxima_acao": "merge_pr2338_quando_Gate_Final_success",
   "pre_existing_failures_baseline": [
     "Gate Final - Deploy Ready",
     "Gate 0.5 - Dependency Audit",
     "Gate 1 - Lint + TypeScript",
     "E2E — Personalization Journey",
-    "Migrations x Canonical schema (Gate E40)"
+    "Migrations x Canonical schema (Gate E40)",
+    "E2E · webkit-authed",
+    "cart-invariants (firefox-authed · shard 1/2)",
+    "cart-invariants (firefox-authed · shard 2/2)",
+    "cart-invariants (chromium-authed · shard 1/2)",
+    "E2E — Full User Flows (authed)",
+    "E2E Subtítulo quote_number (visual)",
+    "E2E PDF exportado · quote_number"
   ],
   "prs": {
-    "2338": {"veredicto": "CI_PENDENTE", "acao": "MERGEAR quando Gate Final = success", "head": "882e957c"},
+    "2338": {"veredicto": "CI_PENDENTE", "acao": "MERGEAR quando Gate Final = success", "head": "b48145b3"},
     "2316": {"veredicto": "AGUARDAR_REBASE", "acao": "conflito_semantico_com_2338", "base": "45545ae"},
     "2315": {"veredicto": "AGUARDAR_REBASE", "acao": "rebase + resolver conflito com #2314", "base": "1ac6992"},
     "2314": {"veredicto": "AGUARDAR_REBASE", "acao": "rebase + reconciliar valor com #2315", "base": "1ac6992"},
