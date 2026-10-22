@@ -1,7 +1,7 @@
 # RELATÓRIO CI — Branch `claude/laughing-cori-o9w35e`
 
 **Gerado em:** 2026-10-22  
-**HEAD:** `205c5688` (allowlist Gate E40)  
+**HEAD:** `dc2baf69` (remove entrada stale baseline Gate 1.3)  
 **PR:** #2338 → main  
 
 ---
@@ -20,42 +20,40 @@
 
 ---
 
-## 2. Status do CI no PR branch (commit `205c5688`)
+## 2. Status do CI no PR branch (commit `dc2baf69`)
 
-### Workflows com resultado definitivo
+### Workflows concluídos no commit `dc2baf69` (em andamento)
 
-| Workflow | Run ID | Status | Causa (se failure) |
+| Workflow | Run ID | Status | Observação |
 |---|---|---|---|
-| Workflow Lint | 39718963310 | ✅ success | — |
-| edge-functions-drift-check | 39718963168 | ✅ success | — |
-| Security Scan | 39718963285 | ✅ success | — |
-| Required Checks Guard | 39718963368 | ✅ success | — |
-| Lint untypedFrom | 39718963386 | ✅ success | — |
-| No Prod Leak in Dev/Test Config | 39718963170 | ✅ success | — |
-| PR Size Guard (E185) | 39718963280 | ✅ success | — |
-| Select Columns vs Types | 39718963355 | ✅ success | — |
-| SSOT Supabase Guard | 39718963340 | ✅ success | — |
-| CodeQL | 39718963342 | ✅ success | — |
-| Bundle size report | 39718963213 | ✅ success | — |
-| TS Unused Locals Ratchet | 39718963457 | ✅ success | — |
-| cart-header-quality-gate | 39718963400 | ✅ success | — |
-| E2E Cart — Matrix (E79) | 39718963189 | ✅ success | — |
-| E2E · Carts Undo RPC Atomic | 39718963173 | ✅ success | — |
-| E2E — CNPJ SSOT | 39718963348 | ✅ success | — |
-| Deployment Failure Alert | 39719017072 | ✅ skipped | — |
-| migrations-sync-log-gate | 39720524077 | ✅ success | Corrigido em commit `305e4763` |
-| **Deploy Gates (Gate Final)** | **39723328396** | **🔄 queued** | Aguarda resultado commit `205c5688` |
-| Running Copilot Code Review | 39718971114 | ❌ failure | Bot de review — NÃO é gate bloqueante |
-| E2E (Playwright) | 39718963346 | ❌ failure | Header sticky `22-header-sticky.spec.ts` — **pré-existente em main** (ver §4) |
+| Workflow Lint | 39724640818 | ✅ success | — |
+| edge-functions-drift-check | 39724640924 | ✅ success | — |
+| Security Scan | 39724640724 | ✅ success | — |
+| Required Checks Guard | 39724640700 | ✅ success | — |
+| Lint untypedFrom | 39724640530 | ✅ success | — |
+| No Prod Leak in Dev/Test Config | 39724640997 | ✅ success | — |
+| PR Size Guard (E185) | 39724640691 | ✅ success | — |
+| Select Columns vs Types | 39724640791 | ✅ success | — |
+| migrations-sync-log-gate | 39724640925 | ✅ success | — |
+| schema-snapshot-export | 39724641117 | ✅ success | — |
+| Deployment Failure Alert | 39724692057 | ✅ skipped | — |
+| **Deploy Gates (Gate Final)** | **39724640809** | **🔄 queued** | Aguarda CI em andamento |
+| db-schema-drift-check (Gate E40) | 39724640767 | 🔄 in_progress | — |
+| Supabase Linter Gate | 39724641442 | 🔄 in_progress | — |
+| SSOT Supabase Guard | 39724640727 | 🔄 in_progress | — |
+| Running Copilot Code Review | 39724648192 | 🔄 queued | Bot de review — NÃO é gate bloqueante |
+| E2E (Playwright) | 39724640875 | 🔄 pending | Pré-existente em main (ver §4) |
 
-### Gate E40 — Schema Drift Check
+### Histórico de correções por commit
 
-| Run ID | Commit | Status | Observação |
-|---|---|---|---|
-| 39720524458 | `305e4763` | ❌ failure | blocking_remote_only=633 |
-| 39723328396 | `205c5688` | 🔄 queued | Fix: allowlist 634 versões — aguardando |
-
-**Fix aplicado:** `scripts/migration-ledger-remote-only-allowlist.json` populado com todas as 634 versões remote_only extraídas do artifact `migration-ledger.json` (run 39720524458, artifact_id 12400614464).
+| Commit | Gate corrigido | Run resultado |
+|---|---|---|
+| `cb2706ca` | Gate 1.12 (contracts) | ✅ Deploy Gates passou |
+| `bd851bb4` | lint-0011 allowlist | ✅ run 39723520985 |
+| `47c4e91e` | lint-0029, E2E 13b | ✅ success |
+| `305e4763` | migrations-sync-log | ✅ run 39724640925 |
+| `205c5688` | Gate E40 allowlist 634 versões | 🔄 aguardando |
+| `dc2baf69` | Gate 1.3 baseline stale | 🔄 aguardando |
 
 ---
 
@@ -110,6 +108,8 @@
 | `cb2706ca` | `tests/contracts/webhook-schemas.ts` | `magazine-reader-state-read` adicionado a NO_BODY_EXEMPT |
 | `305e4763` | `supabase/MIGRATIONS_SYNC_LOG.md` | Recibos E15 para migrations REVOKE |
 | `205c5688` | `scripts/migration-ledger-remote-only-allowlist.json` | Allowlist 634 versões remote_only (Gate E40) |
+| `988c0ca5` | `RELATORIO_CI.md`, `PENDENCIAS.md` | Diagnóstico completo atualizado |
+| `dc2baf69` | `.migration-refs-baseline.json` | Remove entrada stale Gate 1.3 (scripts/migration-ledger-remote-only-allowlist.json → supabase/migrations/20260712_legacy_initial.sql) |
 
 ---
 
@@ -121,4 +121,4 @@
 
 ---
 
-_Atualizado automaticamente por sessão Claude — 2026-10-22_
+_Atualizado automaticamente por sessão Claude — 2026-10-22 (HEAD dc2baf69)_
