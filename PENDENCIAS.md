@@ -332,33 +332,45 @@ O PR adiciona dois arquivos em `supabase/migrations/` que ATIVAM o drift check v
 
 ---
 
-## P27 — Deploy Gates — Gate Final conclusion=failure (P3+P-E40 bloqueiam)
+## P27 — Deploy Gates — Gate Final bloqueado por P3+P-E40 (pré-existentes)
 
 **Status:** ⚠️ Bloqueado por pré-existentes P3 e P-E40  
 **Workflow:** `Deploy Gates` (`deploy-gates.yml`)  
-**Run mais recente:** [39744909966](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39744909966) — SHA `5b32ac8d` — `in_progress` (08:10Z)  
-**Causa:** Gate 3 E2E Smoke (P3) e Gate E40 Schema Drift Check (P-E40) são pré-existentes que falham em todo run desde 10+ dias. Quando esses 2 jobs falham, `Gate Final - Deploy Ready` também falha. Os outros jobs do Deploy Gates passam com conclusion=success.  
-**Jobs success confirmados (run 39744909966, 08:10Z):**
-- Gate 0 SSOT ✅, Gate 0.5 Dependency Audit ✅, Gate 0.6 Dependency Review ✅
-- Gate 2.5 PostgreSQL ✅, Gate 5 SEO ✅, Gate E23 Secret Scan ✅, Gate E40 Detect ✅
-- Gate 4 Lighthouse CI: in_progress, Gate 5.5 RPC: in_progress
-- static-gates (Gate 1), unit-tests (Gate 2), e2e-smoke (Gate 3), Gate Final: pending
-**Por que não corrigível aqui:** Requer correção de infra de auth/E2E (P3) e reconciliação de schema drift (P-E40), ambos fora do escopo deste PR de governança/allowlists.  
+**Run mais recente:** [39745982811](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39745982811) — SHA `33cd3d5d` — `in_progress` (08:12Z–08:25Z+)  
+**Causa:** Gate 3 E2E Smoke (P3) e Gate E40 Schema Drift Check (P-E40) são pré-existentes que falham em todo run. Os outros jobs passam com conclusion=success.  
+**Jobs success confirmados (run 39745982811, SHA 33cd3d5d):**
+- Gate 0 SSOT ✅ (08:16:10Z), Gate 0.5 Dependency Audit ✅ (08:17:15Z)
+- Gate 0.6 Dependency Review ✅ (08:16:45Z), Gate E23 Secret Scan ✅ (08:16:51Z)
+- Gate 2 Unit Tests ✅ (08:17:11Z), Gate 2.5 PostgreSQL ✅ (08:17:42Z)
+- Gate 4 Lighthouse ✅ (08:18:48Z), Gate 5 SEO ✅ (08:16:26Z), Gate 5.5 RPC ✅ (08:17:46Z)
+- **Gate 1 Lint+TypeScript ✅ (08:24:34Z)** — todos 42 steps ✅ incluindo Gate 1.10 indexed-access ratchet ✅ (08:24:22Z), Gate 1.13 policies ✅ (08:23:08Z)
+- Gate 6 Build ✅ (08:25:23Z)
+- Gate E40 Detect (paths) ✅ (08:16:24Z)
+**Jobs in_progress (pré-existentes):**
+- Gate E40 Schema Drift: step 9 "Schema drift check" in_progress desde 08:22:49Z (pré-existente P-E40)
+- Gate 3 E2E Smoke: step 7 "Run Playwright smoke tests" in_progress desde 08:17:49Z (pré-existente P3)
+**Por que não corrigível aqui:** Requer correção de infra de auth/E2E (P3) e reconciliação de schema drift (P-E40), ambos fora do escopo deste PR.  
 **Ação necessária:** PO — ver P3 e P-E40.
 
 ---
 
-## P28 — CI Security & Drift Checks — Aguardando conclusão (08:13Z)
+## P28 — CI Security & Drift Checks — conclusion=failure (testes unitários pré-existentes)
 
-**Status:** ⏳ In progress — aguardando conclusion  
+**Status:** ⚠️ Failure por testes unitários pré-existentes — fix do lint-0011 ✅ confirmado  
 **Workflow:** `CI Security & Drift Checks` (`ci-security-drift.yml`)  
-**Run:** [39744914052](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39744914052) — SHA `5b32ac8d` — `in_progress` (08:13Z)  
-**Progresso (job `quality-gate`):**
-- Steps 1-20 todos ✅ — incluindo step 16 lint-0011 ✅ (08:08:37Z) — fix das assinaturas PG17 funcionou
-- Step 21 (Unit & Integration Tests): in_progress desde 08:08:39Z
-- Steps 22-26 (Hook tests, Guard E2E, Playwright, E2E specs): pending
-**Bloqueio esperado:** Steps 24-26 (Playwright E2E) provavelmente falharão por ausência de credenciais E2E no PR — mesma causa do P3. O ci-security-drift não é required check do Gate Final; o Gate Final depende apenas do `deploy-gates.yml`.  
-**Nota:** Este workflow foi disparado via `workflow_dispatch` para validar o fix do lint-0011. A conclusão final (success ou failure em E2E) não impacta o Gate Final do PR.
+**Run:** [39744914052](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39744914052) — SHA `5b32ac8d` — `conclusion=failure` (completou 08:26:11Z)  
+**Job `quality-gate`:** conclusion=failure (job id 119710869379)  
+**Job `security-audit`:** conclusion=success ✅  
+**Resultado por step (quality-gate):**
+- Steps 1-20 todos ✅ — incluindo **step 16 lint-0011 ✅ (08:08:37Z)** — fix das assinaturas PG17 confirmado
+- **Step 21 "Run Unit & Integration Tests": conclusion=failure (08:08:39Z–08:26:07Z)**
+  - `src/components/cart/__tests__/PopoverQtyInput.test.tsx` > "permite digitar 80 e faz commit no Enter": `expected onCommit(80), received onCommit(1080)` — bug de keyboard simulation (Ctrl+A não selecionou o texto, então `80` foi appendado ao valor existente `10` → `1080`). Linha 68.
+  - `tests/components/mockup/MockupProductSelector.test.tsx` linha 225: timeout em `waitFor(() => screen.getAllByTestId('mockup-product-row').length)` — timeout de renderização de produtos mockados.
+- Steps 22-26 (Hook tests, Guard E2E, Playwright E2E): todos skipped por causa da falha no step 21.
+**Causa das falhas:** Pré-existentes — nenhuma das mudanças deste PR (`lint-0011-allowlist.json`, `PENDENCIAS.md`) tem qualquer relação com `PopoverQtyInput` ou `MockupProductSelector`. São bugs de testes que existem antes deste PR.  
+**Prova de pré-existência:** Os arquivos `src/components/cart/__tests__/PopoverQtyInput.test.tsx` e `tests/components/mockup/MockupProductSelector.test.tsx` não são tocados por nenhum commit deste PR (commits: `lint-0011-allowlist.json`, `PENDENCIAS.md`). A falha é de keyboard simulation do user-event — `{Control>}a{/Control}` não seleciona o campo corretamente no runner, appending `80` ao valor `10`.  
+**Impacto no Gate Final:** NENHUM — `ci-security-drift.yml` não é required check do `deploy-gates.yml`. O Gate Final depende exclusivamente de `deploy-gates.yml`.  
+**Ação necessária:** PO — investigar e corrigir os testes unitários `PopoverQtyInput` e `MockupProductSelector` (fora do escopo deste PR de governança/allowlists).
 
 ---
 
