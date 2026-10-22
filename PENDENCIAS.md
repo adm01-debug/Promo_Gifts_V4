@@ -1,9 +1,9 @@
 # PENDÊNCIAS — Correção de Workflows CI
 
-**Atualizado:** 2026-10-22T15:40 UTC  
+**Atualizado:** 2026-10-22T16:00 UTC  
 **Branch ativa:** `claude/laughing-cori-o9w35e` → PR [#2338](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2338)  
-**HEAD:** `a21f6200` (fix(ci): corrige SIGPIPE (exit 141) no guard do daily-flows-simulation)  
-**Gate Final HEAD:** aguardando novo run para `a21f6200`  
+**HEAD:** `fd5a9ac3` (docs: atualiza PENDENCIAS.md com status reruns 15:40Z)  
+**Gate Final HEAD:** aguardando novo run para `fd5a9ac3`  
 **Gate Final anterior:** [run 39798033549](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39798033549) — Deploy Gates para `141c915a` — ✅ **`conclusion=success`** (15:00Z) — todos 16 jobs passaram
 
 ### Commits desta sessão
@@ -88,11 +88,11 @@
 | 7 | **E2E — Personalization Flow** | 39757064319 | 8e8053b9 | Pré-existente E2E | ⚠️ Auth failure pré-existente — §2.6.3 |
 | 8 | **E2E • Swatch QuickView** | 39757064344 | 8e8053b9 | Pré-existente E2E | ⚠️ Visual/auth flake — §2.6.4 |
 | 9 | **Gitleaks — Full History Audit** | [39757063805](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39757063805) | 8e8053b9 | **RESOLVIDO na main** | ✅ `conclusion=success` em 8e8053b9 — falha anterior era em c7c25848 |
-| 10 | **Quote Builder Delivery Quality** | 39757063628 | 8e8053b9 | Pré-existente E2E | ⚠️ Tooltip visual flake — §2.7 |
+| 10 | **Quote Builder Delivery Quality** | 39757063628 | 8e8053b9 | Pré-existente E2E | ✅ `conclusion=success` — attempt 2 rerun confirmado |
 | 11 | **Quote Number Hardening — Verify** | [39735347516](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39735347516) | c7c25848 | ✅ RESOLVIDO (rerun) | ✅ Rerun attempt 2 → `conclusion=success` (15:25Z) observado via API |
 | 12 | **Release Please** | 39757063511 | 8e8053b9 | Ação humana | ❌ Requer `contents:write` — ver §2.3 |
 | 13 | **Supabase Linter Gate** | 39757063923 | 8e8053b9 | Fix branch | ✅ Fix `b442d1ed` (assinaturas OUT params corretas); run [39786612132](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39786612132) `conclusion=success` (PR branch) |
-| 14 | **Uptime Monitor** | [39788883010](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39788883010) | 8e8053b9 | **RESOLVIDO na main** | ✅ `conclusion=success` em 13:40Z — app voltou ao ar |
+| 14 | **Uptime Monitor** | [39802177763](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39802177763) | 8e8053b9 | ⚠️ INTERMITENTE | ⚠️ Nova falha 15:09Z (health-check 503 = database unhealthy); attempt 2 queued (15:34Z) — §2.1 |
 | 15 | **db-schema-drift-check** | 39757238848 | 8e8053b9 | Ação humana | ❌ Ledger parity — ver §2.2 |
 | 16 | **edge-functions-drift-check** | 39755009146 | c7c25848 | Ação humana | ❌ Edge fn drift — ver §2.11 |
 | 17 | **Kit Coverage — Integration** | [39719136176](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39719136176) | c7c25848 | ❌ Bloqueador humano | ❌ `permission denied for view v_kit_component_complete` + `permission denied for table product_kit_components` — ver §2.12 |
@@ -101,13 +101,17 @@
 
 ## 2. FALHAS NA `main` (commit `8e8053b9`) — Status e Ações
 
-### 2.1 Uptime Monitor — ✅ RESOLVIDO (transient — app voltou)
+### 2.1 Uptime Monitor — ⚠️ INTERMITENTE (health-check 503 = database unhealthy)
 
-- **Run original (falha):** [39776635316](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39776635316)
-- **Run atual (success):** [39788883010](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39788883010) — `conclusion=success` em 13:40Z, sha 8e8053b9
-- **Causa original:** 4 falhas consecutivas no health check — app offline/transiente
-- **Status:** ✅ Resolvido automaticamente — próxima execução agendada passou com sucesso
-- **Ação necessária:** Nenhuma
+- **Run original (09:09Z):** [39776635316](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39776635316) — `conclusion=failure`
+- **Recovery (13:40Z):** [39788883010](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39788883010) — `conclusion=success`
+- **Nova falha (15:09Z):** [39802177763](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39802177763) — `conclusion=failure`
+  - **Causa:** Probe `health-check` → curl exit 22 (HTTP 503 = database unhealthy no canônico)
+  - **Diagnóstico:** `site=0 (OK)`, `health-check=22 (FAIL)`, `check-login=0 (OK)`, `auth-health=0 (OK)`
+  - **Attempt 2:** Rerun disparado às 15:34Z — status `queued` (aguardando runner)
+- **Padrão:** INTERMITENTE — falhas em 09:09Z e 15:09Z, recovery em 13:40Z
+- **Status:** ⚠️ Attempt 2 queued — conclusão pendente; sem ação de código necessária
+- **Ação necessária:** Nenhuma — health-check usa timeout 1500ms; falhas são transientes de infra do banco canônico
 
 ### 2.2 db-schema-drift-check — Ledger Parity Falhou
 
