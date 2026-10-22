@@ -1,11 +1,11 @@
 # Relatório CI — Sessão de Correção de Workflows
 
-**Gerado:** 2026-10-22T13:35 UTC | **Atualizado:** 2026-10-22T14:35 UTC  
+**Gerado:** 2026-10-22T13:35 UTC | **Atualizado:** 2026-10-22T14:45 UTC  
 **Branch:** `claude/laughing-cori-o9w35e` → PR [#2338](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2338)  
-**HEAD atual:** `0f1d53d2` (docs(ci): atualiza HEAD 18455381, timestamps e Gate Final — prova de conclusão final)  
-**Commits desta sessão:** `9c2288c4` → `c58e3a56` → `6d6ed480` → `5216cfc7` → `0aad32d3` → `3daebf93` → `7fa5c405` → `070bd2c7` → `b55d179e` → `040b4a0a` → `c65aa646` → `ac0ba1bf` → `53035934` → `cb2706ca` → `5fe97ded` → `6e4cf085` → `773d203d` → `3b14ab93` → `65048db8` → `a5830d63` → `fc685c1c` → `89cbf1e2` → `18455381` → `0f1d53d2`  
+**HEAD atual:** `986b37c0` (docs(ci): registra run 39796246518 (HEAD e9c1b99a) em PENDENCIAS.md)  
+**Commits desta sessão:** `9c2288c4` → `c58e3a56` → `6d6ed480` → `5216cfc7` → `0aad32d3` → `3daebf93` → `7fa5c405` → `070bd2c7` → `b55d179e` → `040b4a0a` → `c65aa646` → `ac0ba1bf` → `53035934` → `cb2706ca` → `5fe97ded` → `6e4cf085` → `773d203d` → `3b14ab93` → `65048db8` → `a5830d63` → `fc685c1c` → `89cbf1e2` → `18455381` → `0f1d53d2` → `e9c1b99a` → `986b37c0`  
 **Base (main):** `8e8053b9`  
-**Gate Final ativa:** run [39794023027](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39794023027) — Deploy Gates para `0f1d53d2` — `status=pending` às 14:14Z (aguardando conclusão — será cancelado pelo próximo push, comportamento esperado do concurrency group)
+**Gate Final ativa:** run [39796843703](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39796843703) — Deploy Gates para `986b37c0` — `queued` às 14:34Z — aguardando conclusão OBSERVADA
 
 ---
 
@@ -162,11 +162,21 @@ npm error 403 403 Forbidden - GET https://europe-west1-npm.pkg.dev/lovable-core-
 
 ---
 
-## 7. Tabela de Prova de Conclusão — HEAD `0f1d53d2` (2026-10-22T14:35 UTC)
+## 7. Tabela de Prova de Conclusão — HEAD `986b37c0` (2026-10-22T14:45 UTC)
 
 > Cobre todos os **16 workflows** com última execução em `failure` detectados no inventário inicial.  
-> Comparação: baseline (main `8e8053b9`) × atual (PR branch `0f1d53d2`).  
-> **E2E pré-existentes confirmados via API na main:** `Cart Invariants Smoke` run [39757063502](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39757063502) `conclusion=failure`; `E2E — Critical Flows & Error Boundaries` run [39757063778](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39757063778) `conclusion=failure`; `E2E (Playwright)` run [39757063983](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39757063983) `conclusion=failure`; `E2E — Personalization Flow` run [39757064319](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39757064319) `conclusion=failure`; `E2E • Swatch QuickView` run [39757064344](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39757064344) `conclusion=failure` — todos em branch=main, verificados via `github_list_workflow_runs` em 2026-10-22T14:30Z.
+> Comparação: baseline (main `8e8053b9`) × atual (PR branch `986b37c0`).  
+> **E2E pré-existentes confirmados via API (logs + artefatos) em 2026-10-22T14:30Z–14:45Z:**
+>
+> | Workflow | Run (main) | Motivo exato verificado via API |
+> |---|---|---|
+> | Cart Invariants Smoke | [39757063502](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39757063502) | 9 testes em `active-cart-*.spec.ts` — isolamento de estado cart; chromium+firefox shards 1+2; shard 1: 558s>480s |
+> | E2E Critical Flows | [39757063778](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39757063778) | "Check min tests executed" (Error Boundaries sem auth + Full User Flows authed); artefato 201KB |
+> | E2E Playwright | [39757063983](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39757063983) | `e2e-gates` fail-fast header sticky — `22-header-sticky.spec.ts:148,186,206`; overflow/transform em MainLayout.tsx; 170 skip, 1 pass |
+> | E2E Personalization | [39757064319](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39757064319) | "Check min tests executed"; artefato 206KB |
+> | E2E Swatch QV | [39757064344](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39757064344) | webkit+chromium: suite failure; firefox: cancelled >60min |
+>
+> **Gate Final ativo (HEAD `986b37c0`):** run [39796843703](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39796843703) — `queued` às 14:34Z — conclusão pendente observação.
 
 ### Linha de base (main `8e8053b9`) → Status na verificação
 

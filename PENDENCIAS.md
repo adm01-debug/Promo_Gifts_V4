@@ -1,9 +1,9 @@
 # PENDÊNCIAS — Correção de Workflows CI
 
-**Atualizado:** 2026-10-22T14:22 UTC  
+**Atualizado:** 2026-10-22T14:45 UTC  
 **Branch ativa:** `claude/laughing-cori-o9w35e` → PR [#2338](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2338)  
-**HEAD:** `0f1d53d2` (docs(ci): atualiza HEAD 18455381, timestamps e Gate Final — prova de conclusão final)  
-**Gate Final ativa:** Deploy Gates para HEAD deste commit — aguardando resultado OBSERVADO (run 39794023027 cancelado por este push — comportamento esperado de concorrência)
+**HEAD:** `986b37c0` (docs(ci): registra run 39796246518 (HEAD e9c1b99a) em PENDENCIAS.md)  
+**Gate Final ativa:** [run 39796843703](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39796843703) — Deploy Gates para `986b37c0` — `queued` às 14:34Z — aguardando conclusão OBSERVADA via API
 
 ---
 
@@ -87,17 +87,69 @@
 - **Causa:** Workflow composto que inclui `db-schema-drift-check` e/ou `Supabase Linter Gate`
 - **Status:** Fix do drift-baseline (commit `9c2288c4`) deve resolver; aguardando nova execução após merge
 
-### 2.6 E2E (Playwright) — Falhas Pré-existentes
+### 2.6 E2E (Playwright) — `22-header-sticky.spec.ts` — Falha Pré-existente
 
-- **Run:** [39757063983](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39757063983)
-- **Causa:** Falhas de autenticação E2E e/ou flake (confirmadas como pré-existentes)
-- **Falhas identificadas nesta sessão:**
-  - `replenishment-stress` — timeout em `Produto Stress Test 0` (30s) — dado de carga indisponível
-  - `E2E Popover Campos Pendentes` — visual regression (campos ausentes)
-  - `cart-invariants firefox-authed` — auth flake em firefox (recorrente)
-  - `E2E — Personalization Journey` — provável pré-existente
-- **Fix desta sessão:** `mkdir -p playwright-report &&` antes do `touch` em `e2e-gates` (commit `c58e3a56`) resolve false-negative no gate header-sticky
-- **Status:** Falhas pré-existentes confirmadas; não são regressões introduzidas por esta branch
+- **Run na main:** [39757063983](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39757063983) — sha `8e8053b9` — `conclusion=failure`
+- **Job:** `e2e-gates`
+- **Step que falhou:** `🛑 Fail-fast se header sticky falhou`
+- **Erro exato (log):** `"O Header global deixou de ser sticky em alguma rota/viewport. Spec: e2e/flows/22-header-sticky.spec.ts. Causa raiz típica: 'overflow' / 'transform' / 'filter' em ancestral do <header> em src/components/layout/MainLayout.tsx criando scroll container ou stacking context indevido."`
+- **Testes que falharam:**
+  - `22-header-sticky.spec.ts:148:7` — `/admin/auditoria-propriedade`, `/admin/rbac-rotas`, `/status`
+  - `22-header-sticky.spec.ts:186:3` — header sticky pós-login
+  - `22-header-sticky.spec.ts:206:3` — header sticky entre módulos protegidos
+- **Resultado:** 170 testes saltados (skip), 1 passou
+- **Pré-existência:** Confirmado na main `8e8053b9` — nenhum commit desta branch toca `MainLayout.tsx`
+- **Bloqueio para correção:** npm install bloqueado (403 Forbidden — registry privado Lovable) — impossível rodar suite local; correção requer acesso ao ambiente de desenvolvimento completo
+- **Fix desta sessão:** `mkdir -p playwright-report &&` antes do `touch` em `e2e-gates` (commit `c58e3a56`) — resolve false-negative de infra no gate, não a regressão de sticky
+- **Ação necessária:** PO + dev identificar qual propriedade CSS em `src/components/layout/MainLayout.tsx` cria container de scroll ou stacking context que quebra `position: sticky` do header
+
+### 2.6.1 Cart Invariants Smoke — Falha Pré-existente
+
+- **Run na main:** [39757063502](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39757063502) — sha `8e8053b9` — `conclusion=failure`
+- **Jobs que falharam:** `cart-invariants (chromium-authed · shard 1/2)`, `shard 2/2`, `(firefox-authed · shard 1/2)`, `shard 2/2`
+- **Step que falhou em todos os jobs:** `Playwright — invariants do header/sidebar`
+- **9 testes falharam (chromium shard 1) — especificações exatas:**
+  - `e2e/carrinhos/active-cart-edge-cases.spec.ts:51` — trocas rápidas em sequência convergem para o carrinho final
+  - `e2e/carrinhos/active-cart-edge-cases.spec.ts:72` — carrinho vazio zera Qtd/subtotal
+  - `e2e/carrinhos/active-cart-edge-cases.spec.ts:105` — formatação pt-BR de moeda no header
+  - `e2e/carrinhos/active-cart-intermittent-failure.spec.ts:62` — timeout/5xx transitório + refresh
+  - `e2e/carrinhos/active-cart-mutations-parallel.spec.ts:79` (desktop + mobile) — DELETE/PATCH tardios não vazam
+  - `e2e/carrinhos/active-cart-network-failure.spec.ts:52` — offline no meio do reload
+  - `e2e/carrinhos/active-cart-parallel-actions.spec.ts:55` — trocas rápidas com fetch/mutação paralelos
+  - `e2e/carrinhos/active-cart-parallel-actions.spec.ts:119` — trocas repetidas com refresh intermediário
+- **Aviso:** Shard chromium #1 durou 558s > 480s (timeout warning)
+- **Pré-existência:** Confirmado na main `8e8053b9` — nenhum commit desta branch toca carrinho ativo
+- **Ação necessária:** PO + dev de features corrigir isolamento de estado de cart ativo sob mutações paralelas
+
+### 2.6.2 E2E Critical Flows & Error Boundaries — Falha Pré-existente
+
+- **Run na main:** [39757063778](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39757063778) — sha `8e8053b9` — `conclusion=failure`
+- **Jobs que falharam:**
+  - `E2E — Error Boundaries (sem auth)` → step `Check min tests executed` — poucos testes executaram (artefato 201KB)
+  - `E2E — Full User Flows (authed)` → step `Run Sidebar Tooltips E2E — desktop (chromium-authed)` + `Check min tests executed`
+- **Causa:** Artefato pequeno (201KB) indica que app iniciou mas testes não executaram em quantidade suficiente; falha de autenticação ou timeout de setup impede execução do suite completo
+- **Pré-existência:** Confirmado na main `8e8053b9` — nenhum commit desta branch toca autenticação ou sidebar
+- **Ação necessária:** PO + dev de features investigar setup de autenticação E2E para Admin Critical Routes e Sidebar Tooltips
+
+### 2.6.3 E2E Personalization Flow — Falha Pré-existente
+
+- **Run na main:** [39757064319](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39757064319) — sha `8e8053b9` — `conclusion=failure`
+- **Job que falhou:** `E2E — Personalization Journey`
+- **Step que falhou:** `Check min tests executed`
+- **Causa:** Artefato muito pequeno (206KB) — testes não executaram em quantidade suficiente; app pode não ter iniciado a tempo ou autenticação falhou no setup
+- **Pré-existência:** Confirmado na main `8e8053b9` — nenhum commit desta branch toca fluxo de personalização
+- **Ação necessária:** PO + dev de features investigar setup de autenticação E2E para fluxo de personalização
+
+### 2.6.4 E2E Swatch QuickView — Falha Pré-existente
+
+- **Run na main:** [39757064344](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39757064344) — sha `8e8053b9` — `conclusion=failure`
+- **Jobs e steps que falharam:**
+  - `webkit • swatch→QV` → step `Run swatch→QuickView suite` + `Check min tests executed` — failure
+  - `chromium • swatch→QV` → step `Run swatch→QuickView suite` + `Check min tests executed` — failure
+  - `firefox • swatch→QV` → step `Run swatch→QuickView suite` — cancelled (duração >60min, timeout runner); `Check min tests executed` — failure
+- **Causa:** Suite swatch→QuickView falha em webkit e chromium; firefox excede timeout de 60 minutos
+- **Pré-existência:** Confirmado na main `8e8053b9` — nenhum commit desta branch toca componente de swatch ou QuickView
+- **Ação necessária:** PO + dev de features investigar componente swatch/QuickView para webkit/chromium e timeout do firefox
 
 ### 2.8 E2E PDF Exportado — quote_number (pré-existente)
 
@@ -234,20 +286,23 @@
 | **Gate Final — PR branch `89cbf1e2`** | [39791769169](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39791769169) | 🚫 `cancelled` (concorrência) | Cancelado pelo push de `18455381` — comportamento esperado do concurrency group (cancel-in-progress=true); NÃO é failure |
 | **Gate Final — PR branch `18455381`** | [39793218590](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39793218590) | 🚫 `cancelled` (concorrência) | Cancelado pelo push de `0f1d53d2` — comportamento esperado do concurrency group; NÃO é failure. NOTA: run 39793218383 é "Freight Quest — Quality Gates" (workflow diferente), erroneamente identificado antes como Gate Final |
 | **Gate Final — PR branch `0f1d53d2`** | [39794023027](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39794023027) | 🚫 `cancelled` (concorrência) | Cancelado por este push (docs + RELATORIO_CI) — comportamento esperado de cancel-in-progress=true; NÃO é failure; mesmo padrão de 39791769169 e 39793218590 |
-| **Gate Final — PR branch `e9c1b99a` (HEAD)** | [39796246518](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39796246518) | ⏳ `queued` (14:30Z) | Run iniciado por push `e9c1b99a`; SSOT Guard aguardando confirmação; aguardando conclusão OBSERVADA via API |
+| **Gate Final — PR branch `e9c1b99a`** | [39796246518](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39796246518) | 🚫 `pending` → cancelado (concorrência) | Iniciado por push `e9c1b99a`; cancelado pelo push de `986b37c0` — comportamento esperado de cancel-in-progress=true; NÃO é failure |
+| **Gate Final — PR branch `986b37c0` (HEAD)** | [39796843703](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39796843703) | ⏳ `queued` (14:34Z) | Run iniciado por push `986b37c0`; aguardando conclusão OBSERVADA via API; será cancelado por próximo push se houver |
 
 ### 4B. Workflows com falhas pré-existentes (não causados por esta branch)
 
-| Workflow | Run (main) | Status | Entrada em PENDENCIAS.md |
-|---|---|---|---|
-| **E2E (Playwright)** | 39757063983 | ⚠️ failure pré-existente | §2.6 — flakes auth/regressão |
-| **E2E — Critical Flows & Error Boundaries** | 39757063778 | ⚠️ failure pré-existente | §3.5 — auth failure admin routes |
-| **E2E — Personalization Flow** | 39757064319 | ⚠️ failure pré-existente | §2.6 — auth failure pré-existente |
-| **E2E • Swatch QuickView** | 39757064344 | ⚠️ failure pré-existente | §2.6 — visual/auth flake |
-| **Cart Invariants Smoke** | 39757063502 | ⚠️ failure pré-existente | §2.6 — Firefox auth flake recorrente |
-| **Quote Builder Delivery Quality** | 39757063628 | ⚠️ failure pré-existente | §2.7 — tooltip visual flake |
-| **Deploy Gates (main)** | 39757063931 | ⚠️ failure (cascata) | Agrega E2E acima + Supabase Linter (fix em PR) |
-| **copilot-pull-request-reviewer** | 39790122062 | ❌ failure pré-existente | Não bloqueante — GitHub App sem `pull_requests:write` |
+> Todos os motivos abaixo foram verificados via API (logs de jobs/artifacts) em 2026-10-22T14:30Z–14:45Z.
+
+| Workflow | Run (main) | Status | Motivo verificado via API | Entrada em PENDENCIAS.md |
+|---|---|---|---|---|
+| **E2E (Playwright)** | [39757063983](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39757063983) | ⚠️ failure pré-existente | `e2e-gates` step `🛑 Fail-fast se header sticky falhou` — `22-header-sticky.spec.ts:148,186,206` — overflow/transform em `MainLayout.tsx` quebra `position: sticky`; 170 testes saltados | §2.6 |
+| **E2E — Critical Flows & Error Boundaries** | [39757063778](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39757063778) | ⚠️ failure pré-existente | "E2E — Error Boundaries" → `Check min tests executed`; "E2E — Full User Flows" → `Run Sidebar Tooltips E2E` + `Check min tests executed`; artefato 201KB | §2.6.2 |
+| **E2E — Personalization Flow** | [39757064319](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39757064319) | ⚠️ failure pré-existente | "E2E — Personalization Journey" → `Check min tests executed`; artefato 206KB | §2.6.3 |
+| **E2E • Swatch QuickView** | [39757064344](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39757064344) | ⚠️ failure pré-existente | webkit+chromium: `Run swatch→QuickView suite` + `Check min tests executed`; firefox: cancelled (>60min timeout) | §2.6.4 |
+| **Cart Invariants Smoke** | [39757063502](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39757063502) | ⚠️ failure pré-existente | 9 testes falham em `e2e/carrinhos/active-cart-*.spec.ts` — isolamento de estado cart sob mutações paralelas; chromium+firefox shards 1+2; shard 1: 558s > 480s | §2.6.1 |
+| **Quote Builder Delivery Quality** | [39757063628](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39757063628) | ⚠️ failure pré-existente | `e2e/quote-builder-delivery.spec.ts:14,86` — delivery tooltip hover/warning; flake visual/auth | §2.7 |
+| **Deploy Gates (main)** | [39757063931](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39757063931) | ⚠️ failure (cascata) | Agrega E2E acima + Supabase Linter (fix em PR) | §4 |
+| **copilot-pull-request-reviewer** | [39790122062](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39790122062) | ❌ failure pré-existente | GitHub App sem `pull_requests:write` — não é required check | Não bloqueante |
 
 ### 4C. Workflows bloqueados — ação humana necessária
 
