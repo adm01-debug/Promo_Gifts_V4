@@ -65,7 +65,7 @@
     },
     "6_crons": {
       "status": "concluido",
-      "evidencia": "CRON-001 CRITICO: 10 jobs com job startup timeout em 12:56-12:59 UTC hoje; 15 jobs com 69-147 falhas/7d (7-10% taxa de falha); 142 jobs totais",
+      "evidencia": "Inventário completo 142/142 cron jobs obtido. CRON-001 CRITICO: 10 jobs com job startup timeout em 12:56-12:59 UTC hoje; 15 jobs com 69-147 falhas/7d (7-10% taxa de falha). CRON-NEW-001 ALTO: image-dimensions-backfill (jobid=235) chama run-script sem auth. CRON-NEW-002 MEDIO: hash-product-images (jobid=243) usa anon_key em vez de cron-secret. 7 jobs inativos. Ver secao6_crons.md para inventário completo.",
       "evidencia_reexecutada": {
         "jobs_com_timeout_7d": 15,
         "maior_taxa_falha": "dispatcher-failure-alert: 147/2007 (7.3%)",
@@ -127,7 +127,7 @@
     "MEDIO": 27,
     "BAIXO": 9,
     "INFO": 13,
-    "NAO_VERIFICADO": 5,
+    "NAO_VERIFICADO": 7,
     "novos_sessao_14h": {
       "DRIFT-003": "ALTO — 446 migrations no repo sem entrada no ledger do banco (prioridade imediata para reconciliação)",
       "PERF-009": "ALTO — 107 funções PL/pgSQL com exception swallowing (EXCEPTION sem RAISE); erros silenciados podem mascarar falhas de segurança",
@@ -208,10 +208,13 @@
   },
   "secoes_adicionadas_sessao_final": ["27_meta_cumprida"],
   "novos_achados_sessao_continuacao": {
-    "CRON-NEW-001": "ALTO — image-dimensions-backfill chama run-script sem auth headers (x-cron-secret ausente)",
+    "CRON-NEW-001": "ALTO — image-dimensions-backfill (jobid=235) chama run-script sem auth headers (x-cron-secret ausente). P01_cron_auth_headers.sql aponta corretamente para jobid=235.",
+    "CRON-NEW-002": "MEDIO — hash-product-images (jobid=243) usa get_edge_anon_key() em vez de cron-secret (anon_key exposta no comando SQL).",
     "CRON-004": "ALTO — pipeline-health-hourly e reposicao-backfill-hourly com 10% falha consistente em 30d",
     "NV-004": "NAO_VERIFICADO — migrations from-zero: primeira migration depende de auth.users",
-    "NV-005": "NAO_VERIFICADO — LGPD retention: sem política formal documentada encontrada"
+    "NV-005": "NAO_VERIFICADO — LGPD retention: sem política formal documentada encontrada",
+    "NV-006": "NAO_VERIFICADO — types.ts drift estrutural: script scripts/extract-types-inventory.mjs requer Node.js/TypeScript Compiler API. Roteiro: npm run check:types-inventory-drift localmente ou via CI.",
+    "NV-007": "NAO_VERIFICADO — ambiente de staging/Supabase Branch: list_branches retornou 0 branches. Roteiro: Dashboard Supabase → Branches; checar projeto separado com staging/test/dev."
   },
   "backup_pitr_status": "VERIFICADO — archive_mode=on, archive_command=wal-g, wal_level=logical, synchronous_commit=on; janela de retenção confirmar no Dashboard",
   "cron_30d_top_falhas": "pipeline-health-hourly 10.0% (44/441), reposicao-backfill-hourly 10.0% (44/441), dispatcher-failure-alert 3.2% (168/5289)",

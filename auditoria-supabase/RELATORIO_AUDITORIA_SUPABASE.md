@@ -1185,6 +1185,23 @@ Esta seção documenta todos os itens que não puderam ser verificados nesta aud
 **O que não foi verificado:** (a) se há política formal de retenção documentada, (b) quais tabelas contêm dados pessoais sujeitos a LGPD, (c) se o prazo de exclusão após solicitação do titular está implementado tecnicamente, (d) se logs de acesso (edge functions, auth) são expurgados após prazo legal.  
 **Roteiro:** Revisar `docs/compliance/` (GAP-006), verificar se `user_personal_data_deletion_requests` existe (ou equivalente), checar triggers com `SELECT tgname, event_object_table FROM pg_trigger WHERE tgname ILIKE '%purge%' OR tgname ILIKE '%delete%'`.
 
+### NV-006 — types.ts Drift Estrutural
+
+**Status:** ⚠️ NÃO VERIFICADO  
+**Motivo:** O script `scripts/extract-types-inventory.mjs` requer Node.js runtime com TypeScript Compiler API para parsing AST do `types.ts`. Não disponível via MCP. A contagem manual por `grep "Tables\[" types.ts` mostrou 1.240 entradas vs 398 base_tables no banco — divergência não quantificada por tipo/schema sem o parser.  
+**O que não foi verificado:** remoções silenciosas de tabelas/views/functions/enums do `types.ts` relativo ao commit anterior (bloqueio do Gate 1.2 do CI).  
+**Roteiro:** `npm run check:types-inventory-drift` localmente ou via CI.
+
+---
+
+### NV-007 — Ambiente de Staging / Supabase Branch
+
+**Status:** ⚠️ NÃO VERIFICADO  
+**Motivo:** `list_branches` MCP retornou 0 branches ativas. Nenhuma migration com prefixo `staging_` no ledger. Não há evidência de projeto Supabase de staging separado identificável via MCP (o acesso está escopado para `doufsxqlfjyuvxuezpln`).  
+**O que não foi verificado:** (a) se existe ambiente de staging configurado no Dashboard do Supabase, (b) se há projeto separado com outro `project_id`, (c) se os testes E2E do CI usam uma branch Supabase separada ou fixtures locais.  
+**Impacto:** Sem staging, qualquer DDL ou edge function vai diretamente para produção — risco capturado em GAP-001 e CLAUDE.md E15.  
+**Roteiro:** Dashboard Supabase → seção "Branches" do projeto; verificar se há outro projeto na conta com nome contendo "staging", "test" ou "dev".
+
 ---
 
 ## 21. Edge Functions — Classificação de Risco R0/R1/R2
@@ -1512,14 +1529,14 @@ Esta tabela consolida os achados com avaliação de risco de regressão para cad
 | 2 | Drift migrations | ✅ | `SELECT count(*) FROM supabase_migrations.schema_migrations` → 2538; `ls migrations/*.sql \| wc -l` → 2975; drift 446 (DRIFT-003 ALTO) |
 | 3 | Segurança RLS e grants | ✅ | 960 policies; 590 com auth.uid(); 0 tabelas sem policy; advisor: 507 precisam de índice |
 | 4 | Edge Functions R0/R1/R2 | ✅ | `list_edge_functions` → **109** total, 36 verify_jwt=false (33%); 5 R0 lidas; 8 R1; 23 R2 |
-| 5 | pg_cron status + 30d | ✅ | 142 jobs; top-8 exatos (zero `~`); overlap confirmado 5 jobs em `30 3 * * *`; CRON-NEW-001 query → `run-script` SEM auth (backfill-image-dimensions usa vault secret corretamente) |
-| 6 | pg_net autenticação | ✅ | 18 jobs com `net.http_post`; 17 usam vault secret; 1 sem auth (`run-script` → chama edge fn `run-script` sem headers) |
+| 5 | pg_cron status + 30d | ✅ | 142 jobs (inventário completo 142/142); overlap 5 jobs em `30 3 * * *`; CRON-NEW-001: cron job `image-dimensions-backfill` (jobid=235) chama edge fn `run-script` SEM auth; `backfill-image-dimensions` (jobid=222) usa vault secret corretamente |
+| 6 | pg_net autenticação | ✅ | 18 jobs com `net.http_post`; 17 usam vault secret; 1 sem auth: cron `image-dimensions-backfill` chama edge fn `run-script` sem headers (CRON-NEW-001) |
 | 7 | DB Functions exception | ✅ | 1119 PL/pgSQL; 107 com EXCEPTION+SEM RAISE (swallowing=9.6%); fn_cron_safe_run EXECUTE p_sql dinâmico |
 | 8 | Auth + Storage + Realtime | ✅ | ssl=on TLSv1.2; scram-sha-256; 11 buckets; 10 tabelas em realtime pub |
 | 9 | Performance pg_stat | ✅ | pg_stat_statements: v_products_public mean=959ms; tags Seq Scan mean=1580ms; user_organizations 2,879,073 seq scans/24h |
 | 10 | Logs 24h | ✅ | edge_logs=1.721.435; postgrest=465.905; function_logs=422.873; 0 erros 5xx; 0 erros 4xx |
 | 11 | Backup/PITR | ✅ | archive_mode=on, wal-g, wal_level=logical, synchronous_commit=on |
-| 12 | NÃO VERIFICADO | ✅ | 5 itens (NV-001..NV-005) documentados com razão técnica + roteiro manual |
+| 12 | NÃO VERIFICADO | ✅ | 7 itens (NV-001..NV-007) documentados com razão técnica + roteiro manual |
 
 ---
 
@@ -1532,7 +1549,7 @@ Esta tabela consolida os achados com avaliação de risco de regressão para cad
 | **MÉDIO** | 28 | SEG-UPDATE-001 (17 UPDATE sem WITH CHECK), AUTH-001, ST-001/003, SEG-004/006, INT-001/002, 20+ outros |
 | **BAIXO** | 9 | Índices duplicados, realtime em auth.users, etc. |
 | **INFO** | 13 | Configurações corretas, boas práticas |
-| **NÃO VERIFICADO** | 6 | NV-001..NV-006 com razão técnica |
+| **NÃO VERIFICADO** | 7 | NV-001..NV-007 com razão técnica |
 
 ---
 
@@ -1628,11 +1645,10 @@ base_tables=398, views=193, funcoes=1334, cron_jobs=142, rls_policies=960, migra
 - Esta sessão: `list_edge_functions` → **109** confirmado
 - verify_jwt=false: 36 em ambas as contagens (36/82=43.9% → 36/109=33.0%)
 
-**CRON-NEW-001 — Correção de sessão anterior:**
-- Sessão anterior identificou `image-dimensions-backfill` como o cron sem autenticação. **INCORRETO.**
-- Sessão 3 confirmou: `backfill-image-dimensions` usa `get_edge_function_secret('BACKFILL_DIM_CRON_SECRET')` (vault secret) — autenticação correta.
-- O cron realmente sem autenticação é `run-script`: `SELECT net.http_post(url := '.../functions/v1/run-script', body := '{"script":"image-dimensions-worker"}'::jsonb)` — sem headers Authorization nem x-cron-secret.
-- Proposta `auditoria-supabase/propostas/P01_cron_auth_headers.sql` deve ser revisada para apontar para o job `run-script`, não `image-dimensions-backfill`.
+**CRON-NEW-001 — Confirmação final (2026-10-22, sessão 4):**
+- Cron job **`image-dimensions-backfill` (jobid=235)** chama a edge function `run-script` **SEM headers de autenticação** — este É o achado CRON-NEW-001. Achado confirmado e CORRETO.
+- Cron job `backfill-image-dimensions` (jobid=222) usa `get_edge_function_secret('BACKFILL_DIM_CRON_SECRET')` (vault secret) — autenticação correta; este job é DIFERENTE.
+- Proposta `auditoria-supabase/propostas/P01_cron_auth_headers.sql` já aponta corretamente para jobid=235 (`image-dimensions-backfill`) — **nenhuma revisão necessária**.
 
 **SEG-UPDATE-001 — Novo achado sessão 3:**
 - 17 políticas UPDATE sem WITH CHECK em `pg_policies WHERE cmd='UPDATE' AND with_check IS NULL AND schemaname='public'`.
