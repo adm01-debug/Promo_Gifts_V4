@@ -514,10 +514,46 @@ no RELATORIO_CI.md.
 
 ---
 
-*Documento atualizado em 2026-10-22 (v9) — P18 adicionado (Gate 3 E2E Smoke — timeout/runner stale no run 39695326969);
+---
+
+## P19 — cart-header-quality-gate: `bunx: not found` no runner
+
+**Workflow:** `.github/workflows/cart-header-quality-gate.yml`
+**Run falho:** `39698009906` (sha `53195dcb`) — idêntico em `39697216150` (sha `02e4f632`)
+**Job:** `CartHeader fuzz + notas internas` — step 7 `Gerar relatório de invariantes`
+
+**Causa exata verificada:**
+```
+/bin/sh: 1: bunx: not found
+⚠️  Vitest terminou com código não-zero — relatório ainda será gerado.
+❌ JSON de saída não gerado.
+##[error]Process completed with exit code 1.
+```
+
+`scripts/qa/cart-header-fuzz-report.mjs` chama `bunx` (executador do runtime Bun) mas o
+runner GitHub Actions só tem Node.js/npm — Bun não está instalado.
+
+**Confirmação de pré-existência:** mesmo erro nos dois últimos shas do branch (`02e4f632`
+e `53195dcb`) — não foi introduzido por nenhum commit desta sessão.
+
+**Classificação:** Falha de infra de CI — runner não tem `bun` instalado
+
+**O que Engenharia/PO precisam fazer:**
+- Opção A: Substituir `bunx vitest` por `npx vitest` em `scripts/qa/cart-header-fuzz-report.mjs`
+- Opção B: Adicionar step `setup-bun@v2` no workflow antes do step 7
+- Este workflow NÃO é um Required Check de `main` (não bloqueia deploy)
+
+**Impacto:** Não bloqueia deploy (não é required check). Artefato `cart-header-fuzz-report`
+é gerado parcialmente (951 bytes, sem dados de fuzzing).
+
+---
+
+*Documento atualizado em 2026-10-22 (v10) — P19 adicionado (cart-header-quality-gate bunx not found);
+P18 adicionado (Gate 3 E2E Smoke — timeout/runner stale no run 39695326969);
 P17 adicionado (baseline local impossível — registry npm privado 403);
 P10–P13 confirmados via run `39687808882` (commit `0d1efd27`, PR #2338);
 P14 db-schema-drift-check (advisory, requer reconciliação de DDL fora de fluxo);
-P15 Gate E89 — 4 colisões de cron corrigidas em 3 workflows (wraparound, capacity-growth, pgss-slo) — ✅ CONFIRMADO run `39689787809`;
+P15 Gate E89 — 4 colisões de cron corrigidas em 3 workflows — ✅ CONFIRMADO run `39689787809`;
 P16 edge-functions-drift-check (advisory, drift de edge functions — requer engenharia/PO);
-RELATORIO_CI.md criado com inventário completo de 16 workflows failing em main (sha c7c25848).*
+P19 cart-header-quality-gate bunx not found (infra CI, não required check);
+RELATORIO_CI.md criado com inventário completo de workflows failing.*
