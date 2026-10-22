@@ -93,8 +93,9 @@
 - **Run:** [39778554897](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39778554897), job 119827102194
 - **Causa:** HTTP 500 transient ao chamar RPC `audit_security_definer_acl` — não causado por este PR
 - **Script:** `scripts/check-security-definer-acl.mjs` já tinha retry para 503/504, mas não para 500
-- **Fix nesta sessão:** Adicionado HTTP 500 à lista de status retentáveis (commit pendente)
-- **Status:** Fix commitado — aguardando CI rerun
+- **Fix commit `6d6ed480`:** Adicionado HTTP 500 à lista de status retentáveis
+- **Fix commit `5216cfc7` (Codex P2):** HTTP 500 exaurido agora emite INCONCLUSIVE via `concludeCheck` em vez de `process.exit(0)` — evita que erro persistente de SQL/RPC passe silenciosamente pelo gate de segurança
+- **Status:** ✅ Fix completo — aguardando CI confirmar
 
 ### 3.2 E2E Pré-existentes (sticky-and-scroll, Full User Flows, swatch→QV, undo, view-no-presentation-mode)
 
