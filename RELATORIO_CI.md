@@ -548,8 +548,10 @@ Resultado: **14/16 jobs ✅ success + Gate E40 skipped (docs-only E14 bypass) + 
 ### 13.2 — Workflows com FAILURE como última execução na SHA `57017ba7`
 
 > Todos os 16 abaixo têm documentação em PENDENCIAS.md (seção indicada na coluna Ref.).
-> Nenhum deles é required check — o único required check em `main` é "Gate Final - Deploy Ready",
-> que passou com `conclusion=success` (run 39839609893, verificado §10).
+> **Atenção:** `Compare GitHub × Canonical` (workflow #15, `edge-functions-drift-check`) É um required
+> check listado em `required-checks.json` e está em failure pré-existente (ver §13.4 e PENDENCIAS.md §2.11).
+> Os outros 15 workflows abaixo não são required checks. O Gate Final passou com
+> `conclusion=success` (run 39839609893, verificado §10).
 
 | # | Workflow | Run ID | Categoria | PENDENCIAS.md Ref. |
 |---|---|---|---|---|
