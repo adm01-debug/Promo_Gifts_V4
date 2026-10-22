@@ -1,9 +1,10 @@
 # PENDÊNCIAS — Correção de Workflows CI
 
-**Atualizado:** 2026-10-22T18:08 UTC  
+**Atualizado:** 2026-10-22T18:24 UTC  
 **Branch ativa:** `claude/laughing-cori-o9w35e` → PR [#2338](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2338)  
-**HEAD atual:** `de9e220f` (docs: run stuck push)  
-**Gate Final de9e220f:** run [39827875237](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39827875237) — 🔄 `in_progress` — Gate 0 ✅ (18:07:15Z), Detectar mudanças ✅ (18:07:05Z), 11 jobs em `queued` (18:07:16Z) — run progredindo normalmente  
+**HEAD atual:** `3d2fe287` (docs: atualiza PENDENCIAS)  
+**Gate Final 3d2fe287:** run [39828704640](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39828704640) — 🔄 `in_progress` — Gate 0 ✅, Detectar mudanças ✅, Gate 0.5 ✅, Gate 0.6 ✅, Gate E23-E2E ✅ — Gate 1 🔄 (lint:baseline 18:11Z), Gate 5.5 🔄, Gate 2 🔄, Gate 5 🔄 — check-in 18:40Z  
+**Gate Final de9e220f:** run [39827875237](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39827875237) — `cancelled` (superado por push 3d2fe287)  
 **Gate Final b83a5487:** run [39827039880](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39827039880) — ⚠️ `queued/runner-capacity` cancelado por push de9e220f (Gate 0 ✅, Gate 5.5 ✅, demais jobs sem runner por 42+ min)  
 **Gate Final 580d5187:** run [39826419850](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39826419850) — `cancelled` (superado por b83a5487)  
 **Gate Final ac0f4e10:** run [39826162164](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39826162164) — `cancelled` (superado por 580d5187)  
