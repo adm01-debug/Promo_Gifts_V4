@@ -32,12 +32,46 @@ function requestHeaders() {
   };
 }
 
+const MAX_RETRIES = 3;
+const RETRY_DELAY_MS = 15_000;
+const RETRYABLE_HTTP_STATUSES = new Set([500, 503, 504, 521]);
+
+/** @param {number} ms */
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
 async function postRpc(name, body) {
   return fetch(`${SUPABASE_URL.replace(/\/$/, "")}/rest/v1/rpc/${name}`, {
     method: "POST",
     headers: requestHeaders(),
     body: JSON.stringify(body),
   });
+}
+
+async function postRpcWithRetry(name, body, label) {
+  let lastError = null;
+  for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+    let res;
+    try {
+      res = await postRpc(name, body);
+    } catch (err) {
+      lastError = { kind: "network", message: String(err) };
+      console.warn(`⚠️  [${label}] falha de rede (tentativa ${attempt}/${MAX_RETRIES}): ${err}`);
+      if (attempt < MAX_RETRIES) await sleep(RETRY_DELAY_MS);
+      continue;
+    }
+    if (RETRYABLE_HTTP_STATUSES.has(res.status)) {
+      lastError = { kind: "http", status: res.status };
+      console.warn(`⚠️  [${label}] HTTP ${res.status} (tentativa ${attempt}/${MAX_RETRIES}) — aguardando ${RETRY_DELAY_MS / 1000}s...`);
+      if (attempt < MAX_RETRIES) {
+        await sleep(RETRY_DELAY_MS);
+        continue;
+      }
+      return { exhausted: true, status: res.status };
+    }
+    lastError = null;
+    return { res, exhausted: false };
+  }
+  return { exhausted: true, networkError: lastError };
 }
 
 async function main() {
@@ -51,16 +85,24 @@ async function main() {
     );
   }
 
-  let auditResponse;
-  try {
-    auditResponse = await postRpc("audit_security_definer_acl", {});
-  } catch {
+  const auditResult = await postRpcWithRetry("audit_security_definer_acl", {}, "audit-acl");
+  if (auditResult.networkError) {
     conclude(
       CHECK_RESULT_STATUS.INCONCLUSIVE,
       "audit_network_error",
       "O audit SECURITY DEFINER não pôde ser consultado no alvo live.",
     );
   }
+  if (auditResult.exhausted) {
+    conclude(
+      CHECK_RESULT_STATUS.INCONCLUSIVE,
+      "audit_http_error_exhausted",
+      `O audit SECURITY DEFINER retornou HTTP ${auditResult.status} após ${MAX_RETRIES} tentativas — serviço indisponível.`,
+      { httpStatus: auditResult.status, attempts: MAX_RETRIES },
+    );
+  }
+
+  const auditResponse = auditResult.res;
 
   if (!auditResponse.ok) {
     conclude(
@@ -106,30 +148,46 @@ async function main() {
     );
   }
 
-  let smokeResponse;
-  try {
-    smokeResponse = await postRpc("get_profile_and_roles", {
-      _user_id: "00000000-0000-0000-0000-000000000000",
-    });
-  } catch {
+  const smokeResult = await postRpcWithRetry(
+    "get_profile_and_roles",
+    { _user_id: "00000000-0000-0000-0000-000000000000" },
+    "smoke-rpc",
+  );
+  if (smokeResult.networkError) {
     conclude(
       CHECK_RESULT_STATUS.INCONCLUSIVE,
       "smoke_network_error",
       "O smoke da RPC não pôde alcançar o PostgREST após o audit aprovado.",
     );
   }
+  if (smokeResult.exhausted) {
+    conclude(
+      CHECK_RESULT_STATUS.INCONCLUSIVE,
+      "smoke_http_error_exhausted",
+      `O smoke da RPC retornou HTTP ${smokeResult.status} após ${MAX_RETRIES} tentativas — serviço indisponível.`,
+      { httpStatus: smokeResult.status, attempts: MAX_RETRIES },
+    );
+  }
+  const smokeResponse = smokeResult.res;
 
   if (smokeResponse.status === 404) {
-    let existsResponse;
-    try {
-      existsResponse = await postRpc("fn_rpc_exists", { _fname: "get_profile_and_roles" });
-    } catch {
+    const existsResult = await postRpcWithRetry("fn_rpc_exists", { _fname: "get_profile_and_roles" }, "fn-rpc-exists");
+    if (existsResult.networkError) {
       conclude(
         CHECK_RESULT_STATUS.INCONCLUSIVE,
         "existence_network_error",
         "O PostgREST retornou 404 e fn_rpc_exists não pôde confirmar a existência da RPC.",
       );
     }
+    if (existsResult.exhausted) {
+      conclude(
+        CHECK_RESULT_STATUS.INCONCLUSIVE,
+        "existence_http_error_exhausted",
+        `fn_rpc_exists retornou HTTP ${existsResult.status} após ${MAX_RETRIES} tentativas.`,
+        { httpStatus: existsResult.status, attempts: MAX_RETRIES },
+      );
+    }
+    const existsResponse = existsResult.res;
 
     if (!existsResponse.ok) {
       conclude(
