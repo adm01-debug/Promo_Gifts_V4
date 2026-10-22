@@ -70,11 +70,14 @@ R_SCHEMA_DRIFT: ❌ (ECR rate limit — pré-existente em baseline)
 
 ## PRs que Requerem Rebase (ação dos autores)
 
-### PR #2312 — ci(paths): E197+E24 improvements
-**Branch:** não encontrada via API (404 em compare) — branch pode ter sido apagada ou renomeada.  
-**Base:** `1ac6992` (desatualizada — behind main `57017ba7`).  
-**Evidência:** `get_pull_request` #2312 — base.sha = `1ac6992cecf3a604e401e7c311f43b34e4772a4d`.  
-Rebase em main necessário antes de qualquer análise de conflito.
+### PR #2312 — ci(e14): docs-only PRs pulam gates caros via dorny/paths-filter
+**Branch:** `claude/batch-e14-e19-e22-e23-e26-e87-261019-1800`  
+**Head SHA:** `6a5a1e7229fcc5f9201b947b20b276538a731672`  
+**Base:** `1ac6992` (behind main `57017ba7`)  
+**Arquivo alterado:** `.github/workflows/deploy-gates.yml` (+39/-7)  
+**Evidência:** `get_pull_request` #2312 — `changed_files: 1`, `additions: 39`, `deletions: 7`.  
+**Conflito confirmado:** `git merge-tree --write-tree origin/main claude/batch-e14-e19-e22-e23-e26-e87-261019-1800` → `CONFLICT (content): Merge conflict in .github/workflows/deploy-gates.yml`  
+Autor precisa rebasear em `57017ba7` e resolver conflito no `deploy-gates.yml`.
 
 ### PR #2314 — fix(ci): atualiza baseline as-assertions — ProductFormFullscreen +2 (double-cast E83)
 **Branch:** `claude/ci-e19-e22-e23-batch2-261019-1930`  
@@ -82,7 +85,8 @@ Rebase em main necessário antes de qualquer análise de conflito.
 **Base SHA:** `1ac6992cecf3a604e401e7c311f43b34e4772a4d` (behind main `57017ba7`)  
 **Arquivo alterado:** `.as-assertions-baseline.json` (+4/-4) — bump `ProductFormFullscreen.tsx: 2 → 4`, `productionAsCount: 2162 → 2164`  
 **Evidência:** `get_pull_request` #2314 — `changed_files: 1`, `additions: 4`, `deletions: 4`, `mergeable_state: unknown`  
-**Conflito:** mesmo arquivo com PR #2315 (valores divergentes).  
+**Conflito confirmado:** `git merge-tree --write-tree origin/main claude/ci-e19-e22-e23-batch2-261019-1930` → `CONFLICT (content): Merge conflict in .as-assertions-baseline.json`  
+**Conflito semântico:** mesmo arquivo com PR #2315 (valores divergentes: #2314 usa `productionAsCount: 2164`, #2315 usa valor diferente).  
 Após rebase de ambas, reconciliar qual valor é o correto.
 
 ### PR #2315 — chore(ci): E33 — remove E2E_USER_* de 11 workflows chromium-public (C25)
@@ -91,7 +95,8 @@ Após rebase de ambas, reconciliar qual valor é o correto.
 **Base SHA:** `1ac6992cecf3a604e401e7c311f43b34e4772a4d` (behind main `57017ba7`)  
 **Arquivos alterados:** 12 (+3/-48) — remove `E2E_USER_EMAIL`/`E2E_USER_PASSWORD` de 11 workflows `*-public`  
 **Evidência:** `get_pull_request` #2315 — `changed_files: 12`, `additions: 3`, `deletions: 48`, `mergeable_state: unknown`  
-**Conflito:** mesmo arquivo `.as-assertions-baseline.json` com PR #2314.  
+**Conflito confirmado:** `git merge-tree --write-tree origin/main claude/feat-e33-e58-credentials-docs-261019-2000` → `CONFLICT (content): Merge conflict in .as-assertions-baseline.json`  
+**Conflito semântico:** mesmo arquivo `.as-assertions-baseline.json` com PR #2314 (valores divergentes).  
 Correção de segurança válida (C25 — remove credenciais reais de workflows não-autenticados); prioridade alta após rebase.
 
 ### PR #2316 — fix(ci): Gate 1.12 + cors.ts
@@ -99,6 +104,17 @@ Correção de segurança válida (C25 — remove credenciais reais de workflows 
 **Head SHA:** `f9b74053f5f7e525f649979499faa14fc993f76b`  
 **Base main após merge #2338:** `57017ba78eb68c6c72dba336f9c081c4519619c4` ✅  
 **Evidência:** `compare` `main...claude/fix-contract-mag-reader-261019-2110` — `base_commit.sha: 57017ba7` = main atual; commits com `+` = 5 commits não estão em main.  
+**Conflito confirmado:** `git merge-tree --write-tree origin/main claude/fix-contract-mag-reader-261019-2110`:
+```
+CONFLICT (content): Merge conflict in .github/workflows/capacity-growth-report.yml
+CONFLICT (content): Merge conflict in .github/workflows/pgss-slo-report.yml
+CONFLICT (content): Merge conflict in .github/workflows/wraparound-monitor-report.yml
+CONFLICT (content): Merge conflict in src/hooks/intelligence/useGoldSyncStatus.ts
+CONFLICT (content): Merge conflict in src/hooks/intelligence/useZeroResultDiagnosis.ts
+CONFLICT (content): Merge conflict in src/hooks/quotes/useQuoteBuilderState.ts
+CONFLICT (content): Merge conflict in src/lib/intelligence/degradation.ts
+(+ outros arquivos)
+```
 **Conflito semântico com #2338:** PR #2338 adicionou `magazine-reader-state-read` ao `NO_BODY_EXEMPT`; PR #2316 adiciona schema com body `{ token, fingerprint }` — abordagens contraditórias.  
 Após merge de #2338, autor deve decidir: manter `NO_BODY_EXEMPT` (correto para GET-only) ou schema com body (se a função realmente recebe body).
 
@@ -107,12 +123,21 @@ Após merge de #2338, autor deve decidir: manter `NO_BODY_EXEMPT` (correto para 
 ## PRs que Dependem de Decisão Humana (PO)
 
 ### PR #2290 — @eslint/js 9→10 (major bump)
-Dependabot PR. Major version: pode introduzir regras novas que quebram lint.
-**Ação:** PO decide se aceita o risco de breaking changes em lint.
+Dependabot PR. Major version: pode introduzir regras novas que quebram lint.  
+**Branch:** `dependabot/npm_and_yarn/eslint-js-10.0.1`  
+**Head SHA:** `1ebb25769b19d3ad64664c169632fdfb74affcbb`  
+**Base SHA:** `45545ae5` (behind main `57017ba7` — precisa de rebase mesmo que PO aprove)  
+**Diff:** `@eslint/js` 9.39.5 → 10.0.1 + novo `peerDependencies: { eslint: "^10.0.0" }` em `package.json`  
+**CI status:** Gate Final = **failure** (run `119230405169`, check_run `119230405169`) — Gate 3 E2E Smoke failure, múltiplos gates skipped.  
+**Ação:** PO decide se aceita o risco de breaking changes em lint; rebase também necessário antes de merge.
 
 ### PR #2293 — recharts 2→3 (major bump)
-Dependabot PR. Major version: API de componentes pode ter mudado.
-**Ação:** PO decide se aceita o risco de breaking changes na UI.
+Dependabot PR. Major version: API de componentes pode ter mudado.  
+**Branch:** `dependabot/npm_and_yarn/recharts-2.15.3`  
+**Head SHA:** `148399a078f289338b20b35aeae40b86929b6c39`  
+**Base SHA:** `1ac6992` (behind main `57017ba7` — precisa de rebase mesmo que PO aprove)  
+**CI status:** Gate Final = **failure** (run `118245835252`, check_run `118245835252`) — Gate 3 E2E Smoke failure, Magazine Tests OK failure, merge-reports failure.  
+**Ação:** PO decide se aceita o risco de breaking changes na UI; rebase também necessário antes de merge.
 
 ---
 
