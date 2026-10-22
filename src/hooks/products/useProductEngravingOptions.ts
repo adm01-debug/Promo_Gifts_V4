@@ -11,6 +11,7 @@
  * resultam em retorno vazio para nunca quebrar a renderização da PDP.
  */
 import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
 import { invokeExternalRpc } from '@/lib/external-rpc';
 import type { CustomizationOptionsResponse, GravacaoLocation } from '@/types/customization';
 import { logger } from '@/lib/logger';
@@ -20,6 +21,7 @@ export function useProductEngravingOptions(productId: string | undefined) {
     queryKey: ['product-engraving-options-v6', productId],
     queryFn: async (): Promise<GravacaoLocation[]> => {
       if (!productId) return [];
+      if (!(await supabase.auth.getSession()).data.session) return []; // anon: sem EXECUTE
       try {
         const result = await invokeExternalRpc<CustomizationOptionsResponse>(
           'fn_get_product_customization_options',
