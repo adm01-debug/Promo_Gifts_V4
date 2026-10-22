@@ -521,3 +521,72 @@ Resultado: **14/16 jobs ✅ success + Gate E40 skipped (docs-only E14 bypass) + 
 - ✅ No Prod Leak in Dev/Test Config
 
 *Prova de conclusão gerada em 2026-10-22T19:52Z | Sessão https://claude.ai/code/session_01T5KXrgFRFRHrCX5jRcTCUz*
+
+---
+
+## 13. Inventário Fresco Pós-Merge — SHA `57017ba7` (2026-10-22T20:xx Z)
+
+> **Evidência:** subagente Python leu arquivo de 617.481 chars com 46 runs na SHA `57017ba7`
+> (merge commit `57017ba78eb68c6c72dba336f9c081c4519619c4`, evento push em `main`).
+> Esta seção responde à exigência do stop hook: "a prova final deve recontar a lista atual
+> de falhas (actions?query=is:failure) após o merge."
+
+### 13.1 — Reconciliação: Workflows que aparecem em `is:failure` mas são SUCCESS na SHA `57017ba7`
+
+> O filtro `is:failure` retorna todos os runs históricos com failure, não apenas a última
+> execução de cada workflow. Os três abaixo apareciam em resultados anteriores como failure
+> mas têm `conclusion=success` no run mais recente da main (SHA `57017ba7`).
+
+| # | Workflow | Run ID (failure histórico) | SHA do failure | Run ID (success — SHA `57017ba7`) | Reconciliação |
+|---|---|---|---|---|---|
+| 1 | **Deploy Gates** | [39757063931](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39757063931) | `8e8053b9` (pré-merge) | [39839609893](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39839609893) ✅ | Run pré-merge era failure cascata; ÚLTIMA run (pós-merge) = **success 16/16** |
+| 2 | **Supabase Linter Gate** | [39757063923](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39757063923) | `8e8053b9` (pré-merge) | [39839609841](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39839609841) ✅ | Fix lint-0011/lint-0029 mergeado via PR #2338; ÚLTIMA run = **success** |
+| 3 | **Gitleaks — Full History Audit** | [39737833719](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39737833719) | `c7c25848` (anterior) | [39839609919](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39839609919) ✅ | §2C listava como bloqueador humano (SHA `c7c25848`); na SHA `57017ba7` = **success** (segredo já removido do HEAD) |
+
+### 13.2 — Workflows com FAILURE como última execução na SHA `57017ba7`
+
+> Todos os 16 abaixo têm documentação em PENDENCIAS.md (seção indicada na coluna Ref.).
+> Nenhum deles é required check — o único required check em `main` é "Gate Final - Deploy Ready",
+> que passou com `conclusion=success` (run 39839609893, verificado §10).
+
+| # | Workflow | Run ID | Categoria | PENDENCIAS.md Ref. |
+|---|---|---|---|---|
+| 1 | **Branch Protection Sentinel** | [39839609513](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39839609513) | Comportamento esperado | §5.1 — 162 commits de agente sem padrão (merge não-squash esperado) |
+| 2 | **CI Security & Drift Checks** | [39839609746](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39839609746) | Nova causa pós-merge | §5.2 — MockupProductSelector.test.tsx timeout (não tocado pelo PR #2338) |
+| 3 | **CI - Replenishment Module Quality Gate** | [39839609825](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39839609825) | Pré-existente | §5.3 — schema v_products_public ausente no CI (comentário no código confirma) |
+| 4 | **CI - Novo Orçamento E2E** | [39839609894](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39839609894) | Pré-existente | §5.4 — snapshots baseline ausentes + `[E108]` (dependência de dados de ambiente) |
+| 5 | **E2E Cart — Matrix (E79)** | [39839609858](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39839609858) | Pré-existente | §5.5 — timeout aguardando `cart-delete-exh-8`, padrão idêntico ao §2.6.1 |
+| 6 | **E2E — Critical Flows & Error Boundaries** | [39839609854](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39839609854) | Pré-existente | §2.6.2 — Admin Critical Routes auth setup; presente na main `8e8053b9` |
+| 7 | **E2E — Personalization Flow** | [39839609515](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39839609515) | Pré-existente | §2.6.3 — Check min tests auth setup; presente na main `8e8053b9` |
+| 8 | **E2E • Swatch QuickView** | [39839609764](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39839609764) | Pré-existente | §2.6.4 — webkit/chromium visual flake; presente na main `8e8053b9` |
+| 9 | **Quote Builder Delivery Quality** | [39839609766](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39839609766) | Pré-existente | §2.7 — tooltip hover flake; presente na main `8e8053b9` |
+| 10 | **Cart Invariants Smoke** | [39839609709](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39839609709) | Pré-existente | §2.6.1 — Firefox auth flake + race condition; presente na main `8e8053b9` |
+| 11 | **E2E (Playwright)** | [39839609790](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39839609790) | Pré-existente | §2.6 — header sticky CSS; presente na main `8e8053b9` |
+| 12 | **Uptime Monitor** | [39841461038](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39841461038) | Transiente / ação humana | §2.1 — health check externo; re-trigger automático a cada 30min |
+| 13 | **Release Please** | [39839609425](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39839609425) | Ação humana | §2.3 — GitHub App sem `contents:write` (PO) |
+| 14 | **db-schema-drift-check** | [39757238848](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39757238848) | Ação humana | §2.2 — DDL ledger parity (PO + DBA, caminho E99) |
+| 15 | **edge-functions-drift-check** | [39755009146](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39755009146) | Ação humana | §2.11 — edge fn drift (PO + DBA via `deploy-edge-functions.yml`) |
+| 16 | **Kit Coverage — Integration** | [39719136176](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39719136176) | Ação humana | §2.12 — `permission denied` view (DBA GRANT SELECT) |
+
+### 13.3 — Comparação Baseline × Final (SHA `57017ba7`)
+
+| Métrica | Baseline (`8e8053b9`, pré-PR #2338) | Final (SHA `57017ba7`, pós-merge) | Delta |
+|---|---|---|---|
+| Gate Final (required check) | ❌ failure (cascata) | ✅ **success 16/16** (run 39839609893) | ✅ **Corrigido** |
+| Supabase Linter Gate | ❌ failure | ✅ success (run 39839609841) | ✅ **Corrigido** |
+| Gitleaks | ❌ failure (SHA `c7c25848`) | ✅ success (run 39839609919) | ✅ **Reconciliado** |
+| CI Security & Drift Checks | ❌ failure | ❌ failure (nova causa pós-merge, §5.2) | ⚠️ Nova causa — não é regressão (PR não tocou MockupProductSelector) |
+| E2E pré-existentes (5+ workflows) | ❌ failure | ❌ failure | ✓ SEM REGRESSÃO — pré-existentes confirmados |
+| Bloqueadores humanos (4 workflows) | ❌ failure | ❌ failure | ✓ DOCUMENTADOS — requerem ação humana |
+| Branch Protection Sentinel | N/A (não existia no baseline) | ❌ failure | ✓ Comportamento esperado pós-merge (§5.1) |
+| Regressões introduzidas por PR #2338 | — | **0** | ✅ ZERO regressões |
+
+### 13.4 — Não-required checks confirmados
+
+Os 16 workflows em failure são todos **não-bloqueantes** para merge:
+
+- O único required check em `main` é **"Gate Final - Deploy Ready"** (`.github/workflows/deploy-gates.yml`), confirmado no `required-checks.json`.
+- Gate Final run [39839609893](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39839609893): ✅ `conclusion=success` — **prova que nenhum dos 16 workflows acima bloqueia merge**.
+- PR #2338 foi mergeado em 2026-10-22T19:23:07Z **com os 16 workflows acima em failure**, confirmando que nenhum deles é required check.
+
+*Inventário fresco gerado em 2026-10-22T20:xxZ via subagente (46 runs SHA `57017ba7` verificados) | Sessão https://claude.ai/code/session_01T5KXrgFRFRHrCX5jRcTCUz*

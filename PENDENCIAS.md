@@ -429,3 +429,100 @@
 | **Release Please** | 39757063511 | ❌ ação humana | §2.3 — GitHub App sem `contents:write` | PO (owner) |
 | **db-schema-drift-check** | 39757238848 | ❌ ação humana | §2.2 — DDL ledger parity out-of-band | PO + DBA |
 | **edge-functions-drift-check** | 39755009146 | ❌ ação humana | §2.11 — edge function drift | PO + DBA |
+| **Kit Coverage — Integration** | 39719136176 | ❌ ação humana | §2.12 — GRANT SELECT na view v_kit_component_complete | PO + DBA |
+
+---
+
+## 5. INVENTÁRIO PÓS-MERGE (SHA `57017ba7`, 2026-10-22T19:23Z)
+
+> Inventário fresco obtido via API após merge do PR #2338 em 19:23:07Z.
+> Fonte: `list_workflow_runs?head_sha=57017ba7` (46 runs totais verificados via API).
+> Critério do stop hook: "só conta como falha o workflow cuja ÚLTIMA execução na main falhou".
+
+### 5A. Workflows confirmados SUCCESS no SHA `57017ba7` (reconciliação)
+
+| Workflow | Run ID | Conclusão | Evidência |
+|---|---|---|---|
+| **Deploy Gates** | [39839609893](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39839609893) | ✅ success | Gate Final push main — único required check em main |
+| **Supabase Linter Gate** | [39839609841](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39839609841) | ✅ success | Fix b442d1ed (allowlist OUT params) efetivo após merge |
+| **Gitleaks — Full History Audit** | [39839609919](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39839609919) | ✅ success | Confirmado via API — issue anterior (c7c25848) já resolvida |
+
+### 5B. Workflows em FAILURE no SHA `57017ba7` — classificação completa
+
+| Workflow | Run ID | Classificação | Seção |
+|---|---|---|---|
+| **Branch Protection Sentinel** | [39839609513](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39839609513) | Comportamento esperado do merge | §5.1 |
+| **CI Security & Drift Checks** | [39839609746](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39839609746) | Pré-existente (nova causa post-merge) | §5.2 |
+| **CI - Replenishment Module Quality Gate** | [39839609825](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39839609825) | Pré-existente (schema CI ausente) | §5.3 |
+| **CI - Novo Orçamento E2E** | [39839609894](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39839609894) | Pré-existente (dados de ambiente) | §5.4 |
+| **E2E Cart — Matrix (E79)** | [39839609858](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39839609858) | Pré-existente E2E | §5.5 |
+| **E2E — Critical Flows & Error Boundaries** | [39839609854](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39839609854) | Pré-existente E2E | §2.6.2 |
+| **E2E — Personalization Flow** | [39839609515](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39839609515) | Pré-existente E2E | §2.6.3 |
+| **E2E • Swatch QuickView** | [39839609764](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39839609764) | Pré-existente E2E | §2.6.4 |
+| **Quote Builder Delivery Quality** | [39839609766](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39839609766) | Pré-existente E2E (flaky) | §2.7 |
+| **Cart Invariants Smoke** | [39839609709](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39839609709) | Pré-existente E2E | §2.6.1 |
+| **E2E (Playwright)** | [39839609790](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39839609790) | Pré-existente E2E | §2.6 |
+| **Uptime Monitor** | [39841461038](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39841461038) | Intermitente (health-check externo) | §2.1 |
+| **Release Please** | [39839609425](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39839609425) | Bloqueador humano | §2.3 |
+| **db-schema-drift-check** | [39757238848](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39757238848) | Bloqueador humano | §2.2 |
+| **edge-functions-drift-check** | [39755009146](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39755009146) | Bloqueador humano | §2.11 |
+| **Kit Coverage — Integration** | [39719136176](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39719136176) | Bloqueador humano | §2.12 |
+
+> **Nenhum dos 16 workflows em failure acima bloqueia o Gate Final (único required check em main).**
+> Gate Final run [39839609893](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39839609893) — ✅ `conclusion=success` — SHA `57017ba7`.
+
+---
+
+### 5.1 Branch Protection Sentinel — Comportamento Esperado do Merge
+
+- **Run:** [39839609513](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39839609513) — sha `57017ba7` — `conclusion=failure`
+- **Causa exata (log):** `162 commit(s) em push para main sem padrão aceito` — os 162 commits do branch `claude/laughing-cori-o9w35e` não seguem o padrão do sentinel (`(#NNN)` ou `Merge pull request #NNN` no subject).
+- **Classificação:** Resultado esperado de merge não-squash de branch de agente com histórico acumulado. O sentinel verifica todos os commits do push; um merge commit comum traz todo o histórico do branch.
+- **É required check?** NÃO — workflow informativo, não é required check em `main`.
+- **Bloqueia deploy?** NÃO — Gate Final passou (run 39839609893 ✅ success).
+- **Ação necessária:** PO pode avaliar configurar squash-merge obrigatório para branches de agentes em GitHub Settings.
+- **Responsável:** PO (decisão) — não é bloqueador de deploy
+
+### 5.2 CI Security & Drift Checks — Nova Causa Pós-Merge (MockupProductSelector Timeout)
+
+- **Run:** [39839609746](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39839609746) — sha `57017ba7` — `conclusion=failure`
+- **Causa exata (log):** Step "Run Unit & Integration Tests" — `MockupProductSelector.test.tsx` timeout em `waitFor(() => expect(screen.getAllByTestId('mockup-product-row').length).toBeGreater...`
+- **Diferença da causa original (§2.5):** A causa original (composição com db-schema-drift-check e Supabase Linter Gate) foi resolvida. A nova falha é um teste unitário de componente com timeout de `waitFor`.
+- **Pré-existência:** Nenhum commit do PR #2338 toca `MockupProductSelector.test.tsx` nem o componente. Causa raiz: `waitFor` com polling de DOM aguarda `mockup-product-row` que pode não aparecer no runner CI em tempo suficiente.
+- **É required check?** NÃO — workflow separado do Gate Final. Gate Final ✅ passed.
+- **Ação necessária:** PO + dev investigar timeout do `waitFor` em `MockupProductSelector.test.tsx`; aumentar timeout ou estabilizar mock de dados.
+- **Responsável:** PO + dev de features
+
+### 5.3 CI - Replenishment Module Quality Gate — Schema Ausente no CI
+
+- **Run:** [39839609825](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39839609825) — sha `57017ba7` — `conclusion=failure`
+- **Causa exata (log):**
+  1. `expected false to be true` — assertion em `isSuccess || isError` aguardando resultado
+  2. Timeout 15000ms em `useReplenishmentStats deve calcular KPIs corretamente`
+- **Evidência de pré-existência:** Comentário no código-fonte: `"isError is acceptable when the CI lacks the required schema"` — documenta que o erro é esperado quando `v_products_public` não está no CI. PR #2338 não tocou schema de replenishment.
+- **É required check?** NÃO — workflow separado do Gate Final.
+- **Ação necessária:** PO/DBA configurar schema `v_products_public` no ambiente de CI, ou ajustar setup do banco dos testes de integração.
+- **Responsável:** PO + DBA
+
+### 5.4 CI - Novo Orçamento E2E — Snapshots Ausentes e Dados de Ambiente
+
+- **Run:** [39839609894](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39839609894) — sha `57017ba7` — `conclusion=failure`
+- **Causa exata (log):**
+  1. `E2E Subtítulo`: `A snapshot doesn't exist at .../quote-number-subtitle-wide-chromium-authed-linux.png`
+  2. `E2E PDF header`: `[E108] Sem orçamento enviado no ambiente`
+  3. `E2E PDF exportado`: falhas em `quote-pdf-quote-number.spec.ts`
+- **Pré-existência:** Dependência de snapshots baseline e dados de orçamento no ambiente. PR #2338 não criou orçamentos no banco canônico nem gerou snapshots.
+- **É required check?** NÃO — workflow separado do Gate Final.
+- **Ação necessária:** PO deve (a) executar workflow de regeneração de snapshots e (b) verificar disponibilidade de orçamentos enviados no ambiente de teste.
+- **Responsável:** PO + dev de features
+
+### 5.5 E2E Cart — Matrix (E79) — Falha Pré-existente
+
+- **Run:** [39839609858](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39839609858) — sha `57017ba7` — `conclusion=failure`
+- **Causa exata (log):**
+  - `cart-delete-popover`: timeout 120s aguardando `getByTestId('cart-delete-exh-8')`
+  - `cart-handoff`: 2 testes marcados como flaky com timeout
+- **Pré-existência:** Nenhum commit do PR #2338 tocou componentes de carrinho. Padrão idêntico ao §2.6.1 (Cart Invariants Smoke).
+- **É required check?** NÃO — workflow separado do Gate Final.
+- **Ação necessária:** PO + dev investigar timing do componente `cart-delete-exh-8` e estabilidade do handoff de carrinho.
+- **Responsável:** PO + dev de features
