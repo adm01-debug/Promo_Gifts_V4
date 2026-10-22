@@ -1,9 +1,9 @@
 # RELATÓRIO CI — Branch `claude/laughing-cori-o9w35e`
 
 **Gerado em:** 2026-10-22  
-**HEAD principal:** `ceef4d6b` (PR #2338 → main)  
+**HEAD principal:** `0f7eb91a` (PR #2338 → main)  
 **Branch de correções CI:** `fix/ci-workflows` (PR #2341 → main, commit `b36f5362`)  
-**Atualizado em:** 2026-10-22T07:35Z → 08:44Z — sessão Claude
+**Atualizado em:** 2026-10-22T07:35Z → 08:44Z → 09:00Z — sessão Claude
 
 ---
 
@@ -98,11 +98,40 @@
 
 ### PR #2338 (`claude/laughing-cori-o9w35e` → main)
 
-#### Run `39748642992` (HEAD `ceef4d6b`) — CONFIRMADO 08:44Z
+#### Run `39750438156` (HEAD `0f7eb91a`) — verificado 08:57Z, in_progress
 
-> **Nota:** Run mais recente para PR #2338. Gate 1 completou com TODOS os 42 sub-gates ✅ (08:43:07Z).
-> Gate 6 Build ✅ (08:43:56Z). Gate E23 Gitleaks ✅ (08:37:19Z). Gate 3 E2E e Gate E40 ainda
-> in_progress (pré-existentes P3/P-E40). Runs anteriores cancelados por `cancel-in-progress: true`.
+> **Nota:** Run mais recente (push HEAD `0f7eb91a`). Gate 1 completou com TODOS os 42 sub-gates ✅ (08:57:05Z).
+> Gate 6 Build ✅ (08:57:58Z). Gate 3 E2E e Gate E40 ainda in_progress (pré-existentes P3/P-E40).
+> Run `39748642992` cancelado por `cancel-in-progress: true` ao receber este push.
+
+| Job | Conclusão | Completado |
+|---|---|---|
+| Detectar mudanças (docs-only bypass E14) | ✅ **success** | 08:49:48Z |
+| Gate 0 - SSOT Supabase | ✅ **success** | 08:50:11Z |
+| Gate 0.5 - Dependency Audit | ✅ **success** | 08:52:11Z |
+| Gate 0.6 - Dependency Review | ✅ **success** | 08:51:36Z |
+| Gate E23 - Verifica secrets E2E | ✅ **success** | 08:50:27Z |
+| Gate E40 - Detect schema file changes | ✅ **success** | 08:51:29Z |
+| Gate E23 - Secret Scan (gitleaks) | ✅ **success** | 08:51:45Z |
+| Gate 5 - SEO Sanity Check | ✅ **success** | 08:51:45Z |
+| Gate 2 - Unit Tests | ✅ **success** | 08:51:36Z |
+| Gate 2.5 - PostgreSQL Transactional Integrity | ✅ **success** | 08:52:15Z |
+| Gate 4 - Lighthouse CI | ✅ **success** | 08:53:47Z |
+| Gate 5.5 - RPC restore_seller_cart | ✅ **success** | 08:53:59Z |
+| **Gate 1 - Lint + TypeScript (42 sub-gates)** | ✅ **success** | **08:57:05Z** |
+| Gate 6 - Build | ✅ **success** | **08:57:58Z** |
+| Gate E40 - Schema Drift Check | ⏳ in_progress (step 9) | desde 08:57:52Z — pré-existente P-E40 |
+| Gate 3 - E2E Smoke | ⏳ in_progress (step 7) | desde 08:52:29Z — pré-existente P3 |
+
+> **14/16 jobs concluídos com SUCCESS + 2 in_progress (pré-existentes P3/P-E40)**. Conclusão esperada: `failure` (Gate 3 + Gate E40). Ver PENDENCIAS.md P27.
+
+---
+
+#### Run `39748642992` (HEAD `ceef4d6b`) — CONFIRMADO `conclusion=failure` (notif 20, 08:49:20Z)
+
+> **Nota:** Run foi cancelado por `cancel-in-progress: true` ao receber o push do HEAD `0f7eb91a`.
+> Mas Gate 1 e Gate 6 já haviam completado antes do cancel.
+> **conclusion=failure** por Gate 3 E2E Smoke (pré-existente P3) que estava in_progress quando o cancel chegou.
 
 | Job | Conclusão | Completado |
 |---|---|---|
@@ -190,12 +219,13 @@
 |---|---|---|---|---|---|
 | `39743706674` | `f79b863a` | workflow_dispatch | ❌ step 16 — 7 funções PG17 não documentadas | ❌ failure | [link](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39743706674) |
 | `39744914052` | `5b32ac8d` | workflow_dispatch | ✅ step 16 lint-0011 ✅ 08:08:37Z | ❌ failure (step 21 — testes pré-existentes) | [link](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39744914052) |
-| `39748320252` | `d95e19cd` | workflow_dispatch | ✅ step 16 lint-0011 ✅ 08:35:23Z | ⏳ in_progress (step 21 — pré-existente) | [link](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39748320252) |
+| `39748320252` | `d95e19cd` | workflow_dispatch | ✅ step 16 lint-0011 ✅ 08:35:23Z | ❌ failure (step 21 — pré-existente; confirmado notif 22 08:52:07Z) | [link](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39748320252) |
 
 > **Confirmação do fix lint-0011:** Run `39744914052` step 16 ✅ 08:08:37Z — as 7 assinaturas PG17 com parâmetros OUT
 > agora estão documentadas na allowlist `.security/lint-0011-allowlist.json` (commit `5b32ac8d`).
 > O failure no step 21 é por testes pré-existentes (`PopoverQtyInput` / `MockupProductSelector`) — arquivos
-> não tocados por nenhum commit deste PR. Run `39748320252` (dispatch fresh pós-fix, SHA `d95e19cd`) em andamento.
+> não tocados por nenhum commit deste PR. Run `39748320252` (dispatch fresh pós-fix, SHA `d95e19cd`) concluiu
+> com `conclusion=failure` (notif 22, 08:52:07Z) — apenas pelo step 21, o step 16 lint-0011 permanece ✅.
 
 ---
 
@@ -206,9 +236,9 @@
 | 1 | **Workflow Lint** | ✅ **conclusion=success** | [run 39731464629](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39731464629) |
 | 2 | **Static Health Checks** | ✅ **conclusion=success** | [run 39732276027](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39732276027) |
 | 3 | **Python Package using Conda** | ✅ **conclusion=success** | [run 39732278854](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39732278854) |
-| 4 | **CI Security & Drift Checks** | ✅ **lint-0029 ✅; lint-0011 ✅ 08:08:37Z** | lint-0029: PR #2338 commit `47c4e91e`. lint-0011 (PG17 OUT params): commit `5b32ac8d`, confirmado [run 39744914052](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39744914052) step 16 ✅. Dispatch fresh (post-fix): [run 39748320252](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39748320252) in_progress SHA `d95e19cd` |
+| 4 | **CI Security & Drift Checks** | ✅ **lint-0029 ✅; lint-0011 ✅ 08:08:37Z** | lint-0029: PR #2338 commit `47c4e91e`. lint-0011 (PG17 OUT params): commit `5b32ac8d`, confirmado [run 39744914052](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39744914052) step 16 ✅ + [run 39748320252](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39748320252) step 16 ✅ (conclusion=failure por step 21 pré-existente, notif 22 08:52Z) |
 | 5 | **Supabase Linter Gate** | ✅ **conclusion=success** | [run 39732557107](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39732557107) |
-| 6 | **Deploy Gates** (jobs fixáveis) | ✅ **14 jobs success** (2 in_progress) | [run 39748642992](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39748642992) SHA `ceef4d6b` — Gate 1 ✅ 08:43:07Z (42/42 sub-gates), Gate 6 Build ✅ 08:43:56Z, Gate E23 Gitleaks ✅ 08:37:19Z. Gate Final bloqueado por P3+P-E40 pré-existentes — ver P27 |
+| 6 | **Deploy Gates** (jobs fixáveis) | ✅ **14 jobs success** (2 in_progress) | [run 39750438156](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39750438156) SHA `0f7eb91a` — Gate 1 ✅ 08:57:05Z (42/42 sub-gates), Gate 6 Build ✅ 08:57:58Z, Gate E23 Gitleaks ✅ 08:51:45Z. Gate Final bloqueado por P3+P-E40 pré-existentes — ver P27 |
 | 7 | E2E (Playwright) | ⚠️ **Pré-existente** | PENDENCIAS.md P4 — auth/dados Supabase ausentes no CI |
 | 8 | E2E · Carts Undo RPC Atomic | ⚠️ **Pré-existente** | PENDENCIAS.md P22 — auth/dados Supabase ausentes |
 | 9 | E2E — Critical Flows & Error Boundaries | ⚠️ **Pré-existente** | PENDENCIAS.md P4d — auth/dados Supabase ausentes |
@@ -244,7 +274,7 @@
 | Workflow Lint (actionlint) | ❌ failure | ✅ success (PR #2341) | **+FIXED** |
 | Static Health Checks | ❌ failure | ✅ success (PR #2341) | **+FIXED** |
 | Python Package using Conda | ❌ failure | ✅ success (PR #2341) | **+FIXED** |
-| CI Security & Drift Checks | ❌ failure | ✅ success (PR #2338) | **+FIXED** |
+| CI Security & Drift Checks | ❌ failure | ✅ lint-0029 ✅; lint-0011 ✅ (step 21 unit tests = pré-existente não relacionado) | **+FIXED** (causas originais corrigidas) |
 | Supabase Linter Gate | ❌ failure | ✅ success | **+FIXED** |
 | Gate 3 E2E Smoke | ❌ failure (pré-existente) | ⏳ in_progress (pré-existente P3) | sem mudança esperada |
 | Gate E40 Schema Drift | ❌ failure (pré-existente) | ❌ cancelled por push (pré-existente P-E40) | sem mudança esperada |
@@ -271,4 +301,4 @@
 
 ---
 
-_Atualizado em 2026-10-22T08:44Z — sessão Claude (HEAD ceef4d6b; run 39748642992 — Gate 1 ✅ 42/42 sub-gates 08:43:07Z, Gate 6 ✅ 08:43:56Z, Gate E23 Gitleaks ✅ 08:37:19Z, 14/16 jobs success; ci-security-drift dispatch 39748320252 — step 16 lint-0011 ✅ 08:35:23Z confirmado)_
+_Atualizado em 2026-10-22T09:00Z — sessão Claude (HEAD 0f7eb91a; run 39750438156 — Gate 1 ✅ 42/42 sub-gates 08:57:05Z, Gate 6 ✅ 08:57:58Z, Gate E23 Gitleaks ✅ 08:51:45Z, 14/16 jobs success; run 39748642992 conclusion=failure confirmado notif 20 08:49Z; ci-security-drift run 39748320252 conclusion=failure confirmado notif 22 08:52Z step 21 pré-existente; step 16 lint-0011 ✅ 2x confirmado)_
