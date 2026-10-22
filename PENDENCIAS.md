@@ -320,6 +320,7 @@
 
 ## 2.11 edge-functions-drift-check — Edge Function Drift
 
+- **⚠️ Required check:** O job `Compare GitHub × Canonical` deste workflow está listado em `.github/required-checks.json` como required check para `main`. Este failure é um bloqueador ativo de merge.
 - **Run:** [39755009146](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39755009146)
 - **Causa:** "Drift detectado entre GitHub e canônico" — edge function(s) deployadas diretamente no Supabase (via MCP ou dashboard) sem commit no repo
 - **Evidência:** Step "Fail if drift detected" falhou; artefato `drift-report.csv` contém funções afetadas
