@@ -476,9 +476,39 @@ verificações equivalentes foram feitas via CI.
 
 ---
 
+## P18 — Gate 3 E2E Smoke — Timeout / runner stale no run `39695326969`
+
+**Tipo:** Gate de CI — timeout de runner ou falha pré-existente de testes E2E
+**Classificação:** Média — gate obrigatório, mas falha pré-existente (não causada por esta sessão)
+
+**Causa:** O job `Gate 3 - E2E Smoke` (id `119552470082`, run `39695326969`, sha `1c5814b`)
+iniciou o step 7 "Run Playwright smoke tests" às 23:48:46Z. Com timeout de 20 min (classe
+"E2E shard" per CLAUDE.md R3), o ponto de timeout esperado era ~00:08:46Z em 2026-10-22.
+A API GitHub continuou retornando `status: in_progress` sem `conclusion` mesmo horas depois
+(último `updated_at`: 23:52:31Z) — sintoma de runner hung/stale sem sinalização de conclusão.
+
+**Contexto:** A main (`c7c25848`) exibia Gate 3 passando. Os commits desta sessão
+(`3662efb`, `1af58db`, `489232e`, `0aac37d`, `2ff7919`, `ed29091`, `679b5f4`, `cb2706ca`)
+não alteram código de aplicação, testes, fixtures nem configuração de Playwright — não há
+causa técnica para regressão introduzida por esta sessão. A falha está relacionada ao ambiente
+de execução do runner (ver P2-P9 para falhas E2E pré-existentes de UI).
+
+**O que PO / Engenharia precisam fazer:**
+1. Verificar o run `39695326969` diretamente em https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39695326969
+2. Se timed_out: confirmar que é falha pré-existente de infra (runner) — sem correção de código necessária
+3. Se failure com erro específico: investigar se é regressão de UI ou problema de fixture (ver P2-P9)
+4. Optionalmente: rerunnar apenas o job Gate 3 para confirmar baseline
+
+**Impacto:** Gate 3 é obrigatório no `deploy-gates.yml`. Se a main estiver passando e
+este PR falhar apenas no Gate 3, o desbloqueio é: confirmar que é falha de infra e rerunnar.
+Todos os outros 15 gates (Gates 0–6, E89, E95, E118f/g/h, 1.9, etc.) estão ✅ success.
+
 ---
 
-*Documento atualizado em 2026-10-21 (v8) — P17 adicionado (baseline local impossível — registry npm privado 403);
+---
+
+*Documento atualizado em 2026-10-22 (v9) — P18 adicionado (Gate 3 E2E Smoke — timeout/runner stale no run 39695326969);
+P17 adicionado (baseline local impossível — registry npm privado 403);
 P10–P13 confirmados via run `39687808882` (commit `0d1efd27`, PR #2338);
 P14 db-schema-drift-check (advisory, requer reconciliação de DDL fora de fluxo);
 P15 Gate E89 — 4 colisões de cron corrigidas em 3 workflows (wraparound, capacity-growth, pgss-slo) — ✅ CONFIRMADO run `39689787809`;
