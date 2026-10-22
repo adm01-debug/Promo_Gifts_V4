@@ -99,7 +99,7 @@ Falhas em:
 - **Causa**: Step "🩺 RPC get_profile_and_roles smoke test" recebeu HTTP 504 do Supabase. Log: `httpStatus: 504, reason: "audit_http_error", status: "inconclusive"`. Timeout de infraestrutura Supabase — transiente.
 - **Pré-existente**: Ocorre na branch principal quando o endpoint Supabase está com latência elevada
 - **Bloqueante para PR #2338**: NÃO (`supabase-security-gate.yml` não é required check)
-- **Ação**: Rerun automático na próxima execução; não requer fix de código
+- **Ação**: Rerun manual via `workflow_dispatch` em `.github/workflows/supabase-security-gate.yml` — o workflow não tem retry automático (só triggers `push` e `pull_request`); não requer fix de código
 
 ### 13. e2e.yml — job e2e-gates falhou (header-sticky pré-existente)
 - **Run**: https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39763018854
@@ -111,6 +111,17 @@ Falhas em:
 - **Causa**: Ao pushar commit `70fc49a4`, a concorrência (`cancel-in-progress: true` em PRs) cancelou o run anterior de `6c1114fc`. Comportamento esperado — não representa falha real.
 - **Bloqueante para PR #2338**: NÃO
 
+### 15. Contract Tests — CORRIGIDO em b87510ce + 21adfefa
+- **Causa original**: `tests/sql/contract_smoke_schema.sql` não tinha tabela `public.products`. Edge function `product-webhook` tenta SELECT + upsert nessa tabela ao processar qualquer payload de upsert. Erro: `PGRST205: "Could not find the table 'public.products' in the schema cache"`.
+- **Fix b87510ce**: Adicionada tabela `products` com colunas do `NormalizedProduct`
+- **Fix 21adfefa**: Adicionadas tabela `product_sync_logs` (audit trail do product-webhook) + colunas `is_deleted`/`deleted_at` em `products` (necessárias para action `delete`)
+- **Bloqueante para PR #2338**: NÃO mais (fixado)
+
+### 16. sticky-and-scroll (chromium/firefox/webkit-public) — falha pré-existente
+- **Causa**: Testes de overflow/sticky do quote-view rodam na rota `/__visual/quote-view-order` que só existe em DEV mode. O guard `E2E_MOCK_AUTH=1` pula os `@smoke` tests mas não pula o teste de layout sem guard (linha 45 em `quote-view-mainlayout-overflow.spec.ts`). Falha em `36f7f298` para os 3 browsers.
+- **Bloqueante para PR #2338**: NÃO (`overflow-static-gate` que é required passou ✅)
+- **Ação**: Adicionar guard `E2E_MOCK_AUTH` no teste linha 45 em PR dedicado de layout
+
 ---
 
 ## FALHAS NÃO BLOQUEANTES NO PR #2338 (sem relação com o diff)
@@ -121,27 +132,29 @@ Falhas em:
 
 ---
 
-## STATUS ATUAL DO CI (commit 70fc49a4 — HEAD atual)
+## STATUS ATUAL DO CI (commit 21adfefa — HEAD atual)
 
-**Verificado em:** 2026-10-22 ~UTC (sessão atual)
+**Atualizado:** 2026-10-22 ~10:55 UTC
 
 | Gate | Status |
 |---|---|
-| Gate 0 — SSOT Supabase | ⏳ in_progress |
-| Gate 0.5 — Dependency Audit | ⏳ in_progress |
-| Gate 0.6 — Dependency Review | ⏳ in_progress |
-| Gate 1 — Lint + TypeScript | ⏳ in_progress |
-| Gate 2 — Unit Tests | ⏳ in_progress |
-| Gate 2.5 — PostgreSQL Transactional | ⏳ in_progress |
-| Gate 3 — E2E Smoke | ⏳ in_progress |
-| Gate E23 — Secret Scan | ⏳ in_progress |
-| Gate E40 — Schema Drift Detection | ⏳ in_progress |
-| Compare GitHub × Canonical | ⏳ in_progress |
+| Gate 0 — SSOT Supabase | ✅ success (run 39765721862) |
+| Gate 0.5 — Dependency Audit | ⏳ aguardando (novo run para 21adfefa) |
+| Gate 0.6 — Dependency Review | ⏳ aguardando |
+| Gate 1 — Lint + TypeScript | ⏳ aguardando |
+| Gate 2 — Unit Tests | ⏳ aguardando |
+| Gate 2.5 — PostgreSQL Transactional | ⏳ aguardando |
+| Gate 3 — E2E Smoke | ⏳ aguardando |
+| Gate E23 — Secret Scan | ⏳ aguardando |
+| Gate E40 — Schema Drift Detection | ⏳ aguardando (~25min) |
+| Compare GitHub × Canonical | ⏳ aguardando |
 | Gate Final — Deploy Ready | ⏳ aguardando todos |
 | required-checks-drift | ✅ success |
 | overflow-static-gate | ✅ success |
 | Validação Novo Orçamento | ✅ success |
+| Contract Tests (unit) | ✅ success (b87510ce) |
 | supabase-security-gate.yml | ❌ falha (HTTP 504 — não required, pré-existente — #12) |
 | e2e.yml / e2e-gates | ❌ falha (header-sticky — não required, pré-existente — #13) |
+| Gate 5 DB Security Audit (deploy-gates) | ❌ falha (HTTP 504 — não required, pré-existente — #12) |
 
-**10/50 check runs success, 40 in_progress/queued, 0 required failures — aguardando Gate Final.**
+**0 required failures confirmadas. Novo run Deploy Gates iniciando para 21adfefa — aguardando Gate Final.**
