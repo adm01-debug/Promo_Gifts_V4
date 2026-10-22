@@ -1,14 +1,14 @@
 # Relatório CI — Sessão de Correção de Workflows
 
-**Gerado:** 2026-10-22T13:35 UTC | **Atualizado:** 2026-10-22T17:25 UTC  
+**Gerado:** 2026-10-22T13:35 UTC | **Atualizado:** 2026-10-22T16:30 UTC  
 **Branch:** `claude/laughing-cori-o9w35e` → PR [#2338](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2338)  
-**HEAD atual:** `6e93a947` (docs(ci): atualiza RELATORIO_CI.md — header att 3 17:00Z)  
-**Commits desta sessão (compactação 2):** `a21f6200` → `b442d1ed` → `679b5f45` → `dbd53ec4` → `ad831d70` → `6e93a947` (RELATORIO_CI header att 3)  
+**HEAD atual:** `f6b1147` (fix(ci): pre-pull com retry para ghcr.io rate limit no drift check)  
+**Commits desta sessão (compactação 3):** `a21f6200` → `b442d1ed` → `679b5f45` → `dbd53ec4` → `ad831d70` → `6e93a947` → `8bfcbf4a` → `f6b1147`  
 **Base (main):** `8e8053b9`  
-**Gate Final — FILA CONGESTIONADA (GitHub Actions infra):**  
-- run [39808637240](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39808637240) para `ad831d70` → `queued` desde 15:50Z, `updated_at: 15:52Z` (nunca alocou runner)  
-- run [39810013398](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39810013398) para `6e93a947` → `pending` desde 15:59Z (novo, aguardando fila)  
-- **Precedente de sucesso:** run [39798033549](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39798033549) para `141c915a` → `conclusion=success` (16 jobs ✅, 15:00Z) — conteúdo equivalente
+**Gate Final — NOVA RUN (pós-fix Docker rate limit):**  
+- run [39814519115](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39814519115) para `f6b1147` → `queued` desde 16:29Z — aguardando runner  
+- **Precedente de sucesso:** run [39798033549](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39798033549) para `141c915a` → `conclusion=success` (16 jobs ✅, 15:00Z) — conteúdo equivalente  
+- **Razão do novo push:** 3 attempts consecutivos (runs 39810527986 att 1, 2, 3) falharam por `toomanyrequests` no ghcr.io ao puxar `ghcr.io/supabase/postgres:17.6.1.063`. Fix: step pre-pull com 5 tentativas + backoff 30s adicionado ANTES do `supabase db diff`.
 
 ---
 

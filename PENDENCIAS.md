@@ -1,18 +1,19 @@
 # PENDÊNCIAS — Correção de Workflows CI
 
-**Atualizado:** 2026-10-22T17:30 UTC  
+**Atualizado:** 2026-10-22T16:30 UTC  
 **Branch ativa:** `claude/laughing-cori-o9w35e` → PR [#2338](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2338)  
-**HEAD:** `b20bc8d2` (docs: RELATORIO_CI — fila GitHub Actions congestionada)  
-**Gate Final ativa:** run [39810241669](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39810241669) — `b20bc8d2` — `queued` desde 16:01Z — **congestionamento GitHub Actions** (sem runner alocado)  
-**Gate Final precedente:** [run 39798033549](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39798033549) — `141c915a` — ✅ **`conclusion=success`** (15:00Z, 16 jobs) — conteúdo equivalente  
-**Uptime Monitor mais recente:** run [39806810587](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39806810587) — ✅ `conclusion=success` (15:40Z)  
-**CI Security & Drift / Supabase Linter:** fixes no branch `b20bc8d2` — aguardando Gate Final + merge
+**HEAD:** `f6b1147` (fix(ci): pre-pull com retry para ghcr.io rate limit no drift check)  
+**Gate Final nova:** run [39814519115](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39814519115) — `f6b1147` — `queued` desde 16:29Z — aguardando runner  
+**Gate Final precedente:** run [39798033549](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39798033549) — `141c915a` — ✅ **`conclusion=success`** (15:00Z, 16 jobs) — conteúdo equivalente  
+**Uptime Monitor mais recente:** run [39811647198](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39811647198) — ❌ transiente (16:10Z) — padrão intermitente §2.1  
+**db-schema-drift-check fix:** commit `f6b1147` — pre-pull `ghcr.io/supabase/postgres:17.6.1.063` com 5 tentativas + backoff 30s antes do `supabase db diff`
 
 ### Commits desta sessão
 | Commit | Descrição | Resolve |
 |---|---|---|
 | `b442d1ed` | fix(security): corrige allowlist lint-0011 com assinaturas completas pgstattuple (OUT params) | Supabase Linter Gate — mismatch assinaturas OUT params |
 | `a21f6200` | fix(ci): corrige SIGPIPE (exit 141) no guard do daily-flows-simulation | Daily flows simulation — exit 141 SIGPIPE em `gh api --jq` |
+| `f6b1147` | fix(ci): pre-pull com retry para ghcr.io rate limit no drift check | db-schema-drift-check — `toomanyrequests` (44000/min) ao puxar `ghcr.io/supabase/postgres:17.6.1.063` |
 
 ### Reruns Attempt 2 (15:12Z) — Conclusões Confirmadas
 
@@ -109,20 +110,21 @@
 - **Run original (09:09Z):** [39776635316](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39776635316) — `conclusion=failure`
 - **Recovery (13:40Z):** [39788883010](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39788883010) — `conclusion=success`
 - **Nova falha (15:09Z):** [39802177763](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39802177763) — `conclusion=failure`
-  - **Causa:** Probe `health-check` → curl exit 22 (HTTP 503 = database unhealthy no canônico)
-  - **Diagnóstico:** `site=0 (OK)`, `health-check=22 (FAIL)`, `check-login=0 (OK)`, `auth-health=0 (OK)`
-  - **Attempt 2:** Rerun disparado às 15:34Z — **`conclusion=success` em 15:37Z** ✅
-- **Padrão:** INTERMITENTE — falhas em 09:09Z e 15:09Z, recoveries em 13:40Z e 15:37Z
-- **Status:** ✅ RESOLVIDO — attempt 2 confirmou `conclusion=success`
+  - **Attempt 2:** `conclusion=success` em 15:37Z ✅
+- **Nova falha (16:10Z):** [39811647198](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39811647198) — `conclusion=failure`
+  - **Causa:** Mesmo padrão — probe transiente de infra do banco canônico
+  - **Padrão confirmado:** 3 falhas em schedule (09:09Z, 15:09Z, 16:10Z); recoveries automáticas em 13:40Z e 15:37Z
+- **Status:** ⚠️ INTERMITENTE — falha agendada do schedule, sem ação de código necessária
 - **Ação necessária:** Nenhuma — health-check usa timeout 1500ms; falhas são transientes de infra do banco canônico
 
-### 2.2 db-schema-drift-check — Ledger Parity Falhou
+### 2.2 db-schema-drift-check — Ledger Parity + Docker Rate Limit
 
-- **Run:** [39757238848](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39757238848)
-- **Causa:** DDL aplicada out-of-band (sem migration no ledger) — `supabase_migrations.schema_migrations` desincronizado com schema real
-- **Fix nesta sessão:** `scripts/drift-baseline.mjs` corrigido (commit `9c2288c4`) — SESSION_NOISE_EXACT ignora `set check_function_bodies = off;`; entrada inválida removida do allowlist
-- **Pendência remanescente:** O ledger parity propriamente dito requer identificar qual DDL foi aplicada out-of-band e criar migration espelho via caminho E15/E99
-- **Ação necessária:** Dispatch de `db-schema-drift-check.yml` após merge do PR; se ainda falhar, `schema-snapshot-export.yml` com `force_rotate: true`
+- **Run original (falha):** [39757238848](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39757238848) — Ledger Parity
+- **Causa 1 (resolvida):** SESSION_NOISE_EXACT ignorava `set check_function_bodies = off;` — commit `9c2288c4`
+- **Causa 2 (resolvida):** Docker ghcr.io rate limit `toomanyrequests` (44000/min) ao puxar `ghcr.io/supabase/postgres:17.6.1.063` — 3 attempts consecutivos (runs 39810527986 att 1, 2, 3) — **commit `f6b1147` adiciona step pre-pull com 5 tentativas + backoff 30s**
+- **Gate Final em progresso:** run [39814519115](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39814519115) — SHA `f6b1147` — `queued` desde 16:29Z — aguardando conclusão do step `Schema drift check`
+- **Pendência remanescente (ação humana):** O ledger parity propriamente dito requer identificar qual DDL foi aplicada out-of-band e criar migration espelho via caminho E15/E99
+- **Ação necessária após Gate Final:** Se ledger parity ainda falhar, dispatch `schema-snapshot-export.yml` com `force_rotate: true`
 - **Responsável:** PO + DBA (REGRA #8 corolário)
 
 ### 2.3 Release Please — `Resource not accessible by integration`
