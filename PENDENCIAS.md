@@ -424,3 +424,54 @@
 | **Release Please** | 39757063511 | ❌ ação humana | §2.3 — GitHub App sem `contents:write` | PO (owner) |
 | **db-schema-drift-check** | 39757238848 | ❌ ação humana | §2.2 — DDL ledger parity out-of-band | PO + DBA |
 | **edge-functions-drift-check** | 39755009146 | ❌ ação humana | §2.11 — edge function drift | PO + DBA |
+
+---
+
+# PENDÊNCIAS — Incidente do banco 22/10/2026 (PR #2348)
+
+**Atualizado:** 2026-10-22T20:05 UTC
+
+## 1. Aprovar a aplicação da correção do banco — URGENTE
+
+**O que é:** reduz a frequência das 15 rotinas automáticas mais pesadas, que estão saturando o banco (milhares de erros 503/504 por hora desde 21/10 ~20h). Também passa a registrar no log quando uma rotina estoura o tempo.
+
+**Por que trava:** mudança no banco de produção só entra pelo workflow `db-apply-migration.yml`, com aprovação humana no ambiente "production".
+
+**Passo a passo:**
+1. Abra https://github.com/adm01-debug/Promo_Gifts_V4/actions/workflows/db-apply-migration.yml
+2. Se houver execução "Waiting": clique nela → **Review deployments** → marque **production** → **Approve and deploy**.
+3. Se não houver: **Run workflow** → branch `main` → `version`: `20261022193000` → `approved_by`: seu nome → aprove como no passo 2.
+
+## 2. Decidir: aplicar as 12 correções antigas que nunca chegaram ao banco
+
+**O que é:** desde setembro, 12 migrações aprovadas em PR nunca foram aplicadas, porque o validador passou a exigir arquivo de rollback e elas não têm. Entre elas há correções de segurança abertas **hoje** em produção:
+- usuários logados executam `mcp_kv_get` (lê segredos) — E18;
+- visitantes anônimos podem gravar/apagar em `external_connections` — E23;
+- visitantes anônimos têm acesso total a `mockup_approval_links` — 20261008230000;
+- mais: E17, E18 (4 funções), zapp_catalog_stats, E38, E45, E47, E30/E33/E40.
+
+**Por que trava:** preparei uma migração única que junta as 12 (com as checagens originais, que abortam tudo se algo mudou), mas o controle de segurança da sessão bloqueou a criação do arquivo, por empacotar mudanças de permissão de produção. Preciso da sua confirmação explícita.
+
+**Passo a passo:** responda "pode consolidar as 12 migrações pendentes". Eu crio o PR com rollback e recibo, e você aprova uma única vez no mesmo workflow do item 1.
+
+**Não aplicar** (registrado): E35 (obsoleta — índice novo já resolve), E37 (aumentaria carga), E19 (premissa caiu), E25 (a rotina atual já cria partições com proteção; a E25 criaria sem), Roboflow (precisa da sua chave), 20261013180500 (apaga tabelas de backup — só com sua autorização expressa).
+
+**Higiene (baixa prioridade):** 9 migrações já estão aplicadas em produção por outro caminho, só falta registrá-las (modo `repair-only` do mesmo workflow): 20260902220800, 20260902221000, 20260903093500, 20260905033100, 20260905033200, 20260916181609, 20260916210000, 20260920120000, 20260928212000.
+
+## 3. Decidir: quem pode ver o card "Risco de ruptura"
+
+**O que é:** em 13/10 o acesso direto à visão `mv_stock_rupture_alert` foi retirado de usuários logados (alerta "visão exposta na API"). A tela de estoque ainda a lê → card vazio desde 13/10 (632 erros hoje).
+
+**Por que trava:** a solução é uma função segura que entregue só os dados do card. O controle de segurança da sessão bloqueou criá-la sem sua decisão sobre o público. Os dados incluem valor de estoque em R$ e fornecedor.
+
+**Passo a passo:** responda uma das opções:
+- "todos os usuários logados" (como era antes de 13/10); ou
+- "só coordenador para cima" / "só supervisor para cima" / "só admin".
+
+## 4. Avaliar aumentar a máquina do banco (custo)
+
+Banco em máquina pequena (2 GB de memória) com ~150 rotinas. Supabase → projeto `doufsxqlfjyuvxuezpln` → Settings → Compute and Disk → avaliar o próximo tamanho.
+
+## 5. Secret `ASIA_INGESTION_CRON_SECRET` ausente
+
+Uma rotina do fornecedor Asia reclama 143×/dia. Supabase → Project Settings → Vault → "Add new secret" com esse nome e o valor da integração Asia.
