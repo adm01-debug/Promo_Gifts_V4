@@ -471,7 +471,7 @@ Actor = Bot. Evento = `dynamic`. Duração variável: 58s (modo review) a 20min 
 
 ## P24 — E2E Stepper Layout / Popover / quote-reset-stepper-layout: falha pré-existente (PR-only)
 
-**Workflow:** `e2e-quote-reset-stepper-layout.yml` (ou equivalente — PR-only, não dispara em `push: main`)
+**Workflow:** `ci-quotes-wizard.yml` ("CI - Novo Orçamento E2E" — PR-only, não dispara em `push: main`)
 **Run no PR #2338:** `39707407113` (SHA `b169f38480cf8a38f34196158d9feb18bb3804db`, 2026-10-22T01:46Z)
 **Jobs falhados:**
 - `E2E Stepper Layout pós-Reset` (check_run_id `119590570431`)
@@ -546,7 +546,7 @@ Todas pré-existentes ou mesma raiz que itens registrados. Nenhuma causada por e
 | P23 | Gate 3 E2E Smoke — confirmado 2 runs (run `39703771871`: 11 falhas; run `39707407257`: 12 falhas) por lentidão extrema do Supabase — bloqueia Gate Final | Alta | Infra/Supabase backend | PO / Infra |
 | P24 | E2E Stepper/Popover/quote-reset-stepper-layout — falha pré-existente, PR-only, sem regressão (run `39707407113`) | Média | Bug de código/UI | Engenharia |
 | P25 | Edge Integration Tests All Functions (edge-integration-all.yml) — falha pré-existente, não-required, sem regressão (run `39707407172`, SHA `b169f38` docs-only) | Baixa | Edge functions / Infra Supabase | Engenharia / PO |
-| P21b | Visual Baselines desatualizados — requer `workflow_dispatch` em `update-visual-baselines.yml` | Baixa | Config de CI / PO dispatch | PO |
+| P21b | Visual Baselines desatualizados — requer `workflow_dispatch` em `update-snapshots.yml` | Baixa | Config de CI / PO dispatch | PO |
 | P21c | `audit` workflow (run `39702370222`) — verificar se Gate 4 ou advisory | Baixa | Advisory | Engenharia |
 | P26 | **Gitleaks Full History Audit** — potencial secret no histórico (run `39559250174`) — ⚠️ investigar antes de suprimir | Alta | Segurança | Engenharia / PO |
 | P27 | Kit Coverage Integration — falha de integração, não-required (run `39540819979`) | Baixa | Bug de código/UI | Engenharia |
@@ -672,11 +672,11 @@ pode precisar de atualização de baseline (relacionado a P21b).
 
 **Workflows:** `visual-baseline` runs `39702369855` (jobs 1 e 2)
 **Causa:** Os baselines visuais commitados em `.snapshots/` não correspondem ao estado atual da UI
-após commits do Lovable. O workflow `.github/workflows/update-visual-baselines.yml` precisa
+após commits do Lovable. O workflow `.github/workflows/update-snapshots.yml` precisa
 ser disparado (workflow_dispatch) para regerar os baselines.
 **O que o PO precisa fazer:**
 - Acessar: https://github.com/adm01-debug/Promo_Gifts_V4/actions/workflows/
-- Localizar `update-visual-baselines.yml` (ou equivalente) e disparar manualmente
+- Localizar `update-snapshots.yml` e disparar manualmente
 - Fazer merge do PR gerado pelo workflow de update
 **Tipo:** Config de CI — não bloqueia deploy (não é required check)
 **Responsável:** PO / Engenharia
@@ -917,7 +917,7 @@ Mesma raiz de P21a (E2E PDF e visual) e P24 (Stepper/Popover).
 
 **Classificação:** Não-required — não bloqueia deploy. Pré-existente na main.
 
-**Ação:** Investigar com P24. Se snapshots visuais: disparar `update-visual-baselines.yml` (P21b).
+**Ação:** Investigar com P24. Se snapshots visuais: disparar `update-snapshots.yml` (P21b).
 
 ---
 
@@ -931,9 +931,11 @@ Mesma raiz de P21a (E2E PDF e visual) e P24 (Stepper/Popover).
 Relacionado à mesma mudança de UI do Lovable que afeta P2/P3 — o trigger do popover/menu
 mudou de `data-testid="cart-row-menu-{id}"` para `data-testid="cart-row-more-{id}"`.
 
-**Fix aplicado neste PR:** Os seletores de `e2e/flows/13-carts-delete-undo.spec.ts` e
-`e2e/flows/13b-carts-undo-rpc-atomic.spec.ts` foram atualizados para incluir ambos os padrões
-(`cart-row-menu-` e `cart-row-more-`, `aria-label*="Ações"` e `aria-label*="Mais opções"`).
+**Fix aplicado neste PR (commit `b1aa0e5`):** Os seletores de `e2e/flows/13-carts-delete-undo.spec.ts` e
+`e2e/flows/13b-carts-undo-rpc-atomic.spec.ts` foram corrigidos para usar exclusivamente
+`[data-testid^="cart-row-more-"]` — o testid correto confirmado em `CartsListPage.tsx:993`.
+O seletor anterior era muito amplo (incluía `aria-label*="Ações"` e `aria-label*="Mais opções"`)
+e capturava elementos errados (bulk-selection group, mobile header) antes da linha do carrinho.
 
 **Classificação:** Não-required — não bloqueia deploy. Fix aplicado neste PR.
 
