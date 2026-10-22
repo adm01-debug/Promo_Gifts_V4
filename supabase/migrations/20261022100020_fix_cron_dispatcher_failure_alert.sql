@@ -7,6 +7,8 @@
 -- Aprovação: necessária via db-apply-migration.yml (REGRA #8 / E15).
 -- Referência: auditoria-supabase/propostas/P19_cron_failures_remediation.md
 
+BEGIN;
+
 -- Verificação pré-condição: o job deve existir
 DO $$
 BEGIN
@@ -24,3 +26,5 @@ SELECT cron.schedule(
   '3,13,23,33,43,53 * * * *',
   'SELECT public.fn_alert_dispatcher_failures();'
 );
+
+COMMIT;

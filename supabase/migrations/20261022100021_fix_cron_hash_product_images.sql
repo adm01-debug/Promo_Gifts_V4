@@ -9,6 +9,8 @@
 -- Aprovação: necessária via db-apply-migration.yml (REGRA #8 / E15).
 -- Referência: auditoria-supabase/propostas/P19_cron_failures_remediation.md
 
+BEGIN;
+
 -- Verificação pré-condição
 DO $$
 BEGIN
@@ -35,3 +37,5 @@ SELECT cron.schedule(
     timeout_milliseconds := 55000
   )$$
 );
+
+COMMIT;
