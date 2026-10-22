@@ -104,6 +104,7 @@ Gerado automaticamente em cada run — não armazenado como secret no repositór
 | Segredo | Dono | Escopo | Rotação | Observação |
 |---|---|---|---|---|
 | `LHCI_GITHUB_APP_TOKEN` | DevOps | Repo | Nunca (GitHub App) | Gate 4 Lighthouse CI (`continue-on-error: true`) — allowlistado em check-workflow-contracts |
+| `RELEASE_PLEASE_TOKEN` | PO/DevOps | Repo | Anual | PAT com escopo `repo` para `release-please.yml` criar releases/tags em repos com branch protection. Fallback: `GITHUB_TOKEN` (pode falhar com "Resource not accessible by integration"). Criado manualmente em Settings → Secrets → Actions. |
 
 ---
 
