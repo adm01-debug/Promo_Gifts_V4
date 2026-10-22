@@ -780,6 +780,7 @@ da execução e consulta read-only ao catálogo/ledger, sem reaplicar SQL.
 | `20261019000000` | `9626173482db8a8d0bc5aa13aaca719a7b96ca4f411b48d1a356d46b4fc04885` | — | Claude Code (sessão claude.ai/code/session_011wnE6Ws1vdYTuoEHrSDoa7, aprovado PO ti@promobrindes.com.br — "resolva por mim! eu autorizo!!") | E99 mirror OOB — recibo documental | 2026-10-19 | PR #2296 mergeado em main; arquivo `20261019000000_mirror_oob_frontend_telemetry_v_system_health_dashboard.sql` commitado; DDL dos 2 objetos (`frontend_telemetry_size_caps_check` + `v_system_health_dashboard`) aplicada via MCP antes da migration; recibo retroativo (E99 corolário); `migration repair --status applied 20261019000000` pendente via workflow E15 (REGRA #8) | **aplicada via MCP (OOB) — recibo documental** |
 | `20261022000000` | `59de927fcd55b764b70cd084f452aa914bbc2f555aca475caf08fb5b0cc16bef` | — | — (aguardando `workflow_dispatch` E15 pelo PO) | E15 | — | pendente: REVOKE EXECUTE ON FUNCTION public.fn_backfill_queue_reap_stuck(integer, integer) FROM PUBLIC — gap de segurança (Qodo High): qualquer `authenticated` pode chamar rotina SECURITY DEFINER de manutenção de fila com parâmetros arbitrários (p_stuck_minutes=0, p_max_attempts=1), reaping jobs em voo. PR #2338. | **pendente — não aplicada** |
 | `20261022000100` | `3053ee2aa80da1521b32638bc8b45b14ee7fe7a81cf1ef645051a95e8a47d0bb` | — | — (aguardando `workflow_dispatch` E15 pelo PO) | E15 | — | pendente: REVOKE EXECUTE ON FUNCTION public.fn_detect_recurring_errors_last_hour(integer) FROM PUBLIC — gap de segurança (Qodo High): qualquer `authenticated` pode chamar função SECURITY DEFINER de diagnóstico com parâmetros arbitrários, expondo dados de telemetria de erros internos. PR #2338. | **pendente — não aplicada** |
+| `20261022193000` | `eaa8a33524f37c7a7f24ddb6c8a23c0a873101d94f01aa9b6257d5423f4b9e68` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por PO adm01-debug — autorizado no chat 2026-10-22 17:40 BRT) | E15 | 2026-10-22 20:45:58 UTC | job post-check da run 39850901884 confirmou a version no ledger | aplicada |
 
 ### Evidências do recibo `20260922170000`
 
@@ -1469,4 +1470,75 @@ no repo mas NÃO estão aplicadas no banco — decisão registrada no ADR 0009
 (aplicá-las regrediria a fn_standardize_variant viva). Reconciliar antes de
 qualquer `supabase db push`.
 
+---
+
+## 2026-10-22 — Auditoria DRIFT-003: 448 migrations sem ledger identificadas
+
+**Tipo:** Auditoria documental (`[GIT]`) — nenhuma escrita no banco.
+**Sessão:** https://claude.ai/code/session_01GfYDwdVBZip5FzMr8MZ4Be
+**Relatório completo:** `supabase/MIGRATIONS_DRIFT_REPORT.md`
+
+### Resumo do drift identificado
+
+| Métrica | Valor |
+|---|---|
+| Arquivos `.sql` no repo | 2975 |
+| Entradas no ledger (`schema_migrations`) | 2528 |
+| **Migrations sem ledger (drift)** | **448** |
+| Período do drift | 2026-05-11 a 2026-10-13 |
+
+### Distribuição por tipo
+
+| Tipo | Quantidade |
+|---|---|
+| OTHER (DO $precondition$ / idempotentes) | 144 |
+| POLICY (CREATE/DROP POLICY, REVOKE, GRANT) | 88 |
+| FUNCTION (CREATE OR REPLACE FUNCTION) | 73 |
+| DDL_TABLE (CREATE/ALTER/DROP TABLE) | 71 |
+| DML (INSERT/UPDATE/backfill) | 36 |
+| DDL_INDEX (CREATE/DROP INDEX) | 26 |
+| CRON (cron.schedule/alter_job) | 10 |
+
+### 5 migrations mais críticas sem ledger (repair-only markers criados)
+
+| Versão | Arquivo | Impacto |
+|---|---|---|
+| `20260525232003` | `fix_339_personalization_missing_columns.sql` | 6 colunas ausentes em personalization_techniques |
+| `20260622111500` | `supplier_reliability_pipeline_v1.sql` | Pipeline completo supplier_replenishment_events |
+| `20260622130000` | `fix_color_swatches_column_and_view_plus_favorites_grant.sql` | `products.color_swatches` — HTTP 400 sem ela |
+| `20260623000008` | `products_name_m8_max_length.sql` | CHECK constraint em `products` |
+| `20260902220800` | `rls_enable_spr_history_partitions_and_fix_creator.sql` | RLS em partições supplier_products_raw_history |
+
+### Próximo passo
+
+Para cada migration, obter aprovação do PO e executar:
+```bash
+gh workflow run db-apply-migration.yml \
+  -f version=<VERSAO> \
+  -f mode=repair-only \
+  -f approved_by=PO_EMAIL
+```
+
+Ver `supabase/MIGRATIONS_DRIFT_REPORT.md` §Plano de Reconciliação para prioridade completa.
+
 Detalhes, métricas antes/depois e one-shots: docs/EXECUCAO_CORRECOES_MEDALLION_2026-06-10.md
+
+---
+
+## 2026-10-22 — Auditoria de Segurança e Performance (sessão P17/P18/P19)
+
+**Tipo:** Migrations criadas em PR — **não aplicadas ainda** (pendentes de `workflow_dispatch` em `db-apply-migration.yml`).
+**Sessão:** https://claude.ai/code/session_01GfYDwdVBZip5FzMr8MZ4Be
+**Branch:** `claude/happy-faraday-0vgza3`
+**Aprovação necessária:** PO via REGRA #8 / E15 antes de `workflow_dispatch`.
+
+### Recibos pendentes (placeholder Gate 1.3.3)
+
+| versão | sha256 arquivo | md5 statements | executor | método | data UTC | pós-check |
+|---|---|---|---|---|---|---|
+| `20261022100001` | `91404707c71551f6060fc1845cfdd24b608cb6338a2685a92f6b4f98f1f9334f` | `—` (não aplicado) | Claude sessão P17/auditoria | E15 (pendente) | pendente | pendente — REVOKE EXECUTE anon/PUBLIC em fn_cron_guard (FUNC-NEW-001 CRÍTICO) |
+| `20261022100010` | `8ff71060a255026b55cfd1a7bbd817b7a0de05b79aac68a2b2d8a3d766a35ac7` | `—` (não aplicado) | Claude sessão P18/auditoria | E15 (pendente) | pendente | pendente — 50 ALTER POLICY auth.uid() → (SELECT auth.uid()) em 24 tabelas (ADV-PERF-001) |
+| `20261022100011` | `19392e733d888cb4147bf5ccaace6007d99f4b7870eb8d7c1eaa7b07cf90670d` | `—` (não aplicado) | Claude sessão P18/auditoria | E15 (pendente) | pendente | pendente — 13 DROP INDEX unused (~779 MB); 7 deferred (unique/GIN — aprovação PO) |
+| `20261022100020` | `c429599dc3becf972269b08c994cef994a28c591ba47c41524b5390019546d8a` | `—` (não aplicado) | Claude sessão P19/auditoria | E15 (pendente) | pendente | pendente — dispatcher-failure-alert: */5 → 3,13,23,33,43,53 (offset +3min, P19) |
+| `20261022100021` | `4c3ddf72ef90ac779830893686099c48ef1eb6c524c0269a7b2551665816c888` | `—` (não aplicado) | Claude sessão P19/auditoria | E15 (pendente) | pendente | pendente — hash-product-images: */5 → 4,14,24,34,44,54 (offset +4min, P19) |
+| `20261022100022` | `2cc1e34477a862cccd3c0b7d5925179a755cdda50a7e646bad41e40f277675c7` | `—` (não aplicado) | Claude sessão P19/auditoria | E15 (pendente) | pendente | pendente — sync-is-stockout-universal: */5 → */10 (frequência reduzida, P19) |
