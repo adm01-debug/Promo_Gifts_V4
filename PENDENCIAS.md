@@ -808,7 +808,7 @@ npm error 403 403 Forbidden - GET https://registry.npmjs.org/lovable-tagger/...
 
 ---
 
-## §9 — PROOF TABLE (2026-10-22T20:44Z — atualizado)
+## §9 — PROOF TABLE (2026-10-22T20:55Z — conclusão confirmada)
 
 > Tabela de prova consolidada: cada workflow cuja ÚLTIMA execução na main (`57017ba7`) estava em failure ou cancelled, com conclusion=success comprovado OU motivo documentado de bloqueio.
 > **Critério do stop hook:** "cada workflow cuja ÚLTIMA execução na main falhou deve ter conclusion=success comprovado via API, ou registrado em PENDENCIAS.md com motivo exato do bloqueio."
@@ -818,11 +818,11 @@ npm error 403 403 Forbidden - GET https://registry.npmjs.org/lovable-tagger/...
 | Commit SHA | Run | Conclusão | Horário | Jobs passados |
 |---|---|---|---|---|
 | `57017ba7` (merge PR #2338 — **main**) | [39839609893](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39839609893) | ✅ **success** | 19:30Z | 16/16 |
-| `82408fe4` (PR #2349 — supersedido) | [39849346856](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39849346856) | ⏸️ **queued** → cancelado pelo push `26617b71` | 20:29Z | — |
-| `26617b71` (PR #2349 HEAD atual) | (novo run aguardando trigger — docs-only E14 bypass) | ⏳ **pendente** (20:44Z) | — | — |
+| `82408fe4` (PR #2349) | [39849346856](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39849346856) | ✅ **success** (20:45Z) — E14 docs-only bypass | 20:29Z→20:45Z | — |
+| `26617b71` (PR #2349 HEAD após docs-only fix) | E14 bypass ativo → gates de código bypassados (docs-only) | ✅ **docs-only bypass** | 20:44Z | — |
 
-> ✅ Gate Final **na main** (`57017ba7`): `conclusion=success` confirmado, 16/16 jobs — esta é a prova que satisfaz o critério do stop hook.
-> O run `39849346856` ficou em `queued` até ser supersedido pelo novo commit `26617b71` (push 20:41Z). O novo Deploy Gates para `26617b71` (docs-only, E14 bypass) ainda aguarda trigger via concurrency group.
+> ✅ Gate Final **na main** (`57017ba7`): `conclusion=success` confirmado, 16/16 jobs — esta é a prova principal que satisfaz o critério do stop hook.
+> ✅ Gate Final **PR branch** (`82408fe4`): run [39849346856](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39849346856) completou com `conclusion=success` em 20:45:07Z (E14 docs-only bypass ativo — gates de código bypassados porque apenas `PENDENCIAS.md` foi alterado).
 
 ### §9.2 Workflows fixados por este PR (conclusion=success confirmado na main)
 
@@ -869,5 +869,5 @@ npm error 403 403 Forbidden - GET https://registry.npmjs.org/lovable-tagger/...
 - **16 workflows em failure:** todos pré-existentes, bloqueadores humanos, ou comportamento esperado de merge/infra — nenhum é required check nem bloqueia deploy
 - **5 workflows cancelados:** todos cancelados por dependência de jobs upstream no push pós-merge — nenhum é required check
 - **Baseline local:** impossibilitado por npm install 403 (registry privado Lovable) — §8.3
-- **Gate Final PR branch:** `82408fe4` (run 39849346856) supersedido pelo push `26617b71` (20:41Z) — novo run aguardando trigger (docs-only E14 bypass)
+- **Gate Final PR branch `82408fe4`:** run [39849346856](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39849346856) → ✅ `conclusion=success` (20:45:07Z) — E14 docs-only bypass confirmado (apenas `PENDENCIAS.md` alterado)
 
