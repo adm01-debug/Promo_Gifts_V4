@@ -1,0 +1,49 @@
+{
+  "sha": "8e8053b9ed85142e85809783cd3acf9a3077ecde",
+  "ref": "main",
+  "captured_at": "2026-10-22T18:05:00Z",
+  "source": "github_actions_api",
+  "note": "CI local inviável — npm registry privado retorna 403 no container cloud",
+  "gate_final": "failure",
+  "summary": {
+    "total": 88,
+    "success": 45,
+    "failure": 26,
+    "cancelled": 7,
+    "skipped": 10
+  },
+  "failures": [
+    "Gate Final - Deploy Ready",
+    "Gate 0.5 - Dependency Audit",
+    "Gate 1 - Lint + TypeScript",
+    "E2E — Error Boundaries (sem auth)",
+    "E2E — Full User Flows (authed)",
+    "E2E — Personalization Journey",
+    "cart-invariants-summary",
+    "cart-invariants (chromium-authed · shard 1/2)",
+    "cart-invariants (chromium-authed · shard 2/2)",
+    "cart-invariants (firefox-authed · shard 1/2)",
+    "cart-invariants (firefox-authed · shard 2/2)",
+    "Migrations x Canonical schema",
+    "check (×8 entradas genéricas)"
+  ],
+  "cancelled": [
+    "E2E · chromium-authed",
+    "E2E · firefox-authed",
+    "E2E · webkit-authed",
+    "Gate 3 - E2E Smoke",
+    "Smoke (fail-fast)",
+    "chromium • swatch→QV",
+    "firefox • swatch→QV"
+  ],
+  "key_passing_gates": [
+    "Gate 0 - SSOT Supabase (project ID canônico)",
+    "Gate 2 - Unit Tests",
+    "Gate 2.5 - PostgreSQL Transactional Integrity",
+    "Gate 4 - Lighthouse CI",
+    "Gate 5 - SEO Sanity Check",
+    "Gate 5.5 - RPC restore_seller_cart presente no canônico",
+    "Gate E23 - Secret Scan (gitleaks)",
+    "Assert Gate Final is required on main"
+  ]
+}
