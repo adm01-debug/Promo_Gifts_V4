@@ -43,7 +43,7 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE
   public.outbound_webhooks
 TO service_role;
 
--- Tabela products: necessária para product-webhook edge function (upsert + select).
+-- Tabela products: necessária para product-webhook edge function (upsert + select + soft-delete).
 -- Colunas mapeadas 1-to-1 com NormalizedProduct em supabase/functions/product-webhook/index.ts.
 CREATE TABLE IF NOT EXISTS public.products (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -63,6 +63,8 @@ CREATE TABLE IF NOT EXISTS public.products (
   is_featured boolean NOT NULL DEFAULT false,
   is_new boolean NOT NULL DEFAULT false,
   is_on_sale boolean NOT NULL DEFAULT false,
+  is_deleted boolean NOT NULL DEFAULT false,
+  deleted_at timestamptz,
   images text[] NOT NULL DEFAULT ARRAY[]::text[],
   videos jsonb NOT NULL DEFAULT '[]'::jsonb,
   colors jsonb NOT NULL DEFAULT '[]'::jsonb,
@@ -74,5 +76,29 @@ CREATE TABLE IF NOT EXISTS public.products (
 );
 
 GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE public.products TO service_role;
+
+-- Tabela product_sync_logs: necessária para product-webhook (insert no início + update no fim).
+-- Colunas mapeadas ao schema canônico em supabase/baseline/20261015140000_baseline_schema.sql.
+CREATE TABLE IF NOT EXISTS public.product_sync_logs (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  source text NOT NULL,
+  status text NOT NULL DEFAULT 'pending',
+  records_processed integer NOT NULL DEFAULT 0,
+  records_inserted integer NOT NULL DEFAULT 0,
+  records_updated integer NOT NULL DEFAULT 0,
+  records_failed integer NOT NULL DEFAULT 0,
+  duration_ms integer,
+  payload jsonb,
+  error_message text,
+  triggered_by uuid,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  products_received integer DEFAULT 0,
+  products_created integer DEFAULT 0,
+  products_updated integer DEFAULT 0,
+  products_failed integer DEFAULT 0,
+  completed_at timestamptz
+);
+
+GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE public.product_sync_logs TO service_role;
 
 NOTIFY pgrst, 'reload schema';
