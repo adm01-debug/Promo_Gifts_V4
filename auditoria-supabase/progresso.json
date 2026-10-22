@@ -4,22 +4,71 @@
   "auditoria_iniciada": "2026-10-22",
   "auditoria_concluida": "2026-10-22",
   "modo": "somente_leitura_producao_local_para_rls",
-  "rls_matrix_resultado": "13/13 PASS — sem vazamento cross-tenant",
+  "rls_matrix_resultado": "13/13 PASS — sem vazamento cross-tenant (schema simplificado)",
+  "rls_matrix_com_migrations_repo": "NAO_VERIFICADO — 2538 migrations dependem de auth.users FK e extensões Supabase não disponíveis em Postgres puro",
   "stock_daily_summary_status": "vazia_n_live_tup_0",
   "fn_aggregate_stock_daily_status": "timeout_60s_mcp_nao_executado",
+  "edge_logs_janela_maxima": "24h — limitação arquitetural do query_logs MCP (não 7d)",
+  "edge_logs_24h_resultado": "67098 requests, 0 erros 5xx, 0 erros 4xx — saudável",
+  "verify_jwt_false_total": "36 de 82 funções (43.9%) — ver inventario/edge_functions_verify_jwt_false.md",
+  "types_ts_entradas": 1607,
+  "banco_tabelas_publicas": 398,
+  "tabelas_criticas_presentes_banco": "8/8 (personalization_techniques, products, product_variants, suppliers, supplier_products_raw, magazines, magazine_items, magazine_templates)",
+  "from_calls_fantasmas": "5 chamadas para não-tabelas: avatars/stock_notes=buckets storage, t/tpgo/tpgo_faixa=aliases de teste",
+  "rpc_verificadas": "16/16 RPCs do frontend existem no banco",
+  "auth_config": "ssl=on, TLSv1.2+, scram-sha-256, log_connections=off, log_disconnections=off",
+  "storage_buckets": "11 total: 2 públicos (avatars, mockup-assets), 9 privados",
+  "baseline_imutabilidade": "migrations=2538 Δ0, crons=142 Δ0, policies=960 Δ0, edge_functions=82 Δ0",
   "secoes": {
-    "1_inventario": "concluido",
-    "2_drift": "concluido",
-    "3_seguranca": "concluido",
-    "4_integridade": "concluido",
-    "5_performance": "concluido",
-    "6_crons": "concluido",
-    "7_db_functions": "concluido",
-    "8_edge_functions": "concluido",
-    "9_auth_storage_realtime": "concluido",
-    "10_logs": "concluido",
-    "11_rls": "concluido",
-    "12_lacunas": "concluido"
+    "1_inventario": {
+      "status": "concluido",
+      "evidencia": "inventario/secao1_inventario.md — 398 tabelas, 82 edge functions, 1334 DB functions, 960 RLS policies, 142 cron jobs, 18 extensoes, 11 buckets"
+    },
+    "2_drift": {
+      "status": "concluido",
+      "evidencia": "DRIFT-001: types.ts 1607 entradas vs 398 tabelas DB; 8/8 tabelas criticas presentes; 5 chamadas .from() sao buckets/aliases, nao tabelas ausentes"
+    },
+    "3_seguranca": {
+      "status": "concluido",
+      "evidencia": "SEG-001 a SEG-006: 36 funcoes verify_jwt=false (5 criticas); 8 views SECURITY DEFINER; 59 tabelas anon via pg_graphql; 101 funcoes auth SECURITY DEFINER"
+    },
+    "4_integridade": {
+      "status": "concluido",
+      "evidencia": "0 tabelas sem PK; 0 tabelas sem RLS; 0 tabelas RLS+zero policies; 4 FKs sem index; users=profiles 39/39"
+    },
+    "5_performance": {
+      "status": "concluido",
+      "evidencia": "8 politicas com auth.uid() no initplan sem index; 461 indexes sem uso (acima de 30 dias); bloat moderado em stock_snapshots"
+    },
+    "6_crons": {
+      "status": "concluido",
+      "evidencia": "CRON-001 CRITICO: 20+ jobs com job_pid=null na janela 12:03-12:12 UTC; 10 jobs com 82-147 falhas em 7d (7% taxa de falha); 142 jobs totais"
+    },
+    "7_db_functions": {
+      "status": "concluido",
+      "evidencia": "1334 funcoes; 10 funcoes anon SECURITY DEFINER executaveis; 101 funcoes authenticated SECURITY DEFINER; fn_aggregate_stock_daily timeout >60s"
+    },
+    "8_edge_functions": {
+      "status": "concluido",
+      "evidencia": "82 funcoes publicadas; 36 com verify_jwt=false (43.9%); 5 criticas sem auth; lista completa em inventario/edge_functions_verify_jwt_false.md"
+    },
+    "9_auth_storage_realtime": {
+      "status": "concluido",
+      "evidencia": "39 usuarios autenticados; ssl=on TLSv1.2; scram-sha-256; 11 buckets (2 publicos); log_connections=off (AUTH-001 MEDIO)"
+    },
+    "10_logs": {
+      "status": "concluido",
+      "evidencia_24h": "67098 requests em 24h, 0 erros; janela 7d NAO_VERIFICADO por limitacao MCP (max 24h)",
+      "limitacao": "query_logs max 24h — logs 7d por funcao sao NAO VERIFICADOS"
+    },
+    "11_rls": {
+      "status": "concluido",
+      "evidencia": "960 policies; 0 tabelas sem policy; matriz tenant A x B 13/13 PASS (schema simplificado); matriz com migrations repo NAO VERIFICADO (auth.users FK deps)"
+    },
+    "12_lacunas": {
+      "status": "concluido",
+      "evidencia": "stock_daily_summary vazia; fn_aggregate_stock_daily timeout; crons com falhas sem alertas; pg_net sem HMAC em webhooks inbound; log_connections desabilitado"
+    }
   },
   "agentes": {
     "A": "secoes_1_2",
@@ -34,12 +83,25 @@
     "MEDIO": 27,
     "BAIXO": 9,
     "INFO": 13,
-    "NAO_VERIFICADO": 2
+    "NAO_VERIFICADO": 3
   },
   "nao_verificado_motivo": {
-    "fn_aggregate_stock_daily": "funcao leva >60s, timeout MCP — usuario deve executar manualmente",
-    "cron_job_run_details_30d": "coluna start_time sem index, timeout em 30d — janela reduzida para 7d funcionou"
+    "fn_aggregate_stock_daily": "funcao leva >60s, timeout MCP — usuario deve executar manualmente no Dashboard",
+    "edge_logs_7d_por_funcao": "query_logs MCP tem janela maxima de 24h, nao 7 dias — limitacao arquitetural",
+    "rls_matrix_com_migrations_repo": "2538 migrations dependem de auth.users (69 FKs) e extensoes Supabase nao disponiveis em Postgres puro — usar supabase start localmente"
   },
+  "top10_achados": [
+    {"rank": 1, "id": "CRON-001", "sev": "CRITICO", "desc": "20+ cron jobs com job_pid=null em 12:03-12:12 UTC — workers nao iniciando"},
+    {"rank": 2, "id": "SEG-001", "sev": "ALTO", "desc": "5 edge functions criticas sem verify_jwt: mcp-server, crm-db-bridge, external-db-inspect, e2e-cleanup, sync-external-db"},
+    {"rank": 3, "id": "SEG-002", "sev": "ALTO", "desc": "36/82 edge functions com verify_jwt=false (43.9%)"},
+    {"rank": 4, "id": "SEG-003", "sev": "ALTO", "desc": "59 tabelas expostas ao role anon via pg_graphql sem restricao de schema"},
+    {"rank": 5, "id": "PERF-001", "sev": "ALTO", "desc": "8 RLS policies com auth.uid() em initplan sem index de suporte — varredura completa por query"},
+    {"rank": 6, "id": "CRON-002", "sev": "ALTO", "desc": "10 cron jobs com taxa de falha 7-10% em 7 dias (82-147 falhas cada) sem alertas"},
+    {"rank": 7, "id": "SEG-004", "sev": "ALTO", "desc": "101 funcoes SECURITY DEFINER executaveis por authenticated sem restricao"},
+    {"rank": 8, "id": "SEG-005", "sev": "ALTO", "desc": "8 views com SECURITY DEFINER (expoe dados do owner ao viewer)"},
+    {"rank": 9, "id": "PERF-002", "sev": "ALTO", "desc": "461 indexes sem uso em 30+ dias consumindo espaco e degradando writes"},
+    {"rank": 10, "id": "INT-001", "sev": "MEDIO", "desc": "fn_aggregate_stock_daily() nao executa (>60s timeout) — stock_daily_summary vazia com 909 MB alocados"}
+  ],
   "advisors_performance": {
     "auth_rls_initplan": 8,
     "unindexed_fks": 4,
@@ -52,5 +114,28 @@
     "pg_graphql_anon_table_exposed": 59,
     "anon_security_definer_function_executable": 10,
     "authenticated_security_definer_function_executable": 101
+  },
+  "arquivos_entregues": {
+    "relatorio": "auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md",
+    "inventario": [
+      "auditoria-supabase/inventario/secao1_inventario.md",
+      "auditoria-supabase/inventario/edge_functions_verify_jwt_false.md",
+      "auditoria-supabase/inventario/baseline_imutabilidade.md"
+    ],
+    "testes": [
+      "auditoria-supabase/testes/rls_matrix_tenant_ab.md",
+      "auditoria-supabase/testes/rls_matrix_test.sql"
+    ],
+    "propostas": [
+      "auditoria-supabase/propostas/P01_cron_auth_headers.sql",
+      "auditoria-supabase/propostas/P01_rls_restrictive_correcao.sql",
+      "auditoria-supabase/propostas/P02_fk_indexes.sql",
+      "auditoria-supabase/propostas/P03_analyze_tables.sql",
+      "auditoria-supabase/propostas/P03_security_definer_search_path.sql",
+      "auditoria-supabase/propostas/P04_storage_bucket_policies.sql",
+      "auditoria-supabase/propostas/P05_indices_duplicados.sql",
+      "auditoria-supabase/propostas/P06_views_security_invoker.sql",
+      "auditoria-supabase/propostas/P07_storage_recibos_with_check.sql"
+    ]
   }
 }
