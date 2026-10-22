@@ -1,8 +1,8 @@
 number,title,author,bot,draft,base_is_main,files_changed,veredicto,acao,merge_sha,valida,regressao,ja_implementada,regra_negocio_correta
 2338,"fix(ci): corrige 5 workflows em failure",adm01-debug,false,false,true,71,MERGEADA,MERGEADA,57017ba78eb68c6c72dba336f9c081c4519619c4,true,false,false,true
 2316,"fix(ci): Gate 1.12 — magazine-reader-state-read + cors.ts",adm01-debug,false,false,false,2,AGUARDAR_REBASE,rebase + resolver conflito semântico com #2338,,true,false,false,true
-2315,"ci(e2e): remove credenciais reais (C25)",adm01-debug,false,false,false,2,AGUARDAR_REBASE,rebase + resolver conflito com #2314,,true,false,false,true
-2314,"ci(ratchet): productionAsCount 2162→2164",adm01-debug,false,false,false,1,AGUARDAR_REBASE,rebase + reconciliar valor com #2315,,true,false,false,true
+2315,"chore(ci): E33 — remove E2E_USER_* de 11 workflows chromium-public (C25)",adm01-debug,false,false,false,12,AGUARDAR_REBASE,rebase + resolver conflito com #2314,,true,false,false,true
+2314,"fix(ci): atualiza baseline as-assertions — ProductFormFullscreen +2 (double-cast E83)",adm01-debug,false,false,false,1,AGUARDAR_REBASE,rebase + reconciliar valor com #2315,,true,false,false,true
 2312,"ci(e14): docs-only PRs pulam gates caros via dorny/paths-filter",adm01-debug,false,false,false,1,AGUARDAR_REBASE,rebase em main 57017ba7 + resolver conflito em deploy-gates.yml,,true,false,false,true
 2320,"(draft — não analisada)",adm01-debug,false,true,false,,DRAFT,aguardar autor promover para ready,,,,,
 2319,"(PR vazia de bot Jules)","Jules",true,false,false,0,NAO_MERGEAR,fechar (requer ação humana),,false,false,,
