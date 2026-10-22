@@ -2,16 +2,17 @@
   "baseline_sha": "8e8053b9ed85142e85809783cd3acf9a3077ecde",
   "total_open": 28,
   "analisadas": 28,
-  "mergeadas": 3,
-  "ultima_atualizacao": "2026-10-22T21:30Z",
+  "mergeadas": 4,
+  "ultima_atualizacao": "2026-10-22T22:45Z",
   "contagem_por_veredicto": {
     "CI_PENDENTE": 0,
     "AGUARDAR_REBASE": 5,
     "DECISAO_HUMANA": 2,
     "DRAFT": 1,
-    "NAO_MERGEAR": 2,
+    "NAO_MERGEAR": 1,
     "FECHAR": 15,
-    "MERGEADA": 3
+    "MERGEADA": 3,
+    "MERGEADA_PELO_OWNER": 1
   },
   "main_atual": {
     "sha": "3e006427eb19247d2e99c03a8140193d3f763a8e",
@@ -69,7 +70,7 @@
     "2349": {"veredicto": "AGUARDAR_REBASE", "acao": "rebase em main (base stale: 57017ba7)", "head": "d8f7934d", "base": "57017ba7"},
     "2320": {"veredicto": "DRAFT", "acao": "aguardar autor promover para ready"},
     "2319": {"veredicto": "NAO_MERGEAR", "acao": "PR vazia de bot (Jules) — fechar", "files": 0},
-    "2352": {"veredicto": "NAO_MERGEAR", "acao": "DROP INDEX × 13 em migration — DDL destrutiva proibida pela regra da sessão", "head": "f38d5caf", "migrations_destrutivas": ["20261022100011_perf_drop_unused_indexes.sql"]},
+    "2352": {"veredicto": "MERGEADA_PELO_OWNER", "acao": "Mergeada pelo owner adm01-debug às 22:36 UTC (SHA 92a4d3bc). 6 migrations NÃO aplicadas em produção. Ver RELATORIO_VALIDACAO_EXAUSTIVA.md.", "head": "f38d5caf", "merge_sha": "92a4d3bc", "merged_at": "2026-10-22T22:36Z", "migrations_pendentes": ["20261022100001","20261022100010","20261022100020","20261022100021","20261022100022"], "migrations_aguardam_analise": ["20261022100011"]},
     "2293": {"veredicto": "DECISAO_HUMANA", "acao": "recharts 2→3 major bump — depende de PO"},
     "2290": {"veredicto": "DECISAO_HUMANA", "acao": "@eslint/js 9→10 major bump — depende de PO"},
     "2322": {"veredicto": "FECHAR", "acao": "Webpack CI — runtime incompatível com Vite"},
@@ -93,6 +94,9 @@
     "Fechar PR #2319 (Jules bot vazia)",
     "Decisão PO: PR #2290 (ESLint major bump) e #2293 (recharts major bump)",
     "Rebase PRs #2312, #2314, #2315, #2316, #2349 — autores precisam agir",
-    "PR #2352: PO decidir se DROP INDEX × 13 deve ser autorizado separadamente via workflow E15"
+    "URGENTE — PR #2352 mergeada pelo owner: aplicar 5 migrations via db-apply-migration.yml: 20261022100001 (REVOKE fn_cron_guard), 20261022100010 (RLS wrapper), 20261022100020/100021/100022 (cron). NÃO aplicar 20261022100011 (DROP INDEX) sem pg_stat_reset + 24h."
+  ],
+  "gaps_seguranca": [
+    "5 callers de fn_get_product_customization_options sem session guard: useProductCustomizationOptions.ts:113, useProductEngravingOptions.ts:34, useMockupTechniques.ts:88, TechniqueMultiSelector.tsx:65, useSimulatorWizard.ts:60"
   ]
 }
