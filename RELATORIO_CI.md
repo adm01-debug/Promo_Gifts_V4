@@ -87,12 +87,38 @@ npm error 403 403 Forbidden - GET https://europe-west1-npm.pkg.dev/lovable-core-
 
 ## 4. Status do Gate Final (PR branch → Gate Final - Deploy Ready)
 
-> Última verificação: 14:00 UTC
+> Última verificação: 15:00 UTC
 
-| Run | HEAD | Status | Gates verdes confirmados |
+| Run | HEAD | Status | Notas |
 |---|---|---|---|
-| [39778555326](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39778555326) | `c58e3a56` | Cancelado por push seguinte (concorrência — comportamento esperado) | Gate 0, 0.5, E23, 5, E40 |
-| [39782946071](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39782946071) | `a23edb77` | Aguardando CI | A confirmar |
+| [39778555326](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39778555326) | `c58e3a56` | Cancelado por push seguinte | Comportamento esperado de concorrência |
+| [39782946071](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39782946071) | `a23edb77` | Cancelado por push seguinte | Comportamento esperado de concorrência |
+| [39784863088](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39784863088) | `7fa5c405` | **queued** → em andamento | HEAD atual |
+
+## 4.1 Workflows Confirmados SUCCESS em `7fa5c405` (2026-10-22T15:00 UTC)
+
+| Workflow | Run | Status |
+|---|---|---|
+| **Supabase Linter Gate** | [39785411260](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39785411260) | ✅ **success** |
+| **Daily flows simulation** | [39785415433](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39785415433) | ✅ **success** |
+| **Gate 5 — Supabase Security Audit** | [39784863177](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39784863177) | ✅ **success** |
+| **Security Scan** | [39784863266](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39784863266) | ✅ **success** |
+| **edge-functions-drift-check** | [39784863251](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39784863251) | ✅ **success** |
+| **SSOT Supabase Guard** | [39784863154](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39784863154) | ✅ **success** |
+| **E2E · Carts Undo RPC Atomic** | [39784863169](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39784863169) | ✅ **success** |
+| **TS Unused Locals Ratchet** | [39784863099](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39784863099) | ✅ **success** |
+| **Required Checks Guard** | [39784863107](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39784863107) | ✅ **success** |
+| **migrations-sync-log-gate** | [39784863230](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39784863230) | ✅ **success** |
+| **schema-snapshot-export** | [39784863243](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39784863243) | ✅ **success** |
+| **No Prod Leak in Dev/Test Config** | [39784863238](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39784863238) | ✅ **success** |
+| **Select Columns vs Types** | [39784863179](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39784863179) | ✅ **success** |
+
+## 4.2 Falhas Pré-Existentes Verificadas em `7fa5c405`
+
+| Workflow | Run | Causa Raiz | Pré-Existência |
+|---|---|---|---|
+| **Edge Integration Tests — All Functions** | [39784863282](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39784863282) | `validate-access` retorna 200 para number input, deveria retornar 4xx | Branch não toca edge functions |
+| **E2E — Critical Flows & Error Boundaries** | [39784863168](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39784863168) | Auth failure em Admin Critical Routes | Presente na main (run 39757063778) |
 | Novo run (HEAD `070bd2c7`) | `070bd2c7` | Aguardando CI (push às 14:3x UTC) | A confirmar |
 
 ---

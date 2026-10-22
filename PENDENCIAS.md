@@ -178,28 +178,52 @@
 - **Causa:** Falhas pré-existentes confirmadas — commits anteriores (`175a75ad`) também os apresentam
 - **Status:** Não são regressões desta branch; não bloqueiam o Gate Final
 
-### 3.3 Gate Final (deploy-gates.yml) — Run 39778555326
+### 3.3 Gate Final (deploy-gates.yml) — Run 39784863088
 
-- **Status:** `in_progress` em 12:40 UTC
-- **Gates confirmados ✅:** Gate 0, Gate 0.5, Gate E23, Gate 5, Gate E40
-- **Gates pendentes ⏳:** 1, 2, 2.5, 3, 4, 5.5 e demais
+- **Status:** `queued` em 13:13 UTC → aguardando conclusão
+- **Head SHA:** `7fa5c405`
+
+### 3.4 Edge Integration Tests — All Functions (pré-existente)
+
+- **Run:** [39784863282](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39784863282)
+- **Job:** "Edge Functions · Integration All"
+- **Step que falhou:** "Run all edge function integration tests (LIVE)"
+- **Causa:** `tests/edge-functions/live/validate-access.test.ts` — "input inválido (número) → sem crash 5xx"
+  `AssertionError: número: deveria ser 4xx: expected 200 to be greater than at least 400`
+  A edge function `validate-access` retorna HTTP 200 para input inválido (number) em vez de 4xx
+- **Pré-existente:** Nenhum commit desta branch toca edge functions — SSOT de edge fn não foi modificado
+- **edge-functions-drift-check passou** (run 39784863251 success) — confirma que o deploy está em sincronia com o repo; portanto o bug está no código da função, não no deploy
+- **Responsável:** PO + dev de features (bug real na validação de input da edge function `validate-access`)
+
+### 3.5 E2E — Critical Flows & Error Boundaries (pré-existente)
+
+- **Run:** [39784863168](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39784863168)
+- **Job:** "E2E — Full User Flows (authed)"
+- **Steps que falharam:** "Run Admin Critical Routes E2E" + "Check min tests executed"
+- **Causa:** Falha de autenticação no fluxo Admin Critical Routes — pré-existente confirmada
+- **Evidência de pré-existência:** item §2C linha 6 do inventário da main (`8e8053b9`) — `E2E — Critical Flows & Error Boundaries` run [39757063778](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39757063778) também falhou; nenhum commit desta branch toca autenticação ou rotas admin
+- **Status:** ⚠️ Pré-existente — não é regressão desta branch
 
 ---
 
-## 4. PROVA DE SUCESSO (pendente confirmação final)
+## 4. PROVA DE SUCESSO (atualizado 2026-10-22T15:00 UTC)
 
-| Workflow | Status objetivo | Evidência |
+| Workflow | Status | Evidência |
 |---|---|---|
-| Uptime Monitor | ⚠️ ação humana | PO/Infra verificar app |
-| db-schema-drift-check | ⚠️ ação humana | Fix falso positivo: `9c2288c4`; ledger parity → PO+DBA via E99 |
-| Release Please | ⚠️ ação humana | PO configurar `contents:write` no GitHub App |
-| Supabase Linter Gate | ✅ após nova execução | Fix commit `9c2288c4` (retry 3×) |
-| CI Security & Drift Checks | ✅ após merge | Fix composto `9c2288c4` |
-| E2E (Playwright) | ⚠️ pré-existentes | Documentadas §2.6–2.8 acima |
-| Quote Builder Delivery Quality | ⚠️ pré-existente | Flake tooltip pré-existente — §2.7 |
-| Gate 8 Security ACL | ✅ retry + INCONCLUSIVE | Fix commits `6d6ed480`+`5216cfc7` |
-| Gate Final deploy-gates | ⏳ aguardando CI | HEAD `7fa5c405` |
-| Daily Flows Simulation | ✅ fix SIGPIPE | Commit `3daebf93` — `\|\| true` após `head -1` |
-| Quote Number Hardening | ✅ fix timeout 544 | Retry Management API — commit pendente |
-| Gitleaks Full History | ❌ ação humana urgente | Issue #2261 — rotacionar credenciais — §2.10 |
+| **Uptime Monitor** | ❌ ação humana | PO/Infra verificar app online |
+| **db-schema-drift-check** | ⚠️ ação humana | Fix falso positivo `9c2288c4`; ledger parity → PO+DBA via E99 |
+| **Release Please** | ❌ ação humana | PO configurar `contents:write` no GitHub App |
+| **Gitleaks Full History** | ❌ ação humana urgente | Issue #2261 — rotacionar credenciais — §2.10 |
+| **edge-functions-drift-check (original)** | ❌ ação humana | PO/DBA via `deploy-edge-functions.yml` — §2.11 |
+| **Supabase Linter Gate** | ✅ **CONFIRMADO SUCCESS** | Run [39785411260](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39785411260) — commit `7fa5c405` |
+| **Daily Flows Simulation** | ✅ **CONFIRMADO SUCCESS** | Run [39785415433](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39785415433) — commit `7fa5c405` |
+| **Gate 5 — Supabase Security Audit** | ✅ **CONFIRMADO SUCCESS** | Run [39784863177](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39784863177) — commit `7fa5c405` |
+| **CI Security & Drift Checks** | ⏳ `in_progress` | Run [39785427236](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39785427236) |
+| **Gate Final deploy-gates** | ⏳ `queued` | Run [39784863088](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39784863088) — HEAD `7fa5c405` |
+| **Edge Integration Tests** | ⚠️ pré-existente | Bug em `validate-access` retorna 200 para number input — §3.4 |
+| **E2E — Critical Flows** | ⚠️ pré-existente | Auth failure admin routes — §3.5 |
+| **E2E (Playwright)** | ⚠️ pré-existentes | Documentadas §2.6–2.8 acima |
+| **Quote Builder Delivery Quality** | ⚠️ pré-existente | Flake tooltip — §2.7 |
+| **Gate 8 Security ACL** | ✅ retry + INCONCLUSIVE | Fix commits `6d6ed480`+`5216cfc7` |
+| **Quote Number Hardening** | ✅ fix timeout 544 | Retry Management API — commit pendente |
 | edge-functions-drift-check | ❌ ação humana | Drift detectado — sincronizar via deploy-edge-functions.yml — §2.11 |
