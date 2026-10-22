@@ -94,7 +94,34 @@ Falhas em:
 
 ---
 
-## STATUS ATUAL DO CI (commit 6c1114fc — docs post-merge)
+### 12. supabase-security-gate.yml — Gate 5 DB Security Audit (HTTP 504 transiente)
+- **Run**: https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39763019092
+- **Causa**: Step "🩺 RPC get_profile_and_roles smoke test" recebeu HTTP 504 do Supabase. Log: `httpStatus: 504, reason: "audit_http_error", status: "inconclusive"`. Timeout de infraestrutura Supabase — transiente.
+- **Pré-existente**: Ocorre na branch principal quando o endpoint Supabase está com latência elevada
+- **Bloqueante para PR #2338**: NÃO (`supabase-security-gate.yml` não é required check)
+- **Ação**: Rerun automático na próxima execução; não requer fix de código
+
+### 13. e2e.yml — job e2e-gates falhou (header-sticky pré-existente)
+- **Run**: https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39763018854
+- **Causa**: `22-header-sticky.spec.ts` falhou no job `e2e-gates`. Step "🛑 Fail-fast se header sticky falhou" acionado. O PR #2338 não altera nenhum arquivo de layout/CSS/componente — falha é pré-existente em `main`.
+- **Bloqueante para PR #2338**: NÃO (`e2e.yml` não é required check)
+- **Ação**: Fix de header-sticky em PR dedicado de layout
+
+### 14. deploy-gates.yml para 6c1114fc — CANCELLED (não falhou)
+- **Causa**: Ao pushar commit `70fc49a4`, a concorrência (`cancel-in-progress: true` em PRs) cancelou o run anterior de `6c1114fc`. Comportamento esperado — não representa falha real.
+- **Bloqueante para PR #2338**: NÃO
+
+---
+
+## FALHAS NÃO BLOQUEANTES NO PR #2338 (sem relação com o diff)
+
+- `PR Size Check` — PR grande (~2000 linhas); não é required check
+- `copilot-pull-request-reviewer` — bot de review; não é required check  
+- `E2E PDF · trigger uniqueness + header snapshot` — requer dados de banco; não é required check
+
+---
+
+## STATUS ATUAL DO CI (commit 70fc49a4 — HEAD atual)
 
 **Verificado em:** 2026-10-22 ~UTC (sessão atual)
 
@@ -114,5 +141,7 @@ Falhas em:
 | required-checks-drift | ✅ success |
 | overflow-static-gate | ✅ success |
 | Validação Novo Orçamento | ✅ success |
+| supabase-security-gate.yml | ❌ falha (HTTP 504 — não required, pré-existente — #12) |
+| e2e.yml / e2e-gates | ❌ falha (header-sticky — não required, pré-existente — #13) |
 
-**21/30 check runs ainda em andamento — aguardando Gate Final.**
+**10/50 check runs success, 40 in_progress/queued, 0 required failures — aguardando Gate Final.**

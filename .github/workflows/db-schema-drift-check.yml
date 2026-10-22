@@ -212,7 +212,7 @@ jobs:
             > /tmp/schema_drift.sql 2> /tmp/diff.stderr || rc=$?
           if [ "$rc" -ne 0 ]; then
             if [ "$rc" -eq 124 ] || [ "$rc" -eq 137 ]; then
-              echo "::error::supabase db diff excedeu 9 min e foi interrompido (rc=$rc)."
+              echo "::error::supabase db diff excedeu 18 min e foi interrompido (rc=$rc)."
             fi
             # Replay quebrado no shadow: quase sempre uma migration registrada
             # depois do dump cujo SQL já estava no baseline (repair-only de DDL
