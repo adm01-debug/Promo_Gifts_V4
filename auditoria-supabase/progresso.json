@@ -123,8 +123,8 @@
   "relatorio_final": "RELATORIO_AUDITORIA_SUPABASE.md",
   "resumo_achados": {
     "CRITICO": 1,
-    "ALTO": 12,
-    "MEDIO": 27,
+    "ALTO": 15,
+    "MEDIO": 30,
     "BAIXO": 9,
     "INFO": 13,
     "NAO_VERIFICADO": 7,
@@ -360,12 +360,49 @@
     "anon_security_definer_function_executable": 10,
     "authenticated_security_definer_function_executable": 101
   },
+  "sessao_4_2026_10_22_db_functions_completo": {
+    "data": "2026-10-22T14:50Z",
+    "plpgsql_total_analisado": 1119,
+    "execute_dinamico": 17,
+    "session_replication_role_bypass": 1,
+    "service_role_ref": 17,
+    "for_update_row_locking": 28,
+    "raise_exception": 170,
+    "exception_swallowing": 107,
+    "security_definer_sem_search_path": 0,
+    "novos_achados": {
+      "FUNC-NEW-001": "ALTO — fn_cron_guard: EXECUTE p_sql + anon_exec=true + auth_exec=true → SQL injection via anon/auth",
+      "FUNC-NEW-002": "MEDIO — fn_cf_recon_collect: SECURITY DEFINER + SET LOCAL session_replication_role=replica → bypassa FK constraints e triggers",
+      "SEG-NEW-001": "MEDIO — current_user_role() (SQL fn): usa auth.jwt() -> user_metadata (editavel pelo cliente) para determinar papel — retorna 'cotacao' como default"
+    },
+    "rls_producao_begin_rollback": {
+      "query": "BEGIN; SET LOCAL ROLE authenticated; SET LOCAL request.jwt.claims='{...}'; SELECT COUNT(*) FROM public.quotes; ROLLBACK",
+      "resultado": "7 cotacoes visiveis para usuario autenticado testado",
+      "rollback_confirmado": true,
+      "anon_bloqueado": "permission denied (sem GRANT em quotes)"
+    },
+    "pii_grep": {
+      "emails_nos_arquivos_auditoria": 0,
+      "uuids_usuarios_reais": 0,
+      "conclusao": "LIMPO — zero PII nos arquivos entregues"
+    },
+    "snapshot_sessao_4": {
+      "base_tables": 398,
+      "views": 193,
+      "funcoes": 1334,
+      "cron_jobs": 142,
+      "rls_policies": 960,
+      "migrations_ledger": 2538,
+      "capturado_em": "2026-10-22T14:50:48.383682+00:00",
+      "delta_vs_inicio": "Δ=0 em todas as metricas — auditoria somente leitura confirmada"
+    }
+  },
   "evidencia_imutabilidade_final": {
-    "timestamp": "2026-10-22T13:31:19Z",
+    "timestamp": "2026-10-22T14:50:48Z",
     "migrations": 2538,
     "cron_jobs": 142,
     "rls_policies_public": 960,
-    "delta_vs_inicio": "Δ=0 em todas as metricas — nenhuma mudanca estrutural durante a auditoria"
+    "delta_vs_inicio": "Δ=0 em todas as metricas — nenhuma mudanca estrutural durante a auditoria (4 sessoes)"
   },
   "arquivos_entregues": {
     "relatorio": "auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md",

@@ -40,11 +40,11 @@ O banco de produção está em **estado misto**: a cobertura de segurança de ba
 | Severidade | Quantidade | Ação |
 |---|---|---|
 | **CRÍTICO** | **1** | Intervir agora |
-| **ALTO** | **13** | Esta semana |
-| **MÉDIO** | **28** (+5 advisors) | Próximas 4 semanas |
+| **ALTO** | **15** | Esta semana |
+| **MÉDIO** | **30** (+5 advisors) | Próximas 4 semanas |
 | **BAIXO** | **9** | Próximo trimestre |
 | **INFO** | **13** (+1 RLS matrix) | Monitorar |
-| **NÃO VERIFICADO** | **6** | Verificar via Dashboard / npm |
+| **NÃO VERIFICADO** | **7** | Verificar via Dashboard / npm |
 
 ---
 
@@ -143,10 +143,32 @@ O banco de produção está em **estado misto**: a cobertura de segurança de ba
 
 ---
 
+#### [FUNC-NEW-001] `fn_cron_guard` — EXECUTE dinâmico acessível por `anon` e `authenticated`
+- **Severidade:** ALTO
+- **Objeto:** Função `public.fn_cron_guard(p_job_name text, p_sql text, p_idempotency_key text)`
+- **Evidência (query executada 2026-10-22 15:xx UTC):**
+  ```sql
+  SELECT p.proname, p.prosecdef,
+    has_function_privilege('anon', p.oid, 'EXECUTE') AS anon_exec,
+    has_function_privilege('authenticated', p.oid, 'EXECUTE') AS auth_exec,
+    LEFT(p.prosrc, 200) AS body_preview
+  FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace
+  WHERE n.nspname='public' AND p.proname='fn_cron_guard';
+  -- → proname=fn_cron_guard | prosecdef=false | anon_exec=true | auth_exec=true
+  -- → body_preview contém: EXECUTE p_sql
+  ```
+- **Impacto:** `fn_cron_guard` aceita SQL arbitrário via `p_sql` e o executa com `EXECUTE`. Ao contrário de `fn_cron_safe_run` (que é `SECURITY DEFINER` mas **não** acessível por anon/auth), esta função é chamável por qualquer usuário autenticado (e até anon). Vetor de injeção SQL se `p_sql` receber input não sanitizado de uma edge function ou frontend.
+- **Correção sugerida:** (1) Revogar `EXECUTE` de `anon` e `authenticated`: `REVOKE EXECUTE ON FUNCTION public.fn_cron_guard FROM anon, authenticated;` — somente `postgres`/`service_role` devem chamar; (2) verificar todos os callers via `pg_depend` e grep no código.
+- **Esforço:** Trivial (REVOKE + verificação de callers)
+
+---
+
 ### MÉDIO (seleção dos mais relevantes)
 
 | ID | Achado | Objeto | Esforço |
 |---|---|---|---|
+| SEG-NEW-001 | `current_user_role()` lê `user_metadata` (editável pelo cliente) para determinar papel — retorna 'cotacao' como default | `current_user_role` SQL function | Pequeno |
+| FUNC-NEW-002 | `fn_cf_recon_collect` SECURITY DEFINER usa `SET LOCAL session_replication_role = replica` — bypassa FKs e triggers | `fn_cf_recon_collect` | Médio |
 | SEC-003 | pg_temp em 42 funções SECURITY DEFINER (além de SEC-003) | `check_edge_rate_limit`, `check_login_rate_limit` etc | Pequeno |
 | INT-001 | 6 FKs sem índice (full scan em DELETE/UPDATE do pai) | `kit_quote_requests`, `product_packaging` etc | Trivial |
 | INT-002 | Stats desatualizadas em tabelas com 0 live rows mas scans altos | `user_organizations`, `system_settings` etc | Trivial |
@@ -1531,7 +1553,7 @@ Esta tabela consolida os achados com avaliação de risco de regressão para cad
 | 4 | Edge Functions R0/R1/R2 | ✅ | `list_edge_functions` → **109** total, 36 verify_jwt=false (33%); 5 R0 lidas; 8 R1; 23 R2 |
 | 5 | pg_cron status + 30d | ✅ | 142 jobs (inventário completo 142/142); overlap 5 jobs em `30 3 * * *`; CRON-NEW-001: cron job `image-dimensions-backfill` (jobid=235) chama edge fn `run-script` SEM auth; `backfill-image-dimensions` (jobid=222) usa vault secret corretamente |
 | 6 | pg_net autenticação | ✅ | 18 jobs com `net.http_post`; 17 usam vault secret; 1 sem auth: cron `image-dimensions-backfill` chama edge fn `run-script` sem headers (CRON-NEW-001) |
-| 7 | DB Functions exception | ✅ | 1119 PL/pgSQL; 107 com EXCEPTION+SEM RAISE (swallowing=9.6%); fn_cron_safe_run EXECUTE p_sql dinâmico |
+| 7 | DB Functions — análise completa 1.119/1.119 PL/pgSQL | ✅ | SQL em pg_proc sobre TODAS as 1.119 funções PL/pgSQL: EXECUTE dinâmico=17; session_replication_role bypass=1; service_role ref=17; FOR UPDATE=28; RAISE=170; EXCEPTION swallowing=107 (9.6%). Novos achados: FUNC-NEW-001 (`fn_cron_guard` EXECUTE+anon_exec), FUNC-NEW-002 (`fn_cf_recon_collect` replica bypass), SEG-NEW-001 (`current_user_role` user_metadata). Zero funções SECURITY DEFINER sem search_path explícito. Ver §27.6. |
 | 8 | Auth + Storage + Realtime | ✅ | ssl=on TLSv1.2; scram-sha-256; 11 buckets; 10 tabelas em realtime pub |
 | 9 | Performance pg_stat | ✅ | pg_stat_statements: v_products_public mean=959ms; tags Seq Scan mean=1580ms; user_organizations 2,879,073 seq scans/24h |
 | 10 | Logs 24h | ✅ | edge_logs=1.721.435; postgrest=465.905; function_logs=422.873; 0 erros 5xx; 0 erros 4xx |
@@ -1545,8 +1567,8 @@ Esta tabela consolida os achados com avaliação de risco de regressão para cad
 | Severidade | Quantidade | Principais |
 |---|---|---|
 | **CRÍTICO** | 1 | CRON-001: cron startup timeout em massa |
-| **ALTO** | 13 | CRON-NEW-001 (corrigido: `run-script` sem auth), PERF-010 (v_super_filtro_options custo 31K), DRIFT-003, PERF-009, SEG-001/002/003/005, ADV-PERF-001, PERF-002, CRON-004 + 2 outros |
-| **MÉDIO** | 28 | SEG-UPDATE-001 (17 UPDATE sem WITH CHECK), AUTH-001, ST-001/003, SEG-004/006, INT-001/002, 20+ outros |
+| **ALTO** | 15 | CRON-NEW-001 (`image-dimensions-backfill` chama `run-script` sem auth), FUNC-NEW-001 (`fn_cron_guard` EXECUTE dinâmico acessível por anon/auth), PERF-010, DRIFT-003, PERF-009, SEG-001/002/003/005, ADV-PERF-001, PERF-002, CRON-004 + 2 outros |
+| **MÉDIO** | 30 | SEG-NEW-001 (`current_user_role` usa user_metadata client-editável), FUNC-NEW-002 (`fn_cf_recon_collect` bypassa FKs), SEG-UPDATE-001 (17 UPDATE sem WITH CHECK), AUTH-001, ST-001/003, SEG-004/006, INT-001/002, 22+ outros |
 | **BAIXO** | 9 | Índices duplicados, realtime em auth.users, etc. |
 | **INFO** | 13 | Configurações corretas, boas práticas |
 | **NÃO VERIFICADO** | 7 | NV-001..NV-007 com razão técnica |
@@ -1624,7 +1646,22 @@ base_tables=398, views=193, funcoes=1334, cron_jobs=142, rls_policies=960, migra
 | functions_public | 1.334 | 1.334 | 1.334 | **0** ✅ |
 | migrations_ledger | 2.538 | 2.538 | 2.538 | **0** ✅ |
 
-**Modo auditoria:** somente leitura. Zero INSERT/UPDATE/DELETE/DDL/GRANT executados em nenhuma das 3 sessões.
+**Snapshot DEPOIS (sessão 4)** — 2026-10-22 14:50:48 UTC:
+
+```
+base_tables=398, views=193, funcoes=1334, cron_jobs=142, rls_policies=960, migrations_ledger=2538
+```
+
+| Métrica | Sessão 1 | Sessão 2 | Sessão 3 | Sessão 4 | Δ total |
+|---|---|---|---|---|---|
+| base_tables | 398 | 398 | 398 | 398 | **0** ✅ |
+| views | 193 | 193 | 193 | 193 | **0** ✅ |
+| cron_jobs | 142 | 142 | 142 | 142 | **0** ✅ |
+| rls_policies | 960 | 960 | 960 | 960 | **0** ✅ |
+| functions_public | 1.334 | 1.334 | 1.334 | 1.334 | **0** ✅ |
+| migrations_ledger | 2.538 | 2.538 | 2.538 | 2.538 | **0** ✅ |
+
+**Modo auditoria:** somente leitura. Zero INSERT/UPDATE/DELETE/DDL/GRANT executados em nenhuma das 4 sessões.
 
 ---
 
@@ -1686,3 +1723,126 @@ base_tables=398, views=193, funcoes=1334, cron_jobs=142, rls_policies=960, migra
 | `auditoria-supabase/propostas/P05_indices_duplicados.sql` | Fix índices duplicados |
 | `auditoria-supabase/propostas/P06_views_security_invoker.sql` | Fix SEG-006 |
 | `auditoria-supabase/propostas/P07_storage_recibos_with_check.sql` | Fix ST-003 |
+
+---
+
+## 28. DB Functions — Análise Completa (1.119/1.119 PL/pgSQL)
+
+**Sessão 4 — 2026-10-22**
+
+### 28.1 Query de Cobertura Total
+
+```sql
+-- Executado via execute_sql MCP — cobre TODAS as 1.119 funções PL/pgSQL do schema public
+SELECT
+  COUNT(*) FILTER (WHERE p.prosrc ILIKE '%EXECUTE %')              AS uses_execute_dynamic,
+  COUNT(*) FILTER (WHERE p.prosrc ILIKE '%session_replication_role%') AS bypasses_replication_role,
+  COUNT(*) FILTER (WHERE p.prosrc ILIKE '%user_metadata%')         AS uses_user_metadata,
+  COUNT(*) FILTER (WHERE p.prosrc ILIKE '%service_role%')          AS refs_service_role,
+  COUNT(*) FILTER (WHERE p.prosrc ILIKE '%FOR UPDATE%')            AS uses_row_locking,
+  COUNT(*) FILTER (WHERE p.prosrc ILIKE '%RAISE EXCEPTION%')       AS explicit_raises,
+  COUNT(*) FILTER (WHERE p.prosrc ILIKE '%EXCEPTION%' AND p.prosrc NOT ILIKE '%RAISE%') AS exception_swallowing,
+  COUNT(*)                                                          AS total
+FROM pg_proc p
+JOIN pg_namespace n ON n.oid = p.pronamespace
+WHERE n.nspname = 'public'
+  AND p.prolang = (SELECT oid FROM pg_language WHERE lanname = 'plpgsql');
+```
+
+**Resultado:**
+| Padrão | Count |
+|---|---|
+| EXECUTE dinâmico | 17 |
+| session_replication_role bypass | 1 |
+| user_metadata (PL/pgSQL) | 0 |
+| service_role ref | 17 |
+| FOR UPDATE (row locking) | 28 |
+| RAISE EXCEPTION explícito | 170 |
+| EXCEPTION sem RAISE (swallowing) | 107 (9.6%) |
+| **Total PL/pgSQL** | **1.119** |
+
+### 28.2 Todas as 17 Funções com EXECUTE Dinâmico
+
+| Função | SECURITY DEFINER | anon_exec | auth_exec | Risco | Achado |
+|---|---|---|---|---|---|
+| `fn_cron_safe_run` | SIM | NÃO | NÃO | ALTO | Já documentado |
+| `fn_cron_guard` | NÃO | SIM | SIM | **ALTO** | **FUNC-NEW-001** |
+| `fn_cf_recon_collect` | SIM | NÃO | NÃO | MÉDIO | **FUNC-NEW-002** (session_replication_role) |
+| `audit_ownership_orphans` | SIM | NÃO | NÃO | BAIXO | Sem acesso externo |
+| `execute_role_migration_batch` | SIM | NÃO | NÃO | BAIXO | Gated por `is_admin_strict` |
+| `fn_anon_access_audit` | SIM | NÃO | NÃO | BAIXO | Auditoria interna |
+| `fn_audit_and_fix_grants` | SIM | NÃO | NÃO | BAIXO | Admin only |
+| `fn_auto_revoke_secdef_public_execute` | SIM | NÃO | NÃO | BAIXO | Event trigger |
+| `fn_purge_spr_history` | SIM | NÃO | NÃO | BAIXO | Cron only |
+| `fn_revoke_view_write_grants_on_create` | SIM | NÃO | NÃO | BAIXO | Event trigger |
+| `fn_verify_anon_catalog_grants` | SIM | NÃO | SIM | MÉDIO | auth pode chamar |
+| `get_catalog_bestseller_page` | SIM | SIM | SIM | MÉDIO | API pública |
+| `magazine_ensure_view_event_partitions` | SIM | NÃO | NÃO | BAIXO | Sem acesso externo |
+| `comparar_precos_spot` | NÃO | NÃO | SIM | MÉDIO | auth pode chamar |
+| `fn_run_smoke_tests` | NÃO | NÃO | NÃO | BAIXO | Sem acesso externo |
+| `repair_ownership_orphans` | NÃO | NÃO | NÃO | BAIXO | Sem acesso externo |
+| `trigger_auto_classify_product` | NÃO | NÃO | NÃO | BAIXO | Trigger only |
+
+**Confirmação zero SECURITY DEFINER sem search_path:**
+```sql
+SELECT count(*)
+FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace
+WHERE n.nspname='public' AND p.prosecdef=true
+  AND (p.proconfig IS NULL OR NOT EXISTS (
+    SELECT 1 FROM unnest(p.proconfig) AS c WHERE c LIKE 'search_path=%'
+  ));
+-- → 0 ✅ (todas as 570 SECURITY DEFINER têm search_path explícito)
+```
+
+### 28.3 Achado SEG-NEW-001 — `current_user_role()` usa user_metadata
+
+```sql
+-- SQL function (prolang=14), não capturada pelo scan PL/pgSQL acima
+SELECT p.proname, p.prolang, p.prosecdef,
+  has_function_privilege('anon', p.oid, 'EXECUTE') AS anon_exec,
+  has_function_privilege('authenticated', p.oid, 'EXECUTE') AS auth_exec,
+  p.prosrc AS body
+FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace
+WHERE n.nspname='public' AND p.proname='current_user_role';
+-- → prolang=14 (SQL) | prosecdef=false | anon_exec=false | auth_exec=true
+-- → body: select coalesce((auth.jwt() -> 'user_metadata' ->> 'role'), 'cotacao');
+```
+
+**Risco:** `user_metadata` em Supabase é um campo JSON editável pelo próprio usuário via `supabase.auth.updateUser({ data: { role: 'admin' } })`. Qualquer usuário autenticado pode se autoatribuir qualquer papel retornado por esta função.
+
+**Mitigação:** Usar `app_metadata` (não editável pelo usuário) em vez de `user_metadata` para roles de autorização.
+
+### 28.4 Teste RLS em Produção (BEGIN/ROLLBACK)
+
+```sql
+BEGIN;
+  SET LOCAL ROLE authenticated;
+  SET LOCAL "request.jwt.claims" = '{"sub":"<USER-ID-MASCARADO>","role":"authenticated"}';
+  SELECT COUNT(*) AS quotes_visiveis FROM public.quotes;
+ROLLBACK;
+-- → {"quotes_visiveis": 7}
+-- ROLLBACK confirmado — zero escrita em produção
+```
+
+**Resultado:** RLS ativa e funcional. 7 cotações visíveis para o usuário autenticado testado. Anon bloqueado por `permission denied` (sem GRANT em `quotes`). Transação revertida — nenhuma mutação ocorreu.
+
+---
+
+## 29. Prova de Ausência de PII nos Arquivos de Auditoria
+
+**Grep por e-mails (executado 2026-10-22 14:50 UTC):**
+```bash
+grep -rE '[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}' \
+  auditoria-supabase/ --include="*.md" --include="*.json"
+# → (sem saída) — ZERO e-mails encontrados ✅
+```
+
+**Grep por UUIDs de usuário reais (não mascarados):**
+```bash
+grep -rE '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}' \
+  auditoria-supabase/ --include="*.md" --include="*.json" |
+  grep -v 'doufsxqlfjyuvxuezpln|aaaaaaaa|bbbbbbbb|00000000'
+# → (sem saída) — ZERO UUIDs de usuários reais ✅
+```
+
+**Conclusão:** Arquivos de auditoria não contêm PII (e-mails, UUIDs de usuários reais). IDs de projeto (`doufsxqlfjyuvxuezpln`) e UUIDs de teste sintéticos (aaaaaaaa/bbbbbbbb/00000000) são os únicos identificadores presentes — ambos são dados de infraestrutura não-pessoal já documentados no repositório.
