@@ -1,10 +1,12 @@
 # PENDÊNCIAS — Correção de Workflows CI
 
-**Atualizado:** 2026-10-22T16:25 UTC  
+**Atualizado:** 2026-10-22T17:30 UTC  
 **Branch ativa:** `claude/laughing-cori-o9w35e` → PR [#2338](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2338)  
-**HEAD:** `bf7db4c1` (docs: Uptime Monitor attempt 2 → conclusion=success 15:37Z)  
-**Gate Final HEAD:** aguardando novo run para `bf7db4c1`  
-**Gate Final anterior:** [run 39798033549](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39798033549) — Deploy Gates para `141c915a` — ✅ **`conclusion=success`** (15:00Z) — todos 16 jobs passaram
+**HEAD:** `b20bc8d2` (docs: RELATORIO_CI — fila GitHub Actions congestionada)  
+**Gate Final ativa:** run [39810241669](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39810241669) — `b20bc8d2` — `queued` desde 16:01Z — **congestionamento GitHub Actions** (sem runner alocado)  
+**Gate Final precedente:** [run 39798033549](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39798033549) — `141c915a` — ✅ **`conclusion=success`** (15:00Z, 16 jobs) — conteúdo equivalente  
+**Uptime Monitor mais recente:** run [39806810587](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39806810587) — ✅ `conclusion=success` (15:40Z)  
+**CI Security & Drift / Supabase Linter:** fixes no branch `b20bc8d2` — aguardando Gate Final + merge
 
 ### Commits desta sessão
 | Commit | Descrição | Resolve |
