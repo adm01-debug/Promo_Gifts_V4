@@ -8,7 +8,8 @@
 **Base (main antes do merge):** `8e8053b9`  
 **Gate Final b48145b3:** run [39836732441](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39836732441) — ✅ `conclusion=success` **16/16 jobs** (Gate E40 completou entre 19:18:20Z e 19:23:07Z — merge aconteceu, portanto required check passou)  
 **Gate Final merge commit (push main):** run [39839609893](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39839609893) — 🔄 `queued` (19:23:13Z, updated 19:30:31Z)  
-**Gate Final PR #2349 (docs HEAD 757158d7):** run [39841141295](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39841141295) — 🔄 `queued` (19:33:29Z) | Qodo ✅ | Codex ✅ | Vercel ✅ deployed  
+**Gate Final PR #2349 (docs HEAD 757158d7):** run [39841141295](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39841141295) — ⚠️ cancelado por push de `e8afa9c5`  
+**Gate Final PR #2349 (docs HEAD e8afa9c5):** run [39841780662](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39841780662) — 🔄 `pending` (19:37:53Z)  
 **Gate Final 87fb348d/47dfffdc/856b8db4:** cancelados por concorrência de PR (superados por b48145b3)  
 **Gate Final 882e957c:** run [39835181848](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39835181848) — `cancelled` (concorrência de PR — superado por 87fb348d)  
 **Gate Final c59b3e66 (att 3):** run [39829341093](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39829341093) att 3 — `cancelled` (concorrência de PR — superado por 882e957c)  

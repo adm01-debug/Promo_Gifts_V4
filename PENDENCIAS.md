@@ -6,7 +6,8 @@
 **HEAD pushado:** `b48145b3` (último commit de fix — docs(ci): atualiza PENDENCIAS)  
 **Gate Final b48145b3:** run [39836732441](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39836732441) — ✅ `conclusion=success` **16/16 jobs** (Gate E40 completou antes de 19:23:07Z — merge aconteceu)  
 **Gate Final merge commit (push main):** run [39839609893](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39839609893) — 🔄 `queued` (19:23:13Z, updated 19:30:31Z)  
-**Gate Final PR #2349 (docs HEAD 757158d7):** run [39841141295](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39841141295) — 🔄 `queued` (19:33:29Z) | Qodo ✅ sem issues | Codex ✅ sem findings | Vercel ✅ deployed  
+**Gate Final PR #2349 (docs HEAD 757158d7):** run [39841141295](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39841141295) — ⚠️ cancelado por push de `e8afa9c5` (concorrência de PR)  
+**Gate Final PR #2349 (docs HEAD e8afa9c5):** run [39841780662](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39841780662) — 🔄 `pending` (19:37:53Z) | Qodo ✅ sem issues | Codex ✅ sem findings | Vercel ✅ deployed  
 **Gate Final 856b8db4/47dfffdc:** cancelados por concorrência de PR ao push de b48145b3  
 **Gate Final 87fb348d+47dfffdc+856b8db4 (run 39835399695):** run [39835399695](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39835399695) — ❌ `failure` — Gate 0.5 Dependency Audit falhou (ip-address moderate advisory). Fix aplicado em `856b8db4`.  
 **Gate Final 87fb348d:** run [39835399695](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39835399695) — ❌ `failure` (mesmo run — push 47dfffdc não cancelou; Gate 0.5 fez o run falhar)  
