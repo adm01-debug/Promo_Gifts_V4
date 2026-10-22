@@ -64,7 +64,9 @@ async function primeCartsWithRpc(
 
 async function excluirPrimeiraLinha(page: import("@playwright/test").Page) {
   const firstRowMenu = page
-    .locator('[aria-label*="Ações"], [data-testid^="cart-row-menu-"]')
+    .locator(
+      '[aria-label*="Ações"], [aria-label*="Mais opções"], [data-testid^="cart-row-menu-"], [data-testid^="cart-row-more-"]',
+    )
     .first();
   if (await firstRowMenu.count()) {
     await firstRowMenu.click();

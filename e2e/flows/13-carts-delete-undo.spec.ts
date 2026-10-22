@@ -80,7 +80,11 @@ test.describe("Carrinhos: exclusão com Desfazer (paridade com Orçamentos)", ()
     await gotoAndSettle(page, "/carrinhos");
 
     // Abre menu de ações da 1ª linha e dispara "Excluir".
-    const firstRowMenu = page.locator('[aria-label*="Ações"], [data-testid^="cart-row-menu-"]').first();
+    const firstRowMenu = page
+      .locator(
+        '[aria-label*="Ações"], [aria-label*="Mais opções"], [data-testid^="cart-row-menu-"], [data-testid^="cart-row-more-"]',
+      )
+      .first();
     if (await firstRowMenu.count()) {
       await firstRowMenu.click();
       await page.getByRole("menuitem", { name: /excluir/i }).first().click();
@@ -382,7 +386,11 @@ test.describe("Carrinhos: exclusão com Desfazer (paridade com Orçamentos)", ()
       const { calls } = await primeCarts(page, 2);
       await gotoAndSettle(page, "/carrinhos");
 
-      const firstRowMenu = page.locator('[aria-label*="Ações"], [data-testid^="cart-row-menu-"]').first();
+      const firstRowMenu = page
+        .locator(
+          '[aria-label*="Ações"], [aria-label*="Mais opções"], [data-testid^="cart-row-menu-"], [data-testid^="cart-row-more-"]',
+        )
+        .first();
       if (await firstRowMenu.count()) {
         await firstRowMenu.click();
         await page.getByRole("menuitem", { name: /excluir/i }).first().click();
@@ -459,7 +467,11 @@ test.describe("Carrinhos: exclusão com Desfazer (paridade com Orçamentos)", ()
     await gotoAndSettle(page, "/carrinhos");
 
     // Fluxo 1: linha
-    const firstRowMenu = page.locator('[aria-label*="Ações"], [data-testid^="cart-row-menu-"]').first();
+    const firstRowMenu = page
+      .locator(
+        '[aria-label*="Ações"], [aria-label*="Mais opções"], [data-testid^="cart-row-menu-"], [data-testid^="cart-row-more-"]',
+      )
+      .first();
     if (await firstRowMenu.count()) {
       await firstRowMenu.click();
       await page.getByRole("menuitem", { name: /excluir/i }).first().click();
