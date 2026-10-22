@@ -1,5 +1,31 @@
 {
   "schema_version": 1,
   "generated_at": "2026-09-11T00:00:00Z",
-  "entries": []
+  "entries": [
+    {
+      "path": "supabase/migrations/20260525232003_repair_only_marker.sql",
+      "sha256": "315e4a1be72f92f4eeb61ea6b079222de42fd735f8475aac1a6da7c925a835cd",
+      "reason": "repair-only: migration espelho para ledger — não reaplicada (mesma versão de 20260525232003_fix_339_personalization_missing_columns.sql)"
+    },
+    {
+      "path": "supabase/migrations/20260622111500_repair_only_marker.sql",
+      "sha256": "31149e7f716baafae5dc6284285fb6809825b2556a3e84e609aacae441aea8a9",
+      "reason": "repair-only: migration espelho para ledger — não reaplicada (mesma versão de 20260622111500_supplier_reliability_pipeline_v1.sql)"
+    },
+    {
+      "path": "supabase/migrations/20260622130000_repair_only_marker.sql",
+      "sha256": "337f3cab15473f4540dcf19f91179d94b7ff7d44962f5bf0486fde42846d2f4f",
+      "reason": "repair-only: migration espelho para ledger — não reaplicada (mesma versão de 20260622130000_fix_color_swatches_column_and_view_plus_favorites_grant.sql)"
+    },
+    {
+      "path": "supabase/migrations/20260623000008_repair_only_marker.sql",
+      "sha256": "9309f0dbd61efc49bab32ae95bc0a44312817b976071e520c87cd2ca224ce281",
+      "reason": "repair-only: migration espelho para ledger — não reaplicada (mesma versão de 20260623000008_products_name_m8_max_length.sql)"
+    },
+    {
+      "path": "supabase/migrations/20260902220800_repair_only_marker.sql",
+      "sha256": "8bfffb531877230ee873c58e8286b2b55b11a38141854d302bea613590a7400f",
+      "reason": "repair-only: migration espelho para ledger — não reaplicada (mesma versão de 20260902220800_rls_enable_spr_history_partitions_and_fix_creator.sql)"
+    }
+  ]
 }
