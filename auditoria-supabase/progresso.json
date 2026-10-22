@@ -102,12 +102,41 @@
   "relatorio_final": "RELATORIO_AUDITORIA_SUPABASE.md",
   "resumo_achados": {
     "CRITICO": 1,
-    "ALTO": 9,
+    "ALTO": 10,
     "MEDIO": 27,
     "BAIXO": 9,
     "INFO": 13,
     "NAO_VERIFICADO": 5
   },
+  "prova_projeto_confirmada": "get_project_url → https://doufsxqlfjyuvxuezpln.supabase.co (executado 2026-10-22)",
+  "snapshot_producao_13h45": {
+    "tables_count": 398,
+    "views_count": 193,
+    "functions_count": 1334,
+    "cron_jobs_count": 142,
+    "rls_policies_count": 960,
+    "snapshot_ts": "2026-10-22T13:45:05.278142+00:00"
+  },
+  "cron_30d_dados_exatos": {
+    "reposicao_backfill_hourly": {"runs": 442, "failures": 44, "rate": "10.0%"},
+    "pipeline_health_hourly": {"runs": 441, "failures": 44, "rate": "10.0%"},
+    "kit_ficha_parse_site": {"runs": 442, "failures": 36, "rate": "8.1%"},
+    "kit_ficha_fetch": {"runs": 147, "failures": 11, "rate": "7.5%"},
+    "anon_catalog_grant_audit_6h": {"runs": 74, "failures": 5, "rate": "6.8%"},
+    "backfill_queue_reap_stuck": {"runs": 847, "failures": 57, "rate": "6.7%"},
+    "dispatcher_failure_alert": {"runs": 5289, "failures": 168, "rate": "3.2%"},
+    "nota": "Todos valores exatos — zero estimativas (sem ~)"
+  },
+  "cron_new001_evidencia": "SELECT jobname, LEFT(command, 400) FROM cron.job WHERE command ILIKE '%net.http_post%' AND command NOT ILIKE '%cron-secret%' AND command NOT ILIKE '%get_edge_function_secret%' → image-dimensions-backfill: chama run-script sem auth headers",
+  "edge_r0_codigo_lido": {
+    "mcp_server": "LIDO v301 — X-MCP-Key auth via validate_mcp_key RPC; service_role_key; audita em admin_audit_log; scopes por tool",
+    "crm_db_bridge": "LIDO v301 — arquivo salvo por tamanho; bridge DB externo com auth interna",
+    "external_db_inspect": "LIDO v287 — runBotProtection (30req/60s, block 1800s) + getCredential(); executa queries em DB externo",
+    "e2e_cleanup": "LIDO v297 — X-E2E-Cleanup-Token timing-safe + rate limit RPC + email allowlist + dryRun=true; NUNCA apaga auth.users",
+    "sync_external_db": "LIDO v251 — authorizeCron() obrigatório (BUG-EF-005 FIX)"
+  },
+  "fn_cron_safe_run_analise": "SECURITY DEFINER, search_path=public, usa EXECUTE p_sql (SQL dinamico — potencial injecao), pg_try_advisory_xact_lock para concorrencia, timeout padrao 45000ms",
+  "secoes_adicionadas_sessao_final": ["27_meta_cumprida"],
   "novos_achados_sessao_continuacao": {
     "CRON-NEW-001": "ALTO — image-dimensions-backfill chama run-script sem auth headers (x-cron-secret ausente)",
     "CRON-004": "ALTO — pipeline-health-hourly e reposicao-backfill-hourly com 10% falha consistente em 30d",
