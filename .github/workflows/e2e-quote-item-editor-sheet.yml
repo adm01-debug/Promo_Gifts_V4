@@ -2,7 +2,7 @@ name: E2E Quote Item Editor Sheet
 
 # Valida o redesign do header do QuoteItemEditorSheet em 320/375/768:
 # ordem DOM ("+ Produto" antes do título), layout (sem overflow),
-# acessibilidade (foco/tab) e snapshots visuais por port.
+# acessibilidade (foco/tab) e snapshots visuais por viewport.
 # Roda em Chromium/Firefox/WebKit (matriz de browser) em todo PR que
 # tocar no sheet, no harness visual, na rota ou na própria spec.
 
@@ -56,7 +56,7 @@ jobs:
       CI: 'true'
       FORCE_COLOR: '0'
       VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || 'https://doufsxqlfjyuvxuezpln.supabase.co' }}
-      VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_tjH5qAbZ0e5HTTd4872NijQ_s9m6JvYU' }}
+      VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_tjH5qAbZ0e5HTTd872NijQ_s9m6JvYU' }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -64,7 +64,7 @@ jobs:
       - name: Setup E2E
         uses: ./.github/actions/e2e-setup
         with:
-          browsers: st{{ matrix.browser }}
+          browsers: ${{ matrix.browser }}
 
       - name: Run QuoteItemEditorSheet spec (${{ matrix.browser }})
         run: |
@@ -106,7 +106,7 @@ jobs:
           key: e2e-quote-item-editor-sheet
           title: "[CI] E2E Quote Item Editor Sheet falhou no cron semanal"
           body: |
-            ## ❠� E2E Quote Item Editor Sheet falhou no cron semanal
+            ## ❌ E2E Quote Item Editor Sheet falhou no cron semanal
 
             - **Run:** ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
             - **Triggered:** ${{ github.run_started_at }}
