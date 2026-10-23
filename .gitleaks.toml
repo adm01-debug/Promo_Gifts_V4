@@ -46,6 +46,10 @@ paths = [
   '''src/lib/webhook-events-payload-samples\.ts''',
   # Teste de credenciais da edge function (fixture)
   '''supabase/functions/_shared/credentials\.test\.ts''',
+  # Migrations 20261022194* — contêm REVOKE ALL ON TABLE ... FROM anon (DDL de
+  # remoção de privilégio). REVOKE é SQL padrão, não segredo. O gitleaks detecta
+  # o token "anon" no contexto do REVOKE como falso-positivo (run 39915162290).
+  '''supabase/migrations/20261022194.*\.sql''',
 ]
 
 # Commit histórico com service_role hardcoded (E002 removeu do código fonte).
