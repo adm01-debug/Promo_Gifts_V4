@@ -3,40 +3,42 @@ title = "Promo Gifts — Gitleaks Config"
 [extend]
 useDefault = true
 
-# ─── Valores públicos conhecidos ──────────────────────────────────────────────
-# A Supabase publishable key (formato sb_publishable_*) é explicitamente
-# projetada para ser embutida em código de browser (prefixo VITE_).
-# Aparece nos bundles de produção — não é um segredo operacional.
-# RLS restringe o que a chave pode acessar; sem ela o app não inicializa.
+# --- Valores publicos conhecidos ---
+# A Supabase publishable key (formato sb_publishable_*) e explicitamente
+# projetada para ser embutida em codigo de browser (prefixo VITE_).
+# Aparece nos bundles de producao — nao e um segredo operacional.
+# RLS restringe o que a chave pode acessar; sem ela o app nao inicializa.
 #
 # Registrada aqui para evitar falso-positivo no workflow de CI (e2e.yml)
-# onde o valor é usado como fallback quando o secret do repositório não está
+# onde o valor e usado como fallback quando o secret do repositorio nao esta
 # configurado. Ver issue #167.
-# ──────────────────────────────────────────────────────────────────────────────
+# ---
 
 [allowlist]
-description = "Chaves publishable do Supabase (valores públicos embutidos nos bundles)"
+description = "Chaves publishable do Supabase (valores publicos embutidos nos bundles)"
 regexes = [
-  # Fallback público no e2e.yml — chave publishable do projeto doufsxqlfjyuvxuezpln
+  # Fallback publico no e2e.yml — chave publishable do projeto doufsxqlfjyuvxuezpln
   '''sb_publishable_tjH5qAbZ0e5HTTd872NijQ_s9m6JvYU''',
-  # URL do projeto Supabase (pública — aparece em todas as chamadas de rede)
+  # Variante com typo (d4872 vs d872) presente em commit 9a63884a da branch #2372
+  '''sb_publishable_tjH5qAbZ0e5HTTd4872NijQ_s9m6JvYU''',
+  # URL do projeto Supabase (publica — aparece em todas as chamadas de rede)
   '''doufsxqlfjyuvxuezpln\.supabase\.co''',
   # JWT anon key (role: anon) que estava hardcoded em client.ts antes do commit a9a667ff.
-  # Substituído por VITE_SUPABASE_PUBLISHABLE_KEY em 2026-05-23.
-  # Chave anon é pública por design (role sem privilégios, embutida nos bundles).
+  # Substituido por VITE_SUPABASE_PUBLISHABLE_KEY em 2026-05-23.
+  # Chave anon e publica por design (role sem privilegios, embutida nos bundles).
   '''eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9\.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRvdWZzeHFsZmp5dXZ4dWV6cGxuIiwicm9sZSI6ImFub24i''',
-  # Placeholder fake JWT nos workflows de CI — formato header.placeholder (não é segredo real)
+  # Placeholder fake JWT nos workflows de CI — formato header.placeholder (nao e segredo real)
   '''eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9\.placeholder''',
-  # Chaves de localStorage / property keys em código de app — não são segredos
+  # Chaves de localStorage / property keys em codigo de app — nao sao segredos
   '''promobrind\.(magazines|cart|filters|quotes)\.[a-z0-9._-]+''',
   # Property keys de filtro (minSupplierSales90d, minPromoSales90d, etc.)
   '''min(Supplier|Promo)Sales[0-9]+d''',
 ]
 paths = [
-  # Documentação e auditorias — contêm exemplos, logs e curl com tokens de exemplo
+  # Documentacao e auditorias — contêm exemplos, logs e curl com tokens de exemplo
   '''docs/.*''',
   '''audit/.*''',
-  # Testes — tokens e chaves são mock/fixture, não segredos reais
+  # Testes — tokens e chaves sao mock/fixture, nao segredos reais
   '''tests/.*''',
   '''src/.*__tests__.*''',
   '''src/pages/__tests__/.*''',
@@ -46,8 +48,17 @@ paths = [
   '''src/lib/webhook-events-payload-samples\.ts''',
   # Teste de credenciais da edge function (fixture)
   '''supabase/functions/_shared/credentials\.test\.ts''',
+  # Migrations 20261022194* — contêm REVOKE ALL ON TABLE ... FROM anon (DDL de
+  # remocao de privilegio). REVOKE e SQL padrao, nao segredo. O gitleaks detecta
+  # o token "anon" no contexto do REVOKE como falso-positivo (run 39915162290).
+  '''supabase/migrations/20261022194.*\.sql''',
 ]
 
-# Commit histórico com service_role hardcoded (E002 removeu do código fonte).
+# Commit historico com service_role hardcoded (E002 removeu do codigo fonte).
 # A chave precisa ser rotacionada (E001, PO) antes de remover esta entrada.
-commits = ["b5e044f459c0a755b12c47403fa4ff2014be955e"]
+# Commit 9a63884a: branch #2372 — VITE_SUPABASE_PUBLISHABLE_KEY com typo d4872 vs d872
+# (valor e publishable key publica — nao e segredo operacional).
+commits = [
+  "b5e044f459c0a755b12c47403fa4ff2014be955e",
+  "9a63884a57abd94d79572b2f69509d01cea64889",
+]
