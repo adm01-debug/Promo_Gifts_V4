@@ -1,0 +1,80 @@
+name: E2E · Update Quote Item Editor Sheet snapshots
+# Executa `playwright test --update-snapshots` para os 3 browsers (chromium/firefox/webkit)
+# do spec do QuoteItemEditorSheet e faz commit dos PNGs atualizados.
+# Dispara manualmente OU quando o próprio spec/harness é editado.
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'e2e/quotes/quote-item-editor-sheet-header.spec.ts'
+      - 'src/pages/__visual/QuoteItemEditorSheetHarness.tsx'
+      - '.github/workflows/e2e-update-editor-sheet-snapshots.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: e2e-update-editor-sheet-${{ github.ref }}
+  cancel-in-progress: false
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  update-snapshots:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      CI: 'true'
+      FORCE_COLOR: '0'
+      VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || 'https://doufsxqlfjyuvxuezpln.supabase.co' }}
+      VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_tjH5qAbZ0e5HTTd872NijQ_s9m6JvYU' }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false  # E32
+          token: ${{ secrets.GITHUB_TOKEN }}
+          ref: ${{ github.head_ref || github.ref_name }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - name: Cache Playwright browsers
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-all-${{ hashFiles('bun.lock', 'package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-all-
+            ${{ runner.os }}-playwright-
+      - name: Install deps
+        run: npm ci
+      - name: Install all browsers
+        run: npm run e2e:install:all-browsers
+      - name: Update baselines (chromium + firefox + webkit)
+        run: npm run e2e:editor-sheet:update
+      - name: Credencial de push sem token em disco (E32)
+        run: |
+          # shellcheck disable=SC2016
+          git config --local credential.helper '!f() { test "$1" = get || exit 0; echo username=x-access-token; echo "password=${GIT_PUSH_TOKEN}"; }; f'
+      - name: Commit updated snapshots
+        env:
+          GIT_PUSH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A "e2e/quotes/quote-item-editor-sheet-header.spec.ts-snapshots" || true
+          if git diff --cached --quiet; then
+            echo "Sem mudanças de baseline."
+          else
+            git commit -m "chore(e2e): update QuoteItemEditorSheet visual snapshots (chromium/firefox/webkit) [skip ci]"
+            git push
+          fi
+      - name: Upload snapshots artifact
+        if: always()
+        uses: actions/upload-artifact@ff15f0306b3f739f7b6fd43fb5d26cd321bd4de5 # v3.2.1
+        with:
+          name: editor-sheet-snapshots
+          path: e2e/quotes/quote-item-editor-sheet-header.spec.ts-snapshots
+          retention-days: 14
