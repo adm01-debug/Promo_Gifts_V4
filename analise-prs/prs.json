@@ -1,0 +1,218 @@
+[
+  {
+    "number": 2357,
+    "author": "adm01-debug",
+    "draft": false,
+    "base": "main",
+    "head_ref": "claude/security-brechas-e30-e40-e18-2026-10-22",
+    "head_sha": "1cfa45d4",
+    "title": "security: revoga brechas E30/E40/E18 (external_connections, mockup_approval_link"
+  },
+  {
+    "number": 2337,
+    "author": "adm01-debug",
+    "draft": false,
+    "base": "main",
+    "head_ref": "adm01-debug-patch-4",
+    "head_sha": "20dba496",
+    "title": "Add Deno workflow for linting and testing"
+  },
+  {
+    "number": 2336,
+    "author": "adm01-debug",
+    "draft": false,
+    "base": "main",
+    "head_ref": "adm01-debug-patch-2",
+    "head_sha": "c1b584d1",
+    "title": "Create main.yml"
+  },
+  {
+    "number": 2335,
+    "author": "adm01-debug",
+    "draft": false,
+    "base": "main",
+    "head_ref": "adm01-debug-patch-1-12",
+    "head_sha": "8e2076d2",
+    "title": "Add GitHub Actions workflow for Next.js deployment"
+  },
+  {
+    "number": 2334,
+    "author": "adm01-debug",
+    "draft": false,
+    "base": "main",
+    "head_ref": "adm01-debug-patch-1-11",
+    "head_sha": "cd35ef8e",
+    "title": "Add GitHub Actions workflow for GitHub Pages deployment"
+  },
+  {
+    "number": 2333,
+    "author": "adm01-debug",
+    "draft": false,
+    "base": "main",
+    "head_ref": "adm01-debug-patch-1-10",
+    "head_sha": "a0f13769",
+    "title": "Add GitHub Actions workflow for greetings"
+  },
+  {
+    "number": 2331,
+    "author": "adm01-debug",
+    "draft": false,
+    "base": "main",
+    "head_ref": "adm01-debug-patch-1-9",
+    "head_sha": "8382afd4",
+    "title": "Add manual workflow for greeting"
+  },
+  {
+    "number": 2330,
+    "author": "adm01-debug",
+    "draft": false,
+    "base": "main",
+    "head_ref": "adm01-debug-patch-1-8",
+    "head_sha": "59b09efa",
+    "title": "Add Node.js CI workflow for testing and building"
+  },
+  {
+    "number": 2329,
+    "author": "adm01-debug",
+    "draft": false,
+    "base": "main",
+    "head_ref": "adm01-debug-patch-1-7",
+    "head_sha": "43d41bce",
+    "title": "Add GitHub Actions workflow for Python package publishing"
+  },
+  {
+    "number": 2328,
+    "author": "adm01-debug",
+    "draft": false,
+    "base": "main",
+    "head_ref": "adm01-debug-patch-1-6",
+    "head_sha": "cb570c40",
+    "title": "Add Dependency Review GitHub Action"
+  },
+  {
+    "number": 2327,
+    "author": "adm01-debug",
+    "draft": false,
+    "base": "main",
+    "head_ref": "adm01-debug-patch-1-5",
+    "head_sha": "f3650108",
+    "title": "Add Codacy security scan workflow"
+  },
+  {
+    "number": 2326,
+    "author": "adm01-debug",
+    "draft": false,
+    "base": "main",
+    "head_ref": "adm01-debug-patch-1-4",
+    "head_sha": "306a9ced",
+    "title": "Add GitHub Actions workflow for npm package publishing"
+  },
+  {
+    "number": 2325,
+    "author": "adm01-debug",
+    "draft": false,
+    "base": "main",
+    "head_ref": "adm01-debug-patch-1-3",
+    "head_sha": "9ff8b69a",
+    "title": "Add npm publish workflow for Node.js package"
+  },
+  {
+    "number": 2324,
+    "author": "adm01-debug",
+    "draft": false,
+    "base": "main",
+    "head_ref": "adm01-debug-patch-1-2",
+    "head_sha": "3c7844b3",
+    "title": "Create CI workflow for Jekyll site with Docker"
+  },
+  {
+    "number": 2323,
+    "author": "adm01-debug",
+    "draft": false,
+    "base": "main",
+    "head_ref": "adm01-debug-patch-1-1",
+    "head_sha": "d70f66a6",
+    "title": "Add Deno workflow for linting and testing"
+  },
+  {
+    "number": 2322,
+    "author": "adm01-debug",
+    "draft": false,
+    "base": "main",
+    "head_ref": "adm01-debug-patch-1",
+    "head_sha": "168e4ef4",
+    "title": "Add GitHub Actions workflow for Node.js with Webpack"
+  },
+  {
+    "number": 2320,
+    "author": "Copilot",
+    "draft": true,
+    "base": "main",
+    "head_ref": "copilot/corrigir-peer-dependencies-eslint",
+    "head_sha": "df09a371",
+    "title": "Align ESLint dependency ranges to resolve npm peer conflict in CI"
+  },
+  {
+    "number": 2319,
+    "author": "adm01-debug",
+    "draft": true,
+    "base": "main",
+    "head_ref": "jules-11745886140891876680-0b67004e",
+    "head_sha": "df0ee020",
+    "title": "Confirm repository access and workflow status"
+  },
+  {
+    "number": 2316,
+    "author": "adm01-debug",
+    "draft": false,
+    "base": "main",
+    "head_ref": "claude/fix-contract-mag-reader-261019-2110",
+    "head_sha": "f9b74053",
+    "title": "fix(ci): registra contrato magazine-reader-state-read no CONTRACTS map (Gate 1.11)"
+  },
+  {
+    "number": 2315,
+    "author": "adm01-debug",
+    "draft": false,
+    "base": "main",
+    "head_ref": "claude/feat-e33-e58-credentials-docs-261019-2000",
+    "head_sha": "24edaa53",
+    "title": "chore(ci): E33 \u2014 remove E2E_USER_* de 11 workflows chromium-public (C25)"
+  },
+  {
+    "number": 2314,
+    "author": "adm01-debug",
+    "draft": false,
+    "base": "main",
+    "head_ref": "claude/ci-e19-e22-e23-batch2-261019-1930",
+    "head_sha": "ae8909d7",
+    "title": "fix(ci): atualiza baseline as-assertions \u2014 ProductFormFullscreen +2 (double-cast)"
+  },
+  {
+    "number": 2312,
+    "author": "adm01-debug",
+    "draft": false,
+    "base": "main",
+    "head_ref": "claude/batch-e14-e19-e22-e23-e26-e87-261019-1800",
+    "head_sha": "6a5a1e72",
+    "title": "ci(e14): docs-only PRs pulam gates caros via dorny/paths-filter"
+  },
+  {
+    "number": 2293,
+    "author": "dependabot[bot]",
+    "draft": false,
+    "base": "main",
+    "head_ref": "dependabot/npm_and_yarn/recharts-3.10.1",
+    "head_sha": "148399a0",
+    "title": "chore(deps)(deps): bump recharts from 2.15.4 to 3.10.1"
+  },
+  {
+    "number": 2290,
+    "author": "dependabot[bot]",
+    "draft": false,
+    "base": "main",
+    "head_ref": "dependabot/npm_and_yarn/eslint/js-10.0.1",
+    "head_sha": "1ebb2576",
+    "title": "chore(deps)(deps): bump @eslint/js from 9.39.5 to 10.0.1"
+  }
+]
