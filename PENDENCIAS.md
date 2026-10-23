@@ -1,7 +1,7 @@
 # PENDENCIAS.md — Workflows com bloqueio externo
 
 > Gerado em: 2026-10-23  
-> Atualizado em: 2026-10-23T20:30Z (P-13 adicionado; Fix7+8 movidos para PR #2383; seções críticas da sessão 2026-10-22 preservadas — migrations urgentes + decisões banco)  
+> Atualizado em: 2026-10-23T20:20Z (P-15 adicionado: E2E · view-sticky — snapshots nunca commitados, pré-existente em main)  
 > Sessão: https://claude.ai/code/session_019gUZ8wvjsJMC3gYzy6k7jB  
 > Branch de trabalho: `claude/magical-cannon-u5t1vy` → PRs #2378, #2381, #2383
 
@@ -29,6 +29,7 @@ exato e o que o PO precisa fazer para desbloquear.
 | 12 | E2E (Playwright) | 39999446765 | cancelled (runner, infra) | ℹ️ cancelled |
 | 13 | E2E · Cart Delete Popover | 39999446624 | cancelled (runner, infra) | ❌ P-09 (externo/infra) |
 | 14 | Cart Invariants Smoke | 39999446524 | `chromium-authed`/`firefox-authed` shards: `E2E_USER_*` ausentes (mesma raiz P-02) | ❌ P-13 (externo) |
+| 15 | E2E · view-sticky | 40015768736 | Snapshots visuais nunca commitados em main (`quote-view-sticky-visual.spec.ts-snapshots/` inexistente) | ❌ P-15 (pré-existente) |
 
 **Fixes entregues no PR #2378** (app code — aguarda aprovação do PO para merge):
 - Fix 1 (PopoverQtyInput)
@@ -220,6 +221,37 @@ venham via squash-merge/merge-commit de PR, bot oficial, Lovable, release ou byp
 2. O Cart Invariants Smoke passará automaticamente no próximo push após o cadastro
 
 **Impacto:** 4 shards (2 browsers × 2 shards) retornam `conclusion=failure`.
+
+---
+
+## P-15 — E2E · view-sticky — Snapshots visuais nunca commitados
+
+**Workflow:** E2E · view-sticky (`.github/workflows/e2e-view-sticky.yml` ou similar)  
+**Run ID:** 40015768736 (commit `1ccffbd3`, primeiro commit do PR #2378)
+
+**Erro:**
+```
+Error: A snapshot doesn't exist at e2e/quotes/quote-view-sticky-visual.spec.ts-snapshots/sidebar-after-scroll-chromium-public-linux.png.
+Error: A snapshot doesn't exist at e2e/quotes/quote-view-sticky-visual.spec.ts-snapshots/sidebar-before-scroll-chromium-public-linux.png.
+```
+
+**Causa:** Os arquivos `quote-view-sticky-visual.spec.ts` foram adicionados ao repo (commit `cb96cd53`) mas seus baselines visuais **nunca foram gerados e commitados**. Confirmado: `git ls-tree -r origin/main -- 'e2e/quotes/quote-view-sticky-visual.spec.ts-snapshots/'` retorna vazio.
+
+**Testes afetados:**
+- `quote-view-sticky-sidebar.spec.ts:22` — `sidebar permanece fixo no viewport ao rolar a página`
+- `quote-view-sticky-visual.spec.ts:42` — `@visual sidebar sticky › sidebar antes do scroll`
+- `quote-view-sticky-visual.spec.ts:51` — `@visual sidebar sticky › sidebar depois do scroll até "Versões do Orçamento"`
+
+**Impacto:** Não é required check — Deploy Gates (Gate Final) = ✅ SUCCESS não é afetado. Pré-existente em main, não introduzido por este PR.
+
+**Para corrigir:** Gerar os baselines e commitar:
+```sh
+# Em máquina com Chromium/Playwright configurado:
+npx playwright test e2e/quotes/quote-view-sticky-visual.spec.ts \
+  --project=chromium-public --update-snapshots
+# Commitar os PNGs gerados em e2e/quotes/quote-view-sticky-visual.spec.ts-snapshots/
+```
+Ou disparar o workflow de update de snapshots se existir um específico para `view-sticky`.
 
 ---
 
