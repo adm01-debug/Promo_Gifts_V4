@@ -49,7 +49,9 @@ async function measureFirstCard(page: import('@playwright/test').Page, listSelec
   const list = page.locator(listSelector);
   try {
     await expect(list).toBeVisible({ timeout: 15_000 });
-  } catch {
+  } catch (e) {
+    // Só swallowa TimeoutError (ambiente sem dados) — outras falhas propagam.
+    if (!(e instanceof Error && e.constructor.name === 'TimeoutError')) throw e;
     return null;
   }
   const items = page.locator(`${listSelector} >> [role="listitem"]`);
@@ -170,7 +172,8 @@ test.describe('Paridade visual — cards Novidades vs Reposição', () => {
       page,
       'div[role="list"][aria-label="Grade de novidades"]',
     );
-    if (!novelty?.box || !novelty.footerBox) { test.skip(true, '[E108] Sem novidades / footer não encontrado (ambiente sem dados).'); return; }
+    if (!novelty?.box) { test.skip(true, '[E108] Sem novidades no dataset (ambiente sem dados).'); return; }
+    expect(novelty.footerBox, '[E108] Card de novidade renderizado mas footer ausente — regressão estrutural').not.toBeNull();
 
     await gotoAndSettle(page, '/reposicao');
     await expect(page.getByTestId('page-title-reposicao')).toBeVisible();
@@ -178,7 +181,8 @@ test.describe('Paridade visual — cards Novidades vs Reposição', () => {
       page,
       'div[role="list"][aria-label^="Grade de produtos repostos"]',
     );
-    if (!repl?.box || !repl.footerBox) { test.skip(true, '[E108] Sem reposições / footer não encontrado (ambiente sem dados).'); return; }
+    if (!repl?.box) { test.skip(true, '[E108] Sem reposições no dataset (ambiente sem dados).'); return; }
+    expect(repl.footerBox, '[E108] Card de reposição renderizado mas footer ausente — regressão estrutural').not.toBeNull();
 
     // Distância entre bottom do footer e bottom do card = padding interno.
     // Em ambos os módulos deve ser ~igual (mesmo p-3 do BaseProductGridCard).
@@ -297,6 +301,12 @@ test.describe('Paridade visual — cards Novidades vs Reposição', () => {
       await page.setViewportSize({ width: 1600, height: 1000 });
       await gotoAndSettle(page, '/reposicao');
       await expect(page.getByTestId('page-title-reposicao')).toBeVisible();
+
+      // Abre o popover de layout antes de buscar as opções de coluna.
+      const popoverTrigger = page.getByTestId('layout-popover-trigger');
+      await expect(popoverTrigger).toBeVisible({ timeout: 5_000 });
+      await popoverTrigger.click();
+      await page.waitForTimeout(200);
 
       const option = page.getByTestId(`column-option-${cols}`);
       if ((await option.count()) === 0) {
@@ -445,8 +455,10 @@ test.describe('Paridade visual — cards Novidades vs Reposição', () => {
 
     await openListMode(page);
 
+    // Em modo lista o container usa aria-label="Lista de produtos repostos"
+    // (VirtualizedReplenishmentList.tsx:56), não o label da grade.
     const items = page.locator(
-      'div[role="list"][aria-label^="Grade de produtos repostos"] >> [role="listitem"]',
+      'div[role="list"][aria-label="Lista de produtos repostos"] >> [role="listitem"]',
     );
     const count = await items.count();
     if (count === 0) { test.skip(true, '[E108] Sem reposições no dataset (modo lista, ambiente sem dados).'); return; }
