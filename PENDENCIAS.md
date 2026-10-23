@@ -1,7 +1,7 @@
 # PENDENCIAS.md — Workflows com bloqueio externo
 
 > Gerado em: 2026-10-23  
-> Atualizado em: 2026-10-23T20:20Z (P-15 adicionado: E2E · view-sticky — snapshots nunca commitados, pré-existente em main)  
+> Atualizado em: 2026-10-23T20:40Z (P-16 adicionado: Smoke/03b — flake de infra Supabase REST pós-auth)  
 > Sessão: https://claude.ai/code/session_019gUZ8wvjsJMC3gYzy6k7jB  
 > Branch de trabalho: `claude/magical-cannon-u5t1vy` → PRs #2378, #2381, #2383
 
@@ -30,6 +30,7 @@ exato e o que o PO precisa fazer para desbloquear.
 | 13 | E2E · Cart Delete Popover | 39999446624 | cancelled (runner, infra) | ❌ P-09 (externo/infra) |
 | 14 | Cart Invariants Smoke | 39999446524 | `chromium-authed`/`firefox-authed` shards: `E2E_USER_*` ausentes (mesma raiz P-02) | ❌ P-13 (externo) |
 | 15 | E2E · view-sticky | 40015768736 | Snapshots visuais nunca commitados em main (`quote-view-sticky-visual.spec.ts-snapshots/` inexistente) | ❌ P-15 (pré-existente) |
+| 16 | Smoke (fail-fast) | 40016976618 | Flake Supabase REST pós-auth: PostgREST pending 70-80s em `system_settings`, `get_profile_and_roles`, `products` | ❌ P-16 (infra flake) |
 
 **Fixes entregues no PR #2378** (app code — aguarda aprovação do PO para merge):
 - Fix 1 (PopoverQtyInput)
@@ -252,6 +253,35 @@ npx playwright test e2e/quotes/quote-view-sticky-visual.spec.ts \
 # Commitar os PNGs gerados em e2e/quotes/quote-view-sticky-visual.spec.ts-snapshots/
 ```
 Ou disparar o workflow de update de snapshots se existir um específico para `view-sticky`.
+
+---
+
+## P-16 — Smoke (fail-fast) · 03b-thumb-quickview — Flake de infra Supabase REST pós-auth
+
+**Workflow:** Smoke (fail-fast) (`.github/workflows/smoke-fail-fast.yml`)  
+**Run ID:** 40016976618 (job 120632078585, commit `fdf34be4`, PR #2378)  
+**Spec:** `e2e/flows/03b-thumb-quickview.smoke.spec.ts`
+
+**Erro:**
+```
+[loginViaUI] Timeout aguardando redirect pós-login. Botão submit: Iniciando Sistemas...
+TimeoutError: page.waitForURL: Timeout 30000ms exceeded.
+```
+
+**Causa identificada (não é regressão de código):** Auth HTTP bem-sucedido (check-login: 200, token: 200, user: 200), mas chamadas PostgREST ficaram pending por 70-80+ segundos:
+- `GET /rest/v1/system_settings` — PENDING 72s
+- `GET /rest/v1/rpc/get_profile_and_roles` — PENDING 73s  
+- `GET /rest/v1/products` — PENDING 80s+
+
+O frontend ficou travado em "Iniciando Sistemas..." pois os dados de bootstrap não chegaram. Origem: Supabase REST (PostgREST) com latência extrema / indisponibilidade temporária — **não causado pelo Fix 5 (TooltipProvider)** nem por qualquer alteração deste PR.
+
+**Confirmação de não-regressão:** O commit anterior no mesmo PR (`3d8f40ba`, push seguinte) não reproduziu a falha — indica flake de infra, não bug introduzido.
+
+**Impacto:** Não bloqueante no PR atual — `Quality Gates Summary` no commit `fdf34be4` foi **cancelado** (não failed) por `cancel-in-progress: true` quando `3d8f40ba` foi empurrado. Gate Final em `3d8f40ba` está pending/verde.
+
+**Para corrigir (infra):** O smoke spec deve implementar retry com backoff para o bootstrap do app (ou aumentar timeout de `loginViaUI`). Alternativamente, o `beforeAll` pode aguardar `rest/v1/system_settings` diretamente. Não é correção de código de produção — é melhoria de resiliência do teste.
+
+**Ação do PO:** Nenhuma imediata. Monitorar frequência. Se recorrente (>2x/semana), abrir card para adicionar retry no `loginViaUI` helper.
 
 ---
 
