@@ -163,7 +163,7 @@
     "push artefatos: claude/chore-analise-prs-261023-0215 (MISSAO.md, progresso.json, RELATORIO_PRS.md, etc)"
   ],
   "worktrees": [],
-  "main_sha_final": "2e8833bd68ea44eb7a88ebb1737a208fcdcba98b",
+  "main_sha_final": "98e588d58a57b1b1062b6761abafc19ed9c28293",
   "gate_final_pos_missao": "success",
   "migrations_aplicadas": [
     "20261022194000",
