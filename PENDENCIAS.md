@@ -98,10 +98,31 @@ Adicionado `disableHoverableContent` ao `TooltipProvider` local do Sheet.
 
 ---
 
-## P-05 — db-schema-drift-check / Gate E40 — ✅ RESOLVIDO
+## P-05 — db-schema-drift-check / Gate E40 — ❌ BLOQUEIO ESTRUTURAL (externo)
 
-**Status:** Secrets `SUPABASE_ACCESS_TOKEN` e `SUPABASE_DB_PASSWORD` confirmados como configurados pelo PO em 2026-10-23.  
-O Gate E40 deve passar na próxima execução sem ação adicional.
+**Workflow:** `.github/workflows/deploy-gates.yml` — job `Gate E40 - Schema Drift Check`  
+**Step falho:** "Ledger parity (repo x canonical)"  
+**Run:** 39986411363 (attempt 2, 2026-10-23T17:50)
+
+**Erro exato:**
+```
+[migration-ledger][bloqueado] local_only=1091; remote_only=638; mismatched=0; malformed=0
+```
+
+**Causa:** Os secrets estavam corretos (confirmado: `SUPABASE_ACCESS_TOKEN` e `SUPABASE_DB_PASSWORD` aparecem como `***` nos logs). O gate falha por **divergência estrutural de longa data no ledger de migrations**:
+- 1.091 migrations existem em `supabase/migrations/` do repo mas **não estão registradas** no banco de produção (`schema_migrations`)
+- 638 migrations estão **no banco** mas não existem no repo
+
+Isso é pré-existente à sessão atual — o commit `b167c9c8` (main) já tinha essa divergência.
+
+**O que você precisa fazer:**  
+Esta é uma reconciliação de histórico de migrations que exige decisão do PO sobre cada versão. Não pode ser automatizada (REGRA #8 do CLAUDE.md).
+
+1. Baixar o artefato `schema-reconciliation-evidence` do run 39986411363 para ver quais migrations divergem
+2. Decidir a estratégia de reconciliação (criar migration espelhos para as 638 remotas, ou marcar as 1091 locais como `repair-only`)
+3. Seguir o caminho de reconciliação E99 descrito em `docs/db/POLITICA_DDL.md`
+
+**Impacto:** Bloqueia o Gate Final em qualquer push para `main` enquanto não reconciliado. Não impacta o PR #2378 (que roda os mesmos gates mas na branch — a branch não tem secrets configurados para o Gate E40, por isso o gate é skipped/failure diferente no PR).
 
 ---
 

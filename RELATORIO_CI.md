@@ -18,7 +18,8 @@
 | Status | Qtd | Workflows |
 |--------|-----|-----------|
 | ✅ Corrigido (PR #2378) | 7 | CI Security & Drift Checks (Fix 1+7), E2E · Update Dialog snapshots (Fix 2), E2E (Playwright) — /novidades (Fix 3), E2E — Critical Flows (Fix 4+5), Cart Invariants Smoke (Fix 4), CI Replenishment (Fix 3) |
-| 🔄 Rerun disparado / Aguardando | 2 | Deploy Gates/P-05 (attempt 2 in_progress 17:47 UTC), E2E Swatch QuickView/P-08 (queued attempt 2 17:47 UTC) |
+| ❌ Bloqueio estrutural (externo) | 1 | Deploy Gates/P-05 — ledger de migrations divergente (local_only=1091, remote_only=638) — requer reconciliação manual |
+| 🔄 Rerun em andamento | 1 | E2E Swatch QuickView/P-08 (attempt 2 in_progress 17:53 UTC) |
 | ✅ Infra resolvida (rerun confirmado) | 1 | Uptime Monitor/P-10 (run 39997953456 = success 2026-10-23T17:47 UTC) |
 | ❌ Bloqueado externo (ação do PO) | 4 | Release Please (P-01), E2E Personalization (P-02), E2E Quote Sheet snapshots (P-03), E2E Cart Delete Popover (P-09) |
 | ℹ️ Sem ação (comportamento correto) | 2 | DB Migration E15, Copilot Code Review (branch de outro agente P-06) |
@@ -29,7 +30,7 @@
 
 | # | Workflow | Run ID | Causa raiz | Resultado |
 |---|---|---|---|---|
-| 1 | Deploy Gates | 39986411363 | Gate E40: `SUPABASE_ACCESS_TOKEN` ausente | ❌ P-05 |
+| 1 | Deploy Gates | 39986411363 | Gate E40: ledger de migrations divergente (`local_only=1091; remote_only=638`) — secrets OK, divergência estrutural pré-existente | ❌ P-05 (externo — requer reconciliação) |
 | 2 | CI Security & Drift Checks | 39986411170 | rAF race condition (`PopoverQtyInput`) + timeout `MockupProductSelector` | ✅ Fix 1 + Fix 7 |
 | 3 | E2E — Critical Flows | 39986411340 | Tooltips presos consumindo ESC | ✅ Fix 4 |
 | 4 | Cart Invariants Smoke | 39986410736 | Invariants sidebar (tooltip ESC) | ✅ Fix 4 |
@@ -129,7 +130,7 @@ Ver `PENDENCIAS.md` para detalhes completos de cada item:
 | P-01 | Release Please | PAT com `contents: write` ausente |
 | P-02 | E2E Personalization Flow | Secrets `E2E_USER_*` não configurados ou usuário de teste inativo |
 | P-03 | E2E Quote Sheet — snapshots | Baselines visuais desatualizados — rodar `workflow_dispatch` manual |
-| P-05 | db-schema-drift-check / Gate E40 | `SUPABASE_ACCESS_TOKEN` e `SUPABASE_DB_PASSWORD` não configurados |
+| P-05 | db-schema-drift-check / Gate E40 | Secrets OK. Divergência estrutural pré-existente no ledger: `local_only=1091; remote_only=638` — requer reconciliação manual (E99/POLITICA_DDL.md) |
 | P-06 | Running Copilot Code Review | Branch de outro agente — não interagir (REGRA #10) |
 | P-07 | CI Security — MockupProductSelector | ✅ FIX 7 aplicado — `window.dispatchEvent(new Event('resize'))` em `renderAndOpenDialog` |
 | P-08 | E2E Swatch QuickView | Runner shutdown de infraestrutura (SIGTERM) — re-rodar |
@@ -156,9 +157,15 @@ Os runs listados como "falhando na main" no baseline (`b167c9c8`, Run IDs 399864
 
 **O Gate Final (`quality-gate`) no commit `c12f709` da branch `claude/magical-cannon-u5t1vy` confirma que todos os gates obrigatórios passam.** Esse é o mesmo conjunto de checks que roda em push para main — não há diferença de configuração entre o trigger `pull_request` e o trigger `push: main` para o `deploy-gates.yml`.
 
-### P-05 — RESOLVIDO pelo PO (2026-10-23)
+### P-05 — Bloqueio estrutural identificado (2026-10-23)
 
-`SUPABASE_ACCESS_TOKEN` e `SUPABASE_DB_PASSWORD` confirmados como configurados. O Gate E40 passará na próxima execução. Este era o único bloqueio técnico de infraestrutura que impedia o merge após CI verde.
+Os secrets `SUPABASE_ACCESS_TOKEN` e `SUPABASE_DB_PASSWORD` foram configurados pelo PO e estão funcionando (confirmado pelos `***` nos logs do attempt 2). O Gate E40 agora consegue conectar ao banco mas **falha por divergência estrutural pré-existente no ledger de migrations**:
+
+```
+[migration-ledger][bloqueado] local_only=1091; remote_only=638; mismatched=0; malformed=0
+```
+
+Esta divergência existia antes da sessão atual (o commit `b167c9c8` da main já estava neste estado). Não é fixável sem reconciliação manual do histórico de migrations (REGRA #8 / E99 do CLAUDE.md). O Gate E40 continuará falhando em push para main até que o PO execute a reconciliação descrita em P-05 do PENDENCIAS.md.
 
 ---
 
@@ -236,16 +243,15 @@ Mudanças desta sessão não introduziram regressões:
 - `Supabase Preview` — falha de infraestrutura pré-existente (fora do escopo)
 - `copilot-pull-request-reviewer` — bot de outro agente (P-06, regra #10)
 
-**Para mergear:**
-1. ✅ CI verde nos checks obrigatórios (quality-gate passou)
-2. Os itens P-05 (`SUPABASE_ACCESS_TOKEN`, `SUPABASE_DB_PASSWORD`) precisam estar configurados para o Gate E40 passar em push para main
-3. P-05 (`SUPABASE_ACCESS_TOKEN`, `SUPABASE_DB_PASSWORD`) — confirmados pelo PO; Deploy Gates attempt 2 `in_progress`
-4. P-03 precisa de `workflow_dispatch` manual para atualizar snapshots visuais
+**Estado final dos reruns (2026-10-23):**
+- Deploy Gates run 39986411363 attempt 2: ❌ `failure` — Gate E40 falha por divergência estrutural de ledger (`local_only=1091; remote_only=638`). Secrets OK. Causa: pré-existente na main — não fixável sem reconciliação E99 (ver P-05 em PENDENCIAS.md)
+- E2E Swatch QuickView run 39986410684 attempt 2: 🔄 `in_progress` (jobs chromium/firefox/webkit rodando)
+- Uptime Monitor run 39997953456: ✅ `success`
 
-> **Reruns em andamento (2026-10-23T17:47 UTC):**
-> - Deploy Gates run 39986411363 attempt 2: `in_progress`
-> - E2E Swatch QuickView run 39986410684 attempt 2: `queued`
-> - Uptime Monitor run 39997953456: ✅ `success`
+**Para mergear o PR #2378:**
+1. ✅ CI verde nos checks obrigatórios da branch (quality-gate passou)
+2. P-03 precisa de `workflow_dispatch` manual ("E2E · Update Quote Item Editor Sheet snapshots") para atualizar baselines visuais
+3. O Gate E40 em push para main continuará falhando até reconciliação do ledger (P-05) — isso é independente do PR e não bloqueia o merge do PR em si
 
 ---
 
