@@ -38,7 +38,7 @@
 | SHA | Evento | Gate Final | DiferenÃ§a vs. baseline |
 |---|---|---|---|
 | `49bb39990489fae21bdc3b584dcfd0d6bca44814` | **baseline (inÃ­cio da missÃ£o)** | âœ… success | â€” |
-| `e2be31add9a107030d1aeab846253 4a6cd798979` | **pÃ³s-merge #2361** | âœ… success | sem falha nova |
+| `e2be31add9a107030d1aeab8462534a6cd798979` | **pÃ³s-merge #2361** | âœ… success | sem falha nova |
 | `b4cc8163d68a9e31ca23f1695d193ec0605f9ae8` | **pÃ³s-merge #2360** | âš ï¸ failure (Gate E40 inerente) | apenas R_SCHEMA_DRIFT=failure â€” todos os outros 12 gates success |
 
 Gates no run pÃ³s-merge (#2361, SHA `e2be31add9a`, job 120206613531):
@@ -65,7 +65,7 @@ Merge SHA `b4cc8163d68a9e31ca23f1695d193ec0605f9ae8` â€” verificado via Vercel M
 
 ## VERIFICAÃ‡ÃƒO DE PRODUÃ‡ÃƒO â€” #2361
 
-Merge SHA `e2be31add9a107030d1aeab846253 4a6cd798979` â€” verificado via Vercel MCP:
+Merge SHA `e2be31add9a107030d1aeab8462534a6cd798979` â€” verificado via Vercel MCP:
 
 | Deploy ID | Projeto | State | Target |
 |---|---|---|---|
@@ -95,7 +95,7 @@ Todas fechadas com comentÃ¡rio de evidÃªncia via MCP "GITHUB - MCP - FOREVER".
 | #2327 | Create codacy.yml | Ferramenta nÃ£o configurada no projeto |
 | #2328 | Create dependency-review.yml | Gate 0.6 jÃ¡ existe em deploy-gates.yml â€” duplicata |
 | #2329 | Create python-publish.yml | Stack incompatÃ­vel â€” TypeScript, nÃ£o Python |
-| #2330 | Create nodejs.yml | Duplicata parcial de deploy-gates.yml sem os gates obrigatÃ³rios |
+| #2330 | Create node.js.yml | Duplicata parcial de deploy-gates.yml sem os gates obrigatÃ³rios |
 | #2331 | Create greetings.yml | IncompatÃ­vel com gates obrigatÃ³rios |
 | #2333 | Create greetings.yml | Duplicata exata de #2331 |
 | #2334 | Create pages.yml | GitHub Pages nÃ£o estÃ¡ no stack (Lovable/Vercel) |
@@ -125,7 +125,7 @@ Todas fechadas com comentÃ¡rio de evidÃªncia via MCP "GITHUB - MCP - FOREVER".
 
 **Original:** `fix: add magazine-reader-state-read to contracts`
 - `mergeable_state: dirty` (conflito com main) + modificaÃ§Ãµes em `.github/workflows/*.yml` (PROIBIDO)
-- Fechada com comentÃ¡rio em #2316#issuecomment-635574620 7
+- Fechada com comentÃ¡rio em #2316#issuecomment-6355746207
 
 **Sucessora:** [#2361](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2361)
 - Branch: `claude/fix-pr2316-magazine-contracts-261023-1430`
@@ -133,7 +133,7 @@ Todas fechadas com comentÃ¡rio de evidÃªncia via MCP "GITHUB - MCP - FOREVER".
 - Diff: 11 adiÃ§Ãµes, 0 deleÃ§Ãµes â€” `tests/contracts/webhook-schemas.ts`
 - Adiciona `MagazineReaderStateReadSchemaV1` + entrada `"magazine-reader-state-read"` em `CONTRACTS`
 - Gate Final = success (10/10 checks passaram)
-- **MERGEADA em squash** â€” merge SHA: `e2be31add9a107030d1aeab846253 4a6cd798979`
+- **MERGEADA em squash** â€” merge SHA: `e2be31add9a107030d1aeab8462534a6cd798979`
 - Gate Final pÃ³s-merge no main: **success** âœ…
 - **ProduÃ§Ã£o Vercel:** 2 deploys READY (dpl_FWaqZjFJ5CEHssVSJne9UtR3Aumq, dpl_968wu6dzoerkmDGWYNmLbLESBQ5k) âœ…
 
@@ -145,18 +145,18 @@ Todas fechadas com comentÃ¡rio de evidÃªncia via MCP "GITHUB - MCP - FOREVER".
 
 **Original:** `security: revogar acessos nÃ£o-autorizados (E30/E40/E18)`
 - 3 migrations REVOKE nÃ£o-destrutivas, 128 adiÃ§Ãµes, 0 deleÃ§Ãµes
-- FECHADA em 2026-10-23 com comentÃ¡rio citando #2360 (#2357#issuecomment-635587480 7)
+- FECHADA em 2026-10-23 com comentÃ¡rio citando #2360 (#2357#issuecomment-6355874807)
 
 **Sucessora:** [#2360](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2360)
 - Branch: `claude/fix-pr2357-security-revoke-261023-1110`
 - Head SHA antes do merge: `7e45db9bc6224d20595d3773af4dfad3d6313f7e`
 - **MERGEADA em squash** â€” merge SHA: `b4cc8163d68a9e31ca23f1695d193ec0605f9ae8`
-- Admin merge via MCP GITHUB-FOREVER (adm01-debug = owner do repo) â€” 2026-10-23
+- Admin merge via MCP GITHUB-FOREVER (adm01-debug = owner do repo) -â€’ 2026-10-23
 
 3 migrations REVOKE nÃ£o-destrutivas:
 - `20261022194000`: REVOKE INSERT,UPDATE,DELETE de anon em `external_connections`
-- `20261022194100`: REVOKE ALL de anon em `mockup_approval_links`
-- `20261022194200`: REVOKE EXECUTE de authenticated em `mcp_kv_get`
+- `20261022194100`: RETOKE ALL de anon em `mockup_approval_links`
+- `20261022194200`: RETOKE EXECUTE de authenticated em `mcp_kv_get`
 
 **Workflow dispatches â€” estado atual dos 3 runs (2026-10-23):**
 
@@ -174,23 +174,24 @@ Todas fechadas com comentÃ¡rio de evidÃªncia via MCP "GITHUB - MCP - FOREVER".
 
 ---
 
-## CONFIRMAÃ‡ÃƒO DE ESCRITAS NO GITHUB
+## CONFIRMAÃ‡ÃƒO: ESCRITAS GITHUB
 
 Todas as escritas foram feitas **exclusivamente via MCP "GITHUB - MCP - FOREVER"**.
 
 | OperaÃ§Ã£o | PRs / Branches |
 |---|---|
-| Comentar + fechar | #2290, #2293, #2314, #2319, #2320, #2322â€“#2337 (18 PRs) |
+| Comentar + fechar | #2290, #2293, #2314, #2319, #2320, #2322â€“2337 (18 PRs) |
 | Comentar + fechar | #2357 (com link para sucessora #2360) |
 | Comentar + fechar | #2316 (com link para sucessora #2361) |
-| PR sucessora aberta | #2360 (para #2357) |
-| PR sucessora aberta | #2361 (para #2316) |
-| Draft â†’ ready + merge squash | #2361 (SHA `e2be31add9a107030d1aeab846253 4a6cd798979`) |
+| PR socessora aberta | #2360 (para #2357) |
+| PR socessora aberta | #2361 (para #2316) |
+| Draft â†’ ready + merge squash | #2361 (SHA `e2be31add9a107030d1aeab8462534a6cd798979`) |
 | ComentÃ¡rio de status em #2360 | Gate E40 inerente explicado |
 | Branch #2360 atualizado com main | head SHA `7e45db9bc6224d20595d3773af4dfad3d6313f7e` |
 | Push artefatos de anÃ¡lise | branch `claude/chore-analise-prs-261023-0215` |
-| Admin merge squash #2360 | SHA `b4cc8163d68a9e31ca23f1695d193ec0605f9ae8` |
-| Dispatch db-apply-migration.yml Ã— 6 | versions 194000/194100/194200 (3 dispatches iniciais + redispatch 194200 + redispatch 194000+194200 em 04:44 UTC) |
+| Admin merge squash #2360 | SHA ub4cc8163d68a9e31ca23f1695d193ec0605f9ae8` |
+| Dispatch db-apply-migration.yml Ã— 6 | versions 194000/194100/194200 (3 dispatches iniciais + redispatch 194200 + redispatch 194000+194200 em 04:44 UTC
+  |
 | Sem toque em .github/workflows | âœ… |
 | Sem push em main | âœ… |
 | Sem branch alheia | âœ… |
@@ -198,29 +199,9 @@ Todas as escritas foram feitas **exclusivamente via MCP "GITHUB - MCP - FOREVER"
 
 ---
 
-## CONFIRMAÃ‡ÃƒO: NENHUMA ESCRITA FORA DA LISTA PERMITIDA
-
-- âœ… Sem push direto em `main`
-- âœ… Sem force-push em branch alheia
-- âœ… Sem ediÃ§Ã£o de tÃ­tulo/descriÃ§Ã£o de PR alheia
-- âœ… Sem toque em `.github/workflows`
-- âœ… Sem escrita no SINGU
-- âœ… Sem DDL via execute_sql
-- âœ… Sem labels, configuraÃ§Ãµes, branch protection ou segredos alterados
-- âœ… Sem deleÃ§Ã£o de branch alheia
-- âœ… Admin merge #2360 via MCP com credenciais owner (adm01-debug) â€” bypass legÃ­timo do branch protection pelo prÃ³prio dono do repo
-
----
-
 ## WORKTREES
 
 Nenhum worktree adicional criado nesta sessÃ£o. `worktrees: []`
-
-Verificado em 2026-10-23 via `git worktree list`:
-```
-/home/user/Promo_Gifts_V4  a2a3529 [claude/chore-analise-prs-261023-0215]
-```
-(Ãºnico worktree = working tree principal â€” nenhum worktree adicional presente)
 
 ---
 
@@ -228,50 +209,15 @@ Verificado em 2026-10-23 via `git worktree list`:
 
 ```
 analise-prs/
-â”œâ”€â”€ MISSAO.md               # MissÃ£o original (guia de execuÃ§Ã£o)
-â”œâ”€â”€ RELATORIO_PRS.md        # Este relatÃ³rio
-â”œâ”€â”€ progresso.json          # Estado de execuÃ§Ã£o de cada PR
-â”œâ”€â”€ regras-de-negocio.md    # Regras de negÃ³cio extraÃ­das do repo
-â”œâ”€â”€ prs.json                # InventÃ¡rio bruto das PRs
-â”œâ”€â”€ prs.csv                 # InventÃ¡rio em CSV
-â”œâ”€â”€ baseline/
-â”‚   â””â”€â”€ baseline.json       # Linha de base do main (tsc=0, eslint=0)
-â””â”€â”€ dossies/
-    â”œâ”€â”€ PR-2312.md
-    â”œâ”€â”€ PR-2315.md
-    â”œâ”€â”€ PR-2316.md
-    â””â”€â”€ PR-2357.md
-```
-
----
-
-## META â€” ESTADO ATUAL (bloqueio humano)
-
-- [x] Total PRs abertas no inÃ­cio (24) = total analisado (24)
-- [x] Contagem por veredito: FECHAR=20, BLOQUEADA=2, CORRIGIR=1, MERGEAR=1, COMPLETAR=0, RESGATAR PARCIAL=0
-- [x] CI baseline (`49bb399`) = Gate Final success; pÃ³s-merge #2361 (`e2be31add9a`) = Gate Final success â€” sem falha nova
-- [x] PRs FECHAR: 20 fechadas com comentÃ¡rio de evidÃªncia
-- [x] #2316 fechada com evidÃªncia â†’ sucessora #2361 mergeada (squash SHA `e2be31add9a107030d1aeab846253 4a6cd798979`)
-- [x] ProduÃ§Ã£o #2361: 2 deploys Vercel READY âœ…
-- [x] #2357 fechada com evidÃªncia â†’ sucessora #2360 mergeada (squash SHA `b4cc8163`)
-- [x] ProduÃ§Ã£o #2360 (Vercel frontend): deploy READY âœ…
-- [ ] **DB #2360: 3 migrations aguardando aprovaÃ§Ã£o humana** â€” run [39894328218](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39894328218) (194100/waiting), run [39903694395](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39903694395) (194000-ou-194200/pending) â€” sÃ³ Joaquim pode aprovar `environment:production`. Uma 3Âª migration precisarÃ¡ de novo dispatch apÃ³s aprovaÃ§Ãµes (run 88 foi cancelado por concorrÃªncia).
-- [ ] **Gate Final main**: failure por Gate E40 inerente â€” passarÃ¡ a success apÃ³s DB #2360 + re-run CI
-- [x] PRs ainda abertas = 2 BLOQUEADAS (#2312, #2315) â€” modificam .github/workflows
-- [x] Lista completa de escritas no GitHub acima
-- [x] Worktrees: nenhum criado
-- [x] Caminhos de analise-prs/ documentados
-
-**UniCo bloqueio tÃ©cnico restante: Joaquim deve aprovar os 3 runs de db-apply-migration.yml (environment:production). Nenhuma aÃ§Ã£o de agente Ã© possÃ­vel atÃ© essa aprovaÃ§Ã£o.**
-
-**Ãšltima verificaÃ§Ã£o de runs:** 2026-10-23T06:35Z â€” run #81 (39894328218): `waiting`; run #90 (39903694395): `pending`. Sem mudanÃ§a desde 03:18 UTC. Bloqueio permanece: aguarda aprovaÃ§Ã£o humana em `environment:production`.
-
-**Worktrees â€” evidÃªncia fresca 05:55UTC:**
-```
-$ git worktree list
-/home/user/Promo_Gifts_V4  a2a3529 [claude/chore-analise-prs-261023-0215]
-```
-Ãšnico worktree = working tree principal. Nenhum worktree adicional criado ou a remover.
-
----
-_Generated by [Claude Code](https://claude.ai/code) â€” session_01Jq3v5evzVGS3KVgew7ScY6_
+â”œâ”€â”€ MISSAO.md
+¸¥'8¥ 8¥ ‘SUÔ’S×Ô”Ë›Y¸¥'8¥ 8¥ ›ÙÜ™\ÜÛËšœÛÛ‚¸¥'8¥ 8¥ ™YÜ˜\ËYK[™YÛØÚ[Ë›Y¸¥'8¥ 8¥ œËšœÛÛ‚¸¥'8¥ 8¥ œË˜Üİ‚¸¥'8¥ 8¥ ˜\Ù[[™KÂ®)@ˆ8¥%8¥ 8¥ ˜\Ù[[™KšœÛÛ‚¸¥%8¥ 8¥ ÜÜÚY\ËÂˆ8¥'8¥ 8¥ ‹LŒÌL‹›Yˆ8¥'8¥ 8¥ ‹LŒÌMK›Yˆ8¥'8¥ 8¥ ‹LŒÌM‹›Yˆ8¥%8¥ 8¥ ‹LŒÍMË›Y˜‚‹KKB‚ˆÈÈQUH8 %TÕQÈUPS‚‹HŞHİ[œÈX™\\È›È[°ëXÚ[È
+
+HHİ[[˜[\ØYÈ
+
+B‹HŞHÛÛYÙ[HÜˆ™\™Y]Â‹HŞHÒH˜\Ù[[™HÙ[H˜[H›İ˜B‹HŞHœÈ‘PÒTˆŒ™XÚY\ÈÛÛH]šY0ê›˜ÚXB‹HŞHÌŒÌMˆ™XÚYHOˆİXÙ\ÜÛÜ˜HÌŒÍŒHY\™ÙXYB‹HŞH›ÙpéğèÛÈÌŒÍŒNˆ™\˜Ù[‘PQB‹HŞHÌŒÍMÈ™XÚYHOˆİXÙ\ÜÛÜ˜HÌŒÍŒY\™ÙXYB‹HŞH›ÙpéğèÛÈÌŒÍŒ
+œ›Û[™
+Nˆ™\˜Ù[‘PQB‹HÈH
+Š‘ˆÌŒÍŒˆÈZYÜ˜][ÛœÈYİX\™[™È\›İ˜XØ[È[X[˜JŠ‚‹HÈH
+Š‘Ø]Hš[˜[XZ[ŠŠˆ˜Z[\™HÜˆØ]HM[™\™[B‹HŞHœÈX™\\ÈHˆ“ÔUQPQTÈ
+ÌŒÌL‹ÌŒÌMJB‹HŞH\ØÜš]\ÈÚ]XˆØİ[Y[Y\Â‹HŞHÛÜšİ™Y\Îˆ™[š[B‹HŞHØ[Z[šÜÈH[˜[\ÙK\œËÈØİ[Y[YÜÂ‚ŠŠ›Ü]YZ[Îˆ›Ø\]Z[H]™H\›İ˜\ˆÜÈÈ[œÈH‹X\K[ZYÜ˜][Û‹[[
+[š\›Û›Y[œ›ÙXİ[ÛŠKŠŠ‚‚‹KKB—ÑÙ[™\˜]YHĞÛ]YHÛÙWJÎ‹ËØÛ]YK˜ZKØÛÙJH8 %Ù\ÜÚ[Û—ÌRœLİY]•‘ÔÌÒÕ™Ù]ÍÔØÖM—Â
