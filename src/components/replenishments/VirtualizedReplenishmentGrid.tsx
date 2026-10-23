@@ -33,7 +33,6 @@ export function VirtualizedReplenishmentGrid({
 }: VirtualizedGridProps) {
   const parentRef = useRef<HTMLDivElement>(null);
 
-  // Usamos o hook reativo para que o número de colunas mude com a tela
   const numCols = useResponsiveColumns(gridColumns);
   const rowCount = Math.ceil(products.length / numCols);
 
@@ -47,11 +46,6 @@ export function VirtualizedReplenishmentGrid({
 
   const effectiveCols = gridColumns;
 
-  // ⚠️ PERF-2026-08-19: Carrega cores APENAS dos IDs visíveis (virtualizados).
-  // Antes o pai passava TODOS os products (até 662 no Reposição) para
-  // useProductsColorsBatch, gerando N queries ao banco. Agora só os ~30-40
-  // visíveis são processados. Cache global do hook cuida do restante quando
-  // o usuário rola.
   const virtualItems = virtualizer.getVirtualItems();
   const visibleProductIds = useMemo(() => {
     const ids: string[] = [];
@@ -68,7 +62,6 @@ export function VirtualizedReplenishmentGrid({
 
   const { data: internalColorsByProduct } = useProductsColorsBatch(visibleProductIds);
 
-  // Preferir cores externas (do pai) — fallback para internas se pai não passar
   const colorsByProduct = externalColorsByProduct ?? internalColorsByProduct;
 
   return (
