@@ -83,6 +83,12 @@ export function QuoteItemEditorSheet({
         className="flex w-full flex-col gap-0 p-0 sm:max-w-[430px]"
         data-testid="quote-item-editor-sheet"
         aria-label="Editor de item do orçamento"
+        onKeyDownCapture={(e) => {
+          if (e.key === 'Escape') {
+            e.stopPropagation();
+            requestClose(false);
+          }
+        }}
       >
         <SheetHeader className="shrink-0 border-b border-border/50 px-1.5 py-1.5">
           <div className="flex items-center justify-between gap-2">
