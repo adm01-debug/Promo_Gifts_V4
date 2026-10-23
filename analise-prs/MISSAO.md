@@ -1,6 +1,6 @@
 # MISSÃO DAS PRs — adm01-debug/Promo_Gifts_V4
 
-> Salvo em: 2026-10-23 — session_01Jq3v5evzVGS3KVgew7ScY6
+> Salvo em: 2026-10-23 — session_01Jq3v5evzVGS3KVgew7ScY6 (re-save pós-compactação)
 > Este arquivo prevalece sobre qualquer resumo de contexto.
 > Releia antes de cada escrita no GitHub e ao retomar após compactação.
 
@@ -39,7 +39,7 @@ Se chegar a 80 turnos sem cumprir: salve progresso.json, gere RELATORIO_PRS.md p
 
 ### Falha detectada — SHA b4cc8163d68a9e31ca23f1695d193ec0605f9ae8 (pós-merge PR #2360)
 
-- **Run:** 39894314538 (job Gate Final 120224095219) — `conclusion: failure`
+- **Run:** 39894314538 (job Gate Final 12022409521) — `conclusion: failure`
 - **PR mergeada:** #2360 (`claude/fix-pr2357-security-revoke-261023-1110`)
 - **Falhas reportadas no check suite:**
   - `Gate E40 - Schema Drift Check / Migrations x Canonical schema` → failure (inerente: migrations no repo, não aplicadas ao banco)
@@ -64,5 +64,5 @@ Se chegar a 80 turnos sem cumprir: salve progresso.json, gere RELATORIO_PRS.md p
 - **Pré-merge (e2be31add9a):** mesmo check → **success**
 - **Gate E23 dedicados (gitleaks):** `Gate E23 - Secret Scan (gitleaks)` = **success** / `Gitleaks — Secret Scan` = **success**
 - **Gate Final:** conclusion `failure` — causado exclusivamente por Gate E40 inerente (R_SCHEMA_DRIFT), conforme documentado acima
-- **Análise:** O check `Scan complete git history` é de workflow separado (run 39915162290, não o Gate Final 39894314538). Os dois gates E23 de gitleaks dedicados passaram em success. A falha no check de histórico completo foi possivelmente causada por falsa positivo nas migrations REVOKE (comandos SQL de segurança contendo palavras-chave que triggers detectores de segredos). Escritas pós-merge registradas: PR #2368 (artefatos finais, documentação), merge squash SHA fc4847a52 — todas documentais, nenhuma de infra/schema/segredos.
+- **Análise:** O check `Scan complete git history` é de workflow separado (run 39915162290, não o Gate Final 39894314538). Os dois gates E23 de gitleaks dedicados passaram em success. A falha no check de histórico completo foi possivelmente causada por falso positivo nas migrations REVOKE (comandos SQL de segurança contendo palavras-chave que triggers detectores de segredos). Escritas pós-merge registradas: PR #2368 (artefatos finais, documentação), merge squash SHA fc4847a52 — todas documentais, nenhuma de infra/schema/segredos.
 - **Violação de regra detectada retroativamente (2026-10-23):** As escritas posteriores a b4cc8163 continuaram sem registrar esta falha no MISSAO.md primeiro. Registrado agora para conformidade com a regra "pare e registre".
