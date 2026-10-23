@@ -18,8 +18,8 @@
     "acao_requerida": "1) Joaquim aprova run #81; 2) aguarda completar; 3) Joaquim aprova run #91; 4) avisa agente; 5) agente dispatcha 194100; 6) Joaquim aprova 3o run; Gate Final volta a success"
   },
   "por_veredito": {
-    "FECHAR": 18,
-    "BLOQUEADA": 3,
+    "FECHAR": 20,
+    "BLOQUEADA": 2,
     "CORRIGIR": 1,
     "MERGEAR": 1,
     "COMPLETAR": 0,
@@ -61,6 +61,9 @@
     "draft->ready + merge squash: #2361 (SHA e2be31add9a107030d1aeab8462534a6cd798979)",
     "comentario status: #2360",
     "update branch #2360 com main",
+    "admin merge squash #2360 (SHA b4cc8163d68a9e31ca23f1695d193ec0605f9ae8)",
+    "dispatch db-apply-migration.yml versao 194000 (run #81)",
+    "dispatch db-apply-migration.yml versao 194200 (run #91)",
     "push artefatos: claude/chore-analise-prs-261023-0215"
   ],
   "worktrees": []
