@@ -63,6 +63,7 @@ describe('<PopoverQtyInput />', () => {
     const input = screen.getByTestId('cart-item-qty-it-1') as HTMLInputElement;
 
     await user.click(input);
+    await act(async () => {});
     await user.keyboard('{Control>}a{/Control}80{Enter}');
 
     expect(onCommit).toHaveBeenCalledWith(80);

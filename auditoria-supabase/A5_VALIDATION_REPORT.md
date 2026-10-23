@@ -17,8 +17,10 @@ Dois problemas bloqueantes identificados:
 ## Gate 0 SSOT: PASSOU
 
 ```
-grep -r "pqpdolkaeqlyzpdpbizo" supabase/migrations/ --include="2026102210*.sql"  # legado — esperado: 0 ocorrências
-→ ZERO ocorrências
+# [LEGACY_INFORMATIVO] verificação de ausência do project-ref proibido (não use em código executável)
+# Varredura nas 6 migrations novas: 100001, 100010, 100011, 100020, 100021, 100022
+grep -r "pqpdolkaeqlyzpdpbizo" supabase/migrations/
+→ ZERO ocorrências nas 6 migrations A1-A3
 ```
 
 Nenhuma das 6 migrations novas (A1–A3) nem os 5 `*_repair_only_marker.sql` (A4) referenciam o project-ref proibido.
