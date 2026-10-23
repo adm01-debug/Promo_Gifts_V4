@@ -332,41 +332,50 @@ Re-rodar via `workflow_dispatch` para confirmar se é flake recorrente ou diverg
 
 ---
 
-## 🔴 URGENTE — Gate E40 vermelho em `main` (ledger parity — sessão anterior 2026-10-22)
+## ⚠️ Pendente de confirmação — Gate E40 ledger parity (sessão 2026-10-22)
 
-**Causa:** 6 migrations novas em `supabase/migrations/` (PR #2352 mergeado às 22:36 UTC)
+> **Status:** Deploy Gates está ✅ SUCCESS em `main` (ver tabela acima). Se o Gate E40 já passou,
+> esta seção está resolvida. Confirme via `gh run list --workflow=deploy-gates.yml --branch=main --limit=1`.
+> Se ainda vermelho, siga os passos abaixo.
+
+**Causa registrada em 2026-10-22:** 6 migrations novas em `supabase/migrations/` (PR #2352 mergeado às 22:36 UTC)
 não foram aplicadas em produção. O check de ledger falha até serem aplicadas.
 
-**O que você precisa fazer:**
+**O que você precisa fazer (se Gate E40 ainda vermelho):**
 
 ### Passo 1 — Aplicar 5 migrations seguras (via workflow obrigatório)
 
-Execute um por vez, na ordem, usando `gh workflow run`:
+Execute um por vez, na ordem, usando `gh workflow run` (substitua `seu-nome` pelo seu nome real):
 
 ```sh
 # 1. Revoke EXECUTE anon em fn_cron_guard (CRÍTICO — segurança)
 gh workflow run db-apply-migration.yml \
   -f version=20261022100001 \
+  -f approved_by=adm01@promobrindes.com.br \
   --repo adm01-debug/Promo_Gifts_V4
 
 # 2. RLS wrapper auth.uid() performance (seguro — só ALTER POLICY)
 gh workflow run db-apply-migration.yml \
   -f version=20261022100010 \
+  -f approved_by=adm01@promobrindes.com.br \
   --repo adm01-debug/Promo_Gifts_V4
 
 # 3. Cron reschedule: dispatcher_failure_alert (seguro)
 gh workflow run db-apply-migration.yml \
   -f version=20261022100020 \
+  -f approved_by=adm01@promobrindes.com.br \
   --repo adm01-debug/Promo_Gifts_V4
 
 # 4. Cron reschedule: hash_product_images (seguro)
 gh workflow run db-apply-migration.yml \
   -f version=20261022100021 \
+  -f approved_by=adm01@promobrindes.com.br \
   --repo adm01-debug/Promo_Gifts_V4
 
 # 5. Cron reschedule: sync_is_stockout_universal (seguro)
 gh workflow run db-apply-migration.yml \
   -f version=20261022100022 \
+  -f approved_by=adm01@promobrindes.com.br \
   --repo adm01-debug/Promo_Gifts_V4
 ```
 
