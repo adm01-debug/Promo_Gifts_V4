@@ -782,6 +782,7 @@ da execução e consulta read-only ao catálogo/ledger, sem reaplicar SQL.
 | `20261022000100` | `3053ee2aa80da1521b32638bc8b45b14ee7fe7a81cf1ef645051a95e8a47d0bb` | — | — (aguardando `workflow_dispatch` E15 pelo PO) | E15 | — | pendente: REVOKE EXECUTE ON FUNCTION public.fn_detect_recurring_errors_last_hour(integer) FROM PUBLIC — gap de segurança (Qodo High): qualquer `authenticated` pode chamar função SECURITY DEFINER de diagnóstico com parâmetros arbitrários, expondo dados de telemetria de erros internos. PR #2338. | **pendente — não aplicada** |
 | `20261022193000` | `eaa8a33524f37c7a7f24ddb6c8a23c0a873101d94f01aa9b6257d5423f4b9e68` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por PO adm01-debug — autorizado no chat 2026-10-22 17:40 BRT) | E15 | 2026-10-22 20:45:58 UTC | job post-check da run 39850901884 confirmou a version no ledger | aplicada |
 | `20261022194000` | `7d9a9129c04e1c1de1f51a56854d057ca2406af511fd1dd7eed5f5fe94287b76` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por adm01-debug) | E15 | 2026-10-23 09:55:32 UTC | job post-check da run 39894328218 confirmou a version no ledger | aplicada |
+| `20261022194100` | `99992c9628981dcc0f87252ce0c1cd307633c96f1324391db390cf65fecdf450` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por adm01-debug) | E15 | 2026-10-23 10:01:56 UTC | job post-check da run 39935978048 confirmou a version no ledger | aplicada |
 
 ### Evidências do recibo `20260922170000`
 
