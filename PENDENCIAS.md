@@ -1,9 +1,9 @@
 # PENDENCIAS.md — Workflows com bloqueio externo
 
 > Gerado em: 2026-10-23  
-> Atualizado em: 2026-10-23 (sessão continuada — P-11 SHA corrigido; Fix 7 causa raiz confirmada; Uptime Monitor recovery)  
+> Atualizado em: 2026-10-23T19:40Z (P-13 adicionado; Fix7+8 movidos para PR #2383; baseline lint confirmado OK)  
 > Sessão: https://claude.ai/code/session_019gUZ8wvjsJMC3gYzy6k7jB  
-> Branch de trabalho: `claude/magical-cannon-u5t1vy` → PR #2378
+> Branch de trabalho: `claude/magical-cannon-u5t1vy` → PRs #2378, #2381, #2383
 
 Itens abaixo **não foram corrigidos nesta sessão** por dependerem de secret, permissão
 ou dado externo que não está disponível via MCP. Cada item documenta o workflow, o erro
@@ -16,8 +16,8 @@ exato e o que o PO precisa fazer para desbloquear.
 | # | Workflow | Run ID | Causa | Status |
 |---|---|---|---|---|
 | 1 | Deploy Gates | 39999446914 | — | ✅ GREEN |
-| 2 | CI Security & Drift Checks | 39999446430 | `clientHeight`/`clientWidth` = 0 no jsdom → `@tanstack/react-virtual` outerSize=0 → 0 rows renderizados | 🔄 Fix 7 no PR #2378 (aguarda merge) |
-| 3 | CI - Replenishment Module Quality Gate | 39999446605 | `useReplenishmentStats` timeout 15s (race + site estava down às 18:02Z) | 🔄 Fix 8 no PR #2378; recorrente quando site indisponível |
+| 2 | CI Security & Drift Checks | 39999446430 | `clientHeight`/`clientWidth` = 0 no jsdom → `@tanstack/react-virtual` outerSize=0 → 0 rows renderizados | 🔄 Fix 7 no PR #2383 (aguarda merge) |
+| 3 | CI - Replenishment Module Quality Gate | 39999446605 | `useReplenishmentStats` timeout 15s (race + site estava down às 18:02Z) | 🔄 Fix 8 no PR #2383; recorrente quando site indisponível |
 | 4 | E2E — Critical Flows & Error Boundaries | 39999446606 | sidebar-tooltips: tooltip visível após mouse out (hoverable content) | 🔄 Fix 4 no PR #2378 (aguarda merge) |
 | 5 | E2E — Personalization Flow | 39999446757 | Secrets `E2E_USER_*` ausentes / usuário inativo | ❌ P-02 (externo) |
 | 6 | Release Please | 39999446560 | PAT com `contents: write` ausente | ❌ P-01 (externo) |
@@ -28,18 +28,17 @@ exato e o que o PO precisa fazer para desbloquear.
 | 11 | Uptime Monitor | 40001131817 → 40005522306 | Downtime recuperado: run 40001131817=failure → 40005522306=success | ✅ Recuperado |
 | 12 | E2E (Playwright) | 39999446765 | cancelled (runner, infra) | ℹ️ cancelled |
 | 13 | E2E · Cart Delete Popover | 39999446624 | cancelled (runner, infra) | ❌ P-09 (externo/infra) |
-| 14 | Cart Invariants Smoke | 39999446524 | queued (aguardando runner) | ⏳ queued |
+| 14 | Cart Invariants Smoke | 39999446524 | `chromium-authed`/`firefox-authed` shards: `E2E_USER_*` ausentes (mesma raiz P-02) | ❌ P-13 (externo) |
 
-**Fixes entregues no PR #2378** (app code + testes — aguarda aprovação do PO para merge):
+**Fixes entregues no PR #2378** (app code — aguarda aprovação do PO para merge):
 - Fix 1 (PopoverQtyInput)
 - Fix 3 (NoveltiesPage overflow)
 - Fix 4 (App.tsx TooltipProvider)
 - Fix 5 (QuoteItemEditorSheet TooltipProvider)
-- Fix 7 (MockupProductSelector.test.tsx resize dispatch)
-- Fix 8 (useReplenishments.integration.test.ts timeout)
 
-**Commits adicionais no PR #2378:**
-- `82a3a9c` — Fix 7 v2: `clientHeight`/`clientWidth` mocks para `@tanstack/react-virtual` v3 (CI em andamento)
+**Fixes entregues no PR #2383** (test-only — seguro para merge imediato, zero código de produção):
+- Fix 7 (MockupProductSelector.test.tsx — mocks clientHeight/clientWidth para `@tanstack/react-virtual` v3)
+- Fix 8 (useReplenishments.integration.test.ts — timeout 30000 para evitar race)
 
 **Fix entregue no PR #2381** (YAML-only — seguro para merge imediato via admin bypass):
 - Fix 2 (HUSKY=0 no workflow `e2e-update-dialog-snapshots.yml`)
@@ -126,18 +125,18 @@ Deploy Gates com `conclusion=success` no run 39999446914 em `main`.
 
 ---
 
-## P-07 — CI Security & Drift Checks — Timeout em MockupProductSelector.test.tsx — 🔄 FIX NO PR #2378
+## P-07 — CI Security & Drift Checks — clientHeight=0 em MockupProductSelector.test.tsx — 🔄 FIX NO PR #2383
 
 **Workflow:** `ci-security-drift.yml` / `unit-tests` job  
 **Run com falha:** `39999446430` (commit `4c482cbc`)
 
 **Causa raiz confirmada (2026-10-23):**  
-`@tanstack/react-virtual` v3 chama `getScrollElement()` durante o render síncrono. No primeiro render, `scrollParentRef.current` ainda é `null`. Com `scrollElement = null`, `outerSize = 0` e `calculateRange` retorna `null` → nenhuma `mockup-product-row` é renderizada → `waitFor` aguarda 5000ms e estoura.
+`@tanstack/virtual-core` v3 usa `getRect()` que lê `element.clientHeight`/`clientWidth` para calcular `outerSize` do container de scroll. jsdom devolve `0` para ambos por padrão → `outerSize = 0` → `calculateRange` retorna `null` → zero linhas renderizadas → `waitFor` estoura em 5000ms.
 
-**Fix aplicado (Fix 7 no PR #2378):**  
-`window.dispatchEvent(new Event('resize'))` após `renderWithProviders` força re-render com ref preenchida.
+**Fix aplicado (Fix 7 no PR #2383, commit `82a3a9c`):**  
+`clientHeight` e `clientWidth` mockados no `beforeEach` via `Object.defineProperty`. Confirmado: 16/16 testes passando no branch.
 
-**Pendência:** Merge do PR #2378 (aguarda aprovação do PO).
+**Pendência:** Merge do PR #2383 (seguro para merge imediato — zero código de produção).
 
 ---
 
@@ -207,4 +206,21 @@ venham via squash-merge/merge-commit de PR, bot oficial, Lovable, release ou byp
 
 ---
 
-*Próxima atualização: após merge do PR #2378 e resolução dos itens externos.*
+## P-13 — Cart Invariants Smoke — Secrets E2E ausentes (mesma raiz P-02)
+
+**Workflow:** `.github/workflows/e2e-cart-invariants.yml` (ou similar)  
+**Run ID:** 39999446524 (commit `4c482cbc`)
+
+**Erro:** Todos os shards `chromium-authed` e `firefox-authed` falham em "Playwright — invariants do header/sidebar" com autenticação.
+
+**Causa:** `E2E_USER_EMAIL`/`E2E_USER_PASSWORD` ausentes. O spec de invariants usa o projeto Playwright autenticado — mesma raiz de P-02, P-03 e P-12.
+
+**O que você precisa fazer:**
+1. Resolver P-02 (cadastrar `E2E_USER_EMAIL` + `E2E_USER_PASSWORD`)
+2. O Cart Invariants Smoke passará automaticamente no próximo push após o cadastro
+
+**Impacto:** 4 shards (2 browsers × 2 shards) retornam `conclusion=failure`.
+
+---
+
+*Última atualização: 2026-10-23T19:40Z — PRs abertos: #2378 (app code, PO), #2381 (YAML, merge seguro), #2383 (testes, merge seguro).*

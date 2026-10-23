@@ -1,11 +1,11 @@
 # RELATORIO_CI.md — Auditoria completa de workflows
 
 > Gerado em: 2026-10-23  
-> Atualizado em: 2026-10-23T19:30Z (tabela de prova por workflow; checks confirmados no commit 28692fd)  
+> Atualizado em: 2026-10-23T19:40Z (P-13 Cart Invariants; Fix7+8 em #2383; baseline lint/mockup confirmados)  
 > Sessão: https://claude.ai/code/session_019gUZ8wvjsJMC3gYzy6k7jB  
 > Branch: `claude/magical-cannon-u5t1vy`  
-> PR: https://github.com/adm01-debug/Promo_Gifts_V4/pull/2378  
-> Head commit: `28692fd88f698ac1cce59df2161d887e888d16aa`
+> PRs: #2378 (app code) · #2381 (YAML) · #2383 (test-only)  
+> Head commit: `0c758950` (branch) / `4c482cbc` (main)
 
 ---
 
@@ -17,9 +17,11 @@
 | Status | Qtd | Workflows |
 |--------|-----|-----------|
 | ✅ GREEN — Deploy Gates passou | 1 | Deploy Gates (run 39999446914 — Gate E40 RESOLVIDO) |
-| 🔄 Fix no PR #2378 (aguarda merge do PO) | 3 | CI Security & Drift Checks (Fix 7), CI Replenishment (Fix 8), E2E — Critical Flows (Fix 4) |
-| ❌ Bloqueado externo (ação do PO) | 5 | Release Please (P-01), E2E Personalization (P-02), E2E Quote Sheet snapshots (P-03), Update Quote Visual Snapshots (P-12), E2E Cart Delete Popover (P-09) |
-| ⏳ Infra (runner/queued) | 3 | E2E Swatch QuickView/P-08 (attempt 3+), Cart Invariants Smoke (queued), E2E (Playwright) (cancelled) |
+| 🔄 Fix no PR #2383 (test-only — merge seguro) | 2 | CI Security & Drift Checks (Fix 7), CI Replenishment (Fix 8) |
+| 🔄 Fix no PR #2378 (app code — aguarda PO) | 1 | E2E — Critical Flows (Fix 4) |
+| 🔄 Fix no PR #2381 (YAML — merge seguro) | 1 | E2E · Update Dialog Snapshots (Fix 2) |
+| ❌ Bloqueado externo (ação do PO) | 6 | Release Please (P-01), E2E Personalization (P-02), E2E Quote Sheet snapshots (P-03), Update Quote Visual Snapshots (P-12), E2E Cart Delete Popover (P-09), Cart Invariants Smoke (P-13) |
+| ⏳ Infra (runner/queued) | 2 | E2E Swatch QuickView/P-08 (attempt 3+), E2E (Playwright) (cancelled) |
 | ✅ Recuperado | 1 | Uptime Monitor — downtime 40001131817 → recovery 40005522306=success |
 | ❌ Pré-existente (histórico) | 1 | Branch Protection Sentinel/P-11 — commit 4c482cbc direto na main |
 
@@ -30,8 +32,8 @@
 | # | Workflow | Último Run ID | Causa raiz | Resultado |
 |---|---|---|---|---|
 | 1 | Deploy Gates | 39999446914 | Gate E40 resolvido pelo commit `4c482cbc` (outra sessão) | ✅ GREEN |
-| 2 | CI Security & Drift Checks | 39999446430 | Timeout `MockupProductSelector.test.tsx` (`@tanstack/react-virtual` ref null) | 🔄 Fix 7 (PR #2378) |
-| 3 | CI - Replenishment Module Quality Gate | 39999446605 | `useReplenishmentStats` sem timeout override — race com `waitFor` 15s | 🔄 Fix 8 (PR #2378) |
+| 2 | CI Security & Drift Checks | 39999446430 | `clientHeight`/`clientWidth`=0 no jsdom → `@tanstack/react-virtual` outerSize=0 → 0 rows | 🔄 Fix 7 (PR #2383) |
+| 3 | CI - Replenishment Module Quality Gate | 39999446605 | `useReplenishmentStats` sem timeout override — race com `waitFor` 15s | 🔄 Fix 8 (PR #2383) |
 | 4 | E2E — Critical Flows & Error Boundaries | 39999446606 | `sidebar-tooltips`: tooltip visível após mouse out (`disableHoverableContent` ausente) | 🔄 Fix 4 (PR #2378) |
 | 5 | E2E — Personalization Flow | 39999446757 | Secrets `E2E_USER_EMAIL`/`E2E_USER_PASSWORD` ausentes ou usuário inativo | ❌ P-02 (externo) |
 | 6 | Release Please | 39999446560 | PAT com `contents: write` ausente | ❌ P-01 (externo) |
@@ -42,7 +44,7 @@
 | 11 | Uptime Monitor | 40001131817 → 40005522306 | Downtime recuperado: run 40001131817=failure → 40005522306=success | ✅ Recuperado |
 | 12 | E2E (Playwright) | 39999446765 | Cancelado (runner, infra) | ℹ️ cancelled |
 | 13 | E2E · Cart Delete Popover | 39999446624 | Cancelado (runner, infra) | ❌ P-09 (externo/infra) |
-| 14 | Cart Invariants Smoke | 39999446524 | Queued (aguardando runner) | ⏳ queued |
+| 14 | Cart Invariants Smoke | 39999446524 | `chromium-authed`/`firefox-authed`: `E2E_USER_*` ausentes (mesma raiz P-02) | ❌ P-13 (externo) |
 
 ---
 
@@ -135,6 +137,7 @@ Ver `PENDENCIAS.md` para detalhes completos de cada item:
 | P-10 | Uptime Monitor | Downtime recorrente — não é bug de código |
 | P-11 | Branch Protection Sentinel | Commit `4c482cbc` pré-existente direto na main sem padrão aceito — apenas histórico |
 | P-12 | Update Quote Visual Snapshots | `chromium-authed` requer `E2E_USER_*` — mesma raiz de P-02 |
+| P-13 | Cart Invariants Smoke | `chromium-authed`/`firefox-authed` requer `E2E_USER_*` — mesma raiz de P-02 |
 
 ---
 
@@ -150,11 +153,18 @@ URL: https://github.com/adm01-debug/Promo_Gifts_V4/pull/2381
 - **Seguro para merge imediato via admin bypass** (o Gate Final falha por P-05 pré-existente, não por esta mudança)
 - Após merge, o workflow `E2E · Update Dialog snapshots` rodará automaticamente na main e produzirá `conclusion=success`
 
-**PR #2378** — Fixes 1, 3, 4, 5, 7 (código de aplicação)  
+**PR #2378** — Fixes 1, 3, 4, 5 (código de aplicação)  
 URL: https://github.com/adm01-debug/Promo_Gifts_V4/pull/2378  
-- Modifica código de aplicação em 4 arquivos (`PopoverQtyInput.tsx`, `NoveltiesPage.tsx`, `App.tsx`, `QuoteItemEditorSheet.tsx`) + teste `MockupProductSelector.test.tsx`
+- Modifica código de aplicação em 4 arquivos (`PopoverQtyInput.tsx`, `NoveltiesPage.tsx`, `App.tsx`, `QuoteItemEditorSheet.tsx`)
 - **Merge = deploy em produção via Lovable/Vercel** — aguarda aprovação explícita do PO
-- O PR está pronto e validado — todos os gates passam (exceto P-05 pré-existente na main)
+- O PR está pronto e validado — todos os gates passam (exceto pendências externas pré-existentes)
+
+**PR #2383** — Fixes 7, 8 (test-only — seguro para merge imediato)  
+URL: https://github.com/adm01-debug/Promo_Gifts_V4/pull/2383  
+- Modifica somente 2 arquivos de teste: `tests/components/mockup/MockupProductSelector.test.tsx` + `src/hooks/products/__tests__/useReplenishments.integration.test.ts`
+- **Zero código de aplicação** — sem impacto em Lovable/Vercel
+- Confirmado: 16/16 testes passando no branch
+- **Pode ser mergeado imediatamente pelo PO**
 
 ### Por que não é possível confirmar `conclusion=success` nos workflows de push da main
 
@@ -187,13 +197,13 @@ Mudanças desta sessão não introduziram regressões:
 | `npm ci` | ✅ OK | Dependências instaladas; sem erros críticos |
 | `npm run build` | ✅ OK | Built in 8.52s; zero erros TS/Vite |
 | `npm run typecheck` | ✅ OK | 0 erros TypeScript |
-| `npm run lint` | ⚠️ OOM (ambiente) | Container com memória limitada; mesma restrição pré-existente do CI (Fix 2 resolve em GA) |
-| `vitest run` (full) | ⚠️ OOM (ambiente) | Container com memória limitada; igual ao lint |
+| `npm run lint` | ✅ OK | `NODE_OPTIONS=--max-old-space-size=4096 npm run lint:baseline` → exit 0, "Nenhuma regressão detectada" (0 erros, 0 warnings) |
+| `vitest run` (full) | ⚠️ Timeout local | Container: timeout em 90s (OOM). Suíte completa roda no CI (runner com mais memória) |
+| `vitest` — `MockupProductSelector.test.tsx` | ✅ 16/16 | Todos os testes do Fix 7 passando no branch (main: 7 failures antes do fix) |
 | `vitest` — `PopoverQtyInput.test.tsx` | ✅ 32/32 | Testes do Fix 1 passando |
 | `vitest` — `PopoverQtyInput.exhaustive.test.tsx` | ✅ 33/33 | Testes exaustivos do Fix 1 passando |
 
-> A suíte completa de testes e lint rodará no GitHub Actions (runners de maior memória).
-> O OOM local é pré-existente — mesma causa do Husky OOM corrigido no Fix 2.
+> Lint confirmado OK com `--max-old-space-size=4096`. O OOM no lint/vitest full sem essa flag é pré-existente (Fix 2 corrige no CI via HUSKY=0).
 
 ---
 
