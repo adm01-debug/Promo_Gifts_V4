@@ -74,6 +74,7 @@ export function PopoverQtyInput({
   // Ref usada pelo Esc para pular o commit disparado por blur() na sequência.
   const skipCommitRef = useRef(false);
   const feedbackTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const focusRafRef = useRef<number | null>(null);
 
   useEffect(() => {
     if (!editing) setDraft(String(quantity));
@@ -134,7 +135,11 @@ export function PopoverQtyInput({
           // posiciona o cursor no fim sem selecionar o valor (mesmo padrão
           // de SortableCartItem). rAF sobrepõe a seleção implícita que
           // Chrome/Safari aplicam quando o input recebe foco via Tab.
-          requestAnimationFrame(() => {
+          // O ID é salvo em focusRafRef para que onKeyDown/onMouseDown
+          // possam cancelar o rAF antes que ele desfaça uma seleção
+          // intencional (ex.: Ctrl+A feito logo após o foco).
+          focusRafRef.current = requestAnimationFrame(() => {
+            focusRafRef.current = null;
             try {
               el.setSelectionRange(end, end);
             } catch {
@@ -157,7 +162,17 @@ export function PopoverQtyInput({
           commit();
         }}
         onClick={(e) => e.stopPropagation()}
+        onMouseDown={() => {
+          if (focusRafRef.current !== null) {
+            cancelAnimationFrame(focusRafRef.current);
+            focusRafRef.current = null;
+          }
+        }}
         onKeyDown={(e) => {
+          if (focusRafRef.current !== null) {
+            cancelAnimationFrame(focusRafRef.current);
+            focusRafRef.current = null;
+          }
           e.stopPropagation();
           if (e.key === 'Enter') {
             e.preventDefault();
