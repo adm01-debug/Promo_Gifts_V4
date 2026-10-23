@@ -8,13 +8,13 @@
   "status_global": "BLOQUEADO_APROVACAO_PRODUCAO",
   "parada_exata": {
     "pr": "#2360",
-    "etapa": "aguardando Joaquim aprovar db-apply-migration.yml x2 (run #81 + #90) + dispatch+aprovacao 3o run",
-    "bloqueio": "environment:production requer aprovacao humana; agente nao pode aprovar; #2360 ja mergeada (SHA b4cc8163); Gate E40 ativo ate migrations aplicadas no banco",
+    "etapa": "aguardando Joaquim aprovar db-apply-migration.yml x2 (run #81 + #90) + dispatch+aprovacao 3º run",
+    "bloqueio": "environment:production requer aprovação humana; agente não pode aprovar; #2360 já mergeada (SHA b4cc8163); Gate E40 ativo até migrations aplicadas no banco",
     "runs_pendentes": [
       {"run_id": 39894328218, "run_number": 81, "status": "waiting", "url": "https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39894328218"},
       {"run_id": 39903694395, "run_number": 90, "status": "pending", "url": "https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39903694395"}
     ],
-    "acao_requerida": "Joaquim aprovar run #81 e #90 (environment:production); agente dispatcha 3o run e Joaquim aprova; Gate Final volta a success"
+    "acao_requerida": "Joaquim aprovar run #81 e #90 (environment:production); agente dispatcha 3º run e Joaquim aprova; Gate Final volta a success"
   },
   "por_veredito": {
     "FECHAR": 18,
@@ -49,7 +49,7 @@
     "2336": {"veredito": "FECHAR", "estado": "fechada", "evidencia": "comentario+fechamento via MCP"},
     "2337": {"veredito": "FECHAR", "estado": "fechada", "evidencia": "comentario+fechamento via MCP"},
     "2357": {"veredito": "MERGEAR", "estado": "fechada", "sucessora": "2360", "sha_merge_sucessora": "b4cc8163d68a9e31ca23f1695d193ec0605f9ae8"},
-    "2360": {"veredito": "MERGEAR", "estado": "mergeada_admin", "sha_merge": "b4cc8163d68a9e31ca23f1695d193ec0605f9ae8", "gate_e40": "inerente_ate_migrations_aplicadas", "motivo": "mergeada por admin (bypass Gate E40); migrations no banco pendentes de aprovacao humana em environment:production"}
+    "2360": {"veredito": "MERGEAR", "estado": "mergeada_admin", "sha_merge": "b4cc8163d68a9e31ca23f1695d193ec0605f9ae8", "gate_e40": "inerente_ate_migrations_aplicadas", "motivo": "mergeada por admin (bypass Gate E40); migrations no banco pendentes de aprovação humana em environment:production"}
   },
   "escritas_github": [
     "fechar+comentar: #2290, #2293, #2314, #2319, #2320, #2322-2337 (18 PRs)",
@@ -60,9 +60,6 @@
     "draft->ready + merge squash: #2361 (SHA e2be31add9a107030d1aeab8462534a6cd798979)",
     "comentario status: #2360",
     "update branch #2360 com main",
-    "admin merge #2360 (SHA b4cc8163d68a9e31ca23f1695d193ec0605f9ae8)",
-    "dispatch db-apply-migration.yml run #81 (migration 20261022194100)",
-    "dispatch db-apply-migration.yml run #90 (migration 20261022194000 ou 194200)",
     "push artefatos: claude/chore-analise-prs-261023-0215"
   ],
   "worktrees": []
