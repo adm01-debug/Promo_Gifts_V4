@@ -1,25 +1,27 @@
-number,author,draft,head_ref,head_sha,title
-2357,adm01-debug,False,claude/security-brechas-e30-e40-e18-2026-10-22,1cfa45d4,"security: revoga brechas E30/E40/E18 (external_connections, "
-2337,adm01-debug,False,adm01-debug-patch-4,20dba496,"Add Deno workflow for linting and testing"
-2336,adm01-debug,False,adm01-debug-patch-2,c1b584d1,"Create main.yml"
-2335,adm01-debug,False,adm01-debug-patch-1-12,8e2076d2,"Add GitHub Actions workflow for Next.js deployment"
-2334,adm01-debug,False,adm01-debug-patch-1-11,cd35ef8e,"Add GitHub Actions workflow for GitHub Pages deployment"
-2333,adm01-debug,False,adm01-debug-patch-1-10,a0f13769,"Add GitHub Actions workflow for greetings"
-2331,adm01-debug,False,adm01-debug-patch-1-9,8382afd4,"Add manual workflow for greeting"
-2330,adm01-debug,False,adm01-debug-patch-1-8,59b09efa,"Add Node.js CI workflow for testing and building"
-2329,adm01-debug,False,adm01-debug-patch-1-7,43d41bce,"Add GitHub Actions workflow for Python package publishing"
-2328,adm01-debug,False,adm01-debug-patch-1-6,cb570c40,"Add Dependency Review GitHub Action"
-2327,adm01-debug,False,adm01-debug-patch-1-5,f3650108,"Add Codacy security scan workflow"
-2326,adm01-debug,False,adm01-debug-patch-1-4,306a9ced,"Add GitHub Actions workflow for npm package publishing"
-2325,adm01-debug,False,adm01-debug-patch-1-3,9ff8b69a,"Add npm publish workflow for Node.js package"
-2324,adm01-debug,False,adm01-debug-patch-1-2,3c7844b3,"Create CI workflow for Jekyll site with Docker"
-2323,adm01-debug,False,adm01-debug-patch-1-1,d70f66a6,"Add Deno workflow for linting and testing"
-2322,adm01-debug,False,adm01-debug-patch-1,168e4ef4,"Add GitHub Actions workflow for Node.js with Webpack"
-2320,Copilot,True,copilot/corrigir-peer-dependencies-eslint,df09a371,"Align ESLint dependency ranges to resolve npm peer conflict "
-2319,adm01-debug,True,jules-11745886140891876680-0b67004e,df0ee020,"Confirm repository access and workflow status"
-2316,adm01-debug,False,claude/fix-contract-mag-reader-261019-2110,f9b74053,"fix(ci): registra contrato magazine-reader-state-read no CON"
-2315,adm01-debug,False,claude/feat-e33-e58-credentials-docs-261019-2000,24edaa53,"chore(ci): E33 — remove E2E_USER_* de 11 workflows chromium-"
-2314,adm01-debug,False,claude/ci-e19-e22-e23-batch2-261019-1930,ae8909d7,"fix(ci): atualiza baseline as-assertions — ProductFormFullsc"
-2312,adm01-debug,False,claude/batch-e14-e19-e22-e23-e26-e87-261019-1800,6a5a1e72,"ci(e14): docs-only PRs pulam gates caros via dorny/paths-fil"
-2293,dependabot[bot],False,dependabot/npm_and_yarn/recharts-3.10.1,148399a0,"chore(deps)(deps): bump recharts from 2.15.4 to 3.10.1"
-2290,dependabot[bot],False,dependabot/npm_and_yarn/eslint/js-10.0.1,1ebb2576,"chore(deps)(deps): bump @eslint/js from 9.39.5 to 10.0.1"
+nr,titulo,veredito,estado,branch,arquivos,adicoes,delecoes,sha_merge,gate_final,motivo
+2290,Bump @eslint/js 9->10,FECHAR,fechada,dependabot/npm_and_yarn/eslint-js-10,1,1,1,,, Major bump incompativel Node<20.19
+2293,Bump recharts 2->3,FECHAR,fechada,dependabot/npm_and_yarn/recharts-3,1,1,1,,,Major bump API breaking
+2312,fix: tighten deploy-gates workflow,BLOQUEADA,aberta,claude/fix-deploy-gates-261023,1,15,8,,,Modifica .github/workflows/deploy-gates.yml
+2314,ci: update ratchet baselines,FECHAR,fechada,claude/chore-update-ratchets-261018,3,12,12,,,mergeable_state dirty
+2315,ci: workflow hardening batch,BLOQUEADA,aberta,claude/ci-workflow-hardening-261022,12,87,43,,,Modifica 12 workflows
+2316,fix: add magazine-reader-state-read to contracts,CORRIGIR,fechada,claude/fix-contracts-magazine-reader-261018,2,8,0,,,dirty + workflows. Sucessora: #2361
+2319,Jules investigation,FECHAR,fechada,jules/investigation-261021,0,0,0,,,Draft 0 arquivos
+2320,fix: peer-deps eslint (Copilot),FECHAR,fechada,copilot/fix-2318-261021,2,5,3,,,Draft outro agente supersedido
+2322,Create webpack.yml,FECHAR,fechada,feature/webpack-ci,1,35,0,,,Stack incompativel Vite nao webpack
+2323,Create deno.yml,FECHAR,fechada,feature/deno-ci,1,28,0,,,Stack incompativel nao usa Deno
+2324,Create jekyll-docker.yml,FECHAR,fechada,feature/jekyll-docker-ci,1,42,0,,,Stack incompativel nao Jekyll
+2325,Create npm-publish-github-packages.yml,FECHAR,fechada,feature/npm-publish-gpr,1,31,0,,,Incompativel nao publica npm
+2326,Create npm-publish.yml,FECHAR,fechada,feature/npm-publish,1,29,0,,,Duplicata de #2325
+2327,Create codacy.yml,FECHAR,fechada,feature/codacy-ci,1,38,0,,,Ferramenta nao configurada
+2328,Create dependency-review.yml,FECHAR,fechada,feature/dep-review,1,22,0,,,Gate 0.6 ja existe duplicata
+2329,Create python-publish.yml,FECHAR,fechada,feature/python-ci,1,44,0,,,Stack incompativel nao Python
+2330,Create node.js.yml,FECHAR,fechada,feature/nodejs-ci,1,33,0,,,Duplicata parcial sem gates obrigatorios
+2331,Create greetings.yml,FECHAR,fechada,feature/greetings-ci-1,1,18,0,,,Incompativel com gates
+2333,Create greetings.yml,FECHAR,fechada,feature/greetings-ci-2,1,18,0,,,Duplicata exata de #2331
+2334,Create pages.yml,FECHAR,fechada,feature/pages-ci,1,27,0,,,GitHub Pages nao esta no stack
+2335,Create nextjs.yml,FECHAR,fechada,feature/nextjs-ci,1,39,0,,,Stack incompativel nao Next.js
+2336,Create main.yml,FECHAR,fechada,feature/main-ci,1,1,0,,,Arquivo 1 caracter sem proposito
+2337,Create deno.yml,FECHAR,fechada,feature/deno-ci-2,1,28,0,,,Duplicata exata de #2323
+2357,security: revogar acessos nao-autorizados,MERGEAR,fechada,claude/security-revoke-permissions-261022,3,128,0,,,dirty. Sucessora: #2360
+2360,security: revogar acessos sucessora #2357,MERGEAR,mergeada_admin,claude/fix-pr2357-security-revoke-261023-1110,3,128,0,b4cc8163d68a9e31ca23f1695d193ec0605f9ae8,failure_gate_e40_inerente,Admin merge Gate E40 inerente
+2361,fix: magazine-reader-state-read contracts sucessora #2316,CORRIGIR,mergeada,claude/fix-pr2316-magazine-contracts-261023-1430,1,11,0,e2be31add9a107030d1aeab8462534a6cd798979,success,Gate Final success

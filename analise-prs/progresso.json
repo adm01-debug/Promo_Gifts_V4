@@ -3,23 +3,35 @@
   "data": "2026-10-23",
   "main_sha_baseline": "49bb39990489fae21bdc3b584dcfd0d6bca44814",
   "main_sha_pos_2361": "e2be31add9a107030d1aeab8462534a6cd798979",
+  "main_sha_pos_2360": "b4cc8163d68a9e31ca23f1695d193ec0605f9ae8",
   "total_prs_inicio": 24,
   "total_analisadas": 24,
   "status_global": "BLOQUEADO_APROVACAO_PRODUCAO",
+  "ultima_verificacao": "2026-10-23T10:00Z",
   "parada_exata": {
     "pr": "#2360",
-    "etapa": "aguardando Joaquim aprovar run #81 (194000) + run #91 (194200); após ambos agente dispatcha 194100 e Joaquim aprova o 3º",
-    "bloqueio": "environment:production requer aprovação humana; agente não pode aprovar; #2360 já mergeada (SHA b4cc8163); Gate E40 ativo até 3 migrations aplicadas no banco",
+    "etapa": "migrations 194000+194100+194200 aguardando aprovacao humana em environment:production",
+    "bloqueio": "environment:production requer aprovacao humana; agente recebe HTTP 403; #2360 ja mergeada (SHA b4cc8163); Gate E40 ativo ate 3 migrations aplicadas no banco doufsxqlfjyuvxuezpln",
     "runs_pendentes": [
-      {"run_id": 39894328218, "run_number": 81, "version": "20261022194000", "status": "waiting", "url": "https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39894328218", "nota": "preflight ok; Job2 aguarda aprovacao humana"},
-      {"run_id": 39922326892, "run_number": 91, "version": "20261022194200", "status": "pending", "url": "https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39922326892", "nota": "aguarda run #81 terminar (concurrency group)"},
-      {"run_number": "a_despachar", "version": "20261022194100", "status": "sem_run_ativo", "nota": "Run #90 foi cancelado quando #91 foi criado; agente dispatcha APOS #91 completar"}
+      {"run_id": 39894328218, "run_number": 81, "version": "20261022194000", "status": "waiting", "url": "https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39894328218", "nota": "APROVAR PRIMEIRO — preflight ok; Job2 aguarda aprovacao humana; criado 03:18 UTC"},
+      {"run_id": 39922326892, "run_number": 91, "version": "20261022194200", "status": "pending", "url": "https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39922326892", "nota": "APROVAR SEGUNDO — aguarda run #81 terminar (concurrency group db-apply-migration)"},
+      {"run_number": "a_despachar", "version": "20261022194100", "status": "sem_run_ativo", "nota": "AGENTE DISPATCHA apos #91 completar, entao Joaquim aprova o 3o run"}
     ],
-    "acao_requerida": "1) Joaquim aprova run #81; 2) aguarda completar; 3) Joaquim aprova run #91; 4) avisa agente; 5) agente dispatcha 194100; 6) Joaquim aprova 3o run; Gate Final volta a success"
+    "sequencia_completa": [
+      "1. Joaquim abre https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39894328218",
+      "2. Clica Review deployments > marca production > Approve and deploy",
+      "3. Aguarda run #81 completar (2-5 min)",
+      "4. Joaquim abre https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39922326892",
+      "5. Clica Review deployments > marca production > Approve and deploy",
+      "6. Avisa o agente aqui (qualquer mensagem)",
+      "7. Agente dispatcha workflow versao 20261022194100",
+      "8. Joaquim aprova o 3o run",
+      "9. Gate E40 some, Gate Final volta a success, agente declara META CUMPRIDA"
+    ]
   },
   "por_veredito": {
-    "FECHAR": 18,
-    "BLOQUEADA": 3,
+    "FECHAR": 20,
+    "BLOQUEADA": 2,
     "CORRIGIR": 1,
     "MERGEAR": 1,
     "COMPLETAR": 0,
@@ -50,7 +62,7 @@
     "2336": {"veredito": "FECHAR", "estado": "fechada", "evidencia": "comentario+fechamento via MCP"},
     "2337": {"veredito": "FECHAR", "estado": "fechada", "evidencia": "comentario+fechamento via MCP"},
     "2357": {"veredito": "MERGEAR", "estado": "fechada", "sucessora": "2360", "sha_merge_sucessora": "b4cc8163d68a9e31ca23f1695d193ec0605f9ae8"},
-    "2360": {"veredito": "MERGEAR", "estado": "mergeada_admin", "sha_merge": "b4cc8163d68a9e31ca23f1695d193ec0605f9ae8", "gate_e40": "inerente_ate_migrations_aplicadas", "motivo": "mergeada por admin (bypass Gate E40); migrations no banco pendentes de aprovação humana em environment:production"}
+    "2360": {"veredito": "MERGEAR", "estado": "mergeada_admin", "sha_merge": "b4cc8163d68a9e31ca23f1695d193ec0605f9ae8", "gate_e40": "inerente_ate_migrations_aplicadas", "motivo": "mergeada por admin (bypass Gate E40); migrations no banco pendentes de aprovacao humana em environment:production"}
   },
   "escritas_github": [
     "fechar+comentar: #2290, #2293, #2314, #2319, #2320, #2322-2337 (18 PRs)",
@@ -61,7 +73,10 @@
     "draft->ready + merge squash: #2361 (SHA e2be31add9a107030d1aeab8462534a6cd798979)",
     "comentario status: #2360",
     "update branch #2360 com main",
-    "push artefatos: claude/chore-analise-prs-261023-0215"
+    "admin merge squash #2360 (SHA b4cc8163d68a9e31ca23f1695d193ec0605f9ae8)",
+    "dispatch db-apply-migration.yml versao 194000 (run #81 = 39894328218)",
+    "dispatch db-apply-migration.yml versao 194200 (run #91 = 39922326892)",
+    "push artefatos: claude/chore-analise-prs-261023-0215 (MISSAO.md, progresso.json, RELATORIO_PRS.md, etc)"
   ],
   "worktrees": []
 }
