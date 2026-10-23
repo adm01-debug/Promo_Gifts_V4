@@ -75,6 +75,8 @@ const SCROLL_VIEWPORT_HEIGHT = 640;
 
 const originalOffsetHeight = Object.getOwnPropertyDescriptor(HTMLElement.prototype, 'offsetHeight');
 const originalOffsetWidth = Object.getOwnPropertyDescriptor(HTMLElement.prototype, 'offsetWidth');
+const originalClientHeight = Object.getOwnPropertyDescriptor(HTMLElement.prototype, 'clientHeight');
+const originalClientWidth = Object.getOwnPropertyDescriptor(HTMLElement.prototype, 'clientWidth');
 
 function makeProduct(index: number, overrides: Partial<Record<string, unknown>> = {}) {
   return {
@@ -91,11 +93,10 @@ function makeProduct(index: number, overrides: Partial<Record<string, unknown>> 
 
 async function renderAndOpenDialog(onSelect = vi.fn()) {
   renderWithProviders(<MockupProductSelector selection={null} onSelect={onSelect} />);
-  // scrollParentRef.current is null on the first synchronous render (React sets refs only
-  // after the commit phase). The component registers a 'resize' listener that calls
-  // setViewportWidth → triggers a re-render → virtualizer sees the non-null ref on the
-  // next pass → calculateRange returns items. Without this dispatch, outerSize=0 and the
-  // virtualizer renders an empty container forever in jsdom (ResizeObserver is a no-op).
+  // @tanstack/react-virtual v3 usa clientHeight/clientWidth em getRect() para medir o
+  // container de scroll (outerSize). O beforeEach mockoca essas propriedades com valores
+  // não-zero, então o virtualizer já tem outerSize>0 na primeira renderização. O dispatch
+  // abaixo é mantido por compatibilidade mas não é necessário para o fix.
   window.dispatchEvent(new Event('resize'));
   await waitFor(() =>
     expect(screen.getAllByTestId('mockup-product-row').length).toBeGreaterThan(0),
@@ -151,14 +152,25 @@ describe('MockupProductSelector — grade responsiva e honestidade', () => {
 
     // "Layout" de jsdom: dá dimensões não-zero ao elemento de scroll (senão a virtualização
     // não renderiza nada) e uma altura mensurável às linhas (senão a medição retorna 0).
+    // @tanstack/virtual-core v3 usa clientHeight/clientWidth em getRect() para determinar
+    // outerSize do container de scroll; offsetHeight é usado só para measureElement (linhas).
+    const isRowEl = (el: HTMLElement) =>
+      typeof (el as Element)?.getAttribute === 'function' &&
+      (el as Element).getAttribute('data-testid') === 'mockup-product-row';
+    Object.defineProperty(HTMLElement.prototype, 'clientHeight', {
+      configurable: true,
+      get(this: HTMLElement) {
+        return isRowEl(this) ? MEASURED_ROW_HEIGHT : SCROLL_VIEWPORT_HEIGHT;
+      },
+    });
+    Object.defineProperty(HTMLElement.prototype, 'clientWidth', {
+      configurable: true,
+      get: () => 800,
+    });
     Object.defineProperty(HTMLElement.prototype, 'offsetHeight', {
       configurable: true,
       get(this: HTMLElement) {
-        // Guarda: a getter também pode ser lida em receptores que não são Element.
-        const isRow =
-          typeof (this as Element)?.getAttribute === 'function' &&
-          this.getAttribute('data-testid') === 'mockup-product-row';
-        return isRow ? MEASURED_ROW_HEIGHT : SCROLL_VIEWPORT_HEIGHT;
+        return isRowEl(this) ? MEASURED_ROW_HEIGHT : SCROLL_VIEWPORT_HEIGHT;
       },
     });
     Object.defineProperty(HTMLElement.prototype, 'offsetWidth', {
@@ -169,6 +181,12 @@ describe('MockupProductSelector — grade responsiva e honestidade', () => {
 
   afterEach(() => {
     window.innerWidth = originalInnerWidth;
+    if (originalClientHeight) {
+      Object.defineProperty(HTMLElement.prototype, 'clientHeight', originalClientHeight);
+    }
+    if (originalClientWidth) {
+      Object.defineProperty(HTMLElement.prototype, 'clientWidth', originalClientWidth);
+    }
     if (originalOffsetHeight) {
       Object.defineProperty(HTMLElement.prototype, 'offsetHeight', originalOffsetHeight);
     }
