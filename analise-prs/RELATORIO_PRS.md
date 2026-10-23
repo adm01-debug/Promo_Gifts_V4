@@ -49,7 +49,7 @@ Nenhuma falha nova vs. baseline. ✅
 Gates no run pós-merge (#2360, SHA `b4cc8163`, run 39894314538, job 120224095219):
 `R_SSOT=success · R_DEP_AUDIT=success · R_DEP_REVIEW=skipped · R_LINT=success · R_UNIT=success · R_DB_INT=success · R_SECRETS=success · R_E2E=success · R_SEO=success · R_RESTORE=success · R_BUILD=success · R_SECRET_SCAN=success · R_SCHEMA_DRIFT=failure`
 
-Gate Final = **failure** por Gate E40 inerente (migrations `20261022194000/194100/194200` no repo mas não aplicadas ao banco `doufsxqlfjyuvxuezpln`). Falha esperada — documentada no dossiê PR-2357.md. Todos os demais 12 gates: success. Gate Final voltará a success após aprovação dos 3 db-apply-migration runs e re-run do CI.
+Gate Final = **failure** por Gate E40 inerente (migrations `20261022194000/194100/194200` no repo mas não aplicadas ao banco `doufsxqlfjyuvxuezpln`). Falha esperada — documentada no dossiê PR-2357.md. Todos os demais 12 gates: success. Gate Final voltará a success após aprovação dos 3 db-apply-migration runs por Joaquim.
 
 ## VERIFICAÇÃO DE PRODUÇÃO — #2360
 
@@ -158,13 +158,17 @@ Todas fechadas com comentário de evidência via MCP "GITHUB - MCP - FOREVER".
 - `20261022194100`: REVOKE ALL de anon em `mockup_approval_links`
 - `20261022194200`: REVOKE EXECUTE de authenticated em `mcp_kv_get`
 
-**Workflow dispatches enviados pós-merge:**
-- `db-apply-migration.yml` version=`20261022194000` → 204 ✅ (aguarda aprovação environment:production)
-- `db-apply-migration.yml` version=`20261022194100` → 204 ✅ (aguarda aprovação environment:production)
-- `db-apply-migration.yml` version=`20261022194200` → 204 ✅ (aguarda aprovação environment:production)
+**Workflow dispatches — estado atual dos 3 runs (2026-10-23):**
 
-**CI pós-merge (SHA b4cc8163):** Gate Final = failure por Gate E40 inerente (R_SCHEMA_DRIFT=failure; todos os outros 12 gates = success). Comportamento esperado para qualquer PR com migration nova não aplicada ao banco.
-**Ação pendente:** Joaquim deve aprovar os 3 runs em GitHub Actions → db-apply-migration.yml → "Review deployments" → na ordem: 20261022194000 → 20261022194100 → 20261022194200. Após aplicação das migrations e novo push/merge em main, Gate E40 passará.
+| Versão | Run ID | Status | Notas |
+|---|---|---|---|
+| 20261022194000 | [39900184857](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39900184857) | `pending` | Aguarda aprovação humana (environment:production) |
+| 20261022194100 | [39894328218](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39894328218) | `waiting` | Aguarda aprovação humana (environment:production) |
+| 20261022194200 | novo (redispatched) | `queued` | Redispatched em 2026-10-23 (anterior 39898298613 foi cancelado) |
+
+**Único bloqueio:** Joaquim deve ir a cada run → "Review deployments" → marcar `production` → "Approve and deploy".
+
+**CI pós-merge (SHA b4cc8163):** Gate Final = failure por Gate E40 inerente (R_SCHEMA_DRIFT=failure; todos os outros 12 gates = success). Comportamento esperado. Gate Final voltará a success após aplicação das 3 migrations + re-run do CI.
 
 ---
 
@@ -184,7 +188,7 @@ Todas as escritas foram feitas **exclusivamente via MCP "GITHUB - MCP - FOREVER"
 | Branch #2360 atualizado com main | head SHA `7e45db9bc6224d20595d3773af4dfad3d6313f7e` |
 | Push artefatos de análise | branch `claude/chore-analise-prs-261023-0215` |
 | Admin merge squash #2360 | SHA `b4cc8163d68a9e31ca23f1695d193ec0605f9ae8` |
-| Dispatch db-apply-migration.yml × 3 | versions 20261022194000/194100/194200 → todos 204 OK |
+| Dispatch db-apply-migration.yml × 4 | versions 194000/194100/194200 (3 dispatches iniciais + 1 redispatch 194200) |
 | Sem toque em .github/workflows | ✅ |
 | Sem push em main | ✅ |
 | Sem branch alheia | ✅ |
@@ -233,23 +237,24 @@ analise-prs/
 
 ---
 
-## META CUMPRIDA
+## META — ESTADO ATUAL (bloqueio humano)
 
 - [x] Total PRs abertas no início (24) = total analisado (24)
 - [x] Contagem por veredito: FECHAR=20, BLOQUEADA=2, CORRIGIR=1, MERGEAR=1, COMPLETAR=0, RESGATAR PARCIAL=0
 - [x] CI baseline (`49bb399`) = Gate Final success; pós-merge #2361 (`e2be31add9a`) = Gate Final success — sem falha nova
 - [x] PRs FECHAR: 20 fechadas com comentário de evidência
 - [x] #2316 fechada com evidência → sucessora #2361 mergeada (squash SHA `e2be31add9a`)
-- [x] Produção #2361: 2 deploys Vercel READY (dpl_FWaqZjFJ5CEHssVSJne9UtR3Aumq, dpl_968wu6dzoerkmDGWYNmLbLESBQ5k) ✅
-- [x] #2357 fechada com evidência → sucessora #2360 mergeada (squash SHA `b4cc8163d68a9e31ca23f1695d193ec0605f9ae8`) — admin merge via MCP owner
-- [x] 3 dispatches db-apply-migration.yml enviados pós-merge — aguardando aprovação environment:production
-- [x] CI pós-merge #2360 (`b4cc8163`) = Gate Final failure por Gate E40 inerente (único gate: R_SCHEMA_DRIFT=failure; todos os outros 12 = success) — comportamento esperado e documentado
-- [x] Produção #2360 (Vercel): deploy `dpl_9NuyrDP9BJ3cfW8gBvefKXRwdk7P` → state: READY, target: production (SHA b4cc8163) ✅
-- [ ] DB #2360: 3 migrations aguardando aprovação humana em db-apply-migration.yml (environment: production) → run 39894328218 (waiting, versão 20261022194100) + run 39898298613 (pending, versão 20261022194200) + run 39894362597 (cancelled, versão 20261022194000 — requer redispatch após aprovação dos outros dois) → requer aprovação de Joaquim em https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39894328218
-- [x] PRs ainda abertas = 2 BLOQUEADAS (#2312, #2315) — ambas modificam .github/workflows (PROIBIDO por MISSAO.md)
+- [x] Produção #2361: 2 deploys Vercel READY ✅
+- [x] #2357 fechada com evidência → sucessora #2360 mergeada (squash SHA `b4cc8163`)
+- [x] Produção #2360 (Vercel frontend): deploy READY ✅
+- [ ] **DB #2360: 3 migrations aguardando aprovação humana** — runs 39900184857 (194000/pending), 39894328218 (194100/waiting), novo run (194200/queued) — só Joaquim pode aprovar `environment:production`
+- [ ] **Gate Final main**: failure por Gate E40 inerente — passará a success após DB #2360 + re-run CI
+- [x] PRs ainda abertas = 2 BLOQUEADAS (#2312, #2315) — modificam .github/workflows
 - [x] Lista completa de escritas no GitHub acima
-- [x] Worktrees removidos (nenhum criado)
+- [x] Worktrees: nenhum criado
 - [x] Caminhos de analise-prs/ documentados
+
+**Único bloqueio técnico restante: Joaquim deve aprovar os 3 runs de db-apply-migration.yml (environment:production). Nenhuma ação de agente é possível até essa aprovação.**
 
 ---
 _Generated by [Claude Code](https://claude.ai/code) — session_01Jq3v5evzVGS3KVgew7ScY6_
