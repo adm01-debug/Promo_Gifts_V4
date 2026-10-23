@@ -39,9 +39,6 @@ jobs:
         with:
           start-vite: "true"
       - name: Run quote-conditions spec (fail-on-diff, trace+video on failure)
-        env:
-          E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
-          E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
         run: |
           PLAYWRIGHT_JSON_OUTPUT_NAME=playwright-report/results.json \
           npx playwright test e2e/ui/quote-conditions-visual.spec.ts \
@@ -94,7 +91,7 @@ jobs:
           retention-days: 14
       - name: Comentar no PR em caso de falha
         if: failure() && github.event_name == 'pull_request'
-        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        uses: actions/github-script@3a2844b7e9c422d3c10287c895573f7108da1b3 # v9.0.0
         env:
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           DIFF_URL: ${{ steps.upload_diff.outputs.artifact-url }}
@@ -107,7 +104,7 @@ jobs:
             const diffUrl = process.env.DIFF_URL || `${runUrl}#artifacts`;
             const previewUrl = process.env.PREVIEW_URL || `${runUrl}#artifacts`;
 
-            // Matriz esperada: 3 viewports × 2 temas
+            // Matriz experada: 3 viewports × 2 temas
             const VIEWPORTS = ['375', '768', '1280'];
             const THEMES = ['light', 'dark'];
             const status = new Map();
@@ -131,7 +128,7 @@ jobs:
             for (const v of VIEWPORTS) {
               for (const t of THEMES) {
                 const s = status.get(`${v}|${t}`);
-                const badge = s.changed ? '🔴 mudou' : '🟢 ok';
+                const badge = s.changed ? '🔒 mudou' : '😢 ok';
                 const link = s.changed && s.anchor
                   ? `[ver diff](${previewUrl}#${s.anchor})`
                   : '—';
@@ -140,17 +137,17 @@ jobs:
             }
 
             const body = [
-              '❌ **Snapshot visual do card "Condições" divergiu.**',
+              '�l **Snapshot visual do card "Condições" divergiu.**',
               '',
-              `**Resumo por viewport/tema** (${total} caso(s) divergente(s)):`,
+              `**Resumo por viewport/tema** (${total} caso(as) divergente(s)):`,
               '',
               '| Viewport | Tema | Status | Diff |',
               '|---|---|---|---|',
               ...rows,
               '',
-              `🖼️ [HTML preview: baseline × actual × diff](${previewUrl})`,
-              `📎 [PNGs de diff](${diffUrl}) · [Playwright HTML report + traces](${runUrl}#artifacts)`,
-              `🔗 Run: ${runUrl}`,
+              `�� [HTML preview: baseline × actual × diff](${previewUrl})`,
+              `📢 [PNGs de diff](${diffUrl}) · [Playwright HTML report + traces](${runUrl}#artifacts)`,
+              `💪 Run: ${runUrl}`,
               '',
               'Se a mudança é intencional, dispare **E2E · Update Quote Conditions snapshots** (modo `safe_mode=true` recomendado).',
             ].join('\n');
