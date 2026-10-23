@@ -83,11 +83,15 @@ export function QuoteItemEditorSheet({
         className="flex w-full flex-col gap-0 p-0 sm:max-w-[430px]"
         data-testid="quote-item-editor-sheet"
         aria-label="Editor de item do orçamento"
-        onEscapeKeyDown={(e) => {
-          // Radix only fires this for the topmost layer, so nested dialogs
-          // (ConfigurationPanelV6, etc.) already consume ESC before it reaches here.
-          if (hasUnsavedChanges) {
-            e.preventDefault(); // prevent Radix from closing the sheet
+        onKeyDownCapture={(e) => {
+          // Capture-phase intercept: fires before native element handling and before
+          // Radix's document listener. Works cross-browser including Firefox, where
+          // input elements may absorb ESC without propagating to Radix's layer system.
+          // ConfirmDialog and other portal dialogs capture ESC in their own subtree
+          // before this fires, so nested dialogs are not affected.
+          if (e.key === 'Escape' && hasUnsavedChanges) {
+            e.stopPropagation();
+            e.preventDefault();
             setConfirmOpen(true);
           }
         }}
