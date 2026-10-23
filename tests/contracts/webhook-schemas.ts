@@ -660,6 +660,11 @@ export const MagazineReaderStateWriteSchemaV1 = z.object({
   sessionId: z.string().max(128).optional(),
 });
 
+export const MagazineReaderStateReadSchemaV1 = z.object({
+  token: z.string().min(24).max(64).regex(/^[a-f0-9]+$/i),
+  fingerprint: z.string().min(32).max(128),
+});
+
 // ===========================================================================
 // product-visual-search
 // ===========================================================================
@@ -1140,6 +1145,12 @@ export const CONTRACTS: Record<string, ContractDefinition> = {
     endpoint: "magazine-reader-state-write",
     description: "Persiste estado de leitura (página, bookmarks) do leitor público",
     versions: { v1: MagazineReaderStateWriteSchemaV1 },
+    defaultVersion: "v1",
+  },
+  "magazine-reader-state-read": {
+    endpoint: "magazine-reader-state-read",
+    description: "Lê estado de leitura (página, bookmarks) do leitor público por token",
+    versions: { v1: MagazineReaderStateReadSchemaV1 },
     defaultVersion: "v1",
   },
   "product-visual-search": {
