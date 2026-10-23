@@ -44,9 +44,6 @@ jobs:
       - name: Bootstrap (install deps + chromium)
         run: npm run e2e:bootstrap
       - name: Update baselines
-        env:
-          E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
-          E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
         run: npm run e2e:alert-dialog:update
       - name: Credencial de push sem token em disco (E32)
         run: |
