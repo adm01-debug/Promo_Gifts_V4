@@ -1,7 +1,7 @@
-# RELATORIO_CI.md — Correção de Workflows Falhando
+# RELATORIO_CI.md — Auditoria completa de workflows
 
 > Gerado em: 2026-10-23  
-> Atualizado em: 2026-10-23 (P-08 attempt 3 disparado; baseline branch CI documentado)  
+> Atualizado em: 2026-10-23 (inventário refeito com baseline `4c482cbc` — Deploy Gates GREEN)  
 > Sessão: https://claude.ai/code/session_019gUZ8wvjsJMC3gYzy6k7jB  
 > Branch: `claude/magical-cannon-u5t1vy`  
 > PR: https://github.com/adm01-debug/Promo_Gifts_V4/pull/2378
@@ -10,43 +10,38 @@
 
 ## Resumo executivo
 
-**Baseline auditado:** `main` commit `b167c9c8095a99be701187758bae66d760e9c94f`  
-**17 workflows auditados na main (inventário completo — 2026-10-23).**
+**Baseline auditado:** `main` commit `4c482cbc3a90509180cd575c7e26d25d3ed02aeb`  
+**14 workflows auditados na main (inventário refeito em 2026-10-23 com novo baseline).**
 
 | Status | Qtd | Workflows |
 |--------|-----|-----------|
-| ✅ Corrigido — PR #2378 (app code, aguarda merge do PO) | 6 | CI Security & Drift Checks (Fix 1+7), E2E (Playwright) — /novidades (Fix 3), E2E — Critical Flows (Fix 4+5), Cart Invariants Smoke (Fix 4), CI Replenishment (Fix 3) |
-| ✅ Corrigido — PR #2381 (YAML-only, seguro para merge imediato) | 1 | E2E · Update Dialog snapshots (Fix 2) |
-| ❌ Bloqueio estrutural (externo) | 1 | Deploy Gates/P-05 — ledger de migrations divergente (local_only=1091, remote_only=638) — requer reconciliação manual |
-| 🔄 Rerun em andamento | 1 | E2E Swatch QuickView/P-08 (attempt 2 run 39986410684, in_progress) |
-| ❌ Infra (recorrente) | 1 | Uptime Monitor/P-10 (downtime recorrente) |
-| ❌ Bloqueado externo (ação do PO) | 5 | Release Please (P-01), E2E Personalization (P-02), E2E Quote Sheet snapshots (P-03), E2E Cart Delete Popover (P-09), Update Quote Visual Snapshots (P-12) — P-03/P-12 dependem de P-02 (E2E_USER_*) |
-| ℹ️ Sem ação (comportamento correto) | 2 | DB Migration E15, Copilot Code Review (branch de outro agente P-06) |
-| ❌ Pré-existente (histórico) | 1 | Branch Protection Sentinel/P-11 — commit 7401c9f direto na main sem padrão aceito |
+| ✅ GREEN — Deploy Gates passou | 1 | Deploy Gates (run 39999446914 — Gate E40 RESOLVIDO) |
+| 🔄 Fix no PR #2378 (aguarda merge do PO) | 3 | CI Security & Drift Checks (Fix 7), CI Replenishment (Fix 8), E2E — Critical Flows (Fix 4) |
+| ❌ Bloqueado externo (ação do PO) | 5 | Release Please (P-01), E2E Personalization (P-02), E2E Quote Sheet snapshots (P-03), Update Quote Visual Snapshots (P-12), E2E Cart Delete Popover (P-09) |
+| ⏳ Infra (runner/queued) | 3 | E2E Swatch QuickView/P-08 (attempt 3+), Cart Invariants Smoke (queued), E2E (Playwright) (cancelled) |
+| ❌ Infra recorrente | 1 | Uptime Monitor/P-10 (downtime recorrente) |
+| ❌ Pré-existente (histórico) | 1 | Branch Protection Sentinel/P-11 — commit 7401c9f direto na main |
 
 ---
 
-## Inventário completo dos 16 workflows auditados
+## Inventário completo dos 14 workflows auditados (baseline `4c482cbc`)
 
 | # | Workflow | Último Run ID | Causa raiz | Resultado |
 |---|---|---|---|---|
-| 1 | Deploy Gates | 39986411363 | Gate E40: ledger de migrations divergente (`local_only=1091; remote_only=638`) — secrets OK, divergência estrutural pré-existente | ❌ P-05 (externo — requer reconciliação) |
-| 2 | CI Security & Drift Checks | 39986411170 | rAF race condition (`PopoverQtyInput`) + timeout `MockupProductSelector` | ✅ Fix 1 + Fix 7 |
-| 3 | E2E — Critical Flows | 39986411340 | Tooltips presos consumindo ESC | ✅ Fix 4 |
-| 4 | Cart Invariants Smoke | 39986410736 | Invariants sidebar (tooltip ESC) | ✅ Fix 4 |
-| 5 | CI Replenishment | 39986410680 | overflow:hidden em NoveltiesPage | ✅ Fix 3 |
-| 6 | E2E Personalization | 39986411295 | Secrets `E2E_USER_*` ausentes | ❌ P-02 |
-| 7 | Release Please | 39986410747 | PAT `contents: write` ausente | ❌ P-01 |
-| 8 | E2E Swatch QuickView | 39986410684 | Runner shutdown (infra SIGTERM); attempt 2 in_progress | 🔄 P-08 (rerun em andamento) |
-| 9 | E2E (Playwright) | 39973432189 | Header sticky /novidades overflow | ✅ Fix 3 |
-| 10 | E2E Update Dialog snapshots | 39970463068 | Husky OOM no CI pré-push | ✅ Fix 2 (PR #2381 — YAML-only) |
-| 11 | E2E Quote Sheet | 39970462801 | ESC não abre dialog + snapshots | ✅ Fix 5 + 🔄 P-03 (dispatch E155 queued) |
-| 12 | E2E Cart Delete Popover | 39964680566 | Dados de teste + runner shutdown | ❌ P-09 |
-| 13 | DB Migration E15 | 39957452351 | Migration já aplicada — preflight correto | ℹ️ OK |
-| 14 | Uptime Monitor | 39996580013 | Downtime recorrente do site na janela de check | ❌ P-10 (infra recorrente) |
-| 15 | Copilot Code Review | — | Branch de outro agente | ℹ️ P-06 |
-| 16 | Branch Protection Sentinel | 39981481558 | Commit `7401c9f` direto na main sem padrão aceito (pré-existente) | ❌ P-11 (histórico) |
-| 17 | Update Quote Visual Snapshots | 39997674586 | 7 falhas em `chromium-authed`: `E2E_USER_*` ausentes (quote-new-fab.spec.ts ×5 + quote-pdf-header-snapshot.spec.ts ×2) | ❌ P-12 (mesma raiz de P-02) |
+| 1 | Deploy Gates | 39999446914 | Gate E40 resolvido pelo commit `4c482cbc` (outra sessão) | ✅ GREEN |
+| 2 | CI Security & Drift Checks | 39999446430 | Timeout `MockupProductSelector.test.tsx` (`@tanstack/react-virtual` ref null) | 🔄 Fix 7 (PR #2378) |
+| 3 | CI - Replenishment Module Quality Gate | 39999446605 | `useReplenishmentStats` sem timeout override — race com `waitFor` 15s | 🔄 Fix 8 (PR #2378) |
+| 4 | E2E — Critical Flows & Error Boundaries | 39999446606 | `sidebar-tooltips`: tooltip visível após mouse out (`disableHoverableContent` ausente) | 🔄 Fix 4 (PR #2378) |
+| 5 | E2E — Personalization Flow | 39999446757 | Secrets `E2E_USER_EMAIL`/`E2E_USER_PASSWORD` ausentes ou usuário inativo | ❌ P-02 (externo) |
+| 6 | Release Please | 39999446560 | PAT com `contents: write` ausente | ❌ P-01 (externo) |
+| 7 | E2E • Swatch QuickView | 39999446623 | Runner shutdown (SIGTERM); attempt 3+ in_progress | ⏳ P-08 (infra) |
+| 8 | Branch Protection Sentinel | 39999446486 | Commit `7401c9f` push direto na main sem padrão aceito (pré-existente) | ❌ P-11 (histórico) |
+| 9 | E2E · Atualizar snapshots visuais (E155) | 39999649279 | `chromium-authed`: `E2E_USER_*` ausentes (mesma raiz P-02) | ❌ P-03 (externo) |
+| 10 | Update Quote Visual Snapshots | 39997674586 | `chromium-authed`: `E2E_USER_*` ausentes (mesma raiz P-02) | ❌ P-12 (externo) |
+| 11 | Uptime Monitor | 40001131817 | Downtime do site na janela de check (recorrente) | ❌ P-10 (infra) |
+| 12 | E2E (Playwright) | 39999446765 | Cancelado (runner, infra) | ℹ️ cancelled |
+| 13 | E2E · Cart Delete Popover | 39999446624 | Cancelado (runner, infra) | ❌ P-09 (externo/infra) |
+| 14 | Cart Invariants Smoke | 39999446524 | Queued (aguardando runner) | ⏳ queued |
 
 ---
 
@@ -132,14 +127,13 @@ Ver `PENDENCIAS.md` para detalhes completos de cada item:
 | P-01 | Release Please | PAT com `contents: write` ausente |
 | P-02 | E2E Personalization Flow | Secrets `E2E_USER_*` não configurados ou usuário de teste inativo |
 | P-03 | E2E Quote Sheet — snapshots | Dispatch E155 (run 39999649279) falhou: `chromium-authed` requer `E2E_USER_*` — mesma raiz de P-02 e P-12 |
-| P-05 | db-schema-drift-check / Gate E40 | Secrets OK. Divergência estrutural pré-existente no ledger: `local_only=1091; remote_only=638` — requer reconciliação manual (E99/POLITICA_DDL.md) |
+| ~~P-05~~ | ~~db-schema-drift-check / Gate E40~~ | ✅ **RESOLVIDO** — Deploy Gates `conclusion=success` no run 39999446914 (commit `4c482cbc`) |
 | P-06 | Running Copilot Code Review | Branch de outro agente — não interagir (REGRA #10) |
-| P-07 | CI Security — MockupProductSelector | ✅ FIX 7 aplicado — `window.dispatchEvent(new Event('resize'))` em `renderAndOpenDialog` |
-| P-08 | E2E Swatch QuickView | Runner shutdown de infraestrutura (SIGTERM) — rerun attempt 2 in_progress (run 39986410684) |
-| P-09 | E2E Cart Delete Popover | Dados de teste ausentes + runner shutdown |
+| P-08 | E2E Swatch QuickView | Runner shutdown de infraestrutura (SIGTERM) — attempt 3+ in_progress (run 39999446623) |
+| P-09 | E2E Cart Delete Popover | Dados de teste ausentes + runner shutdown (cancelled run 39999446624) |
 | P-10 | Uptime Monitor | Downtime recorrente — não é bug de código |
 | P-11 | Branch Protection Sentinel | Commit `7401c9f` pré-existente direto na main sem padrão aceito — apenas histórico |
-| P-12 | Update Quote Visual Snapshots | `chromium-authed` requer `E2E_USER_*` — mesma raiz de P-02; 7 falhas: quote-new-fab ×5 + quote-pdf-header ×2 |
+| P-12 | Update Quote Visual Snapshots | `chromium-authed` requer `E2E_USER_*` — mesma raiz de P-02 |
 
 ---
 
@@ -167,15 +161,9 @@ Os runs listados como "falhando na main" no baseline (`b167c9c8`, Run IDs 399864
 
 **O Gate Final (`quality-gate`) no commit `c12f709` da branch `claude/magical-cannon-u5t1vy` confirma que todos os gates obrigatórios passam.** Esse é o mesmo conjunto de checks que roda em push para main — não há diferença de configuração entre o trigger `pull_request` e o trigger `push: main` para o `deploy-gates.yml`.
 
-### P-05 — Bloqueio estrutural identificado (2026-10-23)
+### P-05 — ✅ RESOLVIDO (2026-10-23)
 
-Os secrets `SUPABASE_ACCESS_TOKEN` e `SUPABASE_DB_PASSWORD` foram configurados pelo PO e estão funcionando (confirmado pelos `***` nos logs do attempt 2). O Gate E40 agora consegue conectar ao banco mas **falha por divergência estrutural pré-existente no ledger de migrations**:
-
-```
-[migration-ledger][bloqueado] local_only=1091; remote_only=638; mismatched=0; malformed=0
-```
-
-Esta divergência existia antes da sessão atual (o commit `b167c9c8` da main já estava neste estado). Não é fixável sem reconciliação manual do histórico de migrations (REGRA #8 / E99 do CLAUDE.md). O Gate E40 continuará falhando em push para main até que o PO execute a reconciliação descrita em P-05 do PENDENCIAS.md.
+O commit `4c482cbc` ("fix(e2e): corrige paridade E2E novidades/reposicao") aplicado por outra sessão resolveu o Gate E40. Deploy Gates agora mostra `conclusion=success` no run `39999446914`. Ver PENDENCIAS.md §P-05 para detalhes.
 
 ---
 
@@ -208,6 +196,22 @@ Mudanças desta sessão não introduziram regressões:
 
 ---
 
+## Fix 8 — `useReplenishmentStats`: timeout override ausente (`useReplenishments.integration.test.ts`)
+
+**Workflow corrigido:** `CI - Replenishment Module Quality Gate`  
+**Arquivo:** `src/hooks/products/__tests__/useReplenishments.integration.test.ts`  
+**Causa raiz:** O segundo `it()` (`useReplenishmentStats deve calcular KPIs corretamente`) não tinha timeout override. O Vitest usa 15s de timeout padrão para o teste; `waitFor({timeout: 15000})` também expira em 15s. Ambos expiram simultaneamente → o teste aborta sem que a query chegue a `isSuccess` ou `isError`. A fila de re-tentativas do `@tanstack/react-query` (3 tentativas × 5s delay) naturalmente leva mais de 15s para atingir estado terminal quando o Supabase não está disponível localmente.
+
+**Solução:** Adicionado `, 30000` como terceiro argumento do `it()` — o timeout do Vitest (30s) fica acima do `waitFor` (15s), garantindo que a query alcance `isError` antes do Vitest interromper o teste.
+
+```typescript
+  }, 30000); // waitFor timeout (15s) must not race with Vitest test timeout
+```
+
+O teste usa `describe.skipIf(isLocalSupabase)` — só executa quando há backend Supabase real configurado. No CI o Supabase URL do projeto `doufsxqlfjyuvxuezpln` está presente via `VITE_SUPABASE_URL`.
+
+---
+
 ## Fix 7 — `renderAndOpenDialog`: resize dispatch pós-render (`MockupProductSelector.test.tsx`)
 
 **Workflow corrigido:** `ci-security-drift.yml` / `unit-tests`  
@@ -222,9 +226,9 @@ Mudanças desta sessão não introduziram regressões:
 
 ## Estado do PR #2378
 
-- **Status:** Ready for review (convertido de draft em 2026-10-23), branch atualizada com main
-- **Commits:** 8 (6 fixes de código + 1 fix de conflito de merge + 1 commit de documentação)
-- **Diff:** 5 arquivos de código + PENDENCIAS.md + RELATORIO_CI.md
+- **Status:** Ready for review, branch baseada em `4c482cbc` (main atualizado)
+- **Fixes incluídos:** Fix 1 (PopoverQtyInput), Fix 3 (NoveltiesPage), Fix 4 (App.tsx TooltipProvider), Fix 5 (QuoteItemEditorSheet TooltipProvider), Fix 7 (MockupProductSelector resize), Fix 8 (useReplenishments timeout)
+- **Diff:** `src/components/cart/PopoverQtyInput.tsx`, `src/pages/products/NoveltiesPage.tsx`, `src/App.tsx`, `src/components/quotes/QuoteItemEditorSheet.tsx`, `tests/components/mockup/MockupProductSelector.test.tsx`, `src/hooks/products/__tests__/useReplenishments.integration.test.ts` + PENDENCIAS.md + RELATORIO_CI.md
 - **CI na branch:** ✅ **Gate Final (`quality-gate`) = `conclusion:success`** (commit `c12f709`, run completado 2026-10-23T17:32:26Z)
 
 ### Checks confirmados com `conclusion:success` (commit `c12f709`)
