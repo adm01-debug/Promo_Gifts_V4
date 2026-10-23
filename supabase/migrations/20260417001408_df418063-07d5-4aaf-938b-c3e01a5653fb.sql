@@ -6,36 +6,49 @@
 -- Broadcasts/presence emitted by the server (service role) are
 -- not affected — only client-side subscriptions are checked here.
 
-ALTER TABLE IF EXISTS realtime.messages ENABLE ROW LEVEL SECURITY;
+-- Guard: realtime.messages is owned by supabase_realtime_admin, not postgres.
+-- On Preview branches the postgres role is not the owner, so ALTER TABLE and
+-- CREATE POLICY would fail with "must be owner of table realtime.messages".
+-- Skip gracefully when this session is not the table owner.
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1
+    FROM pg_class c
+    JOIN pg_namespace n ON n.oid = c.relnamespace
+    WHERE n.nspname = 'realtime'
+      AND c.relname = 'messages'
+      AND pg_has_role(current_user, c.relowner, 'USAGE')
+  ) THEN
+    ALTER TABLE realtime.messages ENABLE ROW LEVEL SECURITY;
 
-DROP POLICY IF EXISTS "authenticated can read own topic" ON realtime.messages;
-CREATE POLICY "authenticated can read own topic"
-ON realtime.messages
-FOR SELECT
-TO authenticated
-USING (
-  -- Allow only when the topic embeds the caller's user id.
-  -- Convention: topic = 'user:<uuid>' or 'user:<uuid>:<suffix>'
-  (realtime.topic() LIKE ('user:' || auth.uid()::text || '%'))
-  -- Or admin can subscribe to anything (dashboards)
-  OR EXISTS (
-    SELECT 1 FROM public.user_roles
-    WHERE user_id = auth.uid() AND role = 'admin'
-  )
-);
+    DROP POLICY IF EXISTS "authenticated can read own topic" ON realtime.messages;
+    CREATE POLICY "authenticated can read own topic"
+    ON realtime.messages
+    FOR SELECT
+    TO authenticated
+    USING (
+      (realtime.topic() LIKE ('user:' || auth.uid()::text || '%'))
+      OR EXISTS (
+        SELECT 1 FROM public.user_roles
+        WHERE user_id = auth.uid() AND role = 'admin'
+      )
+    );
 
-DROP POLICY IF EXISTS "authenticated can broadcast own topic" ON realtime.messages;
-CREATE POLICY "authenticated can broadcast own topic"
-ON realtime.messages
-FOR INSERT
-TO authenticated
-WITH CHECK (
-  (realtime.topic() LIKE ('user:' || auth.uid()::text || '%'))
-  OR EXISTS (
-    SELECT 1 FROM public.user_roles
-    WHERE user_id = auth.uid() AND role = 'admin'
-  )
-);
+    DROP POLICY IF EXISTS "authenticated can broadcast own topic" ON realtime.messages;
+    CREATE POLICY "authenticated can broadcast own topic"
+    ON realtime.messages
+    FOR INSERT
+    TO authenticated
+    WITH CHECK (
+      (realtime.topic() LIKE ('user:' || auth.uid()::text || '%'))
+      OR EXISTS (
+        SELECT 1 FROM public.user_roles
+        WHERE user_id = auth.uid() AND role = 'admin'
+      )
+    );
+  END IF;
+END $$;
 
 -- ============================================================
 -- 2. Tighten public storage buckets — disallow LIST, allow direct GET
