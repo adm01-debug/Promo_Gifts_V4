@@ -87,11 +87,12 @@ export function QuoteItemEditorSheet({
           if (e.key === 'Escape') {
             // Portal dialogs (e.g. ConfigurationPanelV6) are React children of Sheet
             // so their Escape bubbles up here via React's synthetic capture phase.
-            // Guard: only intercept if Escape originated in THIS dialog, not a nested one.
+            // Only block propagation when ESC came from a nested dialog — let Radix's
+            // own onEscapeKeyDown → onOpenChange={requestClose} handle the sheet itself.
             const innerDialog = (e.target as Element).closest('[role="dialog"]');
-            if (innerDialog !== null && innerDialog !== e.currentTarget) return;
-            e.stopPropagation();
-            requestClose(false);
+            if (innerDialog !== null && innerDialog !== e.currentTarget) {
+              e.stopPropagation();
+            }
           }
         }}
       >
