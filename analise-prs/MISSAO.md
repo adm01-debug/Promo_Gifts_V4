@@ -55,5 +55,5 @@ Se chegar a 80 turnos sem cumprir: salve progresso.json, gere RELATORIO_PRS.md p
   - No SHA `e2be31add9a` (pré-merge #2360, Gate Final = success), cart-invariants (6 shards chromium+firefox) e "Verify push to main matches accepted patterns" já estavam em `failure`
   - Portanto: essas falhas são **pre-existentes** no main, não causadas por #2360
   - Gate Final `e2be31add9a` = success apesar dessas falhas → elas não integram o cálculo do Gate Final
-  - A **única falha nova** em `b4cc8163` vs `e2be31add9a` é Gate E40 no Gate Final (`R_SCHEMA_DRIFT=failure`), inerente à presença de migrations no repo não aplicadas ao banco `doufsxqlfjyuvxuezpln` — comportamento documentado no dossiê PR-2357.md e esperado pelo CI
+  - A **única falha nova** em `b4cc8163` vs `e2be31add9a` é Gate E40 no Gate Final (`R_SCHEMA_DRIFT=failure`), inerente à presença de migrations no repo não aplicadas ao banco — comportamento documentado no dossiê PR-2357.md e esperado pelo CI
   - **Conclusão:** #2360 não introduziu falhas novas além de Gate E40 inerente. Escritas documentais retomadas.
