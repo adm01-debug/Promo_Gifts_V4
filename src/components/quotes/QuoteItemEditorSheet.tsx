@@ -86,7 +86,7 @@ export function QuoteItemEditorSheet({
       >
         <SheetHeader className="shrink-0 border-b border-border/50 px-1.5 py-1.5">
           <div className="flex items-center justify-between gap-2">
-            <TooltipProvider delayDuration={200}>
+            <TooltipProvider delayDuration={200} disableHoverableContent>
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Button
@@ -106,7 +106,7 @@ export function QuoteItemEditorSheet({
                 </TooltipTrigger>
                 <TooltipContent side="bottom" className="max-w-xs text-xs">
                   Confirma as escolhas deste produto (cor, quantidade, personalização) e fecha o
-                  editor. Não grava o orçamento no banco — use “Salvar Rascunho” no resumo para isso.
+                  editor. Não grava o orçamento no banco — use "Salvar Rascunho" no resumo para isso.
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
@@ -175,4 +175,3 @@ export function QuoteItemEditorSheet({
     </Sheet>
   );
 }
-
