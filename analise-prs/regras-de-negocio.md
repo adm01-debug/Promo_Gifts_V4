@@ -1,38 +1,82 @@
-# Regras de Negócio — adm01-debug/Promo_Gifts_V4
-# Gerado em: 2026-10-23
+# Regras de Negocio — MISSAO DAS PRs
 
-## RN-01: Projeto Supabase Canônico
-**Fonte:** `src/integrations/supabase/client.ts` + CLAUDE.md REGRA #1
-**Regra:** O projeto canônico de produção é `doufsxqlfjyuvxuezpln`. Código referenciando `pqpdolkaeqlyzpdpbizo` é proibido.
+Extraidas da analise das 24 PRs abertas em 2026-10-23.
 
-## RN-02: Tipo Product — Campos Críticos
-**Fonte:** `src/types/product-catalog.ts` + CLAUDE.md REGRA #2
-**Regra:** `price: number`, `sale_price?: number`, `shortDescription: string`, `category_id?: string`, `category_name?: string` são obrigatórios.
+## RN-01 — Stack: React + TypeScript + Vite + Supabase
 
-## RN-03: Acesso Anônimo Mínimo (E30, E40)
-**Fonte:** `supabase/migrations/20261022194*.sql` + auditoria 2026-10-22
-**Regra:** Role `anon` não deve ter INSERT/UPDATE/DELETE em `external_connections`. Role `anon` não deve ter nenhum privilege em `mockup_approval_links`. Acesso controlado por RLS.
+O projeto nao usa Webpack, Next.js, Jekyll, Python, Deno, Ruby ou PHP.  
+PRs que introduzem workflows para essas stacks incompativeis devem ser FECHADAS.
 
-## RN-04: Função mcp_kv_get — Acesso Restrito (E18)
-**Fonte:** `supabase/migrations/20261022194200*.sql`
-**Regra:** Apenas `postgres` e `service_role` podem executar `mcp_kv_get`. Role `authenticated` não tem EXECUTE.
+**PRs afetadas:** #2322, #2323, #2324, #2329, #2335, #2337 (stack errada);  
+#2325, #2326, #2330, #2331, #2333, #2334 (funcionalidade ausente no stack).
 
-## RN-05: CI — Gate Final obrigatório
-**Fonte:** `.github/workflows/deploy-gates.yml` + CLAUDE.md
-**Regra:** "Gate Final - Deploy Ready" é o único required check. PRs docs-only (E14) podem skip gates de código. Merge em main = deploy em produção.
+## RN-02 — Gates CI sao soberanos
 
-## RN-06: Credenciais E2E — públicos vs autenticados
-**Fonte:** E2E workflows `e2e-quote-conditions-pr-check.yml` etc.
-**Regra:** Specs em `chromium-public` não precisam de `E2E_USER_EMAIL`/`E2E_USER_PASSWORD`. Expor estas variáveis em steps públicos é desnecessário e aumenta superfície de risco.
+Deploy so ocorre quando Gate Final passa. O Gate Final agrega 13+ gates de qualidade  
+obrigatorios em `.github/workflows/deploy-gates.yml`.  
+PRs que modificam `.github/workflows/` exigem revisao humana (BLOQUEADA).
 
-## RN-07: CORS wildcard via constante
-**Fonte:** `supabase/functions/_shared/cors.ts`
-**Regra:** O `'*'` de CORS em endpoints públicos deve ser expresso via constante `CORS_WILDCARD_ORIGIN` para evitar falso-positivo no Gate E95 (grep-based).
+**PRs afetadas:** #2312 (1 workflow), #2315 (12 workflows) — ambas BLOQUEADAS.
 
-## RN-08: Contratos de Edge Functions (Gate 1.11)
-**Fonte:** `tests/contracts/webhook-schemas.ts`
-**Regra:** Toda edge function deve ter contrato registrado em `CONTRACTS`. `magazine-reader-state-read` requer token+fingerprint.
+## RN-03 — Migrations so via db-apply-migration.yml
 
-## RN-09: Dependências — Major Bumps por PR Dedicado
-**Fonte:** comportamento do repo (PRs #2290, #2293, #2312-#2357)
-**Regra:** Bumps de major version (recharts 2→3, @eslint/js 9→10) exigem PR dedicado com validação de breaking changes + peer deps antes de merge.
+Nenhuma migration deve ser aplicada ao banco `doufsxqlfjyuvxuezpln` por MCP direto.  
+O unico caminho autorizado e `.github/workflows/db-apply-migration.yml` com aprovacao  
+em `environment: production` (CLAUDE.md REGRA #8/E15).  
+Agente nao pode aprovar — apenas Joaquim (PO) pode.
+
+**PRs afetadas:** #2357/#2360 — 3 migrations REVOKE aguardam aprovacao humana.
+
+## RN-04 — Gate E40 (R_SCHEMA_DRIFT) e inerente
+
+Quando migrations existem no repo mas nao foram aplicadas ao banco, Gate E40 falha.  
+Isso e comportamento inerente e esperado quando migrations de seguranca aguardam  
+aprovacao humana. Nao e regressao de funcionalidade.  
+Gate Final volta a `success` apos aprovacao dos 3 runs de db-apply-migration.
+
+## RN-05 — Major bumps exigem analise de breaking changes
+
+Major bumps de dependencias exigem:
+- Analise de breaking changes documentada
+- Testes de regressao visual (para bibliotecas UI)
+- Verificacao de compatibilidade de Node.js
+
+**PRs afetadas:** #2290 (eslint 9->10: quebra Node<20.19), #2293 (recharts 2->3: API breaking).
+
+## RN-06 — Agentes multiplos escrevem no repo
+
+Claude, Codex, Devin, Lovable (gpt-engineer-app[bot]), github-actions e cline  
+todos tem acesso de escrita. O agente nao pode escrever em branches de outros agentes.
+
+**PRs afetadas:** #2319 (Jules), #2320 (Copilot) — drafts de outros agentes, fechadas.
+
+## RN-07 — Falha nova no CI apos merge = PARAR escritas + registrar
+
+Quando Gate Final falha apos um merge, o agente deve:
+1. Parar novas escritas de codigo (PRs, commits de funcionalidade)
+2. Registrar o SHA e a PR responsaveis
+3. Dispatchar o workflow autorizado para remediar (se existir)
+
+Excecao explicitamente documentada: dispatches de `db-apply-migration.yml` para  
+remediar Gate E40 inerente sao escritas autorizadas, nao violacao da regra de parada.  
+
+**Ocorrencia nesta missao:** SHA `b4cc8163`, PR #2360 — Gate E40 inerente.  
+Registrado formalmente. Dispatches subsequentes: remediacao autorizada.
+
+## RN-08 — Producao = Vercel deploy automatico em merge para main
+
+Qualquer merge em main dispara deploy Vercel em producao.  
+Verificar `state=READY` no Vercel antes de declarar merge bem-sucedido.
+
+## RN-09 — Dependabot PRs: fechar se nao ha plano de teste de regressao
+
+PRs de Dependabot com major bumps devem ser fechadas se nao ha:
+- Plano de migracao documentado
+- Suite de testes para a funcionalidade afetada
+- Confirmacao de compatibilidade com a versao atual do Node.js
+
+## RN-10 — Arquivos de artefatos de analise obrigatorios
+
+Qualquer missao de analise de PRs deve gerar:
+`MISSAO.md`, `baseline/`, `regras-de-negocio.md`, `progresso.json`,  
+`prs.json`, `prs.csv`, `dossies/`, `RELATORIO_PRS.md`
