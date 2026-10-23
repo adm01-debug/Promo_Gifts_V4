@@ -89,7 +89,7 @@ test.describe('Paridade visual — cards Novidades vs Reposição', () => {
     await expect(page.getByTestId('page-title-reposicao')).toBeVisible();
     const repl = await measureFirstCard(
       page,
-      'div[role="list"][aria-label="Grade de produtos repostos"]',
+      'div[role="list"][aria-label^="Grade de produtos repostos"]',
     );
     if (!repl?.box) { test.skip(true, '[E108] Sem reposições no dataset (ambiente sem dados).'); return; }
     await testInfo.attach('reposicao.png', {
@@ -142,7 +142,7 @@ test.describe('Paridade visual — cards Novidades vs Reposição', () => {
     const { heights: novH } = await sampleHeights(novItems, Math.min(await novItems.count(), 6));
     await gotoAndSettle(page, '/reposicao');
     const replItems = page.locator(
-      `div[role="list"][aria-label="Grade de produtos repostos"] >> [role="listitem"]`,
+      `div[role="list"][aria-label^="Grade de produtos repostos"] >> [role="listitem"]`,
     );
     const { heights: replH } = await sampleHeights(replItems, Math.min(await replItems.count(), 6));
     if (novH.length && replH.length) {
@@ -176,7 +176,7 @@ test.describe('Paridade visual — cards Novidades vs Reposição', () => {
     await expect(page.getByTestId('page-title-reposicao')).toBeVisible();
     const repl = await measureFirstCard(
       page,
-      'div[role="list"][aria-label="Grade de produtos repostos"]',
+      'div[role="list"][aria-label^="Grade de produtos repostos"]',
     );
     if (!repl?.box || !repl.footerBox) { test.skip(true, '[E108] Sem reposições / footer não encontrado (ambiente sem dados).'); return; }
 
@@ -228,7 +228,7 @@ test.describe('Paridade visual — cards Novidades vs Reposição', () => {
       await gotoAndSettle(page, route);
       await expect(page.getByTestId(titleTid)).toBeVisible();
       const items = page.locator(
-        `div[role="list"][aria-label="${listLabel}"] >> [role="listitem"]`,
+        `div[role="list"][aria-label^="${listLabel}"] >> [role="listitem"]`,
       );
       if ((await items.count()) === 0) {
         test.skip(true, `[E108] Sem itens em ${route} para screenshot diff (ambiente sem dados).`);
@@ -258,7 +258,7 @@ test.describe('Paridade visual — cards Novidades vs Reposição', () => {
       await gotoAndSettle(page, '/reposicao');
       await expect(page.getByTestId('page-title-reposicao')).toBeVisible();
       const items = page.locator(
-        'div[role="list"][aria-label="Grade de produtos repostos"] >> [role="listitem"]',
+        'div[role="list"][aria-label^="Grade de produtos repostos"] >> [role="listitem"]',
       );
       const count = await items.count();
       if (count === 0) { test.skip(true, `[E108] Sem reposições em ${vp.label} (ambiente sem dados).`); return; }
@@ -308,7 +308,7 @@ test.describe('Paridade visual — cards Novidades vs Reposição', () => {
       await page.waitForTimeout(400);
 
       const items = page.locator(
-        'div[role="list"][aria-label="Grade de produtos repostos"] >> [role="listitem"]',
+        'div[role="list"][aria-label^="Grade de produtos repostos"] >> [role="listitem"]',
       );
       const count = await items.count();
       if (count === 0) { test.skip(true, `[E108] Sem reposições no modo ${cols} colunas (ambiente sem dados).`); return; }
@@ -373,7 +373,7 @@ test.describe('Paridade visual — cards Novidades vs Reposição', () => {
       await page.waitForTimeout(400);
 
       const items = page.locator(
-        'div[role="list"][aria-label="Grade de produtos repostos"] >> [role="listitem"]',
+        'div[role="list"][aria-label^="Grade de produtos repostos"] >> [role="listitem"]',
       );
       const count = await items.count();
       if (count === 0) continue;
@@ -412,7 +412,7 @@ test.describe('Paridade visual — cards Novidades vs Reposição', () => {
         await gotoAndSettle(page, '/reposicao');
         await expect(page.getByTestId('page-title-reposicao')).toBeVisible();
         const items = page.locator(
-          'div[role="list"][aria-label="Grade de produtos repostos"] >> [role="listitem"]',
+          'div[role="list"][aria-label^="Grade de produtos repostos"] >> [role="listitem"]',
         );
         const count = await items.count();
         if (count === 0) { test.skip(true, `[E108] Sem reposições em dsf=${dsf} (ambiente sem dados).`); }
@@ -446,7 +446,7 @@ test.describe('Paridade visual — cards Novidades vs Reposição', () => {
     await openListMode(page);
 
     const items = page.locator(
-      'div[role="list"][aria-label="Grade de produtos repostos"] >> [role="listitem"]',
+      'div[role="list"][aria-label^="Grade de produtos repostos"] >> [role="listitem"]',
     );
     const count = await items.count();
     if (count === 0) { test.skip(true, '[E108] Sem reposições no dataset (modo lista, ambiente sem dados).'); return; }

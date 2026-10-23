@@ -1,5 +1,5 @@
 import { useRef, useMemo } from 'react';
-import { useVirtualizer } from '@tanstack/react-virtual';
+import { useVirtualizer } from '@tanstack/react-parent';
 import type { ReplenishmentWithDetails } from '@/hooks/products';
 import type { ColumnCount } from '@/components/products/ColumnSelector';
 import { useResponsiveColumns, getGridColsClass, getGridGapClass } from './grid-layout';
@@ -77,7 +77,7 @@ export function VirtualizedReplenishmentGrid({
       className="overflow-auto focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
       style={SCROLL_CONTAINER_STYLE}
       role="list"
-      aria-label="Grade de produtos repostos"
+      aria-label={`Grade de produtos repostos — ${products.length} ${products.length !== 1 ? 'itens' : 'item'}`}
       aria-live="polite"
       aria-relevant="additions removals"
       tabIndex={0}
