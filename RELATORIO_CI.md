@@ -1,7 +1,7 @@
 # RELATORIO_CI.md — Correção de Workflows Falhando
 
 > Gerado em: 2026-10-23  
-> Atualizado em: 2026-10-23 (inventário final + reruns)  
+> Atualizado em: 2026-10-23 (P-08 attempt 3 disparado; baseline branch CI documentado)  
 > Sessão: https://claude.ai/code/session_019gUZ8wvjsJMC3gYzy6k7jB  
 > Branch: `claude/magical-cannon-u5t1vy`  
 > PR: https://github.com/adm01-debug/Promo_Gifts_V4/pull/2378

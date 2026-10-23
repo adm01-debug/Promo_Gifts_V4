@@ -175,7 +175,7 @@ O componente registra `window.addEventListener('resize', handleResize)` em `useE
 **Status atual (atualizado 2026-10-23):**  
 - Job `chromium • swatch→QV`: cancelado por infra às 18:14:38Z (suite executou ~24min antes do cancel)  
 - Jobs `firefox • swatch→QV` + `webkit • swatch→QV`: presos (firefox em step 4 desde 17:54Z; webkit em step 3/setup desde 17:53Z — stuck runner confirmado)  
-- Cancel do run 39986410684 enviado via API às ~18:30Z. Attempt 3 será disparado assim que o cancel concluir via `github_rerun_workflow` (o workflow não tem `workflow_dispatch`).  
+- Cancel do run 39986410684 enviado via API às ~18:30Z. **Attempt 3 DISPARADO com sucesso** via `github_rerun_workflow` (o workflow não tem `workflow_dispatch`).  
 - Nenhuma correção de código necessária — causa é infra (runner shutdown/stuck).
 
 ---
