@@ -7,7 +7,7 @@
   "total_prs_inicio": 24,
   "total_analisadas": 24,
   "status_global": "CONCLUIDO",
-  "ultima_verificacao": "2026-10-23T10:30Z",
+  "ultima_verificacao": "2026-10-23T11:12Z",
   "parada_exata": null,
   "por_veredito": {
     "FECHAR": 20,
@@ -160,10 +160,12 @@
     "admin merge squash #2360 (SHA b4cc8163d68a9e31ca23f1695d193ec0605f9ae8)",
     "dispatch db-apply-migration.yml versao 194000 (run #81 = 39894328218)",
     "dispatch db-apply-migration.yml versao 194200 (run #91 = 39922326892)",
-    "push artefatos: claude/chore-analise-prs-261023-0215 (MISSAO.md, progresso.json, RELATORIO_PRS.md, etc)"
+    "push artefatos: claude/chore-analise-prs-261023-0215 (MISSAO.md, progresso.json, RELATORIO_PRS.md, etc)",
+    "fix Gate 1.3: PR #2367 (SHA 98e588d58a57b1b1062b6761abafc19ed9c28293) — remove refs .sql em dossier PR-2360.md",
+    "push progresso.json final: claude/chore-analise-prs-artefatos-261023-1200"
   ],
   "worktrees": [],
-  "main_sha_final": "2e8833bd68ea44eb7a88ebb1737a208fcdcba98b",
+  "main_sha_final": "98e588d58a57b1b1062b6761abafc19ed9c28293",
   "gate_final_pos_missao": "success",
   "migrations_aplicadas": [
     "20261022194000",
