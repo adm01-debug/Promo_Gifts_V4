@@ -45,6 +45,17 @@ Gates no run pós-merge (#2361, SHA `e2be31add9a`, job 120206613531):
 
 Nenhuma falha nova vs. baseline. ✅
 
+## VERIFICAÇÃO DE PRODUÇÃO — #2361
+
+Merge SHA `e2be31add9a107030d1aeab8462534a6cd798979` — verificado via Vercel MCP:
+
+| Deploy ID | Projeto | State | Target |
+|---|---|---|---|
+| `dpl_FWaqZjFJ5CEHssVSJne9UtR3Aumq` | promo-gifts-reconciliation-integrity-20260915 | ✅ READY | production |
+| `dpl_968wu6dzoerkmDGWYNmLbLESBQ5k` | promo-gifts-v4 | ✅ READY | production |
+
+#2361 não continha migration nem edge function — apenas `tests/contracts/webhook-schemas.ts`. Deploy de produção: ✅ READY em ambos os projetos.
+
 ---
 
 ## PRs FECHADAS (18)
@@ -91,11 +102,15 @@ Todas fechadas com comentário de evidência via MCP "GITHUB - MCP - FOREVER".
 ### #2360 — Completa #2357: 3 migrations REVOKE segurança (E30/E40/E18)
 **Motivo:** Gate E40 - Schema Drift / Ledger parity falha **inerentemente** para qualquer PR com migration nova.  
 - As migrations estão no branch mas não no ledger de produção (`doufsxqlfjyuvxuezpln`) — o gate compara os dois e falha até as migrations serem aplicadas.
-- Gate Final = `failure` (job 120198478553). Todos os outros gates passam.
+- Branch atualizado com main em 2026-10-23 — novo head SHA: `7e45db9bc6224d20595d3773af4dfad3d6313f7e`
+- `mergeable_state: blocked` — Gate Final é check obrigatório no branch protection. Merge sem bypass = impossível.
 - O agente não pode bypass de check obrigatório (PROIBIDO por MISSAO.md).
 - O PR em si é válido: 3 migrations REVOKE não-destrutivas, sem DROP/ALTER TYPE/DELETE, idempotentes.
 **Evidência CI:** Run `39886849738` — `R_SCHEMA_DRIFT=failure`, todos os demais `success`.  
-**Recomendação:** Mergear e imediatamente disparar `workflow_dispatch` em `.github/workflows/db-apply-migration.yml` para versões `20261022194000` → `20261022194100` → `20261022194200`, nessa ordem.
+**Ação requerida do humano:**
+1. Disparar `workflow_dispatch` em `.github/workflows/db-apply-migration.yml` para versões `20261022194000` → `20261022194100` → `20261022194200`, nessa ordem.
+2. Após aplicação no banco, Gate E40 passa no próximo CI run.
+3. Mergear #2360 (squash).
 
 ---
 
@@ -115,6 +130,7 @@ Todas fechadas com comentário de evidência via MCP "GITHUB - MCP - FOREVER".
 - Gate Final = success (10/10 checks passaram)
 - **MERGEADA em squash** — merge SHA: `e2be31add9a107030d1aeab8462534a6cd798979`
 - Gate Final pós-merge no main: **success** ✅
+- **Produção Vercel:** 2 deploys READY (dpl_FWaqZjFJ5CEHssVSJne9UtR3Aumq, dpl_968wu6dzoerkmDGWYNmLbLESBQ5k) ✅
 
 ---
 
@@ -128,11 +144,13 @@ Todas fechadas com comentário de evidência via MCP "GITHUB - MCP - FOREVER".
 
 **Sucessora:** [#2360](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2360)
 - Branch: `claude/fix-pr2357-security-revoke-261023-1110`
-- Head SHA: `a9200be9f5c3b426ad02b985600c196d81453238`
+- Head SHA original: `a9200be9f5c3b426ad02b985600c196d81453238`
+- Head SHA após update (inclui #2361): `7e45db9bc6224d20595d3773af4dfad3d6313f7e`
 - Gate Final = **failure** — Gate E40 Schema Drift (Ledger parity inerente para migration nova)
+- `mergeable_state: blocked` — Gate Final é check obrigatório no branch protection
 - Todos os outros 12 gates: success
-- **BLOQUEADA** — agente não pode bypass check obrigatório (PROIBIDO)
-- Ação requerida do humano: mergear + dispatch `db-apply-migration.yml` para versões `20261022194000`, `20261022194100`, `20261022194200`
+- **BLOQUEADA** — agente não pode bypass check obrigatório (PROIBIDO por MISSAO.md)
+- Ação requerida do humano: aplicar migrations via `db-apply-migration.yml` (versões `20261022194000`, `20261022194100`, `20261022194200`) → Gate E40 passa → mergear #2360
 
 ---
 
@@ -149,6 +167,7 @@ Todas as escritas foram feitas **exclusivamente via MCP "GITHUB - MCP - FOREVER"
 | PR sucessora aberta | #2361 (para #2316) |
 | Draft → ready + merge squash | #2361 (SHA `e2be31add9a107030d1aeab8462534a6cd798979`) |
 | Comentário de status em #2360 | Gate E40 inerente explicado |
+| Branch #2360 atualizado com main | head SHA `7e45db9bc6224d20595d3773af4dfad3d6313f7e` |
 | Push artefatos de análise | branch `claude/chore-analise-prs-261023-0215` |
 | Sem toque em .github/workflows | ✅ |
 | Sem push em main | ✅ |
@@ -205,7 +224,10 @@ analise-prs/
 - [x] CI baseline (`49bb399`) = Gate Final success; pós-merge #2361 (`e2be31add9a`) = Gate Final success — sem falha nova
 - [x] PRs FECHAR: 18 fechadas com comentário de evidência
 - [x] #2316 fechada com evidência → sucessora #2361 mergeada (squash SHA `e2be31add9a`)
+- [x] Produção #2361: 2 deploys Vercel READY (dpl_FWaqZjFJ5CEHssVSJne9UtR3Aumq, dpl_968wu6dzoerkmDGWYNmLbLESBQ5k) ✅
 - [x] #2357 fechada com evidência → sucessora #2360 aberta (BLOQUEADA: Gate E40 inerente, todos outros gates success)
+- [x] Branch #2360 atualizado com main (head SHA `7e45db9bc6224d20595d3773af4dfad3d6313f7e`) — `mergeable_state: blocked`
+- [x] Merge de #2360 **impossível sem bypass de check obrigatório** (PROIBIDO por MISSAO.md) — ação humana requerida
 - [x] PRs ainda abertas = 3 BLOQUEADAS (#2312, #2315, #2360) — cada uma com motivo e recomendação
 - [x] Lista completa de escritas no GitHub acima
 - [x] Worktrees removidos (nenhum criado)
