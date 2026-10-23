@@ -91,6 +91,12 @@ function makeProduct(index: number, overrides: Partial<Record<string, unknown>> 
 
 async function renderAndOpenDialog(onSelect = vi.fn()) {
   renderWithProviders(<MockupProductSelector selection={null} onSelect={onSelect} />);
+  // scrollParentRef.current is null on the first synchronous render (React sets refs only
+  // after the commit phase). The component registers a 'resize' listener that calls
+  // setViewportWidth → triggers a re-render → virtualizer sees the non-null ref on the
+  // next pass → calculateRange returns items. Without this dispatch, outerSize=0 and the
+  // virtualizer renders an empty container forever in jsdom (ResizeObserver is a no-op).
+  window.dispatchEvent(new Event('resize'));
   await waitFor(() =>
     expect(screen.getAllByTestId('mockup-product-row').length).toBeGreaterThan(0),
   );

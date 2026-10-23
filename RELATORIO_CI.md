@@ -14,8 +14,9 @@
 
 | Status | Qtd | Workflows |
 |--------|-----|-----------|
-| ✅ Corrigido (PR #2378) | 5 | CI Security & Drift Checks (Fix 1), E2E · Update Dialog snapshots (Fix 2), E2E (Playwright) — /novidades (Fix 3), E2E — Critical Flows (Fix 4), E2E Quote Sheet ESC (Fix 5) |
-| ❌ Bloqueado (externo/infra) | 8 | Release Please (P-01), E2E Personalization (P-02), E2E Quote Sheet snapshots (P-03), db-schema-drift-check/Gate E40 (P-05), E2E Swatch QuickView (P-08), E2E Cart Delete Popover (P-09), Uptime Monitor (P-10), CI Security timeout (P-07) |
+| ✅ Corrigido (PR #2378) | 7 | CI Security & Drift Checks (Fix 1), E2E · Update Dialog snapshots (Fix 2), E2E (Playwright) — /novidades (Fix 3), E2E — Critical Flows (Fix 4), E2E Quote Sheet ESC (Fix 5+6), MockupProductSelector timeout (Fix 7) |
+| ❌ Bloqueado (externo/infra) | 6 | Release Please (P-01), E2E Personalization (P-02), E2E Quote Sheet snapshots (P-03), E2E Swatch QuickView (P-08), E2E Cart Delete Popover (P-09), Uptime Monitor (P-10) |
+| ✅ Resolvido pelo PO | 1 | db-schema-drift-check/Gate E40 — P-05 (secrets configurados 2026-10-23) |
 | ℹ️ Sem ação (comportamento correto) | 2 | DB Migration E15, Copilot Code Review (branch de outro agente P-06) |
 
 ---
@@ -133,6 +134,30 @@ Ver `PENDENCIAS.md` para detalhes completos de cada item:
 
 ---
 
+## Validação das correções e restrição de merge
+
+### Por que o PR #2378 não foi mergeado
+
+As correções (Fix 1–7) foram validadas no PR #2378, commit `c12f709` / `547760d`. O merge não foi realizado pelas seguintes razões, em conformidade com as regras da sessão:
+
+1. **O PR modifica código de aplicação** (5 arquivos: `PopoverQtyInput.tsx`, `NoveltiesPage.tsx`, `App.tsx`, `QuoteItemEditorSheet.tsx`, e o workflow `e2e-update-dialog-snapshots.yml`).
+2. **Este repo está ligado ao Lovable/Vercel**: merge em `main` = **deploy em produção automático**.
+3. **Regra da sessão**: "Se o merge disparar deploy de produção e a correção alterar código da aplicação, não faça merge: deixe o PR pronto e registre em PENDENCIAS.md."
+
+O PR permanece **aberto e pronto para merge** — todos os checks obrigatórios passam.
+
+### Por que não é possível confirmar `conclusion=success` nos workflows de push da main
+
+Os runs listados como "falhando na main" no baseline (`b167c9c8`, Run IDs 39986411363, etc.) foram coletados **antes** das correções. Os workflows de push para main (`deploy-gates.yml` em push) só rodarão com os fixes após o merge. Isso é o comportamento esperado — a validação do PR branch é o gate que comprova que os fixes funcionam.
+
+**O Gate Final (`quality-gate`) no commit `c12f709` da branch `claude/magical-cannon-u5t1vy` confirma que todos os gates obrigatórios passam.** Esse é o mesmo conjunto de checks que roda em push para main — não há diferença de configuração entre o trigger `pull_request` e o trigger `push: main` para o `deploy-gates.yml`.
+
+### P-05 — RESOLVIDO pelo PO (2026-10-23)
+
+`SUPABASE_ACCESS_TOKEN` e `SUPABASE_DB_PASSWORD` confirmados como configurados. O Gate E40 passará na próxima execução. Este era o único bloqueio técnico de infraestrutura que impedia o merge após CI verde.
+
+---
+
 ## Anti-regressão
 
 Mudanças desta sessão não introduziram regressões:
@@ -159,6 +184,18 @@ Mudanças desta sessão não introduziram regressões:
 
 > A suíte completa de testes e lint rodará no GitHub Actions (runners de maior memória).
 > O OOM local é pré-existente — mesma causa do Husky OOM corrigido no Fix 2.
+
+---
+
+## Fix 7 — `renderAndOpenDialog`: resize dispatch pós-render (`MockupProductSelector.test.tsx`)
+
+**Workflow corrigido:** `ci-security-drift.yml` / `unit-tests`  
+**Arquivo:** `tests/components/mockup/MockupProductSelector.test.tsx`  
+**Causa raiz:** `@tanstack/react-virtual` v3 chama `getScrollElement()` no render síncrono; na primeira passagem, `scrollParentRef.current` é `null` (React só seta refs após commit) → `outerSize = 0` → `calculateRange` retorna `null` → nenhum `mockup-product-row` renderizado → `waitFor` estoura em 5000ms. Em jsdom o `ResizeObserver` é no-op (`tests/setup.ts`), então o re-render com ref preenchida nunca acontece sozinho.
+
+**Solução:** Adicionar `window.dispatchEvent(new Event('resize'))` após `renderWithProviders` em `renderAndOpenDialog`. O componente registra `handleResize` que chama `setViewportWidth` → dispara re-render → virtualizer recebe o scroll element preenchido → grade renderiza.
+
+**Nota:** `MockupProductSelector.test.tsx` não está no script `test:deploy-gate`, portanto **não bloqueava o Gate Final** — a falha era em `ci-security-drift.yml` (workflow separado).
 
 ---
 

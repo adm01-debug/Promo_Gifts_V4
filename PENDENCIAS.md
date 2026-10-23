@@ -98,25 +98,10 @@ Adicionado `disableHoverableContent` ao `TooltipProvider` local do Sheet.
 
 ---
 
-## P-05 — db-schema-drift-check / Gate E40 — Secrets de banco ausentes
+## P-05 — db-schema-drift-check / Gate E40 — ✅ RESOLVIDO
 
-**Workflow:** `.github/workflows/db-schema-drift-check.yml` (e Gate E40 em `deploy-gates.yml`)  
-**Erro:**
-```
-Error: SUPABASE_ACCESS_TOKEN is not set
--- ou --
-Error: SUPABASE_DB_PASSWORD is not set
-```
-**Causa:** O drift check precisa conectar ao banco de produção `doufsxqlfjyuvxuezpln`.
-
-**O que você precisa fazer:**
-1. **Settings → Secrets → Actions** — verificar se existem:
-   - `SUPABASE_ACCESS_TOKEN` (token da Supabase CLI, gerado em app.supabase.com → Account → Access Tokens)
-   - `SUPABASE_DB_PASSWORD` (senha do banco, em Supabase Dashboard → Settings → Database)
-2. Se não existirem: gerar e cadastrar ambos
-3. Após cadastrar: re-rodar o workflow manualmente
-
-**Impacto:** Gate E40 é **bloqueante** para deploy. Sem esse secret, o Gate Final falha e nenhum PR pode ser mergeado.
+**Status:** Secrets `SUPABASE_ACCESS_TOKEN` e `SUPABASE_DB_PASSWORD` confirmados como configurados pelo PO em 2026-10-23.  
+O Gate E40 deve passar na próxima execução sem ação adicional.
 
 ---
 
@@ -130,19 +115,30 @@ Error: SUPABASE_DB_PASSWORD is not set
 
 ---
 
-## P-07 — CI Security & Drift Checks — Timeout em MockupProductSelector.test.tsx
+## P-07 — CI Security & Drift Checks — Timeout em MockupProductSelector.test.tsx — ✅ FIX APLICADO
 
-**Workflow:** `.github/workflows/ci.yml` (ou `ci-security-drift.yml`)  
-**Erro:** Timeout no teste de unidade `MockupProductSelector.test.tsx` — provavelmente mock de `requestAnimationFrame` ou timer em jsdom.
+**Workflow:** `ci-security-drift.yml` / `unit-tests` job  
+**Run com falha original:** `39986411170`
 
-**Causa provável:** O componente usa `requestAnimationFrame` ou `setTimeout` sem mock adequado no ambiente jsdom.
+**Causa raiz confirmada (2026-10-23):**  
+`@tanstack/react-virtual` v3 chama `getScrollElement()` durante o render síncrono. No primeiro render, `scrollParentRef.current` ainda é `null` (React só seta refs após o commit phase). Com `scrollElement = null`, `outerSize = 0` e `calculateRange` retorna `null` → nenhuma `mockup-product-row` é renderizada → `waitFor` aguarda 5000ms (asyncUtilTimeout de `tests/setup.ts`) e estoura.
 
-**Fix aplicável (próxima sessão):**
-1. Ler o arquivo de teste: `src/components/mockup/__tests__/MockupProductSelector.test.tsx`
-2. Verificar se há `vi.useFakeTimers()` / `vi.runAllTimers()` adequados
-3. Se o componente usa rAF: adicionar `vi.stubGlobal('requestAnimationFrame', cb => cb())`
+Em produção não há problema: logo após o mount, o `ResizeObserver` ou um re-render do componente já popula o ref. Em jsdom, o `ResizeObserver` está mockado como no-op (`tests/setup.ts`), então o re-render nunca ocorre sozinho.
 
-**Por que não foi aplicado nesta sessão:** Investigação de componente novo fora do escopo seguro desta sessão.
+**Fix aplicado (2026-10-23 — `tests/components/mockup/MockupProductSelector.test.tsx`):**  
+O componente registra `window.addEventListener('resize', handleResize)` em `useEffect`, onde `handleResize` chama `setViewportWidth(window.innerWidth)`. Disparar `window.dispatchEvent(new Event('resize'))` após `renderWithProviders` força o re-render com `scrollParentRef.current` já preenchido → virtualizer recebe o scroll element não-nulo → `calculateRange` retorna as linhas → `mockup-product-row` aparece no DOM.
+
+```diff
+ async function renderAndOpenDialog(onSelect = vi.fn()) {
+   renderWithProviders(<MockupProductSelector selection={null} onSelect={onSelect} />);
++  window.dispatchEvent(new Event('resize'));
+   await waitFor(() =>
+     expect(screen.getAllByTestId('mockup-product-row').length).toBeGreaterThan(0),
+   );
+ }
+```
+
+**Pendência restante:** `MockupProductSelector.test.tsx` **não está** no script `test:deploy-gate` (que roda só `migrated-endpoints`, `theme-presets` e `ProductSparkline`) — portanto **não bloqueava o Gate Final**. O fix resolve a falha intermitente em `ci-security-drift.yml` mas não impacta a mergabilidade do PR #2378.
 
 ---
 
