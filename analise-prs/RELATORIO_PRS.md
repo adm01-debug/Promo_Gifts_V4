@@ -264,7 +264,7 @@ analise-prs/
 
 **Único bloqueio técnico restante: Joaquim deve aprovar os 3 runs de db-apply-migration.yml (environment:production). Nenhuma ação de agente é possível até essa aprovação.**
 
-**Última verificação de runs:** 2026-10-23T06:35Z — run #81 (39894328218): `waiting`; run #90 (39903694395): `pending`. Sem mudança desde 03:18 UTC. Bloqueio permanece: aguarda aprovação humana em `environment:production`.
+**Última verificação de runs:** 2026-10-23T07:00Z — run #81 (39894328218): `waiting`; run #90 (39903694395): `pending`. Sem mudança desde 03:18 UTC. Bloqueio permanece: aguarda aprovação humana em `environment:production`.
 
 **Worktrees — evidência fresca 05:55 UTC:**
 ```

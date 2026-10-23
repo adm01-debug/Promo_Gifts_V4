@@ -8,13 +8,14 @@
   "status_global": "BLOQUEADO_APROVACAO_PRODUCAO",
   "parada_exata": {
     "pr": "#2360",
-    "etapa": "aguardando Joaquim aprovar db-apply-migration.yml x2 (run #81 + #90) + dispatch+aprovacao 3º run",
-    "bloqueio": "environment:production requer aprovação humana; agente não pode aprovar; #2360 já mergeada (SHA b4cc8163); Gate E40 ativo até migrations aplicadas no banco",
+    "etapa": "aguardando Joaquim aprovar run #81 (194000) + run #91 (194200); após ambos agente dispatcha 194100 e Joaquim aprova o 3º",
+    "bloqueio": "environment:production requer aprovação humana; agente não pode aprovar; #2360 já mergeada (SHA b4cc8163); Gate E40 ativo até 3 migrations aplicadas no banco",
     "runs_pendentes": [
-      {"run_id": 39894328218, "run_number": 81, "status": "waiting", "url": "https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39894328218"},
-      {"run_id": 39903694395, "run_number": 90, "status": "pending", "url": "https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39903694395"}
+      {"run_id": 39894328218, "run_number": 81, "version": "20261022194000", "status": "waiting", "url": "https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39894328218", "nota": "preflight ok; Job2 aguarda aprovacao humana"},
+      {"run_id": 39922326892, "run_number": 91, "version": "20261022194200", "status": "pending", "url": "https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39922326892", "nota": "aguarda run #81 terminar (concurrency group)"},
+      {"run_number": "a_despachar", "version": "20261022194100", "status": "sem_run_ativo", "nota": "Run #90 foi cancelado quando #91 foi criado; agente dispatcha APOS #91 completar"}
     ],
-    "acao_requerida": "Joaquim aprovar run #81 e #90 (environment:production); agente dispatcha 3º run e Joaquim aprova; Gate Final volta a success"
+    "acao_requerida": "1) Joaquim aprova run #81; 2) aguarda completar; 3) Joaquim aprova run #91; 4) avisa agente; 5) agente dispatcha 194100; 6) Joaquim aprova 3o run; Gate Final volta a success"
   },
   "por_veredito": {
     "FECHAR": 18,
