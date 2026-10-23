@@ -210,7 +210,7 @@ venham via squash-merge/merge-commit de PR, bot oficial, Lovable, release ou byp
 
 ## P-13 — Cart Invariants Smoke — Secrets E2E ausentes (mesma raiz P-02)
 
-**Workflow:** `.github/workflows/e2e-cart-invariants.yml` (ou similar)  
+**Workflow:** `.github/workflows/cart-invariants-smoke.yml`  
 **Run ID:** 39999446524 (commit `4c482cbc`)
 
 **Erro:** Todos os shards `chromium-authed` e `firefox-authed` falham em "Playwright — invariants do header/sidebar" com autenticação.
