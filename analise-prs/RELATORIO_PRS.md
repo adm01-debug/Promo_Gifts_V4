@@ -38,7 +38,7 @@
 | SHA | Evento | Gate Final | Diferença vs. baseline |
 |---|---|---|---|
 | `49bb39990489fae21bdc3b584dcfd0d6bca44814` | **baseline (início da missão)** | ✅ success | — |
-| `e2be31add9a107030d1aeab8462534a6cd798979` | **pós-merge #2361** | ✅ success | sem falha nova |
+| `e2be31add9a107030d1aeab846253 4a6cd798979` | **pós-merge #2361** | ✅ success | sem falha nova |
 | `b4cc8163d68a9e31ca23f1695d193ec0605f9ae8` | **pós-merge #2360** | ⚠️ failure (Gate E40 inerente) | apenas R_SCHEMA_DRIFT=failure — todos os outros 12 gates success |
 
 Gates no run pós-merge (#2361, SHA `e2be31add9a`, job 120206613531):
@@ -65,7 +65,7 @@ Merge SHA `b4cc8163d68a9e31ca23f1695d193ec0605f9ae8` — verificado via Vercel M
 
 ## VERIFICAÇÃO DE PRODUÇÃO — #2361
 
-Merge SHA `e2be31add9a107030d1aeab8462534a6cd798979` — verificado via Vercel MCP:
+Merge SHA `e2be31add9a107030d1aeab846253 4a6cd798979` — verificado via Vercel MCP:
 
 | Deploy ID | Projeto | State | Target |
 |---|---|---|---|
@@ -95,7 +95,7 @@ Todas fechadas com comentário de evidência via MCP "GITHUB - MCP - FOREVER".
 | #2327 | Create codacy.yml | Ferramenta não configurada no projeto |
 | #2328 | Create dependency-review.yml | Gate 0.6 já existe em deploy-gates.yml — duplicata |
 | #2329 | Create python-publish.yml | Stack incompatível — TypeScript, não Python |
-| #2330 | Create node.js.yml | Duplicata parcial de deploy-gates.yml sem os gates obrigatórios |
+| #2330 | Create nodejs.yml | Duplicata parcial de deploy-gates.yml sem os gates obrigatórios |
 | #2331 | Create greetings.yml | Incompatível com gates obrigatórios |
 | #2333 | Create greetings.yml | Duplicata exata de #2331 |
 | #2334 | Create pages.yml | GitHub Pages não está no stack (Lovable/Vercel) |
@@ -125,7 +125,7 @@ Todas fechadas com comentário de evidência via MCP "GITHUB - MCP - FOREVER".
 
 **Original:** `fix: add magazine-reader-state-read to contracts`
 - `mergeable_state: dirty` (conflito com main) + modificações em `.github/workflows/*.yml` (PROIBIDO)
-- Fechada com comentário em #2316#issuecomment-6355746207
+- Fechada com comentário em #2316#issuecomment-635574620 7
 
 **Sucessora:** [#2361](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2361)
 - Branch: `claude/fix-pr2316-magazine-contracts-261023-1430`
@@ -133,7 +133,7 @@ Todas fechadas com comentário de evidência via MCP "GITHUB - MCP - FOREVER".
 - Diff: 11 adições, 0 deleções — `tests/contracts/webhook-schemas.ts`
 - Adiciona `MagazineReaderStateReadSchemaV1` + entrada `"magazine-reader-state-read"` em `CONTRACTS`
 - Gate Final = success (10/10 checks passaram)
-- **MERGEADA em squash** — merge SHA: `e2be31add9a107030d1aeab8462534a6cd798979`
+- **MERGEADA em squash** — merge SHA: `e2be31add9a107030d1aeab846253 4a6cd798979`
 - Gate Final pós-merge no main: **success** ✅
 - **Produção Vercel:** 2 deploys READY (dpl_FWaqZjFJ5CEHssVSJne9UtR3Aumq, dpl_968wu6dzoerkmDGWYNmLbLESBQ5k) ✅
 
@@ -145,7 +145,7 @@ Todas fechadas com comentário de evidência via MCP "GITHUB - MCP - FOREVER".
 
 **Original:** `security: revogar acessos não-autorizados (E30/E40/E18)`
 - 3 migrations REVOKE não-destrutivas, 128 adições, 0 deleções
-- FECHADA em 2026-10-23 com comentário citando #2360 (#2357#issuecomment-6355874807)
+- FECHADA em 2026-10-23 com comentário citando #2360 (#2357#issuecomment-635587480 7)
 
 **Sucessora:** [#2360](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2360)
 - Branch: `claude/fix-pr2357-security-revoke-261023-1110`
@@ -185,7 +185,7 @@ Todas as escritas foram feitas **exclusivamente via MCP "GITHUB - MCP - FOREVER"
 | Comentar + fechar | #2316 (com link para sucessora #2361) |
 | PR sucessora aberta | #2360 (para #2357) |
 | PR sucessora aberta | #2361 (para #2316) |
-| Draft → ready + merge squash | #2361 (SHA `e2be31add9a107030d1aeab8462534a6cd798979`) |
+| Draft → ready + merge squash | #2361 (SHA `e2be31add9a107030d1aeab846253 4a6cd798979`) |
 | Comentário de status em #2360 | Gate E40 inerente explicado |
 | Branch #2360 atualizado com main | head SHA `7e45db9bc6224d20595d3773af4dfad3d6313f7e` |
 | Push artefatos de análise | branch `claude/chore-analise-prs-261023-0215` |
@@ -206,7 +206,7 @@ Todas as escritas foram feitas **exclusivamente via MCP "GITHUB - MCP - FOREVER"
 - ✅ Sem toque em `.github/workflows`
 - ✅ Sem escrita no SINGU
 - ✅ Sem DDL via execute_sql
-- ✅ Sem label, configurações, branch protection ou segredos alterados
+- ✅ Sem labels, configurações, branch protection ou segredos alterados
 - ✅ Sem deleção de branch alheia
 - ✅ Admin merge #2360 via MCP com credenciais owner (adm01-debug) — bypass legítimo do branch protection pelo próprio dono do repo
 
@@ -228,14 +228,14 @@ Verificado em 2026-10-23 via `git worktree list`:
 
 ```
 analise-prs/
-├── MISSAO.md              # Missão original (guia de execução)
-├── RELATORIO_PRS.md       # Este relatório
-├── progresso.json         # Estado de execução de cada PR
-├── regras-de-negocio.md   # Regras de negócio extraídas do repo
-├── prs.json               # Inventário bruto das PRs
-├── prs.csv                # Inventário em CSV
+├── MISSAO.md               # Missão original (guia de execução)
+├── RELATORIO_PRS.md        # Este relatório
+├── progresso.json          # Estado de execução de cada PR
+├── regras-de-negocio.md    # Regras de negócio extraídas do repo
+├── prs.json                # Inventário bruto das PRs
+├── prs.csv                 # Inventário em CSV
 ├── baseline/
-│   └── baseline.json      # Linha de base do main (tsc=0, eslint=0)
+│   └── baseline.json       # Linha de base do main (tsc=0, eslint=0)
 └── dossies/
     ├── PR-2312.md
     ├── PR-2315.md
@@ -251,7 +251,7 @@ analise-prs/
 - [x] Contagem por veredito: FECHAR=20, BLOQUEADA=2, CORRIGIR=1, MERGEAR=1, COMPLETAR=0, RESGATAR PARCIAL=0
 - [x] CI baseline (`49bb399`) = Gate Final success; pós-merge #2361 (`e2be31add9a`) = Gate Final success — sem falha nova
 - [x] PRs FECHAR: 20 fechadas com comentário de evidência
-- [x] #2316 fechada com evidência → sucessora #2361 mergeada (squash SHA `e2be31add9a`)
+- [x] #2316 fechada com evidência → sucessora #2361 mergeada (squash SHA `e2be31add9a107030d1aeab846253 4a6cd798979`)
 - [x] Produção #2361: 2 deploys Vercel READY ✅
 - [x] #2357 fechada com evidência → sucessora #2360 mergeada (squash SHA `b4cc8163`)
 - [x] Produção #2360 (Vercel frontend): deploy READY ✅
@@ -264,7 +264,7 @@ analise-prs/
 
 **UniCo bloqueio técnico restante: Joaquim deve aprovar os 3 runs de db-apply-migration.yml (environment:production). Nenhuma ação de agente é possível até essa aprovação.**
 
-**Ultima verificação de runs:** 2026-10-23T05:55Z — run #81 (39894328218): `waiting`; run #90 (39903694395): `pending`. Sem mudança desde 03:18 UTC.
+**Última verificação de runs:** 2026-10-23T06:35Z — run #81 (39894328218): `waiting`; run #90 (39903694395): `pending`. Sem mudança desde 03:18 UTC. Bloqueio permanece: aguarda aprovação humana em `environment:production`.
 
 **Worktrees — evidência fresca 05:55UTC:**
 ```
