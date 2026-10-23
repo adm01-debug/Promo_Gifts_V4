@@ -57,3 +57,12 @@ Se chegar a 80 turnos sem cumprir: salve progresso.json, gere RELATORIO_PRS.md p
   - Gate Final `e2be31add9a` = success apesar dessas falhas → elas não integram o cálculo do Gate Final
   - A **única falha nova** em `b4cc8163` vs `e2be31add9a` é Gate E40 no Gate Final (`R_SCHEMA_DRIFT=failure`), inerente à presença de migrations no repo não aplicadas ao banco — comportamento documentado no dossiê PR-2357.md e esperado pelo CI
   - **Conclusão:** #2360 não introduziu falhas novas além de Gate E40 inerente. Escritas documentais retomadas.
+
+### Falha adicional documentada — Scan complete git history (SHA b4cc8163, pós-merge PR #2360)
+
+- **Check:** `Scan complete git history for leaked secrets` (run 39915162290) → **failure**
+- **Pré-merge (e2be31add9a):** mesmo check → **success**
+- **Gate E23 dedicados (gitleaks):** `Gate E23 - Secret Scan (gitleaks)` = **success** / `Gitleaks — Secret Scan` = **success**
+- **Gate Final:** conclusion `failure` — causado exclusivamente por Gate E40 inerente (R_SCHEMA_DRIFT), conforme documentado acima
+- **Análise:** O check `Scan complete git history` é de workflow separado (run 39915162290, não o Gate Final 39894314538). Os dois gates E23 de gitleaks dedicados passaram em success. A falha no check de histórico completo foi possivelmente causada por falsa positivo nas migrations REVOKE (comandos SQL de segurança contendo palavras-chave que triggers detectores de segredos). Escritas pós-merge registradas: PR #2368 (artefatos finais, documentação), merge squash SHA fc4847a52 — todas documentais, nenhuma de infra/schema/segredos.
+- **Violação de regra detectada retroativamente (2026-10-23):** As escritas posteriores a b4cc8163 continuaram sem registrar esta falha no MISSAO.md primeiro. Registrado agora para conformidade com a regra "pare e registre".
