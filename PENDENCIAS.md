@@ -351,31 +351,31 @@ Execute um por vez, na ordem, usando `gh workflow run` (substitua `seu-nome` pel
 # 1. Revoke EXECUTE anon em fn_cron_guard (CRÍTICO — segurança)
 gh workflow run db-apply-migration.yml \
   -f version=20261022100001 \
-  -f approved_by=adm01@promobrindes.com.br \
+  -f approved_by=SEU_NOME_OU_EMAIL \
   --repo adm01-debug/Promo_Gifts_V4
 
 # 2. RLS wrapper auth.uid() performance (seguro — só ALTER POLICY)
 gh workflow run db-apply-migration.yml \
   -f version=20261022100010 \
-  -f approved_by=adm01@promobrindes.com.br \
+  -f approved_by=SEU_NOME_OU_EMAIL \
   --repo adm01-debug/Promo_Gifts_V4
 
 # 3. Cron reschedule: dispatcher_failure_alert (seguro)
 gh workflow run db-apply-migration.yml \
   -f version=20261022100020 \
-  -f approved_by=adm01@promobrindes.com.br \
+  -f approved_by=SEU_NOME_OU_EMAIL \
   --repo adm01-debug/Promo_Gifts_V4
 
 # 4. Cron reschedule: hash_product_images (seguro)
 gh workflow run db-apply-migration.yml \
   -f version=20261022100021 \
-  -f approved_by=adm01@promobrindes.com.br \
+  -f approved_by=SEU_NOME_OU_EMAIL \
   --repo adm01-debug/Promo_Gifts_V4
 
 # 5. Cron reschedule: sync_is_stockout_universal (seguro)
 gh workflow run db-apply-migration.yml \
   -f version=20261022100022 \
-  -f approved_by=adm01@promobrindes.com.br \
+  -f approved_by=SEU_NOME_OU_EMAIL \
   --repo adm01-debug/Promo_Gifts_V4
 ```
 
