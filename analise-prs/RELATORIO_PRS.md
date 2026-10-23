@@ -40,6 +40,8 @@
 | `49bb39990489fae21bdc3b584dcfd0d6bca44814` | **baseline (início da missão)** | ✅ success | — |
 | `e2be31add9a107030d1aeab8462534a6cd798979` | **pós-merge #2361** | ✅ success | sem falha nova |
 | `b4cc8163d68a9e31ca23f1695d193ec0605f9ae8` | **pós-merge #2360** | ⚠️ failure (Gate E40 inerente) | apenas R_SCHEMA_DRIFT=failure — todos os outros 12 gates success |
+| `002646970d41aea58e5377901b47cc8ccc4db396` | **pós-merge #2366 (recibo 194000+194100)** | ✅ success | sem falha nova (cart-invariants pré-existente) |
+| `2e8833bd68ea44eb7a88ebb1737a208fcdcba98b` | **pós-merge #2365 (recibo 194200)** | ✅ success | Gate E40 skipped (migrations aplicadas); cart-invariants falha pré-existente confirmada |
 
 Gates no run pós-merge (#2361, SHA `e2be31add9a`, job 120206613531):
 `R_SSOT=success · R_DEP_AUDIT=success · R_DEP_REVIEW=success · R_LINT=success · R_UNIT=success · R_DB_INT=success · R_SECRETS=success · R_E2E=success · R_SEO=success · R_RESTORE=success · R_BUILD=success · R_SECRET_SCAN=success`
@@ -191,6 +193,9 @@ Todas as escritas foram feitas **exclusivamente via MCP "GITHUB - MCP - FOREVER"
 | Push artefatos de análise | branch `claude/chore-analise-prs-261023-0215` |
 | Admin merge squash #2360 | SHA `b4cc8163d68a9e31ca23f1695d193ec0605f9ae8` |
 | Dispatch db-apply-migration.yml × 6 | versions 194000/194100/194200 (3 dispatches iniciais + redispatch 194200 + redispatch 194000+194200 em 04:44 UTC) |
+| PR #2364 aberta + mergeada (recibo v194000) | branch `e15-receipt-20261022194000-*` |
+| PR #2366 aberta + mergeada (recibo v194000+v194100) | branch `e15-receipt-20261022194100-*` |
+| PR #2365 aberta + mergeada (recibo v194200) | branch `e15-receipt-20261022194200-39922326892` |
 | Sem toque em .github/workflows | ✅ |
 | Sem push em main | ✅ |
 | Sem branch alheia | ✅ |
@@ -255,16 +260,19 @@ analise-prs/
 - [x] Produção #2361: 2 deploys Vercel READY ✅
 - [x] #2357 fechada com evidência → sucessora #2360 mergeada (squash SHA `b4cc8163`)
 - [x] Produção #2360 (Vercel frontend): deploy READY ✅
-- [ ] **DB #2360: 3 migrations aguardando aprovação humana** — run [39894328218](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39894328218) (194100/waiting), run [39903694395](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39903694395) (194000-ou-194200/pending) — só Joaquim pode aprovar `environment:production`. Uma 3ª migration precisará de novo dispatch após aprovações (run 88 foi cancelado por concorrência).
-- [ ] **Gate Final main**: failure por Gate E40 inerente — passará a success após DB #2360 + re-run CI
+- [x] **DB #2360: 3 migrations aplicadas** — Joaquim aprovou os 3 runs de db-apply-migration.yml; recibos criados via PRs #2364, #2366, #2365 (branches `e15-receipt-*`) e mergeados em main. Ledger `supabase/MIGRATIONS_SYNC_LOG.md` atualizado. ✅
+- [x] **Gate Final main**: success no SHA `2e8833bd` (pós-merge #2365) — Gate E40 skipped (migrations aplicadas + recibos em ledger). ✅
 - [x] PRs ainda abertas = 2 BLOQUEADAS (#2312, #2315) — modificam .github/workflows
 - [x] Lista completa de escritas no GitHub acima
 - [x] Worktrees: nenhum criado
 - [x] Caminhos de analise-prs/ documentados
 
-**Único bloqueio técnico restante: Joaquim deve aprovar os 3 runs de db-apply-migration.yml (environment:production). Nenhuma ação de agente é possível até essa aprovação.**
+**MISSÃO CONCLUÍDA.** As 3 migrations foram aprovadas e aplicadas por Joaquim. Gate Final voltou a success no SHA `2e8833bd` (2026-10-23). Único restante: PRs #2312 e #2315 (BLOQUEADAS por modificarem .github/workflows) — aguardam revisão/decisão humana.
 
-**Última verificação de runs:** 2026-10-23T07:00Z — run #81 (39894328218): `waiting`; run #90 (39903694395): `pending`. Sem mudança desde 03:18 UTC. Bloqueio permanece: aguarda aprovação humana em `environment:production`.
+**Verificação final — 2026-10-23T10:xx UTC:**
+- Gate Final `2e8833bd`: **success** ✅
+- Gate E40: skipped (migrations aplicadas) ✅
+- cart-invariants: failure — pré-existente, confirmado no SHA `002646970d41` (antes dos recibos) ✅ (não causado por esta missão)
 
 **Worktrees — evidência fresca 05:55 UTC:**
 ```
