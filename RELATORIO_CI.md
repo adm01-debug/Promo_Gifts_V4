@@ -3,7 +3,7 @@
 > Gerado em: 2026-10-23  
 > Sessão: https://claude.ai/code/session_019gUZ8wvjsJMC3gYzy6k7jB  
 > Branch: `claude/magical-cannon-u5t1vy`  
-> PR: https://github.com/adm01-debug/Promo_Gifts_V4/pull/2378 (draft)
+> PR: https://github.com/adm01-debug/Promo_Gifts_V4/pull/2378
 
 ---
 
@@ -13,7 +13,7 @@
 **15 workflows em falha identificados e classificados.**
 
 | Status | Qtd | Workflows |
-|--------|-----|----------|
+|--------|-----|-----------|
 | ✅ Corrigido (PR #2378) | 5 | CI Security & Drift Checks (Fix 1), E2E · Update Dialog snapshots (Fix 2), E2E (Playwright) — /novidades (Fix 3), E2E — Critical Flows (Fix 4), E2E Quote Sheet ESC (Fix 5) |
 | ❌ Bloqueado (externo/infra) | 8 | Release Please (P-01), E2E Personalization (P-02), E2E Quote Sheet snapshots (P-03), db-schema-drift-check/Gate E40 (P-05), E2E Swatch QuickView (P-08), E2E Cart Delete Popover (P-09), Uptime Monitor (P-10), CI Security timeout (P-07) |
 | ℹ️ Sem ação (comportamento correto) | 2 | DB Migration E15, Copilot Code Review (branch de outro agente P-06) |
@@ -101,7 +101,7 @@ impedindo `window.scrollTo()` de mover `window.scrollY` no Playwright.
 
 ---
 
-### Fix 5 — `disableHoverableContent` no TooltipProvider local do Sheet (esta sessão)
+### Fix 5 — `disableHoverableContent` no TooltipProvider local do Sheet (`1663bd8`)
 
 **Workflow corrigido:** `E2E Quote Item Editor Sheet` — ESC não abre dialog  
 **Arquivo:** `src/components/quotes/QuoteItemEditorSheet.tsx:89`  
@@ -145,16 +145,33 @@ Mudanças desta sessão não introduziram regressões:
 
 ---
 
+## Baseline local (2026-10-23 — branch `claude/magical-cannon-u5t1vy`)
+
+| Etapa | Resultado | Detalhe |
+|-------|-----------|--------|
+| `npm ci` | ✅ OK | Dependências instaladas; sem erros críticos |
+| `npm run build` | ✅ OK | Built in 8.52s; zero erros TS/Vite |
+| `npm run typecheck` | ✅ OK | 0 erros TypeScript |
+| `npm run lint` | ⚠️ OOM (ambiente) | Container com memória limitada; mesma restrição pré-existente do CI |
+| `vitest run` (full) | ⚠️ OOM (ambiente) | Container com memória limitada; igual ao lint |
+| `vitest` — `PopoverQtyInput.test.tsx` | ✅ 32/32 | Testes do Fix 1 passando |
+| `vitest` — `PopoverQtyInput.exhaustive.test.tsx` | ✅ 33/33 | Testes exaustivos do Fix 1 passando |
+
+> A suíte completa de testes e lint rodará no GitHub Actions (runners de maior memória).
+> O OOM local é pré-existente — mesma causa do Husky OOM corrigido no Fix 2.
+
+---
+
 ## Estado do PR #2378
 
-- **Status:** Draft, aberto, sem conflitos (`mergeable: true`)
-- **Commits:** 6 (5 fixes de código + 1 commit de documentação)
+- **Status:** Ready for review (convertido de draft em 2026-10-23), branch atualizada com main
+- **Commits:** 7 (5 fixes de código + 2 commits de documentação)
 - **Diff:** 5 arquivos de código + PENDENCIAS.md + RELATORIO_CI.md
-- **CI na branch:** Aguardando execução após conversão de draft para review-ready
+- **CI na branch:** Em execução (iniciado às 17:14 UTC de 2026-10-23)
 
 **Para mergear:**
-1. Converter draft → ready for review e aguardar CI verde
-2. Os itens P-05 (`SUPABASE_ACCESS_TOKEN`, `SUPABASE_DB_PASSWORD`) precisam estar configurados para o Gate E40 passar no merge para main
+1. Aguardar CI verde nos checks obrigatórios
+2. Os itens P-05 (`SUPABASE_ACCESS_TOKEN`, `SUPABASE_DB_PASSWORD`) precisam estar configurados para o Gate E40 passar
 3. P-03 precisa de `workflow_dispatch` manual para atualizar snapshots
 
 ---
