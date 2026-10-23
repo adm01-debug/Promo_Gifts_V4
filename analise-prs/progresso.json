@@ -7,7 +7,7 @@
   "total_prs_inicio": 24,
   "total_analisadas": 24,
   "status_global": "CONCLUIDO",
-  "ultima_verificacao": "2026-10-23T12:20Z",
+  "ultima_verificacao": "2026-10-23T12:37Z",
   "parada_exata": null,
   "por_veredito": {
     "FECHAR": 20,
@@ -18,137 +18,32 @@
     "RESGATAR_PARCIAL": 0
   },
   "prs": {
-    "2290": {
-      "veredito": "FECHAR",
-      "estado": "fechada",
-      "evidencia": "comentario+fechamento via MCP"
-    },
-    "2293": {
-      "veredito": "FECHAR",
-      "estado": "fechada",
-      "evidencia": "comentario+fechamento via MCP"
-    },
-    "2312": {
-      "veredito": "BLOQUEADA",
-      "estado": "fechada",
-      "motivo": "conflitos de merge com main — substituída por #2370",
-      "sucessora": "2370",
-      "evidencia": "comentario+fechamento via MCP (2026-10-23)"
-    },
-    "2314": {
-      "veredito": "FECHAR",
-      "estado": "fechada",
-      "evidencia": "comentario+fechamento via MCP"
-    },
-    "2315": {
-      "veredito": "BLOQUEADA",
-      "estado": "aberta",
-      "motivo": "modifica 12 arquivos .github/workflows/*.yml"
-    },
-    "2316": {
-      "veredito": "CORRIGIR",
-      "estado": "fechada",
-      "sucessora": "2361",
-      "sha_merge_sucessora": "e2be31add9a107030d1aeab8462534a6cd798979"
-    },
-    "2319": {
-      "veredito": "FECHAR",
-      "estado": "fechada",
-      "evidencia": "comentario+fechamento via MCP"
-    },
-    "2320": {
-      "veredito": "FECHAR",
-      "estado": "fechada",
-      "evidencia": "comentario+fechamento via MCP"
-    },
-    "2322": {
-      "veredito": "FECHAR",
-      "estado": "fechada",
-      "evidencia": "comentario+fechamento via MCP"
-    },
-    "2323": {
-      "veredito": "FECHAR",
-      "estado": "fechada",
-      "evidencia": "comentario+fechamento via MCP"
-    },
-    "2324": {
-      "veredito": "FECHAR",
-      "estado": "fechada",
-      "evidencia": "comentario+fechamento via MCP"
-    },
-    "2325": {
-      "veredito": "FECHAR",
-      "estado": "fechada",
-      "evidencia": "comentario+fechamento via MCP"
-    },
-    "2326": {
-      "veredito": "FECHAR",
-      "estado": "fechada",
-      "evidencia": "comentario+fechamento via MCP"
-    },
-    "2327": {
-      "veredito": "FECHAR",
-      "estado": "fechada",
-      "evidencia": "comentario+fechamento via MCP"
-    },
-    "2328": {
-      "veredito": "FECHAR",
-      "estado": "fechada",
-      "evidencia": "comentario+fechamento via MCP"
-    },
-    "2329": {
-      "veredito": "FECHAR",
-      "estado": "fechada",
-      "evidencia": "comentario+fechamento via MCP"
-    },
-    "2330": {
-      "veredito": "FECHAR",
-      "estado": "fechada",
-      "evidencia": "comentario+fechamento via MCP"
-    },
-    "2331": {
-      "veredito": "FECHAR",
-      "estado": "fechada",
-      "evidencia": "comentario+fechamento via MCP"
-    },
-    "2333": {
-      "veredito": "FECHAR",
-      "estado": "fechada",
-      "evidencia": "comentario+fechamento via MCP"
-    },
-    "2334": {
-      "veredito": "FECHAR",
-      "estado": "fechada",
-      "evidencia": "comentario+fechamento via MCP"
-    },
-    "2335": {
-      "veredito": "FECHAR",
-      "estado": "fechada",
-      "evidencia": "comentario+fechamento via MCP"
-    },
-    "2336": {
-      "veredito": "FECHAR",
-      "estado": "fechada",
-      "evidencia": "comentario+fechamento via MCP"
-    },
-    "2337": {
-      "veredito": "FECHAR",
-      "estado": "fechada",
-      "evidencia": "comentario+fechamento via MCP"
-    },
-    "2357": {
-      "veredito": "MERGEAR",
-      "estado": "fechada",
-      "sucessora": "2360",
-      "sha_merge_sucessora": "b4cc8163d68a9e31ca23f1695d193ec0605f9ae8"
-    },
-    "2360": {
-      "veredito": "MERGEAR",
-      "estado": "mergeada_admin",
-      "sha_merge": "b4cc8163d68a9e31ca23f1695d193ec0605f9ae8",
-      "gate_e40": "inerente_ate_migrations_aplicadas",
-      "motivo": "mergeada por admin (bypass Gate E40); migrations no banco pendentes de aprovacao humana em environment:production"
-    }
+    "2290": { "veredito": "FECHAR", "estado": "fechada", "evidencia": "comentario+fechamento via MCP" },
+    "2293": { "veredito": "FECHAR", "estado": "fechada", "evidencia": "comentario+fechamento via MCP" },
+    "2312": { "veredito": "BLOQUEADA", "estado": "fechada", "motivo": "conflitos de merge com main — substituída por #2370", "sucessora": "2370", "evidencia": "comentario+fechamento via MCP (2026-10-23)" },
+    "2314": { "veredito": "FECHAR", "estado": "fechada", "evidencia": "comentario+fechamento via MCP" },
+    "2315": { "veredito": "BLOQUEADA", "estado": "aberta", "motivo": "modifica 12 arquivos .github/workflows/*.yml" },
+    "2316": { "veredito": "CORRIGIR", "estado": "fechada", "sucessora": "2361", "sha_merge_sucessora": "e2be31add9a107030d1aeab8462534a6cd798979" },
+    "2319": { "veredito": "FECHAR", "estado": "fechada", "evidencia": "comentario+fechamento via MCP" },
+    "2320": { "veredito": "FECHAR", "estado": "fechada", "evidencia": "comentario+fechamento via MCP" },
+    "2322": { "veredito": "FECHAR", "estado": "fechada", "evidencia": "comentario+fechamento via MCP" },
+    "2323": { "veredito": "FECHAR", "estado": "fechada", "evidencia": "comentario+fechamento via MCP" },
+    "2324": { "veredito": "FECHAR", "estado": "fechada", "evidencia": "comentario+fechamento via MCP" },
+    "2325": { "veredito": "FECHAR", "estado": "fechada", "evidencia": "comentario+fechamento via MCP" },
+    "2326": { "veredito": "FECHAR", "estado": "fechada", "evidencia": "comentario+fechamento via MCP" },
+    "2327": { "veredito": "FECHAR", "estado": "fechada", "evidencia": "comentario+fechamento via MCP" },
+    "2328": { "veredito": "FECHAR", "estado": "fechada", "evidencia": "comentario+fechamento via MCP" },
+    "2329": { "veredito": "FECHAR", "estado": "fechada", "evidencia": "comentario+fechamento via MCP" },
+    "2330": { "veredito": "FECHAR", "estado": "fechada", "evidencia": "comentario+fechamento via MCP" },
+    "2331": { "veredito": "FECHAR", "estado": "fechada", "evidencia": "comentario+fechamento via MCP" },
+    "2333": { "veredito": "FECHAR", "estado": "fechada", "evidencia": "comentario+fechamento via MCP" },
+    "2334": { "veredito": "FECHAR", "estado": "fechada", "evidencia": "comentario+fechamento via MCP" },
+    "2335": { "veredito": "FECHAR", "estado": "fechada", "evidencia": "comentario+fechamento via MCP" },
+    "2336": { "veredito": "FECHAR", "estado": "fechada", "evidencia": "comentario+fechamento via MCP" },
+    "2337": { "veredito": "FECHAR", "estado": "fechada", "evidencia": "comentario+fechamento via MCP" },
+    "2357": { "veredito": "MERGEAR", "estado": "fechada", "sucessora": "2360", "sha_merge_sucessora": "b4cc8163d68a9e31ca23f1695d193ec0605f9ae8" },
+    "2370": { "veredito": "CORRIGIR", "estado": "mergeada", "predecessora": "2312", "branch": "claude/pensive-faraday-pwphva", "sha_merge": "09eeb1095e97adacc2e058a7036cd5dbbad70e06", "evidencia": "Gate Final success (run 39951950401), merge squash 2026-10-23T12:36:46Z" },
+    "2360": { "veredito": "MERGEAR", "estado": "mergeada_admin", "sha_merge": "b4cc8163d68a9e31ca23f1695d193ec0605f9ae8", "gate_e40": "inerente_ate_migrations_aplicadas", "motivo": "mergeada por admin (bypass Gate E40); migrations no banco pendentes de aprovacao humana em environment:production" }
   },
   "escritas_github": [
     "fechar+comentar: #2290, #2293, #2314, #2319, #2320, #2322-2337 (18 PRs)",
@@ -166,10 +61,12 @@
     "merge squash PR #2368 (artefatos finais): SHA fc4847a52eeb2b2a04c464d025e064bd5e1d23fc",
     "fechar+comentar: #2312 (link para #2370 como sucessora)",
     "abrir PR sucessora: #2370 (ci(deploy-gates): E14 docs-only bypass + unit-tests 45min)",
-    "push progresso.json atualizado: branch claude/pensive-faraday-pwphva"
+    "draft->ready + merge squash: #2370 (SHA 09eeb1095e97adacc2e058a7036cd5dbbad70e06)",
+    "push progresso.json final: claude/chore-analise-prs-final-261023-1240"
   ],
   "worktrees": [],
-  "main_sha_final": "fc4847a52eeb2b2a04c464d025e064bd5e1d23fc",
+  "main_sha_pos_2370": "09eeb1095e97adacc2e058a7036cd5dbbad70e06",
+  "main_sha_final": "09eeb1095e97adacc2e058a7036cd5dbbad70e06",
   "gate_final_pos_missao": "success",
   "migrations_aplicadas": [
     "20261022194000",
