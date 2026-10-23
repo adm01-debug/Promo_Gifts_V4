@@ -214,7 +214,11 @@ Todas as escritas foram feitas **exclusivamente via MCP "GITHUB - MCP - FOREVER"
 
 ## WORKTREES
 
-Nenhum worktree criado. `worktrees: []`
+Nenhum worktree criado. Saída de `git worktree list`:
+```
+/home/user/Promo_Gifts_V4  a2a3529 [claude/chore-analise-prs-261023-0215]
+```
+(Apenas o worktree principal — nenhum worktree extra)
 
 ---
 
@@ -249,11 +253,11 @@ analise-prs/
 - [x] Produção #2361: 2 deploys Vercel READY ✅
 - [x] #2357 fechada com evidência → sucessora #2360 mergeada (squash SHA `b4cc8163`)
 - [x] Produção #2360 (Vercel frontend): deploy READY ✅
-- [ ] **DB #2360: 3 migrations aguardando aprovação humana** — run [39894328218](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39894328218) (194100/waiting), run [39903694395](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39903694395) (194000-ou-194200/pending) — só Joaquim pode aprovar `environment:production`. Uma 3ª migration precisará de novo dispatch após aprovações (run 88 foi cancelado por concorrência).
+- [ ] **DB #2360: 3 migrations aguardando aprovação humana** — run [39894328218](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39894328218) (194100/waiting), run [39903694395](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39903694395) (194000-ou-194200/pending) — só Joaquim pode aprovar `environment:production`. Uma 3ª migration precisará de novo dispatch após aprovações.
 - [ ] **Gate Final main**: failure por Gate E40 inerente — passará a success após DB #2360 + re-run CI
 - [x] PRs ainda abertas = 2 BLOQUEADAS (#2312, #2315) — modificam .github/workflows
 - [x] Lista completa de escritas no GitHub acima
-- [x] Worktrees: nenhum criado
+- [x] Worktrees: nenhum criado (evidenciado por `git worktree list` acima)
 - [x] Caminhos de analise-prs/ documentados
 
 **Único bloqueio técnico restante: Joaquim deve aprovar os 3 runs de db-apply-migration.yml (environment:production). Nenhuma ação de agente é possível até essa aprovação.**
