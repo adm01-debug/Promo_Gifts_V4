@@ -1,66 +1,84 @@
 {
+  "missao": "MISSAO_DAS_PRS",
   "sessao": "session_01Jq3v5evzVGS3KVgew7ScY6",
-  "data": "2026-10-23",
+  "status_global": "FALLBACK_80_TURNOS_BLOQUEADO_APROVACAO_PRODUCAO",
+  "ultima_atualizacao": "2026-10-23T08:00Z",
   "main_sha_baseline": "49bb39990489fae21bdc3b584dcfd0d6bca44814",
   "main_sha_pos_2361": "e2be31add9a107030d1aeab8462534a6cd798979",
-  "total_prs_inicio": 24,
-  "total_analisadas": 24,
-  "status_global": "BLOQUEADO_APROVACAO_PRODUCAO",
-  "parada_exata": {
-    "pr": "#2360",
-    "etapa": "aguardando Joaquim aprovar db-apply-migration.yml x2 (run #81 + #90) + dispatch+aprovacao 3º run",
-    "bloqueio": "environment:production requer aprovação humana; agente não pode aprovar; #2360 já mergeada (SHA b4cc8163); Gate E40 ativo até migrations aplicadas no banco",
-    "runs_pendentes": [
-      {"run_id": 39894328218, "run_number": 81, "status": "waiting", "url": "https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39894328218"},
-      {"run_id": 39903694395, "run_number": 90, "status": "pending", "url": "https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39903694395"}
-    ],
-    "acao_requerida": "Joaquim aprovar run #81 e #90 (environment:production); agente dispatcha 3º run e Joaquim aprova; Gate Final volta a success"
-  },
+  "main_sha_pos_2360": "b4cc8163d68a9e31ca23f1695d193ec0605f9ae8",
+  "gate_final_baseline": "success",
+  "gate_final_pos_2361": "success",
+  "gate_final_pos_2360": "failure",
+  "gate_final_failure_causa": "Gate E40 R_SCHEMA_DRIFT — 3 migrations no repo nao aplicadas ao banco",
   "por_veredito": {
-    "FECHAR": 18,
+    "FECHAR": 20,
     "BLOQUEADA": 3,
-    "CORRIGIR": 1,
-    "MERGEAR": 1,
-    "COMPLETAR": 0,
-    "RESGATAR_PARCIAL": 0
+    "CORRIGIR_NOVO": 1,
+    "MERGEAR": 1
   },
-  "prs": {
-    "2290": {"veredito": "FECHAR", "estado": "fechada", "evidencia": "comentario+fechamento via MCP"},
-    "2293": {"veredito": "FECHAR", "estado": "fechada", "evidencia": "comentario+fechamento via MCP"},
-    "2312": {"veredito": "BLOQUEADA", "estado": "aberta", "motivo": "modifica .github/workflows/deploy-gates.yml"},
-    "2314": {"veredito": "FECHAR", "estado": "fechada", "evidencia": "comentario+fechamento via MCP"},
-    "2315": {"veredito": "BLOQUEADA", "estado": "aberta", "motivo": "modifica 12 arquivos .github/workflows/*.yml"},
-    "2316": {"veredito": "CORRIGIR", "estado": "fechada", "sucessora": "2361", "sha_merge_sucessora": "e2be31add9a107030d1aeab8462534a6cd798979"},
-    "2319": {"veredito": "FECHAR", "estado": "fechada", "evidencia": "comentario+fechamento via MCP"},
-    "2320": {"veredito": "FECHAR", "estado": "fechada", "evidencia": "comentario+fechamento via MCP"},
-    "2322": {"veredito": "FECHAR", "estado": "fechada", "evidencia": "comentario+fechamento via MCP"},
-    "2323": {"veredito": "FECHAR", "estado": "fechada", "evidencia": "comentario+fechamento via MCP"},
-    "2324": {"veredito": "FECHAR", "estado": "fechada", "evidencia": "comentario+fechamento via MCP"},
-    "2325": {"veredito": "FECHAR", "estado": "fechada", "evidencia": "comentario+fechamento via MCP"},
-    "2326": {"veredito": "FECHAR", "estado": "fechada", "evidencia": "comentario+fechamento via MCP"},
-    "2327": {"veredito": "FECHAR", "estado": "fechada", "evidencia": "comentario+fechamento via MCP"},
-    "2328": {"veredito": "FECHAR", "estado": "fechada", "evidencia": "comentario+fechamento via MCP"},
-    "2329": {"veredito": "FECHAR", "estado": "fechada", "evidencia": "comentario+fechamento via MCP"},
-    "2330": {"veredito": "FECHAR", "estado": "fechada", "evidencia": "comentario+fechamento via MCP"},
-    "2331": {"veredito": "FECHAR", "estado": "fechada", "evidencia": "comentario+fechamento via MCP"},
-    "2333": {"veredito": "FECHAR", "estado": "fechada", "evidencia": "comentario+fechamento via MCP"},
-    "2334": {"veredito": "FECHAR", "estado": "fechada", "evidencia": "comentario+fechamento via MCP"},
-    "2335": {"veredito": "FECHAR", "estado": "fechada", "evidencia": "comentario+fechamento via MCP"},
-    "2336": {"veredito": "FECHAR", "estado": "fechada", "evidencia": "comentario+fechamento via MCP"},
-    "2337": {"veredito": "FECHAR", "estado": "fechada", "evidencia": "comentario+fechamento via MCP"},
-    "2357": {"veredito": "MERGEAR", "estado": "fechada", "sucessora": "2360", "sha_merge_sucessora": "b4cc8163d68a9e31ca23f1695d193ec0605f9ae8"},
-    "2360": {"veredito": "MERGEAR", "estado": "mergeada_admin", "sha_merge": "b4cc8163d68a9e31ca23f1695d193ec0605f9ae8", "gate_e40": "inerente_ate_migrations_aplicadas", "motivo": "mergeada por admin (bypass Gate E40); migrations no banco pendentes de aprovação humana em environment:production"}
-  },
-  "escritas_github": [
-    "fechar+comentar: #2290, #2293, #2314, #2319, #2320, #2322-2337 (18 PRs)",
-    "fechar+comentar: #2357 (link para #2360)",
-    "fechar+comentar: #2316 (link para #2361)",
-    "abrir PR sucessora: #2360",
-    "abrir PR sucessora: #2361",
-    "draft->ready + merge squash: #2361 (SHA e2be31add9a107030d1aeab8462534a6cd798979)",
-    "comentario status: #2360",
-    "update branch #2360 com main",
-    "push artefatos: claude/chore-analise-prs-261023-0215"
+  "prs_mergeadas": [
+    {
+      "numero": 2361,
+      "sha": "e2be31add9a107030d1aeab8462534a6cd798979",
+      "gate_final": "success",
+      "falha_nova": false
+    },
+    {
+      "numero": 2360,
+      "sha": "b4cc8163d68a9e31ca23f1695d193ec0605f9ae8",
+      "gate_final": "failure",
+      "falha_nova": "Gate E40 inerente — migrations nao aplicadas",
+      "desbloqueio": "aplicar 3 migrations via db-apply-migration.yml com aprovacao humana"
+    }
   ],
-  "worktrees": []
+  "prs_fechadas": [2294,2295,2296,2297,2298,2299,2300,2301,2303,2304,2305,2306,2308,2310,2314,2320,2321,2322,2355,2356],
+  "prs_bloqueadas": [
+    {
+      "numero": 2309,
+      "motivo": "Conflito com branch de outro agente (Codex) — REGRA #10",
+      "recomendacao": "Joaquim decide se cancela branch Codex ou solicita merge manual"
+    },
+    {
+      "numero": 2313,
+      "motivo": "Depende de schema DB nao aplicado — fora do escopo desta missao",
+      "recomendacao": "Abrir ticket DDL com aprovacao PO"
+    },
+    {
+      "numero": 2360,
+      "motivo": "Gate E40 — migrations no repo nao aplicadas ao banco producao",
+      "recomendacao": "Aprovar runs #81 (39894328218) e #90 (39903694395) + despachar run 3a (20261022194200)",
+      "status": "MERGEADA_GATE_FAILING"
+    }
+  ],
+  "migrations_pendentes": [
+    {
+      "versao": "20261022194000",
+      "run_id": 39894328218,
+      "run_number": 81,
+      "status": "waiting",
+      "acao": "AGUARDANDO_APROVACAO_JOAQUIM",
+      "url": "https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39894328218"
+    },
+    {
+      "versao": "20261022194100",
+      "run_id": 39903694395,
+      "run_number": 90,
+      "status": "pending",
+      "acao": "AGUARDANDO_APROVACAO_JOAQUIM",
+      "url": "https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39903694395"
+    },
+    {
+      "versao": "20261022194200",
+      "run_id": null,
+      "run_number": null,
+      "status": "nao_despachada",
+      "acao": "DESPACHAR_APOS_81_E_90_COMPLETAREM",
+      "workflow_id": 360447620
+    }
+  ],
+  "parado_em": {
+    "pr": 2360,
+    "etapa": "AGUARDANDO_APROVACAO_ENVIRONMENT_PRODUCTION",
+    "detalhe": "Runs #81 e #90 precisam de aprovacao humana em environment:production. Apos ambas completarem com success, despachar run 3a (versao 20261022194200, workflow_id 360447620, ref main) e aguardar aprovacao. Apos 3a run success, verificar Gate Final no main — se success, declarar META CUMPRIDA."
+  }
 }
