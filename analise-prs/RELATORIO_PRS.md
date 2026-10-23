@@ -13,9 +13,9 @@
 | PRs analisadas | 24 |
 | FECHAR (fechadas) | 18 ✅ |
 | BLOQUEADA (mantidas abertas) | 2 |
-| CORRIGIR → sucessora criada + original fechada | 1 |
+| CORRIGIR → sucessora criada + original fechada + MERGEADA | 1 |
 | MERGEAR → sucessora criada (aguarda apply de migrations) | 1 |
-| PRs abertas ao final | 4 (2 BLOQUEADAS + 2 sucessoras) |
+| PRs abertas ao final | 3 (2 BLOQUEADAS + 1 sucessora aguardando humano) |
 
 ---
 
@@ -25,8 +25,8 @@
 |---|---|---|
 | FECHAR | 18 | #2290, #2293, #2314, #2319, #2320, #2322, #2323, #2324, #2325, #2326, #2327, #2328, #2329, #2330, #2331, #2333, #2334, #2335, #2336, #2337 |
 | BLOQUEADA | 2 | #2312, #2315 |
-| CORRIGIR | 1 | #2316 → sucessora #2361 |
-| MERGEAR | 1 | #2357 → sucessora #2360 |
+| CORRIGIR | 1 | #2316 → sucessora #2361 ✅ MERGEADA |
+| MERGEAR | 1 | #2357 → sucessora #2360 (aguarda humano) |
 
 ---
 
@@ -57,7 +57,7 @@ Todas fechadas com comentário de evidência via MCP "GITHUB - MCP - FOREVER".
 | #2336 | Create main.yml | Arquivo com 1 caracter, sem propósito |
 | #2337 | Create deno.yml | Duplicata exata de #2323 |
 
-**Nota:** PRs #2316 foi fechada após criação da sucessora #2361 (ver seção CORRIGIR).
+**Nota:** PR #2316 foi fechada após criação da sucessora #2361 (ver seção CORRIGIR). PR #2357 foi fechada após criação da sucessora #2360 (ver seção MERGEAR).
 
 ---
 
@@ -66,18 +66,18 @@ Todas fechadas com comentário de evidência via MCP "GITHUB - MCP - FOREVER".
 ### #2312 — fix: tighten deploy-gates workflow
 **Motivo do bloqueio:** Modifica `.github/workflows/deploy-gates.yml` — mudança em workflow = BLOQUEIO por MISSAO.md.  
 **Recomendação:** Revisar se o hardening proposto é compatível com o Gate Final atual. Se aprovado, pode ser mergeada diretamente.  
-**Branch:** `claude/fix-deploy-gates-261012-*` (ou similar, head SHA desconhecido)
+**Dossiê:** `analise-prs/dossies/PR-2312.md`
 
 ### #2315 — ci: workflow hardening batch
 **Motivo do bloqueio:** Modifica 12 arquivos `.github/workflows/*.yml` — mudança em 12 workflows = BLOQUEIO por MISSAO.md.  
 **Recomendação:** Revisar cada workflow individualmente. O batch é amplo — considerar dividir em PRs menores por tema.  
-**Branch:** head SHA desconhecido
+**Dossiê:** `analise-prs/dossies/PR-2315.md`
 
 ---
 
 ## PR CORRIGIR → SUCESSORA (1)
 
-### #2316 → #2361
+### #2316 → #2361 ✅ MERGEADA
 
 **Original:** `fix: add magazine-reader-state-read to contracts`  
 - `mergeable_state: dirty` (conflito com main)  
@@ -91,25 +91,28 @@ Todas fechadas com comentário de evidência via MCP "GITHUB - MCP - FOREVER".
 - Diff: 11 adições, 0 deleções, 1 arquivo (`tests/contracts/webhook-schemas.ts`)  
 - Adiciona `MagazineReaderStateReadSchemaV1` (token + fingerprint) e entrada `"magazine-reader-state-read"` em `CONTRACTS`  
 - Cobre Gate 1.12 (contract coverage) para a edge function `magazine-reader-state-read`  
-- CI em andamento na branch  
+- **CI: Gate Final = success (todos os 10 checks passaram)**  
+- **MERGEADA em squash — merge SHA: `e2be31add9a107030d1aeab8462534a6cd798979`**  
+- **Dossiê:** `analise-prs/dossies/PR-2316.md`
 
 ---
 
 ## PR MERGEAR → SUCESSORA (1)
 
-### #2357 → #2360
+### #2357 → #2360 — BLOQUEADA (Gate E40 inerente, aguarda humano)
 
 **Original:** `security: revogar acessos não-autorizados (E30/E40/E18)`  
 - 3 migrations REVOKE INSERT: `anon_mg_*`, `anon_supplier_*`, `anon_personalization_*`  
 - 128 adições, 0 deleções — não-destrutivas, apenas restringem acesso  
-- Análise completa em dossiê #2357  
+- **FECHADA em 2026-10-23** em favor de #2360 (comentário: #2357#issuecomment-6355874807)  
+- **Dossiê:** `analise-prs/dossies/PR-2357.md`
 
 **Sucessora:** [#2360 — Completa #2357: 3 migrations REVOKE INSERT anon (E30/E40/E18)](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2360)  
 - Branch: `claude/fix-pr2357-revoke-anon-261023-0900`  
 - CI: Gate E40 falha por **limitação inerente** — "Ledger parity" compara ledger vivo vs. arquivos da branch. Migrations novas **por definição** não estão no ledger até serem aplicadas.  
 - **O que fazer após merge:** `workflow_dispatch` em `.github/workflows/db-apply-migration.yml` para cada migration na ordem de versão (`20261013`, `20261014`, `20261015`)  
-- Aguarda aprovação humana antes do merge (migrations em produção)  
-- Comentário explicativo em #2360#issuecomment-6355748672  
+- **Aguarda aprovação humana** — migrations em produção, Gate E40 inerente  
+- Comentário explicativo em #2360#issuecomment-6355748672
 
 ---
 
@@ -121,8 +124,9 @@ Todas as escritas foram feitas **exclusivamente via MCP "GITHUB - MCP - FOREVER"
 |---|---|
 | Comentar + fechar | #2290, #2293, #2314, #2319, #2320, #2322–#2337 (18 PRs) |
 | PR sucessora aberta | #2360 (para #2357), #2361 (para #2316) |
-| PR original fechada após sucessora | #2316 |
-| Comentário de status | #2360 (Gate E40 explicado) |
+| PR original fechada após sucessora | #2316, #2357 |
+| Comentário de status | #2360 (Gate E40 explicado), #2357 (fechamento com referência a #2360) |
+| PR #2361 convertida de draft + mergeada (squash) | merge SHA `e2be31add9a107030d1aeab8462534a6cd798979` |
 | Nenhuma escrita proibida | ✅ Sem push em main, sem toque em .github/workflows, sem branch alheia, sem SINGU |
 
 ---
@@ -154,8 +158,13 @@ analise-prs/
 ├── MISSAO.md              # Missão original (guia de execução)
 ├── RELATORIO_PRS.md       # Este relatório
 ├── progresso.json         # Estado de execução de cada PR
-└── baseline/
-    └── baseline.json      # Linha de base do main (tsc=0, eslint=0)
+├── baseline/
+│   └── baseline.json      # Linha de base do main (tsc=0, eslint=0)
+└── dossies/
+    ├── PR-2316.md         # Dossiê CORRIGIR (mergeada)
+    ├── PR-2357.md         # Dossiê MERGEAR (fechada, sucessora #2360)
+    ├── PR-2312.md         # Dossiê BLOQUEADA (workflow)
+    └── PR-2315.md         # Dossiê BLOQUEADA (workflow batch)
 ```
 
 ---
@@ -165,9 +174,12 @@ analise-prs/
 - [x] Total de PRs abertas no início = 24 = total analisado
 - [x] Contagem por veredito: FECHAR=18, BLOQUEADA=2, CORRIGIR=1, MERGEAR=1
 - [x] PRs FECHAR: todas fechadas com comentário de evidência (SHA, arquivo:linha ou PR)
-- [x] Sucessora #2361 aberta; original #2316 fechada com link do comentário
-- [x] Sucessora #2360 aberta (migrations aguardam apply humano após merge)
-- [x] PRs ainda abertas = 2 BLOQUEADAS (#2312, #2315) + 2 sucessoras (#2360, #2361)
+- [x] Sucessora #2361 aberta, CI verde, MERGEADA (squash SHA `e2be31add9a107030d1aeab8462534a6cd798979`)
+- [x] Original #2316 fechada com link do comentário
+- [x] Sucessora #2360 aberta (Gate E40 inerente — migrations aguardam apply humano após merge)
+- [x] Original #2357 FECHADA (comentário citando #2360)
+- [x] PRs ainda abertas = 2 BLOQUEADAS (#2312, #2315) + 1 sucessora (#2360, aguarda humano)
+- [x] Dossies criados: `analise-prs/dossies/PR-2316.md`, `PR-2357.md`, `PR-2312.md`, `PR-2315.md`
 - [x] Nenhuma escrita fora da lista permitida (listagem completa acima)
 - [x] Worktrees removidos (nenhum criado)
 - [x] Caminhos dos arquivos documentados
