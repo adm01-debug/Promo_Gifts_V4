@@ -83,16 +83,12 @@ export function QuoteItemEditorSheet({
         className="flex w-full flex-col gap-0 p-0 sm:max-w-[430px]"
         data-testid="quote-item-editor-sheet"
         aria-label="Editor de item do orçamento"
-        onKeyDownCapture={(e) => {
-          if (e.key === 'Escape') {
-            // Portal dialogs (e.g. ConfigurationPanelV6) are React children of Sheet
-            // so their Escape bubbles up here via React's synthetic capture phase.
-            // Only block propagation when ESC came from a nested dialog — let Radix's
-            // own onEscapeKeyDown → onOpenChange={requestClose} handle the sheet itself.
-            const innerDialog = (e.target as Element).closest('[role="dialog"]');
-            if (innerDialog !== null && innerDialog !== e.currentTarget) {
-              e.stopPropagation();
-            }
+        onEscapeKeyDown={(e) => {
+          // Radix only fires this for the topmost layer, so nested dialogs
+          // (ConfigurationPanelV6, etc.) already consume ESC before it reaches here.
+          if (hasUnsavedChanges) {
+            e.preventDefault(); // prevent Radix from closing the sheet
+            setConfirmOpen(true);
           }
         }}
       >
