@@ -107,6 +107,17 @@ const ALLOWED_BRACES_CHAIN_TRANSITIVE = new Set([
   'postcss-selector-parser', 'postcss-nested',
 ]);
 
+// fast-uri — moderate advisory. Transitive dep via ajv (JSON Schema validator used by
+// test tooling, e.g. jest-extended, vitest internals). Never in the production bundle.
+// undici — moderate advisory. Transitive dep via jsdom (DOM simulation engine used by
+// vitest's jsdom test environment). Never in the production bundle.
+// Both are purely transitive dev-only dependencies with no non-breaking fix available.
+// Accepted same pattern as ALLOWED_LHCI_PACKAGES. Revisit by RISK_REVIEW_DEADLINE.
+const ALLOWED_AJV_JSDOM_CHAIN_PACKAGES = new Set([
+  'fast-uri',  // transitive: ajv → fast-uri; moderate; dev-only (test tooling schema validation)
+  'undici',    // transitive: jsdom → undici; moderate; vitest jsdom test environment
+]);
+
 // Únicos advisories aceitos dentro da cadeia build-time. Qualquer
 // advisory NOVO em um desses pacotes (objeto em `via` com URL fora do
 // conjunto) volta a bloquear o gate — a aceitação é por advisory,
@@ -143,6 +154,7 @@ const ALL_KNOWN_ACCEPTED_PACKAGES = new Set([
   ...ALLOWED_BRACES_CHAIN_DIRECT,
   ...ALLOWED_BRACES_CHAIN_TRANSITIVE,
   ...ALLOWED_ZOD_CHAIN_PACKAGES,
+  ...ALLOWED_AJV_JSDOM_CHAIN_PACKAGES,
 ]);
 
 function isAllowedVitestPackage(packageName, vulnerability) {
@@ -183,6 +195,12 @@ function isAllowedZodChainPackage(packageName, vulnerability) {
     return via.length === 1 && via[0] === 'zod';
   }
   return false;
+}
+
+function isAllowedAjvJsdomPackage(packageName, vulnerability) {
+  if (!ALLOWED_AJV_JSDOM_CHAIN_PACKAGES.has(packageName)) return false;
+  // Both are purely transitive — never direct.
+  return vulnerability.isDirect === false && vulnerability.severity === 'moderate';
 }
 
 function isAllowedBracesChainPackage(packageName, vulnerability) {
@@ -292,6 +310,10 @@ export function evaluateAuditReport(report, now = new Date()) {
       continue;
     }
     if (isAllowedBracesChainPackage(packageName, vulnerability)) {
+      accepted.push(packageName);
+      continue;
+    }
+    if (isAllowedAjvJsdomPackage(packageName, vulnerability)) {
       accepted.push(packageName);
       continue;
     }
