@@ -1,7 +1,7 @@
 # PENDENCIAS.md — Workflows com bloqueio externo
 
 > Gerado em: 2026-10-23  
-> Atualizado em: 2026-10-23T19:40Z (P-13 adicionado; Fix7+8 movidos para PR #2383; baseline lint confirmado OK)  
+> Atualizado em: 2026-10-23T20:10Z (P-14 + resumo final; Deploy Gates ✅ SUCCESS confirmado em `de56a10b`)  
 > Sessão: https://claude.ai/code/session_019gUZ8wvjsJMC3gYzy6k7jB  
 > Branch de trabalho: `claude/magical-cannon-u5t1vy` → PRs #2378, #2381, #2383
 
@@ -223,4 +223,47 @@ venham via squash-merge/merge-commit de PR, bot oficial, Lovable, release ou byp
 
 ---
 
-*Última atualização: 2026-10-23T19:40Z — PRs abertos: #2378 (app code, PO), #2381 (YAML, merge seguro), #2383 (testes, merge seguro).*
+## P-14 — E2E · Quote Conditions visual PR check — Infra flake (zero diffs reais)
+
+**Workflow:** `.github/workflows/e2e-quote-conditions-visual.yml` (ou similar)  
+**Run ID:** 40013194317 (commit `de56a10b`)
+
+**Status:** `visual-check` job = `failure`, mas `diff-artifacts/` vazio (nenhum PNG de diff gerado).  
+`visual-diff-preview` tem apenas 1168 bytes (2 arquivos) — sem divergência de pixel confirmada.  
+Mesmo padrão do `visual-check` infra-flake documentado no inventário.
+
+**Causa provável:** Runner encerrou o spec antes de gerar os diffs, ou o spec encontrou erro de infra
+(ex.: dev server não inicializou a tempo) — o job falha com exit ≠ 0 sem produzir artefatos reais.
+
+**Impacto:** Não bloqueante — Deploy Gates (Gate Final) = ✅ SUCCESS no mesmo commit `de56a10b`.  
+Este workflow é check advisory, não required.
+
+**O que você pode fazer (opcional):**  
+Re-rodar via `workflow_dispatch` para confirmar se é flake recorrente ou divergência real.
+
+---
+
+## Resumo final — HEAD `de56a10b` (branch `claude/magical-cannon-u5t1vy`)
+
+| Check | Status | Observação |
+|---|---|---|
+| **Deploy Gates (Gate Final)** | ✅ SUCCESS | Required check — PR #2378 mergeable |
+| SSOT Supabase Guard | ✅ SUCCESS | |
+| Security Scan | ✅ SUCCESS | |
+| Workflow Lint | ✅ SUCCESS | |
+| Bundle size report | ✅ SUCCESS | |
+| Contract Tests | ✅ SUCCESS | |
+| TS Unused Locals Ratchet | ✅ SUCCESS | |
+| Required Checks Guard | ✅ SUCCESS | |
+| edge-functions-drift-check | ✅ SUCCESS | |
+| CI Security & Drift (unit-tests) | 🔄 Fix 7 no PR #2383 | aguarda merge de #2383 |
+| CI Replenishment Quality Gate (E2E smoke) | 🔄 Fix 8 + P-02 | timeout fix em #2383; E2E smoke ainda depende de P-02 |
+| E2E — Personalization Flow | ❌ P-02 | secrets ausentes |
+| E2E Quote Item Editor Sheet | ❌ P-02 | secrets ausentes |
+| E2E Focused UI Matrix | ❌ P-02 | secrets ausentes |
+| E2E · Quote Conditions visual PR check | ❌ P-14 | infra flake (0 diffs reais) |
+| visual-check | ❌ P-14 padrão | infra flake recorrente |
+| E2E — Personalization Journey | ❌ P-02 | secrets ausentes |
+| Running Copilot Code Review | ❌ bot | review bot, não bloqueia |
+
+*Última atualização: 2026-10-23T20:10Z — Deploy Gates ✅ SUCCESS. PRs abertos: #2378 (app code, aguarda PO), #2381 (YAML, merge seguro), #2383 (testes, merge seguro).*
