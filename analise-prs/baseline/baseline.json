@@ -1,0 +1,10 @@
+{
+  "main_sha": "49bb39990489fae21bdc3b584dcfd0d6bca44814",
+  "date": "2026-10-23",
+  "tsc_errors": 0,
+  "eslint_errors": 0,
+  "eslint_warnings": 0,
+  "vitest_note": "node_modules not installed at scan time; vitest not available",
+  "build_note": "not run (slow)",
+  "ci_state": "unknown - checking PRs individually"
+}
