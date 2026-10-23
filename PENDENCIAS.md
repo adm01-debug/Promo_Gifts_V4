@@ -1,7 +1,7 @@
 # PENDENCIAS.md — Workflows com bloqueio externo
 
 > Gerado em: 2026-10-23  
-> Atualizado em: 2026-10-23T20:10Z (P-14 + resumo final; Deploy Gates ✅ SUCCESS confirmado em `de56a10b`)  
+> Atualizado em: 2026-10-23T20:30Z (P-13 adicionado; Fix7+8 movidos para PR #2383; seções críticas da sessão 2026-10-22 preservadas — migrations urgentes + decisões banco)  
 > Sessão: https://claude.ai/code/session_019gUZ8wvjsJMC3gYzy6k7jB  
 > Branch de trabalho: `claude/magical-cannon-u5t1vy` → PRs #2378, #2381, #2383
 
@@ -225,20 +225,20 @@ venham via squash-merge/merge-commit de PR, bot oficial, Lovable, release ou byp
 
 ## P-14 — E2E · Quote Conditions visual PR check — Infra flake (zero diffs reais)
 
-**Workflow:** `.github/workflows/e2e-quote-conditions-visual.yml` (ou similar)  
+**Workflow:** `.github/workflows/e2e-quote-conditions-visual.yml` (ou similar)
 **Run ID:** 40013194317 (commit `de56a10b`)
 
-**Status:** `visual-check` job = `failure`, mas `diff-artifacts/` vazio (nenhum PNG de diff gerado).  
-`visual-diff-preview` tem apenas 1168 bytes (2 arquivos) — sem divergência de pixel confirmada.  
+**Status:** `visual-check` job = `failure`, mas `diff-artifacts/` vazio (nenhum PNG de diff gerado).
+`visual-diff-preview` tem apenas 1168 bytes (2 arquivos) — sem divergência de pixel confirmada.
 Mesmo padrão do `visual-check` infra-flake documentado no inventário.
 
 **Causa provável:** Runner encerrou o spec antes de gerar os diffs, ou o spec encontrou erro de infra
 (ex.: dev server não inicializou a tempo) — o job falha com exit ≠ 0 sem produzir artefatos reais.
 
-**Impacto:** Não bloqueante — Deploy Gates (Gate Final) = ✅ SUCCESS no mesmo commit `de56a10b`.  
+**Impacto:** Não bloqueante — Deploy Gates (Gate Final) = ✅ SUCCESS no mesmo commit `de56a10b`.
 Este workflow é check advisory, não required.
 
-**O que você pode fazer (opcional):**  
+**O que você pode fazer (opcional):**
 Re-rodar via `workflow_dispatch` para confirmar se é flake recorrente ou divergência real.
 
 ---
@@ -266,4 +266,113 @@ Re-rodar via `workflow_dispatch` para confirmar se é flake recorrente ou diverg
 | E2E — Personalization Journey | ❌ P-02 | secrets ausentes |
 | Running Copilot Code Review | ❌ bot | review bot, não bloqueia |
 
-*Última atualização: 2026-10-23T20:10Z — Deploy Gates ✅ SUCCESS. PRs abertos: #2378 (app code, aguarda PO), #2381 (YAML, merge seguro), #2383 (testes, merge seguro).*
+*Última atualização: 2026-10-23T20:30Z — Deploy Gates ✅ SUCCESS. PRs abertos: #2378 (app code, aguarda PO), #2381 (YAML, merge seguro), #2383 (testes, merge seguro).*
+
+---
+
+## 🔴 URGENTE — Gate E40 vermelho em `main` (ledger parity — sessão anterior 2026-10-22)
+
+**Causa:** 6 migrations novas em `supabase/migrations/` (PR #2352 mergeado às 22:36 UTC)
+não foram aplicadas em produção. O check de ledger falha até serem aplicadas.
+
+**O que você precisa fazer:**
+
+### Passo 1 — Aplicar 5 migrations seguras (via workflow obrigatório)
+
+Execute um por vez, na ordem, usando `gh workflow run`:
+
+```sh
+# 1. Revoke EXECUTE anon em fn_cron_guard (CRÍTICO — segurança)
+gh workflow run db-apply-migration.yml \
+  -f version=20261022100001 \
+  --repo adm01-debug/Promo_Gifts_V4
+
+# 2. RLS wrapper auth.uid() performance (seguro — só ALTER POLICY)
+gh workflow run db-apply-migration.yml \
+  -f version=20261022100010 \
+  --repo adm01-debug/Promo_Gifts_V4
+
+# 3. Cron reschedule: dispatcher_failure_alert (seguro)
+gh workflow run db-apply-migration.yml \
+  -f version=20261022100020 \
+  --repo adm01-debug/Promo_Gifts_V4
+
+# 4. Cron reschedule: hash_product_images (seguro)
+gh workflow run db-apply-migration.yml \
+  -f version=20261022100021 \
+  --repo adm01-debug/Promo_Gifts_V4
+
+# 5. Cron reschedule: sync_is_stockout_universal (seguro)
+gh workflow run db-apply-migration.yml \
+  -f version=20261022100022 \
+  --repo adm01-debug/Promo_Gifts_V4
+```
+
+### ⚠️ NÃO aplicar ainda — requer análise
+
+```
+20261022100011_perf_drop_unused_indexes.sql
+```
+
+- Contém 13 `DROP INDEX` — irreversível sem recriação
+- Antes de aplicar: rodar `SELECT * FROM pg_stat_user_indexes WHERE idx_scan = 0`
+  em produção para confirmar que os índices estão realmente sem uso
+- Risco de regressão de performance em queries não cobertas pelos testes
+
+### Como verificar que o Gate E40 voltou ao verde
+
+Após aplicar as migrations acima, dispare manualmente o workflow de CI:
+
+```sh
+gh workflow run deploy-gates.yml --repo adm01-debug/Promo_Gifts_V4 --ref main
+```
+
+Aguarde ~10 min e confirme que todos os gates passam.
+
+---
+
+## 🔴 URGENTE — Incidente do banco 22/10/2026 — migration `20261022193000`
+
+**O que é:** reduz a frequência das 15 rotinas automáticas mais pesadas, que estão saturando o banco (milhares de erros 503/504 por hora desde 21/10 ~20h). Também passa a registrar no log quando uma rotina estoura o tempo.
+
+**Por que trava:** mudança no banco de produção só entra pelo workflow `db-apply-migration.yml`, com aprovação humana no ambiente "production".
+
+**Passo a passo:**
+1. Abra https://github.com/adm01-debug/Promo_Gifts_V4/actions/workflows/db-apply-migration.yml
+2. Se houver execução "Waiting": clique nela → **Review deployments** → marque **production** → **Approve and deploy**.
+3. Se não houver: **Run workflow** → branch `main` → `version`: `20261022193000` → `approved_by`: seu nome → aprove como no passo 2.
+
+---
+
+## 🟡 Decisões pendentes do banco (sessão anterior 2026-10-22)
+
+### 12 correções antigas que nunca chegaram ao banco
+
+Desde setembro, 12 migrações aprovadas em PR nunca foram aplicadas porque o validador passou a exigir arquivo de rollback. Entre elas há correções de segurança abertas em produção:
+- usuários logados executam `mcp_kv_get` (lê segredos) — E18
+- visitantes anônimos podem gravar/apagar em `external_connections` — E23
+- visitantes anônimos têm acesso total a `mockup_approval_links` — 20261008230000
+
+Para consolidar: responda "pode consolidar as 12 migrações pendentes". A sessão cria o PR com rollback e recibo, e você aprova uma única vez.
+
+**Higiene (baixa prioridade):** 9 migrações já aplicadas em produção por outro caminho, só falta registrá-las (modo `repair-only`): 20260902220800, 20260902221000, 20260903093500, 20260905033100, 20260905033200, 20260916181609, 20260916210000, 20260920120000, 20260928212000.
+
+### Quem pode ver o card "Risco de ruptura"
+
+Em 13/10 o acesso direto à visão `mv_stock_rupture_alert` foi retirado de usuários logados. A tela de estoque ainda a lê → card vazio desde 13/10 (632 erros/dia).
+
+Decisão: responda uma das opções:
+- "todos os usuários logados" (como era antes de 13/10)
+- "só coordenador para cima" / "só supervisor para cima" / "só admin"
+
+### Secret `ASIA_INGESTION_CRON_SECRET` ausente
+
+Uma rotina do fornecedor Asia reclama 143×/dia. Supabase → Project Settings → Vault → "Add new secret" com esse nome e o valor da integração Asia.
+
+### Avaliar aumentar máquina do banco (custo)
+
+Banco em máquina pequena (2 GB de memória) com ~150 rotinas. Supabase → projeto `doufsxqlfjyuvxuezpln` → Settings → Compute and Disk → avaliar o próximo tamanho.
+
+---
+
+> Seções acima preservadas da sessão `claude/laughing-cori-o9w35e` (2026-10-22, PR #2338 mergeado). Não remover sem confirmar que as migrations foram aplicadas e as decisões tomadas.
