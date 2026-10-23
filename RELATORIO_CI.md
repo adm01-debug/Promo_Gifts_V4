@@ -148,11 +148,11 @@ Mudanças desta sessão não introduziram regressões:
 ## Baseline local (2026-10-23 — branch `claude/magical-cannon-u5t1vy`)
 
 | Etapa | Resultado | Detalhe |
-|-------|-----------|--------|
+|-------|-----------|---------|
 | `npm ci` | ✅ OK | Dependências instaladas; sem erros críticos |
 | `npm run build` | ✅ OK | Built in 8.52s; zero erros TS/Vite |
 | `npm run typecheck` | ✅ OK | 0 erros TypeScript |
-| `npm run lint` | ⚠️ OOM (ambiente) | Container com memória limitada; mesma restrição pré-existente do CI |
+| `npm run lint` | ⚠️ OOM (ambiente) | Container com memória limitada; mesma restrição pré-existente do CI (Fix 2 resolve em GA) |
 | `vitest run` (full) | ⚠️ OOM (ambiente) | Container com memória limitada; igual ao lint |
 | `vitest` — `PopoverQtyInput.test.tsx` | ✅ 32/32 | Testes do Fix 1 passando |
 | `vitest` — `PopoverQtyInput.exhaustive.test.tsx` | ✅ 33/33 | Testes exaustivos do Fix 1 passando |
@@ -165,9 +165,9 @@ Mudanças desta sessão não introduziram regressões:
 ## Estado do PR #2378
 
 - **Status:** Ready for review (convertido de draft em 2026-10-23), branch atualizada com main
-- **Commits:** 7 (5 fixes de código + 2 commits de documentação)
+- **Commits:** 7 (6 fixes de código + 1 commit de documentação)
 - **Diff:** 5 arquivos de código + PENDENCIAS.md + RELATORIO_CI.md
-- **CI na branch:** Em execução (iniciado às 17:14 UTC de 2026-10-23)
+- **CI na branch:** Em execução (commit `3a8f5d3` — Fix 6 ESC capture phase)
 
 **Para mergear:**
 1. Aguardar CI verde nos checks obrigatórios
