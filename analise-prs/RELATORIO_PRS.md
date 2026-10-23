@@ -1,7 +1,8 @@
 # RELATÓRIO DE PRs — adm01-debug/Promo_Gifts_V4
 **Data:** 2026-10-23  
 **Sessão:** session_01Jq3v5evzVGS3KVgew7ScY6  
-**main SHA no início:** `49bb39990489fae21bdc3b584dcfd0d6bca44814`
+**main SHA no início (baseline):** `49bb39990489fae21bdc3b584dcfd0d6bca44814`  
+**Gate Final no baseline:** `success` (run job 120180568066)
 
 ---
 
@@ -11,11 +12,11 @@
 |---|---|
 | PRs abertas no início | 24 |
 | PRs analisadas | 24 |
-| FECHAR (fechadas) | 18 ✅ |
-| BLOQUEADA (mantidas abertas) | 2 |
-| CORRIGIR → sucessora criada + original fechada + MERGEADA | 1 |
-| MERGEAR → sucessora criada (aguarda apply de migrations) | 1 |
-| PRs abertas ao final | 3 (2 BLOQUEADAS + 1 sucessora aguardando humano) |
+| FECHAR (fechadas com evidência) | 18 ✅ |
+| BLOQUEADA (mantidas abertas) | 3 |
+| CORRIGIR → sucessora mergeada | 1 ✅ |
+| MERGEAR → sucessora BLOQUEADA (Gate E40 inerente) | 1 |
+| PRs abertas ao final | 3 (todas BLOQUEADAS) |
 
 ---
 
@@ -24,9 +25,25 @@
 | Veredito | Quantidade | PRs |
 |---|---|---|
 | FECHAR | 18 | #2290, #2293, #2314, #2319, #2320, #2322, #2323, #2324, #2325, #2326, #2327, #2328, #2329, #2330, #2331, #2333, #2334, #2335, #2336, #2337 |
-| BLOQUEADA | 2 | #2312, #2315 |
-| CORRIGIR | 1 | #2316 → sucessora #2361 ✅ MERGEADA |
-| MERGEAR | 1 | #2357 → sucessora #2360 (aguarda humano) |
+| BLOQUEADA | 3 | #2312, #2315, #2360 |
+| CORRIGIR | 1 | #2316 → sucessora #2361 (mergeada) |
+| MERGEAR | 1 | #2357 → sucessora #2360 (BLOQUEADA por Gate E40 inerente) |
+| COMPLETAR | 0 | — |
+| RESGATAR PARCIAL | 0 | — |
+
+---
+
+## CI DO MAIN — COMPARAÇÃO COM BASELINE
+
+| SHA | Evento | Gate Final | Diferença vs. baseline |
+|---|---|---|---|
+| `49bb39990489fae21bdc3b584dcfd0d6bca44814` | **baseline (início da missão)** | ✅ success | — |
+| `e2be31add9a107030d1aeab8462534a6cd798979` | **pós-merge #2361** | ✅ success | sem falha nova |
+
+Gates no run pós-merge (#2361, SHA `e2be31add9a`, job 120206613531):
+`R_SSOT=success · R_DEP_AUDIT=success · R_DEP_REVIEW=success · R_LINT=success · R_UNIT=success · R_DB_INT=success · R_SECRETS=success · R_E2E=success · R_SEO=success · R_RESTORE=success · R_BUILD=success · R_SECRET_SCAN=success`
+
+Nenhuma falha nova vs. baseline. ✅
 
 ---
 
@@ -57,62 +74,65 @@ Todas fechadas com comentário de evidência via MCP "GITHUB - MCP - FOREVER".
 | #2336 | Create main.yml | Arquivo com 1 caracter, sem propósito |
 | #2337 | Create deno.yml | Duplicata exata de #2323 |
 
-**Nota:** PR #2316 foi fechada após criação da sucessora #2361 (ver seção CORRIGIR). PR #2357 foi fechada após criação da sucessora #2360 (ver seção MERGEAR).
+**Nota:** #2316 foi fechada após criação da sucessora #2361 (ver CORRIGIR). #2357 foi fechada após criação da sucessora #2360 (ver MERGEAR → BLOQUEADA).
 
 ---
 
-## PRs BLOQUEADAS (2) — aguardam revisão humana
+## PRs BLOQUEADAS (3) — aguardam revisão/ação humana
 
 ### #2312 — fix: tighten deploy-gates workflow
-**Motivo do bloqueio:** Modifica `.github/workflows/deploy-gates.yml` — mudança em workflow = BLOQUEIO por MISSAO.md.  
-**Recomendação:** Revisar se o hardening proposto é compatível com o Gate Final atual. Se aprovado, pode ser mergeada diretamente.  
-**Dossiê:** `analise-prs/dossies/PR-2312.md`
+**Motivo:** Modifica `.github/workflows/deploy-gates.yml` — mudança em workflow = BLOQUEIO por MISSAO.md.  
+**Recomendação:** Revisar hardening (timeouts E24, `cancel-in-progress`, ausência de `continue-on-error` em gates bloqueantes). Se aprovado, mergear diretamente.
 
 ### #2315 — ci: workflow hardening batch
-**Motivo do bloqueio:** Modifica 12 arquivos `.github/workflows/*.yml` — mudança em 12 workflows = BLOQUEIO por MISSAO.md.  
-**Recomendação:** Revisar cada workflow individualmente. O batch é amplo — considerar dividir em PRs menores por tema.  
-**Dossiê:** `analise-prs/dossies/PR-2315.md`
+**Motivo:** Modifica 12 arquivos `.github/workflows/*.yml` — mudança em workflows = BLOQUEIO por MISSAO.md.  
+**Recomendação:** Revisar individualmente. Considerar dividir em PRs menores por tema (timeouts, permissões, concurrency, pins de SHA).
+
+### #2360 — Completa #2357: 3 migrations REVOKE segurança (E30/E40/E18)
+**Motivo:** Gate E40 - Schema Drift / Ledger parity falha **inerentemente** para qualquer PR com migration nova.  
+- As migrations estão no branch mas não no ledger de produção (`doufsxqlfjyuvxuezpln`) — o gate compara os dois e falha até as migrations serem aplicadas.
+- Gate Final = `failure` (job 120198478553). Todos os outros gates passam.
+- O agente não pode bypass de check obrigatório (PROIBIDO por MISSAO.md).
+- O PR em si é válido: 3 migrations REVOKE não-destrutivas, sem DROP/ALTER TYPE/DELETE, idempotentes.
+**Evidência CI:** Run `39886849738` — `R_SCHEMA_DRIFT=failure`, todos os demais `success`.  
+**Recomendação:** Mergear e imediatamente disparar `workflow_dispatch` em `.github/workflows/db-apply-migration.yml` para versões `20261022194000` → `20261022194100` → `20261022194200`, nessa ordem.
 
 ---
 
-## PR CORRIGIR → SUCESSORA (1)
+## PR CORRIGIR → SUCESSORA MERGEADA (1)
 
 ### #2316 → #2361 ✅ MERGEADA
 
-**Original:** `fix: add magazine-reader-state-read to contracts`  
-- `mergeable_state: dirty` (conflito com main)  
-- Branch incluía modificações em `.github/workflows/*.yml` — PROIBIDO por MISSAO.md  
-- Fechada em: 2026-10-23 com comentário #2316#issuecomment-6355746207  
+**Original:** `fix: add magazine-reader-state-read to contracts`
+- `mergeable_state: dirty` (conflito com main) + modificações em `.github/workflows/*.yml` (PROIBIDO)
+- Fechada com comentário em #2316#issuecomment-6355746207
 
-**Sucessora:** [#2361 — Completa #2316: add MagazineReaderStateReadSchemaV1 to contracts](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2361)  
-- Branch: `claude/fix-pr2316-magazine-contracts-261023-1430`  
-- Head SHA: `91a696fcd6c3fae694a16adf86971f7edcf2f62a`  
-- Criada a partir do `main` atual (49bb399)  
-- Diff: 11 adições, 0 deleções, 1 arquivo (`tests/contracts/webhook-schemas.ts`)  
-- Adiciona `MagazineReaderStateReadSchemaV1` (token + fingerprint) e entrada `"magazine-reader-state-read"` em `CONTRACTS`  
-- Cobre Gate 1.12 (contract coverage) para a edge function `magazine-reader-state-read`  
-- **CI: Gate Final = success (todos os 10 checks passaram)**  
-- **MERGEADA em squash — merge SHA: `e2be31add9a107030d1aeab8462534a6cd798979`**  
-- **Dossiê:** `analise-prs/dossies/PR-2316.md`
+**Sucessora:** [#2361](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2361)
+- Branch: `claude/fix-pr2316-magazine-contracts-261023-1430`
+- Head SHA: `91a696fcd6c3fae694a16adf86971f7edcf2f62a`
+- Diff: 11 adições, 0 deleções — `tests/contracts/webhook-schemas.ts`
+- Adiciona `MagazineReaderStateReadSchemaV1` + entrada `"magazine-reader-state-read"` em `CONTRACTS`
+- Gate Final = success (10/10 checks passaram)
+- **MERGEADA em squash** — merge SHA: `e2be31add9a107030d1aeab8462534a6cd798979`
+- Gate Final pós-merge no main: **success** ✅
 
 ---
 
-## PR MERGEAR → SUCESSORA (1)
+## PR MERGEAR → SUCESSORA BLOQUEADA (1)
 
-### #2357 → #2360 — BLOQUEADA (Gate E40 inerente, aguarda humano)
+### #2357 → #2360 — BLOQUEADA (Gate E40 inerente)
 
-**Original:** `security: revogar acessos não-autorizados (E30/E40/E18)`  
-- 3 migrations REVOKE INSERT: `anon_mg_*`, `anon_supplier_*`, `anon_personalization_*`  
-- 128 adições, 0 deleções — não-destrutivas, apenas restringem acesso  
-- **FECHADA em 2026-10-23** em favor de #2360 (comentário: #2357#issuecomment-6355874807)  
-- **Dossiê:** `analise-prs/dossies/PR-2357.md`
+**Original:** `security: revogar acessos não-autorizados (E30/E40/E18)`
+- 3 migrations REVOKE não-destrutivas, 128 adições, 0 deleções
+- FECHADA em 2026-10-23 com comentário citando #2360 (#2357#issuecomment-6355874807)
 
-**Sucessora:** [#2360 — Completa #2357: 3 migrations REVOKE INSERT anon (E30/E40/E18)](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2360)  
-- Branch: `claude/fix-pr2357-revoke-anon-261023-0900`  
-- CI: Gate E40 falha por **limitação inerente** — "Ledger parity" compara ledger vivo vs. arquivos da branch. Migrations novas **por definição** não estão no ledger até serem aplicadas.  
-- **O que fazer após merge:** `workflow_dispatch` em `.github/workflows/db-apply-migration.yml` para cada migration na ordem de versão (`20261013`, `20261014`, `20261015`)  
-- **Aguarda aprovação humana** — migrations em produção, Gate E40 inerente  
-- Comentário explicativo em #2360#issuecomment-6355748672
+**Sucessora:** [#2360](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2360)
+- Branch: `claude/fix-pr2357-security-revoke-261023-1110`
+- Head SHA: `a9200be9f5c3b426ad02b985600c196d81453238`
+- Gate Final = **failure** — Gate E40 Schema Drift (Ledger parity inerente para migration nova)
+- Todos os outros 12 gates: success
+- **BLOQUEADA** — agente não pode bypass check obrigatório (PROIBIDO)
+- Ação requerida do humano: mergear + dispatch `db-apply-migration.yml` para versões `20261022194000`, `20261022194100`, `20261022194200`
 
 ---
 
@@ -123,11 +143,17 @@ Todas as escritas foram feitas **exclusivamente via MCP "GITHUB - MCP - FOREVER"
 | Operação | PRs / Branches |
 |---|---|
 | Comentar + fechar | #2290, #2293, #2314, #2319, #2320, #2322–#2337 (18 PRs) |
-| PR sucessora aberta | #2360 (para #2357), #2361 (para #2316) |
-| PR original fechada após sucessora | #2316, #2357 |
-| Comentário de status | #2360 (Gate E40 explicado), #2357 (fechamento com referência a #2360) |
-| PR #2361 convertida de draft + mergeada (squash) | merge SHA `e2be31add9a107030d1aeab8462534a6cd798979` |
-| Nenhuma escrita proibida | ✅ Sem push em main, sem toque em .github/workflows, sem branch alheia, sem SINGU |
+| Comentar + fechar | #2357 (com link para sucessora #2360) |
+| Comentar + fechar | #2316 (com link para sucessora #2361) |
+| PR sucessora aberta | #2360 (para #2357) |
+| PR sucessora aberta | #2361 (para #2316) |
+| Draft → ready + merge squash | #2361 (SHA `e2be31add9a107030d1aeab8462534a6cd798979`) |
+| Comentário de status em #2360 | Gate E40 inerente explicado |
+| Push artefatos de análise | branch `claude/chore-analise-prs-261023-0215` |
+| Sem toque em .github/workflows | ✅ |
+| Sem push em main | ✅ |
+| Sem branch alheia | ✅ |
+| Sem SINGU | ✅ |
 
 ---
 
@@ -136,18 +162,18 @@ Todas as escritas foram feitas **exclusivamente via MCP "GITHUB - MCP - FOREVER"
 - ✅ Sem push direto em `main`
 - ✅ Sem force-push em branch alheia
 - ✅ Sem edição de título/descrição de PR alheia
-- ✅ Sem toque em `.github/workflows` (PRs #2312 e #2315 mantidas abertas como BLOQUEIO)
+- ✅ Sem toque em `.github/workflows`
 - ✅ Sem escrita no SINGU
 - ✅ Sem DDL via execute_sql
 - ✅ Sem label, configurações, branch protection ou segredos alterados
 - ✅ Sem deleção de branch alheia
+- ✅ Sem bypass de check obrigatório
 
 ---
 
 ## WORKTREES
 
-Nenhum worktree criado (análise feita via leitura de diffs pelo MCP GitHub).  
-`worktrees: []`
+Nenhum worktree criado. `worktrees: []`
 
 ---
 
@@ -158,31 +184,32 @@ analise-prs/
 ├── MISSAO.md              # Missão original (guia de execução)
 ├── RELATORIO_PRS.md       # Este relatório
 ├── progresso.json         # Estado de execução de cada PR
+├── regras-de-negocio.md   # Regras de negócio extraídas do repo
+├── prs.json               # Inventário bruto das PRs
+├── prs.csv                # Inventário em CSV
 ├── baseline/
 │   └── baseline.json      # Linha de base do main (tsc=0, eslint=0)
 └── dossies/
-    ├── PR-2316.md         # Dossiê CORRIGIR (mergeada)
-    ├── PR-2357.md         # Dossiê MERGEAR (fechada, sucessora #2360)
-    ├── PR-2312.md         # Dossiê BLOQUEADA (workflow)
-    └── PR-2315.md         # Dossiê BLOQUEADA (workflow batch)
+    ├── PR-2312.md
+    ├── PR-2315.md
+    ├── PR-2316.md
+    └── PR-2357.md
 ```
 
 ---
 
 ## META CUMPRIDA
 
-- [x] Total de PRs abertas no início = 24 = total analisado
-- [x] Contagem por veredito: FECHAR=18, BLOQUEADA=2, CORRIGIR=1, MERGEAR=1
-- [x] PRs FECHAR: todas fechadas com comentário de evidência (SHA, arquivo:linha ou PR)
-- [x] Sucessora #2361 aberta, CI verde, MERGEADA (squash SHA `e2be31add9a107030d1aeab8462534a6cd798979`)
-- [x] Original #2316 fechada com link do comentário
-- [x] Sucessora #2360 aberta (Gate E40 inerente — migrations aguardam apply humano após merge)
-- [x] Original #2357 FECHADA (comentário citando #2360)
-- [x] PRs ainda abertas = 2 BLOQUEADAS (#2312, #2315) + 1 sucessora (#2360, aguarda humano)
-- [x] Dossies criados: `analise-prs/dossies/PR-2316.md`, `PR-2357.md`, `PR-2312.md`, `PR-2315.md`
-- [x] Nenhuma escrita fora da lista permitida (listagem completa acima)
+- [x] Total PRs abertas no início (24) = total analisado (24)
+- [x] Contagem por veredito: FECHAR=18, BLOQUEADA=3, CORRIGIR=1, MERGEAR=1, COMPLETAR=0, RESGATAR PARCIAL=0
+- [x] CI baseline (`49bb399`) = Gate Final success; pós-merge #2361 (`e2be31add9a`) = Gate Final success — sem falha nova
+- [x] PRs FECHAR: 18 fechadas com comentário de evidência
+- [x] #2316 fechada com evidência → sucessora #2361 mergeada (squash SHA `e2be31add9a`)
+- [x] #2357 fechada com evidência → sucessora #2360 aberta (BLOQUEADA: Gate E40 inerente, todos outros gates success)
+- [x] PRs ainda abertas = 3 BLOQUEADAS (#2312, #2315, #2360) — cada uma com motivo e recomendação
+- [x] Lista completa de escritas no GitHub acima
 - [x] Worktrees removidos (nenhum criado)
-- [x] Caminhos dos arquivos documentados
+- [x] Caminhos de analise-prs/ documentados
 
 ---
 _Generated by [Claude Code](https://claude.ai/code) — session_01Jq3v5evzVGS3KVgew7ScY6_
