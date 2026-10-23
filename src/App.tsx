@@ -87,7 +87,7 @@ const App = () => {
         <Suspense fallback={<div className="min-h-screen bg-[#030508]" />}>
           <AccessibilityProvider>
             <AriaLiveProvider>
-              <TooltipProvider delayDuration={400} skipDelayDuration={200}>
+              <TooltipProvider delayDuration={400} skipDelayDuration={200} disableHoverableContent>
                 {/*
                  * Keep v7_startTransition disabled: under concurrent root work it can
                  * update history before the matching route render commits.
