@@ -11,24 +11,23 @@
 ## Resumo executivo
 
 **Baseline auditado:** `main` commit `b167c9c8095a99be701187758bae66d760e9c94f`  
-**12 workflows em falha na main no momento do inventário final (2026-10-23).**
-
-> **Branch Protection Sentinel** (run 39981481558) aparece na query de falhas, mas o run mais recente (39986411180) é `success` — workflow está VERDE.
+**16 workflows auditados na main (inventário completo — 2026-10-23).**
 
 | Status | Qtd | Workflows |
 |--------|-----|-----------|
 | ✅ Corrigido (PR #2378) | 7 | CI Security & Drift Checks (Fix 1+7), E2E · Update Dialog snapshots (Fix 2), E2E (Playwright) — /novidades (Fix 3), E2E — Critical Flows (Fix 4+5), Cart Invariants Smoke (Fix 4), CI Replenishment (Fix 3) |
 | ❌ Bloqueio estrutural (externo) | 1 | Deploy Gates/P-05 — ledger de migrations divergente (local_only=1091, remote_only=638) — requer reconciliação manual |
-| 🔄 Rerun em andamento | 1 | E2E Swatch QuickView/P-08 (attempt 2 in_progress 17:53 UTC) |
-| ✅ Infra resolvida (rerun confirmado) | 1 | Uptime Monitor/P-10 (run 39997953456 = success 2026-10-23T17:47 UTC) |
-| ❌ Bloqueado externo (ação do PO) | 4 | Release Please (P-01), E2E Personalization (P-02), E2E Quote Sheet snapshots (P-03), E2E Cart Delete Popover (P-09) |
+| 🔄 Rerun / dispatch em andamento | 2 | E2E Swatch QuickView/P-08 (attempt 2 run 39986410684 in_progress); E2E Quote Sheet snapshots/P-03 (dispatch E155 enviado, run 39999649279 queued) |
+| ❌ Infra (recorrente) | 1 | Uptime Monitor/P-10 (run 39996580013 = failure — downtime recorrente) |
+| ❌ Bloqueado externo (ação do PO) | 3 | Release Please (P-01), E2E Personalization (P-02), E2E Cart Delete Popover (P-09) |
 | ℹ️ Sem ação (comportamento correto) | 2 | DB Migration E15, Copilot Code Review (branch de outro agente P-06) |
+| ❌ Pré-existente (histórico) | 1 | Branch Protection Sentinel/P-11 — commit 7401c9f direto na main sem padrão aceito |
 
 ---
 
-## Inventário completo dos 15 workflows auditados
+## Inventário completo dos 16 workflows auditados
 
-| # | Workflow | Run ID | Causa raiz | Resultado |
+| # | Workflow | Último Run ID | Causa raiz | Resultado |
 |---|---|---|---|---|
 | 1 | Deploy Gates | 39986411363 | Gate E40: ledger de migrations divergente (`local_only=1091; remote_only=638`) — secrets OK, divergência estrutural pré-existente | ❌ P-05 (externo — requer reconciliação) |
 | 2 | CI Security & Drift Checks | 39986411170 | rAF race condition (`PopoverQtyInput`) + timeout `MockupProductSelector` | ✅ Fix 1 + Fix 7 |
@@ -37,14 +36,15 @@
 | 5 | CI Replenishment | 39986410680 | overflow:hidden em NoveltiesPage | ✅ Fix 3 |
 | 6 | E2E Personalization | 39986411295 | Secrets `E2E_USER_*` ausentes | ❌ P-02 |
 | 7 | Release Please | 39986410747 | PAT `contents: write` ausente | ❌ P-01 |
-| 8 | E2E Swatch QuickView | 39981481706 | Runner shutdown (infra SIGTERM) | ❌ P-08 |
+| 8 | E2E Swatch QuickView | 39986410684 | Runner shutdown (infra SIGTERM); attempt 2 in_progress | 🔄 P-08 (rerun em andamento) |
 | 9 | E2E (Playwright) | 39973432189 | Header sticky /novidades overflow | ✅ Fix 3 |
 | 10 | E2E Update Dialog snapshots | 39970463068 | Husky OOM no CI pré-push | ✅ Fix 2 |
-| 11 | E2E Quote Sheet | 39970462801 | ESC não abre dialog + snapshots | ✅ Fix 5 + ❌ P-03 |
+| 11 | E2E Quote Sheet | 39970462801 | ESC não abre dialog + snapshots | ✅ Fix 5 + 🔄 P-03 (dispatch E155 queued) |
 | 12 | E2E Cart Delete Popover | 39964680566 | Dados de teste + runner shutdown | ❌ P-09 |
 | 13 | DB Migration E15 | 39957452351 | Migration já aplicada — preflight correto | ℹ️ OK |
-| 14 | Uptime Monitor | 39988718944 → 39997953456 | Downtime do site na janela de check | ✅ RESOLVIDO (run 39997953456 = success) |
+| 14 | Uptime Monitor | 39996580013 | Downtime recorrente do site na janela de check | ❌ P-10 (infra recorrente) |
 | 15 | Copilot Code Review | — | Branch de outro agente | ℹ️ P-06 |
+| 16 | Branch Protection Sentinel | 39981481558 | Commit `7401c9f` direto na main sem padrão aceito (pré-existente) | ❌ P-11 (histórico) |
 
 ---
 

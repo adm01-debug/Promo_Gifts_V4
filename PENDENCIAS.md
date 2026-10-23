@@ -1,6 +1,7 @@
 # PENDENCIAS.md — Workflows com bloqueio externo
 
 > Gerado em: 2026-10-23  
+> Atualizado em: 2026-10-23 (sessão continuada)  
 > Sessão: https://claude.ai/code/session_019gUZ8wvjsJMC3gYzy6k7jB  
 > Branch de trabalho: `claude/magical-cannon-u5t1vy` → PR #2378
 
@@ -24,11 +25,12 @@ exato e o que o PO precisa fazer para desbloquear.
 | 8 | E2E Swatch QuickView | 39981481706 | Runner shutdown (sinal SIGTERM infra) | ❌ P-08 (infra) |
 | 9 | E2E (Playwright) | 39973432189 | Header sticky /novidades — overflow:hidden | ✅ Corrigido Fix 3 |
 | 10 | E2E Update Dialog snapshots | 39970463068 | Husky OOM no pré-push do CI | ✅ Corrigido Fix 2 (workflow YAML) |
-| 11 | E2E Quote Sheet | 39970462801 | ESC não abre dialog + snapshots desatualizados | ✅ Fix 5 aplicado + ❌ P-03 externo |
+| 11 | E2E Quote Sheet | 39970462801 | ESC não abre dialog + snapshots desatualizados | ✅ Fix 5 aplicado + 🔄 P-03 dispatch E155 enviado |
 | 12 | E2E Cart Delete Popover | 39964680566 | Dados de teste (cart IDs) + runner shutdown | ❌ P-09 (externo/infra) |
 | 13 | DB Migration E15 | 39957452351 | Migration já aplicada — preflight correto | ℹ️ OK |
-| 14 | Uptime Monitor | 39988718944 | Downtime do site na janela de check | ❌ P-10 (infra) |
+| 14 | Uptime Monitor | 39988718944 / 39996580013 | Downtime do site na janela de check (recorrente) | ❌ P-10 (infra) |
 | 15 | Copilot Code Review | — | Branch de outro agente | ℹ️ P-06 |
+| 16 | Branch Protection Sentinel | 39981481558 | Commit `7401c9f` push direto na main sem padrão aceito | ❌ P-11 (pré-existente) |
 
 **Fixes entregues no PR #2378:** Fix 1 (PopoverQtyInput), Fix 2 (HUSKY=0 Dialog snapshots), Fix 3 (NoveltiesPage overflow), Fix 4 (App.tsx TooltipProvider), Fix 5 (QuoteItemEditorSheet TooltipProvider)
 
@@ -94,7 +96,7 @@ configurado. O Release Please precisa criar branches, commits e abrir PRs de rel
 **Status: FIX APLICADO** — `src/components/quotes/QuoteItemEditorSheet.tsx:89`  
 Adicionado `disableHoverableContent` ao `TooltipProvider` local do Sheet.
 
-**Pendência restante:** Snapshots visuais ainda desatualizados (P-03) — necessita `workflow_dispatch` manual.
+**Ação executada (2026-10-23):** `workflow_dispatch` enviado para `.github/workflows/update-snapshots.yml` (E155 — "E2E · Atualizar snapshots visuais") com specs `e2e/quotes/quote-item-editor-sheet-header.spec.ts e2e/quotes/quote-add-product-button.spec.ts` na branch `main`. Status: `queued` (run ID: 39999649279). Aguardando conclusão e commit automático dos PNGs.
 
 ---
 
@@ -167,11 +169,12 @@ O componente registra `window.addEventListener('resize', handleResize)` em `useE
 
 **Workflow:** `.github/workflows/e2e-swatch-quickview.yml`  
 **Erro:** Todos os jobs falharam com sinal SIGTERM — GitHub Actions runner foi desligado por infraestrutura.  
-**Run ID:** 39981481706
+**Run ID original:** 39981481706  
+**Attempt 2 disparado:** Run ID 39986410684 — `in_progress` desde 2026-10-23T17:47:23Z
 
 **Causa:** Não é um bug de código — o runner foi encerrado pelo GitHub (timeout ou manutenção).
 
-**O que você precisa fazer:** Re-rodar o workflow manualmente quando CI voltar ao normal. Nenhuma correção de código necessária.
+**Status atual:** Rerun (attempt 2) em andamento. Se o run 39986410684 também falhar por infra, re-rodar manualmente. Nenhuma correção de código necessária.
 
 ---
 
@@ -195,6 +198,35 @@ O componente registra `window.addEventListener('resize', handleResize)` em `useE
 **Run ID:** 39988718944
 
 **Causa:** Não é um bug de código. Nenhuma correção necessária.
+
+---
+
+## P-11 — Branch Protection Sentinel — Push direto na main (pré-existente)
+
+**Workflow:** `.github/workflows/branch-protection-sentinel.yml`  
+**Erro:**
+```
+1 commit(s) em push para main sem padrão aceito: 7401c9f
+```
+**Run ID:** 39981481558 (commit `7401c9f742bfc9af6433bcf47a59e06ef5ea7450`)
+
+**Causa:** Alguém (ou um bot não reconhecido) fez push direto na `main` sem que a mensagem do commit `7401c9f` correspondesse a nenhum dos padrões aceitos pelo Sentinel:
+- Squash merge de PR (`(#NNN)`)
+- Merge commit de PR
+- Bot oficial (`github-actions[bot]`, `dependabot[bot]`, `renovate[bot]`, Lovable)
+- Release (`chore(release): ...`)
+- Allowlist estreita (`docs(redeploy):`, `chore(workflows):`, `chore(docs):`)
+- Bypass de emergência (`[skip-sentinel: <motivo>]`)
+
+**Nota:** Esta falha é **pré-existente** — o commit `7401c9f` entrou na `main` antes desta sessão. A falha do Sentinel é retrospectiva a esse push.
+
+**O que você precisa fazer:**  
+1. Verificar quem fez o push do commit `7401c9f` e por qual motivo
+2. Se foi intencional, verificar se as mudanças estão corretas
+3. O Sentinel não bloqueia nenhum workflow atual — é apenas advisory para essa run histórica
+4. Se quiser limpar: abrir nova run manual do workflow `branch-protection-sentinel.yml` contra `main` — verificará apenas commits futuros
+
+**Impacto:** Histórico — não impede merges ou deploys atuais.
 
 ---
 
