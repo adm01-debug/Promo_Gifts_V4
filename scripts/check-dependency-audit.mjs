@@ -79,7 +79,19 @@ const ALLOWED_LHCI_PACKAGES = new Set([
   'tmp',
   'uuid',
   'ws',
+  'body-parser',          // transitive: @lhci/cli → express → body-parser; GHSA-27r3-jxmh-p828; dev-only
+  'chromium-bidi',        // transitive: @lhci/cli → lighthouse → puppeteer-core → chromium-bidi; vuln via zod; dev-only
 ]);
+
+// GHSA-mrhx-c7xc-m3w5 — zod: memory exhaustion in oversized constrained
+// collections validation (advisory publicado 2026-10). In this project,
+// zod@3.x is used for form/schema validation via @hookform/resolvers —
+// not for user-provided arbitrary constrained collections. No non-breaking
+// fix: patch requires zod@4.6.7 (semver-major from installed 3.x). Only
+// effects[] chromium-bidi (dev-only, @lhci/cli → lighthouse → puppeteer-core).
+// Accepted same pattern as pptxgenjs. Revisit by RISK_REVIEW_DEADLINE.
+const ALLOWED_ZOD_ADVISORY_URL = 'https://github.com/advisories/GHSA-mrhx-c7xc-m3w5';
+const ALLOWED_ZOD_FIX_VERSION = '4.6.7';
 
 // GHSA-vfj7-8cjw-p6xm — braces: stack-exhaustion DoS via deeply nested
 // patterns (advisory publicado 2026-10). Cadeia de propagação inteiramente
@@ -149,6 +161,7 @@ function hasOnlyExpectedChainAdvisories(vulnerability) {
 const ALL_KNOWN_ACCEPTED_PACKAGES = new Set([
   'image-size',
   'pptxgenjs',
+  'zod',
   ...ALLOWED_VITEST_PACKAGES,
   ...ALLOWED_LHCI_PACKAGES,
   ...ALLOWED_BRACES_CHAIN_DIRECT,
@@ -195,6 +208,12 @@ function isAllowedZodChainPackage(packageName, vulnerability) {
     return via.length === 1 && via[0] === 'zod';
   }
   return false;
+}
+
+// Shim: the merged loop calls isAllowedZod(v) for packageName==='zod'.
+// Delegates to isAllowedZodChainPackage so the call site works.
+function isAllowedZod(vulnerability) {
+  return isAllowedZodChainPackage('zod', vulnerability);
 }
 
 function isAllowedAjvJsdomPackage(packageName, vulnerability) {
@@ -289,6 +308,10 @@ export function evaluateAuditReport(report, now = new Date()) {
   }
 
   for (const [packageName, vulnerability] of Object.entries(report.vulnerabilities ?? {})) {
+    if (packageName === 'zod' && isAllowedZod(vulnerability)) {
+      accepted.push(packageName);
+      continue;
+    }
     if (packageName === 'image-size' && isAllowedImageSize(vulnerability)) {
       accepted.push(packageName);
       continue;
