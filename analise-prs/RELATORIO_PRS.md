@@ -41,7 +41,7 @@
 | `e2be31add9a107030d1aeab8462534a6cd798979` | **pós-merge #2361** | ✅ success | sem falha nova |
 | `b4cc8163d68a9e31ca23f1695d193ec0605f9ae8` | **pós-merge #2360** | ⚠️ failure (Gate E40 inerente) | apenas R_SCHEMA_DRIFT=failure — todos os outros 12 gates success |
 | `002646970d41aea58e5377901b47cc8ccc4db396` | **pós-merge #2366 (recibo 194000+194100)** | ✅ success | sem falha nova (cart-invariants pré-existente) |
-| `2e8833bd68ea44eb7a88ebb1737a208fcdcba98b` | **pós-merge #2365 (recibo 194200)** | ✅ success | Gate E40 skipped (migrations aplicadas); cart-invariants falha pré-existente confirmada |
+| `2e8833bd68ea44eb7a88ebb1737a208fcdcba98b` | **pós-merge #2365 (recibo 194200)** | ✅ success | Gate E40 skipped (migrations aplicadas); cart-invariants falha **confirmada pré-existente no baseline `49bb39990489`** (ver §BASELINE abaixo) |
 
 Gates no run pós-merge (#2361, SHA `e2be31add9a`, job 120206613531):
 `R_SSOT=success · R_DEP_AUDIT=success · R_DEP_REVIEW=success · R_LINT=success · R_UNIT=success · R_DB_INT=success · R_SECRETS=success · R_E2E=success · R_SEO=success · R_RESTORE=success · R_BUILD=success · R_SECRET_SCAN=success`
@@ -75,6 +75,24 @@ Merge SHA `e2be31add9a107030d1aeab8462534a6cd798979` — verificado via Vercel M
 | `dpl_968wu6dzoerkmDGWYNmLbLESBQ5k` | promo-gifts-v4 | ✅ READY | production |
 
 #2361 não continha migration nem edge function — apenas `tests/contracts/webhook-schemas.ts`. Deploy de produção: ✅ READY em ambos os projetos.
+
+---
+
+## CART-INVARIANTS — EVIDÊNCIA DE FALHA PRÉ-EXISTENTE {#BASELINE}
+
+Verificado via `github_list_check_runs` no SHA baseline `49bb39990489fae21bdc3b584dcfd0d6bca44814`:
+
+| Check | Conclusion |
+|---|---|
+| cart-invariants (chromium-authed · shard 1/3) | **failure** |
+| cart-invariants (chromium-authed · shard 2/3) | **failure** |
+| cart-invariants (chromium-authed · shard 3/3) | **failure** |
+| cart-invariants (firefox-authed · shard 1/3) | **failure** |
+| cart-invariants (firefox-authed · shard 2/3) | **failure** |
+| cart-invariants (firefox-authed · shard 3/3) | **failure** |
+| cart-invariants-summary | **failure** |
+
+Todos os 6 shards + summary = `failure` no baseline. A falha **existia antes do início da missão** e **não foi introduzida** pelos merges #2361, #2360, #2366, #2365. A regra "PARE TODAS AS ESCRITAS" não se aplica.
 
 ---
 
