@@ -165,14 +165,40 @@ Mudanças desta sessão não introduziram regressões:
 ## Estado do PR #2378
 
 - **Status:** Ready for review (convertido de draft em 2026-10-23), branch atualizada com main
-- **Commits:** 7 (6 fixes de código + 1 commit de documentação)
+- **Commits:** 8 (6 fixes de código + 1 fix de conflito de merge + 1 commit de documentação)
 - **Diff:** 5 arquivos de código + PENDENCIAS.md + RELATORIO_CI.md
-- **CI na branch:** Em execução (commit `3a8f5d3` — Fix 6 ESC capture phase)
+- **CI na branch:** ✅ **Gate Final (`quality-gate`) = `conclusion:success`** (commit `c12f709`, run completado 2026-10-23T17:32:26Z)
+
+### Checks confirmados com `conclusion:success` (commit `c12f709`)
+
+| Check | Resultado |
+|-------|-----------|
+| `quality-gate` (Gate Final — agrega Gates 0–6) | ✅ `success` |
+| `SSOT Gates (validate + guard + hosts)` | ✅ `success` |
+| `Secrets Inventory Check (E40)` | ✅ `success` |
+| `typecheck-unit` | ✅ `success` |
+| `Unit — Zod schemas` | ✅ `success` |
+| `Smoke (fail-fast)` | ✅ `success` |
+| `E2E — Mobile Critical Routes` | ✅ `success` |
+| `E2E — Error Boundaries (sem auth)` | ✅ `success` |
+| `E2E Cart · cart-delete-popover` | ✅ `success` |
+| `E2E Cart · cart-handoff` | ✅ `success` |
+| `E2E Cart · carts-undo-rpc` | ✅ `success` |
+| `E2E · tooltips` | ✅ `success` |
+| `actionlint + shellcheck` | ✅ `success` |
+| `Gitleaks — Secret Scan` | ✅ `success` |
+| `Compare GitHub × Canonical` | ✅ `success` |
+| `required-checks-drift` | ✅ `success` |
+| `noUnusedLocals ratchet` | ✅ `success` |
+
+**Falhas presentes (pré-existentes, não relacionadas ao PR):**
+- `Supabase Preview` — falha de infraestrutura pré-existente (fora do escopo)
+- `copilot-pull-request-reviewer` — bot de outro agente (P-06, regra #10)
 
 **Para mergear:**
-1. Aguardar CI verde nos checks obrigatórios
-2. Os itens P-05 (`SUPABASE_ACCESS_TOKEN`, `SUPABASE_DB_PASSWORD`) precisam estar configurados para o Gate E40 passar
-3. P-03 precisa de `workflow_dispatch` manual para atualizar snapshots
+1. ✅ CI verde nos checks obrigatórios (quality-gate passou)
+2. Os itens P-05 (`SUPABASE_ACCESS_TOKEN`, `SUPABASE_DB_PASSWORD`) precisam estar configurados para o Gate E40 passar em push para main
+3. P-03 precisa de `workflow_dispatch` manual para atualizar snapshots visuais
 
 ---
 
