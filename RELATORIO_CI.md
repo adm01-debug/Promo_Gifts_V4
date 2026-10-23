@@ -1,6 +1,7 @@
 # RELATORIO_CI.md — Correção de Workflows Falhando
 
 > Gerado em: 2026-10-23  
+> Atualizado em: 2026-10-23 (inventário final + reruns)  
 > Sessão: https://claude.ai/code/session_019gUZ8wvjsJMC3gYzy6k7jB  
 > Branch: `claude/magical-cannon-u5t1vy`  
 > PR: https://github.com/adm01-debug/Promo_Gifts_V4/pull/2378
@@ -10,13 +11,16 @@
 ## Resumo executivo
 
 **Baseline auditado:** `main` commit `b167c9c8095a99be701187758bae66d760e9c94f`  
-**15 workflows em falha identificados e classificados.**
+**12 workflows em falha na main no momento do inventário final (2026-10-23).**
+
+> **Branch Protection Sentinel** (run 39981481558) aparece na query de falhas, mas o run mais recente (39986411180) é `success` — workflow está VERDE.
 
 | Status | Qtd | Workflows |
 |--------|-----|-----------|
-| ✅ Corrigido (PR #2378) | 7 | CI Security & Drift Checks (Fix 1), E2E · Update Dialog snapshots (Fix 2), E2E (Playwright) — /novidades (Fix 3), E2E — Critical Flows (Fix 4), E2E Quote Sheet ESC (Fix 5+6), MockupProductSelector timeout (Fix 7) |
-| ❌ Bloqueado (externo/infra) | 6 | Release Please (P-01), E2E Personalization (P-02), E2E Quote Sheet snapshots (P-03), E2E Swatch QuickView (P-08), E2E Cart Delete Popover (P-09), Uptime Monitor (P-10) |
-| ✅ Resolvido pelo PO | 1 | db-schema-drift-check/Gate E40 — P-05 (secrets configurados 2026-10-23) |
+| ✅ Corrigido (PR #2378) | 7 | CI Security & Drift Checks (Fix 1+7), E2E · Update Dialog snapshots (Fix 2), E2E (Playwright) — /novidades (Fix 3), E2E — Critical Flows (Fix 4+5), Cart Invariants Smoke (Fix 4), CI Replenishment (Fix 3) |
+| 🔄 Rerun disparado / Aguardando | 2 | Deploy Gates/P-05 (attempt 2 in_progress 17:47 UTC), E2E Swatch QuickView/P-08 (queued attempt 2 17:47 UTC) |
+| ✅ Infra resolvida (rerun confirmado) | 1 | Uptime Monitor/P-10 (run 39997953456 = success 2026-10-23T17:47 UTC) |
+| ❌ Bloqueado externo (ação do PO) | 4 | Release Please (P-01), E2E Personalization (P-02), E2E Quote Sheet snapshots (P-03), E2E Cart Delete Popover (P-09) |
 | ℹ️ Sem ação (comportamento correto) | 2 | DB Migration E15, Copilot Code Review (branch de outro agente P-06) |
 
 ---
@@ -26,7 +30,7 @@
 | # | Workflow | Run ID | Causa raiz | Resultado |
 |---|---|---|---|---|
 | 1 | Deploy Gates | 39986411363 | Gate E40: `SUPABASE_ACCESS_TOKEN` ausente | ❌ P-05 |
-| 2 | CI Security & Drift Checks | 39986411170 | rAF race condition em `PopoverQtyInput` | ✅ Fix 1 |
+| 2 | CI Security & Drift Checks | 39986411170 | rAF race condition (`PopoverQtyInput`) + timeout `MockupProductSelector` | ✅ Fix 1 + Fix 7 |
 | 3 | E2E — Critical Flows | 39986411340 | Tooltips presos consumindo ESC | ✅ Fix 4 |
 | 4 | Cart Invariants Smoke | 39986410736 | Invariants sidebar (tooltip ESC) | ✅ Fix 4 |
 | 5 | CI Replenishment | 39986410680 | overflow:hidden em NoveltiesPage | ✅ Fix 3 |
@@ -38,7 +42,7 @@
 | 11 | E2E Quote Sheet | 39970462801 | ESC não abre dialog + snapshots | ✅ Fix 5 + ❌ P-03 |
 | 12 | E2E Cart Delete Popover | 39964680566 | Dados de teste + runner shutdown | ❌ P-09 |
 | 13 | DB Migration E15 | 39957452351 | Migration já aplicada — preflight correto | ℹ️ OK |
-| 14 | Uptime Monitor | 39988718944 | Downtime do site na janela de check | ❌ P-10 |
+| 14 | Uptime Monitor | 39988718944 → 39997953456 | Downtime do site na janela de check | ✅ RESOLVIDO (run 39997953456 = success) |
 | 15 | Copilot Code Review | — | Branch de outro agente | ℹ️ P-06 |
 
 ---
@@ -127,10 +131,10 @@ Ver `PENDENCIAS.md` para detalhes completos de cada item:
 | P-03 | E2E Quote Sheet — snapshots | Baselines visuais desatualizados — rodar `workflow_dispatch` manual |
 | P-05 | db-schema-drift-check / Gate E40 | `SUPABASE_ACCESS_TOKEN` e `SUPABASE_DB_PASSWORD` não configurados |
 | P-06 | Running Copilot Code Review | Branch de outro agente — não interagir (REGRA #10) |
-| P-07 | CI Security — MockupProductSelector | Timeout em teste de unidade — investigar mock de rAF/timer |
+| P-07 | CI Security — MockupProductSelector | ✅ FIX 7 aplicado — `window.dispatchEvent(new Event('resize'))` em `renderAndOpenDialog` |
 | P-08 | E2E Swatch QuickView | Runner shutdown de infraestrutura (SIGTERM) — re-rodar |
 | P-09 | E2E Cart Delete Popover | Dados de teste ausentes + runner shutdown |
-| P-10 | Uptime Monitor | Downtime de infraestrutura durante janela de check |
+| P-10 | Uptime Monitor | ✅ RESOLVIDO — run 39997953456 = success (2026-10-23T17:47 UTC) |
 
 ---
 
@@ -235,7 +239,13 @@ Mudanças desta sessão não introduziram regressões:
 **Para mergear:**
 1. ✅ CI verde nos checks obrigatórios (quality-gate passou)
 2. Os itens P-05 (`SUPABASE_ACCESS_TOKEN`, `SUPABASE_DB_PASSWORD`) precisam estar configurados para o Gate E40 passar em push para main
-3. P-03 precisa de `workflow_dispatch` manual para atualizar snapshots visuais
+3. P-05 (`SUPABASE_ACCESS_TOKEN`, `SUPABASE_DB_PASSWORD`) — confirmados pelo PO; Deploy Gates attempt 2 `in_progress`
+4. P-03 precisa de `workflow_dispatch` manual para atualizar snapshots visuais
+
+> **Reruns em andamento (2026-10-23T17:47 UTC):**
+> - Deploy Gates run 39986411363 attempt 2: `in_progress`
+> - E2E Swatch QuickView run 39986410684 attempt 2: `queued`
+> - Uptime Monitor run 39997953456: ✅ `success`
 
 ---
 
