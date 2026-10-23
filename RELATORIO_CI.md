@@ -18,9 +18,9 @@
 | ✅ Corrigido — PR #2378 (app code, aguarda merge do PO) | 6 | CI Security & Drift Checks (Fix 1+7), E2E (Playwright) — /novidades (Fix 3), E2E — Critical Flows (Fix 4+5), Cart Invariants Smoke (Fix 4), CI Replenishment (Fix 3) |
 | ✅ Corrigido — PR #2381 (YAML-only, seguro para merge imediato) | 1 | E2E · Update Dialog snapshots (Fix 2) |
 | ❌ Bloqueio estrutural (externo) | 1 | Deploy Gates/P-05 — ledger de migrations divergente (local_only=1091, remote_only=638) — requer reconciliação manual |
-| 🔄 Rerun / dispatch em andamento | 2 | E2E Swatch QuickView/P-08 (attempt 2 run 39986410684); E2E Quote Sheet snapshots/P-03 (dispatch E155 enviado, run 39999649279) |
+| 🔄 Rerun em andamento | 1 | E2E Swatch QuickView/P-08 (attempt 2 run 39986410684, in_progress) |
 | ❌ Infra (recorrente) | 1 | Uptime Monitor/P-10 (downtime recorrente) |
-| ❌ Bloqueado externo (ação do PO) | 4 | Release Please (P-01), E2E Personalization (P-02), E2E Cart Delete Popover (P-09), Update Quote Visual Snapshots (P-12) |
+| ❌ Bloqueado externo (ação do PO) | 5 | Release Please (P-01), E2E Personalization (P-02), E2E Quote Sheet snapshots (P-03), E2E Cart Delete Popover (P-09), Update Quote Visual Snapshots (P-12) — P-03/P-12 dependem de P-02 (E2E_USER_*) |
 | ℹ️ Sem ação (comportamento correto) | 2 | DB Migration E15, Copilot Code Review (branch de outro agente P-06) |
 | ❌ Pré-existente (histórico) | 1 | Branch Protection Sentinel/P-11 — commit 7401c9f direto na main sem padrão aceito |
 
@@ -131,7 +131,7 @@ Ver `PENDENCIAS.md` para detalhes completos de cada item:
 |----|----------|----------|
 | P-01 | Release Please | PAT com `contents: write` ausente |
 | P-02 | E2E Personalization Flow | Secrets `E2E_USER_*` não configurados ou usuário de teste inativo |
-| P-03 | E2E Quote Sheet — snapshots | Baselines visuais desatualizados — dispatch E155 enviado (run 39999649279) |
+| P-03 | E2E Quote Sheet — snapshots | Dispatch E155 (run 39999649279) falhou: `chromium-authed` requer `E2E_USER_*` — mesma raiz de P-02 e P-12 |
 | P-05 | db-schema-drift-check / Gate E40 | Secrets OK. Divergência estrutural pré-existente no ledger: `local_only=1091; remote_only=638` — requer reconciliação manual (E99/POLITICA_DDL.md) |
 | P-06 | Running Copilot Code Review | Branch de outro agente — não interagir (REGRA #10) |
 | P-07 | CI Security — MockupProductSelector | ✅ FIX 7 aplicado — `window.dispatchEvent(new Event('resize'))` em `renderAndOpenDialog` |

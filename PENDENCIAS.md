@@ -77,28 +77,24 @@ configurado. O Release Please precisa criar branches, commits e abrir PRs de rel
 
 ---
 
-## P-03 — E2E Quote Item Editor Sheet — Snapshots visuais desatualizados
+## P-03 — E2E Quote Item Editor Sheet — Snapshots visuais desatualizados + auth blocker
 
 **Workflow:** `.github/workflows/e2e-quote-item-editor-sheet.yml`  
-**Erro:** Snapshots visuais do header/body do Sheet desatualizados (diff de pixels acima do threshold).
+**Erro original:** Snapshots visuais do header/body do Sheet desatualizados.
 
-**Causa:** O componente `QuoteItemEditorSheet` mudou visualmente desde que os baselines foram gerados.
+**Causa raiz (confirmada 2026-10-23):**  
+O `workflow_dispatch` do E155 (run 39999649279) foi executado, mas o step "Regenerar snapshots" **falhou** — o spec `quote-item-editor-sheet-header.spec.ts` usa o projeto `chromium-authed` que exige `E2E_USER_EMAIL`/`E2E_USER_PASSWORD`. **Mesma raiz de P-02 e P-12.**
 
 **O que você precisa fazer:**
-1. Ir em **Actions → E2E · Update Quote Item Editor Sheet snapshots**
-2. Clicar em **Run workflow** → branch `main`
-3. O workflow roda `playwright test --update-snapshots` e faz commit dos PNGs
-
-**Nota:** Use `workflow_dispatch` — o workflow tem `path-filter` que não dispara em PRs sem mudança no Sheet.
+1. Resolver P-02 primeiro (cadastrar `E2E_USER_EMAIL` + `E2E_USER_PASSWORD`)
+2. Re-rodar o dispatch do workflow `E2E · Atualizar snapshots visuais` com spec `e2e/quotes/quote-item-editor-sheet-header.spec.ts`
 
 ---
 
 ## P-04 — E2E Quote Item Editor Sheet — ESC não abre dialog de confirmação
 
 **Status: FIX APLICADO** — `src/components/quotes/QuoteItemEditorSheet.tsx:89`  
-Adicionado `disableHoverableContent` ao `TooltipProvider` local do Sheet.
-
-**Ação executada (2026-10-23):** `workflow_dispatch` enviado para `.github/workflows/update-snapshots.yml` (E155 — "E2E · Atualizar snapshots visuais") com specs `e2e/quotes/quote-item-editor-sheet-header.spec.ts e2e/quotes/quote-add-product-button.spec.ts` na branch `main`. Status: `queued` (run ID: 39999649279). Aguardando conclusão e commit automático dos PNGs.
+Adicionado `disableHoverableContent` ao `TooltipProvider` local do Sheet (PR #2378).
 
 ---
 
