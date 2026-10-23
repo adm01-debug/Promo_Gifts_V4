@@ -4,13 +4,10 @@
   "main_sha_baseline": "49bb39990489fae21bdc3b584dcfd0d6bca44814",
   "main_sha_pos_2361": "e2be31add9a107030d1aeab8462534a6cd798979",
   "main_sha_pos_2360": "b4cc8163d68a9e31ca23f1695d193ec0605f9ae8",
-  "main_sha_pos_2370": "09eeb1095e97adacc2e058a7036cd5dbbad70e06",
-  "main_sha_pos_2372": "5242725d1858e2ecec3b20a45e7f700c2b241a33",
-  "main_sha_final": "5242725d1858e2ecec3b20a45e7f700c2b241a33",
   "total_prs_inicio": 24,
   "total_analisadas": 24,
-  "status_global": "CONCLUIDO",
-  "ultima_verificacao": "2026-10-23T14:32Z",
+  "status_global": "EM_ANDAMENTO",
+  "ultima_verificacao": "2026-10-23T14:20Z",
   "parada_exata": null,
   "por_veredito": {
     "FECHAR": 20,
@@ -21,8 +18,16 @@
     "RESGATAR_PARCIAL": 0
   },
   "prs": {
-    "2290": { "veredito": "FECHAR", "estado": "fechada", "evidencia": "comentario+fechamento via MCP" },
-    "2293": { "veredito": "FECHAR", "estado": "fechada", "evidencia": "comentario+fechamento via MCP" },
+    "2290": {
+      "veredito": "FECHAR",
+      "estado": "fechada",
+      "evidencia": "comentario+fechamento via MCP"
+    },
+    "2293": {
+      "veredito": "FECHAR",
+      "estado": "fechada",
+      "evidencia": "comentario+fechamento via MCP"
+    },
     "2312": {
       "veredito": "BLOQUEADA",
       "estado": "fechada",
@@ -30,7 +35,11 @@
       "sucessora": "2370",
       "evidencia": "comentario+fechamento via MCP (2026-10-23)"
     },
-    "2314": { "veredito": "FECHAR", "estado": "fechada", "evidencia": "comentario+fechamento via MCP" },
+    "2314": {
+      "veredito": "FECHAR",
+      "estado": "fechada",
+      "evidencia": "comentario+fechamento via MCP"
+    },
     "2315": {
       "veredito": "BLOQUEADA",
       "estado": "fechada",
@@ -40,30 +49,22 @@
     },
     "2372": {
       "veredito": "CORRIGIR",
-      "estado": "mergeada",
+      "estado": "aguardando_gate_final",
       "predecessora": "2315",
       "branch": "claude/fix-pr2315-e2e-creds-261023-1334",
       "head_sha": "fe09d098dabe6e3ff1e298e9682ca9ad039a3ae3",
-      "sha_merge": "5242725d1858e2ecec3b20a45e7f700c2b241a33",
       "commits": [
         "66ba83f66c49439de7a2274e8c1bd8846bb535e2 — fix E2E_USER_* 11 workflows",
         "49b015e389ada4aa5a8116359b368cbe4a81c98f — fix UTF-8 encoding corruption actionlint",
         "fe09d098dabe6e3ff1e298e9682ca9ad039a3ae3 — gitleaks allowlist variante d4872"
       ],
-      "ci_final": {
-        "gate_final": "success",
-        "run_gate_final": "39968163096",
+      "ci_parcial": {
         "gitleaks": "success",
         "actionlint_shellcheck": "success",
         "security_scan": "success",
-        "gate1_lint_ts": "success",
-        "gate2_unit": "success",
-        "gate2_5_pg": "success",
-        "gate3_e2e_smoke": "success",
-        "gate4_lighthouse": "success",
-        "gate5_seo": "success",
-        "gate5_5_rpc": "success",
-        "gate6_build": "success"
+        "required_checks_guard": "success",
+        "gate_final": "pending_e2e_em_progresso",
+        "run_gate_final": "39968163096"
       },
       "descricao": "fix(ci): remove E2E_USER_* de workflows chromium-public (11 arquivos, 15 ocorrencias)"
     },
@@ -75,25 +76,103 @@
       "descricao": "fix(ci): allowlist migrations 20261022194* no gitleaks",
       "evidencia": "merge squash 2026-10-23 — habilitou CI do #2372"
     },
-    "2316": { "veredito": "CORRIGIR", "estado": "fechada", "sucessora": "2361", "sha_merge_sucessora": "e2be31add9a107030d1aeab8462534a6cd798979" },
-    "2319": { "veredito": "FECHAR", "estado": "fechada", "evidencia": "comentario+fechamento via MCP" },
-    "2320": { "veredito": "FECHAR", "estado": "fechada", "evidencia": "comentario+fechamento via MCP" },
-    "2322": { "veredito": "FECHAR", "estado": "fechada", "evidencia": "comentario+fechamento via MCP" },
-    "2323": { "veredito": "FECHAR", "estado": "fechada", "evidencia": "comentario+fechamento via MCP" },
-    "2324": { "veredito": "FECHAR", "estado": "fechada", "evidencia": "comentario+fechamento via MCP" },
-    "2325": { "veredito": "FECHAR", "estado": "fechada", "evidencia": "comentario+fechamento via MCP" },
-    "2326": { "veredito": "FECHAR", "estado": "fechada", "evidencia": "comentario+fechamento via MCP" },
-    "2327": { "veredito": "FECHAR", "estado": "fechada", "evidencia": "comentario+fechamento via MCP" },
-    "2328": { "veredito": "FECHAR", "estado": "fechada", "evidencia": "comentario+fechamento via MCP" },
-    "2329": { "veredito": "FECHAR", "estado": "fechada", "evidencia": "comentario+fechamento via MCP" },
-    "2330": { "veredito": "FECHAR", "estado": "fechada", "evidencia": "comentario+fechamento via MCP" },
-    "2331": { "veredito": "FECHAR", "estado": "fechada", "evidencia": "comentario+fechamento via MCP" },
-    "2333": { "veredito": "FECHAR", "estado": "fechada", "evidencia": "comentario+fechamento via MCP" },
-    "2334": { "veredito": "FECHAR", "estado": "fechada", "evidencia": "comentario+fechamento via MCP" },
-    "2335": { "veredito": "FECHAR", "estado": "fechada", "evidencia": "comentario+fechamento via MCP" },
-    "2336": { "veredito": "FECHAR", "estado": "fechada", "evidencia": "comentario+fechamento via MCP" },
-    "2337": { "veredito": "FECHAR", "estado": "fechada", "evidencia": "comentario+fechamento via MCP" },
-    "2357": { "veredito": "MERGEAR", "estado": "fechada", "sucessora": "2360", "sha_merge_sucessora": "b4cc8163d68a9e31ca23f1695d193ec0605f9ae8" },
+    "2316": {
+      "veredito": "CORRIGIR",
+      "estado": "fechada",
+      "sucessora": "2361",
+      "sha_merge_sucessora": "e2be31add9a107030d1aeab8462534a6cd798979"
+    },
+    "2319": {
+      "veredito": "FECHAR",
+      "estado": "fechada",
+      "evidencia": "comentario+fechamento via MCP"
+    },
+    "2320": {
+      "veredito": "FECHAR",
+      "estado": "fechada",
+      "evidencia": "comentario+fechamento via MCP"
+    },
+    "2322": {
+      "veredito": "FECHAR",
+      "estado": "fechada",
+      "evidencia": "comentario+fechamento via MCP"
+    },
+    "2323": {
+      "veredito": "FECHAR",
+      "estado": "fechada",
+      "evidencia": "comentario+fechamento via MCP"
+    },
+    "2324": {
+      "veredito": "FECHAR",
+      "estado": "fechada",
+      "evidencia": "comentario+fechamento via MCP"
+    },
+    "2325": {
+      "veredito": "FECHAR",
+      "estado": "fechada",
+      "evidencia": "comentario+fechamento via MCP"
+    },
+    "2326": {
+      "veredito": "FECHAR",
+      "estado": "fechada",
+      "evidencia": "comentario+fechamento via MCP"
+    },
+    "2327": {
+      "veredito": "FECHAR",
+      "estado": "fechada",
+      "evidencia": "comentario+fechamento via MCP"
+    },
+    "2328": {
+      "veredito": "FECHAR",
+      "estado": "fechada",
+      "evidencia": "comentario+fechamento via MCP"
+    },
+    "2329": {
+      "veredito": "FECHAR",
+      "estado": "fechada",
+      "evidencia": "comentario+fechamento via MCP"
+    },
+    "2330": {
+      "veredito": "FECHAR",
+      "estado": "fechada",
+      "evidencia": "comentario+fechamento via MCP"
+    },
+    "2331": {
+      "veredito": "FECHAR",
+      "estado": "fechada",
+      "evidencia": "comentario+fechamento via MCP"
+    },
+    "2333": {
+      "veredito": "FECHAR",
+      "estado": "fechada",
+      "evidencia": "comentario+fechamento via MCP"
+    },
+    "2334": {
+      "veredito": "FECHAR",
+      "estado": "fechada",
+      "evidencia": "comentario+fechamento via MCP"
+    },
+    "2335": {
+      "veredito": "FECHAR",
+      "estado": "fechada",
+      "evidencia": "comentario+fechamento via MCP"
+    },
+    "2336": {
+      "veredito": "FECHAR",
+      "estado": "fechada",
+      "evidencia": "comentario+fechamento via MCP"
+    },
+    "2337": {
+      "veredito": "FECHAR",
+      "estado": "fechada",
+      "evidencia": "comentario+fechamento via MCP"
+    },
+    "2357": {
+      "veredito": "MERGEAR",
+      "estado": "fechada",
+      "sucessora": "2360",
+      "sha_merge_sucessora": "b4cc8163d68a9e31ca23f1695d193ec0605f9ae8"
+    },
     "2370": {
       "veredito": "CORRIGIR",
       "estado": "mergeada",
@@ -106,6 +185,7 @@
       "veredito": "MERGEAR",
       "estado": "mergeada_admin",
       "sha_merge": "b4cc8163d68a9e31ca23f1695d193ec0605f9ae8",
+      "gate_e40": "inerente_ate_migrations_aplicadas",
       "motivo": "mergeada por admin (bypass Gate E40); migrations no banco pendentes de aprovacao humana em environment:production"
     }
   },
@@ -130,11 +210,12 @@
     "abrir PR substituta: #2372 (fix E2E_USER_* em 11 workflows chromium-public)",
     "abrir PR: #2373 (gitleaks allowlist migrations 20261022194*)",
     "draft->ready + merge squash: #2373 (SHA f27df1bf543da72b5e4aefbacd2975a8fc66fc60)",
-    "update branch #2372 com main pos-#2373",
-    "merge squash: #2372 (SHA 5242725d1858e2ecec3b20a45e7f700c2b241a33) — Gate Final success run 39968163096",
-    "push artefatos finais: claude/pensive-faraday-pwphva (progresso.json CONCLUIDO, dossies/pr-2372.md, RELATORIO_PRS.md)"
+    "update branch #2372 com main pos-#2373"
   ],
   "worktrees": [],
+  "main_sha_pos_2370": "09eeb1095e97adacc2e058a7036cd5dbbad70e06",
+  "main_sha_final": "09eeb1095e97adacc2e058a7036cd5dbbad70e06",
+  "gate_final_pos_missao": "success",
   "migrations_aplicadas": [
     "20261022194000",
     "20261022194100",
