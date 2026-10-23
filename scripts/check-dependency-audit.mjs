@@ -79,12 +79,6 @@ const ALLOWED_LHCI_PACKAGES = new Set([
   'tmp',
   'uuid',
   'ws',
-  // body-parser — GHSA-27r3-jxmh-p828 (DoS: trailing bytes after compressed body, <1.20.9).
-  // Transitive: @lhci/cli → express → body-parser. Dev-only CI tooling, never in production.
-  // fixAvailable: true (non-breaking); upgrade constrained by @lhci/cli@0.15.1 pinned range.
-  // Accepted 2026-10-23. Revisit by RISK_REVIEW_DEADLINE. (E205)
-  'body-parser',
-  'express',              // transitive: @lhci/cli → express (same chain, may surface separately)
 ]);
 
 // GHSA-vfj7-8cjw-p6xm — braces: stack-exhaustion DoS via deeply nested
