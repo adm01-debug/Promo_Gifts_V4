@@ -712,6 +712,7 @@ f6def33d0c79c66aab118335ed95d9e3a9b40536cca5cd397bacc54e7858ae96
 | `20260916155725` | `SEM_ARQUIVO_LOCAL` | `f078d1d8a52658adb5d48b148798d1f3` | n/d | n/d (pré-E48; ledger não registra por linha) | 2026-09-16 15:57:25 UTC | n/d (não capturado retroativamente; ver E07 — verificação por objeto) |
 | `20260922170000` | `266f0963a9e7b1d30e8594d7c6218747b6a79baf16aa272249e864f55a64b29b` | `badcb6626e975ee80bab7d562a6c12cc` | GitHub Actions, disparado por `adm01-debug` | E15 (run 35760867980) | 2026-09-22 18:34:03 UTC | recibo E15 abaixo; apply, repair e post-check aprovados — ver `## Recibos — E15` |
 | `20260923114500` | `18663b52473fa9fd0edb031495ebe1ed8fc8c0ea0c262631a3b3bf035d8d91b7` | `87c7eefd2929c273fbedd75e4d61c423` | GitHub Actions, disparado por `adm01-debug` | E15 (run 35857184284) | 2026-09-23 11:56:55 UTC | recibo E15 abaixo; post-check confirmou version no ledger — ver `## Recibos — E15` |
+| `20260417001408` | `d544558d96f6be7d1b4e2a6af7269d11ac516836f8ca134a06e682dae2d14a7c` | `n/d` | claude-code (sessão PR #2376) | retroactive-file-fix (arquivo modificado — não reaplicado em prod; adicionou guarda pg_has_role em ALTER TABLE realtime.messages para compatibilidade com Preview branches) | 2026-10-23 UTC | PR #2376 — arquivo corrigido; migration original já estava no ledger de prod; nenhuma DDL nova aplicada |
 
 
 </details>
