@@ -1,7 +1,7 @@
 # RELATORIO_CI.md — Auditoria completa de workflows
 
 > Gerado em: 2026-10-23  
-> Atualizado em: 2026-10-23 (inventário refeito com baseline `4c482cbc` — Deploy Gates GREEN)  
+> Atualizado em: 2026-10-23 (Fix 7 causa raiz corrigida para clientHeight/clientWidth; P-11 SHA correto 4c482cbc; Uptime recovered; PR estado commit 82a3a9c)  
 > Sessão: https://claude.ai/code/session_019gUZ8wvjsJMC3gYzy6k7jB  
 > Branch: `claude/magical-cannon-u5t1vy`  
 > PR: https://github.com/adm01-debug/Promo_Gifts_V4/pull/2378
@@ -19,8 +19,8 @@
 | 🔄 Fix no PR #2378 (aguarda merge do PO) | 3 | CI Security & Drift Checks (Fix 7), CI Replenishment (Fix 8), E2E — Critical Flows (Fix 4) |
 | ❌ Bloqueado externo (ação do PO) | 5 | Release Please (P-01), E2E Personalization (P-02), E2E Quote Sheet snapshots (P-03), Update Quote Visual Snapshots (P-12), E2E Cart Delete Popover (P-09) |
 | ⏳ Infra (runner/queued) | 3 | E2E Swatch QuickView/P-08 (attempt 3+), Cart Invariants Smoke (queued), E2E (Playwright) (cancelled) |
-| ❌ Infra recorrente | 1 | Uptime Monitor/P-10 (downtime recorrente) |
-| ❌ Pré-existente (histórico) | 1 | Branch Protection Sentinel/P-11 — commit 7401c9f direto na main |
+| ✅ Recuperado | 1 | Uptime Monitor — downtime 40001131817 → recovery 40005522306=success |
+| ❌ Pré-existente (histórico) | 1 | Branch Protection Sentinel/P-11 — commit 4c482cbc direto na main |
 
 ---
 
@@ -38,7 +38,7 @@
 | 8 | Branch Protection Sentinel | 39999446486 | Commit `7401c9f` push direto na main sem padrão aceito (pré-existente) | ❌ P-11 (histórico) |
 | 9 | E2E · Atualizar snapshots visuais (E155) | 39999649279 | `chromium-authed`: `E2E_USER_*` ausentes (mesma raiz P-02) | ❌ P-03 (externo) |
 | 10 | Update Quote Visual Snapshots | 39997674586 | `chromium-authed`: `E2E_USER_*` ausentes (mesma raiz P-02) | ❌ P-12 (externo) |
-| 11 | Uptime Monitor | 40001131817 | Downtime do site na janela de check (recorrente) | ❌ P-10 (infra) |
+| 11 | Uptime Monitor | 40001131817 → 40005522306 | Downtime recuperado: run 40001131817=failure → 40005522306=success | ✅ Recuperado |
 | 12 | E2E (Playwright) | 39999446765 | Cancelado (runner, infra) | ℹ️ cancelled |
 | 13 | E2E · Cart Delete Popover | 39999446624 | Cancelado (runner, infra) | ❌ P-09 (externo/infra) |
 | 14 | Cart Invariants Smoke | 39999446524 | Queued (aguardando runner) | ⏳ queued |
@@ -132,7 +132,7 @@ Ver `PENDENCIAS.md` para detalhes completos de cada item:
 | P-08 | E2E Swatch QuickView | Runner shutdown de infraestrutura (SIGTERM) — attempt 3+ in_progress (run 39999446623) |
 | P-09 | E2E Cart Delete Popover | Dados de teste ausentes + runner shutdown (cancelled run 39999446624) |
 | P-10 | Uptime Monitor | Downtime recorrente — não é bug de código |
-| P-11 | Branch Protection Sentinel | Commit `7401c9f` pré-existente direto na main sem padrão aceito — apenas histórico |
+| P-11 | Branch Protection Sentinel | Commit `4c482cbc` pré-existente direto na main sem padrão aceito — apenas histórico |
 | P-12 | Update Quote Visual Snapshots | `chromium-authed` requer `E2E_USER_*` — mesma raiz de P-02 |
 
 ---
@@ -212,13 +212,35 @@ O teste usa `describe.skipIf(isLocalSupabase)` — só executa quando há backen
 
 ---
 
-## Fix 7 — `renderAndOpenDialog`: resize dispatch pós-render (`MockupProductSelector.test.tsx`)
+## Fix 7 — `clientHeight`/`clientWidth` mocks para `@tanstack/react-virtual` v3 (`MockupProductSelector.test.tsx`) — commit `82a3a9c`
 
 **Workflow corrigido:** `ci-security-drift.yml` / `unit-tests`  
 **Arquivo:** `tests/components/mockup/MockupProductSelector.test.tsx`  
-**Causa raiz:** `@tanstack/react-virtual` v3 chama `getScrollElement()` no render síncrono; na primeira passagem, `scrollParentRef.current` é `null` (React só seta refs após commit) → `outerSize = 0` → `calculateRange` retorna `null` → nenhum `mockup-product-row` renderizado → `waitFor` estoura em 5000ms. Em jsdom o `ResizeObserver` é no-op (`tests/setup.ts`), então o re-render com ref preenchida nunca acontece sozinho.
+**Causa raiz confirmada (2026-10-23):** `@tanstack/virtual-core` v3 usa `getRect()` que lê `element.clientHeight` / `element.clientWidth` (não `offsetHeight`/`offsetWidth` nem `getBoundingClientRect`) para calcular `outerSize` do container de scroll. jsdom devolve `0` para ambos por padrão → `outerSize = 0` → `calculateRange` retorna `null` (linha 882: `if (measurements.length === 0 || outerSize === 0) return null`) → zero linhas renderizadas → `waitFor` estoura em 5000ms.
 
-**Solução:** Adicionar `window.dispatchEvent(new Event('resize'))` após `renderWithProviders` em `renderAndOpenDialog`. O componente registra `handleResize` que chama `setViewportWidth` → dispara re-render → virtualizer recebe o scroll element preenchido → grade renderiza.
+A tentativa anterior (commit `c12f709` / Fix 7 v1) adicionou `window.dispatchEvent(new Event('resize'))` — isso dispara `setViewportWidth` no componente mas **não resolve** o outerSize=0 porque o virtualizer já leu `clientHeight=0` no render anterior.
+
+**Solução real (commit `82a3a9c`):** Mockar `clientHeight` e `clientWidth` no `beforeEach`, restaurar no `afterEach`:
+
+```typescript
+// module-level (salvar originais)
+const originalClientHeight = Object.getOwnPropertyDescriptor(HTMLElement.prototype, 'clientHeight');
+const originalClientWidth = Object.getOwnPropertyDescriptor(HTMLElement.prototype, 'clientWidth');
+
+// beforeEach
+const isRowEl = (el: HTMLElement) => (el as Element)?.getAttribute?.('data-testid') === 'mockup-product-row';
+Object.defineProperty(HTMLElement.prototype, 'clientHeight', {
+  configurable: true,
+  get(this: HTMLElement) { return isRowEl(this) ? MEASURED_ROW_HEIGHT : SCROLL_VIEWPORT_HEIGHT; },
+});
+Object.defineProperty(HTMLElement.prototype, 'clientWidth', { configurable: true, get: () => 800 });
+
+// afterEach
+if (originalClientHeight) Object.defineProperty(HTMLElement.prototype, 'clientHeight', originalClientHeight);
+if (originalClientWidth) Object.defineProperty(HTMLElement.prototype, 'clientWidth', originalClientWidth);
+```
+
+**Resultado verificado localmente:** `Tests  8 passed (8)` — todos os testes do `MockupProductSelector` passam.
 
 **Nota:** `MockupProductSelector.test.tsx` não está no script `test:deploy-gate`, portanto **não bloqueava o Gate Final** — a falha era em `ci-security-drift.yml` (workflow separado).
 
@@ -227,9 +249,9 @@ O teste usa `describe.skipIf(isLocalSupabase)` — só executa quando há backen
 ## Estado do PR #2378
 
 - **Status:** Ready for review, branch baseada em `4c482cbc` (main atualizado)
-- **Fixes incluídos:** Fix 1 (PopoverQtyInput), Fix 3 (NoveltiesPage), Fix 4 (App.tsx TooltipProvider), Fix 5 (QuoteItemEditorSheet TooltipProvider), Fix 7 (MockupProductSelector resize), Fix 8 (useReplenishments timeout)
+- **Fixes incluídos:** Fix 1 (PopoverQtyInput), Fix 3 (NoveltiesPage), Fix 4 (App.tsx TooltipProvider), Fix 5 (QuoteItemEditorSheet TooltipProvider), Fix 7 v2 (MockupProductSelector `clientHeight`/`clientWidth` mocks — commit `82a3a9c`), Fix 8 (useReplenishments timeout)
 - **Diff:** `src/components/cart/PopoverQtyInput.tsx`, `src/pages/products/NoveltiesPage.tsx`, `src/App.tsx`, `src/components/quotes/QuoteItemEditorSheet.tsx`, `tests/components/mockup/MockupProductSelector.test.tsx`, `src/hooks/products/__tests__/useReplenishments.integration.test.ts` + PENDENCIAS.md + RELATORIO_CI.md
-- **CI na branch:** ✅ **Gate Final (`quality-gate`) = `conclusion:success`** (commit `c12f709`, run completado 2026-10-23T17:32:26Z)
+- **CI na branch (commit `82a3a9c`):** Gate 2 — Unit Tests ✅ `success` · Gate 3 — Integration Tests ✅ `success` · Gate 5 — E2E Smoke ⏳ in_progress (2026-10-23T19:12Z)
 
 ### Checks confirmados com `conclusion:success` (commit `c12f709`)
 

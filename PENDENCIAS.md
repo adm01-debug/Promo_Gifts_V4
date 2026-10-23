@@ -1,7 +1,7 @@
 # PENDENCIAS.md — Workflows com bloqueio externo
 
 > Gerado em: 2026-10-23  
-> Atualizado em: 2026-10-23 (sessão continuada — inventário refeito com baseline `4c482cbc`)  
+> Atualizado em: 2026-10-23 (sessão continuada — P-11 SHA corrigido; Fix 7 causa raiz confirmada; Uptime Monitor recovery)  
 > Sessão: https://claude.ai/code/session_019gUZ8wvjsJMC3gYzy6k7jB  
 > Branch de trabalho: `claude/magical-cannon-u5t1vy` → PR #2378
 
@@ -16,8 +16,8 @@ exato e o que o PO precisa fazer para desbloquear.
 | # | Workflow | Run ID | Causa | Status |
 |---|---|---|---|---|
 | 1 | Deploy Gates | 39999446914 | — | ✅ GREEN |
-| 2 | CI Security & Drift Checks | 39999446430 | Timeout em `MockupProductSelector.test.tsx` | 🔄 Fix 7 no PR #2378 (aguarda merge) |
-| 3 | CI - Replenishment Module Quality Gate | 39999446605 | `useReplenishmentStats` it() sem timeout → race com waitFor 15s | 🔄 Fix 8 no PR #2378 (aguarda merge) |
+| 2 | CI Security & Drift Checks | 39999446430 | `clientHeight`/`clientWidth` = 0 no jsdom → `@tanstack/react-virtual` outerSize=0 → 0 rows renderizados | 🔄 Fix 7 no PR #2378 (aguarda merge) |
+| 3 | CI - Replenishment Module Quality Gate | 39999446605 | `useReplenishmentStats` timeout 15s (race + site estava down às 18:02Z) | 🔄 Fix 8 no PR #2378; recorrente quando site indisponível |
 | 4 | E2E — Critical Flows & Error Boundaries | 39999446606 | sidebar-tooltips: tooltip visível após mouse out (hoverable content) | 🔄 Fix 4 no PR #2378 (aguarda merge) |
 | 5 | E2E — Personalization Flow | 39999446757 | Secrets `E2E_USER_*` ausentes / usuário inativo | ❌ P-02 (externo) |
 | 6 | Release Please | 39999446560 | PAT com `contents: write` ausente | ❌ P-01 (externo) |
@@ -25,7 +25,7 @@ exato e o que o PO precisa fazer para desbloquear.
 | 8 | Branch Protection Sentinel | 39999446486 | Commit `7401c9f` push direto na main sem padrão aceito | ❌ P-11 (pré-existente) |
 | 9 | E2E · Atualizar snapshots visuais (E155) | 39999649279 | `chromium-authed`: `E2E_USER_*` ausentes (mesmo P-02) | ❌ P-03 (externo) |
 | 10 | Update Quote Visual Snapshots | 39997674586 | `chromium-authed`: `E2E_USER_*` ausentes (mesmo P-02) | ❌ P-12 (externo) |
-| 11 | Uptime Monitor | 40001131817 | Downtime do site na janela de check (recorrente) | ❌ P-10 (infra) |
+| 11 | Uptime Monitor | 40001131817 → 40005522306 | Downtime recuperado: run 40001131817=failure → 40005522306=success | ✅ Recuperado |
 | 12 | E2E (Playwright) | 39999446765 | cancelled (runner, infra) | ℹ️ cancelled |
 | 13 | E2E · Cart Delete Popover | 39999446624 | cancelled (runner, infra) | ❌ P-09 (externo/infra) |
 | 14 | Cart Invariants Smoke | 39999446524 | queued (aguardando runner) | ⏳ queued |
@@ -37,6 +37,9 @@ exato e o que o PO precisa fazer para desbloquear.
 - Fix 5 (QuoteItemEditorSheet TooltipProvider)
 - Fix 7 (MockupProductSelector.test.tsx resize dispatch)
 - Fix 8 (useReplenishments.integration.test.ts timeout)
+
+**Commits adicionais no PR #2378:**
+- `82a3a9c` — Fix 7 v2: `clientHeight`/`clientWidth` mocks para `@tanstack/react-virtual` v3 (CI em andamento)
 
 **Fix entregue no PR #2381** (YAML-only — seguro para merge imediato via admin bypass):
 - Fix 2 (HUSKY=0 no workflow `e2e-update-dialog-snapshots.yml`)
@@ -171,16 +174,21 @@ Deploy Gates com `conclusion=success` no run 39999446914 em `main`.
 
 ---
 
-## P-11 — Branch Protection Sentinel — Push direto na main (pré-existente)
+## P-11 — Branch Protection Sentinel — Push direto na main sem PR
 
 **Workflow:** `.github/workflows/branch-protection-sentinel.yml`  
-**Erro:**
+**Erro (confirmado nos logs do job 120571425838):**
 ```
-1 commit(s) em push para main sem padrão aceito: 7401c9f
+1 commit(s) em push para main sem padrão aceito: 4c482cb
 ```
-**Run ID:** 39999446486 (commit `4c482cbc`)
+**Run ID:** 39999446486 (PUSH_BEFORE=`b167c9c8`, PUSH_AFTER=`4c482cbc`)
 
-**Causa:** Commit `7401c9f742bfc9af6433bcf47a59e06ef5ea7450` que entrou na `main` antes desta sessão, sem mensagem que corresponda aos padrões aceitos pelo Sentinel. Esta falha é **pré-existente** e retrospectiva.
+**Causa:** Commit `4c482cbc` (fix Gate E40 — Schema Drift) foi pushado diretamente para
+`main` por sessão Claude anterior sem seguir PR. O Sentinel requer que commits na main
+venham via squash-merge/merge-commit de PR, bot oficial, Lovable, release ou bypass tag
+`[skip-sentinel: motivo]`. Nenhum desses padrões foi usado.
+
+**Padrões aceitos:** squash merge terminando em `(#NNN)` • `Merge pull request #NNN` • bot oficial • `chore(release):` • `docs(redeploy):` • `chore(workflows):` • `[skip-sentinel: ...]`
 
 **Impacto:** Histórico — não impede merges ou deploys atuais.
 
