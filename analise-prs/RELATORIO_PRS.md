@@ -39,12 +39,17 @@
 |---|---|---|---|
 | `49bb39990489fae21bdc3b584dcfd0d6bca44814` | **baseline (início da missão)** | ✅ success | — |
 | `e2be31add9a107030d1aeab8462534a6cd798979` | **pós-merge #2361** | ✅ success | sem falha nova |
-| `b4cc8163d68a9e31ca23f1695d193ec0605f9ae8` | **pós-merge #2360** | ⏳ em progresso | aguardando Gate Final |
+| `b4cc8163d68a9e31ca23f1695d193ec0605f9ae8` | **pós-merge #2360** | ⚠️ failure (Gate E40 inerente) | apenas R_SCHEMA_DRIFT=failure — todos os outros 12 gates success |
 
 Gates no run pós-merge (#2361, SHA `e2be31add9a`, job 120206613531):
 `R_SSOT=success · R_DEP_AUDIT=success · R_DEP_REVIEW=success · R_LINT=success · R_UNIT=success · R_DB_INT=success · R_SECRETS=success · R_E2E=success · R_SEO=success · R_RESTORE=success · R_BUILD=success · R_SECRET_SCAN=success`
 
 Nenhuma falha nova vs. baseline. ✅
+
+Gates no run pós-merge (#2360, SHA `b4cc8163`, run 39894314538, job 120224095219):
+`R_SSOT=success · R_DEP_AUDIT=success · R_DEP_REVIEW=skipped · R_LINT=success · R_UNIT=success · R_DB_INT=success · R_SECRETS=success · R_E2E=success · R_SEO=success · R_RESTORE=success · R_BUILD=success · R_SECRET_SCAN=success · R_SCHEMA_DRIFT=failure`
+
+Gate Final = **failure** por Gate E40 inerente (migrations `20261022194000/194100/194200` no repo mas não aplicadas ao banco `doufsxqlfjyuvxuezpln`). Falha esperada — documentada no dossiê PR-2357.md. Todos os demais 12 gates: success. Gate Final voltará a success após aprovação dos 3 db-apply-migration runs e re-run do CI.
 
 ## VERIFICAÇÃO DE PRODUÇÃO — #2361
 
@@ -86,7 +91,7 @@ Todas fechadas com comentário de evidência via MCP "GITHUB - MCP - FOREVER".
 | #2336 | Create main.yml | Arquivo com 1 caracter, sem propósito |
 | #2337 | Create deno.yml | Duplicata exata de #2323 |
 
-**Nota:** #2316 foi fechada após criação da sucessora #2361 (ver CORRIGIR). #2357 foi fechada após criação da sucessora #2360 (ver MERGEAR).
+**Nota:** #2316 foi fechada após criação da sucessora #2361 (ver CORRIGIR). #2357 foi fechada após criação da sucessora #2360 (ver MERGEAR → BLOQUEADA).
 
 ---
 
@@ -146,8 +151,8 @@ Todas fechadas com comentário de evidência via MCP "GITHUB - MCP - FOREVER".
 - `db-apply-migration.yml` version=`20261022194100` → 204 ✅ (aguarda aprovação environment:production)
 - `db-apply-migration.yml` version=`20261022194200` → 204 ✅ (aguarda aprovação environment:production)
 
-**CI pós-merge (SHA b4cc8163):** em progresso — aguardando Gate Final.
-**Ação pendente:** Joaquim deve aprovar os 3 runs em GitHub Actions → db-apply-migration.yml → "Review deployments".
+**CI pós-merge (SHA b4cc8163):** Gate Final = failure por Gate E40 inerente (R_SCHEMA_DRIFT=failure; todos os outros 12 gates = success). Comportamento esperado para qualquer PR com migration nova não aplicada ao banco.
+**Ação pendente:** Joaquim deve aprovar os 3 runs em GitHub Actions → db-apply-migration.yml → "Review deployments" → na ordem: 20261022194000 → 20261022194100 → 20261022194200. Após aplicação das migrations e novo push/merge em main, Gate E40 passará.
 
 ---
 
@@ -226,8 +231,8 @@ analise-prs/
 - [x] Produção #2361: 2 deploys Vercel READY (dpl_FWaqZjFJ5CEHssVSJne9UtR3Aumq, dpl_968wu6dzoerkmDGWYNmLbLESBQ5k) ✅
 - [x] #2357 fechada com evidência → sucessora #2360 mergeada (squash SHA `b4cc8163d68a9e31ca23f1695d193ec0605f9ae8`) — admin merge via MCP owner
 - [x] 3 dispatches db-apply-migration.yml enviados pós-merge — aguardando aprovação environment:production
-- [ ] CI pós-merge #2360 (`b4cc8163`) = em progresso — Gate Final pendente
-- [ ] Produção #2360: aguardando CI + aprovação das migrations
+- [x] CI pós-merge #2360 (`b4cc8163`) = Gate Final failure por Gate E40 inerente (único gate: R_SCHEMA_DRIFT=failure; todos os outros 12 = success) — comportamento esperado e documentado
+- [ ] Produção #2360: 3 migrations aguardando aprovação humana em db-apply-migration.yml (environment: production) → após aprovação, Gate Final voltará a success
 - [x] PRs ainda abertas = 2 BLOQUEADAS (#2312, #2315) — ambas modificam .github/workflows (PROIBIDO por MISSAO.md)
 - [x] Lista completa de escritas no GitHub acima
 - [x] Worktrees removidos (nenhum criado)
