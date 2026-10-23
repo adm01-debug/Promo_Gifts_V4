@@ -55,10 +55,15 @@ jobs:
       - name: Update baselines (chromium + firefox + webkit)
         run: npm run e2e:editor-sheet:update
       - name: Credencial de push sem token em disco (E32)
+        # Protegido por 'if' abaixo: nao executa em main (branch protegida)
+        if: ${{ github.ref != 'refs/heads/main' }}
         run: |
           # shellcheck disable=SC2016
           git config --local credential.helper '!f() { test "$1" = get || exit 0; echo username=x-access-token; echo "password=${GIT_PUSH_TOKEN}"; }; f'
       - name: Commit updated snapshots
+        # Nao tenta push em main (protegida). O path filter ja exclui o dir de
+        # snapshots, entao este commit nao re-dispara o updater.
+        if: ${{ github.ref != 'refs/heads/main' }}
         env:
           GIT_PUSH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -68,7 +73,7 @@ jobs:
           if git diff --cached --quiet; then
             echo "Sem mudanças de baseline."
           else
-            git commit -m "chore(e2e): update QuoteItemEditorSheet visual snapshots (chromium/firefox/webkit) [skip ci]"
+            git commit -m "chore(e2e): update QuoteItemEditorSheet visual snapshots (chromium/firefox/webkit)"
             git push
           fi
       - name: Upload snapshots artifact
