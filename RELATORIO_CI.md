@@ -11,15 +11,16 @@
 ## Resumo executivo
 
 **Baseline auditado:** `main` commit `b167c9c8095a99be701187758bae66d760e9c94f`  
-**16 workflows auditados na main (inventário completo — 2026-10-23).**
+**17 workflows auditados na main (inventário completo — 2026-10-23).**
 
 | Status | Qtd | Workflows |
 |--------|-----|-----------|
-| ✅ Corrigido (PR #2378) | 7 | CI Security & Drift Checks (Fix 1+7), E2E · Update Dialog snapshots (Fix 2), E2E (Playwright) — /novidades (Fix 3), E2E — Critical Flows (Fix 4+5), Cart Invariants Smoke (Fix 4), CI Replenishment (Fix 3) |
+| ✅ Corrigido — PR #2378 (app code, aguarda merge do PO) | 6 | CI Security & Drift Checks (Fix 1+7), E2E (Playwright) — /novidades (Fix 3), E2E — Critical Flows (Fix 4+5), Cart Invariants Smoke (Fix 4), CI Replenishment (Fix 3) |
+| ✅ Corrigido — PR #2381 (YAML-only, seguro para merge imediato) | 1 | E2E · Update Dialog snapshots (Fix 2) |
 | ❌ Bloqueio estrutural (externo) | 1 | Deploy Gates/P-05 — ledger de migrations divergente (local_only=1091, remote_only=638) — requer reconciliação manual |
-| 🔄 Rerun / dispatch em andamento | 2 | E2E Swatch QuickView/P-08 (attempt 2 run 39986410684 in_progress); E2E Quote Sheet snapshots/P-03 (dispatch E155 enviado, run 39999649279 queued) |
-| ❌ Infra (recorrente) | 1 | Uptime Monitor/P-10 (run 39996580013 = failure — downtime recorrente) |
-| ❌ Bloqueado externo (ação do PO) | 3 | Release Please (P-01), E2E Personalization (P-02), E2E Cart Delete Popover (P-09) |
+| 🔄 Rerun / dispatch em andamento | 2 | E2E Swatch QuickView/P-08 (attempt 2 run 39986410684); E2E Quote Sheet snapshots/P-03 (dispatch E155 enviado, run 39999649279) |
+| ❌ Infra (recorrente) | 1 | Uptime Monitor/P-10 (downtime recorrente) |
+| ❌ Bloqueado externo (ação do PO) | 4 | Release Please (P-01), E2E Personalization (P-02), E2E Cart Delete Popover (P-09), Update Quote Visual Snapshots (P-12) |
 | ℹ️ Sem ação (comportamento correto) | 2 | DB Migration E15, Copilot Code Review (branch de outro agente P-06) |
 | ❌ Pré-existente (histórico) | 1 | Branch Protection Sentinel/P-11 — commit 7401c9f direto na main sem padrão aceito |
 
@@ -38,13 +39,14 @@
 | 7 | Release Please | 39986410747 | PAT `contents: write` ausente | ❌ P-01 |
 | 8 | E2E Swatch QuickView | 39986410684 | Runner shutdown (infra SIGTERM); attempt 2 in_progress | 🔄 P-08 (rerun em andamento) |
 | 9 | E2E (Playwright) | 39973432189 | Header sticky /novidades overflow | ✅ Fix 3 |
-| 10 | E2E Update Dialog snapshots | 39970463068 | Husky OOM no CI pré-push | ✅ Fix 2 |
+| 10 | E2E Update Dialog snapshots | 39970463068 | Husky OOM no CI pré-push | ✅ Fix 2 (PR #2381 — YAML-only) |
 | 11 | E2E Quote Sheet | 39970462801 | ESC não abre dialog + snapshots | ✅ Fix 5 + 🔄 P-03 (dispatch E155 queued) |
 | 12 | E2E Cart Delete Popover | 39964680566 | Dados de teste + runner shutdown | ❌ P-09 |
 | 13 | DB Migration E15 | 39957452351 | Migration já aplicada — preflight correto | ℹ️ OK |
 | 14 | Uptime Monitor | 39996580013 | Downtime recorrente do site na janela de check | ❌ P-10 (infra recorrente) |
 | 15 | Copilot Code Review | — | Branch de outro agente | ℹ️ P-06 |
 | 16 | Branch Protection Sentinel | 39981481558 | Commit `7401c9f` direto na main sem padrão aceito (pré-existente) | ❌ P-11 (histórico) |
+| 17 | Update Quote Visual Snapshots | 39997674586 | 7 falhas em `chromium-authed`: `E2E_USER_*` ausentes (quote-new-fab.spec.ts ×5 + quote-pdf-header-snapshot.spec.ts ×2) | ❌ P-12 (mesma raiz de P-02) |
 
 ---
 
@@ -129,27 +131,35 @@ Ver `PENDENCIAS.md` para detalhes completos de cada item:
 |----|----------|----------|
 | P-01 | Release Please | PAT com `contents: write` ausente |
 | P-02 | E2E Personalization Flow | Secrets `E2E_USER_*` não configurados ou usuário de teste inativo |
-| P-03 | E2E Quote Sheet — snapshots | Baselines visuais desatualizados — rodar `workflow_dispatch` manual |
+| P-03 | E2E Quote Sheet — snapshots | Baselines visuais desatualizados — dispatch E155 enviado (run 39999649279) |
 | P-05 | db-schema-drift-check / Gate E40 | Secrets OK. Divergência estrutural pré-existente no ledger: `local_only=1091; remote_only=638` — requer reconciliação manual (E99/POLITICA_DDL.md) |
 | P-06 | Running Copilot Code Review | Branch de outro agente — não interagir (REGRA #10) |
 | P-07 | CI Security — MockupProductSelector | ✅ FIX 7 aplicado — `window.dispatchEvent(new Event('resize'))` em `renderAndOpenDialog` |
-| P-08 | E2E Swatch QuickView | Runner shutdown de infraestrutura (SIGTERM) — re-rodar |
+| P-08 | E2E Swatch QuickView | Runner shutdown de infraestrutura (SIGTERM) — rerun attempt 2 in_progress (run 39986410684) |
 | P-09 | E2E Cart Delete Popover | Dados de teste ausentes + runner shutdown |
-| P-10 | Uptime Monitor | ✅ RESOLVIDO — run 39997953456 = success (2026-10-23T17:47 UTC) |
+| P-10 | Uptime Monitor | Downtime recorrente — não é bug de código |
+| P-11 | Branch Protection Sentinel | Commit `7401c9f` pré-existente direto na main sem padrão aceito — apenas histórico |
+| P-12 | Update Quote Visual Snapshots | `chromium-authed` requer `E2E_USER_*` — mesma raiz de P-02; 7 falhas: quote-new-fab ×5 + quote-pdf-header ×2 |
 
 ---
 
 ## Validação das correções e restrição de merge
 
-### Por que o PR #2378 não foi mergeado
+### Dois PRs abertos — estratégia de merge
 
-As correções (Fix 1–7) foram validadas no PR #2378, commit `c12f709` / `547760d`. O merge não foi realizado pelas seguintes razões, em conformidade com as regras da sessão:
+**PR #2381** — `ci(e2e): HUSKY=0 no commit de snapshots do E2E · Update Dialog snapshots`  
+URL: https://github.com/adm01-debug/Promo_Gifts_V4/pull/2381  
+- **1 arquivo alterado:** `.github/workflows/e2e-update-dialog-snapshots.yml` (+1 linha: `HUSKY: "0"`)
+- **Nenhum código de aplicação** — apenas YAML de workflow CI
+- **Não dispara deploy** — mudança de CI não aciona Lovable/Vercel
+- **Seguro para merge imediato via admin bypass** (o Gate Final falha por P-05 pré-existente, não por esta mudança)
+- Após merge, o workflow `E2E · Update Dialog snapshots` rodará automaticamente na main e produzirá `conclusion=success`
 
-1. **O PR modifica código de aplicação** (5 arquivos: `PopoverQtyInput.tsx`, `NoveltiesPage.tsx`, `App.tsx`, `QuoteItemEditorSheet.tsx`, e o workflow `e2e-update-dialog-snapshots.yml`).
-2. **Este repo está ligado ao Lovable/Vercel**: merge em `main` = **deploy em produção automático**.
-3. **Regra da sessão**: "Se o merge disparar deploy de produção e a correção alterar código da aplicação, não faça merge: deixe o PR pronto e registre em PENDENCIAS.md."
-
-O PR permanece **aberto e pronto para merge** — todos os checks obrigatórios passam.
+**PR #2378** — Fixes 1, 3, 4, 5, 7 (código de aplicação)  
+URL: https://github.com/adm01-debug/Promo_Gifts_V4/pull/2378  
+- Modifica código de aplicação em 4 arquivos (`PopoverQtyInput.tsx`, `NoveltiesPage.tsx`, `App.tsx`, `QuoteItemEditorSheet.tsx`) + teste `MockupProductSelector.test.tsx`
+- **Merge = deploy em produção via Lovable/Vercel** — aguarda aprovação explícita do PO
+- O PR está pronto e validado — todos os gates passam (exceto P-05 pré-existente na main)
 
 ### Por que não é possível confirmar `conclusion=success` nos workflows de push da main
 

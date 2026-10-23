@@ -31,8 +31,10 @@ exato e o que o PO precisa fazer para desbloquear.
 | 14 | Uptime Monitor | 39988718944 / 39996580013 | Downtime do site na janela de check (recorrente) | ❌ P-10 (infra) |
 | 15 | Copilot Code Review | — | Branch de outro agente | ℹ️ P-06 |
 | 16 | Branch Protection Sentinel | 39981481558 | Commit `7401c9f` push direto na main sem padrão aceito | ❌ P-11 (pré-existente) |
+| 17 | Update Quote Visual Snapshots | 39997674586 | chromium-authed: `E2E_USER_*` ausentes (mesmo P-02) | ❌ P-12 (externo) |
 
-**Fixes entregues no PR #2378:** Fix 1 (PopoverQtyInput), Fix 2 (HUSKY=0 Dialog snapshots), Fix 3 (NoveltiesPage overflow), Fix 4 (App.tsx TooltipProvider), Fix 5 (QuoteItemEditorSheet TooltipProvider)
+**Fixes entregues no PR #2378** (app code — aguarda aprovação do PO para merge): Fix 1 (PopoverQtyInput), Fix 3 (NoveltiesPage overflow), Fix 4 (App.tsx TooltipProvider), Fix 5 (QuoteItemEditorSheet TooltipProvider)  
+**Fix entregue no PR #2381** (YAML-only — seguro para merge imediato via admin bypass): Fix 2 (HUSKY=0 no commit de snapshots do workflow `e2e-update-dialog-snapshots.yml`)
 
 ---
 
@@ -227,6 +229,28 @@ O componente registra `window.addEventListener('resize', handleResize)` em `useE
 4. Se quiser limpar: abrir nova run manual do workflow `branch-protection-sentinel.yml` contra `main` — verificará apenas commits futuros
 
 **Impacto:** Histórico — não impede merges ou deploys atuais.
+
+---
+
+## P-12 — Update Quote Visual Snapshots — Secrets E2E ausentes (mesmo bloqueio do P-02)
+
+**Workflow:** `.github/workflows/e2e-update-quote-snapshots.yml`  
+**Erro:**
+```
+7 failures em projeto chromium-authed:
+  - e2e/quotes/quote-new-fab.spec.ts (5 viewports: mobile-390, tablet-768, laptop-1024, desktop-1280, wide-1440)
+  - e2e/quotes/quote-pdf-header-snapshot.spec.ts (2 viewports: tablet-768, laptop-1024)
+```
+**Run ID:** 39997674586 (2026-10-23T17:52)
+
+**Causa:** O workflow usa o projeto Playwright `chromium-authed` para testes que exigem usuário autenticado. As variáveis `E2E_USER_EMAIL` e `E2E_USER_PASSWORD` **não estão configuradas como secrets** no repositório (ou o usuário de teste está inativo) — mesma raiz de P-02.
+
+**O que você precisa fazer:**
+1. Resolver o P-02 primeiro (cadastrar `E2E_USER_EMAIL` + `E2E_USER_PASSWORD` em **Settings → Secrets → Actions**)
+2. Re-rodar o workflow `E2E · Update Quote Visual Snapshots` via `workflow_dispatch` na branch `main`
+3. O workflow fará `playwright test --update-snapshots` e commitará os PNGs atualizados automaticamente
+
+**Impacto:** Snapshots desatualizados de `quote-new-fab` e `quote-pdf-header-snapshot` — falha visual no CI, não impede funcionalidade em produção.
 
 ---
 
