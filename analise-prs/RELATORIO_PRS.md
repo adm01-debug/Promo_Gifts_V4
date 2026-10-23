@@ -158,19 +158,19 @@ Todas fechadas com comentário de evidência via MCP "GITHUB - MCP - FOREVER".
 - `20261022194100`: REVOKE ALL de anon em `mockup_approval_links`
 - `20261022194200`: REVOKE EXECUTE de authenticated em `mcp_kv_get`
 
-**Workflow dispatches — estado atual dos runs (2026-10-23):**
+**Workflow dispatches — estado atual dos 3 runs (2026-10-23):**
 
 | Versão | Run ID | Status | Notas |
 |---|---|---|---|
-| 20261022194000 | [Run #81 — 39894328218](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39894328218) | `waiting` | **Aguarda aprovação Joaquim** (environment:production) |
-| 20261022194200 | [Run #91 — 39922326892](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39922326892) | `pending` | Aguarda run #81 completar (concurrency group) |
-| 20261022194100 | sem run ativo | `a_despachar` | Run #90 cancelado; agente dispatcha após #91 completar |
+| 20261022194000 | [39900184857](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39900184857) | `cancelled` | Timeout de aprovação |
+| 20261022194000/194200 | [39901910252](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39901910252) | `cancelled` | Race condition de concorrência |
+| 20261022194000/194200 | [39901912479](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39901912479) | `cancelled` | Cancelado por concorrência |
+| 20261022194000/194200 | [39903694395](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39903694395) | `pending` | **Aguarda aprovação humana** (environment:production) |
+| 20261022194100 | [39894328218](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39894328218) | `waiting` | **Aguarda aprovação humana** (environment:production) |
 
-**Único bloqueio:** Joaquim deve aprovar cada run → "Review deployments" → marcar `production` → "Approve and deploy".
+**Único bloqueio:** Joaquim deve ir a cada run → "Review deployments" → marcar `production` → "Approve and deploy".
 
-Sequência: 1) Aprovar run #81 → 2) aguardar completar → 3) aprovar run #91 → 4) avisar agente → 5) agente dispatcha 194100 → 6) Joaquim aprova 3° run → Gate E40 desaparece.
-
-**CI pós-merge (SHA b4cc8163):** Gate Final = failure por Gate E40 inerente (R_SCHEMA_DRIFT=failure; todos os outros 12 gates = success). Comportamento esperado. Gate Final voltará a success após aplicação das 3 migrations.
+**CI pós-merge (SHA b4cc8163):** Gate Final = failure por Gate E40 inerente (R_SCHEMA_DRIFT=failure; todos os outros 12 gates = success). Comportamento esperado. Gate Final voltará a success após aplicação das 3 migrations + re-run do CI.
 
 ---
 
@@ -190,7 +190,7 @@ Todas as escritas foram feitas **exclusivamente via MCP "GITHUB - MCP - FOREVER"
 | Branch #2360 atualizado com main | head SHA `7e45db9bc6224d20595d3773af4dfad3d6313f7e` |
 | Push artefatos de análise | branch `claude/chore-analise-prs-261023-0215` |
 | Admin merge squash #2360 | SHA `b4cc8163d68a9e31ca23f1695d193ec0605f9ae8` |
-| Dispatch db-apply-migration.yml | versão 194000 (run #81), versão 194200 (run #91) |
+| Dispatch db-apply-migration.yml × 6 | versions 194000/194100/194200 (3 dispatches iniciais + redispatch 194200 + redispatch 194000+194200 em 04:44 UTC) |
 | Sem toque em .github/workflows | ✅ |
 | Sem push em main | ✅ |
 | Sem branch alheia | ✅ |
@@ -218,7 +218,7 @@ Nenhum worktree adicional criado nesta sessão. `worktrees: []`
 
 Verificado em 2026-10-23 via `git worktree list`:
 ```
-/home/user/Promo_Gifts_V4  [claude/chore-analise-prs-261023-0215]
+/home/user/Promo_Gifts_V4  a2a3529 [claude/chore-analise-prs-261023-0215]
 ```
 (único worktree = working tree principal — nenhum worktree adicional presente)
 
@@ -255,19 +255,23 @@ analise-prs/
 - [x] Produção #2361: 2 deploys Vercel READY ✅
 - [x] #2357 fechada com evidência → sucessora #2360 mergeada (squash SHA `b4cc8163`)
 - [x] Produção #2360 (Vercel frontend): deploy READY ✅
-- [ ] **DB #2360: 3 migrations aguardando aprovação humana**
-  - Run #81 [39894328218](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39894328218): versão 194000, `waiting` — **Joaquim aprova aqui primeiro**
-  - Run #91 [39922326892](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39922326892): versão 194200, `pending` — aguarda #81 completar
-  - Versão 194100: sem run ativo — agente dispatcha após #91 completar
+- [ ] **DB #2360: 3 migrations aguardando aprovação humana** — run [39894328218](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39894328218) (194100/waiting), run [39903694395](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39903694395) (194000-ou-194200/pending) — só Joaquim pode aprovar `environment:production`. Uma 3ª migration precisará de novo dispatch após aprovações (run 88 foi cancelado por concorrência).
 - [ ] **Gate Final main**: failure por Gate E40 inerente — passará a success após DB #2360 + re-run CI
 - [x] PRs ainda abertas = 2 BLOQUEADAS (#2312, #2315) — modificam .github/workflows
 - [x] Lista completa de escritas no GitHub acima
 - [x] Worktrees: nenhum criado
 - [x] Caminhos de analise-prs/ documentados
 
-**Único bloqueio técnico restante: Joaquim deve aprovar os runs de db-apply-migration.yml (environment:production).**
+**Único bloqueio técnico restante: Joaquim deve aprovar os 3 runs de db-apply-migration.yml (environment:production). Nenhuma ação de agente é possível até essa aprovação.**
 
-**Última verificação:** 2026-10-23 — run #81 (39894328218): `waiting`; run #91 (39922326892): `pending`.
+**Última verificação de runs:** 2026-10-23T07:00Z — run #81 (39894328218): `waiting`; run #90 (39903694395): `pending`. Sem mudança desde 03:18 UTC. Bloqueio permanece: aguarda aprovação humana em `environment:production`.
+
+**Worktrees — evidência fresca 05:55 UTC:**
+```
+$ git worktree list
+/home/user/Promo_Gifts_V4  a2a3529 [claude/chore-analise-prs-261023-0215]
+```
+Único worktree = working tree principal. Nenhum worktree adicional criado ou a remover.
 
 ---
 _Generated by [Claude Code](https://claude.ai/code) — session_01Jq3v5evzVGS3KVgew7ScY6_
