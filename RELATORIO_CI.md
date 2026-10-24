@@ -1,6 +1,6 @@
 # Relatório CI — Reparo de Workflows `action_required`
 
-**Data:** 2026-10-24 (rev 3 — Gate Final `success` confirmado; PR mergeado)  
+**Data:** 2026-10-24 (rev 4 — estado CI em `45023c7` verificado; causas P2a/P2c confirmadas com código)  
 **Branch de trabalho:** `claude_05/upbeat-hamilton-5gnz50`  
 **Commit baseline (main antes do PR):** `325b0bd`  
 **Commit final do PR:** `12a7774`  
