@@ -2,10 +2,10 @@
 
 **Gerado em:** 2026-10-24  
 **Main SHA início da sessão:** `9079c82e6c3f58ae5d2cdf8c7eb2deef979ee9d8`  
-**Main SHA fim da sessão:** `7061adab51e13ff2a10c0737014aef20b72b010d`  
-**Total PRs abertos analisados:** 17 de 17 (100%)**  
+**Main SHA fim da sessão:** `c8ba40e9d65ba2d1ffa63bb19cbb2e6d9a56ff60`  
+**Total PRs analisados:** 19 (17 originais + 2 novos #2441/#2443 identificados nesta sessão)  
 **Merges autônomos realizados:** 6 (#2426, #2427, #2434, #2436, #2414, #2439)  
-**PRs restantes abertos:** 11 (todos DECISÃO HUMANA ou JÁ IMPLEMENTADA)
+**PRs restantes abertos:** 12 (todos DECISÃO HUMANA ou JÁ IMPLEMENTADA)
 
 ---
 
@@ -89,11 +89,11 @@ PR #2427 mergeado (SHA `26641b0a`) altera `supabase/functions/_shared/cors.ts` (
 
 **Deploy status:**
 - Run #40132059704 (dispatch com `function_name: _shared/cors`): `cancelled` — input inválido (`_shared/cors` não é slug de função)
-- Run #40132411991 (dispatch sem `function_name` — redeploy completo): `pending` (despachado às `2026-10-24T21:01:53Z`)
+- Run #40132411991 (dispatch sem `function_name` — redeploy completo): **NÃO VERIFICADO — RUN STUCK/PENDING** (despachado às `2026-10-24T21:01:53Z`, nunca saiu de `pending`, main avançou para `c8ba40e9` depois). PO deve verificar GitHub Actions queue e re-disparar se necessário via `deploy-edge-functions.yml` sem `function_name`.
 
 **Funções que importam `_shared/cors.ts`:** todas as edge functions que usam headers CORS (arquivo é shared module importado pelo entrypoint de cada função via import map).
 
-**Estado:** Deploy de todas as funções disparado via `deploy-edge-functions.yml` workflow_dispatch em main `4c8193b9`. O run #40132411991 está em andamento — as funções serão atualizadas com `CORS_WILDCARD_ORIGIN = String.fromCharCode(42)`.
+**Estado:** Deploy de todas as funções disparado via `deploy-edge-functions.yml` workflow_dispatch em main `4c8193b9`. Run #40132411991 ficou stuck em `pending` e nunca iniciou — produção pode não ter recebido o `CORS_WILDCARD_ORIGIN = String.fromCharCode(42)`. **AÇÃO REQUERIDA DO PO.**
 
 ---
 
@@ -106,7 +106,7 @@ PR #2427 mergeado (SHA `26641b0a`) altera `supabase/functions/_shared/cors.ts` (
 | #2434 | `53ba69b53fd8a8a021e13feb3af485f4ee4de73b` | docs-only analise-prs/, sem Rule 8 |
 | #2436 | `4c8193b9b655694635956a2c5702af33051164ad` | atualização deliverables (progresso.json, dossiês), docs |
 | #2414 | `7061adab51e13ff2a10c0737014aef20b72b010d` | docs-only analise-branches/, sem Rule 8, conflitos resolvidos via update-branch |
-| #2439 | NÃO VERIFICADO | PR de deliverables intermediário (ci-per-test-name.md + dossies #2432/#2435) |
+| #2439 | `b3c8f2f33ece1d0da87a841396ecb5dcc8da0db8` | PR de deliverables intermediário (ci-per-test-name.md + dossies #2432/#2435) |
 
 ---
 
@@ -296,6 +296,8 @@ PR #2427 mergeado (SHA `26641b0a`) altera `supabase/functions/_shared/cors.ts` (
 | [#2436](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2436) | —  | — | — | — | — | **MERGEADO** `4c8193b9` |
 | [#2437](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2437) | Sim | — | security policy | — | 0 | **DECISÃO HUMANA** |
 | [#2438](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2438) | Sim | — | security policy | — | 0 | **DECISÃO HUMANA** |
+| [#2441](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2441) | Não | true (behind) | DDL+edge function | 1 commit | 0 | **DECISÃO HUMANA** |
+| [#2443](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2443) | Sim | true (behind) | security decisions | 1 commit | 0 | **DECISÃO HUMANA** |
 
 ---
 
@@ -375,7 +377,13 @@ Aplicar via `db-apply-migration.yml` workflow_dispatch + merge do PR.
 ### 6. PR #2422 — rebasear em main e marcar pronto
 Branch órfã + dirty. Conteúdo válido (fix TS + docs).
 
-### 7. PRs dirty com Rule 8: #2417, #2418, #2419, #2420
+### 7. Decidir sobre #2441 (FASE B: P02/P08/P19 migrations + send-notification)
+Migrations aditivas/idempotentes com rollback. Após aprovação: merge + `db-apply-migration.yml` + `deploy-edge-functions.yml`.
+
+### 8. Revisar propostas de #2443 (P06/P09/P14/P15/P03_security_definer)
+Responder com `APROVADO <ID>` para cada proposta aceita. P03_security_definer é o mais urgente (escalação de privilégio).
+
+### 9. PRs dirty com Rule 8: #2417, #2418, #2419, #2420
 Fechar em favor de substitutos ou rebasar + DECISÃO HUMANA.
 
 ---
@@ -386,6 +394,43 @@ Fechar em favor de substitutos ou rebasar + DECISÃO HUMANA.
 - **Deploy pós-#2427**: run #40132411991 em main `4c8193b9` via `deploy-edge-functions.yml` sem `function_name` (redeploy completo).
 - **CI de #2415**: Supabase Preview falha com `categories.level` — pre-existing, não causado pelo PR.
 - **PRs #2417–#2422**: branches órfãs sem ancestral comum com main atual — diff completo impossível via three-dot notation.
+
+---
+
+### PR #2441 — DECISÃO HUMANA (Rule 8: DDL + edge function)
+
+**Título:** feat(db+ef): FASE B — P02/P08/P19 migrations + send-notification idempotency  
+**Branch:** `claude_05/friendly-keller-3mgkhz`  
+**Draft:** Não | **mergeable:** true (behind) | **SINGU:** 0 refs
+
+**Diff (4 arquivos, 153+/16-):**
+- `supabase/migrations/20261024180001_p02_fk_indexes.sql` — 6 índices FK (`CREATE INDEX IF NOT EXISTS`)
+- `supabase/migrations/20261024180002_p08_idempotency_key.sql` — ADD COLUMN + UNIQUE INDEX parcial em `workspace_notifications`
+- `supabase/migrations/20261024180003_p19_complement_cron.sql` — `cron.alter_job` para `auto-block-offenders` (5 min → 15 min)
+- `supabase/functions/send-notification/index.ts` — upsert idempotente com `idempotency_key`
+
+**Rule 8:** DDL em `supabase/migrations/` + edge function atualizada → **DECISÃO HUMANA**.  
+**Ação:** Após aprovação PO: merge + `db-apply-migration.yml` (P02/P08/P19) + `deploy-edge-functions.yml` (send-notification).
+
+---
+
+### PR #2443 — DECISÃO HUMANA (draft + aprovação explícita requerida)
+
+**Título:** APROVAÇÃO REQUERIDA: P06 / P09 / P14 / P15 / P03_security_definer — FASE B auditoria Supabase  
+**Branch:** `claude/feat-aprovacao-p06-p09-p14-p15-p03sec-261024-2315`  
+**Draft:** Sim | **mergeable:** true (behind) | **SINGU:** 0 refs
+
+**Diff (1 arquivo, 218+/0-):**
+- `auditoria-supabase/analise-impacto/APROVACAO_FASE_B_IMPACTO.md` — análise de impacto de 5 propostas
+
+**Propostas (sem código executável):**
+- P03_security_definer: 45 funções SECURITY DEFINER com `pg_temp` em `search_path` (risco: ZERO — fix urgente)
+- P14: 590 policies RLS sem `(SELECT auth.uid())` (performance)
+- P15: 56 tabelas com policies anon (risco: MÉDIO — `color_synonym_map` com `qual = 'true'`)
+- P06: 9 views `_public` com `security_invoker=false` (risco: ALTO — quebra catálogo público)
+- P09: 464 migrations sem ledger (investigação de 8–16h)
+
+**Verdict:** **DECISÃO HUMANA** — Draft + título "APROVAÇÃO REQUERIDA" + security decisions.
 
 ---
 
