@@ -1,230 +1,43 @@
 {
-  "sessao": "session_01Jq3v5evzVGS3KVgew7ScY6",
-  "data": "2026-10-23",
-  "main_sha_baseline": "49bb39990489fae21bdc3b584dcfd0d6bca44814",
-  "main_sha_pos_2361": "e2be31add9a107030d1aeab8462534a6cd798979",
-  "main_sha_pos_2360": "b4cc8163d68a9e31ca23f1695d193ec0605f9ae8",
-  "total_prs_inicio": 24,
-  "total_analisadas": 24,
-  "status_global": "EM_ANDAMENTO",
-  "ultima_verificacao": "2026-10-23T14:20Z",
-  "parada_exata": null,
-  "por_veredito": {
-    "FECHAR": 20,
-    "BLOQUEADA": 2,
-    "CORRIGIR": 1,
-    "MERGEAR": 1,
-    "COMPLETAR": 0,
-    "RESGATAR_PARCIAL": 0
-  },
-  "prs": {
-    "2290": {
-      "veredito": "FECHAR",
-      "estado": "fechada",
-      "evidencia": "comentario+fechamento via MCP"
-    },
-    "2293": {
-      "veredito": "FECHAR",
-      "estado": "fechada",
-      "evidencia": "comentario+fechamento via MCP"
-    },
-    "2312": {
-      "veredito": "BLOQUEADA",
-      "estado": "fechada",
-      "motivo": "conflitos de merge com main — substituída por #2370",
-      "sucessora": "2370",
-      "evidencia": "comentario+fechamento via MCP (2026-10-23)"
-    },
-    "2314": {
-      "veredito": "FECHAR",
-      "estado": "fechada",
-      "evidencia": "comentario+fechamento via MCP"
-    },
-    "2315": {
-      "veredito": "BLOQUEADA",
-      "estado": "fechada",
-      "motivo": "branch conflitava com main; substituída por #2372",
-      "sucessora": "2372",
-      "evidencia": "comentario+fechamento via MCP (2026-10-23T13:xx)"
-    },
-    "2372": {
-      "veredito": "CORRIGIR",
-      "estado": "aguardando_gate_final",
-      "predecessora": "2315",
-      "branch": "claude/fix-pr2315-e2e-creds-261023-1334",
-      "head_sha": "fe09d098dabe6e3ff1e298e9682ca9ad039a3ae3",
-      "commits": [
-        "66ba83f66c49439de7a2274e8c1bd8846bb535e2 — fix E2E_USER_* 11 workflows",
-        "49b015e389ada4aa5a8116359b368cbe4a81c98f — fix UTF-8 encoding corruption actionlint",
-        "fe09d098dabe6e3ff1e298e9682ca9ad039a3ae3 — gitleaks allowlist variante d4872"
-      ],
-      "ci_parcial": {
-        "gitleaks": "success",
-        "actionlint_shellcheck": "success",
-        "security_scan": "success",
-        "required_checks_guard": "success",
-        "gate_final": "pending_e2e_em_progresso",
-        "run_gate_final": "39968163096"
-      },
-      "descricao": "fix(ci): remove E2E_USER_* de workflows chromium-public (11 arquivos, 15 ocorrencias)"
-    },
-    "2373": {
-      "veredito": "CORRIGIR",
-      "estado": "mergeada",
-      "branch": "claude/fix-gitleaks-migrações-anon-261023-1334",
-      "sha_merge": "f27df1bf543da72b5e4aefbacd2975a8fc66fc60",
-      "descricao": "fix(ci): allowlist migrations 20261022194* no gitleaks",
-      "evidencia": "merge squash 2026-10-23 — habilitou CI do #2372"
-    },
-    "2316": {
-      "veredito": "CORRIGIR",
-      "estado": "fechada",
-      "sucessora": "2361",
-      "sha_merge_sucessora": "e2be31add9a107030d1aeab8462534a6cd798979"
-    },
-    "2319": {
-      "veredito": "FECHAR",
-      "estado": "fechada",
-      "evidencia": "comentario+fechamento via MCP"
-    },
-    "2320": {
-      "veredito": "FECHAR",
-      "estado": "fechada",
-      "evidencia": "comentario+fechamento via MCP"
-    },
-    "2322": {
-      "veredito": "FECHAR",
-      "estado": "fechada",
-      "evidencia": "comentario+fechamento via MCP"
-    },
-    "2323": {
-      "veredito": "FECHAR",
-      "estado": "fechada",
-      "evidencia": "comentario+fechamento via MCP"
-    },
-    "2324": {
-      "veredito": "FECHAR",
-      "estado": "fechada",
-      "evidencia": "comentario+fechamento via MCP"
-    },
-    "2325": {
-      "veredito": "FECHAR",
-      "estado": "fechada",
-      "evidencia": "comentario+fechamento via MCP"
-    },
-    "2326": {
-      "veredito": "FECHAR",
-      "estado": "fechada",
-      "evidencia": "comentario+fechamento via MCP"
-    },
-    "2327": {
-      "veredito": "FECHAR",
-      "estado": "fechada",
-      "evidencia": "comentario+fechamento via MCP"
-    },
-    "2328": {
-      "veredito": "FECHAR",
-      "estado": "fechada",
-      "evidencia": "comentario+fechamento via MCP"
-    },
-    "2329": {
-      "veredito": "FECHAR",
-      "estado": "fechada",
-      "evidencia": "comentario+fechamento via MCP"
-    },
-    "2330": {
-      "veredito": "FECHAR",
-      "estado": "fechada",
-      "evidencia": "comentario+fechamento via MCP"
-    },
-    "2331": {
-      "veredito": "FECHAR",
-      "estado": "fechada",
-      "evidencia": "comentario+fechamento via MCP"
-    },
-    "2333": {
-      "veredito": "FECHAR",
-      "estado": "fechada",
-      "evidencia": "comentario+fechamento via MCP"
-    },
-    "2334": {
-      "veredito": "FECHAR",
-      "estado": "fechada",
-      "evidencia": "comentario+fechamento via MCP"
-    },
-    "2335": {
-      "veredito": "FECHAR",
-      "estado": "fechada",
-      "evidencia": "comentario+fechamento via MCP"
-    },
-    "2336": {
-      "veredito": "FECHAR",
-      "estado": "fechada",
-      "evidencia": "comentario+fechamento via MCP"
-    },
-    "2337": {
-      "veredito": "FECHAR",
-      "estado": "fechada",
-      "evidencia": "comentario+fechamento via MCP"
-    },
-    "2357": {
-      "veredito": "MERGEAR",
-      "estado": "fechada",
-      "sucessora": "2360",
-      "sha_merge_sucessora": "b4cc8163d68a9e31ca23f1695d193ec0605f9ae8"
-    },
-    "2370": {
-      "veredito": "CORRIGIR",
-      "estado": "mergeada",
-      "predecessora": "2312",
-      "branch": "claude/pensive-faraday-pwphva",
-      "sha_merge": "09eeb1095e97adacc2e058a7036cd5dbbad70e06",
-      "evidencia": "Gate Final success (run 39951950401), merge squash 2026-10-23T12:36:46Z"
-    },
-    "2360": {
-      "veredito": "MERGEAR",
-      "estado": "mergeada_admin",
-      "sha_merge": "b4cc8163d68a9e31ca23f1695d193ec0605f9ae8",
-      "gate_e40": "inerente_ate_migrations_aplicadas",
-      "motivo": "mergeada por admin (bypass Gate E40); migrations no banco pendentes de aprovacao humana em environment:production"
-    }
-  },
-  "escritas_github": [
-    "fechar+comentar: #2290, #2293, #2314, #2319, #2320, #2322-2337 (18 PRs)",
-    "fechar+comentar: #2357 (link para #2360)",
-    "fechar+comentar: #2316 (link para #2361)",
-    "abrir PR sucessora: #2360",
-    "abrir PR sucessora: #2361",
-    "draft->ready + merge squash: #2361 (SHA e2be31add9a107030d1aeab8462534a6cd798979)",
-    "comentario status: #2360",
-    "update branch #2360 com main",
-    "admin merge squash #2360 (SHA b4cc8163d68a9e31ca23f1695d193ec0605f9ae8)",
-    "dispatch db-apply-migration.yml versao 194000 (run #81 = 39894328218)",
-    "dispatch db-apply-migration.yml versao 194200 (run #91 = 39922326892)",
-    "push artefatos: claude/chore-analise-prs-261023-0215 (MISSAO.md, progresso.json, RELATORIO_PRS.md, etc)",
-    "merge squash PR #2368 (artefatos finais): SHA fc4847a52eeb2b2a04c464d025e064bd5e1d23fc",
-    "fechar+comentar: #2312 (link para #2370 como sucessora)",
-    "abrir PR sucessora: #2370 (ci(deploy-gates): E14 docs-only bypass + unit-tests 45min)",
-    "draft->ready + merge squash: #2370 (SHA 09eeb1095e97adacc2e058a7036cd5dbbad70e06)",
-    "fechar+comentar: #2315 (link para #2372 como substituta)",
-    "abrir PR substituta: #2372 (fix E2E_USER_* em 11 workflows chromium-public)",
-    "abrir PR: #2373 (gitleaks allowlist migrations 20261022194*)",
-    "draft->ready + merge squash: #2373 (SHA f27df1bf543da72b5e4aefbacd2975a8fc66fc60)",
-    "update branch #2372 com main pos-#2373"
+  "session": "https://claude.ai/code/session_01Ss1tXZ4cAbxBvdmu95uNPz",
+  "generated_at": "2026-10-24",
+  "main_sha": "9079c82e6c3f58ae5d2cdf8c7eb2deef979ee9d8",
+  "total_open": 11,
+  "total_analyzed": 11,
+  "merges_realizados": 0,
+  "status": "COMPLETO",
+  "prs": [
+    {"number": 2414, "status": "analisado", "verdict": "BLOQUEADA", "motivo": "dirty — conflitos de merge"},
+    {"number": 2415, "status": "analisado", "verdict": "DECISÃO_HUMANA", "motivo": "toca .github/workflows/ci-security-drift.yml"},
+    {"number": 2417, "status": "analisado", "verdict": "DECISÃO_HUMANA", "motivo": "draft + dirty + CI/workflows + edge fn"},
+    {"number": 2418, "status": "analisado", "verdict": "DECISÃO_HUMANA", "motivo": "draft + dirty + deploy-gates.yml"},
+    {"number": 2419, "status": "analisado", "verdict": "DECISÃO_HUMANA", "motivo": "draft + dirty + security gate"},
+    {"number": 2420, "status": "analisado", "verdict": "DECISÃO_HUMANA", "motivo": "draft + dirty + migrations/rollbacks"},
+    {"number": 2422, "status": "analisado", "verdict": "DRAFT_PENDENTE", "motivo": "sem Rule 8 — bloqueio único é status draft"},
+    {"number": 2424, "status": "analisado", "verdict": "DECISÃO_HUMANA", "motivo": "draft + DDL migration + CI workflow"},
+    {"number": 2426, "status": "analisado", "verdict": "DRAFT_PENDENTE", "motivo": "sem Rule 8 — bloqueio único é status draft"},
+    {"number": 2427, "status": "analisado", "verdict": "DRAFT_PENDENTE", "motivo": "sem Rule 8 para merge — draft + behind; deploy pós-merge requerido"},
+    {"number": 2428, "status": "analisado", "verdict": "DECISÃO_HUMANA", "motivo": "draft + security allowlist policy decision"}
   ],
-  "worktrees": [],
-  "main_sha_pos_2370": "09eeb1095e97adacc2e058a7036cd5dbbad70e06",
-  "main_sha_final": "09eeb1095e97adacc2e058a7036cd5dbbad70e06",
-  "gate_final_pos_missao": "success",
-  "migrations_aplicadas": [
-    "20261022194000",
-    "20261022194100",
-    "20261022194200"
-  ],
-  "prs_recibo_mergeadas": [
-    "#2364",
-    "#2366",
-    "#2365"
-  ],
-  "bloqueio": null
+  "deliverables": {
+    "baseline": "analise-prs/baseline/typecheck.txt",
+    "relatorio": "analise-prs/RELATORIO_PRS.md",
+    "prs_json": "analise-prs/prs.json",
+    "prs_csv": "analise-prs/prs.csv",
+    "dossies": [
+      "analise-prs/dossies/PR-2414.md",
+      "analise-prs/dossies/PR-2415.md",
+      "analise-prs/dossies/PR-2417.md",
+      "analise-prs/dossies/PR-2418.md",
+      "analise-prs/dossies/PR-2419.md",
+      "analise-prs/dossies/PR-2420.md",
+      "analise-prs/dossies/PR-2422.md",
+      "analise-prs/dossies/PR-2424.md",
+      "analise-prs/dossies/PR-2426.md",
+      "analise-prs/dossies/PR-2427.md",
+      "analise-prs/dossies/PR-2428.md"
+    ],
+    "regras_de_negocio": "analise-prs/regras-de-negocio.md",
+    "progresso": "analise-prs/progresso.json"
+  }
 }

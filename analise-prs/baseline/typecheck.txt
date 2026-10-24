@@ -1,0 +1,13 @@
+SHA baseline: 9079c82e6c3f58ae5d2cdf8c7eb2deef979ee9d8
+Data: 2026-10-24
+Comando: npm run typecheck
+
+RESULTADO: 49833 erros TS (AMBIENTE SEM node_modules COMPLETOS)
+Primeiro erro: src/App.tsx(1,42): error TS2307: Cannot find module 'react'
+
+NOTA: Os erros são todos do tipo "Cannot find module" — o ambiente cloud não
+tem node_modules instalados (npm ci bloqueado por 403 em europe-west1-npm.pkg.dev).
+Baseline de regressão TS não é mensurável por este método neste container.
+A baseline real é o último run bem-sucedido do Gate Final no main.
+
+Último Gate Final green em main: run #40120365440 (SHA 74ac36f1, conforme PR #2415 body).
