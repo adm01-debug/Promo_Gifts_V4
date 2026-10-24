@@ -18,10 +18,6 @@
       "ref": "supabase/migrations-snapshot/SCHEMA_DRIFT.sql"
     },
     {
-      "file": "auditoria-supabase/A5_VALIDATION_REPORT.md",
-      "ref": "supabase/migrations/20261022100001...100022.sql"
-    },
-    {
       "file": "CONTRIBUTING.md",
       "ref": "supabase/migrations/README.md"
     },
@@ -1868,10 +1864,6 @@
     {
       "file": "docs/sessoes/2026-05-09-09h57-onda-1-completa-handoff.md",
       "ref": "supabase/migrations/README.md"
-    },
-    {
-      "file": "inventario/branches.json",
-      "ref": "qa/migrations-draft/probe_e184_legacy_refs.sql"
     },
     {
       "file": "inventario/branches.json",
