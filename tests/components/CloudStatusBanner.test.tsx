@@ -41,8 +41,8 @@ vi.mock('@/contexts/AuthContext', () => ({
 }));
 
 const mockUseCloudStatus = vi.fn();
-vi.mock('@/hooks/ui/useCloudStatus', () => ({
-  useCloudStatus: () => mockUseCloudStatus(),
+vi.mock('@/contexts/CloudStatusContext', () => ({
+  useCloudStatusContext: () => mockUseCloudStatus(),
 }));
 
 const mockGetStatusTimeline = vi.fn<() => StatusHistoryEntry[]>();

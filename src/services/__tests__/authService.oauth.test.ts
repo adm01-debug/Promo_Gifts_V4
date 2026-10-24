@@ -11,10 +11,10 @@ vi.mock('@/lib/telemetry/structuredLogger', async () => {
   return mod.structuredLoggerMockFactory();
 });
 
-const mockAuth = {
+const mockAuth = vi.hoisted(() => ({
   signInWithOAuth: vi.fn(),
   exchangeCodeForSession: vi.fn(),
-};
+}));
 vi.mock('@/integrations/supabase/client', () => ({
   supabase: { auth: mockAuth },
 }));
