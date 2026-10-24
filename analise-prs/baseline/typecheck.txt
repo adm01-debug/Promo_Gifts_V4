@@ -1,0 +1,29 @@
+SHA baseline (início da sessão): 9079c82e6c3f58ae5d2cdf8c7eb2deef979ee9d8
+SHA main atual (fim da sessão):  ec736c903cc37a0ef8621eec5a2d05775a64bcb9
+Data: 2026-10-24
+
+=== BASELINE TYPECHECK LOCAL ===
+Comando: npm run typecheck
+RESULTADO: 49833 erros TS (AMBIENTE SEM node_modules COMPLETOS)
+Primeiro erro: src/App.tsx(1,42): error TS2307: Cannot find module 'react'
+NOTA: Erros todos do tipo "Cannot find module" — ambiente cloud sem node_modules.
+Baseline de regressão TS local não mensurável neste container.
+
+=== BASELINE CI POR NOME DE JOB (main ec736c903cc3) ===
+Workflow: CI Security & Drift Checks (run #40129973781)
+  Job: quality-gate → FAILURE
+    Step que falhou: "Dependency vulnerability policy" (step 4)
+    Motivo: npm audit detectou dependência com CVE high/critical
+    Demais steps (Lint, TypeCheck, Build, E2E): todos SKIPPED (pipeline abortou na step 4)
+  Job: security-audit → SUCCESS
+    Step "Audit Credentials" → success
+
+Workflow: Release Please (pre-existing, falha separada)
+  Falha: workflow próprio do release — não relacionada a nenhum PR desta análise
+
+=== PRE-EXISTING FAILURES (não bloqueantes para merges de candidatos) ===
+1. "Dependency vulnerability policy" — CVE em dependência existente em main
+2. Release Please — workflow de release automático, não relacionado a código
+
+Último Gate Final verde em main: run #40120365440 (SHA 74ac36f1, conforme PR #2415 body).
+Gate Final NÃO rodou no SHA atual ec736c903cc3 via branch protection (somente roda em PR).
