@@ -29,3 +29,4 @@ REVOKE ALL PRIVILEGES
 -- WHERE table_name = 'mockup_approval_links' AND table_schema = 'public'
 --   AND grantee IN ('anon', 'authenticated', 'public');
 -- Esperado: anon sem nenhum privilege_type listado
+-- Esperado: anon sem nenhum privilege_type listado
