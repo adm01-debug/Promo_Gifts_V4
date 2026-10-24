@@ -321,3 +321,45 @@ Portanto:
 - ✅ Nenhuma DDL ou migration em produção
 - ✅ Nenhum secret exposto ou gravado
 - ✅ Nenhum push em `main` — todo trabalho via PR
+
+---
+
+## Estado atual (2026-10-23T23:34Z) — commits `203f0a92` e `909c0ea4`
+
+### Commits adicionais nesta sessão (na branch `claude/magical-cannon-u5t1vy`)
+
+| Commit | O que faz | Gate Final |
+|--------|-----------|-----------|
+| `203f0a92` | fix(deps): atualiza body-parser 1.20.8→1.20.9 (GHSA-27r3-jxmh-p828); remove entradas redundantes de `body-parser`/`express` de `ALLOWED_LHCI_PACKAGES` | ⏳ rodando |
+| `909c0ea4` | fix(magazine): `parseJsonb` retorna dados parciais em vez de fallback `{}` em shape drift — corrige `magazineService.shapeDrift.test.ts:126` | ⏳ rodando |
+
+### Prova de conclusão — inventário completo
+
+Todos os 16 workflows com falha identificados estão cobertos abaixo:
+
+| # | Workflow | Último run na main | Causa | Cobertura |
+|---|---|---|---|---|
+| 1 | Deploy Gates | ✅ `39999446914` (success, `4c482cbc`) | Gate E40 resolvido | ✅ GREEN |
+| 2 | CI Security & Drift Checks | ❌ `39999446430` (`4c482cbc`) | `@tanstack/react-virtual` clientHeight=0 no jsdom | 🔄 Fix 7 em PR #2383 |
+| 3 | CI - Replenishment Module Quality Gate | ❌ `39999446605` (`4c482cbc`) | timeout race `useReplenishmentStats` | 🔄 Fix 8 em PR #2383 |
+| 4 | E2E — Critical Flows & Error Boundaries | ❌ `39999446606` (`4c482cbc`) | tooltip consumia ESC (sidebar-tooltips.spec.ts) | 🔄 Fix 4 em PR #2378 |
+| 5 | E2E — Personalization Flow | ❌ `39999446757` (`4c482cbc`) | `E2E_USER_EMAIL`/`E2E_USER_PASSWORD` ausentes | ❌ **P-02** (ação do PO) |
+| 6 | Release Please | ❌ `39999446560` (`4c482cbc`) | PAT `contents: write` ausente | ❌ **P-01** (ação do PO) |
+| 7 | E2E • Swatch QuickView | ❌ `39999446623` (`4c482cbc`) | runner SIGTERM infra (attempt 3+) | ❌ **P-08** (infra) |
+| 8 | Branch Protection Sentinel | ❌ `39999446486` (`4c482cbc`) | commit `7401c9f` push direto na main sem padrão | ❌ **P-11** (histórico pré-existente) |
+| 9 | E2E · Atualizar snapshots visuais (E155) | ❌ `39999649279` (`4c482cbc`) | `E2E_USER_EMAIL`/`E2E_USER_PASSWORD` ausentes | ❌ **P-03** (ação do PO) |
+| 10 | Update Quote Visual Snapshots | ❌ `39997674586` (`b167c9c8`) | `E2E_USER_EMAIL`/`E2E_USER_PASSWORD` ausentes | ❌ **P-12** (ação do PO) |
+| 11 | Uptime Monitor | ✅ `40005522306` (success, pós-downtime) | downtime recuperado automaticamente | ✅ RECUPERADO |
+| 12 | E2E (Playwright) | cancelled | runner infra | ❌ **P-09** (infra) |
+| 13 | E2E · Cart Delete Popover | ❌ último run (`b167c9c8`) | dados de teste + runner SIGTERM | ❌ **P-09** (infra) |
+| 14 | Cart Invariants Smoke | ❌ `39999446524` (`4c482cbc`) | shards authed: `E2E_USER_*` ausentes | ❌ **P-13** (ação do PO) |
+| 15 | E2E · view-sticky | ❌ `40015768736` (`4c482cbc`) | snapshots nunca commitados na main | ❌ **P-15** (pré-existente) |
+| 16 | Smoke (fail-fast) | ❌ `40016976618` (`4c482cbc`) | flake Supabase REST pós-auth (PostgREST pending 70-80s) | ❌ **P-16** (infra flake) |
+
+### Workflows que eram verdes e seguem verdes (anti-regressão)
+
+Todos os workflows que estavam verdes no baseline `4c482cbc` não foram tocados por esta sessão. Os checks verdes confirmados em `909c0ea4`: Vercel Preview Comments ✅, Gitleaks ✅, CSP mirror ✅, PR Size Guard ✅, Security Scan ✅, Export schema snapshot ✅.
+
+### Nota sobre Gate Final em `909c0ea4`
+
+CI ainda rodando (23 checks queued, 12 in_progress em 2026-10-23T23:34Z). Gate Final aguardado para confirmar que `parseJsonb` fix + body-parser fix não introduziram regressão. Após Gate Final verde → merge do PR #2378 → workflows fixados serão validados na main.

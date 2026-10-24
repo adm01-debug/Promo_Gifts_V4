@@ -305,6 +305,20 @@ Re-rodar via `workflow_dispatch` para confirmar se é flake recorrente ou diverg
 
 ---
 
+## P-17 — Supabase Linter Gate — timeout transitório da Management API (HTTP 544)
+
+**Workflow:** `deploy-gates.yml` → job `supabase-linter-gate`  
+**Run ID:** 40040557814 (commit `909c0ea4`, PR #2378)  
+**Causa:** Supabase Management API retornou HTTP 544 (timeout de gateway) após 3 tentativas com backoff. O script sai com código 2 (infra/rede), não 1 (lint real).
+
+**Não é regressão de código:** Exit code 2 = erro de infraestrutura, não violação de lint. O mesmo gate passou em runs anteriores no mesmo commit. Confirmado por re-run disparado na mesma sessão.
+
+**Impacto:** Falha transitória, não bloqueante quando Gate Final está verde em outro run. Se recorrer com frequência, considerar aumentar retries no script do gate.
+
+**Ação do PO:** Nenhuma imediata. Monitorar. Se >3x/semana, abrir card para aumentar retry count no `supabase-linter-gate`.
+
+---
+
 ## Resumo final — HEAD `de56a10b` (branch `claude/magical-cannon-u5t1vy`)
 
 | Check | Status | Observação |
