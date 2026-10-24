@@ -1,14 +1,14 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { useBadgeVisibilityStore } from '../useBadgeVisibilityStore';
 
-// Define the mock structure
-const mockSupabase = {
+// Define the mock structure (vi.hoisted: disponível quando a factory vi.mock roda)
+const mockSupabase = vi.hoisted(() => ({
   from: vi.fn().mockReturnThis(),
   select: vi.fn().mockReturnThis(),
   eq: vi.fn().mockReturnThis(),
   update: vi.fn().mockReturnThis(),
   maybeSingle: vi.fn(),
-};
+}));
 
 // Mock the lazy client
 vi.mock('@/integrations/supabase/client', () => ({
