@@ -633,10 +633,14 @@
     "20261018160100",
     "20261018170000",
     "20261018170100",
-    "20261019000000"
+    "20261019000000",
+    "20261022193000",
+    "20261022194000",
+    "20261022194100",
+    "20261022194200"
   ],
-  "reason": "Versões legacy aplicadas no banco antes da formalização do ledger local, ou com formato de versão diferente do arquivo local (ex: versão sem sufixo no DB vs arquivo com sufixo de nome). Todas verificadas via artifact migration-ledger.json do run CI 39720524458 (commit 305e4763, 2026-10-22). Não bloqueiam o gate — apenas remote_only não-allowlistado bloqueia.",
-  "approved_by": "PR #2338 (2026-10-22)",
-  "evidence_run_id": "39720524458",
-  "evidence_artifact_id": "12400614464"
+  "reason": "Versões legacy aplicadas no banco antes da formalização do ledger local, ou com formato de versão diferente do arquivo local (ex: versão sem sufixo no DB vs arquivo com sufixo de nome). Todas verificadas via artifact migration-ledger.json dos runs CI 39720524458 (commit 305e4763, 2026-10-22) e 40112315214 (PR #2404, 2026-10-24). As versões 20261022193000–20261022194200 correspondem a DDL aplicada em 2026-10-22 fora do workflow db-apply-migration.yml (reconciliadas via PR #2404). Não bloqueiam o gate — apenas remote_only não-allowlistado bloqueia.",
+  "approved_by": "PR #2338 (2026-10-22) + PR #2404 (2026-10-24)",
+  "evidence_run_id": "40112315214",
+  "evidence_artifact_id": "12567388318"
 }
