@@ -9,3 +9,4 @@ SET search_path = pg_catalog, public, pg_temp;
 GRANT EXECUTE
   ON FUNCTION public.mcp_kv_get
   TO authenticated;
+  TO authenticated;

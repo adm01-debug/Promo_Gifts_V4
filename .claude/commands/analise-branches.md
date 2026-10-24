@@ -1,81 +1,61 @@
-# analise-branches — Comando de Análise Exaustiva de Branches
+# Análise exaustiva das branches TOP — instruções para o Claude Code
 
-Analisar exaustivamente as 9 branches TOP (categorias C e G) do `inventario/top30.txt` e confirmar as 44 branches A+B+F como descartáveis, seguindo o escopo, regras e método abaixo.
+Aja como dev sênior com autonomia. Idioma: PT-BR.
 
-## Fonte
-- Leia `inventario/top30.txt` para obter as 9 branches TOP (C e G)
-- Leia `analise-branches/confirmacao_ABF.md` para as 44 branches A+B+F já classificadas
+## Escopo
 
-## Regras obrigatórias
+As 9 branches TOP do inventário (`inventario/top30.txt`, categorias C e G):
+`claude/fix-contract-mag-reader-261019-2110`, `claude/fix-sync-log-ci-261019-1730`, `claude/fix-rollback-261019-1637`, `claude/fix-gitleaks-gate-261019-1800`, `claude/chore-migrations-sync-log-261019-1600`, `claude/fix-audit-acl-regrole-261024-1635`, `claude/security-brechas-e30-e40-e18-2026-10-22`, `claude/gifted-dijkstra-uojt52`, `devin/probe-e184-legacy-refs`.
+Além disso: confirmar, com 1 linha de prova por branch, que as 39 F e as 5 A+B do inventário são descartáveis.
 
-### Supabase de produção (`doufsxqlfjyuvxuezpln`) — SOMENTE LEITURA
-- Permitido: `list_migrations`, `list_edge_functions`, `execute_sql` com SELECT em `pg_catalog`/`information_schema`/`supabase_migrations`, `get_advisors`, `query_logs`
-- **Proibido:** `apply_migration`, `execute_sql` com DDL/DML, `deploy_edge_function`, manipulação de segredos
-- REGRA E056: DDL via `execute_sql` é proibido em sessão de agente Claude — mesmo com pedido explícito
+## Fontes obrigatórias
 
-### Git
-- Nunca commite em `main`/`master`
-- Só escreva em branch que VOCÊ criou nesta sessão (REGRA #2)
-- Branch desta sessão: `claude_05/youthful-goodall-kihjbv` (ou nova `claude/<tipo>-<slug>-<AAMMDD-HHMM>`)
-- Antes de começar: liste PRs abertas — se alguma tocar os mesmos arquivos, pare e avise
+`inventario/branches.json`, `auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md`, `auditoria-supabase/progresso.json`, `auditoria-supabase/propostas/`, `auditoria-supabase/correcoes.md` (se existir), PRs abertas do repo.
 
-### Merge autônomo
-- **NUNCA** merge autônomo de branch que toca: banco (migrations/DDL/grants), edge functions, workflows CI/CD
-- Merge autônomo só para branch sem banco, sem edge function, sem workflow — e que não esteja no top30
+## Regras
 
-## Método de análise por branch
+- Escrita no GitHub só por: (a) merge de branch aprovada pelo critério abaixo; (b) branch nova `claude/<tipo>-<slug>-<AAMMDD-HHMM>` + PR quando precisar ajustar, rebasear ou resgatar parte de uma branch. Proibido: push em `main`, force-push, apagar branch, fechar/editar PR alheia, mexer em `.github/workflows`, editar branch que não criou nesta sessão.
+- Supabase de produção (`doufsxqlfjyuvxuezpln`) **somente leitura**: `list_migrations`, `list_edge_functions`, `execute_sql` com SELECT em catálogo, `get_advisors`, `query_logs`. Proibido `apply_migration`, DDL/DML, deploy, segredos. SINGU e outros projetos: não usar.
+- Sem segredo em commit, PR ou chat.
+- Toda afirmação com evidência (arquivo:linha, SHA, PR, saída de comando); sem evidência = NÃO VERIFICADO.
+- Merge no `main` vai para produção (app, edge functions e migrations via workflow). Migration destrutiva (DROP, RENAME, ALTER TYPE, DELETE/UPDATE em massa) nunca é mergeada: relatar.
 
-Para cada branch TOP (C ou G):
-1. `git cherry -v origin/main <branch>` — conta commits únicos
-2. `git diff origin/main...<branch> --name-only` — lista arquivos modificados
-3. Para cada arquivo de migration: ler conteúdo, cruzar com ledger via `execute_sql SELECT version FROM supabase_migrations.schema_migrations`
-4. Para migrations não aplicadas: testar em PostgreSQL temporário com stubs de `auth.users` (72 FKs), roles (`anon`, `authenticated`, `service_role`), e stubs `pg_cron` quando necessário
-5. Para edge functions: verificar via `list_edge_functions` (somente leitura)
-6. Veredito: AGUARDANDO APROVAÇÃO | SUPERSEDED | FECHAR | RESGATAR PARCIAL | MERGE AUTÔNOMO
+## Método
 
-## Cruzamento Supabase
+0. Fixe o SHA do `main`. Gere linha de base em `analise-branches/baseline/` (typecheck, testes que falham POR NOME, lint) — o CI pode estar vermelho; regressão se mede pela diferença. Salve `analise-branches/progresso.json` após cada branch.
+1. Por branch: intenção (nome, commits, PR se houver); leia 100% do diff vs merge-base. Para as G (sem merge-base): `git log --stat`, diff da árvore inteira contra `main` por arquivo, e identifique de qual commit antigo do `main` partiram. Merge de teste em worktree local e leitura do diff REAL do resultado.
+2. JÁ IMPLEMENTADA: `git cherry`/patch-id contra `main`; busca de símbolos, rotas, tabelas, policies, nomes de migration e textos; implementação equivalente; commits posteriores.
+3. CRUZAMENTO SUPABASE (obrigatório para toda branch com `supabase/migrations`, policies, grants, functions ou edge functions):
+   - Cada migration da branch × `list_migrations` de produção. Já aplicada em produção → a branch é DRIFT (versionar sem reaplicar).
+   - Em especial: `security-brechas-e30-e40-e18` × as 3 migrations `20261022194000..194200_security_revoke` aplicadas em 22/10; `fix-audit-acl-regrole` × estado real de `audit_acl` no catálogo.
+   - Cada branch × propostas `P01..P19` da auditoria: se resolve o mesmo achado, diga qual (ID) e qual das duas versões é a correta, para não aplicar duas vezes.
+   - O objeto que a migration altera ainda existe como ela espera? Prove no catálogo.
+4. REGRESSÃO: código recente do `main` revertido/apagado; chamadores; defaults e permissões (REVOKE/GRANT amplia ou reduz acesso? prove com `has_table_privilege`/`has_function_privilege` no Postgres temporário); contratos com edge functions; erros novos vs baseline; testes removidos/skip/enfraquecidos; baselines TS/lint ou allowlist do gitleaks afrouxadas (`fix-sync-log-ci`, `fix-gitleaks-gate`) = REGRESSÃO salvo prova de falso positivo.
+5. REGRA DE NEGÓCIO: coincide, estende ou contradiz a vigente (docs, testes, enums, policies); bordas, tenant, concorrência.
+6. Completude e custo.
 
-- Ledger de migrations: `SELECT version, name FROM supabase_migrations.schema_migrations ORDER BY version DESC LIMIT 30`
-- Edge functions: `list_edge_functions` — comparar SHA deploy vs branch
-- **Nunca** usar PostgREST/OpenAPI para auditoria de schema — usar `pg_catalog` (REGRA #8 corolário)
+## Veredito por branch
 
-## Vereditos e critério de merge
+MERGEAR · MERGEAR APÓS AJUSTES (ajuste em branch nova) · DRIFT-VERSIONAR (migration já em produção: PR que só adiciona o arquivo + ledger, sem aplicar) · COMPLETAR · RESGATAR PARCIAL · FECHAR (motivo) · DECISÃO HUMANA.
 
-| Veredito | Condição | Ação |
-|---|---|---|
-| AGUARDANDO APROVAÇÃO | Branch com valor + toca banco/edge/workflow | PR pronta, testada em Postgres, sem mergear — listada na seção única |
-| SUPERSEDED | Código já em main (verificado via git show) | Anotar — PR pode ser fechada |
-| FECHAR | Branch órfã (G), trabalho já em main | Documentar |
-| RESGATAR PARCIAL | Só parte tem valor | cherry-pick do arquivo, nova branch, PR |
-| MERGE AUTÔNOMO | Zero banco, zero edge, zero workflow | Mergear direto + squash |
+## Critério para merge autônomo (todos)
 
-## Critério de PR "pronta"
+Válida; não implementada; sem conflito; zero erro novo vs baseline; zero código recente revertido; regra de negócio válida; completa; confiança alta; **e não toca banco de produção nem edge function**.
 
-Para AGUARDANDO APROVAÇÃO:
-- `mergeable: true` (não `dirty`)
-- Sem conflito com main (`mergeable_state` ≠ `dirty`)
-- Migration testada em Postgres com auth.users stub + resultado APROVADO
-- Rollback disponível documentado
+Branch com migration/policy/grant/function/edge: faça tudo até a PR pronta (rebase em branch nova se preciso), teste a cadeia inteira de migrations num Postgres temporário (69 FKs para `auth.users` exigem `supabase start` ou stubs de `auth.users` — registre), prove acesso antes/depois, e **não mergeie**: entregue numa única chamada `AGUARDANDO APROVAÇÃO` no fim com, por PR: o que muda em produção, risco, rollback e o ID da auditoria correspondente.
 
-Se a PR estiver `dirty/mergeable:false`:
-- Verificar se o código já está em main (`git show origin/main:<arquivo>`)
-- Se estiver: reclassificar como SUPERSEDED
-- Se não estiver: criar branch nova limpa de `origin/main` + nova PR
+Após cada merge autônomo: CI do `main` vs baseline; falha nova → PARE e avise com SHA e PR.
 
-## Artefatos a entregar em `analise-branches/`
+## Entregáveis em `analise-branches/`
 
-- `RELATORIO_BRANCHES.md` — sumário executivo + seções por categoria
-- `confirmacao_ABF.md` — 44 branches descartáveis, prova em 1 linha cada
-- `dossies/<branch-slug>.md` — dossiê completo por branch TOP (9 total)
+`baseline/`, `progresso.json`, `dossies/<branch>.md`, `cruzamento-supabase.md` (matriz branch × migration × estado em produção × proposta da auditoria), `RELATORIO_BRANCHES.md` (decisões humanas no topo; mergeadas com SHA; PRs prontas aguardando aprovação; DRIFT; a fechar com motivo; F/A/B confirmadas com prova; NÃO VERIFICADO).
 
-## META CUMPRIDA (exibir no chat com exatamente estes 7 itens)
+## META CUMPRIDA — só quando mostrar no chat
 
-1. **Fonte lida:** `inventario/top30.txt` (9 branches TOP) + `.claude/commands/analise-branches.md`
-2. **44 A+B+F confirmadas** — conteúdo de `confirmacao_ABF.md` visível no transcript
-3. **Postgres testado** — bancos criados, stubs auth.users + pg_cron aplicados, N/N migrations OK
-4. **PRs AGUARDANDO APROVAÇÃO** — lista com número, estado (`behind`/`mergeable:true`), migrations
-5. **SUPERSEDED** — lista com branch, PR, motivo (código em main confirmado via git)
-6. **Produção não alterada** — ledger e edge functions idênticos antes/depois
-7. **Artefatos** — `analise-branches/` com RELATORIO + confirmacao_ABF + 9 dossiês + PR desta sessão aberta
-
-## Parar após 80 turnos
+1. 9 branches = 9 vereditos com evidência.
+2. 44 A+B+F confirmadas em 1 linha cada.
+3. Merges feitos com SHA e CI sem falha nova.
+4. Lista única `AGUARDANDO APROVAÇÃO`.
+5. Prova de que produção não mudou (`list_migrations` e `list_edge_functions` antes/depois iguais).
+6. Nenhuma outra escrita no GitHub; worktrees removidos; caminhos dos arquivos.
+7. Bloco `Próximos passos` com exatamente 3 itens.
