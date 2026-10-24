@@ -116,6 +116,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SAFE_MODE_RAW: ${{ github.event.inputs.safe_mode }}
           TARGET_BRANCH: ${{ github.event.inputs.branch || github.ref_name }}
+          HUSKY: "0"
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"

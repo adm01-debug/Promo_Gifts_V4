@@ -141,6 +141,7 @@ jobs:
         env:
           GIT_PUSH_TOKEN: ${{ github.token }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          HUSKY: "0"
         run: |
           BRANCH="chore/regenerate-types-$(date -u +%Y%m%d-%H%M)"
           git config user.name "github-actions[bot]"

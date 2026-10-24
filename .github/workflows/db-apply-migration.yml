@@ -364,6 +364,7 @@ jobs:
         env:
           GIT_PUSH_TOKEN: ${{ github.token }}
           APPROVED_BY: ${{ inputs.approved_by }}
+          HUSKY: "0"
         run: |
           set -euo pipefail
           BRANCH="e15-receipt-${MIGRATION_VERSION}-${{ github.run_id }}"
