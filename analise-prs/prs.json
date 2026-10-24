@@ -1,29 +1,23 @@
 {
   "generated_at": "2026-10-24",
   "main_sha_inicio": "9079c82e6c3f58ae5d2cdf8c7eb2deef979ee9d8",
-  "main_sha_fim": "4c8193b9b655694635956a2c5702af33051164ad",
+  "main_sha_fim": "c8ba40e9d65ba2d1ffa63bb19cbb2e6d9a56ff60",
   "worktree_tests_completed": true,
-  "total_open": 13,
-  "total_analyzed": 13,
-  "merges_realizados": 4,
+  "total_open_inicio": 17,
+  "total_open_novos": 2,
+  "total_analyzed": 19,
+  "merges_realizados": 6,
   "prs": [
     {
       "number": 2414,
       "title": "chore(análise): dossiês completos + relatório final de branches (Fase 2)",
-      "draft": false,
-      "mergeable": false,
-      "mergeable_state": "dirty",
-      "head_sha": "f62090f8130998bddb1042ad401878f689e81c63",
-      "branch": "claude_05/youthful-goodall-kihjbv",
-      "additions": 6688,
-      "deletions": 0,
-      "changed_files": 26,
-      "rule8_trigger": null,
-      "cherry": "14 commits únicos (todos + não em main)",
+      "status": "MERGEADO",
+      "sha_merge": "7061adab51e13ff2a10c0737014aef20b72b010d",
+      "method": "squash",
+      "patch_id": "c109a6a0ecae3ecb12fa7c01a7ed21baa907c393",
       "singu_refs_added": 0,
       "singu_note": "1 ref em docs (menciona ID proibido em texto de auditoria — sem escrita)",
-      "verdict": "BLOQUEADA",
-      "motivo": "mergeable: false — conflitos de merge (dirty)."
+      "verdict": "MERGEADO"
     },
     {
       "number": 2415,
@@ -161,6 +155,74 @@
       "sha_merge": "4c8193b9b655694635956a2c5702af33051164ad",
       "method": "squash",
       "verdict": "MERGEADO"
+    },
+    {
+      "number": 2432,
+      "title": "feat(qa): probe E184 — detecta refs legadas ao projeto proibido",
+      "draft": false,
+      "rule8_trigger": null,
+      "singu_refs_added": 0,
+      "verdict": "JÁ IMPLEMENTADA",
+      "motivo": "Arquivo qa/migrations-draft/probe_e184_legacy_refs.sql já em main desde PR #2426 (SHA 7f5d410a). Merge seria no-op ou conflito."
+    },
+    {
+      "number": 2435,
+      "title": "fix(ci): Zod v4 repair — UUIDs + vitest + gitleaks + drafts README",
+      "draft": true,
+      "rule8_trigger": "CI/workflows (.github/workflows/ci-security-drift.yml) + security policy (.gitleaks.toml)",
+      "singu_refs_added": 0,
+      "verdict": "DECISÃO HUMANA",
+      "motivo": "Draft + REGRA 8: toca ci-security-drift.yml (CI/workflows) e .gitleaks.toml (security scanning policy)."
+    },
+    {
+      "number": 2437,
+      "title": "fix(ci): Zod v4 repair — UUIDs + vitest + gitleaks + drafts README (v2)",
+      "draft": true,
+      "rule8_trigger": "security policy (.gitleaks.toml)",
+      "singu_refs_added": 0,
+      "verdict": "DECISÃO HUMANA",
+      "motivo": "Draft + REGRA 8: .gitleaks.toml (security scanning policy). Contém adicionalmente correções Zod v4 em src/ e tests/contracts/."
+    },
+    {
+      "number": 2438,
+      "title": "chore(ci): RELATORIO_CI + PENDENCIAS — docs de auditoria pós-Zod v4",
+      "draft": true,
+      "rule8_trigger": "security policy (.gitleaks.toml)",
+      "singu_refs_added": 0,
+      "verdict": "DECISÃO HUMANA",
+      "motivo": "Draft + REGRA 8: .gitleaks.toml (security scanning policy). Predominantemente docs mas gitleaks arrasta o bloqueio."
+    },
+    {
+      "number": 2441,
+      "title": "feat(db+ef): FASE B — P02/P08/P19 migrations + send-notification idempotency",
+      "draft": false,
+      "mergeable": true,
+      "mergeable_state": "behind",
+      "head_sha": "e21d7bda919df3d623813ec58297b1f39133b8b8",
+      "branch": "claude_05/friendly-keller-3mgkhz",
+      "additions": 153,
+      "deletions": 16,
+      "changed_files": 4,
+      "rule8_trigger": "DDL/migrations (P02/P08/P19) + edge function (send-notification)",
+      "singu_refs_added": 0,
+      "verdict": "DECISÃO HUMANA",
+      "motivo": "Toca supabase/migrations/ (3 migrations: CREATE INDEX, ADD COLUMN, cron.alter_job) + edge function send-notification. REGRA #8."
+    },
+    {
+      "number": 2443,
+      "title": "APROVAÇÃO REQUERIDA: P06 / P09 / P14 / P15 / P03_security_definer — FASE B auditoria Supabase",
+      "draft": true,
+      "mergeable": true,
+      "mergeable_state": "behind",
+      "head_sha": "0fd538e8c63a57f271c75c3b6c9d63d939e6f3c3",
+      "branch": "claude/feat-aprovacao-p06-p09-p14-p15-p03sec-261024-2315",
+      "additions": 218,
+      "deletions": 0,
+      "changed_files": 1,
+      "rule8_trigger": "security decisions (P03/P06/P09/P14/P15) + draft",
+      "singu_refs_added": 0,
+      "verdict": "DECISÃO HUMANA",
+      "motivo": "Draft + título APROVAÇÃO REQUERIDA + propostas incluem security decisions e potencial ledger repair. Sem código executável."
     }
   ]
 }
