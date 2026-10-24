@@ -122,6 +122,9 @@ jobs:
       - name: Hook tests (tests/hooks/** — excluído de test:quality, ver package.json)
         run: TZ=America/Sao_Paulo npx vitest run tests/hooks --reporter=dot
 
+      - name: File-size baseline mutation tests (node:test — P20)
+        run: node --test tests/scripts/check-file-size-baseline.test.mjs
+
       # E23/E27 — sem credenciais E2E no repositório: em PR apenas os specs
       # autenticados são pulados (gate E23 monitora); em push para main a
       # ausência de credenciais falha obrigatoriamente.
