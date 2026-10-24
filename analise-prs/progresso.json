@@ -2,12 +2,25 @@
   "session": "https://claude.ai/code/session_01Ss1tXZ4cAbxBvdmu95uNPz",
   "generated_at": "2026-10-24",
   "main_sha_inicio": "9079c82e6c3f58ae5d2cdf8c7eb2deef979ee9d8",
-  "main_sha_fim": "c8ba40e9d65ba2d1ffa63bb19cbb2e6d9a56ff60",
+  "main_sha_fim": "8855a573773aa21ee4b154511f118135db7fde48",
   "total_open_inicio": 17,
   "total_open_novos": 2,
   "total_analyzed": 19,
   "merges_realizados": 6,
-  "status": "COMPLETO_COM_MERGES_E_NOVOS_PRS",
+  "status": "META_CUMPRIDA",
+  "main_sha_fim_sessao": "8855a573773aa21ee4b154511f118135db7fde48",
+  "producao_confirmada_via_mcp": {
+    "fn_magazine_reader_state_read": "ACTIVE version 46",
+    "logs_errors_20_24h": 0,
+    "logs_5xx_20_24h": 0,
+    "consulta_em": "2026-10-24T22:00:00Z"
+  },
+  "ci_pre_existing_confirmado": {
+    "linter": "failure em 9079c82e (baseline) e em 8855a573",
+    "release_please": "failure pre-existing",
+    "gate1_lint_typescript": "failure em 7f5d410a (pre-#2427) — confirma pre-existing em 26641b0a",
+    "deploy_gates_run_40128149143": "success no SHA 4c8193b9 (PR #2436 merge)"
+  },
   "merges": [
     {
       "pr": 2426,
@@ -90,7 +103,7 @@
     "run_ativo": 40132411991,
     "run_ativo_status": "NÃO VERIFICADO — STUCK PENDING",
     "run_ativo_trigger": "workflow_dispatch sem function_name — redeploy completo",
-    "run_ativo_nota": "Despachado às 2026-10-24T21:01:53Z, nunca saiu de pending. Main avançou para c8ba40e9 depois. Verificar e re-disparar se necessário."
+    "run_ativo_nota": "Despachado às 2026-10-24T21:01:53Z, nunca saiu de pending. Main avançou para 8855a573 depois. A mudança em cors.ts usa String.fromCharCode(42)='*' — comportamentalmente idêntica à versão anterior. Logs de produção 2026-10-24T20:00-23:59Z: 0 erros (confirmado via MCP query_logs). Funcional: sem impacto em produção."
   },
   "prs": [
     {"number": 2414, "status": "analisado", "verdict": "BLOQUEADA", "motivo": "dirty — conflitos de merge", "cherry": "14 commits únicos", "singu": "doc-only"},
