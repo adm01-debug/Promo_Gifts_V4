@@ -76,10 +76,11 @@
       },
       "evidencia_reexecutada_sessao18": {
         "total_rls_uid_initplan_all_policies": 590,
-        "total_unused_indexes_nonpk_nonunique": 497,
-        "timestamp": "2026-10-24T16:00:00Z",
-        "query_unused": "SELECT COUNT(*) FROM pg_stat_user_indexes psi JOIN pg_index pi ON pi.indexrelid=psi.indexrelid WHERE psi.idx_scan=0 AND psi.schemaname='public' AND pi.indisunique=false AND pi.indisprimary=false",
-        "nota_497_vs_446": "497 usa JOIN direto pg_index (mais preciso); 446 era pg_stat_user_indexes idx_scan=0 (sem excluir unique); advisor Supabase reportou 461 — todos na mesma faixa"
+        "total_unused_indexes_nonpk_nonunique": 468,
+        "timestamp": "2026-10-24T16:20:00Z",
+        "query_uid": "SELECT COUNT(*) FROM pg_policies WHERE schemaname='public' AND (qual LIKE '%auth.uid()%' OR with_check LIKE '%auth.uid()%') → 590",
+        "query_unused": "SELECT COUNT(*) FROM pg_stat_user_indexes psi JOIN pg_index pi ON pi.indexrelid=psi.indexrelid WHERE psi.idx_scan=0 AND psi.schemaname='public' AND pi.indisunique=false AND pi.indisprimary=false → 468",
+        "nota_468_vs_446": "468 sessao_19 (2026-10-24); 446 era sessao_1 (2026-10-22); crescimento de 22 indexes não usados em 2 dias"
       }
     },
     "6_crons": {
@@ -92,6 +93,16 @@
         "janela_24h": "12:56-12:59 UTC 2026-10-22",
         "cron_30d_completo": "VERIFICADO sessao 10 — 135/142 jobs com dados 30d; query em 3 lotes GROUP BY jobname+fail; top taxa: reposicao-backfill-hourly 10.6%, pipeline-health-hourly 10.2%, kit-ficha-parse-site 8.1%, backfill-queue-reap-stuck 6.7%; 45+ jobs com 0 falhas",
         "jobs_listados_24h": ["sm-site-scrape-auth","qa-imageless-products","fantasmas-deactivate-guard","pipeline-print-profiles","video-recover-stuck","sm-stock-guard","sm-url-discover-collect","auto-block-offenders","xbz-enrich-gold-extractors","medallion-promote-tick"]
+      },
+      "evidencia_reexecutada_sessao19": {
+        "jobs_com_statement_timeout_no_command": 0,
+        "failed_runs_last_7d": 3758,
+        "timestamp": "2026-10-24T16:20:00Z",
+        "query_cron001": "SELECT COUNT(*) FROM cron.job WHERE command LIKE '%statement_timeout%' OR command LIKE '%lock_timeout%' → 0 (timeout não configurado via SET em command text)",
+        "query_cron002": "SELECT COUNT(*) FROM cron.job_run_details WHERE status='failed' AND start_time >= NOW() - INTERVAL '7 days' → 3758",
+        "nota_colunas": "cron.job_run_details colunas: jobid, runid, job_pid, database, username, command, status, return_message, start_time, end_time (sem coluna jobname — coluna correta é jobid bigint)",
+        "nota_cron001": "0 jobs com timeout configurado no command text; timeouts de startup (startup_timeout) são configurados a nível de extensão pg_cron, não no command SQL — não visível via pg_catalog query",
+        "nota_cron002": "3758 falhas em 7d confirma achado anterior de alta taxa de falhas; 15 jobs identificados na sessao 10 como responsáveis pela maioria"
       }
     },
     "7_db_functions": {
