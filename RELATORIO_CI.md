@@ -1,7 +1,7 @@
 # Relatório CI — Reparo de Workflows `action_required`
 
-**Data:** 2026-10-24 (rev 16 — Gate Final `ad21b02b` = success confirmado; inventário action_required: 50 runs pré-existentes todos cobertos por P1/P4)  
-**Branch de trabalho:** `claude_05/upbeat-hamilton-5gnz50`  
+**Data:** 2026-10-24 (rev 17 — HEAD `74ac36f1`; workflows falhando em main: 3 (P1/P11/P2c); P16–P21 documentados em PENDENCIAS.md; Gate Final = success ✅)  
+**Branch de trabalho:** `claude_05/amazing-brahmagupta-0xhdur`  
 **Commit baseline (main antes do PR #2389):** `325b0bd`  
 **Commit final do PR #2389:** `12a7774`  
 **Merge commit em main (PR #2389):** `45023c7` (squash, 2026-10-24T14:00:22Z)  
@@ -32,7 +32,12 @@
 **Deploy Gates em main (push `594fbd40` — PR #2407):** run [#40114329437](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40114329437) — **`success`** ✅ — Gate Final confirmado em `594fbd40` (ver seção Inventário de Jobs abaixo)  
 **Deploy Gates em main (push `652a7f14` — PR #2411):** run [#40118011740](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40118011740) — **`failure`** ❌ Gate 1.3 — `check-migration-path-references.mjs` detectou 3 refs novas em `inventario/branches.json` não cobertas pelo baseline; corrigido por PR #2412  
 **Deploy Gates em main (push `ad21b02b` — PR #2412):** run [#40119299983](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40119299983) — **`success`** ✅ Gate Final [**`success`** ✅](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40119299983/job/120948831232) (concluído 2026-10-24T18:15:57Z) — **HEAD de main atual**  
-**PR docs rev 16:** [#2413](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2413) — em revisão
+**Deploy Gates em main (push `74ac36f1` — PR #2413):** run [#40120365440](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40120365440) — Gate Final **`success`** ✅ — **HEAD de main atual**  
+**Workflows falhando em main no HEAD `74ac36f1`:**
+- Release Please (run [#40120365440](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40120365440)) → P1 (PAT ausente)
+- Supabase Linter Gate (run [#40120365491](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40120365491)) → P11 (timeout externo)
+- E2E — Personalization Flow (run [#40120365592](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40120365592)) → P2c (dados insuficientes no CI)
+**PR docs rev 17 (PENDENCIAS rev 8):** [#2414](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2414) — em aberto
 
 ---
 

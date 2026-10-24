@@ -1,8 +1,8 @@
 # Pendências CI — Bloqueios Externos
 
-**Atualizado em:** 2026-10-24 (rev 7 — P14 resolvido; P15 adicionado: Running Copilot Code Review — bot externo GitHub Copilot)  
-**Branch de referência:** `claude_05/upbeat-hamilton-5gnz50`  
-**Commit de referência (main):** `ad21b02b` (fix(ci): adiciona refs de inventario/branches.json ao migration-refs-baseline — PR #2412)
+**Atualizado em:** 2026-10-24 (rev 8 — P16–P21 adicionados: Thumb QuickView, Critical Flows, Uptime Monitor, validate-access, node:test, Cart Delete Popover)  
+**Branch de referência:** `claude_05/amazing-brahmagupta-0xhdur`  
+**Commit de referência (main):** `74ac36f1` (docs: RELATORIO_CI rev 15 e PENDENCIAS rev 7 — Gate Final ad21b02b + P14 resolvido + P15 — PR #2413)
 
 ---
 
@@ -485,4 +485,117 @@ Nenhuma — não é possível corrigir via código do repositório. O comportame
 
 ---
 
-*Atualizado pela sessão Claude Code — https://claude.ai/code/session_01Nc1nb7PArDnixYvvZssnKy*
+## P16 — E2E • Thumb QuickView (paridade + a11y): Smoke fail-fast
+
+**Workflow:** E2E • Thumb QuickView (paridade + a11y)  
+**Run:** [#40119299702](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40119299702) (commit `ad21b02b`)  
+**Conclusão:** `failure`  
+**Job:** `Smoke (fail-fast)` → step `Smoke`  
+**Categoria:** Dados de teste insuficientes — pré-existente
+
+**Diagnóstico:**  
+O job "Smoke (fail-fast)" executa testes de fumaça de paridade visual e acessibilidade para o componente Thumb QuickView. Falha no step `Smoke` — mesmo padrão de P12 (swatch→QV): o runner de CI não tem dados de catálogo suficientes para renderizar os thumbs de variante de produto que os specs precisam. Artefatos de falha enviados (artifact `smoke-failure-artifacts`, 363 MB).
+
+**Pré-existente:** não relacionado a nenhuma mudança desta branch.
+
+**Ação necessária:** seed de dados de produtos com variantes/thumbs no runner de CI (mesmo que P12/P2b).
+
+---
+
+## P17 — E2E — Critical Flows & Error Boundaries: Sidebar Tooltips + min tests
+
+**Workflow:** E2E — Critical Flows & Error Boundaries  
+**Run:** [#40119299889](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40119299889) (commit `ad21b02b`)  
+**Conclusão:** `failure`  
+**Job:** `E2E — Full User Flows (authed)` → steps: `Run Sidebar Tooltips E2E — desktop (chromium-authed)` (step 8) + `Check min tests executed` (step 10)  
+**Categoria:** Dados de teste insuficientes + mínimo de execuções não atingido — pré-existente
+
+**Diagnóstico:**  
+Step 8 (`Run Sidebar Tooltips E2E — desktop`) falha no spec de tooltips da sidebar (chromium-authed). Os tooltips da sidebar dependem de um estado de orçamento ativo/sidebar aberta que requer dados no banco de CI. Step 10 (`Check min tests executed`) falha como consequência: o job não executa o número mínimo de testes exigido. Mesmo padrão de P2b/P2c/P13.
+
+**Pré-existente:** nenhuma alteração em sidebar ou tooltips por esta branch.
+
+**Ação necessária:** seed de dados de orçamento no runner de CI (mesmo que P2b/P8/P13).
+
+---
+
+## P18 — Uptime Monitor: falha transiente de conectividade
+
+**Workflow:** Uptime Monitor  
+**Run:** [#40119390340](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40119390340) (commit `ad21b02b`)  
+**Conclusão:** `failure`  
+**Categoria:** Falha de conectividade externa — não corrigível via código
+
+**Diagnóstico:**  
+O Uptime Monitor verifica a disponibilidade do endpoint de produção em intervalos regulares. Falhas neste workflow são transientes — o runner de CI não conseguiu alcançar o endpoint no momento da checagem, ou o serviço externo estava temporariamente indisponível. Não relacionado a nenhuma mudança de código.
+
+**Pré-existente / transiente:** mesmo padrão de P5/P9/P11 (problemas de conectividade no runner).
+
+**Ação necessária pelo PO:** verificar se o endpoint de produção está respondendo; re-executar o workflow. Não requer mudança de código.
+
+---
+
+## P19 — Edge Integration Tests: validate-access retorna HTTP 200 para inputs inválidos
+
+**Workflow:** Edge Integration Tests  
+**Arquivo:** `tests/edge-functions/live/validate-access.test.ts:141` (via `tests/edge-functions/live/_live-suite.ts:141`)  
+**Categoria:** Bug na edge function `validate-access` — requer fix + deploy via workflow
+
+**Erro exato:**
+```
+expect(res.status).toBeGreaterThanOrEqual(400)  // linha 141
+Received: 200
+```
+
+**Diagnóstico:**  
+A edge function `validate-access` não valida os inputs recebidos e retorna HTTP 200 para entradas inválidas (corpo vazio, JSON malformado, arrays, strings, null, números). O contrato esperado é retornar HTTP 4xx (400 ou 422) para inputs inválidos.
+
+**Ação necessária:**
+1. Fix na edge function `validate-access` (validação de input com retorno 4xx)
+2. Deploy **exclusivamente** via `workflow_dispatch` em `.github/workflows/deploy-edge-functions.yml` (REGRA #8 corolário — proibido MCP direto)
+3. Re-executar Edge Integration Tests para confirmar correção
+
+**Bloqueio REGRA #8:** deploy de edge function exige revisão humana antes — não pode ser executado autonomamente em sessão de agente.
+
+---
+
+## P20 — CI Security & Drift Checks: check-file-size-baseline.test.mjs usa node:test incompatível com Vitest
+
+**Workflow:** CI Security & Drift Checks  
+**Arquivo:** `tests/scripts/check-file-size-baseline.test.mjs`  
+**Categoria:** Incompatibilidade de runtime de testes — requer fix no arquivo de teste
+
+**Diagnóstico:**  
+`tests/scripts/check-file-size-baseline.test.mjs` usa `import { test, describe } from 'node:test'` — o módulo de testes built-in do Node.js. O Vitest não consegue bundlar `node:test` no ambiente cliente (browser-like environment), causando falha no CI com erro de module resolution.
+
+**Correção necessária:**
+- **Opção A (recomendada):** excluir o arquivo do Vitest via `vitest.config.ts` (adicionar ao array `exclude`) e executá-lo diretamente com `node --test`
+- **Opção B:** refatorar para usar APIs do Vitest (`import { test, describe } from 'vitest'`)
+
+**Ação necessária:** aplicar a opção A ou B e verificar se CI Security & Drift Checks passa. Esta correção é código puro (sem migration, sem edge function) e pode ser feita em PR normal.
+
+---
+
+## P21 — E2E · Cart Delete Popover: cart-delete-exh-9 não encontrado (timeout 120s)
+
+**Workflow:** E2E (Playwright) — job `E2E · Cart Delete Popover (exhaustive)`  
+**Run de referência:** [#40114329340](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40114329340)  
+**Conclusão:** `failure`  
+**Categoria:** Dados de teste insuficientes — pré-existente
+
+**Erro exato:**
+```
+[chromium-authed] — timeout 120000ms exceeded
+locator('[data-testid="cart-delete-exh-9"]').waitFor({ state: 'visible' })
+```
+
+**Diagnóstico:**  
+O spec `e2e/ui/cart-delete-header-popover-exhaustive.spec.ts` aguarda o elemento `data-testid="cart-delete-exh-9"` — um item específico de um carrinho de teste com ID "exh-9". Esse carrinho não existe no banco do runner de CI, então o elemento nunca aparece e o timeout de 120s é excedido.
+
+**Pré-existente:** mesmo padrão de P2b/P8/P13/P17 — dados de carrinhos insuficientes no runner.
+
+**Ação necessária:** seed de carrinhos de teste (incluindo carrinho `exh-9`) no runner de CI.
+
+---
+
+*Atualizado pela sessão Claude Code — https://claude.ai/code/session_01TNNE4Wc1AtzX67bdgyqppC*
