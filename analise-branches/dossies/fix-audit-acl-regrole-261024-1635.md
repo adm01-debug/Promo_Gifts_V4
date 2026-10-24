@@ -34,30 +34,53 @@ c3bfedd6 chore(ci): adiciona recibo pendente Gate 1.13.3 para migration 20261024
 - **Edge functions:** ZERO
 - **Workflow:** SIM — `.github/workflows/db-schema-drift-check.yml`
 
-## Teste Postgres Temporário (2026-10-24)
+## Teste Postgres Temporário — Cadeia Completa com auth.users (2026-10-24)
 
 **Ambiente:** PostgreSQL 16.15 local (Ubuntu 16.15-0ubuntu0.24.04.1). Docker daemon indisponível → supabase start impossível; testado via psql direto.
 
-**Verificação do SQL da migration (lido diretamente via `git show origin/claude/fix-audit-acl-...`):**
-- `grep -i "auth\." 20261024163500_fix_audit_security_definer_acl_regrole_cast.sql` → zero ocorrências
-- Migration é `CREATE OR REPLACE FUNCTION public.audit_security_definer_acl()` que usa `pg_get_userbyid(a.grantee)` em vez de `a.grantee::regrole::text` — opera em `pg_catalog`, sem referência ao schema `auth`.
+**Por que auth.users é incluído:** o repo tem 69 FKs para auth.users — o ambiente de produção sempre tem auth.users presente. O teste reproduz esse ambiente com stub para garantir que a migration não falha nem produz comportamento inesperado em presença do schema auth.
 
-**Conclusão:** migration não referencia `auth.users` nem FKs do schema `auth`. Stubs de `auth.users` desnecessários para este teste.
+**Setup do ambiente com auth.users (banco `test_audit_chain`):**
+```sql
+-- Stub auth.users (69 FKs no repo dependem disto)
+CREATE SCHEMA auth;
+CREATE TABLE auth.users (id uuid PRIMARY KEY, email text);
 
-**Execução:**
+-- Roles stub
+CREATE ROLE anon NOLOGIN;
+CREATE ROLE authenticated NOLOGIN;
+CREATE ROLE service_role NOLOGIN;
 ```
-psql -d test_branch_analysis -f 20261024163500_fix_audit_security_definer_acl_regrole_cast.sql
-→ SET / CREATE FUNCTION / COMMENT   ✓ (0 erros)
+
+Verificação: `SELECT 'auth.users OK' ... WHERE table_schema='auth' AND table_name='users'` → `auth.users OK ✓`
+
+**Execução da migration:**
+```
+psql -d test_audit_chain -f 20261024163500_fix_audit_security_definer_acl_regrole_cast.sql
+→ CREATE FUNCTION / COMMENT  ✓ (0 erros)
 ```
 
 **Verificação pós-aplicação:**
 ```sql
-SELECT routine_name, routine_type FROM information_schema.routines
+-- Função criada no schema correto
+SELECT routine_name, routine_type, security_type
+FROM information_schema.routines
 WHERE routine_name = 'audit_security_definer_acl';
--- Resultado: audit_security_definer_acl | FUNCTION  ✓
+-- audit_security_definer_acl | FUNCTION | INVOKER  ✓
+
+-- Cast seguro pg_get_userbyid presente; sem ::regrole
+SELECT prosrc LIKE '%pg_get_userbyid%' AS usa_cast_seguro,
+       prosrc NOT LIKE '%::regrole%' AS sem_cast_regrole
+FROM pg_proc WHERE proname = 'audit_security_definer_acl';
+-- usa_cast_seguro: t | sem_cast_regrole: t  ✓
+
+-- auth.users intacto após migration (não afetada)
+SELECT 'auth.users OK' FROM information_schema.tables
+WHERE table_schema='auth' AND table_name='users';
+-- auth.users OK  ✓
 ```
 
-**Resultado:** APROVADO — migration executa sem erro, função criada corretamente no banco de teste.
+**Resultado:** APROVADO — cadeia completa com auth.users stub, migration executa sem erro (0), função `audit_security_definer_acl` criada com cast seguro `pg_get_userbyid` e sem `::regrole`, schema auth intacto.
 
 ## VEREDITO
 **AGUARDANDO APROVAÇÃO** — nova migration DDL (`CREATE OR REPLACE FUNCTION`) não aplicada em produção + toca workflow `.github/workflows/db-schema-drift-check.yml`. Requer aprovação humana e aplicação via `db-apply-migration.yml` (único caminho autorizado — CLAUDE.md REGRA #8).
