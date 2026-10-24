@@ -1,6 +1,6 @@
 # Pendências CI — Bloqueios Externos
 
-**Atualizado em:** 2026-10-24 (rev 11 — P4: reduzido a 20 runs residuais; PRs fonte fechadas; PR #2437 squash-mergeado em main `9b23fb64`)  
+**Atualizado em:** 2026-10-24 (rev 12 — P4: corrigido para 641 runs (API confirmada); RELATORIO_CI.md gerado; PR #2437 squash-mergeado em main `9b23fb64`)  
 **Branch de referência:** `claude_05/upbeat-hamilton-5gnz50`  
 **Commit de referência (main):** `9b23fb64` (fix(ci): Zod 4 fixes CI-Replenishment + PENDENCIAS rev 10 — PR #2437)
 
@@ -204,15 +204,15 @@ permissões para query read-only em `doufsxqlfjyuvxuezpln`.
 
 ---
 
-## P4 — ~20 runs `action_required` residuais (PRs fonte fechadas — 2 origens)
+## P4 — 641 runs `action_required` (PRs fonte fechadas/inativas — 2 origens)
 
-**Total em 2026-10-24T23:xx Z:** ~20 runs residuais (reduzido de 641)  
-**Categoria:** branches internas de bots — GitHub exige aprovação; API retorna 403  
-**PRs fonte:** ambas fechadas — runs residuais persistem até expiração natural (90 dias)
+**Total em 2026-10-24T23:xx Z:** 641 runs (API GitHub Actions — confirmado)  
+**Categoria:** branches internas de bots — GitHub exige aprovação manual; API retorna 403  
+**PRs fonte:** ambas fechadas/sem PR — runs persistem até expiração natural (90 dias)
 
-**Origem dos runs residuais:**
-- `release-please[bot]` — branch `release-please--branches--main--components--gifts-store`, head `3a726461` (2026-10-18), sem PR aberta → ~19 runs
-- PR #2320 `copilot/corrigir-peer-dependencies-eslint` — fechada em 2026-10-23 sem merge → ~1 run
+**Origem dos runs:**
+- `release-please--branches--main--components--*` — sub-branches do release-please bot, head `3a726461`, sem PR ativa → ~620 runs
+- PR #2320 `copilot/corrigir-peer-dependencies-eslint` — fechada em 2026-10-23 sem merge, head `df09a371` → ~21 runs
 
 **Inventário completo — last main run em `ec736c90` (2026-10-24T20:29Z):**
 
