@@ -36,10 +36,52 @@ c8935c35 security(migrations): revoga brechas E30/E40/E18 em 3 migrations
 - **Migrations:** SIM — 3 novas migrations DDL (REVOKE + DROP POLICY), não aplicadas em produção
 - **Edge functions:** ZERO
 
+## Teste Postgres Temporário (2026-10-24)
+
+**Ambiente:** PostgreSQL 16.15 local (Ubuntu 16.15-0ubuntu0.24.04.1). Docker daemon indisponível → supabase start impossível; testado via psql direto com stubs de roles e tabelas (sem auth.users, pois migrations são REVOKE-only — não referenciam auth schema).
+
+**Estado antes:**
+- `anon` em `external_connections`: DELETE, INSERT, REFERENCES, TRIGGER, UPDATE (5 privilégios)
+- `anon` em `mockup_approval_links`: ALL (7 privilégios incluindo SELECT)
+- `authenticated` em `mcp_kv_get(text)`: EXECUTE
+
+**Execução:**
+```
+psql -d test_branch_analysis -f 20261022194000.sql → SET / REVOKE  ✓ (0 erros)
+psql -d test_branch_analysis -f 20261022194100.sql → SET / REVOKE  ✓ (0 erros)
+psql -d test_branch_analysis -f 20261022194200.sql → SET / REVOKE  ✓ (0 erros)
+```
+
+**Estado depois:**
+- `anon` em `external_connections`: 0 privilégios ✓
+- `anon` em `mockup_approval_links`: 0 privilégios ✓
+- `authenticated` em `mcp_kv_get(text)`: 0 privilégios ✓
+
+**Resultado:** APROVADO — 3 migrations executam sem erro, produzem exatamente o REVOKE esperado.
+
+## Investigação da Anomalia de Timestamps
+
+Ledger consultado via `execute_sql` em `doufsxqlfjyuvxuezpln`:
+```sql
+SELECT version, name FROM supabase_migrations.schema_migrations
+WHERE version BETWEEN '20261022190000' AND '20261022210000' ORDER BY version;
+```
+**Resultado:**
+- `20261022195616` — fix_update_company_fields_security_definer_search_path ✓
+- `20261022203935` — update_company_fields_security_fix ✓
+- `20261022194000` — **AUSENTE** (não está no ledger)
+- `20261022194100` — **AUSENTE** (não está no ledger)
+- `20261022194200` — **AUSENTE** (não está no ledger)
+
+**Conclusão:** As 3 migrations têm timestamps `194000`/`194100`/`194200` (19:40–19:42 UTC) vs `195616` e `203935` que já estão aplicados. Como o ledger aplica por timestamp crescente, e `195616` < `203935` já estão, as migrations `194000`–`194200` são anteriores a ambas mas foram criadas DEPOIS — tipicamente em sessão de auditoria que gerou os timestamps de forma retroativa. Não há lacuna de estado: as 3 migrations simplesmente nunca foram aplicadas. Aplicá-las via `db-apply-migration.yml` resolverá as brechas sem impacto no ledger existente (o ledger aceita versões fora de ordem na inserção, embora o supabase CLI aplique em ordem crescente).
+
 ## VEREDITO
 **AGUARDANDO APROVAÇÃO** — 3 migrations de segurança críticas (revoga INSERT anon e authenticated em tabelas sensíveis) que ainda não foram aplicadas em produção. A brecha de segurança está ativa. Requer:
-1. Aprovação humana (REVOKE + DROP POLICY é DDL destrutiva)
-2. Aplicação via `.github/workflows/db-apply-migration.yml` (único caminho autorizado)
-3. Verificar por que essas 3 migrations com timestamp < 20261022203935 não estão no ledger
+1. Aprovação humana (REVOKE + DROP POLICY é DDL destrutiva, irreversível sem rollback explícito)
+2. Aplicação via `.github/workflows/db-apply-migration.yml` (único caminho autorizado — E15)
+3. Aplicar em ordem: 20261022194000 → 194100 → 194200
 
-**Prioridade:** ALTA — brechas de segurança (E30/E40/E18) ativas em produção.
+**Rollback disponível:** `supabase/rollbacks/20261022194000_rollback.sql` (e .194100, .194200).
+**ID auditoria:** E30 (external_connections), E40 (mockup_approval_links), E18 (mcp_kv_get).
+**Prioridade:** ALTA — brechas de segurança ativas em produção.
+**Teste Postgres:** APROVADO (detalhes acima).

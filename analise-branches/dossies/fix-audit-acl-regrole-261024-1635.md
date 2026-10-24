@@ -34,7 +34,28 @@ c3bfedd6 chore(ci): adiciona recibo pendente Gate 1.13.3 para migration 20261024
 - **Edge functions:** ZERO
 - **Workflow:** SIM — `.github/workflows/db-schema-drift-check.yml`
 
+## Teste Postgres Temporário (2026-10-24)
+
+**Ambiente:** PostgreSQL 16.15 local (Ubuntu 16.15-0ubuntu0.24.04.1). Docker daemon indisponível → supabase start impossível; testado via psql direto (migration é CREATE OR REPLACE FUNCTION, não requer auth.users stubs).
+
+**Execução:**
+```
+psql -d test_branch_analysis -f 20261024163500_fix_audit_security_definer_acl_regrole_cast.sql
+→ SET / CREATE FUNCTION / COMMENT   ✓ (0 erros)
+```
+
+**Verificação pós-aplicação:**
+```sql
+SELECT routine_name, routine_type FROM information_schema.routines
+WHERE routine_name = 'audit_security_definer_acl';
+-- Resultado: audit_security_definer_acl | FUNCTION  ✓
+```
+
+**Resultado:** APROVADO — migration executa sem erro, função criada corretamente no banco de teste.
+
 ## VEREDITO
 **AGUARDANDO APROVAÇÃO** — nova migration DDL (`CREATE OR REPLACE FUNCTION`) não aplicada em produção + toca workflow `.github/workflows/db-schema-drift-check.yml`. Requer aprovação humana e aplicação via `db-apply-migration.yml` (único caminho autorizado — CLAUDE.md REGRA #8).
 
-**O que muda em produção:** `audit_security_definer_acl()` substituída por versão com cast seguro — elimina HTTP 500 quando role foi removida. Risco: mínimo (function replace idempotente, só muda o cast). Rollback: `supabase/rollbacks/` não listado na branch; criar antes do deploy.
+**O que muda em produção:** `audit_security_definer_acl()` substituída por versão com cast seguro — elimina HTTP 500 quando role foi removida. Risco: mínimo (function replace idempotente, só muda o cast). Rollback: recriar a versão anterior da função (disponível em git history do main).
+**ID auditoria:** relacionado a P03 (security_definer search_path) e Gate 1.13 (RLS).
+**Teste Postgres:** APROVADO (detalhes acima).

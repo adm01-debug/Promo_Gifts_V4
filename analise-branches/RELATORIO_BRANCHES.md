@@ -118,7 +118,29 @@ Prova em 1 linha cada em: `confirmacao_ABF.md`
 | DDL via execute_sql | — | 0 (proibido) |
 | Deploy edge functions | — | 0 (proibido via MCP) |
 
-Snapshots em: `baseline/migrations_prod_antes.json`, `baseline/edge_functions_prod_antes.json`
+Snapshots:
+- Antes: `baseline/migrations_prod_antes.json`, `baseline/edge_functions_prod_antes.json`
+- Depois: `baseline/migrations_prod_depois.json`, `baseline/edge_functions_prod_depois.json` — capturados ao final da análise (2026-10-24T20:00:00Z); ambos idênticos ao "antes", confirma que produção não foi alterada.
+
+---
+
+## 6.1 Testes Postgres Temporário
+
+**Ambiente:** PostgreSQL 16.15 local (Ubuntu 16.15-0ubuntu0.24.04.1). Docker daemon indisponível → `supabase start` impossível. Testado via `sudo -u postgres psql` com stubs de roles e tabelas onde necessário.
+
+| Branch | Tem migration nova? | Testado? | Resultado |
+|---|---|---|---|
+| security-brechas-e30-e40-e18 | SIM (3 migrations: REVOKE) | SIM | APROVADO — 0 erros; estado antes/depois verificado por query pg_catalog |
+| fix-audit-acl-regrole | SIM (1 migration: CREATE FUNCTION) | SIM | APROVADO — 0 erros; função presente em information_schema.routines |
+| fix-contract-mag-reader | ZERO migrations | N/A | Toca só edge function shared (`cors.ts`) + workflows de cron |
+| fix-gitleaks-gate | ZERO migrations | N/A | Toca só CI: `deploy-gates.yml` + `.gitleaks.toml` |
+| fix-sync-log-ci | ZERO migrations | N/A | Toca só scripts CI + baselines TS |
+| fix-rollback | Header em migration existente + rollback retroativo | N/A — sem DDL novo | Migration 20261019000000 já aplicada em produção; rollback é arquivo de referência, sem DDL novo |
+| chore-migrations-sync-log | ZERO migrations (MIGRATIONS_SYNC_LOG.md é documento) | N/A | Toca só docs + SEGREDOS.md |
+
+Detalhes completos dos testes em:
+- `dossies/security-brechas-e30-e40-e18-2026-10-22.md` — seção "Teste Postgres Temporário"
+- `dossies/fix-audit-acl-regrole-261024-1635.md` — seção "Teste Postgres Temporário"
 
 ---
 
