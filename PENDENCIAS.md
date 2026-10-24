@@ -9,7 +9,7 @@
 ## P1 — Release Please: "Resource not accessible by integration"
 
 **Workflow:** `.github/workflows/release-please.yml`  
-**Run mais recente:** [#40109508357](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40109508357) (commit `609d55c6`)  
+**Run mais recente:** [#40124949325](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40124949325) (commit `71d624e8`)  
 **Conclusão:** `failure`  
 **Categoria:** Restrição de permissão — PAT ausente (não corrigível via YAML)
 
@@ -79,47 +79,26 @@ O fallback agora tem `data-testid="app-header"` e `position: fixed`. O `waitForT
 
 ---
 
+
 ### P2b — Cart Invariants Smoke: todos os shards falham
 
-**Run:** [#40108768269](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40108768269) (commit `63c17840`)  
+**Run mais recente:** [#40124949400](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40124949400) (commit `71d624e8`)  
 **Conclusão:** `failure`  
-**Jobs:** múltiplos shards — job `120915904644` (chromium-authed) analisado
+**Jobs:** 6 shards (chromium × 3 + firefox × 3) — todos falharam (job 120884195253 analisado)
 
-**Erros exatos confirmados (job logs, run #40108768269, job 120915904644):**
+**Erros exatos confirmados (job logs):**
 ```
-[chromium-authed] › e2e/carrinhos/active-cart-edge-cases.spec.ts:51:3
-  › Carrinhos · resiliência de carrinho ativo @carrinhos
-  › trocas rápidas em sequência convergem para o carrinho final
-
-[chromium-authed] › e2e/carrinhos/active-cart-edge-cases.spec.ts:72:3
-  › Carrinhos · resiliência de carrinho ativo @carrinhos
-  › carrinho vazio zera Qtd/subtotal e não vaza peso/volume anterior
-
-[chromium-authed] › e2e/carrinhos/active-cart-edge-cases.spec.ts:105:3
-  › Carrinhos · resiliência de carrinho ativo @carrinhos
-  › formatação pt-BR de moeda no header ao alternar entre carrinhos
-
-[chromium-authed] › e2e/carrinhos/active-cart-intermittent-failure.spec.ts:62:3
-  › Carrinhos · falha intermitente durante mutações @carrinhos
-  › timeout/5xx transitório + refresh: header/sidebar reidratam sem mistura
-
-[chromium-authed] › e2e/carrinhos/active-cart-mutations-parallel.spec.ts:79:5
-  › Carrinhos · A→B→A→C · mutações paralelas · desktop @carrinhos
-  › DELETE/PATCH tardios nunca vazam para o header/sidebar do cart ativo
-
-[chromium-authed] › e2e/carrinhos/active-cart-mutations-parallel.spec.ts:79:5
-  › Carrinhos · A→B→A→C · mutações paralelas · mobile @carrinhos
-  › DELETE/PATCH tardios nunca vazam para o header/sidebar do cart ativo
-
-1 passed (1.6m)
-##[error]Process completed with exit code 1.
+Error: [E108] sem carrinhos disponíveis
+Error: [E108] precisa de 3+ carrinhos para A→B→A→C
+Error: [E108] precisa de 2+ carrinhos
+Error: [E108] sem carrinhos disponíveis
+Error: [E108] precisa de 2+ carrinhos
+Error: [E108] sem carrinhos
+6 failed
 ```
-
-Contexto adicional do log: `at .../e2e/carrinhos/active-cart-mutations-parallel.spec.ts:88:75`  
-`DEBUG_CONTEXT {"viewport":"mobile","viewportSize":{"width":390,"height":844}}`
 
 **Diagnóstico:**  
-Os 6 testes verificam invariantes do header/sidebar durante mutações de carrinho (trocas rápidas, esvaziamento, moeda pt-BR, race conditions DELETE/PATCH). Falham porque o estado dos carrinhos no banco de CI não satisfaz as pré-condições dos specs (ex: spec linha 88 assume 2+ carrinhos para testar race condition mobile). Problema de dados de teste no runner, não regressão de código.  
+Código de erro `[E108]` = fixture de dados insuficiente. Os testes exigem 2–3 carrinhos activos no ambiente de CI, mas o estado do banco de teste não os tem. Problema de dados de teste no runner, não regressão de código.  
 **Pré-existente no `main` (commit `325b0bd`)** — não introduzida por este PR.
 
 **Ação necessária:** seed de dados de teste no runner de CI com carrinhos suficientes.
@@ -128,7 +107,7 @@ Os 6 testes verificam invariantes do header/sidebar durante mutações de carrin
 
 ### P2c — E2E Personalization Flow: falha de URL navigation
 
-**Run:** [#40097995548](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40097995548)  
+**Run mais recente:** [#40124949299](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40124949299) (commit `71d624e8`)  
 **Conclusão:** `failure`  
 **Job:** `E2E — Personalization Journey` (job 120884172213 analisado)  
 **Steps falhos:** `Run Personalization E2E Tests` + `Check min tests executed`
@@ -207,7 +186,7 @@ Evitar futuros pushes diretos em main. Todos os commits devem chegar via PR merg
 
 ```
 [Quote RPC canonical readiness] inconclusive: A consulta read-only do contrato
-canonical nao produziu evidencia conclusiva.
+canonico nao produziu evidencia conclusiva.
 result={"status":"inconclusive","reason":"http-error","httpStatus":400}
 ##[error]Process completed with exit code 2.
 ```
@@ -225,14 +204,51 @@ permissões para query read-only em `doufsxqlfjyuvxuezpln`.
 
 ---
 
-## P4 — 50+ runs históricos `action_required` de bots
+## P4 — 641 runs `action_required` de PRs externos (25 workflows)
 
-**Workflows:** `release-please.yml` (disparado por `release-please[bot]`, `copilot-swe-agent[bot]`)  
-**Categoria:** Registros históricos de PRs fechados — não corrigíveis retroativamente
+**Total:** 641 runs, 25 workflows distintos  
+**Categoria:** PRs de forks/bots externos — GitHub exige aprovação manual do mantenedor antes de executar workflows  
+**Não corrigível via código:** requer ação manual em cada PR no GitHub UI
 
-**Causa:** GitHub exige aprovação manual para workflows disparados por colaboradores externos. Os 50+ runs são de PRs já fechados — não é possível aprovar retroativamente.
+**Causa raiz:**  
+GitHub Actions exige que mantenedores do repositório aprovem explicitamente a execução de workflows para PRs enviados de forks externos ou bots não confiáveis. Cada PR externo gera múltiplos runs `action_required` (um por workflow configurado). Esses runs só podem ser aprovados/rejeitados manualmente pelo mantenedor na interface do GitHub — não há correção de código que resolva isso.
 
-**Resolução:** Não se aplica (registros históricos). Novos runs passarão quando `RELEASE_PLEASE_TOKEN` for configurado (P1).
+**head_sha predominante:** `3a726461` (2026-10-18) aparece em 23/25 grupos — indica um ou poucos PRs externos ativos aguardando aprovação.
+
+**25 workflows com runs `action_required`:**
+
+| Workflow | workflow_id | Runs | Última head_sha |
+|---|---|---|---|
+| Bundle size report | 312335936 | 4 | 3a726461 |
+| CI - Replenishment Module Quality Gate | 293021818 | 4 | 3a726461 |
+| Cart Invariants Smoke | 309382416 | 4 | 3a726461 |
+| Contract Tests | 281252069 | 4 | 3a726461 |
+| Cross-reference PR ↔ Issue | 278436796 | 2 | df09a371 (2026-10-23) |
+| Deploy Gates | 282456033 | 4 | 3a726461 |
+| E2E (Playwright) | 278436800 | 4 | 3a726461 |
+| E2E · Dialogs visual PR check | 305923294 | 4 | 3a726461 |
+| E2E · Quote Conditions visual PR check | 306215886 | 4 | 3a726461 |
+| E2E — Critical Flows & Error Boundaries | 283130542 | 4 | 3a726461 |
+| E2E — Magazine Header Layout | 352614703 | 4 | 3a726461 |
+| E2E — Personalization Flow | 285588106 | 4 | 3a726461 |
+| E2E • Swatch QuickView | 300138331 | 4 | 3a726461 |
+| E2E • Thumb QuickView | 298450953 | 4 | 3a726461 |
+| Edge Integration Tests — All Functions | 283130416 | 4 | 3a726461 |
+| Freight Quest — Quality Gates | 287988441 | 4 | 3a726461 |
+| Magazine Unit Tests | 311773734 | 4 | 3a726461 |
+| No Prod Leak in Dev/Test Config | 383518358 | 4 | 3a726461 |
+| Quote Builder Delivery Quality | 278918381 | 4 | 3a726461 |
+| SSOT Supabase Guard | 313828101 | 5 | 3a726461 |
+| Security Scan | 278436801 | 4 | 3a726461 |
+| Supabase Linter Gate | 298969701 | 4 | 3a726461 |
+| Visual Baseline Tests | 278436802 | 5 | 3a726461 |
+| Workflow Lint | 368573629 | 4 | 3a726461 |
+| schema-snapshot-export | 305283288 | 4 | 3a726461 |
+
+**Ação necessária pelo PO:**  
+Navegar até https://github.com/adm01-debug/Promo_Gifts_V4/pulls?q=is:open e para cada PR externo pendente: aprovar os workflows clicando em "Approve and run" (ou fechar/rejeitar o PR). Os runs `action_required` desaparecem automaticamente após a aprovação ou fechamento do PR.
+
+**Impacto no Gate Final:** Nenhum — `action_required` são runs de workflows de PRs externos, não afetam `main` nem o required check "Gate Final - Deploy Ready".
 
 ---
 
@@ -381,14 +397,12 @@ result={"check":"security-definer-acl","status":"inconclusive","reason":"http-er
 
 ---
 
----
-
 ## P11 — Supabase Linter Gate: TimeoutError intermitente
 
 **Workflow:** `.github/workflows/supabase-linter-gate.yml`  
-**Run:** [#40107758306](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40107758306)  
+**Run mais recente:** [#40124949229](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40124949229) (commit `71d624e8`)  
 **Conclusão:** `failure`  
-**Commit:** `c34ed2b4` (docs-only, 2026-10-24T15:36)  
+**Commit:** `71d624e8` (chore(infra), 2026-10-24T19:21Z)  
 **Categoria:** Falha transiente de rede — serviço Supabase linter indisponível no runner
 
 **Erro exato:**
@@ -410,8 +424,6 @@ O step "Check Security Advisors and live catalog gates" executa `node scripts/ch
 - Aguardar disponibilidade do serviço Supabase e re-executar  
 - Ou: configurar timeout maior em `scripts/check-supabase-linter.mjs`  
 - Este workflow é independente do Gate Final (deploy-gates.yml) — não bloqueia merge
-
----
 
 ---
 
@@ -482,6 +494,57 @@ Nenhuma — não é possível corrigir via código do repositório. O comportame
 **Impacto no Gate Final:** Nenhum — `copilot-pull-request-reviewer` não é required check no `main`.
 
 ---
+
+## P16 — E2E — Critical Flows & Error Boundaries: workflow in_progress (não-required)
+
+**Workflow:** `.github/workflows/e2e-critical-flows.yml`  
+**Run mais recente:** [#40124949243](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40124949243) (commit `71d624e8`)  
+**Status:** `in_progress` ao capturar (19:2x:xxZ)  
+**Categoria:** Workflow de longa duração — não é required check no Gate Final
+
+**Diagnóstico:**  
+Este workflow roda testes E2E críticos com múltiplos shards e leva 20-60 min. Não é um required check para merge em `main` — o Gate Final (`deploy-gates.yml`) pode concluir `success` enquanto este ainda está rodando. O status `in_progress` não bloqueia nenhuma PR nem o deploy.
+
+**Impacto no Gate Final:** Nenhum — não faz parte do required check "Gate Final - Deploy Ready".
+
+---
+
+## P17 — Quote Builder Delivery Quality: workflow in_progress (não-required)
+
+**Workflow:** `.github/workflows/quote-builder-delivery.yml`  
+**Run mais recente:** [#40124949406](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40124949406) (commit `71d624e8`)  
+**Status:** `in_progress` ao capturar  
+**Categoria:** Workflow de longa duração — não é required check no Gate Final
+
+**Diagnóstico:** Mesmo padrão de P16. Workflow de qualidade do quote builder com múltiplos shards E2E. Não é required check.
+
+**Impacto no Gate Final:** Nenhum.
+
+---
+
+## P18 — E2E (Playwright): workflow in_progress (não-required)
+
+**Workflow:** `.github/workflows/e2e-playwright.yml` (wf_id: 278436800)  
+**Run mais recente:** [#40124949375](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40124949375) (commit `71d624e8`)  
+**Status:** `in_progress` ao capturar  
+**Categoria:** Workflow de longa duração — não é required check no Gate Final (Gate 3 E2E Smoke no deploy-gates.yml é o required, não este)
+
+**Diagnóstico:** Este é o workflow standalone de E2E Playwright (todos os shards), diferente do Gate 3 (E2E Smoke) que está dentro do `deploy-gates.yml`. Este workflow pode levar 60+ min e não é required check.
+
+**Impacto no Gate Final:** Nenhum — Gate 3 E2E Smoke (dentro de deploy-gates.yml) passou: `success`.
+
+---
+
+## P19 — CI Security & Drift Checks: workflow in_progress (não-required)
+
+**Workflow:** `.github/workflows/ci-security-drift.yml`  
+**Run mais recente:** [#40124949332](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40124949332) (commit `71d624e8`)  
+**Status:** `in_progress` ao capturar  
+**Categoria:** Workflow de auditoria periódica — não é required check no Gate Final
+
+**Diagnóstico:** Workflow de auditoria de segurança e drift de schema (cron + push). Longa duração. Não é required check para merge.
+
+**Impacto no Gate Final:** Nenhum.
 
 ---
 

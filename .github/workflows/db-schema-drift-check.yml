@@ -137,15 +137,16 @@ jobs:
         with:
           version: 2.101.0
 
-      - name: Override image registry to ECR Public (E104)
+      - name: Garante registry ghcr.io (E104 — revertido de ECR por data-limit)
         if: steps.guard.outputs.enabled == 'true'
         run: |
           set -euo pipefail
-          # supabase/setup-cli action define SUPABASE_INTERNAL_IMAGE_REGISTRY=ghcr.io via
-          # $GITHUB_ENV, causando rate limit no db diff (ghcr.io tem quota de 44000/min
-          # compartilhada entre runners). CLI 2.101.0 usa ECR Public nativamente — sobrescreve
-          # a variável aqui para que db diff e pre-pull usem o mesmo registry (ECR).
-          echo "SUPABASE_INTERNAL_IMAGE_REGISTRY=public.ecr.aws" >> "$GITHUB_ENV"
+          # supabase/setup-cli@v2 define SUPABASE_INTERNAL_IMAGE_REGISTRY=ghcr.io via $GITHUB_ENV.
+          # E104 sobrescrevia para ECR Public (public.ecr.aws) porque ghcr.io tinha rate-limit.
+          # A partir de 2026-10-24, ECR Public passou a retornar "toomanyrequests: Data limit exceeded"
+          # em todas as tentativas (4 runs consecutivas); ghcr.io (44k req/min) é preferível para
+          # um único job de drift check. Reverte para ghcr.io explicitamente.
+          echo "SUPABASE_INTERNAL_IMAGE_REGISTRY=ghcr.io" >> "$GITHUB_ENV"
 
       - name: Link canonical project
         if: steps.guard.outputs.enabled == 'true'
@@ -213,10 +214,10 @@ jobs:
         run: |
           set -euo pipefail
           # supabase db diff arranca shadow DB local com esta imagem.
-          # CLI 2.101.0 usa public.ecr.aws (Amazon ECR Public) — não ghcr.io.
+          # Registry lido de SUPABASE_INTERNAL_IMAGE_REGISTRY (ghcr.io, via step anterior).
           # Pre-pull com retry evita falha no step seguinte por rate limit ou lentidão.
           # Tag fixa para CLI 2.101.0 — atualizar junto com "Install Supabase CLI".
-          POSTGRES_IMAGE="public.ecr.aws/supabase/postgres:17.6.1.063"
+          POSTGRES_IMAGE="${SUPABASE_INTERNAL_IMAGE_REGISTRY}/supabase/postgres:17.6.1.063"
           for attempt in 1 2 3 4 5; do
             if docker pull "$POSTGRES_IMAGE"; then
               echo "Pre-pull ok (tentativa $attempt)"
