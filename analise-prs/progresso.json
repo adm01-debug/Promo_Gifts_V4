@@ -1,11 +1,24 @@
 {
   "session": "https://claude.ai/code/session_01Ss1tXZ4cAbxBvdmu95uNPz",
   "generated_at": "2026-10-24",
-  "main_sha": "9079c82e6c3f58ae5d2cdf8c7eb2deef979ee9d8",
+  "main_sha_inicio": "9079c82e6c3f58ae5d2cdf8c7eb2deef979ee9d8",
+  "main_sha_fim": "ec736c903cc37a0ef8621eec5a2d05775a64bcb9",
   "total_open": 11,
   "total_analyzed": 11,
   "merges_realizados": 0,
-  "status": "COMPLETO",
+  "status": "COMPLETO_COM_WORKTREES",
+  "worktree_tests": [
+    {"pr": 2426, "result": "PASSOU", "detail": "merge limpo, 1 arquivo novo qa/migrations-draft/probe_e184_legacy_refs.sql"},
+    {"pr": 2422, "result": "DIRTY", "detail": "github_api: mergeable:false, mergeable_state:dirty — conflitos confirmados"}
+  ],
+  "ci_baseline_por_nome": {
+    "workflow": "CI Security & Drift Checks (run #40129973781)",
+    "sha": "ec736c903cc37a0ef8621eec5a2d05775a64bcb9",
+    "failing_jobs": ["quality-gate"],
+    "failing_steps": ["Dependency vulnerability policy (step 4 de quality-gate)"],
+    "pre_existing": true
+  },
+  "merge_bloqueio": "GitHub API 405: PRs em draft não podem ser mergeados. Converter draft→ready é edição de PR (proibida pelo goal). Ação necessária: PO marcar cada PR elegível como ready for review.",
   "prs": [
     {"number": 2414, "status": "analisado", "verdict": "BLOQUEADA", "motivo": "dirty — conflitos de merge"},
     {"number": 2415, "status": "analisado", "verdict": "DECISÃO_HUMANA", "motivo": "toca .github/workflows/ci-security-drift.yml"},
@@ -13,10 +26,10 @@
     {"number": 2418, "status": "analisado", "verdict": "DECISÃO_HUMANA", "motivo": "draft + dirty + deploy-gates.yml"},
     {"number": 2419, "status": "analisado", "verdict": "DECISÃO_HUMANA", "motivo": "draft + dirty + security gate"},
     {"number": 2420, "status": "analisado", "verdict": "DECISÃO_HUMANA", "motivo": "draft + dirty + migrations/rollbacks"},
-    {"number": 2422, "status": "analisado", "verdict": "DRAFT_PENDENTE", "motivo": "sem Rule 8 — bloqueio único é status draft"},
+    {"number": 2422, "status": "analisado", "verdict": "DRAFT_BLOQUEADA", "motivo": "draft + dirty — conflitos com main atual, precisa de rebase"},
     {"number": 2424, "status": "analisado", "verdict": "DECISÃO_HUMANA", "motivo": "draft + DDL migration + CI workflow"},
-    {"number": 2426, "status": "analisado", "verdict": "DRAFT_PENDENTE", "motivo": "sem Rule 8 — bloqueio único é status draft"},
-    {"number": 2427, "status": "analisado", "verdict": "DRAFT_PENDENTE", "motivo": "sem Rule 8 para merge — draft + behind; deploy pós-merge requerido"},
+    {"number": 2426, "status": "analisado", "verdict": "DRAFT_PENDENTE_READY", "motivo": "worktree PASSOU, 1 arquivo QA, sem Rule 8 — bloqueio: draft status. Ação: PO → ready for review"},
+    {"number": 2427, "status": "analisado", "verdict": "DRAFT_PENDENTE_READY", "motivo": "mergeable:true, sem Rule 8 para merge — bloqueio: draft. Pós-merge: dispatch deploy-edge-functions.yml"},
     {"number": 2428, "status": "analisado", "verdict": "DECISÃO_HUMANA", "motivo": "draft + security allowlist policy decision"}
   ],
   "deliverables": {

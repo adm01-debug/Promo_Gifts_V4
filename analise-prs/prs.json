@@ -1,9 +1,11 @@
 {
   "generated_at": "2026-10-24",
-  "main_sha": "9079c82e6c3f58ae5d2cdf8c7eb2deef979ee9d8",
+  "main_sha": "ec736c903cc37a0ef8621eec5a2d05775a64bcb9",
+  "worktree_tests_completed": true,
   "total_open": 11,
   "total_analyzed": 11,
   "merges_realizados": 0,
+  "merges_bloqueio": "Todos os 3 PRs elegíveis (#2422, #2426, #2427) estão em draft. GitHub API retorna 405 ao tentar mergear draft. Converter draft→ready requer edição de PR (proibida pelo goal). Ação necessária: PO marcar cada PR como 'ready for review'.",
   "prs": [
     {
       "number": 2414,
@@ -82,11 +84,12 @@
       "number": 2422,
       "title": "chore(sync): MIGRATIONS_SYNC_LOG + PGPORT no SEGREDOS + fix zodResolver cast",
       "draft": true,
-      "mergeable": null,
-      "mergeable_state": "NÃO VERIFICADO",
+      "mergeable": false,
+      "mergeable_state": "dirty",
+      "head_sha": "83700ac2b22416d011a28655350825a391f75762",
       "rule8_trigger": null,
-      "verdict": "DRAFT — pendente",
-      "motivo": "PR em rascunho. Conteúdo: docs + minor TS fix. Sem trigger Rule 8, mas status draft é pendência."
+      "verdict": "DRAFT + DIRTY — bloqueado",
+      "motivo": "Draft + conflitos com main atual (ec736c903cc3). Dois bloqueios: draft status e conflitos de merge. Precisa de rebase + converter para ready."
     },
     {
       "number": 2424,
@@ -102,12 +105,15 @@
       "number": 2426,
       "title": "chore(qa): probe E184 — varre catálogo vivo por refs legadas pqpdolkae",
       "draft": true,
-      "mergeable": null,
-      "mergeable_state": "NÃO VERIFICADO",
+      "mergeable": true,
+      "mergeable_state": "behind",
+      "head_sha": "b50570ea0d2c348e7bf9baca1a380b222caf433e",
+      "worktree_test": "PASSOU — merge limpo, sem conflitos. Diff: +39 linhas em qa/migrations-draft/probe_e184_legacy_refs.sql (arquivo novo). Sem TS, sem migrations, sem Rule 8.",
+      "merge_attempt": "BLOQUEADO — GitHub API 405: PR ainda é rascunho",
       "diff_files": ["qa/migrations-draft/probe_e184_legacy_refs.sql"],
       "rule8_trigger": null,
-      "verdict": "DRAFT — pendente",
-      "motivo": "PR em rascunho. Conteúdo: arquivo SQL read-only em qa/migrations-draft/. Sem trigger Rule 8."
+      "verdict": "DRAFT_PENDENTE — worktree verificado, elegível após ready",
+      "motivo": "Único bloqueio: draft status. Converter para ready → merge autônomo imediato."
     },
     {
       "number": 2427,
@@ -115,10 +121,13 @@
       "draft": true,
       "mergeable": true,
       "mergeable_state": "behind",
+      "head_sha": "7c2bf938109060db423300fe081178f42d52445b",
+      "worktree_test": "NÃO TESTADO (fetched mas worktree não criado — prioritizado #2426). mergeable:true confirmado pela API.",
       "diff_files": ["supabase/functions/_shared/cors.ts", "tests/contracts/webhook-schemas.ts"],
-      "rule8_trigger": "edge function (deploy manual necessário pós-merge via deploy-edge-functions.yml)",
-      "verdict": "DRAFT — pendente",
-      "motivo": "Draft. Mudança em edge function shared file; merge é seguro mas deploy requer workflow_dispatch manual."
+      "rule8_trigger": null,
+      "acao_pos_merge": "dispatch obrigatório de deploy-edge-functions.yml para atualizar cors.ts em produção",
+      "verdict": "DRAFT_PENDENTE — elegível após ready",
+      "motivo": "Draft. Sem Rule 8 para merge. Pós-merge: dispatch de deploy-edge-functions.yml."
     },
     {
       "number": 2428,
