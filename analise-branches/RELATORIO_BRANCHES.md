@@ -13,15 +13,15 @@
 
 | Categoria | Count | Ação |
 |---|---|---|
-| AGUARDANDO APROVAÇÃO | 4 | Requer aprovação humana antes do merge |
-| SUPERSEDED | 3 | Conteúdo já em main — PRs antigas podem ser fechadas |
+| AGUARDANDO APROVAÇÃO | 3 | Requer aprovação humana antes do merge |
+| SUPERSEDED | 4 | Conteúdo já em main — PRs antigas podem ser fechadas |
 | FECHAR | 1 | gifted-dijkstra: trabalho já em main |
 | RESGATAR PARCIAL | 1 | devin/probe-e184: salvar só o SQL probe (PR #2423 aberto) |
 | Descartáveis (A+B+F) | 44 | Nenhum trabalho a preservar |
 
 ---
 
-## 2. Branches AGUARDANDO APROVAÇÃO (4)
+## 2. Branches AGUARDANDO APROVAÇÃO (3)
 
 Ordenadas por prioridade de negócio (migrations de segurança primeiro):
 
@@ -38,17 +38,7 @@ Ordenadas por prioridade de negócio (migrations de segurança primeiro):
 - Teste Postgres: APROVADO — cadeia completa com auth.users stub (ver §6.1.1 migrations #21–23)
 - Dossiê: `dossies/security-brechas-e30-e40-e18-2026-10-22.md`
 
-### 2.2 fix-audit-acl-regrole-261024-1635 — **PR #2424**
-**Migration `20261024163500` — cast seguro via pg_get_userbyid() — não aplicada em produção**
-- `20261024163500_fix_audit_security_definer_acl_regrole_cast.sql`: `CREATE OR REPLACE FUNCTION public.audit_security_definer_acl()` com cast seguro (`pg_get_userbyid` em vez de `::regrole`) — elimina HTTP 500 quando role removida
-- Ledger confirmado via `execute_sql SELECT`: `20261024163500` **AUSENTE** em `schema_migrations` de `doufsxqlfjyuvxuezpln`
-- Migration file já commitado em main@`dcf7dc70` — aplicação pendente via workflow
-- Estado da branch: `dirty`, `mergeable: false` — PR conflitada com main; aplicação feita via `db-apply-migration.yml` usando o arquivo já em main (não requer merge da PR)
-- **Ação:** aplicar via `db-apply-migration.yml` com version `20261024163500` após aprovação
-- Teste Postgres: APROVADO — banco `test_audit_chain`, cast seguro confirmado (ver §6.1.1 migration #24)
-- Dossiê: `dossies/fix-audit-acl-regrole-261024-1635.md`
-
-### 2.3 fix-contract-mag-reader-261024-1930 — **PR #2427** (nova branch limpa)
+### 2.2 fix-contract-mag-reader-261024-1930 — **PR #2427** (nova branch limpa)
 **CORS sem literal `'*'` + contrato magazine-reader-state-read**
 - `supabase/functions/_shared/cors.ts`: `CORS_WILDCARD_ORIGIN = String.fromCharCode(42)` — elimina falso-positivo gitleaks Gate E95
 - `tests/contracts/webhook-schemas.ts`: schema `MagazineReaderStateReadSchemaV1` + entrada em `CONTRACTS` — satisfaz Gate 1.12
@@ -57,7 +47,7 @@ Ordenadas por prioridade de negócio (migrations de segurança primeiro):
 - **Ação:** revisar allowlist CORS + deployar via `deploy-edge-functions.yml` após merge
 - Dossiê: `dossies/fix-contract-mag-reader-261019-2110.md`
 
-### 2.4 fix-gitleaks-gate-261024-1930 — **PR #2428** (nova branch limpa)
+### 2.3 fix-gitleaks-gate-261024-1930 — **PR #2428** (nova branch limpa)
 **Allowlist `.gitleaks.toml` — falsos-positivos de testes/fixtures**
 - 10 regexes adicionadas: `SERVICE_ROLE_KEY`, `YOUR_JWT_TOKEN`, mock tokens (`abc123def456`, `anon-key-12345678`, `sup-tok-abc123`, `idem-duplicate-test-001`), JWT canônico jwt.io, fake AWS key, token fuzz magazinePublish
 - Merge semântico da branch original com main (main tinha `paths` mais completo; branch tinha `regexes` únicos)
@@ -68,15 +58,18 @@ Ordenadas por prioridade de negócio (migrations de segurança primeiro):
 
 ---
 
-## 2.B Branches SUPERSEDED (3) — conteúdo já em main
+## 2.B Branches SUPERSEDED (4) — conteúdo já em main
 
-Estas branches tinham PRs abertas mas o conteúdo do código já está em `main`. Podem ser fechadas. Nenhuma tem migration nova pendente no ledger.
+Estas branches tinham PRs abertas mas o conteúdo do código já está em `main`. Podem ser fechadas.
+
+**Nota — migration `20261024163500` pendente em produção:** O SQL `20261024163500_fix_audit_security_definer_acl_regrole_cast.sql` está em `main` desde `dcf7dc70` mas **não consta no ledger `schema_migrations`** de produção. Aplicar via `db-apply-migration.yml` com `version=20261024163500` (não requer merge de PR — arquivo já está em main).
 
 | Branch | PR | Por que superseded |
 |---|---|---|
 | `fix-sync-log-ci-261019-1730` | #2419 | `MAX_RETRIES = 3` + retry loop (8 ocorrências) já em main@dcf7dc70 |
 | `fix-rollback-261019-1637` | #2420 | `supabase/rollbacks/20261019000000_rollback.sql` em main com conteúdo mais completo |
 | `chore-migrations-sync-log-261019-1600` | #2422 | PGPORT em SEGREDOS.md + MIGRATIONS_SYNC_LOG entry já em main |
+| `fix-audit-acl-regrole-261024-1635` | #2424 (`dirty`) | Migration SQL e workflow já em main — PR conflitada. Migration `20261024163500` precisa ser aplicada via `db-apply-migration.yml` (arquivo em main, não requer merge desta PR) |
 
 ---
 
@@ -137,7 +130,7 @@ Snapshots:
 | Branch | Tem migration nova? | Testado? | Resultado |
 |---|---|---|---|
 | security-brechas-e30-e40-e18 (AGUARDANDO APROVAÇÃO #2416) | SIM (3 migrations: REVOKE) | SIM | APROVADO — 0 erros; migrations 194000/194100/194200 NÃO estão no ledger de produção |
-| fix-audit-acl-regrole (AGUARDANDO APROVAÇÃO #2424) | SIM (1 migration: CREATE FUNCTION) | SIM | APROVADO — 0 erros; migration 163500 NÃO está no ledger; arquivo já em main@`dcf7dc70` |
+| fix-audit-acl-regrole (SUPERSEDED — #2424 dirty) | SIM (1 migration: CREATE FUNCTION) | SIM | APROVADO — 0 erros; migration 163500 NÃO está no ledger; arquivo já em main@`dcf7dc70`; PR conflitada, aplicar via `db-apply-migration.yml` |
 | fix-contract-mag-reader-261024-1930 (PR #2427) | ZERO migrations | N/A | Toca só `cors.ts` + `tests/contracts/webhook-schemas.ts` |
 | fix-gitleaks-gate-261024-1930 (PR #2428) | ZERO migrations | N/A | Toca só `.gitleaks.toml` (allowlist) |
 | fix-sync-log-ci (SUPERSEDED #2419) | ZERO migrations | — | Conteúdo já em main; PR pode ser fechada |
