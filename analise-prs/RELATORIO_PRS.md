@@ -46,13 +46,13 @@ Nenhum commit dos PRs abertos está já em main. Todos os PRs trazem mudanças �
 
 ---
 
-## SINGU (pqpdolkaeqlyzpdpbizo) — verificação read-only
+## SINGU (pqpdolkaeqlyzpdpbizo) — verificação read-only [LEGACY_INFORMATIVO]
 
 Busca por adições (`+`) de referências ao projeto proibido `pqpdolkaeqlyzpdpbizo` em cada PR:
 
 | PR | Refs adicionadas | Detalhe |
 |---|---|---|
-| #2414 | 1 ref (docs only) | `analise-branches/` — texto de dossiê menciona "probe que varre refs a `pqpdolkaeqlyzpdpbizo`". Sem escrita ao projeto. |
+| #2414 | 1 ref (docs only) | `analise-branches/` — texto de dossiê menciona "probe que varre refs a `pqpdolkaeqlyzpdpbizo`" [LEGACY_INFORMATIVO]. Sem escrita ao projeto. |
 | #2415 | 0 | Limpo |
 | #2417–#2422 | 0 | Limpos |
 | #2424 | 0 | Limpo |

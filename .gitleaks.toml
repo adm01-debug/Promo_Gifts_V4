@@ -52,6 +52,12 @@ paths = [
   # remocao de privilegio). REVOKE e SQL padrao, nao segredo. O gitleaks detecta
   # o token "anon" no contexto do REVOKE como falso-positivo (run 39915162290).
   '''supabase/migrations/20261022194.*\.sql''',
+  # Build artifacts — bundles Vite podem conter strings de mock/fixture do codigo-fonte
+  # (ex: abc123def456 de AdminConexoesPage). Nao sao segredos operacionais.
+  '''dist/.*''',
+  # Dossies de analise de PRs — contêm exemplos/fixtures de tokens (ex: AKIA fake
+  # em PR-2428.md:23 usado como exemplo de chave AWS). Nao sao segredos operacionais.
+  '''analise-prs/.*''',
 ]
 
 # Commit historico com service_role hardcoded (E002 removeu do codigo fonte).

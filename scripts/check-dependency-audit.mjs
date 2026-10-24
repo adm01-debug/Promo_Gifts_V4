@@ -22,16 +22,13 @@ const REVIEWED_PPTXGENJS_VULNERABLE_RANGES = new Set(['1.1.5-1 || >=1.1.6', '>=2
 const REVIEWED_IMAGE_SIZE_VULNERABLE_RANGES = new Set(['*', '<=2.0.2', '0.6.3 - 2.0.2']);
 
 // zod — GHSA-mrhx-c7xc-m3w5 (DoS: memory exhaustion in oversized constrained collections).
-// zod ^3.22.4 is a direct PRODUCTION dependency used throughout the codebase for form/API
-// validation. The fix (zod@4.6.7) is a semver-major breaking change; the 3.x → 4.x migration
-// is a significant effort and out of scope for a hotfix. Risk assessment:
-//   - The vulnerability requires "oversized constrained collections" in validation input.
-//   - This is a B2B internal tool; user-supplied input paths are narrow and length-bounded by UI.
-//   - No arbitrary file or object upload reaches zod validators in production flows.
-//   - Accepted as temporary risk; MUST be resolved by RISK_REVIEW_DEADLINE via zod@4.x migration.
+// After Dependabot PR #2401 upgraded zod 3.x → 4.6.6, our DIRECT zod is no longer vulnerable
+// (range <4.6.6 does not include 4.6.6). npm audit now reports zod with isDirect:false because
+// the vulnerability represents chromium-bidi's nested older zod
+// (node_modules/chromium-bidi/node_modules/zod), not our production dep.
 // chromium-bidi is a transitive dev-only dep: puppeteer-core → chromium-bidi → zod.
 // puppeteer-core is already in ALLOWED_LHCI_PACKAGES (LHCI / Playwright CI tooling only).
-// Revisit by RISK_REVIEW_DEADLINE. (E205 — 2026-10-23)
+// Revisit by RISK_REVIEW_DEADLINE. (E205 — 2026-10-23; updated post-#2401)
 const ZOD_CVE_ADVISORY_URL = 'https://github.com/advisories/GHSA-mrhx-c7xc-m3w5';
 const ZOD_CVE_SOURCE = 1243066;
 const ALLOWED_ZOD_CHAIN_PACKAGES = new Set([
@@ -190,16 +187,21 @@ function isAllowedLhciPackage(packageName, vulnerability) {
 function isAllowedZodChainPackage(packageName, vulnerability) {
   if (!ALLOWED_ZOD_CHAIN_PACKAGES.has(packageName)) return false;
   if (packageName === 'zod') {
-    // Must be the direct dep with exactly the reviewed advisory.
-    if (vulnerability.isDirect !== true) return false;
     if (vulnerability.severity !== 'high') return false;
     const via = vulnerability.via ?? [];
-    return (
+    const advisoryMatches =
       via.length === 1 &&
       typeof via[0] === 'object' &&
       via[0]?.url === ZOD_CVE_ADVISORY_URL &&
-      via[0]?.source === ZOD_CVE_SOURCE
-    );
+      via[0]?.source === ZOD_CVE_SOURCE;
+    if (!advisoryMatches) return false;
+    // Pre-#2401: our direct zod 3.x was vulnerable (isDirect:true).
+    if (vulnerability.isDirect === true) return true;
+    // Post-#2401: our direct zod is 4.6.6 (not in range <4.6.6).
+    // npm audit now represents chromium-bidi's nested older zod (isDirect:false,
+    // effects:['chromium-bidi']). Allow exactly this case.
+    const effects = vulnerability.effects ?? [];
+    return vulnerability.isDirect === false && effects.length === 1 && effects[0] === 'chromium-bidi';
   }
   if (packageName === 'chromium-bidi') {
     // Transitive dep — only via zod (which is in this allowlist), dev-only (puppeteer-core chain).

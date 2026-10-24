@@ -163,7 +163,7 @@ describe('contract: webhook-dispatcher v1 (compat)', () => {
     const req = makeRequest({
       body: {
         event: 'noop',
-        replay_delivery_id: '11111111-2222-3333-4444-555555555555',
+        replay_delivery_id: '11111111-2222-3333-8444-555555555555',
       },
     });
     const r = await parseContract(req, WebhookDispatcherSchemas);
@@ -233,7 +233,7 @@ describe('contract: webhook-dispatcher v2 (discriminated union)', () => {
       headers: { 'accept-version': '2' },
       body: {
         mode: 'replay',
-        replay_delivery_id: '11111111-2222-3333-4444-555555555555',
+        replay_delivery_id: '11111111-2222-3333-8444-555555555555',
       },
     });
     const okR = await parseContract(ok, WebhookDispatcherSchemas);

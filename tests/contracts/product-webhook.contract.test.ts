@@ -241,7 +241,7 @@ describe('contract: product-webhook v1 (compat com produção)', () => {
 describe('contract: product-webhook v2 (strict)', () => {
   const validV2 = {
     action: 'upsert',
-    idempotency_key: '11111111-2222-3333-4444-555555555555',
+    idempotency_key: '11111111-2222-3333-8444-555555555555',
     product: {
       external_id: 'ext-001',
       sku: 'ABC',
@@ -314,7 +314,7 @@ describe('contract: product-webhook v2 (strict)', () => {
       headers: { 'accept-version': '2' },
       body: {
         action: 'delete',
-        idempotency_key: '11111111-2222-3333-4444-555555555555',
+        idempotency_key: '11111111-2222-3333-8444-555555555555',
       },
     });
     const r = await parseContract(req, ProductWebhookSchemas);
@@ -333,7 +333,7 @@ describe('contract: product-webhook v2 (strict)', () => {
       headers: { 'accept-version': '2' },
       body: {
         action: 'batch_upsert',
-        idempotency_key: '11111111-2222-3333-4444-555555555555',
+        idempotency_key: '11111111-2222-3333-8444-555555555555',
         products: [],
       },
     });
