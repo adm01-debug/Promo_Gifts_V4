@@ -1,82 +1,124 @@
-# Regras de Negocio — MISSAO DAS PRs
+# Regras de Negócio — Análise de PRs
 
-Extraidas da analise das 24 PRs abertas em 2026-10-23.
+**Documento gerado em:** 2026-10-24  
+**Sessão:** https://claude.ai/code/session_01Ss1tXZ4cAbxBvdmu95uNPz  
+**Aplicado a:** análise dos PRs #2414–#2428 do repo `adm01-debug/Promo_Gifts_V4`
 
-## RN-01 — Stack: React + TypeScript + Vite + Supabase
+---
 
-O projeto nao usa Webpack, Next.js, Jekyll, Python, Deno, Ruby ou PHP.  
-PRs que introduzem workflows para essas stacks incompativeis devem ser FECHADAS.
+## 1. Critérios de Merge Autônomo
 
-**PRs afetadas:** #2322, #2323, #2324, #2329, #2335, #2337 (stack errada);  
-#2325, #2326, #2330, #2331, #2333, #2334 (funcionalidade ausente no stack).
+Um PR é elegível para merge autônomo **somente se** satisfaz TODOS os critérios:
 
-## RN-02 — Gates CI sao soberanos
+| # | Critério | Fonte |
+|---|---|---|
+| 1 | `draft: false` (não é rascunho) | Fluxo Git Rule |
+| 2 | `mergeable: true` (sem conflitos) | GitHub API |
+| 3 | Nenhum arquivo toca Rule 8 (ver §2) | CLAUDE.md REGRA #8 |
+| 4 | CI verde ou falha pre-existing comprovada | GitHub Actions |
+| 5 | Diff lido e validado (sem regressão em REGRA #1, #2) | CLAUDE.md |
 
-Deploy so ocorre quando Gate Final passa. O Gate Final agrega 13+ gates de qualidade  
-obrigatorios em `.github/workflows/deploy-gates.yml`.  
-PRs que modificam `.github/workflows/` exigem revisao humana (BLOQUEADA).
+---
 
-**PRs afetadas:** #2312 (1 workflow), #2315 (12 workflows) — ambas BLOQUEADAS.
+## 2. Triggers de Decisão Humana (Rule 8)
 
-## RN-03 — Migrations so via db-apply-migration.yml
+Qualquer PR tocando qualquer um dos itens abaixo exige aprovação do PO antes do merge:
 
-Nenhuma migration deve ser aplicada ao banco `doufsxqlfjyuvxuezpln` por MCP direto.  
-O unico caminho autorizado e `.github/workflows/db-apply-migration.yml` com aprovacao  
-em `environment: production` (CLAUDE.md REGRA #8/E15).  
-Agente nao pode aprovar — apenas Joaquim (PO) pode.
+### 2.1 CI / Workflows
+- Qualquer arquivo em `.github/workflows/`
+- Scripts de gate em `scripts/check-*.mjs` (considerados "CI por extensão")
+- `vitest.config.ts` com impacto em gate (borderline — depende do contexto)
 
-**PRs afetadas:** #2357/#2360 — 3 migrations REVOKE aguardam aprovacao humana.
+### 2.2 DDL / Migrations de Produção
+- Qualquer arquivo em `supabase/migrations/`
+- Qualquer arquivo em `supabase/rollbacks/`
+- Qualquer DDL que altere schema em `doufsxqlfjyuvxuezpln`
 
-## RN-04 — Gate E40 (R_SCHEMA_DRIFT) e inerente
+### 2.3 Segurança / Secrets
+- `.gitleaks.toml` (política de allowlist de secrets)
+- `docs/ci/SEGREDOS.md` como fonte de DDL (apenas documentação → OK)
+- Qualquer mudança que afroxa detecção de secrets reais
 
-Quando migrations existem no repo mas nao foram aplicadas ao banco, Gate E40 falha.  
-Isso e comportamento inerente e esperado quando migrations de seguranca aguardam  
-aprovacao humana. Nao e regressao de funcionalidade.  
-Gate Final volta a `success` apos aprovacao dos 3 runs de db-apply-migration.
+### 2.4 Infraestrutura
+- Dockerfile, docker-compose, stack configs
+- `.vercel/project.json` (REGRA #11 — não modificar)
+- `supabase/config.toml`
 
-## RN-05 — Major bumps exigem analise de breaking changes
+### 2.5 Dados Destrutivos / Custo
+- Deleção de tabelas, colunas, policies em produção
+- Mudanças que afetam billing/custo de infraestrutura
 
-Major bumps de dependencias exigem:
-- Analise de breaking changes documentada
-- Testes de regressao visual (para bibliotecas UI)
-- Verificacao de compatibilidade de Node.js
+---
 
-**PRs afetadas:** #2290 (eslint 9->10: quebra Node<20.19), #2293 (recharts 2->3: API breaking).
+## 3. Invariantes Obrigatórias
 
-## RN-06 — Agentes multiplos escrevem no repo
+Estas verificações rodam para TODOS os PRs antes de qualquer merge:
 
-Claude, Codex, Devin, Lovable (gpt-engineer-app[bot]), github-actions e cline  
-todos tem acesso de escrita. O agente nao pode escrever em branches de outros agentes.
+### 3.1 SSOT Supabase (REGRA #1)
+```sh
+grep 'doufsxqlfjyuvxuezpln' src/integrations/supabase/client.ts
+```
+- CURRENT_PROJECT_ID deve ser `doufsxqlfjyuvxuezpln`
+- `pqpdolkaeqlyzpdpbizo` nunca deve aparecer em código executável
 
-**PRs afetadas:** #2319 (Jules), #2320 (Copilot) — drafts de outros agentes, fechadas.
+### 3.2 Campos Críticos do Tipo Product (REGRA #2)
+Os campos abaixo devem existir em `src/types/product-catalog.ts`:
+- `price: number`
+- `sale_price?: number`
+- `shortDescription: string`
+- `category_id?: string`
+- `category_name?: string`
 
-## RN-07 — Falha nova no CI apos merge = PARAR escritas + registrar
+### 3.3 Vercel Project Anchor (REGRA #11)
+- `.vercel/project.json` deve conter `"projectId": "prj_9UfugNYCuboH2R0XB04Jv8PpjDpZ"`
+- Não deletar, não criar projeto fantasma
 
-Quando Gate Final falha apos um merge, o agente deve:
-1. Parar novas escritas de codigo (PRs, commits de funcionalidade)
-2. Registrar o SHA e a PR responsaveis
-3. Dispatchar o workflow autorizado para remediar (se existir)
+---
 
-Excecao explicitamente documentada: dispatches de `db-apply-migration.yml` para  
-remediar Gate E40 inerente sao escritas autorizadas, nao violacao da regra de parada.  
+## 4. Falhas CI Pre-Existing (não blocantes)
 
-**Ocorrencia nesta missao:** SHA `b4cc8163`, PR #2360 — Gate E40 inerente.  
-Registrado formalmente. Dispatches subsequentes: remediacao autorizada.
+Falhas verificadas como pre-existing e não atribuíveis a PRs em análise:
 
-## RN-08 — Producao = Vercel deploy automatico em merge para main
+| Falha | Causa | Status |
+|---|---|---|
+| `categories.level does not exist` em Supabase Preview | `CREATE MATERIALIZED VIEW "analytics"."categories_tree_visual"` referencia coluna inexistente | Pre-existing — não relacionada a nenhum PR |
 
-Qualquer merge em main dispara deploy Vercel em producao.  
-Verificar `state=READY` no Vercel antes de declarar merge bem-sucedido.
+---
 
-## RN-09 — Dependabot PRs: fechar se nao ha plano de teste de regressao
+## 5. Caminho de Deploy Pós-Merge
 
-PRs de Dependabot com major bumps devem ser fechadas se nao ha:
-- Plano de migracao documentado
-- Suite de testes para a funcionalidade afetada
-- Confirmacao de compatibilidade com a versao atual do Node.js
+### Edge Functions
+Após merge de qualquer PR que altere `supabase/functions/`:
+→ Dispatch obrigatório de `.github/workflows/deploy-edge-functions.yml`
 
-## RN-10 — Arquivos de artefatos de analise obrigatorios
+### Migrations
+Único caminho autorizado:
+→ `.github/workflows/db-apply-migration.yml` via `workflow_dispatch(version)`
 
-Qualquer missao de analise de PRs deve gerar:
-`MISSAO.md`, `baseline/`, `regras-de-negocio.md`, `progresso.json`,  
-`prs.json`, `prs.csv`, `dossies/`, `RELATORIO_PRS.md`
+### Schema Snapshot
+Após migration ou DDL OOB:
+→ `.github/workflows/schema-snapshot-export.yml` com `force_rotate: true`
+
+---
+
+## 6. Draft Status
+
+PRs em rascunho (draft) têm um bloqueio implícito: o autor não sinalizou que estão prontos para revisão. Por convenção, não são mergeados mesmo que o conteúdo seja correto e sem Rule 8. Ação necessária: o autor converter para "ready for review".
+
+---
+
+## 7. Resumo Aplicado aos PRs Analisados
+
+| PR | Veredicto | Razão Primária |
+|---|---|---|
+| #2414 | BLOQUEADA | dirty (conflitos) |
+| #2415 | DECISÃO HUMANA | Rule 8: CI workflow |
+| #2417 | DECISÃO HUMANA | Rule 8: CI + edge fn + dirty |
+| #2418 | DECISÃO HUMANA | Rule 8: deploy-gates.yml + dirty |
+| #2419 | DECISÃO HUMANA | Rule 8: security gate + dirty |
+| #2420 | DECISÃO HUMANA | Rule 8: migrations + dirty |
+| #2422 | DRAFT (elegível) | sem Rule 8; só falta sair de draft |
+| #2424 | DECISÃO HUMANA | Rule 8: DDL + CI workflow |
+| #2426 | DRAFT (elegível) | sem Rule 8; só falta sair de draft |
+| #2427 | DRAFT (elegível) | sem Rule 8 p/ merge; deploy manual pós-merge |
+| #2428 | DECISÃO HUMANA | Rule 8: security policy |

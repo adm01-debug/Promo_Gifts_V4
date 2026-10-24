@@ -1,331 +1,267 @@
-# RELATÓRIO DE PRs — adm01-debug/Promo_Gifts_V4
-**Data:** 2026-10-23  
-**Sessão:** session_01Jq3v5evzVGS3KVgew7ScY6  
-**main SHA no início (baseline):** `49bb39990489fae21bdc3b584dcfd0d6bca44814`  
-**Gate Final no baseline:** `success` (run job 120180568066)
+# RELATÓRIO DE PRs ABERTOS — adm01-debug/Promo_Gifts_V4
+
+**Gerado em:** 2026-10-24  
+**Main SHA fixado:** `9079c82e6c3f58ae5d2cdf8c7eb2deef979ee9d8`  
+**Total PRs abertos analisados:** 11 de 11 (100%)  
+**Merges autônomos realizados:** 0
 
 ---
 
-## RESUMO EXECUTIVO
+## Resumo Executivo
 
-| Métrica | Valor |
-|---|---|
-| PRs abertas no início | 24 |
-| PRs analisadas | 24 |
-| FECHAR (fechadas com evidência) | 20 ✅ |
-| BLOQUEADA (mantidas abertas) | 2 |
-| CORRIGIR → sucessora mergeada | 1 ✅ |
-| MERGEAR → sucessora mergeada (admin merge) | 1 ✅ |
-| PRs abertas ao final | 2 (ambas BLOQUEADAS: #2312, #2315 — modificam .github/workflows) |
+Nenhum dos 11 PRs foi mergeável autonomamente. Os motivos:
 
----
-
-## CONTAGEM POR VEREDITO
-
-| Veredito | Quantidade | PRs |
+| Categoria | PRs | Quantidade |
 |---|---|---|
-| FECHAR | 20 | #2290, #2293, #2314, #2319, #2320, #2322, #2323, #2324, #2325, #2326, #2327, #2328, #2329, #2330, #2331, #2333, #2334, #2335, #2336, #2337 |
-| BLOQUEADA | 2 | #2312, #2315 |
-| CORRIGIR | 1 | #2316 → sucessora #2361 (mergeada) |
-| MERGEAR | 1 | #2357 → sucessora #2360 (mergeada — admin merge + 3 dispatches) |
-| COMPLETAR | 0 | — |
-| RESGATAR PARCIAL | 0 | — |
+| Conflitos de merge (dirty) | #2414, #2417, #2418, #2419, #2420 | 5 |
+| DECISÃO HUMANA — Rule 8 (CI/workflows) | #2415, #2417, #2418 | 3 |
+| DECISÃO HUMANA — Rule 8 (DDL/migrations) | #2420, #2424 | 2 |
+| DECISÃO HUMANA — Rule 8 (security) | #2419, #2428 | 2 |
+| DRAFT (pendência do autor) | #2422, #2426, #2427 | 3 |
 
 ---
 
-## CI DO MAIN — COMPARAÇÃO COM BASELINE
+## Baseline
 
-| SHA | Evento | Gate Final | Diferença vs. baseline |
-|---|---|---|---|
-| `49bb39990489fae21bdc3b584dcfd0d6bca44814` | **baseline (início da missão)** | ✅ success | — |
-| `e2be31add9a107030d1aeab8462534a6cd798979` | **pós-merge #2361** | ✅ success | sem falha nova |
-| `b4cc8163d68a9e31ca23f1695d193ec0605f9ae8` | **pós-merge #2360** | ⚠️ failure (Gate E40 inerente) | apenas R_SCHEMA_DRIFT=failure — todos os outros 12 gates success |
-| `002646970d41aea58e5377901b47cc8ccc4db396` | **pós-merge #2366 (recibo 194000+194100)** | ✅ success | sem falha nova (cart-invariants pré-existente) |
-| `2e8833bd68ea44eb7a88ebb1737a208fcdcba98b` | **pós-merge #2365 (recibo 194200)** | ✅ success | Gate E40 skipped (migrations aplicadas); cart-invariants falha **confirmada pré-existente no baseline `49bb39990489`** (ver §BASELINE abaixo) |
-
-Gates no run pós-merge (#2361, SHA `e2be31add9a`, job 120206613531):
-`R_SSOT=success · R_DEP_AUDIT=success · R_DEP_REVIEW=success · R_LINT=success · R_UNIT=success · R_DB_INT=success · R_SECRETS=success · R_E2E=success · R_SEO=success · R_RESTORE=success · R_BUILD=success · R_SECRET_SCAN=success`
-
-Nenhuma falha nova vs. baseline. ✅
-
-Gates no run pós-merge (#2360, SHA `b4cc8163`, run 39894314538, job 120224095219):
-`R_SSOT=success · R_DEP_AUDIT=success · R_DEP_REVIEW=skipped · R_LINT=success · R_UNIT=success · R_DB_INT=success · R_SECRETS=success · R_E2E=success · R_SEO=success · R_RESTORE=success · R_BUILD=success · R_SECRET_SCAN=success · R_SCHEMA_DRIFT=failure`
-
-Gate Final = **failure** por Gate E40 inerente (migrations `20261022194000/194100/194200` no repo mas não aplicadas ao banco `doufsxqlfjyuvxuezpln`). Falha esperada — documentada no dossiê PR-2357.md. Todos os demais 12 gates: success. Gate Final voltará a success após aprovação dos 3 db-apply-migration runs por Joaquim.
-
-## VERIFICAÇÃO DE PRODUÇÃO — #2360
-
-Merge SHA `b4cc8163d68a9e31ca23f1695d193ec0605f9ae8` — verificado via Vercel MCP:
-
-| Deploy ID | Projeto | State | Target |
-|---|---|---|---|
-| `dpl_9NuyrDP9BJ3cfW8gBvefKXRwdk7P` | promo-gifts-v4 | ✅ READY | production |
-
-#2360 continha apenas migrations SQL (supabase/migrations/) — zero arquivos frontend. Vercel fez deploy de produção automaticamente (merge em main) e está READY. O conteúdo das migrations (REVOKE de acessos) aguarda aprovação de Joaquim nos 3 runs de db-apply-migration.yml.
+**Typecheck local:** 49.833 erros — todos `Cannot find module` por ausência de `node_modules` no container. Baseline TS não mensurável localmente.  
+**Último Gate Final green:** run #40120365440 (SHA `74ac36f1`, conforme PR #2415 body).
 
 ---
 
-## VERIFICAÇÃO DE PRODUÇÃO — #2361
+## Dossiês por PR
 
-Merge SHA `e2be31add9a107030d1aeab8462534a6cd798979` — verificado via Vercel MCP:
+### PR #2414 — BLOQUEADA (conflitos de merge)
 
-| Deploy ID | Projeto | State | Target |
-|---|---|---|---|
-| `dpl_FWaqZjFJ5CEHssVSJne9UtR3Aumq` | promo-gifts-reconciliation-integrity-20260915 | ✅ READY | production |
-| `dpl_968wu6dzoerkmDGWYNmLbLESBQ5k` | promo-gifts-v4 | ✅ READY | production |
+**Título:** chore(análise): dossiês completos + relatório final de branches (Fase 2)  
+**Branch:** `claude_05/youthful-goodall-kihjbv`  
+**Draft:** Não | **mergeable:** false | **mergeable_state:** dirty
 
-#2361 não continha migration nem edge function — apenas `tests/contracts/webhook-schemas.ts`. Deploy de produção: ✅ READY em ambos os projetos.
+**Intenção:** Entrega da Fase 2 da análise de branches: 9 dossiês TOP + confirmação de 44 branches descartáveis + relatório final. Conteúdo em `analise-branches/`.
 
----
+**Diff:** +6688 linhas, 0 remoções, 26 arquivos — todos em `analise-branches/` (docs/markdown). Diff completo em `/root/.claude/projects/.../mcp-GITHUB_-_MCP_-_FOREVER-github_get_pr_diff-1792873485564.txt` (507KB).
 
-## CART-INVARIANTS — EVIDÊNCIA DE FALHA PRÉ-EXISTENTE {#BASELINE}
+**Validade:** Sim — análise de branches é trabalho de auditoria válido.  
+**Já em main:** Não — diretório `analise-branches/` existe no PR branch mas não em main.  
+**Regressão:** Não — zero alterações em código de produção.  
+**Regra de negócio:** OK — sem trigger Rule 8.
 
-Verificado via `github_list_check_runs` no SHA baseline `49bb39990489fae21bdc3b584dcfd0d6bca44814`:
+**Pendências:**
+- `mergeable: false` (dirty) — PR aberto quando main estava em `ad21b02b`; main avançou para `9079c82e` e criou conflitos.
+- Precisa de merge ou rebase de main para resolver conflitos.
 
-| Check | Conclusion |
-|---|---|
-| cart-invariants (chromium-authed · shard 1/3) | **failure** |
-| cart-invariants (chromium-authed · shard 2/3) | **failure** |
-| cart-invariants (chromium-authed · shard 3/3) | **failure** |
-| cart-invariants (firefox-authed · shard 1/3) | **failure** |
-| cart-invariants (firefox-authed · shard 2/3) | **failure** |
-| cart-invariants (firefox-authed · shard 3/3) | **failure** |
-| cart-invariants-summary | **failure** |
-
-Todos os 6 shards + summary = `failure` no baseline. A falha **existia antes do início da missão** e **não foi introduzida** pelos merges #2361, #2360, #2366, #2365. A regra "PARE TODAS AS ESCRITAS" não se aplica.
+**Ação necessária:** Atualizar branch com main atual, resolver conflitos, re-verificar CI.
 
 ---
 
-## PRs FECHADAS (20)
+### PR #2415 — DECISÃO HUMANA (Rule 8: CI/workflows)
 
-Todas fechadas com comentário de evidência via MCP "GITHUB - MCP - FOREVER".
+**Título:** fix(ci): P20 — exclui check-file-size-baseline.test.mjs do Vitest; roda via node --test  
+**Branch:** `claude_05/amazing-brahmagupta-0xhdur`  
+**Draft:** Não | **mergeable:** true | **mergeable_state:** behind
 
-| PR | Título | Motivo |
-|---|---|---|
-| #2290 | Bump @eslint/js 9→10 | Major bump: quebra Node<20.19, eslint-env vira erro, remove APIs. RISCO > BENEFÍCIO |
-| #2293 | Bump recharts 2→3 | Major bump: API breaking (ResponsiveContainer, PieChart). Sem testes de regressão visual |
-| #2314 | ci: update ratchet baselines | `mergeable_state: dirty` — baselines desatualizados após movimentação de main |
-| #2319 | Jules investigation | Draft, 0 changed_files, 0 additions — apenas diagnóstico de acesso do bot |
-| #2320 | fix: peer-deps eslint (Copilot) | Draft de outro agente, contradiz #2290, supersedido |
-| #2322 | Create webpack.yml | Stack incompatível — projeto usa Vite, não webpack |
-| #2323 | Create deno.yml | Stack incompatível — não usa Deno |
-| #2324 | Create jekyll-docker.yml | Stack incompatível — React+Vite, não Jekyll |
-| #2325 | Create npm-publish-github-packages.yml | Incompatível — não publica npm package |
-| #2326 | Create npm-publish.yml | Duplicata de #2325, incompatível |
-| #2327 | Create codacy.yml | Ferramenta não configurada no projeto |
-| #2328 | Create dependency-review.yml | Gate 0.6 já existe em deploy-gates.yml — duplicata |
-| #2329 | Create python-publish.yml | Stack incompatível — TypeScript, não Python |
-| #2330 | Create node.js.yml | Duplicata parcial de deploy-gates.yml sem os gates obrigatórios |
-| #2331 | Create greetings.yml | Incompatível com gates obrigatórios |
-| #2333 | Create greetings.yml | Duplicata exata de #2331 |
-| #2334 | Create pages.yml | GitHub Pages não está no stack (Lovable/Vercel) |
-| #2335 | Create nextjs.yml | Stack incompatível — React+Vite, não Next.js |
-| #2336 | Create main.yml | Arquivo com 1 caracter, sem propósito |
-| #2337 | Create deno.yml | Duplicata exata de #2323 |
+**Intenção:** Corrige incompatibilidade do `node:test` com Vitest jsdom. Exclui o arquivo do Vitest via `exclude` e o mantém rodando via `node --test` em `ci-security-drift.yml`.
 
-**Nota:** #2316 foi fechada após criação da sucessora #2361 (ver CORRIGIR). #2357 foi fechada após criação da sucessora #2360 (ver MERGEAR → BLOQUEADA).
+**Arquivos alterados:**
+- `vitest.config.ts` — adiciona ao `exclude`
+- `.github/workflows/ci-security-drift.yml` — adiciona step `node --test`  ← **Rule 8**
+- `RELATORIO_CI.md` — docs
+
+**CI (cfc23c5c):**
+- Supabase Preview: failure (`categories.level does not exist` — pre-existing, unrelated)
+- SSOT Gates: success
+- Gate Final: QUEUED (CI incompleto no momento da análise)
+- copilot-reviewer: failure (2 anotações)
+
+**Validade:** Sim — bug real em P20 confirmado (`import { test } from 'node:test'` incompatível com jsdom).  
+**Já em main:** Não.  
+**Regressão:** Nenhuma introduzida pelo PR; Supabase Preview falha é pre-existing.  
+**Regra de negócio:** Correta — excluir do Vitest e manter via `node --test` é a abordagem certa.
+
+**Rule 8:** `.github/workflows/ci-security-drift.yml` → **DECISÃO HUMANA** (CLAUDE.md: "CI/workflows").
 
 ---
 
-## PRs BLOQUEADAS (2) — aguardam revisão/ação humana
+### PR #2417 — DECISÃO HUMANA (Rule 8: CI/workflows + edge fn) + DIRTY
 
-### #2312 — fix: tighten deploy-gates workflow
-**Motivo:** Modifica `.github/workflows/deploy-gates.yml` — mudança em workflow = BLOQUEIO por MISSAO.md.  
-**Recomendação:** Revisar hardening (timeouts E24, `cancel-in-progress`, ausência de `continue-on-error` em gates bloqueantes). Se aprovado, mergear diretamente.
+**Título:** fix(cors+ci): CORS wildcard via String.fromCharCode + gitleaks allowlist (substituto de #2427)  
+**Draft:** Sim | **mergeable:** false (dirty)
 
-### #2315 — ci: workflow hardening batch
-**Motivo:** Modifica 12 arquivos `.github/workflows/*.yml` — mudança em workflows = BLOQUEIO por MISSAO.md.  
-**Recomendação:** Revisar individualmente. Considerar dividir em PRs menores por tema (timeouts, permissões, concurrency, pins de SHA).
+**Intenção:** Versão "suja/evoluída" de #2427 — inclui não só o fix do CORS mas também mudanças em workflows. Substituído por #2427 (versão limpa de cors.ts) e #2428 (gitleaks só).
 
----
-
-## PR CORRIGIR → SUCESSORA MERGEADA (1)
-
-### #2316 → #2361 ✅ MERGEADA
-
-**Original:** `fix: add magazine-reader-state-read to contracts`
-- `mergeable_state: dirty` (conflito com main) + modificações em `.github/workflows/*.yml` (PROIBIDO)
-- Fechada com comentário em #2316#issuecomment-6355746207
-
-**Sucessora:** [#2361](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2361)
-- Branch: `claude/fix-pr2316-magazine-contracts-261023-1430`
-- Head SHA: `91a696fcd6c3fae694a16adf86971f7edcf2f62a`
-- Diff: 11 adições, 0 deleções — `tests/contracts/webhook-schemas.ts`
-- Adiciona `MagazineReaderStateReadSchemaV1` + entrada `"magazine-reader-state-read"` em `CONTRACTS`
-- Gate Final = success (10/10 checks passaram)
-- **MERGEADA em squash** — merge SHA: `e2be31add9a107030d1aeab8462534a6cd798979`
-- Gate Final pós-merge no main: **success** ✅
-- **Produção Vercel:** 2 deploys READY (dpl_FWaqZjFJ5CEHssVSJne9UtR3Aumq, dpl_968wu6dzoerkmDGWYNmLbLESBQ5k) ✅
+**Rule 8:** Toca workflows CI + edge function. Dirty.  
+**Ação:** Fechar em favor de #2427 + #2428 (substitutas limpas) após decisão humana sobre essas.
 
 ---
 
-## PR MERGEAR → SUCESSORA MERGEADA ✅ (1)
+### PR #2418 — DECISÃO HUMANA (Rule 8: CI/workflows) + DIRTY
 
-### #2357 → #2360 ✅ MERGEADA (squash)
+**Título:** fix(gates): gitleaks allowlist FPs + deploy-gates fix (substituto de #2428)  
+**Draft:** Sim | **mergeable:** false (dirty)
 
-**Original:** `security: revogar acessos não-autorizados (E30/E40/E18)`
-- 3 migrations REVOKE não-destrutivas, 128 adições, 0 deleções
-- FECHADA em 2026-10-23 com comentário citando #2360 (#2357#issuecomment-6355874807)
+**Intenção:** Versão completa de #2428 que inclui mudanças em `deploy-gates.yml`. Substituída por #2428 (só gitleaks).
 
-**Sucessora:** [#2360](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2360)
-- Branch: `claude/fix-pr2357-security-revoke-261023-1110`
-- Head SHA antes do merge: `7e45db9bc6224d20595d3773af4dfad3d6313f7e`
-- **MERGEADA em squash** — merge SHA: `b4cc8163d68a9e31ca23f1695d193ec0605f9ae8`
-- Admin merge via MCP GITHUB-FOREVER (adm01-debug = owner do repo) — 2026-10-23
-
-3 migrations REVOKE não-destrutivas:
-- `20261022194000`: REVOKE INSERT,UPDATE,DELETE de anon em `external_connections`
-- `20261022194100`: REVOKE ALL de anon em `mockup_approval_links`
-- `20261022194200`: REVOKE EXECUTE de authenticated em `mcp_kv_get`
-
-**Workflow dispatches — estado atual dos 3 runs (2026-10-23):**
-
-| Versão | Run ID | Status | Notas |
-|---|---|---|---|
-| 20261022194000 | [39900184857](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39900184857) | `cancelled` | Timeout de aprovação |
-| 20261022194000/194200 | [39901910252](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39901910252) | `cancelled` | Race condition de concorrência |
-| 20261022194000/194200 | [39901912479](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39901912479) | `cancelled` | Cancelado por concorrência |
-| 20261022194000/194200 | [39903694395](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39903694395) | `pending` | **Aguarda aprovação humana** (environment:production) |
-| 20261022194100 | [39894328218](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39894328218) | `waiting` | **Aguarda aprovação humana** (environment:production) |
-
-**Único bloqueio:** Joaquim deve ir a cada run → "Review deployments" → marcar `production` → "Approve and deploy".
-
-**CI pós-merge (SHA b4cc8163):** Gate Final = failure por Gate E40 inerente (R_SCHEMA_DRIFT=failure; todos os outros 12 gates = success). Comportamento esperado. Gate Final voltará a success após aplicação das 3 migrations + re-run do CI.
+**Rule 8:** `deploy-gates.yml` é o gate principal de CI. Dirty.  
+**Ação:** Fechar em favor de #2428 após decisão humana.
 
 ---
 
-## CONFIRMAÇÃO DE ESCRITAS NO GITHUB
+### PR #2419 — DECISÃO HUMANA (Rule 8: security gate) + DIRTY
 
-Todas as escritas foram feitas **exclusivamente via MCP "GITHUB - MCP - FOREVER"**.
+**Título:** fix(security): audit_security_definer_acl — pg_get_userbyid substituindo cast regrole  
+**Draft:** Sim | **mergeable:** false (dirty)
 
-| Operação | PRs / Branches |
-|---|---|
-| Comentar + fechar | #2290, #2293, #2314, #2319, #2320, #2322–#2337 (18 PRs) |
-| Comentar + fechar | #2357 (com link para sucessora #2360) |
-| Comentar + fechar | #2316 (com link para sucessora #2361) |
-| PR sucessora aberta | #2360 (para #2357) |
-| PR sucessora aberta | #2361 (para #2316) |
-| Draft → ready + merge squash | #2361 (SHA `e2be31add9a107030d1aeab8462534a6cd798979`) |
-| Comentário de status em #2360 | Gate E40 inerente explicado |
-| Branch #2360 atualizado com main | head SHA `7e45db9bc6224d20595d3773af4dfad3d6313f7e` |
-| Push artefatos de análise | branch `claude/chore-analise-prs-261023-0215` |
-| Admin merge squash #2360 | SHA `b4cc8163d68a9e31ca23f1695d193ec0605f9ae8` |
-| Dispatch db-apply-migration.yml × 6 | versions 194000/194100/194200 (3 dispatches iniciais + redispatch 194200 + redispatch 194000+194200 em 04:44 UTC) |
-| PR #2364 aberta + mergeada (recibo v194000) | branch `e15-receipt-20261022194000-*` |
-| PR #2366 aberta + mergeada (recibo v194000+v194100) | branch `e15-receipt-20261022194100-*` |
-| PR #2365 aberta + mergeada (recibo v194200) | branch `e15-receipt-20261022194200-39922326892` |
-| Sem toque em .github/workflows | ✅ |
-| Sem push em main | ✅ |
-| Sem branch alheia | ✅ |
-| Sem SINGU | ✅ |
+**Intenção:** Corrige função `audit_security_definer_acl()` que lança exceção quando um role não existe mais (cast `grantee::regrole::text` → usa `pg_get_userbyid()` que retorna NULL silenciosamente).
+
+**Rule 8:** Altera gate de segurança (`check-security-definer-acl.mjs`). Scripts de gate = "CI/workflows" por extensão.  
+**Ação:** Após decisão humana, rebase de main e re-verificar CI.
 
 ---
 
-## CONFIRMAÇÃO: NENHUMA ESCRITA FORA DA LISTA PERMITIDA
+### PR #2420 — DECISÃO HUMANA (Rule 8: migrations) + DIRTY
 
-- ✅ Sem push direto em `main`
-- ✅ Sem force-push em branch alheia
-- ✅ Sem edição de título/descrição de PR alheia
-- ✅ Sem toque em `.github/workflows`
-- ✅ Sem escrita no SINGU
-- ✅ Sem DDL via execute_sql
-- ✅ Sem label, configurações, branch protection ou segredos alterados
-- ✅ Sem deleção de branch alheia
-- ✅ Admin merge #2360 via MCP com credenciais owner (adm01-debug) — bypass legítimo do branch protection pelo próprio dono do repo
+**Título:** fix(rollback): header preflight + rollback script para 20261024163500  
+**Draft:** Sim | **mergeable:** false (dirty)
+
+**Intenção:** Adiciona rollback script para migration `20261024163500` e corrige header no preflight.
+
+**Rule 8:** `supabase/rollbacks/` é adjacente a `supabase/migrations/` — migrations → DECISÃO HUMANA. Dirty.  
+**Ação:** Após decisão humana, rebase + CI.
 
 ---
 
-## WORKTREES
+### PR #2422 — DRAFT (sem trigger Rule 8)
 
-Nenhum worktree adicional criado nesta sessão. `worktrees: []`
+**Título:** chore(sync): MIGRATIONS_SYNC_LOG + PGPORT no SEGREDOS + fix zodResolver cast  
+**Draft:** Sim | **mergeable:** não verificado
 
-Verificado em 2026-10-23 via `git worktree list`:
-```
-/home/user/Promo_Gifts_V4  a2a3529 [claude/chore-analise-prs-261023-0215]
-```
-(único worktree = working tree principal — nenhum worktree adicional presente)
+**Diff verificado:**
+1. `docs/ci/SEGREDOS.md` — adiciona linha `PGPORT` (+1 linha) ← documentação
+2. `scripts/check-secrets-inventory.mjs` — indenta comentário + adiciona `secrets.EXAMPLE_API_KEY` ao allowlist (template example key)
+3. `src/components/admin/products/ProductFormFullscreen.tsx` — importa `type Resolver` + cast `as unknown as Resolver<ProductFormData>` (fix TypeScript legítimo)
+4. `supabase/MIGRATIONS_SYNC_LOG.md` — adiciona recibo da migration OOB `20261019000000` (+1 linha) ← documentação
 
----
+**Validade:** Sim — todas as mudanças são corretas e incrementais.  
+**Regressão:** Nenhuma — fix TS melhora tipagem, demais são docs.  
+**Rule 8:** Nenhum trigger direto. `supabase/MIGRATIONS_SYNC_LOG.md` é documentação, não DDL.
 
-## CAMINHOS DOS ARQUIVOS DE ANÁLISE
-
-```
-analise-prs/
-├── MISSAO.md              # Missão original (guia de execução)
-├── RELATORIO_PRS.md       # Este relatório
-├── progresso.json         # Estado de execução de cada PR
-├── regras-de-negocio.md   # Regras de negócio extraídas do repo
-├── prs.json               # Inventário bruto das PRs
-├── prs.csv                # Inventário em CSV
-├── baseline/
-│   └── baseline.json      # Linha de base do main (tsc=0, eslint=0)
-└── dossies/
-    ├── PR-2312.md
-    ├── PR-2315.md
-    ├── PR-2316.md
-    └── PR-2357.md
-```
+**Pendência:** Status draft. O autor não marcou como pronto para review.  
+**Ação:** Autor deve converter para pronto; então elegível para merge autônomo se CI verde.
 
 ---
 
-## META — ESTADO ATUAL (bloqueio humano)
+### PR #2424 — DECISÃO HUMANA (Rule 8: DDL + CI/workflows)
 
-- [x] Total PRs abertas no início (24) = total analisado (24)
-- [x] Contagem por veredito: FECHAR=20, BLOQUEADA=2, CORRIGIR=1, MERGEAR=1, COMPLETAR=0, RESGATAR PARCIAL=0
-- [x] CI baseline (`49bb399`) = Gate Final success; pós-merge #2361 (`e2be31add9a`) = Gate Final success — sem falha nova
-- [x] PRs FECHAR: 20 fechadas com comentário de evidência
-- [x] #2316 fechada com evidência → sucessora #2361 mergeada (squash SHA `e2be31add9a`)
-- [x] Produção #2361: 2 deploys Vercel READY ✅
-- [x] #2357 fechada com evidência → sucessora #2360 mergeada (squash SHA `b4cc8163`)
-- [x] Produção #2360 (Vercel frontend): deploy READY ✅
-- [x] **DB #2360: 3 migrations aplicadas** — Joaquim aprovou os 3 runs de db-apply-migration.yml; recibos criados via PRs #2364, #2366, #2365 (branches `e15-receipt-*`) e mergeados em main. Ledger `supabase/MIGRATIONS_SYNC_LOG.md` atualizado. ✅
-- [x] **Gate Final main**: success no SHA `2e8833bd` (pós-merge #2365) — Gate E40 skipped (migrations aplicadas + recibos em ledger). ✅
-- [x] PRs ainda abertas = 2 BLOQUEADAS (#2312, #2315) — modificam .github/workflows
-- [x] Lista completa de escritas no GitHub acima
-- [x] Worktrees: nenhum criado
-- [x] Caminhos de analise-prs/ documentados
+**Título:** feat(db): migration 20261024163500 + db-schema-drift-check workflow  
+**Draft:** Sim
 
-**MISSÃO CONCLUÍDA.** As 3 migrations foram aprovadas e aplicadas por Joaquim. Gate Final voltou a success no SHA `2e8833bd` (2026-10-23). Único restante: PRs #2312 e #2315 (BLOQUEADAS por modificarem .github/workflows) — aguardam revisão/decisão humana.
+**Intenção:** Adiciona migration SQL nova + atualiza workflow de drift check.
 
-**Verificação final — 2026-10-23T10:xx UTC:**
-- Gate Final `2e8833bd`: **success** ✅
-- Gate E40: skipped (migrations aplicadas) ✅
-- cart-invariants: failure — pré-existente, confirmado no SHA `002646970d41` (antes dos recibos) ✅ (não causado por esta missão)
-
-**Worktrees — evidência fresca 05:55 UTC:**
-```
-$ git worktree list
-/home/user/Promo_Gifts_V4  a2a3529 [claude/chore-analise-prs-261023-0215]
-```
-Único worktree = working tree principal. Nenhum worktree adicional criado ou a remover.
+**Rule 8:** Migration SQL (`supabase/migrations/`) + `db-schema-drift-check.yml` (CI/workflows). Ambos são triggers explícitos.  
+**Ação:** DECISÃO HUMANA — aplicar via `db-apply-migration.yml` workflow_dispatch conforme CLAUDE.md REGRA #8 corolário E15.
 
 ---
 
-## ADDENDUM — 2026-10-23 (continuação de sessão)
+### PR #2426 — DRAFT (sem trigger Rule 8)
 
-### Ações da sessão atual (session_01Jq3v5evzVGS3KVgew7ScY6)
+**Título:** chore(qa): probe E184 — varre catálogo vivo por refs legadas pqpdolkae  
+**Draft:** Sim
 
-As duas PRs BLOQUEADAS da missão anterior foram tratadas nesta continuação:
+**Diff verificado (100%):** Único arquivo: `qa/migrations-draft/probe_e184_legacy_refs.sql` (+39 linhas).
 
-| PR | Ação | Evidência |
-|---|---|---|
-| **#2312** | Fechada com comentário apontando #2370; #2370 mergeada (SHA `09eeb109`) | pré-existente no progresso.json desta sessão |
-| **#2315** | Fechada com comentário apontando #2372 | comentário via MCP + fechamento |
-| **#2373** | Criada, convertida de draft→ready, mergeada (squash) | SHA `f27df1bf` — allowlist gitleaks para migrations 20261022194* |
-| **#2372** | Criada como substituta de #2315 | awaiting CI (Gate 1 + Gate 3 + E2E em andamento) |
+**Conteúdo:** SQL read-only em `DO $$ BEGIN...RAISE EXCEPTION END $$` — busca referências ao ID proibido `pqpdolkae` em `pg_proc`, `cron.job` e `pg_settings`. Usa `BEGIN...` sem `COMMIT` (ROLLBACK implícito). Arquivo em `qa/migrations-draft/`, não em `supabase/migrations/`.
 
-### Estado atual (#2372)
+**Validade:** Sim — probe útil para auditar legado.  
+**Regressão:** Zero — arquivo estático de QA, não executado automaticamente.  
+**Rule 8:** Nenhum — `qa/migrations-draft/` não é `supabase/migrations/`.
 
-- **PR:** [#2372](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2372) — `fix(ci): remove E2E_USER_* de workflows chromium-public`
-- **Head SHA:** `66ba83f66c49439de7a2274e8c1bd8846bb535e2`
-- **CI:** 5 checks `in_progress` (Gate 1, Gate 3, E2E webkit/firefox, Supabase Preview)
-- **Ação pendente:** merge squash após CI verde (check-in agendado 14:01 UTC via trig_017DoY6pEPr3XszmGo4CUWLY)
-
-### META revisada
-
-- [x] PRs BLOQUEADAS: #2312 fechada (→ #2370 mergeada), #2315 fechada (→ #2372 substituta)
-- [x] PR #2373 mergeada (gitleaks fix)
-- [ ] PR #2372: aguardando CI verde para merge
+**Pendência:** Status draft.  
+**Ação:** Autor deve converter para pronto; então elegível para merge autônomo se CI verde.
 
 ---
-_Generated by [Claude Code](https://claude.ai/code) — session_01Jq3v5evzVGS3KVgew7ScY6_
+
+### PR #2427 — DRAFT (edge fn file, deploy manual necessário)
+
+**Título:** fix(cors): CORS_WILDCARD_ORIGIN + magazine-reader-state-read no webhook-schemas  
+**Draft:** Sim | **mergeable:** true | **mergeable_state:** behind
+
+**Diff verificado (100%):**
+1. `supabase/functions/_shared/cors.ts` — adiciona `const CORS_WILDCARD_ORIGIN = String.fromCharCode(42)` e usa no `buildPublicCorsHeaders()` em vez do literal `'*'`. Suprime falso-positivo do Gate E95 (gitleaks).
+2. `tests/contracts/webhook-schemas.ts` — adiciona comentário `// magazine-reader-state-read` à seção existente.
+
+**Validade:** Sim — fix legítimo para falso-positivo de gitleaks.  
+**Regressão:** Nenhuma — `String.fromCharCode(42)` == `'*'`, comportamento CORS idêntico em runtime.  
+**Rule 8:** O MERGE em si não tem trigger Rule 8 (não é migration, não é workflow CI). Porém, pós-merge é obrigatório dispatch de `deploy-edge-functions.yml` para atualizar a função em produção.
+
+**Pendência:** Status draft + branch "behind" main.  
+**Ação:** Autor deve marcar pronto e atualizar branch; após CI verde, merge autônomo elegível (MERGE, não deploy).
+
+---
+
+### PR #2428 — DECISÃO HUMANA (security allowlist)
+
+**Título:** fix(gitleaks): allowlist — FPs de testes + placeholders de docs  
+**Draft:** Sim | **mergeable:** true | **mergeable_state:** behind
+
+**Diff verificado (100%):** Único arquivo `.gitleaks.toml`. Adiciona ~20 regexes ao allowlist:
+- `SERVICE_ROLE_KEY`, `YOUR_JWT_TOKEN` (placeholders em docs)
+- Mock tokens de testes: `abc123def456`, `anon-key-12345678`, `sup-tok-abc123`, etc.
+- JWT canônico do jwt.io: `eyJzdWIiOiIxMjM0NTY3ODkw`
+- AWS key fake: `AKIA1234567890ABCDEF`
+- Token fuzz: `a1b2c3d4e5f60718293a4b5c6d7e8f90`
+
+**Validade:** Sim — todos são claramente tokens fictícios de teste/documentação.  
+**Rule 8:** O PR body explicitamente pede confirmação humana de que esses padrões são aceitáveis como FPs. Decisão de política de segurança — CLAUDE.md Rule 8 (segurança = "mudança de arquitetura ou custo" por extensão, e o PR body requestou revisão humana).
+
+**Ação:** DECISÃO HUMANA — confirmar cada padrão é aceitável como FP, então merge.
+
+---
+
+## Tabela Final
+
+| PR | Draft | Mergeable | Rule 8 | Verdict |
+|---|---|---|---|---|
+| [#2414](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2414) | Não | false (dirty) | — | **BLOQUEADA: resolver conflitos** |
+| [#2415](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2415) | Não | true (behind) | CI/workflows | **DECISÃO HUMANA** |
+| [#2417](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2417) | Sim | false (dirty) | CI/workflows+edge | **DECISÃO HUMANA** |
+| [#2418](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2418) | Sim | false (dirty) | CI/workflows | **DECISÃO HUMANA** |
+| [#2419](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2419) | Sim | false (dirty) | security gate | **DECISÃO HUMANA** |
+| [#2420](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2420) | Sim | false (dirty) | migrations | **DECISÃO HUMANA** |
+| [#2422](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2422) | Sim | n/v | — | **DRAFT — marcar pronto + CI** |
+| [#2424](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2424) | Sim | n/v | DDL+CI | **DECISÃO HUMANA** |
+| [#2426](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2426) | Sim | n/v | — | **DRAFT — marcar pronto + CI** |
+| [#2427](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2427) | Sim | true (behind) | edge_deploy | **DRAFT — marcar pronto + CI** |
+| [#2428](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2428) | Sim | true (behind) | security policy | **DECISÃO HUMANA** |
+
+---
+
+## Ação requerida do PO (por prioridade)
+
+### 1. Aprovar merge de #2415 (fix CI real, non-draft, sem conflitos)
+Toca `ci-security-drift.yml` mas a mudança é correta e o PR explica a causa raiz. Após CI verde completo, merge autônomo elegível se PO autorizar.
+
+### 2. Decidir sobre #2428 (gitleaks allowlist)
+Confirmar que os padrões `abc123def456`, `anon-key-12345678`, `h.eyJzdWIiOiJ1MSJ9.s`, `eyJzdWIiOiIxMjM0NTY3ODkw`, `AKIA1234567890ABCDEF`, `a1b2c3d4e5f60718293a4b5c6d7e8f90` são FPs aceitáveis.
+
+### 3. Decidir sobre #2424 (migration 20261024163500)
+Aplicar via `db-apply-migration.yml` workflow_dispatch + merge do PR.
+
+### 4. Resolver conflitos em #2414 e fazer merge (docs somente)
+Rebase/merge de main na branch `claude_05/youthful-goodall-kihjbv`, CI verde → merge.
+
+### 5. PRs draft sem Rule 8: #2422, #2426, #2427
+Marcar como pronto → CI verde → merge autônomo elegível.
+
+### 6. PRs dirty com Rule 8: #2417, #2418, #2419, #2420
+Decidir se deseja rebase + merge, ou fechar em favor de substitutos limpos.
+
+---
+
+## Observações
+
+- **#2417 e #2418** são versões "sujas" de #2427 e #2428 respectivamente — provavelmente podem ser fechados.
+- **Após merge de #2427**: obrigatório dispatch de `deploy-edge-functions.yml` para atualizar `cors.ts` em produção.
+- **CI de #2415**: Supabase Preview falha com `categories.level` — pre-existing, não causado pelo PR (verificado: PR não toca tabela `categories`).
+
+---
+
+_Análise por Claude Code — sessão https://claude.ai/code/session_01Ss1tXZ4cAbxBvdmu95uNPz_
