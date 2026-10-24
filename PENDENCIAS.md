@@ -186,4 +186,75 @@ permissões para query read-only em `doufsxqlfjyuvxuezpln`.
 
 ---
 
+## P6 — Smoke — HTTP against supabase functions serve: ECR rate limit
+
+**Workflow:** Contract Tests (`.github/workflows/contract-tests.yml`)  
+**Run:** [#40099851891](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40099851891)  
+**Job:** `Smoke — HTTP against supabase functions serve` (job 120889744946)  
+**Conclusão:** `failure`  
+**Categoria:** Rate limit externo (AWS ECR) — não corrigível via código
+
+**Erros exatos (log do step "Start Supabase stack"):**
+```
+logflare Error toomanyrequests: Data limit exceeded
+imgproxy Error toomanyrequests: Data limit exceeded
+edge-runtime Error toomanyrequests: Data limit exceeded
+kong Error toomanyrequests: Data limit exceeded
+gotrue Error toomanyrequests: Data limit exceeded
+mailpit Error toomanyrequests: Data limit exceeded
+failed to pull docker image: Error response from daemon: toomanyrequests: Data limit exceeded
+public.ecr.aws/supabase/postgres:17.6.1.063
+(Retried 3x — todas falharam)
+failed to inspect container health: Error response from daemon: No such container: supabase_db_doufsxqlfjyuvxuezpln
+```
+
+**Causa raiz:**  
+AWS ECR (Amazon Container Registry) atingiu o rate limit de pulls no runner de CI.
+O runner tentou puxar todas as imagens do stack local do Supabase (postgres, edge-runtime, kong, gotrue, etc.)
+e recebeu `toomanyrequests: Data limit exceeded` em todas.
+Rate limit externo de infraestrutura — não causado por código do repo.
+
+**Pré-existente:** commit `325b0bd` (main baseline) — não introduzido por este PR.  
+Commit `12a7774` não altera nenhum arquivo de workflow, schema Supabase ou Dockerfile.
+
+**Ação necessária pelo PO:**  
+- Configurar autenticação no runner para `public.ecr.aws` (ECR pull-through cache ou credenciais AWS)  
+- **Ou** migrar para `ghcr.io` ou `hub.docker.com` como registry das imagens Supabase CLI  
+- **Ou** configurar `SUPABASE_INTERNAL_IMAGE_REGISTRY` apontando para um mirror privado
+
+---
+
+## P7 — Supabase Preview: coluna `categories.level` inexistente
+
+**Workflow:** Supabase Preview (integração bot `supabase[bot]`)  
+**Check:** `Supabase Preview` (check externo, não parte do Gate Final)  
+**Commit afetado:** `12a7774454a4bd7174c6eeedb024c6e1f98d7e18`  
+**Conclusão:** `failure`  
+**Categoria:** Falha em preview branch do Supabase — não corrigível via código deste PR
+
+**Erro exato:**
+```
+ERROR:  column "level" of relation "categories" does not exist (SQLSTATE 42703)
+Statement 59: CREATE MATERIALIZED VIEW "analytics"."categories_tree_visual" AS ...
+  WITH (categories AS (
+    SELECT c.id, c.name, c.slug, c.parent_id, c.level, ...
+    FROM public.categories c
+  ))
+```
+
+**Diagnóstico:**  
+A view materializada `analytics.categories_tree_visual` referencia `c.level` na tabela `public.categories`,
+mas essa coluna não existe no schema da **preview branch** do Supabase associada a este PR.
+O próprio `supabase[bot]` confirmou: "no changes detected in supabase directory" para este PR —
+portanto a falha é pré-existente na preview branch, não introduzida por este PR.
+
+**Pré-existente:** presente antes do commit `325b0bd`. PR não altera nenhum arquivo em `supabase/`.
+
+**Ação necessária pelo PO:**  
+Adicionar coluna `level` à tabela `public.categories` no schema da preview branch (migration versionada),
+ou remover/corrigir a referência em `analytics.categories_tree_visual`.
+Ver REGRA #8 do CLAUDE.md para processo de migration.
+
+---
+
 *Atualizado pela sessão Claude Code — https://claude.ai/code/session_01Nc1nb7PArDnixYvvZssnKy*

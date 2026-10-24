@@ -11,16 +11,19 @@
 
 ## Tabela de Prova — Todos os Workflows Analisados
 
-| Workflow | Run de referência | Status baseline (`325b0bd`) | Status final (`cb35d92`) |
-|---|---|---|---|
-| Gate 2 — Testes unitários (vitest) | [#40097995600](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40097995600) | `failure` | **`success`** ✅ |
-| E2E — header sticky (`22-header-sticky.spec.ts`) | [#40097995631](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40097995631) | `failure` | PENDENCIAS.md P2a — `[waitForTestIdVisible] testid="app-header"` timeout em `/novidades` mobile 390×844 |
-| Cart Invariants Smoke (6 shards) | [#40097995522](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40097995522) | `failure` | PENDENCIAS.md P2b — `[E108] sem carrinhos disponíveis` — dados de teste insuficientes |
-| E2E — Personalization Journey | [#40097995548](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40097995548) | `failure` | PENDENCIAS.md P2c — `expect(page).toHaveURL(/\/login/) failed` timeout 15s — regressão de roteamento |
-| Gate 2.5 — PostgreSQL Transactional Integrity | [#40099111918](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40099111918) | `failure` (pré-existente) | PENDENCIAS.md P5 — 43/43 testes locais passam; live check HTTP 400 no Supabase |
-| Release Please | [#40097995569](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40097995569) | `action_required` | PENDENCIAS.md P1 — PAT `RELEASE_PLEASE_TOKEN` ausente |
-| Branch Protection Sentinel | [#40097995567](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40097995567) | `failure` | PENDENCIAS.md P3 — push direto `269ec66` sem PR; auto-resolve no merge |
-| 50+ runs históricos (`release-please[bot]`) | múltiplos | `action_required` | PENDENCIAS.md P4 — registros históricos, não corrigíveis retroativamente |
+| Workflow | Run de referência | Status baseline (`325b0bd`) | Status final (`12a7774`) | Resultado |
+|---|---|---|---|---|
+| Gate 2 — Testes unitários (vitest) | [#40097995600](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40097995600) | `failure` | **`success`** ✅ (run [#40097995600](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40097995600)) | **CORRIGIDO** |
+| Gate Final — Deploy Ready | (baseline: `success`) | `success` | **`success`** ✅ (run [#40099851858](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40099851858)) | **VERDE** |
+| Branch Protection Sentinel | [#40097995567](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40097995567) | `failure` | **`success`** ✅ (squash-merge `45023c7 (#2389)` aceito) | **AUTO-RESOLVIDO** no merge |
+| Release Please | [#40097995569](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40097995569) | `action_required` | `action_required` — bloqueio externo | PENDENCIAS.md **P1** — PAT `RELEASE_PLEASE_TOKEN` ausente |
+| E2E — header sticky (`22-header-sticky.spec.ts`) | [#40097995631](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40097995631) | `failure` | `failure` — pré-existente | PENDENCIAS.md **P2a** — `[waitForTestIdVisible] testid="app-header"` timeout em `/novidades` mobile 390×844 |
+| Cart Invariants Smoke (6 shards) | [#40097995522](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40097995522) | `failure` | `failure` — pré-existente | PENDENCIAS.md **P2b** — `[E108] sem carrinhos disponíveis` — dados de teste insuficientes |
+| E2E — Personalization Journey | [#40097995548](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40097995548) | `failure` | `failure` — pré-existente | PENDENCIAS.md **P2c** — `expect(page).toHaveURL(/\/login/) failed` timeout 15s |
+| Gate 2.5 — PostgreSQL Transactional Integrity | [#40099111918](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40099111918) | `failure` | `failure` — pré-existente | PENDENCIAS.md **P5** — 43/43 testes passam; live check HTTP 400 no Supabase |
+| 50+ runs históricos (`release-please[bot]`) | múltiplos | `action_required` | `action_required` — não corrigível | PENDENCIAS.md **P4** — registros históricos retroativos |
+| Smoke — HTTP against supabase functions serve | [#40099851891](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40099851891) | `failure` (pré-existente) | `failure` — pré-existente | PENDENCIAS.md **P6** — `toomanyrequests: Data limit exceeded` (ECR rate limit) |
+| Supabase Preview | (check externo bot) | `failure` (pré-existente) | `failure` — pré-existente | PENDENCIAS.md **P7** — `column "level" does not exist (SQLSTATE 42703)` em `analytics.categories_tree_visual` |
 
 ---
 
@@ -102,11 +105,27 @@ Foram analisados todos os workflows com `conclusion=action_required` e `conclusi
 | Gate 1.15 (overflow-x-clip) | `success` | `success` ✅ |
 | Gate 2.5 (PostgreSQL Transactional Integrity) | `failure` | `failure` — bloqueio externo (HTTP 400 live check, 43/43 testes locais passam) |
 | Gate Final (deploy-ready) | `success` em main | **`success`** ✅ (`12a7774`, run `40099851858`) |
-| E2E P2a (header sticky `/novidades` mobile) | `failure` | `failure` — regressão pré-existente em main |
-| E2E P2b (cart invariants, `[E108]`) | `failure` | `failure` — dados de teste insuficientes, pré-existente |
-| E2E P2c (personalization, URL navigation) | `failure` | `failure` — regressão de roteamento, pré-existente |
-| Release Please | `action_required` | `action_required` — bloqueio externo (PAT ausente) |
-| Branch Protection Sentinel | `failure` | `failure` em run histórico — auto-resolve no merge |
+| Branch Protection Sentinel | `failure` | **`success`** ✅ — auto-resolvido no squash-merge `45023c7 (#2389)` |
+| E2E P2a (header sticky `/novidades` mobile) | `failure` | `failure` — regressão pré-existente em main (P2a) |
+| E2E P2b (cart invariants, `[E108]`) | `failure` | `failure` — dados de teste insuficientes, pré-existente (P2b) |
+| E2E P2c (personalization, URL navigation) | `failure` | `failure` — regressão de roteamento, pré-existente (P2c) |
+| Gate 2.5 (PostgreSQL Transactional Integrity) | `failure` | `failure` — live check HTTP 400, pré-existente (P5) |
+| Smoke — HTTP supabase functions | `failure` (pré-existente) | `failure` — ECR `toomanyrequests`, pré-existente (P6) |
+| Supabase Preview | `failure` (pré-existente) | `failure` — coluna `level` ausente, pré-existente (P7) |
+| Release Please | `action_required` | `action_required` — bloqueio externo (PAT ausente, P1) |
+| 50+ runs históricos | `action_required` | `action_required` — histórico, não corrigível (P4) |
+
+### Estado pós-merge em main (`45023c7`, 2026-10-24T14:00:22Z)
+
+| Check | Status |
+|---|---|
+| Branch Protection Sentinel | **`success`** ✅ |
+| Lovable Autoheal | **`success`** ✅ |
+| No Prod Leak | **`success`** ✅ |
+| Lint untypedFrom | **`success`** ✅ |
+| Policies Baseline | **`success`** ✅ |
+| Required Checks Guard | **`success`** ✅ |
+| Gate Final (deploy-ready) | Em andamento — aguardando jobs E2E/Transactional |
 
 ---
 
