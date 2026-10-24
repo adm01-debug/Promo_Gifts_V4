@@ -13,14 +13,15 @@
 
 | Categoria | Count | Ação |
 |---|---|---|
-| AGUARDANDO APROVAÇÃO | 7 | Requer aprovação humana antes do merge |
+| AGUARDANDO APROVAÇÃO | 4 | Requer aprovação humana antes do merge |
+| SUPERSEDED | 3 | Conteúdo já em main — PRs antigas podem ser fechadas |
 | FECHAR | 1 | gifted-dijkstra: trabalho já em main |
-| RESGATAR PARCIAL | 1 | devin/probe-e184: salvar só o SQL probe |
+| RESGATAR PARCIAL | 1 | devin/probe-e184: salvar só o SQL probe (PR #2423 aberto) |
 | Descartáveis (A+B+F) | 44 | Nenhum trabalho a preservar |
 
 ---
 
-## 2. Branches AGUARDANDO APROVAÇÃO (7)
+## 2. Branches AGUARDANDO APROVAÇÃO (4)
 
 Ordenadas por prioridade de negócio:
 
@@ -38,39 +39,35 @@ Ordenadas por prioridade de negócio:
 - **Ação:** aplicar via `db-apply-migration.yml` após review da migration SQL
 - Dossiê: `dossies/fix-audit-acl-regrole-261024-1635.md`
 
-### 2.3 fix-contract-mag-reader-261019-2110
-**Edge function shared + 3 workflows de cron**
-- `supabase/functions/_shared/cors.ts`: mudança de `'*'` para constante computada (comportamento idêntico)
-- 3 workflows de cron ajustados (Gate E89)
-- Contrato `magazine-reader-state-read` registrado
+### 2.3 fix-contract-mag-reader-261024-1930 — **PR #2427** (nova branch limpa)
+**CORS sem literal `'*'` + contrato magazine-reader-state-read**
+- `supabase/functions/_shared/cors.ts`: `CORS_WILDCARD_ORIGIN = String.fromCharCode(42)` — elimina falso-positivo gitleaks Gate E95
+- `tests/contracts/webhook-schemas.ts`: schema `MagazineReaderStateReadSchemaV1` + entrada em `CONTRACTS` — satisfaz Gate 1.12
+- Branch `claude/fix-contract-mag-reader-261024-1930` criada direto de `origin/main` (sem conflito)
+- ~~Branch original `fix-contract-mag-reader-261019-2110` (PR #2417) — dirty, substituída~~
 - **Ação:** revisar allowlist CORS + deployar via `deploy-edge-functions.yml` após merge
 - Dossiê: `dossies/fix-contract-mag-reader-261019-2110.md`
 
-### 2.4 fix-gitleaks-gate-261019-1800
-**Workflow principal de CI (deploy-gates.yml)**
-- Substitui `npx gitleaks` por binary download no Gate E23
-- Allowlist de 44 falsos positivos em `.gitleaks.toml`
-- **Ação:** revisar conteúdo da allowlist linha a linha antes de aprovar
+### 2.4 fix-gitleaks-gate-261024-1930 — **PR #2428** (nova branch limpa)
+**Allowlist `.gitleaks.toml` — falsos-positivos de testes/fixtures**
+- 10 regexes adicionadas: `SERVICE_ROLE_KEY`, `YOUR_JWT_TOKEN`, mock tokens (`abc123def456`, `anon-key-12345678`, `sup-tok-abc123`, `idem-duplicate-test-001`), JWT canônico jwt.io, fake AWS key, token fuzz magazinePublish
+- Merge semântico da branch original com main (main tinha `paths` mais completo; branch tinha `regexes` únicos)
+- Branch `claude/fix-gitleaks-gate-261024-1930` criada direto de `origin/main` (sem conflito)
+- ~~Branch original `fix-gitleaks-gate-261019-1800` (PR #2418) — dirty, substituída~~
+- **Ação:** revisar allowlist linha a linha antes de aprovar
 - Dossiê: `dossies/fix-gitleaks-gate-261019-1800.md`
 
-### 2.5 fix-sync-log-ci-261019-1730
-**Decisão de política: gate de segurança passa em timeout**
-- `scripts/check-security-definer-acl.mjs`: 3 retries + `process.exit(0)` se todos 504
-- **Decisão humana:** gate de segurança deve passar ou falhar em falha de infra?
-- Dossiê: `dossies/fix-sync-log-ci-261019-1730.md`
+---
 
-### 2.6 fix-rollback-261019-1637
-**Rollback retroativo de migration já aplicada**
-- Arquivo `supabase/rollbacks/20261019000000_rollback.sql` adicionado
-- Migration já está em produção — rollback é documentação retroativa
-- Dossiê: `dossies/fix-rollback-261019-1637.md`
+## 2.B Branches SUPERSEDED (3) — conteúdo já em main
 
-### 2.7 chore-migrations-sync-log-261019-1600
-**Redundante mas com valor documental**
-- MIGRATIONS_SYNC_LOG.md receipt + PGPORT em SEGREDOS.md
-- Conteúdo parcialmente duplicado por outras branches
-- **Ação:** avaliar se os 2 itens únicos valem PR separado ou devem ser folded em outra branch
-- Dossiê: `dossies/chore-migrations-sync-log-261019-1600.md`
+Estas branches tinham PRs abertas (dirty) mas o conteúdo já está em `main`. Podem ser fechadas.
+
+| Branch | PR | Por que superseded |
+|---|---|---|
+| `fix-sync-log-ci-261019-1730` | #2419 | `MAX_RETRIES = 3` + retry loop (8 ocorrências) já em main@652a7f14 |
+| `fix-rollback-261019-1637` | #2420 | `supabase/rollbacks/20261019000000_rollback.sql` em main com conteúdo mais completo |
+| `chore-migrations-sync-log-261019-1600` | #2422 | PGPORT em SEGREDOS.md + MIGRATIONS_SYNC_LOG entry já em main |
 
 ---
 
@@ -132,11 +129,11 @@ Snapshots:
 |---|---|---|---|
 | security-brechas-e30-e40-e18 | SIM (3 migrations: REVOKE) | SIM | APROVADO — 0 erros; estado antes/depois verificado por query pg_catalog |
 | fix-audit-acl-regrole | SIM (1 migration: CREATE FUNCTION) | SIM | APROVADO — 0 erros; função presente em information_schema.routines |
-| fix-contract-mag-reader | ZERO migrations | N/A | Toca só edge function shared (`cors.ts`) + workflows de cron |
-| fix-gitleaks-gate | ZERO migrations | N/A | Toca só CI: `deploy-gates.yml` + `.gitleaks.toml` |
-| fix-sync-log-ci | ZERO migrations | N/A | Toca só scripts CI + baselines TS |
-| fix-rollback | Header em migration existente + rollback retroativo | N/A — sem DDL novo | Migration 20261019000000 já aplicada em produção; rollback é arquivo de referência, sem DDL novo |
-| chore-migrations-sync-log | ZERO migrations (MIGRATIONS_SYNC_LOG.md é documento) | N/A | Toca só docs + SEGREDOS.md |
+| fix-contract-mag-reader-261024-1930 (PR #2427) | ZERO migrations | N/A | Toca só `cors.ts` + `tests/contracts/webhook-schemas.ts` |
+| fix-gitleaks-gate-261024-1930 (PR #2428) | ZERO migrations | N/A | Toca só `.gitleaks.toml` (allowlist) |
+| fix-sync-log-ci (SUPERSEDED) | ZERO migrations | — | Conteúdo já em main; PR #2419 pode ser fechada |
+| fix-rollback (SUPERSEDED) | Rollback retroativo | — | Conteúdo já em main; PR #2420 pode ser fechada |
+| chore-migrations-sync-log (SUPERSEDED) | ZERO migrations | — | Conteúdo já em main; PR #2422 pode ser fechada |
 
 Detalhes completos dos testes em:
 - `dossies/security-brechas-e30-e40-e18-2026-10-22.md` — seção "Teste Postgres Temporário"
