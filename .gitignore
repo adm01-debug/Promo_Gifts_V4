@@ -1,10 +1,8 @@
-
 !.vscode/extensions.json
 # Editor directories and files
 # Environment variables
 # Logs
 # Storybook
-# Tests
 **/*.stories.tsx
 *.local
 *.log
@@ -88,3 +86,8 @@ graphify-out/*
 !graphify-out/manifest.json
 bun.lock
 bun.lockb
+
+# Vercel: manter .vercel/project.json versionado (ancora o projeto, impede link duplo).
+# Ignorar apenas tokens de env gerados por `vercel pull` — nunca versionados.
+.vercel/.env*
+.vercel/*.env*
