@@ -190,16 +190,21 @@ function isAllowedLhciPackage(packageName, vulnerability) {
 function isAllowedZodChainPackage(packageName, vulnerability) {
   if (!ALLOWED_ZOD_CHAIN_PACKAGES.has(packageName)) return false;
   if (packageName === 'zod') {
-    // Must be the direct dep with exactly the reviewed advisory.
-    if (vulnerability.isDirect !== true) return false;
     if (vulnerability.severity !== 'high') return false;
     const via = vulnerability.via ?? [];
-    return (
+    const advisoryMatches =
       via.length === 1 &&
       typeof via[0] === 'object' &&
       via[0]?.url === ZOD_CVE_ADVISORY_URL &&
-      via[0]?.source === ZOD_CVE_SOURCE
-    );
+      via[0]?.source === ZOD_CVE_SOURCE;
+    if (!advisoryMatches) return false;
+    // Pre-#2401: our direct zod 3.x was vulnerable (isDirect:true).
+    if (vulnerability.isDirect === true) return true;
+    // Post-#2401: our direct zod is 4.6.6 (not in range <4.6.6).
+    // npm audit now represents chromium-bidi's nested older zod (isDirect:false,
+    // effects:['chromium-bidi']). Allow exactly this case.
+    const effects = vulnerability.effects ?? [];
+    return vulnerability.isDirect === false && effects.length === 1 && effects[0] === 'chromium-bidi';
   }
   if (packageName === 'chromium-bidi') {
     // Transitive dep — only via zod (which is in this allowlist), dev-only (puppeteer-core chain).
