@@ -1,20 +1,25 @@
 # Relatório CI — Reparo de Workflows `action_required`
 
-**Data:** 2026-10-24 (rev 14 — Adicionados: Gate Final `594fbd40` confirmado, test:ci-core 957 testes, correção da justificativa npm test — limitação de tempo, não OOM)  
+**Data:** 2026-10-24 (rev 16 — Gate Final `ad21b02b` = success confirmado; inventário action_required: 50 runs pré-existentes todos cobertos por P1/P4)  
 **Branch de trabalho:** `claude_05/upbeat-hamilton-5gnz50`  
 **Commit baseline (main antes do PR #2389):** `325b0bd`  
 **Commit final do PR #2389:** `12a7774`  
 **Merge commit em main (PR #2389):** `45023c7` (squash, 2026-10-24T14:00:22Z)  
-**Merge commit em main (PR #2396 — sentinel fix):** `c34ed2b4` (squash, 2026-10-24T15:36:33Z) — `chore(docs):` → Regra 6 ✅  
+**Merge commit em main (PR #2396 — sentinel fix):** `c34ed2b4` (squash, 2026-10-24T15:36:33Z)  
 **Merge commit em main (PR #2398 — RELATORIO rev 10):** `63c17840` (squash)  
 **Merge commit em main (PR #2392 — sentinel allowlist):** `609d55c6` (squash)  
 **Merge commit em main (PR #2402 — docs rev 11):** `174c4ea8` (squash)  
 **Merge commit em main (PR #2405 — docs rev 12+PENDENCIAS rev 5):** `0213ed60` (squash, 2026-10-24T16:42:24Z)  
-**Merge commit em main (PR #2407 — docs rev 13):** `594fbd40` (squash, 2026-10-24T17:02:43Z) — **HEAD de main atual**  
+**Merge commit em main (PR #2407 — docs rev 13):** `594fbd40` (squash, 2026-10-24T17:02:43Z)  
+**Merge commit em main (PR #2409 — docs rev 14+PENDENCIAS rev 6):** `c3a42843` (squash, sem `(#NNN)` — Branch Protection Sentinel falhou P14)  
+**Merge commit em main (PR #2411 — PENDENCIAS rev 6 fix P14):** `652a7f14` (squash, 2026-10-24T17:52:XX Z) — Branch Protection Sentinel `success` ✅ run [#40118011703](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40118011703)  
+**Merge commit em main (PR #2412 — fix Gate 1.3 migration-refs-baseline):** `ad21b02b` (squash, 2026-10-24T18:09:XX Z) — **HEAD de main atual**  
 **PR principal:** [#2389](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2389) — **MERGEADO** ✅  
 **PR sentinel fix:** [#2396](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2396) — **MERGEADO** ✅  
 **PR docs rev 12+PENDENCIAS:** [#2405](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2405) — **MERGEADO** ✅  
 **PR docs rev 13:** [#2407](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2407) — **MERGEADO** ✅  
+**PR docs rev 14+P14:** [#2411](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2411) — **MERGEADO** ✅  
+**PR fix Gate 1.3:** [#2412](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2412) — **MERGEADO** ✅  
 **Deploy Gates em main (push `45023c7ff8`):** run [#40100571263](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40100571263) — **`success`** ✅ (Gate 2 job `120891902070`; Gate 3 job `120892030879`; Gate Final job `120898759390`)  
 **Deploy Gates em main (push `c34ed2b4`):** run [#40107758485](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40107758485) — **`success`** ✅ (2026-10-24T15:44:03Z)  
 **Branch Protection Sentinel em main (`c34ed2b4`):** run [#40107758455](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40107758455) — **`success`** ✅  
@@ -24,7 +29,10 @@
 **Deploy Gates em main (push `609d55c6`):** run [#40109508595](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40109508595) — **`success`** ✅  
 **Gate Final em main (push `174c4ea8`):** check `Gate Final - Deploy Ready` — **`success`** ✅ (confirmado via `github_list_check_runs` ref=`174c4ea8`)  
 **Deploy Gates em main (push `0213ed60` — PR #2405):** run [#40112803262](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40112803262) — **`success`** ✅ — Gate Final confirmado em `0213ed60` (ver seção Inventário de Jobs abaixo)  
-**Deploy Gates em main (push `594fbd40` — PR #2407):** run [#40114329437](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40114329437) — **`success`** ✅ — Gate Final confirmado em `594fbd40` (ver seção Inventário de Jobs abaixo)
+**Deploy Gates em main (push `594fbd40` — PR #2407):** run [#40114329437](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40114329437) — **`success`** ✅ — Gate Final confirmado em `594fbd40` (ver seção Inventário de Jobs abaixo)  
+**Deploy Gates em main (push `652a7f14` — PR #2411):** run [#40118011740](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40118011740) — **`failure`** ❌ Gate 1.3 — `check-migration-path-references.mjs` detectou 3 refs novas em `inventario/branches.json` não cobertas pelo baseline; corrigido por PR #2412  
+**Deploy Gates em main (push `ad21b02b` — PR #2412):** run [#40119299983](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40119299983) — **`success`** ✅ Gate Final [**`success`** ✅](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40119299983/job/120948831232) (concluído 2026-10-24T18:15:57Z) — **HEAD de main atual**  
+**PR docs rev 16:** [#2413](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2413) — em revisão
 
 ---
 
@@ -47,6 +55,8 @@
 | Gate 8 — Security & Credential Audit | job `120898723937` | `failure` (pré-existente) | `failure` — pré-existente | PENDENCIAS.md **P9** — HTTP 500 Supabase (mesmo padrão P5) |
 | audit — card parity visual | job `120896976701` | `failure` (pré-existente) | `failure` — pré-existente | PENDENCIAS.md **P10** — `rodapé não alinhado` em `novidades-reposicao-card-parity.spec.ts:163` |
 | Supabase Linter Gate | [#40107758306](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40107758306) | `success` (em `90a55243`) | `failure` — transiente | PENDENCIAS.md **P11** — TimeoutError após 3 tentativas; rede Supabase indisponível no runner |
+| Gate 1.3 — Migration contracts | (novo em `652a7f14`) | `success` | **`success`** ✅ (PR #2412, commit `ad21b02b`) | **CORRIGIDO** — baseline atualizado com 3 refs de `inventario/branches.json` |
+| Running Copilot Code Review / copilot-pull-request-reviewer | (bot externo) | `failure` | `failure` — bot externo | PENDENCIAS.md **P15** — GitHub Copilot bot, não é workflow do repositório |
 
 ---
 
@@ -282,7 +292,9 @@ npm error 403 Forbidden - GET https://europe-west1-npm.pkg.dev/lovable-core-prod
 | Release Please | `action_required` | `action_required` — bloqueio externo (PAT ausente, P1) | `action_required` — idem P1 |
 | 50+ runs históricos | `action_required` | `action_required` — histórico, não corrigível (P4) | `action_required` — idem P4 |
 
-**Comparação baseline × `594fbd40` (HEAD atual):** nenhuma regressão. Todos os checks que eram `success` no baseline ou em versões intermediárias continuam `success` em `594fbd40`. Gate Final = `success` confirmado (run #40114329437).
+**Comparação baseline × `594fbd40`:** nenhuma regressão. Todos os checks `success` no baseline continuam `success`.
+
+**Comparação baseline × `ad21b02b` (HEAD main 2026-10-24T18:09Z):** nenhuma regressão. Gate Final = **`success`** ✅ confirmado (run [#40119299983](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40119299983), concluído 18:15:57Z). Todos os checks que eram `success` em `594fbd40` continuam `success` em `ad21b02b`. Failures em `ad21b02b` são o mesmo conjunto pré-existente de P1/P2b/P2c/P7/P15 — nenhuma regressão introduzida.
 
 ### Estado pós-merge em main
 
@@ -313,6 +325,37 @@ npm error 403 Forbidden - GET https://europe-west1-npm.pkg.dev/lovable-core-prod
 ## Regressões
 
 Nenhuma. Os três fixes são cirúrgicos (1–3 linhas cada) e não alteram lógica de negócio, apenas a mecânica de hoisting de mocks.
+
+---
+
+---
+
+## Inventário de Check Runs — main `652a7f14` (PR #2411 squash — 2026-10-24T17:52Z)
+
+| Check | Conclusão |
+|---|---|
+| Verify push to main matches accepted patterns (Branch Protection Sentinel) | **`success`** ✅ — run [#40118011703](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40118011703) |
+| Gate Final - Deploy Ready | run [#40118011740](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40118011740) — **`failure`** em Gate 1.3 (migration contracts): `inventario/branches.json` referencia 3 arquivos inexistentes em main → corrigido por PR #2412 |
+
+**Nota:** Gate 1.3 falhou em `652a7f14` por causa raiz identificada e corrigida no mesmo dia via PR #2412 (`ad21b02b`).
+
+---
+
+## Inventário de Check Runs — main `ad21b02b` (PR #2412 squash — 2026-10-24T18:09Z) ✅ CONFIRMADO
+
+Run Deploy Gates: [#40119299983](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40119299983) — **`success`** ✅ (concluído 2026-10-24T18:15:58Z)
+
+| Check | Conclusão (confirmado 18:15Z) |
+|---|---|
+| **Gate Final - Deploy Ready** | **`success`** ✅ — job [#120948831232](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40119299983/job/120948831232) (18:15:54Z–18:15:57Z) |
+| release-please | `failure` — **P1** PAT ausente (pré-existente) |
+| copilot-pull-request-reviewer | `failure` — **P15** bot externo GitHub Copilot (não é required check) |
+| Gate 0.6 - Dependency Review | `skipped` (PR-only) |
+| Supabase Preview | `failure` — **P7** coluna `level` ausente (pré-existente) |
+
+**PROVA:** Gate Final conclusion=success confirmado via `github_get_workflow_run` (run #40119299983) e `github_list_check_runs` (check_name="Gate Final - Deploy Ready", ref=ad21b02b) — ambos retornaram `conclusion: "success"`.
+
+**Inventário action_required (2026-10-24T18:20Z):** 50 runs com status `action_required` na aba Actions — todos pré-existentes (IDs ≤ #39884454041, anteriores ao início desta sessão). Distribuídos em 25 workflows distintos, todos já cobertos por P1 (Release Please PAT ausente) e P4 (histórico retroativo não corrigível). Nenhum novo workflow entrou em `action_required` por causa dos PRs desta sessão.
 
 ---
 
