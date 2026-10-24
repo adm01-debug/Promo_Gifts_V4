@@ -343,6 +343,7 @@ jobs:
           GIT_PUSH_TOKEN: ${{ github.token }}
           RUN_ID: ${{ github.run_id }}
           ACTOR: ${{ github.actor }}
+          HUSKY: "0"
         shell: bash
         run: |
           set -euo pipefail

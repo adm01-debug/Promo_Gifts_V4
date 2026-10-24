@@ -353,6 +353,7 @@ jobs:
         env:
           GIT_PUSH_TOKEN: ${{ github.token }}
           RUN_ID: ${{ github.run_id }}
+          HUSKY: "0"
         run: |
           set -euo pipefail
           if ! git --no-pager diff --quiet -- supabase/migrations-snapshot/ supabase/baseline/ docs/db/ \
