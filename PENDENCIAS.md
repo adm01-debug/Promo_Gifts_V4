@@ -1,15 +1,15 @@
 # Pendências CI — Bloqueios Externos
 
-**Atualizado em:** 2026-10-24 (rev 3 — P2a **RESOLVIDO** ✅; P8/P9/P10 adicionados)  
+**Atualizado em:** 2026-10-24 (rev 4 — P2b atualizado com nomes exatos dos 6 testes falhantes; commit de referência atualizado para main `609d55c6`)  
 **Branch de referência:** `claude_05/upbeat-hamilton-5gnz50`  
-**Commit de referência (main):** `269ec66b1500d45a5b655613ca2e8a1ea2876027`
+**Commit de referência (main):** `609d55c6` (ci(workflows): adiciona ci(workflows): à allowlist do Branch Protection Sentinel #2392)
 
 ---
 
 ## P1 — Release Please: "Resource not accessible by integration"
 
 **Workflow:** `.github/workflows/release-please.yml`  
-**Run:** [#40097995569](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40097995569)  
+**Run mais recente:** [#40109508357](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40109508357) (commit `609d55c6`)  
 **Conclusão:** `failure`  
 **Categoria:** Restrição de permissão — PAT ausente (não corrigível via YAML)
 
@@ -81,23 +81,45 @@ O fallback agora tem `data-testid="app-header"` e `position: fixed`. O `waitForT
 
 ### P2b — Cart Invariants Smoke: todos os shards falham
 
-**Run:** [#40097995522](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40097995522)  
+**Run:** [#40108768269](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40108768269) (commit `63c17840`)  
 **Conclusão:** `failure`  
-**Jobs:** 6 shards (chromium × 3 + firefox × 3) — todos falharam (job 120884195253 analisado)
+**Jobs:** múltiplos shards — job `120915904644` (chromium-authed) analisado
 
-**Erros exatos confirmados (job logs):**
+**Erros exatos confirmados (job logs, run #40108768269, job 120915904644):**
 ```
-Error: [E108] sem carrinhos disponíveis
-Error: [E108] precisa de 3+ carrinhos para A→B→A→C
-Error: [E108] precisa de 2+ carrinhos
-Error: [E108] sem carrinhos disponíveis
-Error: [E108] precisa de 2+ carrinhos
-Error: [E108] sem carrinhos
-6 failed
+[chromium-authed] › e2e/carrinhos/active-cart-edge-cases.spec.ts:51:3
+  › Carrinhos · resiliência de carrinho ativo @carrinhos
+  › trocas rápidas em sequência convergem para o carrinho final
+
+[chromium-authed] › e2e/carrinhos/active-cart-edge-cases.spec.ts:72:3
+  › Carrinhos · resiliência de carrinho ativo @carrinhos
+  › carrinho vazio zera Qtd/subtotal e não vaza peso/volume anterior
+
+[chromium-authed] › e2e/carrinhos/active-cart-edge-cases.spec.ts:105:3
+  › Carrinhos · resiliência de carrinho ativo @carrinhos
+  › formatação pt-BR de moeda no header ao alternar entre carrinhos
+
+[chromium-authed] › e2e/carrinhos/active-cart-intermittent-failure.spec.ts:62:3
+  › Carrinhos · falha intermitente durante mutações @carrinhos
+  › timeout/5xx transitório + refresh: header/sidebar reidratam sem mistura
+
+[chromium-authed] › e2e/carrinhos/active-cart-mutations-parallel.spec.ts:79:5
+  › Carrinhos · A→B→A→C · mutações paralelas · desktop @carrinhos
+  › DELETE/PATCH tardios nunca vazam para o header/sidebar do cart ativo
+
+[chromium-authed] › e2e/carrinhos/active-cart-mutations-parallel.spec.ts:79:5
+  › Carrinhos · A→B→A→C · mutações paralelas · mobile @carrinhos
+  › DELETE/PATCH tardios nunca vazam para o header/sidebar do cart ativo
+
+1 passed (1.6m)
+##[error]Process completed with exit code 1.
 ```
+
+Contexto adicional do log: `at .../e2e/carrinhos/active-cart-mutations-parallel.spec.ts:88:75`  
+`DEBUG_CONTEXT {"viewport":"mobile","viewportSize":{"width":390,"height":844}}`
 
 **Diagnóstico:**  
-Código de erro `[E108]` = fixture de dados insuficiente. Os testes exigem 2–3 carrinhos activos no ambiente de CI, mas o estado do banco de teste não os tem. Problema de dados de teste no runner, não regressão de código.  
+Os 6 testes verificam invariantes do header/sidebar durante mutações de carrinho (trocas rápidas, esvaziamento, moeda pt-BR, race conditions DELETE/PATCH). Falham porque o estado dos carrinhos no banco de CI não satisfaz as pré-condições dos specs (ex: spec linha 88 assume 2+ carrinhos para testar race condition mobile). Problema de dados de teste no runner, não regressão de código.  
 **Pré-existente no `main` (commit `325b0bd`)** — não introduzida por este PR.
 
 **Ação necessária:** seed de dados de teste no runner de CI com carrinhos suficientes.
