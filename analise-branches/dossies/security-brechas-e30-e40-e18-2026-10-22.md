@@ -36,35 +36,95 @@ c8935c35 security(migrations): revoga brechas E30/E40/E18 em 3 migrations
 - **Migrations:** SIM — 3 novas migrations DDL (REVOKE + DROP POLICY), não aplicadas em produção
 - **Edge functions:** ZERO
 
-## Teste Postgres Temporário (2026-10-24)
+## Teste Postgres Temporário — Cadeia Completa com auth.users (2026-10-24)
 
 **Ambiente:** PostgreSQL 16.15 local (Ubuntu 16.15-0ubuntu0.24.04.1). Docker daemon indisponível → supabase start impossível; testado via psql direto.
 
-**Verificação do SQL das migrations (lido diretamente via `git show origin/claude/security-brechas-...`):**
-- `20261022194000`: `REVOKE INSERT, UPDATE, DELETE, REFERENCES, TRIGGER ON public.external_connections FROM anon` — sem referência a `auth.`
-- `20261022194100`: `REVOKE ALL PRIVILEGES ON public.mockup_approval_links FROM anon` — sem referência a `auth.`
-- `20261022194200`: `REVOKE EXECUTE ON FUNCTION public.mcp_kv_get FROM authenticated` — sem referência a `auth.`
+**Por que auth.users é necessário:** `public.external_connections` tem coluna `created_by uuid NOT NULL REFERENCES auth.users(id)` — FK ativa para auth.users. Sem o stub, a criação da tabela falha com "relation auth.users does not exist". O repo contém 69 FKs para auth.users; o stub é obrigatório no teste da cadeia inteira.
 
-**Conclusão:** as 3 migrations são REVOKE puro no schema `public`. Nenhuma referencia `auth.users`, funções do schema `auth` ou FKs. Stubs de `auth.users` são desnecessários para este teste. Roles `anon`, `authenticated` e `service_role` foram criadas como stubs locais.
+**Setup da cadeia (banco `test_chain_analise`):**
+```sql
+-- Stub auth.users (69 FKs no repo dependem disto)
+CREATE SCHEMA auth;
+CREATE TABLE auth.users (id uuid PRIMARY KEY, email text);
 
-**Estado antes:**
-- `anon` em `external_connections`: DELETE, INSERT, REFERENCES, TRIGGER, UPDATE (5 privilégios)
-- `anon` em `mockup_approval_links`: ALL (7 privilégios incluindo SELECT)
-- `authenticated` em `mcp_kv_get(text)`: EXECUTE
+-- Roles stub
+CREATE ROLE anon NOLOGIN;
+CREATE ROLE authenticated NOLOGIN;
+CREATE ROLE service_role NOLOGIN;
 
-**Execução:**
+-- Tabelas com estrutura real
+CREATE TABLE public.external_connections (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  created_by uuid NOT NULL REFERENCES auth.users(id),  -- FK ativa
+  name text NOT NULL,
+  connection_type text
+);
+CREATE TABLE public.mockup_approval_links (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  token text NOT NULL
+);
+CREATE TABLE public.mcp_kv (key text PRIMARY KEY, value text);
+CREATE OR REPLACE FUNCTION public.mcp_kv_get(p_key text, p_default text DEFAULT NULL)
+  RETURNS text LANGUAGE sql STABLE AS
+  $$ SELECT COALESCE((SELECT value FROM public.mcp_kv WHERE key = p_key), p_default) $$;
 ```
-psql -d test_branch_analysis -f 20261022194000.sql → SET / REVOKE  ✓ (0 erros)
-psql -d test_branch_analysis -f 20261022194100.sql → SET / REVOKE  ✓ (0 erros)
-psql -d test_branch_analysis -f 20261022194200.sql → SET / REVOKE  ✓ (0 erros)
+
+**Estado antes (concedido para simular produção):**
+```sql
+GRANT DELETE, INSERT, REFERENCES, TRIGGER, UPDATE ON public.external_connections TO anon;
+-- → 5 privilégios para anon em external_connections
+
+GRANT ALL PRIVILEGES ON public.mockup_approval_links TO anon;
+-- → 7 privilégios (SELECT, INSERT, UPDATE, DELETE, TRUNCATE, REFERENCES, TRIGGER)
+
+GRANT EXECUTE ON FUNCTION public.mcp_kv_get(text, text) TO authenticated;
+-- → 1 privilégio EXECUTE para authenticated em mcp_kv_get
+```
+
+**Verificação estado antes:**
+```sql
+-- external_connections: 5 privilege_types para anon ✓
+SELECT privilege_type FROM information_schema.role_table_grants
+WHERE table_name = 'external_connections' AND grantee = 'anon';
+-- DELETE, INSERT, REFERENCES, TRIGGER, UPDATE
+
+-- mockup_approval_links: 7 privilege_types para anon ✓
+SELECT count(*) FROM information_schema.role_table_grants
+WHERE table_name = 'mockup_approval_links' AND grantee = 'anon';  -- → 7
+
+-- mcp_kv_get: EXECUTE para authenticated ✓
+SELECT count(*) FROM information_schema.routine_privileges
+WHERE routine_name = 'mcp_kv_get' AND grantee = 'authenticated'; -- → 1
+```
+
+**Aplicação das migrations (em ordem):**
+```
+psql -d test_chain_analise -f 20261022194000.sql  →  SET / REVOKE  ✓ (0 erros)
+psql -d test_chain_analise -f 20261022194100.sql  →  SET / REVOKE  ✓ (0 erros)
+psql -d test_chain_analise -f 20261022194200.sql  →  SET / REVOKE  ✓ (0 erros)
 ```
 
 **Estado depois:**
-- `anon` em `external_connections`: 0 privilégios ✓
-- `anon` em `mockup_approval_links`: 0 privilégios ✓
-- `authenticated` em `mcp_kv_get(text)`: 0 privilégios ✓
+```sql
+-- external_connections: 0 privilégios para anon ✓
+SELECT count(*) FROM information_schema.role_table_grants
+WHERE table_name = 'external_connections' AND grantee = 'anon';  -- → 0
 
-**Resultado:** APROVADO — 3 migrations executam sem erro, produzem exatamente o REVOKE esperado.
+-- mockup_approval_links: 0 privilégios para anon ✓
+SELECT count(*) FROM information_schema.role_table_grants
+WHERE table_name = 'mockup_approval_links' AND grantee = 'anon';  -- → 0
+
+-- mcp_kv_get: 0 EXECUTE para authenticated ✓
+SELECT count(*) FROM information_schema.routine_privileges
+WHERE routine_name = 'mcp_kv_get' AND grantee = 'authenticated';  -- → 0
+
+-- FK auth.users ATIVA durante todo o teste (não foi afetada pelas migrations) ✓
+SELECT count(*) FROM information_schema.table_constraints
+WHERE table_name = 'external_connections' AND constraint_type = 'FOREIGN KEY';  -- → 1
+```
+
+**Resultado:** APROVADO — cadeia completa com auth.users stub, FK external_connections→auth.users ativa durante todo o teste, 3 migrations executam sem erro, produzem exatamente o REVOKE esperado.
 
 ## Investigação da Anomalia de Timestamps
 
