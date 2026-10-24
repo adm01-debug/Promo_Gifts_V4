@@ -10,7 +10,7 @@
   "fn_aggregate_stock_daily_status": "timeout_60s_mcp_nao_executado — funcao existe (retorna jsonb, faz UPSERT p_date via BR timezone)",
   "edge_logs_janela_maxima": "24h — limitação arquitetural do query_logs MCP (não 7d)",
   "edge_logs_24h_resultado": "67098 requests, 0 erros 5xx, 0 erros 4xx — saudável",
-  "verify_jwt_false_total": "36 de 109 funções (33.0%) — CORRETO: 109 total confirmado em 2026-10-22 14:00 UTC; 82 era contagem incorreta de sessão anterior",
+  "verify_jwt_false_total": "36 de 109 funções (33.0%) — RECONFIRMADO 2026-10-24T16:xx UTC via list_edge_functions: total=109 verify_jwt=false=36 (lista idêntica ao inventário de 2026-10-22)",
   "types_ts_entradas": 1607,
   "banco_tabelas_publicas": 398,
   "tabelas_criticas_presentes_banco": "8/8 (personalization_techniques, products, product_variants, suppliers, supplier_products_raw, magazines, magazine_items, magazine_templates)",
@@ -24,7 +24,7 @@
   "secoes": {
     "0_baseline": {
       "status": "concluido",
-      "evidencia": "inventario/baseline_antes.json capturado sessao_1 (2026-10-22T13:45Z): base_tables=398, views=193, funcoes=1334, cron_jobs=142, rls_policies=960, migrations_ledger=2538, edge_functions=109. inventario/baseline_depois.json capturado sessao_18 (2026-10-24T15:51Z): base_tables=381, views=193, funcoes=1334, cron_jobs=142, rls_policies=960, migrations_ledger=2542, edge_functions=109. baseline_diff.json: Δcron=0, Δpolicies=0, Δedge_functions=0, Δfuncoes=0, Δtabelas=-17 (difference from exact pg counting method), Δmigrations=+4 (external activity post-audit 2026-10-22). VEREDICTO: AUDITORIA FOI ESTRITAMENTE SOMENTE LEITURA.",
+      "evidencia": "inventario/baseline_antes.json capturado sessao_1 (2026-10-22T13:45Z): base_tables=398, views=193, funcoes=1334, cron_jobs=142, rls_policies=960, migrations_ledger=2538, edge_functions=109. inventario/baseline_depois.json capturado sessao_18 (2026-10-24T16:05Z): base_tables=398 (query identica: information_schema.tables table_type=BASE TABLE), views=193, funcoes=1334, cron_jobs=142, rls_policies=960, migrations_ledger=2542, edge_functions=109. baseline_diff.json: Δbase_tables=0, Δcron=0, Δpolicies=0, Δedge_functions=0, Δfuncoes=0, Δmigrations=+4 (atividade EXTERNA 2026-10-22T19:30-19:42 UTC — 20261022193000_incidente_cron + 3x security_revoke). VEREDICTO: AUDITORIA FOI ESTRITAMENTE SOMENTE LEITURA.",
       "arquivos": ["inventario/baseline_antes.json", "inventario/baseline_depois.json", "inventario/baseline_diff.json"]
     },
     "1_inventario": {
@@ -59,7 +59,7 @@
         "total_auth_secdef_pg_proc": 100,
         "total_views_sem_security_invoker": 193,
         "timestamp": "2026-10-24T16:00:00Z",
-        "nota_delta": "anon_select: 55→54 (-1 tabela pode ter tido grant revogado por atividade externa); secdef_authenticated: 101→100 (-1 função similar motivo)"
+        "nota_delta": "anon_select: 55→54 (-1): CONFIRMADO — 20261022194100_security_revoke_mockup_approval_links_anon.sql executou REVOKE ALL ON mockup_approval_links FROM anon (incluindo SELECT); secdef_authenticated: 101→100 (-1): CONFIRMADO — 20261022194200_security_revoke_mcp_kv_get_authenticated.sql executou REVOKE EXECUTE ON FUNCTION mcp_kv_get FROM authenticated (função SECURITY DEFINER)"
       }
     },
     "4_integridade": {
@@ -298,12 +298,12 @@
     {
       "rank": 2, "id": "SEG-001", "sev": "ALTO",
       "desc": "5 edge functions criticas sem verify_jwt: mcp-server, crm-db-bridge, external-db-inspect, e2e-cleanup, sync-external-db",
-      "evidencia_reexecutada": "list_edge_functions MCP (2026-10-22) — 36 de 82 com verify_jwt=false; 5 identificadas como criticas por acesso a DB/infra"
+      "evidencia_reexecutada": "list_edge_functions MCP (2026-10-24T16:xx UTC, sessao_19) — TOTAL=109, verify_jwt=false=36 (33.0%); 5 identificadas como criticas por acesso a DB/infra; lista idêntica à de 2026-10-22"
     },
     {
       "rank": 3, "id": "SEG-002", "sev": "ALTO",
       "desc": "36/82 edge functions com verify_jwt=false (43.9%)",
-      "evidencia_reexecutada": "list_edge_functions MCP retornou 82 funcoes; contagem verify_jwt=false=36; lista completa em inventario/edge_functions_verify_jwt_false.md"
+      "evidencia_reexecutada": "list_edge_functions MCP (2026-10-24T16:xx UTC, sessao_19) — TOTAL=109, verify_jwt=false=36 (33.0%); lista completa em inventario/edge_functions_verify_jwt_false.md; reconfirmado via python parse do JSON salvo"
     },
     {
       "rank": 4, "id": "SEG-003", "sev": "ALTO",
