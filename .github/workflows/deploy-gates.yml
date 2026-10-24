@@ -258,11 +258,10 @@ jobs:
           set -euo pipefail
           if [[ "$EVENT" == "pull_request" ]]; then
             git diff --name-only --diff-filter=AM "$BASE_SHA" "$HEAD_SHA" > /tmp/b64-files.txt
-          elif [[ "$EVENT" == "push" ]]; then
+          else
+            # push e workflow_dispatch: verifica apenas o commit mais recente
             git diff --name-only --diff-filter=AM HEAD~1 HEAD > /tmp/b64-files.txt \
               || git ls-files > /tmp/b64-files.txt
-          else
-            git ls-files > /tmp/b64-files.txt
           fi
           INCLUDE='\.(ts|tsx|js|jsx|json|sql|sh|md|yaml|yml|html|css|env|env\.example|toml|conf|rc)$'
           EXCLUDE='(package-lock\.json|pnpm-lock\.yaml|bun\.lock|yarn\.lock|\.min\.|\.bundle\.|^supabase/migrations-snapshot/ALL_IN_ONE\.sql$)'
