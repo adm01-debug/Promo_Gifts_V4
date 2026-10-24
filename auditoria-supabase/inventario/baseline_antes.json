@@ -1,0 +1,12 @@
+{
+  "fonte": "progresso.json sessao_1 / snapshot_producao_13h45",
+  "capturado_em": "2026-10-22T13:45:05.278142+00:00",
+  "base_tables": 398,
+  "views": 193,
+  "funcoes": 1334,
+  "cron_jobs": 142,
+  "rls_policies_public": 960,
+  "migrations_ledger": 2538,
+  "edge_functions": 109,
+  "nota": "Baseline do início da auditoria — sessão 1, 2026-10-22"
+}

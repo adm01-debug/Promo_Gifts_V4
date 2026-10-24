@@ -1,0 +1,13 @@
+{
+  "fonte": "snapshot sessao_18 — query identica a baseline_antes (information_schema.tables table_type=BASE TABLE)",
+  "capturado_em": "2026-10-24T16:05:00.000000+00:00",
+  "query_base_tables": "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='public' AND table_type='BASE TABLE'",
+  "base_tables": 398,
+  "views": 193,
+  "funcoes": 1334,
+  "cron_jobs": 142,
+  "rls_policies_public": 960,
+  "migrations_ledger": 2542,
+  "edge_functions": 109,
+  "nota": "Snapshot pós-auditoria — sessão 18, 2026-10-24. +4 migrations por atividade externa pós-auditoria (20261022193000..20261022194200). Auditoria foi somente leitura: Δcron=0, Δpolicies=0, Δedge_functions=0, Δfuncoes=0, Δbase_tables=0."
+}
