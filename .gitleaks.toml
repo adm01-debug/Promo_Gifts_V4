@@ -15,8 +15,9 @@ useDefault = true
 # ---
 
 [allowlist]
-description = "Chaves publishable do Supabase (valores publicos embutidos nos bundles)"
+description = "Chaves publishable do Supabase + falsos-positivos documentados"
 regexes = [
+  # ── Chaves públicas do Supabase ──────────────────────────────────────────
   # Fallback publico no e2e.yml — chave publishable do projeto doufsxqlfjyuvxuezpln
   '''sb_publishable_tjH5qAbZ0e5HTTd872NijQ_s9m6JvYU''',
   # Variante com typo (d4872 vs d872) presente em commit 9a63884a da branch #2372
@@ -33,6 +34,26 @@ regexes = [
   '''promobrind\.(magazines|cart|filters|quotes)\.[a-z0-9._-]+''',
   # Property keys de filtro (minSupplierSales90d, minPromoSales90d, etc.)
   '''min(Supplier|Promo)Sales[0-9]+d''',
+
+  # ── Falsos-positivos em workflows / docs ─────────────────────────────────
+  # Placeholder literal em docs de diagnóstico / setup
+  '''SERVICE_ROLE_KEY''',
+  '''YOUR_JWT_TOKEN''',
+
+  # ── Falsos-positivos em testes e fixtures ────────────────────────────────
+  # Mock tokens com padrão obvio em testes unitários/integração
+  '''abc123def456''',
+  '''anon-key-12345678''',
+  '''sup-tok-abc123''',
+  '''idem-duplicate-test-001''',
+  # Fragment de JWT truncado em testes (h.eyJzdWIiOiJ1MSJ9.s — payload fake)
+  '''h\.eyJzdWIiOiJ1MSJ9\.s''',
+  # JWT de exemplo canônico do jwt.io ({"sub":"1234567890","name":"John Doe",...})
+  '''eyJzdWIiOiIxMjM0NTY3ODkw''',
+  # AWS key obviamente falsa (sequencial — padrão de documentação)
+  '''AKIA1234567890ABCDEF''',
+  # Token de teste fuzz em magazinePublish
+  '''a1b2c3d4e5f60718293a4b5c6d7e8f90''',
 ]
 paths = [
   # Documentacao e auditorias — contêm exemplos, logs e curl com tokens de exemplo
