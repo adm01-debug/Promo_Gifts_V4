@@ -142,6 +142,67 @@ Detalhes completos dos testes em:
 - `dossies/security-brechas-e30-e40-e18-2026-10-22.md` — seção "Teste Postgres Temporário"
 - `dossies/fix-audit-acl-regrole-261024-1635.md` — seção "Teste Postgres Temporário"
 
+### 6.1.1 Teste Cadeia Completa — 24 Migrations Post-Baseline (2026-10-24)
+
+**Banco:** `test_full_chain_v2` (PostgreSQL 16.15 local)
+
+**Stubs criados antes do baseline:**
+- `CREATE SCHEMA auth;`
+- `CREATE TABLE auth.users(id uuid PRIMARY KEY DEFAULT gen_random_uuid(), email text, created_at timestamptz, updated_at timestamptz, raw_user_meta_data jsonb, is_super_admin boolean);`
+- `CREATE FUNCTION auth.uid() RETURNS uuid LANGUAGE sql STABLE AS $$ SELECT '00000000-0000-0000-0000-000000000000'::uuid $$;`
+- `CREATE FUNCTION auth.role() RETURNS text LANGUAGE sql STABLE AS $$ SELECT 'authenticated' $$;`
+- Roles: `anon`, `authenticated`, `service_role`, `supabase_admin`, `dashboard_user`, `supabase_auth_admin`
+
+**Baseline carregado:** `supabase/baseline/20261015140000_baseline_schema.sql`
+- ERRORs esperados (extensões cloud-only, indisponíveis localmente): `pg_cron`, `pg_net`, `pg_repack`, `http`, `hypopg`, `index_advisor`, `pg_graphql`, `pgmq`, `supabase_vault`, `wrappers`
+- Resultado pós-baseline: **398 tabelas**, 1334 funções, **72 FKs para auth.users** (formato `REFERENCES "auth"."users"`)
+
+**Reconciliação 69 vs 72 FKs:** A contagem "69" em sessões anteriores usava `grep "auth.users"` (sem quotes) e não capturava o formato `"auth"."users"` do baseline dump. A contagem real confirmada pelo banco local é **72 FKs** para `auth.users`.
+
+**24 migrations post-baseline (20261015150000 → 20261024163500):**
+
+| # | Migration | Resultado | Motivo se FAIL |
+|---|---|---|---|
+| 1 | 20261015150000_admin_active_sessions_rpc | OK | — |
+| 2 | 20261018000041_e041_fechar_anon_read | OK | — |
+| 3 | 20261018000042_e042_fix_policies_lote1 | OK | — |
+| 4 | 20261018000043_e042_lote2_ai_art_kits | OK | — |
+| 5 | 20261018000047_e047_restrictive_policies | OK | — |
+| 6 | 20261018000048_e047_lote2_restrictive_pii | OK | — |
+| 7 | 20261018160000_admin_revoke_sessions | OK | — |
+| 8 | 20261018160100_login_attempts_lower_email | OK | — |
+| 9 | 20261018170000_e069_drop_redundant_index | OK | — |
+| 10 | 20261018170100_e070_purge_idempotency | **FAIL** | `schema "cron" does not exist` — pg_cron cloud-only |
+| 11 | 20261019000000_mirror_oob_frontend_telemetry | **FAIL** | `relation "cron.job" does not exist` — pg_cron cloud-only |
+| 12 | 20261022000000_revoke_fn_backfill | OK | — |
+| 13 | 20261022000100_revoke_fn_detect_errors | OK | — |
+| 14 | 20261022100001_security_fn_cron_guard | OK | — |
+| 15 | 20261022100010_perf_rls_auth_uid_wrapper | OK | — |
+| 16 | 20261022100011_perf_drop_unused_indexes | OK | — |
+| 17 | 20261022100020_fix_cron_dispatcher | **FAIL** | `relation "cron.job" does not exist` — pg_cron cloud-only |
+| 18 | 20261022100021_fix_cron_hash_product_images | **FAIL** | `relation "cron.job" does not exist` — pg_cron cloud-only |
+| 19 | 20261022100022_fix_cron_sync_is_stockout | **FAIL** | `relation "cron.job" does not exist` — pg_cron cloud-only |
+| 20 | 20261022193000_incidente_alivio_carga_cron | **FAIL** | `relation "cron.job" does not exist` — pg_cron cloud-only |
+| 21 | 20261022194000_security_revoke_external | OK | — |
+| 22 | 20261022194100_security_revoke_mockup | OK | — |
+| 23 | 20261022194200_security_revoke_mcp_kv | OK | — |
+| 24 | **20261024163500_fix_audit_acl_regrole** | **OK** | — |
+
+**Resultado: 18/24 OK, 6 FAIL**
+
+Todos os 6 FAILs são por `cron.job` inexistente — `pg_cron` é extensão Supabase-cloud-only, não instalável em PostgreSQL local padrão. As migrations de cron são válidas em produção (onde pg_cron está presente no baseline dump via `CREATE EXTENSION pg_cron`). Nenhuma migration DDL pura (RLS, REVOKE, CREATE FUNCTION sem cron) falhou.
+
+**Verificação específica da migration desta branch (24/24):**
+```sql
+-- pg_get_userbyid presente no corpo da função
+-- ::regrole ausente (cast seguro confirmado)
+-- auth.users intacto após migration (72 FKs = antes = depois)
+```
+
+### 6.1.2 DDL Out-of-Band — Achado (2026-10-24)
+
+Migrations `20261022195616` e `20261022203935` constam no ledger de produção (`supabase_migrations.schema_migrations`) mas **não têm arquivo SQL em nenhuma branch do git**. São DDL aplicadas diretamente via MCP/dashboard sem migration file correspondente — padrão documentado em REGRA #8 corolário E056. Ação requerida: criar migrations espelho via E99 (reconciliação `repair-only`).
+
 ---
 
 ## 7. Merges Autônomos Realizados
