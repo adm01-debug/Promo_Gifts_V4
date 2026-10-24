@@ -3,6 +3,7 @@
 -- Achado: A-C01 (Seção 2 — Cron Jobs sem autenticação)
 -- Aprovado pelo PO em 2026-10-24 (FASE B — JÁ LIBERADOS)
 -- Referência: auditoria-supabase/propostas/P01_cron_auth_headers.sql
+-- Rollback: SELECT cron.alter_job(job_id := 235, command := $R$SELECT net.http_post(url := 'https://doufsxqlfjyuvxuezpln.supabase.co/functions/v1/run-script', body := '{"script":"image-dimensions-worker"}'::jsonb)$R$);
 --
 -- Contexto: job image-dimensions-backfill (jobid=235) chama /functions/v1/run-script
 -- via net.http_post sem header de autenticação e com URL hardcoded.
@@ -11,8 +12,6 @@
 -- padrão já usado por outros jobs (ex: backfill-image-dimensions, jobid=222).
 -- Nota: a edge function run-script não está deployada neste momento;
 -- a autenticação entrará em vigor ao deploy.
-
-BEGIN;
 
 DO $$
 BEGIN
@@ -51,17 +50,3 @@ BEGIN
   END IF;
 END;
 $$;
-
-COMMIT;
-
--- ROLLBACK: restaurar comando original (sem autenticação, URL hardcoded)
--- BEGIN;
--- SELECT cron.alter_job(
---   job_id := 235,
---   command := $CMD$
--- SELECT net.http_post(
---     url := 'https://doufsxqlfjyuvxuezpln.supabase.co/functions/v1/run-script',
---     body := '{"script":"image-dimensions-worker"}'::jsonb)
--- $CMD$
--- );
--- COMMIT;
