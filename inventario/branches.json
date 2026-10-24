@@ -26,12 +26,13 @@
     "wips": 0,
     "migrations": [],
     "conflitos_n": 0,
-    "pr_numero": "",
-    "pr_titulo": "",
-    "pr_estado": "",
-    "ci_status": "",
-    "categoria": "B",
+    "pr_numero": "128",
+    "pr_titulo": "Add additional test file inclusion pattern",
+    "pr_estado": "closed",
+    "ci_status": "NÃO VERIFICADO",
+    "categoria": "F",
     "pontuacao": 1,
+    "nota_manual": "",
     "arquivos": [
       ".github/workflows/webpack.yml"
     ]
@@ -66,9 +67,10 @@
     "pr_numero": "",
     "pr_titulo": "",
     "pr_estado": "",
-    "ci_status": "",
-    "categoria": "B",
+    "ci_status": "NÃO VERIFICADO",
+    "categoria": "F",
     "pontuacao": 1,
+    "nota_manual": "",
     "arquivos": [
       ".github/workflows/deno.yml"
     ]
@@ -103,9 +105,10 @@
     "pr_numero": "",
     "pr_titulo": "",
     "pr_estado": "",
-    "ci_status": "",
-    "categoria": "B",
+    "ci_status": "NÃO VERIFICADO",
+    "categoria": "F",
     "pontuacao": 1,
+    "nota_manual": "",
     "arquivos": [
       ".github/workflows/greetings.yml"
     ]
@@ -139,9 +142,10 @@
     "pr_numero": "",
     "pr_titulo": "",
     "pr_estado": "",
-    "ci_status": "",
-    "categoria": "B",
+    "ci_status": "NÃO VERIFICADO",
+    "categoria": "F",
     "pontuacao": 1,
+    "nota_manual": "",
     "arquivos": [
       ".github/workflows/static.yml"
     ]
@@ -175,9 +179,10 @@
     "pr_numero": "",
     "pr_titulo": "",
     "pr_estado": "",
-    "ci_status": "",
-    "categoria": "B",
+    "ci_status": "NÃO VERIFICADO",
+    "categoria": "F",
     "pontuacao": 1,
+    "nota_manual": "",
     "arquivos": [
       ".github/workflows/nextjs.yml"
     ]
@@ -211,9 +216,10 @@
     "pr_numero": "",
     "pr_titulo": "",
     "pr_estado": "",
-    "ci_status": "",
-    "categoria": "B",
+    "ci_status": "NÃO VERIFICADO",
+    "categoria": "F",
     "pontuacao": 1,
+    "nota_manual": "",
     "arquivos": [
       ".github/workflows/jekyll-docker.yml"
     ]
@@ -247,9 +253,10 @@
     "pr_numero": "",
     "pr_titulo": "",
     "pr_estado": "",
-    "ci_status": "",
-    "categoria": "B",
+    "ci_status": "NÃO VERIFICADO",
+    "categoria": "F",
     "pontuacao": 1,
+    "nota_manual": "",
     "arquivos": [
       ".github/workflows/npm-publish.yml"
     ]
@@ -283,9 +290,10 @@
     "pr_numero": "",
     "pr_titulo": "",
     "pr_estado": "",
-    "ci_status": "",
-    "categoria": "B",
+    "ci_status": "NÃO VERIFICADO",
+    "categoria": "F",
     "pontuacao": 1,
+    "nota_manual": "",
     "arquivos": [
       ".github/workflows/npm-publish-github-packages.yml"
     ]
@@ -319,9 +327,10 @@
     "pr_numero": "",
     "pr_titulo": "",
     "pr_estado": "",
-    "ci_status": "",
-    "categoria": "B",
+    "ci_status": "NÃO VERIFICADO",
+    "categoria": "F",
     "pontuacao": 1,
+    "nota_manual": "",
     "arquivos": [
       ".github/workflows/codacy.yml"
     ]
@@ -355,9 +364,10 @@
     "pr_numero": "",
     "pr_titulo": "",
     "pr_estado": "",
-    "ci_status": "",
-    "categoria": "B",
+    "ci_status": "NÃO VERIFICADO",
+    "categoria": "F",
     "pontuacao": 1,
+    "nota_manual": "",
     "arquivos": [
       ".github/workflows/dependency-review.yml"
     ]
@@ -391,9 +401,10 @@
     "pr_numero": "",
     "pr_titulo": "",
     "pr_estado": "",
-    "ci_status": "",
-    "categoria": "B",
+    "ci_status": "NÃO VERIFICADO",
+    "categoria": "F",
     "pontuacao": 1,
+    "nota_manual": "",
     "arquivos": [
       ".github/workflows/python-publish.yml"
     ]
@@ -427,9 +438,10 @@
     "pr_numero": "",
     "pr_titulo": "",
     "pr_estado": "",
-    "ci_status": "",
-    "categoria": "B",
+    "ci_status": "NÃO VERIFICADO",
+    "categoria": "F",
     "pontuacao": 1,
+    "nota_manual": "",
     "arquivos": [
       ".github/workflows/node.js.yml"
     ]
@@ -463,9 +475,10 @@
     "pr_numero": "",
     "pr_titulo": "",
     "pr_estado": "",
-    "ci_status": "",
-    "categoria": "B",
+    "ci_status": "NÃO VERIFICADO",
+    "categoria": "F",
     "pontuacao": 1,
+    "nota_manual": "",
     "arquivos": [
       ".github/workflows/manual.yml"
     ]
@@ -499,9 +512,10 @@
     "pr_numero": "",
     "pr_titulo": "",
     "pr_estado": "",
-    "ci_status": "",
-    "categoria": "B",
+    "ci_status": "NÃO VERIFICADO",
+    "categoria": "F",
     "pontuacao": 1,
+    "nota_manual": "",
     "arquivos": [
       ".github/workflows/main.yml"
     ]
@@ -535,9 +549,10 @@
     "pr_numero": "",
     "pr_titulo": "",
     "pr_estado": "",
-    "ci_status": "",
-    "categoria": "B",
+    "ci_status": "NÃO VERIFICADO",
+    "categoria": "F",
     "pontuacao": 1,
+    "nota_manual": "",
     "arquivos": [
       ".github/workflows/main.yml"
     ]
@@ -571,9 +586,10 @@
     "pr_numero": "",
     "pr_titulo": "",
     "pr_estado": "",
-    "ci_status": "",
-    "categoria": "B",
+    "ci_status": "NÃO VERIFICADO",
+    "categoria": "F",
     "pontuacao": 1,
+    "nota_manual": "",
     "arquivos": [
       ".github/workflows/deno.yml"
     ]
@@ -607,9 +623,10 @@
     "pr_numero": "",
     "pr_titulo": "",
     "pr_estado": "",
-    "ci_status": "",
-    "categoria": "B",
+    "ci_status": "NÃO VERIFICADO",
+    "categoria": "F",
     "pontuacao": 1,
+    "nota_manual": "",
     "arquivos": [
       ".github/workflows/deploy-gates.yml"
     ]
@@ -633,7 +650,8 @@
     "areas": [
       "components",
       "docs",
-      "scripts"
+      "scripts",
+      "src"
     ],
     "commits_msgs": [
       "fix(types): compatibilidade de Resolver com @hookform/resolvers v5",
@@ -648,9 +666,10 @@
     "pr_numero": "",
     "pr_titulo": "",
     "pr_estado": "",
-    "ci_status": "",
+    "ci_status": "NÃO VERIFICADO",
     "categoria": "C",
     "pontuacao": 4,
+    "nota_manual": "",
     "arquivos": [
       "docs/ci/SEGREDOS.md",
       "scripts/check-secrets-inventory.mjs",
@@ -685,9 +704,10 @@
     "pr_numero": "",
     "pr_titulo": "",
     "pr_estado": "",
-    "ci_status": "",
-    "categoria": "B",
+    "ci_status": "NÃO VERIFICADO",
+    "categoria": "F",
     "pontuacao": 1,
+    "nota_manual": "",
     "arquivos": [
       ".as-assertions-baseline.json"
     ]
@@ -699,8 +719,8 @@
     "ultimo_sha": "24edaa539910096180ec51ccbfa72746cefff4c6",
     "primeiro_commit": "2026-10-19T19:38:50+00:00",
     "autores": [
-      "adm01-debug",
-      "Claude"
+      "Claude",
+      "adm01-debug"
     ],
     "ahead": 2,
     "atras": 77,
@@ -723,9 +743,10 @@
     "pr_numero": "",
     "pr_titulo": "",
     "pr_estado": "",
-    "ci_status": "",
+    "ci_status": "NÃO VERIFICADO",
     "categoria": "F",
     "pontuacao": 1,
+    "nota_manual": "",
     "arquivos": [
       ".as-assertions-baseline.json",
       ".github/workflows/e2e-quote-conditions-pr-check.yml",
@@ -744,38 +765,42 @@
   {
     "nome": "claude/fix-audit-acl-regrole-261024-1635",
     "prefixo": "claude",
-    "ultimo_commit": "2026-10-24T16:35:47+00:00",
-    "ultimo_sha": "cf091447132c0fcb5cea3832c9f1ec6328c5bcf5",
+    "ultimo_commit": "2026-10-24T17:15:43+00:00",
+    "ultimo_sha": "8a10866f9d44add6f774e863ba61cc818ae01959",
     "primeiro_commit": "2026-10-24T16:35:47+00:00",
     "autores": [
       "Claude"
     ],
-    "ahead": 1,
+    "ahead": 2,
     "atras": 2,
     "merge_base": "174c4ea80f04241416eb328460032d794b8074c0",
     "merge_base_date": "2026-10-24T13:03:50-03:00",
-    "arquivos_modificados": 1,
-    "linhas_add": 99,
-    "linhas_del": 0,
+    "arquivos_modificados": 2,
+    "linhas_add": 108,
+    "linhas_del": 5,
     "areas": [
-      "migrations"
+      "migrations",
+      "scripts"
     ],
     "commits_msgs": [
+      "chore(ci): allowlist 4 versões remote_only bloqueantes no ledger (PR #2404)",
       "fix(db): cast seguro em audit_security_definer_acl para roles removidas"
     ],
-    "cherry_plus": 1,
+    "cherry_plus": 2,
     "wips": 0,
     "migrations": [
       "supabase/migrations/20261024163500_fix_audit_security_definer_acl_regrole_cast.sql"
     ],
     "conflitos_n": 0,
-    "pr_numero": "",
-    "pr_titulo": "",
-    "pr_estado": "",
-    "ci_status": "",
+    "pr_numero": "2404",
+    "pr_titulo": "fix(db): cast seguro em audit_security_definer_acl para roles removidas",
+    "pr_estado": "open",
+    "ci_status": "NÃO VERIFICADO",
     "categoria": "C",
     "pontuacao": 3,
+    "nota_manual": "",
     "arquivos": [
+      "scripts/migration-ledger-remote-only-allowlist.json",
       "supabase/migrations/20261024163500_fix_audit_security_definer_acl_regrole_cast.sql"
     ]
   },
@@ -786,8 +811,8 @@
     "ultimo_sha": "f9b74053f5f7e525f649979499faa14fc993f76b",
     "primeiro_commit": "2026-10-19T21:06:41+00:00",
     "autores": [
-      "adm01-debug",
-      "Claude"
+      "Claude",
+      "adm01-debug"
     ],
     "ahead": 6,
     "atras": 75,
@@ -797,10 +822,11 @@
     "linhas_add": 31,
     "linhas_del": 15,
     "areas": [
-      "hooks",
-      "edge-functions",
       "ci",
+      "edge-functions",
+      "hooks",
       "lib",
+      "src",
       "tests"
     ],
     "commits_msgs": [
@@ -818,9 +844,10 @@
     "pr_numero": "",
     "pr_titulo": "",
     "pr_estado": "",
-    "ci_status": "",
+    "ci_status": "NÃO VERIFICADO",
     "categoria": "C",
     "pontuacao": 9,
+    "nota_manual": "",
     "arquivos": [
       ".github/workflows/capacity-growth-report.yml",
       ".github/workflows/pgss-slo-report.yml",
@@ -844,8 +871,8 @@
     "ultimo_sha": "50981d51b727193804a234433e36688f2c72d33d",
     "primeiro_commit": "2026-10-19T17:24:21+00:00",
     "autores": [
-      "adm01-debug",
-      "Claude"
+      "Claude",
+      "adm01-debug"
     ],
     "ahead": 5,
     "atras": 82,
@@ -855,9 +882,10 @@
     "linhas_add": 55,
     "linhas_del": 9,
     "areas": [
-      "components",
       "ci",
-      "scripts"
+      "components",
+      "scripts",
+      "src"
     ],
     "commits_msgs": [
       "fix(ci,ts): gitleaks allowlist + ProductFormFullscreen TS + secrets EXAMPLE_API_KEY",
@@ -873,9 +901,10 @@
     "pr_numero": "",
     "pr_titulo": "",
     "pr_estado": "",
-    "ci_status": "",
+    "ci_status": "NÃO VERIFICADO",
     "categoria": "C",
     "pontuacao": 5,
+    "nota_manual": "",
     "arquivos": [
       ".github/workflows/deploy-gates.yml",
       ".gitleaks.toml",
@@ -906,9 +935,10 @@
     "pr_numero": "",
     "pr_titulo": "",
     "pr_estado": "",
-    "ci_status": "",
+    "ci_status": "NÃO VERIFICADO",
     "categoria": "B",
     "pontuacao": 1,
+    "nota_manual": "",
     "arquivos": []
   },
   {
@@ -918,8 +948,8 @@
     "ultimo_sha": "c10816b95c9a39a3bf16f95cb7b6d74d2b999066",
     "primeiro_commit": "2026-10-19T13:38:51-03:00",
     "autores": [
-      "adm01-debug",
-      "Claude"
+      "Claude",
+      "adm01-debug"
     ],
     "ahead": 2,
     "atras": 82,
@@ -930,7 +960,8 @@
     "linhas_del": 2,
     "areas": [
       "components",
-      "migrations"
+      "migrations",
+      "src"
     ],
     "commits_msgs": [
       "fix(types): compatibilidade de Resolver com @hookform/resolvers v5",
@@ -945,9 +976,10 @@
     "pr_numero": "",
     "pr_titulo": "",
     "pr_estado": "",
-    "ci_status": "",
+    "ci_status": "NÃO VERIFICADO",
     "categoria": "C",
     "pontuacao": 6,
+    "nota_manual": "",
     "arquivos": [
       "src/components/admin/products/ProductFormFullscreen.tsx",
       "supabase/migrations/20261019000000_mirror_oob_frontend_telemetry_v_system_health_dashboard.sql",
@@ -983,9 +1015,10 @@
     "pr_numero": "",
     "pr_titulo": "",
     "pr_estado": "",
-    "ci_status": "",
+    "ci_status": "NÃO VERIFICADO",
     "categoria": "F",
     "pontuacao": 1,
+    "nota_manual": "",
     "arquivos": [
       ".github/workflows/db-apply-migration.yml",
       ".github/workflows/stock-future-stock-e2e.yml",
@@ -999,8 +1032,8 @@
     "ultimo_sha": "cfabb3316bae98bc5ed1fbb5c2d06774e7808f1a",
     "primeiro_commit": "2026-10-19T17:24:21+00:00",
     "autores": [
-      "adm01-debug",
-      "Claude"
+      "Claude",
+      "adm01-debug"
     ],
     "ahead": 13,
     "atras": 77,
@@ -1012,6 +1045,7 @@
     "areas": [
       "components",
       "scripts",
+      "src",
       "tests"
     ],
     "commits_msgs": [
@@ -1036,9 +1070,10 @@
     "pr_numero": "",
     "pr_titulo": "",
     "pr_estado": "",
-    "ci_status": "",
+    "ci_status": "NÃO VERIFICADO",
     "categoria": "C",
     "pontuacao": 8,
+    "nota_manual": "",
     "arquivos": [
       ".as-assertions-baseline.json",
       ".as-unknown-baseline.json",
@@ -1055,14 +1090,14 @@
     "primeiro_commit": "2026-10-19T10:41:50-03:00",
     "autores": [
       "dependabot[bot]",
-      "adm01-debug",
       "devin-ai-integration[bot]",
-      "Claude"
+      "Claude",
+      "adm01-debug"
     ],
     "ahead": 17,
     "atras": 83,
-    "merge_base": "",
-    "merge_base_date": "",
+    "merge_base": "NO_MERGE_BASE",
+    "merge_base_date": "NO_MERGE_BASE",
     "arquivos_modificados": 0,
     "linhas_add": 0,
     "linhas_del": 0,
@@ -1093,9 +1128,10 @@
     "pr_numero": "",
     "pr_titulo": "",
     "pr_estado": "",
-    "ci_status": "",
-    "categoria": "B",
-    "pontuacao": 4,
+    "ci_status": "NÃO VERIFICADO",
+    "categoria": "G",
+    "pontuacao": 0,
+    "nota_manual": "Sem merge-base com main atual — história divergiu. Contém migrations e rollbacks (supabase/migrations/20261015150000, 20261018160000) e config CI. Não é possível calcular ahead/behind nem simular merge.",
     "arquivos": []
   },
   {
@@ -1129,9 +1165,10 @@
     "pr_numero": "",
     "pr_titulo": "",
     "pr_estado": "",
-    "ci_status": "",
-    "categoria": "C",
-    "pontuacao": 3,
+    "ci_status": "NÃO VERIFICADO",
+    "categoria": "F",
+    "pontuacao": 0,
+    "nota_manual": "Somente arquivos auditoria-supabase/ — documentação de auditoria, sem código de produto.",
     "arquivos": [
       "auditoria-supabase/RELATORIO_FINAL_2026-10-22.md",
       "auditoria-supabase/secao3_seguranca.md",
@@ -1201,9 +1238,10 @@
     "pr_numero": "",
     "pr_titulo": "",
     "pr_estado": "",
-    "ci_status": "",
-    "categoria": "C",
-    "pontuacao": 4,
+    "ci_status": "NÃO VERIFICADO",
+    "categoria": "F",
+    "pontuacao": 1,
+    "nota_manual": "33 commits, porém SOMENTE arquivos analise-prs/ e PENDENCIAS.md — relatórios de análise, sem código de produto.",
     "arquivos": [
       "PENDENCIAS.md",
       "analise-prs/RELATORIO_PRS.md",
@@ -1257,8 +1295,8 @@
     "ultimo_sha": "1cfa45d417b53bacdf4a529580ad6e95c4f11f70",
     "primeiro_commit": "2026-10-22T19:57:42-03:00",
     "autores": [
-      "adm01-debug",
-      "Claude"
+      "Claude",
+      "adm01-debug"
     ],
     "ahead": 4,
     "atras": 33,
@@ -1268,8 +1306,8 @@
     "linhas_add": 128,
     "linhas_del": 0,
     "areas": [
-      "migrations",
-      "docs"
+      "docs",
+      "migrations"
     ],
     "commits_msgs": [
       "Merge branch 'main' into claude/security-brechas-e30-e40-e18-2026-10-22",
@@ -1288,9 +1326,10 @@
     "pr_numero": "",
     "pr_titulo": "",
     "pr_estado": "",
-    "ci_status": "",
+    "ci_status": "NÃO VERIFICADO",
     "categoria": "C",
     "pontuacao": 3,
+    "nota_manual": "",
     "arquivos": [
       ".migration-refs-baseline.json",
       "supabase/MIGRATIONS_SYNC_LOG.md",
@@ -1318,7 +1357,9 @@
     "arquivos_modificados": 1,
     "linhas_add": 20,
     "linhas_del": 9,
-    "areas": [],
+    "areas": [
+      "docs"
+    ],
     "commits_msgs": [
       "chore(auditoria): atualiza progresso.json com evidências sessao_19",
       "chore(auditoria): reconcilia evidências sessao_19 — SEG-001/002 reconfirmado + delta-1 comprovado"
@@ -1327,14 +1368,54 @@
     "wips": 0,
     "migrations": [],
     "conflitos_n": 0,
-    "pr_numero": "",
-    "pr_titulo": "",
-    "pr_estado": "",
-    "ci_status": "",
-    "categoria": "B",
+    "pr_numero": "2403",
+    "pr_titulo": "chore(auditoria): reconcilia evidências sessao_19",
+    "pr_estado": "open",
+    "ci_status": "NÃO VERIFICADO",
+    "categoria": "F",
     "pontuacao": 1,
+    "nota_manual": "",
     "arquivos": [
       "auditoria-supabase/progresso.json"
+    ]
+  },
+  {
+    "nome": "claude_05/youthful-goodall-kihjbv",
+    "prefixo": "claude_05",
+    "ultimo_commit": "2026-10-24T17:18:36+00:00",
+    "ultimo_sha": "6331f556404e034558478badbc0f0364bc7edbc8",
+    "primeiro_commit": "2026-10-24T17:18:36+00:00",
+    "autores": [
+      "Claude"
+    ],
+    "ahead": 1,
+    "atras": 0,
+    "merge_base": "594fbd40cf837f300a4e3eb6c334b629d4bb0c91",
+    "merge_base_date": "2026-10-24T14:02:43-03:00",
+    "arquivos_modificados": 3,
+    "linhas_add": 5189,
+    "linhas_del": 0,
+    "areas": [
+      "inventario"
+    ],
+    "commits_msgs": [
+      "chore(inventario): WIP — branches.csv e branches.json (50 branches processadas)"
+    ],
+    "cherry_plus": 1,
+    "wips": 55,
+    "migrations": [],
+    "conflitos_n": 0,
+    "pr_numero": "2408",
+    "pr_titulo": "chore(inventario): inventário completo de branches — CSV, JSON, relatório e TOP",
+    "pr_estado": "open",
+    "ci_status": "NÃO VERIFICADO",
+    "categoria": "F",
+    "pontuacao": 0,
+    "nota_manual": "Branch desta sessão de inventário — contém apenas arquivos inventario/. PR#2408 aberto.",
+    "arquivos": [
+      "inventario/branches.csv",
+      "inventario/branches.json",
+      "inventario/progresso.json"
     ]
   },
   {
@@ -1367,9 +1448,10 @@
     "pr_numero": "",
     "pr_titulo": "",
     "pr_estado": "",
-    "ci_status": "",
+    "ci_status": "NÃO VERIFICADO",
     "categoria": "F",
     "pontuacao": 1,
+    "nota_manual": "",
     "arquivos": [
       "package-lock.json",
       "package.json"
@@ -1382,8 +1464,8 @@
     "ultimo_sha": "1ebb25769b19d3ad64664c169632fdfb74affcbb",
     "primeiro_commit": "2026-10-19T18:30:04+00:00",
     "autores": [
-      "adm01-debug",
-      "dependabot[bot]"
+      "dependabot[bot]",
+      "adm01-debug"
     ],
     "ahead": 2,
     "atras": 75,
@@ -1406,9 +1488,10 @@
     "pr_numero": "",
     "pr_titulo": "",
     "pr_estado": "",
-    "ci_status": "",
+    "ci_status": "NÃO VERIFICADO",
     "categoria": "F",
     "pontuacao": 1,
+    "nota_manual": "",
     "arquivos": [
       "package-lock.json",
       "package.json"
@@ -1421,8 +1504,8 @@
     "ultimo_sha": "e587202916e6f012b0e1ff31711ca14b26909caa",
     "primeiro_commit": "2026-10-24T16:01:41+00:00",
     "autores": [
-      "adm01-debug",
-      "dependabot[bot]"
+      "dependabot[bot]",
+      "adm01-debug"
     ],
     "ahead": 3,
     "atras": 1,
@@ -1441,12 +1524,13 @@
     "wips": 0,
     "migrations": [],
     "conflitos_n": 0,
-    "pr_numero": "",
-    "pr_titulo": "",
-    "pr_estado": "",
-    "ci_status": "",
-    "categoria": "B",
+    "pr_numero": "2400",
+    "pr_titulo": "chore(deps): bump fast-uri from 3.1.8 to 3.1.9",
+    "pr_estado": "open",
+    "ci_status": "NÃO VERIFICADO",
+    "categoria": "F",
     "pontuacao": 1,
+    "nota_manual": "",
     "arquivos": [
       "package-lock.json"
     ]
@@ -1458,8 +1542,8 @@
     "ultimo_sha": "5a2c5e17840440578f1489754d43e6b9774142ca",
     "primeiro_commit": "2026-10-24T16:01:54+00:00",
     "autores": [
-      "adm01-debug",
-      "dependabot[bot]"
+      "dependabot[bot]",
+      "adm01-debug"
     ],
     "ahead": 2,
     "atras": 2,
@@ -1479,12 +1563,13 @@
     "wips": 0,
     "migrations": [],
     "conflitos_n": 0,
-    "pr_numero": "",
-    "pr_titulo": "",
-    "pr_estado": "",
-    "ci_status": "",
+    "pr_numero": "2401",
+    "pr_titulo": "chore(deps): bump zod from 3.25.76 to 4.6.6",
+    "pr_estado": "open",
+    "ci_status": "NÃO VERIFICADO",
     "categoria": "F",
     "pontuacao": 1,
+    "nota_manual": "",
     "arquivos": [
       "package-lock.json",
       "package.json"
@@ -1497,15 +1582,15 @@
     "ultimo_sha": "1cc6041e1c206569798e5973a500d9cb4ca89dad",
     "primeiro_commit": "2026-10-19T10:41:50-03:00",
     "autores": [
-      "adm01-debug",
       "dependabot[bot]",
       "Joaquim Promo Brindes",
+      "adm01-debug",
       "devin-ai-integration[bot]"
     ],
     "ahead": 10,
     "atras": 83,
-    "merge_base": "",
-    "merge_base_date": "",
+    "merge_base": "NO_MERGE_BASE",
+    "merge_base_date": "NO_MERGE_BASE",
     "arquivos_modificados": 0,
     "linhas_add": 0,
     "linhas_del": 0,
@@ -1529,9 +1614,10 @@
     "pr_numero": "",
     "pr_titulo": "",
     "pr_estado": "",
-    "ci_status": "",
-    "categoria": "B",
-    "pontuacao": 3,
+    "ci_status": "NÃO VERIFICADO",
+    "categoria": "G",
+    "pontuacao": 0,
+    "nota_manual": "Sem merge-base com main atual — história divergiu. 9 cherry-plus. Contém qa/migrations-draft/probe_e184_legacy_refs.sql e múltiplos fixes de CI. Criado por Devin AI.",
     "arquivos": []
   },
   {
@@ -1563,9 +1649,10 @@
     "pr_numero": "",
     "pr_titulo": "",
     "pr_estado": "",
-    "ci_status": "",
-    "categoria": "B",
+    "ci_status": "NÃO VERIFICADO",
+    "categoria": "F",
     "pontuacao": 1,
+    "nota_manual": "",
     "arquivos": [
       "supabase/MIGRATIONS_SYNC_LOG.md"
     ]
@@ -1599,9 +1686,10 @@
     "pr_numero": "",
     "pr_titulo": "",
     "pr_estado": "",
-    "ci_status": "",
-    "categoria": "B",
+    "ci_status": "NÃO VERIFICADO",
+    "categoria": "F",
     "pontuacao": 1,
+    "nota_manual": "",
     "arquivos": [
       "supabase/MIGRATIONS_SYNC_LOG.md"
     ]
@@ -1635,9 +1723,10 @@
     "pr_numero": "",
     "pr_titulo": "",
     "pr_estado": "",
-    "ci_status": "",
-    "categoria": "B",
+    "ci_status": "NÃO VERIFICADO",
+    "categoria": "F",
     "pontuacao": 1,
+    "nota_manual": "",
     "arquivos": [
       "supabase/MIGRATIONS_SYNC_LOG.md"
     ]
@@ -1671,9 +1760,10 @@
     "pr_numero": "",
     "pr_titulo": "",
     "pr_estado": "",
-    "ci_status": "",
-    "categoria": "B",
+    "ci_status": "NÃO VERIFICADO",
+    "categoria": "F",
     "pontuacao": 1,
+    "nota_manual": "",
     "arquivos": [
       "supabase/MIGRATIONS_SYNC_LOG.md"
     ]
@@ -1707,9 +1797,10 @@
     "pr_numero": "",
     "pr_titulo": "",
     "pr_estado": "",
-    "ci_status": "",
-    "categoria": "B",
+    "ci_status": "NÃO VERIFICADO",
+    "categoria": "F",
     "pontuacao": 1,
+    "nota_manual": "",
     "arquivos": [
       "supabase/MIGRATIONS_SYNC_LOG.md"
     ]
@@ -1743,9 +1834,10 @@
     "pr_numero": "",
     "pr_titulo": "",
     "pr_estado": "",
-    "ci_status": "",
-    "categoria": "B",
+    "ci_status": "NÃO VERIFICADO",
+    "categoria": "F",
     "pontuacao": 1,
+    "nota_manual": "",
     "arquivos": [
       "supabase/MIGRATIONS_SYNC_LOG.md"
     ]
@@ -1779,9 +1871,10 @@
     "pr_numero": "",
     "pr_titulo": "",
     "pr_estado": "",
-    "ci_status": "",
-    "categoria": "B",
+    "ci_status": "NÃO VERIFICADO",
+    "categoria": "F",
     "pontuacao": 1,
+    "nota_manual": "",
     "arquivos": [
       "supabase/MIGRATIONS_SYNC_LOG.md"
     ]
@@ -1815,9 +1908,10 @@
     "pr_numero": "",
     "pr_titulo": "",
     "pr_estado": "",
-    "ci_status": "",
-    "categoria": "B",
+    "ci_status": "NÃO VERIFICADO",
+    "categoria": "F",
     "pontuacao": 1,
+    "nota_manual": "",
     "arquivos": [
       "supabase/MIGRATIONS_SYNC_LOG.md"
     ]
@@ -1851,9 +1945,10 @@
     "pr_numero": "",
     "pr_titulo": "",
     "pr_estado": "",
-    "ci_status": "",
-    "categoria": "B",
+    "ci_status": "NÃO VERIFICADO",
+    "categoria": "F",
     "pontuacao": 1,
+    "nota_manual": "",
     "arquivos": [
       "supabase/MIGRATIONS_SYNC_LOG.md"
     ]
@@ -1887,9 +1982,10 @@
     "pr_numero": "",
     "pr_titulo": "",
     "pr_estado": "",
-    "ci_status": "",
-    "categoria": "B",
+    "ci_status": "NÃO VERIFICADO",
+    "categoria": "F",
     "pontuacao": 1,
+    "nota_manual": "",
     "arquivos": [
       "supabase/MIGRATIONS_SYNC_LOG.md"
     ]
@@ -1923,9 +2019,10 @@
     "pr_numero": "",
     "pr_titulo": "",
     "pr_estado": "",
-    "ci_status": "",
-    "categoria": "B",
+    "ci_status": "NÃO VERIFICADO",
+    "categoria": "F",
     "pontuacao": 1,
+    "nota_manual": "",
     "arquivos": [
       "supabase/MIGRATIONS_SYNC_LOG.md"
     ]
@@ -1959,9 +2056,10 @@
     "pr_numero": "",
     "pr_titulo": "",
     "pr_estado": "",
-    "ci_status": "",
+    "ci_status": "NÃO VERIFICADO",
     "categoria": "A",
     "pontuacao": 1,
+    "nota_manual": "",
     "arquivos": [
       "supabase/MIGRATIONS_SYNC_LOG.md"
     ]
@@ -1989,9 +2087,10 @@
     "pr_numero": "",
     "pr_titulo": "",
     "pr_estado": "",
-    "ci_status": "",
+    "ci_status": "NÃO VERIFICADO",
     "categoria": "B",
     "pontuacao": 1,
+    "nota_manual": "",
     "arquivos": []
   },
   {
@@ -2001,13 +2100,13 @@
     "ultimo_sha": "2c27030e0360809db9ae86423f7c4c7485b8d880",
     "primeiro_commit": "2026-06-05T12:18:10+00:00",
     "autores": [
-      "adm01-debug",
-      "github-actions[bot]"
+      "github-actions[bot]",
+      "adm01-debug"
     ],
     "ahead": 3073,
     "atras": 83,
-    "merge_base": "",
-    "merge_base_date": "",
+    "merge_base": "NO_MERGE_BASE",
+    "merge_base_date": "NO_MERGE_BASE",
     "arquivos_modificados": 0,
     "linhas_add": 0,
     "linhas_del": 0,
@@ -5094,9 +5193,10 @@
     "pr_numero": "",
     "pr_titulo": "",
     "pr_estado": "",
-    "ci_status": "",
+    "ci_status": "NÃO VERIFICADO",
     "categoria": "B",
     "pontuacao": 0,
+    "nota_manual": "",
     "arquivos": []
   },
   {
@@ -5127,9 +5227,10 @@
     "pr_numero": "",
     "pr_titulo": "",
     "pr_estado": "",
-    "ci_status": "",
+    "ci_status": "NÃO VERIFICADO",
     "categoria": "A",
     "pontuacao": 1,
+    "nota_manual": "",
     "arquivos": []
   }
 ]

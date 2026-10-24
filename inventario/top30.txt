@@ -1,0 +1,9 @@
+claude/fix-contract-mag-reader-261019-2110
+claude/fix-sync-log-ci-261019-1730
+claude/fix-rollback-261019-1637
+claude/fix-gitleaks-gate-261019-1800
+claude/chore-migrations-sync-log-261019-1600
+claude/fix-audit-acl-regrole-261024-1635
+claude/security-brechas-e30-e40-e18-2026-10-22
+claude/gifted-dijkstra-uojt52
+devin/probe-e184-legacy-refs
