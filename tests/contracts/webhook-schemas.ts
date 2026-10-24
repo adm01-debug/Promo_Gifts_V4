@@ -639,6 +639,7 @@ export const MagazineImportLocalSchemaV1 = z.object({
 
 // ===========================================================================
 // magazine-public-react / magazine-public-view / magazine-reader-state-write
+// magazine-reader-state-read
 // ===========================================================================
 export const MagazinePublicReactSchemaV1 = z.object({
   token: z.string().min(24).max(64).regex(/^[a-f0-9]+$/i),
