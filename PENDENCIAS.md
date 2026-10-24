@@ -70,7 +70,12 @@ Result: 20 passed, 1 failed, 1 interrupted, 149 did not run (fail-fast)
 
 **Pré-existente no `main` (commit `325b0bd`)** — não introduzida por este PR.
 
-**Ação necessária:** Adicionar `data-testid="app-header"` no fallback do Suspense em `MainLayout.tsx:144`, ou pré-carregar o chunk do `Header` antes da navegação para garantir que `waitForTestIdVisible` não corre durante a janela de lazy-load.
+**Correção aplicada (commit `f31d1a1b`):**
+```diff
+- <Suspense fallback={<div style={{ height: 56 }} className="print:hidden" />}>
++ <Suspense fallback={<div data-testid="app-header" style={{ position: 'fixed', top: 0, right: 0, left: 0, zIndex: 40, height: 56 }} className="print:hidden" />}>
+```
+O fallback agora tem `data-testid="app-header"` e `position: fixed` — idêntico ao Header real. O `waitForTestIdVisible` encontra o elemento imediatamente, sem race condition mesmo antes do chunk JS carregar. Validação via CI em `f31d1a1b` (PR #2393).
 
 ---
 

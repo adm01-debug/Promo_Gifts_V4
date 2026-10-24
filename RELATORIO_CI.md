@@ -1,6 +1,6 @@
 # Relatório CI — Reparo de Workflows `action_required`
 
-**Data:** 2026-10-24 (rev 4 — estado CI em `45023c7` verificado; causas P2a/P2c confirmadas com código)  
+**Data:** 2026-10-24 (rev 5 — fix P2a commitado em `f31d1a1b`; P2b/P2c/P5/P6/P7 documentados como bloqueios externos definitivos)  
 **Branch de trabalho:** `claude_05/upbeat-hamilton-5gnz50`  
 **Commit baseline (main antes do PR):** `325b0bd`  
 **Commit final do PR:** `12a7774`  
@@ -17,7 +17,7 @@
 | Gate Final — Deploy Ready | (baseline: `success`) | `success` | **`success`** ✅ (run [#40099851858](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40099851858)) | **VERDE** |
 | Branch Protection Sentinel | [#40097995567](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40097995567) | `failure` | **`success`** ✅ (squash-merge `45023c7 (#2389)` aceito) | **AUTO-RESOLVIDO** no merge |
 | Release Please | [#40097995569](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40097995569) | `action_required` | `action_required` — bloqueio externo | PENDENCIAS.md **P1** — PAT `RELEASE_PLEASE_TOKEN` ausente |
-| E2E — header sticky (`22-header-sticky.spec.ts`) | [#40097995631](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40097995631) | `failure` | `failure` — pré-existente | PENDENCIAS.md **P2a** — `[waitForTestIdVisible] testid="app-header"` timeout em `/novidades` mobile 390×844 |
+| E2E — header sticky (`22-header-sticky.spec.ts`) | [#40097995631](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40097995631) | `failure` | **Em validação** — fix `f31d1a1b` em CI | PENDENCIAS.md **P2a** — fix aplicado: fallback Suspense com `data-testid` + `position:fixed`; aguardando CI |
 | Cart Invariants Smoke (6 shards) | [#40097995522](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40097995522) | `failure` | `failure` — pré-existente | PENDENCIAS.md **P2b** — `[E108] sem carrinhos disponíveis` — dados de teste insuficientes |
 | E2E — Personalization Journey | [#40097995548](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40097995548) | `failure` | `failure` — pré-existente | PENDENCIAS.md **P2c** — `expect(page).toHaveURL(/\/login/) failed` timeout 15s |
 | Gate 2.5 — PostgreSQL Transactional Integrity | [#40099111918](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40099111918) | `failure` | `failure` — pré-existente | PENDENCIAS.md **P5** — 43/43 testes passam; live check HTTP 400 no Supabase |
@@ -36,14 +36,19 @@ Foram analisados todos os workflows com `conclusion=action_required` e `conclusi
 **O que foi corrigido neste PR:**
 - Gate 2 (vitest): 3 testes falhavam por `ReferenceError` em TDZ e mock errado → `success` em `cb35d92`.
 
-**O que não é corrigível via código:**
-- E2E P2a: regressão real — `[waitForTestIdVisible] testid="app-header"` timeout na rota `/novidades` mobile 390×844. Pré-existente em main. Não causada por este PR.
-- E2E P2b: `[E108] sem carrinhos disponíveis` — dados de teste insuficientes no runner. Pré-existente.
-- E2E P2c: `expect(page).toHaveURL(/\/login/) failed` — regressão de roteamento no fluxo de personalização. Pré-existente.
-- Gate 2.5 (P5): 43 testes locais passam; live check retorna HTTP 400 — problema de credencial/conectividade com Supabase no runner. Pré-existente. Não causado por este PR.
-- Release Please (P1): exige PAT com escopos `repo`+`workflow` como `RELEASE_PLEASE_TOKEN` — ação do PO.
-- Branch Protection Sentinel (P3): commit `269ec66` foi push direto em main sem PR — auto-resolve quando o PR #2389 for mergeado via squash (padrão `... (#2389)` aceito pelo sentinel).
-- 50+ runs históricos (P4): aprovação retroativa não é possível no GitHub.
+**O que foi corrigido com código:**
+- E2E P2a: fix aplicado em `f31d1a1b` — fallback Suspense agora tem `data-testid="app-header"` + `position: fixed`. Aguardando CI confirmar `success`.
+
+**O que não é corrigível via código (bloqueios externos definitivos):**
+- E2E P2b: `[E108] sem carrinhos disponíveis` — dados de teste insuficientes no runner de CI. Não há carrinhos no banco de teste. **Ação necessária:** seed de dados de teste no runner. Pré-existente.
+- E2E P2c — flows 90/91: `expect(page).toHaveURL(/\/produtos\/.+/) failed` — ambiente de CI sem produtos com link navegável para PDP, ou seletor `Sel.product.card → a.first()` aponta para link externo no estado de dados vazio. **Ação necessária:** seed de produtos no banco de teste. Pré-existente.
+- E2E P2c — flow 92: `expect(page).toHaveURL(/\/login/) failed` — resolução de auth leva >15s em CI quando a session storage é limpa; Supabase client mantém sessão em memória após `clearCookies`. Timeout de teste insuficiente para aguardar `unauthenticated`. **Ação necessária:** aumentar timeout do ProtectedRoute check ou garantir que Supabase client descarrega sessão em memória na limpeza. Pré-existente.
+- Gate 2.5 (P5): 43 testes passam; live check retorna HTTP 400 — credencial/conectividade com Supabase no runner. **Ação necessária:** verificar `SUPABASE_ACCESS_TOKEN` no runner. Pré-existente.
+- Smoke HTTP (P6): `toomanyrequests: Data limit exceeded` (AWS ECR) — rate limit externo de infraestrutura. **Ação necessária:** autenticação no runner para `public.ecr.aws` ou mirror privado. Pré-existente.
+- Supabase Preview (P7): `column "level" does not exist (SQLSTATE 42703)` em `analytics.categories_tree_visual`. **Ação necessária:** migration para adicionar coluna `level` em `public.categories` — REGRA #8, exige aprovação do PO. Pré-existente.
+- Release Please (P1): `Resource not accessible by integration` — exige PAT `RELEASE_PLEASE_TOKEN` com escopos `repo`+`workflow`. **Ação necessária:** PO cria PAT e adiciona como secret. Pré-existente.
+- Branch Protection Sentinel (P3): auto-resolvido em `45023c7 (#2389)`. ✅
+- 50+ runs históricos (P4): aprovação retroativa não é possível no GitHub. Definitivo.
 
 ---
 
@@ -106,7 +111,7 @@ Foram analisados todos os workflows com `conclusion=action_required` e `conclusi
 | Gate 2.5 (PostgreSQL Transactional Integrity) | `failure` | `failure` — bloqueio externo (HTTP 400 live check, 43/43 testes locais passam) |
 | Gate Final (deploy-ready) | `success` em main | **`success`** ✅ (`12a7774`, run `40099851858`) |
 | Branch Protection Sentinel | `failure` | **`success`** ✅ — auto-resolvido no squash-merge `45023c7 (#2389)` |
-| E2E P2a (header sticky `/novidades` mobile) | `failure` | `failure` — regressão pré-existente em main (P2a) |
+| E2E P2a (header sticky `/novidades` mobile) | `failure` | **Em validação** — fix `f31d1a1b` aguardando CI |
 | E2E P2b (cart invariants, `[E108]`) | `failure` | `failure` — dados de teste insuficientes, pré-existente (P2b) |
 | E2E P2c (personalization, URL navigation) | `failure` | `failure` — regressão de roteamento, pré-existente (P2c) |
 | Gate 2.5 (PostgreSQL Transactional Integrity) | `failure` | `failure` — live check HTTP 400, pré-existente (P5) |
