@@ -1,12 +1,14 @@
-numero,titulo,draft,mergeable,mergeable_state,regra8,verdict
-2414,"chore(análise): dossiês completos + relatório final de branches (Fase 2)",false,false,dirty,nenhum,BLOQUEADA
-2415,"fix(ci): P20 — exclui check-file-size-baseline.test.mjs do Vitest",false,true,behind,CI/workflows,DECISÃO_HUMANA
-2417,"fix(cors+ci): CORS wildcard + gitleaks (substituto de #2427)",true,false,dirty,CI/workflows+edge_fn,DECISÃO_HUMANA
-2418,"fix(gates): gitleaks FPs + deploy-gates fix (substituto de #2428)",true,false,dirty,CI/workflows,DECISÃO_HUMANA
-2419,"fix(security): audit_security_definer_acl — pg_get_userbyid",true,false,dirty,security_gate,DECISÃO_HUMANA
-2420,"fix(rollback): header preflight + rollback script 20261024163500",true,false,dirty,migrations,DECISÃO_HUMANA
-2422,"chore(sync): MIGRATIONS_SYNC_LOG + PGPORT + zodResolver cast",true,null,n/a,nenhum,DRAFT_PENDENTE
-2424,"feat(db): migration 20261024163500 + db-schema-drift-check",true,null,n/a,DDL+CI/workflows,DECISÃO_HUMANA
-2426,"chore(qa): probe E184 — refs legadas pqpdolkae",true,null,n/a,nenhum,DRAFT_PENDENTE
-2427,"fix(cors): CORS_WILDCARD_ORIGIN + webhook-schemas",true,true,behind,edge_fn_deploy,DRAFT_PENDENTE
-2428,"fix(gitleaks): allowlist FPs testes + docs",true,true,behind,security_allowlist,DECISÃO_HUMANA
+number,title,draft,mergeable,mergeable_state,rule8_trigger,cherry,singu_refs,verdict,sha_merge
+2414,"chore(análise): dossiês completos + relatório final de branches (Fase 2)",false,false,dirty,,14 commits únicos,0 (doc-only),BLOQUEADA,
+2415,"fix(ci): P20 — exclui check-file-size-baseline.test.mjs do Vitest; roda via node --test",false,true,behind,CI/workflows,6 únicos,0,DECISÃO HUMANA,
+2417,"fix(cors+ci): CORS wildcard via String.fromCharCode + gitleaks allowlist",true,false,dirty,CI/workflows+edge,sem merge base,0,DECISÃO HUMANA,
+2418,"fix(gates): gitleaks allowlist FPs + deploy-gates fix",true,false,dirty,CI/workflows,sem merge base,0,DECISÃO HUMANA,
+2419,"fix(security): audit_security_definer_acl — pg_get_userbyid substituindo cast regrole",true,false,dirty,security gate,sem merge base,0,DECISÃO HUMANA,
+2420,"fix(rollback): header preflight + rollback script para 20261024163500",true,false,dirty,migrations,sem merge base,0,DECISÃO HUMANA,
+2422,"chore(sync): MIGRATIONS_SYNC_LOG + PGPORT no SEGREDOS + fix zodResolver cast",true,false,dirty,,sem merge base,0,DRAFT+DIRTY,
+2424,"feat(db): migration 20261024163500 + db-schema-drift-check workflow",true,,n/v,DDL+CI,3 únicos,0,DECISÃO HUMANA,
+2426,"chore(qa): probe E184 — varre catálogo vivo por refs legadas pqpdolkae",,,,,,,MERGEADO,7f5d410a233246c94ee05bc0be6c10be11a3f126
+2427,"fix(cors): CORS_WILDCARD_ORIGIN + magazine-reader-state-read no webhook-schemas",,,,,,,MERGEADO,26641b0a0cb8855f45755cd4734af4c53d52ba5d
+2428,"fix(gitleaks): allowlist — FPs de testes + placeholders de docs",true,true,behind,security policy,1 único,0,DECISÃO HUMANA,
+2434,"chore(análise): relatório completo de PRs abertos — 11/11 analisados",,,,,,,MERGEADO,53ba69b53fd8a8a021e13feb3af485f4ee4de73b
+2436,"chore(análise): atualiza deliverables — 3 merges realizados",,,,,,,MERGEADO,4c8193b9b655694635956a2c5702af33051164ad
