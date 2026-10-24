@@ -66,6 +66,7 @@ jobs:
         if: ${{ github.ref != 'refs/heads/main' }}
         env:
           GIT_PUSH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          HUSKY: "0"
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"

@@ -142,6 +142,7 @@ jobs:
       - name: Commit baseline (detecta mudanças)
         env:
           GIT_PUSH_TOKEN: ${{ github.token }}
+          HUSKY: "0"
         id: changes
         run: |
           set -euo pipefail
