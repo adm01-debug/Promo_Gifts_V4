@@ -1,15 +1,19 @@
 -- fix: audit_security_definer_acl() — cast seguro para OIDs de roles removidas
 --
 -- Causa do HTTP 500 em freight-quality-gates.yml:
---   grantee::regrole::text falha com "role with OID X does not exist" quando
+--   grantee::regrole::text lança "role with OID X does not exist" quando
 --   proacl de alguma função contém OID de role que foi dropada do banco.
 --   PostgREST converte a exceção não tratada em HTTP 500.
 --
 -- Solução:
 --   - CASE WHEN a.grantee = 0 THEN '-' ELSE pg_get_userbyid(a.grantee) END
---     pg_get_userbyid() retorna NULL para OIDs inválidos em vez de lançar exceção.
---   - Filtro adicional: ignora entradas com role removida (OID inválido != 0),
---     pois roles inexistentes não representam vetor de acesso ativo.
+--     pg_get_userbyid() não lança exceção para OIDs inválidos — retorna
+--     'unknown (OID=X)' (confirmado em PG17). A conversão ::regrole anterior
+--     lançava ERROR para qualquer OID sem entrada em pg_authid.
+--   - Filtro adicional via EXISTS: exclui entradas cujo grantee não existe em
+--     pg_catalog.pg_roles, pois roles removidas não representam vetor de
+--     acesso ativo. pg_get_userbyid() IS NOT NULL não funciona como filtro
+--     (nunca retorna NULL), portanto usamos EXISTS explícito.
 --
 -- Baseado na versão de 20260909210000_audit_security_definer_acl_allow_public_endpoints.sql
 -- — somente o CTE acl_expanded foi alterado.
@@ -76,7 +80,7 @@ AS $function$
     FROM defs d
     LEFT JOIN LATERAL (SELECT (aclexplode(d.proacl)).grantee) a ON true
     WHERE a.grantee IS NOT NULL
-      AND (a.grantee = 0 OR pg_get_userbyid(a.grantee) IS NOT NULL)
+      AND (a.grantee = 0 OR EXISTS (SELECT 1 FROM pg_catalog.pg_roles r WHERE r.oid = a.grantee))
   )
   SELECT proname, args, 'PUBLIC has EXECUTE'::text, 'PUBLIC'::text
   FROM acl_expanded
