@@ -2,10 +2,10 @@
   "session": "https://claude.ai/code/session_01Ss1tXZ4cAbxBvdmu95uNPz",
   "generated_at": "2026-10-24",
   "main_sha_inicio": "9079c82e6c3f58ae5d2cdf8c7eb2deef979ee9d8",
-  "main_sha_fim": "4c8193b9b655694635956a2c5702af33051164ad",
-  "total_open": 13,
-  "total_analyzed": 13,
-  "merges_realizados": 4,
+  "main_sha_fim": "7061adab51e13ff2a10c0737014aef20b72b010d",
+  "total_open": 17,
+  "total_analyzed": 17,
+  "merges_realizados": 6,
   "status": "COMPLETO_COM_MERGES",
   "merges": [
     {
@@ -31,6 +31,19 @@
       "sha_merge": "4c8193b9b655694635956a2c5702af33051164ad",
       "method": "squash",
       "acao_pos_merge": "nenhuma — PR de docs/deliverables"
+    },
+    {
+      "pr": 2439,
+      "sha_merge": "NÃO VERIFICADO",
+      "method": "squash",
+      "acao_pos_merge": "nenhuma — PR de docs/deliverables (baseline ci-per-test-name + dossies #2432/#2435)"
+    },
+    {
+      "pr": 2414,
+      "sha_merge": "7061adab51e13ff2a10c0737014aef20b72b010d",
+      "method": "squash",
+      "patch_id": "c109a6a0ecae3ecb12fa7c01a7ed21baa907c393",
+      "acao_pos_merge": "nenhuma — PR de docs análise-branches/"
     }
   ],
   "worktree_tests": [
@@ -90,7 +103,12 @@
     {"number": 2427, "status": "MERGEADO", "verdict": "MERGEADO", "sha_merge": "26641b0a0cb8855f45755cd4734af4c53d52ba5d", "motivo": "cors.ts + webhook-schemas, sem Rule 8, mergeable:true", "deploy_run": 40132411991},
     {"number": 2428, "status": "analisado", "verdict": "DECISÃO_HUMANA", "motivo": "draft + security allowlist policy decision", "cherry": "1 commit único", "singu": "0"},
     {"number": 2434, "status": "MERGEADO", "verdict": "MERGEADO", "sha_merge": "53ba69b53fd8a8a021e13feb3af485f4ee4de73b", "motivo": "docs-only analise-prs/, sem Rule 8"},
-    {"number": 2436, "status": "MERGEADO", "verdict": "MERGEADO", "sha_merge": "4c8193b9b655694635956a2c5702af33051164ad", "motivo": "deliverables update docs-only, sem Rule 8"}
+    {"number": 2436, "status": "MERGEADO", "verdict": "MERGEADO", "sha_merge": "4c8193b9b655694635956a2c5702af33051164ad", "motivo": "deliverables update docs-only, sem Rule 8"},
+    {"number": 2414, "status": "MERGEADO", "verdict": "MERGEADO", "sha_merge": "7061adab51e13ff2a10c0737014aef20b72b010d", "motivo": "docs-only analise-branches/, sem Rule 8, conflitos resolvidos via update-branch"},
+    {"number": 2432, "status": "analisado", "verdict": "JÁ IMPLEMENTADA", "motivo": "arquivo já em main desde PR #2426 (7f5d410a)", "singu": "0"},
+    {"number": 2435, "status": "analisado", "verdict": "DECISÃO_HUMANA", "motivo": "draft + CI/workflows + .gitleaks.toml", "singu": "0"},
+    {"number": 2437, "status": "analisado", "verdict": "DECISÃO_HUMANA", "motivo": "draft + .gitleaks.toml (security policy)", "singu": "0"},
+    {"number": 2438, "status": "analisado", "verdict": "DECISÃO_HUMANA", "motivo": "draft + .gitleaks.toml (security policy)", "singu": "0"}
   ],
   "deliverables": {
     "baseline": "analise-prs/baseline/typecheck.txt",
@@ -109,8 +127,12 @@
       "analise-prs/dossies/PR-2426.md",
       "analise-prs/dossies/PR-2427.md",
       "analise-prs/dossies/PR-2428.md",
+      "analise-prs/dossies/PR-2432.md",
       "analise-prs/dossies/PR-2434.md",
-      "analise-prs/dossies/PR-2436.md"
+      "analise-prs/dossies/PR-2435.md",
+      "analise-prs/dossies/PR-2436.md",
+      "analise-prs/dossies/PR-2437.md",
+      "analise-prs/dossies/PR-2438.md"
     ],
     "regras_de_negocio": "analise-prs/regras-de-negocio.md",
     "progresso": "analise-prs/progresso.json"
