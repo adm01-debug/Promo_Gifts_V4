@@ -2,11 +2,12 @@
   "session": "https://claude.ai/code/session_01Ss1tXZ4cAbxBvdmu95uNPz",
   "generated_at": "2026-10-24",
   "main_sha_inicio": "9079c82e6c3f58ae5d2cdf8c7eb2deef979ee9d8",
-  "main_sha_fim": "7061adab51e13ff2a10c0737014aef20b72b010d",
-  "total_open": 17,
-  "total_analyzed": 17,
+  "main_sha_fim": "c8ba40e9d65ba2d1ffa63bb19cbb2e6d9a56ff60",
+  "total_open_inicio": 17,
+  "total_open_novos": 2,
+  "total_analyzed": 19,
   "merges_realizados": 6,
-  "status": "COMPLETO_COM_MERGES",
+  "status": "COMPLETO_COM_MERGES_E_NOVOS_PRS",
   "merges": [
     {
       "pr": 2426,
@@ -34,7 +35,7 @@
     },
     {
       "pr": 2439,
-      "sha_merge": "NÃO VERIFICADO",
+      "sha_merge": "b3c8f2f33ece1d0da87a841396ecb5dcc8da0db8",
       "method": "squash",
       "acao_pos_merge": "nenhuma — PR de docs/deliverables (baseline ci-per-test-name + dossies #2432/#2435)"
     },
@@ -87,8 +88,9 @@
     "run_cancelado": 40132059704,
     "run_cancelado_motivo": "function_name: _shared/cors é input inválido",
     "run_ativo": 40132411991,
-    "run_ativo_status": "pending",
-    "run_ativo_trigger": "workflow_dispatch sem function_name — redeploy completo"
+    "run_ativo_status": "NÃO VERIFICADO — STUCK PENDING",
+    "run_ativo_trigger": "workflow_dispatch sem function_name — redeploy completo",
+    "run_ativo_nota": "Despachado às 2026-10-24T21:01:53Z, nunca saiu de pending. Main avançou para c8ba40e9 depois. Verificar e re-disparar se necessário."
   },
   "prs": [
     {"number": 2414, "status": "analisado", "verdict": "BLOQUEADA", "motivo": "dirty — conflitos de merge", "cherry": "14 commits únicos", "singu": "doc-only"},
@@ -108,7 +110,9 @@
     {"number": 2432, "status": "analisado", "verdict": "JÁ IMPLEMENTADA", "motivo": "arquivo já em main desde PR #2426 (7f5d410a)", "singu": "0"},
     {"number": 2435, "status": "analisado", "verdict": "DECISÃO_HUMANA", "motivo": "draft + CI/workflows + .gitleaks.toml", "singu": "0"},
     {"number": 2437, "status": "analisado", "verdict": "DECISÃO_HUMANA", "motivo": "draft + .gitleaks.toml (security policy)", "singu": "0"},
-    {"number": 2438, "status": "analisado", "verdict": "DECISÃO_HUMANA", "motivo": "draft + .gitleaks.toml (security policy)", "singu": "0"}
+    {"number": 2438, "status": "analisado", "verdict": "DECISÃO_HUMANA", "motivo": "draft + .gitleaks.toml (security policy)", "singu": "0"},
+    {"number": 2441, "status": "analisado", "verdict": "DECISÃO_HUMANA", "motivo": "DDL (P02/P08/P19 migrations) + edge function send-notification", "singu": "0"},
+    {"number": 2443, "status": "analisado", "verdict": "DECISÃO_HUMANA", "motivo": "draft + título APROVAÇÃO REQUERIDA + security decisions (P03/P06/P09/P14/P15)", "singu": "0"}
   ],
   "deliverables": {
     "baseline": "analise-prs/baseline/typecheck.txt",
@@ -132,7 +136,9 @@
       "analise-prs/dossies/PR-2435.md",
       "analise-prs/dossies/PR-2436.md",
       "analise-prs/dossies/PR-2437.md",
-      "analise-prs/dossies/PR-2438.md"
+      "analise-prs/dossies/PR-2438.md",
+      "analise-prs/dossies/PR-2441.md",
+      "analise-prs/dossies/PR-2443.md"
     ],
     "regras_de_negocio": "analise-prs/regras-de-negocio.md",
     "progresso": "analise-prs/progresso.json"
