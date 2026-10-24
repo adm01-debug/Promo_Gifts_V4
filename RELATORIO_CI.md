@@ -1,6 +1,6 @@
 # Relatório CI — Reparo de Workflows `action_required`
 
-**Data:** 2026-10-24 (rev 15 — P14 resolvido; P15 adicionado; Gate 1.3 corrigido via PR #2412; commits `652a7f14`, `c3a42843`, `2aa42387`, `ad21b02b`)  
+**Data:** 2026-10-24 (rev 16 — Gate Final `ad21b02b` = success confirmado; inventário action_required: 50 runs pré-existentes todos cobertos por P1/P4)  
 **Branch de trabalho:** `claude_05/upbeat-hamilton-5gnz50`  
 **Commit baseline (main antes do PR #2389):** `325b0bd`  
 **Commit final do PR #2389:** `12a7774`  
@@ -30,8 +30,9 @@
 **Gate Final em main (push `174c4ea8`):** check `Gate Final - Deploy Ready` — **`success`** ✅ (confirmado via `github_list_check_runs` ref=`174c4ea8`)  
 **Deploy Gates em main (push `0213ed60` — PR #2405):** run [#40112803262](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40112803262) — **`success`** ✅ — Gate Final confirmado em `0213ed60` (ver seção Inventário de Jobs abaixo)  
 **Deploy Gates em main (push `594fbd40` — PR #2407):** run [#40114329437](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40114329437) — **`success`** ✅ — Gate Final confirmado em `594fbd40` (ver seção Inventário de Jobs abaixo)  
-**Deploy Gates em main (push `652a7f14` — PR #2411):** run [#40118011740](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40118011740) — **Gate Final em progresso** (Gate 1.3 — migration contracts falharia; PR #2412 corrige)  
-**Deploy Gates em main (push `ad21b02b` — PR #2412):** run em progresso — resultado pendente (ver Inventário `ad21b02b` abaixo)
+**Deploy Gates em main (push `652a7f14` — PR #2411):** run [#40118011740](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40118011740) — **`failure`** ❌ Gate 1.3 — `check-migration-path-references.mjs` detectou 3 refs novas em `inventario/branches.json` não cobertas pelo baseline; corrigido por PR #2412  
+**Deploy Gates em main (push `ad21b02b` — PR #2412):** run [#40119299983](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40119299983) — **`success`** ✅ Gate Final [**`success`** ✅](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40119299983/job/120948831232) (concluído 2026-10-24T18:15:57Z) — **HEAD de main atual**  
+**PR docs rev 16:** [#2413](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2413) — em revisão
 
 ---
 
@@ -291,7 +292,9 @@ npm error 403 Forbidden - GET https://europe-west1-npm.pkg.dev/lovable-core-prod
 | Release Please | `action_required` | `action_required` — bloqueio externo (PAT ausente, P1) | `action_required` — idem P1 |
 | 50+ runs históricos | `action_required` | `action_required` — histórico, não corrigível (P4) | `action_required` — idem P4 |
 
-**Comparação baseline × `594fbd40` (HEAD atual):** nenhuma regressão. Todos os checks que eram `success` no baseline ou em versões intermediárias continuam `success` em `594fbd40`. Gate Final = `success` confirmado (run #40114329437).
+**Comparação baseline × `594fbd40`:** nenhuma regressão. Todos os checks `success` no baseline continuam `success`.
+
+**Comparação baseline × `ad21b02b` (HEAD main 2026-10-24T18:09Z):** nenhuma regressão. Gate Final = **`success`** ✅ confirmado (run [#40119299983](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40119299983), concluído 18:15:57Z). Todos os checks que eram `success` em `594fbd40` continuam `success` em `ad21b02b`. Failures em `ad21b02b` são o mesmo conjunto pré-existente de P1/P2b/P2c/P7/P15 — nenhuma regressão introduzida.
 
 ### Estado pós-merge em main
 
@@ -338,35 +341,21 @@ Nenhuma. Os três fixes são cirúrgicos (1–3 linhas cada) e não alteram lóg
 
 ---
 
-## Inventário de Check Runs — main `ad21b02b` (PR #2412 squash — 2026-10-24T18:09Z)
+## Inventário de Check Runs — main `ad21b02b` (PR #2412 squash — 2026-10-24T18:09Z) ✅ CONFIRMADO
 
-Run Deploy Gates: em progresso ao final da sessão.
+Run Deploy Gates: [#40119299983](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40119299983) — **`success`** ✅ (concluído 2026-10-24T18:15:58Z)
 
-| Check | Conclusão (capturado ~18:10Z) |
+| Check | Conclusão (confirmado 18:15Z) |
 |---|---|
-| Gate 0 - SSOT Supabase (project ID canônico) | **`success`** ✅ |
-| Gate 4 - Lighthouse CI | **`success`** ✅ |
-| Gate 5 - SEO Sanity Check | **`success`** ✅ |
-| Gate E23 - Verifica secrets E2E | **`success`** ✅ |
-| Gate E40 - Detect schema file changes | **`success`** ✅ |
-| Detectar mudanças (docs-only bypass E14) | **`success`** ✅ |
-| Assert Gate Final is required on main | **`success`** ✅ |
-| Verificação de saúde pós-merge | **`success`** ✅ |
-| Gate 1 - Lint + TypeScript | `in_progress` |
-| Gate 2 - Unit Tests | `in_progress` |
-| Gate 2.5 - PostgreSQL Transactional Integrity | `in_progress` |
-| Gate 5.5 - RPC restore_seller_cart | `in_progress` |
-| Gate E23 - Secret Scan (gitleaks) | `in_progress` |
-| Gate 0.5 - Dependency Audit | `queued` |
-| Gate 3 - E2E Smoke | `queued` |
-| Gate Final - Deploy Ready | `not started` (aguarda gates individuais) |
+| **Gate Final - Deploy Ready** | **`success`** ✅ — job [#120948831232](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40119299983/job/120948831232) (18:15:54Z–18:15:57Z) |
 | release-please | `failure` — **P1** PAT ausente (pré-existente) |
 | copilot-pull-request-reviewer | `failure` — **P15** bot externo GitHub Copilot (não é required check) |
 | Gate 0.6 - Dependency Review | `skipped` (PR-only) |
-| Gate E40 - Schema Drift Check | `skipped` |
-| Supabase Preview | `in_progress` — **P7** esperado |
+| Supabase Preview | `failure` — **P7** coluna `level` ausente (pré-existente) |
 
-**Nota:** Gate Final não iniciado ao final da captura. Resultado pendente — ver execução futura.
+**PROVA:** Gate Final conclusion=success confirmado via `github_get_workflow_run` (run #40119299983) e `github_list_check_runs` (check_name="Gate Final - Deploy Ready", ref=ad21b02b) — ambos retornaram `conclusion: "success"`.
+
+**Inventário action_required (2026-10-24T18:20Z):** 50 runs com status `action_required` na aba Actions — todos pré-existentes (IDs ≤ #39884454041, anteriores ao início desta sessão). Distribuídos em 25 workflows distintos, todos já cobertos por P1 (Release Please PAT ausente) e P4 (histórico retroativo não corrigível). Nenhum novo workflow entrou em `action_required` por causa dos PRs desta sessão.
 
 ---
 
