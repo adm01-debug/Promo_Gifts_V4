@@ -87,7 +87,7 @@ fi
 # ATENÇÃO: cada novo prefixo aqui é uma porta de fuga. Adicione só com
 # justificativa documentada em .github/SENTINEL_CHANGELOG.md
 # ----------------------------------------------------------------------------
-if echo "$SUBJECT" | grep -qE '^(docs\(redeploy\)|chore\(workflows\)|chore\(docs\)):'; then
+if echo "$SUBJECT" | grep -qE '^(docs\(redeploy\)|chore\(workflows\)|ci\(workflows\)|chore\(docs\)):'; then
   PREFIX="${SUBJECT%%:*}"
   echo "allowlist: $PREFIX"
   exit 0
