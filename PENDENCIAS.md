@@ -1,8 +1,8 @@
 # Pendências CI — Bloqueios Externos
 
-**Atualizado em:** 2026-10-24 (rev 6 — P14 adicionado: Branch Protection Sentinel failure em `c3a42843`; commit de referência atualizado)  
+**Atualizado em:** 2026-10-24 (rev 7 — P14 resolvido; P15 adicionado: Running Copilot Code Review — bot externo GitHub Copilot)  
 **Branch de referência:** `claude_05/upbeat-hamilton-5gnz50`  
-**Commit de referência (main):** `c3a42843` (docs: RELATORIO_CI.md rev 14 — Gate Final 594fbd40 confirmado)
+**Commit de referência (main):** `ad21b02b` (fix(ci): adiciona refs de inventario/branches.json ao migration-refs-baseline — PR #2412)
 
 ---
 
@@ -447,25 +447,41 @@ O check `E2E — Full User Flows (authed)` cobre os specs de fluxos completos (`
 
 ---
 
-## P14 — Branch Protection Sentinel: commit squash sem `(#NNN)` no commit `c3a42843`
+## P14 — Branch Protection Sentinel: commit squash sem `(#NNN)` no commit `c3a42843` — ✅ RESOLVIDO
 
 **Workflow:** `.github/workflows/branch-protection-sentinel.yml`  
-**Run mais recente:** [#40116816203](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40116816203) (commit `c3a42843`)  
-**Conclusão:** `failure`  
+**Run de falha:** [#40116816203](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40116816203) (commit `c3a42843`)  
+**Run de resolução:** [#40118011703](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40118011703) (commit `652a7f14` — PR #2411) — **`success`** ✅  
 **Categoria:** Processo — commit_title explícito sem sufixo de PR no squash-merge do PR #2409
 
-**Erro exato:**
-```
-1 commit(s) em push para main sem padrão aceito: c3a4284
-```
+**Resolução:**  
+PR #2411 squash-mergeado SEM `commit_title` explícito → GitHub auto-appendou `(#2411)` → commit `652a7f14` → sentinel run `40118011703` = `success`.
+
+---
+
+## P15 — Running Copilot Code Review / copilot-pull-request-reviewer: bot externo do GitHub Copilot
+
+**Workflow:** Dinâmico — disparado por GitHub Copilot bot (`event=dynamic`, `actor=Copilot`)  
+**Check name:** `copilot-pull-request-reviewer` (check run) + `Running Copilot Code Review` (workflow run)  
+**Conclusão:** `failure` em todo push para `main` (sem PR aberta)  
+**Categoria:** Bot externo do GitHub Copilot — não é workflow do repositório, não corrigível via código
 
 **Causa raiz:**  
-O squash-merge do PR #2409 foi executado via `github_merge_pull_request` com `commit_title` explícito que não incluía `(#2409)`. O sentinel aceita squash merges apenas quando a mensagem termina em `(#NNN)`. O commit `c3a42843` tem título `docs: RELATORIO_CI.md rev 14 — Gate Final 594fbd40 confirmado + test:ci-core 957 testes` sem o sufixo.
+O GitHub Copilot bot (`Copilot`) executa revisão automática de PR. Quando há um push direto para `main` (via squash merge), o Copilot tenta rodar o review mas não há PR aberta — portanto o check retorna `failure`. Este comportamento é intrínseco ao funcionamento do Copilot como bot de revisão de PR na organização.
 
-**Resolução automática:**  
-O próximo PR squash-mergeado sem `commit_title` explícito gerará commit com `(#NNNN)` ao final — sentinel passará nessa execução. Este item se auto-resolve quando a próxima execução do sentinel confirmar `success`.
+Confirmado nos check runs do commit `ad21b02b`:
+```
+failure  completed  copilot-pull-request-reviewer
+```
+E no commit `652a7f14` (run [#40118011740](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40118011740) Gate Final = `success`): o Gate Final passou a despeito do Copilot check, confirmando que este check **não é required** no Gate Final.
 
-**Ação necessária pelo PO:** Nenhuma — o próximo merge de PR em `main` via squash sem commit_title customizado restaurará o sentinel para `success`.
+**Ação necessária pelo PO:**  
+Nenhuma — não é possível corrigir via código do repositório. O comportamento é do bot Copilot da organização.  
+**Alternativa:** Desabilitar o Copilot Review automático nas configurações da organização se o check for indesejado.
+
+**Impacto no Gate Final:** Nenhum — `copilot-pull-request-reviewer` não é required check no `main`.
+
+---
 
 ---
 
