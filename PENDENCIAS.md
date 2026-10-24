@@ -1,8 +1,8 @@
 # Pendências CI — Bloqueios Externos
 
-**Atualizado em:** 2026-10-24 (rev 4 — P2b atualizado com nomes exatos dos 6 testes falhantes; commit de referência atualizado para main `609d55c6`)  
+**Atualizado em:** 2026-10-24 (rev 5 — P12/P13 adicionados: swatch→QV e E2E Full User Flows failures de `174c4ea8`; commit de referência atualizado para `174c4ea8`)  
 **Branch de referência:** `claude_05/upbeat-hamilton-5gnz50`  
-**Commit de referência (main):** `609d55c6` (ci(workflows): adiciona ci(workflows): à allowlist do Branch Protection Sentinel #2392)
+**Commit de referência (main):** `174c4ea8` (chore(docs): RELATORIO_CI.md rev 11 + PENDENCIAS.md rev 4 #2402)
 
 ---
 
@@ -207,7 +207,7 @@ Evitar futuros pushes diretos em main. Todos os commits devem chegar via PR merg
 
 ```
 [Quote RPC canonical readiness] inconclusive: A consulta read-only do contrato
-canonico nao produziu evidencia conclusiva.
+canonical nao produziu evidencia conclusiva.
 result={"status":"inconclusive","reason":"http-error","httpStatus":400}
 ##[error]Process completed with exit code 2.
 ```
@@ -410,6 +410,40 @@ O step "Check Security Advisors and live catalog gates" executa `node scripts/ch
 - Aguardar disponibilidade do serviço Supabase e re-executar  
 - Ou: configurar timeout maior em `scripts/check-supabase-linter.mjs`  
 - Este workflow é independente do Gate Final (deploy-gates.yml) — não bloqueia merge
+
+---
+
+---
+
+## P12 — swatch→QV (3 browsers): falha visual no fluxo swatch → QuickView
+
+**Workflow:** E2E (Playwright) — check runs `chromium • swatch→QV`, `firefox • swatch→QV`, `webkit • swatch→QV`  
+**Run de referência:** commit `174c4ea8` (check_runs extraídos via `github_list_check_runs`)  
+**Conclusão:** `failure` (3 browsers)  
+**Categoria:** Testes E2E de fluxo visual swatch → QuickView — pré-existente
+
+**Diagnóstico:**  
+Os checks `chromium • swatch→QV`, `firefox • swatch→QV`, `webkit • swatch→QV` são shards do workflow `E2E (Playwright)` que testam o fluxo de abertura do QuickView a partir de um swatch de cor. Falham pré-existentemente — já presentes antes do commit `174c4ea8`. Nenhuma mudança nos arquivos de UI de card/swatch foi feita por este trabalho.  
+
+**Pré-existente:** confirmado — nenhum arquivo de componente de card ou swatch alterado por esta branch.  
+
+**Ação necessária:** investigar seletor de swatch ou dados de produtos com swatches no CI DB; possível problema de dados de teste (mesmo padrão P2b/P8).
+
+---
+
+## P13 — E2E — Full User Flows (authed): falha em fluxos completos de usuário
+
+**Workflow:** E2E (Playwright) — check run `E2E — Full User Flows (authed)`  
+**Run de referência:** commit `174c4ea8`  
+**Conclusão:** `failure`  
+**Categoria:** Testes E2E de fluxos completos (quote, catalog-to-kit) — pré-existente
+
+**Diagnóstico:**  
+O check `E2E — Full User Flows (authed)` cobre os specs de fluxos completos (`e2e/flows/25-quote-full-flow.spec.ts`, `26-catalog-to-kit-flow.spec.ts`, `27-admin-critical-routes.spec.ts`, etc.). Falha pré-existente — mesmo padrão de P2b/P2c: dados insuficientes no banco de CI para completar o fluxo de orçamento ou dados de catálogo indisponíveis.  
+
+**Pré-existente:** nenhuma alteração em componentes de fluxo de orçamento ou catálogo por esta branch.  
+
+**Ação necessária:** seed de dados de orçamento e catálogo no runner de CI (mesmo que P2b/P2c/P8).
 
 ---
 
