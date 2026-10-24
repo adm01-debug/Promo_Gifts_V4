@@ -1,5 +1,5 @@
 {
-  "_comment": "Referências legadas a paths de migration que não existem mais. Congelado em 2026-07-01. Atualizado em 2026-07-03: PR_COMMENT.md (gerado em runtime). NOVAS referências quebradas falham CI — para aceitar uma nova entrada aqui, rode `node scripts/check-migration-path-references.mjs --update-baseline` e justifique no PR.",
+  "_comment": "Referências legadas a paths de migration que não existem mais. Congelado em 2026-07-01. Atualizado em 2026-07-03: PR_COMMENT.md (gerado em runtime). NOVAS referências quebradas falham CI — para aceitar uma nova entrada aqui, rode `node scripts/check-migration-path-references.mjs --update-baseline` e justifique no PR. Atualizado 2026-10-24: entries de inventario/branches.json adicionados (PR #2408 em main não atualizou baseline — ported fix via PR #2404).",
   "entries": [
     {
       "file": ".github/pulls/refactor-magazine-typed-queries.md",
@@ -22,6 +22,26 @@
       "ref": "supabase/migrations/README.md"
     },
     {
+      "file": "docs/AUDIT_FRONTEND_DATABASE.md",
+      "ref": "supabase/migrations/20251228_audit_trail.sql"
+    },
+    {
+      "file": "docs/NOTIFICATION_SYSTEM.md",
+      "ref": "supabase/migrations/001_notification_system.sql"
+    },
+    {
+      "file": "docs/NOTIFICATION_SYSTEM.md",
+      "ref": "supabase/migrations/002_notification_preferences.sql"
+    },
+    {
+      "file": "docs/NOTIFICATION_SYSTEM.md",
+      "ref": "supabase/migrations/003_notification_templates.sql"
+    },
+    {
+      "file": "docs/NOTIFICATION_SYSTEM.md",
+      "ref": "supabase/migrations/004_notification_functions.sql"
+    },
+    {
       "file": "docs/adr/0006-migration-baseline.md",
       "ref": "supabase/migrations/README.md"
     },
@@ -34,11 +54,11 @@
       "ref": "supabase/migrations/20260604T000000Z_fix_raw_v2_product_type_and_overflows.sql"
     },
     {
-      "file": "docs/arquivo/2026-06/FAXINA_DB_2026-06-20_TIER3b.md",
+      "file": "docs/arquivo/2026-06/FAXINA_DB_2026-06-20_TIER3B.md",
       "ref": "supabase/migrations/20260620190000_faxina_tier3b_b1_archive_dead_fns_views.sql"
     },
     {
-      "file": "docs/arquivo/2026-06/FAXINA_DB_2026-06-20_TIER3B.md",
+      "file": "docs/arquivo/2026-06/FAXINA_DB_2026-06-20_TIER3b.md",
       "ref": "supabase/migrations/20260620190000_faxina_tier3b_b1_archive_dead_fns_views.sql"
     },
     {
@@ -195,6 +215,22 @@
     },
     {
       "file": "docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json",
+      "ref": "supabase/migrations/20260621000000_fix_favorites_security_position.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json",
+      "ref": "supabase/migrations/20260621100000_restore_broken_trigger_dependencies.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json",
+      "ref": "supabase/migrations/20260621120000_reconcile_unarchive_live_rpcs.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json",
+      "ref": "supabase/migrations/20260621210000_onboarding_auto_assign_org_canonica.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json",
       "ref": "supabase/migrations/20260621_fix_console_bugs_404_403.sql"
     },
     {
@@ -215,19 +251,7 @@
     },
     {
       "file": "docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json",
-      "ref": "supabase/migrations/20260621000000_fix_favorites_security_position.sql"
-    },
-    {
-      "file": "docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json",
-      "ref": "supabase/migrations/20260621100000_restore_broken_trigger_dependencies.sql"
-    },
-    {
-      "file": "docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json",
-      "ref": "supabase/migrations/20260621120000_reconcile_unarchive_live_rpcs.sql"
-    },
-    {
-      "file": "docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json",
-      "ref": "supabase/migrations/20260621210000_onboarding_auto_assign_org_canonica.sql"
+      "ref": "supabase/migrations/20260622130000_smoke_tests_v30_trends_fix.sql"
     },
     {
       "file": "docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json",
@@ -267,7 +291,15 @@
     },
     {
       "file": "docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json",
-      "ref": "supabase/migrations/20260622130000_smoke_tests_v30_trends_fix.sql"
+      "ref": "supabase/migrations/20260623000001_products_name_m1_add_column_comment.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json",
+      "ref": "supabase/migrations/20260623120000_harden_get_favorite_list_counts_revoke_anon.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json",
+      "ref": "supabase/migrations/20260623130000_fix_restore_trigger_notify_discount_approval.sql"
     },
     {
       "file": "docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json",
@@ -280,18 +312,6 @@
     {
       "file": "docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json",
       "ref": "supabase/migrations/20260623_fix_search_analytics_seller_id_not_generated.sql"
-    },
-    {
-      "file": "docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json",
-      "ref": "supabase/migrations/20260623000001_products_name_m1_add_column_comment.sql"
-    },
-    {
-      "file": "docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json",
-      "ref": "supabase/migrations/20260623120000_harden_get_favorite_list_counts_revoke_anon.sql"
-    },
-    {
-      "file": "docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json",
-      "ref": "supabase/migrations/20260623130000_fix_restore_trigger_notify_discount_approval.sql"
     },
     {
       "file": "docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json",
@@ -487,6 +507,22 @@
     },
     {
       "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/20260621000000_fix_favorites_security_position.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/20260621100000_restore_broken_trigger_dependencies.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/20260621120000_reconcile_unarchive_live_rpcs.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/20260621210000_onboarding_auto_assign_org_canonica.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
       "ref": "supabase/migrations/20260621_fix_console_bugs_404_403.sql"
     },
     {
@@ -507,19 +543,7 @@
     },
     {
       "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
-      "ref": "supabase/migrations/20260621000000_fix_favorites_security_position.sql"
-    },
-    {
-      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
-      "ref": "supabase/migrations/20260621100000_restore_broken_trigger_dependencies.sql"
-    },
-    {
-      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
-      "ref": "supabase/migrations/20260621120000_reconcile_unarchive_live_rpcs.sql"
-    },
-    {
-      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
-      "ref": "supabase/migrations/20260621210000_onboarding_auto_assign_org_canonica.sql"
+      "ref": "supabase/migrations/20260622130000_smoke_tests_v30_trends_fix.sql"
     },
     {
       "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
@@ -559,7 +583,15 @@
     },
     {
       "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
-      "ref": "supabase/migrations/20260622130000_smoke_tests_v30_trends_fix.sql"
+      "ref": "supabase/migrations/20260623000001_products_name_m1_add_column_comment.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/20260623120000_harden_get_favorite_list_counts_revoke_anon.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/20260623130000_fix_restore_trigger_notify_discount_approval.sql"
     },
     {
       "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
@@ -572,18 +604,6 @@
     {
       "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
       "ref": "supabase/migrations/20260623_fix_search_analytics_seller_id_not_generated.sql"
-    },
-    {
-      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
-      "ref": "supabase/migrations/20260623000001_products_name_m1_add_column_comment.sql"
-    },
-    {
-      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
-      "ref": "supabase/migrations/20260623120000_harden_get_favorite_list_counts_revoke_anon.sql"
-    },
-    {
-      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
-      "ref": "supabase/migrations/20260623130000_fix_restore_trigger_notify_discount_approval.sql"
     },
     {
       "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
@@ -887,6 +907,22 @@
     },
     {
       "file": "docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json",
+      "ref": "supabase/migrations/20260621000000_fix_favorites_security_position.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json",
+      "ref": "supabase/migrations/20260621100000_restore_broken_trigger_dependencies.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json",
+      "ref": "supabase/migrations/20260621120000_reconcile_unarchive_live_rpcs.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json",
+      "ref": "supabase/migrations/20260621210000_onboarding_auto_assign_org_canonica.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json",
       "ref": "supabase/migrations/20260621_fix_console_bugs_404_403.sql"
     },
     {
@@ -907,19 +943,7 @@
     },
     {
       "file": "docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json",
-      "ref": "supabase/migrations/20260621000000_fix_favorites_security_position.sql"
-    },
-    {
-      "file": "docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json",
-      "ref": "supabase/migrations/20260621100000_restore_broken_trigger_dependencies.sql"
-    },
-    {
-      "file": "docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json",
-      "ref": "supabase/migrations/20260621120000_reconcile_unarchive_live_rpcs.sql"
-    },
-    {
-      "file": "docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json",
-      "ref": "supabase/migrations/20260621210000_onboarding_auto_assign_org_canonica.sql"
+      "ref": "supabase/migrations/20260622130000_smoke_tests_v30_trends_fix.sql"
     },
     {
       "file": "docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json",
@@ -959,7 +983,11 @@
     },
     {
       "file": "docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json",
-      "ref": "supabase/migrations/20260622130000_smoke_tests_v30_trends_fix.sql"
+      "ref": "supabase/migrations/20260623000001_products_name_m1_add_column_comment.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json",
+      "ref": "supabase/migrations/20260623120000_harden_get_favorite_list_counts_revoke_anon.sql"
     },
     {
       "file": "docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json",
@@ -972,14 +1000,6 @@
     {
       "file": "docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json",
       "ref": "supabase/migrations/20260623_fix_search_analytics_seller_id_not_generated.sql"
-    },
-    {
-      "file": "docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json",
-      "ref": "supabase/migrations/20260623000001_products_name_m1_add_column_comment.sql"
-    },
-    {
-      "file": "docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json",
-      "ref": "supabase/migrations/20260623120000_harden_get_favorite_list_counts_revoke_anon.sql"
     },
     {
       "file": "docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json",
@@ -1179,6 +1199,22 @@
     },
     {
       "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
+      "ref": "supabase/migrations/20260621000000_fix_favorites_security_position.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
+      "ref": "supabase/migrations/20260621100000_restore_broken_trigger_dependencies.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
+      "ref": "supabase/migrations/20260621120000_reconcile_unarchive_live_rpcs.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
+      "ref": "supabase/migrations/20260621210000_onboarding_auto_assign_org_canonica.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
       "ref": "supabase/migrations/20260621_fix_console_bugs_404_403.sql"
     },
     {
@@ -1199,19 +1235,7 @@
     },
     {
       "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
-      "ref": "supabase/migrations/20260621000000_fix_favorites_security_position.sql"
-    },
-    {
-      "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
-      "ref": "supabase/migrations/20260621100000_restore_broken_trigger_dependencies.sql"
-    },
-    {
-      "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
-      "ref": "supabase/migrations/20260621120000_reconcile_unarchive_live_rpcs.sql"
-    },
-    {
-      "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
-      "ref": "supabase/migrations/20260621210000_onboarding_auto_assign_org_canonica.sql"
+      "ref": "supabase/migrations/20260622130000_smoke_tests_v30_trends_fix.sql"
     },
     {
       "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
@@ -1251,22 +1275,6 @@
     },
     {
       "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
-      "ref": "supabase/migrations/20260622130000_smoke_tests_v30_trends_fix.sql"
-    },
-    {
-      "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
-      "ref": "supabase/migrations/20260623_fix_generated_always_columns_batch.sql"
-    },
-    {
-      "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
-      "ref": "supabase/migrations/20260623_fix_search_analytics_add_seller_id.sql"
-    },
-    {
-      "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
-      "ref": "supabase/migrations/20260623_fix_search_analytics_seller_id_not_generated.sql"
-    },
-    {
-      "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
       "ref": "supabase/migrations/20260623000001_products_name_m1_add_column_comment.sql"
     },
     {
@@ -1280,6 +1288,18 @@
     {
       "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
       "ref": "supabase/migrations/20260623130000_fix_restore_trigger_notify_discount_approval.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
+      "ref": "supabase/migrations/20260623_fix_generated_always_columns_batch.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
+      "ref": "supabase/migrations/20260623_fix_search_analytics_add_seller_id.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
+      "ref": "supabase/migrations/20260623_fix_search_analytics_seller_id_not_generated.sql"
     },
     {
       "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
@@ -1479,6 +1499,22 @@
     },
     {
       "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/20260621000000_fix_favorites_security_position.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/20260621100000_restore_broken_trigger_dependencies.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/20260621120000_reconcile_unarchive_live_rpcs.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/20260621210000_onboarding_auto_assign_org_canonica.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
       "ref": "supabase/migrations/20260621_fix_console_bugs_404_403.sql"
     },
     {
@@ -1499,19 +1535,7 @@
     },
     {
       "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
-      "ref": "supabase/migrations/20260621000000_fix_favorites_security_position.sql"
-    },
-    {
-      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
-      "ref": "supabase/migrations/20260621100000_restore_broken_trigger_dependencies.sql"
-    },
-    {
-      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
-      "ref": "supabase/migrations/20260621120000_reconcile_unarchive_live_rpcs.sql"
-    },
-    {
-      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
-      "ref": "supabase/migrations/20260621210000_onboarding_auto_assign_org_canonica.sql"
+      "ref": "supabase/migrations/20260622130000_smoke_tests_v30_trends_fix.sql"
     },
     {
       "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
@@ -1551,22 +1575,6 @@
     },
     {
       "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
-      "ref": "supabase/migrations/20260622130000_smoke_tests_v30_trends_fix.sql"
-    },
-    {
-      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
-      "ref": "supabase/migrations/20260623_fix_generated_always_columns_batch.sql"
-    },
-    {
-      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
-      "ref": "supabase/migrations/20260623_fix_search_analytics_add_seller_id.sql"
-    },
-    {
-      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
-      "ref": "supabase/migrations/20260623_fix_search_analytics_seller_id_not_generated.sql"
-    },
-    {
-      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
       "ref": "supabase/migrations/20260623000001_products_name_m1_add_column_comment.sql"
     },
     {
@@ -1580,6 +1588,18 @@
     {
       "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
       "ref": "supabase/migrations/20260623130000_fix_restore_trigger_notify_discount_approval.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/20260623_fix_generated_always_columns_batch.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/20260623_fix_search_analytics_add_seller_id.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/20260623_fix_search_analytics_seller_id_not_generated.sql"
     },
     {
       "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
@@ -1762,10 +1782,6 @@
       "ref": "supabase/migrations/20260712_legacy_initial.sql"
     },
     {
-      "file": "docs/AUDIT_FRONTEND_DATABASE.md",
-      "ref": "supabase/migrations/20251228_audit_trail.sql"
-    },
-    {
       "file": "docs/auditoria-planejado-nao-executado-2026-10-11/A07_integracoes_infra.md",
       "ref": "supabase/migrations/cron_p0_disable_webhook_outbox_missing_secret_20260623.sql"
     },
@@ -1832,22 +1848,6 @@
     {
       "file": "docs/historico/RECOVERY_PLAN.md",
       "ref": "supabase/migrations/_recovery/"
-    },
-    {
-      "file": "docs/NOTIFICATION_SYSTEM.md",
-      "ref": "supabase/migrations/001_notification_system.sql"
-    },
-    {
-      "file": "docs/NOTIFICATION_SYSTEM.md",
-      "ref": "supabase/migrations/002_notification_preferences.sql"
-    },
-    {
-      "file": "docs/NOTIFICATION_SYSTEM.md",
-      "ref": "supabase/migrations/003_notification_templates.sql"
-    },
-    {
-      "file": "docs/NOTIFICATION_SYSTEM.md",
-      "ref": "supabase/migrations/004_notification_functions.sql"
     },
     {
       "file": "docs/prompts/magazine-module-implementation-prompt.md",
