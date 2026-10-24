@@ -2,11 +2,31 @@
   "session": "https://claude.ai/code/session_01Ss1tXZ4cAbxBvdmu95uNPz",
   "generated_at": "2026-10-24",
   "main_sha_inicio": "9079c82e6c3f58ae5d2cdf8c7eb2deef979ee9d8",
-  "main_sha_fim": "ec736c903cc37a0ef8621eec5a2d05775a64bcb9",
-  "total_open": 11,
-  "total_analyzed": 11,
-  "merges_realizados": 0,
-  "status": "COMPLETO_COM_WORKTREES",
+  "main_sha_fim": "53ba69b53fd8a8a021e13feb3af485f4ee4de73b",
+  "total_open": 12,
+  "total_analyzed": 12,
+  "merges_realizados": 3,
+  "status": "COMPLETO_COM_MERGES",
+  "merges": [
+    {
+      "pr": 2426,
+      "sha_merge": "7f5d410a233246c94ee05bc0be6c10be11a3f126",
+      "method": "squash",
+      "acao_pos_merge": "dispatch de deploy-edge-functions.yml NÃO necessário (PR #2426 não toca edge functions)"
+    },
+    {
+      "pr": 2427,
+      "sha_merge": "26641b0a0cb8855f45755cd4734af4c53d52ba5d",
+      "method": "squash",
+      "acao_pos_merge": "PENDENTE: dispatch obrigatório de deploy-edge-functions.yml para aplicar cors.ts em produção"
+    },
+    {
+      "pr": 2434,
+      "sha_merge": "53ba69b53fd8a8a021e13feb3af485f4ee4de73b",
+      "method": "squash",
+      "acao_pos_merge": "nenhuma — PR de docs"
+    }
+  ],
   "worktree_tests": [
     {"pr": 2426, "result": "PASSOU", "detail": "merge limpo, 1 arquivo novo qa/migrations-draft/probe_e184_legacy_refs.sql"},
     {"pr": 2422, "result": "DIRTY", "detail": "github_api: mergeable:false, mergeable_state:dirty — conflitos confirmados"}
@@ -18,7 +38,6 @@
     "failing_steps": ["Dependency vulnerability policy (step 4 de quality-gate)"],
     "pre_existing": true
   },
-  "merge_bloqueio": "GitHub API 405: PRs em draft não podem ser mergeados. Converter draft→ready é edição de PR (proibida pelo goal). Ação necessária: PO marcar cada PR elegível como ready for review.",
   "prs": [
     {"number": 2414, "status": "analisado", "verdict": "BLOQUEADA", "motivo": "dirty — conflitos de merge"},
     {"number": 2415, "status": "analisado", "verdict": "DECISÃO_HUMANA", "motivo": "toca .github/workflows/ci-security-drift.yml"},
@@ -28,9 +47,10 @@
     {"number": 2420, "status": "analisado", "verdict": "DECISÃO_HUMANA", "motivo": "draft + dirty + migrations/rollbacks"},
     {"number": 2422, "status": "analisado", "verdict": "DRAFT_BLOQUEADA", "motivo": "draft + dirty — conflitos com main atual, precisa de rebase"},
     {"number": 2424, "status": "analisado", "verdict": "DECISÃO_HUMANA", "motivo": "draft + DDL migration + CI workflow"},
-    {"number": 2426, "status": "analisado", "verdict": "DRAFT_PENDENTE_READY", "motivo": "worktree PASSOU, 1 arquivo QA, sem Rule 8 — bloqueio: draft status. Ação: PO → ready for review"},
-    {"number": 2427, "status": "analisado", "verdict": "DRAFT_PENDENTE_READY", "motivo": "mergeable:true, sem Rule 8 para merge — bloqueio: draft. Pós-merge: dispatch deploy-edge-functions.yml"},
-    {"number": 2428, "status": "analisado", "verdict": "DECISÃO_HUMANA", "motivo": "draft + security allowlist policy decision"}
+    {"number": 2426, "status": "MERGEADO", "verdict": "MERGEADO", "sha_merge": "7f5d410a233246c94ee05bc0be6c10be11a3f126", "motivo": "worktree PASSOU, 1 arquivo QA, sem Rule 8"},
+    {"number": 2427, "status": "MERGEADO", "verdict": "MERGEADO", "sha_merge": "26641b0a0cb8855f45755cd4734af4c53d52ba5d", "motivo": "cors.ts + webhook-schemas, sem Rule 8, mergeable:true"},
+    {"number": 2428, "status": "analisado", "verdict": "DECISÃO_HUMANA", "motivo": "draft + security allowlist policy decision"},
+    {"number": 2434, "status": "MERGEADO", "verdict": "MERGEADO", "sha_merge": "53ba69b53fd8a8a021e13feb3af485f4ee4de73b", "motivo": "docs-only analise-prs/, sem Rule 8"}
   ],
   "deliverables": {
     "baseline": "analise-prs/baseline/typecheck.txt",
@@ -48,7 +68,8 @@
       "analise-prs/dossies/PR-2424.md",
       "analise-prs/dossies/PR-2426.md",
       "analise-prs/dossies/PR-2427.md",
-      "analise-prs/dossies/PR-2428.md"
+      "analise-prs/dossies/PR-2428.md",
+      "analise-prs/dossies/PR-2434.md"
     ],
     "regras_de_negocio": "analise-prs/regras-de-negocio.md",
     "progresso": "analise-prs/progresso.json"
