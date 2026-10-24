@@ -1,5 +1,5 @@
 # RELATORIO_CI.md — Relatório CI / Action Required
-**rev 2 — 2026-10-25 (sessão `session_01Nc1nb7PArDnixYvvZssnKy`)**
+**rev 3 — 2026-10-25 (sessão `session_01Nc1nb7PArDnixYvvZssnKy`)**
 **Branch:** `claude_05/upbeat-hamilton-5gnz50` (PR #2438)
 
 ---
@@ -54,7 +54,7 @@ Verificado em 2026-10-25 (latest run por workflow):
 
 | Workflow | Última conclusion | Observação |
 |---|---|---|
-| Branch Protection Sentinel | ❌ failure | PR-only; não bloqueia main |
+| Branch Protection Sentinel | ❌ failure | Roda em `push: main`; falhou em `ec736c90` — ver P20 |
 | CodeQL | ✅ success | — |
 | Cart Invariants Smoke | 🔄 in_progress | E2E, não required |
 | Deployment Failure Alert | ⏭️ skipped | Normal (sem deploy failure) |
@@ -139,7 +139,7 @@ Banco preview `cegqcnepkwtmqlsleqlp` — não é required check, não bloqueia m
 | Supabase Linter Gate | Linter advisory de queries; pré-existente | Não | Não |
 | E2E — Personalization Flow | Flake/env; pré-existente | Não | Não |
 | E2E • Thumb QuickView | Flake/env; pré-existente | Não | Não |
-| Branch Protection Sentinel | PR-only; não existe na main | Não (PR) | Não |
+| Branch Protection Sentinel | Roda em `push: main`; falhou em `ec736c90` por commit sem sufixo `(#NNN)` — ver P20 | Não | Não |
 
 **Nenhum workflow required estava em failure em `main` antes desta sessão.** Os failures listados acima são pré-existentes e não causados por esta branch.
 
