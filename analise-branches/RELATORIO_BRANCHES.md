@@ -28,7 +28,7 @@ Ordenadas por prioridade de negócio:
 **Brechas de segurança ativas em produção**
 - 3 migrations de REVOKE não aplicadas (E30: external_connections anon, E40: mockup_approval_links anon, E18: mcp_kv_get authenticated)
 - **Ação:** aplicar via `db-apply-migration.yml` (workflow_dispatch com versão 20261022194000, 194100, 194200)
-- **Anomalia:** timestamps são anteriores a 20261022203935 mas não estão no ledger — investigar antes de aplicar
+- **Anomalia investigada e resolvida:** timestamps são anteriores a `20261022203935` mas não estão no ledger. Investigação via `execute_sql SELECT version, name FROM supabase_migrations.schema_migrations WHERE version BETWEEN '20261022190000' AND '20261022210000'` confirmou: somente `195616` e `203935` estão no ledger; `194000`/`194100`/`194200` genuinamente ausentes. Causa: timestamps retroativos gerados em sessão de auditoria; migrations nunca foram aplicadas. Sem corrupção ou lacuna no ledger — podem ser aplicadas normalmente via `db-apply-migration.yml`.
 - Dossiê: `dossies/security-brechas-e30-e40-e18-2026-10-22.md`
 
 ### 2.2 fix-audit-acl-regrole-261024-1635

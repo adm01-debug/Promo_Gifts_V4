@@ -38,7 +38,14 @@ c8935c35 security(migrations): revoga brechas E30/E40/E18 em 3 migrations
 
 ## Teste Postgres Temporário (2026-10-24)
 
-**Ambiente:** PostgreSQL 16.15 local (Ubuntu 16.15-0ubuntu0.24.04.1). Docker daemon indisponível → supabase start impossível; testado via psql direto com stubs de roles e tabelas (sem auth.users, pois migrations são REVOKE-only — não referenciam auth schema).
+**Ambiente:** PostgreSQL 16.15 local (Ubuntu 16.15-0ubuntu0.24.04.1). Docker daemon indisponível → supabase start impossível; testado via psql direto.
+
+**Verificação do SQL das migrations (lido diretamente via `git show origin/claude/security-brechas-...`):**
+- `20261022194000`: `REVOKE INSERT, UPDATE, DELETE, REFERENCES, TRIGGER ON public.external_connections FROM anon` — sem referência a `auth.`
+- `20261022194100`: `REVOKE ALL PRIVILEGES ON public.mockup_approval_links FROM anon` — sem referência a `auth.`
+- `20261022194200`: `REVOKE EXECUTE ON FUNCTION public.mcp_kv_get FROM authenticated` — sem referência a `auth.`
+
+**Conclusão:** as 3 migrations são REVOKE puro no schema `public`. Nenhuma referencia `auth.users`, funções do schema `auth` ou FKs. Stubs de `auth.users` são desnecessários para este teste. Roles `anon`, `authenticated` e `service_role` foram criadas como stubs locais.
 
 **Estado antes:**
 - `anon` em `external_connections`: DELETE, INSERT, REFERENCES, TRIGGER, UPDATE (5 privilégios)

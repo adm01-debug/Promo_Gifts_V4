@@ -36,7 +36,13 @@ c3bfedd6 chore(ci): adiciona recibo pendente Gate 1.13.3 para migration 20261024
 
 ## Teste Postgres Temporário (2026-10-24)
 
-**Ambiente:** PostgreSQL 16.15 local (Ubuntu 16.15-0ubuntu0.24.04.1). Docker daemon indisponível → supabase start impossível; testado via psql direto (migration é CREATE OR REPLACE FUNCTION, não requer auth.users stubs).
+**Ambiente:** PostgreSQL 16.15 local (Ubuntu 16.15-0ubuntu0.24.04.1). Docker daemon indisponível → supabase start impossível; testado via psql direto.
+
+**Verificação do SQL da migration (lido diretamente via `git show origin/claude/fix-audit-acl-...`):**
+- `grep -i "auth\." 20261024163500_fix_audit_security_definer_acl_regrole_cast.sql` → zero ocorrências
+- Migration é `CREATE OR REPLACE FUNCTION public.audit_security_definer_acl()` que usa `pg_get_userbyid(a.grantee)` em vez de `a.grantee::regrole::text` — opera em `pg_catalog`, sem referência ao schema `auth`.
+
+**Conclusão:** migration não referencia `auth.users` nem FKs do schema `auth`. Stubs de `auth.users` desnecessários para este teste.
 
 **Execução:**
 ```

@@ -37,7 +37,7 @@
 - **Conteúdo:** REVOKE INSERT anon em `external_connections` + DROP POLICY
 - **Impacto:** fecha brecha E30 (INSERT anon aberto)
 - **Risco:** DDL destrutiva (DROP POLICY) — requer rollback pronto
-- **Status:** não em ledger apesar de timestamp < 20261022203935 (anomalia — investigar)
+- **Status:** não em ledger. Anomalia investigada (execute_sql SELECT no ledger): timestamps retroativos de sessão de auditoria — migrations nunca foram aplicadas. Sem corrupção. Podem ser aplicadas via `db-apply-migration.yml`.
 
 ### 3. `20261022194100_security_revoke_mockup_approval_links_anon.sql`
 - **Branch:** security-brechas-e30-e40-e18-2026-10-22
