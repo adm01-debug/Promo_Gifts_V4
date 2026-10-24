@@ -1,6 +1,6 @@
 # Pendências CI — Bloqueios Externos
 
-**Atualizado em:** 2026-10-24 (rev 2 — erros exatos adicionados)  
+**Atualizado em:** 2026-10-24 (rev 3 — P2a **RESOLVIDO** ✅; P8/P9/P10 adicionados)  
 **Branch de referência:** `claude_05/upbeat-hamilton-5gnz50`  
 **Commit de referência (main):** `269ec66b1500d45a5b655613ca2e8a1ea2876027`
 
@@ -70,12 +70,12 @@ Result: 20 passed, 1 failed, 1 interrupted, 149 did not run (fail-fast)
 
 **Pré-existente no `main` (commit `325b0bd`)** — não introduzida por este PR.
 
-**Correção aplicada (commit `f31d1a1b`):**
+**Correção aplicada (commit `f31d1a1b`) — CONFIRMADA ✅:**
 ```diff
 - <Suspense fallback={<div style={{ height: 56 }} className="print:hidden" />}>
 + <Suspense fallback={<div data-testid="app-header" style={{ position: 'fixed', top: 0, right: 0, left: 0, zIndex: 40, height: 56 }} className="print:hidden" />}>
 ```
-O fallback agora tem `data-testid="app-header"` e `position: fixed` — idêntico ao Header real. O `waitForTestIdVisible` encontra o elemento imediatamente, sem race condition mesmo antes do chunk JS carregar. Validação via CI em `f31d1a1b` (PR #2393).
+O fallback agora tem `data-testid="app-header"` e `position: fixed`. O `waitForTestIdVisible` encontra o elemento imediatamente. **CI confirmou `success`** em job 120897260642 (step 4 `success`, step 5 `skipped` = fail-fast não acionado).
 
 ---
 

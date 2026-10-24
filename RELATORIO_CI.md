@@ -1,6 +1,6 @@
 # Relatório CI — Reparo de Workflows `action_required`
 
-**Data:** 2026-10-24 (rev 6 — P8/P9/P10 adicionados como bloqueios externos pré-existentes; `e2e-gates` em andamento aguardando confirmação de P2a)  
+**Data:** 2026-10-24 (rev 7 — P2a **CONFIRMADO** `success` ✅; P8/P9/P10 adicionados como bloqueios externos pré-existentes)  
 **Branch de trabalho:** `claude_05/upbeat-hamilton-5gnz50`  
 **Commit baseline (main antes do PR):** `325b0bd`  
 **Commit final do PR:** `12a7774`  
@@ -17,7 +17,7 @@
 | Gate Final — Deploy Ready | (baseline: `success`) | `success` | **`success`** ✅ (run [#40099851858](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40099851858)) | **VERDE** |
 | Branch Protection Sentinel | [#40097995567](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40097995567) | `failure` | **`success`** ✅ (squash-merge `45023c7 (#2389)` aceito) | **AUTO-RESOLVIDO** no merge |
 | Release Please | [#40097995569](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40097995569) | `action_required` | `action_required` — bloqueio externo | PENDENCIAS.md **P1** — PAT `RELEASE_PLEASE_TOKEN` ausente |
-| E2E — header sticky (`22-header-sticky.spec.ts`) | [#40097995631](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40097995631) | `failure` | **Em validação** — fix `f31d1a1b` em CI | PENDENCIAS.md **P2a** — fix aplicado: fallback Suspense com `data-testid` + `position:fixed`; aguardando CI |
+| E2E — header sticky (`22-header-sticky.spec.ts`) | [#40097995631](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40097995631) | `failure` | **`success`** ✅ (job 120897260642 step 4 `success`, step 5 `skipped`) | **CORRIGIDO** — fallback Suspense com `data-testid="app-header"` + `position:fixed` (commit `f31d1a1b`) |
 | Cart Invariants Smoke (6 shards) | [#40097995522](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40097995522) | `failure` | `failure` — pré-existente | PENDENCIAS.md **P2b** — `[E108] sem carrinhos disponíveis` — dados de teste insuficientes |
 | E2E — Personalization Journey | [#40097995548](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40097995548) | `failure` | `failure` — pré-existente | PENDENCIAS.md **P2c** — `expect(page).toHaveURL(/\/login/) failed` timeout 15s |
 | Gate 2.5 — PostgreSQL Transactional Integrity | [#40099111918](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40099111918) | `failure` | `failure` — pré-existente | PENDENCIAS.md **P5** — 43/43 testes passam; live check HTTP 400 no Supabase |
@@ -40,7 +40,7 @@ Foram analisados todos os workflows com `conclusion=action_required` e `conclusi
 - Gate 2 (vitest): 3 testes falhavam por `ReferenceError` em TDZ e mock errado → `success` em `cb35d92`.
 
 **O que foi corrigido com código:**
-- E2E P2a: fix aplicado em `f31d1a1b` — fallback Suspense agora tem `data-testid="app-header"` + `position: fixed`. Aguardando CI confirmar `success`.
+- E2E P2a: fix confirmado em `f31d1a1b` — fallback Suspense agora tem `data-testid="app-header"` + `position: fixed`. Gate `success` ✅ confirmado em job 120897260642 (step 4 success, step 5 skipped).
 
 **O que não é corrigível via código (bloqueios externos definitivos):**
 - E2E P2b: `[E108] sem carrinhos disponíveis` — dados de teste insuficientes no runner de CI. Não há carrinhos no banco de teste. **Ação necessária:** seed de dados de teste no runner. Pré-existente.
@@ -114,7 +114,7 @@ Foram analisados todos os workflows com `conclusion=action_required` e `conclusi
 | Gate 2.5 (PostgreSQL Transactional Integrity) | `failure` | `failure` — bloqueio externo (HTTP 400 live check, 43/43 testes locais passam) |
 | Gate Final (deploy-ready) | `success` em main | **`success`** ✅ (`12a7774`, run `40099851858`) |
 | Branch Protection Sentinel | `failure` | **`success`** ✅ — auto-resolvido no squash-merge `45023c7 (#2389)` |
-| E2E P2a (header sticky `/novidades` mobile) | `failure` | **Em validação** — fix `f31d1a1b` aguardando CI |
+| E2E P2a (header sticky `/novidades` mobile) | `failure` | **`success`** ✅ — fix `f31d1a1b` confirmado (job 120897260642, step 4) |
 | E2E P2b (cart invariants, `[E108]`) | `failure` | `failure` — dados de teste insuficientes, pré-existente (P2b) |
 | E2E P2c (personalization, URL navigation) | `failure` | `failure` — regressão de roteamento, pré-existente (P2c) |
 | Gate 2.5 (PostgreSQL Transactional Integrity) | `failure` | `failure` — live check HTTP 400, pré-existente (P5) |
