@@ -475,7 +475,7 @@ export function useSellerCarts() {
       const { shippingDeadlineSchema } = await import('@/lib/carts/shipping-deadline');
       const parsed = shippingDeadlineSchema.safeParse(shippingDeadline);
       if (!parsed.success) {
-        throw new Error(parsed.error.errors[0]?.message ?? 'Data inválida.');
+        throw new Error(parsed.error.issues[0]?.message ?? 'Data inválida.');
       }
       await applyCartUpdate(
         supabase.from('seller_carts').update({ shipping_deadline: parsed.data }),
