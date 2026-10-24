@@ -1,10 +1,11 @@
 # Relatório CI — Reparo de Workflows `action_required`
 
-**Data:** 2026-10-24 (rev 2 — erros exatos de P2a/P2b/P2c; Gate 2.5 adicionado)  
+**Data:** 2026-10-24 (rev 3 — Gate Final `success` confirmado; PR mergeado)  
 **Branch de trabalho:** `claude_05/upbeat-hamilton-5gnz50`  
 **Commit baseline (main antes do PR):** `325b0bd`  
-**Commit final do PR:** `cb35d92`  
-**PR:** [#2389](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2389)
+**Commit final do PR:** `12a7774`  
+**Merge commit em main:** `45023c7` (squash, 2026-10-24T14:00:22Z)  
+**PR:** [#2389](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2389) — **MERGEADO** ✅
 
 ---
 
@@ -97,10 +98,10 @@ Foram analisados todos os workflows com `conclusion=action_required` e `conclusi
 |---|---|---|
 | Gate 2 (vitest) | `failure` | `success` ✅ |
 | Gate 0 (SSOT) | `success` | `success` ✅ |
-| Gate 1 (lint/TS) | `success` | `in_progress` (CI rodando) |
+| Gate 1 (lint/TS) | `success` | **`success`** ✅ |
 | Gate 1.15 (overflow-x-clip) | `success` | `success` ✅ |
 | Gate 2.5 (PostgreSQL Transactional Integrity) | `failure` | `failure` — bloqueio externo (HTTP 400 live check, 43/43 testes locais passam) |
-| Gate Final (deploy-ready) | `success` em main | aguardando Gate 1 completar |
+| Gate Final (deploy-ready) | `success` em main | **`success`** ✅ (`12a7774`, run `40099851858`) |
 | E2E P2a (header sticky `/novidades` mobile) | `failure` | `failure` — regressão pré-existente em main |
 | E2E P2b (cart invariants, `[E108]`) | `failure` | `failure` — dados de teste insuficientes, pré-existente |
 | E2E P2c (personalization, URL navigation) | `failure` | `failure` — regressão de roteamento, pré-existente |
