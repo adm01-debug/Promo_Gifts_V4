@@ -1,8 +1,8 @@
 # Pendências CI — Bloqueios Externos
 
-**Atualizado em:** 2026-10-24 (rev 8 — P4 detalhado com 25 workflows/641 runs; P1/P2b/P2c/P11 atualizados para SHA `71d624e8`; P16-P19 adicionados: workflows in_progress não-required)  
+**Atualizado em:** 2026-10-24 (rev 9 — P4: motivo exato API 403 adicionado; baseline local completo em RELATORIO_CI.md; Gate Final `e9a4764c` = success ✅)  
 **Branch de referência:** `claude_05/upbeat-hamilton-5gnz50`  
-**Commit de referência (main):** `71d624e8` (chore(infra): fixa .vercel/project.json + REGRA #11 — PR #2425)
+**Commit de referência (main):** `e9a4764c` (docs: PENDENCIAS.md rev 8 + RELATORIO_CI.md rev 18 — PR #2431)
 
 ---
 
@@ -244,6 +244,14 @@ GitHub Actions exige que mantenedores do repositório aprovem explicitamente a e
 | Visual Baseline Tests | 278436802 | 5 | 3a726461 |
 | Workflow Lint | 368573629 | 4 | 3a726461 |
 | schema-snapshot-export | 305283288 | 4 | 3a726461 |
+
+**Tentativa de aprovação via API (2026-10-24T20:19Z) — resultado definitivo:**  
+Chamado `github_approve_workflow_run` para run_id `39884454041` → HTTP 403:
+```
+{"message":"This run is not from a fork pull request or queued by the Actions bot",
+ "documentation_url":"https://docs.github.com/rest/actions/workflow-runs#approve-a-workflow-run-for-a-fork-pull-request"}
+```
+A API de aprovação (`POST /repos/{owner}/{repo}/actions/runs/{run_id}/approve`) só funciona para runs de fork PRs. Estes runs são de branches internas (`copilot/*`, `release-please--*`) — mesmo sendo de bots, não são considerados "fork PRs" pela API do GitHub e o campo `head_repository.fork` = `false`. A aprovação manual via UI do GitHub é o único caminho tecnicamente possível.
 
 **Ação necessária pelo PO:**  
 Navegar até https://github.com/adm01-debug/Promo_Gifts_V4/pulls?q=is:open e para cada PR externo pendente: aprovar os workflows clicando em "Approve and run" (ou fechar/rejeitar o PR). Os runs `action_required` desaparecem automaticamente após a aprovação ou fechamento do PR.
