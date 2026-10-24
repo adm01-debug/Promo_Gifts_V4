@@ -137,7 +137,7 @@
     "src/pages/quotes/QuotesListPage.tsx": 503,
     "src/pages/system/SystemStatusPage.tsx": 645,
     "src/pages/tools/VisualSearchPage.tsx": 1274,
-    "src/services/magazineService.ts": 818,
+    "src/services/magazineService.ts": 820,
     "src/services/quoteService.ts": 552,
     "src/types/stock.ts": 555
   }

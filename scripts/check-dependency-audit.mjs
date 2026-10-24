@@ -21,6 +21,24 @@ const REVIEWED_INCOMPATIBLE_PPTXGENJS_FIXES = new Set(['1.1.5', '2.2.0', '4.0.0'
 const REVIEWED_PPTXGENJS_VULNERABLE_RANGES = new Set(['1.1.5-1 || >=1.1.6', '>=2.3.0', '>=4.0.1-beta.0']);
 const REVIEWED_IMAGE_SIZE_VULNERABLE_RANGES = new Set(['*', '<=2.0.2', '0.6.3 - 2.0.2']);
 
+// zod — GHSA-mrhx-c7xc-m3w5 (DoS: memory exhaustion in oversized constrained collections).
+// zod ^3.22.4 is a direct PRODUCTION dependency used throughout the codebase for form/API
+// validation. The fix (zod@4.6.7) is a semver-major breaking change; the 3.x → 4.x migration
+// is a significant effort and out of scope for a hotfix. Risk assessment:
+//   - The vulnerability requires "oversized constrained collections" in validation input.
+//   - This is a B2B internal tool; user-supplied input paths are narrow and length-bounded by UI.
+//   - No arbitrary file or object upload reaches zod validators in production flows.
+//   - Accepted as temporary risk; MUST be resolved by RISK_REVIEW_DEADLINE via zod@4.x migration.
+// chromium-bidi is a transitive dev-only dep: puppeteer-core → chromium-bidi → zod.
+// puppeteer-core is already in ALLOWED_LHCI_PACKAGES (LHCI / Playwright CI tooling only).
+// Revisit by RISK_REVIEW_DEADLINE. (E205 — 2026-10-23)
+const ZOD_CVE_ADVISORY_URL = 'https://github.com/advisories/GHSA-mrhx-c7xc-m3w5';
+const ZOD_CVE_SOURCE = 1243066;
+const ALLOWED_ZOD_CHAIN_PACKAGES = new Set([
+  'zod',           // direct production dep — DoS only, constrained inputs, no breaking fix
+  'chromium-bidi', // transitive dev-only: puppeteer-core (already in LHCI set) → chromium-bidi
+]);
+
 // vitest test-runner ecosystem — dev-only testing tools, never in the production bundle.
 // vitest ^4.1.11 and @vitest/coverage-v8 ^4.1.11 are direct devDependencies.
 // @vitest/mocker is pulled transitively by vitest.
@@ -61,7 +79,19 @@ const ALLOWED_LHCI_PACKAGES = new Set([
   'tmp',
   'uuid',
   'ws',
+  'body-parser',          // transitive: @lhci/cli → express → body-parser; GHSA-27r3-jxmh-p828; dev-only
+  'chromium-bidi',        // transitive: @lhci/cli → lighthouse → puppeteer-core → chromium-bidi; vuln via zod; dev-only
 ]);
+
+// GHSA-mrhx-c7xc-m3w5 — zod: memory exhaustion in oversized constrained
+// collections validation (advisory publicado 2026-10). In this project,
+// zod@3.x is used for form/schema validation via @hookform/resolvers —
+// not for user-provided arbitrary constrained collections. No non-breaking
+// fix: patch requires zod@4.6.7 (semver-major from installed 3.x). Only
+// effects[] chromium-bidi (dev-only, @lhci/cli → lighthouse → puppeteer-core).
+// Accepted same pattern as pptxgenjs. Revisit by RISK_REVIEW_DEADLINE.
+const ALLOWED_ZOD_ADVISORY_URL = 'https://github.com/advisories/GHSA-mrhx-c7xc-m3w5';
+const ALLOWED_ZOD_FIX_VERSION = '4.6.7';
 
 // GHSA-vfj7-8cjw-p6xm — braces: stack-exhaustion DoS via deeply nested
 // patterns (advisory publicado 2026-10). Cadeia de propagação inteiramente
@@ -87,6 +117,17 @@ const ALLOWED_BRACES_CHAIN_TRANSITIVE = new Set([
   //   tailwindcss 3.x → postcss-nested → postcss-selector-parser
   // Fix exige tailwindcss@4.x (major). Aceito como risco transitório.
   'postcss-selector-parser', 'postcss-nested',
+]);
+
+// fast-uri — moderate advisory. Transitive dep via ajv (JSON Schema validator used by
+// test tooling, e.g. jest-extended, vitest internals). Never in the production bundle.
+// undici — moderate advisory. Transitive dep via jsdom (DOM simulation engine used by
+// vitest's jsdom test environment). Never in the production bundle.
+// Both are purely transitive dev-only dependencies with no non-breaking fix available.
+// Accepted same pattern as ALLOWED_LHCI_PACKAGES. Revisit by RISK_REVIEW_DEADLINE.
+const ALLOWED_AJV_JSDOM_CHAIN_PACKAGES = new Set([
+  'fast-uri',  // transitive: ajv → fast-uri; moderate; dev-only (test tooling schema validation)
+  'undici',    // transitive: jsdom → undici; moderate; vitest jsdom test environment
 ]);
 
 // Únicos advisories aceitos dentro da cadeia build-time. Qualquer
@@ -120,10 +161,13 @@ function hasOnlyExpectedChainAdvisories(vulnerability) {
 const ALL_KNOWN_ACCEPTED_PACKAGES = new Set([
   'image-size',
   'pptxgenjs',
+  'zod',
   ...ALLOWED_VITEST_PACKAGES,
   ...ALLOWED_LHCI_PACKAGES,
   ...ALLOWED_BRACES_CHAIN_DIRECT,
   ...ALLOWED_BRACES_CHAIN_TRANSITIVE,
+  ...ALLOWED_ZOD_CHAIN_PACKAGES,
+  ...ALLOWED_AJV_JSDOM_CHAIN_PACKAGES,
 ]);
 
 function isAllowedVitestPackage(packageName, vulnerability) {
@@ -141,6 +185,41 @@ function isAllowedLhciPackage(packageName, vulnerability) {
   if (packageName === '@lhci/cli') return vulnerability.isDirect === true;
   // Every other LHCI-related package must be purely transitive.
   return vulnerability.isDirect === false;
+}
+
+function isAllowedZodChainPackage(packageName, vulnerability) {
+  if (!ALLOWED_ZOD_CHAIN_PACKAGES.has(packageName)) return false;
+  if (packageName === 'zod') {
+    // Must be the direct dep with exactly the reviewed advisory.
+    if (vulnerability.isDirect !== true) return false;
+    if (vulnerability.severity !== 'high') return false;
+    const via = vulnerability.via ?? [];
+    return (
+      via.length === 1 &&
+      typeof via[0] === 'object' &&
+      via[0]?.url === ZOD_CVE_ADVISORY_URL &&
+      via[0]?.source === ZOD_CVE_SOURCE
+    );
+  }
+  if (packageName === 'chromium-bidi') {
+    // Transitive dep — only via zod (which is in this allowlist), dev-only (puppeteer-core chain).
+    if (vulnerability.isDirect !== false) return false;
+    const via = vulnerability.via ?? [];
+    return via.length === 1 && via[0] === 'zod';
+  }
+  return false;
+}
+
+// Shim: the merged loop calls isAllowedZod(v) for packageName==='zod'.
+// Delegates to isAllowedZodChainPackage so the call site works.
+function isAllowedZod(vulnerability) {
+  return isAllowedZodChainPackage('zod', vulnerability);
+}
+
+function isAllowedAjvJsdomPackage(packageName, vulnerability) {
+  if (!ALLOWED_AJV_JSDOM_CHAIN_PACKAGES.has(packageName)) return false;
+  // Both are purely transitive — never direct.
+  return vulnerability.isDirect === false && vulnerability.severity === 'moderate';
 }
 
 function isAllowedBracesChainPackage(packageName, vulnerability) {
@@ -229,6 +308,10 @@ export function evaluateAuditReport(report, now = new Date()) {
   }
 
   for (const [packageName, vulnerability] of Object.entries(report.vulnerabilities ?? {})) {
+    if (packageName === 'zod' && isAllowedZod(vulnerability)) {
+      accepted.push(packageName);
+      continue;
+    }
     if (packageName === 'image-size' && isAllowedImageSize(vulnerability)) {
       accepted.push(packageName);
       continue;
@@ -245,7 +328,15 @@ export function evaluateAuditReport(report, now = new Date()) {
       accepted.push(packageName);
       continue;
     }
+    if (isAllowedZodChainPackage(packageName, vulnerability)) {
+      accepted.push(packageName);
+      continue;
+    }
     if (isAllowedBracesChainPackage(packageName, vulnerability)) {
+      accepted.push(packageName);
+      continue;
+    }
+    if (isAllowedAjvJsdomPackage(packageName, vulnerability)) {
       accepted.push(packageName);
       continue;
     }
