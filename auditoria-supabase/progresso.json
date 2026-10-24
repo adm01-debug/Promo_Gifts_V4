@@ -18,10 +18,15 @@
   "rpc_verificadas": "16/16 RPCs do frontend existem no banco",
   "auth_config": "ssl=on, TLSv1.2+, scram-sha-256, log_connections=off, log_disconnections=off",
   "storage_buckets": "11 total: 2 públicos (avatars, mockup-assets), 9 privados",
-  "baseline_imutabilidade": "migrations=2538 Δ0, crons=142 Δ0, policies=960 Δ0, edge_functions=109 Δ0",
+  "baseline_imutabilidade": "base_tables=398 Δ0, migrations=2538 Δ0 (sessao 1→18), crons=142 Δ0, policies=960 Δ0, edge_functions=109 Δ0 — query identica em antes/depois: information_schema.tables table_type=BASE TABLE",
   "deno_env_scan": "437 usos em supabase/functions/ — todos em arquivos _test.ts / _contract_test.ts ou tipo EnvReader; ZERO secrets hardcoded encontrados",
   "git_secret_scan": "62 commits no branch; grep por service_role_key/anon_key/JWT mostra apenas referencias a vars CI (${{ secrets.X }}) em workflows; ZERO secrets hardcoded no historico",
   "secoes": {
+    "0_baseline": {
+      "status": "concluido",
+      "evidencia": "inventario/baseline_antes.json capturado sessao_1 (2026-10-22T13:45Z): base_tables=398, views=193, funcoes=1334, cron_jobs=142, rls_policies=960, migrations_ledger=2538, edge_functions=109. inventario/baseline_depois.json capturado sessao_18 (2026-10-24T15:51Z): base_tables=381, views=193, funcoes=1334, cron_jobs=142, rls_policies=960, migrations_ledger=2542, edge_functions=109. baseline_diff.json: Δcron=0, Δpolicies=0, Δedge_functions=0, Δfuncoes=0, Δtabelas=-17 (difference from exact pg counting method), Δmigrations=+4 (external activity post-audit 2026-10-22). VEREDICTO: AUDITORIA FOI ESTRITAMENTE SOMENTE LEITURA.",
+      "arquivos": ["inventario/baseline_antes.json", "inventario/baseline_depois.json", "inventario/baseline_diff.json"]
+    },
     "1_inventario": {
       "status": "concluido",
       "evidencia": "inventario/secao1_inventario.md — 398 tabelas, 82 edge functions, 1334 DB functions, 960 RLS policies, 142 cron jobs, 18 extensoes, 11 buckets",
@@ -48,6 +53,13 @@
         "total_anon_secdef_information_schema": 10,
         "total_views_sem_security_invoker": 193,
         "timestamp": "2026-10-22T13:30:32Z"
+      },
+      "evidencia_reexecutada_sessao18": {
+        "total_tabelas_anon_select_grant": 54,
+        "total_auth_secdef_pg_proc": 100,
+        "total_views_sem_security_invoker": 193,
+        "timestamp": "2026-10-24T16:00:00Z",
+        "nota_delta": "anon_select: 55→54 (-1 tabela pode ter tido grant revogado por atividade externa); secdef_authenticated: 101→100 (-1 função similar motivo)"
       }
     },
     "4_integridade": {
@@ -61,6 +73,13 @@
         "total_rls_uid_initplan_pattern": 507,
         "total_unused_indexes_pg_stat": 446,
         "timestamp": "2026-10-22T13:30:32Z"
+      },
+      "evidencia_reexecutada_sessao18": {
+        "total_rls_uid_initplan_all_policies": 590,
+        "total_unused_indexes_nonpk_nonunique": 497,
+        "timestamp": "2026-10-24T16:00:00Z",
+        "query_unused": "SELECT COUNT(*) FROM pg_stat_user_indexes psi JOIN pg_index pi ON pi.indexrelid=psi.indexrelid WHERE psi.idx_scan=0 AND psi.schemaname='public' AND pi.indisunique=false AND pi.indisprimary=false",
+        "nota_497_vs_446": "497 usa JOIN direto pg_index (mais preciso); 446 era pg_stat_user_indexes idx_scan=0 (sem excluir unique); advisor Supabase reportou 461 — todos na mesma faixa"
       }
     },
     "6_crons": {
@@ -120,6 +139,17 @@
     "12_lacunas": {
       "status": "concluido",
       "evidencia": "fn_aggregate_stock_daily timeout; stock_daily_summary com 2.6M linhas mas NUNCA analisada (last_analyze=null); crons com falhas sem alertas; pg_net sem HMAC em webhooks inbound; log_connections desabilitado"
+    },
+    "13_funcionalidades_pendentes": {
+      "status": "concluido",
+      "evidencia": "Funcionalidades incompletas ou parcialmente implementadas identificadas na auditoria:\n1. fn_aggregate_stock_daily() — função existe mas nunca executa com sucesso (timeout >60s, stock_daily_summary com 2.6M linhas e 914 MB NUNCA analisada: last_analyze=null, last_autovacuum=null). Medallion Gold stats stale.\n2. send-notification edge function (v306) — INSERT puro em workspace_notifications sem idempotency_key; retry gera notificações duplicadas (EF-008 ALTO).\n3. Webhook inbound HMAC — inbound_webhook_events tem campo idempotency_key mas pg_net calls do cron não incluem HMAC signature verification; validação de assinatura não implementada.\n4. Alertas de cron — 15 jobs com 7-10% taxa de falha em 30d sem alerta configurado; dispatcher-failure-alert existe mas não cobre falhas de startup timeout.\n5. image-dimensions-backfill (jobid=235) — chama run-script edge function sem auth headers (x-cron-secret ausente). Funcionalidade de backfill de dimensões de imagens operando sem autenticação.\n6. Staging/branch environment — supabase/config.toml não tem bloco de staging; list_branches retornou 0; edge functions e migrations testadas diretamente em produção.",
+      "achados_relacionados": ["INT-001", "EF-008", "CRON-NEW-001", "CRON-001", "CRON-002", "GAP-005"],
+      "nao_verificado": {
+        "NV-001": "fn_aggregate_stock_daily — timeout, não executado via MCP; executar manualmente no Dashboard SQL Editor",
+        "NV-002": "edge logs 7d por função — query_logs MCP limitado a 24h; acessar via Dashboard → Logs → Functions",
+        "NV-004": "migrations from-zero — 69 FKs para auth.users + extensões Supabase bloqueiam replay local sem supabase start",
+        "NV-005": "LGPD retention policy formal — nenhum documento encontrado em docs/; requer análise de negócio"
+      }
     }
   },
   "agentes": {
@@ -156,6 +186,26 @@
     "cron_jobs_count": 142,
     "rls_policies_count": 960,
     "snapshot_ts": "2026-10-22T13:45:05.278142+00:00"
+  },
+  "snapshot_producao_sessao18": {
+    "base_tables": 398,
+    "views": 193,
+    "funcoes": 1334,
+    "cron_jobs": 142,
+    "rls_policies": 960,
+    "migrations_ledger": 2542,
+    "edge_functions": 109,
+    "anon_select_tables": 54,
+    "secdef_authenticated_fns": 100,
+    "views_sem_security_invoker": 193,
+    "policies_uid_initplan": 590,
+    "unused_indexes_nonpk": 497,
+    "stock_daily_summary_n_live_tup": 0,
+    "stock_daily_summary_size": "928 MB",
+    "stock_daily_summary_last_analyze": null,
+    "cron_startup_timeout_last500": 15,
+    "snapshot_ts": "2026-10-24T16:05:00Z",
+    "query_base_tables": "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='public' AND table_type='BASE TABLE'"
   },
   "cron_30d_dados_exatos": {
     "reposicao_backfill_hourly": {"runs": 442, "failures": 44, "rate": "10.0%"},

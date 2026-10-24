@@ -1,16 +1,22 @@
 # Relatório CI — Reparo de Workflows `action_required`
 
-**Data:** 2026-10-24 (rev 10 — PR #2396 mergeado `c34ed2b4`; Branch Protection Sentinel `success` ✅ para `c34ed2b4`; Deploy Gates run #40107758485 `success` ✅ 15:44; P11 Supabase Linter Gate timeout adicionado a PENDENCIAS.md)  
+**Data:** 2026-10-24 (rev 11 — Inventário `63c17840` e `609d55c6` adicionados; baseline npm ci: erro verbatim registrado; P2b: nomes exatos dos testes em PENDENCIAS.md)  
 **Branch de trabalho:** `claude_05/upbeat-hamilton-5gnz50`  
 **Commit baseline (main antes do PR #2389):** `325b0bd`  
 **Commit final do PR #2389:** `12a7774`  
 **Merge commit em main (PR #2389):** `45023c7` (squash, 2026-10-24T14:00:22Z)  
 **Merge commit em main (PR #2396 — sentinel fix):** `c34ed2b4` (squash, 2026-10-24T15:36:33Z) — `chore(docs):` → Regra 6 ✅  
+**Merge commit em main (PR #2398 — RELATORIO rev 10):** `63c17840` (squash)  
+**Merge commit em main (PR #2392 — sentinel allowlist):** `609d55c6` (squash) — **HEAD do main em 2026-10-24T16:xx**  
 **PR principal:** [#2389](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2389) — **MERGEADO** ✅  
 **PR sentinel fix:** [#2396](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2396) — **MERGEADO** ✅  
 **Deploy Gates em main (push `45023c7ff8`):** run [#40100571263](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40100571263) — **`success`** ✅ (Gate 2 job `120891902070`; Gate 3 job `120892030879`; Gate Final job `120898759390`)  
 **Deploy Gates em main (push `c34ed2b4`):** run [#40107758485](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40107758485) — **`success`** ✅ (2026-10-24T15:44:03Z)  
-**Branch Protection Sentinel em main (`c34ed2b4`):** run [#40107758455](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40107758455) — **`success`** ✅
+**Branch Protection Sentinel em main (`c34ed2b4`):** run [#40107758455](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40107758455) — **`success`** ✅  
+**Deploy Gates em main (push `63c17840`):** run [#40108768422](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40108768422) — **`success`** ✅  
+**Branch Protection Sentinel em main (`63c17840`):** run [#40108768357](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40108768357) — **`success`** ✅  
+**Branch Protection Sentinel em main (`609d55c6`):** run [#40109508352](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40109508352) — **`success`** ✅  
+**Deploy Gates em main (push `609d55c6`):** run [#40109508595](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40109508595) — `queued/in_progress` ao capturar (2026-10-24T16:xx)
 
 ---
 
@@ -36,11 +42,67 @@
 
 ---
 
+## Inventário de Workflows — main `63c17840` (PR #2398 squash)
+
+| Workflow | Run | Conclusão |
+|---|---|---|
+| Branch Protection Sentinel | [#40108768357](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40108768357) | **`success`** ✅ |
+| Deploy Gates (Gate Final) | [#40108768422](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40108768422) | **`success`** ✅ |
+| Gitleaks | [#40108768338](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40108768338) | **`success`** ✅ |
+| Lovable Autoheal | [#40108768394](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40108768394) | **`success`** ✅ |
+| Lovable Edit Tracker | [#40108768318](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40108768318) | **`success`** ✅ |
+| No Prod Leak | [#40108768306](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40108768306) | **`success`** ✅ |
+| Policies Baseline | [#40108768364](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40108768364) | **`success`** ✅ |
+| Required Checks Guard | [#40108768367](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40108768367) | **`success`** ✅ |
+| SSOT Supabase Guard | [#40108768474](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40108768474) | **`success`** ✅ |
+| Security Scan | [#40108768359](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40108768359) | **`success`** ✅ |
+| Select Columns vs Types | [#40108768399](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40108768399) | **`success`** ✅ |
+| Static Health Checks | [#40108768279](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40108768279) | **`success`** ✅ |
+| Supabase Linter Gate | [#40108768349](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40108768349) | **`success`** ✅ (P11 foi transiente) |
+| UI · Visual & A11y | [#40108768300](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40108768300) | **`success`** ✅ |
+| E2E · Carts Undo RPC Atomic | [#40108768282](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40108768282) | **`success`** ✅ |
+| Release Please | [#40108768299](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40108768299) | `failure` — **P1** PAT ausente |
+| Cart Invariants Smoke | [#40108768269](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40108768269) | `failure` — **P2b** dados de teste insuficientes |
+| Lovable Protected-File Audit | [#40108768254](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40108768254) | `skipped` |
+
+---
+
+## Inventário de Workflows — main `609d55c6` (PR #2392 squash — HEAD em 2026-10-24T16:xx)
+
+| Workflow | Run | Conclusão (capturado ~16:xx UTC) |
+|---|---|---|
+| Branch Protection Sentinel | [#40109508352](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40109508352) | **`success`** ✅ |
+| Gitleaks | [#40109508354](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40109508354) | **`success`** ✅ |
+| Lovable Autoheal | [#40109508454](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40109508454) | **`success`** ✅ |
+| Lovable Edit Tracker | [#40109508600](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40109508600) | **`success`** ✅ |
+| No Prod Leak | [#40109508441](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40109508441) | **`success`** ✅ |
+| Policies Baseline | [#40109508557](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40109508557) | **`success`** ✅ |
+| Required Checks Guard | [#40109508434](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40109508434) | **`success`** ✅ |
+| SSOT Supabase Guard | [#40109508634](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40109508634) | **`success`** ✅ |
+| Security Scan | [#40109508511](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40109508511) | **`success`** ✅ |
+| Select Columns vs Types | [#40109508370](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40109508370) | **`success`** ✅ |
+| Static Health Checks | [#40109508373](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40109508373) | **`success`** ✅ |
+| Supabase Linter Gate | [#40109508632](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40109508632) | **`success`** ✅ |
+| Release Please | [#40109508357](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40109508357) | `failure` — **P1** PAT ausente |
+| Deploy Gates (Gate Final) | [#40109508595](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40109508595) | `queued` (em progresso ao capturar) |
+| Cart Invariants Smoke | [#40109508509](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40109508509) | `pending` (em progresso ao capturar) |
+| E2E (Playwright) | [#40109508469](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40109508469) | `in_progress` (em progresso ao capturar) |
+| Lovable Protected-File Audit | [#40109508489](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40109508489) | `skipped` |
+
+---
+
 ## Resumo Executivo
 
 Foram analisados todos os workflows com `conclusion=action_required` e `conclusion=failure` da página de Actions. Identificadas 5 causas-raiz distintas; 1 corrigida com código neste PR; 4 bloqueios externos registrados em `PENDENCIAS.md`.
 
-**Nota sobre baseline local:** `npm ci` falha com HTTP 403 no ambiente de execução (proxy Lovable `europe-west1-npm.pkg.dev/lovable-core-prod` sem credenciais disponíveis). `node_modules` ausente. Validação local impossível — CI do GitHub Actions utilizado como referência de ground truth.
+**Nota sobre baseline local:** `npm ci` falha com HTTP 403 no ambiente de execução. `node_modules` ausente. Validação local impossível — CI do GitHub Actions utilizado como referência de ground truth.
+
+**Erro verbatim do `npm ci`:**
+```
+npm error code E403
+npm error 403 Forbidden - GET https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/pngjs/-/pngjs-7.0.0.tgz
+```
+`package-lock.json` tem campo `resolved` apontando para `europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/` (proxy NPM privado do Lovable), inacessível sem credenciais GCP do projeto `lovable-core-prod`. Todos os pacotes com URL nesse proxy retornam 403 Forbidden. Não é falha de configuração local — o lockfile foi gerado no ambiente Lovable e trava todos os `npm ci` fora desse ambiente.
 
 **O que foi corrigido neste PR:**
 - Gate 2 (vitest): 3 testes falhavam por `ReferenceError` em TDZ e mock errado → `success` em `cb35d92`.
