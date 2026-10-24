@@ -1,20 +1,25 @@
 # Relatório CI — Reparo de Workflows `action_required`
 
-**Data:** 2026-10-24 (rev 14 — Adicionados: Gate Final `594fbd40` confirmado, test:ci-core 957 testes, correção da justificativa npm test — limitação de tempo, não OOM)  
+**Data:** 2026-10-24 (rev 15 — P14 resolvido; P15 adicionado; Gate 1.3 corrigido via PR #2412; commits `652a7f14`, `c3a42843`, `2aa42387`, `ad21b02b`)  
 **Branch de trabalho:** `claude_05/upbeat-hamilton-5gnz50`  
 **Commit baseline (main antes do PR #2389):** `325b0bd`  
 **Commit final do PR #2389:** `12a7774`  
 **Merge commit em main (PR #2389):** `45023c7` (squash, 2026-10-24T14:00:22Z)  
-**Merge commit em main (PR #2396 — sentinel fix):** `c34ed2b4` (squash, 2026-10-24T15:36:33Z) — `chore(docs):` → Regra 6 ✅  
+**Merge commit em main (PR #2396 — sentinel fix):** `c34ed2b4` (squash, 2026-10-24T15:36:33Z)  
 **Merge commit em main (PR #2398 — RELATORIO rev 10):** `63c17840` (squash)  
 **Merge commit em main (PR #2392 — sentinel allowlist):** `609d55c6` (squash)  
 **Merge commit em main (PR #2402 — docs rev 11):** `174c4ea8` (squash)  
 **Merge commit em main (PR #2405 — docs rev 12+PENDENCIAS rev 5):** `0213ed60` (squash, 2026-10-24T16:42:24Z)  
-**Merge commit em main (PR #2407 — docs rev 13):** `594fbd40` (squash, 2026-10-24T17:02:43Z) — **HEAD de main atual**  
+**Merge commit em main (PR #2407 — docs rev 13):** `594fbd40` (squash, 2026-10-24T17:02:43Z)  
+**Merge commit em main (PR #2409 — docs rev 14+PENDENCIAS rev 6):** `c3a42843` (squash, sem `(#NNN)` — Branch Protection Sentinel falhou P14)  
+**Merge commit em main (PR #2411 — PENDENCIAS rev 6 fix P14):** `652a7f14` (squash, 2026-10-24T17:52:XX Z) — Branch Protection Sentinel `success` ✅ run [#40118011703](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40118011703)  
+**Merge commit em main (PR #2412 — fix Gate 1.3 migration-refs-baseline):** `ad21b02b` (squash, 2026-10-24T18:09:XX Z) — **HEAD de main atual**  
 **PR principal:** [#2389](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2389) — **MERGEADO** ✅  
 **PR sentinel fix:** [#2396](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2396) — **MERGEADO** ✅  
 **PR docs rev 12+PENDENCIAS:** [#2405](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2405) — **MERGEADO** ✅  
 **PR docs rev 13:** [#2407](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2407) — **MERGEADO** ✅  
+**PR docs rev 14+P14:** [#2411](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2411) — **MERGEADO** ✅  
+**PR fix Gate 1.3:** [#2412](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2412) — **MERGEADO** ✅  
 **Deploy Gates em main (push `45023c7ff8`):** run [#40100571263](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40100571263) — **`success`** ✅ (Gate 2 job `120891902070`; Gate 3 job `120892030879`; Gate Final job `120898759390`)  
 **Deploy Gates em main (push `c34ed2b4`):** run [#40107758485](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40107758485) — **`success`** ✅ (2026-10-24T15:44:03Z)  
 **Branch Protection Sentinel em main (`c34ed2b4`):** run [#40107758455](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40107758455) — **`success`** ✅  
@@ -24,7 +29,9 @@
 **Deploy Gates em main (push `609d55c6`):** run [#40109508595](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40109508595) — **`success`** ✅  
 **Gate Final em main (push `174c4ea8`):** check `Gate Final - Deploy Ready` — **`success`** ✅ (confirmado via `github_list_check_runs` ref=`174c4ea8`)  
 **Deploy Gates em main (push `0213ed60` — PR #2405):** run [#40112803262](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40112803262) — **`success`** ✅ — Gate Final confirmado em `0213ed60` (ver seção Inventário de Jobs abaixo)  
-**Deploy Gates em main (push `594fbd40` — PR #2407):** run [#40114329437](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40114329437) — **`success`** ✅ — Gate Final confirmado em `594fbd40` (ver seção Inventário de Jobs abaixo)
+**Deploy Gates em main (push `594fbd40` — PR #2407):** run [#40114329437](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40114329437) — **`success`** ✅ — Gate Final confirmado em `594fbd40` (ver seção Inventário de Jobs abaixo)  
+**Deploy Gates em main (push `652a7f14` — PR #2411):** run [#40118011740](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40118011740) — **Gate Final em progresso** (Gate 1.3 — migration contracts falharia; PR #2412 corrige)  
+**Deploy Gates em main (push `ad21b02b` — PR #2412):** run em progresso — resultado pendente (ver Inventário `ad21b02b` abaixo)
 
 ---
 
@@ -47,6 +54,8 @@
 | Gate 8 — Security & Credential Audit | job `120898723937` | `failure` (pré-existente) | `failure` — pré-existente | PENDENCIAS.md **P9** — HTTP 500 Supabase (mesmo padrão P5) |
 | audit — card parity visual | job `120896976701` | `failure` (pré-existente) | `failure` — pré-existente | PENDENCIAS.md **P10** — `rodapé não alinhado` em `novidades-reposicao-card-parity.spec.ts:163` |
 | Supabase Linter Gate | [#40107758306](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40107758306) | `success` (em `90a55243`) | `failure` — transiente | PENDENCIAS.md **P11** — TimeoutError após 3 tentativas; rede Supabase indisponível no runner |
+| Gate 1.3 — Migration contracts | (novo em `652a7f14`) | `success` | **`success`** ✅ (PR #2412, commit `ad21b02b`) | **CORRIGIDO** — baseline atualizado com 3 refs de `inventario/branches.json` |
+| Running Copilot Code Review / copilot-pull-request-reviewer | (bot externo) | `failure` | `failure` — bot externo | PENDENCIAS.md **P15** — GitHub Copilot bot, não é workflow do repositório |
 
 ---
 
@@ -313,6 +322,51 @@ npm error 403 Forbidden - GET https://europe-west1-npm.pkg.dev/lovable-core-prod
 ## Regressões
 
 Nenhuma. Os três fixes são cirúrgicos (1–3 linhas cada) e não alteram lógica de negócio, apenas a mecânica de hoisting de mocks.
+
+---
+
+---
+
+## Inventário de Check Runs — main `652a7f14` (PR #2411 squash — 2026-10-24T17:52Z)
+
+| Check | Conclusão |
+|---|---|
+| Verify push to main matches accepted patterns (Branch Protection Sentinel) | **`success`** ✅ — run [#40118011703](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40118011703) |
+| Gate Final - Deploy Ready | run [#40118011740](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40118011740) — **`failure`** em Gate 1.3 (migration contracts): `inventario/branches.json` referencia 3 arquivos inexistentes em main → corrigido por PR #2412 |
+
+**Nota:** Gate 1.3 falhou em `652a7f14` por causa raiz identificada e corrigida no mesmo dia via PR #2412 (`ad21b02b`).
+
+---
+
+## Inventário de Check Runs — main `ad21b02b` (PR #2412 squash — 2026-10-24T18:09Z)
+
+Run Deploy Gates: em progresso ao final da sessão.
+
+| Check | Conclusão (capturado ~18:10Z) |
+|---|---|
+| Gate 0 - SSOT Supabase (project ID canônico) | **`success`** ✅ |
+| Gate 4 - Lighthouse CI | **`success`** ✅ |
+| Gate 5 - SEO Sanity Check | **`success`** ✅ |
+| Gate E23 - Verifica secrets E2E | **`success`** ✅ |
+| Gate E40 - Detect schema file changes | **`success`** ✅ |
+| Detectar mudanças (docs-only bypass E14) | **`success`** ✅ |
+| Assert Gate Final is required on main | **`success`** ✅ |
+| Verificação de saúde pós-merge | **`success`** ✅ |
+| Gate 1 - Lint + TypeScript | `in_progress` |
+| Gate 2 - Unit Tests | `in_progress` |
+| Gate 2.5 - PostgreSQL Transactional Integrity | `in_progress` |
+| Gate 5.5 - RPC restore_seller_cart | `in_progress` |
+| Gate E23 - Secret Scan (gitleaks) | `in_progress` |
+| Gate 0.5 - Dependency Audit | `queued` |
+| Gate 3 - E2E Smoke | `queued` |
+| Gate Final - Deploy Ready | `not started` (aguarda gates individuais) |
+| release-please | `failure` — **P1** PAT ausente (pré-existente) |
+| copilot-pull-request-reviewer | `failure` — **P15** bot externo GitHub Copilot (não é required check) |
+| Gate 0.6 - Dependency Review | `skipped` (PR-only) |
+| Gate E40 - Schema Drift Check | `skipped` |
+| Supabase Preview | `in_progress` — **P7** esperado |
+
+**Nota:** Gate Final não iniciado ao final da captura. Resultado pendente — ver execução futura.
 
 ---
 
