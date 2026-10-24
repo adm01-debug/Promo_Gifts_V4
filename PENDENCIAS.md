@@ -1,6 +1,6 @@
 # Pendências CI — Bloqueios Externos
 
-**Atualizado em:** 2026-10-24 (rev 8 — P16–P21 adicionados: Thumb QuickView, Critical Flows, Uptime Monitor, validate-access, node:test, Cart Delete Popover)  
+**Atualizado em:** 2026-10-24 (rev 9 — P22 adicionado: Quote Builder Delivery Quality — E2E dados insuficientes)  
 **Branch de referência:** `claude_05/amazing-brahmagupta-0xhdur`  
 **Commit de referência (main):** `74ac36f1` (docs: RELATORIO_CI rev 15 e PENDENCIAS rev 7 — Gate Final ad21b02b + P14 resolvido + P15 — PR #2413)
 
@@ -595,6 +595,23 @@ O spec `e2e/ui/cart-delete-header-popover-exhaustive.spec.ts` aguarda o elemento
 **Pré-existente:** mesmo padrão de P2b/P8/P13/P17 — dados de carrinhos insuficientes no runner.
 
 **Ação necessária:** seed de carrinhos de teste (incluindo carrinho `exh-9`) no runner de CI.
+
+## P22 — Quote Builder Delivery Quality: E2E & Visual Regression falha
+
+**Workflow:** `Quote Builder Delivery Quality`  
+**Run de referência:** [#40118011652](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40118011652) (commit `652a7f14`)  
+**Conclusão:** `failure`  
+**Job:** `quality-gate` → step `🌍 E2E & Visual Regression` (step 5)  
+**Categoria:** Dados de teste insuficientes no runner de CI — pré-existente
+
+**Diagnóstico:**  
+O step `🌍 E2E & Visual Regression` falha dentro do job `quality-gate` do workflow "Quote Builder Delivery Quality". O log tail do job mostra apenas upload de artefato de relatório (`delivery-quality-report`, 455 MB) durante teardown — o erro de E2E ocorreu antes do tail capturado.  
+
+Padrão idêntico a P12/P13/P16/P17/P21: os specs E2E do Quote Builder verificam fluxos de entrega de orçamento (gerar PDF, confirmar entrega, visualizar itens enviados) que dependem de dados de orçamento populados no banco do runner de CI. Sem esses dados, os locators de itens de orçamento não são encontrados e os testes falham por timeout.
+
+**Pré-existente:** não relacionado a nenhuma mudança desta branch. Commit `652a7f14` é squash merge do PR #2411 (fix de sentinel de branch protection) — nenhuma alteração de componentes de quote builder.
+
+**Ação necessária:** seed de dados de orçamentos preenchidos no runner de CI (mesmo que P2b/P8/P13/P17/P21).
 
 ---
 
