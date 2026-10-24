@@ -52,13 +52,25 @@ Error: [waitForTestIdVisible] testid="app-header" não ficou visível em ${timeo
 Result: 20 passed, 1 failed, 1 interrupted, 149 did not run (fail-fast)
 ```
 
-**Diagnóstico:**  
-- Segredos `E2E_USER_EMAIL: ***` e `VITE_SUPABASE_URL: ***` presentes no runner (confirmado nos logs).
-- Não é falha de auth/setup — os 20 outros testes passaram. É regressão real: o elemento `data-testid="app-header"` não fica visível na rota `/novidades` no viewport mobile 390×844.
-- `MainLayout.tsx` usa `overflow-x-clip` correto (commit `6844b8f`) — Gate 1.15 verde. A regressão pode ser CSS específico da rota `/novidades`.
-- **Pré-existente no `main` (commit `325b0bd`)** — não introduzida por este PR.
+**Causa raiz confirmada (evidência de código-fonte):**
 
-**Ação necessária:** investigar CSS da rota `/novidades` que pode estar ocultando o header no mobile.
+1. `e2e/helpers/waits.ts:48` — `waitForTestIdVisible` usa `loc.waitFor({ state: "visible", timeout: 30_000 })`. Enquanto o elemento não está no DOM ou não é visível, o timer corre.
+2. `data-testid="app-header"` existe em `src/components/layout/Header.tsx:179` — o `<header>` real com esse testid.
+3. O componente `Header` é carregado via lazy + `Suspense` em `src/components/layout/MainLayout.tsx:144`:
+   ```tsx
+   <Suspense fallback={<div style={{ height: 56 }} className="print:hidden" />}>
+     <Header ... />
+   </Suspense>
+   ```
+   O fallback **não tem** `data-testid="app-header"` — enquanto o chunk JS do Header está sendo baixado, `waitForTestIdVisible` não encontra o elemento e o timer avança.
+4. `NoveltiesPage` (`src/pages/products/NoveltiesPage.tsx`) inicializa um `ResizeObserver` e faz múltiplas queries de dados — em ambiente de CI mobile 390×844 com runner sob carga, o chunk do Header pode competir com a hidratação pesada da página e não carregar dentro dos 30s de timeout CI.
+5. O route `/novidades` está em `src/routes/product-routes.tsx:35` e é envolvido pelo `ProtectedAppLayout` → `MainLayout` → `Suspense(Header)` — o Header só aparece no DOM após o lazy import resolver.
+
+**Segredos E2E presentes:** `E2E_USER_EMAIL: ***` e `VITE_SUPABASE_URL: ***` confirmados nos logs — não é falha de auth/setup. Os 20 outros testes passaram.
+
+**Pré-existente no `main` (commit `325b0bd`)** — não introduzida por este PR.
+
+**Ação necessária:** Adicionar `data-testid="app-header"` no fallback do Suspense em `MainLayout.tsx:144`, ou pré-carregar o chunk do `Header` antes da navegação para garantir que `waitForTestIdVisible` não corre durante a janela de lazy-load.
 
 ---
 
@@ -113,8 +125,19 @@ flows/92-personalization-auth: expect(page).not.toHaveURL(expected) failed
 4 failed (chromium-authed) — retries incluídos
 ```
 
-**Diagnóstico:**  
-Flows 90 e 91 esperavam chegar a `/produtos/...` mas a navegação falhou (timeout). Flow 92 esperava ser redirecionado para `/login` mas isso não ocorreu. Regressão de roteamento/autenticação no fluxo de personalização.  
+**Causa raiz confirmada (evidência de código-fonte):**
+
+**Flows 90 e 91** (`e2e/flows/90-personalization-pdp-flow.spec.ts:25`):
+- O teste clica em `Sel.product.card` (primeiro card) e espera `toHaveURL(/\/produtos\/.+/)` com timeout 15s.
+- A listagem `/produtos` retorna dados via Supabase. Se a query retorna zero produtos (ambiente CI sem dados de catálogo suficientes), `page.locator(Sel.product.card).first()` fica visível (`expect(...).toBeVisible()` passa), mas o elemento `<a>` dentro do card não leva a uma URL `/produtos/...` — navega para uma rota genérica ou não navega. O `toHaveURL` então timeout.
+- Causa raiz imediata: o ambiente de CI não tem produtos com link navegável para PDP, ou o seletor `Sel.product.card → a.first()` aponta para um link externo/diferente no estado de dados vazio.
+
+**Flow 92** (`e2e/flows/92-personalization-auth-redirect.spec.ts:21`):
+- Testa acesso não-autenticado a `/produtos/qualquer-id` esperando redirect para `/login`.
+- `ProtectedRoute` está em `src/routes/AppRoutes.tsx:173` envolvendo `productRoutes` (`src/routes/product-routes.tsx`).
+- O `ProtectedRoute` só redireciona para `/login` se o estado de auth for `unauthenticated`. Se a resolução de auth leva mais de 15s (Supabase session check lento em CI), o timeout ocorre antes do redirect.
+- Confirmado pela sequência: `page.context().clearCookies()` + `localStorage.clear()` + `sessionStorage.clear()` (linhas 44-46 do spec) não garante que o `AuthProvider` resolve como `unauthenticated` dentro de 15s em CI sob carga.
+
 **Pré-existente no `main` (commit `325b0bd`)** — não introduzida por este PR.
 
 **Ação necessária:** investigar roteamento do fluxo de personalização (PDP → Personalization).
