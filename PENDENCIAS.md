@@ -359,4 +359,36 @@ result={"check":"security-definer-acl","status":"inconclusive","reason":"http-er
 
 ---
 
+---
+
+## P11 — Supabase Linter Gate: TimeoutError intermitente
+
+**Workflow:** `.github/workflows/supabase-linter-gate.yml`  
+**Run:** [#40107758306](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40107758306)  
+**Conclusão:** `failure`  
+**Commit:** `c34ed2b4` (docs-only, 2026-10-24T15:36)  
+**Categoria:** Falha transiente de rede — serviço Supabase linter indisponível no runner
+
+**Erro exato:**
+```
+⚠️  Tentativa 1/3 falhou (TimeoutError) — aguardando 5s...
+⚠️  Tentativa 2/3 falhou (TimeoutError) — aguardando 10s...
+❌ Linter indisponível após 3 tentativas (TimeoutError).
+Process completed with exit code 2.
+```
+
+**Diagnóstico:**  
+O step "Check Security Advisors and live catalog gates" executa `node scripts/check-supabase-linter.mjs` com `SUPABASE_ACCESS_TOKEN` (presente, mascarado no log) e `SUPABASE_PROJECT_REF: doufsxqlfjyuvxuezpln`. Após 3 tentativas com backoff total de 80s, o serviço de lint do Supabase não respondeu — `TimeoutError`, não erro de credencial.
+
+**Intermitente:** Mesmo workflow passou para `90a55243` e `15384162` (commits anteriores) e falhou para `43223...` e agora `c34ed2b4`. Sem mudança de código ou credenciais entre as execuções. Mesma causa-raiz de P5/P9 (API Supabase com timeout no runner de CI).
+
+**Pré-existente:** Não há mudança de código neste commit (docs-only) que pudesse causar essa falha. A falha é transiente de infraestrutura.
+
+**Ação necessária:**  
+- Aguardar disponibilidade do serviço Supabase e re-executar  
+- Ou: configurar timeout maior em `scripts/check-supabase-linter.mjs`  
+- Este workflow é independente do Gate Final (deploy-gates.yml) — não bloqueia merge
+
+---
+
 *Atualizado pela sessão Claude Code — https://claude.ai/code/session_01Nc1nb7PArDnixYvvZssnKy*

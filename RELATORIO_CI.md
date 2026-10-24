@@ -1,12 +1,16 @@
 # Relatório CI — Reparo de Workflows `action_required`
 
-**Data:** 2026-10-24 (rev 9 — sentinel fix: commits diretos `15384162`/`90a55243` sem padrão aceito → corrigido com squash PR `(#NNN)` e `chore(docs):` prefix Regra 6)  
+**Data:** 2026-10-24 (rev 10 — PR #2396 mergeado `c34ed2b4`; Branch Protection Sentinel `success` ✅ para `c34ed2b4`; Deploy Gates run #40107758485 `success` ✅ 15:44; P11 Supabase Linter Gate timeout adicionado a PENDENCIAS.md)  
 **Branch de trabalho:** `claude_05/upbeat-hamilton-5gnz50`  
-**Commit baseline (main antes do PR):** `325b0bd`  
-**Commit final do PR:** `12a7774`  
-**Merge commit em main:** `45023c7` (squash, 2026-10-24T14:00:22Z)  
-**PR:** [#2389](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2389) — **MERGEADO** ✅  
-**Deploy Gates em main (push `45023c7ff8`):** run [#40100571263](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40100571263) — **`success`** ✅ (Gate 2 job `120891902070` `success`; Gate 3 job `120892030879` `success`; Gate Final job `120898759390` `success`)
+**Commit baseline (main antes do PR #2389):** `325b0bd`  
+**Commit final do PR #2389:** `12a7774`  
+**Merge commit em main (PR #2389):** `45023c7` (squash, 2026-10-24T14:00:22Z)  
+**Merge commit em main (PR #2396 — sentinel fix):** `c34ed2b4` (squash, 2026-10-24T15:36:33Z) — `chore(docs):` → Regra 6 ✅  
+**PR principal:** [#2389](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2389) — **MERGEADO** ✅  
+**PR sentinel fix:** [#2396](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2396) — **MERGEADO** ✅  
+**Deploy Gates em main (push `45023c7ff8`):** run [#40100571263](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40100571263) — **`success`** ✅ (Gate 2 job `120891902070`; Gate 3 job `120892030879`; Gate Final job `120898759390`)  
+**Deploy Gates em main (push `c34ed2b4`):** run [#40107758485](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40107758485) — **`success`** ✅ (2026-10-24T15:44:03Z)  
+**Branch Protection Sentinel em main (`c34ed2b4`):** run [#40107758455](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40107758455) — **`success`** ✅
 
 ---
 
@@ -28,6 +32,7 @@
 | sticky-and-scroll (3 browsers) | [#40102371513](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40102371513) | `failure` (pré-existente) | `failure` — pré-existente | PENDENCIAS.md **P8** — snapshot ausente + `aside` não encontrado (dados de teste insuficientes) |
 | Gate 8 — Security & Credential Audit | job `120898723937` | `failure` (pré-existente) | `failure` — pré-existente | PENDENCIAS.md **P9** — HTTP 500 Supabase (mesmo padrão P5) |
 | audit — card parity visual | job `120896976701` | `failure` (pré-existente) | `failure` — pré-existente | PENDENCIAS.md **P10** — `rodapé não alinhado` em `novidades-reposicao-card-parity.spec.ts:163` |
+| Supabase Linter Gate | [#40107758306](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40107758306) | `success` (em `90a55243`) | `failure` — transiente | PENDENCIAS.md **P11** — TimeoutError após 3 tentativas; rede Supabase indisponível no runner |
 
 ---
 
