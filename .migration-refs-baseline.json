@@ -1866,6 +1866,14 @@
       "ref": "supabase/migrations/README.md"
     },
     {
+      "file": "inventario/branches.json",
+      "ref": "qa/migrations-draft/probe_e184_legacy_refs.sql"
+    },
+    {
+      "file": "inventario/branches.json",
+      "ref": "supabase/migrations/20261015150000"
+    },
+    {
       "file": "qa/reports/magazine-exhaustive-validation-2026-07-15.md",
       "ref": "qa/migrations-draft/2026-07-12_magazine_items_unique_product.sql"
     },
