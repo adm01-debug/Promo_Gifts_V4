@@ -1,11 +1,12 @@
 # Relatório CI — Reparo de Workflows `action_required`
 
-**Data:** 2026-10-24 (rev 7 — P2a **CONFIRMADO** `success` ✅; P8/P9/P10 adicionados como bloqueios externos pré-existentes)  
+**Data:** 2026-10-24 (rev 8 — Gate Final `success` em main confirmado no run [#40100571263](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40100571263) — Gate 2/Gate 3/Gate Final todos `success` em `45023c7ff8`)  
 **Branch de trabalho:** `claude_05/upbeat-hamilton-5gnz50`  
 **Commit baseline (main antes do PR):** `325b0bd`  
 **Commit final do PR:** `12a7774`  
 **Merge commit em main:** `45023c7` (squash, 2026-10-24T14:00:22Z)  
-**PR:** [#2389](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2389) — **MERGEADO** ✅
+**PR:** [#2389](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2389) — **MERGEADO** ✅  
+**Deploy Gates em main (push `45023c7ff8`):** run [#40100571263](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40100571263) — **`success`** ✅ (Gate 2 job `120891902070` `success`; Gate 3 job `120892030879` `success`; Gate Final job `120898759390` `success`)
 
 ---
 
@@ -133,7 +134,7 @@ Foram analisados todos os workflows com `conclusion=action_required` e `conclusi
 | Lint untypedFrom | **`success`** ✅ |
 | Policies Baseline | **`success`** ✅ |
 | Required Checks Guard | **`success`** ✅ |
-| Gate Final (deploy-ready) | Em andamento — aguardando jobs E2E/Transactional |
+| Gate Final (deploy-ready) | **`success`** ✅ — run [#40100571263](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40100571263) (job `120898759390`) |
 
 ---
 
