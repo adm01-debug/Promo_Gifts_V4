@@ -1,8 +1,8 @@
 # Pendências CI — Bloqueios Externos
 
-**Atualizado em:** 2026-10-24 (rev 5 — P12/P13 adicionados: swatch→QV e E2E Full User Flows failures de `174c4ea8`; commit de referência atualizado para `174c4ea8`)  
+**Atualizado em:** 2026-10-24 (rev 6 — P14 adicionado: Branch Protection Sentinel failure em `c3a42843`; commit de referência atualizado)  
 **Branch de referência:** `claude_05/upbeat-hamilton-5gnz50`  
-**Commit de referência (main):** `174c4ea8` (chore(docs): RELATORIO_CI.md rev 11 + PENDENCIAS.md rev 4 #2402)
+**Commit de referência (main):** `c3a42843` (docs: RELATORIO_CI.md rev 14 — Gate Final 594fbd40 confirmado)
 
 ---
 
@@ -444,6 +444,28 @@ O check `E2E — Full User Flows (authed)` cobre os specs de fluxos completos (`
 **Pré-existente:** nenhuma alteração em componentes de fluxo de orçamento ou catálogo por esta branch.  
 
 **Ação necessária:** seed de dados de orçamento e catálogo no runner de CI (mesmo que P2b/P2c/P8).
+
+---
+
+## P14 — Branch Protection Sentinel: commit squash sem `(#NNN)` no commit `c3a42843`
+
+**Workflow:** `.github/workflows/branch-protection-sentinel.yml`  
+**Run mais recente:** [#40116816203](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40116816203) (commit `c3a42843`)  
+**Conclusão:** `failure`  
+**Categoria:** Processo — commit_title explícito sem sufixo de PR no squash-merge do PR #2409
+
+**Erro exato:**
+```
+1 commit(s) em push para main sem padrão aceito: c3a4284
+```
+
+**Causa raiz:**  
+O squash-merge do PR #2409 foi executado via `github_merge_pull_request` com `commit_title` explícito que não incluía `(#2409)`. O sentinel aceita squash merges apenas quando a mensagem termina em `(#NNN)`. O commit `c3a42843` tem título `docs: RELATORIO_CI.md rev 14 — Gate Final 594fbd40 confirmado + test:ci-core 957 testes` sem o sufixo.
+
+**Resolução automática:**  
+O próximo PR squash-mergeado sem `commit_title` explícito gerará commit com `(#NNNN)` ao final — sentinel passará nessa execução. Este item se auto-resolve quando a próxima execução do sentinel confirmar `success`.
+
+**Ação necessária pelo PO:** Nenhuma — o próximo merge de PR em `main` via squash sem commit_title customizado restaurará o sentinel para `success`.
 
 ---
 
