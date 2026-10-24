@@ -16,7 +16,7 @@
 | P08 (DB) | idempotency_key workspace_notifications | JÁ LIBERADO | ⏳ Aguardando merge PR #2441 | migration `20261024180002` em PR #2441 |
 | P08 (EF) | send-notification upsert idempotente | AUTÔNOMA | ⏳ Aguardando merge PR #2441 | `send-notification/index.ts` em PR #2441 |
 | P19 (complemento) | auto-block-offenders 5→15 min | JÁ LIBERADO | ⏳ Aguardando merge PR #2441 | migration `20261024180003` em PR #2441 |
-| P01 | auth header image-dimensions-backfill | JÁ LIBERADO | ⏳ Aguardando merge PR #2442 | migration `20261024190001` em PR #2442 |
+| P01 | auth header image-dimensions-backfill | JÁ LIBERADO | ⏳ Aguardando merge PR #2445 | migration `20261024190001` em PR #2445 |
 | P06 | security_invoker views | APROVAÇÃO | 🔓 PR #2443 aberto | aguardando PO |
 | P09 | ledger migrations repair | APROVAÇÃO | 🔓 PR #2443 aberto | aguardando PO |
 | P14 | RLS auth.uid() initplan | APROVAÇÃO | 🔓 PR #2443 aberto | aguardando PO |
@@ -77,7 +77,8 @@ SELECT jobid, jobname, LEFT(command,500) FROM cron.job WHERE jobid=222;
 
 **Migration:** `supabase/migrations/20261024180001_fk_indexes_p02.sql`
 **PR #2441:** https://github.com/adm01-debug/Promo_Gifts_V4/pull/2441
-**Índices:** `idx_category_ancestors_descendant_id`, `idx_eco_material_config_material_id`, `idx_feminine_color_config_color_group_id`, `idx_kit_quote_requests_quote_id`, `idx_kit_save_requests_kit_id`, `idx_product_packaging_product_id`
+**Índices criados (2):** `idx_kit_quote_requests_quote_id`, `idx_kit_save_requests_kit_id`
+**Índices omitidos (4 — duplicam PK existente):** `category_ancestors.descendant_id`, `eco_material_config.material_id`, `feminine_color_config.color_group_id`, `product_packaging.product_id`
 **Pós-merge:** Aplicar via `db-apply-migration.yml` com version `20261024180001`
 
 ---
@@ -103,7 +104,7 @@ SELECT jobid, jobname, LEFT(command,500) FROM cron.job WHERE jobid=222;
 ## §P01 — auth header image-dimensions-backfill
 
 **Migration:** `supabase/migrations/20261024190001_cron_auth_p01_image_dimensions_backfill.sql`
-**PR #2442:** (a ser criado nesta sessão)
+**PR #2445:** https://github.com/adm01-debug/Promo_Gifts_V4/pull/2445
 **Detalhe:** job 235 chama `/functions/v1/run-script` sem auth. Migration adiciona `x-cron-secret` via `get_edge_function_secret('CRON_SECRET')` e substitui URL hardcoded por `get_edge_functions_base_url()`.
 **Nota:** `run-script` não está deployada — auth guard entrará em vigor ao deploy.
 **Pós-merge:** Aplicar via `db-apply-migration.yml` com version `20261024190001`
