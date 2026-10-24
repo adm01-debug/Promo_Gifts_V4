@@ -1,0 +1,4 @@
+# Baseline TypeScript — main@652a7f14
+# Data: 2026-10-24
+# Comando: npx tsc --noEmit 2>&1 | grep "^src/" | wc -l
+ERROS_TS_MAIN=0
