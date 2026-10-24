@@ -1,6 +1,6 @@
 # Rastreamento draft → migration → DB
 
-_Atualizado em 2026-10-24T23:30:00.000Z · 11 rascunho(s) · **sem acesso ao DB** (PGHOST ausente)._
+_Atualizado em 2026-10-24T23:42:23.445Z · 11 rascunho(s) · **sem acesso ao DB** (PGHOST ausente)._
 
 Gerado por `scripts/map-drafts-to-migrations.mjs`. Não editar à mão.
 
@@ -28,8 +28,8 @@ Gerado por `scripts/map-drafts-to-migrations.mjs`. Não editar à mão.
 | `2026-06-20_revoke_secdef_from_authenticated.sql` | `revoke_secdef_from_authenticated`<br>`revoke` `secdef` `from` `authenticated` | `20260626181632_m4_ext_revoke_authenticated_from_secdef_deprecated_20260626.sql` — **100%**<br>&nbsp;&nbsp;↳ bateu: `revoke` `secdef` `from` `authenticated`<br><br>`20260512222200_t28_pilot_revoke_admin_security_definer_from_anon_authenticated.sql` — **75%**<br>&nbsp;&nbsp;↳ bateu: `revoke` `from` `authenticated` · faltou: ~~`secdef`~~<br><br>`20260605014545_revoke_fn_process_raw_v2_execute_from_anon_authenticated.sql` — **75%**<br>&nbsp;&nbsp;↳ bateu: `revoke` `from` `authenticated` · faltou: ~~`secdef`~~ | ❔ PGHOST ausente |
 | `2026-06-27_quotes_status_allow_cancelled.sql` | `quotes_status_allow_cancelled`<br>`quotes` `status` `allow` `cancelled` | `20260618102416_quotes_add_cancelled_status.sql` — **75%**<br>&nbsp;&nbsp;↳ bateu: `quotes` `status` `cancelled` · faltou: ~~`allow`~~ | ❔ PGHOST ausente |
 | `2026-07-06_crm_callback_events.sql` | `crm_callback_events`<br>`crm` `callback` `events` | `20260706181356_crm_callback_events.sql` — **🎯 slug exato**<br>&nbsp;&nbsp;↳ bateu: `crm` `callback` `events` | ❔ PGHOST ausente |
-| `2026-07-13_secdef_revoke_webhook_locks.sql` | `secdef_revoke_webhook_locks`<br>`secdef` `revoke` `webhook` `locks` | `20260713_001_secdef_revoke_webhook_locks.sql` — **🎯 slug exato**<br>&nbsp;&nbsp;↳ bateu: `secdef` `revoke` `webhook` `locks`<br><br>`20260713154845_secdef_revoke_webhook_locks.sql` — **🎯 slug exato**<br>&nbsp;&nbsp;↳ bateu: `secdef` `revoke` `webhook` `locks` | ❔ PGHOST ausente |
-| `2026-07-13_secdef_revoke_webhook_locks_ROLLBACK.sql` | `secdef_revoke_webhook_locks_ROLLBACK`<br>`secdef` `revoke` `webhook` `locks` `ROLLBACK` | `20260713_001_secdef_revoke_webhook_locks.sql` — **80%**<br>&nbsp;&nbsp;↳ bateu: `secdef` `revoke` `webhook` `locks` · faltou: ~~`ROLLBACK`~~<br><br>`20260713154845_secdef_revoke_webhook_locks.sql` — **80%**<br>&nbsp;&nbsp;↳ bateu: `secdef` `revoke` `webhook` `locks` · faltou: ~~`ROLLBACK`~~ | ❔ PGHOST ausente |
+| `2026-07-13_secdef_revoke_webhook_locks.sql` | `secdef_revoke_webhook_locks`<br>`secdef` `revoke` `webhook` `locks` | `20260713154845_secdef_revoke_webhook_locks.sql` — **🎯 slug exato**<br>&nbsp;&nbsp;↳ bateu: `secdef` `revoke` `webhook` `locks` | ❔ PGHOST ausente |
+| `2026-07-13_secdef_revoke_webhook_locks_ROLLBACK.sql` | `secdef_revoke_webhook_locks_ROLLBACK`<br>`secdef` `revoke` `webhook` `locks` `ROLLBACK` | `20260713154845_secdef_revoke_webhook_locks.sql` — **80%**<br>&nbsp;&nbsp;↳ bateu: `secdef` `revoke` `webhook` `locks` · faltou: ~~`ROLLBACK`~~ | ❔ PGHOST ausente |
 | `2026-07-23_get_edge_invoke_summary.sql` | `get_edge_invoke_summary`<br>`get` `edge` `invoke` `summary` | _(nenhum match)_ | 🟡 não promovido |
 | `2026-09-09_magazine_rpc_only_contract.sql` | `magazine_rpc_only_contract`<br>`magazine` `rpc` `only` `contract` | _(nenhum match)_ | 🟡 não promovido |
 | `probe_e184_legacy_refs.sql` | `e184_legacy_refs`<br>`e184` `legacy` `refs` | _(nenhum match)_ | 🟡 não promovido |
