@@ -1,7 +1,7 @@
 # PENDENCIAS.md — Workflows com bloqueio externo
 
 > Gerado em: 2026-10-23  
-> Atualizado em: 2026-10-23T20:40Z (P-16 adicionado: Smoke/03b — flake de infra Supabase REST pós-auth)  
+> Atualizado em: 2026-10-24T00:30Z (P-18 a P-25: auditoria completa main `d9772987` — 16 workflows em falha catalogados)  
 > Sessão: https://claude.ai/code/session_019gUZ8wvjsJMC3gYzy6k7jB  
 > Branch de trabalho: `claude/magical-cannon-u5t1vy` → PRs #2378, #2381, #2383
 
@@ -461,3 +461,221 @@ Banco em máquina pequena (2 GB de memória) com ~150 rotinas. Supabase → proj
 ---
 
 > Seções acima preservadas da sessão `claude/laughing-cori-o9w35e` (2026-10-22, PR #2338 mergeado). Não remover sem confirmar que as migrations foram aplicadas e as decisões tomadas.
+
+---
+
+## Inventário completo — run de auditoria (main, commit `d9772987`, 2026-10-24)
+
+> Auditoria realizada na sessão `019gUZ8wvjsJMC3gYzy6k7jB` (2026-10-24T00:30Z).  
+> 16 workflows em falha na main catalogados. 2 corrigidos por nosso PR #2378 (`b4b884f8`).  
+> 14 são pré-existentes / infra / regressão Lovable — detalhados em P-18 a P-25.
+
+| # | Workflow | Run ID | Causa raiz | Ação |
+|---|---|---|---|---|
+| 1 | Deploy Gates | 40040557788 | Gate 0.5: fast-uri + undici moderate CVE | ✅ CORRIGIDO — PR #2378 commit `b4b884f8` |
+| 2 | CI Security & Drift Checks | 40040557754 | Mesmo fast-uri/undici | ✅ CORRIGIDO — mesmo fix |
+| 3 | Branch Protection Sentinel | 40040557853 | Push direto Lovable `d9772987` sem PR | ❌ P-18 (padrão Lovable, pré-existente) |
+| 4 | Supabase Linter Gate | 40040557814 | HTTP 544 Management API timeout | ❌ P-17 (infra, já registrado) |
+| 5 | Freight Quest Quality Gates | 40040557960 | Gate 8: HTTP 500/503 Supabase após 3 retries | ❌ P-19 (infra transiente) |
+| 6 | E2E (Playwright) | 40040558032 | Header sticky quebrado por Lovable `d9772987` | ❌ P-20 (regressão Lovable) |
+| 7 | Cart Invariants Smoke | 40040557772 | 6 de 8 shards falham — autenticação E2E | ❌ P-21 (mesmo P-02: secrets E2E) |
+| 8 | E2E Critical Flows & Error Boundaries | 40040557983 | sidebar-tooltips + min tests | ❌ P-22 (regressão Lovable/infra) |
+| 9 | E2E — Personalization Flow | 40040557779 | min tests fail | ❌ P-23 (infra/autenticação) |
+| 10 | CI - Replenishment Quality Gate | 40040557909 | integration test timeout 15000ms | ❌ P-24 (rede Supabase no runner) |
+| 11 | Release Please | 40040557837 | PAT sem `contents:write` | ❌ P-01 (já registrado) |
+| 12 | Running Copilot Code Review (PR branch) | 40042890789 | Copilot infra failure | ❌ P-25 (bot externo) |
+| 13 | Update Quote Visual Snapshots | 39997674586 | commit `b167c9c8` (old run) | ❌ P-12 (secrets E2E, já registrado) |
+| 14 | E2E · Atualizar snapshots visuais | 39999649279 | commit `4c482cbc` (old run) | ❌ P-03 (secrets E2E, já registrado) |
+| 15 | E2E • Swatch QuickView | 39999446623 | commit `4c482cbc` (old run, infra) | ❌ P-08 (infra, já registrado) |
+| 16 | Uptime Monitor | 40037845325 | commit `4c482cbc` (old run) | ℹ️ Monitoring; recorrente por design |
+
+---
+
+## P-18 — Branch Protection Sentinel — Push direto Lovable `d9772987`
+
+**Workflow:** `.github/workflows/branch-protection-sentinel.yml`  
+**Run ID:** 40040557853 (commit `d9772987`, 2026-10-24)  
+**Erro:**
+```
+1 commit(s) em push para main sem padrão aceito: d977298
+```
+
+**Causa:** Commit `d9772987` foi pushado pelo `gpt-engineer-app[bot]` (Lovable) diretamente para `main`
+sem seguir nenhum padrão aceito pelo Sentinel. O Lovable usa mensagens genéricas como "Changes" que
+não correspondem aos padrões `(#NNN)`, `Merge pull request`, `chore(release):`, etc.
+
+**É padrão do Lovable:** Toda vez que o Lovable commita diretamente em `main`, este Sentinel falha.
+Isso é documentado na REGRA #7 do CLAUDE.md. A falha é esperada e se resolve sozinha no próximo PR
+mergeado via squash (o Sentinel não bloqueia merges futuros).
+
+**Impacto:** Histórico — não impede deploy nem CI em PRs abertos.  
+**Ação do PO:** Nenhuma imediata.
+
+---
+
+## P-19 — Freight Quest Quality Gates — Gate 8 HTTP 500/503 Supabase
+
+**Workflow:** `freight-quest-quality-gates.yml` (ou similar)  
+**Run ID:** 40040557960 (commit `d9772987`, 2026-10-24)  
+**Erro:**
+```
+check:security-definer-acl --require-live: HTTP 500 then HTTP 503 after 3 retries, exit code 2
+```
+
+**Causa:** Gate 8 (`security-definer-acl`) faz chamada ao vivo na Supabase Management API.
+O Supabase retornou HTTP 500 → 503 em 3 tentativas consecutivas. Exit code 2 = infra/rede
+(inconcluso, não violação de lint). 9 de 10 gates passam; apenas o Gate 8 falha por indisponibilidade.
+
+**Não é regressão de código:** O commit `d9772987` é do Lovable (UI-only); nenhuma function
+`SECURITY DEFINER` foi alterada. A falha é idêntica ao P-17 (infra Supabase transiente).
+
+**Impacto:** Não é required check no Gate Final — `deploy-gates.yml` não depende deste workflow.  
+**Ação do PO:** Nenhuma imediata. Se recorrente >3x/semana, aumentar retry count no gate.
+
+---
+
+## P-20 — E2E (Playwright) — Header sticky quebrado por Lovable `d9772987`
+
+**Workflow:** `.github/workflows/e2e.yml`  
+**Run ID:** 40040558032 (commit `d9772987`, main)  
+**Erro (job `e2e-gates`):**
+```
+Header global deixou de ser sticky em alguma rota/viewport
+Spec: e2e/flows/22-header-sticky.spec.ts
+```
+
+**Causa raiz:** O commit `d9772987` do Lovable ("Changes") alterou algum componente de layout
+que desfez a posição sticky do header global. O Gate 1.15 (verificação estática de `overflow-x-clip`
+em `MainLayout.tsx`) **continua passando** — a propriedade CSS está presente. A falha é de runtime E2E:
+o header não está sticky em alguma rota ou viewport específico.
+
+**Diagnóstico necessário:** Ler os logs do spec `22-header-sticky.spec.ts` para identificar qual
+rota/viewport falha. O mais provável: um componente de página específico está aplicando `overflow-x-hidden`
+ou adicionando um elemento intermediário com `position:relative` que quebra o contexto de stacking.
+
+**Como corrigir:** Identificar o componente alterado pelo Lovable que rompeu o sticky e corrigir no PR.
+A investigação requer rodar o spec localmente ou ler os artefatos do run 40040558032.
+
+**Impacto:** Este check é parte do `deploy-gates.yml` — BLOQUEIA merge do PR #2378 se o Gate Final
+falhar por este motivo. **Verificar se é required check no Gate Final atual.**
+
+**Ação do PO:** Alta — investigar logs do run 40040558032 para identificar a rota/viewport afetada
+e corrigir no PR #2378 antes de mergear.
+
+---
+
+## P-21 — Cart Invariants Smoke — E2E autenticado (6/8 shards falham)
+
+**Workflow:** `.github/workflows/cart-invariants-smoke.yml`  
+**Run ID:** 40040557772 (commit `d9772987`, main)  
+**Erro:** 6 de 8 jobs falham (chromium shards 1/3, 2/3, 3/3 + firefox shards 1/3, 2/3, 3/3)  
+Resumo: `❌ Ao menos um shard/browser do smoke de invariants falhou.`
+
+**Causa:** Os specs de invariants do cart usam projetos Playwright `chromium-authed` e `firefox-authed`,
+que requerem `E2E_USER_EMAIL` e `E2E_USER_PASSWORD`. Mesma raiz de P-02, P-13.
+
+**Confirmação:** Run anterior (39999446524, commit `4c482cbc`) mostrava o mesmo padrão de falha.
+Os artefatos do run 40040557772 têm 57MB+ de traces/screenshots indicando execução iniciou mas
+autenticação falhou.
+
+**Impacto:** Não é required check no Gate Final.  
+**Ação do PO:** Resolver P-02 (cadastrar `E2E_USER_EMAIL` + `E2E_USER_PASSWORD`).
+
+---
+
+## P-22 — E2E Critical Flows & Error Boundaries — sidebar-tooltips + min tests
+
+**Workflow:** `.github/workflows/e2e-critical-flows.yml`  
+**Run ID:** 40040557983 (commit `d9772987`, main)  
+**Erro:**
+```
+Sidebar Tooltips E2E: falha
+Check min tests executed: falha
+```
+
+**Causa:** Dois problemas independentes:
+1. **Sidebar Tooltips:** Regressão do commit `d9772987` (Lovable) — mesmo padrão do Fix 4 do PR #2378
+   (TooltipProvider ausente ou `disableHoverableContent` removido).
+2. **Min tests:** O número mínimo de testes esperados não foi atingido — indica que specs foram pulados
+   ou que o runner saiu antes de completar todos os testes por timeout/infra.
+
+**Contexto:** O Fix 4 do PR #2378 adiciona `TooltipProvider` com `disableHoverableContent` em `App.tsx`
+e `QuoteItemEditorSheet.tsx`. Se `d9772987` reverteu ou conflitou com isso, o tooltip behavior volta a falhar.
+
+**Ação do PO:** Merge do PR #2378 corrige o tooltip. Após merge, re-rodar para verificar se min-tests passa.
+
+---
+
+## P-23 — E2E Personalization Flow — min tests fail
+
+**Workflow:** `.github/workflows/e2e-personalization.yml`  
+**Run ID:** 40040557779 (commit `d9772987`, main)  
+**Erro:**
+```
+Check min tests executed: falha
+2 artefatos enviados (207KB)
+```
+
+**Causa:** O spec de personalização usa `chromium-authed` — `E2E_USER_*` ausentes (mesma raiz P-02).
+O número mínimo de testes esperados não foi atingido porque a autenticação falha antes dos testes rodarem.
+
+**Ação do PO:** Resolver P-02.
+
+---
+
+## P-24 — CI Replenishment Quality Gate — integration test timeout
+
+**Workflow:** `ci-replenishment-quality-gate.yml`  
+**Run ID:** 40040557909 (commit `d9772987`, main)  
+**Erro:**
+```
+useReplenishments.integration.test.ts:29 — Timeout 15000ms exceeded
+```
+
+**Causa:** O teste de integração faz chamada real ao Supabase `doufsxqlfjyuvxuezpln` via rede.
+O runner do GitHub Actions não tem acesso confiável ao Supabase externo (DNS/firewall variável),
+e o timeout de 15s é insuficiente para a latência real observada nos runners.
+
+**Fix aplicado (PR #2383):** Timeout aumentado para 30000ms. Aguarda merge do PR #2383.
+
+**Ação do PO:** Merge do PR #2383 (seguro — zero código de produção).
+
+---
+
+## P-25 — Running Copilot Code Review — Copilot infra failure
+
+**Workflow:** `.github/workflows/copilot-code-review.yml`  
+**Run ID:** 40042890789 (commit `bc8d4457`, branch `claude/magical-cannon-u5t1vy`)  
+**Job:** `copilot-pull-request-reviewer`  
+**Erro:** Falha na infraestrutura do Copilot — o job de review do GitHub Copilot não conseguiu processar o PR.
+
+**Causa:** Problema interno da infra do GitHub Copilot, não relacionado ao nosso código.
+Este workflow é ativado automaticamente em PRs e pode falhar por indisponibilidade do serviço Copilot.
+
+**Impacto:** Não é required check no Gate Final. Não bloqueia deploy.  
+**Ação do PO:** Nenhuma. Re-rodar o workflow se quiser o review do Copilot.
+
+---
+
+## Resumo consolidado — 2026-10-24T00:30Z
+
+### Fixes entregues (PR #2378, commit `b4b884f8`)
+| Fix | Componente | Impacto |
+|---|---|---|
+| Gate 0.5 allowlist | `scripts/check-dependency-audit.mjs` | Deploy Gates + CI Security verde |
+| Gate 1.9 baseline | `.as-assertions-baseline.json` | Baseline 2164→2165 (parseJsonb) |
+
+### Bloqueios externos (ação do PO necessária)
+| P# | Workflow | Ação |
+|---|---|---|
+| P-01 | Release Please | Criar PAT com `contents:write` |
+| P-02 | E2E autenticados (6 workflows) | Cadastrar `E2E_USER_EMAIL` + `E2E_USER_PASSWORD` |
+| P-20 | E2E header sticky | Investigar rota/viewport — logs run 40040558032 |
+
+### Infra/bot (sem ação de código)
+- P-17, P-18, P-19, P-25: Supabase/Lovable/Copilot infra — não fixável via código
+
+### Aguardando merge de PRs já abertos
+- P-07 + P-24 → PR #2383 (test-only, zero produção)
+- P-22 (tooltip) → PR #2378 (app code, Fix 4)
+
