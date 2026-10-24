@@ -1,6 +1,6 @@
 # Relatório CI — Reparo de Workflows `action_required`
 
-**Data:** 2026-10-24 (rev 5 — fix P2a commitado em `f31d1a1b`; P2b/P2c/P5/P6/P7 documentados como bloqueios externos definitivos)  
+**Data:** 2026-10-24 (rev 6 — P8/P9/P10 adicionados como bloqueios externos pré-existentes; `e2e-gates` em andamento aguardando confirmação de P2a)  
 **Branch de trabalho:** `claude_05/upbeat-hamilton-5gnz50`  
 **Commit baseline (main antes do PR):** `325b0bd`  
 **Commit final do PR:** `12a7774`  
@@ -24,6 +24,9 @@
 | 50+ runs históricos (`release-please[bot]`) | múltiplos | `action_required` | `action_required` — não corrigível | PENDENCIAS.md **P4** — registros históricos retroativos |
 | Smoke — HTTP against supabase functions serve | [#40099851891](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40099851891) | `failure` (pré-existente) | `failure` — pré-existente | PENDENCIAS.md **P6** — `toomanyrequests: Data limit exceeded` (ECR rate limit) |
 | Supabase Preview | (check externo bot) | `failure` (pré-existente) | `failure` — pré-existente | PENDENCIAS.md **P7** — `column "level" does not exist (SQLSTATE 42703)` em `analytics.categories_tree_visual` |
+| sticky-and-scroll (3 browsers) | [#40102371513](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40102371513) | `failure` (pré-existente) | `failure` — pré-existente | PENDENCIAS.md **P8** — snapshot ausente + `aside` não encontrado (dados de teste insuficientes) |
+| Gate 8 — Security & Credential Audit | job `120898723937` | `failure` (pré-existente) | `failure` — pré-existente | PENDENCIAS.md **P9** — HTTP 500 Supabase (mesmo padrão P5) |
+| audit — card parity visual | job `120896976701` | `failure` (pré-existente) | `failure` — pré-existente | PENDENCIAS.md **P10** — `rodapé não alinhado` em `novidades-reposicao-card-parity.spec.ts:163` |
 
 ---
 

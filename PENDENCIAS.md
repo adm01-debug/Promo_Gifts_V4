@@ -285,4 +285,78 @@ Ver REGRA #8 do CLAUDE.md para processo de migration.
 
 ---
 
+## P8 — sticky-and-scroll (3 browsers): sidebar `aside` não encontrado + snapshot ausente
+
+**Workflow:** E2E (Playwright) — job `sticky-and-scroll (chromium/firefox/webkit-public)`
+**Runs:** [#40102371513](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40102371513)
+**Conclusão:** `failure` (3 browsers)
+**Categoria:** Dados de teste insuficientes + snapshot nunca commitado — pré-existente
+
+**Erros exatos:**
+```
+Error: locator('aside').first() — element not found
+  at quote-view-sticky-sidebar.spec.ts:26
+
+Error: A snapshot doesn't exist at ...sidebar-after-scroll-chromium-public-linux.png
+  (snapshot must be committed to the repo)
+
+FAIL: MainLayout root e html/body NÃO usam overflow-x:hidden
+FAIL: sticky do aside continua ativo após rolar o conteúdo
+```
+
+**Diagnóstico:**
+- `aside not found`: testes de sidebar usam uma view de orçamento que exige dados no CI DB — mesmo padrão `[E108]` de P2b
+- `snapshot missing`: arquivo `.png` de baseline nunca foi commitado — não pode ser causado por mudança de código (pré-existente por definição)
+- `overflow-x:hidden`: detectado em algum ancestral da sidebar na view de orçamento — não relacionado ao `overflow-x:clip` de `MainLayout.tsx:112` (inalterado neste PR)
+- Não relacionado à mudança `position: fixed` no fallback do Suspense do Header (fallback só existe durante carregamento do chunk JS)
+
+**Pré-existente:** confirmado — snapshot ausente não pode ser causado por código; `aside not found` = dados faltantes no runner CI.
+
+**Ação necessária:** seed de dados de orçamento no runner + commitar snapshots de baseline.
+
+---
+
+## P9 — Gate 8 — Security & Credential Audit: HTTP 500 Supabase
+
+**Workflow:** `freight-quest.yml` (Gate 8)
+**Job ID:** 120898723937
+**Conclusão:** `failure`
+**Categoria:** Conectividade com Supabase no runner — mesmo padrão de P5
+
+**Erro exato:**
+```
+[security-definer-acl] inconclusive: HTTP 500 após 3 tentativas — serviço Supabase indisponível
+result={"check":"security-definer-acl","status":"inconclusive","reason":"http-error-exhausted","httpStatus":500}
+```
+
+**Diagnóstico:** `check:security-definer-acl --require-live` faz query ao Supabase `doufsxqlfjyuvxuezpln` e recebeu HTTP 500 após 3 tentativas. Mesmo padrão de P5 (Gate 2.5 live check HTTP 400). Não relacionado a código deste PR.
+
+**Pré-existente:** não introduzido por este PR (nenhum arquivo de workflow/script alterado).
+
+**Ação necessária:** mesmo que P5 — verificar `SUPABASE_ACCESS_TOKEN` no runner.
+
+---
+
+## P10 — audit: card parity visual — rodapé não alinhado
+
+**Workflow:** `catalog-card-parity.yml` (audit)
+**Job ID:** 120896976701
+**Conclusão:** `failure`
+**Categoria:** Teste visual E2E — pré-existente
+
+**Erro exato:**
+```
+[chromium-authed] › e2e/catalog/novidades-reposicao-card-parity.spec.ts:163:3
+  › rodapé (preço/estoque) está alinhado ao bottom em ambos os módulos
+1 failed
+```
+
+**Diagnóstico:** Teste visual de alinhamento de rodapé em cards Novidades/Reposição. Não relacionado a nenhum arquivo alterado neste PR (`MainLayout.tsx`, `RELATORIO_CI.md`, `PENDENCIAS.md`, arquivos de teste unitário).
+
+**Pré-existente:** spec de card parity não foi modificada; nenhuma mudança de CSS de card neste PR.
+
+**Ação necessária:** verificar alinhamento de rodapé nos componentes de card de produto.
+
+---
+
 *Atualizado pela sessão Claude Code — https://claude.ai/code/session_01Nc1nb7PArDnixYvvZssnKy*
