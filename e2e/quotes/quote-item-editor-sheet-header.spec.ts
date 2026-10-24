@@ -319,6 +319,13 @@ for (const vp of VIEWPORTS) {
       await expect(confirmDialog).toBeVisible();
       await expect(confirmDialog).toContainText(/n[ãa]o salvas/i);
 
+      // Aguarda a animação zoom-in-95 (200ms) terminar antes de medir a largura.
+      // boundingBox() usa getBoundingClientRect() que inclui transforms CSS:
+      // durante scale(0.95→1.0) retorna 340.1px em vez de 358px.
+      await confirmDialog.evaluate(async (el) => {
+        await Promise.all(el.getAnimations().map((a) => a.finished));
+      });
+
       const dialogBox = await confirmDialog.boundingBox();
       expect(dialogBox).not.toBeNull();
       if (dialogBox) {
