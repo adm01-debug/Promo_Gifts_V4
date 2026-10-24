@@ -83,10 +83,22 @@ export function QuoteItemEditorSheet({
         className="flex w-full flex-col gap-0 p-0 sm:max-w-[430px]"
         data-testid="quote-item-editor-sheet"
         aria-label="Editor de item do orçamento"
+        onKeyDownCapture={(e) => {
+          // Capture-phase intercept: fires before native element handling and before
+          // Radix's document listener. Works cross-browser including Firefox, where
+          // input elements may absorb ESC without propagating to Radix's layer system.
+          // ConfirmDialog and other portal dialogs capture ESC in their own subtree
+          // before this fires, so nested dialogs are not affected.
+          if (e.key === 'Escape' && hasUnsavedChanges) {
+            e.stopPropagation();
+            e.preventDefault();
+            setConfirmOpen(true);
+          }
+        }}
       >
         <SheetHeader className="shrink-0 border-b border-border/50 px-1.5 py-1.5">
           <div className="flex items-center justify-between gap-2">
-            <TooltipProvider delayDuration={200}>
+            <TooltipProvider delayDuration={200} disableHoverableContent>
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Button
@@ -106,7 +118,7 @@ export function QuoteItemEditorSheet({
                 </TooltipTrigger>
                 <TooltipContent side="bottom" className="max-w-xs text-xs">
                   Confirma as escolhas deste produto (cor, quantidade, personalização) e fecha o
-                  editor. Não grava o orçamento no banco — use “Salvar Rascunho” no resumo para isso.
+                  editor. Não grava o orçamento no banco — use "Salvar Rascunho" no resumo para isso.
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
@@ -175,4 +187,3 @@ export function QuoteItemEditorSheet({
     </Sheet>
   );
 }
-
