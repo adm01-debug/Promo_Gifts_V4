@@ -1,6 +1,6 @@
 # Relatório CI — Reparo de Workflows `action_required`
 
-**Data:** 2026-10-24 (rev 18 — HEAD `74ac36f1`; workflows falhando em main: 3 (P1/P11/P2c); P16–P21 documentados em PENDENCIAS.md; Gate Final = success ✅; P20 fix: vitest.config.ts exclui test node:test; ci-security-drift.yml usa node --test)  
+**Data:** 2026-10-24 (rev 19 — HEAD `74ac36f1`; workflows falhando em main: 3 (P1/P11/P2c); P16–P22 documentados em PENDENCIAS.md; Gate Final = success ✅; P20 fix: vitest.config.ts exclui test node:test; ci-security-drift.yml usa node --test; P22 Quote Builder Delivery Quality adicionado)  
 **Branch de trabalho:** `claude_05/amazing-brahmagupta-0xhdur`  
 **Commit baseline (main antes do PR #2389):** `325b0bd`  
 **Commit final do PR #2389:** `12a7774`  
