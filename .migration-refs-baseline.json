@@ -1867,10 +1867,6 @@
     },
     {
       "file": "inventario/branches.json",
-      "ref": "qa/migrations-draft/probe_e184_legacy_refs.sql"
-    },
-    {
-      "file": "inventario/branches.json",
       "ref": "supabase/migrations/20261015150000"
     },
     {

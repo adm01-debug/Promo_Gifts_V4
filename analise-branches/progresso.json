@@ -1,0 +1,49 @@
+{
+  "versao": "2.0",
+  "data_analise": "2026-10-24",
+  "sha_main_baseline": "652a7f14",
+  "sessao": "claude_05/youthful-goodall-kihjbv",
+  "fase": "CONCLUIDA",
+  "branches_analisadas": {
+    "total": 53,
+    "top_C_G": 9,
+    "descartaveis_ABF": 44
+  },
+  "dossies": {
+    "total": 9,
+    "concluidos": 9,
+    "lista": [
+      {"branch": "claude/fix-contract-mag-reader-261019-2110", "veredito": "AGUARDANDO APROVAÇÃO", "arquivo": "dossies/fix-contract-mag-reader-261019-2110.md"},
+      {"branch": "claude/fix-sync-log-ci-261019-1730", "veredito": "AGUARDANDO APROVAÇÃO", "arquivo": "dossies/fix-sync-log-ci-261019-1730.md"},
+      {"branch": "claude/fix-rollback-261019-1637", "veredito": "AGUARDANDO APROVAÇÃO", "arquivo": "dossies/fix-rollback-261019-1637.md"},
+      {"branch": "claude/fix-gitleaks-gate-261019-1800", "veredito": "AGUARDANDO APROVAÇÃO", "arquivo": "dossies/fix-gitleaks-gate-261019-1800.md"},
+      {"branch": "claude/chore-migrations-sync-log-261019-1600", "veredito": "AGUARDANDO APROVAÇÃO", "arquivo": "dossies/chore-migrations-sync-log-261019-1600.md"},
+      {"branch": "claude/fix-audit-acl-regrole-261024-1635", "veredito": "AGUARDANDO APROVAÇÃO", "arquivo": "dossies/fix-audit-acl-regrole-261024-1635.md"},
+      {"branch": "claude/security-brechas-e30-e40-e18-2026-10-22", "veredito": "AGUARDANDO APROVAÇÃO", "arquivo": "dossies/security-brechas-e30-e40-e18-2026-10-22.md"},
+      {"branch": "claude/gifted-dijkstra-uojt52", "veredito": "FECHAR", "arquivo": "dossies/gifted-dijkstra-uojt52.md"},
+      {"branch": "devin/probe-e184-legacy-refs", "veredito": "RESGATAR PARCIAL", "arquivo": "dossies/devin-probe-e184-legacy-refs.md"}
+    ]
+  },
+  "merges_autonomos": {
+    "total": 0,
+    "motivo": "Todas as 7 branches AGUARDANDO APROVAÇÃO tocam banco/edge/workflows. gifted-dijkstra=FECHAR. devin=RESGATAR PARCIAL."
+  },
+  "entregaveis": {
+    "baseline/migrations_prod_antes.json": "OK",
+    "baseline/edge_functions_prod_antes.json": "OK",
+    "baseline/typecheck.txt": "OK",
+    "baseline/lint.txt": "OK",
+    "confirmacao_ABF.md": "OK",
+    "cruzamento-supabase.md": "OK",
+    "RELATORIO_BRANCHES.md": "OK",
+    "progresso.json": "OK"
+  },
+  "producao_imutavel": {
+    "migrations_antes": "20261022203935",
+    "migrations_depois": "20261022203935",
+    "edge_functions_antes": 151,
+    "edge_functions_depois": 151,
+    "ddl_aplicada": false,
+    "deploy_realizado": false
+  }
+}

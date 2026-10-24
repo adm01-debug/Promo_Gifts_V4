@@ -1,27 +1,14 @@
-nr,titulo,veredito,estado,branch,arquivos,adicoes,delecoes,sha_merge,gate_final,motivo
-2290,Bump @eslint/js 9->10,FECHAR,fechada,dependabot/npm_and_yarn/eslint-js-10,1,1,1,,, Major bump incompativel Node<20.19
-2293,Bump recharts 2->3,FECHAR,fechada,dependabot/npm_and_yarn/recharts-3,1,1,1,,,Major bump API breaking
-2312,fix: tighten deploy-gates workflow,BLOQUEADA,aberta,claude/fix-deploy-gates-261023,1,15,8,,,Modifica .github/workflows/deploy-gates.yml
-2314,ci: update ratchet baselines,FECHAR,fechada,claude/chore-update-ratchets-261018,3,12,12,,,mergeable_state dirty
-2315,ci: workflow hardening batch,BLOQUEADA,aberta,claude/ci-workflow-hardening-261022,12,87,43,,,Modifica 12 workflows
-2316,fix: add magazine-reader-state-read to contracts,CORRIGIR,fechada,claude/fix-contracts-magazine-reader-261018,2,8,0,,,dirty + workflows. Sucessora: #2361
-2319,Jules investigation,FECHAR,fechada,jules/investigation-261021,0,0,0,,,Draft 0 arquivos
-2320,fix: peer-deps eslint (Copilot),FECHAR,fechada,copilot/fix-2318-261021,2,5,3,,,Draft outro agente supersedido
-2322,Create webpack.yml,FECHAR,fechada,feature/webpack-ci,1,35,0,,,Stack incompativel Vite nao webpack
-2323,Create deno.yml,FECHAR,fechada,feature/deno-ci,1,28,0,,,Stack incompativel nao usa Deno
-2324,Create jekyll-docker.yml,FECHAR,fechada,feature/jekyll-docker-ci,1,42,0,,,Stack incompativel nao Jekyll
-2325,Create npm-publish-github-packages.yml,FECHAR,fechada,feature/npm-publish-gpr,1,31,0,,,Incompativel nao publica npm
-2326,Create npm-publish.yml,FECHAR,fechada,feature/npm-publish,1,29,0,,,Duplicata de #2325
-2327,Create codacy.yml,FECHAR,fechada,feature/codacy-ci,1,38,0,,,Ferramenta nao configurada
-2328,Create dependency-review.yml,FECHAR,fechada,feature/dep-review,1,22,0,,,Gate 0.6 ja existe duplicata
-2329,Create python-publish.yml,FECHAR,fechada,feature/python-ci,1,44,0,,,Stack incompativel nao Python
-2330,Create node.js.yml,FECHAR,fechada,feature/nodejs-ci,1,33,0,,,Duplicata parcial sem gates obrigatorios
-2331,Create greetings.yml,FECHAR,fechada,feature/greetings-ci-1,1,18,0,,,Incompativel com gates
-2333,Create greetings.yml,FECHAR,fechada,feature/greetings-ci-2,1,18,0,,,Duplicata exata de #2331
-2334,Create pages.yml,FECHAR,fechada,feature/pages-ci,1,27,0,,,GitHub Pages nao esta no stack
-2335,Create nextjs.yml,FECHAR,fechada,feature/nextjs-ci,1,39,0,,,Stack incompativel nao Next.js
-2336,Create main.yml,FECHAR,fechada,feature/main-ci,1,1,0,,,Arquivo 1 caracter sem proposito
-2337,Create deno.yml,FECHAR,fechada,feature/deno-ci-2,1,28,0,,,Duplicata exata de #2323
-2357,security: revogar acessos nao-autorizados,MERGEAR,fechada,claude/security-revoke-permissions-261022,3,128,0,,,dirty. Sucessora: #2360
-2360,security: revogar acessos sucessora #2357,MERGEAR,mergeada_admin,claude/fix-pr2357-security-revoke-261023-1110,3,128,0,b4cc8163d68a9e31ca23f1695d193ec0605f9ae8,failure_gate_e40_inerente,Admin merge Gate E40 inerente
-2361,fix: magazine-reader-state-read contracts sucessora #2316,CORRIGIR,mergeada,claude/fix-pr2316-magazine-contracts-261023-1430,1,11,0,e2be31add9a107030d1aeab8462534a6cd798979,success,Gate Final success
+number,title,draft,mergeable,mergeable_state,rule8_trigger,cherry,singu_refs,verdict,sha_merge
+2414,"chore(análise): dossiês completos + relatório final de branches (Fase 2)",false,false,dirty,,14 commits únicos,0 (doc-only),BLOQUEADA,
+2415,"fix(ci): P20 — exclui check-file-size-baseline.test.mjs do Vitest; roda via node --test",false,true,behind,CI/workflows,6 únicos,0,DECISÃO HUMANA,
+2417,"fix(cors+ci): CORS wildcard via String.fromCharCode + gitleaks allowlist",true,false,dirty,CI/workflows+edge,sem merge base,0,DECISÃO HUMANA,
+2418,"fix(gates): gitleaks allowlist FPs + deploy-gates fix",true,false,dirty,CI/workflows,sem merge base,0,DECISÃO HUMANA,
+2419,"fix(security): audit_security_definer_acl — pg_get_userbyid substituindo cast regrole",true,false,dirty,security gate,sem merge base,0,DECISÃO HUMANA,
+2420,"fix(rollback): header preflight + rollback script para 20261024163500",true,false,dirty,migrations,sem merge base,0,DECISÃO HUMANA,
+2422,"chore(sync): MIGRATIONS_SYNC_LOG + PGPORT no SEGREDOS + fix zodResolver cast",true,false,dirty,,sem merge base,0,DRAFT+DIRTY,
+2424,"feat(db): migration 20261024163500 + db-schema-drift-check workflow",true,,n/v,DDL+CI,3 únicos,0,DECISÃO HUMANA,
+2426,"chore(qa): probe E184 — varre catálogo vivo por refs legadas pqpdolkae",,,,,,,MERGEADO,7f5d410a233246c94ee05bc0be6c10be11a3f126
+2427,"fix(cors): CORS_WILDCARD_ORIGIN + magazine-reader-state-read no webhook-schemas",,,,,,,MERGEADO,26641b0a0cb8855f45755cd4734af4c53d52ba5d
+2428,"fix(gitleaks): allowlist — FPs de testes + placeholders de docs",true,true,behind,security policy,1 único,0,DECISÃO HUMANA,
+2434,"chore(análise): relatório completo de PRs abertos — 11/11 analisados",,,,,,,MERGEADO,53ba69b53fd8a8a021e13feb3af485f4ee4de73b
+2436,"chore(análise): atualiza deliverables — 3 merges realizados",,,,,,,MERGEADO,4c8193b9b655694635956a2c5702af33051164ad

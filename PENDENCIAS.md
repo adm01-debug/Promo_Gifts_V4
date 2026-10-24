@@ -1,8 +1,8 @@
 # Pendências CI — Bloqueios Externos
 
-**Atualizado em:** 2026-10-24 (rev 9 — P4: motivo exato API 403 adicionado; baseline local completo em RELATORIO_CI.md; Gate Final `e9a4764c` = success ✅)  
+**Atualizado em:** 2026-10-24 (rev 11 — P4: reduzido a 20 runs residuais; PRs fonte fechadas; PR #2437 squash-mergeado em main `9b23fb64`)  
 **Branch de referência:** `claude_05/upbeat-hamilton-5gnz50`  
-**Commit de referência (main):** `e9a4764c` (docs: PENDENCIAS.md rev 8 + RELATORIO_CI.md rev 18 — PR #2431)
+**Commit de referência (main):** `9b23fb64` (fix(ci): Zod 4 fixes CI-Replenishment + PENDENCIAS rev 10 — PR #2437)
 
 ---
 
@@ -204,46 +204,51 @@ permissões para query read-only em `doufsxqlfjyuvxuezpln`.
 
 ---
 
-## P4 — 641 runs `action_required` de PRs externos (25 workflows)
+## P4 — ~20 runs `action_required` residuais (PRs fonte fechadas — 2 origens)
 
-**Total:** 641 runs, 25 workflows distintos  
-**Categoria:** PRs de forks/bots externos — GitHub exige aprovação manual do mantenedor antes de executar workflows  
-**Não corrigível via código:** requer ação manual em cada PR no GitHub UI
+**Total em 2026-10-24T23:xx Z:** ~20 runs residuais (reduzido de 641)  
+**Categoria:** branches internas de bots — GitHub exige aprovação; API retorna 403  
+**PRs fonte:** ambas fechadas — runs residuais persistem até expiração natural (90 dias)
 
-**Causa raiz:**  
-GitHub Actions exige que mantenedores do repositório aprovem explicitamente a execução de workflows para PRs enviados de forks externos ou bots não confiáveis. Cada PR externo gera múltiplos runs `action_required` (um por workflow configurado). Esses runs só podem ser aprovados/rejeitados manualmente pelo mantenedor na interface do GitHub — não há correção de código que resolva isso.
+**Origem dos runs residuais:**
+- `release-please[bot]` — branch `release-please--branches--main--components--gifts-store`, head `3a726461` (2026-10-18), sem PR aberta → ~19 runs
+- PR #2320 `copilot/corrigir-peer-dependencies-eslint` — fechada em 2026-10-23 sem merge → ~1 run
 
-**head_sha predominante:** `3a726461` (2026-10-18) aparece em 23/25 grupos — indica um ou poucos PRs externos ativos aguardando aprovação.
+**Inventário completo — last main run em `ec736c90` (2026-10-24T20:29Z):**
 
-**25 workflows com runs `action_required`:**
+**Inventário completo — last main run em `ec736c90` (2026-10-24T20:29Z):**
 
-| Workflow | workflow_id | Runs | Última head_sha |
-|---|---|---|---|
-| Bundle size report | 312335936 | 4 | 3a726461 |
-| CI - Replenishment Module Quality Gate | 293021818 | 4 | 3a726461 |
-| Cart Invariants Smoke | 309382416 | 4 | 3a726461 |
-| Contract Tests | 281252069 | 4 | 3a726461 |
-| Cross-reference PR ↔ Issue | 278436796 | 2 | df09a371 (2026-10-23) |
-| Deploy Gates | 282456033 | 4 | 3a726461 |
-| E2E (Playwright) | 278436800 | 4 | 3a726461 |
-| E2E · Dialogs visual PR check | 305923294 | 4 | 3a726461 |
-| E2E · Quote Conditions visual PR check | 306215886 | 4 | 3a726461 |
-| E2E — Critical Flows & Error Boundaries | 283130542 | 4 | 3a726461 |
-| E2E — Magazine Header Layout | 352614703 | 4 | 3a726461 |
-| E2E — Personalization Flow | 285588106 | 4 | 3a726461 |
-| E2E • Swatch QuickView | 300138331 | 4 | 3a726461 |
-| E2E • Thumb QuickView | 298450953 | 4 | 3a726461 |
-| Edge Integration Tests — All Functions | 283130416 | 4 | 3a726461 |
-| Freight Quest — Quality Gates | 287988441 | 4 | 3a726461 |
-| Magazine Unit Tests | 311773734 | 4 | 3a726461 |
-| No Prod Leak in Dev/Test Config | 383518358 | 4 | 3a726461 |
-| Quote Builder Delivery Quality | 278918381 | 4 | 3a726461 |
-| SSOT Supabase Guard | 313828101 | 5 | 3a726461 |
-| Security Scan | 278436801 | 4 | 3a726461 |
-| Supabase Linter Gate | 298969701 | 4 | 3a726461 |
-| Visual Baseline Tests | 278436802 | 5 | 3a726461 |
-| Workflow Lint | 368573629 | 4 | 3a726461 |
-| schema-snapshot-export | 305283288 | 4 | 3a726461 |
+Legenda conclusão: ✅ `success` | ❌ `failure` | 🔄 `in_progress` | ⏸ `queued` | 🚫 `cancelled` | — sem run em main (PR-only)
+
+| Workflow | workflow_id | Run ID (main) | Conclusão | Motivo |
+|---|---|---|---|---|
+| Bundle size report | 312335936 | — | — | Trigger `pull_request` only — não roda em push para `main` |
+| CI - Replenishment Module Quality Gate | 293021818 | — | — | Trigger `pull_request` only |
+| Cart Invariants Smoke | 309382416 | [#40129973790](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40129973790) | 🔄 `in_progress` (≥20:44Z) | [E108] dados de teste insuficientes — ver P2b |
+| Contract Tests | 281252069 | — | — | Trigger `pull_request` only |
+| Cross-reference PR ↔ Issue | 278436796 | — | — | Trigger `issues`/`pull_request` only — não roda em push para `main` |
+| Deploy Gates | 282456033 | [#40129973867](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40129973867) | ⏸ `queued` (≥20:51Z) | Concurrency `cancel-in-progress: false` — aguardando run #40129314620 (9079c82e, `pending`) |
+| E2E (Playwright) | 278436800 | [#40129973861](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40129973861) | ❌ `failure` | Falhas E2E pré-existentes — ver P18 |
+| E2E · Dialogs visual PR check | 305923294 | — | — | Trigger `pull_request` only |
+| E2E · Quote Conditions visual PR check | 306215886 | — | — | Trigger `pull_request` only |
+| E2E — Critical Flows & Error Boundaries | 283130542 | [#40129973741](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40129973741) | ❌ `failure` | Falhas E2E pré-existentes — ver P16 |
+| E2E — Magazine Header Layout | 352614703 | — | — | Trigger `pull_request` only (raro / PR-específico) |
+| E2E — Personalization Flow | 285588106 | [#40129973824](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40129973824) | ❌ `failure` | Falha de navegação PDP — ver P2c |
+| E2E • Swatch QuickView | 300138331 | [#40129973831](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40129973831) | 🔄 `in_progress` (≥20:42Z) | Falha visual swatch → QV — ver P12 |
+| E2E • Thumb QuickView | 298450953 | [#40129973875](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40129973875) | 🚫 `cancelled` | Cancelado pelo concurrency group (não é required check) |
+| Edge Integration Tests — All Functions | 283130416 | — | — | Trigger `pull_request` only (raro — requer mudança em edge functions) |
+| Freight Quest — Quality Gates | 287988441 | — | — | Trigger `pull_request` only |
+| Magazine Unit Tests | 311773734 | — | — | Trigger `pull_request` only |
+| No Prod Leak in Dev/Test Config | 383518358 | [#40129973696](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40129973696) | ✅ `success` | — |
+| Quote Builder Delivery Quality | 278918381 | [#40129973841](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40129973841) | ✅ `success` | — |
+| SSOT Supabase Guard | 313828101 | [#40129973774](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40129973774) | ✅ `success` | — |
+| Security Scan | 278436801 | [#40129973840](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40129973840) | ✅ `success` | — |
+| Supabase Linter Gate | 298969701 | [#40129973714](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40129973714) | ✅ `success` | P11 RESOLVIDO — ver P11 ✅ |
+| Visual Baseline Tests | 278436802 | — | — | Trigger `pull_request` only |
+| Workflow Lint | 368573629 | — | — | Trigger `pull_request` only |
+| schema-snapshot-export | 305283288 | [#40129314530](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40129314530) | ✅ `success` | Run em 9079c82e (commit anterior a ec736c90) — schedule weekly |
+
+**Resumo da última execução em `main` (ec736c90):** 7 `success` ✅ | 3 `failure` ❌ (pré-existentes, não-required) | 2 `in_progress` | 1 `queued` (blocked) | 1 `cancelled` | 11 sem run (PR-only)
 
 **Tentativa de aprovação via API (2026-10-24T20:19Z) — resultado definitivo:**  
 Chamado `github_approve_workflow_run` para run_id `39884454041` → HTTP 403:
@@ -251,10 +256,10 @@ Chamado `github_approve_workflow_run` para run_id `39884454041` → HTTP 403:
 {"message":"This run is not from a fork pull request or queued by the Actions bot",
  "documentation_url":"https://docs.github.com/rest/actions/workflow-runs#approve-a-workflow-run-for-a-fork-pull-request"}
 ```
-A API de aprovação (`POST /repos/{owner}/{repo}/actions/runs/{run_id}/approve`) só funciona para runs de fork PRs. Estes runs são de branches internas (`copilot/*`, `release-please--*`) — mesmo sendo de bots, não são considerados "fork PRs" pela API do GitHub e o campo `head_repository.fork` = `false`. A aprovação manual via UI do GitHub é o único caminho tecnicamente possível.
+A API de aprovação só funciona para fork PRs. Branches internas (`copilot/*`, `release-please--*`) com `fork = false` não são aprovadas via API. Aprovação programática impossível.
 
-**Ação necessária pelo PO:**  
-Navegar até https://github.com/adm01-debug/Promo_Gifts_V4/pulls?q=is:open e para cada PR externo pendente: aprovar os workflows clicando em "Approve and run" (ou fechar/rejeitar o PR). Os runs `action_required` desaparecem automaticamente após a aprovação ou fechamento do PR.
+**Ação necessária pelo PO (opcional):**  
+Navegar até https://github.com/adm01-debug/Promo_Gifts_V4/actions?query=is%3Aaction_required e cancelar cada run manualmente para remover da fila, ou aguardar expiração (90 dias).
 
 **Impacto no Gate Final:** Nenhum — `action_required` são runs de workflows de PRs externos, não afetam `main` nem o required check "Gate Final - Deploy Ready".
 
@@ -405,33 +410,15 @@ result={"check":"security-definer-acl","status":"inconclusive","reason":"http-er
 
 ---
 
-## P11 — Supabase Linter Gate: TimeoutError intermitente
+## P11 — Supabase Linter Gate: TimeoutError intermitente — ✅ RESOLVIDO
 
 **Workflow:** `.github/workflows/supabase-linter-gate.yml`  
-**Run mais recente:** [#40124949229](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40124949229) (commit `71d624e8`)  
-**Conclusão:** `failure`  
-**Commit:** `71d624e8` (chore(infra), 2026-10-24T19:21Z)  
-**Categoria:** Falha transiente de rede — serviço Supabase linter indisponível no runner
+**Run de falha:** [#40124949229](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40124949229) (commit `71d624e8`)  
+**Run de resolução:** [#40129973714](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40129973714) (commit `ec736c90`) — **`success`** ✅  
+**Categoria:** Falha transiente de rede — resolvida automaticamente
 
-**Erro exato:**
-```
-⚠️  Tentativa 1/3 falhou (TimeoutError) — aguardando 5s...
-⚠️  Tentativa 2/3 falhou (TimeoutError) — aguardando 10s...
-❌ Linter indisponível após 3 tentativas (TimeoutError).
-Process completed with exit code 2.
-```
-
-**Diagnóstico:**  
-O step "Check Security Advisors and live catalog gates" executa `node scripts/check-supabase-linter.mjs` com `SUPABASE_ACCESS_TOKEN` (presente, mascarado no log) e `SUPABASE_PROJECT_REF: doufsxqlfjyuvxuezpln`. Após 3 tentativas com backoff total de 80s, o serviço de lint do Supabase não respondeu — `TimeoutError`, não erro de credencial.
-
-**Intermitente:** Mesmo workflow passou para `90a55243` e `15384162` (commits anteriores) e falhou para `43223...` e agora `c34ed2b4`. Sem mudança de código ou credenciais entre as execuções. Mesma causa-raiz de P5/P9 (API Supabase com timeout no runner de CI).
-
-**Pré-existente:** Não há mudança de código neste commit (docs-only) que pudesse causar essa falha. A falha é transiente de infraestrutura.
-
-**Ação necessária:**  
-- Aguardar disponibilidade do serviço Supabase e re-executar  
-- Ou: configurar timeout maior em `scripts/check-supabase-linter.mjs`  
-- Este workflow é independente do Gate Final (deploy-gates.yml) — não bloqueia merge
+**Resolução:**  
+O serviço Supabase linter respondeu normalmente no próximo push (`ec736c90`). Run #40129973714 = `completed` `success`. Confirmado via `github_get_workflow_run`.
 
 ---
 

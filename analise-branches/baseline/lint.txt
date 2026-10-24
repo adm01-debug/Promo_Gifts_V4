@@ -1,0 +1,6 @@
+# Baseline ESLint — main@652a7f14
+# Data: 2026-10-24
+# Observação: npx eslint falha com erro de ESM loader no ambiente cloud (não é regressão da branch)
+# STATUS: lint não executável neste ambiente; gate de CI (Gate 1) é a fonte autoritativa
+LINT_EXECUTAVEL=false
+GATE_1_CI=autoridade

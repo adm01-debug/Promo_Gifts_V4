@@ -1,4 +1,5 @@
 -- fix: audit_security_definer_acl() — cast seguro para OIDs de roles removidas
+-- Rollback: supabase/rollbacks/20261024163500_rollback.sql
 --
 -- Causa do HTTP 500 em freight-quality-gates.yml:
 --   grantee::regrole::text lança "role with OID X does not exist" quando

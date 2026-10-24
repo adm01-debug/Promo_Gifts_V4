@@ -9,3 +9,4 @@ SET search_path = pg_catalog, public, pg_temp;
 GRANT SELECT, INSERT, UPDATE, DELETE, REFERENCES, TRIGGER
   ON public.mockup_approval_links
   TO anon;
+  TO anon;
