@@ -559,7 +559,7 @@ A edge function `validate-access` não valida os inputs recebidos e retorna HTTP
 
 ---
 
-## P20 — CI Security & Drift Checks: check-file-size-baseline.test.mjs usa node:test incompatível com Vitest
+## ✅ P20 — CI Security & Drift Checks: check-file-size-baseline.test.mjs usa node:test incompatível com Vitest — RESOLVIDO
 
 **Workflow:** CI Security & Drift Checks  
 **Arquivo:** `tests/scripts/check-file-size-baseline.test.mjs`  
@@ -568,11 +568,10 @@ A edge function `validate-access` não valida os inputs recebidos e retorna HTTP
 **Diagnóstico:**  
 `tests/scripts/check-file-size-baseline.test.mjs` usa `import { test, describe } from 'node:test'` — o módulo de testes built-in do Node.js. O Vitest não consegue bundlar `node:test` no ambiente cliente (browser-like environment), causando falha no CI com erro de module resolution.
 
-**Correção necessária:**
-- **Opção A (recomendada):** excluir o arquivo do Vitest via `vitest.config.ts` (adicionar ao array `exclude`) e executá-lo diretamente com `node --test`
-- **Opção B:** refatorar para usar APIs do Vitest (`import { test, describe } from 'vitest'`)
-
-**Ação necessária:** aplicar a opção A ou B e verificar se CI Security & Drift Checks passa. Esta correção é código puro (sem migration, sem edge function) e pode ser feita em PR normal.
+**Correção aplicada (PR #2415):**
+- `vitest.config.ts`: arquivo excluído do Vitest via array `exclude` (commit `57a59fa`)
+- `.github/workflows/ci-security-drift.yml`: step `node --test tests/scripts/check-file-size-baseline.test.mjs` adicionado (commit `57a59fa`)
+- `.github/workflows/deploy-gates.yml`: step `File-size baseline mutation tests (node:test — P20)` adicionado ao job `unit-tests`, garantindo execução também em PRs (commit pós-review Qodo)
 
 ---
 

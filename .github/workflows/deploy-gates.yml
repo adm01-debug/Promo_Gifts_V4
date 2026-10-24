@@ -480,6 +480,9 @@ jobs:
           TZ=America/Sao_Paulo npx vitest run \
             tests/contracts/webhook-scenario-matrix.test.ts \
             --reporter=dot
+      - name: File-size baseline mutation tests (node:test — P20)
+        if: needs.changes.outputs.docs_only != 'true'
+        run: node --test tests/scripts/check-file-size-baseline.test.mjs
 
   database-integrity:
     name: Gate 2.5 - PostgreSQL Transactional Integrity
