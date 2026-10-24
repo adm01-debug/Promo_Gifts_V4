@@ -1,6 +1,6 @@
 # Relatório CI — Reparo de Workflows `action_required`
 
-**Data:** 2026-10-24 (rev 12 — Baseline local completo adicionado: npm install ✅, typecheck ✅, build ✅, lint ✅, vitest deploy-gate ✅; inventário `174c4ea8` com Gate Final `success` adicionado; PENDENCIAS.md rev 5 com P12/P13)  
+**Data:** 2026-10-24 (rev 13 — Adicionados: inventário `0213ed60` pós-merge PR #2405, diagnóstico agrupado por causa raiz P1–P13, justificativa test:deploy-gate como proxy CI)  
 **Branch de trabalho:** `claude_05/upbeat-hamilton-5gnz50`  
 **Commit baseline (main antes do PR #2389):** `325b0bd`  
 **Commit final do PR #2389:** `12a7774`  
@@ -8,17 +8,20 @@
 **Merge commit em main (PR #2396 — sentinel fix):** `c34ed2b4` (squash, 2026-10-24T15:36:33Z) — `chore(docs):` → Regra 6 ✅  
 **Merge commit em main (PR #2398 — RELATORIO rev 10):** `63c17840` (squash)  
 **Merge commit em main (PR #2392 — sentinel allowlist):** `609d55c6` (squash)  
-**Merge commit em main (PR #2402 — docs rev 11):** `174c4ea8` (squash) — **HEAD de main em 2026-10-24**  
+**Merge commit em main (PR #2402 — docs rev 11):** `174c4ea8` (squash)  
+**Merge commit em main (PR #2405 — docs rev 12+PENDENCIAS rev 5):** `0213ed60` (squash, 2026-10-24T16:42:24Z) — **HEAD de main atual**  
 **PR principal:** [#2389](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2389) — **MERGEADO** ✅  
 **PR sentinel fix:** [#2396](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2396) — **MERGEADO** ✅  
+**PR docs rev 12+PENDENCIAS:** [#2405](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2405) — **MERGEADO** ✅  
 **Deploy Gates em main (push `45023c7ff8`):** run [#40100571263](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40100571263) — **`success`** ✅ (Gate 2 job `120891902070`; Gate 3 job `120892030879`; Gate Final job `120898759390`)  
 **Deploy Gates em main (push `c34ed2b4`):** run [#40107758485](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40107758485) — **`success`** ✅ (2026-10-24T15:44:03Z)  
 **Branch Protection Sentinel em main (`c34ed2b4`):** run [#40107758455](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40107758455) — **`success`** ✅  
 **Deploy Gates em main (push `63c17840`):** run [#40108768422](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40108768422) — **`success`** ✅  
 **Branch Protection Sentinel em main (`63c17840`):** run [#40108768357](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40108768357) — **`success`** ✅  
 **Branch Protection Sentinel em main (`609d55c6`):** run [#40109508352](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40109508352) — **`success`** ✅  
-**Deploy Gates em main (push `609d55c6`):** run [#40109508595](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40109508595) — `queued/in_progress` ao capturar (2026-10-24T16:xx)  
-**Gate Final em main (push `174c4ea8`):** check `Gate Final - Deploy Ready` — **`success`** ✅ (confirmado via `github_list_check_runs` ref=`174c4ea8`)
+**Deploy Gates em main (push `609d55c6`):** run [#40109508595](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40109508595) — **`success`** ✅  
+**Gate Final em main (push `174c4ea8`):** check `Gate Final - Deploy Ready` — **`success`** ✅ (confirmado via `github_list_check_runs` ref=`174c4ea8`)  
+**Deploy Gates em main (push `0213ed60` — PR #2405):** run [#40112803262](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40112803262) — **`success`** ✅ — Gate Final confirmado em `0213ed60` (ver seção abaixo)
 
 ---
 
@@ -79,7 +82,7 @@
 | Lovable Edit Tracker | [#40109508600](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40109508600) | **`success`** ✅ |
 | No Prod Leak | [#40109508441](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40109508441) | **`success`** ✅ |
 | Policies Baseline | [#40109508557](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40109508557) | **`success`** ✅ |
-| Required Checks Guard | [#40109508434](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40109508434) | **`success`** ✅ ✅ |
+| Required Checks Guard | [#40109508434](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40109508434) | **`success`** ✅ |
 | SSOT Supabase Guard | [#40109508634](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40109508634) | **`success`** ✅ |
 | Security Scan | [#40109508511](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40109508511) | **`success`** ✅ |
 | Select Columns vs Types | [#40109508370](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40109508370) | **`success`** ✅ |
@@ -309,3 +312,109 @@ Nenhuma. Os três fixes são cirúrgicos (1–3 linhas cada) e não alteram lóg
 ---
 
 *Gerado por sessão Claude Code — https://claude.ai/code/session_01Nc1nb7PArDnixYvvZssnKy*
+
+---
+
+## Inventário de Jobs — Deploy Gates main `0213ed60` (PR #2405 — 2026-10-24T16:42:24Z)
+
+Run [#40112803262](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40112803262)
+
+| Job | Conclusão | Horário conclusão |
+|---|---|---|
+| Detectar mudanças (docs-only bypass E14) | **`success`** ✅ | 16:42:57Z |
+| Gate 0 - SSOT Supabase (project ID canônico) | **`success`** ✅ | 16:42:44Z |
+| Gate 0.5 - Dependency Audit | **`success`** ✅ | 16:43:35Z |
+| Gate 0.6 - Dependency Review | `skipped` (PR-only) | — |
+| Gate E40 - Detect schema file changes | **`success`** ✅ | 16:43:12Z |
+| Gate E23 - Verifica secrets E2E | **`success`** ✅ | 16:43:10Z |
+| Gate E23 - Secret Scan (gitleaks) | **`success`** ✅ | 16:43:32Z |
+| Gate 5 - SEO Sanity Check | **`success`** ✅ | 16:43:17Z |
+| Gate 5.5 - RPC restore_seller_cart | **`success`** ✅ | 16:44:19Z |
+| Gate 4 - Lighthouse CI | **`success`** ✅ (src/ não mudou — steps skipped) | 16:43:20Z |
+| Gate 2.5 - PostgreSQL Transactional Integrity | **`success`** ✅ | 16:43:34Z |
+| Gate 2 - Unit Tests | **`success`** ✅ | 16:43:47Z |
+| Gate 1 - Lint + TypeScript | **`success`** ✅ | 16:49:48Z |
+| Gate 3 - E2E Smoke | **`success`** ✅ | 16:47:02Z |
+| Gate E40 - Schema Drift Check | `skipped` | — |
+| Gate 6 - Build | **`success`** ✅ | 16:51:33Z |
+| Gate Final - Deploy Ready | **`success`** ✅ | 16:51:39Z |
+
+**Nota Gate 2.5:** passou em `0213ed60` ✅ — comportamento intermitente documentado em P5 (HTTP 400 observado em run anterior); no run `40112803262` o live check passou sem intervenção.
+
+**Gate Final confirmado:** run `40112803262`, job `120929868950`, conclusão `success` às `2026-10-24T16:51:39Z`. Verificado via `github_list_workflow_run_jobs` nesta sessão.
+
+---
+
+## Diagnóstico Agrupado por Causa Raiz — P1–P13
+
+### Causa A — PAT/Secret ausente no runner
+
+| Pendência | Workflow | Erro | Ação necessária |
+|---|---|---|---|
+| P1 | Release Please | `Resource not accessible by integration` | PO cria PAT com escopos `repo`+`workflow` e adiciona como secret `RELEASE_PLEASE_TOKEN` |
+
+### Causa B — Dados de teste insuficientes no runner CI
+
+Workflows falham porque o banco de CI não possui registros de teste (carrinhos, produtos com PDP navegável, variantes com swatch, snapshots visuais). Não há bug de código — o ambiente de teste está incompleto.
+
+| Pendência | Workflow | Erro específico |
+|---|---|---|
+| P2b | Cart Invariants Smoke (6 shards) | `[E108] sem carrinhos disponíveis` — banco de CI sem carrinhos |
+| P2c | E2E Personalization Journey | `expect(page).toHaveURL` timeout 15s — produtos sem PDP navegável no CI DB |
+| P8 | sticky-and-scroll (3 browsers) | Snapshot ausente + `aside` não encontrado no DOM de teste |
+| P12 | swatch→QV (chromium/firefox/webkit) | Variantes com swatch ausentes no banco CI |
+| P13 | Full User Flows (authed) | Fluxo autenticado completo falha — dados de usuário/pedido ausentes |
+
+**Ação necessária (todas):** seed de dados no banco de CI — carrinhos, produtos com PDP, variantes com swatches, pedidos de usuário.
+
+### Causa C — Conectividade/credenciais Supabase no runner
+
+| Pendência | Workflow | Erro | Ação necessária |
+|---|---|---|---|
+| P5 | Gate 2.5 PostgreSQL Transactional Integrity | Live check HTTP 400 (intermitente — passou em `0213ed60`) | Verificar `SUPABASE_ACCESS_TOKEN` e `SUPABASE_SERVICE_ROLE_KEY` no runner |
+| P9 | Gate 8 — Security & Credential Audit | HTTP 500 Supabase após 3 tentativas | Idem P5 — mesma causa raiz |
+
+### Causa D — Rate limit externo (AWS ECR)
+
+| Pendência | Workflow | Erro | Ação necessária |
+|---|---|---|---|
+| P6 | Smoke HTTP (supabase functions serve) | `toomanyrequests: Data limit exceeded` (AWS ECR pull limit) | Autenticação no runner para `public.ecr.aws` ou configurar mirror privado |
+
+### Causa E — DDL aguardando aprovação PO (REGRA #8)
+
+| Pendência | Workflow | Erro | Ação necessária |
+|---|---|---|---|
+| P7 | Supabase Preview (bot externo) | `column "level" does not exist (SQLSTATE 42703)` em `analytics.categories_tree_visual` | Migration DDL para adicionar coluna `level` em `public.categories` — exige aprovação PO (REGRA #8) |
+
+### Causa F — Snapshot visual desatualizado
+
+| Pendência | Workflow | Erro | Ação necessária |
+|---|---|---|---|
+| P10 | card parity visual | `rodapé não alinhado` em `novidades-reposicao-card-parity.spec.ts:163` | Atualizar baseline visual do componente card no runner CI |
+
+### Causa G — Histórico não corrigível retroativamente
+
+| Pendência | Descrição |
+|---|---|
+| P4 | 50+ runs históricos `action_required` do `release-please[bot]` — aprovação retroativa não é possível no GitHub; registros permanentes |
+| P11 | Supabase Linter Gate — TimeoutError transiente (rede Supabase indisponível no runner); não bloqueia Gate Final; reexecução manual resolve |
+
+---
+
+## Justificativa: test:deploy-gate como proxy CI válido
+
+**Por que `npm run test:deploy-gate` (334 testes, 3 arquivos) é suficiente como verificação local de Gate 2?**
+
+1. **É exatamente o que o CI roda.** O step 5 do job Gate 2 em `deploy-gates.yml`:
+   ```yaml
+   - name: Run npm run test:deploy-gate
+     run: npm run test:deploy-gate
+   ```
+   Não é um subset ad-hoc — é o comando idêntico ao CI. Definido em `package.json`:
+   ```json
+   "test:deploy-gate": "vitest run --config vitest.deploy-gate.config.ts"
+   ```
+
+2. **Limitação de memória do container.** O container de sessão tem ~2-4 GB de RAM. O suite completo (`npm test`) importa ~300+ arquivos com mocks pesados (Supabase, Three.js, SVGs) e causa OOM — o mesmo padrão observado no ESLint (`[killed]` por OOM). `vitest run` sem filtro não completa no container.
+
+3. **Confirmação CI:** Run `40112803262`, job `120927965736`, step 5 "Run npm run test:deploy-gate" → `success`. O mesmo comando que passou localmente (334/334, 4.71s, exit 0) passou no CI sem diferença.
