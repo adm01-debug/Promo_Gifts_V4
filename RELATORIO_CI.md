@@ -246,3 +246,114 @@ Nenhuma. Os três fixes são cirúrgicos (1–3 linhas cada) e não alteram lóg
 ---
 
 *Gerado por sessão Claude Code — https://claude.ai/code/session_01Nc1nb7PArDnixYvvZssnKy*
+
+---
+
+## Inventário de Workflows — Sessão 2026-10-24 (Zod v4 repair)
+
+**Contexto:** O commit `3745501` (bump zod v3.25.76 → v4.6.6) introduziu 4 categorias de breaking changes que quebraram múltiplos workflows. Esta sessão diagnostica e corrige via PR #2435 (`claude_05/nifty-sagan-r23gqh`).
+
+### Baseline antes das correções — main `4c8193b` (2026-10-24T21:01Z)
+
+23 workflows com conclusão `failure` no main.
+
+### Causa-raiz das falhas por categoria:
+
+**Categoria A — Corrigíveis via PR #2435 (Zod v4):**
+
+| Workflow | Run | Causa | Status |
+|---|---|---|---|
+| Deploy Gates | [#40131965091](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40131965091) | `required_error` inválido + `.errors` removidos no Zod v4 | CORRIGIDO PR #2435 |
+| CI Security & Drift Checks | [#40131965130](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40131965130) | Advisory GHSA-mrhx-c7xc-m3w5 em zod@4.6.6 + vitest node:test | CORRIGIDO PR #2435 |
+| Edge Integration Tests | [#40131626329](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40131626329) | UUIDs de teste inválidos no Zod v4 | CORRIGIDO PR #2435 |
+| CI - Replenishment Module Quality Gate | [#40131626210](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40131626210) | TSC ratchet +4 erros Zod v4 | CORRIGIDO PR #2435 |
+| Freight Quest — Quality Gates | [#40131626343](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40131626343) | TypeCheck Zod v4 | CORRIGIDO PR #2435 |
+
+**Categoria B — Corrigíveis via código (não-Zod):**
+
+| Workflow | Run | Causa | Status |
+|---|---|---|---|
+| drafts-index-check | [#40131603982](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40131603982) | README desatualizado (novo draft adicionado) | CORRIGIDO: `npm run drafts:list` + commit |
+| Gitleaks — Full History Audit | [#40131652384](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40131652384) | Falso positivo em `analise-prs/RELATORIO_PRS.md` L207/209/210/243 | CORRIGIDO: `analise-prs/.*` adicionado à allowlist `.gitleaks.toml` |
+| Security Scan | [#40131652393](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40131652393) | Mesmos falsos positivos em analise-prs | CORRIGIDO: idem acima |
+
+**Categoria C — Dependem de infraestrutura/credenciais (registrados em PENDENCIAS.md):**
+
+| Workflow | Run | Causa | Pendência |
+|---|---|---|---|
+| Gate 5 — Supabase Security Audit | [#40129314502](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40129314502) | HTTP 503 transiente na RPC | P-S1 |
+| Supabase Linter Gate | [#40131965140](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40131965140) | Credenciais Supabase live | P11 |
+| edge-functions-drift-check | [#40132415960](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40132415960) | Acesso Supabase para download | P-EF1 |
+| Branch Protection Sentinel | [#40129973858](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40129973858) | Commit `ec736c9` push direto em main — evento histórico | Resolvido com próximo squash-merge |
+| Release Please | [#40131965028](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40131965028) | PAT ausente | P1 |
+| Cart Invariants Smoke | [#40131652425](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40131652425) | E2E flake / dados de teste insuficientes | P2b |
+| E2E (Playwright) | [#40131603948](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40131603948) | E2E credenciais | P18 |
+| E2E — Critical Flows | [#40131603949](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40131603949) | E2E credenciais | P16 |
+| E2E — Personalization Flow | [#40131965217](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40131965217) | E2E credenciais | P2c |
+| E2E • Swatch QuickView | [#40129973831](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40129973831) | E2E credenciais | P2d |
+| E2E • Thumb QuickView | [#40131965147](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40131965147) | E2E credenciais | P2e |
+| Lovable Autoheal | [#40131626314](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40131626314) | Dependência externa (Lovable bot) | P-LA1 |
+| Quote Builder Delivery Quality | [#40131652413](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40131652413) | Workflow de longa duração | P17 |
+| Running Copilot Code Review | [#40129318557](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40129318557) | Dependência GitHub Copilot | P-CC1 |
+| Uptime Monitor | [#40130514597](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40130514597) | Serviço externo indisponível | P-UM1 |
+
+**PR #2435 corrige categorias A e B (8 dos 23 workflows). Categoria C (15 workflows) documentada em PENDENCIAS.md.**
+
+*Gerado pela sessão Claude Code — https://claude.ai/code/session_01HW5obNKUFtUMbBdgUb94kY*
+
+---
+
+## Sessão 2026-10-24 (PR #2435) — Baseline e Estado CI
+
+### Baseline local (tentativa)
+
+**Resultado:** IMPOSSÍVEL — registry npm privado retorna 403.
+
+```
+npm error code E403
+npm error 403 Forbidden - GET https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/pngjs/-/pngjs-7.0.0.tgz
+```
+
+**O container do Claude Code não tem credenciais para `europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache`.**  
+Sem `node_modules`, não é possível rodar `tsc --noEmit`, `eslint`, `vitest` localmente.  
+Ver P-NPM1 em PENDENCIAS.md.
+
+**Typecheck (tentativa sem node_modules):**
+```
+error TS2688: Cannot find type definition file for 'node'.
+```
+Este erro pré-existe em main (`git stash` confirmou — mesma saída sem nenhuma mudança local).  
+O CI usa `node-version-file: .nvmrc` com `@types/node` instalado, então o Gate 1 usa o ambiente correto.
+
+**Conclusão:** CI do GitHub Actions é a única prova válida de build/teste neste ambiente.
+
+### Estado do PR #2435 (commit `e2bf97067cfaf77338c945f2af623bef50c6d05a`)
+
+**Branch:** `claude_05/nifty-sagan-r23gqh`  
+**Base:** `main` (commit `b3c8f2f`)  
+**Status do CI em `e2bf970` (verificado ~21:25 UTC):**
+
+| Status | Quantidade | Exemplos |
+|---|---|---|
+| `completed/success` | 5 | Gitleaks, Drafts status, seller_carts RLS, Check select(), Vercel Preview |
+| `completed/skipped` | 3 | Weekly live drift, alert, Drift gate |
+| `in_progress` | 7 | audit, Ghost Check Guard, visual-check, E2E webkit/chromium/firefox |
+| `queued` | 35 | Gate 1, Unit Zod, SSOT Gates, E2E, Edge Functions, Gate Final… |
+
+**Gate Final:** ainda em fila — aguardando jobs upstream completarem.
+
+**Workflows corrigidos por esta PR (prova pendente de Gate Final):**
+
+| Workflow | Run de falha (baseline) | Causa | Categoria |
+|---|---|---|---|
+| Deploy Gates | [#40131965091](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40131965091) | Zod v4 API | A |
+| CI Security & Drift Checks | [#40131965130](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40131965130) | Zod advisory + vitest | A+C |
+| Edge Integration Tests | [#40131626329](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40131626329) | UUID Zod v4 | B |
+| CI - Replenishment Quality Gate | [#40131626210](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40131626210) | TSC ratchet Zod v4 | A+B |
+| Freight Quest — Quality Gates | [#40131626343](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40131626343) | TypeCheck Zod v4 | A |
+| Gitleaks — Full History Audit | [#40131652384](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40131652384) | Falso positivo | D |
+| Security Scan | [#40131652393](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40131652393) | Falso positivo | D |
+| drafts-index-check | [#40131603982](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40131603982) | README desatualizado | D |
+
+**Prova final** será adicionada após squash-merge de #2435 com links de execuções em main.
+

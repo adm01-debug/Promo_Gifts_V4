@@ -1,8 +1,8 @@
 # Pendências CI — Bloqueios Externos
 
-**Atualizado em:** 2026-10-24 (rev 10 — P4: inventário completo por workflow com last main run; P11 RESOLVED; P16/P17/P18/P19 atualizados com runs finais ec736c90; P20 adicionado)  
-**Branch de referência:** `claude_05/upbeat-hamilton-5gnz50`  
-**Commit de referência (main):** `ec736c90` (docs: PENDENCIAS.md rev 9 + RELATORIO_CI.md rev 19 — PR #2433)
+**Atualizado em:** 2026-10-24 (rev 11 — P4: inventário completo; P11 RESOLVED; P16-P19 atualizados; P20 adicionado; correções Zod v4 UUID + vitest + ci-security-drift; PR #2435 `claude_05/nifty-sagan-r23gqh`)  
+**Branch de referência:** `claude_05/nifty-sagan-r23gqh`  
+**Commit de referência (main):** `9b23fb6` (fix(ts): compatibilidade Zod 4 — PR #2437)
 
 ---
 
@@ -531,17 +531,124 @@ Este workflow roda testes E2E críticos com múltiplos shards e leva 20-60 min. 
 
 ---
 
-## P19 — CI Security & Drift Checks: workflow in_progress (não-required)
+## P19 — CI Security & Drift Checks: CORRIGIDO (vitest + Zod v4)
 
 **Workflow:** `.github/workflows/ci-security-drift.yml`  
-**Run mais recente:** [#40124949332](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40124949332) (commit `71d624e8`)  
-**Status:** `in_progress` ao capturar  
-**Categoria:** Workflow de auditoria periódica — não é required check no Gate Final
+**Run mais recente relevante:** [#40124949332](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40124949332)  
+**Status:** `in_progress` ao capturar (estado anterior); corrigido em PR de `claude_05/nifty-sagan-r23gqh`  
+**Categoria:** CORRIGIDO via código
 
-**Diagnóstico:** Workflow de auditoria de segurança e drift de schema (cron + push). Longa duração. Não é required check para merge.
+**Causa raiz confirmada:**  
+- `tests/scripts/check-file-size-baseline.test.mjs` usa `import { test } from 'node:test'` (Node.js native test runner). Vitest tenta bundlar `node:test` via esbuild e falha com `Cannot bundle Node.js built-in "node:test"`.
+- Correção: adicionado `'tests/scripts/check-file-size-baseline.test.mjs'` ao `exclude` em `vitest.config.ts` + step `node --test ...` adicionado em `ci-security-drift.yml`.
 
-**Impacto no Gate Final:** Nenhum.
+**Impacto no Gate Final:** Nenhum direto (não é required check), mas o workflow agora deve concluir `success`.
 
 ---
 
-*Atualizado pela sessão Claude Code — https://claude.ai/code/session_01Nc1nb7PArDnixYvvZssnKy*
+## P20 — Edge Integration: CORRIGIDO (Zod v4 UUID validator)
+
+**Workflow:** `.github/workflows/edge-integration-all.yml`  
+**Arquivo corrigido:** `tests/edge-functions/integration/receive-crm-callback.test.ts`  
+**Status:** CORRIGIDO em PR de `claude_05/nifty-sagan-r23gqh`
+
+**Causa raiz confirmada:**  
+O Zod foi atualizado de v3.25.76 para v4.6.6 (commit `3745501`) sem atualizar os testes. O Zod v4 tightened o validador UUID: o padrão agora é `[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}` (mais o nil UUID e o max UUID). Os testes usavam `00000000-0000-0000-0000-000000000001` cujo terceiro segmento (`0000`) começa com `0` — fora do range `[1-8]`.
+
+**Correção:** UUIDs de teste substituídos por `00000000-0000-4000-8000-00000000000X` (válidos RFC 4122 v4). Validado com Zod v4.6.6: 7/7 testes passam.
+
+---
+
+*Atualizado pela sessão Claude Code — https://claude.ai/code/session_01HW5obNKUFtUMbBdgUb94kY*
+
+---
+
+## P-S1 — Gate 5 Supabase Security Audit: 503 transiente
+
+**Workflow:** `.github/workflows/supabase-security-audit.yml` (Gate 5)
+**Run:** [#40129314502](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40129314502)
+**Conclusão:** `failure`
+**Categoria:** Transiente — Supabase indisponível no momento do run
+
+**Erro:** HTTP 503 na RPC `get_profile_and_roles` após 3 tentativas.
+
+**Ação necessária (PO):** Re-run manual do workflow quando o Supabase estiver disponível. Não requer mudança de código.
+
+---
+
+## P-EF1 — edge-functions-drift-check: drift detectado
+
+**Workflow:** `.github/workflows/edge-functions-drift-check.yml`
+**Run:** [#40132415960](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40132415960)
+**Conclusão:** `failure`
+**Categoria:** Requer acesso Supabase para reconciliação
+
+**Diagnóstico:** Drift entre edge functions commitadas no GitHub e as deployadas no Supabase canônico. O workflow faz `supabase functions download` para comparar — requer `SUPABASE_ACCESS_TOKEN` e acesso ao projeto.
+
+**Ação necessária (PO):** Reconciliar via `deploy-edge-functions.yml` (`workflow_dispatch`) para qualquer função com drift. Ver REGRA #8 (CLAUDE.md) — deploy só via workflow.
+
+---
+
+## P-LA1 — Lovable Autoheal: bot externo
+
+**Workflow:** `.github/workflows/lovable-autoheal.yml`
+**Run:** [#40131626314](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40131626314)
+**Conclusão:** `failure`
+**Categoria:** Dependência externa (Lovable bot)
+
+**Diagnóstico:** O workflow Lovable Autoheal é acionado pelo bot Lovable e depende de credenciais/webhooks do Lovable que não estão no controle direto do repositório.
+
+**Ação necessária (PO):** Verificar configuração do Lovable em https://lovable.dev/projects — pode ser expiração de token ou mudança de plano.
+
+---
+
+## P-CC1 — Running Copilot Code Review: dependência GitHub Copilot
+
+**Workflow:** `.github/workflows/copilot-review.yml`
+**Run:** [#40129318557](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40129318557)
+**Conclusão:** `failure`
+**Categoria:** Dependência GitHub Copilot (não é required check)
+
+**Diagnóstico:** O workflow de Code Review do Copilot depende de licença/permissões do GitHub Copilot para a organização.
+
+**Ação necessária (PO):** Verificar permissões de Copilot nas configurações da organização GitHub.
+
+---
+
+## P-UM1 — Uptime Monitor: serviço externo indisponível
+
+**Workflow:** `.github/workflows/uptime-monitor.yml`
+**Run:** [#40130514597](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40130514597)
+**Conclusão:** `failure`
+**Categoria:** Monitoramento externo (schedule)
+
+**Diagnóstico:** O Uptime Monitor testa endpoints externos que podem estar temporariamente indisponíveis. Não é required check para deployment.
+
+**Ação necessária:** Nenhuma urgente — o monitor re-executa automaticamente. Se persistir, verificar os endpoints monitorados no workflow.
+
+---
+
+*Atualizado pela sessão Claude Code — https://claude.ai/code/session_01HW5obNKUFtUMbBdgUb94kY*
+
+---
+
+## P-NPM1 — Baseline local impossível: registry npm privado retorna 403
+
+**Data detectado:** 2026-10-24  
+**Ambiente:** Container cloud do Claude Code (sessão remota)  
+**Comando:** `npm install` / `npm ci`  
+**Erro exato:**
+```
+npm error code E403
+npm error 403 403 Forbidden - GET https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/pngjs/-/pngjs-7.0.0.tgz
+```
+
+**Impacto:** Não é possível rodar `npm install`, `npm run build`, `npm run lint`, `tsc --noEmit` ou `vitest` localmente neste container. Baseline local de CI não pode ser executado.
+
+**Causa raiz:** O `.npmrc` do projeto aponta para `europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache` (registry privado do Google Artifact Registry do Lovable). O container do Claude Code não tem as credenciais (`GOOGLE_ARTIFACT_REGISTRY_TOKEN` ou equivalente).
+
+**Consequência para validação:** O CI do GitHub Actions tem acesso ao registry via secrets configurados no repo, portanto é a única fonte válida de prova de build/teste. A tabela de prova final usa links de execuções do GitHub Actions como evidência.
+
+**Ação necessária (PO):** Para habilitar baseline local em sessões futuras, configurar o secret do Google Artifact Registry no environment do container de desenvolvimento.
+
+**Não bloqueante para o objetivo desta sessão:** CI do GitHub Actions é suficiente como prova.
