@@ -503,56 +503,83 @@ Nenhuma — não é possível corrigir via código do repositório. O comportame
 
 ---
 
-## P16 — E2E — Critical Flows & Error Boundaries: workflow in_progress (não-required)
+## P16 — E2E — Critical Flows & Error Boundaries: failure (não-required)
 
 **Workflow:** `.github/workflows/e2e-critical-flows.yml`  
-**Run mais recente:** [#40124949243](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40124949243) (commit `71d624e8`)  
-**Status:** `in_progress` ao capturar (19:2x:xxZ)  
-**Categoria:** Workflow de longa duração — não é required check no Gate Final
+**Run em `ec736c90`:** [#40129973741](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40129973741) — `failure`  
+**Run anterior:** [#40124949243](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40124949243) (commit `71d624e8`)  
+**Categoria:** E2E failure — não é required check no Gate Final
 
 **Diagnóstico:**  
-Este workflow roda testes E2E críticos com múltiplos shards e leva 20-60 min. Não é um required check para merge em `main` — o Gate Final (`deploy-gates.yml`) pode concluir `success` enquanto este ainda está rodando. O status `in_progress` não bloqueia nenhuma PR nem o deploy.
+Workflow de E2E críticos com múltiplos shards. Conclusão `failure` em `ec736c90`. Não é required check para merge em `main` — o Gate Final (`deploy-gates.yml`) não o aguarda. Failure pré-existente, não introduzido por PR #2433 (documentação apenas).
 
 **Impacto no Gate Final:** Nenhum — não faz parte do required check "Gate Final - Deploy Ready".
 
 ---
 
-## P17 — Quote Builder Delivery Quality: workflow in_progress (não-required)
+## P17 — Quote Builder Delivery Quality: ✅ RESOLVED (success em ec736c90)
 
 **Workflow:** `.github/workflows/quote-builder-delivery.yml`  
-**Run mais recente:** [#40124949406](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40124949406) (commit `71d624e8`)  
-**Status:** `in_progress` ao capturar  
-**Categoria:** Workflow de longa duração — não é required check no Gate Final
+**Run em `ec736c90`:** [#40129973841](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40129973841) — `success` ✅  
+**Run anterior:** [#40124949406](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40124949406) (commit `71d624e8`)  
+**Categoria:** Workflow de qualidade do quote builder — não é required check no Gate Final
 
-**Diagnóstico:** Mesmo padrão de P16. Workflow de qualidade do quote builder com múltiplos shards E2E. Não é required check.
+**Diagnóstico:** Workflow concluiu `success` em `ec736c90`. Não é required check.
 
 **Impacto no Gate Final:** Nenhum.
 
 ---
 
-## P18 — E2E (Playwright): workflow in_progress (não-required)
+## P18 — E2E (Playwright): failure (não-required)
 
 **Workflow:** `.github/workflows/e2e-playwright.yml` (wf_id: 278436800)  
-**Run mais recente:** [#40124949375](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40124949375) (commit `71d624e8`)  
-**Status:** `in_progress` ao capturar  
-**Categoria:** Workflow de longa duração — não é required check no Gate Final (Gate 3 E2E Smoke no deploy-gates.yml é o required, não este)
+**Run em `ec736c90`:** [#40129973861](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40129973861) — `failure`  
+**Run anterior:** [#40124949375](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40124949375) (commit `71d624e8`)  
+**Categoria:** E2E Playwright standalone — não é required check no Gate Final (Gate 3 E2E Smoke no deploy-gates.yml é o required, não este)
 
-**Diagnóstico:** Este é o workflow standalone de E2E Playwright (todos os shards), diferente do Gate 3 (E2E Smoke) que está dentro do `deploy-gates.yml`. Este workflow pode levar 60+ min e não é required check.
+**Diagnóstico:** Workflow standalone de E2E Playwright (todos os shards) concluiu `failure` em `ec736c90`. Failure pré-existente, não introduzido por PR #2433. Gate 3 E2E Smoke (dentro de deploy-gates.yml) é o required check e passou.
 
 **Impacto no Gate Final:** Nenhum — Gate 3 E2E Smoke (dentro de deploy-gates.yml) passou: `success`.
 
 ---
 
-## P19 — CI Security & Drift Checks: workflow in_progress (não-required)
+## P19 — CI Security & Drift Checks: failure transitório (não-required)
 
 **Workflow:** `.github/workflows/ci-security-drift.yml`  
-**Run mais recente:** [#40124949332](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40124949332) (commit `71d624e8`)  
-**Status:** `in_progress` ao capturar  
-**Categoria:** Workflow de auditoria periódica — não é required check no Gate Final
+**Run em `ec736c90`:** [#40129973781](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40129973781) — `failure`  
+**Run anterior:** [#40124949332](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40124949332) (commit `71d624e8`)  
+**Categoria:** Advisory de auditoria de segurança — não é required check no Gate Final
 
-**Diagnóstico:** Workflow de auditoria de segurança e drift de schema (cron + push). Longa duração. Não é required check para merge.
+**Erro exato:**
+```
+zod: unexpected high advisory
+GHSA-mrhx-c7xc-m3w5 — https://github.com/advisories/GHSA-mrhx-c7xc-m3w5
+```
 
-**Impacto no Gate Final:** Nenhum.
+**Diagnóstico:** Falha transitória do npm registry ao buscar advisories. O script `scripts/check-dependency-audit.mjs` tem a constante `ZOD_CVE_SOURCE = 1243066` e `ALLOWED_ZOD_ADVISORY_URL = 'https://github.com/advisories/GHSA-mrhx-c7xc-m3w5'` — o advisory é conhecido e permitido. A falha indica que o registry devolveu o advisory de forma inesperada naquele momento (estado transitório). Não há CVE novo a tratar.
+
+**Impacto no Gate Final:** Nenhum — este workflow não é required check no Gate Final.
+
+---
+
+---
+
+## P20 — Branch Protection Sentinel: failure em ec736c90 (não-bloqueante)
+
+**Workflow:** `.github/workflows/branch-protection-sentinel.yml`  
+**Run em `ec736c90`:** [#40129973858](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40129973858) — `failure`  
+**Categoria:** Sentinel de governança — não é required check no Gate Final
+
+**Erro exato:**
+```
+Commit "docs: PENDENCIAS.md rev 9 + RELATORIO_CI.md rev 19" não termina em "(#NNN)"
+```
+
+**Causa raiz:** PR #2433 foi mergeado com `commit_title` explícito passado pelo MCP `github_merge_pull_request`, que omitiu o sufixo `(#2433)`. O GitHub não adicionou automaticamente porque o título foi sobrescrito.
+
+**Ação corretiva para o futuro:** Nunca passar `commit_title` explícito no squash merge — deixar o GitHub auto-compor `"<PR title> (#NNN)"`.
+
+**Impacto no Gate Final:** Nenhum — Branch Protection Sentinel não é required check no Gate Final (`deploy-gates.yml`). Failure puramente de governança/documentação, sem impacto no deploy.
 
 ---
 
