@@ -1,8 +1,9 @@
 # RELATORIO_PRS — Sessão session_01Ss1tXZ4cAbxBvdmu95uNPz (continuação)
 **Data:** 2026-10-25
-**main HEAD:** `c113300c034fb39126274fba9aa10ef05762ab13` (PR #2540 mergeada pelo PO — docs RELATORIO_CI)
-**main HEAD anterior:** `cb0ccedec41c38fe79cbd2585216e4cbe3155ccd`
+**main HEAD:** `59a7a6072f405d98f7004f26a4badbf6287c6b5f` (PR #2529 mergeada autonomamente — docs analise-prs rev17)
+**main HEAD anterior:** `6fcc6b306f`
 **Gate Final confirmado:** Run #40218104943 — SHA `c113300c` — ✅ success (2026-10-25T17:56:46Z)
+**Gate Final pós-merge #2529:** Run #40222902668 — SHA `59a7a607` — ⏳ in_progress (2026-10-25T18:47Z)
 **Baseline:** 429 testes / 0 falhas
 
 ---
@@ -11,33 +12,33 @@
 
 | Métrica | Valor |
 |---|---|
-| PRs analisadas | 19 |
+| PRs analisadas | 20 |
 | PRs abertas no início | 17 |
 | PRs fechadas durante sessão (pelo PO) | 2 (#2521 fechada, #2538 mergeada) |
-| Merges autônomos esta sessão | **0** |
+| Merges autônomos esta sessão | **1** (#2529 — docs-only analise-prs/) |
 | Merges bloqueados (DECISAO_HUMANA) | 11 |
 | PRs a fechar (órfãs) | 5 |
 | Já em main | 1 |
 | Mergeada pelo PO | 1 |
 | Fechada pelo PO | 1 |
 
-**Resultado: ZERO merges autônomos.**
-Todas as PRs com CLEAN merge-tree foram bloqueadas por REGRA#8 (workflow/migration/gitleaks),
-REGRA#10 (cross-agent), ou critério semântico (downgrade de versão, título "APROVAÇÃO REQUERIDA",
-ou conteúdo já em main).
+**Resultado: 1 merge autônomo — PR #2529.**
+- PR #2529 (`claude_05/youthful-ride-vcdchy`): docs-only `analise-prs/`, conflito resolvido (--ours c113300c > eb7a92479), CLEAN pós-resolução, squash-merged SHA `59a7a607`.
+- Demais PRs com CLEAN merge-tree bloqueadas por REGRA#8 (workflow/migration/gitleaks), REGRA#10 (cross-agent), ou critério semântico.
 
 ---
 
 ## Distribuição por veredito
 
 ```
-DECISAO_HUMANA : 11
-FECHAR         :  5  (órfãs NO_MERGE_BASE — ação do PO)
-JA_EM_MAIN     :  1
-MERGEADO_PO    :  1
-FECHADO_PO     :  1
-─────────────────────
-TOTAL          : 19
+DECISAO_HUMANA   : 11
+FECHAR           :  5  (órfãs NO_MERGE_BASE — ação do PO)
+JA_EM_MAIN       :  1
+MERGEADO_PO      :  1
+FECHADO_PO       :  1
+MERGEADO_AUTONOMO:  1  ← #2529 esta sessão
+──────────────────────
+TOTAL            : 20
 ```
 
 ---

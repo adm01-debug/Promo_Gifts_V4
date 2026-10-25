@@ -1,9 +1,9 @@
 {
-  "gerado_em": "2026-10-25T18:00:00Z",
+  "gerado_em": "2026-10-25T18:50:00Z",
   "sessao": "https://claude.ai/code/session_01Ss1tXZ4cAbxBvdmu95uNPz",
-  "main_head": "c113300c034fb39126274fba9aa10ef05762ab13",
-  "main_head_descricao": "PR #2540 mergeada pelo PO — docs RELATORIO_CI atualiza cb0ccedc success 17:41Z + Comparação Final",
-  "main_head_anterior": "cb0ccedec41c38fe79cbd2585216e4cbe3155ccd",
+  "main_head": "59a7a6072f405d98f7004f26a4badbf6287c6b5f",
+  "main_head_descricao": "PR #2529 mergeada autonomamente — docs(analise-prs): entregáveis sessão 01Ss1tXZ — 19 PRs analisadas",
+  "main_head_anterior": "6fcc6b306f",
   "baseline": {
     "testes": 429,
     "falhas": 0,
@@ -15,10 +15,24 @@
     "nota": "Gate Final run #40218104943 confirmado nesta sessão: c113300c = success (17:56:46Z). 17 jobs passaram. Baseline inalterada: 429 testes / 0 falhas."
   },
   "prs_analisados": 19,
-  "prs_abertos_atuais": 17,
+  "prs_abertos_atuais": 16,
   "prs_fechados_durante_sessao": [
     {"number": 2521, "titulo": "chore(migrations): E99 repair-only company_fields (rev2)", "fechado_por": "PO", "motivo": "fechado externamente"},
     {"number": 2538, "titulo": "docs: RELATORIO_CI — registra Gate Final HEAD confirmado (4cb4feb4)", "fechado_por": "PO", "motivo": "mergeada pelo PO"}
+  ],
+  "mergeadas_autonomamente": [
+    {
+      "number": 2529,
+      "titulo": "docs(analise-prs): entregáveis sessão 01Ss1tXZ — 53 PRs, 14 merges, Gate Final ✅",
+      "branch": "claude_05/youthful-ride-vcdchy",
+      "merge_sha": "59a7a6072f405d98f7004f26a4badbf6287c6b5f",
+      "merge_method": "squash",
+      "mergeado_em": "2026-10-25T18:47Z",
+      "gate_final_pos_merge_run": "40222902668",
+      "gate_final_pos_merge_status": "in_progress",
+      "criterios_passaram": "1|2|3|4|5|6|7|8",
+      "nota": "docs-only analise-prs/ — sem risco de regressão. Branch desta sessão (claude_05/), sem REGRA#8 triggers."
+    }
   ],
   "contagem_vereditos": {
     "DECISAO_HUMANA": 11,
@@ -26,8 +40,9 @@
     "JA_EM_MAIN": 1,
     "MERGEADO_PO": 1,
     "FECHADO_PO": 1,
-    "total": 19
+    "MERGEADO_AUTONOMO": 1,
+    "total": 20
   },
-  "merges_autonomos_esta_sessao": 0,
-  "worktrees_removidos": []
+  "merges_autonomos_esta_sessao": 1,
+  "worktrees_removidos": ["wt-2529", "wt-v2-2529"]
 }
