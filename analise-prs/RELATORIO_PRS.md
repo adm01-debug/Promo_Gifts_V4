@@ -163,3 +163,69 @@ Estas branches não têm ancestral comum com `main`. Impossível mergear sem reb
 11. **PR #2529** — entregáveis sessão anterior (substituída por esta sessão)
 12. **PR #2532** — docs estado run refs (CONFLICT, obsoleto)
 13. **PR #2452** — fix docs PR-2441.md (CONFLICT)
+
+---
+
+## NÃO VERIFICADO
+
+Itens que não puderam ser verificados diretamente nesta sessão por limitação de ambiente:
+
+| Item | Motivo | Alternativa usada |
+|---|---|---|
+| `npm run typecheck` local | `node_modules` ausente — npm 403 (registry `europe-west1-npm.pkg.dev`) | Gate 1 CI job 121244048940 step success (60s) — 0 erros |
+| `npm run lint:baseline` local | `node_modules` ausente | Gate 1 CI job 121244048940 step success (~2min) — 0 erros |
+| `npm run build` local | `node_modules` ausente | Gate 6 CI job 121245372874 step success (12s) |
+| `vitest` local | `node_modules` ausente | Gate 2 CI job 121244048957 — 429/0 falhas |
+| Testes com falha por nome | Execução local impossível | Nenhum — todos 429 passam (Gate 2 logs confirmam 0 falhos nomeados) |
+| Vercel preview PR #2529 | Falha de infraestrutura (projeto fantasma) | Diagnóstico: deployment `dpl_DpFQFz7H3SVu3Yw3fAS5SBu8EFW9`, estado ERROR, build ~1.9s, logs vazios. Causa: `prj_W1Zdi6BQWkAwQx5VJjpSNlZubeok`. Requer ação PO. |
+
+**Testes falhando por nome no baseline: NENHUM** (confirmado via Gate 2 logs, run #40218104943).
+
+---
+
+## Dossiers individuais — confirmação de cobertura
+
+Todos os 19 PRs analisados têm dossier em `analise-prs/dossies/`:
+
+| PR | Arquivo | Veredito |
+|---|---|---|
+| #2415 | `dossies/PR-2415.md` | DECISAO_HUMANA |
+| #2417 | `dossies/PR-2417.md` | FECHAR |
+| #2418 | `dossies/PR-2418.md` | FECHAR |
+| #2419 | `dossies/PR-2419.md` | FECHAR |
+| #2420 | `dossies/PR-2420.md` | FECHAR |
+| #2422 | `dossies/PR-2422.md` | FECHAR |
+| #2428 | `dossies/PR-2428.md` | DECISAO_HUMANA |
+| #2432 | `dossies/PR-2432.md` | JÁ_EM_MAIN |
+| #2443 | `dossies/PR-2443.md` | DECISAO_HUMANA |
+| #2449 | `dossies/PR-2449.md` | DECISAO_HUMANA |
+| #2452 | `dossies/PR-2452.md` | DECISAO_HUMANA |
+| #2469 | `dossies/PR-2469.md` | DECISAO_HUMANA |
+| #2503 | `dossies/PR-2503.md` | DECISAO_HUMANA |
+| #2520 | `dossies/PR-2520.md` | DECISAO_HUMANA |
+| #2521 | `dossies/PR-2521.md` | FECHADO_PO |
+| #2529 | `dossies/PR-2529.md` | DECISAO_HUMANA |
+| #2532 | `dossies/PR-2532.md` | DECISAO_HUMANA |
+| #2537 | `dossies/PR-2537.md` | DECISAO_HUMANA |
+| #2538 | `dossies/PR-2538.md` | MERGEADO_PO |
+
+---
+
+## Por que ZERO merges autônomos — justificativa consolidada
+
+O mandato exige todos os 8 critérios. Nenhuma das 17 PRs abertas passa nos 8:
+
+| Critério falhante | PRs afetadas |
+|---|---|
+| **#1 Não-válida (NO_MERGE_BASE)** | #2417, #2418, #2419, #2420, #2422 |
+| **#2 JÁ_EM_MAIN (cherry=0)** | #2432 |
+| **#3 CONFLICT** | #2415, #2428, #2449, #2452, #2469, #2503, #2529, #2532 |
+| **#5 Regressão semântica (downgrade)** | #2520 (1.2.1→1.0.0) |
+| **#6 REGRA#8 (.github/workflows/)** | #2415, #2417, #2418, #2419, #2469, #2537 |
+| **#6 REGRA#8 (.gitleaks.toml)** | #2418, #2428 |
+| **#6 REGRA#8 (supabase/migrations/)** | #2449 |
+| **#6 REGRA#10 (cross-agent)** | #2415, #2428, #2432, #2443, #2449, #2452, #2469, #2503, #2532 |
+| **#8 Baixa confiança / título "APROVAÇÃO REQUERIDA"** | #2443 |
+
+**PRs CLEAN sem CONFLICT:** #2432 (JÁ_EM_MAIN), #2443 (REGRA#10 + segurança), #2520 (downgrade), #2537 (REGRA#8 workflow).
+Nenhuma das quatro escapa de ao menos um bloqueio legítimo pelo CLAUDE.md.
