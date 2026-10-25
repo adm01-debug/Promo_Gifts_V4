@@ -12,7 +12,8 @@
 | P03_analyze | ANALYZE em 5 tabelas críticas | AUTÔNOMA | ✅ Aplicado | `pg_stat_user_tables` — ver §P03_analyze |
 | P02 | 2 índices FK sem suporte | JÁ LIBERADO | ✅ Aplicado em produção | run #40164828396 — ledger `20261024180001` — ver §P02 |
 | P03_migration | ANALYZE via migration `20261025002500` | JÁ LIBERADO | ✅ Aplicado em produção | run #40165426404 — ledger `20261025002500` — ver §P03_migration |
-| P12 | auth header backfill-image-dimensions | AUTÔNOMA | ✅ Já aplicado (pré-existente) | job 222 — ver §P12 |
+| P12 | CRON-NEW-001 run-script auth (image-dimensions-backfill) | AUTÔNOMA | ✅ Coberto por P01 (jobid=235 tem x-cron-secret) | run #40166925674 — jobid=235 — ver §P12 |
+| P19_cron001 | CRON-001 redistribuição 15 jobs (incidente 2026-10-22) | AUTÔNOMA | ✅ Aplicado em produção | ledger `20261022193000` — ver §P19_cron001 |
 | P10 | REVOKE fn_cron_guard anon/public | JÁ LIBERADO | ✅ Aplicado em produção | run #40165954774 — ledger `20261022100001` — ver §P10 |
 | P08 (DB) | idempotency_key workspace_notifications | JÁ LIBERADO | ✅ Aplicado em produção | run #40166677491 — ledger `20261024180002` — ver §P08 |
 | P08 (EF) | send-notification upsert idempotente | AUTÔNOMA | ✅ Coluna existe — EF já usava upsert | `send-notification/index.ts` |
@@ -68,22 +69,31 @@ WHERE schemaname='public' ORDER BY last_analyze DESC LIMIT 5;
 
 ---
 
-## §P12 — auth header backfill-image-dimensions
+## §P12 — CRON-NEW-001: run-script sem auth (image-dimensions-backfill → resolvido por P01)
 
-**Status:** Já estava aplicado em produção antes da FASE B.
+**Achado CRON-NEW-001:** `image-dimensions-backfill` (jobid=235) chamava `/functions/v1/run-script` via `net.http_post` sem header de autenticação (`x-cron-secret` ausente). A edge function `run-script` tem `verify_jwt=false`, permitindo execução não autenticada.
 
-**Evidência (SELECT ao vivo — 2026-10-24):**
+**Resolução:** Coberto pela migration **P01** (`20261024190001_cron_auth_p01_image_dimensions_backfill.sql`) — aplicada em produção via run #40166925674, ledger `20261024190001` ✅.
+
+**Condição vault (P12 proposta):** A proposta P12 usa `vault.decrypted_secrets` (não literal de segredo) ✅ — identico ao padrão P01 que usa `public.get_edge_function_secret('CRON_SECRET')`.
+
+**Evidência pós-apply P01 (2026-10-25T ~06:00 UTC):**
 ```sql
-SELECT jobid, jobname, LEFT(command,500) FROM cron.job WHERE jobid=222;
--- jobid=222, jobname='backfill-image-dimensions'
+SELECT jobid, jobname, schedule, LEFT(command,400) FROM cron.job WHERE jobid=235;
+-- jobid=235 | image-dimensions-backfill | 31 */3 * * *
 -- command: SELECT net.http_post(
---   url := public.get_edge_functions_base_url() || '/functions/v1/backfill-image-dimensions',
---   headers := jsonb_build_object('Content-Type','application/json',
---     'x-cron-secret', public.get_edge_function_secret('BACKFILL_DIM_CRON_SECRET')),
---   body := '{"trigger":"cron"}'::jsonb, timeout_milliseconds := 55000)
+--   url := public.get_edge_functions_base_url() || '/functions/v1/run-script',
+--   headers := jsonb_build_object(
+--     'Content-Type', 'application/json',
+--     'x-cron-secret', public.get_edge_function_secret('CRON_SECRET')
+--   ),
+--   body := '{"script":"image-dimensions-worker"}'::jsonb,
+--   timeout_milliseconds := 55000)  ✅ x-cron-secret via Vault
 ```
 
-**Conclusão:** P12 não requer migration — já protegido com `x-cron-secret` via Vault. Nenhuma escrita necessária.
+**Nota jobid=222** (`backfill-image-dimensions`): chama `/functions/v1/backfill-image-dimensions` (não run-script) com `x-cron-secret` via `BACKFILL_DIM_CRON_SECRET` — pré-existente, não relacionado ao achado CRON-NEW-001.
+
+**Conclusão:** CRON-NEW-001 resolvido por P01. Migration P12 separada é redundante — achado fechado.
 
 ---
 
@@ -107,6 +117,56 @@ WHERE version = '20261024180003';
 ```
 
 **Efeito:** job `auto-block-offenders` passou de cada 5 min para cada 15 min (1,16,31,46) — reduz pressão sobre tabela de bloqueios temporários mantendo proteção contra abusadores.
+
+---
+
+## §P19_cron001 — CRON-001: redistribuição de 15 jobs (incidente 2026-10-22)
+
+**Migration:** `supabase/migrations/20261022193000_incidente_2026_10_22_alivio_carga_cron.sql`
+**Origem:** commit direto em `claude_05/friendly-keller-3mgkhz`, depois incorporado via merge em main
+**Ledger:** `version=20261022193000` confirmado em `supabase_migrations.schema_migrations` ✅
+
+**Causa raiz (CRON-001):** 135 jobs ativos com `cron.max_running_jobs=32`; múltiplos jobs com schedule `*/5` (`:00,:05,:10,...,:55`) disparavam simultâneamente, causando startup timeout em cascata.
+
+**Jobs redistribuídos (15):** Cada um recebeu offset único para eliminar colisão de slot.
+
+**Evidência pós-apply (2026-10-25T ~06:15 UTC):**
+```sql
+SELECT jobname, schedule FROM cron.job
+WHERE jobname IN (
+  'asia-image-uploader','backfill-image-dimensions','dispatcher-failure-alert',
+  'fantasmas-deactivate-guard','hash-product-images','image-dimensions-backfill',
+  'medallion-promote-tick','process-pending-products','reposicao-backfill-hourly',
+  'sm-site-scrape','sm-stock-guard','sm-variant-coherence-guard',
+  'sync-is-stockout-universal','xbz-enrich-gold-extractors','xbz-site-scrape','xbz-stock-sync'
+) ORDER BY jobname;
+-- asia-image-uploader          | 9 * * * *
+-- backfill-image-dimensions    | 7,22,37,52 * * * *
+-- dispatcher-failure-alert     | 5,20,35,50 * * * *
+-- fantasmas-deactivate-guard   | 4,34 * * * *
+-- hash-product-images          | 10,25,40,55 * * * *
+-- image-dimensions-backfill    | 31 */3 * * *
+-- medallion-promote-tick       | 6,36 * * * *
+-- process-pending-products     | 2,17,32,47 * * * *
+-- reposicao-backfill-hourly    | 42 */4 * * *
+-- sm-site-scrape               | 14,44 * * * *
+-- sm-stock-guard               | 3,18,33,48 * * * *
+-- sm-variant-coherence-guard   | 12,27,42,57 * * * *
+-- sync-is-stockout-universal   | 0,15,30,45 * * * *
+-- xbz-enrich-gold-extractors   | 26,56 * * * *
+-- xbz-site-scrape              | 1,31 * * * *
+-- xbz-stock-sync               | 23,53 * * * *
+```
+
+```sql
+SELECT COUNT(*) AS ledger_count FROM supabase_migrations.schema_migrations
+WHERE version = '20261022193000';
+-- ledger_count: 1  ✅
+```
+
+**Efeito:** Eliminação de colisão de slot no pg_cron — todos os 15 jobs têm agora offsets distintos entre `:00` e `:59`, sem sobreposição nos mesmos minutos.
+
+**Nota:** Migrations `20261022100020`, `20261022100021`, `20261022100022` (refinamentos adicionais de 3 jobs) existem no repo mas ainda não estão no ledger — são escopo de P09 (ledger repair) e serão aplicadas via `db-apply-migration.yml` após APROVAÇÃO do PO.
 
 ---
 
