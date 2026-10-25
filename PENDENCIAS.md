@@ -907,4 +907,35 @@ Adicionar `page.on('crash', cb)` em `22-header-sticky.spec.ts` para capturar o c
 
 ---
 
+## P63 — E2E • Swatch QuickView: failure (pré-existente — infra + "Check min tests executed")
+
+**Workflow:** `.github/workflows/e2e-swatch-quickview.yml`  
+**Run mais recente com falha:** [#40203094309](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40203094309) (commit `317a317d`)  
+**Runs anteriores confirmando pré-existência:** [#40198674490](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40198674490) (a29b3a19), [#40196412191](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40196412191), [#40195986713](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40195986713) — todos anteriores ao trabalho desta sessão  
+**Conclusão:** `failure`  
+**Categoria:** E2E — combinação de falha em gate mínimo de testes + shutdown de runner (infraestrutura)
+
+**Jobs afetados no run #40203094309:**
+- `firefox • swatch→QV`: falhou em `Check min tests executed` e `Run swatch→QuickView suite`
+- `chromium • swatch→QV`: falhou em `Check min tests executed` e `Run swatch→QuickView suite`
+- `webkit • swatch→QV`: cancelado por `The runner has received a shutdown signal` (shutdown de infraestrutura GitHub Actions)
+
+**Specs envolvidas:**
+- `e2e/catalog/swatch-quickview-list-table.spec.ts`
+- `e2e/catalog/swatch-quickview-v2-list-table.spec.ts`
+- `e2e/catalog/swatch-picker-v2-focus-and-quickview.spec.ts`
+
+**Causa raiz:**  
+O job inclui um step `Check min tests executed` que valida que um número mínimo de testes foi encontrado/executado. Com 0 testes coletados (possivelmente por seletor de arquivo, skip global ou ausência de produto no estado do catálogo em CI), o check falha imediatamente. O shutdown de webkit é independente — infraestrutura do runner encerrou o job antes do término.
+
+**Pré-existente confirmado:**  
+Os runs #40198674490 (a29b3a19), #40196412191 e #40195986713 — todos anteriores a qualquer commit desta sessão — já apresentavam a mesma falha. A sessão não introduziu nem agravou o problema.
+
+**Ação necessária pelo PO:**  
+Investigar por que `Check min tests executed` coleta 0 testes: verificar se os specs existem no estado atual do catálogo no CI (produtos com swatches configurados), se há `test.skip` global ou filtro de arquivo incorreto.
+
+**Impacto no Gate Final:** Nenhum — `e2e-swatch-quickview.yml` NÃO é required check no Gate Final (`deploy-gates.yml`). Gate Final permanece verde.
+
+---
+
 *Atualizado pela sessão Claude Code — https://claude.ai/code/session_01HW5obNKUFtUMbBdgUb94kY*
