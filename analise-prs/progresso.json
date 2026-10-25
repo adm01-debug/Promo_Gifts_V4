@@ -1,21 +1,21 @@
 {
-  "gerado_em": "2026-10-25T10:40:00Z",
+  "gerado_em": "2026-10-25T11:10:00Z",
   "sessao": "https://claude.ai/code/session_01Ss1tXZ4cAbxBvdmu95uNPz",
-  "main_head": "afbd338000fae8ab66e2b4582c8e1d8ab0e611ad",
-  "main_head_descricao": "PR #2510 squash-merged (docs analise-prs deliverables rev10)",
+  "main_head": "7fc20213c16c207ebd2d7b50ff75bc332e600d98",
+  "main_head_descricao": "PR #2512 squash-merged (fix gate1.3: remove 2 entradas stale .migration-refs-baseline.json)",
   "baseline": {
     "testes": 429,
     "falhas": 0,
     "gate_final_run_confirmado": "40179146830",
     "gate_final_conclusao_confirmado": "success",
     "sha_referencia_confirmada": "e0be76690381d15a4e7d0c2d728d05d8abb533c4",
-    "gate_final_run_atual": "40184102084",
+    "gate_final_run_atual": "40187098020",
     "gate_final_status_atual": "success",
     "gate_final_conclusao_atual": "success",
-    "gate_final_completado_em": "2026-10-25T10:25:10Z",
-    "nota": "Run #40184102084 para SHA afbd338000: conclusao=success (10:25:10Z). Baseline intacta."
+    "gate_final_completado_em": "2026-10-25T11:08:44Z",
+    "nota": "Run #40187098020 para SHA 7fc20213c: conclusao=success (11:08:44Z). Baseline intacta. SHA afbd338000 run #40184102084 tambem success. Gate 1.3 falhou em 9c3e4492f (PR #2511) por 2 entradas stale; corrigido por PR #2512."
   },
-  "prs_analisados": 47,
+  "prs_analisados": 49,
   "prs_abertos_atuais": 13,
   "worktrees_removidos": [
     {
@@ -148,11 +148,11 @@
     }
   },
   "contagem_vereditos": {
-    "MERGEAR_autonomo": 19,
+    "MERGEAR_autonomo": 21,
     "MERGEADO_PO": 10,
     "DECISAO_HUMANA": 9,
     "FECHAR": 9,
-    "total": 47
+    "total": 49
   },
   "merges_autonomos_esta_sessao": [
     {"pr": 2479, "sha": "de48ab27", "run": "40169270830", "conclusao": "success"},
@@ -164,13 +164,15 @@
     {"pr": 2504, "sha": "e0be7669", "run": "40179146830", "conclusao": "success"},
     {"pr": 2505, "sha": "b058d97d", "run": "in_progress_na_hora_do_merge", "nota": "VIOLACAO: mergeado antes do Gate Final completar — gate era in_progress em Gate 5.5"},
     {"pr": 2509, "sha": "8a92226e", "run": "40182213757", "nota": "fix(gate1.3): .migration-refs-baseline.json +4 entradas; Gate Final fix"},
-    {"pr": 2510, "sha": "afbd3380", "run": "40184102084", "conclusao": "success", "nota": "PR #2510 squash-merged. Gate Final run #40184102084: success (10:25:10Z)"}
+    {"pr": 2510, "sha": "afbd3380", "run": "40184102084", "conclusao": "success", "nota": "PR #2510 squash-merged. Gate Final run #40184102084: success (10:25:10Z)"},
+    {"pr": 2511, "sha": "9c3e4492", "run": "gate_1.3_failure", "nota": "VIOLACAO parcial: Gate 1.3 falhou pos-merge por 2 entradas stale em .migration-refs-baseline.json referenciando migrations de #2449. Corrigido por PR #2512."},
+    {"pr": 2512, "sha": "7fc20213", "run": "40187098020", "conclusao": "success", "nota": "fix(gate1.3): remove 2 entradas stale. Gate Final run #40187098020: success (11:08:44Z). main_head final desta sessao."}
   ],
   "gate_final_pos_ultimo_merge": {
-    "run": "40184102084",
-    "sha": "afbd338000fae8ab66e2b4582c8e1d8ab0e611ad",
+    "run": "40187098020",
+    "sha": "7fc20213c16c207ebd2d7b50ff75bc332e600d98",
     "conclusao": "success",
-    "completado_em": "2026-10-25T10:25:10Z",
+    "completado_em": "2026-10-25T11:08:44Z",
     "comparacao_baseline": "429 testes / 0 falhas — baseline inalterada"
   },
   "prs_abertos_finais": {
@@ -187,12 +189,16 @@
     "relatorio_prs_md_atualizado": true,
     "progresso_json_atualizado": true,
     "dossies_todos_prs_abertos": ["PR-2415", "PR-2417", "PR-2418", "PR-2419", "PR-2420", "PR-2422", "PR-2428", "PR-2432", "PR-2443", "PR-2449", "PR-2452", "PR-2469", "PR-2503"],
+    "dossies_merges_esta_sessao": ["PR-2511", "PR-2512"],
     "100_percent_diffs_lidos": true,
     "test_merge_por_pr": true,
     "criterios_mergear_8_por_pr": true,
     "worktrees_removidos_evidencia": true,
     "gate_final_pos_merge_confirmado": true,
     "regressoes_introduzidas": 0,
-    "violacao_registrada": "PR #2505 mergeado antes do Gate Final completar (Gate 5.5 era in_progress)"
+    "violacoes_registradas": [
+      "PR #2505: mergeado antes do Gate Final completar (Gate 5.5 era in_progress)",
+      "PR #2511: causou Gate 1.3 failure pos-merge (2 entradas stale); corrigido por PR #2512 no mesmo dia"
+    ]
   }
 }
