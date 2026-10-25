@@ -87,6 +87,7 @@ export default function KitBuilderPage() {
 
   return (
     <div
+      data-testid="kit-builder-container"
       className="relative min-h-screen"
       style={{
         background: `
