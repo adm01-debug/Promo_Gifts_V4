@@ -1,8 +1,8 @@
 # Pendências CI — Bloqueios Externos
 
-**Atualizado em:** 2026-10-25 (rev 26 — P64/P65 adicionados; P2b run atualizado para d74b33fb)  
+**Atualizado em:** 2026-10-25 (rev 27 — P66/P67 adicionados; commit de referência atualizado para c113300c)  
 **Branch de referência:** `claude_05/nifty-sagan-r23gqh`  
-**Commit de referência (main):** `18755518` — docs(analise-prs): deliverables rev16
+**Commit de referência (main):** `c113300c` — docs: RELATORIO_CI.md
 
 ---
 
@@ -109,7 +109,6 @@ flows/90-personalization-pdp: Error: expect(page).toHaveURL(/\/produtos\/.+/) fa
 
 flows/91-personalization-via-simulator: Error: expect(page).toHaveURL(/\/produtos\/.+/) failed
   - Expect "toHaveURL" with timeout 15000ms
-  > 24 | await expect(page).toHaveURL(/\/produtos\/.+/);
 
 flows/92-personalization-auth: Error: expect(page).toHaveURL(/\/login/) failed
   - Expect "toHaveURL" with timeout 15000ms
@@ -1008,6 +1007,77 @@ Dispatch de `.github/workflows/deploy-edge-functions.yml` com `function_name: va
 Verificar que o próximo run de `edge-integration-all.yml` após o deploy passa. Se continuar falhando, revisar se há outra divergência na função deployada.
 
 **Impacto no Gate Final:** Nenhum — `edge-integration-all.yml` NÃO é required check no Gate Final (`deploy-gates.yml`). Gate Final permanece verde.
+
+---
+
+## P66 — Uptime Monitor: health-check edge function retornando HTTP 4xx (infraestrutura)
+
+**Workflow:** `.github/workflows/uptime-monitor.yml`  
+**Run com falha:** [#40217100001](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40217100001) (commit `cb0ccedec4`)  
+**Conclusão:** `failure`  
+**Categoria:** Falha de infraestrutura — edge function em produção retornando erro HTTP
+
+**Job afetado:** `health-check` (job #121240502808)  
+**Step falho:** "Probe site + edge function"  
+**Erro exato (saída do step):**
+```
+site         | 0    OK
+health-check | 22   FAIL  ← curl exit code 22 = HTTP 4xx response
+check-login  | 0    OK
+auth-health  | 0    OK
+```
+
+**Causa raiz:**  
+O step executa `curl --fail-with-body` contra `$SUPABASE_URL/functions/v1/health-check`. Exit code 22 = servidor retornou HTTP 4xx. A edge function `health-check` em `doufsxqlfjyuvxuezpln` está retornando erro HTTP — pode ser: (a) edge function não deployada ou fora de serviço; (b) função retorna 401/403/404; (c) timeout ou rate limit do Supabase. O workflow funciona corretamente como monitor de saúde — a falha é de infraestrutura, não de código do workflow.
+
+**Issue criada automaticamente:** #2539  
+
+**Ação necessária pelo PO:**  
+1. Verificar estado da edge function `health-check` via dashboard Supabase (`doufsxqlfjyuvxuezpln`)
+2. Se necessário, redeploy via `workflow_dispatch` em `.github/workflows/deploy-edge-functions.yml` com `function_name: health-check`
+3. Testar manualmente: `curl -v "$SUPABASE_URL/functions/v1/health-check"` para identificar o código HTTP exato
+
+**Impacto no Gate Final:** Nenhum — `uptime-monitor.yml` NÃO é required check no Gate Final (`deploy-gates.yml`). Gate Final permanece verde.
+
+---
+
+## P67 — Quote Builder Delivery Quality: E2E falha por timeout de auth Supabase (infraestrutura)
+
+**Workflow:** `.github/workflows/delivery-quality.yml`  
+**Run com falha:** [#40218104811](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40218104811) (commit `c113300c`)  
+**Conclusão:** `failure`  
+**Categoria:** Falha de infraestrutura — Supabase auth retornando 504 em CI
+
+**Job afetado:** `quality-gate` (job #121243545360)  
+**Step falho:** "🌍 E2E & Visual Regression" (step 5)  
+**Resultado dos testes:**
+```
+1 failed   — should hide tooltip on Escape key
+2 flaky    — should verify visual alignment across viewports
+             should verify warning guidance via delivery tooltip
+2 passed
+```
+
+**Erro exato (log do job):**
+```
+Error: [loginViaUI] Timeout aguardando redirect pós-login.
+  URL atual: http://localhost:8080/login
+  Botão submit: Entrar na Plataforma
+  Chamadas Supabase (75000ms de espera):
+    +6153ms POST auth/v1/token -> 504 (58462ms)
+    +851ms  GET rest/v1/system_settings -> PENDENTE há 80378ms
+Causa original: Error: esperado redirect para fora da tela de login
+```
+
+**Causa raiz:**  
+`POST auth/v1/token` retornou **HTTP 504 (Gateway Timeout)** após 58 segundos — serviço de autenticação do Supabase indisponível no momento do run. O login nunca completou; todos os testes autenticados falharam. **Não é regressão de código** — o commit `c113300c` é docs-only (`RELATORIO_CI.md`). O run anterior em `cb0ccedc` passou. Padrão idêntico ao P16/P23: instabilidade do Supabase auth em ambiente CI.
+
+**Pré-existência:** Não — falha transiente de infraestrutura. Commits anteriores passaram.
+
+**Ação necessária pelo PO:**  
+Nenhuma. Falha transiente de infraestrutura. O próximo run normal deve passar. Se continuar falhando, verificar status do Supabase auth em `doufsxqlfjyuvxuezpln`.
+
+**Impacto no Gate Final:** Nenhum — `delivery-quality.yml` NÃO é required check no Gate Final (`deploy-gates.yml`). Gate Final permanece verde.
 
 ---
 
