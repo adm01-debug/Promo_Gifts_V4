@@ -23,6 +23,9 @@
     "detalhes_fase_b": [
       {"version": "20261022100001", "name": "security_fn_cron_guard_revoke_anon", "classe": "JÁ LIBERADO P10", "run": "#40165954774"},
       {"version": "20261022193000", "name": "incidente_2026_10_22_alivio_carga_cron", "classe": "AUTÔNOMA P19_cron001", "nota": "autônoma pré-FASE-B; confirmada no ledger"},
+      {"version": "20261022194000", "name": "security_revoke_external_connections_anon", "classe": "pré-FASE-B PR#2416", "nota": "E30 — aplicada em PR #2416 antes de FASE B; confirmada no ledger"},
+      {"version": "20261022194100", "name": "security_revoke_mockup_approval_links_anon", "classe": "pré-FASE-B PR#2416", "nota": "E40 — aplicada em PR #2416 antes de FASE B; confirmada no ledger"},
+      {"version": "20261022194200", "name": "security_revoke_mcp_kv_get_authenticated", "classe": "pré-FASE-B PR#2416", "nota": "E18 — aplicada em PR #2416 antes de FASE B; confirmada no ledger"},
       {"version": "20261024163500", "name": "fix_audit_security_definer_acl_regrole_cast", "classe": "externa", "nota": "aplicada via db-apply-migration.yml entre snapshot 2026-10-24T16:05 e FASE B; confirmada no ledger SELECT"},
       {"version": "20261024180001", "name": "fk_indexes_p02", "classe": "JÁ LIBERADO P02", "run": "#40164828396"},
       {"version": "20261024180002", "name": "workspace_notifications_idempotency_p08", "classe": "JÁ LIBERADO P08", "run": "#40166677491"},
@@ -41,5 +44,5 @@
     "rls_policies_public": 0,
     "edge_functions": 0
   },
-  "nota": "Regenerado 2026-10-25 com queries ao vivo (sessão 01JPgV7FqkG4UuFBJWiJa9FB). Delta total desde baseline_antes (2026-10-22): migrations_ledger +11 (8 itens FASE B + 3 pré-FASE-B incluindo P19_cron001). Demais métricas Δ=0: nenhuma tabela/view/função/policy/edge_function criada ou removida — apenas o aprovado/autônomo mudou. APROVAÇÃO pendente: P06, P09, P14, P15, P03_security_definer (PR #2443)."
+  "nota": "Regenerado 2026-10-25 com queries ao vivo (sessão 01JPgV7FqkG4UuFBJWiJa9FB). Delta total desde baseline_antes (2026-10-22): migrations_ledger +11 — confirmados individualmente via SELECT: 20261022100001(P10/JÁ LIBERADO), 20261022193000(P19_cron001/AUTÔNOMA), 20261022194000(E30/PR#2416), 20261022194100(E40/PR#2416), 20261022194200(E18/PR#2416), 20261024163500(externa), 20261024180001(P02/JÁ LIBERADO), 20261024180002(P08/JÁ LIBERADO), 20261024180003(P19/JÁ LIBERADO), 20261024190001(P01/JÁ LIBERADO), 20261025002500(P03/JÁ LIBERADO). Todos 11 têm aprovação via PR mergeada ou são autônomos. Demais métricas Δ=0: nenhuma tabela/view/função/policy/edge_function criada ou removida. APROVAÇÃO pendente: P06, P09, P14, P15, P03_security_definer (PR #2443)."
 }
