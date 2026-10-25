@@ -13,6 +13,7 @@ import {
   BookOpen,
   Tag,
   Sparkles,
+  ShieldAlert,
 } from 'lucide-react';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -48,6 +49,7 @@ import { CartHeaderButton } from '@/components/cart/CartHeaderButton';
 import { cn } from '@/lib/utils';
 import { RoleBadge } from '@/components/RoleBadge';
 import { AppLogo } from '@/components/layout/AppLogo';
+import { AnonymizeAccountDialog } from '@/components/privacy/AnonymizeAccountDialog';
 
 import { logger } from '@/lib/logger';
 interface HeaderProps {
@@ -63,6 +65,7 @@ export const Header = React.memo(({ onMenuToggle, sidebarOpen }: HeaderProps) =>
   const favoriteCount = useFavoritesStore((s) => s.favoriteCount);
   const compareCount = useComparisonStore((s) => s.compareCount);
   const { user, profile, role, signOut, rolesLoaded } = useAuth();
+  const [anonymizeOpen, setAnonymizeOpen] = React.useState(false);
 
   const toggleBadges = useBadgeVisibilityStore((s) => s.toggleBadges);
   const initializeFromProfile = useBadgeVisibilityStore((s) => s.initializeFromProfile);
@@ -568,6 +571,14 @@ export const Header = React.memo(({ onMenuToggle, sidebarOpen }: HeaderProps) =>
 
               <DropdownMenuSeparator className="bg-border" />
               <DropdownMenuItem
+                onClick={() => setAnonymizeOpen(true)}
+                data-testid="user-menu-item-lgpd"
+                className="cursor-pointer hover:bg-primary/10 focus:bg-primary/10"
+              >
+                <ShieldAlert className="mr-2 h-4 w-4" />
+                Excluir meus dados (LGPD)
+              </DropdownMenuItem>
+              <DropdownMenuItem
                 className="cursor-pointer text-destructive hover:bg-destructive/10 focus:bg-destructive/10 focus:text-destructive"
                 onClick={handleSignOut}
               >
@@ -581,6 +592,7 @@ export const Header = React.memo(({ onMenuToggle, sidebarOpen }: HeaderProps) =>
 
       {/* #9 — Barra sutil no bottom */}
       <div className="absolute bottom-0 left-0 right-0 h-px bg-white/5 opacity-50" />
+      <AnonymizeAccountDialog open={anonymizeOpen} onOpenChange={setAnonymizeOpen} />
     </header>
   );
 });
