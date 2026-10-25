@@ -82,16 +82,27 @@ export const REPLAY_CRON_SEED_FILE = 'drift_replay_cron_seed.sql';
 export const REPLAY_CRON_SEED_SQL = `
 -- Semente de jobs do pg_cron para o replay (scripts/drift-baseline.mjs).
 DO $seed$
+DECLARE
+  v_id bigint;
+  v_n int := 0;
 BEGIN
   IF to_regclass('cron.job') IS NOT NULL
      AND NOT EXISTS (SELECT 1 FROM cron.job WHERE jobname = 'auto-block-offenders') THEN
     PERFORM cron.schedule('auto-block-offenders', '1,6,11,16,21,26,31,36,41,46,51,56 * * * *', 'SELECT 1');
   END IF;
-  -- 20261024190001 e 20261025002500 exigem este job com jobid=235.
+  -- 20261024190001 e 20261025002500 exigem este job com jobid=235. O role do
+  -- replay não tem UPDATE em cron.job: avança a sequence agendando/removendo
+  -- jobs temporários até o próximo jobid ser 235.
   IF to_regclass('cron.job') IS NOT NULL
      AND NOT EXISTS (SELECT 1 FROM cron.job WHERE jobname = 'image-dimensions-backfill') THEN
+    LOOP
+      v_id := cron.schedule('drift-seed-tmp-' || v_n, '0 * * * *', 'SELECT 1');
+      v_n := v_n + 1;
+      EXIT WHEN v_id >= 234 OR v_n > 1000;
+      PERFORM cron.unschedule(v_id);
+    END LOOP;
+    PERFORM cron.unschedule(v_id);
     PERFORM cron.schedule('image-dimensions-backfill', '0 * * * *', 'SELECT 1');
-    UPDATE cron.job SET jobid = 235 WHERE jobname = 'image-dimensions-backfill';
   END IF;
 END
 $seed$;
