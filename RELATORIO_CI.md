@@ -7,7 +7,9 @@
 **PR #2517:** mergeada em `3affff6d93c6caaa4ed0229c23255ba4e2f7bcc7` (timeout 30→60)  
 **PR #2519 (Lovable docs):** mergeada em `416192e706bdd5c76bccade0584581ca39723d31`  
 **PR #2522:** mergeada em `a29b3a1983bc48fb508710f4857c2345db78f794` (timeout 60→90)  
-**Main HEAD atual:** `a29b3a1983bc48fb508710f4857c2345db78f794`
+**PR #2525:** mergeada em `c8967d1ccc79b3aa928c136be88bda5e1aa5e928` (docs P16/P23/P24)  
+**PR #2528:** mergeada em `317a317dbfe45ae27f5eefa67069d1df8d84f811` (docs P59/P60/P62 + auto-resolvidos)  
+**Main HEAD atual:** `317a317dbfe45ae27f5eefa67069d1df8d84f811`
 
 ---
 
@@ -104,7 +106,8 @@ timeout-minutes: 90  # P19b: vitest roda 1265 arquivos com maxWorkers:2 (~45-60m
 | `3affff6d` (PR #2517 merge) | [#40195302647](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40195302647) | ✅ success | Gate Final green |
 | `416192e7` (PR #2519 merge) | [#40196412204](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40196412204) | ⚠️ cancelled | Cancelado pela concurrency ao mergear PR #2522 |
 | `a29b3a19` (PR #2522 merge) | [#40198674547](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40198674547) | ❌ failure (P60) | step 27 — 10 E2E `[chromium-public]` timeout (catalog + kit-builder); P19 corrigido, P60 pré-existente revelado |
-| `c8967d1c` (PR #2525 merge) | [#40200678544](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40200678544) | ⏳ in_progress | ci-security-drift com timeout=90min; step 27 também falhará por P60 |
+| `c8967d1c` (PR #2525 merge) | [#40200678544](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40200678544) | ⏳ in_progress³ | ci-security-drift timeout=90min; step 27 falhará por P60 (pré-existente) |
+| `317a317d` (PR #2528 merge) | [#40203094304](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40203094304) (e2e.yml) | ⏳ in_progress | e2e.yml `/novidades` falhará por P62; ci-security-drift pending; Gate Final: outros checks green |
 
 ---
 
@@ -117,18 +120,22 @@ timeout-minutes: 90  # P19b: vitest roda 1265 arquivos com maxWorkers:2 (~45-60m
 
 | Workflow | Estado ANTES | Estado APÓS | Resolução | Evidência |
 |---|---|---|---|---|
-| `ci-security-drift.yml` | ❌ failure (`AssertionError: expected +0 to be 2`) | ⏳ pendente confirmação² | **CORRIGIDO** (PR #2514 + PR #2517 + PR #2522) | PR #2522 mergeado em `a29b3a19`; run [#40198674547](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40198674547) em andamento |
+| `ci-security-drift.yml` | ❌ failure (`AssertionError: expected +0 to be 2`) | ❌ failure (P60) | **CORRIGIDO** P19 (PR #2514 + #2517 + #2522); step 27 falha por P60 pré-existente | Run [#40198674547](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40198674547): `conclusion=failure` (P60) |
 | `uptime-monitor.yml` | ❌ failure (timeout) | ✅ success | AUTO-RESOLVIDO (infra) | Run [#40192342910](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40192342910) |
 | `supabase-linter-gate.yml` | ❌ failure (HTTP 544) | ✅ success | AUTO-RESOLVIDO (API voltou) | Run [#40192342910](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40192342910) |
 | `branch-protection-sentinel.yml` | ❌ failure (push direto) | ✅ success | AUTO-RESOLVIDO (main HEAD limpo) | Run [#40192342910](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40192342910) |
 | `quote-builder-delivery-quality.yml` | ❌ failure | ✅ success | AUTO-RESOLVIDO | Run [#40192342910](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40192342910) |
-| `release-please.yml` | ❌ failure | ❌ failure (esperado) | **DOCUMENTADO** — PAT scope `repo` ausente | P1/P21/P44 |
+| `release-please.yml` | ❌ failure | ✅ success | AUTO-RESOLVIDO (run #40200678489) | P1/P21/P44 auto-resolvido |
 | `cart-invariants-smoke.yml` | ❌ failure | ❌ failure (esperado) | **DOCUMENTADO** — fixture data insuficiente no CI | P2b |
-| `e2e-flows.yml` | ❌ failure | ❌ failure (esperado) | **DOCUMENTADO** — `/admin/conexoes` renderiza em branco sem E2E creds (`e2e/flows/27-admin-critical-routes.spec.ts:40` — `toBeGreaterThan(0)` recebeu 0) | P16 |
-| `e2e-personalization.yml` | ❌ failure | ❌ failure (esperado) | **DOCUMENTADO** — `toHaveURL` timeout (sem dados PDP + auth timeout >15s); ver P2c | P23 |
-| `e2e-thumb-quickview.yml` | ❌ failure | ❌ failure (esperado) | **DOCUMENTADO** — 1 de 22 testes executa (21 skipped por `requireAuth`); min exigido: 10; webkit+firefox+chromium | P24 |
+| `e2e-flows.yml` | ❌ failure | ❌ failure (esperado) | **DOCUMENTADO** — `/admin/conexoes` renderiza em branco sem E2E creds | P16 |
+| `e2e-personalization.yml` | ❌ failure | ❌ failure (esperado) | **DOCUMENTADO** — `toHaveURL` timeout (sem dados PDP + auth timeout) | P23 |
+| `e2e-thumb-quickview.yml` | ❌ failure | ❌ failure (esperado) | **DOCUMENTADO** — 1 de 22 testes executa (21 skipped por `requireAuth`) | P24 |
+| `e2e.yml` (Playwright) | ❌ failure | ❌ failure (esperado) | **DOCUMENTADO** — `/novidades` page crash no CI (pré-existente, ver P62) | P62 |
+| `copilot-code-review.yml` | ❌ failure | ❌ failure (esperado) | **DOCUMENTADO** — firewall GitHub Copilot infra (recorrente, ver P61) | P61 |
 
-² Run [#40198674547](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40198674547) em `a29b3a19` — concurrency aguarda run anterior `#40195986770` expirar (~14:05Z), depois inicia com `timeout-minutes: 90`. Esperado `conclusion=success` às ~15:35Z.
+² Run [#40198674547](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40198674547) em `a29b3a19` — `conclusion=failure` confirmado: step 27 E2E públicos timeout (P60 — pré-existente).
+
+³ Run [#40200678544](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40200678544) em `c8967d1c` — in_progress em 14:37Z (iniciado 14:06Z, timeout=90min). Esperado step 27 falhar por P60 (~15:36Z).
 
 ---
 
@@ -141,7 +148,7 @@ timeout-minutes: 90  # P19b: vitest roda 1265 arquivos com maxWorkers:2 (~45-60m
 | Build Vite | ✅ success | ✅ `built in 15.92s` — rodado localmente em `a29b3a19` |
 | `test:deploy-gate` (vitest) | ✅ 334 passed | ✅ 334 passed (3 files, 6.99s) — rodado localmente em `a29b3a19` |
 | Gate Final - Deploy Ready | ✅ success `801e38a5` | ✅ success `3affff6d` (run #40195302647) + PR #2522 CI: 31 checks, 0 falhas |
-| `ci-security-drift.yml` | ❌ failure | ⏳ pendente run #40198674547 |
+| `ci-security-drift.yml` | ❌ failure | ❌ failure (P60 pré-existente, step 27) — confirmado run #40198674547 |
 | Workflows required (Gate Final) | ✅ todos green | ✅ todos green |
 
 ---
@@ -172,19 +179,21 @@ timeout-minutes: 90  # P19b: vitest roda 1265 arquivos com maxWorkers:2 (~45-60m
 
 | Pendência | Workflow | Bloqueio |
 |---|---|---|
-| P1 / P21 / P44 | `release-please.yml` | PAT com escopo `repo` — criar e configurar `RELEASE_PLEASE_TOKEN` |
 | P2b | `cart-invariants-smoke.yml` | Seed de dados fixture para o runner de CI |
 | P16 | `e2e-flows.yml` | Secrets `E2E_USER_EMAIL` / `E2E_USER_PASSWORD` para specs autenticados (`/admin/conexoes`) |
 | P23 / P24 | `e2e-personalization.yml`, `e2e-thumb-quickview.yml` | Secrets E2E + seed de dados de produtos no CI |
 | P59 | Vercel | Deletar projeto fantasma `promo-gifts-reconciliation-integrity-20260915` |
+| P60 | `ci-security-drift.yml` | Fix estrutural step 27: usar `--project=chromium-authed` com `storageState` |
+| P61 | `copilot-code-review.yml` | Configurar token Copilot ou desativar workflow |
+| P62 | `e2e.yml` (Playwright) | Investigar OOM/crash em `NoveltyProductGrid` no CI (`/novidades`) |
 
 ---
 
 ## Conclusão
 
-- **2 workflows corrigidos:** `ci-security-drift.yml` (P19 — test + timeout P19b)
-- **4 workflows auto-resolvidos:** Uptime Monitor (P42), Supabase Linter Gate (P48), Branch Protection Sentinel (P58), Quote Builder (P17)
-- **5 workflows documentados (bloqueados externamente):** Release Please (P1/P21/P44), Cart Invariants (P2b), E2E Critical Flows (P16), E2E fixtures (P23/P24)
+- **2 workflows corrigidos:** `ci-security-drift.yml` (P19 — test + timeout P19b); falha residual P60 é pré-existente
+- **5 workflows auto-resolvidos:** Uptime Monitor (P42), Supabase Linter Gate (P48), Branch Protection Sentinel (P58), Quote Builder (P17), Release Please (P1/P21/P44 — run #40200678489)
+- **7 workflows documentados (bloqueados externamente):** Cart Invariants (P2b), E2E Critical Flows (P16), E2E Personalization/QuickView (P23/P24), ci-security-drift step 27 (P60), Copilot Code Review infra (P61), E2E `/novidades` page crash (P62)
 - **Gate Final permanece verde** em todos os commits desta sessão
 - **Zero regressões introduzidas**
-- **Confirmação final pendente:** run [#40198674547](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40198674547) (`ci-security-drift.yml` em `a29b3a19`) — esperado `conclusion=success` às ~15:35Z
+- **Main HEAD atual:** `317a317d` (PR #2528 merge)
