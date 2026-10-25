@@ -9,7 +9,7 @@
 **Merges PO-aprovados (REGRA #8):** 3 (#2441, #2445, #2450)  
 **PRs DECISÃO_HUMANA:** 6 (#2415, #2424, #2428, #2435, #2443, #2449)  
 **PRs FECHAR:** 8 (#2417, #2418, #2419, #2420, #2422, #2432, #2451, #2452)  
-**Nossa PR de deliverables:** 1 (#2447)  
+**PRs MERGEAR (docs-only):** 1 (#2447 — deliverables, behind, draft:true, sem Rule 8)  
 **Worktrees:** todos removidos (`git worktree list` confirma só `/home/user/Promo_Gifts_V4`)
 
 ---
@@ -170,7 +170,7 @@ Nenhum PR mergeado autonomamente toca código de produção exceto:
 | #2441 | MERGEADO (PO) | `90c6492b` | `analise-prs/dossies/PR-2441.md` |
 | #2443 | DECISÃO_HUMANA (draft+security) | — | `analise-prs/dossies/PR-2443.md` |
 | #2445 | MERGEADO (PO) | `8eeeca9b` | `analise-prs/dossies/PR-2445.md` |
-| #2447 | NOSSA PR (deliverables) | — | `analise-prs/dossies/PR-2447.md` |
+| #2447 | MERGEAR (docs-only, draft:true, behind) | — | `analise-prs/dossies/PR-2447.md` |
 | #2449 | DECISÃO_HUMANA (DDL+draft+conflito) | — | `analise-prs/dossies/PR-2449.md` |
 | #2450 | MERGEADO (PO) | `d804cafa` | `analise-prs/dossies/PR-2450.md` |
 | #2451 | FECHAR (state: closed — já fechado) | — | `analise-prs/dossies/PR-2451.md` |
