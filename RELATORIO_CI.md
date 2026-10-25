@@ -17,7 +17,7 @@
 **PR #2536:** mergeada em `35ea12c2791e921e991ba7b4ec1045979b60e48a` (docs: run IDs corretos + SHA 7a34046a)  
 **PR #2535:** mergeada em `4cb4feb431f47573a2d4aee01774a5db24e11810` (fix: teste do replay espera semente de cron em B+1)  
 **PR #2538:** mergeada em `cb0ccedec41c38fe79cbd2585216e4cbe3155ccd` (docs: RELATORIO_CI — Gate Final cb0ccedc)  
-**Main HEAD atual:** `cb0ccedec41c38fe79cbd2585216e4cbe3155ccd`
+**Main HEAD atual:** `6fcc6b3066e13c8a16775ea6eaca809574326374`
 
 ---
 
@@ -133,6 +133,7 @@ timeout-minutes: 90  # P19b: vitest roda 1265 arquivos com maxWorkers:2 (~45-60m
 | `35ea12c2` (PR #2536 merge) | [#40214494245](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40214494245) | ✅ success | docs run IDs corretos — Gate Final green (completado 17:18Z) |
 | `4cb4feb4` (PR #2535 merge) | [#40214531246](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40214531246) | ✅ success | fix teste replay cron B+1 — Gate Final green (completado 17:20Z) |
 | `cb0ccedc` (PR #2538 merge) | [#40216887253](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40216887253) | ✅ success | docs RELATORIO_CI — Gate Final green (completado 17:41Z) |
+| `6fcc6b30` (PR #2542 merge) | [#40222336543](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40222336543) | ✅ success | docs P68 — Gate Final green (completado 18:48Z) |
 
 ---
 
@@ -169,13 +170,15 @@ timeout-minutes: 90  # P19b: vitest roda 1265 arquivos com maxWorkers:2 (~45-60m
 
 ## Comparação Baseline × Final
 
-| Métrica | Baseline (início sessão) | Final (main `cb0ccedc`) |
+| Métrica | Baseline (início sessão) | Final (main `6fcc6b30`) |
 |---|---|---|
-| `check-tsc-baseline.mjs` | ✅ 0 erros | ✅ 0 erros — rodado localmente em `a29b3a19`, EXIT:0 |
-| ESLint | ✅ 0 erros | ✅ 0 erros — rodado localmente com `NODE_OPTIONS=--max-old-space-size=4096`, EXIT:0 |
-| Build Vite | ✅ success | ✅ `built in 15.92s` — rodado localmente em `a29b3a19` |
-| `test:deploy-gate` (vitest) | ✅ 334 passed | ✅ 334 passed (3 files, 6.99s) — rodado localmente em `a29b3a19` |
-| Gate Final - Deploy Ready | ✅ success `801e38a5` | ✅ success `cb0ccedc` (run [#40216887253](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40216887253), completado 17:41Z) |
+| `check-tsc-baseline.mjs` | ✅ 0 erros | ✅ 0 erros — rodado localmente em `6fcc6b30`, EXIT:0 |
+| ESLint | ✅ 0 erros | NÃO VERIFICADO localmente (OOM pré-existente no container) — EXIT:143 |
+| Build Vite | ✅ success | ✅ `built in 14.00s` — rodado localmente em `6fcc6b30` |
+| SSOT validate-supabase-config.mjs | ✅ | ✅ — rodado localmente em `6fcc6b30`, EXIT:0 |
+| Bundle size guard | ✅ | ✅ — rodado localmente em `6fcc6b30`, EXIT:0 |
+| `test:deploy-gate` (vitest) | ✅ 334 passed | NÃO VERIFICADO localmente (OOM pré-existente no container) |
+| Gate Final - Deploy Ready | ✅ success `801e38a5` | ✅ success `6fcc6b30` (run [#40222336543](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40222336543), completado 18:48Z) |
 | `ci-security-drift.yml` | ❌ failure | ❌ failure (P60 pré-existente, step 27) — confirmado run #40198674547 |
 | Workflows required (Gate Final) | ✅ todos green | ✅ todos green |
 
@@ -226,7 +229,7 @@ timeout-minutes: 90  # P19b: vitest roda 1265 arquivos com maxWorkers:2 (~45-60m
 - **5 workflows auto-resolvidos:** Uptime Monitor (P42), Supabase Linter Gate (P48), Branch Protection Sentinel (P58), Quote Builder (P17), Release Please (P1/P21/P44 — run #40200678489)
 - **7 workflows documentados (bloqueados externamente):** Cart Invariants (P2b), E2E Critical Flows (P16), E2E Personalization/QuickView (P23/P24), ci-security-drift step 27 (P60), Copilot Code Review infra (P61), E2E `/novidades` page crash (P62), E2E Swatch QuickView (P63)
 - **2 workflows documentados (novos — d74b33fb):** Replenishment Quality Gate hook timeout (P64), Edge Integration Tests divergência deployed vs. git (P65 — deploy disparado)
-- **Gate Final permanece verde** em todos os commits desta sessão — último run confirmado: [#40216887253](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40216887253) (`cb0ccedc`, ✅ success, completado 17:41Z)
+- **Gate Final permanece verde** em todos os commits desta sessão — último run confirmado: [#40222336543](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40222336543) (`6fcc6b30`, ✅ success, completado 18:48Z)
 - **Zero regressões introduzidas**
-- **Baseline completo registrado (main `d74b33fb`):** TSC ✅ 0 erros · Lint ✅ 0 erros/0 warnings · Build ✅ 15.21s · Vitest deploy-gate ✅ 334 passed
-- **Main HEAD atual:** `cb0ccedec41c38fe79cbd2585216e4cbe3155ccd` (PR #2538 merge)
+- **Baseline registrado (main `6fcc6b30`):** TSC ✅ 0 erros · Build ✅ 14.00s · SSOT ✅ · Bundle ✅ · Lint/Vitest: NÃO VERIFICADO localmente (OOM pré-existente no container; CI gate verde confirma)
+- **Main HEAD atual:** `6fcc6b3066e13c8a16775ea6eaca809574326374` (PR #2542 merge)

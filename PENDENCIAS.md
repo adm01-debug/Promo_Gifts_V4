@@ -1,8 +1,8 @@
 # Pendências CI — Bloqueios Externos
 
-**Atualizado em:** 2026-10-25 (rev 28 — P68 adicionado; commit de referência atualizado para d8b4f130)  
+**Atualizado em:** 2026-10-25 (rev 29 — P16 atualizado run #40222336350 + RELATORIO_CI baseline 6fcc6b30)  
 **Branch de referência:** `claude_05/nifty-sagan-r23gqh`  
-**Commit de referência (main):** `d8b4f130` — docs(pendencias): P66/P67 rev 27 (#2541)
+**Commit de referência (main):** `6fcc6b30` — docs(pendencias): adiciona P68 — preflight bloqueou migration (#2542)
 
 ---
 
@@ -124,7 +124,7 @@ flows/92-personalization-auth: expect(page).not.toHaveURL(expected) failed
 **Flows 90 e 91** (`e2e/flows/90-personalization-pdp-flow.spec.ts:25`):
 - O teste clica em `Sel.product.card` (primeiro card) e espera `toHaveURL(/\/produtos\/.+/)` com timeout 15s.
 - A listagem `/produtos` retorna dados via Supabase. Se a query retorna zero produtos (ambiente CI sem dados de catálogo suficientes), `page.locator(Sel.product.card).first()` fica visível (`expect(...).toBeVisible()` passa), mas o elemento `<a>` dentro do card não leva a uma URL `/produtos/...` — navega para uma rota genérica ou não navega. O `toHaveURL` então timeout.
-- Causa raiz imediata: o ambiente de CI não tem produtos com link navegável para PDP, ou o seletor `Sel.product.card → a.first()` aponta para um link externo/diferente no estado de dados vazio.
+- Causa raiz imediata: o ambiente de CI não tem produtos com link navigável para PDP, ou o seletor `Sel.product.card → a.first()` aponta para um link externo/diferente no estado de dados vazio.
 
 **Flow 92** (`e2e/flows/92-personalization-auth-redirect.spec.ts:21`):
 - Testa acesso não-autenticado a `/produtos/qualquer-id` esperando redirect para `/login`.
@@ -199,7 +199,7 @@ permissões para query read-only em `doufsxqlfjyuvxuezpln`.
 **PRs fonte:** ambas fechadas/sem PR — runs persistem até expiração natural (90 dias)
 
 **Motivo técnico exato (idêntico para todos os 641 runs):**
-> GitHub Actions coloca em `action_required` qualquer workflow disparado por evento `pull_request` em branches de bots internos (`github-actions[bot]`), quando o manutentor não aprovou previamente o run. Tentativa de aprovação via API retorna HTTP 403: `{"message":"This run is not from a fork pull request or queued by the Actions bot","documentation_url":"..."}`. Aprovação programática impossível. Runs expiram em 90 dias automaticamente.
+> GitHub Actions coloca em `action_required` qualquer workflow disparado por evento `pull_request` em branches de bots internos (`github-actions[bot]`), quando o mantenedor não aprovou previamente o run. Tentativa de aprovação via API retorna HTTP 403: `{"message":"This run is not from a fork pull request or queued by the Actions bot","documentation_url":"..."}`. Aprovação programática impossível. Runs expiram em 90 dias automaticamente.
 
 **Branches afetadas:**
 - `release-please--branches--main--components--gifts-store` — bot release-please, sem PR ativa → ~640 runs
@@ -346,22 +346,17 @@ Adicionar coluna `level` à tabela `public.categories` no schema da preview bran
 
 **Workflow:** `.github/workflows/e2e-flows.yml` (ID 283130542)  
 **Categoria:** E2E failure — não é required check no Gate Final  
-**Run mais recente:** [#40198674629](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40198674629) (main `a29b3a19`, 2026-10-25)  
-**Job falho:** `E2E — Full User Flows (authed)` (job 121184969421)  
-**Spec:** `e2e/flows/27-admin-critical-routes.spec.ts:40`
+**Run mais recente:** [#40222336350](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40222336350) (main `6fcc6b30`, 2026-10-25)  
+**Job falho:** `E2E — Full User Flows (authed)` (job 121256409793)  
+**Steps falhos:** step 7 `Run Admin Critical Routes E2E` + step 10 `Check min tests executed`
 
-**Erro exato confirmado (job logs):**
+**Erro exato confirmado (job logs, run #40222336350):**
 ```
-Test: Conexões externas (/admin/conexoes) carrega ou redireciona para login
-
-Error: expect(received).toBeGreaterThan(expected)
-Expected: > 0
-Received:   0
-
-e2e/flows/27-admin-critical-routes.spec.ts:40
+[check-playwright-min-executed] Nao foi possivel ler playwright-report/results-quote-flow.json:
+ENOENT: no such file or directory, open 'playwright-report/results-quote-flow.json'
 ```
 
-**Causa raiz:** A rota `/admin/conexoes` requer autenticação. No runner de CI sem as credenciais E2E (`E2E_USER_EMAIL` / `E2E_USER_PASSWORD`), a página renderiza em branco — nenhum elemento de `main`, `[role='main']`, `[data-testid]`, `h1` ou `h2` é encontrado. O teste executou 2 tentativas (retry #1 também falhou). Pré-existente em main.
+**Causa raiz:** Secrets `E2E_USER_EMAIL` / `E2E_USER_PASSWORD` ausentes no runner CI → `E2E_HAS_CREDS=false` → testes autenticados não executam → `results-quote-flow.json` nunca é gerado → step 10 `Check min tests executed` falha com ENOENT. Pré-existente em main (confirmado também em run anterior `#40198674629`, commit `a29b3a19`, com erro: `/admin/conexoes` renderiza em branco com 0 elementos encontrados).
 
 **Ação necessária (PO):** Configurar secrets `E2E_USER_EMAIL` e `E2E_USER_PASSWORD` no repositório para que os specs autenticados executem. Sem eles, `E2E_HAS_CREDS=false` e o step "Guard — credenciais E2E" de `ci-security-drift.yml` falha em push para main.
 
@@ -458,7 +453,7 @@ flows/92-personalization-auth: Error: expect(page).toHaveURL(/\/login/) failed
 4 failed (chromium-authed) — retries incluídos
 ```
 
-**Causa raiz (de P2c):** Flows 90/91 dependem de catálogo de produtos com links navegáveis para PDP — dados ausentes em CI. Flow 92 espera redirect para `/login` dentro de 15s, mas resolução de auth (Supabase session check) pode ultrapassar o timeout em CI sob carga. Pré-existente em main desde commit `325b0bd`.
+**Causa raiz (de P2c):** Flows 90/91 dependem de catálogo de produtos com links navigáveis para PDP — dados ausentes em CI. Flow 92 espera redirect para `/login` dentro de 15s, mas resolução de auth (Supabase session check) pode ultrapassar o timeout em CI sob carga. Pré-existente em main desde commit `325b0bd`.
 
 **Ação necessária (PO):** Seed de dados de produtos no runner de CI + investigar roteamento PDP → Personalization Flow.
 
