@@ -123,7 +123,7 @@ timeout-minutes: 90  # P19b: vitest roda 1265 arquivos com maxWorkers:2 (~45-60m
 | `af0b4512` (PR #2530 merge) | — | — | docs P61/P62; Gate Final rodando |
 | `e94e846f` (PR #2531 merge) | [#40206446230](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40206446230) | ✅ success | docs P63 — Gate Final green |
 | `d74b33fb` (PR #2524 merge) | [#40206801690](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40206801690) | ✅ success | fix: Linter Gate 5xx → Gate Final green |
-| `76363781` (PR #2533 merge) | aguardando confirmação | ⏳ verificar | docs P64/P65 + baseline registrado |
+| `76363781` (PR #2533 merge) | [#40211291093](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40211291093) | ✅ success | docs P64/P65 + baseline registrado — Gate Final green |
 
 ---
 
@@ -166,7 +166,7 @@ timeout-minutes: 90  # P19b: vitest roda 1265 arquivos com maxWorkers:2 (~45-60m
 | ESLint | ✅ 0 erros | ✅ 0 erros — rodado localmente com `NODE_OPTIONS=--max-old-space-size=4096`, EXIT:0 |
 | Build Vite | ✅ success | ✅ `built in 15.92s` — rodado localmente em `a29b3a19` |
 | `test:deploy-gate` (vitest) | ✅ 334 passed | ✅ 334 passed (3 files, 6.99s) — rodado localmente em `a29b3a19` |
-| Gate Final - Deploy Ready | ✅ success `801e38a5` | ✅ success `3affff6d` (run #40195302647) + PR #2522 CI: 31 checks, 0 falhas |
+| Gate Final - Deploy Ready | ✅ success `801e38a5` | ✅ success `76363781` (run [#40211291093](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40211291093)) |
 | `ci-security-drift.yml` | ❌ failure | ❌ failure (P60 pré-existente, step 27) — confirmado run #40198674547 |
 | Workflows required (Gate Final) | ✅ todos green | ✅ todos green |
 
@@ -176,19 +176,19 @@ timeout-minutes: 90  # P19b: vitest roda 1265 arquivos com maxWorkers:2 (~45-60m
 
 | Workflow | Estado antes | Estado após | Confirmação |
 |---|---|---|---|
-| Gate Final - Deploy Ready (`deploy-gates.yml`) | ✅ | ✅ | Run #40195302647 (PR #2517) + PR #2522: 31 checks, 0 falhas |
-| Gate 0 - SSOT Supabase | ✅ | ✅ | Run #40195302647 + PR #2522 check |
-| Gate 1 - Lint + TypeScript | ✅ | ✅ | Run #40195302647 + PR #2522 check |
-| Gate 2 - Unit Tests | ✅ | ✅ | Run #40195302647 + PR #2522 check |
-| Gate 2.5 - PostgreSQL Transactional Integrity | ✅ | ✅ | Run #40195302647 + PR #2522 check |
-| Gate 3 - E2E Smoke | ✅ | ✅ | Run #40195302647 + PR #2522 check |
-| Gate 0.5 - Dependency Audit | ✅ | ✅ | Run #40195302647 + PR #2522 check |
-| Gate 5 - SEO Sanity Check | ✅ | ✅ | Run #40195302647 + PR #2522 check |
-| Gate 5.5 - RPC restore_seller_cart | ✅ | ✅ | Run #40195302647 + PR #2522 check |
-| Gitleaks — Secret Scan | ✅ | ✅ | Run #40195302647 + PR #2522 check |
-| Gate E23 - Secret Scan | ✅ | ✅ | Run #40195302647 + PR #2522 check |
-| Compare GitHub × Canonical | ✅ | ✅ | Run #40195302647 + PR #2522 check |
-| SSOT Gates | ✅ | ✅ | Run #40195302647 + PR #2522 check |
+| Gate Final - Deploy Ready (`deploy-gates.yml`) | ✅ | ✅ | Run [#40211291093](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40211291093) (`76363781`) + PR #2522: 31 checks, 0 falhas |
+| Gate 0 - SSOT Supabase | ✅ | ✅ | Run #40211291093 + PR #2522 check |
+| Gate 1 - Lint + TypeScript | ✅ | ✅ | Run #40211291093 + PR #2522 check |
+| Gate 2 - Unit Tests | ✅ | ✅ | Run #40211291093 + PR #2522 check |
+| Gate 2.5 - PostgreSQL Transactional Integrity | ✅ | ✅ | Run #40211291093 + PR #2522 check |
+| Gate 3 - E2E Smoke | ✅ | ✅ | Run #40211291093 + PR #2522 check |
+| Gate 0.5 - Dependency Audit | ✅ | ✅ | Run #40211291093 + PR #2522 check |
+| Gate 5 - SEO Sanity Check | ✅ | ✅ | Run #40211291093 + PR #2522 check |
+| Gate 5.5 - RPC restore_seller_cart | ✅ | ✅ | Run #40211291093 + PR #2522 check |
+| Gitleaks — Secret Scan | ✅ | ✅ | Run #40211291093 + PR #2522 check |
+| Gate E23 - Secret Scan | ✅ | ✅ | Run #40211291093 + PR #2522 check |
+| Compare GitHub × Canonical | ✅ | ✅ | Run #40211291093 + PR #2522 check |
+| SSOT Gates | ✅ | ✅ | Run #40211291093 + PR #2522 check |
 
 **Zero regressões introduzidas.** Mudanças desta sessão: (1) alinhamento de test com comportamento E103, (2) timeout numérico 30→60, (3) timeout numérico 60→90. Nenhuma altera comportamento de produção.
 
@@ -217,7 +217,7 @@ timeout-minutes: 90  # P19b: vitest roda 1265 arquivos com maxWorkers:2 (~45-60m
 - **5 workflows auto-resolvidos:** Uptime Monitor (P42), Supabase Linter Gate (P48), Branch Protection Sentinel (P58), Quote Builder (P17), Release Please (P1/P21/P44 — run #40200678489)
 - **7 workflows documentados (bloqueados externamente):** Cart Invariants (P2b), E2E Critical Flows (P16), E2E Personalization/QuickView (P23/P24), ci-security-drift step 27 (P60), Copilot Code Review infra (P61), E2E `/novidades` page crash (P62), E2E Swatch QuickView (P63)
 - **2 workflows documentados (novos — d74b33fb):** Replenishment Quality Gate hook timeout (P64), Edge Integration Tests divergência deployed vs. git (P65 — deploy disparado)
-- **Gate Final permanece verde** em todos os commits desta sessão — último run confirmado: [#40206801690](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40206801690) (`d74b33fb`, ✅ success); PR #2533 mergeado em `76363781`
+- **Gate Final permanece verde** em todos os commits desta sessão — último run confirmado: [#40211291093](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40211291093) (`76363781`, ✅ success, 2026-10-25T16:28:50Z)
 - **Zero regressões introduzidas**
 - **Baseline completo registrado (main `d74b33fb`):** TSC ✅ 0 erros · Lint ✅ 0 erros/0 warnings · Build ✅ 15.21s · Vitest deploy-gate ✅ 334 passed
 - **Main HEAD atual:** `76363781` (PR #2533 merge)
