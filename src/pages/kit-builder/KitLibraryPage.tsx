@@ -38,6 +38,7 @@ import {
   type CustomKitRow,
   type KitTemplateRow,
 } from '@/hooks/kit-builder';
+import { getKitStatusBadge } from '@/lib/kit-builder/persistence';
 import { buildCustomKitInsert } from '@/lib/kit-library/buildCustomKitInsert';
 import { sanitizeError } from '@/lib/security/sanitize-error';
 import { cn } from '@/lib/utils';
@@ -261,8 +262,7 @@ export default function KitLibraryPage() {
     if (selectedTag && k.tag !== selectedTag) return false;
     if (selectedColor && k.color !== selectedColor) return false;
     if (statusFilter === 'draft' && k.status !== 'draft') return false;
-    if (statusFilter === 'published' && !['published', 'shared'].includes(k.status))
-      return false;
+    if (statusFilter === 'published' && !['published', 'shared'].includes(k.status)) return false;
     if (statusFilter === 'archived' && k.status !== 'archived') return false;
     return true;
   };
@@ -327,14 +327,7 @@ export default function KitLibraryPage() {
       clientName: extractDraftClientName(k.personalization_data),
       updatedAt: k.updated_at,
       isDraft: k.status === 'draft',
-      badge:
-        k.status === 'draft'
-          ? 'Rascunho'
-          : k.status === 'archived'
-            ? 'Arquivado'
-            : k.status === 'ready'
-              ? 'Pronto'
-              : 'Publicado',
+      badge: getKitStatusBadge(k.status),
     };
   };
 
