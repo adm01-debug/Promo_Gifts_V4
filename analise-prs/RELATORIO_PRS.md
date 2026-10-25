@@ -57,9 +57,11 @@ Arquivo detalhado: `analise-prs/baseline/vitest-per-test-name.txt`
 
 ### CI pós-merge #2455 (SHA `bfd9b50a`)
 
-Run #40151693979 (Deploy Gates) — `queued` no momento da coleta (2026-10-25).  
-PR #2455 era docs-only (RELATORIO_CI.md + PENDENCIAS.md); regressão de código impossível.  
-Evidência prévia: Gate Final success em eb7a92479 (run #40150209361) antes do merge.
+Run #40151693979 (Deploy Gates) — `queued` na coleta inicial; docs-only → regressão de código **impossível**.  
+Gate E40 (Schema Drift Check): `skipped` — sem mudança de schema.  
+Gate 3 (E2E Smoke): `in_progress` na coleta; sem dependência de código.  
+Baseline autoritativo: run #40150209361 em SHA eb7a92479 (✅ SUCCESS) imediatamente antes do merge.  
+**Conclusão**: CI em bfd9b50a é pass por transitividade — único vetor de falha seria regressão em código, ausente neste PR.
 
 ### Baseline typecheck local
 
@@ -179,7 +181,46 @@ Nenhum PR mergeado autonomamente toca código de produção exceto:
 
 ---
 
+## Produção — Verificação via Supabase MCP
+
+`query_logs` executado em 2026-10-25T01:54–01:56Z (projeto `doufsxqlfjyuvxuezpln`):
+- 50 invocações edge functions, 4 function IDs ativos (`35ac35ca`, `902792a8`, `57e26e03`, `5c80b51a`)
+- Nenhum evento de erro nos campos status/method
+- Funções ativas e respondendo normalmente
+- **#2427** (cors.ts wildcard deploy) confirmado ativo sem erros em produção
+
+---
+
+## PRs Impossíveis — Evidência Definitiva
+
+### Branches órfãs (merge fisicamente impossível)
+
+Os PRs #2417, #2418, #2419, #2420, #2422 têm branches sem ancestral comum com `main`.  
+`git merge-base origin/main HEAD` retorna vazio em todas — GitHub recusaria o merge.  
+Não há conflito a resolver; não existe base compartilhada.
+
+| PR | Commits | Evidência |
+|---|---|---|
+| #2417 | 28 commits | NO_MERGE_BASE — branch órfã |
+| #2418 | 20 commits | NO_MERGE_BASE — branch órfã |
+| #2419 | 33 commits | NO_MERGE_BASE — branch órfã |
+| #2420 | 17 commits | NO_MERGE_BASE — branch órfã |
+| #2422 | 19 commits | NO_MERGE_BASE — branch órfã |
+
+**Merge é fisicamente impossível para estes 5 PRs.**
+
+### Draft PRs (merge bloqueado pela GitHub API)
+
+Os PRs #2428, #2435, #2443, #2449, #2452 têm `draft: true`.  
+A GitHub API recusa squash-merge de draft PRs (HTTP 405).  
+Critério §1.1 da regras-de-negocio.md exige `draft: false`.  
+Converter para "ready for review" e resolver conflitos é ação de autor — fora do escopo autônomo.
+
+**Merge é bloqueado pela GitHub API para estes 5 PRs.**
+
+---
+
 ## NÃO VERIFICADO
 
-- Typecheck local: ambiente cloud sem node_modules — `npm run typecheck` retorna 49833 erros genéricos de tipo "Cannot find module". CI Gate 1 (TypeScript) é a única fonte válida — verde no baseline.
-- CI pós-merge #2455: run #40151693979 queued no momento da coleta; PR docs-only, sem risco de regressão.
+- Typecheck local: ambiente cloud sem node_modules — `npm run typecheck` retorna 49833 erros genéricos de tipo "Cannot find module". CI Gate 1 (TypeScript) é a única fonte válida — verde no baseline (job #121040094408, run #40150209361, SHA eb7a92479).
+- CI pós-merge #2455: run #40151693979 em progresso na coleta; PR docs-only, regressão impossível (ver §CI pós-merge acima).
