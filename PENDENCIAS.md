@@ -204,19 +204,52 @@ permissões para query read-only em `doufsxqlfjyuvxuezpln`.
 
 ---
 
-## P4 — 641 runs `action_required` (PRs fonte fechadas/inativas — 2 origens)
+## P4 — 641 runs `action_required` (branches de bot — 2 origens)
 
-**Total em 2026-10-24T23:xx Z:** 641 runs (API GitHub Actions — confirmado)  
-**Categoria:** branches internas de bots — GitHub exige aprovação manual; API retorna 403  
+**Total em 2026-10-25T04:10Z:** 641 runs (API GitHub Actions — confirmado; `?status=action_required` sem filtro de branch)  
+**Categoria:** branches internas de bots — GitHub exige aprovação manual; API retorna 403 para aprovação programática  
 **PRs fonte:** ambas fechadas/sem PR — runs persistem até expiração natural (90 dias)
 
-**Origem dos runs:**
-- `release-please--branches--main--components--*` — sub-branches do release-please bot, head `3a726461`, sem PR ativa → ~620 runs
-- PR #2320 `copilot/corrigir-peer-dependencies-eslint` — fechada em 2026-10-23 sem merge, head `df09a371` → ~21 runs
+**Motivo técnico exato (idêntico para todos os 641 runs):**
+> GitHub Actions coloca em `action_required` qualquer workflow disparado por evento `pull_request` em branches de bots internos (`github-actions[bot]`), quando o manutentor não aprovou previamente o run. Tentativa de aprovação via API retorna HTTP 403: `{"message":"This run is not from a fork pull request or queued by the Actions bot","documentation_url":"..."}`. Aprovação programática impossível. Runs expiram em 90 dias automaticamente.
 
-**Inventário completo — last main run em `ec736c90` (2026-10-24T20:29Z):**
+**Branches afetadas:**
+- `release-please--branches--main--components--gifts-store` — bot release-please, sem PR ativa → ~640 runs
+- `copilot/corrigir-peer-dependencies-eslint` — PR #2320 fechada em 2026-10-23 sem merge → 1 run
 
-**Inventário completo — last main run em `ec736c90` (2026-10-24T20:29Z):**
+**25 workflows presentes no inventário action_required:**
+
+| Nº | Workflow | Origem |
+|---|---|---|
+| 1 | Bundle size report | release-please branch |
+| 2 | CI - Replenishment Module Quality Gate | release-please branch |
+| 3 | Cart Invariants Smoke (Chrome + Firefox, sharded) | release-please branch |
+| 4 | Contract Tests | release-please branch |
+| 5 | Cross-reference PR ↔ Issue | copilot branch (PR #2320 fechado) |
+| 6 | Deploy Gates | release-please branch |
+| 7 | E2E (Playwright) | release-please branch |
+| 8 | E2E · Dialogs visual PR check | release-please branch |
+| 9 | E2E · Quote Conditions visual PR check | release-please branch |
+| 10 | E2E — Critical Flows & Error Boundaries | release-please branch |
+| 11 | E2E — Magazine Header Layout | release-please branch |
+| 12 | E2E — Personalization Flow | release-please branch |
+| 13 | E2E • Swatch QuickView (Lista + Tabela) | release-please branch |
+| 14 | E2E • Thumb QuickView (paridade + a11y) | release-please branch |
+| 15 | Edge Integration Tests — All Functions | release-please branch |
+| 16 | Freight Quest — Quality Gates | release-please branch |
+| 17 | Magazine Unit Tests | release-please branch |
+| 18 | No Prod Leak in Dev/Test Config | release-please branch |
+| 19 | Quote Builder Delivery Quality | release-please branch |
+| 20 | SSOT Supabase Guard | release-please branch |
+| 21 | Security Scan | release-please branch |
+| 22 | Supabase Linter Gate | release-please branch |
+| 23 | Visual Baseline Tests | release-please branch |
+| 24 | Workflow Lint | release-please branch |
+| 25 | schema-snapshot-export | release-please branch |
+
+**Impacto no Gate Final:** Nenhum — 0 workflows em `main` com `action_required` (API confirmada: `?status=action_required&branch=main` → `total_count: 0`).
+
+**Inventário completo — last main run em `d9f65b43` (2026-10-25T04:12Z):**
 
 Legenda conclusão: ✅ `success` | ❌ `failure` | 🔄 `in_progress` | ⏸ `queued` | 🚫 `cancelled` | — sem run em main (PR-only)
 
@@ -227,7 +260,7 @@ Legenda conclusão: ✅ `success` | ❌ `failure` | 🔄 `in_progress` | ⏸ `qu
 | Cart Invariants Smoke | 309382416 | [#40129973790](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40129973790) | 🔄 `in_progress` (≥20:44Z) | [E108] dados de teste insuficientes — ver P2b |
 | Contract Tests | 281252069 | — | — | Trigger `pull_request` only |
 | Cross-reference PR ↔ Issue | 278436796 | — | — | Trigger `issues`/`pull_request` only — não roda em push para `main` |
-| Deploy Gates | 282456033 | [#40129973867](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40129973867) | ⏸ `queued` (≥20:51Z) | Concurrency `cancel-in-progress: false` — aguardando run #40129314620 (9079c82e, `pending`) |
+| Deploy Gates | 282456033 | [#40160560259](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40160560259) | ✅ `success` (04:12Z) | SHA `d9f65b43` — Gate Final success em main |
 | E2E (Playwright) | 278436800 | [#40129973861](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40129973861) | ❌ `failure` | Falhas E2E pré-existentes — ver P18 |
 | E2E · Dialogs visual PR check | 305923294 | — | — | Trigger `pull_request` only |
 | E2E · Quote Conditions visual PR check | 306215886 | — | — | Trigger `pull_request` only |
@@ -248,7 +281,7 @@ Legenda conclusão: ✅ `success` | ❌ `failure` | 🔄 `in_progress` | ⏸ `qu
 | Workflow Lint | 368573629 | — | — | Trigger `pull_request` only |
 | schema-snapshot-export | 305283288 | [#40129314530](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40129314530) | ✅ `success` | Run em 9079c82e (commit anterior a ec736c90) — schedule weekly |
 
-**Resumo da última execução em `main` (ec736c90):** 7 `success` ✅ | 3 `failure` ❌ (pré-existentes, não-required) | 2 `in_progress` | 1 `queued` (blocked) | 1 `cancelled` | 11 sem run (PR-only)
+**Resumo da última execução em `main` (d9f65b43, 2026-10-25T04:12Z):** 8 `success` ✅ | 3 `failure` ❌ (pré-existentes E2E, não-required) | 1 `in_progress` (Cart) | 1 `cancelled` | 11 sem run (PR-only)
 
 **Tentativa de aprovação via API (2026-10-24T20:19Z) — resultado definitivo:**  
 Chamado `github_approve_workflow_run` para run_id `39884454041` → HTTP 403:
