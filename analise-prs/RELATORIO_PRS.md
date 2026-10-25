@@ -134,7 +134,7 @@ Para todas as PRs FECHAR: veredicto NENHUMA pode ser mergeada de forma alguma �
 
 ---
 
-## Merges Autonomos Desta Sessao (10 PRs)
+## Merges Autonomos Desta Sessao (12 PRs)
 
 | PR | SHA merge | Gate Final run | Conclusao |
 |---|---|---|---|
@@ -188,13 +188,13 @@ Para todas as PRs FECHAR: veredicto NENHUMA pode ser mergeada de forma alguma �
 - [x] `analise-prs/regras-de-negocio.md` rev10 — 6 secoes (docs/testes/enums/migrations/policies/UI)
 - [x] `analise-prs/prs.json` atualizado — main_head=7fc20213c, criterios 8 por PR, 49 PRs
 - [x] `analise-prs/prs.csv` atualizado — 53 linhas incluindo #2509, #2510, #2511 e #2512
-- [x] `analise-prs/RELATORIO_PRS.md` atualizado — este arquivo (rev12)
+- [x] `analise-prs/RELATORIO_PRS.md` atualizado — este arquivo (rev13)
 - [x] `analise-prs/progresso.json` atualizado — gate_final_status_atual=success, worktrees_removidos, criterios_mergear_por_pr
 - [x] Dossies para todos os 13 PRs abertos (PR-2415 a PR-2503)
 - [x] 100% diffs lidos (evidencia por PR no prs.json)
 - [x] Test-merge para todos os 13 PRs abertos (NO_MERGE_BASE para orfaos, resultado documentado)
 - [x] Criterios MERGEAR avaliados (8 criterios x 13 PRs) — todos documentados
 - [x] Worktree removido: /tmp/fix-gate13 (`git worktree remove --force`)
-- [x] Gate Final pos-merge: run #40184102084 conclusion=success (10:25:10Z)
+- [x] Gate Final pos-merge: run #40187098020 conclusion=success (11:08:44Z)
 - [x] Comparacao baseline: 429 testes / 0 falhas — inalterada
 - [x] Violacao registrada: PR #2505 mergeado antes do Gate Final completar
