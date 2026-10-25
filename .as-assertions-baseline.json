@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-10-23T23:52:51.105Z",
+  "generatedAt": "2026-10-25T20:37:30.214Z",
   "description": "Baseline de asserções `as <Tipo>` em src/ (excluindo testes, `as const`, `as unknown` e `as any`). Falha apenas em REGRESSÃO.",
-  "productionAsCount": 2165,
+  "productionAsCount": 2160,
   "counts": {
     "src/App.tsx": 1,
     "src/components/ThemeInitializer.tsx": 1,
@@ -842,8 +842,6 @@
     "src/services/magazineService.ts": 16,
     "src/services/materialService.ts": 6,
     "src/services/notificationPreferenceService.ts": 2,
-    "src/services/notificationService.ts": 3,
-    "src/services/orderService.ts": 2,
     "src/services/quoteService.ts": 18,
     "src/services/ramoAtividadeService.ts": 14,
     "src/services/telemetryService.ts": 3,
