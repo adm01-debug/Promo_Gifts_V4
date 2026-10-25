@@ -508,12 +508,12 @@ export default function KitLibraryPage() {
             <EmptyState
               icon={<Library className="h-10 w-10" />}
               title={
-                q || selectedTag || selectedColor
+                q || selectedTag || selectedColor || statusFilter !== 'all'
                   ? 'Nenhum kit encontrado'
                   : 'Você ainda não criou kits'
               }
               description={
-                q || selectedTag || selectedColor
+                q || selectedTag || selectedColor || statusFilter !== 'all'
                   ? 'Tente ajustar os filtros ou a busca.'
                   : 'Comece montando o seu primeiro kit personalizado ou explore os templates do sistema.'
               }
@@ -622,8 +622,8 @@ export default function KitLibraryPage() {
           ) : filteredFavs.length === 0 ? (
             <EmptyState
               icon={<Star className="h-10 w-10" />}
-              title="Sem favoritos ainda"
-              description="Marque seus kits favoritos com a estrela para acessá-los rapidamente."
+              title={statusFilter !== 'all' ? 'Nenhum favorito neste filtro' : 'Sem favoritos ainda'}
+              description={statusFilter !== 'all' ? 'Tente outro status ou volte para "Todos".' : 'Marque seus kits favoritos com a estrela para acessá-los rapidamente.'}
             />
           ) : (
             <div
