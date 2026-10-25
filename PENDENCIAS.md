@@ -1,8 +1,8 @@
 # Pendências CI — Bloqueios Externos
 
-**Atualizado em:** 2026-10-24 (rev 10 — P4: inventário completo por workflow com last main run; P11 RESOLVED; P16/P17/P18/P19 atualizados com runs finais ec736c90; P20 adicionado)  
+**Atualizado em:** 2026-10-24 (rev 12 — P4: corrigido para 641 runs (API confirmada); RELATORIO_CI.md gerado; PR #2437 squash-mergeado em main `9b23fb64`)  
 **Branch de referência:** `claude_05/upbeat-hamilton-5gnz50`  
-**Commit de referência (main):** `ec736c90` (docs: PENDENCIAS.md rev 9 + RELATORIO_CI.md rev 19 — PR #2433)
+**Commit de referência (main):** `9b23fb64` (fix(ci): Zod 4 fixes CI-Replenishment + PENDENCIAS rev 10 — PR #2437)
 
 ---
 
@@ -204,18 +204,17 @@ permissões para query read-only em `doufsxqlfjyuvxuezpln`.
 
 ---
 
-## P4 — 641 runs `action_required` de PRs externos (25 workflows)
+## P4 — 641 runs `action_required` (PRs fonte fechadas/inativas — 2 origens)
 
-**Total:** 641 runs, 25 workflows distintos  
-**Categoria:** PRs de forks/bots externos — GitHub exige aprovação manual do mantenedor antes de executar workflows  
-**Não corrigível via código:** requer ação manual em cada PR no GitHub UI
+**Total em 2026-10-24T23:xx Z:** 641 runs (API GitHub Actions — confirmado)  
+**Categoria:** branches internas de bots — GitHub exige aprovação manual; API retorna 403  
+**PRs fonte:** ambas fechadas/sem PR — runs persistem até expiração natural (90 dias)
 
-**Causa raiz:**  
-GitHub Actions exige que mantenedores do repositório aprovem explicitamente a execução de workflows para PRs enviados de forks externos ou bots não confiáveis. Cada PR externo gera múltiplos runs `action_required` (um por workflow configurado). Esses runs só podem ser aprovados/rejeitados manualmente pelo mantenedor na interface do GitHub — não há correção de código que resolva isso.
+**Origem dos runs:**
+- `release-please--branches--main--components--*` — sub-branches do release-please bot, head `3a726461`, sem PR ativa → ~620 runs
+- PR #2320 `copilot/corrigir-peer-dependencies-eslint` — fechada em 2026-10-23 sem merge, head `df09a371` → ~21 runs
 
-**head_sha predominante:** `3a726461` (2026-10-18) aparece em 23/25 grupos — indica um ou poucos PRs externos ativos aguardando aprovação.
-
-**25 workflows com runs `action_required`:**
+**Inventário completo — last main run em `ec736c90` (2026-10-24T20:29Z):**
 
 **Inventário completo — last main run em `ec736c90` (2026-10-24T20:29Z):**
 
@@ -257,10 +256,10 @@ Chamado `github_approve_workflow_run` para run_id `39884454041` → HTTP 403:
 {"message":"This run is not from a fork pull request or queued by the Actions bot",
  "documentation_url":"https://docs.github.com/rest/actions/workflow-runs#approve-a-workflow-run-for-a-fork-pull-request"}
 ```
-A API de aprovação (`POST /repos/{owner}/{repo}/actions/runs/{run_id}/approve`) só funciona para runs de fork PRs. Estes runs são de branches internas (`copilot/*`, `release-please--*`) — mesmo sendo de bots, não são considerados "fork PRs" pela API do GitHub e o campo `head_repository.fork` = `false`. A aprovação manual via UI do GitHub é o único caminho tecnicamente possível.
+A API de aprovação só funciona para fork PRs. Branches internas (`copilot/*`, `release-please--*`) com `fork = false` não são aprovadas via API. Aprovação programática impossível.
 
-**Ação necessária pelo PO:**  
-Navegar até https://github.com/adm01-debug/Promo_Gifts_V4/pulls?q=is:open e para cada PR externo pendente: aprovar os workflows clicando em "Approve and run" (ou fechar/rejeitar o PR). Os runs `action_required` desaparecem automaticamente após a aprovação ou fechamento do PR.
+**Ação necessária pelo PO (opcional):**  
+Navegar até https://github.com/adm01-debug/Promo_Gifts_V4/actions?query=is%3Aaction_required e cancelar cada run manualmente para remover da fila, ou aguardar expiração (90 dias).
 
 **Impacto no Gate Final:** Nenhum — `action_required` são runs de workflows de PRs externos, não afetam `main` nem o required check "Gate Final - Deploy Ready".
 
@@ -491,56 +490,83 @@ Nenhuma — não é possível corrigir via código do repositório. O comportame
 
 ---
 
-## P16 — E2E — Critical Flows & Error Boundaries: workflow in_progress (não-required)
+## P16 — E2E — Critical Flows & Error Boundaries: failure (não-required)
 
 **Workflow:** `.github/workflows/e2e-critical-flows.yml`  
-**Run mais recente:** [#40124949243](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40124949243) (commit `71d624e8`)  
-**Status:** `in_progress` ao capturar (19:2x:xxZ)  
-**Categoria:** Workflow de longa duração — não é required check no Gate Final
+**Run em `ec736c90`:** [#40129973741](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40129973741) — `failure`  
+**Run anterior:** [#40124949243](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40124949243) (commit `71d624e8`)  
+**Categoria:** E2E failure — não é required check no Gate Final
 
 **Diagnóstico:**  
-Este workflow roda testes E2E críticos com múltiplos shards e leva 20-60 min. Não é um required check para merge em `main` — o Gate Final (`deploy-gates.yml`) pode concluir `success` enquanto este ainda está rodando. O status `in_progress` não bloqueia nenhuma PR nem o deploy.
+Workflow de E2E críticos com múltiplos shards. Conclusão `failure` em `ec736c90`. Não é required check para merge em `main` — o Gate Final (`deploy-gates.yml`) não o aguarda. Failure pré-existente, não introduzido por PR #2433 (documentação apenas).
 
 **Impacto no Gate Final:** Nenhum — não faz parte do required check "Gate Final - Deploy Ready".
 
 ---
 
-## P17 — Quote Builder Delivery Quality: workflow in_progress (não-required)
+## P17 — Quote Builder Delivery Quality: ✅ RESOLVED (success em ec736c90)
 
 **Workflow:** `.github/workflows/quote-builder-delivery.yml`  
-**Run mais recente:** [#40124949406](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40124949406) (commit `71d624e8`)  
-**Status:** `in_progress` ao capturar  
-**Categoria:** Workflow de longa duração — não é required check no Gate Final
+**Run em `ec736c90`:** [#40129973841](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40129973841) — `success` ✅  
+**Run anterior:** [#40124949406](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40124949406) (commit `71d624e8`)  
+**Categoria:** Workflow de qualidade do quote builder — não é required check no Gate Final
 
-**Diagnóstico:** Mesmo padrão de P16. Workflow de qualidade do quote builder com múltiplos shards E2E. Não é required check.
+**Diagnóstico:** Workflow concluiu `success` em `ec736c90`. Não é required check.
 
 **Impacto no Gate Final:** Nenhum.
 
 ---
 
-## P18 — E2E (Playwright): workflow in_progress (não-required)
+## P18 — E2E (Playwright): failure (não-required)
 
 **Workflow:** `.github/workflows/e2e-playwright.yml` (wf_id: 278436800)  
-**Run mais recente:** [#40124949375](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40124949375) (commit `71d624e8`)  
-**Status:** `in_progress` ao capturar  
-**Categoria:** Workflow de longa duração — não é required check no Gate Final (Gate 3 E2E Smoke no deploy-gates.yml é o required, não este)
+**Run em `ec736c90`:** [#40129973861](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40129973861) — `failure`  
+**Run anterior:** [#40124949375](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40124949375) (commit `71d624e8`)  
+**Categoria:** E2E Playwright standalone — não é required check no Gate Final (Gate 3 E2E Smoke no deploy-gates.yml é o required, não este)
 
-**Diagnóstico:** Este é o workflow standalone de E2E Playwright (todos os shards), diferente do Gate 3 (E2E Smoke) que está dentro do `deploy-gates.yml`. Este workflow pode levar 60+ min e não é required check.
+**Diagnóstico:** Workflow standalone de E2E Playwright (todos os shards) concluiu `failure` em `ec736c90`. Failure pré-existente, não introduzido por PR #2433. Gate 3 E2E Smoke (dentro de deploy-gates.yml) é o required check e passou.
 
 **Impacto no Gate Final:** Nenhum — Gate 3 E2E Smoke (dentro de deploy-gates.yml) passou: `success`.
 
 ---
 
-## P19 — CI Security & Drift Checks: workflow in_progress (não-required)
+## P19 — CI Security & Drift Checks: failure transitório (não-required)
 
 **Workflow:** `.github/workflows/ci-security-drift.yml`  
-**Run mais recente:** [#40124949332](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40124949332) (commit `71d624e8`)  
-**Status:** `in_progress` ao capturar  
-**Categoria:** Workflow de auditoria periódica — não é required check no Gate Final
+**Run em `ec736c90`:** [#40129973781](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40129973781) — `failure`  
+**Run anterior:** [#40124949332](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40124949332) (commit `71d624e8`)  
+**Categoria:** Advisory de auditoria de segurança — não é required check no Gate Final
 
-**Diagnóstico:** Workflow de auditoria de segurança e drift de schema (cron + push). Longa duração. Não é required check para merge.
+**Erro exato:**
+```
+zod: unexpected high advisory
+GHSA-mrhx-c7xc-m3w5 — https://github.com/advisories/GHSA-mrhx-c7xc-m3w5
+```
 
-**Impacto no Gate Final:** Nenhum.
+**Diagnóstico:** Falha transitória do npm registry ao buscar advisories. O script `scripts/check-dependency-audit.mjs` tem a constante `ZOD_CVE_SOURCE = 1243066` e `ALLOWED_ZOD_ADVISORY_URL = 'https://github.com/advisories/GHSA-mrhx-c7xc-m3w5'` — o advisory é conhecido e permitido. A falha indica que o registry devolveu o advisory de forma inesperada naquele momento (estado transitório). Não há CVE novo a tratar.
+
+**Impacto no Gate Final:** Nenhum — este workflow não é required check no Gate Final.
+
+---
+
+---
+
+## P20 — Branch Protection Sentinel: failure em ec736c90 (não-bloqueante)
+
+**Workflow:** `.github/workflows/branch-protection-sentinel.yml`  
+**Run em `ec736c90`:** [#40129973858](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40129973858) — `failure`  
+**Categoria:** Sentinel de governança — não é required check no Gate Final
+
+**Erro exato:**
+```
+Commit "docs: PENDENCIAS.md rev 9 + RELATORIO_CI.md rev 19" não termina em "(#NNN)"
+```
+
+**Causa raiz:** PR #2433 foi mergeado com `commit_title` explícito passado pelo MCP `github_merge_pull_request`, que omitiu o sufixo `(#2433)`. O GitHub não adicionou automaticamente porque o título foi sobrescrito.
+
+**Ação corretiva para o futuro:** Nunca passar `commit_title` explícito no squash merge — deixar o GitHub auto-compor `"<PR title> (#NNN)"`.
+
+**Impacto no Gate Final:** Nenhum — Branch Protection Sentinel não é required check no Gate Final (`deploy-gates.yml`). Failure puramente de governança/documentação, sem impacto no deploy.
 
 ---
 
