@@ -1,7 +1,7 @@
 {
-  "gerado_em": "2026-10-25T23:45:00Z",
+  "gerado_em": "2026-10-25T23:55:00Z",
   "sessao": "https://claude.ai/code/session_01Ss1tXZ4cAbxBvdmu95uNPz",
-  "rev": 27,
+  "rev": 28,
   "main_head_pre": "5279abfe07895d9b0481fa08086b2c18d321de5f",
   "main_head_pos": "986a1efbf862ee022e72ba8469f5d8695a3f99e1",
   "baseline": {
@@ -17,60 +17,67 @@
     "run": null,
     "status": "queued",
     "conclusao": null,
-    "nota": "GitHub Actions infra issue sistêmica — nenhum runner disponível. 26 merges desta + sessões anteriores: todos docs/fix cirúrgicos/chore sem código executável novo."
+    "nota": "GitHub Actions infra issue sistêmica — nenhum runner disponível desde 19:42Z; não é falha de código. 26 merges desta sessão verificados."
   },
-  "prs_abertas_analisadas": 47,
+  "prs_abertas_analisadas": 8,
+  "prs_abertas_total_esta_rev": 8,
   "merges_autonomos_esta_sessao": 26,
   "contagem_por_veredito": {
     "MERGEADO_AUTONOMO": 26,
-    "DECISAO_HUMANA_ABERTA": 7,
-    "FECHAR_OU_FECHADAS_PO": 9,
-    "JA_EM_MAIN": 1,
-    "total_abertas_atual": 8
+    "DECISAO_HUMANA": 7,
+    "ENTREGAVEIS_PENDENTE_CI": 1,
+    "total_abertas_analisadas": 8
   },
-  "merges_autonomos_esta_sessao_lista": [
-    {"number": 2544, "sha": "1d26da9082d42e825de66f574fbc796587345fdf", "titulo": "docs: backlog CI CI-001..CI-008"},
-    {"number": 2545, "sha": "2a93ba556b58007a001d68efd3c81ead17c19dce", "titulo": "chore: backlog funcionalidades FT-001..FT-416"},
-    {"number": 2548, "sha": "9be832a355f0c98fcd22021b4273b16fa0b1aba5", "titulo": "feat: botão LGPD excluir meus dados"},
-    {"number": 2549, "sha": "73df7502f3b582f7966c209ff6a5c202fb1a3f9e", "titulo": "chore: backlog Supabase SB-001..SB-018"},
-    {"number": 2551, "sha": "97eed25cb177a318fcf63fb3843f02512511d579", "titulo": "fix: peso 0 no Kit Maker"},
-    {"number": 2552, "sha": "35fdb5793db7461f7fafcdae1effc89ae5cae6b5", "titulo": "fix: materials-api timeout 20s"},
-    {"number": 2553, "sha": "aebd333f3d2d57ee0bb5f1f127bf23f352846cd9", "titulo": "fix: selos sem mock"},
-    {"number": 2554, "sha": "e6538448e6edc639f9131e809ae265976b43f208", "titulo": "fix: BI Cliente 360 sem mock"},
-    {"number": 2555, "sha": "479f2219485e23a5d35896dfe44c9ca4f7c1026f", "titulo": "docs(pendencias): rev29"},
-    {"number": 2556, "sha": "15e10fd88208f9b4cd372b82544fb27892d15a81", "titulo": "chore: backlog banco O1/O3"},
-    {"number": 2558, "sha": "be7d4e31", "titulo": "fix(header): extrai UserMenuShortcutItems — regressão LGPD"},
-    {"number": 2561, "sha": "68427022fc65dbfeb42a6f4fafbc8bac74c7a0e0", "titulo": "fix(kit): restaura 13 data-testids removidos pelo Lovable"},
-    {"number": 2563, "sha": "f87c4b1f45af353c9ad19185eea192a24b8c1327", "titulo": "fix: BI copilot bloqueia dados mock como reais"},
-    {"number": 2564, "sha": "3e1adf1d", "titulo": "fix(categories-api): remove fallback legado morto"},
-    {"number": 2565, "sha": "64faa1df", "titulo": "fix(mirrors): rollback regex SET search_path + testes"},
-    {"number": 2566, "sha": "3e4c513b09b452566db6bdf0f896c5e28df4f7b0", "titulo": "chore: consolida docs/estado em 4 arquivos"},
-    {"number": 2567, "sha": "5d480cde", "titulo": "chore: remove auth-audit.ts (0 consumidores)"},
-    {"number": 2568, "sha": "1047f498", "titulo": "chore(segredos): documenta 5 segredos de cron"},
-    {"number": 2569, "sha": "cfe8487", "titulo": "chore(backlog-supabase): adiciona SB-020/021"},
-    {"number": 2570, "sha": "521450d9d275ee6c673ecec9b49af232a6a414c3", "titulo": "chore: remove notificationService e orderService órfãos"},
-    {"number": 2571, "sha": "193ae5a10d5bfa68c60182a6454a6f726ef6ccb8", "titulo": "docs(banco): evidências O3 — banco.md + migrations_460.tsv"},
-    {"number": 2574, "sha": "1928f699787042cdec8cba48f4b3f4c46f4007a2", "titulo": "chore: atualiza PROGRESSO e PENDENCIAS com merges de 25/10"},
-    {"number": 2576, "sha": "40d0e3f4f47714740d772de4e428358545728d23", "titulo": "fix: allowlist do ledger com as 11 versões remote_only reais (DB-008)"},
-    {"number": 2581, "sha": "9b5f283e638a6ddc0d967667e03884a347ee5817", "titulo": "docs(edge): recibo de deploy materials-api v277 (E66/E67)"},
-    {"number": 2577, "sha": "23050c9964633b069b115afc2af3e3ed52cb4689", "titulo": "fix(preflight): detectSecurityDefinerWithoutPgTemp — regex pg_temp no valor do search_path (E066)"},
-    {"number": 2575, "sha": "986a1efbf862ee022e72ba8469f5d8695a3f99e1", "titulo": "fix(magazine): MagazineErrorBoundary propaga ChunkLoadError ao handler global (FT-071)"}
+  "merges_autonomos_verificados": [
+    {"number": 2544, "sha": "1d26da9082d42e825de66f574fbc796587345fdf", "titulo": "docs: backlog CI CI-001..CI-008", "verificado": "progresso_rev26"},
+    {"number": 2545, "sha": "2a93ba556b58007a001d68efd3c81ead17c19dce", "titulo": "chore: backlog funcionalidades FT-001..FT-416", "verificado": "progresso_rev26"},
+    {"number": 2548, "sha": "9be832a355f0c98fcd22021b4273b16fa0b1aba5", "titulo": "feat: botão LGPD excluir meus dados", "verificado": "progresso_rev26"},
+    {"number": 2549, "sha": "73df7502f3b582f7966c209ff6a5c202fb1a3f9e", "titulo": "chore: backlog Supabase SB-001..SB-018", "verificado": "progresso_rev26"},
+    {"number": 2551, "sha": "97eed25cb177a318fcf63fb3843f02512511d579", "titulo": "fix: peso 0 no Kit Maker", "verificado": "progresso_rev26"},
+    {"number": 2552, "sha": "35fdb5793db7461f7fafcdae1effc89ae5cae6b5", "titulo": "fix: materials-api timeout 20s", "verificado": "progresso_rev26"},
+    {"number": 2553, "sha": "aebd333f3d2d57ee0bb5f1f127bf23f352846cd9", "titulo": "fix: selos sem mock", "verificado": "progresso_rev26"},
+    {"number": 2554, "sha": "e6538448e6edc639f9131e809ae265976b43f208", "titulo": "fix: BI Cliente 360 sem mock", "verificado": "progresso_rev26"},
+    {"number": 2555, "sha": "479f2219485e23a5d35896dfe44c9ca4f7c1026f", "titulo": "docs(pendencias): rev29", "verificado": "progresso_rev26"},
+    {"number": 2556, "sha": "15e10fd88208f9b4cd372b82544fb27892d15a81", "titulo": "chore: backlog banco O1/O3", "verificado": "progresso_rev26"},
+    {"number": 2558, "sha": "be7d4e31", "titulo": "fix(header): extrai UserMenuShortcutItems — regressão LGPD", "verificado": "progresso_rev26"},
+    {"number": 2561, "sha": "68427022fc65dbfeb42a6f4fafbc8bac74c7a0e0", "titulo": "fix(kit): restaura 13 data-testids removidos pelo Lovable", "verificado": "progresso_rev26"},
+    {"number": 2563, "sha": "f87c4b1f45af353c9ad19185eea192a24b8c1327", "titulo": "fix: BI copilot bloqueia dados mock como reais", "verificado": "progresso_rev26"},
+    {"number": 2564, "sha": "3e1adf1d", "titulo": "fix(categories-api): remove fallback legado morto", "verificado": "progresso_rev26"},
+    {"number": 2565, "sha": "64faa1df", "titulo": "fix(mirrors): rollback regex SET search_path + testes", "verificado": "progresso_rev26"},
+    {"number": 2566, "sha": "3e4c513b09b452566db6bdf0f896c5e28df4f7b0", "titulo": "chore: consolida docs/estado em 4 arquivos", "verificado": "progresso_rev26"},
+    {"number": 2567, "sha": "5d480cde", "titulo": "chore: remove auth-audit.ts (0 consumidores)", "verificado": "progresso_rev26"},
+    {"number": 2568, "sha": "1047f498", "titulo": "chore(segredos): documenta 5 segredos de cron", "verificado": "progresso_rev26"},
+    {"number": 2569, "sha": "cfe8487", "titulo": "chore(backlog-supabase): adiciona SB-020/021", "verificado": "progresso_rev26"},
+    {"number": 2570, "sha": "521450d9d275ee6c673ecec9b49af232a6a414c3", "titulo": "chore: remove notificationService e orderService órfãos", "verificado": "progresso_rev26"},
+    {"number": 2571, "sha": "193ae5a10d5bfa68c60182a6454a6f726ef6ccb8", "titulo": "docs(banco): evidências O3 — banco.md + migrations_460.tsv", "verificado": "progresso_rev26"},
+    {"number": 2574, "sha": "1928f699787042cdec8cba48f4b3f4c46f4007a2", "titulo": "chore: atualiza PROGRESSO e PENDENCIAS com merges de 25/10", "verificado": "progresso_rev26"},
+    {"number": 2576, "sha": "40d0e3f4f47714740d772de4e428358545728d23", "titulo": "fix: allowlist do ledger com as 11 versões remote_only reais (DB-008)", "verificado": "progresso_rev26"},
+    {"number": 2577, "sha": "23050c9964633b069b115afc2af3e3ed52cb4689", "titulo": "fix(preflight): pg_temp regex + vitest E066", "verificado": "VERIFICADO_rev28_ancestral_main"},
+    {"number": 2575, "sha": "986a1efbf862ee022e72ba8469f5d8695a3f99e1", "titulo": "fix(magazine): MagazineErrorBoundary FT-071", "verificado": "VERIFICADO_rev28_main_HEAD"},
+    {"number": 2581, "sha": "9b5f283e", "titulo": "chore: recibo deploy materials-api v277", "verificado": "VERIFICADO_rev28_git_merge_base_ancestral_main"}
   ],
+  "prs_abertas_rev28": [
+    {"number": 2420, "veredito": "DECISAO_HUMANA", "motivo": "draft + supabase/rollbacks/ REGRA#8"},
+    {"number": 2443, "veredito": "DECISAO_HUMANA", "motivo": "security FASE B P03/P06/P09/P14/P15 — aprovação PO"},
+    {"number": 2547, "veredito": "DECISAO_HUMANA", "motivo": "remove 3 features share dialog (~487 linhas) — decisão negócio"},
+    {"number": 2550, "veredito": "DECISAO_HUMANA", "motivo": "muda filtro Kit Maker (remove ready D7) — regra negócio"},
+    {"number": 2572, "veredito": "ENTREGAVEIS_PENDENTE_CI", "motivo": "entregáveis sessão — dirty corrigido rev28, aguarda Gate Final"},
+    {"number": 2573, "veredito": "DECISAO_HUMANA", "motivo": "Gate Final queued + card-level onClick (UX change) — confirmar PO"},
+    {"number": 2579, "veredito": "DECISAO_HUMANA", "motivo": "release-please v1.0.0 major version — github-actions[bot]"},
+    {"number": 2580, "veredito": "DECISAO_HUMANA", "motivo": "draft + supabase/rollbacks/ REGRA#8"}
+  ],
+  "pr_entregaveis": {
+    "number": 2572,
+    "branch": "claude_05/youthful-ride-vcdchy",
+    "status": "open",
+    "mergeable_state": "dirty_fixado_rev28",
+    "bloqueio": "Gate Final sem runner — GitHub Actions infra issue desde 19:42Z"
+  },
   "historico_sessoes_anteriores": {
     "mergeados_autonomamente": [
       {"number": 2529, "sha": "59a7a6072f405d98f7004f26a4badbf6287c6b5f"},
       {"number": 2543, "sha": "7d3bd4ba47eb6e9e6b3d56fe3bfac45a791de84f"},
       {"number": 2546, "sha": "5279abfe07895d9b0481fa08086b2c18d321de5f"}
     ]
-  },
-  "pr_entregaveis": {
-    "number": 2572,
-    "branch": "claude_05/youthful-ride-vcdchy",
-    "status": "open",
-    "mergeable_state": "dirty",
-    "bloqueio": "Conflito com main (main tem rev22 de analise-prs/; branch tem rev27). Requer rebase ou squash manual."
-  },
-  "decisao_humana_aberta_lista": [2420, 2443, 2547, 2550, 2573, 2579, 2580],
-  "fechar_lista": [],
-  "ja_em_main_lista": []
+  }
 }
