@@ -4,8 +4,8 @@
  * 1. Catalog flags (featured, new_arrival, etc.) from mv_product_intelligence
  * 2. Stock velocity trend (emerging, declining) from mv_stock_velocity
  * 3. Restock cadence (frequent_restock flag)
- * Uses real data from mv_product_intelligence + mv_stock_velocity,
- * falls back to seeded mock data for demo/loading states.
+ * Uses only real data from mv_product_intelligence + mv_stock_velocity:
+ * sem dado real não há selo de inteligência (nunca dado simulado).
  *
  * Os limiares e o liga/desliga de `hot-item` / `best-seller` vêm de
  * `admin_settings.intelligence_badges` via {@link useIntelligenceBadgeSettingsValue},
@@ -18,7 +18,6 @@ import {
   type StockVelocity,
   type ProductIntelligenceData,
 } from '@/hooks/intelligence';
-import { generateMockVelocities, generateMockIntelligence } from '@/lib/stock-chart-utils';
 import { useIntelligenceBadgeSettingsValue } from '@/hooks/admin/useIntelligenceBadgeSettings';
 
 type BadgeType =
@@ -54,13 +53,8 @@ export function useProductIntelligenceBadges(
   const settings = useIntelligenceBadgeSettingsValue();
 
   const badges = useMemo((): IntelligenceBadge[] => {
-    const mockVels: StockVelocity[] = productId ? generateMockVelocities(productId) : [];
-    const mockIntel: ProductIntelligenceData | null = productId
-      ? generateMockIntelligence(productId)
-      : null;
-
-    const effectiveIntel: ProductIntelligenceData | null = intelligence ?? mockIntel;
-    const effectiveVels: StockVelocity[] = velocity?.length ? velocity : mockVels;
+    const effectiveIntel: ProductIntelligenceData | null = intelligence ?? null;
+    const effectiveVels: StockVelocity[] = velocity ?? [];
 
     const out: IntelligenceBadge[] = [];
 
@@ -177,7 +171,7 @@ export function useProductIntelligenceBadges(
     }
 
     return out.sort((a, b) => b.priority - a.priority);
-  }, [intelligence, velocity, catalogFlags, productId, settings]);
+  }, [intelligence, velocity, catalogFlags, settings]);
 
   return {
     badges,
