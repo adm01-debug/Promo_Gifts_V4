@@ -1,15 +1,28 @@
 {
   "gerado_em": "2026-10-25T11:10:00Z",
+  "atualizado_em": "2026-10-25T12:00:00Z",
   "sessao": "https://claude.ai/code/session_01Ss1tXZ4cAbxBvdmu95uNPz",
-  "main_head": "7fc20213c16c207ebd2d7b50ff75bc332e600d98",
-  "main_head_descricao": "PR #2512 squash-merged — fix(gate1.3): remove 2 entradas stale — .migration-refs-baseline.json 485→483",
+  "main_head": "801e38a53ce0c235611ff207ea1dd3d41a0ca89a",
+  "main_head_descricao": "PR #2513 squash-merged — docs(analise-prs): deliverables finais rev13 — META CUMPRIDA sessão",
   "gate_final_main": {
-    "run": "40187098020",
+    "run": "40189082535",
     "conclusao": "success",
-    "completado_em": "2026-10-25T11:08:44Z"
+    "completado_em": "2026-10-25T11:17:00Z"
   },
-  "total_analisados": 49,
-  "total_abertos_atuais": 13,
+  "total_analisados": 50,
+  "total_abertos_atuais": 14,
+  "contagem_por_veredito": {
+    "MERGEAR": 21,
+    "MERGEAR_detalhes": "8 pré-sessão (#2414,#2426,#2427,#2434,#2436,#2437,#2438,#2439) + 13 esta sessão (#2479,#2481,#2486,#2490,#2498,#2501,#2504,#2505,#2509,#2510,#2511,#2512,#2513)",
+    "MERGEADO_PO": 10,
+    "MERGEADO_PO_detalhes": "#2435,#2441,#2445,#2450,#2451,#2458,#2464,#2465,#2470,#2473",
+    "DECISAO_HUMANA": 10,
+    "DECISAO_HUMANA_detalhes": "8 abertas (#2415,#2428,#2432,#2443,#2449,#2469,#2503,#2514) + 2 fechadas externamente (#2471,#2480)",
+    "FECHAR": 9,
+    "FECHAR_detalhes": "6 abertas (#2417,#2418,#2419,#2420,#2422,#2452) + 2 fechadas externamente (#2484,#2487encerrada) + 1 já fechada pré-sessão (#2424)",
+    "total": 50,
+    "nota_csv": "prs.csv contém 54 linhas (inclui PRs documentados antes do escopo oficial da sessão e PRs auxiliares de outras sessões contados por merge commit)"
+  },
   "prs_abertos": [
     {
       "number": 2415,
@@ -249,6 +262,24 @@
         "completa": true, "confianca_alta": false,
         "falha_em": [2, 6, 8],
         "bloqueio": "REGRA#10 outra sessao (session_01HW5obNKUFtUMbBdgUb94kY) + draft + RELATORIO_CI ja enviado via #2504"
+      }
+    },
+    {
+      "number": 2514,
+      "title": "docs(pendencias): adiciona P58 — sentinel failure em 7fc20213 (push direto agente Claude)",
+      "draft": true,
+      "mergeable_state": "behind",
+      "verdict": "DECISÃO_HUMANA",
+      "rule8_triggers": [],
+      "motivo": "REGRA #10 (branch claude_05/nifty-sagan-r23gqh sessão session_01HW5obNKUFtUMbBdgUb94kY) + draft=true + behind main",
+      "evidencia": "github_get_pr_diff(#2514): 1 arquivo PENDENCIAS.md (+30/-3) — adiciona entrada P58 sobre push direto de agente. refs/pull/2514/head=077cf0195aaaf1c54ab921243fff47437b4025f7",
+      "acao_recomendada": "PO verificar se P58 ainda relevante pós-PR #2512; converter de draft + atualizar branch se quiser mergear",
+      "criterios_mergear": {
+        "valida": true, "nao_implementada": false, "sem_conflito": false,
+        "zero_erro_novo": true, "zero_reverte": true, "regra_neg_valida": true,
+        "completa": true, "confianca_alta": false,
+        "falha_em": [2, 3, 6, 8],
+        "bloqueio": "REGRA#10 branch outra sessao (session_01HW5obNKUFtUMbBdgUb94kY) + draft=true + behind main + possivelmente ja implementado via #2512"
       }
     }
   ]
