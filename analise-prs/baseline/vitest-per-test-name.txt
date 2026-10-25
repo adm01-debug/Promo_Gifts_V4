@@ -80,3 +80,14 @@ Parent: 2659a2c8 (PR #2473 merge)
 Gate Final run #40166989535: conclusion=success (confirmado no commit msg do SHA aa6f55d4).
 paths-ignore: docs/** → Gate Final provavelmente não disparou para docs-only.
 Último Gate Final verde verificado: run #40166989535. Baseline: 429 testes, 0 falhas.
+
+## Atualização — SHA de48ab27 (main HEAD — pós-merge PR #2479)
+
+PR #2479 mergeada como squash (docs-only, analise-prs/):
+SHA merge: de48ab2792f0b8e658d1534d881599aebb51a35c (abrev: de48ab27)
+Mergeado em: 2026-10-25T06:30:07Z
+Branch: claude_05/youthful-ride-vcdchy
+9 arquivos: analise-prs/ (prs.csv, regras-de-negocio.md, baseline/, dossies/)
+analise-prs/ está na raiz (não em docs/) → Gate Final DISPARA neste push.
+Gate Final PR run #40169270830: conclusion=success ✅ (confirmado via github_list_check_runs).
+Baseline: 429 testes, 0 falhas (sem regressão).
