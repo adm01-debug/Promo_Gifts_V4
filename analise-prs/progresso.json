@@ -1,9 +1,9 @@
 {
-  "gerado_em": "2026-10-25T22:30:00Z",
+  "gerado_em": "2026-10-25T23:30:00Z",
   "sessao": "https://claude.ai/code/session_01Ss1tXZ4cAbxBvdmu95uNPz",
-  "rev": 24,
+  "rev": 26,
   "main_head_pre": "5279abfe07895d9b0481fa08086b2c18d321de5f",
-  "main_head_pos": "193ae5a10d5bfa68c60182a6454a6f726ef6ccb8",
+  "main_head_pos": "1928f699787042cdec8cba48f4b3f4c46f4007a2",
   "baseline": {
     "testes": 429,
     "falhas": 0,
@@ -13,11 +13,11 @@
     "sha": "7d3bd4ba47eb6e9e6b3d56fe3bfac45a791de84f"
   },
   "gate_final_pos_merges": {
-    "sha": "193ae5a1",
+    "sha": "1928f699",
     "run": null,
     "status": "queued",
     "conclusao": null,
-    "nota": "GitHub Actions infra issue sistêmica — nenhum runner disponível desde 19:42Z; não é falha de código. 21 merges desta sessão são todos docs/fix cirúrgicos/chore sem código executável novo."
+    "nota": "GitHub Actions infra issue sistêmica — nenhum runner disponível desde 19:42Z; não é falha de código. 23 merges desta sessão: 10 rev22 + 11 rev23 + 2 rev25 (#2574 #2576). Todos docs/fix cirúrgicos/chore sem código executável novo."
   },
   "materials_api_deploy": {
     "status": "dispatched",
@@ -29,14 +29,14 @@
     "fix_sha": "35fdb579",
     "nota": "Dispatch enviado via workflow_dispatch. Aguardando runners (infra issue sistêmica). AbortSignal fix estará ativo após execução do workflow."
   },
-  "prs_abertas_analisadas": 41,
-  "merges_autonomos_esta_sessao": 21,
+  "prs_abertas_analisadas": 47,
+  "merges_autonomos_esta_sessao": 23,
   "contagem_por_veredito": {
-    "MERGEADO_AUTONOMO": 21,
-    "DECISAO_HUMANA": 14,
-    "FECHAR": 5,
+    "MERGEADO_AUTONOMO": 23,
+    "DECISAO_HUMANA": 19,
+    "FECHAR": 4,
     "JA_EM_MAIN": 1,
-    "total_abertas": 41
+    "total_abertas": 47
   },
   "merges_autonomos_esta_sessao_lista": [
     {"number": 2544, "sha": "1d26da9082d42e825de66f574fbc796587345fdf", "titulo": "docs: backlog CI CI-001..CI-008"},
@@ -59,7 +59,9 @@
     {"number": 2568, "sha": "1047f498", "titulo": "chore(segredos): documenta 5 segredos de cron"},
     {"number": 2569, "sha": "cfe8487", "titulo": "chore(backlog-supabase): adiciona SB-020/021"},
     {"number": 2570, "sha": "521450d9d275ee6c673ecec9b49af232a6a414c3", "titulo": "chore: remove notificationService e orderService órfãos"},
-    {"number": 2571, "sha": "193ae5a10d5bfa68c60182a6454a6f726ef6ccb8", "titulo": "docs(banco): evidências O3 — banco.md + migrations_460.tsv"}
+    {"number": 2571, "sha": "193ae5a10d5bfa68c60182a6454a6f726ef6ccb8", "titulo": "docs(banco): evidências O3 — banco.md + migrations_460.tsv"},
+    {"number": 2574, "sha": "1928f699787042cdec8cba48f4b3f4c46f4007a2", "titulo": "chore: atualiza PROGRESSO e PENDENCIAS com merges de 25/10"},
+    {"number": 2576, "sha": "40d0e3f4f47714740d772de4e428358545728d23", "titulo": "fix: allowlist do ledger com as 11 versões remote_only reais (DB-008)"}
   ],
   "historico_sessoes_anteriores": {
     "mergeados_autonomamente": [
@@ -75,7 +77,7 @@
     "mergeable_state": "blocked",
     "bloqueio": "GitHub Actions infra issue — Gate Final sem runner desde 19:42Z"
   },
-  "decisao_humana_lista": [2415, 2428, 2443, 2449, 2452, 2469, 2503, 2520, 2532, 2537, 2547, 2550, 2557, 2573],
-  "fechar_lista": [2417, 2418, 2419, 2420, 2422],
+  "decisao_humana_lista": [2415,2420,2428,2443,2449,2452,2469,2503,2520,2532,2537,2547,2550,2557,2573,2575,2577,2578,2579],
+  "fechar_lista": [2417,2418,2419,2422],
   "ja_em_main_lista": [2432]
 }
