@@ -10,7 +10,9 @@
 **PR #2525:** mergeada em `c8967d1ccc79b3aa928c136be88bda5e1aa5e928` (docs P16/P23/P24)  
 **PR #2528:** mergeada em `317a317dbfe45ae27f5eefa67069d1df8d84f811` (docs P59/P60/P62 + auto-resolvidos)  
 **PR #2530:** mergeada em `af0b4512765dd5feb8acc3a10216ce7951301254` (docs P61/P62)  
-**Main HEAD atual:** `af0b4512765dd5feb8acc3a10216ce7951301254`
+**PR #2531:** mergeada em `e94e846f` (docs P63)  
+**PR #2524:** mergeada em `d74b33fb1e2f0d2aa6d09db05fc4ea8ac73a4c22` (fix: Linter Gate trata 5xx como falha de infra transitória)  
+**Main HEAD atual:** `d74b33fb1e2f0d2aa6d09db05fc4ea8ac73a4c22`
 
 ---
 
@@ -110,6 +112,8 @@ timeout-minutes: 90  # P19b: vitest roda 1265 arquivos com maxWorkers:2 (~45-60m
 | `c8967d1c` (PR #2525 merge) | [#40200678544](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40200678544) | ⏳ in_progress³ | ci-security-drift timeout=90min; step 27 falhará por P60 (pré-existente) |
 | `317a317d` (PR #2528 merge) | [#40203094304](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40203094304) (e2e.yml) | ⏳ in_progress | e2e.yml `/novidades` falhará por P62; ci-security-drift pending; Gate Final: outros checks green |
 | `af0b4512` (PR #2530 merge) | — | — | docs P61/P62; Gate Final rodando |
+| `e94e846f` (PR #2531 merge) | [#40206446230](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40206446230) | ✅ success | docs P63 — Gate Final green |
+| `d74b33fb` (PR #2524 merge) | [#40206801690](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40206801690) | ✅ success | fix: Linter Gate 5xx → Gate Final green |
 
 ---
 
@@ -135,6 +139,8 @@ timeout-minutes: 90  # P19b: vitest roda 1265 arquivos com maxWorkers:2 (~45-60m
 | `e2e.yml` (Playwright) | ❌ failure | ❌ failure (esperado) | **DOCUMENTADO** — `/novidades` page crash no CI (pré-existente, ver P62) | P62 |
 | `copilot-code-review.yml` | ❌ failure | ❌ failure (esperado) | **DOCUMENTADO** — firewall GitHub Copilot infra (recorrente, ver P61) | P61 |
 | `e2e-swatch-quickview.yml` | ❌ failure | ❌ failure (esperado) | **DOCUMENTADO** — "Check min tests" + runner shutdown infra (pré-existente, ver P63) | P63 |
+| `replenishment-quality.yml` | ❌ failure | ❌ failure (esperado) | **DOCUMENTADO** — hook `useReplenishmentStats` nunca resolve em CI (pré-existente, ver P64) | P64 |
+| `edge-integration-all.yml` | ❌ failure | ❌ failure (em correção) | **DOCUMENTADO** — `validate-access` deployed ≠ git; deploy disparado nesta sessão (ver P65) | P65 |
 
 ² Run [#40198674547](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40198674547) em `a29b3a19` — `conclusion=failure` confirmado: step 27 E2E públicos timeout (P60 — pré-existente).
 
@@ -190,6 +196,8 @@ timeout-minutes: 90  # P19b: vitest roda 1265 arquivos com maxWorkers:2 (~45-60m
 | P61 | `copilot-code-review.yml` | Configurar token Copilot ou desativar workflow |
 | P62 | `e2e.yml` (Playwright) | Investigar OOM/crash em `NoveltyProductGrid` no CI (`/novidades`) |
 | P63 | `e2e-swatch-quickview.yml` | Investigar `Check min tests executed` — 0 specs coletados (produtos com swatches no CI?) |
+| P64 | `replenishment-quality.yml` | Investigar `fn_get_replenishment_stats` — RPC não responde em CI (RLS, variáveis ausentes ou função inexistente?) |
+| P65 | `edge-integration-all.yml` | Deploy de `validate-access` disparado (2026-10-25); verificar próximo run após deploy |
 
 ---
 
@@ -198,6 +206,7 @@ timeout-minutes: 90  # P19b: vitest roda 1265 arquivos com maxWorkers:2 (~45-60m
 - **2 workflows corrigidos:** `ci-security-drift.yml` (P19 — test + timeout P19b); falha residual P60 é pré-existente
 - **5 workflows auto-resolvidos:** Uptime Monitor (P42), Supabase Linter Gate (P48), Branch Protection Sentinel (P58), Quote Builder (P17), Release Please (P1/P21/P44 — run #40200678489)
 - **7 workflows documentados (bloqueados externamente):** Cart Invariants (P2b), E2E Critical Flows (P16), E2E Personalization/QuickView (P23/P24), ci-security-drift step 27 (P60), Copilot Code Review infra (P61), E2E `/novidades` page crash (P62), E2E Swatch QuickView (P63)
-- **Gate Final permanece verde** em todos os commits desta sessão
+- **2 workflows documentados (novos — d74b33fb):** Replenishment Quality Gate hook timeout (P64), Edge Integration Tests divergência deployed vs. git (P65 — deploy disparado)
+- **Gate Final permanece verde** em todos os commits desta sessão — último run: [#40206801690](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40206801690) (`d74b33fb`, ✅ success)
 - **Zero regressões introduzidas**
-- **Main HEAD atual:** `af0b4512` (PR #2530 merge)
+- **Main HEAD atual:** `d74b33fb` (PR #2524 merge)
