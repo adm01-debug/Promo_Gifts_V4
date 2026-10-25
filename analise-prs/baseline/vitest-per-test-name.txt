@@ -1,0 +1,36 @@
+# Baseline vitest por nome de teste — main
+#
+# SHA de referência: eb7a92479750cec45c7b08ce09bcfe05d407396e
+# SHA do último run bem-sucedido (Gate 2): eb7a92479750cec45c7b08ce09bcfe05d407396e
+# CI job: #121040094404 — Deploy Gates run #40150209361
+# Gerado em: 2026-10-25 (sessão https://claude.ai/code/session_01Ss1tXZ4cAbxBvdmu95uNPz)
+#
+# Metodologia:
+#   npm ci falha localmente (registry Lovable europe-west1-npm.pkg.dev inacessível).
+#   Baseline obtida dos logs CI do job Gate 2 (job #121040094404, run #40150209361).
+
+## test:deploy-gate (3 arquivos)
+# Test Files: 3 passed (3)
+# Tests     : 334 passed (334)
+# Falhas    : 0
+PASS  (test:deploy-gate) — 334 tests, 0 falhas
+
+## webhook-scenario-matrix.test.ts
+# Test Files: 1 passed (1)
+# Tests     : 95 passed (95)
+# Falhas    : 0
+PASS  tests/contracts/webhook-scenario-matrix.test.ts — 95 tests, 0 falhas
+
+## check-file-size-baseline.test.mjs
+# NOTA: step NÃO presente no Gate 2 run #40150209361 (removido ou movido para outro job)
+
+## Totais Gate 2
+# Total: 429 tests, 0 falhas, Gate Final = success (run #40150209361)
+
+## Atualização — SHA bfd9b50a (main HEAD atual)
+
+Run #40151693979 (Deploy Gates, gate 2):
+SHA: bfd9b50a5b87d2ef77f116bf53a931d7a4075de7
+Resultado: ✅ SUCCESS — 0 falhas confirmadas 2026-10-25
+PR #2455 que gerou este SHA é docs-only — zero risco de regressão em testes.
+Baseline continua: 429 testes, 0 falhas.

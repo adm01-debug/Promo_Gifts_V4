@@ -2,7 +2,8 @@
 
 **Documento gerado em:** 2026-10-24  
 **Sessão:** https://claude.ai/code/session_01Ss1tXZ4cAbxBvdmu95uNPz  
-**Aplicado a:** análise dos PRs #2414–#2428 do repo `adm01-debug/Promo_Gifts_V4`
+**Atualizado em:** 2026-10-25 (cobertura expandida para todos os 27 PRs analisados)  
+**Aplicado a:** análise dos PRs #2414–#2455 do repo `adm01-debug/Promo_Gifts_V4`
 
 ---
 
@@ -111,14 +112,30 @@ PRs em rascunho (draft) têm um bloqueio implícito: o autor não sinalizou que 
 
 | PR | Veredicto | Razão Primária |
 |---|---|---|
-| #2414 | BLOQUEADA | dirty (conflitos) |
-| #2415 | DECISÃO HUMANA | Rule 8: CI workflow |
-| #2417 | DECISÃO HUMANA | Rule 8: CI + edge fn + dirty |
-| #2418 | DECISÃO HUMANA | Rule 8: deploy-gates.yml + dirty |
-| #2419 | DECISÃO HUMANA | Rule 8: security gate + dirty |
-| #2420 | DECISÃO HUMANA | Rule 8: migrations + dirty |
-| #2422 | DRAFT (elegível) | sem Rule 8; só falta sair de draft |
-| #2424 | DECISÃO HUMANA | Rule 8: DDL + CI workflow |
-| #2426 | DRAFT (elegível) | sem Rule 8; só falta sair de draft |
-| #2427 | DRAFT (elegível) | sem Rule 8 p/ merge; deploy manual pós-merge |
-| #2428 | DECISÃO HUMANA | Rule 8: security policy |
+| #2414 | MERGEADO | SHA 7061adab — docs-only analise-branches/ |
+| #2415 | DECISÃO HUMANA | Rule 8: CI workflow (.github/workflows/) |
+| #2417 | IMPOSSÍVEL | branch órfã — NO_MERGE_BASE (sem ancestral com main) |
+| #2418 | IMPOSSÍVEL | branch órfã — NO_MERGE_BASE (sem ancestral com main) |
+| #2419 | IMPOSSÍVEL | branch órfã — NO_MERGE_BASE (sem ancestral com main) |
+| #2420 | IMPOSSÍVEL | branch órfã — NO_MERGE_BASE (sem ancestral com main) |
+| #2422 | IMPOSSÍVEL | branch órfã (NO_MERGE_BASE) + draft:true |
+| #2424 | DECISÃO HUMANA | Rule 8: DDL migration + CI workflow |
+| #2426 | MERGEADO | SHA 7f5d410a — 1 arquivo QA, sem Rule 8 |
+| #2427 | MERGEADO | SHA 26641b0a — cors.ts + webhook-schemas; edge fn deployed |
+| #2428 | DECISÃO HUMANA | Rule 8: .gitleaks.toml (security policy); draft:true |
+| #2432 | JÁ IMPLEMENTADA | conteúdo em main desde SHA 7f5d410a (patch-id idêntico) |
+| #2434 | MERGEADO | SHA 53ba69b5 — docs-only analise-prs/ |
+| #2435 | DECISÃO HUMANA | Rule 8: CI workflows + .gitleaks.toml; draft:true |
+| #2436 | MERGEADO | SHA 4c8193b9 — deliverables update |
+| #2437 | MERGEADO (outra sessão) | SHA 9b23fb64 |
+| #2438 | MERGEADO (outra sessão) | SHA c8994f17 |
+| #2439 | MERGEADO | SHA b3c8f2f3 — deliverables ci-per-test-name + dossies |
+| #2441 | MERGEADO (PO) | SHA 90c6492b — DDL P02/P08/P19 + edge fn send-notification |
+| #2443 | DECISÃO HUMANA | Rule 8: security decisions; draft:true |
+| #2445 | MERGEADO (PO) | SHA 8eeeca9b — DDL cron.alter_job job_id=235 |
+| #2447 | NOSSA PR (draft) | deliverables da sessão; draft:true — aguarda saída de draft |
+| #2449 | DECISÃO HUMANA | Rule 8: DDL CREATE FUNCTION SECURITY DEFINER; draft:true + conflito |
+| #2450 | MERGEADO (PO) | SHA d804cafa — docs RELATORIO_CI.md rev5 |
+| #2451 | FECHADO | draft + conflito; PR encerrada sem merge |
+| #2452 | IMPOSSÍVEL | draft:true + conflito — GitHub API bloqueia squash de draft |
+| #2455 | MERGEADO | SHA bfd9b50a — docs-only RELATORIO_CI.md rev7 + PENDENCIAS.md |
