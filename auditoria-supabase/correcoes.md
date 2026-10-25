@@ -280,14 +280,129 @@ WHERE version = '20261024190001';
 
 **PR:** https://github.com/adm01-debug/Promo_Gifts_V4/pull/2443
 **Análise de impacto:** `auditoria-supabase/analise-impacto/APROVACAO_FASE_B_IMPACTO.md`
+**Status:** Aguardando aprovação do PO. **NÃO APLICAR sem autorização.**
 
-| ID | Tipo | Impacto resumido |
-|---|---|---|
-| P06 | security_invoker views | 14 views; risco de RLS bypass via owner permissions |
-| P09 | ledger migrations repair | 3 migrations sem recibo no `schema_migrations` |
-| P14 | RLS auth.uid() initplan | 23 policies; N calls vs 1 por query |
-| P15 | anon SELECT produtos/variantes | 2 tabelas expostas a anon sem justificativa |
-| P03_sec | SECURITY DEFINER search_path | 8 funções com `pg_temp` no search_path |
+---
+
+### §P06_aprovacao — security_invoker = false em views públicas
+
+**Evidência pg_catalog (2026-10-25):**
+```sql
+SELECT table_name FROM information_schema.views
+WHERE table_schema='public' AND table_name ILIKE '%public%'
+  AND NOT EXISTS (
+    SELECT 1 FROM pg_options_to_table(
+      (SELECT reloptions FROM pg_class WHERE relname=table_name AND relkind='v')
+    ) WHERE option_name='security_invoker' AND option_value='true'
+  );
+-- 8 views sem security_invoker=true:
+-- v_kit_component_media_public
+-- v_product_compositions_public
+-- v_product_properties_public
+-- v_product_tags_public
+-- v_products_public
+-- v_suppliers_public
+-- v_tabela_preco_gravacao_oficial_public
+-- v_variant_sale_prices_public
+-- Total views_public no schema: 16
+```
+
+**Evidência codebase (grep `v_products_public|v_variant_sale_prices_public|...`):**
+```
+334 ocorrências em 19 arquivos .ts/.tsx referenciam essas views
+Arquivos principais:
+  src/integrations/supabase/types.ts (291 ocorrências — tipo gerado)
+  src/lib/external-db/products-lightweight.ts (3)
+  src/lib/external-db/rest-native.ts (4)
+  src/hooks/products/useProductsLightweight.ts (4)
+  src/lib/db/postgrest.ts (3)
+  + 14 outros arquivos
+```
+
+**Risco:** Views com `security_invoker=false` executam com permissões do owner (postgres), não do caller — um usuário com EXECUTE mas sem SELECT nas tabelas base pode ver dados via view. Em produção, todas as 8 views são read-only públicas, mas não têm RLS aplicada diretamente (no_rls).
+
+**Fix proposto:** `ALTER VIEW public.v_X SET (security_invoker=true)` para cada uma das 8.
+
+---
+
+### §P09_aprovacao — Migrations sem registro no ledger
+
+**Evidência (2026-10-25):**
+```
+Ledger (supabase_migrations.schema_migrations): 2549 migrations
+Arquivos .sql em supabase/migrations/:          2998 arquivos
+Diferença (sem ledger):                          449 arquivos
+```
+
+**Nota:** A maioria desses 449 são migrations históricas aplicadas antes da adoção do ledger Supabase, e migrations de reconciliação mode=repair-only. A proposta P09 trata apenas das migrations com DDL verificado que precisam de `migration repair --status applied` para sincronizar o ledger.
+
+**Risco:** Ledger dessincronizado causa falsos positivos no drift-check e dificulta auditoria. Não afeta o banco em si.
+
+**Fix proposto:** `supabase migration repair --status applied <version>` para cada migration identificada, via `db-apply-migration.yml` mode=repair-only.
+
+---
+
+### §P14_aprovacao — RLS auth.uid() sem wrapper SELECT
+
+**Evidência pg_catalog (2026-10-25):**
+```sql
+SELECT COUNT(*) FROM pg_policies
+WHERE schemaname='public'
+  AND qual LIKE '%auth.uid()%'
+  AND qual NOT LIKE '%(SELECT auth.uid())%';
+-- 447 policies com auth.uid() chamado diretamente (sem wrapper)
+```
+
+**Risco:** `auth.uid()` sem `(SELECT auth.uid())` é chamado 1× por row (não 1× por query), causando N calls ao authz para uma query que retorna N linhas — overhead de performance em tabelas com muitas linhas. Não é vetor de segurança.
+
+**Fix proposto:** Substituir `auth.uid()` → `(SELECT auth.uid())` em 447 policies via migration gerada por P14.
+
+---
+
+### §P15_aprovacao — anon SELECT em tabelas públicas
+
+**Evidência pg_catalog (2026-10-25):**
+```sql
+SELECT COUNT(*) FROM information_schema.role_table_grants
+WHERE grantee='anon' AND privilege_type='SELECT' AND table_schema='public';
+-- 54 tabelas com SELECT grant para anon
+```
+
+**Risco:** Tabelas com `SELECT` para `anon` expostas via PostgREST sem RLS row-filter permitem leitura pública irrestrita. Catálogo B2B — algumas exposições são intencionais (produtos, categorias), mas 54 tabelas é número alto para revisão.
+
+**Fix proposto:** Auditoria de cada tabela: revogar `SELECT` de anon onde não há RLS row-filter justificado; ou adicionar policy `anon_read` explícita.
+
+---
+
+### §P03_sec_aprovacao — SECURITY DEFINER com pg_temp no search_path
+
+**Evidência pg_catalog (2026-10-25):**
+```sql
+SELECT COUNT(*) FROM pg_proc p
+JOIN pg_namespace n ON n.oid=p.pronamespace
+WHERE n.nspname='public' AND p.prosecdef=true
+  AND EXISTS (SELECT 1 FROM unnest(p.proconfig) c WHERE c LIKE 'search_path=%pg_temp%');
+-- 45 funções SECURITY DEFINER com pg_temp no search_path
+```
+
+**Exemplos confirmados:**
+```
+admin_active_sessions          search_path=pg_catalog, pg_temp
+admin_revoke_user_sessions     search_path=pg_catalog, pg_temp
+check_edge_rate_limit          search_path=public, pg_temp
+check_login_rate_limit         search_path=public, pg_temp
+fn_anon_insert_rate_guard      search_path=public, pg_temp
+fn_cron_safe_run               search_path=pg_catalog, public, pg_temp
+get_edge_function_secret       search_path=vault, public, pg_temp
+get_edge_functions_base_url    search_path=public, vault, pg_temp
+get_sitemap_public             search_path=public, pg_temp
+magazine_add_items_atomic      search_path=public, pg_temp
+... (45 total)
+```
+
+**Risco:** `pg_temp` no search_path de função SECURITY DEFINER permite que um atacante com acesso à sessão crie objetos temporários com mesmo nome que funções ou tabelas do sistema — search_path hijack. Risco BAIXO em produção (requer acesso direto à sessão Postgres), mas recomendação CIS Benchmark.
+
+**Fix proposto:** `ALTER FUNCTION public.fn_X SET search_path = public` (removendo pg_temp) para cada uma das 45 funções.
 
 ---
 
