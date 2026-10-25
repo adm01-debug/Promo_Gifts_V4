@@ -1,20 +1,20 @@
 {
-  "gerado_em": "2026-10-25T06:38:00Z",
+  "gerado_em": "2026-10-25T07:30:00Z",
   "sessao": "https://claude.ai/code/session_01Ss1tXZ4cAbxBvdmu95uNPz",
-  "main_head": "de48ab2792f0b8e658d1534d881599aebb51a35c",
+  "main_head": "a778e1e467a92c5db46f6cc844eb0e48452040fa",
   "baseline": {
     "testes": 429,
     "falhas": 0,
-    "gate_final_run": "40169270830",
+    "gate_final_run": "40170213405",
     "gate_final_conclusao": "success",
     "sha_referencia": "1690019920621ec7dc4acd1501b802b8f67de54a"
   },
-  "prs_analisados": 40,
-  "prs_abertos_atuais": 12,
+  "prs_analisados": 42,
+  "prs_abertos_atuais": 14,
   "contagem_vereditos": {
     "MERGEAR": 13,
-    "DECISÃO_HUMANA": 11,
-    "FECHAR": 8,
+    "DECISÃO_HUMANA": 12,
+    "FECHAR": 9,
     "DECISÃO_HUMANA→MERGEADO_PO": 10,
     "IMPOSSÍVEL": 5,
     "MERGEADO": 2
@@ -27,6 +27,14 @@
       "gate_final_run": "40169270830",
       "gate_final_conclusao": "success",
       "merged_at": "2026-10-25T06:30:07Z"
+    },
+    {
+      "pr": 2481,
+      "sha": "a778e1e467a92c5db46f6cc844eb0e48452040fa",
+      "titulo": "docs(analise-prs): deliverables finais rev4",
+      "gate_final_run": "40170213405",
+      "gate_final_conclusao": "success",
+      "merged_at": "2026-10-25T07:00:00Z"
     }
   ],
   "prs_abertos": [
@@ -41,7 +49,9 @@
     {"number": 2443, "verdict": "DECISÃO_HUMANA", "motivo": "Draft + título APROVAÇÃO REQUERIDA", "draft": true},
     {"number": 2449, "verdict": "DECISÃO_HUMANA", "motivo": "Rule 8: supabase/migrations/ + draft", "draft": true},
     {"number": 2452, "verdict": "FECHAR", "motivo": "REGRA #10 outra sessão + draft", "draft": true},
-    {"number": 2469, "verdict": "DECISÃO_HUMANA", "motivo": "Rule 8: .github/workflows/e2e-personalization.yml", "draft": false}
+    {"number": 2469, "verdict": "DECISÃO_HUMANA", "motivo": "Rule 8: .github/workflows/e2e-personalization.yml", "draft": false},
+    {"number": 2480, "verdict": "DECISÃO_HUMANA", "motivo": "REGRA #10 outra sessão session_01JPgV7FqkG4UuFBJWiJa9FB + draft", "draft": true},
+    {"number": 2484, "verdict": "FECHAR", "motivo": "REGRA #10 outra sessão session_01Nc1nb7PArDnixYvvZssnKy + dirty + deleção -962 linhas", "draft": false}
   ],
   "producao": {
     "migrations_pendentes": 0,
