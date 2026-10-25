@@ -136,6 +136,8 @@ WHERE version = '20261022100001';
 
 **Efeito:** anon e PUBLIC não conseguem mais invocar `fn_cron_guard` diretamente — elimina vetor de bypass de rate-limit por chamada direta da função.
 
+**NÃO TESTADO em Postgres local:** `supabase start` falha no replay por incompatibilidades com 69 FKs para `auth.users`. Roteiro de validação: (1) criar instância temporária sem auth schema; (2) `REVOKE EXECUTE ON FUNCTION public.fn_cron_guard(bigint,text) FROM PUBLIC, anon;`; (3) verificar `SELECT has_function_privilege('anon','public.fn_cron_guard(bigint,text)','EXECUTE')` → deve retornar `false`. Verificação em produção já confirmada acima ✅.
+
 ---
 
 ## §P02 — 2 índices FK
@@ -154,6 +156,8 @@ WHERE indexname IN ('idx_kit_quote_requests_quote_id','idx_kit_save_requests_kit
 -- idx_kit_quote_requests_quote_id | kit_quote_requests | CREATE INDEX ... USING btree (quote_id)  ✅
 -- idx_kit_save_requests_kit_id    | kit_save_requests  | CREATE INDEX ... USING btree (kit_id)   ✅
 ```
+
+**NÃO TESTADO em Postgres local:** `supabase start` falha no replay — ambiente local impossível. Roteiro: criar tabelas stub `kit_quote_requests(quote_id uuid)` e `kit_save_requests(kit_id uuid)` sem FKs para `auth.users`, aplicar migration, verificar em `pg_indexes WHERE indexname IN (...)`. Verificação em produção confirmada acima ✅.
 
 ---
 
@@ -179,6 +183,8 @@ WHERE version = '20261024180002';
 ```
 
 **Efeito:** coluna `idempotency_key` adicionada a `workspace_notifications`; edge function `send-notification` passa a fazer upsert idempotente — elimina notificações duplicadas em retry/falha de rede.
+
+**NÃO TESTADO em Postgres local:** `supabase start` falha no replay — ambiente local impossível. Roteiro: criar tabela stub `workspace_notifications` sem FKs para `auth.users`, aplicar migration, verificar `SELECT column_name FROM information_schema.columns WHERE table_name='workspace_notifications' AND column_name='idempotency_key'`. Verificação em produção confirmada acima ✅.
 
 ---
 
