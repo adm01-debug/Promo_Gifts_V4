@@ -256,3 +256,275 @@ Qualquer PR que introduza um teste falhando está abaixo do baseline.
 - CI pós-merge #2455: run #40151693979 confirmado SUCCESS (main HEAD bfd9b50a). PR docs-only, 0 regressões.
 - CI para #2414, #2426, #2434: sem run no SHA do merge exato (merges sequenciais — CI cancelado/supersedido). Cobertura transitiva confirmada via run #40151693979 (SHA bfd9b50a, SUCCESS) que inclui todos os commits anteriores.
 - prs.csv: criado em `analise-prs/prs.csv` (27 PRs, colunas: pr_number, title, author, draft, state, mergeable_state, verdict, sha_merge, ci_run, notes).
+
+**Título:** fix(ci): P20 — exclui check-file-size-baseline.test.mjs do Vitest; roda via node --test  
+**Branch:** `claude_05/amazing-brahmagupta-0xhdur`  
+**Draft:** Não | **mergeable:** true | **mergeable_state:** behind  
+**git cherry:** 6 commits, todos `+` (não em main)  
+**SINGU:** 0 refs
+
+**Intenção:** Corrige incompatibilidade do `node:test` com Vitest jsdom. Exclui o arquivo do Vitest via `exclude` e o mantém rodando via `node --test` em `ci-security-drift.yml`.
+
+**Arquivos alterados:**
+- `vitest.config.ts` — adiciona ao `exclude`
+- `.github/workflows/ci-security-drift.yml` — adiciona step `node --test`  ← **Rule 8**
+- `RELATORIO_CI.md` — docs
+
+**CI (cfc23c5c):** Supabase Preview: failure (`categories.level` — pre-existing, não relacionado).
+
+**Rule 8:** `.github/workflows/ci-security-drift.yml` → **DECISÃO HUMANA**.
+
+---
+
+### PR #2417 — DECISÃO HUMANA + DIRTY + SEM MERGE BASE
+
+**Título:** fix(cors+ci): CORS wildcard via String.fromCharCode + gitleaks allowlist  
+**Draft:** Sim | **mergeable:** false (dirty)  
+**git cherry:** NO_MERGE_BASE — 28 commits, branch órfã  
+**SINGU:** 0 refs
+
+**Rule 8:** Workflows CI + edge function. **NÃO VERIFICADO** (sem merge base — diff entre histórias completamente separadas).  
+**Ação:** Fechar em favor de #2427 (já mergeado) + #2428.
+
+---
+
+### PR #2418 — DECISÃO HUMANA + DIRTY + SEM MERGE BASE
+
+**Título:** fix(gates): gitleaks allowlist FPs + deploy-gates fix  
+**Draft:** Sim | **mergeable:** false (dirty)  
+**git cherry:** NO_MERGE_BASE — 20 commits, branch órfã  
+**SINGU:** 0 refs
+
+**Rule 8:** `deploy-gates.yml` é o gate principal. **NÃO VERIFICADO** (sem merge base).  
+**Ação:** Fechar em favor de #2428.
+
+---
+
+### PR #2419 — DECISÃO HUMANA + DIRTY + SEM MERGE BASE
+
+**Título:** fix(security): audit_security_definer_acl — pg_get_userbyid substituindo cast regrole  
+**Draft:** Sim | **mergeable:** false (dirty)  
+**git cherry:** NO_MERGE_BASE — 33 commits, branch órfã  
+**SINGU:** 0 refs
+
+**Rule 8:** Altera gate de segurança (`check-security-definer-acl.mjs`). **NÃO VERIFICADO** (sem merge base).  
+**Ação:** Após decisão humana, rebase em main.
+
+---
+
+### PR #2420 — DECISÃO HUMANA + DIRTY + SEM MERGE BASE
+
+**Título:** fix(rollback): header preflight + rollback script para 20261024163500  
+**Draft:** Sim | **mergeable:** false (dirty)  
+**git cherry:** NO_MERGE_BASE — 17 commits, branch órfã  
+**SINGU:** 0 refs
+
+**Rule 8:** `supabase/rollbacks/` adjacente a migrations. **NÃO VERIFICADO** (sem merge base).  
+**Ação:** Após decisão humana, rebase + CI.
+
+---
+
+### PR #2422 — DRAFT (sem trigger Rule 8, dirty)
+
+**Título:** chore(sync): MIGRATIONS_SYNC_LOG + PGPORT no SEGREDOS + fix zodResolver cast  
+**Draft:** Sim | **mergeable:** false (dirty)  
+**git cherry:** NO_MERGE_BASE — 19 commits, branch órfã  
+**SINGU:** 0 refs
+
+**Diff verificado (via API):**
+1. `docs/ci/SEGREDOS.md` — adiciona `PGPORT` (+1 linha)
+2. `scripts/check-secrets-inventory.mjs` — indenta comentário + `secrets.EXAMPLE_API_KEY` ao allowlist
+3. `src/components/admin/products/ProductFormFullscreen.tsx` — `as unknown as Resolver<ProductFormData>` (fix TS)
+4. `supabase/MIGRATIONS_SYNC_LOG.md` — recibo migration OOB
+
+**Rule 8:** Nenhum trigger direto. Mas branch órfã + dirty.  
+**Ação:** Autor deve rebasear em main e converter para pronto; então elegível para merge.
+
+---
+
+### PR #2424 — DECISÃO HUMANA (Rule 8: DDL + CI/workflows)
+
+**Título:** feat(db): migration 20261024163500 + db-schema-drift-check workflow  
+**Draft:** Sim | merge base: `74ac36f1`  
+**git cherry:** 3 commits `+`, não estão em main  
+**SINGU:** 0 refs
+
+**Rule 8:** Migration SQL (`supabase/migrations/`) + `db-schema-drift-check.yml`.  
+**Ação:** DECISÃO HUMANA — aplicar via `db-apply-migration.yml` workflow_dispatch (CLAUDE.md E15).
+
+---
+
+### PR #2428 — DECISÃO HUMANA (security allowlist)
+
+**Título:** fix(gitleaks): allowlist — FPs de testes + placeholders de docs  
+**Draft:** Sim | merge base: `71d624e8`  
+**git cherry:** 1 commit `+`, não está em main  
+**SINGU:** 0 refs
+
+**Diff verificado:** Único arquivo `.gitleaks.toml`. Adiciona ~20 regexes ao allowlist (placeholders docs, mock tokens de testes).
+
+**Rule 8:** `.gitleaks.toml` = política de segurança. PR body pediu confirmação humana.  
+**Ação:** DECISÃO HUMANA — confirmar que os padrões são FPs aceitáveis.
+
+---
+
+## Tabela Final
+
+| PR | Draft | Mergeable | Rule 8 | cherry | SINGU | Verdict |
+|---|---|---|---|---|---|---|
+| [#2414](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2414) | — | — | — | squash merge | doc-only | **MERGEADO** `7061adab` |
+| [#2415](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2415) | Não | true (behind) | CI/workflows | 6 únicos | 0 | **DECISÃO HUMANA** |
+| [#2417](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2417) | Sim | false (dirty) | CI+edge | sem base | 0 | **DECISÃO HUMANA** |
+| [#2418](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2418) | Sim | false (dirty) | CI/workflows | sem base | 0 | **DECISÃO HUMANA** |
+| [#2419](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2419) | Sim | false (dirty) | security gate | sem base | 0 | **DECISÃO HUMANA** |
+| [#2420](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2420) | Sim | false (dirty) | migrations | sem base | 0 | **DECISÃO HUMANA** |
+| [#2422](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2422) | Sim | false (dirty) | — | sem base | 0 | **DRAFT+DIRTY** |
+| [#2424](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2424) | Sim | null | DDL+CI | 3 únicos | 0 | **DECISÃO HUMANA** |
+| [#2426](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2426) | —  | — | — | — | — | **MERGEADO** `7f5d410a` |
+| [#2427](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2427) | —  | — | — | — | — | **MERGEADO** `26641b0a` (deploy run #40132411991 — NÃO VERIFICADO) |
+| [#2428](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2428) | Sim | true (behind) | security policy | 1 único | 0 | **DECISÃO HUMANA** |
+| [#2432](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2432) | Não | — | — | — | 0 | **JÁ IMPLEMENTADA** (em main desde #2426) |
+| [#2434](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2434) | —  | — | — | — | — | **MERGEADO** `53ba69b5` |
+| [#2435](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2435) | Sim | — | CI/workflows+security | — | 0 | **DECISÃO HUMANA** |
+| [#2436](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2436) | —  | — | — | — | — | **MERGEADO** `4c8193b9` |
+| [#2437](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2437) | Sim | — | security policy | — | 0 | **DECISÃO HUMANA** |
+| [#2438](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2438) | Sim | — | security policy | — | 0 | **DECISÃO HUMANA** |
+| [#2441](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2441) | Não | true (behind) | DDL+edge function | 1 commit | 0 | **DECISÃO HUMANA** |
+| [#2443](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2443) | Sim | true (behind) | security decisions | 1 commit | 0 | **DECISÃO HUMANA** |
+
+---
+
+### PR #2432 — JÁ IMPLEMENTADA
+
+**Título:** feat(qa): probe E184 — detecta refs legadas ao projeto proibido  
+**Agente:** Devin | **Draft:** Não
+
+**Arquivo único:** `qa/migrations-draft/probe_e184_legacy_refs.sql`
+
+**Já em main:** SIM — arquivo idêntico existe em main desde PR #2426 squash merge (SHA `7f5d410a`). Merge seria no-op ou causaria conflito.
+
+**Verdict:** **JÁ IMPLEMENTADA** — nenhuma ação necessária.
+
+---
+
+### PR #2435 — DECISÃO HUMANA (Rule 8: CI/workflows + security policy)
+
+**Título:** fix(ci): Zod v4 repair — UUIDs + vitest + gitleaks + drafts README  
+**Branch:** `claude_05/upbeat-hamilton-5gnz50`  
+**Draft:** Sim | **SINGU:** 0 refs
+
+**Diff:** `.gitleaks.toml`, `.github/workflows/ci-security-drift.yml`, `PENDENCIAS.md`, `scripts/check-dependency-audit.mjs`, e arquivos `src/`
+
+**Rule 8:** `.github/workflows/ci-security-drift.yml` (CI/workflows) + `.gitleaks.toml` (security scanning policy)
+
+**Verdict:** **DECISÃO HUMANA** — DRAFT + REGRA 8.
+
+---
+
+### PR #2437 — DECISÃO HUMANA (Rule 8: security policy)
+
+**Título:** fix(ci): Zod v4 repair — UUIDs + vitest + gitleaks + drafts README (v2)  
+**Branch:** `claude_05/upbeat-hamilton-5gnz50`  
+**Draft:** Sim | **SINGU:** 0 refs
+
+**Diff (9 arquivos):** `.gitleaks.toml`, `PENDENCIAS.md`, `scripts/check-dependency-audit.mjs`, `src/hooks/products/useSellerCarts.ts` (`.errors[0]`→`.issues[0]`), `src/lib/validations/goalSchema.ts` (`required_error`→`error`), `src/pages/products/seller-carts/useSellerCartsPage.ts`, `tests/contracts/product-webhook.contract.test.ts` (UUID `4444`→`8444`), `tests/contracts/webhook-contracts.test.ts`, `tests/contracts/webhooks.contract.test.ts`
+
+**Rule 8:** `.gitleaks.toml` (security scanning policy exclusion de `dist/.*`)
+
+**Nota:** Contém correções Zod v4 de alto valor (`.errors[0]`→`.issues[0]`, `required_error`→`error`, UUID variant bit fix). Sobreposição com #2435 nos arquivos de infraestrutura.
+
+**Verdict:** **DECISÃO HUMANA** — DRAFT + REGRA 8.
+
+---
+
+### PR #2438 — DECISÃO HUMANA (Rule 8: security policy)
+
+**Título:** chore(ci): RELATORIO_CI + PENDENCIAS — docs de auditoria pós-Zod v4  
+**Draft:** Sim | **SINGU:** 0 refs
+
+**Diff (3 arquivos):** `.gitleaks.toml`, `PENDENCIAS.md`, `RELATORIO_CI.md`
+
+**Rule 8:** `.gitleaks.toml` (security scanning policy) — mesmo que seja predominantemente docs, o gitleaks arrasta o bloqueio.
+
+**Verdict:** **DECISÃO HUMANA** — DRAFT + REGRA 8.
+
+---
+
+## Ação requerida do PO (por prioridade)
+
+### 1. Confirmar deploy de edge functions (run #40132411991) — NÃO VERIFICADO
+cors.ts atualizado em #2427 — deploy de todas as funções disparado. Supabase MCP indisponível nesta sessão (ERR_PROXY_TUNNEL), não foi possível confirmar produção.
+
+### 2. Decidir sobre .gitleaks.toml — desbloqueia #2428, #2435, #2437, #2438
+Quatro PRs abertos tocam `.gitleaks.toml` (exclusão de `dist/.*` + FPs de testes). Se aprovado, #2428 (non-draft, 1 commit) pode ser mergeado após undraft.
+
+### 3. Aprovar merge de #2415 (fix CI real, non-draft, sem conflitos)
+Toca `ci-security-drift.yml` — corrige incompatibilidade `node:test` / Vitest jsdom.
+
+### 4. Decidir sobre #2437 (Zod v4 fixes em src/ + tests/contracts/)
+Conteúdo de alto valor: `.errors[0]`→`.issues[0]`, `required_error`→`error`, UUID variant fix. Após aprovação .gitleaks.toml, marcar como pronto e mergear.
+
+### 5. Decidir sobre #2424 (migration 20261024163500)
+Aplicar via `db-apply-migration.yml` workflow_dispatch + merge do PR.
+
+### 6. PR #2422 — rebasear em main e marcar pronto
+Branch órfã + dirty. Conteúdo válido (fix TS + docs).
+
+### 7. Decidir sobre #2441 (FASE B: P02/P08/P19 migrations + send-notification)
+Migrations aditivas/idempotentes com rollback. Após aprovação: merge + `db-apply-migration.yml` + `deploy-edge-functions.yml`.
+
+### 8. Revisar propostas de #2443 (P06/P09/P14/P15/P03_security_definer)
+Responder com `APROVADO <ID>` para cada proposta aceita. P03_security_definer é o mais urgente (escalação de privilégio).
+
+### 9. PRs dirty com Rule 8: #2417, #2418, #2419, #2420
+Fechar em favor de substitutos ou rebasar + DECISÃO HUMANA.
+
+---
+
+## Observações
+
+- **#2417 e #2418** são versões "sujas" de #2427 e #2428 respectivamente — provavelmente podem ser fechados.
+- **Deploy pós-#2427**: run #40132411991 em main `4c8193b9` via `deploy-edge-functions.yml` sem `function_name` (redeploy completo).
+- **CI de #2415**: Supabase Preview falha com `categories.level` — pre-existing, não causado pelo PR.
+- **PRs #2417–#2422**: branches órfãs sem ancestral comum com main atual — diff completo impossível via three-dot notation.
+
+---
+
+### PR #2441 — DECISÃO HUMANA (Rule 8: DDL + edge function)
+
+**Título:** feat(db+ef): FASE B — P02/P08/P19 migrations + send-notification idempotency  
+**Branch:** `claude_05/friendly-keller-3mgkhz`  
+**Draft:** Não | **mergeable:** true (behind) | **SINGU:** 0 refs
+
+**Diff (4 arquivos, 153+/16-):**
+- `supabase/migrations/20261024180001_fk_indexes_p02.sql` — 6 índices FK (`CREATE INDEX IF NOT EXISTS`)
+- `supabase/migrations/20261024180002_workspace_notifications_idempotency_p08.sql` — ADD COLUMN + UNIQUE INDEX parcial em `workspace_notifications`
+- `supabase/migrations/20261024180003_cron_schedule_p19_remaining.sql` — `cron.alter_job` para `auto-block-offenders` (5 min → 15 min)
+- `supabase/functions/send-notification/index.ts` — upsert idempotente com `idempotency_key`
+
+**Rule 8:** DDL em `supabase/migrations/` + edge function atualizada → **DECISÃO HUMANA**.  
+**Ação:** Após aprovação PO: merge + `db-apply-migration.yml` (P02/P08/P19) + `deploy-edge-functions.yml` (send-notification).
+
+---
+
+### PR #2443 — DECISÃO HUMANA (draft + aprovação explícita requerida)
+
+**Título:** APROVAÇÃO REQUERIDA: P06 / P09 / P14 / P15 / P03_security_definer — FASE B auditoria Supabase  
+**Branch:** `claude/feat-aprovacao-p06-p09-p14-p15-p03sec-261024-2315`  
+**Draft:** Sim | **mergeable:** true (behind) | **SINGU:** 0 refs
+
+**Diff (1 arquivo, 218+/0-):**
+- `auditoria-supabase/analise-impacto/APROVACAO_FASE_B_IMPACTO.md` — análise de impacto de 5 propostas
+
+**Propostas (sem código executável):**
+- P03_security_definer: 45 funções SECURITY DEFINER com `pg_temp` em `search_path` (risco: ZERO — fix urgente)
+- P14: 590 policies RLS sem `(SELECT auth.uid())` (performance)
+- P15: 56 tabelas com policies anon (risco: MÉDIO — `color_synonym_map` com `qual = 'true'`)
+- P06: 9 views `_public` com `security_invoker=false` (risco: ALTO — quebra catálogo público)
+- P09: 464 migrations sem ledger (investigação de 8–16h)
+
+**Verdict:** **DECISÃO HUMANA** — Draft + título "APROVAÇÃO REQUERIDA" + security decisions.
+
+---
+
+_Análise por Claude Code — sessão https://claude.ai/code/session_01Ss1tXZ4cAbxBvdmu95uNPz_
