@@ -1,8 +1,8 @@
 # Pendências CI — Bloqueios Externos
 
-**Atualizado em:** 2026-10-25 (rev 27 — P66/P67 adicionados; commit de referência atualizado para c113300c)  
+**Atualizado em:** 2026-10-25 (rev 28 — P68 adicionado; commit de referência atualizado para d8b4f130)  
 **Branch de referência:** `claude_05/nifty-sagan-r23gqh`  
-**Commit de referência (main):** `c113300c` — docs: RELATORIO_CI.md
+**Commit de referência (main):** `d8b4f130` — docs(pendencias): P66/P67 rev 27 (#2541)
 
 ---
 
@@ -1078,6 +1078,37 @@ Causa original: Error: esperado redirect para fora da tela de login
 Nenhuma. Falha transiente de infraestrutura. O próximo run normal deve passar. Se continuar falhando, verificar status do Supabase auth em `doufsxqlfjyuvxuezpln`.
 
 **Impacto no Gate Final:** Nenhum — `delivery-quality.yml` NÃO é required check no Gate Final (`deploy-gates.yml`). Gate Final permanece verde.
+
+---
+
+## P68 — DB — Aplicação de migration: preflight bloqueou migration com defeitos (workflow_dispatch)
+
+**Workflow:** `.github/workflows/db-apply-migration.yml` (workflow_dispatch)  
+**Run com falha:** [#40216869190](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40216869190) (commit `2d1587b`)  
+**Conclusão:** `failure`  
+**Categoria:** Preflight bloqueou corretamente — migration `20261022195616` com 3 defeitos; NÃO é required check no Gate Final
+
+**Job falho:** `1. Preflight (read-only)` → step "Checa arquivo único, rollback documentado, ainda não no ledger"
+
+**Erros exatos (log do preflight):**
+```
+[preflight-migration-apply] failed: 3 problema(s):
+1. arquivo não tem cabeçalho de rollback lógico ("-- Rollback:" nas primeiras 40 linhas).
+2. arquivo de rollback 20261022195616_rollback.sql não encontrado (E058: rollbacks vivem em supabase/rollbacks/).
+3. SECURITY DEFINER sem "pg_temp" no SET search_path em função "public.update_company_fields":
+   vulnerável a shadowing por objetos em pg_temp. Adicione SET search_path = pg_catalog, pg_temp.
+```
+
+**Causa raiz:**  
+A migration `20261022195616_fix_update_company_fields_security_definer_search_path.sql` foi submetida via `workflow_dispatch` mas o preflight a bloqueou porque: (a) falta cabeçalho `-- Rollback:` obrigatório nas primeiras 40 linhas; (b) falta `supabase/rollbacks/20261022195616_rollback.sql`; (c) `update_company_fields` usa `SECURITY DEFINER` sem `SET search_path = pg_catalog, pg_temp`. O Gate E15 bloqueou corretamente — **nenhuma DDL foi aplicada em produção**.
+
+**Ação necessária pelo PO:**  
+1. Adicionar `-- Rollback: DROP FUNCTION IF EXISTS ...` nas primeiras 40 linhas da migration.
+2. Criar `supabase/rollbacks/20261022195616_rollback.sql` com os comandos de reversão.
+3. Corrigir `SET search_path = pg_catalog, pg_temp` na função `update_company_fields`.
+4. Disparar novo `workflow_dispatch` em `db-apply-migration.yml` com `version: 20261022195616`.
+
+**Impacto no Gate Final:** Nenhum — `db-apply-migration.yml` é workflow_dispatch exclusivo, NÃO é required check no Gate Final (`deploy-gates.yml`).
 
 ---
 
