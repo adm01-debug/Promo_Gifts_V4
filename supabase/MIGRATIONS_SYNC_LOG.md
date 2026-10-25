@@ -787,6 +787,7 @@ da execução e consulta read-only ao catálogo/ledger, sem reaplicar SQL.
 | `20261022194200` | `e11ce4c31251d4584e99c3a98af1a475da1346504393c8cafb4ad27382c2fac3` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por adm01-debug) | E15 | 2026-10-23 09:57:59 UTC | job post-check da run 39922326892 confirmou a version no ledger | aplicada |
 | `20261024163500` | `3e02ba6695da74039e2c0bcdd3b81e56d61c07fdf5778524b0c9f0d888f474d1` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por ti10.promobrindes@gmail.com) | E15 | 2026-10-25 00:06:16 UTC | job post-check da run 40129329070 confirmou a version no ledger | aplicada |
 | `20261025002500` | `5389f02786479592edd543307273480e3c908d61d8b6c7e47dccb89f79823694` | — (não aplicado) | Claude sessão FASE B auditoria (https://claude.ai/code/session_01JPgV7FqkG4UuFBJWiJa9FB) | E15 | pendente | pendente — aguardando db-apply-migration.yml (PR #2451) | **pendente — não aplicada** |
+| `20261024180001` | `855670ae90ad588f045c4672eaba5ca8d28280d620dd6c6e3d55343cd4baf77b` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-10-25 05:19:36 UTC | job post-check da run 40164828396 confirmou a version no ledger | aplicada |
 
 ### Evidências do recibo `20260922170000`
 
