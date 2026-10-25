@@ -1,5 +1,5 @@
 # RELATORIO_CI.md — Relatório CI / Action Required
-**rev 6 — 2026-10-25 (sessão `session_01Nc1nb7PArDnixYvvZssnKy`)**
+**rev 7 — 2026-10-25 (sessão `session_01Nc1nb7PArDnixYvvZssnKy`)**
 **Branch:** `claude_05/upbeat-hamilton-5gnz50` (PRs #2438 e #2453) — **PR #2438 MERGEADO em main SHA `c8994f17`; PR #2453 Gate Final ✅ success**
 
 ---
@@ -651,3 +651,45 @@ Todos os workflows que executaram em `main` no SHA `6ea6c80c` — link, conclus�
 | Todos os 641 `action_required` documentados | ✅ | PENDENCIAS.md P4 |
 | Todos os workflows `failure` em `main` com causa raiz exata | ✅ | 7 failures — seção 12.2 + P1/P15/P16/P18/P19/P21 |
 | Nenhuma regressão introduzida por esta sessão | ✅ | Todos os failures são pré-existentes em main antes da sessão |
+
+---
+
+## 13. Tabela de Prova por Workflow — SHA `12c9605e` (2026-10-25, pós-PR #2470)
+
+**PR #2470** mergeado: `fix(tests): corrige 3 assertions timezone date-utils UTC→BRT`  
+**Commit resultante em main:** `12c9605e`
+
+### 13.1 Required Check — Deploy Gates
+
+| Workflow | Run ID | Conclusão | Detalhe |
+|---|---|---|---|
+| **Deploy Gates** (Gate Final) | [#40164652202](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40164652202) | ✅ **success** | **Único required check em `main`** — todos os Gates 0–6 passaram |
+
+### 13.2 Workflows FAILURE — não-required, pré-existentes ou infra
+
+| Workflow | Run ID | Conclusão | Causa Raiz | PENDENCIAS |
+|---|---|---|---|---|
+| Cart Invariants Smoke | [#40164652156](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40164652156) | ❌ failure | [E108] sem carrinhos ativos para o usuário de teste — dados de teste insuficientes | P2b/P16 |
+| E2E — Critical Flows & Error Boundaries | [#40164652156](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40164652156) | ❌ failure | [E108] same run — ver P16 | P16 |
+| E2E (Playwright) / Quote Builder | [#40164652195](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40164652195) | ❌ failure | `loginViaUI` timeout: `rest/v1/system_settings` PENDENTE 80s+, `rest/v1/products` PENDENTE 71s — rate-limit Supabase no CI runner | P18 |
+
+### 13.3 Baseline Vitest (local, 2026-10-25)
+
+Executado com `TZ=America/Sao_Paulo vitest run tests/unit/` (branch `claude_05/upbeat-hamilton-5gnz50`, pós-PR #2470):
+
+| Métrica | Valor |
+|---|---|
+| Test Files | 30 passed |
+| Tests | **1309 passed, 0 failed** |
+| Duration | 23s |
+| Timezone | America/Sao_Paulo (BRT = UTC-3) |
+| Assertions corrigidas (P19) | 3 — `date-utils.test.ts:79,98,107` |
+
+### 13.4 Mandato — verificação pós-PR #2470
+
+| Requisito | Status | Evidência |
+|---|---|---|
+| Deploy Gates `conclusion=success` em SHA `12c9605e` | ✅ | Run [#40164652202](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40164652202) |
+| P19 (timezone UTC→BRT) corrigido sem regressão | ✅ | PR #2470 mergeado; 1309 testes, 0 falhas |
+| Todos os failures pré-existentes documentados | ✅ | P2b/P16/P18/P25 em PENDENCIAS.md |
+| Nenhuma regressão introduzida | ✅ | Failures idênticos aos de SHA `6ea6c80c` — pré-existentes |

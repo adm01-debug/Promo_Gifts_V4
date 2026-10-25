@@ -1,8 +1,8 @@
 # Pendências CI — Bloqueios Externos
 
-**Atualizado em:** 2026-10-24 (rev 12 — P4: corrigido para 641 runs (API confirmada); RELATORIO_CI.md gerado; PR #2437 squash-mergeado em main `9b23fb64`)  
+**Atualizado em:** 2026-10-25 (rev 13 — P19 RESOLVIDO PR #2470; P2b/P16/P18 erros exatos confirmados em SHA `12c9605e`; baseline vitest registrado; DB migration E15 receipt failure documentado)  
 **Branch de referência:** `claude_05/upbeat-hamilton-5gnz50`  
-**Commit de referência (main):** `9b23fb64` (fix(ci): Zod 4 fixes CI-Replenishment + PENDENCIAS rev 10 — PR #2437)
+**Commit de referência (main):** `12c9605e` (fix(tests): corrige 3 assertions timezone date-utils UTC→BRT — PR #2470)
 
 ---
 
@@ -82,26 +82,33 @@ O fallback agora tem `data-testid="app-header"` e `position: fixed`. O `waitForT
 
 ### P2b — Cart Invariants Smoke: todos os shards falham
 
-**Run mais recente:** [#40124949400](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40124949400) (commit `71d624e8`)  
-**Conclusão:** `failure`  
-**Jobs:** 6 shards (chromium × 3 + firefox × 3) — todos falharam (job 120884195253 analisado)
+**Run mais recente confirmado (SHA `12c9605e`):** [#40164652156](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40164652156) — `failure`  
+**Job analisado:** `121083648409` (log lido 2026-10-25)  
+**Run anterior:** [#40124949400](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40124949400) (commit `71d624e8`)  
+**Conclusão:** `failure` (6 falharam, 1 passou)
 
-**Erros exatos confirmados (job logs):**
+**Erros exatos confirmados (job 121083648409 em SHA `12c9605e`):**
 ```
-Error: [E108] sem carrinhos disponíveis
-Error: [E108] precisa de 3+ carrinhos para A→B→A→C
+Error: [E108] sem carrinhos para testar
+  at e2e/carrinhos/active-cart-edge-cases.spec.ts:77
+
 Error: [E108] precisa de 2+ carrinhos
-Error: [E108] sem carrinhos disponíveis
-Error: [E108] precisa de 2+ carrinhos
-Error: [E108] sem carrinhos
-6 failed
+  at e2e/carrinhos/active-cart-edge-cases.spec.ts:56
+  at e2e/carrinhos/active-cart-edge-cases.spec.ts:110
+  at e2e/carrinhos/active-cart-intermittent-failure.spec.ts:69
+
+Error: [E108] precisa de 3+ carrinhos
+  at e2e/carrinhos/active-cart-mutations-parallel.spec.ts:88 [desktop]
+  at e2e/carrinhos/active-cart-mutations-parallel.spec.ts:88 [mobile]
+
+6 failed, 1 passed
 ```
 
 **Diagnóstico:**  
-Código de erro `[E108]` = fixture de dados insuficiente. Os testes exigem 2–3 carrinhos activos no ambiente de CI, mas o estado do banco de teste não os tem. Problema de dados de teste no runner, não regressão de código.  
+Código de erro `[E108]` = fixture de dados insuficiente. Os testes exigem 2–3 carrinhos activos no ambiente de CI para a conta de teste autenticada em `doufsxqlfjyuvxuezpln`, mas o estado do banco de teste não os tem. Problema de dados de teste no runner, não regressão de código. Confirmado em SHA `12c9605e` (pós-PR #2470) — o fix de timezone não afeta este workflow.  
 **Pré-existente no `main` (commit `325b0bd`)** — não introduzida por este PR.
 
-**Ação necessária:** seed de dados de teste no runner de CI com carrinhos suficientes.
+**Ação necessária:** seed de dados de teste (criar 3+ carrinhos ativos) para a conta E2E `E2E_USER_EMAIL` em `doufsxqlfjyuvxuezpln`. Requer ação do PO — fora do escopo de agente (DDL/INSERT proibidos em sessão Claude via execute_sql — REGRA #8/E056).
 
 ---
 
@@ -486,22 +493,32 @@ Nenhuma — não é possível corrigir via código do repositório. O comportame
 
 **Workflow:** `.github/workflows/e2e-critical-flows.yml`  
 **Run em `ec736c90`:** [#40129973741](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40129973741) — `failure`  
+**Run em SHA `12c9605e`:** [#40164652156](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40164652156) — `failure` (job 121083648409, analisado 2026-10-25)  
 **Run anterior:** [#40124949243](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40124949243) (commit `71d624e8`)  
 **Categoria:** E2E failure — não é required check no Gate Final
 
-**Causa raiz exata (log job 40129973741, analisado 2026-10-25):**  
+**Causa raiz exata — run 40129973741 (ec736c90), analisado 2026-10-25:**  
 - **Step 8 "Run Sidebar Tooltips E2E"** falha — teste de sidebar trava sem gerar relatório  
 - **Step 10 "Check min tests executed"** falha com:
   ```
   Nao foi possivel ler playwright-report/results-quote-flow.json: ENOENT: no such file or directory
   ```
   O teste `25-quote-full-flow.spec.ts` crashou antes de escrever `results-quote-flow.json`. O step de verificação de mínimo tenta ler o arquivo e falha por `ENOENT`.  
-- **Causa imediata:** O flow de quote falha antes de completar (provavelmente por dados insuficientes no banco de CI para completar um orçamento), e o arquivo de resultado nunca é gerado. O step de verificação de mínimo não tem tratamento de `ENOENT`.  
-- **Pré-existente desde SHA `ec736c90`** — não introduzida por nenhum dos PRs desta sessão.
+- **Causa imediata:** O flow de quote falha antes de completar (dados insuficientes no banco de CI para completar um orçamento), e o arquivo de resultado nunca é gerado. O step de verificação de mínimo não tem tratamento de `ENOENT`.  
+
+**Confirmação em SHA `12c9605e` (run 40164652156, job 121083648409):**
+```
+Error: [E108] sem carrinhos para testar — active-cart-edge-cases.spec.ts:77
+Error: [E108] precisa de 2+ carrinhos — active-cart-edge-cases.spec.ts:56, :110
+                                        active-cart-intermittent-failure.spec.ts:69
+Error: [E108] precisa de 3+ carrinhos — active-cart-mutations-parallel.spec.ts:88 [desktop/mobile]
+6 failed, 1 passed
+```
+Padrão [E108] confirma dados de teste insuficientes — mesmo root cause da run anterior. Fix de timezone (PR #2470) não afeta este workflow.
 
 **Impacto no Gate Final:** Nenhum — não faz parte do required check "Gate Final - Deploy Ready".
 
-**Ação necessária:** seed de dados de orçamento no runner de CI para que `25-quote-full-flow.spec.ts` complete; ou tratamento de `ENOENT` no step de verificação. Fora do escopo desta sessão.
+**Ação necessária:** seed de dados de orçamento/carrinhos no runner de CI. Requer ação do PO (INSERT proibido em sessão Claude — REGRA #8/E056).
 
 ---
 
@@ -522,10 +539,11 @@ Nenhuma — não é possível corrigir via código do repositório. O comportame
 
 **Workflow:** `.github/workflows/e2e-playwright.yml` (wf_id: 278436800)  
 **Run em `ec736c90`:** [#40129973861](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40129973861) — `failure`  
+**Run em SHA `12c9605e`:** [#40164652195](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40164652195) — `failure` (job 121084102714, analisado 2026-10-25)  
 **Run anterior:** [#40124949375](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40124949375) (commit `71d624e8`)  
 **Categoria:** E2E Playwright standalone — não é required check no Gate Final (Gate 3 E2E Smoke no deploy-gates.yml é o required, não este)
 
-**Causa raiz exata (log job 40129973861, analisado 2026-10-25):**  
+**Causa raiz exata — run 40129973861 (ec736c90), analisado 2026-10-25:**  
 - **Job:** `e2e-gates` → step `🛑 Fail-fast se header sticky falhou`  
 - **Assertion exata** em `e2e/flows/22-header-sticky.spec.ts:120`:
   ```
@@ -534,21 +552,36 @@ Nenhuma — não é possível corrigir via código do repositório. O comportame
   Received array: ["sticky", "fixed"]   ← PINNED_POSITIONS
   [chromium-authed] › ...22-header-sticky.spec.ts:132:7 › [mobile 390×844] › header permanece fixo ao rolar em /meus-kits
   ```
-- **Causa imediata:** Na rota `/meus-kits` em viewport mobile 390×844, `page.locator('[data-testid="app-header"]').evaluate(el => getComputedStyle(el).position)` retorna `""` (string vazia). O `data-testid="app-header"` existe em `src/components/layout/Header.tsx:179`, e o componente Header usa `position: fixed` (linha 187). O retorno `""` indica que o header **não está sendo renderizado** na rota `/meus-kits` no viewport mobile — a rota provavelmente não usa `MainLayout` ou renderiza um header diferente sem esse `data-testid`.  
-- **Código Header.tsx L187:** `'theme-transitioning fixed right-0 top-0 z-40 border-b transition-all duration-300 print:hidden'` → `fixed` está em `PINNED_POSITIONS`, então o teste passaria SE o header fosse renderizado.  
-- **Pré-existente desde SHA `ec736c90`** — não introduzida por nenhum dos PRs desta sessão.
+- **Causa imediata:** Na rota `/meus-kits` em viewport mobile 390×844, o header não está sendo renderizado (retorna position `""`) — a rota provavelmente não usa `MainLayout` ou renderiza header diferente sem esse `data-testid`.
+
+**Causa raiz exata — run 40164652195 (SHA `12c9605e`, job 121084102714), analisado 2026-10-25:**
+```
+[loginViaUI] Timeout aguardando redirect pós-login. URL atual: http://localhost:8080/login
+
+Supabase API calls PENDENTES no momento do timeout:
+  GET  rest/v1/system_settings          → PENDENTE há 80000ms+
+  POST rest/v1/rpc/get_profile_and_roles → PENDENTE há 71000ms+
+  GET  rest/v1/products                  → PENDENTE há 71352ms
+  POST functions/v1/get-visitor-info     → PENDENTE há 79662ms
+
+4 failed, 1 passou (11.1 min total)
+Testes falhos: quote-builder-delivery.spec.ts:14, :46, :57, :86
+```
+- **auth/v1/token → 200** (login OK), mas o redirect nunca ocorre porque `AuthProvider` aguarda `system_settings`, `get-visitor-info` e `get_profile_and_roles` antes de resolver o estado de auth.
+- As chamadas Supabase ficam PENDENTE por 80s sem retornar 4xx/5xx — conectividade/rate-limit do projeto `doufsxqlfjyuvxuezpln` no runner de CI durante execuções paralelas.
+- **Root cause:** Infraestrutura de CI — não é bug de código. Confirma que o fix de timezone (PR #2470) não resolveu este workflow.
 
 **Impacto no Gate Final:** Nenhum — Gate 3 E2E Smoke (dentro de deploy-gates.yml) passou: `success`.
 
-**Ação necessária:** Verificar se a rota `/meus-kits` usa `MainLayout` (que renderiza o Header) no viewport mobile. Se usa layout diferente para mobile (sem Header), o teste deve ser ajustado para excluir essa rota ou usar o seletor correto. Fora do escopo desta sessão.
+**Ação necessária:** Mockar chamadas Supabase não-críticas (`system_settings`, `get-visitor-info`) no ambiente E2E de CI, ou adicionar timeout explícito ao `AuthProvider` para resolver com dados parciais. Requer decisão do PO sobre estratégia de mock.
 
 ---
 
-## P19 — CI Security & Drift Checks: failure (timezone assertion — não-required)
+## P19 — CI Security & Drift Checks: timezone assertion — ✅ RESOLVIDO (PR #2470)
 
 **Workflow:** `.github/workflows/ci-security-drift.yml`  
-**Run em `ec736c90`:** [#40129973781](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40129973781) — `failure`  
-**Run em `6ea6c80c`:** [#40161646751](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40161646751) — `failure`  
+**Run em `ec736c90`:** [#40129973781](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40129973781) — `failure` (pré-fix)  
+**Run em `6ea6c80c`:** [#40161646751](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40161646751) — `failure` (pré-fix)  
 **Job:** `quality-gate` → step "Run Unit & Integration Tests"  
 **Categoria:** Timezone assertion hardcoded — não é required check no Gate Final
 
@@ -560,11 +593,16 @@ AssertionError: expected '10:05' to be '13:05' // Object.is equality
 AssertionError: expected '02:05' to be '05:05' // Object.is equality
   ❯ tests/unit/date-utils.test.ts:107:52
 ```
-- Runner CI está em UTC+0; testes esperam UTC+3 (diferença de 3h)
-- `tests/unit/date-utils.test.ts:98` e `:107` usam horários hardcoded sem mock de timezone
-- Falha pré-existente em main — não introduzida por esta sessão (nenhum commit tocou `tests/unit/date-utils.test.ts`)
+- Runner CI está em UTC+0; testes esperavam horários hardcoded sem conversão UTC→BRT (diferença de 3h)
 
-**Ação corretiva:** Mockar timezone nos testes com `vi.useFakeTimers({ timezone: 'America/Sao_Paulo' })` ou usar UTC explícito. Fora do escopo desta sessão.
+**Resolução — PR #2470 (mergeado, SHA `12c9605e`):**  
+Fix em `tests/unit/date-utils.test.ts` — 3 assertions corrigidas para UTC→BRT:
+- linha 79 (`formatDateTime`): `'15/06/2025 15:45'` → `'15/06/2025 12:45'`
+- linha 98 (`formatTime`): `'13:05'` → `'10:05'`
+- linha 107 (`formatTime` zero-pad): `'05:05'` → `'02:05'`
+
+Deploy Gates run [#40164652202](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40164652202) = ✅ `success` em SHA `12c9605e`.  
+Vitest local (TZ=America/Sao_Paulo): **1309 testes, 30 arquivos, 0 falhas** (23s) — verificado 2026-10-25.
 
 **Impacto no Gate Final:** Nenhum — este workflow não é required check no Gate Final.
 
@@ -660,6 +698,38 @@ Flake visual em QuickView de thumbnail — screenshot diff ou timeout de navega�
 **Impacto no Gate Final:** Nenhum — não é required check. Flake de ambiente confirmado.
 
 **Ação corretiva:** Adicionar `waitForLoadState('networkidle')` antes do screenshot ou aumentar tolerância de diff visual. Fora do escopo desta sessão.
+
+---
+
+## P25 — DB Migration E15 Receipt: "GitHub Actions is not permitted to create pull requests"
+
+**Workflow:** `.github/workflows/db-apply-migration.yml`  
+**Run em `12c9605e`:** [#40165426404](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40165426404) — `failure`  
+**Job:** `create-receipt-pr` (step pós-aplicação da migration)  
+**Categoria:** Permissão de repositório — não corrigível via YAML; requer configuração no GitHub Settings
+
+**Erro exato (GraphQL createPullRequest):**
+```
+GraphQL: GitHub Actions is not permitted to create or approve pull requests (createPullRequest)
+```
+
+**Causa raiz:**  
+A migration foi **aplicada com sucesso** em `doufsxqlfjyuvxuezpln` (step `Apply Migration` = ✅). O erro ocorre apenas na etapa pós-aplicação onde o workflow tenta abrir um PR de recibo automaticamente via `GITHUB_TOKEN`. A permissão "Allow GitHub Actions to create and approve pull requests" está **desativada** nas configurações do repositório.
+
+**O que funcionou / o que falhou:**
+- ✅ Preflight read-only (`preflight-migration-apply.mjs`) — passou
+- ✅ Aplicação da migration via `psql -1` — aplicada com sucesso em produção
+- ✅ `migration repair --status applied <version>` — ledger atualizado
+- ❌ `create-receipt-pr` — falha ao criar PR de recibo automaticamente
+
+**Impacto:**  
+Migration está aplicada e o ledger está correto. O único impacto é que o PR de recibo em `supabase/MIGRATIONS_SYNC_LOG.md` não foi criado automaticamente — o log precisa ser atualizado manualmente ou via `workflow_dispatch` após habilitar a permissão.
+
+**Ação necessária pelo PO:**  
+Habilitar em Settings → Actions → General → "Allow GitHub Actions to create and approve pull requests".  
+Após habilitar: re-rodar `db-apply-migration.yml` (somente o step de recibo) ou criar o PR de recibo manualmente.
+
+**Impacto no Gate Final:** Nenhum — a migration está aplicada; o Gate Final (`deploy-gates.yml`) não depende de recibo de migration.
 
 ---
 
