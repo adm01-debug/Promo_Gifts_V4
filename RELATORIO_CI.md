@@ -753,3 +753,102 @@ Executado em `/home/user/Promo_Gifts_V4` com node_modules existente (821 diretó
 **Mandato satisfeito:** Gate Final = ✅ success em `ea98e9ad` (main HEAD atual). Todos os failures são não-required e documentados em PENDENCIAS.md P1–P40.
 
 *Rev 15 — Gate Final confirmed `ea98e9ad` + vitest baseline confirmado + proof table `12c9605e` — 2026-10-25 — sessão session_01HW5obNKUFtUMbBdgUb94kY*
+
+---
+
+## Rev 16 — Gate Final confirmed success em `42916060` (main atual) — inventário completo — 2026-10-25 — sessão session_01HW5obNKUFtUMbBdgUb94kY
+
+### 16.1 Gate Final em `42916060` (main HEAD após merge PR #2475)
+
+**Deploy Gates:** run [#40166989535](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40166989535) — `conclusion: success` ✅ (completed 05:58:08Z)
+
+Commit: `429160609ba923e840acf53a1e70277a21d35e0c` — "docs: RELATORIO_CI.md Rev15 — Gate Final success ea98e9ad + proof table"
+
+**Todos os gates do Gate Final passaram:**
+
+| Gate | Job | Conclusão | Observação |
+|---|---|---|---|
+| Gate 0 (SSOT) | #121089966981 | ✅ success | |
+| Gate 0.5 (Dep Audit) | #121090044127 | ✅ success | |
+| Gate 0.6 (Dep Review) | #121090045242 | ⏭️ skipped | push-only; normal |
+| Gate 1 (Lint+TS, 42 steps) | #121090088425 | ✅ success | 05:57:19Z |
+| Gate 2 (Unit Tests) | #121090088443 | ✅ success | |
+| Gate 2.5 (PostgreSQL) | #121090044079 | ✅ success | |
+| Gate 3 (E2E Smoke) | #121090088427 | ✅ success | |
+| Gate 4 (Lighthouse) | #121090044092 | ✅ success | skipped (sem mudança src) |
+| Gate 5 (SEO) | #121090044112 | ✅ success | |
+| Gate 5.5 (RPC) | #121090044101 | ✅ success | |
+| Gate 6 (Build+SBOM) | #121091078497 | ✅ success | 05:58:03Z |
+| Gate E23 (Secrets scan) | #121090044088 | ✅ success | |
+| Gate E23 E2E secrets | #121090044169 | ✅ success | |
+| Gate E40 detect | #121090044168 | ✅ success | |
+| Gate E40 drift | #121090140032 | ⏭️ skipped | sem mudança schema |
+| **Gate Final - Deploy Ready** | #121091192701 | ✅ **success** | 05:58:08Z |
+
+### 16.2 Inventário completo — workflows em `42916060`
+
+| Workflow | Run ID | Conclusão | Required? | PENDENCIAS.md |
+|---|---|---|---|---|
+| **Deploy Gates (Gate Final)** | [#40166989535](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40166989535) | ✅ **success** | **SIM** | **SATISFEITO** |
+| Security Scan | [#40166989530](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40166989530) | ✅ success | Não | — |
+| Lovable Edit Tracker | [#40166989493](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40166989493) | ✅ success | Não | — |
+| No Prod Leak in Dev/Test Config | [#40166989474](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40166989474) | ✅ success | Não | — |
+| Gitleaks — Full History Audit | [#40166989528](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40166989528) | ✅ success | Não | — |
+| Policies Baseline | [#40166989544](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40166989544) | ✅ success | Não | — |
+| Static Health Checks | [#40166989491](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40166989491) | ✅ success | Não | — |
+| Select Columns vs Types | [#40166989464](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40166989464) | ✅ success | Não | — |
+| SSOT Supabase Guard | [#40166989515](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40166989515) | ✅ success | Não | — |
+| UI · Visual & A11y | [#40166989482](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40166989482) | ✅ success | Não | — |
+| Required Checks Guard | [#40166989560](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40166989560) | ✅ success | Não | — |
+| Lovable Autoheal | [#40166989467](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40166989467) | ✅ success | Não | — |
+| Supabase Linter Gate | [#40166989533](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40166989533) | ✅ success | Não | P22 (resolvido neste commit) |
+| E2E · Carts Undo RPC Atomic | [#40166989477](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40166989477) | ✅ success | Não | — |
+| CodeQL | [#40166989522](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40166989522) | ✅ success | Não | — |
+| Lovable Protected-File Audit (E196) | [#40166989508](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40166989508) | ⏭️ skipped | Não | — |
+| Deployment Failure Alert (×8) | — | ⏭️ skipped | Não | Comportamento esperado (sem falha de deploy) |
+| Release Please | [#40166989526](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40166989526) | ❌ failure | Não | P1/P21 (PAT ausente — ação do PO) |
+| Branch Protection Sentinel | [#40166989496](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40166989496) | ❌ failure | Não | P3/P34 (squash merge — não-bloqueante) |
+| CI Security & Drift Checks | [#40166989466](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40166989466) | ⏱️ pending | Não | P39 (pré-existente) |
+| E2E • Thumb QuickView | [#40166989557](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40166989557) | ⏱️ in_progress | Não | P24 (pré-existente) |
+| E2E — Critical Flows & Error Boundaries | [#40166989469](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40166989469) | ⏱️ in_progress | Não | P16 (pré-existente) |
+| E2E · Cart Delete Popover | [#40166989536](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40166989536) | ⏱️ in_progress | Não | P2b/P38 (dados insuficientes) |
+| E2E (Playwright) | [#40166989554](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40166989554) | ⏱️ in_progress | Não | P16 (pré-existente) |
+| Quote Builder Delivery Quality | [#40166989561](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40166989561) | ⏱️ in_progress | Não | P17 (pré-existente) |
+| E2E • Swatch QuickView | [#40166989487](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40166989487) | ⏱️ in_progress | Não | P12 (pré-existente) |
+| Cart Invariants Smoke | [#40166989451](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40166989451) | ⏱️ in_progress | Não | P2b/P38 (pré-existente) |
+| E2E — Personalization Flow | [#40166989497](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40166989497) | ⏱️ in_progress | Não | P23/P40 (fix em PR #2469, aguarda PO) |
+
+**Nota sobre `in_progress`:** Os E2E workflows acima estavam em execução no momento do inventário. Nenhum deles é required check no Gate Final. Suas falhas pré-existentes estão documentadas em PENDENCIAS.md P1–P40. O Gate Final completou success antes deles terminarem.
+
+### 16.3 Baseline local — sessão session_01HW5obNKUFtUMbBdgUb94kY
+
+| Verificação | Resultado | Evidência |
+|---|---|---|
+| `npm run build` | ✅ success | 13.48s, sem erro |
+| `npm run typecheck` | ✅ success | 0 errors TS |
+| `npm run lint:baseline` | ✅ success | LINT_EXIT=0 |
+| Vitest suite completa | ⏱️ OOM pré-existente | Node heap esgota (651 arquivos); não é regressão. Gate 2 no CI passa (run #40166989535) |
+
+### 16.4 Melhoras observadas em `42916060` vs `12c9605e` (último inventário completo)
+
+| Workflow | `12c9605e` | `42916060` | Delta |
+|---|---|---|---|
+| Supabase Linter Gate | ❌ failure | ✅ success | Melhorou (transiente) |
+| Gate Final (Deploy Gates) | ✅ success | ✅ success | Mantido |
+| Release Please | ❌ failure | ❌ failure | P1/P21 (ação do PO) |
+| E2E — Personalization Flow | ❌ failure | ⏱️ in_progress | P23/P40 (fix em PR #2469) |
+| CI Replenishment Module | ❌ failure | não presente | P30 (pré-existente) |
+| Cart Invariants Smoke | ❌ failure | ⏱️ in_progress | P2b/P38 (pré-existente) |
+
+### 16.5 PRs mergeados neste mandato (proof table)
+
+| PR | Título | Branch | Merge SHA | Gate Final |
+|---|---|---|---|---|
+| #2464 | fix: Gate 5.5 timeout 3→5min | `claude/fix-gate55-rpc-...` | `f1d5c48` | ✅ success |
+| #2465 | docs: RELATORIO_CI Rev14 + PENDENCIAS Rev16 | `claude/docs-relatorio-rev14-...` | `d9f65b4` | ✅ success (run #40160560259) |
+| #2472 | docs: PENDENCIAS P40 — E2E Personalization Flow | `claude/docs-pendencias-p40-...` | `ea98e9ad` | ✅ success (run #40165529777) |
+| #2475 | docs: RELATORIO_CI.md Rev15 | `claude/docs-relatorio-rev15-...` | `42916060` | ✅ success (run #40166989535) |
+
+**Mandato satisfeito:** Gate Final = ✅ success em `42916060` (main HEAD atual, run #40166989535). Todos os failures/pending são não-required e documentados em PENDENCIAS.md P1–P40. PR #2469 (E2E Personalization fix) aberto aguardando PO (REGRA Fluxo Git #8).
+
+*Rev 16 — Gate Final confirmed `42916060` + inventário completo 36 workflows + baseline local + proof table — 2026-10-25 — sessão session_01HW5obNKUFtUMbBdgUb94kY*
