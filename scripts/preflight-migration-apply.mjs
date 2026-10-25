@@ -214,7 +214,7 @@ export function detectSecurityDefinerWithoutPgTemp(sqlContent) {
     const startIdx = m.index;
     const snippet = executable.slice(startIdx, startIdx + 2000);
     // Verifica se há SET search_path sem pg_temp
-    const hasSetPath = /SET\s+search_path\s*=/i.test(snippet);
+    const hasSetPath = /SET\s+search_path\s*(?:=|TO\b)/i.test(snippet);
     const hasPgTemp = /pg_temp/i.test(snippet);
     if (hasSetPath && !hasPgTemp) {
       results.push(fnName);
