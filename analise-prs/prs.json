@@ -1,27 +1,27 @@
 {
   "gerado_em": "2026-10-25T11:10:00Z",
-  "atualizado_em": "2026-10-25T12:00:00Z",
+  "atualizado_em": "2026-10-25T14:50:00Z",
   "sessao": "https://claude.ai/code/session_01Ss1tXZ4cAbxBvdmu95uNPz",
-  "main_head": "801e38a53ce0c235611ff207ea1dd3d41a0ca89a",
-  "main_head_descricao": "PR #2513 squash-merged — docs(analise-prs): deliverables finais rev13 — META CUMPRIDA sessão",
+  "main_head": "317a317dbfe45ae27f5eefa67069d1df8d84f811",
+  "main_head_descricao": "PR #2528 squash-merged (PO) — docs: documenta P59 e P60 + P1 auto-resolvido",
   "gate_final_main": {
-    "run": "40189082535",
+    "run": "40203094379",
     "conclusao": "success",
-    "completado_em": "2026-10-25T11:17:00Z"
+    "completado_em": "2026-10-25T14:46:08Z"
   },
-  "total_analisados": 50,
+  "total_analisados": 53,
   "total_abertos_atuais": 14,
   "contagem_por_veredito": {
-    "MERGEAR": 21,
-    "MERGEAR_detalhes": "8 pré-sessão (#2414,#2426,#2427,#2434,#2436,#2437,#2438,#2439) + 13 esta sessão (#2479,#2481,#2486,#2490,#2498,#2501,#2504,#2505,#2509,#2510,#2511,#2512,#2513)",
-    "MERGEADO_PO": 10,
-    "MERGEADO_PO_detalhes": "#2435,#2441,#2445,#2450,#2451,#2458,#2464,#2465,#2470,#2473",
+    "MERGEAR": 22,
+    "MERGEAR_detalhes": "8 pré-sessão (#2414,#2426,#2427,#2434,#2436,#2437,#2438,#2439) + 14 esta sessão (#2479,#2481,#2486,#2490,#2498,#2501,#2504,#2505,#2509,#2510,#2511,#2512,#2513,#2518)",
+    "MERGEADO_PO": 12,
+    "MERGEADO_PO_detalhes": "#2435,#2441,#2445,#2450,#2451,#2458,#2464,#2465,#2470,#2473,#2515,#2517",
     "DECISAO_HUMANA": 10,
     "DECISAO_HUMANA_detalhes": "8 abertas (#2415,#2428,#2432,#2443,#2449,#2469,#2503,#2514) + 2 fechadas externamente (#2471,#2480)",
     "FECHAR": 9,
     "FECHAR_detalhes": "6 abertas (#2417,#2418,#2419,#2420,#2422,#2452) + 2 fechadas externamente (#2484,#2487encerrada) + 1 já fechada pré-sessão (#2424)",
-    "total": 50,
-    "nota_csv": "prs.csv contém 54 linhas (inclui PRs documentados antes do escopo oficial da sessão e PRs auxiliares de outras sessões contados por merge commit)"
+    "total": 53,
+    "nota_csv": "prs.csv contém 57 linhas (inclui PRs documentados antes do escopo oficial da sessão e PRs auxiliares de outras sessões contados por merge commit; adicionados #2515,#2517,#2518 rev16)"
   },
   "prs_abertos": [
     {

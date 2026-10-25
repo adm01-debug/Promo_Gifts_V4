@@ -122,3 +122,21 @@ Branch: claude/docs-analise-prs-rev6-261025-0745
 Arquivos: analise-prs/ (RELATORIO_PRS.md, prs.json, progresso.json) — correções não-sobrepostas rev6
 Gate Final run #40173768324: conclusion=success ✅ (confirmado via github_get_workflow_run às 07:49:49Z).
 Baseline: 429 testes, 0 falhas — INALTERADA. main HEAD atual verificado.
+
+---
+SHA: a6da5766a6bc179218df1435752d52fd4303661c
+Gate Final run #40195765621: conclusion=success ✅ (confirmado 2026-10-25T13:13:12Z)
+PR #2518: docs(analise-prs): reconcilia prs.json rev15 — squash-merged 2026-10-25T13:01:56Z
+Baseline: 429 testes, 0 falhas — INALTERADA.
+
+---
+SHA: 3affff6d93c6caaa4ed0229c23255ba4e2f7bcc7
+Gate Final run #40195986828: conclusion=success ✅ (confirmado 2026-10-25T13:15:46Z)
+PR #2517: fix(ci): aumenta timeout quality-gate 30→60 min — squash-merged pelo PO 2026-10-25T13:04:53Z
+Baseline: 429 testes, 0 falhas — INALTERADA.
+
+---
+SHA: 317a317dbfe45ae27f5eefa67069d1df8d84f811
+Gate Final run #40203094379: conclusion=success ✅ (confirmado 2026-10-25T14:46:08Z)
+PR #2528: docs: documenta P59 e P60 + P1 auto-resolvido — squash-merged pelo PO 2026-10-25T14:37:16Z
+Baseline: 429 testes, 0 falhas — INALTERADA. Este é o main HEAD atual ao fim da sessao.
