@@ -2,6 +2,7 @@
 -- Objetivo: adicionar guard auth.uid() à função update_company_fields
 -- Proteção: impede que chamadas sem sessão atualizem qualquer empresa (E18)
 -- Este arquivo existe somente como documentação (ledger já atualizado antes do commit)
+-- Rollback: supabase/rollbacks/20261022203935_rollback.sql (bloqueado de propósito: reverter reabre a escrita sem guard auth.uid())
 -- Aplicar via db-apply-migration.yml com mode=repair-only
 
 -- Segunda iteração (versão final em produção):

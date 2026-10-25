@@ -362,14 +362,6 @@
       "reason": "Feature sem tabela e sem decisão do PO; não criar schema por suposição."
     },
     {
-      "kind": "rpc",
-      "name": "check_auth_config_status",
-      "file": "src/lib/auth/auth-audit.ts",
-      "occurrences": 1,
-      "stage": 48,
-      "reason": "Fallback deliberado de runAuthAudit; decidir ligação ou aposentadoria antes de criar RPC."
-    },
-    {
       "kind": "relation",
       "name": "bitrix_clients",
       "file": "supabase/functions/bitrix-sync/index.ts",

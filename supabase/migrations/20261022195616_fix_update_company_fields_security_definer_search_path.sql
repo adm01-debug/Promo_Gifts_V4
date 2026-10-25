@@ -2,6 +2,7 @@
 -- Objetivo: adicionar SECURITY DEFINER + SET search_path à função update_company_fields
 -- Proteção: impede search_path injection (E30/auditoria-acl-2026-10-22)
 -- Este arquivo existe somente como documentação (ledger já atualizado antes do commit)
+-- Rollback: ver supabase/rollbacks/20261022195616_rollback.sql (irreversível sem a definição pré-E99, não versionada no repo)
 -- Aplicar via db-apply-migration.yml com mode=repair-only
 
 -- Primeira iteração da correção de segurança:

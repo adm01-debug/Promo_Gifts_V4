@@ -183,6 +183,7 @@ export function ItemCard({
   if (view === 'list') {
     return (
       <Card
+        data-testid="item-option"
         className={cn(
           'group rounded-xl transition-all duration-200',
           'border-border/50 focus-within:ring-2 focus-within:ring-primary/60',
@@ -235,6 +236,7 @@ export function ItemCard({
 
   return (
     <Card
+      data-testid="item-option"
       className={cn(
         'group flex flex-col overflow-hidden rounded-xl transition-all duration-200 will-change-transform',
         'border-border/50 focus-within:ring-2 focus-within:ring-primary/60',
