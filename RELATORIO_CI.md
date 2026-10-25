@@ -1,6 +1,6 @@
 # RELATORIO_CI.md — Relatório CI / Action Required
-**rev 3 — 2026-10-25 (sessão `session_01Nc1nb7PArDnixYvvZssnKy`)**
-**Branch:** `claude_05/upbeat-hamilton-5gnz50` (PR #2438)
+**rev 4 — 2026-10-25 (sessão `session_01Nc1nb7PArDnixYvvZssnKy`)**
+**Branch:** `claude_05/upbeat-hamilton-5gnz50` (PR #2438) — **Gate Final ✅ conclusion=success**
 
 ---
 
@@ -13,8 +13,8 @@ Executado em HEAD `7e69b190` (node v22.22.0, node_modules instalado):
 | Install | `ls node_modules/.package-lock.json` | ✅ node_modules OK |
 | TypeScript | `npx tsc --noEmit` | ✅ EXIT:0 — zero erros |
 | ESLint | `npx eslint src --ext .ts,.tsx --max-warnings=0 --quiet` | ✅ EXIT:0 — zero avisos |
-| Vite build | skipped (sem mudança em `src/`) | N/A — docs-only bypass E14 ativo |
-| Vitest | skipped (sem mudança em `src/`) | N/A — docs-only bypass E14 ativo |
+| Vite build | `npm run build` | ✅ EXIT:0 — 12.92s (warnings INEFFECTIVE_DYNAMIC_IMPORT pré-existentes, não bloqueantes) |
+| Vitest | `npx vitest run` | ⏱️ timeout local >5min — Gate 2 (Unit Tests) ⏭️ SKIPPED no CI via docs-only bypass E14; última execução completa do Gate 2 com `src/` modificado: ✅ success |
 
 **Conclusão baseline:** codebase limpo em HEAD. Docs-only bypass E14 correto — único commit desta sessão toca `PENDENCIAS.md` e `RELATORIO_CI.md`, zero mudança em `src/`.
 
@@ -88,27 +88,29 @@ Verificado em 2026-10-25 (latest run por workflow):
 
 ---
 
-## 3. Estado do Gate Final — PR #2438, SHA `7e69b190`
+## 3. Estado do Gate Final — PR #2438, SHA `2d88a3da` ✅ CONCLUÍDO
 
-**Run:** [#40141643241](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40141643241)
+**Run:** [#40144024721](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40144024721)
 
 | Gate | Job | Status | Conclusion |
 |---|---|---|---|
 | Docs-only bypass E14 | Detectar mudanças | completed | ✅ success |
 | Gate 0 | SSOT Supabase | completed | ✅ success |
 | Gate 0.5 | Dependency Audit | completed | ✅ success |
-| Gate 0.6 | Dependency Review | queued | — |
+| Gate 0.6 | Dependency Review | completed | ✅ success |
 | Gate 1 | Lint + TypeScript | completed | ⏭️ skipped (docs-only) |
 | Gate 2 | Unit Tests | completed | ⏭️ skipped (docs-only) |
-| Gate 2.5 | PostgreSQL Integrity | queued | — |
+| Gate 2.5 | PostgreSQL Integrity | completed | ✅ success |
 | Gate 3 | E2E Smoke | completed | ⏭️ skipped (docs-only) |
 | Gate 4 | Lighthouse CI | completed | ✅ success (src skip) |
-| Gate 5 | SEO Sanity Check | queued | — |
+| Gate 5 | SEO Sanity Check | completed | ✅ success |
 | Gate 5.5 | RPC restore_seller_cart | completed | ✅ success |
 | Gate E23 | Secret Scan (gitleaks) | completed | ✅ success |
 | Gate E23 | Verifica secrets E2E | completed | ✅ success |
-| Gate E40 | Detect schema changes | queued | — |
-| **Gate Final** | Deploy Ready | **pending** | **aguardando jobs acima** |
+| Gate E40 | Detect schema changes | completed | ✅ success |
+| Gate E40 | Schema Drift Check | completed | ⏭️ skipped (docs-only) |
+| Gate 6 | Build | completed | ⏭️ skipped (docs-only) |
+| **Gate Final** | **Deploy Ready** | **completed** | **✅ success** |
 
 ### Checks externos (não required)
 
