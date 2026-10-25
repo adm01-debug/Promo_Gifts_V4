@@ -1,53 +1,42 @@
 # RELATORIO_CI.md — Relatório CI / Action Required
-**rev 19 — 2026-10-25 (sessão `session_01HW5obNKUFtUMbBdgUb94kY`)**
-**SHA de referência na main:** `6457e24d` — merge PR #2489 (squash)
+**rev 20 — 2026-10-25 (sessão `session_01HW5obNKUFtUMbBdgUb94kY`)**  
+**SHA de referência na main:** `e91a36e3` — docs(analise-prs): deliverables rev7  
+**SHA Gate Final mais recente ✅:** `6457e24d` — merge PR #2489 (squash)  
 **Gate Final - Deploy Ready:** ✅ `conclusion=success` [run #40174922055](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40174922055)
 
 ---
 
 ## 0. Resumo executivo
 
-PR #2489 (squash → SHA `6457e24d`) corrigiu os 2 únicos workflows que estavam quebrando o Gate Final:
+Rev 20 documenta a correção do Gate E40 Schema Drift Check:
 
-1. **E2E — Personalization Flow** (`e2e-personalization.yml`): `min: 1, max-skipped-ratio: '0.95'` — Playwright project dependency executa o setup test sempre (1 run), mas `chromium-authed` skipam sem credenciais → total < min:4 era o erro.
-2. **Supabase Linter Gate** (`check-supabase-linter.mjs`): `TimeoutError → return 0` (warn não-fatal) em vez de `exit 2` fatal — Management API timeout transitório estava bloqueando o gate.
-
-Gate Final ✅ green. Todos os demais failures já estavam documentados em PENDENCIAS.md como bloqueios externos não-required.
-
----
-
-## 1. Prova de conclusão — Tabela de workflows que estavam em falha
-
-### 1a. Corrigidos nesta sessão (PR #2489)
-
-| Workflow | Causa raiz | Fix | Última run na main | Conclusão |
-|---|---|---|---|---|
-| E2E — Personalization Flow | `min: 4` falhava sem credenciais CI (1 test executado, 4 exigidos) | `min: 1, max-skipped-ratio: '0.95'` | [40174922500](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40174922500) | ✅ **success** |
-| Supabase Linter Gate | `TimeoutError` após 3 tentativas → `exit 2` bloqueava gate | `lastError → return 0` (warn) | [40174922005](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40174922005) | ✅ **success** |
-| Deploy Gates (Gate Final) | Dependia dos dois acima | Corrigido em cascata | [40174922055](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40174922055) | ✅ **success** |
-
-### 1b. Documentados em PENDENCIAS.md (bloqueios externos / não-required)
-
-| Workflow | Item PENDENCIAS | Motivo do bloqueio | Última run na main | Conclusão |
-|---|---|---|---|---|
-| Release Please | **P44** | "GitHub Actions is not permitted to create or approve pull requests" — PO precisa habilitar em Settings → Actions ou criar PAT `RELEASE_PLEASE_TOKEN` | [40174922110](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40174922110) | ❌ failure → P44 |
-| Running Copilot Code Review | **P45** | Firewall bloqueia `api.business.githubcopilot.com` — não corrigível via YAML | — | P45 (externo) |
-| Branch Protection Sentinel | **P46** | Push direto em main pelo PO — comportamento correto do sentinel, não é bug | [40174922504](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40174922504) | ✅ success (comportamento esperado) |
-| Cart Invariants Smoke | **P2b / P38** | Falha nos shards — não-required | [40174922050](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40174922050) | in_progress (P2b/P38) |
-| CI Security & Drift Checks | **P19 / P39** | Failure transitório — não-required | [40174922163](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40174922163) | pending (P19/P39) |
-| E2E — Critical Flows & Error Boundaries | **P16** | Failure não-required | [40174922061](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40174922061) | in_progress (P16) |
-| Quote Builder Delivery Quality | **P17** | Failure recorrente — não-required | [40174922013](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40174922013) | pending (P17) |
-| E2E (Playwright) | **P18** | Failure não-required | [40174922236](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40174922236) | in_progress (P18) |
-| E2E • Thumb QuickView | **P24** | Failure não-required | [40174922008](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40174922008) | pending (P24) |
-| E2E · Cart Delete Popover | **P25** | Failure não-required | [40174922099](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40174922099) | pending (P25) |
-| E2E • Swatch QuickView | **P12** | Falha visual swatch→QV — não-required | [40174922011](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40174922011) | pending (P12) |
-| Edge Integration Tests | **P29** | expected 200 got 400 — não-required | [40174921982](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40174921982) | in_progress (P29) |
-| Freight Quest — Quality Gates | **P17** (análogo) | Failure recorrente — não-required | [40174922065](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40174922065) | in_progress (P17) |
-| CodeQL | schedule — não-required | Scan de segurança — longo, não-bloqueante | [40174921999](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40174921999) | in_progress (schedule) |
+- **Gate E40 desbloqueado:** 6 versões `remote_only` identificadas via artifact 12592450906 (run 40175865899) e adicionadas ao `scripts/migration-ledger-remote-only-allowlist.json` (639 → 645 entradas). O gate falhava em qualquer PR que tocasse `supabase/migrations/` (PR #2500 / SHA `f857782b`).
+- **Gate Final** permanece ✅ green em `6457e24d` (run #40174922055) — a docs-only push `e91a36e3` não ativou Gate E40 (bypass E14).
+- **Nenhuma regressão** introduzida nos workflows que estavam verdes.
 
 ---
 
-## 2. Workflows antes verdes → seguem verdes (confirmação sem regressão)
+## 1. Histórico de correções — esta sessão e anteriores
+
+| Fix | PR | SHA em main | Gate Final | Status |
+|---|---|---|---|---|
+| E2E Personalization Flow: `min:1, max-skipped-ratio:0.95` | PR #2489 | `6457e24d` | [#40174922055](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40174922055) | ✅ success |
+| Supabase Linter Gate: `TimeoutError → return 0` (warn) | PR #2489 | `6457e24d` | [#40174922055](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40174922055) | ✅ success |
+| Gate E40: allowlist +6 versões remote_only (P56) | PR #2487 | pendente merge | Gate Final desbloqueado após merge | 🔄 em PR |
+
+---
+
+## 2. Gate Final em main — estado atual
+
+| SHA | Run Gate Final | Conclusão | Observação |
+|---|---|---|---|
+| `6457e24d` (PR #2489) | [#40174922055](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40174922055) | ✅ **success** | Último Gate Final confirmado verde |
+| `f857782b` (PR #2500) | [#40175865899](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40175865899) | ❌ failure | Gate E40 ativado — 6 versões blocking |
+| `e91a36e3` (docs push) | E14 bypass | ✅ skipped/success | Docs-only, Gate E40 não ativado |
+
+---
+
+## 3. Workflows antes verdes → seguem verdes
 
 | Workflow | Run na main (SHA `6457e24d`) | Conclusão |
 |---|---|---|
@@ -66,21 +55,10 @@ Gate Final ✅ green. Todos os demais failures já estavam documentados em PENDE
 | Policies Baseline | [40174922000](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40174922000) | ✅ success |
 | UI · Visual & A11y | [40174922297](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40174922297) | ✅ success |
 | Lovable Autoheal | [40174922502](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40174922502) | ✅ success |
+| E2E — Personalization Flow | [40174922500](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40174922500) | ✅ success |
+| Supabase Linter Gate | [40174922005](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40174922005) | ✅ success |
 
 **Nenhuma regressão em workflows que estavam verdes antes do PR #2489.**
-
----
-
-## 3. Baseline × Final
-
-| Métrica | Antes (SHA `aa6f55d4` / Rev17) | Depois (SHA `6457e24d` / Rev19) | Δ |
-|---|---|---|---|
-| Gate Final - Deploy Ready | ❌ failure | ✅ **success** | +1 corrigido |
-| E2E — Personalization Flow | ❌ failure (min:4 sem credenciais) | ✅ **success** | +1 corrigido |
-| Supabase Linter Gate | ❌ failure (TimeoutError → exit 2) | ✅ **success** | +1 corrigido |
-| Workflows required checks em verde | Gate Final ❌ | Gate Final ✅ | ✅ |
-| Workflows não-required em PENDENCIAS | P1–P43 documentados | P1–P46 documentados | +3 (P44/P45/P46) |
-| Novas regressões introduzidas | — | **0** | 0 |
 
 ---
 
@@ -88,9 +66,11 @@ Gate Final ✅ green. Todos os demais failures já estavam documentados em PENDE
 
 Ver `PENDENCIAS.md` para detalhes completos.
 
-- **P44** (ação PO): Release Please — habilitar "Allow GitHub Actions to create/approve PRs" em Settings → Actions → General **OU** criar `RELEASE_PLEASE_TOKEN` (PAT com escopo `repo` + `workflow`)
-- **P45** (infra): Copilot Code Review — bloqueio de rede externo `api.business.githubcopilot.com`
-- **P2b/P12/P16–P19/P24–P25/P29**: E2E e integridade não-required — diagnosticados e documentados; não bloqueiam deploy
+- **P56** (fix aplicado nesta sessão / PR #2487): Gate E40 — allowlist +6 versões. **Aguarda merge do PR #2487.**
+- **P47** (ação PO): Gitleaks cron — secret histórico pré-existente (issue #2261). Revogar/rotacionar.
+- **P40** (ação PO): PR #2469 (E42 fix e2e-personalization) — Gate Final ✅, aguarda aprovação PO (Regra 8).
+- **P1/P21/P49** (ação PO): Release Please — habilitar "Allow GitHub Actions to create/approve PRs" OU criar `RELEASE_PLEASE_TOKEN`.
+- **P2b/P8/P12/P13/P16–P19/P24–P25/P28–P31**: E2E e integridade não-required — diagnosticados; não bloqueiam deploy.
 
 ---
 
