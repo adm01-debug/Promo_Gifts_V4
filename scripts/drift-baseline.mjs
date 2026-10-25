@@ -76,8 +76,9 @@ ALTER DEFAULT PRIVILEGES IN SCHEMA public REVOKE ALL ON FUNCTIONS FROM anon, aut
 // 20261024180003 (job `auto-block-offenders`) e 20261024190001 (jobid 235) exigem jobs já existentes. Em produção
 // ele vem de 20260623171736; no shadow, que parte do baseline, nunca existe e o
 // replay aborta com "job auto-block-offenders não encontrado". Esta semente é
-// anexada ao fim do baseline na pasta temporária (jobs são dado, não schema:
+// gravada como migration B+1 na pasta temporária (jobs são dado, não schema:
 // não alteram o diff). Idempotente e tolerante a shadow sem pg_cron.
+export const REPLAY_CRON_SEED_FILE = 'drift_replay_cron_seed.sql';
 export const REPLAY_CRON_SEED_SQL = `
 -- Semente de jobs do pg_cron para o replay (scripts/drift-baseline.mjs).
 DO $seed$
@@ -269,9 +270,12 @@ export function prepareWorkdir({ rootDir, outDir, appliedVersions, projectRef })
   );
   const sanitized = sanitizeBaselineForReplay(readFileSync(baseline.file, 'utf8'));
   writeFileSync(join(outMigrations, REPLAY_SEED_NAME), REPLAY_SEED_SQL);
-  writeFileSync(join(outMigrations, baseline.name), sanitized.sql + REPLAY_CRON_SEED_SQL);
+  writeFileSync(join(outMigrations, baseline.name), sanitized.sql);
+  // Migration própria em B+1 (sessão nova, role padrão): no fim do baseline o
+  // cron.job já está sem privilégio. As migrations replayadas começam em B+2.
+  writeFileSync(join(outMigrations, replayFileName(baseline.version, 0, REPLAY_CRON_SEED_FILE)), REPLAY_CRON_SEED_SQL);
   replay.forEach((f, i) => {
-    copyFileSync(join(migrationsDir, f), join(outMigrations, replayFileName(baseline.version, i, f)));
+    copyFileSync(join(migrationsDir, f), join(outMigrations, replayFileName(baseline.version, i + 1, f)));
   });
   return {
     baselineVersion: baseline.version,
