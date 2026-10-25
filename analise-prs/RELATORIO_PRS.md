@@ -338,7 +338,7 @@ PR #2427 mergeado (SHA `26641b0a`) altera `supabase/functions/_shared/cors.ts` (
 
 **Rule 8:** `.gitleaks.toml` (security scanning policy exclusion de `dist/.*`)
 
-**Nota:** Contém correções Zod v4 de alto valor (`.errors[0]`→`.issues[0]`, `required_error`→`error`, UUID variant bit fix). Sobreposição com #2435 nos arquivos de infraestrutura.
+**Nota:** Contém correções Zod v4 de alto valor (`.errors[0]`→`.issues[0]`, `required_error`→`error`, UUID variant fix). Sobreposição com #2435 nos arquivos de infraestrutura.
 
 **Verdict:** **DECISÃO HUMANA** — DRAFT + REGRA 8.
 
