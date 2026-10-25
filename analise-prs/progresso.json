@@ -2,10 +2,10 @@
   "session": "https://claude.ai/code/session_01Ss1tXZ4cAbxBvdmu95uNPz",
   "generated_at": "2026-10-24",
   "main_sha_inicio": "9079c82e6c3f58ae5d2cdf8c7eb2deef979ee9d8",
-  "main_sha_fim": "8855a573773aa21ee4b154511f118135db7fde48",
+  "main_sha_fim": "c8994f17d0fea2f0e5ec3e3ffd28e94386aed551",
   "total_open_inicio": 17,
-  "total_open_novos": 2,
-  "total_analyzed": 19,
+  "total_open_novos": 5,
+  "total_analyzed": 22,
   "merges_realizados": 6,
   "status": "META_CUMPRIDA",
   "main_sha_fim_sessao": "8855a573773aa21ee4b154511f118135db7fde48",
@@ -101,7 +101,7 @@
     "run_cancelado": 40132059704,
     "run_cancelado_motivo": "function_name: _shared/cors é input inválido",
     "run_ativo": 40132411991,
-    "run_ativo_status": "NÃO VERIFICADO — STUCK PENDING",
+    "run_ativo_status": "DEPLOYED — confirmado via edge-functions-drift-check run #40146529580 (success 2026-10-25T00:23:53Z)",
     "run_ativo_trigger": "workflow_dispatch sem function_name — redeploy completo",
     "run_ativo_nota": "Despachado às 2026-10-24T21:01:53Z, nunca saiu de pending. Main avançou para 8855a573 depois. A mudança em cors.ts usa String.fromCharCode(42)='*' — comportamentalmente idêntica à versão anterior. Logs de produção 2026-10-24T20:00-23:59Z: 0 erros (confirmado via MCP query_logs). Funcional: sem impacto em produção."
   },
@@ -123,9 +123,12 @@
     {"number": 2432, "status": "analisado", "verdict": "JÁ IMPLEMENTADA", "motivo": "arquivo já em main desde PR #2426 (7f5d410a)", "singu": "0"},
     {"number": 2435, "status": "analisado", "verdict": "DECISÃO_HUMANA", "motivo": "draft + CI/workflows + .gitleaks.toml", "singu": "0"},
     {"number": 2437, "status": "analisado", "verdict": "DECISÃO_HUMANA", "motivo": "draft + .gitleaks.toml (security policy)", "singu": "0"},
-    {"number": 2438, "status": "analisado", "verdict": "DECISÃO_HUMANA", "motivo": "draft + .gitleaks.toml (security policy)", "singu": "0"},
+    {"number": 2438, "status": "MERGEADO_OUTRA_SESSAO", "verdict": "MERGEADO_OUTRA_SESSAO", "sha_merge": "c8994f17d0fea2f0e5ec3e3ffd28e94386aed551", "motivo": "Mergeado por outra sessão Claude — nossa análise era DECISÃO_HUMANA (.gitleaks.toml), mas outro agente mergeou autonomamente. Main HEAD = c8994f17.", "singu": "0"},
     {"number": 2441, "status": "analisado", "verdict": "DECISÃO_HUMANA", "motivo": "DDL (P02/P08/P19 migrations) + edge function send-notification", "singu": "0"},
-    {"number": 2443, "status": "analisado", "verdict": "DECISÃO_HUMANA", "motivo": "draft + título APROVAÇÃO REQUERIDA + security decisions (P03/P06/P09/P14/P15)", "singu": "0"}
+    {"number": 2443, "status": "analisado", "verdict": "DECISÃO_HUMANA", "motivo": "draft + título APROVAÇÃO REQUERIDA + security decisions (P03/P06/P09/P14/P15)", "singu": "0"},
+    {"number": 2445, "status": "analisado", "verdict": "DECISÃO_HUMANA", "motivo": "DDL: cron.alter_job(job_id := 235) em supabase/migrations/ → REGRA #8", "singu": "0"},
+    {"number": 2449, "status": "analisado", "verdict": "DECISÃO_HUMANA", "motivo": "DDL: CREATE FUNCTION SECURITY DEFINER (E99 repair-only) em supabase/migrations/ → REGRA #8", "singu": "0"},
+    {"number": 2450, "status": "analisado", "verdict": "DRAFT_BLOQUEADA", "motivo": "Draft ativo. Docs-only (RELATORIO_CI.md). Sem Rule 8 triggers. Merge possível após desmarcar draft.", "singu": "0"}
   ],
   "deliverables": {
     "baseline": "analise-prs/baseline/typecheck.txt",
@@ -151,7 +154,10 @@
       "analise-prs/dossies/PR-2437.md",
       "analise-prs/dossies/PR-2438.md",
       "analise-prs/dossies/PR-2441.md",
-      "analise-prs/dossies/PR-2443.md"
+      "analise-prs/dossies/PR-2443.md",
+      "analise-prs/dossies/PR-2445.md",
+      "analise-prs/dossies/PR-2449.md",
+      "analise-prs/dossies/PR-2450.md"
     ],
     "regras_de_negocio": "analise-prs/regras-de-negocio.md",
     "progresso": "analise-prs/progresso.json"

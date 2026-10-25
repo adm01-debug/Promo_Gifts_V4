@@ -15,7 +15,10 @@ number,title,draft,mergeable,mergeable_state,rule8_trigger,cherry,singu_refs,ver
 2432,"feat(qa): probe E184 — detecta refs legadas ao projeto proibido",false,,,,,0,JÁ IMPLEMENTADA,
 2435,"fix(ci): Zod v4 repair — UUIDs + vitest + gitleaks + drafts README",true,,,"CI/workflows+security policy",,0,DECISÃO HUMANA,
 2437,"fix(ci): Zod v4 repair — UUIDs + vitest + gitleaks (v2)",true,,,"security policy (.gitleaks.toml)",,0,DECISÃO HUMANA,
-2438,"chore(ci): RELATORIO_CI + PENDENCIAS — docs pós-Zod v4",true,,,"security policy (.gitleaks.toml)",,0,DECISÃO HUMANA,
+2438,"chore(ci): RELATORIO_CI + PENDENCIAS — docs pós-Zod v4",,,,,,0,MERGEADO_OUTRA_SESSAO,c8994f17d0fea2f0e5ec3e3ffd28e94386aed551
 2439,"chore(análise): deliverables Fase 2 + dossies #2432/#2435 + baseline ci-per-test-name",false,,,,,0,MERGEADO,b3c8f2f33ece1d0da87a841396ecb5dcc8da0db8
 2441,"feat(db+ef): FASE B — P02/P08/P19 migrations + send-notification idempotency",false,true,behind,"DDL/migrations+edge function",153+/16-,0,DECISÃO HUMANA,
 2443,"APROVAÇÃO REQUERIDA: P06 / P09 / P14 / P15 / P03_security_definer — FASE B auditoria Supabase",true,true,behind,"security decisions+draft",218+/0-,0,DECISÃO HUMANA,
+2445,"fix(cron): FASE B P01 — cron auth header para image-dimensions-backfill",false,,,"DDL/migrations (cron.alter_job)",,0,DECISÃO HUMANA,
+2449,"fix(db): E99 repair-only — update_company_fields security definer",false,,,"DDL/migrations (SECURITY DEFINER)",,0,DECISÃO HUMANA,
+2450,"docs: RELATORIO_CI.md rev5 — tabela de prova de conclusão pós-merge PR #2438",true,,blocked,,62+/11-,0,DRAFT+BLOQUEADA,

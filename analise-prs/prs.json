@@ -1,11 +1,11 @@
 {
   "generated_at": "2026-10-24",
   "main_sha_inicio": "9079c82e6c3f58ae5d2cdf8c7eb2deef979ee9d8",
-  "main_sha_fim": "c8ba40e9d65ba2d1ffa63bb19cbb2e6d9a56ff60",
+  "main_sha_fim": "c8994f17d0fea2f0e5ec3e3ffd28e94386aed551",
   "worktree_tests_completed": true,
   "total_open_inicio": 17,
-  "total_open_novos": 2,
-  "total_analyzed": 19,
+  "total_open_novos": 5,
+  "total_analyzed": 22,
   "merges_realizados": 6,
   "prs": [
     {
@@ -186,11 +186,11 @@
     {
       "number": 2438,
       "title": "chore(ci): RELATORIO_CI + PENDENCIAS — docs de auditoria pós-Zod v4",
-      "draft": true,
-      "rule8_trigger": "security policy (.gitleaks.toml)",
+      "status": "MERGEADO_OUTRA_SESSAO",
+      "sha_merge": "c8994f17d0fea2f0e5ec3e3ffd28e94386aed551",
       "singu_refs_added": 0,
-      "verdict": "DECISÃO HUMANA",
-      "motivo": "Draft + REGRA 8: .gitleaks.toml (security scanning policy). Predominantemente docs mas gitleaks arrasta o bloqueio."
+      "verdict": "MERGEADO_OUTRA_SESSAO",
+      "motivo": "Mergeado por outra sessão Claude. Nossa análise: DECISÃO_HUMANA (.gitleaks.toml). Outro agente mergeou."
     },
     {
       "number": 2441,
@@ -223,6 +223,34 @@
       "singu_refs_added": 0,
       "verdict": "DECISÃO HUMANA",
       "motivo": "Draft + título APROVAÇÃO REQUERIDA + propostas incluem security decisions e potencial ledger repair. Sem código executável."
+    },
+    {
+      "number": 2445,
+      "title": "fix(cron): FASE B P01 — cron auth header para image-dimensions-backfill",
+      "draft": false,
+      "rule8_trigger": "DDL/migrations (cron.alter_job job_id:235)",
+      "singu_refs_added": 0,
+      "verdict": "DECISÃO HUMANA",
+      "motivo": "Toca supabase/migrations/ (cron.alter_job). REGRA #8."
+    },
+    {
+      "number": 2449,
+      "title": "fix(db): E99 repair-only — update_company_fields security definer",
+      "draft": false,
+      "rule8_trigger": "DDL/migrations (CREATE FUNCTION SECURITY DEFINER — E99 repair-only)",
+      "singu_refs_added": 0,
+      "verdict": "DECISÃO HUMANA",
+      "motivo": "Toca supabase/migrations/ (SECURITY DEFINER function). REGRA #8."
+    },
+    {
+      "number": 2450,
+      "title": "docs: RELATORIO_CI.md rev5 — tabela de prova de conclusão pós-merge PR #2438",
+      "draft": true,
+      "mergeable_state": "blocked",
+      "rule8_trigger": null,
+      "singu_refs_added": 0,
+      "verdict": "DRAFT + BLOQUEADA",
+      "motivo": "Draft ativo. Docs-only (RELATORIO_CI.md). Merge possível após desmarcar draft."
     }
   ]
 }
