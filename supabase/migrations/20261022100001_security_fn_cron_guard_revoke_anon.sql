@@ -1,4 +1,5 @@
 -- SECURITY FIX: FUNC-NEW-001 (CRÍTICO) — fn_cron_guard SQL injection via EXECUTE p_sql
+-- Rollback: 20261022100001_rollback.sql
 --
 -- Evidência coletada em 2026-10-22:
 --   SELECT proname, prosrc FROM pg_proc WHERE proname = 'fn_cron_guard';
@@ -15,8 +16,6 @@
 -- Aplicar via: .github/workflows/db-apply-migration.yml
 -- Aprovação: PO obrigatória (REGRA #1/#8 CLAUDE.md)
 
-BEGIN;
-
 -- Revoga de PUBLIC (que inclui todos os roles, incluindo anon)
 REVOKE EXECUTE ON FUNCTION public.fn_cron_guard(p_key bigint, p_sql text) FROM PUBLIC;
 
@@ -26,8 +25,6 @@ REVOKE EXECUTE ON FUNCTION public.fn_cron_guard(p_key bigint, p_sql text) FROM a
 -- Mantém acesso apenas para quem legítimamente precisa:
 -- service_role (cron scheduler), postgres (admin), authenticated (se necessário — revisar)
 -- GRANT EXECUTE ON FUNCTION public.fn_cron_guard(p_key bigint, p_sql text) TO service_role; -- já tem
-
-COMMIT;
 
 -- POST-CHECK (executar após aplicação para confirmar):
 -- SELECT grantee, privilege_type FROM information_schema.routine_privileges
