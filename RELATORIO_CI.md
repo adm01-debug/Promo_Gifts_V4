@@ -1,5 +1,5 @@
 # RELATORIO_CI.md — Relatório CI / Action Required
-**rev 8 — 2026-10-25 (sessões `session_01Nc1nb7PArDnixYvvZssnKy` + `session_01HW5obNKUFtUMbBdgUb94kY`)**
+**rev 11 — 2026-10-25 (sessão `session_01Nc1nb7PArDnixYvvZssnKy`)**
 **Branches:** `claude_05/upbeat-hamilton-5gnz50` (PRs #2438, #2453, #2454) + `claude_05/nifty-sagan-r23gqh` (PR #2435 mergeado) — Gate Final ✅ conclusion=success (run #40150209361 + #40151468759)
 
 ---
@@ -450,3 +450,60 @@ node scripts/check-migration-path-references.mjs --update-baseline
 **Vercel:** `Resource provisioning failed` — erro de infra pré-existente (REGRA #11 / phantom project). Não é required check no Gate Final. Documentado em P-VERCEL (PENDENCIAS.md).
 
 *Rev 10 — PR #2457 merge + rebase sobre PR #2462 — 2026-10-25 — sessão session_01Nc1nb7PArDnixYvvZssnKy*
+
+---
+
+## 10. PR #2457 — fix Zod v4.6.6 UUIDs + Rev 11 (2026-10-25)
+
+**Sessão:** `session_01Nc1nb7PArDnixYvvZssnKy`  
+**PR mergeado (squash):** [#2457](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2457) → SHA `fcd4fb8d` em main (03:51Z)
+
+### 10.1 Causa raiz corrigida
+
+Zod v4.6.6 passou a exigir version nibble `[1-8]` na posição 14 do UUID. UUIDs de teste com versão `0` (padrão `0000-0000-*`) passaram a falhar. **14 testes em 6 arquivos** corrigidos.
+
+### 10.2 Tabela de prova — Gate Final no PR #2457
+
+Run [#40159335246](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40159335246) — SHA `4b20b4bf` — `conclusion: success`
+
+| Gate | Status |
+|---|---|
+| Gate 0 — SSOT Supabase | ✅ success |
+| Gate 0.5 — npm audit | ✅ success |
+| Gate 0.6 — Dependency Review | ✅ success |
+| Gate 1 — Lint + TypeScript (1.1–1.18) | ✅ success |
+| Gate 2 — Unit Tests (Vitest) | ✅ success |
+| Gate 2.5 — PostgreSQL Integrity | ✅ success |
+| Gate 3 — E2E Smoke (Playwright) | ✅ success |
+| Gate 4 — Lighthouse | ✅ success |
+| Gate 5 — SEO | ✅ success |
+| Gate 5.5 — RPC restore_seller_cart | ✅ success |
+| Gate E23 — Secrets Scan | ✅ success |
+| **Gate Final — Deploy Ready** | ✅ **success** |
+
+### 10.3 Inventário action_required — 2026-10-25
+
+Verificado via API `GET /actions/runs?status=action_required&per_page=50`:
+
+| Fonte | Branch | Qtd | Causa | Bloqueante? |
+|---|---|---|---|---|
+| `Cross-reference PR ↔ Issue` | `copilot/corrigir-peer-dependencies-eslint` | 1 | PR #2320 fechado; branch bot orphã | **Não** |
+| 22 workflows distintos | `release-please--branches--main--components--*` | ~640 | Bot release-please sem PR ativo | **Não** |
+| **`main`** | **main** | **0** | — | **Nenhum bloqueia Gate Final** |
+
+API confirmada: `GET /actions/runs?status=action_required&branch=main` → `{"total_count":0,"workflow_runs":[]}`.
+
+Registrado em PENDENCIAS.md P4 (pre-existente desta sessão).
+
+### 10.4 Deploy Gates em main pós-merge
+
+| Run ID | SHA | Status (03:58Z) |
+|---|---|---|
+| [40159740897](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40159740897) | `fcd4fb8d` | 🔄 in_progress |
+| [40159926751](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40159926751) | `1e07e298` | 🔄 in_progress |
+
+> Nota: SHA `1e07e298` = commit adicional em main pós-squash ("fix(ci): Gate 5.5 timeout 3→5min"). Ambos in_progress ao momento desta escrita. Conclusão documentada em §10.5 quando disponível.
+
+### 10.5 Conclusão final (preencher após runs completarem)
+
+> _A ser atualizado com conclusion dos runs acima._
