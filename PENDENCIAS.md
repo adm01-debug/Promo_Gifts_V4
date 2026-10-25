@@ -856,4 +856,55 @@ Usar `--project=chromium-authed` no step 27, com step anterior rodando `auth.set
 
 ---
 
+## P61 — Running Copilot Code Review: failure (bloqueio de infraestrutura GitHub Copilot)
+
+**Workflow:** `.github/workflows/copilot-code-review.yml`  
+**Run mais recente com falha:** [#40203096554](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40203096554) (commit `317a317d`)  
+**Conclusão:** `failure`  
+**Categoria:** Infraestrutura externa — firewall/rede do GitHub Copilot; não-required
+
+**Causa raiz:**  
+O workflow aciona a API do GitHub Copilot para revisão de código. A infraestrutura do Copilot (firewall de saída do runner) bloqueia a request, resultando em falha. Não há mudança de código que corrija esse comportamento.
+
+**Histórico de recorrência:** Ver P15, P32, P41, P45 — mesma causa, reincidem em pushes sucessivos.
+
+**Ação necessária pelo PO:**  
+Configurar token Copilot com permissões adequadas, ou desativar o workflow se a revisão automática não estiver em uso ativo.
+
+**Impacto no Gate Final:** Nenhum — `copilot-code-review.yml` NÃO é required check no Gate Final (`deploy-gates.yml`). Gate Final permanece verde.
+
+---
+
+## P62 — E2E (Playwright): `22-header-sticky.spec.ts` falha em `/novidades` (pré-existente)
+
+**Workflow:** `.github/workflows/e2e.yml`  
+**Run mais recente com falha:** [#40203094304](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40203094304) (commit `317a317d`)  
+**Run anterior confirmando pré-existência (antes do PR #2508):** [#40198674612](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40198674612) (commit `a29b3a19`) — também `/novidades`, tablet 820×1180  
+**Conclusão:** `failure`  
+**Categoria:** E2E autenticado — page crash específico da rota `/novidades` no CI
+
+**Erro exato (run #40201632246, job ID 121193851200):**
+```
+[chromium-authed] › e2e/flows/22-header-sticky.spec.ts:132:7
+  › Header sticky — rotas autenticadas [mobile 390×844]
+  › header permanece fixo ao rolar em /novidades
+
+Test timeout of 120000ms exceeded.
+[waitForTestIdVisible] testid="app-header" não ficou visível em 30000ms
+causa: locator.waitFor: Target page, context or browser has been closed
+```
+
+**Causa raiz apurada:**  
+O contexto do browser fecha (`Target page, context or browser has been closed`) durante `waitForTestIdVisible('app-header', 30000ms)` ao navegar para `/novidades`. Os outros 33 testes do mesmo run passaram normalmente (5–16s cada). Causa do crash não capturada nos logs — candidato principal: OOM do runner durante carregamento de `NoveltyProductGrid` (usa `VirtualizedNoveltyGrid`, múltiplos `ResizeObserver`/`IntersectionObserver` simultâneos).
+
+**Pré-existente confirmado:**  
+Run [#40198674612](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40198674612) (commit `a29b3a19`, ANTES de qualquer mudança desta sessão) também falhou em `/novidades` (viewport tablet 820×1180). O PR #2508 mudou o viewport de falha (tablet → mobile) ao remover `data-testid="app-header"` do fallback Suspense, mas NÃO introduziu a falha.
+
+**Correção possível (não urgente):**  
+Adicionar `page.on('crash', cb)` em `22-header-sticky.spec.ts` para capturar o crash real; investigar uso de memória de `NoveltyProductGrid` no CI.
+
+**Impacto no Gate Final:** Nenhum — `e2e.yml` NÃO é required check no Gate Final (`deploy-gates.yml`). Gate Final permanece verde.
+
+---
+
 *Atualizado pela sessão Claude Code — https://claude.ai/code/session_01HW5obNKUFtUMbBdgUb94kY*
