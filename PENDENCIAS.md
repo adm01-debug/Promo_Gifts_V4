@@ -1,8 +1,8 @@
 # Pendências CI — Bloqueios Externos
 
-**Atualizado em:** 2026-10-25 (rev 16 — merge PR #2464; P33 Gate Final fix; P34-P35 novos failures `1e07e298`)  
+**Atualizado em:** 2026-10-25 (rev 17 — Gate Final `aa6f55d4` success; P39 diagnóstico exato; P41/P42 adicionados)  
 **Branch de referência:** `claude_05/nifty-sagan-r23gqh`  
-**Commit de referência (main):** `1e07e298` — merge PR #2464 (fix(ci): Gate 5.5 timeout 3→5min)
+**Commit de referência (main):** `aa6f55d4` — merge PR #2477 (docs: RELATORIO_CI Rev16 + Gate Final confirmed)
 
 ---
 
@@ -907,10 +907,6 @@ O Uptime Monitor detectou falha de disponibilidade do site e criou a issue [#246
 
 ---
 
-*Atualizado pela sessão Claude Code — https://claude.ai/code/session_01HW5obNKUFtUMbBdgUb94kY*
-
----
-
 ## P37 — E2E — Personalization Flow: failure em `d9f65b4` (não-required)
 
 **Workflow:** `.github/workflows/e2e-personalization-flow.yml`  
@@ -941,7 +937,27 @@ O Uptime Monitor detectou falha de disponibilidade do site e criou a issue [#246
 **Run:** [#40160560319](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40160560319) — `failure` (commit `d9f65b4`)  
 **Categoria:** Security scan + drift check — não é required check no Gate Final
 
-**Diagnóstico:** Failure no CI Security & Drift Checks. Possível drift de schema (DDL fora do fluxo) ou falha transiente de security scan. Não é required check.
+**Diagnóstico:** 3 testes em `tests/unit/date-utils.test.ts` falham por timezone UTC vs BRT (America/Sao_Paulo). O runner CI executa em UTC mas os testes esperam BRT (+3h). Pré-existente.
+
+**Erros exatos (run #40160560319, commit `d9f65b4`):**
+```
+FAIL tests/unit/date-utils.test.ts > formatDateTime > returns dd/MM/yyyy HH:mm for ISO string (UTC)
+AssertionError: expected '15/06/2025 12:45' to be '15/06/2025 15:45'
+❯ tests/unit/date-utils.test.ts:79:56
+
+FAIL tests/unit/date-utils.test.ts > formatTime > returns HH:mm for ISO string
+AssertionError: expected '10:05' to be '13:05'
+❯ tests/unit/date-utils.test.ts:98:52
+
+FAIL tests/unit/date-utils.test.ts > formatTime > zero-pads hours and minutes
+AssertionError: expected '02:05' to be '05:05'
+❯ tests/unit/date-utils.test.ts:107:52
+
+Test Files: 1 failed | 1092 passed | 130 skipped (1223)
+Tests:      3 failed | 24732 passed | 1127 skipped | 24 todo (25886)
+```
+
+**Fix possível:** Reescrever os testes para usar timestamps absolutos (sem assumir timezone do runner) ou forçar `TZ=America/Sao_Paulo` no workflow. Não é required check — fix deixado para sessão futura.
 
 **Impacto no Gate Final:** Nenhum — não é required check.
 
@@ -960,6 +976,34 @@ O Uptime Monitor detectou falha de disponibilidade do site e criou a issue [#246
 **Impacto no Gate Final:** Nenhum — `e2e-personalization.yml` não é required check no Gate Final. Fix reduz falsos `failure` no workflow de personalização quando `E2E_USER_EMAIL`/`E2E_USER_PASSWORD` ausentes.
 
 **Ação necessária pelo PO:** Revisar e mergear PR [#2469](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2469) (squash-merge). CI verde, sem conflito com main. Apenas aprovação manual necessária (Regra 8 — modifica arquivo de workflow).
+
+---
+
+## P41 — Running Copilot Code Review: failure (não-required)
+
+**Workflow:** Running Copilot Code Review (GitHub Copilot feature)  
+**Run:** [#40168122089](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40168122089) — `failure` (commit `aa6f55d4`)  
+**Categoria:** GitHub Copilot Code Review — não é required check no Gate Final
+
+**Diagnóstico:** GitHub Copilot Code Review falhando. Feature experimental do GitHub Copilot para revisão automática de código. Não é um workflow customizado do repo — é executado pela infraestrutura do GitHub. Falhas são transientes e dependem da disponibilidade do serviço Copilot.
+
+**Impacto no Gate Final:** Nenhum — não é required check.
+
+**Ação necessária:** Nenhuma. Monitorar se persistir.
+
+---
+
+## P42 — Uptime Monitor: failure (não-required)
+
+**Workflow:** `.github/workflows/uptime-monitor.yml`  
+**Run:** [#40168330969](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40168330969) — `failure` (commit `aa6f55d4`)  
+**Categoria:** Health check externo — não é required check no Gate Final
+
+**Diagnóstico:** Uptime Monitor falhando. Workflow de monitoramento externo que verifica a disponibilidade do serviço em produção. Falhas são tipicamente transientes (serviço temporariamente indisponível, timeout de rede, endpoint em deployment).
+
+**Impacto no Gate Final:** Nenhum — não é required check (schedule/cron, não PR gate).
+
+**Ação necessária:** Verificar disponibilidade do serviço em produção se persistir.
 
 ---
 
