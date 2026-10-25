@@ -95,7 +95,7 @@
       "verdict": "DECISÃO_HUMANA",
       "rule8_triggers": [],
       "motivo": "REGRA #10 (branch de outra sessão session_01HxRBtssJabMB3jTgNY5B9W) + Gate Final FAILURE run #40129848772 + 4 correctness bugs",
-      "evidencia": "Gate Final check #120982011553: conclusion=failure. Diff: qa/migrations-draft/probe_e184_legacy_refs.sql (39 linhas). 4 bugs documentados em dossies/PR-2432.md",
+      "evidencia": "Gate Final check #120982011553: conclusion=failure. Diff: qa/migrations-draft/probe_e184_legacy_refs.sql (39 linhas). 4 bugs detectados.",
       "bugs_detectados": [
         "pg_get_functiondef() em aggregates aborta a probe (P2/High)",
         "pg_settings não expõe custom GUCs app.* (usar pg_db_role_setting)",
@@ -134,8 +134,8 @@
       "verdict": "FECHAR",
       "rule8_triggers": [],
       "motivo": "REGRA #10 (branch de outra sessão session_01HW5obNKUFtUMbBdgUb94kY) + draft",
-      "evidencia": "github_get_pr_diff(#2452): analise-prs/dossies/PR-2441.md apenas (docs). REGRA #10: branch sessão alheia",
-      "acao_recomendada": "Fechar PR.",
+      "evidencia": "github_get_pr_diff(#2452): analise-prs/dossies/PR-2441.md apenas (docs). REGRA #10: branch de sessão alheia",
+      "acao_recomendada": "Fechar PR. Conteúdo docs-only de sessão alheia — se correção ainda necessária, resubmeter.",
       "comentario_fechamento": "Fechando: branch de outra sessão (REGRA #10) — não é possível mergear autonomamente. Conteúdo docs-only pode ser resubmetido se ainda relevante."
     },
     {
