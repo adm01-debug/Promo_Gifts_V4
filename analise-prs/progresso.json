@@ -21,12 +21,12 @@
     {"number": 2538, "titulo": "docs: RELATORIO_CI — registra Gate Final HEAD confirmado (4cb4feb4)", "fechado_por": "PO", "motivo": "mergeada pelo PO"}
   ],
   "contagem_vereditos": {
-    "DECISAO_HUMANA": 12,
+    "DECISAO_HUMANA": 11,
     "FECHAR": 5,
     "JA_EM_MAIN": 1,
     "MERGEADO_PO": 1,
     "FECHADO_PO": 1,
-    "total": 20
+    "total": 19
   },
   "merges_autonomos_esta_sessao": 0,
   "worktrees_removidos": []

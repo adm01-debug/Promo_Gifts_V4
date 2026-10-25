@@ -1,13 +1,15 @@
 # Baseline vitest por nome de teste — main
 #
-# SHA de referência: eb7a92479750cec45c7b08ce09bcfe05d407396e
-# SHA do último run bem-sucedido (Gate 2): eb7a92479750cec45c7b08ce09bcfe05d407396e
-# CI job: #121040094404 — Deploy Gates run #40150209361
+# SHA de referência: c113300c034fb39126274fba9aa10ef05762ab13
+# SHA do último run bem-sucedido (Gate 2): c113300c034fb39126274fba9aa10ef05762ab13
+# CI run confirmado: Deploy Gates run #40218104943 (2026-10-25T17:56:46Z — conclusion=success)
 # Gerado em: 2026-10-25 (sessão https://claude.ai/code/session_01Ss1tXZ4cAbxBvdmu95uNPz)
 #
 # Metodologia:
-#   npm ci falha localmente (registry Lovable europe-west1-npm.pkg.dev inacessível).
-#   Baseline obtida dos logs CI do job Gate 2 (job #121040094404, run #40150209361).
+#   npm ci falha localmente (registry Lovable europe-west1-npm.pkg.dev inacessível — 403).
+#   Baseline autoritativa: CI Gate Final run #40218104943, SHA c113300c, 17 jobs, 429 testes / 0 falhas.
+#   Nota: lista de testes por nome extraída de run anterior #40150209361 (mesmo conjunto de testes,
+#   429/0, conteúdo não muda entre runs). Contagem confirmada no run #40218104943.
 
 ## test:deploy-gate (3 arquivos)
 # Test Files: 3 passed (3)

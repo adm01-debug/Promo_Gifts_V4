@@ -14,17 +14,17 @@
   "total_abertos_no_inicio": 17,
   "total_fechados_durante_sessao": 2,
   "contagem_por_veredito": {
-    "DECISAO_HUMANA": 12,
-    "DECISAO_HUMANA_detalhes": "#2415,#2428,#2443,#2449,#2452,#2469,#2503,#2520,#2529,#2532,#2537 + #2415",
+    "DECISAO_HUMANA": 11,
+    "DECISAO_HUMANA_detalhes": "#2415,#2428,#2443,#2449,#2452,#2469,#2503,#2520,#2529,#2532,#2537",
     "FECHAR": 5,
     "FECHAR_detalhes": "#2417,#2418,#2419,#2420,#2422 (NO_MERGE_BASE — órfãs)",
     "JA_EM_MAIN": 1,
-    "JA_EM_MAIN_detalhes": "#2432 (git cherry = 0)",
+    "JA_EM_MAIN_detalhes": "#2432 (git cherry = 0 — confirmado git merge-tree CLEAN + cherry)",
     "MERGEADO_PO": 1,
     "MERGEADO_PO_detalhes": "#2538",
     "FECHADO_PO": 1,
     "FECHADO_PO_detalhes": "#2521",
-    "total": 20
+    "total": 19
   },
   "merges_autonomos": 0,
   "prs_abertos_analisados": [
@@ -34,11 +34,13 @@
       "branch": "claude_05/amazing-brahmagupta-0xhdur",
       "draft": false,
       "test_merge": "CONFLICT",
+      "test_merge_evidence": "git merge-tree --write-tree $(git merge-base origin/main refs/remotes/pr-test/2415) origin/main refs/remotes/pr-test/2415 → conflicting files: .github/workflows/ci-security-drift.yml, .github/workflows/deploy-gates.yml, PENDENCIAS.md, RELATORIO_CI.md, vitest.config.ts",
       "cherry": null,
       "regra8": true,
+      "regra8_files": [".github/workflows/ci-security-drift.yml", ".github/workflows/deploy-gates.yml"],
       "regra10": true,
       "veredito": "DECISAO_HUMANA",
-      "motivo": "CONFLICT + 2 workflows (deploy-gates.yml, ci-security-drift.yml)"
+      "motivo": "CONFLICT em 5 arquivos + REGRA#8 (2 workflows) + REGRA#10 (outra sessão claude_05/)"
     },
     {
       "number": 2417,
@@ -106,6 +108,7 @@
       "branch": "claude/fix-gitleaks-gate-261024-1930",
       "draft": true,
       "test_merge": "CONFLICT",
+      "test_merge_evidence": "git merge-tree --write-tree $(git merge-base origin/main refs/remotes/pr-test/2428) origin/main refs/remotes/pr-test/2428 → conflicting files: .gitleaks.toml",
       "cherry": null,
       "regra8": true,
       "regra10": true,
@@ -118,11 +121,13 @@
       "branch": "claude/feat-probe-e184-241026-2026",
       "draft": false,
       "test_merge": "CLEAN",
+      "test_merge_evidence": "git merge-tree --write-tree $(git merge-base origin/main refs/remotes/pr-test/2432) origin/main refs/remotes/pr-test/2432 → empty diff (sem conflito, sem mudança nova)",
       "cherry": 0,
+      "cherry_evidence": "git cherry origin/main refs/remotes/pr-test/2432 | grep -c '^+' → 0",
       "regra8": false,
       "regra10": true,
       "veredito": "JA_EM_MAIN",
-      "motivo": "git cherry = 0 commits únicos — conteúdo já em main"
+      "motivo": "git cherry = 0 commits únicos — conteúdo já integrado em main"
     },
     {
       "number": 2443,
@@ -130,11 +135,14 @@
       "branch": "claude/feat-aprovacao-p06-p09-p14-p15-p03sec-261024-2315",
       "draft": false,
       "test_merge": "CLEAN",
+      "test_merge_evidence": "git diff origin/main...refs/remotes/pr-test/2443 --stat → 1 file: auditoria-supabase/analise-impacto/APROVACAO_FASE_B_IMPACTO.md (+218/-0)",
+      "diff_files": ["auditoria-supabase/analise-impacto/APROVACAO_FASE_B_IMPACTO.md"],
       "cherry": 1,
+      "cherry_evidence": "git cherry origin/main refs/remotes/pr-test/2443 | grep -c '^+' → 1",
       "regra8": false,
       "regra10": true,
       "veredito": "DECISAO_HUMANA",
-      "motivo": "Título exige aprovação PO; decisões de segurança P03/P06/P09/P14/P15"
+      "motivo": "REGRA#10 (branch de outra sessão claude/) + título 'APROVAÇÃO REQUERIDA' + documento de política de segurança (security_definer ACL P03/P06/P09/P14/P15)"
     },
     {
       "number": 2449,
@@ -142,11 +150,13 @@
       "branch": "claude/chore-e99-mirror-update-company-fields-261025-1100",
       "draft": true,
       "test_merge": "CONFLICT",
+      "test_merge_evidence": "git merge-tree --write-tree ... → conflicting files: supabase/MIGRATIONS_SYNC_LOG.md, supabase/migrations/20261022195616_fix_update_company_fields_security_definer_search_path.sql, supabase/migrations/20261022203935_update_company_fields_security_fix.sql",
       "cherry": null,
       "regra8": true,
+      "regra8_files": ["supabase/migrations/20261022195616_fix_update_company_fields_security_definer_search_path.sql", "supabase/migrations/20261022203935_update_company_fields_security_fix.sql"],
       "regra10": true,
       "veredito": "DECISAO_HUMANA",
-      "motivo": "CONFLICT em supabase/MIGRATIONS_SYNC_LOG.md + REGRA#8 (migrations)"
+      "motivo": "CONFLICT em 3 arquivos (migrations + sync log) + REGRA#8 (migrations)"
     },
     {
       "number": 2452,
@@ -154,6 +164,7 @@
       "branch": "claude/fix-gate-1-3-pr2441-refs-261025",
       "draft": true,
       "test_merge": "CONFLICT",
+      "test_merge_evidence": "git merge-tree --write-tree ... → conflicting files: analise-prs/dossies/PR-2441.md",
       "cherry": null,
       "regra8": false,
       "regra10": true,
@@ -166,11 +177,13 @@
       "branch": "claude/fix-ci-workflows-261025-0630",
       "draft": false,
       "test_merge": "CONFLICT",
+      "test_merge_evidence": "git merge-tree --write-tree ... → conflicting files: .github/workflows/e2e-personalization.yml",
       "cherry": null,
       "regra8": true,
+      "regra8_files": [".github/workflows/e2e-personalization.yml"],
       "regra10": true,
       "veredito": "DECISAO_HUMANA",
-      "motivo": "CONFLICT em e2e-personalization.yml + REGRA#8 (workflow)"
+      "motivo": "CONFLICT em .github/workflows/e2e-personalization.yml + REGRA#8 (workflow)"
     },
     {
       "number": 2503,
@@ -178,11 +191,12 @@
       "branch": "claude/docs-relatorio-ci-rev21-20261025-0911",
       "draft": true,
       "test_merge": "CONFLICT",
+      "test_merge_evidence": "git merge-tree --write-tree ... → conflicting files: RELATORIO_CI.md",
       "cherry": null,
       "regra8": false,
       "regra10": true,
       "veredito": "DECISAO_HUMANA",
-      "motivo": "CONFLICT em RELATORIO_CI.md + REGRA#10"
+      "motivo": "CONFLICT em RELATORIO_CI.md + REGRA#10 + conteúdo obsoleto (Rev21 vs HEAD c113300c)"
     },
     {
       "number": 2520,
@@ -190,11 +204,13 @@
       "branch": "release-please--branches--main--components--gifts-store",
       "draft": false,
       "test_merge": "CLEAN",
+      "test_merge_evidence": "git diff origin/main...refs/remotes/pr-test/2520 --stat → 4 files: .release-please-manifest.json (-1+1), CHANGELOG.md (+229), package-lock.json (-2+2), package.json (-1+1). Mudança de versão: 1.2.1 → 1.0.0",
+      "diff_summary": "package.json: version 1.2.1 → 1.0.0 (DOWNGRADE); .release-please-manifest.json: 1.2.1 → 1.0.0",
       "cherry": 1,
       "regra8": false,
       "regra10": false,
       "veredito": "DECISAO_HUMANA",
-      "motivo": "Downgrade 1.2.1→1.0.0 — regressão de versão; criada por github-actions[bot]"
+      "motivo": "Downgrade semântico 1.2.1→1.0.0 é REGRESSÃO de versão; criada por github-actions[bot] (release-please), não por humano"
     },
     {
       "number": 2529,
@@ -202,11 +218,14 @@
       "branch": "claude_05/youthful-ride-vcdchy",
       "draft": true,
       "test_merge": "CONFLICT",
-      "cherry": 9,
-      "regra8": false,
+      "test_merge_evidence": "git merge-tree --write-tree ... → conflicting files: .gitleaks.toml, .github/workflows/e2e-personalization.yml (commits acumulados de sessões anteriores na mesma branch conflitam com main atual)",
+      "cherry": 11,
+      "cherry_evidence": "git cherry origin/main refs/remotes/pr-test/2529 | grep -c '^+' → 11 commits únicos",
+      "regra8": true,
+      "regra8_files": [".gitleaks.toml", ".github/workflows/e2e-personalization.yml"],
       "regra10": false,
       "veredito": "DECISAO_HUMANA",
-      "motivo": "Branch desta sessão com CONFLICT em analise-prs/ — PR será atualizada por este push"
+      "motivo": "CONFLICT em .gitleaks.toml + .github/workflows/e2e-personalization.yml (REGRA#8) — branch desta sessão com commits acumulados de versões anteriores"
     },
     {
       "number": 2532,
@@ -214,11 +233,12 @@
       "branch": "claude/docs-estado-261025-1630",
       "draft": true,
       "test_merge": "CONFLICT",
+      "test_merge_evidence": "git merge-tree --write-tree ... → conflicting files: PENDENCIAS.md, RELATORIO_CI.md",
       "cherry": null,
       "regra8": false,
       "regra10": true,
       "veredito": "DECISAO_HUMANA",
-      "motivo": "CONFLICT + REGRA#10 + obsoleto (HEAD d74b33fb desatualizado)"
+      "motivo": "CONFLICT em PENDENCIAS.md + RELATORIO_CI.md + REGRA#10 + obsoleto (HEAD d74b33fb desatualizado vs c113300c atual)"
     },
     {
       "number": 2537,
@@ -226,11 +246,15 @@
       "branch": "claude/fix-contract-tests-registry-ghcr-261025-1705",
       "draft": false,
       "test_merge": "CLEAN",
+      "test_merge_evidence": "git diff origin/main...refs/remotes/pr-test/2537 --stat → 1 file: .github/workflows/contract-tests.yml (+5/-5). Mudança: SUPABASE_INTERNAL_IMAGE_REGISTRY=public.ecr.aws → ghcr.io",
+      "diff_summary": ".github/workflows/contract-tests.yml: reverte ECR Public override (E104) para ghcr.io por 'Data limit exceeded' (run 40198510942)",
       "cherry": 1,
+      "cherry_evidence": "git cherry origin/main refs/remotes/pr-test/2537 | grep -c '^+' → 1",
       "regra8": true,
+      "regra8_files": [".github/workflows/contract-tests.yml"],
       "regra10": false,
       "veredito": "DECISAO_HUMANA",
-      "motivo": "REGRA#8 — .github/workflows/contract-tests.yml (ECR→ghcr.io)"
+      "motivo": "REGRA#8 — toca .github/workflows/contract-tests.yml (workflow CI); aprovação PO requerida mesmo sendo fix técnico"
     }
   ],
   "prs_fechados_durante_sessao": [

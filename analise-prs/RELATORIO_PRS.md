@@ -15,7 +15,7 @@
 | PRs abertas no início | 17 |
 | PRs fechadas durante sessão (pelo PO) | 2 (#2521 fechada, #2538 mergeada) |
 | Merges autônomos esta sessão | **0** |
-| Merges bloqueados (DECISAO_HUMANA) | 12 |
+| Merges bloqueados (DECISAO_HUMANA) | 11 |
 | PRs a fechar (órfãs) | 5 |
 | Já em main | 1 |
 | Mergeada pelo PO | 1 |
@@ -31,18 +31,18 @@ ou conteúdo já em main).
 ## Distribuição por veredito
 
 ```
-DECISAO_HUMANA : 12
+DECISAO_HUMANA : 11
 FECHAR         :  5  (órfãs NO_MERGE_BASE — ação do PO)
 JA_EM_MAIN     :  1
 MERGEADO_PO    :  1
 FECHADO_PO     :  1
 ─────────────────────
-TOTAL          : 20
+TOTAL          : 19
 ```
 
 ---
 
-## PRs — DECISAO_HUMANA (12)
+## PRs — DECISAO_HUMANA (11)
 
 | PR | Título | Conflito | REGRA#8 | REGRA#10 | Motivo principal |
 |---|---|---|---|---|---|

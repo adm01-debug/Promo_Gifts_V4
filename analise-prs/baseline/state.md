@@ -16,3 +16,35 @@
 - `npm install`: **FALHA 403** — registry `europe-west1-npm.pkg.dev` sem credenciais neste container
 - `typecheck / lint / vitest local`: **NÃO EXECUTADO** — npm install impossível
 - Baseline de CI usada: Gate Final GitHub Actions (autoritativo)
+
+## Test-merges locais realizados nesta sessão
+
+Para cada uma das 17 PRs abertas, foram executados:
+```
+git fetch origin refs/pull/N/head:refs/remotes/pr-test/N
+git merge-base origin/main refs/remotes/pr-test/N   # detecta NO_MERGE_BASE
+git merge-tree --write-tree $(git merge-base ...) origin/main refs/remotes/pr-test/N
+```
+
+**Resultados (evidência em prs.json `test_merge_evidence`):**
+| PR | Resultado | Arquivos conflitantes |
+|---|---|---|
+| #2415 | CONFLICT | `.github/workflows/ci-security-drift.yml`, `deploy-gates.yml`, `PENDENCIAS.md`, `RELATORIO_CI.md`, `vitest.config.ts` |
+| #2417 | NO_MERGE_BASE | — |
+| #2418 | NO_MERGE_BASE | — |
+| #2419 | NO_MERGE_BASE | — |
+| #2420 | NO_MERGE_BASE | — |
+| #2422 | NO_MERGE_BASE | — |
+| #2428 | CONFLICT | `.gitleaks.toml` |
+| #2432 | CLEAN | git cherry = 0 (JÁ_EM_MAIN) |
+| #2443 | CLEAN | 1 commit único: `APROVACAO_FASE_B_IMPACTO.md` |
+| #2449 | CONFLICT | `MIGRATIONS_SYNC_LOG.md`, 2 migrations |
+| #2452 | CONFLICT | `analise-prs/dossies/PR-2441.md` |
+| #2469 | CONFLICT | `.github/workflows/e2e-personalization.yml` |
+| #2503 | CONFLICT | `RELATORIO_CI.md` |
+| #2520 | CLEAN | 4 arquivos; downgrade 1.2.1→1.0.0 |
+| #2529 | CONFLICT | `.gitleaks.toml`, `.github/workflows/e2e-personalization.yml` |
+| #2532 | CONFLICT | `PENDENCIAS.md`, `RELATORIO_CI.md` |
+| #2537 | CLEAN | `.github/workflows/contract-tests.yml` (+5/-5) |
+
+**ZERO PRs mergeáveis autonomamente** — todas bloqueadas por CONFLICT, NO_MERGE_BASE, JÁ_EM_MAIN, REGRA#8 ou REGRA#10.

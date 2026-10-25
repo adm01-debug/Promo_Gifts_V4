@@ -1,7 +1,7 @@
 # Regras de Negócio — Promo Gifts V4
 **Sessão:** session_01Ss1tXZ4cAbxBvdmu95uNPz (continuação)
 **Data:** 2026-10-25
-**main HEAD:** `cb0ccedec4`
+**main HEAD:** `c113300c034fb39126274fba9aa10ef05762ab13` (PR #2540 mergeada pelo PO — docs RELATORIO_CI)
 
 ## 1. SSOT do Supabase (REGRA #1)
 - Projeto canônico: `doufsxqlfjyuvxuezpln` (Gold/Medallion)
