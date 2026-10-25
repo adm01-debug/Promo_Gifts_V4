@@ -1,8 +1,8 @@
 # Pendências CI — Bloqueios Externos
 
-**Atualizado em:** 2026-10-24 (rev 12 — P4: corrigido para 641 runs (API confirmada); RELATORIO_CI.md gerado; PR #2437 squash-mergeado em main `9b23fb64`)  
+**Atualizado em:** 2026-10-25 (rev 13 — Gate Final PR #2454 ✅ conclusion=success run #40150209361; SHA eb7a9247 em main)  
 **Branch de referência:** `claude_05/upbeat-hamilton-5gnz50`  
-**Commit de referência (main):** `9b23fb64` (fix(ci): Zod 4 fixes CI-Replenishment + PENDENCIAS rev 10 — PR #2437)
+**Commit de referência (main):** `eb7a9247` (fix(ci): Gate 1.3 — limpa 7 entradas stale do baseline de refs de migration — PR #2454)
 
 ---
 
