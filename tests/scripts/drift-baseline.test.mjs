@@ -92,8 +92,9 @@ describe('prepareWorkdir', () => {
     expect(readdirSync(join(out, 'supabase', 'migrations')).sort(byCodeUnit)).toEqual([
       REPLAY_SEED_NAME,
       '20261015140000_baseline_schema.sql',
-      '20261015140001_20260928212000_back_link.sql',
-      '20261015140002_20261016090000_nova.sql',
+      '20261015140001_drift_replay_cron_seed.sql',
+      '20261015140002_20260928212000_back_link.sql',
+      '20261015140003_20261016090000_nova.sql',
     ]);
     const toml = readFileSync(join(out, 'supabase', 'config.toml'), 'utf8');
     expect(toml).toContain('major_version = 17');
