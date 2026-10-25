@@ -15,6 +15,8 @@ const MaterialsRequestSchema = z.object({
   search: z.string().max(200).optional(),
 });
 
+const EXTERNAL_TIMEOUT_MS = 20_000;
+
 Deno.serve(async (req) => {
   const corsHeaders = getCorsHeaders(req);
   if (req.method === 'OPTIONS') {
@@ -57,7 +59,19 @@ Deno.serve(async (req) => {
       );
     }
 
-    const externalSupabase = createClient(externalUrl, externalKey);
+    // Sem timeout o request pendurava até o limite da plataforma (~150 s → 504 em 525 de 7 989
+    // chamadas em 7d). Falha rápido e deixa a UI fazer retry.
+    const externalSupabase = createClient(externalUrl, externalKey, {
+      global: {
+        fetch: (input, init) =>
+          fetch(input, {
+            ...init,
+            signal: init?.signal
+              ? AbortSignal.any([init.signal, AbortSignal.timeout(EXTERNAL_TIMEOUT_MS)])
+              : AbortSignal.timeout(EXTERNAL_TIMEOUT_MS),
+          }),
+      },
+    });
     let result;
 
     switch (action) {
@@ -221,6 +235,14 @@ Deno.serve(async (req) => {
   } catch (error: any) {
     const errorMessage = error instanceof Error ? error.message : (error?.message || error?.error_description || error?.hint || error?.details || JSON.stringify(error) || 'Erro desconhecido');
     const errorCode = error?.code ?? null;
+
+    if (/TimeoutError|AbortError|timed out|aborted/i.test(errorMessage)) {
+      console.warn('[materials-api] banco externo excedeu o timeout', { errorMessage, timeout_ms: EXTERNAL_TIMEOUT_MS });
+      return new Response(
+        JSON.stringify({ error: 'Banco externo indisponível (timeout)', code: 'EXTERNAL_TIMEOUT', _retryable: true }),
+        { status: 504, headers: { ...corsHeaders, 'Content-Type': 'application/json', 'Retry-After': '5' } },
+      );
+    }
 
     // PGRST002 = PostgREST do banco externo ainda está reconstruindo o schema cache
     // (típico logo após auto-resume de projeto pausado). É transitório — devolvemos
