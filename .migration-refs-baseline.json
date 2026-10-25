@@ -18,6 +18,30 @@
       "ref": "supabase/migrations-snapshot/SCHEMA_DRIFT.sql"
     },
     {
+      "file": "analise-prs/dossies/PR-2441.md",
+      "ref": "supabase/migrations/20261024180001_p02_fk_indexes.sql"
+    },
+    {
+      "file": "analise-prs/dossies/PR-2441.md",
+      "ref": "supabase/migrations/20261024180002_p08_idempotency_key.sql"
+    },
+    {
+      "file": "analise-prs/dossies/PR-2441.md",
+      "ref": "supabase/migrations/20261024180003_p19_complement_cron.sql"
+    },
+    {
+      "file": "analise-prs/RELATORIO_PRS.md",
+      "ref": "supabase/migrations/20261024180001_p02_fk_indexes.sql"
+    },
+    {
+      "file": "analise-prs/RELATORIO_PRS.md",
+      "ref": "supabase/migrations/20261024180002_p08_idempotency_key.sql"
+    },
+    {
+      "file": "analise-prs/RELATORIO_PRS.md",
+      "ref": "supabase/migrations/20261024180003_p19_complement_cron.sql"
+    },
+    {
       "file": "CONTRIBUTING.md",
       "ref": "supabase/migrations/README.md"
     },
