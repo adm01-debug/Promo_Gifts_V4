@@ -64,7 +64,7 @@ Qualquer regeneração de `types.ts` deve usar `npm run check:types-inventory-dr
 ### PRs com migrations abertas
 
 | PR | Migrations | Estado | Veredicto |
-|---|---|---|---|
+|---|---|---|
 | #2420 | `supabase/migrations/20261019000000_mirror_oob_*` + rollback | Orphan + draft + Rule 8 | FECHAR |
 | #2449 | `20261022195616_fix_update_company_fields_security_definer_search_path.sql` + `20261022203935_update_company_fields_security_fix.sql` | Conflict + draft + Rule 8 | DECISAO_HUMANA |
 
@@ -135,3 +135,31 @@ Nenhuma das PRs abertas com mudanças de UI pode ser mergeada (todas orphan/draf
 | migrations | #2420, #2449 | Rule 8 §2.2 invariável; E15 único caminho prod |
 | policies | #2443 (proposta apenas) | Gate 1.13 cobre; nenhuma DDL pendente |
 | UI | #2418, #2419, #2420, #2422 | Orphan + draft; irreomerável via merge; cherry-pick manual se necessário |
+
+
+---
+
+## Sessão Continuação 2 — 2026-10-25 (pós-compactação)
+
+### Regra E103: HTTP 5xx de infra = falha transitória não-bloqueante
+
+`check-supabase-linter.mjs` retornava `exit 2` (hard failure) para qualquer `!response.ok`, incluindo erros 5xx (Cloudflare 544, Supabase Management API 500–599). A política E103 define que falhas de infra transitória são não-bloqueantes (retornam `exit 0`), como já ocorria com timeouts de rede.
+
+PR #2524 alinhou o comportamento: após `if (!response.ok)`, testa `response.status >= 500`; se verdadeiro, trata como falha transitória (return 0). Erros 4xx continuam bloqueantes (return 2).
+
+**Regra observada:** toda falha de infra nova no CI (timeout, 5xx, DNS failure) deve ser classificada como transitória (exit 0) ou permanente (exit 2). A distinção é: quem causa o erro? Se for a infraestrutura externa (Cloudflare, CDN, Management API down), é transitório. Se for o código do projeto ou configuração, é permanente.
+
+### Regra: release-please bot não tem autorização autônoma para downgrade de versão
+
+O bot `release-please[bot]` gerou PR #2520 com downgrade de `1.2.1 → 1.0.0` em `package.json`. Mesmo que o CI passe, a decisão de versão canônica do projeto é do PO, não do bot. PRs de automação que alteram versão do `package.json` exigem confirmação humana antes do merge.
+
+### Regra: PR DRAFT na branch designada da sessão = violação irresolvível
+
+O stop-hook de uma sessão anterior criou PR #2529 automaticamente em `claude_05/youthful-ride-vcdchy` (branch designada desta sessão de análise). Esta PR viola a regra "única escrita = merge de PRs aprovadas". Como a regra também proíbe fechar PRs, a violação fica registrada mas irresolvível por este agente. PO deve fechar manualmente ou ignorar (é draft, não bloqueia nada).
+
+### Contagem final desta sessão
+
+- PRs analisadas: 18 (14 originais + #2520, #2521, #2524, #2527, #2529, menos #2531 mergeado pelo PO e #2514 já fechado)
+- Merges autônomos: 1 (#2524 — SHA d74b33fb)
+- PRs restantes abertas: 17 (9 DECISAO_HUMANA + 5 FECHAR + 3 PENDENTE)
+
