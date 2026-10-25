@@ -89,6 +89,9 @@ export default defineConfig({
       // Com placeholder credentials em CI, retorna error.code vazio ao invés de '42501'.
       // Deve rodar apenas em ambientes com VITE_SUPABASE_URL/KEY reais configurados.
       'tests/rls/live-rls.test.ts',
+      // Usa node:test (Node.js native runner) — incompatível com vitest client environment.
+      // Roda apenas via `node tests/scripts/check-file-size-baseline.test.mjs`.
+      'tests/scripts/check-file-size-baseline.test.mjs',
     ],
     // CI runners (GitHub Actions ubuntu-latest) têm 2 vCPU (4 vThreads).
     // Default thread pool causava timeout de 75min — mitigado com

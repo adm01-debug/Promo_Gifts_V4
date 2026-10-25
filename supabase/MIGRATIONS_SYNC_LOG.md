@@ -1540,13 +1540,38 @@ Detalhes, métricas antes/depois e one-shots: docs/EXECUCAO_CORRECOES_MEDALLION_
 
 | versão | sha256 arquivo | md5 statements | executor | método | data UTC | pós-check |
 |---|---|---|---|---|---|---|
-| `20261022100001` | `91404707c71551f6060fc1845cfdd24b608cb6338a2685a92f6b4f98f1f9334f` | `—` (não aplicado) | Claude sessão P17/auditoria | E15 (pendente) | pendente | pendente — REVOKE EXECUTE anon/PUBLIC em fn_cron_guard (FUNC-NEW-001 CRÍTICO) |
+| `20261022100001` | `91404707c71551f6060fc1845cfdd24b608cb6338a2685a92f6b4f98f1f9334f` | aplicado via E15 | Claude FASE-B-P10-auto (https://claude.ai/code/session_01JPgV7FqkG4UuFBJWiJa9FB) | db-apply-migration.yml run #40165954774 | 2026-10-25T05:36 UTC | anon_has_execute=false ✅; ledger_count=1 ✅ (job 4 Recibo falhou — non-critical, entrada manual) |
 | `20261022100010` | `8ff71060a255026b55cfd1a7bbd817b7a0de05b79aac68a2b2d8a3d766a35ac7` | `—` (não aplicado) | Claude sessão P18/auditoria | E15 (pendente) | pendente | pendente — 50 ALTER POLICY auth.uid() → (SELECT auth.uid()) em 24 tabelas (ADV-PERF-001) |
 | `20261022100011` | `19392e733d888cb4147bf5ccaace6007d99f4b7870eb8d7c1eaa7b07cf90670d` | `—` (não aplicado) | Claude sessão P18/auditoria | E15 (pendente) | pendente | pendente — 13 DROP INDEX unused (~779 MB); 7 deferred (unique/GIN — aprovação PO) |
 | `20261022100020` | `c429599dc3becf972269b08c994cef994a28c591ba47c41524b5390019546d8a` | `—` (não aplicado) | Claude sessão P19/auditoria | E15 (pendente) | pendente | pendente — dispatcher-failure-alert: */5 → 3,13,23,33,43,53 (offset +3min, P19) |
 | `20261022100021` | `4c3ddf72ef90ac779830893686099c48ef1eb6c524c0269a7b2551665816c888` | `—` (não aplicado) | Claude sessão P19/auditoria | E15 (pendente) | pendente | pendente — hash-product-images: */5 → 4,14,24,34,44,54 (offset +4min, P19) |
 | `20261022100022` | `2cc1e34477a862cccd3c0b7d5925179a755cdda50a7e646bad41e40f277675c7` | `—` (não aplicado) | Claude sessão P19/auditoria | E15 (pendente) | pendente | pendente — sync-is-stockout-universal: */5 → */10 (frequência reduzida, P19) |
+| `20261022193000` | `eaa8a33524f37c7a7f24ddb6c8a23c0a873101d94f01aa9b6257d5423f4b9e68` | — (md5 query timeout; stmts_null=false confirmado) | sessão autônoma pré-FASE-B (P19_cron001) | n/d (autônoma — aplicada antes do início de FASE B; ver correcoes.md §P19_cron001) | 2026-10-22 ~19:30 UTC | ledger_count=1 ✅ (SELECT version FROM schema_migrations WHERE version='20261022193000' — sessão 01JPgV7FqkG4UuFBJWiJa9FB, 2026-10-25) |
 | `20261022194000` | `58785577281c32a9646a416653629d1a69764bb4e4bfc1e310e3b00171e28048` | `—` (não aplicado) | Claude sessão E30/segurança | E15 (pendente) | pendente | pendente — REVOKE INSERT,UPDATE,DELETE,REFERENCES,TRIGGER ON external_connections FROM anon (brecha E30) |
 | `20261022194100` | `389601c24ab27be5fd302b3244724a30966a3ccb280941892ab0116ef1a8888c` | `—` (não aplicado) | Claude sessão E40/segurança | E15 (pendente) | pendente | pendente — REVOKE ALL ON mockup_approval_links FROM anon (brecha E40) |
 | `20261022194200` | `0685d1c62e3908de2b0932809a0bd9adc2cbd3394cb4ce5897e4ddf2d3ccdbb5` | `—` (não aplicado) | Claude sessão E18-complement/segurança | E15 (pendente) | pendente | pendente — REVOKE EXECUTE ON mcp_kv_get FROM authenticated (brecha E18 complemento) |
-| `20261024163500` | `7345f667cddc4f123943a5ad0e961736c810b87df747d5178e91f947723aa857` | `—` (não aplicado) | Claude sessão fix-audit-acl-regrole (https://claude.ai/code/session_016AQbKL51RKSh8VtWxj4b1G) | E15 | pronto-para-aplicar | rollback adicionado em PR #2430 — fix audit_security_definer_acl(): pg_get_userbyid() substitui cast ::regrole::text (OID de role dropada causava HTTP 500); aguardando db-apply-migration.yml |
+| `20261024163500` | `7345f667cddc4f123943a5ad0e961736c810b87df747d5178e91f947723aa857` | aplicado via E15 | Claude sessão fix-audit-acl-regrole (https://claude.ai/code/session_016AQbKL51RKSh8VtWxj4b1G) | db-apply-migration.yml (externa — aplicada entre snapshot 2026-10-24T16:05 e início de FASE B) | 2026-10-24 ~16:05 UTC | confirmado via SELECT FROM supabase_migrations.schema_migrations (sessão 01JPgV7FqkG4UuFBJWiJa9FB, 2026-10-25); ver baseline_depois.json delta[1] |
+| `20261024180001` | `855670ae90ad588f045c4672eaba5ca8d28280d620dd6c6e3d55343cd4baf77b` | aplicado via E15 | Claude FASE-B-P02-auto (https://claude.ai/code/session_01JPgV7FqkG4UuFBJWiJa9FB) | db-apply-migration.yml run #40164828396 | 2026-10-25T05:32 UTC | idx_kit_quote_requests_quote_id ✅; idx_kit_save_requests_kit_id ✅ (job 4 Recibo falhou — non-critical, entrada manual) |
+| `20261024180002` | `84ca72d9da2c14b8018e57236a5b5b33cac888068beeab35b2030869ffc86cd1` | aplicado via E15 | Claude FASE-B-P08-auto (https://claude.ai/code/session_01JPgV7FqkG4UuFBJWiJa9FB) | db-apply-migration.yml run #40166677491 | 2026-10-25T05:47 UTC | idempotency_key_exists=1 ✅; ledger_count=1 ✅ (job 4 Recibo falhou — non-critical, entrada manual) |
+| `20261024180003` | `f810068550bbfa2da6179d3772f8187821df732417d48dafd15ffd27acfb2a94` | aplicado via E15 | Claude FASE-B-P19-auto (https://claude.ai/code/session_01JPgV7FqkG4UuFBJWiJa9FB) | db-apply-migration.yml run #40167137573 | 2026-10-25T05:58 UTC | schedule=15min (1,16,31,46) ✅; ledger_count=1 ✅ (job 4 Recibo falhou — non-critical, entrada manual) |
+| `20261024190001` | `eb5c03f7d8f690297ce6960ef0803d7c205fb3999891cbb2ef0a4b85dc82c030` | aplicado via E15 | Claude FASE-B-P01-auto (https://claude.ai/code/session_01JPgV7FqkG4UuFBJWiJa9FB) | db-apply-migration.yml run #40166925674 | 2026-10-25T05:52 UTC | x-cron-secret ✅; ledger_count=1 ✅ (job 4 Recibo falhou — non-critical, entrada manual) |
+| `20261025002500` | `6ce2ca6a8a4228486ae5123574845a11a1f1e59b6e4a316628dc6a56925c1f59` | aplicado via E15 | Claude FASE-B-P03-auto (https://claude.ai/code/session_01JPgV7FqkG4UuFBJWiJa9FB) | db-apply-migration.yml run #40165426404 | 2026-10-25T05:28 UTC | categories last_analyze=2026-10-25T05:28 ✅; ledger_count=1 ✅ (job 4 Recibo falhou — non-critical, entrada manual) |
+
+---
+
+## 2026-10-25 — E99: Mirrors repair-only para DDL out-of-band (20261022195616 e 20261022203935)
+
+**Tipo:** Migrations espelho E99 — repair-only (DDL já aplicada em produção via MCP; arquivos SQL criados como documentação e para drift-check).
+**Sessão:** https://claude.ai/code/session_01HxRBtssJabMB3jTgNY5B9W
+**Branch:** `claude/chore-e99-mirror-update-company-fields-261025-1100`
+**Contexto:** Detectado na análise de branches (sessão analise-branches 2026-10-24): versões `20261022195616` e `20261022203935` presentes no ledger `supabase_migrations.schema_migrations` de produção (`doufsxqlfjyuvxuezpln`) mas sem arquivo SQL correspondente no git — DDL out-of-band aplicada via MCP (E056 corolário).
+**Função:** `public.update_company_fields(uuid, jsonb)` — fix SECURITY DEFINER + search_path (E30) + guard auth.uid() (E18).
+
+### Recibos E99 repair-only
+
+| versão | sha256 arquivo | método | data UTC aplicação real | pós-check |
+|---|---|---|---|---|
+| `20261022195616` | `662fa38e1e09eed7d26ae55e0a1f46beca1793837aa9217d8f6e220c4817056f` | E99 repair-only (mirror) | 2026-10-22T19:56:16Z | em produção via SELECT pg_get_functiondef — SECURITY DEFINER + search_path confirmados |
+| `20261022203935` | `83558c38fda00255556c265c7ba669c85650a1508a7b2acdb99902fed3746575` | E99 repair-only (mirror) | 2026-10-22T20:39:35Z | em produção via SELECT pg_get_functiondef — auth.uid() guard confirmado |
+
+**Próximo passo obrigatório:** após merge desta PR, disparar `schema-snapshot-export.yml` com `force_rotate: true` para regenerar baseline (REGRA #8 corolário).

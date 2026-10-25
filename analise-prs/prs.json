@@ -1,166 +1,196 @@
 {
-  "generated_at": "2026-10-24",
-  "main_sha_inicio": "9079c82e6c3f58ae5d2cdf8c7eb2deef979ee9d8",
-  "main_sha_fim": "4c8193b9b655694635956a2c5702af33051164ad",
-  "worktree_tests_completed": true,
-  "total_open": 13,
-  "total_analyzed": 13,
-  "merges_realizados": 4,
+  "session": "session_01Ss1tXZ4cAbxBvdmu95uNPz",
+  "date": "2026-10-25",
+  "rev": 22,
+  "main_head_pre": "5279abfe07895d9b0481fa08086b2c18d321de5f",
+  "main_head_post": "15e10fd88208f9b4cd372b82544fb27892d15a81",
+  "gate_final_baseline": {
+    "run": 40223579961,
+    "sha": "7d3bd4ba",
+    "status": "success",
+    "tests": 429,
+    "failures": 0
+  },
+  "gate_final_post_merges": {
+    "sha": "15e10fd8",
+    "status": "queued",
+    "run": 40227283262,
+    "nota": "GitHub Actions infra issue — preso em queued desde 19:42Z; não é falha de código"
+  },
+  "summary": {
+    "total_open": 29,
+    "merged_this_session": 10,
+    "decisao_humana": 13,
+    "fechar": 5,
+    "ja_em_main": 1,
+    "merged_prev_sessions": 3
+  },
   "prs": [
     {
-      "number": 2414,
-      "title": "chore(análise): dossiês completos + relatório final de branches (Fase 2)",
-      "draft": false,
-      "mergeable": false,
-      "mergeable_state": "dirty",
-      "head_sha": "f62090f8130998bddb1042ad401878f689e81c63",
-      "branch": "claude_05/youthful-goodall-kihjbv",
-      "additions": 6688,
-      "deletions": 0,
-      "changed_files": 26,
-      "rule8_trigger": null,
-      "cherry": "14 commits únicos (todos + não em main)",
-      "singu_refs_added": 0,
-      "singu_note": "1 ref em docs (menciona ID proibido em texto de auditoria — sem escrita)",
-      "verdict": "BLOQUEADA",
-      "motivo": "mergeable: false — conflitos de merge (dirty)."
-    },
-    {
       "number": 2415,
-      "title": "fix(ci): P20 — exclui check-file-size-baseline.test.mjs do Vitest; roda via node --test",
-      "draft": false,
-      "mergeable": true,
-      "mergeable_state": "behind",
-      "head_sha": "cfc23c5cd63e28f2ae63625ab54d9e445c22c285",
-      "branch": "claude_05/amazing-brahmagupta-0xhdur",
-      "additions": 319,
-      "deletions": 15,
-      "changed_files": 5,
-      "rule8_trigger": "CI/workflows (.github/workflows/ci-security-drift.yml)",
-      "cherry": "6 commits únicos (todos + não em main)",
-      "singu_refs_added": 0,
-      "verdict": "DECISÃO HUMANA",
-      "motivo": "Toca .github/workflows/ci-security-drift.yml → Regra #8."
+      "verdict": "DECISAO_HUMANA",
+      "test_merge": "CONFLICT",
+      "rule8": [
+        ".github/workflows/ci-security-drift.yml",
+        ".github/workflows/deploy-gates.yml"
+      ]
     },
     {
       "number": 2417,
-      "title": "fix(cors+ci): CORS wildcard via String.fromCharCode + gitleaks allowlist (substituto de #2427)",
-      "draft": true,
-      "mergeable": false,
-      "mergeable_state": "dirty",
-      "rule8_trigger": "CI/workflows + edge function",
-      "cherry": "NO_MERGE_BASE — branch órfã, 28 commits",
-      "singu_refs_added": 0,
-      "verdict": "DECISÃO HUMANA",
-      "motivo": "Draft + dirty + toca workflows CI e edge function."
+      "verdict": "FECHAR",
+      "test_merge": "NO_MERGE_BASE"
     },
     {
       "number": 2418,
-      "title": "fix(gates): gitleaks allowlist FPs + deploy-gates fix (substituto de #2428)",
-      "draft": true,
-      "mergeable": false,
-      "mergeable_state": "dirty",
-      "rule8_trigger": "CI/workflows (deploy-gates.yml)",
-      "cherry": "NO_MERGE_BASE — branch órfã, 20 commits",
-      "singu_refs_added": 0,
-      "verdict": "DECISÃO HUMANA",
-      "motivo": "Draft + dirty + toca deploy-gates.yml (gate principal)."
+      "verdict": "FECHAR",
+      "test_merge": "NO_MERGE_BASE"
     },
     {
       "number": 2419,
-      "title": "fix(security): audit_security_definer_acl — pg_get_userbyid substituindo cast regrole",
-      "draft": true,
-      "mergeable": false,
-      "mergeable_state": "dirty",
-      "rule8_trigger": "security gate script",
-      "cherry": "NO_MERGE_BASE — branch órfã, 33 commits",
-      "singu_refs_added": 0,
-      "verdict": "DECISÃO HUMANA",
-      "motivo": "Draft + dirty + altera check de segurança (gate 1.13.x)."
+      "verdict": "FECHAR",
+      "test_merge": "NO_MERGE_BASE"
     },
     {
       "number": 2420,
-      "title": "fix(rollback): header preflight + rollback script para 20261024163500",
-      "draft": true,
-      "mergeable": false,
-      "mergeable_state": "dirty",
-      "rule8_trigger": "supabase/migrations/ e supabase/rollbacks/",
-      "cherry": "NO_MERGE_BASE — branch órfã, 17 commits",
-      "singu_refs_added": 0,
-      "verdict": "DECISÃO HUMANA",
-      "motivo": "Draft + dirty + toca supabase/rollbacks/ (migrations adjacente)."
+      "verdict": "FECHAR",
+      "test_merge": "NO_MERGE_BASE"
     },
     {
       "number": 2422,
-      "title": "chore(sync): MIGRATIONS_SYNC_LOG + PGPORT no SEGREDOS + fix zodResolver cast",
-      "draft": true,
-      "mergeable": false,
-      "mergeable_state": "dirty",
-      "head_sha": "83700ac2b22416d011a28655350825a391f75762",
-      "rule8_trigger": null,
-      "cherry": "NO_MERGE_BASE — branch órfã, 19 commits",
-      "singu_refs_added": 0,
-      "verdict": "DRAFT + DIRTY — bloqueado",
-      "motivo": "Branch órfã + dirty. Conteúdo válido mas precisa de rebase em main."
-    },
-    {
-      "number": 2424,
-      "title": "feat(db): migration 20261024163500 + db-schema-drift-check workflow",
-      "draft": true,
-      "mergeable": null,
-      "mergeable_state": "NÃO VERIFICADO",
-      "rule8_trigger": "DDL/migration + CI/workflows",
-      "cherry": "3 commits únicos, base=74ac36f1",
-      "singu_refs_added": 0,
-      "verdict": "DECISÃO HUMANA",
-      "motivo": "Draft + migration SQL em supabase/migrations/ + toca db-schema-drift-check.yml."
-    },
-    {
-      "number": 2426,
-      "title": "chore(qa): probe E184 — varre catálogo vivo por refs legadas pqpdolkae",
-      "status": "MERGEADO",
-      "sha_merge": "7f5d410a233246c94ee05bc0be6c10be11a3f126",
-      "method": "squash",
-      "verdict": "MERGEADO"
-    },
-    {
-      "number": 2427,
-      "title": "fix(cors): CORS_WILDCARD_ORIGIN + magazine-reader-state-read no webhook-schemas",
-      "status": "MERGEADO",
-      "sha_merge": "26641b0a0cb8855f45755cd4734af4c53d52ba5d",
-      "method": "squash",
-      "deploy_run": 40132411991,
-      "acao_pos_merge": "deploy-edge-functions.yml disparado — run #40132411991 (redeploy completo de todas as funções)",
-      "verdict": "MERGEADO"
+      "verdict": "FECHAR",
+      "test_merge": "NO_MERGE_BASE"
     },
     {
       "number": 2428,
-      "title": "fix(gitleaks): allowlist — FPs de testes + placeholders de docs",
-      "draft": true,
-      "mergeable": true,
-      "mergeable_state": "behind",
-      "diff_files": [".gitleaks.toml"],
-      "rule8_trigger": "security allowlist — decisão de política de segurança",
-      "cherry": "1 commit único, base=71d624e8",
-      "singu_refs_added": 0,
-      "verdict": "DECISÃO HUMANA",
-      "motivo": "Draft + PR body pede confirmação humana sobre mock tokens como FPs aceitáveis."
+      "verdict": "DECISAO_HUMANA",
+      "test_merge": "CONFLICT",
+      "rule8": [
+        ".gitleaks.toml"
+      ]
     },
     {
-      "number": 2434,
-      "title": "chore(análise): relatório completo de PRs abertos — 11/11 analisados, 0 merges",
-      "status": "MERGEADO",
-      "sha_merge": "53ba69b53fd8a8a021e13feb3af485f4ee4de73b",
-      "method": "squash",
-      "verdict": "MERGEADO"
+      "number": 2432,
+      "verdict": "JA_EM_MAIN",
+      "test_merge": "CLEAN"
     },
     {
-      "number": 2436,
-      "title": "chore(análise): atualiza deliverables — 3 merges realizados (#2426 #2427 #2434)",
-      "status": "MERGEADO",
-      "sha_merge": "4c8193b9b655694635956a2c5702af33051164ad",
-      "method": "squash",
-      "verdict": "MERGEADO"
+      "number": 2443,
+      "verdict": "DECISAO_HUMANA",
+      "test_merge": "CLEAN",
+      "motivo": "segurança FASE B + aprovação PO"
+    },
+    {
+      "number": 2449,
+      "verdict": "DECISAO_HUMANA",
+      "test_merge": "CONFLICT",
+      "rule8": [
+        "supabase/migrations/"
+      ]
+    },
+    {
+      "number": 2452,
+      "verdict": "DECISAO_HUMANA",
+      "test_merge": "CONFLICT"
+    },
+    {
+      "number": 2469,
+      "verdict": "DECISAO_HUMANA",
+      "test_merge": "CONFLICT",
+      "rule8": [
+        ".github/workflows/e2e-personalization.yml"
+      ]
+    },
+    {
+      "number": 2503,
+      "verdict": "DECISAO_HUMANA",
+      "test_merge": "CONFLICT"
+    },
+    {
+      "number": 2520,
+      "verdict": "DECISAO_HUMANA",
+      "test_merge": "CLEAN",
+      "motivo": "downgrade 1.2.1→1.0.0"
+    },
+    {
+      "number": 2532,
+      "verdict": "DECISAO_HUMANA",
+      "test_merge": "CONFLICT"
+    },
+    {
+      "number": 2537,
+      "verdict": "DECISAO_HUMANA",
+      "test_merge": "CLEAN",
+      "rule8": [
+        ".github/workflows/contract-tests.yml"
+      ]
+    },
+    {
+      "number": 2544,
+      "verdict": "MERGEADO_AUTONOMO",
+      "merge_sha": "1d26da9082d42e825de66f574fbc796587345fdf"
+    },
+    {
+      "number": 2545,
+      "verdict": "MERGEADO_AUTONOMO",
+      "merge_sha": "2a93ba556b58007a001d68efd3c81ead17c19dce"
+    },
+    {
+      "number": 2547,
+      "verdict": "DECISAO_HUMANA",
+      "test_merge": "CLEAN",
+      "motivo": "remoção feature + regressão prs.json"
+    },
+    {
+      "number": 2548,
+      "verdict": "MERGEADO_AUTONOMO",
+      "merge_sha": "9be832a355f0c98fcd22021b4273b16fa0b1aba5"
+    },
+    {
+      "number": 2549,
+      "verdict": "MERGEADO_AUTONOMO",
+      "merge_sha": "73df7502f3b582f7966c209ff6a5c202fb1a3f9e"
+    },
+    {
+      "number": 2550,
+      "verdict": "DECISAO_HUMANA",
+      "test_merge": "CLEAN",
+      "motivo": "mudança regra negócio D7"
+    },
+    {
+      "number": 2551,
+      "verdict": "MERGEADO_AUTONOMO",
+      "merge_sha": "97eed25cb177a318fcf63fb3843f02512511d579"
+    },
+    {
+      "number": 2552,
+      "verdict": "MERGEADO_AUTONOMO",
+      "merge_sha": "35fdb5793db7461f7fafcdae1effc89ae5cae6b5"
+    },
+    {
+      "number": 2553,
+      "verdict": "MERGEADO_AUTONOMO",
+      "merge_sha": "aebd333f3d2d57ee0bb5f1f127bf23f352846cd9"
+    },
+    {
+      "number": 2554,
+      "verdict": "MERGEADO_AUTONOMO",
+      "merge_sha": "e6538448e6edc639f9131e809ae265976b43f208"
+    },
+    {
+      "number": 2555,
+      "verdict": "MERGEADO_AUTONOMO",
+      "merge_sha": "479f2219485e23a5d35896dfe44c9ca4f7c1026f"
+    },
+    {
+      "number": 2556,
+      "verdict": "MERGEADO_AUTONOMO",
+      "merge_sha": "15e10fd88208f9b4cd372b82544fb27892d15a81"
+    },
+    {
+      "number": 2557,
+      "verdict": "DECISAO_HUMANA",
+      "test_merge": "CLEAN",
+      "motivo": "corrupção texto RELATORIO_CI.md"
     }
   ]
 }

@@ -1,118 +1,57 @@
 {
-  "session": "https://claude.ai/code/session_01Ss1tXZ4cAbxBvdmu95uNPz",
-  "generated_at": "2026-10-24",
-  "main_sha_inicio": "9079c82e6c3f58ae5d2cdf8c7eb2deef979ee9d8",
-  "main_sha_fim": "4c8193b9b655694635956a2c5702af33051164ad",
-  "total_open": 13,
-  "total_analyzed": 13,
-  "merges_realizados": 4,
-  "status": "COMPLETO_COM_MERGES",
-  "merges": [
-    {
-      "pr": 2426,
-      "sha_merge": "7f5d410a233246c94ee05bc0be6c10be11a3f126",
-      "method": "squash",
-      "acao_pos_merge": "dispatch de deploy-edge-functions.yml NÃO necessário (PR #2426 não toca edge functions)"
-    },
-    {
-      "pr": 2427,
-      "sha_merge": "26641b0a0cb8855f45755cd4734af4c53d52ba5d",
-      "method": "squash",
-      "acao_pos_merge": "deploy-edge-functions.yml disparado — run #40132411991 (pending). cors.ts é shared module; redeploy completo de todas as funções."
-    },
-    {
-      "pr": 2434,
-      "sha_merge": "53ba69b53fd8a8a021e13feb3af485f4ee4de73b",
-      "method": "squash",
-      "acao_pos_merge": "nenhuma — PR de docs"
-    },
-    {
-      "pr": 2436,
-      "sha_merge": "4c8193b9b655694635956a2c5702af33051164ad",
-      "method": "squash",
-      "acao_pos_merge": "nenhuma — PR de docs/deliverables"
-    }
+  "gerado_em": "2026-10-25T20:30:00Z",
+  "sessao": "https://claude.ai/code/session_01Ss1tXZ4cAbxBvdmu95uNPz",
+  "rev": 22,
+  "main_head_pre": "5279abfe07895d9b0481fa08086b2c18d321de5f",
+  "main_head_pos": "15e10fd88208f9b4cd372b82544fb27892d15a81",
+  "baseline": {
+    "testes": 429,
+    "falhas": 0,
+    "gate_final_run": "40223579961",
+    "gate_final_conclusao": "success",
+    "gate_final_completado_em": "2026-10-25T19:02:42Z",
+    "sha": "7d3bd4ba47eb6e9e6b3d56fe3bfac45a791de84f"
+  },
+  "gate_final_pos_merges": {
+    "sha": "15e10fd8",
+    "run": 40227283262,
+    "status": "queued",
+    "conclusao": null,
+    "nota": "GitHub Actions infra issue — run preso em queued desde 19:42Z; não é falha de código"
+  },
+  "prs_abertas_analisadas": 29,
+  "merges_autonomos_esta_sessao": 10,
+  "contagem_por_veredito": {
+    "MERGEADO_AUTONOMO": 10,
+    "DECISAO_HUMANA": 13,
+    "FECHAR": 5,
+    "JA_EM_MAIN": 1,
+    "total_abertas": 29
+  },
+  "merges_autonomos_esta_sessao_lista": [
+    {"number": 2544, "sha": "1d26da9082d42e825de66f574fbc796587345fdf", "titulo": "docs: backlog CI CI-001..CI-008"},
+    {"number": 2545, "sha": "2a93ba556b58007a001d68efd3c81ead17c19dce", "titulo": "chore: backlog funcionalidades FT-001..FT-416"},
+    {"number": 2548, "sha": "9be832a355f0c98fcd22021b4273b16fa0b1aba5", "titulo": "feat: botão LGPD excluir meus dados"},
+    {"number": 2549, "sha": "73df7502f3b582f7966c209ff6a5c202fb1a3f9e", "titulo": "chore: backlog Supabase SB-001..SB-018"},
+    {"number": 2551, "sha": "97eed25cb177a318fcf63fb3843f02512511d579", "titulo": "fix: peso 0 no Kit Maker"},
+    {"number": 2552, "sha": "35fdb5793db7461f7fafcdae1effc89ae5cae6b5", "titulo": "fix: materials-api timeout 20s"},
+    {"number": 2553, "sha": "aebd333f3d2d57ee0bb5f1f127bf23f352846cd9", "titulo": "fix: selos sem mock"},
+    {"number": 2554, "sha": "e6538448e6edc639f9131e809ae265976b43f208", "titulo": "fix: BI Cliente 360 sem mock"},
+    {"number": 2555, "sha": "479f2219485e23a5d35896dfe44c9ca4f7c1026f", "titulo": "docs(pendencias): rev29"},
+    {"number": 2556, "sha": "15e10fd88208f9b4cd372b82544fb27892d15a81", "titulo": "chore: backlog banco O1/O3"}
   ],
-  "worktree_tests": [
-    {"pr": 2426, "result": "PASSOU", "detail": "merge limpo, 1 arquivo novo qa/migrations-draft/probe_e184_legacy_refs.sql"},
-    {"pr": 2422, "result": "DIRTY", "detail": "github_api: mergeable:false, mergeable_state:dirty — conflitos confirmados"}
-  ],
-  "ci_baseline_por_nome": {
-    "workflow": "CI Security & Drift Checks (run #40129973781)",
-    "sha": "ec736c903cc37a0ef8621eec5a2d05775a64bcb9",
-    "failing_jobs": ["quality-gate"],
-    "failing_steps": ["Dependency vulnerability policy (step 4 de quality-gate)"],
-    "pre_existing": true,
-    "jobs_ok": ["security-audit"],
-    "deploy_gates_fim_sessao": {"run": 40128149143, "sha": "4c8193b9b655694635956a2c5702af33051164ad", "conclusion": "success"}
+  "historico_sessoes_anteriores": {
+    "mergeados_autonomamente": [
+      {"number": 2529, "sha": "59a7a6072f405d98f7004f26a4badbf6287c6b5f"},
+      {"number": 2543, "sha": "7d3bd4ba47eb6e9e6b3d56fe3bfac45a791de84f"},
+      {"number": 2546, "sha": "5279abfe07895d9b0481fa08086b2c18d321de5f"}
+    ]
   },
-  "git_cherry": {
-    "pr2414": {"result": "14 commits, todos + (não em main)", "branch": "claude_05/youthful-goodall-kihjbv"},
-    "pr2415": {"result": "6 commits, todos + (não em main)", "branch": "claude_05/amazing-brahmagupta-0xhdur"},
-    "pr2417": {"result": "NO_MERGE_BASE — branch órfã, 28 commits"},
-    "pr2418": {"result": "NO_MERGE_BASE — branch órfã, 20 commits"},
-    "pr2419": {"result": "NO_MERGE_BASE — branch órfã, 33 commits"},
-    "pr2420": {"result": "NO_MERGE_BASE — branch órfã, 17 commits"},
-    "pr2422": {"result": "NO_MERGE_BASE — branch órfã, 19 commits"},
-    "pr2424": {"result": "3 commits +, base=74ac36f1"},
-    "pr2428": {"result": "1 commit +, base=71d624e8"}
-  },
-  "singu_check": {
-    "pqpdolkaeqlyzpdpbizo_refs_adicionadas": {
-      "pr2414": "1 (docs only — dossiê menciona ID proibido em texto de auditoria; sem escrita)",
-      "pr2415": "0",
-      "pr2417": "0", "pr2418": "0", "pr2419": "0", "pr2420": "0", "pr2422": "0",
-      "pr2424": "0",
-      "pr2428": "0"
-    },
-    "conclusion": "Nenhum PR escreve no projeto SINGU"
-  },
-  "edge_function_deploy": {
-    "pr": 2427,
-    "arquivo": "supabase/functions/_shared/cors.ts",
-    "tipo": "shared module (não é função standalone)",
-    "run_cancelado": 40132059704,
-    "run_cancelado_motivo": "function_name: _shared/cors é input inválido",
-    "run_ativo": 40132411991,
-    "run_ativo_status": "pending",
-    "run_ativo_trigger": "workflow_dispatch sem function_name — redeploy completo"
-  },
-  "prs": [
-    {"number": 2414, "status": "analisado", "verdict": "BLOQUEADA", "motivo": "dirty — conflitos de merge", "cherry": "14 commits únicos", "singu": "doc-only"},
-    {"number": 2415, "status": "analisado", "verdict": "DECISÃO_HUMANA", "motivo": "toca .github/workflows/ci-security-drift.yml", "cherry": "6 commits únicos", "singu": "0"},
-    {"number": 2417, "status": "analisado", "verdict": "DECISÃO_HUMANA", "motivo": "draft + dirty + CI/workflows + edge fn", "cherry": "sem merge base", "singu": "0"},
-    {"number": 2418, "status": "analisado", "verdict": "DECISÃO_HUMANA", "motivo": "draft + dirty + deploy-gates.yml", "cherry": "sem merge base", "singu": "0"},
-    {"number": 2419, "status": "analisado", "verdict": "DECISÃO_HUMANA", "motivo": "draft + dirty + security gate", "cherry": "sem merge base", "singu": "0"},
-    {"number": 2420, "status": "analisado", "verdict": "DECISÃO_HUMANA", "motivo": "draft + dirty + migrations/rollbacks", "cherry": "sem merge base", "singu": "0"},
-    {"number": 2422, "status": "analisado", "verdict": "DRAFT_BLOQUEADA", "motivo": "draft + dirty — branch órfã, precisa de rebase", "cherry": "sem merge base", "singu": "0"},
-    {"number": 2424, "status": "analisado", "verdict": "DECISÃO_HUMANA", "motivo": "draft + DDL migration + CI workflow", "cherry": "3 commits únicos", "singu": "0"},
-    {"number": 2426, "status": "MERGEADO", "verdict": "MERGEADO", "sha_merge": "7f5d410a233246c94ee05bc0be6c10be11a3f126", "motivo": "worktree PASSOU, 1 arquivo QA, sem Rule 8"},
-    {"number": 2427, "status": "MERGEADO", "verdict": "MERGEADO", "sha_merge": "26641b0a0cb8855f45755cd4734af4c53d52ba5d", "motivo": "cors.ts + webhook-schemas, sem Rule 8, mergeable:true", "deploy_run": 40132411991},
-    {"number": 2428, "status": "analisado", "verdict": "DECISÃO_HUMANA", "motivo": "draft + security allowlist policy decision", "cherry": "1 commit único", "singu": "0"},
-    {"number": 2434, "status": "MERGEADO", "verdict": "MERGEADO", "sha_merge": "53ba69b53fd8a8a021e13feb3af485f4ee4de73b", "motivo": "docs-only analise-prs/, sem Rule 8"},
-    {"number": 2436, "status": "MERGEADO", "verdict": "MERGEADO", "sha_merge": "4c8193b9b655694635956a2c5702af33051164ad", "motivo": "deliverables update docs-only, sem Rule 8"}
-  ],
-  "deliverables": {
-    "baseline": "analise-prs/baseline/typecheck.txt",
-    "relatorio": "analise-prs/RELATORIO_PRS.md",
-    "prs_json": "analise-prs/prs.json",
-    "prs_csv": "analise-prs/prs.csv",
-    "dossies": [
-      "analise-prs/dossies/PR-2414.md",
-      "analise-prs/dossies/PR-2415.md",
-      "analise-prs/dossies/PR-2417.md",
-      "analise-prs/dossies/PR-2418.md",
-      "analise-prs/dossies/PR-2419.md",
-      "analise-prs/dossies/PR-2420.md",
-      "analise-prs/dossies/PR-2422.md",
-      "analise-prs/dossies/PR-2424.md",
-      "analise-prs/dossies/PR-2426.md",
-      "analise-prs/dossies/PR-2427.md",
-      "analise-prs/dossies/PR-2428.md",
-      "analise-prs/dossies/PR-2434.md",
-      "analise-prs/dossies/PR-2436.md"
-    ],
-    "regras_de_negocio": "analise-prs/regras-de-negocio.md",
-    "progresso": "analise-prs/progresso.json"
+  "pr_entregaveis": {
+    "number": 2559,
+    "branch": "claude_05/youthful-ride-vcdchy",
+    "status": "open",
+    "mergeable_state": "blocked",
+    "bloqueio": "Gate Final run #40228592594 preso em queued (GitHub Actions infra issue)"
   }
 }

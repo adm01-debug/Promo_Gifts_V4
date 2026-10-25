@@ -89,8 +89,9 @@ export default function BusinessIntelligencePage() {
   useSeasonalPeakNotifications({
     clientId,
     clientName,
-    daysToNextPeak: seas.daysToNextPeak,
-    nextPeakMonth: seas.nextPeakMonth,
+    // Pico calculado sobre dado simulado não gera notificação persistida
+    daysToNextPeak: seas.isMock ? null : seas.daysToNextPeak,
+    nextPeakMonth: seas.isMock ? null : seas.nextPeakMonth,
   });
 
   return (

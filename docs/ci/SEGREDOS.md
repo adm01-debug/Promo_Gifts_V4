@@ -177,6 +177,18 @@ Configurados via `supabase secrets set`; obrigatórios para as funções listada
 | `MAGAZINE_IP_SALT` | Supabase Secret | 12 meses | `magazine-public-react` |
 | `ANON_KEY` | Supabase Secret | — | `_shared/credentials.ts` (alias de SUPABASE_ANON_KEY) |
 
+### Segredos de cron (autorização `x-cron-secret`)
+
+Resolvidos por `_shared/dispatcher-auth.ts` (`authorizeCron`): primeiro o vault (`get_edge_function_secret`), depois `Deno.env`. Ausente nos dois = 401 fail-closed. Só nomes aqui; os valores ficam no vault/secrets do Supabase.
+
+| Segredo | Tipo | Rotação | Funções consumidoras |
+|---|---|---|---|
+| `CRON_SECRET` | Supabase Secret | 6 meses | `process-queue`, `process-scheduled-reports`, `connections-health-check`, `send-notification`, `sync-external-db`, `quote-followup-reminders`, `cleanup-novelties`, `ownership-audit` e demais crons genéricos |
+| `ASIA_INGESTION_CRON_SECRET` | Supabase Secret | 6 meses | `asia-ingestion` |
+| `BACKFILL_DIM_CRON_SECRET` | Supabase Secret | 6 meses | `backfill-image-dimensions` |
+| `HASH_PRODUCT_IMAGES_CRON_SECRET` | Supabase Secret | 6 meses | `hash-product-images` |
+| `GENERATE_BLURHASHES_CRON_SECRET` | Supabase Secret | 6 meses | `generate-blurhashes` |
+
 ### Segredos de instâncias Supabase alternativas
 
 Para o bridge com outros projetos Supabase (ex: CRM externo em outra organização).

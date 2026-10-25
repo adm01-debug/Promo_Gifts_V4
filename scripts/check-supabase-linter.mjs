@@ -97,6 +97,10 @@ export async function runLinter({
         headers: { Authorization: `Bearer ${token}`, Accept: "application/json" },
         signal: AbortSignal.timeout(TIMEOUTS_MS[attempt - 1]),
       });
+      // 5xx (ex.: 544 do Cloudflare) é falha de infra: segue o mesmo caminho do timeout. 401/404 continuam bloqueando.
+      if (response.status >= 500) {
+        throw Object.assign(new Error(`HTTP ${response.status}`), { name: `HTTP${response.status}` });
+      }
       lastError = null;
       break;
     } catch (error) {
@@ -108,8 +112,8 @@ export async function runLinter({
     }
   }
   if (lastError) {
-    logger.error(`❌ Linter indisponível após ${MAX_ATTEMPTS} tentativas (${lastError.name || "erro de rede"}).`);
-    return 2;
+    logger.warn(`⚠️  Linter indisponível após ${MAX_ATTEMPTS} tentativas (${lastError.name || "erro de rede"}) — gate não bloqueante para falha de infra transitória.`);
+    return 0;
   }
 
   if (!response.ok) {

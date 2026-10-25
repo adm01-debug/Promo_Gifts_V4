@@ -115,6 +115,7 @@ export function KitCompositionCard({
               return (
                 <tr
                   key={getKitItemLineId(item)}
+                  data-testid="kit-summary-item"
                   className="border-b border-border/40 hover:bg-secondary/30"
                 >
                   <td className="py-2">

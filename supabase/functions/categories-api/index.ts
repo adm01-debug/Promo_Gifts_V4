@@ -280,58 +280,6 @@ Deno.serve(async (req) => {
           });
         }
 
-        // ESTRATÉGIA 3: product_categories (fallback legacy)
-        // Nota: esta tabela nao existe no banco atual — a query falha silenciosamente,
-        // o que e o comportamento correto (nao ha dados a migrar desta fonte).
-        const { data: fallbackData, error: fallbackError } = await externalClient
-          .from('product_categories')
-          .select('product_id')
-          .in('category_id', targetCategoryIds);
-
-        if (!fallbackError && fallbackData && fallbackData.length > 0) {
-          // BUGFIX 2026-06-21: mesmo tratamento que Estrategia 2 — so incluir ativos
-          const legacyIds = [
-            ...new Set(
-              (fallbackData as Array<{ product_id: string }>)
-                .map((a) => a.product_id)
-                .filter((id) => !allProductIds.has(id)),
-            ),
-          ];
-          if (legacyIds.length > 0) {
-            const legacyBatches: string[][] = [];
-            for (let i = 0; i < legacyIds.length; i += PCA_BATCH_SIZE) {
-              legacyBatches.push(legacyIds.slice(i, i + PCA_BATCH_SIZE));
-            }
-            const legacyResults = await Promise.all(
-              legacyBatches.map((batch) =>
-                externalClient
-                  .from('products')
-                  .select('id')
-                  .in('id', batch)
-                  .eq('is_active', true)
-                  .eq('is_deleted', false)
-                  .then(({ data }) => (data ?? []) as Array<{ id: string }>),
-              ),
-            );
-            let legacyCount = 0;
-            for (const bd of legacyResults) {
-              for (const p of bd) { allProductIds.add(p.id); legacyCount++; }
-            }
-            if (legacyCount > 0) {
-              if (primarySource === 'none') primarySource = 'product_categories';
-              else primarySource += '+product_categories';
-              console.log('Category product strategy result', {
-                strategy: 'product_categories', count: legacyCount,
-              });
-            }
-          }
-        } else {
-          console.log('Category product strategy empty', {
-            strategy: 'product_categories',
-            error: fallbackError ? safeErrorFields(fallbackError) : undefined,
-          });
-        }
-
         const productIds = [...allProductIds];
         console.log('Total unique active products by categories', {
           count: productIds.length,

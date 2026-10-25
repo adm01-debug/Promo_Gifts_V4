@@ -92,6 +92,7 @@ export function WizardSteps({
                 onClick={() => isClickable && onStepClick?.(step.id)}
                 disabled={!isClickable}
                 aria-current={isActive ? 'step' : undefined}
+                data-testid={`wizard-step-${step.id}`}
                 className={cn(
                   'group flex min-w-0 flex-1 items-center gap-2.5 rounded-lg px-1 py-1 transition-all',
                   isClickable ? 'cursor-pointer' : 'cursor-not-allowed opacity-60',

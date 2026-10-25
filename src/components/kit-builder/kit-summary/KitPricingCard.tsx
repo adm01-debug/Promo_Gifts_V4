@@ -107,7 +107,7 @@ export function KitPricingCard({
                 {formatCurrency(pricing.unitPrice)}/kit
               </p>
             </div>
-            <p className="text-2xl font-bold text-primary">
+            <p data-testid="kit-summary-total" className="text-2xl font-bold text-primary">
               {formatCurrency(pricing.total / divisor)}
             </p>
           </div>

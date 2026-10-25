@@ -41,6 +41,17 @@ import {
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
 import { BackButton } from '@/components/common/BackButton';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 import { KitAIPromptDialog } from '@/components/kit-builder/KitAIPromptDialog';
 import { KitIdentityPicker } from '@/components/kit-builder/KitIdentityPicker';
 import { useRBAC } from '@/hooks/auth';
@@ -199,6 +210,7 @@ export function KitBuilderHeader({
               onChange={(e) => onKitNameChange(e.target.value)}
               placeholder="Kit sem nome"
               aria-label="Nome do kit"
+              data-testid="kit-name-input"
               className={cn(
                 'h-auto border-0 bg-transparent px-0 py-0 font-display text-2xl font-bold tracking-tight shadow-none focus-visible:ring-0 focus-visible:ring-offset-0',
                 !kitName && 'italic text-muted-foreground',
@@ -347,13 +359,31 @@ export function KitBuilderHeader({
               {isExistingKit ? 'Atualizar' : 'Salvar'}
             </Button>
 
-            <Button
-              variant="outline"
-              onClick={onReset}
-              className="font-medium text-destructive hover:text-destructive"
-            >
-              <RotateCcw className="mr-2 h-4 w-4" /> Novo kit
-            </Button>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button
+                  variant="outline"
+                  data-testid="reset-kit-button"
+                  className="font-medium text-destructive hover:text-destructive"
+                >
+                  <RotateCcw className="mr-2 h-4 w-4" /> Novo kit
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Criar novo kit?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    O kit atual será descartado. Esta ação não pode ser desfeita.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                  <AlertDialogAction data-testid="confirm-reset-button" onClick={onReset}>
+                    Confirmar
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
 
             <div className="hidden lg:block">
               <KitAIPromptDialog
