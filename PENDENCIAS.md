@@ -1,8 +1,8 @@
 # Pendências CI — Bloqueios Externos
 
-**Atualizado em:** 2026-10-25 (rev 17 — Gate Final `aa6f55d4` success; P39 diagnóstico exato; P41/P42 adicionados)  
+**Atualizado em:** 2026-10-25 (rev 18 — inventário completo `a778e1e4`; P43–P55 adicionados com run IDs e erros exatos)  
 **Branch de referência:** `claude_05/nifty-sagan-r23gqh`  
-**Commit de referência (main):** `aa6f55d4` — merge PR #2477 (docs: RELATORIO_CI Rev16 + Gate Final confirmed)
+**Commit de referência (main):** `a778e1e4` — push direto PO (docs(analise-prs): deliverables finais rev4); Gate Final [#40170611151](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40170611151) = ✅ success
 
 ---
 
@@ -1004,6 +1004,220 @@ Tests:      3 failed | 24732 passed | 1127 skipped | 24 todo (25886)
 **Impacto no Gate Final:** Nenhum — não é required check (schedule/cron, não PR gate).
 
 **Ação necessária:** Verificar disponibilidade do serviço em produção se persistir.
+
+---
+
+## P43 — Branch Protection Sentinel: push direto PO em `a778e1e4` (não-bloqueante)
+
+**Workflow:** `.github/workflows/branch-protection-sentinel.yml`  
+**Run:** [#40170611120](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40170611120) — `failure` (commit `a778e1e4`)  
+**Categoria:** Push direto em main sem PR — PO push; não é required check
+
+**Erro exato:**
+```
+##[error]1 commit(s) em push para main sem padrão aceito: a778e1e
+```
+
+**Causa raiz:** O PO fez push direto do commit `a778e1e4` ("docs(analise-prs): deliverables finais rev4") em main sem PR. O sentinel aceita squash merge `(#NNN)`, merge commit padrão, ou commits de bots. Push direto não atende nenhum padrão.
+
+**Impacto no Gate Final:** Nenhum — Sentinel não é required check. Gate Final [#40170611151] = ✅ success.
+
+**Ação necessária:** Nenhuma (já documentado). PO deve evitar pushes diretos futuros. Ver também P3 e P20.
+
+---
+
+## P44 — E2E — Critical Flows & Error Boundaries: failure em `a778e1e4` (não-required)
+
+**Workflow:** `.github/workflows/e2e-critical-flows.yml`  
+**Run:** [#40170611080](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40170611080) — `failure` (commit `a778e1e4`)  
+**Categoria:** E2E — não é required check
+
+**Erro exato:**
+```
+[check-playwright-min-executed] Nao foi possivel ler playwright-report/results-quote-flow.json:
+ENOENT: no such file or directory, open 'playwright-report/results-quote-flow.json'
+```
+
+**Causa raiz:** O job `Run Admin Critical Routes E2E` (step 7) não produziu o arquivo de resultados `playwright-report/results-quote-flow.json`. O step `Check min tests executed` (step 10) falhou ao tentar ler o arquivo inexistente. Provavelmente o teste de quote-flow abortou antes de gravar resultados (timeout ou falha de setup).
+
+**Impacto no Gate Final:** Nenhum — não é required check. Ver também P16.
+
+**Ação necessária:** Investigar por que `results-quote-flow.json` não é gerado (timeout ou falha de setup do ambiente CI). Pré-existente — não introduzido por `a778e1e4`.
+
+---
+
+## P45 — E2E — Personalization Flow: failure em `a778e1e4` (não-required)
+
+**Workflow:** `.github/workflows/e2e-personalization-flow.yml`  
+**Run:** [#40170611172](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40170611172) — `failure` (commit `a778e1e4`)  
+**Categoria:** E2E — não é required check
+
+**Erro exato:**
+```
+[check-playwright-min-executed] FALHA: ratio de skipped 80.0% > maximo 50.0% (4/5).
+Causas possiveis: muitos testes com requireAuth, condicoes de skip incorretas ou spec nao encontrou dados de fixture.
+```
+
+**Causa raiz:** 4 de 5 testes foram skipped (80%), excedendo o limite de 50%. Testes com `requireAuth` ou falta de dados de fixture no CI. PR #2469 (fix E42) está aberto aguardando aprovação do PO (Regra 8 — DDL/migration relacionado).
+
+**Impacto no Gate Final:** Nenhum. Ver também P37 e P40.
+
+**Ação necessária pelo PO:** Fazer merge do PR #2469 para ativar o fix E42.
+
+---
+
+## P46 — Cart Invariants Smoke: failure em `a778e1e4` (não-required)
+
+**Workflow:** `.github/workflows/cart-invariants-smoke.yml`  
+**Run:** [#40170611084](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40170611084) — `failure` (commit `a778e1e4`)  
+**Categoria:** E2E — não é required check
+
+**Erro exato (jobs falhos):**
+```
+Job: cart-invariants (firefox-authed · shard 1/3) — failure
+Job: cart-invariants (chromium-authed · shard 3/3) — failure
+```
+Erros `[E108]`: fixture de dados insuficiente no runner CI (sem carrinhos ativos para os testes).
+
+**Impacto no Gate Final:** Nenhum. Ver também P2b e P38.
+
+**Ação necessária:** Seed de dados de teste no runner CI. Pré-existente.
+
+---
+
+## P47 — Gitleaks cron: failure em `a778e1e4` (schedule — não-bloqueante)
+
+**Workflow:** `.github/workflows/gitleaks.yml`  
+**Run (push-triggered):** [#40170611104](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40170611104) — `success`  
+**Run (cron/latest):** [#40170963220](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40170963220) — `failure`  
+**Categoria:** Auditoria de secrets pré-existente — schedule, não é required check
+
+**Erro exato (run cron):**
+```
+step "Run Gitleaks" — failure
+"Comentário adicionado na issue #2261"
+```
+
+**Causa raiz:** O Gitleaks full-history audit (cron semanal) encontrou um secret pré-existente rastreado na issue #2261. O run push-triggered na mesma SHA passou (não scanneia histórico completo); o run cron falhou porque scanneia todo o histórico Git e encontrou o secret pré-existente. Não introduzido por `a778e1e4`.
+
+**Impacto no Gate Final:** Nenhum — cron run não é required check; push-triggered = success.
+
+**Ação necessária pelo PO:** Verificar issue #2261 e revogar/rotacionar o secret histórico.
+
+---
+
+## P48 — Supabase Linter Gate: failure em `a778e1e4` (não-bloqueante)
+
+**Workflow:** `.github/workflows/supabase-linter-gate.yml`  
+**Run:** [#40170611137](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40170611137) e [#40171274506](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40171274506) — `failure`  
+**Categoria:** Linter advisory — não é required check
+
+**Erro exato:**
+```
+step "Check Security Advisors and live catalog gates" — failure
+artifact: supabase-linter-allowlist-4668.zip (run #40171274506)
+```
+
+**Causa raiz:** HTTP 544 transiente da Supabase Management API ao tentar consultar advisors. Falha de conectividade transiente, não regressão de código. Pré-existente. Ver P22 e P35.
+
+**Impacto no Gate Final:** Nenhum.
+
+---
+
+## P49 — Release Please: failure em `a778e1e4` (não-bloqueante)
+
+**Workflow:** `.github/workflows/release-please.yml`  
+**Run:** [#40170611128](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40170611128) — `failure` (commit `a778e1e4`)  
+**Categoria:** Bot de releases — não é required check
+
+**Erro:** `release-please failed: Resource not accessible by integration` — PAT `RELEASE_PLEASE_TOKEN` ausente. Ver P1 e P21.
+
+**Ação necessária pelo PO:** Adicionar `RELEASE_PLEASE_TOKEN` nos secrets do repo.
+
+---
+
+## P50 — CI Security & Drift Checks: pending em `a778e1e4` (não-bloqueante)
+
+**Workflow:** `.github/workflows/ci-security-drift-checks.yml`  
+**Run:** [#40170611140](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40170611140) — `pending` (status ao momento do inventário 2026-10-25)  
+**Categoria:** Security & drift — não é required check
+
+**Diagnóstico:** Run ainda em status `pending` ao momento do corte da sessão. Pode completar com sucesso ou falhar com o erro P39 (date-utils UTC vs BRT). Não é required check. Ver P19 e P39.
+
+**Impacto no Gate Final:** Nenhum.
+
+---
+
+## P51 — E2E · Cart Delete Popover: in_progress em `a778e1e4` (não-bloqueante)
+
+**Workflow:** `.github/workflows/e2e-cart-delete-popover.yml`  
+**Run:** [#40170611139](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40170611139) — `in_progress` (status ao momento do inventário)  
+**Categoria:** E2E — não é required check
+
+**Diagnóstico:** Run E2E longo (Playwright multi-engine), ainda em execução ao momento do corte. Conclusão pendente. Ver P25.
+
+**Impacto no Gate Final:** Nenhum.
+
+---
+
+## P52 — E2E (Playwright): in_progress em `a778e1e4` (não-bloqueante)
+
+**Workflow:** `.github/workflows/e2e-playwright.yml`  
+**Run:** [#40170611143](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40170611143) — `in_progress` (status ao momento do inventário)  
+**Categoria:** E2E — não é required check
+
+**Diagnóstico:** Run E2E longo, ainda em execução ao momento do corte. Ver P18.
+
+**Impacto no Gate Final:** Nenhum.
+
+---
+
+## P53 — E2E • Swatch QuickView: in_progress em `a778e1e4` (não-bloqueante)
+
+**Workflow:** `.github/workflows/e2e-swatch-quickview.yml`  
+**Run:** [#40170611132](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40170611132) — `in_progress` (status ao momento do inventário)  
+**Categoria:** E2E — não é required check
+
+**Diagnóstico:** Run E2E longo, ainda em execução ao momento do corte. Ver P12.
+
+**Impacto no Gate Final:** Nenhum.
+
+---
+
+## P54 — E2E • Thumb QuickView: cancelled em `a778e1e4` (não-bloqueante)
+
+**Workflow:** `.github/workflows/e2e-thumb-quickview.yml`  
+**Run:** [#40170611092](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40170611092) — `cancelled` (commit `a778e1e4`)  
+**Categoria:** E2E — não é required check
+
+**Diagnóstico:** Run cancelado pelo `concurrency` group (outro run mais recente da mesma branch assumiu). Cancelamento automático — não é falha de código. Ver P24.
+
+**Impacto no Gate Final:** Nenhum.
+
+---
+
+## P55 — Uptime Monitor: failure em `a778e1e4` (schedule — não-bloqueante)
+
+**Workflow:** `.github/workflows/uptime-monitor.yml`  
+**Run:** [#40171720730](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40171720730) — `failure` (cron run em `a778e1e4`)  
+**Categoria:** Health check externo — não é required check
+
+**Erro exato:**
+```
+step "Probe site + edge function" — failure
+| Probe | Exit code |
+| site | 0 |
+| health-check | 22 | ← HTTP error (curl exit 22 = HTTP >= 400)
+| check-login (OPTIONS) | 0 |
+| auth-health | 0 |
+Comentário adicionado na issue #2463.
+```
+
+**Causa raiz:** Endpoint `health-check` da edge function retornou HTTP >= 400 (exit code 22 do curl). O workflow abriu comentário na issue #2463. Pode ser indisponibilidade transiente da edge function ou do Supabase. Ver P26, P36, P42.
+
+**Impacto no Gate Final:** Nenhum — schedule/cron, não é required check.
+
+**Ação necessária:** Verificar issue #2463 e disponibilidade da edge function `health-check` em produção.
 
 ---
 
