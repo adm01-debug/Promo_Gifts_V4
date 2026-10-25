@@ -121,8 +121,8 @@ export function useClientBI(clientId?: string): ClientBI {
       ordersCount: data.ordersCount,
       lastOrderDate: data.lastOrderAt,
       daysSinceLastOrder: daysSince,
-      // Categorias reais ainda não temos (depende de order_items + categoria) — fallback mock parcial
-      topCategories: MOCK_CLIENT_STATS.topCategories,
+      // Categorias reais ainda não temos (depende de order_items + categoria): vazio, nunca simulado
+      topCategories: [],
       recentOrders: (() => {
         const totals = valid.map((o) => o.total ?? 0).filter((t) => t > 0);
         const mean = totals.length > 0 ? totals.reduce((s, v) => s + v, 0) / totals.length : 0;
