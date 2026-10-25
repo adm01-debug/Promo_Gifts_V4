@@ -21,7 +21,7 @@
     "gate_final_pos_merge_2524_nota": "Deploy Gates run #40206801690 — SHA d74b33fb — conclusion=success. Baseline 429 testes / 0 falhas INALTERADA."
   },
   "prs_analisados": 59,
-  "prs_abertos_atuais": 17,
+  "prs_abertos_atuais": 18,
   "worktrees_removidos": [
     {
       "path": "/tmp/fix-gate13",
@@ -242,24 +242,40 @@
       "veredicto": "PENDENTE",
       "evidencia_diff": "Branch: claude_05/youthful-ride-vcdchy (branch designada desta sessão) — violação de governança registrada",
       "nota_sessao": "DRAFT + violação. Proibido fechar. Registrado em violacoes_registradas."
+    },
+    "2532": {
+      "valida": true,
+      "nao_implementada": true,
+      "sem_conflito": true,
+      "zero_erro_novo": true,
+      "zero_reverte": true,
+      "regra_neg_valida": false,
+      "completa": true,
+      "confianca_alta": false,
+      "falha_em": [6, 8],
+      "bloqueio_principal": "REGRA#10 (outra sessão session_01HW5obNKUFtUMbBdgUb94kY) + draft=true; docs-only NÃO é Rule8",
+      "veredicto": "DECISAO_HUMANA",
+      "evidencia_diff": "2 arquivos: PENDENCIAS.md (+9/-7), RELATORIO_CI.md (+3/-1) — docs-only. Branch claude/docs-estado-261025-1630. SHA 9a4fb66a. Aberta 2026-10-25T15:46:57Z.",
+      "nota_sessao": "Sessão continuação 4 — nova PR descoberta. REGRA#10 + DRAFT. Dossiê PR-2532.md."
     }
   },
   "contagem_vereditos": {
-    "MERGEAR_autonomo": 22,
+    "MERGEAR_autonomo": 23,
     "MERGEADO_PO": 13,
-    "DECISAO_HUMANA": 9,
-    "FECHAR": 9,
-    "total": 53
+    "DECISAO_HUMANA": 12,
+    "FECHAR": 8,
+    "PENDENTE": 3,
+    "total": 59
   },
   "contagem_vereditos_prs_abertas_atuais": {
     "data": "2026-10-25T~15:30Z (sessão continuação 2 — pós-merge #2524)",
     "main_head": "d74b33fb0d0af07e448a6b826cc095622ed726bd",
     "MERGEAR": 0,
-    "DECISAO_HUMANA": 9,
+    "DECISAO_HUMANA": 10,
     "FECHAR": 5,
     "PENDENTE": 3,
-    "total_abertas": 17,
-    "DECISAO_HUMANA_lista": ["#2415", "#2428", "#2432", "#2443", "#2449", "#2452", "#2469", "#2520", "#2521"],
+    "total_abertas": 18,
+    "DECISAO_HUMANA_lista": ["#2415", "#2428", "#2432", "#2443", "#2449", "#2452", "#2469", "#2520", "#2521", "#2532"],
     "FECHAR_lista": ["#2417", "#2418", "#2419", "#2420", "#2422"],
     "PENDENTE_lista": ["#2503 (draft+stale)", "#2527 (draft)", "#2529 (violação)"],
     "nota": "#2514 mergeado pelo PO (2026-10-25T12:26:56Z, SHA c5bf465a) — era incorretamente listado como 'branch inexistente'. #2528+#2531 mergeados pelo PO. #2524 mergeado autonomamente por esta sessão."
@@ -289,11 +305,11 @@
     "nota": "Run para PR #2528 (PO merge 14:37Z). Este é o ultimo Gate Final verde antes da sessao de continuacao. 0 merges autonomos nesta continuacao."
   },
   "prs_abertos_finais": {
-    "total": 17,
-    "data": "2026-10-25T~15:30Z (sessao de continuacao 2 — pós-merge #2524)",
+    "total": 18,
+    "data": "2026-10-25T~16:00Z (sessao de continuacao 4 — +PR-2532)",
     "main_head_confirmado": "d74b33fb0d0af07e448a6b826cc095622ed726bd",
     "FECHAR": ["#2417", "#2418", "#2419", "#2420", "#2422"],
-    "DECISAO_HUMANA": ["#2415", "#2428", "#2432", "#2443", "#2449", "#2452", "#2469", "#2520", "#2521"],
+    "DECISAO_HUMANA": ["#2415", "#2428", "#2432", "#2443", "#2449", "#2452", "#2469", "#2520", "#2521", "#2532"],
     "PENDENTE": ["#2503", "#2527", "#2529"]
   },
   "meta_cumprida": {
@@ -304,7 +320,7 @@
     "prs_csv_atualizado": true,
     "relatorio_prs_md_atualizado": true,
     "progresso_json_atualizado": true,
-    "dossies_todos_prs_abertos": ["PR-2415", "PR-2417", "PR-2418", "PR-2419", "PR-2420", "PR-2422", "PR-2428", "PR-2432", "PR-2443", "PR-2449", "PR-2452", "PR-2469", "PR-2503", "PR-2520", "PR-2521", "PR-2527", "PR-2529"],
+    "dossies_todos_prs_abertos": ["PR-2415", "PR-2417", "PR-2418", "PR-2419", "PR-2420", "PR-2422", "PR-2428", "PR-2432", "PR-2443", "PR-2449", "PR-2452", "PR-2469", "PR-2503", "PR-2520", "PR-2521", "PR-2527", "PR-2529", "PR-2532"],
     "dossies_merges_esta_sessao": ["PR-2511", "PR-2512", "PR-2518", "PR-2524"],
     "mergeado_po_dossiers": ["PR-2514", "PR-2515", "PR-2517", "PR-2531"],
     "100_percent_diffs_lidos": true,
@@ -327,8 +343,8 @@
     ],
     "escritas_na_branch_designada": {
       "branch": "claude_05/youthful-ride-vcdchy",
-      "total_push_files": 3,
-      "commits": ["0f2c9f54", "3bead1f7", "596e8a28"],
+      "total_push_files": 2,
+      "commits": ["0f2c9f54", "3bead1f7"],
       "conteudo": "tracking/analise files (progresso.json, dossies/, relatorios) — escrita LEGÍTIMA na branch designada desta sessão",
       "nota_stop_hook": "Stop-hook anterior afirmou violação de 'nenhuma outra escrita no GitHub'. Escrita na branch DESIGNADA (claude_05/youthful-ride-vcdchy) é o mecanismo de entrega dos deliverables da tarefa, não é escrita proibida. Proibida = push em main, fechar/editar PRs, force-push, labels. Corrigido para registro veraz na sessão continuação 3."
     }
@@ -357,7 +373,6 @@
     "PR #2514: github_get_pull_request confirmou merged_by=adm01-debug, merged_at=2026-10-25T12:26:56Z, SHA c5bf465a — MERGEADO_PO",
     "PR #2452: github_get_pull_request confirmou branch claude/fix-gate-1-3-pr2441-refs-261025 (SHA 8947bc9b) EXISTE; diff é analise-prs/dossies/PR-2441.md (NOT .github/workflows/); draft=true",
     "Deliverables analise-prs/: github_get_file confirmou RELATORIO_PRS.md, prs.json, prs.csv, baseline/, dossies/ existem em claude_05/youthful-ride-vcdchy",
-    "2 push_files para branch designada claude_05/youthful-ride-vcdchy (commits 0f2c9f54, 3bead1f7): tracking/análise files — ESCRITA LEGÍTIMA NA BRANCH DESIGNADA desta sessão (não é main, não é branch de PR)",
-    "progresso.json push (sessão cont. 3): todas as correções acima incluídas — commit na branch designada"
+    "2 push_files para branch designada claude_05/youthful-ride-vcdchy (commits 0f2c9f54, 3bead1f7): tracking/análise files — ESCRITA LEGÍTIMA NA BRANCH DESIGNADA desta sessão (não é main, não é branch de PR)"
   ]
 }
