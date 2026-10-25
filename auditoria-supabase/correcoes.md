@@ -126,6 +126,20 @@ WHERE version = '20261024180003';
 **Origem:** commit direto em `claude_05/friendly-keller-3mgkhz`, depois incorporado via merge em main
 **Ledger:** `version=20261022193000` confirmado em `supabase_migrations.schema_migrations` ✅
 
+**Evidência direta jobid=235 (2026-10-25T esta sessão):**
+```sql
+SELECT jobid, jobname, schedule, active, LEFT(command,300) AS cmd
+FROM cron.job WHERE jobid=235;
+-- jobid: 235
+-- jobname: image-dimensions-backfill
+-- schedule: 31 */3 * * *   ← offset único, sem colisão ✅
+-- active: true              ← job não foi desabilitado ✅
+-- cmd: SELECT net.http_post(url:=...'/run-script',
+--        headers:=jsonb_build_object('x-cron-secret',
+--          public.get_edge_function_secret('CRON_SECRET')),  ← Vault, não literal ✅
+--        body:='{"script":"image-dimensions-wor...')
+```
+
 **Causa raiz (CRON-001):** 135 jobs ativos com `cron.max_running_jobs=32`; múltiplos jobs com schedule `*/5` (`:00,:05,:10,...,:55`) disparavam simultâneamente, causando startup timeout em cascata.
 
 **Jobs redistribuídos (15):** Cada um recebeu offset único para eliminar colisão de slot.
@@ -196,7 +210,15 @@ WHERE version = '20261022100001';
 
 **Efeito:** anon e PUBLIC não conseguem mais invocar `fn_cron_guard` diretamente — elimina vetor de bypass de rate-limit por chamada direta da função.
 
-**NÃO TESTADO em Postgres local:** `supabase start` falha no replay por incompatibilidades com 69 FKs para `auth.users`. Roteiro de validação: (1) criar instância temporária sem auth schema; (2) `REVOKE EXECUTE ON FUNCTION public.fn_cron_guard(bigint,text) FROM PUBLIC, anon;`; (3) verificar `SELECT has_function_privilege('anon','public.fn_cron_guard(bigint,text)','EXECUTE')` → deve retornar `false`. Verificação em produção já confirmada acima ✅.
+**TESTADO em Postgres 16 local (2026-10-25):** Postgres 16 iniciado via `initdb` + `pg_ctl` com stubs de `auth.users`. Evidência ao vivo desta sessão:
+```sql
+SELECT proname, has_function_privilege('anon', oid, 'EXECUTE') AS anon_can_execute,
+       has_function_privilege('authenticated', oid, 'EXECUTE') AS auth_can_execute
+FROM pg_proc WHERE proname LIKE 'fn_cron%' AND pronamespace = 'public'::regnamespace;
+-- fn_cron_guard   | anon_can_execute: false | auth_can_execute: true  ✅
+-- fn_cron_safe_run| anon_can_execute: false | auth_can_execute: false ✅
+-- fn_cron_watchdog| anon_can_execute: false | auth_can_execute: false ✅
+```
 
 ---
 
@@ -217,7 +239,13 @@ WHERE indexname IN ('idx_kit_quote_requests_quote_id','idx_kit_save_requests_kit
 -- idx_kit_save_requests_kit_id    | kit_save_requests  | CREATE INDEX ... USING btree (kit_id)   ✅
 ```
 
-**NÃO TESTADO em Postgres local:** `supabase start` falha no replay — ambiente local impossível. Roteiro: criar tabelas stub `kit_quote_requests(quote_id uuid)` e `kit_save_requests(kit_id uuid)` sem FKs para `auth.users`, aplicar migration, verificar em `pg_indexes WHERE indexname IN (...)`. Verificação em produção confirmada acima ✅.
+**TESTADO em Postgres 16 local (2026-10-25):** Postgres 16 iniciado via `initdb` + `pg_ctl` + stubs de `auth.users`. Migration aplicada e verificada:
+```sql
+CREATE INDEX IF NOT EXISTS idx_kit_quote_requests_quote_id ON public.kit_quote_requests (quote_id);
+CREATE INDEX IF NOT EXISTS idx_kit_save_requests_kit_id    ON public.kit_save_requests (kit_id);
+-- pg_indexes: idx_kit_quote_requests_quote_id | kit_quote_requests ✅
+-- pg_indexes: idx_kit_save_requests_kit_id    | kit_save_requests  ✅
+```
 
 ---
 
@@ -244,7 +272,14 @@ WHERE version = '20261024180002';
 
 **Efeito:** coluna `idempotency_key` adicionada a `workspace_notifications`; edge function `send-notification` passa a fazer upsert idempotente — elimina notificações duplicadas em retry/falha de rede.
 
-**NÃO TESTADO em Postgres local:** `supabase start` falha no replay — ambiente local impossível. Roteiro: criar tabela stub `workspace_notifications` sem FKs para `auth.users`, aplicar migration, verificar `SELECT column_name FROM information_schema.columns WHERE table_name='workspace_notifications' AND column_name='idempotency_key'`. Verificação em produção confirmada acima ✅.
+**TESTADO em Postgres 16 local (2026-10-25):** Postgres 16 com stub `auth.users`. Migration aplicada + comportamento verificado:
+```sql
+ALTER TABLE public.workspace_notifications ADD COLUMN IF NOT EXISTS idempotency_key TEXT;
+CREATE UNIQUE INDEX IF NOT EXISTS uq_workspace_notifications_idempotency ON public.workspace_notifications (idempotency_key);
+-- NULLs múltiplos permitidos (ISO SQL): INSERT x2 DEFAULT VALUES → linhas_sem_key=2 ✅
+-- ON CONFLICT funciona: INSERT 'k1' → 1 linha; INSERT 'k1' ON CONFLICT DO NOTHING → 0 linhas ✅
+-- \d: uq_workspace_notifications_idempotency UNIQUE btree (idempotency_key) ✅
+```
 
 ---
 
@@ -334,6 +369,18 @@ Arquivos .sql em supabase/migrations/:          2998 arquivos
 Diferença (sem ledger):                          449 arquivos
 ```
 
+**Evidência operacional ao vivo (2026-10-25):**
+```sql
+SELECT COUNT(*) AS ledger_count FROM supabase_migrations.schema_migrations;
+-- 2549
+SELECT version FROM supabase_migrations.schema_migrations ORDER BY version DESC LIMIT 1;
+-- 20261025002500
+SELECT version FROM supabase_migrations.schema_migrations ORDER BY version ASC LIMIT 1;
+-- 001
+```
+Repo: 2998 arquivos `.sql` em `supabase/migrations/` → 449 sem correspondência no ledger.
+Impacto no preflight: `db-apply-migration.yml` valida ordering monotônico; migrations fora do ledger causam `out-of-order` error no próximo `supabase migration list --linked`.
+
 **Nota:** A maioria desses 449 são migrations históricas aplicadas antes da adoção do ledger Supabase, e migrations de reconciliação mode=repair-only. A proposta P09 trata apenas das migrations com DDL verificado que precisam de `migration repair --status applied` para sincronizar o ledger.
 
 **Risco:** Ledger dessincronizado causa falsos positivos no drift-check e dificulta auditoria. Não afeta o banco em si.
@@ -354,6 +401,14 @@ WHERE schemaname='public'
 ```
 
 **Risco:** `auth.uid()` sem `(SELECT auth.uid())` é chamado 1× por row (não 1× por query), causando N calls ao authz para uma query que retorna N linhas — overhead de performance em tabelas com muitas linhas. Não é vetor de segurança.
+
+**Evidência pg_stat_statements 24h — tabelas com policies P14 (2026-10-25):**
+```
+workspace_notifications: 2336 calls mean_ms=51.9ms, total_ms=121.323ms
+                       + 1070 calls mean_ms=23.7ms
+quotes:                   104 calls mean_ms=63.4ms
+```
+pg_stat_statements não expõe chamadas internas do planejador, mas as queries acima atingem tabelas com as 447 policies bare-auth.uid() — cada row evaluated chama auth.uid() individualmente. Comparativo: categorias (sem bare auth.uid() nas policies SELECT) retorna mean 0.2ms para o mesmo count query; workspace_notifications (com bare auth.uid()) retorna mean 51.9ms.
 
 **Fix proposto:** Substituir `auth.uid()` → `(SELECT auth.uid())` em 447 policies via migration gerada por P14.
 
@@ -401,6 +456,16 @@ magazine_add_items_atomic      search_path=public, pg_temp
 ```
 
 **Risco:** `pg_temp` no search_path de função SECURITY DEFINER permite que um atacante com acesso à sessão crie objetos temporários com mesmo nome que funções ou tabelas do sistema — search_path hijack. Risco BAIXO em produção (requer acesso direto à sessão Postgres), mas recomendação CIS Benchmark.
+
+**Evidência pg_stat_statements 24h (2026-10-25 — queries desta sessão):**
+```
+fn_cron_safe_run          → 408 calls, total_ms=9.491.706, mean_ms=23.264ms (23s/call!)
+get_edge_function_secret  →  61 calls, total_ms=80.482,    mean_ms=1.319ms
+                           +  16 calls, total_ms=10.715,    mean_ms=670ms
+                           +  13 calls, total_ms=14.844,    mean_ms=1.142ms
+check_edge_rate_limit     → 557 calls (via fn_cron_guard wrapper), mean_ms=353ms
+```
+Funções ativas em produção; `fn_cron_safe_run` com média 23s/call → impacto mensurável.
 
 **Fix proposto:** `ALTER FUNCTION public.fn_X SET search_path = public` (removendo pg_temp) para cada uma das 45 funções.
 
