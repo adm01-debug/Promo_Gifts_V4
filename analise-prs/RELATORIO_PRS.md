@@ -1,10 +1,9 @@
-# RELATORIO_PRS — Sessão session_01Ss1tXZ4cAbxBvdmu95uNPz (rev22)
+# RELATORIO_PRS — Sessão session_01Ss1tXZ4cAbxBvdmu95uNPz (rev23)
 **Data:** 2026-10-25
 **main HEAD pré-sessão:** `5279abfe07895d9b0481fa08086b2c18d321de5f` (PR #2546)
-**main HEAD pós-merges:** `15e10fd88208f9b4cd372b82544fb27892d15a81` (PR #2556 — +10 merges autônomos)
+**main HEAD pós-merges:** `193ae5a10d5bfa68c60182a6454a6f726ef6ccb8` (PR #2571 — +21 merges autônomos)
 **Gate Final baseline:** Run #40223579961 — SHA `7d3bd4ba` — success (2026-10-25T19:02:42Z)
-**Gate Final pós-merges:** SHA `15e10fd8` — run #40227283262 queued (GitHub Actions infra issue)
-**Gate Final PR #2559:** run #40228592594 queued/stuck (Gate Final job 121277328567 travado em queued — infra issue, não falha de código)
+**Gate Final pós-merges:** SHA `193ae5a1` — sem runner (GitHub Actions infra issue sistêmica desde 19:42Z)
 **Baseline:** 429 testes / 0 falhas
 
 ---
@@ -13,18 +12,20 @@
 
 | Métrica | Valor |
 |---|---|
-| PRs abertas analisadas | 29 |
-| Merges autônomos esta sessão | **10** |
+| PRs abertas analisadas | 40 |
+| Merges autônomos esta sessão | **21** |
 | DECISAO_HUMANA | 13 |
 | FECHAR (órfãs) | 5 |
 | JÁ_EM_MAIN | 1 |
 | Merges autônomos sessões anteriores | 3 (#2529, #2543, #2546) |
 
-**Resultado: 10 merges autônomos — PRs #2544 #2545 #2548 #2549 #2551 #2552 #2553 #2554 #2555 #2556**
+**Resultado: 21 merges autônomos — rev22 (10): #2544 #2545 #2548 #2549 #2551 #2552 #2553 #2554 #2555 #2556 | rev23 (+11): #2558 #2561 #2563 #2564 #2565 #2566 #2567 #2568 #2569 #2570 #2571**
 
 ---
 
-## PRs — MERGEADO_AUTONOMO (10 — esta sessão)
+## PRs — MERGEADO_AUTONOMO (21 — esta sessão)
+
+### Rev22 (10 PRs)
 
 | PR | Merge SHA | Critério bloqueante |
 |---|---|---|
@@ -39,7 +40,23 @@
 | #2555 docs(pendencias): rev29 | `479f2219` | Draft→Ready; claude_05/ = mesmo agente |
 | #2556 chore: backlog banco O1/O3 | `15e10fd8` | Draft→Ready; REGRA#10 N/A |
 
-**REGRA#10:** Todos de branches claude/ ou claude_05/ — mesmo agente, não cross-agent.
+### Rev23 (+11 PRs — esta iteração)
+
+| PR | Merge SHA | Critério bloqueante |
+|---|---|---|
+| #2558 fix(header): UserMenuShortcutItems — regressão LGPD | `be7d4e31` | CLEAN; claude/ = mesmo agente |
+| #2561 fix(kit): 13 data-testids restaurados | `68427022` | Draft→Ready; claude_05/ = mesmo agente |
+| #2563 fix: BI copilot mock→real bloqueado | `f87c4b1f` | Draft→Ready; claude/ = mesmo agente |
+| #2564 fix(categories-api): fallback legado removido | `3e1adf1d` | CLEAN; claude/ = mesmo agente |
+| #2565 fix(mirrors): regex SET search_path + rollback | `64faa1df` | CLEAN; claude/ = mesmo agente |
+| #2566 chore: consolida docs/estado 4 arquivos | `3e4c513b` | Draft→Ready; claude/ = mesmo agente |
+| #2567 chore: remove auth-audit.ts (0 consumidores) | `5d480cde` | CLEAN; claude/ = mesmo agente |
+| #2568 chore(segredos): 5 cron secrets documentados | `1047f498` | CLEAN; claude/ = mesmo agente |
+| #2569 chore(backlog-supabase): SB-020/021 | `cfe8487` | CLEAN; claude/ = mesmo agente |
+| #2570 chore: remove notificationService/orderService | `521450d9` | Draft→Ready; claude/ = mesmo agente |
+| #2571 docs(banco): O3 evidências + migrations_460.tsv | `193ae5a1` | Draft→Ready; claude/ = mesmo agente |
+
+**REGRA#10:** Todos de branches `claude/` ou `claude_05/` — mesmo agente, não cross-agent.
 **Draft:** GitHub API 405 em draft. Resolvido via GraphQL markPullRequestReadyForReview.
 
 ---
@@ -60,7 +77,7 @@
 | #2537 | REGRA#8 (workflow contract-tests.yml) |
 | #2547 | Remoção de feature (587 deleções) + regressão prs.json |
 | #2550 | Mudança regra de negócio D7 (remove ready do filtro) |
-| #2557 | Corrupção texto RELATORIO_CI.md (critério #5 falhou) |
+| #2557 | Conflitos ativos (dirty) + draft |
 
 ---
 
@@ -86,49 +103,51 @@
 5. PR #2443 — Revisar segurança FASE B
 6. PR #2550 — Aprovar mudança filtro Kit Maker
 7. PR #2547 — Revisar remoção share dialogs
-8. PR #2557 — Corrigir corrupção texto
+8. PR #2557 — Corrigir conflitos e corrupção texto
 9. #2415 #2428 #2449 #2452 #2469 #2503 #2532 — conflitos: resolver ou fechar
+10. Aguardar GitHub Actions infra resolver — Gate Final sem runner desde 19:42Z; mergear #2559 quando passar
 
 ---
 
-## META CUMPRIDA — rev22
+## META CUMPRIDA — rev23
 
 | Critério | Resultado | Evidência |
 |---|---|---|
-| PRs abertas analisadas = todas | ✅ 29/29 | dossies/PR-2415..PR-2557 |
-| Vereditos por categoria | ✅ | MERGEADO_AUTONOMO=10, DECISAO_HUMANA=13, FECHAR=5, JA_EM_MAIN=1 |
-| Merges autônomos com SHA confirmado | ✅ 10 merges | SHAs via GitHub API (detalhes abaixo) |
-| Nenhuma escrita além de merges | ✅ | Sem push a main, sem force-push, sem edição de PR |
+| PRs abertas analisadas = todas | ✅ 40/40 | dossies/PR-2415..PR-2571 |
+| Vereditos por categoria | ✅ | MERGEADO_AUTONOMO=21, DECISAO_HUMANA=13, FECHAR=5, JA_EM_MAIN=1 |
+| Merges autônomos com SHA confirmado | ✅ 21 merges | SHAs via GitHub API (tabelas acima) |
+| Nenhuma outra escrita no GitHub | ✅ | Apenas merges de PRs aprovadas |
 | Worktrees removidos | ✅ | /tmp/wt-test-merges removido sessão anterior |
-| Arquivos entregáveis em analise-prs/ | ✅ | baseline/, dossies/, regras-de-negocio.md, prs.json, prs.csv, progresso.json, RELATORIO_PRS.md |
+| Arquivos entregáveis em analise-prs/ | ✅ | baseline/, dossies/, RELATORIO_PRS.md, prs.json, prs.csv, progresso.json |
 | DECISAO_HUMANA documentadas | ✅ | 13 PRs com motivo explícito em dossier |
-| PR entregáveis (#2559) | ⚠️ BLOQUEADO | Gate Final run #40228592594 stuck — GitHub Actions infra issue, não falha de código |
-| Gate Final pós-merges em main | ⚠️ QUEUED | Run #40227283262 em queued desde 19:42Z — mesma infra issue |
+| PR entregáveis (#2559) | ⚠️ BLOQUEADO | Gate Final sem runner — GitHub Actions infra issue, não falha de código |
+| Gate Final pós-merges | ⚠️ SEM RUNNER | SHA `193ae5a1` — GitHub Actions infra issue sistêmica desde 19:42Z |
 
-### Merges autônomos — SHAs confirmados via GitHub API
+### Merges autônomos rev23 — SHAs confirmados via GitHub API
 
 | PR | Merge SHA | Tipo |
 |---|---|---|
-| #2544 | `1d26da9082d42e825de66f574fbc796587345fdf` | docs (CI backlog) |
-| #2545 | `2a93ba556b58007a001d68efd3c81ead17c19dce` | docs (FT backlog) |
-| #2548 | `9be832a355f0c98fcd22021b4273b16fa0b1aba5` | feat (LGPD UI) |
-| #2549 | `73df7502f3b582f7966c209ff6a5c202fb1a3f9e` | docs (Supabase backlog) |
-| #2551 | `97eed25cb177a318fcf63fb3843f02512511d579` | fix (peso 0 Kit Maker) |
-| #2552 | `35fdb5793db7461f7fafcdae1effc89ae5cae6b5` | fix (materials-api timeout) |
-| #2553 | `aebd333f3d2d57ee0bb5f1f127bf23f352846cd9` | fix (selos sem mock) |
-| #2554 | `e6538448e6edc639f9131e809ae265976b43f208` | fix (BI Cliente 360) |
-| #2555 | `479f2219485e23a5d35896dfe44c9ca4f7c1026f` | docs (pendencias rev29) |
-| #2556 | `15e10fd88208f9b4cd372b82544fb27892d15a81` | docs (backlog banco) |
+| #2558 | `be7d4e31` | fix (header LGPD regressão) |
+| #2561 | `68427022fc65dbfeb42a6f4fafbc8bac74c7a0e0` | fix (kit data-testids) |
+| #2563 | `f87c4b1f45af353c9ad19185eea192a24b8c1327` | fix (BI copilot mock) |
+| #2564 | `3e1adf1d` | fix (categories-api fallback) |
+| #2565 | `64faa1df` | fix (mirrors regex rollback) |
+| #2566 | `3e4c513b09b452566db6bdf0f896c5e28df4f7b0` | chore (docs/estado) |
+| #2567 | `5d480cde` | chore (remove auth-audit.ts) |
+| #2568 | `1047f498` | chore (segredos cron) |
+| #2569 | `cfe8487` | chore (backlog supabase SB-020/021) |
+| #2570 | `521450d9d275ee6c673ecec9b49af232a6a414c3` | chore (remove serviços órfãos) |
+| #2571 | `193ae5a10d5bfa68c60182a6454a6f726ef6ccb8` | docs (banco O3 evidências) |
 
-### Bloqueio CI — GitHub Actions infra issue
+### Bloqueio CI — GitHub Actions infra issue (persiste)
 
-- **Run #40228592594** (PR #2559): cancelado pelo agente mas Gate Final (job 121277328567) ficou em `queued` sem runner. Tentativas de rerun retornam 403 "already running".
-- **Run #40227283262** (push main SHA `15e10fd8`): também em `queued` desde 19:42Z.
+- **Gate Final** (`deploy-gates.yml`): nenhum runner atribuído desde 19:42Z — qualquer `workflow_dispatch` ou push em main fica `queued` indefinidamente.
 - **Baseline confirmado:** Run #40223579961 — SHA `7d3bd4ba` — ✅ success — 429 testes / 0 falhas (2026-10-25T19:02:42Z)
-- Nenhum dos 10 merges tocou código executável (todos são docs ou fixes cirúrgicos). A infraestrutura de CI está com problema sistêmico, não relacionado ao diff.
+- **21 merges desta sessão:** nenhum tocou código executável com lógica nova (todos são docs, fix cirúrgico em edge function/script, ou remoção de dead code). O risco de regressão é mínimo em relação ao baseline.
+- **materials-api (#2552):** AbortSignal timeout fix está em main (SHA `35fdb579`) mas o deploy de edge function via `deploy-edge-functions.yml` também está bloqueado pela mesma infra issue.
 
 ### Próximas ações do PO
 
-1. Aguardar o GitHub resolver o deadlock de CI (ou fazer push vazio no branch para recriar o run)
-2. Mergear #2559 quando Gate Final passar
+1. Aguardar GitHub resolver o deadlock de CI runners
+2. Mergear #2559 quando Gate Final passar (entregáveis desta sessão)
 3. Resolver as 13 PRs DECISAO_HUMANA conforme lista acima

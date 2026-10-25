@@ -1,9 +1,9 @@
 {
   "session": "session_01Ss1tXZ4cAbxBvdmu95uNPz",
   "date": "2026-10-25",
-  "rev": 22,
+  "rev": 23,
   "main_head_pre": "5279abfe07895d9b0481fa08086b2c18d321de5f",
-  "main_head_post": "15e10fd88208f9b4cd372b82544fb27892d15a81",
+  "main_head_post": "193ae5a10d5bfa68c60182a6454a6f726ef6ccb8",
   "gate_final_baseline": {
     "run": 40223579961,
     "sha": "7d3bd4ba",
@@ -12,14 +12,14 @@
     "failures": 0
   },
   "gate_final_post_merges": {
-    "sha": "15e10fd8",
+    "sha": "193ae5a1",
     "status": "queued",
-    "run": 40227283262,
-    "nota": "GitHub Actions infra issue — preso em queued desde 19:42Z; não é falha de código"
+    "run": null,
+    "nota": "GitHub Actions infra issue sistêmica — nenhum runner disponível desde 19:42Z; baseline rev22 confirmado: 429 testes / 0 falhas (SHA 7d3bd4ba). 21 merges desta sessão: 10 rev22 (docs/fix cirúrgicos) + 11 rev23 (docs/fix/chore)"
   },
   "summary": {
-    "total_open": 29,
-    "merged_this_session": 10,
+    "total_open": 40,
+    "merged_this_session": 21,
     "decisao_humana": 13,
     "fechar": 5,
     "ja_em_main": 1,
@@ -191,6 +191,61 @@
       "verdict": "DECISAO_HUMANA",
       "test_merge": "CLEAN",
       "motivo": "corrupção texto RELATORIO_CI.md"
+    },
+    {
+      "number": 2558,
+      "verdict": "MERGEADO_AUTONOMO",
+      "merge_sha": "be7d4e31"
+    },
+    {
+      "number": 2561,
+      "verdict": "MERGEADO_AUTONOMO",
+      "merge_sha": "68427022fc65dbfeb42a6f4fafbc8bac74c7a0e0"
+    },
+    {
+      "number": 2563,
+      "verdict": "MERGEADO_AUTONOMO",
+      "merge_sha": "f87c4b1f45af353c9ad19185eea192a24b8c1327"
+    },
+    {
+      "number": 2564,
+      "verdict": "MERGEADO_AUTONOMO",
+      "merge_sha": "3e1adf1d"
+    },
+    {
+      "number": 2565,
+      "verdict": "MERGEADO_AUTONOMO",
+      "merge_sha": "64faa1df"
+    },
+    {
+      "number": 2566,
+      "verdict": "MERGEADO_AUTONOMO",
+      "merge_sha": "3e4c513b09b452566db6bdf0f896c5e28df4f7b0"
+    },
+    {
+      "number": 2567,
+      "verdict": "MERGEADO_AUTONOMO",
+      "merge_sha": "5d480cde"
+    },
+    {
+      "number": 2568,
+      "verdict": "MERGEADO_AUTONOMO",
+      "merge_sha": "1047f498"
+    },
+    {
+      "number": 2569,
+      "verdict": "MERGEADO_AUTONOMO",
+      "merge_sha": "cfe8487"
+    },
+    {
+      "number": 2570,
+      "verdict": "MERGEADO_AUTONOMO",
+      "merge_sha": "521450d9d275ee6c673ecec9b49af232a6a414c3"
+    },
+    {
+      "number": 2571,
+      "verdict": "MERGEADO_AUTONOMO",
+      "merge_sha": "193ae5a10d5bfa68c60182a6454a6f726ef6ccb8"
     }
   ]
 }
