@@ -1,7 +1,7 @@
 {
   "session": "session_01Ss1tXZ4cAbxBvdmu95uNPz",
   "date": "2026-10-25",
-  "rev": 23,
+  "rev": 24,
   "main_head_pre": "5279abfe07895d9b0481fa08086b2c18d321de5f",
   "main_head_post": "193ae5a10d5bfa68c60182a6454a6f726ef6ccb8",
   "gate_final_baseline": {
@@ -18,9 +18,9 @@
     "nota": "GitHub Actions infra issue sistêmica — nenhum runner disponível desde 19:42Z; baseline rev22 confirmado: 429 testes / 0 falhas (SHA 7d3bd4ba). 21 merges desta sessão: 10 rev22 (docs/fix cirúrgicos) + 11 rev23 (docs/fix/chore)"
   },
   "summary": {
-    "total_open": 40,
+    "total_open": 41,
     "merged_this_session": 21,
-    "decisao_humana": 13,
+    "decisao_humana": 14,
     "fechar": 5,
     "ja_em_main": 1,
     "merged_prev_sessions": 3
@@ -246,6 +246,12 @@
       "number": 2571,
       "verdict": "MERGEADO_AUTONOMO",
       "merge_sha": "193ae5a10d5bfa68c60182a6454a6f726ef6ccb8"
+    },
+    {
+      "number": 2573,
+      "verdict": "DECISAO_HUMANA",
+      "test_merge": "CLEAN",
+      "motivo": "regressão click bubble — onRemove + onAdd disparam juntos ao clicar Remover"
     }
   ]
 }

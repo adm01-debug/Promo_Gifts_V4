@@ -1,7 +1,7 @@
 {
-  "gerado_em": "2026-10-25T21:30:00Z",
+  "gerado_em": "2026-10-25T22:30:00Z",
   "sessao": "https://claude.ai/code/session_01Ss1tXZ4cAbxBvdmu95uNPz",
-  "rev": 23,
+  "rev": 24,
   "main_head_pre": "5279abfe07895d9b0481fa08086b2c18d321de5f",
   "main_head_pos": "193ae5a10d5bfa68c60182a6454a6f726ef6ccb8",
   "baseline": {
@@ -29,14 +29,14 @@
     "fix_sha": "35fdb579",
     "nota": "Dispatch enviado via workflow_dispatch. Aguardando runners (infra issue sistêmica). AbortSignal fix estará ativo após execução do workflow."
   },
-  "prs_abertas_analisadas": 40,
+  "prs_abertas_analisadas": 41,
   "merges_autonomos_esta_sessao": 21,
   "contagem_por_veredito": {
     "MERGEADO_AUTONOMO": 21,
-    "DECISAO_HUMANA": 13,
+    "DECISAO_HUMANA": 14,
     "FECHAR": 5,
     "JA_EM_MAIN": 1,
-    "total_abertas": 40
+    "total_abertas": 41
   },
   "merges_autonomos_esta_sessao_lista": [
     {"number": 2544, "sha": "1d26da9082d42e825de66f574fbc796587345fdf", "titulo": "docs: backlog CI CI-001..CI-008"},
@@ -75,7 +75,7 @@
     "mergeable_state": "blocked",
     "bloqueio": "GitHub Actions infra issue — Gate Final sem runner desde 19:42Z"
   },
-  "decisao_humana_lista": [2415, 2428, 2443, 2449, 2452, 2469, 2503, 2520, 2532, 2537, 2547, 2550, 2557],
+  "decisao_humana_lista": [2415, 2428, 2443, 2449, 2452, 2469, 2503, 2520, 2532, 2537, 2547, 2550, 2557, 2573],
   "fechar_lista": [2417, 2418, 2419, 2420, 2422],
   "ja_em_main_lista": [2432]
 }
