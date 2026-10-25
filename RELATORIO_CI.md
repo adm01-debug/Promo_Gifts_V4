@@ -379,4 +379,38 @@ node scripts/check-migration-path-references.mjs --update-baseline
 
 **Todos os failures em main são não-required checks. Gate Final = ✅ success.**
 
-*Rev 8 — merge PR #2435 — 2026-10-25 — sessão session_01HW5obNKUFtUMbBdgUb94kY*
+---
+
+## 11. Inventário completo — 17 workflows únicos com is:failure em main
+
+> Extraído de `github_list_workflow_runs` (50 runs recentes em main, 2026-10-25).
+
+| # | Workflow | Event | Commits falhados | Required? | Resultado |
+|---|---|---|---|---|---|
+| 1 | Branch Protection Sentinel | push | edb8432a | Não | Documentado P3/P20 |
+| 2 | CI - Replenishment Module Quality Gate | push | edb8432a | Não | **FIXED** — Zod v4 (PR #2435) |
+| 3 | CI Security & Drift Checks | push | edb8432a | Não | Documentado P19 |
+| 4 | Cart Invariants Smoke | push | edb8432a | Não | Documentado P2b |
+| 5 | Deploy Gates (Gate Final) | push | 8eeeca9b | **SIM** | **FIXED** — run #40151468759 ✅ |
+| 6 | E2E (Playwright) | push | eb7a9247 | Não | Documentado P18 |
+| 7 | E2E · Cart Delete Popover | push | edb8432a | Não | **Documentado P25** |
+| 8 | E2E — Critical Flows & Error Boundaries | push | edb8432a | Não | Documentado P16 |
+| 9 | E2E — Personalization Flow | push | edb8432a | Não | Documentado P2c/P23 |
+| 10 | E2E • Swatch QuickView | push | edb8432a | Não | Documentado P12 |
+| 11 | E2E • Thumb QuickView | push | edb8432a | Não | Documentado P24 |
+| 12 | Edge Integration Tests — All Functions | push | 15dd563b | Não | **FIXED** — UUID fix (PR #2435) |
+| 13 | Quote Builder Delivery Quality | push | edb8432a | Não | Documentado P17 |
+| 14 | Release Please | push | edb8432a | Não | Documentado P1/P21 |
+| 15 | Supabase Linter Gate | push | edb8432a | Não | Documentado P22 |
+| 16 | Uptime Monitor | schedule | bfd9b50a | Não | **Documentado P26** |
+| 17 | edge-functions-drift-check | workflow_run | 15dd563b | Não | **Documentado P27** |
+
+**Resumo:**
+- ✅ FIXED (required): 1 (Deploy Gates / Gate Final)
+- ✅ FIXED (não-required): 2 (CI Replenishment + Edge Integration Tests)
+- 📋 Documentados em PENDENCIAS.md: 14 (P1–P27, não-required, externos ao escopo desta sessão)
+- ❌ Não-documentados: **0**
+
+**Mandato satisfeito:** Todo workflow com is:failure em main está fixado ou documentado com causa raiz em PENDENCIAS.md.
+
+*Rev 9 — PR fix-ci-inventory — 2026-10-25 — sessão session_01HW5obNKUFtUMbBdgUb94kY*
