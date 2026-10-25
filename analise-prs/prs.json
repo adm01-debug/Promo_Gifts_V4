@@ -1,7 +1,7 @@
 {
   "session": "session_01Ss1tXZ4cAbxBvdmu95uNPz",
   "date": "2026-10-25",
-  "rev": 21,
+  "rev": 22,
   "main_head_pre": "5279abfe07895d9b0481fa08086b2c18d321de5f",
   "main_head_post": "15e10fd88208f9b4cd372b82544fb27892d15a81",
   "gate_final_baseline": {
@@ -13,8 +13,9 @@
   },
   "gate_final_post_merges": {
     "sha": "15e10fd8",
-    "status": "pending",
-    "run": 40227283262
+    "status": "queued",
+    "run": 40227283262,
+    "nota": "GitHub Actions infra issue — preso em queued desde 19:42Z; não é falha de código"
   },
   "summary": {
     "total_open": 29,
