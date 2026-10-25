@@ -14,7 +14,9 @@
 **PR #2524:** mergeada em `d74b33fb1e2f0d2aa6d09db05fc4ea8ac73a4c22` (fix: Linter Gate trata 5xx como falha de infra transitória)  
 **PR #2533:** mergeada em `76363781bdc627bc20ce03364dbe4cb22f0c1616` (docs P64/P65 — baseline registrado)  
 **PR #2534:** mergeada em `7a34046abbeb0a3177a3c67456f7157e8ea5bcd3` (docs: RELATORIO_CI run IDs individuais + Gate Final #40212195990)  
-**Main HEAD atual:** `7a34046abbeb0a3177a3c67456f7157e8ea5bcd3`
+**PR #2536:** mergeada em `35ea12c2791e921e991ba7b4ec1045979b60e48a` (docs: run IDs corretos + SHA 7a34046a)  
+**PR #2535:** mergeada em `4cb4feb431f47573a2d4aee01774a5db24e11810` (fix: teste do replay espera semente de cron em B+1)  
+**Main HEAD atual:** `4cb4feb431f47573a2d4aee01774a5db24e11810`
 
 ---
 
@@ -126,6 +128,9 @@ timeout-minutes: 90  # P19b: vitest roda 1265 arquivos com maxWorkers:2 (~45-60m
 | `d74b33fb` (PR #2524 merge) | [#40206801690](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40206801690) | ✅ success | fix: Linter Gate 5xx → Gate Final green |
 | `76363781` (PR #2533 merge) | [#40211291093](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40211291093) | ✅ success | docs P64/P65 + baseline — Gate Final green |
 | `7a34046a` (PR #2534 merge) | [#40212195990](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40212195990) | ✅ success | docs run IDs individuais — Gate Final green (completado 16:40Z) |
+| `893d830e` (fix: semear cron no replay — E40) | [#40213685122](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40213685122) | ✅ success | fix drift replay pg_cron — Gate Final green (completado 17:01Z) |
+| `35ea12c2` (PR #2536 merge) | [#40214494245](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40214494245) | ✅ success | docs run IDs corretos — Gate Final green (completado 17:18Z) |
+| `4cb4feb4` (PR #2535 merge) | [#40214531246](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40214531246) | ✅ success | fix teste replay cron B+1 — Gate Final green (completado 17:20Z) |
 
 ---
 
@@ -162,13 +167,13 @@ timeout-minutes: 90  # P19b: vitest roda 1265 arquivos com maxWorkers:2 (~45-60m
 
 ## Comparação Baseline × Final
 
-| Métrica | Baseline (início sessão) | Final (main `a29b3a19`) |
+| Métrica | Baseline (início sessão) | Final (main `4cb4feb4`) |
 |---|---|---|
 | `check-tsc-baseline.mjs` | ✅ 0 erros | ✅ 0 erros — rodado localmente em `a29b3a19`, EXIT:0 |
 | ESLint | ✅ 0 erros | ✅ 0 erros — rodado localmente com `NODE_OPTIONS=--max-old-space-size=4096`, EXIT:0 |
 | Build Vite | ✅ success | ✅ `built in 15.92s` — rodado localmente em `a29b3a19` |
 | `test:deploy-gate` (vitest) | ✅ 334 passed | ✅ 334 passed (3 files, 6.99s) — rodado localmente em `a29b3a19` |
-| Gate Final - Deploy Ready | ✅ success `801e38a5` | ✅ success `7a34046a` (run [#40212195990](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40212195990), completado 16:40Z) |
+| Gate Final - Deploy Ready | ✅ success `801e38a5` | ✅ success `4cb4feb4` (run [#40214531246](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40214531246), completado 17:20Z) |
 | `ci-security-drift.yml` | ❌ failure | ❌ failure (P60 pré-existente, step 27) — confirmado run #40198674547 |
 | Workflows required (Gate Final) | ✅ todos green | ✅ todos green |
 
@@ -219,7 +224,7 @@ timeout-minutes: 90  # P19b: vitest roda 1265 arquivos com maxWorkers:2 (~45-60m
 - **5 workflows auto-resolvidos:** Uptime Monitor (P42), Supabase Linter Gate (P48), Branch Protection Sentinel (P58), Quote Builder (P17), Release Please (P1/P21/P44 — run #40200678489)
 - **7 workflows documentados (bloqueados externamente):** Cart Invariants (P2b), E2E Critical Flows (P16), E2E Personalization/QuickView (P23/P24), ci-security-drift step 27 (P60), Copilot Code Review infra (P61), E2E `/novidades` page crash (P62), E2E Swatch QuickView (P63)
 - **2 workflows documentados (novos — d74b33fb):** Replenishment Quality Gate hook timeout (P64), Edge Integration Tests divergência deployed vs. git (P65 — deploy disparado)
-- **Gate Final permanece verde** em todos os commits desta sessão — último run confirmado: [#40212195990](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40212195990) (`7a34046a`, ✅ success, completado 16:40Z)
+- **Gate Final permanece verde** em todos os commits desta sessão — último run confirmado: [#40214531246](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40214531246) (`4cb4feb4`, ✅ success, completado 17:20Z)
 - **Zero regressões introduzidas**
 - **Baseline completo registrado (main `d74b33fb`):** TSC ✅ 0 erros · Lint ✅ 0 erros/0 warnings · Build ✅ 15.21s · Vitest deploy-gate ✅ 334 passed
-- **Main HEAD atual:** `7a34046a` (PR #2534 merge)
+- **Main HEAD atual:** `4cb4feb4` (PR #2535 merge)
