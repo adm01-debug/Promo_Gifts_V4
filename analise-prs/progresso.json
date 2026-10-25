@@ -19,6 +19,16 @@
     "conclusao": null,
     "nota": "GitHub Actions infra issue sistêmica — nenhum runner disponível desde 19:42Z; não é falha de código. 21 merges desta sessão são todos docs/fix cirúrgicos/chore sem código executável novo."
   },
+  "materials_api_deploy": {
+    "status": "dispatched",
+    "workflow": "deploy-edge-functions.yml",
+    "ref": "main",
+    "inputs": {"function_name": "materials-api"},
+    "dispatched_at": "2026-10-25T22:00:00Z",
+    "versao_producao_pre_deploy": 276,
+    "fix_sha": "35fdb579",
+    "nota": "Dispatch enviado via workflow_dispatch. Aguardando runners (infra issue sistêmica). AbortSignal fix estará ativo após execução do workflow."
+  },
   "prs_abertas_analisadas": 40,
   "merges_autonomos_esta_sessao": 21,
   "contagem_por_veredito": {
@@ -59,7 +69,7 @@
     ]
   },
   "pr_entregaveis": {
-    "number": 2559,
+    "number": 2572,
     "branch": "claude_05/youthful-ride-vcdchy",
     "status": "open",
     "mergeable_state": "blocked",

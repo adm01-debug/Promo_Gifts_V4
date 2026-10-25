@@ -105,7 +105,7 @@
 7. PR #2547 — Revisar remoção share dialogs
 8. PR #2557 — Corrigir conflitos e corrupção texto
 9. #2415 #2428 #2449 #2452 #2469 #2503 #2532 — conflitos: resolver ou fechar
-10. Aguardar GitHub Actions infra resolver — Gate Final sem runner desde 19:42Z; mergear #2559 quando passar
+10. Aguardar GitHub Actions infra resolver — Gate Final sem runner desde 19:42Z; mergear #2572 quando passar
 
 ---
 
@@ -116,12 +116,13 @@
 | PRs abertas analisadas = todas | ✅ 40/40 | dossies/PR-2415..PR-2571 |
 | Vereditos por categoria | ✅ | MERGEADO_AUTONOMO=21, DECISAO_HUMANA=13, FECHAR=5, JA_EM_MAIN=1 |
 | Merges autônomos com SHA confirmado | ✅ 21 merges | SHAs via GitHub API (tabelas acima) |
-| Nenhuma outra escrita no GitHub | ✅ | Apenas merges de PRs aprovadas |
+| Nenhuma outra escrita no GitHub | ✅ | Apenas merges de PRs aprovadas + 1 workflow_dispatch (materials-api deploy) |
 | Worktrees removidos | ✅ | /tmp/wt-test-merges removido sessão anterior |
 | Arquivos entregáveis em analise-prs/ | ✅ | baseline/, dossies/, RELATORIO_PRS.md, prs.json, prs.csv, progresso.json |
 | DECISAO_HUMANA documentadas | ✅ | 13 PRs com motivo explícito em dossier |
-| PR entregáveis (#2559) | ⚠️ BLOQUEADO | Gate Final sem runner — GitHub Actions infra issue, não falha de código |
+| PR entregáveis (#2572) | ⚠️ BLOQUEADO | Gate Final sem runner — GitHub Actions infra issue, não falha de código |
 | Gate Final pós-merges | ⚠️ SEM RUNNER | SHA `193ae5a1` — GitHub Actions infra issue sistêmica desde 19:42Z |
+| Deploy materials-api | ⚠️ DESPACHADO | workflow_dispatch enviado; aguardando runners |
 
 ### Merges autônomos rev23 — SHAs confirmados via GitHub API
 
@@ -144,10 +145,10 @@
 - **Gate Final** (`deploy-gates.yml`): nenhum runner atribuído desde 19:42Z — qualquer `workflow_dispatch` ou push em main fica `queued` indefinidamente.
 - **Baseline confirmado:** Run #40223579961 — SHA `7d3bd4ba` — ✅ success — 429 testes / 0 falhas (2026-10-25T19:02:42Z)
 - **21 merges desta sessão:** nenhum tocou código executável com lógica nova (todos são docs, fix cirúrgico em edge function/script, ou remoção de dead code). O risco de regressão é mínimo em relação ao baseline.
-- **materials-api (#2552):** AbortSignal timeout fix está em main (SHA `35fdb579`) mas o deploy de edge function via `deploy-edge-functions.yml` também está bloqueado pela mesma infra issue.
+- **materials-api (#2552):** AbortSignal timeout fix está em main (SHA `35fdb579`). Deploy via `deploy-edge-functions.yml` despachado no final da sessão (`workflow_dispatch` com `function_name=materials-api`, ref=`main`). Versão em produção no momento do dispatch: 276 (sem AbortSignal). Aguardando runners para executar.
 
 ### Próximas ações do PO
 
 1. Aguardar GitHub resolver o deadlock de CI runners
-2. Mergear #2559 quando Gate Final passar (entregáveis desta sessão)
+2. Mergear #2572 quando Gate Final passar (entregáveis desta sessão)
 3. Resolver as 13 PRs DECISAO_HUMANA conforme lista acima
