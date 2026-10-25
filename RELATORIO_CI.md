@@ -675,7 +675,7 @@ Todos os workflows que executaram em `main` no SHA `6ea6c80c` — link, conclus�
 
 ### 13.3 Baseline Vitest (local, 2026-10-25)
 
-Executado com `TZ=America/Sao_Paulo vitest run tests/unit/` (branch `claude_05/upbeat-hamilton-5gnz50`, pós-PR #2470):
+**Suite parcial — `tests/unit/` apenas** (`TZ=America/Sao_Paulo vitest run tests/unit/`, pós-PR #2470):
 
 | Métrica | Valor |
 |---|---|
@@ -684,6 +684,16 @@ Executado com `TZ=America/Sao_Paulo vitest run tests/unit/` (branch `claude_05/u
 | Duration | 23s |
 | Timezone | America/Sao_Paulo (BRT = UTC-3) |
 | Assertions corrigidas (P19) | 3 — `date-utils.test.ts:79,98,107` |
+
+**Suite completa** (`TZ=America/Sao_Paulo NODE_OPTIONS=--max-old-space-size=4096 npx vitest run --exclude 'tests/hooks/**'`, pós-PR #2470):
+
+| Métrica | Valor |
+|---|---|
+| Test Files | **4 failed** \| 1090 passed \| 130 skipped (total 1224) |
+| Tests | **10 failed** \| 24725 passed \| 1127 skipped \| 24 todo (total 25886) |
+| Duration | 1150s |
+| Arquivos com falha | `tests/edge-functions/integration/receive-crm-callback.test.ts` (10 falhas) |
+| Natureza | Contract schema — `parsed.success` retorna `false` para payloads válidos; pré-existente, não introduzida por este PR |
 
 ### 13.4 Mandato — verificação pós-PR #2470
 
