@@ -1,7 +1,7 @@
 {
-  "gerado_em": "2026-10-25T08:38:00Z",
+  "gerado_em": "2026-10-25T09:00:00Z",
   "sessao": "https://claude.ai/code/session_01Ss1tXZ4cAbxBvdmu95uNPz",
-  "main_head": "e91a36e390bf99a4a697c1be59d3abeadb7494c6",
+  "main_head": "dcaa20da0ee36ca45447fb5b1dcb96379bea85ad",
   "baseline": {
     "testes": 429,
     "falhas": 0,
@@ -11,6 +11,51 @@
   },
   "prs_analisados": 44,
   "prs_abertos_atuais": 13,
+  "test_merges_executados": [
+    {
+      "pr": 2415,
+      "branch": "claude_05/amazing-brahmagupta-0xhdur",
+      "sha": "cfc23c5c",
+      "base": "dcaa20da0",
+      "resultado": "CONFLICT",
+      "conflitos": ["PENDENCIAS.md", "RELATORIO_CI.md", "vitest.config.ts"],
+      "arquivos_auto_merged": [".github/workflows/ci-security-drift.yml", ".github/workflows/deploy-gates.yml"],
+      "veredicto": "DECISAO_HUMANA",
+      "motivo": "Rule 8 (2 workflows) + conflito"
+    },
+    {
+      "pr": 2432,
+      "branch": "claude/feat-probe-e184-241026-2026",
+      "sha": "efb8324e",
+      "base": "dcaa20da0",
+      "resultado": "CONFLICT",
+      "conflitos": ["qa/migrations-draft/probe_e184_legacy_refs.sql (add/add)"],
+      "veredicto": "DECISAO_HUMANA",
+      "motivo": "REGRA #10 outra sessao + add/add conflict + 4 correctness bugs"
+    },
+    {
+      "pr": 2443,
+      "branch": "claude/feat-aprovacao-p06-p09-p14-p15-p03sec-261024-2315",
+      "sha": "0fd538e8",
+      "base": "dcaa20da0",
+      "resultado": "CLEAN",
+      "arquivos": ["auditoria-supabase/analise-impacto/APROVACAO_FASE_B_IMPACTO.md (+218 linhas)"],
+      "veredicto": "DECISAO_HUMANA",
+      "motivo": "draft=true (GitHub API bloqueia) + titulo APROVACAO REQUERIDA"
+    },
+    {
+      "pr": 2469,
+      "branch": "claude/fix-ci-workflows-261025-0630",
+      "sha": "775756f7",
+      "base": "dcaa20da0",
+      "resultado": "CLEAN",
+      "arquivos": [".github/workflows/e2e-personalization.yml (+2/-1)"],
+      "veredicto": "DECISAO_HUMANA",
+      "motivo": "Rule 8 (workflows) + REGRA #10"
+    }
+  ],
+  "draft_prs_sem_test_merge": [2417, 2418, 2419, 2420, 2422, 2428, 2449, 2452, 2487],
+  "draft_prs_motivo": "draft=true — GitHub API recusa squash-merge (HTTP 405); test-merge de PR draft nao e necessario para confirmar bloqueio",
   "contagem_vereditos": {
     "MERGEAR": 17,
     "MERGEADO_PO": 10,
@@ -18,74 +63,27 @@
     "FECHAR": 9
   },
   "merges_autonomos_esta_sessao": [
-    {
-      "pr": 2479,
-      "sha": "de48ab2792f0b8e658d1534d881599aebb51a35c",
-      "titulo": "docs(analise-prs): deliverables rev3",
-      "gate_final_run": "40169270830",
-      "gate_final_conclusao": "success",
-      "merged_at": "2026-10-25T06:30:07Z"
-    },
-    {
-      "pr": 2481,
-      "sha": "a778e1e467a92c5db46f6cc844eb0e48452040fa",
-      "titulo": "docs(analise-prs): deliverables finais rev4",
-      "gate_final_run": "40170213405",
-      "gate_final_conclusao": "success",
-      "merged_at": "2026-10-25T07:00:00Z"
-    },
-    {
-      "pr": 2486,
-      "sha": "f761938ece2939d5564d6ba51bcd0feb487ce057",
-      "titulo": "docs(analise-prs): deliverables rev5",
-      "gate_final_run": "40172460728",
-      "gate_final_conclusao": "success",
-      "merged_at": "2026-10-25T07:21:27Z"
-    },
-    {
-      "pr": 2490,
-      "sha": "a681fe0e",
-      "titulo": "docs(analise-prs): deliverables rev6",
-      "gate_final_run": "40173768324",
-      "gate_final_conclusao": "success",
-      "merged_at": "2026-10-25T07:43:00Z"
-    },
-    {
-      "pr": 2498,
-      "sha": "eee389ca",
-      "titulo": "docs(analise-prs): deliverables rev6.1 + PR-2487",
-      "gate_final_run": "40174781954",
-      "gate_final_conclusao": "success",
-      "merged_at": "2026-10-25T08:12:00Z"
-    },
-    {
-      "pr": 2501,
-      "sha": "e91a36e390bf99a4a697c1be59d3abeadb7494c6",
-      "titulo": "docs(analise-prs): deliverables rev7 — 44 PRs, 13 abertas, baseline e91a36e3",
-      "gate_final_run": "40176836399",
-      "gate_final_conclusao": "success",
-      "merged_at": "2026-10-25T08:29:41Z"
-    }
+    {"pr": 2479, "sha": "de48ab2792f0b8e658d1534d881599aebb51a35c", "titulo": "docs(analise-prs): deliverables rev3", "gate_final_run": "40169270830", "gate_final_conclusao": "success", "merged_at": "2026-10-25T06:30:07Z"},
+    {"pr": 2481, "sha": "a778e1e467a92c5db46f6cc844eb0e48452040fa", "titulo": "docs(analise-prs): deliverables finais rev4", "gate_final_run": "40170213405", "gate_final_conclusao": "success", "merged_at": "2026-10-25T07:00:00Z"},
+    {"pr": 2486, "sha": "f761938ece2939d5564d6ba51bcd0feb487ce057", "titulo": "docs(analise-prs): deliverables rev5", "gate_final_run": "40172460728", "gate_final_conclusao": "success", "merged_at": "2026-10-25T07:21:27Z"},
+    {"pr": 2490, "sha": "a681fe0e", "titulo": "docs(analise-prs): deliverables rev6", "gate_final_run": "40173768324", "gate_final_conclusao": "success", "merged_at": "2026-10-25T07:43:00Z"},
+    {"pr": 2498, "sha": "eee389ca", "titulo": "docs(analise-prs): deliverables rev6.1 + PR-2487", "gate_final_run": "40174781954", "gate_final_conclusao": "success", "merged_at": "2026-10-25T08:12:00Z"},
+    {"pr": 2501, "sha": "e91a36e390bf99a4a697c1be59d3abeadb7494c6", "titulo": "docs(analise-prs): deliverables rev7 — 44 PRs, 13 abertas, baseline e91a36e3", "gate_final_run": "40176836399", "gate_final_conclusao": "success", "merged_at": "2026-10-25T08:29:41Z"}
   ],
   "prs_abertos": [
-    {"number": 2415, "verdict": "DECISAO_HUMANA", "motivo": "Rule 8: workflows CI", "draft": false},
+    {"number": 2415, "verdict": "DECISAO_HUMANA", "motivo": "Rule 8: 2 workflows + conflito", "draft": false, "test_merge": "CONFLICT"},
     {"number": 2417, "verdict": "FECHAR", "motivo": "Orphan NO_MERGE_BASE + Rule 8", "draft": true},
     {"number": 2418, "verdict": "FECHAR", "motivo": "Orphan NO_MERGE_BASE + Rule 8", "draft": true},
     {"number": 2419, "verdict": "FECHAR", "motivo": "Orphan NO_MERGE_BASE + Rule 8", "draft": true},
     {"number": 2420, "verdict": "FECHAR", "motivo": "Orphan NO_MERGE_BASE + Rule 8 rollbacks", "draft": true},
     {"number": 2422, "verdict": "FECHAR", "motivo": "Orphan NO_MERGE_BASE + draft", "draft": true},
     {"number": 2428, "verdict": "DECISAO_HUMANA", "motivo": "Rule 8: .gitleaks.toml + draft", "draft": true},
-    {"number": 2432, "verdict": "DECISAO_HUMANA", "motivo": "REGRA #10 outra sessao + Gate FAILURE + 4 bugs", "draft": false},
-    {"number": 2443, "verdict": "DECISAO_HUMANA", "motivo": "Draft + titulo APROVACAO REQUERIDA", "draft": true},
-    {"number": 2449, "verdict": "DECISAO_HUMANA", "motivo": "Rule 8: supabase/migrations/ + draft", "draft": true},
+    {"number": 2432, "verdict": "DECISAO_HUMANA", "motivo": "REGRA #10 outra sessao + CONFLICT add/add + 4 bugs", "draft": false, "test_merge": "CONFLICT"},
+    {"number": 2443, "verdict": "DECISAO_HUMANA", "motivo": "draft=true + titulo APROVACAO REQUERIDA", "draft": true, "test_merge": "CLEAN"},
+    {"number": 2449, "verdict": "DECISAO_HUMANA", "motivo": "Rule 8: supabase/migrations/ + draft + conflito", "draft": true},
     {"number": 2452, "verdict": "FECHAR", "motivo": "REGRA #10 outra sessao + draft", "draft": true},
-    {"number": 2469, "verdict": "DECISAO_HUMANA", "motivo": "Rule 8: .github/workflows/ + REGRA #10; supersedido por #2489", "draft": false},
-    {"number": 2487, "verdict": "DECISAO_HUMANA", "motivo": "REGRA #10 outra sessao session_01HW5obNKUFtUMbBdgUb94kY + draft + behind main", "draft": true}
-  ],
-  "prs_fechados_externamente_durante_sessao": [
-    {"number": 2471, "verdict_original": "FECHAR", "motivo": "REGRA #10 outra sessao + dirty + draft"},
-    {"number": 2480, "verdict_original": "DECISAO_HUMANA", "motivo": "REGRA #10 outra sessao + draft"},
-    {"number": 2484, "verdict_original": "FECHAR", "motivo": "REGRA #10 outra sessao + dirty + delecao -962 linhas"}
+    {"number": 2469, "verdict": "DECISAO_HUMANA", "motivo": "Rule 8: .github/workflows/ + REGRA #10", "draft": false, "test_merge": "CLEAN"},
+    {"number": 2487, "verdict": "DECISAO_HUMANA", "motivo": "REGRA #10 outra sessao + draft + behind main", "draft": true}
   ],
   "producao": {
     "migrations_pendentes": 0,
