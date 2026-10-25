@@ -288,3 +288,74 @@ WHERE version = '20261024190001';
 | P14 | RLS auth.uid() initplan | 23 policies; N calls vs 1 por query |
 | P15 | anon SELECT produtos/variantes | 2 tabelas expostas a anon sem justificativa |
 | P03_sec | SECURITY DEFINER search_path | 8 funções com `pg_temp` no search_path |
+
+---
+
+## Verificação ao vivo — sessão 01JPgV7FqkG4UuFBJWiJa9FB (2026-10-25)
+
+Queries executadas nesta sessão para confirmar o estado pós-FASE B:
+
+### 1. Ledger — 8 migrations FASE B confirmadas
+
+```sql
+SELECT version FROM supabase_migrations.schema_migrations
+WHERE version IN (
+  '20261022100001','20261022193000','20261024163500',
+  '20261024180001','20261024180002','20261024180003',
+  '20261024190001','20261025002500'
+);
+-- 8 linhas retornadas ✅
+```
+
+### 2. Contadores baseline_depois
+
+```sql
+SELECT
+  (SELECT COUNT(*) FROM information_schema.tables
+   WHERE table_schema='public' AND table_type='BASE TABLE') AS base_tables,
+  (SELECT COUNT(*) FROM information_schema.views
+   WHERE table_schema='public') AS views,
+  (SELECT COUNT(*) FROM information_schema.routines
+   WHERE routine_schema='public') AS funcoes,
+  (SELECT COUNT(*) FROM cron.job) AS cron_jobs,
+  (SELECT COUNT(*) FROM pg_policies WHERE schemaname='public') AS rls_policies,
+  (SELECT COUNT(*) FROM supabase_migrations.schema_migrations) AS migrations_ledger;
+-- {base_tables:398, views:193, funcoes:1334, cron_jobs:142, rls_policies:960, migrations_ledger:2549} ✅
+-- Delta vs baseline_antes (2538): migrations_ledger +11. Demais Δ=0. ✅
+```
+
+### 3. P19_cron001 — redistribuição CRON-001 confirmada
+
+```sql
+SELECT jobname, schedule FROM cron.job
+WHERE jobname IN (
+  'auto-block-offenders','backfill-image-dimensions',
+  'dispatcher-failure-alert','fantasmas-deactivate-guard',
+  'hash-product-images','sync-is-stockout-universal'
+)
+ORDER BY jobname;
+-- auto-block-offenders        1,16,31,46 * * * *  ✅
+-- backfill-image-dimensions   7,22,37,52 * * * *  ✅
+-- dispatcher-failure-alert    5,20,35,50 * * * *  ✅
+-- fantasmas-deactivate-guard  4,34 * * * *        ✅
+-- hash-product-images         10,25,40,55 * * * * ✅
+-- sync-is-stockout-universal  0,15,30,45 * * * *  ✅
+-- Redistribuição de offsets por job confirmada — correspondência com §P19_cron001 ✅
+```
+
+### 4. P01 — Vault confirmado em jobid 235
+
+```sql
+SELECT jobid, jobname, LEFT(command,200) AS cmd FROM cron.job WHERE jobid=235;
+-- command contém: x-cron-secret', public.get_edge_function_secret('CRON_SECRET')
+-- Segredo via Vault (não literal) ✅
+```
+
+### 5. 20261024163500 presente no ledger
+
+```sql
+SELECT version FROM supabase_migrations.schema_migrations
+WHERE version = '20261024163500';
+-- 1 linha retornada: 20261024163500 ✅
+-- (aplicada via db-apply-migration.yml entre snapshot 2026-10-24T16:05 e início de FASE B)
+```
