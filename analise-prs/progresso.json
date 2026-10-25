@@ -1,15 +1,15 @@
 {
-  "gerado_em": "2026-10-25T09:00:00Z",
+  "gerado_em": "2026-10-25T09:30:00Z",
   "sessao": "https://claude.ai/code/session_01Ss1tXZ4cAbxBvdmu95uNPz",
-  "main_head": "dcaa20da0ee36ca45447fb5b1dcb96379bea85ad",
+  "main_head": "e0be76690381d15a4e7d0c2d728d05d8abb533c4",
   "baseline": {
     "testes": 429,
     "falhas": 0,
-    "gate_final_run": "40176836399",
+    "gate_final_run": "40174922055",
     "gate_final_conclusao": "success",
-    "sha_referencia": "e91a36e390bf99a4a697c1be59d3abeadb7494c6"
+    "sha_referencia": "e0be76690381d15a4e7d0c2d728d05d8abb533c4"
   },
-  "prs_analisados": 44,
+  "prs_analisados": 45,
   "prs_abertos_atuais": 13,
   "test_merges_executados": [
     {
@@ -41,7 +41,7 @@
       "resultado": "CLEAN",
       "arquivos": ["auditoria-supabase/analise-impacto/APROVACAO_FASE_B_IMPACTO.md (+218 linhas)"],
       "veredicto": "DECISAO_HUMANA",
-      "motivo": "draft=true (GitHub API bloqueia) + titulo APROVACAO REQUERIDA"
+      "motivo": "REGRA #10 outra sessao + titulo APROVACAO REQUERIDA"
     },
     {
       "pr": 2469,
@@ -52,14 +52,48 @@
       "arquivos": [".github/workflows/e2e-personalization.yml (+2/-1)"],
       "veredicto": "DECISAO_HUMANA",
       "motivo": "Rule 8 (workflows) + REGRA #10"
+    },
+    {
+      "pr": 2428,
+      "branch": "claude/fix-gitleaks-gate-261024-1930",
+      "sha": "in-session",
+      "base": "e0be76690",
+      "resultado": "CLEAN",
+      "arquivos": [".gitleaks.toml"],
+      "veredicto": "DECISAO_HUMANA",
+      "motivo": "Rule 8 §2.3 (.gitleaks.toml) + draft=true"
+    },
+    {
+      "pr": 2449,
+      "branch": "claude/chore-e99-mirror-update-company-fields-261025-1100",
+      "sha": "in-session",
+      "base": "e0be76690",
+      "resultado": "CONFLICT",
+      "conflitos": ["supabase/MIGRATIONS_SYNC_LOG.md"],
+      "arquivos_auto_merged": [
+        "supabase/migrations/20261022195616_fix_update_company_fields_security_definer_search_path.sql",
+        "supabase/migrations/20261022203935_update_company_fields_security_fix.sql"
+      ],
+      "veredicto": "DECISAO_HUMANA",
+      "motivo": "Rule 8 §2.2 (supabase/migrations/) + CONFLICT + draft=true"
+    },
+    {
+      "pr": 2503,
+      "branch": "claude/docs-relatorio-ci-rev21-20261025-0911",
+      "sha": "in-session",
+      "base": "e0be76690",
+      "resultado": "CLEAN",
+      "arquivos": ["RELATORIO_CI.md"],
+      "veredicto": "DECISAO_HUMANA",
+      "motivo": "REGRA #10 outra sessao (session_01HW5obNKUFtUMbBdgUb94kY) + draft=true"
     }
   ],
-  "draft_prs_sem_test_merge": [2417, 2418, 2419, 2420, 2422, 2428, 2449, 2452, 2487],
-  "draft_prs_motivo": "draft=true — GitHub API recusa squash-merge (HTTP 405); test-merge de PR draft nao e necessario para confirmar bloqueio",
+  "draft_prs_sem_test_merge": [2417, 2418, 2419, 2420, 2422, 2452],
+  "draft_prs_motivo": "draft=true com NO_MERGE_BASE (branches orfas) — git recusa merge com 'refusing to merge unrelated histories'; ou REGRA #10 + fechar ja decidido",
   "contagem_vereditos": {
     "MERGEAR": 17,
     "MERGEADO_PO": 10,
-    "DECISAO_HUMANA": 8,
+    "DECISAO_HUMANA": 9,
     "FECHAR": 9
   },
   "merges_autonomos_esta_sessao": [
@@ -68,7 +102,8 @@
     {"pr": 2486, "sha": "f761938ece2939d5564d6ba51bcd0feb487ce057", "titulo": "docs(analise-prs): deliverables rev5", "gate_final_run": "40172460728", "gate_final_conclusao": "success", "merged_at": "2026-10-25T07:21:27Z"},
     {"pr": 2490, "sha": "a681fe0e", "titulo": "docs(analise-prs): deliverables rev6", "gate_final_run": "40173768324", "gate_final_conclusao": "success", "merged_at": "2026-10-25T07:43:00Z"},
     {"pr": 2498, "sha": "eee389ca", "titulo": "docs(analise-prs): deliverables rev6.1 + PR-2487", "gate_final_run": "40174781954", "gate_final_conclusao": "success", "merged_at": "2026-10-25T08:12:00Z"},
-    {"pr": 2501, "sha": "e91a36e390bf99a4a697c1be59d3abeadb7494c6", "titulo": "docs(analise-prs): deliverables rev7 — 44 PRs, 13 abertas, baseline e91a36e3", "gate_final_run": "40176836399", "gate_final_conclusao": "success", "merged_at": "2026-10-25T08:29:41Z"}
+    {"pr": 2501, "sha": "e91a36e390bf99a4a697c1be59d3abeadb7494c6", "titulo": "docs(analise-prs): deliverables rev7 — 44 PRs, 13 abertas, baseline e91a36e3", "gate_final_run": "40176836399", "gate_final_conclusao": "success", "merged_at": "2026-10-25T08:29:41Z"},
+    {"pr": 2504, "sha": "e0be76690381d15a4e7d0c2d728d05d8abb533c4", "titulo": "docs(analise-prs): deliverables rev8 — test-merges #2415/#2432/#2443/#2469", "gate_final_run": "40179146830", "gate_final_conclusao": "success", "merged_at": "2026-10-25T09:00:00Z"}
   ],
   "prs_abertos": [
     {"number": 2415, "verdict": "DECISAO_HUMANA", "motivo": "Rule 8: 2 workflows + conflito", "draft": false, "test_merge": "CONFLICT"},
@@ -77,13 +112,13 @@
     {"number": 2419, "verdict": "FECHAR", "motivo": "Orphan NO_MERGE_BASE + Rule 8", "draft": true},
     {"number": 2420, "verdict": "FECHAR", "motivo": "Orphan NO_MERGE_BASE + Rule 8 rollbacks", "draft": true},
     {"number": 2422, "verdict": "FECHAR", "motivo": "Orphan NO_MERGE_BASE + draft", "draft": true},
-    {"number": 2428, "verdict": "DECISAO_HUMANA", "motivo": "Rule 8: .gitleaks.toml + draft", "draft": true},
+    {"number": 2428, "verdict": "DECISAO_HUMANA", "motivo": "Rule 8: .gitleaks.toml + draft", "draft": true, "test_merge": "CLEAN"},
     {"number": 2432, "verdict": "DECISAO_HUMANA", "motivo": "REGRA #10 outra sessao + CONFLICT add/add + 4 bugs", "draft": false, "test_merge": "CONFLICT"},
-    {"number": 2443, "verdict": "DECISAO_HUMANA", "motivo": "draft=true + titulo APROVACAO REQUERIDA", "draft": true, "test_merge": "CLEAN"},
-    {"number": 2449, "verdict": "DECISAO_HUMANA", "motivo": "Rule 8: supabase/migrations/ + draft + conflito", "draft": true},
+    {"number": 2443, "verdict": "DECISAO_HUMANA", "motivo": "REGRA #10 outra sessao + titulo APROVACAO REQUERIDA", "draft": false, "test_merge": "CLEAN"},
+    {"number": 2449, "verdict": "DECISAO_HUMANA", "motivo": "Rule 8: supabase/migrations/ + CONFLICT + draft", "draft": true, "test_merge": "CONFLICT"},
     {"number": 2452, "verdict": "FECHAR", "motivo": "REGRA #10 outra sessao + draft", "draft": true},
     {"number": 2469, "verdict": "DECISAO_HUMANA", "motivo": "Rule 8: .github/workflows/ + REGRA #10", "draft": false, "test_merge": "CLEAN"},
-    {"number": 2487, "verdict": "DECISAO_HUMANA", "motivo": "REGRA #10 outra sessao + draft + behind main", "draft": true}
+    {"number": 2503, "verdict": "DECISAO_HUMANA", "motivo": "REGRA #10 outra sessao (session_01HW5obNKUFtUMbBdgUb94kY) + draft=true", "draft": true, "test_merge": "CLEAN"}
   ],
   "producao": {
     "migrations_pendentes": 0,

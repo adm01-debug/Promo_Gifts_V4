@@ -1,8 +1,8 @@
 # RELATORIO DE PRs — Promo Gifts V4
 **Sessao:** https://claude.ai/code/session_01Ss1tXZ4cAbxBvdmu95uNPz  
 **Data:** 2026-10-25  
-**main HEAD:** `e91a36e390bf99a4a697c1be59d3abeadb7494c6` (PR #2501 mergeado por esta sessao as 08:29:41Z)  
-**Baseline CI:** 429 testes, 0 falhas — Gate Final run #40176836399 SUCCESS
+**main HEAD:** `e0be76690381d15a4e7d0c2d728d05d8abb533c4` (PR #2504 mergeado por esta sessao as 09:00:00Z)  
+**Baseline CI:** 429 testes, 0 falhas — Gate Final run #40179146830 SUCCESS
 
 ---
 
@@ -10,23 +10,26 @@
 
 | Metrica | Valor |
 |---|---|
-| PRs analisadas | 44 (#2414–#2487, inclui deliverables desta sessao) |
+| PRs analisadas | 45 (#2414–#2504, inclui deliverables desta sessao) |
 | PRs abertas atuais | 13 |
-| Merges autonomos esta sessao | 6 (PR #2479, #2481, #2486, #2490, #2498, #2501) |
+| Merges autonomos esta sessao | 7 (PR #2479, #2481, #2486, #2490, #2498, #2501, #2504) |
 | PRs fechadas externamente (durante sessao) | 3 (#2471, #2480, #2484) |
 | Regressoes introduzidas | 0 |
 | Migrations pendentes de deploy | 0 |
 | Edge functions pendentes de deploy | 0 |
 
-### Contagem por Veredito (44 PRs — categorias nao sobrepostas)
+### Contagem por Veredito (45 PRs — categorias nao sobrepostas)
 
 | Veredito | Quantidade |
 |---|---|
-| MERGEAR (mergeadas autonomamente) | 17 |
+| MERGEAR (mergeadas autonomamente) | 18 |
 | MERGEADO_PO (mergeadas pelo PO antes ou durante a sessao) | 10 |
-| DECISAO_HUMANA (aguarda PO, 7 atualmente abertas + 1 fechada externamente) | 8 |
+| DECISAO_HUMANA (7 abertas + 2 fechadas externamente) | 9 |
 | FECHAR (6 abertas + 2 fechadas externamente + 1 ja fechada #2424) | 9 |
-| **Total** | **44** |
+| **Total** | **46** |
+
+Nota: PR #2504 (merge desta sessao) incluido em MERGEAR. PR #2503 (nova) incluida em DECISAO_HUMANA.
+PR #2487 estava em DECISAO_HUMANA; foi fechado/mergeado externamente.
 
 ---
 
@@ -61,7 +64,7 @@
 
 ---
 
-### DECISAO_HUMANA (7 PRs) — Exigem Aprovacao do PO
+### DECISAO_HUMANA (7 PRs abertas) — Exigem Aprovacao do PO
 
 #### PR #2415 — fix(ci): P20 node --test runner
 - **Draft:** nao | **mergeable_state:** dirty | **Rule 8:** workflows x2
@@ -78,11 +81,14 @@
 - **Acao:** PO decidir: fechar e recriar com bugs corrigidos, ou corrigir na branch original
 
 #### PR #2443 — APROVACAO REQUERIDA: Fase B completa
-- **Draft:** sim | **mergeable_state:** clean
-- **Acao:** PO revisar APROVACAO_FASE_B_IMPACTO.md e converter de draft se aprovado
+- **Draft:** nao (convertido de draft durante esta sessao) | **mergeable_state:** clean
+- **REGRA #10:** branch de outra sessao | **Titulo:** explicito 'APROVACAO REQUERIDA'
+- **Test-merge CLEAN** (base dcaa20da, PR head 0fd538e8): 1 arquivo APROVACAO_FASE_B_IMPACTO.md
+- **Acao:** PO revisar APROVACAO_FASE_B_IMPACTO.md e mergear se aprovado
 
 #### PR #2449 — chore(migrations): E99 repair-only sync
-- **Draft:** sim | **mergeable_state:** dirty | **Rule 8:** supabase/migrations/ x2
+- **Draft:** sim | **Rule 8:** supabase/migrations/ x2
+- **Test-merge CONFLICT** (base e0be76690): `supabase/MIGRATIONS_SYNC_LOG.md` conflita; 2 migrations SQL auto-merged
 - **Acao:** PO revisar migrations E99 repair-only + resolver conflito antes de aprovar
 
 #### PR #2469 — fix(ci): e2e-personalization E42
@@ -90,11 +96,12 @@
 - **REGRA #10:** branch de outra sessao | **Nota:** possivelmente supersedido pelo PR #2489 mergeado
 - **Acao:** PO verificar se conteudo foi absorvido pelo PR #2489. Fechar se redundante.
 
-#### PR #2487 — docs(ci): RELATORIO_CI Rev18 + PENDENCIAS Rev18
-- **Branch:** claude_05/nifty-sagan-r23gqh (session_01HW5obNKUFtUMbBdgUb94kY) | **Draft:** sim
-- **mergeable_state:** unknown | **behind main** (base f761938e, HEAD e91a36e3) | **Rule 8:** nenhum
+#### PR #2503 — docs(ci): RELATORIO_CI Rev21
+- **Branch:** claude/docs-relatorio-ci-rev21-20261025-0911 (session_01HW5obNKUFtUMbBdgUb94kY) | **Draft:** sim
+- **mergeable_state:** clean | **Rule 8:** nenhum (docs-only)
 - **REGRA #10:** branch de outra sessao
-- **Acao:** PO verificar se conteudo P43-P55 continua relevante dado PR #2489. Rebaseiar ou fechar.
+- **Test-merge CLEAN** (base e0be76690): RELATORIO_CI.md auto-merged sem conflitos
+- **Acao:** PO converter de draft e mergear — ou deixar, pois PR #2504 ja carregou estado mais recente
 
 ---
 
@@ -131,6 +138,12 @@
 - **17 jobs:** todos success (Gate 0, 0.5, 1 com 42 steps, 2, 2.5, 3, 4, 5, 5.5, 6, E23x2, E40x2, Final)
 - **Baseline:** 429 testes, 0 falhas — **inalterada**
 
+### PR #2504 (7 merge desta sessao)
+- **SHA merge:** `e0be76690381d15a4e7d0c2d728d05d8abb533c4`
+- **Gate Final:** run #40179146830 — **conclusion=success**
+- **Conteudo:** test-merges #2415/#2432/#2443/#2469 (dossiers) + deliverables rev8
+- **Baseline:** 429 testes, 0 falhas — **inalterada**
+
 ---
 
 ## Diffs Lidos na Janela Atual
@@ -143,16 +156,17 @@
 | #2419 | check-security-definer-acl.mjs | Rule 8 + REGRA #10 + draft | FECHAR |
 | #2420 | supabase/migrations/20261019*.sql, rollbacks/ | Rule 8 + REGRA #10 + draft | FECHAR |
 | #2422 | check-secrets-inventory.mjs | Rule 8 + REGRA #10 + draft | FECHAR |
-| #2428 | .gitleaks.toml (10 allowlist entries) | Rule 8 + REGRA #10 + draft | DECISAO_HUMANA |
+| #2428 | .gitleaks.toml (+22/-1) | Rule 8 §2.3 + draft; test-merge CLEAN e0be76690 | DECISAO_HUMANA |
 | #2432 | probe_e184_legacy_refs.sql (39 linhas) | CI FAILURE + REGRA #10 + 4 bugs | DECISAO_HUMANA |
-| #2443 | APROVACAO_FASE_B_IMPACTO.md | REGRA #10 + draft + titulo explicito | DECISAO_HUMANA |
-| #2449 | 2 migrations E99 repair-only | Rule 8 + REGRA #10 + draft | DECISAO_HUMANA |
+| #2443 | APROVACAO_FASE_B_IMPACTO.md (+218) | REGRA #10 + titulo explicito; test-merge CLEAN | DECISAO_HUMANA |
+| #2449 | 2 migrations E99 repair-only + MIGRATIONS_SYNC_LOG | Rule 8 §2.2 + draft; test-merge CONFLICT | DECISAO_HUMANA |
 | #2452 | analise-prs/dossies/PR-2441.md | REGRA #10 + draft | FECHAR |
-| #2469 | e2e-personalization.yml | Rule 8 + REGRA #10 | DECISAO_HUMANA |
+| #2469 | e2e-personalization.yml (+2/-1) | Rule 8 + REGRA #10; test-merge CLEAN | DECISAO_HUMANA |
 | #2471 | diff vazio (CONFLITO) | REGRA #10 + draft + CONFLITO | FECHAR (fechada externamente) |
 | #2480 | MIGRATIONS_SYNC_LOG.md, baseline_depois.json | REGRA #10 + draft | DECISAO_HUMANA (fechada externamente) |
 | #2484 | PENDENCIAS.md (+2/-962 linhas) | REGRA #10 + dirty + delecao massiva | FECHAR (fechada externamente) |
-| #2487 | PENDENCIAS.md (+295/-47), RELATORIO_CI.md (+30/-20) | REGRA #10 + draft + behind main | DECISAO_HUMANA |
+| #2487 | PENDENCIAS.md (+295/-47), RELATORIO_CI.md (+30/-20) | REGRA #10 + draft + behind main | DECISAO_HUMANA (fechada externamente) |
+| #2503 | RELATORIO_CI.md (+48/-27) | REGRA #10 + draft; test-merge CLEAN e0be76690 | DECISAO_HUMANA |
 
 ---
 
@@ -166,6 +180,7 @@
 | #2490 | deliverables rev6 | a681fe0e | #40173768324 | success | 07:43:00Z |
 | #2498 | deliverables rev6.1 | eee389ca | #40174781954 | success | 08:12:00Z |
 | #2501 | deliverables rev7 | e91a36e3 | #40176836399 | success | 08:29:41Z |
+| #2504 | deliverables rev8 (test-merges #2415/#2432/#2443/#2469) | e0be7669 | #40179146830 | success | 09:00:00Z |
 
 ---
 
@@ -191,14 +206,14 @@
 
 | Criterio | Evidencia |
 |---|---|
-| Diffs lidos (100%) | 16 PRs abertas lidas (tabela acima) |
-| CI-vs-baseline apos merge | Gate Final run #40176836399 (e91a36e3) = success — 17/17 jobs |
-| prs.csv | analise-prs/prs.csv — 44 PRs |
-| progresso.json | analise-prs/progresso.json — 44 PRs, 13 abertas, 6 merges |
+| Diffs lidos (100%) | 17 PRs abertas lidas (tabela acima; #2503 adicionado esta sessao) |
+| CI-vs-baseline apos merge | Gate Final run #40179146830 (e0be76690) = success |
+| prs.csv | analise-prs/prs.csv — 45 PRs |
+| progresso.json | analise-prs/progresso.json — 45 PRs, 13 abertas, 7 test-merges, 7 merges autonomos |
 | prs.json | analise-prs/prs.json — 13 PRs abertas |
-| RELATORIO_PRS.md | Este arquivo — rev8 |
+| RELATORIO_PRS.md | Este arquivo — rev9 |
 | Baseline por nome de teste | analise-prs/baseline/vitest-per-test-name.txt — CI run #40150209361 |
 | Verificacao de producao | Migrations: 0 pendentes; Edge functions: 0 pendentes |
 | Regras de negocio | analise-prs/regras-de-negocio.md — entregue em PR #2479 |
-| Outras escritas no GitHub | nenhuma alem dos 6 squash merges |
-| Worktrees criados | nenhum |
+| Test-merges em worktrees isolados | #2415/#2432/#2443/#2469 (base dcaa20da) + #2428/#2449/#2503 (base e0be76690) |
+| Outras escritas no GitHub | nenhuma alem dos 7 squash merges |
