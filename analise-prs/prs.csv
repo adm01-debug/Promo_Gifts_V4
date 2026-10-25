@@ -6,14 +6,14 @@ pr_number,title,author,draft,state,mergeable_state,verdict,sha_merge,ci_run,note
 2419,fix(security): audit_security_definer_acl pg_get_userbyid,Claude,true,open,dirty,FECHAR,,,Branch órfã (NO_MERGE_BASE) + draft + Rule 8 check-security-definer-acl.mjs
 2420,fix(rollback): header preflight + rollback script 20261024163500,Claude,true,open,dirty,FECHAR,,,Branch órfã (NO_MERGE_BASE) + draft + Rule 8 supabase/rollbacks/
 2422,fix(ts+docs): ProductFormFullscreen + MIGRATIONS_SYNC_LOG,Claude,true,open,dirty,FECHAR,,,Branch órfã (NO_MERGE_BASE) + draft; conteúdo correto mas merge impossível
-2424,feat(db): migration SECURITY DEFINER acl + db-schema-drift-check,Claude,true,open,blocked,DECISÃO_HUMANA,,,"Rule 8: .github/workflows/db-schema-drift-check.yml + supabase/migrations/ SECURITY DEFINER; draft:true"
+2424,feat(db): migration SECURITY DEFINER acl + db-schema-drift-check,Claude,true,closed,na,FECHAR,,,PR fechado (state=closed merged=false); Rule 8 + draft — FECHAR
 2426,feat(qa): probe E184 detecta refs legadas ao projeto proibido,Claude,false,merged,merged,MERGEAR,7f5d410a,sem_run_no_sha_merge_cobertura_transitiva_bfd9b50a,1 arquivo QA qa/migrations-draft/
-2427,fix(cors+webhooks): cors.ts wildcard + webhook-schemas,Claude,false,merged,merged,MERGEAR,26641b0a,40128149143,cors.ts + webhook-schemas; edge fn deployed run #40146529580
+2427,fix(cors+webhooks): cors.ts wildcard + webhook-schemas,Claude,false,merged,merged,MERGEAR,26641b0a,40131626430,cors.ts + webhook-schemas; Gate Final run #40131626430 conclusion=failure (falhas pré-existentes em main antes da sessão)
 2428,fix(gitleaks): allowlist FPs de testes + placeholders de docs,Claude,true,open,clean,DECISÃO_HUMANA,,,"Rule 8: .gitleaks.toml (secrets policy); draft:true; mergeable limpo"
 2432,feat(qa): probe E184 legacy refs (duplicata),devin/Codex,false,open,clean,FECHAR,,,Conteúdo já em main via PR #2426 (SHA 7f5d410a); duplicata direta
 2434,docs(analise-prs): RELATORIO + dossies #2414-#2428,Claude,false,merged,merged,MERGEAR,53ba69b5,sem_run_no_sha_merge_cobertura_transitiva_bfd9b50a,docs-only analise-prs/
-2435,fix(ci): Zod v4 repair UUIDs + vitest + gitleaks + drafts README,Claude,true,open,dirty,DECISÃO_HUMANA,,,"Rule 8: .github/workflows/ci-security-drift.yml + .gitleaks.toml; draft:true + conflito"
-2436,docs(analise-prs): deliverables update baseline+dossies,Claude,false,merged,merged,MERGEAR,4c8193b9,40128149143,docs analise-prs/; CI verde run #40128149143 no SHA exato
+2435,fix(ci): Zod v4 repair UUIDs + vitest + gitleaks + drafts README,Claude,false,merged,merged,DECISÃO_HUMANA→MERGEADO_PO,50f4f599,,"Rule 8: CI/workflows + .gitleaks.toml; mergeado pelo PO em 2026-10-25T03:18Z; merge_commit_sha 50f4f599729da64e9956b5b3c1a231b4749b8b10"
+2436,docs(analise-prs): deliverables update baseline+dossies,Claude,false,merged,merged,MERGEAR,4c8193b9,sem_run_docs_only,docs-only analise-prs/; sem CI (paths-ignore: docs/** em deploy-gates.yml — comportamento correto)
 2437,(outra sessão — branch diferente),Claude,false,merged,merged,MERGEAR,9b23fb64,40150209361,mergeado por outra sessão
 2438,(outra sessão — branch diferente),Claude,false,merged,merged,MERGEAR,c8994f17,40150209361,mergeado por outra sessão
 2439,docs(analise-prs): deliverables ci-per-test-name + dossies,Claude,false,merged,merged,MERGEAR,b3c8f2f3,40150209361,docs analise-prs/; CI verde run #40150209361 (SHA eb7a92479)
@@ -24,5 +24,13 @@ pr_number,title,author,draft,state,mergeable_state,verdict,sha_merge,ci_run,note
 2449,fix(db): E99 repair-only update_company_fields SECURITY DEFINER,Claude,true,open,dirty,DECISÃO_HUMANA,,,"Rule 8: supabase/migrations/ SECURITY DEFINER; draft:true + conflito"
 2450,docs: RELATORIO_CI.md rev5 + PENDENCIAS.md rev12,Claude,false,merged,merged,DECISÃO_HUMANA→MERGEADO_PO,d804cafa,,"Mergeado pelo PO; estava draft"
 2451,(título não disponível — PR fechado),unknown,true,closed,na,FECHAR,,,PR fechado sem merge pelo autor antes desta sessão
-2452,(draft + conflito com main),unknown,true,open,dirty,FECHAR,,,Draft:true + mergeable_state:dirty; sem autor ativo
-2455,docs: RELATORIO_CI.md rev7 + PENDENCIAS.md rev13,Claude,false,merged,merged,MERGEAR,bfd9b50a,40151693979,docs-only; CI run #40151693979 SUCCESS confirmado (main HEAD atual)
+2452,fix(analise-prs): remove prefixo supabase/migrations/ nos nomes de arquivo,Claude,true,open,unknown,FECHAR,,,Draft:true + branch outra sessão (session_01HW5obNKUFtUMbBdgUb94kY); REGRA #10
+2455,docs: RELATORIO_CI.md rev7 + PENDENCIAS.md rev13,Claude,false,merged,merged,MERGEAR,bfd9b50a,40151693979,docs-only; CI run #40151693979 SUCCESS confirmado (main HEAD anterior)
+2457,fix(test): corrige 14 falhas pós-bump Zod v4.6.6 — UUIDs + timezone,Claude,false,merged,merged,MERGEAR,fcd4fb8d,,Mergeado por outra sessão (session_01Nc1nb7PArDnixYvvZssnKy); 2026-10-25T03:51Z
+2458,docs(auditoria-supabase): atualiza correcoes.md — remove refs obsoletas,Claude,true,open,clean,FECHAR,,,Draft:true + branch outra sessão (session_01JPgV7FqkG4UuFBJWiJa9FB); REGRA #10
+2464,fix(ci): Gate 5.5 timeout 3→5min — corrige Gate Final cancelled em 1b69cfe7,Claude,false,merged,merged,DECISÃO_HUMANA→MERGEADO_PO,1e07e298,40159442659,"Rule 8: .github/workflows/deploy-gates.yml; mergeado pelo PO; run #40159442659 SUCCESS"
+2465,docs(ci): RELATORIO_CI rev11 + PENDENCIAS P17/P22/P33,Claude,true,open,unknown,FECHAR,,,Draft:true + branch outra sessão (session_01HW5obNKUFtUMbBdgUb94kY); REGRA #10; docs-only PENDENCIAS/RELATORIO_CI
+2466,docs(analise-prs): deliverables rev2 — 35 PRs analisados,Claude,true,open,behind,DECISÃO_HUMANA,,,Draft:true — branch desta sessão (claude_05/youthful-ride-vcdchy); Vercel não é required check (strict:false); PO converte draft e faz squash-merge
+2469,fix(ci): e2e-personalization E42 skip ratio gate condicional ao auth,Claude,true,open,unknown,DECISÃO_HUMANA,,,"Rule 8: .github/workflows/e2e-personalization.yml; draft:true; branch outra sessão (session_01HW5obNKUFtUMbBdgUb94kY); REGRA #10"
+2470,fix(test): corrige expectativas de timezone UTC→BRT em date-utils.test.ts,Claude,false,closed,merged,DECISÃO_HUMANA→MERGEADO_PO,12c9605e,,"REGRA #10 (branch outra sessão session_01Nc1nb7PArDnixYvvZssnKy) impediu merge autônomo; mergeado pelo PO 2026-10-25T05:11Z; 1 arquivo: tests/unit/date-utils.test.ts"
+2471,docs(ci): RELATORIO_CI rev9-13 + PENDENCIAS P16/P18/P19 + migration-refs-baseline,Claude,true,open,dirty,FECHAR,,,"draft:true + dirty (CONFLITO) + REGRA #10 (branch outra sessão session_01Nc1nb7PArDnixYvvZssnKy); 3 arquivos docs"
