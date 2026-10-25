@@ -1,24 +1,28 @@
-number,title,draft,mergeable,mergeable_state,rule8_trigger,cherry,singu_refs,verdict,sha_merge
-2414,"chore(análise): dossiês completos + relatório final de branches (Fase 2)",false,true,clean,,squash merge,0 (doc-only),MERGEADO,7061adab51e13ff2a10c0737014aef20b72b010d
-2415,"fix(ci): P20 — exclui check-file-size-baseline.test.mjs do Vitest; roda via node --test",false,true,behind,CI/workflows,6 únicos,0,DECISÃO HUMANA,
-2417,"fix(cors+ci): CORS wildcard via String.fromCharCode + gitleaks allowlist",true,false,dirty,CI/workflows+edge,sem merge base,0,DECISÃO HUMANA,
-2418,"fix(gates): gitleaks allowlist FPs + deploy-gates fix",true,false,dirty,CI/workflows,sem merge base,0,DECISÃO HUMANA,
-2419,"fix(security): audit_security_definer_acl — pg_get_userbyid substituindo cast regrole",true,false,dirty,security gate,sem merge base,0,DECISÃO HUMANA,
-2420,"fix(rollback): header preflight + rollback script para 20261024163500",true,false,dirty,migrations,sem merge base,0,DECISÃO HUMANA,
-2422,"chore(sync): MIGRATIONS_SYNC_LOG + PGPORT no SEGREDOS + fix zodResolver cast",true,false,dirty,,sem merge base,0,DRAFT+DIRTY,
-2424,"feat(db): migration 20261024163500 + db-schema-drift-check workflow",true,,n/v,DDL+CI,3 únicos,0,DECISÃO HUMANA,
-2426,"chore(qa): probe E184 — varre catálogo vivo por refs legadas pqpdolkae",,,,,,,MERGEADO,7f5d410a233246c94ee05bc0be6c10be11a3f126
-2427,"fix(cors): CORS_WILDCARD_ORIGIN + magazine-reader-state-read no webhook-schemas",,,,,,,MERGEADO,26641b0a0cb8855f45755cd4734af4c53d52ba5d
-2428,"fix(gitleaks): allowlist — FPs de testes + placeholders de docs",true,true,behind,security policy,1 único,0,DECISÃO HUMANA,
-2434,"chore(análise): relatório completo de PRs abertos — 11/11 analisados",,,,,,,MERGEADO,53ba69b53fd8a8a021e13feb3af485f4ee4de73b
-2436,"chore(análise): atualiza deliverables — 3 merges realizados",,,,,,,MERGEADO,4c8193b9b655694635956a2c5702af33051164ad
-2432,"feat(qa): probe E184 — detecta refs legadas ao projeto proibido",false,,,,,0,JÁ IMPLEMENTADA,
-2435,"fix(ci): Zod v4 repair — UUIDs + vitest + gitleaks + drafts README",true,,,"CI/workflows+security policy",,0,DECISÃO HUMANA,
-2437,"fix(ci): Zod v4 repair — UUIDs + vitest + gitleaks (v2)",true,,,"security policy (.gitleaks.toml)",,0,DECISÃO HUMANA,
-2438,"chore(ci): RELATORIO_CI + PENDENCIAS — docs pós-Zod v4",,,,,,0,MERGEADO_OUTRA_SESSAO,c8994f17d0fea2f0e5ec3e3ffd28e94386aed551
-2439,"chore(análise): deliverables Fase 2 + dossies #2432/#2435 + baseline ci-per-test-name",false,,,,,0,MERGEADO,b3c8f2f33ece1d0da87a841396ecb5dcc8da0db8
-2441,"feat(db+ef): FASE B — P02/P08/P19 migrations + send-notification idempotency",false,true,behind,"DDL/migrations+edge function",153+/16-,0,DECISÃO HUMANA,
-2443,"APROVAÇÃO REQUERIDA: P06 / P09 / P14 / P15 / P03_security_definer — FASE B auditoria Supabase",true,true,behind,"security decisions+draft",218+/0-,0,DECISÃO HUMANA,
-2445,"fix(cron): FASE B P01 — cron auth header para image-dimensions-backfill",false,,,"DDL/migrations (cron.alter_job)",,0,DECISÃO HUMANA,
-2449,"fix(db): E99 repair-only — update_company_fields security definer",false,,,"DDL/migrations (SECURITY DEFINER)",,0,DECISÃO HUMANA,
-2450,"docs: RELATORIO_CI.md rev5 — tabela de prova de conclusão pós-merge PR #2438",true,,blocked,,62+/11-,0,DRAFT+BLOQUEADA,
+number,title,draft,worktree_test,rule8_trigger,verdict,sha_merge
+2414,"chore(análise): dossiês completos + relatório final de branches (Fase 2)",false,N/A (mergeado),,MERGEADO,7061adab51e13ff2a10c0737014aef20b72b010d
+2415,"fix(ci): P20 — exclui check-file-size-baseline.test.mjs do Vitest; roda via node --test",false,CONFLITO (PENDENCIAS.md RELATORIO_CI.md),CI/workflows,DECISÃO HUMANA,
+2417,"fix(cors+ci): CORS wildcard via String.fromCharCode + gitleaks allowlist",true,NO_MERGE_BASE (orphan),CI/workflows+edge,DECISÃO HUMANA,
+2418,"fix(gates): gitleaks allowlist FPs + deploy-gates fix",true,NO_MERGE_BASE (orphan),CI/workflows+gitleaks,DECISÃO HUMANA,
+2419,"fix(security): audit_security_definer_acl — pg_get_userbyid substituindo cast regrole",true,NO_MERGE_BASE (orphan),security gate,DECISÃO HUMANA,
+2420,"fix(rollback): header preflight + rollback script para 20261024163500",true,NO_MERGE_BASE (orphan),migrations+rollbacks,DECISÃO HUMANA,
+2422,"chore(sync): MIGRATIONS_SYNC_LOG + PGPORT no SEGREDOS + fix zodResolver cast",true,NO_MERGE_BASE (orphan),,DRAFT+DIRTY,
+2424,"feat(db): migration 20261024163500 + db-schema-drift-check workflow",true,NÃO TESTADO,DDL+CI,DECISÃO HUMANA,
+2426,"chore(qa): probe E184 — varre catálogo vivo por refs legadas pqpdolkae",false,N/A (mergeado),,MERGEADO,7f5d410a233246c94ee05bc0be6c10be11a3f126
+2427,"fix(cors): CORS_WILDCARD_ORIGIN + magazine-reader-state-read no webhook-schemas",false,N/A (mergeado),,MERGEADO,26641b0a0cb8855f45755cd4734af4c53d52ba5d
+2428,"fix(gitleaks): allowlist — FPs de testes + placeholders de docs",true,MERGE LIMPO,security policy (.gitleaks.toml),DECISÃO HUMANA,
+2432,"feat(qa): probe E184 — detecta refs legadas ao projeto proibido",false,MERGE LIMPO (JÁ EM MAIN),,JÁ IMPLEMENTADA,
+2434,"chore(análise): relatório completo de PRs abertos — 11/11 analisados",false,N/A (mergeado),,MERGEADO,53ba69b53fd8a8a021e13feb3af485f4ee4de73b
+2435,"fix(ci): Zod v4 repair — UUIDs + vitest + gitleaks + drafts README",true,CONFLITO (PENDENCIAS.md RELATORIO_CI.md dossiê),CI/workflows+gitleaks,DECISÃO HUMANA,
+2436,"chore(análise): atualiza deliverables — 3 merges realizados",false,N/A (mergeado),,MERGEADO,4c8193b9b655694635956a2c5702af33051164ad
+2437,"fix(ci): Zod v4 repair — UUIDs + vitest + gitleaks + drafts README (v2)",false,N/A (mergeado),,MERGEADO,9b23fb642a3d7c28ef56add5f5fbbe25c6c5cbb5
+2438,"chore(ci): RELATORIO_CI + PENDENCIAS — docs de auditoria pós-Zod v4",false,N/A (mergeado),,MERGEADO,c8994f17d0fea2f0e5ec3e3ffd28e94386aed551
+2439,"chore(análise): deliverables Fase 2 + dossies #2432/#2435 + baseline ci-per-test-name",false,N/A (mergeado),,MERGEADO,b3c8f2f33ece1d0da87a841396ecb5dcc8da0db8
+2441,"feat(db+ef): FASE B — P02/P08/P19 migrations + send-notification idempotency",false,N/A (mergeado pelo PO),,MERGEADO,90c6492bce94b3a7c73e66d57f0f025cf5ed33ce
+2443,"APROVAÇÃO REQUERIDA: P06/P09/P14/P15/P03_security_definer — FASE B",true,MERGE LIMPO,security decisions+draft,DECISÃO HUMANA,
+2445,"fix(cron): FASE B P01 — cron auth header para image-dimensions-backfill",false,N/A (mergeado pelo PO),,MERGEADO,8eeeca9b3f4f8e1a3b2c5d6e7f8a9b0c1d2e3f4a
+2447,"chore(análise): evidências finais — progresso.json META_CUMPRIDA + CI/vitest baseline",true,CONFLITO RESOLVIDO (PR-2441.md),,NOSSA PR,
+2449,"fix(db): E99 repair-only — update_company_fields security definer",false,CONFLITO (MIGRATIONS_SYNC_LOG.md),DDL/migrations SECURITY DEFINER,DECISÃO HUMANA,
+2450,"docs: RELATORIO_CI.md rev5 — tabela de prova de conclusão pós-merge PR #2438",false,N/A (mergeado pelo PO),,MERGEADO,d804cafac4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9
+2451,"fix(db): E100 migrations FASE B — PRs pendentes de aprovação PO",false,MERGE LIMPO,DDL/migrations,DECISÃO HUMANA → FECHADO,
+2452,"fix(docs): remove prefixo supabase/migrations/ em PR-2441.md — Gate 1.3",true,CONFLITO (PR-2441.md),,DRAFT+BLOQUEADA,
+2455,"docs(ci): RELATORIO_CI.md rev7 + PENDENCIAS.md rev13 — evidência Gate Final PR #2454",false,MERGE LIMPO,,MERGEADO,bfd9b50a5b87d2ef77f116bf53a931d7a4075de7
