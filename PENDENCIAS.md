@@ -1,33 +1,22 @@
 # Pendências CI — Bloqueios Externos
 
-**Atualizado em:** 2026-10-25 (rev 24 — P2b run atualizado para #40189082464; P19 CORRIGIDO; RELATORIO_CI.md criado)  
+**Atualizado em:** 2026-10-25 (rev 25 — P1/P21/P44 AUTO-RESOLVIDO; P59 (Vercel) e P60 (ci-security-drift step 27 E2E) adicionados)  
 **Branch de referência:** `claude_05/nifty-sagan-r23gqh`  
-**Commit de referência (main):** `801e38a5` — docs: atualização pós-merge (Gate Final success confirmado)
+**Commit de referência (main):** `18755518` — docs(analise-prs): deliverables rev16
 
 ---
 
-## P1 — Release Please: "Resource not accessible by integration"
+## P1 — Release Please: "Resource not accessible by integration" ✅ AUTO-RESOLVIDO
 
 **Workflow:** `.github/workflows/release-please.yml`  
-**Run mais recente:** [#40124949325](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40124949325) (commit `71d624e8`)  
-**Conclusão:** `failure`  
-**Categoria:** Restrição de permissão — PAT ausente (não corrigível via YAML)
+**Run mais recente:** [#40200678489](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40200678489) (commit `c8967d1c`)  
+**Conclusão:** `success` ✅ — AUTO-RESOLVIDO em 2026-10-25  
+**Categoria:** Restrição de permissão — foi transitória
 
-**Erro exato:**
-```
-release-please failed: Resource not accessible by integration
-https://docs.github.com/rest/releases/releases#create-a-release
-```
+**Causa raiz (histórica):**  
+O `release-please-action` tentava criar releases via `POST /repos/{owner}/{repo}/releases`. Com `GITHUB_TOKEN` padrão sem escopo efetivo `contents: write` para releases, o job falhava. O run #40200678489 em `c8967d1c` concluiu com `success` — o issue foi transitório e se resolveu automaticamente sem alteração de configuração.
 
-**Causa raiz:**  
-O `release-please-action` tenta criar a release via `POST /repos/{owner}/{repo}/releases`. O `GITHUB_TOKEN` padrão de Actions não tem permissão para criar releases quando "Allow GitHub Actions to create and approve pull requests" está desativado na organização, ou o token não tem escopo `contents: write` efetivo para releases.
-
-**Ação necessária pelo PO:**
-1. Criar PAT clássico com escopos `repo` e `workflow`
-2. Adicionar como segredo `RELEASE_PLEASE_TOKEN` em Settings → Secrets → Actions
-3. **Ou** habilitar em Settings → Actions → General → "Allow GitHub Actions to create and approve pull requests"
-
-**Impacto no negócio:** Releases e CHANGELOGs não são gerados automaticamente. Versões precisam ser criadas manualmente.
+**Impacto no negócio:** Resolvido. Releases e CHANGELOGs são gerados automaticamente.
 
 ---
 
@@ -809,6 +798,61 @@ O agente Claude empurrou o commit `7fc20213` ("fix(gate1.3): remove entradas de 
 **Contexto:** O push direto foi uma medida emergencial para corrigir Gate 1.3 que estava bloqueando o Gate Final (o único required check). A regra correta é sempre usar PRs — esta violação está documentada aqui para rastreabilidade.
 
 **Resolução automática esperada:** O próximo commit via PR merge passará o sentinel (ele verifica apenas commits do push atual, não histórico).
+
+---
+
+## P59 — Vercel: projeto fantasma `promo-gifts-reconciliation-integrity-20260915`
+
+**Serviço:** Vercel  
+**Projeto:** `promo-gifts-reconciliation-integrity-20260915` (`prj_W1Zdi6BQWkAwQx5VJjpSNlZubeok`)  
+**Categoria:** Infra — projeto fantasma criado por incidente (REGRA #11)  
+
+**Causa:**  
+Em 2026-09-15, um agente rodou `vercel link` dentro de um worktree em `/tmp/promo-gifts-reconciliation-integrity-20260915` sem herdar `.vercel/project.json`. Isso criou um segundo projeto Vercel conectado ao mesmo repositório, causando builds duplicados em todo push.
+
+**Ação necessária pelo PO:**  
+Deletar o projeto `promo-gifts-reconciliation-integrity-20260915` em https://vercel.com/juca1 para eliminar builds duplicados.
+
+**Impacto no negócio:** Cada push dispara 2 builds Vercel (1 canônico + 1 fantasma). Dobro de custo de build + confusão nos logs de deploy.
+
+---
+
+## P60 — CI Security & Drift Checks: step 27 E2E públicos timeout (pré-existente)
+
+**Workflow:** `.github/workflows/ci-security-drift.yml`  
+**Run mais recente com falha:** [#40198674547](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40198674547) (commit `a29b3a19`)  
+**Conclusão:** `failure`  
+**Job:** `quality-gate` → step 27 "Run E2E Critical Tests — specs autenticados"  
+**Categoria:** E2E autenticado sob projeto Playwright público sem storageState — timeout estrutural
+
+**Erros exatos (run #40198674547):**
+```
+[chromium-public] e2e/catalog.spec.ts — 6 testes falharam
+[chromium-public] e2e/kit-builder.spec.ts — 4 testes falharam
+
+locator.click: Test timeout of 120000ms exceeded.
+waiting for locator('[data-testid="wizard-step-box"]')
+  at e2e/kit-builder.spec.ts:33
+  at e2e/kit-builder.spec.ts:69
+```
+
+**Causa raiz confirmada (evidência de código-fonte):**
+
+1. Step 27 em `.github/workflows/ci-security-drift.yml:154` usa `--project=chromium-public` (sem `storageState`) para specs que chamam `loginAs()`:
+   ```yaml
+   run: npx playwright test --project=chromium-public e2e/catalog.spec.ts e2e/kit-builder.spec.ts
+   ```
+2. `loginAs()` (`e2e/helpers/auth.ts:194`) faz login via UI quando não há `storageState`. Timeout UI em CI: 75s (`process.env.CI ? 75_000 : 20_000`).
+3. Com login (~38-75s) + navegação + espera de `wizard-step-box`, o timeout total de 120s por teste é insuficiente.
+4. A `loginAs()` em `e2e/helpers/auth.ts:212` lança `throw new Error("[loginAs] E21...")` se credenciais ausentes — confirmando que `E2E_USER_EMAIL`/`E2E_USER_PASSWORD` ESTÃO configurados no repo e o step roda de fato.
+5. `wizard-step-box` existe no UI mas não aparece dentro do timeout restante após login no runner CI (sem cache de storageState).
+
+**Pré-existente:** Sim — escondida porque vitest (step 21) falhava antes do fix P19 (PR #2514), tornando step 27 SKIPPED em todos os runs anteriores. Revelada após PR #2514 corrigir P19 e o vitest passar pela primeira vez.
+
+**Correção possível (não urgente — NÃO é required check no Gate Final):**  
+Usar `--project=chromium-authed` no step 27, com step anterior rodando `auth.setup.ts` para gerar `storageState.json`. Isso elimina o login UI por teste (~75s → ~0s por teste) e libera o timeout de 120s para a asserção.
+
+**Impacto no Gate Final:** Nenhum — `ci-security-drift.yml` NÃO é required check no Gate Final (`deploy-gates.yml`). Gate Final permanece verde.
 
 ---
 

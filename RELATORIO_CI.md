@@ -103,7 +103,8 @@ timeout-minutes: 90  # P19b: vitest roda 1265 arquivos com maxWorkers:2 (~45-60m
 | `c5bf465a` (PR #2514 merge) | [#40193146183](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40193146183) | ✅ success | Deploy Gates green |
 | `3affff6d` (PR #2517 merge) | [#40195302647](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40195302647) | ✅ success | Gate Final green |
 | `416192e7` (PR #2519 merge) | [#40196412204](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40196412204) | ⚠️ cancelled | Cancelado pela concurrency ao mergear PR #2522 |
-| `a29b3a19` (PR #2522 merge) | [#40198674547](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40198674547) | ⏳ pendente² | ci-security-drift run com timeout=90min |
+| `a29b3a19` (PR #2522 merge) | [#40198674547](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40198674547) | ❌ failure (P60) | step 27 — 10 E2E `[chromium-public]` timeout (catalog + kit-builder); P19 corrigido, P60 pré-existente revelado |
+| `c8967d1c` (PR #2525 merge) | [#40200678544](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40200678544) | ⏳ in_progress | ci-security-drift com timeout=90min; step 27 também falhará por P60 |
 
 ---
 
