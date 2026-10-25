@@ -1006,5 +1006,22 @@ Tests:      3 failed | 24732 passed | 1127 skipped | 24 todo (25886)
 **Ação necessária:** Verificar disponibilidade do serviço em produção se persistir.
 
 ---
+---
 
-*Atualizado pela sessão Claude Code — https://claude.ai/code/session_01HW5obNKUFtUMbBdgUb94kY*
+## P43 — Branch Protection Sentinel: regressão no commit `be1c0dac` (não-required)
+
+**Workflow:** `.github/workflows/branch-protection-sentinel.yml`  
+**Run:** [#40169142350](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40169142350) — `failure` (commit `be1c0dac`)  
+**Categoria:** Sentinel de padrão de commit — **NÃO é required check** no Gate Final
+
+**Causa exata:** Squash-merge do PR #2471 feito com `commit_title` customizado sem incluir `(#2471)` no final. Título gerado: `docs(ci): RELATORIO_CI Rev13 + PENDENCIAS.md P4 inventário action_required`. O sentinel rejeita pushes para `main` cujos commits não terminem com `(#NNN)`, `Merge pull request #NNN`, ou sejam de bots oficiais. SHA `be1c0dac` falha este check.
+
+**Impacto no Gate Final:** Nenhum — Branch Protection Sentinel não é required check. O Gate Final (run [#40169142358](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40169142358)) para SHA `be1c0dac` = **`conclusion: success`** (2026-10-25T06:33:57Z).
+
+**Causa raiz do erro de processo:** `github_merge_pull_request` com `commit_title` customizado sem `(#NNN)` no final. Futuros merges via UI ou sem `commit_title` explícito não reproduzem este problema.
+
+**Ação PO necessária:** Nenhuma — Gate Final não é afetado.
+
+---
+
+*Atualizado pela sessão Claude Code — https://claude.ai/code/session_01Nc1nb7PArDnixYvvZssnKy*
