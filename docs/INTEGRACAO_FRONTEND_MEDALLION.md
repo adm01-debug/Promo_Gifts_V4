@@ -50,7 +50,7 @@ teste `tests/lib/gold-relations.test.ts`.
 |---|---|---|
 | `kit_component_media` (kit-components/api.ts, rest-native whitelist) | nome bridge-era; a tabela real é **`component_media`** (FK `component_id`) | call-sites e whitelists corrigidos |
 | `device_login_notifications` (usePushNotifications realtime; edge `detect-new-device` INSERE nela) | tabela nunca existiu no SSOT — escrita E subscription mortas | **migration 183000** cria tabela + RLS select-own + realtime |
-| `check_auth_config_status` (RPC em auth-audit.ts) | RPC não existe; código já degrada graciosamente e documenta a pendência | mantido (criar a RPC exige definição de semântica de auditoria — fora de escopo) |
+| `check_auth_config_status` (RPC em auth-audit.ts) | RPC não existe; módulo sem consumidores | `auth-audit.ts` removido (SB-015); RPC não será criada |
 | `webhook_events`, `system_error_logs`, `e2e_cleanup_audit`, `bitrix_deals` | referenciadas apenas em edge functions/testes, não no frontend | sem ação (fora do escopo frontend) |
 | `customers`, `contacts`, `companies` | vivem no projeto CRM (via `crm-db-bridge`), não no SSOT | sem ação (caminho correto já é a bridge) |
 | `simulation_runs` | só aparece no types.ts gerado (stale) | sem ação de runtime |
@@ -163,8 +163,7 @@ select proname, has_function_privilege('authenticated', oid, 'EXECUTE')
    Regenerar com `supabase gen types typescript --project-id doufsxqlfjyuvxuezpln`
    e migrar `untypedFrom()` → `supabase.from()` progressivamente
    (ver aviso em `src/lib/supabase-untyped.ts`).
-2. **`check_auth_config_status`**: criar a RPC com semântica definida pelo time
-   de segurança e remover o `@ts-expect-error` em `src/lib/auth/auth-audit.ts`.
+2. ~~**`check_auth_config_status`**~~: resolvido — `src/lib/auth/auth-audit.ts` (código morto) foi removido (SB-015).
 3. **Grants largos em views `vw_*`**: várias views de observabilidade têm
    grants de DML para `anon` (inócuos em views agregadas, mas sujos). Sugerido
    um passe de `REVOKE ALL … GRANT SELECT` em lote.

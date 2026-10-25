@@ -15,6 +15,7 @@ import { fileURLToPath } from 'node:url';
 import {
   detectBlockingDdl,
   detectNonTransactionalDdl,
+  detectSecurityDefinerWithoutPgTemp,
   evaluatePreflight,
   findMigrationFiles,
   hasRollbackHeader,
@@ -322,5 +323,21 @@ describe('CLI (sem credenciais Supabase)', () => {
     );
     expect(result.status).toBe(2);
     expect(result.stdout + result.stderr).toContain('inconclusive');
+  });
+});
+
+describe('detectSecurityDefinerWithoutPgTemp', () => {
+  const fn = (setPath) => `CREATE OR REPLACE FUNCTION public.f(a int)\n RETURNS int\n LANGUAGE sql\n SECURITY DEFINER\n ${setPath}\nAS $$ SELECT 1 $$;`;
+  it('aceita SET search_path TO com pg_temp (formato do pg_dump)', () => {
+    expect(detectSecurityDefinerWithoutPgTemp(fn("SET search_path TO 'public', 'pg_catalog', 'pg_temp'"))).toEqual([]);
+  });
+  it('aceita SET search_path = com pg_temp', () => {
+    expect(detectSecurityDefinerWithoutPgTemp(fn('SET search_path = pg_catalog, pg_temp'))).toEqual([]);
+  });
+  it('aceita SET search_path= sem espaço após o igual', () => {
+    expect(detectSecurityDefinerWithoutPgTemp(fn('SET search_path=public, pg_temp'))).toEqual([]);
+  });
+  it('acusa SET search_path TO sem pg_temp', () => {
+    expect(detectSecurityDefinerWithoutPgTemp(fn("SET search_path TO 'public'"))).toEqual(['public.f']);
   });
 });

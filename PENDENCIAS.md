@@ -1107,4 +1107,192 @@ A migration `20261022195616_fix_update_company_fields_security_definer_search_pa
 
 ---
 
+## P69 — Branch Protection Sentinel: commit do Lovable sem padrão aceito (comportamento correto do gate)
+
+**Workflow:** `.github/workflows/branch-protection-sentinel.yml`  
+**Run com falha:** [#40213684986](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40213684986) (commit `893d830`)  
+**Conclusão:** `failure`  
+**Categoria:** Comportamento correto do sentinel — commit do Lovable (bot) não obedece ao padrão de mensagem exigido
+
+**Erro exato (step do sentinel):**
+```
+1 commit(s) em push para main sem padrão aceito: 893d830
+```
+
+**Causa raiz:**  
+O commit `893d830` foi feito pelo Lovable (`gpt-engineer-app[bot]`) com mensagem fora do padrão aceito pelo `scripts/sentinel-check.sh`. O sentinel exige prefixo `feat|fix|test|refactor|chore|docs|ci|build` (REGRA #6). Commits genéricos do Lovable como "Changes" ou "Update" não obedecem ao padrão. O workflow está funcionando **corretamente** — detectou violação real.
+
+**Pré-existente:**  
+Comportamento recorrente toda vez que o Lovable commita diretamente em `main`. Cada push do Lovable sem mensagem padronizada aciona esta falha.
+
+**Ação necessária pelo PO:**  
+Nenhuma ação técnica possível do agente — o commit é do bot Lovable e está em `main`. Opções: (a) configurar o Lovable para usar mensagens padronizadas; (b) aceitar o ruído e monitorar; (c) criar um allowlist no sentinel para commits do `gpt-engineer-app[bot]`.
+
+**Impacto no Gate Final:** Nenhum — `branch-protection-sentinel.yml` NÃO é required check no Gate Final (`deploy-gates.yml`). Gate Final permanece verde.
+
+---
+
+## P70 — CI Security & Drift Checks: E2E kit-builder failing por data-testids ausentes (fix em PR #2561)
+
+**Workflow:** `.github/workflows/ci-security-drift.yml` (ou equivalente)  
+**Run com falha:** [#40223579888](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40223579888) (commit `7d3bd4ba`)  
+**Conclusão:** `failure`  
+**Categoria:** Regressão introduzida pelo Lovable — data-testids removidos dos componentes kit-builder
+
+**Jobs/testes afetados:**  
+4 testes em `e2e/kit-builder.spec.ts`:
+- "empty state" — não encontrou `[data-testid="kit-builder-container"]`
+- "edit kit name" — não encontrou `[data-testid="kit-name-input"]`
+- "full flow" — não encontrou `[data-testid="wizard-step-box"]`
+- "reset" — não encontrou `[data-testid="reset-kit-button"]`
+
+**Causa raiz:**  
+O Lovable removeu os 13 `data-testid` dos componentes kit-builder durante commits anteriores, quebrando os E2E que dependem desses seletores.
+
+**Fix em andamento:**  
+PR #2561 (`claude_05/nifty-sagan-r23gqh`, commit `e3a45bd7`) restaura os 13 `data-testids` em 8 arquivos. CI em fila para este PR em 2026-10-25.
+
+**Ação necessária pelo PO:**  
+Aguardar merge do PR #2561 após CI verde.
+
+**Impacto no Gate Final:** Depende do workflow — se `ci-security-drift.yml` é required check no Gate Final, o merge do PR #2561 deve resolver. Verificar após CI verde.
+
+---
+
+## P71 — Cart Invariants Smoke: todos os 6 shards falharam (invariantes header/sidebar)
+
+**Workflow:** `.github/workflows/cart-invariants-smoke.yml` (ou equivalente)  
+**Run com falha:** [#40224559879](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40224559879) (commit `5279abfe`)  
+**Conclusão:** `failure`  
+**Categoria:** Falha de E2E — invariantes do header/sidebar falhando nos 6 shards (chromium + firefox, shards 1/3, 2/3, 3/3)
+
+**Jobs afetados:**  
+Todos os 6 jobs de shard: `chromium-shard-1`, `chromium-shard-2`, `chromium-shard-3`, `firefox-shard-1`, `firefox-shard-2`, `firefox-shard-3`
+
+**Step falho:** "Playwright — invariants do header/sidebar"
+
+**Causa raiz (provável):**  
+Relacionada à falha do E2E header sticky (P72 abaixo). O header/sidebar apresenta comportamento anômalo — possivelmente por `overflow`, `transform` ou `filter` em ancestral em `src/components/layout/MainLayout.tsx` criando scroll container ou stacking context indevido, impedindo que o header fique sticky corretamente.
+
+**Diagnóstico incompleto:**  
+Logs dos shards não continham nomes de teste específicos (apenas upload de artifacts). Artifact download necessário para diagnóstico completo.
+
+**Ação necessária pelo PO:**  
+1. Verificar se é a mesma causa raiz do P72 (MainLayout.tsx overflow)
+2. Se sim: aplicar o fix em MainLayout.tsx em branch nova e verificar se ambos os workflows passam
+3. Se não: baixar artifact do shard para diagnóstico completo
+
+**Impacto no Gate Final:** Depende se `cart-invariants-smoke.yml` é required check no Gate Final. Investigação em andamento.
+
+---
+
+## P72 — E2E (Playwright): header sticky failing por overflow/stacking context em MainLayout (regressão)
+
+**Workflow:** `.github/workflows/deploy-gates.yml` (Gate Final) ou equivalente  
+**Run com falha:** [#40223579858](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40223579858) (commit `7d3bd4ba`)  
+**Conclusão:** `failure`  
+**Categoria:** Regressão de código — `overflow`/`transform`/`filter` em ancestral de `<header>` cria scroll container ou stacking context indevido
+
+**Spec falho:** `e2e/flows/22-header-sticky.spec.ts`
+
+**Causa raiz:**  
+O header `<header>` em `src/components/layout/MainLayout.tsx` perdeu o comportamento sticky. A causa mais provável é um elemento ancestral com `overflow: hidden/auto/scroll`, `transform`, `filter` ou `will-change` que cria um novo scroll container ou stacking context, impedindo `position: sticky` de funcionar. O Gate 1.15 monitora exatamente este padrão (`overflow-x-clip` em MainLayout).
+
+**Relação com Gate 1.15:**  
+O Gate 1.15 verifica `overflow-x-clip` em MainLayout como regressão visual de layout horizontal. Este teste E2E (`22-header-sticky.spec.ts`) testa o comportamento sticky do header, que pode ser quebrado pelos mesmos padrões.
+
+**Ação necessária (não alocada — requer investigação em branch nova):**  
+1. Ler `src/components/layout/MainLayout.tsx` e identificar qualquer `overflow`, `transform`, `filter` ou `will-change` adicionado pelo Lovable
+2. Remover ou corrigir o CSS que quebra o scroll container
+3. Verificar que `position: sticky` no `<header>` volta a funcionar
+4. Abrir PR separado (branch `fix/header-sticky-layout`)
+
+**Impacto no Gate Final:** Potencialmente bloqueante se `e2e/flows/22-header-sticky.spec.ts` faz parte do gate `e2e-smoke` do Gate Final. Verificar em `deploy-gates.yml`.
+
+---
+
+## P73 — E2E · Cart Delete Popover: jobs cancelados por timeout/concurrency (pré-existente)
+
+**Workflow:** `.github/workflows/cart-delete-popover-e2e.yml` (ou equivalente)  
+**Run com falha:** [#40216887166](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40216887166) (commit `cb0ccede`)  
+**Conclusão:** `failure` (cancelado)  
+**Categoria:** Timeout de CI — job cancelado por concurrency ou timeout global, não falha de teste
+
+**Jobs afetados:** Todos os jobs do run foram cancelados antes de completar.
+
+**Spec:** `cart-delete-popover.spec.ts:342:3` — teste de popover rodando > 2h  
+
+**Causa raiz:**  
+O run foi cancelado (`The operation was canceled`) — não é uma falha funcional do teste, mas um cancelamento por: (a) timeout do job no CI (> 2h); (b) cancelamento por concurrency group (`cancel-in-progress: true`) disparado por um push mais novo. O teste em si pode ter um `await` longo ou race condition que o faz rodar indefinidamente em CI.
+
+**Pré-existente:**  
+Cancelamentos por concurrency são esperados quando múltiplos pushes chegam em sequência rápida (comportamento do Lovable).
+
+**Ação necessária pelo PO:**  
+1. Verificar se o próximo run completa normalmente (sem cancelamento)
+2. Se o teste consistentemente excede timeout: investigar o `await` em `cart-delete-popover.spec.ts:342`
+3. Candidato a adicionar `timeout` explícito no step do Playwright para este spec
+
+**Impacto no Gate Final:** Depende se este workflow é required check. Cancelamentos por concurrency normalmente não bloqueiam deployments subsequentes.
+
+---
+
+## P74 — E2E • Thumb QuickView: smoke failing (diagnóstico incompleto)
+
+**Workflow:** `.github/workflows/e2e-focused-thumb-quickview.yml` (ou equivalente)  
+**Run com falha:** [#40224559905](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40224559905) (commit `5279abfe`)  
+**Conclusão:** `failure`  
+**Categoria:** Falha de E2E — smoke step falhando; causa raiz não determinada
+
+**Jobs afetados:** Step "Smoke" falhou; artifact uploadado mas não baixado nesta sessão.
+
+**Causa raiz (não determinada):**  
+Logs do step "Smoke" não continham nomes de teste específicos (logs truncados). Artifact com resultados completos existe mas requer download para diagnóstico.
+
+**Relação com P63:**  
+P63 documenta `E2E • Swatch QuickView` falhando. Este é `E2E • Thumb QuickView` — componente diferente (thumb) mas padrão similar (QuickView de produto). Podem compartilhar a mesma causa raiz se o QuickView foi alterado pelo Lovable.
+
+**Ação necessária pelo PO:**  
+1. Baixar artifact do run #40224559905 para ver os nomes dos testes que falharam
+2. Verificar se o componente `ThumbQuickView` foi alterado por commits recentes do Lovable
+3. Comparar com a causa raiz do P63 (Swatch QuickView)
+
+**Impacto no Gate Final:** Depende se `e2e-focused-thumb-quickview.yml` é required check no Gate Final.
+
+---
+
+## P75 — Edge Integration Tests — All Functions: 6 LIVE tests HTTP 5xx (estado das edge functions)
+
+**Workflow:** `.github/workflows/edge-integration-all.yml`  
+**Run com falha:** [#40213685021](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40213685021) (commit `893d830`)  
+**Conclusão:** `failure`  
+**Categoria:** Falha de integração LIVE — edge functions em `doufsxqlfjyuvxuezpln` retornando HTTP >= 500
+
+**Resultado:** 6 testes falharam, 882 passaram (890 total)
+
+**Erro nos 6 testes:**  
+```
+expect(res.status).toBeLessThan(500)
+// Received: HTTP 5xx (>= 500)
+```
+
+**Causa raiz:**  
+6 edge functions em `doufsxqlfjyuvxuezpln` retornaram HTTP >= 500 durante o run LIVE. HTTP 5xx em edge function indica: (a) function não deployada / inexistente; (b) erro interno na function (500 Internal Server Error); (c) cold start com timeout (503 Service Unavailable); (d) divergência git vs deployed (relacionado a P27 e P65).
+
+**Diferente de P65:**  
+P65 documenta `validate-access` retornando HTTP 200 onde deveria retornar 4xx (lógica de validação ausente na versão deployada). P75 documenta functions retornando HTTP 5xx (erro de servidor, não lógica errada).
+
+**Pré-existente parcialmente:**  
+Relacionado ao padrão de P27 (edge-functions-drift-check) e P65 (validate-access deployed ≠ git). A ação de deploy de `validate-access` executada nesta sessão via `deploy-edge-functions.yml` pode ter corrigido parte das falhas.
+
+**Ação necessária pelo PO:**  
+1. Rodar novo run de `edge-integration-all.yml` após os deploys desta sessão
+2. Se ainda falhar: identificar quais 6 functions estão retornando 5xx via artifact
+3. Para cada function 5xx: verificar se há divergência git vs deployed (P27)
+4. Deploy via `workflow_dispatch` em `deploy-edge-functions.yml` para as functions divergentes
+
+**Impacto no Gate Final:** Nenhum — `edge-integration-all.yml` NÃO é required check no Gate Final (`deploy-gates.yml`). Gate Final permanece verde.
+
+---
+
 *Atualizado pela sessão Claude Code — https://claude.ai/code/session_01HW5obNKUFtUMbBdgUb94kY*

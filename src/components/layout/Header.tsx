@@ -6,7 +6,6 @@ import {
   GitCompare,
   Search,
   LogOut,
-  HelpCircle,
   Shield,
   MoreHorizontal,
   Palette,
@@ -35,7 +34,6 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useCurrentSection } from '@/hooks/ui/useCurrentSection';
 import { useIsScrolled } from '@/hooks/ui/useScroll';
 import { useToast } from '@/hooks/ui/use-toast';
-import { useOnboardingContext } from '@/contexts/OnboardingContext';
 
 import { useSearchStore } from '@/stores/useSearchStore';
 import { useWordMagicStore } from '@/stores/useWordMagicStore';
@@ -49,6 +47,7 @@ import { CartHeaderButton } from '@/components/cart/CartHeaderButton';
 import { cn } from '@/lib/utils';
 import { RoleBadge } from '@/components/RoleBadge';
 import { AppLogo } from '@/components/layout/AppLogo';
+import { UserMenuShortcutItems } from '@/components/layout/UserMenuShortcutItems';
 import { AnonymizeAccountDialog } from '@/components/privacy/AnonymizeAccountDialog';
 
 import { logger } from '@/lib/logger';
@@ -85,7 +84,6 @@ export const Header = React.memo(({ onMenuToggle, sidebarOpen }: HeaderProps) =>
     }
   }, [profile?.preferences, initializeFromProfile]);
   const currentSection = useCurrentSection();
-  const { restartTour } = useOnboardingContext();
   const setOpenSearch = useSearchStore((s) => s.setOpen);
 
   const isScrolled = useIsScrolled(20);
@@ -531,43 +529,7 @@ export const Header = React.memo(({ onMenuToggle, sidebarOpen }: HeaderProps) =>
                 </div>
               </DropdownMenuLabel>
               <DropdownMenuSeparator className="bg-border" />
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <DropdownMenuItem
-                    onClick={() => navigate('/admin/temas')}
-                    data-testid="user-menu-item-skins"
-                    className="cursor-pointer hover:bg-primary/10 focus:bg-primary/10"
-                  >
-                    <Palette className="mr-2 h-4 w-4" />
-                    Skins
-                  </DropdownMenuItem>
-                </TooltipTrigger>
-                <TooltipContent side="left" sideOffset={8} data-testid="user-menu-tooltip-skins">
-                  <p>Personalize a aparência da plataforma (temas e cores)</p>
-                </TooltipContent>
-              </Tooltip>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <DropdownMenuItem
-                    onClick={() => {
-                      navigate('/');
-                      setTimeout(() => restartTour(), 300);
-                    }}
-                    data-testid="user-menu-item-guia-rapido"
-                    className="cursor-pointer hover:bg-primary/10 focus:bg-primary/10"
-                  >
-                    <HelpCircle className="mr-2 h-4 w-4" />
-                    Guia Rápido
-                  </DropdownMenuItem>
-                </TooltipTrigger>
-                <TooltipContent
-                  side="left"
-                  sideOffset={8}
-                  data-testid="user-menu-tooltip-guia-rapido"
-                >
-                  <p>Reiniciar o tour guiado pelas funcionalidades do sistema</p>
-                </TooltipContent>
-              </Tooltip>
+              <UserMenuShortcutItems />
 
               <DropdownMenuSeparator className="bg-border" />
               <DropdownMenuItem
