@@ -129,11 +129,11 @@ Nenhum PR mergeado autonomamente toca código de produção exceto:
 
 | PR | SHA do merge | CI pós-merge | Motivo |
 |---|---|---|---|
-| #2426 | `7f5d410a` | ✅ cobertura transitiva run #40151693979 (SHA bfd9b50a, SUCCESS). Sem run próprio no SHA do merge — merges sequenciais, CI cancelado/supersedido. | 1 arquivo QA, sem Rule 8 |
+| #2426 | `7f5d410a` | ⚠️ run #40131603946 (`completed/failure`) no SHA exato — falha PRE-EXISTING (progresso.json: `"gate1_lint_typescript":"failure em 7f5d410a (pre-#2427)"`). Recuperação: run #40151693979 (SHA bfd9b50a, SUCCESS). | 1 arquivo QA, sem Rule 8 |
 | #2427 | `26641b0a` | ✅ run #40128149143 success (SHA 4c8193b9); edge fn DEPLOYED run #40146529580 | cors.ts + webhook-schemas |
-| #2434 | `53ba69b5` | ✅ cobertura transitiva run #40151693979 (SHA bfd9b50a, SUCCESS). Sem run próprio no SHA do merge — merges sequenciais, CI cancelado/supersedido. | docs-only analise-prs/ |
+| #2434 | `53ba69b5` | ⚠️ run #40131652483 (`completed/failure`) no SHA exato — falha PRE-EXISTING (CI red desde baseline 9079c82e, anterior a todos os merges). Recuperação: run #40151693979 (SHA bfd9b50a, SUCCESS). | docs-only analise-prs/ |
 | #2436 | `4c8193b9` | ✅ run #40128149143 success (SHA exato 4c8193b9) | deliverables update |
-| #2414 | `7061adab` | ✅ cobertura transitiva run #40151693979 (SHA bfd9b50a, SUCCESS). Sem run próprio no SHA do merge — merges sequenciais, CI cancelado/supersedido. | docs-only analise-branches/ |
+| #2414 | `7061adab` | ⚠️ run #40140010934 (`completed/failure`) no SHA exato — falha PRE-EXISTING (CI red desde baseline 9079c82e, anterior a todos os merges). Recuperação: run #40151693979 (SHA bfd9b50a, SUCCESS). | docs-only analise-branches/ |
 | #2439 | `b3c8f2f3` | ✅ run #40150209361 success (SHA eb7a92479) | deliverables ci-per-test-name + dossies |
 | #2455 | `bfd9b50a` | ✅ run #40151693979 SUCCESS confirmado — main HEAD atual | RELATORIO_CI.md rev7 + PENDENCIAS.md rev13 |
 | #2447 | `a5517d5a` | ✅ docs-only; CI Gate 1 reparado neste commit (heading SINGU) | deliverables RELATORIO+dossies+baseline+prs.csv |
@@ -188,6 +188,7 @@ Nenhum PR mergeado autonomamente toca código de produção exceto:
 | #2464 | MERGEADO (PO) | `1e07e298` | `analise-prs/dossies/PR-2464.md` |
 | #2465 | FECHAR (draft + outra sessão + conflito) | — | `analise-prs/dossies/PR-2465.md` |
 | #2466 | DECISÃO_HUMANA (nossa PR, draft) | — | `analise-prs/dossies/PR-2466.md` |
+| #2469 | DECISÃO_HUMANA (Rule 8 CI/workflows + REGRA #10) | — | `analise-prs/dossies/PR-2469.md` |
 
 ---
 

@@ -367,6 +367,50 @@
       "singu_refs_added": 0,
       "verdict": "FECHAR",
       "motivo": "Draft:true + branch de outra sessão (REGRA #10). Docs-only correto (documenta PR #2464) mas merge impossível por esta sessão."
+    },
+    {
+      "number": 2466,
+      "title": "docs(analise-prs): deliverables RELATORIO+dossies+baseline+prs.csv (entregável sessão)",
+      "draft": true,
+      "author_session": "session_01Ss1tXZ4cAbxBvdmu95uNPz",
+      "mergeable_state": "clean",
+      "rule8_trigger": null,
+      "singu_refs_added": 0,
+      "verdict": "DECISÃO_HUMANA",
+      "motivo": "Nossa PR (draft:true). GitHub API retornou HTTP 405 'Pull Request is still a draft' ao tentar merge. PO deve converter para ready-for-review e mergear."
+    },
+    {
+      "number": 2469,
+      "title": "fix(ci): e2e-personalization E42 skip ratio gate condicional ao auth",
+      "draft": true,
+      "author_session": "session_01HW5obNKUFtUMbBdgUb94kY",
+      "mergeable_state": "unknown",
+      "rule8_trigger": ".github/workflows/e2e-personalization.yml",
+      "singu_refs_added": 0,
+      "verdict": "DECISÃO_HUMANA",
+      "motivo": "REGRA #8: toca .github/workflows/e2e-personalization.yml. Draft:true + branch outra sessão (REGRA #10). Requer aprovação humana."
+    },
+    {
+      "number": 2470,
+      "title": "fix(test): corrige 3 falhas timezone UTC→BRT em date-utils.test.ts",
+      "draft": true,
+      "author_session": "session_01Nc1nb7PArDnixYvvZssnKy",
+      "mergeable_state": "behind",
+      "rule8_trigger": null,
+      "singu_refs_added": 0,
+      "verdict": "FECHAR",
+      "motivo": "Draft:true + branch de outra sessão (REGRA #10). 1 arquivo: tests/unit/date-utils.test.ts. Merge impossível por esta sessão."
+    },
+    {
+      "number": 2471,
+      "title": "docs(ci): RELATORIO_CI rev9-13 + PENDENCIAS P16/P18/P19 + migration-refs-baseline",
+      "draft": true,
+      "author_session": "session_01Nc1nb7PArDnixYvvZssnKy",
+      "mergeable_state": "dirty",
+      "rule8_trigger": null,
+      "singu_refs_added": 0,
+      "verdict": "FECHAR",
+      "motivo": "Draft:true + dirty (CONFLITO com main) + branch de outra sessão (REGRA #10). 3 arquivos docs. Merge impossível por esta sessão."
     }
   ]
 }
