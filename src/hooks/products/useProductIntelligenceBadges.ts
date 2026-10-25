@@ -171,7 +171,7 @@ export function useProductIntelligenceBadges(
     }
 
     return out.sort((a, b) => b.priority - a.priority);
-  }, [intelligence, velocity, catalogFlags, productId, settings]);
+  }, [intelligence, velocity, catalogFlags, settings]);
 
   return {
     badges,
