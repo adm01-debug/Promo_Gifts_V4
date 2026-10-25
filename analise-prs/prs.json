@@ -1,8 +1,8 @@
 {
-  "gerado_em": "2026-10-25T08:30:00Z",
+  "gerado_em": "2026-10-25T09:30:00Z",
   "sessao": "https://claude.ai/code/session_01Ss1tXZ4cAbxBvdmu95uNPz",
-  "main_head": "6457e24d",
-  "total_analisados": 44,
+  "main_head": "e0be76690381d15a4e7d0c2d728d05d8abb533c4",
+  "total_analisados": 45,
   "total_abertos_atuais": 13,
   "prs_abertos": [
     {
@@ -101,7 +101,7 @@
     {
       "number": 2443,
       "title": "APROVAÇÃO REQUERIDA: Fase B completa — P06/P09/P14/P15/P03",
-      "draft": true,
+      "draft": false,
       "mergeable_state": "clean",
       "verdict": "DECISÃO_HUMANA",
       "rule8_triggers": [],
@@ -144,15 +144,15 @@
       "acao_recomendada": "PO verificar se fix foi absorvido pelo PR #2489 mergeado. Fechar se redundante."
     },
     {
-      "number": 2487,
-      "title": "docs(ci): RELATORIO_CI Rev18 + PENDENCIAS Rev18",
+      "number": 2503,
+      "title": "docs(ci): RELATORIO_CI Rev21 — Gate Final proof SHA dcaa20da run #40179146830",
       "draft": true,
-      "mergeable_state": "unknown",
+      "mergeable_state": "clean",
       "verdict": "DECISÃO_HUMANA",
       "rule8_triggers": [],
-      "motivo": "REGRA #10 (branch claude_05/nifty-sagan-r23gqh sessão session_01HW5obNKUFtUMbBdgUb94kY) + draft:true + behind main",
-      "evidencia": "PR criado 2026-10-25T07:26:34Z. Arquivos: PENDENCIAS.md (+295/-47), RELATORIO_CI.md (+30/-20). PR #2489 mergeou mesmos arquivos em 6457e24d.",
-      "acao_recomendada": "PO verificar se conteúdo P43–P55 relevante dado PR #2489. Rebaseiar e converter de draft, ou fechar."
+      "motivo": "REGRA #10 (branch claude/docs-relatorio-ci-rev21-20261025-0911 sessão session_01HW5obNKUFtUMbBdgUb94kY) + draft=true",
+      "evidencia": "github_get_pr_diff(#2503): RELATORIO_CI.md +48/-27. Test-merge CLEAN em e0be76690 nesta sessão.",
+      "acao_recomendada": "PO converter de draft e mergear se RELATORIO_CI Rev21 ainda relevante (PR #2504 já levou estado mais recente)."
     }
   ]
 }

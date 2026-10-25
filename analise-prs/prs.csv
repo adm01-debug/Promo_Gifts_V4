@@ -43,3 +43,6 @@ pr_number,title,author,draft,state,mergeable_state,verdict,sha_merge,ci_run,note
 2487,docs(ci): RELATORIO_CI Rev18 + PENDENCIAS Rev18,Claude,true,open,unknown,DECISÃO_HUMANA,,,REGRA #10 (branch claude_05/nifty-sagan-r23gqh session_01HW5obNKUFtUMbBdgUb94kY) + draft + behind main (base f761938e); conflito potencial com #2489
 2490,docs(analise-prs): deliverables rev6,Claude,false,merged,merged,MERGEAR,a681fe0e,40173768324,docs-only analise-prs/; squash-merged 2026-10-25T07:43:00Z
 2498,docs(analise-prs): deliverables rev6.1 + PR-2487,Claude,false,merged,merged,MERGEAR,eee389ca,40174781954,docs-only analise-prs/; squash-merged 2026-10-25T08:12:00Z
+2501,docs(analise-prs): deliverables rev7 — 44 PRs,Claude,false,merged,merged,MERGEAR,e91a36e390bf99a4a697c1be59d3abeadb7494c6,40176836399,docs-only analise-prs/; squash-merged 2026-10-25T08:29:41Z
+2503,docs(ci): RELATORIO_CI Rev21,Claude,true,open,clean,DECISÃO_HUMANA,,,REGRA #10 outra sessao (session_01HW5obNKUFtUMbBdgUb94kY) + draft=true; test-merge CLEAN em e0be76690
+2504,docs(analise-prs): deliverables rev8 — test-merges #2415/#2432/#2443/#2469,Claude,false,merged,merged,MERGEAR,e0be76690381d15a4e7d0c2d728d05d8abb533c4,40179146830,docs-only analise-prs/; squash-merged 2026-10-25T09:00:00Z
