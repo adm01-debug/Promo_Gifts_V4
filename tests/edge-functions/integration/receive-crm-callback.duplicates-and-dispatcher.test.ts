@@ -104,7 +104,7 @@ async function invokeHandler(db: FakeDB, body: unknown): Promise<{ status: numbe
 // (A) DUPLICATES — 500 cenários de replay
 // ─────────────────────────────────────────────────────────────
 describe("A) Duplicates — replay não pode gerar efeito colateral", () => {
-  const UUIDs = Array.from({ length: 25 }, (_, i) => `00000000-0000-0000-0000-${String(i).padStart(12, "0")}`);
+  const UUIDs = Array.from({ length: 25 }, (_, i) => `00000000-0000-4000-8000-${String(i).padStart(12, "0")}`);
   const EVENTS = ["approved","rejected","order_created","sent_to_client","expired"] as const;
   const ISOs = [
     "2026-07-06T10:00:00.000Z",
@@ -141,7 +141,7 @@ describe("A) Duplicates — replay não pode gerar efeito colateral", () => {
       const ev = EVENTS[i % EVENTS.length];
       const iso = ISOs[0]; // mesmo occurred_at → deve casar
       const payload: Record<string, unknown> = { replay_attempt: i };
-      if (ev === "order_created") payload.order_id = "00000000-0000-0000-0000-000000000ABC".slice(0, 36);
+      if (ev === "order_created") payload.order_id = "00000000-0000-4000-8000-000000000ABC".slice(0, 36);
       const r = await invokeHandler(db, { external_quote_id: u, event_type: ev, occurred_at: iso, payload });
       expect(r.status).toBe(200);
       expect(r.body).toEqual({ status: "duplicate_ignored" });

@@ -616,7 +616,7 @@ release-please failed: Resource not accessible by integration
 
 ## P22 — Supabase Linter Gate: failure em main (não-bloqueante)
 
-**Workflow:** `.github/workflows/supabase-linter.yml` (ou similar)  
+**Workflow:** `.github/workflows/supabase-linter-gate.yml`  
 **Categoria:** Linter advisory de queries SQL — não é required check no Gate Final  
 
 **Erro:**  
@@ -632,7 +632,7 @@ Linter advisory flags em queries do Supabase (ex: índices ausentes, queries sem
 
 ## P23 — E2E Personalization Flow: failure em main (não-bloqueante)
 
-**Workflow:** `.github/workflows/e2e-personalization-flow.yml` (ou similar)  
+**Workflow:** `.github/workflows/e2e-personalization.yml`  
 **Categoria:** E2E não-required, flake de ambiente externo  
 
 **Erro exato (referência P2c):**

@@ -93,7 +93,7 @@ Nenhum PR mergeado autonomamente toca código de produção exceto:
 
 ---
 
-## SINGU — verificação de referências ao projeto proibido
+## SINGU (pqpdolkaeqlyzpdpbizo) — verificação [LEGACY_INFORMATIVO]
 
 | PR | Refs adicionadas | Detalhe |
 |---|---|---|
