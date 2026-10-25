@@ -20,6 +20,7 @@
 import { Component, type ReactNode } from 'react';
 import { AlertTriangle, ArrowLeft, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { isChunkLoadError } from '@/lib/chunk-recovery';
 import { trackReactError } from '@/lib/telemetry/magazineMetrics';
 
 interface Props {
@@ -71,6 +72,9 @@ export class MagazineErrorBoundary extends Component<Props, State> {
     }
 
     const { isHooksViolation, error } = this.state;
+
+    // Falha de import lazy não se recupera localmente: o global tem reload/limpeza de cache.
+    if (isChunkLoadError(error)) throw error;
 
     return (
       <div
