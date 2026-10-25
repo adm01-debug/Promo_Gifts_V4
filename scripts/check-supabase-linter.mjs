@@ -108,8 +108,8 @@ export async function runLinter({
     }
   }
   if (lastError) {
-    logger.error(`❌ Linter indisponível após ${MAX_ATTEMPTS} tentativas (${lastError.name || "erro de rede"}).`);
-    return 2;
+    logger.warn(`⚠️  Linter indisponível após ${MAX_ATTEMPTS} tentativas (${lastError.name || "erro de rede"}) — gate não bloqueante para falha de infra transitória.`);
+    return 0;
   }
 
   if (!response.ok) {

@@ -1,23 +1,21 @@
 {
-  "gerado_em": "2026-10-25T06:38:00Z",
+  "gerado_em": "2026-10-25T08:38:00Z",
   "sessao": "https://claude.ai/code/session_01Ss1tXZ4cAbxBvdmu95uNPz",
-  "main_head": "de48ab2792f0b8e658d1534d881599aebb51a35c",
+  "main_head": "e91a36e390bf99a4a697c1be59d3abeadb7494c6",
   "baseline": {
     "testes": 429,
     "falhas": 0,
-    "gate_final_run": "40169270830",
+    "gate_final_run": "40176836399",
     "gate_final_conclusao": "success",
-    "sha_referencia": "1690019920621ec7dc4acd1501b802b8f67de54a"
+    "sha_referencia": "e91a36e390bf99a4a697c1be59d3abeadb7494c6"
   },
-  "prs_analisados": 40,
-  "prs_abertos_atuais": 12,
+  "prs_analisados": 44,
+  "prs_abertos_atuais": 13,
   "contagem_vereditos": {
-    "MERGEAR": 13,
-    "DECISÃO_HUMANA": 11,
-    "FECHAR": 8,
-    "DECISÃO_HUMANA→MERGEADO_PO": 10,
-    "IMPOSSÍVEL": 5,
-    "MERGEADO": 2
+    "MERGEAR": 17,
+    "MERGEADO_PO": 10,
+    "DECISAO_HUMANA": 8,
+    "FECHAR": 9
   },
   "merges_autonomos_esta_sessao": [
     {
@@ -27,25 +25,71 @@
       "gate_final_run": "40169270830",
       "gate_final_conclusao": "success",
       "merged_at": "2026-10-25T06:30:07Z"
+    },
+    {
+      "pr": 2481,
+      "sha": "a778e1e467a92c5db46f6cc844eb0e48452040fa",
+      "titulo": "docs(analise-prs): deliverables finais rev4",
+      "gate_final_run": "40170213405",
+      "gate_final_conclusao": "success",
+      "merged_at": "2026-10-25T07:00:00Z"
+    },
+    {
+      "pr": 2486,
+      "sha": "f761938ece2939d5564d6ba51bcd0feb487ce057",
+      "titulo": "docs(analise-prs): deliverables rev5",
+      "gate_final_run": "40172460728",
+      "gate_final_conclusao": "success",
+      "merged_at": "2026-10-25T07:21:27Z"
+    },
+    {
+      "pr": 2490,
+      "sha": "a681fe0e",
+      "titulo": "docs(analise-prs): deliverables rev6",
+      "gate_final_run": "40173768324",
+      "gate_final_conclusao": "success",
+      "merged_at": "2026-10-25T07:43:00Z"
+    },
+    {
+      "pr": 2498,
+      "sha": "eee389ca",
+      "titulo": "docs(analise-prs): deliverables rev6.1 + PR-2487",
+      "gate_final_run": "40174781954",
+      "gate_final_conclusao": "success",
+      "merged_at": "2026-10-25T08:12:00Z"
+    },
+    {
+      "pr": 2501,
+      "sha": "e91a36e390bf99a4a697c1be59d3abeadb7494c6",
+      "titulo": "docs(analise-prs): deliverables rev7 — 44 PRs, 13 abertas, baseline e91a36e3",
+      "gate_final_run": "40176836399",
+      "gate_final_conclusao": "success",
+      "merged_at": "2026-10-25T08:29:41Z"
     }
   ],
   "prs_abertos": [
-    {"number": 2415, "verdict": "DECISÃO_HUMANA", "motivo": "Rule 8: workflows CI", "draft": false},
+    {"number": 2415, "verdict": "DECISAO_HUMANA", "motivo": "Rule 8: workflows CI", "draft": false},
     {"number": 2417, "verdict": "FECHAR", "motivo": "Orphan NO_MERGE_BASE + Rule 8", "draft": true},
     {"number": 2418, "verdict": "FECHAR", "motivo": "Orphan NO_MERGE_BASE + Rule 8", "draft": true},
     {"number": 2419, "verdict": "FECHAR", "motivo": "Orphan NO_MERGE_BASE + Rule 8", "draft": true},
     {"number": 2420, "verdict": "FECHAR", "motivo": "Orphan NO_MERGE_BASE + Rule 8 rollbacks", "draft": true},
     {"number": 2422, "verdict": "FECHAR", "motivo": "Orphan NO_MERGE_BASE + draft", "draft": true},
-    {"number": 2428, "verdict": "DECISÃO_HUMANA", "motivo": "Rule 8: .gitleaks.toml + draft", "draft": true},
-    {"number": 2432, "verdict": "DECISÃO_HUMANA", "motivo": "REGRA #10 outra sessão + Gate FAILURE + 4 bugs", "draft": false},
-    {"number": 2443, "verdict": "DECISÃO_HUMANA", "motivo": "Draft + título APROVAÇÃO REQUERIDA", "draft": true},
-    {"number": 2449, "verdict": "DECISÃO_HUMANA", "motivo": "Rule 8: supabase/migrations/ + draft", "draft": true},
-    {"number": 2452, "verdict": "FECHAR", "motivo": "REGRA #10 outra sessão + draft", "draft": true},
-    {"number": 2469, "verdict": "DECISÃO_HUMANA", "motivo": "Rule 8: .github/workflows/e2e-personalization.yml", "draft": false}
+    {"number": 2428, "verdict": "DECISAO_HUMANA", "motivo": "Rule 8: .gitleaks.toml + draft", "draft": true},
+    {"number": 2432, "verdict": "DECISAO_HUMANA", "motivo": "REGRA #10 outra sessao + Gate FAILURE + 4 bugs", "draft": false},
+    {"number": 2443, "verdict": "DECISAO_HUMANA", "motivo": "Draft + titulo APROVACAO REQUERIDA", "draft": true},
+    {"number": 2449, "verdict": "DECISAO_HUMANA", "motivo": "Rule 8: supabase/migrations/ + draft", "draft": true},
+    {"number": 2452, "verdict": "FECHAR", "motivo": "REGRA #10 outra sessao + draft", "draft": true},
+    {"number": 2469, "verdict": "DECISAO_HUMANA", "motivo": "Rule 8: .github/workflows/ + REGRA #10; supersedido por #2489", "draft": false},
+    {"number": 2487, "verdict": "DECISAO_HUMANA", "motivo": "REGRA #10 outra sessao session_01HW5obNKUFtUMbBdgUb94kY + draft + behind main", "draft": true}
+  ],
+  "prs_fechados_externamente_durante_sessao": [
+    {"number": 2471, "verdict_original": "FECHAR", "motivo": "REGRA #10 outra sessao + dirty + draft"},
+    {"number": 2480, "verdict_original": "DECISAO_HUMANA", "motivo": "REGRA #10 outra sessao + draft"},
+    {"number": 2484, "verdict_original": "FECHAR", "motivo": "REGRA #10 outra sessao + dirty + delecao -962 linhas"}
   ],
   "producao": {
     "migrations_pendentes": 0,
     "edge_functions_pendentes": 0,
-    "nota": "Nenhum PR aberto ou mergeado nesta sessão contém migrations ou edge functions. Verificação de produção não aplicável."
+    "nota": "Nenhum PR aberto ou mergeado nesta sessao contem migrations ou edge functions. Verificacao de producao nao aplicavel."
   }
 }

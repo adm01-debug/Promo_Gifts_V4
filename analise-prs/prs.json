@@ -1,9 +1,9 @@
 {
-  "gerado_em": "2026-10-25T06:45:00Z",
+  "gerado_em": "2026-10-25T08:30:00Z",
   "sessao": "https://claude.ai/code/session_01Ss1tXZ4cAbxBvdmu95uNPz",
-  "main_head": "de48ab2792f0b8e658d1534d881599aebb51a35c",
-  "total_analisados": 40,
-  "total_abertos_atuais": 12,
+  "main_head": "6457e24d",
+  "total_analisados": 44,
+  "total_abertos_atuais": 13,
   "prs_abertos": [
     {
       "number": 2415,
@@ -23,9 +23,9 @@
       "mergeable_state": "dirty",
       "verdict": "FECHAR",
       "rule8_triggers": [".github/workflows/"],
-      "motivo": "Branch órfã NO_MERGE_BASE (sem ancestral com main) + Rule 8 + draft",
-      "evidencia": "mergeable_state=dirty, branch sem ancestral com main confirmado via análise de PR",
-      "acao_recomendada": "Fechar PR. Conteúdo supersedido ou desatualizado sem ancestral válido",
+      "motivo": "Branch órfã NO_MERGE_BASE + Rule 8 + draft",
+      "evidencia": "mergeable_state=dirty, branch sem ancestral com main confirmado",
+      "acao_recomendada": "Fechar PR.",
       "comentario_fechamento": "Fechando: branch sem ancestral comum com main (NO_MERGE_BASE) — impossível mergear sem rebase completo. Conteúdo de workflows deve ser resubmetido a partir do main atual se ainda relevante."
     },
     {
@@ -37,7 +37,7 @@
       "rule8_triggers": [".gitleaks.toml", ".github/workflows/"],
       "motivo": "Branch órfã NO_MERGE_BASE + Rule 8 + draft",
       "evidencia": "mergeable_state=dirty, branch sem ancestral com main",
-      "acao_recomendada": "Fechar PR. Se mudança de gitleaks ainda necessária, recriar do main.",
+      "acao_recomendada": "Fechar PR.",
       "comentario_fechamento": "Fechando: branch sem ancestral comum com main (NO_MERGE_BASE). Mudança em .gitleaks.toml deve ser resubmetida a partir do main atual se ainda relevante."
     },
     {
@@ -60,7 +60,7 @@
       "verdict": "FECHAR",
       "rule8_triggers": ["supabase/rollbacks/"],
       "motivo": "Branch órfã NO_MERGE_BASE + Rule 8 supabase/rollbacks/ + draft",
-      "evidencia": "mergeable_state=dirty, branch sem ancestral com main, contém supabase/rollbacks/",
+      "evidencia": "mergeable_state=dirty, branch sem ancestral com main",
       "acao_recomendada": "Fechar PR.",
       "comentario_fechamento": "Fechando: branch sem ancestral comum com main (NO_MERGE_BASE). Conteúdo de rollbacks de migrations deve ser resubmetido via fluxo db-apply-migration.yml se ainda necessário."
     },
@@ -95,14 +95,8 @@
       "verdict": "DECISÃO_HUMANA",
       "rule8_triggers": [],
       "motivo": "REGRA #10 (branch de outra sessão session_01HxRBtssJabMB3jTgNY5B9W) + Gate Final FAILURE run #40129848772 + 4 correctness bugs",
-      "evidencia": "Gate Final check #120982011553: conclusion=failure. Diff: qa/migrations-draft/probe_e184_legacy_refs.sql (39 linhas). 4 bugs detectados.",
-      "bugs_detectados": [
-        "pg_get_functiondef() em aggregates aborta a probe (P2/High)",
-        "pg_settings não expõe custom GUCs app.* (usar pg_db_role_setting)",
-        "cron.job.jobname pode ser NULL — string_agg omite silenciosamente",
-        "REGRA #10: branch de outra sessão — impossível corrigir autonomamente"
-      ],
-      "acao_recomendada": "PO decidir: fechar e recriar com bugs corrigidos, ou corrigir na branch (requer acesso de outra sessão)"
+      "evidencia": "Gate Final check #120982011553: conclusion=failure. 4 bugs detectados.",
+      "acao_recomendada": "PO decidir: fechar e recriar com bugs corrigidos"
     },
     {
       "number": 2443,
@@ -112,7 +106,7 @@
       "verdict": "DECISÃO_HUMANA",
       "rule8_triggers": [],
       "motivo": "Draft + título explícito 'APROVAÇÃO REQUERIDA' sinaliza decisão humana necessária",
-      "evidencia": "github_get_pr_diff(#2443): auditoria-supabase/analise-impacto/APROVACAO_FASE_B_IMPACTO.md apenas. Draft:true",
+      "evidencia": "github_get_pr_diff(#2443): APROVACAO_FASE_B_IMPACTO.md apenas. Draft:true",
       "acao_recomendada": "PO revisar APROVACAO_FASE_B_IMPACTO.md e converter de draft se aprovado"
     },
     {
@@ -134,20 +128,31 @@
       "verdict": "FECHAR",
       "rule8_triggers": [],
       "motivo": "REGRA #10 (branch de outra sessão session_01HW5obNKUFtUMbBdgUb94kY) + draft",
-      "evidencia": "github_get_pr_diff(#2452): analise-prs/dossies/PR-2441.md apenas (docs). REGRA #10: branch de sessão alheia",
-      "acao_recomendada": "Fechar PR. Conteúdo docs-only de sessão alheia — se correção ainda necessária, resubmeter.",
+      "evidencia": "REGRA #10: branch sessão alheia",
+      "acao_recomendada": "Fechar PR.",
       "comentario_fechamento": "Fechando: branch de outra sessão (REGRA #10) — não é possível mergear autonomamente. Conteúdo docs-only pode ser resubmetido se ainda relevante."
     },
     {
       "number": 2469,
       "title": "fix(ci): e2e-personalization E42 — corrige workflow",
       "draft": false,
-      "mergeable_state": "clean",
+      "mergeable_state": "unknown",
       "verdict": "DECISÃO_HUMANA",
       "rule8_triggers": [".github/workflows/e2e-personalization.yml"],
-      "motivo": "Toca .github/workflows/e2e-personalization.yml (Rule 8 CI) + REGRA #10 branch outra sessão",
+      "motivo": "Toca .github/workflows/ (Rule 8 CI) + REGRA #10 branch outra sessão; possivelmente supersedido por #2489",
       "evidencia": "github_get_pr_diff(#2469): .github/workflows/e2e-personalization.yml modificado",
-      "acao_recomendada": "PO revisar mudança no workflow E42 e mergear se aprovar"
+      "acao_recomendada": "PO verificar se fix foi absorvido pelo PR #2489 mergeado. Fechar se redundante."
+    },
+    {
+      "number": 2487,
+      "title": "docs(ci): RELATORIO_CI Rev18 + PENDENCIAS Rev18",
+      "draft": true,
+      "mergeable_state": "unknown",
+      "verdict": "DECISÃO_HUMANA",
+      "rule8_triggers": [],
+      "motivo": "REGRA #10 (branch claude_05/nifty-sagan-r23gqh sessão session_01HW5obNKUFtUMbBdgUb94kY) + draft:true + behind main",
+      "evidencia": "PR criado 2026-10-25T07:26:34Z. Arquivos: PENDENCIAS.md (+295/-47), RELATORIO_CI.md (+30/-20). PR #2489 mergeou mesmos arquivos em 6457e24d.",
+      "acao_recomendada": "PO verificar se conteúdo P43–P55 relevante dado PR #2489. Rebaseiar e converter de draft, ou fechar."
     }
   ]
 }

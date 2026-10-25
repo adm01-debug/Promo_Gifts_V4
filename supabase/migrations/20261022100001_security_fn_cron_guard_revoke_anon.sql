@@ -1,5 +1,7 @@
 -- SECURITY FIX: FUNC-NEW-001 (CRÍTICO) — fn_cron_guard SQL injection via EXECUTE p_sql
 -- Rollback: 20261022100001_rollback.sql
+-- ROLLBACK: GRANT EXECUTE ON FUNCTION public.fn_cron_guard(p_key bigint, p_sql text) TO PUBLIC;
+--           GRANT EXECUTE ON FUNCTION public.fn_cron_guard(p_key bigint, p_sql text) TO anon;
 --
 -- Evidência coletada em 2026-10-22:
 --   SELECT proname, prosrc FROM pg_proc WHERE proname = 'fn_cron_guard';
