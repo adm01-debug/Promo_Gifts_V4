@@ -74,7 +74,7 @@ export class MagazineErrorBoundary extends Component<Props, State> {
     const { isHooksViolation, error } = this.state;
 
     // Falha de import lazy não se recupera localmente: o global tem reload/limpeza de cache.
-    if (isChunkLoadError(error)) throw error;
+    if (error && isChunkLoadError(error)) throw error;
 
     return (
       <div
