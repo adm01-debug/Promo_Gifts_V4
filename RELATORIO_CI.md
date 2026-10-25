@@ -50,17 +50,21 @@
 
 ---
 
-## CI do PR #2573 — Commit `0a4dec49` (fix stopPropagation)
+## CI do PR #2573 — Commit `1b8c61e8` (HEAD atual do PR)
 
 **PR:** https://github.com/adm01-debug/Promo_Gifts_V4/pull/2573  
-**Commit HEAD do PR:** `0a4dec493025e073e629ef55d5f2e103aad0ecd8`  
-**Status verificado em:** 2026-10-25T22:30Z
+**Commit HEAD do PR:** `1b8c61e87fe0086d22aa1d901055363a96fe4429`  
+**Status verificado em:** 2026-10-25T21:52Z
 
 | Check | Status |
 |---|---|
-| Gate Final - Deploy Ready (run #40235417547) | ⏳ pending — runners saturados desde 21:25Z |
+| Gate Final - Deploy Ready (run [#40237005888](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40237005888)) | ⏳ pending — runners saturados (created 21:45Z, não iniciou) |
 
-**Observação:** Os runners do GitHub Actions estão com fila saturada. O run foi criado às 21:25Z e permanece `pending` (sem um único job iniciado). Este é um problema de infraestrutura GitHub, não de código.
+**Histórico de runs neste PR:**
+- Commit `0a4dec49`: run [#40235417547](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40235417547) — pending (cancelado por push subsequente)
+- Commit `1b8c61e8` (HEAD): run [#40237005888](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40237005888) — pending (runners saturados desde 21:25Z)
+
+**Observação:** Os runners do GitHub Actions estão com fila saturada. O run foi criado às 21:45Z e permanece `pending` (sem um único job iniciado). Este é um problema de infraestrutura GitHub, não de código. Check-in agendado às 22:37Z para verificar resultado.
 
 ---
 
