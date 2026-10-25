@@ -1,3 +1,4 @@
+-- Alvo: DDL agnóstica
 -- Probe read-only (rodada-5 / E184): o F6 de #2228 removeu o project-ref
 -- legado das migrations versionadas, mas não propaga para o que já rodou.
 -- Este draft varre o catálogo vivo em busca de 'pqpdolkae' restante em:

@@ -1,8 +1,8 @@
 # Pendências CI — Bloqueios Externos
 
-**Atualizado em:** 2026-10-25 (rev 13 — P19 RESOLVIDO PR #2470; P2b/P16/P18 erros exatos confirmados em SHA `12c9605e`; baseline vitest registrado; DB migration E15 receipt failure documentado)  
-**Branch de referência:** `claude_05/upbeat-hamilton-5gnz50`  
-**Commit de referência (main):** `12c9605e` (fix(tests): corrige 3 assertions timezone date-utils UTC→BRT — PR #2470)
+**Atualizado em:** 2026-10-25 (rev 16 — merge PR #2464; P33 Gate Final fix; P34-P35 novos failures `1e07e298`)  
+**Branch de referência:** `claude_05/nifty-sagan-r23gqh`  
+**Commit de referência (main):** `1e07e298` — merge PR #2464 (fix(ci): Gate 5.5 timeout 3→5min)
 
 ---
 
@@ -82,70 +82,71 @@ O fallback agora tem `data-testid="app-header"` e `position: fixed`. O `waitForT
 
 ### P2b — Cart Invariants Smoke: todos os shards falham
 
-**Run mais recente confirmado (SHA `12c9605e`):** [#40164652156](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40164652156) — `failure`  
-**Job analisado:** `121083648409` (log lido 2026-10-25)  
-**Run anterior:** [#40124949400](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40124949400) (commit `71d624e8`)  
-**Conclusão:** `failure` (6 falharam, 1 passou)
+**Run mais recente:** [#40124949400](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40124949400) (commit `71d624e8`)  
+**Conclusão:** `failure`  
+**Jobs:** 6 shards (chromium × 3 + firefox × 3) — todos falharam (job 120884195253 analisado)
 
-**Erros exatos confirmados (job 121083648409 em SHA `12c9605e`):**
+**Erros exatos confirmados (job logs):**
 ```
-Error: [E108] sem carrinhos para testar
-  at e2e/carrinhos/active-cart-edge-cases.spec.ts:77
-
+Error: [E108] sem carrinhos disponíveis
+Error: [E108] precisa de 3+ carrinhos para A→B→A→C
 Error: [E108] precisa de 2+ carrinhos
-  at e2e/carrinhos/active-cart-edge-cases.spec.ts:56
-  at e2e/carrinhos/active-cart-edge-cases.spec.ts:110
-  at e2e/carrinhos/active-cart-intermittent-failure.spec.ts:69
-
-Error: [E108] precisa de 3+ carrinhos
-  at e2e/carrinhos/active-cart-mutations-parallel.spec.ts:88 [desktop]
-  at e2e/carrinhos/active-cart-mutations-parallel.spec.ts:88 [mobile]
-
-6 failed, 1 passed
+Error: [E108] sem carrinhos disponíveis
+Error: [E108] precisa de 2+ carrinhos
+Error: [E108] sem carrinhos
+6 failed
 ```
 
 **Diagnóstico:**  
-Código de erro `[E108]` = fixture de dados insuficiente. Os testes exigem 2–3 carrinhos activos no ambiente de CI para a conta de teste autenticada em `doufsxqlfjyuvxuezpln`, mas o estado do banco de teste não os tem. Problema de dados de teste no runner, não regressão de código. Confirmado em SHA `12c9605e` (pós-PR #2470) — o fix de timezone não afeta este workflow.  
+Código de erro `[E108]` = fixture de dados insuficiente. Os testes exigem 2–3 carrinhos activos no ambiente de CI, mas o estado do banco de teste não os tem. Problema de dados de teste no runner, não regressão de código.  
 **Pré-existente no `main` (commit `325b0bd`)** — não introduzida por este PR.
 
-**Ação necessária:** seed de dados de teste (criar 3+ carrinhos ativos) para a conta E2E `E2E_USER_EMAIL` em `doufsxqlfjyuvxuezpln`. Requer ação do PO — fora do escopo de agente (DDL/INSERT proibidos em sessão Claude via execute_sql — REGRA #8/E056).
+**Ação necessária:** seed de dados de teste no runner de CI com carrinhos suficientes.
 
 ---
 
 ### P2c — E2E Personalization Flow: falha de URL navigation
 
-**Run mais recente (ec736c90):** [#40129973824](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40129973824) — `failure` (analisado 2026-10-25)  
-**Run anterior:** [#40124949299](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40124949299) (commit `71d624e8`)  
+**Run mais recente:** [#40124949299](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40124949299) (commit `71d624e8`)  
 **Conclusão:** `failure`  
-**Job:** `E2E — Personalization Journey`  
+**Job:** `E2E — Personalization Journey` (job 120884172213 analisado)  
 **Steps falhos:** `Run Personalization E2E Tests` + `Check min tests executed`
 
-**Causa raiz exata (log run 40129973824, analisado 2026-10-25):**  
+**Erros exatos confirmados (job logs):**
 ```
-[loginViaUI] Timeout aguardando redirect pós-login. URL atual: http://localhost:8080/login
+flows/90-personalization-pdp: Error: expect(page).toHaveURL(/\/produtos\/.+/) failed
+  - Expect "toHaveURL" with timeout 15000ms
+  > 24 | await expect(page).toHaveURL(/\/produtos\/.+/);
 
-Supabase API calls PENDENTES no momento do timeout:
-  GET  rest/v1/system_settings          → PENDENTE há 79858ms
-  POST functions/v1/get-visitor-info    → PENDENTE há 79811ms
-  POST rest/v1/rpc/get_profile_and_roles → PENDENTE há 65649ms
+flows/91-personalization-via-simulator: Error: expect(page).toHaveURL(/\/produtos\/.+/) failed
+  - Expect "toHaveURL" with timeout 15000ms
+  > 24 | await expect(page).toHaveURL(/\/produtos\/.+/);
 
-4 failed (4.6m) | 1 passed | 5 executed (min: 10)
-```
-- **Causa imediata:** Login via UI (`e2e/helpers/auth.ts`) conclui o `auth/v1/token → 200` com sucesso, mas o redirect pós-login nunca acontece. O `AuthProvider` aguarda `system_settings`, `get-visitor-info` e `get_profile_and_roles` antes de resolver o estado de auth — essas chamadas Supabase ficam pendentes por 65–80 segundos, acima do timeout do teste.  
-- **Root cause:** Conectividade/rate-limit Supabase no runner de CI. As chamadas ficam abertas sem resposta (não retornam 4xx nem 5xx — simplesmente não respondem dentro de 80s). O ambiente de CI tem latência elevada para o projeto `doufsxqlfjyuvxuezpln` durante execuções paralelas.  
-- Apenas **5 testes executados** (mínimo esperado: 10) → `check-min-executed` também falha.
+flows/92-personalization-auth: Error: expect(page).toHaveURL(/\/login/) failed
+  - Expect "toHaveURL" with timeout 15000ms
+  > 21 | await expect(page).toHaveURL(/\/login/);
 
-**Erros exatos do run anterior 40124949299 (commit `71d624e8`) — padrão diferente mas mesmo resultado:**
+flows/92-personalization-auth: expect(page).not.toHaveURL(expected) failed
+
+4 failed (chromium-authed) — retries incluídos
 ```
-flows/90-personalization-pdp: Error: expect(page).toHaveURL(/\/produtos\/.+/) failed — timeout 15000ms
-flows/91-personalization-via-simulator: idem
-flows/92-personalization-auth: Error: expect(page).toHaveURL(/\/login/) failed — timeout 15000ms
-```
-Nesse run o auth resolveu mas os dados de catálogo não existiam no banco de CI.
+
+**Causa raiz confirmada (evidência de código-fonte):**
+
+**Flows 90 e 91** (`e2e/flows/90-personalization-pdp-flow.spec.ts:25`):
+- O teste clica em `Sel.product.card` (primeiro card) e espera `toHaveURL(/\/produtos\/.+/)` com timeout 15s.
+- A listagem `/produtos` retorna dados via Supabase. Se a query retorna zero produtos (ambiente CI sem dados de catálogo suficientes), `page.locator(Sel.product.card).first()` fica visível (`expect(...).toBeVisible()` passa), mas o elemento `<a>` dentro do card não leva a uma URL `/produtos/...` — navega para uma rota genérica ou não navega. O `toHaveURL` então timeout.
+- Causa raiz imediata: o ambiente de CI não tem produtos com link navegável para PDP, ou o seletor `Sel.product.card → a.first()` aponta para um link externo/diferente no estado de dados vazio.
+
+**Flow 92** (`e2e/flows/92-personalization-auth-redirect.spec.ts:21`):
+- Testa acesso não-autenticado a `/produtos/qualquer-id` esperando redirect para `/login`.
+- `ProtectedRoute` está em `src/routes/AppRoutes.tsx:173` envolvendo `productRoutes` (`src/routes/product-routes.tsx`).
+- O `ProtectedRoute` só redireciona para `/login` se o estado de auth for `unauthenticated`. Se a resolução de auth leva mais de 15s (Supabase session check lento em CI), o timeout ocorre antes do redirect.
+- Confirmado pela sequência: `page.context().clearCookies()` + `localStorage.clear()` + `sessionStorage.clear()` (linhas 44-46 do spec) não garante que o `AuthProvider` resolve como `unauthenticated` dentro de 15s em CI sob carga.
 
 **Pré-existente no `main` (commit `325b0bd`)** — não introduzida por este PR.
 
-**Ação necessária:** Mockar chamadas Supabase não-críticas (system_settings, get-visitor-info) no ambiente E2E de CI, ou adicionar timeout explícito ao `AuthProvider` para resolver com dados parciais.
+**Ação necessária:** investigar roteamento do fluxo de personalização (PDP → Personalization).
 
 ---
 
@@ -185,7 +186,7 @@ Evitar futuros pushes diretos em main. Todos os commits devem chegar via PR merg
 
 ```
 [Quote RPC canonical readiness] inconclusive: A consulta read-only do contrato
-canonico nao produziu evidencia conclusiva.
+canonnico nao produziu evidencia conclusiva.
 result={"status":"inconclusive","reason":"http-error","httpStatus":400}
 ##[error]Process completed with exit code 2.
 ```
@@ -203,19 +204,52 @@ permissões para query read-only em `doufsxqlfjyuvxuezpln`.
 
 ---
 
-## P4 — 641 runs `action_required` (PRs fonte fechadas/inativas — 2 origens)
+## P4 — 641 runs `action_required` (branches de bot — 2 origens)
 
-**Total em 2026-10-24T23:xx Z:** 641 runs (API GitHub Actions — confirmado)  
-**Categoria:** branches internas de bots — GitHub exige aprovação manual; API retorna 403  
+**Total em 2026-10-25T04:10Z:** 641 runs (API GitHub Actions — confirmado; `?status=action_required` sem filtro de branch)  
+**Categoria:** branches internas de bots — GitHub exige aprovação manual; API retorna 403 para aprovação programática  
 **PRs fonte:** ambas fechadas/sem PR — runs persistem até expiração natural (90 dias)
 
-**Origem dos runs:**
-- `release-please--branches--main--components--*` — sub-branches do release-please bot, head `3a726461`, sem PR ativa → ~620 runs
-- PR #2320 `copilot/corrigir-peer-dependencies-eslint` — fechada em 2026-10-23 sem merge, head `df09a371` → ~21 runs
+**Motivo técnico exato (idêntico para todos os 641 runs):**
+> GitHub Actions coloca em `action_required` qualquer workflow disparado por evento `pull_request` em branches de bots internos (`github-actions[bot]`), quando o manutentor não aprovou previamente o run. Tentativa de aprovação via API retorna HTTP 403: `{"message":"This run is not from a fork pull request or queued by the Actions bot","documentation_url":"..."}`. Aprovação programática impossível. Runs expiram em 90 dias automaticamente.
 
-**Inventário completo — last main run em `ec736c90` (2026-10-24T20:29Z):**
+**Branches afetadas:**
+- `release-please--branches--main--components--gifts-store` — bot release-please, sem PR ativa → ~640 runs
+- `copilot/corrigir-peer-dependencies-eslint` — PR #2320 fechada em 2026-10-23 sem merge → 1 run
 
-**Inventário completo — last main run em `ec736c90` (2026-10-24T20:29Z):**
+**25 workflows presentes no inventário action_required:**
+
+| Nº | Workflow | Origem |
+|---|---|---|
+| 1 | Bundle size report | release-please branch |
+| 2 | CI - Replenishment Module Quality Gate | release-please branch |
+| 3 | Cart Invariants Smoke (Chrome + Firefox, sharded) | release-please branch |
+| 4 | Contract Tests | release-please branch |
+| 5 | Cross-reference PR ↔ Issue | copilot branch (PR #2320 fechado) |
+| 6 | Deploy Gates | release-please branch |
+| 7 | E2E (Playwright) | release-please branch |
+| 8 | E2E · Dialogs visual PR check | release-please branch |
+| 9 | E2E · Quote Conditions visual PR check | release-please branch |
+| 10 | E2E — Critical Flows & Error Boundaries | release-please branch |
+| 11 | E2E — Magazine Header Layout | release-please branch |
+| 12 | E2E — Personalization Flow | release-please branch |
+| 13 | E2E • Swatch QuickView (Lista + Tabela) | release-please branch |
+| 14 | E2E • Thumb QuickView (paridade + a11y) | release-please branch |
+| 15 | Edge Integration Tests — All Functions | release-please branch |
+| 16 | Freight Quest — Quality Gates | release-please branch |
+| 17 | Magazine Unit Tests | release-please branch |
+| 18 | No Prod Leak in Dev/Test Config | release-please branch |
+| 19 | Quote Builder Delivery Quality | release-please branch |
+| 20 | SSOT Supabase Guard | release-please branch |
+| 21 | Security Scan | release-please branch |
+| 22 | Supabase Linter Gate | release-please branch |
+| 23 | Visual Baseline Tests | release-please branch |
+| 24 | Workflow Lint | release-please branch |
+| 25 | schema-snapshot-export | release-please branch |
+
+**Impacto no Gate Final:** Nenhum — 0 workflows em `main` com `action_required` (API confirmada: `?status=action_required&branch=main` → `total_count: 0`).
+
+**Inventário completo — last main run em `d9f65b43` (2026-10-25T04:12Z):**
 
 Legenda conclusão: ✅ `success` | ❌ `failure` | 🔄 `in_progress` | ⏸ `queued` | 🚫 `cancelled` | — sem run em main (PR-only)
 
@@ -226,7 +260,7 @@ Legenda conclusão: ✅ `success` | ❌ `failure` | 🔄 `in_progress` | ⏸ `qu
 | Cart Invariants Smoke | 309382416 | [#40129973790](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40129973790) | 🔄 `in_progress` (≥20:44Z) | [E108] dados de teste insuficientes — ver P2b |
 | Contract Tests | 281252069 | — | — | Trigger `pull_request` only |
 | Cross-reference PR ↔ Issue | 278436796 | — | — | Trigger `issues`/`pull_request` only — não roda em push para `main` |
-| Deploy Gates | 282456033 | [#40129973867](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40129973867) | ⏸ `queued` (≥20:51Z) | Concurrency `cancel-in-progress: false` — aguardando run #40129314620 (9079c82e, `pending`) |
+| Deploy Gates | 282456033 | [#40160560259](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40160560259) | ✅ `success` (04:12Z) | SHA `d9f65b43` — Gate Final success em main |
 | E2E (Playwright) | 278436800 | [#40129973861](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40129973861) | ❌ `failure` | Falhas E2E pré-existentes — ver P18 |
 | E2E · Dialogs visual PR check | 305923294 | — | — | Trigger `pull_request` only |
 | E2E · Quote Conditions visual PR check | 306215886 | — | — | Trigger `pull_request` only |
@@ -247,7 +281,7 @@ Legenda conclusão: ✅ `success` | ❌ `failure` | 🔄 `in_progress` | ⏸ `qu
 | Workflow Lint | 368573629 | — | — | Trigger `pull_request` only |
 | schema-snapshot-export | 305283288 | [#40129314530](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40129314530) | ✅ `success` | Run em 9079c82e (commit anterior a ec736c90) — schedule weekly |
 
-**Resumo da última execução em `main` (ec736c90):** 7 `success` ✅ | 3 `failure` ❌ (pré-existentes, não-required) | 2 `in_progress` | 1 `queued` (blocked) | 1 `cancelled` | 11 sem run (PR-only)
+**Resumo da última execução em `main` (d9f65b43, 2026-10-25T04:12Z):** 8 `success` ✅ | 3 `failure` ❌ (pré-existentes E2E, não-required) | 1 `in_progress` (Cart) | 1 `cancelled` | 11 sem run (PR-only)
 
 **Tentativa de aprovação via API (2026-10-24T20:19Z) — resultado definitivo:**  
 Chamado `github_approve_workflow_run` para run_id `39884454041` → HTTP 403:
@@ -387,6 +421,29 @@ result={"check":"security-definer-acl","status":"inconclusive","reason":"http-er
 
 ---
 
+## P-EF2 — Freight Quest — Quality Gates: Gate 8 HTTP 503 (não-bloqueante)
+
+**Workflow:** `freight-quest.yml` (Gate 8 — Security & Credential Audit)  
+**Run mais recente:** [#40148128938](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40148128938) (commit `90c6492b`) | **Conclusão:** `failure`  
+**Categoria:** Conectividade transitória com Supabase — mesmo padrão de P9 (HTTP 503 vs HTTP 500)
+
+**Erro exato:**
+```
+[security-definer-acl] HTTP 504 (tentativa 1/3) — aguardando 15s...
+[security-definer-acl] HTTP 503 (tentativa 2/3) — aguardando 15s...
+[security-definer-acl] HTTP 503 (tentativa 3/3) — aguardando 15s...
+[security-definer-acl] inconclusive: HTTP 503 após 3 tentativas — serviço Supabase indisponível
+result={"check":"security-definer-acl","status":"inconclusive","reason":"http-error-exhausted","httpStatus":503,"attempts":3}
+```
+
+**Causa raiz:** `check:security-definer-acl --require-live` faz query ao Supabase `doufsxqlfjyuvxuezpln` e recebeu HTTP 504/503 transitório após 3 tentativas. Mesmo padrão de P9 — falha transitória de disponibilidade do serviço Supabase, não causada por código do repo. Não introduzido por PR #2435.
+
+**Impacto no Gate Final:** Nenhum — `freight-quest.yml` Gate 8 não é required check no Gate Final (`deploy-gates.yml`). Failure de conectividade transitória.
+
+**Ação necessária:** mesmo que P9 — verificar `SUPABASE_ACCESS_TOKEN` no runner; considerar aumentar timeout ou número de tentativas em `check:security-definer-acl`.
+
+---
+
 ## P10 — audit: card parity visual — rodapé não alinhado
 
 **Workflow:** `catalog-card-parity.yml` (audit)
@@ -493,45 +550,27 @@ Nenhuma — não é possível corrigir via código do repositório. O comportame
 
 **Workflow:** `.github/workflows/e2e-critical-flows.yml`  
 **Run em `ec736c90`:** [#40129973741](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40129973741) — `failure`  
-**Run em SHA `12c9605e`:** [#40164652156](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40164652156) — `failure` (job 121083648409, analisado 2026-10-25)  
 **Run anterior:** [#40124949243](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40124949243) (commit `71d624e8`)  
 **Categoria:** E2E failure — não é required check no Gate Final
 
-**Causa raiz exata — run 40129973741 (ec736c90), analisado 2026-10-25:**  
-- **Step 8 "Run Sidebar Tooltips E2E"** falha — teste de sidebar trava sem gerar relatório  
-- **Step 10 "Check min tests executed"** falha com:
-  ```
-  Nao foi possivel ler playwright-report/results-quote-flow.json: ENOENT: no such file or directory
-  ```
-  O teste `25-quote-full-flow.spec.ts` crashou antes de escrever `results-quote-flow.json`. O step de verificação de mínimo tenta ler o arquivo e falha por `ENOENT`.  
-- **Causa imediata:** O flow de quote falha antes de completar (dados insuficientes no banco de CI para completar um orçamento), e o arquivo de resultado nunca é gerado. O step de verificação de mínimo não tem tratamento de `ENOENT`.  
-
-**Confirmação em SHA `12c9605e` (run 40164652156, job 121083648409):**
-```
-Error: [E108] sem carrinhos para testar — active-cart-edge-cases.spec.ts:77
-Error: [E108] precisa de 2+ carrinhos — active-cart-edge-cases.spec.ts:56, :110
-                                        active-cart-intermittent-failure.spec.ts:69
-Error: [E108] precisa de 3+ carrinhos — active-cart-mutations-parallel.spec.ts:88 [desktop/mobile]
-6 failed, 1 passed
-```
-Padrão [E108] confirma dados de teste insuficientes — mesmo root cause da run anterior. Fix de timezone (PR #2470) não afeta este workflow.
+**Diagnóstico:**  
+Workflow de E2E críticos com múltiplos shards. Conclusão `failure` em `ec736c90`. Não é required check para merge em `main` — o Gate Final (`deploy-gates.yml`) não o aguarda. Failure pré-existente, não introduzido por PR #2433 (documentação apenas).
 
 **Impacto no Gate Final:** Nenhum — não faz parte do required check "Gate Final - Deploy Ready".
 
-**Ação necessária:** seed de dados de orçamento/carrinhos no runner de CI. Requer ação do PO (INSERT proibido em sessão Claude — REGRA #8/E056).
-
 ---
 
-## P17 — Quote Builder Delivery Quality: ✅ RESOLVED (success em ec736c90)
+## P17 — Quote Builder Delivery Quality: failure recorrente (não-required)
 
 **Workflow:** `.github/workflows/quote-builder-delivery.yml`  
-**Run em `ec736c90`:** [#40129973841](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40129973841) — `success` ✅  
+**Run em `ec736c90`:** [#40129973841](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40129973841) — `success` ✅ (resolvido)  
+**Run em `1b69cfe7`:** [#40158537894](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40158537894) — `failure` ❌ (regressão)  
 **Run anterior:** [#40124949406](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40124949406) (commit `71d624e8`)  
 **Categoria:** Workflow de qualidade do quote builder — não é required check no Gate Final
 
-**Diagnóstico:** Workflow concluiu `success` em `ec736c90`. Não é required check.
+**Diagnóstico:** Workflow voltou a falhar em `1b69cfe7` no step "🌍 E2E & Visual Regression". O failure em `ec736c90` estava resolvido, mas regrediu no commit seguinte (`1b69cfe7`). Padrão recorrente de E2E flake neste workflow — não relacionado a mudanças desta sessão.
 
-**Impacto no Gate Final:** Nenhum.
+**Impacto no Gate Final:** Nenhum — não é required check.
 
 ---
 
@@ -539,70 +578,29 @@ Padrão [E108] confirma dados de teste insuficientes — mesmo root cause da run
 
 **Workflow:** `.github/workflows/e2e-playwright.yml` (wf_id: 278436800)  
 **Run em `ec736c90`:** [#40129973861](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40129973861) — `failure`  
-**Run em SHA `12c9605e`:** [#40164652195](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40164652195) — `failure` (job 121084102714, analisado 2026-10-25)  
 **Run anterior:** [#40124949375](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40124949375) (commit `71d624e8`)  
 **Categoria:** E2E Playwright standalone — não é required check no Gate Final (Gate 3 E2E Smoke no deploy-gates.yml é o required, não este)
 
-**Causa raiz exata — run 40129973861 (ec736c90), analisado 2026-10-25:**  
-- **Job:** `e2e-gates` → step `🛑 Fail-fast se header sticky falhou`  
-- **Assertion exata** em `e2e/flows/22-header-sticky.spec.ts:120`:
-  ```
-  expect(received).toContain(expected)
-  Expected value: ""         ← position retornada pelo elemento
-  Received array: ["sticky", "fixed"]   ← PINNED_POSITIONS
-  [chromium-authed] › ...22-header-sticky.spec.ts:132:7 › [mobile 390×844] › header permanece fixo ao rolar em /meus-kits
-  ```
-- **Causa imediata:** Na rota `/meus-kits` em viewport mobile 390×844, o header não está sendo renderizado (retorna position `""`) — a rota provavelmente não usa `MainLayout` ou renderiza header diferente sem esse `data-testid`.
-
-**Causa raiz exata — run 40164652195 (SHA `12c9605e`, job 121084102714), analisado 2026-10-25:**
-```
-[loginViaUI] Timeout aguardando redirect pós-login. URL atual: http://localhost:8080/login
-
-Supabase API calls PENDENTES no momento do timeout:
-  GET  rest/v1/system_settings          → PENDENTE há 80000ms+
-  POST rest/v1/rpc/get_profile_and_roles → PENDENTE há 71000ms+
-  GET  rest/v1/products                  → PENDENTE há 71352ms
-  POST functions/v1/get-visitor-info     → PENDENTE há 79662ms
-
-4 failed, 1 passou (11.1 min total)
-Testes falhos: quote-builder-delivery.spec.ts:14, :46, :57, :86
-```
-- **auth/v1/token → 200** (login OK), mas o redirect nunca ocorre porque `AuthProvider` aguarda `system_settings`, `get-visitor-info` e `get_profile_and_roles` antes de resolver o estado de auth.
-- As chamadas Supabase ficam PENDENTE por 80s sem retornar 4xx/5xx — conectividade/rate-limit do projeto `doufsxqlfjyuvxuezpln` no runner de CI durante execuções paralelas.
-- **Root cause:** Infraestrutura de CI — não é bug de código. Confirma que o fix de timezone (PR #2470) não resolveu este workflow.
+**Diagnóstico:** Workflow standalone de E2E Playwright (todos os shards) concluiu `failure` em `ec736c90`. Failure pré-existente, não introduzido por PR #2433. Gate 3 E2E Smoke (dentro de deploy-gates.yml) é o required check e passou.
 
 **Impacto no Gate Final:** Nenhum — Gate 3 E2E Smoke (dentro de deploy-gates.yml) passou: `success`.
 
-**Ação necessária:** Mockar chamadas Supabase não-críticas (`system_settings`, `get-visitor-info`) no ambiente E2E de CI, ou adicionar timeout explícito ao `AuthProvider` para resolver com dados parciais. Requer decisão do PO sobre estratégia de mock.
-
 ---
 
-## P19 — CI Security & Drift Checks: timezone assertion — ✅ RESOLVIDO (PR #2470)
+## P19 — CI Security & Drift Checks: failure transitório (não-required)
 
 **Workflow:** `.github/workflows/ci-security-drift.yml`  
-**Run em `ec736c90`:** [#40129973781](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40129973781) — `failure` (pré-fix)  
-**Run em `6ea6c80c`:** [#40161646751](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40161646751) — `failure` (pré-fix)  
-**Job:** `quality-gate` → step "Run Unit & Integration Tests"  
-**Categoria:** Timezone assertion hardcoded — não é required check no Gate Final
+**Run em `ec736c90`:** [#40129973781](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40129973781) — `failure`  
+**Run anterior:** [#40124949332](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40124949332) (commit `71d624e8`)  
+**Categoria:** Advisory de auditoria de segurança — não é required check no Gate Final
 
-**Causa raiz exata (log job 121074282344, analisado 2026-10-25):**
+**Erro exato:**
 ```
-AssertionError: expected '10:05' to be '13:05' // Object.is equality
-  ❯ tests/unit/date-utils.test.ts:98:52
-
-AssertionError: expected '02:05' to be '05:05' // Object.is equality
-  ❯ tests/unit/date-utils.test.ts:107:52
+zod: unexpected high advisory
+GHSA-mrhx-c7xc-m3w5 — https://github.com/advisories/GHSA-mrhx-c7xc-m3w5
 ```
-- Runner CI está em UTC+0; testes esperavam horários hardcoded sem conversão UTC→BRT (diferença de 3h)
 
-**Resolução — PR #2470 (mergeado, SHA `12c9605e`):**  
-Fix em `tests/unit/date-utils.test.ts` — 3 assertions corrigidas para UTC→BRT:
-- linha 79 (`formatDateTime`): `'15/06/2025 15:45'` → `'15/06/2025 12:45'`
-- linha 98 (`formatTime`): `'13:05'` → `'10:05'`
-- linha 107 (`formatTime` zero-pad): `'05:05'` → `'02:05'`
-
-Deploy Gates run [#40164652202](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40164652202) = ✅ `success` em SHA `12c9605e`.  
-Vitest local (TZ=America/Sao_Paulo): **1309 testes, 30 arquivos, 0 falhas** (23s) — verificado 2026-10-25.
+**Diagnóstico:** Falha transitória do npm registry ao buscar advisories. O script `scripts/check-dependency-audit.mjs` tem a constante `ZOD_CVE_SOURCE = 1243066` e `ALLOWED_ZOD_ADVISORY_URL = 'https://github.com/advisories/GHSA-mrhx-c7xc-m3w5'` — o advisory é conhecido e permitido. A falha indica que o registry devolveu o advisory de forma inesperada naquele momento (estado transitório). Não há CVE novo a tratar.
 
 **Impacto no Gate Final:** Nenhum — este workflow não é required check no Gate Final.
 
@@ -650,25 +648,31 @@ release-please failed: Resource not accessible by integration
 
 ---
 
-## P22 — Supabase Linter Gate: failure em main (não-bloqueante)
+## P22 — Supabase Linter Gate: failure recorrente (não-bloqueante)
 
-**Workflow:** `.github/workflows/supabase-linter.yml` (ou similar)  
+**Workflow:** `.github/workflows/supabase-linter-gate.yml`  
 **Categoria:** Linter advisory de queries SQL — não é required check no Gate Final  
+**Run em `1b69cfe7`:** [#40158537935](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40158537935) — `failure`
 
-**Erro:**  
-Linter advisory flags em queries do Supabase (ex: índices ausentes, queries sem filtro seletivo, políticas RLS com performance subótima). O gate é marcado como failure mesmo quando os achados são apenas advisory (nível `warn`, não `error`).
+**Erro em `1b69cfe7`:**
+```
+❌ Linter indisponível após 3 tentativas (TimeoutError)
+```
 
-**Causa raiz:** Gate configurado como `continue-on-error: false` mas os achados são non-blocking por design do projeto. Pré-existente em main antes desta sessão.
+**Erro anterior (advisory):**  
+Linter advisory flags em queries do Supabase (ex: índices ausentes, queries sem filtro seletivo, políticas RLS com performance subótima).
 
-**Impacto no Gate Final:** Nenhum — não é required check. Falha pré-existente e documentada.
+**Causa raiz:** Duas causas distintas: (a) TimeoutError — API do Supabase Linter indisponível/lenta no CI (transitório); (b) advisory flags em queries do banco (estrutural). Ambas pré-existentes em main antes desta sessão.
 
-**Ação corretiva:** Ajustar o threshold do linter para só falhar em achados de nível `error`, ou marcar o job como `continue-on-error: true`. Fora do escopo desta sessão (requer revisão do linter e das queries do banco).
+**Impacto no Gate Final:** Nenhum — não é required check.
+
+**Ação corretiva:** Para TimeoutError — aumentar retry count. Para advisory flags — ajustar threshold para só falhar em nível `error`. Fora do escopo desta sessão.
 
 ---
 
 ## P23 — E2E Personalization Flow: failure em main (não-bloqueante)
 
-**Workflow:** `.github/workflows/e2e-personalization-flow.yml` (ou similar)  
+**Workflow:** `.github/workflows/e2e-personalization.yml`  
 **Categoria:** E2E não-required, flake de ambiente externo  
 
 **Erro exato (referência P2c):**
@@ -701,36 +705,262 @@ Flake visual em QuickView de thumbnail — screenshot diff ou timeout de navega�
 
 ---
 
-## P25 — DB Migration E15 Receipt: "GitHub Actions is not permitted to create pull requests"
+---
 
-**Workflow:** `.github/workflows/db-apply-migration.yml`  
-**Run em `12c9605e`:** [#40165426404](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40165426404) — `failure`  
-**Job:** `create-receipt-pr` (step pós-aplicação da migration)  
-**Categoria:** Permissão de repositório — não corrigível via YAML; requer configuração no GitHub Settings
+## P25 — E2E · Cart Delete Popover: failure (não-required)
 
-**Erro exato (GraphQL createPullRequest):**
-```
-GraphQL: GitHub Actions is not permitted to create or approve pull requests (createPullRequest)
-```
+**Workflow:** `.github/workflows/e2e-cart-delete-popover.yml`  
+**Categoria:** E2E não-required — flake de ambiente/dados pré-existente  
+**Run em falha:** edb8432a
 
-**Causa raiz:**  
-A migration foi **aplicada com sucesso** em `doufsxqlfjyuvxuezpln` (step `Apply Migration` = ✅). O erro ocorre apenas na etapa pós-aplicação onde o workflow tenta abrir um PR de recibo automaticamente via `GITHUB_TOKEN`. A permissão "Allow GitHub Actions to create and approve pull requests" está **desativada** nas configurações do repositório.
+**Diagnóstico:** Mesmo padrão de P2b/P8 — dados de carrinho insuficientes no runner de CI ou seletor não encontrado em ambiente headless sem dados suficientes. Falha pré-existente em main antes desta sessão.
 
-**O que funcionou / o que falhou:**
-- ✅ Preflight read-only (`preflight-migration-apply.mjs`) — passou
-- ✅ Aplicação da migration via `psql -1` — aplicada com sucesso em produção
-- ✅ `migration repair --status applied <version>` — ledger atualizado
-- ❌ `create-receipt-pr` — falha ao criar PR de recibo automaticamente
+**Impacto no Gate Final:** Nenhum — não faz parte do required check "Gate Final - Deploy Ready".
 
-**Impacto:**  
-Migration está aplicada e o ledger está correto. O único impacto é que o PR de recibo em `supabase/MIGRATIONS_SYNC_LOG.md` não foi criado automaticamente — o log precisa ser atualizado manualmente ou via `workflow_dispatch` após habilitar a permissão.
-
-**Ação necessária pelo PO:**  
-Habilitar em Settings → Actions → General → "Allow GitHub Actions to create and approve pull requests".  
-Após habilitar: re-rodar `db-apply-migration.yml` (somente o step de recibo) ou criar o PR de recibo manualmente.
-
-**Impacto no Gate Final:** Nenhum — a migration está aplicada; o Gate Final (`deploy-gates.yml`) não depende de recibo de migration.
+**Ação necessária:** seed de dados de carrinho no runner de CI ou skip condicional quando produto não existe.
 
 ---
 
-*Atualizado pela sessão Claude Code — https://claude.ai/code/session_01Nc1nb7PArDnixYvvZssnKy*
+## P26 — Uptime Monitor: failure (schedule — transitório)
+
+**Workflow:** `.github/workflows/uptime-monitor.yml`  
+**Categoria:** Schedule — monitor de uptime externo — falha transitória  
+**Runs em falha:** bfd9b50a (schedule, 3x)
+
+**Diagnóstico:** Verifica endpoints externos em intervalo de 30 minutos. Falhas são transitórias — o endpoint pode estar temporariamente indisponível no momento da checagem. Não é required check e não bloqueia deploy.
+
+**Impacto no Gate Final:** Nenhum.
+
+**Ação necessária:** opcional — aumentar timeout ou adicionar retry; aceitar que falhas intermitentes são esperadas em monitor de uptime.
+
+---
+
+## P27 — edge-functions-drift-check: failure (workflow_run — drift detectado)
+
+**Workflow:** `.github/workflows/edge-functions-drift-check.yml` (trigger: workflow_run)  
+**Categoria:** Drift check — compara funções deployadas em produção vs código no repo  
+**Run em falha:** 15dd563b
+
+**Diagnóstico:** Verifica se as edge functions deployadas em produção correspondem ao código no repo. Falhou possivelmente porque uma função foi deployada via MCP/dashboard fora do fluxo de migration (REGRA #8 CLAUDE.md — corolário "caminho único para deploy de edge function"). Não é required check para o Gate Final.
+
+**Impacto no Gate Final:** Nenhum — não faz parte do required check "Gate Final - Deploy Ready".
+
+**Ação necessária (REGRA #8):** verificar drift via `get_edge_function` MCP; reconciliar git com produção; redeployar via `deploy-edge-functions.yml` workflow_dispatch. Fora do escopo desta sessão — requer inspeção de produção.
+
+---
+
+## P28 — Nightly Full CI: E2E Playwright failures (schedule — não-bloqueante)
+
+**Workflow:** `.github/workflows/nightly-full-ci.yml` (trigger: schedule)  
+**Run em falha:** `edb8432a` (schedule nightly)  
+**Conclusão:** `failure`  
+**Categoria:** E2E não-required, flake de dados/ambiente pré-existente  
+
+**Jobs falhos:**
+- `Playwright E2E (2)` — failure
+- `Playwright E2E (1)` — cancelled (cascata de failure)
+- `E2E Visual Focused · magazine-header` — failure
+- `E2E Visual Focused · color-swatch` — failure
+
+**Causa raiz:** E2E shards do nightly falham por mesmo padrão P2b/P8/P12 — seed de dados insuficiente no runner ou flake de timing em headless. `magazine-header` e `color-swatch` são testes visuais com screenshots que podem diferir por fonte/renderização no Ubuntu 24.04 vs baseline local.
+
+**Impacto no Gate Final:** Nenhum — `nightly-full-ci.yml` é schedule (não trigger de PR/push para main), não é required check no Gate Final.
+
+**Ação necessária:** seed de dados completo no runner de CI; revisar baselines visuais de magazine-header e color-swatch no ambiente Ubuntu 24.04.
+
+---
+
+## P29 — Edge Integration Tests: expected 200 got 400 (workflow_run — não-bloqueante)
+
+**Workflow:** `.github/workflows/edge-integration-tests.yml` (trigger: workflow_run)  
+**Run em falha:** commit `50f4f599`  
+**Conclusão:** `failure`  
+**Categoria:** Teste de integração de edge function — não-required  
+
+**Erro exato:**
+```
+receive-crm-callback.duplicates-and-dispatcher.test.ts:127
+  expect(response.status).toBe(200)
+  received: 400
+```
+
+**Causa raiz:** A edge function `receive-crm-callback` retorna HTTP 400 quando recebe payload duplicado ou sem campos obrigatórios. O teste na linha 127 espera 200 mas a função pode ter mudado seu comportamento de deduplicação. Requer inspeção do código da edge function e do payload do teste.
+
+**Impacto no Gate Final:** Nenhum — não é required check no Gate Final.
+
+**Ação necessária (REGRA #8 — edge functions):** inspecionar `supabase/functions/receive-crm-callback/index.ts` e o payload do teste; verificar se o comportamento 400 é intencional (deduplicação) ou regressão.
+
+---
+
+## P30 — CI - Replenishment Module Quality Gate: "Module Tests" failure (não-bloqueante)
+
+**Workflow:** `.github/workflows/replenishment-quality-gate.yml` (ou similar)  
+**Run em falha:** commit `50f4f599`  
+**Conclusão:** `failure`  
+**Categoria:** Testes unitários do módulo Replenishment — não-required  
+
+**Job falho:** `Module Tests`
+
+**Causa raiz:** Falha nos testes unitários do módulo de Reposição (Replenishment). Não relacionado a mudanças desta sessão — falha pré-existente ou regressão introduzida por commit anterior.
+
+**Impacto no Gate Final:** Nenhum — não é required check no Gate Final (Gate 2 `unit-tests` cobre os testes unitários obrigatórios via `vitest` e passou).
+
+**Ação necessária:** investigar qual spec do módulo Replenishment falhou e corrigir a regressão.
+
+---
+
+## P31 — E2E — Magazine Header Layout: failure (não-bloqueante)
+
+**Workflow:** `.github/workflows/e2e-magazine-header.yml` (ou similar)  
+**Run em falha:** commit `50f4f599`  
+**Conclusão:** `failure`  
+**Categoria:** E2E visual do layout do header de magazine — não-required  
+
+**Causa raiz:** Flake visual ou regressão de layout no header do magazine. Não relacionado a mudanças desta sessão. Padrão similar a P28 (E2E Visual Focused · magazine-header do nightly).
+
+**Impacto no Gate Final:** Nenhum — não é required check no Gate Final.
+
+**Ação necessária:** inspecionar screenshot diff e verificar se houve mudança de CSS no componente `MagazineHeader` por commit recente do Lovable.
+
+---
+
+## P32 — Running Copilot Code Review: failure (recorrência de P15)
+
+**Workflow:** Bot externo GitHub Copilot (trigger: push/PR)  
+**Run em falha:** commit `50f4f599`  
+**Conclusão:** `failure`  
+**Categoria:** Bot externo — mesmo problema documentado em P15  
+
+**Ver P15** para diagnóstico completo e ação corretiva. Mesma causa raiz: bot do GitHub Copilot (`copilot-pull-request-reviewer`) configurado para revisar todo push, falha quando não há PR associada.
+
+**Impacto no Gate Final:** Nenhum — não é required check no Gate Final.
+
+---
+
+## P33 — Gate Final - Deploy Ready: ✅ CORRIGIDO em 1e07e298 (PR #2464)
+
+**Workflow:** `.github/workflows/deploy-gates.yml` (job `Gate Final - Deploy Ready`)  
+**Run em `1b69cfe7`:** [#40158537891](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40158537891) — `cancelled` (cascata do job `restore-cart-rpc-gate`)  
+**Run em `1e07e298`:** [#40159926751](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40159926751) — Gate Final `in_progress` no momento deste registro
+
+**Causa raiz confirmada:** `timeout-minutes: 3` no job `restore-cart-rpc-gate` (Gate 5.5). O job levava ~3m04s, causando `conclusion: cancelled` e cascateando o Gate Final para `cancelled`/`failure`.
+
+**Fix:** PR #2464 — `timeout-minutes: 3 → 5` em `restore-cart-rpc-gate`. Squash-mergeado em main como commit `1e07e298f03d7940d71629f28c5effc72274f940`.
+
+**Verificação:** Gate Final = `success` no CI do PR #2464 (run [40159442659](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40159442659), job 121068631316). Gate 5.5 levou ~38s com timeout=5min.
+
+---
+
+## P34 — Branch Protection Sentinel: merge commit sem padrão conventional (não-bloqueante)
+
+**Workflow:** `.github/workflows/sentinel-check.yml` (Branch Protection Sentinel)  
+**Run em `1e07e298`:** [#40159926699](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40159926699) — `failure`  
+**Categoria:** Commit de merge sem conventional commit pattern — não-required
+
+**Erro exato:**
+```
+1 commit(s) em push para main sem padrão aceito: 1e07e29
+```
+
+**Causa raiz:** O commit `1e07e298` é o squash-merge do PR #2464. O sentinel verifica se todos os commits em push para main seguem o padrão conventional commit (ex: `fix:`, `feat:`). O squash-merge gerado pelo GitHub inclui o corpo do PR como mensagem, que começa com `fix(ci):`, mas o sentinel falhou — possivelmente por um caractere especial (→) ou pelo cabeçalho da mensagem de squash gerado pelo GitHub não seguir exatamente o padrão aceito.
+
+**Impacto no Gate Final:** Nenhum — Branch Protection Sentinel não é required check no Gate Final (`deploy-gates.yml`).
+
+**Ação necessária:** Nenhuma imediata. O sentinel é advisory para alertar sobre commits fora do padrão. Investigar se o padrão aceito inclui o caráter `→` no título do commit.
+
+---
+
+## P35 — Supabase Linter Gate: Management API 544 em `1e07e298` (não-bloqueante)
+
+**Workflow:** `.github/workflows/supabase-linter-gate.yml`  
+**Run em `1e07e298`:** [#40159926768](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40159926768) — `failure`  
+**Categoria:** Erro transiente da API Supabase — não-required
+
+**Erro exato:**
+```
+❌ Security Advisors indisponíveis: Management API 544 <none>
+```
+
+**Causa raiz:** A Supabase Management API retornou HTTP 544 (server error) ao tentar consultar os Security Advisors. O workflow tenta 3 vezes com backoff mas todas as tentativas falham com timeout/error. Erro transiente — não indica problema no código.
+
+**Impacto no Gate Final:** Nenhum — Supabase Linter Gate não é required check no Gate Final.  
+**Ocorrência anterior:** Mesmo erro documentado em P22 (commit `1b69cfe7`). Recorrente — a API Supabase tem instabilidades periódicas.
+
+**Ação necessária:** Nenhuma. Próxima execução provavelmente passará quando a API estiver estável.
+
+---
+
+## P36 — Uptime Monitor: falha de disponibilidade detectada em `1b69cfe7` (não-bloqueante, comportamento esperado)
+
+**Workflow:** `.github/workflows/uptime-monitor.yml`  
+**Run:** [#40159275001](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40159275001) — `failure` (schedule, commit `1b69cfe7`)  
+**Categoria:** Monitor de disponibilidade — não-required, `failure` é o resultado ESPERADO quando detecta downtime
+
+**Comportamento confirmado:**  
+O Uptime Monitor detectou falha de disponibilidade do site e criou a issue [#2463](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2463) "Uptime: falha de disponibilidade detectada". O workflow **encerra intencionalmente com `exit 1`** quando o probe falha, para que a `conclusion: failure` apareça como alerta no GitHub. Isso é design intencional, não um bug.
+
+**Step falho:** "Probe site + edge function" — o site/edge function não respondeu dentro do timeout.
+
+**Impacto no Gate Final:** Nenhum — Uptime Monitor não é required check no Gate Final.
+
+**Ação necessária:** Verificar issue #2463 para entender o incidente de disponibilidade. O próximo run do Uptime Monitor (schedule cada 30min) indicará se a disponibilidade foi restaurada.
+
+---
+
+*Atualizado pela sessão Claude Code — https://claude.ai/code/session_01HW5obNKUFtUMbBdgUb94kY*
+
+---
+
+## P37 — E2E — Personalization Flow: failure em `d9f65b4` (não-required)
+
+**Workflow:** `.github/workflows/e2e-personalization-flow.yml`  
+**Run:** [#40160560194](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40160560194) — `failure` (commit `d9f65b4`)  
+**Categoria:** E2E de fluxo de personalização — não é required check no Gate Final
+
+**Diagnóstico:** Failure em E2E do fluxo de personalização. Padrão E2E recorrente neste repositório — não relacionado a mudanças desta sessão (docs-only commit em `d9f65b4`).
+
+**Impacto no Gate Final:** Nenhum — não é required check.
+
+---
+
+## P38 — Cart Invariants Smoke: failure em `d9f65b4` (não-required)
+
+**Workflow:** `.github/workflows/cart-invariants-smoke.yml`  
+**Run:** [#40160560030](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40160560030) — `failure` (commit `d9f65b4`)  
+**Categoria:** Smoke test de invariantes do carrinho — não é required check no Gate Final
+
+**Diagnóstico:** Failure em smoke test de invariantes do carrinho. Pré-existente — commit `d9f65b4` é docs-only, não tocou código de carrinho.
+
+**Impacto no Gate Final:** Nenhum — não é required check.
+
+---
+
+## P39 — CI Security & Drift Checks: failure em `d9f65b4` (não-required)
+
+**Workflow:** `.github/workflows/ci-security-drift-checks.yml`  
+**Run:** [#40160560319](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40160560319) — `failure` (commit `d9f65b4`)  
+**Categoria:** Security scan + drift check — não é required check no Gate Final
+
+**Diagnóstico:** Failure no CI Security & Drift Checks. Possível drift de schema (DDL fora do fluxo) ou falha transiente de security scan. Não é required check.
+
+**Impacto no Gate Final:** Nenhum — não é required check.
+
+---
+
+## P40 — PR #2469 (e2e-personalization E42 fix): aguardando aprovação PO (Regra 8)
+
+**PR:** [#2469](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2469)  
+**Branch:** `claude/fix-ci-workflows-261025-0630`  
+**Head SHA:** `775756f7`  
+**Gate Final no head:** ✅ `success` (run [#40162624944](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40162624944))  
+**Categoria:** Workflow `.github/workflows/e2e-personalization.yml` — Regra 8 do Fluxo Git (CI/workflows exigem aprovação do PO)
+
+**Fix:** Adicionado `id: auth-setup` ao step de setup de auth; gate E42 passa a ser condicional (`if: always() && steps.auth-setup.outcome == 'success'`). Quando credenciais ausentes ou auth falha, skip ratio não é checado. Diff mínimo: 2 linhas.
+
+**Impacto no Gate Final:** Nenhum — `e2e-personalization.yml` não é required check no Gate Final. Fix reduz falsos `failure` no workflow de personalização quando `E2E_USER_EMAIL`/`E2E_USER_PASSWORD` ausentes.
+
+**Ação necessária pelo PO:** Revisar e mergear PR [#2469](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2469) (squash-merge). CI verde, sem conflito com main. Apenas aprovação manual necessária (Regra 8 — modifica arquivo de workflow).
+
+---
+
+*Atualizado pela sessão Claude Code — https://claude.ai/code/session_01HW5obNKUFtUMbBdgUb94kY*

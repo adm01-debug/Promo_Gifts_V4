@@ -1,13 +1,31 @@
 {
-  "fonte": "snapshot sessao_18 — query identica a baseline_antes (information_schema.tables table_type=BASE TABLE)",
-  "capturado_em": "2026-10-24T16:05:00.000000+00:00",
+  "fonte": "snapshot pós-FASE B — query idêntica a baseline_antes (information_schema.tables table_type=BASE TABLE)",
+  "capturado_em": "2026-10-25T06:00:00.000000+00:00",
   "query_base_tables": "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='public' AND table_type='BASE TABLE'",
   "base_tables": 398,
   "views": 193,
   "funcoes": 1334,
   "cron_jobs": 142,
   "rls_policies_public": 960,
-  "migrations_ledger": 2542,
+  "migrations_ledger": 2549,
   "edge_functions": 109,
-  "nota": "Snapshot pós-auditoria — sessão 18, 2026-10-24. +4 migrations por atividade externa pós-auditoria (20261022193000..20261022194200). Auditoria foi somente leitura: Δcron=0, Δpolicies=0, Δedge_functions=0, Δfuncoes=0, Δbase_tables=0."
+  "delta_vs_snapshot_20261024": {
+    "migrations_ledger": "+7",
+    "detalhes": [
+      {"version": "20261022100001", "name": "security_fn_cron_guard_revoke_anon", "fase_b": "P10", "run": "#40165954774"},
+      {"version": "20261024163500", "name": "fix_audit_security_definer_acl_regrole_cast", "fase_b": "externa", "nota": "aplicada via db-apply-migration.yml entre snapshot 2026-10-24T16:05 e FASE B; MIGRATIONS_SYNC_LOG marcava pronto-para-aplicar; confirmado via SELECT FROM supabase_migrations.schema_migrations"},
+      {"version": "20261024180001", "name": "fk_indexes_p02", "fase_b": "P02", "run": "#40164828396"},
+      {"version": "20261024180002", "name": "workspace_notifications_idempotency_p08", "fase_b": "P08", "run": "#40166677491"},
+      {"version": "20261024180003", "name": "cron_schedule_p19_remaining", "fase_b": "P19", "run": "#40167137573"},
+      {"version": "20261024190001", "name": "cron_auth_p01_image_dimensions_backfill", "fase_b": "P01", "run": "#40166925674"},
+      {"version": "20261025002500", "name": "analyze_tables_p03", "fase_b": "P03", "run": "#40165426404"}
+    ],
+    "base_tables": 0,
+    "views": 0,
+    "funcoes": 0,
+    "cron_jobs": 0,
+    "rls_policies_public": 0,
+    "edge_functions": 0
+  },
+  "nota": "Snapshot pós-FASE B (2026-10-25). Δmigrations_ledger=+7 vs snapshot 2026-10-24T16:05 (2542→2549): 6 migrations FASE B JÁ LIBERADOS (P10/P02/P08/P19/P01/P03) + 1 externa (20261024163500 fix_audit_security_definer_acl_regrole_cast, aplicada externamente entre snapshot e FASE B — confirmado via SELECT). Demais métricas inalteradas (Δ=0): nenhuma tabela/view/função/policy/edge_function criada ou removida. APROVAÇÃO pendente: P06, P09, P14, P15, P03_security_definer (PR #2443)."
 }
