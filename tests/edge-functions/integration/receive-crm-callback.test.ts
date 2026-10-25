@@ -10,7 +10,7 @@ import { ReceiveCrmCallbackSchemaV1 } from "../../contracts/webhook-schemas";
 describe("receive-crm-callback — contract schema", () => {
   it("aceita payload mínimo válido", () => {
     const parsed = ReceiveCrmCallbackSchemaV1.safeParse({
-      external_quote_id: "00000000-0000-0000-0000-000000000001",
+      external_quote_id: "00000000-0000-4000-8000-000000000001",
       event_type: "sent_to_client",
       occurred_at: "2026-07-06T16:00:00.000Z",
       payload: {},
@@ -20,13 +20,13 @@ describe("receive-crm-callback — contract schema", () => {
 
   it("aceita payload completo (order_created)", () => {
     const parsed = ReceiveCrmCallbackSchemaV1.safeParse({
-      external_quote_id: "00000000-0000-0000-0000-000000000001",
-      crm_quote_id: "00000000-0000-0000-0000-000000000002",
+      external_quote_id: "00000000-0000-4000-8000-000000000001",
+      crm_quote_id: "00000000-0000-4000-8000-000000000002",
       event_type: "order_created",
       status: "converted",
       occurred_at: "2026-07-06T16:00:00.000Z",
       payload: {
-        order_id: "00000000-0000-0000-0000-000000000003",
+        order_id: "00000000-0000-4000-8000-000000000003",
         order_number: "PED-2026-0042",
         approved_by: "João Cliente",
         total_value: 12345.67,
@@ -37,7 +37,7 @@ describe("receive-crm-callback — contract schema", () => {
 
   it("rejeita event_type fora do enum", () => {
     const parsed = ReceiveCrmCallbackSchemaV1.safeParse({
-      external_quote_id: "00000000-0000-0000-0000-000000000001",
+      external_quote_id: "00000000-0000-4000-8000-000000000001",
       event_type: "unknown_event",
       occurred_at: "2026-07-06T16:00:00.000Z",
     });
@@ -55,7 +55,7 @@ describe("receive-crm-callback — contract schema", () => {
 
   it("rejeita occurred_at sem timezone", () => {
     const parsed = ReceiveCrmCallbackSchemaV1.safeParse({
-      external_quote_id: "00000000-0000-0000-0000-000000000001",
+      external_quote_id: "00000000-0000-4000-8000-000000000001",
       event_type: "approved",
       occurred_at: "2026-07-06T16:00:00",
     });
@@ -64,7 +64,7 @@ describe("receive-crm-callback — contract schema", () => {
 
   it("payload é default {} quando omitido", () => {
     const parsed = ReceiveCrmCallbackSchemaV1.safeParse({
-      external_quote_id: "00000000-0000-0000-0000-000000000001",
+      external_quote_id: "00000000-0000-4000-8000-000000000001",
       event_type: "expired",
       occurred_at: "2026-07-06T16:00:00.000Z",
     });
@@ -74,7 +74,7 @@ describe("receive-crm-callback — contract schema", () => {
 
   it("payload aceita campos extras (catchall)", () => {
     const parsed = ReceiveCrmCallbackSchemaV1.safeParse({
-      external_quote_id: "00000000-0000-0000-0000-000000000001",
+      external_quote_id: "00000000-0000-4000-8000-000000000001",
       event_type: "approved",
       occurred_at: "2026-07-06T16:00:00.000Z",
       payload: { crm_metadata: { pipeline: "vendas-b2b" } },

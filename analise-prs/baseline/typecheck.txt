@@ -1,29 +1,51 @@
 SHA baseline (início da sessão): 9079c82e6c3f58ae5d2cdf8c7eb2deef979ee9d8
-SHA main atual (fim da sessão):  ec736c903cc37a0ef8621eec5a2d05775a64bcb9
-Data: 2026-10-24
+SHA main atual (fim da sessão):  bfd9b50a5b87d2ef77f116bf53a931d7a4075de7
+Data: 2026-10-25
 
-=== BASELINE TYPECHECK LOCAL ===
-Comando: npm run typecheck
-RESULTADO: 49833 erros TS (AMBIENTE SEM node_modules COMPLETOS)
-Primeiro erro: src/App.tsx(1,42): error TS2307: Cannot find module 'react'
-NOTA: Erros todos do tipo "Cannot find module" — ambiente cloud sem node_modules.
-Baseline de regressão TS local não mensurável neste container.
+=== BASELINE CI — GATE 1 (Lint + TypeScript) ===
+Fonte autoritativa: CI Gate 1, job #121040094408
+Workflow: Deploy Gates (run #40150209361)
+SHA: eb7a92479750cec45c7b08ce09bcfe05d407396e
+Resultado: ✅ SUCCESS — conclusão do job: success
 
-=== BASELINE CI POR NOME DE JOB (main ec736c903cc3) ===
-Workflow: CI Security & Drift Checks (run #40129973781)
-  Job: quality-gate → FAILURE
-    Step que falhou: "Dependency vulnerability policy" (step 4)
-    Motivo: npm audit detectou dependência com CVE high/critical
-    Demais steps (Lint, TypeCheck, Build, E2E): todos SKIPPED (pipeline abortou na step 4)
-  Job: security-audit → SUCCESS
-    Step "Audit Credentials" → success
+Etapas relevantes:
+  Step 5: "Run npm run typecheck"         → conclusion: success ✅
+  Step 6: "Run npm run lint:baseline"     → conclusion: success ✅
+  Step 7: Gate 1.1 Product fields         → conclusion: success ✅
+  Step 8: Gate 1.2 Types inventory drift  → conclusion: success ✅
+  Step 9: Gate 1.3 Migration contracts    → conclusion: success ✅
+  Step 10: Gate 1.4 Visual baselines      → conclusion: success ✅
+  Gate 1.18: Ledger conflitos semânticos  → conclusion: success ✅
+  Total steps Gate 1: 42 steps — todos success
 
-Workflow: Release Please (pre-existing, falha separada)
-  Falha: workflow próprio do release — não relacionada a nenhum PR desta análise
+CONCLUSÃO: 0 TypeScript errors, 0 lint errors no baseline CI.
 
-=== PRE-EXISTING FAILURES (não bloqueantes para merges de candidatos) ===
-1. "Dependency vulnerability policy" — CVE em dependência existente em main
-2. Release Please — workflow de release automático, não relacionado a código
+Evidência: https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40150209361/job/121040094408
 
-Último Gate Final verde em main: run #40120365440 (SHA 74ac36f1, conforme PR #2415 body).
-Gate Final NÃO rodou no SHA atual ec736c903cc3 via branch protection (somente roda em PR).
+=== NOTA: TYPECHECK LOCAL NÃO MENSURÁVEL ===
+Ambiente cloud sem node_modules (registry europe-west1-npm.pkg.dev inacessível).
+npm run typecheck local retorna 49833 erros genéricos "Cannot find module".
+Baseline de TypeScript medido EXCLUSIVAMENTE via CI Gate 1 (acima).
+
+=== ATUALIZAÇÃO — SHA bfd9b50a (main HEAD atual) ===
+Run: #40151693979 (Deploy Gates)
+SHA: bfd9b50a5b87d2ef77f116bf53a931d7a4075de7
+Resultado: ✅ SUCCESS — confirmado 2026-10-25
+Gate 1 (Lint + TypeScript): VERDE
+Gate 2 (unit tests vitest): VERDE
+PR #2455: docs-only (RELATORIO_CI.md + PENDENCIAS.md), zero alterações em código de produção.
+
+=== ATUALIZAÇÃO — SHA ea98e9adb (main HEAD pré-merge #2466) ===
+Gate Final - Deploy Ready (check #121087055958):
+SHA: ea98e9adb260281e0877a753b83ccb210236f2fc
+Deploy Gates run: #40165529777
+App ID: 15368
+Resultado: ✅ SUCCESS — conclusion=success (2026-10-25T05:34Z)
+Gate 1 (Lint + TypeScript): VERDE (cobertura transitiva de Gate Final SUCCESS)
+Baseline inalterada vs eb7a92479.
+
+=== ATUALIZAÇÃO — SHA 79d1c848b (main HEAD atual — pós-merge #2466) ===
+PR #2466 mergeada como squash (docs-only, analise-prs/):
+SHA merge: 79d1c848b2c9a83f64fe094d82012eba2a50da1f
+paths-ignore aplicável → Gate Final não dispara.
+Último Gate Final verde: ea98e9adb (run #40165529777). Baseline inalterada.

@@ -1,0 +1,61 @@
+# Baseline vitest por nome de teste — main
+#
+# SHA de referência: eb7a92479750cec45c7b08ce09bcfe05d407396e
+# SHA do último run bem-sucedido (Gate 2): eb7a92479750cec45c7b08ce09bcfe05d407396e
+# CI job: #121040094404 — Deploy Gates run #40150209361
+# Gerado em: 2026-10-25 (sessão https://claude.ai/code/session_01Ss1tXZ4cAbxBvdmu95uNPz)
+#
+# Metodologia:
+#   npm ci falha localmente (registry Lovable europe-west1-npm.pkg.dev inacessível).
+#   Baseline obtida dos logs CI do job Gate 2 (job #121040094404, run #40150209361).
+
+## test:deploy-gate (3 arquivos)
+# Test Files: 3 passed (3)
+# Tests     : 334 passed (334)
+# Falhas    : 0
+PASS  (test:deploy-gate) — 334 tests, 0 falhas
+
+## webhook-scenario-matrix.test.ts
+# Test Files: 1 passed (1)
+# Tests     : 95 passed (95)
+# Falhas    : 0
+PASS  tests/contracts/webhook-scenario-matrix.test.ts — 95 tests, 0 falhas
+
+## check-file-size-baseline.test.mjs
+# NOTA: step NÃO presente no Gate 2 run #40150209361 (removido ou movido para outro job)
+
+## Totais Gate 2
+# Total: 429 tests, 0 falhas, Gate Final = success (run #40150209361)
+
+## Atualização — SHA bfd9b50a (main HEAD anterior)
+
+Run #40151693979 (Deploy Gates, gate 2):
+SHA: bfd9b50a5b87d2ef77f116bf53a931d7a4075de7
+Resultado: ✅ SUCCESS — 0 falhas confirmadas 2026-10-25
+PR #2455 que gerou este SHA é docs-only — zero risco de regressão em testes.
+Baseline continua: 429 testes, 0 falhas.
+
+## Atualização — SHA ea98e9adb (main HEAD pré-merge #2466)
+
+Gate Final - Deploy Ready (check #121087055958):
+SHA: ea98e9adb260281e0877a753b83ccb210236f2fc
+Deploy Gates run: #40165529777
+App ID: 15368
+Resultado: ✅ SUCCESS — conclusion=success (2026-10-25T05:34Z)
+Todos os gates 0–6 passaram. Baseline continua: 429 testes, 0 falhas.
+
+## Atualização — SHA 79d1c848b (main HEAD — pós-merge #2466)
+
+PR #2466 mergeada como squash (docs-only, analise-prs/):
+SHA merge: 79d1c848b2c9a83f64fe094d82012eba2a50da1f
+paths-ignore: docs/** → Gate Final NÃO dispara em push docs-only.
+Último Gate Final verde em ea98e9adb (run #40165529777). Baseline inalterada.
+
+## Atualização — SHA 429160609b (main HEAD atual — commit direto PO pós-#2466)
+
+Commit direto pelo PO (adm01-debug) — não foi PR:
+SHA: 429160609ba923e840acf53a1e70277a21d35e0c
+Commit: "docs: RELATORIO_CI.md Rev15 — Gate Final success ea98e9ad + proof table"
+Parent: 06845b6e719ee177f03c88b4b01929dcffe1b738
+paths-ignore: docs/** → Gate Final NÃO dispara.
+Último Gate Final verde: ea98e9adb (run #40165529777). Baseline continua: 429 testes, 0 falhas.

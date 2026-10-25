@@ -38,6 +38,9 @@ paths = [
   # Documentacao e auditorias — contêm exemplos, logs e curl com tokens de exemplo
   '''docs/.*''',
   '''audit/.*''',
+  # Análise de PRs — relatórios com tokens de exemplo e mock data (falso positivo confirmado)
+  # run 40131652393: RELATORIO_PRS.md L207/209/210/243 detectados como generic-api-key / aws-access-token
+  '''analise-prs/.*''',
   # Testes — tokens e chaves sao mock/fixture, nao segredos reais
   '''tests/.*''',
   '''src/.*__tests__.*''',
