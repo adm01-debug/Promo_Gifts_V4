@@ -24,5 +24,8 @@ pr_number,title,author,draft,state,mergeable_state,verdict,sha_merge,ci_run,note
 2449,fix(db): E99 repair-only update_company_fields SECURITY DEFINER,Claude,true,open,dirty,DECISÃO_HUMANA,,,"Rule 8: supabase/migrations/ SECURITY DEFINER; draft:true + conflito"
 2450,docs: RELATORIO_CI.md rev5 + PENDENCIAS.md rev12,Claude,false,merged,merged,DECISÃO_HUMANA→MERGEADO_PO,d804cafa,,"Mergeado pelo PO; estava draft"
 2451,(título não disponível — PR fechado),unknown,true,closed,na,FECHAR,,,PR fechado sem merge pelo autor antes desta sessão
-2452,(draft + conflito com main),unknown,true,open,dirty,FECHAR,,,Draft:true + mergeable_state:dirty; sem autor ativo
-2455,docs: RELATORIO_CI.md rev7 + PENDENCIAS.md rev13,Claude,false,merged,merged,MERGEAR,bfd9b50a,40151693979,docs-only; CI run #40151693979 SUCCESS confirmado (main HEAD atual)
+2452,fix(analise-prs): remove prefixo supabase/migrations/ nos nomes de arquivo,Claude,true,open,unknown,FECHAR,,,Draft:true + branch outra sessão (session_01HW5obNKUFtUMbBdgUb94kY); REGRA #10
+2455,docs: RELATORIO_CI.md rev7 + PENDENCIAS.md rev13,Claude,false,merged,merged,MERGEAR,bfd9b50a,40151693979,docs-only; CI run #40151693979 SUCCESS confirmado (main HEAD anterior)
+2457,fix(test): corrige 14 falhas pós-bump Zod v4.6.6 — UUIDs + timezone,Claude,false,merged,merged,MERGEAR,fcd4fb8d,,Mergeado por outra sessão (session_01Nc1nb7PArDnixYvvZssnKy); 2026-10-25T03:51Z
+2458,docs(auditoria-supabase): atualiza correcoes.md — remove refs obsoletas,Claude,true,open,clean,FECHAR,,,Draft:true + branch outra sessão (session_01JPgV7FqkG4UuFBJWiJa9FB); REGRA #10
+2464,fix(ci): Gate 5.5 timeout 3→5min — corrige Gate Final cancelled em 1b69cfe7,Claude,false,merged,merged,DECISÃO_HUMANA→MERGEADO_PO,1e07e298,40159442659,"Rule 8: .github/workflows/deploy-gates.yml; mergeado pelo PO; run #40159442659 SUCCESS"

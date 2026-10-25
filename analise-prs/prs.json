@@ -1,12 +1,14 @@
 {
   "generated_at": "2026-10-25",
   "main_sha_inicio": "9079c82e6c3f58ae5d2cdf8c7eb2deef979ee9d8",
-  "main_sha_fim": "bfd9b50a5b87d2ef77f116bf53a931d7a4075de7",
+  "main_sha_fim": "1e07e298f03d7940d71629f28c5effc72274f940",
   "worktree_tests_completed": true,
   "total_open_inicio": 17,
-  "total_open_novos": 8,
-  "total_analyzed": 25,
+  "total_open_novos": 12,
+  "total_analyzed": 31,
   "merges_realizados_autonomous": 7,
+  "merges_realizados_po": 5,
+  "merges_realizados_outra_sessao": 3,
   "prs": [
     {
       "number": 2414,
@@ -305,6 +307,55 @@
       "singu_refs_added": 0,
       "verdict": "MERGEADO",
       "motivo": "Docs-only (PENDENCIAS.md + RELATORIO_CI.md). Sem REGRA #8. Merge limpo. Mergeado nesta sessão."
+    },
+    {
+      "number": 2452,
+      "title": "fix(analise-prs): remove prefixo supabase/migrations/ de nomes de arquivo em PR-2441.md",
+      "draft": true,
+      "author_session": "session_01HW5obNKUFtUMbBdgUb94kY",
+      "mergeable_state": "unknown",
+      "rule8_trigger": null,
+      "singu_refs_added": 0,
+      "verdict": "FECHAR",
+      "motivo": "Draft:true + branch de outra sessão (REGRA #10 — read-only). Conteúdo docs-only correto mas merge impossível por esta sessão."
+    },
+    {
+      "number": 2457,
+      "title": "fix(test): corrige 14 falhas pós-bump Zod v4.6.6 — UUIDs inválidos e timezone UTC",
+      "status": "MERGEADO",
+      "sha_merge": "fcd4fb8dd69af22627958322259b0fd7c60e8df1",
+      "method": "squash",
+      "author_session": "session_01Nc1nb7PArDnixYvvZssnKy",
+      "merged_at": "2026-10-25T03:51:17Z",
+      "rule8_trigger": null,
+      "singu_refs_added": 0,
+      "verdict": "MERGEADO",
+      "motivo": "Corrige 14 falhas de teste pós-Zod v4.6.6 (UUID versão 0→4, timezone UTC, mock auth). Mergeado por outra sessão."
+    },
+    {
+      "number": 2458,
+      "title": "docs(auditoria-supabase): atualiza correcoes.md — remove refs Aguardando merge obsoletas",
+      "draft": true,
+      "author_session": "session_01JPgV7FqkG4UuFBJWiJa9FB",
+      "mergeable_state": "clean",
+      "rule8_trigger": null,
+      "singu_refs_added": 0,
+      "verdict": "FECHAR",
+      "motivo": "Draft:true + branch de outra sessão (REGRA #10). Docs-only correto mas merge impossível por esta sessão."
+    },
+    {
+      "number": 2464,
+      "title": "fix(ci): Gate 5.5 timeout 3→5min — corrige Gate Final cancelled em 1b69cfe7",
+      "status": "MERGEADO",
+      "sha_merge": "1e07e298f03d7940d71629f28c5effc72274f940",
+      "method": "squash",
+      "author_session": "session_01HW5obNKUFtUMbBdgUb94kY",
+      "merged_at": "2026-10-25T03:54:21Z",
+      "rule8_trigger": ".github/workflows/deploy-gates.yml",
+      "ci_run_pr": "40159442659",
+      "singu_refs_added": 0,
+      "verdict": "DECISÃO_HUMANA→MERGEADO_PO",
+      "motivo": "REGRA #8: toca .github/workflows/deploy-gates.yml. Mergeado pelo PO. Gate Final = success no PR (run #40159442659)."
     }
   ]
 }
