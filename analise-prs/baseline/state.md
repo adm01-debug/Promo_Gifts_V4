@@ -13,9 +13,33 @@
 - **429 testes / 0 falhas** (baseline inalterada — confirmado run #40214531246)
 
 ## Ambiente local
-- `npm install`: **FALHA 403** — registry `europe-west1-npm.pkg.dev` sem credenciais neste container
-- `typecheck / lint / vitest local`: **NÃO EXECUTADO** — npm install impossível
-- Baseline de CI usada: Gate Final GitHub Actions (autoritativo)
+- `npm install`: **FALHA 403** — registry `europe-west1-npm.pkg.dev` sem credenciais neste container; `node_modules` ausente confirmado (`ls node_modules/.bin/tsc` → not found)
+- `typecheck / lint / vitest local`: **NÃO EXECUTADO** — impossível sem `node_modules`; limitação permanente do container, não negligência
+- Baseline de CI usada: Gate Final GitHub Actions (autoritativo) — run #40218104943 (429 testes / 0 falhas)
+
+## Git worktrees — confirmação
+```
+git worktree list
+/home/user/Promo_Gifts_V4  991bccb20  [claude_05/youthful-ride-vcdchy]
+```
+**Apenas o worktree primário** — nenhum worktree de teste criado nesta sessão. Todos os test-merges foram feitos via `git fetch` + `git merge-tree --write-tree` (operação somente-leitura, sem commit).
+
+## Vercel — investigação de falha no PR #2529
+
+**Sintoma:** 3 pushes consecutivos (`3e5e619`, `23bd5fcc7`, `991bccb20`) falharam com `Resource provisioning failed`.
+
+**Investigação do deployment `dpl_DpFQFz7H3SVu3Yw3fAS5SBu8EFW9`:**
+- `state: ERROR`
+- `errorCode: BUILD_FAILED`
+- `errorMessage: "Resource provisioning failed"`
+- `buildingAt: 1792952457023`, `ready: 1792952458928` → duração: **~1.9 segundos** (build real leva minutos)
+- Runtime logs: **"No logs found"** — o build **nunca chegou a executar**
+
+**Diagnóstico:** falha de infraestrutura anterior ao build, não falha de código. O build não rodou porque o Vercel não conseguiu provisionar o ambiente.
+
+**Causa raiz (documentada em `CLAUDE.md §REGRA#11`):** projeto fantasma `promo-gifts-reconciliation-integrity-20260915` (`prj_W1Zdi6BQWkAwQx5VJjpSNlZubeok`) — criado por um agente em 2026-09-15 ao rodar `vercel link` fora do diretório raiz — conectado ao mesmo repo e causando 2× builds em todo push.
+
+**Solução:** PO deve remover o projeto fantasma no dashboard Vercel. Fora do escopo desta sessão (requer ação humana no painel).
 
 ## Test-merges locais realizados nesta sessão
 
