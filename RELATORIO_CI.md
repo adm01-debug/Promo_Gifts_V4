@@ -15,7 +15,7 @@
 | `npm run build` (Vite) | ✅ PASSOU | 13.58s — sem erro de build |
 | `tsc --noEmit` | ✅ PASSOU | 0 erros TypeScript |
 | `npm run lint` (ESLint) | ✅ PASSOU | exit 0, 0 warnings introduzidos |
-| `vitest run` | ⏳ EM ANDAMENTO | Resultado será atualizado abaixo |
+| `vitest run` (kit-builder) | ✅ PASSOU | 28 arquivos, 221 testes — suite dos arquivos alterados (36s) |
 
 **Nota:** Lint rodou com `NODE_OPTIONS=--max-old-space-size=6144` para evitar OOM no hook de pre-push (ESLint requer ~2.2GB heap, acima do default de 2GB do Node.js).
 
@@ -50,21 +50,40 @@
 
 ---
 
-## CI do PR #2573 — Commit `1b8c61e8` (HEAD atual do PR)
+## CI do PR #2573 — Commit `2adc3be5` (HEAD atual do PR)
 
 **PR:** https://github.com/adm01-debug/Promo_Gifts_V4/pull/2573  
-**Commit HEAD do PR:** `1b8c61e87fe0086d22aa1d901055363a96fe4429`  
-**Status verificado em:** 2026-10-25T21:52Z
+**Commit HEAD do PR:** `2adc3be531385f685c0890eddb16c2be2c97d9f4`  
+**Status verificado em:** 2026-10-25T22:13Z
 
 | Check | Status |
 |---|---|
-| Gate Final - Deploy Ready (run [#40237005888](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40237005888)) | ⏳ pending — runners saturados (created 21:45Z, não iniciou) |
+| Gate Final - Deploy Ready (run [#40237605467](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40237605467)) | ⏳ pending — runners saturados (created 21:53Z, não iniciou) |
 
 **Histórico de runs neste PR:**
-- Commit `0a4dec49`: run [#40235417547](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40235417547) — pending (cancelado por push subsequente)
-- Commit `1b8c61e8` (HEAD): run [#40237005888](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40237005888) — pending (runners saturados desde 21:25Z)
+- Commit `0a4dec49`: run [#40235417547](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40235417547) — cancelled (por push subsequente)
+- Commit `1b8c61e8`: run [#40237005888](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40237005888) — cancelled (por push subsequente)
+- Commit `2adc3be5` (HEAD): run [#40237605467](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40237605467) — pending (runners saturados desde 21:25Z)
 
-**Observação:** Os runners do GitHub Actions estão com fila saturada. O run foi criado às 21:45Z e permanece `pending` (sem um único job iniciado). Este é um problema de infraestrutura GitHub, não de código. Check-in agendado às 22:37Z para verificar resultado.
+**Observação:** Os runners do GitHub Actions estão com fila saturada. O run foi criado às 21:53Z e permanece `pending` (sem um único job iniciado). Este é um problema de infraestrutura GitHub, não de código. Check-in agendado às 22:37Z para verificar resultado.
+
+---
+
+## Tabela de Comparação Baseline × Final — Sessão Atual (2026-10-25)
+
+| Workflow / Check | Estado ANTES (main HEAD `6fcc6b30`) | Estado APÓS (PR #2573 HEAD `2adc3be5`) | Resolução |
+|---|---|---|---|
+| Gate Final - Deploy Ready | ✅ success (run [#40222336543](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40222336543)) | ⏳ pending — runners saturados (run [#40237605467](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40237605467)) | Aguardando runners GitHub (infraestrutura — não é código) |
+| `ci-security-drift.yml` (E2E kit-builder data-testid) | ❌ failure (P70) | **FIX neste PR** — 13 `data-testid` restaurados em 8 arquivos | Corrigido em `e3a45bd7` |
+| `ItemCard` onClick duplo | ❌ bug funcional | **FIX neste PR** — `e.stopPropagation()` em `AddButton` | Corrigido |
+| `edge-functions-drift-check` | ❌ failure | ❌ failure (P76 — PERMISSÃO: 108 funções, exige PO) | **DOCUMENTADO P76** |
+| `db-apply-migration` (preflight) | ✅ comportamento correto | ✅ comportamento correto (P77) | **DOCUMENTADO P77** (preflight bloqueia corretamente migration já aplicada) |
+| E2E workflows (P16/P23/P63/P71/P72/P73/P74) | ❌ failure | ❌ failure | **DOCUMENTADO** PENDENCIAS.md — auth Supabase transiente / scope fora deste PR |
+| `copilot-code-review.yml` | ❌ failure | ❌ failure | **DOCUMENTADO** P15/P32/P41/P45/P61 — bot-only |
+| `replenishment-quality.yml` | ❌ failure | ❌ failure | **DOCUMENTADO** P30/P64 — não é required check |
+| `edge-integration-all.yml` | ❌ failure | ❌ failure | **DOCUMENTADO** P65/P75 — HTTP 5xx em LIVE |
+
+**Nota:** Gate Final ainda `pending` por saturação de runners GitHub Actions (infra externa, não código). Check-in agendado 22:37Z para verificar e executar squash-merge assim que `conclusion=success`.
 
 ---
 
