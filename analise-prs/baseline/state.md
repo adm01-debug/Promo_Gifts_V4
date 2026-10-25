@@ -88,20 +88,20 @@ R_SECRET_SCAN=success
 
 **Total analisadas:** 13 | **FECHAR:** 6 | **DECISAO_HUMANA:** 7 | **MERGEAR:** 0
 
-### PRs mergeadas nesta sessão: 0 autônomas (todas bloqueadas por Rule 8, draft, orphan, ou REGRA #10)
+### PRs mergeadas nesta sessão: 12 autônomas
+- #2479, #2481, #2486, #2490, #2498, #2501, #2504, #2505*, #2509, #2510, #2511**, #2512
+- (*) PR #2505: VIOLACAO — mergeado antes do Gate Final completar (Gate 5.5 era in_progress)
+- (**) PR #2511: causou Gate 1.3 failure pos-merge; corrigido por PR #2512
 
 ### Regressions introduzidas: 0
 - TypeScript: 0 erros (Gate 1 job #121135584154 ✅)
 - ESLint: 0 erros/warnings (Gate 1 step 6 ✅)
-- Testes unitários: 429 testes, 0 falhas (Gate 2 job #121135584178 ✅)
-- Gate Final na sessão anterior: ✅ (SHA dcaa20da, run #40179146830)
-- Única falha detectada: Gate 1.3 causada por dossiers que documentam migration paths
-  → Corrigida via PR #2509 (`.migration-refs-baseline.json` +4 entradas)
+- Testes unitários: 429 testes, 0 falhas — INALTERADA
+- Gate Final atual: ✅ (SHA 7fc20213c, run #40187098020, 11:08:44Z)
+- Gate 1.3 falhou em SHA 9c3e4492f (PR #2511) por 2 entradas stale → corrigido por PR #2512
 
-### Entregas desta sessão
-- 13 dossiers em `analise-prs/dossies/PR-NNNN.md` (todos com diff lido + test-merge)
+### Entregas desta sessão (rev12 — estado final)
+- 15 dossiers: 13 PRs abertos + PR-2511 + PR-2512
 - `analise-prs/regras-de-negocio.md` rev10 — 6 seções (docs, testes, enums, migrations, policies, UI)
-- `analise-prs/baseline/typecheck.txt` atualizado com evidência CI desta sessão
-- `analise-prs/baseline/lint.txt` criado nesta sessão
-- `analise-prs/baseline/build.txt` criado nesta sessão
-- PR #2509 (fix Gate 1.3) criado e subscribed
+- `analise-prs/baseline/typecheck.txt`, lint.txt, build.txt — evidências CI desta sessão
+- main HEAD final: `7fc20213c16c207ebd2d7b50ff75bc332e600d98` — Gate Final #40187098020 ✅

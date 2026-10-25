@@ -1,14 +1,14 @@
 {
-  "gerado_em": "2026-10-25T10:40:00Z",
+  "gerado_em": "2026-10-25T11:10:00Z",
   "sessao": "https://claude.ai/code/session_01Ss1tXZ4cAbxBvdmu95uNPz",
-  "main_head": "afbd338000fae8ab66e2b4582c8e1d8ab0e611ad",
-  "main_head_descricao": "PR #2510 squash-merged — docs(analise-prs): deliverables final rev10",
+  "main_head": "7fc20213c16c207ebd2d7b50ff75bc332e600d98",
+  "main_head_descricao": "PR #2512 squash-merged — fix(gate1.3): remove 2 entradas stale — .migration-refs-baseline.json 485→483",
   "gate_final_main": {
-    "run": "40184102084",
+    "run": "40187098020",
     "conclusao": "success",
-    "completado_em": "2026-10-25T10:25:10Z"
+    "completado_em": "2026-10-25T11:08:44Z"
   },
-  "total_analisados": 47,
+  "total_analisados": 49,
   "total_abertos_atuais": 13,
   "prs_abertos": [
     {
