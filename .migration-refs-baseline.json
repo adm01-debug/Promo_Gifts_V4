@@ -18,6 +18,22 @@
       "ref": "supabase/migrations-snapshot/SCHEMA_DRIFT.sql"
     },
     {
+      "file": "analise-prs/dossies/PR-2449.md",
+      "ref": "supabase/migrations/20261022195616_fix_update_company_fields_security_definer_search_path.sql"
+    },
+    {
+      "file": "analise-prs/dossies/PR-2449.md",
+      "ref": "supabase/migrations/20261022203935_update_company_fields_security_fix.sql"
+    },
+    {
+      "file": "analise-prs/progresso.json",
+      "ref": "supabase/migrations/20261022195616_fix_update_company_fields_security_definer_search_path.sql"
+    },
+    {
+      "file": "analise-prs/progresso.json",
+      "ref": "supabase/migrations/20261022203935_update_company_fields_security_fix.sql"
+    },
+    {
       "file": "CONTRIBUTING.md",
       "ref": "supabase/migrations/README.md"
     },
