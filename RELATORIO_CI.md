@@ -42,49 +42,44 @@
 
 ## Resultado de Vitest
 
-<!-- Será preenchido ao final da execução -->
-
 | Suite | Testes | Resultado |
 |---|---|---|
-| (aguardando) | — | — |
+| (não executado nesta sessão — TSC passou, vitest não rodou localmente antes do push) | — | — |
+
+**Nota:** TSC completou com exit 0 confirmado antes do push do commit `0a4dec49`.
 
 ---
 
-## CI do PR #2561
+## CI do PR #2573 — Commit `0a4dec49` (fix stopPropagation)
 
-**PR:** https://github.com/adm01-debug/Promo_Gifts_V4/pull/2561  
-**Status verificado em:** 2026-10-25T20:20Z
+**PR:** https://github.com/adm01-debug/Promo_Gifts_V4/pull/2573  
+**Commit HEAD do PR:** `0a4dec493025e073e629ef55d5f2e103aad0ecd8`  
+**Status verificado em:** 2026-10-25T22:30Z
 
 | Check | Status |
 |---|---|
-| Gate Final - Deploy Ready | queued |
-| Gate 0.5 - Dependency Audit | queued |
-| Gate 0.6 - Dependency Review | queued |
-| Gate 2.5 - PostgreSQL Transactional Integrity | queued |
-| Smoke (fail-fast) | queued |
-| E2E checks (múltiplos) | queued |
-| Vercel Agent Review | neutral |
-| secrets_check | skipped |
-| Vercel Preview Comments | ✅ success |
+| Gate Final - Deploy Ready (run #40235417547) | ⏳ pending — runners saturados desde 21:25Z |
+
+**Observação:** Os runners do GitHub Actions estão com fila saturada. O run foi criado às 21:25Z e permanece `pending` (sem um único job iniciado). Este é um problema de infraestrutura GitHub, não de código.
 
 ---
 
-## Inventário de Workflows com Falha em `main` (2026-10-25)
+## Inventário de Workflows com Falha em `main` (2026-10-25 — rev 30)
 
-Inventário completo listado em `PENDENCIAS.md` (P1–P75). Abaixo, os que NÃO são required checks no Gate Final:
+Inventário completo listado em `PENDENCIAS.md` (P1–P77). Abaixo, os que NÃO são required checks no Gate Final:
 
 | Workflow | Categoria | Documentado |
 |---|---|---|
 | Running Copilot Code Review | Copilot bot (bot-only) | P15/P32/P41/P45/P61 |
 | E2E — Critical Flows | Supabase auth transiente | P16 |
 | E2E — Personalization Flow | Supabase auth transiente | P23 |
-| edge-functions-drift-check | Drift git vs deployed | P27 |
+| edge-functions-drift-check | **PERMISSÃO** — deploy 108 funções exige PO | P27 / **P76** |
 | CI - Replenishment Module Quality Gate | Não é required check | P30/P64 |
 | E2E • Swatch QuickView | Não é required check | P63 |
 | Uptime Monitor | Infra — ação PO | P66 |
 | Quote Builder Delivery Quality | Supabase auth 504 transiente | P67 |
-| DB migration 20261022195616 preflight | Preflight correto (3 defeitos) | P68 |
-| Branch Protection Sentinel | Commit Lovable sem padrão | P69 |
+| DB migration preflight (2 instâncias) | Comportamento correto do preflight | P68 / **P77** |
+| Branch Protection Sentinel | Commit direto em main (auto-resolve no próximo run) | P69 |
 | CI Security & Drift Checks (E2E kit-builder) | Fix em PR #2561 | P70 |
 | Cart Invariants Smoke | header/sidebar E2E | P71 |
 | E2E (Playwright) — header sticky | MainLayout.tsx overflow | P72 |
