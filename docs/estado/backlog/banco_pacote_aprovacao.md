@@ -52,7 +52,7 @@ SELECT cron.alter_job((SELECT jobid FROM cron.job WHERE jobname='hash-product-im
 SELECT cron.alter_job((SELECT jobid FROM cron.job WHERE jobname='sync-is-stockout-universal'), schedule := '0,15,30,45 * * * *');
 ```
 
-Rollback do e37 (comandos originais lidos hoje; `ANALYZE` listados na íntegra em `cron.job` jobid 53 e 195): restaurar o `command` de 233, 208, 195, 53 com `cron.alter_job(<id>, command := $cmd$...$cmd$)` usando o texto original — guardar o `SELECT jobid, command FROM cron.job WHERE jobid IN (53,195,208,233,244)` **antes** de aplicar. Original de 233: `fn_cron_safe_run(154, <4 UPDATEs em ai_enrichment_queue>, 30000, 'ai-queue-stuck')`; de 208: `fn_cron_safe_run(166, <3 UPDATEs em products>, 44000, 'fantasmas-guard')`; 195 e 53: lista de `ANALYZE public.<tabela>;` sem wrapper.
+Rollback do e37 (comandos originais lidos hoje; `ANALYZE` listados na íntegra em `cron.job` jobid 53 e 195): restaurar o `command` de **233, 208, 195, 53 e 244** com `cron.alter_job(<id>, command := $cmd$...$cmd$)` usando o texto original — guardar o `SELECT jobid, command FROM cron.job WHERE jobid IN (53,195,208,233,244)` **antes** de aplicar. Original de 233: `fn_cron_safe_run(154, <4 UPDATEs em ai_enrichment_queue>, 30000, 'ai-queue-stuck')`; de 208: `fn_cron_safe_run(166, <3 UPDATEs em products>, 44000, 'fantasmas-guard')`; 195 e 53: lista de `ANALYZE public.<tabela>;` sem wrapper; 244: wrapper `fn_cron_safe_run(302, ..., 120000, ...)` → texto original salvo antes da aplicação.
 
 ## B. Endurecimentos (13) — recomendação: NÃO aplicar como estão
 
@@ -62,7 +62,7 @@ Revogam EXECUTE de `anon`/`authenticated` e **ainda não estão aplicadas** (con
 - `20260716000063` e `20260716000067`: revogam `anon` em funções do catálogo público (`fn_global_search`, `get_catalog_bestseller_page`, `fn_super_filtro*`). Quebra o catálogo para visitante.
 - Demais (`20260527200532`, `20260527214425`, `20260528102502`, `20260531135255`, `20260619154747`, `20260623172606`, `20260915113458`, `e18_*` ×2, `20261013180500`): revogações pequenas; `mcp_kv_get` (e18) já está revogada. Precisam de decisão por função.
 
-Caminho seguro: migration nova que revoga **só** as funções com uso zero no front/edge (lista derivada de `end_used.json`), `anon` primeiro, uma função por vez em teste. Rollback por função: `GRANT EXECUTE ON FUNCTION public.<fn>(<args>) TO anon, authenticated;`.
+Caminho seguro: migration nova que revoga **só** as funções com uso zero no front/edge (lista derivada de `end_used.json`), `anon` primeiro, uma função por vez em teste. Rollback por função: restaurar **apenas os roles efetivamente revogados** — ex. se a migration revogar só `anon`, o rollback é `GRANT EXECUTE ON FUNCTION public.<fn>(<args>) TO anon;`; não adicionar `authenticated` onde não existia antes (verificar o grant original em `pg_proc`/`information_schema.role_routine_grants` antes de aplicar).
 
 ## C. Não aplicar (descartar com motivo)
 - 10 que regridem segurança (concedem `anon` o que o baseline não tem) e 34 que ampliam `authenticated` (ex.: `20260528102501_restore_authenticated_rpc_grants`, 587 grants): reverteriam hardening já feito.
