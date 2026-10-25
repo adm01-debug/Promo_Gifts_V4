@@ -25,7 +25,7 @@ PASS  tests/contracts/webhook-scenario-matrix.test.ts — 95 tests, 0 falhas
 # NOTA: step NÃO presente no Gate 2 run #40150209361 (removido ou movido para outro job)
 
 ## Totais Gate 2
-# Total: 429 tests, 0 falhas, Gate Final = success (run #40150209361)
+# Total: 429 testes, 0 falhas, Gate Final = success (run #40150209361)
 
 ## Atualização — SHA bfd9b50a (main HEAD anterior)
 
@@ -91,3 +91,34 @@ Branch: claude_05/youthful-ride-vcdchy
 analise-prs/ está na raiz (não em docs/) → Gate Final DISPARA neste push.
 Gate Final PR run #40169270830: conclusion=success ✅ (confirmado via github_list_check_runs).
 Baseline: 429 testes, 0 falhas (sem regressão).
+
+## Atualização — SHA a778e1e4 (main HEAD — pós-merge PR #2481)
+
+PR #2481 mergeada como squash (docs-only, analise-prs/):
+SHA merge: a778e1e467a92c5db46f6cc844eb0e48452040fa (abrev: a778e1e4)
+Mergeado em: 2026-10-25T07:00:00Z
+Branch: claude_05/youthful-ride-vcdchy
+Arquivos: analise-prs/ (prs.json, prs.csv, RELATORIO_PRS.md, progresso.json, baseline/)
+analise-prs/ na raiz → Gate Final DISPARA.
+Gate Final run #40170213405: conclusion=success ✅ (confirmado via github_get_workflow_run).
+Baseline: 429 testes, 0 falhas (sem regressão).
+
+## Atualização — SHA f761938e (main HEAD — pós-merge PR #2486)
+
+PR #2486 mergeada como squash (docs-only, analise-prs/):
+SHA merge: f761938ece2939d5564d6ba51bcd0feb487ce057 (abrev: f761938e)
+Mergeado em: 2026-10-25T07:21:27Z
+Branch: claude_05/youthful-ride-vcdchy
+Arquivos: analise-prs/ (RELATORIO_PRS.md, prs.json, progresso.json)
+Gate Final run #40172460728: conclusion=success ✅ (confirmado via github_get_workflow_run).
+Baseline: 429 testes, 0 falhas (sem regressão).
+
+## Atualização — SHA a681fe0e (main HEAD atual — pós-merge PR #2490)
+
+PR #2490 mergeada como squash (docs-only, analise-prs/):
+SHA merge: a681fe0e46cc02fbcdfcc5e9e82ce633293fb579 (abrev: a681fe0e)
+Mergeado em: 2026-10-25T07:42:12Z
+Branch: claude/docs-analise-prs-rev6-261025-0745
+Arquivos: analise-prs/ (RELATORIO_PRS.md, prs.json, progresso.json) — correções não-sobrepostas rev6
+Gate Final run #40173768324: conclusion=success ✅ (confirmado via github_get_workflow_run às 07:49:49Z).
+Baseline: 429 testes, 0 falhas — INALTERADA. main HEAD atual verificado.
