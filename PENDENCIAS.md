@@ -1,6 +1,6 @@
 # Pendências CI — Bloqueios Externos
 
-**Atualizado em:** 2026-10-25 (rev 19 — Gate Final `be1c0dac` success; P43 adicionado)
+**Atualizado em:** 2026-10-25 (rev 17 — Gate Final `aa6f55d4` success; P39 diagnóstico exato; P41/P42 adicionados)  
 **Branch de referência:** `claude_05/nifty-sagan-r23gqh`  
 **Commit de referência (main):** `aa6f55d4` — merge PR #2477 (docs: RELATORIO_CI Rev16 + Gate Final confirmed)
 
@@ -1006,7 +1006,6 @@ Tests:      3 failed | 24732 passed | 1127 skipped | 24 todo (25886)
 **Ação necessária:** Verificar disponibilidade do serviço em produção se persistir.
 
 ---
-
 ---
 
 ## P43 — Branch Protection Sentinel: regressão no commit `be1c0dac` (não-required)

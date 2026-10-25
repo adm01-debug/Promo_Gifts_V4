@@ -1,5 +1,5 @@
 {
-  "gerado_em": "2026-10-25T06:45:00Z",
+  "gerado_em": "2026-10-25T06:38:00Z",
   "sessao": "https://claude.ai/code/session_01Ss1tXZ4cAbxBvdmu95uNPz",
   "main_head": "de48ab2792f0b8e658d1534d881599aebb51a35c",
   "baseline": {
@@ -7,7 +7,7 @@
     "falhas": 0,
     "gate_final_run": "40169270830",
     "gate_final_conclusao": "success",
-    "sha_referencia": "de48ab2792f0b8e658d1534d881599aebb51a35c"
+    "sha_referencia": "1690019920621ec7dc4acd1501b802b8f67de54a"
   },
   "prs_analisados": 40,
   "prs_abertos_atuais": 12,
@@ -15,7 +15,7 @@
     "MERGEAR": 13,
     "DECISÃO_HUMANA": 11,
     "FECHAR": 8,
-    "DECISÃO_HUMANA_MERGEADO_PO": 10,
+    "DECISÃO_HUMANA→MERGEADO_PO": 10,
     "IMPOSSÍVEL": 5,
     "MERGEADO": 2
   },
