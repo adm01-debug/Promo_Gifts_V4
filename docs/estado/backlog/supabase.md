@@ -1,0 +1,75 @@
+# Backlog O4 — Supabase funcional (edges, crons, auth, storage, realtime)
+
+**Data:** 2026-10-25 · **Projeto:** `doufsxqlfjyuvxuezpln` (confirmado via `get_project_url`) · **Modo:** somente leitura em produção · **Base repo:** `main@7d3bd4b`
+**Fonte reaproveitada:** `auditoria-supabase/secao6_crons.md`, `secao8_edge_functions.md`, `secao10_logs.md` (ID-LOG-001 estava "NÃO VERIFICADO" por usar sintaxe BigQuery; aqui os logs foram lidos com a sintaxe ClickHouse: tabela `logs`, coluna `source`, `log_attributes[...]`).
+
+Legenda — **Classe:** `AUTÔNOMA` (front/edge/config, merge sem aprovação) · `APROVAÇÃO` (DDL/cron/segredo em produção). **Camada:** front · edge · sql · infra.
+Itens de banco (RLS/grants/migrations) ficam com o backlog O3; aqui só há referência cruzada.
+
+## 1. Inventário verificado (evidência)
+
+| Área | Resultado | Evidência |
+|---|---|---|
+| Edges publicadas × repo | **109 = 109**, 0 só em prod, 0 só no repo, todas `ACTIVE` | `list_edge_functions` × `ls supabase/functions` |
+| Workflow `edge-functions-drift-check` | success nas 5 últimas execuções (PRs #2545, #2544 …) | run 40224460841 |
+| `verify_jwt` prod × `config.toml` | 42 entradas do toml batem com prod; 67 funções sem entrada = default `true` em prod | `list_edge_functions` × `supabase/config.toml` |
+| `verify_jwt=false` em prod | 36 funções; regex de credencial (`Authorization`/`x-cron-secret`/assinatura) acusa 34; sem sinal: `get-visitor-info` (bot-protection) e `image-proxy` — **leitura função a função pendente** (SB próxima fila) | grep `Authorization\|x-cron-secret\|signature` |
+| Crons | 142 jobs, 135 ativos, 17 chamam edge via `net.http_post` | `cron.job` |
+| Tabelas/views referenciadas por `.from()` no código | 163 nomes; 12 ausentes em prod (ver SB-008..SB-011) | `to_regclass` |
+| RPCs referenciadas por `.rpc()` | 120 nomes; 4 ausentes (todas em testes/código morto) | `pg_proc` |
+| Buckets usados no código (`storage.from`) | 7/7 existem em prod | `storage.buckets` |
+| Edges chamadas por `invoke`/`/functions/v1/` em `src/` | todas existem (ausentes só em specs e2e/tests: SB-014) | script de varredura |
+
+## 2. Achados
+
+| ID | Sev. | Camada | Classe | Achado | Evidência | Ação / dependência |
+|---|---|---|---|---|---|---|
+| **SB-001** | ALTA | sql+edge | APROVAÇÃO | Cron `connections-auto-test` (jobid 211) **falha 401 em 100% das execuções**: envia `CRON_SECRET`, a função valida `CONNECTIONS_AUTO_TEST_SECRET`. As migrations do repo (`20260530160000_…use_dynamic_base_url.sql:47`) usam `CONNECTIONS_AUTO_TEST_SECRET`; o cron de produção foi alterado fora do repo (drift). | `cron.job` jobid 211; `supabase/functions/connections-auto-test/index.ts:129-134`; logs 7d: `bad_cron_secret` 80×, último 2026-10-25 18:54:01; `pg_net` UA → 64×401, 0×200 | Restaurar `cron.alter_job(211, …'CONNECTIONS_AUTO_TEST_SECRET'…)` (SQL em §4). Dep.: thread O3 (drift). |
+| **SB-002** | ALTA | edge+sql | APROVAÇÃO | Cron `xbz-image-uploader` (jobid 268, a cada 10 min) chama edge **inexistente** (nem em prod nem no repo) e usa segredo fora da allowlist. Falha 100% das execuções, mascarada: `fn_cron_safe_run` engole o erro e o pg_cron registra "succeeded". | `postgres_logs`: `fn_cron_safe_run [xbz-image-uploader] ERRO: Nome de secret nao autorizado: XBZ_IMAGE_UPLOADER_CRON_SECRET` 115× em 3d; `list_edge_functions` sem `xbz-image-uploader`; vault sem esse nome | **Decisão PO:** recriar a edge (+ segredo) ou desagendar o job. |
+| **SB-003** | ALTA | edge+sql | APROVAÇÃO | Cron `image-dimensions-backfill` (jobid 235) chama `run-script`, edge **inexistente**: 404 a cada execução. O bucket `scripts` tem 1 objeto (provável alvo). | `function_edge_logs`: `run-script` 404 ×4, último 18:31:03; `cron.job` 235; `migrations/20261024190001_cron_auth_p01…:14-15` ("run-script não está deployada") | **Decisão PO:** publicar `run-script` (com auth) ou desagendar 235. P12 da auditoria cobre só o header. |
+| **SB-004** | ALTA | sql | APROVAÇÃO | `fn_cron_safe_run` (≈60 jobs) captura toda exceção e devolve texto; `cron.job_run_details` mostra "succeeded/1 row" mesmo em erro/timeout → o critério "0 falhas em 30d" **não é verificável** por `job_run_details`. Timeouts reais (~120 s, mesmo com limite configurado de 290–880 s): `process-pending` 30×, `xbz-stock-sync` 28×, `refresh-all-mvs` 14×, `sm-stock-guard` 16×, `medallion-promote` 15× em 3d. | `pg_get_functiondef(fn_cron_safe_run)`; `postgres_logs` `fn_cron_safe_run … TIMEOUT após 120000ms (limite=880000ms)` | Teto efetivo ≈120 s (watchdog `20260623183927_fix_b1_watchdog_kill_long_cron_jobs_v2`). Fazer a função gravar resultado em tabela de log; revisar limites. Dep.: O3. |
+| **SB-005** | ALTA | infra | APROVAÇÃO | Saturação do banco: 5 127 falhas em 130 002 execuções (3,94 %) nos últimos 21 d, em 134 dos 135 jobs ativos: 4 903 `job startup timeout`, 15 `server restarted` (ex.: `dispatcher-failure-alert` 224/5 657); 2 773 `canceling statement due to statement timeout` e 349 `idle-in-transaction timeout` em 7 d; Auth `password` 504 ×632 (login do e2e-ci); edges com `upstream request timeout`, `PGRST002 schema cache`, `JWT issued at future`. Tempestade de ~20 jobs nos minutos :03/:18/:33/:48 e :07/:22/:37/:52. | `cron.job_run_details` (21 d); `query_logs` `postgres_logs`/`function_logs`/`auth_logs`; `crm-db-bridge` 43 042 erros "bulk DB fetch failed" em ~36 h | Causa raiz **NÃO PROVADA** (capacidade do compute × jobs concorrentes × pgrst-schema-reload). Dimensionar/escalonar crons; custo → decisão PO. |
+| **SB-006** | MÉDIA | edge | AUTÔNOMA | `materials-api`: 761 respostas 5xx em 7 989 chamadas (504 ×525 com média 150 s, 503 ×144, 500 ×92). O cliente do banco "externo" não tem timeout → request pendura até o limite da plataforma. | `function_edge_logs` 7d; `supabase/functions/materials-api/index.ts:60` (`createClient(externalUrl, externalKey)` sem `fetch` com timeout) | PR `fix-materials-api-timeout` (timeout 20 s → 504 `Retry-After`). |
+| **SB-007** | MÉDIA | edge | AUTÔNOMA | `secrets-manager` 175 5xx (504 ×165 média 150 s) e 441×401; `connection-tester` 42 5xx; `health-check` 35 5xx (`health_degraded` elapsed 41 s); `process-queue` 36 5xx (500 ×14, 504 ×22); `external-db-inspect` 26 5xx; `connections-health-check` 14×504. Mesma classe do SB-005 (dependência de banco lento). | `function_edge_logs` 7d agrupado por função | Reavaliar após SB-005; aplicar timeout padrão onde faltar. |
+| **SB-008** | MÉDIA | sql | APROVAÇÃO | Front assina `postgres_changes` em 6 tabelas **fora** da publication `supabase_realtime` (nunca disparam): `custom_kits`, `integration_credentials`, `kit_comments`, `product_views`, `search_analytics`, `user_notification_preferences`. Na publication e sem consumidor: `order_items`, `orders`, `quote_items`, `users`. | `pg_publication_tables` × `src/hooks/kit-builder/useCustomKitsRealtime.ts:26`, `components/admin/connections/CredentialsChangedBanner.tsx:42`, `hooks/kit-builder/useKitCollaboration.ts:117`, `components/intelligence/RealtimeBadge.tsx:21,25`, `services/notificationPreferenceService.ts:57` | `ALTER PUBLICATION supabase_realtime ADD TABLE …` (SQL §4; `product_views`/`search_analytics` são de alto volume → decisão PO). Realtime também registra 27× `PoolingReplicationError … replication slot undefined_object` e 503× `JwtSignatureError`. |
+| **SB-009** | MÉDIA | front | AUTÔNOMA (decisão PO) | `useStockNotes` lê/escreve `public.stock_notes` — **tabela não existe** e o hook não é importado por nenhum componente (feature de notas de estoque inacabada, não criada). | `src/hooks/stock/useStockNotes.ts:52,67,85`; `grep useStockNotes src` → só o próprio arquivo; sem migration | Decidir: implementar ponta a ponta (tabela+RLS+UI) em O5 ou remover o hook. |
+| **SB-010** | MÉDIA | edge | AUTÔNOMA (decisão PO) | `bitrix-sync` (publicada, 267 linhas) usa `bitrix_clients`, `bitrix_deals`, `sync_logs` — nenhuma existe em prod — e **nenhum caller** em `src/` (só rótulo de breadcrumb). Hoje responde 4xx/5xx a qualquer uso. | `supabase/functions/bitrix-sync/index.ts:172,192,200,236`; `docs/estado/07_EDGE_FUNCTIONS.md:110,250` | Decidir: implementar integração (tabelas+RLS+UI) ou despublicar. |
+| **SB-011** | BAIXA | edge | APROVAÇÃO | `e2e-cleanup` grava em `e2e_cleanup_audit`, que existe só em migration do repo (`20260426200011_…sql:2`) e **não em prod** (drift O3). Insert falha silenciosamente. | `e2e-cleanup/index.ts:82,108,120,167`; `to_regclass('public.e2e_cleanup_audit')` = null | Resolvido ao aplicar a migration (thread O3). |
+| **SB-012** | BAIXA | edge | AUTÔNOMA | `categories-api` consulta `product_categories` (inexistente) como "fallback legacy"; falha tratada e silenciosa — query inútil por requisição. | `categories-api/index.ts:285-290` (o próprio comentário admite) | Remover o bloco (próxima PR de edge). |
+| **SB-013** | MÉDIA | edge+secret | APROVAÇÃO | `asia-ingestion`: `ASIA_INGESTION_CRON_SECRET` **não configurado** (vault/env) → fail-closed 401 em toda chamada (81× em 7 d). Idem tentativas ao `BACKFILL_DIM_CRON_SECRET` (38×), `HASH_PRODUCT_IMAGES_CRON_SECRET` (22×), `GENERATE_BLURHASHES_CRON_SECRET` (11×) — esses 3 constam no vault (só nomes lidos); últimos "não configurado" entre 08:22 e 13:40 de 25/10 (hash-product-images voltou a 200 depois de 11:10); causa da divergência entre vault e env da edge NÃO VERIFICADA. | `function_logs` `dispatcher_auth … secret_not_configured`; `vault.decrypted_secrets` (só nomes) | Criar o segredo da `asia-ingestion` (valor só pelo PO) ou confirmar que ninguém a chama. |
+| **SB-014** | BAIXA | tests | AUTÔNOMA | Specs/tests referenciam edges inexistentes: `bridge-metrics`, `crm-companies`, `external-db`, `magazine-reader-state`, `novelties`, `quote`, `quote-pdf`, `quote-public-view`, `shipping-estimate` (e2e); `receive-quote-sync` é URL externa (secret `CHAMPIONS_RECEIVE_QUOTE_SYNC_URL`). | `e2e/editor-permissions.spec.ts:193`, `e2e/flows/mockup-generator.spec.ts:65`, `e2e/future-stock.spec.ts:40`, … | Revisar specs (mock de rota) — sem efeito em produção. |
+| **SB-015** | BAIXA | front | AUTÔNOMA | `src/lib/auth/auth-audit.ts:14` chama RPC `check_auth_config_status` (não existe; comentário no arquivo admite) e nenhum arquivo importa o módulo. Código morto. | `auth-audit.ts:6-14`; `grep auth-audit src` → 0 consumidores | Remover ou criar a RPC (O5). |
+| **SB-016** | MÉDIA | sql | APROVAÇÃO | `postgres_logs` 7d: `permission denied for materialized view mv_stock_rupture_alert` 1 576× (role `authenticator`), `permission denied for table quotes` 293×, `…password_reset_requests` 116×, `…profiles`/`admin_settings`/`login_attempts`/`outbound_webhooks`/`query_telemetry` ~120× (pico 10:54), `null value in column "user_id" of "admin_audit_log"` 451×. Front consulta `mv_stock_rupture_alert` em `.from()`. | `query_logs` postgres_logs | Pertence ao backlog O3 (grants/RLS); registrado aqui por vir de chamadas de edge/front. |
+| **SB-017** | MÉDIA | infra | NÃO VERIFICÁVEL | **Auth (providers, redirect URLs, rate limits, e-mail, JWT expiry, HIBP)** e **lista de segredos de edge (`Deno.env`)**: o MCP não expõe config de Auth nem `secrets list`. Só verificado: `config.toml [auth] enable_signup=false`, vault tem 16 nomes, 37 nomes `Deno.env`/`secretEnvName` no código (5 sem doc em `SEGREDOS.md`: `ASIA_INGESTION_CRON_SECRET`, `BACKFILL_DIM_CRON_SECRET`, `CRON_SECRET`, `GENERATE_BLURHASHES_CRON_SECRET`, `HASH_PRODUCT_IMAGES_CRON_SECRET`). Auth logs: HIBP `context deadline exceeded` 160× (aviso). | `auth_logs`; `docs/ci/SEGREDOS.md` | PO confirma no Dashboard (Auth → Providers/URL Configuration) ou fornece acesso via Management API. Documentar os 5 nomes em `SEGREDOS.md`. |
+| **SB-018** | INFO | edge | — | Ruído esperado: ~7 500 respostas 401 de UA `node` e 664 de `facebookexternalhit` + 2 700 403 de HeadlessChrome (bot-protection) — sondas de CI/uptime e crawlers contra funções com JWT. Não é defeito. | `function_edge_logs` por `user_agent` | — |
+
+## 3. Cobertura do escopo O4
+
+| Item do plano | Estado |
+|---|---|
+| edges publicadas = repo | ✅ 109/109 (nomes); comparação byte a byte via drift-check do CI (success) |
+| edges: auth, validação, idempotência, sem erro nos logs 7d | ⚠️ erros mapeados (SB-001..007, 013); revisão de código função a função **não feita** nesta passagem (auditoria `secao8_edge_functions.md` cobre; ver pendências) |
+| crons sem falha 30d, alvo existente e versionado | ❌ 3 crons com alvo inexistente/401 (SB-001..003); janela real de `job_run_details` = 21 d; falhas ocultas (SB-004) |
+| storage | ✅ buckets do código existem; policies de storage (52) → O3 (P04/P07) |
+| auth config | ⚠️ NÃO VERIFICÁVEL por MCP (SB-017) |
+| realtime | ❌ SB-008 |
+| `Deno.env` × segredos | ⚠️ parcial (SB-013, SB-017) |
+| todo `.from/.rpc/invoke/storage` aponta para objeto existente | ❌ SB-009..012, SB-015; resto OK |
+
+## 4. SQL proposto (NÃO aplicado — aguardando aprovação)
+
+```sql
+-- SB-001 (restaura o padrão do repo)
+SELECT cron.alter_job(211, command := $C$SELECT net.http_post(url:='https://doufsxqlfjyuvxuezpln.supabase.co/functions/v1/connections-auto-test',headers:=jsonb_build_object('Content-Type','application/json','x-cron-secret',public.get_edge_function_secret('CONNECTIONS_AUTO_TEST_SECRET')),body:='{"trigger":"cron"}'::jsonb,timeout_milliseconds:=30000)$C$);
+-- rollback: mesmo comando com 'CRON_SECRET'
+
+-- SB-008 (só as de baixo volume; product_views/search_analytics dependem de decisão)
+ALTER PUBLICATION supabase_realtime ADD TABLE public.custom_kits, public.kit_comments, public.integration_credentials, public.user_notification_preferences;
+-- rollback: ALTER PUBLICATION supabase_realtime DROP TABLE …
+```
+
+## 5. Próxima fila (O4)
+
+1. PR edge `materials-api` timeout (SB-006) → `fix-materials-api-timeout`.
+2. Revisão de código das 36 edges `verify_jwt=false` (SB-018 base) e das 12 com 5xx.
+3. Re-medir erros 7 d após SB-001/002/003/005.
