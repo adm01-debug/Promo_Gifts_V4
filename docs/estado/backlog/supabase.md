@@ -11,7 +11,7 @@ Itens de banco (RLS/grants/migrations) ficam com o backlog O3; aqui só há refe
 | Área | Resultado | Evidência |
 |---|---|---|
 | Edges publicadas × repo | **109 = 109**, 0 só em prod, 0 só no repo, todas `ACTIVE` | `list_edge_functions` × `ls supabase/functions` |
-| Workflow `edge-functions-drift-check` | success nas 5 últimas execuções (PRs #2545, #2544 …) | run 40224460841 |
+| Workflow `edge-functions-drift-check` | **vermelho na `main`**: 6/6 últimas execuções `failure` (schedule 09:19 e workflow_run); só passa em PRs que não tocam `supabase/functions`. Run de PR que toca função (#2552): 107 de 109 slugs `DRIFT` por hash | runs 40209951474, 40180185423, 40224786765; `PENDENCIAS.md` P27 |
 | `verify_jwt` prod × `config.toml` | 42 entradas do toml batem com prod; 67 funções sem entrada = default `true` em prod | `list_edge_functions` × `supabase/config.toml` |
 | `verify_jwt=false` em prod | 36 funções; regex de credencial (`Authorization`/`x-cron-secret`/assinatura) acusa 34; sem sinal: `get-visitor-info` (bot-protection) e `image-proxy` — **leitura função a função pendente** (SB próxima fila) | grep `Authorization\|x-cron-secret\|signature` |
 | Crons | 142 jobs, 135 ativos, 17 chamam edge via `net.http_post` | `cron.job` |
@@ -41,13 +41,14 @@ Itens de banco (RLS/grants/migrations) ficam com o backlog O3; aqui só há refe
 | **SB-015** | BAIXA | front | AUTÔNOMA | `src/lib/auth/auth-audit.ts:14` chama RPC `check_auth_config_status` (não existe; comentário no arquivo admite) e nenhum arquivo importa o módulo. Código morto. | `auth-audit.ts:6-14`; `grep auth-audit src` → 0 consumidores | Remover ou criar a RPC (O5). |
 | **SB-016** | MÉDIA | sql | APROVAÇÃO | `postgres_logs` 7d: `permission denied for materialized view mv_stock_rupture_alert` 1 576× (role `authenticator`), `permission denied for table quotes` 293×, `…password_reset_requests` 116×, `…profiles`/`admin_settings`/`login_attempts`/`outbound_webhooks`/`query_telemetry` ~120× (pico 10:54), `null value in column "user_id" of "admin_audit_log"` 451×. Front consulta `mv_stock_rupture_alert` em `.from()`. | `query_logs` postgres_logs | Pertence ao backlog O3 (grants/RLS); registrado aqui por vir de chamadas de edge/front. |
 | **SB-017** | MÉDIA | infra | NÃO VERIFICÁVEL | **Auth (providers, redirect URLs, rate limits, e-mail, JWT expiry, HIBP)** e **lista de segredos de edge (`Deno.env`)**: o MCP não expõe config de Auth nem `secrets list`. Só verificado: `config.toml [auth] enable_signup=false`, vault tem 16 nomes, 37 nomes `Deno.env`/`secretEnvName` no código (5 sem doc em `SEGREDOS.md`: `ASIA_INGESTION_CRON_SECRET`, `BACKFILL_DIM_CRON_SECRET`, `CRON_SECRET`, `GENERATE_BLURHASHES_CRON_SECRET`, `HASH_PRODUCT_IMAGES_CRON_SECRET`). Auth logs: HIBP `context deadline exceeded` 160× (aviso). | `auth_logs`; `docs/ci/SEGREDOS.md` | PO confirma no Dashboard (Auth → Providers/URL Configuration) ou fornece acesso via Management API. Documentar os 5 nomes em `SEGREDOS.md`. |
+| **SB-019** | ALTA | edge+ci | APROVAÇÃO (deploy) | Conteúdo publicado ≠ repo em 107 de 109 edges (hash do `supabase functions download` × árvore do repo). Pode ser em parte artefato do método de hash (nenhuma causa provada: não comparei arquivo a arquivo), mas o check é a régua do plano e está vermelho na `main` há >18 h. | runs 40224786765 (19:21Z, 107 DRIFT, 0 órfãs, 0 sem deploy), 40209951474, 40180185423; artefato `drift-report` (csv); `.github/workflows/edge-functions-drift-check.yml:199-282` | Diagnosticar 3 slugs amostra (diff real × normalização); se real, `deploy-edge-functions.yml` (REGRA #8) em lote com aprovação do PO. |
 | **SB-018** | INFO | edge | — | Ruído esperado: ~7 500 respostas 401 de UA `node` e 664 de `facebookexternalhit` + 2 700 403 de HeadlessChrome (bot-protection) — sondas de CI/uptime e crawlers contra funções com JWT. Não é defeito. | `function_edge_logs` por `user_agent` | — |
 
 ## 3. Cobertura do escopo O4
 
 | Item do plano | Estado |
 |---|---|
-| edges publicadas = repo | ✅ 109/109 (nomes); comparação byte a byte via drift-check do CI (success) |
+| edges publicadas = repo | ⚠️ nomes 109/109; conteúdo **NÃO confere** (SB-019) |
 | edges: auth, validação, idempotência, sem erro nos logs 7d | ⚠️ erros mapeados (SB-001..007, 013); revisão de código função a função **não feita** nesta passagem (auditoria `secao8_edge_functions.md` cobre; ver pendências) |
 | crons sem falha 30d, alvo existente e versionado | ❌ 3 crons com alvo inexistente/401 (SB-001..003); janela real de `job_run_details` = 21 d; falhas ocultas (SB-004) |
 | storage | ✅ buckets do código existem; policies de storage (52) → O3 (P04/P07) |
