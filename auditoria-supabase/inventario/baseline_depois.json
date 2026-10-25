@@ -1,13 +1,13 @@
 {
-  "fonte": "snapshot sessao_18 — query identica a baseline_antes (information_schema.tables table_type=BASE TABLE)",
-  "capturado_em": "2026-10-24T16:05:00.000000+00:00",
+  "fonte": "snapshot pós-FASE B — query idêntica a baseline_antes (information_schema.tables table_type=BASE TABLE)",
+  "capturado_em": "2026-10-25T06:00:00.000000+00:00",
   "query_base_tables": "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='public' AND table_type='BASE TABLE'",
   "base_tables": 398,
   "views": 193,
   "funcoes": 1334,
   "cron_jobs": 142,
   "rls_policies_public": 960,
-  "migrations_ledger": 2542,
+  "migrations_ledger": 2549,
   "edge_functions": 109,
-  "nota": "Snapshot pós-auditoria — sessão 18, 2026-10-24. +4 migrations por atividade externa pós-auditoria (20261022193000..20261022194200). Auditoria foi somente leitura: Δcron=0, Δpolicies=0, Δedge_functions=0, Δfuncoes=0, Δbase_tables=0."
+  "nota": "Snapshot pós-FASE B (2026-10-25). Δmigrations_ledger=+7 vs baseline_antes (2542→2549): 20261022100001/P10, 20261024180001/P02, 20261024180002/P08, 20261024190001/P01, 20261024180003/P19, 20261025002500/P03-analyze + 1 externa. Demais métricas inalteradas: nenhuma tabela/view/função/policy criada ou removida. P08 adicionou coluna idempotency_key em workspace_notifications (sem nova tabela). P02 adicionou 2 índices FK. P10 revogou EXECUTE de fn_cron_guard para anon/PUBLIC. P01/P19 alteraram comandos de cron jobs existentes. APROVAÇÃO pendente: P06, P09, P14, P15, P03_security_definer (PR #2443)."
 }

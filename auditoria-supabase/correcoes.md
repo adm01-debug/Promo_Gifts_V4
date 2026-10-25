@@ -13,11 +13,11 @@
 | P02 | 2 índices FK sem suporte | JÁ LIBERADO | ✅ Aplicado em produção | run #40164828396 — ledger `20261024180001` — ver §P02 |
 | P03_migration | ANALYZE via migration `20261025002500` | JÁ LIBERADO | ✅ Aplicado em produção | run #40165426404 — ledger `20261025002500` — ver §P03_migration |
 | P12 | auth header backfill-image-dimensions | AUTÔNOMA | ✅ Já aplicado (pré-existente) | job 222 — ver §P12 |
-| P10 | REVOKE fn_cron_guard anon/public | JÁ LIBERADO | ⏳ Aguardando dispatch | migration `20261022100001`; próximo da fila |
-| P08 (DB) | idempotency_key workspace_notifications | JÁ LIBERADO | ⏳ Aguardando P10 | migration `20261024180002` |
-| P08 (EF) | send-notification upsert idempotente | AUTÔNOMA | ⏳ Aguardando P08 DB | `send-notification/index.ts` |
-| P19 (complemento) | auto-block-offenders 5→15 min | JÁ LIBERADO | ⏳ Aguardando P08 | migration `20261024180003` |
-| P01 | auth header image-dimensions-backfill | JÁ LIBERADO | ⏳ Aguardando P08 | migration `20261024190001` |
+| P10 | REVOKE fn_cron_guard anon/public | JÁ LIBERADO | ✅ Aplicado em produção | run #40165954774 — ledger `20261022100001` — ver §P10 |
+| P08 (DB) | idempotency_key workspace_notifications | JÁ LIBERADO | ✅ Aplicado em produção | run #40166677491 — ledger `20261024180002` — ver §P08 |
+| P08 (EF) | send-notification upsert idempotente | AUTÔNOMA | ✅ Coluna existe — EF já usava upsert | `send-notification/index.ts` |
+| P19 (complemento) | auto-block-offenders 5→15 min | JÁ LIBERADO | ✅ Aplicado em produção | run #40167137573 — ledger `20261024180003` — ver §P19 |
+| P01 | auth header image-dimensions-backfill | JÁ LIBERADO | ✅ Aplicado em produção | run #40166925674 — ledger `20261024190001` — ver §P01 |
 | P06 | security_invoker views | APROVAÇÃO | 🔓 PR #2443 aberto | aguardando PO |
 | P09 | ledger migrations repair | APROVAÇÃO | 🔓 PR #2443 aberto | aguardando PO |
 | P14 | RLS auth.uid() initplan | APROVAÇÃO | 🔓 PR #2443 aberto | aguardando PO |
@@ -91,10 +91,50 @@ SELECT jobid, jobname, LEFT(command,500) FROM cron.job WHERE jobid=222;
 
 **Migration:** `supabase/migrations/20261024180003_cron_schedule_p19_remaining.sql`
 **Origem:** PR #2441 (mergeado em main)
-**Run de apply:** https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40154148044
-**Status apply:** ⏳ `pending` — aguardando aprovação humana no `environment: production` gate
+**Run apply:** https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40167137573
+**Ledger:** `version=20261024180003` confirmado em `supabase_migrations.schema_migrations` ✅
+**Job 4 (Recibo):** falhou no step "Abre PR" — non-critical, entrada manual necessária em MIGRATIONS_SYNC_LOG.md
 **Contexto:** Top-3 jobs P19 já redistribuídos em `20261022193000` (incidente 2026-10-22)
-**Evidência pós-apply:** PENDENTE — a ser preenchido após aprovação do gate
+
+**Evidência pós-apply (2026-10-25 ~05:58 UTC):**
+```sql
+SELECT jobname, schedule FROM cron.job WHERE jobname LIKE '%auto-block-offenders%';
+-- auto-block-offenders | 1,16,31,46 * * * *  ✅
+
+SELECT COUNT(*) AS ledger_count FROM supabase_migrations.schema_migrations
+WHERE version = '20261024180003';
+-- ledger_count: 1  ✅
+```
+
+**Efeito:** job `auto-block-offenders` passou de cada 5 min para cada 15 min (1,16,31,46) — reduz pressão sobre tabela de bloqueios temporários mantendo proteção contra abusadores.
+
+---
+
+## §P10 — REVOKE fn_cron_guard anon/public
+
+**Migration:** `supabase/migrations/20261022100001_security_fn_cron_guard_revoke_anon.sql`
+**Origem:** PR #2441 (mergeado em main); PR #2456 (fix rollback + header, mergeado)
+**Run apply:** https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40165954774
+**Ledger:** `version=20261022100001` confirmado em `supabase_migrations.schema_migrations` ✅
+**Job 4 (Recibo):** falhou no step "Abre PR" — non-critical, entrada manual necessária em MIGRATIONS_SYNC_LOG.md
+
+**DDL aplicada:**
+```sql
+REVOKE EXECUTE ON FUNCTION public.fn_cron_guard(p_key bigint, p_sql text) FROM PUBLIC;
+REVOKE EXECUTE ON FUNCTION public.fn_cron_guard(p_key bigint, p_sql text) FROM anon;
+```
+
+**Evidência pós-apply (2026-10-25 ~05:42 UTC):**
+```sql
+SELECT has_function_privilege('anon','public.fn_cron_guard(bigint,text)','EXECUTE') AS anon_has_execute;
+-- anon_has_execute: false  ✅
+
+SELECT COUNT(*) AS ledger_count FROM supabase_migrations.schema_migrations
+WHERE version = '20261022100001';
+-- ledger_count: 1  ✅
+```
+
+**Efeito:** anon e PUBLIC não conseguem mais invocar `fn_cron_guard` diretamente — elimina vetor de bypass de rate-limit por chamada direta da função.
 
 ---
 
@@ -117,34 +157,28 @@ WHERE indexname IN ('idx_kit_quote_requests_quote_id','idx_kit_save_requests_kit
 
 ---
 
-## §P10 — REVOKE fn_cron_guard anon/public
-
-**Migration:** `supabase/migrations/20261022100001_security_fn_cron_guard_revoke_anon.sql`
-**Origem:** PR #2441 (mergeado em main); PR #2456 (fix rollback + header, mergeado)
-**Status apply:** ⏳ Aguardando apply P19 → P02 → P03 primeiro
-**Verificação pré-apply (2026-10-25T03:14 UTC):**
-```sql
-SELECT COUNT(*) FROM information_schema.role_routine_grants
-WHERE routine_name='fn_cron_guard' AND grantee IN ('anon','PUBLIC');
--- resultado: 2  (anon AINDA TEM EXECUTE — migration NÃO aplicada)
-```
-**Evidência pós-apply:** PENDENTE — resultado esperado: 0
-
----
-
 ## §P08 — Idempotência send-notification
 
 **Migration DB:** `supabase/migrations/20261024180002_workspace_notifications_idempotency_p08.sql`
 **Edge function:** `supabase/functions/send-notification/index.ts` (upsert + `deduplicated` flag)
 **Origem:** PR #2441 (mergeado em main)
-**Status apply:** ⏳ Aguardando apply P19 → P02 → P03 → P10 primeiro
-**Verificação pré-apply (2026-10-25T03:14 UTC):**
+**Run apply:** https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40166677491
+**Ledger:** `version=20261024180002` confirmado em `supabase_migrations.schema_migrations` ✅
+**Job 4 (Recibo):** falhou no step "Abre PR" — non-critical, entrada manual em MIGRATIONS_SYNC_LOG.md
+
+**Evidência pós-apply (2026-10-25T05:47 UTC):**
 ```sql
-SELECT COUNT(*) FROM information_schema.columns
+SELECT COUNT(*) AS idempotency_key_exists
+FROM information_schema.columns
 WHERE table_name='workspace_notifications' AND column_name='idempotency_key';
--- resultado: 0  (coluna NÃO existe — migration NÃO aplicada)
+-- idempotency_key_exists: 1  ✅
+
+SELECT COUNT(*) AS ledger_count FROM supabase_migrations.schema_migrations
+WHERE version = '20261024180002';
+-- ledger_count: 1  ✅
 ```
-**Evidência pós-apply:** PENDENTE — resultado esperado: 1
+
+**Efeito:** coluna `idempotency_key` adicionada a `workspace_notifications`; edge function `send-notification` passa a fazer upsert idempotente — elimina notificações duplicadas em retry/falha de rede.
 
 ---
 
@@ -152,16 +186,27 @@ WHERE table_name='workspace_notifications' AND column_name='idempotency_key';
 
 **Migration:** `supabase/migrations/20261024190001_cron_auth_p01_image_dimensions_backfill.sql`
 **Origem:** PR #2445 (mergeado em main)
-**Status apply:** ⏳ Aguardando apply P19 → P02 → P03 → P10 → P08 primeiro
-**Verificação pré-apply (2026-10-25T03:14 UTC):**
+**Run apply:** https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40166925674
+**Ledger:** `version=20261024190001` confirmado em `supabase_migrations.schema_migrations` ✅
+**Job 4 (Recibo):** padrão não-crítico — entrada manual em MIGRATIONS_SYNC_LOG.md
+
+**Evidência pós-apply (2026-10-25T05:52 UTC):**
 ```sql
-SELECT LEFT(command,200) FROM cron.job WHERE jobid=235;
--- resultado: SELECT net.http_post(url := 'https://doufsxqlfjyuvxuezpln.supabase.co/functions/v1/run-script', ...)
--- URL hardcoded SEM auth header — migration NÃO aplicada
+SELECT LEFT(command,300) AS command_start FROM cron.job WHERE jobid=235;
+-- command_start: SELECT net.http_post(
+--   url := public.get_edge_functions_base_url() || '/functions/v1/run-script',
+--   headers := jsonb_build_object(
+--     'Content-Type', 'application/json',
+--     'x-cron-secret', public.get_edge_function_secret('CRON_SECRET')
+--   ),
+--   body := '{"script":"image-dimensions-wor...  ✅
+
+SELECT COUNT(*) AS ledger_count FROM supabase_migrations.schema_migrations
+WHERE version = '20261024190001';
+-- ledger_count: 1  ✅
 ```
-**Detalhe:** job 235 chama `/functions/v1/run-script` sem auth. Migration adiciona `x-cron-secret` via `get_edge_function_secret('CRON_SECRET')` e substitui URL hardcoded por `get_edge_functions_base_url()`.
-**Nota:** `run-script` não está deployada — auth guard entrará em vigor ao deploy.
-**Evidência pós-apply:** PENDENTE — resultado esperado: command contém `get_edge_function_secret('CRON_SECRET')`
+
+**Efeito:** job 235 (`image-dimensions-backfill`) passou a usar `x-cron-secret` via Vault + URL dinâmica — auth guard ativo ao deploy de `run-script`.
 
 ---
 
