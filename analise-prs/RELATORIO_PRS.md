@@ -3,14 +3,14 @@
 **Gerado em:** 2026-10-25  
 **Sessão:** https://claude.ai/code/session_01Ss1tXZ4cAbxBvdmu95uNPz  
 **Main SHA início da sessão:** `9079c82e6c3f58ae5d2cdf8c7eb2deef979ee9d8`  
-**Main SHA fim da sessão:** `1e07e298f` (após merge de #2464 pelo PO)  
+**Main SHA fim da sessão:** `6ea6c80cee3adbb6752ec4015f2f7a2ba433e5d1` (após merge de #2464 pelo PO)  
 **Total PRs analisados:** 32 (#2414–#2466)  
 **Merges autônomos (esta sessão):** 8 (#2414, #2426, #2427, #2434, #2436, #2439, #2447, #2455)  
 **Merges outra sessão (já em main):** 3 (#2437, #2438, #2457)  
-**Merges PO-aprovados (REGRA #8):** 4 (#2441, #2445, #2450, #2464)  
-**PRs DECISÃO_HUMANA aguardando PO:** 7 (#2415, #2424, #2428, #2435, #2443, #2449, #2466)  
-**PRs FECHAR:** 10 (#2417, #2418, #2419, #2420, #2422, #2432, #2451, #2452, #2458, #2465)  
-**Total verificado:** 8+3+4+7+10 = **32**  
+**Merges PO-aprovados (REGRA #8):** 5 (#2435, #2441, #2445, #2450, #2464)  
+**PRs DECISÃO_HUMANA aguardando PO:** 5 (#2415, #2428, #2443, #2449, #2466)  
+**PRs FECHAR:** 11 (#2417, #2418, #2419, #2420, #2422, #2424, #2432, #2451, #2452, #2458, #2465)  
+**Total verificado:** 8+3+5+5+11 = **32**  
 **Worktrees:** nenhum extra (`git worktree list` confirma só `/home/user/Promo_Gifts_V4`)
 
 ---
@@ -141,9 +141,11 @@ Nenhum PR mergeado autonomamente toca código de produção exceto:
 
 | PR | SHA do merge | Merged by | Motivo |
 |---|---|---|---|
+| #2435 | `50f4f599` | PO (human) | fix(ci): Zod v4 repair UUIDs + vitest + gitleaks + CI workflows |
 | #2441 | `90c6492b` | PO (human) | DDL P02/P08/P19 + edge fn send-notification |
 | #2445 | `8eeeca9b` | PO (human) | DDL cron.alter_job job_id=235 |
 | #2450 | `d804cafa` | PO (human) | docs RELATORIO_CI.md rev5 (estava draft) |
+| #2464 | `1e07e298` | PO (human) | fix(ci): Gate 5.5 timeout 3→5min (deploy-gates.yml) |
 
 ---
 
@@ -158,13 +160,13 @@ Nenhum PR mergeado autonomamente toca código de produção exceto:
 | #2419 | FECHAR (branch órfã + Rule 8) | — | `analise-prs/dossies/PR-2419.md` |
 | #2420 | FECHAR (branch órfã + Rule 8) | — | `analise-prs/dossies/PR-2420.md` |
 | #2422 | FECHAR (branch órfã + draft) | — | `analise-prs/dossies/PR-2422.md` |
-| #2424 | DECISÃO_HUMANA (DDL+CI) | — | `analise-prs/dossies/PR-2424.md` |
+| #2424 | FECHAR (state: closed) | — | `analise-prs/dossies/PR-2424.md` |
 | #2426 | MERGEADO | `7f5d410a` | `analise-prs/dossies/PR-2426.md` |
 | #2427 | MERGEADO | `26641b0a` | `analise-prs/dossies/PR-2427.md` |
 | #2428 | DECISÃO_HUMANA (.gitleaks.toml) | — | `analise-prs/dossies/PR-2428.md` |
 | #2432 | FECHAR (conteúdo já em main via #2426) | — | `analise-prs/dossies/PR-2432.md` |
 | #2434 | MERGEADO | `53ba69b5` | `analise-prs/dossies/PR-2434.md` |
-| #2435 | DECISÃO_HUMANA (CI+gitleaks) | — | `analise-prs/dossies/PR-2435.md` |
+| #2435 | MERGEADO (PO) | `50f4f599` | `analise-prs/dossies/PR-2435.md` |
 | #2436 | MERGEADO | `4c8193b9` | `analise-prs/dossies/PR-2436.md` |
 | #2437 | MERGEADO (outra sessão) | `9b23fb64` | `analise-prs/dossies/PR-2437.md` |
 | #2438 | MERGEADO (outra sessão) | `c8994f17` | `analise-prs/dossies/PR-2438.md` |
@@ -178,6 +180,11 @@ Nenhum PR mergeado autonomamente toca código de produção exceto:
 | #2451 | FECHAR (state: closed — já fechado) | — | `analise-prs/dossies/PR-2451.md` |
 | #2452 | FECHAR (draft + conflito com main) | — | `analise-prs/dossies/PR-2452.md` |
 | #2455 | MERGEADO | `bfd9b50a` | `analise-prs/dossies/PR-2455.md` |
+| #2457 | MERGEADO (outra sessão) | `fcd4fb8d` | `analise-prs/dossies/PR-2457.md` |
+| #2458 | FECHAR (draft + outra sessão) | — | `analise-prs/dossies/PR-2458.md` |
+| #2464 | MERGEADO (PO) | `1e07e298` | `analise-prs/dossies/PR-2464.md` |
+| #2465 | FECHAR (draft + outra sessão + conflito) | — | `analise-prs/dossies/PR-2465.md` |
+| #2466 | DECISÃO_HUMANA (nossa PR, draft) | — | `analise-prs/dossies/PR-2466.md` |
 
 ---
 
@@ -532,9 +539,9 @@ Fechar em favor de substitutos ou rebasar + DECISÃO HUMANA.
 |---|---|---|
 | MERGEAR autônoma (esta sessão) | #2414, #2426, #2427, #2434, #2436, #2439, #2447, #2455 | 8 |
 | MERGEAR outra sessão (já em main) | #2437, #2438, #2457 | 3 |
-| DECISÃO_HUMANA → MERGEADO PO | #2441, #2445, #2450, #2464 | 4 |
-| DECISÃO_HUMANA aguardando PO | #2415, #2424, #2428, #2435, #2443, #2449, #2466 | 7 |
-| FECHAR | #2417, #2418, #2419, #2420, #2422, #2432, #2451, #2452, #2458, #2465 | 10 |
+| DECISÃO_HUMANA → MERGEADO PO | #2435, #2441, #2445, #2450, #2464 | 5 |
+| DECISÃO_HUMANA aguardando PO | #2415, #2428, #2443, #2449, #2466 | 5 |
+| FECHAR | #2417, #2418, #2419, #2420, #2422, #2424, #2432, #2451, #2452, #2458, #2465 | 11 |
 | **TOTAL** | | **32** |
 
 ## Evidência CI por merge autônomo

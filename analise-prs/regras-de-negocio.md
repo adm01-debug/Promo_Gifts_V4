@@ -119,13 +119,13 @@ PRs em rascunho (draft) têm um bloqueio implícito: o autor não sinalizou que 
 | #2419 | IMPOSSÍVEL | branch órfã — NO_MERGE_BASE (sem ancestral com main) |
 | #2420 | IMPOSSÍVEL | branch órfã — NO_MERGE_BASE (sem ancestral com main) |
 | #2422 | IMPOSSÍVEL | branch órfã (NO_MERGE_BASE) + draft:true |
-| #2424 | DECISÃO HUMANA | Rule 8: DDL migration + CI workflow |
+| #2424 | FECHAR | PR fechado (state=closed, merged=false) — branch claude/fix-audit-acl-regrole-261024-1635 |
 | #2426 | MERGEADO | SHA 7f5d410a — 1 arquivo QA, sem Rule 8 |
 | #2427 | MERGEADO | SHA 26641b0a — cors.ts + webhook-schemas; edge fn deployed |
 | #2428 | DECISÃO HUMANA | Rule 8: .gitleaks.toml (security policy); draft:true |
 | #2432 | JÁ IMPLEMENTADA | conteúdo em main desde SHA 7f5d410a (patch-id idêntico) |
 | #2434 | MERGEADO | SHA 53ba69b5 — docs-only analise-prs/ |
-| #2435 | DECISÃO HUMANA | Rule 8: CI workflows + .gitleaks.toml; draft:true |
+| #2435 | MERGEADO (PO) | SHA 50f4f599 — fix(ci): Zod v4 repair; PO aprovou 2026-10-25T03:18Z |
 | #2436 | MERGEADO | SHA 4c8193b9 — deliverables update |
 | #2437 | MERGEADO (outra sessão) | SHA 9b23fb64 |
 | #2438 | MERGEADO (outra sessão) | SHA c8994f17 |

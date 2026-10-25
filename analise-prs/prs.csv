@@ -6,13 +6,13 @@ pr_number,title,author,draft,state,mergeable_state,verdict,sha_merge,ci_run,note
 2419,fix(security): audit_security_definer_acl pg_get_userbyid,Claude,true,open,dirty,FECHAR,,,Branch órfã (NO_MERGE_BASE) + draft + Rule 8 check-security-definer-acl.mjs
 2420,fix(rollback): header preflight + rollback script 20261024163500,Claude,true,open,dirty,FECHAR,,,Branch órfã (NO_MERGE_BASE) + draft + Rule 8 supabase/rollbacks/
 2422,fix(ts+docs): ProductFormFullscreen + MIGRATIONS_SYNC_LOG,Claude,true,open,dirty,FECHAR,,,Branch órfã (NO_MERGE_BASE) + draft; conteúdo correto mas merge impossível
-2424,feat(db): migration SECURITY DEFINER acl + db-schema-drift-check,Claude,true,open,blocked,DECISÃO_HUMANA,,,"Rule 8: .github/workflows/db-schema-drift-check.yml + supabase/migrations/ SECURITY DEFINER; draft:true"
+2424,feat(db): migration SECURITY DEFINER acl + db-schema-drift-check,Claude,true,closed,na,FECHAR,,,PR fechado (state=closed merged=false); Rule 8 + draft — FECHAR
 2426,feat(qa): probe E184 detecta refs legadas ao projeto proibido,Claude,false,merged,merged,MERGEAR,7f5d410a,sem_run_no_sha_merge_cobertura_transitiva_bfd9b50a,1 arquivo QA qa/migrations-draft/
 2427,fix(cors+webhooks): cors.ts wildcard + webhook-schemas,Claude,false,merged,merged,MERGEAR,26641b0a,40128149143,cors.ts + webhook-schemas; edge fn deployed run #40146529580
 2428,fix(gitleaks): allowlist FPs de testes + placeholders de docs,Claude,true,open,clean,DECISÃO_HUMANA,,,"Rule 8: .gitleaks.toml (secrets policy); draft:true; mergeable limpo"
 2432,feat(qa): probe E184 legacy refs (duplicata),devin/Codex,false,open,clean,FECHAR,,,Conteúdo já em main via PR #2426 (SHA 7f5d410a); duplicata direta
 2434,docs(analise-prs): RELATORIO + dossies #2414-#2428,Claude,false,merged,merged,MERGEAR,53ba69b5,sem_run_no_sha_merge_cobertura_transitiva_bfd9b50a,docs-only analise-prs/
-2435,fix(ci): Zod v4 repair UUIDs + vitest + gitleaks + drafts README,Claude,true,open,dirty,DECISÃO_HUMANA,,,"Rule 8: .github/workflows/ci-security-drift.yml + .gitleaks.toml; draft:true + conflito"
+2435,fix(ci): Zod v4 repair UUIDs + vitest + gitleaks + drafts README,Claude,false,merged,merged,DECISÃO_HUMANA→MERGEADO_PO,50f4f599,,"Rule 8: CI/workflows + .gitleaks.toml; mergeado pelo PO em 2026-10-25T03:18Z; merge_commit_sha 50f4f599729da64e9956b5b3c1a231b4749b8b10"
 2436,docs(analise-prs): deliverables update baseline+dossies,Claude,false,merged,merged,MERGEAR,4c8193b9,40128149143,docs analise-prs/; CI verde run #40128149143 no SHA exato
 2437,(outra sessão — branch diferente),Claude,false,merged,merged,MERGEAR,9b23fb64,40150209361,mergeado por outra sessão
 2438,(outra sessão — branch diferente),Claude,false,merged,merged,MERGEAR,c8994f17,40150209361,mergeado por outra sessão
