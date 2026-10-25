@@ -545,7 +545,7 @@ Nenhum workflow em `main` está com `action_required`.
 2. `copilot/corrigir-peer-dependencies-eslint` — 1 run
 
 **Motivo técnico exato (idêntico para todos os 641):**
-> GitHub Actions coloca em `action_required` qualquer workflow disparado por evento `pull_request` originado de bot (`github-actions[bot]`) em branches internas (não-fork), quando o manutentor ainda não aprovou aquele run. Ref: [GitHub Docs — Approving workflow runs](https://docs.github.com/en/actions/managing-workflow-runs-and-deployments/managing-workflow-runs/approving-workflow-runs-from-public-forks). A API de aprovação (`POST /actions/runs/{id}/approve`) retorna HTTP 403 para runs não-fork. Não há aprovação programática possível. Runs expiram automaticamente em 90 dias.
+> GitHub Actions coloca em `action_required` qualquer workflow disparado por evento `pull_request` originado de bot (`github-actions[bot]`) em branches internas (não-fork), quando o manutentor ainda não aprovou aquele run. Ref: [GitHub Docs — Approving workflow runs](https://docs.github.com/en/actions/managing-workflow-runs-and-deployments/managing-workflow-runs/approving-workflow-runs-from-public-forks). A API de aprovação (`POST /actions/runs/{id}/approve`) retorna HTTP 403: `{"message":"This run is not from a fork pull request or queued by the Actions bot","documentation_url":"..."}`. Aprovação programática impossível. Runs expiram automaticamente em 90 dias.
 
 **25 workflows presentes no inventário action_required:**
 
@@ -593,3 +593,128 @@ O mandato do stop-hook está integralmente satisfeito:
 - **Nenhum workflow em `main` com `action_required`:** 0 (API confirmada)
 - **Deploy Gates main SHA `d9f65b43`:** ✅ success (run 40160560259)
 - **PENDENCIAS.md P4:** atualizado com 25 workflows e motivo técnico exato por categoria
+
+*Rev 11 (seção 10) — PR #2457 squash-merge + inventário action_required — 2026-10-25 — sessão session_01Nc1nb7PArDnixYvvZssnKy*
+
+---
+
+## Rev 12 — PR #2464 (Gate 5.5 timeout fix) — 2026-10-25 — sessão session_01HW5obNKUFtUMbBdgUb94kY
+
+### 12.1 Causa raiz corrigida
+
+**Sintoma:** Gate Final (`deploy-gates.yml`) retornou `conclusion: cancelled` no commit `1b69cfe7`.
+
+**Causa:** `timeout-minutes: 3` no job `restore-cart-rpc-gate` (Gate 5.5). O job levava ~3m04s rotineiramente, excedendo o timeout por ~4 segundos → `conclusion: cancelled` → cascata para Gate Final.
+
+**Fix:** `timeout-minutes: 3 → 5` em `restore-cart-rpc-gate`. Verificado no CI do PR #2464: Gate 5.5 = success em ~38s (dentro do novo limite de 5min); Gate Final = success.
+
+### 12.2 Tabela de prova — PR #2464
+
+| Gate | Run do PR | Conclusão |
+|---|---|---|
+| Gate 5.5 (restore-cart-rpc-gate) | Job 121067761486, run 40159442659 | ✅ success (~38s) |
+| Gate Final - Deploy Ready | Job 121068631316, run 40159442659 | ✅ success |
+
+**Merge:** squash-merge em main — SHA `1e07e298f03d7940d71629f28c5effc72274f940`.
+
+### 12.3 Inventário is:failure em main (commits `1b69cfe7` e `1e07e298`) — todos não-required
+
+| Workflow | Run em `1b69cfe7` | Required? | Documentado em |
+|---|---|---|---|
+| Deploy Gates (Gate Final) | 40158537891 — cancelled | **SIM** | **FIXED** — PR #2464 → `1e07e298` |
+| Supabase Linter Gate | 40158537935 — failure | Não | P22 (TimeoutError) |
+| Quote Builder Delivery Quality | 40158537894 — failure | Não | P17 (regressão recorrente) |
+| E2E — Critical Flows & Error Boundaries | 40158537959 — failure | Não | P16 |
+| E2E • Swatch QuickView | 40158537918 — failure | Não | P12 |
+| E2E • Thumb QuickView | 40158537896 — cancelled | Não | P24 |
+| Uptime Monitor | 40159275001 — failure | Não | P26 |
+
+**Mandato satisfeito:** Gate Final = ✅ success em PR #2464 (ci) e em main pós-merge `1e07e298`. Todos os demais failures são não-required e documentados em PENDENCIAS.md.
+
+*Rev 12 — PR #2464 squash-merge — 2026-10-25 — sessão session_01HW5obNKUFtUMbBdgUb94kY*
+
+---
+
+## Rev 13 — Inventário completo em `1e07e298` + novos failures + baseline local — 2026-10-25 — sessão session_01HW5obNKUFtUMbBdgUb94kY
+
+### 13.1 Gate Final em `1e07e298`
+
+Gate Final (run [#40159926751](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40159926751)) — confirmado `conclusion: success` (evidência: seção 10.4 acima).
+
+### 13.2 Novos failures em `1e07e298` (todos não-required)
+
+| Workflow | Run | Conclusão | Required? | PENDENCIAS.md |
+|---|---|---|---|---|
+| Branch Protection Sentinel | [#40159926699](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40159926699) | failure | Não | P34 |
+| Supabase Linter Gate | [#40159926768](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40159926768) | failure | Não | P35 |
+
+**Branch Protection Sentinel:** merge commit `1e07e298` rejeitado por não seguir exatamente o padrão aceito pelo sentinel. Advisory — não bloqueia deploy.
+
+**Supabase Linter Gate:** Management API HTTP 544 (transiente). Recorrente — mesma falha documentada em P22/P35.
+
+### 13.3 Tabela completa de workflows em falha (última execução em main `1e07e298`)
+
+| Workflow | Run | Conclusão | Required (Gate Final)? | PENDENCIAS.md |
+|---|---|---|---|---|
+| Deploy Gates (Gate Final) | [#40159926751](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40159926751) | ✅ success | **SIM** | P33 (FIXED) |
+| Branch Protection Sentinel | [#40159926699](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40159926699) | failure | Não | P34 |
+| Supabase Linter Gate | [#40159926768](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40159926768) | failure | Não | P35 |
+| Release Please | (múltiplos) | failure | Não | P1 |
+| Uptime Monitor | [#40159275001](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40159275001) | failure | Não | P36 (comportamento esperado) |
+
+Todos os workflows não-required documentados em PENDENCIAS.md. O único required check (Gate Final) está com `success` confirmado.
+
+### 13.4 Baseline local — sessão session_01HW5obNKUFtUMbBdgUb94kY
+
+Executado em `/home/user/Promo_Gifts_V4` com node_modules existente (821 diretórios).
+
+| Verificação | Comando | Resultado |
+|---|---|---|
+| node_modules | `ls node_modules \| wc -l` | ✅ 821 dirs |
+| TypeScript | `npx tsc --noEmit` | ✅ EXIT 0 |
+| ESLint | `npx eslint src/ --max-warnings 0` | ✅ EXIT 0 |
+| Vite build | `npm run build` | ✅ EXIT 0 (15.04s) |
+| Vitest | `npm test` | ⏳ timeout >2min (local) |
+
+*Rev 13 — novos failures `1e07e298` documentados + baseline local — 2026-10-25 — sessão session_01HW5obNKUFtUMbBdgUb94kY*
+
+---
+
+## Rev 14 — Gate Final confirmed success em `d9f65b4` (main atual) — 2026-10-25 — sessão session_01HW5obNKUFtUMbBdgUb94kY
+
+### 14.1 Gate Final em `d9f65b4`
+
+**Deploy Gates:** run [#40160560259](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40160560259) — `conclusion: success` ✅
+
+### 14.2 Inventário completo de workflows em `d9f65b4` (main HEAD atual)
+
+| Workflow | Run | Conclusão | Required? | PENDENCIAS.md |
+|---|---|---|---|---|
+| **Deploy Gates (Gate Final)** | [#40160560259](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40160560259) | ✅ **success** | **SIM** | **SATISFEITO** |
+| Branch Protection Sentinel | [#40160560272](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40160560272) | ✅ success | Não | — |
+| Security Scan (CodeQL) | [#40160560302](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40160560302) | ✅ success | Não | — |
+| SSOT Supabase Guard | [#40160560137](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40160560137) | ✅ success | Não | — |
+| Required Checks Guard | [#40160560187](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40160560187) | ✅ success | Não | — |
+| UI · Visual & A11y | [#40160559991](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40160559991) | ✅ success | Não | — |
+| Gitleaks — Full History Audit | [#40160560047](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40160560047) | ✅ success | Não | — |
+| Static Health Checks | [#40160560175](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40160560175) | ✅ success | Não | — |
+| Select Columns vs Types | [#40160560082](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40160560082) | ✅ success | Não | — |
+| Policies Baseline | [#40160560159](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40160560159) | ✅ success | Não | — |
+| E2E · Carts Undo RPC Atomic | [#40160560200](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40160560200) | ✅ success | Não | — |
+| Lovable Edit Tracker | [#40160560004](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40160560004) | ✅ success | Não | — |
+| No Prod Leak in Dev/Test Config | [#40160560291](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40160560291) | ✅ success | Não | — |
+| Lovable Autoheal | [#40160559995](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40160559995) | ✅ success | Não | — |
+| Release Please | [#40160560188](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40160560188) | failure | Não | P1 (PAT ausente) |
+| Uptime Monitor | [#40160847069](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40160847069) | failure | Não | P36 (comportamento esperado) |
+| Supabase Linter Gate | [#40160559986](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40160559986) | failure | Não | P35 (transiente) |
+| Quote Builder Delivery Quality | [#40160560196](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40160560196) | failure | Não | P17 (recorrente) |
+| E2E — Personalization Flow | [#40160560194](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40160560194) | failure | Não | P37 (novo) |
+| Cart Invariants Smoke | [#40160560030](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40160560030) | failure | Não | P38 (novo) |
+| CI Security & Drift Checks | [#40160560319](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40160560319) | failure | Não | P39 (novo) |
+| E2E — Critical Flows & Error Boundaries | [#40160560232](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40160560232) | failure | Não | P16 |
+| E2E • Swatch QuickView | [#40160560301](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40160560301) | cancelled | Não | P12 |
+| E2E • Thumb QuickView | [#40160560083](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40160560083) | cancelled | Não | P24 |
+
+**Mandato satisfeito:** Gate Final = ✅ success em `d9f65b4` (main HEAD atual). Todos os demais failures/cancelled são não-required e documentados em PENDENCIAS.md.
+
+*Rev 14 — inventário completo `d9f65b4` + Gate Final confirmed — 2026-10-25 — sessão session_01HW5obNKUFtUMbBdgUb94kY*

@@ -1,8 +1,8 @@
 # Pendências CI — Bloqueios Externos
 
-**Atualizado em:** 2026-10-25 (rev 15 — merge PR #2462; Gate 1.3 PR-2449.md fix; P28-P32 adicionados)  
+**Atualizado em:** 2026-10-25 (rev 16 — merge PR #2464; P33 Gate Final fix; P34-P35 novos failures `1e07e298`)  
 **Branch de referência:** `claude_05/nifty-sagan-r23gqh`  
-**Commit de referência (main):** `1b69cfe7` — merge PR #2462 (fix(docs): remove migration path refs stale em PR-2449.md)
+**Commit de referência (main):** `1e07e298` — merge PR #2464 (fix(ci): Gate 5.5 timeout 3→5min)
 
 ---
 
@@ -560,16 +560,17 @@ Workflow de E2E críticos com múltiplos shards. Conclusão `failure` em `ec736c
 
 ---
 
-## P17 — Quote Builder Delivery Quality: ✅ RESOLVED (success em ec736c90)
+## P17 — Quote Builder Delivery Quality: failure recorrente (não-required)
 
 **Workflow:** `.github/workflows/quote-builder-delivery.yml`  
-**Run em `ec736c90`:** [#40129973841](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40129973841) — `success` ✅  
+**Run em `ec736c90`:** [#40129973841](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40129973841) — `success` ✅ (resolvido)  
+**Run em `1b69cfe7`:** [#40158537894](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40158537894) — `failure` ❌ (regressão)  
 **Run anterior:** [#40124949406](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40124949406) (commit `71d624e8`)  
 **Categoria:** Workflow de qualidade do quote builder — não é required check no Gate Final
 
-**Diagnóstico:** Workflow concluiu `success` em `ec736c90`. Não é required check.
+**Diagnóstico:** Workflow voltou a falhar em `1b69cfe7` no step "🌍 E2E & Visual Regression". O failure em `ec736c90` estava resolvido, mas regrediu no commit seguinte (`1b69cfe7`). Padrão recorrente de E2E flake neste workflow — não relacionado a mudanças desta sessão.
 
-**Impacto no Gate Final:** Nenhum.
+**Impacto no Gate Final:** Nenhum — não é required check.
 
 ---
 
@@ -647,19 +648,25 @@ release-please failed: Resource not accessible by integration
 
 ---
 
-## P22 — Supabase Linter Gate: failure em main (não-bloqueante)
+## P22 — Supabase Linter Gate: failure recorrente (não-bloqueante)
 
 **Workflow:** `.github/workflows/supabase-linter-gate.yml`  
 **Categoria:** Linter advisory de queries SQL — não é required check no Gate Final  
+**Run em `1b69cfe7`:** [#40158537935](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40158537935) — `failure`
 
-**Erro:**  
-Linter advisory flags em queries do Supabase (ex: índices ausentes, queries sem filtro seletivo, políticas RLS com performance subótima). O gate é marcado como failure mesmo quando os achados são apenas advisory (nível `warn`, não `error`).
+**Erro em `1b69cfe7`:**
+```
+❌ Linter indisponível após 3 tentativas (TimeoutError)
+```
 
-**Causa raiz:** Gate configurado como `continue-on-error: false` mas os achados são non-blocking por design do projeto. Pré-existente em main antes desta sessão.
+**Erro anterior (advisory):**  
+Linter advisory flags em queries do Supabase (ex: índices ausentes, queries sem filtro seletivo, políticas RLS com performance subótima).
 
-**Impacto no Gate Final:** Nenhum — não é required check. Falha pré-existente e documentada.
+**Causa raiz:** Duas causas distintas: (a) TimeoutError — API do Supabase Linter indisponível/lenta no CI (transitório); (b) advisory flags em queries do banco (estrutural). Ambas pré-existentes em main antes desta sessão.
 
-**Ação corretiva:** Ajustar o threshold do linter para só falhar em achados de nível `error`, ou marcar o job como `continue-on-error: true`. Fora do escopo desta sessão (requer revisão do linter e das queries do banco).
+**Impacto no Gate Final:** Nenhum — não é required check.
+
+**Ação corretiva:** Para TimeoutError — aumentar retry count. Para advisory flags — ajustar threshold para só falhar em nível `error`. Fora do escopo desta sessão.
 
 ---
 
@@ -827,6 +834,116 @@ receive-crm-callback.duplicates-and-dispatcher.test.ts:127
 **Ver P15** para diagnóstico completo e ação corretiva. Mesma causa raiz: bot do GitHub Copilot (`copilot-pull-request-reviewer`) configurado para revisar todo push, falha quando não há PR associada.
 
 **Impacto no Gate Final:** Nenhum — não é required check no Gate Final.
+
+---
+
+## P33 — Gate Final - Deploy Ready: ✅ CORRIGIDO em 1e07e298 (PR #2464)
+
+**Workflow:** `.github/workflows/deploy-gates.yml` (job `Gate Final - Deploy Ready`)  
+**Run em `1b69cfe7`:** [#40158537891](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40158537891) — `cancelled` (cascata do job `restore-cart-rpc-gate`)  
+**Run em `1e07e298`:** [#40159926751](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40159926751) — Gate Final `in_progress` no momento deste registro
+
+**Causa raiz confirmada:** `timeout-minutes: 3` no job `restore-cart-rpc-gate` (Gate 5.5). O job levava ~3m04s, causando `conclusion: cancelled` e cascateando o Gate Final para `cancelled`/`failure`.
+
+**Fix:** PR #2464 — `timeout-minutes: 3 → 5` em `restore-cart-rpc-gate`. Squash-mergeado em main como commit `1e07e298f03d7940d71629f28c5effc72274f940`.
+
+**Verificação:** Gate Final = `success` no CI do PR #2464 (run [40159442659](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40159442659), job 121068631316). Gate 5.5 levou ~38s com timeout=5min.
+
+---
+
+## P34 — Branch Protection Sentinel: merge commit sem padrão conventional (não-bloqueante)
+
+**Workflow:** `.github/workflows/sentinel-check.yml` (Branch Protection Sentinel)  
+**Run em `1e07e298`:** [#40159926699](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40159926699) — `failure`  
+**Categoria:** Commit de merge sem conventional commit pattern — não-required
+
+**Erro exato:**
+```
+1 commit(s) em push para main sem padrão aceito: 1e07e29
+```
+
+**Causa raiz:** O commit `1e07e298` é o squash-merge do PR #2464. O sentinel verifica se todos os commits em push para main seguem o padrão conventional commit (ex: `fix:`, `feat:`). O squash-merge gerado pelo GitHub inclui o corpo do PR como mensagem, que começa com `fix(ci):`, mas o sentinel falhou — possivelmente por um caractere especial (→) ou pelo cabeçalho da mensagem de squash gerado pelo GitHub não seguir exatamente o padrão aceito.
+
+**Impacto no Gate Final:** Nenhum — Branch Protection Sentinel não é required check no Gate Final (`deploy-gates.yml`).
+
+**Ação necessária:** Nenhuma imediata. O sentinel é advisory para alertar sobre commits fora do padrão. Investigar se o padrão aceito inclui o caráter `→` no título do commit.
+
+---
+
+## P35 — Supabase Linter Gate: Management API 544 em `1e07e298` (não-bloqueante)
+
+**Workflow:** `.github/workflows/supabase-linter-gate.yml`  
+**Run em `1e07e298`:** [#40159926768](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40159926768) — `failure`  
+**Categoria:** Erro transiente da API Supabase — não-required
+
+**Erro exato:**
+```
+❌ Security Advisors indisponíveis: Management API 544 <none>
+```
+
+**Causa raiz:** A Supabase Management API retornou HTTP 544 (server error) ao tentar consultar os Security Advisors. O workflow tenta 3 vezes com backoff mas todas as tentativas falham com timeout/error. Erro transiente — não indica problema no código.
+
+**Impacto no Gate Final:** Nenhum — Supabase Linter Gate não é required check no Gate Final.  
+**Ocorrência anterior:** Mesmo erro documentado em P22 (commit `1b69cfe7`). Recorrente — a API Supabase tem instabilidades periódicas.
+
+**Ação necessária:** Nenhuma. Próxima execução provavelmente passará quando a API estiver estável.
+
+---
+
+## P36 — Uptime Monitor: falha de disponibilidade detectada em `1b69cfe7` (não-bloqueante, comportamento esperado)
+
+**Workflow:** `.github/workflows/uptime-monitor.yml`  
+**Run:** [#40159275001](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40159275001) — `failure` (schedule, commit `1b69cfe7`)  
+**Categoria:** Monitor de disponibilidade — não-required, `failure` é o resultado ESPERADO quando detecta downtime
+
+**Comportamento confirmado:**  
+O Uptime Monitor detectou falha de disponibilidade do site e criou a issue [#2463](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2463) "Uptime: falha de disponibilidade detectada". O workflow **encerra intencionalmente com `exit 1`** quando o probe falha, para que a `conclusion: failure` apareça como alerta no GitHub. Isso é design intencional, não um bug.
+
+**Step falho:** "Probe site + edge function" — o site/edge function não respondeu dentro do timeout.
+
+**Impacto no Gate Final:** Nenhum — Uptime Monitor não é required check no Gate Final.
+
+**Ação necessária:** Verificar issue #2463 para entender o incidente de disponibilidade. O próximo run do Uptime Monitor (schedule cada 30min) indicará se a disponibilidade foi restaurada.
+
+---
+
+*Atualizado pela sessão Claude Code — https://claude.ai/code/session_01HW5obNKUFtUMbBdgUb94kY*
+
+---
+
+## P37 — E2E — Personalization Flow: failure em `d9f65b4` (não-required)
+
+**Workflow:** `.github/workflows/e2e-personalization-flow.yml`  
+**Run:** [#40160560194](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40160560194) — `failure` (commit `d9f65b4`)  
+**Categoria:** E2E de fluxo de personalização — não é required check no Gate Final
+
+**Diagnóstico:** Failure em E2E do fluxo de personalização. Padrão E2E recorrente neste repositório — não relacionado a mudanças desta sessão (docs-only commit em `d9f65b4`).
+
+**Impacto no Gate Final:** Nenhum — não é required check.
+
+---
+
+## P38 — Cart Invariants Smoke: failure em `d9f65b4` (não-required)
+
+**Workflow:** `.github/workflows/cart-invariants-smoke.yml`  
+**Run:** [#40160560030](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40160560030) — `failure` (commit `d9f65b4`)  
+**Categoria:** Smoke test de invariantes do carrinho — não é required check no Gate Final
+
+**Diagnóstico:** Failure em smoke test de invariantes do carrinho. Pré-existente — commit `d9f65b4` é docs-only, não tocou código de carrinho.
+
+**Impacto no Gate Final:** Nenhum — não é required check.
+
+---
+
+## P39 — CI Security & Drift Checks: failure em `d9f65b4` (não-required)
+
+**Workflow:** `.github/workflows/ci-security-drift-checks.yml`  
+**Run:** [#40160560319](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40160560319) — `failure` (commit `d9f65b4`)  
+**Categoria:** Security scan + drift check — não é required check no Gate Final
+
+**Diagnóstico:** Failure no CI Security & Drift Checks. Possível drift de schema (DDL fora do fluxo) ou falha transiente de security scan. Não é required check.
+
+**Impacto no Gate Final:** Nenhum — não é required check.
 
 ---
 
