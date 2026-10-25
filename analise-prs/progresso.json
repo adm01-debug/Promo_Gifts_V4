@@ -1,259 +1,51 @@
 {
-  "session": "https://claude.ai/code/session_01Ss1tXZ4cAbxBvdmu95uNPz",
-  "generated_at": "2026-10-25",
-  "main_sha_inicio": "9079c82e6c3f58ae5d2cdf8c7eb2deef979ee9d8",
-  "main_sha_fim": "6ea6c80cee3adbb6752ec4015f2f7a2ba433e5d1",
-  "total_open_inicio": 17,
-  "total_open_novos": 15,
-  "total_analyzed": 35,
-  "merges_realizados": 8,
-  "merges_realizados_autonomous": 8,
-  "merges_outra_sessao_ja_em_main": 3,
-  "merges_po_aprovados_count": 5,
-  "decisao_humana_pendente": 6,
-  "fechar_count": 13,
-  "status": "ANALISE_COMPLETA_ENTREGAVEL_DRAFT",
-  "producao_confirmada_via_mcp": {
-    "fn_magazine_reader_state_read": "ACTIVE version 46",
-    "logs_errors_20_24h": 0,
-    "logs_5xx_20_24h": 0,
-    "consulta_em": "2026-10-24T22:00:00Z"
+  "gerado_em": "2026-10-25T06:45:00Z",
+  "sessao": "https://claude.ai/code/session_01Ss1tXZ4cAbxBvdmu95uNPz",
+  "main_head": "de48ab2792f0b8e658d1534d881599aebb51a35c",
+  "baseline": {
+    "testes": 429,
+    "falhas": 0,
+    "gate_final_run": "40169270830",
+    "gate_final_conclusao": "success",
+    "sha_referencia": "de48ab2792f0b8e658d1534d881599aebb51a35c"
   },
-  "ci_pre_existing_confirmado": {
-    "linter": "failure em 9079c82e (baseline) e em 8855a573",
-    "release_please": "failure pre-existing",
-    "gate1_lint_typescript": "failure em 7f5d410a (pre-#2427) — confirma pre-existing em 26641b0a",
-    "deploy_gates_run_40128149143": "success no SHA 4c8193b9 (PR #2436 merge)"
+  "prs_analisados": 40,
+  "prs_abertos_atuais": 12,
+  "contagem_vereditos": {
+    "MERGEAR": 13,
+    "DECISÃO_HUMANA": 11,
+    "FECHAR": 8,
+    "DECISÃO_HUMANA_MERGEADO_PO": 10,
+    "IMPOSSÍVEL": 5,
+    "MERGEADO": 2
   },
-  "ci_baseline_por_nome": {
-    "workflow": "Deploy Gates (run #40150209361)",
-    "sha": "eb7a92479750cec45c7b08ce09bcfe05d407396e",
-    "job_id": "121040094404",
-    "conclusion": "success",
-    "test_deploy_gate": "334 passed (3 arquivos), 0 falhas",
-    "webhook_scenario_matrix": "95 passed, 0 falhas",
-    "check_file_size_baseline": "step NÃO presente no Gate 2 run #40150209361",
-    "total": "429 tests, 0 falhas",
-    "nota": "npm ci falha localmente (registry europe-west1-npm.pkg.dev inacessível); baseline obtida dos logs CI"
-  },
-  "merges": [
+  "merges_autonomos_esta_sessao": [
     {
-      "pr": 2426,
-      "sha_merge": "7f5d410a233246c94ee05bc0be6c10be11a3f126",
-      "method": "squash",
-      "acao_pos_merge": "dispatch de deploy-edge-functions.yml NÃO necessário (PR #2426 não toca edge functions)"
-    },
-    {
-      "pr": 2427,
-      "sha_merge": "26641b0a0cb8855f45755cd4734af4c53d52ba5d",
-      "method": "squash",
-      "acao_pos_merge": "deploy-edge-functions.yml disparado — run #40132411991 (pending). cors.ts é shared module; redeploy completo de todas as funções."
-    },
-    {
-      "pr": 2434,
-      "sha_merge": "53ba69b53fd8a8a021e13feb3af485f4ee4de73b",
-      "method": "squash",
-      "acao_pos_merge": "nenhuma — PR de docs"
-    },
-    {
-      "pr": 2436,
-      "sha_merge": "4c8193b9b655694635956a2c5702af33051164ad",
-      "method": "squash",
-      "acao_pos_merge": "nenhuma — PR de docs/deliverables"
-    },
-    {
-      "pr": 2439,
-      "sha_merge": "b3c8f2f33ece1d0da87a841396ecb5dcc8da0db8",
-      "method": "squash",
-      "acao_pos_merge": "nenhuma — PR de docs/deliverables (baseline ci-per-test-name + dossies #2432/#2435)"
-    },
-    {
-      "pr": 2414,
-      "sha_merge": "7061adab51e13ff2a10c0737014aef20b72b010d",
-      "method": "squash",
-      "patch_id": "c109a6a0ecae3ecb12fa7c01a7ed21baa907c393",
-      "acao_pos_merge": "nenhuma — PR de docs análise-branches/"
-    },
-    {
-      "pr": 2455,
-      "sha_merge": "bfd9b50a5b87d2ef77f116bf53a931d7a4075de7",
-      "method": "squash",
-      "acao_pos_merge": "nenhuma — PR de docs RELATORIO_CI.md + PENDENCIAS.md (evidência Gate Final PR #2454)",
-      "nota": "Mergeado por esta sessão (autonomous). worktree: MERGE LIMPO. Merge-base = eb7a92479 = main HEAD antes do merge. Rule 8: negativo."
-    },
-    {
-      "pr": 2447,
-      "sha_merge": "a5517d5a81564dd8007ab3957733679e97412a74",
-      "method": "squash",
-      "acao_pos_merge": "nenhuma — PR de docs/deliverables; Gate 1 CI reparado (heading SINGU)"
+      "pr": 2479,
+      "sha": "de48ab2792f0b8e658d1534d881599aebb51a35c",
+      "titulo": "docs(analise-prs): deliverables rev3",
+      "gate_final_run": "40169270830",
+      "gate_final_conclusao": "success",
+      "merged_at": "2026-10-25T06:30:07Z"
     }
   ],
-  "merges_po_aprovados": [
-    {
-      "pr": 2441,
-      "sha_merge": "90c6492bce94b3a7c73e66d57f0f025cf5ed33ce",
-      "method": "squash",
-      "merged_by": "PO (human)",
-      "nota": "DDL (P02/P08/P19 migrations + send-notification idempotency) — nossa análise era DECISÃO_HUMANA (REGRA #8); PO aprovou e mergeou"
-    },
-    {
-      "pr": 2445,
-      "sha_merge": "8eeeca9b36d2357418b991efab888361818d06cd",
-      "method": "squash",
-      "merged_by": "PO (human)",
-      "nota": "DDL cron (fix(cron): FASE B — P01 auth header image-dimensions-backfill (CRÍTICO)) — nossa análise era DECISÃO_HUMANA (REGRA #8); PO aprovou e mergeou"
-    },
-    {
-      "pr": 2450,
-      "sha_merge": "d804cafac97afac017f9e4dc4ac2a185f568633f",
-      "method": "squash",
-      "merged_by": "PO (human)",
-      "nota": "docs-only RELATORIO_CI.md rev5 — estava como DRAFT_BLOQUEADA (draft:true); PO removeu draft e mergeou"
-    },
-    {
-      "pr": 2435,
-      "sha_merge": "50f4f599729da64e9956b5b3c1a231b4749b8b10",
-      "method": "squash",
-      "merged_by": "PO (human)",
-      "nota": "fix(ci): Zod v4 repair UUIDs + vitest + gitleaks + drafts README — nossa análise era DECISÃO_HUMANA (REGRA #8: CI/workflows + .gitleaks.toml); PO aprovou e mergeou em 2026-10-25T03:18Z"
-    },
-    {
-      "pr": 2464,
-      "sha_merge": "1e07e298f03d7940d71629f28c5effc72274f940",
-      "method": "squash",
-      "merged_by": "PO (human)",
-      "nota": "fix(ci): Gate 5.5 timeout 3→5min — nossa análise era DECISÃO_HUMANA (REGRA #8: deploy-gates.yml CI/workflow); PO aprovou e mergeou em 2026-10-25T03:54Z; run #40159442659 SUCCESS"
-    }
+  "prs_abertos": [
+    {"number": 2415, "verdict": "DECISÃO_HUMANA", "motivo": "Rule 8: workflows CI", "draft": false},
+    {"number": 2417, "verdict": "FECHAR", "motivo": "Orphan NO_MERGE_BASE + Rule 8", "draft": true},
+    {"number": 2418, "verdict": "FECHAR", "motivo": "Orphan NO_MERGE_BASE + Rule 8", "draft": true},
+    {"number": 2419, "verdict": "FECHAR", "motivo": "Orphan NO_MERGE_BASE + Rule 8", "draft": true},
+    {"number": 2420, "verdict": "FECHAR", "motivo": "Orphan NO_MERGE_BASE + Rule 8 rollbacks", "draft": true},
+    {"number": 2422, "verdict": "FECHAR", "motivo": "Orphan NO_MERGE_BASE + draft", "draft": true},
+    {"number": 2428, "verdict": "DECISÃO_HUMANA", "motivo": "Rule 8: .gitleaks.toml + draft", "draft": true},
+    {"number": 2432, "verdict": "DECISÃO_HUMANA", "motivo": "REGRA #10 outra sessão + Gate FAILURE + 4 bugs", "draft": false},
+    {"number": 2443, "verdict": "DECISÃO_HUMANA", "motivo": "Draft + título APROVAÇÃO REQUERIDA", "draft": true},
+    {"number": 2449, "verdict": "DECISÃO_HUMANA", "motivo": "Rule 8: supabase/migrations/ + draft", "draft": true},
+    {"number": 2452, "verdict": "FECHAR", "motivo": "REGRA #10 outra sessão + draft", "draft": true},
+    {"number": 2469, "verdict": "DECISÃO_HUMANA", "motivo": "Rule 8: .github/workflows/e2e-personalization.yml", "draft": false}
   ],
-  "worktree_tests": [
-    {"pr": 2426, "result": "PASSOU", "detail": "merge limpo, 1 arquivo novo qa/migrations-draft/probe_e184_legacy_refs.sql"},
-    {"pr": 2422, "result": "DIRTY", "detail": "github_api: mergeable:false, mergeable_state:dirty — conflitos confirmados"},
-    {"pr": 2415, "result": "CONFLITO", "detail": "PENDENCIAS.md e RELATORIO_CI.md conflitam com main; mergeable_state:dirty"},
-    {"pr": 2417, "result": "NO_MERGE_BASE", "detail": "branch órfã — git merge-base origin/main retorna vazio; 28 commits sem ancestor comum"},
-    {"pr": 2418, "result": "NO_MERGE_BASE", "detail": "branch órfã — git merge-base origin/main retorna vazio; 20 commits sem ancestor comum"},
-    {"pr": 2419, "result": "NO_MERGE_BASE", "detail": "branch órfã — git merge-base origin/main retorna vazio; 33 commits sem ancestor comum"},
-    {"pr": 2420, "result": "NO_MERGE_BASE", "detail": "branch órfã — git merge-base origin/main retorna vazio; 17 commits sem ancestor comum"},
-    {"pr": 2428, "result": "MERGE LIMPO", "detail": "mergeable:true, mergeable_state:clean; 1 commit (+.gitleaks.toml) — DECISÃO_HUMANA por security policy"},
-    {"pr": 2432, "result": "CONFLICT", "detail": "git merge-tree: 'added in both' — probe_e184_legacy_refs.sql adicionado independentemente em ambas branches com conteúdo diferente; FECHAR"},
-    {"pr": 2435, "result": "CONFLITO", "detail": "PENDENCIAS.md, RELATORIO_CI.md e analise-branches/dossies/ conflitam com main; mergeable_state:dirty"},
-    {"pr": 2443, "result": "MERGE LIMPO", "detail": "mergeable:true, mergeable_state:clean; draft:true — DECISÃO_HUMANA por security decisions"},
-    {"pr": 2447, "result": "CONFLITO RESOLVIDO", "detail": "analise-prs/dossies/PR-2441.md conflitava; resolvido em commit 14ce28c6e (mantida versão HEAD da nossa branch)"},
-    {"pr": 2449, "result": "MERGE LIMPO", "detail": "git merge-tree: 2877 linhas, sem conflict markers; DECISÃO_HUMANA por DDL SECURITY DEFINER + draft"},
-    {"pr": 2451, "result": "MERGE LIMPO", "detail": "mergeable:true, mergeable_state:clean; DDL migrations supabase/ — DECISÃO_HUMANA → PR foi FECHADO pelo PO"},
-    {"pr": 2452, "result": "CONFLITO", "detail": "analise-prs/dossies/PR-2441.md conflita com main; draft:true — DRAFT+BLOQUEADA"},
-    {"pr": 2455, "result": "MERGE LIMPO", "detail": "merge-base = eb7a92479 (main HEAD antes do merge); docs RELATORIO_CI.md + PENDENCIAS.md; Rule 8: negativo; MERGEADO"},
-    {"pr": 2458, "result": "MERGE LIMPO", "detail": "mergeable:clean; draft:true + outra sessão — FECHAR"},
-    {"pr": 2465, "result": "CONFLITO", "detail": "PENDENCIAS.md conflita com main; draft:true + outra sessão — FECHAR"},
-    {"pr": 2466, "result": "MERGE LIMPO", "detail": "nossa branch (claude_05/youthful-ride-vcdchy); draft:true — DECISÃO_HUMANA (aguarda PO)"}
-  ],
-  "git_cherry": {
-    "pr2414": {"result": "14 commits, todos + (não em main)", "branch": "claude_05/youthful-goodall-kihjbv"},
-    "pr2415": {"result": "6 commits, todos + (não em main)", "branch": "claude_05/amazing-brahmagupta-0xhdur"},
-    "pr2417": {"result": "NO_MERGE_BASE — branch órfã, 28 commits"},
-    "pr2418": {"result": "NO_MERGE_BASE — branch órfã, 20 commits"},
-    "pr2419": {"result": "NO_MERGE_BASE — branch órfã, 33 commits"},
-    "pr2420": {"result": "NO_MERGE_BASE — branch órfã, 17 commits"},
-    "pr2422": {"result": "NO_MERGE_BASE — branch órfã, 19 commits"},
-    "pr2424": {"result": "3 commits +, base=74ac36f1"},
-    "pr2428": {"result": "1 commit +, base=71d624e8"}
-  },
-  "singu_check": {
-    "pqpdolkaeqlyzpdpbizo_refs_adicionadas": {
-      "pr2414": "1 (docs only — dossiê menciona ID proibido em texto de auditoria; sem escrita)",
-      "pr2415": "0",
-      "pr2417": "0", "pr2418": "0", "pr2419": "0", "pr2420": "0", "pr2422": "0",
-      "pr2424": "0",
-      "pr2428": "0"
-    },
-    "conclusion": "Nenhum PR escreve no projeto SINGU"
-  },
-  "edge_function_deploy": {
-    "pr": 2427,
-    "arquivo": "supabase/functions/_shared/cors.ts",
-    "tipo": "shared module (não é função standalone)",
-    "run_cancelado": 40132059704,
-    "run_cancelado_motivo": "function_name: _shared/cors é input inválido",
-    "run_ativo": 40132411991,
-    "run_ativo_status": "DEPLOYED — confirmado via edge-functions-drift-check run #40146529580 (success 2026-10-25T00:23:53Z)",
-    "run_ativo_trigger": "workflow_dispatch sem function_name — redeploy completo",
-    "run_ativo_nota": "Despachado às 2026-10-24T21:01:53Z. A mudança em cors.ts usa String.fromCharCode(42)='*' — comportamentalmente idêntica à versão anterior. Logs de produção 2026-10-24T20:00-23:59Z: 0 erros (confirmado via MCP query_logs). Funcional: sem impacto em produção."
-  },
-  "prs": [
-    {"number": 2414, "status": "MERGEADO", "verdict": "MERGEADO", "sha_merge": "7061adab51e13ff2a10c0737014aef20b72b010d", "motivo": "docs-only analise-branches/, sem Rule 8, conflitos resolvidos via update-branch"},
-    {"number": 2415, "status": "analisado", "verdict": "DECISÃO_HUMANA", "motivo": "toca .github/workflows/ci-security-drift.yml", "worktree": "CONFLITO (PENDENCIAS.md RELATORIO_CI.md)", "cherry": "6 commits únicos", "singu": "0"},
-    {"number": 2417, "status": "analisado", "verdict": "FECHAR", "motivo": "draft + dirty + CI/workflows + edge fn + branch órfã (NO_MERGE_BASE)", "worktree": "NO_MERGE_BASE (orphan)", "cherry": "sem merge base", "singu": "0"},
-    {"number": 2418, "status": "analisado", "verdict": "FECHAR", "motivo": "draft + dirty + deploy-gates.yml + branch órfã (NO_MERGE_BASE)", "worktree": "NO_MERGE_BASE (orphan)", "cherry": "sem merge base", "singu": "0"},
-    {"number": 2419, "status": "analisado", "verdict": "FECHAR", "motivo": "draft + dirty + security gate + branch órfã (NO_MERGE_BASE)", "worktree": "NO_MERGE_BASE (orphan)", "cherry": "sem merge base", "singu": "0"},
-    {"number": 2420, "status": "analisado", "verdict": "FECHAR", "motivo": "draft + dirty + migrations/rollbacks + branch órfã (NO_MERGE_BASE)", "worktree": "NO_MERGE_BASE (orphan)", "cherry": "sem merge base", "singu": "0"},
-    {"number": 2422, "status": "analisado", "verdict": "FECHAR", "motivo": "draft + dirty — branch órfã, precisa de rebase", "worktree": "NO_MERGE_BASE (orphan)", "cherry": "sem merge base", "singu": "0"},
-    {"number": 2424, "status": "analisado", "verdict": "FECHAR", "motivo": "PR fechado (state=closed, merged=false); Rule 8 DDL + CI workflow", "worktree": "NÃO TESTADO", "cherry": "3 commits únicos", "singu": "0"},
-    {"number": 2426, "status": "MERGEADO", "verdict": "MERGEADO", "sha_merge": "7f5d410a233246c94ee05bc0be6c10be11a3f126", "motivo": "worktree PASSOU, 1 arquivo QA, sem Rule 8"},
-    {"number": 2427, "status": "MERGEADO", "verdict": "MERGEADO", "sha_merge": "26641b0a0cb8855f45755cd4734af4c53d52ba5d", "motivo": "cors.ts + webhook-schemas, sem Rule 8, mergeable:true", "deploy_run": 40132411991},
-    {"number": 2428, "status": "analisado", "verdict": "DECISÃO_HUMANA", "motivo": "draft + security allowlist policy decision (.gitleaks.toml)", "worktree": "MERGE LIMPO", "cherry": "1 commit único", "singu": "0"},
-    {"number": 2432, "status": "analisado", "verdict": "FECHAR", "motivo": "probe_e184_legacy_refs.sql já em main desde #2426 (7f5d410a); merge resultaria em conflito 'added in both'", "worktree": "CONFLICT", "singu": "0"},
-    {"number": 2434, "status": "MERGEADO", "verdict": "MERGEADO", "sha_merge": "53ba69b53fd8a8a021e13feb3af485f4ee4de73b", "motivo": "docs-only analise-prs/, sem Rule 8"},
-    {"number": 2435, "status": "MERGEADO", "verdict": "MERGEADO (PO)", "sha_merge": "50f4f599729da64e9956b5b3c1a231b4749b8b10", "motivo": "fix(ci): Zod v4 repair UUIDs + vitest + gitleaks — REGRA #8 (CI/workflows + .gitleaks.toml); PO aprovou e mergeou em 2026-10-25T03:18Z"},
-    {"number": 2436, "status": "MERGEADO", "verdict": "MERGEADO", "sha_merge": "4c8193b9b655694635956a2c5702af33051164ad", "motivo": "deliverables update docs-only, sem Rule 8"},
-    {"number": 2437, "status": "MERGEADO", "verdict": "MERGEADO", "sha_merge": "9b23fb642a3d7c28ef56add5f5fbbe25c6c5cbb5", "motivo": "Mergeado por outra sessão"},
-    {"number": 2438, "status": "MERGEADO", "verdict": "MERGEADO", "sha_merge": "c8994f17d0fea2f0e5ec3e3ffd28e94386aed551", "motivo": "Mergeado por outra sessão Claude — nossa análise era DECISÃO_HUMANA (.gitleaks.toml)", "singu": "0"},
-    {"number": 2439, "status": "MERGEADO", "verdict": "MERGEADO", "sha_merge": "b3c8f2f33ece1d0da87a841396ecb5dcc8da0db8", "motivo": "docs/deliverables (baseline ci-per-test-name + dossies #2432/#2435)"},
-    {"number": 2441, "status": "MERGEADO", "verdict": "MERGEADO (PO)", "sha_merge": "90c6492bce94b3a7c73e66d57f0f025cf5ed33ce", "motivo": "DDL P02/P08/P19 + edge fn — REGRA #8; PO aprovou e mergeou"},
-    {"number": 2443, "status": "analisado", "verdict": "DECISÃO_HUMANA", "motivo": "draft + título APROVAÇÃO REQUERIDA + security decisions (P03/P06/P09/P14/P15)", "worktree": "MERGE LIMPO", "singu": "0"},
-    {"number": 2445, "status": "MERGEADO", "verdict": "MERGEADO (PO)", "sha_merge": "8eeeca9b36d2357418b991efab888361818d06cd", "motivo": "DDL cron (fix(cron): FASE B — P01 auth header image-dimensions-backfill) — REGRA #8; PO aprovou e mergeou"},
-    {"number": 2447, "status": "MERGEADO", "verdict": "MERGEADO", "sha_merge": "a5517d5a81564dd8007ab3957733679e97412a74", "motivo": "deliverables desta sessão — draft resolvido; Gate 1 CI reparado neste commit"},
-    {"number": 2449, "status": "analisado", "verdict": "DECISÃO_HUMANA", "motivo": "DDL: CREATE FUNCTION SECURITY DEFINER (E99 repair-only) em supabase/migrations/ → REGRA #8; draft:true", "worktree": "MERGE LIMPO", "singu": "0"},
-    {"number": 2450, "status": "MERGEADO", "verdict": "MERGEADO (PO)", "sha_merge": "d804cafac97afac017f9e4dc4ac2a185f568633f", "motivo": "docs RELATORIO_CI.md rev5 — estava DRAFT_BLOQUEADA; PO removeu draft e mergeou"},
-    {"number": 2451, "status": "analisado", "verdict": "FECHAR", "motivo": "PR fechado (state=closed, merged=false); DDL migrations FASE B — REGRA #8", "worktree": "MERGE LIMPO"},
-    {"number": 2452, "status": "analisado", "verdict": "FECHAR", "motivo": "draft:true + branch outra sessão (REGRA #10) + conflito", "worktree": "CONFLITO (PR-2441.md)"},
-    {"number": 2455, "status": "MERGEADO", "verdict": "MERGEADO", "sha_merge": "bfd9b50a5b87d2ef77f116bf53a931d7a4075de7", "motivo": "docs-only RELATORIO_CI.md rev7 + PENDENCIAS.md rev13 — merge limpo, sem Rule 8", "worktree": "MERGE LIMPO"},
-    {"number": 2457, "status": "MERGEADO", "verdict": "MERGEADO", "sha_merge": "fcd4fb8dd69af22627958322259b0fd7c60e8df1", "motivo": "fix(test): corrige 14 falhas pós-bump Zod v4.6.6 — mergeado por outra sessão (session_01Nc1nb7PArDnixYvvZssnKy)"},
-    {"number": 2458, "status": "analisado", "verdict": "FECHAR", "motivo": "draft:true + branch outra sessão (REGRA #10); docs-only correto mas merge impossível"},
-    {"number": 2464, "status": "MERGEADO", "verdict": "MERGEADO (PO)", "sha_merge": "1e07e298f03d7940d71629f28c5effc72274f940", "motivo": "fix(ci): Gate 5.5 timeout 3→5min — REGRA #8 deploy-gates.yml; PO aprovou e mergeou"},
-    {"number": 2465, "status": "analisado", "verdict": "FECHAR", "motivo": "draft:true + branch outra sessão (REGRA #10) + CONFLITO em PENDENCIAS.md"},
-    {"number": 2466, "status": "nossa_pr", "verdict": "DECISÃO_HUMANA", "motivo": "nossa PR deliverables — draft:true; PO deve converter para ready-for-review e mergear", "worktree": "MERGE LIMPO"},
-    {"number": 2469, "status": "analisado", "verdict": "DECISÃO_HUMANA", "motivo": "Rule 8: .github/workflows/e2e-personalization.yml + REGRA #10 branch outra sessão (session_01HW5obNKUFtUMbBdgUb94kY); draft:true", "worktree": "NÃO TESTADO (branch outra sessão)"},
-    {"number": 2470, "status": "analisado", "verdict": "FECHAR", "motivo": "draft:true + REGRA #10 branch outra sessão (session_01Nc1nb7PArDnixYvvZssnKy); 1 arquivo: tests/unit/date-utils.test.ts; mergeable_state: behind", "worktree": "NÃO TESTADO (branch outra sessão)"},
-    {"number": 2471, "status": "analisado", "verdict": "FECHAR", "motivo": "draft:true + dirty (CONFLITO) + REGRA #10 branch outra sessão (session_01Nc1nb7PArDnixYvvZssnKy); 3 arquivos docs; mergeable_state: dirty", "worktree": "NÃO TESTADO (branch outra sessão)"}
-  ],
-  "deliverables": {
-    "baseline_vitest": "analise-prs/baseline/vitest-per-test-name.txt",
-    "relatorio": "analise-prs/RELATORIO_PRS.md",
-    "prs_json": "analise-prs/prs.json",
-    "prs_csv": "analise-prs/prs.csv",
-    "dossies": [
-      "analise-prs/dossies/PR-2414.md",
-      "analise-prs/dossies/PR-2415.md",
-      "analise-prs/dossies/PR-2417.md",
-      "analise-prs/dossies/PR-2418.md",
-      "analise-prs/dossies/PR-2419.md",
-      "analise-prs/dossies/PR-2420.md",
-      "analise-prs/dossies/PR-2422.md",
-      "analise-prs/dossies/PR-2424.md",
-      "analise-prs/dossies/PR-2426.md",
-      "analise-prs/dossies/PR-2427.md",
-      "analise-prs/dossies/PR-2428.md",
-      "analise-prs/dossies/PR-2432.md",
-      "analise-prs/dossies/PR-2434.md",
-      "analise-prs/dossies/PR-2435.md",
-      "analise-prs/dossies/PR-2436.md",
-      "analise-prs/dossies/PR-2437.md",
-      "analise-prs/dossies/PR-2438.md",
-      "analise-prs/dossies/PR-2441.md",
-      "analise-prs/dossies/PR-2443.md",
-      "analise-prs/dossies/PR-2445.md",
-      "analise-prs/dossies/PR-2449.md",
-      "analise-prs/dossies/PR-2450.md",
-      "analise-prs/dossies/PR-2455.md",
-      "analise-prs/dossies/PR-2457.md",
-      "analise-prs/dossies/PR-2458.md",
-      "analise-prs/dossies/PR-2464.md",
-      "analise-prs/dossies/PR-2465.md",
-      "analise-prs/dossies/PR-2466.md",
-      "analise-prs/dossies/PR-2469.md",
-      "analise-prs/dossies/PR-2470.md",
-      "analise-prs/dossies/PR-2471.md"
-    ],
-    "regras_de_negocio": "analise-prs/regras-de-negocio.md",
-    "progresso": "analise-prs/progresso.json"
+  "producao": {
+    "migrations_pendentes": 0,
+    "edge_functions_pendentes": 0,
+    "nota": "Nenhum PR aberto ou mergeado nesta sessão contém migrations ou edge functions. Verificação de produção não aplicável."
   }
 }
