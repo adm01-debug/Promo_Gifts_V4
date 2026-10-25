@@ -1,12 +1,14 @@
 /**
  * Hook to fetch real supplier trust data for badges.
  * Sources: variant_supplier_sources (lead_time_days) + suppliers (active flag).
- * Falls back to deterministic mock when no real data is available.
+ * Sem dado real devolve um resultado vazio (nunca valores simulados).
  */
 import { dbInvoke } from '@/lib/db/postgrest';
 import { useQuery } from '@tanstack/react-query';
-import { type SupplierTrustData, getMockSupplierTrust } from '@/components/common/SocialProof';
+import { type SupplierTrustData } from '@/components/common/SocialProof';
 import { logger } from '@/lib/logger';
+
+const EMPTY_TRUST: SupplierTrustData = { isVerified: false, deliveryDays: null, avgRating: null };
 
 interface VSSRecord {
   id: string;
@@ -24,13 +26,13 @@ interface SupplierRecord {
 
 /**
  * Fetches real supplier trust data for a product.
- * Returns mock data as fallback if no real data is found.
+ * Returns an empty result if no real data is found.
  */
 export function useSupplierTrust(productId?: string) {
   return useQuery({
     queryKey: ['supplier-trust', productId],
     queryFn: async (): Promise<SupplierTrustData> => {
-      if (!productId) return getMockSupplierTrust('unknown');
+      if (!productId) return EMPTY_TRUST;
 
       try {
         // 1. Get variant IDs for this product first
@@ -45,7 +47,7 @@ export function useSupplierTrust(productId?: string) {
 
         const variantIds = variantResult.records.map((v) => v.id);
         if (!variantIds.length) {
-          return getMockSupplierTrust(productId);
+          return EMPTY_TRUST;
         }
 
         // 2. Get preferred supplier source using variant_id
@@ -62,7 +64,7 @@ export function useSupplierTrust(productId?: string) {
         const sources = vssResult.records;
         if (!sources.length) {
           // No real data — fallback to mock
-          return getMockSupplierTrust(productId);
+          return EMPTY_TRUST;
         }
 
         // Use preferred source, or first active one
@@ -90,19 +92,15 @@ export function useSupplierTrust(productId?: string) {
           }
         }
 
-        // 3. Mock rating (no ratings table exists yet)
-        // Use deterministic value from productId but mark as "real-ish"
-        const mock = getMockSupplierTrust(productId);
-        const avgRating = mock.avgRating; // Will be replaced when ratings table exists
-
+        // 3. Sem tabela de avaliações ainda: nota ausente em vez de simulada.
         return {
           isVerified,
           deliveryDays: leadTimeDays,
-          avgRating,
+          avgRating: null,
         };
       } catch (err) {
-        logger.warn('[useSupplierTrust] Failed to fetch real data, using mock:', err);
-        return getMockSupplierTrust(productId);
+        logger.warn('[useSupplierTrust] Failed to fetch real data:', err);
+        return EMPTY_TRUST;
       }
     },
     enabled: !!productId,

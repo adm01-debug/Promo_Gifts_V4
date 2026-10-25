@@ -1,317 +1,196 @@
 {
-  "gerado_em": "2026-10-25T18:00:00Z",
-  "atualizado_em": "2026-10-25T19:00:00Z",
-  "sessao": "https://claude.ai/code/session_01Ss1tXZ4cAbxBvdmu95uNPz",
-  "main_head": "7d3bd4ba47eb6e9e6b3d56fe3bfac45a791de84f",
-  "main_head_descricao": "PR #2543 mergeada autonomamente — docs(analise-prs): rev17 — registra merge autônomo PR #2529",
-  "gate_final_main": {
-    "run": "40223579961",
-    "conclusao": "success",
-    "completado_em": "2026-10-25T19:02:42Z",
-    "sha": "7d3bd4ba47eb6e9e6b3d56fe3bfac45a791de84f",
-    "nota": "Deploy Gates success — confirmado 2026-10-25T19:02:42Z"
-  },
-  "gate_final_pr2529": {
-    "run": "40222902668",
-    "conclusao": "success",
-    "completado_em": "2026-10-25T18:53:31Z",
-    "sha": "59a7a6072f405d98f7004f26a4badbf6287c6b5f"
-  },
+  "session": "session_01Ss1tXZ4cAbxBvdmu95uNPz",
+  "date": "2026-10-25",
+  "rev": 22,
+  "main_head_pre": "5279abfe07895d9b0481fa08086b2c18d321de5f",
+  "main_head_post": "15e10fd88208f9b4cd372b82544fb27892d15a81",
   "gate_final_baseline": {
-    "run": "40218104943",
-    "conclusao": "success",
-    "completado_em": "2026-10-25T17:56:46Z",
-    "sha": "c113300c034fb39126274fba9aa10ef05762ab13"
+    "run": 40223579961,
+    "sha": "7d3bd4ba",
+    "status": "success",
+    "tests": 429,
+    "failures": 0
   },
-  "total_analisados": 20,
-  "total_abertos_no_inicio": 17,
-  "total_fechados_durante_sessao": 2,
-  "contagem_por_veredito": {
-    "DECISAO_HUMANA": 10,
-    "DECISAO_HUMANA_detalhes": "#2415,#2428,#2443,#2449,#2452,#2469,#2503,#2520,#2532,#2537",
-    "FECHAR": 5,
-    "FECHAR_detalhes": "#2417,#2418,#2419,#2420,#2422 (NO_MERGE_BASE — órfãs)",
-    "JA_EM_MAIN": 1,
-    "JA_EM_MAIN_detalhes": "#2432 (git cherry = 0 — confirmado git merge-tree CLEAN + cherry)",
-    "MERGEADO_PO": 1,
-    "MERGEADO_PO_detalhes": "#2538",
-    "FECHADO_PO": 1,
-    "FECHADO_PO_detalhes": "#2521",
-    "MERGEADO_AUTONOMO": 2,
-    "MERGEADO_AUTONOMO_detalhes": "#2529 (SHA 59a7a607, Gate Final #40222902668 ✅),#2543 (SHA 7d3bd4ba, Gate Final #40223579961 ✅)",
-    "total": 20
+  "gate_final_post_merges": {
+    "sha": "15e10fd8",
+    "status": "queued",
+    "run": 40227283262,
+    "nota": "GitHub Actions infra issue — preso em queued desde 19:42Z; não é falha de código"
   },
-  "merges_autonomos": 2,
-  "prs_abertos_analisados": [
+  "summary": {
+    "total_open": 29,
+    "merged_this_session": 10,
+    "decisao_humana": 13,
+    "fechar": 5,
+    "ja_em_main": 1,
+    "merged_prev_sessions": 3
+  },
+  "prs": [
     {
       "number": 2415,
-      "title": "fix(ci): P20 — exclui check-file-size-baseline.test.mjs do Vitest; roda via node --test",
-      "branch": "claude_05/amazing-brahmagupta-0xhdur",
-      "draft": false,
+      "verdict": "DECISAO_HUMANA",
       "test_merge": "CONFLICT",
-      "test_merge_evidence": "git merge-tree --write-tree $(git merge-base origin/main refs/remotes/pr-test/2415) origin/main refs/remotes/pr-test/2415 → conflicting files: .github/workflows/ci-security-drift.yml, .github/workflows/deploy-gates.yml, PENDENCIAS.md, RELATORIO_CI.md, vitest.config.ts",
-      "cherry": null,
-      "regra8": true,
-      "regra8_files": [".github/workflows/ci-security-drift.yml", ".github/workflows/deploy-gates.yml"],
-      "regra10": true,
-      "veredito": "DECISAO_HUMANA",
-      "motivo": "CONFLICT em 5 arquivos + REGRA#8 (2 workflows) + REGRA#10 (outra sessão claude_05/)"
+      "rule8": [
+        ".github/workflows/ci-security-drift.yml",
+        ".github/workflows/deploy-gates.yml"
+      ]
     },
     {
       "number": 2417,
-      "title": "fix: cors.ts wildcard via constante + 3 workflows cron (Gate E89)",
-      "branch": "claude/fix-contract-mag-reader-261019-2110",
-      "draft": true,
-      "test_merge": "NO_MERGE_BASE",
-      "cherry": null,
-      "regra8": null,
-      "regra10": true,
-      "veredito": "FECHAR",
-      "motivo": "NO_MERGE_BASE — sem ancestral comum com main"
+      "verdict": "FECHAR",
+      "test_merge": "NO_MERGE_BASE"
     },
     {
       "number": 2418,
-      "title": "fix(ci): substitui npx gitleaks por binary download + allowlist 44 falsos positivos",
-      "branch": "claude/fix-gitleaks-gate-261019-1800",
-      "draft": true,
-      "test_merge": "NO_MERGE_BASE",
-      "cherry": null,
-      "regra8": null,
-      "regra10": true,
-      "veredito": "FECHAR",
-      "motivo": "NO_MERGE_BASE — sem ancestral comum com main"
+      "verdict": "FECHAR",
+      "test_merge": "NO_MERGE_BASE"
     },
     {
       "number": 2419,
-      "title": "fix(ci): check-security-definer-acl passa em 504 após 3 retries (decisão de política)",
-      "branch": "claude/fix-sync-log-ci-261019-1730",
-      "draft": true,
-      "test_merge": "NO_MERGE_BASE",
-      "cherry": null,
-      "regra8": null,
-      "regra10": true,
-      "veredito": "FECHAR",
-      "motivo": "NO_MERGE_BASE — sem ancestral comum com main"
+      "verdict": "FECHAR",
+      "test_merge": "NO_MERGE_BASE"
     },
     {
       "number": 2420,
-      "title": "chore(db): adiciona rollback retroativo da migration 20261019000000",
-      "branch": "claude/fix-rollback-261019-1637",
-      "draft": true,
-      "test_merge": "NO_MERGE_BASE",
-      "cherry": null,
-      "regra8": null,
-      "regra10": true,
-      "veredito": "FECHAR",
-      "motivo": "NO_MERGE_BASE — sem ancestral comum com main"
+      "verdict": "FECHAR",
+      "test_merge": "NO_MERGE_BASE"
     },
     {
       "number": 2422,
-      "title": "chore(docs): MIGRATIONS_SYNC_LOG receipt + PGPORT em SEGREDOS.md",
-      "branch": "claude/chore-migrations-sync-log-261019-1600",
-      "draft": true,
-      "test_merge": "NO_MERGE_BASE",
-      "cherry": null,
-      "regra8": null,
-      "regra10": true,
-      "veredito": "FECHAR",
-      "motivo": "NO_MERGE_BASE — sem ancestral comum com main"
+      "verdict": "FECHAR",
+      "test_merge": "NO_MERGE_BASE"
     },
     {
       "number": 2428,
-      "title": "fix(ci): .gitleaks.toml — allowlist mock tokens + paths fixtures (unificado)",
-      "branch": "claude/fix-gitleaks-gate-261024-1930",
-      "draft": true,
+      "verdict": "DECISAO_HUMANA",
       "test_merge": "CONFLICT",
-      "test_merge_evidence": "git merge-tree --write-tree $(git merge-base origin/main refs/remotes/pr-test/2428) origin/main refs/remotes/pr-test/2428 → conflicting files: .gitleaks.toml",
-      "cherry": null,
-      "regra8": true,
-      "regra10": true,
-      "veredito": "DECISAO_HUMANA",
-      "motivo": "CONFLICT em .gitleaks.toml + REGRA#8"
+      "rule8": [
+        ".gitleaks.toml"
+      ]
     },
     {
       "number": 2432,
-      "title": "feat(qa): probe E184 — detecta refs legadas ao projeto proibido",
-      "branch": "claude/feat-probe-e184-241026-2026",
-      "draft": false,
-      "test_merge": "CLEAN",
-      "test_merge_evidence": "git merge-tree --write-tree $(git merge-base origin/main refs/remotes/pr-test/2432) origin/main refs/remotes/pr-test/2432 → empty diff (sem conflito, sem mudança nova)",
-      "cherry": 0,
-      "cherry_evidence": "git cherry origin/main refs/remotes/pr-test/2432 | grep -c '^+' → 0",
-      "regra8": false,
-      "regra10": true,
-      "veredito": "JA_EM_MAIN",
-      "motivo": "git cherry = 0 commits únicos — conteúdo já integrado em main"
+      "verdict": "JA_EM_MAIN",
+      "test_merge": "CLEAN"
     },
     {
       "number": 2443,
-      "title": "APROVAÇÃO REQUERIDA: P06/P09/P14/P15/P03_security_definer — FASE B auditoria Supabase",
-      "branch": "claude/feat-aprovacao-p06-p09-p14-p15-p03sec-261024-2315",
-      "draft": false,
+      "verdict": "DECISAO_HUMANA",
       "test_merge": "CLEAN",
-      "test_merge_evidence": "git diff origin/main...refs/remotes/pr-test/2443 --stat → 1 file: auditoria-supabase/analise-impacto/APROVACAO_FASE_B_IMPACTO.md (+218/-0)",
-      "diff_files": ["auditoria-supabase/analise-impacto/APROVACAO_FASE_B_IMPACTO.md"],
-      "cherry": 1,
-      "cherry_evidence": "git cherry origin/main refs/remotes/pr-test/2443 | grep -c '^+' → 1",
-      "regra8": false,
-      "regra10": true,
-      "veredito": "DECISAO_HUMANA",
-      "motivo": "REGRA#10 (branch de outra sessão claude/) + título 'APROVAÇÃO REQUERIDA' + documento de política de segurança (security_definer ACL P03/P06/P09/P14/P15)"
+      "motivo": "segurança FASE B + aprovação PO"
     },
     {
       "number": 2449,
-      "title": "chore(migrations): E99 mirrors repair-only — update_company_fields (20261022195616 e 20261022203935)",
-      "branch": "claude/chore-e99-mirror-update-company-fields-261025-1100",
-      "draft": true,
+      "verdict": "DECISAO_HUMANA",
       "test_merge": "CONFLICT",
-      "test_merge_evidence": "git merge-tree --write-tree ... → conflicting files: supabase/MIGRATIONS_SYNC_LOG.md, supabase/migrations/20261022195616_fix_update_company_fields_security_definer_search_path.sql, supabase/migrations/20261022203935_update_company_fields_security_fix.sql",
-      "cherry": null,
-      "regra8": true,
-      "regra8_files": ["supabase/migrations/20261022195616_fix_update_company_fields_security_definer_search_path.sql", "supabase/migrations/20261022203935_update_company_fields_security_fix.sql"],
-      "regra10": true,
-      "veredito": "DECISAO_HUMANA",
-      "motivo": "CONFLICT em 3 arquivos (migrations + sync log) + REGRA#8 (migrations)"
+      "rule8": [
+        "supabase/migrations/"
+      ]
     },
     {
       "number": 2452,
-      "title": "fix(docs): remove prefixo supabase/migrations/ em PR-2441.md — Gate 1.3",
-      "branch": "claude/fix-gate-1-3-pr2441-refs-261025",
-      "draft": true,
-      "test_merge": "CONFLICT",
-      "test_merge_evidence": "git merge-tree --write-tree ... → conflicting files: analise-prs/dossies/PR-2441.md",
-      "cherry": null,
-      "regra8": false,
-      "regra10": true,
-      "veredito": "DECISAO_HUMANA",
-      "motivo": "CONFLICT em analise-prs/dossies/PR-2441.md + REGRA#10"
+      "verdict": "DECISAO_HUMANA",
+      "test_merge": "CONFLICT"
     },
     {
       "number": 2469,
-      "title": "fix(ci): e2e-personalization E42 skip ratio gate condicional ao auth",
-      "branch": "claude/fix-ci-workflows-261025-0630",
-      "draft": false,
+      "verdict": "DECISAO_HUMANA",
       "test_merge": "CONFLICT",
-      "test_merge_evidence": "git merge-tree --write-tree ... → conflicting files: .github/workflows/e2e-personalization.yml",
-      "cherry": null,
-      "regra8": true,
-      "regra8_files": [".github/workflows/e2e-personalization.yml"],
-      "regra10": true,
-      "veredito": "DECISAO_HUMANA",
-      "motivo": "CONFLICT em .github/workflows/e2e-personalization.yml + REGRA#8 (workflow)"
+      "rule8": [
+        ".github/workflows/e2e-personalization.yml"
+      ]
     },
     {
       "number": 2503,
-      "title": "docs(ci): RELATORIO_CI Rev21 — Gate Final ✅ dcaa20da + tabela de prova",
-      "branch": "claude/docs-relatorio-ci-rev21-20261025-0911",
-      "draft": true,
-      "test_merge": "CONFLICT",
-      "test_merge_evidence": "git merge-tree --write-tree ... → conflicting files: RELATORIO_CI.md",
-      "cherry": null,
-      "regra8": false,
-      "regra10": true,
-      "veredito": "DECISAO_HUMANA",
-      "motivo": "CONFLICT em RELATORIO_CI.md + REGRA#10 + conteúdo obsoleto (Rev21 vs HEAD c113300c)"
+      "verdict": "DECISAO_HUMANA",
+      "test_merge": "CONFLICT"
     },
     {
       "number": 2520,
-      "title": "chore(main): release 1.0.0",
-      "branch": "release-please--branches--main--components--gifts-store",
-      "draft": false,
+      "verdict": "DECISAO_HUMANA",
       "test_merge": "CLEAN",
-      "test_merge_evidence": "git diff origin/main...refs/remotes/pr-test/2520 --stat → 4 files: .release-please-manifest.json (-1+1), CHANGELOG.md (+229), package-lock.json (-2+2), package.json (-1+1). Mudança de versão: 1.2.1 → 1.0.0",
-      "diff_summary": "package.json: version 1.2.1 → 1.0.0 (DOWNGRADE); .release-please-manifest.json: 1.2.1 → 1.0.0",
-      "cherry": 1,
-      "regra8": false,
-      "regra10": false,
-      "veredito": "DECISAO_HUMANA",
-      "motivo": "Downgrade semântico 1.2.1→1.0.0 é REGRESSÃO de versão; criada por github-actions[bot] (release-please), não por humano"
-    },
-    {
-      "number": 2529,
-      "title": "docs(analise-prs): entregáveis sessão 01Ss1tXZ — 53 PRs, 14 merges, Gate Final ✅",
-      "branch": "claude_05/youthful-ride-vcdchy",
-      "draft": false,
-      "test_merge": "CLEAN",
-      "test_merge_evidence": "Conflito inicial em analise-prs/ resolvido via git checkout --ours (c113300c > eb7a92479); pós-resolução CLEAN. Branch desta sessão — sem REGRA#8 triggers nos arquivos atuais (commits de workflow/.gitleaks em sessões anteriores já integrados em main).",
-      "cherry": 16,
-      "cherry_evidence": "git cherry origin/main refs/remotes/pr-test/2529 | grep -c '^+' → 16 commits únicos pós-resolução",
-      "regra8": false,
-      "regra10": false,
-      "veredito": "MERGEADO_AUTONOMO",
-      "merge_sha": "59a7a6072f405d98f7004f26a4badbf6287c6b5f",
-      "merge_method": "squash",
-      "mergeado_em": "2026-10-25T18:47Z",
-      "gate_final_run": "40222902668",
-      "gate_final_conclusao": "success",
-      "gate_final_completado_em": "2026-10-25T18:53:31Z",
-      "motivo": "docs-only analise-prs/ — branch desta sessão (claude_05/); todos os 8 critérios passaram; squash-merged SHA 59a7a607; Gate Final #40222902668 success ✅"
-    },
-    {
-      "number": 2543,
-      "title": "docs(analise-prs): rev17 — registra merge autônomo PR #2529 + Gate Final #40222902668 ✅",
-      "branch": "claude_05/youthful-ride-vcdchy",
-      "draft": false,
-      "test_merge": "CLEAN",
-      "test_merge_evidence": "Criada nesta sessão como PR de entregáveis docs-only; sem conflito",
-      "cherry": 4,
-      "cherry_evidence": "4 arquivos: progresso.json, prs.csv, RELATORIO_PRS.md, dossies/PR-2529.md",
-      "regra8": false,
-      "regra10": false,
-      "veredito": "MERGEADO_AUTONOMO",
-      "merge_sha": "7d3bd4ba47eb6e9e6b3d56fe3bfac45a791de84f",
-      "merge_method": "squash",
-      "mergeado_em": "2026-10-25T18:55:42Z",
-      "gate_final_run": "40223579961",
-      "gate_final_conclusao": "success",
-      "gate_final_completado_em": "2026-10-25T19:02:42Z",
-      "motivo": "docs-only analise-prs/ — branch desta sessão; entregáveis rev17 pós-merge #2529; Gate Final #40223579961 success ✅"
+      "motivo": "downgrade 1.2.1→1.0.0"
     },
     {
       "number": 2532,
-      "title": "docs: atualiza run refs P2b/P23/P61 + main HEAD d74b33fb",
-      "branch": "claude/docs-estado-261025-1630",
-      "draft": true,
-      "test_merge": "CONFLICT",
-      "test_merge_evidence": "git merge-tree --write-tree ... → conflicting files: PENDENCIAS.md, RELATORIO_CI.md",
-      "cherry": null,
-      "regra8": false,
-      "regra10": true,
-      "veredito": "DECISAO_HUMANA",
-      "motivo": "CONFLICT em PENDENCIAS.md + RELATORIO_CI.md + REGRA#10 + obsoleto (HEAD d74b33fb desatualizado vs c113300c atual)"
+      "verdict": "DECISAO_HUMANA",
+      "test_merge": "CONFLICT"
     },
     {
       "number": 2537,
-      "title": "fix: Contract Tests usa registry ghcr.io (ECR Public estourou data limit)",
-      "branch": "claude/fix-contract-tests-registry-ghcr-261025-1705",
-      "draft": false,
+      "verdict": "DECISAO_HUMANA",
       "test_merge": "CLEAN",
-      "test_merge_evidence": "git diff origin/main...refs/remotes/pr-test/2537 --stat → 1 file: .github/workflows/contract-tests.yml (+5/-5). Mudança: SUPABASE_INTERNAL_IMAGE_REGISTRY=public.ecr.aws → ghcr.io",
-      "diff_summary": ".github/workflows/contract-tests.yml: reverte ECR Public override (E104) para ghcr.io por 'Data limit exceeded' (run 40198510942)",
-      "cherry": 1,
-      "cherry_evidence": "git cherry origin/main refs/remotes/pr-test/2537 | grep -c '^+' → 1",
-      "regra8": true,
-      "regra8_files": [".github/workflows/contract-tests.yml"],
-      "regra10": false,
-      "veredito": "DECISAO_HUMANA",
-      "motivo": "REGRA#8 — toca .github/workflows/contract-tests.yml (workflow CI); aprovação PO requerida mesmo sendo fix técnico"
-    }
-  ],
-  "prs_fechados_durante_sessao": [
-    {
-      "number": 2521,
-      "title": "chore(migrations): E99 repair-only company_fields (rev2)",
-      "acao": "fechada",
-      "por": "PO",
-      "veredito": "FECHADO_PO"
+      "rule8": [
+        ".github/workflows/contract-tests.yml"
+      ]
     },
     {
-      "number": 2538,
-      "title": "docs: RELATORIO_CI — registra Gate Final 893d830e/35ea12c2/4cb4feb4 (HEAD)",
-      "acao": "mergeada",
-      "por": "PO",
-      "merge_commit": "cb0ccedec41c38fe79cbd2585216e4cbe3155ccd",
-      "veredito": "MERGEADO_PO"
+      "number": 2544,
+      "verdict": "MERGEADO_AUTONOMO",
+      "merge_sha": "1d26da9082d42e825de66f574fbc796587345fdf"
+    },
+    {
+      "number": 2545,
+      "verdict": "MERGEADO_AUTONOMO",
+      "merge_sha": "2a93ba556b58007a001d68efd3c81ead17c19dce"
+    },
+    {
+      "number": 2547,
+      "verdict": "DECISAO_HUMANA",
+      "test_merge": "CLEAN",
+      "motivo": "remoção feature + regressão prs.json"
+    },
+    {
+      "number": 2548,
+      "verdict": "MERGEADO_AUTONOMO",
+      "merge_sha": "9be832a355f0c98fcd22021b4273b16fa0b1aba5"
+    },
+    {
+      "number": 2549,
+      "verdict": "MERGEADO_AUTONOMO",
+      "merge_sha": "73df7502f3b582f7966c209ff6a5c202fb1a3f9e"
+    },
+    {
+      "number": 2550,
+      "verdict": "DECISAO_HUMANA",
+      "test_merge": "CLEAN",
+      "motivo": "mudança regra negócio D7"
+    },
+    {
+      "number": 2551,
+      "verdict": "MERGEADO_AUTONOMO",
+      "merge_sha": "97eed25cb177a318fcf63fb3843f02512511d579"
+    },
+    {
+      "number": 2552,
+      "verdict": "MERGEADO_AUTONOMO",
+      "merge_sha": "35fdb5793db7461f7fafcdae1effc89ae5cae6b5"
+    },
+    {
+      "number": 2553,
+      "verdict": "MERGEADO_AUTONOMO",
+      "merge_sha": "aebd333f3d2d57ee0bb5f1f127bf23f352846cd9"
+    },
+    {
+      "number": 2554,
+      "verdict": "MERGEADO_AUTONOMO",
+      "merge_sha": "e6538448e6edc639f9131e809ae265976b43f208"
+    },
+    {
+      "number": 2555,
+      "verdict": "MERGEADO_AUTONOMO",
+      "merge_sha": "479f2219485e23a5d35896dfe44c9ca4f7c1026f"
+    },
+    {
+      "number": 2556,
+      "verdict": "MERGEADO_AUTONOMO",
+      "merge_sha": "15e10fd88208f9b4cd372b82544fb27892d15a81"
+    },
+    {
+      "number": 2557,
+      "verdict": "DECISAO_HUMANA",
+      "test_merge": "CLEAN",
+      "motivo": "corrupção texto RELATORIO_CI.md"
     }
   ]
 }
