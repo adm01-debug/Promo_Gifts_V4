@@ -141,3 +141,5 @@ PRs em rascunho (draft) têm um bloqueio implícito: o autor não sinalizou que 
 | #2455 | MERGEADO | SHA bfd9b50a — docs-only RELATORIO_CI.md rev7 + PENDENCIAS.md |
 | #2466 | DECISÃO HUMANA | Draft:true — branch desta sessão; PO deve converter para ready-for-review e mergear |
 | #2469 | DECISÃO HUMANA | Rule 8: .github/workflows/e2e-personalization.yml + REGRA #10 branch outra sessão |
+| #2470 | FECHAR | Draft:true + REGRA #10 branch outra sessão (session_01Nc1nb7PArDnixYvvZssnKy); 1 arquivo: tests/unit/date-utils.test.ts |
+| #2471 | FECHAR | Draft:true + dirty (CONFLITO) + REGRA #10 branch outra sessão (session_01Nc1nb7PArDnixYvvZssnKy); 3 arquivos docs |

@@ -5,13 +5,13 @@
   "main_sha_fim": "6ea6c80cee3adbb6752ec4015f2f7a2ba433e5d1",
   "total_open_inicio": 17,
   "total_open_novos": 15,
-  "total_analyzed": 33,
+  "total_analyzed": 35,
   "merges_realizados": 8,
   "merges_realizados_autonomous": 8,
   "merges_outra_sessao_ja_em_main": 3,
   "merges_po_aprovados_count": 5,
   "decisao_humana_pendente": 6,
-  "fechar_count": 11,
+  "fechar_count": 13,
   "status": "ANALISE_COMPLETA_ENTREGAVEL_DRAFT",
   "producao_confirmada_via_mcp": {
     "fn_magazine_reader_state_read": "ACTIVE version 46",
@@ -211,7 +211,9 @@
     {"number": 2464, "status": "MERGEADO", "verdict": "MERGEADO (PO)", "sha_merge": "1e07e298f03d7940d71629f28c5effc72274f940", "motivo": "fix(ci): Gate 5.5 timeout 3→5min — REGRA #8 deploy-gates.yml; PO aprovou e mergeou"},
     {"number": 2465, "status": "analisado", "verdict": "FECHAR", "motivo": "draft:true + branch outra sessão (REGRA #10) + CONFLITO em PENDENCIAS.md"},
     {"number": 2466, "status": "nossa_pr", "verdict": "DECISÃO_HUMANA", "motivo": "nossa PR deliverables — draft:true; PO deve converter para ready-for-review e mergear", "worktree": "MERGE LIMPO"},
-    {"number": 2469, "status": "analisado", "verdict": "DECISÃO_HUMANA", "motivo": "Rule 8: .github/workflows/e2e-personalization.yml + REGRA #10 branch outra sessão (session_01HW5obNKUFtUMbBdgUb94kY); draft:true", "worktree": "NÃO TESTADO (branch outra sessão)"}
+    {"number": 2469, "status": "analisado", "verdict": "DECISÃO_HUMANA", "motivo": "Rule 8: .github/workflows/e2e-personalization.yml + REGRA #10 branch outra sessão (session_01HW5obNKUFtUMbBdgUb94kY); draft:true", "worktree": "NÃO TESTADO (branch outra sessão)"},
+    {"number": 2470, "status": "analisado", "verdict": "FECHAR", "motivo": "draft:true + REGRA #10 branch outra sessão (session_01Nc1nb7PArDnixYvvZssnKy); 1 arquivo: tests/unit/date-utils.test.ts; mergeable_state: behind", "worktree": "NÃO TESTADO (branch outra sessão)"},
+    {"number": 2471, "status": "analisado", "verdict": "FECHAR", "motivo": "draft:true + dirty (CONFLITO) + REGRA #10 branch outra sessão (session_01Nc1nb7PArDnixYvvZssnKy); 3 arquivos docs; mergeable_state: dirty", "worktree": "NÃO TESTADO (branch outra sessão)"}
   ],
   "deliverables": {
     "baseline_vitest": "analise-prs/baseline/vitest-per-test-name.txt",
@@ -247,7 +249,9 @@
       "analise-prs/dossies/PR-2464.md",
       "analise-prs/dossies/PR-2465.md",
       "analise-prs/dossies/PR-2466.md",
-      "analise-prs/dossies/PR-2469.md"
+      "analise-prs/dossies/PR-2469.md",
+      "analise-prs/dossies/PR-2470.md",
+      "analise-prs/dossies/PR-2471.md"
     ],
     "regras_de_negocio": "analise-prs/regras-de-negocio.md",
     "progresso": "analise-prs/progresso.json"

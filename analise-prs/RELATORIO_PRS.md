@@ -4,13 +4,13 @@
 **Sessão:** https://claude.ai/code/session_01Ss1tXZ4cAbxBvdmu95uNPz  
 **Main SHA início da sessão:** `9079c82e6c3f58ae5d2cdf8c7eb2deef979ee9d8`  
 **Main SHA fim da sessão:** `6ea6c80cee3adbb6752ec4015f2f7a2ba433e5d1` (após merge de #2464 pelo PO)  
-**Total PRs analisados:** 33 (#2414–#2469)  
+**Total PRs analisados:** 35 (#2414–#2471)  
 **Merges autônomos (esta sessão):** 8 (#2414, #2426, #2427, #2434, #2436, #2439, #2447, #2455)  
 **Merges outra sessão (já em main):** 3 (#2437, #2438, #2457)  
 **Merges PO-aprovados (REGRA #8):** 5 (#2435, #2441, #2445, #2450, #2464)  
 **PRs DECISÃO_HUMANA aguardando PO:** 6 (#2415, #2428, #2443, #2449, #2466, #2469)  
-**PRs FECHAR:** 11 (#2417, #2418, #2419, #2420, #2422, #2424, #2432, #2451, #2452, #2458, #2465)  
-**Total verificado:** 8+3+5+6+11 = **33**  
+**PRs FECHAR:** 13 (#2417, #2418, #2419, #2420, #2422, #2424, #2432, #2451, #2452, #2458, #2465, #2470, #2471)  
+**Total verificado:** 8+3+5+6+13 = **35**  
 **Worktrees:** nenhum extra (`git worktree list` confirma só `/home/user/Promo_Gifts_V4`)
 
 ---
@@ -162,6 +162,8 @@ Nenhum PR mergeado autonomamente toca código de produção exceto:
 | #2420 | FECHAR (branch órfã + Rule 8) | — | `analise-prs/dossies/PR-2420.md` |
 | #2422 | FECHAR (branch órfã + draft) | — | `analise-prs/dossies/PR-2422.md` |
 | #2424 | FECHAR (state: closed) | — | `analise-prs/dossies/PR-2424.md` |
+| #2470 | FECHAR (draft + REGRA #10) | — | `analise-prs/dossies/PR-2470.md` |
+| #2471 | FECHAR (draft + dirty + REGRA #10) | — | `analise-prs/dossies/PR-2471.md` |
 | #2426 | MERGEADO | `7f5d410a` | `analise-prs/dossies/PR-2426.md` |
 | #2427 | MERGEADO | `26641b0a` | `analise-prs/dossies/PR-2427.md` |
 | #2428 | DECISÃO_HUMANA (.gitleaks.toml) | — | `analise-prs/dossies/PR-2428.md` |
