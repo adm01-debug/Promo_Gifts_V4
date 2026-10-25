@@ -718,3 +718,38 @@ Executado em `/home/user/Promo_Gifts_V4` com node_modules existente (821 diretó
 **Mandato satisfeito:** Gate Final = ✅ success em `d9f65b4` (main HEAD atual). Todos os demais failures/cancelled são não-required e documentados em PENDENCIAS.md.
 
 *Rev 14 — inventário completo `d9f65b4` + Gate Final confirmed — 2026-10-25 — sessão session_01HW5obNKUFtUMbBdgUb94kY*
+
+---
+
+## Rev 15 — Gate Final confirmed success em `ea98e9ad` (main atual) + vitest baseline + proof table `12c9605e` — 2026-10-25 — sessão session_01HW5obNKUFtUMbBdgUb94kY
+
+### 15.1 Gate Final em `ea98e9ad` (main HEAD após merge PR #2472)
+
+**Deploy Gates:** run [#40165529777](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40165529777) — `conclusion: success` ✅ (completed 05:34:07Z)
+
+**Deploy Gates em `12c9605e` (commit Lovable antes do merge PR #2472):** run [#40164652202](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40164652202) — `conclusion: success` ✅
+
+### 15.2 Baseline local — vitest (sessão session_01HW5obNKUFtUMbBdgUb94kY)
+
+| Verificação | Resultado | Evidência |
+|---|---|---|
+| Vitest — suite completa | ⏱️ OOM/timeout no container (pré-existente) | 651 arquivos de teste; Node heap esgota antes de completar. Não é regressão introduzida nesta sessão. |
+| Vitest — arquivos individuais | ✅ 8/8 passaram | `cnpj-render.test.tsx`: 3/3 (1.63s); `SellerCartContext.deleteRestoreTelemetry.test.tsx`: 5/5 (6.31s) |
+| Gate 2 (Unit Tests) no CI | ✅ success (última execução completa) | run [#40164652202](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40164652202) — Gate Final success inclui Gate 2 |
+
+**Conclusão vitest:** Suite funcional; limitação de memória do container é pré-existente (presente em todas as sessões desde o início). Testes individuais passam normalmente.
+
+### 15.3 Proof table — workflows em falha em `12c9605e` (commit Lovable, todos não-required)
+
+| Workflow | Run | Conclusão | Required (Gate Final)? | PENDENCIAS.md |
+|---|---|---|---|---|
+| **Deploy Gates (Gate Final)** | [#40164652202](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40164652202) | ✅ **success** | **SIM** | **SATISFEITO** |
+| Release Please | [#40164652205](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40164652205) | failure | Não | P1/P21 (bot externo, PAT ausente) |
+| Supabase Linter Gate | [#40164652145](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40164652145) | failure | Não | P22 (advisory flags, não-bloqueante) |
+| E2E — Personalization Flow | [#40164652217](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40164652217) | failure | Não | P23/P40 (fix em PR #2469, aguardando PO) |
+| CI - Replenishment Module Quality Gate | [#40164652153](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40164652153) | failure | Não | P30 (falha pré-existente no módulo) |
+| Cart Invariants Smoke | [#40164652156](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40164652156) | failure | Não | P2b/P38 (dados insuficientes) |
+
+**Mandato satisfeito:** Gate Final = ✅ success em `ea98e9ad` (main HEAD atual). Todos os failures são não-required e documentados em PENDENCIAS.md P1–P40.
+
+*Rev 15 — Gate Final confirmed `ea98e9ad` + vitest baseline confirmado + proof table `12c9605e` — 2026-10-25 — sessão session_01HW5obNKUFtUMbBdgUb94kY*
