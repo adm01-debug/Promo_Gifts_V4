@@ -141,7 +141,9 @@
       "draft": true,
       "mergeable": true,
       "mergeable_state": "behind",
-      "diff_files": [".gitleaks.toml"],
+      "diff_files": [
+        ".gitleaks.toml"
+      ],
       "rule8_trigger": "security policy (.gitleaks.toml)",
       "worktree_test": "MERGE LIMPO — nenhum conflito (confirmado git worktree add + git merge --no-commit)",
       "cherry": "1 commit único, base=71d624e8",

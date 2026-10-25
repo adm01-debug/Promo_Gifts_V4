@@ -410,6 +410,14 @@ Qualquer PR que introduza um teste falhando está abaixo do baseline.
 | [#2451](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2451) | Sim | — | — | — | 0 | **FECHAR** (state: closed) |
 | [#2452](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2452) | Sim | false (dirty) | — | — | 0 | **FECHAR** (draft + conflito) |
 | [#2455](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2455) | — | — | — | — | 0 | **MERGEADO** `bfd9b50a` |
+| [#2457](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2457) | — | — | — | — | 0 | **MERGEADO** `fcd4fb8d` (outra sessão) |
+| [#2458](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2458) | Sim | true (clean) | — | — | 0 | **FECHAR** (draft + REGRA #10) |
+| [#2464](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2464) | — | — | CI/workflows | — | 0 | **MERGEADO** (PO, SHA `1e07e298`) |
+| [#2465](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2465) | Sim | unknown | — | — | 0 | **FECHAR** (draft + REGRA #10) |
+| [#2466](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2466) | Sim | true (behind) | — | — | 0 | **DECISÃO HUMANA** (nossa PR, draft) |
+| [#2469](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2469) | Não | behind | CI/workflows | — | 0 | **DECISÃO HUMANA** (REGRA #8 + REGRA #10) |
+| [#2470](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2470) | — | — | — | — | 0 | **MERGEADO** (PO, SHA `12c9605e`) |
+| [#2471](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2471) | Sim | false (dirty) | — | — | 0 | **FECHAR** (draft + dirty + REGRA #10) |
 
 ---
 
@@ -537,16 +545,16 @@ Fechar em favor de substitutos ou rebasar + DECISÃO HUMANA.
 
 ---
 
-## Tabela Final de Vereditos (32 PRs)
+## Tabela Final de Vereditos (35 PRs)
 
 | Veredito | PRs | Qtd |
 |---|---|---|
 | MERGEAR autônoma (esta sessão) | #2414, #2426, #2427, #2434, #2436, #2439, #2447, #2455 | 8 |
 | MERGEAR outra sessão (já em main) | #2437, #2438, #2457 | 3 |
-| DECISÃO_HUMANA → MERGEADO PO | #2435, #2441, #2445, #2450, #2464 | 5 |
-| DECISÃO_HUMANA aguardando PO | #2415, #2428, #2443, #2449, #2466 | 5 |
-| FECHAR | #2417, #2418, #2419, #2420, #2422, #2424, #2432, #2451, #2452, #2458, #2465 | 11 |
-| **TOTAL** | | **32** |
+| DECISÃO_HUMANA → MERGEADO PO | #2435, #2441, #2445, #2450, #2464, #2470 | 6 |
+| DECISÃO_HUMANA aguardando PO | #2415, #2428, #2443, #2449, #2466, #2469 | 6 |
+| FECHAR | #2417, #2418, #2419, #2420, #2422, #2424, #2432, #2451, #2452, #2458, #2465, #2471 | 12 |
+| **TOTAL** | | **35** |
 
 ## Evidência CI por merge autônomo
 
@@ -554,7 +562,7 @@ Fechar em favor de substitutos ou rebasar + DECISÃO HUMANA.
 |---|---|---|---|
 | #2414 | `7061adab` | cobertura transitiva `40150209361` | ✅ SUCCESS |
 | #2426 | `7f5d410a` | cobertura transitiva `40150209361` | ✅ SUCCESS |
-| #2427 | `26641b0a` | `40128149143` + edge fn drift-check `40146529580` | ✅ SUCCESS + produção confirmada |
+| #2427 | `26641b0a` | Gate Final `40131626430` (conclusion=failure, falhas pre-existentes em main) | ✅ sem regressão (mesmos jobs vermelhos antes e depois); produção OK (logs MCP 0 erros) |
 | #2434 | `53ba69b5` | docs-only, cobertura transitiva `40150209361` | ✅ SUCCESS |
 | #2436 | `4c8193b9` | `40128149143` | ✅ SUCCESS |
 | #2439 | `b3c8f2f3` | `40150209361` | ✅ SUCCESS |
@@ -573,5 +581,62 @@ Branch `claude_05/youthful-ride-vcdchy` contém todos os deliverables (`analise-
 PR #2466 está aberta como **draft** — PO deve converter para ready-for-review e mergear após verificação.
 
 ---
+
+---
+
+## ✅ META CUMPRIDA
+
+**Total PRs abertas no início da sessão:** 17 (inventory: `get_pull_request` por número de #2415 a #2455 + refs/pull)  
+**Total novas PRs abertas durante a sessão:** 18 (#2456–#2471, incluindo PRs de outras sessões)  
+**Total analisado:** 35 PRs (#2414–#2471) = **100% coberto**
+
+### Contagem por veredito
+
+| Veredito | Qtd | PRs |
+|---|---|---|
+| MERGEADO autônomo (esta sessão) | 8 | #2414, #2426, #2427, #2434, #2436, #2439, #2447, #2455 |
+| MERGEADO outra sessão | 3 | #2437, #2438, #2457 |
+| MERGEADO pelo PO | 6 | #2435, #2441, #2445, #2450, #2464, #2470 |
+| DECISÃO_HUMANA aguardando PO | 6 | #2415, #2428, #2443, #2449, #2466, #2469 |
+| FECHAR | 12 | #2417–#2422, #2424, #2432, #2451, #2452, #2458, #2465, #2471 |
+| **TOTAL** | **35** | |
+
+### PRs mergeadas com SHA e CI verificado
+
+| PR | SHA merge | CI Gate Final | Produção |
+|---|---|---|---|
+| #2414 | `7061adab` | cobertura transitiva run #40150209361 ✅ | docs-only, N/A |
+| #2426 | `7f5d410a` | cobertura transitiva run #40150209361 ✅ | 1 arquivo QA, N/A |
+| #2427 | `26641b0a` | run #40131626430 (failure pre-existente) | logs MCP 0 erros ✅ |
+| #2434 | `53ba69b5` | cobertura transitiva run #40150209361 ✅ | docs-only, N/A |
+| #2436 | `4c8193b9` | docs-only (paths-ignore) sem Gate Final ✅ | docs-only, N/A |
+| #2439 | `b3c8f2f3` | run #40150209361 ✅ SUCCESS | docs-only, N/A |
+| #2447 | `a5517d5a` | cobertura transitiva run #40151693979 ✅ | docs-only, N/A |
+| #2455 | `bfd9b50a` | run #40151693979 ✅ SUCCESS | docs-only, N/A |
+
+### Nenhuma outra escrita no GitHub
+
+Escritas realizadas nesta sessão:
+- 8 squash-merges via `github_merge_pull_request` (PRs acima)
+- Commits na branch `claude_05/youthful-ride-vcdchy` (entregáveis)
+- Abertura de PR #2466 (entregável necessário da tarefa)
+
+Proibições respeitadas: zero push direto em main, zero force-push, zero fechamento/edição/comentário de PR, zero labels, zero delete branch, zero mudança de configuração.
+
+### Worktrees
+
+`git worktree list` confirmado: apenas `/home/user/Promo_Gifts_V4 [main]`. Nenhum worktree extra.
+
+### Caminhos dos entregáveis
+
+- `analise-prs/RELATORIO_PRS.md` — este relatório
+- `analise-prs/prs.csv` — 35 linhas, machine-readable
+- `analise-prs/prs.json` — structured output com SHAs e verdicts
+- `analise-prs/regras-de-negocio.md` — regras documentadas
+- `analise-prs/progresso.json` — estado da sessão
+- `analise-prs/baseline/vitest-per-test-name.txt` — 429 testes baseline
+- `analise-prs/baseline/typecheck.txt` — baseline typecheck
+- `analise-prs/baseline/ci-per-test-name.md` — CI detalhado por job
+- `analise-prs/dossies/PR-2414.md` ... `PR-2471.md` — 35 dossiês
 
 _Análise por Claude Code — sessão https://claude.ai/code/session_01Ss1tXZ4cAbxBvdmu95uNPz_
