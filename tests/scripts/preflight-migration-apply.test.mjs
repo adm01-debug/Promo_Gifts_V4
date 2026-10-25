@@ -340,6 +340,9 @@ describe('detectSecurityDefinerWithoutPgTemp', () => {
   it('acusa SET search_path TO sem pg_temp', () => {
     expect(detectSecurityDefinerWithoutPgTemp(fn("SET search_path TO 'public'"))).toEqual(['public.f']);
   });
+  it('aceita identificador entre aspas com $ no search_path (\"$user\")', () => {
+    expect(detectSecurityDefinerWithoutPgTemp(fn('SET search_path = "$user", public, pg_temp'))).toEqual([]);
+  });
   it('acusa pg_temp mencionado só no corpo, fora do valor do search_path', () => {
     const sql = "CREATE OR REPLACE FUNCTION public.f(a int)\n RETURNS int\n LANGUAGE sql\n SECURITY DEFINER\n SET search_path TO 'public'\nAS $$ SELECT 1 /* pg_temp */, 'pg_temp' $$;";
     expect(detectSecurityDefinerWithoutPgTemp(sql)).toEqual(['public.f']);
