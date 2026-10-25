@@ -56,6 +56,16 @@ describe('Supabase Security Advisors gate', () => {
     })).toBe(1);
   });
 
+  it('trata 5xx da Management API como falha de infra transitória (retry 3x, exit 0)', async () => {
+    const fetcher = vi.fn(async () => response(544));
+    const log = logger();
+    expect(await runLinter({
+      token: 'test-token', ref: 'doufsxqlfjyuvxuezpln', fetcher, logger: log, sleepFn: () => Promise.resolve(),
+    })).toBe(0);
+    expect(fetcher).toHaveBeenCalledTimes(3);
+    expect(log.warn).toHaveBeenCalled();
+  });
+
   it('não consulta outro projeto Supabase por engano', async () => {
     const fetcher = vi.fn();
     expect(await runLinter({

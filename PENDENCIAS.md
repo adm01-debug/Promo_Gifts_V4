@@ -1,33 +1,22 @@
 # Pendências CI — Bloqueios Externos
 
-**Atualizado em:** 2026-10-25 (rev 24 — P2b run atualizado para #40189082464; P19 CORRIGIDO; RELATORIO_CI.md criado)  
+**Atualizado em:** 2026-10-25 (rev 28 — P68 adicionado; commit de referência atualizado para d8b4f130)  
 **Branch de referência:** `claude_05/nifty-sagan-r23gqh`  
-**Commit de referência (main):** `801e38a5` — docs: atualização pós-merge (Gate Final success confirmado)
+**Commit de referência (main):** `d8b4f130` — docs(pendencias): P66/P67 rev 27 (#2541)
 
 ---
 
-## P1 — Release Please: "Resource not accessible by integration"
+## P1 — Release Please: "Resource not accessible by integration" ✅ AUTO-RESOLVIDO
 
 **Workflow:** `.github/workflows/release-please.yml`  
-**Run mais recente:** [#40124949325](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40124949325) (commit `71d624e8`)  
-**Conclusão:** `failure`  
-**Categoria:** Restrição de permissão — PAT ausente (não corrigível via YAML)
+**Run mais recente:** [#40200678489](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40200678489) (commit `c8967d1c`)  
+**Conclusão:** `success` ✅ — AUTO-RESOLVIDO em 2026-10-25  
+**Categoria:** Restrição de permissão — foi transitória
 
-**Erro exato:**
-```
-release-please failed: Resource not accessible by integration
-https://docs.github.com/rest/releases/releases#create-a-release
-```
+**Causa raiz (histórica):**  
+O `release-please-action` tentava criar releases via `POST /repos/{owner}/{repo}/releases`. Com `GITHUB_TOKEN` padrão sem escopo efetivo `contents: write` para releases, o job falhava. O run #40200678489 em `c8967d1c` concluiu com `success` — o issue foi transitório e se resolveu automaticamente sem alteração de configuração.
 
-**Causa raiz:**  
-O `release-please-action` tenta criar a release via `POST /repos/{owner}/{repo}/releases`. O `GITHUB_TOKEN` padrão de Actions não tem permissão para criar releases quando "Allow GitHub Actions to create and approve pull requests" está desativado na organização, ou o token não tem escopo `contents: write` efetivo para releases.
-
-**Ação necessária pelo PO:**
-1. Criar PAT clássico com escopos `repo` e `workflow`
-2. Adicionar como segredo `RELEASE_PLEASE_TOKEN` em Settings → Secrets → Actions
-3. **Ou** habilitar em Settings → Actions → General → "Allow GitHub Actions to create and approve pull requests"
-
-**Impacto no negócio:** Releases e CHANGELOGs não são gerados automaticamente. Versões precisam ser criadas manualmente.
+**Impacto no negócio:** Resolvido. Releases e CHANGELOGs são gerados automaticamente.
 
 ---
 
@@ -82,7 +71,7 @@ O fallback agora tem `data-testid="app-header"` e `position: fixed`. O `waitForT
 
 ### P2b — Cart Invariants Smoke: todos os shards falham
 
-**Run mais recente:** [#40189082464](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40189082464) (commit `801e38a5`)  
+**Run mais recente:** [#40206801611](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40206801611) (commit `d74b33fb`)  
 **Conclusão:** `failure`  
 **Jobs:** 6 shards — todos falharam
 
@@ -120,7 +109,6 @@ flows/90-personalization-pdp: Error: expect(page).toHaveURL(/\/produtos\/.+/) fa
 
 flows/91-personalization-via-simulator: Error: expect(page).toHaveURL(/\/produtos\/.+/) failed
   - Expect "toHaveURL" with timeout 15000ms
-  > 24 | await expect(page).toHaveURL(/\/produtos\/.+/);
 
 flows/92-personalization-auth: Error: expect(page).toHaveURL(/\/login/) failed
   - Expect "toHaveURL" with timeout 15000ms
@@ -356,10 +344,28 @@ Adicionar coluna `level` à tabela `public.categories` no schema da preview bran
 
 ## P16 — E2E — Critical Flows & Error Boundaries: failure (não-required)
 
-**Workflow:** `.github/workflows/e2e-critical-flows.yml`  
-**Categoria:** E2E failure — não é required check no Gate Final
+**Workflow:** `.github/workflows/e2e-flows.yml` (ID 283130542)  
+**Categoria:** E2E failure — não é required check no Gate Final  
+**Run mais recente:** [#40198674629](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40198674629) (main `a29b3a19`, 2026-10-25)  
+**Job falho:** `E2E — Full User Flows (authed)` (job 121184969421)  
+**Spec:** `e2e/flows/27-admin-critical-routes.spec.ts:40`
 
-**Impacto no Gate Final:** Nenhum.
+**Erro exato confirmado (job logs):**
+```
+Test: Conexões externas (/admin/conexoes) carrega ou redireciona para login
+
+Error: expect(received).toBeGreaterThan(expected)
+Expected: > 0
+Received:   0
+
+e2e/flows/27-admin-critical-routes.spec.ts:40
+```
+
+**Causa raiz:** A rota `/admin/conexoes` requer autenticação. No runner de CI sem as credenciais E2E (`E2E_USER_EMAIL` / `E2E_USER_PASSWORD`), a página renderiza em branco — nenhum elemento de `main`, `[role='main']`, `[data-testid]`, `h1` ou `h2` é encontrado. O teste executou 2 tentativas (retry #1 também falhou). Pré-existente em main.
+
+**Ação necessária (PO):** Configurar secrets `E2E_USER_EMAIL` e `E2E_USER_PASSWORD` no repositório para que os specs autenticados executem. Sem eles, `E2E_HAS_CREDS=false` e o step "Guard — credenciais E2E" de `ci-security-drift.yml` falha em push para main.
+
+**Impacto no Gate Final:** Nenhum — `e2e-flows.yml` não é required check no Gate Final.
 
 ---
 
@@ -432,8 +438,29 @@ AssertionError: expected +0 to be 2
 
 ## P23 — E2E Personalization Flow: failure em main (não-bloqueante)
 
-**Workflow:** `.github/workflows/e2e-personalization.yml`  
-**Categoria:** E2E não-required, flake de ambiente externo
+**Workflow:** `.github/workflows/e2e-personalization.yml` (ID 285588106)  
+**Categoria:** E2E não-required  
+**Run mais recente:** [#40198674551](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40198674551) (main `a29b3a19`, 2026-10-25)
+
+**Erros exatos (confirmados em P2c — run #40124949299, job 120884172213):**
+```
+flows/90-personalization-pdp: Error: expect(page).toHaveURL(/\/produtos\/.+/) failed
+  - Expect "toHaveURL" with timeout 15000ms
+  > 24 | await expect(page).toHaveURL(/\/produtos\/.+/);
+
+flows/91-personalization-via-simulator: Error: expect(page).toHaveURL(/\/produtos\/.+/) failed
+  - Expect "toHaveURL" with timeout 15000ms
+
+flows/92-personalization-auth: Error: expect(page).toHaveURL(/\/login/) failed
+  - Expect "toHaveURL" with timeout 15000ms
+  > 21 | await expect(page).toHaveURL(/\/login/);
+
+4 failed (chromium-authed) — retries incluídos
+```
+
+**Causa raiz (de P2c):** Flows 90/91 dependem de catálogo de produtos com links navegáveis para PDP — dados ausentes em CI. Flow 92 espera redirect para `/login` dentro de 15s, mas resolução de auth (Supabase session check) pode ultrapassar o timeout em CI sob carga. Pré-existente em main desde commit `325b0bd`.
+
+**Ação necessária (PO):** Seed de dados de produtos no runner de CI + investigar roteamento PDP → Personalization Flow.
 
 **Impacto no Gate Final:** Nenhum.
 
@@ -441,7 +468,23 @@ AssertionError: expected +0 to be 2
 
 ## P24 — E2E Thumb QuickView: failure em main (não-bloqueante)
 
-**Categoria:** E2E não-required, flake visual/navegação
+**Workflow:** `.github/workflows/e2e-thumb-quickview.yml` (ID 298450953)  
+**Categoria:** E2E não-required  
+**Run mais recente:** [#40193146138](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40193146138) (commit `c5bf465a`, 2026-10-25)  
+**Jobs falhos:** `webkit • 03b` (121173226416), `firefox • 03b` (121173226441), `chromium • 03b` (121173226473)
+
+**Erro exato confirmado (logs chromium job 121173226473):**
+```
+Testes: executed=1 (expected=1 unexpected=0 flaky=0 skipped=21)
+[check-playwright-min-executed] FALHA: 1 testes executados, minimo 10.
+Causas possiveis: secrets E2E ausentes, spec list vazia ou Playwright abortou antes de rodar.
+[check-playwright-min-executed] FALHA: ratio de skipped 95.5% > maximo 50.0% (21/22).
+Causas possiveis: muitos testes com requireAuth, condicoes de skip incorretas ou spec nao encontrou dados de fixture.
+```
+
+**Causa raiz:** 21 de 22 testes são pulados por condições `requireAuth` — sem os secrets `E2E_USER_EMAIL` / `E2E_USER_PASSWORD` no CI, apenas 1 teste público executa (mínimo exigido: 10). O gate de mínimo de testes `check-playwright-min-executed.mjs` falha com exit code 1. Mesmo comportamento nos 3 browsers (webkit, firefox, chromium). Pré-existente em main.
+
+**Ação necessária (PO):** Configurar secrets `E2E_USER_EMAIL` e `E2E_USER_PASSWORD` no repositório para que os specs `requireAuth` executem.
 
 **Impacto no Gate Final:** Nenhum.
 
@@ -754,6 +797,318 @@ O agente Claude empurrou o commit `7fc20213` ("fix(gate1.3): remove entradas de 
 **Contexto:** O push direto foi uma medida emergencial para corrigir Gate 1.3 que estava bloqueando o Gate Final (o único required check). A regra correta é sempre usar PRs — esta violação está documentada aqui para rastreabilidade.
 
 **Resolução automática esperada:** O próximo commit via PR merge passará o sentinel (ele verifica apenas commits do push atual, não histórico).
+
+---
+
+## P59 — Vercel: projeto fantasma `promo-gifts-reconciliation-integrity-20260915`
+
+**Serviço:** Vercel  
+**Projeto:** `promo-gifts-reconciliation-integrity-20260915` (`prj_W1Zdi6BQWkAwQx5VJjpSNlZubeok`)  
+**Categoria:** Infra — projeto fantasma criado por incidente (REGRA #11)  
+
+**Causa:**  
+Em 2026-09-15, um agente rodou `vercel link` dentro de um worktree em `/tmp/promo-gifts-reconciliation-integrity-20260915` sem herdar `.vercel/project.json`. Isso criou um segundo projeto Vercel conectado ao mesmo repositório, causando builds duplicados em todo push.
+
+**Ação necessária pelo PO:**  
+Deletar o projeto `promo-gifts-reconciliation-integrity-20260915` em https://vercel.com/juca1 para eliminar builds duplicados.
+
+**Impacto no negócio:** Cada push dispara 2 builds Vercel (1 canônico + 1 fantasma). Dobro de custo de build + confusão nos logs de deploy.
+
+---
+
+## P60 — CI Security & Drift Checks: step 27 E2E públicos timeout (pré-existente)
+
+**Workflow:** `.github/workflows/ci-security-drift.yml`  
+**Run mais recente com falha:** [#40198674547](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40198674547) (commit `a29b3a19`)  
+**Conclusão:** `failure`  
+**Job:** `quality-gate` → step 27 "Run E2E Critical Tests — specs autenticados"  
+**Categoria:** E2E autenticado sob projeto Playwright público sem storageState — timeout estrutural
+
+**Erros exatos (run #40198674547):**
+```
+[chromium-public] e2e/catalog.spec.ts — 6 testes falharam
+[chromium-public] e2e/kit-builder.spec.ts — 4 testes falharam
+
+locator.click: Test timeout of 120000ms exceeded.
+waiting for locator('[data-testid="wizard-step-box"]')
+  at e2e/kit-builder.spec.ts:33
+  at e2e/kit-builder.spec.ts:69
+```
+
+**Causa raiz confirmada (evidência de código-fonte):**
+
+1. Step 27 em `.github/workflows/ci-security-drift.yml:154` usa `--project=chromium-public` (sem `storageState`) para specs que chamam `loginAs()`:
+   ```yaml
+   run: npx playwright test --project=chromium-public e2e/catalog.spec.ts e2e/kit-builder.spec.ts
+   ```
+2. `loginAs()` (`e2e/helpers/auth.ts:194`) faz login via UI quando não há `storageState`. Timeout UI em CI: 75s (`process.env.CI ? 75_000 : 20_000`).
+3. Com login (~38-75s) + navegação + espera de `wizard-step-box`, o timeout total de 120s por teste é insuficiente.
+4. A `loginAs()` em `e2e/helpers/auth.ts:212` lança `throw new Error("[loginAs] E21...")` se credenciais ausentes — confirmando que `E2E_USER_EMAIL`/`E2E_USER_PASSWORD` ESTÃO configurados no repo e o step roda de fato.
+5. `wizard-step-box` existe no UI mas não aparece dentro do timeout restante após login no runner CI (sem cache de storageState).
+
+**Pré-existente:** Sim — escondida porque vitest (step 21) falhava antes do fix P19 (PR #2514), tornando step 27 SKIPPED em todos os runs anteriores. Revelada após PR #2514 corrigir P19 e o vitest passar pela primeira vez.
+
+**Correção possível (não urgente — NÃO é required check no Gate Final):**  
+Usar `--project=chromium-authed` no step 27, com step anterior rodando `auth.setup.ts` para gerar `storageState.json`. Isso elimina o login UI por teste (~75s → ~0s por teste) e libera o timeout de 120s para a asserção.
+
+**Impacto no Gate Final:** Nenhum — `ci-security-drift.yml` NÃO é required check no Gate Final (`deploy-gates.yml`). Gate Final permanece verde.
+
+---
+
+## P61 — Running Copilot Code Review: failure (bloqueio de infraestrutura GitHub Copilot)
+
+**Workflow:** `.github/workflows/copilot-code-review.yml`  
+**Run mais recente com falha:** [#40203096554](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40203096554) (commit `317a317d`)  
+**Conclusão:** `failure`  
+**Categoria:** Infraestrutura externa — firewall/rede do GitHub Copilot; não-required
+
+**Causa raiz:**  
+O workflow aciona a API do GitHub Copilot para revisão de código. A infraestrutura do Copilot (firewall de saída do runner) bloqueia a request, resultando em falha. Não há mudança de código que corrija esse comportamento.
+
+**Histórico de recorrência:** Ver P15, P32, P41, P45 — mesma causa, reincidem em pushes sucessivos.
+
+**Ação necessária pelo PO:**  
+Configurar token Copilot com permissões adequadas, ou desativar o workflow se a revisão automática não estiver em uso ativo.
+
+**Impacto no Gate Final:** Nenhum — `copilot-code-review.yml` NÃO é required check no Gate Final (`deploy-gates.yml`). Gate Final permanece verde.
+
+---
+
+## P62 — E2E (Playwright): `22-header-sticky.spec.ts` falha em `/novidades` (pré-existente)
+
+**Workflow:** `.github/workflows/e2e.yml`  
+**Run mais recente com falha:** [#40203094304](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40203094304) (commit `317a317d`)  
+**Run anterior confirmando pré-existência (antes do PR #2508):** [#40198674612](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40198674612) (commit `a29b3a19`) — também `/novidades`, tablet 820×1180  
+**Conclusão:** `failure`  
+**Categoria:** E2E autenticado — page crash específico da rota `/novidades` no CI
+
+**Erro exato (run #40201632246, job ID 121193851200):**
+```
+[chromium-authed] › e2e/flows/22-header-sticky.spec.ts:132:7
+  › Header sticky — rotas autenticadas [mobile 390×844]
+  › header permanece fixo ao rolar em /novidades
+
+Test timeout of 120000ms exceeded.
+[waitForTestIdVisible] testid="app-header" não ficou visível em 30000ms
+causa: locator.waitFor: Target page, context or browser has been closed
+```
+
+**Causa raiz apurada:**  
+O contexto do browser fecha (`Target page, context or browser has been closed`) durante `waitForTestIdVisible('app-header', 30000ms)` ao navegar para `/novidades`. Os outros 33 testes do mesmo run passaram normalmente (5–16s cada). Causa do crash não capturada nos logs — candidato principal: OOM do runner durante carregamento de `NoveltyProductGrid` (usa `VirtualizedNoveltyGrid`, múltiplos `ResizeObserver`/`IntersectionObserver` simultâneos).
+
+**Pré-existente confirmado:**  
+Run [#40198674612](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40198674612) (commit `a29b3a19`, ANTES de qualquer mudança desta sessão) também falhou em `/novidades` (viewport tablet 820×1180). O PR #2508 mudou o viewport de falha (tablet → mobile) ao remover `data-testid="app-header"` do fallback Suspense, mas NÃO introduziu a falha.
+
+**Correção possível (não urgente):**  
+Adicionar `page.on('crash', cb)` em `22-header-sticky.spec.ts` para capturar o crash real; investigar uso de memória de `NoveltyProductGrid` no CI.
+
+**Impacto no Gate Final:** Nenhum — `e2e.yml` NÃO é required check no Gate Final (`deploy-gates.yml`). Gate Final permanece verde.
+
+---
+
+## P63 — E2E • Swatch QuickView: failure (pré-existente — infra + "Check min tests executed")
+
+**Workflow:** `.github/workflows/e2e-swatch-quickview.yml`  
+**Run mais recente com falha:** [#40203094309](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40203094309) (commit `317a317d`)  
+**Runs anteriores confirmando pré-existência:** [#40198674490](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40198674490) (a29b3a19), [#40196412191](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40196412191), [#40195986713](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40195986713) — todos anteriores ao trabalho desta sessão  
+**Conclusão:** `failure`  
+**Categoria:** E2E — combinação de falha em gate mínimo de testes + shutdown de runner (infraestrutura)
+
+**Jobs afetados no run #40203094309:**
+- `firefox • swatch→QV`: falhou em `Check min tests executed` e `Run swatch→QuickView suite`
+- `chromium • swatch→QV`: falhou em `Check min tests executed` e `Run swatch→QuickView suite`
+- `webkit • swatch→QV`: cancelado por `The runner has received a shutdown signal` (shutdown de infraestrutura GitHub Actions)
+
+**Specs envolvidas:**
+- `e2e/catalog/swatch-quickview-list-table.spec.ts`
+- `e2e/catalog/swatch-quickview-v2-list-table.spec.ts`
+- `e2e/catalog/swatch-picker-v2-focus-and-quickview.spec.ts`
+
+**Causa raiz:**  
+O job inclui um step `Check min tests executed` que valida que um número mínimo de testes foi encontrado/executado. Com 0 testes coletados (possivelmente por seletor de arquivo, skip global ou ausência de produto no estado do catálogo em CI), o check falha imediatamente. O shutdown de webkit é independente — infraestrutura do runner encerrou o job antes do término.
+
+**Pré-existente confirmado:**  
+Os runs #40198674490 (a29b3a19), #40196412191 e #40195986713 — todos anteriores a qualquer commit desta sessão — já apresentavam a mesma falha. A sessão não introduziu nem agravou o problema.
+
+**Ação necessária pelo PO:**  
+Investigar por que `Check min tests executed` coleta 0 testes: verificar se os specs existem no estado atual do catálogo no CI (produtos com swatches configurados), se há `test.skip` global ou filtro de arquivo incorreto.
+
+**Impacto no Gate Final:** Nenhum — `e2e-swatch-quickview.yml` NÃO é required check no Gate Final (`deploy-gates.yml`). Gate Final permanece verde.
+
+---
+
+## P64 — CI Replenishment Module Quality Gate: hook timeout (pré-existente)
+
+**Workflow:** `.github/workflows/replenishment-quality.yml`  
+**Run mais recente com falha:** [#40206801486](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40206801486) (commit `d74b33fb`)  
+**Conclusão:** `failure`  
+**Categoria:** Teste de integração — timeout de hook assíncrono em CI
+
+**Job afetado:** `replenishment-quality-gate`  
+**Teste:** `src/hooks/products/__tests__/useReplenishments.integration.test.ts` linha 34  
+**Erro:**  
+```
+expect(received).toBe(expected)
+Expected: true
+Received: false
+Error: expected false to be true
+```
+
+**Causa raiz:**  
+O hook `useReplenishmentStats()` em `src/hooks/products/useReplenishments.ts` chama `untypedRpc('fn_get_replenishment_stats')`. Em ambiente CI, a RPC nunca resolve nem rejeita dentro do timeout de 15 segundos (`waitFor(() => expect(result.current.isSuccess || result.current.isError).toBe(true), { timeout: 15000 })`). O estado do hook permanece `isPending: true` indefinidamente.
+
+**Pré-existente confirmado:**  
+Presente em 5+ commits consecutivos anteriores a qualquer mudança desta sessão: d74b33fb, c5bf465a, f857782b, 5b36f092, 19974ecc — todos com a mesma falha.
+
+**Ação necessária pelo PO:**  
+Investigar por que `fn_get_replenishment_stats` não responde em CI — possível: (a) função não existe ou foi removida do banco; (b) RLS bloqueia o usuário anônimo do CI; (c) variável `SUPABASE_URL`/`SUPABASE_ANON_KEY` não está disponível no runner desta suite. Verificar via `pg_catalog.pg_proc` que a função existe e tem permissão de execução para `anon`.
+
+**Impacto no Gate Final:** Nenhum — `replenishment-quality.yml` NÃO é required check no Gate Final (`deploy-gates.yml`). Gate Final permanece verde.
+
+---
+
+## P65 — Edge Integration Tests: validate-access deployed ≠ git (pré-existente)
+
+**Workflow:** `.github/workflows/edge-integration-all.yml`  
+**Run mais recente com falha:** [#40206801555](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40206801555) (commit `d74b33fb`)  
+**Conclusão:** `failure`  
+**Categoria:** Divergência git vs. deployed — edge function desatualizada em produção
+
+**Jobs afetados:** `edge-validate-access` (e outros no suite `edge-integration-all`)  
+**Testes:** `supabase/functions/validate-access/*.test.ts`  
+**Erros (6 falhas):**  
+- `validate-access` retorna HTTP 200 para body ausente (esperado: 400)
+- `validate-access` retorna HTTP 200 para JSON quebrado (esperado: 400)
+- `validate-access` retorna HTTP 200 para array `[]` (esperado: 422)
+- `validate-access` retorna HTTP 200 para `null` (esperado: 422)
+- `validate-access` retorna HTTP 200 para number `42` (esperado: 422)
+- `validate-access` retorna HTTP 200 para string `"texto"` (esperado: 422)
+
+**Causa raiz:**  
+A versão **deployada** em produção de `validate-access` não tem a validação de body que existe em git (linhas 120–133 de `supabase/functions/validate-access/index.ts`):
+```typescript
+const rawText = await req.text().catch(() => "");
+if (!rawText.trim()) return missingBodyResponse({ corsHeaders });
+let rawBody: unknown;
+try { rawBody = JSON.parse(rawText); } catch { return invalidJsonResponse({ corsHeaders }); }
+if (rawBody === null || typeof rawBody !== "object" || Array.isArray(rawBody)) {
+  return validationErrorResponse([...], { corsHeaders });
+}
+```
+A versão deployed retorna 200 para todos os inputs porque a validação não existe nela.
+
+**Pré-existente confirmado:**  
+Run [#40157731716](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40157731716) (commit `50f4f599`, anterior a esta sessão) também falhou com as mesmas 6 falhas.
+
+**Ação em andamento:**  
+Dispatch de `.github/workflows/deploy-edge-functions.yml` com `function_name: validate-access` executado nesta sessão (2026-10-25) para alinhar produção com o git. Aguardando confirmação do deploy e re-run do workflow.
+
+**Ação necessária pelo PO:**  
+Verificar que o próximo run de `edge-integration-all.yml` após o deploy passa. Se continuar falhando, revisar se há outra divergência na função deployada.
+
+**Impacto no Gate Final:** Nenhum — `edge-integration-all.yml` NÃO é required check no Gate Final (`deploy-gates.yml`). Gate Final permanece verde.
+
+---
+
+## P66 — Uptime Monitor: health-check edge function retornando HTTP 4xx (infraestrutura)
+
+**Workflow:** `.github/workflows/uptime-monitor.yml`  
+**Run com falha:** [#40217100001](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40217100001) (commit `cb0ccedec4`)  
+**Conclusão:** `failure`  
+**Categoria:** Falha de infraestrutura — edge function em produção retornando erro HTTP
+
+**Job afetado:** `health-check` (job #121240502808)  
+**Step falho:** "Probe site + edge function"  
+**Erro exato (saída do step):**
+```
+site         | 0    OK
+health-check | 22   FAIL  ← curl exit code 22 = HTTP 4xx response
+check-login  | 0    OK
+auth-health  | 0    OK
+```
+
+**Causa raiz:**  
+O step executa `curl --fail-with-body` contra `$SUPABASE_URL/functions/v1/health-check`. Exit code 22 = servidor retornou HTTP 4xx. A edge function `health-check` em `doufsxqlfjyuvxuezpln` está retornando erro HTTP — pode ser: (a) edge function não deployada ou fora de serviço; (b) função retorna 401/403/404; (c) timeout ou rate limit do Supabase. O workflow funciona corretamente como monitor de saúde — a falha é de infraestrutura, não de código do workflow.
+
+**Issue criada automaticamente:** #2539  
+
+**Ação necessária pelo PO:**  
+1. Verificar estado da edge function `health-check` via dashboard Supabase (`doufsxqlfjyuvxuezpln`)
+2. Se necessário, redeploy via `workflow_dispatch` em `.github/workflows/deploy-edge-functions.yml` com `function_name: health-check`
+3. Testar manualmente: `curl -v "$SUPABASE_URL/functions/v1/health-check"` para identificar o código HTTP exato
+
+**Impacto no Gate Final:** Nenhum — `uptime-monitor.yml` NÃO é required check no Gate Final (`deploy-gates.yml`). Gate Final permanece verde.
+
+---
+
+## P67 — Quote Builder Delivery Quality: E2E falha por timeout de auth Supabase (infraestrutura)
+
+**Workflow:** `.github/workflows/delivery-quality.yml`  
+**Run com falha:** [#40218104811](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40218104811) (commit `c113300c`)  
+**Conclusão:** `failure`  
+**Categoria:** Falha de infraestrutura — Supabase auth retornando 504 em CI
+
+**Job afetado:** `quality-gate` (job #121243545360)  
+**Step falho:** "🌍 E2E & Visual Regression" (step 5)  
+**Resultado dos testes:**
+```
+1 failed   — should hide tooltip on Escape key
+2 flaky    — should verify visual alignment across viewports
+             should verify warning guidance via delivery tooltip
+2 passed
+```
+
+**Erro exato (log do job):**
+```
+Error: [loginViaUI] Timeout aguardando redirect pós-login.
+  URL atual: http://localhost:8080/login
+  Botão submit: Entrar na Plataforma
+  Chamadas Supabase (75000ms de espera):
+    +6153ms POST auth/v1/token -> 504 (58462ms)
+    +851ms  GET rest/v1/system_settings -> PENDENTE há 80378ms
+Causa original: Error: esperado redirect para fora da tela de login
+```
+
+**Causa raiz:**  
+`POST auth/v1/token` retornou **HTTP 504 (Gateway Timeout)** após 58 segundos — serviço de autenticação do Supabase indisponível no momento do run. O login nunca completou; todos os testes autenticados falharam. **Não é regressão de código** — o commit `c113300c` é docs-only (`RELATORIO_CI.md`). O run anterior em `cb0ccedc` passou. Padrão idêntico ao P16/P23: instabilidade do Supabase auth em ambiente CI.
+
+**Pré-existência:** Não — falha transiente de infraestrutura. Commits anteriores passaram.
+
+**Ação necessária pelo PO:**  
+Nenhuma. Falha transiente de infraestrutura. O próximo run normal deve passar. Se continuar falhando, verificar status do Supabase auth em `doufsxqlfjyuvxuezpln`.
+
+**Impacto no Gate Final:** Nenhum — `delivery-quality.yml` NÃO é required check no Gate Final (`deploy-gates.yml`). Gate Final permanece verde.
+
+---
+
+## P68 — DB — Aplicação de migration: preflight bloqueou migration com defeitos (workflow_dispatch)
+
+**Workflow:** `.github/workflows/db-apply-migration.yml` (workflow_dispatch)  
+**Run com falha:** [#40216869190](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40216869190) (commit `2d1587b`)  
+**Conclusão:** `failure`  
+**Categoria:** Preflight bloqueou corretamente — migration `20261022195616` com 3 defeitos; NÃO é required check no Gate Final
+
+**Job falho:** `1. Preflight (read-only)` → step "Checa arquivo único, rollback documentado, ainda não no ledger"
+
+**Erros exatos (log do preflight):**
+```
+[preflight-migration-apply] failed: 3 problema(s):
+1. arquivo não tem cabeçalho de rollback lógico ("-- Rollback:" nas primeiras 40 linhas).
+2. arquivo de rollback 20261022195616_rollback.sql não encontrado (E058: rollbacks vivem em supabase/rollbacks/).
+3. SECURITY DEFINER sem "pg_temp" no SET search_path em função "public.update_company_fields":
+   vulnerável a shadowing por objetos em pg_temp. Adicione SET search_path = pg_catalog, pg_temp.
+```
+
+**Causa raiz:**  
+A migration `20261022195616_fix_update_company_fields_security_definer_search_path.sql` foi submetida via `workflow_dispatch` mas o preflight a bloqueou porque: (a) falta cabeçalho `-- Rollback:` obrigatório nas primeiras 40 linhas; (b) falta `supabase/rollbacks/20261022195616_rollback.sql`; (c) `update_company_fields` usa `SECURITY DEFINER` sem `SET search_path = pg_catalog, pg_temp`. O Gate E15 bloqueou corretamente — **nenhuma DDL foi aplicada em produção**.
+
+**Ação necessária pelo PO:**  
+1. Adicionar `-- Rollback: DROP FUNCTION IF EXISTS ...` nas primeiras 40 linhas da migration.
+2. Criar `supabase/rollbacks/20261022195616_rollback.sql` com os comandos de reversão.
+3. Corrigir `SET search_path = pg_catalog, pg_temp` na função `update_company_fields`.
+4. Disparar novo `workflow_dispatch` em `db-apply-migration.yml` com `version: 20261022195616`.
+
+**Impacto no Gate Final:** Nenhum — `db-apply-migration.yml` é workflow_dispatch exclusivo, NÃO é required check no Gate Final (`deploy-gates.yml`).
 
 ---
 

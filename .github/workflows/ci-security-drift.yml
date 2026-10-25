@@ -26,7 +26,7 @@ defaults:
 jobs:
   quality-gate:
     runs-on: ubuntu-24.04
-    timeout-minutes: 30  # E24: security + unit checks; 45 era excesso de margem (medido: 18-22 min)
+    timeout-minutes: 90  # P19b: vitest roda 1265 arquivos com maxWorkers:2 (~45-60min) + E2E públicos+autenticados (~15-20min) = ~65-80min total. 60min era insuficiente (step 21 levou 47min+ no run #40195986770). E24 guideline (≤60min) não se aplica a este job: suite unitária completa + E2E nightly.
     env:
       NODE_OPTIONS: --max-old-space-size=4096
       E2E_HAS_CREDS: ${{ secrets.E2E_USER_EMAIL != '' && secrets.E2E_USER_PASSWORD != '' }}
