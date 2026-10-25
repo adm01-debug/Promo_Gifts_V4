@@ -1,8 +1,8 @@
 # Pendências CI — Bloqueios Externos
 
-**Atualizado em:** 2026-10-25 (rev 24 — P2b run atualizado para #40189082464; P19 CORRIGIDO; RELATORIO_CI.md criado)  
+**Atualizado em:** 2026-10-25 (rev 25 — P59 adicionado: Vercel preview failure Resource provisioning failed; inventário completo em RELATORIO_CI.md)  
 **Branch de referência:** `claude_05/nifty-sagan-r23gqh`  
-**Commit de referência (main):** `801e38a5` — docs: atualização pós-merge (Gate Final success confirmado)
+**Commit de referência (main):** `c5bf465a` — fix(test): .toBe(0) alinhado com E103 (PR #2514 mergeada)
 
 ---
 
@@ -758,3 +758,33 @@ O agente Claude empurrou o commit `7fc20213` ("fix(gate1.3): remove entradas de 
 ---
 
 *Atualizado pela sessão Claude Code — https://claude.ai/code/session_01HW5obNKUFtUMbBdgUb94kY*
+
+## P59 — Vercel Preview Deployment: "Resource provisioning failed" (infra pré-existente)
+
+**Deployment:** `dpl_AHWZEt4uHAgvMz1FBL3oJaiH2Gri`  
+**PR:** [#2514](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2514)  
+**Branch:** `claude_05/nifty-sagan-r23gqh` (commit `76d878da`)  
+**Estado:** `ERROR` — `BUILD_FAILED`  
+**Categoria:** Infra pré-existente — projeto Vercel fantasma (REGRA #11). NÃO é required check no Gate Final.
+
+**Erro exato:**
+```
+errorCode: "BUILD_FAILED"
+errorMessage: "Resource provisioning failed"
+```
+
+**Causa raiz (documentada em REGRA #11 do CLAUDE.md):**  
+Em 2026-09-15, um agente rodou `vercel link` fora do raiz, criando projeto fantasma  
+`promo-gifts-reconciliation-integrity-20260915` (`prj_W1Zdi6BQWkAwQx5VJjpSNlZubeok`)  
+conectado ao mesmo repo. Isso causa 2× builds em todo push — o segundo build falha  
+com "Resource provisioning failed" pois tenta provisionar o mesmo deploy simultaneamente.
+
+**Impacto no Gate Final:** Nenhum — "Vercel" commit status NÃO é required check no  
+`deploy-gates.yml`. O gate `Check no prod leak` (GitHub Actions) passou com ✅ success.
+
+**Ação necessária pelo PO:**  
+Acessar Vercel Dashboard → deletar projeto fantasma  
+`promo-gifts-reconciliation-integrity-20260915` (`prj_W1Zdi6BQWkAwQx5VJjpSNlZubeok`).  
+Isso eliminará o 2× build e as falhas "Resource provisioning failed" em PRs futuros.
+
+---
