@@ -26,7 +26,7 @@ defaults:
 jobs:
   quality-gate:
     runs-on: ubuntu-24.04
-    timeout-minutes: 30  # E24: security + unit checks; 45 era excesso de margem (medido: 18-22 min)
+    timeout-minutes: 60  # E24: E2E full/nightly class — vitest (~16min) + E2E público+autenticado executam após fix P19; 30 era insuficiente (medido com E2E SKIPPED)
     env:
       NODE_OPTIONS: --max-old-space-size=4096
       E2E_HAS_CREDS: ${{ secrets.E2E_USER_EMAIL != '' && secrets.E2E_USER_PASSWORD != '' }}
