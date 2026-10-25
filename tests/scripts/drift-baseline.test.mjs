@@ -236,6 +236,8 @@ describe('sanitizeBaselineForReplay', () => {
     const delivered = readFileSync(join(out, 'supabase', 'migrations', '20261015140000_baseline_schema.sql'), 'utf8');
     expect(delivered.startsWith('CREATE TABLE t')).toBe(true);
     expect(delivered).toContain("cron.schedule('auto-block-offenders'");
+    expect(delivered).toContain("cron.schedule('image-dimensions-backfill'");
+    expect(delivered).toContain('SET jobid = 235');
   });
 });
 

@@ -72,8 +72,8 @@ ALTER DEFAULT PRIVILEGES IN SCHEMA public REVOKE ALL ON SEQUENCES FROM anon, aut
 ALTER DEFAULT PRIVILEGES IN SCHEMA public REVOKE ALL ON FUNCTIONS FROM anon, authenticated, service_role;
 `;
 
-// O baseline não carrega linhas do pg_cron (só schema), mas a migration
-// 20261024180003 exige o job `auto-block-offenders` já existente. Em produção
+// O baseline não carrega linhas do pg_cron (só schema), mas as migrations
+// 20261024180003 (job `auto-block-offenders`) e 20261024190001 (jobid 235) exigem jobs já existentes. Em produção
 // ele vem de 20260623171736; no shadow, que parte do baseline, nunca existe e o
 // replay aborta com "job auto-block-offenders não encontrado". Esta semente é
 // anexada ao fim do baseline na pasta temporária (jobs são dado, não schema:
@@ -85,6 +85,12 @@ BEGIN
   IF to_regclass('cron.job') IS NOT NULL
      AND NOT EXISTS (SELECT 1 FROM cron.job WHERE jobname = 'auto-block-offenders') THEN
     PERFORM cron.schedule('auto-block-offenders', '1,6,11,16,21,26,31,36,41,46,51,56 * * * *', 'SELECT 1');
+  END IF;
+  -- 20261024190001 e 20261025002500 exigem este job com jobid=235.
+  IF to_regclass('cron.job') IS NOT NULL
+     AND NOT EXISTS (SELECT 1 FROM cron.job WHERE jobname = 'image-dimensions-backfill') THEN
+    PERFORM cron.schedule('image-dimensions-backfill', '0 * * * *', 'SELECT 1');
+    UPDATE cron.job SET jobid = 235 WHERE jobname = 'image-dimensions-backfill';
   END IF;
 END
 $seed$;
