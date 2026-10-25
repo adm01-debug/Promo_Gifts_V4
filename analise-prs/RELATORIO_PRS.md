@@ -1,8 +1,8 @@
-# RELATORIO_PRS — Sessão session_01Ss1tXZ4cAbxBvdmu95uNPz (rev19)
+# RELATORIO_PRS — Sessão session_01Ss1tXZ4cAbxBvdmu95uNPz (rev20)
 **Data:** 2026-10-25
-**main HEAD:** `5279abfe07895d9b0481fa08086b2c18d321de5f` (PR #2546 — docs rev18)
-**Gate Final confirmado:** Run #40223579961 — SHA `7d3bd4ba` — ✅ success (2026-10-25T19:02:42Z)
-**Baseline:** 429 testes / 0 falhas
+**main HEAD:** `15e10fd88208f9b4cd372b82544fb27892d15a81` (PR #2556 — chore(docs) backlog banco)
+**Gate Final em main:** queued em `15e10fd88` (run #40227283262, iniciado 2026-10-25T19:42Z)
+**Baseline anterior confirmado:** 429 testes / 0 falhas (run #40223579961, SHA `7d3bd4ba`)
 
 ---
 
@@ -10,30 +10,47 @@
 
 | Métrica | Valor |
 |---|---|
-| PRs abertas analisadas | 29 |
+| PRs abertas analisadas esta sessão | 20 |
 | Merges autônomos esta sessão | **0** |
-| DECISAO_HUMANA | 23 |
+| DECISAO_HUMANA | 14 |
 | FECHAR (órfãs) | 5 |
 | JÁ_EM_MAIN | 1 |
-| Merges autônomos sessões anteriores (docs) | 3 (#2529, #2543, #2546) |
+| PRs mergeadas por PO/outros agentes entre sessões | 10 (#2544, #2545, #2548, #2549, #2551, #2552, #2553, #2554, #2555, #2556) |
 
-**Resultado: 0 merges autônomos — todas as 29 PRs abertas bloqueadas.**
+**Resultado: 0 merges autônomos — todas as 20 PRs abertas bloqueadas.**
 
 ---
 
-## Distribuição por veredito
+## PRs mergeadas por PO/outros agentes (pós-rev19)
+
+| PR | Título | SHA merge |
+|---|---|---|
+| #2551 | fix: peso 0 no Kit Maker | `97eed25cb` |
+| #2552 | fix: materials-api timeout 20s | `35fdb5793` |
+| #2553 | fix: selos sem mock | `aebd333f3` |
+| #2554 | fix: BI Cliente 360 sem mock | `e6538448e` |
+| #2548 | feat: botão LGPD "Excluir meus dados" | `9be832a35` |
+| #2555 | docs(pendencias): rev29 | `479f22194` |
+| #2544 | docs: backlog CI CI-001..CI-008 | `1d26da908` |
+| #2545 | chore: backlog funcionalidades FT-001..FT-416 | `2a93ba556` |
+| #2549 | chore: backlog Supabase SB-001..SB-018 | `73df7502f` |
+| #2556 | chore: backlog banco O1/O3 | `15e10fd88` |
+
+---
+
+## Distribuição por veredito (20 PRs abertas)
 
 ```
-DECISAO_HUMANA   : 23
+DECISAO_HUMANA   : 14
 FECHAR           :  5  (órfãs NO_MERGE_BASE — ação do PO)
 JA_EM_MAIN       :  1
 ──────────────────────
-TOTAL ABERTAS    : 29
+TOTAL ABERTAS    : 20
 ```
 
 ---
 
-## PRs — DECISAO_HUMANA (23)
+## PRs — DECISAO_HUMANA (14)
 
 | PR | Título | Motivo principal |
 |---|---|---|
@@ -47,19 +64,16 @@ TOTAL ABERTAS    : 29
 | #2520 | chore(main): release 1.0.0 | Downgrade 1.2.1→1.0.0 (regressão) |
 | #2532 | docs: atualiza run refs P2b/P23/P61 | CONFLICT + REGRA#10 |
 | #2537 | fix: Contract Tests registry ghcr.io | REGRA#8 (workflow) |
-| #2544 | docs: backlog CI CI-001..CI-008 | Draft + REGRA#10 |
-| #2545 | chore: backlog funcionalidades FT-001..FT-416 | Draft + REGRA#10 |
 | #2547 | fix: remove links públicos mortos | Draft + REGRA#10 |
-| #2548 | feat: botão LGPD "Excluir meus dados" | Draft + REGRA#10 |
-| #2549 | chore: backlog Supabase SB-001..SB-018 | Draft + REGRA#10 |
 | #2550 | fix: filtro "Publicado" Kit Maker | Draft + REGRA#10 + regra negócio D7 pendente |
-| #2551 | fix: peso 0 no Kit Maker | Draft + REGRA#10 |
-| #2552 | fix: materials-api timeout 20s | Draft + REGRA#10 |
-| #2553 | fix: selos sem mock | Draft + REGRA#10 |
-| #2554 | fix: BI Cliente 360 sem mock | Draft + REGRA#10 |
-| #2555 | docs(pendencias): rev29 | Draft + REGRA#10 (claude_05/ diferente) |
-| #2556 | chore: backlog banco O1/O3 | Draft + REGRA#10 |
 | #2557 | docs: RELATORIO_CI.md P27/P66/P67/P68 | Draft + REGRA#10 |
+| #2558 | fix: reduz Header.tsx abaixo do baseline | Draft + REGRA#10 |
+
+### Detalhe: PR #2558 — reduz Header.tsx (NOVO nesta sessão)
+- Branch: `claude/fix-header-tamanho-lgpd-251025-1950` (diff lido 100%)
+- Extrai `Skins` + `Guia Rápido` de Header.tsx para novo `UserMenuShortcutItems.tsx` (+53/-37 net)
+- CLEAN provável (criada após merge de #2548), sem REGRA#8 files
+- Bloqueio: **Draft + REGRA#10** (branch `claude/` de sessão diferente desta)
 
 ### Detalhe: PR #2537 — Contract Tests registry ghcr.io
 - CLEAN, 1 commit único, `+5/-5` em `.github/workflows/contract-tests.yml` (ECR → ghcr.io)
@@ -98,29 +112,28 @@ Branches sem ancestral comum com `main`. Impossível mergear.
 
 ## Por que ZERO merges autônomos
 
-Todas as 29 PRs falham em pelo menos 1 dos 8 critérios:
+Todas as 20 PRs falham em pelo menos 1 dos 8 critérios:
 
 | Bloqueio | PRs |
 |---|---|
 | NO_MERGE_BASE | #2417, #2418, #2419, #2420, #2422 |
 | JÁ_EM_MAIN (cherry=0) | #2432 |
 | CONFLICT | #2415, #2428, #2449, #2452, #2469, #2503, #2532 |
-| REGRA#8 (.github/workflows/) | #2415, #2417, #2418, #2419, #2469, #2537 |
+| REGRA#8 (.github/workflows/) | #2415, #2469, #2537 |
 | REGRA#8 (.gitleaks.toml) | #2428 |
 | REGRA#8 (supabase/migrations/) | #2449 |
-| REGRA#10 (cross-session) | #2443, #2452, #2469, #2503, #2532, #2544–#2557 |
-| Draft bloqueado | #2444–#2557 |
+| REGRA#10 (cross-session) | #2443, #2452, #2469, #2503, #2532, #2547, #2550, #2557, #2558 |
+| Draft bloqueado | #2547, #2550, #2557, #2558 |
 | Regressão semântica | #2520 (downgrade 1.2.1→1.0.0) |
 | Segurança/aprovação | #2443 |
-
-**PRs CLEAN sem CONFLICT:** #2432 (JÁ_EM_MAIN), #2443 (REGRA#10+segurança), #2520 (downgrade), #2537 (REGRA#8), #2544–#2557 (draft+REGRA#10).
 
 ---
 
 ## Estado do CI
 
-- **Run:** #40223579961 — SHA `7d3bd4ba` — ✅ success (2026-10-25T19:02:42Z)
-- **Baseline:** 429 testes / 0 falhas
+- **main HEAD:** `15e10fd88` — Gate Final queued (run #40227283262, 2026-10-25T19:42Z)
+- **Baseline:** 429 testes / 0 falhas (run #40223579961, SHA `7d3bd4ba`)
+- **Último Gate Final confirmado:** run #40224559937, SHA `5279abfe` ✅ success (2026-10-25T19:38:53Z)
 
 ---
 
@@ -134,7 +147,7 @@ Todas as 29 PRs falham em pelo menos 1 dos 8 critérios:
 3. **PR #2537** — Aprovar troca ECR→ghcr.io em Contract Tests (CLEAN, baixo risco)
 4. **PR #2520** — Aceitar ou rejeitar downgrade 1.2.1→1.0.0 (release-please)
 5. **PR #2443** — Revisão segurança P03/P06/P09/P14/P15 FASE B
-6. **PRs #2547–#2557** — 11 PRs técnicas de outra sessão: revisar e promover de draft
+6. **PRs #2547, #2550, #2557, #2558** — 4 PRs técnicas de outras sessões: revisar e promover de draft
 
 ### Conflito — resolver ou abandonar
 7. #2415, #2428, #2449, #2452, #2469, #2503, #2532 — todas com CONFLICT; obsoletas ou aguardando rebase
