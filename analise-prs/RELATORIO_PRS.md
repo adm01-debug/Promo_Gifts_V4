@@ -404,9 +404,9 @@ Fechar em favor de substitutos ou rebasar + DECISÃO HUMANA.
 **Draft:** Não | **mergeable:** true (behind) | **SINGU:** 0 refs
 
 **Diff (4 arquivos, 153+/16-):**
-- `supabase/migrations/20261024180001_p02_fk_indexes.sql` — 6 índices FK (`CREATE INDEX IF NOT EXISTS`)
-- `supabase/migrations/20261024180002_p08_idempotency_key.sql` — ADD COLUMN + UNIQUE INDEX parcial em `workspace_notifications`
-- `supabase/migrations/20261024180003_p19_complement_cron.sql` — `cron.alter_job` para `auto-block-offenders` (5 min → 15 min)
+- `20261024180001_fk_indexes_p02.sql` — 6 índices FK (`CREATE INDEX IF NOT EXISTS`)
+- `20261024180002_workspace_notifications_idempotency_p08.sql` — ADD COLUMN + UNIQUE INDEX parcial em `workspace_notifications`
+- `20261024180003_cron_schedule_p19_remaining.sql` — `cron.alter_job` para `auto-block-offenders` (5 min → 15 min)
 - `supabase/functions/send-notification/index.ts` — upsert idempotente com `idempotency_key`
 
 **Rule 8:** DDL em `supabase/migrations/` + edge function atualizada → **DECISÃO HUMANA**.  
