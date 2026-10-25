@@ -17,7 +17,9 @@
 **PR #2536:** mergeada em `35ea12c2791e921e991ba7b4ec1045979b60e48a` (docs: run IDs corretos + SHA 7a34046a)  
 **PR #2535:** mergeada em `4cb4feb431f47573a2d4aee01774a5db24e11810` (fix: teste do replay espera semente de cron em B+1)  
 **PR #2538:** mergeada em `cb0ccedec41c38fe79cbd2585216e4cbe3155ccd` (docs: RELATORIO_CI — Gate Final cb0ccedc)  
-**Main HEAD atual:** `cb0ccedec41c38fe79cbd2585216e4cbe3155ccd`
+**PR #2542:** mergeada em `6fcc6b3066e13c8a16775ea6eaca809574326374` (docs P68 — Gate Final [#40222336543](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40222336543) ✅ success 18:48Z)  
+**PR #2543:** mergeada em `7d3bd4ba47eb6e9e6b3d56fe3bfac45a791de84f` (docs analise-prs — docs-only, E197 `paths-ignore: docs/**`, Gate Final não disparado)  
+**Main HEAD atual:** `7d3bd4ba47eb6e9e6b3d56fe3bfac45a791de84f`
 
 ---
 
@@ -90,9 +92,9 @@ timeout-minutes: 30  # E24: security + unit checks; 45 era excesso de margem (me
 timeout-minutes: 60  # E24: E2E full/nightly class — vitest (~16min) + E2E público+autenticado executam após fix P19; 30 era insuficiente (medido com E2E SKIPPED)
 ```
 
-**Causa raiz:** Com vitest sempre falhando (antes do fix P19), os steps 22-27 (mutation tests, hook tests, guard E2E, Playwright install, E2E público + autenticado) eram todos SKIPPED. Após fix P19, eles executam pela primeira vez. Tempo estimado total: ~31-42 min > 30 min. Classe E24 correta: E2E full/nightly ≤ 60 min.
+**Causa raiz:** Com vitest sempre falhando (antes do fix P19), os steps 22-27 (mutation tests, hook tests, guard E2E, Playwright install, E2E público + autenticado) eram todos SKIPPED. Após fix P19, eles executam pela primeira vez. Tempo estimado total: ~31-42 min > 30 min. Classe E24 correta: E2E full/nightly  60 min.
 
-**Problema pós-PR #2517 (P19b):** O estimate "vitest ~16min" era baseado em runs onde vitest falhava rapidamente. Com P19 corrigido, vitest roda os 1265 arquivos completos com `maxWorkers: 2` → ~45-60 min no runner CI. Step 21 levou 47min+ no run #40195986770 e vai ultrapassar o timeout de 60 min. Fix: PR #2522 → `timeout-minutes: 90`.
+**Problema pós-PR #2517 (P19b):** O estimate "vitest ~16min" era baseado em runs onde vitest falhava rapidamente. Com P19 corrigido, vitest roda os 1265 arquivos completos com `maxWorkers: o` ¶ ~45-60 min no runner CI. Step 21 levou 47min+ no run #40195986770 e vai ultrapassar o timeout de 60 min. Fix: PR #2522 → `timeout-minutes: 90`.
 
 ### PR #2522 — Timeout quality-gate 60→90 min (P19b) (mergeado em `a29b3a19`)
 
@@ -121,7 +123,7 @@ timeout-minutes: 90  # P19b: vitest roda 1265 arquivos com maxWorkers:2 (~45-60m
 | `c5bf465a` (PR #2514 merge) | [#40193146183](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40193146183) | ✅ success | Deploy Gates green |
 | `3affff6d` (PR #2517 merge) | [#40195302647](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40195302647) | ✅ success | Gate Final green |
 | `416192e7` (PR #2519 merge) | [#40196412204](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40196412204) | ⚠️ cancelled | Cancelado pela concurrency ao mergear PR #2522 |
-| `a29b3a19` (PR #2522 merge) | [#40198674547](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40198674547) | ❌ failure (P60) | step 27 — 10 E2E `[chromium-public]` timeout (catalog + kit-builder); P19 corrigido, P60 pré-existente revelado |
+| `a29b3a19` (PR #2522 merge) | [#40198674547](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40198674547) | ❌ failure (P60) | step 27 — timeout (E2E público); P19 corrigido, P60 pré-existente revelado |
 | `c8967d1c` (PR #2525 merge) | [#40200678544](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40200678544) | ⏳ in_progress³ | ci-security-drift timeout=90min; step 27 falhará por P60 (pré-existente) |
 | `317a317d` (PR #2528 merge) | [#40203094304](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40203094304) (e2e.yml) | ⏳ in_progress | e2e.yml `/novidades` falhará por P62; ci-security-drift pending; Gate Final: outros checks green |
 | `af0b4512` (PR #2530 merge) | — | — | docs P61/P62; Gate Final rodando |
@@ -133,6 +135,8 @@ timeout-minutes: 90  # P19b: vitest roda 1265 arquivos com maxWorkers:2 (~45-60m
 | `35ea12c2` (PR #2536 merge) | [#40214494245](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40214494245) | ✅ success | docs run IDs corretos — Gate Final green (completado 17:18Z) |
 | `4cb4feb4` (PR #2535 merge) | [#40214531246](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40214531246) | ✅ success | fix teste replay cron B+1 — Gate Final green (completado 17:20Z) |
 | `cb0ccedc` (PR #2538 merge) | [#40216887253](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40216887253) | ✅ success | docs RELATORIO_CI — Gate Final green (completado 17:41Z) |
+| `6fcc6b30` (PR #2542 merge) | [#40222336543](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40222336543) | ✅ success | docs P68 — Gate Final green (completado 18:48Z) |
+| `7d3bd4ba` (PR #2543 merge) | — (skipped) | ⏭️ skipped | docs-only — E197 `paths-ignore: docs/**`; deploy-gates não disparou; último Gate Final válido: `6fcc6b30` ✅ |
 
 ---
 
@@ -145,7 +149,7 @@ timeout-minutes: 90  # P19b: vitest roda 1265 arquivos com maxWorkers:2 (~45-60m
 
 | Workflow | Estado ANTES | Estado APÓS | Resolução | Evidência |
 |---|---|---|---|---|
-| `ci-security-drift.yml` | ❌ failure (`AssertionError: expected +0 to be 2`) | ❌ failure (P60) | **CORRIGIDO** P19 (PR #2514 + #2517 + #2522); step 27 falha por P60 pré-existente | Run [#40198674547](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40198674547): `conclusion=failure` (P60) |
+| `ci-security-drift.yml` | ❌ failure (`AssertionError: expected +0 to be 2`) | ❌ failure (P60) | **CORRI GIDO** P19 (PR #2514 + #2517 + #2522); step 27 falha por P60 pré-existente | Run [#40198674547](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40198674547): `conclusion=failure` (P60) |
 | `uptime-monitor.yml` | ❌ failure (timeout) | ✅ success | AUTO-RESOLVIDO (infra) | Run [#40210245554](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40210245554) (d74b33fb) |
 | `supabase-linter-gate.yml` | ❌ failure (HTTP 544) | ✅ success | AUTO-RESOLVIDO (API voltou) | Run [#40212195840](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40212195840) (7a34046a) |
 | `branch-protection-sentinel.yml` | ❌ failure (push direto) | ✅ success | AUTO-RESOLVIDO (main HEAD limpo) | Run [#40212195957](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40212195957) (7a34046a) |
@@ -154,12 +158,16 @@ timeout-minutes: 90  # P19b: vitest roda 1265 arquivos com maxWorkers:2 (~45-60m
 | `cart-invariants-smoke.yml` | ❌ failure | ❌ failure (esperado) | **DOCUMENTADO** — fixture data insuficiente no CI | P2b |
 | `e2e-flows.yml` | ❌ failure | ❌ failure (esperado) | **DOCUMENTADO** — `/admin/conexoes` renderiza em branco sem E2E creds | P16 |
 | `e2e-personalization.yml` | ❌ failure | ❌ failure (esperado) | **DOCUMENTADO** — `toHaveURL` timeout (sem dados PDP + auth timeout) | P23 |
-| `e2e-thumb-quickview.yml` | ❌ failure | ❌ failure (esperado) | **DOCUMENTADO** — 1 de 22 testes executa (21 skipped por `requireAuth`) | P24 |
+| `e2e-thumb-quickview.yml` | ❌ failure | ❌ failure (esperado) | **DOCUMENTADO** — perfecto 1 de 22 testes executa (21 skipped por `requireAuth`) | P24 |
 | `e2e.yml` (Playwright) | ❌ failure | ❌ failure (esperado) | **DOCUMENTADO** — `/novidades` page crash no CI (pré-existente, ver P62) | P62 |
 | `copilot-code-review.yml` | ❌ failure | ❌ failure (esperado) | **DOCUMENTADO** — firewall GitHub Copilot infra (recorrente, ver P61) | P61 |
-| `e2e-swatch-quickview.yml` | ❌ failure | ❌ failure (esperado) | **DOCUMENTADO** — "Check min tests" + runner shutdown infra (pré-existente, ver P63) | P63 |
+| `e2e-swatch-quickview.yml` | ❌ failure | ❌ failure (esperado) | **DOCUMENTADO** —  "Check min tests" + runner shutdown infra (pré-existente, ver P63) | P63 |
 | `replenishment-quality.yml` | ❌ failure | ❌ failure (esperado) | **DOCUMENTADO** — hook `useReplenishmentStats` nunca resolve em CI (pré-existente, ver P64) | P64 |
 | `edge-integration-all.yml` | ❌ failure | ❌ failure (em correção) | **DOCUMENTADO** — `validate-access` deployed ≠ git; deploy disparado nesta sessão (ver P65) | P65 |
+| `edge-functions-drift-check.yml` | ❌ failure | ❌ failure (esperado) | **DOCUMENTADO** — drift entre funções em produção e código no repo (ver P27) | P27 |
+| `delivery-quality.yml` (P67) | ✅ success | ❌ failure (nova falha pós-PR #2536) | **DOCUMENTADO** — Supabase auth retornando 504 em CI; run [#40218104811](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40218104811) (`c113300c`) — P67 |
+| `uptime-monitor.yml` (P66) | ✅ success | ❌ failure (nova falha pós-PR #2538) | **DOCUMENTADO** — edge function em produção retornando HTTP 4xx; run [#40217100001](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40217100001) (`cb0ccedc`) — P66 |
+| `db-apply-migration.yml` | ✅ n/a | ❌ failure (workflow_dispatch) | **DOCUMENTADO** — preflight bloqueou migration `20261022195616` com 3 defeitos; não é required check; run [#40216869190](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40216869190) — P68 |
 
 ² Run [#40198674547](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40198674547) em `a29b3a19` — `conclusion=failure` confirmado: step 27 E2E públicos timeout (P60 — pré-existente).
 
@@ -171,11 +179,13 @@ timeout-minutes: 90  # P19b: vitest roda 1265 arquivos com maxWorkers:2 (~45-60m
 
 | Métrica | Baseline (início sessão) | Final (main `cb0ccedc`) |
 |---|---|---|
-| `check-tsc-baseline.mjs` | ✅ 0 erros | ✅ 0 erros — rodado localmente em `a29b3a19`, EXIT:0 |
-| ESLint | ✅ 0 erros | ✅ 0 erros — rodado localmente com `NODE_OPTIONS=--max-old-space-size=4096`, EXIT:0 |
-| Build Vite | ✅ success | ✅ `built in 15.92s` — rodado localmente em `a29b3a19` |
-| `test:deploy-gate` (vitest) | ✅ 334 passed | ✅ 334 passed (3 files, 6.99s) — rodado localmente em `a29b3a19` |
-| Gate Final - Deploy Ready | ✅ success `801e38a5` | ✅ success `cb0ccedc` (run [#40216887253](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40216887253), completado 17:41Z) |
+| `check-tsc-baseline.mjs` | ✅ 0 erros | ✅ 0 erros — rodado localmente em `6fcc6b30`, EXIT:0 |
+| ESLint | ✅ 0 erros | NÃO VERIFICADO localmente (OOM pré-existente no container) — EXIT:143 |
+| Build Vite | ✅ success | ✅ `built in 14.00s` — rodado localmente em `6fcc6b30` |
+| SSOT validate-supabase-config.mjs | ✅ | ✅ — rodado localmente em `6fcc6b30`, EXIT:0 |
+| Bundle size guard | ✅ | ✅ — rodado localmente em `6fcc6b30`, EXIT:0 |
+| `test:deploy-gate` (vitest) | ✅ 334 passed | NÃO VERIFICADO localmente (OOM pré-existente no container) |
+| Gate Final - Deploy Ready | ✅ success `801e38a5` | ✅ success `6fcc6b30` (run [#40222336543](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40222336543), 18:48Z) / `7d3bd4ba` docs-only ⏭️ skipped (E197) |
 | `ci-security-drift.yml` | ❌ failure | ❌ failure (P60 pré-existente, step 27) — confirmado run #40198674547 |
 | Workflows required (Gate Final) | ✅ todos green | ✅ todos green |
 
@@ -226,7 +236,8 @@ timeout-minutes: 90  # P19b: vitest roda 1265 arquivos com maxWorkers:2 (~45-60m
 - **5 workflows auto-resolvidos:** Uptime Monitor (P42), Supabase Linter Gate (P48), Branch Protection Sentinel (P58), Quote Builder (P17), Release Please (P1/P21/P44 — run #40200678489)
 - **7 workflows documentados (bloqueados externamente):** Cart Invariants (P2b), E2E Critical Flows (P16), E2E Personalization/QuickView (P23/P24), ci-security-drift step 27 (P60), Copilot Code Review infra (P61), E2E `/novidades` page crash (P62), E2E Swatch QuickView (P63)
 - **2 workflows documentados (novos — d74b33fb):** Replenishment Quality Gate hook timeout (P64), Edge Integration Tests divergência deployed vs. git (P65 — deploy disparado)
-- **Gate Final permanece verde** em todos os commits desta sessão — último run confirmado: [#40216887253](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40216887253) (`cb0ccedc`, ✅ success, completado 17:41Z)
+- **Gate Final permanece verde** — último run confirmado: [#40222336543](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40222336543) (`6fcc6b30`, ✅ success, 18:48Z). HEAD `7d3bd4ba` (PR #2543 docs-only) não disparou deploy-gates.yml por E197 `paths-ignore: docs/**` — comportamento correto e esperado.
 - **Zero regressões introduzidas**
-- **Baseline completo registrado (main `d74b33fb`):** TSC ✅ 0 erros · Lint ✅ 0 erros/0 warnings · Build ✅ 15.21s · Vitest deploy-gate ✅ 334 passed
-- **Main HEAD atual:** `cb0ccedec41c38fe79cbd2585216e4cbe3155ccd` (PR #2538 merge)
+- **Baseline registrado (main `6fcc6b30`):** TSC ✅ 0 erros · Build ✅ 14.00s · SSOT ✅ · Bundle ✅ · Lint/Vitest: NÃO VERIFICADO localmente (OOM pré-existente no container; CI gate verde confirma)
+- **Workflows adicionalmente documentados:** P27 (edge-functions-drift-check), P66 (uptime-monitor nova falha `cb0ccedc`), P67 (delivery-quality nova falha `c113300c`), P68 (db-apply-migration preflight)
+- **Main HEAD atual:** `7d3bd4ba47eb6e9e6b3d56fe3bfac45a791de84f` (PR #2543 merge — docs-only)
