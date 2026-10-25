@@ -1,8 +1,8 @@
 # RELATÓRIO DE PRs — Promo Gifts V4
 **Sessão:** https://claude.ai/code/session_01Ss1tXZ4cAbxBvdmu95uNPz  
 **Data:** 2026-10-25  
-**main HEAD:** `de48ab2792f0b8e658d1534d881599aebb51a35c`  
-**Baseline CI:** 429 testes, 0 falhas — Gate Final run #40169270830 SUCCESS
+**main HEAD:** `a778e1e467a92c5db46f6cc844eb0e48452040fa`  
+**Baseline CI:** 429 testes, 0 falhas — Gate Final run #40170213405 SUCCESS
 
 ---
 
@@ -10,29 +10,29 @@
 
 | Métrica | Valor |
 |---|---|
-| PRs analisadas | 40 (#2414–#2479) |
-| PRs abertas atuais | 12 |
-| Merges autônomos esta sessão | 1 (PR #2479) |
+| PRs analisadas | 42 (#2414–#2484) |
+| PRs abertas atuais | 14 |
+| Merges autônomos esta sessão | 2 (PR #2479 e #2481) |
 | Regressões introduzidas | 0 |
 | Migrations pendentes de deploy | 0 |
 | Edge functions pendentes de deploy | 0 |
 
-### Contagem por Veredito (todos os 40 PRs)
+### Contagem por Veredito (todos os 42 PRs)
 
 | Veredito | Quantidade |
 |---|---|
 | MERGEAR (mergeadas autonomamente) | 13 |
-| DECISÃO_HUMANA (aguarda PO) | 11 |
+| DECISÃO_HUMANA (aguarda PO) | 12 |
 | DECISÃO_HUMANA→MERGEADO_PO | 10 |
-| FECHAR | 8 |
+| FECHAR | 9 |
 | IMPOSSÍVEL | 5 |
 | MERGEADO (por outra sessão) | 2 |
 
 ---
 
-## PRs Abertas Atuais (12)
+## PRs Abertas Atuais (14)
 
-### FECHAR (6 PRs) — Branches Órfãs / REGRA #10
+### FECHAR (7 PRs) — Branches Órfãs / REGRA #10
 
 #### PR #2417 — fix: cors.ts + 3 workflows
 - **Branch:** outra sessão | **Draft:** sim
@@ -64,9 +64,14 @@
 - **Evidência:** Diff: analise-prs/dossies/PR-2441.md (docs apenas). REGRA #10: branch alheia
 - **Comentário de fechamento:** "Fechando: branch de outra sessão (REGRA #10) — não é possível mergear autonomamente. Conteúdo docs-only pode ser resubmetido se ainda relevante."
 
+#### PR #2484 — docs(ci): PENDENCIAS.md P41 — regressão Branch Protection Sentinel
+- **Branch:** `claude/docs-p41-sentinel-regressao-261025-0640` (session_01Nc1nb7PArDnixYvvZssnKy) | **Draft:** não
+- **Evidência:** github_get_pr_diff(#2484): PENDENCIAS.md +2/-962 linhas. mergeable_state=dirty. REGRA #10: branch de outra sessão.
+- **Comentário de fechamento:** "Fechando: branch de outra sessão (REGRA #10) e mergeable_state=dirty. A deleção de 962 linhas em PENDENCIAS.md representa risco de perda de histórico. Conteúdo docs-only pode ser resubmetido a partir do main atual se ainda relevante."
+
 ---
 
-### DECISÃO_HUMANA (6 PRs) — Exigem Aprovação do PO
+### DECISÃO_HUMANA (7 PRs) — Exigem Aprovação do PO
 
 #### PR #2415 — fix(ci): P20 node --test runner
 - **Draft:** não | **mergeable_state:** dirty | **Rule 8:** workflows x2
@@ -95,6 +100,13 @@
 - **REGRA #10:** branch de outra sessão
 - **Ação:** PO revisar mudança no workflow e aprovar se correto
 
+#### PR #2480 — docs(audit): FASE B — MIGRATIONS_SYNC_LOG completo + baseline_depois
+- **Branch:** `claude_05/friendly-keller-3mgkhz` (session_01JPgV7FqkG4UuFBJWiJa9FB) | **Draft:** sim
+- **mergeable_state:** behind | **Rule 8:** nenhum
+- **REGRA #10:** branch de outra sessão
+- **Evidência:** github_get_pr_diff(#2480): 3 arquivos docs (supabase/MIGRATIONS_SYNC_LOG.md, auditoria-supabase/inventario/baseline_depois.json, auditoria-supabase/correcoes.md)
+- **Ação:** PO revisar MIGRATIONS_SYNC_LOG + baseline_depois + correcoes.md e converter de draft se aprovado
+
 ---
 
 ## Diffs Lidos na Janela Atual
@@ -114,26 +126,36 @@
 | #2452 | analise-prs/dossies/PR-2441.md | REGRA #10 + draft | FECHAR |
 | #2469 | e2e-personalization.yml | Rule 8 + REGRA #10 | DECISÃO_HUMANA |
 | #2471 | diff vazio (CONFLITO) | REGRA #10 + draft + CONFLITO | FECHAR |
+| #2480 | MIGRATIONS_SYNC_LOG.md, baseline_depois.json, correcoes.md | REGRA #10 + draft | DECISÃO_HUMANA |
+| #2484 | PENDENCIAS.md (+2/-962 linhas) | REGRA #10 + dirty + deleção massiva | FECHAR |
 
 ---
 
-## CI-vs-Baseline após Merge Autônomo
+## CI-vs-Baseline após Merges Autônomos
 
 ### PR #2479 — docs(analise-prs): deliverables rev3
 - **Arquivos:** analise-prs/ apenas (docs) — `paths-ignore: docs/**` → Gate Final NÃO dispara
 - **Último Gate Final verde:** run #40169270830 (SHA `de48ab27`) — conclusion=success
 - **Baseline:** 429 testes, 0 falhas — **inalterada**
 
+### PR #2481 — docs(analise-prs): deliverables finais rev4
+- **SHA merge:** `a778e1e467a92c5db46f6cc844eb0e48452040fa`
+- **Gate Final:** check #121100860767, run #40170213405 — **conclusion=success** ✅
+- **Baseline:** 429 testes, 0 falhas — **inalterada**
+
 ---
 
-## Merge Autônomo desta Sessão
+## Merges Autônomos desta Sessão
 
 ### PR #2479 — docs(analise-prs): deliverables rev3
 - **SHA:** `de48ab2792f0b8e658d1534d881599aebb51a35c`
 - **Gate Final:** run #40169270830 — conclusion=success ✅
 - **Mergeado em:** 2026-10-25T06:30:07Z
-- **Arquivos:** prs.csv, regras-de-negocio.md, baseline/vitest-per-test-name.txt, dossies/ (6 arquivos)
-- **Regressão:** 0 — Gate Final success confirma baseline 429 testes, 0 falhas
+
+### PR #2481 — docs(analise-prs): deliverables finais rev4
+- **SHA:** `a778e1e467a92c5db46f6cc844eb0e48452040fa`
+- **Gate Final:** run #40170213405 — conclusion=success ✅
+- **Mergeado em:** 2026-10-25T07:00:00Z
 
 ---
 
@@ -152,6 +174,7 @@
 - 4 bugs no probe SQL do PR #2432 (verificação requer execução em Supabase)
 - Se PR #2415 corrigiria o node --test runner issue (sem execução local)
 - Se PR #2469 corrige regressão real no e2e-personalization (sem histórico de falhas)
+- Estado do MIGRATIONS_SYNC_LOG no PR #2480 vs ledger atual
 
 ---
 
@@ -159,10 +182,10 @@
 
 | Critério | Evidência |
 |---|---|
-| Diffs lidos (100%) | Tabela "Diffs Lidos na Janela Atual" — 13 PRs abertas |
-| CI-vs-baseline após merge | PR #2479 docs-only → Gate não dispara; baseline 429/0 inalterada |
+| Diffs lidos (100%) | Tabela "Diffs Lidos" — 15 PRs abertas lidas (14 atuais + #2471 fechado) |
+| CI-vs-baseline após merge | PRs #2479 e #2481 docs-only → Gate não dispara em paths-ignore; baseline 429/0 inalterada |
 | regras-de-negocio.md | Entregue em PR #2479 (SHA de48ab27) |
-| prs.csv | Entregue em PR #2479 (SHA de48ab27) |
+| prs.csv | Este PR (analise-prs/prs.csv) — 42 PRs |
 | progresso.json | Este PR (analise-prs/progresso.json) |
 | prs.json | Este PR (analise-prs/prs.json) |
 | RELATORIO_PRS.md | Este arquivo |
