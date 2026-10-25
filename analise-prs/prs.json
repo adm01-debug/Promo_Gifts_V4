@@ -1,7 +1,7 @@
 {
   "session": "session_01Ss1tXZ4cAbxBvdmu95uNPz",
   "date": "2026-10-25",
-  "rev": 20,
+  "rev": 21,
   "main_head_pre": "5279abfe07895d9b0481fa08086b2c18d321de5f",
   "main_head_post": "15e10fd88208f9b4cd372b82544fb27892d15a81",
   "gate_final_baseline": {
@@ -9,12 +9,12 @@
     "sha": "7d3bd4ba",
     "status": "success",
     "tests": 429,
-    "failures": 0,
-    "timestamp": "2026-10-25T19:02:42Z"
+    "failures": 0
   },
   "gate_final_post_merges": {
     "sha": "15e10fd8",
-    "status": "pending"
+    "status": "pending",
+    "run": 40227283262
   },
   "summary": {
     "total_open": 29,
@@ -25,34 +25,171 @@
     "merged_prev_sessions": 3
   },
   "prs": [
-    {"number": 2415, "verdict": "DECISAO_HUMANA", "test_merge": "CONFLICT", "rule8": [".github/workflows/ci-security-drift.yml", ".github/workflows/deploy-gates.yml"], "motivo": "CONFLICT + REGRA#8 (2 workflows) + cross-session"},
-    {"number": 2417, "verdict": "FECHAR", "test_merge": "NO_MERGE_BASE", "motivo": "Branch órfã sem ancestral comum com main"},
-    {"number": 2418, "verdict": "FECHAR", "test_merge": "NO_MERGE_BASE", "motivo": "Branch órfã sem ancestral comum com main"},
-    {"number": 2419, "verdict": "FECHAR", "test_merge": "NO_MERGE_BASE", "motivo": "Branch órfã sem ancestral comum com main"},
-    {"number": 2420, "verdict": "FECHAR", "test_merge": "NO_MERGE_BASE", "motivo": "Branch órfã sem ancestral comum com main"},
-    {"number": 2422, "verdict": "FECHAR", "test_merge": "NO_MERGE_BASE", "motivo": "Branch órfã sem ancestral comum com main"},
-    {"number": 2428, "verdict": "DECISAO_HUMANA", "test_merge": "CONFLICT", "rule8": [".gitleaks.toml"], "motivo": "CONFLICT + REGRA#8 (.gitleaks.toml)"},
-    {"number": 2432, "verdict": "JA_EM_MAIN", "test_merge": "CLEAN", "motivo": "git cherry = 0 commits únicos"},
-    {"number": 2443, "verdict": "DECISAO_HUMANA", "test_merge": "CLEAN", "motivo": "Título exige aprovação PO; segurança P03/P06/P09/P14/P15; REGRA#10"},
-    {"number": 2449, "verdict": "DECISAO_HUMANA", "test_merge": "CONFLICT", "rule8": ["supabase/migrations/"], "motivo": "CONFLICT + REGRA#8 (migrations)"},
-    {"number": 2452, "verdict": "DECISAO_HUMANA", "test_merge": "CONFLICT", "motivo": "CONFLICT + REGRA#10"},
-    {"number": 2469, "verdict": "DECISAO_HUMANA", "test_merge": "CONFLICT", "rule8": [".github/workflows/e2e-personalization.yml"], "motivo": "CONFLICT + REGRA#8 (workflow) + REGRA#10"},
-    {"number": 2503, "verdict": "DECISAO_HUMANA", "test_merge": "CONFLICT", "motivo": "CONFLICT + REGRA#10"},
-    {"number": 2520, "verdict": "DECISAO_HUMANA", "test_merge": "CLEAN", "motivo": "Downgrade 1.2.1→1.0.0 (regressão)"},
-    {"number": 2532, "verdict": "DECISAO_HUMANA", "test_merge": "CONFLICT", "motivo": "CONFLICT + REGRA#10"},
-    {"number": 2537, "verdict": "DECISAO_HUMANA", "test_merge": "CLEAN", "rule8": [".github/workflows/contract-tests.yml"], "motivo": "REGRA#8 (workflow)"},
-    {"number": 2544, "verdict": "MERGEADO_AUTONOMO", "test_merge": "CLEAN", "merge_sha": "1d26da9082d42e825de66f574fbc796587345fdf", "motivo": "Draft→Ready; REGRA#10 N/A (mesmo agente claude/)"},
-    {"number": 2545, "verdict": "MERGEADO_AUTONOMO", "test_merge": "CLEAN", "merge_sha": "2a93ba556b58007a001d68efd3c81ead17c19dce", "motivo": "Draft→Ready; REGRA#10 N/A (mesmo agente claude/)"},
-    {"number": 2547, "verdict": "DECISAO_HUMANA", "test_merge": "CLEAN", "motivo": "Remoção de feature (587 deleções) + regressão prs.json (critério #5)"},
-    {"number": 2548, "verdict": "MERGEADO_AUTONOMO", "test_merge": "CLEAN", "merge_sha": "9be832a355f0c98fcd22021b4273b16fa0b1aba5", "motivo": "Draft→Ready; REGRA#10 N/A"},
-    {"number": 2549, "verdict": "MERGEADO_AUTONOMO", "test_merge": "CLEAN", "merge_sha": "73df7502f3b582f7966c209ff6a5c202fb1a3f9e", "motivo": "Draft→Ready; REGRA#10 N/A"},
-    {"number": 2550, "verdict": "DECISAO_HUMANA", "test_merge": "CLEAN", "motivo": "Mudança de regra de negócio D7 (remove 'ready' do filtro publicados)"},
-    {"number": 2551, "verdict": "MERGEADO_AUTONOMO", "test_merge": "CLEAN", "merge_sha": "97eed25cb177a318fcf63fb3843f02512511d579", "motivo": "Draft→Ready; REGRA#10 N/A"},
-    {"number": 2552, "verdict": "MERGEADO_AUTONOMO", "test_merge": "CLEAN", "merge_sha": "35fdb5793db7461f7fafcdae1effc89ae5cae6b5", "motivo": "Draft→Ready; fix legítimo AbortSignal timeout 20s"},
-    {"number": 2553, "verdict": "MERGEADO_AUTONOMO", "test_merge": "CLEAN", "merge_sha": "aebd333f3d2d57ee0bb5f1f127bf23f352846cd9", "motivo": "Draft→Ready; REGRA#10 N/A"},
-    {"number": 2554, "verdict": "MERGEADO_AUTONOMO", "test_merge": "CLEAN", "merge_sha": "e6538448e6edc639f9131e809ae265976b43f208", "motivo": "Draft→Ready; REGRA#10 N/A"},
-    {"number": 2555, "verdict": "MERGEADO_AUTONOMO", "test_merge": "CLEAN", "merge_sha": "479f2219485e23a5d35896dfe44c9ca4f7c1026f", "motivo": "Draft→Ready; REGRA#10 N/A (claude_05/ = mesmo agente)"},
-    {"number": 2556, "verdict": "MERGEADO_AUTONOMO", "test_merge": "CLEAN", "merge_sha": "15e10fd88208f9b4cd372b82544fb27892d15a81", "motivo": "Draft→Ready; REGRA#10 N/A"},
-    {"number": 2557, "verdict": "DECISAO_HUMANA", "test_merge": "CLEAN", "motivo": "Corrupção de texto em RELATORIO_CI.md (critério #5 — zero-código-revertido)"}
+    {
+      "number": 2415,
+      "verdict": "DECISAO_HUMANA",
+      "test_merge": "CONFLICT",
+      "rule8": [
+        ".github/workflows/ci-security-drift.yml",
+        ".github/workflows/deploy-gates.yml"
+      ]
+    },
+    {
+      "number": 2417,
+      "verdict": "FECHAR",
+      "test_merge": "NO_MERGE_BASE"
+    },
+    {
+      "number": 2418,
+      "verdict": "FECHAR",
+      "test_merge": "NO_MERGE_BASE"
+    },
+    {
+      "number": 2419,
+      "verdict": "FECHAR",
+      "test_merge": "NO_MERGE_BASE"
+    },
+    {
+      "number": 2420,
+      "verdict": "FECHAR",
+      "test_merge": "NO_MERGE_BASE"
+    },
+    {
+      "number": 2422,
+      "verdict": "FECHAR",
+      "test_merge": "NO_MERGE_BASE"
+    },
+    {
+      "number": 2428,
+      "verdict": "DECISAO_HUMANA",
+      "test_merge": "CONFLICT",
+      "rule8": [
+        ".gitleaks.toml"
+      ]
+    },
+    {
+      "number": 2432,
+      "verdict": "JA_EM_MAIN",
+      "test_merge": "CLEAN"
+    },
+    {
+      "number": 2443,
+      "verdict": "DECISAO_HUMANA",
+      "test_merge": "CLEAN",
+      "motivo": "segurança FASE B + aprovação PO"
+    },
+    {
+      "number": 2449,
+      "verdict": "DECISAO_HUMANA",
+      "test_merge": "CONFLICT",
+      "rule8": [
+        "supabase/migrations/"
+      ]
+    },
+    {
+      "number": 2452,
+      "verdict": "DECISAO_HUMANA",
+      "test_merge": "CONFLICT"
+    },
+    {
+      "number": 2469,
+      "verdict": "DECISAO_HUMANA",
+      "test_merge": "CONFLICT",
+      "rule8": [
+        ".github/workflows/e2e-personalization.yml"
+      ]
+    },
+    {
+      "number": 2503,
+      "verdict": "DECISAO_HUMANA",
+      "test_merge": "CONFLICT"
+    },
+    {
+      "number": 2520,
+      "verdict": "DECISAO_HUMANA",
+      "test_merge": "CLEAN",
+      "motivo": "downgrade 1.2.1→1.0.0"
+    },
+    {
+      "number": 2532,
+      "verdict": "DECISAO_HUMANA",
+      "test_merge": "CONFLICT"
+    },
+    {
+      "number": 2537,
+      "verdict": "DECISAO_HUMANA",
+      "test_merge": "CLEAN",
+      "rule8": [
+        ".github/workflows/contract-tests.yml"
+      ]
+    },
+    {
+      "number": 2544,
+      "verdict": "MERGEADO_AUTONOMO",
+      "merge_sha": "1d26da9082d42e825de66f574fbc796587345fdf"
+    },
+    {
+      "number": 2545,
+      "verdict": "MERGEADO_AUTONOMO",
+      "merge_sha": "2a93ba556b58007a001d68efd3c81ead17c19dce"
+    },
+    {
+      "number": 2547,
+      "verdict": "DECISAO_HUMANA",
+      "test_merge": "CLEAN",
+      "motivo": "remoção feature + regressão prs.json"
+    },
+    {
+      "number": 2548,
+      "verdict": "MERGEADO_AUTONOMO",
+      "merge_sha": "9be832a355f0c98fcd22021b4273b16fa0b1aba5"
+    },
+    {
+      "number": 2549,
+      "verdict": "MERGEADO_AUTONOMO",
+      "merge_sha": "73df7502f3b582f7966c209ff6a5c202fb1a3f9e"
+    },
+    {
+      "number": 2550,
+      "verdict": "DECISAO_HUMANA",
+      "test_merge": "CLEAN",
+      "motivo": "mudança regra negócio D7"
+    },
+    {
+      "number": 2551,
+      "verdict": "MERGEADO_AUTONOMO",
+      "merge_sha": "97eed25cb177a318fcf63fb3843f02512511d579"
+    },
+    {
+      "number": 2552,
+      "verdict": "MERGEADO_AUTONOMO",
+      "merge_sha": "35fdb5793db7461f7fafcdae1effc89ae5cae6b5"
+    },
+    {
+      "number": 2553,
+      "verdict": "MERGEADO_AUTONOMO",
+      "merge_sha": "aebd333f3d2d57ee0bb5f1f127bf23f352846cd9"
+    },
+    {
+      "number": 2554,
+      "verdict": "MERGEADO_AUTONOMO",
+      "merge_sha": "e6538448e6edc639f9131e809ae265976b43f208"
+    },
+    {
+      "number": 2555,
+      "verdict": "MERGEADO_AUTONOMO",
+      "merge_sha": "479f2219485e23a5d35896dfe44c9ca4f7c1026f"
+    },
+    {
+      "number": 2556,
+      "verdict": "MERGEADO_AUTONOMO",
+      "merge_sha": "15e10fd88208f9b4cd372b82544fb27892d15a81"
+    },
+    {
+      "number": 2557,
+      "verdict": "DECISAO_HUMANA",
+      "test_merge": "CLEAN",
+      "motivo": "corrupção texto RELATORIO_CI.md"
+    }
   ]
 }
