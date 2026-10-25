@@ -1556,3 +1556,22 @@ Detalhes, métricas antes/depois e one-shots: docs/EXECUCAO_CORRECOES_MEDALLION_
 | `20261024180003` | `f810068550bbfa2da6179d3772f8187821df732417d48dafd15ffd27acfb2a94` | aplicado via E15 | Claude FASE-B-P19-auto (https://claude.ai/code/session_01JPgV7FqkG4UuFBJWiJa9FB) | db-apply-migration.yml run #40167137573 | 2026-10-25T05:58 UTC | schedule=15min (1,16,31,46) ✅; ledger_count=1 ✅ (job 4 Recibo falhou — non-critical, entrada manual) |
 | `20261024190001` | `eb5c03f7d8f690297ce6960ef0803d7c205fb3999891cbb2ef0a4b85dc82c030` | aplicado via E15 | Claude FASE-B-P01-auto (https://claude.ai/code/session_01JPgV7FqkG4UuFBJWiJa9FB) | db-apply-migration.yml run #40166925674 | 2026-10-25T05:52 UTC | x-cron-secret ✅; ledger_count=1 ✅ (job 4 Recibo falhou — non-critical, entrada manual) |
 | `20261025002500` | `6ce2ca6a8a4228486ae5123574845a11a1f1e59b6e4a316628dc6a56925c1f59` | aplicado via E15 | Claude FASE-B-P03-auto (https://claude.ai/code/session_01JPgV7FqkG4UuFBJWiJa9FB) | db-apply-migration.yml run #40165426404 | 2026-10-25T05:28 UTC | categories last_analyze=2026-10-25T05:28 ✅; ledger_count=1 ✅ (job 4 Recibo falhou — non-critical, entrada manual) |
+
+---
+
+## 2026-10-25 — E99: Mirrors repair-only para DDL out-of-band (20261022195616 e 20261022203935)
+
+**Tipo:** Migrations espelho E99 — repair-only (DDL já aplicada em produção via MCP; arquivos SQL criados como documentação e para drift-check).
+**Sessão:** https://claude.ai/code/session_01HxRBtssJabMB3jTgNY5B9W
+**Branch:** `claude/chore-e99-mirror-update-company-fields-261025-1100`
+**Contexto:** Detectado na análise de branches (sessão analise-branches 2026-10-24): versões `20261022195616` e `20261022203935` presentes no ledger `supabase_migrations.schema_migrations` de produção (`doufsxqlfjyuvxuezpln`) mas sem arquivo SQL correspondente no git — DDL out-of-band aplicada via MCP (E056 corolário).
+**Função:** `public.update_company_fields(uuid, jsonb)` — fix SECURITY DEFINER + search_path (E30) + guard auth.uid() (E18).
+
+### Recibos E99 repair-only
+
+| versão | sha256 arquivo | método | data UTC aplicação real | pós-check |
+|---|---|---|---|---|
+| `20261022195616` | `662fa38e1e09eed7d26ae55e0a1f46beca1793837aa9217d8f6e220c4817056f` | E99 repair-only (mirror) | 2026-10-22T19:56:16Z | em produção via SELECT pg_get_functiondef — SECURITY DEFINER + search_path confirmados |
+| `20261022203935` | `83558c38fda00255556c265c7ba669c85650a1508a7b2acdb99902fed3746575` | E99 repair-only (mirror) | 2026-10-22T20:39:35Z | em produção via SELECT pg_get_functiondef — auth.uid() guard confirmado |
+
+**Próximo passo obrigatório:** após merge desta PR, disparar `schema-snapshot-export.yml` com `force_rotate: true` para regenerar baseline (REGRA #8 corolário).
