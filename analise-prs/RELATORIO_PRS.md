@@ -3,14 +3,14 @@
 **Gerado em:** 2026-10-25  
 **Sessão:** https://claude.ai/code/session_01Ss1tXZ4cAbxBvdmu95uNPz  
 **Main SHA início da sessão:** `9079c82e6c3f58ae5d2cdf8c7eb2deef979ee9d8`  
-**Main SHA fim da sessão:** `6ea6c80cee3adbb6752ec4015f2f7a2ba433e5d1` (após merge de #2464 pelo PO)  
+**Main SHA fim da sessão:** `12c9605e6b870fae5ad4370e77d320a373ee2a81` (após merge de #2470 pelo PO, 2026-10-25T05:11Z)  
 **Total PRs analisados:** 35 (#2414–#2471)  
 **Merges autônomos (esta sessão):** 8 (#2414, #2426, #2427, #2434, #2436, #2439, #2447, #2455)  
 **Merges outra sessão (já em main):** 3 (#2437, #2438, #2457)  
-**Merges PO-aprovados (REGRA #8):** 5 (#2435, #2441, #2445, #2450, #2464)  
+**Merges PO-aprovados (REGRA #8/REGRA #10):** 6 (#2435, #2441, #2445, #2450, #2464, #2470)  
 **PRs DECISÃO_HUMANA aguardando PO:** 6 (#2415, #2428, #2443, #2449, #2466, #2469)  
-**PRs FECHAR:** 13 (#2417, #2418, #2419, #2420, #2422, #2424, #2432, #2451, #2452, #2458, #2465, #2470, #2471)  
-**Total verificado:** 8+3+5+6+13 = **35**  
+**PRs FECHAR:** 12 (#2417, #2418, #2419, #2420, #2422, #2424, #2432, #2451, #2452, #2458, #2465, #2471)  
+**Total verificado:** 8+3+6+6+12 = **35**  
 **Worktrees:** nenhum extra (`git worktree list` confirma só `/home/user/Promo_Gifts_V4`)
 
 ---
@@ -20,7 +20,7 @@
 | PR | Motivo | Estado |
 |---|---|---|
 | **#2415** | `.github/workflows/ci-security-drift.yml` — REGRA #8 CI/workflows | draft:false, conflito (PENDENCIAS.md, RELATORIO_CI.md) |
-| **#2469** | `.github/workflows/e2e-personalization.yml` — REGRA #8 CI/workflows + REGRA #10 branch outra sessão | draft:true |
+| **#2469** | `.github/workflows/e2e-personalization.yml` — REGRA #8 CI/workflows + REGRA #10 branch outra sessão | draft:false, `"mergeable_state": "behind"` |
 | ~~**#2417**~~ | ~~draft + orphan + CI/workflows + edge fn~~ | **FECHAR** — branch órfã |
 | ~~**#2418**~~ | ~~draft + orphan + deploy-gates.yml~~ | **FECHAR** — branch órfã |
 | ~~**#2419**~~ | ~~draft + orphan + security gate~~ | **FECHAR** — branch órfã |

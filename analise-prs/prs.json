@@ -1,13 +1,13 @@
 {
   "generated_at": "2026-10-25",
   "main_sha_inicio": "9079c82e6c3f58ae5d2cdf8c7eb2deef979ee9d8",
-  "main_sha_fim": "1e07e298f03d7940d71629f28c5effc72274f940",
+  "main_sha_fim": "12c9605e6b870fae5ad4370e77d320a373ee2a81",
   "worktree_tests_completed": true,
   "total_open_inicio": 17,
   "total_open_novos": 12,
-  "total_analyzed": 32,
-  "merges_realizados_autonomous": 7,
-  "merges_realizados_po": 5,
+  "total_analyzed": 35,
+  "merges_realizados_autonomous": 8,
+  "merges_realizados_po": 6,
   "merges_realizados_outra_sessao": 3,
   "prs": [
     {
@@ -382,35 +382,39 @@
     {
       "number": 2469,
       "title": "fix(ci): e2e-personalization E42 skip ratio gate condicional ao auth",
-      "draft": true,
+      "draft": false,
       "author_session": "session_01HW5obNKUFtUMbBdgUb94kY",
-      "mergeable_state": "unknown",
+      "mergeable_state": "behind",
       "rule8_trigger": ".github/workflows/e2e-personalization.yml",
       "singu_refs_added": 0,
       "verdict": "DECISÃO_HUMANA",
-      "motivo": "REGRA #8: toca .github/workflows/e2e-personalization.yml. Draft:true + branch outra sessão (REGRA #10). Requer aprovação humana."
+      "motivo": "REGRA #8: toca .github/workflows/e2e-personalization.yml. Branch outra sessão (REGRA #10). Proibição de tarefa 'Não tocar .github/workflows'. Requer aprovação humana."
     },
     {
       "number": 2470,
-      "title": "fix(test): corrige 3 falhas timezone UTC→BRT em date-utils.test.ts",
-      "draft": true,
+      "title": "fix(test): corrige expectativas de timezone UTC→BRT em date-utils.test.ts",
+      "status": "MERGEADO",
+      "sha_merge": "12c9605e6b870fae5ad4370e77d320a373ee2a81",
+      "method": "merge",
+      "merged_at": "2026-10-25T05:11:57Z",
+      "merged_by": "adm01-debug (PO)",
       "author_session": "session_01Nc1nb7PArDnixYvvZssnKy",
-      "mergeable_state": "behind",
       "rule8_trigger": null,
       "singu_refs_added": 0,
-      "verdict": "FECHAR",
-      "motivo": "Draft:true + branch de outra sessão (REGRA #10). 1 arquivo: tests/unit/date-utils.test.ts. Merge impossível por esta sessão."
+      "verdict": "DECISÃO_HUMANA→MERGEADO_PO",
+      "motivo": "Branch outra sessão (REGRA #10) — merge impossível por esta sessão. Mergeado pelo PO em 2026-10-25T05:11:57Z. 1 arquivo: tests/unit/date-utils.test.ts. Fix correto de timezone BRT (UTC-3)."
     },
     {
       "number": 2471,
-      "title": "docs(ci): RELATORIO_CI rev9-13 + PENDENCIAS P16/P18/P19 + migration-refs-baseline",
+      "title": "docs(ci): RELATORIO_CI Rev13 + tabela de prova por workflow + causas raiz P16/P18/P19/P2c",
       "draft": true,
       "author_session": "session_01Nc1nb7PArDnixYvvZssnKy",
-      "mergeable_state": "dirty",
+      "head_sha": "04cf55cbf5bd3773a3574cb6c6a34d6afe56371a",
+      "mergeable_state": "unknown",
       "rule8_trigger": null,
       "singu_refs_added": 0,
       "verdict": "FECHAR",
-      "motivo": "Draft:true + dirty (CONFLITO com main) + branch de outra sessão (REGRA #10). 3 arquivos docs. Merge impossível por esta sessão."
+      "motivo": "Draft:true + branch de outra sessão (REGRA #10). 3 arquivos docs (+458/-67). Merge impossível por esta sessão."
     }
   ]
 }
