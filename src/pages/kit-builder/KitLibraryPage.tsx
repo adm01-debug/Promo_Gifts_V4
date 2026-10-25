@@ -261,7 +261,7 @@ export default function KitLibraryPage() {
     if (selectedTag && k.tag !== selectedTag) return false;
     if (selectedColor && k.color !== selectedColor) return false;
     if (statusFilter === 'draft' && k.status !== 'draft') return false;
-    if (statusFilter === 'published' && !['published', 'ready', 'shared'].includes(k.status))
+    if (statusFilter === 'published' && !['published', 'shared'].includes(k.status))
       return false;
     if (statusFilter === 'archived' && k.status !== 'archived') return false;
     return true;
@@ -328,7 +328,13 @@ export default function KitLibraryPage() {
       updatedAt: k.updated_at,
       isDraft: k.status === 'draft',
       badge:
-        k.status === 'draft' ? 'Rascunho' : k.status === 'archived' ? 'Arquivado' : 'Publicado',
+        k.status === 'draft'
+          ? 'Rascunho'
+          : k.status === 'archived'
+            ? 'Arquivado'
+            : k.status === 'ready'
+              ? 'Pronto'
+              : 'Publicado',
     };
   };
 
