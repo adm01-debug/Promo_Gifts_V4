@@ -210,4 +210,39 @@ Para todas as PRs FECHAR: veredicto NENHUMA pode ser mergeada de forma alguma �
 - [x] Gate Final main HEAD atual (317a317d — PR #2528 PO): run #40203094379 conclusion=**success** ✅ (14:46:08Z)
 - [x] Comparacao baseline: 429 testes / 0 falhas — inalterada
 - [x] Violacoes registradas: PR #2505 (Gate 5.5 in_progress no merge), PR #2511 (Gate 1.3 failure — corrigido por #2512)
-- [x] Supabase doufsxqlfjyuvxuezpln: query_logs retornou [] em sessao anterior (zero erros); MCP = mcp__SUPABASE_-_GEST_O_DE_PRODUTOS__ confirmado via get_project_url esta sessao
+- [x] Supabase doufsxqlfjyuvxuezpln: query_logs (14:00Z–16:00Z) — function_edge_logs=0 erros, postgres_logs=0 erros (auth_logs: 2x login-fail + timeout 14:22Z — infra, nao relacionado aos merges) ✅
+- [x] PR #2529 (violacao inadmissivel): draft aberto em claude_05/youthful-ride-vcdchy — registrado; fechar PRs e proibido pela tarefa; insolvel
+
+---
+
+## Test-merges contra main 317a317d (esta sessao, worktree /tmp/test-merge-317)
+
+Worktree criado em `317a317dbfe45ae27f5eefa67069d1df8d84f811`. Removido apos todos os testes.
+Evidencia: `git worktree list` retornou apenas `/home/user/Promo_Gifts_V4  0d17ec261 [claude_05/youthful-ride-vcdchy]`
+
+### PRs orfas (NO_MERGE_BASE) — branches sem ancestral comum com main
+
+| PR | Branch real | Resultado test-merge |
+|---|---|---|
+| #2417 | `claude/fix-contract-mag-reader-261019-2110` | `fatal: refusing to merge unrelated histories` |
+| #2418 | `claude/fix-gitleaks-gate-261019-1800` | `fatal: refusing to merge unrelated histories` |
+| #2419 | `claude/fix-sync-log-ci-261019-1730` | `fatal: refusing to merge unrelated histories` |
+| #2420 | `claude/fix-rollback-261019-1637` | `fatal: refusing to merge unrelated histories` |
+| #2422 | `claude/chore-migrations-sync-log-261019-1600` | `fatal: refusing to merge unrelated histories` |
+
+### PRs nao-orfas — test-merge contra 317a317d
+
+| PR | Branch | Resultado | Arquivo em conflito / introducao |
+|---|---|---|---|
+| #2415 | `claude_05/amazing-brahmagupta-0xhdur` | DIRTY | `CONFLICT (content): PENDENCIAS.md` |
+| #2428 | `claude/fix-gitleaks-gate-261024-1930` | CLEAN | `.gitleaks.toml +22/-1` |
+| #2432 | `claude/feat-probe-e184-241026-2026` | DIRTY | `CONFLICT (add/add): qa/migrations-draft/probe_e184_legacy_refs.sql` |
+| #2443 | `claude/feat-aprovacao-p06-p09-p14-p15-p03sec-261024-2315` | CLEAN | `APROVACAO_FASE_B_IMPACTO.md +218` |
+| #2449 | `claude/chore-e99-mirror-update-company-fields-261025-1100` | DIRTY | `CONFLICT (content): supabase/MIGRATIONS_SYNC_LOG.md` |
+| #2452 | `claude/fix-docs-pr2441-gate13-261025` | ERROR | branch nao encontrada no remote (REGRA #10 bloqueio permanece) |
+| #2469 | `claude/fix-ci-workflows-261025-0630` | CLEAN | `e2e-personalization.yml +2/-1` |
+| #2503 | `claude/docs-relatorio-ci-rev21-20261025-0911` | DIRTY | `CONFLICT (content): RELATORIO_CI.md` |
+| #2514 | `claude_05/nifty-sagan-r23gqh` | ERROR | branch nao encontrada no remote (REGRA #10 bloqueio permanece) |
+
+**Conclusao:** nenhuma das 14 PRs abertas atende aos 8 criterios MERGEAR — todas sao DECISAO_HUMANA ou FECHAR.
+Nenhum merge autonomo realizado nesta sessao (correto: todas bloqueadas por REGRA #10, Rule 8 ou conflito).
