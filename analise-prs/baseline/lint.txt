@@ -1,21 +1,11 @@
-SHA baseline: fbd335328bec4ae96e9beb3e52953837fa8f9a1d
-Sessão: session_01Ss1tXZ4cAbxBvdmu95uNPz
+ESLint check — Sessão session_01Ss1tXZ4cAbxBvdmu95uNPz (continuação)
 Data: 2026-10-25
 
-=== BASELINE CI — GATE 1 ESLint (Lint Baseline) ===
-Fonte: CI Gate 1, job #121135584154
-Workflow: Deploy Gates (run #40182213757)
-SHA: fbd335328bec4ae96e9beb3e52953837fa8f9a1d
+NÃO EXECUTADO LOCALMENTE
+Motivo: npm install falha com 403 (registry europe-west1-npm.pkg.dev sem credenciais)
 
-Step 6 "Run npm run lint:baseline":
-  conclusion: success ✅
-  Resultado: 0 erros, 0 warnings, Δ vs baseline: regressões +0
+Referência CI (Gate 1 — TypeScript + ESLint):
+- Run #40214531246 (SHA 4cb4feb4): conclusion=success → 0 erros ESLint, 0 warnings
+- Gate Final completo: success ✅
 
-CONCLUSÃO: 0 erros ESLint no main durante esta sessão.
-Sem regressão em relação ao baseline anterior.
-
-Evidência: https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40182213757/job/121135584154
-
-=== NOTA ===
-npm ci local indisponível (registry europe-west1-npm.pkg.dev inacessível em cloud).
-Baseline medido EXCLUSIVAMENTE via CI Gate 1.
+Evidência: Gate Final run #40214531246 job "static-gates" conclusion=success

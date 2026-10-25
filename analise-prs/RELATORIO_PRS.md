@@ -1,208 +1,231 @@
-# RELATORIO DE PRs — Promo Gifts V4
-**Sessao:** https://claude.ai/code/session_01Ss1tXZ4cAbxBvdmu95uNPz  
-**Data:** 2026-10-25  
-**main HEAD:** `801e38a53ce0c235611ff207ea1dd3d41a0ca89a` (PR #2513 squash-merged)  
-**Gate Final:** run #40189082535 — conclusion=**success** ✅  
-**Baseline CI:** 429 testes, 0 falhas — baseline inalterada
+# RELATORIO_PRS — Sessão session_01Ss1tXZ4cAbxBvdmu95uNPz (continuação)
+**Data:** 2026-10-25
+**main HEAD:** `c113300c034fb39126274fba9aa10ef05762ab13` (PR #2540 mergeada pelo PO — docs RELATORIO_CI)
+**main HEAD anterior:** `cb0ccedec41c38fe79cbd2585216e4cbe3155ccd`
+**Gate Final confirmado:** Run #40218104943 — SHA `c113300c` — ✅ success (2026-10-25T17:56:46Z)
+**Baseline:** 429 testes / 0 falhas
 
 ---
 
-## Resumo Executivo
+## Resumo executivo
 
-| Metrica | Valor |
+| Métrica | Valor |
 |---|---|
-| PRs analisadas | 50 (#2414–#2514, inclui deliverables desta sessao) |
-| PRs abertas atuais | 14 |
-| Merges autonomos esta sessao | 13 (PR #2479, #2481, #2486, #2490, #2498, #2501, #2504, #2505, #2509, #2510, #2511, #2512, #2513) |
-| PRs fechadas externamente (durante sessao) | 3 (#2471, #2480, #2484) |
-| Regressoes introduzidas | 0 |
-| Migrations pendentes de deploy | 0 |
-| Edge functions pendentes de deploy | 0 |
-| Worktrees removidos | 1 (/tmp/fix-gate13 — removido com `git worktree remove --force`) |
+| PRs analisadas | 19 |
+| PRs abertas no início | 17 |
+| PRs fechadas durante sessão (pelo PO) | 2 (#2521 fechada, #2538 mergeada) |
+| Merges autônomos esta sessão | **0** |
+| Merges bloqueados (DECISAO_HUMANA) | 11 |
+| PRs a fechar (órfãs) | 5 |
+| Já em main | 1 |
+| Mergeada pelo PO | 1 |
+| Fechada pelo PO | 1 |
 
-### Contagem por Veredito (50 PRs — categorias nao sobrepostas)
-
-| Veredito | Quantidade |
-|---|---|
-| MERGEAR (mergeadas autonomamente) | 21 |
-| MERGEADO_PO (mergeadas pelo PO antes ou durante a sessao) | 10 |
-| DECISAO_HUMANA (8 abertas + 2 fechadas externamente) | 10 |
-| FECHAR (6 abertas + 2 fechadas externamente + 1 ja fechada #2424) | 9 |
-| **Total** | **50** |
-
-### Gate Final pos-merge (comparacao com baseline)
-
-| SHA | Run | Conclusao | Testes | Falhas |
-|---|---|---|---|---|
-| `e0be76690` (baseline confirmado) | #40179146830 | success ✅ | 429 | 0 |
-| `afbd338000` (PR #2510) | #40184102084 | success ✅ | 429 | 0 |
-| `9c3e4492f` (PR #2511) | N/A | FAILURE ⚠️ | 429 | Gate 1.3 stale entries |
-| `7fc20213c` (PR #2512) | #40187098020 | success ✅ | 429 | 0 |
-| `801e38a53` (PR #2513 — main HEAD atual) | #40189082535 | success ✅ | 429 | 0 |
-
-**Regressoes:** 0. Baseline inalterada. Gate 1.3 falhou no PR #2511 e foi corrigido pelo PR #2512.
+**Resultado: ZERO merges autônomos.**
+Todas as PRs com CLEAN merge-tree foram bloqueadas por REGRA#8 (workflow/migration/gitleaks),
+REGRA#10 (cross-agent), ou critério semântico (downgrade de versão, título "APROVAÇÃO REQUERIDA",
+ou conteúdo já em main).
 
 ---
 
-## PRs Abertas Atuais (14) — Criterios de Mergear Avaliados
+## Distribuição por veredito
 
-### FECHAR (6 PRs) — Branches Orfas / REGRA #10
-
-Para todas as PRs FECHAR: veredicto NENHUMA pode ser mergeada de forma alguma — bloqueio tecnico (NO_MERGE_BASE) ou de governanca (REGRA #10 + draft).
-
-#### PR #2417 — fix: cors.ts + 3 workflows
-- **Branch:** orphan sem ancestral | **Draft:** sim | **mergeable_state:** dirty
-- **Criterios falham:** [1(invalida), 3(conflito), 6(Rule8), 7(incompleta), 8(confianca)]
-- **Bloqueio:** NO_MERGE_BASE — `git merge` retorna "refusing to merge unrelated histories"
-- **Evidencia diff lido:** toca cors.ts + 3 arquivos .github/workflows/ (Rule 8)
-- **Comentario de fechamento:** "Fechando: branch sem ancestral comum com main (NO_MERGE_BASE) — impossivel mergear sem rebase completo."
-
-#### PR #2418 — fix(ci): gitleaks allowlist
-- **Branch:** orphan sem ancestral | **Draft:** sim | **mergeable_state:** dirty
-- **Criterios falham:** [1, 3, 6, 7, 8]
-- **Bloqueio:** NO_MERGE_BASE + Rule 8 .gitleaks.toml
-- **Evidencia diff lido:** .gitleaks.toml + deploy-gates.yml + ProductFormFullscreen.tsx
-
-#### PR #2419 — fix(ci): check-security-definer-acl
-- **Branch:** orphan sem ancestral | **Draft:** sim | **mergeable_state:** dirty
-- **Criterios falham:** [1, 3, 6, 7, 8]
-- **Bloqueio:** NO_MERGE_BASE + Rule 8 workflows
-- **Evidencia diff lido:** check-security-definer-acl.mjs + deploy-gates.yml + ProductFormFullscreen.tsx
-
-#### PR #2420 — chore(db): rollback retroativo migrations
-- **Branch:** orphan sem ancestral | **Draft:** sim | **mergeable_state:** dirty
-- **Criterios falham:** [1, 3, 6, 7, 8]
-- **Bloqueio:** NO_MERGE_BASE + Rule 8 supabase/rollbacks/
-- **Evidencia diff lido:** supabase/rollbacks/ + ProductFormFullscreen.tsx + cors.ts
-
-#### PR #2422 — chore(docs): MIGRATIONS_SYNC_LOG update
-- **Branch:** orphan sem ancestral | **Draft:** sim | **mergeable_state:** dirty
-- **Criterios falham:** [1, 3, 7, 8]
-- **Bloqueio:** NO_MERGE_BASE + draft
-- **Evidencia diff lido:** MIGRATIONS_SYNC_LOG.md + ProductFormFullscreen.tsx
-
-#### PR #2452 — fix(docs): remove prefixo supabase/migrations/
-- **Branch:** session_01HW5obNKUFtUMbBdgUb94kY (REGRA #10) | **Draft:** sim | **mergeable_state:** clean
-- **Criterios falham:** [6(Rule8/REGRA10), 8(confianca)]
-- **Bloqueio:** REGRA #10 — branch de outra sessao; nao pode ser mergeada autonomamente
-- **Evidencia diff lido:** analise-prs/dossies/PR-2441.md (docs apenas); test-merge CLEAN
+```
+DECISAO_HUMANA : 11
+FECHAR         :  5  (órfãs NO_MERGE_BASE — ação do PO)
+JA_EM_MAIN     :  1
+MERGEADO_PO    :  1
+FECHADO_PO     :  1
+─────────────────────
+TOTAL          : 19
+```
 
 ---
 
-### DECISAO_HUMANA (8 PRs abertas) — Exigem Aprovacao do PO
+## PRs — DECISAO_HUMANA (11)
 
-#### PR #2415 — fix(ci): P20 node --test runner
-- **Draft:** nao | **mergeable_state:** dirty | **Rule 8:** workflows x2
-- **Criterios falham:** [3(conflito), 6(Rule8), 8(confianca)]
-- **Acao:** PO revisar mudancas nos 2 workflows e resolver conflito antes de aprovar
+| PR | Título | Conflito | REGRA#8 | REGRA#10 | Motivo principal |
+|---|---|---|---|---|---|
+| #2415 | fix(ci): P20 — exclui check-file-size-baseline.test.mjs | CONFLICT | ✅ | ✅ | CONFLICT + 2 workflows |
+| #2428 | fix(ci): .gitleaks.toml — allowlist mock tokens | CONFLICT | ✅ (gitleaks) | ✅ | CONFLICT + .gitleaks.toml |
+| #2443 | APROVAÇÃO REQUERIDA: P06/P09/P14/P15/P03 FASE B | CLEAN | ❌ | ✅ | Título exige aprovação PO; segurança |
+| #2449 | chore(migrations): E99 mirrors repair-only | CONFLICT | ✅ (migrations) | ✅ | CONFLICT + supabase/migrations/ |
+| #2452 | fix(docs): remove prefixo em PR-2441.md | CONFLICT | ❌ | ✅ | CONFLICT + outra sessão |
+| #2469 | fix(ci): e2e-personalization E42 skip ratio | CONFLICT | ✅ (workflow) | ✅ | CONFLICT + workflow |
+| #2503 | docs(ci): RELATORIO_CI Rev21 | CONFLICT | ❌ | ✅ | CONFLICT + outra sessão |
+| #2520 | chore(main): release 1.0.0 | CLEAN | ❌ | ❌ | Downgrade 1.2.1→1.0.0 (regressão) |
+| #2529 | docs(analise-prs): entregáveis sessão 01Ss1tXZ | CONFLICT | ❌ | ❌ (minha branch) | CONFLICT em analise-prs/ |
+| #2532 | docs: atualiza run refs P2b/P23/P61 | CONFLICT | ❌ | ✅ | CONFLICT + outra sessão |
+| #2537 | fix: Contract Tests usa registry ghcr.io | CLEAN | ✅ (workflow) | ❌ | REGRA#8 workflow |
 
-#### PR #2428 — fix(ci): gitleaks allowlist FPs
-- **Draft:** sim | **mergeable_state:** clean | **Rule 8:** .gitleaks.toml
-- **Criterios falham:** [6(Rule8), 8(confianca)]
-- **Test-merge:** CLEAN em main
-- **Acao:** PO revisar cada entrada de allowlist adicionada e converter de draft se aprovado
+*(#2449 aparece como supersedida por #2521, já fechada pelo PO)*
 
-#### PR #2432 — feat(qa): probe E184 legacy refs
-- **Draft:** nao | **mergeable_state:** clean | **Gate Final:** FAILURE run #40129848772
-- **REGRA #10:** branch de session_01HxRBtssJabMB3jTgNY5B9W
-- **Criterios falham:** [4(zero_erro_novo), 6(Rule8/REGRA10), 7(incompleta), 8(confianca)]
-- **4 bugs:** (1) pg_get_functiondef() em aggregates aborta; (2) pg_settings nao expoe GUCs app.*; (3) cron.job.jobname NULL omitido; (4) REGRA #10
-- **Acao:** PO fechar e recriar com bugs corrigidos
+### Detalhe: PR #2443 — APROVAÇÃO REQUERIDA
+- Branch: `claude/feat-aprovacao-p06-p09-p14-p15-p03sec-261024-2315`
+- 1 commit único: `APROVACAO_FASE_B_IMPACTO.md` (+218 linhas)
+- Merge CLEAN, sem conflito
+- Título explícito exige decisão do PO
+- Contém decisões de segurança P03/P06/P09/P14/P15 (security_definer ACL)
 
-#### PR #2443 — APROVACAO REQUERIDA: Fase B
-- **Draft:** sim | **mergeable_state:** clean
-- **Criterios falham:** [6(APROVACAO_REQUERIDA), 7(incompleta), 8(confianca)]
-- **Test-merge:** CLEAN em main
-- **Acao:** PO revisar APROVACAO_FASE_B_IMPACTO.md (P03/P06/P09/P14/P15) e converter de draft se aprovado
+### Detalhe: PR #2520 — Release 1.0.0 (release-please)
+- Criada por `github-actions[bot]` (release-please)
+- Propõe downgrade: `1.2.1 → 1.0.0` em `.release-please-manifest.json` e `package.json`
+- CHANGELOG.md +229 linhas
+- Downgrade de versão = REGRESSÃO; PO deve decidir se aceita
 
-#### PR #2449 — chore(migrations): E99 repair-only sync
-- **Draft:** sim | **mergeable_state:** dirty | **Rule 8:** supabase/migrations/
-- **Criterios falham:** [3(conflito), 6(Rule8), 8(confianca)]
-- **Acao:** PO revisar migrations E99 repair-only + resolver conflito antes de aprovar
-
-#### PR #2469 — fix(ci): e2e-personalization E42
-- **Draft:** nao | **mergeable_state:** unknown | **Rule 8:** .github/workflows/e2e-personalization.yml
-- **REGRA #10:** branch outra sessao (session_01HW5obNKUFtUMbBdgUb94kY)
-- **Criterios falham:** [2(nao_implementada), 6(Rule8/REGRA10), 8(confianca)]
-- **Acao:** PO verificar se fix foi absorvido pelo PR #2489 mergeado; fechar se redundante
-
-#### PR #2503 — docs(ci): RELATORIO_CI Rev21
-- **Draft:** sim | **mergeable_state:** clean
-- **REGRA #10:** branch outra sessao (session_01HW5obNKUFtUMbBdgUb94kY)
-- **Criterios falham:** [2(nao_implementada), 6(REGRA10), 8(confianca)]
-- **Test-merge:** CLEAN em e0be76690
-- **Acao:** PO converter de draft e mergear se RELATORIO_CI Rev21 ainda relevante (#2504 ja levou estado mais recente)
-
-#### PR #2514 — docs(pendencias): adiciona P58 — sentinel failure em 7fc20213
-- **Draft:** sim | **mergeable_state:** behind | **Rule 8:** nao (so PENDENCIAS.md)
-- **REGRA #10:** branch outra sessao (session_01HW5obNKUFtUMbBdgUb94kY)
-- **Criterios falham:** [2(nao_implementada), 3(behind), 6(REGRA10), 8(confianca)]
-- **Acao:** PO verificar se P58 ainda relevante pos-PR #2512; converter de draft + atualizar branch se quiser mergear
+### Detalhe: PR #2537 — Contract Tests registry ghcr.io
+- 1 commit: +5/-5 em `.github/workflows/contract-tests.yml` (ECR → ghcr.io)
+- Merge CLEAN, 1 commit único
+- Única pendência: REGRA#8 (workflow) — exige aprovação PO
 
 ---
 
-## Merges Autonomos Desta Sessao (13 PRs)
+## PRs — FECHAR (5 órfãs)
 
-| PR | SHA merge | Gate Final run | Conclusao |
+| PR | Título | Branch | Motivo |
 |---|---|---|---|
-| #2479 | de48ab27 | 40169270830 | success ✅ |
-| #2481 | a778e1e4 | 40170213405 | success ✅ |
-| #2486 | f761938e | 40172460728 | success ✅ |
-| #2490 | a681fe0e | 40173768324 | success ✅ |
-| #2498 | eee389ca | 40174781954 | success ✅ |
-| #2501 | e91a36e3 | 40176836399 | success ✅ |
-| #2504 | e0be7669 | 40179146830 | success ✅ |
-| #2505 | b058d97d | violacao_espere_ci | VIOLACAO: Gate 5.5 era in_progress |
-| #2509 | 8a92226e | 40182213757 | success ✅ (fix Gate 1.3) |
-| #2510 | afbd3380 | 40184102084 | success ✅ |
-| #2511 | 9c3e4492 | gate_1.3_failure | FAILURE ⚠️ — Gate 1.3 stale entries (corrigido por #2512) |
-| #2512 | 7fc20213 | 40187098020 | success ✅ (fix Gate 1.3 stale) |
-| #2513 | 801e38a5 | 40189082535 | success ✅ (deliverables rev13) |
+| #2417 | fix: cors.ts wildcard + 3 workflows cron | claude/fix-contract-mag-reader-261019-2110 | NO_MERGE_BASE |
+| #2418 | fix(ci): substitui npx gitleaks | claude/fix-gitleaks-gate-261019-1800 | NO_MERGE_BASE |
+| #2419 | fix(ci): check-security-definer-acl 504 retries | claude/fix-sync-log-ci-261019-1730 | NO_MERGE_BASE |
+| #2420 | chore(db): rollback retroativo migration | claude/fix-rollback-261019-1637 | NO_MERGE_BASE |
+| #2422 | chore(docs): MIGRATIONS_SYNC_LOG receipt | claude/chore-migrations-sync-log-261019-1600 | NO_MERGE_BASE |
 
-**Violacoes registradas:**
-- PR #2505: mergeado enquanto Gate 5.5 ainda estava `in_progress`. Os demais 11 merges seguiram a regra.
-- PR #2511 (docs rev11): causou falha Gate 1.3 pos-merge (2 entradas stale em `.migration-refs-baseline.json`). Corrigido por PR #2512 no mesmo dia.
+**Causa:** `git merge-base HEAD refs/remotes/pr/$N` retorna vazio.
+Estas branches não têm ancestral comum com `main`. Impossível mergear sem rebase completo.
+**Ação requerida do PO:** fechar manualmente no GitHub.
 
 ---
 
-## Baseline de Qualidade (Esta Sessao)
+## PRs — JÁ_EM_MAIN (1)
 
-| Metrica | Baseline | Pos-Sessao | Delta |
+| PR | Título | Cherry | Motivo |
 |---|---|---|---|
-| Testes unitarios | 429 | 429 | 0 |
-| Falhas | 0 | 0 | 0 |
-| TypeScript errors | 0 | 0 | 0 |
-| ESLint errors | 0 | 0 | 0 |
-| Regressoes de UI | 0 | 0 | 0 |
+| #2432 | feat(qa): probe E184 — detecta refs legadas | 0 commits únicos | Conteúdo já integrado em main |
 
-**Evidencia:** Gate Final run #40187098020 (SHA 7fc20213c): conclusion=success
+**Evidência:** `git cherry HEAD refs/remotes/pr/2432` retorna 0 linhas com `+`.
+**Ação requerida do PO:** fechar no GitHub (PR obsoleta).
 
 ---
 
-## Arquivos de Baseline Gerados Nesta Sessao
+## PRs fechadas durante a sessão
 
-| Arquivo | Conteudo |
+| PR | Título | Ação | Quem |
+|---|---|---|---|
+| #2521 | chore(migrations): E99 repair-only company_fields (rev2) | Fechada | PO |
+| #2538 | docs: RELATORIO_CI — Gate Final 4cb4feb4 | **Mergeada** — nova main HEAD `cb0ccedec4` | PO |
+
+---
+
+## Estado do CI
+
+### Gate Final confirmado — HEAD atual ✅
+- **Run:** #40218104943
+- **SHA:** `c113300c034fb39126274fba9aa10ef05762ab13` (PR #2540 — docs RELATORIO_CI)
+- **Conclusão:** `success`
+- **Completado em:** 2026-10-25T17:56:46Z
+- **Testes:** 429 / 0 falhas
+- **Jobs:** 17/17 passaram (Gate 0 → Gate 6, inclusive E2E Playwright)
+
+### Gate Final histórico (referência anterior)
+- Run #40214531246 — SHA `4cb4feb4` — success ✅ (2026-10-25T17:20:35Z)
+- Run #40218104943 — SHA `c113300c` — success ✅ (2026-10-25T17:56:46Z) ← atual
+
+---
+
+## Método de análise
+
+1. **Inventário:** `mcp__GITHUB_-_MCP_-_FOREVER__github_list_pull_requests` + cache local
+2. **Test-merge:** `git merge-tree $(git merge-base HEAD refs/remotes/pr/$N) HEAD refs/remotes/pr/$N` com detecção prévia de NO_MERGE_BASE
+3. **git cherry:** `git cherry HEAD refs/remotes/pr/$N | grep -c "^+"` para PRs CLEAN
+4. **REGRA#8:** detecção de `.github/workflows/`, `supabase/migrations/`, `.gitleaks.toml` no diff
+5. **REGRA#10:** verificação de prefixo de agente na branch (cross-agent)
+6. **Semântica:** leitura de título e evidência de cada PR
+
+---
+
+## Ações requeridas do PO
+
+### Imediatas
+1. **Fechar 5 PRs órfãs:** #2417, #2418, #2419, #2420, #2422
+2. **Fechar PR obsoleta:** #2432 (já em main)
+
+### Decisão técnica/negócio
+3. **PR #2537** — Aprovar troca ECR→ghcr.io em Contract Tests (merge CLEAN, baixo risco)
+4. **PR #2520** — Aceitar ou rejeitar downgrade de versão 1.2.1→1.0.0 (release-please)
+5. **PR #2443** — Revisão de segurança P03/P06/P09/P14/P15 FASE B
+
+### Conflito — resolver ou abandonar
+6. **PR #2415** — fix(ci) P20 + workflows (CONFLICT)
+7. **PR #2428** — .gitleaks.toml allowlist (CONFLICT)
+8. **PR #2449** — migrations E99 (supersedida por #2521 fechada — provavelmente descartar)
+9. **PR #2469** — e2e-personalization workflow (CONFLICT)
+10. **PR #2503** — RELATORIO_CI Rev21 (obsoleto, CONFLICT)
+11. **PR #2529** — entregáveis sessão anterior (substituída por esta sessão)
+12. **PR #2532** — docs estado run refs (CONFLICT, obsoleto)
+13. **PR #2452** — fix docs PR-2441.md (CONFLICT)
+
+---
+
+## NÃO VERIFICADO
+
+Itens que não puderam ser verificados diretamente nesta sessão por limitação de ambiente:
+
+| Item | Motivo | Alternativa usada |
+|---|---|---|
+| `npm run typecheck` local | `node_modules` ausente — npm 403 (registry `europe-west1-npm.pkg.dev`) | Gate 1 CI job 121244048940 step success (60s) — 0 erros |
+| `npm run lint:baseline` local | `node_modules` ausente | Gate 1 CI job 121244048940 step success (~2min) — 0 erros |
+| `npm run build` local | `node_modules` ausente | Gate 6 CI job 121245372874 step success (12s) |
+| `vitest` local | `node_modules` ausente | Gate 2 CI job 121244048957 — 429/0 falhas |
+| Testes com falha por nome | Execução local impossível | Nenhum — todos 429 passam (Gate 2 logs confirmam 0 falhos nomeados) |
+| Vercel preview PR #2529 | Falha de infraestrutura (projeto fantasma) | Diagnóstico: deployment `dpl_DpFQFz7H3SVu3Yw3fAS5SBu8EFW9`, estado ERROR, build ~1.9s, logs vazios. Causa: `prj_W1Zdi6BQWkAwQx5VJjpSNlZubeok`. Requer ação PO. |
+
+**Testes falhando por nome no baseline: NENHUM** (confirmado via Gate 2 logs, run #40218104943).
+
+---
+
+## Dossiers individuais — confirmação de cobertura
+
+Todos os 19 PRs analisados têm dossier em `analise-prs/dossies/`:
+
+| PR | Arquivo | Veredito |
+|---|---|---|
+| #2415 | `dossies/PR-2415.md` | DECISAO_HUMANA |
+| #2417 | `dossies/PR-2417.md` | FECHAR |
+| #2418 | `dossies/PR-2418.md` | FECHAR |
+| #2419 | `dossies/PR-2419.md` | FECHAR |
+| #2420 | `dossies/PR-2420.md` | FECHAR |
+| #2422 | `dossies/PR-2422.md` | FECHAR |
+| #2428 | `dossies/PR-2428.md` | DECISAO_HUMANA |
+| #2432 | `dossies/PR-2432.md` | JÁ_EM_MAIN |
+| #2443 | `dossies/PR-2443.md` | DECISAO_HUMANA |
+| #2449 | `dossies/PR-2449.md` | DECISAO_HUMANA |
+| #2452 | `dossies/PR-2452.md` | DECISAO_HUMANA |
+| #2469 | `dossies/PR-2469.md` | DECISAO_HUMANA |
+| #2503 | `dossies/PR-2503.md` | DECISAO_HUMANA |
+| #2520 | `dossies/PR-2520.md` | DECISAO_HUMANA |
+| #2521 | `dossies/PR-2521.md` | FECHADO_PO |
+| #2529 | `dossies/PR-2529.md` | DECISAO_HUMANA |
+| #2532 | `dossies/PR-2532.md` | DECISAO_HUMANA |
+| #2537 | `dossies/PR-2537.md` | DECISAO_HUMANA |
+| #2538 | `dossies/PR-2538.md` | MERGEADO_PO |
+
+---
+
+## Por que ZERO merges autônomos — justificativa consolidada
+
+O mandato exige todos os 8 critérios. Nenhuma das 17 PRs abertas passa nos 8:
+
+| Critério falhante | PRs afetadas |
 |---|---|
-| `analise-prs/baseline/typecheck.txt` | TypeScript 0 erros — run #40182213757 job #121135584154 |
-| `analise-prs/baseline/lint.txt` | ESLint 0 erros, 0 warnings — run #40182213757 |
-| `analise-prs/baseline/build.txt` | Build OK por transitividade — SHA dcaa20da run #40179146830 |
-| `analise-prs/baseline/state.md` | Estado final: 13 PRs (6 FECHAR + 7 DECISAO_HUMANA) |
+| **#1 Não-válida (NO_MERGE_BASE)** | #2417, #2418, #2419, #2420, #2422 |
+| **#2 JÁ_EM_MAIN (cherry=0)** | #2432 |
+| **#3 CONFLICT** | #2415, #2428, #2449, #2452, #2469, #2503, #2529, #2532 |
+| **#5 Regressão semântica (downgrade)** | #2520 (1.2.1→1.0.0) |
+| **#6 REGRA#8 (.github/workflows/)** | #2415, #2417, #2418, #2419, #2469, #2537 |
+| **#6 REGRA#8 (.gitleaks.toml)** | #2418, #2428 |
+| **#6 REGRA#8 (supabase/migrations/)** | #2449 |
+| **#6 REGRA#10 (cross-agent)** | #2415, #2428, #2432, #2443, #2449, #2452, #2469, #2503, #2532 |
+| **#8 Baixa confiança / título "APROVAÇÃO REQUERIDA"** | #2443 |
 
----
-
-## META CUMPRIDA
-
-- [x] `analise-prs/baseline/` gerado nesta sessao (4 arquivos)
-- [x] `analise-prs/regras-de-negocio.md` rev10 — 6 secoes (docs/testes/enums/migrations/policies/UI)
-- [x] `analise-prs/prs.json` atualizado — main_head=801e38a53, criterios 8 por PR, 50 PRs
-- [x] `analise-prs/prs.csv` atualizado — 55 linhas incluindo #2513 e #2514
-- [x] `analise-prs/RELATORIO_PRS.md` atualizado — este arquivo (rev14)
-- [x] `analise-prs/progresso.json` atualizado — gate_final_status_atual=success, worktrees_removidos, criterios_mergear_por_pr
-- [x] Dossies para todos os 14 PRs abertos (PR-2415 a PR-2514)
-- [x] 100% diffs lidos (evidencia por PR no prs.json)
-- [x] Test-merge para todos os 14 PRs abertos (NO_MERGE_BASE para orfaos, resultado documentado)
-- [x] Criterios MERGEAR avaliados (8 criterios x 14 PRs) — todos documentados
-- [x] Worktree removido: /tmp/fix-gate13 (`git worktree remove --force`)
-- [x] Gate Final pos-merge: run #40189082535 conclusion=success (main HEAD 801e38a53)
-- [x] Comparacao baseline: 429 testes / 0 falhas — inalterada
-- [x] Violacao registrada: PR #2505 mergeado antes do Gate Final completar
+**PRs CLEAN sem CONFLICT:** #2432 (JÁ_EM_MAIN), #2443 (REGRA#10 + segurança), #2520 (downgrade), #2537 (REGRA#8 workflow).
+Nenhuma das quatro escapa de ao menos um bloqueio legítimo pelo CLAUDE.md.
