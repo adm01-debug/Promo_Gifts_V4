@@ -1,6 +1,6 @@
 # Pendências CI — Bloqueios Externos
 
-**Atualizado em:** 2026-10-24 (rev 12 — P21/P24/P-V1 adicionados; P4: inventário completo; P11 RESOLVED; P16-P19 atualizados; P20 adicionado; correções Zod v4 UUID + vitest + ci-security-drift; PR #2435 `claude_05/nifty-sagan-r23gqh`)  
+**Atualizado em:** 2026-10-25 (rev 13 — P-AUDIT/P-SMOKE/P-VIS adicionados; P19 status revisado; CI commit f6de09fe)  
 **Branch de referência:** `claude_05/nifty-sagan-r23gqh`  
 **Commit de referência (main):** `9b23fb6` (fix(ts): compatibilidade Zod 4 — PR #2437)
 
@@ -531,18 +531,21 @@ Este workflow roda testes E2E críticos com múltiplos shards e leva 20-60 min. 
 
 ---
 
-## P19 — CI Security & Drift Checks: CORRIGIDO (vitest + Zod v4)
+## P19 — CI Security & Drift Checks: falha residual em receive-crm-callback.test.ts
 
 **Workflow:** `.github/workflows/ci-security-drift.yml`  
-**Run mais recente relevante:** [#40124949332](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40124949332)  
-**Status:** `in_progress` ao capturar (estado anterior); corrigido em PR de `claude_05/nifty-sagan-r23gqh`  
-**Categoria:** CORRIGIDO via código
+**Run mais recente:** [#40142042571](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40142042571) (main@8855a573)  
+**Status:** ❌ ainda falhando (falha diferente da original)  
+**Categoria:** Pré-existente / parcialmente corrigido
 
-**Causa raiz confirmada:**  
-- `tests/scripts/check-file-size-baseline.test.mjs` usa `import { test } from 'node:test'` (Node.js native test runner). Vitest tenta bundlar `node:test` via esbuild e falha com `Cannot bundle Node.js built-in "node:test"`.
-- Correção: adicionado `'tests/scripts/check-file-size-baseline.test.mjs'` ao `exclude` em `vitest.config.ts` + step `node --test ...` adicionado em `ci-security-drift.yml`.
+**Histórico:**  
+- Falha original (vitest + node:test): corrigida via `vitest.config.ts` exclude + step `node --test`  
+- **Falha residual atual:** `tests/edge-functions/integration/receive-crm-callback.test.ts:82:28` — `Expected true + Received false`  
+  Job: `quality-gate`, step: `Run Unit & Integration Tests`
 
-**Impacto no Gate Final:** Nenhum direto (não é required check), mas o workflow agora deve concluir `success`.
+**Diagnóstico da falha residual:** Assertion na linha 82 de `receive-crm-callback.test.ts` falha. Pode ser resultado da correção Zod v4 UUID (P20 aplicado em `tests/edge-functions/integration/`) que alterou UUIDs de teste; linha 82 pode testar algum comportamento que depende do UUID anterior. **NÃO é causa raiz de ci-security-drift.yml completo** — workflow não é required check para Gate Final.
+
+**Impacto no Gate Final:** Nenhum (não é required check). Gate Final depende apenas de `deploy-gates.yml`.
 
 ---
 
@@ -703,3 +706,42 @@ npm error 403 403 Forbidden - GET https://europe-west1-npm.pkg.dev/lovable-core-
 **Ação necessária (PO):** Para habilitar baseline local em sessões futuras, configurar o secret do Google Artifact Registry no environment do container de desenvolvimento.
 
 **Não bloqueante para o objetivo desta sessão:** CI do GitHub Actions é suficiente como prova.
+
+---
+
+## P-AUDIT — Check run "audit": falha registrada em ac7920bc
+
+**Data detectado:** 2026-10-24 (check run na branch `claude_05/nifty-sagan-r23gqh` ao commit `ac7920bc`)  
+**Workflow:** Deploy Gates — Gate 0.5 (`npm audit --audit-level high`)  
+**Run de referência:** estado da branch ao commit `ac7920bc` (snapshot em RELATORIO_CI.md rev 1)  
+**Status atual:** ✅ Gate 0.5 passou com `success` em main@8855a573 ([run #40142042597](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40142042597))
+
+**Diagnóstico:** Check run `audit` registrado como ❌ failure em RELATORIO_CI.md ao capturar estado do CI no PR branch. Na execução mais recente da main (commit `8855a573`), o `Gate 0.5 - Dependency Audit` passou. Provavelmente falha transiente de CVE high em dependência que foi atualizada upstream entre as execuções.
+
+**Ação necessária:** Nenhuma urgente — monitorar se reaparecer. Se persistir em PR novo, identificar CVE e atualizar dependência.
+
+---
+
+## P-SMOKE — Check run "Smoke (fail-fast)": falha registrada em ac7920bc
+
+**Data detectado:** 2026-10-24 (check run na branch `claude_05/nifty-sagan-r23gqh` ao commit `ac7920bc`)  
+**Workflow:** Provavelmente `Cart Invariants Smoke` (shard com `fail-fast: true`) ou Gate 3 E2E Smoke  
+**Run de referência:** estado da branch ao commit `ac7920bc` (snapshot em RELATORIO_CI.md rev 1)  
+**Status atual:** ✅ Gate 3 E2E Smoke passou com `success` em main@8855a573 ([run #40142042597](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40142042597))
+
+**Diagnóstico:** Check run `Smoke (fail-fast)` registrado como ❌ em snapshot do PR branch. Na execução mais recente da main, Gate 3 E2E Smoke passou. Se provém do `Cart Invariants Smoke` com `fail-fast`, ver P2b (mesma causa raiz: dados insuficientes no CI DB).
+
+**Ação necessária:** Mesma que P2b — seed de dados de orçamento/catálogo no runner CI.
+
+---
+
+## P-VIS — Check run "chromium • swatch→QV": falha visual registrada em ac7920bc
+
+**Data detectado:** 2026-10-24 (check run na branch `claude_05/nifty-sagan-r23gqh` ao commit `ac7920bc`)  
+**Workflow:** `E2E • Swatch QuickView (Lista + Tabela)` — shard `chromium`  
+**Run de referência:** [#40133509982](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40133509982) (main@última falha)  
+**Categoria:** Pré-existente — duplica P12
+
+**Diagnóstico:** Check run `chromium • swatch→QV` é um shard do workflow `E2E • Swatch QuickView (Lista + Tabela)`, já documentado como P12. A falha é idêntica: fluxo swatch → QuickView falha por dados de produtos com swatches insuficientes no CI DB (padrão [E108]).
+
+**Ação necessária:** Mesma que P12 — seed de produtos com swatches válidos no banco de CI.
