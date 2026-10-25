@@ -10,12 +10,63 @@
 - **Run #40214531246** — SHA `4cb4feb4` — success ✅ (2026-10-25T17:20:35Z) ← referência anterior
 
 ## Testes
-- **429 testes / 0 falhas** (baseline inalterada — confirmado run #40214531246)
+- **429 testes / 0 falhas** — confirmado via logs do Gate Final run #40218104943 (job 121244048957)
 
-## Ambiente local
-- `npm install`: **FALHA 403** — registry `europe-west1-npm.pkg.dev` sem credenciais neste container; `node_modules` ausente confirmado (`ls node_modules/.bin/tsc` → not found)
-- `typecheck / lint / vitest local`: **NÃO EXECUTADO** — impossível sem `node_modules`; limitação permanente do container, não negligência
-- Baseline de CI usada: Gate Final GitHub Actions (autoritativo) — run #40218104943 (429 testes / 0 falhas)
+### Suítes de teste por nome (Gate 2 — job 121244048957, SHA `c113300c`)
+
+| Comando | Arquivos | Tests passados | Tests falhando |
+|---|---|---|---|
+| `npm run test:deploy-gate` | 3 | **334** | **0** |
+| `npm run test:webhook-scenario-matrix` | 1 | **95** | **0** |
+| **Total** | **4** | **429** | **0** |
+
+**Testes falhando por nome: NENHUM** — todas as 429 assertions passaram.
+
+Evidência direta dos logs (job 121244048957, 2026-10-25T17:49:51–17:54:26Z):
+```
+Test Files  3 passed (3)
+      Tests  334 passed (334)    ← npm run test:deploy-gate
+   Start at  14:49:51
+   Duration  4.40s
+
+Test Files  1 passed (1)
+      Tests  95 passed (95)     ← webhook-scenario-matrix
+   Start at  14:49:56
+   Duration  1.24s
+```
+
+## Typecheck / Lint / Build — evidência de CI (Gate Final run #40218104943)
+
+Container não tem `node_modules` (npm 403 ao registry privado `europe-west1-npm.pkg.dev`).
+Execução local impossível. Baseline extraída diretamente dos logs do CI autoritativo.
+
+### Typecheck (Gate 1 — job 121244048940, step "Run npm run typecheck")
+- **Resultado: 0 erros** (conclusion=success)
+- Período: 2026-10-25T17:49:49Z → 17:50:49Z (~60s)
+- Evidência: step conclusion=success no job 121244048940
+
+### Lint (Gate 1 — job 121244048940, step "Run npm run lint:baseline")
+- **Resultado: 0 erros** (conclusion=success)
+- Período: 2026-10-25T17:50:49Z → 17:52:51Z (~2min)
+- Evidência: step conclusion=success no job 121244048940
+
+### Build (Gate 6 — job 121245372874, step "Run npm run build")
+- **Resultado: success** (conclusion=success)
+- Período: 2026-10-25T17:55:04Z → 17:55:16Z (~12s)
+- Evidência: step conclusion=success no job 121245372874; SBOM + build provenance attestation gerados
+
+### Sub-gates Gate 1 (42 steps — todos success)
+Todos os 42 sub-steps do job `static-gates` (Gate 1) tiveram conclusion=success:
+Gates 1.1–1.18 inclusive (Product fields, types drift, migration contracts, bundle size,
+ratchets TODO/FIXME/`as any`, indexed-access, workflow contracts, RLS policies, secrets inventory,
+CODEOWNERS, ledger de conflitos, etc.)
+
+**Baseline de CI (run #40218104943, SHA `c113300c`):**
+- typecheck: **0 erros**
+- lint: **0 erros**
+- build: **success**
+- testes: **429 / 0 falhas**
+- Testes falhando por nome: **NENHUM**
 
 ## Git worktrees — confirmação
 ```
