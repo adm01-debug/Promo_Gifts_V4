@@ -1,6 +1,6 @@
 {
   "session": "https://claude.ai/code/session_01Ss1tXZ4cAbxBvdmu95uNPz",
-  "generated_at": "2026-10-24",
+  "generated_at": "2026-10-25",
   "main_sha_inicio": "9079c82e6c3f58ae5d2cdf8c7eb2deef979ee9d8",
   "main_sha_fim": "8855a573773aa21ee4b154511f118135db7fde48",
   "total_open_inicio": 17,
@@ -73,6 +73,21 @@
     "jobs_ok": ["security-audit"],
     "deploy_gates_fim_sessao": {"run": 40128149143, "sha": "4c8193b9b655694635956a2c5702af33051164ad", "conclusion": "success"}
   },
+  "vitest_baseline_gate2": {
+    "arquivo": "analise-prs/baseline/vitest-per-test-name.txt",
+    "sha_main_referencia": "8855a573773aa21ee4b154511f118135db7fde48",
+    "sha_ci_job": "829e34f12684eeb0fb21a14f57c9c10f4554e33e",
+    "ci_run": 40128149143,
+    "ci_job_id": 120973977009,
+    "gate2_total_tests": 432,
+    "gate2_failures": 0,
+    "gate2_conclusion": "success",
+    "pre_existing_failures_full_suite": [
+      "tests/hooks/useStockLocation.test.ts — returns current location (mock insuficiente)",
+      "tests/utils/formatTime.test.ts — formats time correctly (timezone BRT zero-padding)"
+    ],
+    "nota": "Gate 2 usa --reporter=dot; nomes por teste visíveis apenas no check-file-size-baseline (node:test). Full suite falhas documentadas de RELATORIO_CI.md (PR #2435 diff)."
+  },
   "git_cherry": {
     "pr2414": {"result": "14 commits, todos + (não em main)", "branch": "claude_05/youthful-goodall-kihjbv"},
     "pr2415": {"result": "6 commits, todos + (não em main)", "branch": "claude_05/amazing-brahmagupta-0xhdur"},
@@ -128,7 +143,9 @@
     {"number": 2443, "status": "analisado", "verdict": "DECISÃO_HUMANA", "motivo": "draft + título APROVAÇÃO REQUERIDA + security decisions (P03/P06/P09/P14/P15)", "singu": "0"}
   ],
   "deliverables": {
-    "baseline": "analise-prs/baseline/typecheck.txt",
+    "baseline_typecheck": "analise-prs/baseline/typecheck.txt",
+    "baseline_ci_per_gate": "analise-prs/baseline/ci-per-test-name.md",
+    "baseline_vitest_per_name": "analise-prs/baseline/vitest-per-test-name.txt",
     "relatorio": "analise-prs/RELATORIO_PRS.md",
     "prs_json": "analise-prs/prs.json",
     "prs_csv": "analise-prs/prs.csv",

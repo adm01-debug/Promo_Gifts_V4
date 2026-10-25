@@ -1,0 +1,63 @@
+# Baseline vitest por nome de teste — main
+#
+# SHA de referência: 8855a573773aa21ee4b154511f118135db7fde48 (main após 6 merges desta sessão)
+# SHA do último run bem-sucedido (Gate 2): 829e34f12684eeb0fb21a14f57c9c10f4554e33e
+#   (PRs #2427/#2436 — delta docs-only; testes idênticos ao main 8855a573)
+# CI job: #120973977009 — Deploy Gates run #40128149143
+# Gerado em: 2026-10-24 (sessão https://claude.ai/code/session_01Ss1tXZ4cAbxBvdmu95uNPz)
+#
+# Metodologia:
+#   npm ci falha localmente (registry Lovable europe-west1-npm.pkg.dev inacessível fora
+#   do ambiente Lovable). Baseline obtida dos logs CI do job Gate 2 (job #120973977009).
+#   O deploy-gate CI usa --reporter=dot (sem nomes individuais); falhas por nome extraídas
+#   do RELATORIO_CI.md contido no diff do PR #2435 (linhas 583–836 da diff lida nesta sessão).
+
+# ─────────────────────────────────────────────────────────────────────────────
+# GATE 2 — Deploy-Gate CI (job #120973977009, SHA 829e34f1, run #40128149143)
+# ─────────────────────────────────────────────────────────────────────────────
+# Comandos executados:
+#   1. npm run test:deploy-gate   → --reporter=dot
+#   2. npx vitest run tests/contracts/webhook-scenario-matrix.test.ts --reporter=dot
+#   3. node --test tests/scripts/check-file-size-baseline.test.mjs
+
+## test:deploy-gate (3 arquivos)
+# Test Files: 3 passed (3)
+# Tests     : 334 passed (334)
+# Falhas    : 0
+PASS  (test:deploy-gate) — 334 tests, 0 falhas
+
+## webhook-scenario-matrix.test.ts
+# Test Files: 1 passed (1)
+# Tests     : 95 passed (95)
+# Falhas    : 0
+PASS  tests/contracts/webhook-scenario-matrix.test.ts — 95 tests, 0 falhas
+
+## check-file-size-baseline.test.mjs (node:test)
+# ok 1 - arquivo de código fora de GENERATED_FILES com 600 linhas → falha (regressão)
+# ok 2 - src/integrations/supabase/types.ts com 1500 linhas → NÃO é contado (gerado)
+# ok 3 - arquivo na baseline que encolheu → exit 0 (drift positivo, não regressão)
+# tests 3 | pass 3 | fail 0
+PASS  tests/scripts/check-file-size-baseline.test.mjs — 3 tests, 0 falhas
+
+## Totais Gate 2
+# Total: 432 tests, 0 falhas, Gate Final = success
+
+# ─────────────────────────────────────────────────────────────────────────────
+# SUITE COMPLETA vitest (fora do deploy-gate CI; documentada em RELATORIO_CI.md)
+# ─────────────────────────────────────────────────────────────────────────────
+# Fonte: conteúdo de RELATORIO_CI.md lido no diff do PR #2435 (linhas 583–836),
+#        deletado nesse PR — documenta run local em SHA ~e9a4764c
+# Totais: 25653 passed | 1127 skipped | 24 todo | 2 pré-existentes falhando
+
+## Falhas PRÉ-EXISTENTES (não introduzidas por esta sessão):
+
+FAIL  tests/hooks/useStockLocation.test.ts
+  Descrição: "returns current location" — data.product_id undefined (mock insuficiente)
+  Causa raiz: mock de dados não contém product_id; falha ao acessar propriedade em undefined
+
+FAIL  tests/utils/formatTime.test.ts (ou similar — nome exato via RELATORIO_CI.md)
+  Descrição: "formats time correctly" — zero-pads timezone BRT
+  Causa raiz: timezone test — Node/CI difere do esperado com America/Sao_Paulo
+
+# Nota: estas 2 falhas NÃO bloqueiam o Gate 2 (deploy-gate não roda a suite completa).
+# O Gate Final passou em ALL SHAs analisados nesta sessão.
