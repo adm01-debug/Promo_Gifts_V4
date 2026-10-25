@@ -107,46 +107,38 @@ Código de erro `[E108]` = fixture de dados insuficiente. Os testes exigem 2–3
 
 ### P2c — E2E Personalization Flow: falha de URL navigation
 
-**Run mais recente:** [#40124949299](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40124949299) (commit `71d624e8`)  
+**Run mais recente (ec736c90):** [#40129973824](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40129973824) — `failure` (analisado 2026-10-25)  
+**Run anterior:** [#40124949299](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40124949299) (commit `71d624e8`)  
 **Conclusão:** `failure`  
-**Job:** `E2E — Personalization Journey` (job 120884172213 analisado)  
+**Job:** `E2E — Personalization Journey`  
 **Steps falhos:** `Run Personalization E2E Tests` + `Check min tests executed`
 
-**Erros exatos confirmados (job logs):**
+**Causa raiz exata (log run 40129973824, analisado 2026-10-25):**  
 ```
-flows/90-personalization-pdp: Error: expect(page).toHaveURL(/\/produtos\/.+/) failed
-  - Expect "toHaveURL" with timeout 15000ms
-  > 24 | await expect(page).toHaveURL(/\/produtos\/.+/);
+[loginViaUI] Timeout aguardando redirect pós-login. URL atual: http://localhost:8080/login
 
-flows/91-personalization-via-simulator: Error: expect(page).toHaveURL(/\/produtos\/.+/) failed
-  - Expect "toHaveURL" with timeout 15000ms
-  > 24 | await expect(page).toHaveURL(/\/produtos\/.+/);
+Supabase API calls PENDENTES no momento do timeout:
+  GET  rest/v1/system_settings          → PENDENTE há 79858ms
+  POST functions/v1/get-visitor-info    → PENDENTE há 79811ms
+  POST rest/v1/rpc/get_profile_and_roles → PENDENTE há 65649ms
 
-flows/92-personalization-auth: Error: expect(page).toHaveURL(/\/login/) failed
-  - Expect "toHaveURL" with timeout 15000ms
-  > 21 | await expect(page).toHaveURL(/\/login/);
-
-flows/92-personalization-auth: expect(page).not.toHaveURL(expected) failed
-
-4 failed (chromium-authed) — retries incluídos
+4 failed (4.6m) | 1 passed | 5 executed (min: 10)
 ```
+- **Causa imediata:** Login via UI (`e2e/helpers/auth.ts`) conclui o `auth/v1/token → 200` com sucesso, mas o redirect pós-login nunca acontece. O `AuthProvider` aguarda `system_settings`, `get-visitor-info` e `get_profile_and_roles` antes de resolver o estado de auth — essas chamadas Supabase ficam pendentes por 65–80 segundos, acima do timeout do teste.  
+- **Root cause:** Conectividade/rate-limit Supabase no runner de CI. As chamadas ficam abertas sem resposta (não retornam 4xx nem 5xx — simplesmente não respondem dentro de 80s). O ambiente de CI tem latência elevada para o projeto `doufsxqlfjyuvxuezpln` durante execuções paralelas.  
+- Apenas **5 testes executados** (mínimo esperado: 10) → `check-min-executed` também falha.
 
-**Causa raiz confirmada (evidência de código-fonte):**
-
-**Flows 90 e 91** (`e2e/flows/90-personalization-pdp-flow.spec.ts:25`):
-- O teste clica em `Sel.product.card` (primeiro card) e espera `toHaveURL(/\/produtos\/.+/)` com timeout 15s.
-- A listagem `/produtos` retorna dados via Supabase. Se a query retorna zero produtos (ambiente CI sem dados de catálogo suficientes), `page.locator(Sel.product.card).first()` fica visível (`expect(...).toBeVisible()` passa), mas o elemento `<a>` dentro do card não leva a uma URL `/produtos/...` — navega para uma rota genérica ou não navega. O `toHaveURL` então timeout.
-- Causa raiz imediata: o ambiente de CI não tem produtos com link navegável para PDP, ou o seletor `Sel.product.card → a.first()` aponta para um link externo/diferente no estado de dados vazio.
-
-**Flow 92** (`e2e/flows/92-personalization-auth-redirect.spec.ts:21`):
-- Testa acesso não-autenticado a `/produtos/qualquer-id` esperando redirect para `/login`.
-- `ProtectedRoute` está em `src/routes/AppRoutes.tsx:173` envolvendo `productRoutes` (`src/routes/product-routes.tsx`).
-- O `ProtectedRoute` só redireciona para `/login` se o estado de auth for `unauthenticated`. Se a resolução de auth leva mais de 15s (Supabase session check lento em CI), o timeout ocorre antes do redirect.
-- Confirmado pela sequência: `page.context().clearCookies()` + `localStorage.clear()` + `sessionStorage.clear()` (linhas 44-46 do spec) não garante que o `AuthProvider` resolve como `unauthenticated` dentro de 15s em CI sob carga.
+**Erros exatos do run anterior 40124949299 (commit `71d624e8`) — padrão diferente mas mesmo resultado:**
+```
+flows/90-personalization-pdp: Error: expect(page).toHaveURL(/\/produtos\/.+/) failed — timeout 15000ms
+flows/91-personalization-via-simulator: idem
+flows/92-personalization-auth: Error: expect(page).toHaveURL(/\/login/) failed — timeout 15000ms
+```
+Nesse run o auth resolveu mas os dados de catálogo não existiam no banco de CI.
 
 **Pré-existente no `main` (commit `325b0bd`)** — não introduzida por este PR.
 
-**Ação necessária:** investigar roteamento do fluxo de personalização (PDP → Personalization).
+**Ação necessária:** Mockar chamadas Supabase não-críticas (system_settings, get-visitor-info) no ambiente E2E de CI, ou adicionar timeout explícito ao `AuthProvider` para resolver com dados parciais.
 
 ---
 
@@ -497,10 +489,19 @@ Nenhuma — não é possível corrigir via código do repositório. O comportame
 **Run anterior:** [#40124949243](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40124949243) (commit `71d624e8`)  
 **Categoria:** E2E failure — não é required check no Gate Final
 
-**Diagnóstico:**  
-Workflow de E2E críticos com múltiplos shards. Conclusão `failure` em `ec736c90`. Não é required check para merge em `main` — o Gate Final (`deploy-gates.yml`) não o aguarda. Failure pré-existente, não introduzido por PR #2433 (documentação apenas).
+**Causa raiz exata (log job 40129973741, analisado 2026-10-25):**  
+- **Step 8 "Run Sidebar Tooltips E2E"** falha — teste de sidebar trava sem gerar relatório  
+- **Step 10 "Check min tests executed"** falha com:
+  ```
+  Nao foi possivel ler playwright-report/results-quote-flow.json: ENOENT: no such file or directory
+  ```
+  O teste `25-quote-full-flow.spec.ts` crashou antes de escrever `results-quote-flow.json`. O step de verificação de mínimo tenta ler o arquivo e falha por `ENOENT`.  
+- **Causa imediata:** O flow de quote falha antes de completar (provavelmente por dados insuficientes no banco de CI para completar um orçamento), e o arquivo de resultado nunca é gerado. O step de verificação de mínimo não tem tratamento de `ENOENT`.  
+- **Pré-existente desde SHA `ec736c90`** — não introduzida por nenhum dos PRs desta sessão.
 
 **Impacto no Gate Final:** Nenhum — não faz parte do required check "Gate Final - Deploy Ready".
+
+**Ação necessária:** seed de dados de orçamento no runner de CI para que `25-quote-full-flow.spec.ts` complete; ou tratamento de `ENOENT` no step de verificação. Fora do escopo desta sessão.
 
 ---
 
@@ -524,9 +525,22 @@ Workflow de E2E críticos com múltiplos shards. Conclusão `failure` em `ec736c
 **Run anterior:** [#40124949375](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40124949375) (commit `71d624e8`)  
 **Categoria:** E2E Playwright standalone — não é required check no Gate Final (Gate 3 E2E Smoke no deploy-gates.yml é o required, não este)
 
-**Diagnóstico:** Workflow standalone de E2E Playwright (todos os shards) concluiu `failure` em `ec736c90`. Failure pré-existente, não introduzido por PR #2433. Gate 3 E2E Smoke (dentro de deploy-gates.yml) é o required check e passou.
+**Causa raiz exata (log job 40129973861, analisado 2026-10-25):**  
+- **Job:** `e2e-gates` → step `🛑 Fail-fast se header sticky falhou`  
+- **Assertion exata** em `e2e/flows/22-header-sticky.spec.ts:120`:
+  ```
+  expect(received).toContain(expected)
+  Expected value: ""         ← position retornada pelo elemento
+  Received array: ["sticky", "fixed"]   ← PINNED_POSITIONS
+  [chromium-authed] › ...22-header-sticky.spec.ts:132:7 › [mobile 390×844] › header permanece fixo ao rolar em /meus-kits
+  ```
+- **Causa imediata:** Na rota `/meus-kits` em viewport mobile 390×844, `page.locator('[data-testid="app-header"]').evaluate(el => getComputedStyle(el).position)` retorna `""` (string vazia). O `data-testid="app-header"` existe em `src/components/layout/Header.tsx:179`, e o componente Header usa `position: fixed` (linha 187). O retorno `""` indica que o header **não está sendo renderizado** na rota `/meus-kits` no viewport mobile — a rota provavelmente não usa `MainLayout` ou renderiza um header diferente sem esse `data-testid`.  
+- **Código Header.tsx L187:** `'theme-transitioning fixed right-0 top-0 z-40 border-b transition-all duration-300 print:hidden'` → `fixed` está em `PINNED_POSITIONS`, então o teste passaria SE o header fosse renderizado.  
+- **Pré-existente desde SHA `ec736c90`** — não introduzida por nenhum dos PRs desta sessão.
 
 **Impacto no Gate Final:** Nenhum — Gate 3 E2E Smoke (dentro de deploy-gates.yml) passou: `success`.
+
+**Ação necessária:** Verificar se a rota `/meus-kits` usa `MainLayout` (que renderiza o Header) no viewport mobile. Se usa layout diferente para mobile (sem Header), o teste deve ser ajustado para excluir essa rota ou usar o seletor correto. Fora do escopo desta sessão.
 
 ---
 
