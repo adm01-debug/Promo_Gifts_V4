@@ -1,8 +1,8 @@
 # RELATÓRIO DE PRs — Promo Gifts V4
 **Sessão:** https://claude.ai/code/session_01Ss1tXZ4cAbxBvdmu95uNPz  
 **Data:** 2026-10-25  
-**main HEAD:** `a778e1e467a92c5db46f6cc844eb0e48452040fa`  
-**Baseline CI:** 429 testes, 0 falhas — Gate Final run #40170213405 SUCCESS
+**main HEAD:** `f761938ece2939d5564d6ba51bcd0feb487ce057`  
+**Baseline CI:** 429 testes, 0 falhas — Gate Final run #40172460728 SUCCESS
 
 ---
 
@@ -10,29 +10,28 @@
 
 | Métrica | Valor |
 |---|---|
-| PRs analisadas | 42 (#2414–#2484) |
-| PRs abertas atuais | 14 |
-| Merges autônomos esta sessão | 2 (PR #2479 e #2481) |
+| PRs analisadas | 41 (#2414–#2484) |
+| PRs abertas atuais | 15 |
+| Merges autônomos esta sessão | 3 (PR #2479, #2481 e #2486) |
 | Regressões introduzidas | 0 |
 | Migrations pendentes de deploy | 0 |
 | Edge functions pendentes de deploy | 0 |
 
-### Contagem por Veredito (todos os 42 PRs)
+### Contagem por Veredito (todos os 41 PRs — categorias não sobrepostas)
 
 | Veredito | Quantidade |
 |---|---|
-| MERGEAR (mergeadas autonomamente) | 13 |
-| DECISÃO_HUMANA (aguarda PO) | 12 |
-| DECISÃO_HUMANA→MERGEADO_PO | 10 |
-| FECHAR | 9 |
-| IMPOSSÍVEL | 5 |
-| MERGEADO (por outra sessão) | 2 |
+| MERGEAR (mergeadas autonomamente, inclui 3 deliverables) | 15 |
+| MERGEADO_PO (mergeadas pelo PO antes ou durante a sessão) | 10 |
+| DECISÃO_HUMANA (aguarda PO, atualmente abertas) | 7 |
+| FECHAR (8 abertas + 1 já fechada #2424) | 9 |
+| **Total** | **41** |
 
 ---
 
-## PRs Abertas Atuais (14)
+## PRs Abertas Atuais (15)
 
-### FECHAR (7 PRs) — Branches Órfãs / REGRA #10
+### FECHAR (8 PRs) — Branches Órfãs / REGRA #10
 
 #### PR #2417 — fix: cors.ts + 3 workflows
 - **Branch:** outra sessão | **Draft:** sim
@@ -63,6 +62,11 @@
 - **Branch:** session_01HW5obNKUFtUMbBdgUb94kY (REGRA #10) | **Draft:** sim
 - **Evidência:** Diff: analise-prs/dossies/PR-2441.md (docs apenas). REGRA #10: branch alheia
 - **Comentário de fechamento:** "Fechando: branch de outra sessão (REGRA #10) — não é possível mergear autonomamente. Conteúdo docs-only pode ser resubmetido se ainda relevante."
+
+#### PR #2471 — docs(ci): RELATORIO_CI rev9-13 + PENDENCIAS P16/P18/P19 + migration-refs-baseline
+- **Branch:** session_01Nc1nb7PArDnixYvvZssnKy (REGRA #10) | **Draft:** sim
+- **Evidência:** draft:true + dirty (CONFLITO) + REGRA #10 branch sessão session_01Nc1nb7PArDnixYvvZssnKy; 3 arquivos docs
+- **Comentário de fechamento:** "Fechando: branch de outra sessão (REGRA #10) com conflito. Conteúdo docs pode ser resubmetido a partir do main atual se ainda relevante."
 
 #### PR #2484 — docs(ci): PENDENCIAS.md P41 — regressão Branch Protection Sentinel
 - **Branch:** `claude/docs-p41-sentinel-regressao-261025-0640` (session_01Nc1nb7PArDnixYvvZssnKy) | **Draft:** não
@@ -140,7 +144,12 @@
 
 ### PR #2481 — docs(analise-prs): deliverables finais rev4
 - **SHA merge:** `a778e1e467a92c5db46f6cc844eb0e48452040fa`
-- **Gate Final:** check #121100860767, run #40170213405 — **conclusion=success** ✅
+- **Gate Final:** run #40170213405 — **conclusion=success** ✅
+- **Baseline:** 429 testes, 0 falhas — **inalterada**
+
+### PR #2486 — docs(analise-prs): deliverables rev5
+- **SHA merge:** `f761938ece2939d5564d6ba51bcd0feb487ce057`
+- **Gate Final:** run #40172460728 — **conclusion=success** ✅
 - **Baseline:** 429 testes, 0 falhas — **inalterada**
 
 ---
@@ -156,6 +165,11 @@
 - **SHA:** `a778e1e467a92c5db46f6cc844eb0e48452040fa`
 - **Gate Final:** run #40170213405 — conclusion=success ✅
 - **Mergeado em:** 2026-10-25T07:00:00Z
+
+### PR #2486 — docs(analise-prs): deliverables rev5
+- **SHA:** `f761938ece2939d5564d6ba51bcd0feb487ce057`
+- **Gate Final:** run #40172460728 — conclusion=success ✅
+- **Mergeado em:** 2026-10-25T07:21:27Z
 
 ---
 
@@ -182,12 +196,12 @@
 
 | Critério | Evidência |
 |---|---|
-| Diffs lidos (100%) | Tabela "Diffs Lidos" — 15 PRs abertas lidas (14 atuais + #2471 fechado) |
-| CI-vs-baseline após merge | PRs #2479 e #2481 docs-only → Gate não dispara em paths-ignore; baseline 429/0 inalterada |
+| Diffs lidos (100%) | Tabela "Diffs Lidos" — 15 PRs abertas lidas |
+| CI-vs-baseline após merge | PRs #2479/#2481/#2486 docs-only → Gate não dispara em paths-ignore; baseline 429/0 inalterada. Gate Final run #40172460728 (f761938e) = success |
 | regras-de-negocio.md | Entregue em PR #2479 (SHA de48ab27) |
-| prs.csv | Este PR (analise-prs/prs.csv) — 42 PRs |
-| progresso.json | Este PR (analise-prs/progresso.json) |
-| prs.json | Este PR (analise-prs/prs.json) |
+| prs.csv | analise-prs/prs.csv — 41 PRs (38 conteúdo + 3 deliverables) |
+| progresso.json | analise-prs/progresso.json — 41 PRs, 15 abertas, contagem não-sobreposta soma=41 |
+| prs.json | analise-prs/prs.json — 15 PRs abertas (inclui #2471) |
 | RELATORIO_PRS.md | Este arquivo |
 | Comentários de fechamento | Textos nas seções FECHAR acima |
 | Baseline por nome de teste | analise-prs/baseline/vitest-per-test-name.txt — CI run #40150209361 |
