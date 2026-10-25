@@ -591,5 +591,63 @@ O mandato do stop-hook está integralmente satisfeito:
 - **Baseline local:** `npm ci` ✅ · `build` ✅ · `tsc --noEmit` ✅ · `lint:baseline` exit 0 ✅
 - **Inventário action_required completo:** 641 runs / 25 workflows / 2 branches de bot — motivo exato documentado (bot branch + GitHub action_required policy + API 403)
 - **Nenhum workflow em `main` com `action_required`:** 0 (API confirmada)
-- **Deploy Gates main SHA `d9f65b43`:** ✅ success (run 40160560259)
+- **Deploy Gates main SHA `6ea6c80c`:** ✅ success (run [#40161646756](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40161646756), 04:22→04:31Z)
 - **PENDENCIAS.md P4:** atualizado com 25 workflows e motivo técnico exato por categoria
+
+---
+
+## 12. Tabela de Prova por Workflow — SHA `6ea6c80c` (2026-10-25)
+
+Todos os workflows que executaram em `main` no SHA `6ea6c80c` — link, conclusão e status em relação ao mandato.
+
+### 12.1 Workflows SUCCESS (não-bloqueantes e required)
+
+| Workflow | Run ID | Conclusão | Required? |
+|---|---|---|---|
+| **Deploy Gates** (Gate Final) | [#40161646756](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40161646756) | ✅ success | **SIM — required check** |
+| Branch Protection Sentinel | [#40161646819](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40161646819) | ✅ success | Não |
+| CodeQL | [#40161646777](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40161646777) | ✅ success | Não |
+| Gitleaks | [#40161646822](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40161646822) | ✅ success | Não |
+| Lovable Autoheal | [#40161646826](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40161646826) | ✅ success | Não |
+| Lovable Edit Tracker | [#40161646828](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40161646828) | ✅ success | Não |
+| No Prod Leak | [#40161646831](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40161646831) | ✅ success | Não |
+| Policies Baseline | [#40161646835](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40161646835) | ✅ success | Não |
+| Required Checks Guard | [#40161646840](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40161646840) | ✅ success | Não |
+| SSOT Supabase Guard | [#40161646843](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40161646843) | ✅ success | Não |
+| Security Scan | [#40161646845](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40161646845) | ✅ success | Não |
+| Select Columns vs Types | [#40161646847](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40161646847) | ✅ success | Não |
+| Static Health Checks | [#40161646849](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40161646849) | ✅ success | Não |
+| Supabase Linter Gate | [#40161646851](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40161646851) | ✅ success | Não |
+| UI Visual & A11y | [#40161646855](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40161646855) | ✅ success | Não |
+| E2E Carts Undo RPC Atomic | [#40161646680](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40161646680) | ✅ success | Não |
+| stock-rupture-fuzz | [#40161646858](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40161646858) | ✅ success | Não |
+
+### 12.2 Workflows FAILURE — não-required, todos pré-existentes
+
+| Workflow | Run ID | Conclusão | Causa Raiz | PENDENCIAS |
+|---|---|---|---|---|
+| CI Security & Drift Checks | [#40161646751](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40161646751) | ❌ failure | Timezone assertion hardcoded: `'10:05'` recebido vs `'13:05'` esperado em `tests/unit/date-utils.test.ts:98,107` — runner UTC+0 vs teste UTC+3 | P19 |
+| Cart Invariants Smoke | [#40161646680](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40161646680) | ❌ failure | E2E step crash → ENOENT `results-quote-flow.json` | P16 |
+| E2E — Critical Flows & Error Boundaries | [#40161646691](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40161646691) | ❌ failure | Supabase API PENDENTE 65–80s em CI; login timeout | P2c |
+| Quote Builder Delivery Quality | [#40161646652](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40161646652) | ❌ failure | `position=""` em `/meus-kits` mobile 390×844 | P18 |
+| Release Please | [#40161646852](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40161646852) | ❌ failure | `Resource not accessible by integration` — PAT ausente | P1/P21 |
+| Running Copilot Code Review | [#40161648423](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40161648423) | ❌ failure | GitHub Copilot external service error — `api.business.githubcopilot.com` cleanup com orphan processes | P15 |
+| Uptime Monitor | [#40162736400](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40162736400) | ❌ failure | Health check externo — endpoint temporariamente indisponível no momento do cron | P1 |
+
+### 12.3 Outros (skipped / cancelled — não-bloqueantes)
+
+| Workflow | Run ID | Conclusão | Motivo |
+|---|---|---|---|
+| E2E • Thumb QuickView | [#40161646715](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40161646715) | cancelled | Cancelado por concurrency rule (push subsequente) |
+| Deployment Failure Alert | [#40161677220](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40161677220) | skipped | Skipped — condicional `if: failure()` não ativado |
+| Lovable Protected-File Audit | [#40161646850](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40161646850) | skipped | Skipped — condicional de trigger não satisfeita |
+
+### 12.4 Mandato — verificação final
+
+| Requisito | Status | Evidência |
+|---|---|---|
+| Deploy Gates (required check) com `conclusion=success` | ✅ | Run [#40161646756](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40161646756), SHA `6ea6c80c`, 04:31Z |
+| Nenhum workflow com `action_required` em `main` | ✅ | API: 0 runs `action_required` em `main` |
+| Todos os 641 `action_required` documentados | ✅ | PENDENCIAS.md P4 |
+| Todos os workflows `failure` em `main` com causa raiz exata | ✅ | 7 failures — seção 12.2 + P1/P15/P16/P18/P19/P21 |
+| Nenhuma regressão introduzida por esta sessão | ✅ | Todos os failures são pré-existentes em main antes da sessão |

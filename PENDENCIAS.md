@@ -544,20 +544,27 @@ Nenhuma — não é possível corrigir via código do repositório. O comportame
 
 ---
 
-## P19 — CI Security & Drift Checks: failure transitório (não-required)
+## P19 — CI Security & Drift Checks: failure (timezone assertion — não-required)
 
 **Workflow:** `.github/workflows/ci-security-drift.yml`  
 **Run em `ec736c90`:** [#40129973781](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40129973781) — `failure`  
-**Run anterior:** [#40124949332](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40124949332) (commit `71d624e8`)  
-**Categoria:** Advisory de auditoria de segurança — não é required check no Gate Final
+**Run em `6ea6c80c`:** [#40161646751](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40161646751) — `failure`  
+**Job:** `quality-gate` → step "Run Unit & Integration Tests"  
+**Categoria:** Timezone assertion hardcoded — não é required check no Gate Final
 
-**Erro exato:**
+**Causa raiz exata (log job 121074282344, analisado 2026-10-25):**
 ```
-zod: unexpected high advisory
-GHSA-mrhx-c7xc-m3w5 — https://github.com/advisories/GHSA-mrhx-c7xc-m3w5
-```
+AssertionError: expected '10:05' to be '13:05' // Object.is equality
+  ❯ tests/unit/date-utils.test.ts:98:52
 
-**Diagnóstico:** Falha transitória do npm registry ao buscar advisories. O script `scripts/check-dependency-audit.mjs` tem a constante `ZOD_CVE_SOURCE = 1243066` e `ALLOWED_ZOD_ADVISORY_URL = 'https://github.com/advisories/GHSA-mrhx-c7xc-m3w5'` — o advisory é conhecido e permitido. A falha indica que o registry devolveu o advisory de forma inesperada naquele momento (estado transitório). Não há CVE novo a tratar.
+AssertionError: expected '02:05' to be '05:05' // Object.is equality
+  ❯ tests/unit/date-utils.test.ts:107:52
+```
+- Runner CI está em UTC+0; testes esperam UTC+3 (diferença de 3h)
+- `tests/unit/date-utils.test.ts:98` e `:107` usam horários hardcoded sem mock de timezone
+- Falha pré-existente em main — não introduzida por esta sessão (nenhum commit tocou `tests/unit/date-utils.test.ts`)
+
+**Ação corretiva:** Mockar timezone nos testes com `vi.useFakeTimers({ timezone: 'America/Sao_Paulo' })` ou usar UTC explícito. Fora do escopo desta sessão.
 
 **Impacto no Gate Final:** Nenhum — este workflow não é required check no Gate Final.
 
