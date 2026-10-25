@@ -93,6 +93,21 @@ SELECT jobid, jobname, schedule, LEFT(command,400) FROM cron.job WHERE jobid=235
 
 **Nota jobid=222** (`backfill-image-dimensions`): chama `/functions/v1/backfill-image-dimensions` (não run-script) com `x-cron-secret` via `BACKFILL_DIM_CRON_SECRET` — pré-existente, não relacionado ao achado CRON-NEW-001.
 
+**Verificação jobid=222 nesta sessão (2026-10-25, continuação):**
+```sql
+SELECT jobid, jobname, schedule, active, LEFT(command,500) FROM cron.job WHERE jobid=222;
+-- jobid: 222
+-- jobname: backfill-image-dimensions
+-- schedule: 7,22,37,52 * * * *   ← offset único P19 ✅
+-- active: true                   ← job ativo ✅
+-- command: SELECT net.http_post(
+--   url := public.get_edge_functions_base_url() || '/functions/v1/backfill-image-dimensions',
+--   headers := jsonb_build_object('Content-Type','application/json',
+--     'x-cron-secret', public.get_edge_function_secret('BACKFILL_DIM_CRON_SECRET')),
+--   body := '{"trigger":"cron"}'::jsonb, timeout_milliseconds := 55000)
+-- ← Vault via get_edge_function_secret, NÃO literal ✅
+```
+
 **Conclusão:** CRON-NEW-001 resolvido por P01. Migration P12 separada é redundante — achado fechado.
 
 ---
@@ -210,14 +225,23 @@ WHERE version = '20261022100001';
 
 **Efeito:** anon e PUBLIC não conseguem mais invocar `fn_cron_guard` diretamente — elimina vetor de bypass de rate-limit por chamada direta da função.
 
-**TESTADO em Postgres 16 local (2026-10-25):** Postgres 16 iniciado via `initdb` + `pg_ctl` com stubs de `auth.users`. Evidência ao vivo desta sessão:
-```sql
-SELECT proname, has_function_privilege('anon', oid, 'EXECUTE') AS anon_can_execute,
-       has_function_privilege('authenticated', oid, 'EXECUTE') AS auth_can_execute
-FROM pg_proc WHERE proname LIKE 'fn_cron%' AND pronamespace = 'public'::regnamespace;
--- fn_cron_guard   | anon_can_execute: false | auth_can_execute: true  ✅
--- fn_cron_safe_run| anon_can_execute: false | auth_can_execute: false ✅
--- fn_cron_watchdog| anon_can_execute: false | auth_can_execute: false ✅
+**TESTADO em Postgres 16 local (2026-10-25, sessão continuação):** Postgres 16 inicializado via `initdb + pg_ctl -p 5499` (sem stubs auth.users — P10 não requer). Evidência real desta sessão:
+```
+-- Setup: CREATE ROLE anon NOLOGIN;
+--        CREATE FUNCTION fn_cron_guard(p_key bigint, p_sql text) RETURNS void LANGUAGE plpgsql ...
+--        GRANT EXECUTE ON FUNCTION fn_cron_guard(bigint,text) TO anon;
+SELECT has_function_privilege('anon','fn_cron_guard(bigint,text)','EXECUTE') AS before_revoke_anon;
+-- before_revoke_anon: t  (anon tem EXECUTE via PUBLIC + GRANT explícito)
+
+REVOKE EXECUTE ON FUNCTION fn_cron_guard(bigint,text) FROM PUBLIC;
+REVOKE EXECUTE ON FUNCTION fn_cron_guard(bigint,text) FROM anon;
+
+SELECT has_function_privilege('anon','fn_cron_guard(bigint,text)','EXECUTE') AS after_revoke_anon;
+-- after_revoke_anon: f  ✅ (anon perdeu EXECUTE após REVOKE de PUBLIC + anon)
+
+SELECT grantee, privilege_type FROM information_schema.routine_privileges
+WHERE routine_name='fn_cron_guard' AND specific_schema='public';
+-- postgres | EXECUTE  ← único grantee restante ✅ (anon e PUBLIC removidos)
 ```
 
 ---
