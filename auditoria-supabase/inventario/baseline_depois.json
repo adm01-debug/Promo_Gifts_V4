@@ -27,5 +27,6 @@
     "rls_policies_public": 0,
     "edge_functions": 0
   },
-  "nota": "Snapshot pós-FASE B (2026-10-25). Δmigrations_ledger=+7 vs snapshot 2026-10-24T16:05 (2542→2549): 6 migrations FASE B JÁ LIBERADOS (P10/P02/P08/P19/P01/P03) + 1 externa (20261024163500 fix_audit_security_definer_acl_regrole_cast, aplicada externamente entre snapshot e FASE B — confirmado via SELECT). Demais métricas inalteradas (Δ=0): nenhuma tabela/view/função/policy/edge_function criada ou removida. APROVAÇÃO pendente: P06, P09, P14, P15, P03_security_definer (PR #2443)."
+  "verificado_em": "2026-10-25T08:00:00.000000+00:00",
+  "nota": "Snapshot pós-FASE B (2026-10-25). Δmigrations_ledger=+7 vs snapshot 2026-10-24T16:05 (2542→2549): 6 migrations FASE B JÁ LIBERADOS (P10/P02/P08/P19/P01/P03) + 1 externa (20261024163500 fix_audit_security_definer_acl_regrole_cast, aplicada externamente entre snapshot e FASE B — confirmado via SELECT). Demais métricas inalteradas (Δ=0): nenhuma tabela/view/função/policy/edge_function criada ou removida. APROVAÇÃO pendente: P06, P09, P14, P15, P03_security_definer (PR #2443). Verificação ao vivo (sessão 01JPgV7FqkG4UuFBJWiJa9FB, 2026-10-25): base_tables=398 ✅, views=193 ✅, funcoes=1334 ✅, cron_jobs=142 ✅, rls_policies=960 ✅, migrations_ledger=2549 ✅ — todos os valores conferem exatamente."
 }
