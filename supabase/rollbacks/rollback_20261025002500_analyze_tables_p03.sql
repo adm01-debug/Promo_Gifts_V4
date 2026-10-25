@@ -1,0 +1,5 @@
+-- Rollback: 20261025002500_analyze_tables_p03.sql
+-- ANALYZE nao tem DDL reversa -- apenas atualiza pg_statistic.
+-- Se planos de execucao piorarem apos aplicacao:
+--   Aguardar autovacuum natural (24-48h) para regenerar estatisticas.
+--   Nao ha acao de rollback necessaria.
