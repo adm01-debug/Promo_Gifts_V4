@@ -1,0 +1,21 @@
+SHA baseline: fbd335328bec4ae96e9beb3e52953837fa8f9a1d
+Sessão: session_01Ss1tXZ4cAbxBvdmu95uNPz
+Data: 2026-10-25
+
+=== BASELINE CI — GATE 1 ESLint (Lint Baseline) ===
+Fonte: CI Gate 1, job #121135584154
+Workflow: Deploy Gates (run #40182213757)
+SHA: fbd335328bec4ae96e9beb3e52953837fa8f9a1d
+
+Step 6 "Run npm run lint:baseline":
+  conclusion: success ✅
+  Resultado: 0 erros, 0 warnings, Δ vs baseline: regressões +0
+
+CONCLUSÃO: 0 erros ESLint no main durante esta sessão.
+Sem regressão em relação ao baseline anterior.
+
+Evidência: https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40182213757/job/121135584154
+
+=== NOTA ===
+npm ci local indisponível (registry europe-west1-npm.pkg.dev inacessível em cloud).
+Baseline medido EXCLUSIVAMENTE via CI Gate 1.

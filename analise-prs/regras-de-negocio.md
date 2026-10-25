@@ -1,146 +1,137 @@
-# Regras de Negócio — Análise de PRs
+# Regras de Negócio — Análise de PRs (rev10, 2026-10-25)
 
-**Documento gerado em:** 2026-10-24  
-**Sessão:** https://claude.ai/code/session_01Ss1tXZ4cAbxBvdmu95uNPz  
-**Atualizado em:** 2026-10-25 (cobertura expandida para todos os 27 PRs analisados)  
-**Aplicado a:** análise dos PRs #2414–#2455 do repo `adm01-debug/Promo_Gifts_V4`
+Documento gerado/atualizado nesta sessão (`session_01Ss1tXZ4cAbxBvdmu95uNPz`) com base na leitura de 100% dos diffs das 13 PRs abertas.
 
 ---
 
-## 1. Critérios de Merge Autônomo
+## 1. docs
 
-Um PR é elegível para merge autônomo **somente se** satisfaz TODOS os critérios:
+### Tratamento de PRs docs-only
 
-| # | Critério | Fonte |
+PRs que modificam apenas arquivos de documentação (`.md`, `.txt`, arquivos em `docs/`, `analise-prs/`) têm tratamento diferenciado no CI:
+
+- **`paths-ignore: docs/**`** em `deploy-gates.yml`: PRs que tocam APENAS arquivos dentro de `docs/` não disparam o Gate Final. Isso é um bypass intencional (E197).
+- **Arquivos na raiz NÃO são bypassados**: `RELATORIO_CI.md`, `PENDENCIAS.md`, `CLAUDE.md` (raiz), e arquivos em `analise-prs/` estão na raiz ou em diretório não coberto por `docs/**` → Gate Final DISPARA.
+
+### Regra observada: docs de outra sessão = FECHAR ou DECISAO_HUMANA
+
+De todas as PRs docs analisadas:
+- **PR #2452** (analise-prs/dossies/PR-2441.md — outra sessão): FECHAR (REGRA #10 + draft)
+- **PR #2503** (RELATORIO_CI.md Rev21 — outra sessão): DECISAO_HUMANA (REGRA #10 + draft)
+- **PR #2443** (APROVACAO_FASE_B_IMPACTO.md — outra sessão): DECISAO_HUMANA (draft + "APROVAÇÃO REQUERIDA")
+
+Nenhuma PR docs-only pode ser mergeada autonomamente quando: (a) é draft, OU (b) vem de outra sessão (REGRA #10).
+
+### Regra observada: RELATORIO_CI.md dispara Gate Final
+
+`RELATORIO_CI.md` está na raiz do repo. `paths-ignore: docs/**` não o cobre. PRs que modificam apenas este arquivo triggeriam Gate Final completo — importante para avaliar se a PR "só-de-docs" é realmente sem impacto de CI.
+
+---
+
+## 2. testes
+
+### Baseline desta sessão
+
+- **429 testes unitários (vitest)**, 0 falhas — Gate 2 ✅
+- Estabelecido em SHA `e0be76690381d15a4e7d0c2d728d05d8abb533c4` (Gate Final run #40174922055)
+- Confirmado em SHA `dcaa20da` (Gate Final run #40179146830) via RELATORIO_CI.md Rev21 (lido nesta sessão)
+- 8 merges autônomos desta sessão (PRs #2479–#2505) não quebraram a baseline
+
+### Regra: testes de contrato não são snapshots visuais
+
+`tests/contracts/webhook-schemas.ts` aparece em PRs #2417 e #2419 (adiciona `MagazineReaderStateReadSchemaV1`). Contratos de schema de webhook são testes funcionais que verificam formato de payload — não devem ser atualizados sem verificar o contrato correspondente no serviço.
+
+### Regra: `check-file-size-baseline.test.mjs` não roda via Vitest
+
+PR #2415 documenta incompatibilidade de `node:test` com jsdom do Vitest. O arquivo usa `import { test } from 'node:test'` e deve ser excluído do Vitest via `exclude` e rodar via `node --test` separadamente. Isso está em `vitest.config.ts` (conflitante em PR #2415).
+
+---
+
+## 3. enums
+
+### Nenhuma PR aberta modifica enums TypeScript diretamente
+
+Nenhuma das 13 PRs abertas modifica `src/integrations/supabase/types.ts` nem arquivos de enums em `src/types/`. A Gate 1.2 (drift estrutural de types.ts) não está em risco pelas PRs abertas.
+
+### Regra: enums de DB via types.ts regenerado devem passar Gate 1.2
+
+Qualquer regeneração de `types.ts` deve usar `npm run check:types-inventory-drift` para verificar que nenhuma tabela/view/function/enum sumiu (REGRA #4). O baseline estrutural está em `scripts/extract-types-inventory.mjs`.
+
+---
+
+## 4. migrations
+
+### PRs com migrations abertas
+
+| PR | Migrations | Estado | Veredicto |
+|---|---|---|---|
+| #2420 | `supabase/migrations/20261019000000_mirror_oob_*` + rollback | Orphan + draft + Rule 8 | FECHAR |
+| #2449 | `20261022195616_fix_update_company_fields_security_definer_search_path.sql` + `20261022203935_update_company_fields_security_fix.sql` | Conflict + draft + Rule 8 | DECISAO_HUMANA |
+
+### Regra: migrations = Rule 8 §2.2 invariável
+
+Qualquer arquivo em `supabase/migrations/` ou `supabase/rollbacks/` ativa Rule 8 §2.2 automaticamente. Nenhuma PR com migration pode ser mergeada autonomamente — independente de ser migration nova, espelho, rollback ou apenas adição de comentário.
+
+### Regra: único caminho autorizado para migration em produção
+
+O caminho é `workflow_dispatch` em `.github/workflows/db-apply-migration.yml` (REGRA #8 corolário E15). MCP `execute_sql` com DDL é proibido em sessão de agente (E056). PRs com migrations abertas devem ter aprovação explícita do PO.
+
+### Regra: reconciliação E99
+
+DDL aplicada fora do fluxo (via MCP/dashboard) deve ser reconciliada via migration espelho + `migration repair --status applied <version>` (com versão explícita) + PR com recibo em `MIGRATIONS_SYNC_LOG.md`. PR #2449 segue este padrão corretamente — bloqueada apenas por Rule 8 + draft + REGRA #10.
+
+---
+
+## 5. policies
+
+### Nenhuma PR aberta modifica policies RLS diretamente
+
+Nenhuma das 13 PRs abertas inclui arquivos com `CREATE POLICY` ou `ALTER POLICY`. 
+
+### PR #2443 referencia policies indiretamente
+
+A análise de impacto em `APROVACAO_FASE_B_IMPACTO.md` (PR #2443) documenta:
+- **P14** — 590 policies com `auth.uid()` sem `(SELECT auth.uid())` → performance
+- **P15** — 56 tabelas com policies para `anon`; `color_synonym_map` com `qual = 'true'` (acesso total)
+- **P03_security_definer** — 45 funções SECURITY DEFINER com `pg_temp` em `search_path`
+
+Essas são propostas que exigem aprovação explícita (PR #2443 é "APROVAÇÃO REQUERIDA"). Nenhuma migration DDL de policy está em execução pendente nas PRs abertas.
+
+### Regra: Gate 1.13 cobre baseline de policies
+
+Gate 1.13 (RLS policies baseline vs pg_policies live) e Gate 1.13.1 (tabelas com RLS e zero policies) são checks automáticos. Qualquer PR que adicione migration com `CREATE POLICY` deve estar coberta por esses gates.
+
+---
+
+## 6. UI
+
+### ProductFormFullscreen.tsx aparece em 4 PRs orphan
+
+`src/components/product/ProductFormFullscreen.tsx` está modificado em PRs #2418, #2419, #2420 e #2422 — todas branches orphan (NO_MERGE_BASE), todas draft, todas de outra sessão. A mudança é uniforme: adiciona `type Resolver` import e cast `as unknown as Resolver<ProductFormData>` / `as ProductFormData`.
+
+**Regra observada:** mudanças de UI em branches orphan são irrecuperáveis via merge normal. Se a mudança for necessária, o PO deve cherry-pick manual em nova branch a partir de `main`.
+
+### Regra: Gate 1.9 controla `as any` e `as unknown`
+
+`.as-assertions-baseline.json` e `.as-unknown-baseline.json` rastreiam counts de asserções TypeScript não seguras. PR #2419 atualiza esses baselines (+2 asserções em ProductFormFullscreen.tsx). Gate 1.9 (ratchet) bloqueia se o count aumentar sem justificativa em label `ratchet-override`. O baseline atual em `main` reflete o estado antes das mudanças de #2418/#2419/#2420/#2422.
+
+### Regra: changes do Lovable podem reverter UI
+
+O bot Lovable (`gpt-engineer-app[bot]`) pode sobrescrever silenciosamente arquivos de UI como `ProductFormFullscreen.tsx`. Se esse arquivo conflitar em merge futuro, verificar se a guarda SSOT em `client.ts` permanece (REGRA #1) e se os campos críticos do tipo `Product` estão presentes (REGRA #2).
+
+### Estado atual de UI em produção
+
+Nenhuma das PRs abertas com mudanças de UI pode ser mergeada (todas orphan/draft/REGRA #10). O estado de UI em `main` é o da última merge autônoma desta sessão (PR #2505, SHA `b058d97d`).
+
+---
+
+## Resumo Executivo
+
+| Seção | PRs Impactadas | Regra Principal |
 |---|---|---|
-| 1 | `draft: false` (não é rascunho) | Fluxo Git Rule |
-| 2 | `mergeable: true` (sem conflitos) | GitHub API |
-| 3 | Nenhum arquivo toca Rule 8 (ver §2) | CLAUDE.md REGRA #8 |
-| 4 | CI verde ou falha pre-existing comprovada | GitHub Actions |
-| 5 | Diff lido e validado (sem regressão em REGRA #1, #2) | CLAUDE.md |
-
----
-
-## 2. Triggers de Decisão Humana (Rule 8)
-
-Qualquer PR tocando qualquer um dos itens abaixo exige aprovação do PO antes do merge:
-
-### 2.1 CI / Workflows
-- Qualquer arquivo em `.github/workflows/`
-- Scripts de gate em `scripts/check-*.mjs` (considerados "CI por extensão")
-- `vitest.config.ts` com impacto em gate (borderline — depende do contexto)
-
-### 2.2 DDL / Migrations de Produção
-- Qualquer arquivo em `supabase/migrations/`
-- Qualquer arquivo em `supabase/rollbacks/`
-- Qualquer DDL que altere schema em `doufsxqlfjyuvxuezpln`
-
-### 2.3 Segurança / Secrets
-- `.gitleaks.toml` (política de allowlist de secrets)
-- `docs/ci/SEGREDOS.md` como fonte de DDL (apenas documentação → OK)
-- Qualquer mudança que afroxa detecção de secrets reais
-
-### 2.4 Infraestrutura
-- Dockerfile, docker-compose, stack configs
-- `.vercel/project.json` (REGRA #11 — não modificar)
-- `supabase/config.toml`
-
-### 2.5 Dados Destrutivos / Custo
-- Deleção de tabelas, colunas, policies em produção
-- Mudanças que afetam billing/custo de infraestrutura
-
----
-
-## 3. Invariantes Obrigatórias
-
-Estas verificações rodam para TODOS os PRs antes de qualquer merge:
-
-### 3.1 SSOT Supabase (REGRA #1)
-```sh
-grep 'doufsxqlfjyuvxuezpln' src/integrations/supabase/client.ts
-```
-- CURRENT_PROJECT_ID deve ser `doufsxqlfjyuvxuezpln`
-- `pqpdolkaeqlyzpdpbizo` nunca deve aparecer em código executável
-
-### 3.2 Campos Críticos do Tipo Product (REGRA #2)
-Os campos abaixo devem existir em `src/types/product-catalog.ts`:
-- `price: number`
-- `sale_price?: number`
-- `shortDescription: string`
-- `category_id?: string`
-- `category_name?: string`
-
-### 3.3 Vercel Project Anchor (REGRA #11)
-- `.vercel/project.json` deve conter `"projectId": "prj_9UfugNYCuboH2R0XB04Jv8PpjDpZ"`
-- Não deletar, não criar projeto fantasma
-
----
-
-## 4. Falhas CI Pre-Existing (não blocantes)
-
-Falhas verificadas como pre-existing e não atribuíveis a PRs em análise:
-
-| Falha | Causa | Status |
-|---|---|---|
-| `categories.level does not exist` em Supabase Preview | `CREATE MATERIALIZED VIEW "analytics"."categories_tree_visual"` referencia coluna inexistente | Pre-existing — não relacionada a nenhum PR |
-
----
-
-## 5. Caminho de Deploy Pós-Merge
-
-### Edge Functions
-Após merge de qualquer PR que altere `supabase/functions/`:
-→ Dispatch obrigatório de `.github/workflows/deploy-edge-functions.yml`
-
-### Migrations
-Único caminho autorizado:
-→ `.github/workflows/db-apply-migration.yml` via `workflow_dispatch(version)`
-
-### Schema Snapshot
-Após migration ou DDL OOB:
-→ `.github/workflows/schema-snapshot-export.yml` com `force_rotate: true`
-
----
-
-## 6. Draft Status
-
-PRs em rascunho (draft) têm um bloqueio implícito: o autor não sinalizou que estão prontos para revisão. Por convenção, não são mergeados mesmo que o conteúdo seja correto e sem Rule 8. Ação necessária: o autor converter para "ready for review".
-
----
-
-## 7. Resumo Aplicado aos PRs Analisados
-
-| PR | Veredicto | Razão Primária |
-|---|---|---|
-| #2414 | MERGEADO | SHA 7061adab — docs-only analise-branches/ |
-| #2415 | DECISÃO HUMANA | Rule 8: CI workflow (.github/workflows/) |
-| #2417 | IMPOSSÍVEL | branch órfã — NO_MERGE_BASE (sem ancestral com main) |
-| #2418 | IMPOSSÍVEL | branch órfã — NO_MERGE_BASE (sem ancestral com main) |
-| #2419 | IMPOSSÍVEL | branch órfã — NO_MERGE_BASE (sem ancestral com main) |
-| #2420 | IMPOSSÍVEL | branch órfã — NO_MERGE_BASE (sem ancestral com main) |
-| #2422 | IMPOSSÍVEL | branch órfã (NO_MERGE_BASE) + draft:true |
-| #2424 | FECHAR | PR fechado (state=closed, merged=false) — branch claude/fix-audit-acl-regrole-261024-1635 |
-| #2426 | MERGEADO | SHA 7f5d410a — 1 arquivo QA, sem Rule 8 |
-| #2427 | MERGEADO | SHA 26641b0a — cors.ts + webhook-schemas; edge fn deployed |
-| #2428 | DECISÃO HUMANA | Rule 8: .gitleaks.toml (security policy); draft:true |
-| #2432 | DECISÃO HUMANA | Gate Final FAILURE (run #40129848772); REGRA #10 branch outra sessão (session_01HxRBtssJabMB3jTgNY5B9W); correctness bugs em probe_e184_legacy_refs.sql |
-| #2434 | MERGEADO | SHA 53ba69b5 — docs-only analise-prs/ |
-| #2435 | MERGEADO (PO) | SHA 50f4f599 — fix(ci): Zod v4 repair; PO aprovou 2026-10-25T03:18Z |
-| #2436 | MERGEADO | SHA 4c8193b9 — deliverables update |
-| #2437 | MERGEADO (outra sessão) | SHA 9b23fb64 |
-| #2438 | MERGEADO (outra sessão) | SHA c8994f17 |
-| #2439 | MERGEADO | SHA b3c8f2f3 — deliverables ci-per-test-name + dossies |
-| #2441 | MERGEADO (PO) | SHA 90c6492b — DDL P02/P08/P19 + edge fn send-notification |
-| #2443 | DECISÃO HUMANA | Rule 8: security decisions; draft:true |
-| #2445 | MERGEADO (PO) | SHA 8eeeca9b — DDL cron.alter_job job_id=235 |
-| #2447 | NOSSA PR (draft) | deliverables da sessão; draft:true — aguarda saída de draft |
-| #2449 | DECISÃO HUMANA | Rule 8: DDL CREATE FUNCTION SECURITY DEFINER; draft:true + conflito |
-| #2450 | MERGEADO (PO) | SHA d804cafa — docs RELATORIO_CI.md rev5 |
-| #2451 | MERGEADO (PO) | SHA 15dd563b — ANALYZE 5 tabelas supabase/migrations/; REGRA #10 branch outra sessão; PO mergeou 2026-10-25T01:36Z |
-| #2452 | FECHAR | draft:true + REGRA #10 branch outra sessão (session_01HW5obNKUFtUMbBdgUb94kY) |
-| #2455 | MERGEADO | SHA bfd9b50a — docs-only RELATORIO_CI.md rev7 + PENDENCIAS.md |
-| #2466 | MERGEADO | SHA 79d1c848b — docs-only analise-prs/; PO converteu draft e mergeou em 2026-10-25 |
-| #2469 | DECISÃO HUMANA | Rule 8: .github/workflows/e2e-personalization.yml + REGRA #10 branch outra sessão |
-| #2470 | MERGEADO (PO) | SHA 12c9605e — fix timezone BRT; REGRA #10 impossibilitou merge autônomo; mergeado pelo PO 2026-10-25T05:11Z |
-| #2471 | FECHAR | Draft:true + dirty (CONFLITO) + REGRA #10 branch outra sessão (session_01Nc1nb7PArDnixYvvZssnKy); 3 arquivos docs |
-| #2473 | MERGEADO (PO) | SHA 2659a2c8 — REGRA #10 branch outra sessão (session_01JPgV7FqkG4UuFBJWiJa9FB); 4 arquivos docs/logs; PO mergeou 2026-10-25T06:08Z |
+| docs | #2443, #2452, #2503 | REGRA #10 + draft → DECISAO_HUMANA ou FECHAR |
+| testes | Baseline 429/0 mantida | Gate 2 baseline preservada por 8 merges autônomos |
+| enums | Nenhuma | Gate 1.2 não em risco |
+| migrations | #2420, #2449 | Rule 8 §2.2 invariável; E15 único caminho prod |
+| policies | #2443 (proposta apenas) | Gate 1.13 cobre; nenhuma DDL pendente |
+| UI | #2418, #2419, #2420, #2422 | Orphan + draft; irreomerável via merge; cherry-pick manual se necessário |
