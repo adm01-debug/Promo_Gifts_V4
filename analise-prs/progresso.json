@@ -1,19 +1,19 @@
 {
-  "gerado_em": "2026-10-25T11:30:00Z",
+  "gerado_em": "2026-10-25T15:30:00Z",
   "sessao": "https://claude.ai/code/session_01Ss1tXZ4cAbxBvdmu95uNPz",
-  "main_head": "3affff6d93c6caaa4ed0229c23255ba4e2f7bcc7",
-  "main_head_descricao": "PR #2517 squash-merged (PO) — fix(ci): aumenta timeout quality-gate de 30→60 min",
+  "main_head": "317a317dbfe45ae27f5eefa67069d1df8d84f811",
+  "main_head_descricao": "PR #2528 squash-merged (PO) — docs: documenta P59 e P60 + P1 auto-resolvido",
   "baseline": {
     "testes": 429,
     "falhas": 0,
     "gate_final_run_confirmado": "40179146830",
     "gate_final_conclusao_confirmado": "success",
     "sha_referencia_confirmada": "e0be76690381d15a4e7d0c2d728d05d8abb533c4",
-    "gate_final_run_atual": "40187098020",
+    "gate_final_run_atual": "40203094379",
     "gate_final_status_atual": "success",
     "gate_final_conclusao_atual": "success",
-    "gate_final_completado_em": "2026-10-25T11:08:44Z",
-    "nota": "Run #40187098020 para SHA 7fc20213c: conclusao=success (11:08:44Z). Baseline intacta. SHA afbd338000 run #40184102084 tambem success. Gate 1.3 falhou em 9c3e4492f (PR #2511) por 2 entradas stale; corrigido por PR #2512."
+    "gate_final_completado_em": "2026-10-25T14:46:08Z",
+    "nota": "Run #40203094379 para SHA 317a317d: conclusao=success (14:46:08Z). PR #2528 squash-merged 14:37Z (PO). Baseline 429 testes / 0 falhas — INALTERADA. Sessão de continuação (compactação) confirma: 0 merges autonomos, 14 PRs analisadas, nenhuma regressão."
   },
   "prs_analisados": 53,
   "prs_abertos_atuais": 14,
@@ -40,6 +40,26 @@
     {"pr": 2422, "branch": "nouvel_2422_orphan", "resultado": "NO_MERGE_BASE", "evidencia": "refusing to merge unrelated histories"},
     {"pr": 2452, "branch": "claude_05/docs-remove-migration-prefix", "resultado": "CLEAN_MERGE_NO_CONFLICT", "nota": "REGRA#10 bloqueia autonomamente independente do test-merge"}
   ],
+  "test_merges_contra_317a317d": {
+    "base_sha": "317a317dbfe45ae27f5eefa67069d1df8d84f811",
+    "session": "https://claude.ai/code/session_01Ss1tXZ4cAbxBvdmu95uNPz (continuacao)",
+    "resultados": [
+      {"pr": 2415, "resultado": "DIRTY"},
+      {"pr": 2417, "resultado": "NO_MERGE_BASE"},
+      {"pr": 2418, "resultado": "NO_MERGE_BASE"},
+      {"pr": 2419, "resultado": "NO_MERGE_BASE"},
+      {"pr": 2420, "resultado": "NO_MERGE_BASE"},
+      {"pr": 2422, "resultado": "NO_MERGE_BASE"},
+      {"pr": 2428, "resultado": "CLEAN"},
+      {"pr": 2432, "resultado": "DIRTY"},
+      {"pr": 2443, "resultado": "CLEAN"},
+      {"pr": 2449, "resultado": "DIRTY"},
+      {"pr": 2452, "resultado": "ERROR (branch not in remote)"},
+      {"pr": 2469, "resultado": "CLEAN"},
+      {"pr": 2503, "resultado": "DIRTY"},
+      {"pr": 2514, "resultado": "ERROR (branch not in remote)"}
+    ]
+  },
   "criterios_mergear_por_pr": {
     "descricao": "8 criterios: (1)valida (2)nao-implementada (3)sem-conflito (4)zero-erro-novo (5)zero-reverte (6)regra-neg-valida (7)completa (8)confianca-alta",
     "2415": {
@@ -99,12 +119,14 @@
       "veredicto": "DECISAO_HUMANA"
     },
     "2432": {
-      "valida": true, "nao_implementada": true, "sem_conflito": true,
-      "zero_erro_novo": false, "zero_reverte": true, "regra_neg_valida": false,
+      "valida": true, "nao_implementada": true, "sem_conflito": false,
+      "zero_erro_novo": true, "zero_reverte": true, "regra_neg_valida": false,
       "completa": false, "confianca_alta": false,
-      "falha_em": [4, 6, 7, 8],
-      "bloqueio_principal": "Gate Final FAILURE run #40129848772 + REGRA#10 + 4 bugs corretude",
-      "veredicto": "DECISAO_HUMANA"
+      "falha_em": [3, 7, 8],
+      "bloqueio_principal": "test-merge DIRTY contra 317a317d (conflito) — arquivo qa/migrations-draft/probe_e184_legacy_refs.sql",
+      "veredicto": "PENDENTE",
+      "evidencia_diff": "único arquivo: qa/migrations-draft/probe_e184_legacy_refs.sql (novo) — probe SQL somente leitura: RAISE EXCEPTION para output de referencias pqpdolkaeqlyzpdpbizo",
+      "nota_sessao": "Reclassificado de DECISAO_HUMANA para PENDENTE: test-merge DIRTY contra 317a317d. Conflito bloqueia merge autonomo."
     },
     "2443": {
       "valida": true, "nao_implementada": true, "sem_conflito": true,
@@ -123,12 +145,14 @@
       "veredicto": "DECISAO_HUMANA"
     },
     "2452": {
-      "valida": true, "nao_implementada": true, "sem_conflito": true,
+      "valida": true, "nao_implementada": true, "sem_conflito": false,
       "zero_erro_novo": true, "zero_reverte": true, "regra_neg_valida": false,
       "completa": true, "confianca_alta": false,
-      "falha_em": [6, 8],
-      "bloqueio_principal": "REGRA#10 branch outra sessao (session_01HW5obNKUFtUMbBdgUb94kY) + draft",
-      "veredicto": "FECHAR"
+      "falha_em": [3, 6, 8],
+      "bloqueio_principal": "Rule8 .github/workflows/ + branch not in remote (ERROR) + draft",
+      "veredicto": "DECISAO_HUMANA",
+      "evidencia_diff": "arquivo: .github/workflows/e2e-personalization.yml — adiciona id: auth-setup + guard if: steps.auth-setup.outcome == 'success'",
+      "nota_sessao": "Reclassificado de FECHAR para DECISAO_HUMANA: toca .github/workflows/ (REGRA#8), aguarda aprovacao PO"
     },
     "2469": {
       "valida": true, "nao_implementada": false, "sem_conflito": true,
@@ -139,20 +163,24 @@
       "veredicto": "DECISAO_HUMANA"
     },
     "2503": {
-      "valida": true, "nao_implementada": false, "sem_conflito": true,
+      "valida": true, "nao_implementada": false, "sem_conflito": false,
       "zero_erro_novo": true, "zero_reverte": true, "regra_neg_valida": false,
       "completa": true, "confianca_alta": false,
-      "falha_em": [2, 6, 8],
-      "bloqueio_principal": "REGRA#10 outra sessao (session_01HW5obNKUFtUMbBdgUb94kY) + draft + RELATORIO_CI ja enviado via #2504",
-      "veredicto": "DECISAO_HUMANA"
+      "falha_em": [2, 3, 7, 8],
+      "bloqueio_principal": "DRAFT + test-merge DIRTY contra 317a317d + base SHA stale (dcaa20da vs 317a317d) + RELATORIO_CI ja enviado via #2504",
+      "veredicto": "PENDENTE",
+      "evidencia_diff": "branch: claude/docs-relatorio-ci-rev21-20261025-0911, changed_files: 1 (RELATORIO_CI.md), base SHA dcaa20da stale",
+      "nota_sessao": "Reclassificado de DECISAO_HUMANA para PENDENTE: DRAFT + test-merge DIRTY + base stale bloqueiam merge autonomo"
     },
     "2514": {
       "valida": true, "nao_implementada": false, "sem_conflito": false,
       "zero_erro_novo": true, "zero_reverte": true, "regra_neg_valida": false,
-      "completa": true, "confianca_alta": false,
-      "falha_em": [2, 3, 6, 8],
-      "bloqueio_principal": "REGRA#10 outra sessao (session_01HW5obNKUFtUMbBdgUb94kY) + draft=true + behind main (mergeable_state=behind)",
-      "veredicto": "DECISAO_HUMANA"
+      "completa": false, "confianca_alta": false,
+      "falha_em": [2, 3, 7, 8],
+      "bloqueio_principal": "branch not in remote (ERROR test-merge) + diff cortado por limite de tokens + draft=true + behind main",
+      "veredicto": "PENDENTE",
+      "evidencia_diff": "NAO VERIFICADO — diff cortado por token limit; branch nao encontrado em remote no test-merge",
+      "nota_sessao": "Reclassificado de DECISAO_HUMANA para PENDENTE: branch not in remote + diff incompleto bloqueiam analise"
     }
   },
   "contagem_vereditos": {
@@ -161,6 +189,18 @@
     "DECISAO_HUMANA": 10,
     "FECHAR": 9,
     "total": 53
+  },
+  "contagem_vereditos_prs_abertas_atuais": {
+    "data": "2026-10-25T15:30:00Z",
+    "main_head": "317a317dbfe45ae27f5eefa67069d1df8d84f811",
+    "MERGEAR": 0,
+    "DECISAO_HUMANA": 6,
+    "FECHAR": 5,
+    "PENDENTE": 3,
+    "total_abertas": 14,
+    "DECISAO_HUMANA_lista": ["#2415", "#2428", "#2443", "#2449", "#2452", "#2469"],
+    "FECHAR_lista": ["#2417", "#2418", "#2419", "#2420", "#2422"],
+    "PENDENTE_lista": ["#2432 (conflict)", "#2503 (draft+stale)", "#2514 (error+draft)"]
   },
   "merges_autonomos_esta_sessao": [
     {"pr": 2479, "sha": "de48ab27", "run": "40169270830", "conclusao": "success"},
@@ -179,16 +219,20 @@
     {"pr": 2518, "sha": "a6da5766a", "run": "40195765621", "conclusao": "success", "nota": "docs(analise-prs): reconcilia prs.json rev15. Gate Final run #40195765621: success (13:13:12Z)."}
   ],
   "gate_final_pos_ultimo_merge": {
-    "run": "40195986828",
-    "sha": "3affff6d93c6caaa4ed0229c23255ba4e2f7bcc7",
+    "run": "40203094379",
+    "sha": "317a317dbfe45ae27f5eefa67069d1df8d84f811",
     "conclusao": "success",
-    "completado_em": "2026-10-25T13:15:46Z",
-    "comparacao_baseline": "429 testes / 0 falhas — baseline inalterada"
+    "completado_em": "2026-10-25T14:46:08Z",
+    "comparacao_baseline": "429 testes / 0 falhas — baseline inalterada",
+    "nota": "Run para PR #2528 (PO merge 14:37Z). Este é o ultimo Gate Final verde antes da sessao de continuacao. 0 merges autonomos nesta continuacao."
   },
   "prs_abertos_finais": {
     "total": 14,
-    "FECHAR": ["#2417", "#2418", "#2419", "#2420", "#2422", "#2452"],
-    "DECISAO_HUMANA": ["#2415", "#2428", "#2432", "#2443", "#2449", "#2469", "#2503", "#2514"]
+    "data": "2026-10-25T15:30:00Z (sessao de continuacao pos-compactacao)",
+    "main_head_confirmado": "317a317dbfe45ae27f5eefa67069d1df8d84f811",
+    "FECHAR": ["#2417", "#2418", "#2419", "#2420", "#2422"],
+    "DECISAO_HUMANA": ["#2415", "#2428", "#2443", "#2449", "#2452", "#2469"],
+    "PENDENTE": ["#2432", "#2503", "#2514"]
   },
   "meta_cumprida": {
     "baseline_gerado_em_sessao": true,
@@ -206,13 +250,24 @@
     "criterios_mergear_8_por_pr": true,
     "worktrees_removidos_evidencia": true,
     "gate_final_pos_merge_confirmado": true,
-    "gate_final_sha_atual": "3affff6d93c6caaa4ed0229c23255ba4e2f7bcc7",
-    "gate_final_run_atual": "40195986828",
+    "gate_final_sha_atual": "317a317dbfe45ae27f5eefa67069d1df8d84f811",
+    "gate_final_run_atual": "40203094379",
     "gate_final_conclusao_atual": "success",
     "regressoes_introduzidas": 0,
     "violacoes_registradas": [
       "PR #2505: mergeado antes do Gate Final completar (Gate 5.5 era in_progress)",
-      "PR #2511: causou Gate 1.3 failure pos-merge (2 entradas stale); corrigido por PR #2512 no mesmo dia"
+      "PR #2511: causou Gate 1.3 failure pos-merge (2 entradas stale); corrigido por PR #2512 no mesmo dia",
+      "PR #2529: criado pelo stop-hook ao iniciar esta sessao de continuacao em claude_05/youthful-ride-vcdchy — violacao da regra 'unica escrita = merge de PRs aprovadas'; proibido fechar; registrado como violacao irresolvivel desta sessao"
     ]
-  }
+  },
+  "merges_autonomos_sessao_continuacao": {
+    "data": "2026-10-25T15:30:00Z",
+    "total": 0,
+    "nota": "0 merges autonomos na sessao de continuacao. Todos 14 PRs abertas bloqueadas: 5 FECHAR (orfas), 6 DECISAO_HUMANA (Rule8), 3 PENDENTE (conflito/draft/error)."
+  },
+  "nao_verificado": [
+    "PR #2514 diff: cortado por limite de tokens — conteudo completo NAO VERIFICADO nesta sessao",
+    "PR #2514 branch: nao encontrado em remote no test-merge — STATUS DO BRANCH NAO VERIFICADO",
+    "PR #2452 branch: ERROR no test-merge (branch not in remote) — nao e possivel confirmar conteudo atual"
+  ]
 }

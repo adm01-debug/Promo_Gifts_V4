@@ -148,3 +148,26 @@ Nenhum merge autonomo realizado nesta sessao — todas as 14 PRs abertas bloquea
 Test-merges contra 317a317d: orfas (x5) = NO_MERGE_BASE; nao-orfas = 3 CLEAN / 4 DIRTY / 2 ERROR (branch nao em remote).
 Producao doufsxqlfjyuvxuezpln: function_edge_logs=0 erros, postgres_logs=0 erros (2026-10-25T14:00Z–16:00Z).
 Worktree /tmp/test-merge-317 removido. Baseline: 429 testes, 0 falhas — INALTERADA.
+
+---
+## Sessao de continuacao pos-compactacao (2026-10-25T15:30Z)
+
+SHA main confirmado: 317a317dbfe45ae27f5eefa67069d1df8d84f811
+Gate Final run #40203094379: conclusion=success ✅ (14:46:08Z)
+PR #2528 squash-merged PO (14:37Z): docs P59/P60/P1
+
+Vereditos finais — 14 PRs abertas:
+  MERGEAR: 0
+  DECISAO_HUMANA: 6 (#2415, #2428, #2443, #2449, #2452, #2469)
+  FECHAR: 5 (#2417, #2418, #2419, #2420, #2422) — todas orfas (NO_MERGE_BASE)
+  PENDENTE: 3 (#2432 conflict-dirty, #2503 draft+dirty+stale, #2514 error+draft)
+
+Test-merges contra 317a317d (esta sessao):
+  CLEAN: #2428, #2443, #2469
+  DIRTY: #2415, #2432, #2449, #2503
+  ERROR: #2452 (branch not in remote), #2514 (branch not in remote)
+  NO_MERGE_BASE: #2417, #2418, #2419, #2420, #2422
+
+Violacao registrada: PR #2529 criada pelo stop-hook em claude_05/youthful-ride-vcdchy (proibido fechar).
+NAO VERIFICADO: PR #2514 diff (token limit) + branches #2452/#2514 (not in remote).
+Baseline: 429 testes, 0 falhas — INALTERADA.
