@@ -29,3 +29,4 @@ pr_number,title,author,draft,state,mergeable_state,verdict,sha_merge,ci_run,note
 2457,fix(test): corrige 14 falhas pós-bump Zod v4.6.6 — UUIDs + timezone,Claude,false,merged,merged,MERGEAR,fcd4fb8d,,Mergeado por outra sessão (session_01Nc1nb7PArDnixYvvZssnKy); 2026-10-25T03:51Z
 2458,docs(auditoria-supabase): atualiza correcoes.md — remove refs obsoletas,Claude,true,open,clean,FECHAR,,,Draft:true + branch outra sessão (session_01JPgV7FqkG4UuFBJWiJa9FB); REGRA #10
 2464,fix(ci): Gate 5.5 timeout 3→5min — corrige Gate Final cancelled em 1b69cfe7,Claude,false,merged,merged,DECISÃO_HUMANA→MERGEADO_PO,1e07e298,40159442659,"Rule 8: .github/workflows/deploy-gates.yml; mergeado pelo PO; run #40159442659 SUCCESS"
+2465,docs(ci): RELATORIO_CI rev11 + PENDENCIAS P17/P22/P33,Claude,true,open,unknown,FECHAR,,,Draft:true + branch outra sessão (session_01HW5obNKUFtUMbBdgUb94kY); REGRA #10; docs-only PENDENCIAS/RELATORIO_CI
