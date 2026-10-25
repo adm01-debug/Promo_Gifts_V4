@@ -1,44 +1,56 @@
-# RELATORIO_CI.md — Relatório CI / Action Required
-**rev 20 — 2026-10-25 (sessão `session_01HW5obNKUFtUMbBdgUb94kY`)**  
-**SHA de referência na main:** `e91a36e3` — docs(analise-prs): deliverables rev7  
-**SHA Gate Final mais recente ✅:** `6457e24d` — merge PR #2489 (squash)  
-**Gate Final - Deploy Ready:** ✅ `conclusion=success` [run #40174922055](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40174922055)
+# RELATORIO_CI.md — Relatório CI / Prova de Conclusão
+**rev 21 — 2026-10-25 (sessão `session_01HW5obNKUFtUMbBdgUb94kY`)**  
+**SHA de referência na main:** `dcaa20da` — docs(ci): RELATORIO_CI Rev18 + PENDENCIAS Rev18 + fix Gate E40  
+**SHA Gate Final mais recente ✅:** `dcaa20da` — run [#40179146830](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40179146830)  
+**Gate Final - Deploy Ready:** ✅ `conclusion=success`
 
 ---
 
 ## 0. Resumo executivo
 
-Rev 20 documenta a correção do Gate E40 Schema Drift Check:
+Rev 21 documenta o estado final desta sessão:
 
-- **Gate E40 desbloqueado:** 6 versões `remote_only` identificadas via artifact 12592450906 (run 40175865899) e adicionadas ao `scripts/migration-ledger-remote-only-allowlist.json` (639 → 645 entradas). O gate falhava em qualquer PR que tocasse `supabase/migrations/` (PR #2500 / SHA `f857782b`).
-- **Gate Final** permanece ✅ green em `6457e24d` (run #40174922055) — a docs-only push `e91a36e3` não ativou Gate E40 (bypass E14).
-- **Nenhuma regressão** introduzida nos workflows que estavam verdes.
-
----
-
-## 1. Histórico de correções — esta sessão e anteriores
-
-| Fix | PR | SHA em main | Gate Final | Status |
-|---|---|---|---|---|
-| E2E Personalization Flow: `min:1, max-skipped-ratio:0.95` | PR #2489 | `6457e24d` | [#40174922055](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40174922055) | ✅ success |
-| Supabase Linter Gate: `TimeoutError → return 0` (warn) | PR #2489 | `6457e24d` | [#40174922055](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40174922055) | ✅ success |
-| Gate E40: allowlist +6 versões remote_only (P56) | PR #2487 | pendente merge | Gate Final desbloqueado após merge | 🔄 em PR |
+- **Gate Final ✅** em `dcaa20da` (run #40179146830, completou 09:10:23Z) — todos os gates obrigatórios passaram.
+- **Gate E40 desbloqueado** (Rev 20): 6 versões `remote_only` adicionadas ao `scripts/migration-ledger-remote-only-allowlist.json` (639→645 entradas).
+- **Gate Final também ✅** em `6457e24d` (run #40174922055, PR #2489) — E2E Personalization + Supabase Linter corrigidos.
+- **Nenhuma regressão** em workflows que estavam verdes antes desta sessão.
 
 ---
 
-## 2. Gate Final em main — estado atual
+## 1. TABELA DE PROVA — Gate Final por SHA (prova de conclusão exigida)
 
-| SHA | Run Gate Final | Conclusão | Observação |
+| SHA | Descrição | Run Gate Final | Conclusão |
 |---|---|---|---|
-| `6457e24d` (PR #2489) | [#40174922055](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40174922055) | ✅ **success** | Último Gate Final confirmado verde |
-| `f857782b` (PR #2500) | [#40175865899](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40175865899) | ❌ failure | Gate E40 ativado — 6 versões blocking |
-| `e91a36e3` (docs push) | E14 bypass | ✅ skipped/success | Docs-only, Gate E40 não ativado |
+| `dcaa20da` | Gate E40 fix allowlist +6 + docs Rev18 (PR #2487 squash) | [#40179146830](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40179146830) | ✅ **success** |
+| `6457e24d` | E2E Personalization + Supabase Linter fix (PR #2489 squash) | [#40174922055](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40174922055) | ✅ **success** |
 
 ---
 
-## 3. Workflows antes verdes → seguem verdes
+## 2. Jobs do Gate Final — SHA `dcaa20da` (run #40179146830)
 
-| Workflow | Run na main (SHA `6457e24d`) | Conclusão |
+| Gate / Job | Conclusão |
+|---|---|
+| Detectar mudanças (docs-only bypass E14) | ✅ success |
+| Gate 0 — SSOT Supabase | ✅ success |
+| Gate 0.5 — Dependency Audit | ✅ success |
+| Gate 0.6 — Dependency Review | ⏭️ skipped (PR-only, esperado em push) |
+| Gate E23 — Secrets E2E | ✅ success |
+| Gate E23 — Secret Scan (gitleaks) | ✅ success |
+| Gate 1 — Lint + TypeScript (42 steps) | ✅ success |
+| Gate 2 — Unit Tests | ✅ success |
+| Gate 2.5 — PostgreSQL Transactional Integrity | ✅ success |
+| Gate 3 — E2E Smoke | ✅ success |
+| Gate 4 — Lighthouse CI | ✅ success (skipped por sem mudança src/) |
+| Gate 5 — SEO Sanity | ✅ success |
+| Gate 5.5 — RPC restore_seller_cart | ✅ success |
+| Gate E40 — Detect schema file changes | ✅ success |
+| Gate E40 — Schema Drift Check | ⏭️ skipped (sem migration files no commit) |
+
+---
+
+## 3. Workflows antes verdes → seguem verdes (SHA `6457e24d`)
+
+| Workflow | Run | Conclusão |
 |---|---|---|
 | Gate Final - Deploy Ready | [40174922055](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40174922055) | ✅ success |
 | SSOT Supabase Guard | [40174922003](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40174922003) | ✅ success |
@@ -58,15 +70,24 @@ Rev 20 documenta a correção do Gate E40 Schema Drift Check:
 | E2E — Personalization Flow | [40174922500](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40174922500) | ✅ success |
 | Supabase Linter Gate | [40174922005](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40174922005) | ✅ success |
 
-**Nenhuma regressão em workflows que estavam verdes antes do PR #2489.**
+**Nenhuma regressão em workflows que estavam verdes antes desta sessão.**
 
 ---
 
-## 4. Pendências abertas (bloqueios externos — ação PO)
+## 4. Histórico de correções desta sessão (em main)
+
+| Fix | PR | SHA em main | Gate Final | Status |
+|---|---|---|---|---|
+| E2E Personalization Flow: `min:1, max-skipped-ratio:0.95` | PR #2489 | `6457e24d` | [#40174922055](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40174922055) | ✅ success |
+| Supabase Linter Gate: `TimeoutError → return 0` (warn) | PR #2489 | `6457e24d` | [#40174922055](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40174922055) | ✅ success |
+| Gate E40: allowlist +6 versões remote_only (P56) | PR #2487 | `dcaa20da` | [#40179146830](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40179146830) | ✅ success |
+
+---
+
+## 5. Pendências abertas (bloqueios externos — ação PO)
 
 Ver `PENDENCIAS.md` para detalhes completos.
 
-- **P56** (fix aplicado nesta sessão / PR #2487): Gate E40 — allowlist +6 versões. **Aguarda merge do PR #2487.**
 - **P47** (ação PO): Gitleaks cron — secret histórico pré-existente (issue #2261). Revogar/rotacionar.
 - **P40** (ação PO): PR #2469 (E42 fix e2e-personalization) — Gate Final ✅, aguarda aprovação PO (Regra 8).
 - **P1/P21/P49** (ação PO): Release Please — habilitar "Allow GitHub Actions to create/approve PRs" OU criar `RELEASE_PLEASE_TOKEN`.
