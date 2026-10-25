@@ -26,3 +26,11 @@ PASS  tests/contracts/webhook-scenario-matrix.test.ts — 95 tests, 0 falhas
 
 ## Totais Gate 2
 # Total: 429 tests, 0 falhas, Gate Final = success (run #40150209361)
+
+## Atualização — SHA bfd9b50a (main HEAD atual)
+
+Run #40151693979 (Deploy Gates, gate 2):
+SHA: bfd9b50a5b87d2ef77f116bf53a931d7a4075de7
+Resultado: ✅ SUCCESS — 0 falhas confirmadas 2026-10-25
+PR #2455 que gerou este SHA é docs-only — zero risco de regressão em testes.
+Baseline continua: 429 testes, 0 falhas.

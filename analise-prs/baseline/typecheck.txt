@@ -26,3 +26,11 @@ Evidência: https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/401502093
 Ambiente cloud sem node_modules (registry europe-west1-npm.pkg.dev inacessível).
 npm run typecheck local retorna 49833 erros genéricos "Cannot find module".
 Baseline de TypeScript medido EXCLUSIVAMENTE via CI Gate 1 (acima).
+
+=== ATUALIZAÇÃO — SHA bfd9b50a (main HEAD atual) ===
+Run: #40151693979 (Deploy Gates)
+SHA: bfd9b50a5b87d2ef77f116bf53a931d7a4075de7
+Resultado: ✅ SUCCESS — confirmado 2026-10-25
+Gate 1 (Lint + TypeScript): VERDE
+Gate 2 (unit tests vitest): VERDE
+PR #2455: docs-only (RELATORIO_CI.md + PENDENCIAS.md), zero alterações em código de produção.

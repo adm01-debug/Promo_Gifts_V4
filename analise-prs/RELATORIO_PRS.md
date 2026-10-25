@@ -7,9 +7,8 @@
 **Total PRs analisados:** 27  
 **Merges autônomos:** 7 (#2426, #2427, #2434, #2436, #2414, #2439, #2455)  
 **Merges PO-aprovados (REGRA #8):** 3 (#2441, #2445, #2450)  
-**PRs DECISÃO_HUMANA:** 10 (#2415, #2417, #2418, #2419, #2420, #2424, #2428, #2435, #2443, #2449)  
-**PRs bloqueados (draft+conflito):** 2 (#2422, #2452)  
-**JÁ IMPLEMENTADA:** 1 (#2432)  
+**PRs DECISÃO_HUMANA:** 6 (#2415, #2424, #2428, #2435, #2443, #2449)  
+**PRs FECHAR:** 8 (#2417, #2418, #2419, #2420, #2422, #2432, #2451, #2452)  
 **Nossa PR de deliverables:** 1 (#2447)  
 **Worktrees:** todos removidos (`git worktree list` confirma só `/home/user/Promo_Gifts_V4`)
 
@@ -20,10 +19,10 @@
 | PR | Motivo | Estado |
 |---|---|---|
 | **#2415** | `.github/workflows/ci-security-drift.yml` — REGRA #8 CI/workflows | draft:false, conflito (PENDENCIAS.md, RELATORIO_CI.md) |
-| **#2417** | draft + orphan (sem merge-base) + CI/workflows + edge fn | draft:true, orphan |
-| **#2418** | draft + orphan (sem merge-base) + deploy-gates.yml | draft:true, orphan |
-| **#2419** | draft + orphan (sem merge-base) + security gate | draft:true, orphan |
-| **#2420** | draft + orphan (sem merge-base) + migrations/rollbacks | draft:true, orphan |
+| ~~**#2417**~~ | ~~draft + orphan + CI/workflows + edge fn~~ | **FECHAR** — branch órfã |
+| ~~**#2418**~~ | ~~draft + orphan + deploy-gates.yml~~ | **FECHAR** — branch órfã |
+| ~~**#2419**~~ | ~~draft + orphan + security gate~~ | **FECHAR** — branch órfã |
+| ~~**#2420**~~ | ~~draft + orphan + migrations/rollbacks~~ | **FECHAR** — branch órfã |
 | **#2424** | draft + DDL migration + CI workflow | draft:true |
 | **#2428** | draft + `.gitleaks.toml` (security policy) | draft:true, merge limpo |
 | **#2435** | draft + CI/workflows + `.gitleaks.toml` | draft:true, conflito |
@@ -128,13 +127,13 @@ Nenhum PR mergeado autonomamente toca código de produção exceto:
 
 | PR | SHA do merge | CI pós-merge | Motivo |
 |---|---|---|---|
-| #2426 | `7f5d410a` | ✅ run #40128149143 success (sha 4c8193b9) | 1 arquivo QA, sem Rule 8 |
-| #2427 | `26641b0a` | ✅ run #40128149143 success; edge fn DEPLOYED #40146529580 | cors.ts + webhook-schemas |
-| #2434 | `53ba69b5` | ✅ run #40128149143 success | docs-only analise-prs/ |
-| #2436 | `4c8193b9` | ✅ run #40128149143 success (exact SHA) | deliverables update |
-| #2414 | `7061adab` | ✅ run #40150209361 success (sha eb7a92479) | docs-only analise-branches/ |
-| #2439 | `b3c8f2f3` | ✅ run #40150209361 success (sha eb7a92479) | deliverables ci-per-test-name + dossies |
-| #2455 | `bfd9b50a` | ⏳ run #40151693979 queued (docs-only, regressão impossível) | RELATORIO_CI.md rev7 + PENDENCIAS.md rev13 |
+| #2426 | `7f5d410a` | ✅ cobertura transitiva run #40151693979 (SHA bfd9b50a, SUCCESS). Sem run próprio no SHA do merge — merges sequenciais, CI cancelado/supersedido. | 1 arquivo QA, sem Rule 8 |
+| #2427 | `26641b0a` | ✅ run #40128149143 success (SHA 4c8193b9); edge fn DEPLOYED run #40146529580 | cors.ts + webhook-schemas |
+| #2434 | `53ba69b5` | ✅ cobertura transitiva run #40151693979 (SHA bfd9b50a, SUCCESS). Sem run próprio no SHA do merge — merges sequenciais, CI cancelado/supersedido. | docs-only analise-prs/ |
+| #2436 | `4c8193b9` | ✅ run #40128149143 success (SHA exato 4c8193b9) | deliverables update |
+| #2414 | `7061adab` | ✅ cobertura transitiva run #40151693979 (SHA bfd9b50a, SUCCESS). Sem run próprio no SHA do merge — merges sequenciais, CI cancelado/supersedido. | docs-only analise-branches/ |
+| #2439 | `b3c8f2f3` | ✅ run #40150209361 success (SHA eb7a92479) | deliverables ci-per-test-name + dossies |
+| #2455 | `bfd9b50a` | ✅ run #40151693979 SUCCESS confirmado — main HEAD atual | RELATORIO_CI.md rev7 + PENDENCIAS.md rev13 |
 
 ## Merges PO-aprovados (REGRA #8)
 
@@ -152,16 +151,16 @@ Nenhum PR mergeado autonomamente toca código de produção exceto:
 |---|---|---|---|
 | #2414 | MERGEADO | `7061adab` | `analise-prs/dossies/PR-2414.md` |
 | #2415 | DECISÃO_HUMANA | — | `analise-prs/dossies/PR-2415.md` |
-| #2417 | DECISÃO_HUMANA (orphan) | — | `analise-prs/dossies/PR-2417.md` |
-| #2418 | DECISÃO_HUMANA (orphan) | — | `analise-prs/dossies/PR-2418.md` |
-| #2419 | DECISÃO_HUMANA (orphan) | — | `analise-prs/dossies/PR-2419.md` |
-| #2420 | DECISÃO_HUMANA (orphan) | — | `analise-prs/dossies/PR-2420.md` |
-| #2422 | DRAFT+BLOQUEADA (orphan) | — | `analise-prs/dossies/PR-2422.md` |
+| #2417 | FECHAR (branch órfã + Rule 8) | — | `analise-prs/dossies/PR-2417.md` |
+| #2418 | FECHAR (branch órfã + Rule 8) | — | `analise-prs/dossies/PR-2418.md` |
+| #2419 | FECHAR (branch órfã + Rule 8) | — | `analise-prs/dossies/PR-2419.md` |
+| #2420 | FECHAR (branch órfã + Rule 8) | — | `analise-prs/dossies/PR-2420.md` |
+| #2422 | FECHAR (branch órfã + draft) | — | `analise-prs/dossies/PR-2422.md` |
 | #2424 | DECISÃO_HUMANA (DDL+CI) | — | `analise-prs/dossies/PR-2424.md` |
 | #2426 | MERGEADO | `7f5d410a` | `analise-prs/dossies/PR-2426.md` |
 | #2427 | MERGEADO | `26641b0a` | `analise-prs/dossies/PR-2427.md` |
 | #2428 | DECISÃO_HUMANA (.gitleaks.toml) | — | `analise-prs/dossies/PR-2428.md` |
-| #2432 | JÁ IMPLEMENTADA | — | `analise-prs/dossies/PR-2432.md` |
+| #2432 | FECHAR (conteúdo já em main via #2426) | — | `analise-prs/dossies/PR-2432.md` |
 | #2434 | MERGEADO | `53ba69b5` | `analise-prs/dossies/PR-2434.md` |
 | #2435 | DECISÃO_HUMANA (CI+gitleaks) | — | `analise-prs/dossies/PR-2435.md` |
 | #2436 | MERGEADO | `4c8193b9` | `analise-prs/dossies/PR-2436.md` |
@@ -171,11 +170,11 @@ Nenhum PR mergeado autonomamente toca código de produção exceto:
 | #2441 | MERGEADO (PO) | `90c6492b` | `analise-prs/dossies/PR-2441.md` |
 | #2443 | DECISÃO_HUMANA (draft+security) | — | `analise-prs/dossies/PR-2443.md` |
 | #2445 | MERGEADO (PO) | `8eeeca9b` | `analise-prs/dossies/PR-2445.md` |
-| #2447 | NOSSA PR (draft) | — | `analise-prs/dossies/PR-2447.md` (pendente) |
+| #2447 | NOSSA PR (deliverables) | — | `analise-prs/dossies/PR-2447.md` |
 | #2449 | DECISÃO_HUMANA (DDL+draft+conflito) | — | `analise-prs/dossies/PR-2449.md` |
 | #2450 | MERGEADO (PO) | `d804cafa` | `analise-prs/dossies/PR-2450.md` |
-| #2451 | DECISÃO_HUMANA→FECHADO | — | — |
-| #2452 | DRAFT+BLOQUEADA (conflito) | — | — |
+| #2451 | FECHAR (state: closed — já fechado) | — | `analise-prs/dossies/PR-2451.md` |
+| #2452 | FECHAR (draft + conflito com main) | — | `analise-prs/dossies/PR-2452.md` |
 | #2455 | MERGEADO | `bfd9b50a` | `analise-prs/dossies/PR-2455.md` |
 
 ---
@@ -190,7 +189,7 @@ Nenhum PR mergeado autonomamente toca código de produção exceto:
 
 ---
 
-## PRs Impossíveis — Evidência Definitiva
+## PRs FECHAR — Evidência Definitiva
 
 ### Branches órfãs (merge fisicamente impossível)
 
@@ -206,7 +205,7 @@ Não há conflito a resolver; não existe base compartilhada.
 | #2420 | 17 commits | NO_MERGE_BASE — branch órfã |
 | #2422 | 19 commits | NO_MERGE_BASE — branch órfã |
 
-**Merge é fisicamente impossível para estes 5 PRs.**
+**Veredicto: FECHAR — merge fisicamente impossível para estes 5 PRs.**
 
 ### Draft PRs (merge bloqueado pela GitHub API)
 
@@ -215,7 +214,7 @@ A GitHub API recusa squash-merge de draft PRs (HTTP 405).
 Critério §1.1 da regras-de-negocio.md exige `draft: false`.  
 Converter para "ready for review" e resolver conflitos é ação de autor — fora do escopo autônomo.
 
-**Merge é bloqueado pela GitHub API para estes 5 PRs.**
+**Veredicto: FECHAR ou DECISÃO_HUMANA — merge bloqueado pela GitHub API.**
 
 ---
 
@@ -254,4 +253,6 @@ Qualquer PR que introduza um teste falhando está abaixo do baseline.
 ## NÃO VERIFICADO
 
 - Typecheck local: ambiente cloud sem node_modules — `npm run typecheck` retorna 49833 erros genéricos de tipo "Cannot find module". CI Gate 1 (TypeScript) é a única fonte válida — verde no baseline (job #121040094408, run #40150209361, SHA eb7a92479).
-- CI pós-merge #2455: run #40151693979 em progresso na coleta; PR docs-only, regressão impossível (ver §CI pós-merge acima).
+- CI pós-merge #2455: run #40151693979 confirmado SUCCESS (main HEAD bfd9b50a). PR docs-only, 0 regressões.
+- CI para #2414, #2426, #2434: sem run no SHA do merge exato (merges sequenciais — CI cancelado/supersedido). Cobertura transitiva confirmada via run #40151693979 (SHA bfd9b50a, SUCCESS) que inclui todos os commits anteriores.
+- prs.csv: criado em `analise-prs/prs.csv` (27 PRs, colunas: pr_number, title, author, draft, state, mergeable_state, verdict, sha_merge, ci_run, notes).
