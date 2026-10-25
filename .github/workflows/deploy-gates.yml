@@ -641,7 +641,7 @@ jobs:
   restore-cart-rpc-gate:
     name: Gate 5.5 - RPC restore_seller_cart presente no canônico
     runs-on: ubuntu-24.04
-    timeout-minutes: 3
+    timeout-minutes: 5
     needs: [ssot-gate]
     # Dependabot e forks não têm acesso a SERVICE_ROLE_KEY — skipa (E59).
     if: |

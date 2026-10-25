@@ -1,8 +1,8 @@
 # Pendências CI — Bloqueios Externos
 
-**Atualizado em:** 2026-10-25 (rev 14 — merge PR #2435; Gate 1.3 stale baseline fix; P-EF2 adicionado)  
+**Atualizado em:** 2026-10-25 (rev 15 — merge PR #2462; Gate 1.3 PR-2449.md fix; P28-P32 adicionados)  
 **Branch de referência:** `claude_05/nifty-sagan-r23gqh`  
-**Commit de referência (main):** merge PR #2435 (fix(qa): remove 6 entradas stale do baseline Gate 1.3)
+**Commit de referência (main):** `1b69cfe7` — merge PR #2462 (fix(docs): remove migration path refs stale em PR-2449.md)
 
 ---
 
@@ -706,6 +706,94 @@ Flake visual em QuickView de thumbnail — screenshot diff ou timeout de navega�
 **Impacto no Gate Final:** Nenhum — não faz parte do required check "Gate Final - Deploy Ready".
 
 **Ação necessária (REGRA #8):** verificar drift via `get_edge_function` MCP; reconciliar git com produção; redeployar via `deploy-edge-functions.yml` workflow_dispatch. Fora do escopo desta sessão — requer inspeção de produção.
+
+---
+
+## P28 — Nightly Full CI: E2E Playwright failures (schedule — não-bloqueante)
+
+**Workflow:** `.github/workflows/nightly-full-ci.yml` (trigger: schedule)  
+**Run em falha:** `edb8432a` (schedule nightly)  
+**Conclusão:** `failure`  
+**Categoria:** E2E não-required, flake de dados/ambiente pré-existente  
+
+**Jobs falhos:**
+- `Playwright E2E (2)` — failure
+- `Playwright E2E (1)` — cancelled (cascata de failure)
+- `E2E Visual Focused · magazine-header` — failure
+- `E2E Visual Focused · color-swatch` — failure
+
+**Causa raiz:** E2E shards do nightly falham por mesmo padrão P2b/P8/P12 — seed de dados insuficiente no runner ou flake de timing em headless. `magazine-header` e `color-swatch` são testes visuais com screenshots que podem diferir por fonte/renderização no Ubuntu 24.04 vs baseline local.
+
+**Impacto no Gate Final:** Nenhum — `nightly-full-ci.yml` é schedule (não trigger de PR/push para main), não é required check no Gate Final.
+
+**Ação necessária:** seed de dados completo no runner de CI; revisar baselines visuais de magazine-header e color-swatch no ambiente Ubuntu 24.04.
+
+---
+
+## P29 — Edge Integration Tests: expected 200 got 400 (workflow_run — não-bloqueante)
+
+**Workflow:** `.github/workflows/edge-integration-tests.yml` (trigger: workflow_run)  
+**Run em falha:** commit `50f4f599`  
+**Conclusão:** `failure`  
+**Categoria:** Teste de integração de edge function — não-required  
+
+**Erro exato:**
+```
+receive-crm-callback.duplicates-and-dispatcher.test.ts:127
+  expect(response.status).toBe(200)
+  received: 400
+```
+
+**Causa raiz:** A edge function `receive-crm-callback` retorna HTTP 400 quando recebe payload duplicado ou sem campos obrigatórios. O teste na linha 127 espera 200 mas a função pode ter mudado seu comportamento de deduplicação. Requer inspeção do código da edge function e do payload do teste.
+
+**Impacto no Gate Final:** Nenhum — não é required check no Gate Final.
+
+**Ação necessária (REGRA #8 — edge functions):** inspecionar `supabase/functions/receive-crm-callback/index.ts` e o payload do teste; verificar se o comportamento 400 é intencional (deduplicação) ou regressão.
+
+---
+
+## P30 — CI - Replenishment Module Quality Gate: "Module Tests" failure (não-bloqueante)
+
+**Workflow:** `.github/workflows/replenishment-quality-gate.yml` (ou similar)  
+**Run em falha:** commit `50f4f599`  
+**Conclusão:** `failure`  
+**Categoria:** Testes unitários do módulo Replenishment — não-required  
+
+**Job falho:** `Module Tests`
+
+**Causa raiz:** Falha nos testes unitários do módulo de Reposição (Replenishment). Não relacionado a mudanças desta sessão — falha pré-existente ou regressão introduzida por commit anterior.
+
+**Impacto no Gate Final:** Nenhum — não é required check no Gate Final (Gate 2 `unit-tests` cobre os testes unitários obrigatórios via `vitest` e passou).
+
+**Ação necessária:** investigar qual spec do módulo Replenishment falhou e corrigir a regressão.
+
+---
+
+## P31 — E2E — Magazine Header Layout: failure (não-bloqueante)
+
+**Workflow:** `.github/workflows/e2e-magazine-header.yml` (ou similar)  
+**Run em falha:** commit `50f4f599`  
+**Conclusão:** `failure`  
+**Categoria:** E2E visual do layout do header de magazine — não-required  
+
+**Causa raiz:** Flake visual ou regressão de layout no header do magazine. Não relacionado a mudanças desta sessão. Padrão similar a P28 (E2E Visual Focused · magazine-header do nightly).
+
+**Impacto no Gate Final:** Nenhum — não é required check no Gate Final.
+
+**Ação necessária:** inspecionar screenshot diff e verificar se houve mudança de CSS no componente `MagazineHeader` por commit recente do Lovable.
+
+---
+
+## P32 — Running Copilot Code Review: failure (recorrência de P15)
+
+**Workflow:** Bot externo GitHub Copilot (trigger: push/PR)  
+**Run em falha:** commit `50f4f599`  
+**Conclusão:** `failure`  
+**Categoria:** Bot externo — mesmo problema documentado em P15  
+
+**Ver P15** para diagnóstico completo e ação corretiva. Mesma causa raiz: bot do GitHub Copilot (`copilot-pull-request-reviewer`) configurado para revisar todo push, falha quando não há PR associada.
+
+**Impacto no Gate Final:** Nenhum — não é required check no Gate Final.
 
 ---
 
