@@ -19,6 +19,8 @@ const NotificationSchema = z.object({
   category: z.string().max(50).optional().default('system'),
   action_url: z.string().max(2000).optional().nullable(),
   metadata: z.record(z.unknown()).optional().nullable(),
+  // P08: chave determinística para deduplicação em retry
+  idempotency_key: z.string().max(128).optional().nullable(),
 });
 
 function jsonRes(corsHeaders: Record<string, string>, body: unknown, status = 200) {
@@ -76,27 +78,38 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Insert into workspace_notifications
-    const { data: notification, error } = await supabase
-      .from('workspace_notifications')
-      .insert({
-        user_id: payload.user_id,
-        title: payload.title,
-        message: payload.message,
-        type: payload.type,
-        category: payload.category,
-        action_url: payload.action_url || null,
-        metadata: payload.metadata || null,
-        is_read: false,
-      })
-      .select()
-      .single();
+    // P08: upsert com idempotency_key — ON CONFLICT DO NOTHING quando key presente
+    const row = {
+      user_id: payload.user_id,
+      title: payload.title,
+      message: payload.message,
+      type: payload.type,
+      category: payload.category,
+      action_url: payload.action_url || null,
+      metadata: payload.metadata || null,
+      is_read: false,
+      ...(payload.idempotency_key ? { idempotency_key: payload.idempotency_key } : {}),
+    };
+
+    const { data: notification, error } = payload.idempotency_key
+      ? await supabase
+          .from('workspace_notifications')
+          .upsert(row, { onConflict: 'idempotency_key', ignoreDuplicates: true })
+          .select()
+          .maybeSingle()
+      : await supabase
+          .from('workspace_notifications')
+          .insert(row)
+          .select()
+          .single();
 
     if (error) throw error;
 
+    // ignoreDuplicates: true retorna null quando duplicata — idempotente OK
     return jsonRes(corsHeaders, {
       success: true,
-      notification_id: notification.id,
+      notification_id: notification?.id ?? null,
+      deduplicated: notification === null,
     });
 
   } catch (error) {
