@@ -227,6 +227,20 @@ describe('sanitizeBaselineForReplay', () => {
     expect(res.removedStatements).toHaveLength(1);
     expect(readFileSync(file, 'utf8')).toBe(raw);
   });
+
+  it('prepareWorkdir semeia os jobs do pg_cron em migration própria B+1, fora do baseline', () => {
+    const root = fixtureRepo({ baselineVersion: '20261015140000', ledgerVersions: ['20261015140000'], migrations: [] });
+    writeFileSync(join(root, 'supabase', 'baseline', '20261015140000_baseline_schema.sql'), 'CREATE TABLE t (id int);\n');
+    const out = join(tmp(), 'wd');
+    prepareWorkdir({ rootDir: root, outDir: out, appliedVersions: ['20261015140000'], projectRef: 'x' });
+    const mig = join(out, 'supabase', 'migrations');
+    expect(readFileSync(join(mig, '20261015140000_baseline_schema.sql'), 'utf8')).not.toContain('cron.schedule');
+    const delivered = readFileSync(join(mig, '20261015140001_drift_replay_cron_seed.sql'), 'utf8');
+    expect(delivered).toContain("cron.schedule('auto-block-offenders'");
+    expect(delivered).toContain("cron.schedule('image-dimensions-backfill'");
+    expect(delivered).toContain('cron.unschedule(v_id)');
+    expect(delivered).not.toContain('UPDATE cron.job');
+  });
 });
 
 describe('maxNumericVersion', () => {
@@ -313,9 +327,10 @@ describe('prepareWorkdir — nomes de migration com caracteres especiais', () =>
     expect(readdirSync(join(out, 'supabase', 'migrations')).sort(byCodeUnit)).toEqual([
       REPLAY_SEED_NAME,
       '20261015140000_baseline_schema.sql',
-      `20261015140001_${names[0]}`,
-      `20261015140002_${names[1]}`,
-      `20261015140003_${names[2]}`,
+      '20261015140001_drift_replay_cron_seed.sql',
+      `20261015140002_${names[0]}`,
+      `20261015140003_${names[1]}`,
+      `20261015140004_${names[2]}`,
     ]);
     expect(readdirSync(out).includes('PWNED')).toBe(false);
   });
