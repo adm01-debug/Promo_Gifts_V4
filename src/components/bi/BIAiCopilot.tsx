@@ -72,7 +72,16 @@ export function BIAiCopilot({ open, onOpenChange, clientId, clientName, ramoAtiv
     setLoading(true);
 
     try {
+      // Blocos simulados (isMock) não vão ao copiloto: ele só pode citar dado real.
+      const simulated = {
+        metricas: bi.isMock,
+        afinidade: !!affinity.data?.isMock,
+        tendenciasSetor: !!trends.data?.isMock,
+        sazonalidade: seas.isMock,
+        clienteVsSetor: vs.isMock,
+      };
       const context = {
+        dadosSimulados: Object.entries(simulated).filter(([, v]) => v).map(([k]) => k),
         clientName,
         ramoAtividade,
         score: health.score,
@@ -82,31 +91,35 @@ export function BIAiCopilot({ open, onOpenChange, clientId, clientName, ramoAtiv
         windowLabel: health.windowLabel,
         shareOfWalletPct: health.shareOfWalletPct,
         potentialUntappedBRL: health.potentialUntappedBRL,
-        ltv: bi.ltv,
-        avgTicket: bi.avgTicket,
-        ordersCount: bi.ordersCount,
-        daysSinceLastOrder: bi.daysSinceLastOrder,
-        topCategories: affinity.data?.categories?.slice(0, 3).map((c) => ({
+        ltv: simulated.metricas ? null : bi.ltv,
+        avgTicket: simulated.metricas ? null : bi.avgTicket,
+        ordersCount: simulated.metricas ? null : bi.ordersCount,
+        daysSinceLastOrder: simulated.metricas ? null : bi.daysSinceLastOrder,
+        topCategories: simulated.afinidade ? [] : affinity.data?.categories?.slice(0, 3).map((c) => ({
           category: c.category,
           count: c.count,
           revenue: c.revenue,
         })),
-        industryTrends: trends.data?.trends?.slice(0, 5).map((t) => ({
+        industryTrends: simulated.tendenciasSetor ? [] : trends.data?.trends?.slice(0, 5).map((t) => ({
           name: t.productName,
           category: t.category,
           unitsSold: t.unitsSold,
         })),
-        seasonality: {
-          topClientMonths: seas.topClientMonths.map(
-            (m) => `${m.monthLabel} (${Math.round(m.sharePercent)}%)`,
-          ),
-          nextPeakMonth: seas.nextPeakMonth,
-          daysToNextPeak: seas.daysToNextPeak,
-        },
-        clientVsIndustry: vs.metrics.map((m) => ({
-          label: m.label,
-          delta: Math.round(m.deltaPercent),
-        })),
+        seasonality: simulated.sazonalidade
+          ? null
+          : {
+              topClientMonths: seas.topClientMonths.map(
+                (m) => `${m.monthLabel} (${Math.round(m.sharePercent)}%)`,
+              ),
+              nextPeakMonth: seas.nextPeakMonth,
+              daysToNextPeak: seas.daysToNextPeak,
+            },
+        clientVsIndustry: simulated.clienteVsSetor
+          ? []
+          : vs.metrics.map((m) => ({
+              label: m.label,
+              delta: Math.round(m.deltaPercent),
+            })),
       };
 
       const { data, error } = await invokeEdge('bi-copilot', {
