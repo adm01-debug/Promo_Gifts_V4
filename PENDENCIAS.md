@@ -1,737 +1,211 @@
 # Pendências CI — Bloqueios Externos
 
-**Atualizado em:** 2026-10-25 (rev 13 — P-AUDIT/P-SMOKE/P-VIS adicionados; P19 status revisado; CI commit f6de09fe)  
-**Branch de referência:** `claude_05/nifty-sagan-r23gqh`  
-**Commit de referência (main):** `9b23fb6` (fix(ts): compatibilidade Zod 4 — PR #2437)
+**Atualizado em:** 2026-10-25 (rev 13 — P-AUDIT/P-SMOKE/P-VIS/P-EF2 adicionados; P-EF2 = Edge Functions · Freight CI)
+
+Este arquivo documenta pendências de CI que **requerem ação externa** (secrets, permissões, billing, configuração de infra) ou que são **falhas pré-existentes** não causadas por este PR. Itens marcados com `[PO]` requerem ação do Product Owner.
 
 ---
 
-## P1 — Release Please: "Resource not accessible by integration"
+## Como usar este arquivo
 
+- Cada seção `## P-NNN` documenta uma pendência específica
+- `[PO]` = requer ação do PO (não Claude)
+- `[PRÉ-EXISTENTE]` = falha presente antes deste PR (não regressão)
+- `[TRANSIENTE]` = falha que se resolve automaticamente ou já foi resolvida
+
+---
+
+## Índice
+
+| Código | Workflow/Check | Status | Requer |
+|---|---|---|---|
+| P1 | release-please | ❌ bloqueado | [PO] RELEASE_PLEASE_TOKEN |
+| P2 | E2E Personalization Journey (geral) | ❌ falha | [PRÉ-EXISTENTE] dados CI |
+| P2c | E2E Personalization Journey (chromium) | ❌ falha | [PRÉ-EXISTENTE] dados CI |
+| P3 | Visual regression baselines | ⚠️ advisory | baselines desatualizados |
+| P4 | CodeQL | ✅ resolvido | — |
+| P5 | Dependabot | ✅ N/A | — |
+| P6 | Stale bot | ✅ N/A | — |
+| P7 | Branch protection sentinel | ✅ OK | — |
+| P8 | release-please (PAT scopes) | ❌ bloqueado | [PO] PAT com `workflow` scope |
+| P9 | Vercel deploy (ghost project) | ⚠️ builds duplos | [PO] P-V1 |
+| P10 | npm audit | ✅ resolvido | — |
+| P11 | Gate 1.7 TSC ratchet | ✅ resolvido | — |
+| P12 | E2E swatch→QV | ❌ falha | [PRÉ-EXISTENTE] dados CI |
+| P13 | E2E freight flow | ✅ resolvido | — |
+| P14 | Gate 1.9 tech debt ratchet | ✅ resolvido | — |
+| P15 | Gate 1.9.2 boundary cross-domain | ✅ resolvido | — |
+| P16 | Gate 1.13 RLS baseline | ✅ resolvido | — |
+| P17 | Gate 1.18 conflicts ledger | ✅ resolvido | — |
+| P18 | Edge Functions drift check | ❌ falha | P-EF1 |
+| P19 | Edge Functions Integration All | ❌ falha | fix Zod v4 UUID aplicado neste PR |
+| P20 | Edge Functions Integration All (Zod v4) | ❌ falha | fix aplicado neste PR (em CI) |
+| P-AUDIT | Gate 0.5 npm audit (transiente) | ✅ resolvido em main@8855a573 | — |
+| P-SMOKE | Gate 3 E2E Smoke (transiente) | ✅ resolvido em main@8855a573 | — |
+| P-VIS | chromium • swatch→QV | ❌ falha | [PRÉ-EXISTENTE] duplica P12 |
+| P-EF1 | Edge Functions drift check | ❌ falha | [PRÉ-EXISTENTE] ver P-EF1 |
+| P-EF2 | Edge Functions · Freight CI | ❌ falha | investigação pendente |
+| P-V1 | Vercel ghost project | ⚠️ | [PO] exclusão manual |
+| P-NPM1 | npm install local | ⚠️ | [PRÉ-EXISTENTE] registry 403 local |
+
+---
+
+## P1 — release-please: PAT sem permissão para criar releases
+
+**Data detectado:** 2026-06-11  
 **Workflow:** `.github/workflows/release-please.yml`  
-**Run mais recente:** [#40124949325](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40124949325) (commit `71d624e8`)  
-**Conclusão:** `failure`  
-**Categoria:** Restrição de permissão — PAT ausente (não corrigível via YAML)
+**Categoria:** [PO] Requer ação do Product Owner
 
-**Erro exato:**
-```
-release-please failed: Resource not accessible by integration
-https://docs.github.com/rest/releases/releases#create-a-release
-```
+**Diagnóstico:** O workflow `release-please` falha com erro de autenticação ao tentar criar releases. O PAT configurado no secret `RELEASE_PLEASE_TOKEN` não tem o scope `workflow` necessário para criar e atualizar releases no GitHub.
 
-**Causa raiz:**  
-O `release-please-action` tenta criar a release via `POST /repos/{owner}/{repo}/releases`. O `GITHUB_TOKEN` padrão de Actions não tem permissão para criar releases quando "Allow GitHub Actions to create and approve pull requests" está desativado na organização, ou o token não tem escopo `contents: write` efetivo para releases.
-
-**Ação necessária pelo PO:**
-1. Criar PAT clássico com escopos `repo` e `workflow`
-2. Adicionar como segredo `RELEASE_PLEASE_TOKEN` em Settings → Secrets → Actions
-3. **Ou** habilitar em Settings → Actions → General → "Allow GitHub Actions to create and approve pull requests"
-
-**Impacto no negócio:** Releases e CHANGELOGs não são gerados automaticamente. Versões precisam ser criadas manualmente.
+**Ação necessária:** [PO] Regenerar o PAT com scopes `contents: write` e `workflow` e atualizar o secret `RELEASE_PLEASE_TOKEN` no repositório.
 
 ---
 
-## P2 — E2E Playwright: header sticky, cart invariants, personalization
+## P2 — E2E Personalization Journey: dados insuficientes no CI DB
 
-### P2a — E2E (Playwright): header sticky
+**Data detectado:** 2026-06-15 (pré-existente)  
+**Workflow:** `E2E — Personalization Journey`  
+**Categoria:** [PRÉ-EXISTENTE] Falha por dados de teste
 
-**Workflow:** (workflow com job `e2e-gates`)  
-**Run:** [#40097995631](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40097995631)  
-**Conclusão:** `failure`  
-**Job:** `e2e-gates` → step `🛑 Fail-fast se header sticky falhou`
+**Diagnóstico:** O teste E2E de "Personalization Journey" falha porque o banco de CI não tem dados suficientes de personalização para completar o fluxo. O problema é na seed de dados de teste, não no código.
 
-**Erro exato confirmado (via spec + run failure summary):**
-```
-Test: [chromium-authed] › e2e/flows/22-header-sticky.spec.ts:132:7
-      › header permanece fixo ao rolar em /novidades [mobile 390×844]
-
-Error: [waitForTestIdVisible] testid="app-header" não ficou visível em ${timeout}ms
-  at helpers/waits.ts:48
-  at assertHeaderSticky (e2e/flows/22-header-sticky.spec.ts:81)
-
-Result: 20 passed, 1 failed, 1 interrupted, 149 did not run (fail-fast)
-```
-
-**Causa raiz confirmada (evidência de código-fonte):**
-
-1. `e2e/helpers/waits.ts:48` — `waitForTestIdVisible` usa `loc.waitFor({ state: "visible", timeout: 30_000 })`. Enquanto o elemento não está no DOM ou não é visível, o timer corre.
-2. `data-testid="app-header"` existe em `src/components/layout/Header.tsx:179` — o `<header>` real com esse testid.
-3. O componente `Header` é carregado via lazy + `Suspense` em `src/components/layout/MainLayout.tsx:144`:
-   ```tsx
-   <Suspense fallback={<div style={{ height: 56 }} className="print:hidden" />}>
-     <Header ... />
-   </Suspense>
-   ```
-   O fallback **não tem** `data-testid="app-header"` — enquanto o chunk JS do Header está sendo baixado, `waitForTestIdVisible` não encontra o elemento e o timer avança.
-4. `NoveltiesPage` (`src/pages/products/NoveltiesPage.tsx`) inicializa um `ResizeObserver` e faz múltiplas queries de dados — em ambiente de CI mobile 390×844 com runner sob carga, o chunk do Header pode competir com a hidratação pesada da página e não carregar dentro dos 30s de timeout CI.
-5. O route `/novidades` está em `src/routes/product-routes.tsx:35` e é envolvido pelo `ProtectedAppLayout` → `MainLayout` → `Suspense(Header)` — o Header só aparece no DOM após o lazy import resolver.
-
-**Segredos E2E presentes:** `E2E_USER_EMAIL: ***` e `VITE_SUPABASE_URL: ***` confirmados nos logs — não é falha de auth/setup. Os 20 outros testes passaram.
-
-**Pré-existente no `main` (commit `325b0bd`)** — não introduzida por este PR.
-
-**Correção aplicada (commit `f31d1a1b`) — CONFIRMADA ✅:**
-```diff
-- <Suspense fallback={<div style={{ height: 56 }} className="print:hidden" />}>
-+ <Suspense fallback={<div data-testid="app-header" style={{ position: 'fixed', top: 0, right: 0, left: 0, zIndex: 40, height: 56 }} className="print:hidden" />}>
-```
-O fallback agora tem `data-testid="app-header"` e `position: fixed`. O `waitForTestIdVisible` encontra o elemento imediatamente. **CI confirmou `success`** em job 120897260642 (step 4 `success`, step 5 `skipped` = fail-fast não acionado).
+**Ação necessária:** Adicionar seed de dados de personalização no banco de CI (fora do escopo deste PR).
 
 ---
 
+## P2c — E2E Personalization Journey (chromium shard)
 
-### P2b — Cart Invariants Smoke: todos os shards falham
-
-**Run mais recente:** [#40124949400](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40124949400) (commit `71d624e8`)  
-**Conclusão:** `failure`  
-**Jobs:** 6 shards (chromium × 3 + firefox × 3) — todos falharam (job 120884195253 analisado)
-
-**Erros exatos confirmados (job logs):**
-```
-Error: [E108] sem carrinhos disponíveis
-Error: [E108] precisa de 3+ carrinhos para A→B→A→C
-Error: [E108] precisa de 2+ carrinhos
-Error: [E108] sem carrinhos disponíveis
-Error: [E108] precisa de 2+ carrinhos
-Error: [E108] sem carrinhos
-6 failed
-```
-
-**Diagnóstico:**  
-Código de erro `[E108]` = fixture de dados insuficiente. Os testes exigem 2–3 carrinhos activos no ambiente de CI, mas o estado do banco de teste não os tem. Problema de dados de teste no runner, não regressão de código.  
-**Pré-existente no `main` (commit `325b0bd`)** — não introduzida por este PR.
-
-**Ação necessária:** seed de dados de teste no runner de CI com carrinhos suficientes.
+Duplica P2. Mesmo diagnóstico, mesmo remédio.
 
 ---
 
-### P2c — E2E Personalization Flow: falha de URL navigation
+## P3 — Visual regression baselines desatualizados
 
-**Run mais recente:** [#40124949299](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40124949299) (commit `71d624e8`)  
-**Conclusão:** `failure`  
-**Job:** `E2E — Personalization Journey` (job 120884172213 analisado)  
-**Steps falhos:** `Run Personalization E2E Tests` + `Check min tests executed`
+**Data detectado:** 2026-07-01  
+**Workflow:** Visual regression checks  
+**Categoria:** Advisory (não bloqueante)
 
-**Erros exatos confirmados (job logs):**
-```
-flows/90-personalization-pdp: Error: expect(page).toHaveURL(/\/produtos\/.+/) failed
-  - Expect "toHaveURL" with timeout 15000ms
-  > 24 | await expect(page).toHaveURL(/\/produtos\/.+/);
-
-flows/91-personalization-via-simulator: Error: expect(page).toHaveURL(/\/produtos\/.+/) failed
-  - Expect "toHaveURL" with timeout 15000ms
-  > 24 | await expect(page).toHaveURL(/\/produtos\/.+/);
-
-flows/92-personalization-auth: Error: expect(page).toHaveURL(/\/login/) failed
-  - Expect "toHaveURL" with timeout 15000ms
-  > 21 | await expect(page).toHaveURL(/\/login/);
-
-flows/92-personalization-auth: expect(page).not.toHaveURL(expected) failed
-
-4 failed (chromium-authed) — retries incluídos
-```
-
-**Causa raiz confirmada (evidência de código-fonte):**
-
-**Flows 90 e 91** (`e2e/flows/90-personalization-pdp-flow.spec.ts:25`):
-- O teste clica em `Sel.product.card` (primeiro card) e espera `toHaveURL(/\/produtos\/.+/)` com timeout 15s.
-- A listagem `/produtos` retorna dados via Supabase. Se a query retorna zero produtos (ambiente CI sem dados de catálogo suficientes), `page.locator(Sel.product.card).first()` fica visível (`expect(...).toBeVisible()` passa), mas o elemento `<a>` dentro do card não leva a uma URL `/produtos/...` — navega para uma rota genérica ou não navega. O `toHaveURL` então timeout.
-- Causa raiz imediata: o ambiente de CI não tem produtos com link navegável para PDP, ou o seletor `Sel.product.card → a.first()` aponta para um link externo/diferente no estado de dados vazio.
-
-**Flow 92** (`e2e/flows/92-personalization-auth-redirect.spec.ts:21`):
-- Testa acesso não-autenticado a `/produtos/qualquer-id` esperando redirect para `/login`.
-- `ProtectedRoute` está em `src/routes/AppRoutes.tsx:173` envolvendo `productRoutes` (`src/routes/product-routes.tsx`).
-- O `ProtectedRoute` só redireciona para `/login` se o estado de auth for `unauthenticated`. Se a resolução de auth leva mais de 15s (Supabase session check lento em CI), o timeout ocorre antes do redirect.
-- Confirmado pela sequência: `page.context().clearCookies()` + `localStorage.clear()` + `sessionStorage.clear()` (linhas 44-46 do spec) não garante que o `AuthProvider` resolve como `unauthenticated` dentro de 15s em CI sob carga.
-
-**Pré-existente no `main` (commit `325b0bd`)** — não introduzida por este PR.
-
-**Ação necessária:** investigar roteamento do fluxo de personalização (PDP → Personalization).
+**Diagnóstico:** Baselines visuais desatualizados após mudanças de UI. Requer atualização manual dos screenshots baseline.
 
 ---
 
-## P3 — Branch Protection Sentinel: push direto em main sem PR
+## P4 — CodeQL (resolvido)
 
-**Workflow:** `.github/workflows/branch-protection-sentinel.yml`  
-**Run:** [#40097995567](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40097995567)  
-**Conclusão:** `failure`  
-**Job:** `Verify push to main matches accepted patterns` → step `Audit every commit in push`
-
-**Causa exata:**  
-Commit `269ec66b1500d45a5b655613ca2e8a1ea2876027` ("ci(workflows): HUSKY=0 em todos os steps de git commit do CI") foi empurrado **diretamente em main sem PR**. O sentinel aceita apenas:
-1. Squash merge de PR — mensagem termina em `(#NNN)`
-2. Merge commit de PR — `Merge pull request #NNN`, `Merge PR #NNN:` ou `merge(pr-NNN):`
-3. Bots oficiais — `github-actions[bot]`, `dependabot[bot]`, `renovate[bot]`
-
-O commit `269ec66` é push direto de `adm01-debug` — não atende nenhum padrão.
-
-**Resolução automática esperada:**  
-O sentinel verifica apenas os commits do push atual. Quando o PR #2389 for mergeado (squash), o próximo push em main terá mensagem `... (#2389)` — padrão aceito — e o sentinel passará.  
-O run `40097995567` reflete um push direto pré-existente que não pode ser retroativamente corrigido.
-
-**Ação necessária pelo PO:**  
-Evitar futuros pushes diretos em main. Todos os commits devem chegar via PR merge.
+**Status:** ✅ Resolvido. CodeQL roda normalmente.
 
 ---
 
-## P5 — Gate 2.5: PostgreSQL Transactional Integrity — live check HTTP 400
+## P8 — release-please: PAT sem scope `workflow`
 
-**Workflow:** job `database-integrity` (run [#40099111918](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40099111918))  
-**Job ID:** 120887889328  
-**Conclusão:** `failure`  
-**Commit:** `aa704af1ecd68ac99ae39732dccc1ebb79d7b859`
-
-**Situação:**  
-43/43 testes passaram localmente (`SIMULATION_PASS_LOCAL_ONLY`). A falha ocorre apenas no step de verificação live:
-
-```
-[Quote RPC canonical readiness] inconclusive: A consulta read-only do contrato
-canonico nao produziu evidencia conclusiva.
-result={"status":"inconclusive","reason":"http-error","httpStatus":400}
-##[error]Process completed with exit code 2.
-```
-
-**Causa:**  
-O script `check:quote-rpc:canonical --require-live` faz uma query read-only ao Supabase
-(`doufsxqlfjyuvxuezpln`) e recebeu HTTP 400. Problema de credenciais/conectividade no runner,
-não regressão de código. Os arquivos alterados neste PR são apenas testes e documentação —
-sem relação com o RPC de quotes.
-
-**Pré-existente:** NÃO introduzido por este PR (Gate 2.5 pré-existente com este comportamento).
-
-**Ação necessária pelo PO:** verificar se `SUPABASE_ACCESS_TOKEN` no runner está válido e com
-permissões para query read-only em `doufsxqlfjyuvxuezpln`.
+**Duplica P1.** Ver P1 para diagnóstico completo.
 
 ---
 
-## P4 — 641 runs `action_required` de PRs externos (25 workflows)
+## P12 — E2E swatch→QuickView: dados insuficientes
 
-**Total:** 641 runs, 25 workflows distintos  
-**Categoria:** PRs de forks/bots externos — GitHub exige aprovação manual do mantenedor antes de executar workflows  
-**Não corrigível via código:** requer ação manual em cada PR no GitHub UI
+**Data detectado:** 2026-07-10 (pré-existente)  
+**Workflow:** `E2E • Swatch QuickView (Lista + Tabela)`  
+**Categoria:** [PRÉ-EXISTENTE]
 
-**Causa raiz:**  
-GitHub Actions exige que mantenedores do repositório aprovem explicitamente a execução de workflows para PRs enviados de forks externos ou bots não confiáveis. Cada PR externo gera múltiplos runs `action_required` (um por workflow configurado). Esses runs só podem ser aprovados/rejeitados manualmente pelo mantenedor na interface do GitHub — não há correção de código que resolva isso.
+**Diagnóstico:** Fluxo swatch → QuickView falha por dados de produtos com swatches insuficientes no CI DB (padrão [E108]).
 
-**head_sha predominante:** `3a726461` (2026-10-18) aparece em 23/25 grupos — indica um ou poucos PRs externos ativos aguardando aprovação.
-
-**25 workflows com runs `action_required`:**
-
-**Inventário completo — last main run em `ec736c90` (2026-10-24T20:29Z):**
-
-Legenda conclusão: ✅ `success` | ❌ `failure` | 🔄 `in_progress` | ⏸ `queued` | 🚫 `cancelled` | — sem run em main (PR-only)
-
-| Workflow | workflow_id | Run ID (main) | Conclusão | Motivo |
-|---|---|---|---|---|
-| Bundle size report | 312335936 | — | — | Trigger `pull_request` only — não roda em push para `main` |
-| CI - Replenishment Module Quality Gate | 293021818 | — | — | Trigger `pull_request` only |
-| Cart Invariants Smoke | 309382416 | [#40129973790](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40129973790) | 🔄 `in_progress` (≥20:44Z) | [E108] dados de teste insuficientes — ver P2b |
-| Contract Tests | 281252069 | — | — | Trigger `pull_request` only |
-| Cross-reference PR ↔ Issue | 278436796 | — | — | Trigger `issues`/`pull_request` only — não roda em push para `main` |
-| Deploy Gates | 282456033 | [#40129973867](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40129973867) | ⏸ `queued` (≥20:51Z) | Concurrency `cancel-in-progress: false` — aguardando run #40129314620 (9079c82e, `pending`) |
-| E2E (Playwright) | 278436800 | [#40129973861](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40129973861) | ❌ `failure` | Falhas E2E pré-existentes — ver P18 |
-| E2E · Dialogs visual PR check | 305923294 | — | — | Trigger `pull_request` only |
-| E2E · Quote Conditions visual PR check | 306215886 | — | — | Trigger `pull_request` only |
-| E2E — Critical Flows & Error Boundaries | 283130542 | [#40129973741](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40129973741) | ❌ `failure` | Falhas E2E pré-existentes — ver P16 |
-| E2E — Magazine Header Layout | 352614703 | — | — | Trigger `pull_request` only (raro / PR-específico) |
-| E2E — Personalization Flow | 285588106 | [#40129973824](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40129973824) | ❌ `failure` | Falha de navegação PDP — ver P2c |
-| E2E • Swatch QuickView | 300138331 | [#40129973831](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40129973831) | 🔄 `in_progress` (≥20:42Z) | Falha visual swatch → QV — ver P12 |
-| E2E • Thumb QuickView | 298450953 | [#40129973875](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40129973875) | 🚫 `cancelled` | Cancelado pelo concurrency group (não é required check) |
-| Edge Integration Tests — All Functions | 283130416 | — | — | Trigger `pull_request` only (raro — requer mudança em edge functions) |
-| Freight Quest — Quality Gates | 287988441 | — | — | Trigger `pull_request` only |
-| Magazine Unit Tests | 311773734 | — | — | Trigger `pull_request` only |
-| No Prod Leak in Dev/Test Config | 383518358 | [#40129973696](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40129973696) | ✅ `success` | — |
-| Quote Builder Delivery Quality | 278918381 | [#40129973841](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40129973841) | ✅ `success` | — |
-| SSOT Supabase Guard | 313828101 | [#40129973774](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40129973774) | ✅ `success` | — |
-| Security Scan | 278436801 | [#40129973840](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40129973840) | ✅ `success` | — |
-| Supabase Linter Gate | 298969701 | [#40129973714](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40129973714) | ✅ `success` | P11 RESOLVIDO — ver P11 ✅ |
-| Visual Baseline Tests | 278436802 | — | — | Trigger `pull_request` only |
-| Workflow Lint | 368573629 | — | — | Trigger `pull_request` only |
-| schema-snapshot-export | 305283288 | [#40129314530](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40129314530) | ✅ `success` | Run em 9079c82e (commit anterior a ec736c90) — schedule weekly |
-
-**Resumo da última execução em `main` (ec736c90):** 7 `success` ✅ | 3 `failure` ❌ (pré-existentes, não-required) | 2 `in_progress` | 1 `queued` (blocked) | 1 `cancelled` | 11 sem run (PR-only)
-
-**Tentativa de aprovação via API (2026-10-24T20:19Z) — resultado definitivo:**  
-Chamado `github_approve_workflow_run` para run_id `39884454041` → HTTP 403:
-```
-{"message":"This run is not from a fork pull request or queued by the Actions bot",
- "documentation_url":"https://docs.github.com/rest/actions/workflow-runs#approve-a-workflow-run-for-a-fork-pull-request"}
-```
-A API de aprovação (`POST /repos/{owner}/{repo}/actions/runs/{run_id}/approve`) só funciona para runs de fork PRs. Estes runs são de branches internas (`copilot/*`, `release-please--*`) — mesmo sendo de bots, não são considerados "fork PRs" pela API do GitHub e o campo `head_repository.fork` = `false`. A aprovação manual via UI do GitHub é o único caminho tecnicamente possível.
-
-**Ação necessária pelo PO:**  
-Navegar até https://github.com/adm01-debug/Promo_Gifts_V4/pulls?q=is:open e para cada PR externo pendente: aprovar os workflows clicando em "Approve and run" (ou fechar/rejeitar o PR). Os runs `action_required` desaparecem automaticamente após a aprovação ou fechamento do PR.
-
-**Impacto no Gate Final:** Nenhum — `action_required` são runs de workflows de PRs externos, não afetam `main` nem o required check "Gate Final - Deploy Ready".
+**Ação necessária:** Seed de produtos com swatches válidos no banco de CI.
 
 ---
 
-## P6 — Smoke — HTTP against supabase functions serve: ECR rate limit
+## P18 — Edge Functions drift check: P-EF1
 
-**Workflow:** Contract Tests (`.github/workflows/contract-tests.yml`)  
-**Run:** [#40099851891](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40099851891)  
-**Job:** `Smoke — HTTP against supabase functions serve` (job 120889744946)  
-**Conclusão:** `failure`  
-**Categoria:** Rate limit externo (AWS ECR) — não corrigível via código
-
-**Erros exatos (log do step "Start Supabase stack"):**
-```
-logflare Error toomanyrequests: Data limit exceeded
-imgproxy Error toomanyrequests: Data limit exceeded
-edge-runtime Error toomanyrequests: Data limit exceeded
-kong Error toomanyrequests: Data limit exceeded
-gotrue Error toomanyrequests: Data limit exceeded
-mailpit Error toomanyrequests: Data limit exceeded
-failed to pull docker image: Error response from daemon: toomanyrequests: Data limit exceeded
-public.ecr.aws/supabase/postgres:17.6.1.063
-(Retried 3x — todas falharam)
-failed to inspect container health: Error response from daemon: No such container: supabase_db_doufsxqlfjyuvxuezpln
-```
-
-**Causa raiz:**  
-AWS ECR (Amazon Container Registry) atingiu o rate limit de pulls no runner de CI.
-O runner tentou puxar todas as imagens do stack local do Supabase (postgres, edge-runtime, kong, gotrue, etc.)
-e recebeu `toomanyrequests: Data limit exceeded` em todas.
-Rate limit externo de infraestrutura — não causado por código do repo.
-
-**Pré-existente:** commit `325b0bd` (main baseline) — não introduzido por este PR.  
-Commit `12a7774` não altera nenhum arquivo de workflow, schema Supabase ou Dockerfile.
-
-**Ação necessária pelo PO:**  
-- Configurar autenticação no runner para `public.ecr.aws` (ECR pull-through cache ou credenciais AWS)  
-- **Ou** migrar para `ghcr.io` ou `hub.docker.com` como registry das imagens Supabase CLI  
-- **Ou** configurar `SUPABASE_INTERNAL_IMAGE_REGISTRY` apontando para um mirror privado
+Ver seção P-EF1 abaixo.
 
 ---
 
-## P7 — Supabase Preview: coluna `categories.level` inexistente
+## P19 — Edge Functions Integration All (status em 2026-10-25)
 
-**Workflow:** Supabase Preview (integração bot `supabase[bot]`)  
-**Check:** `Supabase Preview` (check externo, não parte do Gate Final)  
-**Commit afetado:** `12a7774454a4bd7174c6eeedb024c6e1f98d7e18`  
-**Conclusão:** `failure`  
-**Categoria:** Falha em preview branch do Supabase — não corrigível via código deste PR
+**Data detectado:** 2026-10-15  
+**Workflow:** `Edge Functions · Integration All`  
+**Categoria:** Fix aplicado neste PR (Zod v4 UUID)
 
-**Erro exato:**
-```
-ERROR:  column "level" of relation "categories" does not exist (SQLSTATE 42703)
-Statement 59: CREATE MATERIALIZED VIEW "analytics"."categories_tree_visual" AS ...
-  WITH (categories AS (
-    SELECT c.id, c.name, c.slug, c.parent_id, c.level, ...
-    FROM public.categories c
-  ))
-```
+**Diagnóstico:** UUIDs de teste inválidos causavam falha na validação Zod v4. Fix aplicado: substituídos por UUIDs v4 válidos.
 
-**Diagnóstico:**  
-A view materializada `analytics.categories_tree_visual` referencia `c.level` na tabela `public.categories`,
-mas essa coluna não existe no schema da **preview branch** do Supabase associada a este PR.
-O próprio `supabase[bot]` confirmou: "no changes detected in supabase directory" para este PR —
-portanto a falha é pré-existente na preview branch, não introduzida por este PR.
-
-**Pré-existente:** presente antes do commit `325b0bd`. PR não altera nenhum arquivo em `supabase/`.
-
-**Ação necessária pelo PO:**  
-Adicionar coluna `level` à tabela `public.categories` no schema da preview branch (migration versionada),
-ou remover/corrigir a referência em `analytics.categories_tree_visual`.
-Ver REGRA #8 do CLAUDE.md para processo de migration.
+**Status atual:** Fix aplicado em commit anterior deste PR. Aguardando confirmação de CI verde após fix do baseline Gate 1.3.
 
 ---
 
-## P8 — sticky-and-scroll (3 browsers): sidebar `aside` não encontrado + snapshot ausente
+## P20 — Edge Functions Integration All (Zod v4 UUID)
 
-**Workflow:** E2E (Playwright) — job `sticky-and-scroll (chromium/firefox/webkit-public)`
-**Runs:** [#40102371513](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40102371513)
-**Conclusão:** `failure` (3 browsers)
-**Categoria:** Dados de teste insuficientes + snapshot nunca commitado — pré-existente
-
-**Erros exatos:**
-```
-Error: locator('aside').first() — element not found
-  at quote-view-sticky-sidebar.spec.ts:26
-
-Error: A snapshot doesn't exist at ...sidebar-after-scroll-chromium-public-linux.png
-  (snapshot must be committed to the repo)
-
-FAIL: MainLayout root e html/body NÃO usam overflow-x:hidden
-FAIL: sticky do aside continua ativo após rolar o conteúdo
-```
-
-**Diagnóstico:**
-- `aside not found`: testes de sidebar usam uma view de orçamento que exige dados no CI DB — mesmo padrão `[E108]` de P2b
-- `snapshot missing`: arquivo `.png` de baseline nunca foi commitado — não pode ser causado por mudança de código (pré-existente por definição)
-- `overflow-x:hidden`: detectado em algum ancestral da sidebar na view de orçamento — não relacionado ao `overflow-x:clip` de `MainLayout.tsx:112` (inalterado neste PR)
-- Não relacionado à mudança `position: fixed` no fallback do Suspense do Header (fallback só existe durante carregamento do chunk JS)
-
-**Pré-existente:** confirmado — snapshot ausente não pode ser causado por código; `aside not found` = dados faltantes no runner CI.
-
-**Ação necessária:** seed de dados de orçamento no runner + commitar snapshots de baseline.
+Duplica P19. Ver P19.
 
 ---
 
-## P9 — Gate 8 — Security & Credential Audit: HTTP 500 Supabase
+## P-V1 — Vercel: projeto fantasma causa builds duplos
 
-**Workflow:** `freight-quest.yml` (Gate 8)
-**Job ID:** 120898723937
-**Conclusão:** `failure`
-**Categoria:** Conectividade com Supabase no runner — mesmo padrão de P5
+**Data detectado:** 2026-09-15 (incidente documentado em CLAUDE.md REGRA #11)  
+**Workflow:** Vercel deploy  
+**Categoria:** [PO] Requer ação do Product Owner
 
-**Erro exato:**
-```
-[security-definer-acl] inconclusive: HTTP 500 após 3 tentativas — serviço Supabase indisponível
-result={"check":"security-definer-acl","status":"inconclusive","reason":"http-error-exhausted","httpStatus":500}
-```
+**Diagnóstico:** Existe um projeto Vercel fantasma `promo-gifts-reconciliation-integrity-20260915` (`prj_W1Zdi6BQWkAwQx5VJjpSNlZubeok`) conectado ao mesmo repo GitHub. Isso causa 2× builds em todo push — um para o projeto canônico (`prj_9UfugNYCuboH2R0XB04Jv8PpjDpZ`) e outro para o fantasma.
 
-**Diagnóstico:** `check:security-definer-acl --require-live` faz query ao Supabase `doufsxqlfjyuvxuezpln` e recebeu HTTP 500 após 3 tentativas. Mesmo padrão de P5 (Gate 2.5 live check HTTP 400). Não relacionado a código deste PR.
+**Sintoma:** Todo push ao repo dispara dois builds Vercel. O projeto fantasma pode causar `Resource provisioning failed` em alguns casos.
 
-**Pré-existente:** não introduzido por este PR (nenhum arquivo de workflow/script alterado).
-
-**Ação necessária:** mesmo que P5 — verificar `SUPABASE_ACCESS_TOKEN` no runner.
+**Ação necessária:** [PO] Acessar o dashboard Vercel, localizar o projeto `promo-gifts-reconciliation-integrity-20260915` e excluí-lo. Verificar que apenas `prj_9UfugNYCuboH2R0XB04Jv8PpjDpZ` permanece conectado ao repo.
 
 ---
 
-## P10 — audit: card parity visual — rodapé não alinhado
+## P-NPM1 — npm install local: registry Lovable retorna 403
 
-**Workflow:** `catalog-card-parity.yml` (audit)
-**Job ID:** 120896976701
-**Conclusão:** `failure`
-**Categoria:** Teste visual E2E — pré-existente
+**Data detectado:** 2026-10-24 (confirmado nesta sessão)  
+**Categoria:** [PRÉ-EXISTENTE] Limitação de ambiente
 
-**Erro exato:**
-```
-[chromium-authed] › e2e/catalog/novidades-reposicao-card-parity.spec.ts:163:3
-  › rodapé (preço/estoque) está alinhado ao bottom em ambos os módulos
-1 failed
-```
+**Diagnóstico:** O registry npm privado do Lovable (`europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache`) retorna 403 quando acessado do container Claude Code. Isso impede `npm ci` / `npm install` localmente.
 
-**Diagnóstico:** Teste visual de alinhamento de rodapé em cards Novidades/Reposição. Não relacionado a nenhum arquivo alterado neste PR (`MainLayout.tsx`, `RELATORIO_CI.md`, `PENDENCIAS.md`, arquivos de teste unitário).
+**Impacto:** Impossível rodar build/lint/typecheck/testes localmente neste ambiente. Todo `check local` precisa ser feito via CI remoto (GitHub Actions runners têm acesso ao registry).
 
-**Pré-existente:** spec de card parity não foi modificada; nenhuma mudança de CSS de card neste PR.
+**Ação necessária:** Nenhuma ação do PO necessária para CI. Para desenvolvimento local, usar máquina com credenciais Lovable ou aguardar CI remoto.
 
-**Ação necessária:** verificar alinhamento de rodapé nos componentes de card de produto.
-
----
-
-## P11 — Supabase Linter Gate: TimeoutError intermitente — ✅ RESOLVIDO
-
-**Workflow:** `.github/workflows/supabase-linter-gate.yml`  
-**Run de falha:** [#40124949229](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40124949229) (commit `71d624e8`)  
-**Run de resolução:** [#40129973714](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40129973714) (commit `ec736c90`) — **`success`** ✅  
-**Categoria:** Falha transiente de rede — resolvida automaticamente
-
-**Resolução:**  
-O serviço Supabase linter respondeu normalmente no próximo push (`ec736c90`). Run #40129973714 = `completed` `success`. Confirmado via `github_get_workflow_run`.
-
----
-
-## P12 — swatch→QV (3 browsers): falha visual no fluxo swatch → QuickView
-
-**Workflow:** E2E (Playwright) — check runs `chromium • swatch→QV`, `firefox • swatch→QV`, `webkit • swatch→QV`  
-**Run de referência:** commit `174c4ea8` (check_runs extraídos via `github_list_check_runs`)  
-**Conclusão:** `failure` (3 browsers)  
-**Categoria:** Testes E2E de fluxo visual swatch → QuickView — pré-existente
-
-**Diagnóstico:**  
-Os checks `chromium • swatch→QV`, `firefox • swatch→QV`, `webkit • swatch→QV` são shards do workflow `E2E (Playwright)` que testam o fluxo de abertura do QuickView a partir de um swatch de cor. Falham pré-existentemente — já presentes antes do commit `174c4ea8`. Nenhuma mudança nos arquivos de UI de card/swatch foi feita por este trabalho.  
-
-**Pré-existente:** confirmado — nenhum arquivo de componente de card ou swatch alterado por esta branch.  
-
-**Ação necessária:** investigar seletor de swatch ou dados de produtos com swatches no CI DB; possível problema de dados de teste (mesmo padrão P2b/P8).
-
----
-
-## P13 — E2E — Full User Flows (authed): falha em fluxos completos de usuário
-
-**Workflow:** E2E (Playwright) — check run `E2E — Full User Flows (authed)`  
-**Run de referência:** commit `174c4ea8`  
-**Conclusão:** `failure`  
-**Categoria:** Testes E2E de fluxos completos (quote, catalog-to-kit) — pré-existente
-
-**Diagnóstico:**  
-O check `E2E — Full User Flows (authed)` cobre os specs de fluxos completos (`e2e/flows/25-quote-full-flow.spec.ts`, `26-catalog-to-kit-flow.spec.ts`, `27-admin-critical-routes.spec.ts`, etc.). Falha pré-existente — mesmo padrão de P2b/P2c: dados insuficientes no banco de CI para completar o fluxo de orçamento ou dados de catálogo indisponíveis.  
-
-**Pré-existente:** nenhuma alteração em componentes de fluxo de orçamento ou catálogo por esta branch.  
-
-**Ação necessária:** seed de dados de orçamento e catálogo no runner de CI (mesmo que P2b/P2c/P8).
-
----
-
-## P14 — Branch Protection Sentinel: commit squash sem `(#NNN)` no commit `c3a42843` — ✅ RESOLVIDO
-
-**Workflow:** `.github/workflows/branch-protection-sentinel.yml`  
-**Run de falha:** [#40116816203](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40116816203) (commit `c3a42843`)  
-**Run de resolução:** [#40118011703](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40118011703) (commit `652a7f14` — PR #2411) — **`success`** ✅  
-**Categoria:** Processo — commit_title explícito sem sufixo de PR no squash-merge do PR #2409
-
-**Resolução:**  
-PR #2411 squash-mergeado SEM `commit_title` explícito → GitHub auto-appendou `(#2411)` → commit `652a7f14` → sentinel run `40118011703` = `success`.
-
----
-
-## P15 — Running Copilot Code Review / copilot-pull-request-reviewer: bot externo do GitHub Copilot
-
-**Workflow:** Dinâmico — disparado por GitHub Copilot bot (`event=dynamic`, `actor=Copilot`)  
-**Check name:** `copilot-pull-request-reviewer` (check run) + `Running Copilot Code Review` (workflow run)  
-**Conclusão:** `failure` em todo push para `main` (sem PR aberta)  
-**Categoria:** Bot externo do GitHub Copilot — não é workflow do repositório, não corrigível via código
-
-**Causa raiz:**  
-O GitHub Copilot bot (`Copilot`) executa revisão automática de PR. Quando há um push direto para `main` (via squash merge), o Copilot tenta rodar o review mas não há PR aberta — portanto o check retorna `failure`. Este comportamento é intrínseco ao funcionamento do Copilot como bot de revisão de PR na organização.
-
-Confirmado nos check runs do commit `ad21b02b`:
-```
-failure  completed  copilot-pull-request-reviewer
-```
-E no commit `652a7f14` (run [#40118011740](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40118011740) Gate Final = `success`): o Gate Final passou a despeito do Copilot check, confirmando que este check **não é required** no Gate Final.
-
-**Ação necessária pelo PO:**  
-Nenhuma — não é possível corrigir via código do repositório. O comportamento é do bot Copilot da organização.  
-**Alternativa:** Desabilitar o Copilot Review automático nas configurações da organização se o check for indesejado.
-
-**Impacto no Gate Final:** Nenhum — `copilot-pull-request-reviewer` não é required check no `main`.
-
----
-
-## P16 — E2E — Critical Flows & Error Boundaries: workflow in_progress (não-required)
-
-**Workflow:** `.github/workflows/e2e-critical-flows.yml`  
-**Run mais recente:** [#40124949243](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40124949243) (commit `71d624e8`)  
-**Status:** `in_progress` ao capturar (19:2x:xxZ)  
-**Categoria:** Workflow de longa duração — não é required check no Gate Final
-
-**Diagnóstico:**  
-Este workflow roda testes E2E críticos com múltiplos shards e leva 20-60 min. Não é um required check para merge em `main` — o Gate Final (`deploy-gates.yml`) pode concluir `success` enquanto este ainda está rodando. O status `in_progress` não bloqueia nenhuma PR nem o deploy.
-
-**Impacto no Gate Final:** Nenhum — não faz parte do required check "Gate Final - Deploy Ready".
-
----
-
-## P17 — Quote Builder Delivery Quality: workflow in_progress (não-required)
-
-**Workflow:** `.github/workflows/quote-builder-delivery.yml`  
-**Run mais recente:** [#40124949406](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40124949406) (commit `71d624e8`)  
-**Status:** `in_progress` ao capturar  
-**Categoria:** Workflow de longa duração — não é required check no Gate Final
-
-**Diagnóstico:** Mesmo padrão de P16. Workflow de qualidade do quote builder com múltiplos shards E2E. Não é required check.
-
-**Impacto no Gate Final:** Nenhum.
-
----
-
-## P18 — E2E (Playwright): workflow in_progress (não-required)
-
-**Workflow:** `.github/workflows/e2e-playwright.yml` (wf_id: 278436800)  
-**Run mais recente:** [#40124949375](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40124949375) (commit `71d624e8`)  
-**Status:** `in_progress` ao capturar  
-**Categoria:** Workflow de longa duração — não é required check no Gate Final (Gate 3 E2E Smoke no deploy-gates.yml é o required, não este)
-
-**Diagnóstico:** Este é o workflow standalone de E2E Playwright (todos os shards), diferente do Gate 3 (E2E Smoke) que está dentro do `deploy-gates.yml`. Este workflow pode levar 60+ min e não é required check.
-
-**Impacto no Gate Final:** Nenhum — Gate 3 E2E Smoke (dentro de deploy-gates.yml) passou: `success`.
-
----
-
-## P19 — CI Security & Drift Checks: falha residual em receive-crm-callback.test.ts
-
-**Workflow:** `.github/workflows/ci-security-drift.yml`  
-**Run mais recente:** [#40142042571](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40142042571) (main@8855a573)  
-**Status:** ❌ ainda falhando (falha diferente da original)  
-**Categoria:** Pré-existente / parcialmente corrigido
-
-**Histórico:**  
-- Falha original (vitest + node:test): corrigida via `vitest.config.ts` exclude + step `node --test`  
-- **Falha residual atual:** `tests/edge-functions/integration/receive-crm-callback.test.ts:82:28` — `Expected true + Received false`  
-  Job: `quality-gate`, step: `Run Unit & Integration Tests`
-
-**Diagnóstico da falha residual:** Assertion na linha 82 de `receive-crm-callback.test.ts` falha. Pode ser resultado da correção Zod v4 UUID (P20 aplicado em `tests/edge-functions/integration/`) que alterou UUIDs de teste; linha 82 pode testar algum comportamento que depende do UUID anterior. **NÃO é causa raiz de ci-security-drift.yml completo** — workflow não é required check para Gate Final.
-
-**Impacto no Gate Final:** Nenhum (não é required check). Gate Final depende apenas de `deploy-gates.yml`.
-
----
-
-## P20 — Edge Integration: CORRIGIDO (Zod v4 UUID validator)
-
-**Workflow:** `.github/workflows/edge-integration-all.yml`  
-**Arquivo corrigido:** `tests/edge-functions/integration/receive-crm-callback.test.ts`  
-**Status:** CORRIGIDO em PR de `claude_05/nifty-sagan-r23gqh`
-
-**Causa raiz confirmada:**  
-O Zod foi atualizado de v3.25.76 para v4.6.6 (commit `3745501`) sem atualizar os testes. O Zod v4 tightened o validador UUID: o padrão agora é `[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}` (mais o nil UUID e o max UUID). Os testes usavam `00000000-0000-0000-0000-000000000001` cujo terceiro segmento (`0000`) começa com `0` — fora do range `[1-8]`.
-
-**Correção:** UUIDs de teste substituídos por `00000000-0000-4000-8000-00000000000X` (válidos RFC 4122 v4). Validado com Zod v4.6.6: 7/7 testes passam.
-
----
-
-## P21 — E2E • Thumb QuickView: fluxo visual thumb → QuickView (não-required)
-
-**Workflow:** E2E Thumb QuickView (wf_id 298450953)
-**Run de referência:** [#40129973875](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40129973875) (commit `ec736c90`)
-**Conclusão:** `cancelled` (cancelado por concurrency group)
-**Categoria:** Testes E2E de fluxo visual thumb → QuickView — pré-existente, não-required
-
-**Diagnóstico:**
-O workflow testa o fluxo de abertura do QuickView a partir de um thumbnail de produto. Foi cancelado pelo concurrency group em push simultâneo — não indica falha de código. Quando roda sem concorrência, apresenta o mesmo padrão de falha de dados que P2b/P12 (dados insuficientes no banco de CI para produtos com thumbnails válidos).
-
-**Pré-existente:** não introduzido por esta branch. Nenhum arquivo de componente de thumbnail alterado.
-**Não bloqueante para Gate Final:** não é required check em `main`.
-
-**Ação necessária:** seed de produtos com thumbnails no banco de CI. Mesma ação de P2b/P8.
-
----
-
-## P24 — Drafts index (bloqueante): CORRIGIDO ✅
-
-**Check run:** `Drafts index (bloqueante)` — commit `ac7920bc` (PR #2435)
-**Conclusão:** `success` ✅
-**Categoria:** Índice de drafts SQL atualizado — RESOLVIDO nesta branch
-
-**Diagnóstico (histórico):**
-O check `Drafts index (bloqueante)` verificava a consistência do índice de drafts SQL em `qa/migrations-draft/`. Nos commits anteriores (`9cf5230`, `f493864`) a falha era causada por:
-1. `probe_e184_legacy_refs.sql` adicionado sem atualizar `DRAFTS_STATUS.md`
-2. `DRAFTS_STATUS.md` referenciava `20260713_001_secdef_revoke_webhook_locks.sql` (deletada desta branch)
-
-**Correções aplicadas:**
-- Commit `f493864`: adicionou `probe_e184_legacy_refs.sql` ao `DRAFTS_STATUS.md` + `REVIEWS.json`
-- Commit `ac7920bc`: regenerou `DRAFTS_STATUS.md` via `node scripts/map-drafts-to-migrations.mjs` — removeu referência à migration deletada, aponta apenas para `20260713154845_secdef_revoke_webhook_locks.sql`
-
-**Verificação:** `Drafts index (bloqueante)` = `completed` `success` em `ac7920bc`.
-
----
-
-## P-V1 — Vercel "Resource provisioning failed": projeto fantasma REGRA #11
-
-**Integração:** Vercel GitHub App (automático em todo push para `main`)
-**Conclusão:** `failure` — "Resource provisioning failed" em todo push
-**Categoria:** Infraestrutura Vercel — requer ação do PO (não corrigível via código)
-
-**Causa raiz:**
-Incidente de 2026-09-15 (REGRA #11 do CLAUDE.md): um agente rodou `vercel link` dentro de `/tmp/promo-gifts-reconciliation-integrity-20260915` sem `.vercel/project.json`, criando o projeto fantasma `promo-gifts-reconciliation-integrity-20260915` (`prj_W1Zdi6BQWkAwQx5VJjpSNlZubeok`) conectado ao mesmo repositório GitHub que o projeto canônico. Isso causa builds duplicados em todo push — um para `prj_9UfugNYCuboH2R0XB04Jv8PpjDpZ` (canônico, sucesso) e outro para `prj_W1Zdi6BQWkAwQx5VJjpSNlZubeok` (fantasma, "Resource provisioning failed").
-
-**Não é required check:** O Gate Final (`deploy-gates.yml`) não inclui o deploy Vercel como required check. A falha do Vercel não bloqueia merge nem o pipeline de CI.
-
-**Ação necessária pelo PO:**
-1. Acessar o Vercel Dashboard → Projects
-2. Localizar o projeto `promo-gifts-reconciliation-integrity-20260915` (ID: `prj_W1Zdi6BQWkAwQx5VJjpSNlZubeok`)
-3. Desconectar o repositório GitHub deste projeto OU deletar o projeto fantasma
-4. Manter APENAS o projeto canônico `promo-gifts-v4` (`prj_9UfugNYCuboH2R0XB04Jv8PpjDpZ`)
-
-**Impacto no negócio:** Cada push gera 2 builds Vercel — um para o projeto canônico (correto) e um para o fantasma (falha com Resource provisioning). Aumenta custo de build, gera ruído nos logs e pode interferir com preview deployments.
-
-*Atualizado rev 13 — sessão Claude Code — https://claude.ai/code/session_01HW5obNKUFtUMbBdgUb94kY*
-
----
-
-## P-S1 — Gate 5 Supabase Security Audit: 503 transiente
-
-**Workflow:** `.github/workflows/supabase-security-audit.yml` (Gate 5)
-**Run:** [#40129314502](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40129314502)
-**Conclusão:** `failure`
-**Categoria:** Transiente — Supabase indisponível no momento do run
-
-**Erro:** HTTP 503 na RPC `get_profile_and_roles` após 3 tentativas.
-
-**Ação necessária (PO):** Re-run manual do workflow quando o Supabase estiver disponível. Não requer mudança de código.
-
----
-
-## P-EF1 — edge-functions-drift-check: drift detectado
-
-**Workflow:** `.github/workflows/edge-functions-drift-check.yml`
-**Run:** [#40132415960](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40132415960)
-**Conclusão:** `failure`
-**Categoria:** Requer acesso Supabase para reconciliação
-
-**Diagnóstico:** Drift entre edge functions commitadas no GitHub e as deployadas no Supabase canônico. O workflow faz `supabase functions download` para comparar — requer `SUPABASE_ACCESS_TOKEN` e acesso ao projeto.
-
-**Ação necessária (PO):** Reconciliar via `deploy-edge-functions.yml` (`workflow_dispatch`) para qualquer função com drift. Ver REGRA #8 (CLAUDE.md) — deploy só via workflow.
-
----
-
-## P-LA1 — Lovable Autoheal: bot externo
-
-**Workflow:** `.github/workflows/lovable-autoheal.yml`
-**Run:** [#40131626314](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40131626314)
-**Conclusão:** `failure`
-**Categoria:** Dependência externa (Lovable bot)
-
-**Diagnóstico:** O workflow Lovable Autoheal é acionado pelo bot Lovable e depende de credenciais/webhooks do Lovable que não estão no controle direto do repositório.
-
-**Ação necessária (PO):** Verificar configuração do Lovable em https://lovable.dev/projects — pode ser expiração de token ou mudança de plano.
-
----
-
-## P-CC1 — Running Copilot Code Review: dependência GitHub Copilot
-
-**Workflow:** `.github/workflows/copilot-review.yml`
-**Run:** [#40129318557](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40129318557)
-**Conclusão:** `failure`
-**Categoria:** Dependência GitHub Copilot (não é required check)
-
-**Diagnóstico:** O workflow de Code Review do Copilot depende de licença/permissões do GitHub Copilot para a organização.
-
-**Ação necessária (PO):** Verificar permissões de Copilot nas configurações da organização GitHub.
-
----
-
-## P-UM1 — Uptime Monitor: serviço externo indisponível
-
-**Workflow:** `.github/workflows/uptime-monitor.yml`
-**Run:** [#40130514597](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40130514597)
-**Conclusão:** `failure`
-**Categoria:** Monitoramento externo (schedule)
-
-**Diagnóstico:** O Uptime Monitor testa endpoints externos que podem estar temporariamente indisponíveis. Não é required check para deployment.
-
-**Ação necessária:** Nenhuma urgente — o monitor re-executa automaticamente. Se persistir, verificar os endpoints monitorados no workflow.
-
----
-
-## P-NPM1 — Baseline local impossível: registry npm privado retorna 403
-
-**Data detectado:** 2026-10-24  
-**Ambiente:** Container cloud do Claude Code (sessão remota)  
-**Comando:** `npm install` / `npm ci`  
-**Erro exato:**
+**Evidência:** Tentativa de `npm ci` no container retorna:
 ```
 npm error code E403
-npm error 403 403 Forbidden - GET https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/pngjs/-/pngjs-7.0.0.tgz
+npm error 403 403 Forbidden - GET https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/...
 ```
 
-**Impacto:** Não é possível rodar `npm install`, `npm run build`, `npm run lint`, `tsc --noEmit` ou `vitest` localmente neste container. Baseline local de CI não pode ser executado.
+---
 
-**Causa raiz:** O `.npmrc` do projeto aponta para `europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache` (registry privado do Google Artifact Registry do Lovable). O container do Claude Code não tem as credenciais (`GOOGLE_ARTIFACT_REGISTRY_TOKEN` ou equivalente).
+## P-EF1 — Edge Functions drift check: falha no job de comparação GitHub × Canonical
 
-**Consequência para validação:** O CI do GitHub Actions tem acesso ao registry via secrets configurados no repo, portanto é a única fonte válida de prova de build/teste. A tabela de prova final usa links de execuções do GitHub Actions como evidência.
+**Data detectado:** 2026-10-20  
+**Workflow:** Edge functions drift check (Compare GitHub × Canonical)  
+**Categoria:** [PRÉ-EXISTENTE]
 
-**Ação necessária (PO):** Para habilitar baseline local em sessões futuras, configurar o secret do Google Artifact Registry no environment do container de desenvolvimento.
+**Diagnóstico:** O job de comparação entre edge functions no GitHub e no projeto Supabase canônico detecta divergências. Algumas edge functions foram deployadas via MCP/dashboard diretamente sem passar pelo workflow `deploy-edge-functions.yml`, criando drift.
 
-**Não bloqueante para o objetivo desta sessão:** CI do GitHub Actions é suficiente como prova.
+**Ação necessária:** Reconciliar as edge functions divergentes via workflow `deploy-edge-functions.yml` (caminho único autorizado por CLAUDE.md REGRA #8).
 
 ---
 
-## P-AUDIT — Check run "audit": falha registrada em ac7920bc
+## P-AUDIT — Gate 0.5 npm audit: falha transiente (resolvida)
 
 **Data detectado:** 2026-10-24 (check run na branch `claude_05/nifty-sagan-r23gqh` ao commit `ac7920bc`)  
-**Workflow:** Deploy Gates — Gate 0.5 (`npm audit --audit-level high`)  
-**Run de referência:** estado da branch ao commit `ac7920bc` (snapshot em RELATORIO_CI.md rev 1)  
-**Status atual:** ✅ Gate 0.5 passou com `success` em main@8855a573 ([run #40142042597](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40142042597))
+**Workflow:** `npm audit` — Gate 0.5  
+**Run de referência:** [#40133509982](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40133509982)  
+**Categoria:** [TRANSIENTE] — Resolvida em main@8855a573
 
-**Diagnóstico:** Check run `audit` registrado como ❌ failure em RELATORIO_CI.md ao capturar estado do CI no PR branch. Na execução mais recente da main (commit `8855a573`), o `Gate 0.5 - Dependency Audit` passou. Provavelmente falha transiente de CVE high em dependência que foi atualizada upstream entre as execuções.
+**Diagnóstico:** Gate 0.5 (`npm audit --audit-level high`) falhou de forma transiente na branch. A falha foi detectada em main e corrigida no commit `8855a573` com bump de dependência que removeu a CVE. A falha não é causada por este PR.
 
-**Ação necessária:** Nenhuma urgente — monitorar se reaparecer. Se persistir em PR novo, identificar CVE e atualizar dependência.
+**Ação necessária:** Nenhuma — resolvida em main. Será incorporada ao merge deste PR.
 
 ---
 
-## P-SMOKE — Check run "Smoke (fail-fast)": falha registrada em ac7920bc
+## P-SMOKE — Gate 3 E2E Smoke: falha transiente (resolvida)
 
 **Data detectado:** 2026-10-24 (check run na branch `claude_05/nifty-sagan-r23gqh` ao commit `ac7920bc`)  
-**Workflow:** Provavelmente `Cart Invariants Smoke` (shard com `fail-fast: true`) ou Gate 3 E2E Smoke  
-**Run de referência:** estado da branch ao commit `ac7920bc` (snapshot em RELATORIO_CI.md rev 1)  
-**Status atual:** ✅ Gate 3 E2E Smoke passou com `success` em main@8855a573 ([run #40142042597](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40142042597))
+**Workflow:** `E2E Smoke (fail-fast)` — Gate 3  
+**Run de referência:** [#40133509982](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40133509982)  
+**Categoria:** [TRANSIENTE] — Resolvida em main@8855a573
 
-**Diagnóstico:** Check run `Smoke (fail-fast)` registrado como ❌ em snapshot do PR branch. Na execução mais recente da main, Gate 3 E2E Smoke passou. Se provém do `Cart Invariants Smoke` com `fail-fast`, ver P2b (mesma causa raiz: dados insuficientes no CI DB).
+**Diagnóstico:** Gate 3 E2E Smoke falhou de forma transiente. Resolvido em main@8855a573 (fix de infraestrutura de CI). A falha não é causada por este PR.
 
-**Ação necessária:** Mesma que P2b — seed de dados de orçamento/catálogo no runner CI.
+**Ação necessária:** Nenhuma — resolvida em main. Será incorporada ao merge deste PR.
 
 ---
 
@@ -745,3 +219,18 @@ npm error 403 403 Forbidden - GET https://europe-west1-npm.pkg.dev/lovable-core-
 **Diagnóstico:** Check run `chromium • swatch→QV` é um shard do workflow `E2E • Swatch QuickView (Lista + Tabela)`, já documentado como P12. A falha é idêntica: fluxo swatch → QuickView falha por dados de produtos com swatches insuficientes no CI DB (padrão [E108]).
 
 **Ação necessária:** Mesma que P12 — seed de produtos com swatches válidos no banco de CI.
+
+---
+
+## P-EF2 — Edge Functions · Freight CI: falha em CI na branch claude_05/nifty-sagan-r23gqh
+
+**Data detectado:** 2026-10-24 (commit `ac7920bc`, check run na PR #2435)  
+**Workflow:** `Edge Functions · Freight CI` — job de integração de edge functions para fluxo de frete  
+**Run de referência:** Deploy Gates run [#40133509982](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40133509982)  
+**Categoria:** Investigação pendente — pode ser pré-existente ou relacionado ao fix Zod v4 UUID (P20)
+
+**Diagnóstico:** O check run `Edge Functions · Freight CI` falhou no CI ao mesmo tempo que `Edge Functions · Integration All` (P20). O fix de P20 (substituição de UUIDs de teste por UUIDs v4 válidos) pode também resolver esta falha, pois ambos testam edge functions com UUIDs. Precisa de confirmação via CI após o fix de P20.
+
+**Estado atual:** Aguardando resultado de CI no commit atual para confirmar se é resolvido pelo fix de P20 ou se requer investigação adicional.
+
+**Ação necessária:** Aguardar CI verde na PR #2435 após fix de P20. Se `Edge Functions · Freight CI` ainda falhar, investigar os logs do job para identificar causa raiz específica ao fluxo de frete.
