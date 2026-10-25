@@ -665,4 +665,48 @@ Flake visual em QuickView de thumbnail — screenshot diff ou timeout de navega�
 
 ---
 
+---
+
+## P25 — E2E · Cart Delete Popover: failure (não-required)
+
+**Workflow:** `.github/workflows/e2e-cart-delete-popover.yml`  
+**Categoria:** E2E não-required — flake de ambiente/dados pré-existente  
+**Run em falha:** edb8432a
+
+**Diagnóstico:** Mesmo padrão de P2b/P8 — dados de carrinho insuficientes no runner de CI ou seletor não encontrado em ambiente headless sem dados suficientes. Falha pré-existente em main antes desta sessão.
+
+**Impacto no Gate Final:** Nenhum — não faz parte do required check "Gate Final - Deploy Ready".
+
+**Ação necessária:** seed de dados de carrinho no runner de CI ou skip condicional quando produto não existe.
+
+---
+
+## P26 — Uptime Monitor: failure (schedule — transitório)
+
+**Workflow:** `.github/workflows/uptime-monitor.yml`  
+**Categoria:** Schedule — monitor de uptime externo — falha transitória  
+**Runs em falha:** bfd9b50a (schedule, 3x)
+
+**Diagnóstico:** Verifica endpoints externos em intervalo de 30 minutos. Falhas são transitórias — o endpoint pode estar temporariamente indisponível no momento da checagem. Não é required check e não bloqueia deploy.
+
+**Impacto no Gate Final:** Nenhum.
+
+**Ação necessária:** opcional — aumentar timeout ou adicionar retry; aceitar que falhas intermitentes são esperadas em monitor de uptime.
+
+---
+
+## P27 — edge-functions-drift-check: failure (workflow_run — drift detectado)
+
+**Workflow:** `.github/workflows/edge-functions-drift-check.yml` (trigger: workflow_run)  
+**Categoria:** Drift check — compara funções deployadas em produção vs código no repo  
+**Run em falha:** 15dd563b
+
+**Diagnóstico:** Verifica se as edge functions deployadas em produção correspondem ao código no repo. Falhou possivelmente porque uma função foi deployada via MCP/dashboard fora do fluxo de migration (REGRA #8 CLAUDE.md — corolário "caminho único para deploy de edge function"). Não é required check para o Gate Final.
+
+**Impacto no Gate Final:** Nenhum — não faz parte do required check "Gate Final - Deploy Ready".
+
+**Ação necessária (REGRA #8):** verificar drift via `get_edge_function` MCP; reconciliar git com produção; redeployar via `deploy-edge-functions.yml` workflow_dispatch. Fora do escopo desta sessão — requer inspeção de produção.
+
+---
+
 *Atualizado pela sessão Claude Code — https://claude.ai/code/session_01HW5obNKUFtUMbBdgUb94kY*

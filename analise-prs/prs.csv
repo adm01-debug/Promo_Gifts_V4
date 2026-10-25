@@ -20,7 +20,7 @@ pr_number,title,author,draft,state,mergeable_state,verdict,sha_merge,ci_run,note
 2441,feat(db+edge): DDL P02/P08/P19 + edge fn send-notification,Claude,false,merged,merged,DECISÃO_HUMANA→MERGEADO_PO,90c6492b,,"Mergeado pelo PO; Rule 8 DDL + edge function"
 2443,APROVAÇÃO REQUERIDA: P06/P09/P14/P15/P03_security_definer FASE B,Claude,true,open,clean,DECISÃO_HUMANA,,,"Draft:true + título explícito 'APROVAÇÃO REQUERIDA'; security decisions P03/P06/P09/P14/P15"
 2445,feat(db): DDL cron.alter_job job_id=235,Claude,false,merged,merged,DECISÃO_HUMANA→MERGEADO_PO,8eeeca9b,,"Mergeado pelo PO; Rule 8 DDL cron"
-2447,docs(analise-prs): deliverables RELATORIO+dossies+baseline+prs.csv (esta PR),Claude,true,open,behind,MERGEAR,,,Draft:true + behind (atrás de main — conflito resolvido); docs-only analise-prs/
+2447,docs(analise-prs): deliverables RELATORIO+dossies+baseline+prs.csv (esta PR),Claude,false,merged,merged,MERGEAR,a5517d5a,,"Squash-merged em 2026-10-25; docs-only analise-prs/; CI gate 1 reparado (heading SINGU)"
 2449,fix(db): E99 repair-only update_company_fields SECURITY DEFINER,Claude,true,open,dirty,DECISÃO_HUMANA,,,"Rule 8: supabase/migrations/ SECURITY DEFINER; draft:true + conflito"
 2450,docs: RELATORIO_CI.md rev5 + PENDENCIAS.md rev12,Claude,false,merged,merged,DECISÃO_HUMANA→MERGEADO_PO,d804cafa,,"Mergeado pelo PO; estava draft"
 2451,(título não disponível — PR fechado),unknown,true,closed,na,FECHAR,,,PR fechado sem merge pelo autor antes desta sessão
