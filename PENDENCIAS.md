@@ -1,8 +1,8 @@
 # Pendências CI — Bloqueios Externos
 
-**Atualizado em:** 2026-10-25 (rev 20 — Gate Final `6457e24d` success; P44/P45/P46 adicionados; P56 Gate E40 corrigido)  
-**Branch de referência:** `claude_05/nifty-sagan-r23gqh`  
-**Commit de referência (main):** `e91a36e3` — docs(analise-prs): deliverables rev7
+**Atualizado em:** 2026-10-25 (rev 22 — P57 adicionado; Gate Final `dcaa20da` success confirmado; inventário completo de falhas)  
+**Branch de referência:** `claude/fix-pendencias-rev22-20261025-1430`  
+**Commit de referência (main):** `e0be7669` — docs(analise-prs): test-merges worktree + dossiers 4 PRs abertas (#2504)
 
 ---
 
@@ -683,6 +683,43 @@ AssertionError: expected '02:05' to be '05:05'
 **Impacto no Gate Final:** Gate E40 é step dentro do `deploy-gates.yml`. Desbloqueado após merge do PR #2487.
 
 **Ação necessária:** Nenhuma após merge do PR #2487.
+
+---
+
+---
+
+## P48 — Supabase Linter Gate: falha recorrente em "Check Security Advisors" (Management API timeout)
+
+**Workflow:** `.github/workflows/supabase-linter-gate.yml`  
+**Run mais recente com falha:** [#40180288880](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40180288880) (commit `e0be7669`)  
+**Conclusão:** `failure`  
+**Categoria:** Connectivity timeout — Supabase Management API 544 (não corrigível via YAML)  
+**Sessão:** session_01HW5obNKUFtUMbBdgUb94kY (2026-10-25)
+
+**Causa exata:** Step "Check Security Advisors and live catalog gates" falha com HTTP 544 na Supabase Management API (`Failed to create login role: Connection terminated due to connection timeout`). O fix de `TimeoutError → return 0` (PR #2489) cobriu o timeout de JS; a nova falha é na camada de rede/Management API — mesmo padrão P9/P22/P35.
+
+**Ação necessária pelo PO:** Monitorar estabilidade da Supabase Management API. Não corrigível via código.
+
+---
+
+## P57 — Gate 5 — Supabase Security Audit: HTTP 544 login role timeout (Management API)
+
+**Workflow:** `.github/workflows/supabase-security-gate.yml`  
+**Run mais recente com falha:** [#40175865801](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40175865801) (commit `f857782b`)  
+**Conclusão:** `failure`  
+**Categoria:** Connectivity timeout — Supabase Management API 544 (não corrigível via YAML)  
+**Sessão:** session_01HW5obNKUFtUMbBdgUb94kY (2026-10-25)
+
+**Erro exato:**
+```
+unexpected login role status 544: {"message":"Failed to create login role: Connection terminated due to connection timeout"}
+```
+
+**Causa raiz:** A Management API da Supabase retorna HTTP 544 (connection timeout) ao criar login role para o projeto `doufsxqlfjyuvxuezpln`. Mesmo padrão de falha dos P9, P22, P35 e P48 — todos envolvendo a Supabase Management API em ambiente CI.
+
+**Este gate não é required check no Gate Final** (`deploy-gates.yml`). Não bloqueia deploy.
+
+**Ação necessária pelo PO:** Monitorar estabilidade da Supabase Management API. Não corrigível via código.
 
 ---
 
