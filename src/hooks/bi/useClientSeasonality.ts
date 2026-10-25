@@ -307,10 +307,8 @@ export function useClientSeasonality(
     };
   }
 
-  // Se setor estiver vazio mas cliente tem dados, usa mock só do setor para comparativo visual
-  const industryCells = realIndustryCells.some((c) => c.avgQuotesPerCompany > 0)
-    ? realIndustryCells
-    : getMockSeasonality().industry;
+  // Setor sem dados: mantém as células reais (zeradas); nunca mistura mock em resultado `isMock:false`
+  const industryCells = realIndustryCells;
 
   const topClient = pickTop(clientCells, 'quotesCount', 3);
   const topIndustry = pickTop(industryCells, 'avgQuotesPerCompany', 3);
