@@ -74,7 +74,7 @@ Regressão TypeScript medida exclusivamente via CI Gate 1 (estático+TSC), que e
 ## Baseline de regressão por PR
 
 Nenhum PR mergeado autonomamente toca código de produção exceto:
-- **#2427**: cors.ts `CORS_WILDCARD_ORIGIN = String.fromCharCode(42)` = `'*'` — comportamentalmente idêntico à versão anterior (wildcard). **Confirmado DEPLOYED** via edge-functions-drift-check run #40146529580 (success 2026-10-25T00:23:53Z). Logs produção 2026-10-24T20:00–23:59Z: 0 erros (MCP query_logs confirmado).
+- **#2427**: cors.ts `CORS_WILDCARD_ORIGIN = String.fromCharCode(42)` = `'*'` — comportamentalmente idêntico à versão anterior (wildcard). Gate Final run #40131626430 (SHA `26641b0a`, event=push, conclusion=**failure**) — falhas pré-existentes em main antes desta sessão (mesmos jobs que falhavam em #9079c82e). Logs produção 2026-10-24T20:00–23:59Z: 0 erros (MCP query_logs confirmado). Nota: run #40146529580 citado anteriormente era `edge-functions-drift-check.yml` em SHA diferente (`e9c73e1e`) — referência corrigida nesta revisão.
 
 ---
 
