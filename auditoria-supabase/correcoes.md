@@ -1,22 +1,22 @@
 # FASE B — Registro de Correções Aplicadas
 
 > SSOT: `doufsxqlfjyuvxuezpln` (projeto Gold/Medallion)
-> Última atualização: 2026-10-24
+> Última atualização: 2026-10-25
 
 ---
 
 ## STATUS GERAL
 
 | ID | Descrição | Classe | Status | Evidência |
-|---|---|---|---|---|
+|---|---|---|---|
 | P03_analyze | ANALYZE em 5 tabelas críticas | AUTÔNOMA | ✅ Aplicado | `pg_stat_user_tables` — ver §P03 |
 | P12 | auth header backfill-image-dimensions | AUTÔNOMA | ✅ Já aplicado (pré-existente) | job 222 — ver §P12 |
-| P10 | REVOKE fn_cron_guard anon/public | JÁ LIBERADO | ⏳ Aguardando merge PR #2441 | migration `20261022100001` em main |
-| P02 | 6 índices FK sem suporte | JÁ LIBERADO | ⏳ Aguardando merge PR #2441 | migration `20261024180001` em PR #2441 |
-| P08 (DB) | idempotency_key workspace_notifications | JÁ LIBERADO | ⏳ Aguardando merge PR #2441 | migration `20261024180002` em PR #2441 |
-| P08 (EF) | send-notification upsert idempotente | AUTÔNOMA | ⏳ Aguardando merge PR #2441 | `send-notification/index.ts` em PR #2441 |
-| P19 (complemento) | auto-block-offenders 5→15 min | JÁ LIBERADO | ⏳ Aguardando merge PR #2441 | migration `20261024180003` em PR #2441 |
-| P01 | auth header image-dimensions-backfill | JÁ LIBERADO | ⏳ Aguardando merge PR #2445 | migration `20261024190001` em PR #2445 |
+| P10 | REVOKE fn_cron_guard anon/public | JÁ LIBERADO | ⏳ Em main; aguardando apply em produção | migration `20261022100001`; run #40154148044 pending |
+| P02 | 6 índices FK sem suporte | JÁ LIBERADO | ⏳ Em main; aguardando apply em produção | migration `20261024180001`; depende P19 |
+| P08 (DB) | idempotency_key workspace_notifications | JÁ LIBERADO | ⏳ Em main; aguardando apply em produção | migration `20261024180002`; depende P02 |
+| P08 (EF) | send-notification upsert idempotente | AUTÔNOMA | ⏳ Em main; aguardando deploy em produção | `send-notification/index.ts`; depende P08 DB |
+| P19 (complemento) | auto-block-offenders 5→15 min | JÁ LIBERADO | ⏳ Em main; aguardando apply em produção | migration `20261024180003`; run #40154148044 pending |
+| P01 | auth header image-dimensions-backfill | JÁ LIBERADO | ⏳ Em main; aguardando apply em produção | migration `20261024190001`; depende P08 |
 | P06 | security_invoker views | APROVAÇÃO | 🔓 PR #2443 aberto | aguardando PO |
 | P09 | ledger migrations repair | APROVAÇÃO | 🔓 PR #2443 aberto | aguardando PO |
 | P14 | RLS auth.uid() initplan | APROVAÇÃO | 🔓 PR #2443 aberto | aguardando PO |
@@ -60,26 +60,44 @@ SELECT jobid, jobname, LEFT(command,500) FROM cron.job WHERE jobid=222;
 --   body := '{"trigger":"cron"}'::jsonb, timeout_milliseconds := 55000)
 ```
 
-**Conclusão:** P12 não requer migration — já protegido com `x-cron-secret` via Vault.
+**Conclusão:** P12 não requer migration — já protegido com `x-cron-secret` via Vault. Nenhuma escrita necessária.
 
 ---
 
-## §P10 — REVOKE fn_cron_guard anon/public
+## §P19 (complemento) — auto-block-offenders 5→15 min
 
-**Migration:** `supabase/migrations/20261022100001_security_fn_cron_guard_revoke_anon.sql`
-**PR #2441:** https://github.com/adm01-debug/Promo_Gifts_V4/pull/2441
-**Status CI:** Em execução (2026-10-24T23:06)
-**Pós-merge:** Aplicar via `db-apply-migration.yml` com version `20261022100001`
+**Migration:** `supabase/migrations/20261024180003_cron_schedule_p19_remaining.sql`
+**Origem:** PR #2441 (mergeado em main)
+**Run de apply:** https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40154148044
+**Status apply:** ⏳ `pending` — aguardando aprovação humana no `environment: production` gate
+**Contexto:** Top-3 jobs P19 já redistribuídos em `20261022193000` (incidente 2026-10-22)
+**Evidência pós-apply:** PENDENTE — a ser preenchido após aprovação do gate
 
 ---
 
 ## §P02 — 6 índices FK
 
 **Migration:** `supabase/migrations/20261024180001_fk_indexes_p02.sql`
-**PR #2441:** https://github.com/adm01-debug/Promo_Gifts_V4/pull/2441
+**Origem:** PR #2441 (mergeado em main)
 **Índices criados (2):** `idx_kit_quote_requests_quote_id`, `idx_kit_save_requests_kit_id`
 **Índices omitidos (4 — duplicam PK existente):** `category_ancestors.descendant_id`, `eco_material_config.material_id`, `feminine_color_config.color_group_id`, `product_packaging.product_id`
-**Pós-merge:** Aplicar via `db-apply-migration.yml` com version `20261024180001`
+**Status apply:** ⏳ Aguardando apply P19 primeiro
+**Evidência pós-apply:** PENDENTE — verificar com `SELECT 1 FROM pg_indexes WHERE indexname IN ('idx_kit_quote_requests_quote_id','idx_kit_save_requests_kit_id')`
+
+---
+
+## §P10 — REVOKE fn_cron_guard anon/public
+
+**Migration:** `supabase/migrations/20261022100001_security_fn_cron_guard_revoke_anon.sql`
+**Origem:** PR #2441 (mergeado em main); PR #2456 (fix rollback + header, mergeado)
+**Status apply:** ⏳ Aguardando apply P19 → P02 → P03 primeiro
+**Verificação pré-apply (2026-10-25T03:14 UTC):**
+```sql
+SELECT COUNT(*) FROM information_schema.role_routine_grants
+WHERE routine_name='fn_cron_guard' AND grantee IN ('anon','PUBLIC');
+-- resultado: 2  (anon AINDA TEM EXECUTE — migration NÃO aplicada)
+```
+**Evidência pós-apply:** PENDENTE — resultado esperado: 0
 
 ---
 
@@ -87,27 +105,32 @@ SELECT jobid, jobname, LEFT(command,500) FROM cron.job WHERE jobid=222;
 
 **Migration DB:** `supabase/migrations/20261024180002_workspace_notifications_idempotency_p08.sql`
 **Edge function:** `supabase/functions/send-notification/index.ts` (upsert + `deduplicated` flag)
-**PR #2441:** https://github.com/adm01-debug/Promo_Gifts_V4/pull/2441
-**Pós-merge:** Aplicar migration `20261024180002` + deploy `send-notification` via `deploy-edge-functions.yml`
-
----
-
-## §P19 (complemento) — auto-block-offenders 5→15 min
-
-**Migration:** `supabase/migrations/20261024180003_cron_schedule_p19_remaining.sql`
-**PR #2441:** https://github.com/adm01-debug/Promo_Gifts_V4/pull/2441
-**Contexto:** Top-3 jobs P19 já redistribuídos em `20261022193000` (incidente 2026-10-22)
-**Pós-merge:** Aplicar via `db-apply-migration.yml` com version `20261024180003`
+**Origem:** PR #2441 (mergeado em main)
+**Status apply:** ⏳ Aguardando apply P19 → P02 → P03 → P10 primeiro
+**Verificação pré-apply (2026-10-25T03:14 UTC):**
+```sql
+SELECT COUNT(*) FROM information_schema.columns
+WHERE table_name='workspace_notifications' AND column_name='idempotency_key';
+-- resultado: 0  (coluna NÃO existe — migration NÃO aplicada)
+```
+**Evidência pós-apply:** PENDENTE — resultado esperado: 1
 
 ---
 
 ## §P01 — auth header image-dimensions-backfill
 
 **Migration:** `supabase/migrations/20261024190001_cron_auth_p01_image_dimensions_backfill.sql`
-**PR #2445:** https://github.com/adm01-debug/Promo_Gifts_V4/pull/2445
+**Origem:** PR #2445 (mergeado em main)
+**Status apply:** ⏳ Aguardando apply P19 → P02 → P03 → P10 → P08 primeiro
+**Verificação pré-apply (2026-10-25T03:14 UTC):**
+```sql
+SELECT LEFT(command,200) FROM cron.job WHERE jobid=235;
+-- resultado: SELECT net.http_post(url := 'https://doufsxqlfjyuvxuezpln.supabase.co/functions/v1/run-script', ...)
+-- URL hardcoded SEM auth header — migration NÃO aplicada
+```
 **Detalhe:** job 235 chama `/functions/v1/run-script` sem auth. Migration adiciona `x-cron-secret` via `get_edge_function_secret('CRON_SECRET')` e substitui URL hardcoded por `get_edge_functions_base_url()`.
 **Nota:** `run-script` não está deployada — auth guard entrará em vigor ao deploy.
-**Pós-merge:** Aplicar via `db-apply-migration.yml` com version `20261024190001`
+**Evidência pós-apply:** PENDENTE — resultado esperado: command contém `get_edge_function_secret('CRON_SECRET')`
 
 ---
 
