@@ -10,7 +10,9 @@
 **PR #2525:** mergeada em `c8967d1ccc79b3aa928c136be88bda5e1aa5e928` (docs P16/P23/P24)  
 **PR #2528:** mergeada em `317a317dbfe45ae27f5eefa67069d1df8d84f811` (docs P59/P60/P62 + auto-resolvidos)  
 **PR #2530:** mergeada em `af0b4512765dd5feb8acc3a10216ce7951301254` (docs P61/P62)  
-**Main HEAD atual:** `af0b4512765dd5feb8acc3a10216ce7951301254`
+**PR #2531:** mergeada em `e94e846f6e9d001a3e4180cc09ca071145a5ed3a` (docs P63)  
+**PR #2524:** mergeada em `d74b33fb0d0af07e448a6b826cc095622ed726bd` (fix: Linter Gate trata 5xx como infra transitória)  
+**Main HEAD atual:** `d74b33fb0d0af07e448a6b826cc095622ed726bd`
 
 ---
 
@@ -151,7 +153,7 @@ timeout-minutes: 90  # P19b: vitest roda 1265 arquivos com maxWorkers:2 (~45-60m
 | Build Vite | ✅ success | ✅ `built in 15.92s` — rodado localmente em `a29b3a19` |
 | `test:deploy-gate` (vitest) | ✅ 334 passed | ✅ 334 passed (3 files, 6.99s) — rodado localmente em `a29b3a19` |
 | Gate Final - Deploy Ready | ✅ success `801e38a5` | ✅ success `3affff6d` (run #40195302647) + PR #2522 CI: 31 checks, 0 falhas |
-| `ci-security-drift.yml` | ❌ failure | ❌ failure (P60 pré-existente, step 27) — confirmado run #40198674547 |
+| `ci-security-drift.yml` | ❌ failure | ❌ failure (P60 pré-existente, step 27) — pendente em `d74b33fb` |
 | Workflows required (Gate Final) | ✅ todos green | ✅ todos green |
 
 ---
@@ -186,7 +188,7 @@ timeout-minutes: 90  # P19b: vitest roda 1265 arquivos com maxWorkers:2 (~45-60m
 | P16 | `e2e-flows.yml` | Secrets `E2E_USER_EMAIL` / `E2E_USER_PASSWORD` para specs autenticados (`/admin/conexoes`) |
 | P23 / P24 | `e2e-personalization.yml`, `e2e-thumb-quickview.yml` | Secrets E2E + seed de dados de produtos no CI |
 | P59 | Vercel | Deletar projeto fantasma `promo-gifts-reconciliation-integrity-20260915` |
-| P60 | `ci-security-drift.yml` | Fix estrutural step 27: usar `--project=chromium-authed` com `storageState` |
+| P60 | `ci-security-drift.yml` | Fix estrutural step 27: usar `--project=chromium-authed` com `storageState` — PR #2524 não cobre (fix foi no Linter Gate 5xx, não no step 27) |
 | P61 | `copilot-code-review.yml` | Configurar token Copilot ou desativar workflow |
 | P62 | `e2e.yml` (Playwright) | Investigar OOM/crash em `NoveltyProductGrid` no CI (`/novidades`) |
 | P63 | `e2e-swatch-quickview.yml` | Investigar `Check min tests executed` — 0 specs coletados (produtos com swatches no CI?) |
@@ -200,4 +202,4 @@ timeout-minutes: 90  # P19b: vitest roda 1265 arquivos com maxWorkers:2 (~45-60m
 - **7 workflows documentados (bloqueados externamente):** Cart Invariants (P2b), E2E Critical Flows (P16), E2E Personalization/QuickView (P23/P24), ci-security-drift step 27 (P60), Copilot Code Review infra (P61), E2E `/novidades` page crash (P62), E2E Swatch QuickView (P63)
 - **Gate Final permanece verde** em todos os commits desta sessão
 - **Zero regressões introduzidas**
-- **Main HEAD atual:** `af0b4512` (PR #2530 merge)
+- **Main HEAD atual:** `d74b33fb` (PR #2524 merge — Linter Gate 5xx fix)

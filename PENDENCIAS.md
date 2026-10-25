@@ -71,7 +71,7 @@ O fallback agora tem `data-testid="app-header"` e `position: fixed`. O `waitForT
 
 ### P2b — Cart Invariants Smoke: todos os shards falham
 
-**Run mais recente:** [#40189082464](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40189082464) (commit `801e38a5`)  
+**Run mais recente:** [#40206446085](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40206446085) (commit `e94e846f`)  
 **Conclusão:** `failure`  
 **Jobs:** 6 shards — todos falharam
 
@@ -441,7 +441,7 @@ AssertionError: expected +0 to be 2
 
 **Workflow:** `.github/workflows/e2e-personalization.yml` (ID 285588106)  
 **Categoria:** E2E não-required  
-**Run mais recente:** [#40198674551](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40198674551) (main `a29b3a19`, 2026-10-25)
+**Run mais recente:** [#40206446269](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40206446269) (main `e94e846f`, 2026-10-25)
 
 **Erros exatos (confirmados em P2c — run #40124949299, job 120884172213):**
 ```
@@ -859,7 +859,7 @@ Usar `--project=chromium-authed` no step 27, com step anterior rodando `auth.set
 ## P61 — Running Copilot Code Review: failure (bloqueio de infraestrutura GitHub Copilot)
 
 **Workflow:** `.github/workflows/copilot-code-review.yml`  
-**Run mais recente com falha:** [#40203096554](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40203096554) (commit `317a317d`)  
+**Run mais recente com falha:** [#40205795732](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40205795732) (commit `af0b4512`)  
 **Conclusão:** `failure`  
 **Categoria:** Infraestrutura externa — firewall/rede do GitHub Copilot; não-required
 
