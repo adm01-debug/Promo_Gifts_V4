@@ -1,7 +1,7 @@
 {
-  "gerado_em": "2026-10-25T09:30:00Z",
+  "gerado_em": "2026-10-25T09:50:00Z",
   "sessao": "https://claude.ai/code/session_01Ss1tXZ4cAbxBvdmu95uNPz",
-  "main_head": "e0be76690381d15a4e7d0c2d728d05d8abb533c4",
+  "main_head": "b058d97d83cb1631203058be0462351e722b896b",
   "baseline": {
     "testes": 429,
     "falhas": 0,
@@ -103,7 +103,8 @@
     {"pr": 2490, "sha": "a681fe0e", "titulo": "docs(analise-prs): deliverables rev6", "gate_final_run": "40173768324", "gate_final_conclusao": "success", "merged_at": "2026-10-25T07:43:00Z"},
     {"pr": 2498, "sha": "eee389ca", "titulo": "docs(analise-prs): deliverables rev6.1 + PR-2487", "gate_final_run": "40174781954", "gate_final_conclusao": "success", "merged_at": "2026-10-25T08:12:00Z"},
     {"pr": 2501, "sha": "e91a36e390bf99a4a697c1be59d3abeadb7494c6", "titulo": "docs(analise-prs): deliverables rev7 — 44 PRs, 13 abertas, baseline e91a36e3", "gate_final_run": "40176836399", "gate_final_conclusao": "success", "merged_at": "2026-10-25T08:29:41Z"},
-    {"pr": 2504, "sha": "e0be76690381d15a4e7d0c2d728d05d8abb533c4", "titulo": "docs(analise-prs): deliverables rev8 — test-merges #2415/#2432/#2443/#2469", "gate_final_run": "40179146830", "gate_final_conclusao": "success", "merged_at": "2026-10-25T09:00:00Z"}
+    {"pr": 2504, "sha": "e0be76690381d15a4e7d0c2d728d05d8abb533c4", "titulo": "docs(analise-prs): deliverables rev8 — test-merges #2415/#2432/#2443/#2469", "gate_final_run": "40179146830", "gate_final_conclusao": "success", "merged_at": "2026-10-25T09:00:00Z"},
+    {"pr": 2505, "sha": "b058d97d83cb1631203058be0462351e722b896b", "titulo": "docs(analise-prs): deliverables rev9 — PR #2503 + test-merges #2428/#2449/#2503", "gate_final_run": "in-session-ci-verde-20-success", "gate_final_conclusao": "success", "merged_at": "2026-10-25T09:50:00Z"}
   ],
   "prs_abertos": [
     {"number": 2415, "verdict": "DECISAO_HUMANA", "motivo": "Rule 8: 2 workflows + conflito", "draft": false, "test_merge": "CONFLICT"},
