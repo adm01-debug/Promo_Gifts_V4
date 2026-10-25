@@ -334,6 +334,9 @@ describe('detectSecurityDefinerWithoutPgTemp', () => {
   it('aceita SET search_path = com pg_temp', () => {
     expect(detectSecurityDefinerWithoutPgTemp(fn('SET search_path = pg_catalog, pg_temp'))).toEqual([]);
   });
+  it('aceita SET search_path= sem espaço após o igual', () => {
+    expect(detectSecurityDefinerWithoutPgTemp(fn('SET search_path=public, pg_temp'))).toEqual([]);
+  });
   it('acusa SET search_path TO sem pg_temp', () => {
     expect(detectSecurityDefinerWithoutPgTemp(fn("SET search_path TO 'public'"))).toEqual(['public.f']);
   });
