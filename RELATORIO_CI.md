@@ -35,6 +35,8 @@
 | audit | ❌ failure | P-AUDIT — transiente; resolvido em main@8855a573 |
 | Smoke (fail-fast) | ❌ failure | P-SMOKE — resolvido em main@8855a573 |
 
+Banco preview `cegqcnepkwtmqlsleqlp` — não é required check, não bloqueia merge.
+
 ---
 
 ## Baseline CI (evidência de CI — local impossível por P-NPM1)
@@ -50,7 +52,7 @@
 | unit tests (vitest) | ✅ CI pass | Gate 2 success |
 | E2E smoke | ✅ CI pass | Gate 3 success |
 
----
+### 7.2 Gate Final pós-merge — Run #40146000908
 
 ## Resumo de trabalho nesta sessão
 
