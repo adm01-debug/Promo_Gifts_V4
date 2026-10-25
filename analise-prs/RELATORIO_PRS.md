@@ -93,7 +93,7 @@ Nenhum PR mergeado autonomamente toca código de produção exceto:
 
 ---
 
-## SINGU (pqpdolkaeqlyzpdpbizo) — verificação
+## SINGU (pqpdolkaeqlyzpdpbizo) [LEGACY_INFORMATIVO] — verificação
 
 | PR | Refs adicionadas | Detalhe |
 |---|---|---|
@@ -162,7 +162,7 @@ Nenhum PR mergeado autonomamente toca código de produção exceto:
 | #2428 | DECISÃO_HUMANA (.gitleaks.toml) | — | `analise-prs/dossies/PR-2428.md` |
 | #2432 | FECHAR (conteúdo já em main via #2426) | — | `analise-prs/dossies/PR-2432.md` |
 | #2434 | MERGEADO | `53ba69b5` | `analise-prs/dossies/PR-2434.md` |
-| #2435 | DECISÃO_HUMANA (CI+gitleaks) | — | `analise-prs/dossies/PR-2435.md` |
+| #2435 | MERGEADO (#2435) | — | `analise-prs/dossies/PR-2435.md` |
 | #2436 | MERGEADO | `4c8193b9` | `analise-prs/dossies/PR-2436.md` |
 | #2437 | MERGEADO (outra sessão) | `9b23fb64` | `analise-prs/dossies/PR-2437.md` |
 | #2438 | MERGEADO (outra sessão) | `c8994f17` | `analise-prs/dossies/PR-2438.md` |
@@ -252,7 +252,7 @@ Qualquer PR que introduza um teste falhando está abaixo do baseline.
 
 ## NÃO VERIFICADO
 
-- Typecheck local: ambiente cloud sem node_modules — `npm run typecheck` retorna 49833 erros genéricos de tipo "Cannot find module". CI Gate 1 (TypeScript) é a única fonte válida — verde no baseline (job #121040094408, run #40150209361, SHA eb7a92479).
+- Typecheck local: ambiente cloud sem node_modules — `npm run typecheck` retorna 49833 erros genéricos de tipo "Cannot find Module". CI Gate 1 (TypeScript) é a única fonte válida — verde no baseline (job #121040094408, run #40150209361, SHA eb7a92479).
 - CI pós-merge #2455: run #40151693979 confirmado SUCCESS (main HEAD bfd9b50a). PR docs-only, 0 regressões.
 - CI para #2414, #2426, #2434: sem run no SHA do merge exato (merges sequenciais — CI cancelado/supersedido). Cobertura transitiva confirmada via run #40151693979 (SHA bfd9b50a, SUCCESS) que inclui todos os commits anteriores.
 - prs.csv: criado em `analise-prs/prs.csv` (27 PRs, colunas: pr_number, title, author, draft, state, mergeable_state, verdict, sha_merge, ci_run, notes).
@@ -385,7 +385,7 @@ Qualquer PR que introduza um teste falhando está abaixo do baseline.
 | [#2428](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2428) | Sim | true (behind) | security policy | 1 único | 0 | **DECISÃO HUMANA** |
 | [#2432](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2432) | Não | — | — | — | 0 | **JÁ IMPLEMENTADA** (em main desde #2426) |
 | [#2434](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2434) | —  | — | — | — | — | **MERGEADO** `53ba69b5` |
-| [#2435](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2435) | Sim | — | CI/workflows+security | — | 0 | **DECISÃO HUMANA** |
+| [#2435](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2435) | Sim | — | CI/workflows+security | — | 0 | **MERGEADO** `07ddf86d` |
 | [#2436](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2436) | —  | — | — | — | — | **MERGEADO** `4c8193b9` |
 | [#2437](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2437) | Sim | — | security policy | — | 0 | **DECISÃO HUMANA** |
 | [#2438](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2438) | Sim | — | security policy | — | 0 | **DECISÃO HUMANA** |
@@ -407,17 +407,14 @@ Qualquer PR que introduza um teste falhando está abaixo do baseline.
 
 ---
 
-### PR #2435 — DECISÃO HUMANA (Rule 8: CI/workflows + security policy)
+### PR #2435 — MERGEADO (2026-10-25)
 
-**Título:** fix(ci): Zod v4 repair — UUIDs + vitest + gitleaks + drafts README  
-**Branch:** `claude_05/upbeat-hamilton-5gnz50`  
-**Draft:** Sim | **SINGU:** 0 refs
+**Título:** fix(ci): remove entradas stale do baseline Gate 1.3 e resolve conflito docs  
+**Branch:** `claude_05/nifty-sagan-r23gqh`  
+**Mergeado por:** PO (adm01-debug) via ready_for_review + merge  
+**SHA merge:** `07ddf86d5526961cbf7f2d70a9f38b078f488892`
 
-**Diff:** `.gitleaks.toml`, `.github/workflows/ci-security-drift.yml`, `PENDENCIAS.md`, `scripts/check-dependency-audit.mjs`, e arquivos `src/`
-
-**Rule 8:** `.github/workflows/ci-security-drift.yml` (CI/workflows) + `.gitleaks.toml` (security scanning policy)
-
-**Verdict:** **DECISÃO HUMANA** — DRAFT + REGRA 8.
+**Conteúdo:** `.migration-refs-baseline.json` (6 entradas stale removidas) + docs (RELATORIO_CI.md, PENDENCIAS.md)
 
 ---
 
@@ -431,7 +428,7 @@ Qualquer PR que introduza um teste falhando está abaixo do baseline.
 
 **Rule 8:** `.gitleaks.toml` (security scanning policy exclusion de `dist/.*`)
 
-**Nota:** Contém correções Zod v4 de alto valor (`.errors[0]`→`.issues[0]`, `required_error`→`error`, UUID variant bit fix). Sobreposição com #2435 nos arquivos de infraestrutura.
+**Nota:** Contém correções Zod v4 de alto valor (`.errors[0]`→`.issues[0]`, `required_error`→`error`, UUID variant fix). Sobreposição com #2435 nos arquivos de infraestrutura.
 
 **Verdict:** **DECISÃO HUMANA** — DRAFT + REGRA 8.
 
@@ -471,7 +468,7 @@ Aplicar via `db-apply-migration.yml` workflow_dispatch + merge do PR.
 Branch órfã + dirty. Conteúdo válido (fix TS + docs).
 
 ### 7. Decidir sobre #2441 (FASE B: P02/P08/P19 migrations + send-notification)
-Migrations aditivas/idempotentes com rollback. Após aprovação: merge + `db-apply-migration.yml` + `deploy-edge-functions.yml`.
+Migrations aditivas/idempotentes com rollback. Após aprovação: merge + `db-apply-migration.yml` (P02/P08/P19) + `deploy-edge-functions.yml` (send-notification).
 
 ### 8. Revisar propostas de #2443 (P06/P09/P14/P15/P03_security_definer)
 Responder com `APROVADO <ID>` para cada proposta aceita. P03_security_definer é o mais urgente (escalação de privilégio).
