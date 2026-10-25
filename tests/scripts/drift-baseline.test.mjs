@@ -227,6 +227,16 @@ describe('sanitizeBaselineForReplay', () => {
     expect(res.removedStatements).toHaveLength(1);
     expect(readFileSync(file, 'utf8')).toBe(raw);
   });
+
+  it('prepareWorkdir semeia o job auto-block-offenders no fim do baseline entregue ao shadow', () => {
+    const root = fixtureRepo({ baselineVersion: '20261015140000', ledgerVersions: ['20261015140000'], migrations: [] });
+    writeFileSync(join(root, 'supabase', 'baseline', '20261015140000_baseline_schema.sql'), 'CREATE TABLE t (id int);\n');
+    const out = join(tmp(), 'wd');
+    prepareWorkdir({ rootDir: root, outDir: out, appliedVersions: ['20261015140000'], projectRef: 'x' });
+    const delivered = readFileSync(join(out, 'supabase', 'migrations', '20261015140000_baseline_schema.sql'), 'utf8');
+    expect(delivered.startsWith('CREATE TABLE t')).toBe(true);
+    expect(delivered).toContain("cron.schedule('auto-block-offenders'");
+  });
 });
 
 describe('maxNumericVersion', () => {
