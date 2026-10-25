@@ -1,18 +1,18 @@
 {
   "gerado_em": "2026-10-25T18:00:00Z",
   "sessao": "https://claude.ai/code/session_01Ss1tXZ4cAbxBvdmu95uNPz",
-  "main_head": "cb0ccedec41c38fe79cbd2585216e4cbe3155ccd",
-  "main_head_descricao": "PR #2538 mergeada pelo PO — docs RELATORIO_CI 3 entradas Gate Final",
-  "main_head_anterior": "4cb4feb431f47573a2d4aee01774a5db24e11810",
+  "main_head": "c113300c034fb39126274fba9aa10ef05762ab13",
+  "main_head_descricao": "PR #2540 mergeada pelo PO — docs RELATORIO_CI atualiza cb0ccedc success 17:41Z + Comparação Final",
+  "main_head_anterior": "cb0ccedec41c38fe79cbd2585216e4cbe3155ccd",
   "baseline": {
     "testes": 429,
     "falhas": 0,
-    "gate_final_run_confirmado": "40214531246",
+    "gate_final_run_confirmado": "40218104943",
     "gate_final_conclusao_confirmado": "success",
-    "sha_referencia_confirmada": "4cb4feb431f47573a2d4aee01774a5db24e11810",
-    "gate_final_run_novo_head": "pending",
-    "gate_final_status_novo_head": "in_progress",
-    "nota": "PR #2538 mergeada pelo PO (docs-only). Gate Final para cb0ccedec4 em progresso. Baseline inalterada: 429 testes / 0 falhas."
+    "gate_final_completado_em": "2026-10-25T17:56:46Z",
+    "sha_referencia_confirmada": "c113300c034fb39126274fba9aa10ef05762ab13",
+    "gate_final_run_anterior": "40214531246",
+    "nota": "Gate Final run #40218104943 confirmado nesta sessão: c113300c = success (17:56:46Z). 17 jobs passaram. Baseline inalterada: 429 testes / 0 falhas."
   },
   "prs_analisados": 19,
   "prs_abertos_atuais": 17,

@@ -1,13 +1,13 @@
 # Baseline — Sessão session_01Ss1tXZ4cAbxBvdmu95uNPz (continuação)
 **Data:** 2026-10-25
-**main HEAD:** `cb0ccedec41c38fe79cbd2585216e4cbe3155ccd` (PR #2538 mergeada pelo PO — docs RELATORIO_CI)
-**Commit anterior:** `4cb4feb431f47573a2d4aee01774a5db24e11810` (PR #2535 — fix teste replay cron)
+**main HEAD:** `c113300c034fb39126274fba9aa10ef05762ab13` (PR #2540 mergeada pelo PO — docs RELATORIO_CI)
+**Commit anterior:** `cb0ccedec41c38fe79cbd2585216e4cbe3155ccd` (PR #2538 — docs RELATORIO_CI 3 entradas Gate Final)
 
 ## Gate Final
-- **Run #40214531246** — SHA `4cb4feb4` — conclusion=**success** ✅ (2026-10-25T17:20:35Z)
-- **SHA `cb0ccedec4`** — Gate Final: **PENDING** (em progresso, mudança docs-only RELATORIO_CI.md)
-  - Branch Protection Sentinel: success ✅ (run #40216887106)
-  - Uptime Monitor: failure (run #40217100001 — monitor externo, não gate de qualidade)
+- **Run #40218104943** — SHA `c113300c` — conclusion=**success** ✅ (2026-10-25T17:56:46Z) ← CONFIRMADO NESTA SESSÃO
+  - 17 jobs passaram: Gate 0, Gate 0.5, Gate 1 (sub-gates 1.1–1.18), Gate 2, Gate 2.5, Gate 3, Gate 5, Gate 5.5, Gate 6
+  - E2E Playwright smoke: success (~2min, 17:54:52–17:56:36Z)
+- **Run #40214531246** — SHA `4cb4feb4` — success ✅ (2026-10-25T17:20:35Z) ← referência anterior
 
 ## Testes
 - **429 testes / 0 falhas** (baseline inalterada — confirmado run #40214531246)

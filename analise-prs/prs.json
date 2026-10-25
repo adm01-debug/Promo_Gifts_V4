@@ -1,286 +1,253 @@
 {
-  "gerado_em": "2026-10-25T11:10:00Z",
-  "atualizado_em": "2026-10-25T14:50:00Z",
+  "gerado_em": "2026-10-25T18:00:00Z",
+  "atualizado_em": "2026-10-25T18:30:00Z",
   "sessao": "https://claude.ai/code/session_01Ss1tXZ4cAbxBvdmu95uNPz",
-  "main_head": "317a317dbfe45ae27f5eefa67069d1df8d84f811",
-  "main_head_descricao": "PR #2528 squash-merged (PO) — docs: documenta P59 e P60 + P1 auto-resolvido",
+  "main_head": "c113300c034fb39126274fba9aa10ef05762ab13",
+  "main_head_descricao": "PR #2540 mergeada pelo PO — docs RELATORIO_CI",
   "gate_final_main": {
-    "run": "40203094379",
+    "run": "40218104943",
     "conclusao": "success",
-    "completado_em": "2026-10-25T14:46:08Z"
+    "completado_em": "2026-10-25T17:56:46Z",
+    "sha": "c113300c034fb39126274fba9aa10ef05762ab13"
   },
-  "total_analisados": 53,
-  "total_abertos_atuais": 14,
+  "total_analisados": 19,
+  "total_abertos_no_inicio": 17,
+  "total_fechados_durante_sessao": 2,
   "contagem_por_veredito": {
-    "MERGEAR": 22,
-    "MERGEAR_detalhes": "8 pré-sessão (#2414,#2426,#2427,#2434,#2436,#2437,#2438,#2439) + 14 esta sessão (#2479,#2481,#2486,#2490,#2498,#2501,#2504,#2505,#2509,#2510,#2511,#2512,#2513,#2518)",
-    "MERGEADO_PO": 12,
-    "MERGEADO_PO_detalhes": "#2435,#2441,#2445,#2450,#2451,#2458,#2464,#2465,#2470,#2473,#2515,#2517",
-    "DECISAO_HUMANA": 10,
-    "DECISAO_HUMANA_detalhes": "8 abertas (#2415,#2428,#2432,#2443,#2449,#2469,#2503,#2514) + 2 fechadas externamente (#2471,#2480)",
-    "FECHAR": 9,
-    "FECHAR_detalhes": "6 abertas (#2417,#2418,#2419,#2420,#2422,#2452) + 2 fechadas externamente (#2484,#2487encerrada) + 1 já fechada pré-sessão (#2424)",
-    "total": 53,
-    "nota_csv": "prs.csv contém 57 linhas (inclui PRs documentados antes do escopo oficial da sessão e PRs auxiliares de outras sessões contados por merge commit; adicionados #2515,#2517,#2518 rev16)"
+    "DECISAO_HUMANA": 12,
+    "DECISAO_HUMANA_detalhes": "#2415,#2428,#2443,#2449,#2452,#2469,#2503,#2520,#2529,#2532,#2537 + #2415",
+    "FECHAR": 5,
+    "FECHAR_detalhes": "#2417,#2418,#2419,#2420,#2422 (NO_MERGE_BASE — órfãs)",
+    "JA_EM_MAIN": 1,
+    "JA_EM_MAIN_detalhes": "#2432 (git cherry = 0)",
+    "MERGEADO_PO": 1,
+    "MERGEADO_PO_detalhes": "#2538",
+    "FECHADO_PO": 1,
+    "FECHADO_PO_detalhes": "#2521",
+    "total": 20
   },
-  "prs_abertos": [
+  "merges_autonomos": 0,
+  "prs_abertos_analisados": [
     {
       "number": 2415,
-      "title": "fix(ci): P20 — node --test runner para scripts de check locais",
+      "title": "fix(ci): P20 — exclui check-file-size-baseline.test.mjs do Vitest; roda via node --test",
+      "branch": "claude_05/amazing-brahmagupta-0xhdur",
       "draft": false,
-      "mergeable_state": "dirty",
-      "verdict": "DECISÃO_HUMANA",
-      "rule8_triggers": [".github/workflows/ci-security-drift.yml", ".github/workflows/deploy-gates.yml"],
-      "motivo": "Toca .github/workflows/ (Rule 8 CI) — exige aprovação do PO antes de merge",
-      "evidencia": "github_get_pr_diff(#2415): 2 arquivos em .github/workflows/ modificados",
-      "acao_recomendada": "PO revisar e mergear se aprovar mudança de workflows",
-      "criterios_mergear": {
-        "valida": true, "nao_implementada": true, "sem_conflito": false,
-        "zero_erro_novo": true, "zero_reverte": true, "regra_neg_valida": false,
-        "completa": true, "confianca_alta": false,
-        "falha_em": [3, 6, 8],
-        "bloqueio": "sem_conflito=false (dirty) + Rule8 workflows"
-      }
+      "test_merge": "CONFLICT",
+      "cherry": null,
+      "regra8": true,
+      "regra10": true,
+      "veredito": "DECISAO_HUMANA",
+      "motivo": "CONFLICT + 2 workflows (deploy-gates.yml, ci-security-drift.yml)"
     },
     {
       "number": 2417,
-      "title": "fix: cors.ts + 3 workflows",
+      "title": "fix: cors.ts wildcard via constante + 3 workflows cron (Gate E89)",
+      "branch": "claude/fix-contract-mag-reader-261019-2110",
       "draft": true,
-      "mergeable_state": "dirty",
-      "verdict": "FECHAR",
-      "rule8_triggers": [".github/workflows/"],
-      "motivo": "Branch órfã NO_MERGE_BASE + Rule 8 + draft",
-      "evidencia": "mergeable_state=dirty, branch sem ancestral com main confirmado; diff lido — toca cors.ts + 3 workflows",
-      "acao_recomendada": "Fechar PR.",
-      "comentario_fechamento": "Fechando: branch sem ancestral comum com main (NO_MERGE_BASE) — impossível mergear sem rebase completo. Conteúdo de workflows deve ser resubmetido a partir do main atual se ainda relevante.",
-      "criterios_mergear": {
-        "valida": false, "nao_implementada": true, "sem_conflito": false,
-        "zero_erro_novo": true, "zero_reverte": true, "regra_neg_valida": false,
-        "completa": false, "confianca_alta": false,
-        "falha_em": [1, 3, 6, 7, 8],
-        "bloqueio": "NO_MERGE_BASE (orphan branch) + draft + Rule8"
-      }
+      "test_merge": "NO_MERGE_BASE",
+      "cherry": null,
+      "regra8": null,
+      "regra10": true,
+      "veredito": "FECHAR",
+      "motivo": "NO_MERGE_BASE — sem ancestral comum com main"
     },
     {
       "number": 2418,
-      "title": "fix(ci): gitleaks allowlist",
+      "title": "fix(ci): substitui npx gitleaks por binary download + allowlist 44 falsos positivos",
+      "branch": "claude/fix-gitleaks-gate-261019-1800",
       "draft": true,
-      "mergeable_state": "dirty",
-      "verdict": "FECHAR",
-      "rule8_triggers": [".gitleaks.toml", ".github/workflows/"],
-      "motivo": "Branch órfã NO_MERGE_BASE + Rule 8 + draft",
-      "evidencia": "mergeable_state=dirty, branch sem ancestral com main; diff lido — toca .gitleaks.toml + deploy-gates.yml",
-      "acao_recomendada": "Fechar PR.",
-      "comentario_fechamento": "Fechando: branch sem ancestral comum com main (NO_MERGE_BASE). Mudança em .gitleaks.toml deve ser resubmetida a partir do main atual se ainda relevante.",
-      "criterios_mergear": {
-        "valida": false, "nao_implementada": true, "sem_conflito": false,
-        "zero_erro_novo": true, "zero_reverte": true, "regra_neg_valida": false,
-        "completa": false, "confianca_alta": false,
-        "falha_em": [1, 3, 6, 7, 8],
-        "bloqueio": "NO_MERGE_BASE (orphan branch) + draft + Rule8 gitleaks"
-      }
+      "test_merge": "NO_MERGE_BASE",
+      "cherry": null,
+      "regra8": null,
+      "regra10": true,
+      "veredito": "FECHAR",
+      "motivo": "NO_MERGE_BASE — sem ancestral comum com main"
     },
     {
       "number": 2419,
-      "title": "fix(ci): check-security-definer-acl",
+      "title": "fix(ci): check-security-definer-acl passa em 504 após 3 retries (decisão de política)",
+      "branch": "claude/fix-sync-log-ci-261019-1730",
       "draft": true,
-      "mergeable_state": "dirty",
-      "verdict": "FECHAR",
-      "rule8_triggers": [".github/workflows/"],
-      "motivo": "Branch órfã NO_MERGE_BASE + Rule 8 + draft",
-      "evidencia": "mergeable_state=dirty, branch sem ancestral com main; diff lido — toca check-security-definer-acl.mjs + deploy-gates.yml + ProductFormFullscreen.tsx",
-      "acao_recomendada": "Fechar PR.",
-      "comentario_fechamento": "Fechando: branch sem ancestral comum com main (NO_MERGE_BASE). Resubmeter do main se conteúdo ainda relevante.",
-      "criterios_mergear": {
-        "valida": false, "nao_implementada": true, "sem_conflito": false,
-        "zero_erro_novo": true, "zero_reverte": true, "regra_neg_valida": false,
-        "completa": false, "confianca_alta": false,
-        "falha_em": [1, 3, 6, 7, 8],
-        "bloqueio": "NO_MERGE_BASE (orphan branch) + draft + Rule8 workflows"
-      }
+      "test_merge": "NO_MERGE_BASE",
+      "cherry": null,
+      "regra8": null,
+      "regra10": true,
+      "veredito": "FECHAR",
+      "motivo": "NO_MERGE_BASE — sem ancestral comum com main"
     },
     {
       "number": 2420,
-      "title": "chore(db): rollback retroativo migrations",
+      "title": "chore(db): adiciona rollback retroativo da migration 20261019000000",
+      "branch": "claude/fix-rollback-261019-1637",
       "draft": true,
-      "mergeable_state": "dirty",
-      "verdict": "FECHAR",
-      "rule8_triggers": ["supabase/rollbacks/"],
-      "motivo": "Branch órfã NO_MERGE_BASE + Rule 8 supabase/rollbacks/ + draft",
-      "evidencia": "mergeable_state=dirty, branch sem ancestral com main; diff lido — toca supabase/rollbacks/ + ProductFormFullscreen.tsx + cors.ts",
-      "acao_recomendada": "Fechar PR.",
-      "comentario_fechamento": "Fechando: branch sem ancestral comum com main (NO_MERGE_BASE). Conteúdo de rollbacks de migrations deve ser resubmetido via fluxo db-apply-migration.yml se ainda necessário.",
-      "criterios_mergear": {
-        "valida": false, "nao_implementada": true, "sem_conflito": false,
-        "zero_erro_novo": true, "zero_reverte": true, "regra_neg_valida": false,
-        "completa": false, "confianca_alta": false,
-        "falha_em": [1, 3, 6, 7, 8],
-        "bloqueio": "NO_MERGE_BASE (orphan branch) + draft + Rule8 supabase/rollbacks/"
-      }
+      "test_merge": "NO_MERGE_BASE",
+      "cherry": null,
+      "regra8": null,
+      "regra10": true,
+      "veredito": "FECHAR",
+      "motivo": "NO_MERGE_BASE — sem ancestral comum com main"
     },
     {
       "number": 2422,
-      "title": "chore(docs): MIGRATIONS_SYNC_LOG update",
+      "title": "chore(docs): MIGRATIONS_SYNC_LOG receipt + PGPORT em SEGREDOS.md",
+      "branch": "claude/chore-migrations-sync-log-261019-1600",
       "draft": true,
-      "mergeable_state": "dirty",
-      "verdict": "FECHAR",
-      "rule8_triggers": [],
-      "motivo": "Branch órfã NO_MERGE_BASE + draft",
-      "evidencia": "mergeable_state=dirty, branch sem ancestral com main; diff lido — MIGRATIONS_SYNC_LOG.md + ProductFormFullscreen.tsx",
-      "acao_recomendada": "Fechar PR.",
-      "comentario_fechamento": "Fechando: branch sem ancestral comum com main (NO_MERGE_BASE). MIGRATIONS_SYNC_LOG já atualizado via outros PRs mergeados.",
-      "criterios_mergear": {
-        "valida": false, "nao_implementada": true, "sem_conflito": false,
-        "zero_erro_novo": true, "zero_reverte": true, "regra_neg_valida": true,
-        "completa": false, "confianca_alta": false,
-        "falha_em": [1, 3, 7, 8],
-        "bloqueio": "NO_MERGE_BASE (orphan branch) + draft"
-      }
+      "test_merge": "NO_MERGE_BASE",
+      "cherry": null,
+      "regra8": null,
+      "regra10": true,
+      "veredito": "FECHAR",
+      "motivo": "NO_MERGE_BASE — sem ancestral comum com main"
     },
     {
       "number": 2428,
-      "title": "fix(ci): gitleaks allowlist — FPs adicionais",
+      "title": "fix(ci): .gitleaks.toml — allowlist mock tokens + paths fixtures (unificado)",
+      "branch": "claude/fix-gitleaks-gate-261024-1930",
       "draft": true,
-      "mergeable_state": "clean",
-      "verdict": "DECISÃO_HUMANA",
-      "rule8_triggers": [".gitleaks.toml"],
-      "motivo": "Toca .gitleaks.toml (Rule 8 segurança) + draft",
-      "evidencia": "github_get_pr_diff(#2428): único arquivo .gitleaks.toml; test-merge CLEAN em main",
-      "acao_recomendada": "PO revisar política de allowlist de secrets e converter de draft se aprovado",
-      "criterios_mergear": {
-        "valida": true, "nao_implementada": true, "sem_conflito": true,
-        "zero_erro_novo": true, "zero_reverte": true, "regra_neg_valida": false,
-        "completa": true, "confianca_alta": false,
-        "falha_em": [6, 8],
-        "bloqueio": "Rule8 .gitleaks.toml (segredos) + draft=true"
-      }
+      "test_merge": "CONFLICT",
+      "cherry": null,
+      "regra8": true,
+      "regra10": true,
+      "veredito": "DECISAO_HUMANA",
+      "motivo": "CONFLICT em .gitleaks.toml + REGRA#8"
     },
     {
       "number": 2432,
-      "title": "feat(qa): probe E184 legacy refs — corrige probe E184",
+      "title": "feat(qa): probe E184 — detecta refs legadas ao projeto proibido",
+      "branch": "claude/feat-probe-e184-241026-2026",
       "draft": false,
-      "mergeable_state": "clean",
-      "verdict": "DECISÃO_HUMANA",
-      "rule8_triggers": [],
-      "motivo": "REGRA #10 (branch de outra sessão session_01HxRBtssJabMB3jTgNY5B9W) + Gate Final FAILURE run #40129848772 + 4 correctness bugs",
-      "evidencia": "Gate Final check #120982011553: conclusion=failure. 4 bugs detectados: pg_get_functiondef em aggregates, pg_settings não expõe GUCs app.*, cron.job.jobname NULL omitido, REGRA #10.",
-      "acao_recomendada": "PO decidir: fechar e recriar com bugs corrigidos",
-      "criterios_mergear": {
-        "valida": true, "nao_implementada": true, "sem_conflito": true,
-        "zero_erro_novo": false, "zero_reverte": true, "regra_neg_valida": false,
-        "completa": false, "confianca_alta": false,
-        "falha_em": [4, 6, 7, 8],
-        "bloqueio": "Gate Final FAILURE run #40129848772 + REGRA#10 + 4 bugs corretude"
-      }
+      "test_merge": "CLEAN",
+      "cherry": 0,
+      "regra8": false,
+      "regra10": true,
+      "veredito": "JA_EM_MAIN",
+      "motivo": "git cherry = 0 commits únicos — conteúdo já em main"
     },
     {
       "number": 2443,
-      "title": "APROVAÇÃO REQUERIDA: Fase B completa — P06/P09/P14/P15/P03",
-      "draft": true,
-      "mergeable_state": "clean",
-      "verdict": "DECISÃO_HUMANA",
-      "rule8_triggers": [],
-      "motivo": "Draft + título explícito 'APROVAÇÃO REQUERIDA' sinaliza decisão humana necessária — proposta de policies/segurança",
-      "evidencia": "github_get_pr_diff(#2443): APROVACAO_FASE_B_IMPACTO.md apenas; test-merge CLEAN",
-      "acao_recomendada": "PO revisar APROVACAO_FASE_B_IMPACTO.md e converter de draft se aprovado",
-      "criterios_mergear": {
-        "valida": true, "nao_implementada": true, "sem_conflito": true,
-        "zero_erro_novo": true, "zero_reverte": true, "regra_neg_valida": false,
-        "completa": false, "confianca_alta": false,
-        "falha_em": [6, 7, 8],
-        "bloqueio": "draft=true + titulo explicito 'APROVACAO REQUERIDA' + decisoes seguranca P03/P06/P09/P14/P15"
-      }
+      "title": "APROVAÇÃO REQUERIDA: P06/P09/P14/P15/P03_security_definer — FASE B auditoria Supabase",
+      "branch": "claude/feat-aprovacao-p06-p09-p14-p15-p03sec-261024-2315",
+      "draft": false,
+      "test_merge": "CLEAN",
+      "cherry": 1,
+      "regra8": false,
+      "regra10": true,
+      "veredito": "DECISAO_HUMANA",
+      "motivo": "Título exige aprovação PO; decisões de segurança P03/P06/P09/P14/P15"
     },
     {
       "number": 2449,
-      "title": "chore(migrations): E99 repair-only sync",
+      "title": "chore(migrations): E99 mirrors repair-only — update_company_fields (20261022195616 e 20261022203935)",
+      "branch": "claude/chore-e99-mirror-update-company-fields-261025-1100",
       "draft": true,
-      "mergeable_state": "dirty",
-      "verdict": "DECISÃO_HUMANA",
-      "rule8_triggers": ["supabase/migrations/"],
-      "motivo": "Toca supabase/migrations/ (Rule 8 DDL produção) + draft + conflito",
-      "evidencia": "github_get_pr_diff(#2449): 2 arquivos em supabase/migrations/ + MIGRATIONS_SYNC_LOG.md. mergeable_state=dirty",
-      "acao_recomendada": "PO revisar migrations E99 repair-only + resolver conflito antes de aprovar",
-      "criterios_mergear": {
-        "valida": true, "nao_implementada": true, "sem_conflito": false,
-        "zero_erro_novo": true, "zero_reverte": true, "regra_neg_valida": false,
-        "completa": true, "confianca_alta": false,
-        "falha_em": [3, 6, 8],
-        "bloqueio": "Rule8 supabase/migrations/ DDL producao + draft + conflito"
-      }
+      "test_merge": "CONFLICT",
+      "cherry": null,
+      "regra8": true,
+      "regra10": true,
+      "veredito": "DECISAO_HUMANA",
+      "motivo": "CONFLICT em supabase/MIGRATIONS_SYNC_LOG.md + REGRA#8 (migrations)"
     },
     {
       "number": 2452,
-      "title": "fix(docs): remove prefixo supabase/migrations/ de dossie PR-2451",
+      "title": "fix(docs): remove prefixo supabase/migrations/ em PR-2441.md — Gate 1.3",
+      "branch": "claude/fix-gate-1-3-pr2441-refs-261025",
       "draft": true,
-      "mergeable_state": "clean",
-      "verdict": "FECHAR",
-      "rule8_triggers": [],
-      "motivo": "REGRA #10 (branch de outra sessão session_01HW5obNKUFtUMbBdgUb94kY) + draft",
-      "evidencia": "REGRA #10: branch sessão alheia; diff lido — analise-prs/dossies/PR-2441.md (docs apenas)",
-      "acao_recomendada": "Fechar PR.",
-      "comentario_fechamento": "Fechando: branch de outra sessão (REGRA #10) — não é possível mergear autonomamente. Conteúdo docs-only pode ser resubmetido se ainda relevante.",
-      "criterios_mergear": {
-        "valida": true, "nao_implementada": true, "sem_conflito": true,
-        "zero_erro_novo": true, "zero_reverte": true, "regra_neg_valida": false,
-        "completa": true, "confianca_alta": false,
-        "falha_em": [6, 8],
-        "bloqueio": "REGRA#10 branch outra sessao (session_01HW5obNKUFtUMbBdgUb94kY) + draft"
-      }
+      "test_merge": "CONFLICT",
+      "cherry": null,
+      "regra8": false,
+      "regra10": true,
+      "veredito": "DECISAO_HUMANA",
+      "motivo": "CONFLICT em analise-prs/dossies/PR-2441.md + REGRA#10"
     },
     {
       "number": 2469,
-      "title": "fix(ci): e2e-personalization E42 — corrige workflow",
+      "title": "fix(ci): e2e-personalization E42 skip ratio gate condicional ao auth",
+      "branch": "claude/fix-ci-workflows-261025-0630",
       "draft": false,
-      "mergeable_state": "unknown",
-      "verdict": "DECISÃO_HUMANA",
-      "rule8_triggers": [".github/workflows/e2e-personalization.yml"],
-      "motivo": "Toca .github/workflows/ (Rule 8 CI) + REGRA #10 branch outra sessão; possivelmente supersedido por #2489",
-      "evidencia": "github_get_pr_diff(#2469): .github/workflows/e2e-personalization.yml modificado",
-      "acao_recomendada": "PO verificar se fix foi absorvido pelo PR #2489 mergeado. Fechar se redundante.",
-      "criterios_mergear": {
-        "valida": true, "nao_implementada": false, "sem_conflito": true,
-        "zero_erro_novo": true, "zero_reverte": true, "regra_neg_valida": false,
-        "completa": true, "confianca_alta": false,
-        "falha_em": [2, 6, 8],
-        "bloqueio": "Rule8 .github/workflows/ + REGRA#10 + possivelmente supersedido por #2489"
-      }
+      "test_merge": "CONFLICT",
+      "cherry": null,
+      "regra8": true,
+      "regra10": true,
+      "veredito": "DECISAO_HUMANA",
+      "motivo": "CONFLICT em e2e-personalization.yml + REGRA#8 (workflow)"
     },
     {
       "number": 2503,
-      "title": "docs(ci): RELATORIO_CI Rev21 — Gate Final proof SHA dcaa20da run #40179146830",
+      "title": "docs(ci): RELATORIO_CI Rev21 — Gate Final ✅ dcaa20da + tabela de prova",
+      "branch": "claude/docs-relatorio-ci-rev21-20261025-0911",
       "draft": true,
-      "mergeable_state": "clean",
-      "verdict": "DECISÃO_HUMANA",
-      "rule8_triggers": [],
-      "motivo": "REGRA #10 (branch claude/docs-relatorio-ci-rev21-20261025-0911 sessão session_01HW5obNKUFtUMbBdgUb94kY) + draft=true",
-      "evidencia": "github_get_pr_diff(#2503): RELATORIO_CI.md +48/-27. Test-merge CLEAN em e0be76690 nesta sessão.",
-      "acao_recomendada": "PO converter de draft e mergear se RELATORIO_CI Rev21 ainda relevante (PR #2504 já levou estado mais recente).",
-      "criterios_mergear": {
-        "valida": true, "nao_implementada": false, "sem_conflito": true,
-        "zero_erro_novo": true, "zero_reverte": true, "regra_neg_valida": false,
-        "completa": true, "confianca_alta": false,
-        "falha_em": [2, 6, 8],
-        "bloqueio": "REGRA#10 outra sessao (session_01HW5obNKUFtUMbBdgUb94kY) + draft + RELATORIO_CI ja enviado via #2504"
-      }
+      "test_merge": "CONFLICT",
+      "cherry": null,
+      "regra8": false,
+      "regra10": true,
+      "veredito": "DECISAO_HUMANA",
+      "motivo": "CONFLICT em RELATORIO_CI.md + REGRA#10"
     },
     {
-      "number": 2514,
-      "title": "docs(pendencias): adiciona P58 — sentinel failure em 7fc20213 (push direto agente Claude)",
+      "number": 2520,
+      "title": "chore(main): release 1.0.0",
+      "branch": "release-please--branches--main--components--gifts-store",
+      "draft": false,
+      "test_merge": "CLEAN",
+      "cherry": 1,
+      "regra8": false,
+      "regra10": false,
+      "veredito": "DECISAO_HUMANA",
+      "motivo": "Downgrade 1.2.1→1.0.0 — regressão de versão; criada por github-actions[bot]"
+    },
+    {
+      "number": 2529,
+      "title": "docs(analise-prs): entregáveis sessão 01Ss1tXZ — 53 PRs, 14 merges, Gate Final ✅",
+      "branch": "claude_05/youthful-ride-vcdchy",
       "draft": true,
-      "mergeable_state": "behind",
-      "verdict": "DECISÃO_HUMANA",
-      "rule8_triggers": [],
-      "motivo": "REGRA #10 (branch claude_05/nifty-sagan-r23gqh sessão session_01HW5obNKUFtUMbBdgUb94kY) + draft=true + behind main",
-      "evidencia": "github_get_pr_diff(#2514): 1 arquivo PENDENCIAS.md (+30/-3) — adiciona entrada P58 sobre push direto de agente. refs/pull/2514/head=077cf0195aaaf1c54ab921243fff47437b4025f7",
-      "acao_recomendada": "PO verificar se P58 ainda relevante pós-PR #2512; converter de draft + atualizar branch se quiser mergear",
-      "criterios_mergear": {
-        "valida": true, "nao_implementada": false, "sem_conflito": false,
-        "zero_erro_novo": true, "zero_reverte": true, "regra_neg_valida": true,
-        "completa": true, "confianca_alta": false,
-        "falha_em": [2, 3, 6, 8],
-        "bloqueio": "REGRA#10 branch outra sessao (session_01HW5obNKUFtUMbBdgUb94kY) + draft=true + behind main + possivelmente ja implementado via #2512"
-      }
+      "test_merge": "CONFLICT",
+      "cherry": 9,
+      "regra8": false,
+      "regra10": false,
+      "veredito": "DECISAO_HUMANA",
+      "motivo": "Branch desta sessão com CONFLICT em analise-prs/ — PR será atualizada por este push"
+    },
+    {
+      "number": 2532,
+      "title": "docs: atualiza run refs P2b/P23/P61 + main HEAD d74b33fb",
+      "branch": "claude/docs-estado-261025-1630",
+      "draft": true,
+      "test_merge": "CONFLICT",
+      "cherry": null,
+      "regra8": false,
+      "regra10": true,
+      "veredito": "DECISAO_HUMANA",
+      "motivo": "CONFLICT + REGRA#10 + obsoleto (HEAD d74b33fb desatualizado)"
+    },
+    {
+      "number": 2537,
+      "title": "fix: Contract Tests usa registry ghcr.io (ECR Public estourou data limit)",
+      "branch": "claude/fix-contract-tests-registry-ghcr-261025-1705",
+      "draft": false,
+      "test_merge": "CLEAN",
+      "cherry": 1,
+      "regra8": true,
+      "regra10": false,
+      "veredito": "DECISAO_HUMANA",
+      "motivo": "REGRA#8 — .github/workflows/contract-tests.yml (ECR→ghcr.io)"
+    }
+  ],
+  "prs_fechados_durante_sessao": [
+    {
+      "number": 2521,
+      "title": "chore(migrations): E99 repair-only company_fields (rev2)",
+      "acao": "fechada",
+      "por": "PO",
+      "veredito": "FECHADO_PO"
+    },
+    {
+      "number": 2538,
+      "title": "docs: RELATORIO_CI — registra Gate Final 893d830e/35ea12c2/4cb4feb4 (HEAD)",
+      "acao": "mergeada",
+      "por": "PO",
+      "merge_commit": "cb0ccedec41c38fe79cbd2585216e4cbe3155ccd",
+      "veredito": "MERGEADO_PO"
     }
   ]
 }

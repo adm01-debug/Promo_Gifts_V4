@@ -1,8 +1,8 @@
 # RELATORIO_PRS — Sessão session_01Ss1tXZ4cAbxBvdmu95uNPz (continuação)
 **Data:** 2026-10-25
-**main HEAD:** `cb0ccedec41c38fe79cbd2585216e4cbe3155ccd` (PR #2538 mergeada pelo PO)
-**main HEAD anterior:** `4cb4feb431f47573a2d4aee01774a5db24e11810`
-**Gate Final confirmado:** Run #40214531246 — SHA `4cb4feb4` — ✅ success (2026-10-25T17:20:35Z)
+**main HEAD:** `c113300c034fb39126274fba9aa10ef05762ab13` (PR #2540 mergeada pelo PO — docs RELATORIO_CI)
+**main HEAD anterior:** `cb0ccedec41c38fe79cbd2585216e4cbe3155ccd`
+**Gate Final confirmado:** Run #40218104943 — SHA `c113300c` — ✅ success (2026-10-25T17:56:46Z)
 **Baseline:** 429 testes / 0 falhas
 
 ---
@@ -118,17 +118,17 @@ Estas branches não têm ancestral comum com `main`. Impossível mergear sem reb
 
 ## Estado do CI
 
-### Baseline confirmado (Gate Final ✅)
-- **Run:** #40214531246
-- **SHA:** `4cb4feb431f47573a2d4aee01774a5db24e11810`
+### Gate Final confirmado — HEAD atual ✅
+- **Run:** #40218104943
+- **SHA:** `c113300c034fb39126274fba9aa10ef05762ab13` (PR #2540 — docs RELATORIO_CI)
 - **Conclusão:** `success`
-- **Completado em:** 2026-10-25T17:20:35Z
+- **Completado em:** 2026-10-25T17:56:46Z
 - **Testes:** 429 / 0 falhas
+- **Jobs:** 17/17 passaram (Gate 0 → Gate 6, inclusive E2E Playwright)
 
-### Gate Final novo HEAD
-- **SHA:** `cb0ccedec41c38fe79cbd2585216e4cbe3155ccd` (PR #2538 — docs-only)
-- **Status no momento da análise:** `in_progress` / `pending`
-- **Expectativa:** success (mudança docs-only não afeta testes)
+### Gate Final histórico (referência anterior)
+- Run #40214531246 — SHA `4cb4feb4` — success ✅ (2026-10-25T17:20:35Z)
+- Run #40218104943 — SHA `c113300c` — success ✅ (2026-10-25T17:56:46Z) ← atual
 
 ---
 
