@@ -106,7 +106,18 @@ function SortableItemBadge({
       >
         <GripVertical className="h-3 w-3 text-muted-foreground" />
       </span>
-      <span className="font-medium">{item.quantity}x</span>
+      <input
+        data-testid="kit-item-quantity"
+        type="number"
+        min={1}
+        value={item.quantity}
+        onChange={(e) => {
+          const v = parseInt(e.target.value, 10);
+          if (!isNaN(v) && v >= 1) onUpdateQuantity(getKitItemLineId(item), v);
+        }}
+        className="w-10 rounded border border-border/40 bg-transparent px-1 text-center text-sm font-medium"
+        aria-label="Quantidade"
+      />
       <span className="max-w-[150px] truncate">{item.name}</span>
       <StockBadge
         item={item}
@@ -151,6 +162,7 @@ function SortableItemBadge({
           variant="ghost"
           size="icon"
           aria-label="Fechar"
+          data-testid="remove-kit-item"
           className="h-5 w-5 text-destructive hover:text-destructive"
           onClick={() => onRemoveItem(getKitItemLineId(item))}
         >
