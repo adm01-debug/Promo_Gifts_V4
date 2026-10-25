@@ -1,165 +1,54 @@
-# Regras de Negócio — Análise de PRs (rev10, 2026-10-25)
-
-Documento gerado/atualizado nesta sessão (`session_01Ss1tXZ4cAbxBvdmu95uNPz`) com base na leitura de 100% dos diffs das 13 PRs abertas.
-
----
-
-## 1. docs
-
-### Tratamento de PRs docs-only
-
-PRs que modificam apenas arquivos de documentação (`.md`, `.txt`, arquivos em `docs/`, `analise-prs/`) têm tratamento diferenciado no CI:
-
-- **`paths-ignore: docs/**`** em `deploy-gates.yml`: PRs que tocam APENAS arquivos dentro de `docs/` não disparam o Gate Final. Isso é um bypass intencional (E197).
-- **Arquivos na raiz NÃO são bypassados**: `RELATORIO_CI.md`, `PENDENCIAS.md`, `CLAUDE.md` (raiz), e arquivos em `analise-prs/` estão na raiz ou em diretório não coberto por `docs/**` → Gate Final DISPARA.
-
-### Regra observada: docs de outra sessão = FECHAR ou DECISAO_HUMANA
-
-De todas as PRs docs analisadas:
-- **PR #2452** (analise-prs/dossies/PR-2441.md — outra sessão): FECHAR (REGRA #10 + draft)
-- **PR #2503** (RELATORIO_CI.md Rev21 — outra sessão): DECISAO_HUMANA (REGRA #10 + draft)
-- **PR #2443** (APROVACAO_FASE_B_IMPACTO.md — outra sessão): DECISAO_HUMANA (draft + "APROVAÇÃO REQUERIDA")
-
-Nenhuma PR docs-only pode ser mergeada autonomamente quando: (a) é draft, OU (b) vem de outra sessão (REGRA #10).
-
-### Regra observada: RELATORIO_CI.md dispara Gate Final
-
-`RELATORIO_CI.md` está na raiz do repo. `paths-ignore: docs/**` não o cobre. PRs que modificam apenas este arquivo triggeriam Gate Final completo — importante para avaliar se a PR "só-de-docs" é realmente sem impacto de CI.
-
----
-
-## 2. testes
-
-### Baseline desta sessão
-
-- **429 testes unitários (vitest)**, 0 falhas — Gate 2 ✅
-- Estabelecido em SHA `e0be76690381d15a4e7d0c2d728d05d8abb533c4` (Gate Final run #40174922055)
-- Confirmado em SHA `dcaa20da` (Gate Final run #40179146830) via RELATORIO_CI.md Rev21 (lido nesta sessão)
-- 8 merges autônomos desta sessão (PRs #2479–#2505) não quebraram a baseline
-
-### Regra: testes de contrato não são snapshots visuais
-
-`tests/contracts/webhook-schemas.ts` aparece em PRs #2417 e #2419 (adiciona `MagazineReaderStateReadSchemaV1`). Contratos de schema de webhook são testes funcionais que verificam formato de payload — não devem ser atualizados sem verificar o contrato correspondente no serviço.
-
-### Regra: `check-file-size-baseline.test.mjs` não roda via Vitest
-
-PR #2415 documenta incompatibilidade de `node:test` com jsdom do Vitest. O arquivo usa `import { test } from 'node:test'` e deve ser excluído do Vitest via `exclude` e rodar via `node --test` separadamente. Isso está em `vitest.config.ts` (conflitante em PR #2415).
-
----
-
-## 3. enums
-
-### Nenhuma PR aberta modifica enums TypeScript diretamente
-
-Nenhuma das 13 PRs abertas modifica `src/integrations/supabase/types.ts` nem arquivos de enums em `src/types/`. A Gate 1.2 (drift estrutural de types.ts) não está em risco pelas PRs abertas.
-
-### Regra: enums de DB via types.ts regenerado devem passar Gate 1.2
-
-Qualquer regeneração de `types.ts` deve usar `npm run check:types-inventory-drift` para verificar que nenhuma tabela/view/function/enum sumiu (REGRA #4). O baseline estrutural está em `scripts/extract-types-inventory.mjs`.
-
----
-
-## 4. migrations
-
-### PRs com migrations abertas
-
-| PR | Migrations | Estado | Veredicto |
-|---|---|---|
-| #2420 | `supabase/migrations/20261019000000_mirror_oob_*` + rollback | Orphan + draft + Rule 8 | FECHAR |
-| #2449 | `20261022195616_fix_update_company_fields_security_definer_search_path.sql` + `20261022203935_update_company_fields_security_fix.sql` | Conflict + draft + Rule 8 | DECISAO_HUMANA |
-
-### Regra: migrations = Rule 8 §2.2 invariável
-
-Qualquer arquivo em `supabase/migrations/` ou `supabase/rollbacks/` ativa Rule 8 §2.2 automaticamente. Nenhuma PR com migration pode ser mergeada autonomamente — independente de ser migration nova, espelho, rollback ou apenas adição de comentário.
-
-### Regra: único caminho autorizado para migration em produção
-
-O caminho é `workflow_dispatch` em `.github/workflows/db-apply-migration.yml` (REGRA #8 corolário E15). MCP `execute_sql` com DDL é proibido em sessão de agente (E056). PRs com migrations abertas devem ter aprovação explícita do PO.
-
-### Regra: reconciliação E99
-
-DDL aplicada fora do fluxo (via MCP/dashboard) deve ser reconciliada via migration espelho + `migration repair --status applied <version>` (com versão explícita) + PR com recibo em `MIGRATIONS_SYNC_LOG.md`. PR #2449 segue este padrão corretamente — bloqueada apenas por Rule 8 + draft + REGRA #10.
-
----
-
-## 5. policies
-
-### Nenhuma PR aberta modifica policies RLS diretamente
-
-Nenhuma das 13 PRs abertas inclui arquivos com `CREATE POLICY` ou `ALTER POLICY`. 
-
-### PR #2443 referencia policies indiretamente
-
-A análise de impacto em `APROVACAO_FASE_B_IMPACTO.md` (PR #2443) documenta:
-- **P14** — 590 policies com `auth.uid()` sem `(SELECT auth.uid())` → performance
-- **P15** — 56 tabelas com policies para `anon`; `color_synonym_map` com `qual = 'true'` (acesso total)
-- **P03_security_definer** — 45 funções SECURITY DEFINER com `pg_temp` em `search_path`
-
-Essas são propostas que exigem aprovação explícita (PR #2443 é "APROVAÇÃO REQUERIDA"). Nenhuma migration DDL de policy está em execução pendente nas PRs abertas.
-
-### Regra: Gate 1.13 cobre baseline de policies
-
-Gate 1.13 (RLS policies baseline vs pg_policies live) e Gate 1.13.1 (tabelas com RLS e zero policies) são checks automáticos. Qualquer PR que adicione migration com `CREATE POLICY` deve estar coberta por esses gates.
-
----
-
-## 6. UI
-
-### ProductFormFullscreen.tsx aparece em 4 PRs orphan
-
-`src/components/product/ProductFormFullscreen.tsx` está modificado em PRs #2418, #2419, #2420 e #2422 — todas branches orphan (NO_MERGE_BASE), todas draft, todas de outra sessão. A mudança é uniforme: adiciona `type Resolver` import e cast `as unknown as Resolver<ProductFormData>` / `as ProductFormData`.
-
-**Regra observada:** mudanças de UI em branches orphan são irrecuperáveis via merge normal. Se a mudança for necessária, o PO deve cherry-pick manual em nova branch a partir de `main`.
-
-### Regra: Gate 1.9 controla `as any` e `as unknown`
-
-`.as-assertions-baseline.json` e `.as-unknown-baseline.json` rastreiam counts de asserções TypeScript não seguras. PR #2419 atualiza esses baselines (+2 asserções em ProductFormFullscreen.tsx). Gate 1.9 (ratchet) bloqueia se o count aumentar sem justificativa em label `ratchet-override`. O baseline atual em `main` reflete o estado antes das mudanças de #2418/#2419/#2420/#2422.
-
-### Regra: changes do Lovable podem reverter UI
-
-O bot Lovable (`gpt-engineer-app[bot]`) pode sobrescrever silenciosamente arquivos de UI como `ProductFormFullscreen.tsx`. Se esse arquivo conflitar em merge futuro, verificar se a guarda SSOT em `client.ts` permanece (REGRA #1) e se os campos críticos do tipo `Product` estão presentes (REGRA #2).
-
-### Estado atual de UI em produção
-
-Nenhuma das PRs abertas com mudanças de UI pode ser mergeada (todas orphan/draft/REGRA #10). O estado de UI em `main` é o da última merge autônoma desta sessão (PR #2505, SHA `b058d97d`).
-
----
-
-## Resumo Executivo
-
-| Seção | PRs Impactadas | Regra Principal |
-|---|---|---|
-| docs | #2443, #2452, #2503 | REGRA #10 + draft → DECISAO_HUMANA ou FECHAR |
-| testes | Baseline 429/0 mantida | Gate 2 baseline preservada por 8 merges autônomos |
-| enums | Nenhuma | Gate 1.2 não em risco |
-| migrations | #2420, #2449 | Rule 8 §2.2 invariável; E15 único caminho prod |
-| policies | #2443 (proposta apenas) | Gate 1.13 cobre; nenhuma DDL pendente |
-| UI | #2418, #2419, #2420, #2422 | Orphan + draft; irreomerável via merge; cherry-pick manual se necessário |
-
-
----
-
-## Sessão Continuação 2 — 2026-10-25 (pós-compactação)
-
-### Regra E103: HTTP 5xx de infra = falha transitória não-bloqueante
-
-`check-supabase-linter.mjs` retornava `exit 2` (hard failure) para qualquer `!response.ok`, incluindo erros 5xx (Cloudflare 544, Supabase Management API 500–599). A política E103 define que falhas de infra transitória são não-bloqueantes (retornam `exit 0`), como já ocorria com timeouts de rede.
-
-PR #2524 alinhou o comportamento: após `if (!response.ok)`, testa `response.status >= 500`; se verdadeiro, trata como falha transitória (return 0). Erros 4xx continuam bloqueantes (return 2).
-
-**Regra observada:** toda falha de infra nova no CI (timeout, 5xx, DNS failure) deve ser classificada como transitória (exit 0) ou permanente (exit 2). A distinção é: quem causa o erro? Se for a infraestrutura externa (Cloudflare, CDN, Management API down), é transitório. Se for o código do projeto ou configuração, é permanente.
-
-### Regra: release-please bot não tem autorização autônoma para downgrade de versão
-
-O bot `release-please[bot]` gerou PR #2520 com downgrade de `1.2.1 → 1.0.0` em `package.json`. Mesmo que o CI passe, a decisão de versão canônica do projeto é do PO, não do bot. PRs de automação que alteram versão do `package.json` exigem confirmação humana antes do merge.
-
-### Regra: PR DRAFT na branch designada da sessão = violação irresolvível
-
-O stop-hook de uma sessão anterior criou PR #2529 automaticamente em `claude_05/youthful-ride-vcdchy` (branch designada desta sessão de análise). Esta PR viola a regra "única escrita = merge de PRs aprovadas". Como a regra também proíbe fechar PRs, a violação fica registrada mas irresolvível por este agente. PO deve fechar manualmente ou ignorar (é draft, não bloqueia nada).
-
-### Contagem final desta sessão
-
-- PRs analisadas: 18 (14 originais + #2520, #2521, #2524, #2527, #2529, menos #2531 mergeado pelo PO e #2514 já fechado)
-- Merges autônomos: 1 (#2524 — SHA d74b33fb)
-- PRs restantes abertas: 17 (9 DECISAO_HUMANA + 5 FECHAR + 3 PENDENTE)
-
+# Regras de Negócio — Promo Gifts V4
+**Sessão:** session_01Ss1tXZ4cAbxBvdmu95uNPz (continuação)
+**Data:** 2026-10-25
+**main HEAD:** `cb0ccedec4`
+
+## 1. SSOT do Supabase (REGRA #1)
+- Projeto canônico: `doufsxqlfjyuvxuezpln` (Gold/Medallion)
+- `CURRENT_PROJECT_ID` em `src/integrations/supabase/client.ts` NUNCA muda
+- Projeto proibido: `pqpdolkaeqlyzpdpbizo` (SINGU — READ-ONLY)
+- Qualquer PR que escreva em SINGU → não mergeada
+
+## 2. Campos críticos do tipo Product (REGRA #2)
+Tipo `Product` DEVE conter: `price`, `sale_price?`, `shortDescription`, `category_id?`, `category_name?`
+
+## 3. Critérios de merge autônomo (8 critérios)
+PR passa todos os 8 critérios para merge autônomo:
+1. **Válida** — branch com ancestral comum em main, não órfã
+2. **Não implementada** — conteúdo não já em main (git cherry > 0 unique commits)
+3. **Sem conflito** — git merge-tree CLEAN (sem "changed in both")
+4. **Zero erro novo** — Gate Final CI success no HEAD da PR
+5. **Zero código revertido** — não desfaz melhorias já em main
+6. **Regra de negócio válida** — não viola REGRA #1/#2/#3/#4/#5/#7/#8/#9/#10
+7. **Completa** — funcionalidade integrada de ponta a ponta
+8. **Confiança alta** — sem ambiguidade, sem risco de regressão
+
+## 4. Bloqueios automáticos (REGRA #8 — DECISAO_HUMANA)
+PRs tocando estes arquivos exigem aprovação explícita do PO:
+- `.github/workflows/` — qualquer arquivo de workflow CI/CD
+- `supabase/migrations/` — migrações de schema
+- `.gitleaks.toml` — política de secrets
+
+## 5. Bloqueio cross-agente (REGRA #10 — DECISAO_HUMANA)
+- Branch criada em sessão diferente → não mergeada autonomamente
+- Prefixos de agente: `claude/*`, `claude_05/*`, `codex/*`, `devin/*`, `cline/*`
+- Merge entre branches de agentes diferentes exige PR
+
+## 6. Branches órfãs (FECHAR)
+- NO_MERGE_BASE → `git merge-base HEAD refs/remotes/pr/$N` retorna vazio
+- Impossível mergear sem rebase completo
+- PRs afetadas: #2417, #2418, #2419, #2420, #2422
+
+## 7. Deploy contínuo
+- merge em main = deploy em produção (Vercel automático)
+- Somente Gate Final CI success permite merge
+- `supabase db push` proibido — caminho único: `db-apply-migration.yml`
+
+## 8. Migrations (REGRA #8 corolário E056)
+- DDL via `execute_sql` MCP proibido em sessão de agente
+- Migration espelho + `migration repair` para DDL out-of-band
+- Caminho único: `.github/workflows/db-apply-migration.yml`
+
+## 9. Edge Functions (REGRA #8 corolário)
+- Deploy via `deploy_edge_function` MCP proibido como caminho padrão
+- Caminho único: `.github/workflows/deploy-edge-functions.yml`
