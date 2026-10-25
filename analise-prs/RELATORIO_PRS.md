@@ -36,7 +36,7 @@
 
 ### Deploy Gates — Run #40150209361 (SHA `eb7a92479`) — ✅ SUCCESS
 
-Este foi o último run completo do Gate Final antes do merge de #2455.
+Este foi o último run completo do Gate Final antes do merge de #2455. CI de `bfd9b50a` (run #40151693979) também confirmado ✅ SUCCESS em 2026-10-25T02:01:55Z.
 
 | Gate | Job/Step | Status |
 |---|---|---|
@@ -57,11 +57,10 @@ Arquivo detalhado: `analise-prs/baseline/vitest-per-test-name.txt`
 
 ### CI pós-merge #2455 (SHA `bfd9b50a`)
 
-Run #40151693979 (Deploy Gates) — `queued` na coleta inicial; docs-only → regressão de código **impossível**.  
+Run #40151693979 (Deploy Gates) — **`status: "completed"`, `conclusion: "success"`, `updated_at: "2026-10-25T02:01:55Z"`** (confirmado via `get_workflow_run`).  
 Gate E40 (Schema Drift Check): `skipped` — sem mudança de schema.  
-Gate 3 (E2E Smoke): `in_progress` na coleta; sem dependência de código.  
-Baseline autoritativo: run #40150209361 em SHA eb7a92479 (✅ SUCCESS) imediatamente antes do merge.  
-**Conclusão**: CI em bfd9b50a é pass por transitividade — único vetor de falha seria regressão em código, ausente neste PR.
+PR #2455 era docs-only (RELATORIO_CI.md + PENDENCIAS.md) → regressão de código **impossível**.  
+**Conclusão**: CI em bfd9b50a ✅ SUCCESS confirmado — não queued, não in_progress. Main branch 100% verde.
 
 ### Baseline typecheck local
 
@@ -170,10 +169,10 @@ Nenhum PR mergeado autonomamente toca código de produção exceto:
 | #2438 | MERGEADO (outra sessão) | `c8994f17` | `analise-prs/dossies/PR-2438.md` |
 | #2439 | MERGEADO | `b3c8f2f3` | `analise-prs/dossies/PR-2439.md` |
 | #2441 | MERGEADO (PO) | `90c6492b` | `analise-prs/dossies/PR-2441.md` |
-| #2443 | DECISÃO_HUMANA (security) | — | `analise-prs/dossies/PR-2443.md` |
+| #2443 | DECISÃO_HUMANA (draft+security) | — | `analise-prs/dossies/PR-2443.md` |
 | #2445 | MERGEADO (PO) | `8eeeca9b` | `analise-prs/dossies/PR-2445.md` |
-| #2447 | NOSSA PR (draft) | — | — |
-| #2449 | DECISÃO_HUMANA (DDL+conflito) | — | `analise-prs/dossies/PR-2449.md` |
+| #2447 | NOSSA PR (draft) | — | `analise-prs/dossies/PR-2447.md` (pendente) |
+| #2449 | DECISÃO_HUMANA (DDL+draft+conflito) | — | `analise-prs/dossies/PR-2449.md` |
 | #2450 | MERGEADO (PO) | `d804cafa` | `analise-prs/dossies/PR-2450.md` |
 | #2451 | DECISÃO_HUMANA→FECHADO | — | — |
 | #2452 | DRAFT+BLOQUEADA (conflito) | — | — |
@@ -217,6 +216,38 @@ Critério §1.1 da regras-de-negocio.md exige `draft: false`.
 Converter para "ready for review" e resolver conflitos é ação de autor — fora do escopo autônomo.
 
 **Merge é bloqueado pela GitHub API para estes 5 PRs.**
+
+---
+
+---
+
+## Veredictos Finais — PRs DECISÃO_HUMANA
+
+Todos os 6 PRs abaixo têm veredicto final definitivo. Rule 8 confirmada por leitura real de diff (não suposição). Nenhum pode ser mergeado por agente Claude nesta ou em qualquer sessão autônoma.
+
+| PR | Veredicto Final | Rule 8 Violação | Evidência |
+|---|---|---|---|
+| **#2415** | NÃO MERGEADO — DEFINITIVO | §2.1 CI/workflows | `.github/workflows/ci-security-drift.yml` + `.github/workflows/deploy-gates.yml` — diff lido (SHA `cfc23c5c`) |
+| **#2424** | NÃO MERGEADO — DEFINITIVO | §2.1 + §2.2 | `.github/workflows/db-schema-drift-check.yml` + `supabase/migrations/20261024163500_*.sql` (SECURITY DEFINER) + draft:true |
+| **#2428** | NÃO MERGEADO — DEFINITIVO | §2.3 secrets policy | `.gitleaks.toml` (+22 linhas) + draft:true — diff lido (SHA `26641b0a`) |
+| **#2435** | NÃO MERGEADO — DEFINITIVO | §2.1 + §2.3 | `.github/workflows/ci-security-drift.yml` + `.gitleaks.toml` + draft:true + conflito — diff lido (1,398 linhas, grep confirmado) |
+| **#2443** | NÃO MERGEADO — DEFINITIVO | draft:true (API HTTP 405) | Título "APROVAÇÃO REQUERIDA" + draft:true — diff lido (1 arquivo docs) |
+| **#2449** | NÃO MERGEADO — DEFINITIVO | §2.2 DDL migrations | `supabase/migrations/20261022195616_*.sql` + `20261022203935_*.sql` (SECURITY DEFINER) + draft:true + conflito |
+
+---
+
+## Baseline por Teste Falhando — vitest em main
+
+Arquivo: `analise-prs/baseline/vitest-per-test-name.txt`
+
+| Suite | Testes passando | Falhas |
+|---|---|---|
+| `test:deploy-gate` (3 arquivos) | 334 | **0** |
+| `webhook-scenario-matrix.test.ts` | 95 | **0** |
+| **Total** | **429** | **0** |
+
+**Baseline por failing test name = 0 testes falhando em main (SHA `eb7a92479`, run #40150209361).**
+Qualquer PR que introduza um teste falhando está abaixo do baseline.
 
 ---
 
