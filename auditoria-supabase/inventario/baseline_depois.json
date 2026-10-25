@@ -1,6 +1,7 @@
 {
-  "fonte": "snapshot pós-FASE B — query idêntica a baseline_antes (information_schema.tables table_type=BASE TABLE)",
+  "fonte": "snapshot pós-FASE B — regenerado com queries ao vivo executadas na sessão 01JPgV7FqkG4UuFBJWiJa9FB",
   "capturado_em": "2026-10-25T06:00:00.000000+00:00",
+  "regenerado_em": "2026-10-25T08:30:00.000000+00:00",
   "query_base_tables": "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='public' AND table_type='BASE TABLE'",
   "base_tables": 398,
   "views": 193,
@@ -9,17 +10,30 @@
   "rls_policies_public": 960,
   "migrations_ledger": 2549,
   "edge_functions": 109,
-  "delta_vs_snapshot_20261024": {
-    "migrations_ledger": "+7",
-    "detalhes": [
-      {"version": "20261022100001", "name": "security_fn_cron_guard_revoke_anon", "fase_b": "P10", "run": "#40165954774"},
-      {"version": "20261024163500", "name": "fix_audit_security_definer_acl_regrole_cast", "fase_b": "externa", "nota": "aplicada via db-apply-migration.yml entre snapshot 2026-10-24T16:05 e FASE B; MIGRATIONS_SYNC_LOG marcava pronto-para-aplicar; confirmado via SELECT FROM supabase_migrations.schema_migrations"},
-      {"version": "20261024180001", "name": "fk_indexes_p02", "fase_b": "P02", "run": "#40164828396"},
-      {"version": "20261024180002", "name": "workspace_notifications_idempotency_p08", "fase_b": "P08", "run": "#40166677491"},
-      {"version": "20261024180003", "name": "cron_schedule_p19_remaining", "fase_b": "P19", "run": "#40167137573"},
-      {"version": "20261024190001", "name": "cron_auth_p01_image_dimensions_backfill", "fase_b": "P01", "run": "#40166925674"},
-      {"version": "20261025002500", "name": "analyze_tables_p03", "fase_b": "P03", "run": "#40165426404"}
+  "queries_executadas_nesta_sessao": [
+    "SELECT base_tables, views, funcoes, cron_jobs, rls_policies, migrations_ledger FROM … — resultado: {base_tables:398, views:193, funcoes:1334, cron_jobs:142, rls_policies:960, migrations_ledger:2549} ✅",
+    "SELECT version FROM supabase_migrations.schema_migrations WHERE version IN ('20261022100001','20261022193000','20261024163500','20261024180001','20261024180002','20261024180003','20261024190001','20261025002500') — 8 linhas retornadas ✅",
+    "SELECT relname, last_analyze FROM pg_stat_user_tables WHERE relname IN ('categories','user_roles','…') — categories last_analyze=2026-10-25 05:28:10 ✅",
+    "SELECT jobid,jobname,schedule,LEFT(command,200) FROM cron.job WHERE jobid=235 — command tem x-cron-secret via get_edge_function_secret (Vault, não literal) ✅"
+  ],
+  "delta_vs_baseline_antes_20261022": {
+    "baseline_antes_ledger": 2538,
+    "baseline_depois_ledger": 2549,
+    "migrations_ledger": "+11",
+    "detalhes_fase_b": [
+      {"version": "20261022100001", "name": "security_fn_cron_guard_revoke_anon", "classe": "JÁ LIBERADO P10", "run": "#40165954774"},
+      {"version": "20261022193000", "name": "incidente_2026_10_22_alivio_carga_cron", "classe": "AUTÔNOMA P19_cron001", "nota": "autônoma pré-FASE-B; confirmada no ledger"},
+      {"version": "20261024163500", "name": "fix_audit_security_definer_acl_regrole_cast", "classe": "externa", "nota": "aplicada via db-apply-migration.yml entre snapshot 2026-10-24T16:05 e FASE B; confirmada no ledger SELECT"},
+      {"version": "20261024180001", "name": "fk_indexes_p02", "classe": "JÁ LIBERADO P02", "run": "#40164828396"},
+      {"version": "20261024180002", "name": "workspace_notifications_idempotency_p08", "classe": "JÁ LIBERADO P08", "run": "#40166677491"},
+      {"version": "20261024180003", "name": "cron_schedule_p19_remaining", "classe": "JÁ LIBERADO P19", "run": "#40167137573"},
+      {"version": "20261024190001", "name": "cron_auth_p01_image_dimensions_backfill", "classe": "JÁ LIBERADO P01", "run": "#40166925674"},
+      {"version": "20261025002500", "name": "analyze_tables_p03", "classe": "JÁ LIBERADO P03", "run": "#40165426404"}
     ],
+    "delta_vs_snapshot_20261024": {
+      "migrations_ledger": "+7",
+      "nota": "2542→2549: os 7 itens em detalhes_fase_b exceto 20261022193000 (este foi um dos +4 pré-FASE-B, entre baseline_antes e snapshot 2026-10-24)"
+    },
     "base_tables": 0,
     "views": 0,
     "funcoes": 0,
@@ -27,6 +41,5 @@
     "rls_policies_public": 0,
     "edge_functions": 0
   },
-  "verificado_em": "2026-10-25T08:00:00.000000+00:00",
-  "nota": "Snapshot pós-FASE B (2026-10-25). Δmigrations_ledger=+7 vs snapshot 2026-10-24T16:05 (2542→2549): 6 migrations FASE B JÁ LIBERADOS (P10/P02/P08/P19/P01/P03) + 1 externa (20261024163500 fix_audit_security_definer_acl_regrole_cast, aplicada externamente entre snapshot e FASE B — confirmado via SELECT). Demais métricas inalteradas (Δ=0): nenhuma tabela/view/função/policy/edge_function criada ou removida. APROVAÇÃO pendente: P06, P09, P14, P15, P03_security_definer (PR #2443). Verificação ao vivo (sessão 01JPgV7FqkG4UuFBJWiJa9FB, 2026-10-25): base_tables=398 ✅, views=193 ✅, funcoes=1334 ✅, cron_jobs=142 ✅, rls_policies=960 ✅, migrations_ledger=2549 ✅ — todos os valores conferem exatamente."
+  "nota": "Regenerado 2026-10-25 com queries ao vivo (sessão 01JPgV7FqkG4UuFBJWiJa9FB). Delta total desde baseline_antes (2026-10-22): migrations_ledger +11 (8 itens FASE B + 3 pré-FASE-B incluindo P19_cron001). Demais métricas Δ=0: nenhuma tabela/view/função/policy/edge_function criada ou removida — apenas o aprovado/autônomo mudou. APROVAÇÃO pendente: P06, P09, P14, P15, P03_security_definer (PR #2443)."
 }
