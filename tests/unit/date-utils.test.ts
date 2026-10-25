@@ -74,9 +74,9 @@ describe('formatDateTime', () => {
     expect(formatDateTime(XMAS)).toBe('25/12/2025 14:30');
   });
 
-  it('returns dd/MM/yyyy HH:mm for ISO string (UTC)', () => {
-    // date-fns format() usa hora local; CI roda em UTC → saída em UTC
-    expect(formatDateTime('2025-06-15T15:45:00.000Z')).toBe('15/06/2025 15:45');
+  it('returns dd/MM/yyyy HH:mm for ISO string (BRT)', () => {
+    // 2025-06-15T15:45:00Z = 2025-06-15T12:45:00 BRT (TZ=America/Sao_Paulo)
+    expect(formatDateTime('2025-06-15T15:45:00.000Z')).toBe('15/06/2025 12:45');
   });
 
   it('returns dd/MM/yyyy HH:mm for timestamp', () => {
@@ -94,8 +94,8 @@ describe('formatTime', () => {
   });
 
   it('returns HH:mm for ISO string', () => {
-    // date-fns format() usa hora local; CI roda em UTC → saída em UTC
-    expect(formatTime('2025-03-10T13:05:00.000Z')).toBe('13:05');
+    // 2025-03-10T13:05:00Z = 2025-03-10T10:05:00 BRT (TZ=America/Sao_Paulo)
+    expect(formatTime('2025-03-10T13:05:00.000Z')).toBe('10:05');
   });
 
   it('returns HH:mm for timestamp', () => {
@@ -103,8 +103,8 @@ describe('formatTime', () => {
   });
 
   it('zero-pads hours and minutes', () => {
-    // date-fns format() usa hora local; CI roda em UTC → saída em UTC
-    expect(formatTime('2025-01-01T05:05:00.000Z')).toBe('05:05');
+    // 2025-01-01T05:05:00Z = 2025-01-01T02:05:00 BRT (TZ=America/Sao_Paulo)
+    expect(formatTime('2025-01-01T05:05:00.000Z')).toBe('02:05');
   });
 });
 
