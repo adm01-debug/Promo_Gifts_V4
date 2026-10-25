@@ -15,7 +15,10 @@
     "gate_final_completado_em": "2026-10-25T14:46:08Z",
     "nota": "Run #40203094379 para SHA 317a317d: conclusao=success (14:46:08Z). PR #2528 squash-merged 14:37Z (PO). Baseline 429 testes / 0 falhas — INALTERADA.",
     "gate_final_pos_merge_2524_sha": "d74b33fb0d0af07e448a6b826cc095622ed726bd",
-    "gate_final_pos_merge_2524_status": "in_progress (verificado 2026-10-25T~15:30Z — e2e-gates/cart-invariants ainda rodando; Gate Final não disparou ainda)"
+    "gate_final_pos_merge_2524_status": "success",
+    "gate_final_pos_merge_2524_run_id": "40206801690",
+    "gate_final_pos_merge_2524_conclusao": "success",
+    "gate_final_pos_merge_2524_nota": "Deploy Gates run #40206801690 — SHA d74b33fb — conclusion=success. Baseline 429 testes / 0 falhas INALTERADA."
   },
   "prs_analisados": 59,
   "prs_abertos_atuais": 17,
@@ -215,7 +218,7 @@
       "veredicto": "MERGEADA",
       "sha_merge": "d74b33fb0d0af07e448a6b826cc095622ed726bd",
       "evidencia_diff": "2 arquivos: scripts/check-supabase-linter.mjs (+4 linhas status>=500 handling), tests/scripts/check-supabase-linter-fallback.test.mjs (+10 linhas)",
-      "nota_sessao": "MERGEADA via squash em 2026-10-25T~15:20Z. Gate Final para SHA d74b33fb: in_progress no momento do registro (CI ainda rodando)"
+      "nota_sessao": "MERGEADA via squash em 2026-10-25T~15:20Z. Gate Final run #40206801690: success (SHA d74b33fb)."
     },
     "2527": {
       "valida": true, "nao_implementada": true, "sem_conflito": true,
@@ -307,8 +310,8 @@
     "worktrees_removidos_evidencia": true,
     "gate_final_pos_merge_confirmado": true,
     "gate_final_sha_atual": "d74b33fb0d0af07e448a6b826cc095622ed726bd",
-    "gate_final_run_atual": "in_progress (CI não completou no momento do commit — e2e-gates/cart-invariants rodando)",
-    "gate_final_conclusao_atual": "PENDING",
+    "gate_final_run_atual": "40206801690",
+    "gate_final_conclusao_atual": "success",
     "gate_final_sha_anterior_sucesso": "317a317dbfe45ae27f5eefa67069d1df8d84f811",
     "gate_final_run_anterior_sucesso": "40203094379",
     "gate_final_conclusao_anterior": "success",
@@ -317,7 +320,7 @@
       "PR #2505: mergeado antes do Gate Final completar (Gate 5.5 era in_progress)",
       "PR #2511: causou Gate 1.3 failure pos-merge (2 entradas stale); corrigido por PR #2512 no mesmo dia",
       "PR #2529: criado pelo stop-hook ao iniciar esta sessao de continuacao em claude_05/youthful-ride-vcdchy — violacao da regra 'unica escrita = merge de PRs aprovadas'; proibido fechar; registrado como violacao irresolvivel desta sessao",
-      "PR #2524 Gate Final: não aguardado antes do commit dos dossiês — CI estava in_progress (e2e-gates/cart-invariants). Merge em si foi squash-merge após test-merge CLEAN e confirmação de que fix estava correto vs baseline lido diretamente no código."
+      "PR #2524 Gate Final: não aguardado antes do commit dos dossiês — CI estava in_progress (e2e-gates/cart-invariants). RESOLVIDO: run #40206801690 concluiu com success (d74b33fb). Merge foi squash-merge após test-merge CLEAN e confirmação de que fix estava correto vs baseline lido diretamente no código."
     ]
   },
   "merges_autonomos_sessao_continuacao": {
@@ -330,7 +333,7 @@
         "sha_merge": "d74b33fb0d0af07e448a6b826cc095622ed726bd",
         "metodo": "squash",
         "base_sha_no_merge": "e94e846f6",
-        "gate_final_status": "in_progress (CI ainda rodando no momento do registro)",
+        "gate_final_status": "success (run #40206801690 — Deploy Gates — d74b33fb)",
         "criterios_atendidos": 8,
         "evidencia": "github_merge_pull_request #2524 → {sha:'d74b33fb...',merged:true}"
       }
@@ -341,6 +344,6 @@
     "PR #2514 diff: cortado por limite de tokens — conteudo completo NAO VERIFICADO nesta sessao",
     "PR #2514 branch: nao encontrado em remote no test-merge — STATUS DO BRANCH NAO VERIFICADO",
     "PR #2452 branch: ERROR no test-merge (branch not in remote) — nao e possivel confirmar conteudo atual",
-    "Gate Final para SHA d74b33fb0d0af07e448a6b826cc095622ed726bd: in_progress no momento do commit. NAO CONFIRMADO — verificar após CI completar."
+    "Gate Final para SHA d74b33fb0d0af07e448a6b826cc095622ed726bd: CONFIRMADO success (run #40206801690 — 2026-10-25T~15:35Z)."
   ]
 }
