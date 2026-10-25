@@ -1,6 +1,6 @@
 # RELATORIO_CI.md — Relatório CI / Action Required
-**rev 7 — 2026-10-25 (sessão `session_01Nc1nb7PArDnixYvvZssnKy`)**
-**Branch:** `claude_05/upbeat-hamilton-5gnz50` (PRs #2438, #2453, #2454) — **PR #2454 MERGEADO em main SHA `eb7a9247`; Gate Final ✅ conclusion=success (run #40150209361)**
+**rev 8 — 2026-10-25 (sessões `session_01Nc1nb7PArDnixYvvZssnKy` + `session_01HW5obNKUFtUMbBdgUb94kY`)**
+**Branches:** `claude_05/upbeat-hamilton-5gnz50` (PRs #2438, #2453, #2454) + `claude_05/nifty-sagan-r23gqh` (PR #2435 mergeado) — Gate Final ✅ conclusion=success (run #40150209361 + #40151468759)
 
 ---
 
@@ -322,5 +322,61 @@ node scripts/check-migration-path-references.mjs --update-baseline
 | 2. Tabela de prova com link + conclusion=success | ✅ | Seção 9.1: todos os 16 jobs do run #40150209361 |
 | 3. Gate Final pós-merge com conclusion=success | ✅ | Run [#40150209361](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40150209361) SHA `eb7a9247` — `conclusion: "success"` |
 | 4. Comparação baseline × final sem piora | ✅ | Seção 9.3: 0 regressões; Gate 1.3 corrigido |
-| 5. RELATORIO_CI.md final com evidências | ✅ | Este arquivo, rev 7 |
-| 6. PENDENCIAS.md atualizado (SHA eb7a9247) | ✅ | rev 13, Commit de referência `eb7a9247` |
+| 5. RELATORIO_CI.md final com evidências | ✅ | Este arquivo, rev 8 |
+| 6. PENDENCIAS.md atualizado | ✅ | rev 14, inclui P-EF2 |
+
+---
+
+## 10. PR #2435 — Gate 1.3 stale baseline fix (sessão session_01HW5obNKUFtUMbBdgUb94kY)
+
+**Data:** 2026-10-25 | **Branch:** `claude_05/nifty-sagan-r23gqh` | **PR:** [#2435](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2435) | **Commit HEAD:** `78ed9619`
+
+### 10.1 Correções aplicadas neste PR
+
+| Item | Descrição | Commit |
+|---|---|---|
+| DRAFTS_STATUS.md | Regenerado via `node scripts/map-drafts-to-migrations.mjs`; removeu referência ao arquivo deletado `20260713_001_secdef_revoke_webhook_locks.sql`; 11 rascunhos documentados | `ac7920bc` |
+| REVIEWS.json | Criado com 7 entradas em `acknowledged_not_promoted` incluindo `probe_e184_legacy_refs.sql` | `f493864` |
+| Edge Functions (Zod v4 UUID) | UUIDs de teste substituídos por UUIDs válidos v4 | anterior |
+| `.migration-refs-baseline.json` | Remove 6 entradas stale 20261024180001/02/03 de PR-2441.md e RELATORIO_PRS.md | `79b25410` |
+
+### 10.2 Gate Final — Run #40151468759 ✅
+
+**Branch:** `claude_05/nifty-sagan-r23gqh` | **SHA:** `78ed9619` | **Status:** completed | **Conclusion:** success
+
+| Gate | Job | Conclusão |
+|---|---|---|
+| Gate 0 | SSOT Supabase | ✅ success |
+| Gate 0.5 | Dependency Audit | ✅ success |
+| Gate 1 (incl. Gate 1.3 migration contracts) | Lint + TypeScript + Migration Contracts | ✅ success |
+| Gate 2 | Unit Tests | ✅ success |
+| Gate 2.5 | PostgreSQL Integrity | ✅ success |
+| Gate 3 | E2E Smoke | ✅ success |
+| Gate 4 | Lighthouse CI | ✅ success |
+| Gate 5 | SEO Sanity | ✅ success |
+| Gate 5.5 | RPC restore_seller_cart | ✅ success |
+| Gate E23 | Secret Scan | ✅ success |
+| Gate 6 | Build (Vite + SBOM) | ✅ success |
+| **Gate Final** | **Deploy Ready** | ✅ **success** |
+
+### 10.3 Inventário is:failure em main (2026-10-25) — todos não-required
+
+| Workflow | Status | Required? | Documentado em |
+|---|---|---|---|
+| Release Please | ❌ failure | Não | P1/P21 |
+| Branch Protection Sentinel | ❌ failure | Não | P3/P20 |
+| E2E — Personalization Flow | ❌ failure | Não | P2c/P23 |
+| E2E • Thumb QuickView | ❌ failure | Não | P24 |
+| Supabase Linter Gate | ❌ failure | Não | P22 |
+| Freight Quest — Quality Gates | ❌ failure | Não | P-EF2 (PENDENCIAS.md) |
+| E2E — Critical Flows & Error Boundaries | ❌ failure | Não | P16 |
+| E2E (Playwright) | ❌ failure | Não | P18 |
+| Cart Invariants Smoke | ❌ failure | Não | P2b |
+| Edge Functions · Integration All | ❌ failure | Não | Zod v4 UUID fix aplicado neste PR |
+| audit (chromium • catalog-card-parity) | ❌ failure | Não | P10 |
+| E2E • Swatch QuickView | ❌ failure | Não | P12 |
+| CI Security & Drift Checks | ❌ failure | Não | P19 |
+
+**Todos os failures em main são não-required checks. Gate Final = ✅ success.**
+
+*Rev 8 — merge PR #2435 — 2026-10-25 — sessão session_01HW5obNKUFtUMbBdgUb94kY*

@@ -119,6 +119,9 @@ jobs:
       - name: Run Unit & Integration Tests
         run: npm run test:quality
 
+      - name: Script mutation tests (node:test — excluído do vitest, ver vitest.config.ts)
+        run: node --test tests/scripts/check-file-size-baseline.test.mjs
+
       - name: Hook tests (tests/hooks/** — excluído de test:quality, ver package.json)
         run: TZ=America/Sao_Paulo npx vitest run tests/hooks --reporter=dot
 

@@ -1,8 +1,8 @@
 # Pendências CI — Bloqueios Externos
 
-**Atualizado em:** 2026-10-25 (rev 13 — Gate Final PR #2454 ✅ conclusion=success run #40150209361; SHA eb7a9247 em main)  
-**Branch de referência:** `claude_05/upbeat-hamilton-5gnz50`  
-**Commit de referência (main):** `eb7a9247` (fix(ci): Gate 1.3 — limpa 7 entradas stale do baseline de refs de migration — PR #2454)
+**Atualizado em:** 2026-10-25 (rev 14 — merge PR #2435; Gate 1.3 stale baseline fix; P-EF2 adicionado)  
+**Branch de referência:** `claude_05/nifty-sagan-r23gqh`  
+**Commit de referência (main):** merge PR #2435 (fix(qa): remove 6 entradas stale do baseline Gate 1.3)
 
 ---
 
@@ -388,6 +388,29 @@ result={"check":"security-definer-acl","status":"inconclusive","reason":"http-er
 
 ---
 
+## P-EF2 — Freight Quest — Quality Gates: Gate 8 HTTP 503 (não-bloqueante)
+
+**Workflow:** `freight-quest.yml` (Gate 8 — Security & Credential Audit)  
+**Run mais recente:** [#40148128938](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40148128938) (commit `90c6492b`) | **Conclusão:** `failure`  
+**Categoria:** Conectividade transitória com Supabase — mesmo padrão de P9 (HTTP 503 vs HTTP 500)
+
+**Erro exato:**
+```
+[security-definer-acl] HTTP 504 (tentativa 1/3) — aguardando 15s...
+[security-definer-acl] HTTP 503 (tentativa 2/3) — aguardando 15s...
+[security-definer-acl] HTTP 503 (tentativa 3/3) — aguardando 15s...
+[security-definer-acl] inconclusive: HTTP 503 após 3 tentativas — serviço Supabase indisponível
+result={"check":"security-definer-acl","status":"inconclusive","reason":"http-error-exhausted","httpStatus":503,"attempts":3}
+```
+
+**Causa raiz:** `check:security-definer-acl --require-live` faz query ao Supabase `doufsxqlfjyuvxuezpln` e recebeu HTTP 504/503 transitório após 3 tentativas. Mesmo padrão de P9 — falha transitória de disponibilidade do serviço Supabase, não causada por código do repo. Não introduzido por PR #2435.
+
+**Impacto no Gate Final:** Nenhum — `freight-quest.yml` Gate 8 não é required check no Gate Final (`deploy-gates.yml`). Failure de conectividade transitória.
+
+**Ação necessária:** mesmo que P9 — verificar `SUPABASE_ACCESS_TOKEN` no runner; considerar aumentar timeout ou número de tentativas em `check:security-definer-acl`.
+
+---
+
 ## P10 — audit: card parity visual — rodapé não alinhado
 
 **Workflow:** `catalog-card-parity.yml` (audit)
@@ -642,4 +665,4 @@ Flake visual em QuickView de thumbnail — screenshot diff ou timeout de navega�
 
 ---
 
-*Atualizado pela sessão Claude Code — https://claude.ai/code/session_01Nc1nb7PArDnixYvvZssnKy*
+*Atualizado pela sessão Claude Code — https://claude.ai/code/session_01HW5obNKUFtUMbBdgUb94kY*
