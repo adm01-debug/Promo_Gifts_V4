@@ -1,8 +1,8 @@
 # RELATORIO DE PRs — Promo Gifts V4
 **Sessao:** https://claude.ai/code/session_01Ss1tXZ4cAbxBvdmu95uNPz  
 **Data:** 2026-10-25  
-**main HEAD:** `7fc20213c16c207ebd2d7b50ff75bc332e600d98` (PR #2512 squash-merged em 11:00:47Z)  
-**Gate Final:** run #40187098020 — conclusion=**success** (11:08:44Z) ✅  
+**main HEAD:** `801e38a53ce0c235611ff207ea1dd3d41a0ca89a` (PR #2513 squash-merged)  
+**Gate Final:** run #40189082535 — conclusion=**success** ✅  
 **Baseline CI:** 429 testes, 0 falhas — baseline inalterada
 
 ---
@@ -11,24 +11,24 @@
 
 | Metrica | Valor |
 |---|---|
-| PRs analisadas | 49 (#2414–#2512, inclui deliverables desta sessao) |
-| PRs abertas atuais | 13 |
-| Merges autonomos esta sessao | 12 (PR #2479, #2481, #2486, #2490, #2498, #2501, #2504, #2505, #2509, #2510, #2511, #2512) |
+| PRs analisadas | 50 (#2414–#2514, inclui deliverables desta sessao) |
+| PRs abertas atuais | 14 |
+| Merges autonomos esta sessao | 13 (PR #2479, #2481, #2486, #2490, #2498, #2501, #2504, #2505, #2509, #2510, #2511, #2512, #2513) |
 | PRs fechadas externamente (durante sessao) | 3 (#2471, #2480, #2484) |
 | Regressoes introduzidas | 0 |
 | Migrations pendentes de deploy | 0 |
 | Edge functions pendentes de deploy | 0 |
 | Worktrees removidos | 1 (/tmp/fix-gate13 — removido com `git worktree remove --force`) |
 
-### Contagem por Veredito (49 PRs — categorias nao sobrepostas)
+### Contagem por Veredito (50 PRs — categorias nao sobrepostas)
 
 | Veredito | Quantidade |
 |---|---|
 | MERGEAR (mergeadas autonomamente) | 21 |
 | MERGEADO_PO (mergeadas pelo PO antes ou durante a sessao) | 10 |
-| DECISAO_HUMANA (7 abertas + 2 fechadas externamente) | 9 |
+| DECISAO_HUMANA (8 abertas + 2 fechadas externamente) | 10 |
 | FECHAR (6 abertas + 2 fechadas externamente + 1 ja fechada #2424) | 9 |
-| **Total** | **49** |
+| **Total** | **50** |
 
 ### Gate Final pos-merge (comparacao com baseline)
 
@@ -37,13 +37,14 @@
 | `e0be76690` (baseline confirmado) | #40179146830 | success ✅ | 429 | 0 |
 | `afbd338000` (PR #2510) | #40184102084 | success ✅ | 429 | 0 |
 | `9c3e4492f` (PR #2511) | N/A | FAILURE ⚠️ | 429 | Gate 1.3 stale entries |
-| `7fc20213c` (PR #2512 — main HEAD atual) | #40187098020 | success ✅ | 429 | 0 |
+| `7fc20213c` (PR #2512) | #40187098020 | success ✅ | 429 | 0 |
+| `801e38a53` (PR #2513 — main HEAD atual) | #40189082535 | success ✅ | 429 | 0 |
 
 **Regressoes:** 0. Baseline inalterada. Gate 1.3 falhou no PR #2511 e foi corrigido pelo PR #2512.
 
 ---
 
-## PRs Abertas Atuais (13) — Criterios de Mergear Avaliados
+## PRs Abertas Atuais (14) — Criterios de Mergear Avaliados
 
 ### FECHAR (6 PRs) — Branches Orfas / REGRA #10
 
@@ -88,7 +89,7 @@ Para todas as PRs FECHAR: veredicto NENHUMA pode ser mergeada de forma alguma �
 
 ---
 
-### DECISAO_HUMANA (7 PRs abertas) — Exigem Aprovacao do PO
+### DECISAO_HUMANA (8 PRs abertas) — Exigem Aprovacao do PO
 
 #### PR #2415 — fix(ci): P20 node --test runner
 - **Draft:** nao | **mergeable_state:** dirty | **Rule 8:** workflows x2
@@ -132,9 +133,15 @@ Para todas as PRs FECHAR: veredicto NENHUMA pode ser mergeada de forma alguma �
 - **Test-merge:** CLEAN em e0be76690
 - **Acao:** PO converter de draft e mergear se RELATORIO_CI Rev21 ainda relevante (#2504 ja levou estado mais recente)
 
+#### PR #2514 — docs(pendencias): adiciona P58 — sentinel failure em 7fc20213
+- **Draft:** sim | **mergeable_state:** behind | **Rule 8:** nao (so PENDENCIAS.md)
+- **REGRA #10:** branch outra sessao (session_01HW5obNKUFtUMbBdgUb94kY)
+- **Criterios falham:** [2(nao_implementada), 3(behind), 6(REGRA10), 8(confianca)]
+- **Acao:** PO verificar se P58 ainda relevante pos-PR #2512; converter de draft + atualizar branch se quiser mergear
+
 ---
 
-## Merges Autonomos Desta Sessao (12 PRs)
+## Merges Autonomos Desta Sessao (13 PRs)
 
 | PR | SHA merge | Gate Final run | Conclusao |
 |---|---|---|---|
@@ -150,6 +157,7 @@ Para todas as PRs FECHAR: veredicto NENHUMA pode ser mergeada de forma alguma �
 | #2510 | afbd3380 | 40184102084 | success ✅ |
 | #2511 | 9c3e4492 | gate_1.3_failure | FAILURE ⚠️ — Gate 1.3 stale entries (corrigido por #2512) |
 | #2512 | 7fc20213 | 40187098020 | success ✅ (fix Gate 1.3 stale) |
+| #2513 | 801e38a5 | 40189082535 | success ✅ (deliverables rev13) |
 
 **Violacoes registradas:**
 - PR #2505: mergeado enquanto Gate 5.5 ainda estava `in_progress`. Os demais 11 merges seguiram a regra.
@@ -186,15 +194,15 @@ Para todas as PRs FECHAR: veredicto NENHUMA pode ser mergeada de forma alguma �
 
 - [x] `analise-prs/baseline/` gerado nesta sessao (4 arquivos)
 - [x] `analise-prs/regras-de-negocio.md` rev10 — 6 secoes (docs/testes/enums/migrations/policies/UI)
-- [x] `analise-prs/prs.json` atualizado — main_head=7fc20213c, criterios 8 por PR, 49 PRs
-- [x] `analise-prs/prs.csv` atualizado — 53 linhas incluindo #2509, #2510, #2511 e #2512
-- [x] `analise-prs/RELATORIO_PRS.md` atualizado — este arquivo (rev13)
+- [x] `analise-prs/prs.json` atualizado — main_head=801e38a53, criterios 8 por PR, 50 PRs
+- [x] `analise-prs/prs.csv` atualizado — 55 linhas incluindo #2513 e #2514
+- [x] `analise-prs/RELATORIO_PRS.md` atualizado — este arquivo (rev14)
 - [x] `analise-prs/progresso.json` atualizado — gate_final_status_atual=success, worktrees_removidos, criterios_mergear_por_pr
-- [x] Dossies para todos os 13 PRs abertos (PR-2415 a PR-2503)
+- [x] Dossies para todos os 14 PRs abertos (PR-2415 a PR-2514)
 - [x] 100% diffs lidos (evidencia por PR no prs.json)
-- [x] Test-merge para todos os 13 PRs abertos (NO_MERGE_BASE para orfaos, resultado documentado)
-- [x] Criterios MERGEAR avaliados (8 criterios x 13 PRs) — todos documentados
+- [x] Test-merge para todos os 14 PRs abertos (NO_MERGE_BASE para orfaos, resultado documentado)
+- [x] Criterios MERGEAR avaliados (8 criterios x 14 PRs) — todos documentados
 - [x] Worktree removido: /tmp/fix-gate13 (`git worktree remove --force`)
-- [x] Gate Final pos-merge: run #40187098020 conclusion=success (11:08:44Z)
+- [x] Gate Final pos-merge: run #40189082535 conclusion=success (main HEAD 801e38a53)
 - [x] Comparacao baseline: 429 testes / 0 falhas — inalterada
 - [x] Violacao registrada: PR #2505 mergeado antes do Gate Final completar
