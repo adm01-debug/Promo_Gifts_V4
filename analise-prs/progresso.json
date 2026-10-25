@@ -1,20 +1,20 @@
 {
-  "gerado_em": "2026-10-25T07:45:00Z",
+  "gerado_em": "2026-10-25T08:30:00Z",
   "sessao": "https://claude.ai/code/session_01Ss1tXZ4cAbxBvdmu95uNPz",
-  "main_head": "f761938ece2939d5564d6ba51bcd0feb487ce057",
+  "main_head": "6457e24d",
   "baseline": {
     "testes": 429,
     "falhas": 0,
-    "gate_final_run": "40172460728",
+    "gate_final_run": "40174922055",
     "gate_final_conclusao": "success",
-    "sha_referencia": "f761938ece2939d5564d6ba51bcd0feb487ce057"
+    "sha_referencia": "6457e24d"
   },
-  "prs_analisados": 41,
-  "prs_abertos_atuais": 15,
+  "prs_analisados": 44,
+  "prs_abertos_atuais": 13,
   "contagem_vereditos": {
-    "MERGEAR": 15,
+    "MERGEAR": 17,
     "MERGEADO_PO": 10,
-    "DECISÃO_HUMANA": 7,
+    "DECISÃO_HUMANA": 8,
     "FECHAR": 9
   },
   "merges_autonomos_esta_sessao": [
@@ -41,6 +41,22 @@
       "gate_final_run": "40172460728",
       "gate_final_conclusao": "success",
       "merged_at": "2026-10-25T07:21:27Z"
+    },
+    {
+      "pr": 2490,
+      "sha": "a681fe0e",
+      "titulo": "docs(analise-prs): deliverables rev6",
+      "gate_final_run": "40173768324",
+      "gate_final_conclusao": "success",
+      "merged_at": "2026-10-25T07:43:00Z"
+    },
+    {
+      "pr": 2498,
+      "sha": "eee389ca",
+      "titulo": "docs(analise-prs): deliverables rev6.1 + PR-2487",
+      "gate_final_run": "40174781954",
+      "gate_final_conclusao": "success",
+      "merged_at": "2026-10-25T08:12:00Z"
     }
   ],
   "prs_abertos": [
@@ -55,10 +71,13 @@
     {"number": 2443, "verdict": "DECISÃO_HUMANA", "motivo": "Draft + título APROVAÇÃO REQUERIDA", "draft": true},
     {"number": 2449, "verdict": "DECISÃO_HUMANA", "motivo": "Rule 8: supabase/migrations/ + draft", "draft": true},
     {"number": 2452, "verdict": "FECHAR", "motivo": "REGRA #10 outra sessão + draft", "draft": true},
-    {"number": 2469, "verdict": "DECISÃO_HUMANA", "motivo": "Rule 8: .github/workflows/e2e-personalization.yml", "draft": false},
-    {"number": 2471, "verdict": "FECHAR", "motivo": "REGRA #10 outra sessão session_01Nc1nb7PArDnixYvvZssnKy + dirty (CONFLITO) + draft", "draft": true},
-    {"number": 2480, "verdict": "DECISÃO_HUMANA", "motivo": "REGRA #10 outra sessão session_01JPgV7FqkG4UuFBJWiJa9FB + draft", "draft": true},
-    {"number": 2484, "verdict": "FECHAR", "motivo": "REGRA #10 outra sessão session_01Nc1nb7PArDnixYvvZssnKy + dirty + deleção -962 linhas", "draft": false}
+    {"number": 2469, "verdict": "DECISÃO_HUMANA", "motivo": "Rule 8: .github/workflows/ + REGRA #10; supersedido por #2489", "draft": false},
+    {"number": 2487, "verdict": "DECISÃO_HUMANA", "motivo": "REGRA #10 outra sessão session_01HW5obNKUFtUMbBdgUb94kY + draft + behind main", "draft": true}
+  ],
+  "prs_fechados_externamente_durante_sessao": [
+    {"number": 2471, "verdict_original": "FECHAR", "motivo": "REGRA #10 outra sessão + dirty + draft"},
+    {"number": 2480, "verdict_original": "DECISÃO_HUMANA", "motivo": "REGRA #10 outra sessão + draft"},
+    {"number": 2484, "verdict_original": "FECHAR", "motivo": "REGRA #10 outra sessão + dirty + deleção -962 linhas"}
   ],
   "producao": {
     "migrations_pendentes": 0,
