@@ -123,7 +123,7 @@ PRs em rascunho (draft) têm um bloqueio implícito: o autor não sinalizou que 
 | #2426 | MERGEADO | SHA 7f5d410a — 1 arquivo QA, sem Rule 8 |
 | #2427 | MERGEADO | SHA 26641b0a — cors.ts + webhook-schemas; edge fn deployed |
 | #2428 | DECISÃO HUMANA | Rule 8: .gitleaks.toml (security policy); draft:true |
-| #2432 | JÁ IMPLEMENTADA | conteúdo em main desde SHA 7f5d410a (patch-id idêntico) |
+| #2432 | DECISÃO HUMANA | Gate Final FAILURE (run #40129848772); REGRA #10 branch outra sessão (session_01HxRBtssJabMB3jTgNY5B9W); correctness bugs em probe_e184_legacy_refs.sql |
 | #2434 | MERGEADO | SHA 53ba69b5 — docs-only analise-prs/ |
 | #2435 | MERGEADO (PO) | SHA 50f4f599 — fix(ci): Zod v4 repair; PO aprovou 2026-10-25T03:18Z |
 | #2436 | MERGEADO | SHA 4c8193b9 — deliverables update |
@@ -136,10 +136,11 @@ PRs em rascunho (draft) têm um bloqueio implícito: o autor não sinalizou que 
 | #2447 | NOSSA PR (draft) | deliverables da sessão; draft:true — aguarda saída de draft |
 | #2449 | DECISÃO HUMANA | Rule 8: DDL CREATE FUNCTION SECURITY DEFINER; draft:true + conflito |
 | #2450 | MERGEADO (PO) | SHA d804cafa — docs RELATORIO_CI.md rev5 |
-| #2451 | FECHADO | draft + conflito; PR encerrada sem merge |
-| #2452 | IMPOSSÍVEL | draft:true + conflito — GitHub API bloqueia squash de draft |
+| #2451 | MERGEADO (PO) | SHA 15dd563b — ANALYZE 5 tabelas supabase/migrations/; REGRA #10 branch outra sessão; PO mergeou 2026-10-25T01:36Z |
+| #2452 | FECHAR | draft:true + REGRA #10 branch outra sessão (session_01HW5obNKUFtUMbBdgUb94kY) |
 | #2455 | MERGEADO | SHA bfd9b50a — docs-only RELATORIO_CI.md rev7 + PENDENCIAS.md |
-| #2466 | DECISÃO HUMANA | Draft:true — branch desta sessão; PO deve converter para ready-for-review e mergear |
+| #2466 | MERGEADO | SHA 79d1c848b — docs-only analise-prs/; PO converteu draft e mergeou em 2026-10-25 |
 | #2469 | DECISÃO HUMANA | Rule 8: .github/workflows/e2e-personalization.yml + REGRA #10 branch outra sessão |
 | #2470 | MERGEADO (PO) | SHA 12c9605e — fix timezone BRT; REGRA #10 impossibilitou merge autônomo; mergeado pelo PO 2026-10-25T05:11Z |
 | #2471 | FECHAR | Draft:true + dirty (CONFLITO) + REGRA #10 branch outra sessão (session_01Nc1nb7PArDnixYvvZssnKy); 3 arquivos docs |
+| #2473 | MERGEADO (PO) | SHA 2659a2c8 — REGRA #10 branch outra sessão (session_01JPgV7FqkG4UuFBJWiJa9FB); 4 arquivos docs/logs; PO mergeou 2026-10-25T06:08Z |

@@ -51,7 +51,7 @@ SHA merge: 79d1c848b2c9a83f64fe094d82012eba2a50da1f
 paths-ignore: docs/** → Gate Final NÃO dispara em push docs-only.
 Último Gate Final verde em ea98e9adb (run #40165529777). Baseline inalterada.
 
-## Atualização — SHA 429160609b (main HEAD atual — commit direto PO pós-#2466)
+## Atualização — SHA 429160609b (main HEAD pós-#2466 — commit direto PO)
 
 Commit direto pelo PO (adm01-debug) — não foi PR:
 SHA: 429160609ba923e840acf53a1e70277a21d35e0c
@@ -59,3 +59,24 @@ Commit: "docs: RELATORIO_CI.md Rev15 — Gate Final success ea98e9ad + proof tab
 Parent: 06845b6e719ee177f03c88b4b01929dcffe1b738
 paths-ignore: docs/** → Gate Final NÃO dispara.
 Último Gate Final verde: ea98e9adb (run #40165529777). Baseline continua: 429 testes, 0 falhas.
+
+## Atualização — SHA 2659a2c8 (PR #2473 merge pelo PO)
+
+PR #2473 mergeada pelo PO (adm01-debug) — squash-merge:
+SHA merge: 2659a2c89a6ee99dcec60a2e5d2a9fc8edca5660 (abrev: 2659a2c8)
+Mergeado em: 2026-10-25T06:08:06Z
+Branch: session_01JPgV7FqkG4UuFBJWiJa9FB
+4 arquivos: analise-branches/dossies/ + auditoria-supabase/correcoes.md + baseline_depois.json + supabase/MIGRATIONS_SYNC_LOG.md
+supabase/MIGRATIONS_SYNC_LOG.md toca supabase/ → Gate Final pode disparar.
+Último Gate Final confirmado: run #40166989535 SUCCESS (commit aa6f55d4 — ver abaixo).
+Baseline: 429 testes, 0 falhas (sem regressão esperada — docs e logs).
+
+## Atualização — SHA aa6f55d4 (main HEAD atual — commit direto PO Rev16)
+
+Commit direto pelo PO (adm01-debug) — não foi PR:
+SHA: aa6f55d4726dae81c08da46a398ab477a6c7ed60
+Commit: "docs: RELATORIO_CI.md Rev16" (mensagem inferida do parent chain)
+Parent: 2659a2c8 (PR #2473 merge)
+Gate Final run #40166989535: conclusion=success (confirmado no commit msg do SHA aa6f55d4).
+paths-ignore: docs/** → Gate Final provavelmente não disparou para docs-only.
+Último Gate Final verde verificado: run #40166989535. Baseline: 429 testes, 0 falhas.
