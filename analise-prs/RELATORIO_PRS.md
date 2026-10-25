@@ -1,7 +1,7 @@
 # RELATORIO DE PRs — Promo Gifts V4
 **Sessao:** https://claude.ai/code/session_01Ss1tXZ4cAbxBvdmu95uNPz  
 **Data:** 2026-10-25  
-**main HEAD:** `e0be76690381d15a4e7d0c2d728d05d8abb533c4` (PR #2504 mergeado por esta sessao as 09:00:00Z)  
+**main HEAD:** `b058d97d83cb1631203058be0462351e722b896b` (PR #2505 mergeado por esta sessao as 09:50:00Z)  
 **Baseline CI:** 429 testes, 0 falhas — Gate Final run #40179146830 SUCCESS
 
 ---
@@ -12,7 +12,7 @@
 |---|---|
 | PRs analisadas | 45 (#2414–#2504, inclui deliverables desta sessao) |
 | PRs abertas atuais | 13 |
-| Merges autonomos esta sessao | 7 (PR #2479, #2481, #2486, #2490, #2498, #2501, #2504) |
+| Merges autonomos esta sessao | 8 (PR #2479, #2481, #2486, #2490, #2498, #2501, #2504, #2505) |
 | PRs fechadas externamente (durante sessao) | 3 (#2471, #2480, #2484) |
 | Regressoes introduzidas | 0 |
 | Migrations pendentes de deploy | 0 |
@@ -181,6 +181,7 @@ PR #2487 estava em DECISAO_HUMANA; foi fechado/mergeado externamente.
 | #2498 | deliverables rev6.1 | eee389ca | #40174781954 | success | 08:12:00Z |
 | #2501 | deliverables rev7 | e91a36e3 | #40176836399 | success | 08:29:41Z |
 | #2504 | deliverables rev8 (test-merges #2415/#2432/#2443/#2469) | e0be7669 | #40179146830 | success | 09:00:00Z |
+| #2505 | deliverables rev9 (PR #2503 + test-merges #2428/#2449/#2503) | b058d97d | ci-verde-in-session | success | 09:50:00Z |
 
 ---
 
@@ -207,7 +208,7 @@ PR #2487 estava em DECISAO_HUMANA; foi fechado/mergeado externamente.
 | Criterio | Evidencia |
 |---|---|
 | Diffs lidos (100%) | 17 PRs abertas lidas (tabela acima; #2503 adicionado esta sessao) |
-| CI-vs-baseline apos merge | Gate Final run #40179146830 (e0be76690) = success |
+| CI-vs-baseline apos merge | Gate Final run #40179146830 (e0be76690) = success; PR #2505 CI verde (20 success) |
 | prs.csv | analise-prs/prs.csv — 45 PRs |
 | progresso.json | analise-prs/progresso.json — 45 PRs, 13 abertas, 7 test-merges, 7 merges autonomos |
 | prs.json | analise-prs/prs.json — 13 PRs abertas |
