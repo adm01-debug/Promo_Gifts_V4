@@ -83,7 +83,7 @@ WHERE table_schema='auth' AND table_name='users';
 **Resultado:** APROVADO — cadeia completa com auth.users stub, migration executa sem erro (0), função `audit_security_definer_acl` criada com cast seguro `pg_get_userbyid` e sem `::regrole`, schema auth intacto.
 
 ## VEREDITO
-**SUPERSEDED** — a migration SQL (`20261024163500_fix_audit_security_definer_acl_regrole_cast.sql`) e a mudança de workflow (revert ECR→ghcr.io em `db-schema-drift-check.yml`) já estão em `origin/main` desde commit `dcf7dc70`, conforme confirmado via `git show origin/main:supabase/migrations/20261024163500_...sql` (linha 1: `-- fix: audit_security_definer_acl() — cast seguro para OIDs de roles removidas`). A PR [#2424](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2424) está `mergeable: false` / `mergeable_state: "dirty"` — código já em main, PR conflitada.
+**SUPERSEDED** — a migration SQL (`20261024163500_fix_audit_security_definer_acl_regrole_cast.sql`) e a mudança de workflow (revert ECR→ghcr.io em `db-schema-drift-check.yml`) já estão em `origin/main` desde commit `dcf7dc70`, confirmado via `git show origin/main:supabase/migrations/20261024163500_fix_audit_security_definer_acl_regrole_cast.sql` (linha 1: `-- fix: audit_security_definer_acl() — cast seguro para OIDs de roles removidas`). A PR [#2424](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2424) está `mergeable: false` / `mergeable_state: "dirty"` — código já em main, PR conflitada.
 
 **Nota:** Migration `20261024163500` precisa ser **aplicada em produção** (está em main mas não no ledger `supabase_migrations.schema_migrations`). Aplicar via `.github/workflows/db-apply-migration.yml` (`workflow_dispatch`, `version=20261024163500`).
 **Ação PR:** PR #2424 pode ser fechada (SUPERSEDED).
