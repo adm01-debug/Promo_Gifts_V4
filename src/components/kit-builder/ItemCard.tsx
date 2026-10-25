@@ -184,12 +184,13 @@ export function ItemCard({
     return (
       <Card
         data-testid="item-option"
+        onClick={() => !cantFit && onAdd(item)}
         className={cn(
           'group rounded-xl transition-all duration-200',
           'border-border/50 focus-within:ring-2 focus-within:ring-primary/60',
           isSelected && 'bg-primary/5 ring-2 ring-primary',
-          cantFit && 'opacity-60',
-          !cantFit && !isSelected && 'hover:border-primary/40 hover:bg-card',
+          cantFit && 'opacity-60 cursor-not-allowed',
+          !cantFit && !isSelected && 'cursor-pointer hover:border-primary/40 hover:bg-card',
         )}
       >
         <CardContent className="flex items-center gap-3 p-2.5">
@@ -237,12 +238,13 @@ export function ItemCard({
   return (
     <Card
       data-testid="item-option"
+      onClick={() => !cantFit && onAdd(item)}
       className={cn(
         'group flex flex-col overflow-hidden rounded-xl transition-all duration-200 will-change-transform',
         'border-border/50 focus-within:ring-2 focus-within:ring-primary/60',
         isSelected &&
           'bg-primary/5 shadow-[0_4px_20px_-6px_hsl(var(--primary)/0.35)] ring-2 ring-primary',
-        cantFit && 'opacity-60',
+        cantFit && 'opacity-60 cursor-not-allowed',
         !cantFit &&
           !isSelected &&
           'cursor-pointer hover:-translate-y-0.5 hover:border-primary/40 hover:bg-card hover:shadow-lg',
