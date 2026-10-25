@@ -75,7 +75,7 @@ SELECT jobid, jobname, LEFT(command,500) FROM cron.job WHERE jobid=222;
 
 ## §P02 — 6 índices FK
 
-**Migration:** `supabase/migrations/20261024180001_fk_indexes_p02.sql`
+**Migration:** `20261024180001_fk_indexes_p02.sql` (PR #2441 branch)
 **PR #2441:** https://github.com/adm01-debug/Promo_Gifts_V4/pull/2441
 **Índices:** `idx_category_ancestors_descendant_id`, `idx_eco_material_config_material_id`, `idx_feminine_color_config_color_group_id`, `idx_kit_quote_requests_quote_id`, `idx_kit_save_requests_kit_id`, `idx_product_packaging_product_id`
 **Pós-merge:** Aplicar via `db-apply-migration.yml` com version `20261024180001`
@@ -84,7 +84,7 @@ SELECT jobid, jobname, LEFT(command,500) FROM cron.job WHERE jobid=222;
 
 ## §P08 — Idempotência send-notification
 
-**Migration DB:** `supabase/migrations/20261024180002_workspace_notifications_idempotency_p08.sql`
+**Migration DB:** `20261024180002_workspace_notifications_idempotency_p08.sql` (PR #2441 branch)
 **Edge function:** `supabase/functions/send-notification/index.ts` (upsert + `deduplicated` flag)
 **PR #2441:** https://github.com/adm01-debug/Promo_Gifts_V4/pull/2441
 **Pós-merge:** Aplicar migration `20261024180002` + deploy `send-notification` via `deploy-edge-functions.yml`
@@ -93,7 +93,7 @@ SELECT jobid, jobname, LEFT(command,500) FROM cron.job WHERE jobid=222;
 
 ## §P19 (complemento) — auto-block-offenders 5→15 min
 
-**Migration:** `supabase/migrations/20261024180003_cron_schedule_p19_remaining.sql`
+**Migration:** `20261024180003_cron_schedule_p19_remaining.sql` (PR #2441 branch)
 **PR #2441:** https://github.com/adm01-debug/Promo_Gifts_V4/pull/2441
 **Contexto:** Top-3 jobs P19 já redistribuídos em `20261022193000` (incidente 2026-10-22)
 **Pós-merge:** Aplicar via `db-apply-migration.yml` com version `20261024180003`
