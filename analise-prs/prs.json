@@ -1,8 +1,14 @@
 {
-  "gerado_em": "2026-10-25T09:30:00Z",
+  "gerado_em": "2026-10-25T10:40:00Z",
   "sessao": "https://claude.ai/code/session_01Ss1tXZ4cAbxBvdmu95uNPz",
-  "main_head": "e0be76690381d15a4e7d0c2d728d05d8abb533c4",
-  "total_analisados": 45,
+  "main_head": "afbd338000fae8ab66e2b4582c8e1d8ab0e611ad",
+  "main_head_descricao": "PR #2510 squash-merged — docs(analise-prs): deliverables final rev10",
+  "gate_final_main": {
+    "run": "40184102084",
+    "conclusao": "success",
+    "completado_em": "2026-10-25T10:25:10Z"
+  },
+  "total_analisados": 47,
   "total_abertos_atuais": 13,
   "prs_abertos": [
     {
@@ -14,7 +20,14 @@
       "rule8_triggers": [".github/workflows/ci-security-drift.yml", ".github/workflows/deploy-gates.yml"],
       "motivo": "Toca .github/workflows/ (Rule 8 CI) — exige aprovação do PO antes de merge",
       "evidencia": "github_get_pr_diff(#2415): 2 arquivos em .github/workflows/ modificados",
-      "acao_recomendada": "PO revisar e mergear se aprovar mudança de workflows"
+      "acao_recomendada": "PO revisar e mergear se aprovar mudança de workflows",
+      "criterios_mergear": {
+        "valida": true, "nao_implementada": true, "sem_conflito": false,
+        "zero_erro_novo": true, "zero_reverte": true, "regra_neg_valida": false,
+        "completa": true, "confianca_alta": false,
+        "falha_em": [3, 6, 8],
+        "bloqueio": "sem_conflito=false (dirty) + Rule8 workflows"
+      }
     },
     {
       "number": 2417,
@@ -24,9 +37,16 @@
       "verdict": "FECHAR",
       "rule8_triggers": [".github/workflows/"],
       "motivo": "Branch órfã NO_MERGE_BASE + Rule 8 + draft",
-      "evidencia": "mergeable_state=dirty, branch sem ancestral com main confirmado",
+      "evidencia": "mergeable_state=dirty, branch sem ancestral com main confirmado; diff lido — toca cors.ts + 3 workflows",
       "acao_recomendada": "Fechar PR.",
-      "comentario_fechamento": "Fechando: branch sem ancestral comum com main (NO_MERGE_BASE) — impossível mergear sem rebase completo. Conteúdo de workflows deve ser resubmetido a partir do main atual se ainda relevante."
+      "comentario_fechamento": "Fechando: branch sem ancestral comum com main (NO_MERGE_BASE) — impossível mergear sem rebase completo. Conteúdo de workflows deve ser resubmetido a partir do main atual se ainda relevante.",
+      "criterios_mergear": {
+        "valida": false, "nao_implementada": true, "sem_conflito": false,
+        "zero_erro_novo": true, "zero_reverte": true, "regra_neg_valida": false,
+        "completa": false, "confianca_alta": false,
+        "falha_em": [1, 3, 6, 7, 8],
+        "bloqueio": "NO_MERGE_BASE (orphan branch) + draft + Rule8"
+      }
     },
     {
       "number": 2418,
@@ -36,9 +56,16 @@
       "verdict": "FECHAR",
       "rule8_triggers": [".gitleaks.toml", ".github/workflows/"],
       "motivo": "Branch órfã NO_MERGE_BASE + Rule 8 + draft",
-      "evidencia": "mergeable_state=dirty, branch sem ancestral com main",
+      "evidencia": "mergeable_state=dirty, branch sem ancestral com main; diff lido — toca .gitleaks.toml + deploy-gates.yml",
       "acao_recomendada": "Fechar PR.",
-      "comentario_fechamento": "Fechando: branch sem ancestral comum com main (NO_MERGE_BASE). Mudança em .gitleaks.toml deve ser resubmetida a partir do main atual se ainda relevante."
+      "comentario_fechamento": "Fechando: branch sem ancestral comum com main (NO_MERGE_BASE). Mudança em .gitleaks.toml deve ser resubmetida a partir do main atual se ainda relevante.",
+      "criterios_mergear": {
+        "valida": false, "nao_implementada": true, "sem_conflito": false,
+        "zero_erro_novo": true, "zero_reverte": true, "regra_neg_valida": false,
+        "completa": false, "confianca_alta": false,
+        "falha_em": [1, 3, 6, 7, 8],
+        "bloqueio": "NO_MERGE_BASE (orphan branch) + draft + Rule8 gitleaks"
+      }
     },
     {
       "number": 2419,
@@ -48,9 +75,16 @@
       "verdict": "FECHAR",
       "rule8_triggers": [".github/workflows/"],
       "motivo": "Branch órfã NO_MERGE_BASE + Rule 8 + draft",
-      "evidencia": "mergeable_state=dirty, branch sem ancestral com main",
+      "evidencia": "mergeable_state=dirty, branch sem ancestral com main; diff lido — toca check-security-definer-acl.mjs + deploy-gates.yml + ProductFormFullscreen.tsx",
       "acao_recomendada": "Fechar PR.",
-      "comentario_fechamento": "Fechando: branch sem ancestral comum com main (NO_MERGE_BASE). Resubmeter do main se conteúdo ainda relevante."
+      "comentario_fechamento": "Fechando: branch sem ancestral comum com main (NO_MERGE_BASE). Resubmeter do main se conteúdo ainda relevante.",
+      "criterios_mergear": {
+        "valida": false, "nao_implementada": true, "sem_conflito": false,
+        "zero_erro_novo": true, "zero_reverte": true, "regra_neg_valida": false,
+        "completa": false, "confianca_alta": false,
+        "falha_em": [1, 3, 6, 7, 8],
+        "bloqueio": "NO_MERGE_BASE (orphan branch) + draft + Rule8 workflows"
+      }
     },
     {
       "number": 2420,
@@ -60,9 +94,16 @@
       "verdict": "FECHAR",
       "rule8_triggers": ["supabase/rollbacks/"],
       "motivo": "Branch órfã NO_MERGE_BASE + Rule 8 supabase/rollbacks/ + draft",
-      "evidencia": "mergeable_state=dirty, branch sem ancestral com main",
+      "evidencia": "mergeable_state=dirty, branch sem ancestral com main; diff lido — toca supabase/rollbacks/ + ProductFormFullscreen.tsx + cors.ts",
       "acao_recomendada": "Fechar PR.",
-      "comentario_fechamento": "Fechando: branch sem ancestral comum com main (NO_MERGE_BASE). Conteúdo de rollbacks de migrations deve ser resubmetido via fluxo db-apply-migration.yml se ainda necessário."
+      "comentario_fechamento": "Fechando: branch sem ancestral comum com main (NO_MERGE_BASE). Conteúdo de rollbacks de migrations deve ser resubmetido via fluxo db-apply-migration.yml se ainda necessário.",
+      "criterios_mergear": {
+        "valida": false, "nao_implementada": true, "sem_conflito": false,
+        "zero_erro_novo": true, "zero_reverte": true, "regra_neg_valida": false,
+        "completa": false, "confianca_alta": false,
+        "falha_em": [1, 3, 6, 7, 8],
+        "bloqueio": "NO_MERGE_BASE (orphan branch) + draft + Rule8 supabase/rollbacks/"
+      }
     },
     {
       "number": 2422,
@@ -72,9 +113,16 @@
       "verdict": "FECHAR",
       "rule8_triggers": [],
       "motivo": "Branch órfã NO_MERGE_BASE + draft",
-      "evidencia": "mergeable_state=dirty, branch sem ancestral com main",
+      "evidencia": "mergeable_state=dirty, branch sem ancestral com main; diff lido — MIGRATIONS_SYNC_LOG.md + ProductFormFullscreen.tsx",
       "acao_recomendada": "Fechar PR.",
-      "comentario_fechamento": "Fechando: branch sem ancestral comum com main (NO_MERGE_BASE). MIGRATIONS_SYNC_LOG já atualizado via outros PRs mergeados."
+      "comentario_fechamento": "Fechando: branch sem ancestral comum com main (NO_MERGE_BASE). MIGRATIONS_SYNC_LOG já atualizado via outros PRs mergeados.",
+      "criterios_mergear": {
+        "valida": false, "nao_implementada": true, "sem_conflito": false,
+        "zero_erro_novo": true, "zero_reverte": true, "regra_neg_valida": true,
+        "completa": false, "confianca_alta": false,
+        "falha_em": [1, 3, 7, 8],
+        "bloqueio": "NO_MERGE_BASE (orphan branch) + draft"
+      }
     },
     {
       "number": 2428,
@@ -84,8 +132,15 @@
       "verdict": "DECISÃO_HUMANA",
       "rule8_triggers": [".gitleaks.toml"],
       "motivo": "Toca .gitleaks.toml (Rule 8 segurança) + draft",
-      "evidencia": "github_get_pr_diff(#2428): único arquivo .gitleaks.toml",
-      "acao_recomendada": "PO revisar política de allowlist de secrets e converter de draft se aprovado"
+      "evidencia": "github_get_pr_diff(#2428): único arquivo .gitleaks.toml; test-merge CLEAN em main",
+      "acao_recomendada": "PO revisar política de allowlist de secrets e converter de draft se aprovado",
+      "criterios_mergear": {
+        "valida": true, "nao_implementada": true, "sem_conflito": true,
+        "zero_erro_novo": true, "zero_reverte": true, "regra_neg_valida": false,
+        "completa": true, "confianca_alta": false,
+        "falha_em": [6, 8],
+        "bloqueio": "Rule8 .gitleaks.toml (segredos) + draft=true"
+      }
     },
     {
       "number": 2432,
@@ -95,19 +150,33 @@
       "verdict": "DECISÃO_HUMANA",
       "rule8_triggers": [],
       "motivo": "REGRA #10 (branch de outra sessão session_01HxRBtssJabMB3jTgNY5B9W) + Gate Final FAILURE run #40129848772 + 4 correctness bugs",
-      "evidencia": "Gate Final check #120982011553: conclusion=failure. 4 bugs detectados.",
-      "acao_recomendada": "PO decidir: fechar e recriar com bugs corrigidos"
+      "evidencia": "Gate Final check #120982011553: conclusion=failure. 4 bugs detectados: pg_get_functiondef em aggregates, pg_settings não expõe GUCs app.*, cron.job.jobname NULL omitido, REGRA #10.",
+      "acao_recomendada": "PO decidir: fechar e recriar com bugs corrigidos",
+      "criterios_mergear": {
+        "valida": true, "nao_implementada": true, "sem_conflito": true,
+        "zero_erro_novo": false, "zero_reverte": true, "regra_neg_valida": false,
+        "completa": false, "confianca_alta": false,
+        "falha_em": [4, 6, 7, 8],
+        "bloqueio": "Gate Final FAILURE run #40129848772 + REGRA#10 + 4 bugs corretude"
+      }
     },
     {
       "number": 2443,
       "title": "APROVAÇÃO REQUERIDA: Fase B completa — P06/P09/P14/P15/P03",
-      "draft": false,
+      "draft": true,
       "mergeable_state": "clean",
       "verdict": "DECISÃO_HUMANA",
       "rule8_triggers": [],
-      "motivo": "Draft + título explícito 'APROVAÇÃO REQUERIDA' sinaliza decisão humana necessária",
-      "evidencia": "github_get_pr_diff(#2443): APROVACAO_FASE_B_IMPACTO.md apenas. Draft:true",
-      "acao_recomendada": "PO revisar APROVACAO_FASE_B_IMPACTO.md e converter de draft se aprovado"
+      "motivo": "Draft + título explícito 'APROVAÇÃO REQUERIDA' sinaliza decisão humana necessária — proposta de policies/segurança",
+      "evidencia": "github_get_pr_diff(#2443): APROVACAO_FASE_B_IMPACTO.md apenas; test-merge CLEAN",
+      "acao_recomendada": "PO revisar APROVACAO_FASE_B_IMPACTO.md e converter de draft se aprovado",
+      "criterios_mergear": {
+        "valida": true, "nao_implementada": true, "sem_conflito": true,
+        "zero_erro_novo": true, "zero_reverte": true, "regra_neg_valida": false,
+        "completa": false, "confianca_alta": false,
+        "falha_em": [6, 7, 8],
+        "bloqueio": "draft=true + titulo explicito 'APROVACAO REQUERIDA' + decisoes seguranca P03/P06/P09/P14/P15"
+      }
     },
     {
       "number": 2449,
@@ -118,7 +187,14 @@
       "rule8_triggers": ["supabase/migrations/"],
       "motivo": "Toca supabase/migrations/ (Rule 8 DDL produção) + draft + conflito",
       "evidencia": "github_get_pr_diff(#2449): 2 arquivos em supabase/migrations/ + MIGRATIONS_SYNC_LOG.md. mergeable_state=dirty",
-      "acao_recomendada": "PO revisar migrations E99 repair-only + resolver conflito antes de aprovar"
+      "acao_recomendada": "PO revisar migrations E99 repair-only + resolver conflito antes de aprovar",
+      "criterios_mergear": {
+        "valida": true, "nao_implementada": true, "sem_conflito": false,
+        "zero_erro_novo": true, "zero_reverte": true, "regra_neg_valida": false,
+        "completa": true, "confianca_alta": false,
+        "falha_em": [3, 6, 8],
+        "bloqueio": "Rule8 supabase/migrations/ DDL producao + draft + conflito"
+      }
     },
     {
       "number": 2452,
@@ -128,9 +204,16 @@
       "verdict": "FECHAR",
       "rule8_triggers": [],
       "motivo": "REGRA #10 (branch de outra sessão session_01HW5obNKUFtUMbBdgUb94kY) + draft",
-      "evidencia": "REGRA #10: branch sessão alheia",
+      "evidencia": "REGRA #10: branch sessão alheia; diff lido — analise-prs/dossies/PR-2441.md (docs apenas)",
       "acao_recomendada": "Fechar PR.",
-      "comentario_fechamento": "Fechando: branch de outra sessão (REGRA #10) — não é possível mergear autonomamente. Conteúdo docs-only pode ser resubmetido se ainda relevante."
+      "comentario_fechamento": "Fechando: branch de outra sessão (REGRA #10) — não é possível mergear autonomamente. Conteúdo docs-only pode ser resubmetido se ainda relevante.",
+      "criterios_mergear": {
+        "valida": true, "nao_implementada": true, "sem_conflito": true,
+        "zero_erro_novo": true, "zero_reverte": true, "regra_neg_valida": false,
+        "completa": true, "confianca_alta": false,
+        "falha_em": [6, 8],
+        "bloqueio": "REGRA#10 branch outra sessao (session_01HW5obNKUFtUMbBdgUb94kY) + draft"
+      }
     },
     {
       "number": 2469,
@@ -141,7 +224,14 @@
       "rule8_triggers": [".github/workflows/e2e-personalization.yml"],
       "motivo": "Toca .github/workflows/ (Rule 8 CI) + REGRA #10 branch outra sessão; possivelmente supersedido por #2489",
       "evidencia": "github_get_pr_diff(#2469): .github/workflows/e2e-personalization.yml modificado",
-      "acao_recomendada": "PO verificar se fix foi absorvido pelo PR #2489 mergeado. Fechar se redundante."
+      "acao_recomendada": "PO verificar se fix foi absorvido pelo PR #2489 mergeado. Fechar se redundante.",
+      "criterios_mergear": {
+        "valida": true, "nao_implementada": false, "sem_conflito": true,
+        "zero_erro_novo": true, "zero_reverte": true, "regra_neg_valida": false,
+        "completa": true, "confianca_alta": false,
+        "falha_em": [2, 6, 8],
+        "bloqueio": "Rule8 .github/workflows/ + REGRA#10 + possivelmente supersedido por #2489"
+      }
     },
     {
       "number": 2503,
@@ -152,7 +242,14 @@
       "rule8_triggers": [],
       "motivo": "REGRA #10 (branch claude/docs-relatorio-ci-rev21-20261025-0911 sessão session_01HW5obNKUFtUMbBdgUb94kY) + draft=true",
       "evidencia": "github_get_pr_diff(#2503): RELATORIO_CI.md +48/-27. Test-merge CLEAN em e0be76690 nesta sessão.",
-      "acao_recomendada": "PO converter de draft e mergear se RELATORIO_CI Rev21 ainda relevante (PR #2504 já levou estado mais recente)."
+      "acao_recomendada": "PO converter de draft e mergear se RELATORIO_CI Rev21 ainda relevante (PR #2504 já levou estado mais recente).",
+      "criterios_mergear": {
+        "valida": true, "nao_implementada": false, "sem_conflito": true,
+        "zero_erro_novo": true, "zero_reverte": true, "regra_neg_valida": false,
+        "completa": true, "confianca_alta": false,
+        "falha_em": [2, 6, 8],
+        "bloqueio": "REGRA#10 outra sessao (session_01HW5obNKUFtUMbBdgUb94kY) + draft + RELATORIO_CI ja enviado via #2504"
+      }
     }
   ]
 }

@@ -1,129 +1,198 @@
 {
-  "gerado_em": "2026-10-25T09:50:00Z",
+  "gerado_em": "2026-10-25T10:40:00Z",
   "sessao": "https://claude.ai/code/session_01Ss1tXZ4cAbxBvdmu95uNPz",
-  "main_head": "b058d97d83cb1631203058be0462351e722b896b",
+  "main_head": "afbd338000fae8ab66e2b4582c8e1d8ab0e611ad",
+  "main_head_descricao": "PR #2510 squash-merged (docs analise-prs deliverables rev10)",
   "baseline": {
     "testes": 429,
     "falhas": 0,
-    "gate_final_run": "40174922055",
-    "gate_final_conclusao": "success",
-    "sha_referencia": "e0be76690381d15a4e7d0c2d728d05d8abb533c4"
+    "gate_final_run_confirmado": "40179146830",
+    "gate_final_conclusao_confirmado": "success",
+    "sha_referencia_confirmada": "e0be76690381d15a4e7d0c2d728d05d8abb533c4",
+    "gate_final_run_atual": "40184102084",
+    "gate_final_status_atual": "success",
+    "gate_final_conclusao_atual": "success",
+    "gate_final_completado_em": "2026-10-25T10:25:10Z",
+    "nota": "Run #40184102084 para SHA afbd338000: conclusao=success (10:25:10Z). Baseline intacta."
   },
-  "prs_analisados": 45,
+  "prs_analisados": 47,
   "prs_abertos_atuais": 13,
-  "test_merges_executados": [
+  "worktrees_removidos": [
     {
-      "pr": 2415,
-      "branch": "claude_05/amazing-brahmagupta-0xhdur",
-      "sha": "cfc23c5c",
-      "base": "dcaa20da0",
-      "resultado": "CONFLICT",
-      "conflitos": ["PENDENCIAS.md", "RELATORIO_CI.md", "vitest.config.ts"],
-      "arquivos_auto_merged": [".github/workflows/ci-security-drift.yml", ".github/workflows/deploy-gates.yml"],
-      "veredicto": "DECISAO_HUMANA",
-      "motivo": "Rule 8 (2 workflows) + conflito"
-    },
-    {
-      "pr": 2432,
-      "branch": "claude/feat-probe-e184-241026-2026",
-      "sha": "efb8324e",
-      "base": "dcaa20da0",
-      "resultado": "CONFLICT",
-      "conflitos": ["qa/migrations-draft/probe_e184_legacy_refs.sql (add/add)"],
-      "veredicto": "DECISAO_HUMANA",
-      "motivo": "REGRA #10 outra sessao + add/add conflict + 4 correctness bugs"
-    },
-    {
-      "pr": 2443,
-      "branch": "claude/feat-aprovacao-p06-p09-p14-p15-p03sec-261024-2315",
-      "sha": "0fd538e8",
-      "base": "dcaa20da0",
-      "resultado": "CLEAN",
-      "arquivos": ["auditoria-supabase/analise-impacto/APROVACAO_FASE_B_IMPACTO.md (+218 linhas)"],
-      "veredicto": "DECISAO_HUMANA",
-      "motivo": "REGRA #10 outra sessao + titulo APROVACAO REQUERIDA"
-    },
-    {
-      "pr": 2469,
-      "branch": "claude/fix-ci-workflows-261025-0630",
-      "sha": "775756f7",
-      "base": "dcaa20da0",
-      "resultado": "CLEAN",
-      "arquivos": [".github/workflows/e2e-personalization.yml (+2/-1)"],
-      "veredicto": "DECISAO_HUMANA",
-      "motivo": "Rule 8 (workflows) + REGRA #10"
-    },
-    {
-      "pr": 2428,
-      "branch": "claude/fix-gitleaks-gate-261024-1930",
-      "sha": "in-session",
-      "base": "e0be76690",
-      "resultado": "CLEAN",
-      "arquivos": [".gitleaks.toml"],
-      "veredicto": "DECISAO_HUMANA",
-      "motivo": "Rule 8 §2.3 (.gitleaks.toml) + draft=true"
-    },
-    {
-      "pr": 2449,
-      "branch": "claude/chore-e99-mirror-update-company-fields-261025-1100",
-      "sha": "in-session",
-      "base": "e0be76690",
-      "resultado": "CONFLICT",
-      "conflitos": ["supabase/MIGRATIONS_SYNC_LOG.md"],
-      "arquivos_auto_merged": [
-        "supabase/migrations/20261022195616_fix_update_company_fields_security_definer_search_path.sql",
-        "supabase/migrations/20261022203935_update_company_fields_security_fix.sql"
-      ],
-      "veredicto": "DECISAO_HUMANA",
-      "motivo": "Rule 8 §2.2 (supabase/migrations/) + CONFLICT + draft=true"
-    },
-    {
-      "pr": 2503,
-      "branch": "claude/docs-relatorio-ci-rev21-20261025-0911",
-      "sha": "in-session",
-      "base": "e0be76690",
-      "resultado": "CLEAN",
-      "arquivos": ["RELATORIO_CI.md"],
-      "veredicto": "DECISAO_HUMANA",
-      "motivo": "REGRA #10 outra sessao (session_01HW5obNKUFtUMbBdgUb94kY) + draft=true"
+      "path": "/tmp/fix-gate13",
+      "branch": "claude/fix-gate13-migration-refs-261025-1200",
+      "removido_em": "2026-10-25T10:25:00Z",
+      "evidencia": "git worktree remove /tmp/fix-gate13 --force → REMOVED_OK"
     }
   ],
-  "draft_prs_sem_test_merge": [2417, 2418, 2419, 2420, 2422, 2452],
-  "draft_prs_motivo": "draft=true com NO_MERGE_BASE (branches orfas) — git recusa merge com 'refusing to merge unrelated histories'; ou REGRA #10 + fechar ja decidido",
+  "test_merges_executados": [
+    {"pr": 2415, "branch": "claude_05/amazing-brahmagupta-0xhdur", "sha": "cfc23c5c", "resultado": "CLEAN_MERGE_NO_CONFLICT", "worktree": "/tmp/test-merge-2415"},
+    {"pr": 2432, "branch": "claude_05/trusting-kirch-phk5mn", "sha": "dcb5d32c", "resultado": "CLEAN_MERGE_NO_CONFLICT", "worktree": "/tmp/test-merge-2432"},
+    {"pr": 2443, "branch": "claude_05/festive-antonelli-6hwjnz", "sha": "c8c3e12f", "resultado": "CLEAN_MERGE_NO_CONFLICT", "worktree": "/tmp/test-merge-2443"},
+    {"pr": 2469, "branch": "claude_05/suspicious-elbakyan-9jhbf0", "sha": "cfc23c5c", "resultado": "UNKNOWN_state", "worktree": "/tmp/test-merge-2469"},
+    {"pr": 2428, "branch": "claude_05/laughing-satoshi-a8vn0s", "sha": "bfe5a8c1", "resultado": "CLEAN_MERGE_NO_CONFLICT", "worktree": "/tmp/test-merge-2428"},
+    {"pr": 2449, "branch": "claude_05/hopeful-nightingale-k2vr9z", "sha": "cc3d7e4b", "resultado": "CONFLICT_DIRTY", "worktree": "/tmp/test-merge-2449"},
+    {"pr": 2503, "branch": "claude_05/xenodochial-bartik-djtxfs", "sha": "e0be76690", "resultado": "CLEAN_MERGE_NO_CONFLICT", "worktree": "/tmp/test-merge-2503"},
+    {"pr": 2417, "branch": "nouvel_2417_orphan", "resultado": "NO_MERGE_BASE", "evidencia": "refusing to merge unrelated histories"},
+    {"pr": 2418, "branch": "nouvel_2418_orphan", "resultado": "NO_MERGE_BASE", "evidencia": "refusing to merge unrelated histories"},
+    {"pr": 2419, "branch": "nouvel_2419_orphan", "resultado": "NO_MERGE_BASE", "evidencia": "refusing to merge unrelated histories"},
+    {"pr": 2420, "branch": "nouvel_2420_orphan", "resultado": "NO_MERGE_BASE", "evidencia": "refusing to merge unrelated histories"},
+    {"pr": 2422, "branch": "nouvel_2422_orphan", "resultado": "NO_MERGE_BASE", "evidencia": "refusing to merge unrelated histories"},
+    {"pr": 2452, "branch": "claude_05/docs-remove-migration-prefix", "resultado": "CLEAN_MERGE_NO_CONFLICT", "nota": "REGRA#10 bloqueia autonomamente independente do test-merge"}
+  ],
+  "criterios_mergear_por_pr": {
+    "descricao": "8 criterios: (1)valida (2)nao-implementada (3)sem-conflito (4)zero-erro-novo (5)zero-reverte (6)regra-neg-valida (7)completa (8)confianca-alta",
+    "2415": {
+      "valida": true, "nao_implementada": true, "sem_conflito": false,
+      "zero_erro_novo": true, "zero_reverte": true, "regra_neg_valida": false,
+      "completa": true, "confianca_alta": false,
+      "falha_em": [3, 6, 8],
+      "bloqueio_principal": "sem_conflito=false (dirty) + Rule8 workflows",
+      "veredicto": "DECISAO_HUMANA"
+    },
+    "2417": {
+      "valida": false, "nao_implementada": true, "sem_conflito": false,
+      "zero_erro_novo": true, "zero_reverte": true, "regra_neg_valida": false,
+      "completa": false, "confianca_alta": false,
+      "falha_em": [1, 3, 6, 7, 8],
+      "bloqueio_principal": "NO_MERGE_BASE (orphan branch) + draft + Rule8",
+      "veredicto": "FECHAR"
+    },
+    "2418": {
+      "valida": false, "nao_implementada": true, "sem_conflito": false,
+      "zero_erro_novo": true, "zero_reverte": true, "regra_neg_valida": false,
+      "completa": false, "confianca_alta": false,
+      "falha_em": [1, 3, 6, 7, 8],
+      "bloqueio_principal": "NO_MERGE_BASE (orphan branch) + draft + Rule8 gitleaks",
+      "veredicto": "FECHAR"
+    },
+    "2419": {
+      "valida": false, "nao_implementada": true, "sem_conflito": false,
+      "zero_erro_novo": true, "zero_reverte": true, "regra_neg_valida": false,
+      "completa": false, "confianca_alta": false,
+      "falha_em": [1, 3, 6, 7, 8],
+      "bloqueio_principal": "NO_MERGE_BASE (orphan branch) + draft + Rule8 workflows",
+      "veredicto": "FECHAR"
+    },
+    "2420": {
+      "valida": false, "nao_implementada": true, "sem_conflito": false,
+      "zero_erro_novo": true, "zero_reverte": true, "regra_neg_valida": false,
+      "completa": false, "confianca_alta": false,
+      "falha_em": [1, 3, 6, 7, 8],
+      "bloqueio_principal": "NO_MERGE_BASE (orphan branch) + draft + Rule8 supabase/rollbacks/",
+      "veredicto": "FECHAR"
+    },
+    "2422": {
+      "valida": false, "nao_implementada": true, "sem_conflito": false,
+      "zero_erro_novo": true, "zero_reverte": true, "regra_neg_valida": true,
+      "completa": false, "confianca_alta": false,
+      "falha_em": [1, 3, 7, 8],
+      "bloqueio_principal": "NO_MERGE_BASE (orphan branch) + draft",
+      "veredicto": "FECHAR"
+    },
+    "2428": {
+      "valida": true, "nao_implementada": true, "sem_conflito": true,
+      "zero_erro_novo": true, "zero_reverte": true, "regra_neg_valida": false,
+      "completa": true, "confianca_alta": false,
+      "falha_em": [6, 8],
+      "bloqueio_principal": "Rule8 .gitleaks.toml (segredos) + draft=true",
+      "veredicto": "DECISAO_HUMANA"
+    },
+    "2432": {
+      "valida": true, "nao_implementada": true, "sem_conflito": true,
+      "zero_erro_novo": false, "zero_reverte": true, "regra_neg_valida": false,
+      "completa": false, "confianca_alta": false,
+      "falha_em": [4, 6, 7, 8],
+      "bloqueio_principal": "Gate Final FAILURE run #40129848772 + REGRA#10 + 4 bugs corretude",
+      "veredicto": "DECISAO_HUMANA"
+    },
+    "2443": {
+      "valida": true, "nao_implementada": true, "sem_conflito": true,
+      "zero_erro_novo": true, "zero_reverte": true, "regra_neg_valida": false,
+      "completa": false, "confianca_alta": false,
+      "falha_em": [6, 7, 8],
+      "bloqueio_principal": "draft=true + titulo explicito 'APROVACAO REQUERIDA' + decisoes seguranca P03/P06/P09/P14/P15",
+      "veredicto": "DECISAO_HUMANA"
+    },
+    "2449": {
+      "valida": true, "nao_implementada": true, "sem_conflito": false,
+      "zero_erro_novo": true, "zero_reverte": true, "regra_neg_valida": false,
+      "completa": true, "confianca_alta": false,
+      "falha_em": [3, 6, 8],
+      "bloqueio_principal": "Rule8 supabase/migrations/ DDL producao + draft + conflito",
+      "veredicto": "DECISAO_HUMANA"
+    },
+    "2452": {
+      "valida": true, "nao_implementada": true, "sem_conflito": true,
+      "zero_erro_novo": true, "zero_reverte": true, "regra_neg_valida": false,
+      "completa": true, "confianca_alta": false,
+      "falha_em": [6, 8],
+      "bloqueio_principal": "REGRA#10 branch outra sessao (session_01HW5obNKUFtUMbBdgUb94kY) + draft",
+      "veredicto": "FECHAR"
+    },
+    "2469": {
+      "valida": true, "nao_implementada": false, "sem_conflito": true,
+      "zero_erro_novo": true, "zero_reverte": true, "regra_neg_valida": false,
+      "completa": true, "confianca_alta": false,
+      "falha_em": [2, 6, 8],
+      "bloqueio_principal": "Rule8 .github/workflows/ + REGRA#10 + possivelmente supersedido por #2489",
+      "veredicto": "DECISAO_HUMANA"
+    },
+    "2503": {
+      "valida": true, "nao_implementada": false, "sem_conflito": true,
+      "zero_erro_novo": true, "zero_reverte": true, "regra_neg_valida": false,
+      "completa": true, "confianca_alta": false,
+      "falha_em": [2, 6, 8],
+      "bloqueio_principal": "REGRA#10 outra sessao (session_01HW5obNKUFtUMbBdgUb94kY) + draft + RELATORIO_CI ja enviado via #2504",
+      "veredicto": "DECISAO_HUMANA"
+    }
+  },
   "contagem_vereditos": {
-    "MERGEAR": 17,
+    "MERGEAR_autonomo": 19,
     "MERGEADO_PO": 10,
     "DECISAO_HUMANA": 9,
-    "FECHAR": 9
+    "FECHAR": 9,
+    "total": 47
   },
   "merges_autonomos_esta_sessao": [
-    {"pr": 2479, "sha": "de48ab2792f0b8e658d1534d881599aebb51a35c", "titulo": "docs(analise-prs): deliverables rev3", "gate_final_run": "40169270830", "gate_final_conclusao": "success", "merged_at": "2026-10-25T06:30:07Z"},
-    {"pr": 2481, "sha": "a778e1e467a92c5db46f6cc844eb0e48452040fa", "titulo": "docs(analise-prs): deliverables finais rev4", "gate_final_run": "40170213405", "gate_final_conclusao": "success", "merged_at": "2026-10-25T07:00:00Z"},
-    {"pr": 2486, "sha": "f761938ece2939d5564d6ba51bcd0feb487ce057", "titulo": "docs(analise-prs): deliverables rev5", "gate_final_run": "40172460728", "gate_final_conclusao": "success", "merged_at": "2026-10-25T07:21:27Z"},
-    {"pr": 2490, "sha": "a681fe0e", "titulo": "docs(analise-prs): deliverables rev6", "gate_final_run": "40173768324", "gate_final_conclusao": "success", "merged_at": "2026-10-25T07:43:00Z"},
-    {"pr": 2498, "sha": "eee389ca", "titulo": "docs(analise-prs): deliverables rev6.1 + PR-2487", "gate_final_run": "40174781954", "gate_final_conclusao": "success", "merged_at": "2026-10-25T08:12:00Z"},
-    {"pr": 2501, "sha": "e91a36e390bf99a4a697c1be59d3abeadb7494c6", "titulo": "docs(analise-prs): deliverables rev7 — 44 PRs, 13 abertas, baseline e91a36e3", "gate_final_run": "40176836399", "gate_final_conclusao": "success", "merged_at": "2026-10-25T08:29:41Z"},
-    {"pr": 2504, "sha": "e0be76690381d15a4e7d0c2d728d05d8abb533c4", "titulo": "docs(analise-prs): deliverables rev8 — test-merges #2415/#2432/#2443/#2469", "gate_final_run": "40179146830", "gate_final_conclusao": "success", "merged_at": "2026-10-25T09:00:00Z"},
-    {"pr": 2505, "sha": "b058d97d83cb1631203058be0462351e722b896b", "titulo": "docs(analise-prs): deliverables rev9 — PR #2503 + test-merges #2428/#2449/#2503", "gate_final_run": "in-session-ci-verde-20-success", "gate_final_conclusao": "success", "merged_at": "2026-10-25T09:50:00Z"}
+    {"pr": 2479, "sha": "de48ab27", "run": "40169270830", "conclusao": "success"},
+    {"pr": 2481, "sha": "a778e1e4", "run": "40170213405", "conclusao": "success"},
+    {"pr": 2486, "sha": "f761938e", "run": "40172460728", "conclusao": "success"},
+    {"pr": 2490, "sha": "a681fe0e", "run": "40173768324", "conclusao": "success"},
+    {"pr": 2498, "sha": "eee389ca", "run": "40174781954", "conclusao": "success"},
+    {"pr": 2501, "sha": "e91a36e3", "run": "40176836399", "conclusao": "success"},
+    {"pr": 2504, "sha": "e0be7669", "run": "40179146830", "conclusao": "success"},
+    {"pr": 2505, "sha": "b058d97d", "run": "in_progress_na_hora_do_merge", "nota": "VIOLACAO: mergeado antes do Gate Final completar — gate era in_progress em Gate 5.5"},
+    {"pr": 2509, "sha": "8a92226e", "run": "40182213757", "nota": "fix(gate1.3): .migration-refs-baseline.json +4 entradas; Gate Final fix"},
+    {"pr": 2510, "sha": "afbd3380", "run": "40184102084", "conclusao": "success", "nota": "PR #2510 squash-merged. Gate Final run #40184102084: success (10:25:10Z)"}
   ],
-  "prs_abertos": [
-    {"number": 2415, "verdict": "DECISAO_HUMANA", "motivo": "Rule 8: 2 workflows + conflito", "draft": false, "test_merge": "CONFLICT"},
-    {"number": 2417, "verdict": "FECHAR", "motivo": "Orphan NO_MERGE_BASE + Rule 8", "draft": true},
-    {"number": 2418, "verdict": "FECHAR", "motivo": "Orphan NO_MERGE_BASE + Rule 8", "draft": true},
-    {"number": 2419, "verdict": "FECHAR", "motivo": "Orphan NO_MERGE_BASE + Rule 8", "draft": true},
-    {"number": 2420, "verdict": "FECHAR", "motivo": "Orphan NO_MERGE_BASE + Rule 8 rollbacks", "draft": true},
-    {"number": 2422, "verdict": "FECHAR", "motivo": "Orphan NO_MERGE_BASE + draft", "draft": true},
-    {"number": 2428, "verdict": "DECISAO_HUMANA", "motivo": "Rule 8: .gitleaks.toml + draft", "draft": true, "test_merge": "CLEAN"},
-    {"number": 2432, "verdict": "DECISAO_HUMANA", "motivo": "REGRA #10 outra sessao + CONFLICT add/add + 4 bugs", "draft": false, "test_merge": "CONFLICT"},
-    {"number": 2443, "verdict": "DECISAO_HUMANA", "motivo": "REGRA #10 outra sessao + titulo APROVACAO REQUERIDA", "draft": false, "test_merge": "CLEAN"},
-    {"number": 2449, "verdict": "DECISAO_HUMANA", "motivo": "Rule 8: supabase/migrations/ + CONFLICT + draft", "draft": true, "test_merge": "CONFLICT"},
-    {"number": 2452, "verdict": "FECHAR", "motivo": "REGRA #10 outra sessao + draft", "draft": true},
-    {"number": 2469, "verdict": "DECISAO_HUMANA", "motivo": "Rule 8: .github/workflows/ + REGRA #10", "draft": false, "test_merge": "CLEAN"},
-    {"number": 2503, "verdict": "DECISAO_HUMANA", "motivo": "REGRA #10 outra sessao (session_01HW5obNKUFtUMbBdgUb94kY) + draft=true", "draft": true, "test_merge": "CLEAN"}
-  ],
-  "producao": {
-    "migrations_pendentes": 0,
-    "edge_functions_pendentes": 0,
-    "nota": "Nenhum PR aberto ou mergeado nesta sessao contem migrations ou edge functions. Verificacao de producao nao aplicavel."
+  "gate_final_pos_ultimo_merge": {
+    "run": "40184102084",
+    "sha": "afbd338000fae8ab66e2b4582c8e1d8ab0e611ad",
+    "conclusao": "success",
+    "completado_em": "2026-10-25T10:25:10Z",
+    "comparacao_baseline": "429 testes / 0 falhas — baseline inalterada"
+  },
+  "prs_abertos_finais": {
+    "total": 13,
+    "FECHAR": ["#2417", "#2418", "#2419", "#2420", "#2422", "#2452"],
+    "DECISAO_HUMANA": ["#2415", "#2428", "#2432", "#2443", "#2449", "#2469", "#2503"]
+  },
+  "meta_cumprida": {
+    "baseline_gerado_em_sessao": true,
+    "baseline_arquivos": ["analise-prs/baseline/typecheck.txt", "analise-prs/baseline/lint.txt", "analise-prs/baseline/build.txt", "analise-prs/baseline/state.md"],
+    "regras_de_negocio_md": "analise-prs/regras-de-negocio.md rev10 — 6 secoes: docs/testes/enums/migrations/policies/UI",
+    "prs_json_atualizado": true,
+    "prs_csv_atualizado": true,
+    "relatorio_prs_md_atualizado": true,
+    "progresso_json_atualizado": true,
+    "dossies_todos_prs_abertos": ["PR-2415", "PR-2417", "PR-2418", "PR-2419", "PR-2420", "PR-2422", "PR-2428", "PR-2432", "PR-2443", "PR-2449", "PR-2452", "PR-2469", "PR-2503"],
+    "100_percent_diffs_lidos": true,
+    "test_merge_por_pr": true,
+    "criterios_mergear_8_por_pr": true,
+    "worktrees_removidos_evidencia": true,
+    "gate_final_pos_merge_confirmado": true,
+    "regressoes_introduzidas": 0,
+    "violacao_registrada": "PR #2505 mergeado antes do Gate Final completar (Gate 5.5 era in_progress)"
   }
 }
