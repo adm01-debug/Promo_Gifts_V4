@@ -145,7 +145,10 @@ function AddButton({
         variant="outline"
         size="sm"
         className="ml-auto shrink-0 focus-visible:ring-2 focus-visible:ring-primary/60"
-        onClick={() => selectedItem && onRemove(selectedItem)}
+        onClick={(e) => {
+          e.stopPropagation();
+          if (selectedItem) onRemove(selectedItem);
+        }}
       >
         <Check className="mr-1 h-3 w-3 text-success" />
         <span className="group-hover:hidden">Adicionado</span>
@@ -159,7 +162,10 @@ function AddButton({
       size="sm"
       className="ml-auto shrink-0 opacity-90 transition-opacity focus-visible:ring-2 focus-visible:ring-primary/60 group-hover:opacity-100"
       disabled={cantFit}
-      onClick={() => onAdd(item)}
+      onClick={(e) => {
+        e.stopPropagation();
+        onAdd(item);
+      }}
     >
       <Plus className="mr-1 h-3 w-3" />
       Adicionar
@@ -189,7 +195,7 @@ export function ItemCard({
           'group rounded-xl transition-all duration-200',
           'border-border/50 focus-within:ring-2 focus-within:ring-primary/60',
           isSelected && 'bg-primary/5 ring-2 ring-primary',
-          cantFit && 'opacity-60 cursor-not-allowed',
+          cantFit && 'cursor-not-allowed opacity-60',
           !cantFit && !isSelected && 'cursor-pointer hover:border-primary/40 hover:bg-card',
         )}
       >
@@ -244,7 +250,7 @@ export function ItemCard({
         'border-border/50 focus-within:ring-2 focus-within:ring-primary/60',
         isSelected &&
           'bg-primary/5 shadow-[0_4px_20px_-6px_hsl(var(--primary)/0.35)] ring-2 ring-primary',
-        cantFit && 'opacity-60 cursor-not-allowed',
+        cantFit && 'cursor-not-allowed opacity-60',
         !cantFit &&
           !isSelected &&
           'cursor-pointer hover:-translate-y-0.5 hover:border-primary/40 hover:bg-card hover:shadow-lg',
