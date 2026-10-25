@@ -1,6 +1,6 @@
 # RELATORIO_CI.md — Relatório CI / Action Required
-**rev 6 — 2026-10-25 (sessão `session_01Nc1nb7PArDnixYvvZssnKy`)**
-**Branch:** `claude_05/upbeat-hamilton-5gnz50` (PRs #2438 e #2453) — **PR #2438 MERGEADO em main SHA `c8994f17`; PR #2453 Gate Final ✅ success**
+**rev 7 — 2026-10-25 (sessão `session_01Nc1nb7PArDnixYvvZssnKy`)**
+**Branch:** `claude_05/upbeat-hamilton-5gnz50` (PRs #2438, #2453, #2454) — **PR #2454 MERGEADO em main SHA `eb7a9247`; Gate Final ✅ conclusion=success (run #40150209361)**
 
 ---
 
@@ -80,7 +80,7 @@ Verificado em 2026-10-25 (latest run por workflow):
 | Static Health Checks | ✅ success | — |
 | Supabase Linter Gate | ❌ failure | Pré-existente em main; não é required |
 | UI · Visual & A11y | ✅ success | — |
-| Deploy Gates | ✅ success | **required check** — run #40146000908 (pós-merge, SHA c8994f17) |
+| Deploy Gates | ✅ success | **required check** — run [#40150209361](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40150209361) (pós-merge PR #2454, SHA eb7a9247, conclusion=success 01:26:43Z) |
 
 **Workflows verdes (required):** Gate Final progressivo — ver seção 3 e seção 7.
 
@@ -253,3 +253,74 @@ node scripts/check-migration-path-references.mjs --update-baseline
 **Status de pré-existência:** As falhas são **pré-existentes em main**. O arquivo `receive-crm-callback.test.ts` testa contrato de schema (payload CRM). Erros do tipo `expected false to be true // Object.is equality` em `parsed.success` indicam schema Zod não compatível com o que o teste espera — comportamento que existia antes desta branch (nenhum commit desta sessão tocou `src/` ou `tests/edge-functions/`). Confirmado: SHA `edb83085` não modifica `tests/edge-functions/integration/receive-crm-callback.test.ts` nem `supabase/functions/receive-crm-callback/`.
 
 **Impacto:** Nenhum no deploy. Gate 2 não é required em PR docs-only. Registrado como item de acompanhamento, não regressão desta sessão.
+
+---
+
+## 9. Gate Final — PR #2454 (baseline stale fix) — PROVA FINAL ✅
+
+**Run:** [#40150209361](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40150209361)  
+**SHA:** `eb7a92479750cec45c7b08ce09bcfe05d407396e`  
+**Branch:** `main`  
+**Criado em:** 2026-10-25T01:19:58Z | **Concluído:** 2026-10-25T01:26:43Z  
+**`status: "completed"` · `conclusion: "success"`** ✅
+
+### 9.1 Tabela completa de jobs
+
+| Gate | Job | Status | Conclusão |
+|---|---|---|---|
+| Gate 0 | SSOT Supabase (project ID canônico) | completed | ✅ success |
+| E14 | Detectar mudanças (docs-only bypass) | completed | ✅ success |
+| Gate 5 | SEO Sanity Check | completed | ✅ success |
+| Gate 0.5 | Dependency Audit | completed | ✅ success |
+| Gate 2.5 | PostgreSQL Transactional Integrity | completed | ✅ success |
+| Gate 5.5 | RPC restore_seller_cart presente no canônico | completed | ✅ success |
+| Gate 4 | Lighthouse CI | completed | ✅ success (src não modificado — skipped internamente) |
+| Gate E23 | Secret Scan (gitleaks) | completed | ✅ success |
+| Gate 2 | Unit Tests | completed | ✅ success |
+| Gate E23 | Verifica secrets E2E | completed | ✅ success |
+| Gate E40 | Detect schema file changes | completed | ✅ success |
+| Gate 0.6 | Dependency Review | skipped | ⏭️ PR-only |
+| Gate E40 | Schema Drift Check | skipped | ⏭️ sem credenciais push |
+| **Gate 1** | **Lint + TypeScript (Gates 1.1–1.18, E89–E119)** | **completed** | ✅ **success** (01:25:38Z) |
+| **Gate 3** | **E2E Smoke** | **completed** | ✅ **success** (01:24:35Z) |
+| **Gate 6** | **Build (Vite + SBOM + attestation)** | **completed** | ✅ **success** |
+| **Gate Final** | **Deploy Gates** | **completed** | ✅ **success** (conclusion=success) |
+
+### 9.2 Causa raiz corrigida (PR #2454)
+
+**Problema:** PR #2453 adicionou 7 entradas ao `.migration-refs-baseline.json` para refs de docs de análise (analise-prs/, analise-branches/) que apontavam para migrations de PR #2441 (ainda aberto, nomes provisórios). PR #2441 foi mergeado com nomes finais diferentes. Os docs foram atualizados com os nomes corretos; as 7 entradas do baseline ficaram **stale** (apontavam para migrations inexistentes com os nomes antigos).
+
+**Gate 1.3** (`check-migration-path-references.mjs`) detectou as stale entries e falhou com `exit(1)`.
+
+**Fix:** `node scripts/check-migration-path-references.mjs --update-baseline` → baseline 488 → 481 entradas (7 removidas).
+
+### 9.3 Comparação baseline × final (anti-regressão)
+
+| Métrica | Baseline (PR #2438, SHA c8994f17) | Final (PR #2454, SHA eb7a9247) | Delta |
+|---|---|---|---|
+| Gate Final conclusion | ✅ success | ✅ success | 0 regressão |
+| `.migration-refs-baseline.json` entries | 481 (original) → 488 (+7 PR #2453) | 481 (-7 stale) | Melhorou — stale eliminados |
+| Gate 1.3 | ✅ success (SHA c8994f17) → ❌ failure (SHA d804cafa) | ✅ success (SHA eb7a9247) | **Corrigido** |
+| Workflows verdes antes desta sessão | ✅ CodeQL, SSOT, Static Health, Gitleaks, etc. | ✅ idem — sem regressão | 0 |
+| Failures pré-existentes não-required | Release Please, Supabase Linter, E2E Flakes | Idem — sem alteração | 0 |
+
+### 9.4 Inventário completo `action_required` — tabela de prova
+
+| Fonte | Qtd | Branch(es) | Reason | Bloqueante no Gate Final? | Registrado |
+|---|---|---|---|---|---|
+| `release-please--branches--main--components--*` | ~620 | várias sub-branches do bot | Bot sem permissão de escrita; runs `action_required` por `pull_request_target` sem fork | **Não** — não são PRs nem estão em `main` | PENDENCIAS.md P4 |
+| `copilot/corrigir-peer-dependencies-eslint` | ~21 | branch copilot | PR #2320 fechado sem merge; runs órfãos | **Não** | PENDENCIAS.md P4 |
+| **Total** | **641** | — | API HTTP 403 impede aprovação em lote (branches internas não-fork) | **Nenhum bloqueia Gate Final** | PENDENCIAS.md P4 |
+
+**Verificado via API:** `GET /repos/adm01-debug/Promo_Gifts_V4/actions/runs?status=action_required&per_page=100` → 641 total, zero em `main`, zero em branches desta sessão.
+
+### 9.5 Resumo do mandato — SATISFEITO
+
+| Requisito do mandato | Status | Evidência |
+|---|---|---|
+| 1. Inventário completo `action_required` | ✅ | Seção 9.4: 641 runs, todos não-required, PENDENCIAS.md P4 |
+| 2. Tabela de prova com link + conclusion=success | ✅ | Seção 9.1: todos os 16 jobs do run #40150209361 |
+| 3. Gate Final pós-merge com conclusion=success | ✅ | Run [#40150209361](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40150209361) SHA `eb7a9247` — `conclusion: "success"` |
+| 4. Comparação baseline × final sem piora | ✅ | Seção 9.3: 0 regressões; Gate 1.3 corrigido |
+| 5. RELATORIO_CI.md final com evidências | ✅ | Este arquivo, rev 7 |
+| 6. PENDENCIAS.md atualizado (SHA eb7a9247) | ✅ | rev 13, Commit de referência `eb7a9247` |
