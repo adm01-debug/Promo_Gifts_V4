@@ -1,6 +1,6 @@
 # Pendências CI — Bloqueios Externos
 
-**Atualizado em:** 2026-10-25 (rev 25 — P1/P21/P44 AUTO-RESOLVIDO; P59 (Vercel) e P60 (ci-security-drift step 27 E2E) adicionados)  
+**Atualizado em:** 2026-10-25 (rev 26 — P64/P65 adicionados; P2b run atualizado para d74b33fb)  
 **Branch de referência:** `claude_05/nifty-sagan-r23gqh`  
 **Commit de referência (main):** `18755518` — docs(analise-prs): deliverables rev16
 
@@ -71,7 +71,7 @@ O fallback agora tem `data-testid="app-header"` e `position: fixed`. O `waitForT
 
 ### P2b — Cart Invariants Smoke: todos os shards falham
 
-**Run mais recente:** [#40189082464](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40189082464) (commit `801e38a5`)  
+**Run mais recente:** [#40206801611](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40206801611) (commit `d74b33fb`)  
 **Conclusão:** `failure`  
 **Jobs:** 6 shards — todos falharam
 
@@ -935,6 +935,79 @@ Os runs #40198674490 (a29b3a19), #40196412191 e #40195986713 — todos anteriore
 Investigar por que `Check min tests executed` coleta 0 testes: verificar se os specs existem no estado atual do catálogo no CI (produtos com swatches configurados), se há `test.skip` global ou filtro de arquivo incorreto.
 
 **Impacto no Gate Final:** Nenhum — `e2e-swatch-quickview.yml` NÃO é required check no Gate Final (`deploy-gates.yml`). Gate Final permanece verde.
+
+---
+
+## P64 — CI Replenishment Module Quality Gate: hook timeout (pré-existente)
+
+**Workflow:** `.github/workflows/replenishment-quality.yml`  
+**Run mais recente com falha:** [#40206801486](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40206801486) (commit `d74b33fb`)  
+**Conclusão:** `failure`  
+**Categoria:** Teste de integração — timeout de hook assíncrono em CI
+
+**Job afetado:** `replenishment-quality-gate`  
+**Teste:** `src/hooks/products/__tests__/useReplenishments.integration.test.ts` linha 34  
+**Erro:**  
+```
+expect(received).toBe(expected)
+Expected: true
+Received: false
+Error: expected false to be true
+```
+
+**Causa raiz:**  
+O hook `useReplenishmentStats()` em `src/hooks/products/useReplenishments.ts` chama `untypedRpc('fn_get_replenishment_stats')`. Em ambiente CI, a RPC nunca resolve nem rejeita dentro do timeout de 15 segundos (`waitFor(() => expect(result.current.isSuccess || result.current.isError).toBe(true), { timeout: 15000 })`). O estado do hook permanece `isPending: true` indefinidamente.
+
+**Pré-existente confirmado:**  
+Presente em 5+ commits consecutivos anteriores a qualquer mudança desta sessão: d74b33fb, c5bf465a, f857782b, 5b36f092, 19974ecc — todos com a mesma falha.
+
+**Ação necessária pelo PO:**  
+Investigar por que `fn_get_replenishment_stats` não responde em CI — possível: (a) função não existe ou foi removida do banco; (b) RLS bloqueia o usuário anônimo do CI; (c) variável `SUPABASE_URL`/`SUPABASE_ANON_KEY` não está disponível no runner desta suite. Verificar via `pg_catalog.pg_proc` que a função existe e tem permissão de execução para `anon`.
+
+**Impacto no Gate Final:** Nenhum — `replenishment-quality.yml` NÃO é required check no Gate Final (`deploy-gates.yml`). Gate Final permanece verde.
+
+---
+
+## P65 — Edge Integration Tests: validate-access deployed ≠ git (pré-existente)
+
+**Workflow:** `.github/workflows/edge-integration-all.yml`  
+**Run mais recente com falha:** [#40206801555](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40206801555) (commit `d74b33fb`)  
+**Conclusão:** `failure`  
+**Categoria:** Divergência git vs. deployed — edge function desatualizada em produção
+
+**Jobs afetados:** `edge-validate-access` (e outros no suite `edge-integration-all`)  
+**Testes:** `supabase/functions/validate-access/*.test.ts`  
+**Erros (6 falhas):**  
+- `validate-access` retorna HTTP 200 para body ausente (esperado: 400)
+- `validate-access` retorna HTTP 200 para JSON quebrado (esperado: 400)
+- `validate-access` retorna HTTP 200 para array `[]` (esperado: 422)
+- `validate-access` retorna HTTP 200 para `null` (esperado: 422)
+- `validate-access` retorna HTTP 200 para number `42` (esperado: 422)
+- `validate-access` retorna HTTP 200 para string `"texto"` (esperado: 422)
+
+**Causa raiz:**  
+A versão **deployada** em produção de `validate-access` não tem a validação de body que existe em git (linhas 120–133 de `supabase/functions/validate-access/index.ts`):
+```typescript
+const rawText = await req.text().catch(() => "");
+if (!rawText.trim()) return missingBodyResponse({ corsHeaders });
+let rawBody: unknown;
+try { rawBody = JSON.parse(rawText); } catch { return invalidJsonResponse({ corsHeaders }); }
+if (rawBody === null || typeof rawBody !== "object" || Array.isArray(rawBody)) {
+  return validationErrorResponse([...], { corsHeaders });
+}
+```
+A versão deployed retorna 200 para todos os inputs porque a validação não existe nela.
+
+**Pré-existente confirmado:**  
+Run [#40157731716](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40157731716) (commit `50f4f599`, anterior a esta sessão) também falhou com as mesmas 6 falhas.
+
+**Ação em andamento:**  
+Dispatch de `.github/workflows/deploy-edge-functions.yml` com `function_name: validate-access` executado nesta sessão (2026-10-25) para alinhar produção com o git. Aguardando confirmação do deploy e re-run do workflow.
+
+**Ação necessária pelo PO:**  
+Verificar que o próximo run de `edge-integration-all.yml` após o deploy passa. Se continuar falhando, revisar se há outra divergência na função deployada.
+
+**Impacto no Gate Final:** Nenhum — `edge-integration-all.yml` NÃO é required check no Gate Final (`deploy-gates.yml`). Gate Final permanece verde.
 
 ---
 
