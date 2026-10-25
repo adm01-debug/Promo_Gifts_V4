@@ -1551,3 +1551,22 @@ Detalhes, métricas antes/depois e one-shots: docs/EXECUCAO_CORRECOES_MEDALLION_
 | `20261022194100` | `389601c24ab27be5fd302b3244724a30966a3ccb280941892ab0116ef1a8888c` | `—` (não aplicado) | Claude sessão E40/segurança | E15 (pendente) | pendente | pendente — REVOKE ALL ON mockup_approval_links FROM anon (brecha E40) |
 | `20261022194200` | `0685d1c62e3908de2b0932809a0bd9adc2cbd3394cb4ce5897e4ddf2d3ccdbb5` | `—` (não aplicado) | Claude sessão E18-complement/segurança | E15 (pendente) | pendente | pendente — REVOKE EXECUTE ON mcp_kv_get FROM authenticated (brecha E18 complemento) |
 | `20261024163500` | `7345f667cddc4f123943a5ad0e961736c810b87df747d5178e91f947723aa857` | `—` (não aplicado) | Claude sessão fix-audit-acl-regrole (https://claude.ai/code/session_016AQbKL51RKSh8VtWxj4b1G) | E15 | pronto-para-aplicar | rollback adicionado em PR #2430 — fix audit_security_definer_acl(): pg_get_userbyid() substitui cast ::regrole::text (OID de role dropada causava HTTP 500); aguardando db-apply-migration.yml |
+
+---
+
+## 2026-10-25 — E99: Mirrors repair-only para DDL out-of-band (20261022195616 e 20261022203935)
+
+**Tipo:** Migrations espelho E99 — repair-only (DDL já aplicada em produção via MCP; arquivos SQL criados como documentação e para drift-check).
+**Sessão:** https://claude.ai/code/session_01HxRBtssJabMB3jTgNY5B9W
+**Branch:** `claude/chore-e99-mirror-update-company-fields-261025-1100`
+**Contexto:** Detectado na análise de branches (sessão analise-branches 2026-10-24): versões `20261022195616` e `20261022203935` presentes no ledger `supabase_migrations.schema_migrations` de produção (`doufsxqlfjyuvxuezpln`) mas sem arquivo SQL correspondente no git — DDL out-of-band aplicada via MCP (E056 corolário).
+**Função:** `public.update_company_fields(uuid, jsonb)` — fix SECURITY DEFINER + search_path (E30) + guard auth.uid() (E18).
+
+### Recibos E99 repair-only
+
+| versão | sha256 arquivo | método | data UTC aplicação real | pós-check |
+|---|---|---|---|---|
+| `20261022195616` | `662fa38e1e09eed7d26ae55e0a1f46beca1793837aa9217d8f6e220c4817056f` | E99 repair-only (mirror) | 2026-10-22T19:56:16Z | em produção via SELECT pg_get_functiondef — SECURITY DEFINER + search_path confirmados |
+| `20261022203935` | `83558c38fda00255556c265c7ba669c85650a1508a7b2acdb99902fed3746575` | E99 repair-only (mirror) | 2026-10-22T20:39:35Z | em produção via SELECT pg_get_functiondef — auth.uid() guard confirmado |
+
+**Próximo passo obrigatório:** após merge desta PR, disparar `schema-snapshot-export.yml` com `force_rotate: true` para regenerar baseline (REGRA #8 corolário).
