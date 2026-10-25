@@ -12,7 +12,8 @@
 **PR #2530:** mergeada em `af0b4512765dd5feb8acc3a10216ce7951301254` (docs P61/P62)  
 **PR #2531:** mergeada em `e94e846f` (docs P63)  
 **PR #2524:** mergeada em `d74b33fb1e2f0d2aa6d09db05fc4ea8ac73a4c22` (fix: Linter Gate trata 5xx como falha de infra transitória)  
-**Main HEAD atual:** `d74b33fb1e2f0d2aa6d09db05fc4ea8ac73a4c22`
+**PR #2533:** mergeada em `76363781bdc627bc20ce03364dbe4cb22f0c1616` (docs P64/P65 — baseline registrado)  
+**Main HEAD atual:** `76363781bdc627bc20ce03364dbe4cb22f0c1616`
 
 ---
 
@@ -40,6 +41,14 @@ Corrigir todos os workflows com falha na main ou documentar motivo bloqueante em
 | ESLint (`npm run lint:check`) | ✅ EXIT:0 | `NODE_OPTIONS=--max-old-space-size=4096`, sem warnings |
 | Build (`npm run build`) | ✅ EXIT:0 | `built in 15.92s` |
 | `test:deploy-gate` (vitest) | ✅ 334 passed (3 files) | EXIT:0, duração 6.99s |
+
+### Baseline pré-PR #2533 (main `d74b33fb`) — 2026-10-25
+| Check | Resultado | Evidência |
+|---|---|---|
+| TypeScript (`tsc --noEmit`) | ✅ EXIT:0 | Sem erros de tipo — rodado localmente em `d74b33fb` |
+| ESLint (`npm run lint:baseline`) | ✅ EXIT:0 | `0 erros · 0 warnings · Δ +0` — `NODE_OPTIONS=--max-old-space-size=3072` |
+| Build (`npm run build`) | ✅ EXIT:0 | `built in 15.21s` — rodado localmente em `d74b33fb` |
+| `test:deploy-gate` (vitest) | ✅ 334 passed (3 files) | EXIT:0, duração 6.65s — rodado localmente em `d74b33fb` |
 
 ---
 
@@ -114,6 +123,7 @@ timeout-minutes: 90  # P19b: vitest roda 1265 arquivos com maxWorkers:2 (~45-60m
 | `af0b4512` (PR #2530 merge) | — | — | docs P61/P62; Gate Final rodando |
 | `e94e846f` (PR #2531 merge) | [#40206446230](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40206446230) | ✅ success | docs P63 — Gate Final green |
 | `d74b33fb` (PR #2524 merge) | [#40206801690](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40206801690) | ✅ success | fix: Linter Gate 5xx → Gate Final green |
+| `76363781` (PR #2533 merge) | aguardando confirmação | ⏳ verificar | docs P64/P65 + baseline registrado |
 
 ---
 
@@ -207,6 +217,7 @@ timeout-minutes: 90  # P19b: vitest roda 1265 arquivos com maxWorkers:2 (~45-60m
 - **5 workflows auto-resolvidos:** Uptime Monitor (P42), Supabase Linter Gate (P48), Branch Protection Sentinel (P58), Quote Builder (P17), Release Please (P1/P21/P44 — run #40200678489)
 - **7 workflows documentados (bloqueados externamente):** Cart Invariants (P2b), E2E Critical Flows (P16), E2E Personalization/QuickView (P23/P24), ci-security-drift step 27 (P60), Copilot Code Review infra (P61), E2E `/novidades` page crash (P62), E2E Swatch QuickView (P63)
 - **2 workflows documentados (novos — d74b33fb):** Replenishment Quality Gate hook timeout (P64), Edge Integration Tests divergência deployed vs. git (P65 — deploy disparado)
-- **Gate Final permanece verde** em todos os commits desta sessão — último run: [#40206801690](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40206801690) (`d74b33fb`, ✅ success)
+- **Gate Final permanece verde** em todos os commits desta sessão — último run confirmado: [#40206801690](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40206801690) (`d74b33fb`, ✅ success); PR #2533 mergeado em `76363781`
 - **Zero regressões introduzidas**
-- **Main HEAD atual:** `d74b33fb` (PR #2524 merge)
+- **Baseline completo registrado (main `d74b33fb`):** TSC ✅ 0 erros · Lint ✅ 0 erros/0 warnings · Build ✅ 15.21s · Vitest deploy-gate ✅ 334 passed
+- **Main HEAD atual:** `76363781` (PR #2533 merge)
