@@ -1,48 +1,31 @@
 {
-  "gerado_em": "2026-10-25T18:50:00Z",
+  "gerado_em": "2026-10-25T20:00:00Z",
   "sessao": "https://claude.ai/code/session_01Ss1tXZ4cAbxBvdmu95uNPz",
-  "main_head": "59a7a6072f405d98f7004f26a4badbf6287c6b5f",
-  "main_head_descricao": "PR #2529 mergeada autonomamente — docs(analise-prs): entregáveis sessão 01Ss1tXZ — 19 PRs analisadas",
-  "main_head_anterior": "6fcc6b306f",
+  "main_head": "5279abfe07895d9b0481fa08086b2c18d321de5f",
+  "main_head_descricao": "PR #2546 mergeada — docs(analise-prs): rev18 prs.json registra 2 merges autônomos + Gate Finals",
   "baseline": {
     "testes": 429,
     "falhas": 0,
-    "gate_final_run_confirmado": "40218104943",
-    "gate_final_conclusao_confirmado": "success",
-    "gate_final_completado_em": "2026-10-25T17:56:46Z",
-    "sha_referencia_confirmada": "c113300c034fb39126274fba9aa10ef05762ab13",
-    "gate_final_run_anterior": "40214531246",
-    "nota": "Gate Final run #40218104943 confirmado nesta sessão: c113300c = success (17:56:46Z). 17 jobs passaram. Baseline inalterada: 429 testes / 0 falhas."
+    "gate_final_run_confirmado": "40223579961",
+    "gate_final_conclusao": "success",
+    "gate_final_completado_em": "2026-10-25T19:02:42Z",
+    "sha_referencia": "7d3bd4ba47eb6e9e6b3d56fe3bfac45a791de84f"
   },
-  "prs_analisados": 19,
-  "prs_abertos_atuais": 16,
-  "prs_fechados_durante_sessao": [
-    {"number": 2521, "titulo": "chore(migrations): E99 repair-only company_fields (rev2)", "fechado_por": "PO", "motivo": "fechado externamente"},
-    {"number": 2538, "titulo": "docs: RELATORIO_CI — registra Gate Final HEAD confirmado (4cb4feb4)", "fechado_por": "PO", "motivo": "mergeada pelo PO"}
-  ],
-  "mergeadas_autonomamente": [
-    {
-      "number": 2529,
-      "titulo": "docs(analise-prs): entregáveis sessão 01Ss1tXZ — 53 PRs, 14 merges, Gate Final ✅",
-      "branch": "claude_05/youthful-ride-vcdchy",
-      "merge_sha": "59a7a6072f405d98f7004f26a4badbf6287c6b5f",
-      "merge_method": "squash",
-      "mergeado_em": "2026-10-25T18:47Z",
-      "gate_final_pos_merge_run": "40222902668",
-      "gate_final_pos_merge_status": "in_progress",
-      "criterios_passaram": "1|2|3|4|5|6|7|8",
-      "nota": "docs-only analise-prs/ — sem risco de regressão. Branch desta sessão (claude_05/), sem REGRA#8 triggers."
-    }
-  ],
-  "contagem_vereditos": {
-    "DECISAO_HUMANA": 11,
+  "prs_abertas_analisadas": 29,
+  "merges_autonomos_esta_sessao": 0,
+  "contagem_por_veredito": {
+    "DECISAO_HUMANA": 23,
     "FECHAR": 5,
     "JA_EM_MAIN": 1,
-    "MERGEADO_PO": 1,
-    "FECHADO_PO": 1,
-    "MERGEADO_AUTONOMO": 1,
-    "total": 20
+    "total_abertas": 29
   },
-  "merges_autonomos_esta_sessao": 1,
-  "worktrees_removidos": ["wt-2529", "wt-v2-2529"]
+  "historico_sessao_anterior": {
+    "mergeados_autonomamente": [
+      {"number": 2529, "sha": "59a7a6072f405d98f7004f26a4badbf6287c6b5f", "titulo": "docs(analise-prs): entregáveis sessão 01Ss1tXZ"},
+      {"number": 2543, "sha": "7d3bd4ba47eb6e9e6b3d56fe3bfac45a791de84f", "titulo": "docs(analise-prs): rev17 — registra merge #2529"},
+      {"number": 2546, "sha": "5279abfe07895d9b0481fa08086b2c18d321de5f", "titulo": "docs(analise-prs): rev18 — 2 merges autônomos"}
+    ],
+    "fechado_po": [{"number": 2521}],
+    "mergeado_po": [{"number": 2538}]
+  }
 }
