@@ -356,10 +356,28 @@ Adicionar coluna `level` à tabela `public.categories` no schema da preview bran
 
 ## P16 — E2E — Critical Flows & Error Boundaries: failure (não-required)
 
-**Workflow:** `.github/workflows/e2e-critical-flows.yml`  
-**Categoria:** E2E failure — não é required check no Gate Final
+**Workflow:** `.github/workflows/e2e-flows.yml` (ID 283130542)  
+**Categoria:** E2E failure — não é required check no Gate Final  
+**Run mais recente:** [#40198674629](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40198674629) (main `a29b3a19`, 2026-10-25)  
+**Job falho:** `E2E — Full User Flows (authed)` (job 121184969421)  
+**Spec:** `e2e/flows/27-admin-critical-routes.spec.ts:40`
 
-**Impacto no Gate Final:** Nenhum.
+**Erro exato confirmado (job logs):**
+```
+Test: Conexões externas (/admin/conexoes) carrega ou redireciona para login
+
+Error: expect(received).toBeGreaterThan(expected)
+Expected: > 0
+Received:   0
+
+e2e/flows/27-admin-critical-routes.spec.ts:40
+```
+
+**Causa raiz:** A rota `/admin/conexoes` requer autenticação. No runner de CI sem as credenciais E2E (`E2E_USER_EMAIL` / `E2E_USER_PASSWORD`), a página renderiza em branco — nenhum elemento de `main`, `[role='main']`, `[data-testid]`, `h1` ou `h2` é encontrado. O teste executou 2 tentativas (retry #1 também falhou). Pré-existente em main.
+
+**Ação necessária (PO):** Configurar secrets `E2E_USER_EMAIL` e `E2E_USER_PASSWORD` no repositório para que os specs autenticados executem. Sem eles, `E2E_HAS_CREDS=false` e o step "Guard — credenciais E2E" de `ci-security-drift.yml` falha em push para main.
+
+**Impacto no Gate Final:** Nenhum — `e2e-flows.yml` não é required check no Gate Final.
 
 ---
 
@@ -432,8 +450,29 @@ AssertionError: expected +0 to be 2
 
 ## P23 — E2E Personalization Flow: failure em main (não-bloqueante)
 
-**Workflow:** `.github/workflows/e2e-personalization.yml`  
-**Categoria:** E2E não-required, flake de ambiente externo
+**Workflow:** `.github/workflows/e2e-personalization.yml` (ID 285588106)  
+**Categoria:** E2E não-required  
+**Run mais recente:** [#40198674551](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40198674551) (main `a29b3a19`, 2026-10-25)
+
+**Erros exatos (confirmados em P2c — run #40124949299, job 120884172213):**
+```
+flows/90-personalization-pdp: Error: expect(page).toHaveURL(/\/produtos\/.+/) failed
+  - Expect "toHaveURL" with timeout 15000ms
+  > 24 | await expect(page).toHaveURL(/\/produtos\/.+/);
+
+flows/91-personalization-via-simulator: Error: expect(page).toHaveURL(/\/produtos\/.+/) failed
+  - Expect "toHaveURL" with timeout 15000ms
+
+flows/92-personalization-auth: Error: expect(page).toHaveURL(/\/login/) failed
+  - Expect "toHaveURL" with timeout 15000ms
+  > 21 | await expect(page).toHaveURL(/\/login/);
+
+4 failed (chromium-authed) — retries incluídos
+```
+
+**Causa raiz (de P2c):** Flows 90/91 dependem de catálogo de produtos com links navegáveis para PDP — dados ausentes em CI. Flow 92 espera redirect para `/login` dentro de 15s, mas resolução de auth (Supabase session check) pode ultrapassar o timeout em CI sob carga. Pré-existente em main desde commit `325b0bd`.
+
+**Ação necessária (PO):** Seed de dados de produtos no runner de CI + investigar roteamento PDP → Personalization Flow.
 
 **Impacto no Gate Final:** Nenhum.
 
@@ -441,7 +480,23 @@ AssertionError: expected +0 to be 2
 
 ## P24 — E2E Thumb QuickView: failure em main (não-bloqueante)
 
-**Categoria:** E2E não-required, flake visual/navegação
+**Workflow:** `.github/workflows/e2e-thumb-quickview.yml` (ID 298450953)  
+**Categoria:** E2E não-required  
+**Run mais recente:** [#40193146138](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40193146138) (commit `c5bf465a`, 2026-10-25)  
+**Jobs falhos:** `webkit • 03b` (121173226416), `firefox • 03b` (121173226441), `chromium • 03b` (121173226473)
+
+**Erro exato confirmado (logs chromium job 121173226473):**
+```
+Testes: executed=1 (expected=1 unexpected=0 flaky=0 skipped=21)
+[check-playwright-min-executed] FALHA: 1 testes executados, minimo 10.
+Causas possiveis: secrets E2E ausentes, spec list vazia ou Playwright abortou antes de rodar.
+[check-playwright-min-executed] FALHA: ratio de skipped 95.5% > maximo 50.0% (21/22).
+Causas possiveis: muitos testes com requireAuth, condicoes de skip incorretas ou spec nao encontrou dados de fixture.
+```
+
+**Causa raiz:** 21 de 22 testes são pulados por condições `requireAuth` — sem os secrets `E2E_USER_EMAIL` / `E2E_USER_PASSWORD` no CI, apenas 1 teste público executa (mínimo exigido: 10). O gate de mínimo de testes `check-playwright-min-executed.mjs` falha com exit code 1. Mesmo comportamento nos 3 browsers (webkit, firefox, chromium). Pré-existente em main.
+
+**Ação necessária (PO):** Configurar secrets `E2E_USER_EMAIL` e `E2E_USER_PASSWORD` no repositório para que os specs `requireAuth` executem.
 
 **Impacto no Gate Final:** Nenhum.
 
