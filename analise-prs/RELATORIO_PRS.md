@@ -93,7 +93,7 @@ Nenhum PR mergeado autonomamente toca código de produção exceto:
 
 ---
 
-## SINGU (pqpdolkaeqlyzpdpbizo) — verificação
+## SINGU (pqpdolkaeqlyzpdpbizo) — verificação [LEGACY_INFORMATIVO]
 
 | PR | Refs adicionadas | Detalhe |
 |---|---|---|

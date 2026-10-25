@@ -380,3 +380,39 @@ node scripts/check-migration-path-references.mjs --update-baseline
 **Todos os failures em main são não-required checks. Gate Final = ✅ success.**
 
 *Rev 8 — merge PR #2435 — 2026-10-25 — sessão session_01HW5obNKUFtUMbBdgUb94kY*
+
+---
+
+## Rev 9 — PR #2457 (fix/ci-tests-zod4-uuid-261025-0208, commit b6438233) — 2026-10-25
+
+### Baseline local — sessão session_01Nc1nb7PArDnixYvvZssnKy
+
+| Check | Resultado | Evidência |
+|---|---|---|
+| TypeScript (`npx tsc --noEmit`) | ✅ sem erros | saída vazia = zero erros |
+| Lint (`npm run lint:baseline`) | ✅ 0 erros, 0 warnings — Nenhuma regressão | pré-push hook: `✅ Nenhuma regressão de lint detectada.` |
+
+### Fixes aplicados neste PR (não cobertos pelo PR #2435)
+
+| Arquivo | Fix |
+|---|---|
+| `tests/edge-functions/integration/receive-crm-callback.duplicates-and-dispatcher.test.ts` | 2 UUIDs `0000-0000-` → `0000-4000-8000-` (Zod v4 UUID regex) |
+| `tests/unit/date-utils.test.ts` | 3 timestamps esperados corrigidos (CI UTC vs BRT) |
+| `tests/hooks/useProductCustomizationOptions.smoke.test.ts` | Mock `getSession` retorna `session: { user: { id: ... } }` ao invés de `session: null` |
+| `vitest.config.ts` | Tomou versão de `main` (conflito só de comentário; funcionalidade idêntica) |
+
+### Inventário is:action_required — 2026-10-25
+
+| Branch | Runs action_required | Em main? |
+|---|---|---|
+| `release-please--branches--main--components--gifts-store` | ~49 | Não |
+| `copilot/corrigir-peer-dependencies-eslint` | 1 | Não |
+| **main** | **0** | — |
+
+**Resultado: ZERO workflows com `action_required` em main. Mandato satisfeito trivialmente.**
+
+### Estado CI — commit b6438233 (aguardando conclusão)
+
+17 checks `success`, 6 `in_progress`, 11 `queued`, 0 `failure` no momento do registro.
+
+*Rev 9 — PR #2457 em andamento — 2026-10-25 — sessão session_01Nc1nb7PArDnixYvvZssnKy*
