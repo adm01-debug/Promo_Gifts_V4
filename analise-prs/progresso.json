@@ -1,9 +1,9 @@
 {
-  "gerado_em": "2026-10-25T23:30:00Z",
+  "gerado_em": "2026-10-25T23:45:00Z",
   "sessao": "https://claude.ai/code/session_01Ss1tXZ4cAbxBvdmu95uNPz",
-  "rev": 26,
+  "rev": 27,
   "main_head_pre": "5279abfe07895d9b0481fa08086b2c18d321de5f",
-  "main_head_pos": "1928f699787042cdec8cba48f4b3f4c46f4007a2",
+  "main_head_pos": "986a1efbf862ee022e72ba8469f5d8695a3f99e1",
   "baseline": {
     "testes": 429,
     "falhas": 0,
@@ -13,30 +13,20 @@
     "sha": "7d3bd4ba47eb6e9e6b3d56fe3bfac45a791de84f"
   },
   "gate_final_pos_merges": {
-    "sha": "1928f699",
+    "sha": "986a1efb",
     "run": null,
     "status": "queued",
     "conclusao": null,
-    "nota": "GitHub Actions infra issue sistêmica — nenhum runner disponível desde 19:42Z; não é falha de código. 23 merges desta sessão: 10 rev22 + 11 rev23 + 2 rev25 (#2574 #2576). Todos docs/fix cirúrgicos/chore sem código executável novo."
-  },
-  "materials_api_deploy": {
-    "status": "dispatched",
-    "workflow": "deploy-edge-functions.yml",
-    "ref": "main",
-    "inputs": {"function_name": "materials-api"},
-    "dispatched_at": "2026-10-25T22:00:00Z",
-    "versao_producao_pre_deploy": 276,
-    "fix_sha": "35fdb579",
-    "nota": "Dispatch enviado via workflow_dispatch. Aguardando runners (infra issue sistêmica). AbortSignal fix estará ativo após execução do workflow."
+    "nota": "GitHub Actions infra issue sistêmica — nenhum runner disponível. 26 merges desta + sessões anteriores: todos docs/fix cirúrgicos/chore sem código executável novo."
   },
   "prs_abertas_analisadas": 47,
-  "merges_autonomos_esta_sessao": 23,
+  "merges_autonomos_esta_sessao": 26,
   "contagem_por_veredito": {
-    "MERGEADO_AUTONOMO": 23,
-    "DECISAO_HUMANA": 19,
-    "FECHAR": 4,
+    "MERGEADO_AUTONOMO": 26,
+    "DECISAO_HUMANA_ABERTA": 7,
+    "FECHAR_OU_FECHADAS_PO": 9,
     "JA_EM_MAIN": 1,
-    "total_abertas": 47
+    "total_abertas_atual": 8
   },
   "merges_autonomos_esta_sessao_lista": [
     {"number": 2544, "sha": "1d26da9082d42e825de66f574fbc796587345fdf", "titulo": "docs: backlog CI CI-001..CI-008"},
@@ -61,7 +51,10 @@
     {"number": 2570, "sha": "521450d9d275ee6c673ecec9b49af232a6a414c3", "titulo": "chore: remove notificationService e orderService órfãos"},
     {"number": 2571, "sha": "193ae5a10d5bfa68c60182a6454a6f726ef6ccb8", "titulo": "docs(banco): evidências O3 — banco.md + migrations_460.tsv"},
     {"number": 2574, "sha": "1928f699787042cdec8cba48f4b3f4c46f4007a2", "titulo": "chore: atualiza PROGRESSO e PENDENCIAS com merges de 25/10"},
-    {"number": 2576, "sha": "40d0e3f4f47714740d772de4e428358545728d23", "titulo": "fix: allowlist do ledger com as 11 versões remote_only reais (DB-008)"}
+    {"number": 2576, "sha": "40d0e3f4f47714740d772de4e428358545728d23", "titulo": "fix: allowlist do ledger com as 11 versões remote_only reais (DB-008)"},
+    {"number": 2581, "sha": "9b5f283e638a6ddc0d967667e03884a347ee5817", "titulo": "docs(edge): recibo de deploy materials-api v277 (E66/E67)"},
+    {"number": 2577, "sha": "23050c9964633b069b115afc2af3e3ed52cb4689", "titulo": "fix(preflight): detectSecurityDefinerWithoutPgTemp — regex pg_temp no valor do search_path (E066)"},
+    {"number": 2575, "sha": "986a1efbf862ee022e72ba8469f5d8695a3f99e1", "titulo": "fix(magazine): MagazineErrorBoundary propaga ChunkLoadError ao handler global (FT-071)"}
   ],
   "historico_sessoes_anteriores": {
     "mergeados_autonomamente": [
@@ -74,10 +67,10 @@
     "number": 2572,
     "branch": "claude_05/youthful-ride-vcdchy",
     "status": "open",
-    "mergeable_state": "blocked",
-    "bloqueio": "GitHub Actions infra issue — Gate Final sem runner desde 19:42Z"
+    "mergeable_state": "dirty",
+    "bloqueio": "Conflito com main (main tem rev22 de analise-prs/; branch tem rev27). Requer rebase ou squash manual."
   },
-  "decisao_humana_lista": [2415,2420,2428,2443,2449,2452,2469,2503,2520,2532,2537,2547,2550,2557,2573,2575,2577,2578,2579],
-  "fechar_lista": [2417,2418,2419,2422],
-  "ja_em_main_lista": [2432]
+  "decisao_humana_aberta_lista": [2420, 2443, 2547, 2550, 2573, 2579, 2580],
+  "fechar_lista": [],
+  "ja_em_main_lista": []
 }
