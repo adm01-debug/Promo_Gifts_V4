@@ -31,8 +31,9 @@ import {
 // Erros de render do módulo Revista ficam locais (e viram telemetria magazine_react_error).
 function MagazineRoute({ children }: { children: ReactNode }) {
   const { id } = useParams();
+  const { pathname } = useLocation();
   return (
-    <MagazineErrorBoundary key={id} magazineId={id}>
+    <MagazineErrorBoundary key={pathname} magazineId={id}>
       {children}
     </MagazineErrorBoundary>
   );
