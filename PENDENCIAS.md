@@ -1025,3 +1025,49 @@ Tests:      3 failed | 24732 passed | 1127 skipped | 24 todo (25886)
 ---
 
 *Atualizado pela sessão Claude Code — https://claude.ai/code/session_01Nc1nb7PArDnixYvvZssnKy*
+
+---
+
+## P44 — Release Please: failure (bloqueio de configuração — ação PO)
+
+**Workflow:** `.github/workflows/release-please.yml`  
+**Categoria:** Release automation — não é required check no Gate Final  
+**Sessão:** session_01HW5obNKUFtUMbBdgUb94kY (2026-10-25)
+
+**Causa exata:** "GitHub Actions is not permitted to create or approve pull requests". O token padrão `GITHUB_TOKEN` não tem permissão para criar PRs de release. Necessário configurar "Allow GitHub Actions to create and approve pull requests" em Settings → Actions → General, OU adicionar PAT `RELEASE_PLEASE_TOKEN` como secret do repositório.
+
+**Impacto no Gate Final:** Nenhum — não é required check.
+
+**Ação necessária pelo PO:** Habilitar "Allow GitHub Actions to create and approve pull requests" em Settings → Actions → General do repositório, OU criar secret `RELEASE_PLEASE_TOKEN` com PAT que tenha permissão `pull_requests: write`.
+
+---
+
+## P45 — Running Copilot Code Review: bloqueio de rede externo (não corrigível)
+
+**Workflow:** Running Copilot Code Review (GitHub Copilot feature)  
+**Categoria:** GitHub Copilot Code Review — não é required check no Gate Final  
+**Sessão:** session_01HW5obNKUFtUMbBdgUb94kY (2026-10-25)
+
+**Causa exata:** Firewall do ambiente CI bloqueia `api.business.githubcopilot.com`. Não é possível corrigir no código ou workflow — a conectividade com a API do Copilot é controlada pelo GitHub.
+
+**Impacto no Gate Final:** Nenhum — não é required check.
+
+**Ação necessária:** Nenhuma — não corrigível via código.
+
+---
+
+## P46 — Branch Protection Sentinel: push direto em main pelo PO (comportamento correto)
+
+**Workflow:** `.github/workflows/branch-protection-sentinel.yml`  
+**Categoria:** Sentinel de padrão de commit — NÃO é required check no Gate Final  
+**Sessão:** session_01HW5obNKUFtUMbBdgUb94kY (2026-10-25)
+
+**Causa exata:** Branch Protection Sentinel dispara quando commit é pushado diretamente para `main` sem padrão `(#NNN)` no título. Comportamento correto — sentinel funcionando como esperado, não indica falha no código.
+
+**Impacto no Gate Final:** Nenhum — não é required check. Gate Final continua sendo o único required check em `main`.
+
+**Ação necessária pelo PO:** Nenhuma — guardian informativo. Usar PRs para merges em vez de push direto para main evita estas notificações.
+
+---
+
+*Atualizado pela sessão Claude Code — https://claude.ai/code/session_01HW5obNKUFtUMbBdgUb94kY*
