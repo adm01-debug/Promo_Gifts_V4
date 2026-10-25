@@ -49,3 +49,28 @@ PR #2466 mergeada como squash (docs-only, analise-prs/):
 SHA merge: 79d1c848b2c9a83f64fe094d82012eba2a50da1f
 paths-ignore aplicável → Gate Final não dispara.
 Último Gate Final verde: ea98e9adb (run #40165529777). Baseline inalterada.
+
+=== ATUALIZAÇÃO — SESSION_01Ss1tXZ4cAbxBvdmu95uNPz (2026-10-25) ===
+SHA main durante esta sessão: fbd335328bec4ae96e9beb3e52953837fa8f9a1d
+Gate Final run: #40182213757
+Gate 1 job: #121135584154
+
+Step 5 "Run npm run typecheck": conclusion=success (09:50:25→09:51:35)
+Step 6 "Run npm run lint:baseline": conclusion=success (0 erros, 0 warnings, Δ=0)
+Step 7 Gate 1.1 Product fields: 5/5 ✅
+Step 8 Gate 1.2 types.ts drift: 0 objects removed ✅
+Step 9 Gate 1.3: ❌ FALHOU — referências de migration em PR-2449.md e progresso.json
+  → Corrigido via PR #2509 (branch claude/fix-gate13-migration-refs-261025-1200)
+  → Fix: 4 entradas adicionadas à .migration-refs-baseline.json
+  → Verificado localmente: ✅ "0 referências quebradas (485 entradas legadas)"
+
+Gate 2 (Unit Tests) job #121135584178: conclusion=success (429 testes, 0 falhas)
+Gate 3 (E2E Smoke) job #121135605148: conclusion=success
+Gate 0 (SSOT): success, Gate 0.5: success, Gate 2.5: success
+Gate E23: success, Gate 5: success, Gate 5.5: success
+Gate 4 (Lighthouse): SKIPPED (src/ não alterado)
+Gate 6 (Build): SKIPPED — aguardou Gate 1 que falhou por Gate 1.3
+Gate Final job #121136471558: ❌ — causa única: Gate 1.3; corrigido em PR #2509
+
+CONCLUSÃO TypeScript nesta sessão: 0 erros, idêntico ao baseline anterior.
+Evidência: https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40182213757
