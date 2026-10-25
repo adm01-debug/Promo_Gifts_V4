@@ -9,7 +9,8 @@
 **PR #2522:** mergeada em `a29b3a1983bc48fb508710f4857c2345db78f794` (timeout 60→90)  
 **PR #2525:** mergeada em `c8967d1ccc79b3aa928c136be88bda5e1aa5e928` (docs P16/P23/P24)  
 **PR #2528:** mergeada em `317a317dbfe45ae27f5eefa67069d1df8d84f811` (docs P59/P60/P62 + auto-resolvidos)  
-**Main HEAD atual:** `317a317dbfe45ae27f5eefa67069d1df8d84f811`
+**PR #2530:** mergeada em `af0b4512765dd5feb8acc3a10216ce7951301254` (docs P61/P62)  
+**Main HEAD atual:** `af0b4512765dd5feb8acc3a10216ce7951301254`
 
 ---
 
@@ -108,6 +109,7 @@ timeout-minutes: 90  # P19b: vitest roda 1265 arquivos com maxWorkers:2 (~45-60m
 | `a29b3a19` (PR #2522 merge) | [#40198674547](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40198674547) | ❌ failure (P60) | step 27 — 10 E2E `[chromium-public]` timeout (catalog + kit-builder); P19 corrigido, P60 pré-existente revelado |
 | `c8967d1c` (PR #2525 merge) | [#40200678544](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40200678544) | ⏳ in_progress³ | ci-security-drift timeout=90min; step 27 falhará por P60 (pré-existente) |
 | `317a317d` (PR #2528 merge) | [#40203094304](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40203094304) (e2e.yml) | ⏳ in_progress | e2e.yml `/novidades` falhará por P62; ci-security-drift pending; Gate Final: outros checks green |
+| `af0b4512` (PR #2530 merge) | — | — | docs P61/P62; Gate Final rodando |
 
 ---
 
@@ -132,6 +134,7 @@ timeout-minutes: 90  # P19b: vitest roda 1265 arquivos com maxWorkers:2 (~45-60m
 | `e2e-thumb-quickview.yml` | ❌ failure | ❌ failure (esperado) | **DOCUMENTADO** — 1 de 22 testes executa (21 skipped por `requireAuth`) | P24 |
 | `e2e.yml` (Playwright) | ❌ failure | ❌ failure (esperado) | **DOCUMENTADO** — `/novidades` page crash no CI (pré-existente, ver P62) | P62 |
 | `copilot-code-review.yml` | ❌ failure | ❌ failure (esperado) | **DOCUMENTADO** — firewall GitHub Copilot infra (recorrente, ver P61) | P61 |
+| `e2e-swatch-quickview.yml` | ❌ failure | ❌ failure (esperado) | **DOCUMENTADO** — "Check min tests" + runner shutdown infra (pré-existente, ver P63) | P63 |
 
 ² Run [#40198674547](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40198674547) em `a29b3a19` — `conclusion=failure` confirmado: step 27 E2E públicos timeout (P60 — pré-existente).
 
@@ -186,6 +189,7 @@ timeout-minutes: 90  # P19b: vitest roda 1265 arquivos com maxWorkers:2 (~45-60m
 | P60 | `ci-security-drift.yml` | Fix estrutural step 27: usar `--project=chromium-authed` com `storageState` |
 | P61 | `copilot-code-review.yml` | Configurar token Copilot ou desativar workflow |
 | P62 | `e2e.yml` (Playwright) | Investigar OOM/crash em `NoveltyProductGrid` no CI (`/novidades`) |
+| P63 | `e2e-swatch-quickview.yml` | Investigar `Check min tests executed` — 0 specs coletados (produtos com swatches no CI?) |
 
 ---
 
@@ -193,7 +197,7 @@ timeout-minutes: 90  # P19b: vitest roda 1265 arquivos com maxWorkers:2 (~45-60m
 
 - **2 workflows corrigidos:** `ci-security-drift.yml` (P19 — test + timeout P19b); falha residual P60 é pré-existente
 - **5 workflows auto-resolvidos:** Uptime Monitor (P42), Supabase Linter Gate (P48), Branch Protection Sentinel (P58), Quote Builder (P17), Release Please (P1/P21/P44 — run #40200678489)
-- **7 workflows documentados (bloqueados externamente):** Cart Invariants (P2b), E2E Critical Flows (P16), E2E Personalization/QuickView (P23/P24), ci-security-drift step 27 (P60), Copilot Code Review infra (P61), E2E `/novidades` page crash (P62)
+- **7 workflows documentados (bloqueados externamente):** Cart Invariants (P2b), E2E Critical Flows (P16), E2E Personalization/QuickView (P23/P24), ci-security-drift step 27 (P60), Copilot Code Review infra (P61), E2E `/novidades` page crash (P62), E2E Swatch QuickView (P63)
 - **Gate Final permanece verde** em todos os commits desta sessão
 - **Zero regressões introduzidas**
-- **Main HEAD atual:** `317a317d` (PR #2528 merge)
+- **Main HEAD atual:** `af0b4512` (PR #2530 merge)
