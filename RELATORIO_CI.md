@@ -3,12 +3,15 @@
 **Branch:** `claude_04/beautiful-gates-bvocz5`  
 **PR:** [#2597](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2597)  
 **Commits desta sessão:**
-- `2c9fb608f` — 4 fixes (gitleaks, ratchet-weekly, invoke-direct, replenishment timeout)
+- `2c9pb608f` — 4 fixes (gitleaks, ratchet-weekly, invoke-direct, replenishment timeout)
 - `1960f24b2` — merge main
 - `bfdcc8825` — Tailwind v4→v3 downgrade (package.json + lockfile parcial)
 - `7caa97999` — lockfile: resolve@1.22.13 nested sob tailwindcss (npm ci fix)
-- `58afebb52` — ESLint only-throw-error AnonymizeAccountDialog fix
+- `58afebb52` — ESLint only-throw-error AnonymizeAccountDialog (tentativa incorreta — instanceof)
 - `dfccb1a67` — docs: PENDENCIAS.md rev 35 (P94+P95)
+- `c11451004` — fix pngjs registry URL (403 em npm ci)
+- `2637aaa9c` — docs: baseline local RELATORIO_CI.md
+- `1e8ea09ad` — **fix definitivo** only-throw-error: `new Error(error.message)` em AnonymizeAccountDialog
 
 **Sessão:** https://claude.ai/code/session_014RkohRYagi3sPiL8jtgot4  
 **Data:** 2026-10-26
@@ -38,7 +41,7 @@ Execução local em Node.js 22.22.0 após `npm ci --ignore-scripts`:
 | Workflows com falha investigados | 22+ |
 | Falhas corrigidas nesta sessão | **7** |
 | Falhas documentadas em PENDENCIAS.md (P85–P95) | **11 novos** (total P78–P95 = 18 desde esta sessão) |
-| Gate Final bloqueante | ⏳ Aguardando CI no commit `dfccb1a67` |
+| Gate Final bloqueante | ⏳ Aguardando CI no commit `1e8ea09ad` (latest head) |
 | PR aberto | [#2597](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2597) |
 
 ---
