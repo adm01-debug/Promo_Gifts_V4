@@ -6,7 +6,7 @@
 import { useState } from 'react';
 import { Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
-import { supabase } from '@/integrations/supabase/client';
+import { invokeEdge } from '@/lib/edge/safeInvokeCall';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import {
@@ -41,8 +41,9 @@ export function AnonymizeAccountDialog({ open, onOpenChange }: AnonymizeAccountD
   const handleConfirm = async () => {
     setLoading(true);
     try {
-      const { error } = await supabase.functions.invoke('anonymize-user', {
+      const { error } = await invokeEdge('anonymize-user', {
         body: { confirm_phrase: CONFIRM_PHRASE },
+        op: 'anonymize_user',
       });
       if (error) throw error;
       toast.success('Conta anonimizada', {
