@@ -22,7 +22,6 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import {
   X,
   ArrowLeft,
-  Share2,
   Image as ImageIcon,
   List,
   Filter,
@@ -36,7 +35,6 @@ import { CompareTableView } from '@/components/compare/CompareTableView';
 import { ComparisonScoreCard } from '@/components/compare/ComparisonScoreCard';
 import { ComparisonRadarChart } from '@/components/compare/ComparisonRadarChart';
 import { AIComparisonAdvisor } from '@/components/compare/AIComparisonAdvisor';
-import { ShareComparisonDialog } from '@/components/compare/ShareComparisonDialog';
 import { ExportComparisonButton } from '@/components/compare/ExportComparisonButton';
 import { ComparisonDuelView } from '@/components/compare/ComparisonDuelView';
 import { ComparisonMobileView } from '@/components/compare/ComparisonMobileView';
@@ -89,7 +87,6 @@ export default function ComparePage() {
     },
     [showRadar, setValue],
   );
-  const [shareOpen, setShareOpen] = useState(false);
   const [client, setClient] = useState<{ id: string; name: string } | null>(null);
   const [ariaMessage, setAriaMessage] = useState('');
   const compareItems = useComparisonStore((s) => s.compareItems);
@@ -189,13 +186,6 @@ export default function ComparePage() {
         {ariaMessage}
       </div>
 
-      <ShareComparisonDialog
-        open={shareOpen}
-        onOpenChange={setShareOpen}
-        compareItems={compareItems}
-        clientId={client?.id ?? null}
-        clientName={client?.name ?? null}
-      />
       <div
         id="compare-export-area"
         className="mx-auto w-full max-w-[1920px] animate-fade-in space-y-3 px-3 py-3 pb-24 sm:space-y-4 sm:px-4 sm:py-4 md:pb-6 lg:px-6 xl:px-8"
@@ -257,10 +247,6 @@ export default function ComparePage() {
             </Button>
             <ComparisonPresentationLauncher products={products} formatCurrency={formatCurrency} />
             <ExportComparisonButton products={products} formatCurrency={formatCurrency} />
-            <Button variant="outline" size="sm" onClick={() => setShareOpen(true)}>
-              <Share2 className="mr-2 h-4 w-4" />
-              Compartilhar
-            </Button>
             <Button
               variant="outline"
               size="sm"
