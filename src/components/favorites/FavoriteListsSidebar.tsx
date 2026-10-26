@@ -13,7 +13,6 @@ import {
 import { cn } from '@/lib/utils';
 import type { FavoriteList } from '@/hooks/favorites';
 import { CreateListDialog } from './CreateListDialog';
-import { ShareListDialog } from './ShareListDialog';
 import { DeleteConfirmDialog } from '@/components/ui/ConfirmDialog';
 
 interface Props {
@@ -42,15 +41,12 @@ export function FavoriteListsSidebar({
   onCreateList,
   onUpdateList,
   onDeleteList,
-  onShareList,
-  onRevokeShare,
   trashCount = 0,
   showTrash,
   onToggleTrash,
 }: Props) {
   const [createOpen, setCreateOpen] = useState(false);
   const [editList, setEditList] = useState<FavoriteList | null>(null);
-  const [shareList, setShareList] = useState<FavoriteList | null>(null);
   const [deleteList, setDeleteList] = useState<FavoriteList | null>(null);
 
   return (
@@ -142,9 +138,6 @@ export function FavoriteListsSidebar({
                   <DropdownMenuItem onClick={() => setEditList(list)}>
                     <Pencil className="mr-2 h-3.5 w-3.5" /> Renomear
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setShareList(list)}>
-                    <Share2 className="mr-2 h-3.5 w-3.5" /> Compartilhar
-                  </DropdownMenuItem>
                   {!list.is_default && (
                     <>
                       <DropdownMenuSeparator />
@@ -202,15 +195,6 @@ export function FavoriteListsSidebar({
             await onUpdateList(editList.id, data);
             setEditList(null);
           }}
-        />
-      )}
-      {shareList && (
-        <ShareListDialog
-          open={!!shareList}
-          onOpenChange={(o) => !o && setShareList(null)}
-          list={shareList}
-          onShare={onShareList}
-          onRevoke={onRevokeShare}
         />
       )}
       <DeleteConfirmDialog
