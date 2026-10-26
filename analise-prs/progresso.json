@@ -63,7 +63,7 @@
     "merges_autonomos": 5,
     "contagem_por_veredito": {
       "MERGEADO_AUTONOMO": 5,
-      "DECISAO_HUMANA": 3,
+      "DECISAO_HUMANA": 4,
       "BLOQUEADA": 6
     },
     "merges_lista": [
@@ -75,6 +75,7 @@
     ],
     "decisao_humana": [
       {"number": 2579, "motivo": "downgrade release-please 1.2.1→1.0.0 (regressão semântica)"},
+      {"number": 2580, "motivo": "migration file + DRAFT (REGRA#8)"},
       {"number": 2587, "motivo": "zustand 4→5 major, 11 stores incompatíveis"},
       {"number": 2588, "motivo": "react-day-picker 8→10 major, calendar.tsx usa API v8"}
     ],
@@ -89,7 +90,12 @@
     ],
     "pr_entregaveis": {
       "branch": "claude_04/optimistic-bohr-qplx94",
-      "status": "push_pendente"
+      "status": "completo",
+      "diffs_lidos_100pct": true,
+      "cherry_checks": "todos_unicos",
+      "test_merges": "todos_CLEAN",
+      "ci_gate_final_145da71b": "pending_no_run_found",
+      "ci_gate_final_15e10fd8": "failure_gate19_divida_tecnica_pr2556_sessao_anterior"
     }
   }
 }
