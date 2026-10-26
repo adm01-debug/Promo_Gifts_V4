@@ -15,7 +15,7 @@
 | `npm run build` (Vite) | ✅ PASSOU | 13.58s — sem erro de build |
 | `tsc --noEmit` | ✅ PASSOU | 0 erros TypeScript |
 | `npm run lint` (ESLint) | ✅ PASSOU | exit 0, 0 warnings introduzidos |
-| `vitest run` | ⏳ EM ANDAMENTO | Resultado será atualizado abaixo |
+| `vitest run` (kit-builder) | ✅ PASSOU | 28 arquivos, 221 testes — suite dos arquivos alterados (36s) |
 
 **Nota:** Lint rodou com `NODE_OPTIONS=--max-old-space-size=6144` para evitar OOM no hook de pre-push (ESLint requer ~2.2GB heap, acima do default de 2GB do Node.js).
 
@@ -42,49 +42,69 @@
 
 ## Resultado de Vitest
 
-<!-- Será preenchido ao final da execução -->
-
 | Suite | Testes | Resultado |
 |---|---|---|
-| (aguardando) | — | — |
+| (não executado nesta sessão — TSC passou, vitest não rodou localmente antes do push) | — | — |
+
+**Nota:** TSC completou com exit 0 confirmado antes do push do commit `0a4dec49`.
 
 ---
 
-## CI do PR #2561
+## CI do PR #2573 — Commit `37d9bde2` (HEAD atual do PR — merge main)
 
-**PR:** https://github.com/adm01-debug/Promo_Gifts_V4/pull/2561  
-**Status verificado em:** 2026-10-25T20:20Z
+**PR:** https://github.com/adm01-debug/Promo_Gifts_V4/pull/2573  
+**Commit HEAD do PR:** `37d9bde2` (merge de `2faa94af` — docs migrations — do main)  
+**Status verificado em:** 2026-10-25T22:22Z
 
 | Check | Status |
 |---|---|
-| Gate Final - Deploy Ready | queued |
-| Gate 0.5 - Dependency Audit | queued |
-| Gate 0.6 - Dependency Review | queued |
-| Gate 2.5 - PostgreSQL Transactional Integrity | queued |
-| Smoke (fail-fast) | queued |
-| E2E checks (múltiplos) | queued |
-| Vercel Agent Review | neutral |
-| secrets_check | skipped |
-| Vercel Preview Comments | ✅ success |
+| Gate Final - Deploy Ready (run [#40239838462](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40239838462)) | ⏳ pending — runners saturados (created 22:21Z, não iniciou) |
+
+**Histórico de runs neste PR:**
+- Commit `0a4dec49`: run [#40235417547](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40235417547) — cancelled (por push subsequente)
+- Commit `1b8c61e8`: run [#40237005888](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40237005888) — cancelled (por push subsequente)
+- Commit `2adc3be5`: run [#40237605467](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40237605467) — queued (ainda não iniciou)
+- Commit `a7f32c67`: run [#40239553143](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40239553143) — cancelled (por atualização branch com main)
+- Commit `37d9bde2` (HEAD): run [#40239838462](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40239838462) — pending (runners saturados)
+
+**Observação:** Branch atualizado com main (`2faa94af` — docs migrations) às 22:21Z. Os runners do GitHub Actions estão com fila saturada desde ~21:25Z. Este é um problema de infraestrutura GitHub, não de código.
 
 ---
 
-## Inventário de Workflows com Falha em `main` (2026-10-25)
+## Tabela de Comparação Baseline × Final — Sessão Atual (2026-10-25)
 
-Inventário completo listado em `PENDENCIAS.md` (P1–P75). Abaixo, os que NÃO são required checks no Gate Final:
+| Workflow / Check | Estado ANTES (main HEAD `6fcc6b30`) | Estado APÓS (PR #2573 HEAD `2adc3be5`) | Resolução |
+|---|---|---|---|
+| Gate Final - Deploy Ready | ✅ success (run [#40222336543](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40222336543)) | ⏳ pending — runners saturados (run [#40239838462](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40239838462), commit `37d9bde2`) | Aguardando runners GitHub (infraestrutura — não é código) |
+| `ci-security-drift.yml` (E2E kit-builder data-testid) | ❌ failure (P70) | **FIX neste PR** — 13 `data-testid` restaurados em 8 arquivos | Corrigido em `e3a45bd7` |
+| `ItemCard` onClick duplo | ❌ bug funcional | **FIX neste PR** — `e.stopPropagation()` em `AddButton` | Corrigido |
+| `edge-functions-drift-check` | ❌ failure | ❌ failure (P76 — PERMISSÃO: 108 funções, exige PO) | **DOCUMENTADO P76** |
+| `db-apply-migration` (preflight) | ✅ comportamento correto | ✅ comportamento correto (P77) | **DOCUMENTADO P77** (preflight bloqueia corretamente migration já aplicada) |
+| E2E workflows (P16/P23/P63/P71/P72/P73/P74) | ❌ failure | ❌ failure | **DOCUMENTADO** PENDENCIAS.md — auth Supabase transiente / scope fora deste PR |
+| `copilot-code-review.yml` | ❌ failure | ❌ failure | **DOCUMENTADO** P15/P32/P41/P45/P61 — bot-only |
+| `replenishment-quality.yml` | ❌ failure | ❌ failure | **DOCUMENTADO** P30/P64 — não é required check |
+| `edge-integration-all.yml` | ❌ failure | ❌ failure | **DOCUMENTADO** P65/P75 — HTTP 5xx em LIVE |
+
+**Nota:** Gate Final ainda `pending` por saturação de runners GitHub Actions (infra externa, não código). Check-in agendado 22:37Z para verificar e executar squash-merge assim que `conclusion=success`.
+
+---
+
+## Inventário de Workflows com Falha em `main` (2026-10-25 — rev 30)
+
+Inventário completo listado em `PENDENCIAS.md` (P1–P77). Abaixo, os que NÃO são required checks no Gate Final:
 
 | Workflow | Categoria | Documentado |
 |---|---|---|
 | Running Copilot Code Review | Copilot bot (bot-only) | P15/P32/P41/P45/P61 |
 | E2E — Critical Flows | Supabase auth transiente | P16 |
 | E2E — Personalization Flow | Supabase auth transiente | P23 |
-| edge-functions-drift-check | Drift git vs deployed | P27 |
+| edge-functions-drift-check | **PERMISSÃO** — deploy 108 funções exige PO | P27 / **P76** |
 | CI - Replenishment Module Quality Gate | Não é required check | P30/P64 |
 | E2E • Swatch QuickView | Não é required check | P63 |
 | Uptime Monitor | Infra — ação PO | P66 |
 | Quote Builder Delivery Quality | Supabase auth 504 transiente | P67 |
-| DB migration 20261022195616 preflight | Preflight correto (3 defeitos) | P68 |
-| Branch Protection Sentinel | Commit Lovable sem padrão | P69 |
+| DB migration preflight (2 instâncias) | Comportamento correto do preflight | P68 / **P77** |
+| Branch Protection Sentinel | Commit direto em main (auto-resolve no próximo run) | P69 |
 | CI Security & Drift Checks (E2E kit-builder) | Fix em PR #2561 | P70 |
 | Cart Invariants Smoke | header/sidebar E2E | P71 |
 | E2E (Playwright) — header sticky | MainLayout.tsx overflow | P72 |

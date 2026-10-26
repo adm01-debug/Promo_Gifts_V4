@@ -1,6 +1,8 @@
-import { Navigate, Route, useLocation } from 'react-router-dom';
+import type { ReactNode } from 'react';
+import { Navigate, Route, useLocation, useParams } from 'react-router-dom';
 import { DevRoute } from '@/components/layout/DevRoute';
 import { useAuth } from '@/contexts/AuthContext';
+import { MagazineErrorBoundary } from '@/pages/magazine/components/MagazineErrorBoundary';
 import {
   AdvancedPriceSearchPage,
   BusinessIntelligencePage,
@@ -25,6 +27,17 @@ import {
   VisualSearchPage,
   PromoFlixPlayground,
 } from './lazy-pages';
+
+// Erros de render do módulo Revista ficam locais (e viram telemetria magazine_react_error).
+function MagazineRoute({ children }: { children: ReactNode }) {
+  const { id } = useParams();
+  const { pathname } = useLocation();
+  return (
+    <MagazineErrorBoundary key={pathname} magazineId={id}>
+      {children}
+    </MagazineErrorBoundary>
+  );
+}
 
 function KitBuilderRoute() {
   const location = useLocation();
@@ -69,11 +82,25 @@ export const toolsRoutes = (
     </Route>
     <Route path="/ferramentas/cobertura" element={<CoverageInsightsDashboardPage />} />
     <Route path="/raio-x" element={<VisualSearchPage />} />
-    <Route path="/magazine" element={<MagazineListPage />} />
-    <Route path="/magazine/templates" element={<MagazineTemplatesGalleryPage />} />
-    <Route path="/magazine/:id" element={<MagazineEditorPage />} />
-    <Route path="/magazine/:id/print" element={<MagazinePrintPage />} />
-    <Route path="/magazine/print" element={<MagazinePrintPage />} />
+    <Route path="/magazine" element={<MagazineRoute><MagazineListPage /></MagazineRoute>} />
+    <Route
+      path="/magazine/templates"
+      element={
+        <MagazineRoute>
+          <MagazineTemplatesGalleryPage />
+        </MagazineRoute>
+      }
+    />
+    <Route path="/magazine/:id" element={<MagazineRoute><MagazineEditorPage /></MagazineRoute>} />
+    <Route
+      path="/magazine/:id/print"
+      element={
+        <MagazineRoute>
+          <MagazinePrintPage />
+        </MagazineRoute>
+      }
+    />
+    <Route path="/magazine/print" element={<MagazineRoute><MagazinePrintPage /></MagazineRoute>} />
     <Route path="/promoflix-playground" element={<PromoFlixPlayground />} />
   </>
 );
