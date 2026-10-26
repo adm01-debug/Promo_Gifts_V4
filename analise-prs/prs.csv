@@ -43,3 +43,6 @@ number,title,branch,draft,test_merge,rule8_triggers,verdict,motivo,merge_sha
 2593,bump github/codeql-action/init,dependabot/github_actions/github/codeql-action/init-3.x,false,CLEAN,".github/workflows/codeql.yml",BLOQUEADA,codeql-action/init — .github/workflows proibido,
 2594,bump actions/setup-node 4→7,dependabot/github_actions/actions/setup-node-7,false,CLEAN,".github/workflows/e2e-update-editor-sheet-snapshots.yml",BLOQUEADA,actions/setup-node 4→7 — .github/workflows proibido + sem SHA pin,
 2596,bump postcss-selector-parser 6.1.4→6.1.5,dependabot/npm_and_yarn/postcss-selector-parser-6.1.5,false,CLEAN,,MERGEADO_AUTONOMO,CVE-2026-104844 CPU exhaustion patch,54e8904585ad474030feea88526d9c66b7404aa4
+2597,fix: corrige 4 workflows CI falhando,claude_04/beautiful-gates-bvocz5,false,CLEAN,".github/workflows/ratchet-weekly.yml",DECISAO_HUMANA,REGRA8 workflow + session_014RkohRYagi3sPiL8jtgot4,
+2599,fix(privacy): invoke-direct + ratchet SIGPIPE,claude_04/laughing-gates-l4pt67,false,CLEAN,".github/workflows/ratchet-weekly.yml",DECISAO_HUMANA,REGRA8 workflow + subconjunto de PR#2597,
+2600,docs(analise-prs): sessão f0ceb220 addendum,claude_04/optimistic-bohr-qplx94,true,CLEAN,,BLOQUEADA,DRAFT — entregáveis documentais desta sessão,

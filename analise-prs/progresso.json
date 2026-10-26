@@ -97,5 +97,33 @@
       "ci_gate_final_145da71b": "pending_no_run_found",
       "ci_gate_final_15e10fd8": "failure_gate19_divida_tecnica_pr2556_sessao_anterior"
     }
+  },
+  "sessao_f0ceb220_continuacao": {
+    "data": "2026-10-26",
+    "sessao": "https://claude.ai/code/session_011d8gKLZg8BWivR8aQBwxGF",
+    "nota": "Continuação após compactação de contexto",
+    "prs_abertas_atuais": 14,
+    "prs_novas_analisadas": 3,
+    "total_acumulado_todas_sessoes": 51,
+    "novas_prs": [
+      {"number": 2597, "titulo": "fix: 4 workflows CI falhando", "veredito": "DECISAO_HUMANA", "motivo": "REGRA8 .github/workflows/ratchet-weekly.yml"},
+      {"number": 2599, "titulo": "fix(privacy): invoke-direct + ratchet SIGPIPE", "veredito": "DECISAO_HUMANA", "motivo": "REGRA8 .github/workflows + subconjunto de #2597"},
+      {"number": 2600, "titulo": "docs(analise-prs): deliverables sessão f0ceb220", "veredito": "BLOQUEADA", "motivo": "DRAFT — entregáveis documentais"}
+    ],
+    "prs_fechadas_externamente": ["#2415","#2428","#2443","#2449","#2452","#2469","#2503","#2532","#2537","#2547","#2550","#2557","#2417","#2418","#2419","#2422"],
+    "ci_gate_final_145da71b": "sem_run_Gate_Final_encontrado — E2E failure (nao blocking) — varios runs queued",
+    "contagem_por_veredito_acumulado": {
+      "MERGEADO_AUTONOMO": 18,
+      "DECISAO_HUMANA": 18,
+      "BLOQUEADA": 9,
+      "FECHAR": 5,
+      "JA_EM_MAIN": 1,
+      "total_analisado": 51
+    },
+    "prs_abertas_pendentes": {
+      "DECISAO_HUMANA": [2579, 2580, 2587, 2588, 2597, 2599],
+      "BLOQUEADA": [2572, 2590, 2591, 2592, 2593, 2594, 2600],
+      "FECHAR_ainda_aberta": [2420]
+    }
   }
 }
