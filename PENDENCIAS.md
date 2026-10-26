@@ -1,8 +1,8 @@
 # Pendências CI — Bloqueios Externos
 
-**Atualizado em:** 2026-10-25 (rev 29 — P16 atualizado run #40222336350 + RELATORIO_CI baseline 6fcc6b30)  
+**Atualizado em:** 2026-10-25 (rev 30 — P76/P77 adicionados; commit 0a4dec49 empurrado; runners saturados aguardando Gate Final)  
 **Branch de referência:** `claude_05/nifty-sagan-r23gqh`  
-**Commit de referência (main):** `6fcc6b30` — docs(pendencias): adiciona P68 — preflight bloqueou migration (#2542)
+**Commit de referência (main):** `1928f699` — chore: atualiza PROGRESSO e PENDENCIAS com merges de 25/10 (#2574)
 
 ---
 
@@ -1296,3 +1296,43 @@ Relacionado ao padrão de P27 (edge-functions-drift-check) e P65 (validate-acces
 ---
 
 *Atualizado pela sessão Claude Code — https://claude.ai/code/session_01HW5obNKUFtUMbBdgUb94kY*
+
+---
+
+## P76 — edge-functions-drift-check: 108/109 funções com divergência de conteúdo
+
+**Workflow:** `.github/workflows/edge-functions-drift-check.yml`  
+**Run com falha:** [#40233359793](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40233359793) (commit `4440ef10` em main)  
+**Conclusão:** `failure`  
+**Categoria:** **PERMISSÃO** — deploy de 108 edge functions em produção exige autorização explícita do PO (REGRA #8 corolário)
+
+**Resultado do drift report (artifact #12614865353):**
+```
+Total funções verificadas: 109
+Funções com DRIFT:         108 (conteúdo GitHub ≠ conteúdo deployado em doufsxqlfjyuvxuezpln)
+Funções alinhadas:           2 (backfill-image-dimensions, mcp-query)
+```
+
+**Causa raiz:**  
+O conteúdo de 108 das 109 edge functions em `doufsxqlfjyuvxuezpln` diverge do código no repositório GitHub. Indica que alterações foram deployadas diretamente em produção (via MCP ou dashboard) sem commit correspondente, ou que o repositório avançou sem redeployar.
+
+**Por que está bloqueado (PERMISSÃO):**  
+O único caminho autorizado para deploy de edge functions é `.github/workflows/deploy-edge-functions.yml` (REGRA #8 corolário). Redeployar as 108 funções sobrescreveria o código **atualmente em produção** com o código do repositório — ação irreversível que afeta produção. O PO deve decidir qual versão é canônica (GitHub ou produção) antes de qualquer ação.
+
+**Impacto no Gate Final:** Nenhum — `edge-functions-drift-check.yml` NÃO é required check no Gate Final (`deploy-gates.yml`).
+
+---
+
+## P77 — DB — E15: preflight bloqueou migration já registrada no ledger (comportamento correto)
+
+**Workflow:** `.github/workflows/db-apply-migration.yml` (workflow_dispatch)  
+**Run com falha:** [#40233194168](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40233194168) (commit `4440ef10` em main)  
+**Conclusão:** `failure`  
+**Categoria:** Comportamento correto do preflight — NÃO é required check no Gate Final
+
+**Causa raiz:**  
+O workflow_dispatch foi disparado para migration `20261024180001`, mas o preflight detectou que essa versão **já existe no ledger** (`supabase_migrations.schema_migrations`). O Gate E15 bloqueou corretamente para evitar reaplicação de DDL já executada. Falha de operação pontual (migration submetida duas vezes), não defeito de código.
+
+**Ação necessária:** Nenhuma — comportamento correto do workflow. Esta entrada documenta o run para evitar re-dispatch acidental da mesma migration.
+
+**Impacto no Gate Final:** Nenhum — `db-apply-migration.yml` é workflow_dispatch exclusivo, NÃO é required check no Gate Final.
