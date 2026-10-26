@@ -1483,4 +1483,40 @@ Substituído por `invokeEdge('anonymize-user', { body: ..., op: 'anonymize_user'
 
 ---
 
+---
+
+## P84 — E2E Quotes — Matrix (E77): 4 jobs falhando (pré-existentes, não-bloqueantes)
+
+**Workflow:** `.github/workflows/e2e-quotes.yml` (E77)  
+**Run com falha:** [#40407715626](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40407715626) (commit `2c9fb608` — PR #2597)  
+**Conclusão:** `failure`  
+**Categoria:** E2E pré-existente no `main` — não introduzido por este PR; não-required  
+**Sessão:** session_014RkohRYagi3sPiL8jtgot4 (2026-10-26)
+
+**Motivo do disparo no PR #2597:**  
+`AnonymizeAccountDialog.tsx` (modificado pelo commit `2c9fb608`) matchou o path filter `src/components/**` em `.github/workflows/e2e-quotes.yml`. Nenhuma das mudanças do PR toca código de quotes, snapshots ou fluxo de undo.
+
+**Jobs falhando:**
+
+| Job | Tipo de falha | Specs afetadas |
+|---|---|---|
+| `E2E · row-menu-width` | Visual CSS — alignment `chromium-public` | `quote-row-menu-width.spec.ts` (4 tests) + zoom spec |
+| `E2E · view-no-presentation-mode` | Snapshot dark mode (1 failed) + flaky (1) | Snapshot visual |
+| `E2E · view-sticky` | 1 funcional (sidebar sticky timeout) + 2 visuais | `view-sticky.spec.ts` |
+| `E2E · undo` | 6 tests `chromium-authed` | Specs `04q`, `04r`, `04s` — edge cases do fluxo Desfazer |
+| `merge-reports` | Falha derivada dos jobs acima | — |
+
+**Pré-existência confirmada:**  
+Todos os 4 jobs apresentavam as mesmas falhas em runs anteriores ao PR (confirmado via run [#40405501844](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40405501844) e outros em `main` antes do commit `2c9fb608`).
+
+**Ação necessária pelo PO:**  
+1. `row-menu-width`: investigar regressão CSS no menu de linha do quote — possível mudança de layout no Lovable
+2. `view-no-presentation-mode`: atualizar baseline de snapshot dark mode
+3. `view-sticky`: corrigir funcionalidade de sidebar sticky (timeout) + snapshots
+4. `undo (04q/04r/04s)`: investigar edge cases do fluxo Desfazer em `chromium-authed`
+
+**Impacto no Gate Final:** Nenhum — `e2e-quotes.yml` NÃO é required check no Gate Final (`deploy-gates.yml`). Gate Final permanece verde.
+
+---
+
 *Atualizado pela sessão Claude Code — https://claude.ai/code/session_014RkohRYagi3sPiL8jtgot4 (2026-10-26)*
