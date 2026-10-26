@@ -38,6 +38,7 @@ import {
   type CustomKitRow,
   type KitTemplateRow,
 } from '@/hooks/kit-builder';
+import { getKitStatusBadge } from '@/lib/kit-builder/persistence';
 import { buildCustomKitInsert } from '@/lib/kit-library/buildCustomKitInsert';
 import { sanitizeError } from '@/lib/security/sanitize-error';
 import { cn } from '@/lib/utils';
@@ -261,8 +262,7 @@ export default function KitLibraryPage() {
     if (selectedTag && k.tag !== selectedTag) return false;
     if (selectedColor && k.color !== selectedColor) return false;
     if (statusFilter === 'draft' && k.status !== 'draft') return false;
-    if (statusFilter === 'published' && !['published', 'ready', 'shared'].includes(k.status))
-      return false;
+    if (statusFilter === 'published' && !['published', 'shared'].includes(k.status)) return false;
     if (statusFilter === 'archived' && k.status !== 'archived') return false;
     return true;
   };
@@ -327,8 +327,7 @@ export default function KitLibraryPage() {
       clientName: extractDraftClientName(k.personalization_data),
       updatedAt: k.updated_at,
       isDraft: k.status === 'draft',
-      badge:
-        k.status === 'draft' ? 'Rascunho' : k.status === 'archived' ? 'Arquivado' : 'Publicado',
+      badge: getKitStatusBadge(k.status),
     };
   };
 
@@ -509,12 +508,12 @@ export default function KitLibraryPage() {
             <EmptyState
               icon={<Library className="h-10 w-10" />}
               title={
-                q || selectedTag || selectedColor
+                q || selectedTag || selectedColor || statusFilter !== 'all'
                   ? 'Nenhum kit encontrado'
                   : 'Você ainda não criou kits'
               }
               description={
-                q || selectedTag || selectedColor
+                q || selectedTag || selectedColor || statusFilter !== 'all'
                   ? 'Tente ajustar os filtros ou a busca.'
                   : 'Comece montando o seu primeiro kit personalizado ou explore os templates do sistema.'
               }
@@ -623,8 +622,8 @@ export default function KitLibraryPage() {
           ) : filteredFavs.length === 0 ? (
             <EmptyState
               icon={<Star className="h-10 w-10" />}
-              title="Sem favoritos ainda"
-              description="Marque seus kits favoritos com a estrela para acessá-los rapidamente."
+              title={statusFilter !== 'all' ? 'Nenhum favorito neste filtro' : 'Sem favoritos ainda'}
+              description={statusFilter !== 'all' ? 'Tente outro status ou volte para "Todos".' : 'Marque seus kits favoritos com a estrela para acessá-los rapidamente.'}
             />
           ) : (
             <div

@@ -30,6 +30,14 @@ export function getPersistedKitStatus(kitState: KitState): 'draft' | 'ready' {
   return kitState.isValid ? 'ready' : 'draft';
 }
 
+/** Selo exibido na biblioteca: só published/shared são "Publicado"; `ready` é apenas válido. */
+export function getKitStatusBadge(status: string): string {
+  if (status === 'draft') return 'Rascunho';
+  if (status === 'archived') return 'Arquivado';
+  if (status === 'ready') return 'Pronto';
+  return 'Publicado';
+}
+
 /**
  * Builds the shared snapshot persisted by both explicit save and autosave.
  * `totalPrice` is already the total for `kitQuantity`.
