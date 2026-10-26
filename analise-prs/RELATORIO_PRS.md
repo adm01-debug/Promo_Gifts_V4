@@ -208,3 +208,73 @@
 Todos os 14 PRs desta sessão têm diff 100% lido e confirmado via `git diff origin/main...refs/remotes/pr/<n>`.
 Cherry checks confirmados: todos os commits únicos, nenhum já em main.
 Test-merges: todos CLEAN via `git merge-tree --write-tree`.
+
+---
+
+## ADDENDUM — Sessão f0ceb220 continuação (2026-10-26)
+
+**Sessão:** https://claude.ai/code/session_011d8gKLZg8BWivR8aQBwxGF (continuação pós-compactação)
+**main HEAD:** `145da71bb8c451eebadc75c4bb059397f8d468f7` (confirmado)
+**PRs abertas no momento:** 14
+
+### PRs fechadas externamente desde a sessão anterior
+
+Os seguintes PRs de DECISAO_HUMANA e FECHAR não constam mais como abertos (fechados/mergeados externamente entre sessões):
+
+- **DECISAO_HUMANA fechadas:** #2415, #2428, #2443, #2449, #2452, #2469, #2503, #2532, #2537, #2547, #2550, #2557
+- **FECHAR fechadas:** #2417, #2418, #2419, #2422
+- **#2420** (FECHAR — NO_MERGE_BASE): ainda aberta, confirmado test-merge = NO_MERGE_BASE
+
+### PRs novas analisadas (3 — esta continuação)
+
+| PR | Título | Branch | Veredito | Motivo |
+|---|---|---|---|---|
+| #2597 | fix: 4 workflows CI falhando | `claude_04/beautiful-gates-bvocz5` | DECISAO_HUMANA | REGRA8: `.github/workflows/ratchet-weekly.yml` |
+| #2599 | fix(privacy): invoke-direct + ratchet SIGPIPE | `claude_04/laughing-gates-l4pt67` | DECISAO_HUMANA | REGRA8: `.github/workflows` + subconjunto de #2597 |
+| #2600 | docs(analise-prs): deliverables f0ceb220 | `claude_04/optimistic-bohr-qplx94` | BLOQUEADA | DRAFT — entregáveis documentais |
+
+**Test-merges (confirmados):**
+- #2597: CLEAN (`git merge-tree --write-tree origin/main refs/remotes/pr/2597` exit=0); 4 commits únicos
+- #2599: CLEAN; 2 commits únicos; subconjunto estrito de #2597
+- #2420: NO_MERGE_BASE (reconfirmado)
+
+**CI main (`145da71b`):** Nenhum run Gate Final encontrado. E2E (Playwright) = failure (non-blocking). Múltiplos runs em queue. Conclusão: estado inconclusivo — Gate Final não disparou ou preso em queue.
+
+### Totais acumulados (todas as sessões — pós-continuação)
+
+| Veredito | Quantidade |
+|---|---|
+| MERGEADO_AUTONOMO (todas sessões) | 18 |
+| DECISAO_HUMANA | 18 |
+| BLOQUEADA | 9 |
+| FECHAR | 5 |
+| JA_EM_MAIN | 1 |
+| **Total analisado** | **51** |
+
+### Estado atual das PRs abertas (14)
+
+**DECISAO_HUMANA** (6):
+#2579 (downgrade release-please), #2580 (migration+DRAFT), #2587 (zustand 4→5), #2588 (react-day-picker 8→10), #2597 (4 fixes workflow), #2599 (subconjunto #2597)
+
+**BLOQUEADA** (7):
+#2572 (claude_05 session), #2590–#2594 (.github/workflows dependabot), #2600 (DRAFT deliverables)
+
+**FECHAR ainda aberta** (1):
+#2420 — NO_MERGE_BASE (orphan branch sem ancestral com main)
+
+### Clusters criados
+
+Arquivo `analise-prs/clusters.md` com 6 clusters documentados:
+1. Dependabot npm — 6 PRs (4 mergeadas, 2 DECISAO_HUMANA)
+2. Dependabot GH Actions — 5 PRs (todas BLOQUEADAS)
+3. Release-please — 2 PRs (ambas DECISAO_HUMANA)
+4. Claude agent claude_04 — 4 PRs (1 mergeada, 2 DECISAO_HUMANA, 1 BLOQUEADA)
+5. Claude agent claude_05 — 2 PRs (mesma branch, ambas BLOQUEADAS)
+6. Duplicata #2597↔#2599 — #2599 é subconjunto estrito de #2597
+
+### Recomendação ao PO
+
+1. **Fechar #2420** — branch órfã confirmada (NO_MERGE_BASE)
+2. **Aprovar #2597** e fechar #2599 (subconjunto) — fixes CI necessários, REGRA8 aplicável
+3. **Decidir** #2579 (release-please downgrade), #2580 (migration), #2587 (zustand major), #2588 (react-day-picker major)
+4. **Aprovar diretamente** #2590–#2594 (dependabot GitHub Actions — exceto #2594 que precisa SHA pin fix antes)
