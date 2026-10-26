@@ -2,9 +2,32 @@
 
 **Branch:** `claude_04/beautiful-gates-bvocz5`  
 **PR:** [#2597](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2597)  
-**Commit principal:** `2c9fb608f` (4 fixes) + `1960f24b2` (merge main) + `bfdcc8825` (Tailwind downgrade)  
+**Commits desta sessão:**
+- `2c9fb608f` — 4 fixes (gitleaks, ratchet-weekly, invoke-direct, replenishment timeout)
+- `1960f24b2` — merge main
+- `bfdcc8825` — Tailwind v4→v3 downgrade (package.json + lockfile parcial)
+- `7caa97999` — lockfile: resolve@1.22.13 nested sob tailwindcss (npm ci fix)
+- `58afebb52` — ESLint only-throw-error AnonymizeAccountDialog fix
+- `dfccb1a67` — docs: PENDENCIAS.md rev 35 (P94+P95)
+
 **Sessão:** https://claude.ai/code/session_014RkohRYagi3sPiL8jtgot4  
 **Data:** 2026-10-26
+
+---
+
+## Baseline Local (commit `c11451004`)
+
+Execução local em Node.js 22.22.0 após `npm ci --ignore-scripts`:
+
+| Check | Resultado | Observação |
+|---|---|---|
+| `npm ci --ignore-scripts` | ✅ exit 0 | Após fix do pngjs (registry Lovable → npm público) |
+| `tsc --noEmit` | ✅ exit 0 | Zero erros de TypeScript |
+| `eslint src/` | ✅ exit 0 | Zero warnings/errors |
+| `npm run build` (Vite) | ✅ exit 0 | `built in 13.71s` |
+| Vitest (amostra 2 arquivos) | ✅ 31/31 | Suite completa roda em CI (~778 testes) |
+
+**Nota:** `npm ci` falhava com 403 antes do fix `c11451004` — `pngjs@7.0.0` estava com URL apontando para o registry privado da Lovable. Integrity SHA-512 idêntica ao npm público. Fix aplicado no mesmo commit.
 
 ---
 
@@ -13,9 +36,9 @@
 | Métrica | Valor |
 |---|---|
 | Workflows com falha investigados | 22+ |
-| Falhas corrigidas nesta sessão | **5** |
-| Falhas documentadas em PENDENCIAS.md (P85–P93) | **9 novos** (total P78–P93 = 16 desde esta sessão) |
-| Gate Final bloqueante | ✅ Verde (aguardando CI no commit `bfdcc8825`) |
+| Falhas corrigidas nesta sessão | **7** |
+| Falhas documentadas em PENDENCIAS.md (P85–P95) | **11 novos** (total P78–P95 = 18 desde esta sessão) |
+| Gate Final bloqueante | ⏳ Aguardando CI no commit `dfccb1a67` |
 | PR aberto | [#2597](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2597) |
 
 ---
@@ -270,6 +293,65 @@ As chaves foram cobertas no allowlist do gitleaks (scan passa), mas **o risco re
 6. **GRANT permissões** para `v_kit_component_complete` e `product_kit_components` (P88) via migration versionada
 7. **Verificar outage site** + fechar issue #2598 (P90)
 8. **Analisar peer deps** `@testing-library/jest-dom` e `vite` (P91) — aceitar ou ignorar PRs do Dependabot
+
+---
+
+---
+
+## P93 — Tailwind CSS v4 PostCSS incompatível ✅ CORRIGIDO
+
+**Commits de fix:** `bfdcc8825` + `7caa97999`
+
+**Causa raiz:** Dependabot commit `145da71b` atualizou tailwindcss v3→v4.3.3. v4 moveu PostCSS plugin para pacote separado `@tailwindcss/postcss`. Incompatível com `postcss.config.js` e `src/index.css` do projeto.
+
+**Segundo problema (lockfile):** tailwindcss@3.4.19 precisa de `resolve@^1.22.8`. Root tem `resolve@2.0.0-next.6`. `npm ci` falhava com `Missing: resolve@1.22.13 from lock file`. Fix: entry nested `node_modules/tailwindcss/node_modules/resolve@1.22.13` adicionada ao lockfile.
+
+**Workflows afetados corrigidos:**
+- CI Security & Drift Checks — build Vite
+- Deploy Gates Gate 6 — build Vite
+- CI Replenishment, E2E Playwright, E2E Critical Flows, E2E Swatch QuickView, Edge Integration Tests — npm ci
+
+---
+
+## P95 — ESLint only-throw-error em AnonymizeAccountDialog ✅ CORRIGIDO
+
+**Commit de fix:** `58afebb52`
+
+**Erro:** `src/components/privacy/AnonymizeAccountDialog.tsx:48` — `throw error` onde `error` de `invokeEdge()` pode não ser `Error`. Regra `@typescript-eslint/only-throw-error` bloqueava CI Replenishment.
+
+**Fix:** `throw error instanceof Error ? error : new Error(String(error))`
+
+**Workflow afetado:** `CI - Replenishment Module Quality Gate` (run [#40418413543](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40418413543))
+
+---
+
+## Tabela de Workflows — Estado Esperado Após Merge de `dfccb1a67`
+
+> ⚠️ CI rodando para commit `dfccb1a67` no momento desta escrita — aguardando conclusão.
+
+| Workflow | Falha original em `145da71b` | Causa | Status esperado |
+|---|---|---|---|
+| Deploy Gates (Gate 6 Build) | ❌ failure | Tailwind v4 PostCSS | ✅ success (fix #bfdcc8825+7caa97999) |
+| CI Security & Drift Checks | ❌ failure | Tailwind v4 Vite build | ✅ success (fix #bfdcc8825+7caa97999) |
+| CI Replenishment Quality Gate | ❌ failure | npm ci + ESLint only-throw-error | ✅ success (fix #7caa97999+58afebb52) |
+| E2E (Playwright) | ❌ failure | npm ci | ✅ success (fix #7caa97999) |
+| E2E Critical Flows & Error Boundaries | ❌ failure | npm ci | ✅ success (fix #7caa97999) |
+| E2E • Swatch QuickView | ❌ failure | npm ci | ✅ success (fix #7caa97999) |
+| Edge Integration Tests | ❌ failure | npm ci | ✅ success (fix #7caa97999) |
+| Magazine Unit Tests | ❌ failure | Coverage floor 6 arquivos | ⚠️ P94 — investigando |
+| Quote Builder Delivery Quality | ❌ failure | P84 pré-existente | 📋 documentado P84 |
+| Visual Baseline Tests — Nightly | ❌ failure | Snapshots desatualizados | 📋 documentado P87/P89 |
+
+---
+
+## Próximos Passos para o PO
+
+1. **Aguardar CI verde** no PR [#2597](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2597) e mergear
+2. **Rotacionar 7 chaves** marcadas na seção de chaves acima no painel `doufsxqlfjyuvxuezpln`
+3. **Configurar secrets** `SUPABASE_DB_PASSWORD` e `SUPABASE_ACCESS_TOKEN` no GitHub (P81, P82)
+4. **GRANT permissões** para `v_kit_component_complete` e `product_kit_components` (P88)
+5. **Atualizar snapshots visuais** (P87/P89)
+6. **Investigar Magazine coverage** (P94) — 6 arquivos abaixo do floor
 
 ---
 
