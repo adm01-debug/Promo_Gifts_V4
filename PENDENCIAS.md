@@ -1577,11 +1577,16 @@ Timeout transiente de infraestrutura (idêntico a P79/P80/P85). SHA `522d98e8` �
 **Categoria:** Snapshots visuais desatualizados ou componente modificado pelo Lovable  
 **Sessão:** session_014RkohRYagi3sPiL8jtgot4 (2026-10-26)
 
-**Specs falhando (todas rodando ×20 iterações no chromium-public):**  
-- `stock-health-badges.spec.ts`
-- `stock-dashboard-empty.spec.ts`
-- `stock-dashboard-layout.spec.ts`
-- `stock-dashboard-visual.spec.ts`
+**Specs falhando (todas rodando ×20 iterações no chromium-public) — verificado via run failure summary:**
+
+| Spec | Testes falhando | Descrição das falhas |
+|---|---|---|
+| `stock-dashboard-visual.spec.ts` | 9 specs × 20 | badge Saúde + legenda, drawer aberto com contadores, dialog "Como é calculado" (viewports desktop/tablet/mobile) |
+| `stock-dashboard-empty.spec.ts` | 3 specs × 20 | badge Saúde 100%, dialog 0/0=100%, drawer tab Crítico |
+| `stock-health-badges.spec.ts` | 3 specs × 20 | badge Saúde %, botão "Como é calculado", clicar no badge |
+| `stock-dashboard-layout.spec.ts` | múltiplas × 20 | toolbar e badges visíveis, chip legenda, ScrollArea |
+
+Todos os 4 jobs encerraram com `##[error]Process completed with exit code 1`.
 
 **Causa raiz confirmada:**  
 Snapshots visuais do stock dashboard estão desatualizados. O Lovable (gpt-engineer-app[bot]) provavelmente alterou o componente do stock dashboard (mudança cosmética ou estrutural) sem atualizar os baselines visuais. O stress loop roda ×20, amplificando qualquer falha.
@@ -1638,17 +1643,42 @@ Toda mudança de RLS/GRANT em `doufsxqlfjyuvxuezpln` exige: (a) aprovação do P
 **Categoria:** Snapshots visuais desatualizados (Lovable) + timeout transiente de infraestrutura  
 **Sessão:** session_014RkohRYagi3sPiL8jtgot4 (2026-10-26)
 
-**Jobs falhando:**
+**Jobs falhando — verificado via run failure summary:**
 
-| Job | Tipo de falha |
-|---|---|
-| `E2E Visual — magazine-header` | Snapshot visual desatualizado |
-| `E2E Visual — color-swatch` | Snapshot visual desatualizado |
-| `Playwright E2E shard 2` | Failure (auth timeout ou spec failing) |
-| `Playwright E2E shard 1` | Cancelled (timeout por dependência do shard 2) |
+**`E2E Visual Focused · magazine-header` — 14 testes falhando:**
+
+| Spec | Linha | Cenário |
+|---|---|---|
+| `magazine-header-align.spec.ts` | :88 | cluster direito alinhado — viewport lg |
+| `magazine-header-align.spec.ts` | :88 | resiliente a título longo — viewport xl |
+| `magazine-header-align.spec.ts` | :88 | cluster empilhado — viewport 2xl |
+| `magazine-header-align.spec.ts` | :88 | cluster empilhado — viewport md |
+| `magazine-header-responsive.spec.ts` | :67 | hero/breadcrumb overflow — viewport sm |
+| `magazine-header-responsive.spec.ts` | :99 | sidebar preview — viewport md |
+| `magazine-header-responsive.spec.ts` | :99 | sidebar preview — viewport xl |
+| `magazine-header-responsive.spec.ts` | :121 | empty state capa — viewport sm/md/xl (3 casos) |
+
+**`E2E Visual Focused · color-swatch` — 8 testes falhando:**
+
+| Spec | Linha | Cenário |
+|---|---|---|
+| `color-swatch-selected-no-clip.spec.ts` | :51 | swatch selecionado não vaza — desktop |
+| `color-swatch-selected-no-clip.spec.ts` | :51 | swatch selecionado não vaza — mobile |
+| `color-swatch-two-lines-grid.spec.ts` | :69 | 2 linhas + chip +N — mobile/tablet/desktop/wide |
+| `color-swatch-wrap-visual.spec.ts` | :50 | wrap de bolinhas — desktop |
+| `color-swatch-wrap-visual.spec.ts` | :50 | wrap de bolinhas — mobile |
+
+**`Playwright E2E (1)` — cancelado com kit-builder timeout:**
+```
+Error: expect(emptyMsg.first()).toBeVisible()
+Selector: ':text("Seu kit está vazio")'
+Timeout: 15000ms
+```
+
+**`Playwright E2E (2)`** — failure (artifact 352MB — erro de auth transiente Supabase, padrão P79/P80)
 
 **Causa raiz confirmada:**  
-- `magazine-header` e `color-swatch`: baselines visuais desatualizados após mudança cosmética do Lovable no componente — padrão idêntico ao P87. Requer atualização dos snapshots após validação do diff visual.  
+- `magazine-header` e `color-swatch`: baselines visuais desatualizados após mudança cosmética do Lovable — padrão idêntico ao P87. Requer atualização dos snapshots após validação do diff visual.  
 - Shards E2E: timeout transiente de infraestrutura Supabase — padrão P79/P80.
 
 **Ação necessária pelo PO:**  
@@ -1693,14 +1723,20 @@ O workflow de uptime monitor funciona COMO ESPERADO — ele detectou uma indispo
 **Categoria:** Conflito de peer dependencies — bloqueio externo  
 **Sessão:** session_014RkohRYagi3sPiL8jtgot4 (2026-10-26)
 
-**Dependências com falha:**  
-- `@testing-library/jest-dom` — "Error while updating peer dependency"
-- `vite` — "Error while updating peer dependency"
+**Dependências com falha — verificado via run failure summary:**
 
-**Dependências atualizadas com sucesso (no mesmo run):**  
+```
+| Dependência               | Erro                           | Detalhe                                 |
+|---------------------------|--------------------------------|-----------------------------------------|
+| @testing-library/jest-dom | dependency_file_not_resolvable | "Error while updating peer dependency." |
+| vite                      | dependency_file_not_resolvable | "Error while updating peer dependency." |
+```
+
+**Dependências atualizadas com sucesso no mesmo run (12 PRs criados):**  
 - `framer-motion`: 11.18.2 → 14.6.0  
 - `eslint`: 9.39.4 → 10.13.0  
 - `sonner`: 1.7.4 → 2.0.8  
+- `zustand` e outros 8 pacotes  
 
 **Causa raiz confirmada:**  
 O Dependabot tentou atualizar `@testing-library/jest-dom` e `vite` mas encontrou conflito de peer dependencies com outros pacotes do projeto. O npm não conseguiu resolver a árvore de dependências automaticamente.
