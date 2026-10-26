@@ -1,6 +1,6 @@
 # Pendências CI — Bloqueios Externos
 
-**Atualizado em:** 2026-10-26 (rev 33 — P93 adicionado: fix Tailwind v4→v3 commitado em bfdcc8825; sessão session_014RkohRYagi3sPiL8jtgot4)  
+**Atualizado em:** 2026-10-26 (rev 35 — P94 Magazine Unit Tests cobertura + P95 ESLint only-throw-error corrigido; sessão session_014RkohRYagi3sPiL8jtgot4)  
 **Branch de referência:** `claude_04/beautiful-gates-bvocz5`  
 **Commit de referência (main):** `1928f699` — chore: atualiza PROGRESSO e PENDENCIAS com merges de 25/10 (#2574)
 
@@ -1803,6 +1803,59 @@ Erro: `Error: [postcss] It looks like you're trying to use 'tailwindcss' directl
 - `package-lock.json`: entrada `node_modules/tailwindcss` substituída de v4.3.3 por v3.4.19 (dados copiados do nested `node_modules/lovable-tagger/node_modules/tailwindcss` já presente no lockfile com deps completas)
 
 **Resultado esperado:** CI Gate 6 Build e CI Security Drift Checks passam ao usar v3.4.19.
+
+---
+
+---
+
+## P94 — Magazine Unit Tests: cobertura abaixo do floor em 6 arquivos
+
+**Workflow:** `Magazine Unit Tests` (`.github/workflows/magazine-unit-tests.yml`)  
+**Categoria:** Coverage threshold — não é falha de runtime (778/778 testes passam)  
+**Sessão:** session_014RkohRYagi3sPiL8jtgot4 (2026-10-26)
+
+**Causa raiz:**  
+778/778 testes passam com `success`, mas 6 arquivos têm cobertura de código abaixo dos floors configurados no vitest coverage. A configuração (`vitest.config.ts` ou `.c8rc` similar) define thresholds por arquivo que não estão sendo atingidos.
+
+**Arquivos suspeitos (baseado em histórico):**  
+Os 6 arquivos abaixo do threshold são novos (introduzidos por commits recentes do Lovable) ou têm cobertura regressada por mudanças de interface. Investigação completa exige leitura dos logs do job com a lista exata.
+
+**Bloqueio de correção:**  
+Não é possível aumentar cobertura de teste sem identificar quais são os 6 arquivos exatos. O run mais recente na branch (commit `7caa97999`, run `40418413559`) estava `queued` no momento desta documentação.
+
+**Ação necessária:** Aguardar run completar → identificar 6 arquivos → adicionar testes unitários cobrindo os branches/funções descobertos.
+
+**Impacto no Gate Final:** Magazine Unit Tests NÃO é required check no Gate Final (`deploy-gates.yml`). Falha documentada como pendência de qualidade, não bloqueante de merge.
+
+**Pré-existente:** Verificar se era pré-existente em `main` antes do Dependabot commit `145da71b`.
+
+---
+
+## P95 — CI Replenishment: ESLint only-throw-error em AnonymizeAccountDialog ✅ CORRIGIDO
+
+**Workflow:** `CI - Replenishment Module Quality Gate`  
+**Run com falha:** [#40418413543](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40418413543) (commit `7caa97999`)  
+**Commit de fix:** `58afebb52` (2026-10-26, branch `claude_04/beautiful-gates-bvocz5`)  
+**Categoria:** ESLint regression — `@typescript-eslint/only-throw-error`  
+**Sessão:** session_014RkohRYagi3sPiL8jtgot4 (2026-10-26)
+
+**Causa raiz:**  
+`src/components/privacy/AnonymizeAccountDialog.tsx` linha 48: `throw error` onde `error` é o objeto retornado por `invokeEdge()` — pode não ser instância de `Error`. A regra ESLint `@typescript-eslint/only-throw-error` rejeita `throw` de non-Error.
+
+**Erro exato:**
+```
+src/components/privacy/AnonymizeAccountDialog.tsx [@typescript-eslint/only-throw-error]
+  ERROR 48:24 Expected an error object to be thrown.
+ESLint baseline gate [full] — atual: 1 erros, 0 warnings · baseline: 0 erros
+```
+
+**Fix aplicado:**
+```diff
+- if (error) throw error;
++ if (error) throw error instanceof Error ? error : new Error(String(error));
+```
+
+**Resultado esperado:** CI Replenishment passa com `success` no commit `58afebb52`.
 
 ---
 
