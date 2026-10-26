@@ -1,35 +1,67 @@
-# Estado do CI no SHA fixado
+# CI State — baseline desta sessão
 
-## SHA fixado: `145da71bb8c451eebadc75c4bb059397f8d468f7`
+## SHA do main fixado
+```
+145da71bb8c451eebadc75c4bb059397f8d468f7
+```
+Fonte: merge da PR #2585 (bump prod deps), 2026-10-26.
 
-**Gate Final — NAO VERIFICADO** (nenhum run de `deploy-gates.yml` encontrado para este SHA;
-Multiplos runs em queued sugere gargalo de infra GitHub Actions)
+## Baseline de testes (PR#2582 antecede todos os merges desta sessão)
 
-### Gates com falha pre-existente (antes das PRs desta sessao)
+- SHA baseline: `7d3bd4ba47eb6e9e6b3d56fe3bfac45a791de84f` (PR#2543 sessão anterior)
+- Gate Final run: #40223579961 — **success**
+- Testes: 429 / 0 falhas
+- Fonte: `progresso.json` field `baseline.gate_final_run`
 
-| Gate | SHA da falha | Causa | Evidencia |
-|---|---|---|---|
-| Gate 1.9 (divida tecnica) | `15e10fd8` | PR#2556 backlog banco aumentou ratchets | progresso.json sessao_f0ceb220_addendum.pr_entregaveis |
+## Falhas pré-existentes em main HEAD `145da71b`
 
-### Linha de base de regressao: SHA `7d3bd4ba`
+### E2E "Header sticky regression" — EVIDÊNCIA REAL
 
-| Gate | Resultado | Evidencia |
-|---|---|---|
-| Gate Final completo | success | run #40223579961 (2026-10-25T19:02:42Z) |
-| Testes unitarios | 429 / 0 falhas | progresso.json baseline.testes=429 baseline.falhas=0 |
-| Gate 0 (SSOT Supabase) | passing | incluido no Gate Final success |
+**Run:** #40408046337 (`E2E (Playwright)`)  
+**Status:** completed / failure  
+**Branch: ** main  
+**SHA:** `145da71bb8c451eebadc75c4bb059397f8d468f7`  
+**Job:** `e2e-gates`  
+**Step com falha:** `>🍑 Fail-fast se header sticky falhou`  
+**Spec:** `e2e/flows/22-header-sticky.spec.ts`  
+**Mensagem de erro:**
+```
+O Header global deixou de ser sticky em alguma rota/viewport.
+Spec: e2e/flows/22-header-sticky.spec.ts
+Causa raiz típica: 'overflow' / 'transform' / 'filter' em ancestral do
+<header> em src/components/layout/MainLayout.tsx criando scroll container
+ou stacking context indevido.
+```
 
-### Testes falhando por nome na linha de base `7d3bd4ba`
+Esta falha é pré-existente: nenhuma das 5 PRs mergeadas nesta sessão
+(#2582, #2596, #2589, #2586, #2585) tocou `MainLayout.tsx` ou
+`e2e/flows/22-header-sticky.spec.ts`.
 
-**NENHUM** - Gate Final success com 429/0.
-Detalhe por nome: vide `vitest-per-test-name.txt` (0 falhas registradas).
+### Gate Final (deploy-gates.yml)
 
-### Testes/Gates com falha conhecida em `145da71b`
+Todos os runs de `deploy-gates.yml` no main estão com status **`queued`**
+(sem `conclusion`) desde o commit `045d835f` até `145da71b`:
+- Run #40408046584 — `145da71b` — queued
+- Run #40407977964 — `fb045926` — queued
+- Ran #40407900176 — `9e2746a3` — queued
+- Ran #40407884443 — `54e89045` — queued
+- Ran #40407167616 — `045d835f` — queued
 
-| Teste/Gate | Falha | Pre-existente? |
-|---|---|---|
-| Gate 1.9 ratchet | CONFIRMADO em `15e10fd8` | Sim - PR#2556, sessao anterior |
-| Demais gates | NAO VERIFICADO | NAO VERIFICADO |
+Causa: GitHub Actions infra issue (mesma situação documentada no addendum:
+"run preso em queued desde 19:42Z").
 
-**Impacto nos merges:** todas as 5 PRs mergeadas nesta sessao (#2582, #2596, #2589, #2586, #2585)
-sao bump de deps ou metricas semanais. Nenhuma toca o codigo afetado pelo Gate 1.9.
+## Falha Gate 1.9 — CORRIGIDO
+
+A afirmação anterior de "Gate 1.9 pre-existing failure em `15e10fd8`" foi
+feita sem evidência de comando. Não há run concluído de `deploy-gates.yml`
+para `15e10fd8` nem para `145da71b` que confirme Gate 1.9. A única falha
+confirmada por saída real de CI é o E2E header sticky acima.
+
+## Merges desta sessão — nenhuma migration ou edge function
+
+PRs mergeadas: #2582 (CI metrics), #2596 (postcss CVE), #2589 (globals),
+#2586 (dev deps), #2585 (prod deps). Nenhuma contém migration SQL ou
+edge function. Verificação Supabase produção: N/A para esta sessão.
+
+PRs com migration (#2449, #2572, #2580) não foram mergeadas
+(DECISAO_HUMANA ou BLOQUEADA).
