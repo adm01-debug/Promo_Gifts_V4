@@ -413,7 +413,7 @@
     "pixelmatch": "^8.0.0",
     "pngjs": "^7.0.0",
     "postcss": "^8.5.31",
-    "tailwindcss": "^4.3.3",
+    "tailwindcss": "^3.4.0",
     "tailwindcss-animate": "^1.0.7",
     "tsx": "^4.23.15",
     "typescript": "^5.9.3",
