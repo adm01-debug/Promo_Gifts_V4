@@ -3,7 +3,7 @@
   "date": "2026-10-25",
   "rev": 22,
   "main_head_pre": "5279abfe07895d9b0481fa08086b2c18d321de5f",
-  "main_head_post": "15e10fd88208f9b4cd372b82544fb27892d15a81",
+  "main_head_post": "145da71bb8c451eebadc75c4bb059397f8d468f7",
   "gate_final_baseline": {
     "run": 40223579961,
     "sha": "7d3bd4ba",
@@ -191,6 +191,104 @@
       "verdict": "DECISAO_HUMANA",
       "test_merge": "CLEAN",
       "motivo": "corrupção texto RELATORIO_CI.md"
+    },
+    {
+      "number": 2572,
+      "verdict": "BLOQUEADA",
+      "sessao_analise": "f0ceb220",
+      "motivo": "outra sessão (claude_05) + Gate Final pendente (REGRA#10)"
+    },
+    {
+      "number": 2579,
+      "verdict": "DECISAO_HUMANA",
+      "sessao_analise": "f0ceb220",
+      "test_merge": "CLEAN",
+      "motivo": "downgrade release-please 1.2.1→1.0.0 (regressão semântica)"
+    },
+    {
+      "number": 2580,
+      "verdict": "BLOQUEADA",
+      "sessao_analise": "f0ceb220",
+      "motivo": "DRAFT"
+    },
+    {
+      "number": 2582,
+      "verdict": "MERGEADO_AUTONOMO",
+      "sessao_analise": "f0ceb220",
+      "merge_sha": "045d835f565baf01db94ae5212d673f93a63685b"
+    },
+    {
+      "number": 2585,
+      "verdict": "MERGEADO_AUTONOMO",
+      "sessao_analise": "f0ceb220",
+      "merge_sha": "145da71bb8c451eebadc75c4bb059397f8d468f7"
+    },
+    {
+      "number": 2586,
+      "verdict": "MERGEADO_AUTONOMO",
+      "sessao_analise": "f0ceb220",
+      "merge_sha": "fb04592655cf81d1a6aad79739f2cc2f1c2236c7"
+    },
+    {
+      "number": 2587,
+      "verdict": "DECISAO_HUMANA",
+      "sessao_analise": "f0ceb220",
+      "test_merge": "CLEAN",
+      "motivo": "zustand 4→5 major, 11 stores incompatíveis"
+    },
+    {
+      "number": 2588,
+      "verdict": "DECISAO_HUMANA",
+      "sessao_analise": "f0ceb220",
+      "test_merge": "CLEAN",
+      "motivo": "react-day-picker 8→10 major, calendar.tsx usa API v8"
+    },
+    {
+      "number": 2589,
+      "verdict": "MERGEADO_AUTONOMO",
+      "sessao_analise": "f0ceb220",
+      "merge_sha": "9e2746a31914e714f1b96779f26808c0f3685ff8"
+    },
+    {
+      "number": 2590,
+      "verdict": "BLOQUEADA",
+      "sessao_analise": "f0ceb220",
+      "rule8": [".github/workflows/"],
+      "motivo": "codeql-action/upload-sarif — .github/workflows proibido"
+    },
+    {
+      "number": 2591,
+      "verdict": "BLOQUEADA",
+      "sessao_analise": "f0ceb220",
+      "rule8": [".github/workflows/"],
+      "motivo": "codeql-action/analyze — .github/workflows proibido"
+    },
+    {
+      "number": 2592,
+      "verdict": "BLOQUEADA",
+      "sessao_analise": "f0ceb220",
+      "rule8": [".github/workflows/"],
+      "motivo": "actions/stale 9→11 — .github/workflows proibido"
+    },
+    {
+      "number": 2593,
+      "verdict": "BLOQUEADA",
+      "sessao_analise": "f0ceb220",
+      "rule8": [".github/workflows/"],
+      "motivo": "codeql-action/init — .github/workflows proibido"
+    },
+    {
+      "number": 2594,
+      "verdict": "BLOQUEADA",
+      "sessao_analise": "f0ceb220",
+      "rule8": [".github/workflows/"],
+      "motivo": "actions/setup-node 4→7 — .github/workflows proibido"
+    },
+    {
+      "number": 2596,
+      "verdict": "MERGEADO_AUTONOMO",
+      "sessao_analise": "f0ceb220",
+      "merge_sha": "54e8904585ad474030feea88526d9c66b7404aa4"
     }
   ]
 }

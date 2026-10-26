@@ -53,5 +53,43 @@
     "status": "open",
     "mergeable_state": "blocked",
     "bloqueio": "Gate Final run #40228592594 preso em queued (GitHub Actions infra issue)"
+  },
+  "sessao_f0ceb220_addendum": {
+    "data": "2026-10-26",
+    "sessao": "https://claude.ai/code/session_011d8gKLZg8BWivR8aQBwxGF",
+    "main_head_pre": "15e10fd88208f9b4cd372b82544fb27892d15a81",
+    "main_head_pos": "145da71bb8c451eebadc75c4bb059397f8d468f7",
+    "prs_novas_analisadas": 14,
+    "merges_autonomos": 5,
+    "contagem_por_veredito": {
+      "MERGEADO_AUTONOMO": 5,
+      "DECISAO_HUMANA": 3,
+      "BLOQUEADA": 6
+    },
+    "merges_lista": [
+      {"number": 2582, "sha": "045d835f565baf01db94ae5212d673f93a63685b", "titulo": "chore(ci): métricas semanais 2026-W44"},
+      {"number": 2596, "sha": "54e8904585ad474030feea88526d9c66b7404aa4", "titulo": "bump postcss-selector-parser 6.1.4→6.1.5 (CVE-2026-104844)"},
+      {"number": 2589, "sha": "9e2746a31914e714f1b96779f26808c0f3685ff8", "titulo": "bump globals 15→17"},
+      {"number": 2586, "sha": "fb04592655cf81d1a6aad79739f2cc2f1c2236c7", "titulo": "bump dev deps minor/patch"},
+      {"number": 2585, "sha": "145da71bb8c451eebadc75c4bb059397f8d468f7", "titulo": "bump prod deps minor/patch"}
+    ],
+    "decisao_humana": [
+      {"number": 2579, "motivo": "downgrade release-please 1.2.1→1.0.0 (regressão semântica)"},
+      {"number": 2587, "motivo": "zustand 4→5 major, 11 stores incompatíveis"},
+      {"number": 2588, "motivo": "react-day-picker 8→10 major, calendar.tsx usa API v8"}
+    ],
+    "bloqueadas": [
+      {"number": 2572, "motivo": "outra sessão (claude_05) + Gate Final pendente"},
+      {"number": 2580, "motivo": "DRAFT"},
+      {"number": 2590, "motivo": ".github/workflows proibido"},
+      {"number": 2591, "motivo": ".github/workflows proibido"},
+      {"number": 2592, "motivo": ".github/workflows proibido"},
+      {"number": 2593, "motivo": ".github/workflows proibido"},
+      {"number": 2594, "motivo": ".github/workflows proibido"}
+    ],
+    "pr_entregaveis": {
+      "branch": "claude_04/optimistic-bohr-qplx94",
+      "status": "push_pendente"
+    }
   }
 }
