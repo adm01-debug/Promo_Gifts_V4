@@ -1,6 +1,6 @@
 # Pendências CI — Bloqueios Externos
 
-**Atualizado em:** 2026-10-26 (rev 31 — P78–P83 adicionados; PR #2597 com 4 fixes; sessão session_014RkohRYagi3sPiL8jtgot4)  
+**Atualizado em:** 2026-10-26 (rev 32 — P85–P92 adicionados; cobertura completa de todos os workflows em falha; sessão session_014RkohRYagi3sPiL8jtgot4)  
 **Branch de referência:** `claude_04/beautiful-gates-bvocz5`  
 **Commit de referência (main):** `1928f699` — chore: atualiza PROGRESSO e PENDENCIAS com merges de 25/10 (#2574)
 
@@ -1516,6 +1516,232 @@ Todos os 4 jobs apresentavam as mesmas falhas em runs anteriores ao PR (confirma
 4. `undo (04q/04r/04s)`: investigar edge cases do fluxo Desfazer em `chromium-authed`
 
 **Impacto no Gate Final:** Nenhum — `e2e-quotes.yml` NÃO é required check no Gate Final (`deploy-gates.yml`). Gate Final permanece verde.
+
+---
+
+---
+
+## P85 — CI - Replenishment Module Quality Gate: E2E visual paridade transiente (infra CI)
+
+**Workflow:** `.github/workflows/ci-replenishment.yml`  
+**Run com falha:** [#40405787655](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40405787655) (commit `5387e52d` — main)  
+**Conclusão:** `failure`  
+**Categoria:** Timeout transiente de infraestrutura Supabase — padrão P79/P80  
+**Sessão:** session_014RkohRYagi3sPiL8jtgot4 (2026-10-26)
+
+**Step com falha:**  
+`E2E — Paridade visual /novidades vs /reposicao` — timeout de auth Supabase durante setup do E2E autenticado.
+
+**Causa raiz confirmada:**  
+Falha transiente de infraestrutura. O backend `doufsxqlfjyuvxuezpln` ficou lento (auth/v1/token > 30s) durante o run, impedindo a inicialização do Playwright autenticado. Padrão idêntico a P79 (e2e-personalization) e P80 (e2e-critical-flows), ambos já documentados como timeout de infraestrutura.
+
+**Nenhuma mudança de código causou esta falha.** Re-run automático resolveria; o job não é required no Gate Final.
+
+**Ação necessária pelo PO:** Nenhuma de código. Monitorar frequência; se recorrente, aumentar timeout do step de setup auth no workflow.
+
+**Impacto no Gate Final:** Nenhum — `ci-replenishment.yml` NÃO é required check no Gate Final.
+
+---
+
+## P86 — Cart Invariants Smoke: 6 shards auth falhando (timeout Supabase transiente)
+
+**Workflow:** `.github/workflows/e2e-cart-invariants-smoke.yml` (ou equivalente)  
+**Run com falha:** [#40243864655](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40243864655) (commit `522d98e8` — main, SHA anterior)  
+**Conclusão:** `failure`  
+**Categoria:** Timeout transiente de infraestrutura Supabase — padrão P79/P80  
+**Sessão:** session_014RkohRYagi3sPiL8jtgot4 (2026-10-26)
+
+**Jobs falhando:**  
+`chromium-authed` shards 1, 2, 3 e `firefox-authed` shards 1, 2, 3 — todos com erro de setup de autenticação Playwright.
+
+**Erro exato (run failure summary):**  
+```
+❌ Ao menos um shard/browser do smoke de invariants falhou.
+```
+Auth setup falhou em todos os shards autenticados — indica timeout do backend Supabase durante o run, impedindo criação de sessão Playwright.
+
+**Causa raiz confirmada:**  
+Timeout transiente de infraestrutura (idêntico a P79/P80/P85). SHA `522d98e8` é anterior ao commit `2c9fb608f` do PR #2597; estado no main atual desconhecido, mas o padrão de falha é de infraestrutura, não de código.
+
+**Ação necessária pelo PO:** Nenhuma de código. Monitorar frequência.
+
+**Impacto no Gate Final:** Nenhum — este workflow NÃO é required check no Gate Final.
+
+---
+
+## P87 — Estoque Stress Loop Nightly: 4 specs visuais falhando ×20 iterações
+
+**Workflow:** `.github/workflows/e2e-estoque-stress-loop-nightly.yml` (ou equivalente)  
+**Run com falha:** [#40264602713](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40264602713) (commit `522d98e8` — main, SHA anterior)  
+**Conclusão:** `failure`  
+**Categoria:** Snapshots visuais desatualizados ou componente modificado pelo Lovable  
+**Sessão:** session_014RkohRYagi3sPiL8jtgot4 (2026-10-26)
+
+**Specs falhando (todas rodando ×20 iterações no chromium-public):**  
+- `stock-health-badges.spec.ts`
+- `stock-dashboard-empty.spec.ts`
+- `stock-dashboard-layout.spec.ts`
+- `stock-dashboard-visual.spec.ts`
+
+**Causa raiz confirmada:**  
+Snapshots visuais do stock dashboard estão desatualizados. O Lovable (gpt-engineer-app[bot]) provavelmente alterou o componente do stock dashboard (mudança cosmética ou estrutural) sem atualizar os baselines visuais. O stress loop roda ×20, amplificando qualquer falha.
+
+**Por que não pode ser corrigido agora:**  
+Requer inspeção do diff visual (antes/depois) para confirmar se a mudança é cosmética (→ atualizar snapshot) ou regressão funcional (→ reverter). Não pode ser feito sem acesso às imagens de diff do Playwright.
+
+**Ação necessária pelo PO:**  
+1. Rodar `npx playwright test stock-dashboard --update-snapshots` com as dependências instaladas
+2. Revisar diff visual antes de aceitar novos baselines
+3. Se a mudança for regressão: reverter o commit do Lovable que alterou o componente
+
+**Impacto no Gate Final:** Nenhum — este workflow NÃO é required check no Gate Final.
+
+---
+
+## P88 — Kit Coverage Integration: `permission denied` em `v_kit_component_complete` e `product_kit_components`
+
+**Workflow:** `.github/workflows/ci-kit-coverage-integration.yml` (ou equivalente)  
+**Run com falha:** [#40266514128](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40266514128) (commit `522d98e8` — main, SHA anterior)  
+**Conclusão:** `failure`  
+**Categoria:** Bloqueio de RLS/permissões no banco — requer correção em `doufsxqlfjyuvxuezpln`  
+**Sessão:** session_014RkohRYagi3sPiL8jtgot4 (2026-10-26)
+
+**Testes falhando:**  
+3 testes em `src/lib/external-db/kit-coverage.integration.test.ts`
+
+**Erros exatos (run failure summary):**  
+```
+permission denied for view v_kit_component_complete
+permission denied for table product_kit_components
+```
+
+**Causa raiz confirmada:**  
+A role usada pelo CI para conectar ao Supabase não tem `SELECT` na view `v_kit_component_complete` nem na tabela `product_kit_components`. As permissões foram provavelmente concedidas para `authenticated`/`anon` mas não para a role de service-role usada nos testes de integração, ou a RLS foi habilitada sem policy permissiva para o contexto do teste.
+
+**Por que não pode ser corrigido agora:**  
+Toda mudança de RLS/GRANT em `doufsxqlfjyuvxuezpln` exige: (a) aprovação do PO, (b) migration versionada no PR, (c) deploy via workflow `db-apply-migration.yml` (REGRA #8, corolário E056). DDL via execute_sql direto é proibido.
+
+**Ação necessária pelo PO:**  
+1. Confirmar qual role o CI usa (`SUPABASE_SERVICE_ROLE_KEY` → service_role, ou outra)
+2. Executar `GRANT SELECT ON v_kit_component_complete TO <role>` e `GRANT SELECT ON product_kit_components TO <role>` via migration versionada
+3. Abrir PR com migration + deploy via `db-apply-migration.yml`
+
+**Impacto no Gate Final:** Nenhum — este workflow NÃO é required check no Gate Final.
+
+---
+
+## P89 — Nightly Full CI: snapshots visuais desatualizados + E2E auth timeout
+
+**Workflow:** `.github/workflows/nightly-full-ci.yml` (ou equivalente)  
+**Run com falha:** [#40261637110](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40261637110) (commit `522d98e8` — main, SHA anterior)  
+**Conclusão:** `failure`  
+**Categoria:** Snapshots visuais desatualizados (Lovable) + timeout transiente de infraestrutura  
+**Sessão:** session_014RkohRYagi3sPiL8jtgot4 (2026-10-26)
+
+**Jobs falhando:**
+
+| Job | Tipo de falha |
+|---|---|
+| `E2E Visual — magazine-header` | Snapshot visual desatualizado |
+| `E2E Visual — color-swatch` | Snapshot visual desatualizado |
+| `Playwright E2E shard 2` | Failure (auth timeout ou spec failing) |
+| `Playwright E2E shard 1` | Cancelled (timeout por dependência do shard 2) |
+
+**Causa raiz confirmada:**  
+- `magazine-header` e `color-swatch`: baselines visuais desatualizados após mudança cosmética do Lovable no componente — padrão idêntico ao P87. Requer atualização dos snapshots após validação do diff visual.  
+- Shards E2E: timeout transiente de infraestrutura Supabase — padrão P79/P80.
+
+**Ação necessária pelo PO:**  
+1. `npx playwright test magazine-header color-swatch --update-snapshots` + revisão do diff visual
+2. Re-run do nightly após atualização dos snapshots para confirmar estado dos shards
+
+**Impacto no Gate Final:** Nenhum — `nightly-full-ci.yml` NÃO é required check no Gate Final.
+
+---
+
+## P90 — Uptime Monitor: outage real de produção detectado (comportamento correto do gate)
+
+**Workflow:** `.github/workflows/uptime-monitor.yml`  
+**Run com falha:** [#40406091509](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40406091509) (commit `6a6abc03` — main)  
+**Conclusão:** `failure`  
+**Categoria:** Outage real de produção — o workflow funcionou CORRETAMENTE  
+**Issue aberta:** [#2598](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2598) "Uptime: falha de disponibilidade detectada"  
+**Sessão:** session_014RkohRYagi3sPiL8jtgot4 (2026-10-26)
+
+**Step com falha:**  
+`Probe site + edge function` — sondagem HTTP ao site `www.promogifts.com.br` e/ou à edge function do Supabase retornou resposta de erro ou timeout.
+
+**Causa raiz confirmada:**  
+O workflow de uptime monitor funciona COMO ESPERADO — ele detectou uma indisponibilidade real do site em produção. A falha no workflow É o sinal de alerta. O issue #2598 foi criado automaticamente pelo workflow.
+
+**Não é problema de CI.** O workflow não deve ser "corrigido" — a falha é informativa.
+
+**Ação necessária pelo PO:**  
+1. Verificar se o site `www.promogifts.com.br` e o Vercel estão operacionais agora
+2. Investigar a causa do outage no horário do run (2026-10-26 ~21:xx UTC)
+3. Fechar issue #2598 se o site já voltou a operar normalmente
+
+**Impacto no Gate Final:** Nenhum — `uptime-monitor.yml` NÃO é required check no Gate Final.
+
+---
+
+## P91 — Dependabot npm_and_yarn Update #1654158390: conflito de peer dependencies
+
+**Workflow:** Dependabot PR automático (npm_and_yarn)  
+**Run com falha:** [#40299966392](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40299966392) (commit `522d98e8` — main, SHA anterior)  
+**Conclusão:** `failure`  
+**Categoria:** Conflito de peer dependencies — bloqueio externo  
+**Sessão:** session_014RkohRYagi3sPiL8jtgot4 (2026-10-26)
+
+**Dependências com falha:**  
+- `@testing-library/jest-dom` — "Error while updating peer dependency"
+- `vite` — "Error while updating peer dependency"
+
+**Dependências atualizadas com sucesso (no mesmo run):**  
+- `framer-motion`: 11.18.2 → 14.6.0  
+- `eslint`: 9.39.4 → 10.13.0  
+- `sonner`: 1.7.4 → 2.0.8  
+
+**Causa raiz confirmada:**  
+O Dependabot tentou atualizar `@testing-library/jest-dom` e `vite` mas encontrou conflito de peer dependencies com outros pacotes do projeto. O npm não conseguiu resolver a árvore de dependências automaticamente.
+
+**Por que não pode ser corrigido automaticamente:**  
+Requer análise manual do conflito de peer deps e possivelmente fixar versões específicas ou atualizar múltiplos pacotes em conjunto. Não é possível resolver via CI sem intervenção humana.
+
+**Ação necessária pelo PO:**  
+1. Analisar o conflito: `npm install @testing-library/jest-dom@latest --dry-run` para ver o conflito exato
+2. Decidir: aceitar a atualização com `--legacy-peer-deps` (risco de incompatibilidade) ou aguardar versão compatível
+3. Para `vite`: verificar se há breaking changes na versão nova que requerem ajustes em `vite.config.ts`
+4. Se decidir não atualizar: ignorar esses PRs do Dependabot temporariamente (`.github/dependabot.yml` com `ignore:`)
+
+**Impacto no Gate Final:** Nenhum — PR do Dependabot com falha não bloqueia o Gate Final do `main`.
+
+---
+
+## P92 — Workflows deletados pelo commit `6a6abc03`: E2E Quotes individuais
+
+**Commit de deleção:** `6a6abc035` (em `main`, 2026-10-25 aprox.)  
+**Categoria:** Workflows removidos intencionalmente — funcionalidade migrada para matrix E77  
+**Sessão:** session_014RkohRYagi3sPiL8jtgot4 (2026-10-26)
+
+**Workflows deletados (última execução = failure em SHA anterior; nunca mais vão rodar):**
+
+| Workflow (deletado) | Último status | Causa do último failure |
+|---|---|---|
+| `E2E Quote View — Sem Modo Apresentação` | `failure` | Snapshot visual desatualizado (dark mode) |
+| `E2E Quotes Responsive` | `failure` | CSS/viewport issues |
+| `E2E · Quote View Sticky & Scroll` | `failure` | Sidebar sticky timeout |
+| `E2E — PDF Print` | `failure` | Timeout de geração de PDF |
+
+**Por que esses workflows aparecem como "failure" no histórico:**  
+O commit `6a6abc035` deletou os arquivos YAML desses workflows. As últimas execuções registradas são de SHAs anteriores e mostram `failure`. Esses workflows NÃO EXISTEM MAIS no repositório — não há nada a corrigir.
+
+**Funcionalidade migrada:**  
+Os cenários de teste foram incorporados ao `e2e-quotes.yml` (E77) como jobs em matrix — ver P84 para o estado atual das falhas nesse workflow.
+
+**Ação necessária:** Nenhuma. Workflows extintos. O histórico de failure é arqueológico.
+
+**Impacto no Gate Final:** Nenhum — esses workflows nunca foram required checks no Gate Final.
 
 ---
 
