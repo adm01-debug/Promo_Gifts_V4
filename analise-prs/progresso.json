@@ -89,7 +89,12 @@
     ],
     "pr_entregaveis": {
       "branch": "claude_04/optimistic-bohr-qplx94",
-      "status": "push_pendente"
+      "status": "completo",
+      "diffs_lidos_100pct": true,
+      "cherry_checks": "todos_unicos",
+      "test_merges": "todos_CLEAN",
+      "ci_gate_final_145da71b": "pending_no_run_found",
+      "ci_gate_final_15e10fd8": "failure_gate19_divida_tecnica_pr2556_sessao_anterior"
     }
   }
 }

@@ -132,3 +132,79 @@
 1. Aguardar o GitHub resolver o deadlock de CI (ou fazer push vazio no branch para recriar o run)
 2. Mergear #2559 quando Gate Final passar
 3. Resolver as 13 PRs DECISAO_HUMANA conforme lista acima
+
+---
+
+## ADDENDUM — Sessão f0ceb220 (2026-10-26)
+
+**Sessão:** https://claude.ai/code/session_011d8gKLZg8BWivR8aQBwxGF
+**main antes:** `15e10fd88208f9b4cd372b82544fb27892d15a81`
+**main depois:** `145da71bb8c451eebadc75c4bb059397f8d468f7`
+
+### PRs analisadas nesta sessão (14 novas)
+
+| PR | Título resumido | Veredito | Motivo |
+|---|---|---|---|
+| #2572 | E189 + personalização + supabase + CI | BLOQUEADA | claude_05 ativa + Gate Final pendente (REGRA#10) |
+| #2579 | release 1.0.0 | DECISAO_HUMANA | downgrade release-please 1.2.1→1.0.0 |
+| #2580 | rollback e23 | DECISAO_HUMANA | migration file + DRAFT (REGRA#8) |
+| #2582 | métricas semanais 2026-W44 | MERGEADO | SHA `045d835f` |
+| #2585 | bump prod deps minor/patch | MERGEADO | SHA `145da71b` |
+| #2586 | bump dev deps minor/patch | MERGEADO | SHA `fb04592655` |
+| #2587 | zustand 4→5 | DECISAO_HUMANA | breaking: 11 stores incompatíveis |
+| #2588 | react-day-picker 8→10 | DECISAO_HUMANA | breaking: calendar.tsx usa API v8 |
+| #2589 | globals 15→17 | MERGEADO | SHA `9e2746a3` |
+| #2590 | codeql upload-sarif SHA bump | BLOQUEADA | .github/workflows proibido |
+| #2591 | codeql analyze SHA bump | BLOQUEADA | .github/workflows proibido |
+| #2592 | actions/stale v9→v11 | BLOQUEADA | .github/workflows proibido |
+| #2593 | codeql init SHA bump | BLOQUEADA | .github/workflows proibido |
+| #2594 | actions/setup-node v4→v7 | BLOQUEADA | .github/workflows proibido + sem SHA pin |
+| #2596 | postcss-selector-parser 6.1.4→6.1.5 | MERGEADO | CVE-2026-104844, SHA `54e89045` |
+
+### Merges desta sessão (5)
+
+| PR | SHA merge | Tipo |
+|---|---|---|
+| #2582 | `045d835f565baf01db94ae5212d673f93a63685b` | chore(ci): métricas semanais 2026-W44 |
+| #2596 | `54e8904585ad474030feea88526d9c66b7404aa4` | bump postcss-selector-parser (CVE-2026-104844) |
+| #2589 | `9e2746a31914e714f1b96779f26808c0f3685ff8` | bump globals 15→17 |
+| #2586 | `fb04592655cf81d1a6aad79739f2cc2f1c2236c7` | bump dev deps minor/patch |
+| #2585 | `145da71bb8c451eebadc75c4bb059397f8d468f7` | bump prod deps minor/patch |
+
+### CI pós-merges
+
+| SHA | Gate Final | Status | Conclusão |
+|---|---|---|---|
+| `15e10fd8` | Run #40227283262 | completed | **failure** — Gate 1.9 ratchet dívida técnica (PR#2556 da sessão anterior) |
+| `145da71b` | Sem run Gate Final confirmado | queued | pending — E2E e Deployment Failure Alert em queue |
+
+**Gate 1.9 failure `15e10fd8`:** step "Dívida técnica (ratchets TODO/as/file-size/eslint-disable)" — introduzido por PR#2556 (sessão_01Ss1tXZ4cAbxBvdmu95uNPz). Nenhum dos 5 merges desta sessão toca código executável (todos são bump de deps ou metrics docs).
+
+### Totais acumulados (todas as sessões)
+
+| Veredito | Quantidade |
+|---|---|
+| MERGEADO_AUTONOMO (todas sessões) | 18 |
+| DECISAO_HUMANA | 16 |
+| BLOQUEADA | 7 |
+| FECHAR | 5 |
+| JA_EM_MAIN | 1 |
+| **Total analisado** | **47** |
+
+### PRs pendentes de decisão humana
+
+**DECISAO_HUMANA** (16):
+#2415, #2428, #2443, #2449, #2452, #2469, #2503, #2520, #2532, #2537, #2547, #2550, #2557,
+#2579 (downgrade release-please), #2580 (migration rollback), #2587 (zustand 4→5), #2588 (react-day-picker 8→10)
+
+**BLOQUEADA — .github/workflows** (5 dependabot):
+#2590, #2591, #2592, #2593, #2594 — PO pode aprovar diretamente (baixo risco técnico, exceto #2594 que precisa fix de SHA pin)
+
+**BLOQUEADA — outra sessão**:
+#2572 — aguarda merge da PR de entrega claude_05 ou nova sessão autorizada
+
+### Diffs lidos (100%)
+
+Todos os 14 PRs desta sessão têm diff 100% lido e confirmado via `git diff origin/main...refs/remotes/pr/<n>`.
+Cherry checks confirmados: todos os commits únicos, nenhum já em main.
+Test-merges: todos CLEAN via `git merge-tree --write-tree`.
