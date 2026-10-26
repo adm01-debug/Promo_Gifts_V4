@@ -34,7 +34,6 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { BulkSelectionBar } from '@/components/common/BulkSelectionBar';
 import { CollectionDetailHeader } from '@/components/collections/CollectionDetailHeader';
 import { SortableProductItem } from '@/components/collections/SortableProductItem';
-import { ShareCollectionDialog } from '@/components/collections/ShareCollectionDialog';
 import { CollectionPresentationLauncher } from '@/components/collections/CollectionPresentationLauncher';
 import { CollectionsTrashView } from '@/components/collections/CollectionsTrashView';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
@@ -76,7 +75,6 @@ export default function CollectionDetailPage() {
   const toggleCompare = useComparisonStore((s) => s.toggleCompare);
   const canAddMore = useComparisonStore((s) => s.canAddMore);
   const [showPresentation, setShowPresentation] = useState(false);
-  const [showShareDialog, setShowShareDialog] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState<SortOption>('added');
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
@@ -394,8 +392,6 @@ export default function CollectionDetailPage() {
           onBack={() => navigate('/colecoes')}
           onCreateQuote={handleCreateQuote}
           onPresent={() => setShowPresentation(true)}
-          onShare={() => setShowShareDialog(true)}
-          showShare={!isExternal}
         />
 
         <div role="status" aria-live="polite" className="sr-only">
@@ -709,17 +705,6 @@ export default function CollectionDetailPage() {
         />
       )}
 
-      {localCollection && (
-        <ShareCollectionDialog
-          open={showShareDialog}
-          onClose={() => setShowShareDialog(false)}
-          collectionId={localCollection.id}
-          collectionName={localCollection.name}
-          shareToken={localCollection.shareToken}
-          shareExpiresAt={localCollection.shareExpiresAt}
-          isPublic={localCollection.isPublic}
-        />
-      )}
     </>
   );
 }
