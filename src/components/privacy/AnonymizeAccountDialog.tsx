@@ -45,7 +45,7 @@ export function AnonymizeAccountDialog({ open, onOpenChange }: AnonymizeAccountD
         body: { confirm_phrase: CONFIRM_PHRASE },
         op: 'anonymize_user',
       });
-      if (error) throw error instanceof Error ? error : new Error(String(error));
+      if (error) throw new Error(error.message);
       toast.success('Conta anonimizada', {
         description: 'Seus dados pessoais foram removidos e o acesso foi encerrado.',
       });
