@@ -1,6 +1,6 @@
 # Pendências CI — Bloqueios Externos
 
-**Atualizado em:** 2026-10-26 (rev 32 — P85–P92 adicionados; cobertura completa de todos os workflows em falha; sessão session_014RkohRYagi3sPiL8jtgot4)  
+**Atualizado em:** 2026-10-26 (rev 33 — P93 adicionado: fix Tailwind v4→v3 commitado em bfdcc8825; sessão session_014RkohRYagi3sPiL8jtgot4)  
 **Branch de referência:** `claude_04/beautiful-gates-bvocz5`  
 **Commit de referência (main):** `1928f699` — chore: atualiza PROGRESSO e PENDENCIAS com merges de 25/10 (#2574)
 
@@ -1778,6 +1778,31 @@ Os cenários de teste foram incorporados ao `e2e-quotes.yml` (E77) como jobs em 
 **Ação necessária:** Nenhuma. Workflows extintos. O histórico de failure é arqueológico.
 
 **Impacto no Gate Final:** Nenhum — esses workflows nunca foram required checks no Gate Final.
+
+---
+
+## P93 — CI Security & Drift Checks + Deploy Gates Gate 6: Tailwind CSS v4 PostCSS incompatível ✅ CORRIGIDO
+
+**Commit de fix:** `bfdcc8825` (2026-10-26, branch `claude_04/beautiful-gates-bvocz5`)  
+**Categoria:** Breaking change de dependência — Dependabot bump introduziu v4 incompatível  
+**Sessão:** session_014RkohRYagi3sPiL8jtgot4 (2026-10-26)
+
+**Causa raiz:**  
+Commit `145da71b` (Dependabot) atualizou `tailwindcss` de v3.4.x para v4.3.3. No v4, o plugin PostCSS foi movido para o pacote separado `@tailwindcss/postcss`. O projeto usa:
+- `postcss.config.js`: `tailwindcss: {}` — sintaxe v3, incompatível com v4
+- `src/index.css`: `@tailwind base/components/utilities` — sintaxe v3, incompatível com v4
+
+Erro: `Error: [postcss] It looks like you're trying to use 'tailwindcss' directly as a PostCSS plugin. The PostCSS plugin has moved to a separate package...`
+
+**Workflows afetados:**
+- `CI Security & Drift Checks` → step 52 "Build check" (`npm run build`)
+- `Deploy Gates` → Gate 6 "Build" (`npm run build`)
+
+**Fix aplicado:**
+- `package.json`: `"tailwindcss": "^4.3.3"` → `"tailwindcss": "^3.4.0"`
+- `package-lock.json`: entrada `node_modules/tailwindcss` substituída de v4.3.3 por v3.4.19 (dados copiados do nested `node_modules/lovable-tagger/node_modules/tailwindcss` já presente no lockfile com deps completas)
+
+**Resultado esperado:** CI Gate 6 Build e CI Security Drift Checks passam ao usar v3.4.19.
 
 ---
 

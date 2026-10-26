@@ -2,7 +2,7 @@
 
 **Branch:** `claude_04/beautiful-gates-bvocz5`  
 **PR:** [#2597](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2597)  
-**Commit principal:** `2c9fb608f` (4 fixes) + `1960f24b2` (merge main)  
+**Commit principal:** `2c9fb608f` (4 fixes) + `1960f24b2` (merge main) + `bfdcc8825` (Tailwind downgrade)  
 **Sessão:** https://claude.ai/code/session_014RkohRYagi3sPiL8jtgot4  
 **Data:** 2026-10-26
 
@@ -13,9 +13,9 @@
 | Métrica | Valor |
 |---|---|
 | Workflows com falha investigados | 22+ |
-| Falhas corrigidas nesta sessão | **4** |
-| Falhas documentadas em PENDENCIAS.md (P85–P92) | **8 novos** (total P78–P92 = 15 desde esta sessão) |
-| Gate Final bloqueante | ✅ Verde |
+| Falhas corrigidas nesta sessão | **5** |
+| Falhas documentadas em PENDENCIAS.md (P85–P93) | **9 novos** (total P78–P93 = 16 desde esta sessão) |
+| Gate Final bloqueante | ✅ Verde (aguardando CI no commit `bfdcc8825`) |
 | PR aberto | [#2597](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2597) |
 
 ---
@@ -56,6 +56,14 @@
 DIFF_OUT=$(git diff .tsc-ratchet-baseline bundle-size-baseline.json)
 echo "$DIFF_OUT" | head -40
 ```
+
+---
+
+### 5. P93 — Tailwind CSS v4 PostCSS incompatível (commit `bfdcc8825`)
+
+**Workflows:** `ci-security-drift.yml` (step "Build check") e `deploy-gates.yml` (Gate 6 Build)  
+**Problema:** Dependabot commit `145da71b` atualizou `tailwindcss` v3 → v4.3.3. No v4, o plugin PostCSS foi movido para `@tailwindcss/postcss`. O projeto usa sintaxe v3 (`postcss.config.js: tailwindcss: {}` e CSS `@tailwind base/components/utilities`). npm ci falha com 403 ao tentar instalar de registry privado Lovable.  
+**Fix:** Downgrade `package.json` `^4.3.3` → `^3.4.0`. `package-lock.json`: entrada `node_modules/tailwindcss` substituída para v3.4.19 (dados já presentes no lockfile em `node_modules/lovable-tagger/node_modules/tailwindcss`).
 
 ---
 
