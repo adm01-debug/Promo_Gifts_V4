@@ -141,6 +141,7 @@ jobs:
 
       - name: Export event triggers snapshot (E036)
         if: env.SUPABASE_DB_PASSWORD != ''
+        continue-on-error: true  # psql direto via IPv6 pode falhar do runner — snapshot é observacional
         run: |
           set -euo pipefail
           shopt -s nullglob
@@ -165,6 +166,7 @@ jobs:
 
       - name: Export cron jobs snapshot (E037)
         if: env.SUPABASE_DB_PASSWORD != ''
+        continue-on-error: true  # psql direto via IPv6 pode falhar do runner — snapshot é observacional
         run: |
           set -euo pipefail
           shopt -s nullglob
@@ -201,6 +203,7 @@ jobs:
       # common-prefix do artifact principal e quebrar os cp existentes).
       - name: Export recovery dump (E072)
         if: env.SUPABASE_DB_PASSWORD != ''
+        continue-on-error: true  # psql direto via IPv6 pode falhar do runner — recovery dump é observacional
         run: |
           set -euo pipefail
           shopt -s nullglob
