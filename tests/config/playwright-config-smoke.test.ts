@@ -1,5 +1,19 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
+// @playwright/test triggers browser-detection on first import which can take
+// >90s on a cold CI runner. Mock it so dynamic import('../../playwright.config')
+// resolves instantly; defineConfig is a passthrough in production too.
+vi.mock('@playwright/test', () => ({
+  defineConfig: (config: unknown) => config,
+  devices: {
+    'Desktop Chrome': {},
+    'Desktop Firefox': {},
+    'Desktop Safari': {},
+    'Pixel 5': {},
+    'iPhone 12': {},
+  },
+}));
+
 describe('Playwright server isolation contract', () => {
   const originalEnv = { ...process.env };
 
