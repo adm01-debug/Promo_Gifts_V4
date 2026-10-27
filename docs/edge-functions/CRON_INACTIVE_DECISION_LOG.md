@@ -74,3 +74,12 @@
 | 🟢 Manter inativo | `monitor-connections` | Só para histórico |
 | 🟢 Reativar quando conveniente | `refresh-analytics-mv-product-intelligence` | Não urgente |
 | 🟢 Reativar quando conveniente | `refresh-analytics-mv-stock-velocity` | Não urgente |
+
+---
+
+## 8. `xbz-image-uploader` — `3,13,23,33,43,53 * * * *` (ativo mas silenciosamente quebrado)
+
+**Comando:** Chama `/functions/v1/xbz-image-uploader` com `XBZ_IMAGE_UPLOADER_CRON_SECRET`  
+**Problema:** `XBZ_IMAGE_UPLOADER_CRON_SECRET` não está no allowlist de `get_edge_function_secret` → EXCEPTION a cada execução. `fn_cron_safe_run` captura silenciosamente → cron mostra `succeeded` mas função nunca é chamada. A edge function também não existe no repo nem entre as 109 funções deployadas.  
+**Migration criada:** `20261027220000_deactivate_xbz_image_uploader_cron.sql` — desativa o cron  
+**Para reativar:** criar função, adicionar secret ao vault e ao allowlist, deployar.
