@@ -3,7 +3,8 @@
 **Data:** 2026-10-27  
 **Sessão:** session_012WyySbh2tj8vhRQLBf3mHo  
 **Branch de trabalho:** `claude/quirky-keller-owezvt`  
-**Main SHA atual:** `a0560fdc62744c6bf4ba182914cc76dec06aecb1`
+**Main SHA atual:** `f6f9889af171da4cc538f103fe0988a77dabd90d`  
+**Main SHA início de sessão:** `a0560fdc62744c6bf4ba182914cc76dec06aecb1`
 
 ---
 
@@ -52,6 +53,17 @@
 
 ---
 
+### MERGEADAS PELO OWNER — PÓS-INVENTÁRIO FINAL (durante análise desta sessão)
+| PR | Título | SHA main após merge |
+|----|--------|-------------------|
+| [#2656](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2656) | fix(ci): adiciona qs ao allowlist do gate de dependências (GHSA-6pq8-jhm2-2vcw) | `ac0fe476` |
+| [#2657](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2657) | fix(e2e): corrige catch de timeout e timeout explícito nas assertions de page-title | `f6f9889a` |
+
+**Efeito no CI:** Gate Final FAILURE→SUCCESS e Gate 0.5 FAILURE→SUCCESS após esses merges.  
+**Evidência:** `analise-prs/baseline/ci-comparison-a0560fdc-vs-f6f9889a.md`
+
+---
+
 ### MERGEADAS PELO OWNER PÓS-INVENTÁRIO (durante esta sessão)
 | PR | Título | SHA main após merge |
 |----|--------|-------------------|
@@ -88,16 +100,17 @@ Esta sessão analisou exaustivamente todas as PRs abertas do repositório `adm01
 - **Owner fechou** todas as demais PRs do escopo original após esta sessão gerar PENDENCIAS.md
 - **Gate Final SUCCESS** em todos os 4 merges de Claude — zero regressões
 
-### Inventário Atual (19 PRs — inventário final 2026-10-27)
-- **19 PRs analisadas** individualmente com método das 4 perguntas
-- **5 mergeadas pelo owner** durante a análise (#2594, #2648, #2649, #2650, #2652)
+### Inventário Final (23 PRs — 2026-10-27)
+- **23 PRs documentadas** com método das 4 perguntas e dossier individual
+- **9 mergeadas pelo owner** (#2594, #2648, #2649, #2650, #2652, #2654, #2655, #2656, #2657)
 - **1 mergeada por Claude** — PR #2587 zustand 4→5 (Gate SUCCESS + test-merge limpo + API compatível)
-- **Zero regressões** — Gate Final SUCCESS em todos os merges; CI em monitoramento para #2587
-- **2 novas DRAFTs** — PR #2654 e #2655 surgiram após o inventário original; ambas DRAFT, aguardando promoção
+- **1 PR desta sessão** — #2653 (docs da análise, não faz parte do inventário de negócio)
+- **13 abertas** — todas com bloqueio legítimo (ver tabela e seção de decisões humanas)
+- **Zero regressões** — Gate Final FAILURE→SUCCESS após merges; CI em f6f9889a sem nova falha bloqueante
 
 ---
 
-## Inventário Atual — Tabela Completa (19 PRs)
+## Inventário Final — Tabela Completa (23 PRs)
 
 | PR | Veredicto | Gate Final | Conflito | Motivo |
 |----|-----------|-----------|---------|--------|
@@ -121,22 +134,23 @@ Esta sessão analisou exaustivamente todas as PRs abertas do repositório `adm01
 | [#2654](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2654) | MERGEADA_PELO_OWNER | ✅ SUCCESS (40549508170) | não | Mergeada pelo owner em 17:19:33Z — fix(ci): xbz-image-uploader ao SERVER_ONLY_ALLOWLIST; merge SHA 4c7ecb26 |
 | [#2655](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2655) | MERGEADA_PELO_OWNER | ✅ SUCCESS | não | Mergeada pelo owner em 17:31Z — fix(tests): xbz-image-uploader descriptor pendingDeploy=true; merge SHA a0560fdc |
 
-### Contagem por Veredicto (19 PRs — inventário final 2026-10-27)
+### Contagem por Veredicto (23 PRs — inventário final 2026-10-27)
 
 | Veredicto | Contagem | PRs |
 |-----------|---------|-----|
-| MERGEADA_PELO_OWNER | 7 | #2594, #2648, #2649, #2650, #2652, #2654, #2655 |
+| MERGEADA_PELO_OWNER | 9 | #2594, #2648, #2649, #2650, #2652, #2654, #2655, #2656, #2657 |
 | MERGEADA_CLAUDE | 1 | #2587 |
+| PROPRIO_BRANCH_SESSAO | 1 | #2653 |
 | DECISAO_HUMANA | 1 | #2588 |
 | AGUARDAR_APROVACAO | 2 | #2420, #2645 |
 | NAO_MERGEAR | 2 | #2579, #2600 |
 | CONFLITO_PENDENTE_REBASE | 1 | #2605 |
 | CONFLITO_PENDENTE_REBASE_SEGURANCA | 1 | #2622 |
-| DRAFT | 2 | #2580, #2631 |
+| DRAFT | 3 | #2580, #2631, #2658 |
 | CI_FALHOU | 1 | #2646 |
 | FECHAR | 1 | #2572 |
 
-**Total inventário: 19 ✓ | Analisadas: 19 ✓ | Mergeadas por Claude: 1 (#2587) | Mergeadas pelo owner: 7**
+**Total rastreadas: 23 ✓ | Analisadas com 4Q: 23 ✓ | Mergeadas por Claude: 1 (#2587) | Mergeadas pelo owner: 9 | Abertas: 13**
 
 > **Nota PR #2653:** PR da própria branch de trabalho desta sessão (`claude/quirky-keller-owezvt`) — contém os artefatos desta análise. Não faz parte do inventário original de 19 PRs. Dossier criado em `analise-prs/dossies/PR-2653.md`.
 
@@ -209,6 +223,8 @@ As seguintes falhas existiam ANTES desta sessão (não são regressões):
 - PR #2652: SHA `22ba938e`, 2026-10-27T~16:45Z
 - PR #2654: SHA `4c7ecb26`, 2026-10-27T17:19:33Z
 - PR #2655: SHA `a0560fdc`, 2026-10-27T17:31:49Z
+- PR #2656: SHA `ac0fe476`, 2026-10-27T (pós-inventário) — fix(ci): allowlist 'qs' GHSA-6pq8-jhm2-2vcw
+- PR #2657: SHA `f6f9889a`, 2026-10-27T (pós-inventário) — fix(e2e): timeout fix
 
 **Mergeadas por Claude:**
 - PR #2587: SHA `16ad57c6`, 2026-10-27T16:46:37Z — zustand 4.5.7→5.0.16 (Gate Final ✅ SUCCESS run 40420603513)
@@ -233,9 +249,11 @@ Ver `PENDENCIAS.md` para guia passo a passo. Resumo:
 
 | Arquivo | Descrição |
 |---------|-----------|
-| `analise-prs/dossies/PR-2420.md` até `PR-2655.md` | 19 dossiers com 4 perguntas cada |
-| `analise-prs/prs.json` | Inventário JSON completo (15 PRs) |
-| `analise-prs/prs.csv` | Inventário CSV completo (15 PRs) |
+| `analise-prs/dossies/PR-2420.md` até `PR-2658.md` | 23 dossiers com 4 perguntas cada |
+| `analise-prs/prs.json` | Inventário JSON completo (13 open) |
+| `analise-prs/prs.csv` | Inventário CSV completo (13 open) |
+| `analise-prs/progresso.json` | Estado completo da sessão (contagem, veredictos, CI comparison) |
+| `analise-prs/baseline/ci-comparison-a0560fdc-vs-f6f9889a.md` | CI antes/depois de todos os merges desta sessão |
 | `analise-prs/regras-de-negocio.md` | Regras de negócio documentadas |
 | `analise-prs/RELATORIO_PRS.md` | Este relatório |
 | `analise-prs/baseline/post-merge-ci-comparison.md` | CI antes/depois de cada merge |
@@ -244,4 +262,27 @@ Ver `PENDENCIAS.md` para guia passo a passo. Resumo:
 
 ---
 
-*Gerado por session_012WyySbh2tj8vhRQLBf3mHo — 2026-10-27*
+---
+
+## Merge Tests por PR (git merge --no-commit --no-ff contra main a0560fdc)
+
+| PR | Exit | Conflitos | Arquivos com conflito |
+|----|------|-----------|----------------------|
+| #2420 | 1 | 2 | supabase/migrations/20261019000000_mirror_oob_frontend_telemetry_v_system_health_dashboard.sql, rollback |
+| #2572 | 1 | 8 | .as-assertions-baseline.json, .file-size-baseline.json, .github/workflows/contract-tests.yml, PENDENCIAS.md, analise-prs/ |
+| #2579 | 0 | 0 | .release-please-manifest.json, CHANGELOG.md, package.json, package-lock.json |
+| #2588 | 0 | 0 | package.json, package-lock.json |
+| #2600 | 0 | 0 | analise-prs/ (múltiplos) |
+| #2605 | 1 | 2 | e2e/catalog/novidades-reposicao-card-parity.spec.ts, src/components/products/gallery/PromoFlixPlayer.tsx |
+| #2622 | 1 | 12 | analise-prs/ (múltiplos) |
+| #2645 | 1 | 1 | supabase/MIGRATIONS_SYNC_LOG.md |
+| #2646 | 0 | 0 | (sem conflito, mergeable_state: behind) |
+
+**Nota:** PRs em DRAFT (#2580, #2631, #2658) não foram testadas (API bloqueia merge de DRAFT).  
+**Base do merge test:** main SHA `a0560fdc62744c6bf4ba182914cc76dec06aecb1`  
+**Evidência:** `analise-prs/progresso.json` → bloco `merge_tests`
+
+---
+
+*Gerado por session_012WyySbh2tj8vhRQLBf3mHo — 2026-10-27*  
+*Atualizado final de sessão: main SHA `f6f9889a`, 23 PRs documentadas, 10 mergeadas, 13 abertas*
