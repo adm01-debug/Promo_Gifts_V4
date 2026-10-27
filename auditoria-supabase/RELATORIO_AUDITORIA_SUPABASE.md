@@ -119,7 +119,7 @@ Se esses secrets existem em produção, qualquer edge function pode autenticar c
 **Evidência:** `grep -n "verify_jwt = false" supabase/config.toml`.
 
 Lista completa:
-`crm-db-bridge`, `ai-recommendations`, `external-db-inspect`, `image-proxy`, `webhook-dispatcher`, `webhook-inbound`, `mcp-server`, `connections-auto-test`, `e2e-cleanup`, `get-visitor-info`, `cleanup-notifications`, `cleanup-novelties`, `collections-watcher`, `comparison-price-watcher`, `connections-health-check`, `favorites-watcher`, `ownership-audit`, `process-queue`, `process-scheduled-reports`, `quote-followup-reminders`, `send-digest`, `send-notification`, `send-scheduled-reports`, `sync-external-db`, `log-login-attempt`, `check-login`, `asia-ingestion`, `backfill-image-dimensions`, `receive-crm-callback`
+`crm-db-bridge`, `ai-recommendations`, `external-db-inspect`, `image-proxy`, `webhook-dispatcher`, `webhook-inbound`, `mcp-server`, `connections-auto-test`, `e2e-cleanup`, `get-visitor-info`, `cleanup-notifications`, `cleanup-novelties`, `collections-watcher`, `comparison-price-watcher`, `connections-health-check`, `favorites-watcher`, `ownership-audit`, `process-queue`, `process-scheduled-reports`, `quote-followup-reminders`, `send-digest`, `send-notification`, `send-scheduled-reports`, `sync-external-db`, `log-login-intent`, `check-login`, `asia-ingestion`, `backfill-image-dimensions`, `receive-crm-callback`
 
 **Risco:** Funções críticas como `send-notification`, `process-queue`, `crm-db-bridge` sem validação JWT — qualquer request HTTP sem autenticação as acessa.
 
@@ -151,6 +151,30 @@ Funções mais críticas:
 - `public.check_login_rate_limit(_email, _ip)` — anon pode chamar via RPC
 - `public.fn_global_search(p_term, p_limit, p_types)` — busca global com SECURITY DEFINER
 - `public.fn_product_active_for_rls(p_id)` — helper RLS acessível publicamente
+
+---
+
+### [ALTO] SEC-004b — fn_cron_guard retém grant EXECUTE para authenticated
+
+**Evidência:**
+```sql
+SELECT grantee, privilege_type
+FROM information_schema.routine_privileges
+WHERE routine_schema='public' AND routine_name='fn_cron_guard';
+-- grantee: authenticated | privilege_type: EXECUTE
+-- grantee: postgres      | privilege_type: EXECUTE
+-- grantee: service_role  | privilege_type: EXECUTE
+```
+
+`fn_cron_guard(bigint, text)` executa SQL fornecido pelo chamador via parâmetro `p_sql`. A migration `20261022100001_security_fn_cron_guard_revoke_anon.sql` revogou o grant para `PUBLIC` e `anon`, mas **o grant explícito para `authenticated` permanece ativo**. Qualquer usuário autenticado pode invocar a função via RPC e executar SQL arbitrário com os privilégios da função.
+
+**Impacto no negócio:** Usuário logado pode executar queries arbitrárias no banco com os privilégios do owner da função — extração de dados sensíveis ou manipulação de registros.
+
+**Remediação (APROVAÇÃO):**
+```sql
+REVOKE EXECUTE ON FUNCTION public.fn_cron_guard(bigint, text) FROM authenticated;
+-- Manter apenas service_role e postgres como callers legítimos.
+```
 
 ---
 
@@ -319,15 +343,17 @@ Com **135 cron jobs ativos** tentando iniciar, pg_cron tenta reservar até 32 wo
 
 ## A.9 — AUTH / STORAGE / REALTIME
 
-### [CRÍTICO] AUTH-001 — 28.997 sessões para 39 usuários
+### [ALTO] AUTH-001 — 28.997 registros em auth.sessions para 39 usuários
 
 **Evidência:**
 ```sql
-SELECT COUNT(*) FROM auth.sessions; -- 28997
+SELECT COUNT(*) FROM auth.sessions; -- 28997 (linhas totais, inclui expiradas/revogadas)
 SELECT COUNT(*) FROM auth.users;    -- 39
 ```
 
-Razão 743:1. Provável vazamento de sessões por automações (N8N, edge functions) sem expiração configurada.
+**Nota de precisão:** `COUNT(*) FROM auth.sessions` retorna todas as linhas da tabela, inclusive sessões expiradas e tokens revogados. O valor 28.997 é uma contagem de registros armazenados, não sessões ativas confirmadas. A razão 743:1 é indicativa de acúmulo sem limpeza periódica, mas requer query complementar com filtro de expiração para confirmar quantas são realmente ativas.
+
+**Remediação:** Habilitar `refresh_token_rotation` + configurar `sessions.timebox_duration` (max session lifetime). Verificar job de limpeza de tokens expirados.
 
 ### [ALTO] REAL-001 — auth.users na publicação supabase_realtime
 
@@ -471,15 +497,15 @@ Lovable commita diretamente em `main` → deploy imediato em produção. Sem amb
 | # | Achado | Severidade | Evidência |
 |---|---|---|---|
 | 1 | CRON-001: 418 falhas/24h — ROOT CAUSE: max_worker_processes=6 vs 32 jobs paralelos | CRÍTICO | `pg_settings + cron.job_run_details` 2026-10-27 |
-| 2 | AUTH-001: 28.997 sessões para 39 usuários | CRÍTICO | `SELECT COUNT(*) FROM auth.sessions` = 28.997 |
-| 3 | PERF-001: fn_pipeline_health INSERT mean 32s | CRÍTICO | `pg_stat_statements` 2026-10-27 |
-| 4 | SEC-001: TEST_ADMIN_JWT/SELLER_A/B em Deno.env produção | ALTO | `grep -r "TEST_" supabase/functions/` |
-| 5 | SEC-002: 29 EFs com verify_jwt=false | ALTO | `grep "verify_jwt = false" config.toml` = 29 matches |
-| 6 | SEC-003: 20 funções SECURITY DEFINER com pg_temp | ALTO | `pg_proc WHERE prosecdef AND proconfig LIKE '%pg_temp%'` = 20 rows |
-| 7 | SEC-004: 10 funções SECURITY DEFINER acessíveis por anon | ALTO | Advisor `anon_security_definer_function_executable` = 10 |
-| 8 | ST-001: art-files sem isolamento de owner | ALTO | `pg_policies storage art_files_auth_*` sem filtro owner |
-| 9 | REAL-001: auth.users em supabase_realtime | ALTO | `pg_publication_tables WHERE pubname='supabase_realtime'` |
-| 10 | PERF-002: stock_snapshots 641MB índices não usados | ALTO | `pg_stat_user_indexes idx_scan=0` = 641MB |
+| 2 | PERF-001: fn_pipeline_health INSERT mean 32s | CRÍTICO | `pg_stat_statements` 2026-10-27 |
+| 3 | PERF-002: stock_snapshots 641MB índices não usados | CRÍTICO | `pg_stat_user_indexes idx_scan=0` = 641MB |
+| 4 | AUTH-001: 28.997 registros em auth.sessions para 39 usuários (inclui expiradas) | ALTO | `SELECT COUNT(*) FROM auth.sessions` = 28.997 |
+| 5 | SEC-001: TEST_ADMIN_JWT/SELLER_A/B em Deno.env produção | ALTO | `grep -r "TEST_" supabase/functions/` |
+| 6 | SEC-004b: fn_cron_guard EXECUTE grant ativo para authenticated | ALTO | `information_schema.routine_privileges` 2026-10-27 |
+| 7 | SEC-002: 29 EFs com verify_jwt=false | ALTO | `grep "verify_jwt = false" config.toml` = 29 matches |
+| 8 | SEC-003: 20 funções SECURITY DEFINER com pg_temp | ALTO | `pg_proc WHERE prosecdef AND proconfig LIKE '%pg_temp%'` = 20 rows |
+| 9 | ST-001: art-files sem isolamento de owner | ALTO | `pg_policies storage art_files_auth_*` sem filtro owner |
+| 10 | REAL-001: auth.users em supabase_realtime | ALTO | `pg_publication_tables WHERE pubname='supabase_realtime'` |
 
 ---
 
@@ -532,11 +558,13 @@ auditoria-supabase/
 
 **AUTH-001:** Expirar sessões antigas:
 ```sql
--- NÃO EXECUTAR SEM APROVAÇÃO — apaga 28.958 sessões
+-- NÃO EXECUTAR SEM APROVAÇÃO — apaga registros de sessões
 DELETE FROM auth.sessions WHERE created_at < NOW() - INTERVAL '30 days';
 ```
 
 **SEC-001:** Verificar se `TEST_ADMIN_JWT`, `TEST_SELLER_A_JWT`, `TEST_SELLER_B_JWT`, `TEST_USER_EMAIL`, `TEST_USER_PASSWORD` existem como secrets no projeto e revogar.
+
+**SEC-004b:** Revogar grant EXECUTE de `fn_cron_guard` para `authenticated` (migration em APROVAÇÃO).
 
 ### Prioridade 2 — Próximas 2 semanas
 
