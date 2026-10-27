@@ -1,7 +1,15 @@
 # BASELINE — FALHAS PRÉ-EXISTENTES NO MAIN POR NOME
 **Sessão:** session_011d8gKLZg8BWivR8aQBwxGF
-**SHA baseline:** c86a3812ce79bd8c615c6c5e8919735e5cba3e7e
+**SHA baseline inicial (vitest parcial):** c86a3812ce79bd8c615c6c5e8919735e5cba3e7e
+**SHA baseline final (Gate Final CI — autoritativo):** 1ce29cf2f95ecf851eef580974130a46f5a4f53a
 **Data:** 2026-10-27
+
+> **NOTA IMPORTANTE — Limitação do baseline local:**
+> A suite vitest completa tem 1815 arquivos de teste (~45 min de execução). O vitest
+> não concluiu localmente nesta sessão. O baseline de 6 arquivos / 56 testes foi
+> capturado na rev33 no SHA `c86a3812ce` (mais antigo). O **baseline autoritativo**
+> é o Gate Final CI run #40482105056 — conclusion: SUCCESS em `1ce29cf2f`
+> (2026-10-27T09:42:42Z). Todos os testes estão verdes no HEAD atual do main.
 
 ---
 

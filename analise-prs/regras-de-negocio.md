@@ -1,102 +1,303 @@
-# Regras de Negócio — Análise de PRs
-
-**Sessão:** session_011d8gKLZg8BWivR8aQBwxGF  
+# regras-de-negocio.md — rev59
+**Sessão:** session_011d8gKLZg8BWivR8aQBwxGF
 **Data:** 2026-10-27
-
-Este documento registra as regras de negócio e critérios de decisão usados nesta sessão de análise de PRs.
-
----
-
-## Critérios de veredicto
-
-### MERGEADO_AUTONOMO
-PR pode ser mergeado sem aprovação do PO quando:
-1. Gate Final verde no HEAD atual
-2. `mergeable_state == "clean"` (zero conflitos com main)
-3. Não toca `.github/workflows/`, `supabase/migrations/`, `supabase/functions/` executáveis
-4. Não é branch de outro agente/sessão (REGRA#10)
-5. Não causa regressão semântica (downgrade, remoção de feature, mudança de regra de negócio)
-
-### DECISAO_HUMANA
-PR requer decisão do PO quando qualquer das condições abaixo for verdadeira:
-- **REGRA#8:** toca `.github/workflows/`, `supabase/migrations/`, `supabase/functions/`, `.gitleaks.toml`, Dockerfile, infra
-- **CONFLICT:** `mergeable_state != "clean"` — conflito com main que exige resolução manual
-- **REGRA#10:** branch pertence a outra sessão/agente (esta sessão não escreve em branches alheias)
-- **REGRESSAO:** downgrade de versão, remoção de feature usada, mudança de regra de negócio (filtro Kit Maker, etc.)
-- **BREAKING:** upgrade major com breaking changes (zustand 4→5, react-day-picker 8→10)
-- **DRAFT:** PR em estado draft sem REGRA#10/8 (só aguarda autor converter para ready)
-
-### DRAFT_NOMERGE
-PR draft que não deve ser mergeado autonomamente porque:
-- Contém apenas documentação interna de análise (não é código de produção)
-- OU é solução paliativa/incompleta que o autor deve revisar antes de mergear
-
-### SUPERSEDED
-PR cujos commits já foram incorporados em outro PR mergeado:
-- Verificado via `git cherry` (zero commits únicos)
-- OU PR body/título indica explicitamente que foi substituído
-
-### CI_AGUARDANDO
-PR meu (desta sessão) aguardando Gate Final para merge autônomo:
-- Todos os outros critérios (conflicts, REGRA#8, REGRA#10) OK
-- Gate Final ainda não completou ou está em andamento
-
-### BRANCH_DIRTY
-Branch com conflito ADD/ADD irresolvível nesta sessão:
-- PR de outra sessão (REGRA#10 proíbe escrita)
-- Conflitos introduzidos por merge posterior em main que cobriu os mesmos arquivos
-
-### JA_EM_MAIN
-PR cujos commits já estão em main:
-- `git cherry -v main <branch>` retorna zero linhas
-
-### FECHAR
-PR sem ancestral comum com main (branch órfã):
-- `test_merge: NO_MERGE_BASE` na análise de test-merge
-- PO deve fechar manualmente
-
-### MERGEADO_SESSAO_EXTERNA
-PR que esta sessão rastreava mas foi mergeado por outra sessão durante o trabalho:
-- SHA de merge confirmado via GitHub API
+**main HEAD:** 1ce29cf2f95ecf851eef580974130a46f5a4f53a
+**Supabase projeto canônico:** doufsxqlfjyuvxuezpln (SSOT — REGRA#1)
 
 ---
 
-## Regras de negócio críticas identificadas
+## 1. Arquitetura de dados
 
-### RN-01 — E058: Rollback obrigatório por migration
-Todo arquivo em `supabase/migrations/YYYYMMDDHHMMSS_*.sql` exige arquivo correspondente
-em `supabase/rollbacks/YYYYMMDDHHMMSS_rollback.sql`. O workflow `db-apply-migration.yml`
-falha no preflight (E058) se qualquer rollback estiver faltando.
+**Medallion Bronze → Silver → Gold**
+- Bronze: `supplier_products_raw` (ingestão crua dos fornecedores — Promobrind, XBZ, etc.)
+- Silver: tabelas intermediárias após ETL (deduplicação, enriquecimento)
+- Gold: `products`, `product_variants`, `categories`, etc. — projeto `doufsxqlfjyuvxuezpln`
 
-**Evidência:** Run #40462419661 falhou — `20261027120000_rollback.sql não encontrado`.
-PRs #2621 e #2627 cobrem os 9 rollbacks faltantes das migrations do PR #2603.
+**Multi-tenant via Organizations:**
+- Toda tabela relevante tem `organization_id UUID` — isolamento total via RLS
+- Funções helper: `user_is_org_member(org_id)`, `is_org_admin(org_id)`, `is_org_owner_or_admin(org_id)`
+- 100% das tabelas em `public` têm RLS habilitado (Gate 1.13 bloqueia regressão)
+- Fonte: `docs/04_EXPLICACAO_DAS_POLICIES.md`, `docs/03_ARQUITETURA_DO_SISTEMA.md`
 
-### RN-02 — Gate 1.12: Toda edge function deve estar declarada em edge-authz-manifest.ts
-O arquivo `supabase/functions/_shared/edge-authz-manifest.ts` é SSOT da autorização.
-Função presente no FS mas ausente no manifest → Gate 1.12 FAILED.
+**Tabelas críticas por domínio** (fonte: `docs/03_ARQUITETURA_DO_SISTEMA.md`):
+```
+CORE        → organizations, user_organizations
+CATALOG     → categories, suppliers, products, product_variants,
+              personalization_techniques, supplier_products_raw
+SALES       → quotes, quote_items, orders, order_items, payments
+CLIENTS     → bitrix_clients, client_contacts, client_notes
+MOCKUPS     → mockup_generation_jobs, generated_mockups
+MAGAZINES   → magazines, magazine_items, magazine_templates
+COLLECTIONS → collections, collection_products
+USER DATA   → user_favorites, user_filter_presets
+```
 
-**Evidência:** PR #2603 adicionou `xbz-image-uploader/index.ts` sem declarar no manifest.
-PR #2621 corrigiu: entrada `xbz-image-uploader` adicionada com `category: "service"`.
+---
 
-### RN-03 — Versão semântica via release-please
-O PR da release-please (#2579, #2520) propõe versão baseada em conventional commits.
-Downgrade de 1.2.1 → 1.0.0 é regressão — requer aprovação do PO.
+## 2. Enums SSOT
 
-### RN-04 — Deploy de edge function = caminho único
-Deploy via `deploy-edge-functions.yml` apenas. Deploy direto via MCP/dashboard cria
-divergência silenciosa entre GitHub e produção (drift check detecta mas não reverte).
+### 2.1 Status de Orçamento
+**Fonte:** `src/types/quote.ts:10-21` (Zod schema) + CHECK constraint DB `valid_quote_status`
+**Verificado em:** 2026-06-25 (comentário no código)
 
-### RN-05 — Drift de conteúdo vs. estrutural em edge functions
-Drift de **conteúdo** (hash divergente) em PR é esperado: a função foi modificada no repo
-mas só será deployada após o merge. Drift **estrutural** (função órfã/ausente) indica
-problema real de infraestrutura.
+```typescript
+export const QUOTE_STATUSES = [
+  'approved', 'cancelled', 'converted', 'draft', 'expired',
+  'pending', 'pending_approval', 'rejected', 'sent', 'viewed',
+] as const; // 10 valores — ordem alfabética para diffs estáveis
+```
 
-**Evidência:** PR #2626 (E203) propõe distinguir os dois tipos no step "Fail if drift detected".
+**Tipo derivado:** `QuoteStatus = z.infer<typeof quoteStatusSchema>`
+**Guard:** `isQuoteStatus(value: unknown): value is QuoteStatus` — sem throw
 
-### RN-06 — Supabase canônico = `doufsxqlfjyuvxuezpln` (REGRA#1)
-Nenhum PR pode alterar `CURRENT_PROJECT_ID` em `src/integrations/supabase/client.ts`.
-Qualquer merge que contenha `pqpdolkaeqlyzpdpbizo` em código executável é regressão.
+### 2.2 Resposta do Cliente
+**Fonte:** `src/types/quote.ts:31`
+```typescript
+type ClientResponse = 'approved' | 'changes_requested' | 'rejected';
+```
 
-### RN-07 — Merge automático = deploy em produção imediato
-O Lovable redeploya `main` automaticamente em todo push. Merge autônomo = produção.
-PRs com risco de regressão (breaking changes, remoção de feature) → DECISAO_HUMANA.
+### 2.3 Frete (Shipping Type)
+**Fonte:** `src/types/quote.ts:54` (comentário inline)
+- `'cif'` — cortesia (frete incluso)
+- `'fob'` — cliente paga frete
+- `'fob_pre'` — pré-negociado com custo fixo
+
+### 2.4 Status de Estoque
+**Fonte:** `src/types/stock.ts:100-108`
+```typescript
+type StockStatus =
+  | 'critical'     // < 25% do mínimo
+  | 'in_stock'     // OK
+  | 'incoming'     // aguardando
+  | 'low_stock'    // abaixo do mínimo
+  | 'out_of_stock' // sem estoque
+  | 'overstocked'; // excesso
+```
+
+### 2.5 Tipo de Movimentação de Estoque
+**Fonte:** `src/types/stock.ts:234-241`
+```typescript
+type StockMovementType =
+  | 'adjustment' | 'in' | 'out' | 'released'
+  | 'reserved' | 'return' | 'transfer';
+```
+
+### 2.6 Tipo de Alerta de Estoque
+**Fonte:** `src/types/stock.ts:279-286`
+```typescript
+type StockAlertType =
+  | 'critical' | 'incoming_delayed' | 'low_stock'
+  | 'out_of_stock' | 'overstock' | 'restock_needed' | 'stockout_predicted';
+```
+
+### 2.7 Categorias de Revista (Magazine)
+**Fonte:** `src/types/magazine.ts:32-47`
+14 categorias: `awards`, `bags`, `clocks`, `customized`, `drinkwares`, `general`,
+`giftsets`, `id`, `packaging`, `pins`, `signs`, `stationery`, `technology`, `wearables`
+
+### 2.8 Família de Template de Revista
+**Fonte:** `src/types/magazine.ts` (linha ~48)
+```typescript
+type MagazineTemplateFamily = 'catalog' | 'corporate' | 'editorial';
+```
+Templates IDs: `catalog-giftset`, `catalog-grid-2x3`, `catalog-grid-3x3`, `catalog-list`,
+`corporate-executive`, `corporate-hero`, `corporate-split`, `editorial-hero-grid`,
+`editorial-magazine`, `editorial-manifesto`, `editorial-mono`, `editorial-vogue`
+
+### 2.9 Shape de Área de Gravação
+**Fonte:** `src/types/gravacao.ts`
+```typescript
+type AreaShape = 'circle' | 'custom' | 'oval' | 'rectangle' | 'triangle';
+```
+
+### 2.10 Tipo de Setup
+**Fonte:** `src/types/gravacao.ts` (campo `tipo_setup` de `TecnicaGravacao`)
+```
+'cliche' | 'fotolito' | 'matriz' | 'nenhum' | 'arte_digital'
+```
+
+### 2.11 Formato de Variante do Produto
+**Fonte:** `src/types/infrastructure/promobrind.ts:162`
+```typescript
+type FormatoVariante = 'cilindrica' | 'patch' | 'plana' | 'textil';
+```
+
+### 2.12 Tipo de Integração de Fornecedor
+**Fonte:** `src/types/infrastructure/promobrind.ts:163`
+```typescript
+type TipoIntegracao = 'api_rest' | 'api_spot' | 'manual';
+```
+
+### 2.13 Step do Simulador
+**Fonte:** `src/types/domain/simulation.ts:89`
+```typescript
+type SimulatorStep = 'product' | 'results' | 'techniques';
+```
+
+### 2.14 Status de Saúde EMA
+**Fonte:** `src/types/ema-health.ts`
+```typescript
+type EmaHealthStatus = 'ERROR' | 'OK' | 'UNKNOWN' | 'WARN';
+```
+
+---
+
+## 3. Campos críticos do tipo `Product`
+
+**Fonte:** `src/types/product.ts` (verificado rev59), REGRA#2 `CLAUDE.md`
+
+| Campo | Tipo | Obrigatoriedade | Regra |
+|-------|------|-----------------|-------|
+| `price` | `number` | obrigatório | REGRA#2 — nunca renomear sem atualizar todos os usos |
+| `sale_price` | `number \| undefined` | opcional | REGRA#2 |
+| `shortDescription` | `string` | obrigatório | REGRA#2 |
+| `category_id` | `string \| null` | opcional | REGRA#2 |
+| `category_name` | `string \| null` | opcional | REGRA#2 |
+
+**Gate de CI:** Gate 1.1 verifica esses campos antes de qualquer merge (`.github/workflows/deploy-gates.yml`)
+
+**Histórico de incidente:** Commit `f22e1e2` (2026-06-11) removeu esses campos em merge.
+Restaurados em `aca0f6f`, `14f6d6a`, `0a31ef9` (3 commits extras).
+
+---
+
+## 4. Políticas RLS (resumo)
+
+**Fonte:** `docs/04_EXPLICACAO_DAS_POLICIES.md`
+
+- ~662 policies ativas em 269 tabelas (2026-05-22)
+- 100% das tabelas `public` têm RLS habilitado
+- Padrão: `organization_id` como chave de isolamento
+- Roles: `owner`, `admin`, `member` (via `user_organizations.role`)
+- Funções helper: `user_is_org_member()`, `is_org_admin()`, `is_org_owner_or_admin()`
+- Gate 1.13 (bloqueante): RLS policies baseline vs pg_policies live
+- Gate 1.13.1 (bloqueante): tabelas com RLS ON e zero policies = deny-all silencioso
+
+**Padrão de policy (SELECT):**
+```sql
+USING (user_is_org_member(organization_id))
+```
+**Padrão de policy (INSERT/UPDATE):**
+```sql
+WITH CHECK (is_org_owner_or_admin(organization_id))
+```
+
+**RLS em `supplier_products_raw`:** migration `20261027200000_supplier_stricker_rls_deny_all.sql`
+implementou deny-all em 2026-10-27 — PR #2600 documenta essa mudança.
+
+---
+
+## 5. Migrações relevantes (6 meses recentes)
+
+**Fonte:** `supabase/migrations/` — últimas 20 entradas verificadas
+
+| Data | Arquivo | Conteúdo |
+|------|---------|----------|
+| 2026-10-27 | `20261027234500_reactivate_xbz_image_uploader_cron.sql` | Reativa cron XBZ |
+| 2026-10-27 | `20261027233000_add_xbz_image_uploader_secret_to_allowlist.sql` | Allowlist secret XBZ |
+| 2026-10-27 | `20261027230000_cleanup_get_edge_function_secret_allowlist.sql` | Limpa allowlist |
+| 2026-10-27 | `20261027220000_deactivate_xbz_image_uploader_cron.sql` | Desativa cron XBZ temporário |
+| 2026-10-27 | `20261027200000_supplier_stricker_rls_deny_all.sql` | RLS deny-all suppliers |
+| 2026-10-27 | `20261027180000_reactivate_generate_blurhashes_safe_schedule.sql` | Reativa blurhash cron |
+| 2026-10-27 | `20261027160000_deactivate_image_dimensions_backfill_cron.sql` | Desativa cron |
+| 2026-10-27 | `20261027140000_stagger_cron_burst_schedules.sql` | Escala cron burst |
+| 2026-10-27 | `20261027120000_fix_connections_auto_test_cron_secret.sql` | Fix cron secret |
+| 2026-10-24 | `20261024190001_cron_auth_p01_image_dimensions_backfill.sql` | Cron de backfill |
+| 2026-10-24 | `20261024180003_cron_schedule_p19_remaining.sql` | Cron schedules |
+| 2026-10-22 | `20261022195616_fix_update_company_fields_security_definer_search_path.sql` | Security fix |
+| 2026-10-22 | `20261022194000_security_revoke_external_connections_anon.sql` | Revoke anon access |
+| 2026-06-10 | `20260610234919_security_fix_suppliers_anon_leak_and_rls.sql` | RLS em 11 tabelas internas |
+
+---
+
+## 6. Testes críticos (baseline CI)
+
+**Fonte:** `analise-prs/baseline/test-failures.txt`, Gate Final run #40482105056
+
+- **Baseline de testes:** Gate Final CI success em `1ce29cf2f` (2026-10-27T09:42:42Z)
+- **Suite completa:** 1815 arquivos de teste (~45 min local — vitest não concluiu localmente)
+- **Autoridade:** CI Gate Final run #40482105056 é o baseline oficial
+
+**Testes corrigidos pelo PR #2633 (agora em main):**
+1. `tests/config/playwright-config-smoke.test.ts` — mock `@playwright/test` incompleto
+2. `src/components/products/customization/LocationPanel.tsx:367` — `window.setTimeout → globalThis.setTimeout`
+3. `src/lib/auth/__tests__/safeAuthCall.test.ts:109` — `toBeGreaterThanOrEqual(20) → 15`
+
+**Testes corrigidos pelo PR #2620 (em main):**
+- `PromoFlixPlayer.test.tsx` (React 19 volumechange)
+- `chunk-recovery.shared-reload-budget.test.ts`
+- `replenishment-resilience.test.ts`
+- `NegotiationMarkupCard.visualA11y.test.tsx.snap`
+
+**Schema de testes:** `src/types/__tests__/quote-status-schema.test.ts`
+— verifica que `QUOTE_STATUSES` tem exatamente 10 valores
+
+---
+
+## 7. Regras de UI críticas
+
+### Gate 1.15 — overflow-x-clip em MainLayout
+`MainLayout` deve ter `overflow-x-clip` para evitar regressão de scroll horizontal.
+Gate bloqueia merge se remover.
+
+### Gate 1.16 — Quote list invariants
+Listagem de orçamentos tem invariantes de integridade verificados em CI.
+
+### Gate 1.5 — Sem "Salvar Alterações" em rascunhos
+Fluxo de rascunho de orçamento não deve expor botão "Salvar Alterações" de forma inadequada.
+
+---
+
+## 8. Projetos Supabase (SSOT)
+
+| Projeto | ID | Uso | Regra |
+|---------|-----|-----|-------|
+| **Gold (produção)** | `doufsxqlfjyuvxuezpln` | ÚNICO projeto canônico | REGRA#1 — IMUTÁVEL |
+| Proibido | `pqpdolkaeqlyzpdpbizo` | projeto descontinuado | Gate 0 recusa; REGRA#1 |
+
+**Incidente histórico (2026-06-11):** Lovable reverteu `client.ts` 6+ vezes em 10 min
+causando 401 em produção. Gate 0 detecta, mas Claude não pode remover a guarda.
+
+---
+
+## 9. Deploys e CI
+
+### Fluxo de deploy (SSOT)
+- **Edge functions:** somente via `workflow_dispatch` em `.github/workflows/deploy-edge-functions.yml`
+- **Migrations:** somente via `workflow_dispatch` em `.github/workflows/db-apply-migration.yml`
+- **Deploy app:** merge em `main` dispara Lovable/Vercel automaticamente (merge = produção)
+
+### Vercel
+- Projeto canônico: `prj_9UfugNYCuboH2R0XB04Jv8PpjDpZ` (team `juca1`)
+- `.vercel/project.json` versionado — NÃO deletar (REGRA#11)
+
+### Gate Final
+- Check: "Gate Final - Deploy Ready" (`.github/workflows/deploy-gates.yml`)
+- Único required check em `main` — agrega todos os gates (0–6) em sequência
+- Qualquer gate falhando bloqueia deploy
+
+---
+
+## 10. Regras de negócio de orçamento (Quote)
+
+**Campos principais** (`src/types/quote.ts:Quote interface`):
+- `quote_number`: formato `"ORC-2026-0001"` — numeração automática
+- `seller_id`: FK `profiles.id` — vendedor responsável
+- `status`: um dos 10 valores de `QUOTE_STATUSES` (validado por Zod)
+- `shipping_type`: `'cif'` | `'fob'` | `'fob_pre'`
+- `bitrix_deal_id` / `bitrix_quote_id`: integração Bitrix24 CRM
+- `synced_to_bitrix`: boolean de sincronização
+
+**Campos de desconto:**
+- `discount_percent`: desconto percentual
+- `discount_amount`: desconto em valor
+- `subtotal` → aplica desconto → `total`
+
+**Validade:**
+- `valid_until`: ISO date — data de expiração do orçamento
+- Status `'expired'` deve ser aplicado após essa data (cron ou trigger)
+
+---
+
+_Gerado por session_011d8gKLZg8BWivR8aQBwxGF — rev59_
+_Baseado em: src/types/*.ts, docs/03_*, docs/04_*, supabase/migrations/, CLAUDE.md_
