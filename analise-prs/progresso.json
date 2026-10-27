@@ -7,7 +7,7 @@
     "tsc_exit_code": 0,
     "tsc_command": "tsc -p tsconfig.app.json --noEmit",
     "tsc_worktree": "/tmp/main-baseline-rev32",
-    "vitest": "timeout 60s — falhas pré-existentes documentadas via PR #2605 body",
+    "vitest": "rev33 verificado por nome: chunk-recovery 8P, replenishment 3P, PromoFlixPlayer 22P, NegotiationMarkupCard 23P — todos passam em main 06fe47fd3 (worktree /tmp/main-baseline-rev32)",
     "gate_final_main": "SUCCESS (verificado via github_list_check_runs)"
   },
   "prs_abertas_analisadas": 16,
@@ -39,6 +39,9 @@
       "draft": false,
       "head_sha": "c653bef927",
       "conflito": "CONFLICT — RELATORIO_CI.md + src/components/kit-builder/ItemCard.tsx",
+      "conflict_files": ["RELATORIO_CI.md", "src/components/kit-builder/ItemCard.tsx"],
+      "conflict_resolution": "VERIFICADO_LOCALMENTE_NAO_PUSHADO",
+      "conflict_note": "Resolucao: manter main em ambos. Push proibido REGRA#10+stop-hook. REGRA#8 permanece.",
       "ci_gate_final": "N/A (CONFLICT)",
       "regra8": true,
       "regra10": true,
@@ -212,7 +215,14 @@
       "ci_gate_final": "SUCCESS",
       "regra8": false,
       "veredito": "DECISAO_HUMANA",
-      "motivo": "DRAFT — único bloqueio; CI SUCCESS; zero REGRA#8. Candidato imediato após DRAFT→ready"
+      "motivo": "DRAFT — único bloqueio; CI SUCCESS; zero REGRA#8. Candidato imediato após DRAFT→ready",
+      "vitest_rev33_note": "Todos os testes unitários do PR passam em main 06fe47fd3 (verificado rev33)",
+      "tests_verified": {
+        "chunk_recovery": "8 PASSED",
+        "replenishment": "3 PASSED",
+        "PromoFlixPlayer": "22 PASSED",
+        "NegotiationMarkupCard": "23 PASSED"
+      }
     }
   ]
 }
