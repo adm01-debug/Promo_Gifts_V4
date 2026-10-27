@@ -1,55 +1,428 @@
 {
   "session": "session_011d8gKLZg8BWivR8aQBwxGF",
   "date": "2026-10-27",
-  "main_head_final": "a0560fdc62744c6bf4ba182914cc76dec06aecb1",
-  "gate_final": "FAILURE",
-  "gate_final_run": "40551464429",
-  "gate_final_falha": "Gate 0.5 - Dependency Audit — qs: unexpected moderate advisory (GHSA-6pq8-jhm2-2vcw)",
-  "total_analyzed": 47,
+  "main_head_final": "e0b569f18cdfc8c7bc63466e567597cf799aaae7",
+  "gate_final": "SUCCESS",
+  "gate_final_run": "40572329584",
+  "gate_final_falha": null,
+  "total_analyzed": 45,
   "prs": [
-    {"number": 2420, "title": "chore(db): adiciona rollback retroativo da migration 20261019000000", "state": "open", "verdict": "BLOQUEADA", "blocked_reason": "supabase/rollbacks/ DDL — REGRA#8: exige aprovacao explcita do PO", "sha_merge": null, "merged_by": null},
-    {"number": 2572, "title": "docs(analise-prs): rev23 — 40 PRs, 21 merges autonomos", "state": "open", "verdict": "BLOQUEADA", "blocked_reason": "dirty (mergeable:false) + obsoleto — superseded por revisoes posteriores", "sha_merge": null, "merged_by": null},
-    {"number": 2579, "title": "chore(main): release 1.0.0", "state": "open", "verdict": "BLOQUEADA", "blocked_reason": "release-please rebaixa versao 1.2.1 -> 1.0.0 (downgrade regressivo)", "sha_merge": null, "merged_by": null},
-    {"number": 2580, "title": "fix(banco): rollback header e arquivo rollback migration 20260916", "state": "open", "verdict": "DRAFT_NOMERGE", "blocked_reason": "PR em estado DRAFT — nao pronto para merge", "sha_merge": null, "merged_by": null},
-    {"number": 2582, "title": "chore(ci): metricas semanais 2026-W44", "state": "closed", "verdict": "MERGEADO_SESSAO_EXTERNA", "blocked_reason": null, "sha_merge": null, "merged_by": "github-actions[bot]"},
-    {"number": 2585, "title": "chore(deps): bump prod deps minor/patch 2026-10-26", "state": "closed", "verdict": "MERGEADO_SESSAO_EXTERNA", "blocked_reason": null, "sha_merge": "145da71bb8c451eebadc75c4bb059397f8d468f7", "merged_by": "session_externa"},
-    {"number": 2586, "title": "chore(deps): bump dev deps minor/patch 2026-10-26", "state": "closed", "verdict": "MERGEADO_SESSAO_EXTERNA", "blocked_reason": null, "sha_merge": "fb04592655cf81d1a6aad79739f2cc2f1c2236c7", "merged_by": "session_externa"},
-    {"number": 2587, "title": "chore(deps): bump zustand from 4.5.7 to 5.0.16", "state": "open", "verdict": "BLOQUEADA", "blocked_reason": "Dependabot: Zustand 4->5 breaking API changes — exige migracao de stores", "sha_merge": null, "merged_by": null},
-    {"number": 2588, "title": "chore(deps): bump react-day-picker from 8.10.2 to 10.0.2", "state": "open", "verdict": "BLOQUEADA", "blocked_reason": "Dependabot: react-day-picker 8->10 breaking API changes — exige migracao de componentes", "sha_merge": null, "merged_by": null},
-    {"number": 2589, "title": "chore(deps): bump globals from 15.x to 17.x", "state": "closed", "verdict": "MERGEADO_SESSAO_EXTERNA", "blocked_reason": null, "sha_merge": "9e2746a31914e714f1b96779f26808c0f3685ff8", "merged_by": "session_externa"},
-    {"number": 2590, "title": "chore(deps): bump codeql-action/upload-sarif 4.39.1", "state": "closed", "verdict": "MERGEADO_SESSAO_EXTERNA", "blocked_reason": null, "sha_merge": "c6e94d3a6c8e", "merged_by": "session_externa"},
-    {"number": 2594, "title": "chore(ci): bump actions/setup-node from 4 to 7", "state": "open", "verdict": "BLOQUEADA", "blocked_reason": ".github/workflows/ — CLAUDE.md proibe modificar workflows sem aprovacao do PO", "sha_merge": null, "merged_by": null},
-    {"number": 2596, "title": "chore(deps): bump postcss-selector-parser from 6.1.4 to 6.1.5", "state": "closed", "verdict": "MERGEADO_SESSAO_EXTERNA", "blocked_reason": null, "sha_merge": "54e8904585ad474030feea88526d9c66b7404aa4", "merged_by": "session_externa"},
-    {"number": 2597, "title": "fix(ci): corrige 4 workflows CI falhando", "state": "closed", "verdict": "MERGEADO_SESSAO_EXTERNA", "blocked_reason": null, "sha_merge": "6ef07df8c4980ab776bb087d4ebd79804b1d476c", "merged_by": "session_01Knr9enFAok62bHihBK1UUP"},
-    {"number": 2599, "title": "fix(privacy): substitui supabase.functions.invoke por invokeEdge em AnonymizeAccountDialog", "state": "open", "verdict": "BLOQUEADA", "blocked_reason": "toca .github/workflows/ (subconjunto de #2597 ja mergeada) — CLAUDE.md scope proibido", "sha_merge": null, "merged_by": null},
-    {"number": 2600, "title": "docs(analise-prs): addendum deliverables — branch de entrega desta sessao", "state": "open", "verdict": "DRAFT_NOMERGE", "blocked_reason": "DELIVERY BRANCH — NEVER MERGE: branch de entrega desta sessao (claude_04/optimistic-bohr-qplx94)", "sha_merge": null, "merged_by": null},
-    {"number": 2602, "title": "fix(e2e): corrige falhas E2E mobile, tooltips e personalization specs", "state": "closed", "verdict": "MERGEADO_SESSAO_EXTERNA", "blocked_reason": null, "sha_merge": null, "merged_by": "session_01Knr9enFAok62bHihBK1UUP"},
-    {"number": 2603, "title": "fix(crons): 4 migrations + RLS stricker", "state": "open", "verdict": "BLOQUEADA", "blocked_reason": "supabase/migrations/ DDL — REGRA#8: crons + RLS exigem aprovacao do PO", "sha_merge": null, "merged_by": null},
-    {"number": 2604, "title": "fix(ci): continue-on-error psql steps snapshot", "state": "open", "verdict": "DRAFT_NOMERGE", "blocked_reason": "PR em estado DRAFT", "sha_merge": null, "merged_by": null},
-    {"number": 2605, "title": "fix(tests): 4 falhas unit tests + 1 threshold E2E", "state": "open", "verdict": "BLOQUEADA", "blocked_reason": "dirty + superseded por #2610+#2615+#2616+#2620", "sha_merge": null, "merged_by": null},
-    {"number": 2610, "title": "fix(e2e): atualiza spec 92 para aceitar /auth no redirect de ProtectedRoute", "state": "closed", "verdict": "MERGEADO_AUTONOMO", "blocked_reason": null, "sha_merge": "48899b659ef6deba0fee2db7482347097059edb5", "merged_by": "session_011d8gKLZg8BWivR8aQBwxGF"},
-    {"number": 2615, "title": "fix(tests): aumenta timeout beforeAll 30s->60s em kit-coverage", "state": "closed", "verdict": "MERGEADO_AUTONOMO", "blocked_reason": null, "sha_merge": "6b65d38a15de4affb8ccb6d0787ab12f24588592", "merged_by": "session_011d8gKLZg8BWivR8aQBwxGF"},
-    {"number": 2616, "title": "fix(test): suppressMutePersistRef nao limpar flag no branch de supressao", "state": "closed", "verdict": "MERGEADO_AUTONOMO", "blocked_reason": null, "sha_merge": "2ccc76fd2db3b3baf17b2adefc2e37d9f6c85fce", "merged_by": "session_011d8gKLZg8BWivR8aQBwxGF"},
-    {"number": 2620, "title": "fix(tests): forward-port unit test fixes from PR #2605", "state": "closed", "verdict": "MERGEADO_AUTONOMO", "blocked_reason": null, "sha_merge": "3aabc41878bd454a33ea5643781ce2c7a677da1d", "merged_by": "session_011d8gKLZg8BWivR8aQBwxGF"},
-    {"number": 2621, "title": "fix(rollbacks): rollback files 7 migrations 20261027 (E058)", "state": "closed", "verdict": "MERGEADO_SESSAO_EXTERNA", "blocked_reason": null, "sha_merge": "06c221db520b446eee41ce990c110830be5da13c", "merged_by": "session_01PE8GzVYqxJM25xzvLuLYhW"},
-    {"number": 2622, "title": "fix(rollbacks): rollbacks para 9 migrations 20261027 + manifest fix", "state": "open", "verdict": "BLOQUEADA", "blocked_reason": "supabase/rollbacks/ — REGRA#8: exige aprovacao do PO", "sha_merge": null, "merged_by": null},
-    {"number": 2625, "title": "fix(edge-functions): health-check timeout + xbz-image-uploader manifest", "state": "closed", "verdict": "MERGEADO_SESSAO_EXTERNA", "blocked_reason": null, "sha_merge": "83c81d5859bef375af76a918e7ab01ce20a7944a", "merged_by": "session_01Knr9enFAok62bHihBK1UUP"},
-    {"number": 2627, "title": "fix(rollbacks): rollbacks 2 migrations 20261027 (233000 + 234500)", "state": "closed", "verdict": "MERGEADO_AUTONOMO", "blocked_reason": null, "sha_merge": "16108a1ce67449118e1b2bb80ca60d902bc474d6", "merged_by": "session_011d8gKLZg8BWivR8aQBwxGF"},
-    {"number": 2628, "title": "fix(e2e): adiciona secao simulator em selectors.ts", "state": "closed", "verdict": "MERGEADO_AUTONOMO", "blocked_reason": null, "sha_merge": "02e503365552d8d161e96917277170fff0af92dc", "merged_by": "session_011d8gKLZg8BWivR8aQBwxGF"},
-    {"number": 2631, "title": "chore: atualiza PENDENCIAS e RELATORIO_CI — bloqueio deploy confirmado", "state": "open", "verdict": "DRAFT_NOMERGE", "blocked_reason": "PR em estado DRAFT", "sha_merge": null, "merged_by": null},
-    {"number": 2636, "title": "fix(tests): mock AutoTestJobStatusCard em AdminStructuralComparison", "state": "closed", "verdict": "MERGEADO_AUTONOMO", "blocked_reason": null, "sha_merge": "b5cfee9b24017fbf53a0035e86d8820d07bad74e", "merged_by": "session_011d8gKLZg8BWivR8aQBwxGF"},
-    {"number": 2637, "title": "docs: recibo de aplicacao — 20261027120000 (E15)", "state": "closed", "verdict": "MERGEADO_AUTONOMO", "blocked_reason": null, "sha_merge": "78d083f1696186faf0e25f3aa950c05843928e25", "merged_by": "session_011d8gKLZg8BWivR8aQBwxGF"},
-    {"number": 2645, "title": "docs: recibo de aplicacao — 20261027140000 (E15)", "state": "closed", "verdict": "SUPERSEDED", "blocked_reason": "branch protection exige revisao humana — supabase/migrations/ (REGRA#8)", "sha_merge": null, "merged_by": null, "bloqueio": "Conflito ADD/ADD com main; reconstituted em PR #2652 (SHA 22ba938e)", "merge_sha": null},
-    {"number": 2646, "title": "fix(migrations): cabecalho -- Rollback: nas migrations 20261027160000 e 20261027220000", "state": "open", "verdict": "BLOQUEADA", "blocked_reason": "supabase/migrations/ — REGRA#8: exige aprovacao do PO", "sha_merge": null, "merged_by": null},
-    {"number": 2647, "title": "fix(ci): aumenta timeout swatch-quickview 40->90 min", "state": "closed", "verdict": "MERGEADO_SESSAO_EXTERNA", "blocked_reason": null, "sha_merge": "5d049ef118f3eb84843da44bd8d2efc70ee56ca1", "merged_by": "session_01Knr9enFAok62bHihBK1UUP"},
-    {"number": 2648, "title": "docs: atualiza PENDENCIAS.md §12 com diagnostico schema-snapshot-export", "branch": "unknown", "state": "closed", "verdict": "MERGEADA_SESSAO_EXTERNA", "merge_sha": "ed87db31b5ce630378f74766adcdcc26edfb0bd2", "session": "adm01-debug"},
-    {"number": 2649, "title": "fix(e2e): corrige falhas em admin-critical-routes e personalization-auth-redirect", "branch": "unknown", "state": "closed", "verdict": "MERGEADA_SESSAO_EXTERNA", "merge_sha": "61a0cfa1714661f752273cf864b335eb217ea134", "session": "adm01-debug"},
-    {"number": 2650, "title": "fix(e2e): corrige testids e landing state em catalog.spec e kit-builder.spec", "branch": "claude/fix-e2e-catalog-kitbuilder-261027-1548", "state": "closed", "verdict": "MERGEADA_AUTONOMA", "merge_sha": "f0689734b38e79edda24cf80f5df19abae941015", "session": "session_011d8gKLZg8BWivR8aQBwxGF"},
-    {"number": 2652, "title": "docs(e15): recibo aplicação migration 20261027140000", "branch": "claude/docs-e15-receipt-261027-1700", "state": "closed", "verdict": "MERGEADA_AUTONOMA", "merge_sha": "22ba938e02ae48eee34d77176a4d5dee6cf8e14b", "session": "session_011d8gKLZg8BWivR8aQBwxGF"},
-    {"number": 2653, "title": "docs(analise-prs): inventario final 17 PRs + regras-de-negocio.md", "state": "open", "verdict": "BLOQUEADA", "blocked_reason": "CONFLICT + REGRA#10 — branch claude/quirky-keller-owezvt de outra sessao (session_012WyySbh2tj8vhRQLBf3mHo)", "sha_merge": null, "merged_by": null},
-    {"number": 2654, "title": "fix(ci): xbz-image-uploader → SERVER_ONLY_ALLOWLIST (CORS gate)", "branch": "claude/fix-cors-allowlist-xbz-image-uploader-261027-1700", "state": "closed", "verdict": "MERGEADA_SESSAO_EXTERNA", "blocked_reason": null, "sha_merge": "4c7ecb260da691b5cd436700380b819d0d936961", "merged_at": "2026-10-27T17:19:34Z", "merged_by": "session_01Knr9enFAok62bHihBK1UUP", "gate_final": "SUCCESS"},
-    {"number": 2655, "title": "fix(tests): xbz-image-uploader descriptor with pendingDeploy=true", "branch": "claude/fix-edge-integration-tests-261027-1730", "state": "closed", "verdict": "MERGEADA_SESSAO_EXTERNA", "blocked_reason": null, "sha_merge": "a0560fdc62744c6bf4ba182914cc76dec06aecb1", "merged_at": "2026-10-27T17:31:48Z", "merged_by": "session_01Knr9enFAok62bHihBK1UUP", "gate_final": "FAILURE — Gate 0.5 qs advisory (nao causado por este PR)"},
-    {"number": 2656, "title": "fix(ci): adiciona qs ao allowlist do gate de dependencias (GHSA-6pq8-jhm2-2vcw)", "branch": "claude/fix-dep-audit-qs-261027-1748", "state": "open", "verdict": "DRAFT_NOMERGE", "blocked_reason": "DRAFT + REGRA#10 (branch de session_01Knr9enFAok62bHihBK1UUP)", "sha_merge": null, "merged_by": null, "head_sha": "a715af7f9fffb0df194f1b8f63b950390333bd66", "fix_target": "Gate 0.5 - Dependency Audit — qs moderate advisory GHSA-6pq8-jhm2-2vcw"}
+    {
+      "number": 2420,
+      "title": "chore(db): adiciona rollback retroativo da migration 20261019000000",
+      "state": "open",
+      "verdict": "BLOQUEADA",
+      "blocked_reason": "supabase/rollbacks/ DDL — REGRA#8: exige aprovacao explcita do PO",
+      "sha_merge": null,
+      "merged_by": null
+    },
+    {
+      "number": 2572,
+      "title": "docs(analise-prs): rev23 — 40 PRs, 21 merges autonomos",
+      "state": "open",
+      "verdict": "BLOQUEADA",
+      "blocked_reason": "dirty (mergeable:false) + obsoleto — superseded por revisoes posteriores",
+      "sha_merge": null,
+      "merged_by": null
+    },
+    {
+      "number": 2579,
+      "title": "chore(main): release 1.0.0",
+      "state": "open",
+      "verdict": "BLOQUEADA",
+      "blocked_reason": "release-please rebaixa versao 1.2.1 -> 1.0.0 (downgrade regressivo)",
+      "sha_merge": null,
+      "merged_by": null
+    },
+    {
+      "number": 2580,
+      "title": "fix(banco): rollback header e arquivo rollback migration 20260916",
+      "state": "open",
+      "verdict": "DRAFT_NOMERGE",
+      "blocked_reason": "PR em estado DRAFT — nao pronto para merge",
+      "sha_merge": null,
+      "merged_by": null
+    },
+    {
+      "number": 2582,
+      "title": "chore(ci): metricas semanais 2026-W44",
+      "state": "closed",
+      "verdict": "MERGEADO_SESSAO_EXTERNA",
+      "blocked_reason": null,
+      "sha_merge": null,
+      "merged_by": "github-actions[bot]"
+    },
+    {
+      "number": 2585,
+      "title": "chore(deps): bump prod deps minor/patch 2026-10-26",
+      "state": "closed",
+      "verdict": "MERGEADO_SESSAO_EXTERNA",
+      "blocked_reason": null,
+      "sha_merge": "145da71bb8c451eebadc75c4bb059397f8d468f7",
+      "merged_by": "session_externa"
+    },
+    {
+      "number": 2586,
+      "title": "chore(deps): bump dev deps minor/patch 2026-10-26",
+      "state": "closed",
+      "verdict": "MERGEADO_SESSAO_EXTERNA",
+      "blocked_reason": null,
+      "sha_merge": "fb04592655cf81d1a6aad79739f2cc2f1c2236c7",
+      "merged_by": "session_externa"
+    },
+    {
+      "number": 2587,
+      "title": "chore(deps): bump zustand from 4.5.7 to 5.0.16",
+      "state": "closed",
+      "verdict": "MERGEADA_SESSAO_EXTERNA",
+      "blocked_reason": null,
+      "sha_merge": "16ad57c66e619100f76c113653cdab7a20a7871a",
+      "merged_by": "adm01-debug"
+    },
+    {
+      "number": 2588,
+      "title": "chore(deps): bump react-day-picker from 8.10.2 to 10.0.2",
+      "state": "open",
+      "verdict": "BLOQUEADA",
+      "blocked_reason": "Dependabot: react-day-picker 8->10 breaking API changes — exige migracao de componentes",
+      "sha_merge": null,
+      "merged_by": null
+    },
+    {
+      "number": 2589,
+      "title": "chore(deps): bump globals from 15.x to 17.x",
+      "state": "closed",
+      "verdict": "MERGEADO_SESSAO_EXTERNA",
+      "blocked_reason": null,
+      "sha_merge": "9e2746a31914e714f1b96779f26808c0f3685ff8",
+      "merged_by": "session_externa"
+    },
+    {
+      "number": 2590,
+      "title": "chore(deps): bump codeql-action/upload-sarif 4.39.1",
+      "state": "closed",
+      "verdict": "MERGEADO_SESSAO_EXTERNA",
+      "blocked_reason": null,
+      "sha_merge": "c6e94d3a6c8e",
+      "merged_by": "session_externa"
+    },
+    {
+      "number": 2594,
+      "title": "chore(ci): bump actions/setup-node from 4 to 7",
+      "state": "open",
+      "verdict": "BLOQUEADA",
+      "blocked_reason": ".github/workflows/ — CLAUDE.md proibe modificar workflows sem aprovacao do PO",
+      "sha_merge": null,
+      "merged_by": null
+    },
+    {
+      "number": 2596,
+      "title": "chore(deps): bump postcss-selector-parser from 6.1.4 to 6.1.5",
+      "state": "closed",
+      "verdict": "MERGEADO_SESSAO_EXTERNA",
+      "blocked_reason": null,
+      "sha_merge": "54e8904585ad474030feea88526d9c66b7404aa4",
+      "merged_by": "session_externa"
+    },
+    {
+      "number": 2597,
+      "title": "fix(ci): corrige 4 workflows CI falhando",
+      "state": "closed",
+      "verdict": "MERGEADO_SESSAO_EXTERNA",
+      "blocked_reason": null,
+      "sha_merge": "6ef07df8c4980ab776bb087d4ebd79804b1d476c",
+      "merged_by": "session_01Knr9enFAok62bHihBK1UUP"
+    },
+    {
+      "number": 2599,
+      "title": "fix(privacy): substitui supabase.functions.invoke por invokeEdge em AnonymizeAccountDialog",
+      "state": "open",
+      "verdict": "BLOQUEADA",
+      "blocked_reason": "toca .github/workflows/ (subconjunto de #2597 ja mergeada) — CLAUDE.md scope proibido",
+      "sha_merge": null,
+      "merged_by": null
+    },
+    {
+      "number": 2600,
+      "title": "docs(analise-prs): addendum deliverables — branch de entrega desta sessao",
+      "state": "open",
+      "verdict": "DRAFT_NOMERGE",
+      "blocked_reason": "DELIVERY BRANCH — NEVER MERGE: branch de entrega desta sessao (claude_04/optimistic-bohr-qplx94)",
+      "sha_merge": null,
+      "merged_by": null
+    },
+    {
+      "number": 2602,
+      "title": "fix(e2e): corrige falhas E2E mobile, tooltips e personalization specs",
+      "state": "closed",
+      "verdict": "MERGEADO_SESSAO_EXTERNA",
+      "blocked_reason": null,
+      "sha_merge": null,
+      "merged_by": "session_01Knr9enFAok62bHihBK1UUP"
+    },
+    {
+      "number": 2603,
+      "title": "fix(crons): 4 migrations + RLS stricker",
+      "state": "open",
+      "verdict": "BLOQUEADA",
+      "blocked_reason": "supabase/migrations/ DDL — REGRA#8: crons + RLS exigem aprovacao do PO",
+      "sha_merge": null,
+      "merged_by": null
+    },
+    {
+      "number": 2604,
+      "title": "fix(ci): continue-on-error psql steps snapshot",
+      "state": "open",
+      "verdict": "DRAFT_NOMERGE",
+      "blocked_reason": "PR em estado DRAFT",
+      "sha_merge": null,
+      "merged_by": null
+    },
+    {
+      "number": 2605,
+      "title": "fix(tests): 4 falhas unit tests + 1 threshold E2E",
+      "state": "open",
+      "verdict": "BLOQUEADA",
+      "blocked_reason": "dirty + superseded por #2610+#2615+#2616+#2620",
+      "sha_merge": null,
+      "merged_by": null
+    },
+    {
+      "number": 2610,
+      "title": "fix(e2e): atualiza spec 92 para aceitar /auth no redirect de ProtectedRoute",
+      "state": "closed",
+      "verdict": "MERGEADO_AUTONOMO",
+      "blocked_reason": null,
+      "sha_merge": "48899b659ef6deba0fee2db7482347097059edb5",
+      "merged_by": "session_011d8gKLZg8BWivR8aQBwxGF"
+    },
+    {
+      "number": 2615,
+      "title": "fix(tests): aumenta timeout beforeAll 30s->60s em kit-coverage",
+      "state": "closed",
+      "verdict": "MERGEADO_AUTONOMO",
+      "blocked_reason": null,
+      "sha_merge": "6b65d38a15de4affb8ccb6d0787ab12f24588592",
+      "merged_by": "session_011d8gKLZg8BWivR8aQBwxGF"
+    },
+    {
+      "number": 2616,
+      "title": "fix(test): suppressMutePersistRef nao limpar flag no branch de supressao",
+      "state": "closed",
+      "verdict": "MERGEADO_AUTONOMO",
+      "blocked_reason": null,
+      "sha_merge": "2ccc76fd2db3b3baf17b2adefc2e37d9f6c85fce",
+      "merged_by": "session_011d8gKLZg8BWivR8aQBwxGF"
+    },
+    {
+      "number": 2620,
+      "title": "fix(tests): forward-port unit test fixes from PR #2605",
+      "state": "closed",
+      "verdict": "MERGEADO_AUTONOMO",
+      "blocked_reason": null,
+      "sha_merge": "3aabc41878bd454a33ea5643781ce2c7a677da1d",
+      "merged_by": "session_011d8gKLZg8BWivR8aQBwxGF"
+    },
+    {
+      "number": 2621,
+      "title": "fix(rollbacks): rollback files 7 migrations 20261027 (E058)",
+      "state": "closed",
+      "verdict": "MERGEADO_SESSAO_EXTERNA",
+      "blocked_reason": null,
+      "sha_merge": "06c221db520b446eee41ce990c110830be5da13c",
+      "merged_by": "session_01PE8GzVYqxJM25xzvLuLYhW"
+    },
+    {
+      "number": 2622,
+      "title": "fix(rollbacks): rollbacks para 9 migrations 20261027 + manifest fix",
+      "state": "open",
+      "verdict": "BLOQUEADA",
+      "blocked_reason": "supabase/rollbacks/ — REGRA#8: exige aprovacao do PO",
+      "sha_merge": null,
+      "merged_by": null
+    },
+    {
+      "number": 2625,
+      "title": "fix(edge-functions): health-check timeout + xbz-image-uploader manifest",
+      "state": "closed",
+      "verdict": "MERGEADO_SESSAO_EXTERNA",
+      "blocked_reason": null,
+      "sha_merge": "83c81d5859bef375af76a918e7ab01ce20a7944a",
+      "merged_by": "session_01Knr9enFAok62bHihBK1UUP"
+    },
+    {
+      "number": 2627,
+      "title": "fix(rollbacks): rollbacks 2 migrations 20261027 (233000 + 234500)",
+      "state": "closed",
+      "verdict": "MERGEADO_AUTONOMO",
+      "blocked_reason": null,
+      "sha_merge": "16108a1ce67449118e1b2bb80ca60d902bc474d6",
+      "merged_by": "session_011d8gKLZg8BWivR8aQBwxGF"
+    },
+    {
+      "number": 2628,
+      "title": "fix(e2e): adiciona secao simulator em selectors.ts",
+      "state": "closed",
+      "verdict": "MERGEADO_AUTONOMO",
+      "blocked_reason": null,
+      "sha_merge": "02e503365552d8d161e96917277170fff0af92dc",
+      "merged_by": "session_011d8gKLZg8BWivR8aQBwxGF"
+    },
+    {
+      "number": 2631,
+      "title": "chore: atualiza PENDENCIAS e RELATORIO_CI — bloqueio deploy confirmado",
+      "state": "open",
+      "verdict": "DRAFT_NOMERGE",
+      "blocked_reason": "PR em estado DRAFT",
+      "sha_merge": null,
+      "merged_by": null
+    },
+    {
+      "number": 2636,
+      "title": "fix(tests): mock AutoTestJobStatusCard em AdminStructuralComparison",
+      "state": "closed",
+      "verdict": "MERGEADO_AUTONOMO",
+      "blocked_reason": null,
+      "sha_merge": "b5cfee9b24017fbf53a0035e86d8820d07bad74e",
+      "merged_by": "session_011d8gKLZg8BWivR8aQBwxGF"
+    },
+    {
+      "number": 2637,
+      "title": "docs: recibo de aplicacao — 20261027120000 (E15)",
+      "state": "closed",
+      "verdict": "MERGEADO_AUTONOMO",
+      "blocked_reason": null,
+      "sha_merge": "78d083f1696186faf0e25f3aa950c05843928e25",
+      "merged_by": "session_011d8gKLZg8BWivR8aQBwxGF"
+    },
+    {
+      "number": 2645,
+      "title": "docs: recibo de aplicacao — 20261027140000 (E15)",
+      "state": "closed",
+      "verdict": "SUPERSEDED",
+      "blocked_reason": "branch protection exige revisao humana — supabase/migrations/ (REGRA#8)",
+      "sha_merge": null,
+      "merged_by": null,
+      "bloqueio": "Conflito ADD/ADD com main; reconstituted em PR #2652 (SHA 22ba938e)",
+      "merge_sha": null
+    },
+    {
+      "number": 2646,
+      "title": "fix(migrations): cabecalho -- Rollback: nas migrations 20261027160000 e 20261027220000",
+      "state": "open",
+      "verdict": "BLOQUEADA",
+      "blocked_reason": "supabase/migrations/ — REGRA#8: exige aprovacao do PO",
+      "sha_merge": null,
+      "merged_by": null
+    },
+    {
+      "number": 2647,
+      "title": "fix(ci): aumenta timeout swatch-quickview 40->90 min",
+      "state": "closed",
+      "verdict": "MERGEADO_SESSAO_EXTERNA",
+      "blocked_reason": null,
+      "sha_merge": "5d049ef118f3eb84843da44bd8d2efc70ee56ca1",
+      "merged_by": "session_01Knr9enFAok62bHihBK1UUP"
+    },
+    {
+      "number": 2648,
+      "title": "docs: atualiza PENDENCIAS.md §12 com diagnostico schema-snapshot-export",
+      "branch": "unknown",
+      "state": "closed",
+      "verdict": "MERGEADA_SESSAO_EXTERNA",
+      "merge_sha": "ed87db31b5ce630378f74766adcdcc26edfb0bd2",
+      "session": "adm01-debug"
+    },
+    {
+      "number": 2649,
+      "title": "fix(e2e): corrige falhas em admin-critical-routes e personalization-auth-redirect",
+      "branch": "unknown",
+      "state": "closed",
+      "verdict": "MERGEADA_SESSAO_EXTERNA",
+      "merge_sha": "61a0cfa1714661f752273cf864b335eb217ea134",
+      "session": "adm01-debug"
+    },
+    {
+      "number": 2650,
+      "title": "fix(e2e): corrige testids e landing state em catalog.spec e kit-builder.spec",
+      "branch": "claude/fix-e2e-catalog-kitbuilder-261027-1548",
+      "state": "closed",
+      "verdict": "MERGEADA_AUTONOMA",
+      "merge_sha": "f0689734b38e79edda24cf80f5df19abae941015",
+      "session": "session_011d8gKLZg8BWivR8aQBwxGF"
+    },
+    {
+      "number": 2652,
+      "title": "docs(e15): recibo aplicação migration 20261027140000",
+      "branch": "claude/docs-e15-receipt-261027-1700",
+      "state": "closed",
+      "verdict": "MERGEADA_AUTONOMA",
+      "merge_sha": "22ba938e02ae48eee34d77176a4d5dee6cf8e14b",
+      "session": "session_011d8gKLZg8BWivR8aQBwxGF"
+    },
+    {
+      "number": 2653,
+      "title": "docs(analise-prs): inventario final 17 PRs + regras-de-negocio.md",
+      "state": "open",
+      "verdict": "BLOQUEADA",
+      "blocked_reason": "CONFLICT + REGRA#10 — branch claude/quirky-keller-owezvt de outra sessao (session_012WyySbh2tj8vhRQLBf3mHo)",
+      "sha_merge": null,
+      "merged_by": null
+    },
+    {
+      "number": 2654,
+      "title": "fix(ci): xbz-image-uploader → SERVER_ONLY_ALLOWLIST (CORS gate)",
+      "branch": "claude/fix-cors-allowlist-xbz-image-uploader-261027-1700",
+      "state": "closed",
+      "verdict": "MERGEADA_SESSAO_EXTERNA",
+      "blocked_reason": null,
+      "sha_merge": "4c7ecb260da691b5cd436700380b819d0d936961",
+      "merged_at": "2026-10-27T17:19:34Z",
+      "merged_by": "session_01Knr9enFAok62bHihBK1UUP",
+      "gate_final": "SUCCESS"
+    },
+    {
+      "number": 2655,
+      "title": "fix(tests): xbz-image-uploader descriptor with pendingDeploy=true",
+      "branch": "claude/fix-edge-integration-tests-261027-1730",
+      "state": "closed",
+      "verdict": "MERGEADA_SESSAO_EXTERNA",
+      "blocked_reason": null,
+      "sha_merge": "a0560fdc62744c6bf4ba182914cc76dec06aecb1",
+      "merged_at": "2026-10-27T17:31:48Z",
+      "merged_by": "session_01Knr9enFAok62bHihBK1UUP",
+      "gate_final": "FAILURE — Gate 0.5 qs advisory (nao causado por este PR)"
+    },
+    {
+      "number": 2656,
+      "title": "fix(ci): adiciona qs ao allowlist do gate de dependencias (GHSA-6pq8-jhm2-2vcw)",
+      "branch": "claude/fix-dep-audit-qs-261027-1748",
+      "state": "open",
+      "verdict": "DRAFT_NOMERGE",
+      "blocked_reason": "DRAFT + REGRA#10 (branch de session_01Knr9enFAok62bHihBK1UUP)",
+      "sha_merge": null,
+      "merged_by": null,
+      "head_sha": "a715af7f9fffb0df194f1b8f63b950390333bd66",
+      "fix_target": "Gate 0.5 - Dependency Audit — qs moderate advisory GHSA-6pq8-jhm2-2vcw"
+    },
+    {
+      "number": 2658,
+      "title": "fix(test): tolera timeout de waitFor nos integration tests de reposição",
+      "state": "closed",
+      "verdict": "MERGEADA_SESSAO_EXTERNA",
+      "blocked_reason": null,
+      "sha_merge": "2fafe8edfaa246221a4b427d5728512ba9ff199e",
+      "merged_by": "session_01Knr9enFAok62bHihBK1UUP"
+    },
+    {
+      "number": 2660,
+      "title": "fix(e2e): aguarda spinner de auth do ProtectedRoute antes de interagir com conteúdo protegido",
+      "state": "closed",
+      "verdict": "MERGEADA_SESSAO_EXTERNA",
+      "blocked_reason": null,
+      "sha_merge": "e0b569f18cdfc8c7bc63466e567597cf799aaae7",
+      "merged_by": "session_01Knr9enFAok62bHihBK1UUP"
+    }
   ],
   "summary": {
     "total": 37,
@@ -58,5 +431,6 @@
     "bloqueada": 12,
     "draft_nomerge": 6
   },
-  "revision": "rev82"
+  "revision": "rev82",
+  "open_prs_count": 12
 }
