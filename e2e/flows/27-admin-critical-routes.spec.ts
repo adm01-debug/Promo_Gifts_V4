@@ -27,6 +27,15 @@ test.describe("Rotas Admin críticas — carregamento e RBAC", () => {
     test(`${label} (${path}) carrega ou redireciona para login`, async ({ page }) => {
       await gotoAndSettle(page, path);
 
+      // ProtectedRoute exibe spinner (Loader2 h-10 w-10 animate-spin) enquanto AuthContext
+      // verifica a sessão de forma assíncrona. Aguardamos sumir antes de checar conteúdo.
+      await page
+        .waitForFunction(
+          () => !document.querySelector('.h-10.w-10.animate-spin'),
+          { timeout: 15_000 },
+        )
+        .catch(() => {});
+
       // Deve carregar OU redirecionar para login — nunca retornar 500
       const isLoginPage = /\/(auth|login)/.test(page.url());
       const body = page.locator("body");
@@ -35,8 +44,9 @@ test.describe("Rotas Admin críticas — carregamento e RBAC", () => {
       await expect(body).not.toContainText("Unexpected error", { timeout: 5_000 });
 
       if (!isLoginPage) {
-        // Se não redirecionou, a página deve ter algum conteúdo (não estar em branco)
-        const hasContent = await body.locator("main, [role='main'], [data-testid], h1, h2").count();
+        // Se não redirecionou, a página deve ter algum conteúdo (não estar em branco).
+        // h3 é usado por EmptyState (ex: "Acesso Restrito") quando o usuário não tem permissão.
+        const hasContent = await body.locator("main, [role='main'], [data-testid], h1, h2, h3").count();
         expect(hasContent).toBeGreaterThan(0);
       }
     });

@@ -12,8 +12,9 @@ test.describe("Fluxo: Deep Link e Redirecionamento de Auth", () => {
   });
 
   test("deve redirecionar para login ao abrir PDP e voltar após autenticação", async ({ page }) => {
-    // 1. Tentar acessar uma rota protegida (PDP)
-    const protectedPath = "/produtos/qualquer-id";
+    // /produtos/:slug é rota pública (catálogo); /produto/:id é a rota protegida de detalhe.
+    // 1. Tentar acessar uma rota protegida (PDP de detalhe — singular /produto/)
+    const protectedPath = "/produto/qualquer-id";
 
     await page.goto(protectedPath);
 
