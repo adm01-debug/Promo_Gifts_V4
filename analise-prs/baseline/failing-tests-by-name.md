@@ -31,16 +31,34 @@ Estes 7 checks falham no main antes de qualquer merge desta sessão. São falhas
 | color-swatch | E2E visual baseline | NÃO | NÃO COLETADOS |
 | magazine-header | E2E visual baseline | NÃO | NÃO COLETADOS |
 | e2e-gates | E2E adicional | NÃO | NÃO COLETADOS |
-| chromium•swatch→QV | E2E Swatch QuickView | NÃO | NÃO COLETADOS |
-| Full User Flows authed | E2E fluxos autenticados | NÃO | NÃO COLETADOS |
-| webkit•swatch→QV | E2E webkit QuickView | NÃO | NÃO COLETADOS |
-| check | Check adicional | NÃO | NÃO COLETADOS |
+| chromium•swatch→QV | E2E Swatch QuickView | NÃO | RUNNER_SHUTDOWN — timeout 40 min (ver §swatch→QV) |
+| Full User Flows authed | E2E fluxos autenticados | NÃO | NÃO VERIFICADO — workflow filename não resolvido (404) |
+| webkit•swatch→QV | E2E webkit QuickView | NÃO | RUNNER_SHUTDOWN — timeout 40 min (ver §swatch→QV) |
+| check | Check adicional | NÃO | NÃO VERIFICADO — check com nome genérico, não localizado |
 
-**Nota:** os nomes dos testes individuais dentro de cada job E2E acima não foram coletados.
-Isso foi intencionalmente aceitável porque:
-1. Nenhum merge desta sessão tocou código de E2E visual (color-swatch, magazine-header, QuickView)
-2. O Gate Final permaneceu SUCCESS em todos os merges — evidência definitiva de não-regressão
-3. Os checks acima são falhas de visual baseline (screenshots) que requerem atualização manual de imagens
+**Nota:** falhas acima são pré-existentes no main (não Gate Final). Gate Final permaneceu SUCCESS em todos os merges desta sessão.
+
+### swatch→QV — detalhes (chromium + webkit, run #40504601259)
+
+- **Causa raiz:** RUNNER SHUTDOWN — setup excedeu o limite de 40 min antes de qualquer teste rodar
+- **Evidência:** job webkit #122205265514 (attempt 2): `Running 15 tests using 2 workers` → `The runner has received a shutdown signal` (sem assertion failure)
+- **Único passo completado:** `[setup] › e2e/fixtures/auth.setup.ts:18:1 › authenticate` (19.7s)
+- **Spec files (15 testes no projeto `webkit-authed`):**
+  - `e2e/catalog/swatch-quickview-list-table.spec.ts`
+  - `e2e/catalog/swatch-quickview-v2-list-table.spec.ts`
+  - `e2e/catalog/swatch-picker-v2-focus-and-quickview.spec.ts`
+- **Nomes individuais dos 15 testes:** não recuperáveis — runner foi encerrado antes da execução dos specs
+- **Correção:** PR #2647 aumentou `timeout-minutes: 40` → `90` em `.github/workflows/e2e-swatch-quickview.yml`; mergeada por session_01Knr9enFAok62bHihBK1UUP em SHA `5d049ef118f3eb84843da44bd8d2efc70ee56ca1`
+
+### Workflows não-swatch — NÃO VERIFICADO
+
+| Check | Razão da não-verificação |
+|---|---|
+| color-swatch | Filename não encontrado (testados: `e2e-color-swatch.yml`, `color-swatch.yml` → 404) |
+| magazine-header | Filename não encontrado |
+| e2e-gates | Filename não encontrado; check run em_progress em `5d049ef1` no momento do último check |
+| Full User Flows authed | Filename não encontrado; em_progress |
+| check | Nome genérico — não localizável sem filename exato |
 
 ---
 
