@@ -1,6 +1,6 @@
 # PENDÊNCIAS CI — Promo Gifts V4
 **Atualizado em:** 2026-10-27  
-**Branch de correção:** `claude_04/beautiful-gates-bvocz5` (PR #2597)
+**Branch de correção:** `claude_04/beautiful-gates-bvocz5` (PR #2597 — **MERGEADO** ✅)
 
 ---
 
@@ -97,9 +97,31 @@
 - **Causa raiz:** Squash merge do PR #2629 usou `commit_title` sem sufixo `(#2629)`. Título usado: `chore: entrega RELATORIO_CI.md e PENDENCIAS.md — /goal CI fix concluído`. O sentinel detectou corretamente uma violação real de convenção de commit.
 - **Por que não posso corrigir o commit já mergeado:** Retroativamente impossível — commit já está na main. Force-push em main é proibido (REGRA #9).
 - **Impacto no Gate Final:** NÃO é required check (não está em `.github/required-checks.json`) — não bloqueia deploy nem PRs futuros.
-- **Resolução:** Este PR (#2630+) usa squash merge com `commit_title` terminando em `(#NNN)` — o sentinel passará verde no HEAD após este merge.
+- **Resolução:** PRs seguintes usam squash merge com `commit_title` terminando em `(#NNN)` — o sentinel passará verde no HEAD após o merge.
 
 ---
 
-*Gerado por Claude Code — sessão https://claude.ai/code/session_014RkohRYagi3sPiL8jtgot4*
-*Atualizado: 2026-10-27T09:30 UTC — adicionado §7 Branch Protection Sentinel (PR #2629 squash sem `(#NNN)`)*
+### 8. E2E — Customization Collapse (LocationPanel)
+- **Workflow ID:** 306818523
+- **Workflow:** `.github/workflows/e2e-customization-collapse.yml` (ou equivalente)
+- **Erro:** Step "Check baselines exist (mobile/tablet/desktop)" — arquivos PNG não encontrados em `e2e/customization/collapse-reflow.spec.ts-snapshots/`
+- **Causa raiz:** Baselines de screenshot nunca foram gerados ou commitados. O diretório `e2e/customization/collapse-reflow.spec.ts-snapshots/` não existe em nenhum commit da main.
+- **Confirmação pré-existente:** Todos os 10 runs históricos do workflow falharam no mesmo step — falha pré-existente, não regressão. PR #2634 confirmou "✅ Nenhum diff visual detectado" (LocationPanel fix não gerou regressão visual).
+- **Por que não corrigi:** Gerar baselines requer rodar Playwright com `--update-snapshots` em ambiente com servidor Vite e Supabase configurados — não executável via MCP. A falha está no step "Check baselines exist", que é pré-CI (antes dos testes).
+- **Impacto no Gate Final:** NÃO é required check — não bloqueia deploy.
+
+---
+
+### 9. Branch Protection Sentinel — commit `06faacc` (push direto em main por sessão Claude)
+- **Run ID:** 40491293699 (sha `06faacc95be240697731489b6f1611b4738844b8`, main, 2026-10-27T10:52 UTC)
+- **Workflow:** `.github/workflows/branch-protection-sentinel.yml`
+- **Erro:** `1 commit(s) em push para main sem padrão aceito: 06faacc` — Regra 1 do sentinel: commit direto em `main` SEM merge via PR e SEM sufixo `(#NNN)`.
+- **Causa raiz:** Sessão Claude `session_011kNCJ9xyjX5d9E2bUXhdBg` empurrou diretamente em `main` o commit `06faacc` com mensagem `fix(ci): Gate 1.13 — trata HTTP 400 em check-rls-no-policy-drift (Supabase nova sintaxe)`. Violação dupla: (a) push direto em main sem PR (viola REGRA #9 do CLAUDE.md), (b) mensagem não termina em `(#NNN)` (viola convenção do sentinel). **Esta sessão não criou este commit.**
+- **Por que não posso corrigir:** Commit já está na main. Force-push em main é proibido (REGRA #9).
+- **Impacto no Gate Final:** NÃO é required check — não bloqueia deploy nem PRs futuros.
+- **Resolução:** Próximos merges via squash com sufixo `(#NNN)` retornarão verde. O commit `06faacc` ficará registrado como violação histórica de processo.
+
+---
+
+*Gerado por Claude Code — sessão https://claude.ai/code/session_014RkohRYagi3sPiL8jtgot4*  
+*Atualizado: 2026-10-27T11:02 UTC — adicionado §9 Branch Protection Sentinel `06faacc` (push direto em main por sessão 011k)*
