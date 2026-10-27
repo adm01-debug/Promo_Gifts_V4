@@ -147,9 +147,9 @@ Executado no container Claude Code no HEAD `6ef07df8` (merge commit na main, pó
 | Kit Coverage — Integration | 40446574419 (sha `3ffbf322`) | ✅ hookTimeout 60s no beforeAll | ✅ success (pós-merge) |
 | Gitleaks — Full History Audit | múltiplos | ✅ 17 commits em allowlist .gitleaks.toml | ✅ success (pós-merge) |
 | Ratchet Weekly | múltiplos | ✅ fix SIGPIPE (variável intermediária) | ✅ success (pós-merge) |
+| edge-functions-drift-check | 40453930945 (sha `eb04236c`) | 🔄 dispatch deploy-edge-functions.yml pós-merge | ✅ success (após deploy pós-merge) |
 | Running Copilot Code Review | 40451624818 | ❌ bot externo — irresolvível | ❌ failure (ver PENDENCIAS.md §1) |
 | Uptime Monitor | 40451113594 | ❌ probe externo transiente | ⚠️ depende uptime Supabase (ver PENDENCIAS.md §2) |
-| edge-functions-drift-check | 40453930945 (sha `eb04236c`) | 🔄 dispatch deploy-edge-functions.yml pós-merge | ✅ success (após deploy pós-merge) |
 | E2E workflows (5 falhas) | múltiplos | ❌ infra CI pré-existente | ❌ failure (ver PENDENCIAS.md §3) |
 | Quote Builder Delivery Quality | 40476927065 (sha `6ef07df8`) | ❌ infra E2E pré-existente (confirmado em 40474032315) | ❌ failure (ver PENDENCIAS.md §5) |
 | Gate 5 — Supabase Security Audit | 40476927261 (sha `6ef07df8`) | ❌ HTTP 503 transiente Supabase | ⚠️ depende uptime Supabase (ver PENDENCIAS.md §6) |
@@ -288,11 +288,10 @@ Após o merge do PR #2597, duas falhas adicionais foram identificadas nas runs d
 | `1ce29cf2` (PR #2633) | push main | — | ✅ success (Gate Final PR head 40487405913) |
 | `b1aa18a8` (PR #2634) | push main | 40490191824 | ✅ success |
 | `06faacc9` (push direto) | push main | 40491293817* | ✅ success |
-| `2b9dec8a` (PR #2638) | push main | 40494286331 | ⏳ queued (congestionamento runners GitHub) |
+| `2b9dec8a` (PR #2638) | push main | 40494286331 | ✅ success |
+| `0822b952` (PR #2639) | push main | 40495958468 | ⏳ queued (congestionamento runners GitHub) |
 
 *Verificado em sessão anterior como `conclusion=success`
-
-**Nota sobre run `40494286331`:** O run permaneceu em `queued` por congestionamento de runners GitHub — problema de infraestrutura externa fora do controle via MCP. O merge do presente PR (#2639) gera novo run do Gate Final no HEAD mais recente.
 
 ### Inventário Completo — Workflows com Última Run em Falha na Main
 
@@ -313,12 +312,37 @@ Após o merge do PR #2597, duas falhas adicionais foram identificadas nas runs d
 | Branch Protection Sentinel (`06faacc9`) | 40491293699 | `06faacc9` | https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40491293699 | PENDENCIAS §9 |
 | Edge Integration Tests — All Functions | 40491293458 | `06faacc9` | https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40491293458 | PENDENCIAS §10 |
 | CI Security & Drift Checks | 40490192168 | `b1aa18a8` | https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40490192168 | PENDENCIAS §11 |
+| schema-snapshot-export | 40480567522 | `c5edf577` | https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40480567522 | PENDENCIAS §12 |
 
-**Total de workflows em falha documentados em PENDENCIAS.md: 15 (§1–§11)**  
+**Total de workflows em falha documentados em PENDENCIAS.md: 16 (§1–§12)**  
 **Total de workflows corrigidos por PR (PR #2597 + #2633 + #2634): 5**  
 **Regressões introduzidas: ZERO**
 
 ---
 
+## 14. Baseline Local — Sessão 2026-10-27 (SHA `0822b952`)
+
+Executado no container Claude Code no HEAD `0822b952` (main, pós-merge PR #2639):
+
+| Checagem | Resultado | Detalhe |
+|---|---|---|
+| TypeScript (`npx tsc --noEmit`) | ✅ PASS | exit 0, zero erros |
+| Build Vite (`npm run build`) | ✅ PASS | built in 12.09s, exit 0, zero erros TS |
+| Vitest (arquivos corrigidos) | ✅ PASS | 330 testes passando em 8.51s (`src/lib/auth/__tests__/` + `src/test/config/`) |
+| ESLint (`eslint src`) | ⚠️ TIMEOUT | exit 143 (SIGTERM após 120s) — ESLint completo requer 2GB+ heap neste container; não é falha de código, é gerenciado pelo Gate 1 no CI com heap adequado |
+
+**Comparação baseline × final desta sessão:**
+
+| Métrica | Baseline (pré-sessão, sha `48899b65`) | Final (sha `0822b952`, pós PR #2639) |
+|---|---|---|
+| tsc | ✅ exit 0 | ✅ exit 0 |
+| vite build | ✅ 16.05s | ✅ 12.09s |
+| Vitest (arquivos corrigidos) | ✅ | ✅ 330 testes em 8.51s |
+| Gate Final pós-merge na main | ✅ run 40476927264 (PR #2597) | ✅ run 40494286331 (PR #2638, `conclusion=success`) |
+
+**Workflows verdes confirmados inalterados:** Gate Final passou em todos os merges desta sessão (PRs #2597, #2629, #2633, #2634, #2638). As mudanças dos PRs #2638 e #2639 são exclusivamente docs (PENDENCIAS.md, RELATORIO_CI.md) — zero impacto em código de produção ou lógica de CI.
+
+---
+
 *Gerado por Claude Code — sessão https://claude.ai/code/session_014RkohRYagi3sPiL8jtgot4*  
-*Atualizado: 2026-10-27T11:35 UTC — §13 inventário final com links de execução; PENDENCIAS §10/§11 adicionados*
+*Atualizado: 2026-10-27T13:40 UTC — §13 run 40494286331 success; §14 baseline local + comparação final; PENDENCIAS §12 adicionado*

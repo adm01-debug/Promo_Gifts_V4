@@ -147,5 +147,22 @@
 
 ---
 
+### 12. schema-snapshot-export — Arquivo Baseline JSON Ausente
+- **Run ID:** 40480567522 (sha `c5edf577`, main, 2026-10-27T09:09 UTC)
+- **Workflow:** `.github/workflows/schema-snapshot-export.yml`
+- **Jobs em falha:**
+  - **"Weekly live drift check"**: step 5 "Check ledger manifest drift" — arquivo `docs/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json` não encontrado no runner → exit code 2
+  - **"Export schema snapshot"**: cancelado após ~8 min no step "Run schema snapshot export" — timeout em `supabase db dump --linked` contra `doufsxqlfjyuvxuezpln`
+- **Causa raiz:** O arquivo baseline `docs/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json` referenciado pelo step "Check ledger manifest drift" não existe no repositório. O job "Export schema snapshot" tenta regenerar o baseline via `supabase db dump --linked`, mas cancela por timeout (~8 min) — provavelmente devido ao tamanho do schema (388+ tabelas em `doufsxqlfjyuvxuezpln`).
+- **Confirmação pré-existente:** Workflow é semanal (`schedule`) — falha estrutural desde que o arquivo baseline foi removido do repo. Não é regressão de nenhum PR desta sessão.
+- **Por que não corrigi:** `supabase db dump --linked` não é executável via MCP em sessão de agente. O CLAUDE.md proíbe DDL/dump via `execute_sql` (Corolário E056). Gerar o baseline requer execução do workflow `schema-snapshot-export.yml` via `workflow_dispatch` — ação que requer ambiente Supabase configurado com credenciais de produção no runner CI.
+- **O que você (PO) pode fazer:**
+  1. Acessar GitHub → Actions → `schema-snapshot-export.yml` → Run workflow → marcar `force_rotate: true`.
+  2. Aguardar o job "Export schema snapshot" completar (pode levar 10–20 min em schemas grandes).
+  3. O workflow abrirá PR automático com o novo baseline — revisar o diff e mergear.
+- **Impacto no Gate Final:** NÃO é required check — não bloqueia deploy.
+
+---
+
 *Gerado por Claude Code — sessão https://claude.ai/code/session_014RkohRYagi3sPiL8jtgot4*  
-*Atualizado: 2026-10-27T11:35 UTC — §10 Edge Integration Tests; §11 CI Security & Drift Checks (inventário completo)*
+*Atualizado: 2026-10-27T13:40 UTC — §12 schema-snapshot-export (inventário completo: §1–§12)*
