@@ -1,0 +1,16 @@
+BASELINE VITEST — main HEAD 06fe47fd3a992bf2a39ab356c9d8c357c5f2a27e
+Data: 2026-10-27 (sessão rev33)
+Comando: npx vitest run --reporter=verbose
+Diretório: /tmp/main-baseline-rev32 (worktree de origin/main 06fe47fd3)
+node_modules: symlinked de /home/user/Promo_Gifts_V4/node_modules
+
+RESULTADO: TIMEOUT (60s) — vitest não concluiu no tempo alocado.
+
+Nota: A PR #2605 documenta no seu body que os seguintes testes falham em main antes dos seus fixes:
+1. src/lib/__tests__/chunk-recovery.shared-reload-budget.test.ts:33 — race condition Date.now()
+2. src/lib/__tests__/chunk-recovery.shared-reload-budget.test.ts:60 — race condition Date.now()
+3. tests/integration/replenishment-resilience.test.ts:16 — missing await
+4. src/components/products/gallery/PromoFlixPlayer.tsx tests — React 19 volumechange listener
+5. e2e/catalog/novidades-reposicao-card-parity.spec.ts:214 — threshold 64→96px
+
+Esses itens são candidatos a falhas pré-existentes (documentadas pelo autor via PR body).

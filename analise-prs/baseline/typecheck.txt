@@ -1,11 +1,8 @@
-TypeScript check — Sessão session_01Ss1tXZ4cAbxBvdmu95uNPz (continuação)
-Data: 2026-10-25
+BASELINE TYPECHECK — main HEAD 06fe47fd3a992bf2a39ab356c9d8c357c5f2a27e
+Data: 2026-10-27 (sessão rev33)
+Comando: tsc -p tsconfig.app.json --noEmit
+Diretório: /tmp/main-baseline-rev32 (worktree de origin/main 06fe47fd3)
 
-NÃO EXECUTADO LOCALMENTE
-Motivo: npm install falha com 403 (registry europe-west1-npm.pkg.dev sem credenciais)
+RESULTADO: exit code 0 — ZERO erros TypeScript no HEAD do main.
 
-Referência CI (Gate 1 — TypeScript + ESLint):
-- Run #40214531246 (SHA 4cb4feb4): conclusion=success → 0 erros TypeScript
-- Gate Final completo: success ✅
-
-Evidência: Gate Final run #40214531246 job "static-gates" conclusion=success
+Nenhuma linha de erro emitida.
