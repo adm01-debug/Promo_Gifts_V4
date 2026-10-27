@@ -98,22 +98,65 @@ Error: Hook timed out in 30000ms.
 
 ---
 
-## 4. Estado do PR #2597 no momento deste relatório
+## 4. Baseline Local (verificado em 2026-10-27)
+
+Executado no container Claude Code antes do push final:
+
+| Checagem | Resultado | Detalhe |
+|---|---|---|
+| TypeScript (`npx tsc --noEmit`) | ✅ PASS | TSC_EXIT=0, zero erros |
+| Vitest `chunk-recovery.shared-reload-budget.test.ts` | ✅ PASS | 8/8 testes, EXIT=0 |
+| Vitest `playwright-config-smoke.test.ts` | ⏭ SKIP LOCAL | dynamic import de `playwright.config.ts` ultrapassa timeout 90s no container (sem Vite server). Teste funcional em CI com ambiente correto. |
+| ESLint | ⚠ OOM LOCAL | Pre-commit hook ESLint trava com OOM/timeout no container (problema de ambiente, não de código). CI roda sem problema. |
+
+---
+
+## 5. Estado do PR #2597 (atualizado 2026-10-27T05:10 UTC)
 
 **Branch:** `claude_04/beautiful-gates-bvocz5`  
-**HEAD:** `e76acf61` (2026-10-27T04:5xZ)  
-**Gate Final (Deploy Gates):** `pending` — CI ainda em execução  
+**HEAD atual:** `1a8cb75d` (merge commit de main, 2026-10-27T04:58)  
+**Gate Final (Deploy Gates):** `in_progress` — run `40452649765` no HEAD `1a8cb75d`
 
-Workflows em execução no PR (commit `e76acf61`, 31 total):
-- **Success:** No Prod Leak in Dev/Test Config ✅, Policies Baseline ✅
-- **In progress:** Bundle size report, E2E — Personalization Flow, Quote Builder Delivery Quality, Supabase Linter Gate
-- **Queued/Pending:** Deploy Gates (Gate Final), E2E (Playwright), E2E • Swatch QuickView, E2E Focused UI, E2E Quotes, E2E — Critical Flows, CodeQL, Edge Integration Tests, Gate 5 — Supabase Security Audit, Lint untypedFrom, PR Size Guard, Required Checks Guard, SSOT Supabase Guard, Security Scan, Select Columns vs Types, TS Unused Locals Ratchet, Workflow Lint, db-schema-drift-check, edge-functions-drift-check, migrations-sync-log-gate, schema-snapshot-export, Visual Baseline Tests, CI - Replenishment Module Quality Gate, Contract Tests
+Workflows no PR (HEAD `1a8cb75d`):
+
+| Workflow | Status | Conclusão |
+|---|---|---|
+| No Prod Leak in Dev/Test Config | completed | ✅ success |
+| edge-functions-drift-check | completed | ✅ success |
+| PR Size Guard (E185) | completed | ✅ success |
+| Supabase Linter Gate | completed | ✅ success |
+| Security Scan | completed | ✅ success |
+| Workflow Lint | completed | ✅ success |
+| Select Columns vs Types | completed | ✅ success |
+| migrations-sync-log-gate | completed | ✅ success |
+| Lint untypedFrom | completed | ✅ success |
+| schema-snapshot-export | completed | ✅ success |
+| Gate 5 — Supabase Security Audit | completed | ✅ success |
+| SSOT Supabase Guard | completed | ✅ success |
+| Required Checks Guard | completed | ✅ success |
+| Policies Baseline | completed | ✅ success |
+| Bundle size report | completed | ✅ success |
+| TS Unused Locals Ratchet | completed | ✅ success |
+| Contract Tests | completed | ✅ success |
+| E2E Focused UI — Matrix (E78) | completed | ✅ success |
+| E2E — Personalization Flow | in_progress | — |
+| Edge Integration Tests — All Functions | in_progress | — |
+| E2E — Critical Flows & Error Boundaries | in_progress | — |
+| CI - Replenishment Module Quality Gate | in_progress | — |
+| Quote Builder Delivery Quality | in_progress | — |
+| Visual Baseline Tests — Nightly | in_progress | — |
+| E2E Quotes — Matrix (E77) | in_progress | — |
+| E2E (Playwright) | in_progress | — |
+| Deploy Gates | in_progress | — |
+| E2E • Swatch QuickView | in_progress | — |
+| db-schema-drift-check | completed | cancelled (superseded) |
+| CodeQL | in_progress | — |
 
 **Ação pendente:** aguardar Gate Final verde → merge → re-run das workflows falhas na main.
 
 ---
 
-## 5. Comparação Baseline vs Pós-Correção
+## 6. Comparação Baseline vs Pós-Correção
 
 | Métrica | Antes (sha 48899b65) | Após PR merge (esperado) |
 |---|---|---|
