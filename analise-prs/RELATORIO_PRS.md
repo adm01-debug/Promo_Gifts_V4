@@ -3,10 +3,67 @@
 **Data:** 2026-10-27  
 **Sessão:** session_012WyySbh2tj8vhRQLBf3mHo  
 **Branch de trabalho:** `claude/quirky-keller-owezvt`  
-**Main SHA no momento da análise:** `61a0cfa1714661f752273cf864b335eb217ea134`  
-**Main SHA atual (pós-merges):** `a0560fdc62744c6bf4ba182914cc76dec06aecb1`  
-**Baseline Gate Final (sessão):** SHA `8bafc7d5` → run `39869261220` → SUCCESS  
-**Typecheck baseline:** 1 erro pré-existente (TS2688 `node`) — Gate Final = success
+**Main SHA atual:** `a0560fdc62744c6bf4ba182914cc76dec06aecb1`
+
+---
+
+## ⚠️ RISCOS E DECISÕES HUMANAS PENDENTES
+
+### RISCO DE SEGURANÇA — PR #2622
+**PR:** [#2622](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2622) — docs(rollbacks): 9 rollbacks + edge-authz-manifest  
+**Risco:** O arquivo `supabase/rollbacks/20261027200000_rollback.sql` contém `DISABLE ROW LEVEL SECURITY` em **17 tabelas** do schema `supplier_stricker.*`.  
+**Impacto potencial:** Execução desse rollback em produção removeria proteção RLS de dados sensíveis de fornecedores.  
+**Ação requerida:** Aprovação do PO + Security antes de qualquer merge. Rebase também necessário (conflito).
+
+### DECISÃO DE NEGÓCIO — PR #2588
+**PR:** [#2588](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2588) — react-day-picker 8→10  
+**Risco:** Upgrade de 2 majors sem evidência de compatibilidade no codebase. Requer validação de todos os date pickers.  
+**Ação requerida:** Decisão do PO + validação de compatibilidade.
+
+### AGUARDANDO APROVAÇÃO — PR #2420
+**PR:** [#2420](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2420) — ProductFormFullscreen + migration mirror  
+**Status:** Body "AGUARDANDO APROVAÇÃO"; contém SQL de rollback com DROP/CASCADE.  
+**Ação requerida:** Revisão humana obrigatória (rollback destrutivo).
+
+### AGUARDANDO APROVAÇÃO — PR #2645
+**PR:** [#2645](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2645) — docs(e15): recibo migration  
+**Status:** 0 check runs + conflito + reviewer=adm01-debug designado.  
+**Ação requerida:** Owner deve revisar e resolver conflito em `MIGRATIONS_SYNC_LOG.md`.
+
+### A FECHAR — PRs com documentação explícita para não mergear
+| PR | Motivo | Comentário sugerido (NÃO postar — decisão do owner) |
+|----|--------|-----------------------------------------------------|
+| [#2572](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2572) | 62 arquivos de sessão Claude antiga, dados obsoletos | "Fechando: conteúdo de sessão anterior obsoleto, substituído pelos arquivos atuais em `analise-prs/`." |
+| [#2579](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2579) | Bot release-please, versão downgrade 1.2.1→1.0.0 | "Fechando: bot PR com versão stale — não mergear downgrade." |
+| [#2600](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2600) | Body explícito "NÃO MERGEAR ESTA PR" | "Fechando conforme instrução no body da PR." |
+
+### PRONTAS APÓS AÇÃO DOS AUTORES
+| PR | Impedimento | Ação |
+|----|-------------|------|
+| [#2605](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2605) | `mergeable_state: dirty` — Gate OK ✅ | Rebase em main → CI verde → merge liberado |
+| [#2646](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2646) | Gate Final FAILURE (run `40543049708`) | Corrigir CI → Gate verde → merge liberado |
+
+### DRAFT — AGUARDANDO PROMOÇÃO
+| PR | Conteúdo |
+|----|----------|
+| [#2580](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2580) | migration E23 NO FORCE RLS supplier tables |
+| [#2631](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2631) | PENDENCIAS.md §4 + RELATORIO_CI.md §10 |
+
+---
+
+## Baseline Local (main `a0560fdc`)
+
+| Check | Resultado local | Resultado CI |
+|---|---|---|
+| TypeScript (`tsc --noEmit`) | ✅ TSC_EXIT=0, zero erros | ✅ Gate 1 success |
+| Lint (ESLint) | ✅ LINT_EXIT=0, zero erros | ✅ Gate 1 success |
+| Unit Tests (vitest) | ✅ VITEST_EXIT=0, passam | ✅ Gate 2 success |
+| Dependency Audit | ❌ vulnerabilidades pre-existing | ❌ Gate 0.5 failure (pre-existing) |
+| Edge Functions | N/A (local) | ❌ failure (pre-existing) |
+
+Arquivos: `analise-prs/baseline/local-checks.md`, `analise-prs/baseline/failing-tests-by-name.md`
+
+---
 
 ---
 
