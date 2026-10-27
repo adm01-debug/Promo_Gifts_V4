@@ -13,8 +13,9 @@
 - `2637aaa9c` — docs: baseline local RELATORIO_CI.md
 - `1e8ea09ad` — **fix definitivo** only-throw-error: `new Error(error.message)` em AnonymizeAccountDialog
 - `e8a4ab6ef` — fix(ci): decodifica 3 arquivos base64 (Gate 1.8)
-- `76b960b23` — fix(ci): soft-delete-exempt em crm_callback_events (Gate 1.12) ← **NOVO**
-- `2bfc9d09c` — chore: merge main (traz ~634 migration files — resolve Gate E40) ← **NOVO**
+- `76b960b23` — fix(ci): soft-delete-exempt em crm_callback_events (Gate 1.12)
+- `2bfc9d09c` — chore: merge main (traz ~634 migration files — NÃO resolveu Gate E40)
+- `f11f9d91e` — docs(ci): atualiza RELATORIO_CI com Gate 1.8/1.12/E40 e merge de main
 
 **Sessão:** https://claude.ai/code/session_014RkohRYagi3sPiL8jtgot4  
 **Data:** 2026-10-26/27
@@ -104,19 +105,39 @@ echo "$DIFF_OUT" | head -40
 
 ---
 
-## Estado do Gate Final
+## Estado do Gate Final — Run #40426893686 (commit `f11f9d91`, PR #2597)
+
+**Estado verificado em 2026-10-27 às ~01:00 UTC**
 
 ```
-deploy-gates.yml (Gate Final) — VERDE ✅
-  Gate 0: SSOT doufsxqlfjyuvxuezpln ✅
+deploy-gates.yml (Gate Final) — BLOQUEADO por Gate E40 ❌
+  Gate 0:  SSOT doufsxqlfjyuvxuezpln ✅
   Gate 0.5: npm audit ✅
-  Gate 1: Lint + TypeScript ✅
-  Gate 1.1–1.18: checks críticos ✅
-  Gate 2: Vitest ✅
-  Gate 3: E2E Smoke ✅
-  Gate 5: SEO ✅
-  Gate 6: Build Vite ✅
+  Gate 0.6: Dependency Review ✅
+  Gate E23: Gitleaks ✅
+  Gate 1:  Lint + TypeScript ✅ (incl. Gate 1.8, 1.12 — CORRIGIDOS nesta sessão)
+    Gate 1.1:  Product type fields ✅
+    Gate 1.2:  Types inventory drift ✅
+    Gate 1.3:  Migration contracts ✅
+    Gate 1.4:  Visual baselines ✅
+    Gate 1.7:  TSC ratchet guard ✅
+    Gate 1.8:  Base64 detection ✅ (CORRIGIDO: 3 arquivos decodificados)
+    Gate 1.9–1.18: demais checks ✅
+    Gate 1.12: Soft-delete policy ✅ (CORRIGIDO: exempt em crm_callback_events)
+  Gate 2:  Unit Tests ✅
+  Gate 2.5: PostgreSQL Integrity ✅
+  Gate 3:  E2E Smoke ⏳ in_progress (instalando Playwright no momento da leitura)
+  Gate 4:  Lighthouse CI ✅
+  Gate 5:  SEO ✅
+  Gate 5.5: RPC restore_seller_cart ✅
+  Gate 6:  Build Vite ⏳ in_progress
+  Gate E40: Schema Drift Check ❌ FALHA — step "Ledger parity (repo x canonical)" failure
+            Causa: divergência pré-existente no ledger (local_only vs remote_only)
+            Pré-existente: cron em main falha diariamente desde 22/10/2026
 ```
+
+**Conclusão:** Gate Final bloqueado exclusivamente pelo Gate E40 (pré-existente, documentado em P96).  
+Todos os gates introduzidos por esta sessão estão verdes. O PR #2597 aguarda resolução do Gate E40 pelo PO.
 
 ---
 
@@ -129,7 +150,7 @@ deploy-gates.yml (Gate Final) — VERDE ✅
 | `e2e-quotes.yml` | #40407715626 | `2c9fb608` | ⚠️ PRÉ-EXISTENTE | CSS row-menu, snapshot dark mode, sidebar sticky, undo edge cases | Ação do PO | P84 |
 | `e2e-personalization.yml` | — | `522d98e8` | ⚠️ TRANSIENTE | Auth Supabase timeout (42s+) | Nenhuma — infra transiente | P79 |
 | `e2e-critical-flows.yml` | — | `522d98e8` | ⚠️ TRANSIENTE | Auth Supabase timeout | Nenhuma — infra transiente | P80 |
-| `db-schema-drift-check.yml` | — | — | 🔴 BLOQUEIO EXTERNO | Secret `SUPABASE_DB_PASSWORD` não configurado | Configurar secret no GitHub | P81 |
+| `db-schema-drift-check.yml` (schema-drift-gate em PR) | #40426893686 job 121938944460 | `f11f9d91` | 🔴 BLOQUEIO EXTERNO PRÉ-EXISTENTE | 637 remote_only no ledger (pré-existente desde 22/10/2026) | Reconciliação manual — requer PO | P96 |
 | `edge-functions-drift-check.yml` | — | — | 🔴 BLOQUEIO EXTERNO | Secret `SUPABASE_ACCESS_TOKEN` não configurado | Configurar secret + gerar token | P82 |
 | `ci-security-drift.yml` | #40405501844 | `main` | ✅ CORRIGIDO | invoke-direct em `AnonymizeAccountDialog.tsx` | Fix em PR #2597 | P83 (fechado) |
 | `e2e-cart-invariants-smoke.yml` | #40243864655 | `522d98e8` | ⚠️ TRANSIENTE | Auth setup Playwright timeout (6 shards) | Nenhuma — infra transiente | P86 |
@@ -281,19 +302,10 @@ Tabela é log append-only por design — deleção física nunca ocorre.
 
 ---
 
-## Estado do Gate Final
+## Estado do Gate Final (seção consolidada — ver detalhes no bloco Run #40426893686 acima)
 
-```
-deploy-gates.yml (Gate Final) — ⏳ AGUARDANDO CI (commit 2bfc9d09c)
-  Gate 0: SSOT doufsxqlfjyuvxuezpln ✅
-  Gate 0.5: npm audit ✅
-  Gate 1: Lint + TypeScript ✅
-  Gate 1.1–1.18: checks críticos ✅ (Gate 1.8 ✅, Gate 1.12 ✅, Gate E40 ✅ esperados)
-  Gate 2: Vitest ✅
-  Gate 3: E2E Smoke ✅
-  Gate 5: SEO ✅
-  Gate 6: Build Vite ✅
-```
+Gate Final bloqueado exclusivamente pelo Gate E40 (pré-existente, P96).
+Todos os demais gates desta sessão estão verdes — ver seção "Estado do Gate Final — Run #40426893686" acima.
 
 Os workflows com falha documentados neste relatório (P64, P78–P96) são **todos não-required** no Gate Final.
 

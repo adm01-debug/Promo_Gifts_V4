@@ -1896,10 +1896,15 @@ A reconciliação requer (per CLAUDE.md REGRA #8 / Corolário E99):
 4. `supabase migration repair --status applied <version>` com versão explícita para cada item (NUNCA em lote)
 5. Correr `schema-snapshot-export.yml` com `force_rotate: true` após reconciliação
 
-**Impacto no Gate Final:** Gate E40 é bloqueante quando triggered. Bloqueia merge do PR #2597 enquanto não resolvido.
+**Run final confirmado:** `40426893686` (commit `f11f9d91`, 2026-10-27):  
+- Job `121938944460` ("Gate E40 - Schema Drift Check / Migrations x Canonical schema"): **failure**  
+- Step 8 "Ledger parity (repo x canonical)": **failure**  
+- Todos os demais gates do mesmo run: ✅ success (Gate 1, 1.8, 1.12, 2, 2.5, 4, 5, 5.5, E23, 0, 0.5, 0.6)
+
+**Impacto no Gate Final:** Gate E40 é bloqueante quando triggered. Bloqueia merge do PR #2597 enquanto não resolvido. Gate Final aguarda Gates 3 e 6 (in_progress na leitura), mas já está comprometido pelo E40=failure.
 
 **Workaround potencial (requer PO):** Se o PO confirmar que a divergência é aceitável/conhecida, configurar `drift-allowlist.txt` para as migrations específicas envolvidas. NÃO executável por agente sem aprovação.
 
 ---
 
-*Atualizado pela sessão Claude Code — https://claude.ai/code/session_014RkohRYagi3sPiL8jtgot4 (2026-10-27)*
+*Atualizado pela sessão Claude Code — https://claude.ai/code/session_014RkohRYagi3sPiL8jtgot4 (2026-10-27 — confirmação run final #40426893686)*
