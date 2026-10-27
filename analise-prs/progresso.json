@@ -61,11 +61,7 @@
     "main_head_pos": "145da71bb8c451eebadc75c4bb059397f8d468f7",
     "prs_novas_analisadas": 14,
     "merges_autonomos": 5,
-    "contagem_por_veredito": {
-      "MERGEADO_AUTONOMO": 5,
-      "DECISAO_HUMANA": 3,
-      "BLOQUEADA": 6
-    },
+    "contagem_por_veredito": {"MERGEADO_AUTONOMO": 5, "DECISAO_HUMANA": 3, "BLOQUEADA": 6},
     "merges_lista": [
       {"number": 2582, "sha": "045d835f565baf01db94ae5212d673f93a63685b", "titulo": "chore(ci): métricas semanais 2026-W44"},
       {"number": 2596, "sha": "54e8904585ad474030feea88526d9c66b7404aa4", "titulo": "bump postcss-selector-parser 6.1.4→6.1.5 (CVE-2026-104844)"},
@@ -111,17 +107,10 @@
     ],
     "prs_fechadas_externamente": ["#2415","#2428","#2443","#2449","#2452","#2469","#2503","#2532","#2537","#2547","#2550","#2557","#2417","#2418","#2419","#2422"],
     "ci_gate_final_145da71b": "sem_run_Gate_Final_encontrado — E2E failure (nao blocking) — varios runs queued",
-    "contagem_por_veredito_acumulado": {
-      "MERGEADO_AUTONOMO": 18,
-      "DECISAO_HUMANA": 18,
-      "BLOQUEADA": 9,
-      "FECHAR": 5,
-      "JA_EM_MAIN": 1,
-      "total_analisado": 51
-    },
+    "contagem_por_veredito_acumulado": {"MERGEADO_AUTONOMO": 18, "DECISAO_HUMANA": 18, "BLOQUEADA": 9, "FECHAR": 5, "JA_EM_MAIN": 1, "total_analisado": 51},
     "prs_abertas_pendentes": {
-      "DECISAO_HUMANA": [2579, 2580, 2587, 2588, 2597, 2599],
-      "BLOQUEADA": [2572, 2590, 2591, 2592, 2593, 2594, 2600],
+      "DECISAO_HUMANA": [2579,2580,2587,2588,2597,2599],
+      "BLOQUEADA": [2572,2590,2591,2592,2593,2594,2600],
       "FECHAR_ainda_aberta": [2420]
     }
   },
@@ -134,30 +123,26 @@
     "commit_direto_main_durante_sessao": {
       "sha": "2ca5ef04e6e0968dace09ffcbd70710aad166ba0",
       "sessao_origem": "session_01Knr9enFAok62bHihBK1UUP",
-      "arquivos": [".github/workflows/ratchet-weekly.yml", "package-lock.json", "package.json", "src/components/privacy/AnonymizeAccountDialog.tsx"],
+      "arquivos": [".github/workflows/ratchet-weekly.yml","package-lock.json","package.json","src/components/privacy/AnonymizeAccountDialog.tsx"],
       "nota": "Push direto sem PR — viola REGRA#9"
     },
     "prs_abertas_inicio": 14,
     "prs_abertas_fim": 13,
     "prs_fechadas_externamente_esta_sessao": [{"number": 2599, "motivo": "conteudo integrado via commit direto 2ca5ef04e"}],
     "merges_autonomos": 0,
-    "prs_analisadas_com_diff_100pct": [2420, 2572, 2579, 2580, 2587, 2588, 2590, 2591, 2592, 2593, 2594, 2597, 2599, 2600],
+    "prs_analisadas_com_diff_100pct": [2420,2572,2579,2580,2587,2588,2590,2591,2592,2593,2594,2597,2599,2600],
     "merge_tests_local": {
       "base_sha": "2ca5ef04e6e0968dace09ffcbd70710aad166ba0",
       "comando": "git merge --no-commit --no-ff origin/<branch>",
-      "resultados": {
-        "2420": "NO_MERGE_BASE", "2572": "CONFLICT", "2579": "CLEAN", "2580": "CLEAN",
-        "2587": "CLEAN", "2588": "CLEAN", "2590": "CLEAN", "2591": "CLEAN",
-        "2592": "CLEAN", "2593": "CLEAN", "2594": "CLEAN", "2597": "CONFLICT", "2600": "CLEAN"
-      }
+      "resultados": {"2420": "NO_MERGE_BASE","2572": "CONFLICT","2579": "CLEAN","2580": "CLEAN","2587": "CLEAN","2588": "CLEAN","2590": "CLEAN","2591": "CLEAN","2592": "CLEAN","2593": "CLEAN","2594": "CLEAN","2597": "CONFLICT","2600": "CLEAN"}
     },
-    "typescript_baseline": {"sha_testado": "145da71bb8c451eebadc75c4bb059397f8d468f7", "comando": "node /tmp/main-baseline/node_modules/typescript/bin/tsc -p tsconfig.app.json --noEmit", "erros": 0, "exit_code": 0},
-    "build_vite": {"sha_testado": "2ca5ef04e6e0968dace09ffcbd70710aad166ba0", "comando": "npm run build", "resultado": "SUCESSO", "duracao_s": 11.77, "avisos": "INEFFECTIVE_DYNAMIC_IMPORT (pre-existentes, nao bloqueantes)"},
-    "lint_eslint": {"sha_testado": "2ca5ef04e6e0968dace09ffcbd70710aad166ba0", "comando": "npm run lint", "resultado": "OOM — FATAL ERROR: Ineffective mark-compacts near heap limit", "status": "FALHA_PRE_EXISTENTE — nao regressao desta sessao", "eslint_config": "OK — check-eslint-config-parses.mjs: 11 blocos"},
-    "vitest_parcial": {"sha_testado": "145da71bb8c451eebadc75c4bb059397f8d468f7", "comando": "node node_modules/.bin/vitest run src/utils/__tests__/ src/hooks/__tests__/ src/lib/__tests__/ --reporter=dot", "test_files": 54, "tests_passed": 2546, "tests_skipped": 3, "tests_failed": 0, "duration_s": 36.18, "nota": "Suite completa trava em integration tests sem credenciais Supabase"},
+    "typescript_baseline": {"sha_testado": "145da71bb8c451eebadc75c4bb059397f8d468f7", "erros": 0, "exit_code": 0},
+    "build_vite": {"sha_testado": "2ca5ef04e6e0968dace09ffcbd70710aad166ba0", "resultado": "SUCESSO", "duracao_s": 11.77},
+    "lint_eslint": {"resultado": "OOM — FATAL ERROR", "status": "FALHA_PRE_EXISTENTE"},
+    "vitest_parcial": {"test_files": 54, "tests_passed": 2546, "tests_skipped": 3, "tests_failed": 0},
     "vereditos_13_prs_abertas": {
-      "DECISAO_HUMANA": [2579, 2580, 2587, 2588, 2597],
-      "BLOQUEADA": [2572, 2590, 2591, 2592, 2593, 2594, 2600],
+      "DECISAO_HUMANA": [2579,2580,2587,2588,2597],
+      "BLOQUEADA": [2572,2590,2591,2592,2593,2594,2600],
       "FECHAR": [2420]
     }
   },
@@ -168,10 +153,9 @@
     "merges_autonomos": 0,
     "motivo_zero_merges": "Todas as 13 PRs abertas permanecem bloqueadas — REGRA#8 / CONFLICT / DRAFT / FECHAR / DECISAO_HUMANA",
     "worktrees_temporarios_removidos": true,
-    "worktrees_removidos": ["/tmp/main-baseline", "/tmp/merge-test"],
     "prs_abertas_confirmadas_github": 13,
-    "prs_abertas_lista_github": [2420, 2572, 2579, 2580, 2587, 2588, 2590, 2591, 2592, 2593, 2594, 2597, 2600],
-    "nota_2597_draft": "PR #2597 aparece como DRAFT no GitHub (estava non-draft em prs.csv) — veredito DECISAO_HUMANA mantido (REGRA#8 workflow)",
+    "prs_abertas_lista_github": [2420,2572,2579,2580,2587,2588,2590,2591,2592,2593,2594,2597,2600],
+    "nota_2597_draft": "PR #2597 aparece como DRAFT no GitHub",
     "arquivos_entregues": [
       "analise-prs/regras-de-negocio.md (commit 6f9d5c56)",
       "analise-prs/prs.csv (commit 6595a2e5)",
@@ -182,13 +166,9 @@
     ],
     "meta_cumprida": {
       "total_abertas_igual_analisadas": "13 = 13",
-      "contagem_por_veredito": "em progresso.json sessao_f0ceb220_rev24",
       "merges_com_sha_ci": "0 merges esta sessao — todas bloqueadas legitimamente",
       "sem_outras_escritas_github": true,
-      "worktrees_removidos": true,
-      "baseline_evidencia_real": "TypeScript 0 erros, Build SUCESSO 11.77s, Lint OOM pre-existente, Vitest 2549 testes 0 falhas",
-      "merge_tests_todos_prs": "em regras-de-negocio.md secao 10 e progresso.json sessao_f0ceb220_rev24",
-      "dossies_todos_prs_abertos": true
+      "worktrees_removidos": true
     }
   },
   "sessao_f0ceb220_rev26": {
@@ -196,74 +176,71 @@
     "gerado_em": "2026-10-27T21:30:00-03:00",
     "main_head": "1648890907d5831e2383157936f13742e326171c",
     "main_head_commit": "docs(ci): registra nota de governança sobre squash merge sem sufixo PR (#2601)",
-    "baseline_rev26": {
-      "typecheck": "0 erros (SHA 2ca5ef04e)",
-      "build_vite": "sucesso 11.77s (SHA 2ca5ef04e)",
-      "lint_eslint": "OOM pré-existente — nao é regressao",
-      "vitest_parcial": "54 test files, 2549 testes, 0 falhas, 3 skipped"
-    },
-    "merge_tests_rev26": {
-      "base_sha": "1648890907d5831e2383157936f13742e326171c",
-      "2420": "NO_MERGE_BASE",
-      "2572": "CLEAN",
-      "2579": "CLEAN",
-      "2580": "CLEAN",
-      "2587": "CLEAN",
-      "2588": "CLEAN",
-      "2590": "CLEAN",
-      "2591": "CLEAN",
-      "2592": "CLEAN",
-      "2593": "CLEAN",
-      "2594": "CLEAN",
-      "2597": "CLEAN",
-      "2600": "CLEAN"
-    },
-    "branch_updates": {
-      "2572_test_merge": "CONFLICT->CLEAN (novo main absorveu conflito)",
-      "2579_branch": "release-please--branches--main -> release-please--branches--main--components--gifts-store",
-      "2580_branch": "claude_05/youthful-ride-vcdchy -> claude/fix-e23-rollback-261025-2145",
-      "2590_to_2593_branch": "dependabot -3.x -> -4.39.1 (atualizados pelo dependabot)",
-      "2597_draft": "false -> true (convertido para DRAFT na API)"
-    },
     "prs_abertas": 13,
     "prs_mergeadas_esta_sessao": 0,
     "total_historico_mergeadas": 15,
-    "verditos_abertos": {
-      "FECHAR": 1,
-      "BLOQUEADA": 5,
-      "DECISAO_HUMANA": 7
+    "verditos_abertos": {"FECHAR": 1, "BLOQUEADA": 5, "DECISAO_HUMANA": 7},
+    "merge_tests_rev26": {
+      "base_sha": "1648890907d5831e2383157936f13742e326171c",
+      "2420": "NO_MERGE_BASE","2572": "CLEAN","2579": "CLEAN","2580": "CLEAN","2587": "CLEAN","2588": "CLEAN",
+      "2590": "CLEAN","2591": "CLEAN","2592": "CLEAN","2593": "CLEAN","2594": "CLEAN","2597": "CLEAN","2600": "CLEAN"
     },
-    "entregaveis_gerados": [
-      "analise-prs/prs.csv (47 linhas, branches/draft corrigidos)",
-      "analise-prs/prs.json (47 entradas, main_head 1648890907d5)",
-      "analise-prs/regras-de-negocio.md (rev26, novo SHA + merge tests)",
-      "analise-prs/RELATORIO_PRS.md (rev26)",
-      "analise-prs/baseline/main-sha.txt (novo SHA)",
-      "analise-prs/dossies/PR-2420.md",
-      "analise-prs/dossies/PR-2572.md (atualizado)",
-      "analise-prs/dossies/PR-2579.md (atualizado)",
-      "analise-prs/dossies/PR-2580.md (atualizado)",
-      "analise-prs/dossies/PR-2587.md",
-      "analise-prs/dossies/PR-2588.md",
-      "analise-prs/dossies/PR-2590.md (atualizado)",
-      "analise-prs/dossies/PR-2591.md (atualizado)",
-      "analise-prs/dossies/PR-2592.md (atualizado)",
-      "analise-prs/dossies/PR-2593.md (atualizado)",
-      "analise-prs/dossies/PR-2594.md",
-      "analise-prs/dossies/PR-2597.md (atualizado draft=true)",
-      "analise-prs/dossies/PR-2600.md"
-    ],
     "meta_cumprida": {
       "main_sha_fixo": true,
-      "baseline_gerado": true,
-      "47_prs_em_csv": true,
       "13_prs_abertas_100pct_cobertura": true,
-      "prs_json_gerado": true,
-      "13_dossiers_gerados": true,
       "merge_tests_todos_13": true,
       "prs_mergeadas_com_sha_ci": "0 merges autonomos — todas bloqueadas",
       "zero_escritas_proibidas": true,
       "worktrees_removidos": true
+    }
+  },
+  "sessao_f0ceb220_rev29": {
+    "rev": 29,
+    "gerado_em": "2026-10-27T02:30:00-03:00",
+    "main_head": "1648890907d5831e2383157936f13742e326171c",
+    "main_head_commit": "docs(ci): registra nota de governança sobre squash merge sem sufixo PR (#2601)",
+    "prs_abertas": 15,
+    "merge_tests": {
+      "2420": "NO_MERGE_BASE",
+      "2572": "CLEAN_c653bef9",
+      "2579": "CLEAN_dbac87d8",
+      "2580": "CLEAN_41198d9a",
+      "2587": "CLEAN_243e5d21",
+      "2588": "CLEAN_1a71dd86",
+      "2590": "CLEAN_46c07b88",
+      "2591": "CLEAN_1797d8af",
+      "2592": "CLEAN_936b1042",
+      "2593": "CLEAN_7f36981f",
+      "2594": "CLEAN_87bff9e7",
+      "2597": "CLEAN_3e46211c",
+      "2600": "CLEAN_1c0fbf61",
+      "2602": "CLEAN_8f88d210",
+      "2603": "CLEAN_9db01af0"
+    },
+    "evidencia_draft_405": "merge PR#2602 tentado → HTTP 405 {\"message\":\"Pull Request is still a draft\",\"status\":\"405\"}",
+    "evidencias_por_pr": {
+      "2420": "git merge-base origin/main refs/remotes/pr/2420 → EMPTY (NO_MERGE_BASE)",
+      "2572": "git diff --name-only inclui .github/workflows/contract-tests.yml; branch claude_05/* REGRA#10",
+      "2579": "package.json -\"version\":\"1.2.1\" +\"version\":\"1.0.0\" (DOWNGRADE)",
+      "2580": "draft:true + supabase/migrations/20260916202000_e23_force_rls_secret_tables.sql",
+      "2587": "package.json zustand ^4.5.0→^5.0.16 (major) DECISAO_HUMANA",
+      "2588": "package.json react-day-picker ^8.10.0→^10.0.2; calendar.tsx:22-24 usa API v8 (modifiers, modifiersClassNames, formatters.formatCaption)",
+      "2590": "1 arquivo: .github/workflows/gitleaks-history-audit.yml",
+      "2591": "1 arquivo: .github/workflows/codeql.yml",
+      "2592": "1 arquivo: .github/workflows/stale.yml",
+      "2593": "1 arquivo: .github/workflows/codeql.yml",
+      "2594": "1 arquivo: .github/workflows/e2e-update-editor-sheet-snapshots.yml",
+      "2597": "draft:true + .github/workflows/ratchet-weekly.yml",
+      "2600": "draft:true + 30 arquivos analise-prs/ (deliverables)",
+      "2602": "draft:true (get_pull_request confirmou); HTTP 405 na tentativa de merge",
+      "2603": "draft:true + 5 migrations (inclui 20261027200000_supplier_stricker_rls_deny_all.sql)"
+    },
+    "mergeadas_esta_sessao": 0,
+    "contagem_veredito": {
+      "FECHAR": 1,
+      "BLOQUEADA_REGRA8_workflows": 6,
+      "DECISAO_HUMANA_DRAFT": 5,
+      "DECISAO_HUMANA_semantica": 3
     }
   }
 }
