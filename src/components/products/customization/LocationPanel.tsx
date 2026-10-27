@@ -364,7 +364,7 @@ export function LocationPanel({
       setSelectedTechnique(technique);
       setIsPickerOpen(false);
       setIsSwapping(true);
-      window.setTimeout(() => setIsSwapping(false), reduceMotion ? 0 : 140);
+      setTimeout(() => setIsSwapping(false), reduceMotion ? 0 : 140);
 
       // Foco automático no controle ajustado se houve clamp (A11y)
       setTimeout(() => {
