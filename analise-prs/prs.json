@@ -1,9 +1,9 @@
 {
   "schema_version": "1.0",
-  "gerado_em": "2026-10-27T14:00:00-03:00",
+  "gerado_em": "2026-10-27T10:00:00-03:00",
   "sessao": "session_011d8gKLZg8BWivR8aQBwxGF",
-  "main_head": "48899b659ef6deba0fee2db7482347097059edb5",
-  "total_analisadas": 18,
+  "main_head": "df18546dfd76d1bea7ea5873257b668d128d8df3",
+  "total_analisadas": 22,
   "prs": [
     {
       "numero": 2420,
@@ -564,6 +564,34 @@
       "regra10": false,
       "veredito": "MERGEADO_AUTONOMO",
       "motivo": "Squash merge 2ccc76fd2d. Gate Final SUCCESS run_id 40457299371."
+    },
+    {
+      "numero": 2619,
+      "titulo": "fix(health-check): timeout 5s em getCredential() evita hang no uptime-monitor",
+      "branch": "claude/fix-health-check-cred-timeout-271027-0630",
+      "draft": true,
+      "head_sha": null,
+      "merge_sha": null,
+      "conflito": "CLEAN",
+      "ci_gate_final": "N/A",
+      "regra8": true,
+      "regra10": true,
+      "veredito": "DECISAO_HUMANA",
+      "motivo": "DRAFT + REGRA#10 (branch de session_01Knr9enFAok62bHihBK1UUP) + REGRA#8 (edge function supabase/functions/health-check)"
+    },
+    {
+      "numero": 2620,
+      "titulo": "fix(tests): forward-port unit test fixes from PR #2605",
+      "branch": "claude/fix-unit-tests-forward-261027-1900",
+      "draft": false,
+      "head_sha": "df18546dfd76d1bea7ea5873257b668d128d8df3",
+      "merge_sha": "3aabc41878bd454a33ea5643781ce2c7a677da1d",
+      "conflito": "CLEAN",
+      "ci_gate_final": "QUEUED (run 40462382392 — coalesced com #2603)",
+      "regra8": false,
+      "regra10": false,
+      "veredito": "MERGEADO_AUTONOMO",
+      "motivo": "forward-port de #2605 — 3 mudancas nao conflitantes: fake-timers, await assert, snapshot keys"
     }
   ]
 }

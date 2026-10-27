@@ -1,8 +1,8 @@
 {
   "gerado_em": "2026-10-27T07:00:00Z",
   "sessao": "https://claude.ai/code/session_011d8gKLZg8BWivR8aQBwxGF",
-  "rev": 48,
-  "atualizado_em": "2026-10-27T10:00:00Z",
+  "rev": 49,
+  "atualizado_em": "2026-10-27T10:30:00Z",
   "main_head_baseline": "c86a3812ce79bd8c615c6c5e8919735e5cba3e7e",
   "main_head_pos_merges": "df18546dfd76",
   "main_head_atual": "df18546dfd76 (PR #2603 mergeado externamente + PR #2620 mergeado por esta sessão)",
@@ -39,7 +39,7 @@
   "prs_abertas_analisadas": 22,
   "merges_autonomos_esta_sessao": 8,
   "pendente_ci": 1,
-  "pendente_ci_nota": "Deploy Gates run_id 40462382392 — queued em SHA df18546dfd76 (06:39:16Z, sem progresso até rev48)",
+  "pendente_ci_nota": "Deploy Gates run_id 40462382392 — AINDA QUEUED em SHA df18546dfd76 (updated_at=created_at=06:39:16Z, sem progresso até rev49). DB-apply-migration (E15) run 40462419661 FAILED em df18546dfd76 — 9 migrations do #2603 NÃO aplicadas em produção. Última migration em producao: 20261025002500 (analyze_tables_p03). Ação requerida: PO reinvestiga db-apply-migration.yml falha e redispara para aplicar as 9 migrations.",
   "contagem_por_veredito": {
     "MERGEADO_AUTONOMO": 8,
     "MERGEADO_EXTERNAMENTE": 1,
