@@ -143,16 +143,20 @@
     },
     "2646": {
       "veredicto": "CI_FALHOU",
-      "titulo": "(10 commits, 15 arquivos — E058 compliance)",
-      "head": "2d8fd74e847c150ff88d92800b183f006afbd5e5",
+      "titulo": "fix(migrations): adiciona cabeçalho -- Rollback: nas migrations 20261027160000 e 20261027220000",
+      "head_original": "2d8fd74e847c150ff88d92800b183f006afbd5e5",
+      "head_atual": "79c0c670f33744fecc01f5c9b6617578c57a3fd2",
       "commits": 10,
-      "arquivos": 15,
+      "arquivos": 8,
       "gate_final": "FAILURE",
-      "gate_final_run": 40531570681,
-      "gate_final_check_run_id": 122303736904,
-      "conflito": true,
-      "mergeable_state": "dirty",
-      "motivo": "Gate Final FAILURE (run 40531570681) + conflito. Autor precisa corrigir CI e fazer rebase."
+      "gate_final_run_original": 40531570681,
+      "gate_final_run_atual": 40543049708,
+      "gate_final_check_run_id_atual": 122367004026,
+      "conflito": false,
+      "mergeable_state": "behind",
+      "diff_lido": true,
+      "diff_conteudo": "3 workflows (+packages:read + docker ghcr.io), allowlist.json (+2 versions 20261027120000/140000), MIGRATIONS_SYNC_LOG.md, 3 SQL migrations (+rollback headers). Sem DDL, sem SSOT, sem campos Product.",
+      "motivo": "Gate Final FAILURE em 2 SHAs consecutivos (run 40531570681 SHA 2d8fd74e; run 40543049708 SHA 79c0c670). Branch behind main (base f2f8c3d6). Autor precisa rebase + corrigir CI."
     },
     "2648": {
       "veredicto": "MERGEADA_PELO_OWNER",

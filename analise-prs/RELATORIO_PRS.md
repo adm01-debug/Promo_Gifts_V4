@@ -45,7 +45,7 @@ Esta sessão analisou exaustivamente todas as PRs abertas do repositório `adm01
 | [#2622](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2622) | CONFLITO_PENDENTE_REBASE | ✅ SUCCESS (40468832310) | **SIM** | Gate OK mas `mergeable_state: dirty` |
 | [#2631](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2631) | DRAFT | NAO_RODOU | não | Estado DRAFT |
 | [#2645](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2645) | AGUARDAR_APROVACAO | 0 check runs | **SIM** | Recibo E15 auto-gerado — sem CI + conflito — owner deve revisar |
-| [#2646](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2646) | CI_FALHOU | ❌ FAILURE (40531570681) | **SIM** | Gate Final FAILURE + conflito — corrigir CI e rebase |
+| [#2646](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2646) | CI_FALHOU | ❌ FAILURE (40543049708, SHA 79c0c670) | SIM (behind) | Gate Final FAILURE em 2 SHAs + behind main — corrigir CI e rebase |
 | [#2648](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2648) | MERGEADA_PELO_OWNER | SUCCESS | não | Mergeada pelo owner em 15:50Z — PENDENCIAS.md docs |
 | [#2649](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2649) | MERGEADA_PELO_OWNER | SUCCESS | não | Mergeada pelo owner em 15:54Z — fix e2e admin-critical |
 | [#2650](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2650) | MERGEADA_PELO_OWNER | SUCCESS | não | Mergeada pelo owner em 16:21Z — fix E2E catalog+kit-builder testids |
@@ -69,6 +69,10 @@ Esta sessão analisou exaustivamente todas as PRs abertas do repositório `adm01
 | FECHAR | 1 | #2572 |
 
 **Total inventário: 19 ✓ | Analisadas: 19 ✓ | Mergeadas por Claude: 1 (#2587) | Mergeadas pelo owner: 7**
+
+> **Nota PR #2653:** PR da própria branch de trabalho desta sessão (`claude/quirky-keller-owezvt`) — contém os artefatos desta análise. Não faz parte do inventário original de 19 PRs. Dossier criado em `analise-prs/dossies/PR-2653.md`.
+
+> **Nota PR #2646 (atualizado):** Head atualizado de `2d8fd74e` para `79c0c670`. Gate Final continua ❌ FAILURE (run `40543049708`, 2 anotações). Branch still behind main (base `f2f8c3d6`). Veredicto mantido: CI_FALHOU. Diff lido 100% — 8 arquivos: 3 workflows (+packages:read + docker ghcr.io login), allowlist.json (+2 versions), MIGRATIONS_SYNC_LOG.md, 3 SQL migrations (+rollback headers). Sem DDL, sem SSOT, sem campos Product.
 
 > **Nota:** PR #2650 mergeada pelo owner em 16:21:21Z (merge SHA `f0689734`). PR #2652 mergeada em ~16:45Z (merge SHA `22ba938e`). PR #2587 mergeada por Claude em 16:46:37Z (merge SHA `16ad57c6`). PR #2654 mergeada pelo owner em 17:19:33Z (merge SHA `4c7ecb26`). PR #2655 (fix(tests): xbz-image-uploader descriptor pendingDeploy=true) mergeada pelo owner em 17:31:49Z (merge SHA `a0560fdc`). **Main atual = `a0560fdc62744c6bf4ba182914cc76dec06aecb1`.** Gate Final ✅ SUCCESS.
 

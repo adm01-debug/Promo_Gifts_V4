@@ -31,7 +31,7 @@
     "2605": {"exit": 1, "conflicts": 2, "conflicting_files": ["e2e/catalog/novidades-reposicao-card-parity.spec.ts", "src/components/products/gallery/PromoFlixPlayer.tsx"]},
     "2622": {"exit": 1, "conflicts": 12, "conflicting_files": ["analise-prs/ (múltiplos)"]},
     "2645": {"exit": 1, "conflicts": 1, "conflicting_files": ["supabase/MIGRATIONS_SYNC_LOG.md"]},
-    "2646": {"exit": 0, "conflicts": 0, "files": [".github/workflows/db-schema-drift-check.yml", ".github/workflows/deploy-gates.yml", ".github/workflows/schema-snapshot-export.yml", "scripts/migration-ledger-remote-only-allowlist.json", "supabase/MIGRATIONS_SYNC_LOG.md", "supabase/migrations/20261027160000_deactivate_image_dimensions_backfill_cron.sql", "supabase/migrations/20261027220000_deactivate_xbz_image_uploader_cron.sql", "supabase/migrations/20261027230000_cleanup_get_edge_function_secret_allowlist.sql"]}
+    "2646": {"exit": 0, "conflicts": 0, "files": [".github/workflows/db-schema-drift-check.yml", ".github/workflows/deploy-gates.yml", ".github/workflows/schema-snapshot-export.yml", "scripts/migration-ledger-remote-only-allowlist.json", "supabase/MIGRATIONS_SYNC_LOG.md", "supabase/migrations/20261027160000_deactivate_image_dimensions_backfill_cron.sql", "supabase/migrations/20261027220000_deactivate_xbz_image_uploader_cron.sql", "supabase/migrations/20261027230000_cleanup_get_edge_function_secret_allowlist.sql"], "nota": "Merge-test exit=0 mas Gate Final FAILURE em 2 SHAs (2d8fd74e run 40531570681, 79c0c670 run 40543049708). Branch behind main (base f2f8c3d6)."}
   },
   "git_cherry_checks": {
     "nota": "git cherry origin/main <pr_head>. + = não está no main (cherry pendente).",
@@ -45,7 +45,10 @@
     "2580": "CONFIRMADO — 2 arquivos: migration E23 header, rollback 5 tabelas NO FORCE RLS",
     "2588": "CONFIRMADO — 2 arquivos: package.json + package-lock.json (react-day-picker 8→10, date-fns v4 conflict)",
     "2631": "CONFIRMADO — 2 arquivos: PENDENCIAS.md §4 + RELATORIO_CI.md §10 (bloqueio deploy confirmed)",
-    "2645": "CONFIRMADO — 1 arquivo: supabase/MIGRATIONS_SYNC_LOG.md (+1 linha receipt 20261027140000)"
+    "2645": "CONFIRMADO — 1 arquivo: supabase/MIGRATIONS_SYNC_LOG.md (+1 linha receipt 20261027140000)",
+    "2579": "CONFIRMADO — 4 arquivos: .release-please-manifest.json (downgrade 1.2.1→1.0.0), CHANGELOG.md +228 linhas, package.json+lock version downgrade",
+    "2605": "CONFIRMADO — 5 arquivos: e2e threshold 64→96px, PromoFlixPlayer mute fix, snapshot renames, timer/await fixes",
+    "2646": "CONFIRMADO — 8 arquivos: 3 workflows (+packages:read + docker ghcr.io login), allowlist.json (+2 entries 20261027120000/140000), MIGRATIONS_SYNC_LOG.md (3 linhas), 3 SQL migrations (+rollback header comments)"
   },
   "veredictos": {
     "2420": "AGUARDAR_APROVACAO",
