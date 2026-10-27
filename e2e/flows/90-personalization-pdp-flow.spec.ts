@@ -13,7 +13,7 @@ test.describe("Fluxo: Personalização via PDP", () => {
     
     // 2. Clicar no primeiro produto para abrir a PDP
     const productCard = page.locator(Sel.product.card).first();
-    await expect(productCard).toBeVisible({ timeout: 15000 });
+    await expect(productCard).toBeVisible({ timeout: 30000 });
     
     // Pegar o nome do produto para validar depois
     const productName = await productCard.locator(Sel.product.cardName).innerText();

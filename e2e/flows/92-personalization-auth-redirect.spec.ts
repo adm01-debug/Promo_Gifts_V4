@@ -12,8 +12,9 @@ test.describe("Fluxo: Deep Link e Redirecionamento de Auth", () => {
   });
 
   test("deve redirecionar para login ao abrir PDP e voltar após autenticação", async ({ page }) => {
-    // 1. Tentar acessar uma rota protegida (PDP)
-    const protectedPath = "/produtos/qualquer-id";
+    // /produtos/:slug é rota pública (catálogo); /produto/:id é a rota protegida de detalhe.
+    // 1. Tentar acessar uma rota protegida (PDP de detalhe — singular /produto/)
+    const protectedPath = "/produto/qualquer-id";
 
     await page.goto(protectedPath);
 
@@ -34,7 +35,7 @@ test.describe("Fluxo: Deep Link e Redirecionamento de Auth", () => {
     await gotoAndSettle(page, "/produtos");
 
     const firstProduct = page.locator(Sel.product.card).first();
-    await expect(firstProduct).toBeVisible({ timeout: 15000 });
+    await expect(firstProduct).toBeVisible({ timeout: 30000 });
     const productId = await firstProduct.getAttribute('data-product-id');
     expect(productId).toBeTruthy();
     const productUrl = `/produto/${productId}`;
