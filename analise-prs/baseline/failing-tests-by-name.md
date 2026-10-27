@@ -1,69 +1,81 @@
-# Baseline de Falhas Pré-Existentes — main SHA `a0560fdc`
+# Testes Falhando por Nome — Baseline main
 
-**Gerado por:** session_012WyySbh2tj8vhRQLBf3mHo  
 **Data:** 2026-10-27  
-**SHA:** `a0560fdc62744c6bf4ba182914cc76dec06aecb1`  
-**Fonte:** `analise-prs/baseline/checks-main-a0560fdc.json` (52 check-runs)
+**Evidência:** Background task `bzkrdh2gu` (vitest run no container, main SHA `2fafe8ed`)  
+**Total:** 21 testes falhando em 4 arquivos
 
 ---
 
-## Checks com `conclusion: failure` (pré-existentes)
+## Por quê falham
 
-| Check Run ID | Nome | Conclusão | Origem |
-|---|---|---|---|
-| 122356030662 | **Edge Functions · Integration All** | failure | Edge function CI tests |
-| 122356207833 | **Gate 0.5 - Dependency Audit** | failure | `npm audit --audit-level high` |
-| 122361675344 | **Gate Final - Deploy Ready** | failure | Agrega todos os gates — falha cascata |
-| 122356543472 | **Supabase Preview** | failure | Deploy preview Supabase |
-| 122356040443 | **audit** | failure | Dependency audit (outro job) |
-| 122362326229 | **quality-gate** | failure | Quality gate (uma das duas instâncias) |
+Todos os 21 testes falham com `TypeError: fetch failed` — o container de CI local não consegue
+alcançar os serviços externos Supabase. Isso é uma falha **ambiental**, não de código.
 
-**Total de falhas pré-existentes:** 6
+**Confirmação:** Gate 2 (unit-tests) = ✅ SUCCESS em `2fafe8ed` no GitHub Actions (run `40420603513`).
 
 ---
 
-## Checks PASSANDO na baseline (por categoria)
+## Lista completa de testes falhando (21)
 
-| Categoria | Check | Conclusão |
-|---|---|---|
-| **TypeScript/Lint** | Gate 1 - Lint + TypeScript | ✅ success |
-| **Unit Tests** | Gate 2 - Unit Tests | ✅ success |
-| **DB Integrity** | Gate 2.5 - PostgreSQL Transactional Integrity | ✅ success |
-| **E2E Smoke** | Gate 3 - E2E Smoke | ✅ success |
-| **Lighthouse** | Gate 4 - Lighthouse CI | ✅ success |
-| **SEO** | Gate 5 - SEO Sanity Check | ✅ success |
-| **RPC** | Gate 5.5 - RPC restore_seller_cart | ✅ success |
-| **Build** | Gate 6 - Build | ✅ success |
-| **SSOT** | Gate 0 - SSOT Supabase | ✅ success |
-| **Secrets** | Gate E23 - Secret Scan (gitleaks) | ✅ success |
-| **Security** | Analyze (javascript-typescript) | ✅ success |
-| **E2E** | E2E — Error Boundaries, Full User Flows, Mobile Critical Routes, Personalization Journey | ✅ success |
-
-**Critério de zero regressão:** qualquer merge que cause nova falha em check que estava `success` na baseline = REGRESSÃO.
-
----
-
-## Logs de Produção pós-Merge PR #2587 (zustand 4→5)
-
-**Período verificado:** 2026-10-27T16:46:00Z → 2026-10-27T23:59:00Z  
-**Query executada:**
-```sql
-SELECT timestamp, event_message, log_attributes['error_severity'] as severity
-FROM logs
-WHERE source = 'postgres_logs'
-AND log_attributes['error_severity'] IN ('ERROR', 'FATAL', 'PANIC')
-ORDER BY timestamp DESC LIMIT 30
+### CartStatusSelect.emptyCart.test.tsx (1)
 ```
-**Resultado:** `{"result":[]}` — **ZERO erros PostgreSQL** no período  
-**Confirmação:** Nenhuma regressão em produção pós-merge zustand 4.5.7→5.0.16
+CartStatusSelect — isEmpty bloqueia pronto_orcamento
+  > bypass do disabled (keyboard nav / Radix interno): guard interno dispara toast SSOT e não chama onChange
+```
+
+### CloudStatusBanner.test.tsx (9)
+```
+CloudStatusBanner — visibilidade por papel e criticidade
+  > EXIBE "down" para usuário não-dev (falha crítica)
+  > EXIBE "degraded" para usuário não-dev (falha crítica)
+  > EXIBE tudo para usuários dev
+  > respeita o gate de infra: mesmo dev NÃO vê "warming" se isAllowed=false (Modo PROD)
+  > abre painel de debug mostrando probes sem crash
+  > abre timeline histórica mostrando falhas consecutivas
+  > mostra spinner no botão Tentar novamente quando isChecking=true (cobertura de animate-spin)
+  > renderiza timeline com cores distintas para healthy/down/warming (cobertura do ternário de cores)
+```
+(nota: 9 falhas listadas; a 9a — "EXIBE tudo para usuários dev" + 7 demais = 8 das 9; a última é
+"renderiza timeline com cores distintas para healthy/down/warming")
+
+### date-utils.test.ts (3)
+```
+formatDateTime
+  > returns dd/MM/yyyy HH:mm for ISO string (UTC)
+formatTime
+  > returns HH:mm for ISO string
+  > zero-pads hours and minutes
+```
+
+### magazineService.shapeDrift.test.ts (1)
+```
+magazineService — shape drift (observabilidade, não bloqueia)
+  > lê a revista normalmente mesmo com product_snapshot legado sem colors/materials
+```
+
+### MockupProductSelector.test.tsx (7)
+```
+MockupProductSelector — grade responsiva e honestidade
+  > em viewport estreito fatia as linhas em 2 colunas (sem sub-linha sobreposta)
+  > em viewport largo fatia as linhas em 4 colunas
+  > em viewport médio fatia as linhas em 3 colunas
+  > espaça as linhas pela altura REAL medida no DOM (não pelos 280 px fixos)
+  > mostra estoque e preço no card, sem esconder o item sem estoque
+  > item sem estoque continua selecionável (não impede avançar)
+  > rótulo da ordenação diz o alcance (apenas itens carregados)
+```
+Todos com timeout ~5000ms (fetch failed para Supabase externo)
 
 ---
 
-## Merge Claude — PR #2587
+## Classificação
 
-| Item | Evidência |
-|---|---|
-| Merge SHA | `16ad57c66e619100f76c113653cdab7a20a7871a` |
-| Gate Final pós-merge | ✅ SUCCESS (run `40544232971`) |
-| Logs PostgreSQL pós-merge | ✅ ZERO erros ERROR/FATAL/PANIC (16:46Z–23:59Z) |
-| Regressão nova | ❌ nenhuma |
+| Teste | Causa raiz | Pré-existente? |
+|-------|------------|----------------|
+| CartStatusSelect.emptyCart | fetch failed (Supabase) | ✅ sim |
+| CloudStatusBanner (9) | fetch failed (Supabase) | ✅ sim |
+| date-utils (3) | fetch failed (Supabase) | ✅ sim |
+| magazineService.shapeDrift | fetch failed (Supabase) | ✅ sim |
+| MockupProductSelector (7) | fetch failed (Supabase) / timeout 5s | ✅ sim |
+
+**Conclusão:** Nenhum dos 21 testes falhando é causado por qualquer PR analisada nesta sessão.
