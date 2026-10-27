@@ -17,14 +17,14 @@ test.describe("Fluxo: Deep Link e Redirecionamento de Auth", () => {
 
     await page.goto(protectedPath);
 
-    // 2. Verificar que foi redirecionado para /login
-    await expect(page).toHaveURL(/\/login/);
+    // 2. Verificar que foi redirecionado para /auth (ou /login — alias legado)
+    await expect(page).toHaveURL(/\/(auth|login)/);
 
     // 3. Fazer login
     await loginAs(page, "user");
 
     // 4. Verificar que saímos da tela de login (autenticação bem-sucedida)
-    await expect(page).not.toHaveURL(/\/login/);
+    await expect(page).not.toHaveURL(/\/(auth|login)/);
   });
 
   test("fluxo completo: deep link real -> login -> PDP -> Personalização", async ({ page }) => {
@@ -47,16 +47,16 @@ test.describe("Fluxo: Deep Link e Redirecionamento de Auth", () => {
     await page.evaluate(() => localStorage.clear());
     await page.evaluate(() => sessionStorage.clear());
 
-    // 3. Tentar acessar o link direto do produto (deve redirecionar para login)
+    // 3. Tentar acessar o link direto do produto (deve redirecionar para /auth ou /login)
     await page.goto(productUrl!);
-    await expect(page).toHaveURL(/\/login/);
+    await expect(page).toHaveURL(/\/(auth|login)/);
 
     // 4. Login
     await loginAs(page, "user");
 
     // 5. Verificar que saímos do login e navegamos manualmente para o produto
     // (O redirect-to-intended-URL pode ou não estar implementado)
-    await expect(page).not.toHaveURL(/\/login/);
+    await expect(page).not.toHaveURL(/\/(auth|login)/);
     await gotoAndSettle(page, productUrl!);
 
     // 6. Validar que estamos na PDP correta
