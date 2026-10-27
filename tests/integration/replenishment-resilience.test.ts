@@ -13,7 +13,7 @@ describe('Resilience Testing: Reposição Error Handling', () => {
     // Mock parcial do supabase client para este teste
     // Em testes reais de integração, usaríamos interceptação de rede (msw)
     // Aqui fazemos unitário do tratamento de erro se existisse um hook centralizado
-    expect(mockSelect()).resolves.toMatchObject({ error: { status: 410 } });
+    await expect(mockSelect()).resolves.toMatchObject({ error: { status: 410 } });
   });
 
   it('Deve validar comportamento de Retry para erro 429 (Too Many Requests)', async () => {
