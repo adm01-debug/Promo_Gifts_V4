@@ -14,7 +14,7 @@ DECLARE
   crons text;
   gucs  text;
 BEGIN
-  SELECT string_agg(n.nspname || '.' || p.proname, ', ' ORDER BY 1)
+  SELECT string_agg(n.nspname || '.' || p.proname, ', ' ORDER BY n.nspname || '.' || p.proname)
     INTO funcs
     FROM pg_proc p
     JOIN pg_namespace n ON n.oid = p.pronamespace
@@ -29,7 +29,7 @@ BEGIN
     crons := '<pg_cron não instalado>';
   END IF;
 
-  SELECT string_agg(name || '=' || setting, ', ' ORDER BY 1)
+  SELECT string_agg(name || '=' || setting, ', ' ORDER BY name || '=' || setting)
     INTO gucs
     FROM pg_settings
    WHERE setting ILIKE '%pqpdolkae%';
