@@ -176,7 +176,7 @@ export const EDGE_AUTHZ_MANIFEST: Record<string, AuthzEntry> = {
   "backfill-image-dimensions": { category: "service", rationale: "Backfill dimensões product_images — cron via x-cron-secret (BACKFILL_DIM_CRON_SECRET)", enforcedBy: "custom" },
   "generate-blurhashes": { category: "service", rationale: "Gera blurhashes — cron via authorizeCron (service_role + x-cron-secret)", enforcedBy: "custom" },
   "hash-product-images": { category: "service", rationale: "Hash perceptual de imagens — cron via authorizeCron (service_role + x-cron-secret)", enforcedBy: "custom" },
-  "xbz-image-uploader": { category: "service", rationale: "Upload imagens XBZ → Cloudflare Images — cron via authorizeCron (service_role + XBZ_IMAGE_UPLOADER_CRON_SECRET)", enforcedBy: "custom" },
+  "xbz-image-uploader": { category: "service", rationale: "Upload imagens XBZ para Cloudflare Images — cron via authorizeCron (x-cron-secret: XBZ_IMAGE_UPLOADER_CRON_SECRET)", enforcedBy: "custom" },
   "audit-suite": { category: "dev", rationale: "Suite de auditoria — authorize(dev) + finally cleanup (E022/E023)" },
   "word-magic": { category: "authenticated", rationale: "Geração de copy via IA — authenticateRequest (JWT obrigatório)", enforcedBy: "custom" },
 
