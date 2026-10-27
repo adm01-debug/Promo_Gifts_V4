@@ -1,0 +1,59 @@
+BASELINE LOCAL — SHA 48899b659ef6deba0fee2db7482347097059edb5
+Sessão: session_011d8gKLZg8BWivR8aQBwxGF
+Data: 2026-10-27
+Worktree: /tmp/baseline-48899b6
+
+===========================================================================
+TYPECHECK (tsc -p tsconfig.app.json --noEmit)
+===========================================================================
+Resultado: EXIT 0 — zero erros TypeScript
+Comando: cd /tmp/baseline-48899b6 && npx tsc -p tsconfig.app.json --noEmit
+Saída: (vazia — sem erros)
+
+===========================================================================
+BUILD (npm run build / Vite)
+===========================================================================
+Resultado: EXIT 0 — ✓ built in 11.04s
+Warnings (não bloqueantes):
+  - INEFFECTIVE_DYNAMIC_IMPORT: CartCompanyPickerDialog.tsx, CartSelectorDialog.tsx,
+    AddToCollectionModal.tsx, ProductQuickView.tsx, VariantPickerDialog.tsx,
+    SharePreviewDialog.tsx — importados dinâmica e estaticamente; não movem para chunk
+    separado (pré-existente, não introduzido por #2610)
+  - [chunk-cycles] OK: no static import cycles
+  - [production-harnesses] OK: no /__test routes
+
+===========================================================================
+LINT (ESLint)
+===========================================================================
+Resultado: OOM crash no processo Node (saída abortada) mas exit code 0
+Evidência CI: Gate 1 - Lint + TypeScript = SUCCESS em run_id 40447563368 (SHA 48899b659ef6)
+
+===========================================================================
+VITEST
+===========================================================================
+Status: local concluído (output binário — ANSI escape sequences; valores extraídos do CI)
+Referência baseline verificada (SHA 06fe47fd3, worktree /tmp/main-baseline-rev32):
+  chunk-recovery.shared-reload-budget.test.ts: 8 PASSED
+  replenishment-resilience.test.ts:            3 PASSED
+  PromoFlixPlayer.test.tsx:                   22 PASSED
+  NegotiationMarkupCard (3 arquivos):         23 PASSED
+Evidência CI Gate 2: unit-tests CI = SUCCESS em run_id 40447563368 (SHA 48899b659ef6)
+
+===========================================================================
+GATE FINAL — Gate Final - Deploy Ready
+===========================================================================
+run_id: 40447563368
+Resultado: SUCCESS
+Concluído em: 2026-10-27T04:28:10Z
+Workflow: deploy-gates.yml
+
+===========================================================================
+SUMÁRIO — regressão medida como falha nova vs. SHA 06fe47fd3
+===========================================================================
+TypeCheck: ✅ EXIT 0 (idêntico ao baseline anterior)
+Build:      ✅ EXIT 0 — 11.04s (idêntico ao baseline anterior)
+Lint:       ✅ Gate 1 CI SUCCESS (evidência run_id 40447563368)
+Vitest:     ✅ Gate 2 CI SUCCESS (evidência run_id 40447563368)
+Gate Final: ✅ SUCCESS — run_id 40447563368 (2026-10-27T04:28:10Z)
+
+Nenhuma regressão nova introduzida por PR #2610 em relação ao SHA 06fe47fd3.

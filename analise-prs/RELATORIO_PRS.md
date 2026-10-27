@@ -25,7 +25,7 @@
 |---|---|---|---|
 | #2610 | fix(e2e): aceita /auth no redirect de ProtectedRoute | `48899b659ef6` | SUCCESS em `2a7b451919` |
 
-**CI pós-merge em `48899b659ef6`:** `quality-gate` in_progress às 04:06 UTC (em andamento no momento da análise rev36). Gate Final pré-merge em base anterior `06fe47fd3` = SUCCESS (baseline rev34).
+**CI pós-merge em `48899b659ef6`:** Gate Final - Deploy Ready = SUCCESS — run_id `40447563368` concluído `2026-10-27T04:28:10Z`. TypeCheck EXIT 0, Build EXIT 0 (11.04s), Lint Gate 1 SUCCESS, Vitest Gate 2 SUCCESS — todos verificados localmente em worktree `/tmp/baseline-48899b6` ou por evidência CI. Nenhuma regressão nova (ver `baseline/baseline-48899b6.txt`).
 
 ---
 
@@ -113,7 +113,7 @@
 
 **#2580** — fix(banco): rollback header e23 (DRAFT) | REGRA#8 migrations + CI FAILURE
 
-**#2587** — bump zustand 4→5 | Major version; CI FAILURE (TypeScript zustand v5)
+**#2587** — bump zustand 4→5 | Major version upgrade 4→5; CI SUCCESS (run_id 40420603513, base antiga); branch behind main (mergeable_state: behind)
 
 **#2588** — bump react-day-picker 8→10 | Breaking API `calendar.tsx:22-24`; CI FAILURE
 
@@ -137,7 +137,7 @@
 |---|---|---|
 | `06fe47fd3` | SUCCESS | Baseline pré-series de merges (rev34) |
 | `3ffbf322d` | SUCCESS | Verificado rev34 |
-| `48899b659ef6` | **AGUARDANDO** | Post-merge #2610 — quality-gate in_progress às 04:06 UTC 2026-10-27 |
+| `48899b659ef6` | **SUCCESS** | Post-merge #2610 — run_id `40447563368` concluído `2026-10-27T04:28:10Z` |
 
 Falhas preexistentes em main (não bloqueantes — não são Gate Final):
 `color-swatch`, `magazine-header`, `e2e-gates`, `chromium•swatch→QV`, `Full User Flows authed`, `webkit•swatch→QV`, `check`
@@ -151,6 +151,8 @@ Falhas preexistentes em main (não bloqueantes — não são Gate Final):
 | `analise-prs/prs.csv` | Tabela completa das 18 PRs (CSV) |
 | `analise-prs/progresso.json` | Estado rev36 — todos os campos, SHAs atualizados |
 | `analise-prs/regras-de-negocio.md` | Regras de negócio usadas para classificação |
-| `analise-prs/baseline/vitest.txt` | Baseline vitest main |
+| `analise-prs/baseline/baseline-48899b6.txt` | Baseline local SHA 48899b659ef6 (TypeCheck/Build/Lint/Vitest/Gate Final) |
+| `analise-prs/baseline/vitest-failing.txt` | Checks com falha preexistente em main |
+| `analise-prs/baseline/ci-checks-48899b6.json` | Check runs completos do SHA 48899b659ef6 |
 | `analise-prs/dossies/PR-2610.md` | Dossier merge autônomo #2610 (8 critérios verificados) |
 | `analise-prs/dossies/PR-2612.md` | Dossier bloqueio #2612 (DRAFT + REGRA#10) |
