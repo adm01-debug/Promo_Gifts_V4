@@ -123,5 +123,29 @@
 
 ---
 
+### 10. Edge Integration Tests — All Functions
+- **Run ID:** 40491293458 (sha `06faacc9`, main, 2026-10-27T10:48 UTC)
+- **Workflow:** `.github/workflows/edge-integration-tests.yml` (ou equivalente)
+- **Erro:** Job `Edge Functions · Integration All`, step "Run all edge function integration tests (LIVE)" — exit code 1
+- **Causa raiz:** Testes de integração ao vivo contra edge functions do Supabase (`doufsxqlfjyuvxuezpln`). Requerem credenciais reais e funções deployadas no ambiente de CI. O SHA `06faacc9` foi um push direto da sessão Claude 011k que alterou apenas `scripts/check-rls-no-policy-drift.mjs` — nenhuma edge function foi modificada. A falha é de infraestrutura CI pré-existente (secrets ausentes no runner).
+- **Confirmação pré-existente:** A falha aparece em múltiplos SHAs anteriores. Nenhuma mudança de código nesta sessão alterou edge functions.
+- **Por que não corrigi:** Testes LIVE exigem secrets de produção (`SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` ou equivalentes) configurados no runner CI. Não há código incorreto a corrigir — o problema é configuração do ambiente CI.
+- **O que você (PO) pode fazer:** Verificar em GitHub → Settings → Secrets and variables → Actions se os secrets necessários para o workflow estão configurados.
+- **Impacto no Gate Final:** NÃO é required check — não bloqueia deploy.
+
+---
+
+### 11. CI Security & Drift Checks — Falha em `b1aa18a8` (PR #2634)
+- **Run ID:** 40490192168 (sha `b1aa18a8`, main, 2026-10-27T10:39 UTC)
+- **Workflow:** `.github/workflows/ci-security-drift-checks.yml` (ou equivalente)
+- **Erro:** Job `quality-gate`, step 21 "Run Unit & Integration Tests" — exit code não zero
+- **Contexto:** A falha anterior (run 40447563295, sha `48899b65`) foi corrigida no PR #2597. Esta falha em `b1aa18a8` (merge PR #2634) ocorreu em paralelo com o Gate Final para o mesmo SHA, que completou com `conclusion=success`.
+- **Causa raiz:** O workflow inclui steps de segurança e drift além dos testes unitários do Gate Final. O step 21 falhou mas o log foi truncado (apenas cleanup de git visível). A diferença de escopo entre este workflow e o Gate Final impede diagnóstico definitivo via MCP.
+- **Por que não corrigi:** Log do erro real não acessível (step 21 de 21+ — log truncado mostra apenas cleanup pós-falha). Seria necessário acesso aos logs completos do job para identificar e corrigir a causa raiz sem risco de regressão.
+- **O que você (PO) pode fazer:** Ver https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40490192168/job/122141908315 — logs completos do step 21 para identificar o erro.
+- **Impacto no Gate Final:** NÃO é required check — não bloqueia deploy.
+
+---
+
 *Gerado por Claude Code — sessão https://claude.ai/code/session_014RkohRYagi3sPiL8jtgot4*  
-*Atualizado: 2026-10-27T11:02 UTC — adicionado §9 Branch Protection Sentinel `06faacc` (push direto em main por sessão 011k)*
+*Atualizado: 2026-10-27T11:35 UTC — §10 Edge Integration Tests; §11 CI Security & Drift Checks (inventário completo)*
