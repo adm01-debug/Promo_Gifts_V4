@@ -96,9 +96,6 @@ As duas primeiras são mais permissivas e sobrepõem a terceira (PERMISSIVE = OR
 ```
 Rolename `public` inclui usuários anônimos. `auth.uid()` retorna NULL para anon → a comparação `auth.uid()::text = foldername[1]` falha (NULL ≠ qualquer string), mas é uma ambiguidade que pode criar problemas com path `null/filename`.
 
-### S6 — signatures bucket sem policies de escrita listadas
-Bucket `signatures` não está listado nos resultados de `pg_policies WHERE schemaname='storage'` para escrita. Apenas leitura por autenticados. Deve ser verificado se INSERT/DELETE estão bloqueados intencionalmente.
-
 ---
 
 ## Realtime
