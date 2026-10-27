@@ -1858,8 +1858,48 @@ ESLint baseline gate [full] — atual: 1 erros, 0 warnings · baseline: 0 erros
 
 **Nota:** commit `58afebb52` tentou `instanceof Error ? error : new Error(String(error))` mas ainda violava a regra porque o tipo estático de `error` (do `invokeEdge` return) inclui `InvokeCompatError`, que não extends `Error`. O fix correto é `new Error(error.message)` direto.
 
-**Resultado:** Deploy Gates run `40423385869` em `in_progress` no commit HEAD `79e545379` (contém `1e8ea09ad`).
+**Resultado:** Deploy Gates run `40423385869` falhou em `79e545379` (Gate 1 - Lint). Fix definitivo em commit `1e8ea09ad`. Run `40424755644` em `e8a4ab6ef` confirma lint verde; Gate E40 falhou por divergência pré-existente (P96).
 
 ---
 
-*Atualizado pela sessão Claude Code — https://claude.ai/code/session_014RkohRYagi3sPiL8jtgot4 (2026-10-26)*
+## P96 — Gate E40: Schema Drift Check — divergência pré-existente no ledger de migrations
+
+**Workflow:** `Deploy Gates` → job `schema-drift-gate`  
+**Run com falha:** [#40424755644](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40424755644) (commit `e8a4ab6ef`, job `121928691926`)  
+**Step falho:** `Ledger parity (repo x canonical)`  
+**Categoria:** Pré-existente — divergência de ledger; não causada pelos commits desta sessão  
+**Sessão:** session_014RkohRYagi3sPiL8jtgot4 (2026-10-27)
+
+**Causa raiz:**  
+O Gate E40 (`schema-drift-gate`) é acionado quando qualquer arquivo em `supabase/migrations/` muda. O commit `e8a4ab6ef` decodificou `supabase/migrations/20260706181356_crm_callback_events.sql` (que estava acidentalmente salvo como base64 puro), ativando o gate.
+
+O step `Ledger parity (repo x canonical)` conecta ao Supabase canônico `doufsxqlfjyuvxuezpln` e compara o ledger `supabase_migrations.schema_migrations` com os arquivos em `supabase/migrations/`. Resultado:
+
+```
+[migration-ledger][bloqueado] local_only=1099; remote_only=645; mismatched=0; malformed=0
+```
+
+- **1099 local_only**: migrations em `supabase/migrations/` que NÃO constam no ledger do BD de produção  
+- **645 remote_only**: entries no ledger do BD que NÃO têm arquivo correspondente em `supabase/migrations/`
+
+**Esta divergência NÃO foi causada pelos commits desta sessão.** A session apenas decodificou o conteúdo do arquivo (base64 → SQL legível), sem alterar versões ou adicionar/remover migrations. A divergência 1099/645 é pré-existente e acumulada ao longo do histórico do projeto.
+
+**Conflito real (Gate 1.8 vs Gate E40):**  
+- **Gate 1.8** exige decodificar `supabase/migrations/20260706181356_crm_callback_events.sql` (estava base64 — falha se presente no diff de `workflow_dispatch`)  
+- **Gate E40** falha quando `supabase/migrations/` muda e o ledger tem divergência pré-existente
+
+**Bloqueio de correção:**  
+A reconciliação requer (per CLAUDE.md REGRA #8 / Corolário E99):
+1. Aprovação explícita do PO para trabalhar no ledger de migrations do `doufsxqlfjyuvxuezpln`
+2. DBA para mapear quais 1099 migrations locais nunca foram aplicadas vs quais 645 entries do BD não têm arquivo
+3. Abrir PRs de migrations espelho para os casos de DDL aplicada fora do fluxo
+4. `supabase migration repair --status applied <version>` com versão explícita para cada item (NUNCA em lote)
+5. Correr `schema-snapshot-export.yml` com `force_rotate: true` após reconciliação
+
+**Impacto no Gate Final:** Gate E40 é bloqueante quando triggered. Bloqueia merge do PR #2597 enquanto não resolvido.
+
+**Workaround potencial (requer PO):** Se o PO confirmar que a divergência é aceitável/conhecida, configurar `drift-allowlist.txt` para as migrations específicas envolvidas. NÃO executável por agente sem aprovação.
+
+---
+
+*Atualizado pela sessão Claude Code — https://claude.ai/code/session_014RkohRYagi3sPiL8jtgot4 (2026-10-27)*

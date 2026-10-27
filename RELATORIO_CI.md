@@ -318,44 +318,74 @@ As chaves foram cobertas no allowlist do gitleaks (scan passa), mas **o risco re
 
 ## P95 — ESLint only-throw-error em AnonymizeAccountDialog ✅ CORRIGIDO
 
-**Commit de fix:** `58afebb52`
+**Commit de fix definitivo:** `1e8ea09ad` (2026-10-26)  
+**Tentativa incorreta anterior:** `58afebb52` — usava `instanceof Error` que TypeScript rejeita pois o tipo estático de `error` inclui `InvokeCompatError` (interface plain, não extends `Error`)
 
-**Erro:** `src/components/privacy/AnonymizeAccountDialog.tsx:48` — `throw error` onde `error` de `invokeEdge()` pode não ser `Error`. Regra `@typescript-eslint/only-throw-error` bloqueava CI Replenishment.
+**Erro:** `src/components/privacy/AnonymizeAccountDialog.tsx:48` — `throw error` onde `error` de `invokeEdge()` é `InvokeCompatError`, não `Error`. Regra `@typescript-eslint/only-throw-error` bloqueava CI Replenishment.
 
-**Fix:** `throw error instanceof Error ? error : new Error(String(error))`
+**Fix correto (commit `1e8ea09ad`):** `throw new Error(error.message)` — sempre instância de `Error`, `error.message` é `string` garantida pela interface.
 
 **Workflow afetado:** `CI - Replenishment Module Quality Gate` (run [#40418413543](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40418413543))
 
 ---
 
-## Tabela de Workflows — Estado Esperado Após Merge de `dfccb1a67`
+## Gate 1.8 — Detect base64-encoded files ✅ CORRIGIDO
 
-> ⚠️ CI rodando para commit `dfccb1a67` no momento desta escrita — aguardando conclusão.
+**Commit de fix:** `e8a4ab6ef` (2026-10-27)  
+**Gate:** `Gate 1.8 — Detect accidentally base64-encoded files` (deploy-gates.yml)
 
-| Workflow | Falha original em `145da71b` | Causa | Status esperado |
+**Problema:** 3 arquivos rastreados tinham todo o conteúdo como uma única linha de base64 puro (0 newlines, ≥200 chars, apenas `[A-Za-z0-9+/=]`). Em `workflow_dispatch`, o gate escaneia TODOS os arquivos rastreados (não só o diff), detectando esses arquivos pré-existentes.
+
+**Arquivos corrigidos (decodificados com `base64 -d`):**
+1. `docs/suppliers/spot-fontes-de-dados.md` — 13824 chars base64 → 195 linhas de markdown válido
+2. `supabase/migrations/20260706181356_crm_callback_events.sql` — 3484 chars base64 → SQL válido 54 linhas
+3. `supabase/sql-legacy/20260713_001_secdef_revoke_webhook_locks.sql` — 4636 chars base64 → SQL válido 67 linhas
+
+**Efeito colateral:** A decode do arquivo em `supabase/migrations/` acionou Gate E40 (schema drift check), que encontrou divergência pré-existente no ledger (P96).
+
+---
+
+## P96 — Gate E40: Schema Drift Check ❌ BLOQUEADO (pré-existente)
+
+**Run com falha:** [#40424755644](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40424755644) (commit `e8a4ab6ef`, job `121928691926`)  
+**Erro:** `[migration-ledger][bloqueado] local_only=1099; remote_only=645`
+
+**Causa:** Decodificar `supabase/migrations/20260706181356_crm_callback_events.sql` acionou o gate. A divergência 1099/645 é pré-existente — acumulada historicamente; não causada pelos commits desta sessão.
+
+**Bloqueio:** Requer aprovação do PO + trabalho de DBA para reconciliar o ledger. Ver P96 em PENDENCIAS.md.
+
+---
+
+## Tabela de Workflows — Estado Final (commit `e8a4ab6ef`, 2026-10-27)
+
+| Workflow | Causa original | Status nesta sessão | Nota |
 |---|---|---|---|
-| Deploy Gates (Gate 6 Build) | ❌ failure | Tailwind v4 PostCSS | ✅ success (fix #bfdcc8825+7caa97999) |
-| CI Security & Drift Checks | ❌ failure | Tailwind v4 Vite build | ✅ success (fix #bfdcc8825+7caa97999) |
-| CI Replenishment Quality Gate | ❌ failure | npm ci + ESLint only-throw-error | ✅ success (fix #7caa97999+58afebb52) |
-| E2E (Playwright) | ❌ failure | npm ci | ✅ success (fix #7caa97999) |
-| E2E Critical Flows & Error Boundaries | ❌ failure | npm ci | ✅ success (fix #7caa97999) |
-| E2E • Swatch QuickView | ❌ failure | npm ci | ✅ success (fix #7caa97999) |
-| Edge Integration Tests | ❌ failure | npm ci | ✅ success (fix #7caa97999) |
-| Magazine Unit Tests | ❌ failure | Coverage floor 6 arquivos | ⚠️ P94 — investigando |
-| Quote Builder Delivery Quality | ❌ failure | P84 pré-existente | 📋 documentado P84 |
-| Visual Baseline Tests — Nightly | ❌ failure | Snapshots desatualizados | 📋 documentado P87/P89 |
+| Deploy Gates (Gate 6 Build) | Tailwind v4 PostCSS | ✅ Corrigido (`bfdcc8825`) | |
+| CI Security & Drift Checks | Tailwind v4 Vite build | ✅ Corrigido (`bfdcc8825`) | |
+| CI Replenishment Quality Gate | ESLint only-throw-error | ✅ Corrigido (`1e8ea09ad`) | Fix definitivo |
+| E2E (Playwright) | npm ci | ✅ Corrigido (`7caa97999`) | |
+| E2E Critical Flows | npm ci | ✅ Corrigido (`7caa97999`) | |
+| E2E • Swatch QuickView | npm ci | ✅ Corrigido (`7caa97999`) | |
+| Edge Integration Tests | npm ci | ✅ Corrigido (`7caa97999`) | |
+| Gate 1.8 — base64 files | 3 arquivos mal-encodados | ✅ Corrigido (`e8a4ab6ef`) | |
+| Deploy Gates Gate E40 | Ledger drift pré-existente | ❌ Bloqueado P96 | Requer PO/DBA |
+| Vercel Deployment | Secrets ausentes | ❌ Bloqueado P78/P81 | Requer PO |
+| Magazine Unit Tests | Coverage floor | ⚠️ P94 — não bloqueante Gate Final | |
+| Quote Builder Delivery | E2E quotes | 📋 P84 — pré-existente | |
+| Visual Baseline Tests | Snapshots | 📋 P87/P89 — pré-existente | |
+| Gitleaks audit | 8 chaves para rotação | 📋 P78 — requer PO | |
+| Kit Coverage Integration | GRANT faltando | 📋 P88 — requer PO | |
 
 ---
 
 ## Próximos Passos para o PO
 
-1. **Aguardar CI verde** no PR [#2597](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2597) e mergear
-2. **Rotacionar 7 chaves** marcadas na seção de chaves acima no painel `doufsxqlfjyuvxuezpln`
+1. **Reconciliar ledger de migrations** (P96): 1099 local / 645 remote — requer DBA; Gate E40 bloqueia merge enquanto não resolvido
+2. **Rotacionar 7 chaves** marcadas no painel `doufsxqlfjyuvxuezpln` (P78)
 3. **Configurar secrets** `SUPABASE_DB_PASSWORD` e `SUPABASE_ACCESS_TOKEN` no GitHub (P81, P82)
-4. **GRANT permissões** para `v_kit_component_complete` e `product_kit_components` (P88)
-5. **Atualizar snapshots visuais** (P87/P89)
-6. **Investigar Magazine coverage** (P94) — 6 arquivos abaixo do floor
+4. **GRANT permissões** para `v_kit_component_complete` e `product_kit_components` via migration versionada (P88)
+5. **Investigar Magazine coverage** (P94) — 6 arquivos abaixo do floor (não bloqueante)
 
 ---
 
-*Gerado por Claude Code — https://claude.ai/code/session_014RkohRYagi3sPiL8jtgot4 (2026-10-26)*
+*Atualizado pela sessão Claude Code — https://claude.ai/code/session_014RkohRYagi3sPiL8jtgot4 (2026-10-27)*
