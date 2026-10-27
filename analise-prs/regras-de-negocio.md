@@ -1,7 +1,7 @@
-# regras-de-negocio.md — rev59
+# regras-de-negocio.md — rev69
 **Sessão:** session_011d8gKLZg8BWivR8aQBwxGF
 **Data:** 2026-10-27
-**main HEAD:** 1ce29cf2f95ecf851eef580974130a46f5a4f53a
+**main HEAD:** b752faf8e2e2ac999bcc99f4c9e50472737f825d
 **Supabase projeto canônico:** doufsxqlfjyuvxuezpln (SSOT — REGRA#1)
 
 ---

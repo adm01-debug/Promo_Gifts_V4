@@ -2,7 +2,7 @@
   "meta": {
     "sessao_atual": "session_011d8gKLZg8BWivR8aQBwxGF",
     "sessao_anterior": "session_01Ss1tXZ4cAbxBvdmu95uNPz",
-    "revisao": "rev62",
+    "revisao": "rev69",
     "data": "2026-10-27",
     "main_head_entrada": "df18546dfd76d1bea7ea5873257b668d128d8df3",
     "main_head_final": "b5cfee9b24017fbf53a0035e86d8820d07bad74e",
@@ -606,12 +606,24 @@
       "title": "docs: recibo de aplicação — 20261027120000 (E15)",
       "branch": "e15-receipt-20261027120000-40469025943",
       "draft": false,
-      "test_merge": "BEHIND",
+      "test_merge": "CLEAN",
       "rule8_triggers": [
         "supabase/MIGRATIONS_SYNC_LOG.md"
       ],
       "verdict": "DECISAO_HUMANA",
-      "motivo": "E15 receipt bot — review obrigatório do PO (adm01-debug) + mergeable_state behind"
+      "motivo": "E15 receipt bot — review obrigatório do PO (adm01-debug)"
+    },
+    {
+      "number": 2645,
+      "title": "docs: recibo de aplicação — 20261027140000 (E15)",
+      "branch": "e15-receipt-20261027140000-40512572184",
+      "draft": false,
+      "test_merge": "CLEAN",
+      "rule8_triggers": [
+        "supabase/MIGRATIONS_SYNC_LOG.md"
+      ],
+      "verdict": "DECISAO_HUMANA",
+      "motivo": "E15 receipt bot — review obrigatório do PO (adm01-debug); +1 linha em MIGRATIONS_SYNC_LOG.md"
     }
   ]
 }

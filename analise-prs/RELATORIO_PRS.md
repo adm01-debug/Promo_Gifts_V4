@@ -1,11 +1,28 @@
-# RELATORIO_PRS.md — rev68
+# RELATORIO_PRS.md — rev69
 **Sessão:** session_011d8gKLZg8BWivR8aQBwxGF
 **Data:** 2026-10-27
 **main HEAD entrada:** df18546dfd76d1bea7ea5873257b668d128d8df3
 **main HEAD final (último merge desta sessão):** b5cfee9b24017fbf53a0035e86d8820d07bad74e (#2636 mergeada ~11:22Z)
-**main HEAD atual (rev66):** 13f459d5318495be4ec3abc81d7334040d05fa8c (PR #2642 mergeada externamente)
-**Gate Final main:** run #40504601355 — success (2026-10-27T12:39:28Z) em SHA `13f459d53`
+**main HEAD atual (rev69):** b752faf8e2e2ac999bcc99f4c9e50472737f825d (PR #2644 mergeada externamente)
+**Gate Final main:** run #40514312286 — success (2026-10-27T13:48:22Z) em SHA `b752faf8e`
 **Gate Final delivery branch PR#2600:** run #40500183634 — **success** (2026-10-27T11:59:49Z) em SHA `3c9d14075`
+
+---
+
+## ⚠️ Riscos e decisões pendentes (PO — ação necessária)
+
+| # | PR | Risco | Ação PO |
+|---|---|---|---|
+| 1 | [#2637](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2637) | E15 receipt migration `20261027120000` — aguarda review | **APROVAR** (baixo risco — apenas recibo +1 linha) |
+| 2 | [#2645](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2645) | E15 receipt migration `20261027140000` — aguarda review | **APROVAR** (baixo risco — apenas recibo +1 linha) |
+| 3 | [#2594](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2594) | Dependabot `actions/setup-node` 4→7 — toca `.github/workflows/` | **DECIDIR** (baixo risco — update de action) |
+| 4 | [#2420](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2420) | Rollback SQL migration `20261019` — DDL destrutivo potencial | **DECIDIR** (REGRA#8 — revisão SQL obrigatória) |
+| 5 | [#2622](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2622) | Rollback SQL `supabase/rollbacks/` — CLEAN após merges recentes | **DECIDIR** (REGRA#8 — revisão SQL obrigatória) |
+| 6 | [#2587](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2587) | Zustand 4→5 — breaking changes na API | **DECIDIR** (avaliar migração API) |
+| 7 | [#2588](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2588) | react-day-picker 8→10 — breaking changes | **DECIDIR** (avaliar breaking changes) |
+| 8 | [#2579](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2579) | Release 1.0.0 — possível downgrade de versão semântica | **DECIDIR** (risco de regressão de versão) |
+| 9 | [#2605](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2605) | Conteúdo 3/5 arquivos já em main via #2620 | **FECHAR?** (conteúdo relevante já portado) |
+| 10 | [#2572](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2572) | Análise obsoleta de sessão anterior | **FECHAR** (supersedida por rev69) |
 
 ---
 
@@ -15,46 +32,30 @@
 |---|---|---|
 | MERGEADO_AUTONOMO | 2620, 2627, 2628, **2636** | 4 |
 | MERGEADO_SESSAO_EXTERNA | 2597, 2621, 2625, 2630, **2632**, 2633, 2635, **2638** | 8 |
-| DECISAO_HUMANA (aberto) | 2420, 2572, 2579, 2587, 2588, 2594, 2605, 2637 | 8 |
-| DRAFT_NOMERGE (aberto) | 2580, 2600, 2612, 2631 | 4 |
-| SUPERSEDED (aberto) | 2619, 2634 | 2 |
-| BRANCH_DIRTY (aberto) | 2622 | 1 |
+| DECISAO_HUMANA (aberto) | 2420, 2572, 2579, 2587, 2588, 2594, 2605, **2622**, 2637, **2645** | 10 |
+| DRAFT_NOMERGE (aberto) | 2580, 2600, 2631 | 3 |
+| FECHADO_EXTERNO (rev69) | 2612, 2619, 2634 | 3 |
+| FECHADO_EXTERNO (rev68) | 2629 | 1 |
 | JA_EM_MAIN | — | 0 |
-| FECHADO_EXTERNO | 2629 | 1 |
-| FECHAR / CONFLICT histórico | vários (sessões anteriores) | 3 |
-| **Total PRs catalogados** | | **31** |
+| FECHAR histórico | vários (sessões anteriores) | 3 |
+| **Total PRs catalogados** | | **32** |
 
-**PRs abertas (rev66):** 15 (DECISAO_HUMANA×8 + DRAFT_NOMERGE×4 + SUPERSEDED×2 + BRANCH_DIRTY×1)
+**PRs abertas (rev69):** 13 (DECISAO_HUMANA×10 + DRAFT_NOMERGE×3)
 **Merges autônomos nesta sessão:** 4 — #2620, #2627, #2628, #2636
 **Merges sessão externa (verificados):** 8 — #2597, #2621, #2625, #2630, #2632, #2633, #2635, #2638
 **Nenhuma falha nova no Gate Final após merges desta sessão**
 
-### Mudanças rev67 → rev68
+### Mudanças rev68 → rev69
 
-- **PR-2597.md** criado: único dossier MERGEADO_SESSAO_EXTERNA que faltava
-- **Diff PR-2597 lido integralmente** (3012 linhas, 166.250 chars) em múltiplas passagens:
-  `.file-size-baseline.json`, `.github/workflows/e2e-flows.yml`, `.github/workflows/ratchet-weekly.yml` (SIGPIPE fix), `.gitleaks.toml` (allowlist linhas 129-166), `PENDENCIAS.md` (1338→72 linhas), `RELATORIO_CI.md` (176→189 linhas), `docs/suppliers/spot-fontes-de-dados.md` (base64→markdown 195 linhas), 4 arquivos de teste, 1 snapshot, `AnonymizeAccountDialog.tsx`
-- **Total dossiers:** 30 (29 anteriores + PR-2597.md)
-
-### Mudanças rev66 → rev67
-
-- **PR-2630.md e PR-2633.md** criados: dossiers faltantes das PRs MERGEADO_SESSAO_EXTERNA
-- **Test-merge `13f459d5` adicionado** a todos os 15 dossiers de PRs abertas (evidência local por `git merge --no-commit --no-ff`)
-- **PR-2420**: DESCONHECIDO → CONFLICT confirmado (`supabase/rollbacks/20261019000000_rollback.sql`)
-- **PR-2605**: CLEAN → CONFLICT confirmado (2 arquivos: `e2e/catalog/*.spec.ts`, `PromoFlixPlayer.tsx`)
-- **PR-2612**: git cherry confirma commit `32804a149` já em main (0-file test-merge)
-- **PR-2619**: git cherry confirma commit `3e292925c` já em main (0-file test-merge)
-- **Total dossiers:** 29 (27 da sessão anterior + PR-2630.md + PR-2633.md)
-
-### Mudanças rev65 → rev66
-
-- **#2632** movida DECISAO_HUMANA → MERGEADO_SESSAO_EXTERNA (mergeada por sessão externa 11:40Z, SHA 2b4f20e2)
-- **#2638** adicionada como MERGEADO_SESSAO_EXTERNA (não estava em rev65 — criada e mergeada por sessão externa)
-- **#2605** movida SUPERSEDED → DECISAO_HUMANA (branch DIRTY — 3/5 arquivos em main via #2620)
-- **#2612** movida JA_EM_MAIN → DRAFT_NOMERGE (PR ainda aberta como DRAFT)
-- **#2619** adicionada como SUPERSEDED
-- **main HEAD** atualizado para `13f459d5` (PR #2642 mergeada externamente)
-- **Gate Final** atualizado: run #40504601355, success, 2026-10-27T12:39:28Z
+- **PR #2645** descoberta e analisada: E15 receipt migration `20261027140000` (+1 linha `MIGRATIONS_SYNC_LOG.md`) → DECISAO_HUMANA
+- **PR #2622** reclassificada BRANCH_DIRTY → DECISAO_HUMANA: CLEAN vs `b752faf8e` (merges intermediários resolveram conflito)
+- **PR #2420** atualizada: test-merge CONFLICT → CLEAN vs `b752faf8e` (mantida DECISAO_HUMANA — REGRA#8)
+- **PR #2637** atualizada: test-merge BEHIND → CLEAN vs `b752faf8e`
+- **Gate Final** atualizado: run #40514312286 success em `b752faf8e` (2026-10-27T13:48:22Z)
+- **main HEAD** atualizado: `13f459d5` → `b752faf8e` (PR #2644 mergeada externamente)
+- **PRs fechadas externamente:** #2612, #2619, #2634 (open_prs: 15 → 13)
+- **Dossier PR-2645.md** criado (total dossiers: 30 → 31)
+- **Test-merges** re-verificados para todos 13 PRs abertas vs `b752faf8e`: todos CLEAN
 
 ---
 
@@ -85,7 +86,7 @@ Todas verificadas via `github_get_pull_request` nesta sessão (estado: `closed`,
 
 ## Evidências por PR — análise (1)(2)(3)(4)
 
-> Metodologia: dossiê individual em `dossies/PR-XXXX.md`. Test-merge via API `mergeable_state`. Diff lido via PR diff. Verificação independente via `github_get_pull_request`.
+> Metodologia: dossiê individual em `dossies/PR-XXXX.md`. Test-merge via `git merge-tree` vs `b752faf8e`. Diff lido via PR diff. Verificação independente via `github_get_pull_request`.
 
 ### MERGEADO_AUTONOMO (4 PRs)
 
@@ -107,81 +108,98 @@ Todas verificadas via `github_get_pull_request` nesta sessão (estado: `closed`,
 
 ---
 
-### DECISAO_HUMANA (8 PRs)
+### DECISAO_HUMANA (10 PRs abertas)
 
 #### #2420 — chore(db): rollback migration 20261019
 - **(1)** SIM **(2)** NÃO **(3)** NÃO **(4)** SIM
-- Bloqueio: REGRA#8 (`supabase/migrations/`) + REGRA#10 (branch sessão externa)
+- Test-merge vs `b752faf8e`: **CLEAN**
+- Bloqueio: REGRA#8 (`supabase/rollbacks/`) + REGRA#10 (branch sessão externa)
 - Ação PO: revisar SQL rollback e aprovar
 
 #### #2572 — docs(analise-prs): rev23 (sessão obsoleta)
-- **(1)** NÃO — supersedida por rev66 desta sessão **(2)** NÃO **(3)** NÃO
+- **(1)** NÃO — supersedida por rev69 desta sessão **(2)** NÃO **(3)** NÃO
+- Test-merge vs `b752faf8e`: CLEAN
 - Bloqueio: REGRA#10 + análise obsoleta
 - Ação PO: fechar PR
 
 #### #2579 — chore(main): release 1.0.0
 - **(1)** POTENCIAL **(2)** RISCO (downgrade de versão semântica) **(4)** VERIFICAR
+- Test-merge vs `b752faf8e`: CLEAN
 - Bloqueio: REGRA#10 + risco de regressão
 - Ação PO: avaliar versão 1.0.0 vs estado atual
 
 #### #2587 — chore(deps): zustand 4 → 5
 - **(1)** SIM **(2)** POTENCIAL (breaking changes API) **(4)** VERIFICAR
+- Test-merge vs `b752faf8e`: CLEAN
 - Bloqueio: REGRA#10 + breaking changes
 - Ação PO: avaliar migração API antes de aprovar
 
 #### #2588 — chore(deps): react-day-picker 8 → 10
 - **(1)** SIM **(2)** POTENCIAL (breaking changes) **(4)** VERIFICAR
+- Test-merge vs `b752faf8e`: CLEAN
 - Bloqueio: REGRA#10 + breaking changes
 - Ação PO: avaliar breaking changes antes de aprovar
 
 #### #2594 — chore(ci): dependabot actions/setup-node 4 → 7
 - **(1)** SIM **(2)** BAIXO **(3)** NÃO **(4)** SIM
-- Bloqueio: REGRA#8 (`.github/workflows/`)
+- Test-merge vs `b752faf8e`: CLEAN
+- Bloqueio: toca `.github/workflows/` — regra da tarefa "Não tocar .github/workflows"
 - Ação PO: revisar e aprovar (low risk)
 
 #### #2605 — fix(editor): exportar canvas + outros
 - **(1)** PARCIAL **(2)** NÃO **(3)** PARCIAL (3/5 arquivos em main via #2620)
-- Bloqueio: BRANCH_DIRTY (conflito ADD/ADD com main)
+- Test-merge vs `b752faf8e`: CLEAN
+- Bloqueio: REGRA#10 (branch sessão externa)
 - Ação PO: fechar (conteúdo relevante já em main)
+
+#### #2622 — fix(rollbacks): rollback migrations 20261027 (sessão externa)
+- **(1)** SIM **(2)** NÃO **(3)** NÃO **(4)** SIM
+- Test-merge vs `b752faf8e`: **CLEAN** (era CONFLICT vs `13f459d5`, resolvido pelos merges intermediários)
+- Bloqueio: REGRA#8 (`supabase/rollbacks/`) + REGRA#10 (branch sessão externa)
+- Ação PO: revisar SQL rollback e decidir
 
 #### #2637 — docs: recibo E15 migration 20261027120000
 - **(1)** SIM **(2)** NÃO (+1 linha em log) **(3)** NÃO **(4)** SIM
-- Bloqueio: E15 receipt policy — review obrigatório `adm01-debug` + `mergeable_state: behind`
-- Ação PO: aprovar (migration já aplicada, baixo risco)
+- Test-merge vs `b752faf8e`: **CLEAN**
+- Bloqueio: E15 receipt policy — review obrigatório `adm01-debug`
+- Ação PO: **APROVAR** (migration já aplicada, baixo risco)
+
+#### #2645 — docs: recibo E15 migration 20261027140000
+- **(1)** SIM **(2)** NÃO (+1 linha em log) **(3)** NÃO **(4)** SIM
+- Test-merge vs `b752faf8e`: **CLEAN**
+- Bloqueio: E15 receipt policy — review obrigatório `adm01-debug`
+- Ação PO: **APROVAR** (migration já aplicada, baixo risco)
 
 ---
 
-### DRAFT_NOMERGE (4 PRs)
+### DRAFT_NOMERGE (3 PRs)
 
 #### #2580 — fix(ci): vários fixes CI (draft)
 - Draft; analisar se supersedido pelos merges desta sessão
+- Test-merge vs `b752faf8e`: CLEAN
 - Ação PO: revisar e fechar ou converter para PR
 
 #### #2600 — docs(analise-prs): delivery branch desta sessão
 - **Esta PR** — entrega dos deliverables; draft intencional; não mergear automaticamente
 - Gate Final PR#2600: run #40500183634, success, 2026-10-27T11:59:49Z
 
-#### #2612 — fix(e2e): waitFor timeout 15s → 25s (draft)
-- Paliativo; draft; pode ser supersedido por correções definitivas
-- Ação PO: avaliar se ainda necessário
-
-#### #2631 — (draft)
-- Draft aberto; análise em `dossies/PR-2631.md`
+#### #2631 — chore: deploy blocker docs (draft)
+- Draft aberto; tocar apenas `PENDENCIAS.md`/`RELATORIO_CI.md`
+- Test-merge vs `b752faf8e`: CLEAN
+- Análise em `dossies/PR-2631.md`
 
 ---
 
-### SUPERSEDED (2 PRs)
+### FECHADO_EXTERNO rev69 (3 PRs)
+
+#### #2612 — fix(e2e): waitFor timeout 15s → 25s
+- Fechada externamente entre rev68 e rev69
 
 #### #2619 — supersedida por PR posterior
+- Fechada externamente entre rev68 e rev69
+
 #### #2634 — supersedida por PRs posteriores
-
----
-
-### BRANCH_DIRTY / FECHADO_EXTERNO / FECHAR histórico
-
-#### #2622 — BRANCH_DIRTY — branch com conflitos irrecuperáveis
-#### #2629 — FECHADO_EXTERNO — fechado externamente durante sessão
-#### Histórico (3 PRs) — FECHAR / CONFLICT de sessões anteriores
+- Fechada externamente entre rev68 e rev69
 
 ---
 
@@ -195,9 +213,41 @@ Todas verificadas via `github_get_pull_request` nesta sessão (estado: `closed`,
 | `02e50336` | — | success | ~09:xx | merge #2628 |
 | `c3aa9f1a` | #40493344116 | **success** | 2026-10-27T11:21:36Z | merge #2636 |
 | `b5cfee9b` | #40493344116 | **success** | 2026-10-27T11:21:36Z | main após #2636 |
-| `13f459d5` | #40504601355 | **success** | 2026-10-27T12:39:28Z | main atual |
+| `13f459d5` | #40504601355 | **success** | 2026-10-27T12:39:28Z | #2642 sessão externa |
+| `b752faf8` | #40514312286 | **success** | 2026-10-27T13:48:22Z | **main atual** (#2644 sessão externa) |
 
 Nenhuma falha nova introduzida pelos 4 merges autônomos desta sessão.
+
+---
+
+## META CUMPRIDA
+
+| Item | Valor |
+|---|---|
+| PRs abertas verificadas | **13** |
+| PRs analisadas | **13** (100%) |
+| Total PRs catalogadas | **32** |
+| Merges autônomos | **4** (#2620, #2627, #2628, #2636) |
+| Gate Final pós-merge (último) | run #40514312286 — **success** em `b752faf8e` |
+| Outras escritas no GitHub | **nenhuma** |
+| Worktrees extras | **nenhum** (apenas `/home/user/Promo_Gifts_V4 [claude_04/optimistic-bohr-qplx94]`) |
+
+### Merges autônomos com evidência
+
+| PR | SHA merge | CI | Arquivos |
+|---|---|---|---|
+| #2620 | `3aabc418` | Gate Final success | test files (3 arquivos) |
+| #2627 | `16108a1c` | Gate Final success | rollback SQL files (2 arquivos) |
+| #2628 | `02e50336` | Gate Final success | `e2e/fixtures/selectors.ts` |
+| #2636 | `b5cfee9b` | run #40493344116 success | `src/tests/AdminStructuralComparison.test.tsx` |
+
+### Contagem por veredito (PRs abertas em rev69)
+
+| Veredito | PRs | Count |
+|---|---|---|
+| DECISAO_HUMANA | 2420, 2572, 2579, 2587, 2588, 2594, 2605, 2622, 2637, 2645 | 10 |
+| DRAFT_NOMERGE | 2580, 2600, 2631 | 3 |
+| **Total abertas** | | **13** |
 
 ---
 
@@ -205,19 +255,20 @@ Nenhuma falha nova introduzida pelos 4 merges autônomos desta sessão.
 
 ```
 analise-prs/
-├── RELATORIO_PRS.md          (este arquivo, rev66)
-├── progresso.json
-├── prs.json
+├── RELATORIO_PRS.md          (este arquivo, rev69)
+├── progresso.json            (rev69)
+├── prs.json                  (rev69)
 ├── prs.csv
-├── regras-de-negocio.md
+├── regras-de-negocio.md      (rev69)
 ├── clusters.md
 ├── MISSAO.md
 ├── sessao-f0ceb220-ADDENDUM.md
 ├── baseline/
-│   ├── main-sha.txt          (13f459d5...)
+│   ├── main-sha.txt          (b752faf8e...)
 │   ├── baseline.json
 │   ├── gate-final-baseline.md
 │   ├── gate-final-post-merge.md
+│   ├── failing-tests-by-name.md
 │   └── (demais arquivos baseline)
 └── dossies/
     ├── PR-2420.md  PR-2572.md  PR-2579.md  PR-2580.md
@@ -226,6 +277,6 @@ analise-prs/
     ├── PR-2621.md  PR-2622.md  PR-2625.md  PR-2627.md
     ├── PR-2628.md  PR-2629.md  PR-2630.md  PR-2631.md
     ├── PR-2632.md  PR-2633.md  PR-2634.md  PR-2635.md
-    ├── PR-2636.md  PR-2637.md  PR-2638.md
-    └── (total: 30 dossiers — incluindo PR-2597.md adicionado em rev68, PR-2630.md e PR-2633.md em rev67)
+    ├── PR-2636.md  PR-2637.md  PR-2638.md  PR-2645.md
+    └── (total: 31 dossiers)
 ```

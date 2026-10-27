@@ -1,17 +1,17 @@
 {
   "session_id": "session_011d8gKLZg8BWivR8aQBwxGF",
-  "revision": "rev68",
+  "revision": "rev69",
   "date": "2026-10-27",
   "status": "SESSAO_COMPLETA",
   "main_head_entrada": "df18546dfd76d1bea7ea5873257b668d128d8df3",
   "main_head_final": "b5cfee9b24017fbf53a0035e86d8820d07bad74e",
-  "main_head_atual": "13f459d5318495be4ec3abc81d7334040d05fa8c",
+  "main_head_atual": "b752faf8e2e2ac999bcc99f4c9e50472737f825d",
   "gate_final_atual": {
-    "sha": "13f459d5318495be4ec3abc81d7334040d05fa8c",
-    "run": "40504601355",
+    "sha": "b752faf8e2e2ac999bcc99f4c9e50472737f825d",
+    "run": "40514312286",
     "conclusion": "success",
-    "completed_at": "2026-10-27T12:39:28Z",
-    "nota": "Gate Final success em 13f459d5 (run #40504601355); PR #2642 mergeada externamente."
+    "completed_at": "2026-10-27T13:48:22Z",
+    "nota": "Gate Final success em b752faf8e (run #40514312286); PR #2644 mergeada externamente."
   },
   "gate_final_delivery_branch": {
     "sha": "3c9d14075ebe709f95fb84bc22041ba7950ffc19",
@@ -20,10 +20,24 @@
     "completed_at": "2026-10-27T11:59:49Z",
     "nota": "Gate Final PR#2600 (delivery branch) success em 3c9d14075 (head final); docs-only bypass E14 ativo (Gates 1/2/3 skipped). Compare GitHub x Canonical: success."
   },
-  "prs_analisados_esta_sessao": 31,
-  "open_prs_count_verificado": 15,
-  "open_prs_verificado_em": "2026-10-27T13:00:00Z",
-  "nota_contagem": "15 PRs abertas: DECISAO_HUMANA*8 + DRAFT_NOMERGE*4 + SUPERSEDED*2 + BRANCH_DIRTY*1. 31 total catalogados.",
+  "prs_analisados_esta_sessao": 32,
+  "open_prs_count_verificado": 13,
+  "open_prs_verificado_em": "2026-10-27T14:00:00Z",
+  "nota_contagem": "13 PRs abertas: DECISAO_HUMANA*10 + DRAFT_NOMERGE*3. 32 total catalogados. #2612/#2619/#2634 fechadas externamente. #2622 reclassificada BRANCH_DIRTY→DECISAO_HUMANA (CLEAN vs b752faf8e). #2645 nova.",
+  "correcoes_rev69": [
+    "PR #2645 descoberta e analisada: E15 receipt migration 20261027140000 (+1 linha MIGRATIONS_SYNC_LOG.md) → DECISAO_HUMANA",
+    "PR #2622 reclassificada BRANCH_DIRTY → DECISAO_HUMANA: CLEAN vs b752faf8e (resolvida pelos merges intermediários)",
+    "PR #2420 atualizada: CONFLICT → CLEAN vs b752faf8e (mantida DECISAO_HUMANA — REGRA#8 supabase/rollbacks/)",
+    "PR #2637 atualizada: test_merge BEHIND → CLEAN vs b752faf8e",
+    "Gate Final atualizado: run #40514312286 success em b752faf8e (2026-10-27T13:48:22Z)",
+    "main_head_atual atualizado: 13f459d5 → b752faf8e (PR #2644 mergeada externamente)",
+    "open_prs_count atualizado: 15 → 13 (#2612/#2619/#2634 fechadas externamente)",
+    "DECISAO_HUMANA expandida: 8 → 10 (add #2622 + #2645)",
+    "BRANCH_DIRTY removida: #2622 movida para DECISAO_HUMANA",
+    "SUPERSEDED esvaziada: #2619/#2634 fechadas externamente",
+    "Dossier PR-2645.md criado",
+    "Total dossiers: 30 → 31"
+  ],
   "correcoes_rev68": [
     "Criado dossier PR-2597.md (MERGEADO_SESSAO_EXTERNA — único faltante dos 8)",
     "Diff PR-2597 lido integralmente: 3012 linhas, 12 arquivos com evidência file:line",
@@ -76,21 +90,22 @@
       "2588",
       "2594",
       "2605",
-      "2637"
+      "2622",
+      "2637",
+      "2645"
     ],
     "DRAFT_NOMERGE": [
       "2580",
       "2600",
-      "2612",
       "2631"
     ],
-    "SUPERSEDED": [
+    "SUPERSEDED": [],
+    "FECHADO_EXTERNO_REV69": [
+      "2612",
       "2619",
       "2634"
     ],
-    "BRANCH_DIRTY": [
-      "2622"
-    ],
+    "BRANCH_DIRTY": [],
     "JA_EM_MAIN": []
   },
   "merges_autonomos": {
@@ -198,6 +213,7 @@
   },
   "acoes_po_pendentes": [
     "Revisar e aprovar #2637 (E15 receipt bot — recibo de migration 20261027120000, baixo risco)",
+    "Revisar e aprovar #2645 (E15 receipt bot — recibo de migration 20261027140000, baixo risco)",
     "Aprovar deploy edge functions: run #40482914736 — 106 funcoes divergentes GitHub x Supabase",
     "Decidir #2579 (release 1.0.0 — risco de regressao de versao)",
     "Decidir #2587 (zustand 4->5 — breaking changes)",
@@ -205,9 +221,8 @@
     "Decidir #2420 (rollback SQL migration — REGRA#8)",
     "Decidir #2594 (dependabot actions/setup-node 4->7 — REGRA#8 workflow)",
     "Decidir #2572 (analise obsoleta — fechar?)",
-    "Decidir #2622 (branch dirty — fechar?)",
-    "Decidir #2605 (SUPERSEDED+DIRTY — fechar? conteudo portado para #2620 ja em main)",
-    "Decidir #2579 (release 1.0.0 — downgrade versao)"
+    "Decidir #2622 (rollback SQL — fechar? CLEAN vs main, REGRA#8 + REGRA#10)",
+    "Decidir #2605 (conteudo parcialmente em main via #2620 — fechar?)"
   ],
   "verificacao_independente_rev66": {
     "2597": {
