@@ -573,12 +573,10 @@ describe('PromoFlixPlayer Automated Tests', () => {
       const { container } = render(<PromoFlixPlayer src="test.mp4" autoPlay />);
       const video = container.querySelector('video')!;
 
-      // O navegador dispara `volumechange` quando o componente faz video.muted = true;
-      // jsdom não dispara sozinho, então simulamos.
+      // jsdom dispara volumechange automaticamente ao setar video.muted = true no useEffect;
+      // o flag suppressMutePersistRef é consumido por esse evento — não escreve localStorage.
       // eslint-disable-next-line @typescript-eslint/require-await
-      await act(async () => {
-        fireEvent(video, new Event('volumechange'));
-      });
+      await act(async () => {}); // flush effects
 
       expect(video.muted).toBe(true);
       expect(localStorage.getItem('promoflix_muted')).toBeNull();
@@ -588,11 +586,9 @@ describe('PromoFlixPlayer Automated Tests', () => {
       const { container } = render(<PromoFlixPlayer src="test.mp4" autoPlay />);
       const video = container.querySelector('video')!;
 
-      // Consome o flag de supressão do mute forçado pelo autoplay (não persiste).
+      // jsdom já consumiu o flag via volumechange automático no useEffect — não persiste.
       // eslint-disable-next-line @typescript-eslint/require-await
-      await act(async () => {
-        fireEvent(video, new Event('volumechange'));
-      });
+      await act(async () => {}); // flush effects
       expect(localStorage.getItem('promoflix_muted')).toBeNull();
 
       // Agora uma ação real do usuário (desmutar) deve persistir normalmente.
