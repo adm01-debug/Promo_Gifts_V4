@@ -112,5 +112,16 @@
 
 ---
 
+### 9. Branch Protection Sentinel — commit `06faacc` (push direto em main por sessão Claude)
+- **Run ID:** 40491293699 (sha `06faacc95be240697731489b6f1611b4738844b8`, main, 2026-10-27T10:52 UTC)
+- **Workflow:** `.github/workflows/branch-protection-sentinel.yml`
+- **Erro:** `1 commit(s) em push para main sem padrão aceito: 06faacc` — Regra 1 do sentinel: commit direto em `main` SEM merge via PR e SEM sufixo `(#NNN)`.
+- **Causa raiz:** Sessão Claude `session_011kNCJ9xyjX5d9E2bUXhdBg` empurrou diretamente em `main` o commit `06faacc` com mensagem `fix(ci): Gate 1.13 — trata HTTP 400 em check-rls-no-policy-drift (Supabase nova sintaxe)`. Violação dupla: (a) push direto em main sem PR (viola REGRA #9 do CLAUDE.md), (b) mensagem não termina em `(#NNN)` (viola convenção do sentinel). **Esta sessão não criou este commit.**
+- **Por que não posso corrigir:** Commit já está na main. Force-push em main é proibido (REGRA #9).
+- **Impacto no Gate Final:** NÃO é required check — não bloqueia deploy nem PRs futuros.
+- **Resolução:** Próximos merges via squash com sufixo `(#NNN)` retornarão verde. O commit `06faacc` ficará registrado como violação histórica de processo.
+
+---
+
 *Gerado por Claude Code — sessão https://claude.ai/code/session_014RkohRYagi3sPiL8jtgot4*  
-*Atualizado: 2026-10-27T10:43 UTC — adicionado §8 E2E Customization Collapse (LocationPanel, baselines não gerados, pré-existente)*
+*Atualizado: 2026-10-27T11:02 UTC — adicionado §9 Branch Protection Sentinel `06faacc` (push direto em main por sessão 011k)*
