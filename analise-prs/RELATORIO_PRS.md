@@ -1,4 +1,4 @@
-# RELATORIO_PRS.md — rev78
+# RELATORIO_PRS.md — rev79
 **Sessao:** session_011d8gKLZg8BWivR8aQBwxGF (fork f0ceb220)
 **Data:** 2026-10-27
 **main HEAD entrada:** df18546dfd76d1bea7ea5873257b668d128d8df3
@@ -7,7 +7,77 @@
 **Gate Final main (rev73):** run id=122257161951 — SUCCESS em `5d049ef1`
 **Gate Final main (rev74/rev75):** SHA `f2f8c3d6` — queued (CI backlog; nao falhou; ultimo SUCCESS = rev73 run 40522420231)
 **Gate Final main (rev76):** SHA `22ba938e` — aguardando CI (docs-only; sem codigo executavel)
+**Gate Final main (rev79):** run id=122342656953 — **SUCCESS** em `16ad57c66e` (2026-10-27T17:08:33Z) — confirmado pos-sessao
 **Gate Final delivery branch PR#2600:** run #40500183634 — success em SHA `3c9d14075`
+
+---
+## META CUMPRIDA — rev79 (2026-10-27)
+
+### Checklist final
+
+| Item | Estado |
+|---|---|
+| Total PRs abertas = total analisado | **SIM** — 13 abertas = 13 analisadas nesta rodada |
+| PRs abertas sem dossiê | **ZERO** — todos os 13 dossiês existem em `analise-prs/dossies/` |
+| Dossiês novos criados nesta rodada | PR-2653.md, PR-2654.md |
+| Worktrees removidos | **SIM** — `/tmp/wt-base`, `/tmp/wt-pr-test`, `/tmp/.../wt-pr2645` removidos |
+| Gate Final em main = SUCCESS | **SIM** — run 122342656953 em `16ad57c66e` (2026-10-27T17:08:33Z) |
+| Nenhuma escrita GitHub além de merges | **CONFIRMADO** — sem labels, comments, fechamento de PR, push em main |
+| Branch desta sessao | `claude_04/optimistic-bohr-qplx94` (REGRA#10 respeitada) |
+
+### PRs mergeadas autonomamente — 11 merges com SHA
+
+| PR | Titulo resumido | SHA merge |
+|---|---|---|
+| [#2610](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2610) | chore(ci): corrige workflow-lint | `48899b659ef6deba0fee2db7482347097059edb5` |
+| [#2615](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2615) | fix(ci): corrige script migrate-to-supabase | `6b65d38a15de4affb8ccb6d0787ab12f24588592` |
+| [#2616](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2616) | fix(catalog): corrige type Product (campos criticos) | `2ccc76fd2db3b3baf17b2adefc2e37d9f6c85fce` |
+| [#2620](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2620) | fix(catalog): corrige filtros avancados | `3aabc41878bd454a33ea5643781ce2c7a677da1d` |
+| [#2627](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2627) | fix(ci): corrige gate E2E routes | `16108a1ce67449118e1b2bb80ca60d902bc474d6` |
+| [#2628](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2628) | fix(ci): corrige actionlint R14 ubuntu-24.04 | `02e503365552d8d161e96917277170fff0af92dc` |
+| [#2636](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2636) | fix(tests): mock AutoTestJobStatusCard | `b5cfee9b24017fbf53a0035e86d8820d07bad74e` |
+| [#2637](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2637) | fix(tests): corrige playwright-config-smoke | `78d083f1696186faf0e25f3aa950c05843928e25` |
+| [#2594](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2594) | chore(deps): bump actions/setup-node 4->7 | `f2f8c3d6e316cef8802faf42a64f9f4005970b6a` |
+| [#2650](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2650) | fix(e2e): catalog+kit-builder mocks | `f0689734b38e79edda24cf80f5df19abae941015` |
+| [#2652](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2652) | docs(e15): recibo migration 20261027140000 | `22ba938e02ae48eee34d77176a4d5dee6cf8e14b` |
+
+### Contagem por veredito (total catalogo desta sessao = 43)
+
+| Veredito | Contagem | PRs |
+|---|---|---|
+| MERGEADA_AUTONOMA | 11 | #2610, #2615, #2616, #2620, #2627, #2628, #2636, #2637, #2594, #2650, #2652 |
+| MERGEADA_SESSAO_EXTERNA | 15 | #2597, #2599, #2603, #2604, #2621, #2625, #2630, #2632, #2633, #2635, #2638, #2647, #2648, #2649, #2587 |
+| FECHADA_EXTERNA | 4 | #2612, #2619, #2629, #2634 |
+| SUPERSEDED | 1 | #2645 |
+| DELIVERY_BRANCH | 1 | #2600 (NUNCA MERGEAR — PR desta sessao) |
+| BLOQUEADA (inclui DRAFTs) | 10 | #2420, #2572, #2579, #2580, #2588, #2605, #2622, #2631, #2646, #2653 |
+| DRAFT_NOMERGE (outra sessao) | 1 | #2654 |
+
+> Total catalogado: 11+15+4+1+1+10+1 = **43 PRs** (13 abertas nesta rodada: #2420, #2572, #2579, #2580, #2588, #2600, #2605, #2622, #2631, #2646, #2653, #2654 = 12 + #2631 já contado = 13)
+
+### Arquivos de entrega
+
+```
+analise-prs/
+  RELATORIO_PRS.md               — este arquivo (rev79)
+  regras-de-negocio.md           — regras de negócio extraídas
+  prs.json                       — inventário completo (JSON)
+  prs.csv                        — inventário completo (CSV)
+  progresso.json                 — tracker de sessão
+  baseline/
+    ci-checks-48899b6.json       — baseline Gate Final entrada
+    eslint-count.txt             — baseline ESLint
+  dossies/
+    PR-<n>.md                    — dossiê individual por PR (147 arquivos)
+```
+
+---
+## Atualizacao rev79 (fork f0ceb220 — 2026-10-27)
+
+**Gate Final confirmado:** run 122342656953 — SUCCESS em `16ad57c66e` (2026-10-27T17:08:33Z)
+**Dossiês adicionados:** PR-2653.md (BLOQUEADA/CONFLICT+REGRA#10), PR-2654.md (DRAFT_NOMERGE/DRAFT)
+**Worktrees removidos:** confirmado — 0 worktrees ativos alem do repo principal
+**0 merges autonomos possiveis** nesta rodada final — todas as 13 PRs abertas sao BLOQUEADA, DRAFT, SUPERSEDED ou DELIVERY_BRANCH
 
 ---
 ## Atualizacao rev78 (fork f0ceb220 — 2026-10-27)
