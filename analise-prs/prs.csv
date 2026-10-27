@@ -28,21 +28,25 @@ number,title,branch,draft,test_merge,rule8_triggers,verdict,motivo,merge_sha
 2555,docs(pendencias): rev29,claude_05/nifty-sagan-r23gqh,true,CLEAN,,MERGEADO_AUTONOMO,Draft→Ready claude_05 mesmo agente,479f2219485e23a5d35896dfe44c9ca4f7c1026f
 2556,chore: backlog banco O1/O3,claude/chore-backlog-banco-251025-1915,true,CLEAN,,MERGEADO_AUTONOMO,Draft→Ready REGRA10 NA,15e10fd88208f9b4cd372b82544fb27892d15a81
 2557,docs: RELATORIO_CI.md P27/P66/P67/P68,claude/docs-relatorio-ci-final-20261025-1910,true,CLEAN,,DECISAO_HUMANA,Corrupcao texto RELATORIO_CI criterio5,
-2572,chore(ci/feat): contrato E189 + personalização + supabase + CI,claude_05/youthful-ride-vcdchy,false,CLEAN,".github/workflows/contract-tests.yml supabase/migrations/",BLOQUEADA,Sessao claude_05 ativa + Gate Final pendente (REGRA#10),
-2579,chore(main): release 1.0.0,release-please--branches--main,false,CLEAN,,DECISAO_HUMANA,Downgrade release-please 1.2.1→1.0.0 regressao semantica,
-2580,fix: adiciona cabecalho rollback e arquivo de rollback para e23,claude_05/youthful-ride-vcdchy,true,CLEAN,supabase/migrations/,DECISAO_HUMANA,Migration file + DRAFT — REGRA#8 exige aprovacao PO,
+2572,chore(ci/feat): contrato E189 + personalização + supabase + CI,claude_05/youthful-ride-vcdchy,false,CLEAN,".github/workflows/contract-tests.yml supabase/migrations/",BLOQUEADA,REGRA#10 cross-agent claude_05 + REGRA#8 (workflows+migrations),
+2579,chore(main): release 1.0.0,release-please--branches--main--components--gifts-store,false,CLEAN,,DECISAO_HUMANA,Downgrade release-please 1.2.1→1.0.0 regressao semantica,
+2580,fix(banco): adiciona rollback header e arquivo rollback para e23,claude/fix-e23-rollback-261025-2145,true,CLEAN,supabase/migrations/,DECISAO_HUMANA,DRAFT + REGRA#8 migrations exige aprovacao PO,
 2582,chore(ci): metricas semanais 2026-W44,claude_04/optimistic-bohr-qplx94,false,CLEAN,,MERGEADO_AUTONOMO,,045d835f565baf01db94ae5212d673f93a63685b
 2585,bump prod deps minor/patch (7 updates),dependabot/npm_and_yarn/the-production-minor-patch-group,false,CLEAN,,MERGEADO_AUTONOMO,,145da71bb8c451eebadc75c4bb059397f8d468f7
 2586,bump dev deps minor/patch (10 updates),dependabot/npm_and_yarn/the-development-all-group,false,CLEAN,,MERGEADO_AUTONOMO,,fb04592655cf81d1a6aad79739f2cc2f1c2236c7
 2587,bump zustand from 4.5.7 to 5.0.16,dependabot/npm_and_yarn/zustand-5.0.16,false,CLEAN,,DECISAO_HUMANA,Zustand 4→5 major — 11 stores incompativeis com API v5,
 2588,bump react-day-picker from 8.10.2 to 10.0.2,dependabot/npm_and_yarn/react-day-picker-10.0.2,false,CLEAN,,DECISAO_HUMANA,react-day-picker 8→10 major — calendar.tsx usa API v8,
 2589,bump globals from 15.15.0 to 17.13.0,dependabot/npm_and_yarn/globals-17.13.0,false,CLEAN,,MERGEADO_AUTONOMO,,9e2746a31914e714f1b96779f26808c0f3685ff8
-2590,bump github/codeql-action/upload-sarif,dependabot/github_actions/github/codeql-action/upload-sarif-3.x,false,CLEAN,".github/workflows/gitleaks-history-audit.yml",BLOQUEADA,codeql-action/upload-sarif — .github/workflows proibido,
-2591,bump github/codeql-action/analyze,dependabot/github_actions/github/codeql-action/analyze-3.x,false,CLEAN,".github/workflows/codeql.yml",BLOQUEADA,codeql-action/analyze — .github/workflows proibido,
-2592,bump actions/stale 9→11,dependabot/github_actions/actions/stale-11,false,CLEAN,".github/workflows/stale.yml",BLOQUEADA,actions/stale 9→11 — .github/workflows proibido,
-2593,bump github/codeql-action/init,dependabot/github_actions/github/codeql-action/init-3.x,false,CLEAN,".github/workflows/codeql.yml",BLOQUEADA,codeql-action/init — .github/workflows proibido,
+2590,bump github/codeql-action/upload-sarif 4.39.1,dependabot/github_actions/github/codeql-action/upload-sarif-4.39.1,false,CLEAN,".github/workflows/gitleaks-history-audit.yml",BLOQUEADA,codeql-action/upload-sarif — .github/workflows proibido,
+2591,bump github/codeql-action/analyze 4.39.1,dependabot/github_actions/github/codeql-action/analyze-4.39.1,false,CLEAN,".github/workflows/codeql.yml",BLOQUEADA,codeql-action/analyze — .github/workflows proibido,
+2592,bump actions/stale 9→11,dependabot/github_actions/actions/stale-11.0.0,false,CLEAN,".github/workflows/stale.yml",BLOQUEADA,actions/stale 9→11 — .github/workflows proibido,
+2593,bump github/codeql-action/init 4.39.1,dependabot/github_actions/github/codeql-action/init-4.39.1,false,CLEAN,".github/workflows/codeql.yml",BLOQUEADA,codeql-action/init — .github/workflows proibido,
 2594,bump actions/setup-node 4→7,dependabot/github_actions/actions/setup-node-7,false,CLEAN,".github/workflows/e2e-update-editor-sheet-snapshots.yml",BLOQUEADA,actions/setup-node 4→7 — .github/workflows proibido + sem SHA pin,
 2596,bump postcss-selector-parser 6.1.4→6.1.5,dependabot/npm_and_yarn/postcss-selector-parser-6.1.5,false,CLEAN,,MERGEADO_AUTONOMO,CVE-2026-104844 CPU exhaustion patch,54e8904585ad474030feea88526d9c66b7404aa4
-2597,fix: corrige 4 workflows CI falhando,claude_04/beautiful-gates-bvocz5,false,CLEAN,".github/workflows/ratchet-weekly.yml",DECISAO_HUMANA,REGRA8 workflow + session_014RkohRYagi3sPiL8jtgot4,
-2599,fix(privacy): invoke-direct + ratchet SIGPIPE,claude_04/laughing-gates-l4pt67,false,CLEAN,".github/workflows/ratchet-weekly.yml",DECISAO_HUMANA,REGRA8 workflow + subconjunto de PR#2597,
+2597,fix: corrige 4 workflows CI falhando,claude_04/beautiful-gates-bvocz5,true,CLEAN,".github/workflows/ratchet-weekly.yml",DECISAO_HUMANA,DRAFT + REGRA8 workflow,
+2599,fix(privacy): invoke-direct + ratchet SIGPIPE,claude_04/laughing-gates-l4pt67,false,CLEAN,".github/workflows/ratchet-weekly.yml",FECHADA_EXTERNAMENTE,Conteudo integrado via commit direto 2ca5ef04e por session_01Knr9enFAok62bHihBK1UUP,
 2600,docs(analise-prs): sessão f0ceb220 addendum,claude_04/optimistic-bohr-qplx94,true,CLEAN,,BLOQUEADA,DRAFT — entregáveis documentais desta sessão,
+2602,fix(e2e): corrige falhas E2E mobile tooltips e personalization specs,claude/fix-e2e-mobile-failures-261027-1500,false,CLEAN,,MERGEADO_EXTERNO,Mergeado por session_01Knr9enFAok62bHihBK1UUP 2026-10-27T01:16:30Z,00eeec9ac2c2397c5814f9d17dd0c86ad36a5c0c
+2603,fix(crons): 4 migrations + RLS supplier_stricker,claude_04/tender-hawking-ghw2zi,true,CLEAN,supabase/migrations/,DECISAO_HUMANA,DRAFT + REGRA#8 migrations (5 migrations incl. supplier_stricker_rls_deny_all em 17 tabelas),
+2604,fix(ci): continue-on-error nos steps psql de snapshot (E036/E037/E072),claude_04/charming-darwin-g1nvj2,true,CLEAN,.github/workflows/schema-snapshot-export.yml,DECISAO_HUMANA,DRAFT + REGRA#8 workflow (schema-snapshot-export.yml),
+2605,fix(tests): corrige 4 falhas unit tests e 1 threshold E2E,claude/fix-unit-tests-261027-0113,true,CLEAN,,DECISAO_HUMANA,DRAFT — converter para ready para CI rodar,

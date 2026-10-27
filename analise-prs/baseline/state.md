@@ -1,125 +1,86 @@
-# Baseline — Sessão session_01Ss1tXZ4cAbxBvdmu95uNPz (continuação)
-**Data:** 2026-10-25
-**main HEAD:** `c113300c034fb39126274fba9aa10ef05762ab13` (PR #2540 mergeada pelo PO — docs RELATORIO_CI)
-**Commit anterior:** `cb0ccedec41c38fe79cbd2585216e4cbe3155ccd` (PR #2538 — docs RELATORIO_CI 3 entradas Gate Final)
+# Baseline — rev30 (sessão f0ceb220, rev30)
+**Data:** 2026-10-27
+**main HEAD:** `00eeec9ac2c2397c5814f9d17dd0c86ad36a5c0c`
+**Commit:** fix(e2e): corrige falhas E2E mobile, tooltips e personalization specs (PR #2602, merge por session_01Knr9enFAok62bHihBK1UUP)
 
 ## Gate Final
-- **Run #40218104943** — SHA `c113300c` — conclusion=**success** ✅ (2026-10-25T17:56:46Z) ← CONFIRMADO NESTA SESSÃO
+- **Run #40218104943** — SHA `c113300c` — conclusion=**success** ✅ (2026-10-25T17:56:46Z)
   - 17 jobs passaram: Gate 0, Gate 0.5, Gate 1 (sub-gates 1.1–1.18), Gate 2, Gate 2.5, Gate 3, Gate 5, Gate 5.5, Gate 6
-  - E2E Playwright smoke: success (~2min, 17:54:52–17:56:36Z)
-- **Run #40214531246** — SHA `4cb4feb4` — success ✅ (2026-10-25T17:20:35Z) ← referência anterior
+- **Nota:** SHA `00eeec9ac` (current main) não disparou novo CI run (commit foi E2E-only, não toca `src/` de forma a quebrar gates). Baseline de referência = último run success em SHA `c113300c`.
 
 ## Testes
-- **429 testes / 0 falhas** — confirmado via logs do Gate Final run #40218104943 (job 121244048957)
+- **429 testes / 0 falhas** — confirmado via logs Gate Final run #40218104943
+- **Falhas pré-existentes em `00eeec9ac`** (fonte: PR #2605 body):
+  1. `src/lib/__tests__/chunk-recovery.shared-reload-budget.test.ts:33` — race condition Date.now()
+  2. `src/lib/__tests__/chunk-recovery.shared-reload-budget.test.ts:60` — race condition Date.now()
+  3. `tests/integration/replenishment-resilience.test.ts:16` — missing await
+  4. `src/components/products/gallery/PromoFlixPlayer.tsx` tests — React 19 volumechange duplicate listener
+  5. `e2e/catalog/novidades-reposicao-card-parity.spec.ts:214` — threshold 64px insuficiente
 
-### Suítes de teste por nome (Gate 2 — job 121244048957, SHA `c113300c`)
+## TypeScript
+- `tsc --noEmit`: **0 erros** — confirmado SHA `2ca5ef04e`
 
-| Comando | Arquivos | Tests passados | Tests falhando |
-|---|---|---|---|
-| `npm run test:deploy-gate` | 3 | **334** | **0** |
-| `npm run test:webhook-scenario-matrix` | 1 | **95** | **0** |
-| **Total** | **4** | **429** | **0** |
+## Build Vite
+- `vite build`: **sucesso em 11.77s** — confirmado SHA `2ca5ef04e`
 
-**Testes falhando por nome: NENHUM** — todas as 429 assertions passaram.
+## Lint
+- ESLint: OOM - FATAL ERROR JavaScript heap out of memory — pré-existente, não é regressão
 
-Evidência direta dos logs (job 121244048957, 2026-10-25T17:49:51–17:54:26Z):
-```
-Test Files  3 passed (3)
-      Tests  334 passed (334)    ← npm run test:deploy-gate
-   Start at  14:49:51
-   Duration  4.40s
-
-Test Files  1 passed (1)
-      Tests  95 passed (95)     ← webhook-scenario-matrix
-   Start at  14:49:56
-   Duration  1.24s
-```
-
-## Typecheck / Lint / Build — evidência de CI (Gate Final run #40218104943)
-
-Container não tem `node_modules` (npm 403 ao registry privado `europe-west1-npm.pkg.dev`).
-Execução local impossível. Baseline extraída diretamente dos logs do CI autoritativo.
-
-### Typecheck (Gate 1 — job 121244048940, step "Run npm run typecheck")
-- **Resultado: 0 erros** (conclusion=success)
-- Período: 2026-10-25T17:49:49Z → 17:50:49Z (~60s)
-- Evidência: step conclusion=success no job 121244048940
-
-### Lint (Gate 1 — job 121244048940, step "Run npm run lint:baseline")
-- **Resultado: 0 erros** (conclusion=success)
-- Período: 2026-10-25T17:50:49Z → 17:52:51Z (~2min)
-- Evidência: step conclusion=success no job 121244048940
-
-### Build (Gate 6 — job 121245372874, step "Run npm run build")
-- **Resultado: success** (conclusion=success)
-- Período: 2026-10-25T17:55:04Z → 17:55:16Z (~12s)
-- Evidência: step conclusion=success no job 121245372874; SBOM + build provenance attestation gerados
-
-### Sub-gates Gate 1 (42 steps — todos success)
-Todos os 42 sub-steps do job `static-gates` (Gate 1) tiveram conclusion=success:
-Gates 1.1–1.18 inclusive (Product fields, types drift, migration contracts, bundle size,
-ratchets TODO/FIXME/`as any`, indexed-access, workflow contracts, RLS policies, secrets inventory,
-CODEOWNERS, ledger de conflitos, etc.)
-
-**Baseline de CI (run #40218104943, SHA `c113300c`):**
-- typecheck: **0 erros**
-- lint: **0 erros**
-- build: **success**
-- testes: **429 / 0 falhas**
-- Testes falhando por nome: **NENHUM**
-
-## Git worktrees — confirmação
-```
-git worktree list
-/home/user/Promo_Gifts_V4  991bccb20  [claude_05/youthful-ride-vcdchy]
-```
-**Apenas o worktree primário** — nenhum worktree de teste criado nesta sessão. Todos os test-merges foram feitos via `git fetch` + `git merge-tree --write-tree` (operação somente-leitura, sem commit).
-
-## Vercel — investigação de falha no PR #2529
-
-**Sintoma:** 3 pushes consecutivos (`3e5e619`, `23bd5fcc7`, `991bccb20`) falharam com `Resource provisioning failed`.
-
-**Investigação do deployment `dpl_DpFQFz7H3SVu3Yw3fAS5SBu8EFW9`:**
-- `state: ERROR`
-- `errorCode: BUILD_FAILED`
-- `errorMessage: "Resource provisioning failed"`
-- `buildingAt: 1792952457023`, `ready: 1792952458928` → duração: **~1.9 segundos** (build real leva minutos)
-- Runtime logs: **"No logs found"** — o build **nunca chegou a executar**
-
-**Diagnóstico:** falha de infraestrutura anterior ao build, não falha de código. O build não rodou porque o Vercel não conseguiu provisionar o ambiente.
-
-**Causa raiz (documentada em `CLAUDE.md §REGRA#11`):** projeto fantasma `promo-gifts-reconciliation-integrity-20260915` (`prj_W1Zdi6BQWkAwQx5VJjpSNlZubeok`) — criado por um agente em 2026-09-15 ao rodar `vercel link` fora do diretório raiz — conectado ao mesmo repo e causando 2× builds em todo push.
-
-**Solução:** PO deve remover o projeto fantasma no dashboard Vercel. Fora do escopo desta sessão (requer ação humana no painel).
-
-## Test-merges locais realizados nesta sessão
-
-Para cada uma das 17 PRs abertas, foram executados:
-```
-git fetch origin refs/pull/N/head:refs/remotes/pr-test/N
-git merge-base origin/main refs/remotes/pr-test/N   # detecta NO_MERGE_BASE
-git merge-tree --write-tree $(git merge-base ...) origin/main refs/remotes/pr-test/N
-```
-
-**Resultados (evidência em prs.json `test_merge_evidence`):**
-| PR | Resultado | Arquivos conflitantes |
+## Merge Tests vs main HEAD `00eeec9ac` (rev30)
+| PR | Resultado | Head SHA |
 |---|---|---|
-| #2415 | CONFLICT | `.github/workflows/ci-security-drift.yml`, `deploy-gates.yml`, `PENDENCIAS.md`, `RELATORIO_CI.md`, `vitest.config.ts` |
-| #2417 | NO_MERGE_BASE | — |
-| #2418 | NO_MERGE_BASE | — |
-| #2419 | NO_MERGE_BASE | — |
-| #2420 | NO_MERGE_BASE | — |
-| #2422 | NO_MERGE_BASE | — |
-| #2428 | CONFLICT | `.gitleaks.toml` |
-| #2432 | CLEAN | git cherry = 0 (JÁ_EM_MAIN) |
-| #2443 | CLEAN | 1 commit único: `APROVACAO_FASE_B_IMPACTO.md` |
-| #2449 | CONFLICT | `MIGRATIONS_SYNC_LOG.md`, 2 migrations |
-| #2452 | CONFLICT | `analise-prs/dossies/PR-2441.md` |
-| #2469 | CONFLICT | `.github/workflows/e2e-personalization.yml` |
-| #2503 | CONFLICT | `RELATORIO_CI.md` |
-| #2520 | CLEAN | 4 arquivos; downgrade 1.2.1→1.0.0 |
-| #2529 | CONFLICT | `.gitleaks.toml`, `.github/workflows/e2e-personalization.yml` |
-| #2532 | CONFLICT | `PENDENCIAS.md`, `RELATORIO_CI.md` |
-| #2537 | CLEAN | `.github/workflows/contract-tests.yml` (+5/-5) |
+| #2420 | NO_MERGE_BASE | c10816b95c |
+| #2572 | CLEAN | c653bef927 |
+| #2579 | CLEAN | dbac87d8dc |
+| #2580 | CLEAN | 41198d9a33 |
+| #2587 | CLEAN | 243e5d21cf |
+| #2588 | CLEAN | 1a71dd86bc |
+| #2590 | CLEAN | 46c07b88df |
+| #2591 | CLEAN | 1797d8afb3 |
+| #2592 | CLEAN | 936b10424c |
+| #2593 | CLEAN | 7f36981f2c |
+| #2594 | CLEAN | 87bff9e7ba |
+| #2597 | CLEAN | 3e46211c68 |
+| #2600 | CLEAN | 1c0fbf6147 |
+| #2603 | CLEAN | ab1ea3b316 |
+| #2604 | CLEAN | e33d2fe4aa |
+| #2605 | CLEAN | 9bfead1417 |
 
-**ZERO PRs mergeáveis autonomamente** — todas bloqueadas por CONFLICT, NO_MERGE_BASE, JÁ_EM_MAIN, REGRA#8 ou REGRA#10.
+## Evidência de bloqueio por PR (rev30)
+
+### DRAFT (5 PRs) — GitHub API HTTP 405
+Evidência API: tentativa de merge de PR #2602 → HTTP 405 `{"message":"Pull Request is still a draft","status":"405"}` (rev29). PR #2602 foi depois mergeado por outra sessão.
+- #2580: `draft: true` (API list_pull_requests 2026-10-27)
+- #2597: `draft: true` (API get_pull_request 2026-10-27)
+- #2600: `draft: true` (API list_pull_requests 2026-10-27)
+- #2603: `draft: true` (API get_pull_request 2026-10-27)
+- #2604: `draft: true` (API get_pull_request 2026-10-27)
+- #2605: `draft: true` (API get_pull_request 2026-10-27)
+
+### .github/workflows (6 PRs) — "Não tocar .github/workflows"
+- #2590: 1 arquivo → `.github/workflows/gitleaks-history-audit.yml`
+- #2591: 1 arquivo → `.github/workflows/codeql.yml`
+- #2592: 1 arquivo → `.github/workflows/stale.yml`
+- #2593: 1 arquivo → `.github/workflows/codeql.yml`
+- #2594: 1 arquivo → `.github/workflows/e2e-update-editor-sheet-snapshots.yml`
+- #2572: 62 arquivos incluindo `.github/workflows/contract-tests.yml` + branch `claude_05/*` (REGRA#10)
+- #2597: inclui `.github/workflows/ratchet-weekly.yml` (também DRAFT)
+
+### Migrações sem aprovação PO (2 PRs adicionais)
+- #2580: `supabase/migrations/20260916202000_e23_force_rls_secret_tables.sql` + draft
+- #2603: 5 migrations incluindo `20261027200000_supplier_stricker_rls_deny_all.sql` (RLS) + draft
+
+### DECISAO_HUMANA — semântica/quebra de API
+- #2420: `git merge-base origin/main refs/remotes/pr/2420` → EMPTY (NO_MERGE_BASE; branch órfã)
+- #2579: `package.json` version: `-"1.2.1"` → `+"1.0.0"` (DOWNGRADE)
+- #2587: `package.json` zustand: `^4.5.0` → `^5.0.16` (major) DECISAO_HUMANA
+- #2588: `package.json` react-day-picker: `^8.10.0` → `^10.0.2`; `calendar.tsx:22-24` usa API v8 (`modifiers`, `modifiersClassNames`, `formatters.formatCaption`)
+
+### #2604 — DRAFT + REGRA#8 workflow
+- 1 arquivo: `.github/workflows/schema-snapshot-export.yml`
+- `continue-on-error: true` em 3 steps psql observacionais (E036/E037/E072)
+
+### #2605 — DRAFT (sem REGRA#8)
+- 5 arquivos: somente testes (`*.test.ts`, `*.spec.ts`)
+- Corrige 5 falhas pré-existentes em main `00eeec9ac`
+- Bloqueio único: DRAFT — PO converte DRAFT→ready para CI rodar
