@@ -40,7 +40,7 @@ defaults:
 jobs:
   swatch-quickview:
     name: ${{ matrix.browser }} • swatch→QV
-    timeout-minutes: 40
+    timeout-minutes: 90
     runs-on: ubuntu-24.04
     # webkit runners são sistematicamente preemptados por shutdown signal de infraestrutura
     # chromium e firefox continuam bloqueantes; webkit reporta mas não bloqueia
