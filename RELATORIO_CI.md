@@ -1,14 +1,14 @@
 # RELATÓRIO CI — Promo Gifts V4
 **Gerado em:** 2026-10-27  
 **Branch de correção:** `claude_04/beautiful-gates-bvocz5` (PR #2597)  
-**SHA main no momento do diagnóstico:** `48899b65` → `eb04236c` (commit Lovable mais recente)  
-**HEAD atual do branch:** `68a86eea` (merge commit — integra PR #2621 + resolve conflito edge-authz-manifest)
+**SHA main no momento do diagnóstico:** `48899b65` → `16108a1c` (main atual)  
+**HEAD atual do branch:** `5c154a7c` (merge com main `16108a1c` — atualizado via `update_pr_branch` às 08:24 UTC)
 
 ---
 
 ## 1. Inventário de Workflows — Status na Main
 
-> Base: runs mais recentes por workflow no branch `main` (sha `06c221db`, base do PR #2597).
+> Base: runs mais recentes por workflow no branch `main` (sha `06c221db` → `16108a1c`).
 
 | Workflow | Conclusão | Causa da falha |
 |---|---|---|
@@ -24,8 +24,8 @@
 | **edge-functions-drift-check** | **❌ failure** | **Lovable commitou em `eb04236c` sem deploy — ver §2.5** |
 | Kit Coverage — Integration | ✅ success (após fix) | hookTimeout 60s aplicado no PR |
 | Quote Builder Delivery Quality | ✅ success | — |
-| **Running Copilot Code Review** | **❌ failure** | **Bot externo — irresolvível (ver PENDENCIAS.md)** |
-| **Uptime Monitor** | **❌ failure** | **Transiente — pré-existente (ver PENDENCIAS.md)** |
+| **Running Copilot Code Review** | **❌ failure** | **Bot externo — irresolvível (ver PENDENCIAS.md §1)** |
+| **Uptime Monitor** | **❌ failure** | **Transiente — pré-existente (ver PENDENCIAS.md §2)** |
 | Visual Baseline Tests — Nightly | ✅ success | — |
 
 Workflows **verdes** na main:
@@ -79,13 +79,13 @@ Error: Hook timed out in 30000ms.
 
 ### 2.3 Running Copilot Code Review
 **Causa raiz:** Copilot SWE agent fez cleanup de processos orphan. Bot externo — irresolvível.  
-**Classificação:** IRRESOLVÍVEL. Ver PENDENCIAS.md.
+**Classificação:** IRRESOLVÍVEL. Ver PENDENCIAS.md §1.
 
 ### 2.4 Uptime Monitor
 **Causa raiz:** probe externo transiente. O site estava momentaneamente indisponível.  
-**Classificação:** TRANSIENTE. Ver PENDENCIAS.md.
+**Classificação:** TRANSIENTE. Ver PENDENCIAS.md §2.
 
-### 2.5 edge-functions-drift-check (NOVO — commit Lovable `eb04236c`)
+### 2.5 edge-functions-drift-check (commit Lovable `eb04236c`)
 **Causa raiz:** Commit Lovable `eb04236c` (2026-10-27T05:19 UTC) alterou código de edge function(s) no repositório sem fazer deploy no Supabase. O check "Compare GitHub × Canonical" detectou divergência de conteúdo.  
 **Classificação:** Pré-existente na main, introduzido por Lovable. Não é required check do Gate Final.  
 **Fix:** Disparar `deploy-edge-functions.yml` via `workflow_dispatch` após merge do PR #2597.  
@@ -113,7 +113,7 @@ Error: Hook timed out in 30000ms.
 
 ## 4. Baseline Local (verificado em 2026-10-27)
 
-Executado no container Claude Code no HEAD `ab005b84`:
+Executado no container Claude Code no HEAD `ab005b84` (base das correções):
 
 | Checagem | Resultado | Detalhe |
 |---|---|---|
@@ -126,18 +126,17 @@ Executado no container Claude Code no HEAD `ab005b84`:
 
 ---
 
-## 5. Estado do PR #2597 (atualizado 2026-10-27T08:01 UTC)
+## 5. Estado do PR #2597 (atualizado 2026-10-27T08:25 UTC)
 
 **Branch:** `claude_04/beautiful-gates-bvocz5`  
-**HEAD atual:** `68a86eea8e93170a7c12da5dc91dee892c5b246c`  
-**Merge commit resolve:** conflito com PR #2621 (edge-authz-manifest.ts) + 7 rollback files  
+**HEAD atual:** `5c154a7ceed79723fbaa2298f4e0c24b59265b48` (merge com main `16108a1c` via `update_pr_branch`)  
 **mergeable:** `true`  
 **mergeable_state:** `blocked` — aguardando Gate Final  
-**Gate Final run 40470454890** — `queued` (aguardando runner GitHub Actions):
-- Disparado automaticamente pelo push às 07:59:12 UTC
-- Inclui Gate E40 Schema Drift Check (~30–60 min de execução estimada)
+**Gate Final run 40473290799** — `pending` (aguardando runner GitHub Actions, disparado às 08:24 UTC):
+- Gate E40 Schema Drift Check — estimativa 30–60 min após runner alocar
+- Runs anteriores cancelados automaticamente por `cancel-in-progress: true`
 
-**Merge:** bloqueado — aguardando Gate Final run 40470454890 com `conclusion=success`
+**Merge:** aguardando Gate Final run 40473290799 com `conclusion=success`
 
 ---
 
@@ -169,11 +168,22 @@ Executado no container Claude Code no HEAD `ab005b84`:
 | Ratchet Weekly | ❌ failure | ✅ success |
 | edge-functions-drift-check | ❌ failure (Lovable `eb04236c`) | ✅ success (após deploy pós-merge) |
 | Running Copilot Code Review | ❌ failure | ❌ failure (irresolvível — bot externo) |
-| Gate Final na main | ✅ (base) | ✅ (aguarda merge) |
+| Gate Final na main | ✅ (base) | ✅ (aguarda merge + Gate Final pós-merge) |
 
-**Nenhuma regressão esperada:** todos os testes baseline passam no HEAD `68a86eea`.
+**Nenhuma regressão esperada:** todos os testes baseline passam no HEAD `5c154a7c`.
+
+---
+
+## 8. Próximas ações (bloqueadas por Gate Final)
+
+> ⏳ Gate Final run 40473290799 em `pending` desde 08:24 UTC (aguardando runner).
+
+1. **Quando Gate verde:** squash-merge PR #2597 via `github_merge_pull_request`
+2. **Após merge:** `workflow_dispatch` em `deploy-edge-functions.yml` (fix edge-functions-drift-check)
+3. **Após merge:** verificar Gate Final pós-merge na main com `conclusion=success`
+4. **Confirmar:** workflows antes verdes permanecem verdes após merge
 
 ---
 
 *Gerado por Claude Code — sessão https://claude.ai/code/session_014RkohRYagi3sPiL8jtgot4*  
-*Atualizado: 2026-10-27T08:01 UTC — HEAD `68a86eea` (merge PR#2621); Gate Final run 40470454890 queued*
+*Atualizado: 2026-10-27T08:25 UTC — HEAD `5c154a7c` (merge com main `16108a1c`); Gate Final run 40473290799 pending*
