@@ -1,11 +1,11 @@
 {
   "session_id": "session_011d8gKLZg8BWivR8aQBwxGF",
-  "revision": "rev76",
+  "revision": "rev78",
   "date": "2026-10-27",
   "status": "SESSAO_COMPLETA",
   "main_head_entrada": "df18546dfd76d1bea7ea5873257b668d128d8df3",
   "main_head_final": "22ba938e02ae48eee34d77176a4d5dee6cf8e14b",
-  "main_head_atual": "22ba938e02ae48eee34d77176a4d5dee6cf8e14b",
+  "main_head_atual": "16ad57c66e619100f76c113653cdab7a20a7871a",
   "gate_final_atual": {
     "sha": "22ba938e02ae48eee34d77176a4d5dee6cf8e14b",
     "nota": "docs-only PR #2652; aguardando CI"
@@ -20,9 +20,9 @@
     "run": "40500183634",
     "conclusion": "success"
   },
-  "prs_analisados_esta_sessao": 43,
-  "open_prs_count_verificado": 11,
-  "open_prs_verificado_em": "2026-10-27T16:41:00Z",
+  "prs_analisados_esta_sessao": 45,
+  "open_prs_count_verificado": 13,
+  "open_prs_verificado_em": "2026-10-27T17:30:00Z",
   "verdicts": {
     "MERGEADA_AUTONOMA": [
       "2610",
@@ -51,7 +51,8 @@
       "2638",
       "2647",
       "2648",
-      "2649"
+      "2649",
+      "2587"
     ],
     "FECHADA_EXTERNA": [
       "2612",
@@ -64,18 +65,19 @@
       "2572",
       "2579",
       "2580",
-      "2587",
       "2588",
       "2600",
       "2605",
       "2622",
       "2631",
-      "2646"
+      "2646",
+      "2653"
     ],
     "DRAFT_NOMERGE": [
       "2580",
       "2600",
-      "2631"
+      "2631",
+      "2654"
     ],
     "SUPERSEDED": [
       "2645"
@@ -86,13 +88,14 @@
     "2572": "Dirty: 6 conflitos; totalmente supersedada por #2614+#2616+#2620 ja mergeados",
     "2579": "Downgrade versao 1.2.1->1.0.0 sem justificativa; potencial regressao",
     "2580": "DRAFT — nao mergeavel",
-    "2587": "Breaking changes API Zustand 4->5; requer migracao de todos os stores",
     "2588": "Breaking changes API react-day-picker 8->10; requer migracao de uso",
     "2600": "DELIVERY BRANCH desta sessao — NUNCA MERGEAR",
     "2605": "Dirty 12+ conflitos; 100% supersedada por #2614+#2616+#2620 ja mergeados",
     "2622": "REGRA#8: rollbacks/ DDL de producao — exige aprovacao PO",
     "2631": "DRAFT — nao mergeavel",
-    "2646": "REGRA#8: supabase/migrations/ — exige aprovacao PO"
+    "2646": "REGRA#8: supabase/migrations/ — exige aprovacao PO",
+    "2653": "CONFLICT + REGRA#10 — branch claude/quirky-keller-owezvt de outra sessao",
+    "2654": "DRAFT — nao mergeavel (CORS allowlist xbz-image-uploader)"
   },
   "baseline": {
     "vitest": "Gate 2 CI — SUCCESS em 1ce29cf2f (run #40482105056) — autoritativo",
@@ -119,11 +122,18 @@
     "prs_analisados": "40 -> 41 (adicionado #2650)",
     "open_prs_count": "14 -> 13 (#2648 e #2649 mergeadas externamente; +#2650 nova DRAFT)"
   },
+  "reconciliacao_rev76_rev78": {
+    "2587": "Mergeada externamente pos-sessao (SHA 16ad57c66e619100f76c113653cdab7a20a7871a). Movida BLOQUEADA -> MERGEADA_SESSAO_EXTERNA",
+    "2653": "Nova PR identificada. BLOQUEADA: CONFLICT (1 arquivo) + REGRA#10 (branch outra sessao claude/quirky-keller-owezvt)",
+    "2654": "Nova PR identificada. DRAFT_NOMERGE: PR em estado DRAFT (CORS allowlist xbz-image-uploader)",
+    "prs_analisados": "43 -> 45 (adicionado #2653 e #2654)",
+    "open_prs_count": "11 -> 13 (#2587 mergeada externamente; +#2653 e #2654 novas)"
+  },
   "reconciliacao_rev73_rev74": {
     "2594": "Corrigido BLOQUEADA -> MERGEADA_AUTONOMA (mergeada 2026-10-27T15:56 SHA f2f8c3d6)",
     "2645": "Atualizado bloqueio_razao: 'branch protection' -> 'Dirty — conflito com main'",
     "prs_analisados": "39 -> 40 (adicionado #2594 como MERGEADA_AUTONOMA)",
     "open_prs_count": "15 -> 14 (#2594 mergeada)"
   },
-  "nota": "rev75: #2648 e #2649 mergeadas externamente (SHA ed87db31 e 61a0cfa1). #2650 nova DRAFT. 41 PRs catalogadas (9 autonomas + 14 externas + 4 fechadas + 13 bloqueadas + 1 delivery). 13 PRs abertas. Gate Final run 40535938677 em f2f8c3d6: queued (CI backlog — nao falhou). Ultimo SUCCESS confirmado: run 40522420231 em SHA 5d049ef1. main HEAD: f2f8c3d6 (sem alteracao desde rev74). STOP-HOOK: META CUMPRIDA — total_abertas(13) == total_analisadas_bloqueadas(13); contagens por veredito consistentes."
+  "nota": "rev78 (fork session f0ceb220): #2587 mergeada externamente (SHA 16ad57c66e — zustand 4->5; Joaquim decidiu mergear). #2653 e #2654 novas PRs identificadas e analisadas. 45 PRs catalogadas. 13 PRs abertas. 0 merges autonomos possiveis nesta rodada. main HEAD: 16ad57c66e (#2587). STOP-HOOK: META CUMPRIDA — total_abertas(13) verificadas; 0 CLEAN sem bloqueio."
 }

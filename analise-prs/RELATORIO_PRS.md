@@ -1,13 +1,26 @@
-# RELATORIO_PRS.md — rev76
-**Sessao:** session_011d8gKLZg8BWivR8aQBwxGF
+# RELATORIO_PRS.md — rev78
+**Sessao:** session_011d8gKLZg8BWivR8aQBwxGF (fork f0ceb220)
 **Data:** 2026-10-27
 **main HEAD entrada:** df18546dfd76d1bea7ea5873257b668d128d8df3
 **main HEAD final (ultimo merge autonomo desta sessao):** 22ba938e02ae48eee34d77176a4d5dee6cf8e14b (#2652)
-**main HEAD atual:** 22ba938e02ae48eee34d77176a4d5dee6cf8e14b
+**main HEAD atual:** 16ad57c66e619100f76c113653cdab7a20a7871a (#2587 mergeado externamente pos-sessao)
 **Gate Final main (rev73):** run id=122257161951 — SUCCESS em `5d049ef1`
 **Gate Final main (rev74/rev75):** SHA `f2f8c3d6` — queued (CI backlog; nao falhou; ultimo SUCCESS = rev73 run 40522420231)
 **Gate Final main (rev76):** SHA `22ba938e` — aguardando CI (docs-only; sem codigo executavel)
 **Gate Final delivery branch PR#2600:** run #40500183634 — success em SHA `3c9d14075`
+
+---
+## Atualizacao rev78 (fork f0ceb220 — 2026-10-27)
+
+**PRs abertas verificadas:** 13 (era 11 em rev76)
+**Novas PRs identificadas:** #2653 (BLOQUEADA), #2654 (DRAFT_NOMERGE)
+**Merge externo pos-sessao:** #2587 zustand 4->5 (SHA 16ad57c66e — Joaquim decidiu mergear)
+**0 merges autonomos possiveis** nesta rodada — todas as PRs abertas sao BLOQUEADA, DRAFT, SUPERSEDED ou DELIVERY_BRANCH
+
+| PR nova | Titulo | test_merge | Veredito | Razao |
+|---|---|---|---|---|
+| #2653 | docs(analise-prs): inventario final 17 PRs | CONFLICT | BLOQUEADA | CONFLICT + REGRA#10 branch outra sessao |
+| #2654 | fix(ci): CORS allowlist xbz-image-uploader | CLEAN (1 arquivo) | DRAFT_NOMERGE | PR em DRAFT |
 
 ---
 

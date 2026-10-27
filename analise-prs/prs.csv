@@ -6,7 +6,7 @@ number,title,state,verdict,blocked_reason,sha_merge,merged_by
 2582,"chore(ci): metricas semanais 2026-W44",closed,MERGEADO_SESSAO_EXTERNA,,,github-actions[bot]
 2585,"chore(deps): bump prod deps minor/patch 2026-10-26",closed,MERGEADO_SESSAO_EXTERNA,,145da71bb8c451eebadc75c4bb059397f8d468f7,session_externa
 2586,"chore(deps): bump dev deps minor/patch 2026-10-26",closed,MERGEADO_SESSAO_EXTERNA,,fb04592655cf81d1a6aad79739f2cc2f1c2236c7,session_externa
-2587,"chore(deps): bump zustand from 4.5.7 to 5.0.16",open,BLOQUEADA,"Dependabot: Zustand 4->5 breaking API changes — exige migracao de stores",,
+2587,"chore(deps): bump zustand from 4.5.7 to 5.0.16",closed,MERGEADA_SESSAO_EXTERNA,,16ad57c66e619100f76c113653cdab7a20a7871a,adm01-debug
 2588,"chore(deps): bump react-day-picker from 8.10.2 to 10.0.2",open,BLOQUEADA,"Dependabot: react-day-picker 8->10 breaking API changes — exige migracao de componentes",,
 2589,"chore(deps): bump globals from 15.x to 17.x",closed,MERGEADO_SESSAO_EXTERNA,,9e2746a31914e714f1b96779f26808c0f3685ff8,session_externa
 2590,"chore(deps): bump codeql-action/upload-sarif 4.39.1",closed,MERGEADO_SESSAO_EXTERNA,,c6e94d3a6c8e,session_externa
@@ -38,3 +38,5 @@ number,title,state,verdict,blocked_reason,sha_merge,merged_by
 2649,"fix(e2e): corrige falhas em admin-critical-routes e personalization-auth-redirect",closed,MERGEADA_SESSAO_EXTERNA,,61a0cfa1714661f752273cf864b335eb217ea134,adm01-debug
 2650,"fix(e2e): corrige testids e landing state em catalog.spec e kit-builder.spec",closed,MERGEADO_AUTONOMO,,f0689734b38e79edda24cf80f5df19abae941015,session_011d8gKLZg8BWivR8aQBwxGF
 2652,"docs(e15): recibo aplicacao migration 20261027140000",closed,MERGEADO_AUTONOMO,,22ba938e02ae48eee34d77176a4d5dee6cf8e14b,session_011d8gKLZg8BWivR8aQBwxGF
+2653,"docs(analise-prs): inventario final 17 PRs + regras-de-negocio.md",open,BLOQUEADA,"CONFLICT + REGRA#10 — branch claude/quirky-keller-owezvt de outra sessao",,
+2654,"fix(ci): adiciona xbz-image-uploader ao SERVER_ONLY_ALLOWLIST do CORS gate",open,DRAFT_NOMERGE,"PR em estado DRAFT",,
