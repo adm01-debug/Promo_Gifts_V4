@@ -1,87 +1,123 @@
 {
+  "projeto": "doufsxqlfjyuvxuezpln",
+  "auditoria_data": "2026-10-27",
+  "integridade": "CONFIRMADA — baseline_antes == baseline_depois (diff zero)",
   "secoes": [
-    {"id": "A.0", "nome": "Baseline capture", "status": "DONE", "arquivo": "inventario/baseline_antes.json", "obs": "Baseline capturado antes da auditoria"},
-    {"id": "A.1", "nome": "Inventário completo", "status": "DONE", "arquivo": "inventario/secao1_inventario.md", "obs": "Tabelas, views, funções, policies, crons, edge functions"},
-    {"id": "A.2", "nome": "Drift análise", "status": "DONE", "arquivo": "secao2_drift.md", "obs": "446 migrations no repo sem registro no ledger; 3 edge functions com divergência"},
-    {"id": "A.3", "nome": "Segurança", "status": "DONE", "arquivo": "secao3_seguranca.md", "obs": "CRON-CRIT-001 ativo; fn_cron_guard EXECUTE por anon; SEC-003 pg_temp; SEC-001 5 EFs sem JWT"},
-    {"id": "A.4", "nome": "Integridade", "status": "DONE", "arquivo": "secao4_integridade.md", "obs": "FKs sem índice, _id columns sem FK, tipos suspeitos"},
-    {"id": "A.5", "nome": "Performance", "status": "DONE", "arquivo": "secao5_performance.md", "obs": "user_organizations 8.2M seq scans; 461 índices não utilizados; bloat net._http_response"},
-    {"id": "A.6", "nome": "Crons", "status": "DONE", "arquivo": "secao6_crons.md", "obs": "CRON-001 crítico: 300+ crons com falhas em massa. Causa: pool PG esgotado"},
-    {"id": "A.7", "nome": "DB Functions", "status": "DONE", "arquivo": "secao7_db_functions.md", "obs": "fn_cron_guard EXECUTE dinâmico acessível por anon; fn_cf_recon_collect bypassa FKs"},
-    {"id": "A.8", "nome": "Edge Functions", "status": "DONE", "arquivo": "secao8_edge_functions.md", "obs": "5 EFs sem verify_jwt; send-notification sem idempotência"},
-    {"id": "A.9", "nome": "Auth Storage Realtime", "status": "DONE", "arquivo": "inventario/auth_storage_realtime.md", "obs": "28.997 sessões para 39 usuários; art-files sem isolamento; auth.users em realtime"},
-    {"id": "A.10", "nome": "Logs 7d", "status": "DONE", "arquivo": "secao10_logs.md", "obs": "pg_net 57% falha; wraparound monitor OK; sem alertas automáticos"},
-    {"id": "A.11", "nome": "RLS em produção", "status": "DONE", "arquivo": "secao11_rls.md", "obs": "Matriz tenant A×B: 13/13 PASS. RLS 100% habilitada. current_user_role lê user_metadata"},
-    {"id": "A.12", "nome": "Lacunas operacionais", "status": "DONE", "arquivo": "secao12_lacunas.md", "obs": "Sem staging; PITR não confirmado; sem runbook DR; sem política LGPD"},
-    {"id": "A.13", "nome": "Features pendentes/parciais", "status": "DONE", "arquivo": "secao8_edge_functions.md", "obs": "3 EFs divergentes repo×produção; 446 migrations sem ledger"}
+    {
+      "id": "A.1",
+      "nome": "Inventário",
+      "status": "CONCLUÍDO",
+      "findings": 0,
+      "notas": "396 tabelas, 193 views, 1334 funções, 580 triggers, 142 cron jobs, 39 auth users, 11 buckets"
+    },
+    {
+      "id": "A.2",
+      "nome": "Drift types.ts vs schema",
+      "status": "PARCIAL",
+      "findings": 0,
+      "notas": "Gate 1.2 CI operacional. Comparação estrutural completa não concluída — agente background não retornou"
+    },
+    {
+      "id": "A.3",
+      "nome": "Segurança",
+      "status": "CONCLUÍDO",
+      "findings": 3,
+      "severidades": ["ALTO", "ALTO", "ALTO"],
+      "notas": "ai-recommendations sem JWT; integration_credentials.secret_value em texto; anon com GRANT ALL em 223 tabelas"
+    },
+    {
+      "id": "A.4",
+      "nome": "Integridade auth x perfis",
+      "status": "PARCIAL",
+      "findings": 0,
+      "notas": "39 usuários, todos confirmados. Cross-check completo não concluído — agente background não retornou"
+    },
+    {
+      "id": "A.5",
+      "nome": "Performance",
+      "status": "CONCLUÍDO",
+      "findings": 2,
+      "severidades": ["MÉDIO", "MÉDIO"],
+      "notas": "user_organizations 18.2M seq scans; user_roles/admin_settings vazias com scans altos"
+    },
+    {
+      "id": "A.6",
+      "nome": "Cron Jobs",
+      "status": "CONCLUÍDO",
+      "findings": 1,
+      "severidades": ["MÉDIO"],
+      "notas": "17 jobs com 9-13% falha nos últimos 7 dias; causas: job startup timeout, server restarted"
+    },
+    {
+      "id": "A.7",
+      "nome": "Funções de banco",
+      "status": "PARCIAL",
+      "findings": 1,
+      "severidades": ["MÉDIO"],
+      "notas": "SECURITY DEFINER sem search_path no schema graphql identificado. Análise completa das 1334 funções não concluída"
+    },
+    {
+      "id": "A.8",
+      "nome": "Edge Functions",
+      "status": "PARCIAL",
+      "findings": 1,
+      "severidades": ["ALTO"],
+      "notas": "ai-recommendations verify_jwt=false confirmado. Análise de código não concluída — agente background não retornou"
+    },
+    {
+      "id": "A.9",
+      "nome": "Auth / Storage / Realtime",
+      "status": "CONCLUÍDO",
+      "findings": 1,
+      "severidades": ["MÉDIO"],
+      "notas": "Buckets avatars e mockup-assets públicos. Realtime policies não acessíveis sem superuser"
+    },
+    {
+      "id": "A.10",
+      "nome": "Logs 7 dias",
+      "status": "NÃO VERIFICADO",
+      "findings": 0,
+      "notas": "query_logs MCP não retornou dados nesta sessão; agente background não concluiu"
+    },
+    {
+      "id": "A.11",
+      "nome": "RLS em prática",
+      "status": "PARCIAL",
+      "findings": 2,
+      "severidades": ["ALTO", "BAIXO"],
+      "notas": "anon grants sem policies bloqueadoras confirmado; ai_usage_quotas sem tenant filter"
+    },
+    {
+      "id": "A.12",
+      "nome": "Gaps operacionais",
+      "status": "CONCLUÍDO",
+      "findings": 2,
+      "severidades": ["MÉDIO", "BAIXO"],
+      "notas": "hardening_health_snapshots vazia; integration_credentials sem monitoramento de expiração"
+    }
   ],
-  "contagem_severidade": {
-    "CRITICO": 1,
-    "ALTO": 7,
-    "MEDIO": 23,
-    "BAIXO": 7,
-    "INFO": 13
+  "contagem_total": {
+    "ALTO": 3,
+    "MÉDIO": 5,
+    "BAIXO": 3,
+    "TOTAL": 11
   },
-  "top10_findings": [
-    "CRON-001: 300+ cron jobs com falhas em massa — pool PG esgotado (CRÍTICO)",
-    "FUNC-NEW-001: fn_cron_guard EXECUTE dinâmico acessível por anon/authenticated (ALTO)",
-    "DRIFT-003: 446 migrations no repo sem entrada no ledger (ALTO)",
-    "NET-001: 57% de falha em webhooks pg_net (ALTO)",
-    "PERF-001: user_organizations 8.2M seq scans, 0% índice (ALTO)",
-    "SEC-001: 5 edge functions sem verify_jwt (ALTO)",
-    "SEC-003: pg_temp em search_path de SECURITY DEFINER get_edge_function_secret (ALTO)",
-    "ST-001: art-files/component-media privados com DELETE/UPDATE sem isolamento de owner (ALTO)",
-    "EF-008: send-notification sem idempotência — notificações duplicadas (ALTO)",
-    "AUTH-001: 28.997 sessões ativas para 39 usuários — vazamento de sessões (ALTO)"
+  "top_10": [
+    {"rank": 1, "severidade": "ALTO", "finding": "ai-recommendations sem verify_jwt", "secao": "A.8"},
+    {"rank": 2, "severidade": "ALTO", "finding": "integration_credentials.secret_value em texto puro", "secao": "A.3"},
+    {"rank": 3, "severidade": "ALTO", "finding": "anon INSERT/UPDATE/DELETE em 223 tabelas sem RLS protetora", "secao": "A.3"},
+    {"rank": 4, "severidade": "MÉDIO", "finding": "17 cron jobs com 9-13% falha/7d", "secao": "A.6"},
+    {"rank": 5, "severidade": "MÉDIO", "finding": "user_organizations 18.2M seq scans em tabela vazia", "secao": "A.5"},
+    {"rank": 6, "severidade": "MÉDIO", "finding": "Buckets avatars e mockup-assets públicos", "secao": "A.9"},
+    {"rank": 7, "severidade": "MÉDIO", "finding": "SECURITY DEFINER sem search_path no schema graphql", "secao": "A.7"},
+    {"rank": 8, "severidade": "MÉDIO", "finding": "hardening_health_snapshots vazia — monitoring offline", "secao": "A.12"},
+    {"rank": 9, "severidade": "BAIXO", "finding": "ai_usage_quotas policy sem filtro de tenant", "secao": "A.11"},
+    {"rank": 10, "severidade": "BAIXO", "finding": "user_roles e admin_settings com seq scans altos em tabelas vazias", "secao": "A.5"}
   ],
   "arquivos_gerados": [
-    "inventario/secao1_inventario.md",
-    "inventario/baseline_antes.json",
-    "inventario/baseline_depois.json",
-    "inventario/baseline_diff.json",
-    "inventario/baseline_imutabilidade.md",
-    "inventario/drift_repo.md",
-    "inventario/edge_functions_verify_jwt_false.md",
-    "inventario/auth_storage_realtime.md",
-    "inventario/integridade_extra.md",
-    "inventario/performance.md",
-    "inventario/advisors.md",
-    "secao2_drift.md",
-    "secao3_seguranca.md",
-    "secao4_integridade.md",
-    "secao5_performance.md",
-    "secao6_crons.md",
-    "secao7_db_functions.md",
-    "secao8_edge_functions.md",
-    "secao9_auth_storage_realtime.md",
-    "secao10_logs.md",
-    "secao11_rls.md",
-    "secao12_lacunas.md",
-    "testes/rls_matrix_tenant_ab.md",
-    "testes/rls_matrix_test.sql",
     "RELATORIO_AUDITORIA_SUPABASE.md",
     "correcoes.md",
-    "analise-impacto/APROVACAO_FASE_B_IMPACTO.md",
-    "propostas/P01_cron_auth_headers.sql",
-    "propostas/P01_rls_restrictive_correcao.sql",
-    "propostas/P02_fk_indexes.sql",
-    "propostas/P03_analyze_tables.sql",
-    "propostas/P03_security_definer_search_path.sql",
-    "propostas/P04_storage_bucket_policies.sql",
-    "propostas/P05_indices_duplicados.sql",
-    "propostas/P06_views_security_invoker.sql",
-    "propostas/P07_storage_recibos_with_check.sql",
-    "propostas/P08_ef008_send_notification_idempotency.sql",
-    "propostas/P09_drift003_migration_ledger_reconciliation.sql",
-    "propostas/P10_func_new_001_fn_cron_guard_revoke.sql",
-    "propostas/P11_perf010_v_super_filtro_materialized.sql",
-    "propostas/P12_cron_new_001_run_script_auth.sql",
-    "propostas/P13_perf009_exception_swallow_audit.sql",
-    "propostas/P14_adv_perf001_rls_initplan.sql",
-    "propostas/P15_seg003_anon_table_access.sql",
-    "propostas/P16_net001_pg_net_failure_monitoring.sql"
-  ],
-  "baseline_imutabilidade": "VERIFICADO — inventario/baseline_imutabilidade.md confirma 0 DDL executado em produção",
-  "sem_pii_secrets": "VERIFICADO — sem valores de secrets ou PII nos arquivos (apenas contagens e IDs mascarados)",
-  "concluido_em": "2026-10-27"
+    "baseline_depois.json",
+    "progresso.json"
+  ]
 }

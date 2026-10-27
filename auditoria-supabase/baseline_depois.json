@@ -1,0 +1,30 @@
+{
+  "capturado_em": "2026-10-27T22:33:10Z",
+  "fase": "depois",
+  "nota": "Auditoria SOMENTE LEITURA — nenhuma escrita feita em producao",
+  "projeto": "doufsxqlfjyuvxuezpln",
+  "snapshot": {
+    "tables": 396,
+    "views": 193,
+    "cron_jobs": 142,
+    "rls_policies": 960,
+    "functions": 1334,
+    "triggers": 580,
+    "auth_users": 39,
+    "storage_buckets": 11
+  },
+  "diff_esperado": "ZERO — qualquer diferenca indica escrita nao autorizada",
+  "buckets": [
+    {"id": "scripts", "public": false},
+    {"id": "component-media", "public": false},
+    {"id": "personalization-images", "public": false},
+    {"id": "mockup-art-files", "public": false},
+    {"id": "quarantine", "public": false},
+    {"id": "supplier-logos", "public": false},
+    {"id": "product-videos", "public": false},
+    {"id": "recibos-entrega", "public": false},
+    {"id": "avatars", "public": true},
+    {"id": "art-files", "public": false},
+    {"id": "mockup-assets", "public": true}
+  ]
+}
