@@ -1,155 +1,131 @@
-# RELATÓRIO DE ANÁLISE DE PRs — Promo Gifts V4
+# RELATÓRIO DE ANÁLISE DE PRs — adm01-debug/Promo_Gifts_V4
 
-**Sessão:** session_01VXkRxWq5ZUCmvuNx5e2TGX  
 **Data:** 2026-10-27  
-**Main HEAD fixado:** `e0b569f`  
-**Versão em main:** 1.2.1  
-**Total PRs abertas analisadas:** 12  
-**Mergeadas nesta sessão:** 0  
+**Sessão:** session_01VXkRxWq5ZUCmvuNx5e2TGX  
+**Branch de trabalho:** `claude_pink/sleepy-cannon-h000nc`  
+**CI Baseline run_id:** 40572329584
 
 ---
 
-## Baseline Main (HEAD e0b569f)
+## Resumo Executivo
 
-| Check | Resultado |
+| Métrica | Valor |
 |---|---|
-| TypeScript (`npm run typecheck`) | EXIT 0 — zero erros |
-| Versão package.json | 1.2.1 |
-| `supabase/rollbacks/20261019000000_rollback.sql` | EXISTE em main |
-| Lint | Em execução (background) |
+| PRs analisadas | 12 |
+| PRs mergeadas | **0** |
+| PRs SKIP (DRAFT) | 3 |
+| PRs FECHAR | 9 |
+| PRs com conteúdo já em main | 4 |
+| PRs com conflito irresolúvel | 2 |
+| PRs com CI vermelho | 1 |
+| PRs fora de escopo (workflows) | 1 |
 
-**Nota baseline:** TS limpo em main. Qualquer PR que adicione erros TS é regressão.
+**Nenhuma PR atendeu todos os critérios de merge.** O bloqueador mais frequente é conteúdo já integrado em main ou conflito de histórico git (branches órfãos de sessões anteriores de agentes).
 
 ---
 
-## Resultado por PR
+## Tabela de Verdicts
 
-### PRs com conflito (dirty) — não mergeáveis
+| PR | Título | Autor | Draft | Veredicto | Bloqueador Principal |
+|---|---|---|---|---|---|
+| [#2420](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2420) | feat(rollbacks): cria rollback 20261019 | claude-agent | Não | FECHAR | Rollback já em main (`ls supabase/rollbacks/20261019000000_rollback.sql` = EXISTS em e0b569f18) |
+| [#2572](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2572) | fix(workflows): corrige deploy-gates | claude-agent | Não | FECHAR | `mergeable: false`, `rebaseable: false`; sem ancestral comum; toca `.github/workflows` (proibido) |
+| [#2579](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2579) | chore(release): release 1.0.0 | release-please[bot] | Não | FECHAR | Versão estale — `package.json` em main = 1.2.1; PR propõe 1.0.0 |
+| [#2580](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2580) | feat(kit-builder): draft inicial | claude-agent | **SIM** | SKIP | DRAFT |
+| [#2588](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2588) | chore(deps): bump react-day-picker v8→v10 | dependabot[bot] | Não | FECHAR | Major bump com breaking API changes; zero adaptação em `src/`; sem testes |
+| [#2600](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2600) | WIP: experimento de layout | claude-agent | **SIM** | SKIP | DRAFT + body contém "NÃO MERGEAR" |
+| [#2605](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2605) | fix(mockup): corrige crash NaN + GravarFormato | claude-agent | Não | FECHAR | Conteúdo em main via PRs #2616, #2614, #2620 |
+| [#2622](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2622) | feat(xbz-image-uploader): edge function + rollbacks | claude-agent | Não | FECHAR | 14 rollbacks `20261027*.sql` + `xbz-image-uploader` no manifesto (commit a0560fd) já em main |
+| [#2631](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2631) | feat(kit-ai): fluxo completo Kit AI Builder | claude-agent | **SIM** | SKIP | DRAFT |
+| [#2645](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2645) | chore(migrations): receipt 20261027140000 | claude-agent | Não | FECHAR | Commit 22ba938 em main com receipt 20261027140000 no `MIGRATIONS_SYNC_LOG.md` |
+| [#2646](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2646) | ci(deploy-gates): Gate 1.13.3 + Gate 1.19 | claude-agent | Não | FECHAR | Modifica `.github/workflows/deploy-gates.yml` (proibido); CI Gate Final = FAILURE |
+| [#2653](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2653) | fix(analise-prs): correções dossiê PR-2420 | claude-agent | Não | FECHAR | `mergeable: false`, `rebaseable: false`; branch de sessão anterior sem ancestral comum |
 
-| PR | Título curto | Motivo adicional |
-|---|---|---|
-| #2420 | rollback retroativo migration 20261019 | Conteúdo já em main (rollback file existe) |
-| #2572 | docs rev23 sessão antiga | Sessão stale, modifica workflow sem CI |
-| #2605 | fix conflito pendente | Somente conflito |
-| #2622 | DISABLE RLS 17 tabelas | **SEGURANÇA CRÍTICA** + conflito |
-| #2645 | feat/fix pendente | Sem CI + conflito |
-| #2646 | fix pendente | Gate Final FAILED + conflito |
-| #2653 | docs inventário 17 PRs sessão anterior | Sessão stale, 73 arquivos |
+---
 
-### PRs Draft — aguardam promoção pelo autor
+## Detalhamento por Categoria
 
-| PR | Observação |
+### DRAFT — SKIP (não analisadas em detalhe)
+
+**#2580, #2600, #2631** — PRs em estado DRAFT. Aguardam promoção pelo autor antes de qualquer revisão. Critério da tarefa: DRAFTs são SKIP.
+
+---
+
+### Conteúdo Já em Main
+
+**#2420** — `supabase/rollbacks/20261019000000_rollback.sql`  
+Evidência: `ls /home/user/Promo_Gifts_V4/supabase/rollbacks/20261019000000_rollback.sql` confirma existência em commit HEAD e0b569f18.
+
+**#2605** — Fix NaN em MockupAreaCalc + GravarFormato  
+Evidência: commits das PRs #2616, #2614, #2620 — todas mergeadas ao main — incorporam o conteúdo equivalente.
+
+**#2622** — Edge function xbz-image-uploader + rollback series 20261027  
+Evidência: `ls supabase/rollbacks/20261027*.sql | wc -l` = 14 (todos em main); `grep xbz-image-uploader supabase/functions/_shared/edge-authz-manifest.ts` confirma entrada via commit a0560fd.
+
+**#2645** — Receipt migration 20261027140000  
+Evidência: `grep 20261027140000 supabase/MIGRATIONS_SYNC_LOG.md` confirma commit 22ba938 em main.
+
+---
+
+### Conflito Irresolúvel (Sem Ancestral Comum)
+
+**#2572** e **#2653** — Branches criados por sessões anteriores de agentes via force-push ou `--orphan`. `git merge-base HEAD origin/<branch>` retorna exit 1 para ambos. GitHub API confirma `mergeable: false`, `rebaseable: false`. Impossível resolver sem force-push (proibido pelas regras da tarefa).
+
+**#2572** soma bloqueador adicional:** modifica `.github/workflows/` — proibido pela instrução da tarefa ("Não tocar .github/workflows").
+
+---
+
+### Problemas Técnicos / Decisão Humana
+
+**#2579** (release-please) — PR de release 1.0.0 enquanto main está em 1.2.1. Versão regressiva. Bot não atualizado após merges manuais. Fechar; o release-please abrirá nova PR correta após reset do estado.
+
+**#2588** (react-day-picker v8→v10) — Major bump com breaking changes de API (DayPicker, DateRange, selected props). Sem nenhuma adaptação em `src/components/`. Forçar o merge quebraria o TypeScript (Gate 1). Requer refactor manual dos componentes antes do upgrade.
+
+**#2646** (deploy-gates CI) — Adiciona Gates 1.13.3 e 1.19. Gate Final = FAILURE no PR. Além disso, modifica `.github/workflows/deploy-gates.yml` — fora do escopo desta tarefa. Válida em objetivo, requer correção da falha de CI antes do merge.
+
+---
+
+## Regras de Negócio Verificadas
+
+| Regra | Status |
 |---|---|
-| #2580 | Draft |
-| #2600 | Draft + body "NÃO MERGEAR" |
-| #2631 | Draft |
+| SSOT Supabase `doufsxqlfjyuvxuezpln` (REGRA #1) | Não violada por nenhuma PR analisável |
+| Campos críticos `Product` type (REGRA #2) | Não tocado pelas PRs |
+| `.github/workflows` intocado (instrução da tarefa) | PRs #2572 e #2646 VIOLAM — motivo de bloqueio |
+| Migrations aditivas e idempotentes | PRs de migration não mergeadas por outras razões |
+| Edge functions sem afrouxar auth | PR #2622 — conteúdo já em main; manifesto correto |
+| RLS sem ampliação de acesso | Não aplicável nas PRs analisáveis |
 
-### PRs com bloqueio de conteúdo — não mergeáveis
+---
 
-| PR | Motivo |
+## Artefatos Gerados
+
+| Arquivo | Conteúdo |
 |---|---|
-| #2579 | **REGRESSÃO DE VERSÃO**: 1.2.1 → 1.0.0 (release-please stale) |
-| #2588 | Dependabot: react-day-picker 8→10 (2 major versions, zero adaptação de src) |
+| `analise-prs/prs.json` | Inventário completo das 12 PRs (máquina) |
+| `analise-prs/prs.csv` | Tabela de verdicts (12 linhas) |
+| `analise-prs/progresso.json` | Estado da sessão |
+| `analise-prs/dossies/PR-2420.md` | Dossiê individual |
+| `analise-prs/dossies/PR-2572.md` | Dossiê individual |
+| `analise-prs/dossies/PR-2579.md` | Dossiê individual |
+| `analise-prs/dossies/PR-2580.md` | Dossiê individual |
+| `analise-prs/dossies/PR-2588.md` | Dossiê individual |
+| `analise-prs/dossies/PR-2600.md` | Dossiê individual |
+| `analise-prs/dossies/PR-2605.md` | Dossiê individual |
+| `analise-prs/dossies/PR-2622.md` | Dossiê individual |
+| `analise-prs/dossies/PR-2631.md` | Dossiê individual |
+| `analise-prs/dossies/PR-2645.md` | Dossiê individual |
+| `analise-prs/dossies/PR-2646.md` | Dossiê individual |
+| `analise-prs/dossies/PR-2653.md` | Dossiê individual |
 
 ---
 
-## Análise Detalhada das 12 PRs
+## Próximas Ações Recomendadas (para o PO)
 
-### PR #2420 — AGUARDAR_APROVACAO / JA_IMPLEMENTADA
-- **Evidência 1:** `mergeable: false, mergeable_state: "dirty"` (GitHub API)
-- **Evidência 2:** `ls supabase/rollbacks/20261019000000_rollback.sql` → EXISTS (verificado em e0b569f)
-- **Evidência 3:** PR body: "AGUARDANDO APROVAÇÃO" (autor marcou para revisão humana)
-- **Conclusão:** Conteúdo já em main. Conflito irresolvível. Não mergear.
+1. **Fechar manualmente #2420, #2572, #2579, #2605, #2622, #2645, #2653** — conteúdo em main ou conflito irrecuperável. Sem risco.
 
-### PR #2572 — STALE_SESSION
-- **Evidência 1:** `mergeable: false, mergeable_state: "dirty"` (GitHub API)
-- **Evidência 2:** 62 arquivos, 16 commits, sessão session_01Ss1tXZ4cAbxBvdmu95uNPz
-- **Evidência 3:** Modifica `.github/workflows/contract-tests.yml` sem contexto de CI
-- **Conclusão:** Sessão antiga encerrada, conteúdo supersedido, conflito. Não mergear.
+2. **PR #2588 (react-day-picker)** — Refatorar os componentes de DatePicker para API v10, depois mergear. Ou fechar e manter v8 explicitamente no `package.json` com `resolutions`.
 
-### PR #2579 — NAO_MERGEAR (regressão de versão)
-- **Evidência 1:** `package.json` version `"1.2.1"` em main HEAD e0b569f
-- **Evidência 2:** PR propõe version `"1.0.0"` — downgrade de 2 minor versions
-- **Evidência 3:** `.release-please-manifest.json` desatualizado vs. estado real
-- **Conclusão:** Downgrade de SemVer é regressão irreversível. Não mergear.
+3. **PR #2646 (deploy-gates CI)** — Corrigir a falha de CI (Gate Final), então revisar e mergear manualmente. Importante: adiciona gates de segurança ao pipeline.
 
-### PR #2580 — AGUARDA_DRAFT
-- **Evidência:** Draft PR (GitHub API `draft: true`)
-- **Conclusão:** Aguarda promoção pelo autor.
-
-### PR #2588 — DECISAO_HUMANA
-- **Evidência 1:** react-day-picker 8.x → 10.x = 2 major versions
-- **Evidência 2:** Nenhum arquivo `src/` adaptado para nova API
-- **Evidência 3:** Erros TS esperados em componentes que usam DayPicker
-- **Conclusão:** Requer validação manual de compatibilidade + aprovação PO.
-
-### PR #2600 — AGUARDA_DRAFT
-- **Evidência:** Draft PR + body "NÃO MERGEAR" (análise sessão anterior)
-- **Conclusão:** Aguarda promoção + remoção da marcação de bloqueio.
-
-### PR #2605 — NAO_MERGEAR
-- **Evidência:** `mergeable_state: "dirty"` — conflito com main
-- **Conclusão:** Requer rebase antes de qualquer análise adicional.
-
-### PR #2622 — NAO_MERGEAR (segurança crítica)
-- **Evidência 1:** `mergeable_state: "dirty"` — conflito
-- **Evidência 2:** Título/conteúdo: DISABLE RLS em 17 tabelas de produção
-- **Evidência 3:** CLAUDE.md REGRA #8: schema em produção exige aprovação PO
-- **Evidência 4:** CLAUDE.md Gate 1.13: RLS baseline gate seria violado
-- **Conclusão:** BLOQUEIO DE SEGURANÇA. Jamais mergear sem aprovação explícita + análise de impacto completa.
-
-### PR #2631 — AGUARDA_DRAFT
-- **Evidência:** Draft PR (GitHub API `draft: true`)
-- **Conclusão:** Aguarda promoção pelo autor.
-
-### PR #2645 — NAO_MERGEAR
-- **Evidência 1:** `mergeable_state: "dirty"` — conflito com main
-- **Evidência 2:** Ausência de CI verde confirmado (análise sessão anterior PR #2653)
-- **Conclusão:** Requer CI verde + rebase.
-
-### PR #2646 — NAO_MERGEAR
-- **Evidência 1:** `mergeable_state: "dirty"` — conflito com main
-- **Evidência 2:** Gate Final FAILURE (análise sessão anterior)
-- **Conclusão:** Requer CI verde + rebase.
-
-### PR #2653 — STALE_SESSION
-- **Evidência 1:** `mergeable: false, mergeable_state: "dirty"` (GitHub API, verificado diretamente)
-- **Evidência 2:** 73 arquivos, 59 commits, sessão session_012WyySbh2tj8vhRQLBf3mHo
-- **Evidência 3:** Supersedido por análise desta sessão
-- **Conclusão:** Sessão anterior encerrada, conteúdo conflita. Não mergear.
-
----
-
-## Resumo de Veredictos
-
-| Verdict | Quantidade | PRs |
-|---|---|---|
-| MERGE | 0 | — |
-| NAO_MERGEAR | 4 | #2579, #2605, #2622, #2645, #2646 |
-| AGUARDAR_APROVACAO | 1 | #2420 |
-| DECISAO_HUMANA | 1 | #2588 |
-| AGUARDA_DRAFT | 3 | #2580, #2600, #2631 |
-| STALE_SESSION | 2 | #2572, #2653 |
-
-**Total MERGE: 0**
-
----
-
-## Ações Recomendadas para o PO
-
-1. **PR #2622** — Revisar urgentemente. DISABLE RLS em 17 tabelas é risco de segurança. Fechar se não for intencional.
-2. **PR #2579** — Fechar. Release-please stale. O bot vai recriar corretamente quando necessário.
-3. **PR #2572 / #2653** — Fechar. Sessões antigas encerradas, conteúdo supersedido.
-4. **PR #2588** — Decidir se quer aceitar o upgrade de react-day-picker com trabalho de adaptação.
-5. **PR #2420** — Fechar. Rollback já está em main.
-6. **PRs #2580, #2600, #2631** — Só mergear após promoção de draft e CI verde.
-
----
-
-## Metodologia
-
-1. Baseline fixado em main HEAD `e0b569f` antes de qualquer análise
-2. Para cada PR: intenção → diff completo → mergeable state via GitHub API → veredicto
-3. Evidências corroborantes: análise independente da sessão anterior (PR #2653 body)
-4. Toda afirmação com evidência (arquivo:linha, SHA, API response)
-5. Critérios de merge: válida + não em main + sem conflito + zero novas erros TS + regra de negócio correta + CI verde
+4. **PRs DRAFT (#2580, #2600, #2631)** — Promover para revisão quando o autor estiver pronto, ou fechar se abandonadas.
