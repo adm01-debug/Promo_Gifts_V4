@@ -1,6 +1,6 @@
 {
-  "rev": 53,
-  "ultima_atualizacao": "2026-10-27T21:00:00Z",
+  "rev": 54,
+  "ultima_atualizacao": "2026-10-27T22:30:00Z",
   "sessao_01Ss1tXZ4cAbxBvdmu95uNPz": {
     "data": "2026-10-25",
     "rev": 22,
@@ -208,18 +208,18 @@
       "gate_final_run": "40420603513",
       "gate_final_conclusao": "success"
     },
-    "prs_abertas_analisadas": 17,
+    "prs_abertas_analisadas": 18,
     "merges_autonomos": 1,
     "contagem_vereditos": {
       "MERGEADO_AUTONOMO": 1,
       "MERGEADO_OWNER": 5,
-      "DECISAO_HUMANA": 3,
+      "DECISAO_HUMANA": 4,
       "AGUARDAR_APROVACAO": 2,
       "CONFLITO": 2,
       "CI_FALHOU": 1,
       "DRAFT_NOMERGE": 2,
       "NAO_MERGEAR": 1,
-      "total": 17
+      "total": 18
     },
     "mergeados_autonomo": [
       {
@@ -273,7 +273,8 @@
       2622,
       2631,
       2645,
-      2646
+      2646,
+      2662
     ],
     "delivery_pr": {
       "number": 2653,
