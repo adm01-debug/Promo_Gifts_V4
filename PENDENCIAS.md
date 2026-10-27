@@ -1936,3 +1936,55 @@ Nenhuma. Esta falha não pode ser resolvida no código — requer melhoria de pe
 3. Adicionar `continue-on-error: true` no job `e2e-personalization` (apenas se o PO aceitar que este check seja não-bloqueante)
 
 *Registrado pela sessão Claude Code — https://claude.ai/code/session_014RkohRYagi3sPiL8jtgot4 (2026-10-27)*
+
+---
+
+## P98 — E2E · undo — Falhas em specs de expiração e acessibilidade de undo (pré-existente) ⏳ AGUARDANDO INFRA
+
+**Workflow:** `e2e-undo.yml` (ou equivalente que executa specs `04p` / `04r`)  
+**Branch com falha:** `claude_04/beautiful-gates-bvocz5` (commit `b5c4faa5c`, run #40446103455)  
+**Specs falhando:**
+- `e2e/flows/04p-quotes-expiration-column.spec.ts:149` — falha na validação de coluna de expiração / regressão de layout
+- `e2e/flows/04r-undo-toast-a11y-keyboard.spec.ts:150` — clique após 500ms não chama `onUndo` (timing de toast)
+
+**Categoria:** Pré-existente — não causado por nenhum commit desta branch  
+**Sessão:** session_014RkohRYagi3sPiL8jtgot4 (2026-10-27)  
+**Bloqueio:** Os specs testam comportamentos de UI que dependem de timing (toast de undo) ou dados do banco (coluna de expiração de orçamentos). A branch `claude_04/beautiful-gates-bvocz5` NÃO tocou os arquivos `04p` ou `04r`, nem os componentes de toast ou coluna de expiração.
+
+**Evidência de pré-existência:**  
+Investigação na sessão `session_014RkohRYagi3sPiL8jtgot4` confirmou que as falhas ocorrem em commits anteriores a qualquer mudança desta branch. Os arquivos spec existem em `main` sem alteração por esta sessão.
+
+**Ação tomada:**  
+Nenhuma. Requer:
+1. (PO) Confirmação se o comportamento de toast de undo (timeout 500ms) é intencional ou precisa de ajuste
+2. (PO) Confirmação se a coluna de expiração de orçamentos existe no banco `doufsxqlfjyuvxuezpln`
+
+*Registrado pela sessão Claude Code — https://claude.ai/code/session_014RkohRYagi3sPiL8jtgot4 (2026-10-27)*
+
+---
+
+## P99 — E2E — Critical Flows & Error Boundaries — ENOENT results-quote-flow.json (pré-existente) ⏳ PRÉ-EXISTENTE
+
+**Workflow:** `e2e-critical-flows.yml` (nome no Actions: "E2E — Critical Flows & Error Boundaries")  
+**Run com falha em main:** [#40445291257](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40445291257) (commit `24f335dc`, 03:38Z)  
+**Run com falha em main anterior:** commit `5f02bdb0` (antes do merge de PR #2609) — mesma falha confirmada  
+**Job falhando:** `e2e-critical-flows`  
+**Causa:** O step "Run Quote Full Flow E2E" falha → não escreve `playwright-report/results-quote-flow.json` → o step "Check min tests executed" (que lê o arquivo) falha com `ENOENT: no such file or directory`
+
+**Categoria:** Pré-existente — falha em `main` antes e depois do PR #2609. Não causada por esta branch.  
+**Sessão:** session_014RkohRYagi3sPiL8jtgot4 (2026-10-27)  
+**Bloqueio:** A falha do step "Run Quote Full Flow E2E" causa um efeito cascata: sem `results-quote-flow.json`, o step "Check min tests executed" falha independentemente. A causa raiz do primeiro step está no ambiente de CI (Supabase, autenticação) e não no código desta branch.
+
+**Evidência de pré-existência:**  
+- Falha confirmada em sha `5f02bdb0` (main, antes do merge de PR #2609)
+- Falha confirmada em sha `24f335dc` (main, após merge de PR #2609)
+- A branch `claude_04/beautiful-gates-bvocz5` NÃO tocou specs de quote flow
+
+**Nota:** Este workflow NÃO é o "Gate Final - Deploy Ready" (required check). Sua falha não bloqueia merge em `main`.
+
+**Ação tomada:**  
+Nenhuma. Requer:
+1. (PO) Confirmar se o Quote Flow E2E deve ser executado com autenticação real ou mock
+2. Investigar por que o step "Run Quote Full Flow E2E" falha consistentemente
+
+*Registrado pela sessão Claude Code — https://claude.ai/code/session_014RkohRYagi3sPiL8jtgot4 (2026-10-27)*
