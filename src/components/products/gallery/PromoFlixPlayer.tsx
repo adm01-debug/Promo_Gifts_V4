@@ -6,7 +6,6 @@
  *  - Print/foto do frame atual (download PNG)
  *  - Picture-in-Picture e Fullscreen
  *  - Atalhos de teclado: Space, ←/→, J/L, K, ↑/↓, M, F, P, S, < / >
- *  - Suporte HLS via hls.js (fallback nativo no Safari)
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { logger } from '@/lib/logger';
@@ -651,10 +650,14 @@ export function PromoFlixPlayer({
       setVolume(video.volume);
       setIsMuted(video.muted);
       localStorage.setItem('promoflix_volume', video.volume.toString());
-      if (suppressMutePersistRef.current && video.muted) {
-        suppressMutePersistRef.current = false;
+      if (suppressMutePersistRef.current) {
+        if (!video.muted) {
+          // Usuário desmutou explicitamente — sai da supressão e persiste
+          suppressMutePersistRef.current = false;
+          localStorage.setItem('promoflix_muted', video.muted.toString());
+        }
+        // else: ainda mutado pelo autoplay → não persiste, mantém flag
       } else {
-        suppressMutePersistRef.current = false;
         localStorage.setItem('promoflix_muted', video.muted.toString());
       }
     };
@@ -1274,7 +1277,7 @@ export function PromoFlixPlayer({
               style={{ width: `${progressPct}%` }}
             />
             <div
-              className="absolute top-1/2 h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white shadow-[0_2px_8px_rgba(0,0,0,0.6)] ring-2 ring-primary transition-opacity md:h-3.5 md:w-3.5 md:opacity-0 md:group-hover/seek:opacity-100"
+              className="absolute top-1/2 h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white shadow-[0_2px_8px_rgba(0,0,0,0.5)] ring-2 ring-primary transition-opacity md:h-3.5 md:w-3.5 md:opacity-0 md:group-hover/seek:opacity-100"
               style={{ left: `${progressPct}%` }}
             />
           </div>
