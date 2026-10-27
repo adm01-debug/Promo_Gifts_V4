@@ -38,5 +38,5 @@ describe.skipIf(isLocalSupabase)('useReplenishments Hooks Integration', () => {
     expect(result.current.data).toHaveProperty('totalReplenishments');
     expect(result.current.data).toHaveProperty('activeReplenishments');
     expect(typeof result.current.data?.replenishmentRate).toBe('number');
-  }, 35000); // waitFor timeout (25s) must not race with Vitest test timeout
+  }, 30000); // waitFor timeout (25s) alinhado com useReplenishmentsWithDetails
 });
