@@ -146,4 +146,30 @@ Para cada PR, responder com evidência (arquivo:linha, SHA, run ID):
 
 ---
 
+---
+
+## Fontes Verificadas Nesta Sessão
+
+Cada regra abaixo foi checada contra o arquivo de origem no commit `a0560fdc` (main atual):
+
+| Regra | Fonte | Evidência |
+|-------|-------|-----------|
+| REGRA #1 — SSOT | `src/integrations/supabase/client.ts:24` | `const CURRENT_PROJECT_ID = "doufsxqlfjyuvxuezpln";` |
+| REGRA #1 — guarda | `src/integrations/supabase/client.ts:17-18` | comentário `// CURRENT_PROJECT_ID derruba 100% dos builds` |
+| REGRA #2 — campos Product | `src/types/product-catalog.ts:30,32,35,279` | `shortDescription`, `sale_price?`, `category_id?` presentes |
+| REGRA #8 — DDL via workflow | `CLAUDE.md:225` | "`supabase db push` é proibido (REGRA #1/§7)." |
+| REGRA #8 — E15 preflight | `scripts/preflight-migration-apply.mjs:1-10` | cabeçalho "PLANO_DBA E15 — checagem somente-leitura" |
+| REGRA #8 — Gate workflow | `.github/workflows/deploy-gates.yml:804` | `name: Gate Final - Deploy Ready` |
+| REGRA #8 — E15 corolário rollback | `CLAUDE.md:corolário E15` | `-- Rollback: supabase/rollbacks/<version>_rollback.sql` nas primeiras 40 linhas |
+| REGRA #9 — push após governança | `CLAUDE.md:REGRA #9` | "sessão com commit de segurança/CI/migrations → git push + PR aberta" |
+| REGRA #10 — merge cross-agente | `CLAUDE.md:REGRA #10` | "Merge entre branches de agentes diferentes → obrigatório via PR, nunca direto" |
+| Gate Final | `.github/workflows/deploy-gates.yml:249,304` | job agregador `Gate Final - Deploy Ready` |
+| Padrão workflow R1-R20 | `docs/ci/PADRAO_WORKFLOW.md` | R1-R8 estrutura, R9-R14 segurança, R15-R20 supply chain |
+| Campos enums/types | `src/integrations/supabase/types.ts` (types.ts derivado do banco `doufsxqlfjyuvxuezpln`) | gate 1.2 drift estrutural verifica tabelas/views/enums |
+| Policies RLS | `CLAUDE.md:Gate 1.13.1` | "tabelas com RLS habilitada e zero policies — deny-all silencioso" |
+| Migrations E15 rollback | `supabase/rollbacks/` (verificado em PR #2420 e PR #2580) | rollback files obrigatórios para cada migration |
+
+---
+
 *Gerado por session_012WyySbh2tj8vhRQLBf3mHo — 2026-10-27*
+*Atualizado com fontes verificadas — 2026-10-27T (final de sessão)*

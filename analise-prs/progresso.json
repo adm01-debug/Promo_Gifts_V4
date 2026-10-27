@@ -1,293 +1,86 @@
 {
-  "baseline_sha": "8bafc7d5a0a1f0f6a06d88adc6577098f873dfcb",
-  "total_open_inicio_sessao": 25,
-  "total_open_nota": "25 PRs abertas encontradas no inventário inicial. Durante a sessão foram criadas: #2356 (por esta sessão — mergeada), #2357 (pelo owner — fechada), #2360 (pelo owner — mergeada). Total documentadas com dossier: 31 (lista completa em prs{} abaixo).",
-  "total_open": 28,
-  "total_open_como_calculado": "25 originais + #2356 (criada por esta sessão antes do merge) + #2357 + #2360 (abertas pelo owner durante a sessão) = 28 PRs que estiveram abertas durante a sessão",
-  "total_documentadas": 31,
-  "analisadas": 31,
-  "mergeadas": 6,
-  "ultima_atualizacao": "2026-10-27T18:30Z",
-  "reconciliacao_inventario": {
-    "data": "2026-10-27T18:00Z",
-    "metodo": "github_list_pull_requests API — resposta salva em arquivo, parseada via Python",
-    "total_open_atual_github": 15,
-    "numeros_open_atual": [2420, 2572, 2579, 2580, 2587, 2588, 2594, 2600, 2605, 2622, 2631, 2645, 2646, 2648, 2649],
-    "nota": "Todas as PRs do escopo original (2290–2360) foram dispostas pelo owner adm01-debug após esta sessão gerar PENDENCIAS.md. Nenhuma remanescente da sessão.",
-    "pr2349_reconciliacao": "PR #2349 estava como AGUARDAR_CI mas foi mergeada pelo owner em 2026-10-23T00:55:46Z (SHA 49bb39990489fae21bdc3b584dcfd0d6bca44814). Atualizado para MERGEADA_PELO_OWNER.",
-    "pr2312_reconciliacao": "PR #2312 estava como AGUARDAR_CI, fechada pelo owner sem merge em 2026-10-23T12:11:28Z.",
-    "pr2290_reconciliacao": "PR #2290 estava como DECISAO_HUMANA, fechada pelo owner sem merge em 2026-10-23T01:28:45Z.",
-    "pr2322_reconciliacao": "PR #2322 estava como FECHAR, fechada pelo owner sem merge em 2026-10-23T01:31:45Z (presumivelmente as demais FECHAR também)."
+  "sessao": "session_012WyySbh2tj8vhRQLBf3mHo",
+  "data": "2026-10-27",
+  "main_sha": "a0560fdc62744c6bf4ba182914cc76dec06aecb1",
+  "total_open_github_api": 12,
+  "prs_open_api": [2653, 2646, 2645, 2631, 2622, 2605, 2600, 2588, 2580, 2579, 2572, 2420],
+  "nota_pr_2653": "PR da própria branch de trabalho desta sessão (docs/analise-prs). Não faz parte do inventário original.",
+  "inventario_original_19_prs": [2420, 2572, 2579, 2580, 2587, 2588, 2594, 2600, 2605, 2622, 2631, 2645, 2646, 2648, 2649, 2650, 2652, 2654, 2655],
+  "contagem_inventario": 19,
+  "contagem_analisadas": 19,
+  "gate_final_baseline_main": {
+    "sha": "a0560fdc62744c6bf4ba182914cc76dec06aecb1",
+    "gate_final": "failure",
+    "falhas_pre_existentes": [
+      "Gate 0.5 - Dependency Audit",
+      "Edge Functions · Integration All",
+      "Gate Final - Deploy Ready",
+      "Supabase Preview",
+      "audit",
+      "quality-gate (uma instância)"
+    ],
+    "arquivo_baseline": "analise-prs/baseline/checks-main-a0560fdc.json"
   },
-  "contagem_por_veredicto": {
-    "FECHADO_PELO_OWNER": 1,
-    "AGUARDAR_CI": 4,
-    "DECISAO_HUMANA": 2,
-    "DRAFT": 1,
-    "NAO_MERGEAR": 1,
-    "FECHAR": 15,
-    "MERGEADA": 4,
-    "MERGEADA_PELO_OWNER": 3
+  "merge_tests": {
+    "nota": "git merge --no-commit --no-ff contra main a0560fdc. Executado nesta sessão.",
+    "2420": {"exit": 1, "conflicts": 1, "conflicting_files": ["supabase/migrations/20261019000000_mirror_oob_frontend_telemetry_v_system_health_dashboard.sql", "supabase/rollbacks/20261019000000_rollback.sql"]},
+    "2572": {"exit": 1, "conflicts": 8, "conflicting_files": [".as-assertions-baseline.json", ".file-size-baseline.json", ".github/workflows/contract-tests.yml", "PENDENCIAS.md", "analise-prs/ (múltiplos)"]},
+    "2579": {"exit": 0, "conflicts": 0, "files": [".release-please-manifest.json", "CHANGELOG.md", "package-lock.json", "package.json"]},
+    "2588": {"exit": 0, "conflicts": 0, "files": ["package-lock.json", "package.json"]},
+    "2600": {"exit": 0, "conflicts": 0, "files": ["analise-prs/ (múltiplos)"]},
+    "2605": {"exit": 1, "conflicts": 2, "conflicting_files": ["e2e/catalog/novidades-reposicao-card-parity.spec.ts", "src/components/products/gallery/PromoFlixPlayer.tsx"]},
+    "2622": {"exit": 1, "conflicts": 12, "conflicting_files": ["analise-prs/ (múltiplos)"]},
+    "2645": {"exit": 1, "conflicts": 1, "conflicting_files": ["supabase/MIGRATIONS_SYNC_LOG.md"]},
+    "2646": {"exit": 0, "conflicts": 0, "files": [".github/workflows/db-schema-drift-check.yml", ".github/workflows/deploy-gates.yml", ".github/workflows/schema-snapshot-export.yml", "scripts/migration-ledger-remote-only-allowlist.json", "supabase/MIGRATIONS_SYNC_LOG.md", "supabase/migrations/20261027160000_deactivate_image_dimensions_backfill_cron.sql", "supabase/migrations/20261027220000_deactivate_xbz_image_uploader_cron.sql", "supabase/migrations/20261027230000_cleanup_get_edge_function_secret_allowlist.sql"]}
   },
-  "main_atual": {
-    "sha": "8bafc7d5a0a1f0f6a06d88adc6577098f873dfcb",
-    "gate_final": "SUCCESS",
-    "gate_final_check_run_id": 120142508825,
-    "gate_final_completed_at": "2026-10-22T23:12:21Z",
-    "gate_final_run_id": 39869261220
+  "git_cherry_checks": {
+    "nota": "git cherry origin/main <pr_head>. + = não está no main (cherry pendente).",
+    "2420": "+",
+    "2580": "+",
+    "2605": "+",
+    "2622": "+"
   },
-  "pr2338_head": "b48145b366041354dc0ee8a20a0bd6217b1289f1",
-  "pr2338_merge_sha": "57017ba78eb68c6c72dba336f9c081c4519619c4",
-  "pr2338_merged_at": "2026-10-22T19:23Z",
-  "pr2338_ci_status": "MERGEADA",
-  "pr2351_head": "9bca9b5a",
-  "pr2351_merge_sha": "3e06378a5e4f53e00a2c6826fdf667692b307882",
-  "pr2351_merged_at": "2026-10-22T21:08Z",
-  "pr2354_head": "dcaf0bab",
-  "pr2354_merge_sha": "3e006427eb19247d2e99c03a8140193d3f763a8e",
-  "pr2354_merged_at": "2026-10-22T21:09Z",
-  "status": "CONCLUIDO",
-  "proxima_acao": "aguardar_decisao_humana_PRs_restantes",
-  "inventario_atual_2026_10_27": {
-    "main_sha": "f0689734b38e79edda24cf80f5df19abae941015",
-    "main_sha_baseline_sessao": "61a0cfa1714661f752273cf864b335eb217ea134",
-    "total_open": 12,
-    "numeros": [2420, 2572, 2579, 2580, 2587, 2588, 2600, 2605, 2622, 2631, 2645, 2646],
-    "total_analisadas_incluindo_mergeadas": 16,
-    "analisadas": 16,
-    "mergeadas_by_claude": 0,
-    "mergeadas_by_owner": 4,
-    "dossiers_criados": 16,
-    "contagem_por_veredicto": {
-      "MERGEADA_PELO_OWNER": 4,
-      "CONFLITO_PENDENTE_REBASE": 1,
-      "CONFLITO_PENDENTE_REBASE_SEGURANCA": 1,
-      "DRAFT": 2,
-      "DECISAO_HUMANA": 2,
-      "NAO_MERGEAR": 2,
-      "FECHAR": 1,
-      "AGUARDAR_APROVACAO": 2,
-      "CI_FALHOU": 1,
-      "MERGEADA_CLAUDE": 0
-    },
-    "prs_com_gate_final_ok_mas_conflito": [2605, 2622],
-    "prs_sem_ci": [2645],
-    "prs_ci_falhou": [2646],
-    "pr2650_nota": "Surgiu após inventário inicial (DRAFT), promovida pelo autor, mergeada pelo owner em 16:21:21Z",
-    "diffs_lidos_100pct": true,
-    "diffs_agente": "a865c139fa7a98922",
-    "diffs_arquivo": "analise-prs/baseline/pr-diffs-summary.json",
-    "alerta_seguranca_2622": "Rollback 20261027200000_rollback.sql DISABLE RLS em 17 tabelas supplier_stricker.* — requer aprovação PO/Security antes de qualquer merge",
-    "nota": "16 PRs analisadas (15 do inventário de reconciliação + #2650). 100% diffs lidos. Zero merges por Claude. 4 mergeadas pelo owner. 12 ainda abertas."
+  "diffs_lidos_nesta_sessao": {
+    "2420": "CONFIRMADO — 3 arquivos: ProductFormFullscreen.tsx (+resolver type), migration mirror, rollback",
+    "2580": "CONFIRMADO — 2 arquivos: migration E23 header, rollback 5 tabelas NO FORCE RLS",
+    "2588": "CONFIRMADO — 2 arquivos: package.json + package-lock.json (react-day-picker 8→10, date-fns v4 conflict)",
+    "2631": "CONFIRMADO — 2 arquivos: PENDENCIAS.md §4 + RELATORIO_CI.md §10 (bloqueio deploy confirmed)",
+    "2645": "CONFIRMADO — 1 arquivo: supabase/MIGRATIONS_SYNC_LOG.md (+1 linha receipt 20261027140000)"
   },
-  "worktrees_extras": "nenhum — git worktree list mostra só /home/user/Promo_Gifts_V4 [claude/quirky-keller-owezvt]",
-  "alerta_sentinel": {
-    "check": "Verify push to main matches accepted patterns",
-    "check_run_id": 120036831874,
-    "conclusao": "failure",
-    "commit": "57017ba78eb68c6c72dba336f9c081c4519619c4",
-    "pr": 2338,
-    "causa_raiz": "Commits do branch claude/laughing-cori-o9w35e com mensagens tipo 'fix(ci):' não casam com padrões do sentinel. Não é regressão de código.",
-    "eh_gate_bloqueante": false,
-    "esta_nos_gates_0_a_6": false,
-    "eh_regressao_de_codigo": false
+  "veredictos": {
+    "2420": "AGUARDAR_APROVACAO",
+    "2572": "FECHAR",
+    "2579": "NAO_MERGEAR",
+    "2580": "DRAFT",
+    "2588": "DECISAO_HUMANA",
+    "2600": "NAO_MERGEAR",
+    "2605": "CONFLITO_PENDENTE_REBASE",
+    "2622": "CONFLITO_PENDENTE_REBASE_SEGURANCA",
+    "2631": "DRAFT",
+    "2645": "AGUARDAR_APROVACAO",
+    "2646": "CI_FALHOU",
+    "2648": "MERGEADA_PELO_OWNER",
+    "2649": "MERGEADA_PELO_OWNER",
+    "2650": "MERGEADA_PELO_OWNER",
+    "2652": "MERGEADA_PELO_OWNER",
+    "2654": "MERGEADA_PELO_OWNER",
+    "2655": "MERGEADA_PELO_OWNER",
+    "2587": "MERGEADA_CLAUDE",
+    "2594": "MERGEADA_PELO_OWNER"
   },
-  "pre_existing_failures_baseline": [
-    "Gate Final - Deploy Ready",
-    "Gate 0.5 - Dependency Audit",
-    "Gate 1 - Lint + TypeScript",
-    "E2E — Personalization Journey",
-    "Migrations x Canonical schema (Gate E40)",
-    "E2E · webkit-authed",
-    "cart-invariants (firefox-authed · shard 1/2)",
-    "cart-invariants (firefox-authed · shard 2/2)",
-    "cart-invariants (chromium-authed · shard 1/2)",
-    "E2E — Full User Flows (authed)",
-    "E2E Subtítulo quote_number (visual)",
-    "E2E PDF exportado · quote_number"
+  "mergeadas_claude": [
+    {"pr": 2587, "merge_sha": "16ad57c66e619100f76c113653cdab7a20a7871a", "gate": "SUCCESS (40420603513)", "regressao": false}
   ],
-  "prs": {
-    "2338": {
-      "veredicto": "MERGEADA",
-      "acao": "MERGEADA",
-      "head": "b48145b3",
-      "merge_sha": "57017ba78eb68c6c72dba336f9c081c4519619c4",
-      "merged_at": "2026-10-22T19:23Z",
-      "gate_final_run": 39848498577
-    },
-    "2351": {
-      "veredicto": "MERGEADA",
-      "acao": "MERGEADA",
-      "head": "9bca9b5a",
-      "merge_sha": "3e06378a5e4f53e00a2c6826fdf667692b307882",
-      "merged_at": "2026-10-22T21:08Z",
-      "gate_final_run": 39848498577
-    },
-    "2354": {
-      "veredicto": "MERGEADA",
-      "acao": "MERGEADA",
-      "head": "dcaf0bab",
-      "merge_sha": "3e006427eb19247d2e99c03a8140193d3f763a8e",
-      "merged_at": "2026-10-22T21:09Z",
-      "gate_final_run": 39852198657
-    },
-    "2316": {
-      "veredicto": "AGUARDAR_CI",
-      "acao": "rebase + resolver conflito semântico com #2338 (Gate Final failure vs base stale 45545ae5)",
-      "base": "45545ae"
-    },
-    "2315": {
-      "veredicto": "AGUARDAR_CI",
-      "acao": "rebase + resolver conflito com #2314 (Gate Final failure vs base stale 1ac6992c)",
-      "base": "1ac6992"
-    },
-    "2314": {
-      "veredicto": "AGUARDAR_CI",
-      "acao": "rebase + reconciliar baseline com #2315 (Gate Final failure vs base stale 1ac6992c)",
-      "base": "1ac6992"
-    },
-    "2312": {
-      "veredicto": "AGUARDAR_CI",
-      "acao": "rebase necessário + CI (Gate Final failure vs base stale 1ac6992c)",
-      "base": "1ac6992"
-    },
-    "2349": {
-      "veredicto": "MERGEADA_PELO_OWNER",
-      "acao": "Mergeada pelo owner adm01-debug em 2026-10-23T00:55:46Z (SHA 49bb3999). Estava como AGUARDAR_CI — reconciliada em 2026-10-27.",
-      "head": "d8f7934d",
-      "merge_sha": "49bb39990489fae21bdc3b584dcfd0d6bca44814",
-      "merged_at": "2026-10-23T00:55:46Z"
-    },
-    "2357": {
-      "veredicto": "FECHADO_PELO_OWNER",
-      "acao": "Fechada por adm01-debug em favor da PR #2360 (2026-10-23T02:23Z). Gate 1 e Gate E40 falharam em todos os SHAs (26451e05, 1cfa45d4). As 3 migrations REVOKE preservadas integralmente em #2360.",
-      "head": "26451e05d6e8",
-      "closed_at": "2026-10-23T02:23:56Z",
-      "substituta": 2360
-    },
-    "2360": {
-      "veredicto": "MERGEADA_PELO_OWNER",
-      "acao": "Substituta de #2357. Mergeada pelo owner adm01-debug em 2026-10-23T03:18:34Z. 3 migrations REVOKE segurança (E30/E40/E18) aplicadas no main.",
-      "head": "7e45db9bc622",
-      "merge_sha": "b4cc8163d68a9e31ca23f1695d193ec0605f9ae8",
-      "merged_at": "2026-10-23T03:18:34Z",
-      "migrations": [
-        "20261022194000_security_revoke_external_connections_anon",
-        "20261022194100_security_revoke_mockup_approval_links_anon",
-        "20261022194200_security_revoke_mcp_kv_get_authenticated"
-      ]
-    },
-    "2320": {
-      "veredicto": "DRAFT",
-      "acao": "aguardar autor promover para ready"
-    },
-    "2319": {
-      "veredicto": "NAO_MERGEAR",
-      "acao": "PR vazia de bot (Jules) — fechar",
-      "files": 0
-    },
-    "2352": {
-      "veredicto": "MERGEADA_PELO_OWNER",
-      "acao": "Mergeada pelo owner adm01-debug às 22:36 UTC (SHA 92a4d3bc). 6 migrations NÃO aplicadas em produção. Ver RELATORIO_VALIDACAO_EXAUSTIVA.md.",
-      "head": "f38d5caf",
-      "merge_sha": "92a4d3bc",
-      "merged_at": "2026-10-22T22:36Z",
-      "migrations_pendentes": [
-        "20261022100001",
-        "20261022100010",
-        "20261022100020",
-        "20261022100021",
-        "20261022100022"
-      ],
-      "migrations_aguardam_analise": [
-        "20261022100011"
-      ]
-    },
-    "2293": {
-      "veredicto": "DECISAO_HUMANA",
-      "acao": "recharts 2→3 major bump — depende de PO"
-    },
-    "2290": {
-      "veredicto": "DECISAO_HUMANA",
-      "acao": "@eslint/js 9→10 major bump — depende de PO"
-    },
-    "2322": {
-      "veredicto": "FECHAR",
-      "acao": "Webpack CI — runtime incompatível com Vite"
-    },
-    "2323": {
-      "veredicto": "FECHAR",
-      "acao": "Deno CI — runtime incompatível com npm/Vite"
-    },
-    "2324": {
-      "veredicto": "FECHAR",
-      "acao": "Jekyll Docker — stack errada (não é site Jekyll)"
-    },
-    "2325": {
-      "veredicto": "FECHAR",
-      "acao": "npm publish — projeto não é pacote npm publicável"
-    },
-    "2326": {
-      "veredicto": "FECHAR",
-      "acao": "npm publish GitHub Packages — projeto não é pacote npm publicável"
-    },
-    "2327": {
-      "veredicto": "FECHAR",
-      "acao": "Codacy SAST — serviço não configurado no projeto"
-    },
-    "2328": {
-      "veredicto": "FECHAR",
-      "acao": "Dependency Review — duplicata do Gate 0.6 já existente"
-    },
-    "2329": {
-      "veredicto": "FECHAR",
-      "acao": "Python publish PyPI — projeto não é Python"
-    },
-    "2330": {
-      "veredicto": "FECHAR",
-      "acao": "Node.js CI matrix — npm test não existe no projeto"
-    },
-    "2331": {
-      "veredicto": "FECHAR",
-      "acao": "Manual greeting workflow — decorativo, sem valor operacional"
-    },
-    "2333": {
-      "veredicto": "FECHAR",
-      "acao": "First-interaction bot — risco supply chain"
-    },
-    "2334": {
-      "veredicto": "FECHAR",
-      "acao": "GitHub Pages static — projeto usa Vercel"
-    },
-    "2335": {
-      "veredicto": "FECHAR",
-      "acao": "Next.js GitHub Pages — framework errado (Vite não Next.js)"
-    },
-    "2336": {
-      "veredicto": "FECHAR",
-      "acao": "Arquivo em branco (1 byte) — workflow inválido"
-    },
-    "2337": {
-      "veredicto": "FECHAR",
-      "acao": "Deno CI — duplicata byte-a-byte do PR #2323"
-    },
-    "2356": {
-      "veredicto": "MERGEADA",
-      "acao": "MERGEADA",
-      "head": "cfabab26",
-      "branch": "claude/session-guard-remaining-callers",
-      "merge_sha": "8bafc7d5a0a1f0f6a06d88adc6577098f873dfcb",
-      "merged_at": "2026-10-22T23:31Z",
-      "gate_final_run": 39869261220,
-      "fixes": "session guard para 5 callers de fn_get_product_customization_options + MANIFESTO_MIGRATIONS_RECONCILIADAS_2026-09-11.json"
-    }
-  },
-  "pendencias_humanas": [
-    "Fechar 15 PRs de template (#2322–#2337 exceto #2332): requer escrita no GitHub além de merge",
-    "Fechar PR #2319 (Jules bot vazia)",
-    "Decisão PO: PR #2290 (ESLint major bump) e #2293 (recharts major bump)",
-    "Rebase PRs #2312, #2314, #2315, #2316, #2349 — autores precisam agir",
-    "URGENTE — PR #2352 mergeada pelo owner: aplicar 5 migrations via db-apply-migration.yml: 20261022100001 (REVOKE fn_cron_guard), 20261022100010 (RLS wrapper), 20261022100020/100021/100022 (cron). NÃO aplicar 20261022100011 (DROP INDEX) sem pg_stat_reset + 24h."
-  ],
-  "gaps_seguranca": []
+  "mergeadas_owner": [2594, 2648, 2649, 2650, 2652, 2654, 2655],
+  "meta_cumprida": {
+    "total_open_api": 12,
+    "total_inventariadas": 19,
+    "total_analisadas_com_4_perguntas": 19,
+    "dossiers_arquivos": "analise-prs/dossies/PR-2420.md até PR-2655.md",
+    "baseline_arquivo": "analise-prs/baseline/checks-main-a0560fdc.json",
+    "regras_negocio_arquivo": "analise-prs/regras-de-negocio.md",
+    "worktrees_removidos": true,
+    "merge_claude_gate_final_ok": true,
+    "zero_regressoes_novas": true
+  }
 }
