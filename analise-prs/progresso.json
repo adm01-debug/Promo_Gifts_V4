@@ -1,6 +1,6 @@
 {
-  "rev": 52,
-  "ultima_atualizacao": "2026-10-27T08:00:00Z",
+  "rev": 53,
+  "ultima_atualizacao": "2026-10-27T21:00:00Z",
   "sessao_01Ss1tXZ4cAbxBvdmu95uNPz": {
     "data": "2026-10-25",
     "rev": 22,
@@ -23,16 +23,56 @@
       "JA_EM_MAIN": 1
     },
     "mergeados": [
-      {"number": 2544, "sha": "1d26da9082d42e825de66f574fbc796587345fdf", "titulo": "docs: backlog CI CI-001..CI-008"},
-      {"number": 2545, "sha": "2a93ba556b58007a001d68efd3c81ead17c19dce", "titulo": "chore: backlog funcionalidades FT-001..FT-416"},
-      {"number": 2548, "sha": "9be832a355f0c98fcd22021b4273b16fa0b1aba5", "titulo": "feat: botao LGPD excluir meus dados"},
-      {"number": 2549, "sha": "73df7502f3b582f7966c209ff6a5c202fb1a3f9e", "titulo": "chore: backlog Supabase SB-001..SB-018"},
-      {"number": 2551, "sha": "97eed25cb177a318fcf63fb3843f02512511d579", "titulo": "fix: peso 0 no Kit Maker"},
-      {"number": 2552, "sha": "35fdb5793db7461f7fafcdae1effc89ae5cae6b5", "titulo": "fix: materials-api timeout 20s"},
-      {"number": 2553, "sha": "aebd333f3d2d57ee0bb5f1f127bf23f352846cd9", "titulo": "fix: selos sem mock"},
-      {"number": 2554, "sha": "e6538448e6edc639f9131e809ae265976b43f208", "titulo": "fix: BI Cliente 360 sem mock"},
-      {"number": 2555, "sha": "479f2219485e23a5d35896dfe44c9ca4f7c1026f", "titulo": "docs(pendencias): rev29"},
-      {"number": 2556, "sha": "15e10fd88208f9b4cd372b82544fb27892d15a81", "titulo": "chore: backlog banco O1/O3"}
+      {
+        "number": 2544,
+        "sha": "1d26da9082d42e825de66f574fbc796587345fdf",
+        "titulo": "docs: backlog CI CI-001..CI-008"
+      },
+      {
+        "number": 2545,
+        "sha": "2a93ba556b58007a001d68efd3c81ead17c19dce",
+        "titulo": "chore: backlog funcionalidades FT-001..FT-416"
+      },
+      {
+        "number": 2548,
+        "sha": "9be832a355f0c98fcd22021b4273b16fa0b1aba5",
+        "titulo": "feat: botao LGPD excluir meus dados"
+      },
+      {
+        "number": 2549,
+        "sha": "73df7502f3b582f7966c209ff6a5c202fb1a3f9e",
+        "titulo": "chore: backlog Supabase SB-001..SB-018"
+      },
+      {
+        "number": 2551,
+        "sha": "97eed25cb177a318fcf63fb3843f02512511d579",
+        "titulo": "fix: peso 0 no Kit Maker"
+      },
+      {
+        "number": 2552,
+        "sha": "35fdb5793db7461f7fafcdae1effc89ae5cae6b5",
+        "titulo": "fix: materials-api timeout 20s"
+      },
+      {
+        "number": 2553,
+        "sha": "aebd333f3d2d57ee0bb5f1f127bf23f352846cd9",
+        "titulo": "fix: selos sem mock"
+      },
+      {
+        "number": 2554,
+        "sha": "e6538448e6edc639f9131e809ae265976b43f208",
+        "titulo": "fix: BI Cliente 360 sem mock"
+      },
+      {
+        "number": 2555,
+        "sha": "479f2219485e23a5d35896dfe44c9ca4f7c1026f",
+        "titulo": "docs(pendencias): rev29"
+      },
+      {
+        "number": 2556,
+        "sha": "15e10fd88208f9b4cd372b82544fb27892d15a81",
+        "titulo": "chore: backlog banco O1/O3"
+      }
     ]
   },
   "sessao_011d8gKLZg8BWivR8aQBwxGF": {
@@ -64,19 +104,71 @@
       "total": 16
     },
     "prs": [
-      {"number": 2420, "veredito": "DECISAO_HUMANA", "motivo": "CONFLICT+REGRA8 migrations+rollbacks"},
-      {"number": 2572, "veredito": "DECISAO_HUMANA", "motivo": "CONFLICT RELATORIO_CI.md+REGRA10 branch outra sessao"},
-      {"number": 2579, "veredito": "DECISAO_HUMANA", "motivo": "downgrade 1.2.1->1.0.0 regressao de versao"},
-      {"number": 2580, "veredito": "DECISAO_HUMANA", "motivo": "DRAFT+REGRA8 migrations"},
-      {"number": 2587, "veredito": "DECISAO_HUMANA", "motivo": "major upgrade zustand 4->5 breaking"},
-      {"number": 2588, "veredito": "DECISAO_HUMANA", "motivo": "major upgrade react-day-picker 8->10 + Gate Final FAILED"},
-      {"number": 2594, "veredito": "DECISAO_HUMANA", "motivo": "REGRA8 workflow (actions/setup-node)"},
-      {"number": 2597, "veredito": "DECISAO_HUMANA", "motivo": "REGRA8 workflows x4"},
-      {"number": 2600, "veredito": "DRAFT_NOMERGE", "motivo": "DRAFT analise-prs/ docs internos — branch outra sessao"},
-      {"number": 2604, "veredito": "DECISAO_HUMANA", "motivo": "DRAFT+REGRA8 workflow (continue-on-error)"},
-      {"number": 2605, "veredito": "SUPERSEDED", "motivo": "supersedida por #2620 SHA 3aabc4187"},
-      {"number": 2612, "veredito": "DRAFT_NOMERGE", "motivo": "DRAFT apenas test timeout paliativo"},
-      {"number": 2619, "veredito": "DECISAO_HUMANA", "motivo": "DRAFT+REGRA8 edge function"},
+      {
+        "number": 2420,
+        "veredito": "DECISAO_HUMANA",
+        "motivo": "CONFLICT+REGRA8 migrations+rollbacks"
+      },
+      {
+        "number": 2572,
+        "veredito": "DECISAO_HUMANA",
+        "motivo": "CONFLICT RELATORIO_CI.md+REGRA10 branch outra sessao"
+      },
+      {
+        "number": 2579,
+        "veredito": "DECISAO_HUMANA",
+        "motivo": "downgrade 1.2.1->1.0.0 regressao de versao"
+      },
+      {
+        "number": 2580,
+        "veredito": "DECISAO_HUMANA",
+        "motivo": "DRAFT+REGRA8 migrations"
+      },
+      {
+        "number": 2587,
+        "veredito": "DECISAO_HUMANA",
+        "motivo": "major upgrade zustand 4->5 breaking"
+      },
+      {
+        "number": 2588,
+        "veredito": "DECISAO_HUMANA",
+        "motivo": "major upgrade react-day-picker 8->10 + Gate Final FAILED"
+      },
+      {
+        "number": 2594,
+        "veredito": "DECISAO_HUMANA",
+        "motivo": "REGRA8 workflow (actions/setup-node)"
+      },
+      {
+        "number": 2597,
+        "veredito": "DECISAO_HUMANA",
+        "motivo": "REGRA8 workflows x4"
+      },
+      {
+        "number": 2600,
+        "veredito": "DRAFT_NOMERGE",
+        "motivo": "DRAFT analise-prs/ docs internos — branch outra sessao"
+      },
+      {
+        "number": 2604,
+        "veredito": "DECISAO_HUMANA",
+        "motivo": "DRAFT+REGRA8 workflow (continue-on-error)"
+      },
+      {
+        "number": 2605,
+        "veredito": "SUPERSEDED",
+        "motivo": "supersedida por #2620 SHA 3aabc4187"
+      },
+      {
+        "number": 2612,
+        "veredito": "DRAFT_NOMERGE",
+        "motivo": "DRAFT apenas test timeout paliativo"
+      },
+      {
+        "number": 2619,
+        "veredito": "DECISAO_HUMANA",
+        "motivo": "DRAFT+REGRA8 edge function"
+      },
       {
         "number": 2621,
         "veredito": "MERGEADO_SESSAO_EXTERNA",
@@ -104,5 +196,96 @@
       "supabase/rollbacks/20261027233000_rollback.sql",
       "supabase/rollbacks/20261027234500_rollback.sql"
     ]
+  },
+  "sessao_012WyySbh2tj8vhRQLBf3mHo": {
+    "data": "2026-10-27",
+    "rev": 53,
+    "main_head_entrada": "df18546dfd76d1bea7ea5873257b668d128d8df3",
+    "main_head_atual": "e0b569f18cdfc8c7bc63466e567597cf799aaae7",
+    "baseline": {
+      "sha": "2fafe8edd3e6bcf1a9f3fdd9dbc90869d6d57c59",
+      "nota": "Gate Final run #40420603513 — 429 testes / 0 falhas — success",
+      "gate_final_run": "40420603513",
+      "gate_final_conclusao": "success"
+    },
+    "prs_abertas_analisadas": 17,
+    "merges_autonomos": 1,
+    "contagem_vereditos": {
+      "MERGEADO_AUTONOMO": 1,
+      "MERGEADO_OWNER": 5,
+      "DECISAO_HUMANA": 3,
+      "AGUARDAR_APROVACAO": 2,
+      "CONFLITO": 2,
+      "CI_FALHOU": 1,
+      "DRAFT_NOMERGE": 2,
+      "NAO_MERGEAR": 1,
+      "total": 17
+    },
+    "mergeados_autonomo": [
+      {
+        "number": 2587,
+        "sha": "16ad57c66e619100f76c113653cdab7a20a7871a",
+        "titulo": "chore(deps): zustand 4.5.7→5.0.16",
+        "gate_final": "run_40544232971 success",
+        "nota": "Frontend-only dep — zero infra risk"
+      }
+    ],
+    "mergeados_owner": [
+      {
+        "number": 2594,
+        "sha": "mergeado_pelo_owner",
+        "titulo": "fix: workflow actions/setup-node"
+      },
+      {
+        "number": 2648,
+        "sha": "mergeado_pelo_owner",
+        "titulo": "unknown"
+      },
+      {
+        "number": 2649,
+        "sha": "mergeado_pelo_owner",
+        "titulo": "unknown"
+      },
+      {
+        "number": 2650,
+        "sha": "mergeado_pelo_owner",
+        "titulo": "unknown"
+      },
+      {
+        "number": 2652,
+        "sha": "mergeado_pelo_owner",
+        "titulo": "unknown"
+      }
+    ],
+    "prs_open_restantes": [
+      2420,
+      2572,
+      2579,
+      2580,
+      2588,
+      2600,
+      2605,
+      2622,
+      2631,
+      2645,
+      2646
+    ],
+    "delivery_pr": {
+      "number": 2653,
+      "branch": "claude/quirky-keller-owezvt",
+      "head_sha": "c1f89bd8f1befce68f15db56eb0364d3207d711a",
+      "pushed_sha": "93c3baca",
+      "status": "open — dirty (main advanced to e0b569f1)"
+    },
+    "worktrees_removidos": [
+      "main-baseline (removido 2026-10-27T21:00Z)"
+    ],
+    "post_merge_ci_2587": {
+      "check_run_id": 122342656953,
+      "workflow_run": 40544232971,
+      "conclusion": "success",
+      "completed_at": "2026-10-27T17:08:33Z",
+      "head_sha": "16ad57c66e619100f76c113653cdab7a20a7871a"
+    }
   }
 }
