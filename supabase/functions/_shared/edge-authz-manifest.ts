@@ -173,9 +173,10 @@ export const EDGE_AUTHZ_MANIFEST: Record<string, AuthzEntry> = {
   "sync-external-db": { category: "service", rationale: "Sync DB externo — service_role_key server-to-server", enforcedBy: "custom" },
   "crm-callback-alerts": { category: "service", rationale: "Cron de alertas — Bearer service_role em comparação constante", enforcedBy: "custom" },
   "asia-ingestion": { category: "service", rationale: "Sync paginado catálogo ASIA — cron/service via x-cron-secret (ASIA_INGESTION_CRON_SECRET)", enforcedBy: "custom" },
-  "backfill-image-dimensions": { category: "service", rationale: "Backfill dimensões product_images — cron via x-cron-secret (BACKFILL_DIM_CRON_SECRET)", enforcedBy: "custom" },
+  "backfill-image-dimensions": { category: "service", rationale: "Backfill dimensões product_images — cron via authorizeCron (BACKFILL_DIM_CRON_SECRET)", enforcedBy: "custom" },
   "generate-blurhashes": { category: "service", rationale: "Gera blurhashes — cron via authorizeCron (service_role + x-cron-secret)", enforcedBy: "custom" },
   "hash-product-images": { category: "service", rationale: "Hash perceptual de imagens — cron via authorizeCron (service_role + x-cron-secret)", enforcedBy: "custom" },
+  "xbz-image-uploader": { category: "service", rationale: "Upload periódico de imagens XBZ para Cloudflare Images — cron via authorizeCron (XBZ_IMAGE_UPLOADER_CRON_SECRET)", enforcedBy: "custom" },
   "audit-suite": { category: "dev", rationale: "Suite de auditoria — authorize(dev) + finally cleanup (E022/E023)" },
   "word-magic": { category: "authenticated", rationale: "Geração de copy via IA — authenticateRequest (JWT obrigatório)", enforcedBy: "custom" },
 
