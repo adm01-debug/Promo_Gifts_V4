@@ -61,6 +61,12 @@ paths = [
   # Dossies de analise de PRs — contêm exemplos/fixtures de tokens (ex: AKIA fake
   # em PR-2428.md:23 usado como exemplo de chave AWS). Nao sao segredos operacionais.
   '''analise-prs/.*''',
+  # Scripts de seed, tooling e CI — contêm chaves anon/JWT como fallback público
+  # para ambiente de desenvolvimento (não são segredos operacionais).
+  '''scripts/.*''',
+  # Fixtures e2e — playwright usa JWT anon hardcoded como fallback quando o secret
+  # SUPABASE_ANON_KEY não está configurado no runner (falso-positivo confirmado).
+  '''e2e/.*''',
 ]
 
 # Commits historicos com secrets detectados pelo gitleaks (run 40283428329 — 2026-10-26).
