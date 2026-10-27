@@ -1,16 +1,35 @@
 BASELINE VITEST — main HEAD 06fe47fd3a992bf2a39ab356c9d8c357c5f2a27e
-Data: 2026-10-27 (sessão rev33)
-Comando: npx vitest run --reporter=verbose
+Data: 2026-10-27 (sessão rev34)
+
+RESULTADO CI: SUCCESS
+Gate: "Gate 2 - Unit Tests"
+Conclusão: success
+SHA testado: 06fe47fd3a992bf2a39ab356c9d8c357c5f2a27e
+Fonte: github_list_check_runs
+
+RESULTADO LOCAL (por arquivo — sessão rev33):
 Diretório: /tmp/main-baseline-rev32 (worktree de origin/main 06fe47fd3)
 node_modules: symlinked de /home/user/Promo_Gifts_V4/node_modules
 
-RESULTADO: TIMEOUT (60s) — vitest não concluiu no tempo alocado.
+Arquivos verificados (timeout 60s por arquivo):
+  chunk-recovery.shared-reload-budget.test.ts:  8 PASSED
+  replenishment-resilience.test.ts:             3 PASSED
+  PromoFlixPlayer.test.tsx:                    22 PASSED
+  NegotiationMarkupCard (3 arquivos):          23 PASSED
+  quote-status-schema.test.ts:                 14 PASSED
+  kit-builder/ItemCard subset:                  0 falhas
 
-Nota: A PR #2605 documenta no seu body que os seguintes testes falham em main antes dos seus fixes:
-1. src/lib/__tests__/chunk-recovery.shared-reload-budget.test.ts:33 — race condition Date.now()
-2. src/lib/__tests__/chunk-recovery.shared-reload-budget.test.ts:60 — race condition Date.now()
-3. tests/integration/replenishment-resilience.test.ts:16 — missing await
-4. src/components/products/gallery/PromoFlixPlayer.tsx tests — React 19 volumechange listener
-5. e2e/catalog/novidades-reposicao-card-parity.spec.ts:214 — threshold 64→96px
+Nota: Suite completa (~41 arquivos) não completa em 60s localmente.
+Gate 2 CI (bloqueante) está SUCCESS — evidência canônica.
 
-Esses itens são candidatos a falhas pré-existentes (documentadas pelo autor via PR body).
+FALHAS PRÉ-EXISTENTES NO CI DE MAIN (não são Gate 2):
+Essas falhas são de checks E2E/visual opcionais, NÃO do Gate 2:
+  - E2E Visual Focused · color-swatch (failure)
+  - E2E Visual Focused · magazine-header (failure)
+  - e2e-gates (failure)
+  - chromium • swatch→QV (failure)
+  - E2E — Full User Flows (authed) (failure)
+  - webkit • swatch→QV (failure)
+  - check (failure — check genérico, não Gate Final)
+
+Gate Final - Deploy Ready: SUCCESS (bloqueante principal)

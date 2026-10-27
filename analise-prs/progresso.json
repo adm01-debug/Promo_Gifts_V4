@@ -1,23 +1,26 @@
 {
-  "gerado_em": "2026-10-27T06:30:00-03:00",
+  "gerado_em": "2026-10-27T13:00:00-03:00",
   "sessao": "https://claude.ai/code/session_011d8gKLZg8BWivR8aQBwxGF",
-  "rev": 33,
-  "main_head": "06fe47fd3a992bf2a39ab356c9d8c357c5f2a27e",
+  "rev": 35,
+  "main_head": "48899b659ef6deba0fee2db7482347097059edb5",
   "baseline": {
     "tsc_exit_code": 0,
     "tsc_command": "tsc -p tsconfig.app.json --noEmit",
     "tsc_worktree": "/tmp/main-baseline-rev32",
     "vitest": "rev33 verificado por nome: chunk-recovery 8P, replenishment 3P, PromoFlixPlayer 22P, NegotiationMarkupCard 23P — todos passam em main 06fe47fd3 (worktree /tmp/main-baseline-rev32)",
-    "gate_final_main": "SUCCESS (verificado via github_list_check_runs)"
+    "gate1_lint": "SUCCESS via CI github_list_check_runs em 06fe47fd3 (rev34)",
+    "gate6_build": "SUCCESS local exit 0 (11.72s, /tmp/main-baseline-rev32) + CI em 06fe47fd3 (rev34)",
+    "falhas_preexistentes_main": "7 checks E2E/visuais opcionais não-Gate2/não-GateFinal: color-swatch, magazine-header, e2e-gates, chromium•swatch→QV, Full User Flows authed, webkit•swatch→QV, check",
+    "gate_final_main": "SUCCESS (verificado via github_list_check_runs em 06fe47fd3 e em 3ffbf322d)"
   },
-  "prs_abertas_analisadas": 16,
-  "merges_autonomos_esta_sessao": 0,
+  "prs_abertas_analisadas": 17,
+  "merges_autonomos_esta_sessao": 1,
   "contagem_por_veredito": {
     "BLOQUEADA": 6,
     "DECISAO_HUMANA": 9,
     "FECHAR": 1,
-    "MERGEADO_AUTONOMO": 0,
-    "total_abertas": 16
+    "MERGEADO_AUTONOMO": 1,
+    "total_abertas": 17
   },
   "prs": [
     {
@@ -38,15 +41,12 @@
       "branch": "claude_05/youthful-ride-vcdchy",
       "draft": false,
       "head_sha": "c653bef927",
-      "conflito": "CONFLICT — RELATORIO_CI.md + src/components/kit-builder/ItemCard.tsx",
-      "conflict_files": ["RELATORIO_CI.md", "src/components/kit-builder/ItemCard.tsx"],
-      "conflict_resolution": "VERIFICADO_LOCALMENTE_NAO_PUSHADO",
-      "conflict_note": "Resolucao: manter main em ambos. Push proibido REGRA#10+stop-hook. REGRA#8 permanece.",
-      "ci_gate_final": "N/A (CONFLICT)",
+      "conflito": "CLEAN (era CONFLICT em rev33; main 3ffbf322d resolveu)",
+      "ci_gate_final": "N/A (bloqueada por REGRA#8+REGRA#10)",
       "regra8": true,
       "regra10": true,
       "veredito": "BLOQUEADA",
-      "motivo": "CONFLICT + REGRA#8 (.github/workflows/contract-tests.yml + supabase/migrations/) + REGRA#10 cross-agent claude_05"
+      "motivo": "REGRA#8 (.github/workflows/contract-tests.yml + supabase/migrations/) + REGRA#10 cross-agent claude_05"
     },
     {
       "numero": 2579,
@@ -223,6 +223,22 @@
         "PromoFlixPlayer": "22 PASSED",
         "NegotiationMarkupCard": "23 PASSED"
       }
+    },
+    {
+      "numero": 2610,
+      "titulo": "fix(e2e): atualiza spec 92 para aceitar /auth no redirect de ProtectedRoute",
+      "branch": "claude/fix-personalization-e2e-auth-261027-0340",
+      "draft": false,
+      "head_sha": "2a7b451919",
+      "merge_sha": "48899b659ef6deba0fee2db7482347097059edb5",
+      "conflito": "CLEAN (1 arquivo, 6 linhas alteradas)",
+      "ci_gate_final": "SUCCESS (SHA original verificado por session_01Knr9enFAok62bHihBK1UUP; merge autorizado pois CLEAN + sem REGRA#8 + sem REGRA#10 + não DRAFT)",
+      "regra8": false,
+      "regra10": false,
+      "files_changed": ["e2e/flows/92-personalization-auth-redirect.spec.ts"],
+      "diff_summary": "4 asserções /login/ → /(auth|login)/: aceita /auth que é o redirect real de ProtectedRoute.tsx:48",
+      "veredito": "MERGEADO_AUTONOMO",
+      "motivo": "Merge squash SHA 48899b659ef6. Todos os 8 critérios atendidos: válida, não implementada, CLEAN, Gate Final SUCCESS, zero código revertido, regras de negócio OK, completa, confiança alta."
     }
   ]
 }

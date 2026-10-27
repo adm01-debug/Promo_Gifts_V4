@@ -1,11 +1,15 @@
-Build check — Sessão session_01Ss1tXZ4cAbxBvdmu95uNPz (continuação)
-Data: 2026-10-25
+BASELINE BUILD — main HEAD 06fe47fd3a992bf2a39ab356c9d8c357c5f2a27e
+Data: 2026-10-27 (sessão rev34)
 
-NÃO EXECUTADO LOCALMENTE
-Motivo: npm install falha com 403 (registry europe-west1-npm.pkg.dev sem credenciais)
+RESULTADO LOCAL: SUCCESS
+Comando: node node_modules/.bin/vite build --mode=test
+Diretório: /tmp/main-baseline-rev32 (worktree de origin/main 06fe47fd3)
+Exit code: 0
+Duração: 11.72s
+Warnings (não fatais): INEFFECTIVE_DYNAMIC_IMPORT em VariantPickerDialog.tsx, SharePreviewDialog.tsx
 
-Referência CI (Gate 6 — Build Vite):
-- Run #40214531246 (SHA 4cb4feb4): conclusion=success → Build OK
-- Gate Final completo: success ✅
-
-Evidência: Gate Final run #40214531246 job "build" conclusion=success
+RESULTADO CI: SUCCESS
+Gate: "Gate 6 - Build"
+Conclusão: success
+SHA testado: 06fe47fd3a992bf2a39ab356c9d8c357c5f2a27e
+Fonte: github_list_check_runs

@@ -1,7 +1,7 @@
 {
-  "generated": "2026-10-27T06:45:00-03:00",
+  "generated": "2026-10-27T09:10:00-03:00",
   "session": "session_011d8gKLZg8BWivR8aQBwxGF",
-  "revision": "rev33",
+  "revision": "rev34",
   "main_head": "06fe47fd3a992bf2a39ab356c9d8c357c5f2a27e",
   "main_head_commit": "fix(e2e): corrige falhas de E2E em mock auth (no-org) e baselines ausentes (push direto session_01Knr9enFAok62bHihBK1UUP)",
   "total_prs": 51,

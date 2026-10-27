@@ -1,11 +1,14 @@
-ESLint check — Sessão session_01Ss1tXZ4cAbxBvdmu95uNPz (continuação)
-Data: 2026-10-25
+BASELINE LINT — main HEAD 06fe47fd3a992bf2a39ab356c9d8c357c5f2a27e
+Data: 2026-10-27 (sessão rev34)
+Fonte: CI Gate Final run em 06fe47fd3 (github_list_check_runs)
 
-NÃO EXECUTADO LOCALMENTE
-Motivo: npm install falha com 403 (registry europe-west1-npm.pkg.dev sem credenciais)
+RESULTADO: SUCCESS (via CI)
+Gate: "Gate 1 - Lint + TypeScript"
+Conclusão: success
+SHA testado: 06fe47fd3a992bf2a39ab356c9d8c357c5f2a27e
 
-Referência CI (Gate 1 — TypeScript + ESLint):
-- Run #40214531246 (SHA 4cb4feb4): conclusion=success → 0 erros ESLint, 0 warnings
-- Gate Final completo: success ✅
+Nota: ESLint local não completa em 60s (codebase grande, ~1900 arquivos de teste).
+Evidência via CI é canônica — Gate 1 é bloqueante e estava SUCCESS no main atual.
 
-Evidência: Gate Final run #40214531246 job "static-gates" conclusion=success
+Execuções locais de subset (src/integrations/, src/components/kit-builder/):
+- EXIT 0 em ambos os subsets verificados

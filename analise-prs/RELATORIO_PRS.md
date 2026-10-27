@@ -1,8 +1,8 @@
 # RELATÓRIO DE PRs — Promo Gifts V4
-**Sessão:** session_011d8gKLZg8BWivR8aQBwxGF (rev33)
+**Sessão:** session_011d8gKLZg8BWivR8aQBwxGF (rev35)
 **Data:** 2026-10-27
-**main HEAD:** `06fe47fd3a992bf2a39ab356c9d8c357c5f2a27e`
-**Commit:** fix(e2e): corrige falhas de E2E em mock auth (no-org) e baselines ausentes (push direto por session_01Knr9enFAok62bHihBK1UUP — toca `.github/workflows/e2e-quotes.yml` + 18 e2e specs)
+**main HEAD:** `48899b659ef6deba0fee2db7482347097059edb5`
+**Commit:** squash merge PR #2610 — fix(e2e): atualiza spec 92 para aceitar /auth no redirect de ProtectedRoute
 **HEAD anterior (rev30):** `00eeec9ac2c2397c5814f9d17dd0c86ad36a5c0c`
 
 ---
@@ -11,11 +11,11 @@
 
 | Métrica | Valor |
 |---|---|
-| Total de PRs analisadas (histórico) | 51 |
-| PRs abertas nesta revisão | 16 |
-| PRs mergeadas autonomamente (total histórico) | 15 |
-| PRs mergeadas por esta sessão (rev30) | 0 |
-| PRs mergeadas externamente (rev30) | 1 (#2602) |
+| Total de PRs analisadas (histórico) | 52 |
+| PRs abertas analisadas nesta revisão | 17 |
+| PRs mergeadas autonomamente (total histórico) | 16 |
+| PRs mergeadas por esta sessão (rev35) | 1 (#2610) |
+| PRs mergeadas externamente (rev35) | 0 |
 | PRs aguardando DECISAO_HUMANA (abertas) | 9 |
 | PRs BLOQUEADAS por REGRA (abertas) | 6 |
 | PRs FECHAR / órfãs (abertas) | 1 |
@@ -81,7 +81,7 @@ Evidência bloqueio DRAFT: API HTTP 405 `{"message":"Pull Request is still a dra
 
 ---
 
-## Merge Tests vs main `06fe47fd3` (rev31)
+## Merge Tests vs main `06fe47fd3` (rev31) / `48899b659e` (rev35)
 
 | PR | Branch | Resultado | Head SHA |
 |---|---|---|---|
@@ -101,13 +101,15 @@ Evidência bloqueio DRAFT: API HTTP 405 `{"message":"Pull Request is still a dra
 | #2603 | claude_04/tender-hawking-ghw2zi | CLEAN | ab1ea3b316 |
 | #2604 | claude_04/charming-darwin-g1nvj2 | CLEAN | e33d2fe4aa |
 | #2605 | claude/fix-unit-tests-261027-0113 | CLEAN | 9bfead1417 |
+| **#2610** | **claude/fix-personalization-e2e-auth-261027-0340** | **CLEAN → MERGEADO** | **2a7b451919** |
 
 ---
 
-## PRs Mergeadas Autonomamente (Histórico — 15 total)
+## PRs Mergeadas Autonomamente (Histórico — 16 total)
 
 | PR | SHA merge | Título |
 |---|---|---|
+| #2610 | 48899b659e | fix(e2e): aceita /auth no redirect de ProtectedRoute (spec 92) — rev35 |
 | #2544 | 1d26da908 | docs: backlog CI CI-001..CI-008 |
 | #2545 | 2a93ba556 | chore: backlog funcionalidades FT-001..FT-416 |
 | #2548 | 9be832a35 | feat: botao LGPD excluir meus dados |
@@ -132,11 +134,31 @@ Evidência bloqueio DRAFT: API HTTP 405 `{"message":"Pull Request is still a dra
 
 ---
 
-## Observações (rev33)
+## Observações (rev35)
 
 - **Novo commit em main (rev31→33):** `06fe47fd3` push direto por session_01Knr9enFAok62bHihBK1UUP — toca `.github/workflows/e2e-quotes.yml` + 18 e2e specs. Causa conflito em PR #2572.
 - **PR #2572 conflito VERIFICADO E RESOLVIDO** (rev33): Resolução aplicada em worktree local. `RELATORIO_CI.md` + `src/components/kit-builder/ItemCard.tsx` ambos resolvidos mantendo main. 0 markers. Push proibido por REGRA#10 + stop-hook. REGRA#8 permanece bloqueante mesmo sem conflito.
 - **PR #2602 (MERGEADO_EXTERNO)**: estava listada como DRAFT em rev29; foi mergeada por outra sessão durante análise, tornando-se o novo main HEAD `00eeec9ac`. 5 arquivos E2E (`e2e/flows/*.spec.ts`). Merge via PR (REGRA#9 satisfeita).
+
+## Baseline CI em main `06fe47fd3` (rev34 — completo)
+
+| Gate | Check | Resultado | Fonte |
+|---|---|---|---|
+| Gate 1 | Lint + TypeScript | **SUCCESS** | `github_list_check_runs` — `06fe47fd3` |
+| Gate 2 | Unit Tests (vitest) | **SUCCESS** | `github_list_check_runs` — `06fe47fd3` |
+| Gate 6 | Build (Vite) | **SUCCESS** (exit 0, 11.72s) | local `/tmp/main-baseline-rev32` + CI |
+| Gate Final | Deploy Ready | **SUCCESS** | `github_list_check_runs` — `06fe47fd3` |
+
+**Falhas pré-existentes em main (NÃO são Gate 2 / Gate Final — opcionais/E2E):**
+- E2E Visual Focused · color-swatch (failure)
+- E2E Visual Focused · magazine-header (failure)
+- e2e-gates (failure)
+- chromium • swatch→QV (failure)
+- E2E — Full User Flows (authed) (failure)
+- webkit • swatch→QV (failure)
+- check (failure — check genérico, não Gate Final)
+
+Nenhuma dessas 7 falhas é do Gate 2 (unit tests) nem do Gate Final. São E2E visuais/opcionais pré-existentes em main independentemente de qualquer PR.
 - **PR #2603**: 5ª migration `20261027200000_supplier_stricker_rls_deny_all.sql` habilita RLS deny-all explícita em 17 tabelas do schema `supplier_stricker` — aditiva e endurece segurança. Bloqueada por DRAFT + REGRA#8.
 - **PR #2604**: `continue-on-error: true` em 3 steps observacionais `psql` (E036/E037/E072) que falham por IPv6 (`Network is unreachable`). Step principal (supabase CLI) não é alterado. Bloqueada por DRAFT + REGRA#8.
 - **PR #2605 — testes verificados em main `06fe47fd3`** (rev33, worktree `/tmp/main-baseline-rev32`):

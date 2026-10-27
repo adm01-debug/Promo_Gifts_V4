@@ -1,7 +1,7 @@
 # Regras de Negócio — Promo Gifts V4
-**Sessão:** session_011d8gKLZg8BWivR8aQBwxGF (rev33)
+**Sessão:** session_011d8gKLZg8BWivR8aQBwxGF (rev35)
 **Data:** 2026-10-27
-**main HEAD:** `06fe47fd3a992bf2a39ab356c9d8c357c5f2a27e` (fix(e2e): corrige falhas de E2E em mock auth — push direto session_01Knr9enFAok62bHihBK1UUP)
+**main HEAD:** `48899b659ef6deba0fee2db7482347097059edb5` (squash merge PR #2610 — fix(e2e): aceita /auth no redirect de ProtectedRoute)
 
 ## 1. SSOT do Supabase (REGRA #1)
 - Projeto canônico: `doufsxqlfjyuvxuezpln` (Gold/Medallion)
