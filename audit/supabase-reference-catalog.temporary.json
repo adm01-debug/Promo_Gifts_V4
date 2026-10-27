@@ -810,6 +810,14 @@
       "occurrences": 1,
       "stage": 100,
       "reason": "Despacho dinâmico: `untypedFrom(resolveTable(table))` — resolveTable converte slug para nome de tabela; inventariado na etapa 100 do PLANO_WORKFLOWS_CI_V2."
+    },
+    {
+      "kind": "relation",
+      "name": "xbz_image_import_staging",
+      "file": "supabase/functions/xbz-image-uploader/index.ts",
+      "occurrences": 1,
+      "stage": 101,
+      "reason": "Tabela ainda não criada em produção; edge function xbz-image-uploader é stub (not_implemented) aguardando migration de criação da tabela."
     }
   ]
 }
