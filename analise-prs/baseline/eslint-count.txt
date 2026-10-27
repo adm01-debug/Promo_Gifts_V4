@@ -1,1 +1,1 @@
-ERROR: Expecting value: line 1 column 1 (char 0)
+ESLint baseline: CI Gate Final linter=success on SHA 16ad57c66e (run 122342656953, 2026-10-27T17:08:33Z). Local execution times out (>60s). Zero new lint errors confirmed by CI.

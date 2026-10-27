@@ -1,0 +1,16 @@
+# Falhas pré-existentes na baseline (SHA 16ad57c66e — antes desta sessão)
+
+Falhas conhecidas (não introduzidas por PRs analisadas nesta sessão):
+- check: FAILURE (pre-existing — baseline)
+- Supabase Preview: FAILURE ("Remote migration versions not found in local migrations directory")
+- audit: FAILURE (pre-existing — baseline)
+- Verify push to main matches accepted patterns: FAILURE (pre-existing — baseline)
+
+Em progresso na baseline (E2E/quality gate com timeouts conhecidos):
+- E2E — Full User Flows (authed): in_progress/timeout
+- quality-gate: in_progress/timeout
+- E2E — Personalization Journey: in_progress/timeout
+
+Gate Final (deploy-gates.yml) era SUCCESS em SHA 16ad57c66e (run 122342656953, 2026-10-27T17:08:33Z).
+Gate Final era SUCCESS em SHA 4c7ecb260d (run 40549508170, 2026-10-27T17:26:23Z) — PR #2654.
+Gate Final NOT YET PRESENT em SHA a0560fdc62 — CI em progresso no momento do snapshot (2026-10-27T17:38Z).
