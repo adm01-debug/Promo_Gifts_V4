@@ -1,11 +1,11 @@
 {
   "session_id": "session_011d8gKLZg8BWivR8aQBwxGF",
-  "revision": "rev64",
+  "revision": "rev65",
   "date": "2026-10-27",
   "status": "SESSAO_COMPLETA",
   "main_head_entrada": "df18546dfd76d1bea7ea5873257b668d128d8df3",
   "main_head_final": "b5cfee9b24017fbf53a0035e86d8820d07bad74e",
-  "main_head_atual": "b5cfee9b24017fbf53a0035e86d8820d07bad74e",
+  "main_head_atual": "1beb0c34f4f22dc9b5ed3d57b8428629619e8f89",
   "gate_final_atual": {
     "sha": "c3aa9f1a09d3201478d865217eb9d924e87d1990",
     "run": "40493344116",
@@ -21,16 +21,23 @@
     "nota": "Gate Final PR#2600 (delivery branch) success em 3c9d14075 (head final); docs-only bypass E14 ativo (Gates 1/2/3 skipped). Compare GitHub x Canonical: success."
   },
   "prs_analisados_esta_sessao": 29,
-  "open_prs_count_verificado": 13,
-  "open_prs_verificado_em": "2026-10-27T11:44:00Z",
+  "open_prs_count_verificado": 12,
+  "open_prs_verificado_em": "2026-10-27T12:15:00Z",
+  "nota_contagem": "12 PRs abertas excl. PR #2600 (delivery branch desta sessao). prs.csv tem 55 linhas = acumulado de todas as sessoes anteriores + esta.",
+  "correcoes_rev65": [
+    "#2632 movida DECISAO_HUMANA -> MERGEADO_SESSAO_EXTERNA: mergeada por outra sessao (SHA 2b4f20e2f5, fix(ci): aumenta timeout)",
+    "#2605 movida SUPERSEDED -> DECISAO_HUMANA: conteudo portado para #2620 mas agora DIRTY (3/5 arquivos em main via #2620 causam conflito ADD/ADD)",
+    "#2612 movida JA_EM_MAIN -> DRAFT_NOMERGE: PR ainda aberta como DRAFT; conteudo eh paliativo (waitFor timeout 15s->25s)",
+    "open_prs_count atualizado 13->12 (excl. #2600)"
+  ],
   "verdicts": {
     "MERGEADO_AUTONOMO": ["2620", "2627", "2628", "2636"],
-    "MERGEADO_SESSAO_EXTERNA": ["2597", "2621", "2625", "2630", "2633", "2635", "2638"],
-    "DECISAO_HUMANA": ["2420", "2572", "2579", "2587", "2588", "2594", "2632", "2637"],
-    "DRAFT_NOMERGE": ["2580", "2600", "2631"],
-    "SUPERSEDED": ["2605", "2619", "2634"],
+    "MERGEADO_SESSAO_EXTERNA": ["2597", "2621", "2625", "2630", "2632", "2633", "2635", "2638"],
+    "DECISAO_HUMANA": ["2420", "2572", "2579", "2587", "2588", "2594", "2605", "2637"],
+    "DRAFT_NOMERGE": ["2580", "2600", "2612", "2631"],
+    "SUPERSEDED": ["2619", "2634"],
     "BRANCH_DIRTY": ["2622"],
-    "JA_EM_MAIN": ["2612"]
+    "JA_EM_MAIN": []
   },
   "merges_autonomos": {
     "2620": {
@@ -90,6 +97,12 @@
       "titulo": "chore: adiciona §7 sentinel ao PENDENCIAS.md",
       "merged_at": "2026-10-27T09:43:00Z"
     },
+    "2632": {
+      "sha": "2b4f20e2f5",
+      "titulo": "fix(ci): aumenta timeout do job export de 10 para 30 min",
+      "merged_at": "2026-10-27T10:00:00Z",
+      "nota": "Mergeada por sessao externa enquanto esta sessao estava em andamento; confirmado por git log em main"
+    },
     "2633": {
       "sha": "1ce29cf2f95ecf851eef580974130a46f5a4f53a",
       "sessao": "session_01Knr9enFAok62bHihBK1UUP",
@@ -107,11 +120,11 @@
       "sessao": "session_014RkohRYagi3sPiL8jtgot4",
       "titulo": "docs: PENDENCIAS §8 e §9 + RELATORIO_CI — PRs #2633 #2634 (#2638)",
       "merged_at": "2026-10-27T11:11:35Z",
-      "nota": "PR não estava aberta no momento da análise desta sessão"
+      "nota": "PR nao estava aberta no momento da analise desta sessao"
     }
   },
   "baseline": {
-    "typecheck": "0 erros — main HEAD 1ce29cf2f (sessão rev59, tsc --noEmit exit 0)",
+    "typecheck": "0 erros — main HEAD 1ce29cf2f (sessao rev59, tsc --noEmit exit 0)",
     "lint": "success — Gate 1 CI em 3f5d94df",
     "gate_final_pos_merge": {
       "sha": "b5cfee9b24017fbf53a0035e86d8820d07bad74e",
@@ -120,18 +133,23 @@
       "completed_at": "2026-10-27T11:21:36Z"
     }
   },
+  "worktrees": {
+    "count": 1,
+    "lista": ["/home/user/Promo_Gifts_V4  [claude_04/optimistic-bohr-qplx94]"],
+    "extra_worktrees": "nenhum"
+  },
   "acoes_po_pendentes": [
     "Revisar e aprovar #2637 (E15 receipt bot — recibo de migration 20261027120000, baixo risco)",
-    "Aprovar deploy edge functions: run #40482914736 — 106 funções divergentes GitHub × Supabase",
-    "Decidir #2579 (release 1.0.0 — risco de regressão de versão)",
-    "Decidir #2587 (zustand 4→5 — breaking changes)",
-    "Decidir #2588 (react-day-picker 8→10)",
+    "Aprovar deploy edge functions: run #40482914736 — 
+106 funcoes divergentes GitHub x Supabase",
+    "Decidir #2579 (release 1.0.0 — risco de regressao de versao)",
+    "Decidir #2587 (zustand 4->5 — breaking changes)",
+    "Decidir #2588 (react-day-picker 8->10)",
     "Decidir #2420 (rollback SQL migration — REGRA#8)",
-    "Decidir #2632 (timeout workflow 10→30min — REGRA#8)",
-    "Decidir #2594 (dependabot actions/setup-node 4→7)",
-    "Fechar #2572 (análise obsoleta)",
-    "Fechar #2622 (branch dirty)",
-    "Fechar #2605 (supersedida por #2620)",
-    "Fechar #2634 (supersedida por #2633)"
+    "Decidir #2594 (dependabot actions/setup-node 4->7 — REGRA#8 workflow)",
+    "Decidir #2572 (analise obsoleta — fechar?)",
+    "Decidir #2622 (branch dirty — fechar?)",
+    "Decidir #2605 (SUPERSEDED+DIRTY — fechar? conteudo portado para #2620 ja em main)",
+    "Decidir #2579 (release 1.0.0 — downgrade versao)"
   ]
 }

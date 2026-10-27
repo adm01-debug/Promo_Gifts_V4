@@ -37,20 +37,20 @@ number,title,branch,draft,test_merge,verdict,motivo
 2597,fix: corrige 4 workflows CI falhando,claude_04/beautiful-gates-bvocz5,False,CLEAN,DECISAO_HUMANA,REGRA8 workflows x4 + REGRA10 branch outra sessao
 2600,docs(analise-prs): rev54 — 16 PRs esta sessao,claude_04/optimistic-bohr-qplx94,True,CLEAN,DRAFT_NOMERGE,DRAFT analise-prs/ docs internos desta sessao
 2604,fix(ci): continue-on-error psql steps snapshot,claude_04/charming-darwin-g1nvj2,True,CLEAN,DECISAO_HUMANA,DRAFT+REGRA8 workflow schema-snapshot-export
-2605,fix(tests): 4 falhas unit tests + 1 threshold E2E,claude/fix-unit-tests-261027-0113,False,CONFLICT,SUPERSEDED,Conteudo portado para #2620 SHA 3aabc4187 + REGRA10
+2605,fix(tests): 4 falhas unit tests + 1 threshold E2E,claude/fix-unit-tests-261027-0113,False,CONFLICT,DECISAO_HUMANA,SUPERSEDED+DIRTY: 3/5 arquivos portados para #2620 (ja em main) causam conflito ADD/ADD
 2612,fix(test): waitFor timeout 15s->25s useReplenishment,claude/fix-replenishment-timeout-261027-0430,True,CLEAN,DRAFT_NOMERGE,DRAFT apenas test timeout solucao paliativa
 2619,fix(health-check): timeout 5s em getCredential evita hang,claude/fix-health-check-cred-timeout-271027-0630,True,CLEAN,SUPERSEDED,Supersedida por #2625 SHA 83c81d58
 2621,fix(migrations): rollback files 7 migrations 20261027 E058,claude/fix-rollbacks-migrations-261027-1305,False,CLEAN,MERGEADO_SESSAO_EXTERNA,Mergeado por session_01PE8GzVYqxJM25xzvLuLYhW
 2622,fix(rollbacks): rollbacks 9 migrations + manifest fix,claude/fix-rollbacks-20261027-271027-1000,False,DIRTY,BRANCH_DIRTY,ADD/ADD conflict apos merge de #2621
 2625,fix(edge-functions): health-check timeout + manifest xbz,claude/fix-edge-authz-xbz-health-check-271027-1100,False,CLEAN,MERGEADO_SESSAO_EXTERNA,Mergeado por session_01Knr9enFAok62bHihBK1UUP
-2627,fix(rollbacks): rollbacks 2 migrations 20261027 233000+234500,claude/fix-rollbacks-2m-271027-0800,False,CLEAN,MERGEADO_AUTONOMO,Gate Final success — 2 rollbacks unicos desta sessao
+2627,fix(rollbacks): rollbacks 2 migrations 20261027 233000+234500,claude/fix-rollbacks-2m-271027-0800,False,CLEAN,MERGEADO_AUTONOMO,Gate Final success —  2 rollbacks unicos desta sessao
 2628,fix(e2e): atualiza selectors E2E do simulador,claude/fix-e2e-simulator-selectors-271027-0846,False,CLEAN,MERGEADO_AUTONOMO,Teste E2E apenas; Gate Final green
-2629,chore: PENDENCIAS.md §4 e RELATORIO_CI (versão antiga),claude/chore-deploy-blocker-261027-old,True,N/A,FECHADO_EXTERNO,PR fechada externamente antes de rev59
-2630,chore: adiciona §7 sentinel ao PENDENCIAS.md,claude/chore-sentinel-pendencias-271027,False,CLEAN,MERGEADO_SESSAO_EXTERNA,Mergeado por sessão externa
-2631,chore: atualiza PENDENCIAS §4 e RELATORIO_CI — bloqueio deploy,claude/chore-deploy-blocker-261027-1007,True,CLEAN,DRAFT_NOMERGE,Draft + REGRA#10 (session_014RkohRYagi3sPiL8jtgot4)
-2632,fix(ci): aumenta timeout do job export de 10 para 30 min,claude/fix-export-timeout-261027-1400,False,CLEAN,DECISAO_HUMANA,REGRA#8 workflow + REGRA#10
+2629,chore: PENDENCIAS.md §4 eR RELATORIO_CI (versao antiga),claude/chore-deploy-blocker-261027-old,True,N/A,FECHADO_EXTERNO,PR fechada externamente antes de rev59
+2630,chore: adiciona §7 sentinel ao PENDENCIAS.md,claude/chore-sentinel-pendencias-271027,Mrue,CLEAN,MERGEADO_SESSAO_EXTERNA,Mergeado por sessao externa
+2631,chore: atualiza PENDENCIAS §4 eR RELATORIO_CI — bloqueio deploy,claude/chore-deploy-blocker-261027-1007,True,CLEAN,DRAFT_NOMERGE,Draft + REGRA#10 (session_014RkohRYagi3sPiL8jtgot4)
+2632,fix(ci): aumenta timeout do job export de 10 para 30 min,claude/fix-export-timeout-261027-1400,False,CLEAN,MERGEADO_SESSAO_EXTERNA,Mergeado por sessao externa (SHA 2b4f20e2f5) enquanto esta sessao estava ativa
 2633,fix(tests): corrige 3 falhas vitest no CI Security,claude/fix-ci-tests-261027-external,False,CLEAN,MERGEADO_SESSAO_EXTERNA,Mergeado por session_01Knr9enFAok62bHihBK1UUP
 2634,"fix(ci): corrige 3 races de teste (playwright, safeAuthCall, LocationPanel)",claude/fix-ci-tests-261027-1005,True,CLEAN,SUPERSEDED,Supersedida por #2633 + Draft + REGRA#10
-2635,fix(ci): Gate 1.13 — trata HTTP 400 pós-timeout como soft,claude/fix-gate-1-13-http400-261027-1416,True,CLEAN,DRAFT_NOMERGE,Draft + REGRA#10 + gate de segurança RLS requer aprovação PO
+2635,fix(ci): Gate 1.13 — trata HTTP 400 pós-timeout como soft,claude/fix-gate-1-13-http400-261027-1416,True,CLEAN,MERGEADO_SESSAO_EXTERNA,Mergeado por session_011kNCJ9xyjX5d9E2bUXhdBg (SHA 06faacc95) em 2026-10-27T10:48:11Z
 2636,fix(tests): mock AutoTestJobStatusCard em AdminStructuralComparison,claude/fix-window-autotestcard-261027-1031,False,CLEAN,MERGEADO_AUTONOMO,Gate Final run #40493344116 success; SHA b5cfee9b; apenas test files +7/-0
-2637,docs: recibo de aplicação — 20261027120000 (E15),e15-receipt-20261027120000-40469025943,False,BEHIND,DECISAO_HUMANA,E15 receipt bot — review obrigatório do PO + mergeable_state behind
+2637,docs: recibo de aplicação —  20261027120000 (E15),e15-receipt-20261027120000-40469025943,False,BEHIND,DECISAO_HUMANA,E15 receipt bot — review obrigatório do PO + mergeable_state behind
