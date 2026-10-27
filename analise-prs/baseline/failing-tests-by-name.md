@@ -97,16 +97,33 @@ Resultado: **6 arquivos, 56 testes — todos PASSED**
 ### Por arquivo:
 
 **src/lib/__tests__/chunk-recovery.shared-reload-budget.test.ts** — 8 PASSED
+1. URL limpa: bump seta __bare=1 e __bart=agora, retorna true
+2. 2º bump dentro da janela: incrementa para 2 preservando __bart
+3. teto atingido (__bare=2 na janela): bump recusa e NÃO muta a URL
+4. janela expirada (>20s): reseta para 1 com __bart novo
+5. readSharedReloadBudget não muta a URL (só leitura)
+6. orçamento livre + contador próprio livre: reload ocorre e a URL final carrega __bare/__bart
+7. orçamento compartilhado JÁ esgotado (__bare=2 na URL, de outro mecanismo): recusa mesmo com contador próprio zerado
+8. orçamento compartilhado esgotado mas FORA da janela de 20s: não bloqueia (reseta e permite)
 
 **tests/integration/replenishment-resilience.test.ts** — 3 PASSED
+1. Deve tratar erro 410 Gone (Endpoint Decommissioned) com fallback ou mensagem clara
+2. Deve validar comportamento de Retry para erro 429 (Too Many Requests)
+3. Deve garantir estado consistente após erro 5xx
 
 **src/components/products/gallery/PromoFlixPlayer.test.tsx** — 22 PASSED
+(22 testes de player: autoplay, mute, crossOrigin, race conditions, quality levels, error handling)
 
 **src/components/quotes/__tests__/NegotiationMarkupCard.singleline.test.tsx** — 3 PASSED
+1. renderiza header sem o texto descritivo "Ative para inflar..."
+2. coloca título, badge e switch como irmãos diretos (uma linha)
+3. não renderiza nenhum <p> descritivo no estado desativado
 
 **src/components/quotes/__tests__/NegotiationMarkupCard.visualA11y.test.tsx** — 17 PASSED
+(17 testes de acessibilidade, responsividade e visualização)
 
 **src/components/quotes/__tests__/NegotiationMarkupCard.priceCardsOrder.test.tsx** — 3 PASSED
+(3 testes de ordenação de price cards)
 
 ---
 
