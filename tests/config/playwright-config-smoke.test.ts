@@ -25,7 +25,7 @@ describe('Playwright server isolation contract', () => {
       url: 'http://localhost:8080',
       reuseExistingServer: false,
     });
-  });
+  }, 30_000);
 
   it('starts Vite when E2E_BASE_URL points to localhost', async () => {
     process.env.E2E_BASE_URL = 'http://localhost:8080';
@@ -36,7 +36,7 @@ describe('Playwright server isolation contract', () => {
       url: 'http://localhost:8080',
       reuseExistingServer: false,
     });
-  });
+  }, 30_000);
 
   it('reuses an existing local server in ephemeral CI', async () => {
     process.env.CI = 'true';
@@ -44,14 +44,14 @@ describe('Playwright server isolation contract', () => {
     const config = (await import('../../playwright.config')).default;
 
     expect(config.webServer).toMatchObject({ reuseExistingServer: true });
-  });
+  }, 30_000);
 
   it('allows explicit local reuse outside CI', async () => {
     process.env.E2E_REUSE_EXISTING_SERVER = '1';
     const config = (await import('../../playwright.config')).default;
 
     expect(config.webServer).toMatchObject({ reuseExistingServer: true });
-  });
+  }, 30_000);
 
   it('does not start a local server when a remote E2E_BASE_URL is provided', async () => {
     process.env.E2E_BASE_URL = 'https://preview.example.test';
@@ -59,5 +59,5 @@ describe('Playwright server isolation contract', () => {
 
     expect(config.use?.baseURL).toBe('https://preview.example.test');
     expect(config.webServer).toBeUndefined();
-  });
+  }, 30_000);
 });
