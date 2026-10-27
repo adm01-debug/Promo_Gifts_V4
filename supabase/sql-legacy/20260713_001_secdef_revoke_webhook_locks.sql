@@ -1,1 +1,67 @@
-LS0gPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQotLSBEcmFmdCAoTsODTyBleGVjdXRhciBzZW0gYXByb3Zhw6fDo28gZG8gUE8g4oCUIENMQVVERS5tZCAjQ29tcG9ydGFtZW50byBvYnJpZ2F0w7NyaW8pCi0tIC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KLS0gQ29udGV4dG8KLS0gICBzdXBhYmFzZS0tbGludGVyICgyMDI2LTA3LTEzKSBhcG9udG91IDU3IGZpbmRpbmdzIDAwMjgvMDAyOSAoU0VDVVJJVFkKLS0gICBERUZJTkVSIGV4ZWN1dMOhdmVsIHBvciBQVUJMSUMvYW5vbi9hdXRoZW50aWNhdGVkKS4gQmFzZWxpbmUgYWNlaXRvIGVtCi0tICAgLnNlY3VyaXR5L3N1cGFiYXNlLWxpbnRlci1iYXNlbGluZS5qc29uIGNvYnJlIDQ4IGZ1bsOnw7VlcyAoUkxTIGhlbHBlcnMgKwotLSAgIFJQQ3MgZG8gZnJvbnRlbmQpLiBPIGRpZmYgYXR1YWwgaWRlbnRpZmljYSA0IGZ1bsOnw7VlcyBmb3JhIGRvIGJhc2VsaW5lOgotLQotLSAgICAgU8OzIGVkZ2UvY3JvbiAoc2VydmljZV9yb2xlKSDigJQgZGV2ZW0gdGVyIEVYRUNVVEUgcmV2b2dhZG86Ci0tICAgICAgIOKAoiBjbGFpbV93ZWJob29rX2RlbGl2ZXJ5KHBfd2ViaG9va19pZCB1dWlkLCBwX3BheWxvYWRfaGFzaCB0ZXh0KQotLSAgICAgICDigKIgcmVsZWFzZV93ZWJob29rX2RlbGl2ZXJ5X2xvY2socF93ZWJob29rX2lkIHV1aWQsIHBfcGF5bG9hZF9oYXNoIHRleHQpCi0tICAgICAgIOKAoiBjbGVhbnVwX3N0YWxlX3dlYmhvb2tfbG9ja3MoKQotLQotLSAgICAgRnJvbnRlbmQgUlBDIGludGVuY2lvbmFsIOKAlCBtYW50w6ltLCBzw7MgYWRpY2lvbmFyIGFvIGJhc2VsaW5lOgotLSAgICAgICDigKIgcmVzdG9yZV9zZWxsZXJfY2FydChfc25hcHNob3QganNvbmIpICAgLS0gY2hhbWFkYSBlbQotLSAgICAgICAgIHNyYy9ob29rcy9wcm9kdWN0cy91c2VTZWxsZXJDYXJ0cy50czozMjUKLS0KLS0gQ2FsbGVycyB2ZXJpZmljYWRvcwotLSAgIHN1cGFiYXNlL2Z1bmN0aW9ucy93ZWJob29rLWRpc3BhdGNoZXIvaW5kZXgudHM6MjU0LDM3MwotLSAgICAgKHJwYygnY2xhaW1fd2ViaG9va19kZWxpdmVyeScgLyAncmVsZWFzZV93ZWJob29rX2RlbGl2ZXJ5X2xvY2snKSkKLS0gICBFZGdlIGZ1bmN0aW9ucyByb2RhbSBjb21vIHNlcnZpY2Vfcm9sZSDihpIgbsOjbyBzw6NvIGFmZXRhZGFzIHBlbG8gUkVWT0tFLgotLSAgIGNsZWFudXBfc3RhbGVfd2ViaG9va19sb2NrcyDDqSBhY2lvbmFkYSBwb3IgY3Jvbi9lZGdlIChtZXNtYSBjbGFzc2UpLgotLQotLSBFZmVpdG8gZXNwZXJhZG8KLS0gICDigKIgRmVjaGEgMyBmaW5kaW5ncyAoMiBkZSAwMDI4ICsgMyBkZSAwMDI5LCBjb250YW5kbyBvdmVybG9hZHMpLgotLSAgIOKAoiBOZW5odW1hIHF1ZWJyYSBkZSBzdXBlcmbDrWNpZSBww7pibGljYS9hdXRlbnRpY2FkYS4KLS0KLS0gUm9sbGJhY2sKLS0gICBHUkFOVCBFWEVDVVRFIE9OIEZVTkNUSU9OIHB1YmxpYy48Zm4+KC4uLikgVE8gYXV0aGVudGljYXRlZCwgYW5vbjsKLS0KLS0gQXByb3Zhw6fDo28KLS0gICBQTyBkZXZlIGNvbmZpcm1hciBhbnRlcyBkZSBhcGxpY2FyIHZpYSBzdXBhYmFzZS0tbWlncmF0aW9uLiBFc3RlIGFycXVpdm8KLS0gICBmaWNhIGVtIHFhL21pZ3JhdGlvbnMtZHJhZnQvIGNvbmZvcm1lIGNvbnZlbsOnw6NvIChtZXNtbyBwYWRyw6NvIGRlCi0tICAgMjAyNi0wNi0xOF9zZWN1cml0eV9kZWZpbmVyX2FjbC5zcWwgZSAyMDI2LTA2LTIwX3Jldm9rZV9zZWNkZWZfZnJvbV9hdXRoZW50aWNhdGVkLnNxbCkuCi0tID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KCkJFR0lOOwoKLS0gMSkgY2xhaW1fd2ViaG9va19kZWxpdmVyeSDigJQgYXRvbWljIGRlbGl2ZXJ5IGxvY2ssIGNoYW1hZGEgc8OzIGVtIGVkZ2UKUkVWT0tFIEVYRUNVVEUgT04gRlVOQ1RJT04gcHVibGljLmNsYWltX3dlYmhvb2tfZGVsaXZlcnkodXVpZCwgdGV4dCkgRlJPTSBQVUJMSUMsIGFub24sIGF1dGhlbnRpY2F0ZWQ7CkdSQU5UICBFWEVDVVRFIE9OIEZVTkNUSU9OIHB1YmxpYy5jbGFpbV93ZWJob29rX2RlbGl2ZXJ5KHV1aWQsIHRleHQpIFRPIHNlcnZpY2Vfcm9sZTsKCi0tIDIpIHJlbGVhc2Vfd2ViaG9va19kZWxpdmVyeV9sb2NrIOKAlCBsaWJlcmEgbG9jayBhcMOzcyBlbnRyZWdhClJFVk9LRSBFWEVDVVRFIE9OIEZVTkNUSU9OIHB1YmxpYy5yZWxlYXNlX3dlYmhvb2tfZGVsaXZlcnlfbG9jayh1dWlkLCB0ZXh0KSBGUk9NIFBVQkxJQywgYW5vbiwgYXV0aGVudGljYXRlZDsKR1JBTlQgIEVYRUNVVEUgT04gRlVOQ1RJT04gcHVibGljLnJlbGVhc2Vfd2ViaG9va19kZWxpdmVyeV9sb2NrKHV1aWQsIHRleHQpIFRPIHNlcnZpY2Vfcm9sZTsKCi0tIDMpIGNsZWFudXBfc3RhbGVfd2ViaG9va19sb2NrcyDigJQgbGltcGV6YSBkZSBsb2NrcyBleHBpcmFkb3MgKGNyb24pClJFVk9LRSBFWEVDVVRFIE9OIEZVTkNUSU9OIHB1YmxpYy5jbGVhbnVwX3N0YWxlX3dlYmhvb2tfbG9ja3MoKSBGUk9NIFBVQkxJQywgYW5vbiwgYXV0aGVudGljYXRlZDsKR1JBTlQgIEVYRUNVVEUgT04gRlVOQ1RJT04gcHVibGljLmNsZWFudXBfc3RhbGVfd2ViaG9va19sb2NrcygpIFRPIHNlcnZpY2Vfcm9sZTsKCkNPTU1JVDsKCi0tIC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KLS0gUGFzc28gcMOzcy1taWdyYcOnw6NvIChOw4NPIGFwbGljYXIgYXTDqSBQTyBhcHJvdmFyIGEgbWlncmHDp8OjbyBhY2ltYSk6Ci0tCi0tIEF0dWFsaXphciAuc2VjdXJpdHkvc3VwYWJhc2UtbGludGVyLWJhc2VsaW5lLmpzb24gcGFyYSBhY2VpdGFyCi0tIHJlc3RvcmVfc2VsbGVyX2NhcnQgY29tbyBSUEMgaW50ZW5jaW9uYWwgZG8gZnJvbnRlbmQuIERpZmY6Ci0tCi0tICAgeyAibGludCI6ICIwMDI5X2F1dGhlbnRpY2F0ZWRfc2VjdXJpdHlfZGVmaW5lcl9mdW5jdGlvbl9leGVjdXRhYmxlIiwKLS0gICAgICJuYW1lIjogInJlc3RvcmVfc2VsbGVyX2NhcnQiIH0KLS0KLS0gSnVzdGlmaWNhdGl2YSBubyBjb21taXQ6Ci0tICAgInJlc3RvcmVfc2VsbGVyX2NhcnQgw6kgUlBDIHDDumJsaWNhIGRvIGZyb250ZW5kICh1c2VTZWxsZXJDYXJ0cy50czozMjUpLgotLSAgICBSTFMgaW50ZXJuYSDDoCBmdW7Dp8OjbyBmaWx0cmEgcG9yIGF1dGgudWlkKCkuIFNFQ1VSSVRZIERFRklORVIgbmVjZXNzw6FyaW8KLS0gICAgcGFyYSBieXBhc3MgZGUgUkxTIGNvbnRyb2xhZG8gbm8gSU5TRVJUIGRvIGNhcnQraXRlbXMuIgotLSA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09Cg==
+-- ============================================================================
+-- Draft (NÃO executar sem aprovação do PO — CLAUDE.md #Comportamento obrigatório)
+-- ----------------------------------------------------------------------------
+-- Contexto
+--   supabase--linter (2026-07-13) apontou 57 findings 0028/0029 (SECURITY
+--   DEFINER executável por PUBLIC/anon/authenticated). Baseline aceito em
+--   .security/supabase-linter-baseline.json cobre 48 funções (RLS helpers +
+--   RPCs do frontend). O diff atual identifica 4 funções fora do baseline:
+--
+--     Só edge/cron (service_role) — devem ter EXECUTE revogado:
+--       • claim_webhook_delivery(p_webhook_id uuid, p_payload_hash text)
+--       • release_webhook_delivery_lock(p_webhook_id uuid, p_payload_hash text)
+--       • cleanup_stale_webhook_locks()
+--
+--     Frontend RPC intencional — mantém, só adicionar ao baseline:
+--       • restore_seller_cart(_snapshot jsonb)   -- chamada em
+--         src/hooks/products/useSellerCarts.ts:325
+--
+-- Callers verificados
+--   supabase/functions/webhook-dispatcher/index.ts:254,373
+--     (rpc('claim_webhook_delivery' / 'release_webhook_delivery_lock'))
+--   Edge functions rodam como service_role → não são afetadas pelo REVOKE.
+--   cleanup_stale_webhook_locks é acionada por cron/edge (mesma classe).
+--
+-- Efeito esperado
+--   • Fecha 3 findings (2 de 0028 + 3 de 0029, contando overloads).
+--   • Nenhuma quebra de superfície pública/autenticada.
+--
+-- Rollback
+--   GRANT EXECUTE ON FUNCTION public.<fn>(...) TO authenticated, anon;
+--
+-- Aprovação
+--   PO deve confirmar antes de aplicar via supabase--migration. Este arquivo
+--   fica em qa/migrations-draft/ conforme convenção (mesmo padrão de
+--   2026-06-18_security_definer_acl.sql e 2026-06-20_revoke_secdef_from_authenticated.sql).
+-- ============================================================================
+
+BEGIN;
+
+-- 1) claim_webhook_delivery — atomic delivery lock, chamada só em edge
+REVOKE EXECUTE ON FUNCTION public.claim_webhook_delivery(uuid, text) FROM PUBLIC, anon, authenticated;
+GRANT  EXECUTE ON FUNCTION public.claim_webhook_delivery(uuid, text) TO service_role;
+
+-- 2) release_webhook_delivery_lock — libera lock após entrega
+REVOKE EXECUTE ON FUNCTION public.release_webhook_delivery_lock(uuid, text) FROM PUBLIC, anon, authenticated;
+GRANT  EXECUTE ON FUNCTION public.release_webhook_delivery_lock(uuid, text) TO service_role;
+
+-- 3) cleanup_stale_webhook_locks — limpeza de locks expirados (cron)
+REVOKE EXECUTE ON FUNCTION public.cleanup_stale_webhook_locks() FROM PUBLIC, anon, authenticated;
+GRANT  EXECUTE ON FUNCTION public.cleanup_stale_webhook_locks() TO service_role;
+
+COMMIT;
+
+-- ----------------------------------------------------------------------------
+-- Passo pós-migração (NÃO aplicar até PO aprovar a migração acima):
+--
+-- Atualizar .security/supabase-linter-baseline.json para aceitar
+-- restore_seller_cart como RPC intencional do frontend. Diff:
+--
+--   { "lint": "0029_authenticated_security_definer_function_executable",
+--     "name": "restore_seller_cart" }
+--
+-- Justificativa no commit:
+--   "restore_seller_cart é RPC pública do frontend (useSellerCarts.ts:325).
+--    RLS interna à função filtra por auth.uid(). SECURITY DEFINER necessário
+--    para bypass de RLS controlado no INSERT do cart+items."
+-- ============================================================================
