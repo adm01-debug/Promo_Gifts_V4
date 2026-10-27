@@ -1,8 +1,8 @@
 # RELATÓRIO CI — Promo Gifts V4
 **Gerado em:** 2026-10-27  
-**Branch de correção:** `claude_04/beautiful-gates-bvocz5` (PR #2597)  
-**SHA main no momento do diagnóstico:** `48899b65` → `16108a1c` (main atual)  
-**HEAD atual do branch:** `5c154a7c` (merge com main `16108a1c` — atualizado via `update_pr_branch` às 08:24 UTC)
+**Branch de correção:** `claude_04/beautiful-gates-bvocz5` (PR #2597 — **MERGEADO** ✅)  
+**SHA main no momento do diagnóstico:** `48899b65`  
+**SHA merge commit (squash):** `6ef07df8c4980ab776bb087d4ebd79804b1d476c` (main atual)
 
 ---
 
@@ -113,30 +113,30 @@ Error: Hook timed out in 30000ms.
 
 ## 4. Baseline Local (verificado em 2026-10-27)
 
-Executado no container Claude Code no HEAD `ab005b84` (base das correções):
+Executado no container Claude Code no HEAD `6ef07df8` (merge commit na main, pós-squash):
 
 | Checagem | Resultado | Detalhe |
 |---|---|---|
 | `npm install` | ✅ PASS | sem erros de instalação |
 | TypeScript (`npx tsc --noEmit`) | ✅ PASS | TSC_EXIT=0, zero erros |
-| Build Vite (`npx vite build`) | ✅ PASS | BUILD_EXIT=0, 17.29s, zero erros TS |
+| Build Vite (`npx vite build`) | ✅ PASS | BUILD_EXIT=0, 16.05s, zero erros TS |
 | ESLint (`eslint src --max-warnings 0`) | ✅ PASS | EXIT=0, zero warnings |
-| Vitest arquivos corrigidos | ✅ PASS | chunk-recovery, PromoFlixPlayer, playwright-config-smoke todos passam |
+| Vitest arquivos corrigidos | ✅ PASS | chunk-recovery, PromoFlixPlayer, playwright-config-smoke todos passam (confirmado no run 40475129693) |
 | Vitest suíte completa | ⏭ TIMEOUT | Container encerra após ~2min; não afeta CI (timeout 45min) |
 
 ---
 
-## 5. Estado do PR #2597 (atualizado 2026-10-27T08:25 UTC)
+## 5. Estado do PR #2597 (atualizado 2026-10-27T08:55 UTC)
 
 **Branch:** `claude_04/beautiful-gates-bvocz5`  
-**HEAD atual:** `5c154a7ceed79723fbaa2298f4e0c24b59265b48` (merge com main `16108a1c` via `update_pr_branch`)  
-**mergeable:** `true`  
-**mergeable_state:** `blocked` — aguardando Gate Final  
-**Gate Final run 40473290799** — `pending` (aguardando runner GitHub Actions, disparado às 08:24 UTC):
-- Gate E40 Schema Drift Check — estimativa 30–60 min após runner alocar
-- Runs anteriores cancelados automaticamente por `cancel-in-progress: true`
+**PR #2597:** ✅ **MERGEADO** (squash) em `2026-10-27T08:55 UTC`  
+**Merge commit SHA:** `6ef07df8c4980ab776bb087d4ebd79804b1d476c`  
+**Gate Final pré-merge run 40475129693** — ✅ `conclusion=success` (SHA `955a9d8ef1`, concluído 08:53 UTC)  
 
-**Merge:** aguardando Gate Final run 40473290799 com `conclusion=success`
+**Gate Final pós-merge na main run 40476927264** — `queued` (disparado às 08:55 UTC pelo push do squash commit):
+- Gate E40 Schema Drift Check — estimativa 30–60 min após runner alocar
+
+**Deploy Edge Functions run 40476968791** — `pending` (dispatch `workflow_dispatch` executado às 08:55 UTC)
 
 ---
 
@@ -159,31 +159,31 @@ Executado no container Claude Code no HEAD `ab005b84` (base das correções):
 
 ## 7. Comparação Baseline vs Pós-Correção
 
-| Métrica | Antes (sha `48899b65`) | Após PR merge (aguardado) |
+| Métrica | Antes (sha `48899b65`) | Após PR merge (MERGEADO `6ef07df8`) |
 |---|---|---|
 | Workflows com falha na main | 12+ | 4 (E2E pré-existentes + Copilot bot + Uptime transiente) |
-| CI Security & Drift Checks | ❌ failure | ✅ success |
-| Kit Coverage — Integration | ❌ failure | ✅ success |
-| Gitleaks — Full History Audit | ❌ failure | ✅ success |
-| Ratchet Weekly | ❌ failure | ✅ success |
-| edge-functions-drift-check | ❌ failure (Lovable `eb04236c`) | ✅ success (após deploy pós-merge) |
+| CI Security & Drift Checks | ❌ failure | ✅ success (run 40475129693) |
+| Kit Coverage — Integration | ❌ failure | ✅ success (run 40475129693) |
+| Gitleaks — Full History Audit | ❌ failure | ✅ success (run 40475129693) |
+| Ratchet Weekly | ❌ failure | ✅ success (run 40475129693) |
+| edge-functions-drift-check | ❌ failure (Lovable `eb04236c`) | ⏳ aguardando deploy run 40476968791 |
 | Running Copilot Code Review | ❌ failure | ❌ failure (irresolvível — bot externo) |
-| Gate Final na main | ✅ (base) | ✅ (aguarda merge + Gate Final pós-merge) |
+| Gate Final pré-merge | ✅ (base) | ✅ success run 40475129693 |
+| Gate Final pós-merge na main | — | ⏳ queued run 40476927264 (Gate E40 ~30-60 min) |
 
-**Nenhuma regressão esperada:** todos os testes baseline passam no HEAD `5c154a7c`.
+**Nenhuma regressão confirmada:** baseline local passou no HEAD `6ef07df8` (merge commit na main) — npm ✅, tsc ✅, vite build ✅, eslint ✅.
 
 ---
 
-## 8. Próximas ações (bloqueadas por Gate Final)
+## 8. Estado pós-merge (atualizado 2026-10-27T09:04 UTC)
 
-> ⏳ Gate Final run 40473290799 em `pending` desde 08:24 UTC (aguardando runner).
-
-1. **Quando Gate verde:** squash-merge PR #2597 via `github_merge_pull_request`
-2. **Após merge:** `workflow_dispatch` em `deploy-edge-functions.yml` (fix edge-functions-drift-check)
-3. **Após merge:** verificar Gate Final pós-merge na main com `conclusion=success`
-4. **Confirmar:** workflows antes verdes permanecem verdes após merge
+✅ **PR #2597 mergeado** (squash) em 2026-10-27T08:55 UTC  
+✅ **Merge commit SHA:** `6ef07df8c4980ab776bb087d4ebd79804b1d476c`  
+✅ **Gate Final pré-merge** run 40475129693 — `conclusion=success` (08:53 UTC)  
+⏳ **Gate Final pós-merge na main** run 40476927264 — `queued` (08:55 UTC, Gate E40 Schema Drift ~30-60 min)  
+⏳ **Deploy Edge Functions** run 40476968791 — `pending` (08:55 UTC)  
 
 ---
 
 *Gerado por Claude Code — sessão https://claude.ai/code/session_014RkohRYagi3sPiL8jtgot4*  
-*Atualizado: 2026-10-27T08:25 UTC — HEAD `5c154a7c` (merge com main `16108a1c`); Gate Final run 40473290799 pending*
+*Atualizado: 2026-10-27T09:04 UTC — merge commit `6ef07df8` na main; Gate Final pós-merge run 40476927264 queued*
