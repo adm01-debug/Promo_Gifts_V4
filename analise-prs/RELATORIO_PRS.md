@@ -116,7 +116,7 @@
 | #2551 | `97eed25cb177a318fcf63fb3843f02512511d579` | fix (peso 0 Kit Maker) |
 | #2552 | `35fdb5793db7461f7fafcdae1effc89ae5cae6b5` | fix (materials-api timeout) |
 | #2553 | `aebd333f3d2d57ee0bb5f1f127bf23f352846cd9` | fix (selos sem mock) |
-| #2554 | `e6538448e6edc639f9131e809ae265976b43f208` | fix (BI Cliente 360) |
+| #2554 | `e6538448e6edc439f9131e809ae265976b43f208` | fix (BI Cliente 360) |
 | #2555 | `479f2219485e23a5d35896dfe44c9ca4f7c1026f` | docs (pendencias rev29) |
 | #2556 | `15e10fd88208f9b4cd372b82544fb27892d15a81` | docs (backlog banco) |
 
@@ -222,3 +222,75 @@ Run #40462419661 falhou no preflight E058: "arquivo de rollback 20261027120000_r
 
 - `supabase/rollbacks/20261027233000_rollback.sql` — remove XBZ_IMAGE_UPLOADER_CRON_SECRET do allowlist
 - `supabase/rollbacks/20261027234500_rollback.sql` — desativa cron xbz-image-uploader
+
+---
+
+# RELATORIO_PRS — Sessão session_011d8gKLZg8BWivR8aQBwxGF (rev51)
+**Data:** 2026-10-27 (atualização final)
+**Alteração:** PR #2621 → DECISAO_HUMANA; PR #2622 → CI_AGUARDANDO (independente)
+
+---
+
+## Resumo executivo (rev51)
+
+| Métrica | Valor |
+|---|---|
+| PRs abertas analisadas | **15** |
+| Merges autônomos esta sessão | **0** (PR #2622 CI aguardando) |
+| CI_AGUARDANDO | 1 (#2622 — Gate Final SHA `59ad634d`) |
+| DECISAO_HUMANA | **11** (+#2621) |
+| DRAFT_NOMERGE | 2 |
+| SUPERSEDED | 1 |
+| **Total** | **15** |
+
+---
+
+## Mudanças de veredicto (rev50 → rev51)
+
+### PR #2621 — CI_AGUARDANDO → DECISAO_HUMANA
+
+**Gate 1.12 FAILED** (run #40465056420):
+```
+❌ [manifest] Edge function "xbz-image-uploader" não está declarada em edge-authz-manifest.ts.
+FS=111 manifest=110 — 1 função ausente
+```
+
+**Causa raiz:** PR #2603 adicionou `supabase/functions/xbz-image-uploader/index.ts` em main sem declarar no manifest. PR #2621 herdou a divergência.
+
+**REGRA#10:** Branch `claude/fix-rollbacks-migrations-261027-1305` é da sessão `session_01PE8GzVYqxJM25xzvLuLYhW`. Escrita proibida nesta sessão.
+
+**Fix aplicado em PR #2622**, commit `273807b51416b82bb7c14113b3ba532ead247671`.
+
+---
+
+### PR #2622 — MINE_DRAFT_NEEDS_UPDATE → CI_AGUARDANDO
+
+PR #2622 agora é **independente** de #2621: contém todos 9 rollbacks + manifest fix.
+
+**Estado atual:**
+- Branch: `claude/fix-rollbacks-20261027-271027-1000`
+- HEAD: `59ad634d3cc61f31611f1d5c99a45a394ff957de` (main `8b7594ad` incorporado)
+- Draft: false (convertido via GraphQL)
+- Gate Final: em andamento (run #40467720081)
+
+**Conteúdo do PR:**
+- `supabase/rollbacks/20261027120000_rollback.sql` a `20261027234500_rollback.sql` (9 arquivos)
+- `supabase/functions/_shared/edge-authz-manifest.ts` — entrada `xbz-image-uploader` adicionada
+- `analise-prs/` — arquivos desta sessão (progresso, dossiers, prs.csv, RELATORIO_PRS.md)
+
+---
+
+## Contexto atualizado — DB-apply-migration
+
+**Status:** Run #40462419661 FAILED (E058: rollback 20261027120000_rollback.sql não encontrado)
+- PR #2622 cobre **todos os 9 rollbacks** faltantes + manifest fix
+- PR #2621 tem Gate 1.12 FAILED — recomenda-se fechar
+- Após PR #2622 mergear → re-dispatch `db-apply-migration.yml` (exige aprovação PO — REGRA#8)
+
+**main HEAD atual:** `8b7594ad2c2fd5b8d2b6c6176c2b3acbea7241b6` (PR #2623 — fix gitleaks)
+
+## Ações requeridas do PO (rev51)
+
+1. **PR #2621 — Fechar** (recomendado): PR #2622 cobre tudo incluindo o manifest fix
+2. **PR #2622 — Aguardar Gate Final** e confirmar merge (minha branch, CI em andamento)
+3. **Após PR #2622 mergear:** dispatchar `db-apply-migration.yml` para aplicar as 9 migrations (exige aprovação PO — REGRA#8)

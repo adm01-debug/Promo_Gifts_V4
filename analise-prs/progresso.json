@@ -1,57 +1,104 @@
 {
-  "gerado_em": "2026-10-25T20:30:00Z",
-  "sessao": "https://claude.ai/code/session_01Ss1tXZ4cAbxBvdmu95uNPz",
-  "rev": 22,
-  "main_head_pre": "5279abfe07895d9b0481fa08086b2c18d321de5f",
-  "main_head_pos": "15e10fd88208f9b4cd372b82544fb27892d15a81",
-  "baseline": {
-    "testes": 429,
-    "falhas": 0,
-    "gate_final_run": "40223579961",
-    "gate_final_conclusao": "success",
-    "gate_final_completado_em": "2026-10-25T19:02:42Z",
-    "sha": "7d3bd4ba47eb6e9e6b3d56fe3bfac45a791de84f"
-  },
-  "gate_final_pos_merges": {
-    "sha": "15e10fd8",
-    "run": 40227283262,
-    "status": "queued",
-    "conclusao": null,
-    "nota": "GitHub Actions infra issue — run preso em queued desde 19:42Z; não é falha de código"
-  },
-  "prs_abertas_analisadas": 29,
-  "merges_autonomos_esta_sessao": 10,
-  "contagem_por_veredito": {
-    "MERGEADO_AUTONOMO": 10,
-    "DECISAO_HUMANA": 13,
-    "FECHAR": 5,
-    "JA_EM_MAIN": 1,
-    "total_abertas": 29
-  },
-  "merges_autonomos_esta_sessao_lista": [
-    {"number": 2544, "sha": "1d26da9082d42e825de66f574fbc796587345fdf", "titulo": "docs: backlog CI CI-001..CI-008"},
-    {"number": 2545, "sha": "2a93ba556b58007a001d68efd3c81ead17c19dce", "titulo": "chore: backlog funcionalidades FT-001..FT-416"},
-    {"number": 2548, "sha": "9be832a355f0c98fcd22021b4273b16fa0b1aba5", "titulo": "feat: botão LGPD excluir meus dados"},
-    {"number": 2549, "sha": "73df7502f3b582f7966c209ff6a5c202fb1a3f9e", "titulo": "chore: backlog Supabase SB-001..SB-018"},
-    {"number": 2551, "sha": "97eed25cb177a318fcf63fb3843f02512511d579", "titulo": "fix: peso 0 no Kit Maker"},
-    {"number": 2552, "sha": "35fdb5793db7461f7fafcdae1effc89ae5cae6b5", "titulo": "fix: materials-api timeout 20s"},
-    {"number": 2553, "sha": "aebd333f3d2d57ee0bb5f1f127bf23f352846cd9", "titulo": "fix: selos sem mock"},
-    {"number": 2554, "sha": "e6538448e6edc639f9131e809ae265976b43f208", "titulo": "fix: BI Cliente 360 sem mock"},
-    {"number": 2555, "sha": "479f2219485e23a5d35896dfe44c9ca4f7c1026f", "titulo": "docs(pendencias): rev29"},
-    {"number": 2556, "sha": "15e10fd88208f9b4cd372b82544fb27892d15a81", "titulo": "chore: backlog banco O1/O3"}
-  ],
-  "historico_sessoes_anteriores": {
-    "mergeados_autonomamente": [
-      {"number": 2529, "sha": "59a7a6072f405d98f7004f26a4badbf6287c6b5f"},
-      {"number": 2543, "sha": "7d3bd4ba47eb6e9e6b3d56fe3bfac45a791de84f"},
-      {"number": 2546, "sha": "5279abfe07895d9b0481fa08086b2c18d321de5f"}
+  "rev": 51,
+  "ultima_atualizacao": "2026-10-27T07:35:00Z",
+  "sessao_01Ss1tXZ4cAbxBvdmu95uNPz": {
+    "data": "2026-10-25",
+    "rev": 22,
+    "main_head_pre": "5279abfe07895d9b0481fa08086b2c18d321de5f",
+    "main_head_pos": "15e10fd88208f9b4cd372b82544fb27892d15a81",
+    "baseline": {
+      "testes": 429,
+      "falhas": 0,
+      "gate_final_run": "40223579961",
+      "gate_final_conclusao": "success",
+      "gate_final_completado_em": "2026-10-25T19:02:42Z",
+      "sha": "7d3bd4ba47eb6e9e6b3d56fe3bfac45a791de84f"
+    },
+    "prs_abertas_analisadas": 29,
+    "merges_autonomos": 10,
+    "contagem_vereditos": {
+      "MERGEADO_AUTONOMO": 10,
+      "DECISAO_HUMANA": 13,
+      "FECHAR": 5,
+      "JA_EM_MAIN": 1
+    },
+    "mergeados": [
+      {"number": 2544, "sha": "1d26da9082d42e825de66f574fbc796587345fdf", "titulo": "docs: backlog CI CI-001..CI-008"},
+      {"number": 2545, "sha": "2a93ba556b58007a001d68efd3c81ead17c19dce", "titulo": "chore: backlog funcionalidades FT-001..FT-416"},
+      {"number": 2548, "sha": "9be832a355f0c98fcd22021b4273b16fa0b1aba5", "titulo": "feat: botão LGPD excluir meus dados"},
+      {"number": 2549, "sha": "73df7502f3b582f7966c209ff6a5c202fb1a3f9e", "titulo": "chore: backlog Supabase SB-001..SB-018"},
+      {"number": 2551, "sha": "97eed25cb177a318fcf63fb3843f02512511d579", "titulo": "fix: peso 0 no Kit Maker"},
+      {"number": 2552, "sha": "35fdb5793db7461f7fafcdae1effc89ae5cae6b5", "titulo": "fix: materials-api timeout 20s"},
+      {"number": 2553, "sha": "aebd333f3d2d57ee0bb5f1f127bf23f352846cd9", "titulo": "fix: selos sem mock"},
+      {"number": 2554, "sha": "e6538448e6edc639f9131e809ae265976b43f208", "titulo": "fix: BI Cliente 360 sem mock"},
+      {"number": 2555, "sha": "479f2219485e23a5d35896dfe44c9ca4f7c1026f", "titulo": "docs(pendencias): rev29"},
+      {"number": 2556, "sha": "15e10fd88208f9b4cd372b82544fb27892d15a81", "titulo": "chore: backlog banco O1/O3"}
     ]
   },
-  "pr_entregaveis": {
-    "number": 2559,
-    "branch": "claude_05/youthful-ride-vcdchy",
-    "status": "open",
-    "mergeable_state": "blocked",
-    "bloqueio": "Gate Final run #40228592594 preso em queued (GitHub Actions infra issue)"
+  "sessao_011d8gKLZg8BWivR8aQBwxGF": {
+    "data": "2026-10-27",
+    "rev": 51,
+    "main_head_entrada": "df18546dfd76d1bea7ea5873257b668d128d8df3",
+    "main_head_atual": "8b7594ad2c2fd5b8d2b6c6176c2b3acbea7241b6",
+    "main_head_atual_pr": "#2623 (fix(ci): gitleaks allowlist — sessão session_01Knr9enFAok62bHihBK1UUP)",
+    "baseline": {
+      "sha": "df18546dfd76d1bea7ea5873257b668d128d8df3",
+      "nota": "Gate Final verde confirmado — PR #2603 mergeou com CI. +#2618 +#2620 antes do baseline."
+    },
+    "prs_abertas_analisadas": 15,
+    "merges_autonomos": 0,
+    "pr_entregaveis_pendente": {
+      "number": 2622,
+      "branch": "claude/fix-rollbacks-20261027-271027-1000",
+      "status": "open ready (convertido de DRAFT)",
+      "ci_head_sha": "59ad634d3cc61f31611f1d5c99a45a394ff957de",
+      "nota": "Gate Final disparado. Inclui 9 rollbacks + manifest fix xbz-image-uploader. Independente de #2621."
+    },
+    "contagem_vereditos": {
+      "CI_AGUARDANDO": 1,
+      "DECISAO_HUMANA": 11,
+      "DRAFT_NOMERGE": 2,
+      "SUPERSEDED": 1,
+      "total": 15
+    },
+    "prs": [
+      {"number": 2420, "veredito": "DECISAO_HUMANA", "motivo": "CONFLICT+REGRA8 migrations+rollbacks"},
+      {"number": 2572, "veredito": "DECISAO_HUMANA", "motivo": "CONFLICT RELATORIO_CI.md+REGRA10 branch outra sessão"},
+      {"number": 2579, "veredito": "DECISAO_HUMANA", "motivo": "downgrade 1.2.1→1.0.0 regressão de versão"},
+      {"number": 2580, "veredito": "DECISAO_HUMANA", "motivo": "DRAFT+REGRA8 migrations"},
+      {"number": 2587, "veredito": "DECISAO_HUMANA", "motivo": "major upgrade zustand 4→5 breaking"},
+      {"number": 2588, "veredito": "DECISAO_HUMANA", "motivo": "major upgrade react-day-picker 8→10 + Gate Final FAILED"},
+      {"number": 2594, "veredito": "DECISAO_HUMANA", "motivo": "REGRA8 workflow (actions/setup-node)"},
+      {"number": 2597, "veredito": "DECISAO_HUMANA", "motivo": "REGRA8 workflows x4"},
+      {"number": 2600, "veredito": "DRAFT_NOMERGE", "motivo": "DRAFT analise-prs/ docs internos — branch outra sessão"},
+      {"number": 2604, "veredito": "DECISAO_HUMANA", "motivo": "DRAFT+REGRA8 workflow (continue-on-error)"},
+      {"number": 2605, "veredito": "SUPERSEDED", "motivo": "supersedida por #2620 SHA 3aabc4187"},
+      {"number": 2612, "veredito": "DRAFT_NOMERGE", "motivo": "DRAFT apenas test timeout paliativo"},
+      {"number": 2619, "veredito": "DECISAO_HUMANA", "motivo": "DRAFT+REGRA8 edge function"},
+      {
+        "number": 2621,
+        "veredito": "DECISAO_HUMANA",
+        "motivo": "Gate 1.12 FAILED (xbz-image-uploader ausente em edge-authz-manifest.ts) + REGRA10 (branch sessão session_01PE8GzVYqxJM25xzvLuLYhW — proibido escrever)",
+        "gate_1_12_run": "40465056420",
+        "gate_1_12_erro": "[manifest] Edge function \"xbz-image-uploader\" não está declarada em edge-authz-manifest.ts. FS=111 manifest=110"
+      },
+      {
+        "number": 2622,
+        "veredito": "CI_AGUARDANDO",
+        "motivo": "Minha branch. Gate Final disparado SHA 59ad634d. 9 rollbacks + manifest fix xbz-image-uploader. CLEAN vs main 8b7594ad. Independente de #2621.",
+        "ci_sha": "59ad634d3cc61f31611f1d5c99a45a394ff957de"
+      }
+    ],
+    "rollbacks_criados": [
+      "supabase/rollbacks/20261027233000_rollback.sql",
+      "supabase/rollbacks/20261027234500_rollback.sql"
+    ],
+    "manifest_fix": {
+      "arquivo": "supabase/functions/_shared/edge-authz-manifest.ts",
+      "commit_sha": "273807b51416b82bb7c14113b3ba532ead247671",
+      "entrada": "xbz-image-uploader",
+      "category": "service",
+      "motivo": "Função adicionada em PR #2603 sem declaração no manifest — causou Gate 1.12 FAIL em PR #2621"
+    }
   }
 }

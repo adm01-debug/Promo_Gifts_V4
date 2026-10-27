@@ -40,5 +40,5 @@ number,title,branch,draft,test_merge,rule8_triggers,verdict,motivo,merge_sha
 2605,fix(tests): 4 falhas unit tests + 1 threshold E2E,claude/fix-unit-tests-261027-0113,false,CONFLICT,,SUPERSEDED,supersedida por #2620 mergeada SHA 3aabc4187,
 2612,fix(test): waitFor timeout 15s→25s useReplenishment,claude/fix-replenishment-timeout-261027-0430,true,CLEAN,,DRAFT_NOMERGE,DRAFT apenas test timeout files,
 2619,fix(health-check): timeout 5s em getCredential evita hang,claude/fix-health-check-cred-timeout-271027-0630,true,CLEAN,,DECISAO_HUMANA,DRAFT+REGRA8 edge function,
-2621,fix(migrations): rollback files 7 migrations 20261027 E058,claude/fix-rollbacks-migrations-261027-1305,false,CLEAN,supabase/rollbacks/,CI_AGUARDANDO,Gate Final run 40465056420 em andamento,
-2622,fix(rollbacks): rollbacks 9 migrations 20261027 PR #2603,claude/fix-rollbacks-20261027-271027-1000,true,CLEAN,supabase/rollbacks/,MINE_DRAFT_NEEDS_UPDATE,minha branch aguarda #2621 merge para strip 7 arquivos,
+2621,fix(migrations): rollback files 7 migrations 20261027 E058,claude/fix-rollbacks-migrations-261027-1305,false,CLEAN,supabase/rollbacks/,DECISAO_HUMANA,Gate 1.12 FAILED (xbz-image-uploader ausente em manifest run#40465056420) + REGRA10 branch sessao session_01PE8GzVYqxJM25xzvLuLYhW,
+2622,fix(rollbacks): 9 rollbacks + manifest fix xbz-image-uploader,claude/fix-rollbacks-20261027-271027-1000,false,CLEAN,supabase/rollbacks/ + edge-authz-manifest.ts,CI_AGUARDANDO,Minha branch. Gate Final disparado SHA 59ad634d. 9 rollbacks + manifest fix. CLEAN vs main 8b7594ad.,
