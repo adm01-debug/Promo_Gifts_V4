@@ -20,15 +20,16 @@ Esta sessão analisou exaustivamente todas as PRs abertas do repositório `adm01
 - **Owner fechou** todas as demais PRs do escopo original após esta sessão gerar PENDENCIAS.md
 - **Gate Final SUCCESS** em todos os 4 merges de Claude — zero regressões
 
-### Inventário Atual (17 PRs — inventário final 2026-10-27)
-- **17 PRs analisadas** individualmente com método das 4 perguntas
+### Inventário Atual (19 PRs — inventário final 2026-10-27)
+- **19 PRs analisadas** individualmente com método das 4 perguntas
 - **5 mergeadas pelo owner** durante a análise (#2594, #2648, #2649, #2650, #2652)
 - **1 mergeada por Claude** — PR #2587 zustand 4→5 (Gate SUCCESS + test-merge limpo + API compatível)
 - **Zero regressões** — Gate Final SUCCESS em todos os merges; CI em monitoramento para #2587
+- **2 novas DRAFTs** — PR #2654 e #2655 surgiram após o inventário original; ambas DRAFT, aguardando promoção
 
 ---
 
-## Inventário Atual — Tabela Completa (15 PRs)
+## Inventário Atual — Tabela Completa (19 PRs)
 
 | PR | Veredicto | Gate Final | Conflito | Motivo |
 |----|-----------|-----------|---------|--------|
@@ -49,8 +50,10 @@ Esta sessão analisou exaustivamente todas as PRs abertas do repositório `adm01
 | [#2649](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2649) | MERGEADA_PELO_OWNER | SUCCESS | não | Mergeada pelo owner em 15:54Z — fix e2e admin-critical |
 | [#2650](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2650) | MERGEADA_PELO_OWNER | SUCCESS | não | Mergeada pelo owner em 16:21Z — fix E2E catalog+kit-builder testids |
 | [#2652](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2652) | MERGEADA_PELO_OWNER | SUCCESS | não | Mergeada pelo owner em ~16:45Z — docs(e15): recibo migration 20261027140000 |
+| [#2654](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2654) | DRAFT | NAO_RODOU | não | DRAFT — fix(ci): adiciona xbz-image-uploader ao SERVER_ONLY_ALLOWLIST |
+| [#2655](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2655) | DRAFT | NAO_RODOU | não | DRAFT — fix(tests): add xbz-image-uploader descriptor pendingDeploy=true |
 
-### Contagem por Veredicto (17 PRs — inventário final 2026-10-27)
+### Contagem por Veredicto (19 PRs — inventário final 2026-10-27)
 
 | Veredicto | Contagem | PRs |
 |-----------|---------|-----|
@@ -61,11 +64,11 @@ Esta sessão analisou exaustivamente todas as PRs abertas do repositório `adm01
 | NAO_MERGEAR | 2 | #2579, #2600 |
 | CONFLITO_PENDENTE_REBASE | 1 | #2605 |
 | CONFLITO_PENDENTE_REBASE_SEGURANCA | 1 | #2622 |
-| DRAFT | 2 | #2580, #2631 |
+| DRAFT | 4 | #2580, #2631, #2654, #2655 |
 | CI_FALHOU | 1 | #2646 |
 | FECHAR | 1 | #2572 |
 
-**Total inventário: 17 ✓ | Analisadas: 17 ✓ | Mergeadas por Claude: 1 (#2587) | Mergeadas pelo owner: 5**
+**Total inventário: 19 ✓ | Analisadas: 19 ✓ | Mergeadas por Claude: 1 (#2587) | Mergeadas pelo owner: 5**
 
 > **Nota:** PR #2650 surgiu após o inventário de reconciliação e foi mergeada pelo owner em 16:21:21Z (merge SHA `f0689734`). PR #2652 (docs E15 receipt) mergeada pelo owner em ~16:45Z (merge SHA `22ba938e`). PR #2587 mergeada por Claude em 16:46:37Z (merge SHA `16ad57c6`). Main atual = `16ad57c66e619100f76c113653cdab7a20a7871a`.
 
@@ -148,7 +151,7 @@ Ver `PENDENCIAS.md` para guia passo a passo. Resumo:
 4. **Humano requerido:** PR #2420 (AGUARDANDO APROVAÇÃO), PR #2645 (reviewer=adm01-debug)
 5. **Rebase (autores):** PR #2605, #2622 (Gate Final OK — só falta rebase)
 6. **Corrigir CI + rebase:** PR #2646 (Gate Final FAILURE run 40531570681)
-7. **Promover de DRAFT:** PR #2580, #2631, #2650
+7. **Promover de DRAFT:** PR #2580, #2631, #2654, #2655
 
 ---
 
@@ -156,7 +159,7 @@ Ver `PENDENCIAS.md` para guia passo a passo. Resumo:
 
 | Arquivo | Descrição |
 |---------|-----------|
-| `analise-prs/dossies/PR-2420.md` até `PR-2650.md` | 15+ dossiers com 4 perguntas cada |
+| `analise-prs/dossies/PR-2420.md` até `PR-2655.md` | 19 dossiers com 4 perguntas cada |
 | `analise-prs/prs.json` | Inventário JSON completo (15 PRs) |
 | `analise-prs/prs.csv` | Inventário CSV completo (15 PRs) |
 | `analise-prs/regras-de-negocio.md` | Regras de negócio documentadas |
