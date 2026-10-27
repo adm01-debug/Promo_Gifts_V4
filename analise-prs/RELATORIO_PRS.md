@@ -1,7 +1,7 @@
 # RELATORIO_PRS.md — Análise Exaustiva de PRs Abertas
 **Sessão:** session_011d8gKLZg8BWivR8aQBwxGF (fork f0ceb220)
-**Rev:** 80
-**Data:** 2026-10-27T17:38Z
+**Rev:** 81
+**Data:** 2026-10-27T17:42Z (Gate Final verificado)
 **Branch de entrega:** `claude_04/optimistic-bohr-qplx94` (PR #2600 — NUNCA MERGEAR)
 
 ---
@@ -24,8 +24,18 @@
 ## ⚠️ NÃO VERIFICADO (verificação impossível nesta sessão)
 
 - **Produção `doufsxqlfjyuvxuezpln`:** ERR_PROXY_TUNNEL durante toda a sessão. Nenhum acesso ao Supabase MCP (mcp.supabase.com). Todas as afirmações sobre estado de produção são baseadas em evidências indiretas (CI, logs de PR).
-- **Gate Final em SHA `a0560fdc62`** (novo main HEAD — PR #2655): CI em progresso no momento do snapshot (17:38Z). Gate 3, Gate 6 e E2E jobs `in_progress`. Gate Final `deploy-gates.yml` NOT YET PRESENT. Verificação pendente.
 - **Deploy Lovable:** merge no main = redeploy automático via Lovable. Estado do deploy não verificável nesta sessão (ERR_PROXY_TUNNEL).
+
+## ❌ GATE FINAL FAILURE — main HEAD `a0560fdc62` (verificado)
+
+Gate Final em SHA `a0560fdc62` completou às **17:42:15Z** com **conclusão: failure**.
+
+- **Gate falhou:** Gate 0.5 - Dependency Audit (run 40551464429, job 122356207833)
+- **Causa:** `qs: unexpected moderate advisory` — nova entrada no npm registry entre as runs de 17:26Z e 17:42Z
+- **PR #2655 introduziu?** NÃO — diff de #2655 foi apenas `+7/-0` em `tests/edge-functions/live/descriptors.ts`; nenhuma dependência foi alterada
+- **Origem real:** nova advisory publicada no npm registry para o pacote `qs` (moderate), detectada pelo script `check-dependency-audit.mjs` como "unexpected" vs baseline de advisories esperadas
+- **Outros gates:** todos SUCCESS (R_LINT, R_UNIT, R_DB_INT, R_E2E, R_SEO, R_RESTORE, R_BUILD, R_SECRET_SCAN, R_SSOT — todos `success`)
+- **Ação necessária:** atualizar baseline de advisories em `scripts/check-dependency-audit.mjs` ou resolver a dependency `qs` — requer nova PR. **DECISÃO_PO.**
 
 ---
 
@@ -56,7 +66,7 @@
 |---|---|---|
 | `16ad57c66e` | PR #2587 (zustand bump) — baseline | SUCCESS (run 122342656953, 17:08:33Z) |
 | `4c7ecb260d` | PR #2654 (CORS gate) | SUCCESS (run 40549508170, 17:26:23Z) ✅ |
-| `a0560fdc62` | PR #2655 (pendingDeploy) — HEAD atual | PENDENTE (CI running at 17:38Z) ⚠️ |
+| `a0560fdc62` | PR #2655 (pendingDeploy) — HEAD atual | FAILURE ❌ Gate 0.5 qs advisory (run 40551464429, 17:42:15Z) |
 
 ---
 
@@ -76,7 +86,7 @@
 - **Sessão autora:** session_01Knr9enFAok62bHihBK1UUP
 - **merged_at:** 2026-10-27T17:31:48Z
 - **merge_commit_sha:** `a0560fdc62744c6bf4ba182914cc76dec06aecb1` (= novo main HEAD)
-- **Gate Final:** ⚠️ NÃO VERIFICADO — CI em progresso no snapshot (17:38Z)
+- **Gate Final:** ❌ FAILURE (run 40551464429, 17:42:15Z) — Gate 0.5 qs moderate advisory (não causado por este PR)
 - **Produção:** NÃO VERIFICADO (ERR_PROXY_TUNNEL)
 - **Veredito:** MERGEADA_SESSAO_EXTERNA
 
@@ -176,7 +186,7 @@
 
 ```
 analise-prs/
-├── RELATORIO_PRS.md           (este arquivo — rev80)
+├── RELATORIO_PRS.md           (este arquivo — rev81)
 ├── baseline/
 │   ├── eslint-count.txt       (baseline ESLint via CI)
 │   ├── typecheck-errors.txt   (baseline TSC exit:0)
@@ -208,7 +218,7 @@ analise-prs/
 - **Merges autônomos por esta sessão:** 0
 - **Merges externos durante a sessão:**
   - PR #2654 → SHA `4c7ecb260da691b5cd436700380b819d0d936961` — Gate Final SUCCESS ✅
-  - PR #2655 → SHA `a0560fdc62744c6bf4ba182914cc76dec06aecb1` — Gate Final ⚠️ NÃO VERIFICADO (CI em progresso)
+  - PR #2655 → SHA `a0560fdc62744c6bf4ba182914cc76dec06aecb1` — Gate Final ❌ FAILURE (Gate 0.5 qs advisory — não causado por #2655)
 - **Outras escritas no GitHub:** nenhuma (além do push ao delivery branch)
 - **Worktrees:** nenhum worktree criado nesta sessão
 - **Produção:** NÃO VERIFICADO (ERR_PROXY_TUNNEL toda a sessão)

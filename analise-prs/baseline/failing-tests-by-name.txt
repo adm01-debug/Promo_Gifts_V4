@@ -13,4 +13,8 @@ Em progresso na baseline (E2E/quality gate com timeouts conhecidos):
 
 Gate Final (deploy-gates.yml) era SUCCESS em SHA 16ad57c66e (run 122342656953, 2026-10-27T17:08:33Z).
 Gate Final era SUCCESS em SHA 4c7ecb260d (run 40549508170, 2026-10-27T17:26:23Z) — PR #2654.
-Gate Final NOT YET PRESENT em SHA a0560fdc62 — CI em progresso no momento do snapshot (2026-10-27T17:38Z).
+Gate Final FAILURE em SHA a0560fdc62 (run 40551464429, 2026-10-27T17:42:15Z) — PR #2655.
+  Falha: Gate 0.5 - Dependency Audit — "qs: unexpected moderate advisory".
+  Causa: nova advisory npm para qs, não introduzida pelo código de #2655 (+7/-0 em descriptors.ts).
+  Todos os outros gates passaram (lint, TS, unit, E2E, build, secrets, SSOT).
+  Ação pendente: nova PR para resolver qs advisory — DECISÃO_PO.
