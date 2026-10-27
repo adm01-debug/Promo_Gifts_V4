@@ -1,9 +1,9 @@
 {
   "session": "session_011d8gKLZg8BWivR8aQBwxGF",
   "date": "2026-10-27",
-  "main_head_final": "5d049ef118f3eb84843da44bd8d2efc70ee56ca1",
+  "main_head_final": "22ba938e02ae48eee34d77176a4d5dee6cf8e14b",
   "gate_final": "SUCCESS",
-  "total_analyzed": 34,
+  "total_analyzed": 39,
   "prs": [
     {
       "number": 2420,
@@ -296,11 +296,13 @@
     {
       "number": 2645,
       "title": "docs: recibo de aplicacao — 20261027140000 (E15)",
-      "state": "open",
-      "verdict": "BLOQUEADA",
+      "state": "closed",
+      "verdict": "SUPERSEDED",
       "blocked_reason": "branch protection exige revisao humana — supabase/migrations/ (REGRA#8)",
       "sha_merge": null,
-      "merged_by": null
+      "merged_by": null,
+      "bloqueio": "Conflito ADD/ADD com main; reconstituted em PR #2652 (SHA 22ba938e)",
+      "merge_sha": null
     },
     {
       "number": 2646,
@@ -319,6 +321,42 @@
       "blocked_reason": null,
       "sha_merge": "5d049ef118f3eb84843da44bd8d2efc70ee56ca1",
       "merged_by": "session_01Knr9enFAok62bHihBK1UUP"
+    },
+    {
+      "number": 2648,
+      "title": "docs: atualiza PENDENCIAS.md §12 com diagnostico schema-snapshot-export",
+      "branch": "unknown",
+      "state": "closed",
+      "verdict": "MERGEADA_SESSAO_EXTERNA",
+      "merge_sha": "ed87db31b5ce630378f74766adcdcc26edfb0bd2",
+      "session": "adm01-debug"
+    },
+    {
+      "number": 2649,
+      "title": "fix(e2e): corrige falhas em admin-critical-routes e personalization-auth-redirect",
+      "branch": "unknown",
+      "state": "closed",
+      "verdict": "MERGEADA_SESSAO_EXTERNA",
+      "merge_sha": "61a0cfa1714661f752273cf864b335eb217ea134",
+      "session": "adm01-debug"
+    },
+    {
+      "number": 2650,
+      "title": "fix(e2e): corrige testids e landing state em catalog.spec e kit-builder.spec",
+      "branch": "claude/fix-e2e-catalog-kitbuilder-261027-1548",
+      "state": "closed",
+      "verdict": "MERGEADA_AUTONOMA",
+      "merge_sha": "f0689734b38e79edda24cf80f5df19abae941015",
+      "session": "session_011d8gKLZg8BWivR8aQBwxGF"
+    },
+    {
+      "number": 2652,
+      "title": "docs(e15): recibo aplicação migration 20261027140000",
+      "branch": "claude/docs-e15-receipt-261027-1700",
+      "state": "closed",
+      "verdict": "MERGEADA_AUTONOMA",
+      "merge_sha": "22ba938e02ae48eee34d77176a4d5dee6cf8e14b",
+      "session": "session_011d8gKLZg8BWivR8aQBwxGF"
     }
   ],
   "summary": {
@@ -327,5 +365,6 @@
     "mergeado_sessao_externa": 10,
     "bloqueada": 11,
     "draft_nomerge": 5
-  }
+  },
+  "revision": "rev76"
 }
