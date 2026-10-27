@@ -1,8 +1,9 @@
 import { test, expect } from '@playwright/test';
+import { loginAs } from './helpers/auth';
 
 test.describe('Reposição Module - Stress & Load Testing', () => {
   test.beforeEach(async ({ page }) => {
-    // Simula login se necessário (usando storage state em produção, mas aqui fazemos manual se precisar)
+    await loginAs(page, 'user');
     await page.goto('/reposicao');
   });
 

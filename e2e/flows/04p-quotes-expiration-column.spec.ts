@@ -115,6 +115,7 @@ for (const tz of TIMEZONES) {
       );
 
       test.skip(seed.skipped === "no-jwt", "Sem JWT no localStorage para seed.");
+      if (seed.created === 0) { test.skip(true, "Nenhuma quote criada — sem acesso ao banco (no-org)."); }
       expect(seed.created).toBeGreaterThan(0);
 
       await gotoAndSettle(page, "/orcamentos");

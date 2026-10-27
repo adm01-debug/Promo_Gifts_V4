@@ -28,7 +28,7 @@ test.describe("Rotas Admin críticas — carregamento e RBAC", () => {
       await gotoAndSettle(page, path);
 
       // Deve carregar OU redirecionar para login — nunca retornar 500
-      const isLoginPage = page.url().includes("/login");
+      const isLoginPage = /\/(auth|login)/.test(page.url());
       const body = page.locator("body");
 
       await expect(body).not.toContainText(/Erro 500|Internal Server Error|500 Internal/i, { timeout: 10_000 });

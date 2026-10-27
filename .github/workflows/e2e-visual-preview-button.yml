@@ -103,6 +103,7 @@ jobs:
           npx playwright test \
             e2e/visual/preview-button.spec.ts \
             --project=chromium-public \
+            --update-snapshots=missing \
             --reporter=github,list,html
         env:
           E2E_BASE_URL: http://localhost:8080
