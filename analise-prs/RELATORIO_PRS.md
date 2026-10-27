@@ -1,5 +1,5 @@
 # RELATÓRIO DE PRs — Promo Gifts V4
-**Sessão:** session_011d8gKLZg8BWivR8aQBwxGF (rev31)
+**Sessão:** session_011d8gKLZg8BWivR8aQBwxGF (rev32)
 **Data:** 2026-10-27
 **main HEAD:** `06fe47fd3a992bf2a39ab356c9d8c357c5f2a27e`
 **Commit:** fix(e2e): corrige falhas de E2E em mock auth (no-org) e baselines ausentes (push direto por session_01Knr9enFAok62bHihBK1UUP — toca `.github/workflows/e2e-quotes.yml` + 18 e2e specs)
@@ -151,7 +151,7 @@ Evidência bloqueio DRAFT: API HTTP 405 `{"message":"Pull Request is still a dra
 
 ---
 
-## META CUMPRIDA — rev31
+## META CUMPRIDA — rev32
 
 - main SHA: `06fe47fd3a992bf2a39ab356c9d8c357c5f2a27e` ✓
 - Baseline: typecheck 0 erros (SHA `2ca5ef04e`), build Vite 11.77s (SHA `2ca5ef04e`), Gate Final success (#40218104943, 429/0 falhas) ✓
@@ -160,28 +160,44 @@ Evidência bloqueio DRAFT: API HTTP 405 `{"message":"Pull Request is still a dra
 - `prs.json`: 51 entradas ✓
 - 16 dossiers `analise-prs/dossies/PR-NNNN.md` (evidência de bloqueio por PR) ✓
 - Merge tests re-executados vs `06fe47fd3` — 16 PRs ✓
+- **Diff lido 100%** para todas as 8 PRs não-DRAFT com merge CLEAN (#2579, #2587, #2588, #2590, #2591, #2592, #2593, #2594) ✓
+- **CI Gate Final verificado** para todas as 8 PRs não-DRAFT CLEAN (#2590/#2591/#2592/#2593/#2594: SUCCESS; #2587/#2588: FAILURE; #2579: sem runs) ✓
+- **8 critérios de merge avaliados** por PR — nenhuma PR passou todos os 8 critérios ✓
 - **Evidência de bloqueio por PR** (resumo):
 
-| PR | Bloqueio | Evidência |
-|---|---|---|
-| #2420 | NO_MERGE_BASE | `git merge-base origin/main refs/remotes/pr/2420` → vazio |
-| #2572 | CONFLICT + REGRA#8 + REGRA#10 | `git merge --no-commit` → CONFLICT; `.github/workflows/` + `supabase/migrations/`; branch `claude_05/*` |
-| #2579 | Regressão semântica | `package.json`: `"1.2.1"→"1.0.0"` downgrade |
-| #2580 | DRAFT + REGRA#8 | `draft: true` API; `supabase/migrations/` |
-| #2587 | DECISAO_HUMANA major | zustand `^4.5.0→^5.0.16`; 11 stores com API v4 |
-| #2588 | DECISAO_HUMANA breaking | `calendar.tsx:22-24` usa `modifiers`/`modifiersClassNames`/`formatters` (API v8); v10 remove essas props |
-| #2590 | REGRA#8 workflow | `.github/workflows/gitleaks-history-audit.yml` |
-| #2591 | REGRA#8 workflow | `.github/workflows/codeql.yml` |
-| #2592 | REGRA#8 workflow | `.github/workflows/stale.yml` |
-| #2593 | REGRA#8 workflow | `.github/workflows/codeql.yml` |
-| #2594 | REGRA#8 workflow | `.github/workflows/e2e-update-editor-sheet-snapshots.yml` |
-| #2597 | DRAFT + REGRA#8 | `draft: true` API; `.github/workflows/ratchet-weekly.yml` |
-| #2600 | DRAFT (entregáveis) | `draft: true` — PR desta sessão |
-| #2603 | DRAFT + REGRA#8 | `draft: true` API; 5 migrations incl. `supplier_stricker_rls_deny_all` |
-| #2604 | DRAFT + REGRA#8 | `draft: true` API; `.github/workflows/schema-snapshot-export.yml` |
-| #2605 | DRAFT | `draft: true` API — único bloqueio; sem REGRA#8 |
+| PR | Bloqueio | Evidência | CI Gate Final |
+|---|---|---|---|
+| #2420 | NO_MERGE_BASE | `git merge-base origin/main refs/remotes/pr/2420` → vazio | N/A |
+| #2572 | CONFLICT + REGRA#8 + REGRA#10 | `git merge --no-commit` → CONFLICT; `.github/workflows/` + `supabase/migrations/`; branch `claude_05/*` | N/A |
+| #2579 | Regressão semântica | `package.json`: `"1.2.1"→"1.0.0"` downgrade; diff lido 100% | SEM RUNS |
+| #2580 | DRAFT + REGRA#8 | `draft: true` API; `supabase/migrations/` | N/A (DRAFT) |
+| #2587 | DECISAO_HUMANA major + CI fail | zustand `^4.5.0→^5.0.16`; 11 stores com API v4; diff lido 100% (só package.json+lock) | ⛔ FAILURE SHA `243e5d21cf` |
+| #2588 | DECISAO_HUMANA breaking + CI fail | `calendar.tsx:22-24` usa API v8 (não atualizado); diff lido 100% (só package.json+lock) | ⛔ FAILURE SHA `1a71dd86bc` |
+| #2590 | REGRA#8 workflow (único bloqueio) | `gitleaks-history-audit.yml:52` — SHA bump codeql-action/upload-sarif; SHA pin correto (R15 ✓); diff lido 100% | ✅ SUCCESS SHA `46c07b88df` |
+| #2591 | REGRA#8 workflow (único bloqueio) | `codeql.yml:87` — SHA bump codeql-action/analyze; SHA pin correto (R15 ✓); diff lido 100% | ✅ SUCCESS SHA `1797d8afb3` |
+| #2592 | REGRA#8 workflow (único bloqueio) | `stale.yml:29` — SHA bump actions/stale v9→v11; SHA pin correto (R15 ✓); diff lido 100% | ✅ SUCCESS SHA `936b10424c` |
+| #2593 | REGRA#8 workflow (único bloqueio) | `codeql.yml:80` — SHA bump codeql-action/init; SHA pin correto (R15 ✓); diff lido 100% | ✅ SUCCESS SHA `7f36981f2c` |
+| #2594 | REGRA#8 workflow + R15 SHA pin | `e2e-update-editor-sheet-snapshots.yml:36` — `setup-node@v7` **sem SHA pin** (viola R15); diff lido 100% | ✅ SUCCESS SHA `87bff9e7ba` |
+| #2597 | DRAFT + REGRA#8 | `draft: true` API; `.github/workflows/ratchet-weekly.yml` | N/A (DRAFT) |
+| #2600 | DRAFT (entregáveis) | `draft: true` — PR desta sessão | N/A (DRAFT) |
+| #2603 | DRAFT + REGRA#8 | `draft: true` API; 5 migrations incl. `supplier_stricker_rls_deny_all` | N/A (DRAFT) |
+| #2604 | DRAFT + REGRA#8 | `draft: true` API; `.github/workflows/schema-snapshot-export.yml` | N/A (DRAFT) |
+| #2605 | DRAFT | `draft: true` API — único bloqueio; sem REGRA#8 | N/A (DRAFT) |
 
 - **0 PRs mergeadas autonomamente nesta sessão** — todas têm bloqueio verificado ✓
 - **1 PR mergeada externamente** (#2602 — outra sessão, rev30) ✓
 - **Única escrita no GitHub desta sessão**: push de entregáveis para `claude_04/optimistic-bohr-qplx94` (branch designada pelo ambiente, conforme instrução de sessão) ✓
 - Worktrees removidos ✓
+
+### Critérios de merge por PR não-DRAFT CLEAN (rev32 — evidência completa)
+
+| PR | C1 Válida | C2 Nova | C3 Sem conflito | C4 CI verde | C5 Sem regressão | C6 Regra negócio | C7 Completa | C8 Confiança | Veredito |
+|---|---|---|---|---|---|---|---|---|---|
+| #2579 | ✅ | ✅ | ✅ | ⛔ (sem runs) | ⛔ downgrade 1.2.1→1.0.0 | N/A | N/A | N/A | DECISAO_HUMANA |
+| #2587 | ✅ | ✅ | ✅ | ⛔ FAILURE | ⛔ breaking zustand v4→v5 | N/A | ⛔ stores não migrados | ⛔ | DECISAO_HUMANA |
+| #2588 | ✅ | ✅ | ✅ | ⛔ FAILURE | ⛔ breaking rdp v8→v10 | N/A | ⛔ calendar.tsx não migrado | ⛔ | DECISAO_HUMANA |
+| #2590 | ✅ | ✅ | ✅ | ✅ SUCCESS | ✅ | ⛔ REGRA#8 workflow | N/A | N/A | BLOQUEADA |
+| #2591 | ✅ | ✅ | ✅ | ✅ SUCCESS | ✅ | ⛔ REGRA#8 workflow | N/A | N/A | BLOQUEADA |
+| #2592 | ✅ | ✅ | ✅ | ✅ SUCCESS | ✅ | ⛔ REGRA#8 workflow | N/A | N/A | BLOQUEADA |
+| #2593 | ✅ | ✅ | ✅ | ✅ SUCCESS | ✅ | ⛔ REGRA#8 workflow | N/A | N/A | BLOQUEADA |
+| #2594 | ✅ | ✅ | ✅ | ✅ SUCCESS | ✅ | ⛔ REGRA#8 workflow + R15 pin | N/A | N/A | BLOQUEADA |

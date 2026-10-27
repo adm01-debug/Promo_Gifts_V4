@@ -1,8 +1,9 @@
 {
-  "generated": "2026-10-27T04:30:00-03:00",
+  "generated": "2026-10-27T06:00:00-03:00",
   "session": "session_011d8gKLZg8BWivR8aQBwxGF",
-  "main_head": "00eeec9ac2c2397c5814f9d17dd0c86ad36a5c0c",
-  "main_head_commit": "fix(e2e): corrige falhas E2E mobile, tooltips e personalization specs (PR #2602)",
+  "revision": "rev32",
+  "main_head": "06fe47fd3a992bf2a39ab356c9d8c357c5f2a27e",
+  "main_head_commit": "fix(e2e): corrige falhas de E2E em mock auth (no-org) e baselines ausentes (push direto session_01Knr9enFAok62bHihBK1UUP)",
   "total_prs": 51,
   "open_prs": 16,
   "verditos": {
