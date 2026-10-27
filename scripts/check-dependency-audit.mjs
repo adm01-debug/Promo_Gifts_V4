@@ -78,6 +78,7 @@ const ALLOWED_LHCI_PACKAGES = new Set([
   'ws',
   'body-parser',          // transitive: @lhci/cli → express → body-parser; GHSA-27r3-jxmh-p828; dev-only
   'chromium-bidi',        // transitive: @lhci/cli → lighthouse → puppeteer-core → chromium-bidi; vuln via zod; dev-only
+  'qs',                   // transitive: @lhci/cli → express → qs; GHSA-6pq8-jhm2-2vcw; moderate; DoS via stringify arrayFormat comma; dev-only
 ]);
 
 // GHSA-mrhx-c7xc-m3w5 — zod: memory exhaustion in oversized constrained
