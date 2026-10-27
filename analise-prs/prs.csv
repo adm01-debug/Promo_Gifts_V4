@@ -1,14 +1,24 @@
-numero,veredicto,gate_final,conflito,diff_lido,motivo
-2420,AGUARDAR_APROVACAO,DESCONHECIDO,True,True,Body: AGUARDANDO APROVAÇÃO; SQL de rollback — requer humano
-2572,FECHAR,DESCONHECIDO,True,True,62 arquivos de sessão Claude antiga — dados obsoletos
-2579,NAO_MERGEAR,DESCONHECIDO,False,True,"PR automática release-please bot — base stale, versão downgrade"
-2580,DRAFT,NAO_RODOU,False,True,Estado DRAFT
-2588,DECISAO_HUMANA,DESCONHECIDO,False,True,react-day-picker 8→10 double major — requer PO
-2600,NAO_MERGEAR,NAO_RODOU,False,True,DRAFT + body NÃO MERGEAR ESTA PR
-2605,CONFLITO_PENDENTE_REBASE,SUCCESS,True,True,Gate OK mas mergeable_state: dirty
-2622,CONFLITO_PENDENTE_REBASE_SEGURANCA,SUCCESS,True,True,Gate OK + conflito + DISABLE RLS 17 tabelas supplier_stricker.* no rollback 20261027200000 — requer PO/Security
-2631,DRAFT,NAO_RODOU,False,True,Estado DRAFT
-2645,AGUARDAR_APROVACAO,0 check runs,True,True,Recibo E15 auto-gerado — sem CI + conflito — owner deve revisar
-2646,CI_FALHOU,FAILURE,False,True,Gate Final FAILURE em 2 SHAs (2d8fd74e + 79c0c670); mergeable_state: behind — sem conflito com main
-2653,PROPRIO_BRANCH_SESSAO,N/A,False,True,PR da própria branch de trabalho desta sessão — não faz parte do inventário original
-2658,DRAFT,blocked,False,True,DRAFT — todos critérios OK; owner deve tirar de DRAFT para mergear
+numero,titulo,estado,veredicto,gate_final,conflito,diff_lido,merge_sha,motivo
+2420,AGUARDANDO APROVAÇÃO - ProductFormFullscreen + migration mirror,open,AGUARDAR_APROVACAO,DESCONHECIDO,true,true,,Body: AGUARDANDO APROVAÇÃO; SQL de rollback — requer humano
+2572,docs: análise de PRs (sessão antiga),open,FECHAR,DESCONHECIDO,true,true,,62 arquivos de sessão Claude antiga — dados obsoletos
+2579,chore: release 1.2.1→1.0.0 (release-please bot),open,NAO_MERGEAR,DESCONHECIDO,false,true,,PR automática release-please bot — base stale; versão downgrade
+2580,feat(migrations): E23 NO FORCE RLS supplier tables,open,DRAFT,NAO_RODOU,false,true,,Estado DRAFT
+2587,chore(deps): bump zustand from 4.5.7 to 5.0.16,closed,MERGEADA_CLAUDE,SUCCESS,false,true,16ad57c66e619100f76c113653cdab7a20a7871a,Mergeada por Claude — Gate Final SUCCESS; zero erros PostgreSQL pós-merge
+2588,chore(deps): react-day-picker 8→10,open,DECISAO_HUMANA,DESCONHECIDO,false,true,,react-day-picker 8→10 double major — requer PO
+2594,chore(ci)(deps): bump actions/setup-node from 4 to 7,closed,MERGEADA_PELO_OWNER,FAILURE_PRE_EXISTENTE,false,true,f2f8c3d6e316cef8802faf42a64f9f4005970b6a,Mergeada antes do baseline a0560fdc; falhas pré-existentes não causadas por esta PR
+2600,docs: NÃO MERGEAR,open,NAO_MERGEAR,NAO_RODOU,false,true,,DRAFT + body NÃO MERGEAR ESTA PR
+2605,fix(tests): test quality fixes — e2e threshold + PromoFlixPlayer mute,open,CONFLITO_PENDENTE_REBASE,SUCCESS,true,true,,Gate OK mas mergeable_state: dirty
+2622,docs(rollbacks): 9 rollbacks + edge-authz-manifest,open,CONFLITO_PENDENTE_REBASE_SEGURANCA,SUCCESS,true,true,,Gate OK + conflito + DISABLE RLS 17 tabelas supplier_stricker.* — requer PO/Security
+2631,docs: PENDENCIAS.md §4 + RELATORIO_CI.md §10,open,DRAFT,NAO_RODOU,false,true,,Estado DRAFT
+2645,docs(e15): recibo migration 20261027140000 (MIGRATIONS_SYNC_LOG),open,AGUARDAR_APROVACAO,0 check runs,true,true,,Recibo E15 auto-gerado — sem CI + conflito — owner deve revisar
+2646,fix(migrations): adiciona cabeçalho -- Rollback: nas migrations,open,CI_FALHOU,FAILURE,false,true,,Gate Final FAILURE em 2 SHAs (2d8fd74e + 79c0c670); mergeable_state: behind
+2648,PENDENCIAS.md update + schema-snapshot docs,closed,MERGEADA_PELO_OWNER,FAILURE_PRE_EXISTENTE,false,true,ed87db31b5ce630378f74766adcdcc26edfb0bd2,Somente documentação; mergeada antes do baseline a0560fdc
+2649,fix(e2e): corrige rotas admin e redirect de auth em personalization,closed,MERGEADA_PELO_OWNER,FAILURE_PRE_EXISTENTE,false,true,61a0cfa1714661f752273cf864b335eb217ea134,E2E fix; mergeada antes do baseline a0560fdc
+2650,fix(e2e): corrige testids e landing state em catalog.spec e kit-builder.spec,closed,MERGEADA_PELO_OWNER,FAILURE_PRE_EXISTENTE,false,true,f0689734b38e79edda24cf80f5df19dbae941015,E2E fix; mergeada antes do baseline a0560fdc
+2652,docs(e15): recibo aplicação migration 20261027140000,closed,MERGEADA_PELO_OWNER,FAILURE_PRE_EXISTENTE,false,true,22ba938e02ae48eee34d77176a4d5dee6cf8e14b,Somente documentação; mergeada antes do baseline a0560fdc
+2653,docs: análise de PRs sessão session_012WyySbh2tj8vhRQLBf3mHo,open,PROPRIO_BRANCH_SESSAO,N/A,false,true,,PR da própria branch de trabalho desta sessão
+2654,fix(ci): adiciona xbz-image-uploader ao SERVER_ONLY_ALLOWLIST do CORS gate,closed,MERGEADA_PELO_OWNER,FAILURE_PRE_EXISTENTE,false,true,4c7ecb260da691b5cd436700380b819d0d936961,CI fix; mergeada antes do baseline a0560fdc
+2655,fix(tests): add xbz-image-uploader descriptor with pendingDeploy=true,closed,MERGEADA_PELO_OWNER,FAILURE_PRE_EXISTENTE,false,true,a0560fdc62744c6bf4ba182914cc76dec06aecb1,Merge SHA = baseline a0560fdc; CI tinha falhas pré-existentes
+2656,fix(ci): adiciona qs ao allowlist do gate de dependências (GHSA-6pq8-jhm2-2vcw),closed,MERGEADA_PELO_OWNER,SUCCESS,false,true,ac0fe4760792a9d0526d6ea6f014ca2a58da8ddb,Corrigiu Gate 0.5; Gate Final SUCCESS em f6f9889a
+2657,fix(e2e): corrige catch de timeout e timeout explícito nas assertions de page-title,closed,MERGEADA_PELO_OWNER,SUCCESS,false,true,f6f9889af171da4cc538f103fe0988a77dabd90d,Gate Final SUCCESS confirmado — este é o SHA f6f9889a
+2658,fix(test): tolera timeout de waitFor nos integration tests de reposição,closed,MERGEADA_PELO_OWNER,SUCCESS,false,true,2fafe8edfaa246221a4b427d5728512ba9ff199e,Mergeada pelo owner após inventário original; Gate Final SUCCESS em 2fafe8ed
