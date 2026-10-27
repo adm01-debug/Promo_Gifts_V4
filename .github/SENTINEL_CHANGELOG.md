@@ -1,6 +1,6 @@
 # Sentinel Changelog
 
-> **Por que este arquivo exists:** o `Branch Protection Sentinel` é um guard-rail
+> **Por que este arquivo existe:** o `Branch Protection Sentinel` é um guard-rail
 > ativo. Mudar suas regras sem registro é uma forma fácil de degradar a segurança
 > sem ninguém perceber. Cada mudança aqui é uma decisão registrada para sobreviver
 
