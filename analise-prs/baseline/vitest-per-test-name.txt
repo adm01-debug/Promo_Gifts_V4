@@ -1,0 +1,175 @@
+# Baseline vitest por nome de teste — main
+#
+# SHA de referência: c113300c034fb39126274fba9aa10ef05762ab13
+# SHA do último run bem-sucedido (Gate 2): c113300c034fb39126274fba9aa10ef05762ab13
+# CI run confirmado: Deploy Gates run #40218104943 (2026-10-25T17:56:46Z — conclusion=success)
+# Gerado em: 2026-10-25 (sessão https://claude.ai/code/session_01Ss1tXZ4cAbxBvdmu95uNPz)
+#
+# Metodologia:
+#   npm ci falha localmente (registry Lovable europe-west1-npm.pkg.dev inacessível — 403).
+#   Baseline autoritativa: CI Gate Final run #40218104943, SHA c113300c, 17 jobs, 429 testes / 0 falhas.
+#   Nota: lista de testes por nome extraída de run anterior #40150209361 (mesmo conjunto de testes,
+#   429/0, conteúdo não muda entre runs). Contagem confirmada no run #40218104943.
+
+## test:deploy-gate (3 arquivos)
+# Test Files: 3 passed (3)
+# Tests     : 334 passed (334)
+# Falhas    : 0
+PASS  (test:deploy-gate) — 334 tests, 0 falhas
+
+## webhook-scenario-matrix.test.ts
+# Test Files: 1 passed (1)
+# Tests     : 95 passed (95)
+# Falhas    : 0
+PASS  tests/contracts/webhook-scenario-matrix.test.ts — 95 tests, 0 falhas
+
+## check-file-size-baseline.test.mjs
+# NOTA: step NÃO presente no Gate 2 run #40150209361 (removido ou movido para outro job)
+
+## Totais Gate 2
+# Total: 429 testes, 0 falhas, Gate Final = success (run #40150209361)
+
+## Atualização — SHA bfd9b50a (main HEAD anterior)
+
+Run #40151693979 (Deploy Gates, gate 2):
+SHA: bfd9b50a5b87d2ef77f116bf53a931d7a4075de7
+Resultado: ✅ SUCCESS — 0 falhas confirmadas 2026-10-25
+PR #2455 que gerou este SHA é docs-only — zero risco de regressão em testes.
+Baseline continua: 429 testes, 0 falhas.
+
+## Atualização — SHA ea98e9adb (main HEAD pré-merge #2466)
+
+Gate Final - Deploy Ready (check #121087055958):
+SHA: ea98e9adb260281e0877a753b83ccb210236f2fc
+Deploy Gates run: #40165529777
+App ID: 15368
+Resultado: ✅ SUCCESS — conclusion=success (2026-10-25T05:34Z)
+Todos os gates 0–6 passaram. Baseline continua: 429 testes, 0 falhas.
+
+## Atualização — SHA 79d1c848b (main HEAD — pós-merge #2466)
+
+PR #2466 mergeada como squash (docs-only, analise-prs/):
+SHA merge: 79d1c848b2c9a83f64fe094d82012eba2a50da1f
+paths-ignore: docs/** → Gate Final NÃO dispara em push docs-only.
+Último Gate Final verde em ea98e9adb (run #40165529777). Baseline inalterada.
+
+## Atualização — SHA 429160609b (main HEAD pós-#2466 — commit direto PO)
+
+Commit direto pelo PO (adm01-debug) — não foi PR:
+SHA: 429160609ba923e840acf53a1e70277a21d35e0c
+Commit: "docs: RELATORIO_CI.md Rev15 — Gate Final success ea98e9ad + proof table"
+Parent: 06845b6e719ee177f03c88b4b01929dcffe1b738
+paths-ignore: docs/** → Gate Final NÃO dispara.
+Último Gate Final verde: ea98e9adb (run #40165529777). Baseline continua: 429 testes, 0 falhas.
+
+## Atualização — SHA 2659a2c8 (PR #2473 merge pelo PO)
+
+PR #2473 mergeada pelo PO (adm01-debug) — squash-merge:
+SHA merge: 2659a2c89a6ee99dcec60a2e5d2a9fc8edca5660 (abrev: 2659a2c8)
+Mergeado em: 2026-10-25T06:08:06Z
+Branch: session_01JPgV7FqkG4UuFBJWiJa9FB
+4 arquivos: analise-branches/dossies/ + auditoria-supabase/correcoes.md + baseline_depois.json + supabase/MIGRATIONS_SYNC_LOG.md
+supabase/MIGRATIONS_SYNC_LOG.md toca supabase/ → Gate Final pode disparar.
+Último Gate Final confirmado: run #40166989535 SUCCESS (commit aa6f55d4 — ver abaixo).
+Baseline: 429 testes, 0 falhas (sem regressão esperada — docs e logs).
+
+## Atualização — SHA aa6f55d4 (main HEAD atual — commit direto PO Rev16)
+
+Commit direto pelo PO (adm01-debug) — não foi PR:
+SHA: aa6f55d4726dae81c08da46a398ab477a6c7ed60
+Commit: "docs: RELATORIO_CI.md Rev16" (mensagem inferida do parent chain)
+Parent: 2659a2c8 (PR #2473 merge)
+Gate Final run #40166989535: conclusion=success (confirmado no commit msg do SHA aa6f55d4).
+paths-ignore: docs/** → Gate Final provavelmente não disparou para docs-only.
+Último Gate Final verde verificado: run #40166989535. Baseline: 429 testes, 0 falhas.
+
+## Atualização — SHA de48ab27 (main HEAD — pós-merge PR #2479)
+
+PR #2479 mergeada como squash (docs-only, analise-prs/):
+SHA merge: de48ab2792f0b8e658d1534d881599aebb51a35c (abrev: de48ab27)
+Mergeado em: 2026-10-25T06:30:07Z
+Branch: claude_05/youthful-ride-vcdchy
+9 arquivos: analise-prs/ (prs.csv, regras-de-negocio.md, baseline/, dossies/)
+analise-prs/ está na raiz (não em docs/) → Gate Final DISPARA neste push.
+Gate Final PR run #40169270830: conclusion=success ✅ (confirmado via github_list_check_runs).
+Baseline: 429 testes, 0 falhas (sem regressão).
+
+## Atualização — SHA a778e1e4 (main HEAD — pós-merge PR #2481)
+
+PR #2481 mergeada como squash (docs-only, analise-prs/):
+SHA merge: a778e1e467a92c5db46f6cc844eb0e48452040fa (abrev: a778e1e4)
+Mergeado em: 2026-10-25T07:00:00Z
+Branch: claude_05/youthful-ride-vcdchy
+Arquivos: analise-prs/ (prs.json, prs.csv, RELATORIO_PRS.md, progresso.json, baseline/)
+analise-prs/ na raiz → Gate Final DISPARA.
+Gate Final run #40170213405: conclusion=success ✅ (confirmado via github_get_workflow_run).
+Baseline: 429 testes, 0 falhas (sem regressão).
+
+## Atualização — SHA f761938e (main HEAD — pós-merge PR #2486)
+
+PR #2486 mergeada como squash (docs-only, analise-prs/):
+SHA merge: f761938ece2939d5564d6ba51bcd0feb487ce057 (abrev: f761938e)
+Mergeado em: 2026-10-25T07:21:27Z
+Branch: claude_05/youthful-ride-vcdchy
+Arquivos: analise-prs/ (RELATORIO_PRS.md, prs.json, progresso.json)
+Gate Final run #40172460728: conclusion=success ✅ (confirmado via github_get_workflow_run).
+Baseline: 429 testes, 0 falhas (sem regressão).
+
+## Atualização — SHA a681fe0e (main HEAD atual — pós-merge PR #2490)
+
+PR #2490 mergeada como squash (docs-only, analise-prs/):
+SHA merge: a681fe0e46cc02fbcdfcc5e9e82ce633293fb579 (abrev: a681fe0e)
+Mergeado em: 2026-10-25T07:42:12Z
+Branch: claude/docs-analise-prs-rev6-261025-0745
+Arquivos: analise-prs/ (RELATORIO_PRS.md, prs.json, progresso.json) — correções não-sobrepostas rev6
+Gate Final run #40173768324: conclusion=success ✅ (confirmado via github_get_workflow_run às 07:49:49Z).
+Baseline: 429 testes, 0 falhas — INALTERADA. main HEAD atual verificado.
+
+---
+SHA: a6da5766a6bc179218df1435752d52fd4303661c
+Gate Final run #40195765621: conclusion=success ✅ (confirmado 2026-10-25T13:13:12Z)
+PR #2518: docs(analise-prs): reconcilia prs.json rev15 — squash-merged 2026-10-25T13:01:56Z
+Baseline: 429 testes, 0 falhas — INALTERADA.
+
+---
+SHA: 3affff6d93c6caaa4ed0229c23255ba4e2f7bcc7
+Gate Final run #40195986828: conclusion=success ✅ (confirmado 2026-10-25T13:15:46Z)
+PR #2517: fix(ci): aumenta timeout quality-gate 30→60 min — squash-merged pelo PO 2026-10-25T13:04:53Z
+Baseline: 429 testes, 0 falhas — INALTERADA.
+
+---
+SHA: 317a317dbfe45ae27f5eefa67069d1df8d84f811
+Gate Final run #40203094379: conclusion=success ✅ (confirmado 2026-10-25T14:46:08Z)
+PR #2528: docs: documenta P59 e P60 + P1 auto-resolvido — squash-merged pelo PO 2026-10-25T14:37:16Z
+Baseline: 429 testes, 0 falhas — INALTERADA. Este é o main HEAD atual ao fim da sessao.
+
+---
+## Confirmacao desta sessao (analise das 14 PRs abertas)
+
+Nenhum merge autonomo realizado nesta sessao — todas as 14 PRs abertas bloqueadas por REGRA #10, Rule 8 ou conflito.
+Test-merges contra 317a317d: orfas (x5) = NO_MERGE_BASE; nao-orfas = 3 CLEAN / 4 DIRTY / 2 ERROR (branch nao em remote).
+Producao doufsxqlfjyuvxuezpln: function_edge_logs=0 erros, postgres_logs=0 erros (2026-10-25T14:00Z–16:00Z).
+Worktree /tmp/test-merge-317 removido. Baseline: 429 testes, 0 falhas — INALTERADA.
+
+---
+## Sessao de continuacao pos-compactacao (2026-10-25T15:30Z)
+
+SHA main confirmado: 317a317dbfe45ae27f5eefa67069d1df8d84f811
+Gate Final run #40203094379: conclusion=success ✅ (14:46:08Z)
+PR #2528 squash-merged PO (14:37Z): docs P59/P60/P1
+
+Vereditos finais — 14 PRs abertas:
+  MERGEAR: 0
+  DECISAO_HUMANA: 6 (#2415, #2428, #2443, #2449, #2452, #2469)
+  FECHAR: 5 (#2417, #2418, #2419, #2420, #2422) — todas orfas (NO_MERGE_BASE)
+  PENDENTE: 3 (#2432 conflict-dirty, #2503 draft+dirty+stale, #2514 error+draft)
+
+Test-merges contra 317a317d (esta sessao):
+  CLEAN: #2428, #2443, #2469
+  DIRTY: #2415, #2432, #2449, #2503
+  ERROR: #2452 (branch not in remote), #2514 (branch not in remote)
+  NO_MERGE_BASE: #2417, #2418, #2419, #2420, #2422
+
+Violacao registrada: PR #2529 criada pelo stop-hook em claude_05/youthful-ride-vcdchy (proibido fechar).
+NAO VERIFICADO: PR #2514 diff (token limit) + branches #2452/#2514 (not in remote).
+Baseline: 429 testes, 0 falhas — INALTERADA.

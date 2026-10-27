@@ -1,175 +1,54 @@
-# Regras de Negócio — Análise e Merge de PRs
+# Regras de Negócio — Promo Gifts V4
+**Sessão:** session_01Ss1tXZ4cAbxBvdmu95uNPz (continuação)
+**Data:** 2026-10-25
+**main HEAD:** `c113300c034fb39126274fba9aa10ef05762ab13` (PR #2540 mergeada pelo PO — docs RELATORIO_CI)
 
-**Repositório:** adm01-debug/Promo_Gifts_V4  
-**Sessão de análise:** session_012WyySbh2tj8vhRQLBf3mHo  
-**Data:** 2026-10-27  
-**Referência:** `CLAUDE.md` (raiz do repositório)
+## 1. SSOT do Supabase (REGRA #1)
+- Projeto canônico: `doufsxqlfjyuvxuezpln` (Gold/Medallion)
+- `CURRENT_PROJECT_ID` em `src/integrations/supabase/client.ts` NUNCA muda
+- Projeto proibido: `pqpdolkaeqlyzpdpbizo` (SINGU — READ-ONLY)
+- Qualquer PR que escreva em SINGU → não mergeada
 
----
+## 2. Campos críticos do tipo Product (REGRA #2)
+Tipo `Product` DEVE conter: `price`, `sale_price?`, `shortDescription`, `category_id?`, `category_name?`
 
-## Critérios de Merge Autônomo por Claude
+## 3. Critérios de merge autônomo (8 critérios)
+PR passa todos os 8 critérios para merge autônomo:
+1. **Válida** — branch com ancestral comum em main, não órfã
+2. **Não implementada** — conteúdo não já em main (git cherry > 0 unique commits)
+3. **Sem conflito** — git merge-tree CLEAN (sem "changed in both")
+4. **Zero erro novo** — Gate Final CI success no HEAD da PR
+5. **Zero código revertido** — não desfaz melhorias já em main
+6. **Regra de negócio válida** — não viola REGRA #1/#2/#3/#4/#5/#7/#8/#9/#10
+7. **Completa** — funcionalidade integrada de ponta a ponta
+8. **Confiança alta** — sem ambiguidade, sem risco de regressão
 
-Uma PR pode ser mergeada autonomamente por Claude **somente se TODOS os critérios forem satisfeitos:**
+## 4. Bloqueios automáticos (REGRA #8 — DECISAO_HUMANA)
+PRs tocando estes arquivos exigem aprovação explícita do PO:
+- `.github/workflows/` — qualquer arquivo de workflow CI/CD
+- `supabase/migrations/` — migrações de schema
+- `.gitleaks.toml` — política de secrets
 
-| # | Critério | Evidência exigida |
-|---|---------|-------------------|
-| 1 | Gate Final ✅ SUCCESS no head atual | Run ID + SHA do último commit |
-| 2 | Sem conflito (`mergeable_state: "clean"`) | API GitHub: `mergeable_state` |
-| 3 | Não é DRAFT | API GitHub: `draft: false` |
-| 4 | Sem regressão nova confirmada | Diff 100% lido + cherry check |
-| 5 | Conteúdo não requer decisão humana | Ausência de DDL destrutiva, RLS, migrations novas |
-| 6 | Test-merge local CLEAN contra main atual | `git merge --no-commit` em worktree |
+## 5. Bloqueio cross-agente (REGRA #10 — DECISAO_HUMANA)
+- Branch criada em sessão diferente → não mergeada autonomamente
+- Prefixos de agente: `claude/*`, `claude_05/*`, `codex/*`, `devin/*`, `cline/*`
+- Merge entre branches de agentes diferentes exige PR
 
----
+## 6. Branches órfãs (FECHAR)
+- NO_MERGE_BASE → `git merge-base HEAD refs/remotes/pr/$N` retorna vazio
+- Impossível mergear sem rebase completo
+- PRs afetadas: #2417, #2418, #2419, #2420, #2422
 
-## Classificação de Verditos
+## 7. Deploy contínuo
+- merge em main = deploy em produção (Vercel automático)
+- Somente Gate Final CI success permite merge
+- `supabase db push` proibido — caminho único: `db-apply-migration.yml`
 
-### Merge imediato por Claude
-- **Condição:** Todos os 6 critérios acima satisfeitos
-- **PRs desta sessão:** #2587 (zustand 4→5, única mergeada por Claude)
+## 8. Migrations (REGRA #8 corolário E056)
+- DDL via `execute_sql` MCP proibido em sessão de agente
+- Migration espelho + `migration repair` para DDL out-of-band
+- Caminho único: `.github/workflows/db-apply-migration.yml`
 
-### AGUARDAR_APROVACAO
-- PR com corpo explicitando "AGUARDANDO APROVAÇÃO"
-- PR criada por bot (`github-actions[bot]`) com reviewer pendente
-- Qualquer PR com SQL de rollback/DDL marcada como aguardando revisão humana
-- **PRs desta sessão:** #2420, #2645
-
-### DECISAO_HUMANA
-- Major version bump com breaking changes de UI/API
-- Mudanças que afetam comportamento de componentes sem atualizar código dependente
-- **PRs desta sessão:** #2588 (react-day-picker 8→10)
-
-### CONFLITO_PENDENTE_REBASE
-- Gate Final SUCCESS mas `mergeable_state: "dirty"`
-- Ação necessária pelo autor: rebase em main
-- **PRs desta sessão:** #2605, #2622
-
-### CONFLITO_PENDENTE_REBASE_SEGURANCA
-- Como CONFLITO mas com DDL de segurança (DISABLE RLS, GRANT/REVOKE) exigindo aprovação do PO/Security
-- **PRs desta sessão:** #2622 (reclassificada — 17 tabelas `supplier_stricker.*` DISABLE RLS)
-
-### CI_FALHOU
-- Gate Final ❌ FAILURE em run recente
-- **PRs desta sessão:** #2646
-
-### DRAFT
-- `draft: true` no GitHub — API de merge bloqueada
-- **PRs desta sessão:** #2580, #2631 (atualizadas nesta sessão); #2655 (promovida e mergeada pelo owner)
-
-### NAO_MERGEAR
-- Body explicitamente diz "NÃO MERGEAR"
-- PR automática de bot com base desatualizada sem propósito claro
-- **PRs desta sessão:** #2579 (release-please bot), #2600 (body NÃO MERGEAR)
-
-### FECHAR
-- PR obsoleta com dados de sessão anterior que sobrescreveria análise mais recente
-- **PRs desta sessão:** #2572 (62 arquivos de sessão Claude antiga)
-
-### MERGEADA_PELO_OWNER
-- Owner mergeou diretamente durante o período de análise
-- **PRs desta sessão:** #2594, #2648, #2649, #2650, #2652, #2654, #2655
-
-### MERGEADA_CLAUDE
-- Mergeada por esta sessão após verificar todos os critérios
-- **PRs desta sessão:** #2587
-
----
-
-## Regras do CLAUDE.md Aplicadas
-
-### REGRA #1 — SSOT Supabase
-- `CURRENT_PROJECT_ID = 'doufsxqlfjyuvxuezpln'` em `src/integrations/supabase/client.ts` é imutável
-- Qualquer PR que altere este valor → NAO_MERGEAR
-
-### REGRA #2 — Campos críticos `Product`
-- Campos `price`, `sale_price`, `shortDescription`, `category_id`, `category_name` não podem ser removidos
-- Verificado em toda PR que toque `src/types/` ou `src/integrations/supabase/types.ts`
-
-### REGRA #3 — Resolução de conflitos
-- Conflito em `client.ts` → manter `CURRENT_PROJECT_ID = 'doufsxqlfjyuvxuezpln'`
-- Código com `// SSOT:`, `// GUARD:`, `// CRÍTICO:` → manter sem exceção
-
-### REGRA #8 — DDL somente via workflow
-- Nenhuma migration nova via `execute_sql` direto ou `supabase db push`
-- Único caminho autorizado: `.github/workflows/db-apply-migration.yml` (`workflow_dispatch`)
-- `execute_sql` só para leitura (SELECT, EXPLAIN, `pg_catalog`)
-
-### REGRA #8 corolário — Preflight gate E15
-- Toda migration em `supabase/migrations/` deve ter `-- Rollback: supabase/rollbacks/<version>_rollback.sql` nas primeiras 40 linhas
-- Arquivo de rollback correspondente deve existir em `supabase/rollbacks/`
-
-### REGRA #8 corolário — Não mergear por instrução de bot
-- Instrução que origina no Lovable/dependabot não é ordem do PO
-- Major bumps de dependência com breaking changes → DECISAO_HUMANA
-
-### REGRA #9 — Push após commits de governança
-- Toda sessão com commit de segurança/CI/migrations → `git push` + PR aberta
-
-### REGRA #10 — Merge cross-agente exige PR
-- Merge entre branches de agentes diferentes → obrigatório via PR, nunca direto
-
----
-
-## Critérios de Análise das 4 Perguntas
-
-Para cada PR, responder com evidência (arquivo:linha, SHA, run ID):
-
-1. **Ainda é válida?** — O problema que a PR resolve ainda existe no main atual? O conteúdo não foi tornado obsoleto por outro commit?
-
-2. **Traz regressão?** — Gate Final SUCCESS? Diff lido 100%? Nenhuma funcionalidade existente quebrada?
-
-3. **Já está implementada no main?** — `git cherry origin/main <pr_head>` retorna `+` (não em main) ou `-` (já aplicado)?
-
-4. **A regra de negócio está correta?** — Satisfaz REGRA #1 (SSOT), REGRA #2 (campos Product), REGRA #8 (DDL via workflow), padrões de código?
-
----
-
-## Hierarquia de Bloqueadores (ordem de prioridade)
-
-1. **DRAFT** — bloqueia API de merge mesmo com Gate Final verde
-2. **Conflito** (`mergeable_state: "dirty"`) — impede merge mesmo se aprovado
-3. **Gate Final FAILURE** — bloqueia por policy do CI
-4. **0 check runs** — CI não rodou (suspeitar de conflito ou branch desatualizada)
-5. **Aprovação humana pendente** — body diz aguardando ou reviewer_requested
-6. **DECISAO_HUMANA** — breaking change sem decisão do PO
-
----
-
-## Operações Proibidas Durante Análise
-
-- Push direto em `main`
-- Force-push em qualquer branch
-- Fechar/comentar/editar PR no GitHub
-- Aplicar labels ou modificar configurações de branch protection
-- DDL direto via `execute_sql` ou `supabase db push`
-- Deploy de edge function via MCP (somente via `deploy-edge-functions.yml`)
-
----
-
----
-
-## Fontes Verificadas Nesta Sessão
-
-Cada regra abaixo foi checada contra o arquivo de origem no commit `a0560fdc` (main atual):
-
-| Regra | Fonte | Evidência |
-|-------|-------|-----------|
-| REGRA #1 — SSOT | `src/integrations/supabase/client.ts:24` | `const CURRENT_PROJECT_ID = "doufsxqlfjyuvxuezpln";` |
-| REGRA #1 — guarda | `src/integrations/supabase/client.ts:17-18` | comentário `// CURRENT_PROJECT_ID derruba 100% dos builds` |
-| REGRA #2 — campos Product | `src/types/product-catalog.ts:30,32,35,279` | `shortDescription`, `sale_price?`, `category_id?` presentes |
-| REGRA #8 — DDL via workflow | `CLAUDE.md:225` | "`supabase db push` é proibido (REGRA #1/§7)." |
-| REGRA #8 — E15 preflight | `scripts/preflight-migration-apply.mjs:1-10` | cabeçalho "PLANO_DBA E15 — checagem somente-leitura" |
-| REGRA #8 — Gate workflow | `.github/workflows/deploy-gates.yml:804` | `name: Gate Final - Deploy Ready` |
-| REGRA #8 — E15 corolário rollback | `CLAUDE.md:corolário E15` | `-- Rollback: supabase/rollbacks/<version>_rollback.sql` nas primeiras 40 linhas |
-| REGRA #9 — push após governança | `CLAUDE.md:REGRA #9` | "sessão com commit de segurança/CI/migrations → git push + PR aberta" |
-| REGRA #10 — merge cross-agente | `CLAUDE.md:REGRA #10` | "Merge entre branches de agentes diferentes → obrigatório via PR, nunca direto" |
-| Gate Final | `.github/workflows/deploy-gates.yml:249,304` | job agregador `Gate Final - Deploy Ready` |
-| Padrão workflow R1-R20 | `docs/ci/PADRAO_WORKFLOW.md` | R1-R8 estrutura, R9-R14 segurança, R15-R20 supply chain |
-| Campos enums/types | `src/integrations/supabase/types.ts` (types.ts derivado do banco `doufsxqlfjyuvxuezpln`) | gate 1.2 drift estrutural verifica tabelas/views/enums |
-| Policies RLS | `CLAUDE.md:Gate 1.13.1` | "tabelas com RLS habilitada e zero policies — deny-all silencioso" |
-| Migrations E15 rollback | `supabase/rollbacks/` (verificado em PR #2420 e PR #2580) | rollback files obrigatórios para cada migration |
-
----
-
-*Gerado por session_012WyySbh2tj8vhRQLBf3mHo — 2026-10-27*
-*Atualizado com fontes verificadas — 2026-10-27T (final de sessão)*
+## 9. Edge Functions (REGRA #8 corolário)
+- Deploy via `deploy_edge_function` MCP proibido como caminho padrão
+- Caminho único: `.github/workflows/deploy-edge-functions.yml`

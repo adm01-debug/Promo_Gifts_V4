@@ -1,0 +1,11 @@
+ESLint check — Sessão session_01Ss1tXZ4cAbxBvdmu95uNPz (continuação)
+Data: 2026-10-25
+
+NÃO EXECUTADO LOCALMENTE
+Motivo: npm install falha com 403 (registry europe-west1-npm.pkg.dev sem credenciais)
+
+Referência CI (Gate 1 — TypeScript + ESLint):
+- Run #40214531246 (SHA 4cb4feb4): conclusion=success → 0 erros ESLint, 0 warnings
+- Gate Final completo: success ✅
+
+Evidência: Gate Final run #40214531246 job "static-gates" conclusion=success

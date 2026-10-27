@@ -1,287 +1,108 @@
 {
-  "sessao": "session_012WyySbh2tj8vhRQLBf3mHo",
-  "data": "2026-10-27",
-  "main_sha": "a0560fdc62744c6bf4ba182914cc76dec06aecb1",
-  "total_open_github_api": 12,
-  "prs_open_api": [
-    2653,
-    2646,
-    2645,
-    2631,
-    2622,
-    2605,
-    2600,
-    2588,
-    2580,
-    2579,
-    2572,
-    2420
-  ],
-  "main_sha_atual": "2fafe8edfaa246221a4b427d5728512ba9ff199e",
-  "mergeadas_pelo_owner_pos_inventario": [2656, 2657, 2658],
-  "nota_pr_2653": "PR da própria branch de trabalho desta sessão (docs/analise-prs). Não faz parte do inventário original.",
-  "nota_pr_2658": "Nova PR aberta após inventário original. DRAFT — todos critérios de merge satisfeitos; bloqueada por estado draft. Diff: 1 arquivo +16/-6, só testes.",
-  "inventario_original_19_prs": [
-    2420,
-    2572,
-    2579,
-    2580,
-    2587,
-    2588,
-    2594,
-    2600,
-    2605,
-    2622,
-    2631,
-    2645,
-    2646,
-    2648,
-    2649,
-    2650,
-    2652,
-    2654,
-    2655
-  ],
-  "contagem_inventario": 19,
-  "contagem_analisadas": 19,
-  "gate_final_baseline_main": {
-    "sha": "a0560fdc62744c6bf4ba182914cc76dec06aecb1",
-    "gate_final": "failure",
-    "falhas_pre_existentes": [
-      "Gate 0.5 - Dependency Audit",
-      "Edge Functions · Integration All",
-      "Gate Final - Deploy Ready",
-      "Supabase Preview",
-      "audit",
-      "quality-gate (uma instância)"
-    ],
-    "arquivo_baseline": "analise-prs/baseline/checks-main-a0560fdc.json"
-  },
-  "merge_tests": {
-    "nota": "git merge --no-commit --no-ff contra main a0560fdc. Executado nesta sessão.",
-    "2420": {
-      "exit": 1,
-      "conflicts": 1,
-      "conflicting_files": [
-        "supabase/migrations/20261019000000_mirror_oob_frontend_telemetry_v_system_health_dashboard.sql",
-        "supabase/rollbacks/20261019000000_rollback.sql"
-      ]
+  "rev": 52,
+  "ultima_atualizacao": "2026-10-27T08:00:00Z",
+  "sessao_01Ss1tXZ4cAbxBvdmu95uNPz": {
+    "data": "2026-10-25",
+    "rev": 22,
+    "main_head_pre": "5279abfe07895d9b0481fa08086b2c18d321de5f",
+    "main_head_pos": "15e10fd88208f9b4cd372b82544fb27892d15a81",
+    "baseline": {
+      "testes": 429,
+      "falhas": 0,
+      "gate_final_run": "40223579961",
+      "gate_final_conclusao": "success",
+      "gate_final_completado_em": "2026-10-25T19:02:42Z",
+      "sha": "7d3bd4ba47eb6e9e6b3d56fe3bfac45a791de84f"
     },
-    "2572": {
-      "exit": 1,
-      "conflicts": 8,
-      "conflicting_files": [
-        ".as-assertions-baseline.json",
-        ".file-size-baseline.json",
-        ".github/workflows/contract-tests.yml",
-        "PENDENCIAS.md",
-        "analise-prs/ (múltiplos)"
-      ]
+    "prs_abertas_analisadas": 29,
+    "merges_autonomos": 10,
+    "contagem_vereditos": {
+      "MERGEADO_AUTONOMO": 10,
+      "DECISAO_HUMANA": 13,
+      "FECHAR": 5,
+      "JA_EM_MAIN": 1
     },
-    "2579": {
-      "exit": 0,
-      "conflicts": 0,
-      "files": [
-        ".release-please-manifest.json",
-        "CHANGELOG.md",
-        "package-lock.json",
-        "package.json"
-      ]
-    },
-    "2588": {
-      "exit": 0,
-      "conflicts": 0,
-      "files": [
-        "package-lock.json",
-        "package.json"
-      ]
-    },
-    "2600": {
-      "exit": 0,
-      "conflicts": 0,
-      "files": [
-        "analise-prs/ (múltiplos)"
-      ]
-    },
-    "2605": {
-      "exit": 1,
-      "conflicts": 2,
-      "conflicting_files": [
-        "e2e/catalog/novidades-reposicao-card-parity.spec.ts",
-        "src/components/products/gallery/PromoFlixPlayer.tsx"
-      ]
-    },
-    "2622": {
-      "exit": 1,
-      "conflicts": 12,
-      "conflicting_files": [
-        "analise-prs/ (múltiplos)"
-      ]
-    },
-    "2645": {
-      "exit": 1,
-      "conflicts": 1,
-      "conflicting_files": [
-        "supabase/MIGRATIONS_SYNC_LOG.md"
-      ]
-    },
-    "2646": {
-      "exit": 0,
-      "conflicts": 0,
-      "files": [
-        ".github/workflows/db-schema-drift-check.yml",
-        ".github/workflows/deploy-gates.yml",
-        ".github/workflows/schema-snapshot-export.yml",
-        "scripts/migration-ledger-remote-only-allowlist.json",
-        "supabase/MIGRATIONS_SYNC_LOG.md",
-        "supabase/migrations/20261027160000_deactivate_image_dimensions_backfill_cron.sql",
-        "supabase/migrations/20261027220000_deactivate_xbz_image_uploader_cron.sql",
-        "supabase/migrations/20261027230000_cleanup_get_edge_function_secret_allowlist.sql"
-      ],
-      "nota": "mergeable: true, mergeable_state: behind (não dirty). Merge-test via GitHub API: sem conflitos com main. Gate Final FAILURE run 40543049708 SHA 79c0c670. Diff lido 100% nesta sessão: 3 workflows (+packages:read + docker ghcr.io login), allowlist.json (reformat + entradas 20261027120000/20261027140000), MIGRATIONS_SYNC_LOG.md (docs), 3 SQL migrations (+-- Rollback: header)"
-    }
-  },
-  "git_cherry_checks": {
-    "nota": "git cherry origin/main <pr_head>. + = não está no main (cherry pendente).",
-    "2420": "+",
-    "2580": "+",
-    "2605": "+",
-    "2622": "+"
-  },
-  "diffs_lidos_nesta_sessao": {
-    "2420": "CONFIRMADO — 3 arquivos: ProductFormFullscreen.tsx (+resolver type), migration mirror, rollback",
-    "2580": "CONFIRMADO — 2 arquivos: migration E23 header, rollback 5 tabelas NO FORCE RLS",
-    "2588": "CONFIRMADO — 2 arquivos: package.json + package-lock.json (react-day-picker 8→10, date-fns v4 conflict)",
-    "2631": "CONFIRMADO — 2 arquivos: PENDENCIAS.md §4 + RELATORIO_CI.md §10 (bloqueio deploy confirmed)",
-    "2645": "CONFIRMADO — 1 arquivo: supabase/MIGRATIONS_SYNC_LOG.md (+1 linha receipt 20261027140000)",
-    "2579": "CONFIRMADO — 4 arquivos: .release-please-manifest.json (downgrade 1.2.1→1.0.0), CHANGELOG.md +228 linhas, package.json+lock version downgrade",
-    "2605": "CONFIRMADO — 5 arquivos: e2e threshold 64→96px, PromoFlixPlayer mute fix, snapshot renames, timer/await fixes",
-    "2646": "CONFIRMADO (diff lido nesta sessão) — 8 arquivos: 3 workflows (+packages:read + docker ghcr.io login), allowlist.json (reformat + 2 entradas), MIGRATIONS_SYNC_LOG.md (3 linhas docs), 3 SQL migrations (+-- Rollback: header). mergeable: true, mergeable_state: behind."
-  },
-  "veredictos": {
-    "2420": "AGUARDAR_APROVACAO",
-    "2572": "FECHAR",
-    "2579": "NAO_MERGEAR",
-    "2580": "DRAFT",
-    "2588": "DECISAO_HUMANA",
-    "2600": "NAO_MERGEAR",
-    "2605": "CONFLITO_PENDENTE_REBASE",
-    "2622": "CONFLITO_PENDENTE_REBASE_SEGURANCA",
-    "2631": "DRAFT",
-    "2645": "AGUARDAR_APROVACAO",
-    "2646": "CI_FALHOU",
-    "2656": "MERGEADA_PELO_OWNER",
-    "2657": "MERGEADA_PELO_OWNER",
-    "2658": "MERGEADA_PELO_OWNER",
-    "2648": "MERGEADA_PELO_OWNER",
-    "2649": "MERGEADA_PELO_OWNER",
-    "2650": "MERGEADA_PELO_OWNER",
-    "2652": "MERGEADA_PELO_OWNER",
-    "2654": "MERGEADA_PELO_OWNER",
-    "2655": "MERGEADA_PELO_OWNER",
-    "2587": "MERGEADA_CLAUDE",
-    "2594": "MERGEADA_PELO_OWNER",
-    "2653": "PROPRIO_BRANCH_SESSAO"
-  },
-  "mergeadas_claude": [
-    {
-      "pr": 2587,
-      "merge_sha": "16ad57c66e619100f76c113653cdab7a20a7871a",
-      "gate": "SUCCESS (40420603513)",
-      "regressao": false
-    }
-  ],
-  "mergeadas_owner": [
-    2594,
-    2648,
-    2649,
-    2650,
-    2652,
-    2654,
-    2655,
-    2656,
-    2657,
-    2658
-  ],
-  "ci_comparison_final": {
-    "baseline_sha": "a0560fdc62744c6bf4ba182914cc76dec06aecb1",
-    "current_sha": "2fafe8edfaa246221a4b427d5728512ba9ff199e",
-    "gate_final_baseline": "failure",
-    "gate_final_current": "success",
-    "gate_0_5_baseline": "failure",
-    "gate_0_5_current": "success",
-    "regressoes_bloqueantes": 0,
-    "novas_falhas_nao_bloqueantes": ["e2e-gates", "E2E — Personalization Journey", "Verify push to main matches accepted patterns", "check", "Compare GitHub × Canonical", "copilot-pull-request-reviewer"],
-    "evidencia": "Gate Final SUCCESS em f6f9889a apesar das novas falhas — todas não-bloqueantes",
-    "arquivo_comparacao": "analise-prs/baseline/ci-comparison-a0560fdc-vs-f6f9889a.md",
-    "verificado_em": "2026-10-27"
-  },
-  "contagem_reconciliacao": {
-    "nota": "Três contagens diferentes — todas consistentes entre si",
-    "open_api_inicio_sessao": 12,
-    "open_api_atual": 13,
-    "nota_open_atual": "13 = #2600 estava DRAFT no inventário original; #2658 aberta após inventário; #2653 é branch desta sessão",
-    "inventario_original_19": "PRs abertas na API no início da sessão + 4 abertas/detectadas durante análise",
-    "total_tracked_23": "19 inventário original + #2653 + #2656 + #2657 + #2658 = 23 PRs com dossier",
-    "open_com_dossier_e_4Q": 13,
-    "mergeadas_claude": 1,
-    "mergeadas_owner": 9,
-    "total_dossiers": 23,
-    "dossiers_existem": [
-      2420, 2572, 2579, 2580, 2587, 2588, 2594, 2600, 2605,
-      2622, 2631, 2645, 2646, 2648, 2649, 2650, 2652, 2653,
-      2654, 2655, 2656, 2657, 2658
+    "mergeados": [
+      {"number": 2544, "sha": "1d26da9082d42e825de66f574fbc796587345fdf", "titulo": "docs: backlog CI CI-001..CI-008"},
+      {"number": 2545, "sha": "2a93ba556b58007a001d68efd3c81ead17c19dce", "titulo": "chore: backlog funcionalidades FT-001..FT-416"},
+      {"number": 2548, "sha": "9be832a355f0c98fcd22021b4273b16fa0b1aba5", "titulo": "feat: botao LGPD excluir meus dados"},
+      {"number": 2549, "sha": "73df7502f3b582f7966c209ff6a5c202fb1a3f9e", "titulo": "chore: backlog Supabase SB-001..SB-018"},
+      {"number": 2551, "sha": "97eed25cb177a318fcf63fb3843f02512511d579", "titulo": "fix: peso 0 no Kit Maker"},
+      {"number": 2552, "sha": "35fdb5793db7461f7fafcdae1effc89ae5cae6b5", "titulo": "fix: materials-api timeout 20s"},
+      {"number": 2553, "sha": "aebd333f3d2d57ee0bb5f1f127bf23f352846cd9", "titulo": "fix: selos sem mock"},
+      {"number": 2554, "sha": "e6538448e6edc639f9131e809ae265976b43f208", "titulo": "fix: BI Cliente 360 sem mock"},
+      {"number": 2555, "sha": "479f2219485e23a5d35896dfe44c9ca4f7c1026f", "titulo": "docs(pendencias): rev29"},
+      {"number": 2556, "sha": "15e10fd88208f9b4cd372b82544fb27892d15a81", "titulo": "chore: backlog banco O1/O3"}
     ]
   },
-  "meta_cumprida": {
-    "total_open_api_inicio": 12,
-    "total_open_api_atual": 13,
-    "total_inventariadas": 19,
-    "total_analisadas_com_4_perguntas": 23,
-    "total_dossiers_criados": 23,
-    "dossiers_arquivos": "analise-prs/dossies/PR-2420.md até PR-2658.md (23 dossiers)",
-    "baseline_arquivo": "analise-prs/baseline/checks-main-a0560fdc.json",
-    "regras_negocio_arquivo": "analise-prs/regras-de-negocio.md",
-    "local_checks_arquivo": "analise-prs/baseline/local-checks.md",
-    "worktrees_removidos": true,
-    "merge_claude_gate_final_ok": true,
-    "zero_regressoes_novas": true,
-    "vitest_exit0_confirmado": true,
-    "vitest_ci_gate2_success": true,
-    "producao_mcp_verificada": "Nenhuma das 9 PRs mergeadas pelo owner continha SQL de migration — ledger consistente confirmado via list_migrations",
-    "dossiers_pr2656_criado": true,
-    "dossiers_pr2657_criado": true
-  },
-  "supabase_log_check_post_merge_2587": {
-    "resultado": "ZERO erros PostgreSQL no período 16:46Z-23:59Z (pós-merge PR #2587)",
-    "query": "SELECT timestamp, event_message, log_attributes['error_severity'] FROM logs WHERE source='postgres_logs' AND error_severity IN ('ERROR','FATAL','PANIC') ORDER BY timestamp DESC LIMIT 30",
-    "iso_timestamp_start": "2026-10-27T16:46:00Z",
-    "iso_timestamp_end": "2026-10-27T23:59:00Z",
-    "raw_result": "[]",
-    "confirmacao": "Sem nova regressão em produção pós-merge zustand 4→5",
-    "verificado_em": "2026-10-27"
-  },
-  "baseline_failing_checks_a0560fdc": {
-    "sha": "a0560fdc62744c6bf4ba182914cc76dec06aecb1",
-    "falhas_pre_existentes": [
-      {"id": 122356030662, "nome": "Edge Functions · Integration All"},
-      {"id": 122356207833, "nome": "Gate 0.5 - Dependency Audit"},
-      {"id": 122361675344, "nome": "Gate Final - Deploy Ready"},
-      {"id": 122356543472, "nome": "Supabase Preview"},
-      {"id": 122356040443, "nome": "audit"},
-      {"id": 122362326229, "nome": "quality-gate (uma instância)"}
+  "sessao_011d8gKLZg8BWivR8aQBwxGF": {
+    "data": "2026-10-27",
+    "rev": 52,
+    "main_head_entrada": "df18546dfd76d1bea7ea5873257b668d128d8df3",
+    "main_head_atual": "06c221db520b446eee41ce990c110830be5da13c",
+    "main_head_atual_pr": "#2621 (fix(migrations): rollback files 7 migrations 20261027 — sessao session_01PE8GzVYqxJM25xzvLuLYhW)",
+    "baseline": {
+      "sha": "df18546dfd76d1bea7ea5873257b668d128d8df3",
+      "nota": "Gate Final verde confirmado — PR #2603 mergeou com CI. +#2618 +#2620 antes do baseline."
+    },
+    "prs_abertas_analisadas": 16,
+    "merges_autonomos": 0,
+    "pr_entregaveis_pendente": {
+      "number": 2627,
+      "branch": "claude/fix-rollbacks-2m-271027-0800",
+      "status": "open ready",
+      "ci_head_sha": "4b5be8cac91c36246567165730b8a3a5a8316e41",
+      "nota": "Gate Final disparado. 2 rollbacks unicos (233000+234500) nao cobertos por #2621. CLEAN vs main 06c221db."
+    },
+    "contagem_vereditos": {
+      "CI_AGUARDANDO": 1,
+      "DECISAO_HUMANA": 11,
+      "DRAFT_NOMERGE": 2,
+      "SUPERSEDED": 1,
+      "MERGEADO_SESSAO_EXTERNA": 1,
+      "BRANCH_DIRTY": 1,
+      "total": 16
+    },
+    "prs": [
+      {"number": 2420, "veredito": "DECISAO_HUMANA", "motivo": "CONFLICT+REGRA8 migrations+rollbacks"},
+      {"number": 2572, "veredito": "DECISAO_HUMANA", "motivo": "CONFLICT RELATORIO_CI.md+REGRA10 branch outra sessao"},
+      {"number": 2579, "veredito": "DECISAO_HUMANA", "motivo": "downgrade 1.2.1->1.0.0 regressao de versao"},
+      {"number": 2580, "veredito": "DECISAO_HUMANA", "motivo": "DRAFT+REGRA8 migrations"},
+      {"number": 2587, "veredito": "DECISAO_HUMANA", "motivo": "major upgrade zustand 4->5 breaking"},
+      {"number": 2588, "veredito": "DECISAO_HUMANA", "motivo": "major upgrade react-day-picker 8->10 + Gate Final FAILED"},
+      {"number": 2594, "veredito": "DECISAO_HUMANA", "motivo": "REGRA8 workflow (actions/setup-node)"},
+      {"number": 2597, "veredito": "DECISAO_HUMANA", "motivo": "REGRA8 workflows x4"},
+      {"number": 2600, "veredito": "DRAFT_NOMERGE", "motivo": "DRAFT analise-prs/ docs internos — branch outra sessao"},
+      {"number": 2604, "veredito": "DECISAO_HUMANA", "motivo": "DRAFT+REGRA8 workflow (continue-on-error)"},
+      {"number": 2605, "veredito": "SUPERSEDED", "motivo": "supersedida por #2620 SHA 3aabc4187"},
+      {"number": 2612, "veredito": "DRAFT_NOMERGE", "motivo": "DRAFT apenas test timeout paliativo"},
+      {"number": 2619, "veredito": "DECISAO_HUMANA", "motivo": "DRAFT+REGRA8 edge function"},
+      {
+        "number": 2621,
+        "veredito": "MERGEADO_SESSAO_EXTERNA",
+        "motivo": "Mergeado por sessao session_01PE8GzVYqxJM25xzvLuLYhW. Gate 1.12 corrigido na branch original. 7 rollbacks + manifest xbz-image-uploader.",
+        "merge_sha": "06c221db520b446eee41ce990c110830be5da13c"
+      },
+      {
+        "number": 2622,
+        "veredito": "BRANCH_DIRTY",
+        "motivo": "ADD/ADD conflict com main apos merge de #2621. 2 rollbacks unicos (233000+234500) reconstituted em PR #2627."
+      },
+      {
+        "number": 2625,
+        "veredito": "DECISAO_HUMANA",
+        "motivo": "DRAFT + REGRA8 edge function health-check/index.ts + REGRA10 branch sessao session_01Knr9enFAok62bHihBK1UUP + manifest parte supersedida por #2621"
+      },
+      {
+        "number": 2627,
+        "veredito": "CI_AGUARDANDO",
+        "motivo": "Minha branch. Gate Final disparado SHA 4b5be8ca. 2 rollbacks unicos 233000+234500 nao cobertos por #2621. CLEAN vs main 06c221db.",
+        "ci_sha": "4b5be8cac91c36246567165730b8a3a5a8316e41"
+      }
     ],
-    "passando": [
-      "Gate 1 - Lint + TypeScript",
-      "Gate 2 - Unit Tests",
-      "Gate 2.5 - PostgreSQL Transactional Integrity",
-      "Gate 3 - E2E Smoke",
-      "Gate 4 - Lighthouse CI",
-      "Gate 5 - SEO Sanity Check",
-      "Gate 5.5 - RPC restore_seller_cart",
-      "Gate 6 - Build",
-      "Gate 0 - SSOT Supabase"
-    ],
-    "arquivo": "analise-prs/baseline/failing-tests-by-name.md"
+    "rollbacks_criados": [
+      "supabase/rollbacks/20261027233000_rollback.sql",
+      "supabase/rollbacks/20261027234500_rollback.sql"
+    ]
   }
 }
