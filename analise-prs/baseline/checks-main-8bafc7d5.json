@@ -11,5 +11,19 @@
   "gate_final_run_id": 39869261220,
   "gate_final_completed_at": "2026-10-22T23:12:21Z",
   "note": "Baseline capturado após merge do PR #2356 (session guard 5 callers). Um erro TS2688 pré-existente no main.",
-  "how_captured": "npx tsc --noEmit rodado no working tree com origin/main checado; Gate Final verificado via mcp__GITHUB_-_MCP_-_FOREVER__github_list_check_runs(ref=cfabab26) conclusion=success"
+  "how_captured": "npx tsc --noEmit rodado no working tree com origin/main checado; Gate Final verificado via mcp__GITHUB_-_MCP_-_FOREVER__github_list_check_runs(ref=cfabab26) conclusion=success",
+  "gate_e40_schema_drift": {
+    "status": "skipped",
+    "job_id": 120141146953,
+    "job_name": "Gate E40 - Schema Drift Check",
+    "conclusion": "skipped",
+    "steps_count": 0,
+    "reason": "PR #2356 não alterou arquivos de schema (supabase/migrations/, supabase/baseline/). O job de detecção (job 120139590626) rodou e não encontrou mudanças — schema drift check condicional foi ignorado.",
+    "evidence_source": "mcp__GITHUB_-_MCP_-_FOREVER__github_list_workflow_run_jobs(run_id=39869261220) — job 120141146953 conclusion=skipped, steps=[]"
+  },
+  "gate_e40_pre_existing_evidence": {
+    "source_file": "analise-prs/baseline/checks-main-8e8053b9.json",
+    "finding": "\"Migrations x Canonical schema\" listada explicitamente em failures[] no SHA 8e8053b9 (baseline original, antes de qualquer merge desta sessão)",
+    "implication": "A falha de Gate E40 é pré-existente ao início desta sessão — não foi introduzida por nenhum merge"
+  }
 }

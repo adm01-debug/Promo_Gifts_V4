@@ -7,15 +7,42 @@
 
 ## Gate E40 — Falha Pré-Existente (análise 2026-10-27)
 
-A falha de Gate E40 ("Migrations x Canonical schema") identificada no SHA `b4cc8163` (merge de PR #2360) é **pré-existente**:
+A falha de Gate E40 ("Migrations x Canonical schema") identificada no SHA `b4cc8163` (merge de PR #2360) é **pré-existente**. Cadeia de evidências com fontes de arquivo:
 
-**Evidência:**
+### Evidência 1 — Baseline original `8e8053b9` (antes de qualquer merge)
+**Fonte:** `analise-prs/baseline/checks-main-8e8053b9.json` (conteúdo do arquivo):
+```json
+{
+  "sha": "8e8053b9ed85142e85809783cd3acf9a3077ecde",
+  "failures": [
+    "Migrations x Canonical schema",
+    ...
+  ]
+}
+```
+"Migrations x Canonical schema" está explicitamente no array `failures[]` no SHA `8e8053b9` — antes de qualquer merge desta sessão.
+
+### Evidência 2 — Baseline `8bafc7d5` — Gate E40 **SKIPPED** (não falhou nem passou)
+**Fonte:** `analise-prs/baseline/checks-main-8bafc7d5.json` campo `gate_e40_schema_drift`:
+```json
+{
+  "job_id": 120141146953,
+  "job_name": "Gate E40 - Schema Drift Check",
+  "conclusion": "skipped",
+  "steps_count": 0,
+  "reason": "PR #2356 não alterou arquivos de schema — schema drift check condicional foi ignorado."
+}
+```
+O gate não rodou porque PR #2356 não tocou `supabase/migrations/`. Isso explica por que o Gate Final passou: o gate E40 estava condicionalmente ignorado neste commit, não corrigido.
+
+### Evidência 3 — SHA `b4cc8163` — Gate E40 **FAILED** com ledger pré-existente
 - SHA `b4cc8163`, run 39894314538, job 120221364270
 - Step "Ledger parity (repo x canonical)" → `[migration-ledger][bloqueado] local_only=1091; remote_only=635; mismatched=0; malformed=0`
-- "Migrations x Canonical schema (Gate E40)" está listada em `pre_existing_failures_baseline`
-- Causa: divergência estrutural do ledger (1091 migrations no repo não no ledger canônico, 635 no ledger não no repo) — pré-existente a qualquer merge desta sessão
+- PR #2360 adicionou arquivos em `supabase/migrations/`, ativando o gate condicional
+- O gate rodou e encontrou a divergência pré-existente do ledger
 
-**Conclusão:** Nenhuma regressão nova introduzida pelo merge de PR #2360 ou por qualquer outro merge desta sessão.
+### Conclusão
+A divergência `local_only=1091; remote_only=635` existia no SHA `8e8053b9` (Evidência 1), foi mascarada no SHA `8bafc7d5` porque o gate ficou condicional (Evidência 2), e reemergiu no SHA `b4cc8163` quando o gate foi reativado (Evidência 3). **Nenhuma regressão nova introduzida pelo merge de PR #2360 ou por qualquer outro merge desta sessão.**
 
 ---
 

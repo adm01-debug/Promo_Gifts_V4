@@ -1,9 +1,11 @@
 {
   "baseline_sha": "8bafc7d5a0a1f0f6a06d88adc6577098f873dfcb",
   "total_open": 25,
+  "total_open_nota": "25 PRs abertas no início da sessão (inventário original). Adicionadas durante a sessão: #2357 (aberta e fechada pelo owner) e #2360 (aberta e mergeada pelo owner) = 27 PRs documentadas com dossier. total_open reflete o snapshot inicial.",
+  "total_documentadas": 27,
   "analisadas": 25,
   "mergeadas": 6,
-  "ultima_atualizacao": "2026-10-27T15:27Z",
+  "ultima_atualizacao": "2026-10-27T16:00Z",
   "contagem_por_veredicto": {
     "FECHADO_PELO_OWNER": 1,
     "AGUARDAR_CI": 5,
