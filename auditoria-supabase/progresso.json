@@ -1,34 +1,30 @@
 {
   "projeto": "doufsxqlfjyuvxuezpln",
-  "auditoria_data": "2026-10-27",
-  "auditoria_concluida": true,
-  "integridade": "CONFIRMADA — somente leitura, nenhum DDL executado",
+  "sessao": "session_01VXkRxX4vkrqFTfH53NAEBx",
+  "data": "2026-10-27",
   "secoes": [
-    {"id": "A.0", "nome": "Baseline", "status": "CONCLUÍDO", "notas": "2.551 migrations, 109 edge functions, PG 17.6"},
-    {"id": "A.1", "nome": "Inventário", "status": "CONCLUÍDO", "notas": "398 tabelas, 193 views, 1334 funções, 135 cron jobs, 39 auth users, 11 buckets, RLS 100%"},
-    {"id": "A.2", "nome": "Drift repo × produção", "status": "CONCLUÍDO", "notas": "458 migrations drift; 3 EFs divergentes; placeholders fn_my_rpc, invoke('e')"},
-    {"id": "A.3", "nome": "Segurança", "status": "CONCLUÍDO", "findings": 7, "notas": "SEC-001 a SEC-007 — credenciais de teste, 29 EFs sem JWT, 20 SECURITY DEFINER com pg_temp"},
-    {"id": "A.4", "nome": "Integridade", "status": "CONCLUÍDO", "notas": "80+ colunas sem FK; price como ARRAY; preços TEXT em views"},
-    {"id": "A.5", "nome": "Performance", "status": "CONCLUÍDO", "findings": 6, "notas": "PERF-001 a PERF-006 — fn_pipeline_health 32s, 641MB índices mortos, stock_daily_summary 40% dead"},
-    {"id": "A.6", "nome": "Cron Jobs", "status": "CONCLUÍDO", "findings": 1, "notas": "CRON-001: 418 falhas/24h — ROOT CAUSE: max_worker_processes=6 vs cron.max_running_jobs=32"},
-    {"id": "A.7", "nome": "Funções de banco", "status": "CONCLUÍDO", "notas": "1334 funções; 20 SECURITY DEFINER com pg_temp; 10 acessíveis por anon"},
-    {"id": "A.8", "nome": "Edge Functions", "status": "CONCLUÍDO", "notas": "112 repo vs 109 prod; 29 sem JWT; TEST_* em Deno.env"},
-    {"id": "A.9", "nome": "Auth / Storage / Realtime", "status": "CONCLUÍDO", "findings": 5, "notas": "AUTH-001: 28997 sessões/39 usuários; REAL-001: auth.users em realtime; ST-001: art-files sem owner isolation"},
-    {"id": "A.10", "nome": "Logs 7 dias", "status": "CONCLUÍDO", "notas": "pg_net: 142 ok, 12 timeout, 2×404; crons: 3408 ok, 418 failed"},
-    {"id": "A.11", "nome": "RLS na prática", "status": "CONCLUÍDO", "notas": "0 tabelas sem RLS; 8 tabelas com auth_rls_initplan"},
-    {"id": "A.12", "nome": "Lacunas operacionais", "status": "CONCLUÍDO", "notas": "PITR config OK; sem alertas automáticos; sem staging"},
-    {"id": "A.13", "nome": "Funcionalidades pendentes", "status": "CONCLUÍDO", "notas": "458 migrations drift; 3 EFs fora de sincronia; placeholders de teste"}  ],
-  "contagem_severidade": {
-    "CRITICO": 3,
-    "ALTO": 8,
-    "MEDIO": 12,
-    "BAIXO": 9,
-    "TOTAL": 32
-  },
-  "top3_urgentes": [
-    {"rank": 1, "id": "CRON-001", "acao": "Reduzir cron.max_running_jobs para 4 no dashboard Supabase"},
-    {"rank": 2, "id": "AUTH-001", "acao": "Expirar 28.958 sessões antigas (DELETE com aprovação do PO)"},
-    {"rank": 3, "id": "SEC-001", "acao": "Verificar e revogar TEST_ADMIN_JWT, TEST_SELLER_A/B_JWT como secrets"}
+    {"id": "A.0", "titulo": "Baseline inventário", "status": "PARCIAL", "nota": "Agente em background não retornou antes do fim da sessão"},
+    {"id": "A.1", "titulo": "Inventário completo", "status": "PARCIAL", "nota": "Agente em background não retornou antes do fim da sessão"},
+    {"id": "A.2", "titulo": "Drift repo↔produção", "status": "PARCIAL", "nota": "Agente em background não retornou antes do fim da sessão"},
+    {"id": "A.3", "titulo": "Segurança (RLS, secrets)", "status": "CONCLUÍDO", "achados": 4, "evidencias": ["SELECT pg_tables WHERE rowsecurity=false → vazio", "Advisor security_definer_view ERROR: 8 views", "has_function_privilege anon: 10 funções SECURITY DEFINER"]},
+    {"id": "A.4", "titulo": "Integridade estrutural", "status": "PARCIAL", "nota": "Agente em background não retornou antes do fim da sessão"},
+    {"id": "A.5", "titulo": "Performance", "status": "PARCIAL", "nota": "Agente em background não retornou antes do fim da sessão"},
+    {"id": "A.6", "titulo": "Cron jobs", "status": "CONCLUÍDO", "achados": 0, "evidencias": ["SELECT * FROM cron.job ORDER BY jobname → 110 jobs, 103 ativos, 7 inativos", "Todos os segredos via get_edge_function_secret() (vault)", "fn_cron_safe_run wrapper em uso extenso"]},
+    {"id": "A.7", "titulo": "DB functions", "status": "NÃO VERIFICADO", "nota": "Inventário parcial via pg_proc executado; análise completa requer A.1"},
+    {"id": "A.8", "titulo": "Edge functions", "status": "CONCLUÍDO", "achados": 7, "arquivo": "inventario/edge_functions.md"},
+    {"id": "A.9", "titulo": "Auth/Storage/Realtime", "status": "PARCIAL", "nota": "Agente em background não retornou antes do fim da sessão"},
+    {"id": "A.10", "titulo": "Logs 7d", "status": "PARCIAL", "nota": "Apenas 24h consultados; campo status_code vazio no ClickHouse"},
+    {"id": "A.11", "titulo": "RLS na prática", "status": "CONCLUÍDO", "achados": 1, "evidencias": ["BEGIN; SET ROLE anon; SELECT COUNT(*) FROM products/variants/suppliers/magazines/workspace_notifications; ROLLBACK"]},
+    {"id": "A.12", "titulo": "Lacunas operacionais", "status": "PARCIAL", "achados": 2}
   ],
-  "branch": "claude_pink/peaceful-planck-q4ee1i"
+  "contagem_severidade": {
+    "CRITICO": 0,
+    "ALTO": 0,
+    "MEDIO": 2,
+    "BAIXO": 6,
+    "INFO": 5,
+    "OPERACIONAL": 2
+  },
+  "relatorio": "RELATORIO_AUDITORIA_SUPABASE.md",
+  "sem_escrita_em_producao": true
 }
