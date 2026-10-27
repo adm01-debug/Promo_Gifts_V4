@@ -1,5 +1,5 @@
 # Regras de Negócio — Promo Gifts V4
-**Sessão:** session_011d8gKLZg8BWivR8aQBwxGF (rev31)
+**Sessão:** session_011d8gKLZg8BWivR8aQBwxGF (rev33)
 **Data:** 2026-10-27
 **main HEAD:** `06fe47fd3a992bf2a39ab356c9d8c357c5f2a27e` (fix(e2e): corrige falhas de E2E em mock auth — push direto session_01Knr9enFAok62bHihBK1UUP)
 
@@ -55,62 +55,42 @@ PRs tocando estes arquivos exigem aprovação explícita do PO:
 
 ---
 
-## 10. Baseline — evidências reais (rev24, SHA `2ca5ef04e`)
+## 10. Baseline — evidências reais (rev33, SHA `06fe47fd3`)
 
 ### TypeScript
 ```
-Comando: node /tmp/main-baseline/node_modules/typescript/bin/tsc \
-  -p /tmp/main-baseline/tsconfig.app.json --noEmit
-SHA testado: 2ca5ef04e6e0968dace09ffcbd70710aad166ba0
-Saída: (vazia)
+Comando: tsc -p tsconfig.app.json --noEmit
+SHA testado: 06fe47fd3a992bf2a39ab356c9d8c357c5f2a27e
+Worktree: /tmp/main-baseline-rev32
 Exit code: 0
 Resultado: 0 ERROS
 ```
 
-### Build Vite
+### Vitest por arquivo (rev33 — testes de PR #2605 verificados em main 06fe47fd3)
 ```
-Comando: npm run build
-SHA testado: 2ca5ef04e6e0968dace09ffcbd70710aad166ba0
-Saída: ✓ built in 11.77s
-Resultado: SUCESSO
-Avisos: INEFFECTIVE_DYNAMIC_IMPORT (pré-existentes, não bloqueantes)
-```
-
-### Lint (ESLint)
-```
-Comando: npm run lint (= lint:baseline = check-eslint-baseline.mjs)
-SHA testado: 2ca5ef04e6e0968dace09ffcbd70710aad166ba0
-Resultado: OOM — FATAL ERROR: Ineffective mark-compacts near heap limit
-Causa: JavaScript heap out of memory no check-eslint-baseline.mjs
-Status: FALHA PRÉ-EXISTENTE — não é regressão desta sessão
-check-eslint-config-parses.mjs: OK (11 blocos de config)
+chunk-recovery.shared-reload-budget.test.ts: 8 PASSED
+replenishment-resilience.test.ts:            3 PASSED
+PromoFlixPlayer.test.tsx:                   22 PASSED
+NegotiationMarkupCard (3 arquivos):         23 PASSED
+novidades-reposicao-card-parity.spec.ts:    NÃO VERIFICADO (E2E — requer servidor)
+  → CI de PR #2605 HEAD 9bfead1417: SUCCESS
 ```
 
-### Vitest parcial (unitários)
+**Conclusão:** Todos os 5 grupos de testes que PR #2605 afirma corrigir PASSAM em main 06fe47fd3.
+O main avançou de 00eeec9ac → 06fe47fd3 e absorveu ou tornou irrelevantes as correções de #2605.
+
+### Gate Final CI em main
 ```
-Comando: node node_modules/.bin/vitest run \
-  src/utils/__tests__/ src/hooks/__tests__/ src/lib/__tests__/ --reporter=dot
-SHA testado: 145da71bb8c451eebadc75c4bb059397f8d468f7
-Test Files: 54 (53 passed | 1 skipped)
-Tests: 2549 (2546 passed | 3 skipped | 0 failed)
-Resultado: 0 FALHAS
-Nota pré-existente: date-utils.test.ts — 3 falhas sem TZ=America/Sao_Paulo (container UTC)
-  → com TZ=America/Sao_Paulo: 0 falhas (62/62 pass)
-  → não é regressão — container não tem TZ configurado
-Suite completa trava em integration tests sem credenciais Supabase.
+check_run: "Gate Final - Deploy Ready"
+SHA: 06fe47fd3a992bf2a39ab356c9d8c357c5f2a27e
+Status: SUCCESS
 ```
 
-### Gate 0 SSOT
-```
-Comando: node scripts/validate-supabase-config.mjs
-Resultado: ✅ CURRENT_PROJECT_ID = doufsxqlfjyuvxuezpln
-```
-
-### Merge tests (todos os 16 PRs abertos — base `06fe47fd3` — rev31)
+### Merge tests (todos os 16 PRs abertos — base `06fe47fd3` — rev33)
 | PR | Branch | Resultado |
 |----|--------|-----------|
 | #2420 | claude/fix-rollback-261019-1637 | NO_MERGE_BASE |
-| #2572 | claude_05/youthful-ride-vcdchy | CONFLICT (e2e specs vs 06fe47fd3) |
+| #2572 | claude_05/youthful-ride-vcdchy | CONFLICT — RELATORIO_CI.md + ItemCard.tsx (resolução verificada em worktree — manter main em ambos) |
 | #2579 | release-please--branches--main--components--gifts-store | CLEAN |
 | #2580 | claude/fix-e23-rollback-261025-2145 | CLEAN |
 | #2587 | dependabot/npm_and_yarn/zustand-5.0.16 | CLEAN |

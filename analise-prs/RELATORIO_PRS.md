@@ -132,20 +132,20 @@ Evidência bloqueio DRAFT: API HTTP 405 `{"message":"Pull Request is still a dra
 
 ---
 
-## Observações (rev31)
+## Observações (rev33)
 
-- **Novo commit em main (rev31):** `06fe47fd3` push direto por session_01Knr9enFAok62bHihBK1UUP — toca `.github/workflows/e2e-quotes.yml` + 18 e2e specs. Causa conflito em PR #2572.
-- **PR #2572 agora CONFLICT**: e2e specs da branch colidem com as do commit `06fe47fd3`. Já era BLOQUEADA por REGRA#8+REGRA#10 — conflito é razão adicional.
+- **Novo commit em main (rev31→33):** `06fe47fd3` push direto por session_01Knr9enFAok62bHihBK1UUP — toca `.github/workflows/e2e-quotes.yml` + 18 e2e specs. Causa conflito em PR #2572.
+- **PR #2572 conflito VERIFICADO E RESOLVIDO** (rev33): Resolução aplicada em worktree local. `RELATORIO_CI.md` + `src/components/kit-builder/ItemCard.tsx` ambos resolvidos mantendo main. 0 markers. Push proibido por REGRA#10 + stop-hook. REGRA#8 permanece bloqueante mesmo sem conflito.
 - **PR #2602 (MERGEADO_EXTERNO)**: estava listada como DRAFT em rev29; foi mergeada por outra sessão durante análise, tornando-se o novo main HEAD `00eeec9ac`. 5 arquivos E2E (`e2e/flows/*.spec.ts`). Merge via PR (REGRA#9 satisfeita).
 - **PR #2603**: 5ª migration `20261027200000_supplier_stricker_rls_deny_all.sql` habilita RLS deny-all explícita em 17 tabelas do schema `supplier_stricker` — aditiva e endurece segurança. Bloqueada por DRAFT + REGRA#8.
 - **PR #2604**: `continue-on-error: true` em 3 steps observacionais `psql` (E036/E037/E072) que falham por IPv6 (`Network is unreachable`). Step principal (supabase CLI) não é alterado. Bloqueada por DRAFT + REGRA#8.
-- **PR #2605**: Fix cirúrgico de 5 falhas pré-existentes em `main 00eeec9ac` (race conditions, missing await, React 19 listener, threshold E2E). Único bloqueio é DRAFT — nenhuma REGRA#8. Candidato imediato a merge assim que convertido para ready.
-- **Falhas pré-existentes em main `06fe47fd3`** (fonte: PR #2605 body):
-  1. `src/lib/__tests__/chunk-recovery.shared-reload-budget.test.ts:33` — race condition `Date.now()`
-  2. `src/lib/__tests__/chunk-recovery.shared-reload-budget.test.ts:60` — race condition `Date.now()`
-  3. `tests/integration/replenishment-resilience.test.ts:16` — `await` ausente em `expect().resolves`
-  4. `src/components/products/gallery/PromoFlixPlayer.tsx` — React 19 volumechange duplicate listener
-  5. `e2e/catalog/novidades-reposicao-card-parity.spec.ts:214` — threshold `replGap < 64px` insuficiente (fix: 96px)
+- **PR #2605 — testes verificados em main `06fe47fd3`** (rev33, worktree `/tmp/main-baseline-rev32`):
+  - chunk-recovery: 8 PASSED (PR afirmava FAIL em `00eeec9ac`)
+  - replenishment-resilience: 3 PASSED (PR afirmava FAIL em `00eeec9ac`)
+  - PromoFlixPlayer: 22 PASSED (PR afirmava FAIL em `00eeec9ac`)
+  - NegotiationMarkupCard: 23 PASSED (PR afirmava snapshots obsoletos)
+  - novidades-reposicao-card-parity:214: NÃO VERIFICADO (E2E requer servidor; CI de #2605 é SUCCESS)
+  - **Conclusão**: testes do PR passam no main atual. PR ainda pode ser válido por threshold E2E.
 - **Zustand v5 (#2587)**: `create` from 'zustand' é backward-compatible em v5. Risco baixo tecnicamente, mas major version → DECISAO_HUMANA.
 - **react-day-picker v10 (#2588)**: `calendar.tsx:22-24` usa `modifiers`, `modifiersClassNames`, `formatters` (API v8). Em v10 essas props mudaram — quebra confirmada.
 
@@ -155,7 +155,7 @@ Evidência bloqueio DRAFT: API HTTP 405 `{"message":"Pull Request is still a dra
 
 - main SHA: `06fe47fd3a992bf2a39ab356c9d8c357c5f2a27e` ✓
 - Baseline (esta sessão): `tsc -p tsconfig.app.json --noEmit` → exit 0, zero erros TypeScript (worktree `/tmp/main-baseline-rev32`, main HEAD `06fe47fd3`) ✓
-- Baseline vitest: timeout 60s — falhas pré-existentes documentadas via PR #2605 body ✓
+- Baseline vitest (rev33 — por nome): chunk-recovery 8 PASSED, replenishment 3 PASSED, PromoFlixPlayer 22 PASSED, NegotiationMarkupCard 23 PASSED — todos passam em main `06fe47fd3` ✓
 - **51 PRs** em `analise-prs/prs.csv` (histórico completo) ✓
 - **16 PRs abertas** — 100% cobertura com veredito e evidência por PR ✓
 - `prs.json`: 51 entradas (atualizado para rev33/main `06fe47fd3`) ✓
@@ -163,7 +163,7 @@ Evidência bloqueio DRAFT: API HTTP 405 `{"message":"Pull Request is still a dra
 - Merge tests re-executados vs `06fe47fd3` — 16 PRs ✓
 - **Diff lido 100%** para todas as 8 PRs não-DRAFT com merge CLEAN ✓
 - **CI Gate Final verificado** para TODAS as 16 PRs (incluindo DRAFT) — nenhuma marcada "N/A" por DRAFT ✓
-- **#2572 conflito analisado localmente**: `git merge-tree` → CONFLICT em `RELATORIO_CI.md` + `src/components/kit-builder/ItemCard.tsx` (não são workflows); REGRA#8+REGRA#10 permanecem bloqueantes ✓
+- **#2572 conflito VERIFICADO E RESOLVIDO localmente (worktree)**: `git merge --no-commit` em `/tmp/pr2572-conflict-test` → resolução aplicada (manter main em ambos os arquivos), 0 markers restantes, `git add` OK. Mas push proibido (REGRA#10 + stop-hook). REGRA#8+REGRA#10 continuam bloqueantes mesmo após resolução de conflito ✓
 - **8 critérios de merge avaliados** por PR — nenhuma PR passou todos os 8 critérios ✓
 - **Evidência de bloqueio por PR** (resumo):
 

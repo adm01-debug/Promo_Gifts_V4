@@ -1,7 +1,7 @@
 {
-  "generated": "2026-10-27T06:00:00-03:00",
+  "generated": "2026-10-27T06:45:00-03:00",
   "session": "session_011d8gKLZg8BWivR8aQBwxGF",
-  "revision": "rev32",
+  "revision": "rev33",
   "main_head": "06fe47fd3a992bf2a39ab356c9d8c357c5f2a27e",
   "main_head_commit": "fix(e2e): corrige falhas de E2E em mock auth (no-org) e baselines ausentes (push direto session_01Knr9enFAok62bHihBK1UUP)",
   "total_prs": 51,
@@ -344,7 +344,13 @@
       "rule8_triggers": ".github/workflows/contract-tests.yml supabase/migrations/",
       "verdict": "BLOQUEADA",
       "motivo": "REGRA#10 cross-agent claude_05 + REGRA#8 (workflows+migrations)",
-      "merge_sha": null
+      "merge_sha": null,
+      "conflict_files": [
+        "RELATORIO_CI.md",
+        "src/components/kit-builder/ItemCard.tsx"
+      ],
+      "conflict_resolution": "VERIFICADO_LOCALMENTE_NAO_PUSHADO",
+      "conflict_note": "Resolucao: manter main em ambos. Push proibido REGRA#10+stop-hook. REGRA#8 permanece."
     },
     {
       "number": 2579,
@@ -575,7 +581,14 @@
       "rule8_triggers": null,
       "verdict": "DECISAO_HUMANA",
       "motivo": "DRAFT — 5 arquivos de teste, 0 REGRA#8 — converter para ready para CI rodar",
-      "merge_sha": null
+      "merge_sha": null,
+      "vitest_rev33_note": "Todos os testes unitarios do PR passam em main 06fe47fd3 (verificado rev33)",
+      "tests_verified": {
+        "chunk_recovery": "8 PASSED",
+        "replenishment": "3 PASSED",
+        "PromoFlixPlayer": "22 PASSED",
+        "NegotiationMarkupCard": "23 PASSED"
+      }
     }
   ]
 }
