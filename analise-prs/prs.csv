@@ -1,56 +1,36 @@
-number,title,branch,draft,test_merge,verdict,motivo
-2415,fix(ci): P20 exclui check-file-size-baseline,claude_05/amazing-brahmagupta-0xhdur,False,CONFLICT,DECISAO_HUMANA,CONFLICT+REGRA8 2workflows
-2417,fix: cors wildcard + workflows cron,claude/fix-contract-mag-reader-261019-2110,True,NO_MERGE_BASE,FECHAR,Branch orfa sem ancestral com main
-2418,fix(ci): npx gitleaks + allowlist,claude/fix-gitleaks-gate-261019-1800,True,NO_MERGE_BASE,FECHAR,Branch orfa sem ancestral com main
-2419,fix(ci): check-security-definer-acl retries,claude/fix-sync-log-ci-261019-1730,True,NO_MERGE_BASE,FECHAR,Branch orfa sem ancestral com main
-2420,chore(db): rollback retroativo migration 20261019,claude/fix-rollback-261019-1637,False,CONFLICT,DECISAO_HUMANA,CONFLICT+REGRA8 migrations+rollbacks ADD/ADD
-2422,chore(docs): MIGRATIONS_SYNC_LOG receipt,claude/chore-migrations-sync-log-261019-1600,True,NO_MERGE_BASE,FECHAR,Branch orfa sem ancestral com main
-2428,fix(ci): gitleaks allowlist mock tokens,claude/fix-gitleaks-gate-261024-1930,True,CONFLICT,DECISAO_HUMANA,CONFLICT+REGRA8 gitleaks
-2432,feat(qa): probe E184 detecta refs legadas,claude/feat-probe-e184-241026-2026,False,CLEAN,JA_EM_MAIN,git cherry = 0 commits unicos
-2443,APROVACAO REQUERIDA: P06/P09/P14/P15/P03 FASE B,claude/feat-aprovacao-p06-p09-p14-p15-p03sec-261024-2315,False,CLEAN,DECISAO_HUMANA,Seguranca FASE B + aprovacao PO
-2449,chore(migrations): E99 mirrors repair-only,claude/chore-e99-mirror-update-company-fields-261025-1100,True,CONFLICT,DECISAO_HUMANA,CONFLICT+REGRA8 migrations
-2452,fix(docs): remove prefixo em PR-2441.md,claude/fix-gate-1-3-pr2441-refs-261025,True,CONFLICT,DECISAO_HUMANA,CONFLICT+REGRA10
-2469,fix(ci): e2e-personalization E42 skip ratio,claude/fix-ci-workflows-261025-0630,False,CONFLICT,DECISAO_HUMANA,CONFLICT+REGRA8+REGRA10
-2503,docs(ci): RELATORIO_CI Rev21,claude/docs-relatorio-ci-rev21-20261025-0911,True,CONFLICT,DECISAO_HUMANA,CONFLICT+REGRA10
-2520,chore(main): release 1.0.0,release-please--branches--main--components--gifts-store,False,CLEAN,DECISAO_HUMANA,Downgrade 1.2.1->1.0.0 regressao
-2532,docs: atualiza run refs,claude/docs-estado-261025-1630,True,CONFLICT,DECISAO_HUMANA,CONFLICT+REGRA10
-2537,fix: Contract Tests registry ghcr.io,claude/fix-contract-tests-registry-ghcr-261025-1705,False,CLEAN,DECISAO_HUMANA,REGRA8 workflow
-2544,docs: backlog CI CI-001..CI-008,claude/chore-backlog-ci-261025-1920,False,CLEAN,MERGEADO_AUTONOMO,
-2545,chore: backlog funcionalidades FT-001..FT-416,claude/chore-backlog-funcionalidades-261025-1920,False,CLEAN,MERGEADO_AUTONOMO,
-2547,fix: remove links publicos mortos,claude/fix-links-publicos-mortos-261025-1930,False,CLEAN,DECISAO_HUMANA,Remocao feature 587 delecoes + regressao prs.json
-2548,feat: botao LGPD excluir meus dados,claude/feat-lgpd-anonimizar-conta-261025-1950,False,CLEAN,MERGEADO_AUTONOMO,
-2549,chore: backlog Supabase SB-001..SB-018,claude/chore-backlog-supabase-261025-1908,False,CLEAN,MERGEADO_AUTONOMO,
-2550,fix: filtro Publicado Kit Maker KMM-075,claude/fix-kit-publicados-261025-2010,False,CLEAN,DECISAO_HUMANA,Mudanca regra negocio D7 remove ready
-2551,fix: peso 0 no Kit Maker,claude/fix-kit-peso-zero-261025-2015,False,CLEAN,MERGEADO_AUTONOMO,
-2552,fix: materials-api timeout 20s,claude/fix-materials-api-timeout-261025-1912,False,CLEAN,MERGEADO_AUTONOMO,
-2553,fix: selos sem mock,claude/fix-selos-simulados-261025-2025,False,CLEAN,MERGEADO_AUTONOMO,
-2554,fix: BI Cliente 360 sem mock,claude/fix-bi-mock-flag-261025-2040,False,CLEAN,MERGEADO_AUTONOMO,
-2555,docs(pendencias): rev29,claude_05/nifty-sagan-r23gqh,False,CLEAN,MERGEADO_AUTONOMO,
-2556,chore: backlog banco O1/O3,claude/chore-backlog-banco-251025-1915,False,CLEAN,MERGEADO_AUTONOMO,
-2557,docs: RELATORIO_CI.md P27/P66/P67/P68,claude/docs-relatorio-ci-final-20261025-1910,False,CLEAN,DECISAO_HUMANA,Corrupcao texto RELATORIO_CI criterio5
-2572,docs(analise-prs): rev23,claude_05/youthful-ride-vcdchy,False,CONFLICT,DECISAO_HUMANA,CONFLICT RELATORIO_CI.md + REGRA10 branch outra sessao
-2579,chore(main): release 1.0.0,release-please--branches--main--components--gifts-store,False,CLEAN,DECISAO_HUMANA,Downgrade 1.2.1->1.0.0 regressao de versao
-2580,fix(banco): rollback header e rollback migration 20260916,claude/fix-e23-rollback-261025-2145,True,CLEAN,DECISAO_HUMANA,DRAFT+REGRA8 migrations
-2587,chore(deps): bump zustand from 4.5.7 to 5.0.16,dependabot/npm_and_yarn/zustand-5.0.16,False,CLEAN,DECISAO_HUMANA,major upgrade 4->5 breaking changes
-2588,chore(deps): bump react-day-picker from 8.10.2 to 10.0.2,dependabot/npm_and_yarn/react-day-picker-10.0.2,False,CLEAN,DECISAO_HUMANA,major upgrade 8->10 breaking changes + Gate Final FAILED
-2594,chore(ci): bump actions/setup-node from 4 to 7,dependabot/github_actions/actions/setup-node-7,False,CLEAN,DECISAO_HUMANA,REGRA8 workflow
-2597,fix: corrige 4 workflows CI falhando,claude_04/beautiful-gates-bvocz5,False,CLEAN,DECISAO_HUMANA,REGRA8 workflows x4 + REGRA10 branch outra sessao
-2600,docs(analise-prs): rev54 — 16 PRs esta sessao,claude_04/optimistic-bohr-qplx94,True,CLEAN,DRAFT_NOMERGE,DRAFT analise-prs/ docs internos desta sessao
-2604,fix(ci): continue-on-error psql steps snapshot,claude_04/charming-darwin-g1nvj2,True,CLEAN,DECISAO_HUMANA,DRAFT+REGRA8 workflow schema-snapshot-export
-2605,fix(tests): 4 falhas unit tests + 1 threshold E2E,claude/fix-unit-tests-261027-0113,False,CONFLICT,DECISAO_HUMANA,SUPERSEDED+DIRTY: 3/5 arquivos portados para #2620 (ja em main) causam conflito ADD/ADD
-2612,fix(test): waitFor timeout 15s->25s useReplenishment,claude/fix-replenishment-timeout-261027-0430,True,CLEAN,DRAFT_NOMERGE,DRAFT apenas test timeout solucao paliativa
-2619,fix(health-check): timeout 5s em getCredential evita hang,claude/fix-health-check-cred-timeout-271027-0630,True,CLEAN,SUPERSEDED,Supersedida por #2625 SHA 83c81d58
-2621,fix(migrations): rollback files 7 migrations 20261027 E058,claude/fix-rollbacks-migrations-261027-1305,False,CLEAN,MERGEADO_SESSAO_EXTERNA,Mergeado por session_01PE8GzVYqxJM25xzvLuLYhW
-2622,fix(rollbacks): rollbacks 9 migrations + manifest fix,claude/fix-rollbacks-20261027-271027-1000,False,DIRTY,BRANCH_DIRTY,ADD/ADD conflict apos merge de #2621
-2625,fix(edge-functions): health-check timeout + manifest xbz,claude/fix-edge-authz-xbz-health-check-271027-1100,False,CLEAN,MERGEADO_SESSAO_EXTERNA,Mergeado por session_01Knr9enFAok62bHihBK1UUP
-2627,fix(rollbacks): rollbacks 2 migrations 20261027 233000+234500,claude/fix-rollbacks-2m-271027-0800,False,CLEAN,MERGEADO_AUTONOMO,Gate Final success —  2 rollbacks unicos desta sessao
-2628,fix(e2e): atualiza selectors E2E do simulador,claude/fix-e2e-simulator-selectors-271027-0846,False,CLEAN,MERGEADO_AUTONOMO,Teste E2E apenas; Gate Final green
-2629,chore: PENDENCIAS.md §4 eR RELATORIO_CI (versao antiga),claude/chore-deploy-blocker-261027-old,True,N/A,FECHADO_EXTERNO,PR fechada externamente antes de rev59
-2630,chore: adiciona §7 sentinel ao PENDENCIAS.md,claude/chore-sentinel-pendencias-271027,Mrue,CLEAN,MERGEADO_SESSAO_EXTERNA,Mergeado por sessao externa
-2631,chore: atualiza PENDENCIAS §4 eR RELATORIO_CI — bloqueio deploy,claude/chore-deploy-blocker-261027-1007,True,CLEAN,DRAFT_NOMERGE,Draft + REGRA#10 (session_014RkohRYagi3sPiL8jtgot4)
-2632,fix(ci): aumenta timeout do job export de 10 para 30 min,claude/fix-export-timeout-261027-1400,False,CLEAN,MERGEADO_SESSAO_EXTERNA,Mergeado por sessao externa (SHA 2b4f20e2f5) enquanto esta sessao estava ativa
-2633,fix(tests): corrige 3 falhas vitest no CI Security,claude/fix-ci-tests-261027-external,False,CLEAN,MERGEADO_SESSAO_EXTERNA,Mergeado por session_01Knr9enFAok62bHihBK1UUP
-2634,"fix(ci): corrige 3 races de teste (playwright, safeAuthCall, LocationPanel)",claude/fix-ci-tests-261027-1005,True,CLEAN,SUPERSEDED,Supersedida por #2633 + Draft + REGRA#10
-2635,fix(ci): Gate 1.13 — trata HTTP 400 pós-timeout como soft,claude/fix-gate-1-13-http400-261027-1416,True,CLEAN,MERGEADO_SESSAO_EXTERNA,Mergeado por session_011kNCJ9xyjX5d9E2bUXhdBg (SHA 06faacc95) em 2026-10-27T10:48:11Z
-2636,fix(tests): mock AutoTestJobStatusCard em AdminStructuralComparison,claude/fix-window-autotestcard-261027-1031,False,CLEAN,MERGEADO_AUTONOMO,Gate Final run #40493344116 success; SHA b5cfee9b; apenas test files +7/-0
-2637,docs: recibo de aplicação —  20261027120000 (E15),e15-receipt-20261027120000-40469025943,False,BEHIND,DECISAO_HUMANA,E15 receipt bot — review obrigatório do PO + mergeable_state behind
+number,title,state,verdict,blocked_reason,sha_merge,merged_by
+2420,"chore(db): adiciona rollback retroativo da migration 20261019000000",open,BLOQUEADA,"supabase/rollbacks/ DDL — REGRA#8: exige aprovacao explcita do PO",,
+2572,"docs(analise-prs): rev23 — 40 PRs 21 merges autonomos",open,BLOQUEADA,"dirty (mergeable:false) + obsoleto — superseded por revisoes posteriores",,
+2579,"chore(main): release 1.0.0",open,BLOQUEADA,"release-please rebaixa versao 1.2.1 -> 1.0.0 (downgrade regressivo)",,
+2580,"fix(banco): rollback header e arquivo rollback migration 20260916",open,DRAFT_NOMERGE,"PR em estado DRAFT — nao pronto para merge",,
+2582,"chore(ci): metricas semanais 2026-W44",closed,MERGEADO_SESSAO_EXTERNA,,,github-actions[bot]
+2585,"chore(deps): bump prod deps minor/patch 2026-10-26",closed,MERGEADO_SESSAO_EXTERNA,,145da71bb8c451eebadc75c4bb059397f8d468f7,session_externa
+2586,"chore(deps): bump dev deps minor/patch 2026-10-26",closed,MERGEADO_SESSAO_EXTERNA,,fb04592655cf81d1a6aad79739f2cc2f1c2236c7,session_externa
+2587,"chore(deps): bump zustand from 4.5.7 to 5.0.16",open,BLOQUEADA,"Dependabot: Zustand 4->5 breaking API changes — exige migracao de stores",,
+2588,"chore(deps): bump react-day-picker from 8.10.2 to 10.0.2",open,BLOQUEADA,"Dependabot: react-day-picker 8->10 breaking API changes — exige migracao de componentes",,
+2589,"chore(deps): bump globals from 15.x to 17.x",closed,MERGEADO_SESSAO_EXTERNA,,9e2746a31914e714f1b96779f26808c0f3685ff8,session_externa
+2590,"chore(deps): bump codeql-action/upload-sarif 4.39.1",closed,MERGEADO_SESSAO_EXTERNA,,c6e94d3a6c8e,session_externa
+2594,"chore(ci): bump actions/setup-node from 4 to 7",open,BLOQUEADA,".github/workflows/ — CLAUDE.md proibe modificar workflows sem aprovacao do PO",,
+2596,"chore(deps): bump postcss-selector-parser from 6.1.4 to 6.1.5",closed,MERGEADO_SESSAO_EXTERNA,,54e8904585ad474030feea88526d9c66b7404aa4,session_externa
+2597,"fix(ci): corrige 4 workflows CI falhando",closed,MERGEADO_SESSAO_EXTERNA,,6ef07df8c4980ab776bb087d4ebd79804b1d476c,session_01Knr9enFAok62bHihBK1UUP
+2599,"fix(privacy): substitui supabase.functions.invoke por invokeEdge em AnonymizeAccountDialog",open,BLOQUEADA,"toca .github/workflows/ (subconjunto de #2597 ja mergeada) — scope proibido",,
+2600,"docs(analise-prs): addendum deliverables — branch de entrega desta sessao",open,DRAFT_NOMERGE,"DELIVERY BRANCH — NEVER MERGE",,
+2602,"fix(e2e): corrige falhas E2E mobile tooltips e personalization specs",closed,MERGEADO_SESSAO_EXTERNA,,,session_01Knr9enFAok62bHihBK1UUP
+2603,"fix(crons): 4 migrations + RLS stricker",open,BLOQUEADA,"supabase/migrations/ DDL — REGRA#8: crons + RLS exigem aprovacao do PO",,
+2604,"fix(ci): continue-on-error psql steps snapshot",open,DRAFT_NOMERGE,"PR em estado DRAFT",,
+2605,"fix(tests): 4 falhas unit tests + 1 threshold E2E",open,BLOQUEADA,"dirty + superseded por #2610+#2615+#2616+#2620",,
+2610,"fix(e2e): atualiza spec 92 para aceitar /auth no redirect de ProtectedRoute",closed,MERGEADO_AUTONOMO,,48899b659ef6deba0fee2db7482347097059edb5,session_011d8gKLZg8BWivR8aQBwxGF
+2615,"fix(tests): aumenta timeout beforeAll 30s->60s em kit-coverage",closed,MERGEADO_AUTONOMO,,6b65d38a15de4affb8ccb6d0787ab12f24588592,session_011d8gKLZg8BWivR8aQBwxGF
+2616,"fix(test): suppressMutePersistRef nao limpar flag no branch de supressao",closed,MERGEADO_AUTONOMO,,2ccc76fd2db3b3baf17b2adefc2e37d9f6c85fce,session_011d8gKLZg8BWivR8aQBwxGF
+2620,"fix(tests): forward-port unit test fixes from PR #2605",closed,MERGEADO_AUTONOMO,,3aabc41878bd454a33ea5643781ce2c7a677da1d,session_011d8gKLZg8BWivR8aQBwxGF
+2621,"fix(rollbacks): rollback files 7 migrations 20261027 (E058)",closed,MERGEADO_SESSAO_EXTERNA,,06c221db520b446eee41ce990c110830be5da13c,session_01PE8GzVYqxJM25xzvLuLYhW
+2622,"fix(rollbacks): rollbacks para 9 migrations 20261027 + manifest fix",open,BLOQUEADA,"supabase/rollbacks/ — REGRA#8: exige aprovacao do PO",,
+2625,"fix(edge-functions): health-check timeout + xbz-image-uploader manifest",closed,MERGEADO_SESSAO_EXTERNA,,83c81d5859bef375af76a918e7ab01ce20a7944a,session_01Knr9enFAok62bHihBK1UUP
+2627,"fix(rollbacks): rollbacks 2 migrations 20261027 (233000 + 234500)",closed,MERGEADO_AUTONOMO,,16108a1ce67449118e1b2bb80ca60d902bc474d6,session_011d8gKLZg8BWivR8aQBwxGF
+2628,"fix(e2e): adiciona secao simulator em selectors.ts",closed,MERGEADO_AUTONOMO,,02e503365552d8d161e96917277170fff0af92dc,session_011d8gKLZg8BWivR8aQBwxGF
+2631,"chore: atualiza PENDENCIAS e RELATORIO_CI — bloqueio deploy confirmado",open,DRAFT_NOMERGE,"PR em estado DRAFT",,
+2636,"fix(tests): mock AutoTestJobStatusCard em AdminStructuralComparison",closed,MERGEADO_AUTONOMO,,b5cfee9b24017fbf53a0035e86d8820d07bad74e,session_011d8gKLZg8BWivR8aQBwxGF
+2637,"docs: recibo de aplicacao — 20261027120000 (E15)",closed,MERGEADO_AUTONOMO,,78d083f1696186faf0e25f3aa950c05843928e25,session_011d8gKLZg8BWivR8aQBwxGF
+2645,"docs: recibo de aplicacao — 20261027140000 (E15)",open,BLOQUEADA,"branch protection exige revisao humana — supabase/migrations/ (REGRA#8)",,
+2646,"fix(migrations): cabecalho -- Rollback: nas migrations 20261027160000 e 20261027220000",open,BLOQUEADA,"supabase/migrations/ — REGRA#8: exige aprovacao do PO",,
+2647,"fix(ci): aumenta timeout swatch-quickview 40->90 min",closed,MERGEADO_SESSAO_EXTERNA,,5d049ef118f3eb84843da44bd8d2efc70ee56ca1,session_01Knr9enFAok62bHihBK1UUP

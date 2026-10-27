@@ -1,100 +1,126 @@
-# Clusters de PRs — Promo Gifts V4
-# Gerado: 2026-10-26 | Sessão session_011d8gKLZg8BWivR8aQBwxGF
-# main HEAD: 145da71bb8c451eebadc75c4bb059397f8d468f7
+# clusters.md — Agrupamento de PRs por Cluster
+**Sessao:** session_011d8gKLZg8BWivR8aQBwxGF
+**Data:** 2026-10-27
+**main HEAD:** 5d049ef118f3eb84843da44bd8d2efc70ee56ca1
 
-## Resumo
+---
 
-| Cluster | PRs | Notas |
+## Cluster A — Rollbacks / DDL (BLOQUEADA — REGRA#8)
+
+PRs tocando `supabase/rollbacks/` ou `supabase/migrations/` sem aprovacao do PO.
+**Regra:** Todo DDL em producao exige aprovacao explicita do PO (REGRA#8 CLAUDE.md).
+
+| PR | Titulo | Razao do bloqueio |
 |---|---|---|
-| Dependabot (npm) | #2585, #2586, #2587, #2588, #2589, #2596 | 3 mergeadas autônomas; 2 DECISAO_HUMANA (major); 1 CVE mergeada |
-| Dependabot (GH Actions) | #2590, #2591, #2592, #2593, #2594 | Todas BLOQUEADAS (.github/workflows proibido) |
-| Release-please | #2520, #2579 | Ambas DECISAO_HUMANA — downgrade semântico |
-| Claude agent (claude_04) | #2582, #2597, #2599, #2600 | 1 mergeada; 2 DECISAO_HUMANA; 1 BLOQUEADA (DRAFT) |
-| Claude agent (claude_05) | #2572, #2580 | Mesma branch; ambas BLOQUEADAS |
-| Lovable/bot | — | Nenhuma PR aberta de Lovable neste ciclo |
-| Duplicatas/subconjunto | #2597 ↔ #2599 | #2599 é subconjunto estrito de #2597 |
-| Cadeia mesma branch | #2572 + #2580 | Mesma branch `claude_05/youthful-ride-vcdchy` |
+| [#2420](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2420) | rollback retroativo migration 20261019 | supabase/rollbacks/ DDL |
+| [#2580](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2580) | rollback header migration 20260916 | DRAFT + supabase/rollbacks/ |
+| [#2603](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2603) | 4 migrations + RLS stricker | supabase/migrations/ DDL REGRA#8 |
+| [#2622](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2622) | rollbacks 9 migrations 20261027 | supabase/rollbacks/ |
+| [#2645](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2645) | recibo aplicacao 20261027140000 | branch protection exige revisao humana |
+| [#2646](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2646) | cabecalho -- Rollback: migrations | supabase/migrations/ |
+
+**Acao recomendada:** PO revisar cada PR. #2645 e #2646 sao de baixo risco (apenas comentario SQL).
 
 ---
 
-## Cluster 1 — Dependabot npm (atualização de dependências)
+## Cluster B — Dependencias com Breaking Changes (BLOQUEADA)
 
-| PR | Título | Veredito | SHA merge |
-|---|---|---|---|
-| #2585 | bump prod deps minor/patch | MERGEADO_AUTONOMO | `145da71b` |
-| #2586 | bump dev deps minor/patch | MERGEADO_AUTONOMO | `fb045926` |
-| #2589 | bump globals 15→17 | MERGEADO_AUTONOMO | `9e2746a3` |
-| #2596 | bump postcss-selector-parser (CVE-2026-104844) | MERGEADO_AUTONOMO | `54e89045` |
-| #2587 | bump zustand 4→5 (major) | DECISAO_HUMANA | — |
-| #2588 | bump react-day-picker 8→10 (major) | DECISAO_HUMANA | — |
+PRs de Dependabot com upgrades que quebram a API de bibliotecas em uso.
 
-**Motivo das pendentes:** zustand 4→5 quebra 11 stores (`useKitStore`, `useProductStore`, etc.); react-day-picker 8→10 quebra `calendar.tsx` (usa API v8).
-
----
-
-## Cluster 2 — Dependabot GitHub Actions (bump de actions em workflows)
-
-| PR | Action | Workflow afetado | Veredito |
-|---|---|---|---|
-| #2590 | `github/codeql-action/upload-sarif` 2→3 | `gitleaks-history-audit.yml` | BLOQUEADA |
-| #2591 | `github/codeql-action/analyze` 2→3 | `codeql.yml` | BLOQUEADA |
-| #2592 | `actions/stale` 9→11 | `stale.yml` | BLOQUEADA |
-| #2593 | `github/codeql-action/init` 2→3 | `codeql.yml` | BLOQUEADA |
-| #2594 | `actions/setup-node` 4→7 | `e2e-update-editor-sheet-snapshots.yml` | BLOQUEADA |
-
-**Motivo:** Todas tocam `.github/workflows/` — REGRA#8 exige aprovação PO.  
-**Risco real:** Baixo — são bumps de SHAs de actions conhecidas (codeql, stale, setup-node). A única com ressalva extra é #2594 (`setup-node` sem SHA pin no novo YAML). PO pode aprovar em bloco se quiser.
-
----
-
-## Cluster 3 — Release-please (versionamento semântico)
-
-| PR | Título | Branch | Veredito |
-|---|---|---|---|
-| #2520 | chore(main): release 1.0.0 | `release-please--branches--main--components--gifts-store` | DECISAO_HUMANA |
-| #2579 | chore(main): release 1.0.0 | `release-please--branches--main` | DECISAO_HUMANA |
-
-**Motivo:** Ambas representam downgrade de `release-please` 1.2.1 → 1.0.0 — regressão semântica (1.0.0 < 1.2.1 em semver). São duas PRs da mesma tool para branches diferentes da mesma release. O histórico de versões indica que a release deveria ser ≥ 1.2.1.
-
----
-
-## Cluster 4 — Claude agent claude_04 (esta sessão e sessões irmãs)
-
-| PR | Branch | Título | Veredito | SHA merge |
-|---|---|---|---|---|
-| #2582 | `claude_04/optimistic-bohr-qplx94` | métricas semanais W44 | MERGEADO_AUTONOMO | `045d835f` |
-| #2597 | `claude_04/beautiful-gates-bvocz5` | fix 4 workflows CI | DECISAO_HUMANA | — |
-| #2599 | `claude_04/laughing-gates-l4pt67` | fix privacy + ratchet SIGPIPE | DECISAO_HUMANA | — |
-| #2600 | `claude_04/optimistic-bohr-qplx94` | docs: entregáveis sessão | BLOQUEADA (DRAFT) | — |
-
----
-
-## Cluster 5 — Claude agent claude_05 (sessão irmã, mesma branch)
-
-| PR | Branch | Título | Veredito |
-|---|---|---|---|
-| #2572 | `claude_05/youthful-ride-vcdchy` | contrato E189 + personalização + supabase + CI | BLOQUEADA |
-| #2580 | `claude_05/youthful-ride-vcdchy` | fix: cabeçalho rollback e23 | DECISAO_HUMANA |
-
-**Atenção:** Ambas na mesma branch `claude_05/youthful-ride-vcdchy`. #2572 toca `.github/workflows/contract-tests.yml` + `supabase/migrations/`. #2580 é DRAFT + toca `supabase/migrations/`. Gate Final para `claude_05` não confirmou (infra GitHub Actions queued).
-
----
-
-## Cluster 6 — Duplicatas / Subconjunto estrito
-
-| PRs | Relação | Recomendação |
+| PR | Dependencia | Breaking change |
 |---|---|---|
-| #2597 ↔ #2599 | #2599 é subconjunto de #2597 (mesmos 2 arquivos, mesmos patches) | Fechar #2599, aprovar #2597 |
+| [#2587](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2587) | zustand 4.5.7 -> 5.0.16 | API de stores mudou completamente |
+| [#2588](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2588) | react-day-picker 8.10.2 -> 10.0.2 | API de componentes mudou |
 
-**Detalhes:**  
-- #2597 (`claude_04/beautiful-gates-bvocz5`) contém: `ratchet-weekly.yml` (SIGPIPE) + `.gitleaks.toml` (22 leaks históricos) + `PENDENCIAS.md` (P78–P84) + `RELATORIO_CI.md` + `AnonymizeAccountDialog.tsx` (invokeEdge) + `useReplenishments.integration.test.ts` (timeout)  
-- #2599 (`claude_04/laughing-gates-l4pt67`) contém: `ratchet-weekly.yml` (mesmo patch) + `AnonymizeAccountDialog.tsx` (mesmo patch)  
-- Não há commits únicos em #2599 que não estejam em #2597.
+**Acao recomendada:** Criar branch separada para migracao, testar localmente, abrir PR proprio.
 
 ---
 
-## PRs abertas por categoria (estado em 2026-10-26)
+## Cluster C — Workflows CI (BLOQUEADA)
 
-**DECISAO_HUMANA (6):** #2579, #2580, #2587, #2588, #2597, #2599  
-**BLOQUEADA (7):** #2572, #2590, #2591, #2592, #2593, #2594, #2600  
-**FECHAR (1, ainda aberta):** #2420 (NO_MERGE_BASE — branch órfã)
+PRs tocando `.github/workflows/` — proibido por CLAUDE.md sem aprovacao.
+
+| PR | Titulo | Detalhe |
+|---|---|---|
+| [#2594](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2594) | bump actions/setup-node 4 -> 7 | Dependabot, tocaria workflows |
+| [#2599](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2599) | fix privacy: invokeEdge | subconjunto de #2597 ja mergeada |
+
+**Acao recomendada:** #2594 e baixo risco (action bump). PO decide se aprova.
+
+---
+
+## Cluster D — Obsoletos / Dirty / Superseded (BLOQUEADA)
+
+PRs que nao podem ser mergeados por estado invalido ou superseded.
+
+| PR | Titulo | Razao |
+|---|---|---|
+| [#2572](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2572) | docs analise-prs rev23 | dirty (mergeable:false) + obsoleto |
+| [#2579](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2579) | release 1.0.0 | downgrade 1.2.1 -> 1.0.0 |
+| [#2605](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2605) | fix 4 unit tests + E2E threshold | dirty + superseded por #2610/#2615/#2616/#2620 |
+
+**Acao recomendada:** Fechar #2572 e #2579 (obsoletas). #2605: superseded — verificar se ainda necessaria.
+
+---
+
+## Cluster E — Drafts (DRAFT_NOMERGE)
+
+PRs em estado DRAFT — nao prontas para merge.
+
+| PR | Titulo | Observacao |
+|---|---|---|
+| [#2600](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2600) | delivery branch desta sessao | NEVER MERGE — branch de entrega |
+| [#2604](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2604) | ci continue-on-error | draft |
+| [#2631](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2631) | pendencias §4 + relatorio-ci | draft |
+
+**Acao recomendada:** #2600 e a branch de entrega desta sessao, nunca fazer merge. Os demais: PO decide se promove ou fecha.
+
+---
+
+## Cluster F — Mergeadas (MERGEADO_AUTONOMO + MERGEADO_SESSAO_EXTERNA)
+
+PRs mergeadas com sucesso. Gate Final SUCCESS em `5d049ef1` confirma que nenhuma introduziu regressao.
+
+### Mergeadas por esta sessao (MERGEADO_AUTONOMO):
+
+| PR | Titulo | Merge SHA |
+|---|---|---|
+| [#2610](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2610) | fix(e2e): auth redirect ProtectedRoute | `48899b659ef6` |
+| [#2615](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2615) | fix(tests): timeout beforeAll kit-coverage | `6b65d38a15de` |
+| [#2616](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2616) | fix(test): suppressMutePersistRef flag | `2ccc76fd2db3` |
+| [#2620](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2620) | fix(tests): forward-port unit fixes | `3aabc41878bd` |
+| [#2627](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2627) | fix(rollbacks): rollbacks 2 migrations | `16108a1ce674` |
+| [#2628](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2628) | fix(e2e): simulator selectors.ts | `02e503365552` |
+| [#2636](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2636) | fix(tests): mock AutoTestJobStatusCard | `b5cfee9b2401` |
+| [#2637](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2637) | docs: recibo 20261027120000 (E15) | `78d083f16961` |
+
+### Mergeadas por sessao externa durante a analise:
+
+| PR | Titulo | Merge SHA | Sessao |
+|---|---|---|---|
+| [#2582](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2582) | ci metricas semana W44 | - | github-actions |
+| [#2585](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2585) | deps prod minor/patch | `145da71bb8c4` | externa |
+| [#2586](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2586) | deps dev minor/patch | `fb04592655cf` | externa |
+| [#2589](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2589) | globals 15->17 | `9e2746a31914` | externa |
+| [#2590](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2590) | codeql-action 4.39.1 | `c6e94d3a6c8e` | externa |
+| [#2596](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2596) | postcss-selector-parser 6.1.5 | `54e8904585ad` | externa |
+| [#2597](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2597) | fix 4 workflows CI | `6ef07df8c498` | session_01Knr9 |
+| [#2602](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2602) | fix e2e mobile tooltips | - | session_01Knr9 |
+| [#2621](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2621) | rollbacks 7 migrations E058 | `06c221db520b` | session_01PE8G |
+| [#2625](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2625) | edge-functions health+xbz | `83c81d5859be` | session_01Knr9 |
+| [#2647](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2647) | fix ci timeout swatch 40->90 | `5d049ef118f3` | session_01Knr9 |
+
+---
+
+## Resumo por cluster
+
+| Cluster | PRs | Acao |
+|---|---|---|
+| A — Rollbacks/DDL | 6 | PO aprovar/rejeitar |
+| B — Breaking deps | 2 | Migracao manual necessaria |
+| C — Workflows CI | 2 | PO decide |
+| D — Obsoletos | 3 | Fechar #2572 e #2579 |
+| E — Drafts | 3 | PO decide |
+| F — Mergeadas | 19 | Concluidas — Gate Final SUCCESS |
+
+**Gate Final verificado:** run #122257161951 — SUCCESS em `5d049ef118f3` (2026-10-27T14:34Z)
