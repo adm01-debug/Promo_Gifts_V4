@@ -19,7 +19,9 @@ BEGIN
     'BACKFILL_DIM_CRON_SECRET',
     'WEBHOOK_DISPATCHER_URL',
     'WEBHOOK_SECRET',
-    'ASIA_INGESTION_CRON_SECRET'
+    'ASIA_INGESTION_CRON_SECRET',
+    -- Preservar entrada adicionada por 20261027233000, se já aplicada
+    'XBZ_IMAGE_UPLOADER_CRON_SECRET'
   ) THEN
     RAISE EXCEPTION 'Nome de secret nao autorizado: %', _name
       USING ERRCODE = 'insufficient_privilege';
