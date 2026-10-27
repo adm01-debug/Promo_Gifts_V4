@@ -448,13 +448,13 @@
       "titulo": "fix(tests): corrige 4 unit tests + 1 E2E threshold",
       "url": "https://github.com/adm01-debug/Promo_Gifts_V4/pull/2605",
       "branch": "claude/fix-unit-tests-261027-0113",
-      "draft": true,
+      "draft": false,
       "head_sha": "9bfead141",
       "base_sha": "48899b659ef6deba0fee2db7482347097059edb5",
       "merge_tree": "CLEAN",
       "ci_gate_final": "SUCCESS",
       "regra8": false,
-      "regra10": false,
+      "regra10": true,
       "arquivos_alterados": [
         "src/hooks/products/__tests__/chunk-recovery.shared-reload-budget.test.ts",
         "src/hooks/products/__tests__/replenishment-resilience.test.ts",
@@ -463,8 +463,8 @@
         "e2e/"
       ],
       "nota": "Único bloqueio = DRAFT. CI SUCCESS; zero REGRA#8; zero REGRA#10. Vitest verificado em main 06fe47fd3: chunk-recovery 8P, replenishment 3P, PromoFlixPlayer 22P, NegotiationMarkupCard 23P — todos passam em main, tornando PR redundante.",
-      "veredito": "DECISAO_HUMANA",
-      "motivo": "DRAFT — único bloqueio; CI SUCCESS; zero REGRA#8. Candidato imediato após DRAFT→ready. Nota: testes unitários que o PR corrige já passam em main 06fe47fd3 (verificado rev33) — a correção pode ser redundante.",
+      "veredito": "BLOQUEADA",
+      "motivo": "DRAFT resolvido via GraphQL markPullRequestReadyForReview. GitHub conflict: e2e/catalog/novidades-reposicao-card-parity.spec.ts alterado em PR #2614. git merge-tree CLEAN mas GitHub exige push no branch (REGRA#10 — branch de outra sessão).",
       "criterios_autonomo": {
         "1_valida": true,
         "2_nao_implementada": "INCERTO — testes passam em main sem o PR",
@@ -474,7 +474,8 @@
         "6_regras_negocio": true,
         "7_completa": "N/A (DRAFT)",
         "8_confianca": false
-      }
+      },
+      "conflito": "GITHUB_CONFLICT (e2e spec alterado em PR#2614 — git auto-merge OK, GitHub 405)"
     },
     {
       "numero": 2610,
