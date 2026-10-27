@@ -1,8 +1,8 @@
 # RELATÓRIO CI — Promo Gifts V4
 **Gerado em:** 2026-10-27  
-**Branch de correção:** `claude_04/beautiful-gates-bvocz5` (PR #2597)  
-**SHA main no momento do diagnóstico:** `48899b65` → `16108a1c` (main atual)  
-**HEAD atual do branch:** `5c154a7c` (merge com main `16108a1c` — atualizado via `update_pr_branch` às 08:24 UTC)
+**Branch de correção:** `claude_04/beautiful-gates-bvocz5` (PR #2597 — **MERGEADO** ✅)  
+**SHA main no momento do diagnóstico:** `48899b65`  
+**SHA merge commit (squash):** `6ef07df8c4980ab776bb087d4ebd79804b1d476c` (main atual)
 
 ---
 
@@ -113,30 +113,29 @@ Error: Hook timed out in 30000ms.
 
 ## 4. Baseline Local (verificado em 2026-10-27)
 
-Executado no container Claude Code no HEAD `ab005b84` (base das correções):
+Executado no container Claude Code no HEAD `6ef07df8` (merge commit na main, pós-squash):
 
 | Checagem | Resultado | Detalhe |
 |---|---|---|
 | `npm install` | ✅ PASS | sem erros de instalação |
 | TypeScript (`npx tsc --noEmit`) | ✅ PASS | TSC_EXIT=0, zero erros |
-| Build Vite (`npx vite build`) | ✅ PASS | BUILD_EXIT=0, 17.29s, zero erros TS |
+| Build Vite (`npx vite build`) | ✅ PASS | BUILD_EXIT=0, 16.05s, zero erros TS |
 | ESLint (`eslint src --max-warnings 0`) | ✅ PASS | EXIT=0, zero warnings |
-| Vitest arquivos corrigidos | ✅ PASS | chunk-recovery, PromoFlixPlayer, playwright-config-smoke todos passam |
+| Vitest arquivos corrigidos | ✅ PASS | chunk-recovery, PromoFlixPlayer, playwright-config-smoke todos passam (confirmado no run 40475129693) |
 | Vitest suíte completa | ⏭ TIMEOUT | Container encerra após ~2min; não afeta CI (timeout 45min) |
 
 ---
 
-## 5. Estado do PR #2597 (atualizado 2026-10-27T08:25 UTC)
+## 5. Estado do PR #2597 (atualizado 2026-10-27T09:25 UTC)
 
 **Branch:** `claude_04/beautiful-gates-bvocz5`  
-**HEAD atual:** `5c154a7ceed79723fbaa2298f4e0c24b59265b48` (merge com main `16108a1c` via `update_pr_branch`)  
-**mergeable:** `true`  
-**mergeable_state:** `blocked` — aguardando Gate Final  
-**Gate Final run 40473290799** — `pending` (aguardando runner GitHub Actions, disparado às 08:24 UTC):
-- Gate E40 Schema Drift Check — estimativa 30–60 min após runner alocar
-- Runs anteriores cancelados automaticamente por `cancel-in-progress: true`
+**PR #2597:** ✅ **MERGEADO** (squash) em `2026-10-27T08:55 UTC`  
+**Merge commit SHA:** `6ef07df8c4980ab776bb087d4ebd79804b1d476c`  
+**Gate Final pré-merge run 40475129693** — ✅ `conclusion=success` (SHA `955a9d8ef1`, concluído 08:53 UTC)  
 
-**Merge:** aguardando Gate Final run 40473290799 com `conclusion=success`
+**Gate Final pós-merge na main run 40476927264** — ✅ `conclusion=success` (09:18 UTC)
+
+**Deploy Edge Functions run 40476968791** — ⏳ `pending` (dispatch `workflow_dispatch` executado às 08:55 UTC; runner externo ainda não alocado — ver PENDENCIAS.md §4)
 
 ---
 
@@ -152,6 +151,8 @@ Executado no container Claude Code no HEAD `ab005b84` (base das correções):
 | Uptime Monitor | 40451113594 | ❌ probe externo transiente | ⚠️ depende uptime Supabase (ver PENDENCIAS.md §2) |
 | edge-functions-drift-check | 40453930945 (sha `eb04236c`) | 🔄 dispatch deploy-edge-functions.yml pós-merge | ✅ success (após deploy pós-merge) |
 | E2E workflows (5 falhas) | múltiplos | ❌ infra CI pré-existente | ❌ failure (ver PENDENCIAS.md §3) |
+| Quote Builder Delivery Quality | 40476927065 (sha `6ef07df8`) | ❌ infra E2E pré-existente (confirmado em 40474032315) | ❌ failure (ver PENDENCIAS.md §5) |
+| Gate 5 — Supabase Security Audit | 40476927261 (sha `6ef07df8`) | ❌ HTTP 503 transiente Supabase | ⚠️ depende uptime Supabase (ver PENDENCIAS.md §6) |
 
 **Workflows que estavam verdes e devem continuar verdes:** todos os 15+ listados na §1 — não foram tocados por este PR.
 
@@ -159,31 +160,53 @@ Executado no container Claude Code no HEAD `ab005b84` (base das correções):
 
 ## 7. Comparação Baseline vs Pós-Correção
 
-| Métrica | Antes (sha `48899b65`) | Após PR merge (aguardado) |
+| Métrica | Antes (sha `48899b65`) | Após PR merge (MERGEADO `6ef07df8`) |
 |---|---|---|
 | Workflows com falha na main | 12+ | 4 (E2E pré-existentes + Copilot bot + Uptime transiente) |
-| CI Security & Drift Checks | ❌ failure | ✅ success |
-| Kit Coverage — Integration | ❌ failure | ✅ success |
-| Gitleaks — Full History Audit | ❌ failure | ✅ success |
-| Ratchet Weekly | ❌ failure | ✅ success |
-| edge-functions-drift-check | ❌ failure (Lovable `eb04236c`) | ✅ success (após deploy pós-merge) |
+| CI Security & Drift Checks | ❌ failure | ✅ success (run 40475129693) |
+| Kit Coverage — Integration | ❌ failure | ✅ success (run 40475129693) |
+| Gitleaks — Full History Audit | ❌ failure | ✅ success (run 40475129693) |
+| Ratchet Weekly | ❌ failure | ✅ success (run 40475129693) |
+| edge-functions-drift-check | ❌ failure (Lovable `eb04236c`) | ⏳ aguardando deploy run 40476968791 |
 | Running Copilot Code Review | ❌ failure | ❌ failure (irresolvível — bot externo) |
-| Gate Final na main | ✅ (base) | ✅ (aguarda merge + Gate Final pós-merge) |
+| Gate Final pré-merge | ✅ (base) | ✅ success run 40475129693 |
+| Gate Final pós-merge na main | — | ✅ success run 40476927264 (09:18 UTC) |
+| Quote Builder Delivery Quality | ✅ (base) | ❌ failure pré-existente (PENDENCIAS.md §5) |
+| Gate 5 — Supabase Security Audit | ✅ (base) | ❌ failure transiente (PENDENCIAS.md §6) |
 
-**Nenhuma regressão esperada:** todos os testes baseline passam no HEAD `5c154a7c`.
+**Nenhuma regressão confirmada:** baseline local passou no HEAD `6ef07df8` (merge commit na main) — npm ✅, tsc ✅, vite build ✅, eslint ✅.
 
 ---
 
-## 8. Próximas ações (bloqueadas por Gate Final)
+## 8. Estado pós-merge (atualizado 2026-10-27T09:25 UTC)
 
-> ⏳ Gate Final run 40473290799 em `pending` desde 08:24 UTC (aguardando runner).
+✅ **PR #2597 mergeado** (squash) em 2026-10-27T08:55 UTC  
+✅ **Merge commit SHA:** `6ef07df8c4980ab776bb087d4ebd79804b1d476c`  
+✅ **Gate Final pré-merge** run 40475129693 — `conclusion=success` (08:53 UTC)  
+✅ **Gate Final pós-merge na main** run 40476927264 — `conclusion=success` (09:18 UTC)  
+⏳ **Deploy Edge Functions** run 40476968791 — `pending` (08:55 UTC; runner externo não alocado — ver PENDENCIAS.md §4)  
 
-1. **Quando Gate verde:** squash-merge PR #2597 via `github_merge_pull_request`
-2. **Após merge:** `workflow_dispatch` em `deploy-edge-functions.yml` (fix edge-functions-drift-check)
-3. **Após merge:** verificar Gate Final pós-merge na main com `conclusion=success`
-4. **Confirmar:** workflows antes verdes permanecem verdes após merge
+---
+
+## 9. Novos Workflows em Falha Descobertos Pós-Merge
+
+Após o merge do PR #2597, duas falhas adicionais foram identificadas nas runs disparadas pelo merge commit `6ef07df8`:
+
+### 9.1 Quote Builder Delivery Quality
+- **Run ID:** 40476927065 (sha `6ef07df8`, pós-merge)
+- **Workflow:** `.github/workflows/delivery-quality.yml`
+- **Erro:** Step "E2E & Visual Regression" — falha de infraestrutura E2E
+- **Confirmação pré-existente:** Run 40474032315 (sha `83c81d58`, **antes do merge**) já mostrava `failure` — não é regressão do PR #2597
+- **Classificação:** Pré-existente. Ver PENDENCIAS.md §5.
+
+### 9.2 Gate 5 — Supabase Security Audit
+- **Run ID:** 40476927261 (sha `6ef07df8`, pós-merge)
+- **Workflow:** `.github/workflows/supabase-security-gate.yml`
+- **Erro:** HTTP 503 no step "RPC get_profile_and_roles smoke test" após 3 tentativas
+- **Causa raiz:** Indisponibilidade transiente do Supabase (`doufsxqlfjyuvxuezpln.supabase.co`) — mesmo padrão do Uptime Monitor (§2)
+- **Classificação:** Transiente. Ver PENDENCIAS.md §6.
 
 ---
 
 *Gerado por Claude Code — sessão https://claude.ai/code/session_014RkohRYagi3sPiL8jtgot4*  
-*Atualizado: 2026-10-27T08:25 UTC — HEAD `5c154a7c` (merge com main `16108a1c`); Gate Final run 40473290799 pending*
+*Atualizado: 2026-10-27T09:25 UTC — Gate Final pós-merge run 40476927264 conclusion=success ✅; Deploy Edge Functions run 40476968791 pending (runner externo)*

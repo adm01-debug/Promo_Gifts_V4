@@ -64,7 +64,28 @@
 - **Por que não corrigi antes do merge:** A falha foi introduzida por commit Lovable APÓS a criação do PR. Não é relacionada às correções do PR. Não é required check do Gate Final.
 - **Ação requerida (pós-merge):**
   - Disparar `.github/workflows/deploy-edge-functions.yml` via `workflow_dispatch` para sincronizar as edge functions.
-  - Ou identificar qual função drifted (artefato `drift-report.csv` da run 40453930945) e fazer deploy pontual com `function_name` específico.
+  - Ou identificar qual função driftou (artefato `drift-report.csv` da run 40453930945) e fazer deploy pontual com `function_name` específico.
+- **Impacto no Gate Final:** NÃO é required check — não bloqueia deploy.
+
+---
+
+### 5. Quote Builder Delivery Quality
+- **Run ID:** 40476927065 (sha `6ef07df8`, main — pós-merge)
+- **Run ID pré-merge (confirma pré-existente):** 40474032315 (sha `83c81d58`, main — antes do merge)
+- **Workflow:** `.github/workflows/delivery-quality.yml`
+- **Erro:** Falha no step "E2E & Visual Regression" — infraestrutura E2E (mesmo padrão dos 5 workflows E2E do §3).
+- **Causa raiz:** Falha de infraestrutura E2E pré-existente. Confirmada pré-existente: run 40474032315 já mostrava `failure` no SHA `83c81d58` (commit anterior ao merge do PR #2597). Não é regressão do PR.
+- **Por que não corrigi:** Falha existia antes do PR #2597. É infraestrutura E2E, não código alterado neste PR.
+- **Impacto no Gate Final:** NÃO é required check — não bloqueia deploy.
+
+---
+
+### 6. Gate 5 — Supabase Security Audit
+- **Run ID:** 40476927261 (sha `6ef07df8`, main — pós-merge)
+- **Workflow:** `.github/workflows/supabase-security-gate.yml`
+- **Erro:** Step "RPC get_profile_and_roles smoke test" retornou HTTP 503 após 3 tentativas — log: `O smoke da RPC retornou HTTP 503 após 3 tentativas — serviço indisponível.`
+- **Causa raiz:** Transiente — indisponibilidade momentânea do Supabase (`doufsxqlfjyuvxuezpln.supabase.co`). Idêntico ao padrão do Uptime Monitor (§2). Não é regressão de código.
+- **Por que não corrigi:** Falha transiente de disponibilidade do Supabase Cloud. Não há código a corrigir.
 - **Impacto no Gate Final:** NÃO é required check — não bloqueia deploy.
 
 ---
