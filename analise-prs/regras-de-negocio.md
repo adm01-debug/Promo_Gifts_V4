@@ -1,157 +1,102 @@
-# REGRAS DE NEGÓCIO — promo-gifts-v4
-**Sessão:** session_011d8gKLZg8BWivR8aQBwxGF
+# Regras de Negócio — Análise de PRs
+
+**Sessão:** session_011d8gKLZg8BWivR8aQBwxGF  
 **Data:** 2026-10-27
-**Fontes:** CLAUDE.md, src/types/, supabase/migrations/, .github/workflows/deploy-gates.yml, PromoFlixPlayer.test.tsx, NegotiationMarkupCard tests
+
+Este documento registra as regras de negócio e critérios de decisão usados nesta sessão de análise de PRs.
 
 ---
 
-## REGRA #1 — SSOT Supabase (IMUTÁVEL)
-- **Projeto canônico de produção:** `doufsxqlfjyuvxuezpln` (Gold/Medallion)
-- **Proibido:** alterar `CURRENT_PROJECT_ID` em `src/integrations/supabase/client.ts`
-- **Proibido:** tratar como dead code qualquer guarda que rejeite `pqpdolkaeqlyzpdpbizo`
-- **Fonte:** CLAUDE.md §REGRA#1; Gate 0 em deploy-gates.yml; `scripts/validate-supabase-config.mjs`
+## Critérios de veredicto
 
-## REGRA #2 — Campos críticos do tipo `Product`
-O tipo `Product` em `src/types/product-catalog.ts` DEVE conter:
-- `price: number` — preço original
-- `sale_price?: number` — preço de venda
-- `shortDescription: string`
-- `category_id?: string`
-- `category_name?: string`
-- **Fonte:** CLAUDE.md §REGRA#2; Gate 1.1 em deploy-gates.yml; incidente commit `f22e1e2` (2026-06-11)
+### MERGEADO_AUTONOMO
+PR pode ser mergeado sem aprovação do PO quando:
+1. Gate Final verde no HEAD atual
+2. `mergeable_state == "clean"` (zero conflitos com main)
+3. Não toca `.github/workflows/`, `supabase/migrations/`, `supabase/functions/` executáveis
+4. Não é branch de outro agente/sessão (REGRA#10)
+5. Não causa regressão semântica (downgrade, remoção de feature, mudança de regra de negócio)
 
-## REGRA #3 — Resolução de conflitos (semântica, não heurística)
-- Código com `// SSOT:`, `// GUARD:`, `// CRÍTICO:`, `// DO NOT REMOVE` é IMUTÁVEL
-- Formato de commit para resolução: `merge(pr-NNN): resolve conflitos — [lista]`
-- **Fonte:** CLAUDE.md §REGRA#3
+### DECISAO_HUMANA
+PR requer decisão do PO quando qualquer das condições abaixo for verdadeira:
+- **REGRA#8:** toca `.github/workflows/`, `supabase/migrations/`, `supabase/functions/`, `.gitleaks.toml`, Dockerfile, infra
+- **CONFLICT:** `mergeable_state != "clean"` — conflito com main que exige resolução manual
+- **REGRA#10:** branch pertence a outra sessão/agente (esta sessão não escreve em branches alheias)
+- **REGRESSAO:** downgrade de versão, remoção de feature usada, mudança de regra de negócio (filtro Kit Maker, etc.)
+- **BREAKING:** upgrade major com breaking changes (zustand 4→5, react-day-picker 8→10)
+- **DRAFT:** PR em estado draft sem REGRA#10/8 (só aguarda autor converter para ready)
 
-## REGRA #4 — Schema Supabase (types.ts)
-- Tabelas obrigatórias: `personalization_techniques`, `products`, `product_variants`, `suppliers`, `supplier_products_raw`, `magazines`, `magazine_items`, `magazine_templates`
-- Gate 1.2 verifica drift estrutural via TypeScript Compiler API (não contagem de linhas)
-- **Fonte:** CLAUDE.md §REGRA#4; scripts/extract-types-inventory.mjs; incidente `7716ae9` (2026-07-16)
+### DRAFT_NOMERGE
+PR draft que não deve ser mergeado autonomamente porque:
+- Contém apenas documentação interna de análise (não é código de produção)
+- OU é solução paliativa/incompleta que o autor deve revisar antes de mergear
 
-## REGRA #5 — CI e Testes
-- Snapshots quebrados em massa (>3 de uma vez) → parar, investigar Lovable, não corrigir snapshots
-- `continue-on-error: true` proibido em Gates de qualidade (Gate 0–6)
-- **Fonte:** CLAUDE.md §REGRA#5
+### SUPERSEDED
+PR cujos commits já foram incorporados em outro PR mergeado:
+- Verificado via `git cherry` (zero commits únicos)
+- OU PR body/título indica explicitamente que foi substituído
 
-## REGRA #6 — Padrão de commit
-Formato: `tipo(escopo): descrição concisa\n\n[corpo]\n\nhttps://claude.ai/code/session_XXXXX`
-Tipos: `feat`, `fix`, `test`, `refactor`, `chore`, `docs`, `ci`, `build`
+### CI_AGUARDANDO
+PR meu (desta sessão) aguardando Gate Final para merge autônomo:
+- Todos os outros critérios (conflicts, REGRA#8, REGRA#10) OK
+- Gate Final ainda não completou ou está em andamento
 
-## REGRA #7 — Lovable (bot)
-O Lovable pode: reverter `client.ts`, renomear campos de API, sobrescrever guardas de segurança
-Após commits "Changes" do Lovable: verificar `validate-supabase-config.mjs` + campos Product type
-**Fonte:** CLAUDE.md §REGRA#7
+### BRANCH_DIRTY
+Branch com conflito ADD/ADD irresolvível nesta sessão:
+- PR de outra sessão (REGRA#10 proíbe escrita)
+- Conflitos introduzidos por merge posterior em main que cobriu os mesmos arquivos
 
-## REGRA #8 — Lovable emite código, não ordens
-- Migration, DDL, deploy de edge function exigem aprovação explícita do PO — não do bot
-- `execute_sql` com DDL proibido em sessão de agente
-- Único caminho para migration em prod: `.github/workflows/db-apply-migration.yml`
-- **Fonte:** CLAUDE.md §REGRA#8; E056
+### JA_EM_MAIN
+PR cujos commits já estão em main:
+- `git cherry -v main <branch>` retorna zero linhas
 
-## REGRA #9 — Push ao terminar sessão de governança
-**Fonte:** CLAUDE.md §REGRA#9; incidente 2026-09-17 (29 commits locais)
+### FECHAR
+PR sem ancestral comum com main (branch órfã):
+- `test_merge: NO_MERGE_BASE` na análise de test-merge
+- PO deve fechar manualmente
 
-## REGRA #10 — Merge cross-agente exige PR
-- 6 agentes: Claude, Codex, Devin, Lovable, github-actions, cline
-- `sentinel-check.sh` recusa merge entre branches de prefixos diferentes
-- **Fonte:** CLAUDE.md §REGRA#10; E189
-
-## REGRA #11 — Vercel CLI proibido fora do raiz
-- Proibido: `vercel link`, `vercel pull` fora do diretório raiz
-- `.vercel/project.json` contém `"projectId": "prj_9UfugNYCuboH2R0XB04Jv8PpjDpZ"` — âncora
-- **Fonte:** CLAUDE.md §REGRA#11; incidente 2026-09-15
+### MERGEADO_SESSAO_EXTERNA
+PR que esta sessão rastreava mas foi mergeado por outra sessão durante o trabalho:
+- SHA de merge confirmado via GitHub API
 
 ---
 
-## CI GATES OBRIGATÓRIOS (Gate Final — deploy-gates.yml)
+## Regras de negócio críticas identificadas
 
-| Gate | Descrição | Tipo |
-|---|---|---|
-| Gate 0 | SSOT — ID canônico `doufsxqlfjyuvxuezpln` | job |
-| Gate 0.5 | npm audit --audit-level high | job |
-| Gate 0.6 | Dependency Review (PR-only) | job |
-| Gate 1 | Lint ESLint + TypeScript sem erros | job |
-| Gate 1.1 | Campos críticos do tipo Product | step |
-| Gate 1.2 | Drift estrutural types.ts | step |
-| Gate 1.3 | Contratos de migration (preflight E15) | step |
-| Gate 2 | Vitest unitários | job |
-| Gate 2.5 | Integridade transacional PostgreSQL | job |
-| Gate 3 | E2E Smoke (Playwright, chromium) | job |
-| Gate 5 | SEO sanity check | job |
-| Gate 5.5 | RPC restore_seller_cart presente | job |
-| Gate 6 | Build Vite sem erro + SBOM | job |
-| Gate Final | Deploy Gates aggregator | job |
+### RN-01 — E058: Rollback obrigatório por migration
+Todo arquivo em `supabase/migrations/YYYYMMDDHHMMSS_*.sql` exige arquivo correspondente
+em `supabase/rollbacks/YYYYMMDDHHMMSS_rollback.sql`. O workflow `db-apply-migration.yml`
+falha no preflight (E058) se qualquer rollback estiver faltando.
 
----
+**Evidência:** Run #40462419661 falhou — `20261027120000_rollback.sql não encontrado`.
+PRs #2621 e #2627 cobrem os 9 rollbacks faltantes das migrations do PR #2603.
 
-## CONTRATOS DE COMPONENTES (extraídos dos testes)
+### RN-02 — Gate 1.12: Toda edge function deve estar declarada em edge-authz-manifest.ts
+O arquivo `supabase/functions/_shared/edge-authz-manifest.ts` é SSOT da autorização.
+Função presente no FS mas ausente no manifest → Gate 1.12 FAILED.
 
-### PromoFlixPlayer.tsx — src/components/products/gallery/PromoFlixPlayer.tsx
-Fonte: `PromoFlixPlayer.test.tsx` (22 testes PASSED no baseline)
-Contratos verificados:
-- Sem atributo `crossOrigin` no elemento video (Cloudflare Stream CORS compatibility) — test linha ~155
-- Limpa `src` e chama `load()` no unmount (previne erros residuais) — test linha ~168
-- Reset do estado de erro ao trocar `src` — test linha ~181
-- Tenta muted autoplay fallback se `play()` falhar com som — test linha ~194
-- NÃO persiste mute forçado por autoplay como preferência do usuário — test linha ~220
-- Persiste mute/unmute explícito do usuário após mute forçado por autoplay — test linha ~233
-- Protege contra race conditions via `initTokenRef` em mudanças rápidas de src — test linha ~207
-- `suppressMutePersistRef` NÃO deve ser limpo no branch de supressão (fix #2616) — PromoFlixPlayer.tsx:655
-- Botão "Manual Load" presente e reinicializa player ao clicar — test linha ~129
-- Atualiza estado de qualidade durante múltiplas mudanças de nível — test linha ~142
+**Evidência:** PR #2603 adicionou `xbz-image-uploader/index.ts` sem declarar no manifest.
+PR #2621 corrigiu: entrada `xbz-image-uploader` adicionada com `category: "service"`.
 
-### NegotiationMarkupCard — src/components/quotes/
-Fonte: 3 arquivos de teste (23 testes PASSED no baseline)
-Contratos verificados:
-- Header sem texto descritivo "Ative para inflar..." — singleline.test:10
-- Título, badge e switch como irmãos diretos (uma linha) — singleline.test:20
-- Slider focável com ArrowRight/ArrowLeft/Home/End atualizando aria-valuenow — visualA11y.test:60
-- Label do slider e aria-live do % para acessibilidade — visualA11y.test:73
-- Escala responsiva px-3/py-2.5 (mobile) → sm:px-2.5/sm:py-2 (desktop) — visualA11y.test:35
+### RN-03 — Versão semântica via release-please
+O PR da release-please (#2579, #2520) propõe versão baseada em conventional commits.
+Downgrade de 1.2.1 → 1.0.0 é regressão — requer aprovação do PO.
 
-### chunk-recovery — src/lib/__tests__/
-Fonte: `chunk-recovery.shared-reload-budget.test.ts` (8 testes PASSED)
-Contratos verificados:
-- 2 bumps dentro da janela: incrementa preservando `__bart`
-- Teto atingido (`__bare=2`): recusa e NÃO muta a URL
-- Janela expirada (>20s): reseta para 1 com `__bart` novo
-- `readSharedReloadBudget` não muta a URL (só leitura)
-- Orçamento compartilhado já esgotado mas fora da janela: não bloqueia
+### RN-04 — Deploy de edge function = caminho único
+Deploy via `deploy-edge-functions.yml` apenas. Deploy direto via MCP/dashboard cria
+divergência silenciosa entre GitHub e produção (drift check detecta mas não reverte).
 
----
+### RN-05 — Drift de conteúdo vs. estrutural em edge functions
+Drift de **conteúdo** (hash divergente) em PR é esperado: a função foi modificada no repo
+mas só será deployada após o merge. Drift **estrutural** (função órfã/ausente) indica
+problema real de infraestrutura.
 
-## FALHAS PRÉ-EXISTENTES NO MAIN (não bloqueantes)
+**Evidência:** PR #2626 (E203) propõe distinguir os dois tipos no step "Fail if drift detected".
 
-| Workflow/Job | Status | Observação |
-|---|---|---|
-| color-swatch | FAILURE | Visual baseline — não é Gate Final |
-| magazine-header | FAILURE | Visual baseline — não é Gate Final |
-| e2e-gates | FAILURE | E2E adicional — não é Gate Final |
-| chromium•swatch→QV | FAILURE | E2E Swatch QuickView — não é Gate Final |
-| Full User Flows authed | FAILURE | E2E fluxos completos — não é Gate Final |
-| webkit•swatch→QV | FAILURE | E2E webkit — não é Gate Final |
-| check | FAILURE | Check adicional — não é Gate Final |
+### RN-06 — Supabase canônico = `doufsxqlfjyuvxuezpln` (REGRA#1)
+Nenhum PR pode alterar `CURRENT_PROJECT_ID` em `src/integrations/supabase/client.ts`.
+Qualquer merge que contenha `pqpdolkaeqlyzpdpbizo` em código executável é regressão.
 
-**Testes por nome:** NÃO COLETADOS para as 7 falhas acima (são E2E visuais, não unit tests).
-**Gate Final:** SUCCESS confirmado em todos os merges desta sessão.
-
----
-
-## REGRAS DE MIGRAÇÃO
-- Migration aditiva e não destrutiva: sem DROP, RENAME, ALTER TYPE, DELETE/UPDATE em massa
-- Deve ser idempotente
-- Único caminho: `.github/workflows/db-apply-migration.yml` (`workflow_dispatch`)
-- Fonte: CLAUDE.md §REGRA#8 corolário E15
-
-## REGRAS DE EDGE FUNCTION
-- Deploy somente via `.github/workflows/deploy-edge-functions.yml`
-- Fonte: CLAUDE.md §REGRA#8 corolário
-
-## REGRAS DE RLS/PERMISSÕES
-- Gate 1.13: RLS policies baseline vs pg_policies live
-- Gate 1.13.1: Tabelas com RLS habilitada e zero policies → deny-all silencioso
-- Gate 1.13.2: 7 tabelas com INSERT anônimo têm trigger de rate guard
-- Auditoria de schema somente via `pg_catalog`, nunca PostgREST/OpenAPI
-- Fonte: CLAUDE.md §REGRA#8 corolário; Gate 1.13.x
+### RN-07 — Merge automático = deploy em produção imediato
+O Lovable redeploya `main` automaticamente em todo push. Merge autônomo = produção.
+PRs com risco de regressão (breaking changes, remoção de feature) → DECISAO_HUMANA.
