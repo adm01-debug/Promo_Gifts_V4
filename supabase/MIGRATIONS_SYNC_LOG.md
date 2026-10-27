@@ -1575,3 +1575,9 @@ Detalhes, métricas antes/depois e one-shots: docs/EXECUCAO_CORRECOES_MEDALLION_
 | `20261022203935` | `83558c38fda00255556c265c7ba669c85650a1508a7b2acdb99902fed3746575` | E99 repair-only (mirror) | 2026-10-22T20:39:35Z | em produção via SELECT pg_get_functiondef — auth.uid() guard confirmado |
 
 **Próximo passo obrigatório:** após merge desta PR, disparar `schema-snapshot-export.yml` com `force_rotate: true` para regenerar baseline (REGRA #8 corolário).
+
+## Nota de governança — 2026-10-27
+
+Squash merge do PR #2599 (commit `2ca5ef04`) foi realizado via API com mensagem customizada,
+sem o sufixo `(#2599)` exigido pelo Branch Protection Sentinel. Este commit via PR #XXXX
+restaura o padrão `(#NNN)` no HEAD de `main`.
