@@ -1,6 +1,6 @@
 # PENDÊNCIAS CI — Promo Gifts V4
 **Atualizado em:** 2026-10-27  
-**Branch de correção:** `claude_04/beautiful-gates-bvocz5` (PR #2597)
+**Branch de correção:** `claude_04/beautiful-gates-bvocz5` (PR #2597 — **MERGEADO** ✅)
 
 ---
 
@@ -97,9 +97,20 @@
 - **Causa raiz:** Squash merge do PR #2629 usou `commit_title` sem sufixo `(#2629)`. Título usado: `chore: entrega RELATORIO_CI.md e PENDENCIAS.md — /goal CI fix concluído`. O sentinel detectou corretamente uma violação real de convenção de commit.
 - **Por que não posso corrigir o commit já mergeado:** Retroativamente impossível — commit já está na main. Force-push em main é proibido (REGRA #9).
 - **Impacto no Gate Final:** NÃO é required check (não está em `.github/required-checks.json`) — não bloqueia deploy nem PRs futuros.
-- **Resolução:** Este PR (#2630+) usa squash merge com `commit_title` terminando em `(#NNN)` — o sentinel passará verde no HEAD após este merge.
+- **Resolução:** PRs seguintes usam squash merge com `commit_title` terminando em `(#NNN)` — o sentinel passará verde no HEAD após o merge.
 
 ---
 
-*Gerado por Claude Code — sessão https://claude.ai/code/session_014RkohRYagi3sPiL8jtgot4*
-*Atualizado: 2026-10-27T09:30 UTC — adicionado §7 Branch Protection Sentinel (PR #2629 squash sem `(#NNN)`)*
+### 8. E2E — Customization Collapse (LocationPanel)
+- **Workflow ID:** 306818523
+- **Workflow:** `.github/workflows/e2e-customization-collapse.yml` (ou equivalente)
+- **Erro:** Step "Check baselines exist (mobile/tablet/desktop)" — arquivos PNG não encontrados em `e2e/customization/collapse-reflow.spec.ts-snapshots/`
+- **Causa raiz:** Baselines de screenshot nunca foram gerados ou commitados. O diretório `e2e/customization/collapse-reflow.spec.ts-snapshots/` não existe em nenhum commit da main.
+- **Confirmação pré-existente:** Todos os 10 runs históricos do workflow falharam no mesmo step — falha pré-existente, não regressão. PR #2634 confirmou "✅ Nenhum diff visual detectado" (LocationPanel fix não gerou regressão visual).
+- **Por que não corrigi:** Gerar baselines requer rodar Playwright com `--update-snapshots` em ambiente com servidor Vite e Supabase configurados — não executável via MCP. A falha está no step "Check baselines exist", que é pré-CI (antes dos testes).
+- **Impacto no Gate Final:** NÃO é required check — não bloqueia deploy.
+
+---
+
+*Gerado por Claude Code — sessão https://claude.ai/code/session_014RkohRYagi3sPiL8jtgot4*  
+*Atualizado: 2026-10-27T10:43 UTC — adicionado §8 E2E Customization Collapse (LocationPanel, baselines não gerados, pré-existente)*
