@@ -42,10 +42,10 @@ Esta sessão analisou exaustivamente todas as PRs abertas do repositório `adm01
 | [#2594](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2594) | MERGEADA_PELO_OWNER | SUCCESS | não | Mergeada pelo owner em 15:56Z — actions/setup-node 4→7 |
 | [#2600](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2600) | NAO_MERGEAR | NAO_RODOU | não | DRAFT + body "NÃO MERGEAR ESTA PR" |
 | [#2605](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2605) | CONFLITO_PENDENTE_REBASE | ✅ SUCCESS (40431155697) | **SIM** | Gate OK mas `mergeable_state: dirty` |
-| [#2622](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2622) | CONFLITO_PENDENTE_REBASE | ✅ SUCCESS (40468832310) | **SIM** | Gate OK mas `mergeable_state: dirty` |
+| [#2622](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2622) | CONFLITO_PENDENTE_REBASE_SEGURANCA | ✅ SUCCESS (40468832310) | **SIM** | Gate OK mas `mergeable_state: dirty` + DISABLE RLS em 17 tabelas supplier_stricker.* no rollback 20261027200000 — requer aprovação PO/Security |
 | [#2631](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2631) | DRAFT | NAO_RODOU | não | Estado DRAFT |
 | [#2645](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2645) | AGUARDAR_APROVACAO | 0 check runs | **SIM** | Recibo E15 auto-gerado — sem CI + conflito — owner deve revisar |
-| [#2646](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2646) | CI_FALHOU | ❌ FAILURE (40543049708, SHA 79c0c670) | SIM (behind) | Gate Final FAILURE em 2 SHAs + behind main — corrigir CI e rebase |
+| [#2646](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2646) | CI_FALHOU | ❌ FAILURE (40543049708, SHA 79c0c670) | não (mergeable: true, behind) | Gate Final FAILURE em 2 SHAs; sem conflito (mergeable_state: behind) — atualizar branch e corrigir CI |
 | [#2648](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2648) | MERGEADA_PELO_OWNER | SUCCESS | não | Mergeada pelo owner em 15:50Z — PENDENCIAS.md docs |
 | [#2649](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2649) | MERGEADA_PELO_OWNER | SUCCESS | não | Mergeada pelo owner em 15:54Z — fix e2e admin-critical |
 | [#2650](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2650) | MERGEADA_PELO_OWNER | SUCCESS | não | Mergeada pelo owner em 16:21Z — fix E2E catalog+kit-builder testids |

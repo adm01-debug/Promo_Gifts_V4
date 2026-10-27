@@ -3,9 +3,42 @@
   "data": "2026-10-27",
   "main_sha": "a0560fdc62744c6bf4ba182914cc76dec06aecb1",
   "total_open_github_api": 12,
-  "prs_open_api": [2653, 2646, 2645, 2631, 2622, 2605, 2600, 2588, 2580, 2579, 2572, 2420],
+  "prs_open_api": [
+    2653,
+    2646,
+    2645,
+    2631,
+    2622,
+    2605,
+    2600,
+    2588,
+    2580,
+    2579,
+    2572,
+    2420
+  ],
   "nota_pr_2653": "PR da própria branch de trabalho desta sessão (docs/analise-prs). Não faz parte do inventário original.",
-  "inventario_original_19_prs": [2420, 2572, 2579, 2580, 2587, 2588, 2594, 2600, 2605, 2622, 2631, 2645, 2646, 2648, 2649, 2650, 2652, 2654, 2655],
+  "inventario_original_19_prs": [
+    2420,
+    2572,
+    2579,
+    2580,
+    2587,
+    2588,
+    2594,
+    2600,
+    2605,
+    2622,
+    2631,
+    2645,
+    2646,
+    2648,
+    2649,
+    2650,
+    2652,
+    2654,
+    2655
+  ],
   "contagem_inventario": 19,
   "contagem_analisadas": 19,
   "gate_final_baseline_main": {
@@ -23,15 +56,87 @@
   },
   "merge_tests": {
     "nota": "git merge --no-commit --no-ff contra main a0560fdc. Executado nesta sessão.",
-    "2420": {"exit": 1, "conflicts": 1, "conflicting_files": ["supabase/migrations/20261019000000_mirror_oob_frontend_telemetry_v_system_health_dashboard.sql", "supabase/rollbacks/20261019000000_rollback.sql"]},
-    "2572": {"exit": 1, "conflicts": 8, "conflicting_files": [".as-assertions-baseline.json", ".file-size-baseline.json", ".github/workflows/contract-tests.yml", "PENDENCIAS.md", "analise-prs/ (múltiplos)"]},
-    "2579": {"exit": 0, "conflicts": 0, "files": [".release-please-manifest.json", "CHANGELOG.md", "package-lock.json", "package.json"]},
-    "2588": {"exit": 0, "conflicts": 0, "files": ["package-lock.json", "package.json"]},
-    "2600": {"exit": 0, "conflicts": 0, "files": ["analise-prs/ (múltiplos)"]},
-    "2605": {"exit": 1, "conflicts": 2, "conflicting_files": ["e2e/catalog/novidades-reposicao-card-parity.spec.ts", "src/components/products/gallery/PromoFlixPlayer.tsx"]},
-    "2622": {"exit": 1, "conflicts": 12, "conflicting_files": ["analise-prs/ (múltiplos)"]},
-    "2645": {"exit": 1, "conflicts": 1, "conflicting_files": ["supabase/MIGRATIONS_SYNC_LOG.md"]},
-    "2646": {"exit": 0, "conflicts": 0, "files": [".github/workflows/db-schema-drift-check.yml", ".github/workflows/deploy-gates.yml", ".github/workflows/schema-snapshot-export.yml", "scripts/migration-ledger-remote-only-allowlist.json", "supabase/MIGRATIONS_SYNC_LOG.md", "supabase/migrations/20261027160000_deactivate_image_dimensions_backfill_cron.sql", "supabase/migrations/20261027220000_deactivate_xbz_image_uploader_cron.sql", "supabase/migrations/20261027230000_cleanup_get_edge_function_secret_allowlist.sql"], "nota": "Merge-test exit=0 mas Gate Final FAILURE em 2 SHAs (2d8fd74e run 40531570681, 79c0c670 run 40543049708). Branch behind main (base f2f8c3d6)."}
+    "2420": {
+      "exit": 1,
+      "conflicts": 1,
+      "conflicting_files": [
+        "supabase/migrations/20261019000000_mirror_oob_frontend_telemetry_v_system_health_dashboard.sql",
+        "supabase/rollbacks/20261019000000_rollback.sql"
+      ]
+    },
+    "2572": {
+      "exit": 1,
+      "conflicts": 8,
+      "conflicting_files": [
+        ".as-assertions-baseline.json",
+        ".file-size-baseline.json",
+        ".github/workflows/contract-tests.yml",
+        "PENDENCIAS.md",
+        "analise-prs/ (múltiplos)"
+      ]
+    },
+    "2579": {
+      "exit": 0,
+      "conflicts": 0,
+      "files": [
+        ".release-please-manifest.json",
+        "CHANGELOG.md",
+        "package-lock.json",
+        "package.json"
+      ]
+    },
+    "2588": {
+      "exit": 0,
+      "conflicts": 0,
+      "files": [
+        "package-lock.json",
+        "package.json"
+      ]
+    },
+    "2600": {
+      "exit": 0,
+      "conflicts": 0,
+      "files": [
+        "analise-prs/ (múltiplos)"
+      ]
+    },
+    "2605": {
+      "exit": 1,
+      "conflicts": 2,
+      "conflicting_files": [
+        "e2e/catalog/novidades-reposicao-card-parity.spec.ts",
+        "src/components/products/gallery/PromoFlixPlayer.tsx"
+      ]
+    },
+    "2622": {
+      "exit": 1,
+      "conflicts": 12,
+      "conflicting_files": [
+        "analise-prs/ (múltiplos)"
+      ]
+    },
+    "2645": {
+      "exit": 1,
+      "conflicts": 1,
+      "conflicting_files": [
+        "supabase/MIGRATIONS_SYNC_LOG.md"
+      ]
+    },
+    "2646": {
+      "exit": 0,
+      "conflicts": 0,
+      "files": [
+        ".github/workflows/db-schema-drift-check.yml",
+        ".github/workflows/deploy-gates.yml",
+        ".github/workflows/schema-snapshot-export.yml",
+        "scripts/migration-ledger-remote-only-allowlist.json",
+        "supabase/MIGRATIONS_SYNC_LOG.md",
+        "supabase/migrations/20261027160000_deactivate_image_dimensions_backfill_cron.sql",
+        "supabase/migrations/20261027220000_deactivate_xbz_image_uploader_cron.sql",
+        "supabase/migrations/20261027230000_cleanup_get_edge_function_secret_allowlist.sql"
+      ],
+      "nota": "mergeable: true, mergeable_state: behind (não dirty). Merge-test via GitHub API: sem conflitos com main. Gate Final FAILURE run 40543049708 SHA 79c0c670. Diff lido 100% nesta sessão: 3 workflows (+packages:read + docker ghcr.io login), allowlist.json (reformat + entradas 20261027120000/20261027140000), MIGRATIONS_SYNC_LOG.md (docs), 3 SQL migrations (+-- Rollback: header)"
+    }
   },
   "git_cherry_checks": {
     "nota": "git cherry origin/main <pr_head>. + = não está no main (cherry pendente).",
@@ -48,7 +153,7 @@
     "2645": "CONFIRMADO — 1 arquivo: supabase/MIGRATIONS_SYNC_LOG.md (+1 linha receipt 20261027140000)",
     "2579": "CONFIRMADO — 4 arquivos: .release-please-manifest.json (downgrade 1.2.1→1.0.0), CHANGELOG.md +228 linhas, package.json+lock version downgrade",
     "2605": "CONFIRMADO — 5 arquivos: e2e threshold 64→96px, PromoFlixPlayer mute fix, snapshot renames, timer/await fixes",
-    "2646": "CONFIRMADO — 8 arquivos: 3 workflows (+packages:read + docker ghcr.io login), allowlist.json (+2 entries 20261027120000/140000), MIGRATIONS_SYNC_LOG.md (3 linhas), 3 SQL migrations (+rollback header comments)"
+    "2646": "CONFIRMADO (diff lido nesta sessão) — 8 arquivos: 3 workflows (+packages:read + docker ghcr.io login), allowlist.json (reformat + 2 entradas), MIGRATIONS_SYNC_LOG.md (3 linhas docs), 3 SQL migrations (+-- Rollback: header). mergeable: true, mergeable_state: behind."
   },
   "veredictos": {
     "2420": "AGUARDAR_APROVACAO",
@@ -72,9 +177,22 @@
     "2594": "MERGEADA_PELO_OWNER"
   },
   "mergeadas_claude": [
-    {"pr": 2587, "merge_sha": "16ad57c66e619100f76c113653cdab7a20a7871a", "gate": "SUCCESS (40420603513)", "regressao": false}
+    {
+      "pr": 2587,
+      "merge_sha": "16ad57c66e619100f76c113653cdab7a20a7871a",
+      "gate": "SUCCESS (40420603513)",
+      "regressao": false
+    }
   ],
-  "mergeadas_owner": [2594, 2648, 2649, 2650, 2652, 2654, 2655],
+  "mergeadas_owner": [
+    2594,
+    2648,
+    2649,
+    2650,
+    2652,
+    2654,
+    2655
+  ],
   "meta_cumprida": {
     "total_open_api": 12,
     "total_inventariadas": 19,
@@ -85,5 +203,10 @@
     "worktrees_removidos": true,
     "merge_claude_gate_final_ok": true,
     "zero_regressoes_novas": true
+  },
+  "supabase_log_check_post_merge_2587": {
+    "resultado": "ZERO erros PostgreSQL no período 16:46Z-18:30Z (pós-merge PR #2587)",
+    "query": "postgres_logs source, error_severity IN (ERROR, FATAL, PANIC), result: []",
+    "confirmacao": "Sem nova regressão em produção pós-merge zustand 4→5"
   }
 }

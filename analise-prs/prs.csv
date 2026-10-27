@@ -1,20 +1,13 @@
-numero,titulo,veredicto,head_sha,gate_final,conflito,mergeable_state,arquivos,motivo_resumido,data_analise
-2420,Rollback/sync PR — AGUARDANDO APROVAÇÃO,AGUARDAR_APROVACAO,c10816b9,DESCONHECIDO,false,unknown,3,Body diz AGUARDANDO APROVAÇÃO — requer aprovação humana,2026-10-27
-2572,analise-prs docs sessão Claude anterior,FECHAR,SESSAO_ANTIGA,DESCONHECIDO,false,,62,62 arquivos de sessão antiga — dados obsoletos,2026-10-27
-2579,chore(main): release 1.0.0,NAO_MERGEAR,RELEASE_PLEASE,DESCONHECIDO,false,,,"PR automática release-please bot — base f2f8c3d6 stale",2026-10-27
-2580,DRAFT rollback header E23 E058,DRAFT,,NAO_RODOU,false,,,"Estado DRAFT — aguardar autor",2026-10-27
-2587,Bump zustand 4.5.7 to 5.0.16,MERGEADA_CLAUDE,0a091fc8,SUCCESS,false,clean,2,Mergeada por Claude 2026-10-27T16:46Z — merge_sha 16ad57c6,2026-10-27
-2588,Bump react-day-picker 8.10.2 to 10.0.2,DECISAO_HUMANA,,DESCONHECIDO,false,,,Double major bump 8→10 — requer decisão PO,2026-10-27
-2594,Bump actions/setup-node from 4 to 7,MERGEADA_PELO_OWNER,,SUCCESS,false,,,"Mergeada pelo owner 2026-10-27T15:56:14Z — merge_sha f2f8c3d6",2026-10-27
-2600,DRAFT NÃO MERGEAR ESTA PR,NAO_MERGEAR,,NAO_RODOU,false,,89,Estado DRAFT + body diz NÃO MERGEAR,2026-10-27
-2605,Test quality fixes E2E mute snapshots timers,CONFLITO_PENDENTE_REBASE,9bfead14,SUCCESS,true,dirty,5,Gate Final OK mas merge conflicts — rebase necessário,2026-10-27
-2622,9 rollbacks + manifest MANIFESTO_ROLLBACKS,CONFLITO_PENDENTE_REBASE,2e8f40c1,SUCCESS,true,dirty,,Gate Final OK mas merge conflicts — rebase necessário,2026-10-27
-2631,DRAFT docs PENDENCIAS RELATORIO_CI,DRAFT,,NAO_RODOU,false,,,"Estado DRAFT — aguardar autor",2026-10-27
-2645,E15 receipt migration 20261027140000,AGUARDAR_APROVACAO,c1bcb16d,0_CHECK_RUNS,true,dirty,1,Recibo E15 auto-gerado — sem CI + conflito — owner deve review,2026-10-27
-2646,fix(migrations): adiciona cabeçalho Rollback nas migrations 20261027160000 e 20261027220000,CI_FALHOU,79c0c670,FAILURE,false,behind,8,Gate Final FAILURE run 40543049708 em 2 SHAs + behind main — rebase + corrigir CI,2026-10-27
-2648,PENDENCIAS.md schema-snapshot docs,MERGEADA_PELO_OWNER,,SUCCESS,false,,,"Mergeada pelo owner 2026-10-27T15:50:19Z — merge_sha ed87db31",2026-10-27
-2649,fix e2e admin-critical tests,MERGEADA_PELO_OWNER,,SUCCESS,false,,,"Mergeada pelo owner 2026-10-27T15:54:20Z — merge_sha 61a0cfa1",2026-10-27
-2650,fix e2e catalog+kit-builder testids,MERGEADA_PELO_OWNER,acdaa65b,SUCCESS,false,clean,2,"Mergeada pelo owner 2026-10-27T16:21:21Z — merge_sha f0689734",2026-10-27
-2652,docs(e15): recibo migration 20261027140000,MERGEADA_PELO_OWNER,,SUCCESS,false,clean,1,"Mergeada pelo owner 2026-10-27T16:45Z — merge_sha 22ba938e",2026-10-27
-2654,fix(ci): adiciona xbz-image-uploader ao SERVER_ONLY_ALLOWLIST,MERGEADA_PELO_OWNER,a02a7c1a,SUCCESS,false,clean,1,Mergeada pelo owner 2026-10-27T17:19:33Z — merge_sha 4c7ecb26,2026-10-27
-2655,fix(tests): add xbz-image-uploader descriptor with pendingDeploy=true,MERGEADA_PELO_OWNER,d4b959aa,SUCCESS,false,clean,1,"Mergeada pelo owner 2026-10-27T17:31:49Z — merge_sha a0560fdc",2026-10-27
+numero,veredicto,gate_final,conflito,diff_lido,motivo
+2420,AGUARDAR_APROVACAO,DESCONHECIDO,True,True,Body: AGUARDANDO APROVAÇÃO; SQL de rollback — requer humano
+2572,FECHAR,DESCONHECIDO,True,True,62 arquivos de sessão Claude antiga — dados obsoletos
+2579,NAO_MERGEAR,DESCONHECIDO,False,True,"PR automática release-please bot — base stale, versão downgrade"
+2580,DRAFT,NAO_RODOU,False,True,Estado DRAFT
+2588,DECISAO_HUMANA,DESCONHECIDO,False,True,react-day-picker 8→10 double major — requer PO
+2600,NAO_MERGEAR,NAO_RODOU,False,True,DRAFT + body NÃO MERGEAR ESTA PR
+2605,CONFLITO_PENDENTE_REBASE,SUCCESS,True,True,Gate OK mas mergeable_state: dirty
+2622,CONFLITO_PENDENTE_REBASE_SEGURANCA,SUCCESS,True,True,Gate OK + conflito + DISABLE RLS 17 tabelas supplier_stricker.* no rollback 20261027200000 — requer PO/Security
+2631,DRAFT,NAO_RODOU,False,True,Estado DRAFT
+2645,AGUARDAR_APROVACAO,0 check runs,True,True,Recibo E15 auto-gerado — sem CI + conflito — owner deve revisar
+2646,CI_FALHOU,FAILURE,False,True,Gate Final FAILURE em 2 SHAs (2d8fd74e + 79c0c670); mergeable_state: behind — sem conflito com main
+2653,PROPRIO_BRANCH_SESSAO,N/A,False,True,PR da própria branch de trabalho desta sessão — não faz parte do inventário original

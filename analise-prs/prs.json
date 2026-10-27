@@ -1,228 +1,145 @@
 {
-  "inventario_atual": {
-    "data": "2026-10-27",
-    "sessao": "session_012WyySbh2tj8vhRQLBf3mHo",
-    "main_sha": "a0560fdc62744c6bf4ba182914cc76dec06aecb1",
-    "main_sha_anterior": "16ad57c66e619100f76c113653cdab7a20a7871a",
-    "total_analisadas": 19,
-    "nota": "15 PRs abertas no inventário de reconciliação 2026-10-27T18:00Z. #2594, #2648, #2649 foram mergeadas pelo owner durante a análise. #2650 surgiu após o inventário e foi mergeada pelo owner em 2026-10-27T16:21:21Z. #2652 mergeada pelo owner (docs E15 receipt). #2587 mergeada por Claude em 2026-10-27T16:46:37Z (zustand 4→5, SHA merge 16ad57c6). #2654 e #2655 surgiram após o inventário final — ambas DRAFT, aguardando promoção pelo autor. Total 19 PRs analisadas, 13 ainda abertas.",
-    "numeros_inventario_reconciliacao": [2420, 2572, 2579, 2580, 2587, 2588, 2594, 2600, 2605, 2622, 2631, 2645, 2646, 2648, 2649],
-    "numeros_ainda_open": [2420, 2572, 2579, 2580, 2588, 2600, 2605, 2622, 2631, 2645, 2646],
-    "pr2650_nota": "Surgiu após inventário inicial; mergeada pelo owner em 2026-10-27T16:21:21Z (merge SHA f0689734). Main passou de 61a0cfa1 para f0689734.",
-    "pr2652_nota": "Surgiu após inventário; mergeada pelo owner em ~16:45Z (merge SHA 22ba938e). docs(e15): recibo migration 20261027140000.",
-    "pr2587_nota": "Mergeada por Claude em 2026-10-27T16:46:37Z (merge SHA 16ad57c6). zustand 4.5.7→5.0.16. Gate Final SUCCESS run 40420603513, test-merge limpo, git cherry +, 2 arquivos package.json+lock, API 100% compatível.",
-    "pr2654_nota": "Surgiu como DRAFT/blocked após inventário final. Owner promoveu e mergeou em 2026-10-27T17:19:33Z (merge SHA 4c7ecb26). fix(ci): +1 linha SERVER_ONLY_ALLOWLIST. Gate Final SUCCESS run 40549508170. Main atual = 4c7ecb260da691b5cd436700380b819d0d936961."
-  },
-  "contagem_por_veredicto": {
-    "MERGEADA_PELO_OWNER": 7,
-    "DECISAO_HUMANA": 1,
-    "CONFLITO_PENDENTE_REBASE": 1,
-    "CONFLITO_PENDENTE_REBASE_SEGURANCA": 1,
-    "DRAFT": 2,
-    "AGUARDAR_APROVACAO": 2,
-    "CI_FALHOU": 1,
-    "NAO_MERGEAR": 2,
-    "FECHAR": 1,
-    "MERGEADA_CLAUDE": 1
-  },
-  "prs": {
-    "2420": {
+  "data": "2026-10-27",
+  "sessao": "session_012WyySbh2tj8vhRQLBf3mHo",
+  "main_sha": "a0560fdc62744c6bf4ba182914cc76dec06aecb1",
+  "total_open": 12,
+  "prs": [
+    {
+      "numero": 2420,
+      "titulo": "AGUARDANDO APROVAÇÃO - ProductFormFullscreen + migration mirror",
+      "branch": "unknown",
+      "estado": "open",
       "veredicto": "AGUARDAR_APROVACAO",
-      "titulo": "Rollback/sync PR — AGUARDANDO APROVAÇÃO",
-      "head": "c10816b9",
-      "arquivos": 3,
       "gate_final": "DESCONHECIDO",
-      "conflito": false,
-      "motivo": "Body explicitamente diz AGUARDANDO APROVAÇÃO. Contém SQL de rollback — requer aprovação humana por REGRA #8."
+      "conflito": true,
+      "motivo": "Body: AGUARDANDO APROVAÇÃO; SQL de rollback — requer humano",
+      "diff_lido": true
     },
-    "2572": {
+    {
+      "numero": 2572,
+      "titulo": "docs: análise de PRs (sessão antiga)",
+      "branch": "unknown",
+      "estado": "open",
       "veredicto": "FECHAR",
-      "titulo": "analise-prs docs — sessão Claude anterior",
-      "head": "SESSAO_ANTIGA",
-      "arquivos": 62,
       "gate_final": "DESCONHECIDO",
-      "conflito": false,
-      "motivo": "62 arquivos de documentação de sessão antiga (session_01Ss1tXZ4cAbxBvdmu95uNPz). Dados obsoletos — sobrescreveria análise mais recente."
+      "conflito": true,
+      "motivo": "62 arquivos de sessão Claude antiga — dados obsoletos",
+      "diff_lido": true
     },
-    "2579": {
+    {
+      "numero": 2579,
+      "titulo": "chore: release 1.2.1→1.0.0 (release-please bot)",
+      "branch": "release-please--branches--main",
+      "estado": "open",
       "veredicto": "NAO_MERGEAR",
-      "titulo": "chore(main): release 1.0.0",
-      "head": "RELEASE_PLEASE",
-      "base_stale": "f2f8c3d6",
-      "criado_por": "release-please bot",
       "gate_final": "DESCONHECIDO",
       "conflito": false,
-      "motivo": "PR automática de release-please bot. Base f2f8c3d6 muito antiga. Nunca válida para merge direto."
+      "motivo": "PR automática release-please bot — base stale, versão downgrade",
+      "diff_lido": true
     },
-    "2580": {
+    {
+      "numero": 2580,
+      "titulo": "feat(migrations): E23 NO FORCE RLS supplier tables",
+      "branch": "unknown",
+      "estado": "open",
       "veredicto": "DRAFT",
-      "titulo": "DRAFT — rollback header E23 (E058 compliance)",
       "gate_final": "NAO_RODOU",
       "conflito": false,
-      "motivo": "Estado DRAFT — aguardar autor promover."
+      "motivo": "Estado DRAFT",
+      "diff_lido": true
     },
-    "2587": {
-      "veredicto": "MERGEADA_CLAUDE",
-      "titulo": "Bump zustand from 4.5.7 to 5.0.16",
-      "criado_por": "dependabot[bot]",
-      "gate_final": "SUCCESS",
-      "gate_final_run": 40420603513,
-      "conflito": false,
-      "merged_at": "2026-10-27T16:46:37Z",
-      "merge_sha": "16ad57c66e619100f76c113653cdab7a20a7871a",
-      "mergeado_por": "claude/session_012WyySbh2tj8vhRQLBf3mHo",
-      "motivo": "zustand 4.5.7→5.0.16. Gate Final SUCCESS, test-merge limpo, git cherry +, API 100% compatível (apenas create/persist). 2 arquivos: package.json + package-lock.json."
-    },
-    "2588": {
+    {
+      "numero": 2588,
+      "titulo": "chore(deps): react-day-picker 8→10",
+      "branch": "unknown",
+      "estado": "open",
       "veredicto": "DECISAO_HUMANA",
-      "titulo": "Bump react-day-picker from 8.10.2 to 10.0.2",
-      "criado_por": "dependabot[bot]",
       "gate_final": "DESCONHECIDO",
       "conflito": false,
-      "motivo": "Double major bump react-day-picker 8→10 com breaking changes de UI. Requer decisão do PO."
+      "motivo": "react-day-picker 8→10 double major — requer PO",
+      "diff_lido": true
     },
-    "2594": {
-      "veredicto": "MERGEADA_PELO_OWNER",
-      "titulo": "Bump actions/setup-node from 4 to 7",
-      "criado_por": "dependabot[bot]",
-      "merged_at": "2026-10-27T15:56:14Z",
-      "merge_sha": "f2f8c3d6",
-      "mergeado_por": "adm01-debug",
-      "motivo": "Mergeada pelo owner durante a análise desta sessão."
-    },
-    "2600": {
+    {
+      "numero": 2600,
+      "titulo": "docs: NÃO MERGEAR",
+      "branch": "unknown",
+      "estado": "open",
       "veredicto": "NAO_MERGEAR",
-      "titulo": "DRAFT — NÃO MERGEAR ESTA PR",
       "gate_final": "NAO_RODOU",
       "conflito": false,
-      "branch": "claude_04/*",
-      "commits": 89,
-      "arquivos": 76,
-      "motivo": "Estado DRAFT + body explicitamente diz NÃO MERGEAR ESTA PR."
+      "motivo": "DRAFT + body NÃO MERGEAR ESTA PR",
+      "diff_lido": true
     },
-    "2605": {
+    {
+      "numero": 2605,
+      "titulo": "fix(tests): test quality fixes — e2e threshold, PromoFlixPlayer mute",
+      "branch": "unknown",
+      "estado": "open",
       "veredicto": "CONFLITO_PENDENTE_REBASE",
-      "titulo": "Test quality fixes (E2E threshold, PromoFlix mute, snapshots, timers)",
-      "head": "9bfead14",
-      "arquivos": 5,
       "gate_final": "SUCCESS",
-      "gate_final_run": 40431155697,
+      "run_id": 40431155697,
       "conflito": true,
-      "mergeable_state": "dirty",
-      "motivo": "Gate Final SUCCESS mas merge conflicts. Autor precisa fazer rebase."
+      "motivo": "Gate OK mas mergeable_state: dirty",
+      "diff_lido": true
     },
-    "2622": {
-      "veredicto": "CONFLITO_PENDENTE_REBASE",
-      "titulo": "(9 rollbacks + manifest MANIFESTO_ROLLBACKS)",
-      "head": "2e8f40c1",
+    {
+      "numero": 2622,
+      "titulo": "docs(rollbacks): 9 rollbacks + edge-authz-manifest",
+      "branch": "unknown",
+      "estado": "open",
+      "veredicto": "CONFLITO_PENDENTE_REBASE_SEGURANCA",
       "gate_final": "SUCCESS",
-      "gate_final_run": 40468832310,
+      "run_id": 40468832310,
       "conflito": true,
-      "mergeable_state": "dirty",
-      "motivo": "Gate Final SUCCESS mas merge conflicts. Autor precisa fazer rebase."
+      "motivo": "Gate OK + conflito + DISABLE RLS 17 tabelas supplier_stricker.* no rollback 20261027200000 — requer PO/Security",
+      "diff_lido": true
     },
-    "2631": {
+    {
+      "numero": 2631,
+      "titulo": "docs: PENDENCIAS.md §4 + RELATORIO_CI.md §10",
+      "branch": "unknown",
+      "estado": "open",
       "veredicto": "DRAFT",
-      "titulo": "DRAFT — docs PENDENCIAS/RELATORIO_CI",
       "gate_final": "NAO_RODOU",
       "conflito": false,
-      "motivo": "Estado DRAFT — aguardar autor promover."
+      "motivo": "Estado DRAFT",
+      "diff_lido": true
     },
-    "2645": {
+    {
+      "numero": 2645,
+      "titulo": "docs(e15): recibo migration 20261027140000 (MIGRATIONS_SYNC_LOG)",
+      "branch": "unknown",
+      "estado": "open",
       "veredicto": "AGUARDAR_APROVACAO",
-      "titulo": "E15 receipt — migration 20261027140000",
-      "head": "c1bcb16d",
-      "arquivos": 1,
-      "arquivo_unico": "supabase/MIGRATIONS_SYNC_LOG.md",
-      "criado_por": "github-actions[bot]",
-      "gate_final": "0_CHECK_RUNS",
+      "gate_final": "0 check runs",
       "conflito": true,
-      "mergeable_state": "dirty",
-      "reviewer_pendente": "adm01-debug",
-      "motivo": "Recibo E15 auto-gerado. 0 check runs + conflito. Owner deve fazer review e rebase."
+      "motivo": "Recibo E15 auto-gerado — sem CI + conflito — owner deve revisar",
+      "diff_lido": true
     },
-    "2646": {
-      "veredicto": "CI_FALHOU",
+    {
+      "numero": 2646,
       "titulo": "fix(migrations): adiciona cabeçalho -- Rollback: nas migrations 20261027160000 e 20261027220000",
-      "head_original": "2d8fd74e847c150ff88d92800b183f006afbd5e5",
-      "head_atual": "79c0c670f33744fecc01f5c9b6617578c57a3fd2",
-      "commits": 10,
-      "arquivos": 8,
+      "branch": "claude/fix-rollbacks-migrations-261027-1305",
+      "head_sha": "79c0c670",
+      "estado": "open",
+      "veredicto": "CI_FALHOU",
       "gate_final": "FAILURE",
-      "gate_final_run_original": 40531570681,
-      "gate_final_run_atual": 40543049708,
-      "gate_final_check_run_id_atual": 122367004026,
+      "run_id": 40543049708,
       "conflito": false,
       "mergeable_state": "behind",
-      "diff_lido": true,
-      "diff_conteudo": "3 workflows (+packages:read + docker ghcr.io), allowlist.json (+2 versions 20261027120000/140000), MIGRATIONS_SYNC_LOG.md, 3 SQL migrations (+rollback headers). Sem DDL, sem SSOT, sem campos Product.",
-      "motivo": "Gate Final FAILURE em 2 SHAs consecutivos (run 40531570681 SHA 2d8fd74e; run 40543049708 SHA 79c0c670). Branch behind main (base f2f8c3d6). Autor precisa rebase + corrigir CI."
+      "motivo": "Gate Final FAILURE em 2 SHAs (2d8fd74e + 79c0c670); mergeable_state: behind — sem conflito com main",
+      "diff_lido": true
     },
-    "2648": {
-      "veredicto": "MERGEADA_PELO_OWNER",
-      "titulo": "PENDENCIAS.md update + schema-snapshot docs",
-      "merged_at": "2026-10-27T15:50:19Z",
-      "merge_sha": "ed87db31",
-      "mergeado_por": "adm01-debug",
-      "motivo": "Mergeada pelo owner durante a análise desta sessão."
-    },
-    "2649": {
-      "veredicto": "MERGEADA_PELO_OWNER",
-      "titulo": "fix: e2e admin-critical tests",
-      "merged_at": "2026-10-27T15:54:20Z",
-      "merge_sha": "61a0cfa1714661f752273cf864b335eb217ea134",
-      "mergeado_por": "adm01-debug",
-      "nota": "Este merge resultou no SHA de main 61a0cfa1 no momento da análise inicial.",
-      "motivo": "Mergeada pelo owner durante a análise desta sessão."
-    },
-    "2652": {
-      "veredicto": "MERGEADA_PELO_OWNER",
-      "titulo": "docs(e15): recibo migration 20261027140000",
-      "gate_final": "SUCCESS",
+    {
+      "numero": 2653,
+      "titulo": "docs: análise de PRs sessão session_012WyySbh2tj8vhRQLBf3mHo",
+      "branch": "claude/quirky-keller-owezvt",
+      "estado": "open",
+      "veredicto": "PROPRIO_BRANCH_SESSAO",
+      "gate_final": "N/A",
       "conflito": false,
-      "merged_at": "2026-10-27T16:45:18Z",
-      "merge_sha": "22ba938e02ae48eee34d77176a4d5dee6cf8e14b",
-      "mergeado_por": "adm01-debug",
-      "motivo": "Surgiu após inventário inicial. Docs only (recibo E15 migration). Mergeada pelo owner durante a análise desta sessão."
-    },
-    "2654": {
-      "veredicto": "MERGEADA_PELO_OWNER",
-      "titulo": "fix(ci): adiciona xbz-image-uploader ao SERVER_ONLY_ALLOWLIST",
-      "head": "a02a7c1a731e51661adb2c866da42f6c472ce921",
-      "arquivos": 1,
-      "gate_final": "SUCCESS",
-      "gate_final_run": 40549508170,
-      "conflito": false,
-      "merged_at": "2026-10-27T17:19:33Z",
-      "merge_sha": "4c7ecb260da691b5cd436700380b819d0d936961",
-      "mergeado_por": "adm01-debug",
-      "motivo": "Surgiu como DRAFT/blocked. Owner promoveu e mergeou. +1 linha SERVER_ONLY_ALLOWLIST em scripts/check-edge-cors-headers.mjs. Gate Final SUCCESS."
-    },
-    "2655": {
-      "veredicto": "MERGEADA_PELO_OWNER",
-      "titulo": "fix(tests): add xbz-image-uploader descriptor with pendingDeploy=true",
-      "head": "d4b959aafdd028c0c9271d31eed2d891c96cb153",
-      "arquivos": 1,
-      "gate_final": "SUCCESS",
-      "conflito": false,
-      "merged_at": "2026-10-27T17:31:49Z",
-      "merge_sha": "a0560fdc62744c6bf4ba182914cc76dec06aecb1",
-      "mergeado_por": "adm01-debug",
-      "motivo": "Owner promoveu de DRAFT e mergeou. tests/edge-functions/live/descriptors.ts +7 linhas (descriptor xbz-image-uploader com pendingDeploy=true). Merge SHA a0560fdc = main atual."
-    },
-    "2650": {
-      "veredicto": "MERGEADA_PELO_OWNER",
-      "titulo": "fix(e2e): catalog + kit-builder testid updates",
-      "head": "acdaa65b",
-      "branch": "claude/fix-e2e-catalog-kitbuilder-261027-1548",
-      "arquivos": 2,
-      "gate_final": "SUCCESS",
-      "gate_final_run": 40536630821,
-      "merged_at": "2026-10-27T16:21:21Z",
-      "merge_sha": "f0689734b38e79edda24cf80f5df19abae941015",
-      "mergeado_por": "adm01-debug",
-      "nota": "Este merge resultou no SHA de main atual f0689734. PR saiu de DRAFT antes do merge. Gate Final SUCCESS confirmado por esta sessão.",
-      "motivo": "Mergeada pelo owner durante a análise desta sessão. 2 arquivos de E2E (catalog.spec.ts + kit-builder.spec.ts) com correções de data-testids."
+      "motivo": "PR da própria branch de trabalho desta sessão — não faz parte do inventário original",
+      "diff_lido": true
     }
-  }
+  ]
 }
