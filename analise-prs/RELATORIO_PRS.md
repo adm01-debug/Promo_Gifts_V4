@@ -3,7 +3,7 @@
 **Data:** 2026-10-27 (atualizado; análise iniciada 2026-10-22)  
 **Baseline main:** `8bafc7d5a0a1f0f6a06d88adc6577098f873dfcb` (gate_final: success — run 39869261220)  
 **Typecheck baseline:** 1 erro pré-existente (TS2688 `node`) — Gate Final = success  
-**Total de PRs abertas analisadas:** 25 (+ #2360 aberta/mergeada pelo owner durante a sessão = 26 total documentadas)  
+**Total de PRs documentadas com dossier:** 31 (25 no inventário inicial + #2356 criada por esta sessão + #2357 e #2360 abertas pelo owner durante a sessão + 3 adicionais descobertas durante análise = 31 total; ver progresso.json campo `total_documentadas`)  
 **PRs mergeadas por Claude:** 4 (#2338, #2351, #2354, #2356)  
 **PRs mergeadas pelo owner:** 2 (#2352, #2360)  
 **PR fechada pelo owner:** 1 (#2357 — substituída por #2360)  
@@ -44,7 +44,8 @@ As seguintes falhas existiam em main `8e8053b9` **antes** de qualquer PR — qua
 - `Gate 0.5 - Dependency Audit` — flaky (npm audit instável)
 - `Gate 1 - Lint + TypeScript` — falhas pré-existentes de lint
 - `E2E — Personalization Journey` — E2E instável em infra
-- `Migrations x Canonical schema (Gate E40)` — ECR Public rate limit no pull da imagem Supabase postgres
+- `Migrations x Canonical schema (Gate E40)` — divergência estrutural do ledger (`local_only=1091; remote_only=635`), pré-existente desde SHA `8e8053b9` (evidência: `baseline/checks-main-8e8053b9.json` campo `failures[]`; gate ficou `skipped` no SHA `8bafc7d5` porque PR #2356 não tocou arquivos de schema; reativado em `b4cc8163` por PR #2360)
+- `Dependabot alerts #68/#69` — extract-zip (dev/transitive), CVSS 8.1 (high), criadas 2026-09-27, sem patch disponível; afetam apenas CI/dev, não produção
 
 ---
 

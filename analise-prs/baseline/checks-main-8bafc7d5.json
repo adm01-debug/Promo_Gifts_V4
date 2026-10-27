@@ -25,5 +25,36 @@
     "source_file": "analise-prs/baseline/checks-main-8e8053b9.json",
     "finding": "\"Migrations x Canonical schema\" listada explicitamente em failures[] no SHA 8e8053b9 (baseline original, antes de qualquer merge desta sessão)",
     "implication": "A falha de Gate E40 é pré-existente ao início desta sessão — não foi introduzida por nenhum merge"
+  },
+  "dependabot_vulnerabilities": {
+    "total_high": 2,
+    "pre_existing": true,
+    "created_at": "2026-09-27",
+    "nota": "Ambas as alertas existiam ANTES do início desta sessão (criadas 2026-09-27; baseline desta sessão é 2026-10-22). Nenhum merge desta sessão as introduziu.",
+    "alerts": [
+      {
+        "number": 68,
+        "package": "extract-zip",
+        "cve": "CVE-2026-56876",
+        "severity": "high",
+        "scope": "development",
+        "relationship": "transitive",
+        "summary": "extract-zip unvalidated symlink path traversal",
+        "first_patched_version": null,
+        "regressao_desta_sessao": false
+      },
+      {
+        "number": 69,
+        "package": "extract-zip",
+        "cve": "CVE-2026-19693",
+        "severity": "high",
+        "scope": "development",
+        "relationship": "transitive",
+        "summary": "extract-zip allows arbitrary file writes through symlink archive entries",
+        "first_patched_version": null,
+        "regressao_desta_sessao": false
+      }
+    ],
+    "avaliacao": "extract-zip é dependência transitiva de dev (Playwright/testes). Não afeta o bundle de produção (não inclusa no build Vite — scope:development). Sem versão com patch disponível (first_patched_version=null). Risco: ambiente de CI, não produção."
   }
 }
