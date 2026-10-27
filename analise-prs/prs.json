@@ -2,12 +2,12 @@
   "meta": {
     "sessao_atual": "session_011d8gKLZg8BWivR8aQBwxGF",
     "sessao_anterior": "session_01Ss1tXZ4cAbxBvdmu95uNPz",
-    "revisao": "rev59",
+    "revisao": "rev62",
     "data": "2026-10-27",
     "main_head_entrada": "df18546dfd76d1bea7ea5873257b668d128d8df3",
-    "main_head_final": "1ce29cf2f95ecf851eef580974130a46f5a4f53a",
-    "total_prs_analisados_historico": 53,
-    "total_prs_analisados_sessao_atual": 26
+    "main_head_final": "b5cfee9b24017fbf53a0035e86d8820d07bad74e",
+    "total_prs_analisados_historico": 55,
+    "total_prs_analisados_sessao_atual": 28
   },
   "prs": [
     {
@@ -590,6 +590,28 @@
       ],
       "verdict": "DRAFT_NOMERGE",
       "motivo": "Draft + REGRA#10 + gate de segurança RLS requer aprovação PO"
+    },
+    {
+      "number": 2636,
+      "title": "fix(tests): mock AutoTestJobStatusCard em AdminStructuralComparison",
+      "branch": "claude/fix-window-autotestcard-261027-1031",
+      "draft": false,
+      "test_merge": "CLEAN",
+      "rule8_triggers": [],
+      "verdict": "MERGEADO_AUTONOMO",
+      "motivo": "Gate Final run #40493344116 success; squash-merge SHA b5cfee9b; apenas test files (+7/-0); padrão idêntico a 3 mocks adjacentes"
+    },
+    {
+      "number": 2637,
+      "title": "docs: recibo de aplicação — 20261027120000 (E15)",
+      "branch": "e15-receipt-20261027120000-40469025943",
+      "draft": false,
+      "test_merge": "BEHIND",
+      "rule8_triggers": [
+        "supabase/MIGRATIONS_SYNC_LOG.md"
+      ],
+      "verdict": "DECISAO_HUMANA",
+      "motivo": "E15 receipt bot — review obrigatório do PO (adm01-debug) + mergeable_state behind"
     }
   ]
 }

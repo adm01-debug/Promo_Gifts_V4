@@ -52,3 +52,5 @@ number,title,branch,draft,test_merge,verdict,motivo
 2633,fix(tests): corrige 3 falhas vitest no CI Security,claude/fix-ci-tests-261027-external,False,CLEAN,MERGEADO_SESSAO_EXTERNA,Mergeado por session_01Knr9enFAok62bHihBK1UUP
 2634,"fix(ci): corrige 3 races de teste (playwright, safeAuthCall, LocationPanel)",claude/fix-ci-tests-261027-1005,True,CLEAN,SUPERSEDED,Supersedida por #2633 + Draft + REGRA#10
 2635,fix(ci): Gate 1.13 — trata HTTP 400 pós-timeout como soft,claude/fix-gate-1-13-http400-261027-1416,True,CLEAN,DRAFT_NOMERGE,Draft + REGRA#10 + gate de segurança RLS requer aprovação PO
+2636,fix(tests): mock AutoTestJobStatusCard em AdminStructuralComparison,claude/fix-window-autotestcard-261027-1031,False,CLEAN,MERGEADO_AUTONOMO,Gate Final run #40493344116 success; SHA b5cfee9b; apenas test files +7/-0
+2637,docs: recibo de aplicação — 20261027120000 (E15),e15-receipt-20261027120000-40469025943,False,BEHIND,DECISAO_HUMANA,E15 receipt bot — review obrigatório do PO + mergeable_state behind
