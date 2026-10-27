@@ -1,11 +1,13 @@
-TypeScript check — Sessão session_01Ss1tXZ4cAbxBvdmu95uNPz (continuação)
-Data: 2026-10-25
+TypeScript check — sessão session_012WyySbh2tj8vhRQLBf3mHo
+Data: 2026-10-27T22:25Z
+Main SHA: e0b569f18cdfc8c7bc63466e567597cf799aaae7
+Branch: claude/quirky-keller-owezvt (analise-prs/ only — source igual ao main)
 
-NÃO EXECUTADO LOCALMENTE
-Motivo: npm install falha com 403 (registry europe-west1-npm.pkg.dev sem credenciais)
+Comando: node_modules/.bin/tsc --noEmit
+Exit code: 0
 
-Referência CI (Gate 1 — TypeScript + ESLint):
-- Run #40214531246 (SHA 4cb4feb4): conclusion=success → 0 erros TypeScript
-- Gate Final completo: success ✅
+Resultado: SEM ERROS TypeScript
 
-Evidência: Gate Final run #40214531246 job "static-gates" conclusion=success
+Nota: node_modules disponível nesta sessão (não precisou npm install).
+O branch claude/quirky-keller-owezvt difere do main apenas em analise-prs/ (docs).
+TypeScript não processa analise-prs/*.md, então o resultado é idêntico ao main.

@@ -1,6 +1,6 @@
 {
-  "rev": 54,
-  "ultima_atualizacao": "2026-10-27T22:30:00Z",
+  "rev": 55,
+  "ultima_atualizacao": "2026-10-27T23:59:00Z",
   "sessao_01Ss1tXZ4cAbxBvdmu95uNPz": {
     "data": "2026-10-25",
     "rev": 22,
@@ -59,7 +59,7 @@
   },
   "sessao_012WyySbh2tj8vhRQLBf3mHo": {
     "data": "2026-10-27",
-    "rev": 54,
+    "rev": 55,
     "main_head_entrada": "df18546dfd76d1bea7ea5873257b668d128d8df3",
     "main_head_atual": "e0b569f18cdfc8c7bc63466e567597cf799aaae7",
     "baseline": {
@@ -73,12 +73,10 @@
     "contagem_vereditos": {
       "MERGEADO_AUTONOMO": 1,
       "MERGEADO_OWNER": 5,
-      "DECISAO_HUMANA": 4,
-      "AGUARDAR_APROVACAO": 2,
-      "CONFLITO": 2,
+      "FECHADO_OWNER": 3,
+      "DECISAO_HUMANA": 5,
       "CI_FALHOU": 1,
-      "DRAFT_NOMERGE": 2,
-      "NAO_MERGEAR": 1,
+      "DRAFT_NOMERGE": 3,
       "total": 18
     },
     "mergeados_autonomo": [
@@ -97,7 +95,13 @@
       {"number": 2650, "sha": "f0689734b38e79edda24cf80f5df19abae941015", "titulo": "fix(e2e): testids e landing state em catalog.spec e kit-builder.spec", "merged_at": "2026-10-27T16:21:21Z"},
       {"number": 2652, "sha": "22ba938e02ae48eee34d77176a4d5dee6cf8e14b", "titulo": "docs(e15): recibo aplicação migration 20261027140000", "merged_at": "2026-10-27T16:40:44Z"}
     ],
-    "prs_open_restantes": [2420, 2572, 2579, 2580, 2588, 2600, 2605, 2622, 2631, 2645, 2646, 2662],
+    "prs_open_restantes": [],
+    "analise_completa": true,
+    "fechados_owner": [
+      {"number": 2605, "fechado_em": "2026-10-27T22:23:21Z", "motivo": "supersedida por #2620"},
+      {"number": 2622, "fechado_em": "2026-10-27T22:23:22Z", "motivo": "BRANCH_DIRTY ADD/ADD conflict"},
+      {"number": 2645, "fechado_em": "2026-10-27T22:23:24Z", "motivo": "supersedida por #2652 SHA 22ba938e"}
+    ],
     "delivery_pr": {
       "number": 2653,
       "branch": "claude/quirky-keller-owezvt",
