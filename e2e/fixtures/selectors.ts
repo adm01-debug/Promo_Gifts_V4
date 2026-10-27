@@ -364,7 +364,15 @@ export const Sel = {
     emptyFiltered: TID("carts-empty-filtered"),
   },
 
-
+  // ---------- Simulador de Personalização ----------
+  simulator: {
+    /** Título da página /simulador (SimuladorWizard). */
+    title: TID("page-title-simulador"),
+    /** Nome do produto no WizardContextBar. */
+    productName: TID("simulator-product-name"),
+    /** SKU do produto no WizardContextBar. */
+    productSku: TID("simulator-product-sku"),
+  },
 
 
   // ---------- App genérico ----------
