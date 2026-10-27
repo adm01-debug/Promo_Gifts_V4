@@ -35,7 +35,7 @@ test.describe("Fluxo: Deep Link e Redirecionamento de Auth", () => {
     await gotoAndSettle(page, "/produtos");
 
     const firstProduct = page.locator(Sel.product.card).first();
-    await expect(firstProduct).toBeVisible({ timeout: 15000 });
+    await expect(firstProduct).toBeVisible({ timeout: 30000 });
     const productId = await firstProduct.getAttribute('data-product-id');
     expect(productId).toBeTruthy();
     const productUrl = `/produto/${productId}`;

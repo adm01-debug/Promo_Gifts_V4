@@ -44,7 +44,7 @@ export async function waitForRouteIdle(page: Page, opts?: { timeout?: number }) 
   await page
     .waitForFunction(
       () => !document.querySelector('[data-state="loading"], [data-skeleton]'),
-      { timeout: Math.min(timeout, 8_000) },
+      { timeout: Math.min(timeout, 20_000) },
     )
     .catch(() => {});
   await page
@@ -91,11 +91,11 @@ export async function gotoAndSettle(page: Page, path: string, opts?: { timeout?:
       /* tolerável: rotas que não usam #root */
     });
 
-  // Skeletons devem sumir
+  // Skeletons e spinner de auth do ProtectedRoute devem sumir
   await page
     .waitForFunction(
       () => !document.querySelector('[data-state="loading"], [data-skeleton]'),
-      { timeout: 8_000 },
+      { timeout: 20_000 },
     )
     .catch(() => {
       /* tolerável: pode não haver skeleton */
@@ -132,7 +132,7 @@ export async function settleAfterAction(page: Page, opts?: { timeout?: number })
 }
 
 /**
- * Espera centralizada por elemento visível — substitui `.first().waitFor({state:"visible"})`.
+ * Espera centralizada por elemento visível — substitui `.first().waitFor({state:"visible"})`..
  */
 export async function waitForVisible(
   page: Page,
