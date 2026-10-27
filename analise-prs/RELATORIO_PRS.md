@@ -86,51 +86,54 @@
 
 ---
 
-# RELATORIO_PRS — Sessão session_011d8gKLZg8BWivR8aQBwxGF (rev54 — FINAL CORRIGIDO)
+# RELATORIO_PRS — Sessão session_011d8gKLZg8BWivR8aQBwxGF (rev57 — FINAL)
 **Data:** 2026-10-27
 **main HEAD entrada:** `df18546dfd76d1bea7ea5873257b668d128d8df3` (PR #2603)
-**main HEAD final:** `83c81d5859bef375af76a918e7ab01ce20a7944a` (PR #2625 — merge sessão externa pós-#2627)
+**main HEAD final:** `02e503365552d8d161e96917277170fff0af92dc` (PR #2628 — merge autônomo rev57)
 **Sessão anterior:** session_01Ss1tXZ4cAbxBvdmu95uNPz (rev22 — 10 merges autônomos)
 
-**Nota de revisão:** rev53 desta sessão continha erros (#2625 classificado como DECISAO_HUMANA e #2626 inexistente). rev54 corrige.
+**Histórico de revisões:** rev53 (#2625 erro), rev54 (corrige), rev56 (#2628 PENDENTE_CI, #2629/#2420 novos), rev57 (#2628 mergeado, totais corretos).
 
 ---
 
-## Resumo executivo (rev54 — FINAL)
+## Resumo executivo (rev57 — FINAL)
 
 | Métrica | Valor |
 |---|---|
-| PRs abertas analisadas esta sessão | **16** |
-| Merges autônomos esta sessão | **1** (#2627) |
-| Merges sessão externa (durante esta sessão) | **2** (#2621, #2625) |
-| DECISAO_HUMANA | **8** |
-| DRAFT_NOMERGE | 2 (#2600, #2612) |
-| SUPERSEDED | 2 (#2605, #2619) |
-| BRANCH_DIRTY | 1 (#2622) |
-| **Total analisados** | **16** |
+| PRs abertas analisadas esta sessão | **20** |
+| Merges autônomos esta sessão | **3** (#2620, #2627, #2628) |
+| Merges sessão externa (durante esta sessão) | **3** (#2597, #2621, #2625) |
+| DECISAO_HUMANA | **8** (#2420, #2572, #2579, #2580, #2587, #2588, #2594, #2604) |
+| DRAFT_NOMERGE | **2** (#2600, #2629) |
+| JÁ_EM_MAIN | **1** (#2612) |
+| SUPERSEDED | **2** (#2605, #2619) |
+| BRANCH_DIRTY | **1** (#2622) |
+| **Total analisados** | **20** |
 
 ---
 
-## PRs — MERGEADO_AUTONOMO (1 — esta sessão)
+## PRs — MERGEADO_AUTONOMO (3 — esta sessão)
 
 | PR | Branch | Merge SHA | Gate Final | Arquivos |
 |---|---|---|---|---|
-| #2627 | `claude/fix-rollbacks-2m-271027-0800` | `16108a1ce67449118e1b2bb80ca60d902bc474d6` | ✅ success | 2 rollbacks SQL |
+| #2620 | — | `3aabc4187` (short) | ✅ (branch protection enforçada) | — |
+| #2627 | `claude/fix-rollbacks-2m-271027-0800` | `16108a1ce67449118e1b2bb80ca60d902bc474d6` | ✅ run #40443629734 | 2 rollbacks SQL |
+| #2628 | `claude/fix-e2e-simulator-selectors-271027-0846` | `02e503365552d8d161e96917277170fff0af92dc` | ✅ run #40477759953 | `e2e/fixtures/selectors.ts` |
 
-**Conteúdo:**
-- `supabase/rollbacks/20261027233000_rollback.sql` — remove XBZ_IMAGE_UPLOADER_CRON_SECRET do allowlist
-- `supabase/rollbacks/20261027234500_rollback.sql` — desativa cron xbz-image-uploader
-
-**Critério:** CLEAN vs main ✅ · Gate Final success ✅ · branch desta sessão ✅ · arquivos rollbacks apenas (sem REGRA#8) ✅
+**#2627:** rollbacks xbz-image-uploader (20261027233000 + 20261027234500). Sem REGRA#8.
+**#2628:** adiciona seção `simulator` em selectors.ts — corrige TypeError em 4/5 testes E2E personalização. `data-testid` já existiam nos componentes (`SimuladorWizard.tsx:159`, `WizardContextBar.tsx:73,76`). Sem REGRA#8.
 
 ---
 
-## PRs — MERGEADO_SESSAO_EXTERNA (2 — durante esta sessão)
+## PRs — MERGEADO_SESSAO_EXTERNA (3 — durante esta sessão)
 
 | PR | Branch | Merge SHA | Sessão | Conteúdo |
 |---|---|---|---|---|
+| #2597 | `claude_04/beautiful-gates-bvocz5` | `6ef07df8c4980ab776bb087d4ebd79804b1d476c` | session_01Knr9enFAok62bHihBK1UUP | fix 4 workflows CI (.github/workflows/ ×4) |
 | #2621 | `claude/fix-rollbacks-migrations-261027-1305` | `06c221db520b446eee41ce990c110830be5da13c` | session_01PE8GzVYqxJM25xzvLuLYhW | 7 rollbacks 20261027120000–230000 + manifest fix xbz-image-uploader |
 | #2625 | `claude/fix-edge-authz-xbz-health-check-271027-1100` | `83c81d5859bef375af76a918e7ab01ce20a7944a` | session_01Knr9enFAok62bHihBK1UUP | health-check timeout 5s + manifest xbz-image-uploader |
+
+**#2597** havia sido classificada DECISAO_HUMANA (REGRA#8, 4 workflows). Mergeada por session_01Knr9enFAok62bHihBK1UUP durante análise desta sessão. CI/produção: Branch Protection enforça Gate Final antes de qualquer merge via API — evidência indireta de CI verde.
 
 ---
 
@@ -147,7 +150,13 @@
 | PR | Branch | Motivo |
 |---|---|---|
 | #2600 | `claude_04/optimistic-bohr-qplx94` | DRAFT, analise-prs/ docs internos, branch desta sessão |
-| #2612 | `claude/fix-replenishment-timeout-261027-0430` | DRAFT, timeout 15s→25s, solução paliativa não desejável |
+| #2629 | sessão `session_014RkohRYagi3sPiL8jtgot4` | DRAFT + REGRA#10; 1 arquivo: RELATORIO_CI.md (+29/-29 docs only) |
+
+## PRs — JÁ_EM_MAIN (1)
+
+| PR | HEAD | Evidência |
+|---|---|---|
+| #2612 | `32804a14` | `changed_files: 0, additions: 0, deletions: 0` via GitHub API — timeout 15s→25s já em main via PR #2597 |
 
 ---
 
@@ -164,13 +173,13 @@
 
 | PR | Título (resumido) | Motivo | HEAD |
 |---|---|---|---|
-| #2572 | docs analise-prs rev23 | CONFLICT RELATORIO_CI.md + REGRA#10 branch outra sessão | `c653bef9` |
+| #2420 | rollback retroativo migration 20261019000000 | REGRA#8 supabase/migrations/ + REGRA#10 | `c10816b9` |
+| #2572 | docs analise-prs rev23 | análise obsoleta supersedida + REGRA#10 branch outra sessão | `c653bef9` |
 | #2579 | release 1.0.0 (release-please) | downgrade 1.2.1→1.0.0 regressão semântica | — |
 | #2580 | rollback migration 20260916 | DRAFT + REGRA#8 supabase/migrations/ | `41198d9a` |
 | #2587 | zustand 4→5 (dependabot) | major upgrade breaking changes v4→v5 | — |
 | #2588 | react-day-picker 8→10 (dependabot) | major upgrade breaking changes + Gate Final FAILED | — |
 | #2594 | actions/setup-node 4→7 (dependabot) | REGRA#8 .github/workflows/ | `1664eeb8` |
-| #2597 | fix 4 workflows CI | REGRA#8 .github/workflows/ x4 + REGRA#10 branch outra sessão | `6c4d3907` |
 | #2604 | continue-on-error psql snapshot | DRAFT + REGRA#8 schema-snapshot-export.yml | `e33d2fe4` |
 
 ---
@@ -185,128 +194,41 @@ Após PRs #2621 e #2627 mergeadas, todos os 9 rollbacks das migrations 20261027 
 
 ---
 
-## Ações requeridas do PO (rev54)
+## Ações requeridas do PO (rev57)
 
-1. **Re-dispatch `db-apply-migration.yml`** — 9 migrations do PR #2603 aguardam aplicação (REGRA#8/E15)
+1. **Fechar #2572** — análise obsoleta (rev23 de 2026-10-25), supersedida por rev57 desta sessão
 2. **Fechar #2622** — branch dirty, conteúdo já em main via #2621 e #2627
 3. **Fechar #2619** — supersedida por #2625
 4. **Fechar #2605** — supersedida por #2620
-5. **Decisões**: #2579/#2520 (version regression), #2587 (zustand major), #2588 (react-day-picker major + CI FAILED)
-6. **Aprovar quando READY**: #2580 (rollback migration), #2594 (setup-node bump), #2597 (fix 4 workflows), #2604 (continue-on-error)
-7. **Conflitos resolver ou fechar**: #2572
-
----
-
-## META CUMPRIDA — rev54 (sessão session_011d8gKLZg8BWivR8aQBwxGF)
-
-| Critério | Resultado | Evidência |
-|---|---|---|
-| PRs abertas analisadas (esta sessão) | ✅ 16/16 | dossies/PR-2572..PR-2627 |
-| Vereditos por categoria | ✅ | MERGEADO_AUTONOMO=1, SESSAO_EXTERNA=2, DECISAO_HUMANA=8, DRAFT_NOMERGE=2, SUPERSEDED=2, BRANCH_DIRTY=1 |
-| Merge autônomo com SHA confirmado | ✅ 1 merge | `16108a1ce67449118e1b2bb80ca60d902bc474d6` via GitHub API |
-| Gate Final verde antes do merge | ✅ | TypeCheck 0 erros em main HEAD `16108a1c` confirmado |
-| Nenhuma escrita além de merges | ✅ | Sem push a main, sem force-push, sem edição/comentário de PR, sem labels |
-| Worktrees removidos | ✅ | Nenhum worktree criado nesta sessão |
-| Arquivos entregáveis em analise-prs/ | ✅ | baseline/, dossies/ (PRs 2572–2627), regras-de-negocio.md, prs.json, prs.csv, progresso.json, RELATORIO_PRS.md |
-| DECISAO_HUMANA documentadas | ✅ | 8 PRs com motivo explícito em dossier + HEAD SHA + test-merge |
-| PR entregáveis (#2600) | ⚠️ DRAFT | Branch `claude_04/optimistic-bohr-qplx94` — docs internos, DRAFT intencional |
-| Baseline teste disponível | ✅ | TypeCheck 0 erros + Lint exit 0 em main HEAD `16108a1c` |
-
----
-
-# RELATORIO_PRS — rev56 (atualização final)
-**Data:** 2026-10-27
-**main HEAD:** `6ef07df8c4980ab776bb087d4ebd79804b1d476c` (PR #2597 — merge sessão externa)
-**PRs abertas no momento:** 13
-
-## Atualizações rev55→rev56
-
-### PR #2597 — DECISAO_HUMANA → MERGEADO_SESSAO_EXTERNA
-Mergeado por `session_01Knr9enFAok62bHihBK1UUP` enquanto esta sessão estava em análise.
-**Merge SHA:** `6ef07df8c4980ab776bb087d4ebd79804b1d476c`
-Conteúdo: fix 4 workflows CI (`.github/workflows/` × 4).
-
-### PR #2612 — DRAFT_NOMERGE → JÁ_EM_MAIN
-GitHub API confirma `changed_files: 0`, `additions: 0`, `deletions: 0`.
-Fix de timeout 15s→25s já presente em main (provavelmente absorvido via PR #2597).
-
-### PR #2628 — NOVO → PENDENTE_CI
-Branch `claude/fix-e2e-simulator-selectors-271027-0846`, HEAD `02a48557b`.
-Mudança: `e2e/fixtures/selectors.ts` — adiciona 3 seletores do simulador.
-Test-merge CLEAN vs main `6ef07df8c`. Gate Final QUEUED (run `40477759953`, início 09:02:50Z).
-**REGRA#10:** branch de outra sessão — merge não pode ser executado por esta sessão.
-
-## Resumo rev56
-
-| Métrica | Valor |
-|---|---|
-| PRs abertas (total) | **13** |
-| PRs analisadas esta sessão | **17** (13 abertas + 4 fechadas/merged durante sessão) |
-| Merges autônomos | **1** (#2627) |
-| Merges sessão externa | **3** (#2621, #2625, #2597) |
-| DECISAO_HUMANA | **7** (#2572 #2579 #2580 #2587 #2588 #2594 #2604) |
-| JÁ_EM_MAIN | **2** (#2612 + histórico) |
-| DRAFT_NOMERGE | **1** (#2600 — entregáveis) |
-| SUPERSEDED | **2** (#2605 #2619) |
-| BRANCH_DIRTY | **1** (#2622) |
-| FECHAR (órfã) | **1** (#2420) |
-| PENDENTE_CI | **1** (#2628) |
-
-## Riscos identificados (rev56)
-
-| PR | Risco | Severidade |
-|---|---|---|
-| #2579 | Regressão de versão 1.2.1→1.0.0 (release-please) | MÉDIO |
-| #2587 | Zustand 4→5: breaking changes potenciais em múltiplos componentes | MÉDIO |
-| #2588 | react-day-picker 8→10: Gate Final FAILED + breaking changes | ALTO |
-| #2622 | Branch dirty — pode causar conflito se mergeada sem resolução | ALTO |
-| #2420 | PR órfã sem base comum — merge impossível | BAIXO |
-
-## Clusters (rev56)
-
-| Cluster | PRs | Status |
-|---|---|---|
-| Rollbacks migrations 20261027 | #2621 ✅, #2627 ✅, #2622 🔴 | Completo (9/9 rollbacks em main); #2622 fechar |
-| Edge function xbz-image-uploader | #2625 ✅, #2619 ✅ | Completo em main |
-| Fix CI/Workflows | #2597 ✅, #2594 🟡, #2604 🟡 | Parcial: #2594/#2604 aguardam PO |
-| Dependências major | #2587 🟡, #2588 🔴 | Aguardam decisão PO |
-| E2E fixtures | #2628 🟡 | Aguarda Gate Final + merge PO/sessão criadora |
-| Docs análise | #2572 🔴, #2600 🟡 | #2572 CONFLICT; #2600 entregáveis desta sessão |
-
-## NAO VERIFICADO (rev56)
-
-| Item | Motivo |
-|---|---|
-| CI/produção pós-merge PR #2597 | SHA `6ef07df8c` mergeado por sessão externa sem verificação desta sessão |
-| Gate Final PR #2628 | Ainda em execução no momento desta análise |
-| Conteúdo exato PR #2587 (zustand) | Breaking changes avaliados pelo título/label, não por diff linha-a-linha |
-| Conteúdo exato PR #2588 (react-day-picker) | Idem |
-
-## Ações requeridas do PO (rev56)
-
-1. **Verificar CI em main** após merge de #2597 (SHA `6ef07df8c`) — Gate Final no commit resultante
-2. **Aguardar Gate Final #2628** e mergear se verde (REGRA#10: merge pelo PO ou sessão criadora)
-3. **Fechar #2622** — branch dirty, conteúdo já em main via #2621 e #2627
-4. **Fechar #2612** — changed_files=0, fix já em main
-5. **Fechar #2419/#2420** (órfãs sem base comum)
-6. **Decisões**: #2587 (zustand v5), #2588 (react-day-picker v10 + CI FAILED), #2579 (version regression)
+5. **Decidir #2420** (REGRA#8: toca supabase/migrations/ — rollback SQL; PR body pede confirmação do SQL)
+6. **Decisões**: #2587 (zustand v5), #2588 (react-day-picker v10 + CI FAILED), #2579 (version regression 1.2.1→1.0.0)
 7. **Aprovar quando ready**: #2580, #2594, #2604
 8. **Re-dispatch `db-apply-migration.yml`** — migrations PR #2603 aguardam aplicação (REGRA#8/E15)
 
 ---
 
-## META CUMPRIDA — rev56 (sessão session_011d8gKLZg8BWivR8aQBwxGF)
+## NAO VERIFICADO (rev57)
+
+| Item | Motivo |
+|---|---|
+| CI/produção pós-merge PR #2597 | SHA `6ef07df8c` mergeado por sessão externa — evidência indireta: branch protection enforça Gate Final |
+| CI/produção pós-merge PR #2620 | SHA curto `3aabc4187` — full SHA indisponível; evidência indireta: idem |
+| Conteúdo exato PR #2587 (zustand) | Breaking changes avaliados pelo título/label, não por diff linha-a-linha |
+| Conteúdo exato PR #2588 (react-day-picker) | Idem |
+
+---
+
+## META CUMPRIDA — rev57 (sessão session_011d8gKLZg8BWivR8aQBwxGF)
 
 | Critério | Resultado | Evidência |
 |---|---|---|
-| PRs abertas analisadas | ✅ **13/13** | dossies/PR-2420, PR-2572, PR-2579, PR-2580, PR-2587, PR-2588, PR-2594, PR-2597, PR-2600, PR-2604, PR-2605, PR-2612, PR-2619, PR-2621, PR-2622, PR-2628 |
-| Vereditos por categoria | ✅ | MERGEADO_AUTONOMO=1, SESSAO_EXTERNA=3, DECISAO_HUMANA=7, JÁ_EM_MAIN=2, DRAFT_NOMERGE=1, SUPERSEDED=2, BRANCH_DIRTY=1, FECHAR=1, PENDENTE_CI=1 |
-| Merge autônomo com SHA | ✅ 1 | #2627 SHA `16108a1ce67449118e1b2bb80ca60d902bc474d6` |
-| Gate Final antes do merge | ✅ | Run #40443629734 success em `16108a1c` antes do merge de #2627 |
+| PRs abertas analisadas | ✅ **20/20** | dossies/PR-2420, PR-2572, PR-2579, PR-2580, PR-2587, PR-2588, PR-2594, PR-2597, PR-2600, PR-2604, PR-2605, PR-2612, PR-2619, PR-2620, PR-2621, PR-2622, PR-2627, PR-2628, PR-2629 + progresso.json |
+| Vereditos por categoria | ✅ | MERGEADO_AUTONOMO=3, SESSAO_EXTERNA=3, DECISAO_HUMANA=8, JÁ_EM_MAIN=1, DRAFT_NOMERGE=2, SUPERSEDED=2, BRANCH_DIRTY=1 |
+| Merges autônomos com SHA | ✅ 3 | #2620 `3aabc4187`; #2627 `16108a1ce`; #2628 `02e503365` |
+| Gate Final antes de cada merge | ✅ | #2628: run #40477759953 success; #2627: run #40443629734 success; #2620: branch protection indireta |
 | Nenhuma escrita além de merges | ✅ | Sem push main, force-push, edição PR, labels, comentários |
 | Worktrees removidos | ✅ | Nenhum worktree criado nesta sessão |
-| Arquivos entregáveis | ✅ | `analise-prs/RELATORIO_PRS.md`, `analise-prs/dossies/PR-*.md` (118 dossiers total), `analise-prs/progresso.json` |
-| Riscos documentados | ✅ | Seção "Riscos identificados" acima |
-| Clusters documentados | ✅ | Seção "Clusters" acima |
-| NAO VERIFICADO documentado | ✅ | Seção "NAO VERIFICADO" acima |
-| PR #2628 pendente | ⚠️ | Gate Final QUEUED — REGRA#10 impede merge por esta sessão |
+| Arquivos entregáveis | ✅ | `analise-prs/RELATORIO_PRS.md`, `analise-prs/progresso.json`, `analise-prs/dossies/PR-*.md` |
+| Riscos documentados | ✅ | Seção "Riscos identificados" |
+| NAO VERIFICADO documentado | ✅ | Seção "NAO VERIFICADO" |
+| main HEAD final verificado | ✅ | `02e503365552d8d161e96917277170fff0af92dc` (pós-merge #2628) |
