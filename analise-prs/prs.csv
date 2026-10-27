@@ -28,7 +28,7 @@ number,title,branch,draft,test_merge,rule8_triggers,verdict,motivo,merge_sha
 2555,docs(pendencias): rev29,claude_05/nifty-sagan-r23gqh,true,CLEAN,,MERGEADO_AUTONOMO,Draft→Ready claude_05 mesmo agente,479f2219485e23a5d35896dfe44c9ca4f7c1026f
 2556,chore: backlog banco O1/O3,claude/chore-backlog-banco-251025-1915,true,CLEAN,,MERGEADO_AUTONOMO,Draft→Ready REGRA10 NA,15e10fd88208f9b4cd372b82544fb27892d15a81
 2557,docs: RELATORIO_CI.md P27/P66/P67/P68,claude/docs-relatorio-ci-final-20261025-1910,true,CLEAN,,DECISAO_HUMANA,Corrupcao texto RELATORIO_CI criterio5,
-2572,chore(ci/feat): contrato E189 + personalização + supabase + CI,claude_05/youthful-ride-vcdchy,false,CLEAN,".github/workflows/contract-tests.yml supabase/migrations/",BLOQUEADA,REGRA#10 cross-agent claude_05 + REGRA#8 (workflows+migrations),
+2572,chore(ci/feat): contrato E189 + personalização + supabase + CI,claude_05/youthful-ride-vcdchy,false,CONFLICT,".github/workflows/contract-tests.yml supabase/migrations/",BLOQUEADA,CONFLICT+REGRA#10 cross-agent claude_05 + REGRA#8 (workflows+migrations),
 2579,chore(main): release 1.0.0,release-please--branches--main--components--gifts-store,false,CLEAN,,DECISAO_HUMANA,Downgrade release-please 1.2.1→1.0.0 regressao semantica,
 2580,fix(banco): adiciona rollback header e arquivo rollback para e23,claude/fix-e23-rollback-261025-2145,true,CLEAN,supabase/migrations/,DECISAO_HUMANA,DRAFT + REGRA#8 migrations exige aprovacao PO,
 2582,chore(ci): metricas semanais 2026-W44,claude_04/optimistic-bohr-qplx94,false,CLEAN,,MERGEADO_AUTONOMO,,045d835f565baf01db94ae5212d673f93a63685b

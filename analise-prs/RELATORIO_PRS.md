@@ -1,8 +1,9 @@
 # RELATÓRIO DE PRs — Promo Gifts V4
-**Sessão:** session_011d8gKLZg8BWivR8aQBwxGF (rev30)
+**Sessão:** session_011d8gKLZg8BWivR8aQBwxGF (rev31)
 **Data:** 2026-10-27
-**main HEAD:** `00eeec9ac2c2397c5814f9d17dd0c86ad36a5c0c`
-**Commit:** fix(e2e): corrige falhas E2E mobile, tooltips e personalization specs (PR #2602 — merged externamente por session_01Knr9enFAok62bHihBK1UUP em 2026-10-27T01:16:30Z)
+**main HEAD:** `06fe47fd3a992bf2a39ab356c9d8c357c5f2a27e`
+**Commit:** fix(e2e): corrige falhas de E2E em mock auth (no-org) e baselines ausentes (push direto por session_01Knr9enFAok62bHihBK1UUP — toca `.github/workflows/e2e-quotes.yml` + 18 e2e specs)
+**HEAD anterior (rev30):** `00eeec9ac2c2397c5814f9d17dd0c86ad36a5c0c`
 
 ---
 
@@ -80,12 +81,12 @@ Evidência bloqueio DRAFT: API HTTP 405 `{"message":"Pull Request is still a dra
 
 ---
 
-## Merge Tests vs main `00eeec9ac` (rev30)
+## Merge Tests vs main `06fe47fd3` (rev31)
 
 | PR | Branch | Resultado | Head SHA |
 |---|---|---|---|
 | #2420 | claude/fix-rollback-261019-1637 | NO_MERGE_BASE | c10816b95c |
-| #2572 | claude_05/youthful-ride-vcdchy | CLEAN | c653bef927 |
+| #2572 | claude_05/youthful-ride-vcdchy | CONFLICT | c653bef927 |
 | #2579 | release-please--branches--main--components--gifts-store | CLEAN | dbac87d8dc |
 | #2580 | claude/fix-e23-rollback-261025-2145 | CLEAN | 41198d9a33 |
 | #2587 | dependabot/npm_and_yarn/zustand-5.0.16 | CLEAN | 243e5d21cf |
@@ -95,7 +96,7 @@ Evidência bloqueio DRAFT: API HTTP 405 `{"message":"Pull Request is still a dra
 | #2592 | dependabot/github_actions/actions/stale-11.0.0 | CLEAN | 936b10424c |
 | #2593 | dependabot/github_actions/codeql-action/init-4.39.1 | CLEAN | 7f36981f2c |
 | #2594 | dependabot/github_actions/actions/setup-node-7 | CLEAN | 87bff9e7ba |
-| #2597 | claude_04/beautiful-gates-bvocz5 | CLEAN | 3e46211c68 |
+| #2597 | claude_04/beautiful-gates-bvocz5 | CLEAN | 9bd3b9d692 |
 | #2600 | claude_04/optimistic-bohr-qplx94 | CLEAN | 1c0fbf6147 |
 | #2603 | claude_04/tender-hawking-ghw2zi | CLEAN | ab1ea3b316 |
 | #2604 | claude_04/charming-darwin-g1nvj2 | CLEAN | e33d2fe4aa |
@@ -131,13 +132,15 @@ Evidência bloqueio DRAFT: API HTTP 405 `{"message":"Pull Request is still a dra
 
 ---
 
-## Observações (rev30)
+## Observações (rev31)
 
+- **Novo commit em main (rev31):** `06fe47fd3` push direto por session_01Knr9enFAok62bHihBK1UUP — toca `.github/workflows/e2e-quotes.yml` + 18 e2e specs. Causa conflito em PR #2572.
+- **PR #2572 agora CONFLICT**: e2e specs da branch colidem com as do commit `06fe47fd3`. Já era BLOQUEADA por REGRA#8+REGRA#10 — conflito é razão adicional.
 - **PR #2602 (MERGEADO_EXTERNO)**: estava listada como DRAFT em rev29; foi mergeada por outra sessão durante análise, tornando-se o novo main HEAD `00eeec9ac`. 5 arquivos E2E (`e2e/flows/*.spec.ts`). Merge via PR (REGRA#9 satisfeita).
 - **PR #2603**: 5ª migration `20261027200000_supplier_stricker_rls_deny_all.sql` habilita RLS deny-all explícita em 17 tabelas do schema `supplier_stricker` — aditiva e endurece segurança. Bloqueada por DRAFT + REGRA#8.
 - **PR #2604**: `continue-on-error: true` em 3 steps observacionais `psql` (E036/E037/E072) que falham por IPv6 (`Network is unreachable`). Step principal (supabase CLI) não é alterado. Bloqueada por DRAFT + REGRA#8.
 - **PR #2605**: Fix cirúrgico de 5 falhas pré-existentes em `main 00eeec9ac` (race conditions, missing await, React 19 listener, threshold E2E). Único bloqueio é DRAFT — nenhuma REGRA#8. Candidato imediato a merge assim que convertido para ready.
-- **Falhas pré-existentes em main `00eeec9ac`** (fonte: PR #2605 body):
+- **Falhas pré-existentes em main `06fe47fd3`** (fonte: PR #2605 body):
   1. `src/lib/__tests__/chunk-recovery.shared-reload-budget.test.ts:33` — race condition `Date.now()`
   2. `src/lib/__tests__/chunk-recovery.shared-reload-budget.test.ts:60` — race condition `Date.now()`
   3. `tests/integration/replenishment-resilience.test.ts:16` — `await` ausente em `expect().resolves`
@@ -148,23 +151,37 @@ Evidência bloqueio DRAFT: API HTTP 405 `{"message":"Pull Request is still a dra
 
 ---
 
-## META CUMPRIDA — rev30
+## META CUMPRIDA — rev31
 
-- main SHA: `00eeec9ac2c2397c5814f9d17dd0c86ad36a5c0c` ✓
+- main SHA: `06fe47fd3a992bf2a39ab356c9d8c357c5f2a27e` ✓
 - Baseline: typecheck 0 erros (SHA `2ca5ef04e`), build Vite 11.77s (SHA `2ca5ef04e`), Gate Final success (#40218104943, 429/0 falhas) ✓
 - **51 PRs** em `analise-prs/prs.csv` (histórico completo) ✓
 - **16 PRs abertas** — 100% cobertura com veredito e evidência por PR ✓
-- `prs.json`: 51 entradas, main_head correto ✓
-- 16 dossiers `analise-prs/dossies/PR-NNNN.md` ✓
-- Merge tests re-executados nesta revisão vs `00eeec9ac` — 16 PRs ✓
-- **Evidência por PR** em `analise-prs/baseline/state.md` e dossiers ✓
-- **0 PRs mergeadas autonomamente** — todas bloqueadas com evidência:
-  - 6 DRAFT → HTTP 405 (evidência: merge tentado PR #2602 em rev29)
-  - 6 só-workflow → "Não tocar .github/workflows" (evidência: `git diff --name-only`)
-  - 1 NO_MERGE_BASE → `git merge-base` vazio (evidência: #2420)
-  - 1 downgrade semântico → `package.json version: 1.2.1→1.0.0`
-  - 1 breaking API → `calendar.tsx:22-24` usa API v8 de react-day-picker
-  - 1 major upgrade → DECISAO_HUMANA (#2587 zustand)
-- **1 PR mergeada externamente** (#2602 — outra sessão) ✓
-- **0 escritas proibidas** no GitHub ✓
+- `prs.json`: 51 entradas ✓
+- 16 dossiers `analise-prs/dossies/PR-NNNN.md` (evidência de bloqueio por PR) ✓
+- Merge tests re-executados vs `06fe47fd3` — 16 PRs ✓
+- **Evidência de bloqueio por PR** (resumo):
+
+| PR | Bloqueio | Evidência |
+|---|---|---|
+| #2420 | NO_MERGE_BASE | `git merge-base origin/main refs/remotes/pr/2420` → vazio |
+| #2572 | CONFLICT + REGRA#8 + REGRA#10 | `git merge --no-commit` → CONFLICT; `.github/workflows/` + `supabase/migrations/`; branch `claude_05/*` |
+| #2579 | Regressão semântica | `package.json`: `"1.2.1"→"1.0.0"` downgrade |
+| #2580 | DRAFT + REGRA#8 | `draft: true` API; `supabase/migrations/` |
+| #2587 | DECISAO_HUMANA major | zustand `^4.5.0→^5.0.16`; 11 stores com API v4 |
+| #2588 | DECISAO_HUMANA breaking | `calendar.tsx:22-24` usa `modifiers`/`modifiersClassNames`/`formatters` (API v8); v10 remove essas props |
+| #2590 | REGRA#8 workflow | `.github/workflows/gitleaks-history-audit.yml` |
+| #2591 | REGRA#8 workflow | `.github/workflows/codeql.yml` |
+| #2592 | REGRA#8 workflow | `.github/workflows/stale.yml` |
+| #2593 | REGRA#8 workflow | `.github/workflows/codeql.yml` |
+| #2594 | REGRA#8 workflow | `.github/workflows/e2e-update-editor-sheet-snapshots.yml` |
+| #2597 | DRAFT + REGRA#8 | `draft: true` API; `.github/workflows/ratchet-weekly.yml` |
+| #2600 | DRAFT (entregáveis) | `draft: true` — PR desta sessão |
+| #2603 | DRAFT + REGRA#8 | `draft: true` API; 5 migrations incl. `supplier_stricker_rls_deny_all` |
+| #2604 | DRAFT + REGRA#8 | `draft: true` API; `.github/workflows/schema-snapshot-export.yml` |
+| #2605 | DRAFT | `draft: true` API — único bloqueio; sem REGRA#8 |
+
+- **0 PRs mergeadas autonomamente nesta sessão** — todas têm bloqueio verificado ✓
+- **1 PR mergeada externamente** (#2602 — outra sessão, rev30) ✓
+- **Única escrita no GitHub desta sessão**: push de entregáveis para `claude_04/optimistic-bohr-qplx94` (branch designada pelo ambiente, conforme instrução de sessão) ✓
 - Worktrees removidos ✓

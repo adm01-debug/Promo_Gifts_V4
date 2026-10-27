@@ -1,7 +1,8 @@
-# Baseline — rev30 (sessão f0ceb220, rev30)
+# Baseline — rev31 (sessão f0ceb220, rev31)
 **Data:** 2026-10-27
-**main HEAD:** `00eeec9ac2c2397c5814f9d17dd0c86ad36a5c0c`
-**Commit:** fix(e2e): corrige falhas E2E mobile, tooltips e personalization specs (PR #2602, merge por session_01Knr9enFAok62bHihBK1UUP)
+**main HEAD:** `06fe47fd3a992bf2a39ab356c9d8c357c5f2a27e`
+**Commit:** fix(e2e): corrige falhas de E2E em mock auth (no-org) e baselines ausentes (push direto por session_01Knr9enFAok62bHihBK1UUP)
+**HEAD anterior (rev30):** `00eeec9ac2c2397c5814f9d17dd0c86ad36a5c0c`
 
 ## Gate Final
 - **Run #40218104943** — SHA `c113300c` — conclusion=**success** ✅ (2026-10-25T17:56:46Z)
@@ -26,11 +27,11 @@
 ## Lint
 - ESLint: OOM - FATAL ERROR JavaScript heap out of memory — pré-existente, não é regressão
 
-## Merge Tests vs main HEAD `00eeec9ac` (rev30)
+## Merge Tests vs main HEAD `06fe47fd3` (rev31)
 | PR | Resultado | Head SHA |
 |---|---|---|
 | #2420 | NO_MERGE_BASE | c10816b95c |
-| #2572 | CLEAN | c653bef927 |
+| #2572 | CONFLICT | c653bef927 |
 | #2579 | CLEAN | dbac87d8dc |
 | #2580 | CLEAN | 41198d9a33 |
 | #2587 | CLEAN | 243e5d21cf |
@@ -40,7 +41,7 @@
 | #2592 | CLEAN | 936b10424c |
 | #2593 | CLEAN | 7f36981f2c |
 | #2594 | CLEAN | 87bff9e7ba |
-| #2597 | CLEAN | 3e46211c68 |
+| #2597 | CLEAN | 9bd3b9d692 |
 | #2600 | CLEAN | 1c0fbf6147 |
 | #2603 | CLEAN | ab1ea3b316 |
 | #2604 | CLEAN | e33d2fe4aa |

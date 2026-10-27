@@ -1,7 +1,7 @@
 # Regras de Negócio — Promo Gifts V4
-**Sessão:** session_011d8gKLZg8BWivR8aQBwxGF (rev30)
+**Sessão:** session_011d8gKLZg8BWivR8aQBwxGF (rev31)
 **Data:** 2026-10-27
-**main HEAD:** `00eeec9ac2c2397c5814f9d17dd0c86ad36a5c0c` (fix(e2e): corrige falhas E2E mobile, tooltips e personalization specs — PR #2602)
+**main HEAD:** `06fe47fd3a992bf2a39ab356c9d8c357c5f2a27e` (fix(e2e): corrige falhas de E2E em mock auth — push direto session_01Knr9enFAok62bHihBK1UUP)
 
 ## 1. SSOT do Supabase (REGRA #1)
 - Projeto canônico: `doufsxqlfjyuvxuezpln` (Gold/Medallion)
@@ -106,11 +106,11 @@ Comando: node scripts/validate-supabase-config.mjs
 Resultado: ✅ CURRENT_PROJECT_ID = doufsxqlfjyuvxuezpln
 ```
 
-### Merge tests (todos os 16 PRs abertos — base `00eeec9ac` — rev30)
+### Merge tests (todos os 16 PRs abertos — base `06fe47fd3` — rev31)
 | PR | Branch | Resultado |
 |----|--------|-----------|
 | #2420 | claude/fix-rollback-261019-1637 | NO_MERGE_BASE |
-| #2572 | claude_05/youthful-ride-vcdchy | CLEAN |
+| #2572 | claude_05/youthful-ride-vcdchy | CONFLICT (e2e specs vs 06fe47fd3) |
 | #2579 | release-please--branches--main--components--gifts-store | CLEAN |
 | #2580 | claude/fix-e23-rollback-261025-2145 | CLEAN |
 | #2587 | dependabot/npm_and_yarn/zustand-5.0.16 | CLEAN |

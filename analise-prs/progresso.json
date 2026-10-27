@@ -655,5 +655,42 @@
       "sem_escritas_proibidas": true,
       "worktrees_removidos": true
     }
+  },
+  "sessao_f0ceb220_rev31": {
+    "data": "2026-10-27",
+    "main_head": "06fe47fd3a992bf2a39ab356c9d8c357c5f2a27e",
+    "main_head_anterior": "00eeec9ac2c2397c5814f9d17dd0c86ad36a5c0c",
+    "novo_commit_main": "06fe47fd3 — fix(e2e): corrige falhas de E2E em mock auth (no-org) — push direto session_01Knr9enFAok62bHihBK1UUP",
+    "total_prs_abertas": 16,
+    "mergeadas_autonomo": 0,
+    "mergeadas_externas": 0,
+    "mudancas_vs_rev30": [
+      "#2572: test_merge CLEAN→CONFLICT (e2e specs conflitam com 06fe47fd3)",
+      "#2597: head SHA atualizado 3e46211c68→9bd3b9d692"
+    ],
+    "todos_bloqueios_verificados": true,
+    "merge_tests_16_prs": "#2420 NO_MERGE_BASE; #2572 CONFLICT; restante CLEAN",
+    "arquivos_atualizados": [
+      "analise-prs/baseline/main-sha.txt (rev31 — 06fe47fd3)",
+      "analise-prs/baseline/state.md (rev31 — merge tests atualizados)",
+      "analise-prs/prs.csv (#2572 test_merge CONFLICT)",
+      "analise-prs/dossies/PR-2572.md (CONFLICT adicionado)",
+      "analise-prs/regras-de-negocio.md (rev31 — merge tests atualizados)",
+      "analise-prs/RELATORIO_PRS.md (rev31 — META CUMPRIDA com tabela de bloqueios)",
+      "analise-prs/progresso.json (sessao_f0ceb220_rev31)"
+    ],
+    "meta_cumprida": {
+      "16_abertas_igual_16_analisadas": true,
+      "contagem_por_veredito": {
+        "BLOQUEADA": 6,
+        "DECISAO_HUMANA": 9,
+        "FECHAR": 1
+      },
+      "merge_tests_re_executados_vs_novo_main": true,
+      "evidencia_bloqueio_por_pr_na_tabela_relatorio": true,
+      "0_merges_autonomos": true,
+      "0_escritas_proibidas": true,
+      "worktrees_removidos": true
+    }
   }
 }
