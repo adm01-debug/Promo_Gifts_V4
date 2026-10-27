@@ -132,3 +132,93 @@
 1. Aguardar o GitHub resolver o deadlock de CI (ou fazer push vazio no branch para recriar o run)
 2. Mergear #2559 quando Gate Final passar
 3. Resolver as 13 PRs DECISAO_HUMANA conforme lista acima
+
+---
+
+# RELATORIO_PRS — Sessão session_011d8gKLZg8BWivR8aQBwxGF (rev50)
+**Data:** 2026-10-27
+**main HEAD entrada:** `df18546dfd76d1bea7ea5873257b668d128d8df3` (PR #2603)
+**Sessão anterior:** session_01Ss1tXZ4cAbxBvdmu95uNPz (rev22 — 10 merges autônomos)
+
+---
+
+## Resumo executivo (rev50 — 2026-10-27)
+
+| Métrica | Valor |
+|---|---|
+| PRs abertas analisadas | **15** |
+| Merges autônomos esta sessão | **0** (CI aguardando #2621) |
+| CI_AGUARDANDO | 1 (#2621) |
+| MINE_DRAFT_NEEDS_UPDATE | 1 (#2622) |
+| DECISAO_HUMANA | 10 |
+| DRAFT_NOMERGE | 2 |
+| SUPERSEDED | 1 |
+| **Total** | **15** |
+
+---
+
+## PRs — CI_AGUARDANDO (merge quando Gate Final verde)
+
+| PR | Branch | Arquivos | Motivo |
+|---|---|---|---|
+| #2621 | claude/fix-rollbacks-migrations-261027-1305 | supabase/rollbacks/ x7 | Gate Final run 40465056420 em andamento. CLEAN vs main. Supabase rollbacks apenas — sem REGRA#8. |
+
+**Ação:** Mergear via squash quando Gate Final success.
+
+---
+
+## PRs — MINE_DRAFT_NEEDS_UPDATE
+
+| PR | Branch | Status |
+|---|---|---|
+| #2622 | claude/fix-rollbacks-20261027-271027-1000 | DRAFT. Aguarda #2621 merge. Depois: strip 7 arquivos sobrepostos, force-push, converter DRAFT, aguardar CI, mergear. |
+
+---
+
+## PRs — DRAFT_NOMERGE (2)
+
+| PR | Motivo |
+|---|---|
+| #2600 | DRAFT, analise-prs/ docs apenas, branch claude_04 de outra sessão |
+| #2612 | DRAFT, apenas test timeout files, solução paliativa |
+
+---
+
+## PRs — SUPERSEDED (1)
+
+| PR | Motivo |
+|---|---|
+| #2605 | Conteúdo portado para #2620, mergeada em main SHA `3aabc4187` |
+
+---
+
+## PRs — DECISAO_HUMANA (10)
+
+| PR | Título (resumido) | Motivo |
+|---|---|---|
+| #2420 | rollback retroativo migration 20261019 | CONFLICT+REGRA#8 migrations+rollbacks |
+| #2572 | docs analise-prs rev23 | CONFLICT RELATORIO_CI.md + REGRA#10 branch outra sessão |
+| #2579 | release 1.0.0 (release-please) | downgrade 1.2.1→1.0.0 regressão de versão |
+| #2580 | rollback migration 20260916 | DRAFT + REGRA#8 migrations |
+| #2587 | zustand 4→5 (dependabot) | major upgrade breaking changes |
+| #2588 | react-day-picker 8→10 (dependabot) | major upgrade breaking changes + Gate Final FAILED |
+| #2594 | actions/setup-node 4→7 (dependabot) | REGRA#8 workflow |
+| #2597 | fix 4 workflows CI | REGRA#8 workflows x4 |
+| #2604 | continue-on-error psql snapshot | DRAFT + REGRA#8 workflow |
+| #2619 | health-check timeout 5s | DRAFT + REGRA#8 edge function |
+
+---
+
+## Contexto — DB-apply-migration FAILED
+
+Run #40462419661 falhou no preflight E058: "arquivo de rollback 20261027120000_rollback.sql não encontrado"
+- PR #2621: adiciona 7 rollbacks faltantes (CI em andamento)
+- PR #2622: adiciona 2 rollbacks únicos (minha branch, DRAFT, aguarda #2621)
+- Após ambos mergearem: re-dispatch `db-apply-migration.yml` (aprovação PO necessária — REGRA#8)
+
+---
+
+## Rollbacks criados nesta sessão (em PR #2622)
+
+- `supabase/rollbacks/20261027233000_rollback.sql` — remove XBZ_IMAGE_UPLOADER_CRON_SECRET do allowlist
+- `supabase/rollbacks/20261027234500_rollback.sql` — desativa cron xbz-image-uploader

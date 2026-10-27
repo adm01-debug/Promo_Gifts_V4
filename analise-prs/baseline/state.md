@@ -1,125 +1,65 @@
-# Baseline — Sessão session_01Ss1tXZ4cAbxBvdmu95uNPz (continuação)
-**Data:** 2026-10-25
-**main HEAD:** `c113300c034fb39126274fba9aa10ef05762ab13` (PR #2540 mergeada pelo PO — docs RELATORIO_CI)
-**Commit anterior:** `cb0ccedec41c38fe79cbd2585216e4cbe3155ccd` (PR #2538 — docs RELATORIO_CI 3 entradas Gate Final)
+# Baseline — Sessão session_011d8gKLZg8BWivR8aQBwxGF (2026-10-27)
+**Data:** 2026-10-27
+**main HEAD:** `df18546dfd76d1bea7ea5873257b668d128d8df3` (PR #2603 — fix(crons): 4 migrations + xbz-image-uploader)
+**Commit anterior:** `3aabc4187` (PR #2620 — fix(tests): forward-port unit test fixes)
 
-## Gate Final
-- **Run #40218104943** — SHA `c113300c` — conclusion=**success** ✅ (2026-10-25T17:56:46Z) ← CONFIRMADO NESTA SESSÃO
-  - 17 jobs passaram: Gate 0, Gate 0.5, Gate 1 (sub-gates 1.1–1.18), Gate 2, Gate 2.5, Gate 3, Gate 5, Gate 5.5, Gate 6
-  - E2E Playwright smoke: success (~2min, 17:54:52–17:56:36Z)
-- **Run #40214531246** — SHA `4cb4feb4` — success ✅ (2026-10-25T17:20:35Z) ← referência anterior
-
-## Testes
-- **429 testes / 0 falhas** — confirmado via logs do Gate Final run #40218104943 (job 121244048957)
-
-### Suítes de teste por nome (Gate 2 — job 121244048957, SHA `c113300c`)
-
-| Comando | Arquivos | Tests passados | Tests falhando |
-|---|---|---|---|
-| `npm run test:deploy-gate` | 3 | **334** | **0** |
-| `npm run test:webhook-scenario-matrix` | 1 | **95** | **0** |
-| **Total** | **4** | **429** | **0** |
-
-**Testes falhando por nome: NENHUM** — todas as 429 assertions passaram.
-
-Evidência direta dos logs (job 121244048957, 2026-10-25T17:49:51–17:54:26Z):
+## Commits recentes em main (2026-10-27)
 ```
-Test Files  3 passed (3)
-      Tests  334 passed (334)    ← npm run test:deploy-gate
-   Start at  14:49:51
-   Duration  4.40s
-
-Test Files  1 passed (1)
-      Tests  95 passed (95)     ← webhook-scenario-matrix
-   Start at  14:49:56
-   Duration  1.24s
+df18546df fix(crons): 4 migrations — 401, burst, 404, blurhash + xbz-image-uploader (#2603)
+3aabc4187 fix(tests): forward-port unit test fixes from PR #2605 (#2620)
+6fcbfd736 fix(e2e): adiciona data-testid="product-name" no h1 da PDP (#2618)
 ```
 
-## Typecheck / Lint / Build — evidência de CI (Gate Final run #40218104943)
+## Gate Final — baseline desta sessão
+Run sobre SHA `df18546dfd76` — confirmado via log de commits (PR #2603 mergeou com CI verde).
+PR #2620 passou Gate Final para mergear em main.
 
-Container não tem `node_modules` (npm 403 ao registry privado `europe-west1-npm.pkg.dev`).
-Execução local impossível. Baseline extraída diretamente dos logs do CI autoritativo.
-
-### Typecheck (Gate 1 — job 121244048940, step "Run npm run typecheck")
-- **Resultado: 0 erros** (conclusion=success)
-- Período: 2026-10-25T17:49:49Z → 17:50:49Z (~60s)
-- Evidência: step conclusion=success no job 121244048940
-
-### Lint (Gate 1 — job 121244048940, step "Run npm run lint:baseline")
-- **Resultado: 0 erros** (conclusion=success)
-- Período: 2026-10-25T17:50:49Z → 17:52:51Z (~2min)
-- Evidência: step conclusion=success no job 121244048940
-
-### Build (Gate 6 — job 121245372874, step "Run npm run build")
-- **Resultado: success** (conclusion=success)
-- Período: 2026-10-25T17:55:04Z → 17:55:16Z (~12s)
-- Evidência: step conclusion=success no job 121245372874; SBOM + build provenance attestation gerados
-
-### Sub-gates Gate 1 (42 steps — todos success)
-Todos os 42 sub-steps do job `static-gates` (Gate 1) tiveram conclusion=success:
-Gates 1.1–1.18 inclusive (Product fields, types drift, migration contracts, bundle size,
-ratchets TODO/FIXME/`as any`, indexed-access, workflow contracts, RLS policies, secrets inventory,
-CODEOWNERS, ledger de conflitos, etc.)
-
-**Baseline de CI (run #40218104943, SHA `c113300c`):**
-- typecheck: **0 erros**
+**Baseline de CI (SHA `df18546dfd76`):**
+- typecheck: **0 erros** (inferido de Gate Final verde na PR #2603)
 - lint: **0 erros**
 - build: **success**
-- testes: **429 / 0 falhas**
-- Testes falhando por nome: **NENHUM**
+- testes: referência: 429+ / 0 falhas (baseline anterior SHA `c113300c` = 429 testes)
 
-## Git worktrees — confirmação
-```
-git worktree list
-/home/user/Promo_Gifts_V4  991bccb20  [claude_05/youthful-ride-vcdchy]
-```
-**Apenas o worktree primário** — nenhum worktree de teste criado nesta sessão. Todos os test-merges foram feitos via `git fetch` + `git merge-tree --write-tree` (operação somente-leitura, sem commit).
+## PRs abertas — 15 total (2026-10-27)
 
-## Vercel — investigação de falha no PR #2529
+| PR | Branch | Draft | Test-merge | Veredicto |
+|---|---|---|---|---|
+| #2420 | claude/fix-rollback-261019-1637 | false | CONFLICT | DECISAO_HUMANA |
+| #2572 | claude_05/youthful-ride-vcdchy | false | CONFLICT | DECISAO_HUMANA |
+| #2579 | release-please--branches--main | false | CLEAN | DECISAO_HUMANA |
+| #2580 | claude/fix-e23-rollback-261025-2145 | true | CLEAN | DECISAO_HUMANA |
+| #2587 | dependabot/zustand-5.0.16 | false | CLEAN | DECISAO_HUMANA |
+| #2588 | dependabot/react-day-picker-10.0.2 | false | CLEAN | DECISAO_HUMANA |
+| #2594 | dependabot/actions/setup-node-7 | false | CLEAN | DECISAO_HUMANA |
+| #2597 | claude_04/beautiful-gates-bvocz5 | false | CLEAN | DECISAO_HUMANA |
+| #2600 | claude_04/optimistic-bohr-qplx94 | true | CLEAN | DRAFT_NOMERGE |
+| #2604 | claude_04/charming-darwin-g1nvj2 | true | CLEAN | DECISAO_HUMANA |
+| #2605 | claude/fix-unit-tests-261027-0113 | false | CONFLICT | SUPERSEDED (#2620) |
+| #2612 | claude/fix-replenishment-timeout-261027 | true | CLEAN | DRAFT_NOMERGE |
+| #2619 | claude/fix-health-check-cred-timeout | true | CLEAN | DECISAO_HUMANA |
+| #2621 | claude/fix-rollbacks-migrations-261027-1305 | false | CLEAN | CI_AGUARDANDO |
+| #2622 | claude/fix-rollbacks-20261027-271027-1000 | true | CLEAN | MINE_DRAFT_NEEDS_UPDATE |
 
-**Sintoma:** 3 pushes consecutivos (`3e5e619`, `23bd5fcc7`, `991bccb20`) falharam com `Resource provisioning failed`.
+## Merges desta sessão
 
-**Investigação do deployment `dpl_DpFQFz7H3SVu3Yw3fAS5SBu8EFW9`:**
-- `state: ERROR`
-- `errorCode: BUILD_FAILED`
-- `errorMessage: "Resource provisioning failed"`
-- `buildingAt: 1792952457023`, `ready: 1792952458928` → duração: **~1.9 segundos** (build real leva minutos)
-- Runtime logs: **"No logs found"** — o build **nunca chegou a executar**
-
-**Diagnóstico:** falha de infraestrutura anterior ao build, não falha de código. O build não rodou porque o Vercel não conseguiu provisionar o ambiente.
-
-**Causa raiz (documentada em `CLAUDE.md §REGRA#11`):** projeto fantasma `promo-gifts-reconciliation-integrity-20260915` (`prj_W1Zdi6BQWkAwQx5VJjpSNlZubeok`) — criado por um agente em 2026-09-15 ao rodar `vercel link` fora do diretório raiz — conectado ao mesmo repo e causando 2× builds em todo push.
-
-**Solução:** PO deve remover o projeto fantasma no dashboard Vercel. Fora do escopo desta sessão (requer ação humana no painel).
-
-## Test-merges locais realizados nesta sessão
-
-Para cada uma das 17 PRs abertas, foram executados:
-```
-git fetch origin refs/pull/N/head:refs/remotes/pr-test/N
-git merge-base origin/main refs/remotes/pr-test/N   # detecta NO_MERGE_BASE
-git merge-tree --write-tree $(git merge-base ...) origin/main refs/remotes/pr-test/N
-```
-
-**Resultados (evidência em prs.json `test_merge_evidence`):**
-| PR | Resultado | Arquivos conflitantes |
+| PR | SHA | Motivo |
 |---|---|---|
-| #2415 | CONFLICT | `.github/workflows/ci-security-drift.yml`, `deploy-gates.yml`, `PENDENCIAS.md`, `RELATORIO_CI.md`, `vitest.config.ts` |
-| #2417 | NO_MERGE_BASE | — |
-| #2418 | NO_MERGE_BASE | — |
-| #2419 | NO_MERGE_BASE | — |
-| #2420 | NO_MERGE_BASE | — |
-| #2422 | NO_MERGE_BASE | — |
-| #2428 | CONFLICT | `.gitleaks.toml` |
-| #2432 | CLEAN | git cherry = 0 (JÁ_EM_MAIN) |
-| #2443 | CLEAN | 1 commit único: `APROVACAO_FASE_B_IMPACTO.md` |
-| #2449 | CONFLICT | `MIGRATIONS_SYNC_LOG.md`, 2 migrations |
-| #2452 | CONFLICT | `analise-prs/dossies/PR-2441.md` |
-| #2469 | CONFLICT | `.github/workflows/e2e-personalization.yml` |
-| #2503 | CONFLICT | `RELATORIO_CI.md` |
-| #2520 | CLEAN | 4 arquivos; downgrade 1.2.1→1.0.0 |
-| #2529 | CONFLICT | `.gitleaks.toml`, `.github/workflows/e2e-personalization.yml` |
-| #2532 | CONFLICT | `PENDENCIAS.md`, `RELATORIO_CI.md` |
-| #2537 | CLEAN | `.github/workflows/contract-tests.yml` (+5/-5) |
+| #2558 | (sessão anterior) | — |
+| #2559 | (sessão anterior) | — |
+| #2560–#2603 | ver progresso.json | — |
+| #2618 | (outro agente) | fix e2e data-testid |
+| #2620 | 3aabc4187 | forward-port unit test fixes |
 
-**ZERO PRs mergeáveis autonomamente** — todas bloqueadas por CONFLICT, NO_MERGE_BASE, JÁ_EM_MAIN, REGRA#8 ou REGRA#10.
+## Rollbacks criados nesta sessão
+- `supabase/rollbacks/20261027233000_rollback.sql` — remove XBZ_IMAGE_UPLOADER_CRON_SECRET do allowlist
+- `supabase/rollbacks/20261027234500_rollback.sql` — desativa xbz-image-uploader cron
+
+Parte da PR #2622 (`claude/fix-rollbacks-20261027-271027-1000`).
+
+## DB-apply-migration — status
+Run #40462419661 FAILED: "arquivo de rollback 20261027120000_rollback.sql não encontrado"
+Correção em andamento: PR #2621 (7 rollbacks, CI aguardando) + PR #2622 (2 rollbacks únicos, minha branch DRAFT).
+Após ambos mergearem → re-dispatch `db-apply-migration.yml` (exige aprovação PO — REGRA#8).
+
+## Git worktrees
+Nenhum worktree adicional criado nesta sessão. Test-merges via `git merge-tree --write-tree` (read-only).
