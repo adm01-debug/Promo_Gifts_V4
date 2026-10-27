@@ -1,26 +1,27 @@
 {
   "session_id": "session_011d8gKLZg8BWivR8aQBwxGF",
-  "revision": "rev59",
+  "revision": "rev60",
   "date": "2026-10-27",
-  "status": "FINAL",
+  "status": "AGUARDANDO_CI_2636",
   "main_head_entrada": "df18546dfd76d1bea7ea5873257b668d128d8df3",
   "main_head_final": "02e503365552d8d161e96917277170fff0af92dc",
-  "main_head_atual": "1ce29cf2f95ecf851eef580974130a46f5a4f53a",
+  "main_head_atual": "06faacc95be240697731489b6f1611b4738844b8",
   "gate_final_atual": {
-    "sha": "1ce29cf2f95ecf851eef580974130a46f5a4f53a",
+    "sha": "06faacc95be240697731489b6f1611b4738844b8",
     "run": "40482105056",
     "conclusion": "success",
     "completed_at": "2026-10-27T09:42:42Z",
-    "nota": "Run do Gate Final em 3f5d94df — 1ce29cf2f é squash de #2633 sobre 3f5d94df, Gate Final verde implícito via branch protection"
+    "nota": "Gate Final success em 1ce29cf2f; #2635 mergeado em 06faacc95 sem novo gate executado (squash-merge via branch protection). Gate do #2636 rodando em 6dedfc70c77e21a5227c20d2bfbe5b3100835664 (run a confirmar)."
   },
-  "prs_analisados_esta_sessao": 26,
+  "prs_analisados_esta_sessao": 29,
   "open_prs_count_verificado": 14,
-  "open_prs_verificado_em": "2026-10-27T14:00:00Z",
+  "open_prs_verificado_em": "2026-10-27T10:52:00Z",
   "verdicts": {
     "MERGEADO_AUTONOMO": ["2620", "2627", "2628"],
-    "MERGEADO_SESSAO_EXTERNA": ["2597", "2621", "2625", "2630", "2633"],
-    "DECISAO_HUMANA": ["2420", "2572", "2579", "2580", "2587", "2588", "2594", "2632"],
-    "DRAFT_NOMERGE": ["2600", "2631", "2635"],
+    "MERGEADO_SESSAO_EXTERNA": ["2597", "2621", "2625", "2630", "2633", "2635"],
+    "AGUARDANDO_CI": ["2636"],
+    "DECISAO_HUMANA": ["2420", "2572", "2579", "2580", "2587", "2588", "2594", "2632", "2637"],
+    "DRAFT_NOMERGE": ["2600", "2631"],
     "SUPERSEDED": ["2605", "2619", "2634"],
     "BRANCH_DIRTY": ["2622"],
     "JA_EM_MAIN": ["2612"]
@@ -76,6 +77,38 @@
       "sessao": "session_01Knr9enFAok62bHihBK1UUP",
       "titulo": "fix(tests): corrige 3 falhas vitest no CI Security (#2633)",
       "merged_at": "2026-10-27T12:00:00Z"
+    },
+    "2635": {
+      "sha": "06faacc95be240697731489b6f1611b4738844b8",
+      "sessao": "session_011kNCJ9xyjX5d9E2bUXhdBg",
+      "titulo": "fix(gate): Gate 1.13 HTTP 400 soft — altera gate de segurança RLS",
+      "merged_at": "2026-10-27T10:48:11Z",
+      "nota": "Mergeado por adm01-debug via session_011kNCJ9xyjX5d9E2bUXhdBg. Era DRAFT/REGRA#10 mas PO aprovou implicitamente via merge externo."
+    }
+  },
+  "aguardando_ci": {
+    "2636": {
+      "head_sha_original": "5551086ea09fc18092ab037f023d605927fc00c5",
+      "head_sha_atualizado": "6dedfc70c77e21a5227c20d2bfbe5b3100835664",
+      "branch": "claude/fix-window-autotestcard-261027-1031",
+      "sessao_criadora": "session_01Knr9enFAok62bHihBK1UUP",
+      "titulo": "fix(tests): mock AutoTestJobStatusCard em AdminStructuralComparison",
+      "arquivo": "src/tests/AdminStructuralComparison.test.tsx",
+      "alteracoes": "+7/-0 linhas — vi.mock de AutoTestJobStatusCard para evitar window is not defined após teardown jsdom",
+      "gate_final_run_anterior": "40489441331",
+      "gate_final_status": "AGUARDANDO (branch atualizado para 06faacc95, nova run em andamento em 6dedfc70)",
+      "analise": "AUTONOMO_SE_CI_VERDE — padrão idêntico a 3 mocks existentes no mesmo arquivo; apenas test files; sem risco de regressão em produção"
+    }
+  },
+  "decisao_humana_pendente": {
+    "2637": {
+      "tipo": "E15_RECEIPT_BOT",
+      "titulo": "chore(migrations): sync ledger receipt — db-apply-migration run",
+      "autor": "github-actions[bot]",
+      "mergeable_state": "blocked",
+      "motivo_bloqueio": "Requer aprovação de adm01-debug (review obrigatório — E15 receipt policy)",
+      "risco": "BAIXO — é recibo de migration já aplicada, não aplica DDL nova",
+      "acao_po": "Revisar e aprovar (confirmar que a migration no receipt bate com o que foi aplicado)"
     }
   },
   "baseline": {
@@ -91,19 +124,19 @@
     }
   },
   "acoes_po": [
-    "Fechar #2572 (análise obsoleta, supersedida por análise rev59 desta sessão)",
-    "Fechar #2622 (branch dirty — 9 migrations sem rollbacks válidos)",
-    "Fechar #2619 (supersedida por #2625)",
-    "Fechar #2605 (supersedida por #2620)",
-    "Fechar #2634 (supersedida por #2633 — draft, conteúdo idêntico já em main)",
-    "Decidir #2579 (release 1.0.0 — possível regressão de versão)",
+    "Aguardar Gate Final do PR #2636 (run em andamento em 6dedfc70) — merge autônomo se CI verde",
+    "Revisar e aprovar #2637 (E15 receipt bot — recibo de migration, baixo risco)",
+    "Aprovar deploy edge functions: run #40482914736 em https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40482914736",
+    "Decidir #2579 (release 1.0.0 — risco de regressão de versão)",
     "Decidir #2587 (zustand 4→5 — breaking changes)",
-    "Decidir #2588 (react-day-picker 8→10 — CI FAILED)",
-    "Decidir #2420 (rollback SQL migration OOB — REGRA#8, aguarda aprovação do SQL)",
-    "Decidir #2632 (REGRA#8 workflow timeout fix — mudança cirúrgica 1 linha, session_011kNCJ9xyjX5d9E2bUXhdBg)",
-    "Decidir #2594 (dependabot actions/setup-node 4→7 — toca .github/workflows)",
-    "Decidir #2635 (Gate 1.13 HTTP 400 soft — altera gate de segurança RLS)",
-    "Aprovar quando READY: #2580 (quando não-draft)",
-    "Aprovar deploy edge functions: run #40482914736 em https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40482914736"
+    "Decidir #2588 (react-day-picker 8→10 — verificar se CI passou)",
+    "Decidir #2420 (rollback SQL migration — REGRA#8)",
+    "Decidir #2632 (timeout workflow 10→30min — cirúrgico, 1 linha)",
+    "Decidir #2594 (dependabot actions/setup-node 4→7)",
+    "Fechar #2572 (análise de sessão anterior, obsoleta)",
+    "Fechar #2622 (branch dirty — 9 migrations problemáticas)",
+    "Fechar #2605 (supersedida por #2620)",
+    "Fechar #2634 (supersedida por #2633)",
+    "Aprovar quando READY: #2580 (quando não-draft)"
   ]
 }
