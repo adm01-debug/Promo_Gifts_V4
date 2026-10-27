@@ -65,6 +65,7 @@
 - **Ação requerida (pós-merge):**
   - Disparar `.github/workflows/deploy-edge-functions.yml` via `workflow_dispatch` para sincronizar as edge functions.
   - Ou identificar qual função driftou (artefato `drift-report.csv` da run 40453930945) e fazer deploy pontual com `function_name` específico.
+- **Status pós-merge:** `deploy-edge-functions.yml` disparado via `workflow_dispatch` (run 40476968791 — pós-merge de PR #2597; run 40480767717 — pós-merge de PR #2629). `edge-functions-drift-check` run 40480776196 em `in_progress` (2026-10-27T09:27 UTC).
 - **Impacto no Gate Final:** NÃO é required check — não bloqueia deploy.
 
 ---
@@ -90,4 +91,15 @@
 
 ---
 
+### 7. Branch Protection Sentinel — commit `b6a2b359` (PR #2629)
+- **Run ID:** 40480654007 (sha `b6a2b359`, main, 2026-10-27T09:26 UTC)
+- **Erro:** `1 commit(s) em push para main sem padrão aceito: b6a2b35` — Regra 1 do sentinel (`scripts/sentinel-check.sh`): squash merge DEVE terminar em `(#NNN)` (regex `\(#[0-9]+\)[[:space:]]*$`).
+- **Causa raiz:** Squash merge do PR #2629 usou `commit_title` sem sufixo `(#2629)`. Título usado: `chore: entrega RELATORIO_CI.md e PENDENCIAS.md — /goal CI fix concluído`. O sentinel detectou corretamente uma violação real de convenção de commit.
+- **Por que não posso corrigir o commit já mergeado:** Retroativamente impossível — commit já está na main. Force-push em main é proibido (REGRA #9).
+- **Impacto no Gate Final:** NÃO é required check (não está em `.github/required-checks.json`) — não bloqueia deploy nem PRs futuros.
+- **Resolução:** Este PR (#2630+) usa squash merge com `commit_title` terminando em `(#NNN)` — o sentinel passará verde no HEAD após este merge.
+
+---
+
 *Gerado por Claude Code — sessão https://claude.ai/code/session_014RkohRYagi3sPiL8jtgot4*
+*Atualizado: 2026-10-27T09:30 UTC — adicionado §7 Branch Protection Sentinel (PR #2629 squash sem `(#NNN)`)*
