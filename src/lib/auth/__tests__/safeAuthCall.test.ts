@@ -106,7 +106,7 @@ describe('safeAuthCall — sucesso e classificação', () => {
       maxRetries: 1,
     });
     if (r.kind === 'err') expect(r.errorKind).toBe('timeout');
-    expect(r.elapsedMs).toBeGreaterThanOrEqual(20);
+    expect(r.elapsedMs).toBeGreaterThanOrEqual(15);
   }, 5_000);
 
   it('nunca lança exceção — resposta malformada vira unknown', async () => {

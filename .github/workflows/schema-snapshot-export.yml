@@ -83,7 +83,7 @@ jobs:
     name: Export schema snapshot
     needs: drift-gate
     runs-on: ubuntu-24.04
-    timeout-minutes: 10
+    timeout-minutes: 30  # supabase db dump --linked > 388 tabelas leva >10min (run #40480567522 cancelado)
     # E27: SUPABASE_ACCESS_TOKEN não deve chegar a PRs de forks.
     # drift-gate: skipped em PR/push; em schedule/dispatch tem de passar, salvo force_rotate.
     if: >-
@@ -144,6 +144,7 @@ jobs:
 
       - name: Export event triggers snapshot (E036)
         if: env.SUPABASE_DB_PASSWORD != ''
+        continue-on-error: true  # psql direto via IPv6 pode falhar do runner — snapshot é observacional
         run: |
           set -euo pipefail
           shopt -s nullglob
@@ -168,6 +169,7 @@ jobs:
 
       - name: Export cron jobs snapshot (E037)
         if: env.SUPABASE_DB_PASSWORD != ''
+        continue-on-error: true  # psql direto via IPv6 pode falhar do runner — snapshot é observacional
         run: |
           set -euo pipefail
           shopt -s nullglob
@@ -204,6 +206,7 @@ jobs:
       # common-prefix do artifact principal e quebrar os cp existentes).
       - name: Export recovery dump (E072)
         if: env.SUPABASE_DB_PASSWORD != ''
+        continue-on-error: true  # psql direto via IPv6 pode falhar do runner — recovery dump é observacional
         run: |
           set -euo pipefail
           shopt -s nullglob
