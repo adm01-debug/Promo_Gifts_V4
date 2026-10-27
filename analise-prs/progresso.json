@@ -1,6 +1,6 @@
 {
   "session_id": "session_011d8gKLZg8BWivR8aQBwxGF",
-  "revision": "rev71",
+  "revision": "rev72",
   "date": "2026-10-27",
   "status": "SESSAO_COMPLETA",
   "main_head_entrada": "df18546dfd76d1bea7ea5873257b668d128d8df3",
@@ -9,19 +9,44 @@
   "gate_final_atual": {
     "sha": "5d049ef118f3eb84843da44bd2efc70ee56ca1",
     "run_id": "122257161951",
-    "run_baseline": "40514312286",
-    "conclusion": "success",
-    "nota": "Gate Final SUCCESS em 5d049ef1 (id=122257161951) — confirmado rev71. Baseline: Gate Final SUCCESS em b752faf8e (run #40514312286). Nenhuma regressão introduzida por #2647 (timeout 40→90 min)."
+    "conclusion": "success"
   },
   "gate_final_delivery_branch": {
     "sha": "3c9d14075ebe709f95fb84bc22041ba7950ffc19",
     "run": "40500183634",
-    "conclusion": "success",
-    "completed_at": "2026-10-27T11:59:49Z",
-    "nota": "Gate Final PR#2600 (delivery branch) success em 3c9d14075 (head final); docs-only bypass E14 ativo (Gates 1/2/3 skipped). Compare GitHub x Canonical: success."
+    "conclusion": "success"
   },
   "prs_analisados_esta_sessao": 34,
   "open_prs_count_verificado": 13,
   "open_prs_verificado_em": "2026-10-27T14:45:00Z",
-  "nota_contagem": "13 PRs abertas: DECISAO_HUMANA*10 + DRAFT_NOMERGE*3. 34 total catalogadas. #2637 mergeada autonomamente nesta sessão. #2647 mergeada por sessão externa. #2646 nova (REGRA%28). DECISAO_HUMANA: 2420/2572/2579/2587/2588/2594/2605/2622/2645/2646.",
-  "correcoes_rev71
+  "verdicts": {
+    "MERGEADA_AUTONOMA": ["2620", "2627", "2628", "2636", "2637"],
+    "MERGEADA_SESSAO_EXTERNA": ["2597", "2621", "2625", "2630", "2632", "2633", "2635", "2638", "2647"],
+    "FECHADA_EXTERNA": ["2612", "2619", "2629", "2634"],
+    "BLOQUEADA": ["2420", "2572", "2579", "2580", "2587", "2588", "2594", "2600", "2605", "2622", "2631", "2645", "2646"],
+    "DRAFT_NOMERGE": ["2580", "2600", "2631"]
+  },
+  "bloqueio_razoes": {
+    "2420": "REGRA#8: rollbacks/ DDL de producao — exige aprovacao PO",
+    "2572": "Dirty: 6 conflitos; totalmente supersedada por #2614+#2616+#2620 ja mergeados",
+    "2579": "Downgrade versao 1.2.1->1.0.0 sem justificativa; potencial regressao",
+    "2580": "DRAFT — nao mergeavel",
+    "2587": "Breaking changes API Zustand 4->5; requer migracao de todos os stores",
+    "2588": "Breaking changes API react-day-picker 8->10; requer migracao de uso",
+    "2594": "Toca .github/workflows/ — REGRA#8; exige aprovacao PO",
+    "2600": "DELIVERY BRANCH desta sessao — NUNCA MERGEAR",
+    "2605": "Dirty 12+ conflitos; 100% supersedada por #2614+#2616+#2620 ja mergeados",
+    "2622": "REGRA#8: rollbacks/ DDL de producao — exige aprovacao PO",
+    "2631": "DRAFT — nao mergeavel",
+    "2645": "Behind main; branch protection exige review humano",
+    "2646": "REGRA#8: supabase/migrations/ — exige aprovacao PO"
+  },
+  "baseline": {
+    "vitest": "Gate 2 CI — SUCCESS em 1ce29cf2f (run #40482105056) — autoritativo",
+    "typecheck": "EXIT 0 em b752faf8e",
+    "lint": "Gate 1 SUCCESS em run_id 40447563368 (SHA 48899b659ef6)",
+    "failing_tests": "analise-prs/baseline/failing-tests-by-name.md — rev72"
+  },
+  "worktrees_removidos": true,
+  "nota": "rev72: DECISAO_HUMANA renomeada para BLOQUEADA com razoes especificas por PR. 13 PRs abertas: todas BLOQUEADAS. Deliverables: prs.json, prs.csv, clusters.md, regras-de-negocio.md, 33+ dossiers. Gate Final SUCCESS em 5d049ef1."
+}
