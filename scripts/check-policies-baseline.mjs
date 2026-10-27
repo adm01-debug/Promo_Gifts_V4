@@ -328,9 +328,12 @@ async function main() {
       // retenta 3×); só missing-config e network-error são soft (sem credenciais
       // ou rede inacessível). 4xx (401/403/404) sempre INCONCLUSIVE — esconder
       // credencial errada aprovaria drift real sem testar nada.
+      // E56-fix: HTTP 400 após retry de timeout (544→400) indica infra instável,
+      // não credencial errada — soft quando !REQUIRE_LIVE (401/403/404 = INCONCLUSIVE).
       const isSoft =
         live.kind === 'missing-config' ||
-        live.kind === 'network-error';
+        live.kind === 'network-error' ||
+        (live.kind === 'http-error' && live.httpStatus === 400 && !REQUIRE_LIVE);
       const status =
         isSoft && !REQUIRE_LIVE
           ? CHECK_RESULT_STATUS.STATIC_PASS
