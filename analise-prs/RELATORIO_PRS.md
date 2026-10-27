@@ -4,7 +4,7 @@
 **Sessão:** session_012WyySbh2tj8vhRQLBf3mHo  
 **Branch de trabalho:** `claude/quirky-keller-owezvt`  
 **Main SHA no momento da análise:** `61a0cfa1714661f752273cf864b335eb217ea134`  
-**Main SHA atual (pós-merges):** `16ad57c66e619100f76c113653cdab7a20a7871a`  
+**Main SHA atual (pós-merges):** `4c7ecb260da691b5cd436700380b819d0d936961`  
 **Baseline Gate Final (sessão):** SHA `8bafc7d5` → run `39869261220` → SUCCESS  
 **Typecheck baseline:** 1 erro pré-existente (TS2688 `node`) — Gate Final = success
 
@@ -50,27 +50,27 @@ Esta sessão analisou exaustivamente todas as PRs abertas do repositório `adm01
 | [#2649](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2649) | MERGEADA_PELO_OWNER | SUCCESS | não | Mergeada pelo owner em 15:54Z — fix e2e admin-critical |
 | [#2650](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2650) | MERGEADA_PELO_OWNER | SUCCESS | não | Mergeada pelo owner em 16:21Z — fix E2E catalog+kit-builder testids |
 | [#2652](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2652) | MERGEADA_PELO_OWNER | SUCCESS | não | Mergeada pelo owner em ~16:45Z — docs(e15): recibo migration 20261027140000 |
-| [#2654](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2654) | DRAFT | NAO_RODOU | não | DRAFT — fix(ci): adiciona xbz-image-uploader ao SERVER_ONLY_ALLOWLIST |
-| [#2655](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2655) | DRAFT | NAO_RODOU | não | DRAFT — fix(tests): add xbz-image-uploader descriptor pendingDeploy=true |
+| [#2654](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2654) | MERGEADA_PELO_OWNER | ✅ SUCCESS (40549508170) | não | Mergeada pelo owner em 17:19:33Z — fix(ci): xbz-image-uploader ao SERVER_ONLY_ALLOWLIST; merge SHA 4c7ecb26 |
+| [#2655](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2655) | DRAFT | NAO_RODOU | não | DRAFT — behind (sem conflito); test-merge ✅ CLEAN contra 4c7ecb26 |
 
 ### Contagem por Veredicto (19 PRs — inventário final 2026-10-27)
 
 | Veredicto | Contagem | PRs |
 |-----------|---------|-----|
-| MERGEADA_PELO_OWNER | 5 | #2594, #2648, #2649, #2650, #2652 |
+| MERGEADA_PELO_OWNER | 6 | #2594, #2648, #2649, #2650, #2652, #2654 |
 | MERGEADA_CLAUDE | 1 | #2587 |
 | DECISAO_HUMANA | 1 | #2588 |
 | AGUARDAR_APROVACAO | 2 | #2420, #2645 |
 | NAO_MERGEAR | 2 | #2579, #2600 |
 | CONFLITO_PENDENTE_REBASE | 1 | #2605 |
 | CONFLITO_PENDENTE_REBASE_SEGURANCA | 1 | #2622 |
-| DRAFT | 4 | #2580, #2631, #2654, #2655 |
+| DRAFT | 3 | #2580, #2631, #2655 |
 | CI_FALHOU | 1 | #2646 |
 | FECHAR | 1 | #2572 |
 
-**Total inventário: 19 ✓ | Analisadas: 19 ✓ | Mergeadas por Claude: 1 (#2587) | Mergeadas pelo owner: 5**
+**Total inventário: 19 ✓ | Analisadas: 19 ✓ | Mergeadas por Claude: 1 (#2587) | Mergeadas pelo owner: 6**
 
-> **Nota:** PR #2650 surgiu após o inventário de reconciliação e foi mergeada pelo owner em 16:21:21Z (merge SHA `f0689734`). PR #2652 (docs E15 receipt) mergeada pelo owner em ~16:45Z (merge SHA `22ba938e`). PR #2587 mergeada por Claude em 16:46:37Z (merge SHA `16ad57c6`). Main atual = `16ad57c66e619100f76c113653cdab7a20a7871a`.
+> **Nota:** PR #2650 surgiu após o inventário de reconciliação e foi mergeada pelo owner em 16:21:21Z (merge SHA `f0689734`). PR #2652 (docs E15 receipt) mergeada pelo owner em ~16:45Z (merge SHA `22ba938e`). PR #2587 mergeada por Claude em 16:46:37Z (merge SHA `16ad57c6`). PR #2654 (fix(ci): xbz-image-uploader SERVER_ONLY_ALLOWLIST) mergeada pelo owner em 17:19:33Z (merge SHA `4c7ecb26`). Main atual = `4c7ecb260da691b5cd436700380b819d0d936961`. Gate Final ✅ SUCCESS run `40549508170`.
 
 > **⚠️ Segurança:** PR #2622 reclassificada para CONFLITO_PENDENTE_REBASE_SEGURANCA — rollback `20261027200000` contém DISABLE RLS em 17 tabelas `supplier_stricker.*`. Requer aprovação do PO/Security antes de qualquer merge.
 
@@ -135,6 +135,7 @@ As seguintes falhas existiam ANTES desta sessão (não são regressões):
 - PR #2594: SHA `f2f8c3d6`, 2026-10-27T15:56:14Z
 - PR #2650: SHA `f0689734`, 2026-10-27T16:21:21Z
 - PR #2652: SHA `22ba938e`, 2026-10-27T~16:45Z
+- PR #2654: SHA `4c7ecb26`, 2026-10-27T17:19:33Z
 
 **Mergeadas por Claude:**
 - PR #2587: SHA `16ad57c6`, 2026-10-27T16:46:37Z — zustand 4.5.7→5.0.16 (Gate Final ✅ SUCCESS run 40420603513)
