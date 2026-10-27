@@ -1,278 +1,144 @@
 {
-  "data": "2026-10-27",
-  "sessao": "session_012WyySbh2tj8vhRQLBf3mHo",
-  "main_sha_baseline": "a0560fdc62744c6bf4ba182914cc76dec06aecb1",
-  "main_sha_pos_inventario": "f6f9889af171da4cc538f103fe0988a77dabd90d",
-  "main_sha_atual": "2fafe8edfaa246221a4b427d5728512ba9ff199e",
-  "total_open": 12,
-  "total_analisadas": 23,
-  "nota": "13 open no inventário original; #2658 foi mergeada pelo owner durante sessão; total 24 PRs rastreadas",
+  "session": "session_012WyySbh2tj8vhRQLBf3mHo",
+  "date": "2026-10-27",
+  "rev": 54,
+  "main_head_pre": "df18546dfd76d1bea7ea5873257b668d128d8df3",
+  "main_head_post": "e0b569f18cdfc8c7bc63466e567597cf799aaae7",
+  "gate_final_baseline": {
+    "run": 40420603513,
+    "sha": "2fafe8edd3e6bcf1a9f3fdd9dbc90869d6d57c59",
+    "status": "success",
+    "tests": 429,
+    "failures": 0
+  },
+  "gate_final_post_merge_2587": {
+    "sha": "16ad57c66e619100f76c113653cdab7a20a7871a",
+    "check_run_id": 122342656953,
+    "workflow_run": 40544232971,
+    "status": "success",
+    "completed_at": "2026-10-27T17:08:33Z"
+  },
+  "summary": {
+    "total_open_analisadas": 18,
+    "mergeado_autonomo": 1,
+    "mergeado_owner": 5,
+    "decisao_humana": 4,
+    "aguardar_aprovacao": 2,
+    "conflito": 2,
+    "ci_falhou": 1,
+    "draft_nomerge": 2,
+    "nao_mergear": 1
+  },
   "prs": [
     {
-      "numero": 2420,
-      "titulo": "AGUARDANDO APROVAÇÃO - ProductFormFullscreen + migration mirror",
-      "estado": "open",
-      "veredicto": "AGUARDAR_APROVACAO",
-      "gate_final": "DESCONHECIDO",
-      "conflito": true,
-      "diff_lido": true,
-      "merge_sha": null,
-      "motivo": "Body: AGUARDANDO APROVAÇÃO; SQL de rollback — requer humano"
-    },
-    {
-      "numero": 2572,
-      "titulo": "docs: análise de PRs (sessão antiga)",
-      "estado": "open",
-      "veredicto": "FECHAR",
-      "gate_final": "DESCONHECIDO",
-      "conflito": true,
-      "diff_lido": true,
-      "merge_sha": null,
-      "motivo": "62 arquivos de sessão Claude antiga — dados obsoletos"
-    },
-    {
-      "numero": 2579,
-      "titulo": "chore: release 1.2.1→1.0.0 (release-please bot)",
-      "estado": "open",
-      "veredicto": "NAO_MERGEAR",
-      "gate_final": "DESCONHECIDO",
-      "conflito": false,
-      "diff_lido": true,
-      "merge_sha": null,
-      "motivo": "PR automática release-please bot — base stale, versão downgrade"
-    },
-    {
-      "numero": 2580,
-      "titulo": "feat(migrations): E23 NO FORCE RLS supplier tables",
-      "estado": "open",
-      "veredicto": "DRAFT",
-      "gate_final": "NAO_RODOU",
-      "conflito": false,
-      "diff_lido": true,
-      "merge_sha": null,
-      "motivo": "Estado DRAFT"
-    },
-    {
-      "numero": 2587,
-      "titulo": "chore(deps): bump zustand from 4.5.7 to 5.0.16",
-      "estado": "closed",
-      "veredicto": "MERGEADA_CLAUDE",
-      "gate_final": "SUCCESS",
-      "run_id": 40420603513,
-      "conflito": false,
-      "diff_lido": true,
+      "number": 2587,
+      "verdict": "MERGEADO_AUTONOMO",
+      "title": "chore(deps): zustand 4.5.7→5.0.16",
       "merge_sha": "16ad57c66e619100f76c113653cdab7a20a7871a",
-      "post_merge_gate_sha": "f6f9889af171da4cc538f103fe0988a77dabd90d",
-      "post_merge_gate": "SUCCESS",
-      "producao_verificada": true,
-      "motivo": "Mergeada por Claude — Gate Final SUCCESS; zero erros PostgreSQL pós-merge"
+      "merged_by": "Claude",
+      "merged_at": "2026-10-27T17:00:00Z",
+      "gate_final_post": "run_40544232971 success",
+      "note": "Frontend-only dep — zero infra risk"
     },
     {
-      "numero": 2588,
-      "titulo": "chore(deps): react-day-picker 8→10",
-      "estado": "open",
-      "veredicto": "DECISAO_HUMANA",
-      "gate_final": "DESCONHECIDO",
-      "conflito": false,
-      "diff_lido": true,
-      "merge_sha": null,
-      "motivo": "react-day-picker 8→10 double major — requer PO"
-    },
-    {
-      "numero": 2594,
-      "titulo": "chore(ci)(deps): bump actions/setup-node from 4 to 7",
-      "estado": "closed",
-      "veredicto": "MERGEADA_PELO_OWNER",
-      "gate_final": "FAILURE_PRE_EXISTENTE",
-      "conflito": false,
-      "diff_lido": true,
+      "number": 2594,
+      "verdict": "MERGEADO_OWNER",
+      "title": "chore(ci)(deps): bump actions/setup-node from 4 to 7",
       "merge_sha": "f2f8c3d6e316cef8802faf42a64f9f4005970b6a",
-      "nota": "Mergeada antes do baseline a0560fdc; falhas pré-existentes não causadas por esta PR"
+      "merged_by": "adm01-debug",
+      "merged_at": "2026-10-27T15:56:14Z"
     },
     {
-      "numero": 2600,
-      "titulo": "docs: NÃO MERGEAR",
-      "estado": "open",
-      "veredicto": "NAO_MERGEAR",
-      "gate_final": "NAO_RODOU",
-      "conflito": false,
-      "diff_lido": true,
-      "merge_sha": null,
-      "motivo": "DRAFT + body NÃO MERGEAR ESTA PR"
-    },
-    {
-      "numero": 2605,
-      "titulo": "fix(tests): test quality fixes — e2e threshold, PromoFlixPlayer mute",
-      "estado": "open",
-      "veredicto": "CONFLITO_PENDENTE_REBASE",
-      "gate_final": "SUCCESS",
-      "run_id": 40431155697,
-      "conflito": true,
-      "diff_lido": true,
-      "merge_sha": null,
-      "motivo": "Gate OK mas mergeable_state: dirty"
-    },
-    {
-      "numero": 2622,
-      "titulo": "docs(rollbacks): 9 rollbacks + edge-authz-manifest",
-      "estado": "open",
-      "veredicto": "CONFLITO_PENDENTE_REBASE_SEGURANCA",
-      "gate_final": "SUCCESS",
-      "run_id": 40468832310,
-      "conflito": true,
-      "diff_lido": true,
-      "merge_sha": null,
-      "motivo": "Gate OK + conflito + DISABLE RLS 17 tabelas supplier_stricker.* — requer PO/Security"
-    },
-    {
-      "numero": 2631,
-      "titulo": "docs: PENDENCIAS.md §4 + RELATORIO_CI.md §10",
-      "estado": "open",
-      "veredicto": "DRAFT",
-      "gate_final": "NAO_RODOU",
-      "conflito": false,
-      "diff_lido": true,
-      "merge_sha": null,
-      "motivo": "Estado DRAFT"
-    },
-    {
-      "numero": 2645,
-      "titulo": "docs(e15): recibo migration 20261027140000 (MIGRATIONS_SYNC_LOG)",
-      "estado": "open",
-      "veredicto": "AGUARDAR_APROVACAO",
-      "gate_final": "0 check runs",
-      "conflito": true,
-      "diff_lido": true,
-      "merge_sha": null,
-      "motivo": "Recibo E15 auto-gerado — sem CI + conflito — owner deve revisar"
-    },
-    {
-      "numero": 2646,
-      "titulo": "fix(migrations): adiciona cabeçalho -- Rollback: nas migrations 20261027160000 e 20261027220000",
-      "estado": "open",
-      "veredicto": "CI_FALHOU",
-      "gate_final": "FAILURE",
-      "run_id": 40543049708,
-      "head_sha": "79c0c670",
-      "conflito": false,
-      "mergeable_state": "behind",
-      "diff_lido": true,
-      "merge_sha": null,
-      "motivo": "Gate Final FAILURE em 2 SHAs (2d8fd74e + 79c0c670); mergeable_state: behind"
-    },
-    {
-      "numero": 2648,
-      "titulo": "PENDENCIAS.md update + schema-snapshot docs",
-      "estado": "closed",
-      "veredicto": "MERGEADA_PELO_OWNER",
-      "gate_final": "FAILURE_PRE_EXISTENTE",
-      "conflito": false,
-      "diff_lido": true,
+      "number": 2648,
+      "verdict": "MERGEADO_OWNER",
+      "title": "docs: atualiza PENDENCIAS.md §12 com diagnóstico exato do schema-snapshot-export",
       "merge_sha": "ed87db31b5ce630378f74766adcdcc26edfb0bd2",
-      "nota": "Somente documentação; mergeada antes do baseline a0560fdc"
+      "merged_by": "adm01-debug",
+      "merged_at": "2026-10-27T15:50:19Z"
     },
     {
-      "numero": 2649,
-      "titulo": "fix(e2e): corrige rotas admin e redirect de auth em personalization",
-      "estado": "closed",
-      "veredicto": "MERGEADA_PELO_OWNER",
-      "gate_final": "FAILURE_PRE_EXISTENTE",
-      "conflito": false,
-      "diff_lido": true,
+      "number": 2649,
+      "verdict": "MERGEADO_OWNER",
+      "title": "fix(e2e): corrige falhas em admin-critical-routes e personalization-auth-redirect",
       "merge_sha": "61a0cfa1714661f752273cf864b335eb217ea134",
-      "nota": "E2E fix; mergeada antes do baseline a0560fdc"
+      "merged_by": "adm01-debug",
+      "merged_at": "2026-10-27T15:54:20Z"
     },
     {
-      "numero": 2650,
-      "titulo": "fix(e2e): corrige testids e landing state em catalog.spec e kit-builder.spec",
-      "estado": "closed",
-      "veredicto": "MERGEADA_PELO_OWNER",
-      "gate_final": "FAILURE_PRE_EXISTENTE",
-      "conflito": false,
-      "diff_lido": true,
+      "number": 2650,
+      "verdict": "MERGEADO_OWNER",
+      "title": "fix(e2e): corrige testids e landing state em catalog.spec e kit-builder.spec",
       "merge_sha": "f0689734b38e79edda24cf80f5df19abae941015",
-      "nota": "E2E fix; mergeada antes do baseline a0560fdc"
+      "merged_by": "adm01-debug",
+      "merged_at": "2026-10-27T16:21:21Z"
     },
     {
-      "numero": 2652,
-      "titulo": "docs(e15): recibo aplicação migration 20261027140000",
-      "estado": "closed",
-      "veredicto": "MERGEADA_PELO_OWNER",
-      "gate_final": "FAILURE_PRE_EXISTENTE",
-      "conflito": false,
-      "diff_lido": true,
+      "number": 2652,
+      "verdict": "MERGEADO_OWNER",
+      "title": "docs(e15): recibo aplicação migration 20261027140000",
       "merge_sha": "22ba938e02ae48eee34d77176a4d5dee6cf8e14b",
-      "nota": "Somente documentação; mergeada antes do baseline a0560fdc"
+      "merged_by": "adm01-debug",
+      "merged_at": "2026-10-27T16:40:44Z"
     },
     {
-      "numero": 2653,
-      "titulo": "docs: análise de PRs sessão session_012WyySbh2tj8vhRQLBf3mHo",
-      "estado": "open",
-      "veredicto": "PROPRIO_BRANCH_SESSAO",
-      "gate_final": "N/A",
-      "conflito": false,
-      "diff_lido": true,
-      "merge_sha": null,
-      "motivo": "PR da própria branch de trabalho desta sessão"
+      "number": 2420,
+      "verdict": "DECISAO_HUMANA",
+      "motivo": "CONFLICT+REGRA8 — migrations+rollbacks com conflito não-trivial"
     },
     {
-      "numero": 2654,
-      "titulo": "fix(ci): adiciona xbz-image-uploader ao SERVER_ONLY_ALLOWLIST do CORS gate",
-      "estado": "closed",
-      "veredicto": "MERGEADA_PELO_OWNER",
-      "gate_final": "FAILURE_PRE_EXISTENTE",
-      "conflito": false,
-      "diff_lido": true,
-      "merge_sha": "4c7ecb260da691b5cd436700380b819d0d936961",
-      "nota": "CI fix; mergeada antes do baseline a0560fdc"
+      "number": 2572,
+      "verdict": "CONFLITO",
+      "motivo": "CONFLICT RELATORIO_CI.md + REGRA10 branch de outra sessão"
     },
     {
-      "numero": 2655,
-      "titulo": "fix(tests): add xbz-image-uploader descriptor with pendingDeploy=true",
-      "estado": "closed",
-      "veredicto": "MERGEADA_PELO_OWNER",
-      "gate_final": "FAILURE_PRE_EXISTENTE",
-      "conflito": false,
-      "diff_lido": true,
-      "merge_sha": "a0560fdc62744c6bf4ba182914cc76dec06aecb1",
-      "nota": "Merge SHA = baseline a0560fdc; CI tinha Gate 0.5/Edge Functions/Gate Final pre-existentes"
+      "number": 2579,
+      "verdict": "DECISAO_HUMANA",
+      "motivo": "downgrade 1.2.1→1.0.0 — regressão de versão"
     },
     {
-      "numero": 2656,
-      "titulo": "fix(ci): adiciona qs ao allowlist do gate de dependências (GHSA-6pq8-jhm2-2vcw)",
-      "estado": "closed",
-      "veredicto": "MERGEADA_PELO_OWNER",
-      "gate_final": "SUCCESS",
-      "conflito": false,
-      "diff_lido": true,
-      "merge_sha": "ac0fe4760792a9d0526d6ea6f014ca2a58da8ddb",
-      "post_merge_gate_sha": "f6f9889af171da4cc538f103fe0988a77dabd90d",
-      "post_merge_gate": "SUCCESS",
-      "nota": "Corrigiu Gate 0.5; Gate Final SUCCESS em f6f9889a"
+      "number": 2580,
+      "verdict": "DECISAO_HUMANA",
+      "motivo": "DRAFT + REGRA8 migrations — necessita aprovação PO"
     },
     {
-      "numero": 2657,
-      "titulo": "fix(e2e): corrige catch de timeout e timeout explícito nas assertions de page-title (CI - Replenishment)",
-      "estado": "closed",
-      "veredicto": "MERGEADA_PELO_OWNER",
-      "gate_final": "SUCCESS",
-      "conflito": false,
-      "diff_lido": true,
-      "merge_sha": "f6f9889af171da4cc538f103fe0988a77dabd90d",
-      "post_merge_gate_sha": "f6f9889af171da4cc538f103fe0988a77dabd90d",
-      "post_merge_gate": "SUCCESS",
-      "nota": "Gate Final SUCCESS confirmado — este é o SHA f6f9889a"
+      "number": 2588,
+      "verdict": "CI_FALHOU",
+      "motivo": "major upgrade react-day-picker 8→10 — Gate Final FAILED"
     },
     {
-      "numero": 2658,
-      "titulo": "fix(test): tolera timeout de waitFor nos integration tests de reposição",
-      "estado": "closed",
-      "veredicto": "MERGEADA_PELO_OWNER",
-      "gate_final": "PENDENTE",
-      "conflito": false,
-      "diff_lido": true,
-      "merge_sha": "2fafe8edfaa246221a4b427d5728512ba9ff199e",
-      "nota": "Mergeada pelo owner após inventário original; CI em andamento para 2fafe8ed"
+      "number": 2600,
+      "verdict": "DRAFT_NOMERGE",
+      "motivo": "DRAFT analise-prs/ docs internos — branch de outra sessão"
+    },
+    {
+      "number": 2605,
+      "verdict": "NAO_MERGEAR",
+      "motivo": "supersedida por versão mais recente já em main (CONFLICT)"
+    },
+    {
+      "number": 2622,
+      "verdict": "CONFLITO",
+      "motivo": "ADD/ADD conflict com main após merge #2621"
+    },
+    {
+      "number": 2631,
+      "verdict": "AGUARDAR_APROVACAO",
+      "motivo": "DRAFT — PR de outra sessão aguardando aprovação do PO"
+    },
+    {
+      "number": 2645,
+      "verdict": "AGUARDAR_APROVACAO",
+      "motivo": "PR de outra sessão aguardando aprovação do PO"
+    },
+    {
+      "number": 2646,
+      "verdict": "DECISAO_HUMANA",
+      "motivo": "Gate Final falhou — mudança na edge function, necessita revisão PO"
+    },
+    {
+      "number": 2662,
+      "verdict": "DRAFT_NOMERGE",
+      "motivo": "DRAFT analise-prs/ docs internos — branch de sessão session_01VXkRxWq5ZUCmvuNx5e2TGX (claude_pink/), REGRA10 cross-agente"
     }
   ]
 }
