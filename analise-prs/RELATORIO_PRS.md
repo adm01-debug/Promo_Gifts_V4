@@ -153,27 +153,31 @@ Evidência: `grep 20261027140000 supabase/MIGRATIONS_SYNC_LOG.md` confirma commi
 - Regra da tarefa: DRAFT = SKIP
 
 **#2588 — NÃO MERGEAR**
-- Diff: `package.json` muda `react-day-picker` de `^8.10.0` para `^10.0.2`; `package-lock.json` atualizado
-- Zero arquivos `src/` modificados — nenhuma adaptação para API v10
-- `react-day-picker` v8→v10: breaking changes em `DayPicker` props, `selected`/`onSelect` handlers, `Modifiers` type removido
-- Resultado esperado: erros TypeScript em todos os componentes consumidores de `DayPicker`
-- Decisão humana necessária: refatorar `src/` antes do merge OU manter v8 via `resolutions`
+- Diff: `package.json` muda `react-day-picker` de `^8.10.0` para `^10.0.2`; 12 arquivos total
+- **Merge test local (git merge --no-commit):** CLEAN — sem conflitos de merge
+- **TSC após merge:** EXIT 0 — sem erros TypeScript introduzidos (v10 manteve compatibilidade de tipos usados em `calendar.tsx`)
+- **CI no head SHA `2b6ba5d4`:** `E2E • Swatch QuickView` = FAILURE — falha pré-existente não relacionada ao bump de dependência
+- Bloqueador real: E2E failure em CI + zero evidência de testes de regressão para o componente de calendário
+- Decisão humana necessária: confirmar que o componente de calendário funciona com v10 em produção
 
 **#2600 — SKIP/DRAFT**
-- `draft: true`
-- Body da PR contém explicitamente "NÃO MERGEAR ESTA PR"
+- `draft: true`; body da PR contém explicitamente "NÃO MERGEAR ESTA PR"
+- Diff: 116 arquivos, inclui 3 arquivos `.github/workflows/` + arquivos `analise-prs/` desta sessão
+- **Merge test local:** CONFLICT em `tests/config/playwright-config-smoke.test.ts`
 - Regra da tarefa: DRAFT = SKIP
 
 **#2631 — SKIP/DRAFT**
 - `draft: true`, `mergeable: false`, `mergeable_state: dirty`
-- Conflito com main — impossível mergear sem resolução manual
+- Diff: 27 arquivos, inclui 3 arquivos `.github/workflows/` + `PENDENCIAS.md` + `RELATORIO_CI.md`
+- **Merge test local:** CONFLICT em `PENDENCIAS.md` e `RELATORIO_CI.md`
 - Regra da tarefa: DRAFT = SKIP
 
 **#2646 — NÃO MERGEAR**
-- Diff: modifica `.github/workflows/db-schema-drift-check.yml`, `.github/workflows/deploy-gates.yml`, `.github/workflows/schema-snapshot-export.yml`
-- Regra explícita da tarefa: "Não tocar `.github/workflows`"
+- Diff: 3 arquivos `.github/workflows/` + migrations + `MIGRATIONS_SYNC_LOG.md`
+- **Merge test local:** CLEAN (sem conflitos de merge)
+- **Arquivos `.github/` no merge:** `db-schema-drift-check.yml`, `deploy-gates.yml`, `schema-snapshot-export.yml`
+- Regra explícita da tarefa: "Não tocar `.github/workflows`" — 3 arquivos de workflows → BLOQUEADO
 - `mergeable_state: behind` — branch desatualizada em relação a main
-- Conteúdo técnico: adiciona `packages: read` + auth Docker ghcr.io; migration headers; migration ledger entries
 - Decisão humana necessária antes de qualquer merge
 
 **#2662 — SKIP/DRAFT**
@@ -192,11 +196,22 @@ Evidência: `grep 20261027140000 supabase/MIGRATIONS_SYNC_LOG.md` confirma commi
 | PRs SKIP (DRAFT) | 4 (#2580, #2600, #2631, #2662) |
 | PRs NÃO MERGEAR (decisão humana) | 2 (#2588, #2646) |
 | Outras escritas no GitHub | 0 (somente fechamento das 7 por comando do PO) |
-| Worktrees criados | 0 |
+| Worktrees criados | 4 (wt-2588, wt-2600, wt-2631, wt-2646 — todos removidos após testes) |
 | Push direto em main | 0 |
 | Force-push | 0 |
 
 **Nenhuma PR mergeada** — nenhuma PR atendeu simultaneamente todos os critérios:
-- Draft = SKIP por regra da tarefa
-- `#2588`: major npm bump sem adaptação src → quebra TypeScript
-- `#2646`: toca `.github/workflows/` → explicitamente proibido pela regra da tarefa
+- Draft = SKIP por regra da tarefa (#2580, #2600, #2631, #2662)
+- `#2588`: merge CLEAN, TSC EXIT 0, mas E2E failure no CI (Swatch QuickView); requer confirmação de que calendário funciona com v10
+- `#2646`: merge CLEAN, mas toca 3 arquivos `.github/workflows/` → explicitamente proibido pela regra da tarefa
+
+### Resumo de Merge Tests Locais
+
+| PR | Merge | Conflitos | TSC | Bloqueador Final |
+|---|---|---|---|---|
+| #2580 | N/A | N/A | N/A | DRAFT |
+| #2588 | CLEAN | 0 | EXIT 0 | E2E failure no CI |
+| #2600 | CONFLICT | `playwright-config-smoke.test.ts` | N/A | DRAFT + conflito + .github/workflows |
+| #2631 | CONFLICT | `PENDENCIAS.md`, `RELATORIO_CI.md` | N/A | DRAFT + conflito + .github/workflows |
+| #2646 | CLEAN | 0 | N/A | `.github/workflows` (3 arquivos) |
+| #2662 | N/A | N/A | N/A | DRAFT (branch desta sessão) |
