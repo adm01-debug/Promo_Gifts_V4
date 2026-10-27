@@ -1,14 +1,16 @@
 numero,titulo,veredicto,head_sha,gate_final,conflito,mergeable_state,arquivos,motivo_resumido,data_analise
-2420,Rollback/sync PR — AGUARDANDO APROVAÇÃO,DECISAO_HUMANA,c10816b9,DESCONHECIDO,false,unknown,3,Body diz AGUARDANDO APROVAÇÃO — requer aprovação humana,2026-10-27
+2420,Rollback/sync PR — AGUARDANDO APROVAÇÃO,AGUARDAR_APROVACAO,c10816b9,DESCONHECIDO,false,unknown,3,Body diz AGUARDANDO APROVAÇÃO — requer aprovação humana,2026-10-27
 2572,analise-prs docs sessão Claude anterior,FECHAR,SESSAO_ANTIGA,DESCONHECIDO,false,,62,62 arquivos de sessão antiga — dados obsoletos,2026-10-27
 2579,chore(main): release 1.0.0,NAO_MERGEAR,RELEASE_PLEASE,DESCONHECIDO,false,,,"PR automática release-please bot — base f2f8c3d6 stale",2026-10-27
-2580,DRAFT,,,,false,,,"Estado DRAFT — aguardar autor",2026-10-27
+2580,DRAFT rollback header E23 E058,DRAFT,,NAO_RODOU,false,,,"Estado DRAFT — aguardar autor",2026-10-27
 2587,Bump zustand 4.5.7 to 5.0.16,DECISAO_HUMANA,,DESCONHECIDO,false,,,Major bump 4→5 — requer decisão PO,2026-10-27
 2588,Bump react-day-picker 8.10.2 to 10.0.2,DECISAO_HUMANA,,DESCONHECIDO,false,,,Double major bump 8→10 — requer decisão PO,2026-10-27
-2600,DRAFT NÃO MERGEAR,NAO_MERGEAR,,NAO_RODOU,false,,,Estado DRAFT + body diz NÃO MERGEAR,2026-10-27
-2605,Test quality fixes (E2E/mute/snapshots/timers),CONFLITO,9bfead14,SUCCESS,true,dirty,5,Gate Final OK mas merge conflicts — rebase necessário,2026-10-27
-2622,(conteúdo parcial — 1362 linhas diff),CONFLITO,2e8f40c1,SUCCESS,true,dirty,,Gate Final OK mas merge conflicts — rebase necessário,2026-10-27
-2631,DRAFT,,,,false,,,"Estado DRAFT — aguardar autor",2026-10-27
-2645,E15 receipt migration 20261027140000,CONFLITO,c1bcb16d,0_CHECK_RUNS,true,dirty,1,Recibo E15 auto-gerado — sem CI + conflito — rebase necessário,2026-10-27
-2646,(10 commits 15 arquivos),CONFLITO,2d8fd74e,0_CHECK_RUNS,true,dirty,15,0 check runs + conflito — rebase + CI necessários,2026-10-27
-2650,E2E test fixes,DRAFT,8f5b1389,NAO_RODOU,false,,,Estado DRAFT — base no main atual — aguardar autor,2026-10-27
+2594,Bump actions/setup-node from 4 to 7,MERGEADA_PELO_OWNER,,SUCCESS,false,,,"Mergeada pelo owner 2026-10-27T15:56:14Z — merge_sha f2f8c3d6",2026-10-27
+2600,DRAFT NÃO MERGEAR ESTA PR,NAO_MERGEAR,,NAO_RODOU,false,,89,Estado DRAFT + body diz NÃO MERGEAR,2026-10-27
+2605,Test quality fixes E2E mute snapshots timers,CONFLITO_PENDENTE_REBASE,9bfead14,SUCCESS,true,dirty,5,Gate Final OK mas merge conflicts — rebase necessário,2026-10-27
+2622,9 rollbacks + manifest MANIFESTO_ROLLBACKS,CONFLITO_PENDENTE_REBASE,2e8f40c1,SUCCESS,true,dirty,,Gate Final OK mas merge conflicts — rebase necessário,2026-10-27
+2631,DRAFT docs PENDENCIAS RELATORIO_CI,DRAFT,,NAO_RODOU,false,,,"Estado DRAFT — aguardar autor",2026-10-27
+2645,E15 receipt migration 20261027140000,AGUARDAR_APROVACAO,c1bcb16d,0_CHECK_RUNS,true,dirty,1,Recibo E15 auto-gerado — sem CI + conflito — owner deve review,2026-10-27
+2646,E058 compliance base64 10 commits 15 arquivos,CI_FALHOU,2d8fd74e,FAILURE,true,dirty,15,Gate Final FAILURE run 40531570681 + conflito — corrigir CI e rebase,2026-10-27
+2648,PENDENCIAS.md schema-snapshot docs,MERGEADA_PELO_OWNER,,SUCCESS,false,,,"Mergeada pelo owner 2026-10-27T15:50:19Z — merge_sha ed87db31",2026-10-27
+2649,fix e2e admin-critical tests,MERGEADA_PELO_OWNER,,SUCCESS,false,,,"Mergeada pelo owner 2026-10-27T15:54:20Z — merge_sha 61a0cfa1 (main atual)",2026-10-27

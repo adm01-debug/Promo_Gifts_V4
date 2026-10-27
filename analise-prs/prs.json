@@ -3,20 +3,24 @@
     "data": "2026-10-27",
     "sessao": "session_012WyySbh2tj8vhRQLBf3mHo",
     "main_sha": "61a0cfa1714661f752273cf864b335eb217ea134",
-    "total_open": 13,
-    "numeros": [2420, 2572, 2579, 2580, 2587, 2588, 2600, 2605, 2622, 2631, 2645, 2646, 2650]
+    "total_analisadas": 15,
+    "nota": "15 PRs abertas no inventário de reconciliação 2026-10-27T18:00Z. #2594, #2648, #2649 foram mergeadas pelo owner durante a análise. #2650 surgiu após o inventário inicial.",
+    "numeros_inventario_reconciliacao": [2420, 2572, 2579, 2580, 2587, 2588, 2594, 2600, 2605, 2622, 2631, 2645, 2646, 2648, 2649],
+    "numeros_ainda_open": [2420, 2572, 2579, 2580, 2587, 2588, 2600, 2605, 2622, 2631, 2645, 2646, 2650]
   },
   "contagem_por_veredicto": {
+    "MERGEADA_PELO_OWNER": 3,
     "DECISAO_HUMANA": 3,
-    "FECHAR": 1,
-    "NAO_MERGEAR": 2,
+    "CONFLITO_PENDENTE_REBASE": 2,
     "DRAFT": 4,
-    "CONFLITO": 3,
-    "MERGEADA": 0
+    "AGUARDAR_APROVACAO": 2,
+    "CI_FALHOU": 1,
+    "NAO_MERGEAR": 2,
+    "MERGEADA_CLAUDE": 0
   },
   "prs": {
     "2420": {
-      "veredicto": "DECISAO_HUMANA",
+      "veredicto": "AGUARDAR_APROVACAO",
       "titulo": "Rollback/sync PR — AGUARDANDO APROVAÇÃO",
       "head": "c10816b9",
       "arquivos": 3,
@@ -45,7 +49,7 @@
     },
     "2580": {
       "veredicto": "DRAFT",
-      "titulo": "DRAFT",
+      "titulo": "DRAFT — rollback header E23 (E058 compliance)",
       "gate_final": "NAO_RODOU",
       "conflito": false,
       "motivo": "Estado DRAFT — aguardar autor promover."
@@ -66,15 +70,27 @@
       "conflito": false,
       "motivo": "Double major bump react-day-picker 8→10 com breaking changes de UI. Requer decisão do PO."
     },
+    "2594": {
+      "veredicto": "MERGEADA_PELO_OWNER",
+      "titulo": "Bump actions/setup-node from 4 to 7",
+      "criado_por": "dependabot[bot]",
+      "merged_at": "2026-10-27T15:56:14Z",
+      "merge_sha": "f2f8c3d6",
+      "mergeado_por": "adm01-debug",
+      "motivo": "Mergeada pelo owner durante a análise desta sessão."
+    },
     "2600": {
       "veredicto": "NAO_MERGEAR",
-      "titulo": "DRAFT — NÃO MERGEAR",
+      "titulo": "DRAFT — NÃO MERGEAR ESTA PR",
       "gate_final": "NAO_RODOU",
       "conflito": false,
+      "branch": "claude_04/*",
+      "commits": 89,
+      "arquivos": 76,
       "motivo": "Estado DRAFT + body explicitamente diz NÃO MERGEAR ESTA PR."
     },
     "2605": {
-      "veredicto": "CONFLITO",
+      "veredicto": "CONFLITO_PENDENTE_REBASE",
       "titulo": "Test quality fixes (E2E threshold, PromoFlix mute, snapshots, timers)",
       "head": "9bfead14",
       "arquivos": 5,
@@ -85,8 +101,8 @@
       "motivo": "Gate Final SUCCESS mas merge conflicts. Autor precisa fazer rebase."
     },
     "2622": {
-      "veredicto": "CONFLITO",
-      "titulo": "(conteúdo verificado parcialmente — ~1362 linhas de diff)",
+      "veredicto": "CONFLITO_PENDENTE_REBASE",
+      "titulo": "(9 rollbacks + manifest MANIFESTO_ROLLBACKS)",
       "head": "2e8f40c1",
       "gate_final": "SUCCESS",
       "gate_final_run": 40468832310,
@@ -96,13 +112,13 @@
     },
     "2631": {
       "veredicto": "DRAFT",
-      "titulo": "DRAFT",
+      "titulo": "DRAFT — docs PENDENCIAS/RELATORIO_CI",
       "gate_final": "NAO_RODOU",
       "conflito": false,
       "motivo": "Estado DRAFT — aguardar autor promover."
     },
     "2645": {
-      "veredicto": "CONFLITO",
+      "veredicto": "AGUARDAR_APROVACAO",
       "titulo": "E15 receipt — migration 20261027140000",
       "head": "c1bcb16d",
       "arquivos": 1,
@@ -115,24 +131,34 @@
       "motivo": "Recibo E15 auto-gerado. 0 check runs + conflito. Owner deve fazer review e rebase."
     },
     "2646": {
-      "veredicto": "CONFLITO",
-      "titulo": "(10 commits, 15 arquivos)",
-      "head": "2d8fd74e",
+      "veredicto": "CI_FALHOU",
+      "titulo": "(10 commits, 15 arquivos — E058 compliance)",
+      "head": "2d8fd74e847c150ff88d92800b183f006afbd5e5",
       "commits": 10,
       "arquivos": 15,
-      "gate_final": "0_CHECK_RUNS",
+      "gate_final": "FAILURE",
+      "gate_final_run": 40531570681,
+      "gate_final_check_run_id": 122303736904,
       "conflito": true,
       "mergeable_state": "dirty",
-      "motivo": "0 check runs no head + conflito. Sem Gate Final não é possível avaliar. Autor precisa rebase + CI."
+      "motivo": "Gate Final FAILURE (run 40531570681) + conflito. Autor precisa corrigir CI e fazer rebase."
     },
-    "2650": {
-      "veredicto": "DRAFT",
-      "titulo": "E2E test fixes",
-      "head": "8f5b1389",
-      "base": "61a0cfa1",
-      "gate_final": "NAO_RODOU",
-      "conflito": false,
-      "motivo": "Estado DRAFT. Base no main atual — boa sinalização. Aguardar autor promover."
+    "2648": {
+      "veredicto": "MERGEADA_PELO_OWNER",
+      "titulo": "PENDENCIAS.md update + schema-snapshot docs",
+      "merged_at": "2026-10-27T15:50:19Z",
+      "merge_sha": "ed87db31",
+      "mergeado_por": "adm01-debug",
+      "motivo": "Mergeada pelo owner durante a análise desta sessão."
+    },
+    "2649": {
+      "veredicto": "MERGEADA_PELO_OWNER",
+      "titulo": "fix: e2e admin-critical tests",
+      "merged_at": "2026-10-27T15:54:20Z",
+      "merge_sha": "61a0cfa1714661f752273cf864b335eb217ea134",
+      "mergeado_por": "adm01-debug",
+      "nota": "Este merge resultou no SHA de main atual 61a0cfa1 — baseline desta sessão.",
+      "motivo": "Mergeada pelo owner durante a análise desta sessão."
     }
   }
 }

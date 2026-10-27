@@ -19,41 +19,50 @@ Esta sessão analisou exaustivamente todas as PRs abertas do repositório `adm01
 - **Owner fechou** todas as demais PRs do escopo original após esta sessão gerar PENDENCIAS.md
 - **Gate Final SUCCESS** em todos os 4 merges de Claude — zero regressões
 
-### Inventário Atual (PRs abertas em 2026-10-27)
-- **13 PRs abertas** analisadas individualmente com método das 4 perguntas
-- **0 mergeadas** por esta sessão (todas têm impedimentos)
+### Inventário Atual (15 PRs — inventário de reconciliação 2026-10-27T18:00Z)
+- **15 PRs analisadas** individualmente com método das 4 perguntas
+- **3 mergeadas pelo owner** durante a análise (#2594, #2648, #2649)
+- **0 mergeadas por Claude** — todos os candidatos elegíveis têm impedimento (CONFLITO ou CI_FALHOU)
 - **Zero regressões** — nenhum merge tentado sem Gate Final + sem conflito
 
 ---
 
-## Inventário Atual — Tabela Completa (13 PRs)
+## Inventário Atual — Tabela Completa (15 PRs)
 
 | PR | Veredicto | Gate Final | Conflito | Motivo |
 |----|-----------|-----------|---------|--------|
-| [#2420](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2420) | DECISAO_HUMANA | DESCONHECIDO | não | Body: "AGUARDANDO APROVAÇÃO"; SQL de rollback |
+| [#2420](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2420) | AGUARDAR_APROVACAO | DESCONHECIDO | não | Body: "AGUARDANDO APROVAÇÃO"; SQL de rollback — requer humano |
 | [#2572](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2572) | FECHAR | DESCONHECIDO | não | 62 arquivos de sessão Claude antiga — dados obsoletos |
 | [#2579](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2579) | NAO_MERGEAR | DESCONHECIDO | não | PR automática release-please bot — base stale |
 | [#2580](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2580) | DRAFT | NAO_RODOU | não | Estado DRAFT |
 | [#2587](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2587) | DECISAO_HUMANA | DESCONHECIDO | não | zustand 4→5 major bump — requer PO |
 | [#2588](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2588) | DECISAO_HUMANA | DESCONHECIDO | não | react-day-picker 8→10 double major — requer PO |
+| [#2594](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2594) | MERGEADA_PELO_OWNER | SUCCESS | não | Mergeada pelo owner em 15:56Z — actions/setup-node 4→7 |
 | [#2600](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2600) | NAO_MERGEAR | NAO_RODOU | não | DRAFT + body "NÃO MERGEAR ESTA PR" |
-| [#2605](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2605) | CONFLITO | ✅ SUCCESS (40431155697) | **SIM** | Gate OK mas `mergeable_state: dirty` |
-| [#2622](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2622) | CONFLITO | ✅ SUCCESS (40468832310) | **SIM** | Gate OK mas `mergeable_state: dirty` |
+| [#2605](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2605) | CONFLITO_PENDENTE_REBASE | ✅ SUCCESS (40431155697) | **SIM** | Gate OK mas `mergeable_state: dirty` |
+| [#2622](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2622) | CONFLITO_PENDENTE_REBASE | ✅ SUCCESS (40468832310) | **SIM** | Gate OK mas `mergeable_state: dirty` |
 | [#2631](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2631) | DRAFT | NAO_RODOU | não | Estado DRAFT |
-| [#2645](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2645) | CONFLITO | 0 check runs | **SIM** | Recibo E15 auto-gerado — sem CI + conflito |
-| [#2646](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2646) | CONFLITO | 0 check runs | **SIM** | 10 commits, 15 arquivos — sem CI + conflito |
-| [#2650](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2650) | DRAFT | NAO_RODOU | não | Estado DRAFT — base no main atual |
+| [#2645](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2645) | AGUARDAR_APROVACAO | 0 check runs | **SIM** | Recibo E15 auto-gerado — sem CI + conflito — owner deve revisar |
+| [#2646](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2646) | CI_FALHOU | ❌ FAILURE (40531570681) | **SIM** | Gate Final FAILURE + conflito — corrigir CI e rebase |
+| [#2648](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2648) | MERGEADA_PELO_OWNER | SUCCESS | não | Mergeada pelo owner em 15:50Z — PENDENCIAS.md docs |
+| [#2649](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2649) | MERGEADA_PELO_OWNER | SUCCESS | não | Mergeada pelo owner em 15:54Z — fix e2e admin-critical |
 
-### Contagem por Veredicto (inventário atual — 13 PRs)
+### Contagem por Veredicto (15 PRs — inventário de reconciliação)
 
 | Veredicto | Contagem | PRs |
 |-----------|---------|-----|
-| CONFLITO | 4 | #2605, #2622, #2645, #2646 |
-| DRAFT | 3 | #2580, #2631, #2650 |
-| DECISAO_HUMANA | 3 | #2420, #2587, #2588 |
+| MERGEADA_PELO_OWNER | 3 | #2594, #2648, #2649 |
+| DECISAO_HUMANA | 2 | #2587, #2588 |
+| AGUARDAR_APROVACAO | 2 | #2420, #2645 |
 | NAO_MERGEAR | 2 | #2579, #2600 |
+| CONFLITO_PENDENTE_REBASE | 2 | #2605, #2622 |
+| DRAFT | 2 | #2580, #2631 |
+| CI_FALHOU | 1 | #2646 |
 | FECHAR | 1 | #2572 |
-| MERGEADA | 0 | — |
+
+**Total inventário: 15 ✓ | Analisadas: 15 ✓ | Mergeadas por Claude: 0**
+
+> **Nota:** PR #2650 surgiu após o inventário de reconciliação (18:00Z) — dossier em `dossies/PR-2650.md`. Estado DRAFT, base no main atual.
 
 ---
 
@@ -68,7 +77,7 @@ Esta sessão analisou exaustivamente todas as PRs abertas do repositório `adm01
   - `src/components/products/gallery/PromoFlixPlayer.tsx` — mute forçado no autoplay
   - snapshot, chunk-recovery timer, replenishment await
 
-### #2622 — (conteúdo verificado parcialmente)
+### #2622 — (9 rollbacks + manifest)
 - **Gate Final:** ✅ SUCCESS (run `40468832310`, SHA `2e8f40c1`)
 - **Impedimento:** `mergeable_state: dirty`
 - **Ação:** Autor faz rebase em main → re-roda CI → Gate Final verde → merge liberado
@@ -94,7 +103,7 @@ As seguintes falhas existiam ANTES desta sessão (não são regressões):
 
 ---
 
-## Merges Realizados por Esta Sessão (inventário original)
+## Merges Realizados por Esta Sessão (inventário original #2290–#2360)
 
 | PR | SHA Merge | Gate Final | Regressão nova? |
 |----|-----------|-----------|----------------|
@@ -103,10 +112,15 @@ As seguintes falhas existiam ANTES desta sessão (não são regressões):
 | [#2354](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2354) | `3e006427` | ✅ SUCCESS (39852198657) | ❌ nenhuma |
 | [#2356](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2356) | `8bafc7d5` | ✅ SUCCESS (39869261220) | ❌ nenhuma |
 
-**Mergeadas pelo owner `adm01-debug`:**
+**Mergeadas pelo owner `adm01-debug` (inventário original):**
 - PR #2349: SHA `49bb3999`, 2026-10-23T00:55:46Z
 - PR #2352: SHA `92a4d3bc`, 2026-10-22T22:36Z (6 migrations pendentes — ver PENDENCIAS.md)
 - PR #2360: SHA `b4cc8163`, 2026-10-23T03:18:34Z (3 migrations REVOKE aplicadas em produção)
+
+**Mergeadas pelo owner durante análise do inventário atual:**
+- PR #2648: SHA `ed87db31`, 2026-10-27T15:50:19Z
+- PR #2649: SHA `61a0cfa1`, 2026-10-27T15:54:20Z (main atual)
+- PR #2594: SHA `f2f8c3d6`, 2026-10-27T15:56:14Z
 
 ---
 
@@ -116,9 +130,11 @@ Ver `PENDENCIAS.md` para guia passo a passo. Resumo:
 
 1. **URGENTE:** Aplicar 4 migrations via `db-apply-migration.yml`: `20261022100010`, `20261022100020`, `20261022100021`, `20261022100022`
 2. **Fechar:** PR #2572 (docs obsoletos), PR #2579 (bot), PR #2600 (NÃO MERGEAR)
-3. **PO Decision:** PR #2587 (zustand major), PR #2588 (react-day-picker major), PR #2420 (AGUARDANDO APROVAÇÃO)
-4. **Rebase (autores):** PR #2605, #2622, #2645, #2646
-5. **Promover de DRAFT:** PR #2580, #2631, #2650
+3. **PO Decision:** PR #2587 (zustand major), PR #2588 (react-day-picker major)
+4. **Humano requerido:** PR #2420 (AGUARDANDO APROVAÇÃO), PR #2645 (reviewer=adm01-debug)
+5. **Rebase (autores):** PR #2605, #2622 (Gate Final OK — só falta rebase)
+6. **Corrigir CI + rebase:** PR #2646 (Gate Final FAILURE run 40531570681)
+7. **Promover de DRAFT:** PR #2580, #2631, #2650
 
 ---
 
@@ -126,9 +142,9 @@ Ver `PENDENCIAS.md` para guia passo a passo. Resumo:
 
 | Arquivo | Descrição |
 |---------|-----------|
-| `analise-prs/dossies/PR-2420.md` até `PR-2650.md` | 13 dossiers com 4 perguntas cada |
-| `analise-prs/prs.json` | Inventário JSON completo |
-| `analise-prs/prs.csv` | Inventário CSV completo |
+| `analise-prs/dossies/PR-2420.md` até `PR-2650.md` | 15+ dossiers com 4 perguntas cada |
+| `analise-prs/prs.json` | Inventário JSON completo (15 PRs) |
+| `analise-prs/prs.csv` | Inventário CSV completo (15 PRs) |
 | `analise-prs/regras-de-negocio.md` | Regras de negócio documentadas |
 | `analise-prs/RELATORIO_PRS.md` | Este relatório |
 | `analise-prs/baseline/post-merge-ci-comparison.md` | CI antes/depois de cada merge |
