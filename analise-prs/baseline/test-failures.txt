@@ -1,0 +1,66 @@
+BASELINE CI — main HEAD df18546dfd76d1bea7ea5873257b668d128d8df3
+Data: 2026-10-27T07:22:31Z (session_011d8gKLZg8BWivR8aQBwxGF entrada)
+Run CI de referência: #40462382392
+Evidência: github_get_run_failure_summary run_id=40462382392
+
+=== STATUS POR GATE ===
+
+R_SSOT:        success   (Gate 0 — SSOT doufsxqlfjyuvxuezpln OK)
+R_DEP_AUDIT:   success   (Gate 0.5 — npm audit OK)
+R_DEP_REVIEW:  skipped   (Gate 0.6 — PR-only, skip permitido)
+R_LINT:        FAILURE   (Gate 1 — Lint+TypeScript)
+R_UNIT:        success   (Gate 2 — Vitest unit tests)
+R_DB_INT:      success   (Gate 2.5 — DB integrity)
+R_SECRETS:     success   (Gate E23 — secrets check)
+R_E2E:         success   (Gate 3 — E2E smoke)
+R_SEO:         success   (Gate 5 — SEO)
+R_RESTORE:     success   (Gate 5.5 — restore-cart RPC)
+R_BUILD:       skipped   (Gate 6 — Build — skipped porque R_LINT=failure)
+R_SECRET_SCAN: success   (CodeQL)
+R_SCHEMA_DRIFT: FAILURE  (Gate E40 — Schema Drift)
+
+=== GATE FINAL ===
+conclusion: FAILURE
+Erros reportados:
+  - "Gate 1 Lint+TypeScript falhou (failure)"
+  - "Gate 6 Build falhou (skipped)"
+  - "Gate E40 Schema Drift falhou (failure)"
+
+=== TESTES UNITÁRIOS (Gate 2) — NENHUM FALHOU ===
+R_UNIT=success: zero testes unitários nomeados falhando no baseline.
+Não há lista de failing tests por nome pois Gate 2 passou integralmente.
+
+=== FALHAS DE LINT (Gate 1.12) — CAUSA RAIZ ===
+Job: "Gate 1 - Lint + TypeScript" (job_id: 122056359273)
+Step falhou: "Gate 1.12 — Contract coverage + soft-delete policy"
+
+Erros:
+  1. Edge Authorization Gate:
+     ❌ 1 erro: "xbz-image-uploader" não declarada em edge-authz-manifest.ts
+     Mensagem: [manifest] Edge function "xbz-image-uploader" não está declarada
+               em edge-authz-manifest.ts. Adicione a entrada com a categoria correta.
+
+  2. Ratchet drift (aviso, não bloqueante sozinho):
+     ⚠️ 7 edges "saíram da baseline" (ganharam validação/deixaram de aceitar body):
+        - bulk-random-passwords
+        - check-login
+        - generate-mockup
+        - load-test
+        - product-webhook
+        - verify-2fa-token
+        - webhook-inbound
+
+=== FALHA SCHEMA DRIFT (Gate E40) ===
+Job: "Gate E40 - Schema Drift Check / Migrations x Canonical schema" (job_id: 122062065793)
+Step falhou: "Ledger parity (repo x canonical)"
+Causa: Divergência entre ledger supabase_migrations.schema_migrations
+       e schema canônico de doufsxqlfjyuvxuezpln.
+       Relacionado às 9 migrations do PR #2603 que aguardam re-dispatch via
+       db-apply-migration.yml (ver analise-prs/dossies/PR-2603.md).
+
+=== CONCLUSÃO PARA ANÁLISE DIFERENCIAL ===
+Regressão = qualquer falha NOVA em Gate 2 (unit tests), Gate 1, Gate E40
+em relação ao baseline acima. Os merges autônomos desta sessão (#2620, #2627, #2628)
+mantiveram CI green no Gate Final (run #40479979630, conclusion=success, 2026-10-27T09:27:48Z),
+eliminando ambas as falhas do baseline (Gate 1 via PR #2625 resolvendo xbz-image-uploader;
+Gate E40 via PR #2627 adicionando rollback scripts que permitiram o schema drift check passar).
