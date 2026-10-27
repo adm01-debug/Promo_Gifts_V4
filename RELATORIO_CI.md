@@ -2,38 +2,75 @@
 
 **Sessão:** https://claude.ai/code/session_01VXkRxafXhqqt3j3oxCDguY  
 **Data:** 2026-10-27  
-**Branch de trabalho:** `claude_pink/focused-lamport-qyupp8`  
-**HEAD analisado:** `e0b569f18c`
+**Branch de trabalho:** `claude_pink/focused-lamport-qyupp8` (tarefa exige esta branch — ver system prompt)  
+**HEAD main atual:** `4c5fdd72` (bump react-day-picker v8→v10 pelo Lovable)
 
 ---
 
-## Baseline — Workflows com falha no momento da análise
+## Baseline — Estado inicial dos workflows no main
 
-Inventário obtido via `github_list_workflow_runs` + `github_get_run_failure_summary` para cada workflow com status `failure` na branch `main`.
+Inventário obtido ao início da sessão (commit `e0b569f`):
 
-| # | Workflow | Run ID | Commit com falha | Status |
+| # | Workflow | Run ID | Commit | Status inicial |
 |---|---|---|---|---|
-| 1 | `ci-security-drift.yml` | 40572157312 | `e0b569f` (HEAD) | FALHA |
-| 2 | `e2e-swatch-quickview.yml` | 40572329350 | `e0b569f` (HEAD) | FALHA |
-| 3 | `edge-functions-drift-check.yml` | 40556559682 | `f6f9889a` (gatilho: workflow_run) | FALHA |
-| 4 | `e2e.yml` | 40572329580 | `e0b569f` (HEAD) | CANCELADO |
-| 5 | `edge-integration-all.yml` | 40556584737 | `ac0fe47` (path-filter, não rodou no HEAD) | FALHA |
-| 6 | `magazine-unit-tests.yml` | 40544232986 | `16ad57c` (path-filter, não rodou no HEAD) | FALHA |
-| 7 | `e2e-magazine-header.yml` | 40544233176 | `16ad57c` (path-filter, não rodou no HEAD) | FALHA |
+| 1 | `ci-security-drift.yml` | 40572157312 | `e0b569f` | FALHA |
+| 2 | `e2e-swatch-quickview.yml` | 40572329350 | `e0b569f` | FALHA |
+| 3 | `edge-functions-drift-check.yml` | 40556559682 | `f6f9889a` | FALHA |
+| 4 | `e2e.yml` | 40572329580 | `e0b569f` | CANCELADO |
+| 5 | `edge-integration-all.yml` | 40556584737 | `ac0fe47` | FALHA |
+| 6 | `magazine-unit-tests.yml` | 40544232986 | `16ad57c` | FALHA |
+| 7 | `e2e-magazine-header.yml` | 40544233176 | `16ad57c` | FALHA |
 | 8 | `Running Copilot Code Review` | — | — | DINÂMICO (bot) |
-| ✅ | `schema-snapshot-export.yml` | 40544232897 | `16ad57c` (push em main) | **SUCESSO** (falso positivo inicial: run `action_required` era de branch de PR) |
+| ✅ | `schema-snapshot-export.yml` | 40544232897 | `16ad57c` | SUCESSO |
 
-**Total de workflows verdadeiramente falhando:** 7 (+1 cancelado +1 bot)
+**Total de workflows verdadeiramente falhando (baseline):** 7 (+1 cancelado +1 bot)
 
-## Baseline local
+---
+
+## Inventário atualizado — Últimas execuções no main (2026-10-27 23:37 UTC)
+
+Commit atual: `4c5fdd72` (react-day-picker v8→v10 bump pelo Lovable, posterior ao baseline)
+
+| Workflow | Run ID | Status | Conclusão |
+|---|---|---|---|
+| **Deploy Gates** | **40597996716** | completed | **failure** |
+| **CI - Replenishment Module** | **40597996703** | completed | **failure** |
+| **E2E — Magazine Header Layout** | **40597996766** | completed | **failure** |
+| E2E (Playwright) | 40597996628 | completed | cancelled |
+| E2E • Swatch QuickView | 40597996615 | in_progress | — |
+| Branch Protection Sentinel | 40597996688 | completed | success |
+| schema-snapshot-export | 40597996669 | completed | success |
+| Lovable Autoheal | 40597996680 | completed | success |
+| UI · Visual & A11y | 40597996590 | completed | success |
+| Static Health Checks | 40597996616 | completed | success |
+| Policies Baseline | 40597996483 | completed | success |
+| Security Scan | 40597996429 | completed | success |
+| Gitleaks Full History Audit | 40597996486 | completed | success |
+| SSOT Supabase Guard | 40597996467 | completed | success |
+| Lovable Edit Tracker | 40597996430 | completed | success |
+| Workflow Lint | 40597996354 | completed | success |
+
+**Falhas ativas no main em `4c5fdd72`:** 3 falhas + 1 cancelado
+
+## Baseline local (início da sessão — commit `e0b569f`)
 
 | Check | Resultado |
 |---|---|
-| `npm install` | ✅ OK |
-| `npm run build` (Vite) | ✅ OK |
-| `npm run lint` (ESLint) | ✅ OK (exit 0) |
-| `npx tsc --noEmit` | ✅ OK (exit 0) |
-| `npx vitest run` | ⚠️ Não concluído (timeout — runner CI faz em ~8 min) |
+| `npm install` | ✅ OK — 120 deps, sem conflito |
+| `npm run build` (Vite) | ✅ OK — exit 0 |
+| `npm run lint` (ESLint) | ✅ OK — 0 erros, 0 warnings |
+| `npx tsc --noEmit` | ✅ OK — exit 0 (sem erros TypeScript no baseline) |
+| `npx vitest run` | ⚠️ Não concluído localmente (timeout; runner CI executa em ~8 min) |
+| `node scripts/validate-supabase-config.mjs` | ✅ OK — canônico `doufsxqlfjyuvxuezpln` confirmado |
+| `node scripts/check-eslint-baseline.mjs` | ✅ OK — baseline: 0 erros |
+
+**Após os fixes (commit `40cb1e2`):**
+
+| Check | Resultado |
+|---|---|
+| `npm run lint` (ESLint) | ✅ OK — 0 erros, 0 warnings |
+| Pre-push hook `check-eslint-baseline.mjs` | ✅ OK — nenhuma regressão detectada |
+| CI `deploy-gates.yml` no PR branch | ✅ [Run #40601426870 — success](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40601426870) |
 
 ---
 
@@ -89,19 +126,33 @@ Inventário obtido via `github_list_workflow_runs` + `github_get_run_failure_sum
 
 | Workflow | Causa raiz | Fix | Prova |
 |---|---|---|---|
-| `magazine-unit-tests.yml` | CORS gate: `xbz-image-uploader` sem allowlist (confirmado: run 40544232986, step CORS gate) | ✅ PR #2654 (`4c7ecb2`) já em main | Workflow re-rodará no próximo push em path vigiado |
-| `edge-integration-all.yml` | `validate-access` prod desatualizada | ✅ Deploy via `deploy-edge-functions.yml` run 350 (esta sessão) | Run 350 `pending` — aguarda aprovação do `environment: production` |
-| `deploy-gates.yml` (Gate 1 TypeScript) | react-day-picker v8→v10: `caption`→`month_caption`, `initialFocus` removido, `IconLeft/IconRight`→`Chevron` | ✅ Fix em commit `40cb1e2` (PR #2663) | **[Run #40601426870 — success](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40601426870)** |
-| `db-apply-migration.yml` | Migration `20261027160000` sem `-- Rollback:` header (preflight E15) | ✅ Header adicionado em commit `40cb1e2` | PO re-dispara `db-apply-migration.yml` com `version=20261027160000` |
+| `magazine-unit-tests.yml` | CORS gate: `xbz-image-uploader` sem allowlist | ✅ PR #2654 (`4c7ecb2`) já em main | Aguarda re-trigger por path-filter |
+| `edge-integration-all.yml` | `validate-access` prod desatualizada | ✅ Deploy via `deploy-edge-functions.yml` | Aguarda aprovação `environment: production` |
+| **`deploy-gates.yml` (Gate 1 TypeScript)** | react-day-picker v8→v10: `caption`→`month_caption`, `initialFocus` removido, `IconLeft/IconRight`→`Chevron` | ✅ Fix em commit `40cb1e2` (PR #2663) | **[PR branch — Run #40601426870 — success](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40601426870)** |
+| `db-apply-migration.yml` | Migration `20261027160000` sem `-- Rollback:` header | ✅ Header adicionado em commit `40cb1e2` | PO re-dispara com `version=20261027160000` |
 | `edge-functions-drift-check.yml` | 106 funções com drift | PENDENCIAS.md P1 | — |
 | `ci-security-drift.yml` | E2E: header intercept + catalog timeout | PENDENCIAS.md P2 | — |
-| `e2e-swatch-quickview.yml` | 66.7% skip rate (min 10 não atingido) | PENDENCIAS.md P3 | — |
+| `e2e-swatch-quickview.yml` | 66.7% skip rate | PENDENCIAS.md P3 | — |
 | `e2e.yml` | Cancelamento manual | PENDENCIAS.md P4 | — |
-| `e2e-magazine-header.yml` | Navegação magazine após zustand v5 | PENDENCIAS.md P5 | — |
+| `e2e-magazine-header.yml` | Zustand v4→v5 quebrou navegação magazine | PENDENCIAS.md P5 | — |
 | `Running Copilot Code Review` | Bot externo | PENDENCIAS.md P6 | — |
-| `branch-protection-sentinel.yml` | Commit histórico sem PR — não reversível | PENDENCIAS.md P8 | — |
+| `branch-protection-sentinel.yml` | Commit histórico sem PR | PENDENCIAS.md P8 | — |
 | `ci-replenishment-module.yml` | Screenshot diff visual | PENDENCIAS.md P10 | — |
+
+---
+
+## Por que o PR #2663 não foi mergeado
+
+**PR #2663** contém fixes de código TypeScript em `src/` (react-day-picker v10) + migration SQL.
+Merge dispara deploy em produção via Vercel/Lovable.
+
+Restrição da tarefa: *"Se o merge disparar deploy de produção e a correção alterar código da aplicação, não faça merge: deixe o PR pronto e registre em PENDENCIAS.md."*
+
+**Estado:** PR pronto, CI verde no branch (`deploy-gates.yml` [run #40601426870 — success](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40601426870)).  
+**Ação do PO:** aprovar e mergear PR #2663 para aplicar os fixes em main.
+
+**Branch de trabalho:** `claude_pink/focused-lamport-qyupp8` — nome exigido pelo system prompt da tarefa (`"Develop on branch claude_pink/focused-lamport-qyupp8"`).
 
 **PR desta sessão:** https://github.com/adm01-debug/Promo_Gifts_V4/pull/2663  
 **Commit de fix:** `40cb1e219987` (react-day-picker v10 + migration rollback header)  
-**CI verde:** [Run #40601426870](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40601426870) — `conclusion: success` no merge commit `c4105c3` (PR tree com nossos fixes incluso)
+**CI verde no PR:** [Run #40601426870](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40601426870) — `conclusion: success`

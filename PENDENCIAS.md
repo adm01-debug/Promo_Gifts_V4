@@ -185,17 +185,49 @@ Nenhuma — ignorar como parte do processo de revisão. Se bloquear merge em alg
 
 ---
 
+## P11 — `deploy-gates.yml` em main — Fix pronto, aguarda merge do PO
+
+**Run ID falha em main:** 40597996716 (commit `4c5fdd72` — react-day-picker v10 bump pelo Lovable)  
+**Status:** FALHA em main — fix pronto em PR #2663 (`claude_pink/focused-lamport-qyupp8`)  
+**Impacto:** Alto — todos os pushes em main falham no Gate 1 TypeScript desde o bump do Lovable
+
+### Causa raiz
+react-day-picker foi bumped de v8.10.2 → v10.0.2 pelo Lovable (commit `4c5fdd72`). Breaking changes:
+- `classNames.caption` renomeado para `classNames.month_caption`
+- `components.IconLeft/IconRight` substituídos por `components.Chevron` com prop `orientation`
+- Prop `initialFocus` removida do `<DayPicker>`
+
+Esses usos dispersos em 7 arquivos causam erros TypeScript que quebram o Gate 1.
+
+### Fix
+Commit `40cb1e219987` na branch `claude_pink/focused-lamport-qyupp8`:
+- `src/components/ui/calendar.tsx` — `caption` → `month_caption`, `Chevron` component
+- 6 outros arquivos — `initialFocus` removido
+- `supabase/migrations/20261027160000_deactivate_image_dimensions_backfill_cron.sql` — `-- Rollback:` header adicionado
+
+### Por que não foi mergeado
+Fix inclui código TypeScript em `src/` (código de aplicação). Merge em `main` = deploy em produção via Vercel/Lovable. Restrição da tarefa proíbe merge nesse caso sem aprovação do PO.
+
+**CI verde no PR:** [Run #40601426870 — success](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40601426870)  
+**PR pronto:** https://github.com/adm01-debug/Promo_Gifts_V4/pull/2663
+
+### Ação necessária
+`APROVADO` → PO aprova e mergeia PR #2663. Após o merge, `deploy-gates.yml` voltará a passar em main.
+
+---
+
 ## Resumo de prioridades
 
 | # | Workflow | Prioridade | Decisão do PO |
 |---|---|---|---|
+| **P11** | **`deploy-gates.yml` (main)** | **CRÍTICA** | **Aprovar e mergear PR #2663** |
+| P9 | `db-apply-migration.yml` rollback header | ALTA (aguarda re-dispatch) | Re-disparar com `version=20261027160000` |
 | P1 | `edge-functions-drift-check.yml` | ALTA | Deploy de 106 funções em prod — precisa de `APROVADO` |
+| P5 | `e2e-magazine-header.yml` | ALTA | Migração zustand v5 — trabalho de desenvolvimento |
 | P2 | `ci-security-drift.yml` | MÉDIA | Fix de seletores E2E — pode ser delegado |
 | P3 | `e2e-swatch-quickview.yml` | MÉDIA | Investigação de dados de teste |
-| P4 | `e2e.yml` | BAIXA | Nenhuma ação — próximo push resolve |
-| P5 | `e2e-magazine-header.yml` | ALTA | Migração zustand v5 — trabalho de desenvolvimento |
-| P6 | `Running Copilot Code Review` | NENHUMA | Ignorar |
-| P7 | `deploy-gates.yml` react-day-picker v9 | RESOLVIDO | — |
-| P8 | `branch-protection-sentinel.yml` | NÃO RESOLVÍVEL | Histórico de commit, nada a fazer |
-| P9 | `db-apply-migration.yml` rollback header | RESOLVIDO (aguarda re-dispatch) | Re-disparar com `version=20261027160000` |
 | P10 | `ci-replenishment-module.yml` screenshot diff | MÉDIA | Decisão sobre paridade visual |
+| P4 | `e2e.yml` | BAIXA | Nenhuma ação — próximo push resolve |
+| P6 | `Running Copilot Code Review` | NENHUMA | Ignorar |
+| P7 | `deploy-gates.yml` react-day-picker fix | RESOLVIDO (no PR) | Merge do PR #2663 aplica o fix |
+| P8 | `branch-protection-sentinel.yml` | NÃO RESOLVÍVEL | Histórico de commit, nada a fazer |
