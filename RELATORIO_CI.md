@@ -1,4 +1,4 @@
-# Relatório de CI — Sessão 2026-10-26
+# Relatório de CI — Sessão 2026-10-26/27
 
 **Branch:** `claude_04/beautiful-gates-bvocz5`  
 **PR:** [#2597](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2597)  
@@ -12,9 +12,12 @@
 - `c11451004` — fix pngjs registry URL (403 em npm ci)
 - `2637aaa9c` — docs: baseline local RELATORIO_CI.md
 - `1e8ea09ad` — **fix definitivo** only-throw-error: `new Error(error.message)` em AnonymizeAccountDialog
+- `e8a4ab6ef` — fix(ci): decodifica 3 arquivos base64 (Gate 1.8)
+- `76b960b23` — fix(ci): soft-delete-exempt em crm_callback_events (Gate 1.12) ← **NOVO**
+- `2bfc9d09c` — chore: merge main (traz ~634 migration files — resolve Gate E40) ← **NOVO**
 
 **Sessão:** https://claude.ai/code/session_014RkohRYagi3sPiL8jtgot4  
-**Data:** 2026-10-26
+**Data:** 2026-10-26/27
 
 ---
 
@@ -39,9 +42,9 @@ Execução local em Node.js 22.22.0 após `npm ci --ignore-scripts`:
 | Métrica | Valor |
 |---|---|
 | Workflows com falha investigados | 22+ |
-| Falhas corrigidas nesta sessão | **7** |
-| Falhas documentadas em PENDENCIAS.md (P85–P95) | **11 novos** (total P78–P95 = 18 desde esta sessão) |
-| Gate Final bloqueante | ⏳ Aguardando CI no commit `1e8ea09ad` (latest head) |
+| Falhas corrigidas nesta sessão | **9** |
+| Falhas documentadas em PENDENCIAS.md (P85–P96) | **12 novos** (total P78–P96 = 19 desde esta sessão) |
+| Gate Final bloqueante | ⏳ Aguardando CI no commit `2bfc9d09c` (latest head) |
 | PR aberto | [#2597](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2597) |
 
 ---
@@ -250,21 +253,49 @@ deploy-gates.yml (Gate Final) — VERDE ✅
 
 ---
 
+## Correções Adicionais (sessão 2026-10-27)
+
+### Gate 1.8 — 3 arquivos decodificados de base64 (commit `e8a4ab6ef`)
+
+**Problema:** `supabase/migrations/20260706181356_crm_callback_events.sql`, `supabase/MIGRATIONS_SYNC_LOG.md` e `docs/SCHEMA_REFERENCE.md` estavam armazenados como texto base64 em vez de UTF-8 — Gate 1.8 bloqueava o deploy.
+**Fix:** Conteúdo decodificado e arquivos reescritos como texto UTF-8 puro.
+
+---
+
+### Gate 1.12 — soft-delete-exempt em crm_callback_events (commit `76b960b23`)
+
+**Problema:** `supabase/migrations/20260706181356_crm_callback_events.sql` criava a tabela `public.crm_callback_events` sem `deleted_at` e sem anotação `-- soft-delete-exempt:`. Gate 1.12 contabilizava `+1` table sem política.
+**Fix:** Comentário adicionado na linha do `CREATE TABLE`:
+```sql
+CREATE TABLE IF NOT EXISTS public.crm_callback_events ( -- soft-delete-exempt: tabela de auditoria append-only
+```
+Tabela é log append-only por design — deleção física nunca ocorre.
+
+---
+
+### Gate E40 — merge de main traz 634 migration files (commit `2bfc9d09c`)
+
+**Problema:** Branch divergiu de `main` antes de ~634 migration files serem adicionados. O Gate E40 contabilizava `blocking_remote_only_count: 637` (entradas no ledger sem arquivo local). `local_only` não bloqueia; `remote_only` não-allowlistado bloqueia.
+**Fix:** `git merge origin/main` — traz os ~634 migration files. Após merge, apenas as 11 entradas já allowlistadas em `scripts/migration-ledger-remote-only-allowlist.json` restam como `remote_only`, com `blocking=0`.
+**Conflitos resolvidos:** `ratchet-weekly.yml` (mantido comentário SIGPIPE), `package.json` e `package-lock.json` (aceita tailwindcss `^3.4.17` e `prettier-plugin-tailwindcss` de main).
+
+---
+
 ## Estado do Gate Final
 
 ```
-deploy-gates.yml (Gate Final) — VERDE ✅
+deploy-gates.yml (Gate Final) — ⏳ AGUARDANDO CI (commit 2bfc9d09c)
   Gate 0: SSOT doufsxqlfjyuvxuezpln ✅
   Gate 0.5: npm audit ✅
   Gate 1: Lint + TypeScript ✅
-  Gate 1.1–1.18: checks críticos ✅
+  Gate 1.1–1.18: checks críticos ✅ (Gate 1.8 ✅, Gate 1.12 ✅, Gate E40 ✅ esperados)
   Gate 2: Vitest ✅
   Gate 3: E2E Smoke ✅
   Gate 5: SEO ✅
   Gate 6: Build Vite ✅
 ```
 
-Os workflows com falha documentados neste relatório (P64, P78–P92) são **todos não-required** no Gate Final.
+Os workflows com falha documentados neste relatório (P64, P78–P96) são **todos não-required** no Gate Final.
 
 ---
 
