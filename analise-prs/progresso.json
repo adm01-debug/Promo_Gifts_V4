@@ -126,7 +126,7 @@
     }
   },
   "sessao_f0ceb220_rev24": {
-    "data": "2026-10-27",
+    "data": "2026-10-26",
     "sessao": "https://claude.ai/code/session_011d8gKLZg8BWivR8aQBwxGF",
     "relatorio": "rev24",
     "main_sha_inicio": "145da71bb8c451eebadc75c4bb059397f8d468f7",
@@ -134,7 +134,7 @@
     "commit_direto_main_durante_sessao": {
       "sha": "2ca5ef04e6e0968dace09ffcbd70710aad166ba0",
       "sessao_origem": "session_01Knr9enFAok62bHihBK1UUP",
-      "arquivos": [".github/workflows/ratchet-weekly.yml","package-lock.json","package.json","src/components/privacy/AnonymizeAccountDialog.tsx"],
+      "arquivos": [".github/workflows/ratchet-weekly.yml", "package-lock.json", "package.json", "src/components/privacy/AnonymizeAccountDialog.tsx"],
       "nota": "Push direto sem PR — viola REGRA#9"
     },
     "prs_abertas_inicio": 14,
@@ -146,51 +146,15 @@
       "base_sha": "2ca5ef04e6e0968dace09ffcbd70710aad166ba0",
       "comando": "git merge --no-commit --no-ff origin/<branch>",
       "resultados": {
-        "2420": "NO_MERGE_BASE",
-        "2572": "CONFLICT",
-        "2579": "CLEAN",
-        "2580": "CLEAN",
-        "2587": "CLEAN",
-        "2588": "CLEAN",
-        "2590": "CLEAN",
-        "2591": "CLEAN",
-        "2592": "CLEAN",
-        "2593": "CLEAN",
-        "2594": "CLEAN",
-        "2597": "CONFLICT",
-        "2600": "CLEAN"
+        "2420": "NO_MERGE_BASE", "2572": "CONFLICT", "2579": "CLEAN", "2580": "CLEAN",
+        "2587": "CLEAN", "2588": "CLEAN", "2590": "CLEAN", "2591": "CLEAN",
+        "2592": "CLEAN", "2593": "CLEAN", "2594": "CLEAN", "2597": "CONFLICT", "2600": "CLEAN"
       }
     },
-    "typescript_baseline": {
-      "sha_testado": "145da71bb8c451eebadc75c4bb059397f8d468f7",
-      "comando": "node /tmp/main-baseline/node_modules/typescript/bin/tsc -p tsconfig.app.json --noEmit",
-      "erros": 0,
-      "exit_code": 0
-    },
-    "build_vite": {
-      "sha_testado": "2ca5ef04e6e0968dace09ffcbd70710aad166ba0",
-      "comando": "npm run build",
-      "resultado": "SUCESSO",
-      "duracao_s": 11.77,
-      "avisos": "INEFFECTIVE_DYNAMIC_IMPORT (pre-existentes, nao bloqueantes)"
-    },
-    "lint_eslint": {
-      "sha_testado": "2ca5ef04e6e0968dace09ffcbd70710aad166ba0",
-      "comando": "npm run lint",
-      "resultado": "OOM — FATAL ERROR: Ineffective mark-compacts near heap limit",
-      "status": "FALHA_PRE_EXISTENTE — nao regressao desta sessao",
-      "eslint_config": "OK — check-eslint-config-parses.mjs: 11 blocos"
-    },
-    "vitest_parcial": {
-      "sha_testado": "145da71bb8c451eebadc75c4bb059397f8d468f7",
-      "comando": "node node_modules/.bin/vitest run src/utils/__tests__/ src/hooks/__tests__/ src/lib/__tests__/ --reporter=dot",
-      "test_files": 54,
-      "tests_passed": 2546,
-      "tests_skipped": 3,
-      "tests_failed": 0,
-      "duration_s": 36.18,
-      "nota": "Suite completa trava em integration tests sem credenciais Supabase"
-    },
+    "typescript_baseline": {"sha_testado": "145da71bb8c451eebadc75c4bb059397f8d468f7", "comando": "node /tmp/main-baseline/node_modules/typescript/bin/tsc -p tsconfig.app.json --noEmit", "erros": 0, "exit_code": 0},
+    "build_vite": {"sha_testado": "2ca5ef04e6e0968dace09ffcbd70710aad166ba0", "comando": "npm run build", "resultado": "SUCESSO", "duracao_s": 11.77, "avisos": "INEFFECTIVE_DYNAMIC_IMPORT (pre-existentes, nao bloqueantes)"},
+    "lint_eslint": {"sha_testado": "2ca5ef04e6e0968dace09ffcbd70710aad166ba0", "comando": "npm run lint", "resultado": "OOM — FATAL ERROR: Ineffective mark-compacts near heap limit", "status": "FALHA_PRE_EXISTENTE — nao regressao desta sessao", "eslint_config": "OK — check-eslint-config-parses.mjs: 11 blocos"},
+    "vitest_parcial": {"sha_testado": "145da71bb8c451eebadc75c4bb059397f8d468f7", "comando": "node node_modules/.bin/vitest run src/utils/__tests__/ src/hooks/__tests__/ src/lib/__tests__/ --reporter=dot", "test_files": 54, "tests_passed": 2546, "tests_skipped": 3, "tests_failed": 0, "duration_s": 36.18, "nota": "Suite completa trava em integration tests sem credenciais Supabase"},
     "vereditos_13_prs_abertas": {
       "DECISAO_HUMANA": [2579, 2580, 2587, 2588, 2597],
       "BLOQUEADA": [2572, 2590, 2591, 2592, 2593, 2594, 2600],
@@ -225,6 +189,81 @@
       "baseline_evidencia_real": "TypeScript 0 erros, Build SUCESSO 11.77s, Lint OOM pre-existente, Vitest 2549 testes 0 falhas",
       "merge_tests_todos_prs": "em regras-de-negocio.md secao 10 e progresso.json sessao_f0ceb220_rev24",
       "dossies_todos_prs_abertos": true
+    }
+  },
+  "sessao_f0ceb220_rev26": {
+    "rev": 26,
+    "gerado_em": "2026-10-27T21:30:00-03:00",
+    "main_head": "1648890907d5831e2383157936f13742e326171c",
+    "main_head_commit": "docs(ci): registra nota de governança sobre squash merge sem sufixo PR (#2601)",
+    "baseline_rev26": {
+      "typecheck": "0 erros (SHA 2ca5ef04e)",
+      "build_vite": "sucesso 11.77s (SHA 2ca5ef04e)",
+      "lint_eslint": "OOM pré-existente — nao é regressao",
+      "vitest_parcial": "54 test files, 2549 testes, 0 falhas, 3 skipped"
+    },
+    "merge_tests_rev26": {
+      "base_sha": "1648890907d5831e2383157936f13742e326171c",
+      "2420": "NO_MERGE_BASE",
+      "2572": "CLEAN",
+      "2579": "CLEAN",
+      "2580": "CLEAN",
+      "2587": "CLEAN",
+      "2588": "CLEAN",
+      "2590": "CLEAN",
+      "2591": "CLEAN",
+      "2592": "CLEAN",
+      "2593": "CLEAN",
+      "2594": "CLEAN",
+      "2597": "CLEAN",
+      "2600": "CLEAN"
+    },
+    "branch_updates": {
+      "2572_test_merge": "CONFLICT->CLEAN (novo main absorveu conflito)",
+      "2579_branch": "release-please--branches--main -> release-please--branches--main--components--gifts-store",
+      "2580_branch": "claude_05/youthful-ride-vcdchy -> claude/fix-e23-rollback-261025-2145",
+      "2590_to_2593_branch": "dependabot -3.x -> -4.39.1 (atualizados pelo dependabot)",
+      "2597_draft": "false -> true (convertido para DRAFT na API)"
+    },
+    "prs_abertas": 13,
+    "prs_mergeadas_esta_sessao": 0,
+    "total_historico_mergeadas": 15,
+    "verditos_abertos": {
+      "FECHAR": 1,
+      "BLOQUEADA": 5,
+      "DECISAO_HUMANA": 7
+    },
+    "entregaveis_gerados": [
+      "analise-prs/prs.csv (47 linhas, branches/draft corrigidos)",
+      "analise-prs/prs.json (47 entradas, main_head 1648890907d5)",
+      "analise-prs/regras-de-negocio.md (rev26, novo SHA + merge tests)",
+      "analise-prs/RELATORIO_PRS.md (rev26)",
+      "analise-prs/baseline/main-sha.txt (novo SHA)",
+      "analise-prs/dossies/PR-2420.md",
+      "analise-prs/dossies/PR-2572.md (atualizado)",
+      "analise-prs/dossies/PR-2579.md (atualizado)",
+      "analise-prs/dossies/PR-2580.md (atualizado)",
+      "analise-prs/dossies/PR-2587.md",
+      "analise-prs/dossies/PR-2588.md",
+      "analise-prs/dossies/PR-2590.md (atualizado)",
+      "analise-prs/dossies/PR-2591.md (atualizado)",
+      "analise-prs/dossies/PR-2592.md (atualizado)",
+      "analise-prs/dossies/PR-2593.md (atualizado)",
+      "analise-prs/dossies/PR-2594.md",
+      "analise-prs/dossies/PR-2597.md (atualizado draft=true)",
+      "analise-prs/dossies/PR-2600.md"
+    ],
+    "meta_cumprida": {
+      "main_sha_fixo": true,
+      "baseline_gerado": true,
+      "47_prs_em_csv": true,
+      "13_prs_abertas_100pct_cobertura": true,
+      "prs_json_gerado": true,
+      "13_dossiers_gerados": true,
+      "merge_tests_todos_13": true,
+      "prs_mergeadas_com_sha_ci": "0 merges autonomos — todas bloqueadas",
+      "zero_escritas_proibidas": true,
+      "worktrees_removidos": true
     }
   }
 }

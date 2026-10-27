@@ -1,7 +1,7 @@
 # Regras de Negócio — Promo Gifts V4
-**Sessão:** session_011d8gKLZg8BWivR8aQBwxGF (rev24)
+**Sessão:** session_011d8gKLZg8BWivR8aQBwxGF (rev26)
 **Data:** 2026-10-27
-**main HEAD:** `2ca5ef04e6e0968dace09ffcbd70710aad166ba0` (commit direto por session_01Knr9enFAok62bHihBK1UUP — 2026-10-26T20:29-0300)
+**main HEAD:** `1648890907d5831e2383157936f13742e326171c` (docs(ci): registra nota de governança sobre squash merge sem sufixo PR — PR #2601)
 
 ## 1. SSOT do Supabase (REGRA #1)
 - Projeto canônico: `doufsxqlfjyuvxuezpln` (Gold/Medallion)
@@ -106,19 +106,19 @@ Comando: node scripts/validate-supabase-config.mjs
 Resultado: ✅ CURRENT_PROJECT_ID = doufsxqlfjyuvxuezpln
 ```
 
-### Merge tests (todos os 13 PRs abertos — base `2ca5ef04e`)
+### Merge tests (todos os 13 PRs abertos — base `1648890907d5` — rev26)
 | PR | Branch | Resultado |
 |----|--------|-----------|
 | #2420 | claude/fix-rollback-261019-1637 | NO_MERGE_BASE |
-| #2572 | claude_05/youthful-ride-vcdchy | CONFLICT |
-| #2579 | release-please--branches--main | CLEAN |
+| #2572 | claude_05/youthful-ride-vcdchy | CLEAN |
+| #2579 | release-please--branches--main--components--gifts-store | CLEAN |
 | #2580 | claude/fix-e23-rollback-261025-2145 | CLEAN |
 | #2587 | dependabot/npm_and_yarn/zustand-5.0.16 | CLEAN |
 | #2588 | dependabot/npm_and_yarn/react-day-picker-10.0.2 | CLEAN |
-| #2590 | dependabot/github_actions/codeql-action/upload-sarif-3.x | CLEAN |
-| #2591 | dependabot/github_actions/codeql-action/analyze-3.x | CLEAN |
-| #2592 | dependabot/github_actions/actions/stale-11 | CLEAN |
-| #2593 | dependabot/github_actions/codeql-action/init-3.x | CLEAN |
+| #2590 | dependabot/github_actions/github/codeql-action/upload-sarif-4.39.1 | CLEAN |
+| #2591 | dependabot/github_actions/github/codeql-action/analyze-4.39.1 | CLEAN |
+| #2592 | dependabot/github_actions/actions/stale-11.0.0 | CLEAN |
+| #2593 | dependabot/github_actions/github/codeql-action/init-4.39.1 | CLEAN |
 | #2594 | dependabot/github_actions/actions/setup-node-7 | CLEAN |
-| #2597 | claude_04/beautiful-gates-bvocz5 | CONFLICT |
+| #2597 | claude_04/beautiful-gates-bvocz5 | CLEAN |
 | #2600 | claude_04/optimistic-bohr-qplx94 | CLEAN |
