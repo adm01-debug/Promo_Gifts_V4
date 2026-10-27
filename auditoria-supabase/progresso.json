@@ -1,23 +1,34 @@
 {
   "projeto": "doufsxqlfjyuvxuezpln",
-  "auditoria_iniciada": "2026-10-27",
-  "auditoria_encerrada": "2026-10-27",
-  "sessao": "session_01VXkRxX4vkrqFTfH53NAEBx",
+  "auditoria_data": "2026-10-27",
+  "auditoria_concluida": true,
+  "integridade": "CONFIRMADA — somente leitura, nenhum DDL executado",
   "secoes": [
-    {"secao": "A.0", "status": "concluída", "achados": 0},
-    {"secao": "A.1", "status": "concluída", "achados": 0},
-    {"secao": "A.2", "status": "concluída", "achados": 2},
-    {"secao": "A.3", "status": "concluída", "achados": 12},
-    {"secao": "A.4", "status": "concluída", "achados": 2},
-    {"secao": "A.5", "status": "concluída", "achados": 3},
-    {"secao": "A.6", "status": "concluída", "achados": 4},
-    {"secao": "A.7", "status": "concluída", "achados": 2},
-    {"secao": "A.8", "status": "concluída", "achados": 3},
-    {"secao": "A.9", "status": "concluída", "achados": 4},
-    {"secao": "A.10", "status": "concluída", "achados": 2},
-    {"secao": "A.11", "status": "concluída", "achados": 0},
-    {"secao": "A.12", "status": "parcial", "achados": 3}
+    {"id": "A.0", "nome": "Baseline", "status": "CONCLUÍDO", "notas": "2.551 migrations, 109 edge functions, PG 17.6"},
+    {"id": "A.1", "nome": "Inventário", "status": "CONCLUÍDO", "notas": "398 tabelas, 193 views, 1334 funções, 135 cron jobs, 39 auth users, 11 buckets, RLS 100%"},
+    {"id": "A.2", "nome": "Drift repo × produção", "status": "CONCLUÍDO", "notas": "458 migrations drift; 3 EFs divergentes; placeholders fn_my_rpc, invoke('e')"},
+    {"id": "A.3", "nome": "Segurança", "status": "CONCLUÍDO", "findings": 7, "notas": "SEC-001 a SEC-007 — credenciais de teste, 29 EFs sem JWT, 20 SECURITY DEFINER com pg_temp"},
+    {"id": "A.4", "nome": "Integridade", "status": "CONCLUÍDO", "notas": "80+ colunas sem FK; price como ARRAY; preços TEXT em views"},
+    {"id": "A.5", "nome": "Performance", "status": "CONCLUÍDO", "findings": 6, "notas": "PERF-001 a PERF-006 — fn_pipeline_health 32s, 641MB índices mortos, stock_daily_summary 40% dead"},
+    {"id": "A.6", "nome": "Cron Jobs", "status": "CONCLUÍDO", "findings": 1, "notas": "CRON-001: 418 falhas/24h — ROOT CAUSE: max_worker_processes=6 vs cron.max_running_jobs=32"},
+    {"id": "A.7", "nome": "Funções de banco", "status": "CONCLUÍDO", "notas": "1334 funções; 20 SECURITY DEFINER com pg_temp; 10 acessíveis por anon"},
+    {"id": "A.8", "nome": "Edge Functions", "status": "CONCLUÍDO", "notas": "112 repo vs 109 prod; 29 sem JWT; TEST_* em Deno.env"},
+    {"id": "A.9", "nome": "Auth / Storage / Realtime", "status": "CONCLUÍDO", "findings": 5, "notas": "AUTH-001: 28997 sessões/39 usuários; REAL-001: auth.users em realtime; ST-001: art-files sem owner isolation"},
+    {"id": "A.10", "nome": "Logs 7 dias", "status": "CONCLUÍDO", "notas": "pg_net: 142 ok, 12 timeout, 2×404; crons: 3408 ok, 418 failed"},
+    {"id": "A.11", "nome": "RLS na prática", "status": "CONCLUÍDO", "notas": "0 tabelas sem RLS; 8 tabelas com auth_rls_initplan"},
+    {"id": "A.12", "nome": "Lacunas operacionais", "status": "CONCLUÍDO", "notas": "PITR config OK; sem alertas automáticos; sem staging"},
+    {"id": "A.13", "nome": "Funcionalidades pendentes", "status": "CONCLUÍDO", "notas": "458 migrations drift; 3 EFs fora de sincronia; placeholders de teste"}  ],
+  "contagem_severidade": {
+    "CRITICO": 3,
+    "ALTO": 8,
+    "MEDIO": 12,
+    "BAIXO": 9,
+    "TOTAL": 32
+  },
+  "top3_urgentes": [
+    {"rank": 1, "id": "CRON-001", "acao": "Reduzir cron.max_running_jobs para 4 no dashboard Supabase"},
+    {"rank": 2, "id": "AUTH-001", "acao": "Expirar 28.958 sessões antigas (DELETE com aprovação do PO)"},
+    {"rank": 3, "id": "SEC-001", "acao": "Verificar e revogar TEST_ADMIN_JWT, TEST_SELLER_A/B_JWT como secrets"}
   ],
-  "totais": {"CRÍTICO": 2, "ALTO": 9, "MÉDIO": 12, "BAIXO": 9, "total": 32},
-  "imutabilidade": "CONFIRMADA — apenas SELECT em catálogos e pg_catalog executados nesta sessão"
+  "branch": "claude_pink/peaceful-planck-q4ee1i"
 }
