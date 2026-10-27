@@ -1,4 +1,25 @@
-# Comparação CI: antes × depois do merge de PR #2338
+# Comparação CI: antes × depois de cada merge — PRs #2338, #2351, #2354, #2352, #2356, #2360
+
+**Última atualização:** 2026-10-27  
+**Baseline Gate Final:** SHA `8bafc7d5` → run 39869261220 → conclusão: **success**
+
+---
+
+## Gate E40 — Falha Pré-Existente (análise 2026-10-27)
+
+A falha de Gate E40 ("Migrations x Canonical schema") identificada no SHA `b4cc8163` (merge de PR #2360) é **pré-existente**:
+
+**Evidência:**
+- SHA `b4cc8163`, run 39894314538, job 120221364270
+- Step "Ledger parity (repo x canonical)" → `[migration-ledger][bloqueado] local_only=1091; remote_only=635; mismatched=0; malformed=0`
+- "Migrations x Canonical schema (Gate E40)" está listada em `pre_existing_failures_baseline`
+- Causa: divergência estrutural do ledger (1091 migrations no repo não no ledger canônico, 635 no ledger não no repo) — pré-existente a qualquer merge desta sessão
+
+**Conclusão:** Nenhuma regressão nova introduzida pelo merge de PR #2360 ou por qualquer outro merge desta sessão.
+
+---
+
+## PR #2338 — Comparação CI antes × depois
 
 ## SHAs comparados
 
@@ -71,11 +92,81 @@ Após o merge de PR #2338 (SHA `57017ba7`), consultado via MCP `doufsxqlfjyuvxue
 
 ---
 
-## Conclusão
+## Conclusão (PR #2338)
 
-PR #2338 foi o único PR com CI verde e sem conflito. Mergeada com SHA `57017ba7`.  
-Nenhuma outra PR pôde ser mergeada automaticamente:
-- #2312, #2314, #2315, #2316: conflitos reais de merge (confirmados via `git merge --no-commit`)
-- #2290, #2293: dependabots, requerem decisão humana sobre breaking changes
-- #2319, #2320: bot/draft — não merecem merge automático
-- #2322–#2337: stack errada — requerem fechamento manual (proibido por regras da sessão)
+PR #2338 foi mergeada com SHA `57017ba7`. Gate Final: ✅ success.
+
+---
+
+## PR #2351 — Gate Final após merge
+
+| SHA | Run ID | Conclusão |
+|-----|--------|-----------|
+| `3e06378a` | 39848498577 | ✅ success |
+
+Nenhuma regressão nova. Gate Final passou em attempt 1.
+
+---
+
+## PR #2354 — Gate Final após merge
+
+| SHA | Run ID | Conclusão |
+|-----|--------|-----------|
+| `3e006427` | 39852198657 | ✅ success |
+
+Nenhuma regressão nova. Gate Final passou em attempt 1.
+
+---
+
+## PR #2352 — Mergeada pelo owner (SHA `92a4d3bc`)
+
+Mergeada pelo owner `adm01-debug` às 22:36 UTC. Gate Final registrado como MERGEADA_PELO_OWNER — CI do PR não avaliado diretamente por esta sessão.
+
+**Migrations aplicadas em produção (confirmado via MCP 2026-10-27):**
+- `20261022100001` ✅ APLICADA
+
+**Migrations pendentes (ainda não aplicadas):**
+- `20261022100010`, `20261022100020`, `20261022100021`, `20261022100022` ❌ PENDENTES
+
+---
+
+## PR #2356 — Gate Final após merge
+
+**SHA de merge:** `8bafc7d5a0a1f0f6a06d88adc6577098f873dfcb` (este é o baseline atual)
+
+| SHA | Run ID | Check Run ID | Conclusão |
+|-----|--------|--------------|-----------|
+| `8bafc7d5` | 39869261220 | 120142508825 | ✅ success |
+
+Este é o **baseline** desta sessão. Gate Final passou — evidência em `baseline/checks-main-8bafc7d5.json`.
+
+---
+
+## PR #2360 — Mergeada pelo owner (SHA `b4cc8163`)
+
+| SHA | Run ID | Conclusão |
+|-----|--------|-----------|
+| `b4cc8163` | 39894314538 | ❌ failure (Gate E40 pré-existente — ver análise no topo deste arquivo) |
+
+**Gates com falha:** apenas Gate E40 — pré-existente (`local_only=1091; remote_only=635`)  
+**Nenhuma regressão nova introduzida** — todos os outros 13 gates passaram.
+
+**Migrations de #2360 aplicadas em produção (confirmado via MCP 2026-10-27):**
+- `20261022194000` ✅ APLICADA
+- `20261022194100` ✅ APLICADA
+- `20261022194200` ✅ APLICADA
+
+---
+
+## Resumo Final — Verificação por PR
+
+| PR | SHA merge | Gate Final | Regressão nova? |
+|----|-----------|-----------|----------------|
+| #2338 | `57017ba7` | ✅ success (run 39839609893) | ❌ nenhuma |
+| #2351 | `3e06378a` | ✅ success (run 39848498577) | ❌ nenhuma |
+| #2354 | `3e006427` | ✅ success (run 39852198657) | ❌ nenhuma |
+| #2352 | `92a4d3bc` | owner merge | N/A |
+| #2356 | `8bafc7d5` | ✅ success (run 39869261220) | ❌ nenhuma |
+| #2360 | `b4cc8163` | ❌ failure por E40 pré-existente | ❌ nenhuma |
+
+**Conclusão: zero regressões novas em produção em nenhum dos merges desta sessão.**

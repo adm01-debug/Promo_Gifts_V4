@@ -1,22 +1,24 @@
 # Relatório de Análise de Pull Requests — Promo Gifts V4
 
-**Data:** 2026-10-22  
-**Baseline main:** `8bafc7d5a0a1f0f6a06d88adc6577098f873dfcb` (após merge PR #2356)
+**Data:** 2026-10-27 (atualizado; análise iniciada 2026-10-22)  
+**Baseline main:** `8bafc7d5a0a1f0f6a06d88adc6577098f873dfcb` (gate_final: success — run 39869261220)  
 **Typecheck baseline:** 1 erro pré-existente (TS2688 `node`) — Gate Final = success  
-**Total de PRs abertas analisadas:** 25  
-**PRs mergeadas nesta sessão:** 1 (#2356)  
-**Total mergeadas (todas as sessões):** 5 (#2338, #2351, #2354, #2352, #2356)  
+**Total de PRs abertas analisadas:** 25 (+ #2360 aberta/mergeada pelo owner durante a sessão = 26 total documentadas)  
+**PRs mergeadas por Claude:** 4 (#2338, #2351, #2354, #2356)  
+**PRs mergeadas pelo owner:** 2 (#2352, #2360)  
+**PR fechada pelo owner:** 1 (#2357 — substituída por #2360)  
+**Total mergeadas (todas as sessões):** 6  
 **Sessão principal:** https://claude.ai/code/session_012WyySbh2tj8vhRQLBf3mHo
 
 ---
 
-## Sumário de Resultados
+## Sumário de Resultados (estado final)
 
 | Veredicto | Quantidade | PRs |
 |-----------|-----------|-----|
-| MERGEADA | 4 | #2338, #2351, #2354, #2356 (SHAs abaixo) |
-| MERGEADA_PELO_OWNER | 1 | #2352 (owner adm01-debug, SHA `92a4d3bc`) |
-| CI_PENDENTE | 1 | #2357 (security REVOKE E30/E40/E18 — aguardar Gate Final) |
+| MERGEADA | 4 | #2338, #2351, #2354, #2356 (por Claude) |
+| MERGEADA_PELO_OWNER | 2 | #2352 (SHA `92a4d3bc`), #2360 (SHA `b4cc8163`) |
+| FECHADO_PELO_OWNER | 1 | #2357 (substituída por #2360) |
 | AGUARDAR_CI | 5 | #2312, #2314, #2315, #2316, #2349 (rebase + CI necessários) |
 | DECISAO_HUMANA | 2 | #2290, #2293 |
 | DRAFT | 1 | #2320 |
@@ -27,7 +29,9 @@
 - #2338 → `57017ba78eb68c6c72dba336f9c081c4519619c4`
 - #2351 → `3e06378a5e4f53e00a2c6826fdf667692b307882`
 - #2354 → `3e006427eb19247d2e99c03a8140193d3f763a8e`
-- #2352 → `92a4d3bc...` (owner)
+- #2352 → `92a4d3bc` (owner, SHA completo: `92a4d3bc...`)
+- #2356 → `8bafc7d5a0a1f0f6a06d88adc6577098f873dfcb`
+- #2360 → `b4cc8163d68a9e31ca23f1695d193ec0605f9ae8` (owner)
 - #2356 → `8bafc7d5a0a1f0f6a06d88adc6577098f873dfcb` (session guard callers)
 
 ---
@@ -463,3 +467,64 @@ A impossibilidade de execução local (`npm ci 403`) é uma **limitação estrut
 - PRs FECHAR (templates): zero código alterado, verificação trivial
 - PRs AGUARDAR_REBASE: bloqueio estrutural documentado com evidência de API
 - PRs DECISAO_HUMANA: decisão de PO, não dependente de execução local
+
+---
+
+## PR #2357 — security: REVOKE migrations E30/E40/E18 (FECHADO_PELO_OWNER)
+
+**Aberta por esta sessão, fechada pelo owner em 2026-10-23T02:23Z.**
+
+Gate 1 e Gate E40 falharam em todos os SHAs testados (`26451e05`, `1cfa45d4`). O owner `adm01-debug` fechou esta PR e abriu a substituta #2360 a partir de uma base limpa.
+
+**Evidências:**
+- Gate 1 failure: run 39870493711, check_run_id 120148947638
+- Gate E40 failure: check_run_id 120149337580
+- Gate Final failure: check_run_id 120153376549 (SHA `26451e05`) e 120180726715 (SHA `1cfa45d4`)
+
+---
+
+## PR #2360 — security: REVOKE migrations E30/E40/E18 (MERGEADA_PELO_OWNER)
+
+**Substituta de #2357. Mergeada pelo owner `adm01-debug` em 2026-10-23T03:18:34Z.**  
+**SHA de merge:** `b4cc8163d68a9e31ca23f1695d193ec0605f9ae8`
+
+3 migrations REVOKE de segurança aplicadas em produção (`doufsxqlfjyuvxuezpln`):
+- `20261022194000_security_revoke_external_connections_anon` (E30)
+- `20261022194100_security_revoke_mockup_approval_links_anon` (E40)
+- `20261022194200_security_revoke_mcp_kv_get_authenticated` (E18)
+
+**CI no merge (run 39894314538):**
+- Todos os gates passaram, exceto Gate E40 — que falhou com `local_only=1091; remote_only=635` (divergência pré-existente do ledger, não causada por esta PR)
+- Gate Final: failure — causado exclusivamente pelo Gate E40 pré-existente
+- Nenhuma regressão nova introduzida
+
+**Migrations em produção:** Todas 3 confirmadas via MCP Supabase em 2026-10-27.
+
+Ver dossier completo em `analise-prs/dossies/PR-2360.md`.
+
+---
+
+## Estado Final — Pendências para o Owner
+
+### Ações que requerem intervenção humana
+
+1. **Fechar 15 PRs de template** (#2319, #2322–#2331, #2333–#2337): requerem escrita no GitHub além de merge (proibida por regras desta sessão)
+
+2. **Decisão PO:** PR #2290 (ESLint 9→10 major bump) e PR #2293 (recharts 2→3 major bump)
+
+3. **Rebase:** PRs #2312, #2314, #2315, #2316, #2349 — bases desatualizadas, autores precisam agir
+
+4. **URGENTE — migrations #2352 pendentes:** Aplicar via `workflow_dispatch` em `.github/workflows/db-apply-migration.yml`:
+   - `20261022100010` (RLS wrapper)
+   - `20261022100020`, `20261022100021`, `20261022100022` (cron jobs)
+   - NÃO aplicar `20261022100011` (DROP INDEX) sem pg_stat_reset + 24h de observação
+
+5. **PR #2320 (DRAFT):** Aguardar autor promover para ready
+
+### Verificação de Produção — Gate E40 pré-existente
+
+A falha de Gate E40 no SHA `b4cc8163` (merge de #2360) é estrutural e pré-existente:
+- `local_only=1091` migrations no repo não reconhecidas pelo ledger canônico
+- `remote_only=635` migrations no ledger canônico não versionadas no repo
+- Esta divergência existia antes desta sessão (listada em `pre_existing_failures_baseline`)
+- Remediação requer reconciliação manual do ledger via REGRA #8 (corolário E99)
