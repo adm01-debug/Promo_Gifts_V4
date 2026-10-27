@@ -14,25 +14,34 @@ DECLARE
   crons text;
   gucs  text;
 BEGIN
-  SELECT string_agg(n.nspname || '.' || p.proname, ', ' ORDER BY n.nspname || '.' || p.proname)
-    INTO funcs
-    FROM pg_proc p
-    JOIN pg_namespace n ON n.oid = p.pronamespace
-   WHERE pg_get_functiondef(p.oid) ILIKE '%pqpdolkae%';
+  SELECT string_agg(v, ', ') INTO funcs
+    FROM (
+      SELECT n.nspname || '.' || p.proname AS v
+        FROM pg_proc p
+        JOIN pg_namespace n ON n.oid = p.pronamespace
+       WHERE pg_get_functiondef(p.oid) ILIKE '%pqpdolkae%'
+       ORDER BY 1
+    ) s;
 
   IF EXISTS (SELECT 1 FROM pg_extension WHERE extname = 'pg_cron') THEN
-    SELECT string_agg('job ' || j.jobid || ' ' || j.jobname || ' :: ' || left(j.command, 300), E'\n' ORDER BY j.jobid)
-      INTO crons
-      FROM cron.job j
-     WHERE j.command ILIKE '%pqpdolkae%';
+    SELECT string_agg(v, E'\n') INTO crons
+      FROM (
+        SELECT 'job ' || j.jobid || ' ' || j.jobname || ' :: ' || left(j.command, 300) AS v
+          FROM cron.job j
+         WHERE j.command ILIKE '%pqpdolkae%'
+         ORDER BY j.jobid
+      ) s;
   ELSE
     crons := '<pg_cron não instalado>';
   END IF;
 
-  SELECT string_agg(name || '=' || setting, ', ' ORDER BY name || '=' || setting)
-    INTO gucs
-    FROM pg_settings
-   WHERE setting ILIKE '%pqpdolkae%';
+  SELECT string_agg(v, ', ') INTO gucs
+    FROM (
+      SELECT name || '=' || setting AS v
+        FROM pg_settings
+       WHERE setting ILIKE '%pqpdolkae%'
+       ORDER BY 1
+    ) s;
 
   RAISE EXCEPTION 'PROBE_E184 | funcs=% | crons=% | gucs=%',
     COALESCE(funcs, '<none>'), COALESCE(crons, '<none>'), COALESCE(gucs, '<none>');
