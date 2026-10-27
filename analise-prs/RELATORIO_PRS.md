@@ -1,10 +1,10 @@
-# RELATORIO_PRS.md — rev63
+# RELATORIO_PRS.md — rev64
 **Sessão:** session_011d8gKLZg8BWivR8aQBwxGF
 **Data:** 2026-10-27
 **main HEAD entrada:** df18546dfd76d1bea7ea5873257b668d128d8df3
 **main HEAD atual:** b5cfee9b24017fbf53a0035e86d8820d07bad74e (#2636 mergeada por sessão externa, ~11:22Z)
 **Gate Final main:** run #40493344116 — success (2026-10-27T11:21:36Z) em SHA `b5cfee9b`
-**Gate Final delivery branch PR#2600:** run #40497480554 — **success** (completed 2026-10-27T11:48:23Z) em SHA `f1392289`
+**Gate Final delivery branch PR#2600:** run #40500183634 — **success** (completed 2026-10-27T11:59:49Z) em SHA `3c9d14075` (head final)
 
 ---
 
@@ -35,7 +35,7 @@
 **Contexto:** PR #2600 (delivery branch desta sessão) tem `PR Size Check` com `conclusion: failure`.
 
 **Evidência CLAUDE.md:404:** "O único check required no branch protection de `main` é **'Gate Final - Deploy Ready'**"
-`grep "PR Size|E185" CLAUDE.md` → **No matches found** — "PR Size Check" / "PR Size Guard (E185)" está **ausente** da tabela "Gates obrigatórios" (CLAUDE.md:402–489).
+`grep "PR Size|E185" CLAUDE.md` → **No matches found** —  "PR Size Check" / "PR Size Guard (E185)" está **ausente** da tabela "Gates obrigatórios" (CLAUDE.md:402–489).
 
 Portanto: `PR Size Check` é check não-bloqueante e não é required gate. Não impacta merge ou produção.
 
@@ -47,10 +47,10 @@ Portanto: `PR Size Check` é check não-bloqueante e não é required gate. Não
 
 ### DECISAO_HUMANA (8 PRs)
 
-#### #2420 — chore(db): rollback migration 20261019
+#### #2420 ↔ chore(db): rollback migration 20261019
 - **Arquivos:** `ProductFormFullscreen.tsx` (+2/-2), `supabase/migrations/20261019000000_mirror_oob...sql` (+1/-0), `supabase/rollbacks/20261019000000_rollback.sql` (+6/-0 — `ALTER TABLE DROP CONSTRAINT` + `DROP VIEW IF EXISTS`)
 - **(1) Válida?** SIM — rollback da migration OOB detectada em drift-check run 39251404944
-- **(2) Regressão?** NÃO — rollback de objetos OOB + fix TS cirúrgico
+- **(2) Regressão?** NÃO — rollback de objetos OOB + fix TS ciúrg�co
 - **(3) Em main?** NÃO — `supabase/rollbacks/20261019000000_rollback.sql` não existe em main
 - **(4) Regra correta?** SIM — SQL reverte o que a migration aplicou
 - **Bloqueio:** REGRA#8 (`supabase/migrations/`) + REGRA#10 (branch de sessão externa)
@@ -66,7 +66,7 @@ Portanto: `PR Size Check` é check não-bloqueante e não é required gate. Não
 
 #### #2579 — chore(main): release 1.0.0
 - **Arquivos:** `package.json`, `CHANGELOG.md` — propõe versão 1.0.0
-- **(1) Válida?** POTENCIALMENTE NÃO — main já está em 1.2.1+; merge causaria downgrade
+- **(1) Válida?** POTENCIALMENTE NÃO — `package.json` main já está em 1.2.1+; merge causaria downgrade
 - **(2) Regressão?** SIM — downgrade CHANGELOG 1.2.1 → 1.0.0
 - **(3) Em main?** NÃO
 - **(4) Regra correta?** NÃO — release-please dessincronizado após merges sem tag git
@@ -137,9 +137,9 @@ Portanto: `PR Size Check` é check não-bloqueante e não é required gate. Não
 - **(3) Em main?** NÃO
 - **(4) Regra correta?** N/A — documentação de sessão
 - **Bloqueio:** DRAFT deliberado — não deve ser mergeado (análise transitória)
-- **Gate Final #40497480554:** **success** (completed 2026-10-27T11:48:23Z) em SHA `f1392289`, docs-only bypass E14 ativo (Gates 1/2/3 skipped)
+- **Gate Final #40500183634:** **success** (completed 2026-10-27T11:59:49Z) em SHA `3c9d14075` (head final); docs-only bypass E14 ativo (Gates 1/2/3 skipped)
 
-#### #2631 — chore: PENDENCIAS §4 + RELATORIO_CI
+#### #2631 ↔ chore: PENDENCIAS §4 + RELATORIO_CI
 - **Arquivos:** `PENDENCIAS.md` (+68/-40), `RELATORIO_CI.md` (+29/-25)
 - **(1) Válida?** SIM — documenta bloqueio de deploy real (environment Production, required_reviewers)
 - **(2) Regressão?** NÃO — apenas docs
@@ -163,7 +163,7 @@ Portanto: `PR Size Check` é check não-bloqueante e não é required gate. Não
 
 #### #2634 — fix(ci): 3 races de teste
 - **Arquivos:** `playwright-config-smoke.test.ts`, `safeAuthCall.test.ts`, `LocationPanel.tsx`
-- **(1) Válida?** NÃO — diff idêntico ao #2633 já em main (SHA `1ce29cf2f`)
+- **(1) Válida?** NÃO — diff idêncico ao #2633 já em main (SHA `1ce29cf2f`)
 - **(2) Regressão?** N/A — supersedida
 - **(3) Em main?** SIM — via #2633
 - **(4) Regra correta?** N/A — supersedida
@@ -174,14 +174,14 @@ Portanto: `PR Size Check` é check não-bloqueante e não é required gate. Não
 
 ### BRANCH_DIRTY (1 PR)
 
-#### #2622 — fix(rollbacks): 9 migrations + manifest
+#### #2622 — fix(acrollbacks): 9 migrations + manifest
 - **Arquivos:** 29 arquivos — 9 rollbacks SQL + edge-authz-manifest.ts + analise-prs/
 - **(1) Válida?** NÃO — ADD/ADD conflict em 7 dos 9 rollbacks após merge #2621
 - **(2) Regressão?** N/A — branch inmergeável
 - **(3) Em main?** Parcialmente — 7 rollbacks via #2621; 2 únicos via #2627 (mergeada)
 - **(4) Regra correta?** N/A — branch dirty
 - **Test-merge:** `mergeable: false` (DIRTY — ADD/ADD nos 7 arquivos conflitantes)
-- **Ação:** fechar; conteúdo único reconstituted em #2627 (mergeada com sucesso)
+- **Ação:** fechar; conteúdo único reconstitued em #2627 (mergeada com sucesso)
 
 ---
 
@@ -244,12 +244,12 @@ Nenhum worktree criado nesta sessão. Verificação: `git worktree list` mostra 
 
 ---
 
-## Caminhos dos entregáveis — branch `claude_04/optimistic-bohr-qplx94` (head rev63)
+## Caminhos dos entregáveis — branch `claude_04/optimistic-bohr-qplx94`, commit `3c9d14075`
 
 | Arquivo | Descrição |
 |---|---|
-| `analise-prs/RELATORIO_PRS.md` | Este relatório (rev63) |
-| `analise-prs/progresso.json` | Estado completo rev63 (SESSAO_COMPLETA + gate_final_delivery_branch) |
+| `analise-prs/RELATORIO_PRS.md` | Este relatório (rev64) |
+| `analise-prs/progresso.json` | Estado completo rev64 (SESSAO_COMPLETA |
 | `analise-prs/prs.json` | Dados completos rev62 (55 PRs histórico) |
 | `analise-prs/prs.csv` | Tabela CSV todas as PRs |
 | `analise-prs/regras-de-negocio.md` | Regras extraídas do codebase (rev59) |
@@ -266,10 +266,10 @@ Nenhum worktree criado nesta sessão. Verificação: `git worktree list` mostra 
 | `analise-prs/dossies/PR-2622.md` | Dossiê completo PR#2622 |
 | `analise-prs/dossies/PR-2631.md` | Dossiê completo PR#2631 |
 | `analise-prs/dossies/PR-2632.md` | Dossiê completo PR#2632 |
-| `analise-prs/dossies/PR-2634.md` | Dossiê completo PR#2634 |
+| analise-prs/dossies/PR-2634.md` | Dossiê completo PR#2634 |
 | `analise-prs/dossies/PR-2636.md` | Dossiê completo PR#2636 (mergeada) |
 | `analise-prs/dossies/PR-2637.md` | Dossiê completo PR#2637 |
 
 ---
 
-_Gerado automaticamente por session_011d8gKLZg8BWivR8aQBwxGF — rev63_
+_Gerado automaticamente por session_011d8gKLZg8BWivR8aQBwxGF — rev64_

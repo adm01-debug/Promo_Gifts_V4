@@ -1,6 +1,6 @@
 {
   "session_id": "session_011d8gKLZg8BWivR8aQBwxGF",
-  "revision": "rev63",
+  "revision": "rev64",
   "date": "2026-10-27",
   "status": "SESSAO_COMPLETA",
   "main_head_entrada": "df18546dfd76d1bea7ea5873257b668d128d8df3",
@@ -14,11 +14,11 @@
     "nota": "Gate Final success em c3aa9f1a (run #40493344116); #2636 squash-merged em b5cfee9b."
   },
   "gate_final_delivery_branch": {
-    "sha": "f1392289410d02df7cc12bde987f27a49ccb989a",
-    "run": "40497480554",
+    "sha": "3c9d14075ebe709f95fb84bc22041ba7950ffc19",
+    "run": "40500183634",
     "conclusion": "success",
-    "completed_at": "2026-10-27T11:48:23Z",
-    "nota": "Gate Final PR#2600 (delivery branch) success em f1392289; docs-only bypass E14 ativo (Gates 1/2/3 skipped)."
+    "completed_at": "2026-10-27T11:59:49Z",
+    "nota": "Gate Final PR#2600 (delivery branch) success em 3c9d14075 (head final); docs-only bypass E14 ativo (Gates 1/2/3 skipped). Compare GitHub x Canonical: success."
   },
   "prs_analisados_esta_sessao": 29,
   "open_prs_count_verificado": 13,
