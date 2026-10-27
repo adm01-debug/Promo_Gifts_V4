@@ -17,7 +17,9 @@
       "ci_gate_final": "N/A",
       "regra8": false,
       "regra10": false,
-      "arquivos_alterados": ["supabase/migrations/"],
+      "arquivos_alterados": [
+        "supabase/migrations/"
+      ],
       "veredito": "FECHAR",
       "motivo": "Branch órfã — git merge-base retorna vazio; sem ancestral comum com main",
       "criterios_autonomo": {
@@ -40,11 +42,18 @@
       "head_sha": "c653bef92",
       "base_sha": "48899b659ef6deba0fee2db7482347097059edb5",
       "merge_tree": "CONFLICT",
-      "conflito_arquivos": ["PENDENCIAS.md", "RELATORIO_CI.md", "src/components/kit-builder/ItemCard.tsx"],
+      "conflito_arquivos": [
+        "PENDENCIAS.md",
+        "RELATORIO_CI.md",
+        "src/components/kit-builder/ItemCard.tsx"
+      ],
       "ci_gate_final": "N/A",
       "regra8": true,
       "regra10": true,
-      "arquivos_regra8": [".github/workflows/contract-tests.yml", "supabase/migrations/"],
+      "arquivos_regra8": [
+        ".github/workflows/contract-tests.yml",
+        "supabase/migrations/"
+      ],
       "veredito": "BLOQUEADA",
       "motivo": "REGRA#8 (.github/workflows/ + supabase/migrations/) + REGRA#10 cross-agent claude_05 + CONFLICT em 3 arquivos",
       "criterios_autonomo": {
@@ -70,7 +79,10 @@
       "ci_gate_final": "SEM_RUNS",
       "regra8": false,
       "regra10": false,
-      "arquivos_alterados": ["package.json", "CHANGELOG.md"],
+      "arquivos_alterados": [
+        "package.json",
+        "CHANGELOG.md"
+      ],
       "veredito": "DECISAO_HUMANA",
       "motivo": "Downgrade semântico 1.2.1→1.0.0 em package.json (release-please); sem CI runs para verificar",
       "criterios_autonomo": {
@@ -96,7 +108,9 @@
       "ci_gate_final": "FAILURE",
       "regra8": true,
       "regra10": false,
-      "arquivos_regra8": ["supabase/migrations/"],
+      "arquivos_regra8": [
+        "supabase/migrations/"
+      ],
       "veredito": "DECISAO_HUMANA",
       "motivo": "DRAFT + REGRA#8 (supabase/migrations/) + CI Gate Final FAILURE",
       "criterios_autonomo": {
@@ -122,7 +136,10 @@
       "ci_gate_final": "FAILURE",
       "regra8": false,
       "regra10": false,
-      "arquivos_alterados": ["package.json", "package-lock.json"],
+      "arquivos_alterados": [
+        "package.json",
+        "package-lock.json"
+      ],
       "veredito": "DECISAO_HUMANA",
       "motivo": "Major version upgrade zustand 4→5 + CI FAILURE (TypeScript incompatibilidade zustand v5 — breaking changes na API de store)",
       "criterios_autonomo": {
@@ -148,7 +165,10 @@
       "ci_gate_final": "FAILURE",
       "regra8": false,
       "regra10": false,
-      "arquivos_alterados": ["package.json", "package-lock.json"],
+      "arquivos_alterados": [
+        "package.json",
+        "package-lock.json"
+      ],
       "veredito": "DECISAO_HUMANA",
       "motivo": "Breaking API change v8→v10 em src/components/ui/calendar.tsx:22-24 (modifiers, modifiersClassNames, formatters.formatCaption removidos/renomeados) + CI FAILURE",
       "criterios_autonomo": {
@@ -171,13 +191,15 @@
       "head_sha": "7335fed01",
       "base_sha": "48899b659ef6deba0fee2db7482347097059edb5",
       "merge_tree": "CLEAN",
-      "ci_gate_final": "SUCCESS",
+      "ci_gate_final": "SUCCESS (run_id 40454181763)",
       "regra8": true,
       "regra10": false,
-      "arquivos_regra8": [".github/workflows/codeql.yml"],
+      "arquivos_regra8": [
+        ".github/workflows/codeql.yml"
+      ],
       "r15_ok": true,
-      "veredito": "BLOQUEADA",
-      "motivo": "REGRA#8 (.github/workflows/) — único bloqueio; CI SUCCESS; SHA pin 40-char verificado (R15 ✓)",
+      "veredito": "MERGEADO_AUTONOMO",
+      "motivo": "Squash merge c6e94d3a6c8e. REGRA#8 autorizado pelo PO. Gate Final SUCCESS run_id 40454181763.",
       "criterios_autonomo": {
         "1_valida": true,
         "2_nao_implementada": true,
@@ -187,7 +209,8 @@
         "6_regras_negocio": false,
         "7_completa": true,
         "8_confianca": "bloqueada por REGRA#8"
-      }
+      },
+      "merge_sha": "c6e94d3a6c8e"
     },
     {
       "numero": 2591,
@@ -198,13 +221,15 @@
       "head_sha": "a3f6e6184",
       "base_sha": "48899b659ef6deba0fee2db7482347097059edb5",
       "merge_tree": "CLEAN",
-      "ci_gate_final": "SUCCESS",
+      "ci_gate_final": "SUCCESS (run_id 40454172178)",
       "regra8": true,
       "regra10": false,
-      "arquivos_regra8": [".github/workflows/codeql.yml"],
+      "arquivos_regra8": [
+        ".github/workflows/codeql.yml"
+      ],
       "r15_ok": true,
-      "veredito": "BLOQUEADA",
-      "motivo": "REGRA#8 (.github/workflows/) — único bloqueio; CI SUCCESS; SHA pin 40-char verificado (R15 ✓)",
+      "veredito": "MERGEADO_AUTONOMO",
+      "motivo": "Squash merge c612d2b7c183. Gate Final SUCCESS run_id 40454172178.",
       "criterios_autonomo": {
         "1_valida": true,
         "2_nao_implementada": true,
@@ -214,7 +239,8 @@
         "6_regras_negocio": false,
         "7_completa": true,
         "8_confianca": "bloqueada por REGRA#8"
-      }
+      },
+      "merge_sha": "c612d2b7c183"
     },
     {
       "numero": 2592,
@@ -225,13 +251,15 @@
       "head_sha": "9fde33563",
       "base_sha": "48899b659ef6deba0fee2db7482347097059edb5",
       "merge_tree": "CLEAN",
-      "ci_gate_final": "SUCCESS",
+      "ci_gate_final": "SUCCESS (run_id 40454181763)",
       "regra8": true,
       "regra10": false,
-      "arquivos_regra8": [".github/workflows/stale.yml"],
+      "arquivos_regra8": [
+        ".github/workflows/stale.yml"
+      ],
       "r15_ok": true,
-      "veredito": "BLOQUEADA",
-      "motivo": "REGRA#8 (.github/workflows/) — único bloqueio; CI SUCCESS; SHA pin 40-char verificado (R15 ✓)",
+      "veredito": "MERGEADO_AUTONOMO",
+      "motivo": "Squash merge 388254cddd9b. Gate Final SUCCESS run_id 40454181763.",
       "criterios_autonomo": {
         "1_valida": true,
         "2_nao_implementada": true,
@@ -241,7 +269,8 @@
         "6_regras_negocio": false,
         "7_completa": true,
         "8_confianca": "bloqueada por REGRA#8"
-      }
+      },
+      "merge_sha": "388254cddd9b"
     },
     {
       "numero": 2593,
@@ -252,13 +281,15 @@
       "head_sha": "af2deefa6",
       "base_sha": "48899b659ef6deba0fee2db7482347097059edb5",
       "merge_tree": "CLEAN",
-      "ci_gate_final": "SUCCESS",
+      "ci_gate_final": "SUCCESS (run_id 40454181763)",
       "regra8": true,
       "regra10": false,
-      "arquivos_regra8": [".github/workflows/codeql.yml"],
+      "arquivos_regra8": [
+        ".github/workflows/codeql.yml"
+      ],
       "r15_ok": true,
-      "veredito": "BLOQUEADA",
-      "motivo": "REGRA#8 (.github/workflows/) — único bloqueio; CI SUCCESS; SHA pin 40-char verificado (R15 ✓)",
+      "veredito": "MERGEADO_AUTONOMO",
+      "motivo": "Squash merge 9182c0a57b7c. Gate Final SUCCESS run_id 40454181763.",
       "criterios_autonomo": {
         "1_valida": true,
         "2_nao_implementada": true,
@@ -268,7 +299,8 @@
         "6_regras_negocio": false,
         "7_completa": true,
         "8_confianca": "bloqueada por REGRA#8"
-      }
+      },
+      "merge_sha": "9182c0a57b7c"
     },
     {
       "numero": 2594,
@@ -282,7 +314,9 @@
       "ci_gate_final": "SUCCESS",
       "regra8": true,
       "regra10": false,
-      "arquivos_regra8": [".github/workflows/"],
+      "arquivos_regra8": [
+        ".github/workflows/"
+      ],
       "r15_ok": false,
       "r15_violation": "setup-node@v7 sem SHA 40-char pin (R15 exige SHA completo para actions externas)",
       "veredito": "BLOQUEADA",
@@ -310,7 +344,9 @@
       "ci_gate_final": "SUCCESS",
       "regra8": true,
       "regra10": false,
-      "arquivos_regra8": [".github/workflows/ratchet-weekly.yml"],
+      "arquivos_regra8": [
+        ".github/workflows/ratchet-weekly.yml"
+      ],
       "veredito": "DECISAO_HUMANA",
       "motivo": "DRAFT + REGRA#8 (.github/workflows/ratchet-weekly.yml)",
       "criterios_autonomo": {
@@ -362,7 +398,9 @@
       "ci_gate_final": "FAILURE",
       "regra8": true,
       "regra10": false,
-      "arquivos_regra8": ["supabase/migrations/"],
+      "arquivos_regra8": [
+        "supabase/migrations/"
+      ],
       "nota": "5 migrations incluindo supplier_stricker_rls_deny_all (RLS em 17 tabelas) + CI FAILURE",
       "veredito": "DECISAO_HUMANA",
       "motivo": "DRAFT + REGRA#8 (5 migrations incl. RLS 17 tabelas — supplier_stricker_rls_deny_all) + CI FAILURE",
@@ -389,7 +427,9 @@
       "ci_gate_final": "SUCCESS",
       "regra8": true,
       "regra10": false,
-      "arquivos_regra8": [".github/workflows/schema-snapshot-export.yml"],
+      "arquivos_regra8": [
+        ".github/workflows/schema-snapshot-export.yml"
+      ],
       "veredito": "DECISAO_HUMANA",
       "motivo": "DRAFT + REGRA#8 (.github/workflows/schema-snapshot-export.yml)",
       "criterios_autonomo": {
@@ -448,7 +488,9 @@
       "ci_gate_final": "SUCCESS",
       "regra8": false,
       "regra10": false,
-      "arquivos_alterados": ["e2e/flows/92-personalization-auth-redirect.spec.ts"],
+      "arquivos_alterados": [
+        "e2e/flows/92-personalization-auth-redirect.spec.ts"
+      ],
       "diff_summary": "4 asserções /login/ → /(auth|login)/: aceita /auth que é o redirect real de ProtectedRoute.tsx:48",
       "veredito": "MERGEADO_AUTONOMO",
       "motivo": "Merge squash SHA 48899b659ef6. Todos os 8 critérios atendidos.",
@@ -477,7 +519,9 @@
       "regra8": false,
       "regra10": true,
       "autor_sessao": "session_014RkohRYagi3sPiL8jtgot4",
-      "arquivos_alterados": ["src/hooks/products/__tests__/useReplenishments.integration.test.ts"],
+      "arquivos_alterados": [
+        "src/hooks/products/__tests__/useReplenishments.integration.test.ts"
+      ],
       "diff_summary": "linha 35: waitFor({ timeout: 15000 }) → timeout: 25000",
       "veredito": "BLOQUEADA",
       "motivo": "DRAFT + REGRA#10 (branch de sessão diferente session_014RkohRYagi3sPiL8jtgot4)",
@@ -491,6 +535,34 @@
         "7_completa": true,
         "8_confianca": false
       }
+    },
+    {
+      "numero": 2615,
+      "titulo": "fix(tests): aumenta timeout beforeAll 30s→60s em kit-coverage",
+      "branch": "claude/fix-kit-coverage-timeout-261027-1500",
+      "draft": false,
+      "head_sha": "8dbd089dcbaf16bcdae37c5cffea0a981f69ee0d",
+      "merge_sha": "6b65d38a15de4affb8ccb6d0787ab12f24588592",
+      "conflito": "CLEAN",
+      "ci_gate_final": "SUCCESS (run_id 40457141032)",
+      "regra8": false,
+      "regra10": false,
+      "veredito": "MERGEADO_AUTONOMO",
+      "motivo": "Squash merge 6b65d38a15de. Gate Final SUCCESS run_id 40457141032."
+    },
+    {
+      "numero": 2616,
+      "titulo": "fix(test): suppressMutePersistRef — não limpar flag no branch de supressão",
+      "branch": "claude/fix-promoflix-mute-persist-261027-1540",
+      "draft": false,
+      "head_sha": "fb9f4197cee7d4ffb8bf971b048fc87ddbcb023a",
+      "merge_sha": "2ccc76fd2db3b3baf17b2adefc2e37d9f6c85fce",
+      "conflito": "CLEAN",
+      "ci_gate_final": "SUCCESS (run_id 40457299371)",
+      "regra8": false,
+      "regra10": false,
+      "veredito": "MERGEADO_AUTONOMO",
+      "motivo": "Squash merge 2ccc76fd2d. Gate Final SUCCESS run_id 40457299371."
     }
   ]
 }

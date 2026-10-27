@@ -18,8 +18,8 @@
     "falhas_preexistentes_nao_novas": "7 checks opcionais (color-swatch, magazine-header, e2e-gates, chromium•swatch→QV, Full User Flows authed, webkit•swatch→QV, check) já presentes no baseline c86a3812 — nenhum dos 7 merges introduziu nova falha nos gates bloqueantes",
     "gates_bloqueantes_todos_green": true,
     "producao_supabase": {
-      "status": "INALTERADO",
-      "evidencia": "Nenhum dos 7 PRs mergeados toca supabase/migrations/ nem edge functions — verificado via list_pr_files de cada PR. MCP Supabase indisponível (ERR_PROXY_TUNNEL) nesta sessão; evidência alternativa: diffs dos 7 PRs não contêm DDL nem deploy de edge function.",
+      "status": "INALTERADO — CONFIRMADO VIA MCP",
+      "evidencia": "mcp__SUPABASE_-_GEST_O_DE_PRODUTOS__list_migrations retornou 2549 migrations. Última: 20261025002500 (analyze_tables_p03, 2026-10-25). Nenhuma migration com timestamp posterior a 2026-10-27 (data dos 7 merges). Confirmado: nenhum dos 7 PRs mergeados aplicou DDL em produção.",
       "arquivos_alterados_pelos_7_merges": [
         "#2610: e2e/personalization.spec.ts",
         "#2590-2593: .github/workflows/codeql.yml (codeql-action SHA pins)",
