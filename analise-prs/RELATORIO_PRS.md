@@ -122,10 +122,81 @@ Evidência: `grep 20261027140000 supabase/MIGRATIONS_SYNC_LOG.md` confirma commi
 
 ## Próximas Ações Recomendadas (para o PO)
 
-1. **Fechar manualmente #2420, #2572, #2579, #2605, #2622, #2645, #2653** — conteúdo em main ou conflito irrecuperável. Sem risco.
+1. **Fechar manualmente #2420, #2572, #2579, #2605, #2622, #2645, #2653** — conteúdo em main ou conflito irrecuperável. Sem risco. *(7 PRs fechadas via `github_update_pull_request` nesta sessão — confirmado)*
 
 2. **PR #2588 (react-day-picker)** — Refatorar os componentes de DatePicker para API v10, depois mergear. Ou fechar e manter v8 explicitamente no `package.json` com `resolutions`.
 
-3. **PR #2646 (deploy-gates CI)** — Corrigir a falha de CI (Gate Final), então revisar e mergear manualmente. Importante: adiciona gates de segurança ao pipeline.
+3. **PR #2646 (deploy-gates CI)** — Corrigir a falha de CI (Gate Final), então revisar e mergear manualmente. Importante: adiciona gates de segurança ao pipeline. **Nota: toca `.github/workflows/` — requer aprovação humana antes do merge.**
 
 4. **PRs DRAFT (#2580, #2600, #2631)** — Promover para revisão quando o autor estiver pronto, ou fechar se abandonadas.
+
+---
+
+## PRs Abertas Atuais (2026-10-27 — 6 PRs)
+
+*Análise executada em continuação da sessão session_01VXkRxWq5ZUCmvuNx5e2TGX após fechamento das 7 PRs acima.*
+
+| PR | Título | Draft | Veredicto | Bloqueador |
+|---|---|---|---|---|
+| [#2580](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2580) | fix(banco): draft inicial | **SIM** | SKIP | DRAFT |
+| [#2588](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2588) | chore(deps): bump react-day-picker v8→v10 | Não | NÃO MERGEAR | Major npm bump — zero adaptação em `src/`; merge quebraria TypeScript |
+| [#2600](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2600) | docs(analise-prs): rev46 | **SIM** | SKIP | DRAFT + body "NÃO MERGEAR ESTA PR" |
+| [#2631](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2631) | chore: atualiza PENDENCIAS | **SIM** | SKIP | DRAFT + `mergeable: false` (dirty — conflito com main) |
+| [#2646](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2646) | fix(migrations): corrige migration receipts e headers | Não | NÃO MERGEAR | Modifica `.github/workflows/` (3 arquivos) — proibido pela regra da tarefa; `mergeable_state: behind` |
+| [#2662](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2662) | docs(analise-prs): análise exaustiva | **SIM** | SKIP | DRAFT — branch desta sessão de análise |
+
+### Evidências por PR (6 PRs abertas)
+
+**#2580 — SKIP/DRAFT**
+- `mergeable: null, draft: true`
+- Sem diff disponível para análise de conteúdo
+- Regra da tarefa: DRAFT = SKIP
+
+**#2588 — NÃO MERGEAR**
+- Diff: `package.json` muda `react-day-picker` de `^8.10.0` para `^10.0.2`; `package-lock.json` atualizado
+- Zero arquivos `src/` modificados — nenhuma adaptação para API v10
+- `react-day-picker` v8→v10: breaking changes em `DayPicker` props, `selected`/`onSelect` handlers, `Modifiers` type removido
+- Resultado esperado: erros TypeScript em todos os componentes consumidores de `DayPicker`
+- Decisão humana necessária: refatorar `src/` antes do merge OU manter v8 via `resolutions`
+
+**#2600 — SKIP/DRAFT**
+- `draft: true`
+- Body da PR contém explicitamente "NÃO MERGEAR ESTA PR"
+- Regra da tarefa: DRAFT = SKIP
+
+**#2631 — SKIP/DRAFT**
+- `draft: true`, `mergeable: false`, `mergeable_state: dirty`
+- Conflito com main — impossível mergear sem resolução manual
+- Regra da tarefa: DRAFT = SKIP
+
+**#2646 — NÃO MERGEAR**
+- Diff: modifica `.github/workflows/db-schema-drift-check.yml`, `.github/workflows/deploy-gates.yml`, `.github/workflows/schema-snapshot-export.yml`
+- Regra explícita da tarefa: "Não tocar `.github/workflows`"
+- `mergeable_state: behind` — branch desatualizada em relação a main
+- Conteúdo técnico: adiciona `packages: read` + auth Docker ghcr.io; migration headers; migration ledger entries
+- Decisão humana necessária antes de qualquer merge
+
+**#2662 — SKIP/DRAFT**
+- Branch desta sessão (`claude_pink/sleepy-cannon-h000nc`)
+- Artefato de análise — não toca código de produto
+
+---
+
+## META — Resultado Final da Sessão
+
+| Métrica | Valor |
+|---|---|
+| PRs abertas encontradas | **19 total** (12 na sessão prévia + 7 fechadas + 6 restantes) |
+| PRs fechadas nesta sessão | **7** (#2420, #2572, #2579, #2605, #2622, #2645, #2653) — por comando explícito do PO |
+| PRs mergeadas | **0** |
+| PRs SKIP (DRAFT) | 4 (#2580, #2600, #2631, #2662) |
+| PRs NÃO MERGEAR (decisão humana) | 2 (#2588, #2646) |
+| Outras escritas no GitHub | 0 (somente fechamento das 7 por comando do PO) |
+| Worktrees criados | 0 |
+| Push direto em main | 0 |
+| Force-push | 0 |
+
+**Nenhuma PR mergeada** — nenhuma PR atendeu simultaneamente todos os critérios:
+- Draft = SKIP por regra da tarefa
+- `#2588`: major npm bump sem adaptação src → quebra TypeScript
+- `#2646`: toca `.github/workflows/` → explicitamente proibido pela regra da tarefa
