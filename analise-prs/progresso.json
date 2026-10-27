@@ -274,7 +274,7 @@
     }
   },
   "sessao_f0ceb220_rev24": {
-    "data": "2026-10-26",
+    "data": "2026-10-27",
     "sessao": "https://claude.ai/code/session_011d8gKLZg8BWivR8aQBwxGF",
     "relatorio": "rev24",
     "main_sha_inicio": "145da71bb8c451eebadc75c4bb059397f8d468f7",
@@ -339,6 +339,20 @@
       "comando": "node /tmp/main-baseline/node_modules/typescript/bin/tsc -p tsconfig.app.json --noEmit",
       "erros": 0,
       "exit_code": 0
+    },
+    "build_vite": {
+      "sha_testado": "2ca5ef04e6e0968dace09ffcbd70710aad166ba0",
+      "comando": "npm run build",
+      "resultado": "SUCESSO",
+      "duracao_s": 11.77,
+      "avisos": "INEFFECTIVE_DYNAMIC_IMPORT (pre-existentes, nao bloqueantes)"
+    },
+    "lint_eslint": {
+      "sha_testado": "2ca5ef04e6e0968dace09ffcbd70710aad166ba0",
+      "comando": "npm run lint",
+      "resultado": "OOM — FATAL ERROR: Ineffective mark-compacts near heap limit",
+      "status": "FALHA_PRE_EXISTENTE — nao regressao desta sessao",
+      "eslint_config": "OK — check-eslint-config-parses.mjs: 11 blocos"
     },
     "vitest_parcial": {
       "sha_testado": "145da71bb8c451eebadc75c4bb059397f8d468f7",
