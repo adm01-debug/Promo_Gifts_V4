@@ -233,28 +233,33 @@
     "mergeados_owner": [
       {
         "number": 2594,
-        "sha": "mergeado_pelo_owner",
-        "titulo": "fix: workflow actions/setup-node"
+        "sha": "f2f8c3d6e316cef8802faf42a64f9f4005970b6a",
+        "titulo": "chore(ci)(deps): bump actions/setup-node from 4 to 7",
+        "merged_at": "2026-10-27T15:56:14Z"
       },
       {
         "number": 2648,
-        "sha": "mergeado_pelo_owner",
-        "titulo": "unknown"
+        "sha": "ed87db31b5ce630378f74766adcdcc26edfb0bd2",
+        "titulo": "docs: atualiza PENDENCIAS.md §12 com diagnóstico exato do schema-snapshot-export",
+        "merged_at": "2026-10-27T15:50:19Z"
       },
       {
         "number": 2649,
-        "sha": "mergeado_pelo_owner",
-        "titulo": "unknown"
+        "sha": "61a0cfa1714661f752273cf864b335eb217ea134",
+        "titulo": "fix(e2e): corrige falhas em admin-critical-routes e personalization-auth-redirect",
+        "merged_at": "2026-10-27T15:54:20Z"
       },
       {
         "number": 2650,
-        "sha": "mergeado_pelo_owner",
-        "titulo": "unknown"
+        "sha": "f0689734b38e79edda24cf80f5df19abae941015",
+        "titulo": "fix(e2e): corrige testids e landing state em catalog.spec e kit-builder.spec",
+        "merged_at": "2026-10-27T16:21:21Z"
       },
       {
         "number": 2652,
-        "sha": "mergeado_pelo_owner",
-        "titulo": "unknown"
+        "sha": "22ba938e02ae48eee34d77176a4d5dee6cf8e14b",
+        "titulo": "docs(e15): recibo aplicação migration 20261027140000",
+        "merged_at": "2026-10-27T16:40:44Z"
       }
     ],
     "prs_open_restantes": [
