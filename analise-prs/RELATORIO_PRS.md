@@ -1,7 +1,7 @@
 # RELATORIO_PRS.md — Análise Exaustiva de PRs Abertas
 **Sessão:** session_011d8gKLZg8BWivR8aQBwxGF (fork f0ceb220)
-**Rev:** 81
-**Data:** 2026-10-27T17:42Z (Gate Final verificado)
+**Rev:** 82
+**Data:** 2026-10-27T17:50Z (PR #2656 adicionado)
 **Branch de entrega:** `claude_04/optimistic-bohr-qplx94` (PR #2600 — NUNCA MERGEAR)
 
 ---
@@ -41,8 +41,8 @@ Gate Final em SHA `a0560fdc62` completou às **17:42:15Z** com **conclusão: fai
 
 ## RESUMO EXECUTIVO
 
-**Total PRs analisadas nesta sessão: 14**
-- 12 PRs abertas (open) no momento da análise
+**Total PRs analisadas nesta sessão: 15**
+- 13 PRs abertas (open) ao final da análise
 - 2 PRs mergeadas durante a sessão por outra sessão (session_01Knr9enFAok62bHihBK1UUP)
 
 **Contagem por veredito:**
@@ -52,7 +52,7 @@ Gate Final em SHA `a0560fdc62` completou às **17:42:15Z** com **conclusão: fai
 | MERGEADA_SESSAO_EXTERNA | 2 | #2654, #2655 |
 | DECISAO_PO | 6 | #2420, #2579, #2580, #2588, #2622, #2646 |
 | BLOQUEADA/SUPERSEDED | 4 | #2572, #2605, #2645, #2653 |
-| DRAFT_NOMERGE | 1 | #2631 |
+| DRAFT_NOMERGE | 2 | #2631, #2656 |
 | NUNCA_MERGEAR | 1 | #2600 (delivery branch) |
 
 **Merges autônomos por esta sessão: 0**
@@ -86,7 +86,7 @@ Gate Final em SHA `a0560fdc62` completou às **17:42:15Z** com **conclusão: fai
 - **Sessão autora:** session_01Knr9enFAok62bHihBK1UUP
 - **merged_at:** 2026-10-27T17:31:48Z
 - **merge_commit_sha:** `a0560fdc62744c6bf4ba182914cc76dec06aecb1` (= novo main HEAD)
-- **Gate Final:** ❌ FAILURE (run 40551464429, 17:42:15Z) — Gate 0.5 qs moderate advisory (não causado por este PR)
+- **Gate Final:** ❌ FAILURE (run 40551464429, 17:42:15Z) — Gate 0.5 qs moderate advisory (não causado por #2655)
 - **Produção:** NÃO VERIFICADO (ERR_PROXY_TUNNEL)
 - **Veredito:** MERGEADA_SESSAO_EXTERNA
 
@@ -160,6 +160,16 @@ Gate Final em SHA `a0560fdc62` completou às **17:42:15Z** com **conclusão: fai
 - **Conteúdo:** apenas docs — válido quando removido DRAFT
 - **Veredito:** DRAFT_NOMERGE
 
+### PR #2656 — fix(ci): adiciona qs ao allowlist do gate de dependências (GHSA-6pq8-jhm2-2vcw)
+- **Estado:** DRAFT, `mergeable_state: "blocked"` (DRAFT ativo)
+- **Branch:** `claude/fix-dep-audit-qs-261027-1748` (session_01Knr9enFAok62bHihBK1UUP)
+- **Head SHA:** `a715af7f9fffb0df194f1b8f63b950390333bd66`
+- **Bloqueadores:** DRAFT + REGRA#10 (branch de outra sessão)
+- **Conteúdo:** +1 linha a `ALLOWED_LHCI_PACKAGES` em `scripts/check-dependency-audit.mjs` — adiciona `'qs'` ao allowlist
+- **Importância:** **resolve Gate Final FAILURE** — `qs` é transitive dep de `@lhci/cli → express → qs@6.16.0` (CI-only, advisory moderate GHSA-6pq8-jhm2-2vcw, CVSS 5.3, DoS via stringify — inacessível por input de usuário)
+- **Ação necessária (DECISAO_PO):** remover DRAFT + aguardar CI verde + mergear
+- **Veredito:** DRAFT_NOMERGE
+
 ---
 
 ## CLUSTER 5 — NUNCA MERGEAR
@@ -186,7 +196,7 @@ Gate Final em SHA `a0560fdc62` completou às **17:42:15Z** com **conclusão: fai
 
 ```
 analise-prs/
-├── RELATORIO_PRS.md           (este arquivo — rev81)
+├── RELATORIO_PRS.md           (este arquivo — rev82)
 ├── baseline/
 │   ├── eslint-count.txt       (baseline ESLint via CI)
 │   ├── typecheck-errors.txt   (baseline TSC exit:0)
@@ -205,7 +215,8 @@ analise-prs/
 │   ├── PR-2646.md
 │   ├── PR-2653.md
 │   ├── PR-2654.md             (atualizado: MERGEADA_SESSAO_EXTERNA)
-│   └── PR-2655.md             (novo: MERGEADA_SESSAO_EXTERNA)
+│   ├── PR-2655.md             (novo: MERGEADA_SESSAO_EXTERNA)
+│   └── PR-2656.md             (novo: DRAFT_NOMERGE — fix Gate 0.5 qs advisory)
 └── prs.json / prs.csv
 ```
 
@@ -213,12 +224,15 @@ analise-prs/
 
 ## META CUMPRIDA
 
-- **Total PRs analisadas:** 14 (12 open + 2 mergeadas durante a sessão)
-- **Total = analisadas:** 14 = 14 ✅
+- **Total PRs analisadas nesta sessão:** 15 (13 open ao final + 2 mergeadas durante a sessão)
+- **PRs open ao final:** 13 (#2420, #2572, #2579, #2580, #2588, #2600, #2605, #2622, #2631, #2645, #2646, #2653, #2656)
+- **Total = analisadas:** 15 = 15 ✅
 - **Merges autônomos por esta sessão:** 0
 - **Merges externos durante a sessão:**
   - PR #2654 → SHA `4c7ecb260da691b5cd436700380b819d0d936961` — Gate Final SUCCESS ✅
   - PR #2655 → SHA `a0560fdc62744c6bf4ba182914cc76dec06aecb1` — Gate Final ❌ FAILURE (Gate 0.5 qs advisory — não causado por #2655)
+- **PRs bloqueadas por REGRA#10 (conflito em branch de outra sessão):** #2572, #2605, #2645, #2653 — escrita proibida
+- **Gate Final main HEAD:** FAILURE — aguarda merge de PR #2656 (DRAFT — requer ação do PO)
 - **Outras escritas no GitHub:** nenhuma (além do push ao delivery branch)
 - **Worktrees:** nenhum worktree criado nesta sessão
 - **Produção:** NÃO VERIFICADO (ERR_PROXY_TUNNEL toda a sessão)

@@ -39,4 +39,6 @@ number,title,state,verdict,blocked_reason,sha_merge,merged_by
 2650,"fix(e2e): corrige testids e landing state em catalog.spec e kit-builder.spec",closed,MERGEADO_AUTONOMO,,f0689734b38e79edda24cf80f5df19abae941015,session_011d8gKLZg8BWivR8aQBwxGF
 2652,"docs(e15): recibo aplicacao migration 20261027140000",closed,MERGEADO_AUTONOMO,,22ba938e02ae48eee34d77176a4d5dee6cf8e14b,session_011d8gKLZg8BWivR8aQBwxGF
 2653,"docs(analise-prs): inventario final 17 PRs + regras-de-negocio.md",open,BLOQUEADA,"CONFLICT + REGRA#10 — branch claude/quirky-keller-owezvt de outra sessao",,
-2654,"fix(ci): adiciona xbz-image-uploader ao SERVER_ONLY_ALLOWLIST do CORS gate",open,DRAFT_NOMERGE,"PR em estado DRAFT",,
+2654,"fix(ci): xbz-image-uploader → SERVER_ONLY_ALLOWLIST (CORS gate)",closed,MERGEADA_SESSAO_EXTERNA,,4c7ecb260da691b5cd436700380b819d0d936961,session_01Knr9enFAok62bHihBK1UUP
+2655,"fix(tests): xbz-image-uploader descriptor with pendingDeploy=true",closed,MERGEADA_SESSAO_EXTERNA,,a0560fdc62744c6bf4ba182914cc76dec06aecb1,session_01Knr9enFAok62bHihBK1UUP
+2656,"fix(ci): adiciona qs ao allowlist do gate de dependencias (GHSA-6pq8-jhm2-2vcw)",open,DRAFT_NOMERGE,"DRAFT + REGRA#10 (branch de session_01Knr9enFAok62bHihBK1UUP — fixes Gate 0.5 qs advisory)",,

@@ -1,17 +1,20 @@
 {
   "session_id": "session_011d8gKLZg8BWivR8aQBwxGF",
-  "revision": "rev78",
+  "revision": "rev82",
   "date": "2026-10-27",
   "status": "SESSAO_COMPLETA",
   "main_head_entrada": "df18546dfd76d1bea7ea5873257b668d128d8df3",
-  "main_head_final": "22ba938e02ae48eee34d77176a4d5dee6cf8e14b",
-  "main_head_atual": "16ad57c66e619100f76c113653cdab7a20a7871a",
+  "main_head_final": "a0560fdc62744c6bf4ba182914cc76dec06aecb1",
+  "main_head_atual": "a0560fdc62744c6bf4ba182914cc76dec06aecb1",
   "gate_final_atual": {
-    "sha": "22ba938e02ae48eee34d77176a4d5dee6cf8e14b",
-    "nota": "docs-only PR #2652; aguardando CI"
+    "sha": "a0560fdc62744c6bf4ba182914cc76dec06aecb1",
+    "run_id": "40551464429",
+    "conclusion": "failure",
+    "falha": "Gate 0.5 - Dependency Audit — qs: unexpected moderate advisory GHSA-6pq8-jhm2-2vcw",
+    "causa": "nova advisory npm para qs (transitive dep de @lhci/cli → express → qs@6.16.0); nao causado por PR #2655"
   },
   "gate_final_rev73": {
-    "sha": "5d049ef118f3eb84843da44bd2efc70ee56ca1",
+    "sha": "5d049ef118f3eb84843da44bd8d2efc70ee56ca1",
     "run_id": "122257161951",
     "conclusion": "success"
   },
@@ -20,9 +23,9 @@
     "run": "40500183634",
     "conclusion": "success"
   },
-  "prs_analisados_esta_sessao": 45,
+  "prs_analisados_esta_sessao": 47,
   "open_prs_count_verificado": 13,
-  "open_prs_verificado_em": "2026-10-27T17:30:00Z",
+  "open_prs_verificado_em": "2026-10-27T17:49:00Z",
   "verdicts": {
     "MERGEADA_AUTONOMA": [
       "2610",
@@ -52,7 +55,9 @@
       "2647",
       "2648",
       "2649",
-      "2587"
+      "2587",
+      "2654",
+      "2655"
     ],
     "FECHADA_EXTERNA": [
       "2612",
@@ -77,7 +82,7 @@
       "2580",
       "2600",
       "2631",
-      "2654"
+      "2656"
     ],
     "SUPERSEDED": [
       "2645"
@@ -91,11 +96,11 @@
     "2588": "Breaking changes API react-day-picker 8->10; requer migracao de uso",
     "2600": "DELIVERY BRANCH desta sessao — NUNCA MERGEAR",
     "2605": "Dirty 12+ conflitos; 100% supersedada por #2614+#2616+#2620 ja mergeados",
-    "2622": "REGRA#8: rollbacks/ DDL de producao — exige aprovacao PO",
+    "2622": "REGRA#8: rollbacks/ DDL de producao — exige aprovacao do PO",
     "2631": "DRAFT — nao mergeavel",
-    "2646": "REGRA#8: supabase/migrations/ — exige aprovacao PO",
-    "2653": "CONFLICT + REGRA#10 — branch claude/quirky-keller-owezvt de outra sessao",
-    "2654": "DRAFT — nao mergeavel (CORS allowlist xbz-image-uploader)"
+    "2646": "REGRA#8: supabase/migrations/ — exige aprovacao do PO",
+    "2653": "CONFLICT + REGRA#10 (branch outra sessao claude/quirky-keller-owezvt — superseded)",
+    "2656": "DRAFT + REGRA#10 (branch session_01Knr9enFAok62bHihBK1UUP — fixes Gate 0.5 qs advisory)"
   },
   "baseline": {
     "vitest": "Gate 2 CI — SUCCESS em 1ce29cf2f (run #40482105056) — autoritativo",
@@ -135,5 +140,5 @@
     "prs_analisados": "39 -> 40 (adicionado #2594 como MERGEADA_AUTONOMA)",
     "open_prs_count": "15 -> 14 (#2594 mergeada)"
   },
-  "nota": "rev78 (fork session f0ceb220): #2587 mergeada externamente (SHA 16ad57c66e — zustand 4->5; Joaquim decidiu mergear). #2653 e #2654 novas PRs identificadas e analisadas. 45 PRs catalogadas. 13 PRs abertas. 0 merges autonomos possiveis nesta rodada. main HEAD: 16ad57c66e (#2587). STOP-HOOK: META CUMPRIDA — total_abertas(13) verificadas; 0 CLEAN sem bloqueio."
+  "nota": "rev82 (fork session f0ceb220): #2654 mergeada externamente (SHA 4c7ecb260d — CORS gate fix, Gate Final SUCCESS). #2655 mergeada externamente (SHA a0560fdc62 — pendingDeploy=true, Gate Final FAILURE por qs advisory). #2656 nova PR DRAFT por session_01Knr9enFAok62bHihBK1UUP — fix Gate 0.5 qs advisory. 47 PRs catalogadas. 13 PRs abertas ao final da sessao. 0 merges autonomos nesta rodada. main HEAD: a0560fdc62 — Gate Final FAILURE (Gate 0.5 qs advisory GHSA-6pq8-jhm2-2vcw). Producao NAO VERIFICADO (ERR_PROXY_TUNNEL)."
 }
