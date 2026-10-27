@@ -94,6 +94,46 @@ Estas PRs têm Gate Final com falha por base stale — os autores precisam fazer
 
 ---
 
+## ⚠️ SEGURANÇA CRÍTICA — PR #2622 (adicionado 2026-10-27)
+
+O diff completo da PR #2622 (evidência: `analise-prs/baseline/pr-diffs-summary.json`) revelou:
+
+**`supabase/rollbacks/20261027200000_rollback.sql`** contém:
+- `DROP POLICY IF EXISTS deny_all ON supplier_stricker.*` — remove políticas de segurança em **17 tabelas**
+- `ALTER TABLE supplier_stricker.* DISABLE ROW LEVEL SECURITY` — desativa RLS em **17 tabelas**
+
+Este arquivo é um rollback de referência (nunca aplicado diretamente pelo CI), mas sua presença na PR **sem revisão de segurança** é um risco.
+
+**Ação necessária antes de qualquer merge da PR #2622:**
+1. PO/Security deve revisar e aprovar explicitamente o rollback `20261027200000_rollback.sql`
+2. Se aprovado: autor faz rebase + re-run CI → Gate Final SUCCESS → merge
+3. Se reprovado: remover o arquivo ou reescrever sem o DISABLE RLS antes do merge
+
+**Status atual:** PR #2622 tem conflito de merge — não pode ser mergeada de qualquer forma antes do rebase.
+
+---
+
+## PRs abertas atuais (inventário 2026-10-27T18:30Z)
+
+12 PRs abertas em `adm01-debug/Promo_Gifts_V4`:
+
+| PR | Veredicto | Ação |
+|----|-----------|------|
+| [#2420](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2420) | AGUARDAR_APROVACAO | Body diz "AGUARDANDO APROVAÇÃO" — humano deve aprovar |
+| [#2572](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2572) | FECHAR | Docs + src stale de sessão anterior — fechar sem merge |
+| [#2579](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2579) | NAO_MERGEAR | Release-please bot, base stale — fechar sem merge |
+| [#2580](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2580) | DRAFT | Aguardar autor promover |
+| [#2587](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2587) | DECISAO_HUMANA | Zustand 4→5 major — PO decide |
+| [#2588](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2588) | DECISAO_HUMANA | react-day-picker 8→10 double major — PO decide |
+| [#2600](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2600) | NAO_MERGEAR | DRAFT + body diz NÃO MERGEAR — fechar sem merge |
+| [#2605](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2605) | CONFLITO_PENDENTE_REBASE | Gate OK — autor faz rebase + CI re-run |
+| [#2622](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2622) | CONFLITO_SEGURANCA | Gate OK mas conflito + DISABLE RLS — revisão security ANTES do rebase |
+| [#2631](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2631) | DRAFT | Aguardar autor promover |
+| [#2645](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2645) | AGUARDAR_APROVACAO | E15 receipt + sem CI + conflito — owner deve review |
+| [#2646](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2646) | CI_FALHOU | Gate Final FAILURE + conflito — corrigir CI + rebase |
+
+---
+
 ## Resumo de o que Claude já fez
 
 | Item | Status |
@@ -107,3 +147,6 @@ Estas PRs têm Gate Final com falha por base stale — os autores precisam fazer
 | Gate Final em todos os merges de Claude: success | ✅ VERIFICADO |
 | Gate E40 pré-existente documentado com evidências de arquivo | ✅ CONCLUÍDO |
 | Worktrees extras removidos | ✅ NENHUM EXTRA (só o primário) |
+| 16 PRs do inventário atual analisadas (reconciliação) | ✅ CONCLUÍDO |
+| 100% diffs lidos para todas as 12 PRs abertas | ✅ CONCLUÍDO (agente `a865c139fa7a98922`) |
+| PRs mergeadas pelo owner durante análise (#2594, #2648, #2649, #2650) | ✅ DOCUMENTADO |

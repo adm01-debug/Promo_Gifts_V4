@@ -46,23 +46,29 @@ Esta sessão analisou exaustivamente todas as PRs abertas do repositório `adm01
 | [#2646](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2646) | CI_FALHOU | ❌ FAILURE (40531570681) | **SIM** | Gate Final FAILURE + conflito — corrigir CI e rebase |
 | [#2648](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2648) | MERGEADA_PELO_OWNER | SUCCESS | não | Mergeada pelo owner em 15:50Z — PENDENCIAS.md docs |
 | [#2649](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2649) | MERGEADA_PELO_OWNER | SUCCESS | não | Mergeada pelo owner em 15:54Z — fix e2e admin-critical |
+| [#2650](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2650) | MERGEADA_PELO_OWNER | SUCCESS | não | Mergeada pelo owner em 16:21Z — fix E2E catalog+kit-builder testids |
 
-### Contagem por Veredicto (15 PRs — inventário de reconciliação)
+### Contagem por Veredicto (16 PRs — inventário final com #2650)
 
 | Veredicto | Contagem | PRs |
 |-----------|---------|-----|
-| MERGEADA_PELO_OWNER | 3 | #2594, #2648, #2649 |
+| MERGEADA_PELO_OWNER | 4 | #2594, #2648, #2649, #2650 |
 | DECISAO_HUMANA | 2 | #2587, #2588 |
 | AGUARDAR_APROVACAO | 2 | #2420, #2645 |
 | NAO_MERGEAR | 2 | #2579, #2600 |
-| CONFLITO_PENDENTE_REBASE | 2 | #2605, #2622 |
+| CONFLITO_PENDENTE_REBASE | 1 | #2605 |
+| CONFLITO_PENDENTE_REBASE_SEGURANCA | 1 | #2622 |
 | DRAFT | 2 | #2580, #2631 |
 | CI_FALHOU | 1 | #2646 |
 | FECHAR | 1 | #2572 |
 
-**Total inventário: 15 ✓ | Analisadas: 15 ✓ | Mergeadas por Claude: 0**
+**Total inventário: 16 ✓ | Analisadas: 16 ✓ | Mergeadas por Claude: 0 | Mergeadas pelo owner: 4**
 
-> **Nota:** PR #2650 surgiu após o inventário de reconciliação (18:00Z) — dossier em `dossies/PR-2650.md`. Estado DRAFT, base no main atual.
+> **Nota:** PR #2650 surgiu após o inventário de reconciliação (18:00Z) e foi mergeada pelo owner em 16:21:21Z (merge SHA `f0689734`). Main atual = `f0689734b38e79edda24cf80f5df19abae941015`.
+
+> **⚠️ Segurança:** PR #2622 reclassificada para CONFLITO_PENDENTE_REBASE_SEGURANCA — rollback `20261027200000` contém DISABLE RLS em 17 tabelas `supplier_stricker.*`. Requer aprovação do PO/Security antes de qualquer merge.
+
+> **⚠️ Nota PR #2572:** Reclassificada de "puramente docs" para FECHAR_COM_RESSALVA — diff completo revelou src/ + supabase/ + workflows além de docs.
 
 ---
 

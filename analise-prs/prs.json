@@ -2,20 +2,24 @@
   "inventario_atual": {
     "data": "2026-10-27",
     "sessao": "session_012WyySbh2tj8vhRQLBf3mHo",
-    "main_sha": "61a0cfa1714661f752273cf864b335eb217ea134",
-    "total_analisadas": 15,
-    "nota": "15 PRs abertas no inventário de reconciliação 2026-10-27T18:00Z. #2594, #2648, #2649 foram mergeadas pelo owner durante a análise. #2650 surgiu após o inventário inicial.",
+    "main_sha": "f0689734b38e79edda24cf80f5df19abae941015",
+    "main_sha_anterior": "61a0cfa1714661f752273cf864b335eb217ea134",
+    "total_analisadas": 16,
+    "nota": "15 PRs abertas no inventário de reconciliação 2026-10-27T18:00Z. #2594, #2648, #2649 foram mergeadas pelo owner durante a análise. #2650 surgiu após o inventário e foi mergeada pelo owner em 2026-10-27T16:21:21Z. Total 16 PRs analisadas, 12 ainda abertas.",
     "numeros_inventario_reconciliacao": [2420, 2572, 2579, 2580, 2587, 2588, 2594, 2600, 2605, 2622, 2631, 2645, 2646, 2648, 2649],
-    "numeros_ainda_open": [2420, 2572, 2579, 2580, 2587, 2588, 2600, 2605, 2622, 2631, 2645, 2646, 2650]
+    "numeros_ainda_open": [2420, 2572, 2579, 2580, 2587, 2588, 2600, 2605, 2622, 2631, 2645, 2646],
+    "pr2650_nota": "Surgiu após inventário inicial; mergeada pelo owner em 2026-10-27T16:21:21Z (merge SHA f0689734). Main passou de 61a0cfa1 para f0689734."
   },
   "contagem_por_veredicto": {
-    "MERGEADA_PELO_OWNER": 3,
-    "DECISAO_HUMANA": 3,
-    "CONFLITO_PENDENTE_REBASE": 2,
-    "DRAFT": 4,
+    "MERGEADA_PELO_OWNER": 4,
+    "DECISAO_HUMANA": 2,
+    "CONFLITO_PENDENTE_REBASE": 1,
+    "CONFLITO_PENDENTE_REBASE_SEGURANCA": 1,
+    "DRAFT": 2,
     "AGUARDAR_APROVACAO": 2,
     "CI_FALHOU": 1,
     "NAO_MERGEAR": 2,
+    "FECHAR": 1,
     "MERGEADA_CLAUDE": 0
   },
   "prs": {
@@ -157,8 +161,22 @@
       "merged_at": "2026-10-27T15:54:20Z",
       "merge_sha": "61a0cfa1714661f752273cf864b335eb217ea134",
       "mergeado_por": "adm01-debug",
-      "nota": "Este merge resultou no SHA de main atual 61a0cfa1 — baseline desta sessão.",
+      "nota": "Este merge resultou no SHA de main 61a0cfa1 no momento da análise inicial.",
       "motivo": "Mergeada pelo owner durante a análise desta sessão."
+    },
+    "2650": {
+      "veredicto": "MERGEADA_PELO_OWNER",
+      "titulo": "fix(e2e): catalog + kit-builder testid updates",
+      "head": "acdaa65b",
+      "branch": "claude/fix-e2e-catalog-kitbuilder-261027-1548",
+      "arquivos": 2,
+      "gate_final": "SUCCESS",
+      "gate_final_run": 40536630821,
+      "merged_at": "2026-10-27T16:21:21Z",
+      "merge_sha": "f0689734b38e79edda24cf80f5df19abae941015",
+      "mergeado_por": "adm01-debug",
+      "nota": "Este merge resultou no SHA de main atual f0689734. PR saiu de DRAFT antes do merge. Gate Final SUCCESS confirmado por esta sessão.",
+      "motivo": "Mergeada pelo owner durante a análise desta sessão. 2 arquivos de E2E (catalog.spec.ts + kit-builder.spec.ts) com correções de data-testids."
     }
   }
 }
