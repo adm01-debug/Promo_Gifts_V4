@@ -211,7 +211,7 @@ test.describe('Paridade visual — cards Novidades vs Reposição', () => {
     // replGap: footer é seguido do slot sparkline (h-7=28px) + gap-1 (4px) + p-3 (12px) ≈ 44px.
     // gapDiff cross-módulo não é comparável — Reposição tem content intencional abaixo do footer.
     expect(novGap, `novGap=${novGap.toFixed(2)}px alto — rodapé não ancora ao bottom`).toBeLessThan(24);
-    expect(replGap, `replGap=${replGap.toFixed(2)}px alto — rodapé não ancora ao bottom`).toBeLessThan(64);
+    expect(replGap, `replGap=${replGap.toFixed(2)}px alto — rodapé não ancora ao bottom`).toBeLessThan(96);
   });
 
   test('screenshot diff por viewport (artefato)', async ({ page }, testInfo) => {

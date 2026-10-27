@@ -29,12 +29,17 @@ vi.mock('@/lib/logger', () => ({
 
 describe('readSharedReloadBudget / bumpSharedReloadBudget (puro)', () => {
   it('URL limpa: bump seta __bare=1 e __bart=agora, retorna true', () => {
-    const u = new URL('https://x.test/carrinhos?status=draft');
-    const now = Date.now();
-    expect(bumpSharedReloadBudget(u)).toBe(true);
-    expect(u.searchParams.get('__bare')).toBe('1');
-    expect(u.searchParams.get('__bart')).toBe(String(now));
-    expect(u.searchParams.get('status')).toBe('draft'); // preserva outros params
+    vi.useFakeTimers();
+    try {
+      const u = new URL('https://x.test/carrinhos?status=draft');
+      const now = Date.now();
+      expect(bumpSharedReloadBudget(u)).toBe(true);
+      expect(u.searchParams.get('__bare')).toBe('1');
+      expect(u.searchParams.get('__bart')).toBe(String(now));
+      expect(u.searchParams.get('status')).toBe('draft'); // preserva outros params
+    } finally {
+      vi.useRealTimers();
+    }
   });
 
   it('2º bump dentro da janela: incrementa para 2 preservando __bart', () => {
@@ -55,12 +60,17 @@ describe('readSharedReloadBudget / bumpSharedReloadBudget (puro)', () => {
   });
 
   it('janela expirada (>20s): reseta para 1 com __bart novo', () => {
-    const firstAt = Date.now() - 25_000;
-    const u = new URL(`https://x.test/carrinhos?__bare=2&__bart=${firstAt}`);
-    const now = Date.now();
-    expect(bumpSharedReloadBudget(u)).toBe(true);
-    expect(u.searchParams.get('__bare')).toBe('1');
-    expect(u.searchParams.get('__bart')).toBe(String(now));
+    vi.useFakeTimers();
+    try {
+      const now = Date.now();
+      const firstAt = now - 25_000;
+      const u = new URL(`https://x.test/carrinhos?__bare=2&__bart=${firstAt}`);
+      expect(bumpSharedReloadBudget(u)).toBe(true);
+      expect(u.searchParams.get('__bare')).toBe('1');
+      expect(u.searchParams.get('__bart')).toBe(String(now));
+    } finally {
+      vi.useRealTimers();
+    }
   });
 
   it('readSharedReloadBudget não muta a URL (só leitura)', () => {

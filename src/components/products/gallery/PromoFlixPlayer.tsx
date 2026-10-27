@@ -652,7 +652,7 @@ export function PromoFlixPlayer({
       setIsMuted(video.muted);
       localStorage.setItem('promoflix_volume', video.volume.toString());
       if (suppressMutePersistRef.current && video.muted) {
-        suppressMutePersistRef.current = false;
+        // autoplay-forced mute — suppress persist; keep flag active so duplicate listeners also skip
       } else {
         suppressMutePersistRef.current = false;
         localStorage.setItem('promoflix_muted', video.muted.toString());
