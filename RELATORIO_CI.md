@@ -91,9 +91,17 @@ Inventário obtido via `github_list_workflow_runs` + `github_get_run_failure_sum
 |---|---|---|---|
 | `magazine-unit-tests.yml` | CORS gate: `xbz-image-uploader` sem allowlist (confirmado: run 40544232986, step CORS gate) | ✅ PR #2654 (`4c7ecb2`) já em main | Workflow re-rodará no próximo push em path vigiado |
 | `edge-integration-all.yml` | `validate-access` prod desatualizada | ✅ Deploy via `deploy-edge-functions.yml` run 350 (esta sessão) | Run 350 `pending` — aguarda aprovação do `environment: production` |
-| `edge-functions-drift-check.yml` | 106 funções com drift | PENDENCIAS.md | — |
-| `ci-security-drift.yml` | E2E: header intercept + catalog timeout | PENDENCIAS.md | — |
-| `e2e-swatch-quickview.yml` | 66.7% skip rate (min 10 não atingido) | PENDENCIAS.md | — |
-| `e2e.yml` | Cancelamento manual | PENDENCIAS.md | — |
-| `e2e-magazine-header.yml` | Navegação magazine após zustand v5 | PENDENCIAS.md | — |
-| `Running Copilot Code Review` | Bot externo | PENDENCIAS.md | — |
+| `deploy-gates.yml` (Gate 1 TypeScript) | react-day-picker v8→v10: `caption`→`month_caption`, `initialFocus` removido, `IconLeft/IconRight`→`Chevron` | ✅ Fix em commit `40cb1e2` (PR #2663) | **[Run #40601426870 — success](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40601426870)** |
+| `db-apply-migration.yml` | Migration `20261027160000` sem `-- Rollback:` header (preflight E15) | ✅ Header adicionado em commit `40cb1e2` | PO re-dispara `db-apply-migration.yml` com `version=20261027160000` |
+| `edge-functions-drift-check.yml` | 106 funções com drift | PENDENCIAS.md P1 | — |
+| `ci-security-drift.yml` | E2E: header intercept + catalog timeout | PENDENCIAS.md P2 | — |
+| `e2e-swatch-quickview.yml` | 66.7% skip rate (min 10 não atingido) | PENDENCIAS.md P3 | — |
+| `e2e.yml` | Cancelamento manual | PENDENCIAS.md P4 | — |
+| `e2e-magazine-header.yml` | Navegação magazine após zustand v5 | PENDENCIAS.md P5 | — |
+| `Running Copilot Code Review` | Bot externo | PENDENCIAS.md P6 | — |
+| `branch-protection-sentinel.yml` | Commit histórico sem PR — não reversível | PENDENCIAS.md P8 | — |
+| `ci-replenishment-module.yml` | Screenshot diff visual | PENDENCIAS.md P10 | — |
+
+**PR desta sessão:** https://github.com/adm01-debug/Promo_Gifts_V4/pull/2663  
+**Commit de fix:** `40cb1e219987` (react-day-picker v10 + migration rollback header)  
+**CI verde:** [Run #40601426870](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40601426870) — `conclusion: success` no merge commit `c4105c3` (PR tree com nossos fixes incluso)
