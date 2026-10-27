@@ -1,6 +1,6 @@
 {
   "session_id": "session_011d8gKLZg8BWivR8aQBwxGF",
-  "revision": "rev74",
+  "revision": "rev75",
   "date": "2026-10-27",
   "status": "SESSAO_COMPLETA",
   "main_head_entrada": "df18546dfd76d1bea7ea5873257b668d128d8df3",
@@ -22,15 +22,15 @@
     "run": "40500183634",
     "conclusion": "success"
   },
-  "prs_analisados_esta_sessao": 40,
-  "open_prs_count_verificado": 14,
-  "open_prs_verificado_em": "2026-10-27T15:56:13Z",
+  "prs_analisados_esta_sessao": 41,
+  "open_prs_count_verificado": 13,
+  "open_prs_verificado_em": "2026-10-27T16:10:00Z",
   "verdicts": {
     "MERGEADA_AUTONOMA": ["2610", "2615", "2616", "2620", "2627", "2628", "2636", "2637", "2594"],
-    "MERGEADA_SESSAO_EXTERNA": ["2597", "2599", "2603", "2604", "2621", "2625", "2630", "2632", "2633", "2635", "2638", "2647"],
+    "MERGEADA_SESSAO_EXTERNA": ["2597", "2599", "2603", "2604", "2621", "2625", "2630", "2632", "2633", "2635", "2638", "2647", "2648", "2649"],
     "FECHADA_EXTERNA": ["2612", "2619", "2629", "2634"],
-    "BLOQUEADA": ["2420", "2572", "2579", "2580", "2587", "2588", "2600", "2605", "2622", "2631", "2645", "2646", "2648", "2649"],
-    "DRAFT_NOMERGE": ["2580", "2600", "2631", "2648", "2649"]
+    "BLOQUEADA": ["2420", "2572", "2579", "2580", "2587", "2588", "2600", "2605", "2622", "2631", "2645", "2646", "2650"],
+    "DRAFT_NOMERGE": ["2580", "2600", "2631", "2650"]
   },
   "bloqueio_razoes": {
     "2420": "REGRA#8: rollbacks/ DDL de producao — exige aprovacao PO",
@@ -45,8 +45,7 @@
     "2631": "DRAFT — nao mergeavel",
     "2645": "Dirty — conflito com main (update_pr_branch 422); recibo migration E15; exige resolucao de conflito",
     "2646": "REGRA#8: supabase/migrations/ — exige aprovacao PO",
-    "2648": "DRAFT — nao mergeavel",
-    "2649": "DRAFT — nao mergeavel"
+    "2650": "DRAFT — nao mergeavel"
   },
   "baseline": {
     "vitest": "Gate 2 CI — SUCCESS em 1ce29cf2f (run #40482105056) — autoritativo",
@@ -66,11 +65,18 @@
   "tentativas_merge_bloqueadas": {
     "2645": "update_pr_branch retornou 422 merge conflict — nao mergeavel"
   },
+  "reconciliacao_rev74_rev75": {
+    "2648": "Corrigido DRAFT_NOMERGE -> MERGEADA_SESSAO_EXTERNA (mergeada externamente 2026-10-27T15:50:19Z SHA ed87db31b5ce630378f74766adcdcc26edfb0bd2)",
+    "2649": "Corrigido DRAFT_NOMERGE -> MERGEADA_SESSAO_EXTERNA (mergeada externamente 2026-10-27T15:54:20Z SHA 61a0cfa1714661f752273cf864b335eb217ea134)",
+    "2650": "Adicionado DRAFT_NOMERGE (PR nova criada 2026-10-27T15:49:51Z; fix(e2e) catalog+kit-builder)",
+    "prs_analisados": "40 -> 41 (adicionado #2650)",
+    "open_prs_count": "14 -> 13 (#2648 e #2649 mergeadas externamente; +#2650 nova DRAFT)"
+  },
   "reconciliacao_rev73_rev74": {
     "2594": "Corrigido BLOQUEADA -> MERGEADA_AUTONOMA (mergeada 2026-10-27T15:56 SHA f2f8c3d6)",
     "2645": "Atualizado bloqueio_razao: 'branch protection' -> 'Dirty — conflito com main'",
     "prs_analisados": "39 -> 40 (adicionado #2594 como MERGEADA_AUTONOMA)",
     "open_prs_count": "15 -> 14 (#2594 mergeada)"
   },
-  "nota": "rev74: #2594 mergeada autonomamente (SHA f2f8c3d6). #2645 bloqueada por conflito com main (update_pr_branch 422). 40 PRs catalogadas (9 autonomas + 12 externas + 4 fechadas + 14 bloqueadas + 1 delivery). 14 PRs abertas. Gate Final run 40535938677 em f2f8c3d6: queued (CI backlog — nao falhou). Ultimo SUCCESS confirmado: run 40522420231 em SHA 5d049ef1. STOP-HOOK: META CUMPRIDA — total_abertas(14) == total_analisadas_bloqueadas(14); contagens por veredito consistentes."
+  "nota": "rev75: #2648 e #2649 mergeadas externamente (SHA ed87db31 e 61a0cfa1). #2650 nova DRAFT. 41 PRs catalogadas (9 autonomas + 14 externas + 4 fechadas + 13 bloqueadas + 1 delivery). 13 PRs abertas. Gate Final run 40535938677 em f2f8c3d6: queued (CI backlog — nao falhou). Ultimo SUCCESS confirmado: run 40522420231 em SHA 5d049ef1. main HEAD: f2f8c3d6 (sem alteracao desde rev74). STOP-HOOK: META CUMPRIDA — total_abertas(13) == total_analisadas_bloqueadas(13); contagens por veredito consistentes."
 }

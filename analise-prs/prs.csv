@@ -34,5 +34,6 @@ number,title,state,verdict,blocked_reason,sha_merge,merged_by
 2645,"docs: recibo de aplicacao — 20261027140000 (E15)",open,BLOQUEADA,"Dirty — conflito com main; recibo migration E15; exige resolucao de conflito",,
 2646,"fix(migrations): cabecalho -- Rollback: nas migrations 20261027160000 e 20261027220000",open,BLOQUEADA,"supabase/migrations/ — REGRA#8: exige aprovacao do PO",,
 2647,"fix(ci): aumenta timeout swatch-quickview 40->90 min",closed,MERGEADO_SESSAO_EXTERNA,,5d049ef118f3eb84843da44bd8d2efc70ee56ca1,session_01Knr9enFAok62bHihBK1UUP
-2648,"docs: atualiza PENDENCIAS.md §12 com diagnostico schema-snapshot-export",open,DRAFT_NOMERGE,"PR em estado DRAFT",,
-2649,"fix(e2e): corrige falhas em admin-critical-routes e personalization-auth-redirect",open,DRAFT_NOMERGE,"PR em estado DRAFT",,
+2648,"docs: atualiza PENDENCIAS.md §12 com diagnostico schema-snapshot-export",closed,MERGEADA_SESSAO_EXTERNA,,ed87db31b5ce630378f74766adcdcc26edfb0bd2,adm01-debug
+2649,"fix(e2e): corrige falhas em admin-critical-routes e personalization-auth-redirect",closed,MERGEADA_SESSAO_EXTERNA,,61a0cfa1714661f752273cf864b335eb217ea134,adm01-debug
+2650,"fix(e2e): corrige testids e landing state em catalog.spec e kit-builder.spec",open,DRAFT_NOMERGE,"PR em estado DRAFT — DRAFT nao mergeavel",,

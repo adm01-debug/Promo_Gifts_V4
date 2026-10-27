@@ -1,11 +1,11 @@
-# RELATORIO_PRS.md — rev74
+# RELATORIO_PRS.md — rev75
 **Sessao:** session_011d8gKLZg8BWivR8aQBwxGF
 **Data:** 2026-10-27
 **main HEAD entrada:** df18546dfd76d1bea7ea5873257b668d128d8df3
 **main HEAD final (ultimo merge autonomo desta sessao):** f2f8c3d6e316cef8802faf42a64f9f4005970b6a (#2594)
-**main HEAD atual:** f2f8c3d6e316cef8802faf42a64f9f4005970b6a (PR #2594 — merge autonomo rev74)
+**main HEAD atual:** f2f8c3d6e316cef8802faf42a64f9f4005970b6a (sem alteracao desde rev74)
 **Gate Final main (rev73):** run id=122257161951 — SUCCESS em `5d049ef1`
-**Gate Final main (rev74):** run #40535938677 — queued (CI backlog; nao falhou; ultimo SUCCESS = rev73)
+**Gate Final main (rev74/rev75):** SHA `f2f8c3d6` — queued (CI backlog; nao falhou; ultimo SUCCESS = rev73 run 40522420231)
 **Gate Final delivery branch PR#2600:** run #40500183634 — success em SHA `3c9d14075`
 
 ---
@@ -15,10 +15,10 @@
 | Categoria | Contagem | PRs |
 |---|---|---|
 | Mergeadas autonomamente (agentes claude_04) | 9 | #2610, #2615, #2616, #2620, #2627, #2628, #2636, #2637, #2594 |
-| Mergeadas por sessao externa | 12 | #2597, #2599, #2603, #2604, #2621, #2625, #2630, #2632, #2633, #2635, #2638, #2647 |
+| Mergeadas por sessao externa | 14 | #2597, #2599, #2603, #2604, #2621, #2625, #2630, #2632, #2633, #2635, #2638, #2647, #2648, #2649 |
 | Fechadas externamente | 4 | #2612, #2619, #2629, #2634 |
-| BLOQUEADA (abertas, nao mergeavel) | 14 | #2420, #2572, #2579, #2580, #2587, #2588, #2600, #2605, #2622, #2631, #2645, #2646, #2648, #2649 |
-| **TOTAL CATALOGADAS** | **40** | |
+| BLOQUEADA (abertas, nao mergeavel) | 13 | #2420, #2572, #2579, #2580, #2587, #2588, #2600, #2605, #2622, #2631, #2645, #2646, #2650 |
+| **TOTAL CATALOGADAS** | **41** | |
 
 ---
 
@@ -32,15 +32,13 @@
 | [#2580](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2580) | DRAFT: experimento wizard | DRAFT nao mergeavel | PROMOVER OU FECHAR |
 | [#2587](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2587) | chore(deps): Zustand 4->5 | Breaking changes API Zustand 4->5; requer migracao de todos os stores | DECIDIR |
 | [#2588](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2588) | chore(deps): react-day-picker 8->10 | Breaking changes API 8->10; requer migracao de uso | DECIDIR |
-| [#2594](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2594) | chore(deps): actions/setup-node 4->7 | **MERGEADA** SHA `f2f8c3d6` (rev74) | — |
 | [#2600](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2600) | docs: entrega analise PRs | DELIVERY BRANCH — NUNCA MERGEAR | — |
 | [#2605](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2605) | fix(catalog): filtro SKU | Dirty 12+ conflitos; 100% supersedada por #2614+#2616+#2620 | FECHAR |
 | [#2622](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2622) | rollback migration 20261024 | REGRA#8: rollbacks/ toca DDL de producao | REVISAR SQL + APROVAR |
 | [#2631](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2631) | DRAFT: novo checkout flow | DRAFT nao mergeavel | PROMOVER OU FECHAR |
 | [#2645](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2645) | docs: recibo migration E15 | Dirty — conflito com main (update_pr_branch 422); exige resolucao de conflito | RESOLVER CONFLITO + APROVAR |
 | [#2646](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2646) | fix(migrations): rollback header | REGRA#8: supabase/migrations/ | REVISAR SQL + APROVAR |
-| [#2648](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2648) | DRAFT: docs atualiza PENDENCIAS.md §12 | DRAFT nao mergeavel | PROMOVER OU FECHAR |
-| [#2649](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2649) | DRAFT: fix(e2e) admin-critical e personalization | DRAFT nao mergeavel | PROMOVER OU FECHAR |
+| [#2650](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2650) | fix(e2e): corrige testids e landing state em catalog.spec e kit-builder.spec | DRAFT nao mergeavel | PROMOVER OU FECHAR |
 
 ---
 
@@ -55,7 +53,7 @@ PRs: #2420, #2622, #2646
 Todas tocam supabase/rollbacks/ ou supabase/migrations/. REGRA#8 exige aprovacao PO + revisao SQL.
 
 ### Cluster C — DRAFTs em progresso
-PRs: #2580, #2631, #2648, #2649
+PRs: #2580, #2631, #2650
 Nao mergeavel ate PO promover a ready.
 
 ### Cluster D — Obsoletas / supersedadas
@@ -68,9 +66,9 @@ Totalmente supersedadas pelos merges desta sessao. Recomendacao: FECHAR.
 
 - **Entrada:** Gate Final run #40447563368 — SUCCESS em SHA `48899b659ef6`
 - **Saida (rev73):** Gate Final run #122257161951 — SUCCESS em SHA `5d049ef1`
-- **Saida (rev74):** Gate Final run #40535938677 em SHA `f2f8c3d6` — queued (CI backlog; 3 runs na fila; nao falhou; ultimo SUCCESS confirmado = rev73 run #40522420231)
+- **Saida (rev74/rev75):** Gate Final run #40535938677 em SHA `f2f8c3d6` — queued (CI backlog; 3 runs na fila; nao falhou; ultimo SUCCESS confirmado = rev73 run #40522420231)
 - **Delivery branch:** Gate Final run #40500183634 — SUCCESS em `3c9d14075`
-- **Regressoes introduzidas por esta sessao:** ZERO (rev73 confirmado; rev74 aguardando CI)
+- **Regressoes introduzidas por esta sessao:** ZERO (rev73 confirmado; rev74/rev75 aguardando CI)
 
 ---
 
@@ -82,9 +80,24 @@ Todos os worktrees de test-merge criados em /tmp/ foram removidos apos uso.
 
 ## Verificacao de producao
 
-- Supabase mcp.supabase.com: ERR_PROXY_TUNNEL
+- Supabase mcp.supabase.com: ERR_PROXY_TUNNEL (indisponivel toda a sessao)
 - Alternativa: Gate Final CI (deploy-gates.yml) como proxy
-- 8 merges autonomos (sessoes claude_04): todos docs-only ou codigo sem migrations/edge functions
+- 9 merges autonomos (sessoes claude_04): todos docs-only ou codigo sem migrations/edge functions
+
+---
+
+## Reconciliacao rev74 → rev75
+
+| Correcao | Detalhe |
+|---|---|
+| #2648 veredito corrigido | DRAFT_NOMERGE → MERGEADA_SESSAO_EXTERNA (mergeada externamente 2026-10-27T15:50:19Z SHA `ed87db31`) |
+| #2649 veredito corrigido | DRAFT_NOMERGE → MERGEADA_SESSAO_EXTERNA (mergeada externamente 2026-10-27T15:54:20Z SHA `61a0cfa1`) |
+| #2650 adicionado | Nova DRAFT criada 2026-10-27T15:49:51Z; fix(e2e) catalog+kit-builder; HEAD `acdaa65b` |
+| Mergeadas sessao externa | 12 → 14 (#2648 + #2649) |
+| BLOQUEADA | 14 → 13 (saiu #2648 e #2649; entrou #2650) |
+| TOTAL catalogadas | 40 → 41 |
+| open_prs_count | 14 → 13 (#2648 e #2649 mergeadas; +#2650 nova DRAFT) |
+| Cluster C | Removidas #2648/#2649; adicionada #2650 |
 
 ---
 
