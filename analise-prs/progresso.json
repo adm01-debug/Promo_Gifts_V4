@@ -205,8 +205,35 @@
     "zero_regressoes_novas": true
   },
   "supabase_log_check_post_merge_2587": {
-    "resultado": "ZERO erros PostgreSQL no período 16:46Z-18:30Z (pós-merge PR #2587)",
-    "query": "postgres_logs source, error_severity IN (ERROR, FATAL, PANIC), result: []",
-    "confirmacao": "Sem nova regressão em produção pós-merge zustand 4→5"
+    "resultado": "ZERO erros PostgreSQL no período 16:46Z-23:59Z (pós-merge PR #2587)",
+    "query": "SELECT timestamp, event_message, log_attributes['error_severity'] FROM logs WHERE source='postgres_logs' AND error_severity IN ('ERROR','FATAL','PANIC') ORDER BY timestamp DESC LIMIT 30",
+    "iso_timestamp_start": "2026-10-27T16:46:00Z",
+    "iso_timestamp_end": "2026-10-27T23:59:00Z",
+    "raw_result": "[]",
+    "confirmacao": "Sem nova regressão em produção pós-merge zustand 4→5",
+    "verificado_em": "2026-10-27"
+  },
+  "baseline_failing_checks_a0560fdc": {
+    "sha": "a0560fdc62744c6bf4ba182914cc76dec06aecb1",
+    "falhas_pre_existentes": [
+      {"id": 122356030662, "nome": "Edge Functions · Integration All"},
+      {"id": 122356207833, "nome": "Gate 0.5 - Dependency Audit"},
+      {"id": 122361675344, "nome": "Gate Final - Deploy Ready"},
+      {"id": 122356543472, "nome": "Supabase Preview"},
+      {"id": 122356040443, "nome": "audit"},
+      {"id": 122362326229, "nome": "quality-gate (uma instância)"}
+    ],
+    "passando": [
+      "Gate 1 - Lint + TypeScript",
+      "Gate 2 - Unit Tests",
+      "Gate 2.5 - PostgreSQL Transactional Integrity",
+      "Gate 3 - E2E Smoke",
+      "Gate 4 - Lighthouse CI",
+      "Gate 5 - SEO Sanity Check",
+      "Gate 5.5 - RPC restore_seller_cart",
+      "Gate 6 - Build",
+      "Gate 0 - SSOT Supabase"
+    ],
+    "arquivo": "analise-prs/baseline/failing-tests-by-name.md"
   }
 }
