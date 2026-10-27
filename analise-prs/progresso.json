@@ -1,7 +1,7 @@
 {
   "gerado_em": "2026-10-27T14:00:00-03:00",
   "sessao": "https://claude.ai/code/session_011d8gKLZg8BWivR8aQBwxGF",
-  "rev": 36,
+  "rev": 38,
   "main_head": "48899b659ef6deba0fee2db7482347097059edb5",
   "baseline": {
     "tsc_exit_code": 0,
@@ -12,7 +12,7 @@
     "gate6_build": "SUCCESS local exit 0 (11.72s, /tmp/main-baseline-rev32) + CI em 06fe47fd3 (rev34)",
     "falhas_preexistentes_main": "7 checks E2E/visuais opcionais não-Gate2/não-GateFinal: color-swatch, magazine-header, e2e-gates, chromium•swatch→QV, Full User Flows authed, webkit•swatch→QV, check",
     "gate_final_main_pre_merge": "SUCCESS (verificado via github_list_check_runs em 06fe47fd3 e em 3ffbf322d)",
-    "gate_final_post_merge_2610": "AGUARDANDO — quality-gate in_progress em 48899b659ef6 (iniciado 04:06 UTC 2026-10-27; resultado indisponível no momento da análise rev36)"
+    "gate_final_post_merge_2610": "SUCCESS — run_id 40447563368 Deploy Gates concluído 2026-10-27T04:28:10Z em 48899b659ef6deba0fee2db7482347097059edb5 (verificado sessão session_011d8gKLZg8BWivR8aQBwxGF)"
   },
   "prs_abertas_analisadas": 18,
   "merges_autonomos_esta_sessao": 1,
@@ -81,10 +81,10 @@
       "draft": false,
       "head_sha": "0a091fc84",
       "conflito": "CLEAN",
-      "ci_gate_final": "FAILURE",
+      "ci_gate_final": "SUCCESS (run_id 40420603513, base 2ca5ef04e6e — base antiga; branch behind main)",
       "regra8": false,
       "veredito": "DECISAO_HUMANA",
-      "motivo": "Major version upgrade + CI FAILURE (TypeScript zustand v5 incompatibility)"
+      "motivo": "Branch behind main (mergeable_state: behind) + major version upgrade 4→5; CI validou em base antiga, não na atual"
     },
     {
       "numero": 2588,

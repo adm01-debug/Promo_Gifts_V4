@@ -3,9 +3,9 @@ Sessão: session_011d8gKLZg8BWivR8aQBwxGF (rev37)
 Data: 2026-10-27
 SHA verificado: 48899b659ef6deba0fee2db7482347097059edb5 (post-merge PR #2610)
 
-NOTA: Gate Final - Deploy Ready ainda NÃO PUBLICADO neste SHA (quality-gate in_progress
-no momento da coleta). Os checks abaixo foram coletados via github_list_check_runs
-diretamente no SHA acima.
+NOTA: Gate Final - Deploy Ready = SUCCESS confirmado — run_id 40447563368 concluído
+2026-10-27T04:28:10Z. Os checks individuais abaixo foram coletados via
+github_list_check_runs antes da conclusão do Gate Final.
 
 ===========================================================================
 CHECKS COM CONCLUSÃO "failure" EM 48899b659ef6
@@ -90,7 +90,7 @@ Falhas preexistentes NÃO bloqueiam Gate Final (são checks opcionais):
   color-swatch, magazine-header, e2e-gates, chromium•swatch→QV,
   Full User Flows authed, webkit•swatch→QV, check, Supabase Preview, audit
 
-Gate Final - Deploy Ready: AGUARDANDO (não publicado ainda no momento da coleta)
+Gate Final - Deploy Ready: SUCCESS — run_id 40447563368 concluído 2026-10-27T04:28:10Z
 Gate Final em SHA anterior 06fe47fd3: SUCCESS (baseline confirmado)
 Gate Final em SHA anterior 3ffbf322d: SUCCESS (verificado rev34)
 
