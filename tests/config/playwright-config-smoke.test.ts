@@ -1,5 +1,12 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
+// Prevent @playwright/test initialization (browser detection, registry setup) from
+// hanging the vitest process. defineConfig is a pass-through for config-shape tests.
+vi.mock('@playwright/test', () => ({
+  defineConfig: (config: unknown) => config,
+  devices: {} as Record<string, unknown>,
+}));
+
 describe('Playwright server isolation contract', () => {
   const originalEnv = { ...process.env };
 
