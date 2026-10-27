@@ -69,7 +69,7 @@
 |---|---|---|
 | ✅ Sem impacto atual | `process-webhook-outbox` | 0 pendentes na outbox (verificado 2026-10-27) |
 | ✅ Sem impacto atual | `pipeline-classify-categories` | 0 produtos sem categoria (verificado 2026-10-27) |
-| 🟡 Reativar quando burst resolvido | `generate-blurhashes` | Mudar para `*/10` antes |
+| ✅ Migration criada | `generate-blurhashes` | Migration `20261027180000` — reativa com `*/10` após burst fix `20261027140000` |
 | 🟡 Reativar se diagnóstico for necessário | `dispatcher-log-sync` | Avaliar uso real |
 | 🟢 Manter inativo | `monitor-connections` | Só para histórico |
 | 🟢 Reativar quando conveniente | `refresh-analytics-mv-product-intelligence` | Não urgente |
