@@ -57,7 +57,7 @@ function Calendar({
       classNames={{
         months: 'flex w-full flex-col sm:flex-row gap-2',
         month: 'flex w-full flex-col space-y-2 md:space-y-1',
-        caption: 'flex justify-between items-start px-1 pt-0 pb-1 md:px-0.5 md:pb-0.5',
+        month_caption: 'flex justify-between items-start px-1 pt-0 pb-1 md:px-0.5 md:pb-0.5',
         caption_label:
           'text-[15px] md:text-[11px] font-bold tracking-tight leading-[1.1] text-destructive capitalize flex flex-col items-start gap-0 whitespace-pre-line',
         nav: 'flex items-center gap-2 md:gap-1.5',
@@ -91,8 +91,12 @@ function Calendar({
         ...classNames,
       }}
       components={{
-        IconLeft: () => <ChevronLeft className="h-5 w-5 md:h-3 md:w-3" />,
-        IconRight: () => <ChevronRight className="h-5 w-5 md:h-3 md:w-3" />,
+        Chevron: ({ orientation }) =>
+          orientation === 'right' ? (
+            <ChevronRight className="h-5 w-5 md:h-3 md:w-3" />
+          ) : (
+            <ChevronLeft className="h-5 w-5 md:h-3 md:w-3" />
+          ),
       }}
       {...props}
     />
