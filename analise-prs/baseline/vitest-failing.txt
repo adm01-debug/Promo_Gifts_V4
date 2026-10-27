@@ -1,0 +1,98 @@
+BASELINE DE TESTES/CHECKS FALHANDO EM MAIN
+Sessão: session_011d8gKLZg8BWivR8aQBwxGF (rev37)
+Data: 2026-10-27
+SHA verificado: 48899b659ef6deba0fee2db7482347097059edb5 (post-merge PR #2610)
+
+NOTA: Gate Final - Deploy Ready ainda NÃO PUBLICADO neste SHA (quality-gate in_progress
+no momento da coleta). Os checks abaixo foram coletados via github_list_check_runs
+diretamente no SHA acima.
+
+===========================================================================
+CHECKS COM CONCLUSÃO "failure" EM 48899b659ef6
+===========================================================================
+
+1. check
+   - Conclusão: failure
+   - Tipo: check suite/status
+   - Status: pre-existente em main (não introduzido por #2610)
+
+2. Supabase Preview
+   - Conclusão: failure
+   - Tipo: Supabase preview environment (não é required check)
+   - Status: pre-existente — falha porque preview Supabase não está configurado para esta branch
+
+3. audit
+   - Conclusão: failure
+   - Tipo: security audit (npm audit ou similar)
+   - Status: pre-existente em main
+
+4. Verify push to main matches accepted patterns
+   - Conclusão: failure
+   - Tipo: branch protection guard
+   - Status: pre-existente — mergees via squash podem não corresponder ao padrão esperado
+
+===========================================================================
+CHECKS AINDA EM ANDAMENTO EM 48899b659ef6 (momento da coleta)
+===========================================================================
+
+5. E2E — Full User Flows (authed)
+   - Status: in_progress
+   - Tipo: E2E Playwright (job Gate 3 / e2e-smoke)
+   - Histórico: listado como falha preexistente em main: "Full User Flows authed"
+
+6. E2E — Personalization Journey
+   - Status: in_progress
+   - Tipo: E2E Playwright (relacionado ao spec de personalization corrigido por #2610)
+
+7. quality-gate (2 runs)
+   - Status: in_progress
+   - Tipo: workflow que agrega gates (Gate Final depende deste)
+
+8. Gate 0 - SSOT Supabase (project ID canônico)
+   - Status: queued
+   - Tipo: Gate 0 obrigatório
+
+9. Detectar mudanças (docs-only bypass E14)
+   - Status: queued
+   - Tipo: bypass check (não é gate)
+
+===========================================================================
+FALHAS PREEXISTENTES DOCUMENTADAS (baseline anterior — SHA 06fe47fd3)
+===========================================================================
+
+Fonte: analise-prs/progresso.json (baseline.falhas_preexistentes_main)
+
+1. color-swatch — check visual opcional
+2. magazine-header — check visual opcional
+3. e2e-gates — E2E gate opcional
+4. chromium•swatch→QV — Playwright visual (chromium)
+5. Full User Flows authed — E2E authed flow (in_progress em 48899b659ef6)
+6. webkit•swatch→QV — Playwright visual (webkit)
+7. check — check geral
+
+===========================================================================
+TESTES UNITÁRIOS (VITEST) — PASSANDO EM MAIN
+===========================================================================
+
+Verificados em worktree /tmp/main-baseline-rev32 (SHA 06fe47fd3):
+
+chunk-recovery.shared-reload-budget.test.ts:    8 PASSED
+replenishment-resilience.test.ts:               3 PASSED
+PromoFlixPlayer.test.tsx:                      22 PASSED
+NegotiationMarkupCard (3 arquivos):            23 PASSED
+Gate 2 (unit-tests CI) em 06fe47fd3:           SUCCESS
+
+===========================================================================
+SUMÁRIO
+===========================================================================
+
+Falhas preexistentes NÃO bloqueiam Gate Final (são checks opcionais):
+  color-swatch, magazine-header, e2e-gates, chromium•swatch→QV,
+  Full User Flows authed, webkit•swatch→QV, check, Supabase Preview, audit
+
+Gate Final - Deploy Ready: AGUARDANDO (não publicado ainda no momento da coleta)
+Gate Final em SHA anterior 06fe47fd3: SUCCESS (baseline confirmado)
+Gate Final em SHA anterior 3ffbf322d: SUCCESS (verificado rev34)
+
+Regressão medida como: nova falha em check que PASSA em 06fe47fd3
+  → Nenhuma regressão nova detectada nos checks disponíveis em 48899b659ef6
