@@ -1,0 +1,112 @@
+BASELINE LOCAL — SHA c86a3812ce79bd8c615c6c5e8919735e5cba3e7e
+Sessão: session_011d8gKLZg8BWivR8aQBwxGF (rev39)
+Data: 2026-10-27
+Worktree: /tmp/wt-main (node_modules symlink → /home/user/Promo_Gifts_V4/node_modules)
+PR origem: fix(e2e): auth no beforeEach do stress test e entrada sentinel v2.0.4 (#2613)
+
+===========================================================================
+TYPECHECK (tsc -p tsconfig.app.json --noEmit)
+===========================================================================
+Resultado: EXIT 0 — zero erros TypeScript
+Comando: cd /tmp/wt-main && npx tsc -p tsconfig.app.json --noEmit 2>&1; echo "TSC_EXIT:$?"
+Saída: (vazia — sem erros)
+
+===========================================================================
+LINT (ESLint)
+===========================================================================
+Escopo parcial (NODE_OPTIONS=--max-old-space-size=4096):
+  src/components/quotes/ + src/lib/ → EXIT 0, zero warnings
+Escopo completo src/: NODE_OPTIONS=--max-old-space-size=4096 → EXIT 0
+Evidência CI: Gate 1 - Lint + TypeScript = SUCCESS em run_id 40447563368 (SHA 48899b659ef6)
+  e em Gate Final post-#2613 (pendente coleta do run_id da nova execução em c86a3812ce)
+
+===========================================================================
+VITEST (por nome de teste — --no-color --reporter=verbose)
+===========================================================================
+Comando: cd /tmp/wt-main && node_modules/.bin/vitest run --no-color --reporter=verbose [arquivos]
+Resultado: 6 arquivos, 56 testes — todos PASSED
+
+Arquivo 1: src/lib/__tests__/chunk-recovery.shared-reload-budget.test.ts (8 PASSED)
+  ✓ URL limpa: bump seta __bare=1 e __bart=agora, retorna true
+  ✓ 2º bump dentro da janela: incrementa para 2 preservando __bart
+  ✓ teto atingido (__bare=2 na janela): bump recusa e NÃO muta a URL
+  ✓ janela expirada (>20s): reseta para 1 com __bart novo
+  ✓ readSharedReloadBudget não muta a URL (só leitura)
+  ✓ orçamento livre + contador próprio livre: reload ocorre e a URL final carrega __bare/__bart
+  ✓ orçamento compartilhado JÁ esgotado (__bare=2 na URL, de outro mecanismo): recusa mesmo com contador próprio zerado
+  ✓ orçamento compartilhado esgotado mas FORA da janela de 20s: não bloqueia (reseta e permite)
+
+Arquivo 2: tests/integration/replenishment-resilience.test.ts (3 PASSED)
+  ✓ Deve tratar erro 410 Gone (Endpoint Decommissioned) com fallback ou mensagem clara
+  ✓ Deve validar comportamento de Retry para erro 429 (Too Many Requests)
+  ✓ Deve garantir estado consistente após erro 5xx
+
+Arquivo 3: src/components/products/gallery/PromoFlixPlayer.test.tsx (22 PASSED)
+  ✓ should show "Manual Load" button and re-initialize player on click
+  ✓ should update quality state during multiple level changes with auto-level enabled
+  ✓ should NOT have crossOrigin on the video element (Cloudflare Stream CORS compatibility)
+  ✓ should clean up src and load() the video element on unmount to prevent residual errors
+  ✓ should reset error state when switching to a new video src
+  ✓ should try muted autoplay fallback if play() fails with sound
+  ✓ should correctly handle native error code 3 (DECODE)
+  ✓ should prevent race conditions using initTokenRef during fast src changes
+  ✓ should clean up timeouts on unmount
+  ✓ should NOT persist the autoplay-forced mute as a user preference
+  ✓ should persist an explicit user mute/unmute after the autoplay-forced mute
+  [+ 11 testes adicionais capturados no run completo]
+
+Arquivo 4: src/components/quotes/__tests__/NegotiationMarkupCard.singleline.test.tsx (3 PASSED)
+  ✓ renderiza header sem o texto descritivo "Ative para inflar..."
+  ✓ coloca título, badge e switch como irmãos diretos (uma linha)
+  ✓ não renderiza nenhum <p> descritivo no estado desativado
+
+Arquivo 5: src/components/quotes/__tests__/NegotiationMarkupCard.visualA11y.test.tsx (17 PASSED)
+  ✓ snapshot em 'mobile' (375 px) sem rótulo de preço final
+  ✓ snapshot em 'desktop' (1440 px) sem rótulo de preço final
+  ✓ usa escala responsiva px-3/py-2.5 (mobile) → sm:px-2.5/sm:py-2 (desktop)
+  ✓ linha de desconto (grid REAL/CLIENTE) mantém padding-top consistente com separador
+  ✓ slider é focável e responde a ArrowRight/ArrowLeft/Home/End atualizando aria-valuenow
+  ✓ label do slider e aria-live do % permitem leitura correta ao ajustar
+  ✓ slider expõe aria-label descritivo no root do Radix
+  [+ 10 testes adicionais]
+
+Arquivo 6: src/components/quotes/__tests__/NegotiationMarkupCard.priceCardsOrder.test.tsx (3 PASSED)
+  [3 testes de ordenação de price cards]
+
+SUMÁRIO VITEST: 6 arquivos, 56 testes, todos PASSED
+Duração: ~5.71s (transform 1.21s, setup 1.50s, import 1.89s, tests 2.10s)
+
+===========================================================================
+COMPARAÇÃO COM BASELINE ANTERIOR (SHA 48899b659ef6, rev38)
+===========================================================================
+chunk-recovery.shared-reload-budget.test.ts: 8 PASSED → 8 PASSED ✅ (mesmos testes)
+replenishment-resilience.test.ts:            3 PASSED → 3 PASSED ✅ (mesmos testes)
+PromoFlixPlayer.test.tsx:                   22 PASSED → 22 PASSED ✅ (mesmos testes)
+NegotiationMarkupCard (3 arquivos):         23 PASSED → 23 PASSED ✅ (mesmos testes)
+Nenhuma regressão introduzida por PR #2613.
+
+===========================================================================
+GIT MERGE-TREE — todos os 17 PRs abertos vs c86a3812ce (rev39)
+===========================================================================
+PR #2420 | CONFLICT (changed in both) | c10816b95
+PR #2572 | CONFLICT (changed in both + added in remote) | c653bef92
+PR #2579 | CLEAN | 0fcb493e8 (head SHA atualizado — force-push no release-please)
+PR #2580 | CLEAN | 41198d9a33
+PR #2587 | CLEAN | 0a091fc84
+PR #2588 | CLEAN | 0c1f7dc38
+PR #2590 | CLEAN | refs/pr/2590 (7335fed01)
+PR #2591 | CLEAN | refs/pr/2591 (a3f6e6184)
+PR #2592 | CLEAN | refs/pr/2592 (9fde33563)
+PR #2593 | CLEAN | refs/pr/2593 (af2deefa6)
+PR #2594 | CLEAN | refs/pr/2594 (0e62124ca)
+PR #2597 | CLEAN | 1a8cb75d8 (head SHA atualizado — branch evoluiu)
+PR #2600 | CLEAN | f3772a030 (origin head — entregáveis desta sessão)
+PR #2603 | CLEAN | ab1ea3b31
+PR #2604 | CLEAN | e33d2fe4a
+PR #2605 | CLEAN | 9bfead141
+PR #2612 | CLEAN | 32804a149
+
+Nota: PR #2420 mostrava NO_MERGE_BASE com clone raso (46 commits);
+após git fetch --deepen=500 (861 commits), encontrou base 17c181744 mas
+há conflito: branch claude/fix-rollback-261019-1637 divergiu demais de main.
+Veredito FECHAR mantido.

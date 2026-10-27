@@ -1,18 +1,22 @@
 {
-  "gerado_em": "2026-10-27T14:00:00-03:00",
+  "gerado_em": "2026-10-27T18:00:00-03:00",
   "sessao": "https://claude.ai/code/session_011d8gKLZg8BWivR8aQBwxGF",
-  "rev": 38,
-  "main_head": "48899b659ef6deba0fee2db7482347097059edb5",
+  "rev": 39,
+  "main_head": "c86a3812ce79bd8c615c6c5e8919735e5cba3e7e",
+  "nota_main": "PR #2613 mergeada por outro agente pós-#2610 — fix(e2e): auth no beforeEach do stress test e entrada sentinel v2.0.4",
   "baseline": {
     "tsc_exit_code": 0,
     "tsc_command": "tsc -p tsconfig.app.json --noEmit",
-    "tsc_worktree": "/tmp/main-baseline-rev32",
-    "vitest": "rev33 verificado por nome: chunk-recovery 8P, replenishment 3P, PromoFlixPlayer 22P, NegotiationMarkupCard 23P — todos passam em main 06fe47fd3 (worktree /tmp/main-baseline-rev32)",
-    "gate1_lint": "SUCCESS via CI github_list_check_runs em 06fe47fd3 (rev34)",
-    "gate6_build": "SUCCESS local exit 0 (11.72s, /tmp/main-baseline-rev32) + CI em 06fe47fd3 (rev34)",
+    "tsc_worktree": "/tmp/wt-main",
+    "tsc_sha": "c86a3812ce79bd8c615c6c5e8919735e5cba3e7e",
+    "vitest": "rev39 verificado por nome: chunk-recovery 8P, replenishment 3P, PromoFlixPlayer 22P, NegotiationMarkupCard 23P (56 total) — todos passam em c86a3812ce (worktree /tmp/wt-main)",
+    "vitest_vs_48899b6": "zero regressão — mesmos 56 testes, mesmos nomes, todos PASSED",
+    "gate1_lint": "EXIT 0 local (NODE_OPTIONS=--max-old-space-size=4096) escopo completo src/ em c86a3812ce; EXIT 0 parcial src/components/quotes/ + src/lib/",
+    "gate6_build": "SUCCESS CI em 48899b659ef6 (run_id 40447563368); local em /tmp/baseline-48899b6 EXIT 0 (11.04s)",
     "falhas_preexistentes_main": "7 checks E2E/visuais opcionais não-Gate2/não-GateFinal: color-swatch, magazine-header, e2e-gates, chromium•swatch→QV, Full User Flows authed, webkit•swatch→QV, check",
     "gate_final_main_pre_merge": "SUCCESS (verificado via github_list_check_runs em 06fe47fd3 e em 3ffbf322d)",
-    "gate_final_post_merge_2610": "SUCCESS — run_id 40447563368 Deploy Gates concluído 2026-10-27T04:28:10Z em 48899b659ef6deba0fee2db7482347097059edb5 (verificado sessão session_011d8gKLZg8BWivR8aQBwxGF)"
+    "gate_final_post_merge_2610": "SUCCESS — run_id 40447563368 Deploy Gates concluído 2026-10-27T04:28:10Z em 48899b659ef6deba0fee2db7482347097059edb5 (verificado sessão session_011d8gKLZg8BWivR8aQBwxGF)",
+    "gate_final_post_2613": "pendente — baseline local c86a3812ce: TypeCheck EXIT 0 + ESLint EXIT 0 + Vitest 56P confirmados"
   },
   "prs_abertas_analisadas": 18,
   "merges_autonomos_esta_sessao": 1,
@@ -24,6 +28,8 @@
     "total_abertas_excluindo_merged": 17,
     "total_analisadas": 18
   },
+  "merge_tree_base": "c86a3812ce79bd8c615c6c5e8919735e5cba3e7e",
+  "merge_tree_historia": "861 commits (git fetch --deepen=500)",
   "prs": [
     {
       "numero": 2420,
@@ -31,11 +37,12 @@
       "branch": "claude/fix-rollback-261019-1637",
       "draft": false,
       "head_sha": "c10816b95",
-      "conflito": "NO_MERGE_BASE",
+      "conflito": "CONFLICT (changed in both) — base 17c181744 encontrada com fetch 861 commits; branch divergiu de main",
+      "conflito_nota": "Aparecia como NO_MERGE_BASE com clone raso (46 commits); resolvido com git fetch --deepen=500",
       "ci_gate_final": "N/A",
       "regra8": false,
       "veredito": "FECHAR",
-      "motivo": "Branch órfã — NO_MERGE_BASE (sem ancestral comum com main)"
+      "motivo": "CONFLICT real + rollback retroativo migration + branch excessivamente divergida de main"
     },
     {
       "numero": 2572,
@@ -43,7 +50,7 @@
       "branch": "claude_05/youthful-ride-vcdchy",
       "draft": false,
       "head_sha": "c653bef92",
-      "conflito": "CONFLICT — PENDENCIAS.md, RELATORIO_CI.md, ItemCard.tsx (verificado rev36 contra 48899b659ef6)",
+      "conflito": "CONFLICT — PENDENCIAS.md, RELATORIO_CI.md, ItemCard.tsx (verificado rev39 contra c86a3812ce)",
       "ci_gate_final": "N/A (bloqueada por REGRA#8+REGRA#10)",
       "regra8": true,
       "regra10": true,
@@ -55,7 +62,8 @@
       "titulo": "chore(main): release 1.0.0",
       "branch": "release-please--branches--main--components--gifts-store",
       "draft": false,
-      "head_sha": "edf0bce2f",
+      "head_sha": "0fcb493e8",
+      "head_sha_nota": "Atualizado: branch sofreu force-push (anterior: edf0bce2f)",
       "conflito": "CLEAN",
       "ci_gate_final": "SEM_RUNS",
       "regra8": false,
@@ -164,7 +172,8 @@
       "titulo": "fix: 4 workflows CI falhando",
       "branch": "claude_04/beautiful-gates-bvocz5",
       "draft": true,
-      "head_sha": "b672ca5db",
+      "head_sha": "1a8cb75d8",
+      "head_sha_nota": "Atualizado: branch evoluiu (anterior: b672ca5db)",
       "conflito": "CLEAN",
       "ci_gate_final": "SUCCESS",
       "regra8": true,
@@ -176,7 +185,7 @@
       "titulo": "docs(analise-prs): addendum",
       "branch": "claude_04/optimistic-bohr-qplx94",
       "draft": true,
-      "head_sha": "57968a816",
+      "head_sha": "f3772a030",
       "conflito": "CLEAN",
       "ci_gate_final": "N/A (deliverables)",
       "regra8": false,
@@ -188,7 +197,7 @@
       "titulo": "fix(crons): 4 migrations + RLS stricker",
       "branch": "claude_04/tender-hawking-ghw2zi",
       "draft": true,
-      "head_sha": "ab1ea3b316",
+      "head_sha": "ab1ea3b31",
       "conflito": "CLEAN",
       "ci_gate_final": "FAILURE",
       "regra8": true,
@@ -200,7 +209,7 @@
       "titulo": "fix(ci): continue-on-error psql E036/E037/E072",
       "branch": "claude_04/charming-darwin-g1nvj2",
       "draft": true,
-      "head_sha": "e33d2fe4aa",
+      "head_sha": "e33d2fe4a",
       "conflito": "CLEAN",
       "ci_gate_final": "SUCCESS",
       "regra8": true,
@@ -218,7 +227,6 @@
       "regra8": false,
       "veredito": "DECISAO_HUMANA",
       "motivo": "DRAFT — único bloqueio; CI SUCCESS; zero REGRA#8. Candidato imediato após DRAFT→ready",
-      "vitest_rev33_note": "Todos os testes unitários do PR passam em main 06fe47fd3 (verificado rev33)",
       "tests_verified": {
         "chunk_recovery": "8 PASSED",
         "replenishment": "3 PASSED",
@@ -240,7 +248,7 @@
       "files_changed": ["e2e/flows/92-personalization-auth-redirect.spec.ts"],
       "diff_summary": "4 asserções /login/ → /(auth|login)/: aceita /auth que é o redirect real de ProtectedRoute.tsx:48",
       "veredito": "MERGEADO_AUTONOMO",
-      "motivo": "Merge squash SHA 48899b659ef6. Todos os 8 critérios atendidos: válida, não implementada, CLEAN, Gate Final SUCCESS, zero código revertido, regras de negócio OK, completa, confiança alta."
+      "motivo": "Merge squash SHA 48899b659ef6. Todos os 8 critérios atendidos."
     },
     {
       "numero": 2612,
