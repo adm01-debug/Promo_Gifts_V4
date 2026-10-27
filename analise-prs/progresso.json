@@ -1,16 +1,14 @@
 {
   "session_id": "session_011d8gKLZg8BWivR8aQBwxGF",
-  "revision": "rev75",
+  "revision": "rev76",
   "date": "2026-10-27",
   "status": "SESSAO_COMPLETA",
   "main_head_entrada": "df18546dfd76d1bea7ea5873257b668d128d8df3",
-  "main_head_final": "f2f8c3d6e316cef8802faf42a64f9f4005970b6a",
-  "main_head_atual": "f2f8c3d6e316cef8802faf42a64f9f4005970b6a",
+  "main_head_final": "22ba938e02ae48eee34d77176a4d5dee6cf8e14b",
+  "main_head_atual": "22ba938e02ae48eee34d77176a4d5dee6cf8e14b",
   "gate_final_atual": {
-    "sha": "f2f8c3d6e316cef8802faf42a64f9f4005970b6a",
-    "run_id": "40535938677",
-    "conclusion": "queued",
-    "nota": "CI backlog — 3 runs queued antes deste; nao falhou; ultimo SUCCESS confirmado em rev73 SHA 5d049ef1 run 40522420231"
+    "sha": "22ba938e02ae48eee34d77176a4d5dee6cf8e14b",
+    "nota": "docs-only PR #2652; aguardando CI"
   },
   "gate_final_rev73": {
     "sha": "5d049ef118f3eb84843da44bd2efc70ee56ca1",
@@ -22,15 +20,66 @@
     "run": "40500183634",
     "conclusion": "success"
   },
-  "prs_analisados_esta_sessao": 41,
-  "open_prs_count_verificado": 13,
-  "open_prs_verificado_em": "2026-10-27T16:10:00Z",
+  "prs_analisados_esta_sessao": 43,
+  "open_prs_count_verificado": 11,
+  "open_prs_verificado_em": "2026-10-27T16:41:00Z",
   "verdicts": {
-    "MERGEADA_AUTONOMA": ["2610", "2615", "2616", "2620", "2627", "2628", "2636", "2637", "2594"],
-    "MERGEADA_SESSAO_EXTERNA": ["2597", "2599", "2603", "2604", "2621", "2625", "2630", "2632", "2633", "2635", "2638", "2647", "2648", "2649"],
-    "FECHADA_EXTERNA": ["2612", "2619", "2629", "2634"],
-    "BLOQUEADA": ["2420", "2572", "2579", "2580", "2587", "2588", "2600", "2605", "2622", "2631", "2645", "2646", "2650"],
-    "DRAFT_NOMERGE": ["2580", "2600", "2631", "2650"]
+    "MERGEADA_AUTONOMA": [
+      "2610",
+      "2615",
+      "2616",
+      "2620",
+      "2627",
+      "2628",
+      "2636",
+      "2637",
+      "2594",
+      "2650",
+      "2652"
+    ],
+    "MERGEADA_SESSAO_EXTERNA": [
+      "2597",
+      "2599",
+      "2603",
+      "2604",
+      "2621",
+      "2625",
+      "2630",
+      "2632",
+      "2633",
+      "2635",
+      "2638",
+      "2647",
+      "2648",
+      "2649"
+    ],
+    "FECHADA_EXTERNA": [
+      "2612",
+      "2619",
+      "2629",
+      "2634"
+    ],
+    "BLOQUEADA": [
+      "2420",
+      "2572",
+      "2579",
+      "2580",
+      "2587",
+      "2588",
+      "2600",
+      "2605",
+      "2622",
+      "2631",
+      "2646"
+    ],
+    "DRAFT_NOMERGE": [
+      "2580",
+      "2600",
+      "2631"
+    ],
+    "SUPERSEDED": [
+      "2645"
+    ]
   },
   "bloqueio_razoes": {
     "2420": "REGRA#8: rollbacks/ DDL de producao — exige aprovacao PO",
@@ -43,9 +92,7 @@
     "2605": "Dirty 12+ conflitos; 100% supersedada por #2614+#2616+#2620 ja mergeados",
     "2622": "REGRA#8: rollbacks/ DDL de producao — exige aprovacao PO",
     "2631": "DRAFT — nao mergeavel",
-    "2645": "Dirty — conflito com main (update_pr_branch 422); recibo migration E15; exige resolucao de conflito",
-    "2646": "REGRA#8: supabase/migrations/ — exige aprovacao PO",
-    "2650": "DRAFT — nao mergeavel"
+    "2646": "REGRA#8: supabase/migrations/ — exige aprovacao PO"
   },
   "baseline": {
     "vitest": "Gate 2 CI — SUCCESS em 1ce29cf2f (run #40482105056) — autoritativo",

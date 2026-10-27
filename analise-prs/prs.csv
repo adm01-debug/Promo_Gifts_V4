@@ -31,9 +31,10 @@ number,title,state,verdict,blocked_reason,sha_merge,merged_by
 2631,"chore: atualiza PENDENCIAS e RELATORIO_CI — bloqueio deploy confirmado",open,DRAFT_NOMERGE,"PR em estado DRAFT",,
 2636,"fix(tests): mock AutoTestJobStatusCard em AdminStructuralComparison",closed,MERGEADO_AUTONOMO,,b5cfee9b24017fbf53a0035e86d8820d07bad74e,session_011d8gKLZg8BWivR8aQBwxGF
 2637,"docs: recibo de aplicacao — 20261027120000 (E15)",closed,MERGEADO_AUTONOMO,,78d083f1696186faf0e25f3aa950c05843928e25,session_011d8gKLZg8BWivR8aQBwxGF
-2645,"docs: recibo de aplicacao — 20261027140000 (E15)",open,BLOQUEADA,"Dirty — conflito com main; recibo migration E15; exige resolucao de conflito",,
+2645,"docs: recibo de aplicacao — 20261027140000 (E15)",closed,SUPERSEDED,"Conflito ADD/ADD com main; recibo reconstituted em PR #2652 (SHA 22ba938e)",,
 2646,"fix(migrations): cabecalho -- Rollback: nas migrations 20261027160000 e 20261027220000",open,BLOQUEADA,"supabase/migrations/ — REGRA#8: exige aprovacao do PO",,
 2647,"fix(ci): aumenta timeout swatch-quickview 40->90 min",closed,MERGEADO_SESSAO_EXTERNA,,5d049ef118f3eb84843da44bd8d2efc70ee56ca1,session_01Knr9enFAok62bHihBK1UUP
 2648,"docs: atualiza PENDENCIAS.md §12 com diagnostico schema-snapshot-export",closed,MERGEADA_SESSAO_EXTERNA,,ed87db31b5ce630378f74766adcdcc26edfb0bd2,adm01-debug
 2649,"fix(e2e): corrige falhas em admin-critical-routes e personalization-auth-redirect",closed,MERGEADA_SESSAO_EXTERNA,,61a0cfa1714661f752273cf864b335eb217ea134,adm01-debug
-2650,"fix(e2e): corrige testids e landing state em catalog.spec e kit-builder.spec",open,DRAFT_NOMERGE,"PR em estado DRAFT — DRAFT nao mergeavel",,
+2650,"fix(e2e): corrige testids e landing state em catalog.spec e kit-builder.spec",closed,MERGEADO_AUTONOMO,,f0689734b38e79edda24cf80f5df19abae941015,session_011d8gKLZg8BWivR8aQBwxGF
+2652,"docs(e15): recibo aplicacao migration 20261027140000",closed,MERGEADO_AUTONOMO,,22ba938e02ae48eee34d77176a4d5dee6cf8e14b,session_011d8gKLZg8BWivR8aQBwxGF
