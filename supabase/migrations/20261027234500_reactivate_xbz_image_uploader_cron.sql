@@ -1,4 +1,4 @@
--- Migration: 20261027250000_reactivate_xbz_image_uploader_cron.sql
+-- Migration: 20261027234500_reactivate_xbz_image_uploader_cron.sql
 -- CONTEXTO: Reativa o cron 'xbz-image-uploader' (active := true).
 -- PRÉ-REQUISITO: XBZ_IMAGE_UPLOADER_CRON_SECRET deve estar no vault E
 --   a edge function xbz-image-uploader deve estar deployada antes de aplicar.
