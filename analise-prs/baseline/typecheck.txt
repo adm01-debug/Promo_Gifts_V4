@@ -1,7 +1,7 @@
-BASELINE TYPECHECK — main HEAD 06fe47fd3a992bf2a39ab356c9d8c357c5f2a27e
-Data: 2026-10-27 (sessão rev33)
-Comando: tsc -p tsconfig.app.json --noEmit
-Diretório: /tmp/main-baseline-rev32 (worktree de origin/main 06fe47fd3)
+BASELINE TYPECHECK — main HEAD 1ce29cf2f95ecf851eef580974130a46f5a4f53a
+Data: 2026-10-27 (sessão rev59)
+Comando: tsc --noEmit (via node_modules/.bin/tsc)
+Diretório: /tmp/main-baseline (worktree de origin/main 1ce29cf2f)
 
 RESULTADO: exit code 0 — ZERO erros TypeScript no HEAD do main.
 

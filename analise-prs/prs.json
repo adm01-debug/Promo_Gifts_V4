@@ -2,58 +2,594 @@
   "meta": {
     "sessao_atual": "session_011d8gKLZg8BWivR8aQBwxGF",
     "sessao_anterior": "session_01Ss1tXZ4cAbxBvdmu95uNPz",
-    "revisao": "rev54",
+    "revisao": "rev59",
     "data": "2026-10-27",
     "main_head_entrada": "df18546dfd76d1bea7ea5873257b668d128d8df3",
-    "main_head_final": "83c81d5859bef375af76a918e7ab01ce20a7944a",
-    "total_prs_analisados_historico": 45,
-    "total_prs_analisados_sessao_atual": 16
+    "main_head_final": "1ce29cf2f95ecf851eef580974130a46f5a4f53a",
+    "total_prs_analisados_historico": 53,
+    "total_prs_analisados_sessao_atual": 26
   },
   "prs": [
-    {"number": 2415, "title": "fix(ci): P20 exclui check-file-size-baseline", "branch": "claude_05/amazing-brahmagupta-0xhdur", "draft": false, "test_merge": "CONFLICT", "rule8_triggers": [".github/workflows/"], "verdict": "DECISAO_HUMANA", "motivo": "CONFLICT+REGRA8 2workflows"},
-    {"number": 2417, "title": "fix: cors wildcard + workflows cron", "branch": "claude/fix-contract-mag-reader-261019-2110", "draft": true, "test_merge": "NO_MERGE_BASE", "rule8_triggers": [".github/workflows/"], "verdict": "FECHAR", "motivo": "Branch orfa sem ancestral com main"},
-    {"number": 2418, "title": "fix(ci): npx gitleaks + allowlist", "branch": "claude/fix-gitleaks-gate-261019-1800", "draft": true, "test_merge": "NO_MERGE_BASE", "rule8_triggers": [".gitleaks.toml"], "verdict": "FECHAR", "motivo": "Branch orfa sem ancestral com main"},
-    {"number": 2419, "title": "fix(ci): check-security-definer-acl retries", "branch": "claude/fix-sync-log-ci-261019-1730", "draft": true, "test_merge": "NO_MERGE_BASE", "rule8_triggers": [".github/workflows/"], "verdict": "FECHAR", "motivo": "Branch orfa sem ancestral com main"},
-    {"number": 2420, "title": "chore(db): rollback retroativo migration 20261019", "branch": "claude/fix-rollback-261019-1637", "draft": false, "test_merge": "CONFLICT", "rule8_triggers": ["supabase/migrations/", "rollbacks/"], "verdict": "DECISAO_HUMANA", "motivo": "CONFLICT+REGRA8 migrations+rollbacks ADD/ADD"},
-    {"number": 2422, "title": "chore(docs): MIGRATIONS_SYNC_LOG receipt", "branch": "claude/chore-migrations-sync-log-261019-1600", "draft": true, "test_merge": "NO_MERGE_BASE", "rule8_triggers": [], "verdict": "FECHAR", "motivo": "Branch orfa sem ancestral com main"},
-    {"number": 2428, "title": "fix(ci): gitleaks allowlist mock tokens", "branch": "claude/fix-gitleaks-gate-261024-1930", "draft": true, "test_merge": "CONFLICT", "rule8_triggers": [".gitleaks.toml"], "verdict": "DECISAO_HUMANA", "motivo": "CONFLICT+REGRA8 gitleaks"},
-    {"number": 2432, "title": "feat(qa): probe E184 detecta refs legadas", "branch": "claude/feat-probe-e184-241026-2026", "draft": false, "test_merge": "CLEAN", "rule8_triggers": [], "verdict": "JA_EM_MAIN", "motivo": "git cherry = 0 commits unicos"},
-    {"number": 2443, "title": "APROVACAO REQUERIDA: P06/P09/P14/P15/P03 FASE B", "branch": "claude/feat-aprovacao-p06-p09-p14-p15-p03sec-261024-2315", "draft": false, "test_merge": "CLEAN", "rule8_triggers": [], "verdict": "DECISAO_HUMANA", "motivo": "Seguranca FASE B + aprovacao PO"},
-    {"number": 2449, "title": "chore(migrations): E99 mirrors repair-only", "branch": "claude/chore-e99-mirror-update-company-fields-261025-1100", "draft": true, "test_merge": "CONFLICT", "rule8_triggers": ["supabase/migrations/"], "verdict": "DECISAO_HUMANA", "motivo": "CONFLICT+REGRA8 migrations"},
-    {"number": 2452, "title": "fix(docs): remove prefixo em PR-2441.md", "branch": "claude/fix-gate-1-3-pr2441-refs-261025", "draft": true, "test_merge": "CONFLICT", "rule8_triggers": [], "verdict": "DECISAO_HUMANA", "motivo": "CONFLICT+REGRA10"},
-    {"number": 2469, "title": "fix(ci): e2e-personalization E42 skip ratio", "branch": "claude/fix-ci-workflows-261025-0630", "draft": false, "test_merge": "CONFLICT", "rule8_triggers": [".github/workflows/e2e-personalization.yml"], "verdict": "DECISAO_HUMANA", "motivo": "CONFLICT+REGRA8+REGRA10"},
-    {"number": 2503, "title": "docs(ci): RELATORIO_CI Rev21", "branch": "claude/docs-relatorio-ci-rev21-20261025-0911", "draft": true, "test_merge": "CONFLICT", "rule8_triggers": [], "verdict": "DECISAO_HUMANA", "motivo": "CONFLICT+REGRA10"},
-    {"number": 2520, "title": "chore(main): release 1.0.0", "branch": "release-please--branches--main--components--gifts-store", "draft": false, "test_merge": "CLEAN", "rule8_triggers": [], "verdict": "DECISAO_HUMANA", "motivo": "Downgrade 1.2.1->1.0.0 regressao"},
-    {"number": 2532, "title": "docs: atualiza run refs", "branch": "claude/docs-estado-261025-1630", "draft": true, "test_merge": "CONFLICT", "rule8_triggers": [], "verdict": "DECISAO_HUMANA", "motivo": "CONFLICT+REGRA10"},
-    {"number": 2537, "title": "fix: Contract Tests registry ghcr.io", "branch": "claude/fix-contract-tests-registry-ghcr-261025-1705", "draft": false, "test_merge": "CLEAN", "rule8_triggers": [".github/workflows/contract-tests.yml"], "verdict": "DECISAO_HUMANA", "motivo": "REGRA8 workflow"},
-    {"number": 2544, "title": "docs: backlog CI CI-001..CI-008", "branch": "claude/chore-backlog-ci-261025-1920", "draft": false, "test_merge": "CLEAN", "rule8_triggers": [], "verdict": "MERGEADO_AUTONOMO", "merge_sha": "1d26da9082d42e825de66f574fbc796587345fdf"},
-    {"number": 2545, "title": "chore: backlog funcionalidades FT-001..FT-416", "branch": "claude/chore-backlog-funcionalidades-261025-1920", "draft": false, "test_merge": "CLEAN", "rule8_triggers": [], "verdict": "MERGEADO_AUTONOMO", "merge_sha": "2a93ba556b58007a001d68efd3c81ead17c19dce"},
-    {"number": 2547, "title": "fix: remove links publicos mortos", "branch": "claude/fix-links-publicos-mortos-261025-1930", "draft": false, "test_merge": "CLEAN", "rule8_triggers": [], "verdict": "DECISAO_HUMANA", "motivo": "Remocao feature 587 delecoes + regressao prs.json"},
-    {"number": 2548, "title": "feat: botao LGPD excluir meus dados", "branch": "claude/feat-lgpd-anonimizar-conta-261025-1950", "draft": false, "test_merge": "CLEAN", "rule8_triggers": [], "verdict": "MERGEADO_AUTONOMO", "merge_sha": "9be832a355f0c98fcd22021b4273b16fa0b1aba5"},
-    {"number": 2549, "title": "chore: backlog Supabase SB-001..SB-018", "branch": "claude/chore-backlog-supabase-261025-1908", "draft": false, "test_merge": "CLEAN", "rule8_triggers": [], "verdict": "MERGEADO_AUTONOMO", "merge_sha": "73df7502f3b582f7966c209ff6a5c202fb1a3f9e"},
-    {"number": 2550, "title": "fix: filtro Publicado Kit Maker KMM-075", "branch": "claude/fix-kit-publicados-261025-2010", "draft": false, "test_merge": "CLEAN", "rule8_triggers": [], "verdict": "DECISAO_HUMANA", "motivo": "Mudanca regra negocio D7 remove ready"},
-    {"number": 2551, "title": "fix: peso 0 no Kit Maker", "branch": "claude/fix-kit-peso-zero-261025-2015", "draft": false, "test_merge": "CLEAN", "rule8_triggers": [], "verdict": "MERGEADO_AUTONOMO", "merge_sha": "97eed25cb177a318fcf63fb3843f02512511d579"},
-    {"number": 2552, "title": "fix: materials-api timeout 20s", "branch": "claude/fix-materials-api-timeout-261025-1912", "draft": false, "test_merge": "CLEAN", "rule8_triggers": [], "verdict": "MERGEADO_AUTONOMO", "merge_sha": "35fdb5793db7461f7fafcdae1effc89ae5cae6b5"},
-    {"number": 2553, "title": "fix: selos sem mock", "branch": "claude/fix-selos-simulados-261025-2025", "draft": false, "test_merge": "CLEAN", "rule8_triggers": [], "verdict": "MERGEADO_AUTONOMO", "merge_sha": "aebd333f3d2d57ee0bb5f1f127bf23f352846cd9"},
-    {"number": 2554, "title": "fix: BI Cliente 360 sem mock", "branch": "claude/fix-bi-mock-flag-261025-2040", "draft": false, "test_merge": "CLEAN", "rule8_triggers": [], "verdict": "MERGEADO_AUTONOMO", "merge_sha": "e6538448e6edc639f9131e809ae265976b43f208"},
-    {"number": 2555, "title": "docs(pendencias): rev29", "branch": "claude_05/nifty-sagan-r23gqh", "draft": false, "test_merge": "CLEAN", "rule8_triggers": [], "verdict": "MERGEADO_AUTONOMO", "merge_sha": "479f2219485e23a5d35896dfe44c9ca4f7c1026f"},
-    {"number": 2556, "title": "chore: backlog banco O1/O3", "branch": "claude/chore-backlog-banco-251025-1915", "draft": false, "test_merge": "CLEAN", "rule8_triggers": [], "verdict": "MERGEADO_AUTONOMO", "merge_sha": "15e10fd88208f9b4cd372b82544fb27892d15a81"},
-    {"number": 2557, "title": "docs: RELATORIO_CI.md P27/P66/P67/P68", "branch": "claude/docs-relatorio-ci-final-20261025-1910", "draft": false, "test_merge": "CLEAN", "rule8_triggers": [], "verdict": "DECISAO_HUMANA", "motivo": "Corrupcao texto RELATORIO_CI criterio5"},
-    {"number": 2572, "title": "docs(analise-prs): rev23", "branch": "claude_05/youthful-ride-vcdchy", "draft": false, "test_merge": "CONFLICT", "rule8_triggers": [], "verdict": "DECISAO_HUMANA", "motivo": "CONFLICT RELATORIO_CI.md + REGRA10 branch outra sessao", "head_sha": "c653bef9"},
-    {"number": 2579, "title": "chore(main): release 1.0.0", "branch": "release-please--branches--main--components--gifts-store", "draft": false, "test_merge": "CLEAN", "rule8_triggers": [], "verdict": "DECISAO_HUMANA", "motivo": "Downgrade 1.2.1->1.0.0 regressao de versao"},
-    {"number": 2580, "title": "fix(banco): rollback header e rollback migration 20260916", "branch": "claude/fix-e23-rollback-261025-2145", "draft": true, "test_merge": "CLEAN", "rule8_triggers": ["supabase/migrations/"], "verdict": "DECISAO_HUMANA", "motivo": "DRAFT+REGRA8 migrations", "head_sha": "41198d9a"},
-    {"number": 2587, "title": "chore(deps): bump zustand from 4.5.7 to 5.0.16", "branch": "dependabot/npm_and_yarn/zustand-5.0.16", "draft": false, "test_merge": "CLEAN", "rule8_triggers": [], "verdict": "DECISAO_HUMANA", "motivo": "major upgrade 4->5 breaking changes"},
-    {"number": 2588, "title": "chore(deps): bump react-day-picker from 8.10.2 to 10.0.2", "branch": "dependabot/npm_and_yarn/react-day-picker-10.0.2", "draft": false, "test_merge": "CLEAN", "rule8_triggers": [], "verdict": "DECISAO_HUMANA", "motivo": "major upgrade 8->10 breaking changes + Gate Final FAILED"},
-    {"number": 2594, "title": "chore(ci): bump actions/setup-node from 4 to 7", "branch": "dependabot/github_actions/actions/setup-node-7", "draft": false, "test_merge": "CLEAN", "rule8_triggers": [".github/workflows/"], "verdict": "DECISAO_HUMANA", "motivo": "REGRA8 workflow", "head_sha": "1664eeb8"},
-    {"number": 2597, "title": "fix: corrige 4 workflows CI falhando", "branch": "claude_04/beautiful-gates-bvocz5", "draft": false, "test_merge": "CLEAN", "rule8_triggers": [".github/workflows/"], "verdict": "DECISAO_HUMANA", "motivo": "REGRA8 workflows x4 + REGRA10 branch outra sessao", "head_sha": "6c4d3907"},
-    {"number": 2600, "title": "docs(analise-prs): rev54 — 16 PRs esta sessao", "branch": "claude_04/optimistic-bohr-qplx94", "draft": true, "test_merge": "CLEAN", "rule8_triggers": [], "verdict": "DRAFT_NOMERGE", "motivo": "DRAFT analise-prs/ docs internos desta sessao"},
-    {"number": 2604, "title": "fix(ci): continue-on-error psql steps snapshot", "branch": "claude_04/charming-darwin-g1nvj2", "draft": true, "test_merge": "CLEAN", "rule8_triggers": [".github/workflows/"], "verdict": "DECISAO_HUMANA", "motivo": "DRAFT+REGRA8 workflow schema-snapshot-export", "head_sha": "e33d2fe4"},
-    {"number": 2605, "title": "fix(tests): 4 falhas unit tests + 1 threshold E2E", "branch": "claude/fix-unit-tests-261027-0113", "draft": false, "test_merge": "CONFLICT", "rule8_triggers": [], "verdict": "SUPERSEDED", "motivo": "Conteudo portado para #2620 SHA 3aabc4187 + REGRA10", "head_sha": "9bfead14"},
-    {"number": 2612, "title": "fix(test): waitFor timeout 15s->25s useReplenishment", "branch": "claude/fix-replenishment-timeout-261027-0430", "draft": true, "test_merge": "CLEAN", "rule8_triggers": [], "verdict": "DRAFT_NOMERGE", "motivo": "DRAFT apenas test timeout solucao paliativa", "head_sha": "32804a14"},
-    {"number": 2619, "title": "fix(health-check): timeout 5s em getCredential evita hang", "branch": "claude/fix-health-check-cred-timeout-271027-0630", "draft": true, "test_merge": "CLEAN", "rule8_triggers": [], "verdict": "SUPERSEDED", "motivo": "Supersedida por #2625 SHA 83c81d58"},
-    {"number": 2621, "title": "fix(migrations): rollback files 7 migrations 20261027 E058", "branch": "claude/fix-rollbacks-migrations-261027-1305", "draft": false, "test_merge": "CLEAN", "rule8_triggers": ["supabase/rollbacks/"], "verdict": "MERGEADO_SESSAO_EXTERNA", "merge_sha": "06c221db520b446eee41ce990c110830be5da13c", "motivo": "Mergeado por session_01PE8GzVYqxJM25xzvLuLYhW"},
-    {"number": 2622, "title": "fix(rollbacks): rollbacks 9 migrations + manifest fix", "branch": "claude/fix-rollbacks-20261027-271027-1000", "draft": false, "test_merge": "DIRTY", "rule8_triggers": ["supabase/rollbacks/"], "verdict": "BRANCH_DIRTY", "motivo": "ADD/ADD conflict apos merge de #2621"},
-    {"number": 2625, "title": "fix(edge-functions): health-check timeout + manifest xbz", "branch": "claude/fix-edge-authz-xbz-health-check-271027-1100", "draft": false, "test_merge": "CLEAN", "rule8_triggers": ["supabase/functions/"], "verdict": "MERGEADO_SESSAO_EXTERNA", "merge_sha": "83c81d5859bef375af76a918e7ab01ce20a7944a", "merged_at": "2026-10-27T08:30:52Z", "motivo": "Mergeado por session_01Knr9enFAok62bHihBK1UUP"},
-    {"number": 2627, "title": "fix(rollbacks): rollbacks 2 migrations 20261027 233000+234500", "branch": "claude/fix-rollbacks-2m-271027-0800", "draft": false, "test_merge": "CLEAN", "rule8_triggers": [], "verdict": "MERGEADO_AUTONOMO", "merge_sha": "16108a1ce67449118e1b2bb80ca60d902bc474d6", "motivo": "Gate Final success — 2 rollbacks unicos desta sessao"}
+    {
+      "number": 2415,
+      "title": "fix(ci): P20 exclui check-file-size-baseline",
+      "branch": "claude_05/amazing-brahmagupta-0xhdur",
+      "draft": false,
+      "test_merge": "CONFLICT",
+      "rule8_triggers": [
+        ".github/workflows/"
+      ],
+      "verdict": "DECISAO_HUMANA",
+      "motivo": "CONFLICT+REGRA8 2workflows"
+    },
+    {
+      "number": 2417,
+      "title": "fix: cors wildcard + workflows cron",
+      "branch": "claude/fix-contract-mag-reader-261019-2110",
+      "draft": true,
+      "test_merge": "NO_MERGE_BASE",
+      "rule8_triggers": [
+        ".github/workflows/"
+      ],
+      "verdict": "FECHAR",
+      "motivo": "Branch orfa sem ancestral com main"
+    },
+    {
+      "number": 2418,
+      "title": "fix(ci): npx gitleaks + allowlist",
+      "branch": "claude/fix-gitleaks-gate-261019-1800",
+      "draft": true,
+      "test_merge": "NO_MERGE_BASE",
+      "rule8_triggers": [
+        ".gitleaks.toml"
+      ],
+      "verdict": "FECHAR",
+      "motivo": "Branch orfa sem ancestral com main"
+    },
+    {
+      "number": 2419,
+      "title": "fix(ci): check-security-definer-acl retries",
+      "branch": "claude/fix-sync-log-ci-261019-1730",
+      "draft": true,
+      "test_merge": "NO_MERGE_BASE",
+      "rule8_triggers": [
+        ".github/workflows/"
+      ],
+      "verdict": "FECHAR",
+      "motivo": "Branch orfa sem ancestral com main"
+    },
+    {
+      "number": 2420,
+      "title": "chore(db): rollback retroativo migration 20261019",
+      "branch": "claude/fix-rollback-261019-1637",
+      "draft": false,
+      "test_merge": "CONFLICT",
+      "rule8_triggers": [
+        "supabase/migrations/",
+        "rollbacks/"
+      ],
+      "verdict": "DECISAO_HUMANA",
+      "motivo": "CONFLICT+REGRA8 migrations+rollbacks ADD/ADD"
+    },
+    {
+      "number": 2422,
+      "title": "chore(docs): MIGRATIONS_SYNC_LOG receipt",
+      "branch": "claude/chore-migrations-sync-log-261019-1600",
+      "draft": true,
+      "test_merge": "NO_MERGE_BASE",
+      "rule8_triggers": [],
+      "verdict": "FECHAR",
+      "motivo": "Branch orfa sem ancestral com main"
+    },
+    {
+      "number": 2428,
+      "title": "fix(ci): gitleaks allowlist mock tokens",
+      "branch": "claude/fix-gitleaks-gate-261024-1930",
+      "draft": true,
+      "test_merge": "CONFLICT",
+      "rule8_triggers": [
+        ".gitleaks.toml"
+      ],
+      "verdict": "DECISAO_HUMANA",
+      "motivo": "CONFLICT+REGRA8 gitleaks"
+    },
+    {
+      "number": 2432,
+      "title": "feat(qa): probe E184 detecta refs legadas",
+      "branch": "claude/feat-probe-e184-241026-2026",
+      "draft": false,
+      "test_merge": "CLEAN",
+      "rule8_triggers": [],
+      "verdict": "JA_EM_MAIN",
+      "motivo": "git cherry = 0 commits unicos"
+    },
+    {
+      "number": 2443,
+      "title": "APROVACAO REQUERIDA: P06/P09/P14/P15/P03 FASE B",
+      "branch": "claude/feat-aprovacao-p06-p09-p14-p15-p03sec-261024-2315",
+      "draft": false,
+      "test_merge": "CLEAN",
+      "rule8_triggers": [],
+      "verdict": "DECISAO_HUMANA",
+      "motivo": "Seguranca FASE B + aprovacao PO"
+    },
+    {
+      "number": 2449,
+      "title": "chore(migrations): E99 mirrors repair-only",
+      "branch": "claude/chore-e99-mirror-update-company-fields-261025-1100",
+      "draft": true,
+      "test_merge": "CONFLICT",
+      "rule8_triggers": [
+        "supabase/migrations/"
+      ],
+      "verdict": "DECISAO_HUMANA",
+      "motivo": "CONFLICT+REGRA8 migrations"
+    },
+    {
+      "number": 2452,
+      "title": "fix(docs): remove prefixo em PR-2441.md",
+      "branch": "claude/fix-gate-1-3-pr2441-refs-261025",
+      "draft": true,
+      "test_merge": "CONFLICT",
+      "rule8_triggers": [],
+      "verdict": "DECISAO_HUMANA",
+      "motivo": "CONFLICT+REGRA10"
+    },
+    {
+      "number": 2469,
+      "title": "fix(ci): e2e-personalization E42 skip ratio",
+      "branch": "claude/fix-ci-workflows-261025-0630",
+      "draft": false,
+      "test_merge": "CONFLICT",
+      "rule8_triggers": [
+        ".github/workflows/e2e-personalization.yml"
+      ],
+      "verdict": "DECISAO_HUMANA",
+      "motivo": "CONFLICT+REGRA8+REGRA10"
+    },
+    {
+      "number": 2503,
+      "title": "docs(ci): RELATORIO_CI Rev21",
+      "branch": "claude/docs-relatorio-ci-rev21-20261025-0911",
+      "draft": true,
+      "test_merge": "CONFLICT",
+      "rule8_triggers": [],
+      "verdict": "DECISAO_HUMANA",
+      "motivo": "CONFLICT+REGRA10"
+    },
+    {
+      "number": 2520,
+      "title": "chore(main): release 1.0.0",
+      "branch": "release-please--branches--main--components--gifts-store",
+      "draft": false,
+      "test_merge": "CLEAN",
+      "rule8_triggers": [],
+      "verdict": "DECISAO_HUMANA",
+      "motivo": "Downgrade 1.2.1->1.0.0 regressao"
+    },
+    {
+      "number": 2532,
+      "title": "docs: atualiza run refs",
+      "branch": "claude/docs-estado-261025-1630",
+      "draft": true,
+      "test_merge": "CONFLICT",
+      "rule8_triggers": [],
+      "verdict": "DECISAO_HUMANA",
+      "motivo": "CONFLICT+REGRA10"
+    },
+    {
+      "number": 2537,
+      "title": "fix: Contract Tests registry ghcr.io",
+      "branch": "claude/fix-contract-tests-registry-ghcr-261025-1705",
+      "draft": false,
+      "test_merge": "CLEAN",
+      "rule8_triggers": [
+        ".github/workflows/contract-tests.yml"
+      ],
+      "verdict": "DECISAO_HUMANA",
+      "motivo": "REGRA8 workflow"
+    },
+    {
+      "number": 2544,
+      "title": "docs: backlog CI CI-001..CI-008",
+      "branch": "claude/chore-backlog-ci-261025-1920",
+      "draft": false,
+      "test_merge": "CLEAN",
+      "rule8_triggers": [],
+      "verdict": "MERGEADO_AUTONOMO",
+      "merge_sha": "1d26da9082d42e825de66f574fbc796587345fdf"
+    },
+    {
+      "number": 2545,
+      "title": "chore: backlog funcionalidades FT-001..FT-416",
+      "branch": "claude/chore-backlog-funcionalidades-261025-1920",
+      "draft": false,
+      "test_merge": "CLEAN",
+      "rule8_triggers": [],
+      "verdict": "MERGEADO_AUTONOMO",
+      "merge_sha": "2a93ba556b58007a001d68efd3c81ead17c19dce"
+    },
+    {
+      "number": 2547,
+      "title": "fix: remove links publicos mortos",
+      "branch": "claude/fix-links-publicos-mortos-261025-1930",
+      "draft": false,
+      "test_merge": "CLEAN",
+      "rule8_triggers": [],
+      "verdict": "DECISAO_HUMANA",
+      "motivo": "Remocao feature 587 delecoes + regressao prs.json"
+    },
+    {
+      "number": 2548,
+      "title": "feat: botao LGPD excluir meus dados",
+      "branch": "claude/feat-lgpd-anonimizar-conta-261025-1950",
+      "draft": false,
+      "test_merge": "CLEAN",
+      "rule8_triggers": [],
+      "verdict": "MERGEADO_AUTONOMO",
+      "merge_sha": "9be832a355f0c98fcd22021b4273b16fa0b1aba5"
+    },
+    {
+      "number": 2549,
+      "title": "chore: backlog Supabase SB-001..SB-018",
+      "branch": "claude/chore-backlog-supabase-261025-1908",
+      "draft": false,
+      "test_merge": "CLEAN",
+      "rule8_triggers": [],
+      "verdict": "MERGEADO_AUTONOMO",
+      "merge_sha": "73df7502f3b582f7966c209ff6a5c202fb1a3f9e"
+    },
+    {
+      "number": 2550,
+      "title": "fix: filtro Publicado Kit Maker KMM-075",
+      "branch": "claude/fix-kit-publicados-261025-2010",
+      "draft": false,
+      "test_merge": "CLEAN",
+      "rule8_triggers": [],
+      "verdict": "DECISAO_HUMANA",
+      "motivo": "Mudanca regra negocio D7 remove ready"
+    },
+    {
+      "number": 2551,
+      "title": "fix: peso 0 no Kit Maker",
+      "branch": "claude/fix-kit-peso-zero-261025-2015",
+      "draft": false,
+      "test_merge": "CLEAN",
+      "rule8_triggers": [],
+      "verdict": "MERGEADO_AUTONOMO",
+      "merge_sha": "97eed25cb177a318fcf63fb3843f02512511d579"
+    },
+    {
+      "number": 2552,
+      "title": "fix: materials-api timeout 20s",
+      "branch": "claude/fix-materials-api-timeout-261025-1912",
+      "draft": false,
+      "test_merge": "CLEAN",
+      "rule8_triggers": [],
+      "verdict": "MERGEADO_AUTONOMO",
+      "merge_sha": "35fdb5793db7461f7fafcdae1effc89ae5cae6b5"
+    },
+    {
+      "number": 2553,
+      "title": "fix: selos sem mock",
+      "branch": "claude/fix-selos-simulados-261025-2025",
+      "draft": false,
+      "test_merge": "CLEAN",
+      "rule8_triggers": [],
+      "verdict": "MERGEADO_AUTONOMO",
+      "merge_sha": "aebd333f3d2d57ee0bb5f1f127bf23f352846cd9"
+    },
+    {
+      "number": 2554,
+      "title": "fix: BI Cliente 360 sem mock",
+      "branch": "claude/fix-bi-mock-flag-261025-2040",
+      "draft": false,
+      "test_merge": "CLEAN",
+      "rule8_triggers": [],
+      "verdict": "MERGEADO_AUTONOMO",
+      "merge_sha": "e6538448e6edc639f9131e809ae265976b43f208"
+    },
+    {
+      "number": 2555,
+      "title": "docs(pendencias): rev29",
+      "branch": "claude_05/nifty-sagan-r23gqh",
+      "draft": false,
+      "test_merge": "CLEAN",
+      "rule8_triggers": [],
+      "verdict": "MERGEADO_AUTONOMO",
+      "merge_sha": "479f2219485e23a5d35896dfe44c9ca4f7c1026f"
+    },
+    {
+      "number": 2556,
+      "title": "chore: backlog banco O1/O3",
+      "branch": "claude/chore-backlog-banco-251025-1915",
+      "draft": false,
+      "test_merge": "CLEAN",
+      "rule8_triggers": [],
+      "verdict": "MERGEADO_AUTONOMO",
+      "merge_sha": "15e10fd88208f9b4cd372b82544fb27892d15a81"
+    },
+    {
+      "number": 2557,
+      "title": "docs: RELATORIO_CI.md P27/P66/P67/P68",
+      "branch": "claude/docs-relatorio-ci-final-20261025-1910",
+      "draft": false,
+      "test_merge": "CLEAN",
+      "rule8_triggers": [],
+      "verdict": "DECISAO_HUMANA",
+      "motivo": "Corrupcao texto RELATORIO_CI criterio5"
+    },
+    {
+      "number": 2572,
+      "title": "docs(analise-prs): rev23",
+      "branch": "claude_05/youthful-ride-vcdchy",
+      "draft": false,
+      "test_merge": "CONFLICT",
+      "rule8_triggers": [],
+      "verdict": "DECISAO_HUMANA",
+      "motivo": "CONFLICT RELATORIO_CI.md + REGRA10 branch outra sessao",
+      "head_sha": "c653bef9"
+    },
+    {
+      "number": 2579,
+      "title": "chore(main): release 1.0.0",
+      "branch": "release-please--branches--main--components--gifts-store",
+      "draft": false,
+      "test_merge": "CLEAN",
+      "rule8_triggers": [],
+      "verdict": "DECISAO_HUMANA",
+      "motivo": "Downgrade 1.2.1->1.0.0 regressao de versao"
+    },
+    {
+      "number": 2580,
+      "title": "fix(banco): rollback header e rollback migration 20260916",
+      "branch": "claude/fix-e23-rollback-261025-2145",
+      "draft": true,
+      "test_merge": "CLEAN",
+      "rule8_triggers": [
+        "supabase/migrations/"
+      ],
+      "verdict": "DECISAO_HUMANA",
+      "motivo": "DRAFT+REGRA8 migrations",
+      "head_sha": "41198d9a"
+    },
+    {
+      "number": 2587,
+      "title": "chore(deps): bump zustand from 4.5.7 to 5.0.16",
+      "branch": "dependabot/npm_and_yarn/zustand-5.0.16",
+      "draft": false,
+      "test_merge": "CLEAN",
+      "rule8_triggers": [],
+      "verdict": "DECISAO_HUMANA",
+      "motivo": "major upgrade 4->5 breaking changes"
+    },
+    {
+      "number": 2588,
+      "title": "chore(deps): bump react-day-picker from 8.10.2 to 10.0.2",
+      "branch": "dependabot/npm_and_yarn/react-day-picker-10.0.2",
+      "draft": false,
+      "test_merge": "CLEAN",
+      "rule8_triggers": [],
+      "verdict": "DECISAO_HUMANA",
+      "motivo": "major upgrade 8->10 breaking changes + Gate Final FAILED"
+    },
+    {
+      "number": 2594,
+      "title": "chore(ci): bump actions/setup-node from 4 to 7",
+      "branch": "dependabot/github_actions/actions/setup-node-7",
+      "draft": false,
+      "test_merge": "CLEAN",
+      "rule8_triggers": [
+        ".github/workflows/"
+      ],
+      "verdict": "DECISAO_HUMANA",
+      "motivo": "REGRA8 workflow",
+      "head_sha": "1664eeb8"
+    },
+    {
+      "number": 2597,
+      "title": "fix: corrige 4 workflows CI falhando",
+      "branch": "claude_04/beautiful-gates-bvocz5",
+      "draft": false,
+      "test_merge": "CLEAN",
+      "rule8_triggers": [
+        ".github/workflows/"
+      ],
+      "verdict": "DECISAO_HUMANA",
+      "motivo": "REGRA8 workflows x4 + REGRA10 branch outra sessao",
+      "head_sha": "6c4d3907"
+    },
+    {
+      "number": 2600,
+      "title": "docs(analise-prs): rev54 — 16 PRs esta sessao",
+      "branch": "claude_04/optimistic-bohr-qplx94",
+      "draft": true,
+      "test_merge": "CLEAN",
+      "rule8_triggers": [],
+      "verdict": "DRAFT_NOMERGE",
+      "motivo": "DRAFT analise-prs/ docs internos desta sessao"
+    },
+    {
+      "number": 2604,
+      "title": "fix(ci): continue-on-error psql steps snapshot",
+      "branch": "claude_04/charming-darwin-g1nvj2",
+      "draft": true,
+      "test_merge": "CLEAN",
+      "rule8_triggers": [
+        ".github/workflows/"
+      ],
+      "verdict": "DECISAO_HUMANA",
+      "motivo": "DRAFT+REGRA8 workflow schema-snapshot-export",
+      "head_sha": "e33d2fe4"
+    },
+    {
+      "number": 2605,
+      "title": "fix(tests): 4 falhas unit tests + 1 threshold E2E",
+      "branch": "claude/fix-unit-tests-261027-0113",
+      "draft": false,
+      "test_merge": "CONFLICT",
+      "rule8_triggers": [],
+      "verdict": "SUPERSEDED",
+      "motivo": "Conteudo portado para #2620 SHA 3aabc4187 + REGRA10",
+      "head_sha": "9bfead14"
+    },
+    {
+      "number": 2612,
+      "title": "fix(test): waitFor timeout 15s->25s useReplenishment",
+      "branch": "claude/fix-replenishment-timeout-261027-0430",
+      "draft": true,
+      "test_merge": "CLEAN",
+      "rule8_triggers": [],
+      "verdict": "DRAFT_NOMERGE",
+      "motivo": "DRAFT apenas test timeout solucao paliativa",
+      "head_sha": "32804a14"
+    },
+    {
+      "number": 2619,
+      "title": "fix(health-check): timeout 5s em getCredential evita hang",
+      "branch": "claude/fix-health-check-cred-timeout-271027-0630",
+      "draft": true,
+      "test_merge": "CLEAN",
+      "rule8_triggers": [],
+      "verdict": "SUPERSEDED",
+      "motivo": "Supersedida por #2625 SHA 83c81d58"
+    },
+    {
+      "number": 2621,
+      "title": "fix(migrations): rollback files 7 migrations 20261027 E058",
+      "branch": "claude/fix-rollbacks-migrations-261027-1305",
+      "draft": false,
+      "test_merge": "CLEAN",
+      "rule8_triggers": [
+        "supabase/rollbacks/"
+      ],
+      "verdict": "MERGEADO_SESSAO_EXTERNA",
+      "merge_sha": "06c221db520b446eee41ce990c110830be5da13c",
+      "motivo": "Mergeado por session_01PE8GzVYqxJM25xzvLuLYhW"
+    },
+    {
+      "number": 2622,
+      "title": "fix(rollbacks): rollbacks 9 migrations + manifest fix",
+      "branch": "claude/fix-rollbacks-20261027-271027-1000",
+      "draft": false,
+      "test_merge": "DIRTY",
+      "rule8_triggers": [
+        "supabase/rollbacks/"
+      ],
+      "verdict": "BRANCH_DIRTY",
+      "motivo": "ADD/ADD conflict apos merge de #2621"
+    },
+    {
+      "number": 2625,
+      "title": "fix(edge-functions): health-check timeout + manifest xbz",
+      "branch": "claude/fix-edge-authz-xbz-health-check-271027-1100",
+      "draft": false,
+      "test_merge": "CLEAN",
+      "rule8_triggers": [
+        "supabase/functions/"
+      ],
+      "verdict": "MERGEADO_SESSAO_EXTERNA",
+      "merge_sha": "83c81d5859bef375af76a918e7ab01ce20a7944a",
+      "merged_at": "2026-10-27T08:30:52Z",
+      "motivo": "Mergeado por session_01Knr9enFAok62bHihBK1UUP"
+    },
+    {
+      "number": 2627,
+      "title": "fix(rollbacks): rollbacks 2 migrations 20261027 233000+234500",
+      "branch": "claude/fix-rollbacks-2m-271027-0800",
+      "draft": false,
+      "test_merge": "CLEAN",
+      "rule8_triggers": [],
+      "verdict": "MERGEADO_AUTONOMO",
+      "merge_sha": "16108a1ce67449118e1b2bb80ca60d902bc474d6",
+      "motivo": "Gate Final success — 2 rollbacks unicos desta sessao"
+    },
+    {
+      "number": 2628,
+      "title": "fix(e2e): atualiza selectors E2E do simulador",
+      "branch": "claude/fix-e2e-simulator-selectors-271027-0846",
+      "draft": false,
+      "test_merge": "CLEAN",
+      "rule8_triggers": [],
+      "verdict": "MERGEADO_AUTONOMO",
+      "merge_sha": "02e503365552d8d161e96917277170fff0af92dc",
+      "motivo": "Teste E2E apenas; Gate Final green"
+    },
+    {
+      "number": 2629,
+      "title": "chore: PENDENCIAS.md §4 e RELATORIO_CI (versão antiga)",
+      "branch": "claude/chore-deploy-blocker-261027-old",
+      "draft": true,
+      "test_merge": "N/A",
+      "rule8_triggers": [],
+      "verdict": "FECHADO_EXTERNO",
+      "motivo": "PR fechada externamente antes de rev59"
+    },
+    {
+      "number": 2630,
+      "title": "chore: adiciona §7 sentinel ao PENDENCIAS.md",
+      "branch": "claude/chore-sentinel-pendencias-271027",
+      "draft": false,
+      "test_merge": "CLEAN",
+      "rule8_triggers": [],
+      "verdict": "MERGEADO_SESSAO_EXTERNA",
+      "merge_sha": "3f5d94dfee055d6d51b310756b170ac8a8476752",
+      "motivo": "Mergeado por sessão externa"
+    },
+    {
+      "number": 2631,
+      "title": "chore: atualiza PENDENCIAS §4 e RELATORIO_CI — bloqueio deploy",
+      "branch": "claude/chore-deploy-blocker-261027-1007",
+      "draft": true,
+      "test_merge": "CLEAN",
+      "rule8_triggers": [],
+      "verdict": "DRAFT_NOMERGE",
+      "motivo": "Draft + REGRA#10 (session_014RkohRYagi3sPiL8jtgot4)"
+    },
+    {
+      "number": 2632,
+      "title": "fix(ci): aumenta timeout do job export de 10 para 30 min",
+      "branch": "claude/fix-export-timeout-261027-1400",
+      "draft": false,
+      "test_merge": "CLEAN",
+      "rule8_triggers": [
+        ".github/workflows/"
+      ],
+      "verdict": "DECISAO_HUMANA",
+      "motivo": "REGRA#8 workflow + REGRA#10"
+    },
+    {
+      "number": 2633,
+      "title": "fix(tests): corrige 3 falhas vitest no CI Security",
+      "branch": "claude/fix-ci-tests-261027-external",
+      "draft": false,
+      "test_merge": "CLEAN",
+      "rule8_triggers": [],
+      "verdict": "MERGEADO_SESSAO_EXTERNA",
+      "merge_sha": "1ce29cf2f95ecf851eef580974130a46f5a4f53a",
+      "motivo": "Mergeado por session_01Knr9enFAok62bHihBK1UUP"
+    },
+    {
+      "number": 2634,
+      "title": "fix(ci): corrige 3 races de teste (playwright, safeAuthCall, LocationPanel)",
+      "branch": "claude/fix-ci-tests-261027-1005",
+      "draft": true,
+      "test_merge": "CLEAN",
+      "rule8_triggers": [],
+      "verdict": "SUPERSEDED",
+      "motivo": "Supersedida por #2633 + Draft + REGRA#10"
+    },
+    {
+      "number": 2635,
+      "title": "fix(ci): Gate 1.13 — trata HTTP 400 pós-timeout como soft",
+      "branch": "claude/fix-gate-1-13-http400-261027-1416",
+      "draft": true,
+      "test_merge": "CLEAN",
+      "rule8_triggers": [
+        "scripts/check-policies-baseline.mjs"
+      ],
+      "verdict": "DRAFT_NOMERGE",
+      "motivo": "Draft + REGRA#10 + gate de segurança RLS requer aprovação PO"
+    }
   ]
 }
