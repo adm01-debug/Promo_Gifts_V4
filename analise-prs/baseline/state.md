@@ -1,13 +1,13 @@
-# Baseline — rev31 (sessão f0ceb220, rev31)
+# Baseline — rev86 (sessão f0ceb220, rev86)
 **Data:** 2026-10-27
-**main HEAD:** `06fe47fd3a992bf2a39ab356c9d8c357c5f2a27e`
-**Commit:** fix(e2e): corrige falhas de E2E em mock auth (no-org) e baselines ausentes (push direto por session_01Knr9enFAok62bHihBK1UUP)
-**HEAD anterior (rev30):** `00eeec9ac2c2397c5814f9d17dd0c86ad36a5c0c`
+**main HEAD:** `e0b569f18cdfc8c7bc63466e567597cf799aaae7`
+**Commit:** fix(e2e): aguarda spinner de auth do ProtectedRoute antes de interagir com conteúdo protegido (PR #2660, session_01Knr9enFAok62bHihBK1UUP)
+**HEAD anterior (rev85):** `2fafe8edfaa246221a4b427d5728512ba9ff199e`
 
 ## Gate Final
-- **Run #40218104943** — SHA `c113300c` — conclusion=**success** ✅ (2026-10-25T17:56:46Z)
-  - 17 jobs passaram: Gate 0, Gate 0.5, Gate 1 (sub-gates 1.1–1.18), Gate 2, Gate 2.5, Gate 3, Gate 5, Gate 5.5, Gate 6
-- **Nota:** SHA `00eeec9ac` (current main) não disparou novo CI run (commit foi E2E-only, não toca `src/` de forma a quebrar gates). Baseline de referência = último run success em SHA `c113300c`.
+- **Run #40572329584** — SHA `e0b569f18` — conclusion=**success** ✅ (2026-10-27T19:57:32Z)
+  - Gate Final — Deploy Ready: SUCCESS
+- **Nota:** PR #2660 (fix(e2e) auth spinner ProtectedRoute) mergeada externamente por session_01Knr9enFAok62bHihBK1UUP. Gate Final confirmado SUCCESS.
 
 ## Testes
 - **429 testes / 0 falhas** — confirmado via logs Gate Final run #40218104943

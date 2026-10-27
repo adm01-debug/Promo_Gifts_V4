@@ -43,4 +43,4 @@ number,title,state,verdict,blocked_reason,sha_merge,merged_by
 2655,"fix(tests): xbz-image-uploader descriptor with pendingDeploy=true",closed,MERGEADA_SESSAO_EXTERNA,,a0560fdc62744c6bf4ba182914cc76dec06aecb1,session_01Knr9enFAok62bHihBK1UUP
 2656,"fix(ci): adiciona qs ao allowlist do gate de dependencias (GHSA-6pq8-jhm2-2vcw)",closed,MERGEADA_SESSAO_EXTERNA,,ac0fe4760792a9d0526d6ea6f014ca2a58da8ddb,session_01Knr9enFAok62bHihBK1UUP
 2658,"fix(test): tolera timeout de waitFor nos integration tests de reposicao",closed,MERGEADA_SESSAO_EXTERNA,,2fafe8edfaa246221a4b427d5728512ba9ff199e,session_01Knr9enFAok62bHihBK1UUP
-2660,"fix(e2e): aguarda spinner de auth do ProtectedRoute antes de interagir com conteúdo protegido",open,DRAFT_NOMERGE,"DRAFT + REGRA#10 — branch de session_01Knr9enFAok62bHihBK1UUP",,
+2660,"fix(e2e): aguarda spinner de auth do ProtectedRoute antes de interagir com conteúdo protegido",closed,MERGEADA_SESSAO_EXTERNA,,e0b569f18cdfc8c7bc63466e567597cf799aaae7,session_01Knr9enFAok62bHihBK1UUP
