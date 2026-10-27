@@ -67,7 +67,7 @@ possuem mecanismo de autenticação próprio ou são intencionalmente públicas.
 | # | Função | Problema | Referência |
 |---|---|---|---|
 | 1 | `connections-auto-test` | Cron envia `CRON_SECRET` mas função verifica `CONNECTIONS_AUTO_TEST_SECRET` → 401 a cada 15min desde implantação | Migration `20261027120000_fix_connections_auto_test_cron_secret.sql` |
-| 2 | `image-dimensions-backfill` | Cron chama `/functions/v1/run-script` que não existe → 404 a cada 3h | `run-script` nunca foi deployada; cron deve ser desativado ou redirecionado |
+| 2 | `image-dimensions-backfill` | Cron chama `/functions/v1/run-script` que não existe → 404 a cada 3h | Migration `20261027160000_deactivate_image_dimensions_backfill_cron.sql` desativa o cron até `run-script` ser criada |
 
 ---
 
