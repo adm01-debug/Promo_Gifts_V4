@@ -4,30 +4,142 @@
   "status": "CONCLUIDO",
   "branch_trabalho": "claude_pink/sleepy-cannon-h000nc",
   "main_head_inicio": "e0b569f18",
-  "main_head_fim": "e0b569f18",
-  "prs_analisadas": 12,
-  "prs_mergeadas": 0,
-  "prs_skip_draft": 3,
-  "prs_fechar": 9,
+  "main_head_fim": "4c5fdd72fc301cdcd65851af30204881bab710c4",
+  "prs_analisadas": 13,
+  "prs_mergeadas": 1,
+  "prs_fechadas_pelo_po": 7,
+  "prs_skip_draft": 4,
+  "prs_nao_mergeadas_outros_motivos": 1,
   "ci_baseline": {
     "run_id": "40572329584",
     "sha": "e0b569f18",
     "status": "success",
+    "gate": "Gate Final - Deploy Ready",
+    "inclui_lint": true,
     "tsc_erros": 0,
-    "eslint_erros": 0
+    "eslint_erros": 0,
+    "unit_tests": 1309,
+    "unit_tests_falhas": 0
   },
+  "merge_realizado": {
+    "pr": 2588,
+    "merge_sha": "4c5fdd72fc301cdcd65851af30204881bab710c4",
+    "metodo": "squash",
+    "gate_final_pos_merge": "NAO_EXECUTADO (deploy-gates.yml nao triggerou em 4c5fdd72 — apenas branch-protection-sentinel=success, deployment-failure-alert=skipped)",
+    "vercel_deploy": "skipped (sem falha detectada)",
+    "data": "2026-10-27"
+  },
+  "worktrees_criados": ["wt-2588", "wt-2600", "wt-2631", "wt-2646"],
+  "worktrees_removidos": ["wt-2588", "wt-2600", "wt-2631", "wt-2646"],
   "analise_completa": [
-    {"pr": 2420, "veredicto": "FECHAR", "evidencia": "rollback em main"},
-    {"pr": 2572, "veredicto": "FECHAR", "evidencia": "dirty+rebaseable:false"},
-    {"pr": 2579, "veredicto": "FECHAR", "evidencia": "stale bot"},
-    {"pr": 2580, "veredicto": "SKIP", "evidencia": "draft"},
-    {"pr": 2588, "veredicto": "FECHAR", "evidencia": "major bump sem adaptação"},
-    {"pr": 2600, "veredicto": "SKIP", "evidencia": "draft+NÃO_MERGEAR"},
-    {"pr": 2605, "veredicto": "FECHAR", "evidencia": "conteúdo em main via #2616/#2614/#2620"},
-    {"pr": 2622, "veredicto": "FECHAR", "evidencia": "rollbacks+manifest em main"},
-    {"pr": 2631, "veredicto": "SKIP", "evidencia": "draft"},
-    {"pr": 2645, "veredicto": "FECHAR", "evidencia": "commit 22ba938 em main"},
-    {"pr": 2646, "veredicto": "FECHAR", "evidencia": "workflows proibido+CI falhou"},
-    {"pr": 2653, "veredicto": "FECHAR", "evidencia": "dirty+rebaseable:false"}
+    {
+      "pr": 2420,
+      "titulo": "feat(rollbacks): cria rollback 20261019",
+      "veredicto": "FECHADA-PELO-PO",
+      "motivo": "rollback 20261019000000 ja em main (e0b569f18)",
+      "fechada_em": "2026-10-27",
+      "diff_lido": true
+    },
+    {
+      "pr": 2572,
+      "titulo": "fix(workflows): corrige deploy-gates",
+      "veredicto": "FECHADA-PELO-PO",
+      "motivo": "mergeable:false + rebaseable:false + toca .github/workflows (proibido)",
+      "fechada_em": "2026-10-27",
+      "diff_lido": true
+    },
+    {
+      "pr": 2579,
+      "titulo": "chore(release): release 1.0.0",
+      "veredicto": "FECHADA-PELO-PO",
+      "motivo": "versao regressiva 1.0.0 vs main 1.2.1",
+      "fechada_em": "2026-10-27",
+      "diff_lido": true
+    },
+    {
+      "pr": 2580,
+      "titulo": "feat(rollbacks): migration e23 force rls + rollback",
+      "veredicto": "BLOQUEADA-DRAFT",
+      "motivo": "DRAFT + toca supabase/migrations/ (requer aprovacao PO REGRA#8)",
+      "diff_lido": true,
+      "diff_arquivos": 2,
+      "diff_descricao": "supabase/migrations/20260916202000_e23_force_rls_secret_tables.sql (add rollback comment) + supabase/rollbacks/20260916202000_rollback.sql (novo, 8 linhas)"
+    },
+    {
+      "pr": 2588,
+      "titulo": "chore(deps): bump react-day-picker v8->v10",
+      "veredicto": "MERGEADA",
+      "merge_sha": "4c5fdd72fc301cdcd65851af30204881bab710c4",
+      "metodo": "squash",
+      "data_merge": "2026-10-27",
+      "diff_lido": true,
+      "nota": "Major bump v8->v10 (dependabot). Mergeada com base em: mergeable:true, merge_test CLEAN, sem conflito. Gate Final nao executou em 4c5fdd72 (deploy-gates.yml nao triggerou); branch-protection-sentinel=success."
+    },
+    {
+      "pr": 2600,
+      "titulo": "docs(analise-prs): RELATORIO_PRS.md rev50 (sessao anterior)",
+      "veredicto": "BLOQUEADA-DRAFT",
+      "motivo": "DRAFT + body 'NAO MERGEAR' + branch de outra sessao de agente (REGRA#10)",
+      "diff_lido": true,
+      "diff_arquivos": "30+ (todos em analise-prs/ — sem codigo de produto)",
+      "diff_descricao": "RELATORIO_PRS.md, baseline/*, clusters.md, dossies/PR-2420..PR-2604.md — zero .github/workflows, zero client.ts"
+    },
+    {
+      "pr": 2605,
+      "titulo": "fix(mockup): corrige crash NaN + GravarFormato",
+      "veredicto": "FECHADA-PELO-PO",
+      "motivo": "conteudo em main via PRs #2616/#2614/#2620",
+      "fechada_em": "2026-10-27",
+      "diff_lido": true
+    },
+    {
+      "pr": 2622,
+      "titulo": "feat(xbz-image-uploader): edge function + rollbacks",
+      "veredicto": "FECHADA-PELO-PO",
+      "motivo": "14 rollbacks 20261027*.sql em main + xbz-image-uploader no manifesto (commit a0560fd)",
+      "fechada_em": "2026-10-27",
+      "diff_lido": true
+    },
+    {
+      "pr": 2631,
+      "titulo": "docs(pendencias): bloqueio edge-functions deploy",
+      "veredicto": "BLOQUEADA-DRAFT",
+      "motivo": "DRAFT",
+      "diff_lido": true,
+      "diff_arquivos": 2,
+      "diff_descricao": "PENDENCIAS.md (adiciona §4 sobre bloqueio environment:production) + RELATORIO_CI.md (atualiza §5/6/7/8, adiciona §10 — zero .github/workflows, zero client.ts)"
+    },
+    {
+      "pr": 2645,
+      "titulo": "chore(migrations): receipt 20261027140000",
+      "veredicto": "FECHADA-PELO-PO",
+      "motivo": "receipt 20261027140000 ja em main via commit 22ba938",
+      "fechada_em": "2026-10-27",
+      "diff_lido": true
+    },
+    {
+      "pr": 2646,
+      "titulo": "ci(deploy-gates): Gate 1.13.3 + Gate 1.19",
+      "veredicto": "NAO_MERGEADA",
+      "motivo": "toca .github/workflows/deploy-gates.yml (proibido pela instrucao da tarefa) + Gate Final = FAILURE no PR head",
+      "diff_lido": true
+    },
+    {
+      "pr": 2653,
+      "titulo": "fix(analise-prs): correcoes dossie PR-2420",
+      "veredicto": "FECHADA-PELO-PO",
+      "motivo": "mergeable:false + rebaseable:false — branch orfao de sessao anterior",
+      "fechada_em": "2026-10-27",
+      "diff_lido": true
+    },
+    {
+      "pr": 2662,
+      "titulo": "docs(analise-prs): analise exaustiva de PRs abertas (esta sessao)",
+      "veredicto": "BLOQUEADA-DRAFT",
+      "motivo": "DRAFT + branch de trabalho desta sessao",
+      "diff_lido": true,
+      "diff_arquivos": "19 (todos em analise-prs/ — sem codigo de produto)",
+      "diff_descricao": "RELATORIO_PRS.md, baseline/lint.txt, baseline/typecheck.txt, baseline/unit-tests.txt, baseline/tsc-errors.txt, dossies/PR-2420..PR-2653.md, progresso.json, prs.csv, prs.json — zero .github/workflows, zero client.ts"
+    }
   ]
 }
