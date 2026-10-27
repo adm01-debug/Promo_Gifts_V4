@@ -1835,12 +1835,12 @@ Não é possível aumentar cobertura de teste sem identificar quais são os 6 ar
 
 **Workflow:** `CI - Replenishment Module Quality Gate`  
 **Run com falha:** [#40418413543](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40418413543) (commit `7caa97999`)  
-**Commit de fix:** `58afebb52` (2026-10-26, branch `claude_04/beautiful-gates-bvocz5`)  
+**Commit de fix definitivo:** `1e8ea09ad` (2026-10-26, branch `claude_04/beautiful-gates-bvocz5`)  
 **Categoria:** ESLint regression — `@typescript-eslint/only-throw-error`  
 **Sessão:** session_014RkohRYagi3sPiL8jtgot4 (2026-10-26)
 
 **Causa raiz:**  
-`src/components/privacy/AnonymizeAccountDialog.tsx` linha 48: `throw error` onde `error` é o objeto retornado por `invokeEdge()` — pode não ser instância de `Error`. A regra ESLint `@typescript-eslint/only-throw-error` rejeita `throw` de non-Error.
+`src/components/privacy/AnonymizeAccountDialog.tsx` linha 48: `throw error` onde `error` é `InvokeCompatError` — interface plain `{ message: string; name: string; status: number; request_id: string }` que NÃO extends `Error`. A regra ESLint `@typescript-eslint/only-throw-error` rejeita `throw` de non-Error, e também rejeita `throw error instanceof Error ? error : new Error(String(error))` porque o tipo estático inclui `InvokeCompatError`.
 
 **Erro exato:**
 ```
@@ -1849,13 +1849,16 @@ src/components/privacy/AnonymizeAccountDialog.tsx [@typescript-eslint/only-throw
 ESLint baseline gate [full] — atual: 1 erros, 0 warnings · baseline: 0 erros
 ```
 
-**Fix aplicado:**
+**Fix definitivo aplicado (commit `1e8ea09ad`):**
 ```diff
 - if (error) throw error;
-+ if (error) throw error instanceof Error ? error : new Error(String(error));
++ if (error) throw new Error(error.message);
 ```
+`error.message` é `string` (propriedade de `InvokeCompatError`). `new Error(error.message)` é instância de `Error` — satisfaz `only-throw-error` sem condicionais.
 
-**Resultado esperado:** CI Replenishment passa com `success` no commit `58afebb52`.
+**Nota:** commit `58afebb52` tentou `instanceof Error ? error : new Error(String(error))` mas ainda violava a regra porque o tipo estático de `error` (do `invokeEdge` return) inclui `InvokeCompatError`, que não extends `Error`. O fix correto é `new Error(error.message)` direto.
+
+**Resultado:** Deploy Gates run `40423385869` em `in_progress` no commit HEAD `79e545379` (contém `1e8ea09ad`).
 
 ---
 
