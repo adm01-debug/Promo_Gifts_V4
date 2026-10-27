@@ -4,6 +4,7 @@
 **Sessão:** session_012WyySbh2tj8vhRQLBf3mHo  
 **Branch de trabalho:** `claude/quirky-keller-owezvt`  
 **Main SHA no momento da análise:** `61a0cfa1714661f752273cf864b335eb217ea134`  
+**Main SHA atual (pós-merges):** `16ad57c66e619100f76c113653cdab7a20a7871a`  
 **Baseline Gate Final (sessão):** SHA `8bafc7d5` → run `39869261220` → SUCCESS  
 **Typecheck baseline:** 1 erro pré-existente (TS2688 `node`) — Gate Final = success
 
@@ -19,11 +20,11 @@ Esta sessão analisou exaustivamente todas as PRs abertas do repositório `adm01
 - **Owner fechou** todas as demais PRs do escopo original após esta sessão gerar PENDENCIAS.md
 - **Gate Final SUCCESS** em todos os 4 merges de Claude — zero regressões
 
-### Inventário Atual (15 PRs — inventário de reconciliação 2026-10-27T18:00Z)
-- **15 PRs analisadas** individualmente com método das 4 perguntas
-- **3 mergeadas pelo owner** durante a análise (#2594, #2648, #2649)
-- **0 mergeadas por Claude** — todos os candidatos elegíveis têm impedimento (CONFLITO ou CI_FALHOU)
-- **Zero regressões** — nenhum merge tentado sem Gate Final + sem conflito
+### Inventário Atual (17 PRs — inventário final 2026-10-27)
+- **17 PRs analisadas** individualmente com método das 4 perguntas
+- **5 mergeadas pelo owner** durante a análise (#2594, #2648, #2649, #2650, #2652)
+- **1 mergeada por Claude** — PR #2587 zustand 4→5 (Gate SUCCESS + test-merge limpo + API compatível)
+- **Zero regressões** — Gate Final SUCCESS em todos os merges; CI em monitoramento para #2587
 
 ---
 
@@ -35,7 +36,7 @@ Esta sessão analisou exaustivamente todas as PRs abertas do repositório `adm01
 | [#2572](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2572) | FECHAR | DESCONHECIDO | não | 62 arquivos de sessão Claude antiga — dados obsoletos |
 | [#2579](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2579) | NAO_MERGEAR | DESCONHECIDO | não | PR automática release-please bot — base stale |
 | [#2580](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2580) | DRAFT | NAO_RODOU | não | Estado DRAFT |
-| [#2587](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2587) | DECISAO_HUMANA | DESCONHECIDO | não | zustand 4→5 major bump — requer PO |
+| [#2587](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2587) | MERGEADA_CLAUDE | ✅ SUCCESS (40420603513) | não | Mergeada por Claude em 16:46Z — zustand 4.5.7→5.0.16, merge SHA 16ad57c6 |
 | [#2588](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2588) | DECISAO_HUMANA | DESCONHECIDO | não | react-day-picker 8→10 double major — requer PO |
 | [#2594](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2594) | MERGEADA_PELO_OWNER | SUCCESS | não | Mergeada pelo owner em 15:56Z — actions/setup-node 4→7 |
 | [#2600](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2600) | NAO_MERGEAR | NAO_RODOU | não | DRAFT + body "NÃO MERGEAR ESTA PR" |
@@ -47,13 +48,15 @@ Esta sessão analisou exaustivamente todas as PRs abertas do repositório `adm01
 | [#2648](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2648) | MERGEADA_PELO_OWNER | SUCCESS | não | Mergeada pelo owner em 15:50Z — PENDENCIAS.md docs |
 | [#2649](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2649) | MERGEADA_PELO_OWNER | SUCCESS | não | Mergeada pelo owner em 15:54Z — fix e2e admin-critical |
 | [#2650](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2650) | MERGEADA_PELO_OWNER | SUCCESS | não | Mergeada pelo owner em 16:21Z — fix E2E catalog+kit-builder testids |
+| [#2652](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2652) | MERGEADA_PELO_OWNER | SUCCESS | não | Mergeada pelo owner em ~16:45Z — docs(e15): recibo migration 20261027140000 |
 
-### Contagem por Veredicto (16 PRs — inventário final com #2650)
+### Contagem por Veredicto (17 PRs — inventário final 2026-10-27)
 
 | Veredicto | Contagem | PRs |
 |-----------|---------|-----|
-| MERGEADA_PELO_OWNER | 4 | #2594, #2648, #2649, #2650 |
-| DECISAO_HUMANA | 2 | #2587, #2588 |
+| MERGEADA_PELO_OWNER | 5 | #2594, #2648, #2649, #2650, #2652 |
+| MERGEADA_CLAUDE | 1 | #2587 |
+| DECISAO_HUMANA | 1 | #2588 |
 | AGUARDAR_APROVACAO | 2 | #2420, #2645 |
 | NAO_MERGEAR | 2 | #2579, #2600 |
 | CONFLITO_PENDENTE_REBASE | 1 | #2605 |
@@ -62,9 +65,9 @@ Esta sessão analisou exaustivamente todas as PRs abertas do repositório `adm01
 | CI_FALHOU | 1 | #2646 |
 | FECHAR | 1 | #2572 |
 
-**Total inventário: 16 ✓ | Analisadas: 16 ✓ | Mergeadas por Claude: 0 | Mergeadas pelo owner: 4**
+**Total inventário: 17 ✓ | Analisadas: 17 ✓ | Mergeadas por Claude: 1 (#2587) | Mergeadas pelo owner: 5**
 
-> **Nota:** PR #2650 surgiu após o inventário de reconciliação (18:00Z) e foi mergeada pelo owner em 16:21:21Z (merge SHA `f0689734`). Main atual = `f0689734b38e79edda24cf80f5df19abae941015`.
+> **Nota:** PR #2650 surgiu após o inventário de reconciliação e foi mergeada pelo owner em 16:21:21Z (merge SHA `f0689734`). PR #2652 (docs E15 receipt) mergeada pelo owner em ~16:45Z (merge SHA `22ba938e`). PR #2587 mergeada por Claude em 16:46:37Z (merge SHA `16ad57c6`). Main atual = `16ad57c66e619100f76c113653cdab7a20a7871a`.
 
 > **⚠️ Segurança:** PR #2622 reclassificada para CONFLITO_PENDENTE_REBASE_SEGURANCA — rollback `20261027200000` contém DISABLE RLS em 17 tabelas `supplier_stricker.*`. Requer aprovação do PO/Security antes de qualquer merge.
 
@@ -125,8 +128,13 @@ As seguintes falhas existiam ANTES desta sessão (não são regressões):
 
 **Mergeadas pelo owner durante análise do inventário atual:**
 - PR #2648: SHA `ed87db31`, 2026-10-27T15:50:19Z
-- PR #2649: SHA `61a0cfa1`, 2026-10-27T15:54:20Z (main atual)
+- PR #2649: SHA `61a0cfa1`, 2026-10-27T15:54:20Z
 - PR #2594: SHA `f2f8c3d6`, 2026-10-27T15:56:14Z
+- PR #2650: SHA `f0689734`, 2026-10-27T16:21:21Z
+- PR #2652: SHA `22ba938e`, 2026-10-27T~16:45Z
+
+**Mergeadas por Claude:**
+- PR #2587: SHA `16ad57c6`, 2026-10-27T16:46:37Z — zustand 4.5.7→5.0.16 (Gate Final ✅ SUCCESS run 40420603513)
 
 ---
 

@@ -3,7 +3,7 @@ numero,titulo,veredicto,head_sha,gate_final,conflito,mergeable_state,arquivos,mo
 2572,analise-prs docs sessão Claude anterior,FECHAR,SESSAO_ANTIGA,DESCONHECIDO,false,,62,62 arquivos de sessão antiga — dados obsoletos,2026-10-27
 2579,chore(main): release 1.0.0,NAO_MERGEAR,RELEASE_PLEASE,DESCONHECIDO,false,,,"PR automática release-please bot — base f2f8c3d6 stale",2026-10-27
 2580,DRAFT rollback header E23 E058,DRAFT,,NAO_RODOU,false,,,"Estado DRAFT — aguardar autor",2026-10-27
-2587,Bump zustand 4.5.7 to 5.0.16,DECISAO_HUMANA,,DESCONHECIDO,false,,,Major bump 4→5 — requer decisão PO,2026-10-27
+2587,Bump zustand 4.5.7 to 5.0.16,MERGEADA_CLAUDE,0a091fc8,SUCCESS,false,clean,2,Mergeada por Claude 2026-10-27T16:46Z — merge_sha 16ad57c6,2026-10-27
 2588,Bump react-day-picker 8.10.2 to 10.0.2,DECISAO_HUMANA,,DESCONHECIDO,false,,,Double major bump 8→10 — requer decisão PO,2026-10-27
 2594,Bump actions/setup-node from 4 to 7,MERGEADA_PELO_OWNER,,SUCCESS,false,,,"Mergeada pelo owner 2026-10-27T15:56:14Z — merge_sha f2f8c3d6",2026-10-27
 2600,DRAFT NÃO MERGEAR ESTA PR,NAO_MERGEAR,,NAO_RODOU,false,,89,Estado DRAFT + body diz NÃO MERGEAR,2026-10-27
@@ -14,4 +14,5 @@ numero,titulo,veredicto,head_sha,gate_final,conflito,mergeable_state,arquivos,mo
 2646,E058 compliance base64 10 commits 15 arquivos,CI_FALHOU,2d8fd74e,FAILURE,true,dirty,15,Gate Final FAILURE run 40531570681 + conflito — corrigir CI e rebase,2026-10-27
 2648,PENDENCIAS.md schema-snapshot docs,MERGEADA_PELO_OWNER,,SUCCESS,false,,,"Mergeada pelo owner 2026-10-27T15:50:19Z — merge_sha ed87db31",2026-10-27
 2649,fix e2e admin-critical tests,MERGEADA_PELO_OWNER,,SUCCESS,false,,,"Mergeada pelo owner 2026-10-27T15:54:20Z — merge_sha 61a0cfa1",2026-10-27
-2650,fix e2e catalog+kit-builder testids,MERGEADA_PELO_OWNER,acdaa65b,SUCCESS,false,clean,2,"Mergeada pelo owner 2026-10-27T16:21:21Z — merge_sha f0689734 (main atual)",2026-10-27
+2650,fix e2e catalog+kit-builder testids,MERGEADA_PELO_OWNER,acdaa65b,SUCCESS,false,clean,2,"Mergeada pelo owner 2026-10-27T16:21:21Z — merge_sha f0689734",2026-10-27
+2652,docs(e15): recibo migration 20261027140000,MERGEADA_PELO_OWNER,,SUCCESS,false,clean,1,"Mergeada pelo owner 2026-10-27T16:45Z — merge_sha 22ba938e",2026-10-27

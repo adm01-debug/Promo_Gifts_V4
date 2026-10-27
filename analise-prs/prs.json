@@ -2,17 +2,19 @@
   "inventario_atual": {
     "data": "2026-10-27",
     "sessao": "session_012WyySbh2tj8vhRQLBf3mHo",
-    "main_sha": "f0689734b38e79edda24cf80f5df19abae941015",
-    "main_sha_anterior": "61a0cfa1714661f752273cf864b335eb217ea134",
-    "total_analisadas": 16,
-    "nota": "15 PRs abertas no inventário de reconciliação 2026-10-27T18:00Z. #2594, #2648, #2649 foram mergeadas pelo owner durante a análise. #2650 surgiu após o inventário e foi mergeada pelo owner em 2026-10-27T16:21:21Z. Total 16 PRs analisadas, 12 ainda abertas.",
+    "main_sha": "16ad57c66e619100f76c113653cdab7a20a7871a",
+    "main_sha_anterior": "22ba938e02ae48eee34d77176a4d5dee6cf8e14b",
+    "total_analisadas": 17,
+    "nota": "15 PRs abertas no inventário de reconciliação 2026-10-27T18:00Z. #2594, #2648, #2649 foram mergeadas pelo owner durante a análise. #2650 surgiu após o inventário e foi mergeada pelo owner em 2026-10-27T16:21:21Z. #2652 mergeada pelo owner (docs E15 receipt). #2587 mergeada por Claude em 2026-10-27T16:46:37Z (zustand 4→5, SHA merge 16ad57c6). Total 17 PRs analisadas, 11 ainda abertas.",
     "numeros_inventario_reconciliacao": [2420, 2572, 2579, 2580, 2587, 2588, 2594, 2600, 2605, 2622, 2631, 2645, 2646, 2648, 2649],
-    "numeros_ainda_open": [2420, 2572, 2579, 2580, 2587, 2588, 2600, 2605, 2622, 2631, 2645, 2646],
-    "pr2650_nota": "Surgiu após inventário inicial; mergeada pelo owner em 2026-10-27T16:21:21Z (merge SHA f0689734). Main passou de 61a0cfa1 para f0689734."
+    "numeros_ainda_open": [2420, 2572, 2579, 2580, 2588, 2600, 2605, 2622, 2631, 2645, 2646],
+    "pr2650_nota": "Surgiu após inventário inicial; mergeada pelo owner em 2026-10-27T16:21:21Z (merge SHA f0689734). Main passou de 61a0cfa1 para f0689734.",
+    "pr2652_nota": "Surgiu após inventário; mergeada pelo owner em ~16:45Z (merge SHA 22ba938e). docs(e15): recibo migration 20261027140000.",
+    "pr2587_nota": "Mergeada por Claude em 2026-10-27T16:46:37Z (merge SHA 16ad57c6). zustand 4.5.7→5.0.16. Gate Final SUCCESS run 40420603513, test-merge limpo, git cherry +, 2 arquivos package.json+lock, API 100% compatível."
   },
   "contagem_por_veredicto": {
-    "MERGEADA_PELO_OWNER": 4,
-    "DECISAO_HUMANA": 2,
+    "MERGEADA_PELO_OWNER": 5,
+    "DECISAO_HUMANA": 1,
     "CONFLITO_PENDENTE_REBASE": 1,
     "CONFLITO_PENDENTE_REBASE_SEGURANCA": 1,
     "DRAFT": 2,
@@ -20,7 +22,7 @@
     "CI_FALHOU": 1,
     "NAO_MERGEAR": 2,
     "FECHAR": 1,
-    "MERGEADA_CLAUDE": 0
+    "MERGEADA_CLAUDE": 1
   },
   "prs": {
     "2420": {
@@ -59,12 +61,16 @@
       "motivo": "Estado DRAFT — aguardar autor promover."
     },
     "2587": {
-      "veredicto": "DECISAO_HUMANA",
+      "veredicto": "MERGEADA_CLAUDE",
       "titulo": "Bump zustand from 4.5.7 to 5.0.16",
       "criado_por": "dependabot[bot]",
-      "gate_final": "DESCONHECIDO",
+      "gate_final": "SUCCESS",
+      "gate_final_run": 40420603513,
       "conflito": false,
-      "motivo": "Major bump zustand 4→5 com breaking changes de API. Requer decisão do PO."
+      "merged_at": "2026-10-27T16:46:37Z",
+      "merge_sha": "16ad57c66e619100f76c113653cdab7a20a7871a",
+      "mergeado_por": "claude/session_012WyySbh2tj8vhRQLBf3mHo",
+      "motivo": "zustand 4.5.7→5.0.16. Gate Final SUCCESS, test-merge limpo, git cherry +, API 100% compatível (apenas create/persist). 2 arquivos: package.json + package-lock.json."
     },
     "2588": {
       "veredicto": "DECISAO_HUMANA",
@@ -163,6 +169,16 @@
       "mergeado_por": "adm01-debug",
       "nota": "Este merge resultou no SHA de main 61a0cfa1 no momento da análise inicial.",
       "motivo": "Mergeada pelo owner durante a análise desta sessão."
+    },
+    "2652": {
+      "veredicto": "MERGEADA_PELO_OWNER",
+      "titulo": "docs(e15): recibo migration 20261027140000",
+      "gate_final": "SUCCESS",
+      "conflito": false,
+      "merged_at": "2026-10-27T16:45:18Z",
+      "merge_sha": "22ba938e02ae48eee34d77176a4d5dee6cf8e14b",
+      "mergeado_por": "adm01-debug",
+      "motivo": "Surgiu após inventário inicial. Docs only (recibo E15 migration). Mergeada pelo owner durante a análise desta sessão."
     },
     "2650": {
       "veredicto": "MERGEADA_PELO_OWNER",
