@@ -17,7 +17,10 @@
     2572,
     2420
   ],
+  "main_sha_atual": "f6f9889af171da4cc538f103fe0988a77dabd90d",
+  "mergeadas_pelo_owner_pos_inventario": [2656, 2657],
   "nota_pr_2653": "PR da própria branch de trabalho desta sessão (docs/analise-prs). Não faz parte do inventário original.",
+  "nota_pr_2658": "Nova PR aberta após inventário original. DRAFT — todos critérios de merge satisfeitos; bloqueada por estado draft. Diff: 1 arquivo +16/-6, só testes.",
   "inventario_original_19_prs": [
     2420,
     2572,
@@ -167,6 +170,9 @@
     "2631": "DRAFT",
     "2645": "AGUARDAR_APROVACAO",
     "2646": "CI_FALHOU",
+    "2656": "MERGEADA_PELO_OWNER",
+    "2657": "MERGEADA_PELO_OWNER",
+    "2658": "DRAFT",
     "2648": "MERGEADA_PELO_OWNER",
     "2649": "MERGEADA_PELO_OWNER",
     "2650": "MERGEADA_PELO_OWNER",
@@ -174,7 +180,8 @@
     "2654": "MERGEADA_PELO_OWNER",
     "2655": "MERGEADA_PELO_OWNER",
     "2587": "MERGEADA_CLAUDE",
-    "2594": "MERGEADA_PELO_OWNER"
+    "2594": "MERGEADA_PELO_OWNER",
+    "2653": "PROPRIO_BRANCH_SESSAO"
   },
   "mergeadas_claude": [
     {
@@ -191,7 +198,9 @@
     2650,
     2652,
     2654,
-    2655
+    2655,
+    2656,
+    2657
   ],
   "meta_cumprida": {
     "total_open_api": 12,

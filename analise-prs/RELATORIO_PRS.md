@@ -48,6 +48,17 @@
 |----|----------|
 | [#2580](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2580) | migration E23 NO FORCE RLS supplier tables |
 | [#2631](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2631) | PENDENCIAS.md §4 + RELATORIO_CI.md §10 |
+| [#2658](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2658) | fix(test): tolerância de timeout CI nos integration tests de reposição — zero conflito, sem regressão, diff mínimo (+16/-6); pronto para merge assim que sair de draft |
+
+---
+
+### MERGEADAS PELO OWNER PÓS-INVENTÁRIO (durante esta sessão)
+| PR | Título | SHA main após merge |
+|----|--------|-------------------|
+| [#2656](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2656) | fix(ci): adiciona qs ao allowlist do gate de dependências (GHSA-6pq8-jhm2-2vcw) | `ac0fe476` |
+| [#2657](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2657) | fix(e2e): corrige catch de timeout e timeout explícito nas assertions de page-title | `f6f9889a` |
+
+**Main SHA atual:** `f6f9889af171da4cc538f103fe0988a77dabd90d`
 
 ---
 

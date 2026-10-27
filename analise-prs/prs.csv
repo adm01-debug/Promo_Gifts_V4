@@ -11,3 +11,4 @@ numero,veredicto,gate_final,conflito,diff_lido,motivo
 2645,AGUARDAR_APROVACAO,0 check runs,True,True,Recibo E15 auto-gerado — sem CI + conflito — owner deve revisar
 2646,CI_FALHOU,FAILURE,False,True,Gate Final FAILURE em 2 SHAs (2d8fd74e + 79c0c670); mergeable_state: behind — sem conflito com main
 2653,PROPRIO_BRANCH_SESSAO,N/A,False,True,PR da própria branch de trabalho desta sessão — não faz parte do inventário original
+2658,DRAFT,blocked,False,True,DRAFT — todos critérios OK; owner deve tirar de DRAFT para mergear

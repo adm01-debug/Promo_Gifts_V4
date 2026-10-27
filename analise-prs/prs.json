@@ -1,8 +1,10 @@
 {
   "data": "2026-10-27",
   "sessao": "session_012WyySbh2tj8vhRQLBf3mHo",
-  "main_sha": "a0560fdc62744c6bf4ba182914cc76dec06aecb1",
-  "total_open": 12,
+  "main_sha_baseline": "a0560fdc62744c6bf4ba182914cc76dec06aecb1",
+  "main_sha_atual": "f6f9889af171da4cc538f103fe0988a77dabd90d",
+  "mergeadas_pelo_owner_pos_inventario": [2656, 2657],
+  "total_open": 13,
   "prs": [
     {
       "numero": 2420,
@@ -139,6 +141,21 @@
       "gate_final": "N/A",
       "conflito": false,
       "motivo": "PR da própria branch de trabalho desta sessão — não faz parte do inventário original",
+      "diff_lido": true
+    },
+    {
+      "numero": 2658,
+      "titulo": "fix(test): tolera timeout de waitFor nos integration tests de reposição",
+      "branch": "claude/fix-replenishment-timeout-2710-1840",
+      "head_sha": "8183f6a1",
+      "estado": "open",
+      "veredicto": "DRAFT",
+      "gate_final": "blocked",
+      "conflito": false,
+      "mergeable_state": "blocked",
+      "merge_test_exit": 0,
+      "merge_test_base": "f6f9889a",
+      "motivo": "DRAFT — todos os critérios satisfeitos; owner deve tirar de DRAFT para mergear",
       "diff_lido": true
     }
   ]
