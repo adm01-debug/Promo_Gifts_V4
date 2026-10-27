@@ -12,7 +12,7 @@
 Inventário obtido via `github_list_workflow_runs` + `github_get_run_failure_summary` para cada workflow com status `failure` na branch `main`.
 
 | # | Workflow | Run ID | Commit com falha | Status |
-|---|---|---|---|
+|---|---|---|---|---|
 | 1 | `ci-security-drift.yml` | 40572157312 | `e0b569f` (HEAD) | FALHA |
 | 2 | `e2e-swatch-quickview.yml` | 40572329350 | `e0b569f` (HEAD) | FALHA |
 | 3 | `edge-functions-drift-check.yml` | 40556559682 | `f6f9889a` (gatilho: workflow_run) | FALHA |
@@ -25,6 +25,16 @@ Inventário obtido via `github_list_workflow_runs` + `github_get_run_failure_sum
 
 **Total de workflows verdadeiramente falhando:** 7 (+1 cancelado +1 bot)
 
+## Baseline local
+
+| Check | Resultado |
+|---|---|
+| `npm install` | ✅ OK |
+| `npm run build` (Vite) | ✅ OK |
+| `npm run lint` (ESLint) | ✅ OK (exit 0) |
+| `npx tsc --noEmit` | ✅ OK (exit 0) |
+| `npx vitest run` | ⚠️ Não concluído (timeout — runner CI faz em ~8 min) |
+
 ---
 
 ## Diagnóstico por causa raiz
@@ -33,7 +43,7 @@ Inventário obtido via `github_list_workflow_runs` + `github_get_run_failure_sum
 
 **`edge-integration-all.yml`**  
 - Causa: `validate-access` em produção é versão antiga sem validação de input  
-- Código atual no repo (`ac0ve47` em diante): já tem `missingBodyResponse`, `invalidJsonResponse`, `validationErrorResponse`  
+- Código atual no repo (`ac0fe47` em diante): já tem `missingBodyResponse`, `invalidJsonResponse`, `validationErrorResponse`  
 - Fix aplicado: dispatch de `deploy-edge-functions.yml` com `function_name: validate-access`
 
 **`edge-functions-drift-check.yml`**  
@@ -43,8 +53,10 @@ Inventário obtido via `github_list_workflow_runs` + `github_get_run_failure_sum
 ### Grupo B — CORS gate (já corrigido no repo)
 
 **`magazine-unit-tests.yml`**  
-- Causa: `xbz-image-uploader` não estava na `SERVER_ONLY_ALLOWLIST` do script `check-edge-cors-headers.mjs`  
+- Causa confirmada (run 40544232986): step `🌐 Edge CORS x-request-id gate` falhou com `xbz-image-uploader: no CORS configuration found`  
+- Causa raiz: `xbz-image-uploader` não estava na `SERVER_ONLY_ALLOWLIST` do script `check-edge-cors-headers.mjs` (é função cron, chamada apenas por pg_cron, sem CORS)  
 - Fix já commitado: PR #2654 (`4c7ecb2`) adicionou `xbz-image-uploader` ao allowlist  
+- Nota: zustand v4→v5 (`16ad57c`) está no mesmo commit mas NÃO é a causa da falha — o CORS gate falha antes dos testes  
 - Status: aguardando trigger do workflow (path-filter; necessita push em `src/pages/magazine/**` ou outros paths vigiados)
 
 ### Grupo C — E2E / autenticação
@@ -77,8 +89,8 @@ Inventário obtido via `github_list_workflow_runs` + `github_get_run_failure_sum
 
 | Workflow | Causa raiz | Fix | Prova |
 |---|---|---|---|
-| `magazine-unit-tests.yml` | CORS gate: `xbz-image-uploader` sem allowlist | ✅ PR #2654 (`4c7ecb2`) já em main | Workflow precisa re-rodar após push em path vigiado |
-| `edge-integration-all.yml` | `validate-access` prod desatualizada | ✅ Deploy via `deploy-edge-functions.yml` (esta sessão) | Aguardando run de confirmação |
+| `magazine-unit-tests.yml` | CORS gate: `xbz-image-uploader` sem allowlist (confirmado: run 40544232986, step CORS gate) | ✅ PR #2654 (`4c7ecb2`) já em main | Workflow re-rodará no próximo push em path vigiado |
+| `edge-integration-all.yml` | `validate-access` prod desatualizada | ✅ Deploy via `deploy-edge-functions.yml` run 350 (esta sessão) | Run 350 `pending` — aguarda aprovação do `environment: production` |
 | `edge-functions-drift-check.yml` | 106 funções com drift | PENDENCIAS.md | — |
 | `ci-security-drift.yml` | E2E: header intercept + catalog timeout | PENDENCIAS.md | — |
 | `e2e-swatch-quickview.yml` | 66.7% skip rate (min 10 não atingido) | PENDENCIAS.md | — |
