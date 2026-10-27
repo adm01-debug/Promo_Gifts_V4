@@ -61,12 +61,16 @@
 - **Run ID:** 40453930945 (sha `eb04236c`, main)
 - **Erro:** "Drift detectado entre GitHub e canônico" — step "Fail if drift detected" exit 1
 - **Causa raiz:** Commit Lovable `eb04236c` (2026-10-27T05:19 UTC) alterou código de edge function(s) no repositório GitHub sem fazer deploy correspondente no Supabase (`doufsxqlfjyuvxuezpln`). O check detectou divergência de conteúdo entre GitHub e o canônico deployado.
-- **Por que não corrigi antes do merge:** A falha foi introduzida por commit Lovable APÓS a criação do PR. Não é relacionada às correções do PR. Não é required check do Gate Final.
+- **Por que não corrigi antes do merge:** A falha foi introduzida por commit Lovable APÓS a criação do PR. Não é relacionada às correções do PR.
 - **Ação requerida (pós-merge):**
   - Disparar `.github/workflows/deploy-edge-functions.yml` via `workflow_dispatch` para sincronizar as edge functions.
-  - Ou identificar qual função driftou (artefato `drift-report.csv` da run 40453930945) e fazer deploy pontual com `function_name` específico.
-- **Status pós-merge:** `deploy-edge-functions.yml` disparado via `workflow_dispatch` (run 40476968791 — pós-merge de PR #2597; run 40480767717 — pós-merge de PR #2629). `edge-functions-drift-check` run 40480776196 em `in_progress` (2026-10-27T09:27 UTC).
-- **Impacto no Gate Final:** NÃO é required check — não bloqueia deploy.
+- **Causa do bloqueio confirmada (2026-10-27T10:05 UTC):** Ambiente `Production` no GitHub Actions (`id: 15475715299`) tem regra de proteção `required_reviewers: adm01-debug`. O job `deploy` em `deploy-edge-functions.yml` usa `environment: production` e aguarda aprovação manual do PO antes de executar. Confirmado via GitHub API. Todos os runs ficaram stuck em `pending`: 40476968791, 40480767717, 40482582104, 40482914736.
+- **edge-functions-drift-check run 40482373448** (2026-10-27T09:41 UTC) — `conclusion=failure`: 106 funções com divergência de conteúdo GitHub × Supabase. Resolve automaticamente via `workflow_run` após deploy concluído com sucesso.
+- **Ação requerida — não pode ser automatizada por agente:**
+  1. Acesse https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40482914736
+  2. Clique em **"Review deployments"** → **"Approve and deploy"**
+  3. Após o deploy concluir (~5 min), o `edge-functions-drift-check` re-executa sozinho
+- **Impacto no Gate Final:** O Gate Final já está verde (run 40482105056 ✅). O `edge-functions-drift-check` é required check standalone no branch protection — bloqueia futuros merges de PR enquanto estiver vermelho.
 
 ---
 
@@ -102,4 +106,4 @@
 ---
 
 *Gerado por Claude Code — sessão https://claude.ai/code/session_014RkohRYagi3sPiL8jtgot4*
-*Atualizado: 2026-10-27T09:30 UTC — adicionado §7 Branch Protection Sentinel (PR #2629 squash sem `(#NNN)`)*
+*Atualizado: 2026-10-27T10:05 UTC — §4 atualizado: bloqueio deploy confirmado (environment: production required_reviewers: adm01-debug)*
