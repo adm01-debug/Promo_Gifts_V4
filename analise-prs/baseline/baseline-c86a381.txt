@@ -16,7 +16,7 @@ LINT (ESLint)
 ===========================================================================
 Escopo parcial (NODE_OPTIONS=--max-old-space-size=4096):
   src/components/quotes/ + src/lib/ → EXIT 0, zero warnings
-Escopo completo src/: NODE_OPTIONS=--max-old-space-size=4096 → EXIT 0
+Escopo completo src/: rodando em background — Gate 1 CI é a evidência definitiva
 Evidência CI: Gate 1 - Lint + TypeScript = SUCCESS em run_id 40447563368 (SHA 48899b659ef6)
   e em Gate Final post-#2613 (pendente coleta do run_id da nova execução em c86a3812ce)
 
@@ -42,6 +42,7 @@ Arquivo 2: tests/integration/replenishment-resilience.test.ts (3 PASSED)
   ✓ Deve garantir estado consistente após erro 5xx
 
 Arquivo 3: src/components/products/gallery/PromoFlixPlayer.test.tsx (22 PASSED)
+  [22 testes de PromoFlixPlayer Automated Tests — Level Changes, Regression Tests, etc.]
   ✓ should show "Manual Load" button and re-initialize player on click
   ✓ should update quality state during multiple level changes with auto-level enabled
   ✓ should NOT have crossOrigin on the video element (Cloudflare Stream CORS compatibility)
