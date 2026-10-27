@@ -1,6 +1,6 @@
 {
   "session_id": "session_011d8gKLZg8BWivR8aQBwxGF",
-  "revision": "rev62",
+  "revision": "rev63",
   "date": "2026-10-27",
   "status": "SESSAO_COMPLETA",
   "main_head_entrada": "df18546dfd76d1bea7ea5873257b668d128d8df3",
@@ -13,51 +13,24 @@
     "completed_at": "2026-10-27T11:21:36Z",
     "nota": "Gate Final success em c3aa9f1a (run #40493344116); #2636 squash-merged em b5cfee9b."
   },
+  "gate_final_delivery_branch": {
+    "sha": "f1392289410d02df7cc12bde987f27a49ccb989a",
+    "run": "40497480554",
+    "conclusion": "success",
+    "completed_at": "2026-10-27T11:48:23Z",
+    "nota": "Gate Final PR#2600 (delivery branch) success em f1392289; docs-only bypass E14 ativo (Gates 1/2/3 skipped)."
+  },
   "prs_analisados_esta_sessao": 29,
-  "open_prs_count_verificado": 14,
-  "open_prs_verificado_em": "2026-10-27T10:52:00Z",
+  "open_prs_count_verificado": 13,
+  "open_prs_verificado_em": "2026-10-27T11:44:00Z",
   "verdicts": {
-    "MERGEADO_AUTONOMO": [
-      "2620",
-      "2627",
-      "2628",
-      "2636"
-    ],
-    "MERGEADO_SESSAO_EXTERNA": [
-      "2597",
-      "2621",
-      "2625",
-      "2630",
-      "2633",
-      "2635",
-      "2638"
-    ],
-    "DECISAO_HUMANA": [
-      "2420",
-      "2572",
-      "2579",
-      "2587",
-      "2588",
-      "2594",
-      "2632",
-      "2637"
-    ],
-    "DRAFT_NOMERGE": [
-      "2580",
-      "2600",
-      "2631"
-    ],
-    "SUPERSEDED": [
-      "2605",
-      "2619",
-      "2634"
-    ],
-    "BRANCH_DIRTY": [
-      "2622"
-    ],
-    "JA_EM_MAIN": [
-      "2612"
-    ]
+    "MERGEADO_AUTONOMO": ["2620", "2627", "2628", "2636"],
+    "MERGEADO_SESSAO_EXTERNA": ["2597", "2621", "2625", "2630", "2633", "2635", "2638"],
+    "DECISAO_HUMANA": ["2420", "2572", "2579", "2587", "2588", "2594", "2632", "2637"],
+    "DRAFT_NOMERGE": ["2580", "2600", "2631"],
+    "SUPERSEDED": ["2605", "2619", "2634"],
+    "BRANCH_DIRTY": ["2622"],
+    "JA_EM_MAIN": ["2612"]
   },
   "merges_autonomos": {
     "2620": {
@@ -93,20 +66,11 @@
       "gate_final_run": "40493344116",
       "gate_final_completed_at": "2026-10-27T11:21:36Z",
       "merged_at": "2026-10-27T11:21:36Z",
-      "arquivos": [
-        "src/tests/AdminStructuralComparison.test.tsx"
-      ],
+      "arquivos": ["src/tests/AdminStructuralComparison.test.tsx"],
       "nota": "Gate Final run #40493344116 conclusion: success em c3aa9f1a; squash-merged por session_011d8gKLZg8BWivR8aQBwxGF"
     }
   },
   "merges_sessao_externa": {
-    "2638": {
-      "sha": "2b9dec8ac7fd7e2dd7ede290100073ec2e89d382",
-      "sessao": "session_014RkohRYagi3sPiL8jtgot4",
-      "titulo": "docs: PENDENCIAS §8 e §9 + RELATORIO_CI — PRs #2633 #2634 (#2638)",
-      "merged_at": "2026-10-27T11:11:35Z",
-      "nota": "PR não estava aberta no momento da análise desta sessão"
-    },
     "2597": {
       "sha": "6ef07df8c4980ab776bb087d4ebd79804b1d476c",
       "sessao": "session_01Knr9enFAok62bHihBK1UUP",
@@ -137,6 +101,13 @@
       "sessao": "session_011kNCJ9xyjX5d9E2bUXhdBg",
       "titulo": "fix(gate): Gate 1.13 HTTP 400 soft",
       "merged_at": "2026-10-27T10:48:11Z"
+    },
+    "2638": {
+      "sha": "2b9dec8ac7fd7e2dd7ede290100073ec2e89d382",
+      "sessao": "session_014RkohRYagi3sPiL8jtgot4",
+      "titulo": "docs: PENDENCIAS §8 e §9 + RELATORIO_CI — PRs #2633 #2634 (#2638)",
+      "merged_at": "2026-10-27T11:11:35Z",
+      "nota": "PR não estava aberta no momento da análise desta sessão"
     }
   },
   "baseline": {
