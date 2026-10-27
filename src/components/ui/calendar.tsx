@@ -62,10 +62,10 @@ function Calendar({
           'text-[15px] md:text-[11px] font-bold tracking-tight leading-[1.1] text-destructive capitalize flex flex-col items-start gap-0 whitespace-pre-line',
         nav: 'flex items-center gap-2 md:gap-1.5',
         // Mobile: 44×44 tap target. Desktop: h-5 w-5 compacto.
-        nav_button:
+        button_previous:
           'inline-flex h-11 w-11 md:h-5 md:w-5 items-center justify-center rounded-full bg-transparent p-0 text-destructive transition-colors hover:bg-accent/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
-        nav_button_previous: 'static',
-        nav_button_next: 'static',
+        button_next:
+          'inline-flex h-11 w-11 md:h-5 md:w-5 items-center justify-center rounded-full bg-transparent p-0 text-destructive transition-colors hover:bg-accent/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
         table: 'flex w-full min-w-0 flex-col border-collapse',
         head: 'block w-full',
         tbody: 'flex w-full flex-col gap-1 md:gap-0.5',
