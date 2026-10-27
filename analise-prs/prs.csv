@@ -28,20 +28,19 @@ number,title,branch,draft,test_merge,rule8_triggers,verdict,motivo,merge_sha
 2555,docs(pendencias): rev29,claude_05/nifty-sagan-r23gqh,true,CLEAN,,MERGEADO_AUTONOMO,Draft->Ready claude_05 mesmo agente,479f2219485e23a5d35896dfe44c9ca4f7c1026f
 2556,chore: backlog banco O1/O3,claude/chore-backlog-banco-251025-1915,true,CLEAN,,MERGEADO_AUTONOMO,Draft->Ready REGRA10 NA,15e10fd88208f9b4cd372b82544fb27892d15a81
 2557,docs: RELATORIO_CI.md P27/P66/P67/P68,claude/docs-relatorio-ci-final-20261025-1910,true,CLEAN,,DECISAO_HUMANA,Corrupcao texto RELATORIO_CI criterio5,
-2572,docs(analise-prs): rev23 — 40 PRs 21 merges autônomos,claude_05/youthful-ride-vcdchy,false,CONFLICT,,DECISAO_HUMANA,CONFLICT RELATORIO_CI.md+REGRA10 branch outra sessao,
+2572,docs(analise-prs): rev23 — 40 PRs 21 merges,claude_05/youthful-ride-vcdchy,false,CONFLICT,,DECISAO_HUMANA,CONFLICT RELATORIO_CI.md + REGRA10 branch outra sessao,
 2579,chore(main): release 1.0.0,release-please--branches--main--components--gifts-store,false,CLEAN,,DECISAO_HUMANA,Downgrade 1.2.1->1.0.0 regressao de versao,
-2580,fix(banco): rollback header e arquivo rollback migration 20260916,claude/fix-e23-rollback-261025-2145,true,CLEAN,supabase/migrations/,DECISAO_HUMANA,DRAFT+REGRA8 migrations,
+2580,fix(banco): rollback header e rollback migration 20260916,claude/fix-e23-rollback-261025-2145,true,CLEAN,supabase/migrations/,DECISAO_HUMANA,DRAFT+REGRA8 migrations,
 2587,chore(deps): bump zustand from 4.5.7 to 5.0.16,dependabot/npm_and_yarn/zustand-5.0.16,false,CLEAN,,DECISAO_HUMANA,major upgrade 4->5 breaking changes,
-2588,chore(deps): bump react-day-picker from 8.10.2 to 10.0.2,dependabot/npm_and_yarn/react-day-picker-10.0.2,false,CLEAN,,DECISAO_HUMANA,major upgrade 8->10 breaking changes,
+2588,chore(deps): bump react-day-picker from 8.10.2 to 10.0.2,dependabot/npm_and_yarn/react-day-picker-10.0.2,false,CLEAN,,DECISAO_HUMANA,major upgrade 8->10 breaking changes + Gate Final FAILED,
 2594,chore(ci): bump actions/setup-node from 4 to 7,dependabot/github_actions/actions/setup-node-7,false,CLEAN,.github/workflows/,DECISAO_HUMANA,REGRA8 workflow,
-2597,fix: corrige 4 workflows CI falhando,claude_04/beautiful-gates-bvocz5,false,CLEAN,.github/workflows/ x4,DECISAO_HUMANA,REGRA8 workflows x4,
-2600,docs(analise-prs): rev46 — 20 PRs (7 mergeaveis),claude_04/optimistic-bohr-qplx94,true,CLEAN,,DRAFT_NOMERGE,DRAFT analise-prs/ docs internos,
-2604,fix(ci): continue-on-error psql steps snapshot,claude_04/charming-darwin-g1nvj2,true,CLEAN,.github/workflows/,DECISAO_HUMANA,DRAFT+REGRA8 workflow,
-2605,fix(tests): 4 falhas unit tests + 1 threshold E2E,claude/fix-unit-tests-261027-0113,false,CONFLICT,,SUPERSEDED,supersedida por #2620 mergeada SHA 3aabc4187,
-2612,fix(test): waitFor timeout 15s->25s useReplenishment,claude/fix-replenishment-timeout-261027-0430,true,CLEAN,,DRAFT_NOMERGE,DRAFT apenas test timeout files,
-2619,fix(health-check): timeout 5s em getCredential evita hang,claude/fix-health-check-cred-timeout-271027-0630,true,CLEAN,,DECISAO_HUMANA,DRAFT+REGRA8 edge function,
-2621,fix(migrations): rollback files 7 migrations 20261027 E058,claude/fix-rollbacks-migrations-261027-1305,false,CLEAN,supabase/rollbacks/,MERGEADO_SESSAO_EXTERNA,Mergeado por sessao session_01PE8GzVYqxJM25xzvLuLYhW SHA 06c221db,06c221db520b446eee41ce990c110830be5da13c
-2622,fix(rollbacks): rollbacks 9 migrations + manifest fix xbz-image-uploader,claude/fix-rollbacks-20261027-271027-1000,false,DIRTY,supabase/rollbacks/ + edge-authz-manifest.ts,BRANCH_DIRTY,Branch outra sessao ADD/ADD conflict apos #2621 merge. REGRA10.,
-2625,fix(ci): registra xbz-image-uploader no manifest + timeout,claude/fix-edge-authz-xbz-health-check-271027-1100,true,CLEAN,,DECISAO_HUMANA,DRAFT+REGRA8 edge function+REGRA10 sessao session_01Knr9enFAok62bHihBK1UUP,
-2626,ci(drift-check): E203 PR events so falham em drift estrutural,claude/fix-drift-scope-271027-1430,true,CLEAN,.github/workflows/,DECISAO_HUMANA,DRAFT+REGRA8 workflow+REGRA10 sessao session_01Knr9enFAok62bHihBK1UUP,
-2627,fix(rollbacks): 2 rollbacks unicos migrations 20261027 (233000+234500),claude/fix-rollbacks-2m-271027-0800,false,CLEAN,supabase/rollbacks/,CI_AGUARDANDO,Minha branch. Gate Final em andamento SHA ba98475f. 2 rollbacks unicos CLEAN vs main 06c221db.,
+2597,fix: corrige 4 workflows CI falhando,claude_04/beautiful-gates-bvocz5,false,CLEAN,.github/workflows/ x4,DECISAO_HUMANA,REGRA8 workflows x4 + REGRA10 branch outra sessao,
+2600,docs(analise-prs): rev54 — 16 PRs esta sessao,claude_04/optimistic-bohr-qplx94,true,CLEAN,,DRAFT_NOMERGE,DRAFT analise-prs/ docs internos desta sessao,
+2604,fix(ci): continue-on-error psql steps snapshot,claude_04/charming-darwin-g1nvj2,true,CLEAN,.github/workflows/,DECISAO_HUMANA,DRAFT+REGRA8 workflow schema-snapshot-export,
+2605,fix(tests): 4 falhas unit tests + 1 threshold E2E,claude/fix-unit-tests-261027-0113,false,CONFLICT,,SUPERSEDED,Conteudo portado para #2620 SHA 3aabc4187 + REGRA10,
+2612,fix(test): waitFor timeout 15s->25s useReplenishment,claude/fix-replenishment-timeout-261027-0430,true,CLEAN,,DRAFT_NOMERGE,DRAFT apenas test timeout solucao paliativa,
+2619,fix(health-check): timeout 5s em getCredential evita hang,claude/fix-health-check-cred-timeout-271027-0630,true,CLEAN,,SUPERSEDED,Supersedida por #2625 SHA 83c81d58 — PR body de #2625 confirma,
+2621,fix(migrations): rollback files 7 migrations 20261027 E058,claude/fix-rollbacks-migrations-261027-1305,false,CLEAN,supabase/rollbacks/,MERGEADO_SESSAO_EXTERNA,Mergeado por session_01PE8GzVYqxJM25xzvLuLYhW — 7 rollbacks + manifest fix xbz-image-uploader,06c221db520b446eee41ce990c110830be5da13c
+2622,fix(rollbacks): rollbacks 9 migrations + manifest fix,claude/fix-rollbacks-20261027-271027-1000,false,DIRTY,supabase/rollbacks/ + edge-authz-manifest.ts,BRANCH_DIRTY,ADD/ADD conflict apos merge de #2621 — conteudo unico reconstituido em #2627,
+2625,fix(edge-functions): health-check timeout + manifest xbz,claude/fix-edge-authz-xbz-health-check-271027-1100,false,CLEAN,supabase/functions/,MERGEADO_SESSAO_EXTERNA,Mergeado por session_01Knr9enFAok62bHihBK1UUP — health-check timeout 5s + manifest xbz-image-uploader,83c81d5859bef375af76a918e7ab01ce20a7944a
+2627,fix(rollbacks): rollbacks 2 migrations 20261027 233000+234500,claude/fix-rollbacks-2m-271027-0800,false,CLEAN,,MERGEADO_AUTONOMO,Gate Final success — 2 rollbacks unicos desta sessao,16108a1ce67449118e1b2bb80ca60d902bc474d6
