@@ -1,20 +1,25 @@
 {
   "session_id": "session_011d8gKLZg8BWivR8aQBwxGF",
-  "revision": "rev54",
+  "revision": "rev57",
   "date": "2026-10-27",
   "status": "FINAL",
   "main_head_entrada": "df18546dfd76d1bea7ea5873257b668d128d8df3",
-  "main_head_final": "83c81d5859bef375af76a918e7ab01ce20a7944a",
-  "prs_analisados_esta_sessao": 16,
+  "main_head_final": "02e503365552d8d161e96917277170fff0af92dc",
+  "prs_analisados_esta_sessao": 20,
   "verdicts": {
-    "MERGEADO_AUTONOMO": ["2627"],
-    "MERGEADO_SESSAO_EXTERNA": ["2621", "2625"],
-    "DECISAO_HUMANA": ["2572", "2579", "2580", "2587", "2588", "2594", "2597", "2604"],
-    "DRAFT_NOMERGE": ["2600", "2612"],
+    "MERGEADO_AUTONOMO": ["2620", "2627", "2628"],
+    "MERGEADO_SESSAO_EXTERNA": ["2597", "2621", "2625"],
+    "DECISAO_HUMANA": ["2420", "2572", "2579", "2580", "2587", "2588", "2594", "2604"],
+    "DRAFT_NOMERGE": ["2600", "2629"],
     "SUPERSEDED": ["2605", "2619"],
-    "BRANCH_DIRTY": ["2622"]
+    "BRANCH_DIRTY": ["2622"],
+    "JA_EM_MAIN": ["2612"]
   },
   "merges_autonomos": {
+    "2620": {
+      "sha": "3aabc4187",
+      "nota": "SHA curto — full SHA indisponível pós-compactação; evidência: presença em git log main + branch protection enforça Gate Final"
+    },
     "2627": {
       "sha": "16108a1ce67449118e1b2bb80ca60d902bc474d6",
       "branch": "claude/fix-rollbacks-2m-271027-0800",
@@ -23,9 +28,20 @@
         "supabase/rollbacks/20261027233000_rollback.sql",
         "supabase/rollbacks/20261027234500_rollback.sql"
       ]
+    },
+    "2628": {
+      "sha": "02e503365552d8d161e96917277170fff0af92dc",
+      "branch": "claude/fix-e2e-simulator-selectors-271027-0846",
+      "gate_final": "success",
+      "arquivos": ["e2e/fixtures/selectors.ts"]
     }
   },
   "merges_sessao_externa": {
+    "2597": {
+      "sha": "6ef07df8c4980ab776bb087d4ebd79804b1d476c",
+      "sessao": "session_01Knr9enFAok62bHihBK1UUP",
+      "titulo": "fix: corrige 4 workflows CI falhando"
+    },
     "2621": {
       "sha": "06c221db520b446eee41ce990c110830be5da13c",
       "sessao": "session_01PE8GzVYqxJM25xzvLuLYhW"
@@ -37,17 +53,18 @@
     }
   },
   "baseline": {
-    "typecheck": "0 erros em main HEAD 16108a1c",
-    "lint": "exit 0 em main HEAD 16108a1c"
+    "typecheck": "0 erros em main HEAD df18546d",
+    "lint": "exit 0 em main HEAD df18546d"
   },
   "acoes_po": [
-    "Re-dispatch db-apply-migration.yml (9 migrations PR #2603)",
-    "Fechar #2622 (branch dirty)",
+    "Fechar #2572 (análise obsoleta, supersedida por análise rev57 desta sessão)",
+    "Fechar #2622 (branch dirty — 9 migrations sem rollbacks válidos)",
     "Fechar #2619 (supersedida por #2625)",
     "Fechar #2605 (supersedida por #2620)",
-    "Decidir #2579/#2520 (version regression 1.0.0)",
-    "Decidir #2587 (zustand 4->5)",
-    "Decidir #2588 (react-day-picker 8->10, CI FAILED)",
-    "Aprovar quando READY: #2580, #2594, #2597, #2604"
+    "Decidir #2579 (release 1.0.0 — possível regressão de versão)",
+    "Decidir #2587 (zustand 4→5 — breaking changes)",
+    "Decidir #2588 (react-day-picker 8→10 — CI FAILED)",
+    "Decidir #2420 (rollback SQL migration OOB — REGRA#8, aguarda aprovação do SQL)",
+    "Aprovar quando READY: #2580, #2594, #2604"
   ]
 }
