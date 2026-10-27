@@ -69,32 +69,39 @@ paths = [
   '''e2e/.*''',
 ]
 
-# Commit historico com service_role hardcoded (E002 removeu do codigo fonte).
-# A chave precisa ser rotacionada (E001, PO) antes de remover esta entrada.
+# Commits historicos com secrets detectados pelo gitleaks (run 40283428329 — 2026-10-26).
+# Estes commits estao no historico imutavel do git e nao podem ser removidos sem rewrite.
+# Chaves operacionais ativas marcadas com [ROTACIONAR] precisam de rotacao pelo PO (PENDENCIAS.md).
+#
+# Categorias:
+#   (a) Chave publica/anon por design — false positive seguro
+#   (b) Chave em arquivo de teste/script — nao e segredo operacional
+#   (c) Chave potencialmente ativa — [ROTACIONAR] documentado em PENDENCIAS.md
+#   (d) Snapshot/dump historico — nao afeta producao atual
+#
 # Commit 9a63884a: branch #2372 — VITE_SUPABASE_PUBLISHABLE_KEY com typo d4872 vs d872
 # (valor e publishable key publica — nao e segredo operacional).
-#
-# Commits historicos adicionados em 2026-10-27 (fix issue #2261):
-# - 13c58825: initial import squash — JWT anon hardcoded em client.ts (pre-E002)
-# - 86ecbbb4: jwt em client.ts (Lovable commit May-2026, pre-E002)
-# - 9db70109: generic-api-key em e2e/ (fixture de playwright, nao segredo real)
-# - ca16ebf7, 3f36572b, 5ee16092: generic-api-key em scripts/ (seed/tooling, publicos)
-# - 7fc1a8cb, 0bebb586: generic-api-key em _shared/auth.ts (chave rotacionada, E002)
-# - b0cc98c1: jwt em scripts/ (seed usa anon JWT como fallback de dev)
-# - b253296d, b078ddc7, 45883e70: jwt em client.ts (Lovable commits Jun-2026, pre-E002)
 commits = [
-  "b5e044f459c0a755b12c47403fa4ff2014be955e",
-  "9a63884a57abd94d79572b2f69509d01cea64889",
-  "13c58825187aa8d5b0d7a608ab65fe7effa41092",
-  "86ecbbb4d2d82d688aca86cfead558428391407b",
-  "9db70109199f34d343b08fce3d8c7e237497421d",
-  "ca16ebf7ad0c5fe0c13f62794782515efc798508",
-  "3f36572bb7c219cf6bf2c917cac46090761e3c04",
-  "7fc1a8cb64c3cc81475c0dfd5787e4a65e41f355",
-  "0bebb586b40c89394f0ae78f2fb5da5ca64627bf",
-  "5ee16092217f01e1c58510afb3844932fc6fe9ce",
-  "b0cc98c11d258c6d460bfe5bfaf3185be9fd7e57",
-  "b253296d1dd125b52ebc3683ae25e7c1ea8ef4a4",
-  "b078ddc74d89fb644757ad3841629ac5c855a820",
-  "45883e70380e45f890babff5cfa3c91b174c859b",
+  # Originais (ja existiam no allowlist)
+  "b5e044f459c0a755b12c47403fa4ff2014be955e", # (c) service_role hardcoded — E002 removeu; rotacao pendente E001
+  "9a63884a57abd94d79572b2f69509d01cea64889", # (a) publishable key com typo — falso positivo
+
+  # Adicionados em 2026-10-26 (run 40283428329 — 22 leaks)
+  "06461a457d505c48dccd10742800a4da0c713abc", # (c) migration fn_notify_champions — apikey hardcoded [ROTACIONAR]
+  "e8953169bc48ca9b60d14ce884d549d42007e28d", # (b) supabase/functions/migrate-helper/index.ts — helper interno
+  "8bd948eb37043a67e68fdad7bdaa99da03e4822b", # (b/c) e2e/chaos-validation.spec.ts + scripts/kit-enrichment + dispatcher-auth.test.ts
+  "33475f48305e05ffefc29f07182cf8881327f882", # (d) migrations-snapshot/ALL_IN_ONE.sql — dump historico
+  "b6fab6ee284fb630bd06e9b99eb5bd459f34a078", # (d) migrations-snapshot/ALL_IN_ONE.sql — dump historico
+  "86ecbbb4d2d82d688aca86cfead558428391407b", # (c) client.ts:jwt:13 — provavel service_role [ROTACIONAR]
+  "9db70109199f34d343b08fce3d8c7e237497421d", # (b) e2e/chaos-validation.spec.ts — fixture de teste
+  "7fc1a8cb64c3cc81475c0dfd5787e4a65e41f355", # (c) supabase/functions/_shared/auth.ts:32 [ROTACIONAR]
+  "ca16ebf7ad0c5fe0c13f62794782515efc798508", # (b) scripts/massive-load-test.mjs — script de carga
+  "3f36572bb7c219cf6bf2c917cac46090761e3c04", # (b) scripts/massive-load-test.mjs — script de carga
+  "5ee16092217f01e1c58510afb3844932fc6fe9ce", # (b) scripts/contract-testing.mjs:generic-api-key:6
+  "0bebb586b40c89394f0ae78f2fb5da5ca64627bf", # (c) supabase/functions/_shared/auth.ts:32 [ROTACIONAR]
+  "b0cc98c11d258c6d460bfe5bfaf3185be9fd7e57", # (c) scripts/contract-testing.mjs:jwt:5 — service_role [ROTACIONAR]
+  "b253296d1dd125b52ebc3683ae25e7c1ea8ef4a4", # (a/c) client.ts:jwt:6 — anon ou service_role historico
+  "b078ddc74d89fb644757ad3841629ac5c855a820", # (a/c) client.ts:jwt:6 — anon ou service_role historico
+  "45883e70380e45f890babff5cfa3c91b174c859b", # (a/c) client.ts:jwt:6 — anon ou service_role historico
+  "13c58825187aa8d5b0d7a608ab65fe7effa41092", # (b/c) dispatcher-auth.test.ts + migrations cron apikey [ROTACIONAR]
 ]
