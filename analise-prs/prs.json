@@ -1,196 +1,122 @@
-{
-  "session": "session_01Ss1tXZ4cAbxBvdmu95uNPz",
-  "date": "2026-10-25",
-  "rev": 22,
-  "main_head_pre": "5279abfe07895d9b0481fa08086b2c18d321de5f",
-  "main_head_post": "15e10fd88208f9b4cd372b82544fb27892d15a81",
-  "gate_final_baseline": {
-    "run": 40223579961,
-    "sha": "7d3bd4ba",
-    "status": "success",
-    "tests": 429,
-    "failures": 0
+[
+  {
+    "number": 2667,
+    "title": "fix(calendar): adapta react-day-picker v8\u2192v10 (classNames + components + autoFocus)",
+    "author": "adm01-debug",
+    "draft": false,
+    "base": "main",
+    "head_sha": "79ac4d6a360725004df622032358bf8c27efda74",
+    "mergeable": null,
+    "created_at": "2026-10-27T23:18:04Z",
+    "changed_files": "N/A",
+    "commits": "N/A"
   },
-  "gate_final_post_merges": {
-    "sha": "15e10fd8",
-    "status": "queued",
-    "run": 40227283262,
-    "nota": "GitHub Actions infra issue — preso em queued desde 19:42Z; não é falha de código"
+  {
+    "number": 2666,
+    "title": "chore(main): release 1.0.0",
+    "author": "github-actions[bot]",
+    "draft": false,
+    "base": "main",
+    "head_sha": "6a254ef57746f30b93a404c8286de40eb76b4613",
+    "mergeable": null,
+    "created_at": "2026-10-27T22:54:45Z",
+    "changed_files": "N/A",
+    "commits": "N/A"
   },
-  "summary": {
-    "total_open": 29,
-    "merged_this_session": 10,
-    "decisao_humana": 13,
-    "fechar": 5,
-    "ja_em_main": 1,
-    "merged_prev_sessions": 3
+  {
+    "number": 2665,
+    "title": "chore(deps)(deps-dev): bump qs from 6.16.0 to 6.16.2",
+    "author": "dependabot[bot]",
+    "draft": false,
+    "base": "main",
+    "head_sha": "1bda4d605946b81b47a65963557d5d4c6bb1c54b",
+    "mergeable": null,
+    "created_at": "2026-10-27T22:53:25Z",
+    "changed_files": "N/A",
+    "commits": "N/A"
   },
-  "prs": [
-    {
-      "number": 2415,
-      "verdict": "DECISAO_HUMANA",
-      "test_merge": "CONFLICT",
-      "rule8": [
-        ".github/workflows/ci-security-drift.yml",
-        ".github/workflows/deploy-gates.yml"
-      ]
-    },
-    {
-      "number": 2417,
-      "verdict": "FECHAR",
-      "test_merge": "NO_MERGE_BASE"
-    },
-    {
-      "number": 2418,
-      "verdict": "FECHAR",
-      "test_merge": "NO_MERGE_BASE"
-    },
-    {
-      "number": 2419,
-      "verdict": "FECHAR",
-      "test_merge": "NO_MERGE_BASE"
-    },
-    {
-      "number": 2420,
-      "verdict": "FECHAR",
-      "test_merge": "NO_MERGE_BASE"
-    },
-    {
-      "number": 2422,
-      "verdict": "FECHAR",
-      "test_merge": "NO_MERGE_BASE"
-    },
-    {
-      "number": 2428,
-      "verdict": "DECISAO_HUMANA",
-      "test_merge": "CONFLICT",
-      "rule8": [
-        ".gitleaks.toml"
-      ]
-    },
-    {
-      "number": 2432,
-      "verdict": "JA_EM_MAIN",
-      "test_merge": "CLEAN"
-    },
-    {
-      "number": 2443,
-      "verdict": "DECISAO_HUMANA",
-      "test_merge": "CLEAN",
-      "motivo": "segurança FASE B + aprovação PO"
-    },
-    {
-      "number": 2449,
-      "verdict": "DECISAO_HUMANA",
-      "test_merge": "CONFLICT",
-      "rule8": [
-        "supabase/migrations/"
-      ]
-    },
-    {
-      "number": 2452,
-      "verdict": "DECISAO_HUMANA",
-      "test_merge": "CONFLICT"
-    },
-    {
-      "number": 2469,
-      "verdict": "DECISAO_HUMANA",
-      "test_merge": "CONFLICT",
-      "rule8": [
-        ".github/workflows/e2e-personalization.yml"
-      ]
-    },
-    {
-      "number": 2503,
-      "verdict": "DECISAO_HUMANA",
-      "test_merge": "CONFLICT"
-    },
-    {
-      "number": 2520,
-      "verdict": "DECISAO_HUMANA",
-      "test_merge": "CLEAN",
-      "motivo": "downgrade 1.2.1→1.0.0"
-    },
-    {
-      "number": 2532,
-      "verdict": "DECISAO_HUMANA",
-      "test_merge": "CONFLICT"
-    },
-    {
-      "number": 2537,
-      "verdict": "DECISAO_HUMANA",
-      "test_merge": "CLEAN",
-      "rule8": [
-        ".github/workflows/contract-tests.yml"
-      ]
-    },
-    {
-      "number": 2544,
-      "verdict": "MERGEADO_AUTONOMO",
-      "merge_sha": "1d26da9082d42e825de66f574fbc796587345fdf"
-    },
-    {
-      "number": 2545,
-      "verdict": "MERGEADO_AUTONOMO",
-      "merge_sha": "2a93ba556b58007a001d68efd3c81ead17c19dce"
-    },
-    {
-      "number": 2547,
-      "verdict": "DECISAO_HUMANA",
-      "test_merge": "CLEAN",
-      "motivo": "remoção feature + regressão prs.json"
-    },
-    {
-      "number": 2548,
-      "verdict": "MERGEADO_AUTONOMO",
-      "merge_sha": "9be832a355f0c98fcd22021b4273b16fa0b1aba5"
-    },
-    {
-      "number": 2549,
-      "verdict": "MERGEADO_AUTONOMO",
-      "merge_sha": "73df7502f3b582f7966c209ff6a5c202fb1a3f9e"
-    },
-    {
-      "number": 2550,
-      "verdict": "DECISAO_HUMANA",
-      "test_merge": "CLEAN",
-      "motivo": "mudança regra negócio D7"
-    },
-    {
-      "number": 2551,
-      "verdict": "MERGEADO_AUTONOMO",
-      "merge_sha": "97eed25cb177a318fcf63fb3843f02512511d579"
-    },
-    {
-      "number": 2552,
-      "verdict": "MERGEADO_AUTONOMO",
-      "merge_sha": "35fdb5793db7461f7fafcdae1effc89ae5cae6b5"
-    },
-    {
-      "number": 2553,
-      "verdict": "MERGEADO_AUTONOMO",
-      "merge_sha": "aebd333f3d2d57ee0bb5f1f127bf23f352846cd9"
-    },
-    {
-      "number": 2554,
-      "verdict": "MERGEADO_AUTONOMO",
-      "merge_sha": "e6538448e6edc639f9131e809ae265976b43f208"
-    },
-    {
-      "number": 2555,
-      "verdict": "MERGEADO_AUTONOMO",
-      "merge_sha": "479f2219485e23a5d35896dfe44c9ca4f7c1026f"
-    },
-    {
-      "number": 2556,
-      "verdict": "MERGEADO_AUTONOMO",
-      "merge_sha": "15e10fd88208f9b4cd372b82544fb27892d15a81"
-    },
-    {
-      "number": 2557,
-      "verdict": "DECISAO_HUMANA",
-      "test_merge": "CLEAN",
-      "motivo": "corrupção texto RELATORIO_CI.md"
-    }
-  ]
-}
+  {
+    "number": 2664,
+    "title": "docs(auditoria): Fase A completa \u2014 auditoria Supabase doufsxqlfjyuvxuezpln 2026-10-27",
+    "author": "adm01-debug",
+    "draft": false,
+    "base": "main",
+    "head_sha": "13dfda60d369cb110d31ea38ce4a1558030866cf",
+    "mergeable": null,
+    "created_at": "2026-10-27T22:36:19Z",
+    "changed_files": "N/A",
+    "commits": "N/A"
+  },
+  {
+    "number": 2663,
+    "title": "docs(ci): RELATORIO_CI.md + PENDENCIAS.md \u2014 baseline de falhas e deploy validate-access",
+    "author": "adm01-debug",
+    "draft": false,
+    "base": "main",
+    "head_sha": "40cb1e219987ded2ea09b5d423fdc15b2e7d3ded",
+    "mergeable": null,
+    "created_at": "2026-10-27T22:33:08Z",
+    "changed_files": "N/A",
+    "commits": "N/A"
+  },
+  {
+    "number": 2662,
+    "title": "docs(analise-prs): an\u00e1lise exaustiva 13 PRs \u2014 1 merge (#2588) \u2014 session_01VXkRxWq5ZUCmvuNx5e2TGX",
+    "author": "adm01-debug",
+    "draft": false,
+    "base": "main",
+    "head_sha": "869ca457ddc10d920369a393e72c941c48510901",
+    "mergeable": null,
+    "created_at": "2026-10-27T22:03:50Z",
+    "changed_files": "N/A",
+    "commits": "N/A"
+  },
+  {
+    "number": 2646,
+    "title": "fix(migrations): adiciona cabe\u00e7alho -- Rollback: nas migrations 20261027160000 e 20261027220000",
+    "author": "adm01-debug",
+    "draft": false,
+    "base": "main",
+    "head_sha": "79c0c670f33744fecc01f5c9b6617578c57a3fd2",
+    "mergeable": null,
+    "created_at": "2026-10-27T14:18:32Z",
+    "changed_files": "N/A",
+    "commits": "N/A"
+  },
+  {
+    "number": 2631,
+    "title": "chore: atualiza PENDENCIAS \u00a74 e RELATORIO_CI \u2014 bloqueio deploy confirmado",
+    "author": "adm01-debug",
+    "draft": false,
+    "base": "main",
+    "head_sha": "b093f023f2d988f8eeb447ca224ec2fd56a3d6ae",
+    "mergeable": null,
+    "created_at": "2026-10-27T09:52:24Z",
+    "changed_files": "N/A",
+    "commits": "N/A"
+  },
+  {
+    "number": 2600,
+    "title": "docs(analise-prs): rev46 \u2014 an\u00e1lise completa 20 PRs (7 mergeadas)",
+    "author": "adm01-debug",
+    "draft": false,
+    "base": "main",
+    "head_sha": "d7b6aaff442bd8eee8495510069083213d297c51",
+    "mergeable": null,
+    "created_at": "2026-10-26T22:04:32Z",
+    "changed_files": "N/A",
+    "commits": "N/A"
+  },
+  {
+    "number": 2580,
+    "title": "fix(banco): adiciona rollback header e arquivo rollback para e23",
+    "author": "adm01-debug",
+    "draft": true,
+    "base": "main",
+    "head_sha": "41198d9a332f3e75707ca070d62b27b2eb772792",
+    "mergeable": null,
+    "created_at": "2026-10-25T21:49:53Z",
+    "changed_files": "N/A",
+    "commits": "N/A"
+  }
+]
