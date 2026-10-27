@@ -1908,3 +1908,31 @@ A reconciliação requer (per CLAUDE.md REGRA #8 / Corolário E99):
 ---
 
 *Atualizado pela sessão Claude Code — https://claude.ai/code/session_014RkohRYagi3sPiL8jtgot4 (2026-10-27 — corrigido em commit 3e46211c6, run #40430664155)*
+
+---
+
+## P97 — E2E Personalization Journey — Falha por performance do Supabase (pré-existente) ⏳ AGUARDANDO INFRA
+
+**Workflow:** `e2e-personalization.yml`  
+**Run com falha:** [#40443201981](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40443201981) (commit `9ab69bc4df`, job `e2e-personalization`)  
+**Specs falhando:** `90-personalization-pdp-flow.spec.ts`, `91-personalization-variant-flow.spec.ts`, `92-personalization-auth-redirect.spec.ts`  
+**Categoria:** Infraestrutura Supabase — pré-existente, não causado por esta branch  
+**Sessão:** session_014RkohRYagi3sPiL8jtgot4 (2026-10-27)  
+**Bloqueio:** Externo — performance do Supabase canônico `doufsxqlfjyuvxuezpln`
+
+**Causa raiz:**  
+`POST rest/v1/rpc/get_profile_and_roles` levou **33.126ms** (timeout esperado: ~5s). `GET rest/v1/system_settings` ficou **pendente por 80.337ms**. As specs E2E de personalização dependem de autenticação real via Supabase, portanto falham quando a API está lenta ou sobrecarregada.
+
+**Evidência de que é pré-existente:**  
+- Specs existem em `main` desde commit `3a43fb7b7` (2026-05-xx)
+- Workflow `e2e-personalization.yml` existe em `main` desde commit `6457e24da`
+- A branch `claude_04/beautiful-gates-bvocz5` NÃO tocou nenhum dos arquivos de spec de personalização
+- O mesmo padrão de falha (timeout no `get_profile_and_roles`) foi observado em runs anteriores na `main`
+
+**Ação tomada:**  
+Nenhuma. Esta falha não pode ser resolvida no código — requer melhoria de performance na infra Supabase (`doufsxqlfjyuvxuezpln`). Possíveis ações pelo PO:
+1. Adicionar índice em `profiles.id` / `user_roles.user_id` se ausente
+2. Revisar a RPC `get_profile_and_roles` para reduzir joins ou adicionar cache
+3. Adicionar `continue-on-error: true` no job `e2e-personalization` (apenas se o PO aceitar que este check seja não-bloqueante)
+
+*Registrado pela sessão Claude Code — https://claude.ai/code/session_014RkohRYagi3sPiL8jtgot4 (2026-10-27)*
