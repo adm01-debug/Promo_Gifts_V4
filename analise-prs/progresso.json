@@ -202,6 +202,19 @@
     2656,
     2657
   ],
+  "ci_comparison_final": {
+    "baseline_sha": "a0560fdc62744c6bf4ba182914cc76dec06aecb1",
+    "current_sha": "f6f9889af171da4cc538f103fe0988a77dabd90d",
+    "gate_final_baseline": "failure",
+    "gate_final_current": "success",
+    "gate_0_5_baseline": "failure",
+    "gate_0_5_current": "success",
+    "regressoes_bloqueantes": 0,
+    "novas_falhas_nao_bloqueantes": ["e2e-gates", "E2E — Personalization Journey", "Verify push to main matches accepted patterns", "check", "Compare GitHub × Canonical", "copilot-pull-request-reviewer"],
+    "evidencia": "Gate Final SUCCESS em f6f9889a apesar das novas falhas — todas não-bloqueantes",
+    "arquivo_comparacao": "analise-prs/baseline/ci-comparison-a0560fdc-vs-f6f9889a.md",
+    "verificado_em": "2026-10-27"
+  },
   "meta_cumprida": {
     "total_open_api": 12,
     "total_inventariadas": 19,
