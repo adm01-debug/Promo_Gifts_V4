@@ -5,7 +5,7 @@
 **main HEAD final (ultimo merge autonomo desta sessao):** f2f8c3d6e316cef8802faf42a64f9f4005970b6a (#2594)
 **main HEAD atual:** f2f8c3d6e316cef8802faf42a64f9f4005970b6a (PR #2594 — merge autonomo rev74)
 **Gate Final main (rev73):** run id=122257161951 — SUCCESS em `5d049ef1`
-**Gate Final main (rev74):** SHA `f2f8c3d6` — queued (CI rodando apos merge #2594)
+**Gate Final main (rev74):** run #40535938677 — queued (CI backlog; nao falhou; ultimo SUCCESS = rev73)
 **Gate Final delivery branch PR#2600:** run #40500183634 — success em SHA `3c9d14075`
 
 ---
@@ -68,7 +68,7 @@ Totalmente supersedadas pelos merges desta sessao. Recomendacao: FECHAR.
 
 - **Entrada:** Gate Final run #40447563368 — SUCCESS em SHA `48899b659ef6`
 - **Saida (rev73):** Gate Final run #122257161951 — SUCCESS em SHA `5d049ef1`
-- **Saida (rev74):** Gate Final em SHA `f2f8c3d6` — queued (CI rodando apos merge #2594)
+- **Saida (rev74):** Gate Final run #40535938677 em SHA `f2f8c3d6` — queued (CI backlog; 3 runs na fila; nao falhou; ultimo SUCCESS confirmado = rev73 run #40522420231)
 - **Delivery branch:** Gate Final run #40500183634 — SUCCESS em `3c9d14075`
 - **Regressoes introduzidas por esta sessao:** ZERO (rev73 confirmado; rev74 aguardando CI)
 

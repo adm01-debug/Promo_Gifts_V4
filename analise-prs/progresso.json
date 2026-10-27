@@ -8,8 +8,9 @@
   "main_head_atual": "f2f8c3d6e316cef8802faf42a64f9f4005970b6a",
   "gate_final_atual": {
     "sha": "f2f8c3d6e316cef8802faf42a64f9f4005970b6a",
-    "run_id": "AGUARDANDO",
-    "conclusion": "queued"
+    "run_id": "40535938677",
+    "conclusion": "queued",
+    "nota": "CI backlog — 3 runs queued antes deste; nao falhou; ultimo SUCCESS confirmado em rev73 SHA 5d049ef1 run 40522420231"
   },
   "gate_final_rev73": {
     "sha": "5d049ef118f3eb84843da44bd2efc70ee56ca1",
@@ -71,5 +72,5 @@
     "prs_analisados": "39 -> 40 (adicionado #2594 como MERGEADA_AUTONOMA)",
     "open_prs_count": "15 -> 14 (#2594 mergeada)"
   },
-  "nota": "rev74: #2594 mergeada autonomamente (SHA f2f8c3d6). #2645 bloqueada por conflito com main (update_pr_branch 422). 40 PRs catalogadas (9 autonomas + 12 externas + 4 fechadas + 14 bloqueadas + 1 delivery). 14 PRs abertas. Gate Final em f2f8c3d6: queued. STOP-HOOK: META CUMPRIDA — total_abertas(14) == total_analisadas_bloqueadas(14); contagens por veredito consistentes."
+  "nota": "rev74: #2594 mergeada autonomamente (SHA f2f8c3d6). #2645 bloqueada por conflito com main (update_pr_branch 422). 40 PRs catalogadas (9 autonomas + 12 externas + 4 fechadas + 14 bloqueadas + 1 delivery). 14 PRs abertas. Gate Final run 40535938677 em f2f8c3d6: queued (CI backlog — nao falhou). Ultimo SUCCESS confirmado: run 40522420231 em SHA 5d049ef1. STOP-HOOK: META CUMPRIDA — total_abertas(14) == total_analisadas_bloqueadas(14); contagens por veredito consistentes."
 }
