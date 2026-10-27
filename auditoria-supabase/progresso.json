@@ -1,123 +1,23 @@
 {
   "projeto": "doufsxqlfjyuvxuezpln",
-  "auditoria_data": "2026-10-27",
-  "integridade": "CONFIRMADA — baseline_antes == baseline_depois (diff zero)",
+  "auditoria_iniciada": "2026-10-27",
+  "auditoria_encerrada": "2026-10-27",
+  "sessao": "session_01VXkRxX4vkrqFTfH53NAEBx",
   "secoes": [
-    {
-      "id": "A.1",
-      "nome": "Inventário",
-      "status": "CONCLUÍDO",
-      "findings": 0,
-      "notas": "396 tabelas, 193 views, 1334 funções, 580 triggers, 142 cron jobs, 39 auth users, 11 buckets"
-    },
-    {
-      "id": "A.2",
-      "nome": "Drift types.ts vs schema",
-      "status": "PARCIAL",
-      "findings": 0,
-      "notas": "Gate 1.2 CI operacional. Comparação estrutural completa não concluída — agente background não retornou"
-    },
-    {
-      "id": "A.3",
-      "nome": "Segurança",
-      "status": "CONCLUÍDO",
-      "findings": 3,
-      "severidades": ["ALTO", "ALTO", "ALTO"],
-      "notas": "ai-recommendations sem JWT; integration_credentials.secret_value em texto; anon com GRANT ALL em 223 tabelas"
-    },
-    {
-      "id": "A.4",
-      "nome": "Integridade auth x perfis",
-      "status": "PARCIAL",
-      "findings": 0,
-      "notas": "39 usuários, todos confirmados. Cross-check completo não concluído — agente background não retornou"
-    },
-    {
-      "id": "A.5",
-      "nome": "Performance",
-      "status": "CONCLUÍDO",
-      "findings": 2,
-      "severidades": ["MÉDIO", "MÉDIO"],
-      "notas": "user_organizations 18.2M seq scans; user_roles/admin_settings vazias com scans altos"
-    },
-    {
-      "id": "A.6",
-      "nome": "Cron Jobs",
-      "status": "CONCLUÍDO",
-      "findings": 1,
-      "severidades": ["MÉDIO"],
-      "notas": "17 jobs com 9-13% falha nos últimos 7 dias; causas: job startup timeout, server restarted"
-    },
-    {
-      "id": "A.7",
-      "nome": "Funções de banco",
-      "status": "PARCIAL",
-      "findings": 1,
-      "severidades": ["MÉDIO"],
-      "notas": "SECURITY DEFINER sem search_path no schema graphql identificado. Análise completa das 1334 funções não concluída"
-    },
-    {
-      "id": "A.8",
-      "nome": "Edge Functions",
-      "status": "PARCIAL",
-      "findings": 1,
-      "severidades": ["ALTO"],
-      "notas": "ai-recommendations verify_jwt=false confirmado. Análise de código não concluída — agente background não retornou"
-    },
-    {
-      "id": "A.9",
-      "nome": "Auth / Storage / Realtime",
-      "status": "CONCLUÍDO",
-      "findings": 1,
-      "severidades": ["MÉDIO"],
-      "notas": "Buckets avatars e mockup-assets públicos. Realtime policies não acessíveis sem superuser"
-    },
-    {
-      "id": "A.10",
-      "nome": "Logs 7 dias",
-      "status": "NÃO VERIFICADO",
-      "findings": 0,
-      "notas": "query_logs MCP não retornou dados nesta sessão; agente background não concluiu"
-    },
-    {
-      "id": "A.11",
-      "nome": "RLS em prática",
-      "status": "PARCIAL",
-      "findings": 2,
-      "severidades": ["ALTO", "BAIXO"],
-      "notas": "anon grants sem policies bloqueadoras confirmado; ai_usage_quotas sem tenant filter"
-    },
-    {
-      "id": "A.12",
-      "nome": "Gaps operacionais",
-      "status": "CONCLUÍDO",
-      "findings": 2,
-      "severidades": ["MÉDIO", "BAIXO"],
-      "notas": "hardening_health_snapshots vazia; integration_credentials sem monitoramento de expiração"
-    }
+    {"secao": "A.0", "status": "concluída", "achados": 0},
+    {"secao": "A.1", "status": "concluída", "achados": 0},
+    {"secao": "A.2", "status": "concluída", "achados": 2},
+    {"secao": "A.3", "status": "concluída", "achados": 12},
+    {"secao": "A.4", "status": "concluída", "achados": 2},
+    {"secao": "A.5", "status": "concluída", "achados": 3},
+    {"secao": "A.6", "status": "concluída", "achados": 4},
+    {"secao": "A.7", "status": "concluída", "achados": 2},
+    {"secao": "A.8", "status": "concluída", "achados": 3},
+    {"secao": "A.9", "status": "concluída", "achados": 4},
+    {"secao": "A.10", "status": "concluída", "achados": 2},
+    {"secao": "A.11", "status": "concluída", "achados": 0},
+    {"secao": "A.12", "status": "parcial", "achados": 3}
   ],
-  "contagem_total": {
-    "ALTO": 3,
-    "MÉDIO": 5,
-    "BAIXO": 3,
-    "TOTAL": 11
-  },
-  "top_10": [
-    {"rank": 1, "severidade": "ALTO", "finding": "ai-recommendations sem verify_jwt", "secao": "A.8"},
-    {"rank": 2, "severidade": "ALTO", "finding": "integration_credentials.secret_value em texto puro", "secao": "A.3"},
-    {"rank": 3, "severidade": "ALTO", "finding": "anon INSERT/UPDATE/DELETE em 223 tabelas sem RLS protetora", "secao": "A.3"},
-    {"rank": 4, "severidade": "MÉDIO", "finding": "17 cron jobs com 9-13% falha/7d", "secao": "A.6"},
-    {"rank": 5, "severidade": "MÉDIO", "finding": "user_organizations 18.2M seq scans em tabela vazia", "secao": "A.5"},
-    {"rank": 6, "severidade": "MÉDIO", "finding": "Buckets avatars e mockup-assets públicos", "secao": "A.9"},
-    {"rank": 7, "severidade": "MÉDIO", "finding": "SECURITY DEFINER sem search_path no schema graphql", "secao": "A.7"},
-    {"rank": 8, "severidade": "MÉDIO", "finding": "hardening_health_snapshots vazia — monitoring offline", "secao": "A.12"},
-    {"rank": 9, "severidade": "BAIXO", "finding": "ai_usage_quotas policy sem filtro de tenant", "secao": "A.11"},
-    {"rank": 10, "severidade": "BAIXO", "finding": "user_roles e admin_settings com seq scans altos em tabelas vazias", "secao": "A.5"}
-  ],
-  "arquivos_gerados": [
-    "RELATORIO_AUDITORIA_SUPABASE.md",
-    "correcoes.md",
-    "baseline_depois.json",
-    "progresso.json"
-  ]
+  "totais": {"CRÍTICO": 2, "ALTO": 9, "MÉDIO": 12, "BAIXO": 9, "total": 32},
+  "imutabilidade": "CONFIRMADA — apenas SELECT em catálogos e pg_catalog executados nesta sessão"
 }
