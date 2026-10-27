@@ -2,23 +2,23 @@
   "inventario_atual": {
     "data": "2026-10-27",
     "sessao": "session_012WyySbh2tj8vhRQLBf3mHo",
-    "main_sha": "4c7ecb260da691b5cd436700380b819d0d936961",
+    "main_sha": "a0560fdc62744c6bf4ba182914cc76dec06aecb1",
     "main_sha_anterior": "16ad57c66e619100f76c113653cdab7a20a7871a",
     "total_analisadas": 19,
     "nota": "15 PRs abertas no inventário de reconciliação 2026-10-27T18:00Z. #2594, #2648, #2649 foram mergeadas pelo owner durante a análise. #2650 surgiu após o inventário e foi mergeada pelo owner em 2026-10-27T16:21:21Z. #2652 mergeada pelo owner (docs E15 receipt). #2587 mergeada por Claude em 2026-10-27T16:46:37Z (zustand 4→5, SHA merge 16ad57c6). #2654 e #2655 surgiram após o inventário final — ambas DRAFT, aguardando promoção pelo autor. Total 19 PRs analisadas, 13 ainda abertas.",
     "numeros_inventario_reconciliacao": [2420, 2572, 2579, 2580, 2587, 2588, 2594, 2600, 2605, 2622, 2631, 2645, 2646, 2648, 2649],
-    "numeros_ainda_open": [2420, 2572, 2579, 2580, 2588, 2600, 2605, 2622, 2631, 2645, 2646, 2655],
+    "numeros_ainda_open": [2420, 2572, 2579, 2580, 2588, 2600, 2605, 2622, 2631, 2645, 2646],
     "pr2650_nota": "Surgiu após inventário inicial; mergeada pelo owner em 2026-10-27T16:21:21Z (merge SHA f0689734). Main passou de 61a0cfa1 para f0689734.",
     "pr2652_nota": "Surgiu após inventário; mergeada pelo owner em ~16:45Z (merge SHA 22ba938e). docs(e15): recibo migration 20261027140000.",
     "pr2587_nota": "Mergeada por Claude em 2026-10-27T16:46:37Z (merge SHA 16ad57c6). zustand 4.5.7→5.0.16. Gate Final SUCCESS run 40420603513, test-merge limpo, git cherry +, 2 arquivos package.json+lock, API 100% compatível.",
     "pr2654_nota": "Surgiu como DRAFT/blocked após inventário final. Owner promoveu e mergeou em 2026-10-27T17:19:33Z (merge SHA 4c7ecb26). fix(ci): +1 linha SERVER_ONLY_ALLOWLIST. Gate Final SUCCESS run 40549508170. Main atual = 4c7ecb260da691b5cd436700380b819d0d936961."
   },
   "contagem_por_veredicto": {
-    "MERGEADA_PELO_OWNER": 6,
+    "MERGEADA_PELO_OWNER": 7,
     "DECISAO_HUMANA": 1,
     "CONFLITO_PENDENTE_REBASE": 1,
     "CONFLITO_PENDENTE_REBASE_SEGURANCA": 1,
-    "DRAFT": 3,
+    "DRAFT": 2,
     "AGUARDAR_APROVACAO": 2,
     "CI_FALHOU": 1,
     "NAO_MERGEAR": 2,
@@ -195,16 +195,16 @@
       "motivo": "Surgiu como DRAFT/blocked. Owner promoveu e mergeou. +1 linha SERVER_ONLY_ALLOWLIST em scripts/check-edge-cors-headers.mjs. Gate Final SUCCESS."
     },
     "2655": {
-      "veredicto": "DRAFT",
+      "veredicto": "MERGEADA_PELO_OWNER",
       "titulo": "fix(tests): add xbz-image-uploader descriptor with pendingDeploy=true",
       "head": "d4b959aafdd028c0c9271d31eed2d891c96cb153",
       "arquivos": 1,
-      "gate_final": "NAO_RODOU",
+      "gate_final": "SUCCESS",
       "conflito": false,
-      "mergeable_state": "behind",
-      "test_merge_local": "CLEAN",
-      "test_merge_base": "4c7ecb26",
-      "motivo": "Estado DRAFT — behind (sem conflito). Test-merge ✅ CLEAN contra main 4c7ecb26. Aguardar autor promover → CI → Gate Final → merge."
+      "merged_at": "2026-10-27T17:31:49Z",
+      "merge_sha": "a0560fdc62744c6bf4ba182914cc76dec06aecb1",
+      "mergeado_por": "adm01-debug",
+      "motivo": "Owner promoveu de DRAFT e mergeou. tests/edge-functions/live/descriptors.ts +7 linhas (descriptor xbz-image-uploader com pendingDeploy=true). Merge SHA a0560fdc = main atual."
     },
     "2650": {
       "veredicto": "MERGEADA_PELO_OWNER",

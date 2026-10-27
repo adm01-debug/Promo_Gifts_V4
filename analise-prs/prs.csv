@@ -17,4 +17,4 @@ numero,titulo,veredicto,head_sha,gate_final,conflito,mergeable_state,arquivos,mo
 2650,fix e2e catalog+kit-builder testids,MERGEADA_PELO_OWNER,acdaa65b,SUCCESS,false,clean,2,"Mergeada pelo owner 2026-10-27T16:21:21Z — merge_sha f0689734",2026-10-27
 2652,docs(e15): recibo migration 20261027140000,MERGEADA_PELO_OWNER,,SUCCESS,false,clean,1,"Mergeada pelo owner 2026-10-27T16:45Z — merge_sha 22ba938e",2026-10-27
 2654,fix(ci): adiciona xbz-image-uploader ao SERVER_ONLY_ALLOWLIST,MERGEADA_PELO_OWNER,a02a7c1a,SUCCESS,false,clean,1,Mergeada pelo owner 2026-10-27T17:19:33Z — merge_sha 4c7ecb26,2026-10-27
-2655,fix(tests): add xbz-image-uploader descriptor with pendingDeploy=true,DRAFT,d4b959aa,NAO_RODOU,false,behind,1,Estado DRAFT — behind (sem conflito); test-merge CLEAN contra 4c7ecb26,2026-10-27
+2655,fix(tests): add xbz-image-uploader descriptor with pendingDeploy=true,MERGEADA_PELO_OWNER,d4b959aa,SUCCESS,false,clean,1,"Mergeada pelo owner 2026-10-27T17:31:49Z — merge_sha a0560fdc",2026-10-27
