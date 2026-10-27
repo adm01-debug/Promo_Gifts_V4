@@ -10,7 +10,7 @@
 -- 2.216 versões vs ~1.000 arquivos locais (drift histórico).
 -- =========================================================================
 
-CREATE TABLE IF NOT EXISTS public.crm_callback_events ( -- soft-delete-exempt: append-only audit log de callbacks CRM; registros nunca deletados
+CREATE TABLE IF NOT EXISTS public.crm_callback_events ( -- soft-delete-exempt: append-only audit log de callbacks CRM; purge por purge_old_crm_callback_events() após 180 dias (sem soft-delete)
   id                uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   external_quote_id uuid NOT NULL,
   crm_quote_id      uuid,
