@@ -215,16 +215,41 @@
     "arquivo_comparacao": "analise-prs/baseline/ci-comparison-a0560fdc-vs-f6f9889a.md",
     "verificado_em": "2026-10-27"
   },
+  "contagem_reconciliacao": {
+    "nota": "Três contagens diferentes — todas consistentes entre si",
+    "open_api_inicio_sessao": 12,
+    "open_api_atual": 13,
+    "nota_open_atual": "13 = #2600 estava DRAFT no inventário original; #2658 aberta após inventário; #2653 é branch desta sessão",
+    "inventario_original_19": "PRs abertas na API no início da sessão + 4 abertas/detectadas durante análise",
+    "total_tracked_23": "19 inventário original + #2653 + #2656 + #2657 + #2658 = 23 PRs com dossier",
+    "open_com_dossier_e_4Q": 13,
+    "mergeadas_claude": 1,
+    "mergeadas_owner": 9,
+    "total_dossiers": 23,
+    "dossiers_existem": [
+      2420, 2572, 2579, 2580, 2587, 2588, 2594, 2600, 2605,
+      2622, 2631, 2645, 2646, 2648, 2649, 2650, 2652, 2653,
+      2654, 2655, 2656, 2657, 2658
+    ]
+  },
   "meta_cumprida": {
-    "total_open_api": 12,
+    "total_open_api_inicio": 12,
+    "total_open_api_atual": 13,
     "total_inventariadas": 19,
-    "total_analisadas_com_4_perguntas": 19,
-    "dossiers_arquivos": "analise-prs/dossies/PR-2420.md até PR-2655.md",
+    "total_analisadas_com_4_perguntas": 23,
+    "total_dossiers_criados": 23,
+    "dossiers_arquivos": "analise-prs/dossies/PR-2420.md até PR-2658.md (23 dossiers)",
     "baseline_arquivo": "analise-prs/baseline/checks-main-a0560fdc.json",
     "regras_negocio_arquivo": "analise-prs/regras-de-negocio.md",
+    "local_checks_arquivo": "analise-prs/baseline/local-checks.md",
     "worktrees_removidos": true,
     "merge_claude_gate_final_ok": true,
-    "zero_regressoes_novas": true
+    "zero_regressoes_novas": true,
+    "vitest_exit0_confirmado": true,
+    "vitest_ci_gate2_success": true,
+    "producao_mcp_verificada": "Nenhuma das 9 PRs mergeadas pelo owner continha SQL de migration — ledger consistente confirmado via list_migrations",
+    "dossiers_pr2656_criado": true,
+    "dossiers_pr2657_criado": true
   },
   "supabase_log_check_post_merge_2587": {
     "resultado": "ZERO erros PostgreSQL no período 16:46Z-23:59Z (pós-merge PR #2587)",

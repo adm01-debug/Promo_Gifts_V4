@@ -37,8 +37,12 @@ Saída: (vazia — zero erros de erro; warnings não bloqueiam)
 VITEST_EXIT=0
 ```
 
-**Resultado:** ✅ PASSA — todos os unit tests passam  
-**Nota CI:** Gate 2 - Unit Tests = success (check run `122356207930`)
+**Resultado:** ✅ PASSA — zero testes falhando  
+**Interpretação de exit 0:** `vitest run` retorna exit 0 se e somente se todos os testes passam. Exit 1 ou superior indica falha. Exit 0 = nenhum teste falhou.
+
+**Limitação de ambiente:** chamadas subsequentes com `--reporter=verbose` e `--list` terminam por SIGTERM (exit 143) após 60–90s — timeout do ambiente de CI remoto, **não** falha de teste. O exit code 0 da execução original é a evidência definitiva de que nenhum teste falhou.
+
+**Confirmação independente via CI:** Gate 2 - Unit Tests = **success** (check run `122356207930`, SHA `a0560fdc`) — CI externo confirma o mesmo baseline.
 
 ---
 
