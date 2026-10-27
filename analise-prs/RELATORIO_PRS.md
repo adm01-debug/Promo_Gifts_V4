@@ -1,4 +1,4 @@
-# RELATORIO_PRS.md — rev66
+# RELATORIO_PRS.md — rev67
 **Sessão:** session_011d8gKLZg8BWivR8aQBwxGF
 **Data:** 2026-10-27
 **main HEAD entrada:** df18546dfd76d1bea7ea5873257b668d128d8df3
@@ -28,6 +28,16 @@
 **Merges autônomos nesta sessão:** 4 — #2620, #2627, #2628, #2636
 **Merges sessão externa (verificados):** 8 — #2597, #2621, #2625, #2630, #2632, #2633, #2635, #2638
 **Nenhuma falha nova no Gate Final após merges desta sessão**
+
+### Mudanças rev66 → rev67
+
+- **PR-2630.md e PR-2633.md** criados: dossiers faltantes das PRs MERGEADO_SESSAO_EXTERNA
+- **Test-merge `13f459d5` adicionado** a todos os 15 dossiers de PRs abertas (evidência local por `git merge --no-commit --no-ff`)
+- **PR-2420**: DESCONHECIDO → CONFLICT confirmado (`supabase/rollbacks/20261019000000_rollback.sql`)
+- **PR-2605**: CLEAN → CONFLICT confirmado (2 arquivos: `e2e/catalog/*.spec.ts`, `PromoFlixPlayer.tsx`)
+- **PR-2612**: git cherry confirma commit `32804a149` já em main (0-file test-merge)
+- **PR-2619**: git cherry confirma commit `3e292925c` já em main (0-file test-merge)
+- **Total dossiers:** 29 (27 da sessão anterior + PR-2630.md + PR-2633.md)
 
 ### Mudanças rev65 → rev66
 
@@ -210,5 +220,5 @@ analise-prs/
     ├── PR-2628.md  PR-2629.md  PR-2630.md  PR-2631.md
     ├── PR-2632.md  PR-2633.md  PR-2634.md  PR-2635.md
     ├── PR-2636.md  PR-2637.md  PR-2638.md
-    └── (total: 27 dossies)
+    └── (total: 29 dossiers — incluindo PR-2630.md e PR-2633.md adicionados em rev67)
 ```
