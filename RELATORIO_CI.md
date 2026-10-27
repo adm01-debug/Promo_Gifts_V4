@@ -126,17 +126,16 @@ Executado no container Claude Code no HEAD `6ef07df8` (merge commit na main, pó
 
 ---
 
-## 5. Estado do PR #2597 (atualizado 2026-10-27T09:12 UTC)
+## 5. Estado do PR #2597 (atualizado 2026-10-27T09:25 UTC)
 
 **Branch:** `claude_04/beautiful-gates-bvocz5`  
 **PR #2597:** ✅ **MERGEADO** (squash) em `2026-10-27T08:55 UTC`  
 **Merge commit SHA:** `6ef07df8c4980ab776bb087d4ebd79804b1d476c`  
 **Gate Final pré-merge run 40475129693** — ✅ `conclusion=success` (SHA `955a9d8ef1`, concluído 08:53 UTC)  
 
-**Gate Final pós-merge na main run 40476927264** — `in_progress` (09:12 UTC):
-- Gate E40 Schema Drift Check — estimativa 30–60 min após runner alocar
+**Gate Final pós-merge na main run 40476927264** — ✅ `conclusion=success` (09:18 UTC)
 
-**Deploy Edge Functions run 40476968791** — `pending` (dispatch `workflow_dispatch` executado às 08:55 UTC)
+**Deploy Edge Functions run 40476968791** — ⏳ `pending` (dispatch `workflow_dispatch` executado às 08:55 UTC; runner externo ainda não alocado — ver PENDENCIAS.md §4)
 
 ---
 
@@ -171,7 +170,7 @@ Executado no container Claude Code no HEAD `6ef07df8` (merge commit na main, pó
 | edge-functions-drift-check | ❌ failure (Lovable `eb04236c`) | ⏳ aguardando deploy run 40476968791 |
 | Running Copilot Code Review | ❌ failure | ❌ failure (irresolvível — bot externo) |
 | Gate Final pré-merge | ✅ (base) | ✅ success run 40475129693 |
-| Gate Final pós-merge na main | — | ⏳ in_progress run 40476927264 |
+| Gate Final pós-merge na main | — | ✅ success run 40476927264 (09:18 UTC) |
 | Quote Builder Delivery Quality | ✅ (base) | ❌ failure pré-existente (PENDENCIAS.md §5) |
 | Gate 5 — Supabase Security Audit | ✅ (base) | ❌ failure transiente (PENDENCIAS.md §6) |
 
@@ -179,13 +178,13 @@ Executado no container Claude Code no HEAD `6ef07df8` (merge commit na main, pó
 
 ---
 
-## 8. Estado pós-merge (atualizado 2026-10-27T09:12 UTC)
+## 8. Estado pós-merge (atualizado 2026-10-27T09:25 UTC)
 
 ✅ **PR #2597 mergeado** (squash) em 2026-10-27T08:55 UTC  
 ✅ **Merge commit SHA:** `6ef07df8c4980ab776bb087d4ebd79804b1d476c`  
 ✅ **Gate Final pré-merge** run 40475129693 — `conclusion=success` (08:53 UTC)  
-⏳ **Gate Final pós-merge na main** run 40476927264 — `in_progress` (09:12 UTC, Gate E40 Schema Drift ~30-60 min)  
-⏳ **Deploy Edge Functions** run 40476968791 — `pending` (08:55 UTC)  
+✅ **Gate Final pós-merge na main** run 40476927264 — `conclusion=success` (09:18 UTC)  
+⏳ **Deploy Edge Functions** run 40476968791 — `pending` (08:55 UTC; runner externo não alocado — ver PENDENCIAS.md §4)  
 
 ---
 
@@ -210,4 +209,4 @@ Após o merge do PR #2597, duas falhas adicionais foram identificadas nas runs d
 ---
 
 *Gerado por Claude Code — sessão https://claude.ai/code/session_014RkohRYagi3sPiL8jtgot4*  
-*Atualizado: 2026-10-27T09:12 UTC — merge commit `6ef07df8` na main; Gate Final pós-merge run 40476927264 in_progress*
+*Atualizado: 2026-10-27T09:25 UTC — Gate Final pós-merge run 40476927264 conclusion=success ✅; Deploy Edge Functions run 40476968791 pending (runner externo)*
