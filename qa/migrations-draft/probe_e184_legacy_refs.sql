@@ -13,35 +13,39 @@ DECLARE
   funcs text;
   crons text;
   gucs  text;
+  r     record;
 BEGIN
-  funcs := array_to_string(
-    ARRAY(
-      SELECT n.nspname || '.' || p.proname
-        FROM pg_proc p
-        JOIN pg_namespace n ON n.oid = p.pronamespace
-       WHERE pg_get_functiondef(p.oid) ILIKE '%pqpdolkae%'
-       ORDER BY 1
-    ), ', ');
+  FOR r IN
+    SELECT n.nspname || '.' || p.proname AS f
+      FROM pg_proc p
+      JOIN pg_namespace n ON n.oid = p.pronamespace
+     WHERE pg_get_functiondef(p.oid) ILIKE '%pqpdolkae%'
+     ORDER BY 1
+  LOOP
+    funcs := COALESCE(funcs || ', ', '') || r.f;
+  END LOOP;
 
   IF EXISTS (SELECT 1 FROM pg_extension WHERE extname = 'pg_cron') THEN
-    crons := array_to_string(
-      ARRAY(
-        SELECT 'job ' || j.jobid || ' ' || j.jobname || ' :: ' || left(j.command, 300)
-          FROM cron.job j
-         WHERE j.command ILIKE '%pqpdolkae%'
-         ORDER BY j.jobid
-      ), E'\n');
+    FOR r IN
+      SELECT 'job ' || j.jobid || ' ' || j.jobname || ' :: ' || left(j.command, 300) AS f
+        FROM cron.job j
+       WHERE j.command ILIKE '%pqpdolkae%'
+       ORDER BY j.jobid
+    LOOP
+      crons := COALESCE(crons || E'\n', '') || r.f;
+    END LOOP;
   ELSE
     crons := '<pg_cron não instalado>';
   END IF;
 
-  gucs := array_to_string(
-    ARRAY(
-      SELECT name || '=' || setting
-        FROM pg_settings
-       WHERE setting ILIKE '%pqpdolkae%'
-       ORDER BY 1
-    ), ', ');
+  FOR r IN
+    SELECT name || '=' || setting AS f
+      FROM pg_settings
+     WHERE setting ILIKE '%pqpdolkae%'
+     ORDER BY 1
+  LOOP
+    gucs := COALESCE(gucs || ', ', '') || r.f;
+  END LOOP;
 
   RAISE EXCEPTION 'PROBE_E184 | funcs=% | crons=% | gucs=%',
     COALESCE(funcs, '<none>'), COALESCE(crons, '<none>'), COALESCE(gucs, '<none>');
