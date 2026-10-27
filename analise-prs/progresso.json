@@ -17,8 +17,13 @@
   },
   "merges_autonomos": {
     "2620": {
-      "sha": "3aabc4187",
-      "nota": "SHA curto — full SHA indisponível pós-compactação; evidência: presença em git log main + branch protection enforça Gate Final"
+      "sha": "3aabc41878bd454a33ea5643781ce2c7a677da1d",
+      "arquivos": [
+        "src/components/quotes/__tests__/__snapshots__/NegotiationMarkupCard.visualA11y.test.tsx.snap",
+        "src/lib/__tests__/chunk-recovery.shared-reload-budget.test.ts",
+        "tests/integration/replenishment-resilience.test.ts"
+      ],
+      "nota": "SHA completo recuperado via github_get_commit; commit verificado PGP valid; apenas test files"
     },
     "2627": {
       "sha": "16108a1ce67449118e1b2bb80ca60d902bc474d6",
@@ -53,8 +58,16 @@
     }
   },
   "baseline": {
-    "typecheck": "0 erros em main HEAD df18546d",
-    "lint": "exit 0 em main HEAD df18546d"
+    "typecheck": "0 erros — main HEAD 06fe47fd3a992bf2a39ab356c9d8c357c5f2a27e (sessão rev33, tsc --noEmit exit 0)",
+    "lint": "success — Gate 1 CI em 06fe47fd3 (github_list_check_runs conclusion: success)",
+    "arquivo_typecheck": "analise-prs/baseline/typecheck.txt",
+    "arquivo_lint": "analise-prs/baseline/lint.txt",
+    "gate_final_pos_merge": {
+      "sha": "02e503365552d8d161e96917277170fff0af92dc",
+      "run": "40479979630",
+      "conclusion": "success",
+      "completed_at": "2026-10-27T09:27:48Z"
+    }
   },
   "acoes_po": [
     "Fechar #2572 (análise obsoleta, supersedida por análise rev57 desta sessão)",
