@@ -244,7 +244,7 @@ export function ProductDetailHero({
               isAIActive ? 'text-violet-700 dark:text-violet-300' : 'text-foreground',
             )}
           >
-            {displayName}
+            <span data-testid="product-name">{displayName}</span>
           </h1>
 
           {/* Word Magic — botão integrado no cabeçalho do produto */}
