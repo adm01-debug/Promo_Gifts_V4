@@ -220,10 +220,10 @@ jobs:
           # Registry lido de SUPABASE_INTERNAL_IMAGE_REGISTRY (ghcr.io, via step anterior).
           # Autenticação com GITHUB_TOKEN (packages: read) evita o rate limit anônimo compartilhado
           # (44k req/min entre todos runners do GitHub Actions). Tag fixa para CLI 2.101.0.
-          echo "$GITHUB_TOKEN" | docker login ghcr.io -u x-access-token --password-stdin
           POSTGRES_IMAGE="${SUPABASE_INTERNAL_IMAGE_REGISTRY}/supabase/postgres:17.6.1.063"
           for attempt in 1 2 3 4 5; do
-            if docker pull "$POSTGRES_IMAGE"; then
+            if echo "$GITHUB_TOKEN" | docker login ghcr.io -u x-access-token --password-stdin \
+                && docker pull "$POSTGRES_IMAGE"; then
               echo "Pre-pull ok (tentativa $attempt)"
               break
             fi
