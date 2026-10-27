@@ -3,7 +3,7 @@ Data: 2026-10-27 (sessão rev34)
 
 RESULTADO CI: SUCCESS
 Gate: "Gate 2 - Unit Tests"
-Conclusão: success
+Conclusao: success
 SHA testado: 06fe47fd3a992bf2a39ab356c9d8c357c5f2a27e
 Fonte: github_list_check_runs
 
