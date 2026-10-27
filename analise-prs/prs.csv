@@ -1,19 +1,19 @@
-numero,titulo,branch,draft,head_sha,conflito_merge_tree,ci_gate_final,regra8,regra10,veredito,motivo
-2420,chore(db): rollback retroativo migration,claude/fix-rollback-261019-1637,false,c10816b95,NO_MERGE_BASE,N/A,false,false,FECHAR,Branch órfã — NO_MERGE_BASE (sem ancestral comum com main)
-2572,docs(analise-prs): rev23 + contrato E189,claude_05/youthful-ride-vcdchy,false,c653bef92,"CONFLICT (PENDENCIAS.md, RELATORIO_CI.md, ItemCard.tsx)",N/A,true,true,BLOQUEADA,REGRA#8 (.github/workflows/contract-tests.yml + supabase/migrations/) + REGRA#10 cross-agent claude_05
-2579,chore(main): release 1.0.0,release-please--branches--main--components--gifts-store,false,edf0bce2f,CLEAN,SEM_RUNS,false,false,DECISAO_HUMANA,Downgrade semântico 1.2.1→1.0.0 em package.json
-2580,fix(banco): rollback header e23,claude/fix-e23-rollback-261025-2145,true,41198d9a3,CLEAN,FAILURE,true,false,DECISAO_HUMANA,DRAFT + REGRA#8 migrations + CI FAILURE
-2587,bump zustand 4→5,dependabot/npm_and_yarn/zustand-5.0.16,false,0a091fc84,CLEAN,FAILURE,false,false,DECISAO_HUMANA,Major version upgrade + CI FAILURE (TypeScript zustand v5 incompatibility)
-2588,bump react-day-picker 8→10,dependabot/npm_and_yarn/react-day-picker-10.0.2,false,0c1f7dc38,CLEAN,FAILURE,false,false,DECISAO_HUMANA,Breaking API change v8→v10 em calendar.tsx:22-24 + CI FAILURE
-2590,bump codeql-action/upload-sarif,dependabot/github_actions/github/codeql-action/upload-sarif-4.39.1,false,7335fed01,CLEAN,SUCCESS,true,false,BLOQUEADA,REGRA#8 .github/workflows/ (único bloqueio) — CI SUCCESS
-2591,bump codeql-action/analyze,dependabot/github_actions/github/codeql-action/analyze-4.39.1,false,a3f6e6184,CLEAN,SUCCESS,true,false,BLOQUEADA,REGRA#8 .github/workflows/ (único bloqueio) — CI SUCCESS
-2592,bump actions/stale 9→11,dependabot/github_actions/actions/stale-11.0.0,false,9fde33563,CLEAN,SUCCESS,true,false,BLOQUEADA,REGRA#8 .github/workflows/ (único bloqueio) — CI SUCCESS
-2593,bump codeql-action/init,dependabot/github_actions/github/codeql-action/init-4.39.1,false,af2deefa6,CLEAN,SUCCESS,true,false,BLOQUEADA,REGRA#8 .github/workflows/ (único bloqueio) — CI SUCCESS
-2594,bump actions/setup-node 4→7,dependabot/github_actions/actions/setup-node-7,false,0e62124ca,CLEAN,SUCCESS,true,false,BLOQUEADA,REGRA#8 .github/workflows/ + R15 violation (setup-node@v7 sem SHA 40-char pin)
-2597,fix: 4 workflows CI falhando,claude_04/beautiful-gates-bvocz5,true,b672ca5db,CLEAN,SUCCESS,true,false,DECISAO_HUMANA,DRAFT + REGRA#8 .github/workflows/ratchet-weekly.yml
-2600,docs(analise-prs): addendum,claude_04/optimistic-bohr-qplx94,true,57968a816,CLEAN,N/A,false,false,DECISAO_HUMANA,DRAFT — PR de entregáveis desta sessão
-2603,fix(crons): 4 migrations + RLS stricker,claude_04/tender-hawking-ghw2zi,true,ab1ea3b31,CLEAN,FAILURE,true,false,DECISAO_HUMANA,DRAFT + REGRA#8 (5 migrations incl. RLS 17 tabelas) + CI FAILURE
-2604,fix(ci): continue-on-error psql E036/E037/E072,claude_04/charming-darwin-g1nvj2,true,e33d2fe4a,CLEAN,SUCCESS,true,false,DECISAO_HUMANA,DRAFT + REGRA#8 .github/workflows/schema-snapshot-export.yml
-2605,fix(tests): corrige 4 unit tests + 1 E2E threshold,claude/fix-unit-tests-261027-0113,true,9bfead141,CLEAN,SUCCESS,false,false,DECISAO_HUMANA,DRAFT — único bloqueio; CI SUCCESS; zero REGRA#8. Candidato imediato após DRAFT→ready
-2610,fix(e2e): atualiza spec 92 para aceitar /auth no redirect de ProtectedRoute,claude/fix-personalization-e2e-auth-261027-0340,false,2a7b451919,CLEAN,SUCCESS,false,false,MERGEADO_AUTONOMO,Merge squash SHA 48899b659ef6. Todos os 8 critérios atendidos.
-2612,fix(tests): aumenta timeout useReplenishments integration test 15s→25s,claude/fix-replenishment-timeout-261027-0430,true,32804a149,CLEAN,N/A,false,true,BLOQUEADA,DRAFT + REGRA#10 (branch de session_014RkohRYagi3sPiL8jtgot4 — sessão diferente)
+numero,titulo,branch,head_sha,draft,merge_tree,ci_gate_final,regra8,regra10,r15_violated,merge_sha,veredito,motivo
+2420,chore(db): rollback retroativo migration,claude/fix-rollback-261019-1637,c10816b95,false,CONFLICT,N/A,false,false,false,,FECHAR,CONFLICT + rollback destrutivo migration
+2572,docs(analise-prs): rev23 + contrato E189,claude_05/youthful-ride-vcdchy,c653bef92,false,CONFLICT,N/A,true,true,false,,BLOQUEADA,REGRA#8+REGRA#10+CONFLICT
+2579,chore(main): release 1.0.0,release-please--branches--main--components--gifts-store,0fcb493e8,false,CLEAN,SEM_RUNS,false,false,false,,DECISAO_HUMANA,Downgrade semântico 1.2.1→1.0.0
+2580,fix(banco): rollback header e23,claude/fix-e23-rollback-261025-2145,41198d9a33,true,CLEAN,FAILURE,true,false,false,,DECISAO_HUMANA,DRAFT+REGRA#8+CI FAILURE
+2587,bump zustand 4→5,dependabot/npm_and_yarn/zustand-5.0.16,0a091fc84,false,CLEAN,SUCCESS (base antiga),false,false,false,,DECISAO_HUMANA,Major upgrade 4→5 + branch behind main
+2588,bump react-day-picker 8→10,dependabot/npm_and_yarn/react-day-picker-10.0.2,0c1f7dc38,false,CLEAN,FAILURE,false,false,false,,DECISAO_HUMANA,Breaking API v8→v10 + CI FAILURE
+2590,bump codeql-action/upload-sarif 3→4.39.1,dependabot/github_actions/codeql-action/upload-sarif-4.39.1,7335fed01,false,CLEAN,SUCCESS,false,false,false,c6e94d3a6c8ec70652ebf91652a262b66b08567d,MERGEADO_AUTONOMO,CI SUCCESS+CLEAN+R15 OK
+2591,bump codeql-action/analyze 3→4.39.1,dependabot/github_actions/codeql-action/analyze-4.39.1,a3f6e6184,false,CLEAN,SUCCESS,false,false,false,c612d2b7c183c247768909b03da722ccc4339321,MERGEADO_AUTONOMO,CI SUCCESS+CLEAN+R15 OK
+2592,bump actions/stale 9→11,dependabot/github_actions/actions/stale-11.0.0,9fde33563,false,CLEAN,SUCCESS,false,false,false,388254cddd9b72701c1e3076fa9b24e464ded7e5,MERGEADO_AUTONOMO,CI SUCCESS+CLEAN+R15 OK
+2593,bump codeql-action/init 3→4.39.1,dependabot/github_actions/codeql-action/init-4.39.1,af2deefa6,false,CLEAN,SUCCESS,false,false,false,9182c0a57b7c526b2c3665bddba21f510eae72c5,MERGEADO_AUTONOMO,CI SUCCESS+CLEAN+R15 OK
+2594,bump actions/setup-node 4→7,dependabot/github_actions/actions/setup-node-7,0e62124ca,false,CLEAN,SUCCESS,false,false,true,,BLOQUEADA,R15 violation (sem SHA 40-char)
+2597,fix: 4 workflows CI falhando,claude_04/beautiful-gates-bvocz5,1a8cb75d8,true,CLEAN,SUCCESS,true,false,false,,DECISAO_HUMANA,DRAFT+REGRA#8
+2600,docs(analise-prs): addendum,claude_04/optimistic-bohr-qplx94,8215e539,true,CLEAN,N/A,false,false,false,,DECISAO_HUMANA,DRAFT — entregáveis da sessão
+2603,fix(crons): 4 migrations + RLS stricker,claude_04/tender-hawking-ghw2zi,ab1ea3b31,true,CLEAN,FAILURE,true,false,false,,DECISAO_HUMANA,DRAFT+REGRA#8+CI FAILURE
+2604,fix(ci): continue-on-error psql,claude_04/charming-darwin-g1nvj2,e33d2fe4a,true,CLEAN,SUCCESS,true,false,false,,DECISAO_HUMANA,DRAFT+REGRA#8
+2605,fix(tests): 4 unit tests + 1 E2E,claude/fix-unit-tests-261027-0113,9bfead141,true,CLEAN,SUCCESS,false,false,false,,DECISAO_HUMANA,DRAFT único bloqueio
+2610,fix(e2e): aceita /auth no redirect,claude/fix-personalization-e2e-auth-261027-0340,2a7b451919,false,CLEAN,SUCCESS,false,false,false,48899b659ef6deba0fee2db7482347097059edb5,MERGEADO_AUTONOMO,8 critérios atendidos
+2612,fix(tests): timeout useReplenishments 15s→25s,claude/fix-replenishment-timeout-261027-0430,32804a149,true,CLEAN,N/A,false,true,false,,BLOQUEADA,DRAFT+REGRA#10
