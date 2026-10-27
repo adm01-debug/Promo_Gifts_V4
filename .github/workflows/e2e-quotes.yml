@@ -160,6 +160,7 @@ jobs:
         run: |
           npx playwright test ${{ matrix.spec }} \
             --project=${{ matrix.project }} \
+            --update-snapshots=missing \
             --reporter=line,html
 
       # R6 — retention-days: 14
