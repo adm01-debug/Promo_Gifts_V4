@@ -47,3 +47,4 @@ number,title,branch,draft,test_merge,rule8_triggers,verdict,motivo,merge_sha
 2599,fix(privacy): invoke-direct + ratchet SIGPIPE,claude_04/laughing-gates-l4pt67,false,CLEAN,".github/workflows/ratchet-weekly.yml",FECHADA_EXTERNAMENTE,Conteudo integrado via commit direto 2ca5ef04e por session_01Knr9enFAok62bHihBK1UUP,
 2600,docs(analise-prs): sessão f0ceb220 addendum,claude_04/optimistic-bohr-qplx94,true,CLEAN,,BLOQUEADA,DRAFT — entregáveis documentais desta sessão,
 2602,fix(e2e): corrige falhas E2E mobile tooltips e personalization specs,claude/fix-e2e-mobile-failures-261027-1500,true,CLEAN,,DECISAO_HUMANA,DRAFT — GitHub API 405,
+2603,fix(crons): 4 migrations — 401 burst 404 blurhash,claude_04/tender-hawking-ghw2zi,true,CLEAN,supabase/migrations/,DECISAO_HUMANA,DRAFT + REGRA#8 migrations (4 cron.alter_job),

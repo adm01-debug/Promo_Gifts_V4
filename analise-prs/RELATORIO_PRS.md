@@ -1,5 +1,5 @@
 # RELATÓRIO DE PRs — Promo Gifts V4
-**Sessão:** session_011d8gKLZg8BWivR8aQBwxGF (rev27)
+**Sessão:** session_011d8gKLZg8BWivR8aQBwxGF (rev28)
 **Data:** 2026-10-27
 **main HEAD:** `1648890907d5831e2383157936f13742e326171c`
 **Commit:** docs(ci): registra nota de governança sobre squash merge sem sufixo PR (#2601)
@@ -10,17 +10,17 @@
 
 | Métrica | Valor |
 |---|---|
-| Total de PRs analisadas (histórico) | 48 |
-| PRs abertas nesta sessão | 14 |
+| Total de PRs analisadas (histórico) | 49 |
+| PRs abertas nesta sessão | 15 |
 | PRs mergeadas autonomamente (total histórico) | 15 |
 | PRs mergeadas nesta sessão | 0 |
-| PRs aguardando DECISAO_HUMANA (abertas) | 8 |
-| PRs BLOQUEADAS por REGRA#8 (abertas) | 5 |
+| PRs aguardando DECISAO_HUMANA (abertas) | 9 |
+| PRs BLOQUEADAS por REGRA#8 (abertas) | 6 |
 | PRs FECHAR / orphas (abertas) | 1 |
 
 ---
 
-## Baseline (SHA 1648890907d5 - rev27)
+## Baseline (SHA 1648890907d5 - rev28)
 
 | Verificação | Resultado |
 |---|---|
@@ -43,19 +43,20 @@
 |---|---|---|
 | #2420 | chore(db): rollback retroativo migration | Branch orfa - NO_MERGE_BASE. Sem ancestral comum com main. |
 
-### BLOQUEADA - REGRA#8 workflows (5 PRs)
+### BLOQUEADA - REGRA#8 workflows (6 PRs)
 
 Constraint ativo: nao tocar .github/workflows — nenhuma escrita autonoma nestas PRs.
 
 | PR | Titulo | Rule8 |
 |---|---|---|
+| #2572 | chore(ci/feat): contrato E189 + CI | .github/workflows/ + supabase/migrations/ + CONFLICT |
 | #2590 | bump codeql-action/upload-sarif 4.39.1 | gitleaks-history-audit.yml |
 | #2591 | bump codeql-action/analyze 4.39.1 | codeql.yml |
 | #2592 | bump actions/stale 9 to 11 | stale.yml |
 | #2593 | bump codeql-action/init 4.39.1 | codeql.yml |
 | #2594 | bump actions/setup-node 4 to 7 | e2e workflows + sem SHA pin |
 
-### DECISAO_HUMANA (8 PRs)
+### DECISAO_HUMANA (9 PRs abertas)
 
 | PR | Titulo | Draft | Motivo |
 |---|---|---|---|
@@ -64,13 +65,14 @@ Constraint ativo: nao tocar .github/workflows — nenhuma escrita autonoma nesta
 | #2587 | bump zustand 4 to 5 | nao | Major upgrade - 11 stores incompativeis com API v5 |
 | #2588 | bump react-day-picker 8 to 10 | nao | Major upgrade - calendar.tsx usa API v8 |
 | #2597 | fix: 4 workflows CI falhando | sim | DRAFT + REGRA#8 workflow |
-| #2600 | docs(analise-prs): addendum rev22 | sim | DRAFT - entregaveis desta sessao |
-| #2602 | fix(e2e): corrige falhas E2E mobile | sim | DRAFT - API retorna 405 "Pull Request is still a draft" |
-| #2572 | docs(analise-prs): contrato E189 + CI | nao | REGRA#10 cross-agent claude_05 + REGRA#8 + CONFLICT |
+| #2600 | docs(analise-prs): addendum | sim | DRAFT - entregaveis desta sessao |
+| #2602 | fix(e2e): corrige falhas E2E mobile | sim | DRAFT - API retorna 405 |
+| #2603 | fix(crons): 4 migrations — 401, burst, 404, blurhash | sim | DRAFT + REGRA#8 migrations (4 cron.alter_job) |
+| #2572 | chore(ci/feat): contrato E189 + CI | nao | REGRA#10 cross-agent + REGRA#8 + CONFLICT |
 
 ---
 
-## Merge Tests vs main 1648890907d5 (rev27)
+## Merge Tests vs main 1648890907d5 (rev28)
 
 | PR | Branch | Resultado |
 |---|---|---|
@@ -88,6 +90,7 @@ Constraint ativo: nao tocar .github/workflows — nenhuma escrita autonoma nesta
 | #2597 | claude_04/beautiful-gates-bvocz5 | CLEAN |
 | #2600 | claude_04/optimistic-bohr-qplx94 | CLEAN |
 | #2602 | claude/fix-e2e-mobile-failures-261027-1500 | CLEAN (tree 9496eef0ec0d) |
+| #2603 | claude_04/tender-hawking-ghw2zi | CLEAN (mergeable=true API, 496 add, 0 del) |
 
 ---
 
@@ -115,23 +118,23 @@ Constraint ativo: nao tocar .github/workflows — nenhuma escrita autonoma nesta
 
 ## Observacoes
 
-- PR #2602: NOVA nesta sessao (2026-10-27T00:35). DRAFT — GitHub API 405 impede merge. Conteudo correto, zero regressao, apenas E2E tests. Requer PO converter para ready-for-review.
-- PR #2572: merge test CLEAN em rev26; CONFLICT em rev27 (RELATORIO_CI.md + ItemCard.tsx). Mantido BLOQUEADA por REGRA#8 + REGRA#10.
+- PR #2603: NOVA nesta sessão (2026-10-27T00:43:44Z). DRAFT + REGRA#8 (4 migrations cron.alter_job). Fixes operacionais reais: 401 a cada 15min, 27 timeouts/dia, 404 a cada 3h. Requer PO aprovar e converter DRAFT→ready.
+- PR #2602: DRAFT — GitHub API 405 impede merge. Requer PO converter para ready-for-review.
+- PR #2572: CONFLICT (RELATORIO_CI.md + ItemCard.tsx) vs main 1648890907d5. Mantido BLOQUEADA.
 - PR #2597: DRAFT verificado via API. Fix tecnico valioso aguarda PO por REGRA#8.
-- Branches #2590-2593: atualizadas de -3.x para -4.39.1 pelo dependabot.
-- PR #2599: FECHADA_EXTERNAMENTE — conteudo integrado via commit direto 2ca5ef04e.
+- Branches #2590-2593: dependabot actions atualizadas de -3.x para -4.39.1.
 
 ---
 
-## META CUMPRIDA - rev27
+## META CUMPRIDA - rev28
 
 - main SHA: 1648890907d5831e2383157936f13742e326171c
 - Baseline: typecheck 0 erros, build Vite OK, Gate Final success (CI run #40218104943, 429/0 falhas)
-- 48 PRs em prs.csv (historico completo)
-- 14 PRs abertas — 100% cobertura com veredito e dossier
-- prs.json: 48 entradas, main_head correto
-- 14 dossiers PR-NNNN.md (incluindo novo PR-2602.md)
-- Merge tests vs 1648890907d5 — 14 PRs (incluindo #2602 CLEAN)
-- 0 PRs mergeadas (todas bloqueadas: 5 DRAFT-API-405, 5 REGRA#8, 3 DECISAO_HUMANA, 1 CONFLICT+REGRA#8+REGRA#10, 1 NO_MERGE_BASE)
+- 49 PRs em prs.csv (historico completo)
+- 15 PRs abertas — 100% cobertura com veredito e dossier
+- prs.json: 49 entradas, main_head correto
+- 15 dossiers PR-NNNN.md (incluindo novo PR-2603.md)
+- Merge tests vs 1648890907d5 — 15 PRs (incluindo #2603 CLEAN)
+- 0 PRs mergeadas (todas bloqueadas: 5 DRAFT-API-405, 6 REGRA#8, 2 DECISAO_HUMANA major, 1 semantic downgrade, 1 CONFLICT+REGRA#8+REGRA#10, 1 NO_MERGE_BASE)
 - 0 escritas proibidas no GitHub
 - worktrees removidos
