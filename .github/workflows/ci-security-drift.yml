@@ -151,7 +151,7 @@ jobs:
       # R5 — credenciais E2E escopadas apenas ao step que as usa.
       - name: Run E2E Critical Tests — specs autenticados
         if: ${{ env.E2E_HAS_CREDS == 'true' }}
-        run: npx playwright test --project=chromium-public e2e/catalog.spec.ts e2e/kit-builder.spec.ts
+        run: npx playwright test --project=chromium-authed e2e/catalog.spec.ts e2e/kit-builder.spec.ts
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
