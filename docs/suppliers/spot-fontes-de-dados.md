@@ -1,1 +1,195 @@
-IyBTUE9UIC8gU3RyaWNrZXIg4oCUIDMgQ2FuYWlzIGRlIERhZG9zCgoqKkZvcm5lY2Vkb3I6KiogU1BPVCAvIFN0cmlja2VyIMK3IGBzdXBwbGllcl9pZCA9IGJjZmMwZDAyLTQ0YzYtNDhhZS04NDcyLTEyYjFhM2YzZDhlMGAKKipQcm9jZXNzYWRvcjoqKiBgZm5fcHJvY2Vzc19yYXdfdjJgCioqQXR1YWxpemFkbzoqKiAyMDI2LTA2LTA2CgotLS0KCiMjIFZpc8OjbyBnZXJhbAoKQSBTUE9UIMOpIG8gZm9ybmVjZWRvciBtYWlzIGNvbXBsZXhvIGRhIHBsYXRhZm9ybWEuIFNldXMgZGFkb3MgY2hlZ2FtIHBvciAqKjMgY2FuYWlzIGRpc3RpbnRvcyoqLApjYWRhIHVtIGNvbSBhdXRlbnRpY2HDp8OjbywgcHJvcMOzc2l0byBlIGZvcm1hdG8gcHLDs3ByaW9zLiBBcGVuYXMgKip1bSoqIGRlbGVzIChvIFdlYnNlcnZpY2UgQVBJKQphbGltZW50YSBvIHBpcGVsaW5lIGRlIGNhdMOhbG9nbyDigJQgb3Mgb3V0cm9zIGRvaXMgc8OjbyBjb21wbGVtZW50YXJlcyBvdSBvcGVyYWNpb25haXMuCgpgYGAK4pSM4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSQCuKUgiAgQ0FOQUwgQSAgICAgICAgICAgICAgQ0FOQUwgQiAgICAgICAgICAgICAgICBDQU5BTCBDICAgICAgICAgICAgICAgICDilIIK4pSCICBXZWJzZXJ2aWNlIEFQSSAgICAgICBQb3J0YWwgcMO6YmxpY28gICAgICAgICBQb3J0YWwgYXV0ZW50aWNhZG8gICAgIOKUggrilIIgIHdzLnNwb3RnaWZ0cy5jb20uYnIgIHd3dy5zcG90Z2lmdHMuY29tLmJyICAgd3d3LnNwb3RnaWZ0cy5jb20uYnIgICDilIIK4pSCICAoQWNjZXNzS2V5IOKGkiB0b2tlbikgIChzZW0gYXV0aCkgICAgICAgICAgICAgKGxvZ2luL3NlbmhhKSAgICAgICAgICDilIIK4pSCICDwn5+iIGNhdMOhbG9nbyAgICAgICAgICDwn5+hIGNvbXBsZW1lbnRhciAgICAgICAgIPCflLQgb3BlcmFjaW9uYWwgICAgICAgICAg4pSCCuKUlOKUgOKUgOKUgOKUgOKUgOKUgOKUrOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUrOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUrOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUmAogICAgICAg4pSCICAgICAgICAgICAgICAgICAgICAg4pSCICAgICAgICAgICAgICAgICAgICAg4pSCCiAgICAgICDilrwgICAgICAgICAgICAgICAgICAgICDilrwgICAgICAgICAgICAgICAgICAgICDilrwK4pSM4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSQCuKUgiAgICAgICAgICAgICAgICAgICAgc3VwcGxpZXJfcHJvZHVjdHNfcmF3ICAgICAgICAgICAgICAgICAgICAgICAgICAgIOKUggrilIIgICByYXdfZGF0YSAoSlNPTkIpICAgc3RvY2tfZGF0YSAgICAgICAgICAgKyBzdXBwbGllcl9jdXN0b21pemF0aW9uXyDilIIK4pSCICAg4oaQIE9wdGlvbmFsc0NvbXBsZXRlIOKGkCBTdG9ja3MgICAgICAgICAgICAgIHJhdyDihpAgQ3VzdG9taXphdGlvblRhYmxlc+KUggrilIIgICAoQ2FuYWwgQSBhcGVuYXMg4oCUIENhbmFpcyBCIGUgQyBOw4NPIGVzY3JldmVtIG5vIEJyb256ZSkgICAgICAgICAgICDilIIK4pSU4pSA4pSA4pSA4pSA4pSA4pSA4pSs4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSYCiAgICAgICDilIIKICAgICAgIOKWvAogIGZuX3Byb2Nlc3NfcmF3X3YyCiAgICAgICDilIIKICAgICAgIOKWvAogIHByb2R1dG9zX3BhZHJvbml6YWNhbyAvIHByb2R1dG9zX3BhZHJvbml6YWNhb192YXJpYW50ZXMgIChTSUxWRVIpCiAgICAgICDilIIKICAgICAgIOKWvAogIHByb2R1Y3RzIC8gcHJvZHVjdF92YXJpYW50cwogICAgICAgKGNhbWFkYSBHT0xEKQpgYGAKCj4gKipSZWdyYSBjYXJkaW5hbDoqKiBhIGluZ2VzdMOjbyBzw7MgZXNjcmV2ZSBubyBCcm9uemUsIGUgc8OzIHZpYSBSUEMuIEEgdHJhbnNmb3JtYcOnw6NvCj4gQnJvbnpl4oaSU2lsdmVy4oaSR29sZCDDqSByZXNwb25zYWJpbGlkYWRlIGV4Y2x1c2l2YSBkbyBQb3N0Z3JlcyAoYGZuX3BpcGVsaW5lX3Byb21vdGVfdGlja2ApLgoKLS0tCgojIyBDYW5hbCBBIOKAlCBXZWJzZXJ2aWNlIEFQSSBgd3Muc3BvdGdpZnRzLmNvbS5icmAKCioqSG9zdDoqKiBgaHR0cHM6Ly93cy5zcG90Z2lmdHMuY29tLmJyL2FwaS92MVNTTGAgwrcgKipzb3VyY2VfY2hhbm5lbDoqKiBgYXBpX3htbGAKKipBdXRoOioqIGBQT1NUIC9BdXRoZW50aWNhdGVDbGllbnRgIGNvbSBgQWNjZXNzS2V5YCDihpIgdG9rZW4gZGUgc2Vzc8OjbwoqKlNlZ3JlZG86KiogYFNQT1RfQUNDRVNTX0tFWWAgKFZhdWx0IFN1cGFiYXNlICsgZ2V0dGVyIGBmbl9nZXRfc3BvdF9hY2Nlc3Nfa2V5KClgKQoqKlN0YXR1czoqKiDinIUgKirDmm5pY28gY2FuYWwgcXVlIGFsaW1lbnRhIG8gQnJvbnplKiogwrcgQnJvbnplIHBvcHVsYWRvICh+My42MTIgU0tVcykKCiMjIyBGZWVkcyBkaXNwb27DrXZlaXMKCnwgRmVlZCB8IENoYXZlIHwgTyBxdWUgZW50cmVnYSB8IFZvbHVtZSB8IExpbWl0ZS9kaWEgfCBDYWTDqm5jaWEgfAp8LS0tfC0tLXwtLS18LS0tfDotLS06fC0tLXwKfCBgT3B0aW9uYWxzQ29tcGxldGVgIHwgYFNrdWAgfCBGZWVkLW3Do2U6IH4yMzAgY2FtcG9zIHBvciBTS1UgfCB+MjcgTUIgfCAqKjIyKiogfCAxw5cvZGlhIDAzOjAwIHwKfCBgU3RvY2tzYCB8IGBTa3VgIHwgRXN0b3F1ZSBhdHVhbCArIDYgamFuZWxhcyBkZSByZXBvc2nDp8OjbyB8IGxldmUgfCAqKjk2KiogfCAqLzMwIG1pbiB8CnwgYEN1c3RvbWl6YXRpb25UYWJsZXNgIHwgYFRhYmxlQ29kZU9wdGlvbmAgfCBQcmXDp29zIGRlIHBlcnNvbmFsaXphw6fDo28gKDE1IGZhaXhhcyArIFNMQSkgfCB+Mjg5IGxpbmhhcyB8IDIyIHwgMcOXL3NlbWFuYSB8CnwgYENvbG9yc2AgfCBgQ29sb3JDb2RlYCB8IFRhYmVsYSBkZSA1MiBjb3JlcyAoY8OzZGlnbyDihpIgZGVzYyDihpIgaGV4KSB8IDUyIGxpbmhhcyB8IDIyIHwgMcOXL3NlbWFuYSB8CnwgYFByb2R1Y3RUeXBlc2AgfCBgVHlwZUNvZGVgIHwgVGF4b25vbWlhICgzMSB0aXBvcyArIHN1YnRpcG9zKSB8IDMxIGxpbmhhcyB8IDIyIHwgMcOXL3NlbWFuYSB8CnwgYENhbmNlbGVkUHJvZHVjdHNgIHwgcmVmIHwgUHJvZHV0b3MgZGVzY29udGludWFkb3Mg4oaSIGBpc19hY3RpdmU9ZmFsc2VgIHwgdmFyacOhdmVsIHwgMjIgfCBmaW0gZGUgY2FkYSBmdWxsLXB1bGwgfAoKIyMjIE8gcXVlIG8gYE9wdGlvbmFsc0NvbXBsZXRlYCBlbnRyZWdhIChmZWVkLW3Do2UpCgpgYGAKT3B0aW9uYWxzQ29tcGxldGUg4oCUIDEgbGluaGEgcG9yIFNLVSAoe1Byb2RSZWZlcmVuY2V9LXtDb2xvckNvZGV9KQogIOKUggogIOKUnOKUgOKUgCBJREVOVElEQURFICAgICDihpIgU2t1LCBXZWJTa3UsIFByb2RSZWZlcmVuY2UsIE11bHRpcGxpZXIsIFVwZGF0ZURhdGUKICDilJzilIDilIAgTk9NRS9ERVNDUknDh8ODTyDihpIgTmFtZSwgU2hvcnREZXNjcmlwdGlvbiwgRGVzY3JpcHRpb24sIFNFTyoKICDilJzilIDilIAgQ09SICAgICAgICAgICAg4oaSIENvbG9yQ29kZSwgQ29sb3JEZXNjMSwgQ29sb3JIZXgxCiAg4pSc4pSA4pSAIFBSRcOHTyAgICAgICAgICDihpIgTWluUXQxLi41IC8gUHJpY2UxLi41ICg1IGZhaXhhcyBkZSBxdWFudGlkYWRlKQogIOKUnOKUgOKUgCBGw41TSUNPICAgICAgICAg4oaSIENvbWJpbmVkU2l6ZXMsIFdlaWdodCwgQm94V2VpZ2h0S0csIEJveFZvbHVtZQogIOKUnOKUgOKUgCBDQVRFR09SSUFTICAgICDihpIgVHlwZS9UeXBlQ29kZSwgU3ViVHlwZS9TdWJUeXBlQ29kZSwgQ2F0YWxvZ3MKICDilJzilIDilIAgRU1CQUxBR0VNICAgICAg4oaSIFBhY2tpbmcsIFJlcGFja2luZywgQm94SW5uZXJRdHksIEJveFF1YW50aXR5CiAg4pSc4pSA4pSAIFBFUlNPTkFMSVpBw4fDg08g4oaSIEN1c3RvbWl6YXRpb25UeXBlcywgQXJlYTEuLjgsIENvbXBvbmVudDEuLjgsCiAg4pSCICAgICAgICAgICAgICAgICAgICBMb2NhdGlvbjEuLjgsIFRhYmxlQ29kZXNPcHRpb25zMS4uOCAoOCBwb3Npw6fDtWVzKQogIOKUnOKUgOKUgCBJTUFHRU5TICAgICAgICDihpIgTWFpbkltYWdlLCBBbGxJbWFnZUxpc3QsIEJveEltYWdlLCBBcmVhe259SW1hZ2UsCiAg4pSCICAgICAgICAgICAgICAgICAgICBDb21wb25lbnR7bn1JbWFnZSwgTG9jYXRpb257bn1JbWFnZQogIOKUnOKUgOKUgCBWw41ERU8gICAgICAgICAg4oaSIFZpZGVvTGluayAoWW91VHViZSksIFZpZGVvTGlua1ZpbWVvLCBWaWRlbzM2MAogIOKUlOKUgOKUgCBUQUdTL0ZMQUdTICAgICDihpIgS2V5V29yZHMsIFByb3BlcnRpZXMsIENlcnRpZmljYXRlcywgSXNUZXh0aWwsCiAgICAgICAgICAgICAgICAgICAgICAgSXNTdG9ja091dCwgTmV3UHJvZHVjdCwgUHZjRnJlZSwgTm9SZXBsZW5pc2htZW50CmBgYAoKIyMjIE9uZGUgY2FkYSBmZWVkIGF0ZXJyYSBubyBCcm9uemUKCnwgRmVlZCB8IFRhYmVsYSBkZXN0aW5vIHwgQ2FtcG8gLyB0cmlsaGEgfAp8LS0tfC0tLXwtLS18CnwgYE9wdGlvbmFsc0NvbXBsZXRlYCB8IGBzdXBwbGllcl9wcm9kdWN0c19yYXdgIHwgYHJhd19kYXRhYCAoanNvbmIsIGFzLWlzKSB8CnwgYFN0b2Nrc2AgfCBgc3VwcGxpZXJfcHJvZHVjdHNfcmF3YCB8IGBzdG9ja19kYXRhYCAodHJpbGhhIHNlcGFyYWRhKSB8CnwgYEN1c3RvbWl6YXRpb25UYWJsZXNgIHwgYHN1cHBsaWVyX2N1c3RvbWl6YXRpb25fcmF3YCB8IDEgbGluaGEgcG9yIGB0YWJsZV9jb2RlX29wdGlvbmAgfAp8IGBDb2xvcnNgIHwgYHN1cHBsaWVyX2NvbG9yc2AgfCBkZS1wYXJhIHwKfCBgUHJvZHVjdFR5cGVzYCB8IGBzdXBwbGllcl9jYXRlZ29yeV9tYXBwaW5nc2AgfCBkZS1wYXJhIHwKfCBgQ2FuY2VsZWRQcm9kdWN0c2AgfCBgc3VwcGxpZXJfcHJvZHVjdHNfcmF3YCB8IGBpc19hY3RpdmUgPSBmYWxzZWAgfAoKIyMjIExpbWl0YcOnw7VlcyBlIGdvdGNoYXMgZG8gRVRMCgp8ICMgfCBSZWdyYSB8IERldGFsaGUgfAp8LS0tfC0tLXwtLS18CnwgMSB8IGBXZWlnaHRHcmAg4omgIHBlc28gdW5pdMOhcmlvIHwgw4kgZ3JhbWF0dXJhIHTDqnh0aWwgKGcvbcKyKS4gUGVzbyByZWFsID0gYFdlaWdodGAgfAp8IDIgfCBgSGFzQ2FwYWNpdHlzYCBzZW1wcmUgYGZhbHNlYCB8IE7Do28gdXNhciBjb21vIGZsYWcuIFVzYXIgYENhcGFjaXR5YCAodGV4dG8pIG7Do28tdmF6aW8gfAp8IDMgfCBDb3JlcyBjb20gY8OzZGlnbyBkdXBsaWNhZG8gfCBgMDNgIGUgYDEwM2AgPSAiUHJldG8iLiBOb3JtYWxpemFyIG5vIGRlLXBhcmEgYHN1cHBsaWVyX2NvbG9yc2AgfAp8IDQgfCBgQm94U2l6ZU1gIHVzYSBtZXRyb3MgY29tbyBzdHJpbmcgfCBgMC4zOWAgPSAzOSBjbS4gUHJlZmVyaXIgY2FtcG9zIGBCb3gqTU1gIG51bcOpcmljb3MgfAp8IDUgfCBgWW91clByaWNlYCBlc3BhcnNvICg5JSBkb3MgU0tVcykgfCBGYWxsYmFjayB2aWEgYFByaWNle259YCArIGNvbmRpw6fDo28gY29tZXJjaWFsIHwKfCA2IHwgQ290YSBjcsOtdGljYSBubyBgT3B0aW9uYWxzQ29tcGxldGVgIHwgQXBlbmFzICoqMjIgY2hhbWFkYXMvZGlhKiouIEZhbGhhIHNlbSByZXRyeSBwbGFuZWphZG8gcGVyZGUgYSBqYW5lbGEgfAp8IDcgfCBNb2ppYmFrZSBlbSB0ZXh0b3MgZGUgw6FyZWEgfCBgw4PLnGAg4oaSIGDDmGAuIFNhbml0aXphciBVVEYtOCBuYSBwYWRyb25pemHDp8OjbyAoU2lsdmVyKSB8CnwgOCB8IFPDsyA1IGZhaXhhcyBkZSBwcmXDp28gYXRpdmFzIG5vIEJSIHwgYE1pblF0Ni4uMTBgIC8gYFByaWNlNi4uMTBgIHPDo28gc2VtcHJlIHZhemlhcyB8CgotLS0KCiMjIENhbmFsIEIg4oCUIFBvcnRhbCBXZWIgUMO6YmxpY28gYHd3dy5zcG90Z2lmdHMuY29tLmJyYAoKKipIb3N0OioqIGBodHRwczovL3d3dy5zcG90Z2lmdHMuY29tLmJyYCDCtyAqKnNvdXJjZV9jaGFubmVsOioqIOKAlCAobsOjbyBpbmdlcmlkbykKKipBdXRoOioqIG5lbmh1bWEg4oCUIGVuZHBvaW50cyBhYmVydG9zIGFvIHDDumJsaWNvCioqU3RhdHVzOioqIOKaoO+4jyAqKkNvbXBsZW1lbnRhciDCtyBuw6NvIHVzYWRvIG5vIHBpcGVsaW5lIHByaW5jaXBhbCoqCgp8IEVuZHBvaW50IHwgTyBxdWUgZW50cmVnYSB8IFVzbyBubyBwaXBlbGluZSB8CnwtLS18LS0tfC0tLXwKfCBgR0VUIC9wdC9jYXRhbG9nby9hamF4L3Blc3F1aXNhci5waHBgIHwgQnVzY2EgcsOhcGlkYSAoYXTDqSA1IHJlc3VsdGFkb3MpIHwg4p2MIE7Do28gdXNhZG8gfAp8IGBQT1NUIC9wdC9jYXRhbG9nby9jYXRhbG9nby5hamF4LnBocGAgKGBnZXRTdG9ja1dhcmVob3VzZXNgKSB8IEVzdG9xdWUgcG9yIGFybWF6w6ltIGbDrXNpY28gfCDimqDvuI8gT3BjaW9uYWwvY29tcGxlbWVudGFyIHwKfCBgR0VUIC9wdC9wcm9kdXRvL2FqYXgvY2FycmVnYVBlcnNvbmFsaXphY29lcy5waHBgIHwgSFRNTCBkZSBwZXJzb25hbGl6YcOnw6NvIGRvIHByb2R1dG8gfCDinYwgTsOjbyB1c2FkbyB8CnwgYEdFVCAvcHQvcHJvZHV0by9hamF4L2NhcnJlZ2FSZWxhY2lvbmFkb3MucGhwYCB8IFByb2R1dG9zIHJlbGFjaW9uYWRvcyB8IOKdjCBOw6NvIHVzYWRvIHwKCj4gKipOb3RhOioqIGBnZXRTdG9ja1dhcmVob3VzZXNgIMOpIG8gw7puaWNvIGVuZHBvaW50IGRlc3RlIGNhbmFsIGNvbSBhbGd1bWEgdXRpbGlkYWRlIHBhcmEgZGFkb3Mg4oCUCj4gZSBhaW5kYSBhc3NpbSDDqSByZWR1bmRhbnRlIGNvbSBvIGZlZWQgYFN0b2Nrc2AgZG8gV2Vic2VydmljZSAoQ2FuYWwgQSkuCgotLS0KCiMjIENhbmFsIEMg4oCUIFBvcnRhbCBXZWIgQXV0ZW50aWNhZG8gYHd3dy5zcG90Z2lmdHMuY29tLmJyYAoKKipIb3N0OioqIGBodHRwczovL3d3dy5zcG90Z2lmdHMuY29tLmJyYCDCtyAqKnNvdXJjZV9jaGFubmVsOioqIOKAlCAobsOjbyBpbmdlcmlkbykKKipBdXRoOioqIGBQT1NUIC9wdC9hcmVhLXJlc2VydmFkYS9sb2dpbi9gIOKGkiBjb29raWUgYFBIUFNFU1NJRGAKKipTdGF0dXM6Kiog4p2MICoqRGFkb3Mgb3BlcmFjaW9uYWlzIOKAlCBmb3JhIGRvIGVzY29wbyBkbyBjYXTDoWxvZ28qKgoKfCBFbmRwb2ludCB8IE8gcXVlIGVudHJlZ2EgfAp8LS0tfC0tLXwKfCBgZ2V0U2VtYWZvcm9gIHwgU2Vtw6Fmb3JvIGRlIGRpc3BvbmliaWxpZGFkZSAodmVyZGUvYW1hcmVsby92ZXJtZWxobykgfAp8IGAvcHQvbG9qYS8qYCB8IENhcnJpbmhvLCBjaGVja291dCwgY8OhbGN1bG8gZGUgZnJldGUgfAp8IGAvcHQvc2ltdWxhZG9yLypgIHwgU2ltdWxhZG9yIGRlIHBlcnNvbmFsaXphw6fDo28gfAp8IGAvcHQvY2xpZW50ZXMvKmAgfCBQZWRpZG9zLCBmYXR1cmFzLCBub3RhcyBmaXNjYWlzIHwKfCBgL3B0L21hcXVldGFzX2d1YXJkYWRhcy8qYCB8IExheW91dHMgc2Fsdm9zIGRlIHBlcnNvbmFsaXphw6fDo28gfAp8IGAvcHQvb3JjYW1lbnRvcy8qYCB8IE9yw6dhbWVudG9zIGNvbXBhcmF0aXZvcyB8CgojIyMg4pqg77iPIEFsZXJ0YXMgZGUgc2VndXJhbsOnYSBkbyBDYW5hbCBDCgp8IEFsZXJ0YSB8IERldGFsaGUgfAp8LS0tfC0tLXwKfCDwn5S0IFNlbmhhIGZyYWNhIHwgYDEyMzQ1YCBzZW0gcmVxdWlzaXRvcyBkZSBjb21wbGV4aWRhZGUgfAp8IPCflLQgQmxvcXVlaW8gZ2VvbG9jYWxpemFkbyB8IEFjZXNzbyBkZSBJUCBmb3JhIGRvIEJyYXNpbCBwb2RlIHRyYXZhciBhIGNvbnRhIHBvciAiYWNlc3NvIHNpbXVsdMOibmVvIGRlIHBhw61zZXMgZGlmZXJlbnRlcyIg4oCUIHJvYsO0IHByZWNpc2Egcm9kYXIgZGUgSVAgYnJhc2lsZWlybyB8Cnwg8J+UtCBTZW0gMkZBIHwgTmVuaHVtIHNlZ3VuZG8gZmF0b3IgZGUgYXV0ZW50aWNhw6fDo28gfAp8IPCfn6EgU2VtIENTUkYgVG9rZW4gfCBFbmRwb2ludHMgUE9TVCBzZW0gcHJvdGXDp8OjbyBDU1JGIHwKfCDwn5+hIFNlc3PDo28gcG9yIGNvb2tpZSB8IGBQSFBTRVNTSURgIGV4cGlyYSBhbyBmZWNoYXIgbyBicm93c2VyIHwKCi0tLQoKIyMgQ29tcGFyYXRpdm8gZG9zIDMgY2FuYWlzCgp8IEluZm9ybWHDp8OjbyB8IEEgwrcgV2Vic2VydmljZSB8IEIgwrcgUG9ydGFsIHDDumJsaWNvIHwgQyDCtyBQb3J0YWwgYXV0ZW50aWNhZG8gfAp8LS0tfDotLS06fDotLS06fDotLS06fAp8IEFsaW1lbnRhIG8gQnJvbnplIHwg4pyFIHwg4p2MIHwg4p2MIHwKfCBBdXRlbnRpY2HDp8OjbyB8IEFjY2Vzc0tleSDihpIgdG9rZW4gfCBuZW5odW1hIHwgbG9naW4vc2VuaGEg4oaSIFBIUFNFU1NJRCB8CnwgQ2F0w6Fsb2dvIGNvbXBsZXRvIChwcm9kdXRvLXBhaSArIHZhcmlhbnRlKSB8IOKchSBgT3B0aW9uYWxzQ29tcGxldGVgIHwg4oCUIHwg4oCUIHwKfCBQcmXDp28gKDUgZmFpeGFzKSB8IOKchSB8IOKAlCB8IOKAlCB8CnwgRXN0b3F1ZSB8IOKchSBgU3RvY2tzYCB8IOKaoO+4jyBwb3IgYXJtYXrDqW0gfCDimqDvuI8gc2Vtw6Fmb3JvIHwKfCBQZXJzb25hbGl6YcOnw6NvIChwcmXDp29zICsgw6FyZWFzKSB8IOKchSBgQ3VzdG9taXphdGlvblRhYmxlc2AgfCDimqDvuI8gSFRNTCB8IOKaoO+4jyBzaW11bGFkb3IgfAp8IENvcmVzIC8gVGF4b25vbWlhIHwg4pyFIGBDb2xvcnNgIC8gYFByb2R1Y3RUeXBlc2AgfCDigJQgfCDigJQgfAp8IERlc2NvbnRpbnVhZG9zIHwg4pyFIGBDYW5jZWxlZFByb2R1Y3RzYCB8IOKAlCB8IOKAlCB8CnwgUGVkaWRvcyAvIEZhdHVyYXMgLyBORiB8IOKdjCB8IOKdjCB8IOKchSBvcGVyYWNpb25hbCB8CnwgRnJldGUgLyBDaGVja291dCB8IOKdjCB8IOKdjCB8IOKchSBvcGVyYWNpb25hbCB8CnwgUmlzY28gZGUgc2VndXJhbsOnYSB8IPCfn6IgYmFpeG8gKFZhdWx0KSB8IPCfn6IgYmFpeG8gKHDDumJsaWNvKSB8IPCflLQgYWx0byAoc2VuaGEgZnJhY2EsIGdlby1ibG9jaywgc2VtIDJGQSkgfAoKLS0tCgojIyBTaXR1YcOnw6NvIGRlIGludGVncmHDp8OjbyBlIHByw7N4aW1vcyBwYXNzb3MKCnwgQ2FuYWwgfCBJbnRlZ3JhZG8gfCBBdXRvbWHDp8OjbyB8IEHDp8OjbyB8CnwtLS18LS0tfC0tLXwtLS18CnwgQSDCtyBXZWJzZXJ2aWNlIEFQSSB8IOKchSBCcm9uemUgcG9wdWxhZG8gfCDimqDvuI8gc25hcHNob3QgZGV6LzIwMjUgfCBJbmdlc3TDo28gbjhuIGRpw6FyaWEgY29tIHdhdGVybWFyayBgVXBkYXRlRGF0ZWAgKHZlciBjYWTDqm5jaWEpIHwKfCBCIMK3IFBvcnRhbCBww7pibGljbyB8IOKdjCB8IOKdjCB8IEF2YWxpYXIgYGdldFN0b2NrV2FyZWhvdXNlc2Agc8OzIHNlIGBTdG9ja3NgIChDYW5hbCBBKSBmb3IgaW5zdWZpY2llbnRlIHwKfCBDIMK3IFBvcnRhbCBhdXRlbnRpY2FkbyB8IOKdjCB8IOKdjCB8IEZvcmEgZG8gZXNjb3BvIGRlIGNhdMOhbG9nby4gU2UgdXNhZG8gcC8gb3BlcmHDp8OjbzogdHJvY2FyIHNlbmhhLCBleGlnaXIgSVAgQlIsIGFkaWNpb25hciAyRkEgfAoKIyMjIENhZMOqbmNpYSBkZSBpbmdlc3TDo28gKGVzdGFkby1hbHZvLCBjb20gc3RhZ2dlcikKCnwgSG9yw6FyaW8gfCBGZWVkIHwgRnJlcXXDqm5jaWEgfAp8LS0tfC0tLXwtLS18CnwgMDM6MDAgfCBgT3B0aW9uYWxzQ29tcGxldGVgIChwcm9kdXRvcykgfCAxw5cvZGlhIHwKfCAqLzMwIG1pbiB8IGBTdG9ja3NgIChlc3RvcXVlKSB8IGEgY2FkYSAzMCBtaW4gfAp8IERvbSAwNDowMCB8IGBDdXN0b21pemF0aW9uVGFibGVzYCB8IDHDly9zZW1hbmEgfAp8IERvbSAwNDowMCB8IGBDb2xvcnNgICsgYFByb2R1Y3RUeXBlc2AgfCAxw5cvc2VtYW5hIHwKfCBGaW0gZGUgcHVsbCB8IGBDYW5jZWxlZFByb2R1Y3RzYCAoc3dlZXApIHwgYSBjYWRhIGZ1bGwtcHVsbCBPSyB8Cgo+ICoqUmVncmEgZGUgc3RhZ2dlcjoqKiBvIHB1bGwgZGUgcHJvZHV0byBudW5jYSByb2RhIGFvIG1lc21vIHRlbXBvIHF1ZSBvIGBwcm9tb3RlIHRpY2tgICgqLzEwIG1pbikuCj4gUHJvZHV0byDDqSBwZXNhZG8gZSByYXJvIChjb3RhIGRlIDIyL2RpYSk7IGVzdG9xdWUgw6kgbGV2ZSBlIGZyZXF1ZW50ZS4K
+# SPOT / Stricker — 3 Canais de Dados
+
+**Fornecedor:** SPOT / Stricker · `supplier_id = bcfc0d02-44c6-48ae-8472-12b1a3f3d8e0`
+**Processador:** `fn_process_raw_v2`
+**Atualizado:** 2026-06-06
+
+---
+
+## Visão geral
+
+A SPOT é o fornecedor mais complexo da plataforma. Seus dados chegam por **3 canais distintos**,
+cada um com autenticação, propósito e formato próprios. Apenas **um** deles (o Webservice API)
+alimenta o pipeline de catálogo — os outros dois são complementares ou operacionais.
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│  CANAL A              CANAL B                CANAL C                 │
+│  Webservice API       Portal público         Portal autenticado     │
+│  ws.spotgifts.com.br  www.spotgifts.com.br   www.spotgifts.com.br   │
+│  (AccessKey → token)  (sem auth)             (login/senha)          │
+│  🟢 catálogo          🟡 complementar         🔴 operacional          │
+└──────┬────────────────────┬─────────────────────┬───────────────────┘
+       │                     │                     │
+       ▼                     ▼                     ▼
+┌─────────────────────────────────────────────────────────────────────┐
+│                    supplier_products_raw                            │
+│   raw_data (JSONB)   stock_data           + supplier_customization_ │
+│   ← OptionalsComplete ← Stocks              raw ← CustomizationTables│
+│   (Canal A apenas — Canais B e C NÃO escrevem no Bronze)            │
+└──────┬──────────────────────────────────────────────────────────────┘
+       │
+       ▼
+  fn_process_raw_v2
+       │
+       ▼
+  produtos_padronizacao / produtos_padronizacao_variantes  (SILVER)
+       │
+       ▼
+  products / product_variants
+       (camada GOLD)
+```
+
+> **Regra cardinal:** a ingestão só escreve no Bronze, e só via RPC. A transformação
+> Bronze→Silver→Gold é responsabilidade exclusiva do Postgres (`fn_pipeline_promote_tick`).
+
+---
+
+## Canal A — Webservice API `ws.spotgifts.com.br`
+
+**Host:** `https://ws.spotgifts.com.br/api/v1SSL` · **source_channel:** `api_xml`
+**Auth:** `POST /AuthenticateClient` com `AccessKey` → token de sessão
+**Segredo:** `SPOT_ACCESS_KEY` (Vault Supabase + getter `fn_get_spot_access_key()`)
+**Status:** ✅ **Único canal que alimenta o Bronze** · Bronze populado (~3.612 SKUs)
+
+### Feeds disponíveis
+
+| Feed | Chave | O que entrega | Volume | Limite/dia | Cadência |
+|---|---|---|---|:---:|---|
+| `OptionalsComplete` | `Sku` | Feed-mãe: ~230 campos por SKU | ~27 MB | **22** | 1×/dia 03:00 |
+| `Stocks` | `Sku` | Estoque atual + 6 janelas de reposição | leve | **96** | */30 min |
+| `CustomizationTables` | `TableCodeOption` | Preços de personalização (15 faixas + SLA) | ~289 linhas | 22 | 1×/semana |
+| `Colors` | `ColorCode` | Tabela de 52 cores (código → desc → hex) | 52 linhas | 22 | 1×/semana |
+| `ProductTypes` | `TypeCode` | Taxonomia (31 tipos + subtipos) | 31 linhas | 22 | 1×/semana |
+| `CanceledProducts` | ref | Produtos descontinuados → `is_active=false` | variável | 22 | fim de cada full-pull |
+
+### O que o `OptionalsComplete` entrega (feed-mãe)
+
+```
+OptionalsComplete — 1 linha por SKU ({ProdReference}-{ColorCode})
+  │
+  ├── IDENTIDADE     → Sku, WebSku, ProdReference, Multiplier, UpdateDate
+  ├── NOME/DESCRIÇÃO → Name, ShortDescription, Description, SEO*
+  ├── COR            → ColorCode, ColorDesc1, ColorHex1
+  ├── PREÇO          → MinQt1..5 / Price1..5 (5 faixas de quantidade)
+  ├── FÍSICO         → CombinedSizes, Weight, BoxWeightKG, BoxVolume
+  ├── CATEGORIAS     → Type/TypeCode, SubType/SubTypeCode, Catalogs
+  ├── EMBALAGEM      → Packing, Repacking, BoxInnerQty, BoxQuantity
+  ├── PERSONALIZAÇÃO → CustomizationTypes, Area1..8, Component1..8,
+  │                    Location1..8, TableCodesOptions1..8 (8 posições)
+  ├── IMAGENS        → MainImage, AllImageList, BoxImage, Area{n}Image,
+  │                    Component{n}Image, Location{n}Image
+  ├── VÍDEO          → VideoLink (YouTube), VideoLinkVimeo, Video360
+  └── TAGS/FLAGS     → KeyWords, Properties, Certificates, IsTextil,
+                       IsStockOut, NewProduct, PvcFree, NoReplenishment
+```
+
+### Onde cada feed aterra no Bronze
+
+| Feed | Tabela destino | Campo / trilha |
+|---|---|---|
+| `OptionalsComplete` | `supplier_products_raw` | `raw_data` (jsonb, as-is) |
+| `Stocks` | `supplier_products_raw` | `stock_data` (trilha separada) |
+| `CustomizationTables` | `supplier_customization_raw` | 1 linha por `table_code_option` |
+| `Colors` | `supplier_colors` | de-para |
+| `ProductTypes` | `supplier_category_mappings` | de-para |
+| `CanceledProducts` | `supplier_products_raw` | `is_active = false` |
+
+### Limitações e gotchas do ETL
+
+| # | Regra | Detalhe |
+|---|---|---|
+| 1 | `WeightGr` ≠ peso unitário | É gramatura têxtil (g/m²). Peso real = `Weight` |
+| 2 | `HasCapacitys` sempre `false` | Não usar como flag. Usar `Capacity` (texto) não-vazio |
+| 3 | Cores com código duplicado | `03` e `103` = "Preto". Normalizar no de-para `supplier_colors` |
+| 4 | `BoxSizeM` usa metros como string | `0.39` = 39 cm. Preferir campos `Box*MM` numéricos |
+| 5 | `YourPrice` esparso (9% dos SKUs) | Fallback via `Price{n}` + condição comercial |
+| 6 | Cota crítica no `OptionalsComplete` | Apenas **22 chamadas/dia**. Falha sem retry planejado perde a janela |
+| 7 | Mojibake em textos de área | `Ã˜` → `Ø`. Sanitizar UTF-8 na padronização (Silver) |
+| 8 | Só 5 faixas de preço ativas no BR | `MinQt6..10` / `Price6..10` são sempre vazias |
+
+---
+
+## Canal B — Portal Web Público `www.spotgifts.com.br`
+
+**Host:** `https://www.spotgifts.com.br` · **source_channel:** — (não ingerido)
+**Auth:** nenhuma — endpoints abertos ao público
+**Status:** ⚠️ **Complementar · não usado no pipeline principal**
+
+| Endpoint | O que entrega | Uso no pipeline |
+|---|---|---|
+| `GET /pt/catalogo/ajax/pesquisar.php` | Busca rápida (até 5 resultados) | ❌ Não usado |
+| `POST /pt/catalogo/catalogo.ajax.php` (`getStockWarehouses`) | Estoque por armazém físico | ⚠️ Opcional/complementar |
+| `GET /pt/produto/ajax/carregaPersonalizacoes.php` | HTML de personalização do produto | ❌ Não usado |
+| `GET /pt/produto/ajax/carregaRelacionados.php` | Produtos relacionados | ❌ Não usado |
+
+> **Nota:** `getStockWarehouses` é o único endpoint deste canal com alguma utilidade para dados —
+> e ainda assim é redundante com o feed `Stocks` do Webservice (Canal A).
+
+---
+
+## Canal C — Portal Web Autenticado `www.spotgifts.com.br`
+
+**Host:** `https://www.spotgifts.com.br` · **source_channel:** — (não ingerido)
+**Auth:** `POST /pt/area-reservada/login/` → cookie `PHPSESSID`
+**Status:** ❌ **Dados operacionais — fora do escopo do catálogo**
+
+| Endpoint | O que entrega |
+|---|---|
+| `getSemaforo` | Semáforo de disponibilidade (verde/amarelo/vermelho) |
+| `/pt/loja/*` | Carrinho, checkout, cálculo de frete |
+| `/pt/simulador/*` | Simulador de personalização |
+| `/pt/clientes/*` | Pedidos, faturas, notas fiscais |
+| `/pt/maquetas_guardadas/*` | Layouts salvos de personalização |
+| `/pt/orcamentos/*` | Orçamentos comparativos |
+
+### ⚠️ Alertas de segurança do Canal C
+
+| Alerta | Detalhe |
+|---|---|
+| 🔴 Senha fraca | `12345` sem requisitos de complexidade |
+| 🔴 Bloqueio geolocalizado | Acesso de IP fora do Brasil pode travar a conta por "acesso simultâneo de países diferentes" — robô precisa rodar de IP brasileiro |
+| 🔴 Sem 2FA | Nenhum segundo fator de autenticação |
+| 🟡 Sem CSRF Token | Endpoints POST sem proteção CSRF |
+| 🟡 Sessão por cookie | `PHPSESSID` expira ao fechar o browser |
+
+---
+
+## Comparativo dos 3 canais
+
+| Informação | A · Webservice | B · Portal público | C · Portal autenticado |
+|---|:---:|:---:|:---:|
+| Alimenta o Bronze | ✅ | ❌ | ❌ |
+| Autenticação | AccessKey → token | nenhuma | login/senha → PHPSESSID |
+| Catálogo completo (produto-pai + variante) | ✅ `OptionalsComplete` | — | — |
+| Preço (5 faixas) | ✅ | — | — |
+| Estoque | ✅ `Stocks` | ⚠️ por armazém | ⚠️ semáforo |
+| Personalização (preços + áreas) | ✅ `CustomizationTables` | ⚠️ HTML | ⚠️ simulador |
+| Cores / Taxonomia | ✅ `Colors` / `ProductTypes` | — | — |
+| Descontinuados | ✅ `CanceledProducts` | — | — |
+| Pedidos / Faturas / NF | ❌ | ❌ | ✅ operacional |
+| Frete / Checkout | ❌ | ❌ | ✅ operacional |
+| Risco de segurança | 🟢 baixo (Vault) | 🟢 baixo (público) | 🔴 alto (senha fraca, geo-block, sem 2FA) |
+
+---
+
+## Situação de integração e próximos passos
+
+| Canal | Integrado | Automação | Ação |
+|---|---|---|---|
+| A · Webservice API | ✅ Bronze populado | ⚠️ snapshot dez/2025 | Ingestão n8n diária com watermark `UpdateDate` (ver cadência) |
+| B · Portal público | ❌ | ❌ | Avaliar `getStockWarehouses` só se `Stocks` (Canal A) for insuficiente |
+| C · Portal autenticado | ❌ | ❌ | Fora do escopo de catálogo. Se usado p/ operação: trocar senha, exigir IP BR, adicionar 2FA |
+
+### Cadência de ingestão (estado-alvo, com stagger)
+
+| Horário | Feed | Frequência |
+|---|---|---|
+| 03:00 | `OptionalsComplete` (produtos) | 1×/dia |
+| */30 min | `Stocks` (estoque) | a cada 30 min |
+| Dom 04:00 | `CustomizationTables` | 1×/semana |
+| Dom 04:00 | `Colors` + `ProductTypes` | 1×/semana |
+| Fim de pull | `CanceledProducts` (sweep) | a cada full-pull OK |
+
+> **Regra de stagger:** o pull de produto nunca roda ao mesmo tempo que o `promote tick` (*/10 min).
+> Produto é pesado e raro (cota de 22/dia); estoque é leve e frequente.
