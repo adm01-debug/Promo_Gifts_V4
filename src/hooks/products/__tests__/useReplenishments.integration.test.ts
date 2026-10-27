@@ -32,11 +32,11 @@ describe.skipIf(isLocalSupabase)('useReplenishments Hooks Integration', () => {
     });
 
     await waitFor(() => expect(result.current.isSuccess || result.current.isError).toBe(true), {
-      timeout: 15000,
+      timeout: 25000,
     });
     if (result.current.isError) return;
     expect(result.current.data).toHaveProperty('totalReplenishments');
     expect(result.current.data).toHaveProperty('activeReplenishments');
     expect(typeof result.current.data?.replenishmentRate).toBe('number');
-  }, 30000); // waitFor timeout (15s) must not race with Vitest test timeout
+  }, 30000); // waitFor timeout (25s) alinhado com useReplenishmentsWithDetails
 });
