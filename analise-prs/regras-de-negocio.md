@@ -1,8 +1,9 @@
-# regras-de-negocio.md — rev69
+# regras-de-negocio.md — rev70
 **Sessão:** session_011d8gKLZg8BWivR8aQBwxGF
 **Data:** 2026-10-27
-**main HEAD:** b752faf8e2e2ac999bcc99f4c9e50472737f825d
+**main HEAD:** 5d049ef118f3eb84843da44bd8d2efc70ee56ca1
 **Supabase projeto canônico:** doufsxqlfjyuvxuezpln (SSOT — REGRA#1)
+**Supabase URL verificada via MCP:** https://doufsxqlfjyuvxuezpln.supabase.co (confirmado)
 
 ---
 
@@ -201,7 +202,15 @@ implementou deny-all em 2026-10-27 — PR #2600 documenta essa mudança.
 | 2026-10-27 | `20261027180000_reactivate_generate_blurhashes_safe_schedule.sql` | Reativa blurhash cron |
 | 2026-10-27 | `20261027160000_deactivate_image_dimensions_backfill_cron.sql` | Desativa cron |
 | 2026-10-27 | `20261027140000_stagger_cron_burst_schedules.sql` | Escala cron burst |
-| 2026-10-27 | `20261027120000_fix_connections_auto_test_cron_secret.sql` | Fix cron secret |
+| 2026-10-27 | `20261027120000_fix_connections_auto_test_cron_secret.sql` | Fix cron secret — **EM LEDGER** (confirmado via MCP rev70) |
+| 2026-10-27 | `20261027140000_stagger_cron_burst_schedules.sql` | Escala cron burst — **EM LEDGER** (confirmado via MCP rev70) |
+| 2026-10-27 | `20261027160000_deactivate_image_dimensions_backfill_cron.sql` | Desativa cron — arquivo no repo, **NÃO no ledger** (aguarda db-apply-migration.yml) |
+| 2026-10-27 | `20261027180000_reactivate_generate_blurhashes_safe_schedule.sql` | Reativa blurhash cron — **NÃO no ledger** |
+| 2026-10-27 | `20261027200000_supplier_stricker_rls_deny_all.sql` | RLS deny-all suppliers — **NÃO no ledger** |
+| 2026-10-27 | `20261027220000_deactivate_xbz_image_uploader_cron.sql` | Desativa cron XBZ — **NÃO no ledger** |
+| 2026-10-27 | `20261027230000_cleanup_get_edge_function_secret_allowlist.sql` | Limpa allowlist — **NÃO no ledger** |
+| 2026-10-27 | `20261027233000_add_xbz_image_uploader_secret_to_allowlist.sql` | Allowlist secret XBZ — **NÃO no ledger** |
+| 2026-10-27 | `20261027234500_reactivate_xbz_image_uploader_cron.sql` | Reativa cron XBZ — **NÃO no ledger** |
 | 2026-10-24 | `20261024190001_cron_auth_p01_image_dimensions_backfill.sql` | Cron de backfill |
 | 2026-10-24 | `20261024180003_cron_schedule_p19_remaining.sql` | Cron schedules |
 | 2026-10-22 | `20261022195616_fix_update_company_fields_security_definer_search_path.sql` | Security fix |
@@ -299,5 +308,22 @@ causando 401 em produção. Gate 0 detecta, mas Claude não pode remover a guard
 
 ---
 
-_Gerado por session_011d8gKLZg8BWivR8aQBwxGF — rev59_
-_Baseado em: src/types/*.ts, docs/03_*, docs/04_*, supabase/migrations/, CLAUDE.md_
+---
+
+## 11. Dependabot — alertas high em aberto (rev70)
+
+**Fonte:** `github_list_dependabot_alerts` (severity=high, state=open) — 2026-10-27
+
+| Alert # | Pacote | CVE | Resumo | first_patched_version | Escopo |
+|---|---|---|---|---|---|
+| #69 | `extract-zip` ≤ 2.0.1 | CVE-2026-19693 | Arbitrary file write via symlink archive entries (path traversal CWE-22) | **null** (sem fix disponível) | devDependency, transitive |
+| #68 | `extract-zip` ≤ 2.0.1 | CVE-2026-56876 | Unvalidated symlink path traversal em ZIP extraction | **null** (sem fix disponível) | devDependency, transitive |
+
+**Risco:** BAIXO para produção — `extract-zip` é `devDependency` (transitive, scope: development). Não está no bundle de produção. Explorável apenas se código de desenvolvimento processar arquivos ZIP maliciosos.
+
+**Ação:** DECISAO_HUMANA — aguardar upstream fix (`first_patched_version: null`). PR Dependabot correspondente: não criada automaticamente (sem versão fixada disponível). Dismissal possível com justificativa "tolerable risk / dev-only" — mas requer aprovação do PO (REGRA#8 corolário: segurança requer decisão humana).
+
+---
+
+_Gerado por session_011d8gKLZg8BWivR8aQBwxGF — rev70_
+_Baseado em: src/types/*.ts, docs/03_*, docs/04_*, supabase/migrations/, CLAUDE.md, list_migrations MCP (doufsxqlfjyuvxuezpln), list_dependabot_alerts_
