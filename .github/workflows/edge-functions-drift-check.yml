@@ -461,19 +461,12 @@ jobs:
       - name: Fail if drift detected
         if: steps.check_paths.outputs.needs_drift != 'false' && (steps.hash_diff.outputs.drift_count != '0' || steps.hash_diff.outputs.missing_in_dl != '0' || steps.slug_diff.outputs.has_orphans == 'true' || steps.slug_diff.outputs.has_missing == 'true')
         run: |
-          # E203: Para eventos pull_request, somente drift estrutural (órfã / ausente) bloqueia.
-          # Drift de conteúdo em PR é esperado — a função será deployada após o merge via
-          # "Deploy Edge Functions". Sem essa distinção qualquer PR que toca uma edge function
-          # bloquearia o merge indefinidamente (a função modificada nunca bate com o canônico
-          # até ser deployada, e não se pode deployar antes de mergear).
+          # E203: Em PRs, todo drift (conteúdo, missing, orphan) é advisory — não bloqueia merge.
+          # A função modificada/adicionada só pode ser deployada pós-merge via "Deploy Edge Functions".
+          # Bloquear em has_missing ou has_orphans criaria deadlock: não se deploya antes de mergear,
+          # não se mergeia porque a função não está deployada.
           if [ "${{ github.event_name }}" = "pull_request" ]; then
-            has_orphans="${{ steps.slug_diff.outputs.has_orphans }}"
-            has_missing="${{ steps.slug_diff.outputs.has_missing }}"
-            if [ "$has_orphans" = "true" ] || [ "$has_missing" = "true" ]; then
-              echo "::error::Drift estrutural detectado: função órfã no canônico ou função no repo sem deploy. Ver sumário."
-              exit 1
-            fi
-            echo "::notice::Drift de conteúdo em ${{ steps.hash_diff.outputs.drift_count }} função(ões) — advisory para PR. Será resolvido pelo deploy pós-merge via 'Deploy Edge Functions'."
+            echo "::notice::Drift advisory para PR — conteúdo: ${{ steps.hash_diff.outputs.drift_count }} função(ões), missing: ${{ steps.slug_diff.outputs.has_missing }}, orphans: ${{ steps.slug_diff.outputs.has_orphans }}. Será resolvido pelo deploy pós-merge via 'Deploy Edge Functions'."
             exit 0
           fi
           echo "::error::Drift detectado entre GitHub e canônico. Veja sumário do job e artefato drift-report.csv."
