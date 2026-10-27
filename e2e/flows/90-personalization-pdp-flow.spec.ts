@@ -18,11 +18,11 @@ test.describe("Fluxo: Personalização via PDP", () => {
     // Pegar o nome do produto para validar depois
     const productName = await productCard.locator(Sel.product.cardName).innerText();
     
-    // Clicar no link do produto (âncora dentro do card)
-    await productCard.locator('a').first().click();
-    
+    // Clicar no card para abrir a PDP (usa onClick + navigate, sem âncora)
+    await productCard.click();
+
     // 3. Validar que estamos na PDP
-    await expect(page).toHaveURL(/\/produtos\/.+/);
+    await expect(page).toHaveURL(/\/produto\/.+/);
     await expect(page.locator(Sel.product.name)).toContainText(productName);
     
     // Pegar o SKU da PDP para comparar depois
