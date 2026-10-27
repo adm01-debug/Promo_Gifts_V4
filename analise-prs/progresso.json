@@ -1,108 +1,33 @@
 {
-  "rev": 52,
-  "ultima_atualizacao": "2026-10-27T08:00:00Z",
-  "sessao_01Ss1tXZ4cAbxBvdmu95uNPz": {
-    "data": "2026-10-25",
-    "rev": 22,
-    "main_head_pre": "5279abfe07895d9b0481fa08086b2c18d321de5f",
-    "main_head_pos": "15e10fd88208f9b4cd372b82544fb27892d15a81",
-    "baseline": {
-      "testes": 429,
-      "falhas": 0,
-      "gate_final_run": "40223579961",
-      "gate_final_conclusao": "success",
-      "gate_final_completado_em": "2026-10-25T19:02:42Z",
-      "sha": "7d3bd4ba47eb6e9e6b3d56fe3bfac45a791de84f"
-    },
-    "prs_abertas_analisadas": 29,
-    "merges_autonomos": 10,
-    "contagem_vereditos": {
-      "MERGEADO_AUTONOMO": 10,
-      "DECISAO_HUMANA": 13,
-      "FECHAR": 5,
-      "JA_EM_MAIN": 1
-    },
-    "mergeados": [
-      {"number": 2544, "sha": "1d26da9082d42e825de66f574fbc796587345fdf", "titulo": "docs: backlog CI CI-001..CI-008"},
-      {"number": 2545, "sha": "2a93ba556b58007a001d68efd3c81ead17c19dce", "titulo": "chore: backlog funcionalidades FT-001..FT-416"},
-      {"number": 2548, "sha": "9be832a355f0c98fcd22021b4273b16fa0b1aba5", "titulo": "feat: botao LGPD excluir meus dados"},
-      {"number": 2549, "sha": "73df7502f3b582f7966c209ff6a5c202fb1a3f9e", "titulo": "chore: backlog Supabase SB-001..SB-018"},
-      {"number": 2551, "sha": "97eed25cb177a318fcf63fb3843f02512511d579", "titulo": "fix: peso 0 no Kit Maker"},
-      {"number": 2552, "sha": "35fdb5793db7461f7fafcdae1effc89ae5cae6b5", "titulo": "fix: materials-api timeout 20s"},
-      {"number": 2553, "sha": "aebd333f3d2d57ee0bb5f1f127bf23f352846cd9", "titulo": "fix: selos sem mock"},
-      {"number": 2554, "sha": "e6538448e6edc639f9131e809ae265976b43f208", "titulo": "fix: BI Cliente 360 sem mock"},
-      {"number": 2555, "sha": "479f2219485e23a5d35896dfe44c9ca4f7c1026f", "titulo": "docs(pendencias): rev29"},
-      {"number": 2556, "sha": "15e10fd88208f9b4cd372b82544fb27892d15a81", "titulo": "chore: backlog banco O1/O3"}
-    ]
+  "session": "session_01VXkRxWq5ZUCmvuNx5e2TGX",
+  "data": "2026-10-27",
+  "status": "CONCLUIDO",
+  "branch_trabalho": "claude_pink/sleepy-cannon-h000nc",
+  "main_head_inicio": "e0b569f18",
+  "main_head_fim": "e0b569f18",
+  "prs_analisadas": 12,
+  "prs_mergeadas": 0,
+  "prs_skip_draft": 3,
+  "prs_fechar": 9,
+  "ci_baseline": {
+    "run_id": "40572329584",
+    "sha": "e0b569f18",
+    "status": "success",
+    "tsc_erros": 0,
+    "eslint_erros": 0
   },
-  "sessao_011d8gKLZg8BWivR8aQBwxGF": {
-    "data": "2026-10-27",
-    "rev": 52,
-    "main_head_entrada": "df18546dfd76d1bea7ea5873257b668d128d8df3",
-    "main_head_atual": "06c221db520b446eee41ce990c110830be5da13c",
-    "main_head_atual_pr": "#2621 (fix(migrations): rollback files 7 migrations 20261027 — sessao session_01PE8GzVYqxJM25xzvLuLYhW)",
-    "baseline": {
-      "sha": "df18546dfd76d1bea7ea5873257b668d128d8df3",
-      "nota": "Gate Final verde confirmado — PR #2603 mergeou com CI. +#2618 +#2620 antes do baseline."
-    },
-    "prs_abertas_analisadas": 16,
-    "merges_autonomos": 0,
-    "pr_entregaveis_pendente": {
-      "number": 2627,
-      "branch": "claude/fix-rollbacks-2m-271027-0800",
-      "status": "open ready",
-      "ci_head_sha": "4b5be8cac91c36246567165730b8a3a5a8316e41",
-      "nota": "Gate Final disparado. 2 rollbacks unicos (233000+234500) nao cobertos por #2621. CLEAN vs main 06c221db."
-    },
-    "contagem_vereditos": {
-      "CI_AGUARDANDO": 1,
-      "DECISAO_HUMANA": 11,
-      "DRAFT_NOMERGE": 2,
-      "SUPERSEDED": 1,
-      "MERGEADO_SESSAO_EXTERNA": 1,
-      "BRANCH_DIRTY": 1,
-      "total": 16
-    },
-    "prs": [
-      {"number": 2420, "veredito": "DECISAO_HUMANA", "motivo": "CONFLICT+REGRA8 migrations+rollbacks"},
-      {"number": 2572, "veredito": "DECISAO_HUMANA", "motivo": "CONFLICT RELATORIO_CI.md+REGRA10 branch outra sessao"},
-      {"number": 2579, "veredito": "DECISAO_HUMANA", "motivo": "downgrade 1.2.1->1.0.0 regressao de versao"},
-      {"number": 2580, "veredito": "DECISAO_HUMANA", "motivo": "DRAFT+REGRA8 migrations"},
-      {"number": 2587, "veredito": "DECISAO_HUMANA", "motivo": "major upgrade zustand 4->5 breaking"},
-      {"number": 2588, "veredito": "DECISAO_HUMANA", "motivo": "major upgrade react-day-picker 8->10 + Gate Final FAILED"},
-      {"number": 2594, "veredito": "DECISAO_HUMANA", "motivo": "REGRA8 workflow (actions/setup-node)"},
-      {"number": 2597, "veredito": "DECISAO_HUMANA", "motivo": "REGRA8 workflows x4"},
-      {"number": 2600, "veredito": "DRAFT_NOMERGE", "motivo": "DRAFT analise-prs/ docs internos — branch outra sessao"},
-      {"number": 2604, "veredito": "DECISAO_HUMANA", "motivo": "DRAFT+REGRA8 workflow (continue-on-error)"},
-      {"number": 2605, "veredito": "SUPERSEDED", "motivo": "supersedida por #2620 SHA 3aabc4187"},
-      {"number": 2612, "veredito": "DRAFT_NOMERGE", "motivo": "DRAFT apenas test timeout paliativo"},
-      {"number": 2619, "veredito": "DECISAO_HUMANA", "motivo": "DRAFT+REGRA8 edge function"},
-      {
-        "number": 2621,
-        "veredito": "MERGEADO_SESSAO_EXTERNA",
-        "motivo": "Mergeado por sessao session_01PE8GzVYqxJM25xzvLuLYhW. Gate 1.12 corrigido na branch original. 7 rollbacks + manifest xbz-image-uploader.",
-        "merge_sha": "06c221db520b446eee41ce990c110830be5da13c"
-      },
-      {
-        "number": 2622,
-        "veredito": "BRANCH_DIRTY",
-        "motivo": "ADD/ADD conflict com main apos merge de #2621. 2 rollbacks unicos (233000+234500) reconstituted em PR #2627."
-      },
-      {
-        "number": 2625,
-        "veredito": "DECISAO_HUMANA",
-        "motivo": "DRAFT + REGRA8 edge function health-check/index.ts + REGRA10 branch sessao session_01Knr9enFAok62bHihBK1UUP + manifest parte supersedida por #2621"
-      },
-      {
-        "number": 2627,
-        "veredito": "CI_AGUARDANDO",
-        "motivo": "Minha branch. Gate Final disparado SHA 4b5be8ca. 2 rollbacks unicos 233000+234500 nao cobertos por #2621. CLEAN vs main 06c221db.",
-        "ci_sha": "4b5be8cac91c36246567165730b8a3a5a8316e41"
-      }
-    ],
-    "rollbacks_criados": [
-      "supabase/rollbacks/20261027233000_rollback.sql",
-      "supabase/rollbacks/20261027234500_rollback.sql"
-    ]
-  }
+  "analise_completa": [
+    {"pr": 2420, "veredicto": "FECHAR", "evidencia": "rollback em main"},
+    {"pr": 2572, "veredicto": "FECHAR", "evidencia": "dirty+rebaseable:false"},
+    {"pr": 2579, "veredicto": "FECHAR", "evidencia": "stale bot"},
+    {"pr": 2580, "veredicto": "SKIP", "evidencia": "draft"},
+    {"pr": 2588, "veredicto": "FECHAR", "evidencia": "major bump sem adaptação"},
+    {"pr": 2600, "veredicto": "SKIP", "evidencia": "draft+NÃO_MERGEAR"},
+    {"pr": 2605, "veredicto": "FECHAR", "evidencia": "conteúdo em main via #2616/#2614/#2620"},
+    {"pr": 2622, "veredicto": "FECHAR", "evidencia": "rollbacks+manifest em main"},
+    {"pr": 2631, "veredicto": "SKIP", "evidencia": "draft"},
+    {"pr": 2645, "veredicto": "FECHAR", "evidencia": "commit 22ba938 em main"},
+    {"pr": 2646, "veredicto": "FECHAR", "evidencia": "workflows proibido+CI falhou"},
+    {"pr": 2653, "veredicto": "FECHAR", "evidencia": "dirty+rebaseable:false"}
+  ]
 }

@@ -1,196 +1,152 @@
 {
-  "session": "session_01Ss1tXZ4cAbxBvdmu95uNPz",
-  "date": "2026-10-25",
-  "rev": 22,
-  "main_head_pre": "5279abfe07895d9b0481fa08086b2c18d321de5f",
-  "main_head_post": "15e10fd88208f9b4cd372b82544fb27892d15a81",
-  "gate_final_baseline": {
-    "run": 40223579961,
-    "sha": "7d3bd4ba",
-    "status": "success",
-    "tests": 429,
-    "failures": 0
-  },
-  "gate_final_post_merges": {
-    "sha": "15e10fd8",
-    "status": "queued",
-    "run": 40227283262,
-    "nota": "GitHub Actions infra issue — preso em queued desde 19:42Z; não é falha de código"
-  },
-  "summary": {
-    "total_open": 29,
-    "merged_this_session": 10,
-    "decisao_humana": 13,
-    "fechar": 5,
-    "ja_em_main": 1,
-    "merged_prev_sessions": 3
-  },
+  "session": "session_01VXkRxWq5ZUCmvuNx5e2TGX",
+  "data": "2026-10-27",
+  "main_head_inicio": "e0b569f18 (fix(e2e): aguarda spinner de auth do ProtectedRoute antes de interagir)",
+  "total_prs_abertas": 12,
+  "prs_mergeadas_sessao": 0,
   "prs": [
     {
-      "number": 2415,
-      "verdict": "DECISAO_HUMANA",
-      "test_merge": "CONFLICT",
-      "rule8": [
-        ".github/workflows/ci-security-drift.yml",
-        ".github/workflows/deploy-gates.yml"
-      ]
+      "numero": 2420,
+      "titulo": "feat(rollback): Add rollback scripts for 20261019 migrations",
+      "autor": "adm01-debug",
+      "draft": false,
+      "base": "main",
+      "head": "claude_05/lucky-matsumoto-m12fqe",
+      "head_sha": "b5e8a7c",
+      "mergeable": false,
+      "mergeable_state": "dirty",
+      "veredicto": "FECHAR",
+      "razao": "Já implementado — 20261019000000_rollback.sql presente em main (verificado: ls supabase/rollbacks/20261019*)",
+      "evidencia": "supabase/rollbacks/20261019000000_rollback.sql existe no HEAD main"
     },
     {
-      "number": 2417,
-      "verdict": "FECHAR",
-      "test_merge": "NO_MERGE_BASE"
+      "numero": 2572,
+      "titulo": "docs(analise-prs): rev23 — 40 PRs, 21 merges autônomos, Gate Final pendente CI",
+      "autor": "adm01-debug",
+      "draft": false,
+      "base": "main",
+      "head": "claude_05/youthful-ride-vcdchy",
+      "head_sha": "c653bef92",
+      "mergeable": false,
+      "mergeable_state": "dirty",
+      "rebaseable": false,
+      "veredicto": "FECHAR",
+      "razao": "Conflito irresolúvel (dirty+rebaseable:false, sem ancestral comum com HEAD). Conteúdo (analise-prs/ sessão 01Ss1tXZ4) superado pelas sessões subsequentes.",
+      "evidencia": "GitHub API: mergeable=false, rebaseable=false; git merge-base exit 1"
     },
     {
-      "number": 2418,
-      "verdict": "FECHAR",
-      "test_merge": "NO_MERGE_BASE"
+      "numero": 2579,
+      "titulo": "chore: release 1.0.0",
+      "autor": "github-actions[bot]",
+      "draft": false,
+      "base": "main",
+      "head": "release-please--branches--main",
+      "head_sha": "stale",
+      "mergeable": false,
+      "mergeable_state": "dirty",
+      "veredicto": "FECHAR",
+      "razao": "PR de release-please stale — projeto já em v1.2.1 (package.json). Release 1.0.0 seria retrograding.",
+      "evidencia": "package.json: version=1.2.1"
     },
     {
-      "number": 2419,
-      "verdict": "FECHAR",
-      "test_merge": "NO_MERGE_BASE"
+      "numero": 2580,
+      "titulo": "feat(magazine): implementa MagazineEditorPage com circuit-breaker e fallback",
+      "autor": "adm01-debug",
+      "draft": true,
+      "base": "main",
+      "head": "claude_05/silly-darwin-vrkjle",
+      "veredicto": "SKIP",
+      "razao": "DRAFT — aguardar promoção pelo autor"
     },
     {
-      "number": 2420,
-      "verdict": "FECHAR",
-      "test_merge": "NO_MERGE_BASE"
+      "numero": 2588,
+      "titulo": "chore(deps): bump react-day-picker from 8.10.1 to 10.5.1",
+      "autor": "dependabot[bot]",
+      "draft": false,
+      "base": "main",
+      "head": "dependabot/npm_and_npm/react-day-picker-10.5.1",
+      "veredicto": "FECHAR",
+      "razao": "Major version bump v8→v10 com quebra de API (DayPicker props, Modifiers type removidos). Sem adaptação de src/. Introduziria erros TypeScript.",
+      "evidencia": "react-day-picker changelog: v9 e v10 ambos breaking. Nenhum componente adaptado no PR diff."
     },
     {
-      "number": 2422,
-      "verdict": "FECHAR",
-      "test_merge": "NO_MERGE_BASE"
+      "numero": 2600,
+      "titulo": "docs(analise-prs): RELATORIO_PRS.md rev22 — 22 PRs analisadas, 0 merges",
+      "autor": "adm01-debug",
+      "draft": true,
+      "base": "main",
+      "head": "claude/lively-ptolemy-4rjupt",
+      "veredicto": "SKIP",
+      "razao": "DRAFT — body diz explicitamente NÃO MERGEAR"
     },
     {
-      "number": 2428,
-      "verdict": "DECISAO_HUMANA",
-      "test_merge": "CONFLICT",
-      "rule8": [
-        ".gitleaks.toml"
-      ]
+      "numero": 2605,
+      "titulo": "fix(mockup): corrige crash NaN em cálculo de área impressa + integra GravarFormato",
+      "autor": "adm01-debug",
+      "draft": false,
+      "base": "main",
+      "head": "claude/icy-hoover-bvdpyy",
+      "veredicto": "FECHAR",
+      "razao": "Já implementado — fixes landed via PR #2616 (fix MockupAreaCalc NaN), #2614 (GravarFormato integration), #2620 (limites de impressão). Conteúdo equivalente já em main.",
+      "evidencia": "git log --oneline main | grep -E '2616|2614|2620' — commits presentes"
     },
     {
-      "number": 2432,
-      "verdict": "JA_EM_MAIN",
-      "test_merge": "CLEAN"
+      "numero": 2622,
+      "titulo": "feat(xbz-image-uploader): implementa edge function + rollback series 20261027",
+      "autor": "adm01-debug",
+      "draft": false,
+      "base": "main",
+      "head": "claude/quizzical-wright-j5mpf4",
+      "veredicto": "FECHAR",
+      "razao": "Já implementado — rollback files 20261027* todos presentes em supabase/rollbacks/. edge-authz-manifest.ts já contém entry 'xbz-image-uploader' (commit a0560fd).",
+      "evidencia": "ls supabase/rollbacks/20261027*.sql = 14 arquivos; grep xbz-image-uploader supabase/functions/_shared/edge-authz-manifest.ts = match"
     },
     {
-      "number": 2443,
-      "verdict": "DECISAO_HUMANA",
-      "test_merge": "CLEAN",
-      "motivo": "segurança FASE B + aprovação PO"
+      "numero": 2631,
+      "titulo": "feat(kit-ai-builder): implementa fluxo completo Kit AI Builder",
+      "autor": "adm01-debug",
+      "draft": true,
+      "base": "main",
+      "head": "claude/cranky-gates-dtg2pc",
+      "veredicto": "SKIP",
+      "razao": "DRAFT — aguardar promoção pelo autor"
     },
     {
-      "number": 2449,
-      "verdict": "DECISAO_HUMANA",
-      "test_merge": "CONFLICT",
-      "rule8": [
-        "supabase/migrations/"
-      ]
+      "numero": 2645,
+      "titulo": "chore(migrations): receipt 20261027140000 + MIGRATIONS_SYNC_LOG",
+      "autor": "adm01-debug",
+      "draft": false,
+      "base": "main",
+      "head": "claude/fervent-antonelli-qjzmhx",
+      "veredicto": "FECHAR",
+      "razao": "Já implementado — commit 22ba938 já está em main com migration receipt 20261027140000 e MIGRATIONS_SYNC_LOG atualizado.",
+      "evidencia": "git log main --oneline | grep 22ba938; grep 20261027140000 supabase/MIGRATIONS_SYNC_LOG.md"
     },
     {
-      "number": 2452,
-      "verdict": "DECISAO_HUMANA",
-      "test_merge": "CONFLICT"
+      "numero": 2646,
+      "titulo": "ci(deploy-gates): adiciona Gate 1.13.3 migration receipts + Gate 1.19 bundle-size",
+      "autor": "adm01-debug",
+      "draft": false,
+      "base": "main",
+      "head": "claude/jolly-rosalind-yphvzp",
+      "veredicto": "FECHAR",
+      "razao": "Toca .github/workflows/ — proibido por regra da tarefa ('Não tocar .github/workflows'). CI falhou no PR.",
+      "evidencia": "mcp list_pr_files PR#2646: .github/workflows/deploy-gates.yml modificado"
     },
     {
-      "number": 2469,
-      "verdict": "DECISAO_HUMANA",
-      "test_merge": "CONFLICT",
-      "rule8": [
-        ".github/workflows/e2e-personalization.yml"
-      ]
-    },
-    {
-      "number": 2503,
-      "verdict": "DECISAO_HUMANA",
-      "test_merge": "CONFLICT"
-    },
-    {
-      "number": 2520,
-      "verdict": "DECISAO_HUMANA",
-      "test_merge": "CLEAN",
-      "motivo": "downgrade 1.2.1→1.0.0"
-    },
-    {
-      "number": 2532,
-      "verdict": "DECISAO_HUMANA",
-      "test_merge": "CONFLICT"
-    },
-    {
-      "number": 2537,
-      "verdict": "DECISAO_HUMANA",
-      "test_merge": "CLEAN",
-      "rule8": [
-        ".github/workflows/contract-tests.yml"
-      ]
-    },
-    {
-      "number": 2544,
-      "verdict": "MERGEADO_AUTONOMO",
-      "merge_sha": "1d26da9082d42e825de66f574fbc796587345fdf"
-    },
-    {
-      "number": 2545,
-      "verdict": "MERGEADO_AUTONOMO",
-      "merge_sha": "2a93ba556b58007a001d68efd3c81ead17c19dce"
-    },
-    {
-      "number": 2547,
-      "verdict": "DECISAO_HUMANA",
-      "test_merge": "CLEAN",
-      "motivo": "remoção feature + regressão prs.json"
-    },
-    {
-      "number": 2548,
-      "verdict": "MERGEADO_AUTONOMO",
-      "merge_sha": "9be832a355f0c98fcd22021b4273b16fa0b1aba5"
-    },
-    {
-      "number": 2549,
-      "verdict": "MERGEADO_AUTONOMO",
-      "merge_sha": "73df7502f3b582f7966c209ff6a5c202fb1a3f9e"
-    },
-    {
-      "number": 2550,
-      "verdict": "DECISAO_HUMANA",
-      "test_merge": "CLEAN",
-      "motivo": "mudança regra negócio D7"
-    },
-    {
-      "number": 2551,
-      "verdict": "MERGEADO_AUTONOMO",
-      "merge_sha": "97eed25cb177a318fcf63fb3843f02512511d579"
-    },
-    {
-      "number": 2552,
-      "verdict": "MERGEADO_AUTONOMO",
-      "merge_sha": "35fdb5793db7461f7fafcdae1effc89ae5cae6b5"
-    },
-    {
-      "number": 2553,
-      "verdict": "MERGEADO_AUTONOMO",
-      "merge_sha": "aebd333f3d2d57ee0bb5f1f127bf23f352846cd9"
-    },
-    {
-      "number": 2554,
-      "verdict": "MERGEADO_AUTONOMO",
-      "merge_sha": "e6538448e6edc639f9131e809ae265976b43f208"
-    },
-    {
-      "number": 2555,
-      "verdict": "MERGEADO_AUTONOMO",
-      "merge_sha": "479f2219485e23a5d35896dfe44c9ca4f7c1026f"
-    },
-    {
-      "number": 2556,
-      "verdict": "MERGEADO_AUTONOMO",
-      "merge_sha": "15e10fd88208f9b4cd372b82544fb27892d15a81"
-    },
-    {
-      "number": 2557,
-      "verdict": "DECISAO_HUMANA",
-      "test_merge": "CLEAN",
-      "motivo": "corrupção texto RELATORIO_CI.md"
+      "numero": 2653,
+      "titulo": "docs(analise-prs): inventário final 17 PRs + regras-de-negocio.md",
+      "autor": "adm01-debug",
+      "draft": false,
+      "base": "main",
+      "head": "claude/quirky-keller-owezvt",
+      "head_sha": "c1f89bd8f",
+      "mergeable": false,
+      "mergeable_state": "dirty",
+      "rebaseable": false,
+      "veredicto": "FECHAR",
+      "razao": "Conflito irresolúvel (dirty+rebaseable:false, sem ancestral comum com HEAD atual). Conteúdo (analise-prs/ sessão 012WyySbh2tj8) superado pela sessão corrente.",
+      "evidencia": "GitHub API: mergeable=false, rebaseable=false; git merge tentou 'refusing to merge unrelated histories'"
     }
   ]
 }
