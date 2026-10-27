@@ -89,7 +89,7 @@ Dados capturados no início da sessão para verificação de que nenhum DDL foi 
 
 - `client.ts:24`: `CURRENT_PROJECT_ID = "doufsxqlfjyuvxuezpln"` ✓
 - `config.toml:1`: `project_id = "doufsxqlfjyuvxuezpln"` ✓
-- `pqpdolkaeqlyzpdpbizo` ausente de código executável ✓
+- `pqpdolkaeqlyzpdpbizo` ausente de código executável ✓ <!-- [LEGACY_INFORMATIVO] -->
 
 ---
 
@@ -504,11 +504,19 @@ auditoria-supabase/
 ├── progresso.json                            (14/14 seções concluídas)
 ├── inventario/
 │   ├── baseline_antes.json                   (A.0 — snapshot inicial)
+│   ├── secao1_inventario.md                  (A.1)
 │   ├── drift_repo.md                         (A.2)
 │   ├── advisors.md                           (A.3/A.5 — Supabase Advisors)
 │   ├── integridade_extra.md                  (A.4)
 │   ├── performance.md                        (A.5)
 │   └── auth_storage_realtime.md              (A.9)
+└── (arquivos de sessão anterior 2026-10-22)
+    ├── secao6_crons.md
+    ├── secao7_db_functions.md
+    ├── secao8_edge_functions.md
+    ├── secao10_logs.md
+    ├── secao11_rls.md
+    └── secao12_lacunas.md
 ```
 
 ---
