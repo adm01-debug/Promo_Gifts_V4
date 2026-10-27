@@ -4,6 +4,27 @@
 > ativo. Mudar suas regras sem registro é uma forma fácil de degradar a segurança
 > sem ninguém perceber. Cada mudança aqui é uma decisão registrada para sobreviver
 
+## v2.0.4 — 2026-10-27 — Incidente: squash merge PR #2610 sem sufixo `(#NNN)`
+
+**Contexto:** o squash merge do PR #2610 foi feito via MCP `github_merge_pull_request`
+com `commit_title` explícito, sem o sufixo `(#2610)` que o GitHub adiciona
+automaticamente quando nenhum `commit_title` é especificado. O sentinel disparou
+`Verify push to main matches accepted patterns` com exit 1 para o commit
+`48899b65`.
+
+**Impacto:** check advisory (não bloqueante para deploy); Gate Final (`quality-gate`)
+continua sendo o único required check em `main`. O incidente não afetou deploy.
+
+**Lição:** ao fazer squash merge via API/MCP, NÃO especificar `commit_title` para que
+o GitHub gere `{título} (#{PR})` automaticamente — este é o formato aceito pela
+Regra 1 do sentinel. Se precisar de título customizado, inclui o sufixo `(#NNN)`.
+
+**Resolução:** este PR corrige a HEAD de `main` com um commit que passa o sentinel
+(squash merge com sufixo automático `(#NNN)`).
+
+
+> a trocas de sessão de chat, trocas de pessoa no plantão, etc.
+
 ## v2.0.3 — 2026-10-27 — Incidente: squash merge PR #2606 sem sufixo `(#NNN)`
 
 **Contexto:** o squash merge do PR #2606 (`fix(e2e): corrige falhas de E2E em mock
