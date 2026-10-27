@@ -1,7 +1,7 @@
 # RELATORIO_PRS.md — Análise Exaustiva de PRs Abertas
 **Sessão:** session_011d8gKLZg8BWivR8aQBwxGF (fork f0ceb220)
-**Rev:** 83
-**Data:** 2026-10-27T18:50Z (PRs #2656 e #2658 mergeados externamente; Gate 0.5 restaurado)
+**Rev:** 84
+**Data:** 2026-10-27T19:30Z (Gate Final 2fafe8ed confirmado SUCCESS — run 40563196038)
 **Branch de entrega:** `claude_04/optimistic-bohr-qplx94` (PR #2600 — NUNCA MERGEAR)
 
 ---
@@ -26,14 +26,14 @@
 - **Produção `doufsxqlfjyuvxuezpln`:** ERR_PROXY_TUNNEL durante toda a sessão. Nenhum acesso ao Supabase MCP (mcp.supabase.com). Todas as afirmações sobre estado de produção são baseadas em evidências indiretas (CI, logs de PR).
 - **Deploy Lovable:** merge no main = redeploy automático via Lovable. Estado do deploy não verificável nesta sessão (ERR_PROXY_TUNNEL).
 
-## ⏳ GATE FINAL — main HEAD `2fafe8ed` (CI IN_PROGRESS ao final da sessão)
+## ✅ GATE FINAL — main HEAD `2fafe8ed` (SUCCESS confirmado)
 
-Gate Final no SHA `2fafe8edfaa246221a4b427d5728512ba9ff199e` não completou ao final da sessão —
-E2E Playwright, Visual Baselines e Security Drift Checks ainda rodando às ~18:50Z.
+Gate Final no SHA `2fafe8edfaa246221a4b427d5728512ba9ff199e` — **CONFIRMADO SUCCESS**.
+Run `40563196038`, started 2026-10-27T18:47:16Z, completed 2026-10-27T18:54:40Z.
 
 - **Gate 0.5 (qs advisory):** ✅ RESOLVIDO via PR #2656 mergeada 2026-10-27T18:04Z (SHA `ac0fe476`)
 - **Gate Final em `ac0fe476`** (PR #2656 — qs fix): SUCCESS ✅ (Gate 0.5 resolvido)
-- **Gate Final em `2fafe8ed`** (PR #2658 — integration tests): **NÃO VERIFICADO** — CI in_progress
+- **Gate Final em `2fafe8ed`** (PR #2658 — integration tests): ✅ **SUCCESS** (run 40563196038, 2026-10-27T18:54:40Z)
 
 ---
 
@@ -66,7 +66,7 @@ E2E Playwright, Visual Baselines e Security Drift Checks ainda rodando às ~18:5
 | `4c7ecb260d` | PR #2654 (CORS gate) | SUCCESS (run 40549508170, 17:26:23Z) ✅ |
 | `a0560fdc62` | PR #2655 (pendingDeploy) | FAILURE ❌ Gate 0.5 qs advisory (run 40551464429, 17:42:15Z) |
 | `ac0fe476` | PR #2656 (qs allowlist) — Gate 0.5 fix | SUCCESS ✅ (qs advisory resolvido) |
-| `2fafe8ed` | PR #2658 (integration tests timeout) — HEAD atual | CI IN_PROGRESS ⏳ (~18:50Z) |
+| `2fafe8ed` | PR #2658 (integration tests timeout) — HEAD atual | ✅ SUCCESS (run 40563196038, 18:54:40Z) |
 
 ---
 
@@ -76,7 +76,7 @@ E2E Playwright, Visual Baselines e Security Drift Checks ainda rodando às ~18:5
 - **Branch:** `claude/fix-cors-allowlist-xbz-image-uploader-261027-1700`
 - **Sessão autora:** session_01Knr9enFAok62bHihBK1UUP
 - **merged_at:** 2026-10-27T17:19:34Z
-- **merge_commit_sha:** `4c7ecb260da691b5cd436700380b819d0d936961`
+- **merge_commit_sha:** `4c7ecb260da691b5cd436700380b818d0d936961`
 - **Gate Final:** SUCCESS ✅ (run 40549508170, 17:26:23Z)
 - **Produção:** NÃO VERIFICADO (ERR_PROXY_TUNNEL)
 - **Veredito:** MERGEADA_SESSAO_EXTERNA
@@ -104,7 +104,7 @@ E2E Playwright, Visual Baselines e Security Drift Checks ainda rodando às ~18:5
 - **Sessão autora:** session_01Knr9enFAok62bHihBK1UUP
 - **merged_at:** 2026-10-27T18:47Z
 - **merge_commit_sha:** `2fafe8edfaa246221a4b427d5728512ba9ff199e` (= novo main HEAD)
-- **Gate Final:** CI IN_PROGRESS ⏳ — não verificado ao final da sessão
+- **Gate Final:** ✅ SUCCESS (run 40563196038, 2026-10-27T18:54:40Z)
 - **Produção:** NÃO VERIFICADO (ERR_PROXY_TUNNEL)
 - **Veredito:** MERGEADA_SESSAO_EXTERNA
 
@@ -204,7 +204,7 @@ E2E Playwright, Visual Baselines e Security Drift Checks ainda rodando às ~18:5
 
 ```
 analise-prs/
-├── RELATORIO_PRS.md           (este arquivo — rev83)
+├── RELATORIO_PRS.md           (este arquivo — rev84)
 ├── baseline/
 │   ├── eslint-count.txt       (baseline ESLint via CI)
 │   ├── typecheck-errors.txt   (baseline TSC exit:0)
@@ -225,7 +225,7 @@ analise-prs/
 │   ├── PR-2654.md             (MERGEADA_SESSAO_EXTERNA)
 │   ├── PR-2655.md             (MERGEADA_SESSAO_EXTERNA)
 │   ├── PR-2656.md             (atualizado: MERGEADA_SESSAO_EXTERNA — Gate 0.5 fix)
-│   └── PR-2658.md             (novo: MERGEADA_SESSAO_EXTERNA — integration tests timeout)
+│   └── PR-2658.md             (atualizado rev84: Gate Final SUCCESS confirmado)
 └── prs.csv  (prs.json: não atualizado nesta revisão — requer rebuild)
 ```
 
@@ -241,9 +241,9 @@ analise-prs/
   - PR #2654 → SHA `4c7ecb260d` — Gate Final SUCCESS ✅
   - PR #2655 → SHA `a0560fdc62` — Gate Final ❌ FAILURE (Gate 0.5 qs advisory — não causado por #2655)
   - PR #2656 → SHA `ac0fe476` — Gate Final SUCCESS ✅ (Gate 0.5 resolvido)
-  - PR #2658 → SHA `2fafe8ed` — Gate Final CI IN_PROGRESS ⏳
+  - PR #2658 → SHA `2fafe8ed` — Gate Final ✅ **SUCCESS** (run 40563196038, 18:54:40Z)
 - **PRs bloqueadas por REGRA#10 (conflito em branch de outra sessão):** #2572, #2605, #2645, #2653 — escrita proibida
-- **Gate Final main HEAD atual (`2fafe8ed`):** CI IN_PROGRESS ao final da sessão — Gate 0.5 RESOLVIDO via #2656
+- **Gate Final main HEAD atual (`2fafe8ed`):** ✅ **SUCCESS** (run 40563196038, 2026-10-27T18:54:40Z)
 - **Outras escritas no GitHub:** nenhuma (além do push ao delivery branch)
 - **Worktrees:** nenhum worktree criado nesta sessão
 - **Produção:** NÃO VERIFICADO (ERR_PROXY_TUNNEL toda a sessão)
