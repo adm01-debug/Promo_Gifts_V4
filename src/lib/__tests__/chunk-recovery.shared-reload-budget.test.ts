@@ -30,10 +30,13 @@ vi.mock('@/lib/logger', () => ({
 describe('readSharedReloadBudget / bumpSharedReloadBudget (puro)', () => {
   it('URL limpa: bump seta __bare=1 e __bart=agora, retorna true', () => {
     const u = new URL('https://x.test/carrinhos?status=draft');
-    const now = Date.now();
+    const beforeBump = Date.now();
     expect(bumpSharedReloadBudget(u)).toBe(true);
+    const afterBump = Date.now();
     expect(u.searchParams.get('__bare')).toBe('1');
-    expect(u.searchParams.get('__bart')).toBe(String(now));
+    const bartVal = Number(u.searchParams.get('__bart'));
+    expect(bartVal).toBeGreaterThanOrEqual(beforeBump);
+    expect(bartVal).toBeLessThanOrEqual(afterBump);
     expect(u.searchParams.get('status')).toBe('draft'); // preserva outros params
   });
 
