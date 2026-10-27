@@ -48,6 +48,25 @@
   "pr2354_merged_at": "2026-10-22T21:09Z",
   "status": "CONCLUIDO",
   "proxima_acao": "aguardar_decisao_humana_PRs_restantes",
+  "inventario_atual_2026_10_27": {
+    "main_sha": "61a0cfa1714661f752273cf864b335eb217ea134",
+    "total_open": 13,
+    "numeros": [2420, 2572, 2579, 2580, 2587, 2588, 2600, 2605, 2622, 2631, 2645, 2646, 2650],
+    "analisadas": 13,
+    "mergeadas": 0,
+    "dossiers_criados": 13,
+    "contagem_por_veredicto": {
+      "CONFLITO": 4,
+      "DRAFT": 3,
+      "DECISAO_HUMANA": 3,
+      "NAO_MERGEAR": 2,
+      "FECHAR": 1,
+      "MERGEADA": 0
+    },
+    "prs_com_gate_final_ok_mas_conflito": [2605, 2622],
+    "prs_sem_ci": [2645, 2646],
+    "nota": "Todas as 13 PRs abertas analisadas individualmente com método das 4 perguntas. Zero merges realizados — todos os candidatos têm impedimento (DRAFT, CONFLITO ou DECISAO_HUMANA)."
+  },
   "worktrees_extras": "nenhum — git worktree list mostra só /home/user/Promo_Gifts_V4 [claude/quirky-keller-owezvt]",
   "alerta_sentinel": {
     "check": "Verify push to main matches accepted patterns",

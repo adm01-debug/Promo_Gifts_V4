@@ -1,27 +1,14 @@
-number,title,author,bot,draft,base_is_main,files_changed,veredicto,acao,merge_sha,valida,regressao,ja_implementada,regra_negocio_correta
-2338,"fix(ci): corrige 5 workflows em failure",adm01-debug,false,false,true,71,MERGEADA,MERGEADA,57017ba78eb68c6c72dba336f9c081c4519619c4,true,false,false,true
-2316,"fix(ci): Gate 1.12 — magazine-reader-state-read + cors.ts",adm01-debug,false,false,false,2,AGUARDAR_REBASE,rebase + resolver conflito semântico com #2338,,true,false,false,true
-2315,"chore(ci): E33 — remove E2E_USER_* de 11 workflows chromium-public (C25)",adm01-debug,false,false,false,12,AGUARDAR_REBASE,rebase + resolver conflito com #2314,,true,false,false,true
-2314,"fix(ci): atualiza baseline as-assertions — ProductFormFullscreen +2 (double-cast E83)",adm01-debug,false,false,false,1,AGUARDAR_REBASE,rebase + reconciliar valor com #2315,,true,false,false,true
-2312,"ci(e14): docs-only PRs pulam gates caros via dorny/paths-filter",adm01-debug,false,false,false,1,AGUARDAR_REBASE,rebase em main 57017ba7 + resolver conflito em deploy-gates.yml,,true,false,false,true
-2320,"(draft — não analisada)",adm01-debug,false,true,false,,DRAFT,aguardar autor promover para ready,,,,,
-2319,"(PR vazia de bot Jules)","Jules",true,false,false,0,NAO_MERGEAR,fechar (requer ação humana),,false,false,,
-2293,"build(deps): bump recharts 2→3","dependabot[bot]",true,false,true,2,DECISAO_HUMANA,PO decide risco de breaking changes UI,,true,,,
-2290,"build(deps): bump @eslint/js 9→10","dependabot[bot]",true,false,true,2,DECISAO_HUMANA,PO decide risco de breaking changes lint,,true,,,
-2322,"Add GitHub Actions workflow for Node.js with Webpack",adm01-debug,false,false,true,1,FECHAR,fechar — stack errada,,false,false,false,false
-2323,"Add Deno workflow for linting and testing",adm01-debug,false,false,true,1,FECHAR,fechar — stack errada,,false,false,false,false
-2324,"Create CI workflow for Jekyll site with Docker",adm01-debug,false,false,true,1,FECHAR,fechar — stack errada,,false,false,false,false
-2325,"Add npm publish workflow for Node.js package",adm01-debug,false,false,true,1,FECHAR,fechar — stack errada,,false,false,false,false
-2326,"Add GitHub Actions workflow for npm package publishing",adm01-debug,false,false,true,1,FECHAR,fechar — stack errada,,false,false,false,false
-2327,"Add Codacy security scan workflow",adm01-debug,false,false,true,1,FECHAR,fechar — stack errada,,false,false,false,false
-2328,"Add Dependency Review GitHub Action",adm01-debug,false,false,true,1,FECHAR,fechar — stack errada,,false,false,false,false
-2329,"Add GitHub Actions workflow for Python package publishing",adm01-debug,false,false,true,1,FECHAR,fechar — stack errada,,false,false,false,false
-2330,"Add Node.js CI workflow for testing and building",adm01-debug,false,false,true,1,FECHAR,fechar — stack errada,,false,false,false,false
-2331,"Add manual workflow for greeting",adm01-debug,false,false,true,1,FECHAR,fechar — stack errada,,false,false,false,false
-2333,"Add GitHub Actions workflow for greetings",adm01-debug,false,false,true,1,FECHAR,fechar — stack errada,,false,false,false,false
-2334,"Add GitHub Actions workflow for GitHub Pages deployment",adm01-debug,false,false,true,1,FECHAR,fechar — stack errada,,false,false,false,false
-2335,"Add GitHub Actions workflow for Next.js deployment",adm01-debug,false,false,true,1,FECHAR,fechar — stack errada,,false,false,false,false
-2336,"Create main.yml (arquivo em branco)",adm01-debug,false,false,true,1,FECHAR,fechar — arquivo em branco,,false,false,false,false
-2337,"Add Deno workflow for linting and testing (duplicata #2323)",adm01-debug,false,false,true,1,FECHAR,fechar — stack errada,,false,false,false,false
-2349,"fix(ci): release-please RELEASE_PLEASE_TOKEN + cart-invariants shards 2→3 + diagnóstico E2E",adm01-debug,false,false,true,6,AGUARDAR_CI,aguardar Gate Final (0 check runs após rebase),,true,false,false,true
-2357,"security: revoga brechas E30/E40/E18",adm01-debug,false,false,true,8,CI_PENDENTE,aguardar Gate Final — merge quando CI verde,,true,false,false,true
+numero,titulo,veredicto,head_sha,gate_final,conflito,mergeable_state,arquivos,motivo_resumido,data_analise
+2420,Rollback/sync PR — AGUARDANDO APROVAÇÃO,DECISAO_HUMANA,c10816b9,DESCONHECIDO,false,unknown,3,Body diz AGUARDANDO APROVAÇÃO — requer aprovação humana,2026-10-27
+2572,analise-prs docs sessão Claude anterior,FECHAR,SESSAO_ANTIGA,DESCONHECIDO,false,,62,62 arquivos de sessão antiga — dados obsoletos,2026-10-27
+2579,chore(main): release 1.0.0,NAO_MERGEAR,RELEASE_PLEASE,DESCONHECIDO,false,,,"PR automática release-please bot — base f2f8c3d6 stale",2026-10-27
+2580,DRAFT,,,,false,,,"Estado DRAFT — aguardar autor",2026-10-27
+2587,Bump zustand 4.5.7 to 5.0.16,DECISAO_HUMANA,,DESCONHECIDO,false,,,Major bump 4→5 — requer decisão PO,2026-10-27
+2588,Bump react-day-picker 8.10.2 to 10.0.2,DECISAO_HUMANA,,DESCONHECIDO,false,,,Double major bump 8→10 — requer decisão PO,2026-10-27
+2600,DRAFT NÃO MERGEAR,NAO_MERGEAR,,NAO_RODOU,false,,,Estado DRAFT + body diz NÃO MERGEAR,2026-10-27
+2605,Test quality fixes (E2E/mute/snapshots/timers),CONFLITO,9bfead14,SUCCESS,true,dirty,5,Gate Final OK mas merge conflicts — rebase necessário,2026-10-27
+2622,(conteúdo parcial — 1362 linhas diff),CONFLITO,2e8f40c1,SUCCESS,true,dirty,,Gate Final OK mas merge conflicts — rebase necessário,2026-10-27
+2631,DRAFT,,,,false,,,"Estado DRAFT — aguardar autor",2026-10-27
+2645,E15 receipt migration 20261027140000,CONFLITO,c1bcb16d,0_CHECK_RUNS,true,dirty,1,Recibo E15 auto-gerado — sem CI + conflito — rebase necessário,2026-10-27
+2646,(10 commits 15 arquivos),CONFLITO,2d8fd74e,0_CHECK_RUNS,true,dirty,15,0 check runs + conflito — rebase + CI necessários,2026-10-27
+2650,E2E test fixes,DRAFT,8f5b1389,NAO_RODOU,false,,,Estado DRAFT — base no main atual — aguardar autor,2026-10-27
