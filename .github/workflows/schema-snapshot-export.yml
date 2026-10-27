@@ -80,7 +80,7 @@ jobs:
     name: Export schema snapshot
     needs: drift-gate
     runs-on: ubuntu-24.04
-    timeout-minutes: 10
+    timeout-minutes: 30  # supabase db dump --linked > 388 tabelas leva >10min (run #40480567522 cancelado)
     # E27: SUPABASE_ACCESS_TOKEN não deve chegar a PRs de forks.
     # drift-gate: skipped em PR/push; em schedule/dispatch tem de passar, salvo force_rotate.
     if: >-
