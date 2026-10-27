@@ -1,12 +1,18 @@
 {
   "session_id": "session_011d8gKLZg8BWivR8aQBwxGF",
-  "revision": "rev82",
+  "revision": "rev83",
   "date": "2026-10-27",
   "status": "SESSAO_COMPLETA",
   "main_head_entrada": "df18546dfd76d1bea7ea5873257b668d128d8df3",
-  "main_head_final": "a0560fdc62744c6bf4ba182914cc76dec06aecb1",
-  "main_head_atual": "a0560fdc62744c6bf4ba182914cc76dec06aecb1",
+  "main_head_final": "2fafe8edfaa246221a4b427d5728512ba9ff199e",
+  "main_head_atual": "2fafe8edfaa246221a4b427d5728512ba9ff199e",
   "gate_final_atual": {
+    "sha": "2fafe8edfaa246221a4b427d5728512ba9ff199e",
+    "status": "in_progress",
+    "conclusion": null,
+    "nota": "CI in_progress ao final da sessao (~18:50Z). E2E Playwright, Visual Baselines, Security Drift Checks ainda rodando. Gate 0.5 (qs advisory GHSA-6pq8-jhm2-2vcw) RESOLVIDO via PR #2656 (sha ac0fe476)."
+  },
+  "gate_final_rev82": {
     "sha": "a0560fdc62744c6bf4ba182914cc76dec06aecb1",
     "run_id": "40551464429",
     "conclusion": "failure",
@@ -14,7 +20,7 @@
     "causa": "nova advisory npm para qs (transitive dep de @lhci/cli → express → qs@6.16.0); nao causado por PR #2655"
   },
   "gate_final_rev73": {
-    "sha": "5d049ef118f3eb84843da44bd8d2efc70ee56ca1",
+    "sha": "5d049ef118f3eb84843da44bd2efc70ee56ca1",
     "run_id": "122257161951",
     "conclusion": "success"
   },
@@ -23,9 +29,9 @@
     "run": "40500183634",
     "conclusion": "success"
   },
-  "prs_analisados_esta_sessao": 47,
-  "open_prs_count_verificado": 13,
-  "open_prs_verificado_em": "2026-10-27T17:49:00Z",
+  "prs_analisados_esta_sessao": 48,
+  "open_prs_count_verificado": 12,
+  "open_prs_verificado_em": "2026-10-27T18:50:00Z",
   "verdicts": {
     "MERGEADA_AUTONOMA": [
       "2610",
@@ -57,7 +63,9 @@
       "2649",
       "2587",
       "2654",
-      "2655"
+      "2655",
+      "2656",
+      "2658"
     ],
     "FECHADA_EXTERNA": [
       "2612",
@@ -81,8 +89,7 @@
     "DRAFT_NOMERGE": [
       "2580",
       "2600",
-      "2631",
-      "2656"
+      "2631"
     ],
     "SUPERSEDED": [
       "2645"
@@ -99,8 +106,7 @@
     "2622": "REGRA#8: rollbacks/ DDL de producao — exige aprovacao do PO",
     "2631": "DRAFT — nao mergeavel",
     "2646": "REGRA#8: supabase/migrations/ — exige aprovacao do PO",
-    "2653": "CONFLICT + REGRA#10 (branch outra sessao claude/quirky-keller-owezvt — superseded)",
-    "2656": "DRAFT + REGRA#10 (branch session_01Knr9enFAok62bHihBK1UUP — fixes Gate 0.5 qs advisory)"
+    "2653": "CONFLICT + REGRA#10 (branch outra sessao claude/quirky-keller-owezvt — superseded)"
   },
   "baseline": {
     "vitest": "Gate 2 CI — SUCCESS em 1ce29cf2f (run #40482105056) — autoritativo",
@@ -119,6 +125,13 @@
   },
   "tentativas_merge_bloqueadas": {
     "2645": "update_pr_branch retornou 422 merge conflict — nao mergeavel"
+  },
+  "reconciliacao_rev83": {
+    "2656": "Atualizado DRAFT_NOMERGE -> MERGEADA_SESSAO_EXTERNA (mergeada externamente 2026-10-27T18:04Z SHA ac0fe4760792a9d0526d6ea6f014ca2a58da8ddb por session_01Knr9enFAok62bHihBK1UUP — Gate 0.5 qs advisory RESOLVIDO)",
+    "2658": "Adicionado MERGEADA_SESSAO_EXTERNA (mergeada externamente 2026-10-27T18:47Z SHA 2fafe8edfaa246221a4b427d5728512ba9ff199e por session_01Knr9enFAok62bHihBK1UUP — fix test integration timeout)",
+    "gate_0_5": "RESOLVIDO — qs advisory adicionado ao allowlist via PR #2656 (ac0fe476)",
+    "prs_analisados": "47 -> 48 (adicionado #2658)",
+    "open_prs_count": "13 -> 12 (#2656 mergeada externamente)"
   },
   "reconciliacao_rev74_rev75": {
     "2648": "Corrigido DRAFT_NOMERGE -> MERGEADA_SESSAO_EXTERNA (mergeada externamente 2026-10-27T15:50:19Z SHA ed87db31b5ce630378f74766adcdcc26edfb0bd2)",
@@ -140,5 +153,5 @@
     "prs_analisados": "39 -> 40 (adicionado #2594 como MERGEADA_AUTONOMA)",
     "open_prs_count": "15 -> 14 (#2594 mergeada)"
   },
-  "nota": "rev82 (fork session f0ceb220): #2654 mergeada externamente (SHA 4c7ecb260d — CORS gate fix, Gate Final SUCCESS). #2655 mergeada externamente (SHA a0560fdc62 — pendingDeploy=true, Gate Final FAILURE por qs advisory). #2656 nova PR DRAFT por session_01Knr9enFAok62bHihBK1UUP — fix Gate 0.5 qs advisory. 47 PRs catalogadas. 13 PRs abertas ao final da sessao. 0 merges autonomos nesta rodada. main HEAD: a0560fdc62 — Gate Final FAILURE (Gate 0.5 qs advisory GHSA-6pq8-jhm2-2vcw). Producao NAO VERIFICADO (ERR_PROXY_TUNNEL)."
+  "nota": "rev83 (fork session f0ceb220): #2656 mergeada externamente (SHA ac0fe476 — Gate 0.5 qs fix, Gate Final SUCCESS). #2658 mergeada externamente (SHA 2fafe8ed — fix test integration timeout, Gate Final CI IN_PROGRESS ao final da sessao). 48 PRs catalogadas. 12 PRs abertas ao final da sessao. 0 merges autonomos nesta rodada. main HEAD: 2fafe8ed — Gate Final CI IN_PROGRESS (nao verificado ao final). Producao NAO VERIFICADO (ERR_PROXY_TUNNEL)."
 }
