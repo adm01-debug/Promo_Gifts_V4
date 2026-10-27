@@ -1,6 +1,6 @@
 {
   "session_id": "session_011d8gKLZg8BWivR8aQBwxGF",
-  "revision": "rev67",
+  "revision": "rev68",
   "date": "2026-10-27",
   "status": "SESSAO_COMPLETA",
   "main_head_entrada": "df18546dfd76d1bea7ea5873257b668d128d8df3",
@@ -24,6 +24,12 @@
   "open_prs_count_verificado": 15,
   "open_prs_verificado_em": "2026-10-27T13:00:00Z",
   "nota_contagem": "15 PRs abertas: DECISAO_HUMANA*8 + DRAFT_NOMERGE*4 + SUPERSEDED*2 + BRANCH_DIRTY*1. 31 total catalogados.",
+  "correcoes_rev68": [
+    "Criado dossier PR-2597.md (MERGEADO_SESSAO_EXTERNA — único faltante dos 8)",
+    "Diff PR-2597 lido integralmente: 3012 linhas, 12 arquivos com evidência file:line",
+    "Conteudo verificado: .gitleaks.toml (linhas 129-166), PENDENCIAS.md (1338->72 linhas), RELATORIO_CI.md (176->189), spot-fontes-de-dados.md (base64->markdown 195 linhas), 4 test files, 1 snapshot, AnonymizeAccountDialog.tsx",
+    "Total dossiers: 29->30"
+  ],
   "correcoes_rev67": [
     "Criados dossiers PR-2630.md e PR-2633.md (MERGEADO_SESSAO_EXTERNA — faltavam em rev66)",
     "Test-merge vs main 13f459d5 adicionado a TODOS 15 dossiers de PRs abertas",
