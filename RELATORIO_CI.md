@@ -126,14 +126,14 @@ Executado no container Claude Code no HEAD `6ef07df8` (merge commit na main, pó
 
 ---
 
-## 5. Estado do PR #2597 (atualizado 2026-10-27T08:55 UTC)
+## 5. Estado do PR #2597 (atualizado 2026-10-27T09:12 UTC)
 
 **Branch:** `claude_04/beautiful-gates-bvocz5`  
 **PR #2597:** ✅ **MERGEADO** (squash) em `2026-10-27T08:55 UTC`  
 **Merge commit SHA:** `6ef07df8c4980ab776bb087d4ebd79804b1d476c`  
 **Gate Final pré-merge run 40475129693** — ✅ `conclusion=success` (SHA `955a9d8ef1`, concluído 08:53 UTC)  
 
-**Gate Final pós-merge na main run 40476927264** — `queued` (disparado às 08:55 UTC pelo push do squash commit):
+**Gate Final pós-merge na main run 40476927264** — `in_progress` (09:12 UTC):
 - Gate E40 Schema Drift Check — estimativa 30–60 min após runner alocar
 
 **Deploy Edge Functions run 40476968791** — `pending` (dispatch `workflow_dispatch` executado às 08:55 UTC)
@@ -152,6 +152,8 @@ Executado no container Claude Code no HEAD `6ef07df8` (merge commit na main, pó
 | Uptime Monitor | 40451113594 | ❌ probe externo transiente | ⚠️ depende uptime Supabase (ver PENDENCIAS.md §2) |
 | edge-functions-drift-check | 40453930945 (sha `eb04236c`) | 🔄 dispatch deploy-edge-functions.yml pós-merge | ✅ success (após deploy pós-merge) |
 | E2E workflows (5 falhas) | múltiplos | ❌ infra CI pré-existente | ❌ failure (ver PENDENCIAS.md §3) |
+| Quote Builder Delivery Quality | 40476927065 (sha `6ef07df8`) | ❌ infra E2E pré-existente (confirmado em 40474032315) | ❌ failure (ver PENDENCIAS.md §5) |
+| Gate 5 — Supabase Security Audit | 40476927261 (sha `6ef07df8`) | ❌ HTTP 503 transiente Supabase | ⚠️ depende uptime Supabase (ver PENDENCIAS.md §6) |
 
 **Workflows que estavam verdes e devem continuar verdes:** todos os 15+ listados na §1 — não foram tocados por este PR.
 
@@ -169,21 +171,43 @@ Executado no container Claude Code no HEAD `6ef07df8` (merge commit na main, pó
 | edge-functions-drift-check | ❌ failure (Lovable `eb04236c`) | ⏳ aguardando deploy run 40476968791 |
 | Running Copilot Code Review | ❌ failure | ❌ failure (irresolvível — bot externo) |
 | Gate Final pré-merge | ✅ (base) | ✅ success run 40475129693 |
-| Gate Final pós-merge na main | — | ⏳ queued run 40476927264 (Gate E40 ~30-60 min) |
+| Gate Final pós-merge na main | — | ⏳ in_progress run 40476927264 |
+| Quote Builder Delivery Quality | ✅ (base) | ❌ failure pré-existente (PENDENCIAS.md §5) |
+| Gate 5 — Supabase Security Audit | ✅ (base) | ❌ failure transiente (PENDENCIAS.md §6) |
 
 **Nenhuma regressão confirmada:** baseline local passou no HEAD `6ef07df8` (merge commit na main) — npm ✅, tsc ✅, vite build ✅, eslint ✅.
 
 ---
 
-## 8. Estado pós-merge (atualizado 2026-10-27T09:04 UTC)
+## 8. Estado pós-merge (atualizado 2026-10-27T09:12 UTC)
 
 ✅ **PR #2597 mergeado** (squash) em 2026-10-27T08:55 UTC  
 ✅ **Merge commit SHA:** `6ef07df8c4980ab776bb087d4ebd79804b1d476c`  
 ✅ **Gate Final pré-merge** run 40475129693 — `conclusion=success` (08:53 UTC)  
-⏳ **Gate Final pós-merge na main** run 40476927264 — `queued` (08:55 UTC, Gate E40 Schema Drift ~30-60 min)  
+⏳ **Gate Final pós-merge na main** run 40476927264 — `in_progress` (09:12 UTC, Gate E40 Schema Drift ~30-60 min)  
 ⏳ **Deploy Edge Functions** run 40476968791 — `pending` (08:55 UTC)  
 
 ---
 
+## 9. Novos Workflows em Falha Descobertos Pós-Merge
+
+Após o merge do PR #2597, duas falhas adicionais foram identificadas nas runs disparadas pelo merge commit `6ef07df8`:
+
+### 9.1 Quote Builder Delivery Quality
+- **Run ID:** 40476927065 (sha `6ef07df8`, pós-merge)
+- **Workflow:** `.github/workflows/delivery-quality.yml`
+- **Erro:** Step "E2E & Visual Regression" — falha de infraestrutura E2E
+- **Confirmação pré-existente:** Run 40474032315 (sha `83c81d58`, **antes do merge**) já mostrava `failure` — não é regressão do PR #2597
+- **Classificação:** Pré-existente. Ver PENDENCIAS.md §5.
+
+### 9.2 Gate 5 — Supabase Security Audit
+- **Run ID:** 40476927261 (sha `6ef07df8`, pós-merge)
+- **Workflow:** `.github/workflows/supabase-security-gate.yml`
+- **Erro:** HTTP 503 no step "RPC get_profile_and_roles smoke test" após 3 tentativas
+- **Causa raiz:** Indisponibilidade transiente do Supabase (`doufsxqlfjyuvxuezpln.supabase.co`) — mesmo padrão do Uptime Monitor (§2)
+- **Classificação:** Transiente. Ver PENDENCIAS.md §6.
+
+---
+
 *Gerado por Claude Code — sessão https://claude.ai/code/session_014RkohRYagi3sPiL8jtgot4*  
-*Atualizado: 2026-10-27T09:04 UTC — merge commit `6ef07df8` na main; Gate Final pós-merge run 40476927264 queued*
+*Atualizado: 2026-10-27T09:12 UTC — merge commit `6ef07df8` na main; Gate Final pós-merge run 40476927264 in_progress*
