@@ -1,52 +1,19 @@
-number,title,branch,draft,test_merge,rule8_triggers,verdict,motivo,merge_sha
-2415,fix(ci): P20 exclui check-file-size-baseline,claude_05/amazing-brahmagupta-0xhdur,false,CONFLICT,.github/workflows/ x2,DECISAO_HUMANA,CONFLICT+REGRA8 2workflows,
-2417,fix: cors wildcard + workflows cron,claude/fix-contract-mag-reader-261019-2110,true,NO_MERGE_BASE,.github/workflows/,FECHAR,Branch orfa sem ancestral com main,
-2418,fix(ci): npx gitleaks + allowlist,claude/fix-gitleaks-gate-261019-1800,true,NO_MERGE_BASE,.gitleaks.toml,FECHAR,Branch orfa sem ancestral com main,
-2419,fix(ci): check-security-definer-acl retries,claude/fix-sync-log-ci-261019-1730,true,NO_MERGE_BASE,.github/workflows/,FECHAR,Branch orfa sem ancestral com main,
-2420,chore(db): rollback retroativo migration,claude/fix-rollback-261019-1637,true,NO_MERGE_BASE,,FECHAR,Branch orfa sem ancestral com main,
-2422,chore(docs): MIGRATIONS_SYNC_LOG receipt,claude/chore-migrations-sync-log-261019-1600,true,NO_MERGE_BASE,,FECHAR,Branch orfa sem ancestral com main,
-2428,fix(ci): gitleaks allowlist mock tokens,claude/fix-gitleaks-gate-261024-1930,true,CONFLICT,.gitleaks.toml,DECISAO_HUMANA,CONFLICT+REGRA8 gitleaks,
-2432,feat(qa): probe E184 detecta refs legadas,claude/feat-probe-e184-241026-2026,false,CLEAN,,JA_EM_MAIN,git cherry = 0 commits unicos,
-2443,APROVACAO REQUERIDA: P06/P09/P14/P15/P03 FASE B,claude/feat-aprovacao-p06-p09-p14-p15-p03sec-261024-2315,false,CLEAN,,DECISAO_HUMANA,Seguranca FASE B + aprovacao PO,
-2449,chore(migrations): E99 mirrors repair-only,claude/chore-e99-mirror-update-company-fields-261025-1100,true,CONFLICT,supabase/migrations/,DECISAO_HUMANA,CONFLICT+REGRA8 migrations,
-2452,fix(docs): remove prefixo em PR-2441.md,claude/fix-gate-1-3-pr2441-refs-261025,true,CONFLICT,,DECISAO_HUMANA,CONFLICT+REGRA10,
-2469,fix(ci): e2e-personalization E42 skip ratio,claude/fix-ci-workflows-261025-0630,false,CONFLICT,.github/workflows/e2e-personalization.yml,DECISAO_HUMANA,CONFLICT+REGRA8+REGRA10,
-2503,docs(ci): RELATORIO_CI Rev21,claude/docs-relatorio-ci-rev21-20261025-0911,true,CONFLICT,,DECISAO_HUMANA,CONFLICT+REGRA10,
-2520,chore(main): release 1.0.0,release-please--branches--main--components--gifts-store,false,CLEAN,,DECISAO_HUMANA,Downgrade 1.2.1→1.0.0 regressao,
-2532,docs: atualiza run refs,claude/docs-estado-261025-1630,true,CONFLICT,,DECISAO_HUMANA,CONFLICT+REGRA10,
-2537,fix: Contract Tests registry ghcr.io,claude/fix-contract-tests-registry-ghcr-261025-1705,false,CLEAN,.github/workflows/contract-tests.yml,DECISAO_HUMANA,REGRA8 workflow,
-2544,docs: backlog CI CI-001..CI-008,claude/chore-backlog-ci-261025-1920,true,CLEAN,,MERGEADO_AUTONOMO,Draft→Ready REGRA10 NA,1d26da9082d42e825de66f574fbc796587345fdf
-2545,chore: backlog funcionalidades FT-001..FT-416,claude/chore-backlog-funcionalidades-261025-1920,true,CLEAN,,MERGEADO_AUTONOMO,Draft→Ready REGRA10 NA,2a93ba556b58007a001d68efd3c81ead17c19dce
-2547,fix: remove links publicos mortos,claude/fix-links-publicos-mortos-261025-1930,true,CLEAN,,DECISAO_HUMANA,Remocao feature 587 delecoes + regressao prs.json,
-2548,feat: botao LGPD excluir meus dados,claude/feat-lgpd-anonimizar-conta-261025-1950,true,CLEAN,,MERGEADO_AUTONOMO,Draft→Ready REGRA10 NA,9be832a355f0c98fcd22021b4273b16fa0b1aba5
-2549,chore: backlog Supabase SB-001..SB-018,claude/chore-backlog-supabase-261025-1908,true,CLEAN,,MERGEADO_AUTONOMO,Draft→Ready REGRA10 NA,73df7502f3b582f7966c209ff6a5c202fb1a3f9e
-2550,fix: filtro Publicado Kit Maker KMM-075,claude/fix-kit-publicados-261025-2010,true,CLEAN,,DECISAO_HUMANA,Mudanca regra negocio D7 remove ready,
-2551,fix: peso 0 no Kit Maker,claude/fix-kit-peso-zero-261025-2015,true,CLEAN,,MERGEADO_AUTONOMO,Draft→Ready REGRA10 NA,97eed25cb177a318fcf63fb3843f02512511d579
-2552,fix: materials-api timeout 20s,claude/fix-materials-api-timeout-261025-1912,true,CLEAN,,MERGEADO_AUTONOMO,Draft→Ready AbortSignal 20s fix,35fdb5793db7461f7fafcdae1effc89ae5cae6b5
-2553,fix: selos sem mock,claude/fix-selos-simulados-261025-2025,true,CLEAN,,MERGEADO_AUTONOMO,Draft→Ready REGRA10 NA,aebd333f3d2d57ee0bb5f1f127bf23f352846cd9
-2554,fix: BI Cliente 360 sem mock,claude/fix-bi-mock-flag-261025-2040,true,CLEAN,,MERGEADO_AUTONOMO,Draft→Ready REGRA10 NA,e6538448e6edc639f9131e809ae265976b43f208
-2555,docs(pendencias): rev29,claude_05/nifty-sagan-r23gqh,true,CLEAN,,MERGEADO_AUTONOMO,Draft→Ready claude_05 mesmo agente,479f2219485e23a5d35896dfe44c9ca4f7c1026f
-2556,chore: backlog banco O1/O3,claude/chore-backlog-banco-251025-1915,true,CLEAN,,MERGEADO_AUTONOMO,Draft→Ready REGRA10 NA,15e10fd88208f9b4cd372b82544fb27892d15a81
-2557,docs: RELATORIO_CI.md P27/P66/P67/P68,claude/docs-relatorio-ci-final-20261025-1910,true,CLEAN,,DECISAO_HUMANA,Corrupcao texto RELATORIO_CI criterio5,
-2572,chore(ci/feat): contrato E189 + personalização + supabase + CI,claude_05/youthful-ride-vcdchy,false,CONFLICT,".github/workflows/contract-tests.yml supabase/migrations/",BLOQUEADA,CONFLICT+REGRA#10 cross-agent claude_05 + REGRA#8 (workflows+migrations),
-2579,chore(main): release 1.0.0,release-please--branches--main--components--gifts-store,false,CLEAN,,DECISAO_HUMANA,Downgrade release-please 1.2.1→1.0.0 regressao semantica,
-2580,fix(banco): adiciona rollback header e arquivo rollback para e23,claude/fix-e23-rollback-261025-2145,true,CLEAN,supabase/migrations/,DECISAO_HUMANA,DRAFT + REGRA#8 migrations exige aprovacao PO,
-2582,chore(ci): metricas semanais 2026-W44,claude_04/optimistic-bohr-qplx94,false,CLEAN,,MERGEADO_AUTONOMO,,045d835f565baf01db94ae5212d673f93a63685b
-2585,bump prod deps minor/patch (7 updates),dependabot/npm_and_yarn/the-production-minor-patch-group,false,CLEAN,,MERGEADO_AUTONOMO,,145da71bb8c451eebadc75c4bb059397f8d468f7
-2586,bump dev deps minor/patch (10 updates),dependabot/npm_and_yarn/the-development-all-group,false,CLEAN,,MERGEADO_AUTONOMO,,fb04592655cf81d1a6aad79739f2cc2f1c2236c7
-2587,bump zustand from 4.5.7 to 5.0.16,dependabot/npm_and_yarn/zustand-5.0.16,false,CLEAN,,DECISAO_HUMANA,Zustand 4→5 major — 11 stores incompativeis com API v5,
-2588,bump react-day-picker from 8.10.2 to 10.0.2,dependabot/npm_and_yarn/react-day-picker-10.0.2,false,CLEAN,,DECISAO_HUMANA,react-day-picker 8→10 major — calendar.tsx usa API v8,
-2589,bump globals from 15.15.0 to 17.13.0,dependabot/npm_and_yarn/globals-17.13.0,false,CLEAN,,MERGEADO_AUTONOMO,,9e2746a31914e714f1b96779f26808c0f3685ff8
-2590,bump github/codeql-action/upload-sarif 4.39.1,dependabot/github_actions/github/codeql-action/upload-sarif-4.39.1,false,CLEAN,".github/workflows/gitleaks-history-audit.yml",BLOQUEADA,codeql-action/upload-sarif — .github/workflows proibido,
-2591,bump github/codeql-action/analyze 4.39.1,dependabot/github_actions/github/codeql-action/analyze-4.39.1,false,CLEAN,".github/workflows/codeql.yml",BLOQUEADA,codeql-action/analyze — .github/workflows proibido,
-2592,bump actions/stale 9→11,dependabot/github_actions/actions/stale-11.0.0,false,CLEAN,".github/workflows/stale.yml",BLOQUEADA,actions/stale 9→11 — .github/workflows proibido,
-2593,bump github/codeql-action/init 4.39.1,dependabot/github_actions/github/codeql-action/init-4.39.1,false,CLEAN,".github/workflows/codeql.yml",BLOQUEADA,codeql-action/init — .github/workflows proibido,
-2594,bump actions/setup-node 4→7,dependabot/github_actions/actions/setup-node-7,false,CLEAN,".github/workflows/e2e-update-editor-sheet-snapshots.yml",BLOQUEADA,actions/setup-node 4→7 — .github/workflows proibido + sem SHA pin,
-2596,bump postcss-selector-parser 6.1.4→6.1.5,dependabot/npm_and_yarn/postcss-selector-parser-6.1.5,false,CLEAN,,MERGEADO_AUTONOMO,CVE-2026-104844 CPU exhaustion patch,54e8904585ad474030feea88526d9c66b7404aa4
-2597,fix: corrige 4 workflows CI falhando,claude_04/beautiful-gates-bvocz5,true,CLEAN,".github/workflows/ratchet-weekly.yml",DECISAO_HUMANA,DRAFT + REGRA8 workflow,
-2599,fix(privacy): invoke-direct + ratchet SIGPIPE,claude_04/laughing-gates-l4pt67,false,CLEAN,".github/workflows/ratchet-weekly.yml",FECHADA_EXTERNAMENTE,Conteudo integrado via commit direto 2ca5ef04e por session_01Knr9enFAok62bHihBK1UUP,
-2600,docs(analise-prs): sessão f0ceb220 addendum,claude_04/optimistic-bohr-qplx94,true,CLEAN,,BLOQUEADA,DRAFT — entregáveis documentais desta sessão,
-2602,fix(e2e): corrige falhas E2E mobile tooltips e personalization specs,claude/fix-e2e-mobile-failures-261027-1500,false,CLEAN,,MERGEADO_EXTERNO,Mergeado por session_01Knr9enFAok62bHihBK1UUP 2026-10-27T01:16:30Z,00eeec9ac2c2397c5814f9d17dd0c86ad36a5c0c
-2603,fix(crons): 4 migrations + RLS supplier_stricker,claude_04/tender-hawking-ghw2zi,true,CLEAN,supabase/migrations/,DECISAO_HUMANA,DRAFT + REGRA#8 migrations (5 migrations incl. supplier_stricker_rls_deny_all em 17 tabelas),
-2604,fix(ci): continue-on-error nos steps psql de snapshot (E036/E037/E072),claude_04/charming-darwin-g1nvj2,true,CLEAN,.github/workflows/schema-snapshot-export.yml,DECISAO_HUMANA,DRAFT + REGRA#8 workflow (schema-snapshot-export.yml),
-2605,fix(tests): corrige 4 falhas unit tests e 1 threshold E2E,claude/fix-unit-tests-261027-0113,true,CLEAN,,DECISAO_HUMANA,DRAFT — converter para ready para CI rodar,
+numero,titulo,branch,draft,head_sha,conflito_merge_tree,ci_gate_final,regra8,regra10,veredito,motivo
+2420,chore(db): rollback retroativo migration,claude/fix-rollback-261019-1637,false,c10816b95,NO_MERGE_BASE,N/A,false,false,FECHAR,Branch órfã — NO_MERGE_BASE (sem ancestral comum com main)
+2572,docs(analise-prs): rev23 + contrato E189,claude_05/youthful-ride-vcdchy,false,c653bef92,"CONFLICT (PENDENCIAS.md, RELATORIO_CI.md, ItemCard.tsx)",N/A,true,true,BLOQUEADA,REGRA#8 (.github/workflows/contract-tests.yml + supabase/migrations/) + REGRA#10 cross-agent claude_05
+2579,chore(main): release 1.0.0,release-please--branches--main--components--gifts-store,false,edf0bce2f,CLEAN,SEM_RUNS,false,false,DECISAO_HUMANA,Downgrade semântico 1.2.1→1.0.0 em package.json
+2580,fix(banco): rollback header e23,claude/fix-e23-rollback-261025-2145,true,41198d9a3,CLEAN,FAILURE,true,false,DECISAO_HUMANA,DRAFT + REGRA#8 migrations + CI FAILURE
+2587,bump zustand 4→5,dependabot/npm_and_yarn/zustand-5.0.16,false,0a091fc84,CLEAN,FAILURE,false,false,DECISAO_HUMANA,Major version upgrade + CI FAILURE (TypeScript zustand v5 incompatibility)
+2588,bump react-day-picker 8→10,dependabot/npm_and_yarn/react-day-picker-10.0.2,false,0c1f7dc38,CLEAN,FAILURE,false,false,DECISAO_HUMANA,Breaking API change v8→v10 em calendar.tsx:22-24 + CI FAILURE
+2590,bump codeql-action/upload-sarif,dependabot/github_actions/github/codeql-action/upload-sarif-4.39.1,false,7335fed01,CLEAN,SUCCESS,true,false,BLOQUEADA,REGRA#8 .github/workflows/ (único bloqueio) — CI SUCCESS
+2591,bump codeql-action/analyze,dependabot/github_actions/github/codeql-action/analyze-4.39.1,false,a3f6e6184,CLEAN,SUCCESS,true,false,BLOQUEADA,REGRA#8 .github/workflows/ (único bloqueio) — CI SUCCESS
+2592,bump actions/stale 9→11,dependabot/github_actions/actions/stale-11.0.0,false,9fde33563,CLEAN,SUCCESS,true,false,BLOQUEADA,REGRA#8 .github/workflows/ (único bloqueio) — CI SUCCESS
+2593,bump codeql-action/init,dependabot/github_actions/github/codeql-action/init-4.39.1,false,af2deefa6,CLEAN,SUCCESS,true,false,BLOQUEADA,REGRA#8 .github/workflows/ (único bloqueio) — CI SUCCESS
+2594,bump actions/setup-node 4→7,dependabot/github_actions/actions/setup-node-7,false,0e62124ca,CLEAN,SUCCESS,true,false,BLOQUEADA,REGRA#8 .github/workflows/ + R15 violation (setup-node@v7 sem SHA 40-char pin)
+2597,fix: 4 workflows CI falhando,claude_04/beautiful-gates-bvocz5,true,b672ca5db,CLEAN,SUCCESS,true,false,DECISAO_HUMANA,DRAFT + REGRA#8 .github/workflows/ratchet-weekly.yml
+2600,docs(analise-prs): addendum,claude_04/optimistic-bohr-qplx94,true,57968a816,CLEAN,N/A,false,false,DECISAO_HUMANA,DRAFT — PR de entregáveis desta sessão
+2603,fix(crons): 4 migrations + RLS stricker,claude_04/tender-hawking-ghw2zi,true,ab1ea3b31,CLEAN,FAILURE,true,false,DECISAO_HUMANA,DRAFT + REGRA#8 (5 migrations incl. RLS 17 tabelas) + CI FAILURE
+2604,fix(ci): continue-on-error psql E036/E037/E072,claude_04/charming-darwin-g1nvj2,true,e33d2fe4a,CLEAN,SUCCESS,true,false,DECISAO_HUMANA,DRAFT + REGRA#8 .github/workflows/schema-snapshot-export.yml
+2605,fix(tests): corrige 4 unit tests + 1 E2E threshold,claude/fix-unit-tests-261027-0113,true,9bfead141,CLEAN,SUCCESS,false,false,DECISAO_HUMANA,DRAFT — único bloqueio; CI SUCCESS; zero REGRA#8. Candidato imediato após DRAFT→ready
+2610,fix(e2e): atualiza spec 92 para aceitar /auth no redirect de ProtectedRoute,claude/fix-personalization-e2e-auth-261027-0340,false,2a7b451919,CLEAN,SUCCESS,false,false,MERGEADO_AUTONOMO,Merge squash SHA 48899b659ef6. Todos os 8 critérios atendidos.
+2612,fix(tests): aumenta timeout useReplenishments integration test 15s→25s,claude/fix-replenishment-timeout-261027-0430,true,32804a149,CLEAN,N/A,false,true,BLOQUEADA,DRAFT + REGRA#10 (branch de session_014RkohRYagi3sPiL8jtgot4 — sessão diferente)

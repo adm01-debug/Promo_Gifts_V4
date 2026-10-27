@@ -1,5 +1,5 @@
 # Regras de Negócio — Promo Gifts V4
-**Sessão:** session_011d8gKLZg8BWivR8aQBwxGF (rev35)
+**Sessão:** session_011d8gKLZg8BWivR8aQBwxGF (rev36)
 **Data:** 2026-10-27
 **main HEAD:** `48899b659ef6deba0fee2db7482347097059edb5` (squash merge PR #2610 — fix(e2e): aceita /auth no redirect de ProtectedRoute)
 

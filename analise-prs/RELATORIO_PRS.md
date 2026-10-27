@@ -1,227 +1,156 @@
 # RELATÓRIO DE PRs — Promo Gifts V4
-**Sessão:** session_011d8gKLZg8BWivR8aQBwxGF (rev35)
+**Sessão:** session_011d8gKLZg8BWivR8aQBwxGF (rev36)
 **Data:** 2026-10-27
 **main HEAD:** `48899b659ef6deba0fee2db7482347097059edb5`
-**Commit:** squash merge PR #2610 — fix(e2e): atualiza spec 92 para aceitar /auth no redirect de ProtectedRoute
-**HEAD anterior (rev30):** `00eeec9ac2c2397c5814f9d17dd0c86ad36a5c0c`
+**PRs abertas analisadas:** 18 (incluindo #2610 já mergeada nesta sessão)
+**Merges autônomos esta sessão:** 1 (PR #2610)
 
 ---
 
-## Resumo Executivo
+## Resumo por veredito
 
-| Métrica | Valor |
+| Veredito | Quantidade |
 |---|---|
-| Total de PRs analisadas (histórico) | 52 |
-| PRs abertas analisadas nesta revisão | 17 |
-| PRs mergeadas autonomamente (total histórico) | 16 |
-| PRs mergeadas por esta sessão (rev35) | 1 (#2610) |
-| PRs mergeadas externamente (rev35) | 0 |
-| PRs aguardando DECISAO_HUMANA (abertas) | 9 |
-| PRs BLOQUEADAS por REGRA (abertas) | 6 |
-| PRs FECHAR / órfãs (abertas) | 1 |
+| MERGEADO_AUTONOMO | 1 |
+| BLOQUEADA | 7 |
+| DECISAO_HUMANA | 9 |
+| FECHAR | 1 |
+| **Total analisadas** | **18** |
 
 ---
 
-## RISCOS E DECISÕES HUMANAS (topo — ação requerida)
+## PRs mergeadas nesta sessão
 
-| PR | Título | Draft | Razão | Ação |
+| PR | Título | SHA squash | Gate Final pré-merge |
+|---|---|---|---|
+| #2610 | fix(e2e): aceita /auth no redirect de ProtectedRoute | `48899b659ef6` | SUCCESS em `2a7b451919` |
+
+**CI pós-merge em `48899b659ef6`:** `quality-gate` in_progress às 04:06 UTC (em andamento no momento da análise rev36). Gate Final pré-merge em base anterior `06fe47fd3` = SUCCESS (baseline rev34).
+
+---
+
+## Tabela completa de PRs
+
+### Merge tests — base `48899b659ef6` (rev36)
+
+| PR | Branch | Head SHA | merge-tree | Veredito |
 |---|---|---|---|---|
-| #2603 | fix(crons): 4 migrations + RLS stricker | sim | DRAFT + 5 migrations REGRA#8 (incl. RLS 17 tabelas) | Converter DRAFT→ready + aprovar migrations |
-| #2604 | fix(ci): continue-on-error psql E036/E037/E072 | sim | DRAFT + `.github/workflows/schema-snapshot-export.yml` REGRA#8 | Converter DRAFT→ready + aprovar workflow |
-| #2605 | fix(tests): corrige 4 unit tests + 1 E2E | sim | DRAFT — só testes, 0 REGRA#8, risco mínimo | Converter DRAFT→ready |
-| #2600 | docs(analise-prs): addendum rev22 | sim | DRAFT — deliverables desta sessão | Converter DRAFT→ready |
-| #2597 | fix: 4 workflows CI falhando | sim | DRAFT + `.github/workflows/ratchet-weekly.yml` REGRA#8 | Converter DRAFT→ready + aprovar |
-| #2580 | fix(banco): rollback e23 | sim | DRAFT + migrations REGRA#8 | Converter DRAFT→ready + aprovar |
-| #2588 | bump react-day-picker 8→10 | não | API v8 usada em `calendar.tsx:22-24` | Migrar API antes de mergear |
-| #2587 | bump zustand 4→5 | não | Major upgrade | Testar compatibilidade |
-| #2579 | release 1.0.0 | não | Downgrade 1.2.1→1.0.0 | Fechar ou corrigir |
-| #2572 | contrato E189 + CI | não | `.github/workflows/contract-tests.yml` + REGRA#10 cross-agent | Decidir integração |
+| #2420 | claude/fix-rollback-261019-1637 | c10816b95 | NO_MERGE_BASE | FECHAR |
+| #2572 | claude_05/youthful-ride-vcdchy | c653bef92 | CONFLICT (PENDENCIAS.md, RELATORIO_CI.md, ItemCard.tsx) | BLOQUEADA |
+| #2579 | release-please--branches--main--components--gifts-store | edf0bce2f | CLEAN | DECISAO_HUMANA |
+| #2580 | claude/fix-e23-rollback-261025-2145 | 41198d9a33 | CLEAN | DECISAO_HUMANA |
+| #2587 | dependabot/npm_and_yarn/zustand-5.0.16 | 0a091fc84 | CLEAN | DECISAO_HUMANA |
+| #2588 | dependabot/npm_and_yarn/react-day-picker-10.0.2 | 0c1f7dc38 | CLEAN | DECISAO_HUMANA |
+| #2590 | dependabot/github_actions/codeql-action/upload-sarif-4.39.1 | 7335fed01 | CLEAN | BLOQUEADA |
+| #2591 | dependabot/github_actions/codeql-action/analyze-4.39.1 | a3f6e6184 | CLEAN | BLOQUEADA |
+| #2592 | dependabot/github_actions/actions/stale-11.0.0 | 9fde33563 | CLEAN | BLOQUEADA |
+| #2593 | dependabot/github_actions/codeql-action/init-4.39.1 | af2deefa6 | CLEAN | BLOQUEADA |
+| #2594 | dependabot/github_actions/actions/setup-node-7 | 0e62124ca | CLEAN | BLOQUEADA |
+| #2597 | claude_04/beautiful-gates-bvocz5 | b672ca5db | CLEAN | DECISAO_HUMANA |
+| #2600 | claude_04/optimistic-bohr-qplx94 | 57968a816 | CLEAN | DECISAO_HUMANA |
+| #2603 | claude_04/tender-hawking-ghw2zi | ab1ea3b31 | CLEAN | DECISAO_HUMANA |
+| #2604 | claude_04/charming-darwin-g1nvj2 | e33d2fe4a | CLEAN | DECISAO_HUMANA |
+| #2605 | claude/fix-unit-tests-261027-0113 | 9bfead141 | CLEAN | DECISAO_HUMANA |
+| #2610 | claude/fix-personalization-e2e-auth-261027-0340 | 2a7b451919 | CLEAN → MERGEADO | MERGEADO_AUTONOMO |
+| #2612 | claude/fix-replenishment-timeout-261027-0430 | 32804a149 | CLEAN | BLOQUEADA |
 
 ---
 
-## PRs Abertas — Vereditos com Evidência
+## Detalhamento por veredito
 
-### FECHAR (1 PR)
+### MERGEADO_AUTONOMO
 
-| PR | Título | Evidência | Motivo |
-|---|---|---|---|
-| #2420 | chore(db): rollback retroativo migration | `git merge-base origin/main refs/remotes/pr/2420` → EMPTY (sem ancestral comum) | Branch órfã — NO_MERGE_BASE |
+**#2610** — fix(e2e): atualiza spec 92 para aceitar /auth no redirect de ProtectedRoute
+- Branch: `claude/fix-personalization-e2e-auth-261027-0340`
+- Diff: `e2e/flows/92-personalization-auth-redirect.spec.ts` — 4 asserções `/login/` → `/(auth|login)/`
+- Razão: `ProtectedRoute.tsx:48` redireciona para `/auth`, spec só aceitava `/login`
+- Gate Final pré-merge: SUCCESS em SHA `2a7b451919` (verificado session_01Knr9enFAok62bHihBK1UUP)
+- Merge squash SHA: `48899b659ef6deba0fee2db7482347097059edb5`
+- Todos os 8 critérios atendidos
 
-### BLOQUEADA — REGRA "Não tocar .github/workflows" (6 PRs)
+---
 
-| PR | Título | Arquivo workflow | Evidência |
-|---|---|---|---|
-| #2572 | docs(analise-prs) + contrato E189 | `.github/workflows/contract-tests.yml` | `git diff --name-only` (62 files, inclui contract-tests.yml); branch `claude_05/*` (REGRA#10) |
-| #2590 | bump codeql-action/upload-sarif | `.github/workflows/gitleaks-history-audit.yml` | 1 arquivo, 100% workflow |
-| #2591 | bump codeql-action/analyze | `.github/workflows/codeql.yml` | 1 arquivo, 100% workflow |
-| #2592 | bump actions/stale 9→11 | `.github/workflows/stale.yml` | 1 arquivo, 100% workflow |
-| #2593 | bump codeql-action/init | `.github/workflows/codeql.yml` | 1 arquivo, 100% workflow |
-| #2594 | bump actions/setup-node 4→7 | `.github/workflows/e2e-update-editor-sheet-snapshots.yml` | 1 arquivo, 100% workflow |
+### FECHAR
 
-### DECISAO_HUMANA — DRAFT (6 PRs)
+**#2420** — chore(db): rollback retroativo migration
+- Branch: `claude/fix-rollback-261019-1637` | SHA: `c10816b95`
+- merge-tree: NO_MERGE_BASE — `git merge-base` retorna vazio; branch órfã sem ancestral comum com main
 
-Evidência bloqueio DRAFT: API HTTP 405 `{"message":"Pull Request is still a draft","status":"405"}` (tentativa merge PR #2602 — rev29). "Proibido editar PR" impede converter para ready.
+---
 
-| PR | Título | Head SHA | Bloqueio adicional |
-|---|---|---|---|
-| #2580 | fix(banco): rollback e23 | `41198d9a` | REGRA#8 migrations (`20260916202000_e23_force_rls_secret_tables.sql`) |
-| #2597 | fix: 4 workflows CI | `3e46211c` | REGRA#8 workflows (`.github/workflows/ratchet-weekly.yml`) |
-| #2600 | docs(analise-prs): addendum | `1c0fbf61` | — |
-| #2603 | fix(crons): 4 migrations + RLS | `ab1ea3b3` | REGRA#8 migrations (5 migrations incl. `supplier_stricker_rls_deny_all.sql` — RLS 17 tabelas) |
-| #2604 | fix(ci): continue-on-error psql | `e33d2fe4` | REGRA#8 workflow (`.github/workflows/schema-snapshot-export.yml`) |
-| #2605 | fix(tests): 4 unit + 1 E2E | `9bfead14` | — (único bloqueio: DRAFT) |
+### BLOQUEADA (7 PRs)
 
-### DECISAO_HUMANA — Semântica / Breaking Change (3 PRs)
+**#2572** — docs(analise-prs): rev23 + contrato E189
+- Branch: `claude_05/youthful-ride-vcdchy` | SHA: `c653bef92`
+- REGRA#8: `.github/workflows/contract-tests.yml` + `supabase/migrations/`
+- REGRA#10: prefixo `claude_05` = agente diferente
+- merge-tree CONFLICT: PENDENCIAS.md, RELATORIO_CI.md, ItemCard.tsx (3 arquivos)
 
-| PR | Título | Evidência de bloqueio |
+**#2590** — bump codeql-action/upload-sarif-4.39.1 | SHA: `7335fed01`
+- REGRA#8: `.github/workflows/codeql.yml` | CI: SUCCESS | merge-tree: CLEAN
+
+**#2591** — bump codeql-action/analyze-4.39.1 | SHA: `a3f6e6184`
+- REGRA#8: `.github/workflows/codeql.yml` | CI: SUCCESS | merge-tree: CLEAN
+
+**#2592** — bump actions/stale 9→11 | SHA: `9fde33563`
+- REGRA#8: `.github/workflows/stale.yml` | CI: SUCCESS | merge-tree: CLEAN
+
+**#2593** — bump codeql-action/init-4.39.1 | SHA: `af2deefa6`
+- REGRA#8: `.github/workflows/codeql.yml` | CI: SUCCESS | merge-tree: CLEAN
+
+**#2594** — bump actions/setup-node 4→7 | SHA: `0e62124ca`
+- REGRA#8: `.github/workflows/` + R15 violation (setup-node@v7 sem SHA 40-char pin)
+
+**#2612** — fix(tests): timeout useReplenishments 15s→25s | SHA: `32804a149`
+- DRAFT + REGRA#10 (autor: `session_014RkohRYagi3sPiL8jtgot4` ≠ esta sessão)
+- Arquivo: `useReplenishments.integration.test.ts:35`
+
+---
+
+### DECISAO_HUMANA (9 PRs)
+
+**#2579** — chore(main): release 1.0.0 | Downgrade semântico `1.2.1→1.0.0` (release-please)
+
+**#2580** — fix(banco): rollback header e23 (DRAFT) | REGRA#8 migrations + CI FAILURE
+
+**#2587** — bump zustand 4→5 | Major version; CI FAILURE (TypeScript zustand v5)
+
+**#2588** — bump react-day-picker 8→10 | Breaking API `calendar.tsx:22-24`; CI FAILURE
+
+**#2597** — fix: 4 workflows CI falhando (DRAFT) | REGRA#8 + DRAFT
+
+**#2600** — docs(analise-prs): addendum (DRAFT) | PR de entregáveis desta sessão — não mergear
+
+**#2603** — fix(crons): 4 migrations + RLS stricker (DRAFT) | REGRA#8 + DRAFT + CI FAILURE
+
+**#2604** — fix(ci): continue-on-error psql (DRAFT) | REGRA#8 + DRAFT; CI SUCCESS
+
+**#2605** — fix(tests): 4 unit tests + 1 E2E (DRAFT) | **Único bloqueio: DRAFT**
+- CI: SUCCESS | merge-tree: CLEAN | zero REGRA#8 | zero REGRA#10
+- Candidato imediato após DRAFT→ready
+
+---
+
+## Baseline CI pré/pós-merge #2610
+
+| SHA | Gate Final | Nota |
 |---|---|---|
-| #2579 | chore(main): release 1.0.0 | `package.json`: `-"version":"1.2.1"` → `+"version":"1.0.0"` — downgrade semântico |
-| #2587 | bump zustand 4→5 | `package.json`: `^4.5.0`→`^5.0.16`; major upgrade → DECISAO_HUMANA |
-| #2588 | bump react-day-picker 8→10 | `calendar.tsx:22-24` usa `modifiers`, `modifiersClassNames`, `formatters.formatCaption` (API v8); v10 muda essas props → quebra confirmada |
+| `06fe47fd3` | SUCCESS | Baseline pré-series de merges (rev34) |
+| `3ffbf322d` | SUCCESS | Verificado rev34 |
+| `48899b659ef6` | **AGUARDANDO** | Post-merge #2610 — quality-gate in_progress às 04:06 UTC 2026-10-27 |
+
+Falhas preexistentes em main (não bloqueantes — não são Gate Final):
+`color-swatch`, `magazine-header`, `e2e-gates`, `chromium•swatch→QV`, `Full User Flows authed`, `webkit•swatch→QV`, `check`
 
 ---
 
-## Merge Tests vs main `06fe47fd3` (rev31) / `48899b659e` (rev35)
+## Arquivos de evidência
 
-| PR | Branch | Resultado | Head SHA |
-|---|---|---|---|
-| #2420 | claude/fix-rollback-261019-1637 | NO_MERGE_BASE | c10816b95c |
-| #2572 | claude_05/youthful-ride-vcdchy | CONFLICT | c653bef927 |
-| #2579 | release-please--branches--main--components--gifts-store | CLEAN | dbac87d8dc |
-| #2580 | claude/fix-e23-rollback-261025-2145 | CLEAN | 41198d9a33 |
-| #2587 | dependabot/npm_and_yarn/zustand-5.0.16 | CLEAN | 243e5d21cf |
-| #2588 | dependabot/npm_and_yarn/react-day-picker-10.0.2 | CLEAN | 1a71dd86bc |
-| #2590 | dependabot/github_actions/codeql-action/upload-sarif-4.39.1 | CLEAN | 46c07b88df |
-| #2591 | dependabot/github_actions/codeql-action/analyze-4.39.1 | CLEAN | 1797d8afb3 |
-| #2592 | dependabot/github_actions/actions/stale-11.0.0 | CLEAN | 936b10424c |
-| #2593 | dependabot/github_actions/codeql-action/init-4.39.1 | CLEAN | 7f36981f2c |
-| #2594 | dependabot/github_actions/actions/setup-node-7 | CLEAN | 87bff9e7ba |
-| #2597 | claude_04/beautiful-gates-bvocz5 | CLEAN | 9bd3b9d692 |
-| #2600 | claude_04/optimistic-bohr-qplx94 | CLEAN | 1c0fbf6147 |
-| #2603 | claude_04/tender-hawking-ghw2zi | CLEAN | ab1ea3b316 |
-| #2604 | claude_04/charming-darwin-g1nvj2 | CLEAN | e33d2fe4aa |
-| #2605 | claude/fix-unit-tests-261027-0113 | CLEAN | 9bfead1417 |
-| **#2610** | **claude/fix-personalization-e2e-auth-261027-0340** | **CLEAN → MERGEADO** | **2a7b451919** |
-
----
-
-## PRs Mergeadas Autonomamente (Histórico — 16 total)
-
-| PR | SHA merge | Título |
-|---|---|---|
-| #2610 | 48899b659e | fix(e2e): aceita /auth no redirect de ProtectedRoute (spec 92) — rev35 |
-| #2544 | 1d26da908 | docs: backlog CI CI-001..CI-008 |
-| #2545 | 2a93ba556 | chore: backlog funcionalidades FT-001..FT-416 |
-| #2548 | 9be832a35 | feat: botao LGPD excluir meus dados |
-| #2549 | 73df7502f | chore: backlog Supabase SB-001..SB-018 |
-| #2551 | 97eed25cb | fix: peso 0 no Kit Maker |
-| #2552 | 35fdb5793 | fix: materials-api timeout 20s |
-| #2553 | aebd333f3 | fix: selos sem mock |
-| #2554 | e6538448e | fix: BI Cliente 360 sem mock |
-| #2555 | 479f2219 | docs(pendencias): rev29 |
-| #2556 | 15e10fd88 | chore: backlog banco O1/O3 |
-| #2582 | 045d835f5 | chore(ci): métricas semanais 2026-W44 |
-| #2585 | 145da71bb | bump prod deps minor/patch (7 updates) |
-| #2586 | fb046592 | bump dev deps minor/patch (10 updates) |
-| #2589 | 9e2746a31 | bump globals 15→17 |
-| #2596 | 54e890458 | bump postcss-selector-parser (CVE-2026-104844) |
-
-## Mergeadas Externamente (nesta revisão)
-
-| PR | SHA merge | Merged por | Data |
-|---|---|---|---|
-| #2602 | 00eeec9ac | session_01Knr9enFAok62bHihBK1UUP | 2026-10-27T01:16:30Z |
-
----
-
-## Observações (rev35)
-
-- **Novo commit em main (rev31→33):** `06fe47fd3` push direto por session_01Knr9enFAok62bHihBK1UUP — toca `.github/workflows/e2e-quotes.yml` + 18 e2e specs. Causa conflito em PR #2572.
-- **PR #2572 conflito VERIFICADO E RESOLVIDO** (rev33): Resolução aplicada em worktree local. `RELATORIO_CI.md` + `src/components/kit-builder/ItemCard.tsx` ambos resolvidos mantendo main. 0 markers. Push proibido por REGRA#10 + stop-hook. REGRA#8 permanece bloqueante mesmo sem conflito.
-- **PR #2602 (MERGEADO_EXTERNO)**: estava listada como DRAFT em rev29; foi mergeada por outra sessão durante análise, tornando-se o novo main HEAD `00eeec9ac`. 5 arquivos E2E (`e2e/flows/*.spec.ts`). Merge via PR (REGRA#9 satisfeita).
-
-## Baseline CI em main `06fe47fd3` (rev34 — completo)
-
-| Gate | Check | Resultado | Fonte |
-|---|---|---|---|
-| Gate 1 | Lint + TypeScript | **SUCCESS** | `github_list_check_runs` — `06fe47fd3` |
-| Gate 2 | Unit Tests (vitest) | **SUCCESS** | `github_list_check_runs` — `06fe47fd3` |
-| Gate 6 | Build (Vite) | **SUCCESS** (exit 0, 11.72s) | local `/tmp/main-baseline-rev32` + CI |
-| Gate Final | Deploy Ready | **SUCCESS** | `github_list_check_runs` — `06fe47fd3` |
-
-**Falhas pré-existentes em main (NÃO são Gate 2 / Gate Final — opcionais/E2E):**
-- E2E Visual Focused · color-swatch (failure)
-- E2E Visual Focused · magazine-header (failure)
-- e2e-gates (failure)
-- chromium • swatch→QV (failure)
-- E2E — Full User Flows (authed) (failure)
-- webkit • swatch→QV (failure)
-- check (failure — check genérico, não Gate Final)
-
-Nenhuma dessas 7 falhas é do Gate 2 (unit tests) nem do Gate Final. São E2E visuais/opcionais pré-existentes em main independentemente de qualquer PR.
-- **PR #2603**: 5ª migration `20261027200000_supplier_stricker_rls_deny_all.sql` habilita RLS deny-all explícita em 17 tabelas do schema `supplier_stricker` — aditiva e endurece segurança. Bloqueada por DRAFT + REGRA#8.
-- **PR #2604**: `continue-on-error: true` em 3 steps observacionais `psql` (E036/E037/E072) que falham por IPv6 (`Network is unreachable`). Step principal (supabase CLI) não é alterado. Bloqueada por DRAFT + REGRA#8.
-- **PR #2605 — testes verificados em main `06fe47fd3`** (rev33, worktree `/tmp/main-baseline-rev32`):
-  - chunk-recovery: 8 PASSED (PR afirmava FAIL em `00eeec9ac`)
-  - replenishment-resilience: 3 PASSED (PR afirmava FAIL em `00eeec9ac`)
-  - PromoFlixPlayer: 22 PASSED (PR afirmava FAIL em `00eeec9ac`)
-  - NegotiationMarkupCard: 23 PASSED (PR afirmava snapshots obsoletos)
-  - novidades-reposicao-card-parity:214: NÃO VERIFICADO (E2E requer servidor; CI de #2605 é SUCCESS)
-  - **Conclusão**: testes do PR passam no main atual. PR ainda pode ser válido por threshold E2E.
-- **Zustand v5 (#2587)**: `create` from 'zustand' é backward-compatible em v5. Risco baixo tecnicamente, mas major version → DECISAO_HUMANA.
-- **react-day-picker v10 (#2588)**: `calendar.tsx:22-24` usa `modifiers`, `modifiersClassNames`, `formatters` (API v8). Em v10 essas props mudaram — quebra confirmada.
-
----
-
-## META CUMPRIDA — rev33
-
-- main SHA: `06fe47fd3a992bf2a39ab356c9d8c357c5f2a27e` ✓
-- Baseline (esta sessão): `tsc -p tsconfig.app.json --noEmit` → exit 0, zero erros TypeScript (worktree `/tmp/main-baseline-rev32`, main HEAD `06fe47fd3`) ✓
-- Baseline vitest (rev33 — por nome): chunk-recovery 8 PASSED, replenishment 3 PASSED, PromoFlixPlayer 22 PASSED, NegotiationMarkupCard 23 PASSED — todos passam em main `06fe47fd3` ✓
-- **51 PRs** em `analise-prs/prs.csv` (histórico completo) ✓
-- **16 PRs abertas** — 100% cobertura com veredito e evidência por PR ✓
-- `prs.json`: 51 entradas (atualizado para rev33/main `06fe47fd3`) ✓
-- 16 dossiers `analise-prs/dossies/PR-NNNN.md` — todos com CI Gate Final verificado ✓
-- Merge tests re-executados vs `06fe47fd3` — 16 PRs ✓
-- **Diff lido 100%** para todas as 8 PRs não-DRAFT com merge CLEAN ✓
-- **CI Gate Final verificado** para TODAS as 16 PRs (incluindo DRAFT) — nenhuma marcada "N/A" por DRAFT ✓
-- **#2572 conflito VERIFICADO E RESOLVIDO localmente (worktree)**: `git merge --no-commit` em `/tmp/pr2572-conflict-test` → resolução aplicada (manter main em ambos os arquivos), 0 markers restantes, `git add` OK. Mas push proibido (REGRA#10 + stop-hook). REGRA#8+REGRA#10 continuam bloqueantes mesmo após resolução de conflito ✓
-- **8 critérios de merge avaliados** por PR — nenhuma PR passou todos os 8 critérios ✓
-- **Evidência de bloqueio por PR** (resumo):
-
-| PR | Bloqueio | Evidência | CI Gate Final |
-|---|---|---|---|
-| #2420 | NO_MERGE_BASE | `git merge-base origin/main refs/remotes/pr/2420` → vazio | N/A |
-| #2572 | CONFLICT + REGRA#8 + REGRA#10 | `git merge-tree HEAD refs/remotes/pr/2572` → CONFLICT em `RELATORIO_CI.md` + `src/components/kit-builder/ItemCard.tsx`; `.github/workflows/contract-tests.yml` + `supabase/migrations/`; branch `claude_05/*` | N/A |
-| #2579 | Regressão semântica | `package.json`: `"1.2.1"→"1.0.0"` downgrade; diff lido 100% | SEM RUNS |
-| #2580 | DRAFT + REGRA#8 | `draft: true` API; `supabase/migrations/` | ⛔ FAILURE SHA `41198d9a33` |
-| #2587 | DECISAO_HUMANA major + CI fail | zustand `^4.5.0→^5.0.16`; 11 stores com API v4; diff lido 100% (só package.json+lock) | ⛔ FAILURE SHA `243e5d21cf` |
-| #2588 | DECISAO_HUMANA breaking + CI fail | `calendar.tsx:22-24` usa API v8 (não atualizado); diff lido 100% (só package.json+lock) | ⛔ FAILURE SHA `1a71dd86bc` |
-| #2590 | REGRA#8 workflow (único bloqueio) | `gitleaks-history-audit.yml:52` — SHA bump codeql-action/upload-sarif; SHA pin correto (R15 ✓); diff lido 100% | ✅ SUCCESS SHA `46c07b88df` |
-| #2591 | REGRA#8 workflow (único bloqueio) | `codeql.yml:87` — SHA bump codeql-action/analyze; SHA pin correto (R15 ✓); diff lido 100% | ✅ SUCCESS SHA `1797d8afb3` |
-| #2592 | REGRA#8 workflow (único bloqueio) | `stale.yml:29` — SHA bump actions/stale v9→v11; SHA pin correto (R15 ✓); diff lido 100% | ✅ SUCCESS SHA `936b10424c` |
-| #2593 | REGRA#8 workflow (único bloqueio) | `codeql.yml:80` — SHA bump codeql-action/init; SHA pin correto (R15 ✓); diff lido 100% | ✅ SUCCESS SHA `7f36981f2c` |
-| #2594 | REGRA#8 workflow + R15 SHA pin | `e2e-update-editor-sheet-snapshots.yml:36` — `setup-node@v7` **sem SHA pin** (viola R15); diff lido 100% | ✅ SUCCESS SHA `87bff9e7ba` |
-| #2597 | DRAFT + REGRA#8 | `draft: true` API; `.github/workflows/ratchet-weekly.yml` | ✅ SUCCESS SHA `3e46211c68` |
-| #2600 | DRAFT (entregáveis) | `draft: true` — PR desta sessão | N/A (deliverables) |
-| #2603 | DRAFT + REGRA#8 | `draft: true` API; 5 migrations incl. `supplier_stricker_rls_deny_all` | ⛔ FAILURE SHA `ab1ea3b316` |
-| #2604 | DRAFT + REGRA#8 | `draft: true` API; `.github/workflows/schema-snapshot-export.yml` | ✅ SUCCESS SHA `e33d2fe4aa` |
-| #2605 | DRAFT | `draft: true` API — único bloqueio; sem REGRA#8 | ✅ SUCCESS SHA `9bfead1417` |
-
-- **0 PRs mergeadas autonomamente nesta sessão** — todas têm bloqueio verificado ✓
-- **1 PR mergeada externamente** (#2602 — outra sessão, rev30) ✓
-- **Única escrita no GitHub desta sessão**: push de entregáveis para `claude_04/optimistic-bohr-qplx94` (branch designada pelo ambiente, conforme instrução de sessão) ✓
-- Worktrees removidos ✓
-
-### Critérios de merge por PR não-DRAFT CLEAN (rev32 — evidência completa)
-
-| PR | C1 Válida | C2 Nova | C3 Sem conflito | C4 CI verde | C5 Sem regressão | C6 Regra negócio | C7 Completa | C8 Confiança | Veredito |
-|---|---|---|---|---|---|---|---|---|---|
-| #2579 | ✅ | ✅ | ✅ | ⛔ (sem runs) | ⛔ downgrade 1.2.1→1.0.0 | N/A | N/A | N/A | DECISAO_HUMANA |
-| #2587 | ✅ | ✅ | ✅ | ⛔ FAILURE | ⛔ breaking zustand v4→v5 | N/A | ⛔ stores não migrados | ⛔ | DECISAO_HUMANA |
-| #2588 | ✅ | ✅ | ✅ | ⛔ FAILURE | ⛔ breaking rdp v8→v10 | N/A | ⛔ calendar.tsx não migrado | ⛔ | DECISAO_HUMANA |
-| #2590 | ✅ | ✅ | ✅ | ✅ SUCCESS | ✅ | ⛔ REGRA#8 workflow | N/A | N/A | BLOQUEADA |
-| #2591 | ✅ | ✅ | ✅ | ✅ SUCCESS | ✅ | ⛔ REGRA#8 workflow | N/A | N/A | BLOQUEADA |
-| #2592 | ✅ | ✅ | ✅ | ✅ SUCCESS | ✅ | ⛔ REGRA#8 workflow | N/A | N/A | BLOQUEADA |
-| #2593 | ✅ | ✅ | ✅ | ✅ SUCCESS | ✅ | ⛔ REGRA#8 workflow | N/A | N/A | BLOQUEADA |
-| #2594 | ✅ | ✅ | ✅ | ✅ SUCCESS | ✅ | ⛔ REGRA#8 workflow + R15 pin | N/A | N/A | BLOQUEADA |
+| Arquivo | Conteúdo |
+|---|---|
+| `analise-prs/prs.csv` | Tabela completa das 18 PRs (CSV) |
+| `analise-prs/progresso.json` | Estado rev36 — todos os campos, SHAs atualizados |
+| `analise-prs/regras-de-negocio.md` | Regras de negócio usadas para classificação |
+| `analise-prs/baseline/vitest.txt` | Baseline vitest main |
+| `analise-prs/dossies/PR-2610.md` | Dossier merge autônomo #2610 (8 critérios verificados) |
+| `analise-prs/dossies/PR-2612.md` | Dossier bloqueio #2612 (DRAFT + REGRA#10) |
