@@ -1,9 +1,9 @@
-# RELATORIO_PRS.md — rev60
+# RELATORIO_PRS.md — rev61
 **Sessão:** session_011d8gKLZg8BWivR8aQBwxGF
 **Data:** 2026-10-27
 **main HEAD entrada:** df18546dfd76d1bea7ea5873257b668d128d8df3
-**main HEAD atual:** 06faacc95be240697731489b6f1611b4738844b8
-**Gate Final atual:** run #40482105056 — success (2026-10-27T09:42:42Z) em 1ce29cf2f; #2635 mergeado depois sem novo gate; #2636 aguardando CI em 6dedfc70
+**main HEAD atual:** 2b9dec8ac7fd7e2dd7ede290100073ec2e89d382 (#2638 mergeada por session_014 às 11:11Z)
+**Gate Final atual:** run #40482105056 — success (2026-10-27T09:42:42Z) em 1ce29cf2f; #2635 mergeado depois sem novo gate; #2636 aguardando CI em c3aa9f1a (run #40493344116, iniciado 11:07Z — conteúdo idêntico a 6dedfc70, CI trigger commit por sessão externa)
 
 ---
 
@@ -100,6 +100,7 @@
 | #2630 | `3f5d94dfee055d6d51b310756b170ac8a8476752` | — | chore: adiciona §7 sentinel ao PENDENCIAS.md |
 | #2633 | `1ce29cf2f95ecf851eef580974130a46f5a4f53a` | session_01Knr9enFAok62bHihBK1UUP | fix(tests): corrige 3 falhas vitest no CI Security |
 | #2635 | `06faacc95be240697731489b6f1611b4738844b8` | session_011kNCJ9xyjX5d9E2bUXhdBg | fix(gate): Gate 1.13 HTTP 400 soft (era DRAFT/REGRA#10, PO aprovou via merge externo 10:48:11Z) |
+| #2638 | `2b9dec8ac7fd7e2dd7ede290100073ec2e89d382` | session_014RkohRYagi3sPiL8jtgot4 | docs: PENDENCIAS §8 §9 + RELATORIO_CI (11:11:35Z) |
 
 ---
 
@@ -121,4 +122,4 @@
 
 ---
 
-_Gerado automaticamente por session_011d8gKLZg8BWivR8aQBwxGF — rev60_
+_Gerado automaticamente por session_011d8gKLZg8BWivR8aQBwxGF — rev61_
