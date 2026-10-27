@@ -1,7 +1,7 @@
 {
   "session": "session_012WyySbh2tj8vhRQLBf3mHo",
   "date": "2026-10-27",
-  "rev": 54,
+  "rev": 55,
   "main_head_pre": "df18546dfd76d1bea7ea5873257b668d128d8df3",
   "main_head_post": "e0b569f18cdfc8c7bc63466e567597cf799aaae7",
   "gate_final_baseline": {
@@ -22,12 +22,10 @@
     "total_open_analisadas": 18,
     "mergeado_autonomo": 1,
     "mergeado_owner": 5,
-    "decisao_humana": 4,
-    "aguardar_aprovacao": 2,
-    "conflito": 2,
+    "fechado_owner": 3,
+    "decisao_humana": 5,
     "ci_falhou": 1,
-    "draft_nomerge": 2,
-    "nao_mergear": 1
+    "draft_nomerge": 3
   },
   "prs": [
     {
@@ -87,7 +85,7 @@
     },
     {
       "number": 2572,
-      "verdict": "CONFLITO",
+      "verdict": "DECISAO_HUMANA",
       "motivo": "CONFLICT RELATORIO_CI.md + REGRA10 branch de outra sessão"
     },
     {
@@ -112,23 +110,23 @@
     },
     {
       "number": 2605,
-      "verdict": "NAO_MERGEAR",
-      "motivo": "supersedida por versão mais recente já em main (CONFLICT)"
+      "verdict": "FECHADO_OWNER",
+      "motivo": "fechada pelo owner adm01-debug 2026-10-27T22:23:21Z — supersedida por #2620"
     },
     {
       "number": 2622,
-      "verdict": "CONFLITO",
-      "motivo": "ADD/ADD conflict com main após merge #2621"
+      "verdict": "FECHADO_OWNER",
+      "motivo": "fechada pelo owner adm01-debug 2026-10-27T22:23:22Z — BRANCH_DIRTY ADD/ADD conflict"
     },
     {
       "number": 2631,
-      "verdict": "AGUARDAR_APROVACAO",
-      "motivo": "DRAFT — PR de outra sessão aguardando aprovação do PO"
+      "verdict": "DRAFT_NOMERGE",
+      "motivo": "DRAFT — sessão externa + REGRA10 branch claude/ diferente agente"
     },
     {
       "number": 2645,
-      "verdict": "AGUARDAR_APROVACAO",
-      "motivo": "PR de outra sessão aguardando aprovação do PO"
+      "verdict": "FECHADO_OWNER",
+      "motivo": "fechada pelo owner adm01-debug 2026-10-27T22:23:24Z — supersedida por #2652"
     },
     {
       "number": 2646,

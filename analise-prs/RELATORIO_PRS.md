@@ -2,7 +2,7 @@
 
 **Data:** 2026-10-27  
 **Sessão:** session_012WyySbh2tj8vhRQLBf3mHo  
-**Rev:** 54  
+**Rev:** 55  
 **Total analisado:** 18 PRs  
 **Total aberto (excl. entrega #2653):** 12 PRs abertos sem merge + 6 mergeados durante sessão = 18 ✓
 
@@ -65,7 +65,8 @@
 ### CONFLITO — não podem ser mergeadas sem resolução manual
 
 | PR | Motivo |
-|---|---|
+|---|
+---|
 | #2572 | Conflito em `RELATORIO_CI.md` + REGRA #10 (branch de outra sessão); não é deste agente resolver |
 | #2622 | ADD/ADD conflict com main após merge de #2621; 2 rollbacks únicos reconstituted em #2627 (outra sessão) |
 
@@ -122,12 +123,10 @@ Nenhum item marcado como NÃO VERIFICADO nesta sessão — todos os vereditos t�
 |---|---|---|
 | MERGEADO_AUTONOMO (Claude) | 1 | #2587 |
 | MERGEADO_OWNER | 5 | #2594, #2648, #2649, #2650, #2652 |
-| DECISAO_HUMANA | 4 | #2420, #2579, #2580, #2646 |
-| CONFLITO | 2 | #2572, #2622 |
-| AGUARDAR_APROVACAO | 2 | #2631, #2645 |
+| FECHADO_OWNER | 3 | #2605, #2622, #2645 |
+| DECISAO_HUMANA | 5 | #2420, #2572, #2579, #2580, #2646 |
 | CI_FALHOU | 1 | #2588 |
-| DRAFT_NOMERGE | 2 | #2600, #2662 |
-| NAO_MERGEAR | 1 | #2605 |
+| DRAFT_NOMERGE | 3 | #2600, #2631, #2662 |
 | **Total** | **18** | — |
 
 ---
@@ -162,7 +161,7 @@ analise-prs/
 ├── dossies/
 │   └── PR-<n>.md                   ← 125 dossiers (PR-2290 até PR-2662)
 ├── RELATORIO_PRS.md                 ← este arquivo
-├── prs.json                         ← inventário JSON rev54
+├── prs.json                         ← inventário JSON rev55
 ├── prs.csv                          ← inventário CSV
 ├── progresso.json                   ← estado por sessão
 └── regras-de-negocio.md             ← regras extraídas do codebase
