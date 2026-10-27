@@ -1,16 +1,25 @@
 {
   "session_id": "session_011d8gKLZg8BWivR8aQBwxGF",
-  "revision": "rev57",
+  "revision": "rev58",
   "date": "2026-10-27",
   "status": "FINAL",
   "main_head_entrada": "df18546dfd76d1bea7ea5873257b668d128d8df3",
   "main_head_final": "02e503365552d8d161e96917277170fff0af92dc",
-  "prs_analisados_esta_sessao": 20,
+  "main_head_atual": "3f5d94dfee055d6d51b310756b170ac8a8476752",
+  "gate_final_atual": {
+    "sha": "3f5d94dfee055d6d51b310756b170ac8a8476752",
+    "run": "40482105056",
+    "conclusion": "success",
+    "completed_at": "2026-10-27T09:42:42Z"
+  },
+  "prs_analisados_esta_sessao": 22,
+  "open_prs_count_verificado": 12,
+  "open_prs_verificado_em": "2026-10-27T10:00:00Z",
   "verdicts": {
     "MERGEADO_AUTONOMO": ["2620", "2627", "2628"],
     "MERGEADO_SESSAO_EXTERNA": ["2597", "2621", "2625"],
-    "DECISAO_HUMANA": ["2420", "2572", "2579", "2580", "2587", "2588", "2594", "2604"],
-    "DRAFT_NOMERGE": ["2600", "2629"],
+    "DECISAO_HUMANA": ["2420", "2572", "2579", "2580", "2587", "2588", "2594", "2604", "2632"],
+    "DRAFT_NOMERGE": ["2600", "2629", "2631"],
     "SUPERSEDED": ["2605", "2619"],
     "BRANCH_DIRTY": ["2622"],
     "JA_EM_MAIN": ["2612"]
@@ -70,7 +79,7 @@
     }
   },
   "acoes_po": [
-    "Fechar #2572 (análise obsoleta, supersedida por análise rev57 desta sessão)",
+    "Fechar #2572 (análise obsoleta, supersedida por análise rev58 desta sessão)",
     "Fechar #2622 (branch dirty — 9 migrations sem rollbacks válidos)",
     "Fechar #2619 (supersedida por #2625)",
     "Fechar #2605 (supersedida por #2620)",
@@ -78,6 +87,8 @@
     "Decidir #2587 (zustand 4→5 — breaking changes)",
     "Decidir #2588 (react-day-picker 8→10 — CI FAILED)",
     "Decidir #2420 (rollback SQL migration OOB — REGRA#8, aguarda aprovação do SQL)",
-    "Aprovar quando READY: #2580, #2594, #2604"
+    "Decidir #2632 (REGRA#8 workflow timeout fix — mudança cirúrgica 1 linha, session_011kNCJ9xyjX5d9E2bUXhdBg)",
+    "Aprovar quando READY: #2580, #2594, #2604",
+    "Aprovar deploy edge functions: run #40482914736 em https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40482914736"
   ]
 }
