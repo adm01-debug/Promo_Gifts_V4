@@ -201,7 +201,6 @@ export function DatePickerField(props: DatePickerFieldProps) {
           defaultMonth={selectedDate ?? today}
           onSelect={handleSelect}
           disabled={disabledMatcher}
-          initialFocus
           className="pointer-events-auto"
         />
         {showFooter && (

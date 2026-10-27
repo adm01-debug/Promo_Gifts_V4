@@ -16,7 +16,7 @@
 O job `compare-deployed-vs-repo` detectou que 106 edge functions deployed diferem do código no repo (conteúdo, versão, ou timestamp). O workflow `edge-functions-drift-check.yml` compara o estado do Supabase canônico contra o HEAD do repo e falha quando encontra divergências.
 
 ### Por que não foi resolvido
-Deploiar todas as 106 funções requer:
+Deployar todas as 106 funções requer:
 1. Decisão do PO: confirmar que HEAD do repo é a versão correta para produção em todas elas
 2. Potencial downtime de funções em uso (não há blue-green para edge functions no Supabase)
 3. Possível regressão se alguma função tem código deployado mais recente que o repo (ver REGRA #8 corolário: drift pode ser de prod → repo, não só repo → prod)
@@ -122,7 +122,7 @@ Nenhuma — o próximo push em `main` (quando este PR for mergeado) vai criar um
 ### Ação necessária
 1. Ler `src/pages/magazine/` e stores relacionados
 2. Identificar chamadas incompatíveis com zustand v5
-3. Aplicar migration guide do zustand v5
+3. Aplicar migration guide do zustand v5 (https://zustand.docs.pmnd.rs/migrations/migrating-to-v5)
 
 ---
 
@@ -144,6 +144,47 @@ Nenhuma — ignorar como parte do processo de revisão. Se bloquear merge em alg
 
 ---
 
+## P7 — `deploy-gates.yml` — TypeScript errors react-day-picker v9 (RESOLVIDO)
+
+**Run ID:** 40597996716 (falhou) → fix commitado nesta sessão  
+**Status:** CORRIGIDO — 8 ocorrências de `initialFocus` removidas; `caption` → `month_caption`; `IconLeft`/`IconRight` → `Chevron` em `calendar.tsx`  
+**Arquivos corrigidos:**
+- `src/components/ui/calendar.tsx`
+- `src/components/admin/security/keys/McpKeysFilters.tsx`
+- `src/components/dashboard/widget-filters/WidgetFiltersBar.tsx`
+- `src/components/notifications/NotificationDrawer.tsx`
+- `src/components/ui/date-picker-field.tsx`
+- `src/pages/admin/AdminTelemetriaPage.tsx`
+- `src/pages/quotes/QuoteBuilderPage.tsx`
+
+---
+
+## P8 — `branch-protection-sentinel.yml` — Commit histórico sem PR (NÃO RESOLVÍVEL)
+
+**Run ID:** 40559179979  
+**Status:** FALHA HISTÓRICA — não resolvível  
+**Causa:** Commit `f6f9889a` foi pushado direto em `main` sem seguir o padrão de PR. O sentinel roda em todo push e detecta commits que não passaram pelo fluxo de PR.  
+**Por que não resolvido:** Não é possível alterar o histórico de commits em `main` (força bruta proibida). O sentinel passará automaticamente nos próximos commits que seguirem o fluxo correto.
+
+---
+
+## P9 — `db-apply-migration.yml` — Migration sem `-- Rollback:` header (RESOLVIDO)
+
+**Run ID:** 40595866232 (falhou) → fix commitado nesta sessão  
+**Status:** CORRIGIDO — adicionado `-- Rollback:` na linha 2 de `20261027160000_deactivate_image_dimensions_backfill_cron.sql`  
+**Ação pendente:** PO precisa re-disparar `db-apply-migration.yml` com `version=20261027160000` para aplicar a migration em produção.
+
+---
+
+## P10 — `ci-replenishment-module.yml` — E2E visual parity (screenshot diff)
+
+**Run ID:** 40563195442  
+**Status:** FALHA no commit `2fafe8e`  
+**Causa:** Testes de paridade visual (`novidades-reposicao-card-parity.spec.ts`) detectaram diferença nas dimensões dos cards entre `/novidades` e `/reposicao`. Screenshot diff registrado.  
+**Por que não resolvido:** Requer análise do componente de card e decisão se a diferença visual é intencional (redesign) ou regressão. Não é um erro de código TypeScript.
+
+---
+
 ## Resumo de prioridades
 
 | # | Workflow | Prioridade | Decisão do PO |
@@ -154,3 +195,7 @@ Nenhuma — ignorar como parte do processo de revisão. Se bloquear merge em alg
 | P4 | `e2e.yml` | BAIXA | Nenhuma ação — próximo push resolve |
 | P5 | `e2e-magazine-header.yml` | ALTA | Migração zustand v5 — trabalho de desenvolvimento |
 | P6 | `Running Copilot Code Review` | NENHUMA | Ignorar |
+| P7 | `deploy-gates.yml` react-day-picker v9 | RESOLVIDO | — |
+| P8 | `branch-protection-sentinel.yml` | NÃO RESOLVÍVEL | Histórico de commit, nada a fazer |
+| P9 | `db-apply-migration.yml` rollback header | RESOLVIDO (aguarda re-dispatch) | Re-disparar com `version=20261027160000` |
+| P10 | `ci-replenishment-module.yml` screenshot diff | MÉDIA | Decisão sobre paridade visual |
