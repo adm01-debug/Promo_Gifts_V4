@@ -1,1 +1,54 @@
-LS0gPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQotLSBNaWdyYXRpb246IGNybV9jYWxsYmFja19ldmVudHMKLS0gRGF0YTogMjAyNi0wNy0wNiB8IEFsdm86IGNhbsO0bmljbyBkb3Vmc3hxbGZqeXV2eHVlenBsbgotLSBBdWRpdG9yaWEvaWRlbXBvdMOqbmNpYSBkb3MgY2FsbGJhY2tzIGRvIENSTSBQcm9tbyBDaGFtcGlvbnMgVjIKLS0gcmVjZWJpZG9zIHBlbGEgZWRnZSBmdW5jdGlvbiByZWNlaXZlLWNybS1jYWxsYmFjay4KLS0gT3JpZ2VtOiBxYS9taWdyYXRpb25zLWRyYWZ0LzIwMjYtMDctMDZfY3JtX2NhbGxiYWNrX2V2ZW50cy5zcWwKLS0gQVBMSUNBREEgbm8gY2Fuw7RuaWNvIGVtIDIwMjYtMDctMDYgdmlhIE1DUCBhcHBseV9taWdyYXRpb24KLS0gKHJlZ2lzdHJhZGEgZW0gc3VwYWJhc2VfbWlncmF0aW9ucy5zY2hlbWFfbWlncmF0aW9ucyBjb21vIDIwMjYwNzA2MTgxMzU2KS4KLS0gTk9UQTogbsOjbyB1c2FyIGBzdXBhYmFzZSBkYiBwdXNoYCBuZXN0ZSByZXBvIOKAlCBoaXN0w7NyaWNvIHJlbW90byB0ZW0KLS0gMi4yMTYgdmVyc8O1ZXMgdnMgfjEuMDAwIGFycXVpdm9zIGxvY2FpcyAoZHJpZnQgaGlzdMOzcmljbykuCi0tID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KCkNSRUFURSBUQUJMRSBJRiBOT1QgRVhJU1RTIHB1YmxpYy5jcm1fY2FsbGJhY2tfZXZlbnRzICgKICBpZCAgICAgICAgICAgICAgICB1dWlkIFBSSU1BUlkgS0VZIERFRkFVTFQgZ2VuX3JhbmRvbV91dWlkKCksCiAgZXh0ZXJuYWxfcXVvdGVfaWQgdXVpZCBOT1QgTlVMTCwKICBjcm1fcXVvdGVfaWQgICAgICB1dWlkLAogIGV2ZW50X3R5cGUgICAgICAgIHRleHQgTk9UIE5VTEwsCiAgb2NjdXJyZWRfYXQgICAgICAgdGltZXN0YW1wdHogTk9UIE5VTEwsCiAgcGF5bG9hZCAgICAgICAgICAganNvbmIgTk9UIE5VTEwgREVGQVVMVCAne30nOjpqc29uYiwKICByZXN1bHQgICAgICAgICAgICB0ZXh0IE5PVCBOVUxMLCAgICAgIC0tICdhcHBsaWVkJyB8ICdkdXBsaWNhdGVfaWdub3JlZCcgfCAnZXJyb3InCiAgZXJyb3JfbWVzc2FnZSAgICAgdGV4dCwKICByZWNlaXZlZF9hdCAgICAgICB0aW1lc3RhbXB0eiBOT1QgTlVMTCBERUZBVUxUIG5vdygpLAoKICBDT05TVFJBSU5UIGNybV9jYWxsYmFja19ldmVudHNfZXZlbnRfdHlwZV9jaGsKICAgIENIRUNLIChldmVudF90eXBlIElOICgnYXBwcm92ZWQnLCdyZWplY3RlZCcsJ29yZGVyX2NyZWF0ZWQnLCdzZW50X3RvX2NsaWVudCcsJ2V4cGlyZWQnKSksCiAgQ09OU1RSQUlOVCBjcm1fY2FsbGJhY2tfZXZlbnRzX3Jlc3VsdF9jaGsKICAgIENIRUNLIChyZXN1bHQgSU4gKCdhcHBsaWVkJywnZHVwbGljYXRlX2lnbm9yZWQnLCdlcnJvcicpKSwKICBDT05TVFJBSU5UIGNybV9jYWxsYmFja19ldmVudHNfaWRlbXBvdGVuY3lfdWsKICAgIFVOSVFVRSAoZXh0ZXJuYWxfcXVvdGVfaWQsIGV2ZW50X3R5cGUsIG9jY3VycmVkX2F0KQopOwoKQ09NTUVOVCBPTiBUQUJMRSBwdWJsaWMuY3JtX2NhbGxiYWNrX2V2ZW50cyBJUwogICdBdWRpdG9yaWEgKyBjaGF2ZSBkZSBpZGVtcG90w6puY2lhIGRvcyBjYWxsYmFja3MgcmVjZWJpZG9zIGRvIENSTSBQcm9tbyBDaGFtcGlvbnMgVjIgdmlhIGVkZ2UgZnVuY3Rpb24gcmVjZWl2ZS1jcm0tY2FsbGJhY2suJzsKCi0tIEdSQU5UcyAob2JyaWdhdMOzcmlvIGVtIHB1YmxpYyDigJQgRGF0YSBBUEkgbsOjbyBjb25jZWRlIHBvciBwYWRyw6NvKQpHUkFOVCBTRUxFQ1QgT04gcHVibGljLmNybV9jYWxsYmFja19ldmVudHMgVE8gYXV0aGVudGljYXRlZDsKR1JBTlQgQUxMICAgIE9OIHB1YmxpYy5jcm1fY2FsbGJhY2tfZXZlbnRzIFRPIHNlcnZpY2Vfcm9sZTsKCi0tIFJMUzogYWRtaW5zIHZpc3VhbGl6YW07IGVzY3JpdGEgc8OzIHZpYSBzZXJ2aWNlX3JvbGUgKGVkZ2UgZnVuY3Rpb24pLgpBTFRFUiBUQUJMRSBwdWJsaWMuY3JtX2NhbGxiYWNrX2V2ZW50cyBFTkFCTEUgUk9XIExFVkVMIFNFQ1VSSVRZOwoKRFJPUCBQT0xJQ1kgSUYgRVhJU1RTICJBZG1pbnMgY2FuIHZpZXcgY3JtIGNhbGxiYWNrIGV2ZW50cyIgT04gcHVibGljLmNybV9jYWxsYmFja19ldmVudHM7CkNSRUFURSBQT0xJQ1kgIkFkbWlucyBjYW4gdmlldyBjcm0gY2FsbGJhY2sgZXZlbnRzIgogIE9OIHB1YmxpYy5jcm1fY2FsbGJhY2tfZXZlbnRzCiAgRk9SIFNFTEVDVAogIFRPIGF1dGhlbnRpY2F0ZWQKICBVU0lORyAocHVibGljLmhhc19yb2xlKGF1dGgudWlkKCksICdhZG1pbic6OmFwcF9yb2xlKSk7CgotLSDDjW5kaWNlcyBkZSBjb25zdWx0YQpDUkVBVEUgSU5ERVggSUYgTk9UIEVYSVNUUyBpZHhfY3JtX2NhbGxiYWNrX2V2ZW50c19xdW90ZQogIE9OIHB1YmxpYy5jcm1fY2FsbGJhY2tfZXZlbnRzIChleHRlcm5hbF9xdW90ZV9pZCwgcmVjZWl2ZWRfYXQgREVTQyk7CgpDUkVBVEUgSU5ERVggSUYgTk9UIEVYSVNUUyBpZHhfY3JtX2NhbGxiYWNrX2V2ZW50c19yZXN1bHRfcmVjZWl2ZWQKICBPTiBwdWJsaWMuY3JtX2NhbGxiYWNrX2V2ZW50cyAocmVzdWx0LCByZWNlaXZlZF9hdCBERVNDKTsK
+-- =========================================================================
+-- Migration: crm_callback_events
+-- Data: 2026-07-06 | Alvo: canônico doufsxqlfjyuvxuezpln
+-- Auditoria/idempotência dos callbacks do CRM Promo Champions V2
+-- recebidos pela edge function receive-crm-callback.
+-- Origem: qa/migrations-draft/2026-07-06_crm_callback_events.sql
+-- APLICADA no canônico em 2026-07-06 via MCP apply_migration
+-- (registrada em supabase_migrations.schema_migrations como 20260706181356).
+-- NOTA: não usar `supabase db push` neste repo — histórico remoto tem
+-- 2.216 versões vs ~1.000 arquivos locais (drift histórico).
+-- =========================================================================
+
+CREATE TABLE IF NOT EXISTS public.crm_callback_events ( -- soft-delete-exempt: tabela de auditoria append-only (eventos de callback CRM nunca são deletados)
+  id                uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  external_quote_id uuid NOT NULL,
+  crm_quote_id      uuid,
+  event_type        text NOT NULL,
+  occurred_at       timestamptz NOT NULL,
+  payload           jsonb NOT NULL DEFAULT '{}'::jsonb,
+  result            text NOT NULL,      -- 'applied' | 'duplicate_ignored' | 'error'
+  error_message     text,
+  received_at       timestamptz NOT NULL DEFAULT now(),
+
+  CONSTRAINT crm_callback_events_event_type_chk
+    CHECK (event_type IN ('approved','rejected','order_created','sent_to_client','expired')),
+  CONSTRAINT crm_callback_events_result_chk
+    CHECK (result IN ('applied','duplicate_ignored','error')),
+  CONSTRAINT crm_callback_events_idempotency_uk
+    UNIQUE (external_quote_id, event_type, occurred_at)
+);
+
+COMMENT ON TABLE public.crm_callback_events IS
+  'Auditoria + chave de idempotência dos callbacks recebidos do CRM Promo Champions V2 via edge function receive-crm-callback.';
+
+-- GRANTs (obrigatório em public — Data API não concede por padrão)
+GRANT SELECT ON public.crm_callback_events TO authenticated;
+GRANT ALL    ON public.crm_callback_events TO service_role;
+
+-- RLS: admins visualizam; escrita só via service_role (edge function).
+ALTER TABLE public.crm_callback_events ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Admins can view crm callback events" ON public.crm_callback_events;
+CREATE POLICY "Admins can view crm callback events"
+  ON public.crm_callback_events
+  FOR SELECT
+  TO authenticated
+  USING (public.has_role(auth.uid(), 'admin'::app_role));
+
+-- Índices de consulta
+CREATE INDEX IF NOT EXISTS idx_crm_callback_events_quote
+  ON public.crm_callback_events (external_quote_id, received_at DESC);
+
+CREATE INDEX IF NOT EXISTS idx_crm_callback_events_result_received
+  ON public.crm_callback_events (result, received_at DESC);

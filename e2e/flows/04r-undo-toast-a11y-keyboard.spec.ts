@@ -154,6 +154,7 @@ test.describe("Toast Desfazer — acessibilidade + teclado", () => {
     // onTimeout. Como estamos testando o botão em si (guarda `undone` +
     // disabled), tentamos click FORÇADO enquanto ainda houver resíduo.
     await showUndoToastInBrowser(page, 500);
+    await page.waitForTimeout(700);
 
     // Aguarda expiração (state remainingMs <= 0). O toast é dismissed logo
     // em seguida — pode não haver janela para clique normal. Tentamos
