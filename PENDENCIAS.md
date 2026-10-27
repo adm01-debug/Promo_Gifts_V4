@@ -21,7 +21,7 @@
 
 ### 2. Uptime Monitor
 - **Run IDs:** 40451113594, múltiplos (sha `48899b65`, main)
-- **Erro:** Step "Probe site + edge function" falhou — site/edge function do Supabase (`doufsxqlfjyuvxuezpln.supabase.co`) estava temporariamente indisponível.
+- **Erro:** Step "Probe site + edge function" falhou — site/edge function do Supabase (`doufsxqlfjyuvxuezpln`) estava temporariamente indisponível.
 - **Causa raiz:** Transiente — probe externo detectou indisponibilidade momentânea. Jobs subsequentes executaram com sucesso.
 - **Por que não posso corrigir:** Monitoramento externo depende da disponibilidade do Supabase Cloud e do Vercel.
 - **O que você (PO) pode fazer:**
@@ -147,22 +147,43 @@
 
 ---
 
-### 12. schema-snapshot-export — Arquivo Baseline JSON Ausente
-- **Run ID:** 40480567522 (sha `c5edf577`, main, 2026-10-27T09:09 UTC)
-- **Workflow:** `.github/workflows/schema-snapshot-export.yml`
-- **Jobs em falha:**
-  - **"Weekly live drift check"**: step 5 "Check ledger manifest drift" — arquivo `docs/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json` não encontrado no runner → exit code 2
-  - **"Export schema snapshot"**: cancelado após ~8 min no step "Run schema snapshot export" — timeout em `supabase db dump --linked` contra `doufsxqlfjyuvxuezpln`
-- **Causa raiz:** O arquivo baseline `docs/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json` referenciado pelo step "Check ledger manifest drift" não existe no repositório. O job "Export schema snapshot" tenta regenerar o baseline via `supabase db dump --linked`, mas cancela por timeout (~8 min) — provavelmente devido ao tamanho do schema (388+ tabelas em `doufsxqlfjyuvxuezpln`).
-- **Confirmação pré-existente:** Workflow é semanal (`schedule`) — falha estrutural desde que o arquivo baseline foi removido do repo. Não é regressão de nenhum PR desta sessão.
-- **Por que não corrigi:** `supabase db dump --linked` não é executável via MCP em sessão de agente. O CLAUDE.md proíbe DDL/dump via `execute_sql` (Corolário E056). Gerar o baseline requer execução do workflow `schema-snapshot-export.yml` via `workflow_dispatch` — ação que requer ambiente Supabase configurado com credenciais de produção no runner CI.
-- **O que você (PO) pode fazer:**
-  1. Acessar GitHub → Actions → `schema-snapshot-export.yml` → Run workflow → marcar `force_rotate: true`.
-  2. Aguardar o job "Export schema snapshot" completar (pode levar 10–20 min em schemas grandes).
-  3. O workflow abrirá PR automático com o novo baseline — revisar o diff e mergear.
+### 12. schema-snapshot-export — Dois Bloqueios Independentes (atualizado 2026-10-27T15:22 UTC)
+
+#### Histórico de runs
+| Run | SHA | Resultado | Data |
+|-----|-----|-----------|------|
+| 40497981197 | `a010db34` | failure | 2026-10-27T11:41Z |
+| **40527451039** | `5d049ef1` | **failure** | **2026-10-27T15:05Z** |
+
+O run 40527451039 foi disparado manualmente com `force_rotate: true` para contornar o drift-gate — mas revelou **dois bloqueios independentes** identificados com precisão nos logs:
+
+#### Bloqueio A — Ledger de migrations massivamente divergente
+- **Job:** "Drift gate antes de girar o baseline / Migrations x Canonical schema"
+- **Step:** "Ledger parity (repo x canonical)"
+- **Log exato:** `[migration-ledger][bloqueado] local_only=1108; remote_only=647; mismatched=0; malformed=0`
+- **Causa:** 1.108 migrations que existem no repositório (`supabase/migrations/`) NÃO estão registradas no ledger canônico (`doufsxqlfjyuvxuezpln`). 647 versões no banco não existem como arquivo no repo. Essa divergência bloqueou a validação de paridade antes mesmo de tentar o dump.
+- **Por que não corrigi:** Reconciliação de 1.755 migrations divergentes exigiria análise migration a migration — potencialmente DDL destrutivo em banco de produção. Escopo fora desta sessão. Consultar `docs/db/POLITICA_DDL.md` e `supabase/MIGRATIONS_SYNC_LOG.md`.
+
+#### Bloqueio B — `supabase db dump --linked` falha com exit 1
+- **Job:** "Export schema snapshot"
+- **Step:** "Generate snapshot" (`node scripts/export-schema-snapshot.mjs`)
+- **Log exato:** `[schema-snapshot][err] Falha ao dumpar schema vivo: exit 1`
+- **Credenciais:** Passaram pelo guard (`SUPABASE_ACCESS_TOKEN` e `SUPABASE_DB_PASSWORD` presentes e mascarados). O `supabase link` completou com sucesso (`Finished supabase link.`). O dump iniciou conexão (`Connecting to remote database...`) mas retornou exit 1 após ~22 segundos.
+- **Causa provável:** `SUPABASE_DB_PASSWORD` no GitHub Secret tem valor incorreto (senha do banco de produção mudou, ou o secret aponta para a senha errada). Alternativamente: rate limit ou restrição de IP no Supabase para conexão de runner CI.
+- **Script:** `scripts/export-schema-snapshot.mjs` captura o stderr do `pg_dump` internamente mas só imprime a linha genérica de erro. O stderr completo do `pg_dump` não está visível nos logs do GitHub Actions.
+
+#### O que você (PO) pode fazer
+1. **Verificar `SUPABASE_DB_PASSWORD` no GitHub Secrets:** Settings → Secrets and variables → Actions → `SUPABASE_DB_PASSWORD`. Deve ser a senha do usuário `postgres` do projeto `doufsxqlfjyuvxuezpln`. A senha pode ser recuperada/redefinida no Supabase Dashboard → Settings → Database → Reset database password.
+2. **Após corrigir a senha:** Disparar novamente `schema-snapshot-export.yml` via `workflow_dispatch` com `force_rotate: true`.
+3. **Sobre o Bloqueio A (ledger divergente):** Exige análise do `docs/db/POLITICA_DDL.md` e reconciliação controlada das migrations. É trabalho separado e não urgente — o Gate Final não depende disso.
+
+#### Job adicional em falha
+- **Job:** "Weekly live drift check" — step "Check ledger manifest drift"
+- **Causa:** Mesmo bloqueio A (ledger divergente) — job paralelo que verifica o mesmo ledger.
+
 - **Impacto no Gate Final:** NÃO é required check — não bloqueia deploy.
 
 ---
 
 *Gerado por Claude Code — sessão https://claude.ai/code/session_014RkohRYagi3sPiL8jtgot4*  
-*Atualizado: 2026-10-27T13:40 UTC — §12 schema-snapshot-export (inventário completo: §1–§12)*
+*Atualizado: 2026-10-27T15:22 UTC — §12 atualizado com diagnóstico exato do run 40527451039 (force_rotate=true)*
