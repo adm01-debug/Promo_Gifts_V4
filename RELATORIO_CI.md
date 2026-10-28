@@ -212,6 +212,15 @@ Restrição da tarefa: *"Se o merge disparar deploy de produção e a correção
 - **Fix:** Ambas as entradas alteradas para "aguardando-dispatch" — commit `8ac51d7`
 - **Prova do fix:** Gate 0 SSOT confirmado verde em run subsequente (`40629954855`)
 
+### Diagnósticos adicionais (2026-10-28 — sessão continuada)
+
+| Workflow/Job | Run ID | Causa raiz | PENDENCIAS.md |
+|---|---|---|---|
+| Kit Coverage Integration | 40628415319 | `permission denied for table product_kit_components` e `view v_kit_component_complete` — GRANT ausente para role CI | P17 |
+| `uptime-monitor.yml` | 40627515243 | Edge function `health-check` retorna HTTP ≥ 400 (curl exit 22) — `site`/`check-login`/`auth-health` passam | P18 |
+| Nightly Full CI — magazine-header | 40622763252 (job 122605008157) | `[loginAs] E21 — modo estrito: E2E_USER_EMAIL/PASSWORD ausentes em CI` — 14 tests failed — secrets ausentes no nightly runner | P19 |
+| Nightly Full CI — color-swatch | 40622763252 | `waitForSelector('[data-testid="product-card"]')` timeout — auth redirect, mesma raiz do P10 (pré-existente) | P20 |
+
 ### Checklist de runs com `conclusion=success` desta sessão
 
 | Workflow | Run | Commit | Conclusão |
@@ -221,6 +230,34 @@ Restrição da tarefa: *"Se o merge disparar deploy de produção e a correção
 
 ### Aguardando
 
-- **Deploy Gates** `40629954744` (`9e2ef4f`) — ainda `queued` por runner backlog. Este run validará P10 (URL guards) e P16 (MIGRATIONS_SYNC_LOG fix). Quando concluir, o único bloqueante esperado é P15 (Gate E40 — pré-existente).
+- **Deploy Gates** `40629954744` (`9e2ef4f`) — ainda `queued` por runner backlog (>30min). Este run validará P10 (URL guards) e P16 (MIGRATIONS_SYNC_LOG fix). Quando concluir, o único bloqueante esperado é P15 (Gate E40 — pré-existente).
+
+---
+
+## Baseline local — estado final (2026-10-28)
+
+| Check | Resultado | Observação |
+|---|---|---|
+| `npm ci` | ✅ exit 0 | 120 deps, sem conflito |
+| `npm run build` (Vite) | ✅ exit 0 | Warnings `INEFFECTIVE_DYNAMIC_IMPORT` apenas |
+| `npm run lint:baseline` (ESLint) | ✅ exit 0 | 0 erros, 0 warnings, Δ: +0 |
+| `npx tsc --noEmit` | ✅ exit 0 | Sem erros TypeScript (após fix react-day-picker em `90264719`) |
+| `npx vitest run` | ✅ exit 0 | 10 suites passaram — confirmado task b8y6sdtjn (sessão anterior) |
+| `node scripts/validate-supabase-config.mjs` | ✅ exit 0 | `doufsxqlfjyuvxuezpln` confirmado |
+
+---
+
+## Workflows falhando no main — inventário final
+
+| Workflow | Causa raiz | Fix disponível | Prova |
+|---|---|---|---|
+| `ci-replenishment-module.yml` | P10: JWT expiry redirect para /login; `gotoAndSettle` swallows errors | ✅ URL guards em commits `cbe33d3`, `9e2ef4f` | Deploy Gates run `40629954744` (queued — runner backlog) |
+| `edge-integration-all.yml` (kit coverage) | P17: RLS permission denied `product_kit_components`/`v_kit_component_complete` | Requer migration GRANT (PO) | PENDENCIAS.md P17 |
+| `edge-integration-all.yml` (validate-access) | P14: função prod desatualizada — aceita inputs inválidos como válidos | Requer dispatch `deploy-edge-functions.yml` (PO) | PENDENCIAS.md P14 |
+| `uptime-monitor.yml` | P18: `health-check` edge function retorna HTTP ≥ 400 | Requer diagnóstico + redeploy (PO) | PENDENCIAS.md P18 |
+| Nightly Full CI — magazine-header | P19: `E2E_USER_EMAIL/PASSWORD` ausentes no nightly runner | Requer configuração de secrets (PO) | PENDENCIAS.md P19 |
+| Nightly Full CI — color-swatch | P20: auth redirect (pré-existente, igual P10) | URL guard em `color-swatch.spec.ts` (agente) | PENDENCIAS.md P20 |
+| `deploy-gates.yml` Gate E40 | P15: ledger drift (local=1108; remote=647) — pré-existente | Reconciliação E99 (PO autoriza) | PENDENCIAS.md P15 |
+| `migrations-sync-log-gate` (Gate 1.3) | P16: entrada `20261027160000` com "pendente" rejeitada | ✅ Resolvido: `8ac51d7` — "aguardando-dispatch" | SSOT Supabase Guard run 40629954855 ✅ |
 
 ---
