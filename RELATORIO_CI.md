@@ -146,7 +146,7 @@ END $$;
 | 7 | edge-functions-drift-check | [40663094555](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40663094555) | **PENDENCIAS.md P8** | Drift GitHub × canônico — requer reconciliação pelo PO |
 | 8 | E2E — Personalization Flow | [40662579633](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40662579633) | **PENDENCIAS.md P9** | Secrets E2E ausentes — mesma causa de P1 |
 | 9 | E2E • Swatch QuickView | [40662579393](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40662579393) | **PENDENCIAS.md P10** | Secrets E2E + webkit null — depende de P1 |
-| 10 | Edge Integration Tests — All Functions | [40638774637](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40638774637) | **PENDENCIAS.md P11** | 11 falhas em 3 arquivos — causa raiz não determinada |
+| 10 | Edge Integration Tests — All Functions | [40638774637](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40638774637) | **PENDENCIAS.md P11** | 3 edge functions: `generate-mockup`/`verify-2fa-token` travam em input inválido (timeout 30s); `validate-access` retorna HTTP 200 para qualquer input (deveria retornar 4xx) |
 | 11 | Kit Coverage — Integration | [40628415319](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40628415319) | **PENDENCIAS.md P12** | `permission denied for view v_kit_component_complete` — GRANT SELECT ausente |
 | 12 | E2E · undo | [40667936090](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40667936090) | **PENDENCIAS.md P6** | Falhas pré-existentes — requer investigação de UI |
 
