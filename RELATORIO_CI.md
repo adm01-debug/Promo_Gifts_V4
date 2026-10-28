@@ -85,13 +85,13 @@ Resultado válido: CI do PR #2681 executa em runner GitHub Actions com memória 
 |---|---|---|---|
 | `calendar.dimensions.test.tsx` | 78 | `querySelector('button[aria-selected="true"]')` | `querySelector('[aria-selected="true"] button')` |
 | `calendar.dimensions.test.tsx` | 110 | `querySelectorAll('button[name="day"]')` | `querySelectorAll('td[role="gridcell"] button')` |
-| `calendar.redesign.test.tsx` | 58–63 | `querySelectorAll('button[name="day"]')` para achar today | `querySelectorAll('td[role="gridcell"]')` com `classes(td).includes('text-destructive')` |
+| `calendar.redesign.test.tsx` | 58–63 | busca frágil por `text-destructive` (falso-positivo com domingos) | `querySelector('td[aria-current="date"]')` — aria semântico do RDP v10 |
 | `calendar.redesign.test.tsx` | 68 | `querySelector('button[aria-selected="true"]')` | `querySelector('[aria-selected="true"]')` |
 | `date-picker-field.test.tsx` | 60 | `getByRole('gridcell', { name: /15/ })` + click | `getByRole('button', { name: /15/ })` + click |
 
 ### Grupo B — Sentinel (Branch Protection Sentinel)
 
-O sentinel falha para pushes que não seguem o padrão aceito. O push `04239fd` já está na main e não pode ser revertido sem force-push. **A última execução do sentinel vai virar success automaticamente quando este PR for mergeado** — o merge commit (`Merge pull request #NNN`) é um padrão aceito pelo sentinel.
+O sentinel falha para pushes que não seguem o padrão aceito. O push `04239fd` já está na main e não pode ser revertido sem force-push. **A última execução do sentinel vai virar success automaticamente quando este PR for mergeado** — o merge commit (`Merge pull request #NNN`) é um padrão aceito pelo sentinel (`scripts/sentinel-check.sh`) e passa.
 
 ### Grupo C — E2E autenticado (bloqueado — ver PENDENCIAS.md)
 
@@ -116,7 +116,11 @@ Os workflows P1 e P2 de E2E que dependem de autenticação real continuam falhan
 
 ---
 
-## 5. Prova de conclusão (a preencher após merge do PR #2681)
+## 5. Prova de conclusão (aguardando Deploy Gates — re-trigger 2026-10-28T04:09Z)
+
+**Histórico de runs PR #2681:**
+- Run `40629639891` (commit `7286e3b`): criado 03:58Z, ficou preso em `queued` por saturação de runners. Cancelado às 04:09Z.
+- Re-trigger via commit `chore(ci)`: novo run em andamento.
 
 | Workflow | Run ID pós-merge | Conclusion | Link |
 |---|---|---|---|
@@ -124,7 +128,7 @@ Os workflows P1 e P2 de E2E que dependem de autenticação real continuam falhan
 | CI Security & Drift Checks | — | pendente | — |
 | Deploy Gates | — | pendente | — |
 
-*Esta tabela será atualizada com os run IDs e links reais após o merge do PR #2681 e execução dos workflows na main.*
+*Esta tabela será atualizada com os run IDs e links reais após o Deploy Gates = success e merge do PR #2681.*
 
 ---
 
