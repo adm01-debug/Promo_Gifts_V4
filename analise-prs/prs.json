@@ -156,5 +156,41 @@
     "base": "disjoint",
     "veredito": "NÃO_MERGEAR",
     "razao": "Histórico disjunto; session_01Ss1tXZ4cAbxBvdmu95uNPz; REGRA #10"
+  },
+  {
+    "number": 2676,
+    "title": "fix(tests): corrige seletores rdp v10 + entrega analise-prs (outra sessão)",
+    "author": "adm01-debug",
+    "draft": false,
+    "base": "main",
+    "veredito": "NÃO_MERGEAR",
+    "razao": "mergeable=false (dirty); REGRA #10 — branch criada por outra sessão"
+  },
+  {
+    "number": 2679,
+    "title": "test(calendar): corrige seletores de teste para react-day-picker v10",
+    "author": "adm01-debug",
+    "draft": false,
+    "base": "main",
+    "veredito": "AGUARDA_CI",
+    "razao": "mergeable=true mas blocked; Gate Final cancelled por runner starvation (run #40630295218); outra sessão (claude_pink/awesome-ride-d25ur3); supersedida por #2681 em escopo"
+  },
+  {
+    "number": 2680,
+    "title": "fix(tests): corrige seletores para react-day-picker v10 (draft)",
+    "author": "adm01-debug",
+    "draft": true,
+    "base": "main",
+    "veredito": "NÃO_MERGEAR",
+    "razao": "DRAFT; escopo menor (3 arquivos vs 5 de #2681); supersedida por #2681"
+  },
+  {
+    "number": 2681,
+    "title": "fix(tests): atualiza seletores DOM para react-day-picker v10",
+    "author": "adm01-debug",
+    "draft": false,
+    "base": "main",
+    "veredito": "AGUARDA_CI",
+    "razao": "mergeable=true mas blocked; Gate Final queued (run #40630803838, 04:10:18Z); melhor candidato — 5 arquivos, não draft; runner starvation bloqueando CI"
   }
 ]

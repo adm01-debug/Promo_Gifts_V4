@@ -16,3 +16,7 @@ number,title,author,draft,base,veredito,merge_sha,razao
 2673,chore(e2e): update calendar visual baselines post-v10,github-actions[bot],false,main,MERGEADA,62af0798dd71812979667ac29f596d25f3ef191b,
 2674,analise-prs: entrega desta sessão (claude_pink/sleepy-cannon-h000nc),adm01-debug,true,main,NÃO_MERGEAR,,Nossa branch de entrega — NUNCA MERGEAR
 2675,branch de outra sessão — histórico disjunto,adm01-debug,false,disjoint,NÃO_MERGEAR,,Histórico disjunto; session_01Ss1tXZ4cAbxBvdmu95uNPz; REGRA #10
+2676,fix(tests): corrige seletores rdp v10 + entrega analise-prs (outra sessão),adm01-debug,false,main,NÃO_MERGEAR,,mergeable=false (dirty); REGRA #10 — outra sessão
+2679,test(calendar): corrige seletores de teste para react-day-picker v10,adm01-debug,false,main,AGUARDA_CI,,mergeable=true; Gate Final cancelled run #40630295218; outra sessão claude_pink/awesome-ride-d25ur3
+2680,fix(tests): corrige seletores para react-day-picker v10 (draft),adm01-debug,true,main,NÃO_MERGEAR,,DRAFT; supersedida por #2681 (5 arquivos vs 3)
+2681,fix(tests): atualiza seletores DOM para react-day-picker v10,adm01-debug,false,main,AGUARDA_CI,,mergeable=true; Gate Final queued run #40630803838; melhor candidato — runner starvation bloqueando CI
