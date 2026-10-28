@@ -202,22 +202,25 @@ Esta divergência é independente do fix de P4 (guard pg_cron nas migrations `20
 ## P8 — edge-functions-drift-check (drift entre GitHub e canônico)
 
 **Workflow:** edge-functions-drift-check  
-**Run ID da última falha:** 40744782349  
-**Link:** https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40744782349  
-**Status:** failure
+**Run ID da última falha:** 40756284439 (2026-10-28 19:39 UTC; SHA `da7bdb8`)
+**Link:** https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40756284439
+**Status:** failure — atualização para `main=c213051` é documental e não alterou edge functions.
 
 **Erro exato:**
 ```
 ##[error]Drift detectado entre GitHub e canônico. Veja sumário do job e artefato drift-report.csv.
 ```
 
-**Causa raiz:** Uma ou mais edge functions no Supabase `doufsxqlfjyuvxuezpln` divergem do código em `supabase/functions/` no GitHub (deploy direto fora do workflow, conforme REGRA #8 corolário).
+**Evidência do artefato `drift_report.csv`:** 110 funções comparadas; 81 alinhadas; 29 com hash de conteúdo divergente; nenhuma função ausente no canônico ou órfã. O relatório prova a divergência, mas não identifica sozinho qual lado é a versão aprovada nem como ela chegou ao canônico.
+
+**Funções com conteúdo divergente:** `ai-recommendations`, `bitrix-sync`, `cnpj-lookup`, `collections-watcher`, `connections-auto-test`, `connections-hub-audit`, `crm-db-bridge`, `e2e-cleanup`, `ema-pipeline-health`, `favorites-watcher`, `generate-ad-image`, `generate-mockup`, `kit-ai-builder`, `log-login-attempt`, `magazine-import-local`, `magazine-public-react`, `mcp-keys-issue`, `mcp-keys-revoke`, `migrate-helper`, `product-webhook`, `quote-sync-promo-champions`, `receive-crm-callback`, `secrets-manager`, `send-scheduled-reports`, `simulation-orchestrator`, `trends-insights`, `visual-search`, `webhook-dispatcher`, `webhook-inbound`
+
+**Deploy aguardando PO:** run [40757296680](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40757296680) está `waiting` no environment **Production**. A API de pending deployments confirma que o aprovador é `adm01-debug`. É um dispatch amplo; não aprovar antes de classificar as 29 divergências.
 
 **Ação necessária do PO:**
-- Verificar artefato `drift-report.csv` no run 40744782349 para identificar quais funções divergem
-- Para drift de conteúdo: `supabase functions download <slug>` + commit + PR
-- Para orphan no canônico: deletar via dashboard + registrar no repo
-- Após reconciliar: disparar `deploy-edge-functions.yml` via `workflow_dispatch`
+- Decidir, função por função, se o código aprovado é o do GitHub ou o canônico; consultar o artefato do run 40756284439 antes de escolher.
+- Corrigir pelo fluxo de PR a fonte aprovada; depois usar `deploy-edge-functions.yml` com `function_name` para publicar funções pontuais.
+- Aprovar o environment **Production** apenas para o conjunto revisado. Não há orphan para remover nem migration de banco pendente nesse drift.
 
 ---
 
@@ -268,23 +271,19 @@ webkit: expect(picker).not.toBeNull()
 
 **Resultado:** 3 arquivos falharam | 11 testes failed | 884 passed | 2 skipped (897 total)
 
-**Causa raiz (determinada — versões deployadas desatualizadas no Supabase):**
+**Falha registrada:** 3 arquivos falharam; o resumo antigo atribuía a falha a versões divergentes de três funções. O snapshot posterior do detector de drift (run 40756284439) permite confirmar apenas os hashes atuais, sem determinar qual lado é a versão aprovada:
 
 As 3 edge functions afetadas têm código **correto no repositório** (confirmado em 2026-10-28 via `github_get_content`):
 - `generate-mockup` (SHA `09af62394a`) — já tem `try/catch` em `JSON.parse` do body
 - `verify-2fa-token` (SHA `a58240e50786`) — já tem `try/catch` em `JSON.parse` do body
 - `validate-access` (SHA `14ce2379c053`) — já tem `missingBodyResponse`, `invalidJsonResponse`, `validationErrorResponse`, validação JWT completa e rejeição de tokens inválidos
 
-**O deploy no Supabase está desatualizado.** As versões em produção são antigas (sem esses tratamentos), causando:
-1. `generate-mockup` + `verify-2fa-token` em produção: timeout 30s ao receber JSON inválido (versão antiga sem try/catch → worker trava)
-2. `validate-access` em produção: retorna HTTP 200 para todos os inputs, incluindo body inválido e tokens ausentes/expirados (versão antiga sem validação)
-
-**NÃO é bug de código** — a correção já está commitada no repo. O problema é que o deploy não foi feito com as versões atuais.
+**Estado no snapshot mais recente:** `validate-access` e `verify-2fa-token` estão alinhadas com o repositório; `generate-mockup` continua divergente. A comparação de hashes não prova se o código canônico ou o do GitHub é a versão aprovada. A falha E2E #40746330314 é anterior a esse snapshot.
 
 **Ação necessária do PO:**
-- Disparar `workflow_dispatch` em `.github/workflows/deploy-edge-functions.yml`
-- Aprovar o gate `environment: production` quando solicitado
-- Funções a redeployar: `generate-mockup`, `verify-2fa-token`, `validate-access`
+- Classificar `generate-mockup` comparando o conteúdo canônico ao versionado e decidir qual lado é aprovado.
+- Se a decisão exigir alteração/deploy, fazê-la por PR e pelo workflow `deploy-edge-functions.yml`; aprovar `Production` somente para o conjunto revisado.
+- Reexecutar os testes de integração após a reconciliação. Não redeployar `verify-2fa-token` ou `validate-access`, que aparecem alinhadas no snapshot atual.
 
 ---
 
