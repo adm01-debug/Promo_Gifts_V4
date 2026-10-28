@@ -103,18 +103,17 @@ Clique em "Re-run all jobs".
 
 ---
 
-## P3 — Branch Protection Sentinel (commit `04239fd` na main sem PR)
+## ✅ P3 — RESOLVIDO — Branch Protection Sentinel
 
 **Workflow:** Branch Protection Sentinel  
-**Run ID:** 40615509825  
-**Link:** https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40615509825  
-**Status:** failure na run citada; verificar se ainda está falhando na main atual
+**Run ID da falha original:** 40615509825  
+**Link da falha:** https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40615509825  
+**Status:** ✅ RESOLVIDO — run 40680415509 = success (SHA `e4a326e`)
 
-**Contexto:** O commit `04239fd` (`chore(deps): bump qs 6.16.0→6.16.2`) foi pushed diretamente para `main` sem passar por PR. O sentinel detectou isso e falhou.
+**Causa original:** Commits `c73cb9b` e `8c81483` foram pushed diretamente à main (sem PR) para corrigir P5 e P4 urgentemente. O sentinel detectou esses commits diretos e falhou nas runs `40662579535` e `40667156223`.
 
-**Status atualizado (2026-10-28):** Com P0 e P4 resolvidos, a main está recebendo merges via PR. Verificar se o workflow Branch Protection Sentinel passou nos runs recentes da main.
-
-**Ação necessária do PO:** Se o sentinel ainda falhar, verificar qual commit está causando e abrir PR para o próximo bump de dependência.
+**Resolução:** Após P4 e P5 estarem na main, os commits subsequentes entraram via PR. O sentinel voltou ao estado success automaticamente.  
+**Evidência:** Run [40680415509](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40680415509) em SHA `e4a326e` → **success**.
 
 **Recomendação para o futuro:** Bumps de dependências devem entrar por PR (Dependabot/Renovate) ou com mensagem terminando em `(#NNN)` / `[skip-sentinel: bump-dep]`.
 
@@ -160,16 +159,18 @@ Clique em "Re-run all jobs".
 
 ---
 
-## P7 — db-schema-drift-check (consequência direta de P4)
+## P7 — db-schema-drift-check (timing — resolução esperada no próximo run agendado)
 
 **Workflow:** db-schema-drift-check  
 **Run ID da última falha:** 40665197973  
 **Link:** https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40665197973  
-**Status:** failure — deve ter resolvido com P4
+**Status:** failure (timing) — a correção já está na main; próximo run agendado deve resolver
 
-**Causa raiz:** Consequência direta de P4 (Gate E40). Com P4 resolvido (commit `8c81483`), este workflow deve ter passado automaticamente.
+**Causa da falha persistente (timing):** O run `40665197973` foi agendado (schedule diário) às 09:33 em 2026-10-28, no SHA `c73cb9b`. O fix das migrations (`8c81483`, que torna o replay do Gate E40 safe com guard `IF to_regclass('cron.job') IS NULL`) só foi commitado às 09:48 — **15 minutos após o run já ter iniciado com o SHA anterior**. O drift-check replayou as migrations sem o guard e falhou.
 
-**Ação necessária:** Verificar se o workflow `db-schema-drift-check` passou nos runs após commit `8c81483`.
+**Resolução esperada:** O próximo run agendado (schedule diário) usará um SHA que inclui `8c81483` e deve passar, pois as migrations `20261027120000` e `20261027140000` agora têm o guard pg_cron.
+
+**Ação necessária do PO:** Se o próximo run agendado falhar, disparar manualmente `db-schema-drift-check` via `workflow_dispatch` para confirmar. O fix já está validado pelos Gate Final runs `40667156516` e `40662579684` que incluem o mesmo replay via Gate E40.
 
 ---
 
