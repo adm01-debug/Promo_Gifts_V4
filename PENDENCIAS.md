@@ -384,20 +384,24 @@ Step de integração de kits falha com:
 permission denied for table product_kit_components
 permission denied for view v_kit_component_complete
 ```
-O role de teste (provavelmente `authenticated` ou role de service account do CI) não tem GRANT de SELECT nas tabelas/views de componentes de kits. A RLS está habilitada mas a policy ou o GRANT para o role do CI está ausente.
+O workflow `kit-coverage-integration.yml` usa a chave pública do Supabase (anon key) **sem efetuar login**. Portanto, as requisições de CI rodam como role `anon`, não como `authenticated`. O GRANT de SELECT precisa ser para o role `anon`, não para `authenticated`.
+
+Confirmação: `src/lib/external-db/kit-coverage.integration.test.ts` cria o cliente Supabase sem `auth.signIn` — toda chamada é feita como `anon`.
 
 ### Por que não foi resolvido
-Corrigir requer DDL: `GRANT SELECT ON product_kit_components, v_kit_component_complete TO <role>` ou criação de policy RLS. DDL via `execute_sql` em sessão de agente é proibido (REGRA #8 corolário E056). O caminho correto é migration SQL + PR + `db-apply-migration.yml`.
+Corrigir requer DDL: `GRANT SELECT ON product_kit_components, v_kit_component_complete TO anon` ou criação de policy RLS para `anon`. DDL via `execute_sql` em sessão de agente é proibido (REGRA #8 corolário E056). O caminho correto é migration SQL + PR + `db-apply-migration.yml`.
+
+> ⚠️ **Atenção:** Um GRANT para `authenticated` (como documentado anteriormente neste arquivo) **não corrige o CI** — as requisições do job de integração chegam como `anon`.
 
 ### Ação necessária
 `APROVADO` → autorizar criação de migration com:
 ```sql
-GRANT SELECT ON public.product_kit_components TO authenticated;
-GRANT SELECT ON public.v_kit_component_complete TO authenticated;
+GRANT SELECT ON public.product_kit_components TO anon;
+GRANT SELECT ON public.v_kit_component_complete TO anon;
 ```
-Ou revisar a RLS policy existente. Migration deve passar pelo workflow `db-apply-migration.yml`.
+Ou adicionar RLS policy `USING (true)` para `anon` nas duas tabelas/views. Migration deve passar pelo workflow `db-apply-migration.yml`.
 
-**Risco:** baixo (somente GRANT de leitura, não altera estrutura de dados).
+**Risco:** baixo (somente GRANT de leitura para role sem autenticação, mesmas permissões já existentes em outras tabelas de catálogo público).
 
 ---
 
@@ -439,12 +443,25 @@ O runner do workflow nightly (`schedule`) não tem acesso às secrets `E2E_USER_
 Todos os 14 testes do `e2e-magazine-header.yml` falharam com este erro.
 
 ### Por que não foi resolvido
-Secrets são configuradas por environment no GitHub Actions. O workflow nightly provavelmente usa um environment diferente (ou nenhum) que não herda as secrets de E2E. Requer acesso ao GitHub Settings → Environments para configurar.
+O arquivo `.github/workflows/nightly-full.yml` **não declara `environment:`** e **não mapeia `E2E_USER_EMAIL`/`E2E_USER_PASSWORD` para o job `visual-focused`**. Apenas configurar as secrets no GitHub Settings (repository-level ou environment-level) não é suficiente — o job precisa que as secrets sejam explicitamente expostas como variáveis de ambiente.
+
+Requer alteração no arquivo `nightly-full.yml`: adicionar `env:` com as secrets no job correto.
 
 ### Ação necessária
-Configurar `E2E_USER_EMAIL` e `E2E_USER_PASSWORD` no environment usado pelo workflow `nightly-full-ci.yml` (ou `.github/workflows/e2e-magazine-header.yml` se tiver trigger schedule próprio).
+Duas mudanças necessárias (ambas requerem PR):
 
-**Alternativa:** configurar as secrets como repository-level secrets (não environment-scoped) se forem seguras para todos os runners.
+**1. Modificar `.github/workflows/nightly-full.yml`** — adicionar ao job `visual-focused` (ou equivalente que roda os testes de magazine-header):
+```yaml
+env:
+  E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
+  E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
+```
+
+**2. Configurar as secrets** no GitHub Settings → Secrets and variables → Actions como repository-level secrets (ou no environment referenciado pelo job, se `environment:` for adicionado).
+
+> ⚠️ **Atenção:** Apenas configurar as secrets sem alterar o arquivo `nightly-full.yml` **não corrige a falha** — o job não lê as secrets que não foram mapeadas no `env:`.
+
+**Este workflow é separado do `deploy-gates.yml` (Gate Final). Não bloqueia o merge do PR #2663.**
 
 ---
 
@@ -455,21 +472,32 @@ Configurar `E2E_USER_EMAIL` e `E2E_USER_PASSWORD` no environment usado pelo work
 **Impacto:** Médio — testes visuais de swatch bloqueados no nightly
 
 ### Causa raiz
-Mesma causa raiz do P10 (`ci-replenishment-module.yml`): JWT expira durante bateria longa de testes; `gotoAndSettle` redireciona para `/login` silenciosamente; o componente alvo nunca monta.
+O `nightly-full.yml` usa o projeto Playwright **`chromium-public`**, que roda **sem autenticação** e navega diretamente para `/catalogo`. Portanto, a falha **não é** causada por expiração de JWT nem redirect para `/login`.
 
 Erro exato:
 ```
 page.waitForSelector('[data-testid="product-card"]') timeout
 ```
-O browser estava em `/login` mas o teste esperava product cards da página de catálogo.
 
-**Esta falha é pré-existente em `main`** — não foi introduzida pelo PR #2663. O fix de URL guard (commits `cbe33d3`/`9e2ef4f`) cobre `/reposicao`, mas não cobre `color-swatch` que provavelmente navega para `/catalog` ou similar.
+A causa real é uma das seguintes:
+- O seletor `[data-testid="product-card"]` não existe mais na página `/catalogo` (mudança do Lovable no componente)
+- Os dados de produto não foram carregados no prazo esperado (timeout de rede/Supabase no ambiente nightly)
+- A estrutura de rota ou parâmetros de `/catalogo` mudou e o teste acessa uma página vazia
+
+**Esta falha é pré-existente em `main`** — não foi introduzida pelo PR #2663.
+
+> ⚠️ **Atenção:** Aplicar o padrão de URL guard (skip quando URL contém `/login`) **não corrige este problema** e mascararia falhas genuínas do catálogo de produtos, pois o projeto `chromium-public` nunca redireciona para `/login`.
 
 ### Por que não foi resolvido
-O fix de P10 adicionado nesta sessão cobre `novidades-reposicao-card-parity.spec.ts`. O spec `color-swatch` é arquivo diferente — requer auditoria separada do mesmo padrão de URL guard.
+Requer investigação específica do spec `color-swatch` no contexto `chromium-public`: inspecionar se `[data-testid="product-card"]` existe na versão atual do componente em `/catalogo`, e se os dados de produto chegam dentro do timeout configurado.
 
 ### Ação necessária
-Aplicar o mesmo padrão de URL guard em `e2e/visual/color-swatch.spec.ts` (ou caminho equivalente): após cada `gotoAndSettle`, verificar `page.url().includes(route)` e chamar `test.skip` se auth redirected.
+1. Localizar o arquivo do spec (provavelmente `e2e/visual/color-swatch.spec.ts`)
+2. Verificar se `[data-testid="product-card"]` ainda existe no componente atual (inspecionar commits recentes do Lovable que tocaram catálogo)
+3. Se o seletor mudou: atualizar o teste com o seletor correto
+4. Se é timeout de dados: aumentar timeout ou adicionar `waitForResponse` ao endpoint de produtos
+
+**Este workflow é separado do `deploy-gates.yml` (Gate Final). Não bloqueia o merge do PR #2663.**
 
 ---
 
