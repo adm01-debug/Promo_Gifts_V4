@@ -167,5 +167,18 @@
     "mergeable": null,
     "veredicto": "AGUARDA_CI",
     "razao": "Base=main correto. Gate Final não rodou. Candidata correta para baselines v10."
+  },
+  {
+    "number": 2675,
+    "title": "docs(audit): sessão session_012WyySbh2tj8vhRQLBf3mHo — relatório final rev63, 4 merges autônomos",
+    "branch": "claude/quirky-keller-owezvt",
+    "draft": false,
+    "base_sha": "04239fdd42",
+    "base_is_current_main": false,
+    "head_sha": "140b8c819e",
+    "gate_final": "NOT_RUN",
+    "mergeable": null,
+    "veredicto": "NÃO_MERGEAR",
+    "razao": "Entrega de outra sessão Claude (session_012WyySbh2tj8vhRQLBf3mHo). Base outdated (04239fdd vs 8b0b6068). Gate Final não rodou. REGRA #10: não tocar em branch de outro agente."
   }
 ]

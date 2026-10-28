@@ -3,8 +3,8 @@
 **Gerado em:** 2026-10-28  
 **Sessão:** claude_pink/sleepy-cannon-h000nc  
 **Main SHA na análise:** `8b0b6068e53592509cfac7225935340b6f3409df`  
-**Total PRs abertas:** 12  
-**Total analisadas:** 12  
+**Total PRs abertas:** 13 (incluindo #2675 detectada em 2026-10-28)
+**Total analisadas:** 13  
 
 ---
 
@@ -12,12 +12,16 @@
 
 | Veredicto | Quantidade | PRs |
 |---|---|---|
-| NÃO_MERGEAR | 4 | #2600, #2662, #2668, #2670 |
+| NÃO_MERGEAR | 5 | #2600, #2662, #2668, #2670, #2675 |
 | DECISAO_HUMANA | 1 | #2663 |
 | AGUARDA_CI | 7 | #2580, #2631, #2646, #2665, #2666, #2671, #2673 |
 | AGUARDA_ANÁLISE | 1 | #2672 |
 
 **PRs mergeadas nesta sessão:** #2664 (react-day-picker fix parte 1) + #2667 (react-day-picker fix completo)
+
+### PR#2675 (novo, detectado em 2026-10-28)
+- **Veredicto:** NÃO_MERGEAR
+- **Razão:** Entrega de outra sessão Claude (`session_012WyySbh2tj8vhRQLBf3mHo`). Base outdated (`04239fdd` vs main `8b0b6068`). Gate Final não rodou. REGRA #10 proíbe tocar em branch de outro agente.
 
 ---
 

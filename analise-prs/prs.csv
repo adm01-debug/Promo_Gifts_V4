@@ -12,3 +12,4 @@ number,title,draft,base_is_current_main,gate_final,mergeable,veredicto,razao
 2671,chore(e2e): update calendar visual baselines (safe),False,False,NOT_RUN,,AGUARDA_CI,Baselines válidos pós-migração v10. Base outdated. Conflito potencial com #2673.
 2672,chore(e2e): update calendar visual baselines (force),False,False,NOT_RUN,,AGUARDA_ANÁLISE,Base não é main (c3fd54164b). Pode ser stack sobre #2671. Conflito provável com #2671 e #2673.
 2673,chore(e2e): update calendar visual baselines (safe),False,True,NOT_RUN,,AGUARDA_CI,Base=main correto. Gate Final não rodou. Candidata correta para baselines v10.
+2675,"docs(audit): sessão session_012WyySbh2tj8vhRQLBf3mHo — relatório final rev63, 4 merges autônomos",False,False,NOT_RUN,,NÃO_MERGEAR,"Entrega de outra sessão Claude. Base outdated. Gate Final não rodou. REGRA #10."
