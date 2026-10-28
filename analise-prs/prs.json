@@ -1,142 +1,216 @@
-{
-  "session": "session_012WyySbh2tj8vhRQLBf3mHo",
-  "date": "2026-10-27",
-  "rev": 55,
-  "main_head_pre": "df18546dfd76d1bea7ea5873257b668d128d8df3",
-  "main_head_post": "e0b569f18cdfc8c7bc63466e567597cf799aaae7",
-  "gate_final_baseline": {
-    "run": 40420603513,
-    "sha": "2fafe8edd3e6bcf1a9f3fdd9dbc90869d6d57c59",
-    "status": "success",
-    "tests": 429,
-    "failures": 0
+[
+  {
+    "number": 2580,
+    "title": "fix(banco): rollback header e23 force_rls",
+    "author": "adm01-debug",
+    "draft": true,
+    "base": "main",
+    "head_sha": "41198d9a332f3e75707ca070d62b27b2eb772792",
+    "mergeable": false,
+    "veredito": "DECISAO_HUMANA",
+    "motivo": "DRAFT + supabase/migrations/ + supabase/rollbacks/ (REGRA #8)",
+    "created_at": "2026-10-27"
   },
-  "gate_final_post_merge_2587": {
-    "sha": "16ad57c66e619100f76c113653cdab7a20a7871a",
-    "check_run_id": 122342656953,
-    "workflow_run": 40544232971,
-    "status": "success",
-    "completed_at": "2026-10-27T17:08:33Z"
+  {
+    "number": 2587,
+    "title": "chore(deps): zustand 4.5.7→5.0.16",
+    "author": "dependabot[bot]",
+    "draft": false,
+    "base": "main",
+    "head_sha": "16ad57c66e619100f76c113653cdab7a20a7871a",
+    "mergeable": true,
+    "veredito": "MERGEADO_AUTONOMO",
+    "sha_merge": "16ad57c66e619100f76c113653cdab7a20a7871a",
+    "gate_final_run": "40544232971",
+    "gate_final_conclusao": "success",
+    "created_at": "2026-10-27"
   },
-  "summary": {
-    "total_open_analisadas": 18,
-    "mergeado_autonomo": 1,
-    "mergeado_owner": 5,
-    "fechado_owner": 3,
-    "decisao_humana": 5,
-    "ci_falhou": 1,
-    "draft_nomerge": 3
+  {
+    "number": 2600,
+    "title": "docs(analise-prs): rev46 — 20 PRs",
+    "author": "claude",
+    "draft": true,
+    "base": "main",
+    "head_sha": null,
+    "mergeable": false,
+    "veredito": "DRAFT_NOMERGE",
+    "motivo": "PR body diz NÃO MERGEAR ESTA PR; obsoleta; REGRA #10",
+    "created_at": "2026-10-26"
   },
-  "prs": [
-    {
-      "number": 2587,
-      "verdict": "MERGEADO_AUTONOMO",
-      "title": "chore(deps): zustand 4.5.7→5.0.16",
-      "merge_sha": "16ad57c66e619100f76c113653cdab7a20a7871a",
-      "merged_by": "Claude",
-      "merged_at": "2026-10-27T17:00:00Z",
-      "gate_final_post": "run_40544232971 success",
-      "note": "Frontend-only dep — zero infra risk"
-    },
-    {
-      "number": 2594,
-      "verdict": "MERGEADO_OWNER",
-      "title": "chore(ci)(deps): bump actions/setup-node from 4 to 7",
-      "merge_sha": "f2f8c3d6e316cef8802faf42a64f9f4005970b6a",
-      "merged_by": "adm01-debug",
-      "merged_at": "2026-10-27T15:56:14Z"
-    },
-    {
-      "number": 2648,
-      "verdict": "MERGEADO_OWNER",
-      "title": "docs: atualiza PENDENCIAS.md §12 com diagnóstico exato do schema-snapshot-export",
-      "merge_sha": "ed87db31b5ce630378f74766adcdcc26edfb0bd2",
-      "merged_by": "adm01-debug",
-      "merged_at": "2026-10-27T15:50:19Z"
-    },
-    {
-      "number": 2649,
-      "verdict": "MERGEADO_OWNER",
-      "title": "fix(e2e): corrige falhas em admin-critical-routes e personalization-auth-redirect",
-      "merge_sha": "61a0cfa1714661f752273cf864b335eb217ea134",
-      "merged_by": "adm01-debug",
-      "merged_at": "2026-10-27T15:54:20Z"
-    },
-    {
-      "number": 2650,
-      "verdict": "MERGEADO_OWNER",
-      "title": "fix(e2e): corrige testids e landing state em catalog.spec e kit-builder.spec",
-      "merge_sha": "f0689734b38e79edda24cf80f5df19abae941015",
-      "merged_by": "adm01-debug",
-      "merged_at": "2026-10-27T16:21:21Z"
-    },
-    {
-      "number": 2652,
-      "verdict": "MERGEADO_OWNER",
-      "title": "docs(e15): recibo aplicação migration 20261027140000",
-      "merge_sha": "22ba938e02ae48eee34d77176a4d5dee6cf8e14b",
-      "merged_by": "adm01-debug",
-      "merged_at": "2026-10-27T16:40:44Z"
-    },
-    {
-      "number": 2420,
-      "verdict": "DECISAO_HUMANA",
-      "motivo": "CONFLICT+REGRA8 — migrations+rollbacks com conflito não-trivial"
-    },
-    {
-      "number": 2572,
-      "verdict": "DECISAO_HUMANA",
-      "motivo": "CONFLICT RELATORIO_CI.md + REGRA10 branch de outra sessão"
-    },
-    {
-      "number": 2579,
-      "verdict": "DECISAO_HUMANA",
-      "motivo": "downgrade 1.2.1→1.0.0 — regressão de versão"
-    },
-    {
-      "number": 2580,
-      "verdict": "DECISAO_HUMANA",
-      "motivo": "DRAFT + REGRA8 migrations — necessita aprovação PO"
-    },
-    {
-      "number": 2588,
-      "verdict": "CI_FALHOU",
-      "motivo": "major upgrade react-day-picker 8→10 — Gate Final FAILED"
-    },
-    {
-      "number": 2600,
-      "verdict": "DRAFT_NOMERGE",
-      "motivo": "DRAFT analise-prs/ docs internos — branch de outra sessão"
-    },
-    {
-      "number": 2605,
-      "verdict": "FECHADO_OWNER",
-      "motivo": "fechada pelo owner adm01-debug 2026-10-27T22:23:21Z — supersedida por #2620"
-    },
-    {
-      "number": 2622,
-      "verdict": "FECHADO_OWNER",
-      "motivo": "fechada pelo owner adm01-debug 2026-10-27T22:23:22Z — BRANCH_DIRTY ADD/ADD conflict"
-    },
-    {
-      "number": 2631,
-      "verdict": "DRAFT_NOMERGE",
-      "motivo": "DRAFT — sessão externa + REGRA10 branch claude/ diferente agente"
-    },
-    {
-      "number": 2645,
-      "verdict": "FECHADO_OWNER",
-      "motivo": "fechada pelo owner adm01-debug 2026-10-27T22:23:24Z — supersedida por #2652"
-    },
-    {
-      "number": 2646,
-      "verdict": "DECISAO_HUMANA",
-      "motivo": "Gate Final falhou — mudança na edge function, necessita revisão PO"
-    },
-    {
-      "number": 2662,
-      "verdict": "DRAFT_NOMERGE",
-      "motivo": "DRAFT analise-prs/ docs internos — branch de sessão session_01VXkRxWq5ZUCmvuNx5e2TGX (claude_pink/), REGRA10 cross-agente"
-    }
-  ]
-}
+  {
+    "number": 2631,
+    "title": "chore: PENDENCIAS §4 e RELATORIO_CI",
+    "author": "claude",
+    "draft": false,
+    "base": "main",
+    "head_sha": "b093f023f2d988f8eeb447ca224ec2fd56a3d6ae",
+    "mergeable": false,
+    "veredito": "DECISAO_HUMANA",
+    "motivo": "CONFLITO em PENDENCIAS.md e RELATORIO_CI.md",
+    "created_at": "2026-10-27"
+  },
+  {
+    "number": 2646,
+    "title": "fix(migrations): rollback header + packages:read",
+    "author": "claude",
+    "draft": false,
+    "base": "main",
+    "head_sha": "79c0c670f33744fecc01f5c9b6617578c57a3fd2",
+    "mergeable": true,
+    "veredito": "DECISAO_HUMANA",
+    "motivo": "3 .github/workflows/ + 3 supabase/migrations/ (REGRA #8)",
+    "created_at": "2026-10-27"
+  },
+  {
+    "number": 2662,
+    "title": "docs(audit): dossiês rev46 — 30 arquivos analise-prs/",
+    "author": "claude",
+    "draft": false,
+    "base": "main",
+    "head_sha": "749f9608e92164d0b8202cb5709e878648a5f1be",
+    "mergeable": true,
+    "veredito": "MERGEADO_AUTONOMO",
+    "sha_merge": "efacff0bef81c7d175aef629ab338634b6c4ffb2",
+    "gate_final_run": "40609592189",
+    "gate_final_conclusao": "failure",
+    "gate_final_nota": "falha PRE-EXISTENTE: SHA 4c5fdd72 (merge do owner em #2588) já tinha 10 erros TS react-day-picker antes deste merge; PR é docs-only (analise-prs/), não introduziu erros novos; fix em SHA 8b0b6068 run 40612760517",
+    "created_at": "2026-10-28"
+  },
+  {
+    "number": 2663,
+    "title": "docs(ci): RELATORIO_CI.md + PENDENCIAS.md",
+    "author": "claude",
+    "draft": false,
+    "base": "main",
+    "head_sha": "a96baae31b1438cdcf25b94e6ba31ee196d421a9",
+    "mergeable": true,
+    "veredito": "DECISAO_HUMANA",
+    "motivo": "supabase/migrations/ (REGRA #8) + branch behind",
+    "created_at": "2026-10-28"
+  },
+  {
+    "number": 2664,
+    "title": "docs(audit): auditoria Supabase — 15 arquivos auditoria-supabase/",
+    "author": "claude",
+    "draft": false,
+    "base": "main",
+    "head_sha": "872a0ee2",
+    "mergeable": true,
+    "veredito": "MERGEADO_AUTONOMO",
+    "sha_merge": "bd783873aa273a6da6f3351e8d1f670baaf950d2",
+    "gate_final_run": "40609991866",
+    "gate_final_conclusao": "failure",
+    "gate_final_nota": "falha PRE-EXISTENTE: mesma causa do #2662 (SHA 4c5fdd72); PR é docs-only (auditoria-supabase/); fix em SHA 8b0b6068 run 40612760517",
+    "created_at": "2026-10-28"
+  },
+  {
+    "number": 2665,
+    "title": "chore(deps): bump qs 6.16.0→6.16.2",
+    "author": "dependabot[bot]",
+    "draft": false,
+    "base": "main",
+    "head_sha": "1bda4d605946b81b47a65963557d5d4c6bb1c54b",
+    "mergeable": true,
+    "veredito": "MERGEADO_AUTONOMO",
+    "sha_merge": "04239fdd42eef05589fb41b3f0e58a664621fbf7",
+    "gate_final_run": "40615509956",
+    "gate_final_conclusao": "success",
+    "created_at": "2026-10-27"
+  },
+  {
+    "number": 2666,
+    "title": "chore(main): release 1.0.0",
+    "author": "release-please[bot]",
+    "draft": false,
+    "base": "main",
+    "head_sha": "6a254ef57746f30b93a404c8286de40eb76b4613",
+    "mergeable": true,
+    "veredito": "FECHAR",
+    "motivo": "Downgrade semver 1.2.1→1.0.0; nunca mergear",
+    "created_at": "2026-10-27"
+  },
+  {
+    "number": 2667,
+    "title": "fix(calendar): react-day-picker v8→v10",
+    "author": "dependabot[bot]",
+    "draft": false,
+    "base": "main",
+    "head_sha": "c2ed28a7c8ae59e120c7f929cff3557c52fcf682",
+    "mergeable": true,
+    "veredito": "CI_FALHOU",
+    "motivo": "Supersedida por fix direto no main (SHA 8b0b6068); CONFLICT em calendar.tsx",
+    "created_at": "2026-10-27"
+  },
+  {
+    "number": 2668,
+    "title": "chore(analise-prs): inventário PRs",
+    "author": "claude",
+    "draft": true,
+    "base": "main",
+    "head_sha": "d0a3fb612eaf230f9866bd6817f9a40bf72c24ba",
+    "mergeable": true,
+    "veredito": "DRAFT_NOMERGE",
+    "motivo": "DRAFT; diff: reescreve prs.csv (46→10 linhas) e prs.json com dados desatualizados da sessão anterior",
+    "created_at": "2026-10-28"
+  },
+  {
+    "number": 2670,
+    "title": "fix: migra react-day-picker v8→v10 (classNames + Chevron + autoFocus)",
+    "author": "adm01-debug",
+    "draft": true,
+    "base": "main",
+    "head_sha": "0ed16e619f253d64cce54dfbcb60b22b8b5123eb",
+    "mergeable": true,
+    "veredito": "DRAFT_NOMERGE",
+    "motivo": "DRAFT + SUPERSEDED — fix já está em main via SHA 8b0b6068; owner pode fechar",
+    "created_at": "2026-10-28"
+  },
+  {
+    "number": 2671,
+    "title": "chore(e2e): update calendar visual baselines (safe)",
+    "author": "github-actions[bot]",
+    "draft": false,
+    "base": "main",
+    "head_sha": "f0deb7a941fd18e1eecd5c9029c2bc0808a26d6b",
+    "mergeable": true,
+    "veredito": "DECISAO_HUMANA",
+    "motivo": "Depende #2670 que foi supersedida; behind; diff confirmado: 8 PNGs em e2e/",
+    "created_at": "2026-10-28"
+  },
+  {
+    "number": 2672,
+    "title": "chore(e2e): update calendar visual baselines (force)",
+    "author": "github-actions[bot]",
+    "draft": false,
+    "base": "claude_pink/compassionate-keller-om34uo",
+    "head_sha": null,
+    "mergeable": false,
+    "veredito": "DECISAO_HUMANA",
+    "motivo": "Base ≠ main; PR auxiliar de #2670; diff confirmado: 8 PNGs em e2e/",
+    "created_at": "2026-10-28"
+  },
+  {
+    "number": 2673,
+    "title": "chore(e2e): update calendar visual baselines (safe)",
+    "author": "github-actions[bot]",
+    "draft": false,
+    "base": "main",
+    "head_sha": null,
+    "mergeable": false,
+    "veredito": "DECISAO_HUMANA",
+    "motivo": "blocked — reviewer adm01-debug solicitado; depende de #2670 ser resolvido antes",
+    "created_at": "2026-10-28"
+  },
+  {
+    "number": 2674,
+    "title": "docs(analise-prs): análise completa 12 PRs",
+    "author": "claude",
+    "draft": true,
+    "base": "main",
+    "head_sha": null,
+    "mergeable": false,
+    "veredito": "DRAFT_NOMERGE",
+    "motivo": "DRAFT; body=NÃO MERGEAR; sessão externa com dados desatualizados",
+    "created_at": "2026-10-28"
+  }
+]

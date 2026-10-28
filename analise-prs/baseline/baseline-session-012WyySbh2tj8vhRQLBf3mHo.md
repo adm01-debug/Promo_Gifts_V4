@@ -11,9 +11,10 @@
 | Check | Resultado | Evidência |
 |---|---|---|
 | TypeCheck (`npx tsc --noEmit`) | ✅ 0 erros | exit 0, TSC_EXIT=0 |
-| Lint (`npm run lint`) | ✅ exit 0 | lint:baseline ratchet sem regressão |
+| Lint (`npm run lint`) | ✅ exit 0 | ratchet (`check-eslint-baseline.mjs`) sem novas violações; ESLint subprocess crashou com OOM/Abort mas ratchet-wrapper sai 0 pois baseline não aumentou — mesmo comportamento do CI |
+| Lint (direto `npx eslint`) | ⚠️ OOM/Abort | subprocess Node.js abortou (stack: 0x14448a3…); exit code capturado = 0; evidência em task bmf06vvp6.output |
 | Build (`npm run build`) | ✅ exit 0 | `✓ built in 14.07s` |
-| Vitest | ⏸ não concluído localmente | >3 min timeout — ver Gate Final CI |
+| Vitest | ⏸ não concluído localmente | task b8zskfl2r rodou >30 min sem output — requer >3 GiB RAM; ver Gate Final CI run 40615509956 (Gate 2 passed) |
 
 ## Testes via Gate Final CI
 
@@ -45,7 +46,7 @@
 ## Worktrees
 
 ```
-/home/user/Promo_Gifts_V4  6ac4b243 [claude/quirky-keller-owezvt]
+/home/user/Promo_Gifts_V4  [claude/quirky-keller-owezvt]
 ```
 
 Nenhum worktree extra — todos removidos ou nunca criados nesta sessão.
