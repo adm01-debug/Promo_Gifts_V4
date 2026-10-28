@@ -96,16 +96,52 @@ O timeout de 2s (`expect(tooltip).toBeVisible({ timeout: 2000 })`) pode ser insu
 **Workflow:** Branch Protection Sentinel  
 **Run ID:** 40615509825  
 **Link:** https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40615509825  
-**Status:** failure (histórico — resolve automaticamente ao mergear o PR #2681)
+**Status:** failure
 
 **Contexto:** O commit `04239fd` (`chore(deps): bump qs 6.16.0→6.16.2`) foi pushed diretamente para `main` sem passar por PR. O sentinel detectou isso e falhou.
 
-**Resolução automática:** Quando o PR #2681 for mergeado, o sentinel executa para o merge commit (`Merge pull request #2681`) — esse padrão é aceito pelo sentinel (`scripts/sentinel-check.sh`) e passa. A execução histórica em falha permanece no histórico, mas a **última execução** passa a ser success.
+**Status atualizado (2026-10-28):** O PR #2681 foi fechado sem merge. A resolução automática não ocorreu. O sentinel continua com a última execução em falha.
 
-**Nenhuma ação necessária da sua parte** — só merge o PR #2681.
+**Ação necessária:** Abrir novo PR com os commits do fix de Calendar e mergear — o merge commit `Merge pull request #NNN` é padrão aceito pelo sentinel e resolve automaticamente.
 
 **Recomendação para o futuro:** Bumps de dependências devem entrar por PR (Dependabot/Renovate) ou com mensagem terminando em `(#NNN)` / `[skip-sentinel: bump-dep]`.
 
 ---
 
-*Próxima ação: resolver P1 configurando os 4 secrets E2E em https://github.com/adm01-debug/Promo_Gifts_V4/settings/secrets/actions. Após isso, P2 e P3 se resolvem por cascata/merge.*
+## P4 — Gate E40 (Schema Drift) BLOQUEANTE — divergência massiva de ledger Supabase
+
+**Workflow:** Deploy Gates (Gate Final)  
+**Run ID da falha:** 40660438161  
+**Link:** https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40660438161  
+**Status:** failure — Gate E40 falhou, Gate Final falhou em cascata
+
+**Erro exato (log do Gate Final):**
+```
+[migration-ledger][bloqueado] local_only=1108; remote_only=647; mismatched=0; malformed=0
+##[error]Gate E40 Schema Drift falhou (failure)
+```
+
+**Causa raiz:** 1.108 migrations existem no repo (`supabase/migrations/`) mas não estão no ledger de produção (`supabase_migrations.schema_migrations`), e 647 migrations estão no ledger de produção mas não no repo. Divergência massiva pré-existente — o Gate E40 verifica paridade entre repo e banco de produção.
+
+**Impacto:** NENHUM PR neste repositório pode ter Gate Final = success enquanto o ledger estiver dessincronizado. Este é um bloqueio sistêmico de infraestrutura, não causado pelo PR #2681 nem por nenhuma mudança de código.
+
+**Descoberta crítica:** O CLAUDE.md documenta Gate E40 como "advisory, não gate — não bloqueia merge". O código real em `deploy-gates.yml` o trata como **BLOQUEANTE** — a linha `[[ "$R_SCHEMA_DRIFT" == "success" || "$R_SCHEMA_DRIFT" == "skipped" ]] || fail_gate "Gate E40 Schema Drift falhou (${R_SCHEMA_DRIFT})"` confirma que falha no E40 falha o Gate Final. O CLAUDE.md está desatualizado.
+
+**Caminho de resolução (REGRA #8 corolário E99 — requer aprovação PO):**
+
+Este é um processo destrutivo de infraestrutura de banco de produção. Não pode ser executado por agente sem aprovação explícita do PO. O caminho autorizado é:
+
+1. Identificar quais das 1.108 migrations `local_only` já foram aplicadas em produção (via `pg_catalog` — nunca PostgREST)
+2. Para cada migration aplicada fora do fluxo: criar migration espelho + `supabase migration repair --status applied <version>` (com versão explícita)
+3. Para migrations não aplicadas: decidir se aplicar via `db-apply-migration.yml` (único caminho autorizado)
+4. Abrir PR com todos os arquivos e recibos em `supabase/MIGRATIONS_SYNC_LOG.md`
+5. Rodar `schema-snapshot-export.yml` com `force_rotate: true` após o ledger estar sincronizado
+
+**Ação necessária do PO:**
+- Aprovar o processo de reconciliação do ledger
+- Providenciar acesso a `DATABASE_URL` de produção (`doufsxqlfjyuvxuezpln`) para executar queries `pg_catalog`
+- Revisar e aprovar cada migration antes da aplicação em produção
+
+---
+
+*Próxima ação prioritária: (1) configurar 4 secrets E2E (P1) — https://github.com/adm01-debug/Promo_Gifts_V4/settings/secrets/actions; (2) abrir novo PR com os commits de fix de Calendar para resolver P2 e P3; (3) aprovar reconciliação do ledger Supabase (P4 — requer PO).*

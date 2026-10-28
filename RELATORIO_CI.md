@@ -57,7 +57,7 @@ Resultado válido: CI do PR #2681 executa em runner GitHub Actions com memória 
 ### 2e. Erros pré-correção (derivados dos logs de CI — runs em falha)
 
 **CI Security & Drift Checks — `calendar.dimensions.test.tsx`:**
-- Linha 79: `expected null to be truthy` — `container.querySelector('button[aria-selected="true"]')` retorna null no v10
+- Linha 79: `expected null to be truthy` — `container.querySelector('button[aria-selected="true"')` retorna null no v10
 - Linha 111: `expected 0 to be greater than 20` — `querySelectorAll('button[name="day"]')` retorna 0 no v10
 
 **CI Security & Drift Checks — `calendar.redesign.test.tsx`:**
@@ -85,13 +85,13 @@ Resultado válido: CI do PR #2681 executa em runner GitHub Actions com memória 
 |---|---|---|---|
 | `calendar.dimensions.test.tsx` | 78 | `querySelector('button[aria-selected="true"]')` | `querySelector('[aria-selected="true"] button')` |
 | `calendar.dimensions.test.tsx` | 110 | `querySelectorAll('button[name="day"]')` | `querySelectorAll('td[role="gridcell"] button')` |
-| `calendar.redesign.test.tsx` | 58–63 | busca frágil por `text-destructive` (falso-positivo com domingos) | `querySelector('td[aria-current="date"]')` — aria semântico do RDP v10 |
+| `calendar.redesign.test.tsx` | 58–63 | busca frágil por `text-destructive` (falso-positivo com domingos) | `Array.from(querySelectorAll('td')).find(td => td.className.includes('[&>button]:text-destructive'))` — classe Tailwind child-selector no `<td>` wrapper (RDP v10) |
 | `calendar.redesign.test.tsx` | 68 | `querySelector('button[aria-selected="true"]')` | `querySelector('[aria-selected="true"]')` |
-| `date-picker-field.test.tsx` | 60 | `getByRole('gridcell', { name: /15/ })` + click | `getByRole('button', { name: /15/ })` + click |
+| `date-picker-field.test.tsx` | 60 | `getByRole('gridcell', { name: /15/ })` + click direto no `<td>` | `getByRole('gridcell', { name: /15/ })` + `querySelector('button') ?? cell` + click (RDP v10: click no `<td>` não dispara — clicar no `<button>` interno) |
 
 ### Grupo B — Sentinel (Branch Protection Sentinel)
 
-O sentinel falha para pushes que não seguem o padrão aceito. O push `04239fd` já está na main e não pode ser revertido sem force-push. **A última execução do sentinel vai virar success automaticamente quando este PR for mergeado** — o merge commit (`Merge pull request #NNN`) é um padrão aceito pelo sentinel (`scripts/sentinel-check.sh`) e passa.
+O sentinel falha para pushes que não seguem o padrão aceito. O push `04239fd` já está na main e não pode ser revertido sem force-push. O PR #2681 foi fechado sem merge (2026-10-28), portanto a resolução automática não ocorreu. O sentinel continuará com última execução em falha até que um novo PR seja criado e mergeado (o merge commit `Merge pull request #NNN` é padrão aceito pelo sentinel). Ver P3 em PENDENCIAS.md.
 
 ### Grupo C — E2E autenticado (bloqueado — ver PENDENCIAS.md)
 
@@ -107,8 +107,9 @@ Os workflows P1 e P2 de E2E que dependem de autenticação real continuam falhan
 | TypeScript (tsc) | ✓ (pré-existente) | ✓ exit 0 |
 | Testes unitários | ✗ 5 falhas Calendar | ✓ 1210 passando, exit 0 |
 | Lint (ESLint) | ✓ (pré-existente) | Aguardando CI |
-| Branch Protection Sentinel | ✗ failure (run 40615509825) | Resolve após merge do PR |
-| CI Security & Drift Checks | ✗ failure (run 40615509752) | Resolve após merge (testes corrigidos) |
+| Branch Protection Sentinel | ✗ failure (run 40615509825) | Bloqueado — PR #2681 fechado sem merge; resolve com novo PR (ver P3) |
+| CI Security & Drift Checks | ✗ failure (run 40615509752) | Fix aplicado e validado; resolve com novo PR |
+| Deploy Gates (Gate Final) | ✗ failure (run 40660438161) | Gate E40 BLOQUEANTE — ledger dessincronizado (ver P4) |
 | CI Replenishment E2E | ✗ failure (P1 — secrets) | Bloqueado — ver PENDENCIAS.md |
 | E2E Critical Flows | ✗ failure (P2 — secrets) | Bloqueado — ver PENDENCIAS.md |
 
@@ -116,23 +117,31 @@ Os workflows P1 e P2 de E2E que dependem de autenticação real continuam falhan
 
 ---
 
-## 5. Prova de conclusão (retrigger via push MCP — 2026-10-28T04:35Z)
+## 5. Prova de conclusão — resultado final do Deploy Gates (run 40660438161)
 
-**Histórico de runs PR #2681:**
-- Run `40629639891` (commit `7286e3b`): criado 03:58Z, gates cancelados por saturação de runners.
-- Re-run attempt 3 disparado via `github_rerun_workflow`.
-- Push MCP (este commit) disparado em `99aa164` para triggar novo run no HEAD atual.
+**PR #2681 foi fechado sem merge.** Resultado do último run de Deploy Gates para o HEAD `2eb3c3d`:
 
-| Workflow | Run ID pós-merge | Conclusion | Link |
-|---|---|---|---|
-| Branch Protection Sentinel | — | pendente | — |
-| CI Security & Drift Checks | — | pendente | — |
-| Deploy Gates | — | pendente | — |
+| Gate | Status | Observação |
+|---|---|---|
+| Gate 0 — SSOT | ✅ success | |
+| Gate 0.5 — Dependency Audit | ✅ success | |
+| Gate 0.6 — Dependency Review | ✅ success | |
+| Gate 1 — Lint + TypeScript | ✅ success | Confirma: sem erros de lint nem TS |
+| Gate 1.1–1.18 (steps internos) | ✅ success | Campos Product, drift types, contratos, etc. |
+| Gate 2 — Unit Tests (Vitest) | ✅ success | Fix de Calendar RDP v10 validado — 1210 arquivos passando |
+| Gate 2.5 — PostgreSQL | ✅ success | |
+| Gate 3 — E2E Smoke | ✅ success | |
+| Gate 5 — SEO | ✅ success | |
+| Gate 5.5 — RPC restore_seller_cart | ✅ success | |
+| Gate 6 — Build | ✅ success | |
+| Gate E23 — Secret Scan | ✅ success | |
+| **Gate E40 — Schema Drift** | ❌ **failure** | `local_only=1108; remote_only=647` — divergência massiva de ledger pré-existente (ver P4 em PENDENCIAS.md) |
+| **Gate Final — Deploy Ready** | ❌ **failure** | Bloqueado pelo Gate E40 |
 
-*Esta tabela será atualizada com os run IDs e links reais após o Deploy Gates = success e merge do PR #2681.*
+**Conclusão:** O fix de Calendar (objetivo técnico desta sessão) está **correto e validado** — 12 de 13 gates passam, incluindo Gate 2 (unit tests) e Gate 3 (E2E smoke). O bloqueio no Gate Final é causado pelo Gate E40 (Schema Drift), que é um problema de infraestrutura pré-existente, completamente independente das mudanças deste PR. Não existe nenhum PR neste repositório que passe pelo Gate Final enquanto o ledger Supabase estiver dessincronizado. Ver P4 em PENDENCIAS.md para o caminho de resolução.
 
 ---
 
 ## 6. Pendências (não corrigíveis sem ação externa)
 
-Ver `PENDENCIAS.md` para detalhes completos de P1 e P2 (E2E autenticado — requer secrets configurados pelo PO no GitHub Actions).
+Ver `PENDENCIAS.md` para detalhes completos de P1–P4.
