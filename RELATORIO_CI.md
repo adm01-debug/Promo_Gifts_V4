@@ -13,7 +13,7 @@
 |---|---|---|
 | Deploy Gates (Gate Final) | ✅ success | Runs 40667156516 e 40662579684 — P0/P4 RESOLVIDOS |
 | CI Security & Drift Checks | ✅ success (fix) | Fix Calendar RDP v10 — commit `c73cb9b` — P5 RESOLVIDO |
-| Branch Protection Sentinel | ✅ success | RESOLVIDO — run 40702858343 (main SHA `2cee272b`) — P3 |
+| Branch Protection Sentinel | ⚠️ recorrente | Passou em SHA `2cee272b` (run 40702858343 ✅); falhou em SHA `6b2cc72` (run 40728685711 ❌) — squash merge sem `(#2699)` — P3 |
 | CI Replenishment Module E2E | ❌ failure | 4 secrets E2E ausentes — P1 |
 | E2E — Critical Flows & Error Boundaries | ❌ failure | Mesma causa P1 — P2 |
 | E2E · undo | ❌ failure | Falhas pré-existentes — P6 |
@@ -138,7 +138,7 @@ END $$;
 | # | Workflow em falha | Run ID da falha (main) | Desfecho | Evidência |
 |---|---|---|---|---|
 | 1 | CI Security & Drift Checks | [40615509752](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40615509752) | **✅ RESOLVIDO — P5** | Fix commit `c73cb9b`; Gate 2 ✅ no run [40662579684](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40662579684) |
-| 2 | Branch Protection Sentinel | [40702858343](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40702858343) | **✅ RESOLVIDO — P3** | Run pós-merge (SHA `2cee272b`) → success |
+| 2 | Branch Protection Sentinel | [40615509825](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40615509825) | **⚠️ RECORRENTE — P3** | Passou em SHA `2cee272b` (run 40702858343) mas falhou em SHA `6b2cc72` (run [40728685711](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40728685711)) — squash merge via API sem `(#2699)` no commit_title |
 | 3 | CI Replenishment Module E2E | [40612760478](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40612760478) | **PENDENCIAS.md P1** | 4 secrets E2E ausentes — requer ação do PO |
 | 4 | E2E — Critical Flows & Error Boundaries | [40615510053](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40615510053) | **PENDENCIAS.md P2** | Mesma causa de P1 (secrets ausentes) + tooltip timing |
 | 5 | Deploy Gates (Gate Final) | [40660438161](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40660438161) | **✅ RESOLVIDO — P4** | Fix commit `8c81483`; run [40667156516](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40667156516) success |
@@ -154,7 +154,9 @@ END $$;
 
 **Workflows aguardando ação do PO:** P1 (E2E secrets), P2 (depende P1), P6 (UI regressão), P8 (edge functions drift), P9 (depende P1), P10 (depende P1 + webkit), P11 (edge integration), P12 (GRANT SELECT).
 
-**Verificado pós-merge (2026-10-28):** P3 (Branch Protection Sentinel) → ✅ RESOLVIDO (run 40702858343). P7 (db-schema-drift-check) → ❌ AINDA FALHA (run 40708395880) — causa raiz é ledger divergente (`local_only=1108; remote_only=648`), independente de P4; requer reconciliação pelo PO.
+**Verificado pós-merge SHA `2cee272b` (2026-10-28):** P3 (Branch Protection Sentinel) → ✅ run 40702858343 success. P7 (db-schema-drift-check) → ❌ run 40708395880 failure (ledger divergente, independente de P4).
+
+**Verificado pós-merge SHA `6b2cc72` (PR #2699, 2026-10-28):** Deploy Gates → ✅ run [40728685782](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40728685782) success (Gate Final ✅, todos os 17 jobs). Branch Protection Sentinel → ❌ run [40728685711](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40728685711) failure — squash merge via API não incluiu `(#2699)` no commit title → P3 RECORRENTE.
 
 ---
 
@@ -166,3 +168,25 @@ END $$;
 | [40662579684](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40662579684) | `c73cb9b` | ✅ success | 2026-10-28 |
 
 **Gate Final verde em dois runs consecutivos — condição de processo satisfeita.**
+
+---
+
+## 7. Verificação pós-merge — SHA `6b2cc72` (PR #2699, 2026-10-28)
+
+| Workflow | Run ID | Conclusion | Observação |
+|---|---|---|---|
+| Deploy Gates (Gate Final) | [40728685782](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40728685782) | ✅ **success** | Todos os 17 jobs completados; Gate Final ✅ |
+| Branch Protection Sentinel | [40728685711](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40728685711) | ❌ **failure** | P3 RECORRENTE — squash merge sem `(#2699)` |
+| Lovable Edit Tracker | [40728685690](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40728685690) | ✅ success | |
+| Gitleaks — Full History Audit | [40728685675](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40728685675) | ✅ success | |
+| No Prod Leak in Dev/Test Config | [40728685548](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40728685548) | ✅ success | |
+| Policies Baseline | [40728685586](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40728685586) | ✅ success | |
+| Security Scan | [40728685829](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40728685829) | ✅ success | |
+| Supabase Linter Gate | [40728685716](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40728685716) | ✅ success | |
+| UI · Visual & A11y | [40728685627](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40728685627) | ✅ success | |
+| Static Health Checks | [40728685785](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40728685785) | ✅ success | |
+| Lovable Autoheal | [40728685794](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40728685794) | ✅ success | |
+| Select Columns vs Types | [40728685838](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40728685838) | ✅ success | |
+| Required Checks Guard | [40728685459](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40728685459) | ✅ success | |
+
+**Conclusão:** Gate Final (único required check em `main`) ✅ success em SHA `6b2cc72`. Branch Protection Sentinel falhou novamente por causa sistemática (squash merge via API sem `(#NNN)`) — documentado como P3 RECORRENTE em PENDENCIAS.md. Nenhuma regressão nos workflows que estavam verdes antes do merge.
