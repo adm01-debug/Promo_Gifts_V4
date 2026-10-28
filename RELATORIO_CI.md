@@ -1,28 +1,28 @@
 # RELATÓRIO CI — Promo Gifts V4
 **Gerado em:** 2026-10-28  
 **Branch de correção:** `fix/ci-workflows` (esta sessão)  
-**SHA main no momento do diagnóstico:** `8c81483` (pós-fix Gate E40)
+**SHA main no momento do diagnóstico:** `8c81483` (pós-fix Gate E40)  
+**SHA main final (pós-merge PR #2704):** `4562f376` (docs-only — sem alteração de código)
 
 ---
 
-## 1. Inventário de Workflows — Status na Main (2026-10-28)
+## 1. Inventário de Workflows — Estado atual na Main (SHA `4562f376`)
 
-> Base: runs mais recentes por workflow no branch `main` (SHA `8c81483`).
+| Workflow | Último run na main | Conclusão | Observação |
+|---|---|---|---|
+| Deploy Gates (Gate Final) | [40741742537](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40741742537) | ✅ success | SHA `4562f376` |
+| Branch Protection Sentinel | [40741741700](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40741741700) | ✅ success | SHA `4562f376` |
+| E2E — Critical Flows | [40741741633](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40741741633) | ✅ success* | SHA `4562f376` — 90% skipped (requireAuth sem secrets) |
+| E2E — Personalization Flow | [40741742442](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40741742442) | ✅ success* | SHA `4562f376` — skipped (requireAuth) |
+| E2E • Swatch QuickView | [40741742801](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40741742801) | ⏳ pending | SHA `4562f376` — em execução no momento do relatório |
+| CI Replenishment Module E2E | [40735988559](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40735988559) | ❌ failure | SHA `9bb37c44` — 4 secrets E2E ausentes (P1) |
+| Edge Integration Tests — All | [40735988490](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40735988490) | ❌ failure | SHA `9bb37c44` — versões edge functions desatualizadas (P11) |
+| edge-functions-drift-check | [40740410933](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40740410933) | ❌ failure | SHA `c7bc0ba6` — drift GitHub × canônico (P8) |
+| db-schema-drift-check | [40708395880](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40708395880) | ❌ failure | workflow_dispatch SHA `2cee272b` — ledger divergente (P7) |
+| Kit Coverage — Integration | [40628415319](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40628415319) | ❌ failure | schedule SHA `62af0798` — GRANT ausente (P12) |
+| E2E Quotes — Matrix (E77) | N/A | N/A | Workflow só roda em PR; 0 execuções na main |
 
-| Workflow | Conclusão | Observação |
-|---|---|---|
-| Deploy Gates (Gate Final) | ✅ success | Runs 40667156516 e 40662579684 — P0/P4 RESOLVIDOS |
-| CI Security & Drift Checks | ✅ success (fix) | Fix Calendar RDP v10 — commit `c73cb9b` — P5 RESOLVIDO |
-| Branch Protection Sentinel | ✅ RESOLVIDO — P3 | Run [40739341755](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40739341755) — SHA `c7bc0ba6` (PR #2703 com `(#2703)` no commit_title) — success |
-| CI Replenishment Module E2E | ❌ failure | 4 secrets E2E ausentes — P1 |
-| E2E — Critical Flows & Error Boundaries | ❌ failure | Mesma causa P1 — P2 |
-| E2E · undo | ❌ failure | Falhas pré-existentes — P6 |
-| db-schema-drift-check | ❌ failure | Ledger divergente: `local_only=1108; remote_only=648` — P7 aguarda PO |
-| edge-functions-drift-check | ❌ failure | Drift GitHub × canônico — P8 |
-| E2E — Personalization Flow | ❌ failure | Secrets E2E ausentes — P9 |
-| E2E • Swatch QuickView | ❌ failure | Secrets E2E + webkit null — P10 |
-| Edge Integration Tests — All Functions | ❌ failure | 11 testes falhando — P11 |
-| Kit Coverage — Integration | ❌ failure | permission denied view — P12 |
+> `*` success via `requireAuth`: os testes verificam se as secrets E2E estão presentes; sem elas, o suite é skipped integralmente e o workflow retorna success. A causa raiz (secrets ausentes) está em P1.
 
 ---
 
@@ -58,15 +58,19 @@ ESLint baseline gate [full] — atual: 0 erros, 0 warnings · baseline: 0 erros
 ```
 
 > Nota: execuções sem NODE_OPTIONS falham por OOM no container local (heap limit 2GB).
-> Corrigido com `--max-old-space-size=4096`.
 
 ### 2e. Testes unitários (Vitest)
 
 ```
-NODE_OPTIONS="--max-old-space-size=4096" npx vitest run → 1 arquivo com falha (3 testes), 1209 passando
+NODE_OPTIONS="--max-old-space-size=4096" npx vitest run
+
+Test Files  1 failed | 1209 passed | 131 skipped (1341)
+     Tests  3 failed | 25653 passed | 1134 skipped | 24 todo (26814)
+  Start at  11:24:43
+  Duration  1261.23s
 ```
 
-> **3 testes TZ-dependentes falham localmente** (`date-utils.test.ts` — `formatTime`, `formatDateTime`, `formatDate` com strings ISO UTC esperando resultado em BRT). Causa: container de build local não define `TZ=America/Sao_Paulo`. São falhas **pré-existentes** — o Gate 2 no CI (`TZ=America/Sao_Paulo` configurado no runner) passa com 1210+ testes: run [40662579684](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40662579684) ✅ success. Não são regressão desta sessão.
+> **3 falhas TZ-dependentes em `tests/unit/date-utils.test.ts`** (função `formatTime`): testes esperam horário em BRT (UTC-3), mas o container roda em UTC. O Gate 2 no CI passa porque roda com `TZ=America/Sao_Paulo`. No container local sem essa variável, as 3 falham. Não são regressões.
 
 ---
 
@@ -90,108 +94,76 @@ NODE_OPTIONS="--max-old-space-size=4096" npx vitest run → 1 arquivo com falha 
 
 **Causa raiz:** As migrations `20261027120000` e `20261027140000` executavam `ALTER SYSTEM SET cron.database_name` e `UPDATE cron.job` incondicionalmente. No ambiente de replay do Gate E40 (que usa PostgreSQL sem extensão `pg_cron`), esses comandos lançavam `RAISE EXCEPTION` e abortavam o replay.
 
-**Fix:** Commit `8c81483` na main — guard `IF to_regclass('cron.job') IS NULL OR NOT EXISTS (...) THEN RAISE NOTICE + RETURN` adicionado nas duas migrations:
-
-```sql
--- Antes (migration 20261027120000):
-ALTER SYSTEM SET cron.database_name = 'postgres';
-
--- Depois (replay-safe):
-DO $$
-BEGIN
-  IF to_regclass('cron.job') IS NULL OR NOT EXISTS (
-    SELECT 1 FROM information_schema.tables WHERE table_schema='cron' AND table_name='job'
-  ) THEN
-    RAISE NOTICE 'pg_cron não disponível neste ambiente — migration ignorada';
-    RETURN;
-  END IF;
-  ALTER SYSTEM SET cron.database_name = 'postgres';
-END $$;
-```
+**Fix:** Commit `8c81483` na main — guard `IF to_regclass('cron.job') IS NULL` adicionado nas duas migrations.
 
 ---
 
 ## 4. Comparação baseline × pós-correção
 
-| Métrica | Pré-correção (esta sessão) | Pós-correção (main `8c81483`) |
+| Métrica | Pré-correção (baseline) | Pós-correção (main `4562f376`) |
 |---|---|---|
 | Build Vite | ✅ exit 0, 19.14s | ✅ exit 0 |
 | TypeScript (tsc) | ✅ exit 0 | ✅ exit 0 |
-| Testes unitários | ✅ 1210+ passando | ✅ 1210+ passando |
+| Testes unitários | 3 falhas TZ-ambientais | 3 falhas TZ-ambientais (inalteradas — ambiente) |
 | Lint (ESLint) | ✅ 0 erros | ✅ 0 erros |
-| Deploy Gates (Gate Final) | ❌ Gate E40 failure | ✅ success (runs 40667156516, 40662579684) |
-| CI Security & Drift Checks | ❌ 5 falhas Calendar | ✅ success (run 40662579684, Gate 2) |
+| Deploy Gates (Gate Final) | ❌ Gate E40 failure | ✅ success (run [40741742537](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40741742537)) |
+| Branch Protection Sentinel | ❌ título sem (#NNN) | ✅ success (run [40741741700](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40741741700)) |
 
-**Nenhuma regressão introduzida:** somente 3 arquivos de teste e 2 migrations foram alterados; código de produção intacto.
+> **SHA `4562f376` valida o baseline:** o commit `4562f376` (PR #2704) alterou apenas `PENDENCIAS.md` e `RELATORIO_CI.md` (docs na raiz). Nenhum arquivo de código, migration, edge function, teste ou workflow foi modificado. Os resultados do baseline (build/lint/tsc/vitest) são válidos para este SHA — não há delta de código a medir.
+
+**Nenhuma regressão introduzida:** somente 3 arquivos de teste e 2 migrations foram alterados nesta sessão; código de produção intacto.
 
 ---
 
-## 5. Prova de conclusão — estado de cada workflow em falha
+## 5. Prova de conclusão — estado de cada workflow em falha (Run ID falha original → Último run na main)
 
-**Critério:** cada workflow em falha está NESTA tabela com `conclusion=success` verificado, ou com referência explícita ao item em `PENDENCIAS.md` que documenta o motivo exato do bloqueio.
+**Legenda:** `Run ID original` = run que originou o item no PENDENCIAS.md. `Último run na main` = execução mais recente na branch main verificada em 2026-10-28.
 
-**Condições de processo do `/goal` — estado atual:**
-- ✅ Baseline completo (install/build/lint/typecheck) registrado ANTES de alterações
-- ✅ Reexecução confirmada dos workflows de push na main com conclusion=success: runs `40667156516`, `40662579684`, `40739341760` (Deploy Gates pós-PR #2703, SHA `c7bc0ba6`)
-- ✅ Branch `fix/ci-workflows` com PR para main (este PR)
+| # | Workflow em falha | Run ID original | Último run na main | Conclusão atual | Desfecho |
+|---|---|---|---|---|---|
+| P0/P4 | Deploy Gates (Gate Final) | [40660438161](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40660438161) | [40741742537](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40741742537) | ✅ success | **RESOLVIDO** — fix `8c81483` (Gate E40) |
+| P3 | Branch Protection Sentinel | [40615509825](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40615509825) | [40741741700](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40741741700) | ✅ success | **RESOLVIDO** — PRs com `(#NNN)` |
+| P5 | CI Security & Drift Checks | [40615509752](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40615509752) | incorporado em Deploy Gates | ✅ success | **RESOLVIDO** — fix `c73cb9b` (Calendar v10) |
+| P1 | CI Replenishment Module E2E | [40612760478](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40612760478) | [40735988559](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40735988559) | ❌ failure | **PENDENCIAS.md P1** — 4 secrets E2E ausentes; requer ação do PO |
+| P2 | E2E — Critical Flows | [40615510053](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40615510053) | [40741741633](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40741741633) | ✅ success* | **PENDENCIAS.md P2** — success espúrio (requireAuth skipa testes); causa raiz = P1 |
+| P6 | E2E Quotes — Matrix (E77) | [40667936090](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40667936090) | N/A (0 runs na main) | N/A | **PENDENCIAS.md P6** — workflow só dispara em PR; run original era em branch de PR (cancelled) |
+| P7 | db-schema-drift-check | [40708395880](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40708395880) | [40708395880](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40708395880) | ❌ failure | **PENDENCIAS.md P7** — ledger divergente `local_only=1108; remote_only=648` |
+| P8 | edge-functions-drift-check | [40663094555](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40663094555) | [40740410933](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40740410933) | ❌ failure | **PENDENCIAS.md P8** — drift GitHub × canônico; requer reconciliação pelo PO |
+| P9 | E2E — Personalization Flow | [40662579633](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40662579633) | [40741742442](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40741742442) | ✅ success* | **PENDENCIAS.md P9** — success espúrio (requireAuth); causa raiz = P1 |
+| P10 | E2E • Swatch QuickView | [40662579393](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40662579393) | [40741742801](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40741742801) | ⏳ pending | **PENDENCIAS.md P10** — em execução no momento do relatório; causa raiz = P1 + webkit |
+| P11 | Edge Integration Tests — All | [40638774637](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40638774637) | [40735988490](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40735988490) | ❌ failure | **PENDENCIAS.md P11** — versões edge functions desatualizadas; requer `deploy-edge-functions.yml` pelo PO |
+| P12 | Kit Coverage — Integration | [40628415319](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40628415319) | [40628415319](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40628415319) | ❌ failure | **PENDENCIAS.md P12** — `permission denied for view v_kit_component_complete`; bloqueado por P7 |
 
-| # | Workflow em falha | Run ID da falha (main) | Desfecho | Evidência |
+> `*` success via `requireAuth`: testes verificam presença de secrets antes de rodar; sem elas, o suite é skipped e o workflow retorna success. A causa raiz (P1 — secrets ausentes) persiste.
+
+---
+
+## 6. Runs de referência — workflows verdes na main após as correções
+
+| Workflow | Run ID | SHA | Conclusão | Data |
 |---|---|---|---|---|
-| 1 | CI Security & Drift Checks | [40615509752](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40615509752) | **✅ RESOLVIDO — P5** | Fix commit `c73cb9b`; Gate 2 ✅ no run [40662579684](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40662579684) |
-| 2 | Branch Protection Sentinel | [40615509825](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40615509825) | **✅ RESOLVIDO — P3** | Run [40739341755](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40739341755) — SHA `c7bc0ba6` (PR #2703 com `(#2703)` no commit_title) — success. Causa raiz corrigida: sempre passar `commit_title` terminando em `(#NNN)`. |
-| 3 | CI Replenishment Module E2E | [40612760478](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40612760478) | **PENDENCIAS.md P1** | 4 secrets E2E ausentes — requer ação do PO |
-| 4 | E2E — Critical Flows & Error Boundaries | [40615510053](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40615510053) | **PENDENCIAS.md P2** | Mesma causa de P1 (secrets ausentes) + tooltip timing |
-| 5 | Deploy Gates (Gate Final) | [40660438161](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40660438161) | **✅ RESOLVIDO — P4** | Fix commit `8c81483`; run [40667156516](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40667156516) success |
-| 6 | db-schema-drift-check | [40708395880](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40708395880) | **❌ PENDENCIAS.md P7** | Ledger divergente: `local_only=1108; remote_only=648` — não é consequência de P4; requer reconciliação pelo PO |
-| 7 | edge-functions-drift-check | [40663094555](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40663094555) | **PENDENCIAS.md P8** | Drift GitHub × canônico — requer reconciliação pelo PO |
-| 8 | E2E — Personalization Flow | [40662579633](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40662579633) | **PENDENCIAS.md P9** | Secrets E2E ausentes — mesma causa de P1 |
-| 9 | E2E • Swatch QuickView | [40662579393](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40662579393) | **PENDENCIAS.md P10** | Secrets E2E + webkit null — depende de P1 |
-| 10 | Edge Integration Tests — All Functions | [40638774637](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40638774637) | **PENDENCIAS.md P11** | 3 edge functions: `generate-mockup`/`verify-2fa-token` travam em input inválido (timeout 30s); `validate-access` retorna HTTP 200 para qualquer input (deveria retornar 4xx) |
-| 11 | Kit Coverage — Integration | [40628415319](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40628415319) | **PENDENCIAS.md P12** | `permission denied for view v_kit_component_complete` — GRANT SELECT ausente |
-| 12 | E2E · undo | [40667936090](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40667936090) | **PENDENCIAS.md P6** | Falhas pré-existentes — requer investigação de UI |
+| Deploy Gates (Gate Final) | [40667156516](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40667156516) | `8c81483` | ✅ success | 2026-10-28 |
+| Deploy Gates (Gate Final) | [40662579684](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40662579684) | `c73cb9b` | ✅ success | 2026-10-28 |
+| Deploy Gates (Gate Final) | [40739341785](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40739341785) | `c7bc0ba6` | ✅ success | 2026-10-28 |
+| Deploy Gates (Gate Final) | [40741742537](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40741742537) | `4562f376` | ✅ success | 2026-10-28 |
+| Branch Protection Sentinel | [40739341755](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40739341755) | `c7bc0ba6` | ✅ success | 2026-10-28 |
+| Branch Protection Sentinel | [40741741700](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40741741700) | `4562f376` | ✅ success | 2026-10-28 |
 
-**Workflows resolvidos nesta sessão:** P4 (Gate E40 + Deploy Gates), P5 (CI Security & Drift Checks / Calendar RDP v10).
-
-**Workflows aguardando ação do PO:** P1 (E2E secrets), P2 (depende P1), P6 (UI regressão), P8 (edge functions drift), P9 (depende P1), P10 (depende P1 + webkit), P11 (edge integration), P12 (GRANT SELECT).
-
-**Verificado pós-merge SHA `2cee272b` (2026-10-28):** P3 (Branch Protection Sentinel) → ✅ run 40702858343 success. P7 (db-schema-drift-check) → ❌ run 40708395880 failure (ledger divergente, independente de P4).
-
-**Verificado pós-merge SHA `6b2cc72` (PR #2699, 2026-10-28):** Deploy Gates → ✅ run [40728685782](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40728685782) success (Gate Final ✅, todos os 17 jobs). Branch Protection Sentinel → ❌ run [40728685711](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40728685711) failure — squash merge via API não incluiu `(#2699)` no commit title → P3 RECORRENTE.
-
-**Verificado pós-merge SHA `c7bc0ba6` (PR #2703, 2026-10-28):** Deploy Gates → ✅ run [40739341760](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40739341760) success. Branch Protection Sentinel → ✅ run [40739341755](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40739341755) success — **P3 RESOLVIDO**. Correção sistêmica confirmada: `commit_title` terminando em `(#2703)` aceito pelo sentinel.
+**Gate Final verde em 4 runs consecutivos na main — condição de processo satisfeita.**
 
 ---
 
-## 6. Runs de referência — Deploy Gates na main (prova de conclusão)
+## 7. Workflows aguardando ação do PO
 
-| Run ID | SHA | Workflow | Conclusão | Data |
-|---|---|---|---|---|
-| [40662579684](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40662579684) | `c73cb9b` | Deploy Gates | ✅ success | 2026-10-28 |
-| [40667156516](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40667156516) | `8c81483` | Deploy Gates | ✅ success | 2026-10-28 |
-| [40728685782](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40728685782) | `6b2cc72` | Deploy Gates | ✅ success | 2026-10-28 |
-| [40739341760](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40739341760) | `c7bc0ba6` | Deploy Gates | ✅ success | 2026-10-28 |
-| [40739341755](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40739341755) | `c7bc0ba6` | Branch Protection Sentinel | ✅ success | 2026-10-28 |
+Os itens abaixo estão documentados em `PENDENCIAS.md` com o motivo exato do bloqueio e a ação necessária:
 
-**Gate Final verde em quatro runs consecutivos — condição de processo satisfeita. P3 confirmado RESOLVIDO.**
-
----
-
-## 7. Verificação pós-merge — SHA `6b2cc72` (PR #2699, 2026-10-28)
-
-| Workflow | Run ID | Conclusion | Observação |
+| Item | Workflow | Bloqueio | Ação necessária |
 |---|---|---|---|
-| Deploy Gates (Gate Final) | [40728685782](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40728685782) | ✅ **success** | Todos os 17 jobs completados; Gate Final ✅ |
-| Branch Protection Sentinel | [40728685711](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40728685711) | ❌ **failure** | P3 RECORRENTE — squash merge sem `(#2699)` |
-| Lovable Edit Tracker | [40728685690](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40728685690) | ✅ success | |
-| Gitleaks — Full History Audit | [40728685675](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40728685675) | ✅ success | |
-| No Prod Leak in Dev/Test Config | [40728685548](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40728685548) | ✅ success | |
-| Policies Baseline | [40728685586](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40728685586) | ✅ success | |
-| Security Scan | [40728685829](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40728685829) | ✅ success | |
-| Supabase Linter Gate | [40728685716](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40728685716) | ✅ success | |
-| UI · Visual & A11y | [40728685627](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40728685627) | ✅ success | |
-| Static Health Checks | [40728685785](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40728685785) | ✅ success | |
-| Lovable Autoheal | [40728685794](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40728685794) | ✅ success | |
-| Select Columns vs Types | [40728685838](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40728685838) | ✅ success | |
-| Required Checks Guard | [40728685459](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40728685459) | ✅ success | |
-
-**Conclusão:** Gate Final (único required check em `main`) ✅ success em SHA `6b2cc72`. Branch Protection Sentinel falhou novamente por causa sistemática (squash merge via API sem `(#NNN)`) — documentado como P3 RECORRENTE em PENDENCIAS.md. Nenhuma regressão nos workflows que estavam verdes antes do merge.
+| P1 | CI Replenishment Module E2E | 4 secrets E2E ausentes no GitHub Actions | Adicionar `E2E_USER_EMAIL`, `E2E_USER_PASSWORD`, `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY` |
+| P2, P9, P10 | E2E Critical Flows, Personalization, Swatch | Dependem de P1 | Resolvido automaticamente após P1 |
+| P6 | E2E Quotes — Matrix (E77) | Workflow não roda na main (somente PR); run original era em branch de PR (cancelled) | Investigar se falha persiste em novo PR |
+| P7 | db-schema-drift-check | `local_only=1108; remote_only=648` — ledger divergente | Reconciliar via `db-apply-migration.yml` ou `migration repair` com versão explícita |
+| P8 | edge-functions-drift-check | Drift GitHub × canônico (funções no repo divergem das deployadas) | Disparar `deploy-edge-functions.yml` (workflow_dispatch) e aprovar `environment: production` |
+| P11 | Edge Integration Tests — All | Versões deployadas desatualizadas (código no repo correto) | Disparar `deploy-edge-functions.yml` (workflow_dispatch) |
+| P12 | Kit Coverage — Integration | `permission denied for view v_kit_component_complete` | Opção A: resolver P7 e mergear PR #2701 com GRANT. Opção B: `db-apply-migration.yml` com GRANT SELECT |
+| P13 | N/A (Vercel infra) | Projeto fantasma `prj_W1Zdi6BQWkAwQx5VJjpSNlZubeok` gerando builds duplicados | Deletar projeto fantasma no dashboard Vercel |
