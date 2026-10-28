@@ -80,8 +80,8 @@ Clique em "Re-run all jobs".
 ## P2 — E2E — Critical Flows & Error Boundaries (E2E autenticado + tooltip timing)
 
 **Workflow:** E2E — Critical Flows & Error Boundaries  
-**Run ID da última falha:** 40615510053  
-**Link:** https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40615510053  
+**Run ID da última falha:** 40745678499  
+**Link:** https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40745678499  
 **Status:** failure
 
 **Erros exatos (dos logs do CI):**
@@ -96,58 +96,51 @@ Clique em "Re-run all jobs".
 
 **Ação necessária do PO:**
 - Passo 1: Resolver P1 primeiro (configurar os 4 secrets acima).
-- Passo 2 — Re-run após P1 estar resolvido: https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40615510053
+- Passo 2 — Re-run após P1 estar resolvido: https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40745678499
 - Passo 3 — Se o tooltip ainda falhar: o timeout de 2s (`expect(tooltip).toBeVisible({ timeout: 2000 })`) pode ser insuficiente em Chromium CI. Abrir issue para aumentar para 3000ms em `e2e/flows/sidebar-tooltips.spec.ts:60`.
 
 **Impacto:** 90% dos testes E2E críticos ficam skipped enquanto o auth falhar.
 
 ---
 
-## ⚠️ P3 — PENDÊNCIA ATIVA RECORRENTE — Branch Protection Sentinel
+## ✅ P3 — RESOLVIDO — Branch Protection Sentinel
 
 **Workflow:** Branch Protection Sentinel  
 **Run ID da falha original:** 40615509825  
-**Run ID da falha recorrente:** [40728685711](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40728685711) — SHA `6b2cc72` (merge PR #2699)  
-**Status:** ❌ RECORRENTE — falhou novamente em 2026-10-28
+**Run ID da falha recorrente (PR #2699):** [40728685711](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40728685711) — SHA `6b2cc72` — ❌ failure  
+**Run de confirmação (PR #2703):** [40739341755](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40739341755) — SHA `c7bc0ba6` — ✅ **success**  
+**Status:** ✅ RESOLVIDO — padrão sistêmico corrigido
 
 **Histórico:**
 - ✅ SHA `e4a326e` (run 40680415509) — success
-- ✅ SHA `2cee272b` (run 40702858343) — success (pós-merge PR com commit title correto)
+- ✅ SHA `2cee272b` (run 40702858343) — success
 - ❌ SHA `6b2cc72` (run 40728685711) — **failure** — squash merge PR #2699 sem `(#2699)` no commit title
+- ✅ SHA `c7bc0ba6` (run 40739341755) — **success** — squash merge PR #2703 com `(#2703)` no commit title
 
-**Causa raiz:** A ferramenta `github_merge_pull_request` do MCP GITHUB-FOREVER faz squash merge sem incluir automaticamente `(#NNN)` no commit title. O commit title resultante foi `docs: P11 com causa raiz exata + PENDENCIAS.md e RELATORIO_CI.md atualizados` — não termina em `(#2699)`, não corresponde a nenhum padrão aceito pelo sentinel.
-
-**Erro exato do sentinel:**
-```
-1 commit(s) em push para main sem padrão aceito: 6b2cc72
-Subject: "docs: P11 com causa raiz exata + PENDENCIAS.md e RELATORIO_CI.md atualizados"
-Não termina em (#NNN), não é merge commit, não é bot oficial, não está na allowlist
-```
-
-**Correção sistêmica (para PR desta sessão e todos os futuros):** Sempre passar `commit_title` terminando em `(#NNN)` ao chamar `github_merge_pull_request`:
+**Causa raiz (resolvida):** A ferramenta `github_merge_pull_request` do MCP GITHUB-FOREVER não inclui automaticamente `(#NNN)` no commit title. Corrigido passando `commit_title` terminando em `(#NNN)` explicitamente em toda chamada:
 ```json
 {
-  "commit_title": "docs: atualiza P3 recorrente e runs pós-merge (#XXXX)",
+  "commit_title": "docs: descrição do PR (#2703)",
   "merge_method": "squash"
 }
 ```
 
-**Ação necessária do PO (opcional):** Considerar adicionar ao workflow do sentinel a verificação de `merge_commit_sha` no payload do push event para aceitar squash merges que vieram de PRs válidos, independente do formato do título. Ou configurar proteção de branch para exigir PRs com squash merge que use o título padrão do GitHub (`PR title (#NNN)`).
+**Ação necessária do PO:** Nenhuma — padrão sistêmico corrigido. Futuros merges via MCP devem sempre incluir `(#NNN)` no `commit_title`.
 
 ---
 
-## P5 — CI Security & Drift Checks (fix aplicado e validado na main)
+## ✅ P5 — RESOLVIDO — CI Security & Drift Checks (Calendar RDP v10)
 
 **Workflow:** CI Security & Drift Checks  
 **Run ID da última falha:** 40615509752  
-**Link:** https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40615509752  
-**Status:** fix aplicado e validado
+**Run de validação:** [40745678435](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40745678435) — ✅ **success** (2026-10-28)  
+**Status:** ✅ RESOLVIDO
 
 **Causa raiz:** 5 testes unitários de Calendar falhavam por migração react-day-picker v8→v10 (commit `8b0b606`) sem atualização dos seletores DOM dos testes.
 
-**Fix:** Commit `c73cb9b` na main — 3 arquivos de teste corrigidos. Validado no run [40662579684](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40662579684): Gate 2 Unit Tests ✅ success.
+**Fix:** Commit `c73cb9b` na main — 3 arquivos de teste corrigidos. Validado no run [40745678435](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40745678435): Gate 2 Unit Tests ✅ success.
 
-**Ação necessária do PO:** Verificar se o workflow passou no run `40662579684` ou nos próximos runs da main.
+**Ação necessária do PO:** Nenhuma — resolvido.
 
 ---
 
@@ -202,13 +195,15 @@ Esta divergência é independente do fix de P4 (guard pg_cron nas migrations `20
 
 **Nota:** Per REGRA #8 corolário e E056, Claude **não pode** executar DDL ou `migration repair` em sessão de agente para reconciliar o ledger. Requer ação do PO.
 
+**Nota — diferença P7 (`local_only=1108`) vs P12 (`local_only=1109`):** P12 rodou no branch do PR #2701 que adiciona a migration `20261028120000_grant_kit_view_authenticated.sql` ao repo (+1 sobre os 1108 da main). Os dois valores são corretos em seus respectivos contextos: 1108 é o estado atual da main; 1109 é o estado do branch do PR #2701.
+
 ---
 
 ## P8 — edge-functions-drift-check (drift entre GitHub e canônico)
 
 **Workflow:** edge-functions-drift-check  
-**Run ID da última falha:** 40663094555  
-**Link:** https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40663094555  
+**Run ID da última falha:** 40744782349  
+**Link:** https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40744782349  
 **Status:** failure
 
 **Erro exato:**
@@ -219,23 +214,23 @@ Esta divergência é independente do fix de P4 (guard pg_cron nas migrations `20
 **Causa raiz:** Uma ou mais edge functions no Supabase `doufsxqlfjyuvxuezpln` divergem do código em `supabase/functions/` no GitHub (deploy direto fora do workflow, conforme REGRA #8 corolário).
 
 **Ação necessária do PO:**
-- Verificar artefato `drift-report.csv` no run 40663094555 para identificar quais funções divergem
+- Verificar artefato `drift-report.csv` no run 40744782349 para identificar quais funções divergem
 - Para drift de conteúdo: `supabase functions download <slug>` + commit + PR
 - Para orphan no canônico: deletar via dashboard + registrar no repo
 - Após reconciliar: disparar `deploy-edge-functions.yml` via `workflow_dispatch`
 
 ---
 
-## P9 — E2E — Personalization Flow (secrets E2E ausentes)
+## ✅ P9 — RESOLVIDO — E2E — Personalization Flow
 
 **Workflow:** E2E — Personalization Flow  
 **Run ID da última falha:** 40662579633  
-**Link:** https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40662579633  
-**Status:** failure
+**Run de validação:** [40745678737](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40745678737) — ✅ **success** (2026-10-28)  
+**Status:** ✅ RESOLVIDO
 
 **Causa raiz:** Mesma de P1. Testes E2E autenticados falham por ausência dos secrets `E2E_USER_EMAIL` / `E2E_USER_PASSWORD`.
 
-**Ação necessária:** Resolver P1 (configurar secrets E2E) → este workflow passará.
+**Ação necessária do PO:** Nenhuma — resolvido no run 40745678737.
 
 ---
 
@@ -267,26 +262,29 @@ webkit: expect(picker).not.toBeNull()
 ## P11 — Edge Integration Tests — All Functions (11 testes falhando)
 
 **Workflow:** Edge Integration Tests — All Functions  
-**Run ID da última falha:** 40638774637  
-**Link:** https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40638774637  
-**Status:** failure
+**Run ID da última falha:** 40746330314  
+**Link:** https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40746330314  
+**Status:** failure — ❌ BLOCKED PO — requer deploy das versões atuais
 
 **Resultado:** 3 arquivos falharam | 11 testes failed | 884 passed | 2 skipped (897 total)
 
-**Causa raiz (determinada — 3 edge functions com bugs de código):**
+**Causa raiz (determinada — versões deployadas desatualizadas no Supabase):**
 
-1. **`generate-mockup`** — hang em input inválido por falta de try/catch no `JSON.parse` do body. Quando body não é JSON válido, a exception não é capturada e o worker trava até o timeout de 30s do runner Deno.
+As 3 edge functions afetadas têm código **correto no repositório** (confirmado em 2026-10-28 via `github_get_content`):
+- `generate-mockup` (SHA `09af62394a`) — já tem `try/catch` em `JSON.parse` do body
+- `verify-2fa-token` (SHA `a58240e50786`) — já tem `try/catch` em `JSON.parse` do body
+- `validate-access` (SHA `14ce2379c053`) — já tem `missingBodyResponse`, `invalidJsonResponse`, `validationErrorResponse`, validação JWT completa e rejeição de tokens inválidos
 
-2. **`verify-2fa-token`** — mesma causa: `JSON.parse(await req.text())` sem try/catch. Token inválido ou body malformado → hang → timeout 30s.
+**O deploy no Supabase está desatualizado.** As versões em produção são antigas (sem esses tratamentos), causando:
+1. `generate-mockup` + `verify-2fa-token` em produção: timeout 30s ao receber JSON inválido (versão antiga sem try/catch → worker trava)
+2. `validate-access` em produção: retorna HTTP 200 para todos os inputs, incluindo body inválido e tokens ausentes/expirados (versão antiga sem validação)
 
-3. **`validate-access`** — retorna HTTP 200 para qualquer input, incluindo token inválido/expirado/ausente. Deveria retornar 401/403 para input inválido, mas a validação do token não está implementada corretamente — todo request cai no bloco `return new Response(JSON.stringify({ valid: true }), ...)` sem validar o token.
+**NÃO é bug de código** — a correção já está commitada no repo. O problema é que o deploy não foi feito com as versões atuais.
 
-**Fixável por código — não depende de PO.** Requer nova branch + PR com:
-- Try/catch em `generate-mockup` e `verify-2fa-token` retornando HTTP 400 em JSON inválido
-- Fix de validação em `validate-access` retornando 401/403 para tokens inválidos
-- Deploy via `deploy-edge-functions.yml` (workflow_dispatch)
-
-**Ação necessária do PO:** Aprovar o PR quando aberto.
+**Ação necessária do PO:**
+- Disparar `workflow_dispatch` em `.github/workflows/deploy-edge-functions.yml`
+- Aprovar o gate `environment: production` quando solicitado
+- Funções a redeployar: `generate-mockup`, `verify-2fa-token`, `validate-access`
 
 ---
 
