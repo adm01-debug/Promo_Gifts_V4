@@ -1,4 +1,5 @@
 -- Migration: 20261027160000_deactivate_image_dimensions_backfill_cron.sql
+-- Rollback: supabase/rollbacks/20261027160000_rollback.sql
 -- PROBLEMA: cron image-dimensions-backfill chama /functions/v1/run-script
 -- que nunca foi deployada → 404 a cada 3h (schedule: 31 */3 * * *).
 -- A função run-script não existe em supabase/functions/ — só existe

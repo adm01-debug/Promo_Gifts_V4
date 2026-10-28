@@ -71,6 +71,9 @@ jobs:
   drift-gate:
     name: Drift gate antes de girar o baseline
     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    permissions:
+      contents: read
+      packages: read  # necessário para docker pull ghcr.io autenticado no drift-check (reusable workflow não pode elevar caller)
     uses: ./.github/workflows/db-schema-drift-check.yml
     with:
       allow_missing_baseline: false
