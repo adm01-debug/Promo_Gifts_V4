@@ -85,13 +85,13 @@ Resultado válido: CI do PR #2681 executa em runner GitHub Actions com memória 
 |---|---|---|---|
 | `calendar.dimensions.test.tsx` | 78 | `querySelector('button[aria-selected="true"]')` | `querySelector('[aria-selected="true"] button')` |
 | `calendar.dimensions.test.tsx` | 110 | `querySelectorAll('button[name="day"]')` | `querySelectorAll('td[role="gridcell"] button')` |
-| `calendar.redesign.test.tsx` | 58–63 | busca frágil por `text-destructive` (falso-positivo com domingos) | `querySelector('td[aria-current="date"]')` — aria semântico do RDP v10 |
+| `calendar.redesign.test.tsx` | 58–63 | busca frágil por `text-destructive` (falso-positivo com domingos) | `Array.from(querySelectorAll('td')).find(td => td.className.includes('[&>button]:text-destructive'))` — classe Tailwind child-selector no `<td>` wrapper (RDP v10) |
 | `calendar.redesign.test.tsx` | 68 | `querySelector('button[aria-selected="true"]')` | `querySelector('[aria-selected="true"]')` |
-| `date-picker-field.test.tsx` | 60 | `getByRole('gridcell', { name: /15/ })` + click | `getByRole('button', { name: /15/ })` + click |
+| `date-picker-field.test.tsx` | 60 | `getByRole('gridcell', { name: /15/ })` + click direto no `<td>` | `getByRole('gridcell', { name: /15/ })` + `querySelector('button') ?? cell` + click (RDP v10: click no `<td>` não dispara — clicar no `<button>` interno) |
 
 ### Grupo B — Sentinel (Branch Protection Sentinel)
 
-O sentinel falha para pushes que não seguem o padrão aceito. O push `04239fd` já está na main e não pode ser revertido sem force-push. **A última execução do sentinel vai virar success automaticamente quando este PR for mergeado** — o merge commit (`Merge pull request #NNN`) é um padrão aceito pelo sentinel (`scripts/sentinel-check.sh`) e passa.
+O sentinel falha para pushes que não seguem o padrão aceito. O push `04239fd` já está na main e não pode ser revertido sem force-push. O PR #2681 foi fechado sem merge (2026-10-28), portanto a resolução automática não ocorreu. O sentinel continuará com última execução em falha até que um novo PR seja criado e mergeado (o merge commit `Merge pull request #NNN` é padrão aceito pelo sentinel). Ver P3 em PENDENCIAS.md.
 
 ### Grupo C — E2E autenticado (bloqueado — ver PENDENCIAS.md)
 
@@ -107,8 +107,9 @@ Os workflows P1 e P2 de E2E que dependem de autenticação real continuam falhan
 | TypeScript (tsc) | ✓ (pré-existente) | ✓ exit 0 |
 | Testes unitários | ✗ 5 falhas Calendar | ✓ 1210 passando, exit 0 |
 | Lint (ESLint) | ✓ (pré-existente) | Aguardando CI |
-| Branch Protection Sentinel | ✗ failure (run 40615509825) | Resolve após merge do PR |
-| CI Security & Drift Checks | ✗ failure (run 40615509752) | Resolve após merge (testes corrigidos) |
+| Branch Protection Sentinel | ✗ failure (run 40615509825) | Bloqueado — PR #2681 fechado sem merge; resolve com novo PR (ver P3) |
+| CI Security & Drift Checks | ✗ failure (run 40615509752) | Fix aplicado e validado; resolve com novo PR |
+| Deploy Gates (Gate Final) | ✗ failure (run 40660438161) | Gate E40 BLOQUEANTE — ledger dessincronizado (ver P4) |
 | CI Replenishment E2E | ✗ failure (P1 — secrets) | Bloqueado — ver PENDENCIAS.md |
 | E2E Critical Flows | ✗ failure (P2 — secrets) | Bloqueado — ver PENDENCIAS.md |
 
@@ -116,22 +117,50 @@ Os workflows P1 e P2 de E2E que dependem de autenticação real continuam falhan
 
 ---
 
-## 5. Prova de conclusão (aguardando Deploy Gates — re-trigger 2026-10-28T04:09Z)
+## 5. Prova de conclusão — estado de cada workflow em falha
 
-**Histórico de runs PR #2681:**
-- Run `40629639891` (commit `7286e3b`): criado 03:58Z, ficou preso em `queued` por saturação de runners. Cancelado às 04:09Z.
-- Re-trigger via commit `chore(ci)`: novo run em andamento.
+**Run de referência:** [40660438161](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40660438161) (Deploy Gates, branch `2eb3c3d`, PR #2686)
 
-| Workflow | Run ID pós-merge | Conclusion | Link |
+| Workflow em falha | Run ID original | Estado do fix | Prova / Bloqueio |
 |---|---|---|---|
-| Branch Protection Sentinel | — | pendente | — |
-| CI Security & Drift Checks | — | pendente | — |
-| Deploy Gates | — | pendente | — |
+| CI Security & Drift Checks | [40615509752](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40615509752) | Fix aplicado — PR #2686 | Gate 2 ✅ no run 40660438161; merge bloqueado por Gate E40 (P5 em PENDENCIAS.md) |
+| Branch Protection Sentinel | [40615509825](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40615509825) | Resolve no merge do PR | PR #2686 pronto; merge bloqueado por Gate E40 (P3 em PENDENCIAS.md) |
+| CI Replenishment E2E | [40612760478](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40612760478) | Não corrigível sem secrets | Secrets ausentes (P1 em PENDENCIAS.md) |
+| E2E Critical Flows | [40615510053](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40615510053) | Não corrigível sem secrets | Secrets ausentes (P2 em PENDENCIAS.md) |
 
-*Esta tabela será atualizada com os run IDs e links reais após o Deploy Gates = success e merge do PR #2681. Retrigger: 2026-10-28T04:30Z (PR reaberto após fechamento acidental por outro agente).*
+**Gates do run 40660438161 (último Deploy Gates executado):**
+
+| Gate | Status |
+|---|---|
+| Gate 0 — SSOT | ✅ |
+| Gate 0.5 — Dependency Audit | ✅ |
+| Gate 0.6 — Dependency Review | ✅ |
+| Gate 1 — Lint + TypeScript | ✅ |
+| Gate 1.1–1.18 | ✅ |
+| Gate 2 — Unit Tests | ✅ (fix Calendar RDP v10 — 1210 arquivos) |
+| Gate 2.5 — PostgreSQL | ✅ |
+| Gate 3 — E2E Smoke | ✅ |
+| Gate 5 — SEO | ✅ |
+| Gate 5.5 — RPC | ✅ |
+| Gate 6 — Build | ✅ |
+| Gate E23 — Secret Scan | ✅ |
+| Gate E40 — Schema Drift | ❌ `local_only=1108; remote_only=647` (P4 em PENDENCIAS.md) |
+| Gate Final | ❌ bloqueado por E40 |
+
+**Bloqueio raiz único:** Gate E40 é BLOQUEANTE no código real de `deploy-gates.yml` (contrariando CLAUDE.md que diz "advisory"). Com `local_only=1108; remote_only=647`, **nenhum PR neste repositório pode passar no Gate Final** enquanto o ledger não for reconciliado. Isso é um problema de infraestrutura pré-existente, anterior a este PR e independente de qualquer mudança de código.
+
+Após resolução de P4 (Gate E40) pelo PO: merge do PR #2686 → CI Security & Drift Checks ✅ na main → Branch Protection Sentinel ✅ na main.
 
 ---
 
-## 6. Pendências (não corrigíveis sem ação externa)
+## 6. Pendências — resumo
 
-Ver `PENDENCIAS.md` para detalhes completos de P1 e P2 (E2E autenticado — requer secrets configurados pelo PO no GitHub Actions).
+| Item | Workflow | Bloqueio | Ação do PO |
+|---|---|---|---|
+| P1 | CI Replenishment E2E | Secrets ausentes | Cadastrar 4 secrets em GitHub Actions |
+| P2 | E2E Critical Flows | Secrets ausentes (depende P1) | Idem P1 |
+| P3 | Branch Protection Sentinel | Merge bloqueado por P4 | Resolver P4, depois mergear PR #2686 |
+| P4 | Gate Final (Gate E40) | Ledger 1108/647 | Aprovar reconciliação + DATABASE_URL prod |
+| P5 | CI Security & Drift Checks | Merge bloqueado por P4 | Resolver P4, depois mergear PR #2686 |
+
+Ver `PENDENCIAS.md` para detalhes completos e passo a passo de cada item.
