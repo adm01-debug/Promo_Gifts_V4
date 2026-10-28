@@ -9,3 +9,12 @@ number,title,author,draft,base,head_sha,mergeable,created_at,changed_files,commi
 2631,chore: atualiza PENDENCIAS §4 e RELATORIO_CI — bloqueio deploy confirmado,adm01-debug,False,main,b093f023f2d988f8eeb447ca224ec2fd56a3d6ae,,2026-10-27T09:52:24Z,N/A,N/A
 2600,docs(analise-prs): rev46 — análise completa 20 PRs (7 mergeadas),adm01-debug,False,main,d7b6aaff442bd8eee8495510069083213d297c51,,2026-10-26T22:04:32Z,N/A,N/A
 2580,fix(banco): adiciona rollback header e arquivo rollback para e23,adm01-debug,True,main,41198d9a332f3e75707ca070d62b27b2eb772792,,2026-10-25T21:49:53Z,N/A,N/A
+2668,chore(analise-prs): inventário e relatório de todas as PRs abertas,adm01-debug,False,main,N/A,True,2026-10-27T23:25:00Z,N/A,N/A
+2670,fix(calendar): corrige Calendar.tsx para react-day-picker v10,adm01-debug,False,main,7d2a142d0d8fcab1c7c9d6978b3e5042b251d7c1,,2026-10-27T23:50:00Z,N/A,8
+2671,chore(e2e): update calendar visual baselines,github-actions[bot],False,main,f0deb7a941fd18e1eecd5c9029c2bc0808a26d6b,,2026-10-28T00:10:00Z,N/A,1
+2672,chore(e2e): update calendar visual baselines (force),github-actions[bot],False,claude_pink/compassionate-keller-om34uo,8e7212203a320fa71912590dfc110000fa2cc3e1,,2026-10-28T00:16:14Z,8,1
+2673,chore(e2e): update calendar visual baselines post-v10,github-actions[bot],False,main,62af0798dd71812979667ac29f596d25f3ef191b,,2026-10-28T00:30:00Z,8,1
+2675,docs(audit): relatório final sessão anterior (4 merges autônomos),adm01-debug,False,main,N/A,False,2026-10-27T23:30:00Z,N/A,N/A
+2677,fix(tests): corrige seletores calendar/date-picker para react-day-picker v10,adm01-debug,False,main,a310471017a58ba8ba1e759ac9c6e355cc978bf2,,2026-10-28T02:20:00Z,N/A,1
+2678,fix(tests): atualiza seletores de calendário para react-day-picker v10,adm01-debug,True,main,bd9d256615e7af99331059952c88d462e24c12de,,2026-10-28T02:40:58Z,3,2
+2679,test(calendar): corrige seletores de teste para react-day-picker v10,adm01-debug,False,main,0cb3c5257d919bb2c39482a7f5978f47ff6753b4,True,2026-10-28T02:56:45Z,3,2

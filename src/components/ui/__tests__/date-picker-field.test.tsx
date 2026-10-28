@@ -56,10 +56,11 @@ describe('DatePickerField — comportamento e a11y', () => {
 
     await user.click(trigger);
     const dialog = await screen.findByRole('dialog');
-    // react-day-picker v10: clicar no <td> (gridcell) não dispara o handler;
-    // precisa clicar no <button> interno cujo aria-label contém o número do dia.
-    const day15 = within(dialog).getByRole('button', { name: /15/ });
-    await user.click(day15);
+    // Seleciona o dia 15 no mês atual do calendário aberto.
+    const day15Cell = within(dialog).getByRole('gridcell', { name: /15/ });
+    // rdp v10: click the button inside the gridcell (clicking <td> alone doesn't trigger selection)
+    const day15Btn = day15Cell.querySelector<HTMLElement>('button') ?? day15Cell;
+    await user.click(day15Btn);
     expect(onChange).toHaveBeenCalledWith('2026-07-15');
   });
 

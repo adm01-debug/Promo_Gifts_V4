@@ -1,4 +1,5 @@
 -- Migration: 20261027220000_deactivate_xbz_image_uploader_cron.sql
+-- Rollback: supabase/rollbacks/20261027220000_rollback.sql
 -- PROBLEMA: cron xbz-image-uploader chama get_edge_function_secret('XBZ_IMAGE_UPLOADER_CRON_SECRET')
 -- que não está no allowlist da função → EXCEPTION a cada 10 min (6x/hora).
 -- fn_cron_safe_run captura a exceção silenciosamente → cron aparece como "succeeded" no
