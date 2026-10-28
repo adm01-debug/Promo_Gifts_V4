@@ -1,0 +1,8 @@
+## Testes unitários baseline — main HEAD e0b569f18 — 2026-10-27
+
+Comando: TZ=America/Sao_Paulo npx vitest run tests/unit/
+Resultado: Test Files 30 passed (30) | Tests 1309 passed (1309) | EXIT 0
+
+Nenhum teste falhando em main. Linha de base: zero falhas.
+
+Verificado em session_01VXkRxWq5ZUCmvuNx5e2TGX

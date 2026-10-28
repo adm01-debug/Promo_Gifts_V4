@@ -160,9 +160,18 @@ export default function QuoteViewOrderHarness() {
     <main
       data-testid="quote-view-order-harness"
       data-quote-id={HARNESS_QUOTE_ID}
-      className="min-h-dvh bg-background"
+      className="min-h-dvh bg-background flex"
     >
-      <div className="mx-auto w-full max-w-[1920px] animate-fade-in space-y-2.5 px-3 py-2.5 pb-24 sm:space-y-3 sm:px-4 sm:py-3 md:pb-5 lg:px-6 xl:px-8">
+      <aside
+        data-testid="sidebar-brand-header"
+        style={{ position: 'sticky', top: 0 }}
+        className="hidden md:flex flex-col shrink-0 w-56 h-screen self-start border-r border-border"
+      >
+        <div className="p-4 text-sm text-muted-foreground">
+          Promo Brindes — harness sidebar
+        </div>
+      </aside>
+      <div className="flex-1 min-w-0 animate-fade-in space-y-2.5 px-3 py-2.5 pb-24 sm:space-y-3 sm:px-4 sm:py-3 md:pb-5 lg:px-6 xl:px-8">
         {/* 1) Timeline no topo, sem moldura */}
         <div className="w-full">
           <QuoteStatusTimeline

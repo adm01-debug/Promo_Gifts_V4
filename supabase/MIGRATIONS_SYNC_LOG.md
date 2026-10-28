@@ -713,6 +713,15 @@ f6def33d0c79c66aab118335ed95d9e3a9b40536cca5cd397bacc54e7858ae96
 | `20260922170000` | `266f0963a9e7b1d30e8594d7c6218747b6a79baf16aa272249e864f55a64b29b` | `badcb6626e975ee80bab7d562a6c12cc` | GitHub Actions, disparado por `adm01-debug` | E15 (run 35760867980) | 2026-09-22 18:34:03 UTC | recibo E15 abaixo; apply, repair e post-check aprovados — ver `## Recibos — E15` |
 | `20260923114500` | `18663b52473fa9fd0edb031495ebe1ed8fc8c0ea0c262631a3b3bf035d8d91b7` | `87c7eefd2929c273fbedd75e4d61c423` | GitHub Actions, disparado por `adm01-debug` | E15 (run 35857184284) | 2026-09-23 11:56:55 UTC | recibo E15 abaixo; post-check confirmou version no ledger — ver `## Recibos — E15` |
 | `20260417001408` | `d544558d96f6be7d1b4e2a6af7269d11ac516836f8ca134a06e682dae2d14a7c` | `n/d` | claude-code (sessão PR #2376) | retroactive-file-fix (arquivo modificado — não reaplicado em prod; adicionou guarda pg_has_role em ALTER TABLE realtime.messages para compatibilidade com Preview branches) | 2026-10-23 UTC | PR #2376 — arquivo corrigido; migration original já estava no ledger de prod; nenhuma DDL nova aplicada |
+| `20261027120000` | `5d4be00c38b6b610a40e077226ef05ff362222946c2c54b688a0a19c331fb82d` | `—` | claude-code (PR #2603) | E15 | 2026-10-27 UTC (previsto) | pendente — a ser aplicado via db-apply-migration.yml após merge do PR #2603 |
+| `20261027140000` | `e63a43b30c5bce7d3e1e7f6f6829fc692e4b95b5a229b07b24c353ac97fc07cf` | `—` | claude-code (PR #2603) | E15 | 2026-10-27 UTC (previsto) | pendente — a ser aplicado via db-apply-migration.yml após merge do PR #2603 |
+| `20261027160000` | `e8d26f0560611d1397b219f92b6dbd0fa37205e462d412c46682ec1381e1fa06` | `—` | claude-code (PR #2646) | E15 | 2026-10-27 UTC (previsto) | a aplicar via db-apply-migration.yml após merge do PR #2646 (arquivo revisado no PR #2646) |
+| `20261027180000` | `1b47a1d2eadd49608f36331d6be6e93e7478022ed97cbbbae9617e455bcb38a4` | `—` | claude-code (PR #2603) | E15 | 2026-10-27 UTC (previsto) | pendente — a ser aplicado via db-apply-migration.yml após merge do PR #2603 |
+| `20261027200000` | `9737df0d29ff332d5ae3d359c2d4c068c894ef861bbbd6e0a8b0e50caf710c5a` | `—` | claude-code (PR #2603) | E15 | 2026-10-27 UTC (previsto) | pendente — a ser aplicado via db-apply-migration.yml após merge do PR #2603 |
+| `20261027220000` | `fb16901b0c1edd37080aada4edd16de71cbb6e128dca12764cfc22947f6797af` | `—` | claude-code (PR #2646) | E15 | 2026-10-27 UTC (previsto) | a aplicar via db-apply-migration.yml após merge do PR #2646 (arquivo revisado no PR #2646) |
+| `20261027230000` | `2d6a57f537d962a89ff44e80244f94ad0baff9292cfcd8bd65a295978107ff26` | `—` | claude-code (PR #2646) | E15 | 2026-10-27 UTC (previsto) | a aplicar via db-apply-migration.yml após merge do PR #2646 (arquivo revisado no PR #2646) |
+| `20261027233000` | `bd5d0bc3262f9b34b6108c42c7ec186f8f9066d97dbd881a6276a2bb97d87885` | `—` | claude-code (PR #2603) | E15 | 2026-10-27 UTC (previsto) | pendente — a ser aplicado via db-apply-migration.yml após merge do PR #2603 |
+| `20261027234500` | `272850e119d8798e7aac9242e4b774309f22a8227e7b6bbac4a086ab945f6cec` | `—` | claude-code (PR #2603) | E15 | 2026-10-27 UTC (previsto) | pendente — a ser aplicado via db-apply-migration.yml após merge do PR #2603 |
 
 
 </details>
@@ -785,6 +794,9 @@ da execução e consulta read-only ao catálogo/ledger, sem reaplicar SQL.
 | `20261022194000` | `7d9a9129c04e1c1de1f51a56854d057ca2406af511fd1dd7eed5f5fe94287b76` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por adm01-debug) | E15 | 2026-10-23 09:55:32 UTC | job post-check da run 39894328218 confirmou a version no ledger | aplicada |
 | `20261022194100` | `99992c9628981dcc0f87252ce0c1cd307633c96f1324391db390cf65fecdf450` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por adm01-debug) | E15 | 2026-10-23 10:01:56 UTC | job post-check da run 39935978048 confirmou a version no ledger | aplicada |
 | `20261022194200` | `e11ce4c31251d4584e99c3a98af1a475da1346504393c8cafb4ad27382c2fac3` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por adm01-debug) | E15 | 2026-10-23 09:57:59 UTC | job post-check da run 39922326892 confirmou a version no ledger | aplicada |
+| `20261027120000` | `5d4be00c38b6b610a40e077226ef05ff362222946c2c54b688a0a19c331fb82d` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-10-27 10:38:50 UTC | job post-check da run 40469025943 confirmou a version no ledger | aplicada |
+| `20261027140000` | `e63a43b30c5bce7d3e1e7f6f6829fc692e4b95b5a229b07b24c353ac97fc07cf` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-10-27 13:58:20 UTC | job post-check da run 40512572184 confirmou a version no ledger | aplicada |
+| `20261027160000` | `c20b8190eee43e9a40fe8cc084040f25c94d1c1ef59335efda3da8d39ac6e8d6` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-10-28 10:13:23 UTC | job post-check da run 40670021078 confirmou a version no ledger | aplicada |
 
 ### Evidências do recibo `20260922170000`
 
@@ -1575,3 +1587,9 @@ Detalhes, métricas antes/depois e one-shots: docs/EXECUCAO_CORRECOES_MEDALLION_
 | `20261022203935` | `83558c38fda00255556c265c7ba669c85650a1508a7b2acdb99902fed3746575` | E99 repair-only (mirror) | 2026-10-22T20:39:35Z | em produção via SELECT pg_get_functiondef — auth.uid() guard confirmado |
 
 **Próximo passo obrigatório:** após merge desta PR, disparar `schema-snapshot-export.yml` com `force_rotate: true` para regenerar baseline (REGRA #8 corolário).
+
+## Nota de governança — 2026-10-27
+
+Squash merge do PR #2599 (commit `2ca5ef04`) foi realizado via API com mensagem customizada,
+sem o sufixo `(#2599)` exigido pelo Branch Protection Sentinel. Este commit via PR #XXXX
+restaura o padrão `(#NNN)` no HEAD de `main`.

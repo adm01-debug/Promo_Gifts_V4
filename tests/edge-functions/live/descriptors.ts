@@ -177,6 +177,13 @@ export const DESCRIPTORS: Record<string, Descriptor> = {
     // No happy-path: downloads images and writes blurhash strings — expensive.
     invalidInputs: [],
   },
+  'xbz-image-uploader': {
+    skipCors: true,
+    // pg_cron job (schedule: 3,13,23,43,53 * * * *); auth via x-cron-secret.
+    // Not yet deployed to canonical — 404 is acceptable until deploy-edge-functions.yml runs.
+    pendingDeploy: true,
+    invalidInputs: [],
+  },
 
   // ---------------- Tombstones (410 Gone — decommissioned) ----------------
   'mcp-query': {

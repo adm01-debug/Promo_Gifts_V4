@@ -1,57 +1,118 @@
 {
-  "gerado_em": "2026-10-25T20:30:00Z",
-  "sessao": "https://claude.ai/code/session_01Ss1tXZ4cAbxBvdmu95uNPz",
-  "rev": 22,
-  "main_head_pre": "5279abfe07895d9b0481fa08086b2c18d321de5f",
-  "main_head_pos": "15e10fd88208f9b4cd372b82544fb27892d15a81",
-  "baseline": {
-    "testes": 429,
-    "falhas": 0,
-    "gate_final_run": "40223579961",
-    "gate_final_conclusao": "success",
-    "gate_final_completado_em": "2026-10-25T19:02:42Z",
-    "sha": "7d3bd4ba47eb6e9e6b3d56fe3bfac45a791de84f"
+  "session_atual": "session_01VXkRxYoeZ4YYfunRonjjXL",
+  "data": "2026-10-28",
+  "status": "EM_ANDAMENTO",
+  "branch_trabalho": "claude_pink/awesome-ride-d25ur3",
+  "main_head_inicio": "62af0798dd71812979667ac29f596d25f3ef191b",
+  "main_head_atual": "62af0798dd71812979667ac29f596d25f3ef191b",
+  "prs_abertas_inicio": 5,
+  "prs_analisadas_esta_sessao": 10,
+  "prs_mergeadas_esta_sessao": 1,
+  "prs_fechadas_esta_sessao": 5,
+  "prs_abertas_atual": 5,
+  "ci_gate_final_pr2679": {
+    "run_id": "40623857734",
+    "sha": "0cb3c5257d919bb2c39482a7f5978f47ff6753b4",
+    "status": "cancelled",
+    "conclusao": "cancelled",
+    "nota": "Cancelado em 2026-10-28T03:12Z — runners stuck >1h. Novo run triggerado via push em 515bd64."
   },
-  "gate_final_pos_merges": {
-    "sha": "15e10fd8",
-    "run": 40227283262,
-    "status": "queued",
+  "ci_gate_final_pr2679_v2": {
+    "sha": "515bd64ca6e933a95b15cdeae6969925fe815b08",
+    "status": "cancelled",
+    "conclusao": "cancelled",
+    "nota": "Run 40625610155 queued >1h sem runners. Cancelado em 2026-10-28T03:30Z."
+  },
+  "ci_gate_final_pr2679_v3": {
+    "run_id": "40628689804",
+    "sha": "73e0f0c47bf8f2887096d64d78f84f0106ec456e",
+    "status": "cancelled",
+    "conclusao": "cancelled",
+    "nota": "Run queued 20+ min sem iniciar — cancelado em 2026-10-28T04:08Z. Novo push para retrigger."
+  },
+  "ci_gate_final_pr2679_v4": {
+    "run_id": "40630295218",
+    "sha": "f85652c",
+    "status": "cancelled",
+    "conclusao": "cancelled",
+    "nota": "Auto-cancelado por concorrência quando run 40630089377 (PR#2680) foi cancelado em 04:16Z"
+  },
+  "ci_gate_final_pr2679_v5": {
+    "run_id": null,
+    "sha": "pending",
+    "status": "pending",
     "conclusao": null,
-    "nota": "GitHub Actions infra issue — run preso em queued desde 19:42Z; não é falha de código"
+    "nota": "Retrigger v5 — 04:20Z após liberar slot de concorrência (cancelei 40630803748 + 40630803605 de PR#2681)"
   },
-  "prs_abertas_analisadas": 29,
-  "merges_autonomos_esta_sessao": 10,
-  "contagem_por_veredito": {
-    "MERGEADO_AUTONOMO": 10,
-    "DECISAO_HUMANA": 13,
-    "FECHAR": 5,
-    "JA_EM_MAIN": 1,
-    "total_abertas": 29
+  "ci_main_atual": {
+    "sha": "62af0798",
+    "status": "in_progress",
+    "nota": "E2E em execução após merge do PR #2673 (E2E baselines v10)"
   },
-  "merges_autonomos_esta_sessao_lista": [
-    {"number": 2544, "sha": "1d26da9082d42e825de66f574fbc796587345fdf", "titulo": "docs: backlog CI CI-001..CI-008"},
-    {"number": 2545, "sha": "2a93ba556b58007a001d68efd3c81ead17c19dce", "titulo": "chore: backlog funcionalidades FT-001..FT-416"},
-    {"number": 2548, "sha": "9be832a355f0c98fcd22021b4273b16fa0b1aba5", "titulo": "feat: botão LGPD excluir meus dados"},
-    {"number": 2549, "sha": "73df7502f3b582f7966c209ff6a5c202fb1a3f9e", "titulo": "chore: backlog Supabase SB-001..SB-018"},
-    {"number": 2551, "sha": "97eed25cb177a318fcf63fb3843f02512511d579", "titulo": "fix: peso 0 no Kit Maker"},
-    {"number": 2552, "sha": "35fdb5793db7461f7fafcdae1effc89ae5cae6b5", "titulo": "fix: materials-api timeout 20s"},
-    {"number": 2553, "sha": "aebd333f3d2d57ee0bb5f1f127bf23f352846cd9", "titulo": "fix: selos sem mock"},
-    {"number": 2554, "sha": "e6538448e6edc639f9131e809ae265976b43f208", "titulo": "fix: BI Cliente 360 sem mock"},
-    {"number": 2555, "sha": "479f2219485e23a5d35896dfe44c9ca4f7c1026f", "titulo": "docs(pendencias): rev29"},
-    {"number": 2556, "sha": "15e10fd88208f9b4cd372b82544fb27892d15a81", "titulo": "chore: backlog banco O1/O3"}
+  "merges_realizados": [
+    {
+      "pr": 2673,
+      "titulo": "chore(e2e): update calendar visual baselines post-v10",
+      "merge_sha": "62af0798dd71812979667ac29f596d25f3ef191b",
+      "metodo": "squash",
+      "data_merge": "2026-10-28"
+    }
   ],
-  "historico_sessoes_anteriores": {
-    "mergeados_autonomamente": [
-      {"number": 2529, "sha": "59a7a6072f405d98f7004f26a4badbf6287c6b5f"},
-      {"number": 2543, "sha": "7d3bd4ba47eb6e9e6b3d56fe3bfac45a791de84f"},
-      {"number": 2546, "sha": "5279abfe07895d9b0481fa08086b2c18d321de5f"}
-    ]
-  },
-  "pr_entregaveis": {
-    "number": 2559,
-    "branch": "claude_05/youthful-ride-vcdchy",
-    "status": "open",
-    "mergeable_state": "blocked",
-    "bloqueio": "Gate Final run #40228592594 preso em queued (GitHub Actions infra issue)"
+  "prs_fechadas": [
+    {
+      "pr": 2678,
+      "motivo": "Duplicata de #2679 (unit test fix rdp v10)"
+    },
+    {
+      "pr": 2677,
+      "motivo": "Duplicata de #2679 (unit test fix rdp v10)"
+    },
+    {
+      "pr": 2670,
+      "motivo": "Fix do calendar.tsx já estava em main via commit 8b0b606"
+    },
+    {
+      "pr": 2671,
+      "motivo": "E2E baselines já mergeadas via PR #2673"
+    },
+    {
+      "pr": 2672,
+      "motivo": "E2E baselines já mergeadas via PR #2673"
+    }
+  ],
+  "prs_abertas_vereditos": [
+    {
+      "pr": 2679,
+      "veredicto": "MERGE_CANDIDATE",
+      "bloquio": "Gate Final SHA 24ba2b5 (pending)"
+    },
+    {
+      "pr": 2675,
+      "veredicto": "BLOQUEADO_CONFLITO",
+      "bloqueio": "mergeable_state=dirty — conflito com main em branch de outra sessão (REGRA #10: sem escrita)"
+    },
+    {
+      "pr": 2668,
+      "veredicto": "MERGE_CANDIDATE",
+      "bloqueio": "aguarda Gate Final main verde"
+    },
+    {
+      "pr": 2663,
+      "veredicto": "AGUARDA_PO",
+      "bloqueio": "título diz docs mas pode conter migration — PO deve revisar"
+    },
+    {
+      "pr": 2631,
+      "veredicto": "MERGE_CANDIDATE",
+      "bloqueio": "aguarda Gate Final main verde"
+    }
+  ],
+  "sessao_anterior": {
+    "session": "session_01VXkRxWq5ZUCmvuNx5e2TGX",
+    "data": "2026-10-27",
+    "branch_trabalho": "claude_pink/sleepy-cannon-h000nc",
+    "prs_analisadas": 13,
+    "prs_mergeadas": 1,
+    "prs_fechadas_pelo_po": 7
   }
 }

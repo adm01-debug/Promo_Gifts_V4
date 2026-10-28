@@ -15,6 +15,12 @@ import { gotoAndSettle } from "../helpers/nav";
 
 test.describe("Sidebar — tooltips comerciais (hover/unhover)", () => {
   test.beforeEach(async ({ page }) => {
+    const vp = page.viewportSize();
+    test.skip(
+      vp !== null && vp.width < 768,
+      'Hover tooltips não se aplicam em dispositivos touch; rodando apenas em desktop',
+    );
+
     await loginAs(page, "user");
     await gotoAndSettle(page, "/");
 

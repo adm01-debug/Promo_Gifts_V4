@@ -461,6 +461,14 @@ jobs:
       - name: Fail if drift detected
         if: steps.check_paths.outputs.needs_drift != 'false' && (steps.hash_diff.outputs.drift_count != '0' || steps.hash_diff.outputs.missing_in_dl != '0' || steps.slug_diff.outputs.has_orphans == 'true' || steps.slug_diff.outputs.has_missing == 'true')
         run: |
+          # E203: Em PRs, todo drift (conteúdo, missing, orphan) é advisory — não bloqueia merge.
+          # A função modificada/adicionada só pode ser deployada pós-merge via "Deploy Edge Functions".
+          # Bloquear em has_missing ou has_orphans criaria deadlock: não se deploya antes de mergear,
+          # não se mergeia porque a função não está deployada.
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            echo "::notice::Drift advisory para PR — conteúdo: ${{ steps.hash_diff.outputs.drift_count }} função(ões), missing: ${{ steps.slug_diff.outputs.has_missing }}, orphans: ${{ steps.slug_diff.outputs.has_orphans }}. Será resolvido pelo deploy pós-merge via 'Deploy Edge Functions'."
+            exit 0
+          fi
           echo "::error::Drift detectado entre GitHub e canônico. Veja sumário do job e artefato drift-report.csv."
           echo "::error::Resoluções possíveis:"
           echo "::error::  1. Drift de conteúdo: rodar 'supabase functions download <slug>' e commit no repo"

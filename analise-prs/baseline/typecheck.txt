@@ -1,11 +1,6 @@
-TypeScript check — Sessão session_01Ss1tXZ4cAbxBvdmu95uNPz (continuação)
-Data: 2026-10-25
+## TypeScript baseline — main HEAD e0b569f18 — 2026-10-27
 
-NÃO EXECUTADO LOCALMENTE
-Motivo: npm install falha com 403 (registry europe-west1-npm.pkg.dev sem credenciais)
+Comando: npx tsc --noEmit
+Resultado: EXIT 0 — zero erros TypeScript em main
 
-Referência CI (Gate 1 — TypeScript + ESLint):
-- Run #40214531246 (SHA 4cb4feb4): conclusion=success → 0 erros TypeScript
-- Gate Final completo: success ✅
-
-Evidência: Gate Final run #40214531246 job "static-gates" conclusion=success
+Verificado em session_01VXkRxWq5ZUCmvuNx5e2TGX
