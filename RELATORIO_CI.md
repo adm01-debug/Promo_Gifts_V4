@@ -64,13 +64,13 @@ Commit atual: `4c5fdd72` (react-day-picker v8→v10 bump pelo Lovable, posterior
 | `node scripts/validate-supabase-config.mjs` | ✅ OK — canônico `doufsxqlfjyuvxuezpln` confirmado |
 | `node scripts/check-eslint-baseline.mjs` | ✅ OK — baseline: 0 erros |
 
-**Após os fixes (commit `40cb1e2`):**
+**Após os fixes (commit `90264719`):**
 
 | Check | Resultado |
 |---|---|
 | `npm run lint` (ESLint) | ✅ OK — 0 erros, 0 warnings |
 | Pre-push hook `check-eslint-baseline.mjs` | ✅ OK — nenhuma regressão detectada |
-| CI `deploy-gates.yml` no PR branch | ✅ [Run #40601426870 — success](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40601426870) |
+| CI `deploy-gates.yml` no PR branch | ⏳ Aguardando conclusão do run no commit `90264719` (calendar.tsx v10 fix) |
 
 ---
 
@@ -93,7 +93,8 @@ Commit atual: `4c5fdd72` (react-day-picker v8→v10 bump pelo Lovable, posterior
 - Causa confirmada (run 40544232986): step `🌐 Edge CORS x-request-id gate` falhou com `xbz-image-uploader: no CORS configuration found`  
 - Causa raiz: `xbz-image-uploader` não estava na `SERVER_ONLY_ALLOWLIST` do script `check-edge-cors-headers.mjs` (é função cron, chamada apenas por pg_cron, sem CORS)  
 - Fix já commitado: PR #2654 (`4c7ecb2`) adicionou `xbz-image-uploader` ao allowlist  
-- Status: ✅ RESOLVIDO — run #40597996420 (commit `4c5fdd72`, main) passou com `conclusion=success`
+- Nota: zustand v4→v5 (`16ad57c`) está no mesmo commit mas NÃO é a causa da falha — o CORS gate falha antes dos testes  
+- Status: aguardando trigger do workflow (path-filter; necessita push em `src/pages/magazine/**` ou outros paths vigiados)
 
 ### Grupo C — E2E / autenticação
 
@@ -126,15 +127,15 @@ Commit atual: `4c5fdd72` (react-day-picker v8→v10 bump pelo Lovable, posterior
 | Workflow | Causa raiz | Fix | Prova |
 |---|---|---|---|
 | `magazine-unit-tests.yml` | CORS gate: `xbz-image-uploader` sem allowlist | ✅ PR #2654 (`4c7ecb2`) já em main | ✅ [Run #40597996420 — success](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40597996420) — main, commit `4c5fdd72` |
-| `edge-integration-all.yml` | `validate-access` prod desatualizada — retorna HTTP 200 para inputs inválidos (6 testes: JSON inválido, body vazio, array, string, null, número) | Requer deploy de `validate-access` via `deploy-edge-functions.yml` | PENDENCIAS.md P14 — aguarda `APROVADO` do PO |
-| **`deploy-gates.yml` (Gate 1 TypeScript)** | react-day-picker v8→v10: `caption`→`month_caption`, `initialFocus` removido, `IconLeft/IconRight`→`Chevron` | ✅ Fix em commit `40cb1e2` (PR #2663) | **[PR branch — Run #40601426870 — success](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40601426870)** |
+| `edge-integration-all.yml` | `validate-access` prod desatualizada — retorna HTTP 200 para inputs inválidos | Requer deploy de `validate-access` via `deploy-edge-functions.yml` | PENDENCIAS.md P14 — aguarda `APROVADO` do PO |
+| **`deploy-gates.yml` (Gate 1 TypeScript)** | react-day-picker v8→v10: classNames v8→v10, `initialFocus` removido, `Chevron` component | ✅ Fix em commit `90264719` (PR #2663) | ⏳ CI aguardando conclusão em commit `90264719` |
 | `db-apply-migration.yml` | Migration `20261027160000` sem `-- Rollback:` header | ✅ Header adicionado em commit `40cb1e2` | PO re-dispara com `version=20261027160000` |
 | `edge-functions-drift-check.yml` | 106 funções com drift | PENDENCIAS.md P1 | — |
 | `ci-security-drift.yml` | E2E: header intercept + catalog timeout | PENDENCIAS.md P2 | — |
 | `e2e-swatch-quickview.yml` | 66.7% skip rate | PENDENCIAS.md P3 | — |
 | `e2e.yml` | Cancelamento manual | PENDENCIAS.md P4 | — |
 | `e2e-magazine-header.yml` | Zustand v4→v5 quebrou navegação magazine | PENDENCIAS.md P5 | — |
-| `Running Copilot Code Review` | Bot externo; `conclusion=failure` em `4357a2d4` | PENDENCIAS.md P6 | — |
+| `Running Copilot Code Review` | Bot externo | PENDENCIAS.md P6 | — |
 | `branch-protection-sentinel.yml` | Commit histórico sem PR | PENDENCIAS.md P8 | — |
 | `ci-replenishment-module.yml` | Screenshot diff visual | PENDENCIAS.md P10 | — |
 
@@ -147,11 +148,10 @@ Merge dispara deploy em produção via Vercel/Lovable.
 
 Restrição da tarefa: *"Se o merge disparar deploy de produção e a correção alterar código da aplicação, não faça merge: deixe o PR pronto e registre em PENDENCIAS.md."*
 
-**Estado:** PR pronto, CI verde no branch (`deploy-gates.yml` [run #40601426870 — success](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40601426870)).  
-**Ação do PO:** aprovar e mergear PR #2663 para aplicar os fixes em main.
+**Estado:** PR pronto, CI em execução no commit `90264719` (calendar.tsx v10 fix).  
+**Ação do PO:** aguardar CI verde e aprovar/mergear PR #2663.
 
-**Branch de trabalho:** `claude_pink/focused-lamport-qyupp8` — nome exigido pelo system prompt da tarefa (`"Develop on branch claude_pink/focused-lamport-qyupp8"`).
+**Branch de trabalho:** `claude_pink/focused-lamport-qyupp8` — nome exigido pelo system prompt da tarefa.  
 
 **PR desta sessão:** https://github.com/adm01-debug/Promo_Gifts_V4/pull/2663  
-**Commit de fix:** `40cb1e219987` (react-day-picker v10 + migration rollback header)  
-**CI verde no PR:** [Run #40601426870](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40601426870) — `conclusion: success`
+**Commit de fix:** `90264719` (calendar.tsx v10 classNames + todos os fixes react-day-picker)  

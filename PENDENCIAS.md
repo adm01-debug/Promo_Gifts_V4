@@ -197,19 +197,20 @@ react-day-picker foi bumped de v8.10.2 → v10.0.2 pelo Lovable (commit `4c5fdd7
 - `classNames.caption` renomeado para `classNames.month_caption`
 - `components.IconLeft/IconRight` substituídos por `components.Chevron` com prop `orientation`
 - Prop `initialFocus` removida do `<DayPicker>`
+- classNames v8 (`nav_button`, `table`, `head_row`, etc.) substituídos pelos equivalentes v10
 
 Esses usos dispersos em 7 arquivos causam erros TypeScript que quebram o Gate 1.
 
 ### Fix
-Commit `40cb1e219987` na branch `claude_pink/focused-lamport-qyupp8`:
-- `src/components/ui/calendar.tsx` — `caption` → `month_caption`, `Chevron` component
+Commit `90264719` na branch `claude_pink/focused-lamport-qyupp8`:
+- `src/components/ui/calendar.tsx` — migração completa para API v10 (classNames, components)
 - 6 outros arquivos — `initialFocus` removido
 - `supabase/migrations/20261027160000_deactivate_image_dimensions_backfill_cron.sql` — `-- Rollback:` header adicionado
 
 ### Por que não foi mergeado
 Fix inclui código TypeScript em `src/` (código de aplicação). Merge em `main` = deploy em produção via Vercel/Lovable. Restrição da tarefa proíbe merge nesse caso sem aprovação do PO.
 
-**CI verde no PR:** [Run #40601426870 — success](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40601426870)  
+**CI aguardando resultado no PR:** commit `90264719` (calendar.tsx v10 fix)  
 **PR pronto:** https://github.com/adm01-debug/Promo_Gifts_V4/pull/2663
 
 ### Ação necessária
@@ -289,7 +290,8 @@ Deploy de edge function via MCP direto é proibido (REGRA #8 corolário). O úni
 ## Resumo de prioridades
 
 | # | Workflow | Prioridade | Decisão do PO |
-|---|---|---|---|
+|---|---|---|
+|---|---|
 | **P11** | **`deploy-gates.yml` (main)** | **CRÍTICA** | **Aprovar e mergear PR #2663** |
 | P9 | `db-apply-migration.yml` rollback header | ALTA (aguarda re-dispatch) | Re-disparar com `version=20261027160000` |
 | P14 | `edge-integration-all.yml` — `validate-access` prod desatualizada | ALTA | `APROVADO` → dispatch `deploy-edge-functions.yml` `function_name: validate-access` |
