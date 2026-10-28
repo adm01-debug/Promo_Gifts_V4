@@ -7,8 +7,8 @@
 -- pode confundir diagnósticos futuros. Remover mantém o allowlist como SSOT
 -- do que realmente pode ser acessado.
 -- Evidência: auditoria 2026-10-27 docs/db/PGMQ_AND_SECRETS_AUDIT_2026-10-27.md
--- Rollback: recriar a função com as 3 entradas reincluídas (abaixo):
---   'WEBHOOK_DISPATCHER_URL', 'WEBHOOK_SECRET', 'ASIA_INGESTION_CRON_SECRET'
+-- Rollback: supabase/rollbacks/20261027230000_rollback.sql
+--   (reinsere as 3 entradas stale: WEBHOOK_DISPATCHER_URL, WEBHOOK_SECRET, ASIA_INGESTION_CRON_SECRET)
 
 -- ── PRÉ-CONDIÇÃO: função existe e ainda contém as entradas stale ──────────────
 DO $$
