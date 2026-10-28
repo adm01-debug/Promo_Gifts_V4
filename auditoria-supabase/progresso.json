@@ -87,8 +87,17 @@
       "id": "A.10",
       "titulo": "Logs 7d",
       "status": "CONCLUÍDO",
-      "achados": 4,
-      "arquivo": "secao10_logs.md"
+      "achados": 5,
+      "arquivo": "secao10_logs.md",
+      "evidencias_sessao_2026-10-28": [
+        "query_logs service=edge-function window=2026-10-28T02:58Z..03:02Z (24h max): EXECUTADO",
+        "LOG-001 NOVO: materials-api timeout 135-139s vs limit 20s (EXTERNAL_PROMOBRIND)",
+        "LOG-001: credentials bulk fetch failed: upstream request timeout",
+        "LOG-001: Auth GET /user → 504 context deadline exceeded (duration ~53s)",
+        "LOG-001: Auth POST /token → 504 context deadline exceeded (login failing, ~11s)",
+        "LOG-001: crm-db-bridge kill_switch check aborted (repeated)",
+        "NOTAS: window 24h max (não 7d); campo 'metadata' inexistente — omitido da query"
+      ]
     },
     {
       "id": "A.11",
@@ -112,7 +121,7 @@
   ],
   "contagem_severidade": {
     "CRITICO": 3,
-    "ALTO": 8,
+    "ALTO": 9,
     "MEDIO": 12,
     "BAIXO": 9
   },

@@ -24,10 +24,10 @@ Corresponde a `CURRENT_PROJECT_ID = 'doufsxqlfjyuvxuezpln'` em `src/integrations
 | Severidade | Contagem |
 |---|---|
 | CRÍTICO | 3 |
-| ALTO | 8 |
+| ALTO | 9 |
 | MÉDIO | 12 |
 | BAIXO | 9 |
-| **Total** | **32** |
+| **Total** | **33** |
 
 ---
 
@@ -170,6 +170,31 @@ As 11 migrations aplicadas durante a auditoria foram via `db-apply-migration.yml
 
 - **Objeto:** Functions em `public`
 - **Evidência:** `has_function_privilege('anon', ...)` → 10 funções (sessão anterior).
+
+### ALT-009 — LOG-001: Degradação de produção em andamento (auth 504 + DB externo timeout)
+
+- **Seção:** A.10 (Logs)
+- **Objeto:** Edge function `materials-api`, `credentials`, `crm-db-bridge`; serviço auth
+- **Evidência (esta sessão — query_logs 2026-10-28T02:58–03:02 UTC):**
+  ```
+  [materials-api] banco externo excedeu o timeout
+    { errorMessage: "TimeoutError: Signal timed out.", timeout_ms: 20000 }
+  [credentials] EXTERNAL_PROMOBRIND_SERVICE_ROLE_KEY source:env
+    error:"upstream request timeout" duration_ms:135880
+  [credentials] bulk DB fetch failed: upstream request timeout
+  Auth GET /user → HTTP 504 "context deadline exceeded"
+    promogifts.com.br, duration ~53s
+  Auth POST /token → HTTP 504 "context deadline exceeded"
+    duration ~11s (FALHA DE LOGIN)
+  [kill_switch] check error for edge_crm_db_bridge: The signal has been aborted
+  ```
+- **Causa raiz provável:** DB externo `EXTERNAL_PROMOBRIND` inacessível (timeout 135-139s vs limit 20s). A `crm-db-bridge` falha, o hook `custom_access_token` (se configurado) bloqueia o auth pipeline, causando 504s em `/user` e `/token`. Login de usuários em promogifts.com.br está falhando ativamente.
+- **Impacto no negócio:** Usuários não conseguem fazer login. Sessões existentes recebem 504 em qualquer chamada autenticada. Duração indeterminada — logs confirmam ocorrência às 03:00 UTC mas não indicam início ou fim.
+- **Ação imediata sugerida:**
+  1. Verificar se DB externo (`EXTERNAL_PROMOBRIND_URL`) está acessível agora
+  2. Desativar kill_switch `edge_crm_db_bridge` temporariamente se possível
+  3. Verificar configuração do hook `custom_access_token` em auth
+- **Proposta:** C_LOG001 — investigação e circuit-breaker para `crm-db-bridge` (timeout curto + fallback) — AGUARDANDO APROVAÇÃO.
 
 ---
 
