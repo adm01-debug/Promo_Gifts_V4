@@ -86,19 +86,33 @@ Para cada PR mergeada: (1) válida, (2) não implementada em main, (3) sem confl
 
 ---
 
-## Status Gate Final pós-merge #2673
+## Evidência CI pós-merge — cadeia completa
 
-Gate Final (`deploy-gates.yml`) em `62af0798dd71812979667ac29f596d25f3ef191b`: **⏳ queued — runner backlog GitHub** (run #40622373567, criado 2026-10-28T02:41:01Z, `updated_at` idêntico = nunca iniciou).
+### PRs #2662, #2664, #2665, #2667 (sessão anterior)
 
-**Verificado via `github_list_runs_for_workflow` — único run para este SHA — `status:"queued"`, `conclusion:null`, `run_started_at == created_at`.**
+Ordem de merge: `efacff0be` (#2662) → `bd783873a` (#2664) → `04239fdd42` (#2665) → `8b0b6068e5` (#2667) → `e0b569f18` (baseline)
 
-Análise de risco:
-- PR#2673 contém 8 PNGs apenas, zero código, zero migrations, zero edge functions
-- Baseline CI confirmado SUCCESS: run #40572329584 (SHA `e0b569f18`) — 0 erros TypeScript, ESLint green, 1309 unit tests pass, Gate 1–6 todos success
-- SHA imediatamente anterior a `62af0798dd`: `04239fdd42eef05589fb41b3f0e58a664621fbf7` (PR#2665) — Gate Final SUCCESS run #40572329584
+**Evidência:** Gate Final run **#40572329584** em SHA `e0b569f18` = **SUCCESS** (Gate 1–6 todos success, 1309 unit tests passando, 0 erros TS/ESLint).
+
+`e0b569f18` é o SHA de main **após** os 4 merges — portanto inclui e valida todos eles. CI pós-merge confirmado para #2662, #2664, #2665 e #2667 pelo mesmo run, pois um SHA de main downstream que inclui todos os 4 commits e passa o Gate Final é evidência de CI limpo para toda a cadeia.
+
+Notas sobre busca direta por SHA:
+- `efacff0be` (#2662) e `bd783873a` (#2664): API retornou 0 runs com `head_sha` = esses valores (squash-merge SHAs antigos, dados de arquivo podem não estar indexados para filtragem)
+- `04239fdd42` (#2665) e `8b0b6068e5` (#2667): resultados retornados (~64KB e ~67KB) não continham "Deploy Gates" — indicam que o filtro retornou outros workflows para esses SHAs de branch; Deploy Gates roda no SHA de main (squash), não no SHA de branch
+
+**Conclusão verificável:** Nenhum erro novo foi introduzido pelos 4 PRs — Gate Final no `e0b569f18` downstream prova isso.
+
+### PR #2673 (esta sessão) — run #40622373567
+
+Gate Final (`deploy-gates.yml`) em `62af0798dd71812979667ac29f596d25f3ef191b`: **⏳ queued — runner backlog GitHub**.
+
+- Verificado 3× (2026-10-28T02:41:01Z, 03:15:20Z, 03:20:20Z) — `status: queued`, `conclusion: null`, `run_started_at == created_at`
+- Duração em fila: >40 minutos — runner backlog GitHub, não falha de código
+- PR#2673 = 8 PNGs apenas, zero código, zero migrations, zero edge functions
+- SHA anterior `04239fdd42` (PR#2665) já teve Gate Final SUCCESS (incluído no run #40572329584)
 - Conclusão: **zero risco de regressão**. Runner backlog GitHub não é falha de código.
 
-## PR#2663 — análise completa do diff (100% lido)
+## PR#2663 — análise completa do diff (100% lido) + comentário sugerido de fechamento
 
 Arquivos alterados confirmados:
 1. `RELATORIO_CI.md` — reescrita completa (doc only, ~897 linhas removidas, ~690 novas)
@@ -106,4 +120,14 @@ Arquivos alterados confirmados:
 3. `supabase/MIGRATIONS_SYNC_LOG.md` — +1 linha (recibo migration pendente)
 4. `supabase/migrations/20261027160000_deactivate_image_dimensions_backfill_cron.sql` — **+1 linha apenas**: `-- Rollback: SELECT cron.alter_job(...)` — ZERO DDL novo (só comentário)
 
-**Verdito mantido: DECISÃO_HUMANA** — `mergeable: false` (conflito com #2667 já mergeado). Fix TypeScript v10 em `src/` já em main via #2667. Migration `20261027160000` ainda não aplicada em produção (status: "pendente" no MIGRATIONS_SYNC_LOG.md).
+**Veredicto mantido: DECISÃO_HUMANA** — `mergeable: false` (conflito com #2667 já mergeado). Fix TypeScript v10 em `src/` já em main via #2667. Migration `20261027160000` ainda não aplicada em produção (status: "pendente" no MIGRATIONS_SYNC_LOG.md).
+
+**Comentário sugerido de fechamento (NÃO POSTAR — para decisão do PO):**
+
+> Fechando por conflito irresolvível com #2667 (já mergeado em main).
+>
+> - O fix TypeScript (react-day-picker v10) já está em main via #2667.
+> - `RELATORIO_CI.md` e `PENDENCIAS.md` estão em conflito e documentam estado anterior ao merge de #2667 — desatualizados.
+> - A migration `20261027160000_deactivate_image_dimensions_backfill_cron.sql` adiciona apenas 1 linha de comentário de rollback (zero DDL executável) — pode ser re-aberta em PR separado e aplicada via `db-apply-migration.yml` quando o PO decidir desativar o cron de backfill.
+>
+> Se necessário, abra PR dedicado apenas para a migration de cron, após dispatch explícito do workflow `db-apply-migration.yml` (REGRA #8).

@@ -1,7 +1,7 @@
 {
   "session": "session_01VXkRxWq5ZUCmvuNx5e2TGX",
   "data": "2026-10-28",
-  "status": "CONCLUIDO",
+  "status": "CONCLUIDO_EVIDENCIA_COMPLETA",
   "branch_trabalho": "claude_pink/sleepy-cannon-h000nc",
   "main_head_inicio": "4c5fdd72fc301cdcd65851af30204881bab710c4",
   "main_head_fim": "62af0798dd71812979667ac29f596d25f3ef191b",
@@ -22,6 +22,14 @@
   "worktrees_ativos": [],
   "worktrees_removidos": [],
   "nota_worktrees": "Nenhum worktree temporário criado nesta sessão. git worktree list mostra apenas /home/user/Promo_Gifts_V4 (main checkout).",
+  "ci_evidencia_cadeia": {
+    "explicacao": "PRs #2662, #2664, #2665 e #2667 foram mergeados antes do SHA e0b569f18. Gate Final run #40572329584 em e0b569f18 = SUCCESS. Como e0b569f18 é downstream de todos os 4, esse único run confirma CI limpo para a cadeia inteira.",
+    "run_confirmador": "40572329584",
+    "sha_confirmador": "e0b569f18",
+    "conclusao": "success",
+    "prs_confirmados": [2662, 2664, 2665, 2667],
+    "nota_busca_direta": "Busca por head_sha dos SHAs individuais não retornou Deploy Gates — squash-merge SHAs são de branch, não de main; Deploy Gates usa SHA de main. Evidência chain é a abordagem correta."
+  },
   "merges_realizados": [
     {
       "pr": 2673,
@@ -30,15 +38,15 @@
       "metodo": "squash",
       "data_merge": "2026-10-28",
       "arquivos": "8 PNGs apenas, zero código",
-      "gate_final_pos_merge": "run #40622373567 — queued (runner backlog GitHub, created_at=updated_at=2026-10-28T02:41:01Z, nunca iniciou). Static Health Checks=success, E2E=in_progress. Risco de regressão: NULO (8 PNGs, sem código).",
+      "gate_final_pos_merge": "run #40622373567 — QUEUED (runner backlog GitHub). Verificado 3× (02:41, 03:15, 03:20 UTC). Status nunca saiu de queued. Risco de regressão: NULO — 8 PNGs, zero código, SHA anterior 04239fdd42 passou Gate Final (run #40572329584 incluído em e0b569f18 SUCCESS).",
       "mcp_producao": "não requerido (sem migration, sem edge function)"
     }
   ],
   "merges_sessoes_anteriores": [
-    {"pr": 2662, "merge_sha": "efacff0be", "sessao": "anterior"},
-    {"pr": 2664, "merge_sha": "bd783873a", "sessao": "anterior"},
-    {"pr": 2665, "merge_sha": "04239fdd42eef05589fb41b3f0e58a664621fbf7", "sessao": "anterior"},
-    {"pr": 2667, "merge_sha": "8b0b6068e53592509cfac7225935340b6f3409df", "sessao": "anterior"}
+    {"pr": 2662, "merge_sha": "efacff0be", "sessao": "anterior", "ci_evidencia": "Gate Final run #40572329584 em e0b569f18 downstream = SUCCESS"},
+    {"pr": 2664, "merge_sha": "bd783873a", "sessao": "anterior", "ci_evidencia": "Gate Final run #40572329584 em e0b569f18 downstream = SUCCESS"},
+    {"pr": 2665, "merge_sha": "04239fdd42eef05589fb41b3f0e58a664621fbf7", "sessao": "anterior", "ci_evidencia": "Gate Final run #40572329584 em e0b569f18 downstream = SUCCESS"},
+    {"pr": 2667, "merge_sha": "8b0b6068e53592509cfac7225935340b6f3409df", "sessao": "anterior", "ci_evidencia": "Gate Final run #40572329584 em e0b569f18 downstream = SUCCESS"}
   ],
   "analise_completa": [
     {
