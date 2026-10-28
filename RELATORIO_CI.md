@@ -1,7 +1,7 @@
 # RELATÓRIO CI — adm01-debug/Promo_Gifts_V4
 
 **Sessão:** https://claude.ai/code/session_01VXkRxafXhqqt3j3oxCDguY  
-**Data:** 2026-10-27  
+**Data:** 2026-10-28  
 **Branch de trabalho:** `claude_pink/focused-lamport-qyupp8` (tarefa exige esta branch — ver system prompt)  
 **HEAD main atual:** `4c5fdd72` (bump react-day-picker v8→v10 pelo Lovable)
 
@@ -70,7 +70,16 @@ Commit atual: `4c5fdd72` (react-day-picker v8→v10 bump pelo Lovable, posterior
 |---|---|
 | `npm run lint` (ESLint) | ✅ OK — 0 erros, 0 warnings |
 | Pre-push hook `check-eslint-baseline.mjs` | ✅ OK — nenhuma regressão detectada |
-| CI `deploy-gates.yml` no PR branch | ⏳ Aguardando conclusão do run no commit `90264719` (calendar.tsx v10 fix) |
+| CI `deploy-gates.yml` no PR branch | ✅ [Run #40601426870 — success](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40601426870) — commit `c391f4e`, Gate E40 skipped (sem migration files naquele commit) |
+
+**HEAD atual da branch (`17b020a`):**
+
+| Check | Resultado |
+|---|---|
+| Gate 1 TypeScript | ✅ Fix em `90264719` — confirmado por run #40601426870 |
+| Gate E40 (db-schema-drift-check) | ❌ FALHA esperada — P15 (647 remote_only migrations, pré-existente) |
+| Gate Final | ❌ FALHA esperada — bloqueado por Gate E40 (P15) |
+| Deploy Gates run `17b020a` | ⏳ Run #40622853947 — QUEUED (runners GitHub Actions — triggering novo run com este commit) |
 
 ---
 
@@ -128,7 +137,8 @@ Commit atual: `4c5fdd72` (react-day-picker v8→v10 bump pelo Lovable, posterior
 |---|---|---|---|
 | `magazine-unit-tests.yml` | CORS gate: `xbz-image-uploader` sem allowlist | ✅ PR #2654 (`4c7ecb2`) já em main | ✅ [Run #40597996420 — success](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40597996420) — main, commit `4c5fdd72` |
 | `edge-integration-all.yml` | `validate-access` prod desatualizada — retorna HTTP 200 para inputs inválidos | Requer deploy de `validate-access` via `deploy-edge-functions.yml` | PENDENCIAS.md P14 — aguarda `APROVADO` do PO |
-| **`deploy-gates.yml` (Gate 1 TypeScript)** | react-day-picker v8→v10: classNames v8→v10, `initialFocus` removido, `Chevron` component | ✅ Fix em commit `90264719` (PR #2663) | ⏳ CI aguardando conclusão em commit `90264719` |
+| **`deploy-gates.yml` (Gate 1 TypeScript)** | react-day-picker v8→v10: classNames v8→v10, `initialFocus` removido, `Chevron` component | ✅ Fix em commit `90264719` (PR #2663) | ✅ [Run #40601426870 — success](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40601426870) (commit `c391f4e`, Gate E40 skipped naquele run) |
+| **`deploy-gates.yml` (Gate E40 db-schema-drift)** | 647 migrations em prod sem arquivo no repo (pré-existente, não introduzido por este PR) | Requer reconciliação E99 authorizada pelo PO | PENDENCIAS.md P15 — `[migration-ledger][bloqueado] local_only=1108; remote_only=647` |
 | `db-apply-migration.yml` | Migration `20261027160000` sem `-- Rollback:` header | ✅ Header adicionado em commit `40cb1e2` | PO re-dispara com `version=20261027160000` |
 | `edge-functions-drift-check.yml` | 106 funções com drift | PENDENCIAS.md P1 | — |
 | `ci-security-drift.yml` | E2E: header intercept + catalog timeout | PENDENCIAS.md P2 | — |
@@ -148,10 +158,11 @@ Merge dispara deploy em produção via Vercel/Lovable.
 
 Restrição da tarefa: *"Se o merge disparar deploy de produção e a correção alterar código da aplicação, não faça merge: deixe o PR pronto e registre em PENDENCIAS.md."*
 
-**Estado:** PR pronto, CI em execução no commit `90264719` (calendar.tsx v10 fix).  
-**Ação do PO:** aguardar CI verde e aprovar/mergear PR #2663.
+**Estado:** PR pronto. Gate Final esperado falhar apenas no Gate E40 (P15 — ledger drift pré-existente). Gate 1 TypeScript confirmado verde em run #40601426870.  
+**Ação do PO:** ver lista de itens abaixo em PENDENCIAS.md e escolher quais autorizar.
 
 **Branch de trabalho:** `claude_pink/focused-lamport-qyupp8` — nome exigido pelo system prompt da tarefa.  
 
 **PR desta sessão:** https://github.com/adm01-debug/Promo_Gifts_V4/pull/2663  
-**Commit de fix:** `90264719` (calendar.tsx v10 classNames + todos os fixes react-day-picker)  
+**Commit de fix principal:** `90264719` (calendar.tsx v10 classNames + todos os fixes react-day-picker)  
+**Único gate bloqueante restante:** Gate E40 (P15) — pré-existente, requer reconciliação E99 pelo PO  
