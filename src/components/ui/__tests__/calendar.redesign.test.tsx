@@ -55,17 +55,22 @@ describe('Calendar iOS redesign', () => {
 
   it('day_today destaca o dia atual em vermelho', () => {
     render(<Calendar mode="single" defaultMonth={new Date()} />);
-    const today = Array.from(document.querySelectorAll<HTMLElement>('button[name="day"]')).find(
-      (b) => classes(b).includes('text-destructive'),
-    );
-    expect(today).toBeTruthy();
-    const c = classes(today);
-    expect(c).toMatch(/text-destructive/);
+    // rdp v10: today button has aria-current="date"; styling via [&>button]:text-destructive on parent <td>
+    const todayBtn =
+      document.querySelector<HTMLElement>('button[aria-current="date"]') ??
+      Array.from(document.querySelectorAll<HTMLElement>('button[name="day"]')).find((b) =>
+        classes(b).includes('text-destructive'),
+      );
+    expect(todayBtn).toBeTruthy();
+    // In v10, text-destructive is on the wrapper td via child selector (substring match still works)
+    const wrapperClass = classes(todayBtn?.parentElement) + ' ' + classes(todayBtn);
+    expect(wrapperClass).toMatch(/text-destructive/);
   });
 
   it('day_selected: bg-destructive + text-primary-foreground', () => {
     render(<Calendar mode="single" selected={REF} defaultMonth={REF} />);
-    const sel = document.querySelector('button[aria-selected="true"]');
+    // rdp v10: aria-selected on <td> wrapper; rdp v8: on <button>
+    const sel = document.querySelector('[aria-selected="true"]');
     expect(sel).toBeTruthy();
     const c = classes(sel);
     expect(c).toMatch(/bg-destructive/);
