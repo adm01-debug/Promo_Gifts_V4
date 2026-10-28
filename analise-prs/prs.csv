@@ -1,13 +1,14 @@
-numero,titulo,autor,draft,veredicto,razao_curta
-2420,feat(rollback): Add rollback scripts for 20261019 migrations,adm01-debug,false,FECHAR,Já implementado — rollback em main
-2572,docs(analise-prs): rev23 — 40 PRs,adm01-debug,false,FECHAR,Conflito irresolúvel + conteúdo superado
-2579,chore: release 1.0.0,github-actions[bot],false,FECHAR,Stale — projeto já em v1.2.1
-2580,feat(magazine): implementa MagazineEditorPage,adm01-debug,true,SKIP,DRAFT
-2588,chore(deps): bump react-day-picker 8→10,dependabot[bot],false,FECHAR,Major version sem adaptação de src
-2600,docs(analise-prs): RELATORIO_PRS.md rev22,adm01-debug,true,SKIP,DRAFT + body NÃO MERGEAR
-2605,fix(mockup): corrige crash NaN + integra GravarFormato,adm01-debug,false,FECHAR,Já implementado via PR #2616/#2614/#2620
-2622,feat(xbz-image-uploader): edge function + rollbacks 20261027,adm01-debug,false,FECHAR,Já implementado — rollbacks e manifest em main
-2631,feat(kit-ai-builder): implementa fluxo completo,adm01-debug,true,SKIP,DRAFT
-2645,chore(migrations): receipt 20261027140000,adm01-debug,false,FECHAR,Já implementado — commit 22ba938 em main
-2646,ci(deploy-gates): Gate 1.13.3 + Gate 1.19,adm01-debug,false,FECHAR,Toca .github/workflows (proibido) + CI falhou
-2653,docs(analise-prs): inventário final 17 PRs,adm01-debug,false,FECHAR,Conflito irresolúvel + conteúdo superado
+number,title,author,head_sha,state,draft,mergeable_state,verdict,valida,regressao,ja_em_main,regra_negocio_correta
+2580,"fix(banco): adiciona header rollback à migration e23",claude,41198d9a,open,true,behind,AGUARDA_GATE_FINAL,true,false,false,true
+2600,"docs: analise-prs rev46",claude,d7b6aaff,open,false,behind,NAO_MERGEAR,false,false,false,true
+2631,"chore: atualiza PENDENCIAS e RELATORIO_CI",claude,b093f023,open,false,dirty,NAO_MERGEAR,false,false,false,true
+2646,"fix(migrations): adiciona headers rollback nas migrations de cron",claude,79c0c670,open,false,behind,AGUARDA_GATE_FINAL,true,false,false,true
+2662,"delivery: analise-prs dossiês e relatório",claude,,open,false,N/A,NAO_MERGEAR_ENTREGA,true,false,false,true
+2663,"docs(ci): atualiza RELATORIO_CI e PENDENCIAS",claude,b3553989,open,false,dirty,NAO_MERGEAR,false,false,false,true
+2665,"chore(deps): bump qs from 6.16.0 to 6.16.2",dependabot[bot],1bda4d60,open,false,behind,AGUARDA_GATE_FINAL,true,false,false,true
+2666,"chore: release 1.0.0",release-please[bot],dac526be,open,false,blocked,NAO_VERIFICADO,true,false,false,true
+2668,"analise-prs: inventário inicial de PRs abertas",claude,d0a3fb6,open,true,behind,NAO_MERGEAR,false,false,false,true
+2670,"fix(calendar): migrate react-day-picker v8→v10 API",claude,7d2a142d,open,true,dirty,NAO_MERGEAR,false,false,true,true
+2671,"test(e2e): update calendar visual baselines safe 00:09",github-actions[bot],f0deb7a9,open,false,behind,NAO_MERGEAR,false,true,false,false
+2672,"test(e2e): update calendar visual baselines force 00:16",github-actions[bot],8e722120,open,false,unstable,NAO_MERGEAR,false,true,false,false
+2673,"test(e2e): update calendar visual baselines safe 01:09",github-actions[bot],1cc327e0,open,false,blocked,AGUARDA_GATE_FINAL,true,false,false,true
