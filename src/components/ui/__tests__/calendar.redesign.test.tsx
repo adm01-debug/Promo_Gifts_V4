@@ -11,8 +11,7 @@ const REF = new Date(2026, 6, 2); // 02/jul/2026
 
 afterEach(() => cleanup());
 
-const classes = (el: Element | null | undefined) =>
-  (el?.getAttribute('class') ?? '').toLowerCase();
+const classes = (el: Element | null | undefined) => (el?.getAttribute('class') ?? '').toLowerCase();
 
 function byClass(substr: string): HTMLElement | null {
   const nodes = Array.from(document.querySelectorAll<HTMLElement>('[class]'));
@@ -55,21 +54,25 @@ describe('Calendar iOS redesign', () => {
 
   it('day_today destaca o dia atual em vermelho', () => {
     render(<Calendar mode="single" defaultMonth={new Date()} />);
-    const today = Array.from(document.querySelectorAll<HTMLElement>('button[name="day"]')).find(
-      (b) => classes(b).includes('text-destructive'),
+    // v10: today modifier class on <td> via [&>button]:text-destructive child selector, not on <button>
+    const todayCell = Array.from(document.querySelectorAll<HTMLElement>('[class]')).find(
+      (el) =>
+        (el.getAttribute('class') ?? '').includes('[&>button]:text-destructive') &&
+        el.querySelector('button') !== null,
     );
-    expect(today).toBeTruthy();
-    const c = classes(today);
-    expect(c).toMatch(/text-destructive/);
+    expect(todayCell).toBeTruthy();
+    const c = todayCell!.getAttribute('class') ?? '';
+    expect(c).toMatch(/\[&>button\]:text-destructive/);
   });
 
   it('day_selected: bg-destructive + text-primary-foreground', () => {
     render(<Calendar mode="single" selected={REF} defaultMonth={REF} />);
-    const sel = document.querySelector('button[aria-selected="true"]');
+    // v10: aria-selected on <td>, selected classes use [&>button]:bg-destructive child selector on <td>
+    const sel = document.querySelector('[aria-selected="true"]');
     expect(sel).toBeTruthy();
-    const c = classes(sel);
-    expect(c).toMatch(/bg-destructive/);
-    expect(c).toMatch(/text-primary-foreground/);
+    const c = sel!.getAttribute('class') ?? '';
+    expect(c).toMatch(/\[&>button\]:bg-destructive/);
+    expect(c).toMatch(/\[&>button\]:text-primary-foreground/);
   });
 
   it('day_outside é oculto (invisible + pointer-events-none)', () => {
