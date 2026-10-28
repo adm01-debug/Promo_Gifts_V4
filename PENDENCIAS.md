@@ -1,7 +1,7 @@
 # PENDENCIAS.md — Itens bloqueados por secret/permissão/infraestrutura
 
 **Atualizado:** 2026-10-28  
-**Branch:** `fix/ci-workflows` (esta sessão)
+**Branch:** `fix/reconcile-canonical-pending-migrations` (auditoria de 2026-10-28)
 
 ---
 
@@ -339,3 +339,26 @@ description: "Deployment has failed — run this Vercel CLI command: npx vercel 
 ---
 
 *Ação prioritária: P1 (secrets E2E) — desbloqueia P2, P9, P10. P6, P8, P11 requerem investigação independente. P12 bloqueado por P7 (Opção B disponível via workflow_dispatch sem resolver P7). P13 requer deleção do projeto fantasma Vercel.*
+
+---
+
+## P14 — Reconciliação canônica de migrations pendentes (leitura em 2026-10-28)
+
+**Projeto verificado:** `doufsxqlfjyuvxuezpln` (Supabase Management API + consulta `pg_catalog` read-only). Nenhuma DDL foi executada nesta auditoria.
+
+**Ledger:** as versões `20261027120000`, `20261027140000` e `20261027160000` estão aplicadas e têm recibos E15. As versões posteriores abaixo ainda não constam no ledger:
+
+| Migration | Evidência ao vivo | Próximo passo / bloqueio |
+|---|---|---|
+| `20261027180000` | `generate-blurhashes` existe, está inativo e ainda usa o schedule antigo; versão pendente | Aplicar pelo workflow E15 após resolver o run Production já aguardando revisão |
+| `20261027200000` | 17 tabelas `supplier_stricker` sem RLS; 13 nomes da migration antiga existiam, mas quatro estavam incorretos | Corrigida neste PR para as 17 tabelas reais e rollback alinhado; aplicar somente após merge e preflight |
+| `20261027220000` | `xbz-image-uploader` está ativo sem o segredo necessário | Migration de desativação pendente; aplicar por E15 após liberar o bloqueio atual de concorrência |
+| `20261027230000` | As três entradas stale do allowlist foram confirmadas | Aplicar por E15 após revisão |
+| `20261027233000` | `XBZ_IMAGE_UPLOADER_CRON_SECRET` não existe no Vault | Bloqueada; novo preflight da migration também exige o segredo |
+| `20261027234500` | A Edge Function existe, mas o segredo não existe nem está no allowlist | Bloqueada; migration reforçada para abortar sem secret e allowlist |
+
+**Bloqueio de execução:** o run [40670992687](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40670992687) está `waiting` no job `Apply (requer aprovação do environment production)` e não consigo comprovar com o log acessível qual versão foi solicitada. Ele mantém o grupo de concorrência do workflow E15. Não aprovei esse run nem alterei o banco. A dispatch desta sessão para `20261027180000` foi cancelada antes de executar job, para evitar duplicar uma versão desconhecida. O PO deve identificar a versão desse run e aprovar ou cancelar conscientemente.
+
+**Comparação normalizada de versões** (Management API do projeto canônico × arquivos `supabase/migrations` na `main` `c344508`): 2.541 versões compartilhadas, 463 locais ainda não aplicadas e 8 entradas históricas remotas sem arquivo com a mesma versão. Isto é um inventário, não autorização para replay em lote; itens históricos dependem de allowlists/baseline e classificação.
+
+**Pré-condições confirmadas:** `20261027234500` não deve ser aplicada enquanto o secret não existir. A Edge Function `xbz-image-uploader` está presente no projeto, porém o Vault não tem `XBZ_IMAGE_UPLOADER_CRON_SECRET`; o cron estava ativo na consulta.

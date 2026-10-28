@@ -56,3 +56,13 @@ Os itens abaixo estão documentados em `PENDENCIAS.md` com o motivo exato do blo
 | P11 | Edge Integration Tests — All | Versões deployadas desatualizadas (código no repo correto) | Disparar `deploy-edge-functions.yml` (workflow_dispatch) |
 | P12 | Kit Coverage — Integration | `permission denied for view v_kit_component_complete` | Opção A: resolver P7 e mergear PR #2701 com GRANT. Opção B: `db-apply-migration.yml` com GRANT SELECT |
 | P13 | N/A (Vercel infra) | Projeto fantasma `prj_W1Zdi6BQWkAwQx5VJjpSNlZubeok` gerando builds duplicados | Deletar projeto fantasma no dashboard Vercel |
+
+## 8. Auditoria de sincronização local × GitHub × Supabase canônico — 2026-10-28
+
+- Checkout principal limpo em `c344508711797a730893644449b16a05f12f4fce`, igual a `origin/main`; o branch de auditoria #2695 está publicado, mas não mesclado (check `copilot-pull-request-reviewer` falhou).
+- Banco confirmado explicitamente pelo project ref `doufsxqlfjyuvxuezpln`. Ledger ao vivo contém `20261027120000`, `20261027140000` e `20261027160000`; há seis migrations posteriores no repositório sem recibo/aplicação comprovada. Detalhes e bloqueios estão em P14 de `PENDENCIAS.md`.
+- Comparação local baseline, antes da correção: `npm ci` success; `npm run build` success; `npm run lint:baseline` success (0 erros/0 warnings, sem regressão); `npm run typecheck` success; `npm test -- --reporter=dot`: 1.210 arquivos e 25.656 testes passaram, 131 arquivos/1.134 testes skipped e 24 todo.
+- `npm run check:types-inventory-drift -- --base HEAD~1 --json` passou sem remoção/alteração estrutural local. Checagem `--live` não foi executada localmente; a comparação canônica permanece evidenciada pelos checks GitHub.
+- `node scripts/check-migration-filename-contract.mjs`, `node scripts/validate-supabase-config.mjs` e `git diff --check` passaram.
+- A main ainda tem falha no run [40762904577](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762904577): o teste E2E rejeita a string `500`, que também aparece no nome válido de produto “Caneca alumínio 500ml”. Isso é falso positivo do teste; não indica erro 500 da aplicação.
+- Nenhum dado operacional foi copiado ao GitHub. Nenhuma migration, DDL, `migration repair` ou deploy foi executado diretamente.

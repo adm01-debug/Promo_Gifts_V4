@@ -17,9 +17,9 @@ DECLARE
 BEGIN
   SELECT ARRAY_AGG(t) INTO missing
   FROM UNNEST(ARRAY[
-    'canceled_products','category_mappings','colors','config',
-    'customization_options','customization_tables','failed_products','images',
-    'optionals','price_rules','product_types','products',
+    'canceled_products','category_mappings','colors','stg_colors',
+    'customization_options','customization_tables','stg_customizations','stg_images',
+    'optionals','stg_product_types','product_types','products',
     'stg_optionals','stg_products','stg_stock','stocks','sync_log'
   ]) t
   WHERE NOT EXISTS (
@@ -40,13 +40,13 @@ $$;
 ALTER TABLE supplier_stricker.canceled_products     ENABLE ROW LEVEL SECURITY;
 ALTER TABLE supplier_stricker.category_mappings     ENABLE ROW LEVEL SECURITY;
 ALTER TABLE supplier_stricker.colors                ENABLE ROW LEVEL SECURITY;
-ALTER TABLE supplier_stricker.config                ENABLE ROW LEVEL SECURITY;
+ALTER TABLE supplier_stricker.stg_colors              ENABLE ROW LEVEL SECURITY;
 ALTER TABLE supplier_stricker.customization_options ENABLE ROW LEVEL SECURITY;
 ALTER TABLE supplier_stricker.customization_tables  ENABLE ROW LEVEL SECURITY;
-ALTER TABLE supplier_stricker.failed_products       ENABLE ROW LEVEL SECURITY;
-ALTER TABLE supplier_stricker.images                ENABLE ROW LEVEL SECURITY;
+ALTER TABLE supplier_stricker.stg_customizations     ENABLE ROW LEVEL SECURITY;
+ALTER TABLE supplier_stricker.stg_images              ENABLE ROW LEVEL SECURITY;
 ALTER TABLE supplier_stricker.optionals             ENABLE ROW LEVEL SECURITY;
-ALTER TABLE supplier_stricker.price_rules           ENABLE ROW LEVEL SECURITY;
+ALTER TABLE supplier_stricker.stg_product_types       ENABLE ROW LEVEL SECURITY;
 ALTER TABLE supplier_stricker.product_types         ENABLE ROW LEVEL SECURITY;
 ALTER TABLE supplier_stricker.products              ENABLE ROW LEVEL SECURITY;
 ALTER TABLE supplier_stricker.stg_optionals         ENABLE ROW LEVEL SECURITY;
@@ -58,13 +58,13 @@ ALTER TABLE supplier_stricker.sync_log              ENABLE ROW LEVEL SECURITY;
 CREATE POLICY deny_all ON supplier_stricker.canceled_products     USING (false);
 CREATE POLICY deny_all ON supplier_stricker.category_mappings     USING (false);
 CREATE POLICY deny_all ON supplier_stricker.colors                USING (false);
-CREATE POLICY deny_all ON supplier_stricker.config                USING (false);
+CREATE POLICY deny_all ON supplier_stricker.stg_colors              USING (false);
 CREATE POLICY deny_all ON supplier_stricker.customization_options USING (false);
 CREATE POLICY deny_all ON supplier_stricker.customization_tables  USING (false);
-CREATE POLICY deny_all ON supplier_stricker.failed_products       USING (false);
-CREATE POLICY deny_all ON supplier_stricker.images                USING (false);
+CREATE POLICY deny_all ON supplier_stricker.stg_customizations     USING (false);
+CREATE POLICY deny_all ON supplier_stricker.stg_images              USING (false);
 CREATE POLICY deny_all ON supplier_stricker.optionals             USING (false);
-CREATE POLICY deny_all ON supplier_stricker.price_rules           USING (false);
+CREATE POLICY deny_all ON supplier_stricker.stg_product_types       USING (false);
 CREATE POLICY deny_all ON supplier_stricker.product_types         USING (false);
 CREATE POLICY deny_all ON supplier_stricker.products              USING (false);
 CREATE POLICY deny_all ON supplier_stricker.stg_optionals         USING (false);
@@ -87,9 +87,9 @@ BEGIN
   WHERE n.nspname = 'supplier_stricker'
     AND c.relkind = 'r'
     AND c.relname = ANY(ARRAY[
-      'canceled_products','category_mappings','colors','config',
-      'customization_options','customization_tables','failed_products','images',
-      'optionals','price_rules','product_types','products',
+      'canceled_products','category_mappings','colors','stg_colors',
+      'customization_options','customization_tables','stg_customizations','stg_images',
+      'optionals','stg_product_types','product_types','products',
       'stg_optionals','stg_products','stg_stock','stocks','sync_log'
     ])
     AND NOT c.relrowsecurity;
@@ -106,9 +106,9 @@ BEGIN
   WHERE n.nspname = 'supplier_stricker'
     AND c.relkind = 'r'
     AND c.relname = ANY(ARRAY[
-      'canceled_products','category_mappings','colors','config',
-      'customization_options','customization_tables','failed_products','images',
-      'optionals','price_rules','product_types','products',
+      'canceled_products','category_mappings','colors','stg_colors',
+      'customization_options','customization_tables','stg_customizations','stg_images',
+      'optionals','stg_product_types','product_types','products',
       'stg_optionals','stg_products','stg_stock','stocks','sync_log'
     ])
     AND NOT EXISTS (
