@@ -57,7 +57,7 @@ Resultado válido: CI do PR #2681 executa em runner GitHub Actions com memória 
 ### 2e. Erros pré-correção (derivados dos logs de CI — runs em falha)
 
 **CI Security & Drift Checks — `calendar.dimensions.test.tsx`:**
-- Linha 79: `expected null to be truthy` — `container.querySelector('button[aria-selected="true"]')` retorna null no v10
+- Linha 79: `expected null to be truthy` — `container.querySelector('button[aria-selected="true"')` retorna null no v10
 - Linha 111: `expected 0 to be greater than 20` — `querySelectorAll('button[name="day"]')` retorna 0 no v10
 
 **CI Security & Drift Checks — `calendar.redesign.test.tsx`:**
@@ -130,22 +130,22 @@ Os workflows P1 e P2 de E2E que dependem de autenticação real continuam falhan
 
 **Gates do run 40660438161 (último Deploy Gates executado):**
 
-| Gate | Status |
-|---|---|
-| Gate 0 — SSOT | ✅ |
-| Gate 0.5 — Dependency Audit | ✅ |
-| Gate 0.6 — Dependency Review | ✅ |
-| Gate 1 — Lint + TypeScript | ✅ |
-| Gate 1.1–1.18 | ✅ |
-| Gate 2 — Unit Tests | ✅ (fix Calendar RDP v10 — 1210 arquivos) |
-| Gate 2.5 — PostgreSQL | ✅ |
-| Gate 3 — E2E Smoke | ✅ |
-| Gate 5 — SEO | ✅ |
-| Gate 5.5 — RPC | ✅ |
-| Gate 6 — Build | ✅ |
-| Gate E23 — Secret Scan | ✅ |
-| Gate E40 — Schema Drift | ❌ `local_only=1108; remote_only=647` (P4 em PENDENCIAS.md) |
-| Gate Final | ❌ bloqueado por E40 |
+| Gate | Status | Observação |
+|---|---|---|
+| Gate 0 — SSOT | ✅ success | |
+| Gate 0.5 — Dependency Audit | ✅ success | |
+| Gate 0.6 — Dependency Review | ✅ success | |
+| Gate 1 — Lint + TypeScript | ✅ success | Sem erros de lint nem TS |
+| Gate 1.1–1.18 (steps internos) | ✅ success | Campos Product, drift types, contratos, etc. |
+| Gate 2 — Unit Tests (Vitest) | ✅ success | Fix Calendar RDP v10 — 1210 arquivos passando |
+| Gate 2.5 — PostgreSQL | ✅ success | |
+| Gate 3 — E2E Smoke | ✅ success | |
+| Gate 5 — SEO | ✅ success | |
+| Gate 5.5 — RPC restore_seller_cart | ✅ success | |
+| Gate 6 — Build | ✅ success | |
+| Gate E23 — Secret Scan | ✅ success | |
+| **Gate E40 — Schema Drift** | ❌ **failure** | `local_only=1108; remote_only=647` (P4 em PENDENCIAS.md) |
+| **Gate Final — Deploy Ready** | ❌ **failure** | Bloqueado pelo Gate E40 |
 
 **Bloqueio raiz único:** Gate E40 é BLOQUEANTE no código real de `deploy-gates.yml` (contrariando CLAUDE.md que diz "advisory"). Com `local_only=1108; remote_only=647`, **nenhum PR neste repositório pode passar no Gate Final** enquanto o ledger não for reconciliado. Isso é um problema de infraestrutura pré-existente, anterior a este PR e independente de qualquer mudança de código.
 
