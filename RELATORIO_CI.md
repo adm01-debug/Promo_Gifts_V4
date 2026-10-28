@@ -128,7 +128,7 @@ Os workflows P1 e P2 de E2E que dependem de autenticação real continuam falhan
 | CI Security & Drift Checks | — | pendente | — |
 | Deploy Gates | — | pendente | — |
 
-*Esta tabela será atualizada com os run IDs e links reais após o Deploy Gates = success e merge do PR #2681.*
+*Esta tabela será atualizada com os run IDs e links reais após o Deploy Gates = success e merge do PR #2681. Retrigger: 2026-10-28T04:30Z (PR reaberto após fechamento acidental por outro agente).*
 
 ---
 
