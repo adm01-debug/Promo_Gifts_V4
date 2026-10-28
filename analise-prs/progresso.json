@@ -2,8 +2,18 @@
   "sessao": "https://claude.ai/code/session_012WyySbh2tj8vhRQLBf3mHo",
   "data": "2026-10-28",
   "main_sha_baseline": "62af0798dd71812979667ac29f596d25f3ef191b",
-  "merges_executados_esta_sessao": [],
-  "ultima_atualizacao": "2026-10-28T05:30:00Z",
+  "merges_executados_esta_sessao": [
+    {
+      "pr": 2679,
+      "merge_sha": "ab70ca24300a2d9c8a1109a65a7b25ee02250a3e",
+      "head_sha": "39e6bf76ec07f54dacbcaed83268551b375cbda6",
+      "metodo": "squash",
+      "timestamp": "2026-10-28T05:06Z",
+      "gate_final": "SUCCESS (run 40631972278)",
+      "branch": "claude_pink/awesome-ride-d25ur3"
+    }
+  ],
+  "ultima_atualizacao": "2026-10-28T05:06:00Z",
   "resumo": {
     "total_prs": 12,
     "total_analisadas": 12,
@@ -11,7 +21,7 @@
     "fechada_sem_merge": 1,
     "aguarda_po": 4,
     "bloqueado": 6,
-    "mergeadas_esta_sessao": 0
+    "mergeadas_esta_sessao": 1
   },
   "prs": [
     {
@@ -76,7 +86,7 @@
       "branch": "claude_pink/awesome-ride-d25ur3",
       "conflito_com_main": false,
       "draft": false,
-      "ci_status": "deploy-gates queued (run 40631972278) em 39e6bf76 — aguardando Gate Final"
+      "ci_status": "Gate Final SUCCESS (run 40631972278) — MERGEADA em ab70ca24"
     },
     {
       "numero": 2680,
