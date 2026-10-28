@@ -19,9 +19,16 @@
   },
   "ci_gate_final_pr2679_v2": {
     "sha": "515bd64ca6e933a95b15cdeae6969925fe815b08",
+    "status": "cancelled",
+    "conclusao": "cancelled",
+    "nota": "Run 40625610155 queued >1h sem runners. Cancelado em 2026-10-28T03:30Z."
+  },
+  "ci_gate_final_pr2679_v3": {
+    "run_id": null,
+    "sha": "pending_push",
     "status": "pending",
     "conclusao": null,
-    "nota": "Novo run triggerado via push neste commit"
+    "nota": "Novo push em progresso para retrigger Gate Final"
   },
   "ci_main_atual": {
     "sha": "62af0798",
