@@ -4,7 +4,7 @@
 **Sessão:** `session_01VXkRxWq5ZUCmvuNx5e2TGX` (claude_pink/sleepy-cannon-h000nc)  
 **Main SHA pré-análise:** `4c5fdd72fc301cdcd65851af30204881bab710c4`  
 **Main SHA pós-merges:** `62af0798dd71812979667ac29f596d25f3ef191b`  
-**Gate Final main atual:** ⏳ queued/running em `62af0798dd`
+**Gate Final main atual:** ✗ cancelled em `62af0798dd` (runner backlog GitHub, 03:32:41Z; SHA anterior 04239fdd42 = success — risco NULO)
 
 ---
 
@@ -19,7 +19,7 @@
 
 ---
 
-## Inventário Completo — 17 PRs analisadas
+## Inventário Completo — 21 PRs analisadas
 
 ### PRs MERGEADAS (5 total)
 
@@ -43,7 +43,16 @@
 | #2672 | Código em main; 57 arquivos misturados; conflitos; PNG pré-v10 |
 | #2674 | Nossa branch de entrega — NUNCA MERGEAR |
 | #2675 | Histórico disjunto; outra sessão (`session_01Ss1tXZ4cAbxBvdmu95uNPz`) |
+| #2676 | mergeable=false (dirty); REGRA #10 — outra sessão |
+| #2680 | DRAFT; supersedida por #2681 (mais abrangente, não draft) |
 | #2662 | (listada acima como mergeada — body é delivery branch) |
+
+### PRs AGUARDA_CI (2 total)
+
+| PR | Título | Motivo |
+|---|---|---|
+| #2679 | test(calendar): corrige seletores rdp v10 | mergeable=true mas blocked; CI pendente na branch; outra sessão |
+| #2681 | fix(tests): atualiza seletores DOM rdp v10 | mergeable=true mas blocked; CI pendente; melhor candidato |
 
 ### PRs AGUARDA_PO (3 total)
 
@@ -66,10 +75,11 @@
 | Veredito | Quantidade | PRs |
 |---|---|---|
 | MERGEADA | 5 | #2664, #2667, #2665, #2662, #2673 |
-| NÃO_MERGEAR | 8 | #2600, #2631, #2668, #2670, #2671, #2672, #2674, #2675 |
+| NÃO_MERGEAR | 10 | #2600, #2631, #2668, #2670, #2671, #2672, #2674, #2675, #2676, #2680 |
 | AGUARDA_PO | 3 | #2580, #2646, #2666 |
 | DECISÃO_HUMANA | 1 | #2663 |
-| **Total analisado** | **17** | ✅ |
+| AGUARDA_CI | 2 | #2679, #2681 |
+| **Total analisado** | **21** | ✅ |
 
 ---
 
@@ -96,7 +106,7 @@ Para cada PR mergeada: (1) válida, (2) não implementada em main, (3) sem confl
 | #2664 | `bd783873aa27` | 40609991866 | **failure** | PRE-EXISTENTE — mesma causa; PR docs-only |
 | #2667 | `8b0b6068e535` | 40612760517 | **success** ✅ | Este PR CORRIGIU o breakage v10 |
 | #2665 | `04239fdd42ee` | 40615509956 | **success** ✅ | bump qs CVE — CI verde |
-| #2673 | `62af0798dd71` | 40622373567 | **queued** ⏳ | Runner backlog 48+ min; 8 PNGs only, zero risco |
+| #2673 | `62af0798dd71` | 40622373567 | **cancelled** ✗ | Runner backlog — cancelado 03:32:41Z; 8 PNGs, zero risco; SHA anterior 04239fdd42 = success |
 
 ### Por que #2662 e #2664 mostram `failure`:
 
@@ -108,9 +118,9 @@ PR#2667 (`fix(calendar): adapta react-day-picker v8→v10`) corrigiu todos os 9 
 
 **Critério "zero erro novo":** SATISFEITO. Nenhum dos merges desta sessão introduziu novo erro. A falha em #2662/#2664 era pré-existente e foi corrigida pelo merge subsequente #2667.
 
-### PR #2673 — run #40622373567 (queued)
+### PR #2673 — run #40622373567 (cancelled)
 
-Verificado 3× (02:41:01Z, 03:15:20Z, 03:20:20Z UTC) — `status: queued`, `conclusion: null` por 48+ minutos. Runner backlog GitHub. PR#2673 = 8 PNGs only, zero código. SHA anterior `04239fdd42ee` = success. **Risco de regressão: NULO.**
+Verificado 3× (02:41:01Z, 03:15:20Z, 03:20:20Z UTC) — `status: queued`, cancelado em 03:32:41Z por timeout do runner (backlog GitHub). PR#2673 = 8 PNGs only, zero código. SHA anterior `04239fdd42ee` (PR#2665) = run #40615509956 **success**. **Risco de regressão: NULO.**
 
 ### Vulnerabilidades Dependabot
 
