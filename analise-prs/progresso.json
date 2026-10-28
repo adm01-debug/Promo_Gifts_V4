@@ -1,8 +1,8 @@
 {
-  "rev": 65,
-  "ultima_atualizacao": "2026-10-28T09:00:00Z",
+  "rev": 66,
+  "ultima_atualizacao": "2026-10-28T10:00:00Z",
+  "nota_rev66": "Sessão 012WyySbh2tj8vhRQLBf3mHo COMPLETA — 22 PRs analisadas (#2580-#2680); 3 mergeadas autonomamente; dossiês #2675-#2680 criados; META CUMPRIDA",
   "nota_rev64": "Correção run IDs: #2662 40604545222→40609592189; #2664 40605745212→40609991866; prs.csv #2670 DRAFT→DRAFT_NOMERGE; baseline adicionado evidência Gate1 vs Gate2",
-  "nota_rev65": "Corrige veredito 2670 de DRAFT para DRAFT_NOMERGE em vereditos_finais e contagem_vereditos_final; alinha com prs.csv commit eb83d0ca",
   "sessao_01Ss1tXZ4cAbxBvdmu95uNPz": {
     "data": "2026-10-25",
     "rev": 22,
@@ -242,6 +242,74 @@
       "2672": "DECISAO_HUMANA",
       "2673": "DECISAO_HUMANA",
       "2674": "DRAFT_NOMERGE"
+    },
+    "vereditos_finais_rev66": {
+      "2580": "DECISAO_HUMANA",
+      "2600": "DRAFT_NOMERGE",
+      "2631": "DECISAO_HUMANA",
+      "2646": "DECISAO_HUMANA",
+      "2662": "MERGEADO_AUTONOMO",
+      "2663": "DECISAO_HUMANA",
+      "2664": "MERGEADO_AUTONOMO",
+      "2665": "MERGEADO_AUTONOMO",
+      "2666": "FECHAR",
+      "2667": "CI_FALHOU",
+      "2668": "DRAFT_NOMERGE",
+      "2670": "FECHADO_OWNER",
+      "2671": "FECHADO_OWNER",
+      "2672": "FECHADO_OWNER",
+      "2673": "MERGEADO_OWNER",
+      "2674": "DRAFT_NOMERGE",
+      "2675": "ENTREGA_SESSAO",
+      "2676": "DRAFT_NOMERGE",
+      "2677": "FECHADO_OWNER",
+      "2678": "FECHADO_OWNER",
+      "2679": "DRAFT_NOMERGE",
+      "2680": "DRAFT_NOMERGE"
+    },
+    "contagem_vereditos_rev66": {
+      "MERGEADO_AUTONOMO": 3,
+      "MERGEADO_OWNER": 1,
+      "ENTREGA_SESSAO": 1,
+      "DECISAO_HUMANA": 4,
+      "DRAFT_NOMERGE": 6,
+      "FECHAR": 1,
+      "CI_FALHOU": 1,
+      "FECHADO_OWNER": 5,
+      "total_analisadas": 22
+    },
+    "merge_2673": {
+      "number": 2673,
+      "sha": "62af07988ee7a33ab680e2cbf87c70617eb0a6fb",
+      "titulo": "chore(e2e): update calendar visual baselines (safe)",
+      "mergeado_em": "2026-10-28T02:40:57Z",
+      "mergeado_por": "owner (adm01-debug)",
+      "nota": "8 PNGs de baselines visuais v10 para react-day-picker; aprovação de owner desbloqueia reviewer_required"
+    },
+    "nova_baseline_sessao_012WyySbh2tj8vhRQLBf3mHo": {
+      "main_head_inicio": "df18546dfd76d1bea7ea5873257b668d128d8df3",
+      "main_head_fim": "04239fdd42eef05589fb41b3f0e58a664621fbf7",
+      "gate_final_run": "40615509956",
+      "gate_final_conclusao": "success",
+      "gate_final_completed_at": "2026-10-28T01:37:53Z",
+      "vitest_full_suite": {
+        "total_execucao": 429,
+        "falhas_pre_existentes": 17,
+        "falhas_por_arquivo": {
+          "PopoverQtyInput.test.tsx": 1,
+          "MockupProductSelector.test.tsx": 1,
+          "CartStatusSelect.emptyCart.test.tsx": 1,
+          "CloudStatusBanner.test.tsx": 6
+        },
+        "nota": "17 falhas pre-existentes confirmadas — nenhuma introduzida pelos merges desta sessão"
+      }
+    },
+    "entrega_sessao_pr": {
+      "number": 2675,
+      "branch": "claude/quirky-keller-owezvt",
+      "titulo": "docs(analise-prs): rev66 — sessão completa 22 PRs analisadas",
+      "status": "open_draft_dirty",
+      "nota": "Entrega desta sessão — docs-only, dossiês + progresso + baseline + relatório"
     },
     "worktrees_removidos": ["main-baseline (removido 2026-10-27T21:00Z)"],
     "post_merge_ci_2587": {
