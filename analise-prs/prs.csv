@@ -1,15 +1,18 @@
-number,title,draft,base_is_current_main,gate_final,mergeable,veredicto,razao
-2580,fix(banco): adiciona rollback header e arquivo rollback para migration critica,True,False,FAILED_OLD_BASE,,AGUARDA_CI,"Draft, base outdated, Gate Final falhou contra versão quebrada do main. Mudança aditiva válida."
-2600,docs(analise-prs): rev46 — análise completa 20 PRs,False,False,SUCCESS_OLD_BASE,True,NÃO_MERGEAR,Body diz explicitamente NÃO MERGEAR. Delivery branch de sessão anterior.
-2631,chore: atualiza PENDENCIAS §4 e RELATORIO_CI,False,False,SUCCESS_OLD_BASE,,AGUARDA_CI,"Docs-only, base outdated. Gate Final rodou na base antiga. Precisa verificar na base atual."
-2646,fix(migrations): adiciona cabeçalho -- Rollback: nas migrations críticas,False,False,FAILED_E40_INFRA_FLAKE,,AGUARDA_CI,"Gate E40 falhou por rate limit ghcr.io (infra, não código). Todos outros gates passaram."
-2662,chore(analise-prs): deliverables da sessão automática de análise de PRs,False,,SUCCESS,,NÃO_MERGEAR,Delivery branch desta sessão. Não mergear automaticamente.
-2663,docs(ci): RELATORIO_CI.md + PENDENCIAS.md — baseline de falhas,False,False,NOT_RUN,False,DECISAO_HUMANA,"Conflito de merge (mergeable=false, dirty). Conteúdo pode estar desatualizado. Requer rebase ou fechamento."
-2665,chore(deps): bump qs from 6.16.0 to 6.16.2,False,False,NOT_RUN,True,AGUARDA_CI,Security bump válido. Base outdated. Aguarda rebase + Gate Final.
-2666,chore(main): release 1.0.0,False,True,NOT_RUN,True,AGUARDA_CI,Release-please automático. Base=main correto. Gate Final não rodou ainda.
-2668,chore(analise-prs): inventário e relatório de todas as PRs abertas,True,False,NOT_RUN,,NÃO_MERGEAR,"Draft, incompleto, base outdated, substituído por PR#2662."
-2670,fix: migra react-day-picker v8→v10 (classNames + Chevron + autoFocus),True,False,NOT_RUN,,NÃO_MERGEAR,"Draft, superseded por PR#2667 já mergeada. Merge causaria conflito."
-2671,chore(e2e): update calendar visual baselines (safe),False,False,NOT_RUN,,AGUARDA_CI,Baselines válidos pós-migração v10. Base outdated. Conflito potencial com #2673.
-2672,chore(e2e): update calendar visual baselines (force),False,False,NOT_RUN,,AGUARDA_ANÁLISE,Base não é main (c3fd54164b). Pode ser stack sobre #2671. Conflito provável com #2671 e #2673.
-2673,chore(e2e): update calendar visual baselines (safe),False,True,NOT_RUN,,AGUARDA_CI,Base=main correto. Gate Final não rodou. Candidata correta para baselines v10.
-2675,"docs(audit): sessão session_012WyySbh2tj8vhRQLBf3mHo — relatório final rev63, 4 merges autônomos",False,False,NOT_RUN,,NÃO_MERGEAR,"Entrega de outra sessão Claude. Base outdated. Gate Final não rodou. REGRA #10."
+number,title,author,draft,base,veredito,merge_sha,razao
+2580,fix(banco): rollback RLS header,adm01-debug,false,main,AGUARDA_PO,,Migration RLS comentada — requer aprovação humana (governança)
+2600,docs(analise-prs): rev46 — delivery branch sessão anterior,adm01-debug,false,main,NÃO_MERGEAR,,Delivery branch de sessão anterior. Body: NÃO MERGEAR ESTA PR.
+2631,chore: atualiza PENDENCIAS §4 e RELATORIO_CI — bloqueio deploy confirmado,adm01-debug,false,main,NÃO_MERGEAR,,Supersedida — commits docs já mergeados via #2662
+2646,fix(migrations): rollback headers + packages:read,adm01-debug,false,main,AGUARDA_PO,,.github/workflows/ x3 + migrations x3 — requer revisão humana (REGRA CI)
+2662,docs(analise-prs): análise 13 PRs sessão anterior,adm01-debug,false,main,MERGEADA,efacff0be,
+2663,docs(ci): RELATORIO_CI+PENDENCIAS + migration cron,adm01-debug,false,main,DECISÃO_HUMANA,,Migration cron + conflito com #2667 — PO decide: fechar ou aprovar migration separada
+2664,docs(auditoria): Fase A completa — auditoria Supabase doufsxqlfjyuvxuezpln,adm01-debug,false,main,MERGEADA,bd783873a,
+2665,chore(deps): bump qs 6.16.0→6.16.2 (CVE fix),dependabot[bot],false,main,MERGEADA,04239fdd42eef05589fb41b3f0e58a664621fbf7,
+2666,chore(main): release 1.0.0,github-actions[bot],false,main,AGUARDA_PO,,Downgrade semver 1.2.1→1.0.0 — requer confirmação do PO
+2667,fix(calendar): adapta react-day-picker v8→v10 (classNames + components + autoFocus),adm01-debug,false,main,MERGEADA,8b0b6068e53592509cfac7225935340b6f3409df,
+2668,analise-prs inventário (draft outra sessão),adm01-debug,true,old,NÃO_MERGEAR,,REGRA #10 — branch criada por session_01Ss1tXZ4cAbxBvdmu95uNPz
+2670,fix react-day-picker v10 (draft outra sessão),adm01-debug,true,old,NÃO_MERGEAR,,Draft; código v10 já em main via #2667; analise-prs de outra sessão sobrescreveria deliverables
+2671,chore(e2e): update calendar visual baselines (pré-v10),github-actions[bot],false,old,NÃO_MERGEAR,,Baselines pré-v10 supersedida por #2673 (mergeada com SHA 62af0798dd)
+2672,chore(e2e): update calendar visual baselines (force 57 files),adm01-debug,false,other,NÃO_MERGEAR,,Código em main + analise-prs de outra sessão + conflitos + PNG calendar-mobile pré-v10
+2673,chore(e2e): update calendar visual baselines post-v10,github-actions[bot],false,main,MERGEADA,62af0798dd71812979667ac29f596d25f3ef191b,
+2674,analise-prs: entrega desta sessão (claude_pink/sleepy-cannon-h000nc),adm01-debug,true,main,NÃO_MERGEAR,,Nossa branch de entrega — NUNCA MERGEAR
+2675,branch de outra sessão — histórico disjunto,adm01-debug,false,disjoint,NÃO_MERGEAR,,Histórico disjunto; session_01Ss1tXZ4cAbxBvdmu95uNPz; REGRA #10

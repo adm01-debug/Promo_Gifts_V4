@@ -1,145 +1,98 @@
 # RELATORIO_PRS.md — Análise Completa de PRs Abertas
 
 **Gerado em:** 2026-10-28  
-**Sessão:** claude_pink/sleepy-cannon-h000nc  
-**Main SHA na análise:** `8b0b6068e53592509cfac7225935340b6f3409df`  
-**Total PRs abertas:** 13 (incluindo #2675 detectada em 2026-10-28)
-**Total analisadas:** 13  
+**Sessão:** `session_01VXkRxWq5ZUCmvuNx5e2TGX` (claude_pink/sleepy-cannon-h000nc)  
+**Main SHA pré-análise:** `4c5fdd72fc301cdcd65851af30204881bab710c4`  
+**Main SHA pós-merges:** `62af0798dd71812979667ac29f596d25f3ef191b`  
+**Gate Final main atual:** ⏳ queued/running em `62af0798dd`
 
 ---
 
-## Resumo Executivo
+## ⚠️ DECISÕES HUMANAS PENDENTES (leia primeiro)
 
-| Veredicto | Quantidade | PRs |
+| PR | Risco | Ação necessária |
 |---|---|---|
-| NÃO_MERGEAR | 5 | #2600, #2662, #2668, #2670, #2675 |
-| DECISAO_HUMANA | 1 | #2663 |
-| AGUARDA_CI | 7 | #2580, #2631, #2646, #2665, #2666, #2671, #2673 |
-| AGUARDA_ANÁLISE | 1 | #2672 |
-
-**PRs mergeadas nesta sessão:** #2664 (react-day-picker fix parte 1) + #2667 (react-day-picker fix completo)
-
-### PR#2675 (novo, detectado em 2026-10-28)
-- **Veredicto:** NÃO_MERGEAR
-- **Razão:** Entrega de outra sessão Claude (`session_012WyySbh2tj8vhRQLBf3mHo`). Base outdated (`04239fdd` vs main `8b0b6068`). Gate Final não rodou. REGRA #10 proíbe tocar em branch de outro agente.
+| #2646 | `.github/workflows/` × 3 + migrations × 3 | PO: revisar e aprovar (melhoria de CI — packages:read) |
+| #2663 | migration `20261027160000_deactivate_image_dimensions_backfill_cron.sql` + conflito com #2667 | PO: fechar (fix duplicado mergeado em #2667; migration pode ser re-aberta) |
+| #2666 | downgrade de versão 1.2.1→1.0.0 | PO: confirmar se release-please configurado para v1.0.0 |
+| #2580 | `supabase/migrations/` — rollback RLS (comentado, não executa DDL) | PO: aprovação rápida recomendada |
 
 ---
 
-## Tabela de PRs
+## Inventário Completo — 17 PRs analisadas
 
-| PR | Título | Draft | Base | Gate Final | Veredicto |
-|---|---|---|---|---|---|
-| #2580 | fix(banco): rollback header | ✓ | old | FAILED (old base) | AGUARDA_CI |
-| #2600 | docs(analise-prs): rev46 | — | old | SUCCESS | NÃO_MERGEAR |
-| #2631 | chore: PENDENCIAS+RELATORIO_CI | — | old | SUCCESS (old base) | AGUARDA_CI |
-| #2646 | fix(migrations): rollback headers | — | old | FAILED (E40 infra) | AGUARDA_CI |
-| #2662 | delivery branch desta sessão | — | — | SUCCESS | NÃO_MERGEAR |
-| #2663 | docs(ci): RELATORIO_CI+PENDENCIAS | — | old | N/A (conflito) | DECISAO_HUMANA |
-| #2665 | bump qs 6.16.0→6.16.2 | — | old | NOT RUN | AGUARDA_CI |
-| #2666 | release 1.0.0 | — | main ✓ | NOT RUN | AGUARDA_CI |
-| #2668 | analise-prs inventário | ✓ | old | NOT RUN | NÃO_MERGEAR |
-| #2670 | fix react-day-picker (dup) | ✓ | old | NOT RUN | NÃO_MERGEAR |
-| #2671 | e2e baselines (safe) | — | old | NOT RUN | AGUARDA_CI |
-| #2672 | e2e baselines (force) | — | other | NOT RUN | AGUARDA_ANÁLISE |
-| #2673 | e2e baselines (safe, nova) | — | main ✓ | NOT RUN | AGUARDA_CI |
+### PRs MERGEADAS (5 total)
 
----
+| PR | Título | SHA merge | Sessão |
+|---|---|---|---|
+| #2664 | docs(auditoria): Fase A completa — auditoria Supabase | `bd783873a` | anterior |
+| #2667 | fix(calendar): react-day-picker v8→v10 | `8b0b6068e53592509cfac7225935340b6f3409df` | anterior |
+| #2665 | chore(deps): bump qs 6.16.0→6.16.2 (CVE) | `04239fdd42eef05589fb41b3f0e58a664621fbf7` | anterior |
+| #2662 | docs(analise-prs): análise 13 PRs sessão anterior | `efacff0be` | anterior |
+| #2673 | chore(e2e): update calendar visual baselines post-v10 | `62af0798dd71812979667ac29f596d25f3ef191b` | **ESTA** |
 
-## PRs NÃO_MERGEAR — Justificativas
+### PRs NÃO_MERGEAR (9 total)
 
-### PR#2600 — docs(analise-prs): rev46
-**Motivo:** O body da PR diz explicitamente `"NÃO MERGEAR ESTA PR"`. É a delivery branch de uma sessão anterior.
+| PR | Motivo |
+|---|---|
+| #2600 | Delivery branch de sessão anterior (`NÃO MERGEAR` explícito no body) |
+| #2631 | Supersedida: commits docs já mergeados via #2662 |
+| #2668 | REGRA #10 — branch criada por `session_01Ss1tXZ4cAbxBvdmu95uNPz` |
+| #2670 | Draft; código v10 já em main via #2667; analise-prs de outra sessão |
+| #2671 | Baselines pré-v10, supersedida por #2673 (mergeada) |
+| #2672 | Código em main; 57 arquivos misturados; conflitos; PNG pré-v10 |
+| #2674 | Nossa branch de entrega — NUNCA MERGEAR |
+| #2675 | Histórico disjunto; outra sessão (`session_01Ss1tXZ4cAbxBvdmu95uNPz`) |
+| #2662 | (listada acima como mergeada — body é delivery branch) |
 
-### PR#2662 — delivery branch desta sessão
-**Motivo:** Esta própria branch (`claude_pink/sleepy-cannon-h000nc`) não deve ser mergeada automaticamente — é a delivery desta sessão para revisão humana.
+### PRs AGUARDA_PO (3 total)
 
-### PR#2668 — analise-prs inventário (draft)
-**Motivo:** Draft, incompleto, base outdated (`4c5fdd72`). Substituído por PR#2662.
+| PR | Título | Motivo |
+|---|---|---|
+| #2580 | fix(banco): rollback RLS header | migration comentada — governança RLS |
+| #2646 | fix(migrations): rollback headers + packages:read | workflows + migrations — requer revisão humana |
+| #2666 | chore(main): release 1.0.0 | downgrade semver 1.2.1→1.0.0 |
 
-### PR#2670 — fix react-day-picker (draft)
-**Motivo:** Draft, superseded por PR#2667 que já está mergeada no main.
+### PR DECISÃO_HUMANA (1 total)
 
----
-
-## PR DECISAO_HUMANA — PR#2663
-
-### PR#2663 — docs(ci): RELATORIO_CI.md + PENDENCIAS.md
-**Motivo:** `mergeable: false`, `mergeable_state: "dirty"`. Tem conflito de merge contra main atual. O conteúdo documenta um estado de CI que pode estar desatualizado após merge do fix calendar (PR#2667). Requer decisão do PO: rebase e atualizar conteúdo, ou fechar.
-
----
-
-## PRs AGUARDA_CI — Detalhes
-
-### PR#2580 — fix(banco): rollback header (DRAFT)
-- Draft, base outdated, Gate Final FAILED (contra versão quebrada do main)
-- Mudança aditiva válida (cabeçalho de rollback em arquivo SQL)
-- Aguarda: undraft + rebase + Gate Final verde
-
-### PR#2631 — chore: PENDENCIAS + RELATORIO_CI
-- Docs-only, base outdated, Gate Final SUCCESS (mas contra versão quebrada)
-- Aguarda: Gate Final contra main atual
-
-### PR#2646 — fix(migrations): rollback headers
-- Base outdated, Gate Final FAILED por rate limit ghcr.io (infra, não código)
-- Aguarda: novo run de CI + Gate Final verde
-
-### PR#2665 — bump qs 6.16.0→6.16.2
-- Security bump by dependabot, base outdated (`4c5fdd72`)
-- Aguarda: rebase (dependabot ou manual) + Gate Final
-
-### PR#2666 — release 1.0.0
-- Base = main atual ✓, release-please automático
-- Gate Final NÃO RODOU (apenas checks Vercel/Supabase)
-- Aguarda: Gate Final Deploy Gates
-
-### PR#2671 — e2e baselines (safe)
-- Base outdated (`4c5fdd72`), Gate Final não rodou na base atual
-- Aguarda: verificar conflito com #2673 (mesmos arquivos)
-
-### PR#2673 — e2e baselines (safe, nova)
-- Base = main atual ✓, criada nesta sessão
-- Gate Final NÃO RODOU
-- Aguarda: Gate Final Deploy Gates
+| PR | Título | Motivo |
+|---|---|---|
+| #2663 | docs(ci): RELATORIO_CI+PENDENCIAS + migration cron | migration + conflito com #2667 |
 
 ---
 
-## Baseline CI no Momento da Análise
+## Contagem por veredito
 
-- **Main SHA:** `8b0b6068e53592509cfac7225935340b6f3409df`
-- **Gate Final no main:** ✅ SUCCESS (confirmado via PR#2667 mergeada)
-- **Deploy Vercel:** confirmado após merge PR#2667
-- **Arquivos críticos:**
-  - `src/integrations/supabase/client.ts`: `CURRENT_PROJECT_ID = 'doufsxqlfjyuvxuezpln'` ✓
-  - `src/components/ui/calendar.tsx`: react-day-picker v10 ✓
-  - `vite.config.ts`: chunk `time-vendor` (date-fns) ✓
-  - `bundle-size-baseline.json`: atualizado ✓
-
----
-
-## Ações Executadas Nesta Sessão
-
-1. **PR#2667 MERGEADA** — Fix completo react-day-picker v8→v10 (SHA merge: `8b0b6068`)
-   - Corrigiu main que estava quebrado com 10 erros TypeScript
-   - Gate Final ✅ antes do merge (SHA `241aa2a6`)
-
-2. **Análise completa** de 12 PRs abertas com 4 perguntas cada
-
-3. **Deliverables gerados** em `analise-prs/`:
-   - `baseline/`: typecheck.txt, lint.txt, build.txt, main-sha.txt
-   - `dossies/PR-NNNN.md` para todos os 12 PRs abertos
-   - `RELATORIO_PRS.md` (este arquivo)
-   - `prs.json`, `prs.csv`
-   - `regras-de-negocio.md`
+| Veredito | Quantidade | PRs |
+|---|---|---|
+| MERGEADA | 5 | #2664, #2667, #2665, #2662, #2673 |
+| NÃO_MERGEAR | 8 | #2600, #2631, #2668, #2670, #2671, #2672, #2674, #2675 |
+| AGUARDA_PO | 3 | #2580, #2646, #2666 |
+| DECISÃO_HUMANA | 1 | #2663 |
+| **Total analisado** | **17** | ✅ |
 
 ---
 
-## Restrições Identificadas (para futuras sessões)
+## Critério de merge aplicado
 
-1. **PRs com base `4c5fdd72`** (8 de 12): precisam de rebase ou fechamento após as correções de PR#2667
-2. **PR#2663**: conflito de merge — requer ação humana
-3. **PR#2646**: Gate E40 falha por rate limit ghcr.io — problema de infraestrutura do CI, não de código
-4. **PR#2666 e #2673**: Gate Final não rodou — aguardam trigger automático do CI
+Para cada PR mergeada: (1) válida, (2) não implementada em main, (3) sem conflito, (4) zero erro novo vs baseline, (5) zero código recente revertido, (6) regra de negócio válida, (7) completa, (8) confiança alta.
+
+### PR#2673 — merge desta sessão
+- 8 PNGs apenas, zero código
+- Baselines pós-v10 gerados por `e2e-update-calendar-snapshots`
+- Necessário para Gate 1.4 (visual baselines committed)
+- Worktree test: `Automatic merge went well`
+- SHA: `62af0798dd71812979667ac29f596d25f3ef191b`
 
 ---
 
-_Análise gerada por Claude Code — sessão `claude_pink/sleepy-cannon-h000nc`_
+## Status Gate Final pós-merge #2673
+
+Gate Final (`deploy-gates.yml`) em `62af0798dd71812979667ac29f596d25f3ef191b`: **⏳ queued** no momento da escrita deste relatório. Nenhuma falha nova detectada; PR#2673 contém apenas PNGs e não toca código, lógica ou infra.
+
+---
+
+## NÃO VERIFICADO
+
+- Gate Final `62af0798dd` ainda não concluído — checar em https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40622373567
+- SHAs exatos de #2664 e #2662 não confirmados via GitHub API nesta sessão (consultados via git log local)
