@@ -3,7 +3,7 @@
 **Gerado em:** 2026-10-28  
 **Sessão:** https://claude.ai/code/session_01VXkRxYoeZ4YYfunRonjjXL  
 **Main HEAD:** `62af0798dd71812979667ac29f596d25f3ef191b`  
-**Gate Final main:** ⏳ IN PROGRESS (E2E rodando na SHA `62af079`)
+**Gate Final main:** ⏳ queued (run `40623857734`, SHA `0cb3c52` — PR #2679)
 
 ---
 
@@ -21,7 +21,7 @@
 | PR | Título | Veredito | Motivo |
 |---|---|---|---|
 | #2679 | test(calendar): corrige seletores para react-day-picker v10 | **MERGE CANDIDATE** | Aguarda Gate Final SHA `ce05764` |
-| #2675 | docs(audit): relatório final sessão anterior (4 merges autônomos) | **MERGE CANDIDATE** | Docs only; aguarda Gate Final main verde |
+| #2675 | docs(audit): relatório final sessão anterior (4 merges autônomos) | **BLOQUEADO (CONFLITO)** | `mergeable_state=dirty`; branch de outra sessão — PO resolve |
 | #2668 | chore(analise-prs): inventário e relatório de todas as PRs abertas | **MERGE CANDIDATE** | Docs only; aguarda Gate Final main verde |
 | #2663 | docs(ci): RELATORIO_CI.md + PENDENCIAS.md + migration | **AGUARDA PO** | Título diz "docs" mas contém migration; verificar antes de mergear |
 | #2631 | chore: atualiza PENDENCIAS §4 e RELATORIO_CI | **MERGE CANDIDATE** | Docs only; aguarda Gate Final main verde |
@@ -32,7 +32,8 @@
 
 | Veredito | Quantidade | PRs |
 |---|---|---|
-| MERGE CANDIDATE | 4 | #2679, #2675, #2668, #2631 |
+| MERGE CANDIDATE | 3 | #2679, #2668, #2631 |
+| BLOQUEADO (CONFLITO) | 1 | #2675 |
 | AGUARDA PO | 1 | #2663 |
 | Total analisado | **5** | = total aberto ✅ |
 

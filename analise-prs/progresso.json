@@ -11,9 +11,9 @@
   "prs_fechadas_esta_sessao": 5,
   "prs_abertas_atual": 5,
   "ci_gate_final_pr2679": {
-    "run_id": "5044331273",
-    "sha": "24ba2b591a661e437e47e82ff8e581c8699f9341",
-    "status": "pending",
+    "run_id": "40623857734",
+    "sha": "0cb3c5257d919bb2c39482a7f5978f47ff6753b4",
+    "status": "queued",
     "conclusao": null
   },
   "ci_main_atual": {
@@ -60,8 +60,8 @@
     },
     {
       "pr": 2675,
-      "veredicto": "MERGE_CANDIDATE",
-      "bloqueio": "aguarda Gate Final main verde"
+      "veredicto": "BLOQUEADO_CONFLITO",
+      "bloqueio": "mergeable_state=dirty — conflito com main em branch de outra sessão (REGRA #10: sem escrita)"
     },
     {
       "pr": 2668,
