@@ -1,0 +1,51 @@
+# Baseline — Sessão session_012WyySbh2tj8vhRQLBf3mHo
+
+**Data:** 2026-10-28  
+**Main HEAD no início da sessão:** `df18546dfd76d1bea7ea5873257b668d128d8df3`  
+**Main HEAD ao final da sessão:** `04239fdd42eef05589fb41b3f0e58a664621fbf7`  
+
+---
+
+## Verificações locais (executadas nesta sessão)
+
+| Check | Resultado | Evidência |
+|---|---|---|
+| TypeCheck (`npx tsc --noEmit`) | ✅ 0 erros | exit 0, TSC_EXIT=0 |
+| Lint (`npm run lint`) | ✅ exit 0 | lint:baseline ratchet sem regressão |
+| Build (`npm run build`) | ✅ exit 0 | `✓ built in 14.07s` |
+| Vitest | ⏸ não concluído localmente | >3 min timeout — ver Gate Final CI |
+
+## Testes via Gate Final CI
+
+| SHA | Run ID | Conclusão | Observação |
+|---|---|---|---|
+| `2fafe8ed` (baseline) | `40420603513` | success | 429 testes / 0 falhas (sessão anterior) |
+| `04239fdd` (main atual) | `40615509956` | success | Gate 2 (unit-tests) passed |
+
+## Supabase produção (doufsxqlfjyuvxuezpln)
+
+- Logs postgres_logs janela 00:00–02:00 UTC: **0 erros** ✅
+
+---
+
+## Gate Final por merge autônomo
+
+| PR | SHA Merge | Run ID Gate Final | Conclusão | Observação |
+|---|---|---|---|---|
+| #2587 | `16ad57c6` | `40544232971` | ✅ success | |
+| #2662 | `efacff0b` | `40609592189` | ⚠️ failure | Pre-existente: SHA `4c5fdd72` (react-day-picker v8→v10 sem adaptação, owner) — não causado por este PR docs-only |
+| #2664 | `bd783873` | `40609991866` | ⚠️ failure | Mesma causa pre-existente |
+| Repair | `8b0b6068` | `40612760517` | ✅ success | Fix react-day-picker em main (session_01VXkRxWq5ZUCmvuNx5e2TGX) |
+| #2665 | `04239fdd` | `40615509956` | ✅ success | Main atual — CI verde |
+
+**Conclusão:** os dois failures em `efacff0b` e `bd783873` são explicados pela pré-existência de 10 erros TS do react-day-picker introduzidos pelo owner em `4c5fdd72` (antes dos merges). Esses PRs eram docs-only (`analise-prs/`, `auditoria-supabase/`), e a falha no Gate Final foi causada pelos TS errors pre-existentes, não pelos arquivos que esses PRs adicionaram. O fix (`8b0b6068`) restaurou o CI e a main está verde desde então.
+
+---
+
+## Worktrees
+
+```
+/home/user/Promo_Gifts_V4  6ac4b243 [claude/quirky-keller-owezvt]
+```
+
+Nenhum worktree extra — todos removidos ou nunca criados nesta sessão.
