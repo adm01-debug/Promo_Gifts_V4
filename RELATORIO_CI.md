@@ -174,3 +174,53 @@ Restrição da tarefa: *"Se o merge disparar deploy de produção e a correção
 **PR desta sessão:** https://github.com/adm01-debug/Promo_Gifts_V4/pull/2663  
 **Commit de fix principal:** `90264719` (calendar.tsx v10 classNames + todos os fixes react-day-picker)  
 **Único gate bloqueante restante:** Gate E40 (P15) — pré-existente, requer reconciliação E99 pelo PO  
+
+---
+
+## Atualização — Sessão continuada (2026-10-28)
+
+### Fixes adicionais aplicados nesta sessão
+
+| Commit | Fix | Status |
+|---|---|---|
+| `8ac51d7` | P16: `MIGRATIONS_SYNC_LOG.md` — entradas `20261027160000` alteradas de "pendente" para "aguardando-dispatch" (ambas as linhas 718 e 1587) | ✅ em remote |
+| `cbe33d3` | P10: URL guard em `novidades-reposicao-card-parity.spec.ts` — guards adicionados após `gotoAndSettle('/reposicao')` no loop de colunas (~:319) e no loop DSF (~:451) | ✅ em remote |
+| `9e2ef4f` | P10: URL guard nos testes `cards têm mesmas dimensões` (~:94) e `screenshot diff por viewport` (~:223) | ✅ em remote |
+
+### Estado atual do Deploy Gates (commit `9e2ef4f`)
+
+| Run | Status | Conclusão | Observação |
+|---|---|---|---|
+| **Deploy Gates** `40629954744` | `queued` | — | Runner backlog — sem jobs iniciados desde 04:01 UTC |
+| **SSOT Report** `40629954855` | `completed` | ✅ **success** | Gate 0 verde — `doufsxqlfjyuvxuezpln` confirmado, 3/3 gates pass |
+| **Migrations x Canonical schema** `40629954914` | `completed` | ❌ failure | = **P15** (pre-existente): `local_only=1108; remote_only=647`. Advisory — NÃO é required check no branch protection. |
+| **Copilot reviewer** `40629965194` | `completed` | ❌ failure | = **P6** (bot externo, pré-existente) |
+
+### Diagnóstico — Falha `Migrations x Canonical schema` em `9e2ef4f`
+
+- **Workflow:** `db-schema-drift-check.yml`
+- **Step:** "Ledger parity (repo x canonical)"
+- **Erro:** `[migration-ledger][bloqueado] local_only=1108; remote_only=647; mismatched=0; malformed=0`
+- **Causa:** Idêntica ao P15 (pré-existente desde antes desta sessão). 647 migrations aplicadas em produção não têm arquivo correspondente em `supabase/migrations/`. Nenhum commit desta sessão alterou migrations existentes de forma a causar isso.
+- **Bloqueante?** NÃO — `db-schema-drift-check.yml` é workflow separado do `deploy-gates.yml`. O único required check é "Gate Final - Deploy Ready" (CLAUDE.md: "O único check required no branch protection de `main`...").
+
+### P16 — Diagnóstico confirmado e corrigido
+
+- **Gate que falhou:** Gate 1.3 `migrations-sync-log-gate` — step dentro de `static-gates`
+- **Erro original:** `pendente_sem_adicao_no_pr` para `20261027160000` — migration MODIFICADA (não Added) no PR
+- **Causa:** `evaluateSyncLogGate` rejeita "pendente" para migrations modificadas; `addedFilenames` (via `--diff-filter=A`) não inclui arquivos apenas modificados
+- **Fix:** Ambas as entradas alteradas para "aguardando-dispatch" — commit `8ac51d7`
+- **Prova do fix:** Gate 0 SSOT confirmado verde em run subsequente (`40629954855`)
+
+### Checklist de runs com `conclusion=success` desta sessão
+
+| Workflow | Run | Commit | Conclusão |
+|---|---|---|---|
+| SSOT Supabase Guard | 40629954855 | `9e2ef4f` | ✅ success |
+| Deploy Gates (anterior) | 40601426870 | `c391f4e` | ✅ success |
+
+### Aguardando
+
+- **Deploy Gates** `40629954744` (`9e2ef4f`) — ainda `queued` por runner backlog. Este run validará P10 (URL guards) e P16 (MIGRATIONS_SYNC_LOG fix). Quando concluir, o único bloqueante esperado é P15 (Gate E40 — pré-existente).
+
+---
