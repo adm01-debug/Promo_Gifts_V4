@@ -287,6 +287,36 @@ Deploy de edge function via MCP direto é proibido (REGRA #8 corolário). O úni
 
 ---
 
+## P15 — Gate E40 `deploy-gates.yml` — Migration ledger drift (local_only=1108; remote_only=647)
+
+**Run ID:** 40611170047  
+**Status:** FALHA — gate bloqueante  
+**Detectado em:** commit `4357a2d4` (run 2026-10-28T00:49:04Z)
+
+### Causa raiz
+O Gate E40 `[migration-ledger]` compara `supabase/migrations/` (arquivos `.sql` no repo) contra o ledger de produção (`supabase_migrations.schema_migrations` em `doufsxqlfjyuvxuezpln`). A comparação detectou:
+- `local_only=1108` — 1108 migrations estão no repo mas **não** no ledger de produção
+- `remote_only=647` — 647 entradas no ledger de produção **não** têm arquivo correspondente no repo
+
+Esta é uma divergência **pré-existente** — não foi introduzida pelo PR #2663. O gate passou nos runs anteriores (`#40601426870 — success`) mas ficou bloqueante a partir de algum commit intermediário (possivelmente a migration `20261027160000` adicionada no PR, ou mudança no threshold do gate).
+
+### Por que não foi resolvido
+Reconciliar 1108+647 migrations exige:
+1. Auditoria completa do histórico de migrations — qual é a SSOT? (repo vs banco)
+2. REGRA #8 corolário: `supabase migration repair --status applied` sem versão explícita é proibido (trunca o ledger)
+3. REGRA #8 corolário E099: caminho de reconciliação exige migration espelho + PR + `schema-snapshot-export.yml force_rotate`
+4. Escopo enorme: 1755 objetos com divergência (não é fix de 1 linha)
+
+### Ação necessária
+Este gate pode ser pré-existente ao PR e ter sido mascarado. Verificar:
+1. Se `deploy-gates.yml` no run `#40601426870` (success) passou este gate — se sim, a adição de `20261027160000` pode ter cruzado um threshold
+2. Se for threshold: ajustar o limite ou excluir a migration nova do count
+3. Se for divergência real: abrir tarefa separada de reconciliação de ledger (escopo fora deste PR)
+
+**Risco:** produção — não fazer DDL direto.
+
+---
+
 ## Resumo de prioridades
 
 | # | Workflow | Prioridade | Decisão do PO |
@@ -306,3 +336,4 @@ Deploy de edge function via MCP direto é proibido (REGRA #8 corolário). O úni
 | P8 | `branch-protection-sentinel.yml` | NÃO RESOLVÍVEL | Histórico de commit, nada a fazer |
 | P12 | `uptime-monitor.yml` | BAIXA | Monitor externo — aguardar próximos runs após merge |
 | **P13** | **`e2e.yml` Critical Flows** | **ALTA** | **Mesma raiz do P11 — resolve com merge do PR #2663** |
+| **P15** | **Gate E40 `deploy-gates.yml` ledger drift (local=1108; remote=647)** | **CRÍTICA** | **Investigar se threshold mudou ou se é divergência pré-existente; reconciliação exige tarefa separada** |
