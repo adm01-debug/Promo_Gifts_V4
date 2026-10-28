@@ -87,8 +87,11 @@
       "titulo": "docs(ci): RELATORIO_CI+PENDENCIAS + migration cron",
       "veredito": "DECISÃO_HUMANA",
       "diff_lido": true,
-      "diff_descricao": "11 arquivos (+690/-897), docs only (RELATORIO_CI.md + PENDENCIAS.md) + migration cron",
-      "motivo": "mergeable=false (dirty) — conflito com #2667 já mergeado. Migration cron requer decisão PO (fechar ou re-abrir separada)."
+      "diff_completo": true,
+      "diff_linhas_total": 1103,
+      "diff_descricao": "11 arquivos (+690/-897). RELATORIO_CI.md (doc, ~897 removidas/690 novas). PENDENCIAS.md (doc, reescrita P1-P15). supabase/MIGRATIONS_SYNC_LOG.md (+1 linha recibo). supabase/migrations/20261027160000_deactivate_image_dimensions_backfill_cron.sql (+1 linha comentário rollback APENAS — ZERO DDL novo).",
+      "migration_analise": "migration existente — apenas +1 linha: '-- Rollback: SELECT cron.alter_job(...)'. ZERO DDL novo. Status produção: pendente (aguarda db-apply-migration.yml dispatch pelo PO).",
+      "motivo": "mergeable=false (dirty) — conflito com #2667 já mergeado. Fix TypeScript src/ já em main via #2667. Migration cron requer decisão PO (fechar ou re-abrir separada)."
     },
     {
       "pr": 2664,

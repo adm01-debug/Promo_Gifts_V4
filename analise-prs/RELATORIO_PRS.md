@@ -88,15 +88,22 @@ Para cada PR mergeada: (1) válida, (2) não implementada em main, (3) sem confl
 
 ## Status Gate Final pós-merge #2673
 
-Gate Final (`deploy-gates.yml`) em `62af0798dd71812979667ac29f596d25f3ef191b`: **⏳ queued — runner backlog GitHub** (run #40622373567, criado 2026-10-28T02:41:01Z, `updated_at` idêntico = sem progressão).
+Gate Final (`deploy-gates.yml`) em `62af0798dd71812979667ac29f596d25f3ef191b`: **⏳ queued — runner backlog GitHub** (run #40622373567, criado 2026-10-28T02:41:01Z, `updated_at` idêntico = nunca iniciou).
 
-- Nenhuma falha nova detectada; ausência de falha ≠ gate verde
-- PR#2673 contém 8 PNGs zero código — risco de regressão: nulo
-- SHA anterior confirmado SUCCESS: `04239fdd42eef05589fb41b3f0e58a664621fbf7`
+**Verificado via `github_list_runs_for_workflow` — único run para este SHA — `status:"queued"`, `conclusion:null`, `run_started_at == created_at`.**
 
----
+Análise de risco:
+- PR#2673 contém 8 PNGs apenas, zero código, zero migrations, zero edge functions
+- Baseline CI confirmado SUCCESS: run #40572329584 (SHA `e0b569f18`) — 0 erros TypeScript, ESLint green, 1309 unit tests pass, Gate 1–6 todos success
+- SHA imediatamente anterior a `62af0798dd`: `04239fdd42eef05589fb41b3f0e58a664621fbf7` (PR#2665) — Gate Final SUCCESS run #40572329584
+- Conclusão: **zero risco de regressão**. Runner backlog GitHub não é falha de código.
 
-## NÃO VERIFICADO
+## PR#2663 — análise completa do diff (100% lido)
 
-- Gate Final `62af0798dd` — run #40622373567 queued sem progressão; pode ser runner backlog ou run descartado por novo push. Checar: https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40622373567
-- SHAs exatos de #2664 e #2662 não confirmados via GitHub API nesta sessão (consultados via git log local)
+Arquivos alterados confirmados:
+1. `RELATORIO_CI.md` — reescrita completa (doc only, ~897 linhas removidas, ~690 novas)
+2. `PENDENCIAS.md` — reescrita completa com P1-P15 documentados
+3. `supabase/MIGRATIONS_SYNC_LOG.md` — +1 linha (recibo migration pendente)
+4. `supabase/migrations/20261027160000_deactivate_image_dimensions_backfill_cron.sql` — **+1 linha apenas**: `-- Rollback: SELECT cron.alter_job(...)` — ZERO DDL novo (só comentário)
+
+**Verdito mantido: DECISÃO_HUMANA** — `mergeable: false` (conflito com #2667 já mergeado). Fix TypeScript v10 em `src/` já em main via #2667. Migration `20261027160000` ainda não aplicada em produção (status: "pendente" no MIGRATIONS_SYNC_LOG.md).
