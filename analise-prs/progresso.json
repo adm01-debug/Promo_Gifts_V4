@@ -1,15 +1,11 @@
 {
   "session": "session_01VXkRxWq5ZUCmvuNx5e2TGX",
-  "data": "2026-10-27",
+  "data": "2026-10-28",
   "status": "CONCLUIDO",
   "branch_trabalho": "claude_pink/sleepy-cannon-h000nc",
-  "main_head_inicio": "e0b569f18",
-  "main_head_fim": "4c5fdd72fc301cdcd65851af30204881bab710c4",
-  "prs_analisadas": 13,
-  "prs_mergeadas": 1,
-  "prs_fechadas_pelo_po": 7,
-  "prs_skip_draft": 4,
-  "prs_nao_mergeadas_outros_motivos": 1,
+  "main_head_inicio": "4c5fdd72fc301cdcd65851af30204881bab710c4",
+  "main_head_fim": "62af0798dd71812979667ac29f596d25f3ef191b",
+  "total_prs_inventariadas": 17,
   "ci_baseline": {
     "run_id": "40572329584",
     "sha": "e0b569f18",
@@ -19,127 +15,170 @@
     "tsc_erros": 0,
     "eslint_erros": 0,
     "unit_tests": 1309,
-    "unit_tests_falhas": 0
+    "unit_tests_falhas": 0,
+    "testes_falhando_por_nome": []
   },
-  "merge_realizado": {
-    "pr": 2588,
-    "merge_sha": "4c5fdd72fc301cdcd65851af30204881bab710c4",
-    "metodo": "squash",
-    "gate_final_pos_merge": "NAO_EXECUTADO (deploy-gates.yml nao triggerou em 4c5fdd72 — apenas branch-protection-sentinel=success, deployment-failure-alert=skipped)",
-    "vercel_deploy": "skipped (sem falha detectada)",
-    "data": "2026-10-27"
-  },
-  "worktrees_criados": ["wt-2588", "wt-2600", "wt-2631", "wt-2646"],
-  "worktrees_removidos": ["wt-2588", "wt-2600", "wt-2631", "wt-2646"],
+  "worktrees_criados": [],
+  "worktrees_ativos": [],
+  "worktrees_removidos": [],
+  "nota_worktrees": "Nenhum worktree temporário criado nesta sessão. git worktree list mostra apenas /home/user/Promo_Gifts_V4 (main checkout).",
+  "merges_realizados": [
+    {
+      "pr": 2673,
+      "titulo": "chore(e2e): update calendar visual baselines post-v10",
+      "merge_sha": "62af0798dd71812979667ac29f596d25f3ef191b",
+      "metodo": "squash",
+      "data_merge": "2026-10-28",
+      "arquivos": "8 PNGs apenas, zero código",
+      "gate_final_pos_merge": "run #40622373567 — queued (runner backlog GitHub, created_at=updated_at=2026-10-28T02:41:01Z, nunca iniciou). Static Health Checks=success, E2E=in_progress. Risco de regressão: NULO (8 PNGs, sem código).",
+      "mcp_producao": "não requerido (sem migration, sem edge function)"
+    }
+  ],
+  "merges_sessoes_anteriores": [
+    {"pr": 2662, "merge_sha": "efacff0be", "sessao": "anterior"},
+    {"pr": 2664, "merge_sha": "bd783873a", "sessao": "anterior"},
+    {"pr": 2665, "merge_sha": "04239fdd42eef05589fb41b3f0e58a664621fbf7", "sessao": "anterior"},
+    {"pr": 2667, "merge_sha": "8b0b6068e53592509cfac7225935340b6f3409df", "sessao": "anterior"}
+  ],
   "analise_completa": [
     {
-      "pr": 2420,
-      "titulo": "feat(rollbacks): cria rollback 20261019",
-      "veredicto": "FECHADA-PELO-PO",
-      "motivo": "rollback 20261019000000 ja em main (e0b569f18)",
-      "fechada_em": "2026-10-27",
-      "diff_lido": true
-    },
-    {
-      "pr": 2572,
-      "titulo": "fix(workflows): corrige deploy-gates",
-      "veredicto": "FECHADA-PELO-PO",
-      "motivo": "mergeable:false + rebaseable:false + toca .github/workflows (proibido)",
-      "fechada_em": "2026-10-27",
-      "diff_lido": true
-    },
-    {
-      "pr": 2579,
-      "titulo": "chore(release): release 1.0.0",
-      "veredicto": "FECHADA-PELO-PO",
-      "motivo": "versao regressiva 1.0.0 vs main 1.2.1",
-      "fechada_em": "2026-10-27",
-      "diff_lido": true
-    },
-    {
       "pr": 2580,
-      "titulo": "feat(rollbacks): migration e23 force rls + rollback",
-      "veredicto": "BLOQUEADA-DRAFT",
-      "motivo": "DRAFT + toca supabase/migrations/ (requer aprovacao PO REGRA#8)",
+      "titulo": "fix(banco): rollback RLS header",
+      "veredito": "AGUARDA_PO",
       "diff_lido": true,
       "diff_arquivos": 2,
-      "diff_descricao": "supabase/migrations/20260916202000_e23_force_rls_secret_tables.sql (add rollback comment) + supabase/rollbacks/20260916202000_rollback.sql (novo, 8 linhas)"
-    },
-    {
-      "pr": 2588,
-      "titulo": "chore(deps): bump react-day-picker v8->v10",
-      "veredicto": "MERGEADA",
-      "merge_sha": "4c5fdd72fc301cdcd65851af30204881bab710c4",
-      "metodo": "squash",
-      "data_merge": "2026-10-27",
-      "diff_lido": true,
-      "nota": "Major bump v8->v10 (dependabot). Mergeada com base em: mergeable:true, merge_test CLEAN, sem conflito. Gate Final nao executou em 4c5fdd72 (deploy-gates.yml nao triggerou); branch-protection-sentinel=success."
+      "diff_linhas": "+9",
+      "diff_descricao": "supabase/migrations/20260916202000_e23_force_rls_secret_tables.sql: +1 linha (comentário '-- Rollback: supabase/rollbacks/...') — ZERO DDL novo. supabase/rollbacks/20260916202000_rollback.sql: novo arquivo 8 linhas — ALTER TABLE ... NO FORCE ROW LEVEL SECURITY para 5 tabelas (integration_credentials, external_connections, secret_rotation_log, step_up_tokens, user_token_revocations).",
+      "regressao": "NENHUMA — migration não executa DDL novo; rollback file é novo mas não executado automaticamente",
+      "regra_negocio": "Válida — adiciona documentação de rollback para E23 RLS migration existente",
+      "motivo_bloqueio": "Toca supabase/migrations/ — REGRA #8 governança exige aprovação PO mesmo para mudanças aditivas"
     },
     {
       "pr": 2600,
-      "titulo": "docs(analise-prs): RELATORIO_PRS.md rev50 (sessao anterior)",
-      "veredicto": "BLOQUEADA-DRAFT",
-      "motivo": "DRAFT + body 'NAO MERGEAR' + branch de outra sessao de agente (REGRA#10)",
+      "titulo": "docs(analise-prs): rev46 — delivery branch sessão anterior",
+      "veredito": "NÃO_MERGEAR",
       "diff_lido": true,
-      "diff_arquivos": "30+ (todos em analise-prs/ — sem codigo de produto)",
-      "diff_descricao": "RELATORIO_PRS.md, baseline/*, clusters.md, dossies/PR-2420..PR-2604.md — zero .github/workflows, zero client.ts"
-    },
-    {
-      "pr": 2605,
-      "titulo": "fix(mockup): corrige crash NaN + GravarFormato",
-      "veredicto": "FECHADA-PELO-PO",
-      "motivo": "conteudo em main via PRs #2616/#2614/#2620",
-      "fechada_em": "2026-10-27",
-      "diff_lido": true
-    },
-    {
-      "pr": 2622,
-      "titulo": "feat(xbz-image-uploader): edge function + rollbacks",
-      "veredicto": "FECHADA-PELO-PO",
-      "motivo": "14 rollbacks 20261027*.sql em main + xbz-image-uploader no manifesto (commit a0560fd)",
-      "fechada_em": "2026-10-27",
-      "diff_lido": true
+      "motivo": "Body explícito 'NÃO MERGEAR ESTA PR' — delivery branch sessão anterior"
     },
     {
       "pr": 2631,
-      "titulo": "docs(pendencias): bloqueio edge-functions deploy",
-      "veredicto": "BLOQUEADA-DRAFT",
-      "motivo": "DRAFT",
+      "titulo": "chore: atualiza PENDENCIAS §4 e RELATORIO_CI",
+      "veredito": "NÃO_MERGEAR",
       "diff_lido": true,
-      "diff_arquivos": 2,
-      "diff_descricao": "PENDENCIAS.md (adiciona §4 sobre bloqueio environment:production) + RELATORIO_CI.md (atualiza §5/6/7/8, adiciona §10 — zero .github/workflows, zero client.ts)"
-    },
-    {
-      "pr": 2645,
-      "titulo": "chore(migrations): receipt 20261027140000",
-      "veredicto": "FECHADA-PELO-PO",
-      "motivo": "receipt 20261027140000 ja em main via commit 22ba938",
-      "fechada_em": "2026-10-27",
-      "diff_lido": true
+      "motivo": "Supersedida — commits docs já mergeados via #2662"
     },
     {
       "pr": 2646,
-      "titulo": "ci(deploy-gates): Gate 1.13.3 + Gate 1.19",
-      "veredicto": "NAO_MERGEADA",
-      "motivo": "toca .github/workflows/deploy-gates.yml (proibido pela instrucao da tarefa) + Gate Final = FAILURE no PR head",
-      "diff_lido": true
-    },
-    {
-      "pr": 2653,
-      "titulo": "fix(analise-prs): correcoes dossie PR-2420",
-      "veredicto": "FECHADA-PELO-PO",
-      "motivo": "mergeable:false + rebaseable:false — branch orfao de sessao anterior",
-      "fechada_em": "2026-10-27",
-      "diff_lido": true
+      "titulo": "fix(migrations): rollback headers + packages:read",
+      "veredito": "AGUARDA_PO",
+      "diff_lido": true,
+      "diff_descricao": ".github/workflows/ × 3 + supabase/migrations/ × 3",
+      "motivo_bloqueio": "Mandato explícito 'Não tocar .github/workflows' + REGRA #8 para migrations"
     },
     {
       "pr": 2662,
-      "titulo": "docs(analise-prs): analise exaustiva de PRs abertas (esta sessao)",
-      "veredicto": "BLOQUEADA-DRAFT",
-      "motivo": "DRAFT + branch de trabalho desta sessao",
+      "titulo": "docs(analise-prs): análise 13 PRs sessão anterior",
+      "veredito": "MERGEADA",
+      "merge_sha": "efacff0be",
+      "diff_lido": true
+    },
+    {
+      "pr": 2663,
+      "titulo": "docs(ci): RELATORIO_CI+PENDENCIAS + migration cron",
+      "veredito": "DECISÃO_HUMANA",
       "diff_lido": true,
-      "diff_arquivos": "19 (todos em analise-prs/ — sem codigo de produto)",
-      "diff_descricao": "RELATORIO_PRS.md, baseline/lint.txt, baseline/typecheck.txt, baseline/unit-tests.txt, baseline/tsc-errors.txt, dossies/PR-2420..PR-2653.md, progresso.json, prs.csv, prs.json — zero .github/workflows, zero client.ts"
+      "diff_descricao": "11 arquivos (+690/-897), docs only (RELATORIO_CI.md + PENDENCIAS.md) + migration cron",
+      "motivo": "mergeable=false (dirty) — conflito com #2667 já mergeado. Migration cron requer decisão PO (fechar ou re-abrir separada)."
+    },
+    {
+      "pr": 2664,
+      "titulo": "docs(auditoria): Fase A completa — auditoria Supabase",
+      "veredito": "MERGEADA",
+      "merge_sha": "bd783873a",
+      "diff_lido": true
+    },
+    {
+      "pr": 2665,
+      "titulo": "chore(deps): bump qs 6.16.0→6.16.2 (CVE fix)",
+      "veredito": "MERGEADA",
+      "merge_sha": "04239fdd42eef05589fb41b3f0e58a664621fbf7",
+      "diff_lido": true
+    },
+    {
+      "pr": 2666,
+      "titulo": "chore(main): release 1.0.0",
+      "veredito": "AGUARDA_PO",
+      "diff_lido": true,
+      "diff_arquivos": 4,
+      "diff_linhas": "+216/-1 (CHANGELOG.md +216, package.json/package-lock.json/-1 cada, .release-please-manifest.json -1)",
+      "diff_descricao": ".release-please-manifest.json: 1.2.1→1.0.0. CHANGELOG.md: +216 linhas (histório completo). package.json/package-lock.json: version 1.2.1→1.0.0.",
+      "regressao": "ZERO código mudado — apenas versão e changelog",
+      "regra_negocio": "release-please bot iniciou ciclo v1.0.0 enquanto main está em 1.2.1 — parece reset do bot. Sem risco técnico mas PO deve confirmar intenção de semver.",
+      "motivo_bloqueio": "Downgrade semver 1.2.1→1.0.0 em package.json — requer confirmação do PO"
+    },
+    {
+      "pr": 2667,
+      "titulo": "fix(calendar): adapta react-day-picker v8→v10",
+      "veredito": "MERGEADA",
+      "merge_sha": "8b0b6068e53592509cfac7225935340b6f3409df",
+      "diff_lido": true
+    },
+    {
+      "pr": 2668,
+      "titulo": "analise-prs inventário (draft, outra sessão)",
+      "veredito": "NÃO_MERGEAR",
+      "diff_lido": true,
+      "motivo": "REGRA #10 — branch criada por session_01Ss1tXZ4cAbxBvdmu95uNPz"
+    },
+    {
+      "pr": 2670,
+      "titulo": "fix react-day-picker v10 (draft, outra sessão)",
+      "veredito": "NÃO_MERGEAR",
+      "diff_lido": true,
+      "motivo": "Draft; código v10 já em main via #2667; outra sessão"
+    },
+    {
+      "pr": 2671,
+      "titulo": "chore(e2e): update calendar visual baselines (pré-v10)",
+      "veredito": "NÃO_MERGEAR",
+      "diff_lido": true,
+      "motivo": "Baselines pré-v10, supersedida por #2673"
+    },
+    {
+      "pr": 2672,
+      "titulo": "chore(e2e): update calendar visual baselines (force, 57 files)",
+      "veredito": "NÃO_MERGEAR",
+      "diff_lido": true,
+      "motivo": "Código em main + analise-prs de outra sessão + conflitos + PNGs pré-v10"
+    },
+    {
+      "pr": 2673,
+      "titulo": "chore(e2e): update calendar visual baselines post-v10",
+      "veredito": "MERGEADA",
+      "merge_sha": "62af0798dd71812979667ac29f596d25f3ef191b",
+      "diff_lido": true,
+      "diff_descricao": "8 PNGs (baselines pós-v10 gerados por CI), zero código"
+    },
+    {
+      "pr": 2674,
+      "titulo": "analise-prs: entrega desta sessão (claude_pink/sleepy-cannon-h000nc)",
+      "veredito": "NÃO_MERGEAR",
+      "diff_lido": true,
+      "motivo": "Nossa branch de entrega — NUNCA MERGEAR"
+    },
+    {
+      "pr": 2675,
+      "titulo": "branch de outra sessão — histórico disjunto",
+      "veredito": "NÃO_MERGEAR",
+      "diff_lido": true,
+      "motivo": "Histórico disjunto; session_01Ss1tXZ4cAbxBvdmu95uNPz; REGRA #10"
     }
-  ]
+  ],
+  "contagem_por_veredito": {
+    "MERGEADA": {"count": 5, "prs": [2662, 2664, 2665, 2667, 2673]},
+    "NÃO_MERGEAR": {"count": 8, "prs": [2600, 2631, 2668, 2670, 2671, 2672, 2674, 2675]},
+    "AGUARDA_PO": {"count": 3, "prs": [2580, 2646, 2666]},
+    "DECISÃO_HUMANA": {"count": 1, "prs": [2663]},
+    "TOTAL_ANALISADO": 17
+  }
 }
