@@ -120,7 +120,7 @@ export function WidgetFiltersBar({
               selected={value.dateRange}
               onSelect={(r) => onChange({ ...value, dateRange: r })}
               locale={ptBR}
-              initialFocus
+              autoFocus
               className={cn('pointer-events-auto p-3')}
             />
           </PopoverContent>
