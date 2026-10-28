@@ -1,5 +1,25 @@
 # PENDENCIAS.md — Itens bloqueados por secret/permissão/infraestrutura
 
+## Revalidação em 2026-10-28 — `main` `c3445087`
+
+Consulta de workflows: última execução por workflow em `main`: 23 verdes, 5 vermelhas, 3 canceladas e 2 ignoradas entre 33 workflows observados. Nenhuma migration ou dado foi alterado durante esta revalidação.
+
+| Pendência | Evidência atual | Próxima ação segura |
+|---|---|---|
+| E2E Catálogo → Kit | Run [40762904577](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762904577): a verificação literal de `500` também capturou `6.500 produtos`. Correção enviada no PR #2717 (`9336e0520`); aguardar CI do PR antes de considerar resolvido. | Confirmar o check E2E verde no PR #2717 e, após merge autorizado pelos gates, observar novo run em `main`. |
+| E2E Kit Builder | Run [40762904949](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762904949): 6 testes autenticados falharam; o trecho disponível mostra `locator.click` no botão de início excedendo 120 s. | Obter trace/estado visual da falha e reproduzir com usuário de teste e dados reais; não afrouxar timeout nem ignorar teste. |
+| E2E Swatch QuickView | Run [40762904693](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762904693): runner recebeu sinal de encerramento no projeto WebKit; log não confirma erro de asserção. | Reexecutar o workflow para confirmar se foi encerramento transitório do runner; preservar a suite e os limites atuais. |
+| Edge `crm-db-bridge` | Run [40762354015](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762354015): requests com corpo vazio e string crua receberam 503, acima do contrato de teste (<500). | Inspecionar logs e versão da função remota; se exigir deploy, seguir `.github/workflows/deploy-edge-functions.yml` e aprovação do environment Production. Não implantar via MCP/dashboard. |
+| E2E Magazine Header | Runs [40762354171](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762354171) na `main` e [40788879592](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40788879592) no PR #2717: depois de clicar no primeiro cartão, a URL permaneceu `/magazine`, em vez de `/magazine/{id}`. | Reproduzir com sessão autenticada e trace; confirmar se o cartão existe e se o click dispara navegação antes de alterar o teste ou a aplicação. |
+| Revisão automática do PR #2717 | Run [40788890456](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40788890456): reviewer Copilot encerrou com `SessionModelError: You've reached your additional usage limit for your plan` (classificado como `quota`); não há parecer de código. | Repor a cota do Copilot ou obter a revisão manual exigida pelas regras do repositório; não tratar a falha de quota como revisão aprovada. |
+| WebKit no PR #2717 | Run [40788879682](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40788879682): projeto WebKit foi cancelado com sinal de shutdown do runner. O rerun do run equivalente em `main` está na tentativa 2, status `queued`. | Aguardar a tentativa 2 e verificar se o runner completa; não alterar teste por cancelamento de infraestrutura. |
+| Checks E2E Quotes do PR #2717 | Run [40788879637](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40788879637): `view-no-presentation-mode` falhou por divergência de screenshot móvel; `undo` teve 2 falhas, uma com `expect(count).toBe(0)` recebendo `1` após expiração. São falhas do PR (não da última execução em `main`) e bloqueiam a mesclagem; causa ainda não comprovada. | Reproduzir os dois casos com a sessão autenticada e comparar screenshot/trace. Não atualizar snapshot, tolerância ou asserção sem explicar a diferença visual/funcional. |
+| Reconciliação Supabase | Canônico `doufsxqlfjyuvxuezpln`: comparação bruta tem 3.004 IDs locais, 2.552 remotos; 463 locais e 11 remotos sem par exato. O Gate E40 no PR #2714 reporta `local_only=1109; remote_only=648` por outro escopo/filtro. | Explicar a divergência metodológica, classificar cada versão e reconciliar somente por migration versionada e fluxo autorizado; não aplicar nada automaticamente. |
+| Publicação da atualização Graphify | Checkout local tem `graphify-out/GRAPH_REPORT.md` e `manifest.json` atualizados e não commitados; `graphify update` reportou pacote 0.9.91 vs skill 0.9.94 e gerou diff de metadados extenso. | Reconciliar a versão do gerador e produzir diff revisável antes de publicar o snapshot; não misturar os artefatos a uma correção de produto/CI. |
+| Guarda RLS / auditoria | PR #2715 permanece aberto; correção não está em `main`. O workflow quality do PR teve falhas E2E e o revisor automático esteve indisponível por limite de quota, segundo a evidência anterior. | Corrigir/validar as falhas de CI e obter revisão exigida. Sem merge enquanto os checks obrigatórios estiverem vermelhos. |
+
+Os runs verdes e os resultados locais detalhados estão no `RELATORIO_CI.md` (snapshot da mesma data). As causas ainda não comprovadas ficam explicitamente pendentes; não foram tratadas como corrigidas por inferência.
+
 **Atualizado:** 2026-10-28  
 **Branch:** `fix/ci-workflows` (esta sessão)
 
