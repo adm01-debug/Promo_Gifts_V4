@@ -116,11 +116,12 @@ Os workflows P1 e P2 de E2E que dependem de autenticação real continuam falhan
 
 ---
 
-## 5. Prova de conclusão (aguardando Deploy Gates — re-trigger 2026-10-28T04:09Z)
+## 5. Prova de conclusão (retrigger via push MCP — 2026-10-28T04:35Z)
 
 **Histórico de runs PR #2681:**
-- Run `40629639891` (commit `7286e3b`): criado 03:58Z, ficou preso em `queued` por saturação de runners. Cancelado às 04:09Z.
-- Re-trigger via commit `chore(ci)`: novo run em andamento.
+- Run `40629639891` (commit `7286e3b`): criado 03:58Z, gates cancelados por saturação de runners.
+- Re-run attempt 3 disparado via `github_rerun_workflow`.
+- Push MCP (este commit) disparado em `99aa164` para triggar novo run no HEAD atual.
 
 | Workflow | Run ID pós-merge | Conclusion | Link |
 |---|---|---|---|
