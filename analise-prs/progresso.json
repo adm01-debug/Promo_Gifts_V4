@@ -24,11 +24,18 @@
     "nota": "Run 40625610155 queued >1h sem runners. Cancelado em 2026-10-28T03:30Z."
   },
   "ci_gate_final_pr2679_v3": {
+    "run_id": "40628689804",
+    "sha": "73e0f0c47bf8f2887096d64d78f84f0106ec456e",
+    "status": "cancelled",
+    "conclusao": "cancelled",
+    "nota": "Run queued 20+ min sem iniciar — cancelado em 2026-10-28T04:08Z. Novo push para retrigger."
+  },
+  "ci_gate_final_pr2679_v4": {
     "run_id": null,
-    "sha": "pending_push",
+    "sha": "pending",
     "status": "pending",
     "conclusao": null,
-    "nota": "Novo push em progresso para retrigger Gate Final"
+    "nota": "Retrigger via push em 2026-10-28T04:08Z"
   },
   "ci_main_atual": {
     "sha": "62af0798",
