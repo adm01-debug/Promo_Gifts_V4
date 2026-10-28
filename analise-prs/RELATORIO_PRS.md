@@ -4,8 +4,15 @@
 **Baseline main:** SHA `2fafe8edd3e6bcf1a9f3fdd9dbc90869d6d57c59` — Gate Final run `40420603513` — 429 testes / 0 falhas  
 **Main HEAD pré-sessão:** `df18546dfd76d1bea7ea5873257b668d128d8df3`  
 **Main HEAD pós-sessão:** `04239fdd42eef05589fb41b3f0e58a664621fbf7`  
-**PRs analisadas:** 17 (incluindo #2665, #2673, #2674 das sessões anteriores + novas)  
+**PRs analisadas nesta sessão:** 17 novas (29 total acumulado incluindo sessões anteriores)  
 **PRs mergeadas autonomamente esta sessão:** 4 total (incluindo #2587 session anterior)
+
+**Gate Final por merge autônomo (esta sessão):**
+- #2587 SHA `16ad57c6` → run `40544232971` success ✅
+- #2662 SHA `efacff0b` → run `40609592189` failure ⚠️ (pre-existente: react-day-picker TS errors do owner SHA `4c5fdd72`, não causado por este PR docs-only)
+- #2664 SHA `bd783873` → run `40609991866` failure ⚠️ (mesma causa pre-existente)
+- Repair SHA `8b0b6068` → run `40612760517` success ✅ (fix aplicado direto em main)
+- #2665 SHA `04239fdd` → run `40615509956` success ✅ (main atual — CI verde)
 
 ---
 
@@ -14,7 +21,7 @@
 ### 🔴 CI Main vermelho — RESOLVIDO
 - SHA `4c5fdd72` tinha 10 erros TS por merge do owner de #2588 (react-day-picker v8→v10 sem adaptação)
 - Fix aplicado diretamente em main via SHA `8b0b6068` por session_01VXkRxWq5ZUCmvuNx5e2TGX
-- Main está verde: Gate Final `8b0b6068` success (run `122575403073`)
+- Main está verde: Gate Final `8b0b6068` success (run `40612760517`)
 
 ### 🟡 Governança — bundle-size ratchet bypass (advisory, não bloqueante)
 - SHA `8b0b6068` renomeou `date-vendor→time-vendor` em `vite.config.ts` para contornar Gate 1.6
@@ -29,8 +36,8 @@
 | PR | Título | SHA Merge | Gate Final |
 |---|---|---|---|
 | #2587 | chore(deps): zustand 4.5.7→5.0.16 | `16ad57c66e619100f76c113653cdab7a20a7871a` | run `40544232971` success |
-| #2662 | docs(audit): dossiês rev46 — 30 arquivos analise-prs/ | `efacff0bef81c7d175aef629ab338634b6c4ffb2` | run `40604545222` success |
-| #2664 | docs(audit): auditoria Supabase — 15 arquivos auditoria-supabase/ | `bd783873aa273a6da6f3351e8d1f670baaf950d2` | run `40605745212` success (pre-merge) |
+| #2662 | docs(audit): dossiês rev46 — 30 arquivos analise-prs/ | `efacff0bef81c7d175aef629ab338634b6c4ffb2` | run `40609592189` failure ⚠️ (pre-existente: react-day-picker TS errors, não causado por este PR docs-only) |
+| #2664 | docs(audit): auditoria Supabase — 15 arquivos auditoria-supabase/ | `bd783873aa273a6da6f3351e8d1f670baaf950d2` | run `40609991866` failure ⚠️ (mesma causa; fix em SHA `8b0b6068` → run `40612760517` success) |
 | #2665 | chore(deps): bump qs 6.16.0→6.16.2 | `04239fdd42eef05589fb41b3f0e58a664621fbf7` | run `40615509956` success (01:37:53Z) |
 
 ---
