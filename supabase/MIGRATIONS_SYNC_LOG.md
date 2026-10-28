@@ -715,7 +715,7 @@ f6def33d0c79c66aab118335ed95d9e3a9b40536cca5cd397bacc54e7858ae96
 | `20260417001408` | `d544558d96f6be7d1b4e2a6af7269d11ac516836f8ca134a06e682dae2d14a7c` | `n/d` | claude-code (sessão PR #2376) | retroactive-file-fix (arquivo modificado — não reaplicado em prod; adicionou guarda pg_has_role em ALTER TABLE realtime.messages para compatibilidade com Preview branches) | 2026-10-23 UTC | PR #2376 — arquivo corrigido; migration original já estava no ledger de prod; nenhuma DDL nova aplicada |
 | `20261027120000` | `5d4be00c38b6b610a40e077226ef05ff362222946c2c54b688a0a19c331fb82d` | `—` | claude-code (PR #2603) | E15 | 2026-10-27 UTC (previsto) | pendente — a ser aplicado via db-apply-migration.yml após merge do PR #2603 |
 | `20261027140000` | `e63a43b30c5bce7d3e1e7f6f6829fc692e4b95b5a229b07b24c353ac97fc07cf` | `—` | claude-code (PR #2603) | E15 | 2026-10-27 UTC (previsto) | pendente — a ser aplicado via db-apply-migration.yml após merge do PR #2603 |
-| `20261027160000` | `e8d26f0560611d1397b219f92b6dbd0fa37205e462d412c46682ec1381e1fa06` | `—` | claude-code (PR #2603) | E15 | 2026-10-27 UTC (previsto) | aguardando-dispatch — a ser aplicado via db-apply-migration.yml após merge do PR #2603 |
+| `20261027160000` | `a344bd19ef3a0fbc6d1a82a8032a0ddcfa04167201820057126e04cd34cf24d2` | `—` | claude-code (PR #2603 + PR #2663) | E15 | 2026-10-27 UTC (previsto) | aguardando-dispatch — a ser aplicado via db-apply-migration.yml após merge do PR #2603; SHA atualizado em PR #2663 (adicionou cabeçalho `-- Rollback:` ao arquivo) |
 | `20261027180000` | `1b47a1d2eadd49608f36331d6be6e93e7478022ed97cbbbae9617e455bcb38a4` | `—` | claude-code (PR #2603) | E15 | 2026-10-27 UTC (previsto) | pendente — a ser aplicado via db-apply-migration.yml após merge do PR #2603 |
 | `20261027200000` | `9737df0d29ff332d5ae3d359c2d4c068c894ef861bbbd6e0a8b0e50caf710c5a` | `—` | claude-code (PR #2603) | E15 | 2026-10-27 UTC (previsto) | pendente — a ser aplicado via db-apply-migration.yml após merge do PR #2603 |
 | `20261027220000` | `fb16901b0c1edd37080aada4edd16de71cbb6e128dca12764cfc22947f6797af` | `—` | claude-code (PR #2603) | E15 | 2026-10-27 UTC (previsto) | pendente — a ser aplicado via db-apply-migration.yml após merge do PR #2603 |
@@ -1584,7 +1584,6 @@ Detalhes, métricas antes/depois e one-shots: docs/EXECUCAO_CORRECOES_MEDALLION_
 |---|---|---|---|---|
 | `20261022195616` | `662fa38e1e09eed7d26ae55e0a1f46beca1793837aa9217d8f6e220c4817056f` | E99 repair-only (mirror) | 2026-10-22T19:56:16Z | em produção via SELECT pg_get_functiondef — SECURITY DEFINER + search_path confirmados |
 | `20261022203935` | `83558c38fda00255556c265c7ba669c85650a1508a7b2acdb99902fed3746575` | E99 repair-only (mirror) | 2026-10-22T20:39:35Z | em produção via SELECT pg_get_functiondef — auth.uid() guard confirmado |
-| `20261027160000` | `a344bd19ef3a0fbc6d1a82a8032a0ddcfa04167201820057126e04cd34cf24d2` | aguardando-dispatch — `db-apply-migration.yml` pelo PO (P9/PENDENCIAS.md) | 2026-10-27T16:00:00Z | não aplicada em produção ainda — migration criada nesta PR para pre-registrar recibo conforme gate 1.13.3 |
 
 **Próximo passo obrigatório:** após merge desta PR, disparar `schema-snapshot-export.yml` com `force_rotate: true` para regenerar baseline (REGRA #8 corolário).
 
