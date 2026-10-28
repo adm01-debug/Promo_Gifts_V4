@@ -40,22 +40,22 @@ Expected pattern: not matching /login/
 Received string: "http://localhost:8080/login"
 ```
 
-**Causa raiz:** Helper de autenticação E2E aguarda redirect pós-login por 75s, mas a URL permanece em `/login`. O app não consegue autenticar porque os secrets de credenciais de teste não estão configurados no GitHub Actions.
+**Causa raiz:** Helper de autenticação E2E aguarda redirect pós-login por for 75s, mas a URL permanece em `/login`. O app não consegue autenticar porque os secrets de credenciais de teste não estão configurados no GitHub Actions.
 
 **Secrets ausentes identificados nos logs:**
-- `E2E_USER_EMAIL` — email de um usuário de teste válido no Supabase `doufsxqlfjyuvxuezpln`
+- `E2E_USER_EMAIL` — email de um usuério de teste válido no Supabase `doufsxqlfjyuvxuezpln`
 - `E2E_USER_PASSWORD` — senha desse usuário
 - `VITE_SUPABASE_URL` — URL do projeto Supabase (se não estiver como variable)
 - `VITE_SUPABASE_PUBLISHABLE_KEY` — anon key do Supabase (se não estiver como variable)
 
 **Ação necessária do PO:**
 
-Passo 1 — Abra a página de secrets:
+Passo 1 → Abra a página de secrets:
 ```
 https://github.com/adm01-debug/Promo_Gifts_V4/settings/secrets/actions
 ```
 
-Passo 2 — Crie cada secret clicando em "New repository secret":
+Passo 2 → Crie cada secret clicando em "New repository secret":
 
 | Secret | Valor |
 |---|---|
@@ -64,10 +64,10 @@ Passo 2 — Crie cada secret clicando em "New repository secret":
 | `VITE_SUPABASE_URL` | `https://doufsxqlfjyuvxuezpln.supabase.co` (se não existir como Actions Variable) |
 | `VITE_SUPABASE_PUBLISHABLE_KEY` | anon/publishable key do projeto `doufsxqlfjyuvxuezpln` |
 
-Passo 3 — Verifique se o usuário de teste existe:
+Passo 3 → Verifique se o usuário de teste existe:
 No Supabase Dashboard → Authentication → Users → filtre por email do usuário de teste. Se não existir, crie um usuário com email+senha.
 
-Passo 4 — Re-run do workflow:
+Passo 4 → Re-run do workflow:
 ```
 https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40612760478
 ```
@@ -96,8 +96,8 @@ Clique em "Re-run all jobs".
 
 **Ação necessária do PO:**
 - Passo 1: Resolver P1 primeiro (configurar os 4 secrets acima).
-- Passo 2 — Re-run após P1 estar resolvido: https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40615510053
-- Passo 3 — Se o tooltip ainda falhar: o timeout de 2s (`expect(tooltip).toBeVisible({ timeout: 2000 })`) pode ser insuficiente em Chromium CI. Abrir issue para aumentar para 3000ms em `e2e/flows/sidebar-tooltips.spec.ts:60`.
+- Passo 2 → Re-run após P1 estar resolvido: https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40615510053
+- Passo 3 → Se o tooltip ainda falhar: o timeout de 2s (`expect(tooltip).toBeVisible({ timeout: 2000 })`) pode ser insuficiente em Chromium CI. Abrir issue para aumentar para 3000ms em `e2e/flows/sidebar-tooltips.spec.ts:60`.
 
 **Impacto:** 90% dos testes E2E críticos ficam skipped enquanto o auth falhar.
 
@@ -107,7 +107,7 @@ Clique em "Re-run all jobs".
 
 **Workflow:** Branch Protection Sentinel  
 **Run ID da falha original:** 40615509825  
-**Link da falha:** https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40615509825  
+*(Link da falha:** https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40615509825  
 **Status:** ✅ RESOLVIDO — run 40680415509 = success (SHA `e4a326e`)
 
 **Causa original:** Commits `c73cb9b` e `8c81483` foram pushed diretamente à main (sem PR) para corrigir P5 e P4 urgentemente. O sentinel detectou esses commits diretos e falhou nas runs `40662579535` e `40667156223`.
@@ -128,7 +128,7 @@ Clique em "Re-run all jobs".
 
 **Causa raiz:** 5 testes unitários de Calendar falhavam por migração react-day-picker v8→v10 (commit `8b0b606`) sem atualização dos seletores DOM dos testes.
 
-**Fix:** Commit `c73cb9b` na main — 3 arquivos de teste corrigidos. Validado no run [40662579684](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40662579684): Gate 2 Unit Tests ✅ success.
+**Fix:** Commit `c73cb9b` na main → 3 arquivos de teste corrigidos. Validado no run [40662579684](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40662579684): Gate 2 Unit Tests ✅ success.
 
 **Ação necessária do PO:** Verificar se o workflow passou no run `40662579684` ou nos próximos runs da main.
 
@@ -150,7 +150,7 @@ Clique em "Re-run all jobs".
 
 2. [chromium-authed] › e2e/flows/04r-undo-toast-a11y-keyboard.spec.ts:150
    Error: expect(count).toBe(0) → recebeu 1
-   (click após 500ms ainda aciona onUndo — timing flake/regressão)
+   (click apös 500ms ainda aciona onUndo — timing flake/regressão)
 ```
 
 **Ação necessária do PO:**
@@ -169,7 +169,6 @@ Clique em "Re-run all jobs".
 **Erro exato (step 8 — Ledger parity):**
 ```
 [migration-ledger][bloqueado] local_only=1108; remote_only=648; mismatched=0; malformed=0
-```
 
 **Causa raiz (diagnosticada em 2026-10-28):** Divergência massiva e pré-existente entre o ledger local (`supabase/migrations/`) e o banco canônico (`doufsxqlfjyuvxuezpln`):
 - `local_only=1108`: 1108 arquivos `.sql` existem no repo mas **não estão aplicados** no DB de produção
@@ -226,7 +225,7 @@ Clique em "Re-run all jobs".
 ## P10 — E2E • Swatch QuickView (secrets E2E + dados de produto ausentes)
 
 **Workflow:** E2E • Swatch QuickView (Lista + Tabela)  
-**Run ID da última falha:** 40662579393  
+**Run ID da última falha:** 40662579933  
 **Link:** https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40662579393  
 **Status:** failure
 
@@ -239,7 +238,7 @@ webkit: expect(picker).not.toBeNull()
 ```
 
 **Causa raiz (dois problemas):**
-1. Firefox/chromium: autenticação E2E falhou — mesma causa P1 (secrets ausentes)
+1. Firefox/chromium: autenticação E2E falhou → mesma causa P1 (secrets ausentes)
 2. Webkit: picker V2 retorna null — produtos com `color_swatches V2` podem não existir em produção ou seletor mudou
 
 **Ação necessária do PO:**
