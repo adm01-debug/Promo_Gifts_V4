@@ -1,17 +1,17 @@
 # Graph Report - v4-db-sync-fix  (2026-10-28)
 
 ## Corpus Check
-- 8559 files · ~9,160,672 words
+- 8559 files · ~9,160,896 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 57 file(s) not represented in the graph (top: (none) 27, .css 10, .toml 6)
 
 ## Summary
-- 55579 nodes · 83738 edges · 6585 communities (2146 shown, 4439 thin omitted)
+- 55568 nodes · 83728 edges · 6580 communities (2137 shown, 4443 thin omitted)
 - Extraction: 96% EXTRACTED · 4% INFERRED · 0% AMBIGUOUS · INFERRED: 3425 edges (avg confidence: 0.94)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `773425f7`
+- Built from commit: `fb388b90`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -26,7 +26,7 @@
 - react-router-dom
 - ref_hooks
 - nav.ts
-- @testing-library/react
+- ref_contexts
 - ref_node_fs
 - ref_types
 - scripts
@@ -47,11 +47,11 @@
 - ref_services
 - ref_node_url
 - QuoteKanbanBoard.tsx
-- createStructuredLogger
+- cors.ts
 - products
-- SidebarReorganized.tsx
+- SidebarNavGroup.suspense.test.tsx
 - products
-- CartHeaderButton.tsx
+- MockupApprovalTemplate.tsx
 - products
 - authorizeCron
 - createEdge.ts
@@ -75,7 +75,7 @@
 - ref_node_os
 - C) "Sem consumidor" — dupla verificação e confiança
 - _factories.ts
-- MagazineListPage.tsx
+- MagazineEditorPage.tsx
 - dependencies
 - package.json
 - public.update_updated_at_column
@@ -87,7 +87,7 @@
 - GlobalSearchPalette.tsx
 - public.fn_refresh_media_health
 - ref_fs
-- MagazineEditorPage.tsx
+- pagination.ts
 - lib/kit-builder/index.ts
 - crm-db-bridge/index.ts
 - Catálogo, produtos e coleções
@@ -99,7 +99,7 @@
 - KitSummary.tsx
 - A) Tabela por FERRAMENTA
 - Ferramentas e Magazine
-- D.1 — Núcleo (adoção alta, é o que sustenta o padrão)
+- parseAiResponse.ts
 - "public"."classify_pendrive"
 - ringsOf
 - ProductColorSelector.tsx
@@ -147,22 +147,22 @@
 - StockDashboard.tsx
 - price-calculator.ts
 - GitHub Actions — Auditoria exaustiva dos 117 workflows e plano de correções em 100 etapas
-- ADR — contrato canônico do `webhook-inbound`
+- cart-mock.ts
 - MagicUpConfigPanel.tsx
 - editorRecovery.ts
 - Fase 10 — Transversal, QA e release (KM3-087 a 100)
 - recalibrate-watermark-thresholds.mjs
-- check-eslint-baseline.mjs
+- @/lib
 - fuzz-testing.mjs
 - DataSourceDebugTab.tsx
-- Tendências e rotas `AdminRoute`
+- useRuptureAlerts.test.tsx
 - Bloco F — Edge functions: deploy, drift e ledger (E63–E74)
-- @playwright/test
+- MagazinePageRenderer
 - useSellerCarts.helpers.ts
 - 20260512000000_bootstrap_missing_application_schemas.sql
 - tags
 - theme-presets.ts
-- A) Tabela por FUNCIONALIDADE
+- useSecretsManager.ts
 - C.1 — Teste-espelho (o teste reimplementa a lógica e testa a si mesmo)
 - e2e-resources.ts
 - pricing/simulator/index.ts
@@ -179,8 +179,8 @@
 - QuotesStatusChips.tsx
 - check-supabase-reference-catalog.mjs
 - VariantStockTable.tsx
-- QuoteItemsTable.tsx
-- external-db/index.ts
+- QuoteItemDetailSheet.tsx
+- products-lightweight.ts
 - public.product_variants
 - public.products
 - Manifesto de migrations forward-only — reconciliação local × ledger documentado
@@ -193,18 +193,18 @@
 - public.user_roles
 - Auditoria Exaustiva — Viewer Público da Revista
 - useExpertChat.ts
-- simulation-orchestrator/index.ts
+- outcomes.ts
 - 08 — Camada de Dados / Schema (estado DECLARADO no repositório)
 - 4.1. Segunda rodada de testes (2026-06-05) — verificações profundas
 - cleanup-client.ts
 - check-workflow-contracts.mjs
-- SupplierRiskPanel.tsx
+- check-ledger-statements-gate.mjs
 - Grupo C — Frontend (T21–T30)
 - 🏗️ Arquitetura do Sistema
 - crm-db.ts
 - safeInvokeCall.ts
-- Matriz preparatória de fluxos críticos
-- check-public-views-drift.mjs
+- useMockupDraft.test.ts
+- 2. Definição de cada view (`pg_get_viewdef`) `[RO]`
 - validate-lovable-sync-target.mjs
 - 🧹 Sessão de Housekeeping de PRs — 08/05/2026
 - AUDITORIA_PLANEJADO_NAO_EXECUTADO_2026-10-11.md
@@ -214,11 +214,11 @@
 - magic-up-result-panel-keyboard.test.tsx
 - BD Interno (app)
 - A. BI por cliente — fontes e estados mistos
-- WorkflowCanvas.tsx
+- 🟢 FASE 1 — Faxina de Código
 - postgrest.ts
 - Plano de Integração de Branches — 300 etapas (2026-10-19)
 - Inventário e Arquitetura de Mídia — Promo Brindes
-- useMcpKeys.ts
+- A) Tabela por FUNCIONALIDADE
 - invoke.ts
 - magicUpStrategy.ts
 - gravacao-database.ts
@@ -262,8 +262,8 @@
 - ConnectionsPulseBar.tsx
 - NotificationDrawer.tsx
 - Migration Sync Log
-- sanitizeError
-- Credentials Audit
+- Auditoria Técnica — Relatório de Triagem
+- Bugs Encontrados
 - useOrgData.test.ts
 - useQuoteBuilderState.helpers.ts
 - sentry.ts
@@ -277,7 +277,7 @@
 - Magazine — plano de correções e melhorias em 50 etapas
 - Referências
 - PROMO_GIFTS_V4_BLUE_PREMIUM_DESIGN_SYSTEM.md
-- D) Duplicação e refactor abandonado
+- 05 — Camada de Lógica: Hooks, Serviços, Contexts e Stores
 - preflight-migration-apply.mjs
 - Plano de Melhorias e Correções — 50 Etapas
 - zod
@@ -289,7 +289,7 @@
 - public.product_images
 - navigationMetrics.ts
 - 4 Melhorias de Pipeline n8n — SM × XBZ
-- 22-header-sticky.spec.ts
+- fixtures/selectors.ts
 - audit-freight-block.mjs
 - auth-debug.ts
 - pricing.service.ts
@@ -305,7 +305,7 @@
 - useCatalogFiltering
 - useStockVelocityPrefetch.ts
 - [ARQUIVADO] Plano de Melhorias e Correções do Catálogo com Jev (TypeSafe System One) — v2
-- A.4 Infra e qualidade
+- CartHeaderButton.tsx
 - 🟡 MÉDIOS (10)
 - ui/ConfirmDialog.tsx
 - useFavoritesStore.ts
@@ -316,7 +316,7 @@
 - public.product_images
 - materialService
 - product-search.ts
-- 06 — LIB / UTILS / TIPOS — Auditoria de estado (somente leitura)
+- WebhooksTab.tsx
 - 4. Documentos de feature, ADRs, arquitetura e handoffs
 - PersonalizationConfig.tsx
 - OrganizationContext.tsx
@@ -327,7 +327,7 @@
 - invokeTelemetrySink.ts
 - check-policies-baseline.mjs
 - simulate-daily-flows.mjs
-- secretValidators.ts
+- public.product_variants
 - StockAlertsIndicator.tsx
 - PropostaComercialTailwind.tsx
 - useTecnicasUnificadas.ts
@@ -335,15 +335,15 @@
 - image-utils.ts
 - 🏢 Como Criar sua Primeira Organization
 - 💻 Integração Frontend (React)
-- stock-chart-utils.ts
+- SocialProof.tsx
 - 11.3 Plano Consolidação de Auditorias 100 (2026-09-24) — `docs/plans/PLANO_CONSOLIDACAO_AUDITORIAS_100_ETAPAS_2026-09-24.md` (blocos A…I; E01–E100)
 - Achados prioritários
 - Kit Maker — revisão pós-implementação das 100 etapas
 - Auditoria do Magazine contra as cinco referências visuais
 - Plano de reconciliação Local ↔ GitHub ↔ Supabase canônico — 50 etapas
 - useCategoriesTree.ts
-- SellerCartContext.tsx
-- ONDA 12 — TIPOS, CASTS E DÍVIDA CONGELADA (E121–E130)
+- @tanstack/react-query
+- Auditoria — Módulo "Notificações de Estoque" (sino do header)
 - useScheduledReports.ts
 - gold.ts
 - stock-table-sticky.spec.ts
@@ -359,7 +359,7 @@
 - 20260716000037_restore_fk_indexes_after_036.sql
 - 20260716202321_restore_fk_indexes_after_036.sql
 - approved_plan_execution_test.sql
-- 2. Segurança
+- check-migration-filename-contract.mjs
 - 8.1 Inventário
 - mockupGenerationService.ts
 - Plano de pendências, correções e melhorias — 50 etapas
@@ -380,11 +380,11 @@
 - 20260512000003_t28_pk_and_fk_indexes.sql
 - "public"."product_images"
 - Baseline de dívida de tipos e lint — Etapa 32
-- check-migrations-sync-log-gate.mjs
+- useGlobalSearch
 - raw-row.adapter.ts
 - Auditoria Independente Pré-Produção — Promo_Gifts
 - 09 — CI, INFRAESTRUTURA E SCRIPTS
-- Backlog O1/O3 — Banco (migrations × produção)
+- Bloco 4 — Integrações, ADRs, planos gerais e issues (A02, A07, A09, A11)
 - 🛠️ RECOVERY PLAN — Restauração de 65 tabelas faltantes
 - chunk-recovery.ts
 - Bloco A — Destravar a validação real (etapas 01–10)
@@ -392,14 +392,14 @@
 - 03b-product-thumb-quickview.spec.ts
 - command.tsx
 - form.tsx
-- useErrorHandler.ts
+- login-flow.test.ts
 - ProductVideoGallery.tsx
 - useSuppliersManager.ts
 - FutureStockDialog.tsx
 - SecurityDashboard.tsx
 - useCommercialIntelligence.ts
 - 20260419130037_5f01e5dd-e3d5-4d26-8a08-328d432a05aa.sql
-- public.fn_claim_ai_description_batch
+- CartUtilComponents.tsx
 - magic-up-onda5.test.tsx
 - public.v_system_alerts
 - Guia de Contribuição
@@ -415,7 +415,7 @@
 - Manual de Migração — PARTE 2 (Fases 3 a 16)
 - EdgeInvokeLivePanel.tsx
 - export-schema-snapshot.mjs
-- SocialProof.tsx
+- Kit Maker — plano de correções e melhorias em 50 etapas
 - auth/index.ts
 - notifications-metrics.ts
 - supplier_products_raw
@@ -426,9 +426,9 @@
 - Seção 1 — Inventário Completo
 - 9.2 Storage
 - useProductsColorsBatch.ts
-- SizeFilter.tsx
+- useProductsByCategory.ts
 - useDebouncedCartItemActions.ts
-- useMockupDraft.test.ts
+- invokeEdgeSafe
 - Simulação adversarial de cenários, falhas e gaps
 - useKitBuilderPageState.ts
 - rls-isolation.test.ts
@@ -456,13 +456,13 @@
 - Validação de backup, restore e rollback — 2026-08-26
 - 📋 Auditoria PromoGifts — Plano de Faxina e Migração
 - SEGREDOS.md — Inventário de Segredos e Variáveis dos Workflows
-- webhook-inbound/index.ts
+- webhook-contracts.test.ts
 - useTecnicasList.ts
 - PLANO DE MELHORIAS E CORREÇÕES — 200 ETAPAS
 - ONDA 5 — LEDGER DE MIGRATIONS (E051–E060)
 - AutoTestJobStatusCard.tsx
 - QuoteItemsList.tsx
-- check-ledger-manifest-drift.mjs
+- BrandColorPicker.tsx
 - secretNormalizers.ts
 - SkeletonLoaders.tsx
 - novelty-core.ts
@@ -472,12 +472,12 @@
 - receive-crm-callback.fuzz.test.ts
 - ramoAtividadeService
 - types/simulation.ts
-- market-intelligence-insights/index.ts
+- E2E (Playwright)
 - 20260108014732_22444765-aa2c-47b2-afb4-f942541d622d.sql
 - public.product_notebook_specs
 - public.fn_run_smoke_tests
 - public.fn_super_filtro
-- public.fn_super_filtro
+- Relatório de Arquitetura Back-End — Análise Sênior Exaustiva
 - public.fn_super_filtro
 - public.fn_run_smoke_tests
 - public.fn_run_smoke_tests
@@ -499,14 +499,14 @@
 - Integração Front-end ↔ Arquitetura Medallion (Bronze / Prata / Ouro)
 - Manual de Migração: Lovable Cloud → Supabase Oficial (SSOT)
 - Relatório Final Consolidado — Colapso 2026-05-24 | FASES 1+2+3
-- Relatório de Validação — Fix "Desfazer Exclusão" (toast duplicado)
+- Fluxo 9 — Orçamento (quote)
 - sw.js
 - audit-credentials.mjs
 - audit-db-frontend-coverage.mjs
 - check-critical-coverage.mjs
 - StockHealthBreakdownDrawer.tsx
 - ProposalProductTable.tsx
-- UpsellPlusPlus.tsx
+- T14 — E2E Smoke Gate Fix (Hidratação SPA)
 - 20260622111500_supplier_reliability_pipeline_v1.sql
 - public.fn_run_smoke_tests
 - public.fn_run_smoke_tests
@@ -521,7 +521,7 @@
 - Realtime
 - 3. Migration 2: Drop de índices não utilizados
 - Seção 12 — Lacunas e Gaps
-- A11Y Clickable — SSOT de divs clicáveis
+- magazine-flakiness-report.mjs
 - drift-baseline.test.mjs
 - Ambientes e Paridade Mínima (local / CI / staging)
 - A) Tabela por DOMÍNIO
@@ -529,7 +529,7 @@
 - Fase 1 — As 20 Dimensões
 - undoToast.tsx
 - catalog-search-audit.spec.ts
-- 🔍 Relatório de Análise de Performance - MainLayout
+- 1.5 — Pendências decisórias da fase
 - EnhancedErrorBoundary
 - IncidentDetailsDrawer.tsx
 - VoiceSearchOverlay.tsx
@@ -547,13 +547,13 @@
 - Auditoria & Estabilização de Performance do Backend — 2026-06-15
 - ADR — contrato de saúde EMA e pipeline de ruptura
 - useColorSystem.ts
-- 🔍 Auditoria Exaustiva — APIs Externas
+- quote-sync-promo-champions/index.ts
 - 🔎 Detalhamento das 10 regras mais volumosas
-- KitLibraryPage.tsx
+- breadcrumb.tsx
 - CartHeaderActions.render.test.tsx
 - 🔐 Ativação SSO em Produção — Guia Pré-Deploy
 - 🇧🇷 REMOÇÃO DE i18n E CONFIGURAÇÃO PT-BR - GIFTS-STORE
-- Fluxo 6 — Comparação
+- checkLoginGate.ts
 - 13 — Runtime do Banco Canônico (medição ao vivo)
 - Agente 3 — Integridade de Dados e Armazenamento (incidente 2026-10-13)
 - Kit Maker — Plano de implementação em 200 etapas e 2.000 subetapas
@@ -564,8 +564,8 @@
 - check-bundle-size.mjs
 - validate-ssot-report.mjs
 - MicroInteractions.tsx
-- RupturePanelEma.tsx
-- QuantityPriceCalculator.tsx
+- Top-10 Queries Auditadas
+- rls-integration-tests/index.ts
 - useSupplierReliabilityServer.ts
 - futureStock.battery.test.ts
 - cartAnalytics.ts
@@ -576,10 +576,10 @@
 - 3. Problemas priorizados
 - 5. Achados NÃO auto-corrigidos (remediação documentada)
 - session-recovery.ts
-- Inventário de proveniência — mocks, fallbacks e consumidores downstream
+- Grupo C — Frontend (T21–T30)
 - Plano de melhorias e correções — checklist de 100 etapas
 - Auditoria Exaustiva Supabase — 20 Etapas
-- magazineMetrics.ts
+- QuotesConfigurableList.tsx
 - node
 - Design Tokens — Orange Premium SSOT
 - E11_LEDGER_STATEMENTS_ALLOWLIST.json
@@ -593,10 +593,10 @@
 - T-FIX-5 — Checklist de Ativação
 - T-FIX-5 — Lint Guard-rail contra `forEach()` em Testes
 - Auditoria Técnica — 2026-06-18 (Fase 1 read-only)
-- safeToast.ts
-- Relatório de Incidente — `EnhancedErrorBoundary` em `/inteligencia-comercial`
+- sanitizeError
+- Bloco A — Kit Maker: fechar o que ficou pela metade (E01–E14)
 - append-edge-deploy-receipt.test.mjs
-- check-edge-zod-ratchet.mjs
+- quote-view-typography.ts
 - e2e-feature-summary.mjs
 - ConnectionsIncidentStrip.tsx
 - DiscountApprovalQueue.tsx
@@ -619,12 +619,12 @@
 - Contract validation package
 - material_types
 - 🔍 Diagnóstico de Comunicação com Banco de Dados
-- LocationCard.tsx
+- post-login-redirect.ts
 - 10 — TESTES (auditoria de estado)
-- Bloco 2 — Kit Maker (A03, A04)
+- immutableCache.ts
 - Onda 5 — GlitchTip init (Sentry SDK compatível)
 - Bloco B — Kit Maker: validação real com sessão autenticada (E15–E30)
-- Fase 3 — Produção fora do caminho de PR; credenciais e escrita automática (E25–E40)
+- Bloco F — Edge functions: deploy, drift e ledger (E63–E74)
 - Fase 4 — Gates honestos: nada verde sem testar, nada que não possa falhar (E41–E58)
 - Bugs — Detalhe Completo
 - Só Marcas — 5 Fontes de Dados
@@ -653,7 +653,7 @@
 - Seção 6 — Crons (pg_cron) — Inventário Completo 142/142
 - Painel de readiness de features e inventário de flags — 2026-08-26
 - 1. Commits dangling — classificação completa (125 commits)
-- useClientBI
+- Fase 7 — Banco e Supabase ops (E63–E74)
 - Auditoria Exaustiva: Banco de Dados ↔ Front-end — Promo Gifts v4
 - ColorGroupFilter.tsx
 - error-reporter.ts
@@ -665,7 +665,7 @@
 - Hooks Audit -- promo-gifts-v4 (2026-05)
 - Fase 6 — Cron / pipelines
 - Observabilidade — Promo Gifts
-- Otimizações de Performance — Guia Técnico
+- Bundle Size Gate e Report
 - Plano A/B — Desligamento do `external-db-bridge`
 - Execução controlada do plano de reconciliação — 22/09/2026
 - 📚 docs/redeploy/
@@ -685,10 +685,10 @@
 - PENDENCIAS.md — Itens bloqueados por secret/permissão/infraestrutura
 - 20260615201825_align_xbz_staging_schema_part2_functions.sql
 - Magazine Publish — Fuzz Simulation Report
-- ConfigurationPanelV6
+- print-area-grouping.ts
 - check-package-duplicate-scripts.mjs
 - collect-coverage-ci.mjs
-- gen-edges-readme.mjs
+- public.discount_approval_requests
 - publish-ssot-schema.mjs
 - triage-edge-typecheck.mjs
 - validate-cnpj-error-mapper.mjs
@@ -696,12 +696,12 @@
 - McpAuditFeed.tsx
 - `formatEngravingTitle`
 - useClientSeasonality.ts
-- useReplenishments.ts
+- 4. Documentos de feature, ADRs, arquitetura e handoffs
 - useAutoSaveQuote.ts
 - degradationRegistry.ts
 - price-response.adapter.ts
 - useComparisonStore.ts
-- Edge Functions — Catálogo
+- Bloco E — Revista: gaps das duas auditorias (E51–E62)
 - _authz.ts
 - 20260102205635_add_soft_delete_support.sql
 - public.vw_product_notebook_complete
@@ -715,9 +715,9 @@
 - Inventário read-only de Edge Functions — etapa 88
 - useStepUpAuth.ts
 - OnboardingContext.tsx
-- KitIsometricPreview.tsx
-- 🟠 P1 — Alto risco
-- useProductsManager.ts
+- Fase 2 — Cortar volume, fila e duplicação (E13–E24)
+- check-event-triggers-drift.mjs
+- run-e2e-quotes-undo.mjs
 - date-utils.ts
 - 🔴 DROP — Remover (liberar espaço + acelerar INSERTs)
 - MfaChallengeDialog
@@ -774,7 +774,7 @@
 - RELATÓRIO DE AUDITORIA SUPABASE
 - 10.2 Observabilidade Existente (via código e workflows)
 - rls_matrix_test.sql
-- 4. Fase A — Auditoria (somente leitura)
+- useErrorHandler.ts
 - Test Battery (8 phases, 300+ scenarios)
 - Índice de Documentação — Promo Gifts V4
 - Auditoria crítica (re-teste ao vivo): `process_spot_products` → `fn_process_raw_v2`
@@ -782,7 +782,7 @@
 - Auditoria QA Exaustiva — 2026-06-02 / 2026-06-03
 - Faxina do Banco de Dados — 2026-06-20
 - Inventário de Mídia SPOT × Cloudflare — 2026-06-08
-- useProductsColorsBatch.aggregation.test.tsx
+- circuit-breaker.ts
 - 🔍 Auditoria Exaustiva Round 3 — Integrações Sistema
 - README.md
 - Anexo — inventário completo (281 arquivos produtivos)
@@ -793,19 +793,19 @@
 - Relatório QA — 2026-05-22
 - Redeploy 2026-05 — Fase 1.1 — Log de Execução
 - Redeploy Fase 4 — Gate CI de Schema Drift (Lovable ↔ Oficial)
-- describe
+- 11. Plano detalhado da Onda 2
 - Redeploy T3 — Auditoria de Migrations
 - 🔐 Runbook P0: Rotação de Credenciais — Incidente `.env` Exposto
 - Matriz de cenários de RLS
 - Storage — Política Oficial de Buckets Públicos
 - SPOT / Stricker — 3 Canais de Dados
 - matrix-automated.spec.ts
-- quote-list-responsive.spec.ts
+- Faxina do Banco de Dados — 2026-06-20 · Tier 3b (funções + views, lote 1)
 - Parte 1 — CustomizationOptions (HotSpots do editor visual)
 - SPOT / Stricker — Integração Completa v5.3
 - check-docs-supabase-hosts.mjs
 - map-drafts-to-migrations.mjs
-- cart-header-fuzz-report.mjs
+- ONDA 11 — GATES DE FRONTEND QUE NÃO RODAM (E111–E120)
 - ssot-report-markdown.mjs
 - ProductSupplierSection.tsx
 - QuoteBuilderSummaryCollapseAll.fuzz.test.ts
@@ -829,7 +829,7 @@
 - A.2 Drift — Repo × Produção
 - P02_fk_indexes.sql
 - P19 — Remediação Top-10 Crons com Falha
-- orders
+- ONDA 1 — GATES QUE MENTEM (E011–E020)
 - imageProxy.ts
 - Fixes Executed
 - 🟡 FASE 2 — Faxina de Banco de Dados
@@ -842,12 +842,12 @@
 - `product_images` — Laudo técnico e hardening (Gold / `doufsxqlfjyuvxuezpln`)
 - Refactor arquitetural v2 — `supplier_products_raw` (2026-06-05)
 - Detalhe por schema
-- Fluxo 4 — Detalhe do produto (PDP)
+- ONDA 7 — BACKUP, RECUPERAÇÃO E DETECÇÃO (E071–E080)
 - calculators.ts
 - Onda 9 — Drop public_token_tables + cleanup de funções órfãs (B-8 encerrada)
 - Onboarding — Promo Gifts (Setup < 4h)
 - Bloco G — CI: gates e higiene (E75–E86)
-- Fase 1 — Estancar o check obrigatório e a divergência de produção (E01–E12)
+- UPDATE 2 — 2026-05-22 (~20:51 UTC): test.fixme + recuperação de corrupção base64-duplo
 - Redeploy Fase 3 — Sign-off Final (T30)
 - Redeploy T2.5 — Hotfix de CI + Documentação Vercel
 - Relatório Pós-Fase 2 — Colapso 2026-05-24
@@ -871,11 +871,11 @@
 - simulate-degradation-telemetry.mjs
 - SecretImpactTooltip.tsx
 - StepUpAttemptsPanel.tsx
-- StockHistoryChart.tsx
+- 🟡 P0 — Requer aprovação do PO (não aplicado)
 - useIntersectionObserver.test.ts
 - gravacao-constants.ts
 - useSparklineSales.tsx
-- useProductImages.ts
+- Fluxo 4 — Detalhe do produto (PDP)
 - intelligenceAnalytics.ts
 - dossierPdfGenerator.ts
 - db-retry.ts
@@ -883,8 +883,8 @@
 - product-bounds-detector.ts
 - discount-validation-messages.ts
 - webhook-events-catalog.ts
-- CartsListPage.tsx
-- quote-builder-freight-block-fuzz.test.tsx
+- 🚀 Setup Local
+- CreateListDialog.tsx
 - useQuotesListPage.expiring.test.ts
 - colorSorting.ts
 - performanceTracker
@@ -914,8 +914,8 @@
 - 🔒 Branch Protection — `main`
 - DB ↔ Frontend Coverage Report
 - RPCs transacionais de orçamento — implementação proposta e simulação isolada
-- Deployment Guide — Promo_Gifts
-- useExternalSimulator.ts
+- QuoteItemsTable.tsx
+- OrganizationContext.tsx
 - 🔧 18. UTILITÁRIOS
 - 📦 3. GESTÃO DE PRODUTOS
 - Mudanças desta onda
@@ -947,7 +947,7 @@
 - kit-coverage.ts
 - exportDiscountAuditPdf.ts
 - calculations.ts
-- AdminDesignTokensPage.tsx
+- product-search.ts
 - gravacao.ts
 - imports
 - 20241231000000_saved_filters.sql
@@ -975,11 +975,11 @@
 - receive-crm-callback.duplicates-and-dispatcher.test.ts
 - 3. Banco de Dados
 - Grupo A — Schema do DB ao Vivo (T01–T10)
-- Grupo B — Edge Functions (T11–T20)
+- simulation-orchestrator/handler_characterization_test.ts
 - Grupo D — Segurança (T31–T40)
 - Bugs Found Auditing My Own P0–P8 Work
-- Faxina do Banco de Dados — 2026-06-20 · Tier 3b (funções + views, lote 1)
-- Faxina do Banco de Dados — 2026-06-20 · Tier 3b (funções + views, lote 1)
+- public.fn_smoke_tests_categorization
+- Banco canônico — inventário por `pg_catalog`
 - ADR — contrato por ação do `bitrix-sync`
 - ADR — baseline de bundle e chunk compartilhado de produtos
 - E36 — Custo agregado de `fn_cron_safe_run`: quais jobs puxam a média para cima (2026-09-16)
@@ -993,13 +993,13 @@
 - Plano de Recuperação de Desastre (DR) — Promo Gifts V4
 - Crons Inativos — Log de Decisão
 - A.7 — Observabilidade / Plataforma
-- AuditHistory.tsx
+- ONDA 12 — TIPOS, CASTS E DÍVIDA CONGELADA (E121–E130)
 - 📊 Guia de Integração - Botão Export Excel
 - 🔐 1. AUTENTICAÇÃO E SEGURANÇA
 - 🤖 2. INTELIGÊNCIA ARTIFICIAL
-- Bugs Corrigidos — Round 1 (PR #476)
-- Bundle Size Gate e Report
-- Sequência
+- Plano de reconciliação Local ↔ GitHub ↔ Supabase canônico — 50 etapas
+- Fase 9 — Consolidação e custo (E85–E93)
+- check-route-error-element.mjs
 - 01 — Escopo, evidências e contratos de aceite
 - 02 — Sistema visual compartilhado e composição das páginas
 - 03 — Rotas, percursos e estado do editor
@@ -1029,11 +1029,11 @@
 - Grupo H — assistente de IA com sugestões reais
 - Grupo I — revisão, preço final e orçamento
 - Grupo J — testes de aceitação, integração e produção
-- ONDA 0 — DESBLOQUEIO (E001–E010) · **BLOQUEANTE**
-- ONDA 10 — A SUÍTE DE TESTES ESTÁ VERMELHA (E101–E110)
+- eslint-baseline-scope-add.mjs
+- check-collapse-baselines.mjs
 - ONDA 3 — BASELINE E DRIFT DE SCHEMA (E031–E040)
 - ONDA 4 — RLS E POLICIES (E041–E050)
-- ONDA 6 — QUALIDADE DAS MIGRATIONS (E061–E070)
+- CategorySidebarPanel.tsx
 - Fase B — Paridade Local × GitHub
 - Fase C — Integridade da fonte de migrations
 - Fase 1 — Estancar o que está quebrado hoje (E01–E10)
@@ -1044,7 +1044,7 @@
 - T14 — UPDATE 13 (CAUSA RAIZ REAL: BASE64 EM SPECS COMMITADOS)
 - 🔥 Achados Críticos
 - REST Native Migration
-- credentials.test.ts
+- MagicUpBrandKitPanel.tsx
 - Runbook — Hardening do `generate_quote_number`
 - 🔬 Validação Direta nas Fontes — 10 Achados Cruzados com o Banco
 - Suíte E2E por rota
@@ -1062,8 +1062,8 @@
 - check-codeowners-coverage.mjs
 - check-iframe-sandbox.mjs
 - check-smoke-tags.mjs
-- ci-metrics.mjs
-- freight-quest-load-test.mjs
+- useProductMatch.simulation.test.ts
+- ref_node_process
 - massive-load-test.mjs
 - fuzz-cart-delete-popover.mjs
 - simulate-ai-key-scenarios.mjs
@@ -1075,7 +1075,7 @@
 - useRecentIncidents.ts
 - CategoryCascadeSelector.tsx
 - GlassElements.tsx
-- QuoteBuilderStepper.tsx
+- AuthContext.tsx
 - chart.tsx
 - DataCard.tsx
 - useProductsByColor.test.ts
@@ -1138,19 +1138,19 @@
 - E47 — Detector de assinatura de schema: correções ao premissa do plano
 - Pacote de Aprovação #2 — Segurança + Desempenho + Cron (2026-09-17)
 - Resultado por prioridade
-- §3. Segurança / RLS
+- common/__tests__/useSearchHistory.test.ts
 - Checklist de Compatibilidade
 - Política de DDL — quando MCP/dashboard é aceitável (E12/E75)
-- DECISION-LOG v2 — Onda "CI Green" (we-dream-big / PromoGifts)
+- useDevGate
 - Colapso do LocationPanel — máscara & limiar de pixel diff
-- C) As sete armadilhas
+- quote-builder-freight-block-consumers.contract.test.ts
 - 🗄️ 32. TABELAS DO BANCO DE DADOS (COMPLETO)
 - Kit Maker — plano corretivo de implementação em 100 etapas
-- Grupo F — catálogo de caixas e recomendação
-- Fase 5 — Escolha da caixa, Fluxo 2 (KM3-041 a 048)
+- PARTE 4 — GAPS E DÍVIDA TÉCNICA (BAIXA SEVERIDADE)
+- useExternalCollections.ts
 - FASE 1 — Integridade do ledger de migrations (E06–E15)
 - FASE 2 — Postura de segurança (E16–E24)
-- FASE 3 — Capacidade, armazenamento e partições (E25–E33)
+- FASE 1 — Higiene do GitHub: issues e branches (E9–E16)
 - ONDA 14 — BUILD, BUNDLE E CÓDIGO MORTO (E141–E150)
 - 7. Errata e gaps descobertos na validação pós-publicação (2026-09-27)
 - Passo a passo (no projeto Promo Champions)
@@ -1173,8 +1173,8 @@
 - browser/main.tsx
 - bundle-size-report.mjs
 - check-anon-insert-rate-guard.mjs
-- check-chunk-cycles.test.mjs
-- check-toast-leaks.mjs
+- check-doc-refs.mjs
+- check-production-harnesses.mjs
 - dry-run-migration-draft.mjs
 - test-magazine-hardening-v2.sh
 - validate-quote-summary-undo.mjs
@@ -1183,7 +1183,7 @@
 - SavedFilters.tsx
 - BulkAddToCollectionModal.test.tsx
 - StockDashboard.test.tsx
-- simulator/TechniqueCard.tsx
+- plan-status.mjs
 - LoadingState.tsx
 - useZeroResultDiagnosis.ts
 - useSellerCarts.versionGuard.test.tsx
@@ -1255,19 +1255,19 @@
 - E19 — As 2 tabelas com RLS sem policy (2026-09-16)
 - E25 — Automação de partições de `supplier_products_raw_history` (2026-09-16)
 - E30 — Plano de capacidade e alerta de crescimento
-- Auditoria de Documentação — SSOT Supabase
+- tsc-baseline-generate.mjs
 - 🟣 FASE 4 — Integração com CRM Externo
 - 7.1 Links — `link-primary`, `link-secondary`, `link-disabled`
 - E12 — Detector de DDL fora do fluxo (out-of-band) (2026-09-16)
 - 🎨 17. UI/UX
 - 🔗 20. INTEGRAÇÕES
 - ⚠️ Armadilhas e lições aprendidas
-- Onda 1 — Hardening de Auth em Edge Functions
+- useScheduledReports.ts
 - __tests__/useDebounce.test.ts
 - Canário sintético — `log-login-attempt`
 - Magazine — pacote RPC forward-only aplicado e validado
 - FASE 4 — PR #2228 `claude/hopeful-heisenberg-dt4bl3` (E161–E195)
-- findBaseline
+- MagazineEditorPage.hooksOrder.test.tsx
 - check-supabase-migration-ledger.mjs
 - FASE 1 — Integridade dos gates
 - migration.sql
@@ -1292,26 +1292,26 @@
 - check-generated-files-protected.mjs
 - check-no-quote-comments.mjs
 - route-test-matrix.mjs
-- stress-burst.mjs
+- useFavoritesStore.ts
 - UrgencyBadge.tsx
-- MarketIntelligenceInsightsCard.tsx
-- MagicUpCampaignPanel.tsx
+- 20260611130808_seo_recreate_views_v3.sql
+- AdImageResult.tsx
 - pdfHardcodedColors.test.ts
 - VoiceOverlaySections.tsx
 - FocusTrap.tsx
 - pagination.tsx
-- StatusBadge.tsx
-- useSmokeTests.ts
-- useClientVsIndustry.ts
+- DevRoute.test.tsx
+- Plano de melhorias e correções em exatamente 100 etapas
+- Credentials Audit
 - useListUrlState.fuzz.test.tsx
-- useCustomizationCollapsePrefs.ts
+- color_variations
 - useMaterialTypes.ts
 - useTechniquePricingOptions.ts
 - stockFetcher.test.ts
 - usePrecoCalculation.ts
 - webSpeechFallback.ts
 - auth-utils.ts
-- bi/mockData.ts
+- 3. ACHADOS ABERTOS (revisão 2026-09-16)
 - logger.ts
 - quotesLayout.ts
 - usePlatformFailureAlert.ts
@@ -1320,10 +1320,10 @@
 - useQuotesListPage.duplicateUndo.test.tsx
 - TrendsKpiCards.tsx
 - magazinePublish.fuzz.test.ts
-- useRecentlyViewedStore.ts
+- check-edge-cors-headers.mjs
 - customization.ts
 - color-matching.ts
-- productPdfExport.ts
+- classify-unledgered-migrations.mjs
 - image-utils.fuzz.test.ts
 - rls-matrix-export/index.ts
 - public.user_organizations
@@ -1397,7 +1397,7 @@
 - E18 — Revisão das 94 funções SECURITY DEFINER executáveis por `authenticated`
 - E23 — FORCE RLS e revogação em tabelas de segredo (2026-09-16)
 - Pós-mortem — 29+ commits de governança presos só no disco local (2026-09-17)
-- PARTE 2 — VULNERABILIDADES DE ALTA SEVERIDADE
+- test-failures-report.mjs
 - "public"."product_kit_components"
 - Auditoria de Tabelas Vazias — 2026-05-12
 - ColdVsWarmCrmCard.tsx
@@ -1409,7 +1409,7 @@
 - ONDA-16 — Modelo de Roles: `agente` == `vendedor` (fonte da verdade)
 - Onda 4 — esbuild preservar console.warn/error em produção
 - Patch manual: `external-db-bridge/index.ts` — kill-switch integration
-- FASE 3 — Qualidade de código e CI (E23–E30)
+- EdgeInvokeLivePanel.tsx
 - FASE 2 — Testes e cobertura
 - Postmortem — Merge cross-agente sem PR (2026-08-31)
 - Postmortem — DDL via MCP sem migration (2026-10-13)
@@ -1418,7 +1418,7 @@
 - 6. Fase 1 — Inventário e diff de schemas {#6-fase-1--inventário-e-diff-de-schemas}
 - Redeploy 2026-05 Fase 1 — Sincronização repo↔DB de migrations órfãs
 - 4. Histórico cronológico — do início ao fim da Onda 1
-- 5. Decisões técnicas tomadas (com justificativa)
+- catalog-stock-status.ts
 - 9. Estado da infraestrutura
 - 3. Campos — Variante (`optionals` / `optionalscomplete`)
 - Calendar Shrink ~50% — Quality Gate Report
@@ -1428,25 +1428,25 @@
 - public.vw_image_type_dropblockers
 - Open Graph Image — Self-hosted
 - Regressão — Preço read-only em Itens de Orçamento
-- QA Report — Quotes Hardening (2026-06-25)
+- useProductsColorsBatch.ts
 - FiltersPage.test.tsx
 - pptxGenerator.ts
 - RELATÓRIO CI — Promo Gifts V4
 - check-gates-table.mjs
-- generate-theme-report.mjs
+- 1. Evidência medida (fotografia de 2026-09-16)
 - ResolveProductsSelectComparisonCard.tsx
-- ClientCategoryRadar.tsx
+- FASE 3 — PRs abertas (exceto #2228) (E111–E160)
 - ClientVsIndustryComparison.tsx
 - EntityBadge.tsx
 - pdfContrastReport.test.ts
 - PdfGenerationModule.test.ts
-- RecentReplenishmentsWidget.tsx
+- FASE 0 — Desbloqueio imediato
 - ColorSwatch.ssot.test.tsx
 - data/mockData.ts
 - useDeviceDetection.ts
-- useClientHealthScore.ts
-- useConnectionsOverviewFilters.ts
-- useContextualSuggestions.ts
+- qa/migrations-draft — Guia de uso
+- StockEmptyFiltersHint.tsx
+- DevChallengeContext.tsx
 - feedbackSounds.ts
 - playTtsAudio
 - request-dev-access.ts
@@ -1597,7 +1597,7 @@
 - Runbook — Loop de erro em trigger (ou função chamada por trigger)
 - Runbook — Pico de tráfego indevido (bot/scraper/DDoS leve)
 - Seller-scope checker
-- 13. Comandos úteis para retomar
+- quoteVariant.contract.test.ts
 - intelligenceHelpers.ts
 - crm_callback_events_retention.sql
 - Validação — Undo remove item no Resumo do Novo Orçamento
@@ -1610,32 +1610,31 @@
 - public.v_db_health_audit
 - Validação Exaustiva — Bloco Frete: label "Valor R$" alinhado + sem cifrão duplicado
 - 2026-07-12_magazine_reader_state.sql
-- build-cors-snapshot.mjs
+- intelligenceAnalytics.failure-event.test.ts
 - check-edge-request-id-propagation.mjs
 - check-no-bypass-literals.mjs
-- check-no-template-thumbnail.mjs
+- format-engraving-title.ts
 - list-migration-drafts.mjs
 - simulate-bi-partial-degradation.mjs
 - simulate-degradation-sink.mjs
-- ssot-report-annotations.mjs
+- Roadmap de Correção
 - ssot-report-summary.mjs
-- typecheck-edge-functions.mjs
 - verify-roboflow-setup.js
-- ConnectionErrorDetailsDialog.tsx
+- 9. Magazine
 - OwnershipRepairDialog
 - CartHeaderButton.delete.test.tsx
 - BridgeMetricsSummary.tsx
-- MarketIntelligenceChart.tsx
+- 🏗️ Decisões Arquiteturais
 - ZeroResultSubstitutes.tsx
 - swatchSizing.ts
 - ColorSwatch.tsx
 - card.tsx
 - stat-card.tsx
-- useIndustryTrends.ts
+- SEÇÃO 4 — EDGE FUNCTIONS SUPABASE
 - useBridgeMetrics.ts
-- useSalesHistory.ts
-- useVoiceCommandHistory.ts
-- useProductCustomizationOptions.ts
+- Dependabot / npm audit — Dismissal Baseline
+- 🔧 **AÇÕES NECESSÁRIAS**
+- FASE 2 — Limpeza das branches mortas (E076–E110)
 - useSupplierFiscalData.ts
 - hooks-audit-regression.unit.test.ts
 - rate-limit.ts
@@ -1748,9 +1747,9 @@
 - `SEC-012` 🟡 MÉDIO — Cobertura de Zod desigual
 - Edge Functions com verify_jwt=false
 - EXPLAIN — Top queries por tempo total (pg_stat_statements)
-- CI — ESTRUTURA DE GATES E PADRÃO E12
+- Fase A — Controle de mudança e preservação multiagente
 - ECC for Codex CLI
-- 🔒 Checklist de SSOT (revisão de PR — obrigatório)
+- Fase G — Código, Edge Functions e banco vivo
 - oauth-error-messages.ts
 - 🎯 FASE 2: Páginas Principais (3-5 dias)
 - 🎯 FASE 3: Features Avançadas (5-7 dias)
@@ -1768,10 +1767,10 @@
 - E059 — Triagem das Migrations Local-Only
 - P200 — Placar Final de Execução
 - ⚪ FASE 6 — Documentação Final e Handoff
-- 📋 Anexos
+- 10. Pendências críticas antes da Onda 2
 - 🟡 Médio
 - 3.9 Mobile, PWA e offline
-- Technical Audit & Hardening Report
+- Onda 15 — Auth hooks/integrations hardening
 - Kit Maker — Cobertura de áreas de gravação (etapa 11)
 - Métricas de CI — 2026-10-26
 - Retrospectiva — Plano CI/CD v2 (100 etapas)
@@ -1794,10 +1793,10 @@
 - 🏭 Fábrica de Correções (VPS Hostinger)
 - ⚠️ LEIA PRIMEIRO — Regras de ouro
 - Tabelas (~120 total)
-- purgeOrphanCartPrefs.test.ts
+- useUnsavedChangesGuard.test.ts
 - Rate-Limiter Monitoring — Consumidores
-- Fase D — Restaurar observabilidade real do Supabase
-- Fase E — Reconciliação bidirecional do ledger
+- connection-error-copy.ts
+- quoteHandoffTelemetry.ts
 - Fase F — Auditoria completa do schema por `pg_catalog`
 - D.9 — Tarefa 5: Restore com `ON CONFLICT` {#d9-restore}
 - D.12 — Templates prontos {#d12-templates}
@@ -1806,7 +1805,7 @@
 - Runbook — Vazamento de chave/secret (ex.: credencial em `COMMENT ON`, código ou log)
 - Security Best Practices
 - Mitigação temporária — `image-size` via `pptxgenjs`
-- 14. Handoff específico para próximo Claude
+- magazineEdgeContract.test.ts
 - 15. Exemplo Real — Têxtil GOIABA WOMEN 30511
 - 16. Exemplo Real — Agenda SPECT A5 66190
 - Staging para gates destrutivos
@@ -1815,36 +1814,36 @@
 - .eslint-baseline-scope.json
 - Branch Protection — Quote Summary (sticky header + action buttons)
 - public.vw_stock_quantity_outliers
-- Rastreamento draft → migration → DB
+- public.fn_dequeue_ai_enrichment
 - input-otp.tsx
 - public.fn_ingest_asia_hg_batch
 - check-client-structured-logging.mjs
-- HighLimitTelemetryCard.tsx
+- 🔵 FASE 0 — Auditoria Inicial
 - ProductsListingLatencyAlert.tsx
 - ClientComparator.tsx
-- ClientOverview360.tsx
-- IndustryTrendingProducts.tsx
+- "prod_audit"."generate_category_suggestions"
+- 9. Debug toggle: `window.__DEBUG_QUOTE_TABLE`
 - ErrorBoundary
-- common/LoadingOverlay.tsx
-- ProductCustomizationOptions.tsx
+- useCatalogRealStats.ts
+- CnpjFormHarness.tsx
 - MockIO
 - FloatingParticles.tsx
 - SimulatorErrorBoundary
 - BICategoryFocusContext.tsx
-- useClientCategoryAffinity.ts
-- useIndustryCategoryTrends.ts
-- mockup-audit.test.ts
+- ColorSwatchesHarness.tsx
+- 🔍 Auditoria Exaustiva Round 2 — APIs Externas
+- access-denied-strings.tsx
 - dailyCatalogDefaults.ts
 - useSellerCarts.addItem-toast.test.tsx
-- useQuoteConcurrencyGuard.test.ts
+- TabSkipHarness.tsx
 - bug-g7-regression.unit.test.ts
 - useScroll.ts
 - dev-route-telemetry.ts
-- log-access-denied.ts
+- UndoToastHarness.tsx
 - executive-summary.ts
 - external-db-prewarm.ts
 - degradation.ts
-- future-stock-stats.ts
+- CalendarHarness.tsx
 - magazine-status-config.ts
 - mockup-storage.ts
 - password-reset-status-config.ts
@@ -1853,7 +1852,7 @@
 - sw-register.ts
 - variant-matching.ts
 - engraving-schema-diff.ts
-- useMagazineProductFavorites.ts
+- ProductsStep.tsx
 - mapRestoreCartError.ts
 - CartNotesLeakGuards.test.tsx
 - cnpj-errors.ts
@@ -1965,7 +1964,7 @@
 - tests/lib/theme-presets.test.ts
 - RLS Test Suite
 - rls-seller-policies.spec.ts
-- security-headers.test.ts
+- QuoteItemEditorSheetHarness.tsx
 - contract_smoke_schema.sql
 - signup-migration-fixture.sql
 - supplierReliability.fuzz.test.ts
@@ -2006,7 +2005,7 @@
 - Baseline de Imutabilidade da Produção
 - A.12 — LACUNAS OPERACIONAIS
 - A.2 — DRIFT REPO × PRODUÇÃO
-- 🔗 Cross-reference Issue ↔ PR (obrigatório)
+- QuoteItemsListMobileHarness.tsx
 - public.magazine_reorder_items_atomic
 - 📊 CATEGORIES (Categorias)
 - 💰 QUOTES (Orçamentos)
@@ -2015,7 +2014,7 @@
 - ADR 0005 — Circuit Breaker em Bridges Externas
 - Sumário Executivo — Auditoria Front-end ↔ DB (Promo_Gifts)
 - Auditoria Técnica — 20 Dimensões
-- 🧪 **TESTES A REALIZAR**
+- 🎯 **JUSTIFICATIVA DA DECISÃO:**
 - ✅ **RESUMO FINAL**
 - "public"."expert_chat_get_messages"
 - "public"."mockup_generation_jobs"
@@ -2035,7 +2034,7 @@
 - 📂 Localização de tudo
 - 20260625120000_align_quote_status_check — RESOLVIDO (não aplicar)
 - E01 — Linha de base registrada (2026-09-16)
-- 🚀 **ROADMAP ATUALIZADO (SEM i18n):**
+- useIPValidation.ts
 - Helpers semânticos de RBAC (RLS)
 - D.13 — Checklist final {#d13-checklist}
 - Runbook — Redeploy de Edge Function (desvio N-1 → N)
@@ -2080,9 +2079,9 @@
 - supplier-colors.ts
 - trending-score.ts
 - TelemetrySkeletons.tsx
-- waitForMagazinePrintReadiness
+- .then
 - MockupDialogs.tsx
-- applyVoiceFilters.ts
+- usePageZoom.ts
 - CartHeader.contract-snapshot.test.ts
 - QuotesListPage.deleteDisabled.test.tsx
 - QuotesListPage.layout.test.tsx
@@ -2102,7 +2101,7 @@
 - push_subscriptions
 - quote_comments
 - sync_jobs
-- 20251228000005_quote_versioning.sql
+- DatePickerFieldHarness.tsx
 - public.password_reset_requests
 - 20251231024837_c924e1c3-b77f-4076-9cdc-195effdf6ea2.sql
 - 20251231121324_9bfed8fc-56ff-45e4-8175-e1bd0bb0f72f.sql
@@ -2303,7 +2302,6 @@
 - sql-legacy — SQL histórico não-migration
 - MockResponse
 - IO
-- platform-ops.test.ts
 - quote-flow.test.ts
 - webhooks.test.ts
 - frenet.ts
@@ -2408,7 +2406,6 @@
 - Daily Flows Simulation — 2026-09-07
 - scroll-area.tsx
 - release-please-config.json
-- ci-performance-gate.ts
 - CartHeaderButton.undoSnapshot.test.ts
 - QuickAddToQuote.guard.test.ts
 - QuoteBuilderActionButtons.fuzz.test.ts
@@ -2416,7 +2413,6 @@
 - useUndoRedo.ts
 - scribeTokenCache.ts
 - demoClient.ts
-- external-rpc.ts
 - ema-health.ts
 - "public"."color_equivalences"
 - "public"."kit_share_tokens"
@@ -3007,7 +3003,6 @@
 - mv_product_leaf_category_pk
 - public.fn_quotes_validate_discount
 - public.get_catalog_bestseller_page
-- public.get_promo_sales_ranking
 - trg_prevent_canonical_chain_insert
 - public.fn_repair_canonical_chains
 - idx_generated_mockups_user_created
@@ -3192,7 +3187,6 @@
 - idx_pv_next_entry_date_nonnull
 - idx_products_dimensions_source
 - idx_products_active_not_deleted
-- integration/log-login-attempt.test.ts
 - MagazineStatsCards.test.tsx
 - confirmacao_ABF.md
 - route-test-matrix.md
@@ -3973,47 +3967,47 @@
 ## Import Cycles
 - None detected.
 
-## Communities (6585 total, 4439 thin omitted)
+## Communities (6580 total, 4443 thin omitted)
 
 ### Community 1 - "ALL_IN_ONE.sql"
 Cohesion: 0.00
 Nodes (17): "cf_recon"."crawl_run", "cf_recon"."metric_snapshot", "prod_audit"."classification_rules", public.audit_log, public.e2e_cleanup_rate_limit, public.feature_flags, public.notification_preferences, public.notification_templates (+9 more)
 
 ### Community 4 - "ref_integrations"
-Cohesion: 0.00
-Nodes (411): T28 — Rotas Protegidas ✅, sonner, @tanstack/react-query, AutoTestIntervalCard(), save(), formatLabel(), INTERVAL_OPTIONS, CredentialsChangedBannerProps (+403 more)
+Cohesion: 0.01
+Nodes (321): Tendências e rotas `AdminRoute`, A.5.2 — Sob `<AdminRoute>` (`admin-routes.tsx:65`) — exige `canManage` **+ MFA em AAL2**, sonner, AutoTestIntervalCard(), save(), formatLabel(), INTERVAL_OPTIONS, ConnectionErrorDetailsDialog() (+313 more)
 
 ### Community 5 - "ref_components"
-Cohesion: 0.00
-Nodes (410): 5.21 Observações (áreas 12–20), `webhook-dispatcher` — auth multi-modo, 4. Componentes cobertos, KM100-058 — Integrar comparação de caixas, lucide-react, @radix-ui/react-radio-group, recharts, BlockedLog (+402 more)
+Cohesion: 0.01
+Nodes (368): Correções implementadas e reconfirmadas, 5.21 Observações (áreas 12–20), lucide-react, qrcode.react, @radix-ui/react-radio-group, recharts, BlockedLog, BlockedLogsTab() (+360 more)
 
 ### Community 6 - "ref_lib"
 Cohesion: 0.00
-Nodes (267): fast-check, vitest, NewCategoryDialogProps, LegalFooterProps, Props, SectionErrorBoundary(), SectionErrorBoundaryProps, product (+259 more)
+Nodes (288): @testing-library/react, @testing-library/user-event, vitest, LegalFooterProps, DevOnly, DevOnlyProps, mockUseDevGate, SectionErrorBoundary() (+280 more)
 
 ### Community 8 - "react-router-dom"
 Cohesion: 0.01
-Nodes (191): react-router-dom, @tanstack/react-virtual, @testing-library/jest-dom, UnauthorizedState, DiscountApprovalHeaderBadge(), QUERY_KEY, mockCount, renderBadge() (+183 more)
+Nodes (138): BUG-SF-11 — Supplier filter com implementação inconsistente entre 2 hooks, react-router-dom, BackButton, BackButtonProps, routeLabels, badgeConfig, IntelligenceBadgesProps, IntelligenceBadgeType (+130 more)
 
 ### Community 9 - "ref_hooks"
 Cohesion: 0.01
-Nodes (150): AiRoutingTab(), EMPTY_FORM, formToInput(), KNOWN_CAPABILITIES, RoutingFormState, rowToForm(), Props, SOURCE_CONFIG (+142 more)
+Nodes (188): AiModelsTab(), CAPABILITY_KEYS, emptyInput(), toInput(), AiRoutingTab(), EMPTY_FORM, formToInput(), KNOWN_CAPABILITIES (+180 more)
 
 ### Community 10 - "nav.ts"
 Cohesion: 0.02
-Nodes (112): `e2e/helpers/waits.ts` (commit `b340ec38`), ADMIN_ROUTES, VIEWPORTS, RULESET, VIEWPORTS, ROUTES, Case, CASES (+104 more)
+Nodes (91): ADMIN_ROUTES, VIEWPORTS, ROUTES, Case, CASES, ROUTES, VIEWPORTS, VIEWPORTS (+83 more)
 
-### Community 11 - "@testing-library/react"
+### Community 11 - "ref_contexts"
 Cohesion: 0.01
-Nodes (152): qrcode.react, react-helmet-async, @testing-library/react, @testing-library/user-event, gateState, baseProps, baseRows, mockCollectionsCtx (+144 more)
+Nodes (101): CheckResult, GitHubCredentialsTester(), LABELS, Report, isoDaysFromNow(), IssueMcpKeyForm(), Props, formatExpiresIn() (+93 more)
 
 ### Community 12 - "ref_node_fs"
 Cohesion: 0.01
-Nodes (196): DEFAULT_RATIO, opts(), ratio(), ALLOWLISTS, ROOT, SEC_DIR, scanAsAssertions(), scanAsUnknown() (+188 more)
+Nodes (161): DEFAULT_RATIO, opts(), ratio(), classify(), extractCorsLiterals(), listFunctions(), main(), SNAPSHOT_PATH (+153 more)
 
 ### Community 13 - "ref_types"
 Cohesion: 0.01
-Nodes (156): O escape hatch `Record<string, unknown>`, ClientSelectorProps, CatalogBulkModals(), CatalogBulkModalsProps, Sel, CatalogContent, CatalogContentProps, useCatalogSelection() (+148 more)
+Nodes (155): O escape hatch `Record<string, unknown>`, ClientSelectorProps, CatalogBulkModals(), CatalogBulkModalsProps, Sel, CatalogContent, CatalogContentProps, useCatalogSelection() (+147 more)
 
 ### Community 14 - "scripts"
 Cohesion: 0.01
@@ -4021,15 +4015,15 @@ Nodes (285): scripts, audit:credentials, audit:credentials:all, audit:credential
 
 ### Community 15 - "react"
 Cohesion: 0.01
-Nodes (139): A.2 — Atenção especial: `src/components/providers/AppProviders.tsx`, react, App(), AppBootstrapContainer(), OptionalCloudStatusBanner(), OptionalCloudStatusDot(), OptionalGlobalOfflineAlert(), queryClient (+131 more)
+Nodes (166): A.2 — Atenção especial: `src/components/providers/AppProviders.tsx`, react, react-helmet-async, App(), AppBootstrapContainer(), OptionalCloudStatusBanner(), OptionalCloudStatusDot(), OptionalGlobalOfflineAlert() (+158 more)
 
 ### Community 16 - "gotoAndSettle"
-Cohesion: 0.01
-Nodes (121): 0. Sumário executivo (para decisão de negócio), E21 — `auth.setup.ts` em modo estrito no CI, setup(), VIEWPORTS, VIEWPORTS, DPRS, VIEWPORTS, setup() (+113 more)
+Cohesion: 0.02
+Nodes (103): 0. Sumário executivo (para decisão de negócio), E21 — `auth.setup.ts` em modo estrito no CI, setup(), VIEWPORTS, VIEWPORTS, VIEWPORTS, RULESET, DPRS (+95 more)
 
 ### Community 17 - "cors.ts"
 Cohesion: 0.02
-Nodes (171): 8.2 HMAC comum a V1 e V2, Uso e manutenção, 2. Método, fontes e limites, BUG-010 🟠 ALTO — `quote-sync`: URL N8N em escopo de módulo + SDK version drift, 0. Como o projeto resolve credenciais (contexto necessário para ler a tabela), 8. ip-api.com (geolocalização de visitante) 🟨 IMPLEMENTADO_PARCIAL, RecommendationRequestSchema, ALLOWED_IMAGE_DOMAINS (+163 more)
+Nodes (183): `SEC-009` 🟡 MÉDIO — Validar auth interna em `crm-db-bridge` e `external-db-inspect`, SEC-NEW-01 — Role `simulation` concede poder de `dev` sem governança 🔴 Alta, Uso e manutenção, `module-scope-credential-read` (HIGH), `resolve-credential-type-mismatch` (CRITICAL), Rules, `ssot-bypass` (HIGH), BUG-001 🔴 CRÍTICO — `elevenlabs-tts`: `resolveCredential` retorna objeto, não string (+175 more)
 
 ### Community 18 - "ProductCard.tsx"
 Cohesion: 0.02
@@ -4037,75 +4031,75 @@ Nodes (178): baseCardPriceFormatter, BaseProductGridCard, BaseProductGridCardPro
 
 ### Community 19 - "ref_utils"
 Cohesion: 0.01
-Nodes (127): Correções implementadas e reconfirmadas, `products/` (100), ClientCardProps, PrefetchHandlersLike, ClientDetailHeaderProps, CollectionTableRow(), CollectionTableRowProps, CollectionTableView() (+119 more)
+Nodes (118): `products/` (100), ClientCardProps, PrefetchHandlersLike, ClientDetailHeaderProps, ImageWithFallback, ImageWithFallbackProps, Props, Product (+110 more)
 
 ### Community 20 - "concludeCheck"
 Cohesion: 0.02
-Nodes (198): 1. Problema (conforme o plano), 2. Estado herdado desta sessão, 3. Números reconfirmados ao vivo nesta sessão `[RO]`, 4. Metodologia do gate (`scripts/check-ledger-statements-gate.mjs`), 5. Evidência de execução nesta sessão, 6. Achado desta sessão: gate implementado, não plugado em CI, 7. Checklist de conclusão (do plano), 8. Resumo (+190 more)
+Nodes (187): 5. Gate de CI (`scripts/check-public-views-drift.mjs`) `[RO — só leitura no Supabase]`, Evidência rodada nesta sessão, Testes, Artefatos preparados (não aplicados), Artefatos preparados (não aplicados), argv, computeProjections(), main() (+179 more)
 
 ### Community 21 - "@playwright/test"
 Cohesion: 0.01
-Nodes (68): EXPECTED_ACTIONS, MODULES, ZoneId, ZONES, PROTECTED_ROUTES, GRID_THUMB, GRID_THUMB_XPATH, REQUIRED_ROUTES (+60 more)
+Nodes (80): EXPECTED_ACTIONS, MODULES, ZoneId, ZONES, PROTECTED_ROUTES, GRID_THUMB, GRID_THUMB_XPATH, REQUIRED_ROUTES (+72 more)
 
 ### Community 22 - "date-fns"
-Cohesion: 0.01
-Nodes (138): 3.7 BI, relatórios e dashboards, date-fns, react-day-picker, AiProvidersTab(), API_FORMATS, EMPTY_INPUT, getNotes(), setNotes() (+130 more)
+Cohesion: 0.02
+Nodes (127): 3.7 BI, relatórios e dashboards, date-fns, react-day-picker, AiProvidersTab(), API_FORMATS, EMPTY_INPUT, getNotes(), setNotes() (+119 more)
 
 ### Community 23 - "categories"
 Cohesion: 0.01
-Nodes (102): "prod_audit"."generate_category_suggestions"(), "prod_audit"."score_product_category"(), "public"."classify_bolsa_termica"(), "public"."classify_caneca"(), "public"."classify_headphone"(), "public"."classify_kit_ferramentas"(), "public"."classify_lanterna"(), "public"."classify_marmita"() (+94 more)
+Nodes (91): "public"."classify_bolsa_termica"(), "public"."classify_caneca"(), "public"."classify_headphone"(), "public"."classify_kit_ferramentas"(), "public"."classify_lanterna"(), "public"."classify_marmita"(), "public"."classify_mochila"(), "public"."classify_porta_copo"() (+83 more)
 
 ### Community 24 - "cart-mock.ts"
-Cohesion: 0.03
-Nodes (108): bootWithCarts(), STALE_DRAFT, STALE_DRAFT, VIEWPORTS, buildMixedCarts(), buildCarts(), buildCarts(), bootstrap() (+100 more)
+Cohesion: 0.05
+Nodes (72): STALE_DRAFT, STALE_DRAFT, VIEWPORTS, openPopoverWithItem(), stubQtyPatch(), transformCart(), FORBIDDEN_LABELS, TID() (+64 more)
 
 ### Community 25 - "framer-motion"
-Cohesion: 0.02
-Nodes (117): framer-motion, AIMockupAssistantProps, INITIAL_MESSAGES, Message, QUICK_ACTIONS, QuickAction, BundleSuggestion, BundleSuggestionCardProps (+109 more)
+Cohesion: 0.01
+Nodes (123): framer-motion, AIMockupAssistantProps, INITIAL_MESSAGES, Message, QUICK_ACTIONS, QuickAction, BundleSuggestion, BundleSuggestionCardProps (+115 more)
 
 ### Community 26 - "parseContract"
 Cohesion: 0.02
-Nodes (122): RFC-1123, RFC-7807, E05 — `duration_ms` mede só o gateway de IA, P11 — Edge Integration Tests — All Functions (11 testes falhando), contractResponseHeaders, corsHeaders, contractResponseHeaders, E2ERateLimitRow (+114 more)
+Nodes (117): RFC-1123, RFC-7807, 10. Matriz de respostas proposta, 11. Simulação de cenários e gaps de rollout, 13. Evidência de verificação local, 14. Decisões necessárias antes de alterar produção, 15. Plano de implementação depois das decisões, 16. Critérios de aceite para fechar a etapa 38 (+109 more)
 
 ### Community 27 - "ref_node_child_process"
 Cohesion: 0.01
-Nodes (120): __dirname, __filename, STORAGE, extractPdfPages(), added, dbUrl, liveNames, removed (+112 more)
+Nodes (115): extractPdfPages(), added, dbUrl, liveNames, removed, snapshot, snapshotNames, snapshotPath (+107 more)
 
 ### Community 28 - ""public"."fn_calculate_health_score""
 Cohesion: 0.02
-Nodes (87): _diff, "extensions"."grant_pg_net_access"(), _live, "on_auth_user_created", "prod_audit"."recent_failures"(), "public"."assign_cart_item_sort_order"(), "public"."audit_rls_matrix"(), "public"."check_geo_country_allowed"() (+79 more)
+Nodes (62): _diff, "extensions"."grant_pg_net_access"(), _live, "on_auth_user_created", "prod_audit"."recent_failures"(), "public"."assign_cart_item_sort_order"(), "public"."audit_rls_matrix"(), "public"."check_geo_country_allowed"() (+54 more)
 
 ### Community 29 - "ref_services"
 Cohesion: 0.02
-Nodes (89): LinkedMaterial, MaterialGroupTree(), MaterialGroupTreeProps, CATEGORIES, CATEGORY_COLORS, CategoryKey, fetchProductTags(), ProductMarketingSection() (+81 more)
+Nodes (93): LinkedMaterial, MaterialGroupTree(), MaterialGroupTreeProps, CATEGORIES, CATEGORY_COLORS, CategoryKey, fetchProductTags(), ProductMarketingSection() (+85 more)
 
 ### Community 30 - "ref_node_url"
 Cohesion: 0.01
-Nodes (104): args, brokenTests, _dirname, flakyTests, issueIdx, quarantinePath, reportPath, __dirname (+96 more)
+Nodes (99): args, brokenTests, _dirname, flakyTests, issueIdx, quarantinePath, reportPath, __dirname (+91 more)
 
 ### Community 31 - "QuoteKanbanBoard.tsx"
-Cohesion: 0.03
-Nodes (104): Onda 12 — `cleanup/12-duplicacao` (8-12h, médio risco), @dnd-kit/core, @dnd-kit/sortable, @dnd-kit/utilities, GroupComponentCard(), GroupComponentCardProps, GroupLocationCard(), GroupLocationCardProps (+96 more)
-
-### Community 32 - "createStructuredLogger"
 Cohesion: 0.02
-Nodes (100): 6. Regressão em Áreas Adjacentes, Como testar, Convenções, Edge Functions — Catálogo Completo, Helpers compartilhados, Padrões obrigatórios, Tabela de endpoints, 1. SECURITY DEFINER ACL — 10 violações (+92 more)
+Nodes (123): Onda 12 — `cleanup/12-duplicacao` (8-12h, médio risco), canvas-confetti, @dnd-kit/core, @dnd-kit/sortable, @dnd-kit/utilities, GroupComponentCard(), GroupComponentCardProps, GroupLocationCard() (+115 more)
+
+### Community 32 - "cors.ts"
+Cohesion: 0.02
+Nodes (139): 6. Regressão em Áreas Adjacentes, Como testar, Convenções, Edge Functions — Catálogo Completo, Helpers compartilhados, Padrões obrigatórios, Tabela de endpoints, P200-E094 · [A] · P2 · `Allow-Origin: *` só em rota realmente anônima (+131 more)
 
 ### Community 33 - "products"
 Cohesion: 0.02
 Nodes (110): audit_products, idx_products_name_search, idx_suppliers_org, log_price_change(), public.calculate_seo_score(), public.check_login_rate_limit(), public.check_video_health(), public.classify_pendrive() (+102 more)
 
-### Community 34 - "SidebarReorganized.tsx"
-Cohesion: 0.02
-Nodes (98): AppLogo(), AppLogoProps, usePresetId(), HeaderProps, Header, MainLayout(), MainLayoutProps, PersistentBreadcrumbs (+90 more)
+### Community 34 - "SidebarNavGroup.suspense.test.tsx"
+Cohesion: 0.05
+Nodes (49): NavGroup, NavItem, SidebarNavGroup, SidebarNavGroupProps, ControlledSidebarGroup(), group, Router, setupRouter() (+41 more)
 
 ### Community 35 - "products"
 Cohesion: 0.03
-Nodes (91): "public"."auto_increment_display_order"(), "public"."calculate_seo_score"(), "public"."consolidate_variant_stock"(), "public"."fn_aggregate_stock_daily"(), "public"."fn_alert_supplier_settings_incomplete"(), "public"."fn_anon_insert_rate_guard"(), "public"."fn_apply_print_profiles"(), "public"."fn_asia_find_not_found"() (+83 more)
+Nodes (88): "public"."auto_increment_display_order"(), "public"."calculate_seo_score"(), "public"."check_telemetry_regression"(), "public"."consolidate_variant_stock"(), "public"."fn_aggregate_stock_daily"(), "public"."fn_alert_supplier_settings_incomplete"(), "public"."fn_anon_insert_rate_guard"(), "public"."fn_asia_enqueue_videos"() (+80 more)
 
-### Community 36 - "CartHeaderButton.tsx"
-Cohesion: 0.02
-Nodes (92): RFC-4180, B-8 · `BulkAddToCartModal` passa `onCreated` no-op, 4. Mockup — geração, estado e editor (front), P200-E134 · [D] · P2 · Cleanup de `setTimeout` nos 25 arquivos restantes, html2canvas, CompareCartsDialog(), buildCartCsv(), csvCell() (+84 more)
+### Community 36 - "MockupApprovalTemplate.tsx"
+Cohesion: 0.06
+Nodes (39): P200-E134 · [D] · P2 · Cleanup de `setTimeout` nos 25 arquivos restantes, html2canvas, CollectionDetailHeader(), CollectionDetailHeaderProps, CollectionInfo, csvEscape(), downloadBlob(), ExportCollectionButton() (+31 more)
 
 ### Community 37 - "products"
 Cohesion: 0.03
@@ -4113,15 +4107,15 @@ Nodes (90): "public"."auto_increment_display_order"(), "public"."calculate_seo_s
 
 ### Community 38 - "authorizeCron"
 Cohesion: 0.02
-Nodes (92): 2.2 Edge Functions sem JWT (24), `SEC-009` 🟡 MÉDIO — Validar auth interna em `crm-db-bridge` e `external-db-inspect`, 1. Drift: repo vs publicado, 2.1 Funções intencionalmente públicas (R0 — sem auth de identidade, por design), 2.2 Funções de cron/scheduler (R1 — auth via x-cron-secret do vault), 2.3 Funções com auth via header proprietário, 2.4 Funções com auth via Bearer JWT (in-code), 2.5 Funções com auth via MCP API Key (+84 more)
+Nodes (121): 2.2 Edge Functions sem JWT (24), 1. Drift: repo vs publicado, 2.1 Funções intencionalmente públicas (R0 — sem auth de identidade, por design), 2.2 Funções de cron/scheduler (R1 — auth via x-cron-secret do vault), 2.3 Funções com auth via header proprietário, 2.4 Funções com auth via Bearer JWT (in-code), 2.5 Funções com auth via MCP API Key, 2.6 Funções sem auth obrigatória (acesso aberto intencional) (+113 more)
 
 ### Community 39 - "createEdge.ts"
 Cohesion: 0.02
-Nodes (118): 1. Sumário Executivo, 2. Metodologia e Escopo, 3.A Segurança, 4. Roadmap de Correções (Priorizado), 5. Benchmarking vs. Padrões de Mercado, 6. Tabela Consolidada de Findings, 7. Apêndice — Contexto Operacional, Decisões Arquiteturais (ADRs) (+110 more)
+Nodes (114): 3.A Segurança, Pontos Fortes de Segurança (Confirmados), SEC-01 — `external-db-bridge`: caminho RPC sem autenticação 🔴 Alta, SEC-02 — SSRF em `connection-test-runner` 🔴 Alta, SEC-03 — `bulk-random-passwords`: comparação timing-unsafe + sem schema 🟠 Média, SEC-04 — `createEdge` com adoção zero 🟠 Média, SEC-05 — Padrões CORS amplos (risco moderado) 🟡 Baixa, SEC-NEW-02 — CSP do Vercel com `'unsafe-inline'` e `'unsafe-eval'` 🟠 Média-Alta (+106 more)
 
 ### Community 40 - "products"
 Cohesion: 0.03
-Nodes (84): "public"."auto_increment_display_order"(), "public"."calculate_seo_score"(), "public"."consolidate_variant_stock"(), "public"."fn_aggregate_stock_daily"(), "public"."fn_alert_supplier_settings_incomplete"(), "public"."fn_anon_insert_rate_guard"(), "public"."fn_asia_find_not_found"(), "public"."fn_asia_fix_multi_main_images"() (+76 more)
+Nodes (85): "public"."auto_increment_display_order"(), "public"."calculate_seo_score"(), "public"."consolidate_variant_stock"(), "public"."fn_aggregate_stock_daily"(), "public"."fn_alert_supplier_settings_incomplete"(), "public"."fn_anon_insert_rate_guard"(), "public"."fn_asia_find_not_found"(), "public"."fn_asia_fix_multi_main_images"() (+77 more)
 
 ### Community 41 - "_live-suite.ts"
 Cohesion: 0.06
@@ -4133,19 +4127,19 @@ Nodes (57): profiles, _diff, _live, "prod_audit"."recent_failures"(), "public"."
 
 ### Community 43 - "supabase-client-adapter.ts"
 Cohesion: 0.02
-Nodes (104): ✅ 11 etapas fechadas, 1.1 `.tsc-baseline.json` — 1.333 erros TypeScript, 1.2 `.eslint-baseline.json` — 409 arquivos com warnings, 1.3 `.toast-leaks-baseline.json` — 176 leaks, 1. Dívida congelada em baselines, 2.1 ✅ Corrigido e mergeado (14 sessões), 2.2 🟡 Pendente (declarado em `STATUS.md`), 2. Hardening — status por sessão (+96 more)
+Nodes (114): ✅ 11 etapas fechadas, 1.1 `.tsc-baseline.json` — 1.333 erros TypeScript, 1.2 `.eslint-baseline.json` — 409 arquivos com warnings, 1.3 `.toast-leaks-baseline.json` — 176 leaks, 1. Dívida congelada em baselines, 2.1 ✅ Corrigido e mergeado (14 sessões), 2.2 🟡 Pendente (declarado em `STATUS.md`), 2. Hardening — status por sessão (+106 more)
 
 ### Community 44 - ""public"."fn_calculate_health_score""
 Cohesion: 0.02
-Nodes (57): _diff, _live, "prod_audit"."recent_failures"(), "public"."assign_cart_item_sort_order"(), "public"."audit_rls_matrix"(), "public"."check_geo_country_allowed"(), "public"."check_hardening_status"(), "public"."fn_anon_access_audit"() (+49 more)
+Nodes (52): _diff, _live, "prod_audit"."recent_failures"(), "public"."assign_cart_item_sort_order"(), "public"."audit_rls_matrix"(), "public"."check_geo_country_allowed"(), "public"."check_hardening_status"(), "public"."fn_anon_access_audit"() (+44 more)
 
 ### Community 45 - "AdminRoute"
 Cohesion: 0.03
-Nodes (101): 5. Foco: `test-*`, simulação e utilitários, Escopo e método, Home, cliente, aliases e 404, Inventário de rotas e contratos — 2026-08-26, Lacunas e divergências acionáveis, Orçamentos, Topologia, 10. Lacunas de cobertura e próximos passos (+93 more)
+Nodes (86): 5. Foco: `test-*`, simulação e utilitários, Escopo e método, Inventário de rotas e contratos — 2026-08-26, Lacunas e divergências acionáveis, Orçamentos, Topologia, 10. Lacunas de cobertura e próximos passos, 2. Rotas públicas por token descontinuadas (legado no SSOT RBAC e nos testes) (+78 more)
 
 ### Community 46 - "request-id.ts"
-Cohesion: 0.03
-Nodes (77): AnonymizeUserSchema, AuditReport, CheckResult, REQUIRED_CRONS, REQUIRED_FUNCTIONS, REQUIRED_TABLES, TRIGGER_TABLES, CreateSchema (+69 more)
+Cohesion: 0.04
+Nodes (63): AuditReport, CheckResult, REQUIRED_CRONS, REQUIRED_FUNCTIONS, REQUIRED_TABLES, TRIGGER_TABLES, BodySchema, corsHeaders (+55 more)
 
 ### Community 47 - "public.quotes"
 Cohesion: 0.02
@@ -4153,31 +4147,31 @@ Nodes (107): audit_bitrix_clients, audit_log, audit_orders, audit_quotes, create
 
 ### Community 48 - "ref_pages"
 Cohesion: 0.05
-Nodes (97): ConversionFunnel(), HotSearchesCard(), TrendsHeatmap(), UnmetDemandCard(), Header, AdminAiUsagePage, AdminCadastrosPage, AdminClientPerformancePage (+89 more)
+Nodes (96): ConversionFunnel(), HotSearchesCard(), TrendsHeatmap(), UnmetDemandCard(), Header, prefetchQuoteRoutes(), AdminAiUsagePage, AdminCadastrosPage (+88 more)
 
 ### Community 49 - "ref_https"
-Cohesion: 0.03
-Nodes (42): corsHeaders, PayloadSchema, AuthResult, EXPECTED_NAMES, VALID_HEALTHS, VALID_SOURCES, CheckResult, Report (+34 more)
+Cohesion: 0.02
+Nodes (102): 12.1 Testes que parecem integração, mas não exercitam o handler, 12.2 Teste Deno HMAC legado também não mede HMAC externo, 12.3 Teste remoto avulso é mutante e está defasado, 12.4 Caracterização handler-real adicionada, 12. Auditoria dos testes, Bloco A — Kit Maker: fechar o que ficou pela metade (E01–E14), corsHeaders, PayloadSchema (+94 more)
 
 ### Community 50 - "MagazineTemplatesGalleryPage.tsx"
-Cohesion: 0.03
-Nodes (73): Diferenças que precisam de decisão, não de alteração automática, Fase 1 — Camada de tokens Blue Premium (11–20), 1. Objetivo e regras de execução, A11y (30 casos), Auditoria — Galeria de Templates de Revista (Hardening 10/10), Dados (60 casos), Fase 0 — Simulação de cenários (200 casos), Fora de escopo (backlog) (+65 more)
+Cohesion: 0.05
+Nodes (39): A11y (30 casos), Auditoria — Galeria de Templates de Revista (Hardening 10/10), Dados (60 casos), Fase 0 — Simulação de cenários (200 casos), Fora de escopo (backlog), Onda 14 — Gate `@smoke` de governança ✅, Onda 15 — Regressão visual (screenshot baseline) ✅, Ondas adicionais (9 → 12) — rumo a 100/100 (+31 more)
 
 ### Community 51 - "check-types-inventory-drift.mjs"
-Cohesion: 0.03
-Nodes (80): 2.1 `scripts/extract-types-inventory.mjs`, 2.4 Teste de mutação (`tests/scripts/check-types-inventory-drift.test.mjs`), 1.0.0 — 2026-07-14, 2.0.0 — 2026-07-15, SSOT Report — Changelog de contrato, FILE_THRESHOLDS, lines, summary (+72 more)
+Cohesion: 0.08
+Nodes (48): 2.1 `scripts/extract-types-inventory.mjs`, 2.4 Teste de mutação (`tests/scripts/check-types-inventory-drift.test.mjs`), 1.0.0 — 2026-07-14, 2.0.0 — 2026-07-15, SSOT Report — Changelog de contrato, buildColumnIndex(), extractSelectCalls(), listSourceFiles() (+40 more)
 
 ### Community 52 - "webhook-schemas.ts"
-Cohesion: 0.02
-Nodes (96): buildErrorResponse(), expectUnified422(), parseAgainst(), parseVersioned(), SimulatedResponse, zodErrorToFields(), AiRecommendationsSchemaV1, AnalyzeLogoColorsSchemaV1 (+88 more)
+Cohesion: 0.03
+Nodes (77): AiRecommendationsSchemaV1, AnalyzeLogoColorsSchemaV1, AnonymizeUserSchemaV1, BiCopilotSchemaV1, BitrixSyncSchemaV1, BlockIpTemporarilySchemaV1, BulkRandomPasswordsSchemaV1, CategoriesApiSchemaV1 (+69 more)
 
 ### Community 53 - "14-favorites-remove-persistence.spec.ts"
 Cohesion: 0.03
 Nodes (38): assertFavoritesHeader(), assertFavoritesHeaderVisuals(), readFavoritesCount(), readFavoritesCounters(), readFavoritesListsCount(), FavoriteItem, clearAllFavoritesArtifacts(), FavoriteItem (+30 more)
 
 ### Community 54 - "Rotas técnicas `DevRoute`"
-Cohesion: 0.03
-Nodes (79): Rotas técnicas `DevRoute`, A.5.3 — Sob `<DevRoute>` (`admin-routes.tsx:119`) — exige papel `dev` **+ MFA AAL2**, Build, ESLint, npm audit, Outdated dependencies, QA Baseline — promo-gifts-v4, TypeScript (`tsc --noEmit`) (+71 more)
+Cohesion: 0.02
+Nodes (120): Rotas técnicas `DevRoute`, A.5.3 — Sob `<DevRoute>` (`admin-routes.tsx:119`) — exige papel `dev` **+ MFA AAL2**, C) PÁGINAS ESQUELETO / PLACEHOLDER (roteadas, mas sem lógica real completa), E.1 — Classificação de TODOS os 217 arquivos de `src/pages/`, E.2 — Arquivos de `src/routes/` (14) — classificação, E) COBERTURA, Grupo 1 — 110 páginas ROTEADAS, Grupo 3 — 2 arquivos ÓRFÃOS — ⬛ MORTO_OU_ABANDONADO (+112 more)
 
 ### Community 55 - "gen-migrations-readme.mjs"
 Cohesion: 0.02
@@ -4189,19 +4183,19 @@ Nodes (46): ADR — checks inconclusivos sem segredo, credencial ou alvo de test
 
 ### Community 57 - "ref_node_os"
 Cohesion: 0.02
-Nodes (45): auditProductionHarnesses(), forbiddenMarkers, main(), textExtensions, walk(), BASELINE_PATH, ESLINT_BIN, report (+37 more)
+Nodes (65): auditChunkCycles(), findStronglyConnectedComponents(), visit(), main(), readChunkGraph(), argv, baselineArg, computeDriftCandidates() (+57 more)
 
 ### Community 58 - "C) "Sem consumidor" — dupla verificação e confiança"
-Cohesion: 0.03
-Nodes (71): A.10 — Segurança, sanitização e RBAC, A.11 — Autenticação (subsistema `src/lib/auth/`, 19 arquivos), A.12 — Feature toggles, A.13 — Dados estáticos / seed, A.14 — Utilitários de imagem, cor e catálogo, A.15 — Tema e UI de base, A.1 — Cliente Supabase e guardas de configuração (SSOT), A.2 — Tipagem do schema Supabase (+63 more)
+Cohesion: 0.04
+Nodes (66): 06 — LIB / UTILS / TIPOS — Auditoria de estado (somente leitura), A.11 — Autenticação (subsistema `src/lib/auth/`, 19 arquivos), A.12 — Feature toggles, A.13 — Dados estáticos / seed, A.14 — Utilitários de imagem, cor e catálogo, A.15 — Tema e UI de base, A.1 — Cliente Supabase e guardas de configuração (SSOT), A.2 — Tipagem do schema Supabase (+58 more)
 
 ### Community 59 - "_factories.ts"
 Cohesion: 0.05
-Nodes (23): SAMPLE_PRODUCTS, LOGO, preencherGerador(), selecionarPrimeiroProduto(), PRODUCT_LIST, SAMPLE_ID, AuthedRouteSpec, buildAuthedRouteSuite() (+15 more)
+Nodes (22): SAMPLE_PRODUCTS, LOGO, preencherGerador(), selecionarPrimeiroProduto(), PRODUCT_LIST, AuthedRouteSpec, buildAuthedRouteSuite(), buildPublicTokenSuite() (+14 more)
 
-### Community 60 - "MagazineListPage.tsx"
+### Community 60 - "MagazineEditorPage.tsx"
 Cohesion: 0.05
-Nodes (74): Fase 2 — Primitivos compartilhados do módulo (21–30), Fase 7 — Identidade + Preview + Páginas (69–78), Grupo G — Identidade, CRM e marca (031–035), BrandColorPicker(), ColorKey, ContrastBadge(), LABEL, Props (+66 more)
+Nodes (61): Mapa do caminho, R4 — Editor / Identidade, Divergências conscientes em relação ao mockup, Fase 0 — Recon (1–10), Fase 10 — QA técnico, visual e entrega (93–100), Fase 3 — Biblioteca `/magazine` (31–40), Fase 4 — Galeria `/magazine/templates` (41–50), Fase 5 — Inspector de template (51–58) (+53 more)
 
 ### Community 61 - "dependencies"
 Cohesion: 0.02
@@ -4216,20 +4210,20 @@ Cohesion: 0.03
 Nodes (82): audit_sales_goals, idx_connection_test_history_conn_time, idx_custom_kits_tag, idx_custom_kits_user_favorite, idx_custom_kits_user_pinned, idx_favorite_items_list, idx_favorite_items_product, idx_favorite_items_unique (+74 more)
 
 ### Community 64 - "check-migration-filename-contract.mjs"
-Cohesion: 0.03
-Nodes (69): declaredVersionOf(), duplicateVersions, entries, files, manifest, MIGRATIONS_DIR, outputPath, ROOT (+61 more)
+Cohesion: 0.04
+Nodes (45): declaredVersionOf(), duplicateVersions, entries, files, manifest, MIGRATIONS_DIR, outputPath, ROOT (+37 more)
 
 ### Community 65 - "Bugs Detalhados"
-Cohesion: 0.03
-Nodes (74): BUG-GS-01 — `HighlightMatch.tsx`: regex.test() com flag global avança `lastIndex`, BUG-GS-02 — `GlobalSearchPalette.tsx`: 3 estados simultâneos para query de 2 chars, BUG-GS-04 — `AdvancedSearch.tsx`: `handleVoiceAction` com stale closure — `setQuery` faltando nas deps, BUG-GS-06 — `searchCache` não é limpo no logout — dados de sessão anterior vazam, BUG-GS-07 — `performSemanticSearch` silencia todos os erros sem feedback ao usuário, BUG-GS-08 — `GlobalSearch.tsx` (legado): `handleResultClick` não está nas deps do `useEffect` — stale closure, BUG-GS-09 — `SmartSuggestions.tsx` na pasta search é código morto não importado, BUG-GS-10 — Query de "produtos populares" usa apenas últimos 100 registros por data — não é "mais vistos" (+66 more)
+Cohesion: 0.10
+Nodes (22): BUG-GS-01 — `HighlightMatch.tsx`: regex.test() com flag global avança `lastIndex`, BUG-GS-02 — `GlobalSearchPalette.tsx`: 3 estados simultâneos para query de 2 chars, BUG-GS-04 — `AdvancedSearch.tsx`: `handleVoiceAction` com stale closure — `setQuery` faltando nas deps, BUG-GS-06 — `searchCache` não é limpo no logout — dados de sessão anterior vazam, BUG-GS-07 — `performSemanticSearch` silencia todos os erros sem feedback ao usuário, BUG-GS-08 — `GlobalSearch.tsx` (legado): `handleResultClick` não está nas deps do `useEffect` — stale closure, BUG-GS-09 — `SmartSuggestions.tsx` na pasta search é código morto não importado, BUG-GS-10 — Query de "produtos populares" usa apenas últimos 100 registros por data — não é "mais vistos" (+14 more)
 
 ### Community 66 - "PdfGenerationDialog.tsx"
-Cohesion: 0.03
-Nodes (54): 6. Arquivos alterados nesta rodada, jest-axe, detectBrowserPure(), detectSafari(), PdfGenerationDialog(), PdfGenerationDialogProps, PREVIEW_SCROLL_STYLE, printLog (+46 more)
+Cohesion: 0.04
+Nodes (40): 6. Arquivos alterados nesta rodada, jest-axe, detectBrowserPure(), detectSafari(), PdfGenerationDialog(), PdfGenerationDialogProps, PREVIEW_SCROLL_STYLE, printLog (+32 more)
 
 ### Community 67 - "Rotas públicas e harnesses"
-Cohesion: 0.04
-Nodes (62): Rotas públicas e harnesses, 1. Rotas públicas (React), A.1 — Rotas PÚBLICAS (sem autenticação) — `src/routes/public-routes.tsx`, A.2 — Rotas declaradas direto em `AppRoutes.tsx`, UnauthorizedPage(), IPValidationResult, useIPValidation(), Auth() (+54 more)
+Cohesion: 0.11
+Nodes (31): Rotas públicas e harnesses, 1. Rotas públicas (React), A.1 — Rotas PÚBLICAS (sem autenticação) — `src/routes/public-routes.tsx`, A.2 — Rotas declaradas direto em `AppRoutes.tsx`, UnauthorizedPage(), Auth(), authButtonClass(), ForgotPasswordConfirmation() (+23 more)
 
 ### Community 68 - "public.products"
 Cohesion: 0.03
@@ -4244,24 +4238,24 @@ Cohesion: 0.04
 Nodes (46): idx_mockup_jobs_org, idx_public_token_failures_ip, idx_public_token_failures_resource, idx_test_results_batch_result, idx_test_results_severity_fail, "prod_audit"."recent_failures"(), "prod_audit"."test_results", public.audit_ownership_orphans() (+38 more)
 
 ### Community 71 - "ref_fs"
-Cohesion: 0.04
-Nodes (17): externalBaseUrl, args, minArg, brokenTests, report, reportPath, findFiles(), baseMagazine (+9 more)
+Cohesion: 0.03
+Nodes (38): externalBaseUrl, runBuildAndCheckWarnings(), stripAnsi(), args, minArg, TestResult, THRESHOLDS, CSV_FILE (+30 more)
 
-### Community 72 - "MagazineEditorPage.tsx"
-Cohesion: 0.05
-Nodes (54): Mapa do caminho, R4 — Editor / Identidade, Divergências conscientes em relação ao mockup, Fase 0 — Recon (1–10), Fase 10 — QA técnico, visual e entrega (93–100), Fase 3 — Biblioteca `/magazine` (31–40), Fase 4 — Galeria `/magazine/templates` (41–50), Fase 5 — Inspector de template (51–58) (+46 more)
+### Community 72 - "pagination.ts"
+Cohesion: 0.15
+Nodes (19): fast-check, isClosingPage(), PAGE_LABELS, Props, StructuredPagesEditor(), getTemplate(), createMagazinePageDefinition(), createStructuredPageOrder() (+11 more)
 
 ### Community 73 - "lib/kit-builder/index.ts"
-Cohesion: 0.06
-Nodes (61): 5.10 Área 10 — Geometria, ocupação e validação física (KM-091…100), 5.4 Área 04 — Modelo canônico, catálogo e contratos de dados (KM-031…040), KM3-006 — Fixtures determinísticas alinhadas ao catálogo real, boxScore(), candidateScore(), normalizeSearch(), resolveKitAICompositions(), BoxRecommendation (+53 more)
+Cohesion: 0.07
+Nodes (60): 5.10 Área 10 — Geometria, ocupação e validação física (KM-091…100), 5.9 Área 09 — Catálogo de embalagens e prévia contextual (KM-081…090), boxScore(), candidateScore(), normalizeSearch(), resolveKitAICompositions(), BoxRecommendation, BoxRecommendationStatus (+52 more)
 
 ### Community 74 - "crm-db-bridge/index.ts"
-Cohesion: 0.05
-Nodes (55): ALLOWED_TABLES, applyFilters(), applyOrdering(), authenticateRequest(), AuthResult, BatchQuery, breaker, buildCredsHealthSnapshot() (+47 more)
+Cohesion: 0.04
+Nodes (79): 2.1 Auth / Bypass keys / Token revocation, 2.3 Webhooks / Crons / Dispatcher, 2.4 RLS — cobertura, recursão, search_path, 2.5 SSRF / SQL injection / Validação de input, 2.6 Segredos & Vault, 2.7 CORS, headers de segurança, CSP, 2. Segurança, 4.3 `external-db-bridge` (cache, breaker, retry) (+71 more)
 
 ### Community 75 - "Catálogo, produtos e coleções"
 Cohesion: 0.05
-Nodes (65): Catálogo, produtos e coleções, 3. Catálogo e produto (ProtectedRoute), Mapa do caminho, 3.6 Catálogo, busca, filtros, comparação, favoritos e coleções, A.3 — Produtos — `src/routes/product-routes.tsx` (sob `PR` + `PAL`), B-3 · `price = 0` no caminho de lista enriquecida quando `sale_price` é nulo, B-4 · Favoritar pela grade do catálogo não persiste no banco, Fluxo 7 — Favoritos (+57 more)
+Nodes (65): Catálogo, produtos e coleções, 3. Catálogo e produto (ProtectedRoute), Mapa do caminho, 3.6 Catálogo, busca, filtros, comparação, favoritos e coleções, A.3 — Produtos — `src/routes/product-routes.tsx` (sob `PR` + `PAL`), B-4 · Favoritar pela grade do catálogo não persiste no banco, Fluxo 7 — Favoritos, D-3 — Favoritos: três implementações, uma morta (+57 more)
 
 ### Community 76 - "public.products"
 Cohesion: 0.03
@@ -4269,43 +4263,43 @@ Nodes (63): "public"."fn_asia_enrich_parent"(), "public"."fn_asia_populate_image
 
 ### Community 77 - "3. Plano executável — 50 etapas"
 Cohesion: 0.03
-Nodes (70): 1. Base, evidências e limites, 2. Regras de execução e conclusão, 3. Plano executável — 50 etapas, 4. Ondas, dependências e pontos de parada, Anexo A — Cobertura do plano anterior de 100 etapas, Anexo B — Cobertura do plano posterior de 20 etapas, Anexo C — Recibo obrigatório por etapa, Anexo D — Checklist final de liberação (+62 more)
+Nodes (59): 3. Plano executável — 50 etapas, Bloco A — Escopo, referências e ambientes, Bloco B — Estado, persistência e banco, Bloco C — Qualidade de dados e disponibilidade, Bloco D — Estrutura visual, navegação e reuso, Bloco E — Catálogo e seleção de itens, Bloco F — Composição e recomendação de caixas, Bloco G — Saídas de exceção e personalização (+51 more)
 
 ### Community 78 - "public.products"
 Cohesion: 0.03
-Nodes (63): "public"."fn_asia_enrich_parent"(), "public"."fn_asia_populate_image_queue"(), "public"."fn_dryrun_standardize_supplier"(), "public"."fn_enrich_padronizacao"(), "public"."fn_ingest_customization_options_batch"(), "public"."fn_padvar_sync"(), "public"."fn_parse_xbz_site_html"(), "public"."fn_process_raw_v2"() (+55 more)
+Nodes (68): "public"."fn_asia_enrich_parent"(), "public"."fn_asia_populate_image_queue"(), "public"."fn_dryrun_standardize_supplier"(), "public"."fn_enrich_padronizacao"(), "public"."fn_generate_trends_insights"(), "public"."fn_get_repressed_demand"(), "public"."fn_ingest_customization_options_batch"(), "public"."fn_padvar_sync"() (+60 more)
 
 ### Community 79 - "rest-native.ts"
 Cohesion: 0.05
-Nodes (59): Degradacao graciosa, BatchQuery, BatchResult, BridgeResponse, invokeExternalDb(), invokeExternalDbDelete(), invokeExternalDbSingle(), InvokeOptions (+51 more)
+Nodes (58): 2. Onde mora o código, BatchQuery, BatchResult, BridgeResponse, invokeExternalDb(), invokeExternalDbDelete(), invokeExternalDbSingle(), InvokeOptions (+50 more)
 
 ### Community 80 - "ProductMatchPage.tsx"
 Cohesion: 0.05
-Nodes (49): Call-sites auditados, Escopo, Matriz de gaps, Restrições do sandbox, Suite pré-existente, Testes executados, Unit (Vitest + RTL) — `src/components/quotes/__tests__/CompanyContactSelector.layout.test.tsx`, Validação — Layout 50/50 Empresa + Contato (+41 more)
+Nodes (41): Call-sites auditados, Escopo, Matriz de gaps, Restrições do sandbox, Suite pré-existente, Testes executados, Unit (Vitest + RTL) — `src/components/quotes/__tests__/CompanyContactSelector.layout.test.tsx`, Validação — Layout 50/50 Empresa + Contato (+33 more)
 
 ### Community 81 - "KitSummary.tsx"
-Cohesion: 0.04
-Nodes (52): KM3-062 — Checklist de validação, E12 — Teste do caminho de impressão, DiscontinuedItemsAlert(), DiscontinuedItemsAlertProps, FREIGHT_TABLE, FreightEstimator(), FreightEstimatorProps, METHOD_LABELS (+44 more)
+Cohesion: 0.07
+Nodes (40): KM3-062 — Checklist de validação, DiscontinuedItemsAlert(), FreightEstimator(), KitActionsBar(), KitCompositionCard(), KitIdentificationCard(), KitIdentificationCardProps, KitPricingCard() (+32 more)
 
 ### Community 82 - "A) Tabela por FERRAMENTA"
-Cohesion: 0.04
-Nodes (56): Mapa do caminho, A) Tabela por FERRAMENTA, D-9 — Fachadas de notificação (3 camadas, todas vivas), AffinityCategory, ClientAffinityResult, ClientTopProduct, deriveCategoryFromName(), MOCK_SUGGESTIONS (+48 more)
+Cohesion: 0.03
+Nodes (65): 4.8 Plano de 20 etapas de 2026-05-23 (`docs/PLANO-20-ETAPAS-2026-05-23.md`, issue #264 "Plano de Correções em 20 Etapas (rastreamento)"), A) Tabela por FERRAMENTA, Auditoria de Hooks — Round 4 — Maio 2026, BUG-18 🔴 P1 — `useQuoteBuilderState.ts`, BUG-19 🟡 P2 — `useSimulatorWizard.ts` (função `mapV6LocationsToWizard`), Bugs Encontrados e Corrigidos, Histórico de Auditorias, Hooks Auditados Sem Bugs (+57 more)
 
 ### Community 83 - "Ferramentas e Magazine"
-Cohesion: 0.06
-Nodes (62): Ferramentas e Magazine, 6. Ferramentas (ProtectedRoute; `/simulacao` sob DevRoute), Mapa do caminho, 5.2 IA, conteúdo e ferramentas, 3.10 Demais itens do roadmap, A.6 — Ferramentas — `src/routes/tools-routes.tsx` (sob `PR` + `PAL`), C) PÁGINAS ESQUELETO / PLACEHOLDER (roteadas, mas sem lógica real completa), D.1 — Contagem (+54 more)
+Cohesion: 0.04
+Nodes (81): Ferramentas e Magazine, 6. Ferramentas (ProtectedRoute; `/simulacao` sob DevRoute), Mapa do caminho, Mapa do caminho, Mapa do caminho, 5.17 Área 17 — Biblioteca, exemplos e suporte contextual (KM-161…170), A.6 — Ferramentas — `src/routes/tools-routes.tsx` (sob `PR` + `PAL`), D.1 — Contagem (+73 more)
 
-### Community 84 - "D.1 — Núcleo (adoção alta, é o que sustenta o padrão)"
-Cohesion: 0.05
-Nodes (51): D.1 — Núcleo (adoção alta, é o que sustenta o padrão), 1. Lovable AI Gateway (`ai.gateway.lovable.dev`) ✅ IMPLEMENTADO_TOTAL, 2. AI Router multi-provider (OpenAI / Anthropic / Google Gemini) 🟨 IMPLEMENTADO_PARCIAL, 3. DeepSeek (`api.deepseek.com`) 🟨 IMPLEMENTADO_PARCIAL, 4. Hugging Face Inference (`api-inference.huggingface.co`) 🟨 IMPLEMENTADO_PARCIAL, A.1 — IA / LLM, Comportamento antes vs depois, Contexto (+43 more)
+### Community 84 - "parseAiResponse.ts"
+Cohesion: 0.50
+Nodes (4): FALLBACK_RESULT, parseAiResponse(), validateResult(), VoiceCommandResult
 
 ### Community 85 - ""public"."classify_pendrive""
-Cohesion: 0.04
-Nodes (49): "limit_user_search_history", "order_items_recalc_total", "public"."assert_quote_discount_integrity"(), "public"."can_access_quote"(), "public"."classify_pendrive"(), "public"."cleanup_user_search_history"(), "public"."comparar_precos_spot"(), "public"."compare_quote_snapshots"() (+41 more)
+Cohesion: 0.03
+Nodes (52): "limit_user_search_history", "order_items_recalc_total", "public"."assert_quote_discount_integrity"(), "public"."can_access_quote"(), "public"."classify_pendrive"(), "public"."cleanup_discount_test_data"(), "public"."cleanup_user_search_history"(), "public"."comparar_precos_spot"() (+44 more)
 
 ### Community 86 - "ringsOf"
-Cohesion: 0.06
-Nodes (43): 1. Resumo executivo, 2. Cobertura por suíte, 3.1 Falhas silenciosas eliminadas, 3.2 Bateria unitária (novo arquivo `helpers.test.ts`), 3. Robustez do helper (Fase 5), 4. Fuzz property-based (Fase 2), 5.1 M5 (mudança responsiva) — gap FECHADO via Playwright pixel-perfect, 5. Mutation testing manual (Fase 3) (+35 more)
+Cohesion: 0.08
+Nodes (33): 3.1 Falhas silenciosas eliminadas, 3.2 Bateria unitária (novo arquivo `helpers.test.ts`), 3. Robustez do helper (Fase 5), 8. Fora do escopo (para próximas ondas), thumbsFrom(), buildMagazine(), makeItem(), buildMagazine() (+25 more)
 
 ### Community 87 - "ProductColorSelector.tsx"
 Cohesion: 0.05
@@ -4317,11 +4311,11 @@ Nodes (53): RFC-1918, Auditoria de APIs Externas — Promo Gifts v4, 🔴 BUG-A0
 
 ### Community 89 - "AIChat.tsx"
 Cohesion: 0.04
-Nodes (54): 7.0 Resumo, 7.2 Magazine — módulo e prompt de implementação, 7.4 Migrações e pendências técnicas do Magazine (RPCs, importador, queries tipadas, rings, baseline visual), 7.6 Demais ferramentas de IA (`docs/estado/04_FERRAMENTAS_IA.md`, `docs/ROBOFLOW_SETUP.md`), 7.7 Observações, 7. Magazine, Mockup, Magic Up e ferramentas de IA, 04 — FERRAMENTAS (estado medido), 0. Como as ferramentas chegam à tela (+46 more)
+Nodes (59): 5.3 Integrações, administração e compatibilidade, 3.12 Observações, 7.0 Resumo, 7.2 Magazine — módulo e prompt de implementação, 7.4 Migrações e pendências técnicas do Magazine (RPCs, importador, queries tipadas, rings, baseline visual), 7.6 Demais ferramentas de IA (`docs/estado/04_FERRAMENTAS_IA.md`, `docs/ROBOFLOW_SETUP.md`), 7.7 Observações, 7. Magazine, Mockup, Magic Up e ferramentas de IA (+51 more)
 
 ### Community 90 - "magazineService.ts"
-Cohesion: 0.04
-Nodes (55): Escopo da mudança, Patch pronto para aplicar, PR armado — Migração `magazineService` para queries tipadas, Pré-condições (checar antes de aplicar o patch), Ratchet vigente após a consolidação de persistência (2026-09-09), Riscos previstos, Rollback, Validação pós-aplicação (+47 more)
+Cohesion: 0.06
+Nodes (43): Escopo da mudança, Patch pronto para aplicar, PR armado — Migração `magazineService` para queries tipadas, Pré-condições (checar antes de aplicar o patch), Ratchet vigente após a consolidação de persistência (2026-09-09), Riscos previstos, Rollback, Validação pós-aplicação (+35 more)
 
 ### Community 91 - "untypedFrom"
 Cohesion: 0.04
@@ -4329,11 +4323,11 @@ Nodes (53): Artefato temporário, Classificação deliberada, Contrato de refer�
 
 ### Community 92 - ""public"."classify_pendrive""
 Cohesion: 0.04
-Nodes (49): "limit_user_search_history", "order_items_recalc_total", "public"."assert_quote_discount_integrity"(), "public"."can_access_quote"(), "public"."classify_pendrive"(), "public"."cleanup_user_search_history"(), "public"."comparar_precos_spot"(), "public"."compare_quote_snapshots"() (+41 more)
+Nodes (41): "limit_user_search_history", "order_items_recalc_total", "public"."can_access_quote"(), "public"."classify_pendrive"(), "public"."cleanup_discount_test_data"(), "public"."cleanup_user_search_history"(), "public"."comparar_precos_spot"(), "public"."compare_quote_snapshots"() (+33 more)
 
 ### Community 93 - "ai-router/index.ts"
-Cohesion: 0.06
-Nodes (47): AnthropicBlock, anthropicNativeAdapter, AnthropicResponse, GoogleCandidate, googleGenaiAdapter, GooglePart, GoogleResponse, ADAPTERS (+39 more)
+Cohesion: 0.07
+Nodes (44): AnthropicBlock, anthropicNativeAdapter, AnthropicResponse, GoogleCandidate, googleGenaiAdapter, GooglePart, GoogleResponse, ADAPTERS (+36 more)
 
 ### Community 94 - "20250103080000_complete_schema.sql"
 Cohesion: 0.06
@@ -4344,40 +4338,40 @@ Cohesion: 0.05
 Nodes (32): public.classify_pendrive(), public.consolidate_variant_stock(), public.fn_aggregate_stock_daily(), public.fn_auto_link_product_to_color_categories(), public.fn_auto_vincular_cor_variante(), public.fn_backfill_feminine_links(), public.fn_calculate_health_score(), public.fn_calculate_sale_price() (+24 more)
 
 ### Community 96 - "ProductFormStepContent.tsx"
-Cohesion: 0.08
-Nodes (48): ProductFormFullscreenProps, CharCounter(), FieldLabel(), FormSectionProps, SectionCard(), SectionDef, SectionId, SECTIONS (+40 more)
+Cohesion: 0.09
+Nodes (46): ProductFormFullscreenProps, CharCounter(), FieldLabel(), FormSectionProps, SectionCard(), SectionDef, SectionId, SECTIONS (+38 more)
 
 ### Community 97 - "MockupConfigPanel.tsx"
 Cohesion: 0.05
-Nodes (44): AreaCard, AreaCardProps, ACCEPTED_EXTENSIONS, ACCEPTED_MIME, ArtFileAttachment, ArtFileUpload(), ArtFileUploadProps, formatBytes() (+36 more)
+Nodes (47): AreaCard, AreaCardProps, ACCEPTED_EXTENSIONS, ACCEPTED_MIME, ArtFileAttachment, ArtFileUpload(), ArtFileUploadProps, formatBytes() (+39 more)
 
 ### Community 98 - "localStorage"
-Cohesion: 0.04
-Nodes (52): 1) Catálogo, 2) Busca, 3) Orçamento, 4) Carrinho, 5) Estoque, 6) Mockup, 7) Magazine, 8) Kit (+44 more)
+Cohesion: 0.05
+Nodes (48): 1) Catálogo, 2) Busca, 3) Orçamento, 4) Carrinho, 5) Estoque, 6) Mockup, 7) Magazine, 8) Kit (+40 more)
 
 ### Community 99 - "mockEdgeFunctionFetch"
 Cohesion: 0.06
-Nodes (31): AUTH, CT, VALID_PAYLOAD, AUTH, CT, CATEGORIES_RESPONSE, VALID_CNPJ_BODY, VALID_CNPJ_SUCCESS (+23 more)
+Nodes (33): AUTH, CT, VALID_PAYLOAD, AUTH, CT, CATEGORIES_RESPONSE, VALID_CNPJ_BODY, VALID_CNPJ_SUCCESS (+25 more)
 
 ### Community 100 - "ReplenishmentProductGrid.tsx"
-Cohesion: 0.05
-Nodes (47): 4.4 Mobile, Dark mode, Acessibilidade, Design system/tokens, PAGE_STRUCTURE_STANDARD, design-system-audit, `docs/design/blue-premium`, LEVEL_COLORS, Props, WhatIfPanel(), AnyRpc, CHIP_CFG, CoverageStat, fmtRelative() (+39 more)
+Cohesion: 0.03
+Nodes (68): 4.4 Mobile, Dark mode, Acessibilidade, Design system/tokens, PAGE_STRUCTURE_STANDARD, design-system-audit, `docs/design/blue-premium`, @tanstack/react-virtual, LEVEL_COLORS, Props, WhatIfPanel(), AnyRpc, CHIP_CFG, CoverageStat (+60 more)
 
 ### Community 101 - "log-login-attempt/index.ts"
-Cohesion: 0.04
-Nodes (49): 07 — EDGE FUNCTIONS (`supabase/functions/`), 0.1 CAMADA DE AUTORIZAÇÃO DO GATEWAY (`supabase/config.toml`), 0.2 CRONS — O QUE FOI POSSÍVEL PROVAR NO REPO, 0. CONTAGEM REAL DO ESCOPO (correção do enunciado), B.1 — Zero chamador em qualquer frente, B.2 — Chamador apenas simbólico, B.3 — Morta com prova, B. FUNÇÕES SEM CHAMADOR IDENTIFICADO (com os comandos de prova) (+41 more)
+Cohesion: 0.08
+Nodes (27): C.3 — Asserção vacuamente verdadeira, Cobertura entregue, Escopo: por que **não** existe camada "handler-direct Vitest", Estado final: 10/10, Gaps conhecidos, Matriz SQLSTATE cobertos, Reprodução local, Validação exaustiva — `log-login-attempt` (2026-07-22) (+19 more)
 
 ### Community 102 - "20250103120000_schema_no_gamification.sql"
 Cohesion: 0.07
 Nodes (55): idx_analytics_events_created_at, idx_analytics_events_type, idx_analytics_events_user, idx_notifications_created_at, idx_notifications_read, idx_notifications_user, idx_orders_client, idx_orders_created_at (+47 more)
 
 ### Community 103 - "build-migration-ledger-manifest.mjs"
-Cohesion: 0.04
-Nodes (46): A.11 RLS na prática, 1. Método e limites, 3. Comparação com `SCHEMA_REFERENCE.md`, 4.1 Relações, colunas, RLS e policies, 4.2 Constraints, índices, rotinas, triggers e views, 4.3 Enums, extensões, cron e privilégios, 4. Queries reproduzíveis, 5. Próximos passos autorizáveis, sem executar agora (+38 more)
+Cohesion: 0.03
+Nodes (65): A.11 RLS na prática, Backend, Frontend, Monitoring, Performance Optimization, Pipeline de métricas reais (RUM) → Sentry, Queries prontas (Sentry → Discover), Targets (Google Core Web Vitals — official thresholds) (+57 more)
 
 ### Community 104 - "🎁 Promo Brindes — Plataforma de Vendas de Brindes Promocionais"
-Cohesion: 0.04
-Nodes (56): 1. Catálogo (`/` e `/filtros`), 1. Clonar e instalar, 2. Configurar Supabase, 2. Simulador de Preços (`/simulador`), 3. Criador de Orçamentos (`/orcamentos/novo`), 3. Variáveis de ambiente, 4. Flow — Assistente IA, 4. Rodar em desenvolvimento (+48 more)
+Cohesion: 0.05
+Nodes (41): 1. Catálogo (`/` e `/filtros`), 2. Simulador de Preços (`/simulador`), 3. Criador de Orçamentos (`/orcamentos/novo`), 4. Flow — Assistente IA, 5. Montador de Kits (`/montar-kit`), 6. Dashboard BI (`/bi`), 🏗 Arquitetura, 🔐 Autenticação e Autorização (+33 more)
 
 ### Community 105 - "bridgeCallMetrics.ts"
 Cohesion: 0.05
@@ -4388,36 +4382,36 @@ Cohesion: 0.04
 Nodes (55): ⏸ CHECKPOINT 3 — APÓS E150, ONDA 15 — CONSOLIDAR OS 127 WORKFLOWS (E151–E160), ONDA 16 — CUSTO E TEMPO DE CI (E161–E170), ONDA 17 — SEGURANÇA DE CI E MONITORES DORMENTES (E171–E180), ONDA 18 — GOVERNANÇA E TRABALHO MULTIAGENTE (E181–E190), ONDA 19 — DOCUMENTAÇÃO QUE INDUZ ERRO (E191–E200), P200-E151 · [A] · P2 · Deletar 2 workflows inteiramente contidos no `e2e-cart`, P200-E152 · [A] · P2 · Desduplicar `cart-quality` e `e2e-cart` (+47 more)
 
 ### Community 107 - "concurrency"
-Cohesion: 0.05
-Nodes (52): 10.1 Plano Workflows/CI 100 (2026-09-26) — E01 a E100, Fase 1 — Estancar o que está quebrado (E01–E10), Fase 3 — Acabar com o "verde sem fazer nada" (E21–E32), Fase 4 — Gates decorativos viram gates (E33–E42), Fase 6 — Proteção de branch e checks obrigatórios (E53–E62), Fase 7 — Banco e Supabase ops (E63–E74), Fase 8 — Deploy e edge functions (E75–E84), Fase 9 — Consolidação e custo (E85–E93) (+44 more)
+Cohesion: 0.07
+Nodes (39): 10.1 Plano Workflows/CI 100 (2026-09-26) — E01 a E100, Fase 1 — Estancar o que está quebrado (E01–E10), Fase 3 — Acabar com o "verde sem fazer nada" (E21–E32), Fase 4 — Gates decorativos viram gates (E33–E42), Fase 6 — Proteção de branch e checks obrigatórios (E53–E62), Fase 7 — Banco e Supabase ops (E63–E74), Fase 8 — Deploy e edge functions (E75–E84), Fase 9 — Consolidação e custo (E85–E93) (+31 more)
 
 ### Community 108 - "PLANO DE ENGENHARIA — 50 ETAPAS (2026-09-17)"
 Cohesion: 0.04
-Nodes (53): 1. Achados que fundamentam este plano (resumo, evidência completa na conversa), 2. Ordem de execução, 3. Gates de interrupção (herdados + novos), 4. Checklist final 10/10, E10 · Fechar issue #1809 (Gate 1 TS regressão) `[GIT]`, E11 · Fechar issue #784 (edge functions órfãs) `[GIT]`, E12 · Triar issue #563 (drift-check antigo) `[GIT]`, E13 · Revalidar issue #1832 (deploy failure 2026-09-05) `[GIT]` (+45 more)
+Nodes (53): 1. Achados que fundamentam este plano (resumo, evidência completa na conversa), 2. Ordem de execução, 3. Gates de interrupção (herdados + novos), 4. Checklist final 10/10, E17 · Confirmar e, se necessário, executar a rotação pedida em #1807 `[SEGURANÇA]` `[REQUER-PO]` — **P0** — revalidado 2026-09-20, E18 · Remediar os achados reais de #1341 `[SEGURANÇA]` `[REQUER-PO]`, E19 · CSP: remover `unsafe-inline` de `style-src` (#1831) `[SEGURANÇA]`, E1 · Push da branch e abertura do PR `[GIT]` — ✅ concluído (2026-09-20, retroativo) (+45 more)
 
 ### Community 109 - "ItemSelector.tsx"
-Cohesion: 0.06
-Nodes (41): BoxComparisonDialogProps, BoxSelectorProps, BoxSortMode, BoxViewMode, FavoriteToggleButton(), FavoriteToggleButtonProps, AddButton(), CompatibilityBadge() (+33 more)
+Cohesion: 0.09
+Nodes (34): FavoriteToggleButton(), AddButton(), CompatibilityBadge(), getItemAttributes(), ItemCard(), ItemCardProps, StockBadge(), ItemSelector() (+26 more)
 
 ### Community 110 - "products-detail.ts"
-Cohesion: 0.07
-Nodes (42): 0. Mapa das duas camadas de dados (pré-requisito para ler as tabelas), Campos críticos do tipo `Product` (REGRA #2), E24 · Corrigir os erros de tipo expostos por E23 `[CI]`, CacheEntry, Entity, getCachedByIds(), getFresh(), getFreshFromCacheSafe() (+34 more)
+Cohesion: 0.06
+Nodes (58): 0. Mapa das duas camadas de dados (pré-requisito para ler as tabelas), Campos críticos do tipo `Product` (REGRA #2), BatchImportProgress, BatchImportResult, checkExistingSkus(), executeBatchImport(), generateErrorReportCSV(), ImportMode (+50 more)
 
 ### Community 111 - "A) TABELA MESTRA DE INTEGRAÇÕES"
-Cohesion: 0.04
-Nodes (51): 10. ElevenLabs — Scribe (STT realtime) ✅ IMPLEMENTADO_TOTAL, 11. ElevenLabs — TTS 🟨 IMPLEMENTADO_PARCIAL, 11 — INTEGRAÇÕES COM TERCEIROS (estado medido), 12. WhatsApp via deep link `wa.me` ✅ IMPLEMENTADO_TOTAL, 13. Bitrix24 REST — `bitrix-sync` ⬛ MORTO_OU_ABANDONADO, 14. n8n — webhook de orçamento ✅ IMPLEMENTADO_TOTAL, 15. SalesPro (webhook de orçamento) 🟨 IMPLEMENTADO_PARCIAL, 16. Promo Champions (webhook de orçamento) 🟨 IMPLEMENTADO_PARCIAL (+43 more)
+Cohesion: 0.03
+Nodes (68): 2. Método, fontes e limites, 0. Como o projeto resolve credenciais (contexto necessário para ler a tabela), 11 — INTEGRAÇÕES COM TERCEIROS (estado medido), 13. Bitrix24 REST — `bitrix-sync` ⬛ MORTO_OU_ABANDONADO, 15. SalesPro (webhook de orçamento) 🟨 IMPLEMENTADO_PARCIAL, 16. Promo Champions (webhook de orçamento) 🟨 IMPLEMENTADO_PARCIAL, 17. CRM externo V4 — callback de entrada 🟨 IMPLEMENTADO_PARCIAL, 18. Alertas de callback CRM → GlitchTip/Sentry (server) 🟨 IMPLEMENTADO_PARCIAL (+60 more)
 
 ### Community 112 - "@supabase/supabase-js"
 Cohesion: 0.05
 Nodes (34): @supabase/supabase-js, Anthropic, BATCH_SIZE, claude, { createClient }, supabase, supabase, supabase (+26 more)
 
 ### Community 113 - "useExternalDatabase.ts"
-Cohesion: 0.05
-Nodes (46): 3.0 Resumo, 3.1 Orçamentos, aprovação e conversão, 3.2 Pedidos, pagamentos e logística, 3.3 CRM, clientes e vendedores, 3.8 Notificações, e-mail e WhatsApp, 3. Roadmap de produto e funcionalidades de negócio, 10. `useClientHistory` — cliente 360°, 1. `useExternalProducts` — listagem paginada (+38 more)
+Cohesion: 0.17
+Nodes (20): ExternalDatabaseState, isBridgeRelatedError(), Operation, QueryOptions, QueryResult, useExternalCategories(), useExternalClientContacts(), useExternalCollections() (+12 more)
 
 ### Community 114 - "push"
-Cohesion: 0.04
-Nodes (50): Fase 5 — Baselines visuais e bots que escrevem em branch (E43–E52), R23 — Workflows com `pull_request` e `push` em `main` devem declarar `paths-ignore` para docs (E14), R24 — Mudança em >10 workflows no mesmo commit exige execução no mesmo PR (E190 — C27), B1 — Achado nº1: `--project=routes-mobile` não existe no Playwright, B2 — Gates obrigatórios que quase nunca disparam, B3 — `continue-on-error: true` — as 31 ocorrências, B4 — Filtro duplo em check required (`carrinhos`), B5 — Dois pipelines de deploy concorrendo pelo mesmo alvo — **sim, existem dois pares** (+42 more)
+Cohesion: 0.05
+Nodes (48): Fase 5 — Baselines visuais e bots que escrevem em branch (E43–E52), B1 — Achado nº1: `--project=routes-mobile` não existe no Playwright, B2 — Gates obrigatórios que quase nunca disparam, B3 — `continue-on-error: true` — as 31 ocorrências, B4 — Filtro duplo em check required (`carrinhos`), B5 — Dois pipelines de deploy concorrendo pelo mesmo alvo — **sim, existem dois pares**, B6 — Workflows só-`workflow_dispatch`, chaves duplicadas e outras armadilhas, B7 — `workflow_run`: o nome referenciado existe, mas o produtor nunca roda sozinho (+40 more)
 
 ### Community 115 - "reduced-app-navigation.test.tsx"
 Cohesion: 0.06
@@ -4440,76 +4434,76 @@ Cohesion: 0.05
 Nodes (37): "limit_user_search_history", "order_items_recalc_total", "public"."can_access_quote"(), "public"."classify_pendrive"(), "public"."cleanup_user_search_history"(), "public"."comparar_precos_spot"(), "public"."compare_quote_snapshots"(), "public"."complete_optimization"() (+29 more)
 
 ### Community 120 - "AUDITORIA COMPLETA DO SISTEMA — PromoGifts (ADM01)"
-Cohesion: 0.04
-Nodes (48): ANÁLISE DE RISCO AGREGADO, AUDITORIA COMPLETA DO SISTEMA — PromoGifts (ADM01), Backup de Base de Dados, CHANGELOG e Versioning, CSP, O que foi encontrado, O que foi encontrado, O que foi encontrado (+40 more)
+Cohesion: 0.05
+Nodes (43): ANÁLISE DE RISCO AGREGADO, AUDITORIA COMPLETA DO SISTEMA — PromoGifts (ADM01), Backup de Base de Dados, CHANGELOG e Versioning, CSP, O que foi encontrado, O que foi encontrado, O que foi encontrado (+35 more)
 
 ### Community 121 - ""public"."fn_promote_notebook_specs""
 Cohesion: 0.04
 Nodes (9): "public"."fn_auto_criar_equivalencia_spot"(), "public"."fn_auto_discover_compatible_packagings"(), "public"."fn_enrich_packaging_post_promote"(), "public"."fn_promote_notebook_specs"(), pairs, public.fn_auto_discover_all_compatible_packagings(), public.fn_auto_discover_all_compatible_packagings(), public.fn_auto_discover_all_compatible_packagings() (+1 more)
 
 ### Community 122 - "zod-validate.ts"
-Cohesion: 0.05
-Nodes (35): BodySchema, validBody, ExactHashDatabaseRow, ImgRow, isExactHashDatabaseRow(), isProductIdDatabaseRow(), isRecord(), ProductIdDatabaseRow (+27 more)
+Cohesion: 0.03
+Nodes (54): Grupo B — Edge Functions (T11–T20), T11 — Funções Deployadas vs Locais ⚠️, T12 — `verify_jwt=false` sem Proteção Manual 🔴, T13 — Padrão de Autenticação por Função ⚠️, T14 — Cobertura de CORS ✅, T15 — Logging Estruturado 🔴, T16 — Tratamento de Erros ⚠️, T17 — Circuit Breaker 🔴 (+46 more)
 
 ### Community 123 - "20250103090000_mockup_ai_complete.sql"
 Cohesion: 0.09
 Nodes (42): idx_approval_links_active, idx_approval_links_job_id, idx_approval_links_token, idx_credit_transactions_created_at, idx_credit_transactions_user_id, idx_generated_mockups_approval_status, idx_generated_mockups_created_at, idx_generated_mockups_job_id (+34 more)
 
 ### Community 124 - "🌉➡️🗄️ A Mudança da "Bridge": de Edge Function para PostgREST Nativo"
-Cohesion: 0.05
-Nodes (43): 0. TL;DR (leia isto primeiro), 10. Passos finais de aposentadoria (decommission), 11. Glossário rápido para IAs/devs, 12. Documentos relacionados, 1. Por que mudamos, 2. Onde mora o código, 3. Ciclo de vida de uma leitura (o caminho feliz), 4.1 Tabelas e contagem aproximada (+35 more)
+Cohesion: 0.06
+Nodes (38): 0. TL;DR (leia isto primeiro), 10. Passos finais de aposentadoria (decommission), 11. Glossário rápido para IAs/devs, 12. Documentos relacionados, 1. Por que mudamos, 3. Ciclo de vida de uma leitura (o caminho feliz), 4.1 Tabelas e contagem aproximada, 4.2 VIEWs de segurança (✅ existem no banco, validado 30/05) (+30 more)
 
 ### Community 125 - "2. Performance"
 Cohesion: 0.04
 Nodes (47): 2. Performance, 3. Banco de Dados, 4. Qualidade de Código, 5. Integrações, 6. Operacional, Benchmarking, Correções Aplicadas Neste PR, Detalhamento por Categoria (+39 more)
 
 ### Community 126 - "drift-baseline.mjs"
-Cohesion: 0.07
-Nodes (44): Corolário — baseline do drift-check e comandos que apagam o ledger, Corolário — baseline do drift-check e comandos que apagam o ledger, 3A — Gate 3: #2271, #2269, #2267, P200-E036 · [A] · P1 · Inventariar event triggers em vez de descartá-los ✅, P200-E038 · [A] · P1 · Ancorar e validar a allowlist de drift ✅, ALLOWLIST_PROBES, arg(), BASELINE_DIR (+36 more)
+Cohesion: 0.10
+Nodes (34): P200-E038 · [A] · P1 · Ancorar e validar a allowlist de drift ✅, ALLOWLIST_PROBES, appliedVersionsFromLedger(), arg(), codeMask(), collapseSqlWhitespace(), dollarQuoteEnd(), dropDumpLossyFunctions() (+26 more)
 
 ### Community 127 - "Auditoria exaustiva do Promo Gifts V4 e plano de 100 etapas"
-Cohesion: 0.04
-Nodes (46): Achados priorizados, Alta confiança técnica, ainda dependente do PO, Auditoria exaustiva do Promo Gifts V4 e plano de 100 etapas, Banco canônico — inventário por `pg_catalog`, Bundle e complexidade, Candidatos a limpeza — aguardando autorização, Conclusão executiva, Constraints e índices (+38 more)
+Cohesion: 0.05
+Nodes (36): Achados priorizados, Alta confiança técnica, ainda dependente do PO, Auditoria exaustiva do Promo Gifts V4 e plano de 100 etapas, Bundle e complexidade, Candidatos a limpeza — aguardando autorização, Conclusão executiva, Correções novas comprovadas, Critério para encerrar a estabilização (+28 more)
 
 ### Community 128 - "🔐 Explicação das Policies (RLS)"
 Cohesion: 0.04
 Nodes (46): 📊 ANALYTICS_EVENTS, 📋 AUDIT_LOG, 👥 BITRIX_CLIENTS (Clientes), 📚 COLLECTIONS, **Como funcionam:**, **Diferença:** User-scoped (não org-scoped!), 🔐 Explicação das Policies (RLS), 🖼️ GENERATED_MOCKUPS (+38 more)
 
 ### Community 129 - "StockDashboard.tsx"
-Cohesion: 0.08
-Nodes (33): Mapa do módulo, AlertCard(), severityIcons, severityStyles, AlertEmptyState(), AlertSummaryBar(), LowStockDialog(), OutOfStockDialog() (+25 more)
+Cohesion: 0.11
+Nodes (27): Mapa do módulo, AlertCard(), AlertEmptyState(), AlertSummaryBar(), LowStockDialog(), OutOfStockDialog(), StockAlertDialogProps, formatRelativeTime() (+19 more)
 
 ### Community 130 - "price-calculator.ts"
 Cohesion: 0.06
 Nodes (44): 5.14 Área 14 — Preços, estoque e frete (KM-131…140), Registro de execução incremental, 13 — Estoque agregado na projeção do catálogo, Fase 2 — Dados e catálogo (KM3-009 a 016), Fase 7 — Revisão (KM3-059 a 070), KM3-009 — Preencher acabamento das 14 embalagens `[PO D2]`, KM3-010 — Fechamento da embalagem `[PO D1]`, KM3-011 — Corrigir a embalagem sem medida interna (+36 more)
 
 ### Community 131 - "GitHub Actions — Auditoria exaustiva dos 117 workflows e plano de correções em 100 etapas"
-Cohesion: 0.04
-Nodes (45): 1. Estado medido (26/09), 4. Ordem recomendada e dependências críticas, 5. O que este plano **não** propõe, 6. Próximos passos, E100 — Fechar o ciclo: CLAUDE.md, graphify, retrospectiva medida, E33 — `freight-quality-gates.yml`: thresholds reais, sem `continue-on-error` em "Gate", sem duplicação, E34 — `full-ci.yml` e `global-search-gate.yml`: cobertura que pode falhar, E35 — `lint-untyped-from.yml`: remover `continue-on-error` e podar allowlist (+37 more)
+Cohesion: 0.06
+Nodes (35): 1. Estado medido (26/09), 4. Ordem recomendada e dependências críticas, 5. O que este plano **não** propõe, 6. Próximos passos, E100 — Fechar o ciclo: CLAUDE.md, graphify, retrospectiva medida, E33 — `freight-quality-gates.yml`: thresholds reais, sem `continue-on-error` em "Gate", sem duplicação, E34 — `full-ci.yml` e `global-search-gate.yml`: cobertura que pode falhar, E35 — `lint-untyped-from.yml`: remover `continue-on-error` e podar allowlist (+27 more)
 
-### Community 132 - "ADR — contrato canônico do `webhook-inbound`"
+### Community 132 - "cart-mock.ts"
 Cohesion: 0.04
-Nodes (44): 10. Matriz de respostas proposta, 11. Simulação de cenários e gaps de rollout, 12.1 Testes que parecem integração, mas não exercitam o handler, 12.2 Teste Deno HMAC legado também não mede HMAC externo, 12.3 Teste remoto avulso é mutante e está defasado, 12.4 Caracterização handler-real adicionada, 12. Auditoria dos testes, 13. Evidência de verificação local (+36 more)
+Nodes (33): bootWithCarts(), buildMixedCarts(), buildCarts(), buildCarts(), HEIGHTS, makeLongCart(), MATRIX, openWithLongList() (+25 more)
 
 ### Community 133 - "MagicUpConfigPanel.tsx"
-Cohesion: 0.06
-Nodes (39): 2. Inventário completo do registro client-side, Auditoria exaustiva do `<Clickable>` — Findings & Cobertura, Correções aplicadas nesta bateria, Critério de sucesso — atingido, Fase 1 — Auditoria estática, Fase 2 — Testes unitários (70 casos), Fase 3 — Fuzz property-based (1.600 iterações), Fase 4 — Auditoria estrutural dos call-sites (7 regras × 12 arquivos) (+31 more)
+Cohesion: 0.05
+Nodes (45): 1. Card animado com seleção (`motion.div` + `isPressed` + `strictTarget`), 2. Elemento semântico customizado (`as="article"`), 3. Wrapper de shadcn (`as={Card}`), 4. Ação com `stopPropagation` (thumb dentro de card), 5. `role` semântico (`link`, `menuitem`, `tab`), 6. Radix `asChild` — **NÃO** envolver com `<Clickable>`, A11Y Clickable — SSOT de divs clicáveis, API (+37 more)
 
 ### Community 134 - "editorRecovery.ts"
 Cohesion: 0.12
 Nodes (27): 1.4 Cadeia órfã superada (5 commits, auditoria pós-merge) — 5 commits, EditorPatch, EditorPersistence, clearMagazineEditorRecovery(), currentRecords(), keyPrefix(), legacyKey(), MagazineEditorRecovery (+19 more)
 
 ### Community 135 - "Fase 10 — Transversal, QA e release (KM3-087 a 100)"
-Cohesion: 0.05
-Nodes (45): 5.8 Área 08 — Composição, quantidades e edição do kit (KM-071…080), 6.3 Plano de Melhorias — 100 etapas (KM3-001…100, 2026-09-22), Bloco D — Kit Maker: robustez e escala (E41–E50), 8. Kit Maker (plano Consolidação, Blocos A-D), Fase 10 — Transversal, QA e release (KM3-087 a 100), Fase 4 — Caixas compatíveis, Fluxo 1 (KM3-031 a 040), KM3-031 — Chips de tipo de embalagem, KM3-032 — Grid / Lista e ordenação de caixas (+37 more)
+Cohesion: 0.04
+Nodes (54): 5.8 Área 08 — Composição, quantidades e edição do kit (KM-071…080), 6.0 Resumo, 6.3 Plano de Melhorias — 100 etapas (KM3-001…100, 2026-09-22), 6.4 Plano Corretivo — 100 etapas (2026-09-11) — IDs KMC-001…100, 6.5 Sobreposições e dívida crônica do Kit Maker, 6.6 Observações, 6. Kit Maker — planos corretivo (100), melhorias (100), finalização (20) e correções (50), Bloco D — Kit Maker: robustez e escala (E41–E50) (+46 more)
 
 ### Community 136 - "recalibrate-watermark-thresholds.mjs"
 Cohesion: 0.04
 Nodes (36): 7.3 Magazine — plano de 50 etapas (2026-09-09) + execução + auditoria de 2026-09-28, pixelmatch, pngjs, args, collectDiffs(), combos, diffs, md (+28 more)
 
-### Community 137 - "check-eslint-baseline.mjs"
-Cohesion: 0.05
-Nodes (39): baseline, BASELINE_PATH, blockingDelta, cliFull, cliIncremental, current, dir, ESLINT_BIN (+31 more)
+### Community 137 - "@/lib"
+Cohesion: 0.04
+Nodes (38): NewCategoryDialogProps, Props, BannerVariant, CloudStatusBanner, CloudStatusBannerInner, STATUS_CONFIG, StatusHistoryEntry, baseRow (+30 more)
 
 ### Community 138 - "fuzz-testing.mjs"
 Cohesion: 0.07
@@ -4519,17 +4513,17 @@ Nodes (38): combine(), execRequest(), fieldFuzz(), FUNCTION_SPECS, generateBlock
 Cohesion: 0.07
 Nodes (38): ActiveFilter, BridgeProductsPreviewPanel(), fmtCurrency(), PAGE_SIZE_OPTIONS, PageSize, CacheEntry, CredentialCacheMetricsPanel(), fmtDuration() (+30 more)
 
-### Community 140 - "Tendências e rotas `AdminRoute`"
-Cohesion: 0.06
-Nodes (39): Tendências e rotas `AdminRoute`, Mapa do caminho, A.5.2 — Sob `<AdminRoute>` (`admin-routes.tsx:65`) — exige `canManage` **+ MFA em AAL2**, B.2 — Kit Builder — ⬛ 1.819 linhas (14 componentes), KM50-006 — Preservar o fluxo escolhido ao salvar e reabrir, PromotionDialog(), useUserManagement(), useAdminKitTemplates() (+31 more)
+### Community 140 - "useRuptureAlerts.test.tsx"
+Cohesion: 0.04
+Nodes (51): 04 — FERRAMENTAS (estado medido), 0. Como as ferramentas chegam à tela, B.1 — Subsistema EMA / Risco de Ruptura (inventory) — ⬛ ~1.480 linhas, B.2 — Kit Builder — ⬛ 1.819 linhas (14 componentes), B.3 — Demais órfãos por diretório, B) Ferramentas sem página / sem consumidor (prova de ausência), C.1 — Crítico: mock apresentado como dado real, C.2 — Mock com `Math.random()` (série não determinística) (+43 more)
 
 ### Community 141 - "Bloco F — Edge functions: deploy, drift e ledger (E63–E74)"
 Cohesion: 0.05
-Nodes (43): Anexo — o que continua fora deste plano, Bloco C — Kit Maker: mobile, acessibilidade e aceite (E31–E40), Bloco F — Edge functions: deploy, drift e ledger (E63–E74), Bloco H — Observabilidade e alertas (E87–E92), Bloco I — Governança e fechamento (E93–E100), E100 — `[PO]` Sessão de aceite das etapas de decisão, E31 — Chips de filtro viram scroll horizontal em 390 px, E32 — Tabela da Revisão com `overflow-x-auto` (+35 more)
+Nodes (40): Anexo — o que continua fora deste plano, Bloco C — Kit Maker: mobile, acessibilidade e aceite (E31–E40), Bloco D — Kit Maker: robustez e escala (E41–E50), Bloco H — Observabilidade e alertas (E87–E92), Bloco I — Governança e fechamento (E93–E100), E100 — `[PO]` Sessão de aceite das etapas de decisão, E31 — Chips de filtro viram scroll horizontal em 390 px, E32 — Tabela da Revisão com `overflow-x-auto` (+32 more)
 
-### Community 142 - "@playwright/test"
-Cohesion: 0.08
-Nodes (20): selectFirstTwoQuotes(), openListAndFirstQuoteId(), attachDiagnosticsRecorder(), DiagnosticsRecorder, dumpDiagnosticsIfFailed(), snapshotUndoToast(), b64url(), buildMockSession() (+12 more)
+### Community 142 - "MagazinePageRenderer"
+Cohesion: 0.07
+Nodes (41): 5.1 M5 (mudança responsiva) — gap FECHADO via Playwright pixel-perfect, 5. Mutation testing manual (Fase 3), Ondas executadas, isActive(), BackCoverPage(), ContactPage(), CoverPage(), InstitutionalPage() (+33 more)
 
 ### Community 143 - "useSellerCarts.helpers.ts"
 Cohesion: 0.11
@@ -4541,35 +4535,35 @@ Nodes (32): "cf_recon"."cf_ghost_check_queue", "cf_recon"."crawl_run", "cf_recon
 
 ### Community 145 - "tags"
 Cohesion: 0.05
-Nodes (11): "public"."debug_automations"(), "public"."debug_automations"(), "public"."fn_apply_print_profiles"(), "public"."fn_auto_link_feminine_color"(), tags, public.fn_super_filtro_product_ids(), public.fn_super_filtro_product_ids(), public.fn_super_filtro_product_ids() (+3 more)
+Nodes (12): "public"."debug_automations"(), "public"."fn_apply_print_profiles"(), "public"."fn_auto_link_feminine_color"(), "public"."debug_automations"(), "public"."fn_apply_print_profiles"(), tags, public.fn_super_filtro_product_ids(), public.fn_super_filtro_product_ids() (+4 more)
 
 ### Community 146 - "theme-presets.ts"
 Cohesion: 0.06
 Nodes (31): 🏗️ Arquitetura — Observações para Roadmap, Onda 11 — `cleanup/11-design-system` (10-15h, ALTO risco) 🔴, checkContrast(), failures, MODES, REPORT_DIR, REPORT_FILE, ROUTES (+23 more)
 
-### Community 147 - "A) Tabela por FUNCIONALIDADE"
-Cohesion: 0.05
-Nodes (34): A) Tabela por FUNCIONALIDADE, ChallengeRequest, DevChallengeContext, DevChallengeContextValue, PendingChallenge, useDevChallenge(), AuditAction, AuditEntityType (+26 more)
+### Community 147 - "useSecretsManager.ts"
+Cohesion: 0.24
+Nodes (9): InvokeBody, InvokeSecretsData, invokeSecretsManager(), normalizeError(), RotationHistoryEntry, SecretError, SecretMutationResult, SecretStatus (+1 more)
 
 ### Community 148 - "C.1 — Teste-espelho (o teste reimplementa a lógica e testa a si mesmo)"
 Cohesion: 0.08
 Nodes (33): C.1 — Teste-espelho (o teste reimplementa a lógica e testa a si mesmo), scrollAreaHeight(), buildToastPayload(), Cart, buildColorNavParams(), buildShareMessage(), filterMainImages(), findVariationByParams() (+25 more)
 
 ### Community 149 - "e2e-resources.ts"
-Cohesion: 0.09
-Nodes (33): e2eName(), e2eScope(), getTestPrefix(), getTestUserEmail(), getTestUserId(), getTestUserIdentity(), isE2eName(), TestUserIdentity (+25 more)
+Cohesion: 0.05
+Nodes (56): 1. Resumo executivo, 2. Cobertura por suíte, 4. Fuzz property-based (Fase 2), 7. Aderência a policies E2E (Fase 6), 9. Índice de arquivos alterados/criados, Auditoria dos testes de ring do Magazine PreviewSidebar, Propriedades validadas, e2eName() (+48 more)
 
 ### Community 150 - "pricing/simulator/index.ts"
-Cohesion: 0.11
-Nodes (33): ProductPriceSimulator(), ProductPriceSimulatorProps, SimulatorMode, StepProgressBar(), CustomizationOptions(), CustomizationOptionsProps, EngravingList(), EngravingListProps (+25 more)
+Cohesion: 0.06
+Nodes (65): Props, QuantityComparisonTable(), Props, TechniqueConfigCard(), Props, TechniqueMultiSelector(), availableSizes, CalcProduct (+57 more)
 
 ### Community 151 - "Última atualização: 2026-10-18 — Regra #9 sync: PR obrigatório para commits de governança."
 Cohesion: 0.05
 Nodes (41): AGENTS.md — espelho do CLAUDE.md (contexto multi-agente), ARQUIVOS PROTEGIDOS (não modificar sem razão explícita), CI — ESTRUTURA DE GATES E PADRÃO E12, CLAUDE.md — Instruções para Claude Code (sessões automáticas), CONTEXTO DO PROJETO, Corolário — auditoria de schema, Corolário — caminho único para aplicar migration nova (E15), Corolário — caminho único para deploy de edge function (+33 more)
 
 ### Community 152 - "check-edge-verify-jwt-allowlist.mjs"
-Cohesion: 0.06
-Nodes (38): 1. Método `[RO]`, 2. Achado #1 — `ezbr_sha256` não é reproduzível localmente, 3. Achado #2 — bundle deployado exclui arquivos de teste (`*.test.ts`), 4. Mudança no workflow (`edge-functions-drift-check.yml`), 5. Allowlist de `verify_jwt=false` — 36 entradas, zero drift, 6. Script novo — `scripts/check-edge-verify-jwt-allowlist.mjs`, 7. Testes, 8. Resumo (+30 more)
+Cohesion: 0.05
+Nodes (59): 1. Método `[RO]`, 2. Achado #1 — `ezbr_sha256` não é reproduzível localmente, 3. Achado #2 — bundle deployado exclui arquivos de teste (`*.test.ts`), 4. Mudança no workflow (`edge-functions-drift-check.yml`), 5. Allowlist de `verify_jwt=false` — 36 entradas, zero drift, 6. Script novo — `scripts/check-edge-verify-jwt-allowlist.mjs`, 7. Testes, 8. Resumo (+51 more)
 
 ### Community 153 - "20260909200000_magazine_hardening_v2.sql"
 Cohesion: 0.06
@@ -4580,20 +4574,20 @@ Cohesion: 0.11
 Nodes (35): BadgeFormDialog(), BadgeFormDialogProps, BadgeFormValues, DraftState, EMPTY_DRAFT, toDraft(), BadgePreview(), BadgePreviewProps (+27 more)
 
 ### Community 155 - "SupabaseConnectionsTab.tsx"
-Cohesion: 0.14
-Nodes (33): Bitrix24Tab(), ConnectionDetailsDialog(), ConnectionStatus, CredentialField, fmtDate(), Props, Props, ConnectionPreflightAlert() (+25 more)
+Cohesion: 0.12
+Nodes (37): Bitrix24Tab(), ConnectionDetailsDialog(), ConnectionStatus, CredentialField, fmtDate(), Props, Props, ConnectionPreflightAlert() (+29 more)
 
 ### Community 156 - "ProductKitComponentsSection.tsx"
 Cohesion: 0.11
 Nodes (33): ComponentMedia, createComponent(), createPrintArea(), deleteComponent(), deleteComponentMedia(), deletePrintArea(), fetchComponentMedia(), fetchKitComponents() (+25 more)
 
 ### Community 157 - "FilterPanel.tsx"
-Cohesion: 0.10
-Nodes (33): CommemorativeDateFilter(), CommemorativeDateFilterProps, CommemorativeDateItem(), CommemorativeDateItemProps, getDaysUntilText(), DebouncedPriceInput(), DebouncedPriceInputProps, ExternalCategoryFilter() (+25 more)
+Cohesion: 0.11
+Nodes (29): CommemorativeDateFilter(), CommemorativeDateFilterProps, CommemorativeDateItem(), CommemorativeDateItemProps, getDaysUntilText(), DebouncedPriceInput(), DebouncedPriceInputProps, ExternalCategoryFilter() (+21 more)
 
 ### Community 158 - "products"
 Cohesion: 0.05
-Nodes (30): public.calculate_seo_score(), public.check_login_rate_limit(), public.check_video_health(), public.fn_apply_asia_properties_to_product(), public.fn_auto_classify_packing(), public.fn_auto_link_commemorative_dates(), public.fn_auto_set_same_supplier(), public.fn_backfill_product_attributes_safe() (+22 more)
+Nodes (35): public.calculate_seo_score(), public.fn_apply_asia_properties_to_product(), public.fn_auto_classify_packing(), public.fn_auto_link_commemorative_dates(), public.fn_auto_link_eco(), public.fn_auto_link_eco_material(), public.fn_auto_set_same_supplier(), public.fn_backfill_eco_links() (+27 more)
 
 ### Community 159 - "Plano de governança do banco — auditoria read-only (etapas 069–080)"
 Cohesion: 0.05
@@ -4601,11 +4595,11 @@ Nodes (41): 10. Etapa 077 — matriz de grants efetivos, 11. Etapas 078–080 �
 
 ### Community 160 - "Kit Maker — Plano de melhorias em 100 etapas"
 Cohesion: 0.05
-Nodes (41): Anexo A — Rastreabilidade mockup → etapas, Anexo B — Matriz de estado (preencher a cada lote), Fase 1 — Fundamentos (KM3-001 a 008), Fase 6 — Personalização (KM3-049 a 058), Fase 8 — Biblioteca (KM3-071 a 078), Fase 9 — Montar com IA (KM3-079 a 086), Kit Maker — Plano de melhorias em 100 etapas, KM3-001 — Congelar as referências no repositório (+33 more)
+Nodes (42): Anexo A — Rastreabilidade mockup → etapas, Anexo B — Matriz de estado (preencher a cada lote), Fase 1 — Fundamentos (KM3-001 a 008), Fase 5 — Escolha da caixa, Fluxo 2 (KM3-041 a 048), Fase 6 — Personalização (KM3-049 a 058), Fase 9 — Montar com IA (KM3-079 a 086), Kit Maker — Plano de melhorias em 100 etapas, KM3-001 — Congelar as referências no repositório (+34 more)
 
 ### Community 161 - "QuotesStatusChips.tsx"
 Cohesion: 0.07
-Nodes (32): 1. Fontes da verdade, 2. Mapa atual (14 badges × 6 chips), 3. Por que `cancelled` é inserível no banco canônico, 4. Estado atual (cancelled já liberado), 5. Gates automáticos, Badges da linha (`QUOTE_ROW_BADGE_STYLES`), Chips do topo (`CHIP_TOOLTIPS`), Tooltips de status de orçamentos — SSOT (+24 more)
+Nodes (31): 1. Fontes da verdade, 2. Mapa atual (14 badges × 6 chips), 3. Por que `cancelled` é inserível no banco canônico, 4. Estado atual (cancelled já liberado), 5. Gates automáticos, Badges da linha (`QUOTE_ROW_BADGE_STYLES`), Chips do topo (`CHIP_TOOLTIPS`), Tooltips de status de orçamentos — SSOT (+23 more)
 
 ### Community 162 - "check-supabase-reference-catalog.mjs"
 Cohesion: 0.09
@@ -4615,13 +4609,13 @@ Nodes (37): auditSupabaseReferences(), calledIdentifier(), classifyReceiver(), c
 Cohesion: 0.09
 Nodes (30): BulkAddToCollectionModal(), StockBulkActionBar(), StockBulkActionBarProps, setup(), mockNavigate, useSelectionShortcut(), buildQuoteItemPayload(), buildQuoteParam() (+22 more)
 
-### Community 164 - "QuoteItemsTable.tsx"
-Cohesion: 0.10
-Nodes (31): EngravingBadge(), EngravingBadgeProps, EngravingBadgeVariant, ProductThumb(), ProductThumbProps, qvThumb, QvThumbSize, qvSpacing (+23 more)
+### Community 164 - "QuoteItemDetailSheet.tsx"
+Cohesion: 0.22
+Nodes (12): EngravingBadge(), EngravingBadgeProps, EngravingBadgeVariant, fmt(), getCurrentTierLabel(), getNextTier(), NextTierHint(), parseNotesField() (+4 more)
 
-### Community 165 - "external-db/index.ts"
-Cohesion: 0.09
-Nodes (34): BatchImportProgress, BatchImportResult, checkExistingSkus(), executeBatchImport(), generateErrorReportCSV(), ImportMode, ImportRow, sanitizeImportRow() (+26 more)
+### Community 165 - "products-lightweight.ts"
+Cohesion: 0.43
+Nodes (7): InvokeResult, fetchPage(), fetchPageResilient(), fetchPromobrindProductsLightweight(), fetchSequential(), isTimeoutError(), LightweightProduct
 
 ### Community 166 - "public.product_variants"
 Cohesion: 0.05
@@ -4636,12 +4630,12 @@ Cohesion: 0.05
 Nodes (39): 10. Riscos que impedem replay hoje, 11. Próxima evidência necessária, 12. Critério de liberação para a etapa 85, 13. Validações desta entrega, 14. Addendum somente leitura — ledger canônico de 28/08/2026, 1. Fontes e limites probatórios, 2.1 Raiz criptográfica do inventário, 2.2 Distribuição temporal local (+31 more)
 
 ### Community 169 - "safeAuthCall.ts"
-Cohesion: 0.07
-Nodes (36): Eventos emitidos pelo `edge.invoke`, Gate CI, Métricas agregadas — `get_edge_invoke_summary(_minutes)`, Onda 20 — Telemetria & Correlação, Propagação de `X-Request-Id`, Auth Surface Hardening — Relatório final 10/10, Cenários simulados (fuzz), CI (+28 more)
+Cohesion: 0.09
+Nodes (31): Auth Surface Hardening — Relatório final 10/10, Cenários simulados (fuzz), CI, Conformidade com regras do projeto, Invariantes garantidos, Migração pendente (opcional, futuro), Ondas entregues, AuthErrorKind (+23 more)
 
 ### Community 170 - "ProductImageGallery.tsx"
-Cohesion: 0.13
-Nodes (28): ConfirmDeleteDialog(), Props, ImageBulkToolbar(), Props, ImageFilterBar(), Props, CF_STATUS_CONFIG, ImageGrid() (+20 more)
+Cohesion: 0.14
+Nodes (26): ImageBulkToolbar(), Props, ImageFilterBar(), Props, CF_STATUS_CONFIG, ImageGrid(), Props, ImageMetaEditor() (+18 more)
 
 ### Community 171 - "Changelog"
 Cohesion: 0.05
@@ -4664,16 +4658,16 @@ Cohesion: 0.05
 Nodes (35): audit_trigger_func(), idx_admin_audit_log_details_gin, idx_profiles_email, idx_profiles_role, idx_user_organizations_org, idx_user_organizations_user, prevent_profile_role_change, prevent_profile_role_change_trigger (+27 more)
 
 ### Community 176 - "Auditoria Exaustiva — Viewer Público da Revista"
-Cohesion: 0.08
-Nodes (34): Auditoria Exaustiva — Viewer Público da Revista, C1 — `pageIdx` inicial lê `localStorage` sem `try/catch`, C2 — Space (` `) avança página **e** aciona botão focado, C3 — Mini-mapa: `dragging` fica preso se `mouseup` acontecer fora do track, Cenários simulados (amostra representativa), Conclusão, 🔴 Críticos (3), I1 — Effect ESC do zoom re-registra listener a cada render (+26 more)
+Cohesion: 0.10
+Nodes (21): Auditoria Exaustiva — Viewer Público da Revista, C1 — `pageIdx` inicial lê `localStorage` sem `try/catch`, C2 — Space (` `) avança página **e** aciona botão focado, C3 — Mini-mapa: `dragging` fica preso se `mouseup` acontecer fora do track, Cenários simulados (amostra representativa), Conclusão, 🔴 Críticos (3), I1 — Effect ESC do zoom re-registra listener a cada render (+13 more)
 
 ### Community 177 - "useExpertChat.ts"
 Cohesion: 0.12
 Nodes (27): ChatHeader(), ChatHeaderProps, ChatHistoryPanel(), ChatInputBar(), THINKING_MESSAGES, THINKING_MESSAGES_CRM, useExpertChat(), UseExpertChatOptions (+19 more)
 
-### Community 178 - "simulation-orchestrator/index.ts"
-Cohesion: 0.08
-Nodes (30): ModeEnum, SimulationOrchestratorSchemas, SimulationOrchestratorV1, SimulationOrchestratorV2, TargetFnEnum, dbCalls, EdgeHandler, ENV_NAMES (+22 more)
+### Community 178 - "outcomes.ts"
+Cohesion: 0.19
+Nodes (13): buildReport(), SimulationReport, classifyHttpScenario(), ClassifyHttpScenarioInput, responseStatusForSummary(), SimulationExpectation, SimulationOutcome, SimulationOutcomeSummary (+5 more)
 
 ### Community 179 - "08 — Camada de Dados / Schema (estado DECLARADO no repositório)"
 Cohesion: 0.05
@@ -4684,20 +4678,20 @@ Cohesion: 0.05
 Nodes (37): 1.1. Testes automatizados, 1.2. Testes manuais no DB de produção (`doufsxqlfjyuvxuezpln`), 1. Escopo dos testes, 2.1. Colunas da tabela `supplier_products_raw`, 2.2. Índices, 2.3. Triggers, 2.4. Função `fn_process_raw_v2` — verificações cirúrgicas, 2.5. Bug #3 original — 499 "processed" com erros silenciados (+29 more)
 
 ### Community 181 - "cleanup-client.ts"
-Cohesion: 0.08
-Nodes (34): globalSetup(), globalTeardown(), attemptCleanupRequest(), AttemptOutcome, CleanupConfig, CleanupResponse, computeBackoff(), isRetryable() (+26 more)
+Cohesion: 0.21
+Nodes (16): globalSetup(), globalTeardown(), attemptCleanupRequest(), AttemptOutcome, CleanupConfig, CleanupResponse, computeBackoff(), isRetryable() (+8 more)
 
 ### Community 182 - "check-workflow-contracts.mjs"
-Cohesion: 0.11
-Nodes (35): checkC10PersistCredentials(), checkC11ShellStrict(), checkC12NoContentsWriteInPR(), checkC13PathsSelfRef(), checkC14NoStandaloneTestResults(), checkC15FixedRunner(), checkC16ShaPinned(), checkC17NoContinueOnErrorJob() (+27 more)
+Cohesion: 0.07
+Nodes (46): __dirname, jobNames, loadWorkflows(), matched, phantoms, _require, requiredChecks, requiredChecksJson (+38 more)
 
-### Community 183 - "SupplierRiskPanel.tsx"
+### Community 183 - "check-ledger-statements-gate.mjs"
 Cohesion: 0.08
-Nodes (23): ProductRiskDetail(), ProductRiskDetailProps, RiskKpi(), RiskKpiProps, RiskChartDataPoint, RiskTooltip, mockIntelligence, mockSummary (+15 more)
+Nodes (39): 1. Método e limites, 3. Comparação com `SCHEMA_REFERENCE.md`, 4.1 Relações, colunas, RLS e policies, 4.2 Constraints, índices, rotinas, triggers e views, 4.3 Enums, extensões, cron e privilégios, 4. Queries reproduzíveis, 5. Próximos passos autorizáveis, sem executar agora, Classificação final das diferenças (+31 more)
 
 ### Community 184 - "Grupo C — Frontend (T21–T30)"
-Cohesion: 0.05
-Nodes (36): AI Quotas, Apêndice: Evidências de Infra Coletadas, Auditoria Exaustiva: Código × Infraestrutura Supabase, Edge Functions Deployadas (79 ativas), Grupo C — Frontend (T21–T30), Grupo E — Performance, Observabilidade e Qualidade (T41–T50), Kill Switches (1 no DB), Logs Recentes (24h) (+28 more)
+Cohesion: 0.09
+Nodes (22): AI Quotas, Apêndice: Evidências de Infra Coletadas, Auditoria Exaustiva: Código × Infraestrutura Supabase, Edge Functions Deployadas (79 ativas), Grupo E — Performance, Observabilidade e Qualidade (T41–T50), Kill Switches (1 no DB), Logs Recentes (24h), pg_cron (27 jobs ativos, 0 falhas/24h) (+14 more)
 
 ### Community 185 - "🏗️ Arquitetura do Sistema"
 Cohesion: 0.05
@@ -4708,36 +4702,36 @@ Cohesion: 0.10
 Nodes (32): M-04 — `crm-db.ts`: `detectCanonicalDbHealth()` (health check passivo), acquireCrmSlot(), activateRateLimitCooldown(), canDegradeCrmRead(), CanonicalDbHealthResult, _concurrentQueue, CrmBatchQuery, CrmBatchResult (+24 more)
 
 ### Community 187 - "safeInvokeCall.ts"
-Cohesion: 0.07
-Nodes (33): Edge Functions e integrações, Headers client → edge, Contrato, Estado por edge, Manifesto de Idempotência — Edges de Escrita, Regra para novos call sites, Antes / depois, Migração para `invokeEdgeSafe` — SSOT de `functions.invoke` (+25 more)
+Cohesion: 0.11
+Nodes (20): Bloqueadas por autorização ou capacidade externa, Concluídas e comprovadas, Edge Functions e integrações, Execução validada em 26/08/2026, Parciais com evidência pronta, Verificações desta rodada, Headers client → edge, EdgeErrorKind (+12 more)
 
-### Community 188 - "Matriz preparatória de fluxos críticos"
-Cohesion: 0.05
-Nodes (36): 11. CRM, 12. Dependências cruzadas e ordem segura, 13. Decisões consolidadas ainda pendentes, 1. Método, alcance e limitações, 2. Resumo executivo para decisão do PO, 3. Catálogo, 4. Busca, 5. Orçamento (+28 more)
+### Community 188 - "useMockupDraft.test.ts"
+Cohesion: 0.04
+Nodes (57): 11. CRM, 12. Dependências cruzadas e ordem segura, 13. Decisões consolidadas ainda pendentes, 1. Método, alcance e limitações, 2. Resumo executivo para decisão do PO, 3. Catálogo, 5. Orçamento, 6. Carrinho (+49 more)
 
-### Community 189 - "check-public-views-drift.mjs"
-Cohesion: 0.08
-Nodes (33): 1. As 8 views, confirmadas ao vivo `[RO]`, 2. Definição de cada view (`pg_get_viewdef`) `[RO]`, 3. Varredura de colunas sensíveis `[RO]` — achado central desta etapa, 4. Comparação contrato × banco ao vivo `[RO]`, 5. Gate de CI (`scripts/check-public-views-drift.mjs`) `[RO — só leitura no Supabase]`, 6. Resumo para o checklist da E16, E16 — As 8 views `v_*_public` SECURITY DEFINER como superfície anônima (2026-09-16), Evidência rodada nesta sessão (+25 more)
+### Community 189 - "2. Definição de cada view (`pg_get_viewdef`) `[RO]`"
+Cohesion: 0.13
+Nodes (14): 1. As 8 views, confirmadas ao vivo `[RO]`, 2. Definição de cada view (`pg_get_viewdef`) `[RO]`, 3. Varredura de colunas sensíveis `[RO]` — achado central desta etapa, 4. Comparação contrato × banco ao vivo `[RO]`, 6. Resumo para o checklist da E16, E16 — As 8 views `v_*_public` SECURITY DEFINER como superfície anônima (2026-09-16), `v_kit_component_media_public`, `v_product_compositions_public` (+6 more)
 
 ### Community 190 - "validate-lovable-sync-target.mjs"
-Cohesion: 0.05
-Nodes (34): 1. Onde entra o `schedule:` — `schema-snapshot-export.yml`, não `db-schema-drift-check.yml`, 2. Mecanismo de diff: git history, não um artefato novo, 3. Comparação ledger ↔ arquivos: script novo, não `npm run ledger:manifest`, Decisão de arquitetura, E46 — Drift check live semanal + comparação ledger ↔ arquivos no CI, Nota de honestidade sobre os números do baseline E06, O que fica pendente — só comprovável pós-merge, O que foi implementado (+26 more)
+Cohesion: 0.07
+Nodes (25): 1. Onde entra o `schedule:` — `schema-snapshot-export.yml`, não `db-schema-drift-check.yml`, 2. Mecanismo de diff: git history, não um artefato novo, 3. Comparação ledger ↔ arquivos: script novo, não `npm run ledger:manifest`, Decisão de arquitetura, E46 — Drift check live semanal + comparação ledger ↔ arquivos no CI, Nota de honestidade sobre os números do baseline E06, O que fica pendente — só comprovável pós-merge, O que foi implementado (+17 more)
 
 ### Community 191 - "🧹 Sessão de Housekeeping de PRs — 08/05/2026"
-Cohesion: 0.06
-Nodes (35): 12.8 Testes pulados (varredura 8), 13 · Operacionalidade — **7.5/10** (Padrão ×1) ↑ de 7.0, 1. MCP `create_pull_request` falhando com 404 — bypass via curl, 2. CodeRabbit Pro + Codex + Copilot são complementares ao CI, 3. `vi.stubEnv` é o jeito certo de stub `import.meta.env` em Vitest, 4. `setupFiles` rodam antes dos imports do test file, 5. Pre-commit hook (`lint-staged`) usa `eslint --max-warnings=0`, 6. Pre-push hook timeout 524 (+27 more)
+Cohesion: 0.10
+Nodes (19): 1. MCP `create_pull_request` falhando com 404 — bypass via curl, 2. CodeRabbit Pro + Codex + Copilot são complementares ao CI, 3. `vi.stubEnv` é o jeito certo de stub `import.meta.env` em Vitest, 4. `setupFiles` rodam antes dos imports do test file, 5. Pre-commit hook (`lint-staged`) usa `eslint --max-warnings=0`, 6. Pre-push hook timeout 524, 7. `.env.local` esconde problema de CI em local, #82 `fix(preview): restaura preview do Lovable` (+11 more)
 
 ### Community 192 - "AUDITORIA_PLANEJADO_NAO_EXECUTADO_2026-10-11.md"
-Cohesion: 0.06
-Nodes (27): Anexo A01 — Roadmap de produto e funcionalidades de negócio, Anexo A03 — Kit Maker: plano mestre de 200 etapas, Anexo A05 — Magazine, Mockup, Magic Up e ferramentas de IA, Anexo A07 — Integrações, fornecedores, edge functions e infraestrutura, 10.0 Resumo, 10.3 Plano Melhorias e Correções 50 (2026-09-13) — `docs/plans/PLANO_MELHORIAS_CORRECOES_50_ETAPAS_2026-09-13.md` (E01–E50), 10.4 Conformidade do Padrão E12 (`docs/ci/PADRAO_WORKFLOW.md`, R1–R8), 10.5 Segredos e variáveis não inventariados (`docs/ci/SEGREDOS.md` × `.github/workflows/` + `.github/actions/`) (+19 more)
+Cohesion: 0.09
+Nodes (14): Anexo A01 — Roadmap de produto e funcionalidades de negócio, Anexo A03 — Kit Maker: plano mestre de 200 etapas, Anexo A04 — Kit Maker: planos de correções, finalização, melhorias e corretivo, Anexo A05 — Magazine, Mockup, Magic Up e ferramentas de IA, Anexo A07 — Integrações, fornecedores, edge functions e infraestrutura, 10.0 Resumo, 10.3 Plano Melhorias e Correções 50 (2026-09-13) — `docs/plans/PLANO_MELHORIAS_CORRECOES_50_ETAPAS_2026-09-13.md` (E01–E50), 10.4 Conformidade do Padrão E12 (`docs/ci/PADRAO_WORKFLOW.md`, R1–R8) (+6 more)
 
 ### Community 193 - "collapse-reflow.spec.ts"
 Cohesion: 0.07
 Nodes (28): 1. Como funciona o diff, assertBaselineExists(), __dirname, SNAPSHOT_DIR, TOGGLE, VIEWPORTS, waitForStableHeight(), BASE_DYNAMIC_MASK_SELECTORS (+20 more)
 
 ### Community 194 - "GitHub Actions — Auditoria exaustiva v2 dos 125 workflows e plano de correções em 100 etapas"
-Cohesion: 0.05
-Nodes (36): 1. Método, 5. As 100 etapas, 6. Ordem sugerida de execução (sprints de 2 semanas), 7. Mapa achados → etapas, 8. Fontes e reprodutibilidade, E100 — Retrospectiva medida e placar do plano, E13 — Um único projeto Vercel ligado ao repositório, E14 — PRs de bot e PRs só de docs não disparam a esteira inteira (+28 more)
+Cohesion: 0.04
+Nodes (54): 1. Método, 5. As 100 etapas, 6. Ordem sugerida de execução (sprints de 2 semanas), 7. Mapa achados → etapas, 8. Fontes e reprodutibilidade, E01 — Gate 1.9 deixa de contar arquivos gerados (`types.ts`), E02 — Diagnóstico e correção do login do smoke em CI (Gate 3), E03 — `deploy-ready` distingue skip condicional de skip em cascata e deixa de bloquear Dependabot/forks (+46 more)
 
 ### Community 195 - "cartViewModePrefs.ts"
 Cohesion: 0.11
@@ -4748,32 +4742,32 @@ Cohesion: 0.06
 Nodes (13): clickInactiveAndSyncState(), collectVariationTabStops(), expectRovingState(), expectSingleTabStop(), FOCUS_VISIBLE_CLASSES, getDots(), getDotsTablist(), getTabOrder() (+5 more)
 
 ### Community 197 - "BD Interno (app)"
-Cohesion: 0.07
-Nodes (35): 1. Estoque XBZ — `fn_import_stock_xbz` (cron `xbz-stock-sync`, `*/15`), 2. Dimensões — trigger `trg_auto_sync_product_dimensions`, Plano — Enriquecedores Gold que leem Bronze (estoque & dimensões), Resumo, 6. Gaps e falhas confirmadas, Auditoria, BD Interno (app), Carrinhos de Vendedor (+27 more)
+Cohesion: 0.08
+Nodes (31): 1. Estoque XBZ — `fn_import_stock_xbz` (cron `xbz-stock-sync`, `*/15`), 2. Dimensões — trigger `trg_auto_sync_product_dimensions`, Plano — Enriquecedores Gold que leem Bronze (estoque & dimensões), Resumo, 6. Gaps e falhas confirmadas, BUG-SF-13 — `FilterPreset` tipo duplicado com shapes diferentes, Auditoria, BD Interno (app) (+23 more)
 
 ### Community 198 - "A. BI por cliente — fontes e estados mistos"
-Cohesion: 0.10
-Nodes (32): A. BI por cliente — fontes e estados mistos, Backlog de aceite derivado (sem alteração nesta etapa), Cobertura de telas e consumidores observados, Dependências de efeito do BI, BIAiCopilot(), BIBriefingMode(), fmtBRL(), BIProductCard() (+24 more)
+Cohesion: 0.03
+Nodes (85): A. BI por cliente — fontes e estados mistos, Backlog de aceite derivado (sem alteração nesta etapa), Cobertura de telas e consumidores observados, Contrato alvo para a etapa 57 — depende de autorização de design/PO, Convenção de leitura da matriz, Dependências de efeito do BI, Escopo e método, Evidências e comandos somente leitura executados (+77 more)
 
-### Community 199 - "WorkflowCanvas.tsx"
-Cohesion: 0.08
-Nodes (32): 1.1 — Sistema restrito a colaboradores, 1.2 — Reset de senha com aprovação, 1.3 — Remoção de Passkey/WebAuthn, 1.4 — Faxina de rotas (revisão página por página), 1.6 — Remoção das 7 rotas públicas com token (radical), 1.6 — Remoção de feature pública (executada 07/05/2026), 1.7 — Páginas órfãs e cleanup auxiliar (executada 07/05/2026 - sessão de noite), 1.8 — Quick-wins de infraestrutura (executados 07/05/2026 - sessão de noite) (+24 more)
+### Community 199 - "🟢 FASE 1 — Faxina de Código"
+Cohesion: 0.11
+Nodes (18): 1.1 — Sistema restrito a colaboradores, 1.2 — Reset de senha com aprovação, 1.3 — Remoção de Passkey/WebAuthn, 1.4 — Faxina de rotas (revisão página por página), 1.6 — Remoção das 7 rotas públicas com token (radical), 1.6 — Remoção de feature pública (executada 07/05/2026), 1.8 — Quick-wins de infraestrutura (executados 07/05/2026 - sessão de noite), 1.9 — Catálogo de commits Lovable bot (CONCLUÍDA 08/05/2026) (+10 more)
 
 ### Community 200 - "postgrest.ts"
 Cohesion: 0.08
 Nodes (30): 1.1 Vetores de acesso a dados medidos, 1.2 RPCs e Edge Functions chamados pelo escopo, 1. Peso medido do escopo, A.3 — Acesso a dados (PostgREST / bridge / RPC), 2.5 Consistência de aliases entre os 3 caminhos de leitura, BRIDGE_ALIASES, COLUMN_MAP, dbInvoke() (+22 more)
 
 ### Community 201 - "Plano de Integração de Branches — 300 etapas (2026-10-19)"
-Cohesion: 0.06
-Nodes (35): 10. Pontos que exigem o Joaquim (resumo), 11. Diário de execução (o executor preenche), 12. Resultado (preencher em E297), 1.1 Estado do `main`, 1.2 Inventário das 106 branches, 1.3 Falhas e gaps encontrados (fora do CI vermelho), 1. Diagnóstico (fatos medidos em 2026-10-19), 1A — C1: login E2E em CI (destrava ~11 workflows) (+27 more)
+Cohesion: 0.08
+Nodes (23): 10. Pontos que exigem o Joaquim (resumo), 11. Diário de execução (o executor preenche), 12. Resultado (preencher em E297), 1.1 Estado do `main`, 1.2 Inventário das 106 branches, 1.3 Falhas e gaps encontrados (fora do CI vermelho), 1. Diagnóstico (fatos medidos em 2026-10-19), 1A — C1: login E2E em CI (destrava ~11 workflows) (+15 more)
 
 ### Community 202 - "Inventário e Arquitetura de Mídia — Promo Brindes"
 Cohesion: 0.06
 Nodes (35): 10. Plano de Ação e Roadmap, 11.1 Nomenclatura de IDs no Cloudflare Images (padrão a manter), 11.2 Variantes de transformação CF Images (a implementar), 11.3 Status lifecycle de `product_images`, 11. Convenções e Padrões, 12. KPIs e Métricas de Acompanhamento, 13. Workers Cloudflare Relacionados, 1.1 Breakdown estimado por fornecedor no Cloudflare (+27 more)
 
-### Community 203 - "useMcpKeys.ts"
-Cohesion: 0.12
-Nodes (28): ACTION_LABELS, AuditEntry, McpKeyDetailsDrawer(), Props, formatExpiresIn(), formatRelative(), McpKeyRow(), Props (+20 more)
+### Community 203 - "A) Tabela por FUNCIONALIDADE"
+Cohesion: 0.04
+Nodes (53): A) Tabela por FUNCIONALIDADE, ACTION_LABELS, AuditEntry, McpKeyDetailsDrawer(), Props, formatExpiresIn(), formatRelative(), McpKeyRow() (+45 more)
 
 ### Community 204 - "invoke.ts"
 Cohesion: 0.10
@@ -4788,20 +4782,20 @@ Cohesion: 0.09
 Nodes (24): Database, FornecedorGravacao, HotStampingFitaOpcao, Json, LaserAcabamentoOpcao, TecnicaFaixaArea, TecnicaFaixaPontos, TecnicaGravacao (+16 more)
 
 ### Community 207 - "20251227180006_sql_optimizations.sql"
-Cohesion: 0.08
-Nodes (23): quotes, idx_quotes_tags, idx_clients_email, idx_clients_name_search, idx_clients_segment, idx_order_history_order, idx_products_name_search, idx_products_sku (+15 more)
+Cohesion: 0.06
+Nodes (27): quotes, idx_quotes_tags, idx_clients_email, idx_clients_name_search, idx_clients_segment, idx_order_history_order, idx_products_name_search, idx_products_sku (+19 more)
 
 ### Community 208 - "useKitBuilderQuote.ts"
 Cohesion: 0.07
 Nodes (33): 10. Kit, Contratos detectados, Critérios de sucesso propostos, Decisões pendentes do PO, Rollback, flags e riscos abertos, Testes encontrados, Adendo 2 — o que MAIS se aproveita do documento do Codex (etapas 69–80), Adendo 3 — planos antigos do repositório que ainda valem + risco achado (etapas 81–84) (+25 more)
 
 ### Community 209 - "5. Kit Maker — plano mestre de 200 etapas (2026-09-10)"
-Cohesion: 0.08
-Nodes (33): 5.0 Resumo, 5.11 Área 11 — Caixas recomendadas e comparação (KM-101…110), 5.15 Área 15 — Revisão, identificação e criação do orçamento (KM-141…150), 5.16 Área 16 — Assistente de montagem com IA (KM-151…160), 5.19 Área 19 — Testes integrados, segurança e regressão (KM-181…190), 5.1 Área 01 — Escopo, evidências e contratos de aceite (KM-001…010), 5.20 Área 20 — Entrega controlada, documentação e aceite final (KM-191…200), 5.2 Área 02 — Sistema visual compartilhado e composição das páginas (KM-011…020) (+25 more)
+Cohesion: 0.10
+Nodes (31): 5.0 Resumo, 5.11 Área 11 — Caixas recomendadas e comparação (KM-101…110), 5.15 Área 15 — Revisão, identificação e criação do orçamento (KM-141…150), 5.16 Área 16 — Assistente de montagem com IA (KM-151…160), 5.19 Área 19 — Testes integrados, segurança e regressão (KM-181…190), 5.1 Área 01 — Escopo, evidências e contratos de aceite (KM-001…010), 5.20 Área 20 — Entrega controlada, documentação e aceite final (KM-191…200), 5.2 Área 02 — Sistema visual compartilhado e composição das páginas (KM-011…020) (+23 more)
 
 ### Community 210 - "A.1 — Tabela dos 46 (+1)"
 Cohesion: 0.11
-Nodes (31): O que foi encontrado, SEÇÃO 17 — ACESSIBILIDADE (A11Y), A.1 — Tabela dos 46 (+1), A11yContext, A11yContextType, AccessibilityProvider(), FONT_SIZE_PX, SkipToContent() (+23 more)
+Nodes (30): O que foi encontrado, A.1 — Tabela dos 46 (+1), A11yContext, A11yContextType, AccessibilityProvider(), FONT_SIZE_PX, SkipToContent(), useA11y() (+22 more)
 
 ### Community 211 - "3. FASES DETALHADAS"
 Cohesion: 0.06
@@ -4820,12 +4814,12 @@ Cohesion: 0.06
 Nodes (35): devDependencies, autoprefixer, @axe-core/playwright, @commitlint/cli, @commitlint/config-conventional, eslint-plugin-unused-imports, fast-check, jest-axe (+27 more)
 
 ### Community 215 - "client.ts"
-Cohesion: 0.07
-Nodes (26): @lovable.dev/cloud-auth-js, lovable, lovableAuth, SignInOptions, authLog, envKey, envUrl, envUrlIsValid (+18 more)
+Cohesion: 0.05
+Nodes (40): 2.1 Migrations: Repo × Ledger × Schema Real, 2.2 types.ts × Schema Real, 2.3 Edge Functions: Publicadas × Repo, 2.4 Código Fonte × Schema Real (chamadas .from()/.rpc()), 2.5 Deno.env × Vault Secrets, 2.6 Resumo de Achados da Seção 2, Contagens, Migrations Aplicadas Fora do Repo (11 — DDL Out-of-Band) (+32 more)
 
 ### Community 216 - "IntegrationsHealthCard.tsx"
-Cohesion: 0.09
-Nodes (29): CardSourceDiagnostic(), describeLoadError(), Field, Props, SOURCE_META, CredentialsSourceFilter(), Props, CredentialSource (+21 more)
+Cohesion: 0.08
+Nodes (33): CardSourceDiagnostic(), describeLoadError(), Field, Props, SOURCE_META, CredentialsSourceFilter(), Props, CredentialSource (+25 more)
 
 ### Community 217 - "ModernSkeletons.tsx"
 Cohesion: 0.11
@@ -4837,7 +4831,7 @@ Nodes (24): LogoPreviewCanvas(), LogoPreviewCanvasProps, LogoQuickActions(), Log
 
 ### Community 219 - "useNovelties.ts"
 Cohesion: 0.14
-Nodes (32): iso(), raw(), applyNoveltyPredicate(), applyNoveltyQualityFilters(), buildSupplierBreakdown(), calcDaysAsNovelty(), calcDaysRemaining(), CategoryRecord (+24 more)
+Nodes (33): D-6 — `useNovelties` × `novelty-core`: extração incompleta, P200-E124 · [D] · P1 · Criar o ratchet de `as unknown as`, applyNoveltyPredicate(), applyNoveltyQualityFilters(), buildSupplierBreakdown(), calcDaysAsNovelty(), calcDaysRemaining(), CategoryRecord (+25 more)
 
 ### Community 220 - "aggregate.ts"
 Cohesion: 0.13
@@ -4848,20 +4842,20 @@ Cohesion: 0.09
 Nodes (32): Antes de regenerar types.ts:, Após regenerar:, REGRA #4 — SCHEMA SUPABASE (`types.ts`), Antes de regenerar types.ts:, Após regenerar:, REGRA #4 — SCHEMA SUPABASE (`types.ts`), 1. Problema, 2.2 Contagens reais confirmadas hoje (2026-09-16) (+24 more)
 
 ### Community 222 - "useCommemorativeDates.ts"
-Cohesion: 0.07
-Nodes (32): 1. Mojibake UTF-8 (CORRIGIDO) — Severidade Alta, 2–4. Backend Supabase — Advisors de segurança, 2. Funções `SECURITY DEFINER` executáveis por anon (revisar), 3. 373 tabelas expostas ao papel `anon`, 4. RLS sempre-verdadeira — `password_reset_requests`, 5. Kit Maker servindo dados de mock em produção — Média, 6. Aviso de validade de preço em todos os produtos — Média, 7. Widget de calendário do Dashboard — Baixa (+24 more)
+Cohesion: 0.06
+Nodes (38): 1. Mojibake UTF-8 (CORRIGIDO) — Severidade Alta, 2–4. Backend Supabase — Advisors de segurança, 2. Funções `SECURITY DEFINER` executáveis por anon (revisar), 3. 373 tabelas expostas ao papel `anon`, 4. RLS sempre-verdadeira — `password_reset_requests`, 5. Kit Maker servindo dados de mock em produção — Média, 6. Aviso de validade de preço em todos os produtos — Média, 7. Widget de calendário do Dashboard — Baixa (+30 more)
 
 ### Community 223 - "🔬 Auditoria Técnica Exaustiva — Promo Gifts V4 (Round 2)"
-Cohesion: 0.06
-Nodes (25): Auditoria Exaustiva — Módulo BUSCA GLOBAL, Mapa de Arquivos Modificados, Resumo Executivo, Degradação graciosa (o que o site faz sem cada dependência), Detecção (sinais que já existem), Passo a passo, Regras que não mudam durante o incidente, Resposta a incidentes — Promo Gifts V4 (+17 more)
+Cohesion: 0.08
+Nodes (18): Auditoria Exaustiva — Módulo BUSCA GLOBAL, Mapa de Arquivos Modificados, Resumo Executivo, Degradação graciosa (o que o site faz sem cada dependência), Detecção (sinais que já existem), Passo a passo, Regras que não mudam durante o incidente, Resposta a incidentes — Promo Gifts V4 (+10 more)
 
 ### Community 224 - "🚀 Roadmap - Próximos Passos"
 Cohesion: 0.06
 Nodes (34): **4.1: Bitrix24**, **4.2: n8n Automation**, **4.3: WhatsApp Business**, **5.1: Design System**, **5.2: Responsividade**, **5.3: Loading States**, **7.1: Checklist de Produção**, **7.2: Documentação** (+26 more)
 
 ### Community 225 - "Fixtures críticas anonimizadas — inventário seguro"
-Cohesion: 0.06
-Nodes (30): A. Já está bem encaminhado, Achados transversais, B. Gaps reais, C. Chamadas a produção ou dados voláteis, Camada 1 — fixtures puramente locais, obrigatórias para regressão, Camada 2 — seeds controladas de staging, opcionais, Cleanup remoto, Conjunto canônico proposto (+22 more)
+Cohesion: 0.09
+Nodes (22): A. Já está bem encaminhado, Achados transversais, B. Gaps reais, C. Chamadas a produção ou dados voláteis, Camada 1 — fixtures puramente locais, obrigatórias para regressão, Camada 2 — seeds controladas de staging, opcionais, Cleanup remoto, Conjunto canônico proposto (+14 more)
 
 ### Community 226 - "ONDA 8 — EDGE FUNCTIONS: AUTORIZAÇÃO E EXPOSIÇÃO DE DADOS (E081–E090)"
 Cohesion: 0.06
@@ -4872,24 +4866,24 @@ Cohesion: 0.12
 Nodes (20): norm(), snapshotHeader(), norm(), snapshotHeader(), VIEWPORTS, norm(), readHeader(), norm() (+12 more)
 
 ### Community 228 - "MockupHistoryPanel.tsx"
-Cohesion: 0.10
-Nodes (25): canvas-confetti, Annotation, MockupAnnotations(), MockupAnnotationsProps, MockupBeforeAfter(), MockupBeforeAfterProps, CompareMockup, MockupCompareDialog() (+17 more)
+Cohesion: 0.13
+Nodes (21): Annotation, MockupAnnotations(), MockupAnnotationsProps, MockupBeforeAfter(), MockupBeforeAfterProps, CompareMockup, MockupCompareDialog(), MockupCompareDialogProps (+13 more)
 
 ### Community 229 - "BulkImportDialog.tsx"
-Cohesion: 0.12
-Nodes (28): downloadBlob(), StepComplete(), StepCompleteProps, StepImporting(), StepImportingProps, StepMapping(), StepMappingProps, StepPreview() (+20 more)
+Cohesion: 0.08
+Nodes (39): Pendências pós-fix, downloadBlob(), StepComplete(), StepCompleteProps, StepImporting(), StepImportingProps, StepMapping(), StepMappingProps (+31 more)
 
 ### Community 230 - "SupplierDrawer.tsx"
-Cohesion: 0.10
-Nodes (26): BAND_LABEL, BAND_STYLE, ReliabilityBadge(), ReliabilityBadgeProps, ReliabilityKpiBar(), ReliabilityKpiBarProps, delayLabel(), formatDate() (+18 more)
+Cohesion: 0.12
+Nodes (22): BAND_LABEL, BAND_STYLE, ReliabilityBadge(), ReliabilityBadgeProps, delayLabel(), formatDate(), fulfillmentLabel(), ReplenishmentHistoryTable() (+14 more)
 
 ### Community 231 - "LayoutComponents.tsx"
 Cohesion: 0.08
 Nodes (31): AnimatedContainer(), AnimatedContainerProps, Container(), CONTAINER_SIZE_CLASSES, ContainerProps, Divider(), DividerProps, Grid() (+23 more)
 
 ### Community 232 - "LocationPanel.tsx"
-Cohesion: 0.08
-Nodes (26): clearDraft(), draftKey(), groupByGrupo(), LocationDraft, LocationPanel(), LocationPanelProps, readDraft(), SelectedTechniqueBar() (+18 more)
+Cohesion: 0.03
+Nodes (65): Fluxo 5 — Personalização / gravação, ConfigurationPanel(), ConfigurationPanelProps, FaixaDimensional, CollapsedInteractionProps, ConfigurationPanelV6(), ConfigurationPanelV6Props, countUniqueTechniques() (+57 more)
 
 ### Community 233 - "product-webhook/index.ts"
 Cohesion: 0.08
@@ -4912,8 +4906,8 @@ Cohesion: 0.06
 Nodes (32): 1) Catálogo, 1) Coleta Playwright, 2) Busca, 2) Falha estrutural encontrada, 3) Estado do worktree no momento da auditoria, 3) Orçamento, 4) Carrinho, 5) Estoque (+24 more)
 
 ### Community 238 - "AUDITORIA INDEPENDENTE — PROMO_GIFTS"
-Cohesion: 0.06
-Nodes (32): Aliases Legados (causa de confusão), APÊNDICE A — COMANDOS DE VERIFICAÇÃO RÁPIDA, APÊNDICE B — INVENTÁRIO DE EDGE FUNCTIONS COM `verify_jwt = false`, APÊNDICE C — ESTRUTURA DE ROLES E PERMISSÕES, AUDITORIA INDEPENDENTE — PROMO_GIFTS, Concerns de Infraestrutura, CONCLUSÃO, CRÍTICO-001: Escalonamento de Privilégios via `user_roles` (Privilege Escalation) (+24 more)
+Cohesion: 0.05
+Nodes (39): Aliases Legados (causa de confusão), ALTO-001: `webhook-dispatcher` — Endpoint Sem Autenticação com Service Role Key, ALTO-002: Content-Security-Policy Ausente no `index.html`, ALTO-003: CSP com Placeholder `{{nonce}}` Não Substituído nas Edge Functions, ALTO-004: Kong 2.8.1 em Self-Hosted — Versão com CVEs Conhecidos, ALTO-005: Branch `main` sem Proteção — Push Direto por Qualquer Colaborador, ALTO-006: `collections` Table — Qualquer Agente Pode Deletar Collections, ALTO-007: Containers Supabase Auth Exited na VPS (+31 more)
 
 ### Community 239 - "ICON_MAP — Referência completa"
 Cohesion: 0.06
@@ -4924,20 +4918,20 @@ Cohesion: 0.06
 Nodes (32): 11.1 Reconhecimento de Fala, 🎙️ 11. COMANDOS DE VOZ, 13.1 Export Excel, 13.2 Export PDF, 📤 13. EXPORTAÇÃO, 14.1 Configuração pt-BR, 🌐 14. LOCALIZAÇÃO (pt-BR), 16.1 Service Worker (+24 more)
 
 ### Community 241 - "SCHEMA_REFERENCE.md — Banco Canônico PromoGifts (Gold/Medallion)"
-Cohesion: 0.06
-Nodes (33): 0. REGRA DE MÉTODO (leia antes de auditar este banco), 10. MANUTENÇÃO DESTE DOCUMENTO, 1. SUMÁRIO EXECUTIVO, 2. POSTURA DE SEGURANÇA — ESTADO REAL, 3. ACHADOS ABERTOS (revisão 2026-09-16), 4. ARQUITETURA MEDALLION — MAPA REAL, 5. AUTORIZAÇÃO, 6. MATERIALIZED VIEWS (12 — recontadas por completo em 2026-09-16) (+25 more)
+Cohesion: 0.08
+Nodes (25): 0. REGRA DE MÉTODO (leia antes de auditar este banco), 10. MANUTENÇÃO DESTE DOCUMENTO, 1. SUMÁRIO EXECUTIVO, 2. POSTURA DE SEGURANÇA — ESTADO REAL, 4. ARQUITETURA MEDALLION — MAPA REAL, 5. AUTORIZAÇÃO, 6. MATERIALIZED VIEWS (12 — recontadas por completo em 2026-09-16), 7-A. POR QUE NÃO EXISTE "CANONICAL_DB_CREATION_PROMPT" (+17 more)
 
 ### Community 242 - "ProductFormFullscreen.tsx"
-Cohesion: 0.09
-Nodes (22): @hookform/resolvers, react-hook-form, useProductFormDraft(), useSkuValidation(), HorizontalStepper(), HorizontalStepperProps, StepDef, StepId (+14 more)
+Cohesion: 0.08
+Nodes (25): 4. TOP 9 Candidatas (categorias C/D/E/G), @hookform/resolvers, react-hook-form, useProductFormDraft(), useSkuValidation(), HorizontalStepper(), HorizontalStepperProps, StepDef (+17 more)
 
 ### Community 243 - "promote-draft-migration.mjs"
-Cohesion: 0.14
-Nodes (30): attachDbDiffComment(), buildPrBody(), computeDiffCacheKey(), DIFF_CACHE_DIR, dim(), DRAFT_DIR, err(), __filename (+22 more)
+Cohesion: 0.12
+Nodes (33): Comportamento em falha, Exemplos, Promoção automatizada — `npm run draft:promote -- <file> --apply --pr`, attachDbDiffComment(), buildPrBody(), computeDiffCacheKey(), DIFF_CACHE_DIR, dim() (+25 more)
 
 ### Community 244 - "ConnectionsPulseBar.tsx"
-Cohesion: 0.10
-Nodes (26): ConnectionsPulseBar(), MINI_KPI_ICON_CLASSES, MINI_KPI_VALUE_CLASSES, MiniKpi(), SEVERITY_META, ExplainModeContext, ExplainModeContextValue, useExplainMode() (+18 more)
+Cohesion: 0.13
+Nodes (22): ConnectionsPulseBar(), MINI_KPI_ICON_CLASSES, MINI_KPI_VALUE_CLASSES, MiniKpi(), SEVERITY_META, HeaderSeveritySummary(), PillDef, Tone (+14 more)
 
 ### Community 245 - "NotificationDrawer.tsx"
 Cohesion: 0.10
@@ -4945,27 +4939,27 @@ Nodes (20): EfficiencyGrid(), EfficiencyGridProps, SuspiciousWarning(), Suspicio
 
 ### Community 246 - "Migration Sync Log"
 Cohesion: 0.06
-Nodes (33): 2026-05-24 â€” Fix definitivo sort-order 20250103, 2026-05-25 - Preview markers para PR #314, 2026-06-04 - Re-auditoria pos-cutover: 2 migrations out-of-band + correcoes (doufsxqlfjyuvxuezpln), 2026-06-05 - Reconciliacao pos-cutover SPR / motor_v2 (doufsxqlfjyuvxuezpln), 2026-06-05 - Reconciliacao TOTAL de junho + hardening (PR #659 review), 2026-06-10 — Execução das correções da auditoria medallion (11 migrações via MCP), 2026-09-11 — Kit Maker: aplicação atômica e fechamento do topo do ledger, 2026-09-11 — Reconciliação do ledger canônico (fase 1: snapshots remotos) (+25 more)
+Nodes (34): 2026-05-24 â€” Fix definitivo sort-order 20250103, 2026-05-25 - Preview markers para PR #314, 2026-06-04 - Re-auditoria pos-cutover: 2 migrations out-of-band + correcoes (doufsxqlfjyuvxuezpln), 2026-06-04 - Reconciliacao motor_v2 / paridade Spot (doufsxqlfjyuvxuezpln), 2026-06-05 - Reconciliacao pos-cutover SPR / motor_v2 (doufsxqlfjyuvxuezpln), 2026-06-05 - Reconciliacao TOTAL de junho + hardening (PR #659 review), 2026-06-10 — Execução das correções da auditoria medallion (11 migrações via MCP), 2026-09-11 — Kit Maker: aplicação atômica e fechamento do topo do ledger (+26 more)
 
-### Community 247 - "sanitizeError"
-Cohesion: 0.08
-Nodes (28): T27 — Sanitização de Inputs ✅, 1. Sumário executivo, 2.2 ESLint baseline gate (`scripts/check-eslint-baseline.mjs`), 2.3 Toast leaks gate (`scripts/check-toast-leaks.mjs`), 2.4 Edge structured-logging gate, 2. P0 — Bloqueadores de CI, 3.1 Script ausente referenciado, 3.2 Supabase linter — verificação incompleta (+20 more)
+### Community 247 - "Auditoria Técnica — Relatório de Triagem"
+Cohesion: 0.14
+Nodes (13): 1. Sumário executivo, 2.2 ESLint baseline gate (`scripts/check-eslint-baseline.mjs`), 2.4 Edge structured-logging gate, 2. P0 — Bloqueadores de CI, 3.1 Script ausente referenciado, 3.2 Supabase linter — verificação incompleta, 3.3 Vite dev-server — erros históricos, 3. P1 — Não-bloqueadores, mas relevantes (+5 more)
 
-### Community 248 - "Credentials Audit"
-Cohesion: 0.06
-Nodes (29): Adding new credentials, Baseline burn-down, Credentials Audit, How it runs, Local usage, `module-scope-credential-read` (HIGH), Platform-managed credentials (allowlisted), `resolve-credential-type-mismatch` (CRITICAL) (+21 more)
+### Community 248 - "Bugs Encontrados"
+Cohesion: 0.13
+Nodes (13): APIs Externas Auditadas, 🔍 Auditoria Exaustiva — APIs Externas, BUG-002 🟠 ALTO — `elevenlabs-scribe-token`: Credential SSOT bypass, BUG-003 🟠 ALTO — `cnpj-lookup`: Formato do mock de teste incorreto, BUG-004 🟡 MÉDIO — `generate-mockup`: Versão SDK Supabase divergente, BUG-005 🟡 MÉDIO — `dropbox-list`: Credential SSOT bypass, BUG-006 🟡 MÉDIO — `sync-quote-bitrix`: N8N webhook URL sem SSOT, BUG-007 🔵 BAIXO — `viacep.ts`: Fetch sem timeout (+5 more)
 
 ### Community 249 - "useOrgData.test.ts"
-Cohesion: 0.08
-Nodes (29): 3.11 Delta vs auditoria de 2026-08-16, 3.4 Gamificação, metas e inteligência comercial, A.1 Funcionalidades de negócio, D.2 — `src/components/goals/SalesGoalsCard.tsx` ⬛, 1. Itens priorizados (profundidade), 2. Demais itens de produto (A01), 3. Demais itens de código (A10), 4. Outro dono (só ID, fora de escopo) (+21 more)
+Cohesion: 0.05
+Nodes (44): 3.0 Resumo, 3.11 Delta vs auditoria de 2026-08-16, 3.1 Orçamentos, aprovação e conversão, 3.2 Pedidos, pagamentos e logística, 3.3 CRM, clientes e vendedores, 3.4 Gamificação, metas e inteligência comercial, 3.8 Notificações, e-mail e WhatsApp, 3. Roadmap de produto e funcionalidades de negócio (+36 more)
 
 ### Community 250 - "useQuoteBuilderState.helpers.ts"
 Cohesion: 0.11
 Nodes (24): Etapas NÃO concluídas, ApprovalFilter, DiscountManagementPanel(), InfoCell(), SellerProfile, applyLoadedQuote(), buildSimulatorQuoteItem(), buildUrlParamQuoteItem() (+16 more)
 
 ### Community 251 - "sentry.ts"
-Cohesion: 0.10
-Nodes (27): 29. GlitchTip / Sentry (frontend) 🟨 IMPLEMENTADO_PARCIAL, Estado anterior à Onda 5, 1. Correlação ponta-a-ponta (`request_id`), 2. Logger estruturado (formato JSON), Apêndice, Arquivos-fonte (path:line), Comandos úteis, Env vars e flags consolidadas (+19 more)
+Cohesion: 0.13
+Nodes (22): 29. GlitchTip / Sentry (frontend) 🟨 IMPLEMENTADO_PARCIAL, Estado anterior à Onda 5, 2. Logger estruturado (formato JSON), @sentry/react, BufferedError, BufferedMessage, captureException(), captureMessage() (+14 more)
 
 ### Community 252 - "🔔 SISTEMA UNIFICADO DE NOTIFICAÇÕES"
 Cohesion: 0.06
@@ -4984,16 +4978,16 @@ Cohesion: 0.10
 Nodes (29): ALL_CHAIN_PACKAGES, ALL_KNOWN_ACCEPTED_PACKAGES, ALLOWED_AJV_JSDOM_CHAIN_PACKAGES, ALLOWED_BRACES_CHAIN_DIRECT, ALLOWED_BRACES_CHAIN_TRANSITIVE, ALLOWED_IMAGE_SIZE_ADVISORIES, ALLOWED_LHCI_PACKAGES, ALLOWED_VITEST_PACKAGES (+21 more)
 
 ### Community 256 - "ConnectionTestHistoryPanel.tsx"
-Cohesion: 0.10
-Nodes (29): buildCurl(), bytesOf(), ConnectionTestDetailsDialog(), ConnectionTestDetailsState, defensiveMask(), formatAbsolute(), formatRelative(), Props (+21 more)
+Cohesion: 0.11
+Nodes (28): buildCurl(), bytesOf(), ConnectionTestDetailsDialog(), ConnectionTestDetailsState, defensiveMask(), formatAbsolute(), formatRelative(), Props (+20 more)
 
 ### Community 257 - "KitAIPromptDialog.tsx"
-Cohesion: 0.08
-Nodes (30): 6.2 Plano de Finalização — 20 etapas (2026-09-23), Bloco A — Kit Maker: fechar o que ficou pela metade (E01–E14), Bloco A — Kit Maker: fechar o que ficou pela metade (E01–E14), E01 — Diálogo da IA consome o que a IA devolve, E02 — `description` > 160 chars não pode derrubar a sugestão inteira, E03 — Descriptor live dedicado para `kit-ai-builder`, E04 — Telemetria de IA provada em produção, E06 — Mensagem do circuit breaker não culpa o usuário (+22 more)
+Cohesion: 0.13
+Nodes (19): 5.6 Área 06 — Entrada do Kit Maker e descoberta (KM-051…060), KM50-016 — Aproximar a entrada do modelo aprovado, E01 — Diálogo da IA consome o que a IA devolve, AUDIENCES, BUDGETS, buildAlternativeTitle(), buildBriefDescription(), buildStructuredPrompt() (+11 more)
 
 ### Community 258 - "PromptGenerator.tsx"
-Cohesion: 0.10
-Nodes (25): 7.5 Magic Up — ADR de fronteira e guia de acessibilidade da Onda 5, MagicUpBatchGenerationPanel(), MagicUpBrandKitPanel(), MagicUpBrandKitPanelProps, parseWordList(), MagicUpBrandSafetyChecklist(), MagicUpBrandSafetyChecklistProps, MagicUpLogoLibrary() (+17 more)
+Cohesion: 0.17
+Nodes (15): CATEGORIES, PromptBankProps, SCENE_PROMPTS, ScenePrompt, SEGMENT_CATEGORY_MAP, PromptCustomizationPanel(), GeneratedPrompt, PromptGenerator() (+7 more)
 
 ### Community 259 - "Magazine — plano de correções e melhorias em 50 etapas"
 Cohesion: 0.06
@@ -5001,35 +4995,35 @@ Nodes (26): 2. Base de evidências e limites, 3. Rastreabilidade dos achados, 4.
 
 ### Community 260 - "Referências"
 Cohesion: 0.06
-Nodes (30): 8 Regras Obrigatórias, Checklist de revisão antes de abrir PR, Checklist de revisão antes de abrir PR (atualizado E76, E88), Metas de saúde da esteira (E87), Padrão de Higiene de Workflow — CI Promo Brindes, R10 — `defaults.run.shell: bash` obrigatório em workflows com steps `run:`, R11 — `permissions.contents: write` proibido em workflows com trigger `pull_request`, R12 — Workflows com `paths:` devem incluir o próprio arquivo na lista (+22 more)
+Nodes (32): 8 Regras Obrigatórias, Checklist de revisão antes de abrir PR, Checklist de revisão antes de abrir PR (atualizado E76, E88), Metas de saúde da esteira (E87), Padrão de Higiene de Workflow — CI Promo Brindes, R10 — `defaults.run.shell: bash` obrigatório em workflows com steps `run:`, R11 — `permissions.contents: write` proibido em workflows com trigger `pull_request`, R12 — Workflows com `paths:` devem incluir o próprio arquivo na lista (+24 more)
 
 ### Community 261 - "PROMO_GIFTS_V4_BLUE_PREMIUM_DESIGN_SYSTEM.md"
 Cohesion: 0.06
 Nodes (30): 0. PROPÓSITO DESTE DOCUMENTO, 15. KPI STRIP, 28. EDITOR — ETAPA CONTEÚDO, 29. EDITOR — ETAPA DESIGN, 30. EDITOR — ETAPA LAYOUT & GERAR, 32. TABS, 34. DROPDOWNS E CONTEXT MENUS, 35. EMPTY STATES (+22 more)
 
-### Community 262 - "D) Duplicação e refactor abandonado"
-Cohesion: 0.08
-Nodes (28): 05 — Camada de Lógica: Hooks, Serviços, Contexts e Stores, 0. Método (reprodutível), C.1 `Math.random()` no escopo (7 ocorrências, 3 categorias), C.2 Dados fictícios de negócio — o domínio BI, C.3 Outros mocks, C.4 Postura fail-open, C) Stubs e dados fictícios, D-1 — Simulador de preço: o legado inteiro ficou órfão (⚠️ maior achado) (+20 more)
+### Community 262 - "05 — Camada de Lógica: Hooks, Serviços, Contexts e Stores"
+Cohesion: 0.15
+Nodes (12): 05 — Camada de Lógica: Hooks, Serviços, Contexts e Stores, 0. Método (reprodutível), C.1 `Math.random()` no escopo (7 ocorrências, 3 categorias), C.2 Dados fictícios de negócio — o domínio BI, C.3 Outros mocks, C.4 Postura fail-open, C) Stubs e dados fictícios, E.1 Contabilidade (+4 more)
 
 ### Community 263 - "preflight-migration-apply.mjs"
 Cohesion: 0.11
 Nodes (28): E15 · Workflow de aplicação controlada de migration única `[GIT]` (execução `[REQUER-PO]`) ✅ Construído em 2026-09-16 (execução ao vivo aguarda PO), argv, CONCURRENTLY_PATTERNS, detectBlockingDdl(), detectCreateIndexWithoutConcurrently(), detectExtensionWithoutSchema(), detectNonTransactionalDdl(), detectSecurityDefinerWithoutPgTemp() (+20 more)
 
 ### Community 264 - "Plano de Melhorias e Correções — 50 Etapas"
-Cohesion: 0.06
-Nodes (30): E01 · Documentar o finding 0029 órfão e destravar o CI/CD Pipeline, E02 · Restaurar cobertura do módulo de estoque acima do threshold, E03 · Fast-forward do `main` e poda de branches mortos, E04 · Triagem dos 2 stashes órfãos, E05 · Ressincronizar o grafo graphify, E06 · Fechar o ciclo do PR #1860, E30 · Inventário das 2.983 migrations, E31 · Normalizar os 67 nomes fora do padrão (+22 more)
+Cohesion: 0.08
+Nodes (23): E30 · Inventário das 2.983 migrations, E31 · Normalizar os 67 nomes fora do padrão, E32 · `[REQUER-PO]` Baseline/squash das migrations históricas, E33 · Reduzir o `types.ts` de 64.637 linhas, E34 · Reconciliar `.migration-refs-baseline.json`, E35 · Runbook de auditoria via `pg_catalog`, E36 · Triagem em massa das 290 issues `autoheal`, E37 · Desarmar/reconfigurar `lovable-autoheal.yml` (+15 more)
 
 ### Community 265 - "zod"
 Cohesion: 0.13
 Nodes (22): zod, ForgotPasswordFormData, forgotPasswordSchema, isWeakPassword(), LoginFormData, loginSchema, ResetPasswordFormData, resetPasswordSchema (+14 more)
 
 ### Community 266 - "stress-quote-number-concurrent.mjs"
-Cohesion: 0.07
-Nodes (28): 2.1 Migrations: Repo × Ledger × Schema Real, 2.2 types.ts × Schema Real, 2.3 Edge Functions: Publicadas × Repo, 2.4 Código Fonte × Schema Real (chamadas .from()/.rpc()), 2.5 Deno.env × Vault Secrets, 2.6 Resumo de Achados da Seção 2, Contagens, Migrations Aplicadas Fora do Repo (11 — DDL Out-of-Band) (+20 more)
+Cohesion: 0.12
+Nodes (16): allErrs, args, baseMax, colList, CONNECTIONS, forbidden, nums, PER_CONN (+8 more)
 
 ### Community 267 - "2026-10-15: baseline do drift-check + comandos que apagam o ledger (REGRA #8). 2026-10-14: E88/E89/E91/E92."
-Cohesion: 0.07
-Nodes (30): 2026-10-15: baseline do drift-check + comandos que apagam o ledger (REGRA #8). 2026-10-14: E88/E89/E91/E92., ARQUIVOS PROTEGIDOS (não modificar sem razão explícita), CONTEXTO DO PROJETO, Frescura do Grafo, graphify, NUNCA faça:, NUNCA faça:, NUNCA faça: (+22 more)
+Cohesion: 0.06
+Nodes (36): 2026-10-15: baseline do drift-check + comandos que apagam o ledger (REGRA #8). 2026-10-14: E88/E89/E91/E92., ARQUIVOS PROTEGIDOS (não modificar sem razão explícita), CI — ESTRUTURA DE GATES E PADRÃO E12, CONTEXTO DO PROJETO, Detector de DDL fora do fluxo (E12 corolário), Frescura do Grafo, Gates obrigatórios (required checks em `main`), graphify (+28 more)
 
 ### Community 268 - "Auditoria de Bugs e Falhas — 2026-05-23"
 Cohesion: 0.07
@@ -5040,8 +5034,8 @@ Cohesion: 0.07
 Nodes (29): 1. Sumário Executivo, 2. Matriz de Cobertura por Melhoria, 3. Resultados por Project Playwright, 4.1 Stress test (25 req · 5 concurrency), 4.2 Contract testing (4 cenários), 4.3 Fuzz testing, 4.4 Smoke estático (`scripts/smoke-tests.mjs`), 4. Cenários Negativos & Borda (+21 more)
 
 ### Community 270 - "vault.decrypted_secrets"
-Cohesion: 0.07
-Nodes (21): "public"."check_telemetry_regression"(), "public"."cron_invoke_edge"(), "public"."fn_asia_dispatch_queue_batch"(), "public"."fn_asia_enqueue_primary_url_images"(), "public"."fn_asia_enqueue_videos"(), "public"."fn_asia_harvest_queue_batch"(), "public"."fn_asia_import_youtube_videos"(), "public"."fn_asia_legacy_dispatch_batch"() (+13 more)
+Cohesion: 0.08
+Nodes (18): "public"."cron_invoke_edge"(), "public"."fn_asia_dispatch_queue_batch"(), "public"."fn_asia_enqueue_primary_url_images"(), "public"."fn_asia_harvest_queue_batch"(), "public"."fn_asia_legacy_dispatch_batch"(), "public"."fn_asia_legacy_harvest_batch"(), "public"."fn_asia_run_image_cycle"(), "public"."fn_cf_collect_sm_legacy_dispatch"() (+10 more)
 
 ### Community 271 - "public.product_images"
 Cohesion: 0.07
@@ -5055,9 +5049,9 @@ Nodes (27): APIs nativas usadas, Buffer, flush e sample rate, Integração com o
 Cohesion: 0.07
 Nodes (29): 4 Melhorias de Pipeline n8n — SM × XBZ, Algoritmo de extração de nome, Credenciais n8n, Detalhes técnicos importantes, Diferença SM vs XBZ, Estado do Banco (pós-melhorias), Fonte dos dados, Fonte dos dados (+21 more)
 
-### Community 274 - "22-header-sticky.spec.ts"
-Cohesion: 0.09
-Nodes (26): assertFeatureLoads(), pathOf(), ROUTE_BY_FEATURE, SMOKE_COVERAGE, assertHeaderSticky(), PINNED_POSITIONS, PROTECTED_NAV_SEQUENCE, VIEWPORTS (+18 more)
+### Community 274 - "fixtures/selectors.ts"
+Cohesion: 0.03
+Nodes (88): PARTE 10 — PONTOS POSITIVOS (O QUE FUNCIONA BEM), E47 — Flakiness e mutation medidos de verdade (`retry` global, `rg` ausente, `--only`), `e2e/helpers/waits.ts` (commit `b340ec38`), NON_DEFAULT_SORTS, SORT_VALUES, SortValue, test, PageSlug (+80 more)
 
 ### Community 275 - "audit-freight-block.mjs"
 Cohesion: 0.09
@@ -5068,12 +5062,12 @@ Cohesion: 0.12
 Nodes (16): authDebug(), authDebugError(), __authDebugInternals, authDebugUrl(), decodeJwtPayload(), maskEmail(), maskToken(), sanitizeDebugPayload() (+8 more)
 
 ### Community 277 - "pricing.service.ts"
-Cohesion: 0.13
-Nodes (23): calculateSavings(), BatchPricingRequest, BatchPricingResponse, calculateBatchPricing(), calculatePriceFromTable(), calculatePricing(), calculateQuantitySavings(), comparePricing() (+15 more)
+Cohesion: 0.17
+Nodes (21): calculateSavings(), BatchPricingRequest, BatchPricingResponse, calculateBatchPricing(), calculatePriceFromTable(), calculatePricing(), calculateQuantitySavings(), comparePricing() (+13 more)
 
 ### Community 278 - "public.user_roles"
-Cohesion: 0.07
-Nodes (18): "public"."auto_block_extreme_offenders"(), "public"."can_manage_quotes"(), "public"."check_auth_throttling"(), "public"."check_ip_access"(), "public"."check_login_rate_limit"(), "public"."cleanup_discount_test_data"(), "public"."detect_geo_violations"(), "public"."execute_role_migration_batch"() (+10 more)
+Cohesion: 0.09
+Nodes (14): "public"."auto_block_extreme_offenders"(), "public"."can_manage_quotes"(), "public"."check_auth_throttling"(), "public"."check_ip_access"(), "public"."check_login_rate_limit"(), "public"."detect_geo_violations"(), "public"."fn_check_login_allowed"(), "public"."_get_user_primary_role"() (+6 more)
 
 ### Community 279 - "vault.decrypted_secrets"
 Cohesion: 0.07
@@ -5100,32 +5094,32 @@ Cohesion: 0.09
 Nodes (14): fixture_late_reject, public.product_variants, public.products, public.quotes, public.user_is_org_member(), public.user_organizations, trg_qip_parent_immutable, trg_qip_propagate (+6 more)
 
 ### Community 285 - "MockupPromptManager.tsx"
-Cohesion: 0.11
-Nodes (25): 1. Contexto, 2.1 Mockup = compositor determinístico, sem IA na geração, 2.2 Magic Up = módulo criativo com IA, 2.3 Owner e criticidade, 2. Decisão, 3. Tabela — módulo × artefato, 4. Evidência (git grep), 5. Consequências (+17 more)
+Cohesion: 0.08
+Nodes (34): 1. Contexto, 2.1 Mockup = compositor determinístico, sem IA na geração, 2.2 Magic Up = módulo criativo com IA, 2.3 Owner e criticidade, 2. Decisão, 3. Tabela — módulo × artefato, 4. Evidência (git grep), 5. Consequências (+26 more)
 
 ### Community 286 - "4. Gaps Estruturais (P1)"
 Cohesion: 0.07
-Nodes (28): 1. Sumário Executivo, 2.1 Camadas e tabelas, 2.2 Motor de transformação (verificado no código), 2.3 Estado por fornecedor (medição direta), 2. Arquitetura Real Implantada (mapa verificado no banco), 3.1 🔴 P0-1 — Carrossel de reprocessamento (XBZ), 3.2 🔴 P0-2 — Histórico-bomba (`supplier_products_raw_history`), 3.3 🔴 P0-3 — Segurança: dados de custo e pipeline expostos a `anon` (+20 more)
+Nodes (27): 1. Sumário Executivo, 2.1 Camadas e tabelas, 2.2 Motor de transformação (verificado no código), 2.3 Estado por fornecedor (medição direta), 2. Arquitetura Real Implantada (mapa verificado no banco), 3.1 🔴 P0-1 — Carrossel de reprocessamento (XBZ), 3.2 🔴 P0-2 — Histórico-bomba (`supplier_products_raw_history`), 3.3 🔴 P0-3 — Segurança: dados de custo e pipeline expostos a `anon` (+19 more)
 
 ### Community 287 - "useCatalogFiltering"
-Cohesion: 0.08
-Nodes (25): 2ª RODADA — Execução das melhorias rumo a 10/10 (2026-06-18), Auditoria Exaustiva — Super Filtro (2026-06-18), Causa-raiz, Correção, Refactor — `applyProductFilters` (pipeline puro) + **simulação exaustiva**, Resumo Executivo, SF-A — Toggles de Opções Rápidas inertes (🔴 ALTO), SF-B — `onSale` não mapeado (🟠 MÉDIO) (+17 more)
+Cohesion: 0.07
+Nodes (30): 2ª RODADA — Execução das melhorias rumo a 10/10 (2026-06-18), Auditoria Exaustiva — Super Filtro (2026-06-18), Causa-raiz, Correção, Refactor — `applyProductFilters` (pipeline puro) + **simulação exaustiva**, Resumo Executivo, SF-A — Toggles de Opções Rápidas inertes (🔴 ALTO), SF-B — `onSale` não mapeado (🟠 MÉDIO) (+22 more)
 
 ### Community 288 - "useStockVelocityPrefetch.ts"
-Cohesion: 0.09
-Nodes (28): Banco, jobs e migrations — leitura primeiro, Bloqueadas por autorização ou capacidade externa, CI, dependências e gates determinísticos, Concluídas e comprovadas, Contratos TypeScript e disciplina de código, Edge, integrações, testes e observabilidade, Execução validada em 26/08/2026, Fundação, proteção e critérios de aceite (+20 more)
+Cohesion: 0.18
+Nodes (16): Contratos TypeScript e disciplina de código, Tipo 3 — Contratos TypeScript e qualidade de código, StockVelocity, batchKey(), fetchStockVelocityPrefetchBatch(), groupByProduct(), hasStockVelocityIdentity(), mapStockVelocityPrefetchRow() (+8 more)
 
 ### Community 289 - "[ARQUIVADO] Plano de Melhorias e Correções do Catálogo com Jev (TypeSafe System One) — v2"
 Cohesion: 0.07
 Nodes (27): 1. Taxa de rollback vs commit por banco (`pg_stat_database`), 2. Investigação de deadlocks via logs (últimas 24h), 3. Contenção de locks — estado atual (`pg_locks` × `pg_stat_activity`), 4. Achados — resumo, 5. Recomendações (evidência para pacote de decisão — nenhuma ação aplicada), 6. Queries executadas (para reprodutibilidade), E39 — Deadlocks e Rollback Rate — Auditoria [DB-RO], Resumo executivo (+19 more)
 
-### Community 290 - "A.4 Infra e qualidade"
-Cohesion: 0.07
-Nodes (26): 4.8 Plano de 20 etapas de 2026-05-23 (`docs/PLANO-20-ETAPAS-2026-05-23.md`, issue #264 "Plano de Correções em 20 Etapas (rastreamento)"), A.2 Ferramentas, A.3 Integrações, A.4 Infra e qualidade, A. TABELA MESTRA — Planejado × Realidade, Auditoria de Hooks — Round 4 — Maio 2026, BUG-18 🔴 P1 — `useQuoteBuilderState.ts`, BUG-19 🟡 P2 — `useSimulatorWizard.ts` (função `mapV6LocationsToWizard`) (+18 more)
+### Community 290 - "CartHeaderButton.tsx"
+Cohesion: 0.08
+Nodes (26): Mapa do caminho, B-8 · `BulkAddToCartModal` passa `onCreated` no-op, CartCompanyCnpjDisplay, CartCompanyCnpjInput, resolveCartCompanyCnpj(), CartCompanyPicker(), CartCompanyPickerProps, CompanyItem (+18 more)
 
 ### Community 291 - "🟡 MÉDIOS (10)"
 Cohesion: 0.07
-Nodes (28): BUG-14 · `useNewSupplierForm.ts` — `minimum_order_value` duplicado (mesmo que BUG-13), BUG-15 · `useProductsManager.ts` — `video_url` extração insegura, BUG-16 · `useSuppliersManager.ts` — `JSON.parse(supplier.contacts)` falha com JSONB, BUG-17 · `useSuppliersManager.ts` — `handleCnpjLookup` sobrescreve campos preenchidos, BUG-18 · `useProductsManager.ts` — `stats` calculados na página, não no total, BUG-19 · `useNewSupplierForm.ts` — Social media não incluído no payload de criação, BUG-20 · `useNewSupplierForm.ts` — Logo salva com path `new-{timestamp}` permanente, BUG-21 · `useSuppliersManager.ts` — Dup check de nome case-sensitive (+20 more)
+Nodes (29): BUG-14 · `useNewSupplierForm.ts` — `minimum_order_value` duplicado (mesmo que BUG-13), BUG-15 · `useProductsManager.ts` — `video_url` extração insegura, BUG-16 · `useSuppliersManager.ts` — `JSON.parse(supplier.contacts)` falha com JSONB, BUG-17 · `useSuppliersManager.ts` — `handleCnpjLookup` sobrescreve campos preenchidos, BUG-18 · `useProductsManager.ts` — `stats` calculados na página, não no total, BUG-19 · `useNewSupplierForm.ts` — Social media não incluído no payload de criação, BUG-20 · `useNewSupplierForm.ts` — Logo salva com path `new-{timestamp}` permanente, BUG-21 · `useSuppliersManager.ts` — Dup check de nome case-sensitive (+21 more)
 
 ### Community 292 - "ui/ConfirmDialog.tsx"
 Cohesion: 0.13
@@ -5133,15 +5127,15 @@ Nodes (22): @radix-ui/react-alert-dialog, AlertDialogAction, AlertDialogCancel, 
 
 ### Community 293 - "useFavoritesStore.ts"
 Cohesion: 0.08
-Nodes (22): zustand, OracleVoiceBridge, useOracleVoiceBridge, mockSupabase, BadgeVisibilityStore, ThemeSettings, useBadgeVisibilityStore, FavoriteItem (+14 more)
+Nodes (21): zustand, OracleVoiceBridge, useOracleVoiceBridge, mockSupabase, BadgeVisibilityStore, ThemeSettings, useBadgeVisibilityStore, ProductSelectionActions (+13 more)
 
 ### Community 294 - "ConnectionsOverviewTable.tsx"
 Cohesion: 0.10
-Nodes (23): Aggregate, aggregateSource(), ConnectionRowSourceBadge(), META, SUFFIXES, ConnectionsOverviewFilters(), Props, STATUS_OPTIONS (+15 more)
+Nodes (24): Aggregate, aggregateSource(), ConnectionRowSourceBadge(), META, SUFFIXES, ConnectionsOverviewFilters(), Props, STATUS_OPTIONS (+16 more)
 
 ### Community 295 - "SecretField.tsx"
 Cohesion: 0.13
-Nodes (22): JustSavedFlash(), MaskedSuffixBadge(), Props, Props, RotateSecretConfirmDialog(), formatRelative(), RotationHistoryRow(), Props (+14 more)
+Nodes (20): CredentialSourceBadge(), JustSavedFlash(), Props, MaskedSuffixBadge(), Props, Props, RotateSecretConfirmDialog(), formatRelative() (+12 more)
 
 ### Community 296 - "public.product_images"
 Cohesion: 0.07
@@ -5156,28 +5150,28 @@ Cohesion: 0.07
 Nodes (25): "public"."fn_asia_complete_image_upload"(), "public"."fn_asia_complete_image_upload_batch"(), "public"."fn_handle_canonical_root_soft_delete"(), "public"."fn_prevent_canonical_chain"(), "public"."fn_product_images_health_check"(), "trg_auto_classify_image", "trg_autolink_canonical_on_content_hash", "trg_autopromote_primary_on_deactivation" (+17 more)
 
 ### Community 299 - "materialService"
-Cohesion: 0.08
-Nodes (15): BUG-GS-03 — `useGlobalSearch.ts`: `handleVoiceAction` com stale closure — `setQuery`/`setResults` faltando nas deps, 🐛 Stale Closures / Dependency Arrays (BUG-GS-03, 04, 08, 18), BUG-SF-07 — `localSearch` não sincroniza quando `filters.search` muda para valor não-vazio, Contexto, Fora de escopo, Frontend, Mudanças, Ordem no fluxo (+7 more)
+Cohesion: 0.09
+Nodes (14): BUG-GS-03 — `useGlobalSearch.ts`: `handleVoiceAction` com stale closure — `setQuery`/`setResults` faltando nas deps, 🐛 Stale Closures / Dependency Arrays (BUG-GS-03, 04, 08, 18), Contexto, Fora de escopo, Frontend, Mudanças, Ordem no fluxo, Regra proposta (+6 more)
 
 ### Community 300 - "product-search.ts"
-Cohesion: 0.10
-Nodes (25): 1. Sumário executivo, 2.1 Dois caminhos independentes, 2.2 Ranking (`src/utils/product-search.ts`), 2. Arquitetura da busca (trace end-to-end confirmado no código), 3.1 [CRÍTICO #1] Busca server-side só em `name`, 3.2 [CRÍTICO #2] ILIKE é acento-sensível — *recomendação*, 3.3 [ALTO #3] SELECT omitia `supplier_reference` e `short_description`, 3.4 [ALTO #4] Divergência de dataset dropdown ↔ grade — *recomendação* (+17 more)
+Cohesion: 0.12
+Nodes (16): 1. Sumário executivo, 2.1 Dois caminhos independentes, 2.2 Ranking (`src/utils/product-search.ts`), 2. Arquitetura da busca (trace end-to-end confirmado no código), 3.1 [CRÍTICO #1] Busca server-side só em `name`, 3.2 [CRÍTICO #2] ILIKE é acento-sensível — *recomendação*, 3.3 [ALTO #3] SELECT omitia `supplier_reference` e `short_description`, 3.4 [ALTO #4] Divergência de dataset dropdown ↔ grade — *recomendação* (+8 more)
 
-### Community 301 - "06 — LIB / UTILS / TIPOS — Auditoria de estado (somente leitura)"
-Cohesion: 0.08
-Nodes (26): 3. O que foi verificado e está SAUDÁVEL, 🟢 O que está SÓLIDO (invariantes do CLAUDE.md intactos), 06 — LIB / UTILS / TIPOS — Auditoria de estado (somente leitura), B(a) — `src/integrations/supabase/client.ts`: guardas de configuração, B(c) — Tipo `Product`: campos críticos, B(d) — `src/data/`: dados estáticos alimentam produção?, B(f) — `Math.random()` fora de testes e valores hardcoded em cálculo, B) Itens obrigatórios de verificação (+18 more)
+### Community 301 - "WebhooksTab.tsx"
+Cohesion: 0.10
+Nodes (24): `webhook-dispatcher` — auth multi-modo, Props, TestRow, EventsMultiSelect(), Props, downloadJson(), ExportButton(), Props (+16 more)
 
 ### Community 302 - "4. Documentos de feature, ADRs, arquitetura e handoffs"
-Cohesion: 0.10
-Nodes (26): 1. Arquitetura real de controle de features, Lacunas estruturais do registro client-side, 4.0 Resumo, 4.10 `docs/architecture/*.md` e `docs/arquitetura/*.md`, 4.11 `docs/validation/*.md` e `docs/historico/RECOVERY_PLAN.md` (+ `orphan-edges-2026-05-10.md`), 4.12 Observações, 4.1 ADRs (`docs/adr/*.md` e `docs/ADR_*.md`), 4.2 Autenticação / SSO (`AUTH-SSO-ACTIVATION.md`, `AUTH-GOOGLE-SETUP.md`, `AUTH-GOOGLE-PROD-CHECKLIST.md`) (+18 more)
+Cohesion: 0.12
+Nodes (24): M-05 — `feature-flags.ts`: Flag `crm_bridge_enabled`, 1. Arquitetura real de controle de features, Lacunas estruturais do registro client-side, 4.1 ADRs (`docs/adr/*.md` e `docs/ADR_*.md`), 12.4 Feature flags / kill switches (varredura 4), B(c) — Tipo `Product`: campos críticos, B(d) — `src/data/`: dados estáticos alimentam produção?, B(e) — Sistema de feature flags / toggles (+16 more)
 
 ### Community 303 - "PersonalizationConfig.tsx"
-Cohesion: 0.12
-Nodes (25): 5.12 Área 12 — Configuração da personalização (KM-111…120), 5.13 Área 13 — Artes, geração de prévias e manipulação visual (KM-121…130), Bloco B — Kit Maker: validação real com sessão autenticada (E15–E30), buildKitMockupRequest(), clampConfiguredDimension(), FlatArea, FlatTechnique, flattenTechniques() (+17 more)
+Cohesion: 0.09
+Nodes (30): 5.12 Área 12 — Configuração da personalização (KM-111…120), 5.13 Área 13 — Artes, geração de prévias e manipulação visual (KM-121…130), 5.18 Área 18 — Responsividade, acessibilidade, textos e efeitos (KM-171…180), 6.2 Plano de Finalização — 20 etapas (2026-09-23), Bloco B — Kit Maker: validação real com sessão autenticada (E15–E30), iso(), KitIsometricPreview(), KitShortcutsDialog() (+22 more)
 
 ### Community 304 - "OrganizationContext.tsx"
-Cohesion: 0.08
-Nodes (24): 12.2 UI que promete e não entrega (varredura 2), closePopover(), 1. Sumário Executivo, 2. Auditoria Estática, 3. Fuzz Determinístico, 4. Auditoria RLS/DB (banco canônico `doufsxqlfjyuvxuezpln`), 5. Auditoria da Mutation (`useSellerCarts.ts:210`), 6. Especificação E2E (19 cenários) (+16 more)
+Cohesion: 0.12
+Nodes (16): 12.2 UI que promete e não entrega (varredura 2), closePopover(), 1. Sumário Executivo, 2. Auditoria Estática, 3. Fuzz Determinístico, 4. Auditoria RLS/DB (banco canônico `doufsxqlfjyuvxuezpln`), 5. Auditoria da Mutation (`useSellerCarts.ts:210`), 6. Especificação E2E (19 cenários) (+8 more)
 
 ### Community 305 - "useGravacaoPriceV2.ts"
 Cohesion: 0.11
@@ -5192,8 +5186,8 @@ Cohesion: 0.07
 Nodes (27): Alertas para Canal de Engenharia, Auditoria de RLS, Backup e Restauração, 🗄️ Banco de Dados, Bloqueio de Usuário, Cenário 1: Frontend Inacessível, Cenário 2: Edge Functions Falhando, Cenário 3: Banco de Dados Corrompido (+19 more)
 
 ### Community 308 - "SSOCallbackPage.test.tsx"
-Cohesion: 0.07
-Nodes (22): Critério de aceite, Mudanças aplicadas, Onda 15 — Auth hooks/integrations hardening, Próximo passo — Onda 16 (fora de escopo), Simulação — mapa exaustivo dos call sites, SSOCallbackPage(), StatusIcon(), StatusSteps() (+14 more)
+Cohesion: 0.08
+Nodes (21): CallbackStatus, SEVERITY_STYLES, SSOCallbackPage(), STATUS_DESCRIPTION, STATUS_TITLE, StatusIcon(), StatusSteps(), exchangeCodeForSessionMock (+13 more)
 
 ### Community 309 - "invokeTelemetrySink.ts"
 Cohesion: 0.12
@@ -5207,9 +5201,9 @@ Nodes (26): APP_SCHEMAS, argv, BASELINE_PATH, describePolicy(), __dirname, fetch
 Cohesion: 0.15
 Nodes (26): applyMarkup(), args, between(), calcDiscount(), calcItemTotal(), calcRealDiscountPercent(), JSON_OUT, lines (+18 more)
 
-### Community 312 - "secretValidators.ts"
-Cohesion: 0.12
-Nodes (21): Props, mapConnectionToTester(), CancelledError, isRetryableSecretError(), RetryOptions, withRetryBackoff(), DEFAULT_RULE, getMinLength() (+13 more)
+### Community 312 - "public.product_variants"
+Cohesion: 0.07
+Nodes (26): "public"."fn_get_reposicao_variants_summary"(), "public"."fn_import_stock_xbz"(), "trg_auto_link_feminine_color", "trg_auto_link_variant_color", "trg_auto_resolve_variant_color", "trg_capture_stock_snapshot", "trg_cascade_deactivate_vss", "trg_csp_insert" (+18 more)
 
 ### Community 313 - "StockAlertsIndicator.tsx"
 Cohesion: 0.09
@@ -5220,8 +5214,8 @@ Cohesion: 0.14
 Nodes (20): LogoWithTransparentBg(), ProposalClientBar(), ProposalFooter(), Props, ProposalHeader(), Props, ProposalSellerSignature(), Props (+12 more)
 
 ### Community 315 - "useTecnicasUnificadas.ts"
-Cohesion: 0.07
-Nodes (5): calculatePriceForQuantityLegacy(), CustomizationPriceTable, extractPriceTiers(), useTecnicaPorCodigo, useTecnicaUnificada
+Cohesion: 0.05
+Nodes (23): A) Tabelas por fluxo de negócio, Fluxo 10 — Precificação / simulador, Fluxo 6 — Comparação, ⚠️ A ARMADILHA do grep ingênuo (medida, não teórica), useComparison(), ComparisonScoreWeights, DEFAULT_SCORE_WEIGHTS, normalizeHigherBetter() (+15 more)
 
 ### Community 316 - "masks.ts"
 Cohesion: 0.16
@@ -5239,66 +5233,61 @@ Nodes (27): **2.1: Pegar seu User ID**, **2.2: Adicionar você à Organization**
 Cohesion: 0.07
 Nodes (27): **1.1: Criar o Context**, **1.2: Adicionar ao App**, **2.1: Hook para buscar dados com RLS**, **2.2: Hook para criar dados**, **3.1: Buscar Produtos**, **3.2: Criar Produto**, **3.3: Buscar Orçamentos**, **4.1: OrganizationSwitcher** (+19 more)
 
-### Community 320 - "stock-chart-utils.ts"
-Cohesion: 0.12
-Nodes (19): B. Badges, confiança e inteligência de produto, B-7 · Gráfico de estoque cai em dados sintéticos sem sinalização de fonte, IntelligenceBadges(), COMMERCIAL_FLAG_CONFIG, FlagConfig, generateMockIntelligence(), generateMockStockData(), generateMockSupplierNames() (+11 more)
+### Community 320 - "SocialProof.tsx"
+Cohesion: 0.05
+Nodes (47): B. Badges, confiança e inteligência de produto, B-7 · Gráfico de estoque cai em dados sintéticos sem sinalização de fonte, IntelligenceBadges(), ConversionStatsProps, DynamicTrustBadges(), DynamicTrustBadgesProps, HIGHLIGHTED_BADGES, LowStockAlertProps (+39 more)
 
 ### Community 321 - "11.3 Plano Consolidação de Auditorias 100 (2026-09-24) — `docs/plans/PLANO_CONSOLIDACAO_AUDITORIAS_100_ETAPAS_2026-09-24.md` (blocos A…I; E01–E100)"
-Cohesion: 0.08
-Nodes (27): 11.3 Plano Consolidação de Auditorias 100 (2026-09-24) — `docs/plans/PLANO_CONSOLIDACAO_AUDITORIAS_100_ETAPAS_2026-09-24.md` (blocos A…I; E01–E100), 11.4 Plano de Pendências 50 (2026-08-29) — `P50` + `EX50`, 11.5 Checklist 100 (2026-08-26) — `C100` + `A100` (mesmo plano em dois documentos; contagem por documento), 11.6 Simulações, backup/rollback, fixtures, baseline visual, mapa de rota, Onda 0 e relatórios técnicos, 11.7 Dívida crônica — temas que reaparecem em vários planos sem fechar, 11.8 Observações, Bloco C — Kit Maker: mobile, acessibilidade e aceite (E31–E40), Bloco E — Revista: gaps das duas auditorias (E51–E62) (+19 more)
+Cohesion: 0.15
+Nodes (14): 11.3 Plano Consolidação de Auditorias 100 (2026-09-24) — `docs/plans/PLANO_CONSOLIDACAO_AUDITORIAS_100_ETAPAS_2026-09-24.md` (blocos A…I; E01–E100), 11.4 Plano de Pendências 50 (2026-08-29) — `P50` + `EX50`, 11.5 Checklist 100 (2026-08-26) — `C100` + `A100` (mesmo plano em dois documentos; contagem por documento), 11.6 Simulações, backup/rollback, fixtures, baseline visual, mapa de rota, Onda 0 e relatórios técnicos, 11.7 Dívida crônica — temas que reaparecem em vários planos sem fechar, 11.8 Observações, Bloco C — Kit Maker: mobile, acessibilidade e aceite (E31–E40), Bloco E — Revista: gaps das duas auditorias (E51–E62) (+6 more)
 
 ### Community 322 - "Achados prioritários"
 Cohesion: 0.07
 Nodes (26): A01 — P1: permissões legadas deixam um caminho de escrita fora do CAS das RPCs, A02 — P1: “Limpar tudo” é parcial sob falha, A03 — P1/P2: recuperação de edição na saída permanece incompleta, A04 — P2: galeria continua usando placeholder em vez dos assets aprovados, A05 — P2: registry e fontes divergem do que a interface promete, A06 — P2: favoritos e “Mais recentes” da galeria são incompletos, A07 — P2: CRM limitado, erros confundidos com vazio e cache sem escopo de conta, A08 — P2: catálogo deixou de ter limite 80, mas completude ainda não é garantida (+18 more)
 
 ### Community 323 - "Kit Maker — revisão pós-implementação das 100 etapas"
-Cohesion: 0.07
-Nodes (23): Arquivos principais desta onda, Cenários simulados e resultado, Escopo realizado nesta onda, Evidência local desta onda, Kit Maker — execução, simulações e evidências (10/09/2026), Limites e próximas pendências, 10. Conclusão, 1. Veredito executivo (+15 more)
+Cohesion: 0.14
+Nodes (14): 10. Conclusão, 1. Veredito executivo, 2. Escopo efetivamente alterado, 3.1 Segunda revisão adversarial do PR, 3.2 Terceira revisão adversarial do PR, 3.3 Quarta revisão adversarial do PR, 3. Falhas da auditoria anterior, 4. Reavaliação das lacunas G01–G13 (+6 more)
 
 ### Community 324 - "Auditoria do Magazine contra as cinco referências visuais"
-Cohesion: 0.08
-Nodes (25): Auditoria do Magazine contra as cinco referências visuais, Base, método e limites, Conclusão, Diferenças concretas do registry, Evidências e reprodução, Falhas reproduzidas e prioridade de correção, Lacunas dos testes existentes, P1 — Integridade e confirmação de salvamento (+17 more)
+Cohesion: 0.05
+Nodes (44): Auditoria do Magazine contra as cinco referências visuais, Base, método e limites, Conclusão, Diferenças concretas do registry, Diferenças que precisam de decisão, não de alteração automática, Evidências e reprodução, Falhas reproduzidas e prioridade de correção, Lacunas dos testes existentes (+36 more)
 
 ### Community 325 - "Plano de reconciliação Local ↔ GitHub ↔ Supabase canônico — 50 etapas"
-Cohesion: 0.08
-Nodes (20): Aplicação autorizada: 20260922170000, Escopo aprovado, Estado, Pré-aplicação verificada, Próxima ação, Correções de código desta rodada, Critério de conclusão das etapas 37/39, Escopo e evidência (+12 more)
+Cohesion: 0.09
+Nodes (14): Aplicação autorizada: 20260922170000, Escopo aprovado, Estado, Pré-aplicação verificada, Próxima ação, Correções de código desta rodada, Critério de conclusão das etapas 37/39, Escopo e evidência (+6 more)
 
 ### Community 326 - "useCategoriesTree.ts"
 Cohesion: 0.08
 Nodes (25): 02 — Estado real de `src/components/admin/`, B.1 — Órfãos diretos (zero importadores em `src/`), B.2 — Órfãos transitivos (importados **apenas** por órfãos de B.1), B.3 — Sem consumidor **fora** de testes, B) Componentes sem consumidor — prova de ausência, C.1 — `Math.random()` — **6 ocorrências, todas legítimas**, C.2 — `TODO` / `FIXME` / "em breve" / "coming soon" — **zero ocorrências**, C.3 — Dados de domínio hardcoded onde deveria haver tabela (+17 more)
 
-### Community 327 - "SellerCartContext.tsx"
-Cohesion: 0.10
-Nodes (22): Fluxo 8 — Carrinho (carrinhos do vendedor), bucketLatency(), extractApiErrorMeta(), {
-  log: restoreLog,
-  emit: emitRestore,
-  normalizeCorrelationId,
-  generateCorrelationId,
-}, RELOADABLE_REASONS, SellerCartContext, SellerCartContextType, SellerCartProvider() (+14 more)
+### Community 327 - "@tanstack/react-query"
+Cohesion: 0.01
+Nodes (173): Fluxo 8 — Carrinho (carrinhos do vendedor), D.1 — `src/components/audit/AuditReport.tsx` ⬛, @tanstack/react-query, DiscountApprovalHeaderBadge(), QUERY_KEY, ACTION_META, Props, RepairAction (+165 more)
 
-### Community 328 - "ONDA 12 — TIPOS, CASTS E DÍVIDA CONGELADA (E121–E130)"
-Cohesion: 0.07
-Nodes (26): D-6 — `useNovelties` × `novelty-core`: extração incompleta, 1. Contexto: existem DOIS sinos, 2. Defeitos encontrados, 3. Fontes de verdade (confirmadas no banco), 4.1 Banco — 5 RPCs (`supabase/migrations/20260614220000_stock_notification_rpcs.sql`), 4.2 Frontend, 4.3 Testes, 4. Correções (+18 more)
+### Community 328 - "Auditoria — Módulo "Notificações de Estoque" (sino do header)"
+Cohesion: 0.15
+Nodes (12): 1. Contexto: existem DOIS sinos, 2. Defeitos encontrados, 3. Fontes de verdade (confirmadas no banco), 4.1 Banco — 5 RPCs (`supabase/migrations/20260614220000_stock_notification_rpcs.sql`), 4.2 Frontend, 4.3 Testes, 4. Correções, 5. Hardening ACL (+4 more)
 
 ### Community 329 - "useScheduledReports.ts"
-Cohesion: 0.08
-Nodes (25): 14 — LACUNAS DE COBERTURA (buracos de costura dos lotes 01–13), A.3 — Atenção especial: `src/components/reports/ScheduledReportsManager.tsx`, A) BLOCO A — `src/components`: 17 subdiretórios + 3 arquivos de raiz, B.1 — Os 13 arquivos `.sql`, B.2 — Existe tooling que consome `qa/migrations-draft/` (o diretório não é inerte), B.3 — Panorama do resto de `qa/` (altitude), B) BLOCO B — `qa/` (87 arquivos), foco em `qa/migrations-draft/`, C) BLOCO C — arquivos de configuração sem cobertura (+17 more)
+Cohesion: 0.10
+Nodes (19): 14 — LACUNAS DE COBERTURA (buracos de costura dos lotes 01–13), A.3 — Atenção especial: `src/components/reports/ScheduledReportsManager.tsx`, A) BLOCO A — `src/components`: 17 subdiretórios + 3 arquivos de raiz, B.1 — Os 13 arquivos `.sql`, B.2 — Existe tooling que consome `qa/migrations-draft/` (o diretório não é inerte), B.3 — Panorama do resto de `qa/` (altitude), B) BLOCO B — `qa/` (87 arquivos), foco em `qa/migrations-draft/`, C) BLOCO C — arquivos de configuração sem cobertura (+11 more)
 
 ### Community 330 - "gold.ts"
 Cohesion: 0.11
 Nodes (25): 2.1 Frontend → relações inexistentes no banco (erro 404/PGRST205 em runtime), 2.2 Relações existentes, mas sem grant (permission denied silencioso), 2.3 RPCs admin com EXECUTE revogado no hardening (42501 na UI), 2.4 Realtime: subscriptions sem entrega, 2.6 Tooling, 2. Gaps encontrados e correções, 3. O que foi adicionado, AnyClient (+17 more)
 
 ### Community 331 - "stock-table-sticky.spec.ts"
-Cohesion: 0.08
-Nodes (15): assertCardContent(), expectNoVerticalClip(), SLUGS, VIEWPORTS, VIEWPORTS, VIEWPORTS, JANK_BUDGET, MAX_SCROLL_MS (+7 more)
+Cohesion: 0.20
+Nodes (9): JANK_BUDGET, MAX_SCROLL_MS, MIN_FRAMES, SCROLL, THEAD, TOOLBAR, trail(), viewports (+1 more)
 
 ### Community 332 - "magazine.ts"
-Cohesion: 0.07
-Nodes (25): GAP #1 — P0 — `MagazineEditorPage.publish()` sem `await`, GAP #2 — P0 — `stepValidation` referenciando campos inexistentes no tipo, GAP #3 — P2 — `magazineService.create` aceita `title=""`, GAP #4 — P2 — Concorrência de `addProducts`, Gaps encontrados e correções, BooleanContentKey, DEFAULT_BRANDING, DEFAULT_MAGAZINE_CONTENT (+17 more)
+Cohesion: 0.06
+Nodes (33): GAP #1 — P0 — `MagazineEditorPage.publish()` sem `await`, GAP #2 — P0 — `stepValidation` referenciando campos inexistentes no tipo, GAP #3 — P2 — `magazineService.create` aceita `title=""`, GAP #4 — P2 — Concorrência de `addProducts`, Gaps encontrados e correções, BooleanContentKey, DUMMY_ITEM, Flags (+25 more)
 
 ### Community 333 - "class-variance-authority"
-Cohesion: 0.10
-Nodes (21): class-variance-authority, @radix-ui/react-toggle, @radix-ui/react-toggle-group, Alert, AlertDescription, AlertTitle, alertVariants, Badge (+13 more)
+Cohesion: 0.08
+Nodes (22): class-variance-authority, @radix-ui/react-toggle, @radix-ui/react-toggle-group, Alert, AlertDescription, AlertTitle, alertVariants, Badge (+14 more)
 
 ### Community 334 - "generate-coverage-report.mjs"
 Cohesion: 0.09
@@ -5321,7 +5310,7 @@ Cohesion: 0.14
 Nodes (19): countByTechnique(), findAll(), findBestMatch(), findByCodeOption(), findById(), findByTechniqueName(), PriceTableFilters, PriceTableOrderBy (+11 more)
 
 ### Community 339 - "DevInfraGate.ts"
-Cohesion: 0.16
+Cohesion: 0.15
 Nodes (12): AccessPolicy, DEFAULT_ALLOWED_ROLES, DefaultAccessPolicy, EnvGateProvider, FALSY, LocalStorageGateProvider, parseGateFlag(), TRUTHY (+4 more)
 
 ### Community 340 - "20260416182133_c21e8da8-e57f-4a37-90e1-764aa94489c9.sql"
@@ -5340,9 +5329,9 @@ Nodes (18): idx_catacccat_accessory_category_id, idx_edge_function_invocations_i
 Cohesion: 0.13
 Nodes (23): public.admin_audit_log, public.compute_quote_snapshot_hash(), public.discount_approval_requests, public.fn_quotes_validate_discount(), public.is_supervisor_or_above(), public.kit_component_print_areas, public.product_kit_components, public.products (+15 more)
 
-### Community 344 - "2. Segurança"
-Cohesion: 0.08
-Nodes (26): 2.1 Auth / Bypass keys / Token revocation, 2.3 Webhooks / Crons / Dispatcher, 2.4 RLS — cobertura, recursão, search_path, 2.5 SSRF / SQL injection / Validação de input, 2.6 Segredos & Vault, 2.7 CORS, headers de segurança, CSP, 2. Segurança, 4.3 `external-db-bridge` (cache, breaker, retry) (+18 more)
+### Community 344 - "check-migration-filename-contract.mjs"
+Cohesion: 0.15
+Nodes (24): auditMigrationFilenameContract(), BASELINE_RELATIVE_PATH, CANONICAL_FILENAME_EXAMPLE, CANONICAL_FILENAME_RE, extractValidTimestampPrefix(), filenameViolation(), formatMigrationFilenameContractReport(), isSafeBaselineMigrationPath() (+16 more)
 
 ### Community 345 - "8.1 Inventário"
 Cohesion: 0.08
@@ -5354,15 +5343,15 @@ Nodes (16): Histórico de diagnóstico e execução ampla final, assertNotSvg(),
 
 ### Community 347 - "Plano de pendências, correções e melhorias — 50 etapas"
 Cohesion: 0.08
-Nodes (25): Critério global de conclusão, Evidências novas que alteram a ordem de trabalho, Fontes e limitações da elaboração, Marcadores, Matriz de rastreabilidade etapa por etapa, Modelo de registro por etapa, Objetivo e estado de partida, Ordem de execução e paralelismo seguro (+17 more)
+Nodes (24): Critério global de conclusão, Evidências novas que alteram a ordem de trabalho, Fontes e limitações da elaboração, Marcadores, Matriz de rastreabilidade etapa por etapa, Modelo de registro por etapa, Objetivo e estado de partida, Ordem de execução e paralelismo seguro (+16 more)
 
 ### Community 348 - "from"
-Cohesion: 0.08
-Nodes (25): 1.1 Tabelas acessadas via `supabase.from()`, 1.2 Edge Functions invocadas, 1.3 RPCs (`supabase.rpc()`), 1.4 Subscriptions Realtime, 1.5 Buckets de Storage, §1. Inventário do Acoplamento, 2.1 Tabelas usadas no front-end AUSENTES do `types.ts`, 2.2 Tabelas em `types.ts` NÃO usadas diretamente no front-end (+17 more)
+Cohesion: 0.04
+Nodes (46): 1.1 Tabelas acessadas via `supabase.from()`, 1.2 Edge Functions invocadas, 1.3 RPCs (`supabase.rpc()`), 1.4 Subscriptions Realtime, 1.5 Buckets de Storage, §1. Inventário do Acoplamento, 2.1 Tabelas usadas no front-end AUSENTES do `types.ts`, 2.2 Tabelas em `types.ts` NÃO usadas diretamente no front-end (+38 more)
 
 ### Community 349 - "rate-limit-check/index.ts"
-Cohesion: 0.10
-Nodes (20): 1. Segurança, [P0-SEC-01] SECURITY DEFINER sem SET search_path, [P0-SEC-02] Service Role Bypass Spoofável em authorize.ts, [P0-SEC-03] CSRF Validation era Stub Incompleto, [P0-SEC-04] Rate Limiter Fail-Open para Autenticação, [P1-SEC-05] CORS Wildcards Excessivamente Permissivos, [P1-SEC-06] Webhook Sem Idempotência (Double Processing), [P2-SEC-07] Webhook Sem Proteção Contra Replay (+12 more)
+Cohesion: 0.13
+Nodes (18): 1. Segurança, [P0-SEC-01] SECURITY DEFINER sem SET search_path, [P0-SEC-02] Service Role Bypass Spoofável em authorize.ts, [P0-SEC-03] CSRF Validation era Stub Incompleto, [P0-SEC-04] Rate Limiter Fail-Open para Autenticação, [P1-SEC-05] CORS Wildcards Excessivamente Permissivos, [P1-SEC-06] Webhook Sem Idempotência (Double Processing), [P2-SEC-07] Webhook Sem Proteção Contra Replay (+10 more)
 
 ### Community 350 - "🟠 ALTOS (8)"
 Cohesion: 0.08
@@ -5370,15 +5359,15 @@ Nodes (25): 🟠 ALTOS (8), Arquivos analisados, Auditoria Exaustiva — Módulo
 
 ### Community 351 - "useNewSupplierForm.ts"
 Cohesion: 0.17
-Nodes (18): BUG-01 · `useNewSupplierForm.ts` — Serialização legada em `notes` inconsistente com `useSuppliersManager`, AddressTab(), AddressTabProps, BasicDataTab(), BasicDataTabProps, ContactsTab(), ContactsTabProps, CONTACT_ROLES (+10 more)
+Nodes (17): AddressTab(), AddressTabProps, BasicDataTab(), BasicDataTabProps, ContactsTab(), ContactsTabProps, CONTACT_ROLES, createEmptyContact() (+9 more)
 
 ### Community 352 - "useProducts"
 Cohesion: 0.10
-Nodes (24): B-1 · `category_name` nunca chega no caminho de lista enriquecida, B-2 · `tags` nunca chega no caminho de lista, B-5 · CTA "Criar orçamento" do simulador de preços aterrissa na rota errada com payload errado, B-6 · `QuantityPriceCalculator` ignora as próprias props, B) Fios quebrados — onde a cadeia UI→persistência se rompe, A descoberta, Arquivos com escape hatch `Record<string, unknown>` removidos, Campos que não existiam em nenhum tipo (+16 more)
+Nodes (24): B-1 · `category_name` nunca chega no caminho de lista enriquecida, B-2 · `tags` nunca chega no caminho de lista, B-3 · `price = 0` no caminho de lista enriquecida quando `sale_price` é nulo, B-6 · `QuantityPriceCalculator` ignora as próprias props, B) Fios quebrados — onde a cadeia UI→persistência se rompe, A descoberta, Arquivos com escape hatch `Record<string, unknown>` removidos, Campos que não existiam em nenhum tipo (+16 more)
 
 ### Community 353 - "Plano de melhorias e correções — reconciliação Local × GitHub × Supabase"
 Cohesion: 0.08
-Nodes (26): 1.1 Atualização de evidência — 2026-09-16, 1. Estado inicial comprovado, 2. Regras operacionais, 3. Ordem de execução recomendada, 4. Gates de interrupção, 5. Checklist final 10/10, Critérios globais de conclusão, E01 — Congelar a linha de base da reconciliação `[RO]` (+18 more)
+Nodes (26): 1.1 Atualização de evidência — 2026-09-16, 1. Estado inicial comprovado, 2. Regras operacionais, 3. Ordem de execução recomendada, 4. Gates de interrupção, 5. Checklist final 10/10, Critérios globais de conclusão, E26 — Restaurar autenticação local da CLI `[DB-RO]` (+18 more)
 
 ### Community 354 - "Pré-release (gates obrigatórios)"
 Cohesion: 0.08
@@ -5424,33 +5413,33 @@ Nodes (25): "cf_recon"."action_log", "cf_recon"."cf_image", "cf_recon"."remediat
 Cohesion: 0.08
 Nodes (24): 10. Baseline decrescente proposto, 11. Comandos exatos e resultados, 12. Checklist de aceite da etapa 32, 1. Resultado executivo, 2. Escopo e semântica da contagem, 3. Distribuição por domínio do app, 4. Hotspots por domínio Edge, 5. Diretivas ESLint por regra (+16 more)
 
-### Community 365 - "check-migrations-sync-log-gate.mjs"
-Cohesion: 0.16
-Nodes (21): 2.3 Gate de CI, addedOrRenamedMigrationFilenames(), changedMigrationFilenames(), CHECK_NAME, countVersionOccurrences(), evaluateSyncLogGate(), extractMigrationVersion(), extractRegisteredVersions() (+13 more)
+### Community 365 - "useGlobalSearch"
+Cohesion: 0.09
+Nodes (21): BUG-GS-13 — `GlobalSearch.tsx` (legado) exporta `useGlobalSearch` — conflito de nome com hook real, BUG-GS-14 — Analytics salva queries brutas potencialmente contendo PII (CPF, CNPJ, e-mail), ♿ Acessibilidade (BUG-GS-12), 🔍 Auditoria Exaustiva — Módulo BUSCA GLOBAL (2026-05-27), 🧹 Código Morto / Dead Code (BUG-GS-09, 13), 🔒 Error Handling (BUG-GS-07), 🧪 Novos Testes (T15–T17), 📊 Popular Products Query (BUG-GS-10) (+13 more)
 
 ### Community 366 - "raw-row.adapter.ts"
-Cohesion: 0.14
-Nodes (23): P0 — Queries quebradas em runtime (tabela/view inexistente no banco oficial), adaptFaixaPrecoRow(), adaptFaixaPrecoRows(), adaptPrintAreaTechniqueRow(), adaptPrintAreaTechniqueRows(), adaptTabelaPrecoRow(), adaptTabelaPrecoRows(), adaptTecnicaRow() (+15 more)
+Cohesion: 0.15
+Nodes (26): 5. 🔴 Gaps e bugs encontrados (priorizados), P0 — Queries quebradas em runtime (tabela/view inexistente no banco oficial), P1 — Migration não aplicada / drift de schema, P2 — Documentação desatualizada, adaptFaixaPrecoRow(), adaptFaixaPrecoRows(), adaptPrintAreaTechniqueRow(), adaptPrintAreaTechniqueRows() (+18 more)
 
 ### Community 367 - "Auditoria Independente Pré-Produção — Promo_Gifts"
 Cohesion: 0.08
 Nodes (24): 1) Escopo, método e limitações reais, 3.1 Qualidade e build, 3.2 Testes, 3.3 Segurança e banco (estático), 3) Evidências de execução (testes e verificações), 4) Achados críticos e relevantes, 5.1 Frontend, 5.2 Edge Functions / Segurança (+16 more)
 
 ### Community 368 - "09 — CI, INFRAESTRUTURA E SCRIPTS"
-Cohesion: 0.08
-Nodes (24): 09 — CI, INFRAESTRUTURA E SCRIPTS, A) TABELA MESTRA — 107 WORKFLOWS, C.1 — `deploy-gates.yml` (workflow `Deploy Gates`), C.3 — `freight-quality-gates.yml` (workflow `Freight Quest — Quality Gates`), C.4 — `ssot-supabase.yml` (workflow `SSOT Supabase Guard`, job `SSOT Gates (validate + guard + hosts)` L23), C.5 — `supabase-security-gate.yml`, C.6 — Redundância entre os eixos, C) GATES NUMERADOS (Gate 0–6) (+16 more)
+Cohesion: 0.11
+Nodes (18): 09 — CI, INFRAESTRUTURA E SCRIPTS, A) TABELA MESTRA — 107 WORKFLOWS, `cloudflare-workers/`, D.1 — Os 51 órfãos, D.2 — Os 8 "semi-órfãos" (só alcançáveis por outro script), D) SCRIPTS ÓRFÃOS (de 186), E) BASELINES E QUEM AS CONSOME, F) `package.json` — 228 SCRIPTS NPM × USO REAL NO CI (+10 more)
 
-### Community 369 - "Backlog O1/O3 — Banco (migrations × produção)"
-Cohesion: 0.08
-Nodes (19): AGUARDANDO APROVAÇÃO (banco), Backlog O1/O3 — Banco (migrations × produção), Diff objeto a objeto (133 + 72 que alteram o schema), Itens, Método da prova (O3), Os 17 inconclusivos (leitura em produção, 2026-10-25), Propostas da auditoria (P01..P19) — estado segundo `auditoria-supabase/correcoes.md`, Próximo passo da O3 (nesta frente) (+11 more)
+### Community 369 - "Bloco 4 — Integrações, ADRs, planos gerais e issues (A02, A07, A09, A11)"
+Cohesion: 0.03
+Nodes (54): AGUARDANDO APROVAÇÃO (banco), Backlog O1/O3 — Banco (migrations × produção), Diff objeto a objeto (133 + 72 que alteram o schema), Itens, Método da prova (O3), Os 17 inconclusivos (leitura em produção, 2026-10-25), Propostas da auditoria (P01..P19) — estado segundo `auditoria-supabase/correcoes.md`, Próximo passo da O3 (nesta frente) (+46 more)
 
 ### Community 370 - "🛠️ RECOVERY PLAN — Restauração de 65 tabelas faltantes"
 Cohesion: 0.08
 Nodes (24): 1. Geração, 2. Revisão (sua), 3. Teste em Branch dev, 4. Aprovação pra produção (sua), 5. Aplicação em produção, 6. Validação pós-aplicação, 7. Em caso de erro, 📁 ARTEFATOS GERADOS (estão em /tmp/recovery/ na VPS) (+16 more)
 
 ### Community 371 - "chunk-recovery.ts"
-Cohesion: 0.12
-Nodes (23): Referências cruzadas com memória de projeto, nprogress, appendCacheBust(), attemptChunkRecovery(), bumpSharedReloadBudget(), cleanRecoveryUrlParams(), clearChunkRecoveryState(), extractChunkUrl() (+15 more)
+Cohesion: 0.13
+Nodes (22): nprogress, appendCacheBust(), attemptChunkRecovery(), bumpSharedReloadBudget(), cleanRecoveryUrlParams(), clearChunkRecoveryState(), extractChunkUrl(), hardReload() (+14 more)
 
 ### Community 372 - "Bloco A — Destravar a validação real (etapas 01–10)"
 Cohesion: 0.08
@@ -5458,7 +5447,7 @@ Nodes (24): 01 — Usuário de teste e dados descartáveis, 02 — Setup de aute
 
 ### Community 373 - "assertPersistableCnpj"
 Cohesion: 0.10
-Nodes (22): Conclusão, Contagem de asserções, Descobertas colaterais (não-bugs, documentar), Estado da SSOT, Gaps ativos encontrados, Matriz Hipótese × Veredicto, Validação Exaustiva — Rodada N (2026-07-02), Baterias executadas (+14 more)
+Nodes (21): Conclusão, Contagem de asserções, Descobertas colaterais (não-bugs, documentar), Gaps ativos encontrados, Matriz Hipótese × Veredicto, Validação Exaustiva — Rodada N (2026-07-02), Baterias executadas, CI (+13 more)
 
 ### Community 374 - "03b-product-thumb-quickview.spec.ts"
 Cohesion: 0.15
@@ -5469,20 +5458,20 @@ Cohesion: 0.09
 Nodes (19): cmdk, @radix-ui/react-dialog, Command, CommandDialog(), CommandDialogProps, CommandEmpty, CommandGroup, CommandInput (+11 more)
 
 ### Community 376 - "form.tsx"
-Cohesion: 0.10
-Nodes (19): @radix-ui/react-label, @radix-ui/react-slot, Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, FormControl (+11 more)
+Cohesion: 0.17
+Nodes (13): @radix-ui/react-label, FormControl, FormDescription, FormFieldContext, FormFieldContextValue, FormItem, FormItemContext, FormItemContextValue (+5 more)
 
-### Community 377 - "useErrorHandler.ts"
-Cohesion: 0.10
-Nodes (15): getAuthenticatorAssuranceLevelMock, listFactorsMock, MOCK_PROFILE, MOCK_ROLES, rpcMock, signInMock, CHUNK_ERROR_PATTERNS, clearReloadAttempts() (+7 more)
+### Community 377 - "login-flow.test.ts"
+Cohesion: 0.17
+Nodes (6): getAuthenticatorAssuranceLevelMock, listFactorsMock, MOCK_PROFILE, MOCK_ROLES, rpcMock, signInMock
 
 ### Community 378 - "ProductVideoGallery.tsx"
-Cohesion: 0.21
-Nodes (19): ProductVideoGallery(), ProductVideoGalleryProps, ACCEPTED_VIDEO_TYPES, ExternalVideo, extractThumbnailFromVideo(), formatBytes(), MAX_FILE_SIZE, parseYouTubeId() (+11 more)
+Cohesion: 0.18
+Nodes (21): ConfirmDeleteDialog(), Props, ProductVideoGallery(), ProductVideoGalleryProps, ACCEPTED_VIDEO_TYPES, ExternalVideo, extractThumbnailFromVideo(), formatBytes() (+13 more)
 
 ### Community 379 - "useSuppliersManager.ts"
 Cohesion: 0.18
-Nodes (17): SupplierFormDialog(), SupplierFormDialogProps, SupplierListHeader(), SupplierListHeaderProps, SuppliersManager(), SupplierTable(), SupplierTableProps, CONTACT_ROLES (+9 more)
+Nodes (18): BUG-01 · `useNewSupplierForm.ts` — Serialização legada em `notes` inconsistente com `useSuppliersManager`, SupplierFormDialog(), SupplierFormDialogProps, SupplierListHeader(), SupplierListHeaderProps, SuppliersManager(), SupplierTable(), SupplierTableProps (+10 more)
 
 ### Community 380 - "FutureStockDialog.tsx"
 Cohesion: 0.13
@@ -5500,21 +5489,21 @@ Nodes (23): CategoryRankingItem, ClientAggregate, fetchCategoryRanking(), fetchC
 Cohesion: 0.11
 Nodes (18): idx_inbound_events_endpoint_time, idx_outbound_webhooks_active_events, idx_webhook_deliveries_event_time, idx_webhook_deliveries_webhook_time, public.external_connections, public.inbound_webhook_endpoints, public.inbound_webhook_events, public.mcp_api_keys (+10 more)
 
-### Community 384 - "public.fn_claim_ai_description_batch"
-Cohesion: 0.10
-Nodes (17): public.create_material_with_equivalence(), public.debug_image_type(), public.fn_auto_link_eco(), public.fn_auto_link_eco_material(), public.fn_backfill_eco_links(), public.fn_batch_extract_materials_from_name(), public.fn_claim_ai_description_batch(), public.fn_complete_ai_description() (+9 more)
+### Community 384 - "CartUtilComponents.tsx"
+Cohesion: 0.16
+Nodes (16): RFC-4180, CompareCartsDialog(), buildCartCsv(), csvCell(), exportCartToCSV(), exportCartToPDF(), safeCartFileName(), safeNumber() (+8 more)
 
 ### Community 385 - "magic-up-onda5.test.tsx"
 Cohesion: 0.10
 Nodes (13): item(), ArrowHarness(), buildVariations(), expectActiveElementFocusVisible(), expectAllCardsFocusVisible(), expectAllWinnerButtonsFocusVisible(), expectFocusVisible(), FOCUS_VISIBLE_BASE_CLASSES (+5 more)
 
 ### Community 387 - "Guia de Contribuição"
-Cohesion: 0.08
-Nodes (24): Alterando regras do sentinel, 🧪 Antes de abrir PR, Bitrix24, 🛡️ Branch Protection Sentinel, 👤 Bus factor assumido (operação 1-dev), Bypass `[skip-sentinel]` — uso e abuso, Como funciona, 🎓 Convenções específicas (+16 more)
+Cohesion: 0.06
+Nodes (35): 1. Código runtime, 2. Documentação (`.md`), 3. Migrations e schema, 4. Gates automáticos verdes, 5. Se o PR precisa mencionar o legado, Alterando regras do sentinel, 🧪 Antes de abrir PR, Bitrix24 (+27 more)
 
 ### Community 388 - "health-score.ts"
-Cohesion: 0.11
-Nodes (18): Verificações que passaram (sem defeito encontrado), CATALOG_LOW_STOCK_THRESHOLD, CATALOG_STOCK_STATUS_COLOR, CATALOG_STOCK_STATUS_LABEL, CatalogStockStatus, getCatalogStockStatus(), bucketByStatus(), calcHealthScore() (+10 more)
+Cohesion: 0.13
+Nodes (18): Verificações que passaram (sem defeito encontrado), computeFutureStockStats(), daysUntil(), dedupeFutureEntries(), FutureStockStats, safeQty(), bucketByStatus(), calcHealthScore() (+10 more)
 
 ### Community 389 - "FASE 4 — Desempenho e cron (E34–E40)"
 Cohesion: 0.08
@@ -5525,44 +5514,44 @@ Cohesion: 0.08
 Nodes (24): 1.1 Números, 1.2 O que exige ação imediata (segurança e dados), 1.3 Onde o sistema pode errar dinheiro, 1.4 Funcionalidades prometidas que o vendedor ou o cliente não têm, 1.5 O que trava as entregas, 1. Sumário executivo, 2.1 Princípio: documento não é prova, 2.2 Escopo varrido (+16 more)
 
 ### Community 391 - "Plano Mockup — 50 etapas (correções e melhorias)"
-Cohesion: 0.11
-Nodes (20): 7.1 Mockup — Plano 50 (2026-10-08) + Adendo Codex (etapas 51–92), A. Segurança e dados (decisões Q5, Q6, Q7, Q11, Q22), B. Integridade da geração (Q10, Q12, Q13, Q14, Q16, Q22), C. UX e fluxo (Q1, Q3, Q8, Q9, Q23, Q27, Q28), D. Documento timbrado (Q18, Q19, Q20), E. Orçamento e cliente (Q4, Q21, Q22), F. Matheus (Q2, Q2b/c, Q25), Fora do plano (registrado no roadmap) (+12 more)
+Cohesion: 0.09
+Nodes (25): 3.10 Demais itens do roadmap, 7.1 Mockup — Plano 50 (2026-10-08) + Adendo Codex (etapas 51–92), 6. Mockup / Magic Up / IA, 8. COMO ESTA AUDITORIA SE VERIFICOU, A. Segurança e dados (decisões Q5, Q6, Q7, Q11, Q22), B. Integridade da geração (Q10, Q12, Q13, Q14, Q16, Q22), C. UX e fluxo (Q1, Q3, Q8, Q9, Q23, Q27, Q28), D. Documento timbrado (Q18, Q19, Q20) (+17 more)
 
 ### Community 392 - "🟢 BAIXO"
-Cohesion: 0.08
-Nodes (23): ARQUIVOS MODIFICADOS NESTE COMMIT, Auditoria Exaustiva — Super Filtro, 🟢 BAIXO, BUG-SF-01 — Filtro `techniques` nunca aplicado, BUG-SF-02 — Filtro `tags` nunca aplicado, BUG-SF-08 — `skipSort` não trata `sortBy === 'relevance'` em `useFiltersPageState`, BUG-SF-09 — `AdvancedFilterState.sortBy` tem valores errados (underscore vs hyphen), BUG-SF-10 — Voice action `sort` map não inclui `'relevance'` (+15 more)
+Cohesion: 0.13
+Nodes (14): ARQUIVOS MODIFICADOS NESTE COMMIT, Auditoria Exaustiva — Super Filtro, BUG-SF-01 — Filtro `techniques` nunca aplicado, BUG-SF-02 — Filtro `tags` nunca aplicado, BUG-SF-07 — `localSearch` não sincroniza quando `filters.search` muda para valor não-vazio, BUG-SF-08 — `skipSort` não trata `sortBy === 'relevance'` em `useFiltersPageState`, BUG-SF-09 — `AdvancedFilterState.sortBy` tem valores errados (underscore vs hyphen), BUG-SF-10 — Voice action `sort` map não inclui `'relevance'` (+6 more)
 
 ### Community 393 - "public.user_roles"
-Cohesion: 0.09
-Nodes (14): "public"."auto_block_extreme_offenders"(), "public"."can_manage_quotes"(), "public"."check_auth_throttling"(), "public"."check_ip_access"(), "public"."check_login_rate_limit"(), "public"."cleanup_discount_test_data"(), "public"."detect_geo_violations"(), "public"."execute_role_migration_batch"() (+6 more)
+Cohesion: 0.11
+Nodes (11): "public"."auto_block_extreme_offenders"(), "public"."can_manage_quotes"(), "public"."check_auth_throttling"(), "public"."check_ip_access"(), "public"."check_login_rate_limit"(), "public"."detect_geo_violations"(), "public"."_get_user_primary_role"(), "set_updated_at" (+3 more)
 
 ### Community 394 - "ESTADO ATUAL DO SISTEMA — Promo Brindes (`promo-gifts-v4`)"
 Cohesion: 0.08
 Nodes (23): 1. VEREDITO EM UMA TELA, 2.1 Módulos de código (arquivos de produção, exclui testes), 2.2 Unidades funcionais, 2.3 Promessas × realidade (o que foi planejado ou sugerido), 2.4 Banco de dados (medido ao vivo), 2.5 Código sem consumidor, 2. CONTAGEM HONESTA, 4. O QUE ESTÁ BOM — sem suavizar nem exagerar (+15 more)
 
 ### Community 395 - "Plano DBA de Correções e Melhorias — 50 Etapas"
-Cohesion: 0.08
-Nodes (22): 0. Relação com os planos anteriores, 1.1 Ledger de migrations × arquivos, 1.2 Postura de segurança, 1.3 Capacidade física, 1.4 Desempenho e cron, 1.5 Contratos código × banco, 1.6 Git, 1. Evidência medida (fotografia de 2026-09-16) (+14 more)
+Cohesion: 0.07
+Nodes (27): 0. Relação com os planos anteriores, 3. Ordem de execução, 4. Gates de interrupção, 5. Checklist final 10/10, E01 · Sincronizar a branch de trabalho e congelar a linha de base `[GIT]` ✅ Concluída em 2026-09-16, E02 · Restaurar a verificação live (secrets e CLI) `[REQUER-PO]`, E03 · Verificar backup/PITR e tirar snapshot lógico pré-plano `[DB-RO]`, E04 · Regenerar `docs/SCHEMA_REFERENCE.md` a partir do `pg_catalog` `[GIT]` ✅ Concluída em 2026-09-16 (+19 more)
 
 ### Community 396 - "ONDA 11 — GATES DE FRONTEND QUE NÃO RODAM (E111–E120)"
 Cohesion: 0.09
-Nodes (24): §6 — O QUE FICOU DELIBERADAMENTE DE FORA, ⏸ CHECKPOINT 2 — APÓS E100, ONDA 11 — GATES DE FRONTEND QUE NÃO RODAM (E111–E120), ONDA 13 — REACT: VAZAMENTOS, RE-RENDER E ACESSIBILIDADE (E131–E140), P200-E111 · [D] · P0 · Fazer o Gate 1.1 realmente checar o tipo `Product`, P200-E112 · [D] · P1 · Fazer `npm run lint` rodar o ESLint, P200-E113 · [D] · P1 · Ligar o gate de vazamento de toast e corrigir as 2 regressões, P200-E114 · [D] · P1 · Proibir aumento do baseline de bundle sem label (+16 more)
+Nodes (24): §6 — O QUE FICOU DELIBERADAMENTE DE FORA, ⏸ CHECKPOINT 2 — APÓS E100, ONDA 10 — A SUÍTE DE TESTES ESTÁ VERMELHA (E101–E110), ONDA 13 — REACT: VAZAMENTOS, RE-RENDER E ACESSIBILIDADE (E131–E140), P200-E101 · [D] · P0 · Consertar o lockfile apontando para registry privado, P200-E102 · [D] · P0 · Mockar a rede nos testes de edge function, P200-E103 · [D] · P0 · Corrigir o teste de contrato do `MockupProductSelector`, P200-E104 · [D] · P1 · Atualizar o teste do gate de bundle (+16 more)
 
 ### Community 397 - "Manual de Migração — PARTE 2 (Fases 3 a 16)"
 Cohesion: 0.08
 Nodes (24): 11. Fase 1.1 — Drop de tabelas legacy "fantasma" {#11-fase-11}, 12. Limitação conhecida — desbloqueio definitivo do app {#12-limitação-conhecida}, 13. Padrões e princípios {#13-padrões-e-princípios}, 14. Templates de SQL prontos {#14-templates-prontos}, 9. Fase 3.5 — Drift residual + allowlist {#9-fase-35}, Apêndice A — Fluxo BPM completo (visão única), Apêndice B — Indicadores e KPIs sugeridos, Apêndice C — Glossário (+16 more)
 
 ### Community 398 - "EdgeInvokeLivePanel.tsx"
-Cohesion: 0.12
-Nodes (20): Invariantes preservados, Onda 22 — Export CSV/JSON + Copy request-id + deep-link para lookup, Próxima onda, Simulações prévias, EdgeInvokeLivePanel(), fmtMs(), fmtPct(), MiniKpi() (+12 more)
+Cohesion: 0.18
+Nodes (13): Invariantes preservados, Onda 22 — Export CSV/JSON + Copy request-id + deep-link para lookup, Próxima onda, Simulações prévias, buildDownloadFilename(), copyRequestId(), CSV_COLUMNS, csvEscape() (+5 more)
 
 ### Community 399 - "export-schema-snapshot.mjs"
 Cohesion: 0.18
-Nodes (22): appliedVersionsFromLedger(), buildBaselineSql(), byCodeUnit(), looksLikeSchemaDump(), maxNumericVersion(), buildAllInOne(), dumpLiveSchema(), ensureOutDir() (+14 more)
+Nodes (21): BASELINE_DIR, BASELINE_NAME_RE, buildBaselineSql(), looksLikeSchemaDump(), buildAllInOne(), dumpLiveSchema(), ensureOutDir(), err() (+13 more)
 
-### Community 400 - "SocialProof.tsx"
+### Community 400 - "Kit Maker — plano de correções e melhorias em 50 etapas"
 Cohesion: 0.09
-Nodes (19): ConversionStatsProps, DynamicTrustBadges(), DynamicTrustBadgesProps, HIGHLIGHTED_BADGES, LowStockAlertProps, PopularityBadgeProps, ProductBadgeFlags, RecentActivityProps (+11 more)
+Nodes (19): Bloqueios preservados, Evidências locais, Gates remotos e reconciliação da base, Kit Maker — recibo de execução do plano de 50 etapas, Remediação pós-auditoria de 27/09 — sessão e retry, Simulação executada antes da consolidação, Situação por etapa afetada nesta onda, Verificação read-only do canônico e isolamento da biblioteca (+11 more)
 
 ### Community 401 - "auth/index.ts"
 Cohesion: 0.14
@@ -5573,8 +5562,8 @@ Cohesion: 0.10
 Nodes (20): AUTO_RESET_INTERVAL_MS, BADGE_RENDER_BUDGET_MS, BadgeListener, badgeListeners, BadgeRenderBudget, BadgeRenderSource, BadgeRenderStat, DEBUG_LOG_THROTTLE_MS (+12 more)
 
 ### Community 403 - "supplier_products_raw"
-Cohesion: 0.09
-Nodes (17): public.debug_automations(), public.fn_auto_link_feminine_color(), public.fn_auto_link_properties(), public.fn_auto_link_tags(), public.fn_batch_populate_packing(), public.fn_expire_novelties_with_stats(), public.fn_extract_asia_variants(), public.fn_find_material_type_id() (+9 more)
+Cohesion: 0.05
+Nodes (29): public.check_login_rate_limit(), public.check_video_health(), public.create_material_with_equivalence(), public.debug_automations(), public.debug_image_type(), public.fn_auto_link_feminine_color(), public.fn_auto_link_properties(), public.fn_auto_link_tags() (+21 more)
 
 ### Community 406 - "sitemap.ts"
 Cohesion: 0.13
@@ -5593,28 +5582,28 @@ Cohesion: 0.09
 Nodes (22): 9.1 Auth, 9.2 Storage, 9.3 Realtime, 9.4 pg_net — Webhooks HTTP, 9.5 Sumário da Seção 9, Achados Auth, Achados Storage, auth.users no Realtime (+14 more)
 
 ### Community 410 - "useProductsColorsBatch.ts"
-Cohesion: 0.09
-Nodes (21): A. `vitest.config.ts` — contract test suite TOTALMENTE quebrada, Achados por severidade, B. `ProductGrid.tsx` — violação Rules-of-Hooks, C. `ProductCard.tsx` — TDZ em `allMatchingVariants`, D. `QuoteBitrixSync.ts` — `check:seller-scope` violation, E. `tests/contracts/webhook-schemas.ts` — 3 schemas faltantes, M. Mojibakes em comentários PT-BR, N. Imports não usados (+13 more)
+Cohesion: 0.08
+Nodes (24): A. `vitest.config.ts` — contract test suite TOTALMENTE quebrada, Achados por severidade, C. `ProductCard.tsx` — TDZ em `allMatchingVariants`, D. `QuoteBitrixSync.ts` — `check:seller-scope` violation, E. `tests/contracts/webhook-schemas.ts` — 3 schemas faltantes, F. `NoveltyProductGrid.integration.test.tsx` — código quebrado em runtime, G. T-FIX-5b anti-padrão `forEach(expect)` em 3 testes, H. `useSparklineSales.tsx:142` — `!= null` (eqeqeq + safer) (+16 more)
 
-### Community 411 - "SizeFilter.tsx"
-Cohesion: 0.11
-Nodes (19): SF-E — Filtro de **Tamanhos funcional** (server-side) → **RESOLVIDO**, SF-E — "Tamanhos" vazio (⚪ INFO — limitação de arquitetura), 13.3 Bugs ainda abertos — BUG_REPORT_20260526, docs/bugs/*, AUDITORIA_BUGS_2026-05-23, SUPER_FILTRO_*, hooks-audit-*, HOOKS_AUDIT, api-audit-2026-05-26, BUG-17 — `sizes` não filtra no Super Filtro, Descrição, Fix aplicado, Fluxo 3 — Filtros, getSizeOrder() (+11 more)
+### Community 411 - "useProductsByCategory.ts"
+Cohesion: 0.28
+Nodes (6): mockInvoke, mockInvoke, useCategoryDescendants(), useProductsByCategory(), UseProductsByCategoryOptions, UseProductsByCategoryResult
 
 ### Community 412 - "useDebouncedCartItemActions.ts"
-Cohesion: 0.10
-Nodes (18): 6. Carrinho, Contratos detectados, Critérios de sucesso propostos, Decisões pendentes do PO, Mapa do caminho, Rollback, flags e pendências, Testes encontrados, QUERY_KEY (+10 more)
+Cohesion: 0.16
+Nodes (10): QUERY_KEY, CART_ITEM_DEBOUNCE_MS, CART_ITEM_DEBOUNCE_MS_MAX, CART_ITEM_DEBOUNCE_MS_MIN, DebouncedCartItemActions, getCartItemDebounceMs(), RemoveItemMutation, UpdateQtyMutation (+2 more)
 
-### Community 413 - "useMockupDraft.test.ts"
-Cohesion: 0.13
-Nodes (19): 8. Mockup, Contratos detectados, Critérios de sucesso propostos, Decisões pendentes do PO, Mapa do caminho, Rollback, flags e pendências, Testes encontrados, draftWithLogo() (+11 more)
+### Community 413 - "invokeEdgeSafe"
+Cohesion: 0.09
+Nodes (21): 10. ElevenLabs — Scribe (STT realtime) ✅ IMPLEMENTADO_TOTAL, 11. ElevenLabs — TTS 🟨 IMPLEMENTADO_PARCIAL, 12. WhatsApp via deep link `wa.me` ✅ IMPLEMENTADO_TOTAL, 9. Resend (`api.resend.com`) 🟨 IMPLEMENTADO_PARCIAL, A.3 — Comunicação, Contrato, Estado por edge, Manifesto de Idempotência — Edges de Escrita (+13 more)
 
 ### Community 414 - "Simulação adversarial de cenários, falhas e gaps"
 Cohesion: 0.09
 Nodes (22): A. Concorrência, governança e proteção, B. CI, dependências e qualidade local, Baseline reproduzida, C. Contratos código ↔ banco e Edge handlers, D. Produto, UX, mocks e provenance, E. Banco, RLS, jobs e migrations, F. Integrações, deploy e release, Fotografia read-only do banco (+14 more)
 
 ### Community 415 - "useKitBuilderPageState.ts"
-Cohesion: 0.17
-Nodes (21): 5.3 Área 03 — Rotas, percursos e estado do editor (KM-021…030), 5.6 Área 06 — Entrada do Kit Maker e descoberta (KM-051…060), KM50-016 — Aproximar a entrada do modelo aprovado, featuredImage(), HeroProductImage(), KitMakerLanding(), useLandingCatalog(), isKitMakerLandingRoute() (+13 more)
+Cohesion: 0.47
+Nodes (9): 5.3 Área 03 — Rotas, percursos e estado do editor (KM-021…030), isKitMakerLandingRoute(), isRecord(), readDraftAIBriefing(), readDraftClient(), readDraftFlow(), readDraftNotes(), toSavedKitSnapshot() (+1 more)
 
 ### Community 416 - "rls-isolation.test.ts"
 Cohesion: 0.09
@@ -5625,12 +5614,12 @@ Cohesion: 0.09
 Nodes (22): 🔴 ALTOS, BUG-01 — `--orange` aponta para AZUL (hue 217°), BUG-02 — Variáveis CSS ausentes no `:root` (14 grupos de tokens), BUG-03 — `--sidebar-primary` diverge de `--primary` no `:root`, BUG-04 — `--orange-*` ausentes de `CSS_VARS_TO_APPLY`, BUG-05 — `@keyframes` duplicados (6 animações × 2), BUG-06 — `@keyframes shimmer` conflitante (2x, lógicas opostas), BUG-07 — `.card-base` / `.card-elevated` sem padding (+14 more)
 
 ### Community 418 - "12 — Planejado, Sugerido e Prometido × Realidade do Código"
-Cohesion: 0.09
-Nodes (22): 0. Aviso metodológico — documento não é prova, 12 — Planejado, Sugerido e Prometido × Realidade do Código, B.1 Método, B.2 Os casos mais graves (features de negócio dadas como prontas), B.3 Evidência fabricada em **auditorias** (não só no inventário), B. Evidência fabricada encontrada — **seção crítica**, C. Promessas de interface (visíveis ao usuário final), D.1 Contagem (+14 more)
+Cohesion: 0.06
+Nodes (33): 0. Aviso metodológico — documento não é prova, 12 — Planejado, Sugerido e Prometido × Realidade do Código, A.2 Ferramentas, A.3 Integrações, A.4 Infra e qualidade, A. TABELA MESTRA — Planejado × Realidade, B.1 Método, B.2 Os casos mais graves (features de negócio dadas como prontas) (+25 more)
 
 ### Community 419 - "ProductIntelligence.tsx"
-Cohesion: 0.10
-Nodes (21): 1. Itens novos (nao constam em A01-A11), 2. Reverificacao dos itens de docs/estado/12 (coincidem com A-series; so estado atual), 3. Ignorados (Outro dono), Bloco 5 — Planos fora dos anexos (docs/estado/12, roadmap), Contagem por estado, METRIC_CARD_BG_COLORS, METRIC_CARD_ICON_COLORS, MetricCard() (+13 more)
+Cohesion: 0.13
+Nodes (17): 1. Itens novos (nao constam em A01-A11), METRIC_CARD_BG_COLORS, METRIC_CARD_ICON_COLORS, MetricCard(), MetricCardProps, ProductIntelligence(), ProductIntelligenceProps, ProductIntelligenceSkeleton() (+9 more)
 
 ### Community 420 - "🤝 HANDOFF SUPLEMENTAR — Sessão de noite 07/05/2026"
 Cohesion: 0.09
@@ -5649,20 +5638,20 @@ Cohesion: 0.09
 Nodes (23): 0. Como ler, Bloqueios conhecidos na entrada, Invariantes, 0. Como ler e executar, Decisões do PO (bloqueiam as etapas marcadas), Estado dos dados hoje (consultado em 22/09), Invariantes (não negociáveis), Lotes de PR sugeridos (+15 more)
 
 ### Community 424 - "🚫 POLÍTICA DE IDIOMA - GIFTS-STORE"
-Cohesion: 0.09
-Nodes (23): ⚠️ **ALERTA PARA DESENVOLVEDORES:**, 📝 **ALTERAÇÕES FEITAS NOS DOCUMENTOS:**, **ANALISE_EXAUSTIVA_GIFTS_STORE.md:**, 🎓 **BOAS PRÁTICAS:**, 🇧🇷 DECISÃO DE NEGÓCIO: EXCLUSIVAMENTE PORTUGUÊS DO BRASIL, **DIAGRAMAS_PROCESSOS_GIFTS_STORE.md:**, ✅ **FAZER:**, 🎯 **JUSTIFICATIVA DA DECISÃO:** (+15 more)
+Cohesion: 0.08
+Nodes (25): ⚠️ **ALERTA PARA DESENVOLVEDORES:**, 📝 **ALTERAÇÕES FEITAS NOS DOCUMENTOS:**, **ANALISE_EXAUSTIVA_GIFTS_STORE.md:**, 🎓 **BOAS PRÁTICAS:**, 🇧🇷 DECISÃO DE NEGÓCIO: EXCLUSIVAMENTE PORTUGUÊS DO BRASIL, **DIAGRAMAS_PROCESSOS_GIFTS_STORE.md:**, ✅ **FAZER:**, ✅ **Já está conforme:** (+17 more)
 
 ### Community 425 - "Roboflow Integration Setup Guide"
 Cohesion: 0.09
 Nodes (22): 1. Get Roboflow API Key, 2. Configure Credentials in Supabase, 3. (Optional) Configure Model ID, 4. Deploy the Edge Function, 500 - Roboflow API Error, 503 - ROBOFLOW_NOT_CONFIGURED, 5. Test the Integration, API Usage (+14 more)
 
 ### Community 426 - "🧹 FAXINA TÉCNICA DO PROMO_GIFTS — ONDA 1 COMPLETA & HANDOFF"
-Cohesion: 0.09
-Nodes (22): 10.1 🔴 ROTACIONAR PAT (segurança crítica), 10.2 🟡 Investigar full vitest suite hang no CI, 10.3 🟢 Reativar 2 tests skipados na Onda 1, 10.4 🟢 Corrigir `.coderabbit.yaml`, 10.5 🟢 Decisão sobre branch protection da main, 10. Pendências críticas antes da Onda 2, 1. Como ler este documento, 2. TL;DR — Estado em 5 linhas (+14 more)
+Cohesion: 0.07
+Nodes (29): 13.1 Pegar estado atual do repo, 13.2 Validar repo está saudável, 13.3 Acessar histórico granular dos 8 commits da Onda 1, 13.4 Rollback de emergência (se algo quebrar), 13.5 Iniciar Onda 2, 13.6 Comandos de auditoria para o próximo Claude verificar a faxina, 13. Comandos úteis para retomar, 14.1 Cara, seja bem-vindo. Aqui está o contexto comprimido. (+21 more)
 
 ### Community 427 - "quote-scenarios.ts"
-Cohesion: 0.15
-Nodes (10): AUTHED_PROJECTS, openPdfDialog(), VIEWPORTS, VIEWPORTS, FORBIDDEN_PHRASE, gotoQuoteScenario(), QUOTE_BREAKPOINTS, QUOTE_NUMBER_REGEX (+2 more)
+Cohesion: 0.19
+Nodes (9): AUTHED_PROJECTS, openPdfDialog(), VIEWPORTS, FORBIDDEN_PHRASE, gotoQuoteScenario(), QUOTE_BREAKPOINTS, QUOTE_NUMBER_REGEX, QuoteScenario (+1 more)
 
 ### Community 428 - "tab-trail.ts"
 Cohesion: 0.10
@@ -5689,16 +5678,16 @@ Cohesion: 0.19
 Nodes (19): EngravingAreaCard(), EngravingAreaCardProps, COMMON_COMPONENTS, COMMON_LOCATIONS, DEFAULT_DETAIL_FORM, DetailFormState, EnrichedArea, ExternalTechnique (+11 more)
 
 ### Community 434 - "adapters/index.ts"
-Cohesion: 0.16
-Nodes (21): AdaptResult, bumpStat(), ContractMismatchEntry, contractMismatches, detectPriceSchema(), FullSchemaStats, getContractMismatches(), getLegacyFieldsSeen() (+13 more)
+Cohesion: 0.13
+Nodes (18): bumpStat(), ContractMismatchEntry, contractMismatches, detectPriceSchema(), FullSchemaStats, getContractMismatches(), getLegacyFieldsSeen(), getRecentMismatches() (+10 more)
 
 ### Community 435 - "tests/p0/_mocks.ts"
-Cohesion: 0.14
-Nodes (13): QUOTE_WITH_FREIGHT, bitrixWebhook5xx, bitrixWebhookOk, bitrixWebhookTimeout, cloudflareStreamDown, createSupabaseClientMock(), crmDbBridgeOffline, crmDbBridgeStale (+5 more)
+Cohesion: 0.12
+Nodes (15): OVER_LIMIT_BODY, WITHIN_LIMIT_BODY, QUOTE_WITH_FREIGHT, bitrixWebhook5xx, bitrixWebhookOk, bitrixWebhookTimeout, cloudflareStreamDown, createSupabaseClientMock() (+7 more)
 
 ### Community 436 - "SSOT Supabase — Painel de Saúde"
-Cohesion: 0.10
-Nodes (17): CLAUDE.md — Instruções para Claude Code (sessões automáticas), Lido pelo Claude Code ao iniciar cada sessão neste repositório., Última atualização: 2026-10-24 — REGRA #11: proíbe vercel link/pull fora do raiz; .vercel/project.json fixado no repo., Caminhos históricos tolerados, Como executar tudo, Marcadores legítimos, Onde falha um PR, Referências (+9 more)
+Cohesion: 0.07
+Nodes (26): CLAUDE.md — Instruções para Claude Code (sessões automáticas), Lido pelo Claude Code ao iniciar cada sessão neste repositório., Última atualização: 2026-10-24 — REGRA #11: proíbe vercel link/pull fora do raiz; .vercel/project.json fixado no repo., ✏️ Arquivos alterados nesta auditoria, Auditoria de Documentação — SSOT Supabase, 🔎 Classificação das 24 menções ao legado, 📎 Comandos de reprodução, ✅ Critérios 10/10 (+18 more)
 
 ### Community 437 - "📡 Documentação de APIs - Gifts Store"
 Cohesion: 0.09
@@ -5709,44 +5698,44 @@ Cohesion: 0.09
 Nodes (21): Aplicação / rollout funcional, Banco de dados / schema / restauração, Canário, mitigação e stop conditions, Comandos validados apenas por inspeção, Conclusão operacional, Edge, Edge Functions, Evidência detalhada por camada (+13 more)
 
 ### Community 439 - "📋 Auditoria PromoGifts — Plano de Faxina e Migração"
-Cohesion: 0.09
-Nodes (22): 1. Domain-Driven Design — Cada sistema com um propósito, 2. Banco unificado de Produtos, 3. Snapshot vs Referência (decisão sobre clientes em orçamentos), 4. Sistema restrito a colaboradores, 5. Plano Supabase, Achados que viraram ações nas próximas fases, Aprovações que SEMPRE precisam de OK explícito, 📋 Auditoria PromoGifts — Plano de Faxina e Migração (+14 more)
+Cohesion: 0.12
+Nodes (17): Anexo A: Histórico de Commits da Faxina (em ordem cronológica), Anexo B: Projetos Supabase, Anexo C: Pendências Críticas (snapshots de risco), Anexo D: Decisões Arquiteturais Registradas (ADRs), Anexo E: Como editar este documento, 📋 Anexos, Aprovações que SEMPRE precisam de OK explícito, 📋 Auditoria PromoGifts — Plano de Faxina e Migração (+9 more)
 
 ### Community 440 - "SEGREDOS.md — Inventário de Segredos e Variáveis dos Workflows"
 Cohesion: 0.09
 Nodes (21): Allowlist (sem valor obrigatório — falha graciosamente), Auto-injetados pelo Supabase (sempre disponíveis), Cart / Testes de carrinho, Configuração do Supabase (cliente Vite), Credenciais E2E (testes de integração/staging), Deploy Vercel, Flags e configuração de runtime, Integrações e callbacks (+13 more)
 
-### Community 441 - "webhook-inbound/index.ts"
-Cohesion: 0.13
-Nodes (17): Bugs ativos encontrados durante a classificação, Categoria (a) — Interno com validação própria (22 funções), Categoria (b) — Público por design (4 funções), Categoria (c) — Erro / precisa JWT, Categorias, Classificação — Edge Functions com `verify_jwt = false`, Problema operacional (não de segurança), corsHeaders (+9 more)
+### Community 441 - "webhook-contracts.test.ts"
+Cohesion: 0.12
+Nodes (19): buildErrorResponse(), expectUnified422(), parseAgainst(), parseVersioned(), SimulatedResponse, zodErrorToFields(), CnpjLookupSchemaV1, CONTRACTS (+11 more)
 
 ### Community 442 - "useTecnicasList.ts"
 Cohesion: 0.12
-Nodes (20): 3. RISCOS ESTRUTURAIS, POR GRAVIDADE, 🟡 R10 — Backup codes de 2FA gerados com `Math.random()`, 🔴 R1 — O ambiente não é reconstruível a partir do repositório, 🔴 R2 — Nenhum quality gate está protegendo nada, 🔴 R3 — Quatro endpoints de produção sem autorização, 🟠 R4 — Dado fictício exibido como real, 🟠 R5 — Fios partidos que perdem dados silenciosamente, 🟠 R6 — Os testes não protegem o que dizem proteger (+12 more)
+Nodes (19): 3. RISCOS ESTRUTURAIS, POR GRAVIDADE, 🟡 R10 — Backup codes de 2FA gerados com `Math.random()`, 🔴 R1 — O ambiente não é reconstruível a partir do repositório, 🔴 R2 — Nenhum quality gate está protegendo nada, 🔴 R3 — Quatro endpoints de produção sem autorização, 🟠 R4 — Dado fictício exibido como real, 🟠 R5 — Fios partidos que perdem dados silenciosamente, 🟠 R6 — Os testes não protegem o que dizem proteger (+11 more)
 
 ### Community 443 - "PLANO DE MELHORIAS E CORREÇÕES — 200 ETAPAS"
-Cohesion: 0.09
-Nodes (21): §2 — REGRAS DE EXECUÇÃO, §3 — TRILHAS E LEGENDA, §4 — AS 200 ETAPAS, §5 — RASTREABILIDADE: ACHADO → ETAPA, §7 — RESUMO EXECUTIVO, As 12 etapas que dependem do PO, COMO USAR ESTE DOCUMENTO, Mapa completo (+13 more)
+Cohesion: 0.07
+Nodes (27): §1 — DIAGNÓSTICO: POR QUE OS PLANOS ANTERIORES NÃO FECHARAM, §2 — REGRAS DE EXECUÇÃO, §3 — TRILHAS E LEGENDA, §4 — AS 200 ETAPAS, §5 — RASTREABILIDADE: ACHADO → ETAPA, §7 — RESUMO EXECUTIVO, A consequência prática, As 12 etapas que dependem do PO (+19 more)
 
 ### Community 444 - "ONDA 5 — LEDGER DE MIGRATIONS (E051–E060)"
 Cohesion: 0.09
-Nodes (22): ⏸ CHECKPOINT 1 — APÓS E050, ONDA 5 — LEDGER DE MIGRATIONS (E051–E060), ONDA 7 — BACKUP, RECUPERAÇÃO E DETECÇÃO (E071–E080), P200-E051 · [A] · P1 · `repair-only` tem de avisar que quebra o replay, P200-E052 · [A] · P1 · Recibo tem de distinguir aplicação de registro, P200-E053 · [C] · P1 · Fechar as 179 versões aguardando `repair`, P200-E054 · [B] · P1 · Registrar as 10 migrations do incidente de 2026-10-13, P200-E055 · [A] · P1 · Gate: migration aplicada sem recibo em 24h reprova (+14 more)
+Nodes (22): ⏸ CHECKPOINT 1 — APÓS E050, ONDA 5 — LEDGER DE MIGRATIONS (E051–E060), ONDA 6 — QUALIDADE DAS MIGRATIONS (E061–E070), P200-E051 · [A] · P1 · `repair-only` tem de avisar que quebra o replay, P200-E052 · [A] · P1 · Recibo tem de distinguir aplicação de registro, P200-E053 · [C] · P1 · Fechar as 179 versões aguardando `repair`, P200-E054 · [B] · P1 · Registrar as 10 migrations do incidente de 2026-10-13, P200-E055 · [A] · P1 · Gate: migration aplicada sem recibo em 24h reprova (+14 more)
 
 ### Community 445 - "AutoTestJobStatusCard.tsx"
-Cohesion: 0.10
-Nodes (20): `AutoTestJobStatusCard` sempre "untested", Banner "Credenciais alteradas" não mostra qual secret mudou, "Carregando..." infinito no seletor de empresas (front), Checklist operacional por ambiente, Como promover sem editar migration histórica, `connections-auto-test`, 🔁 Edge Functions que dependem de credenciais CRM, 🩺 Endpoints de Diagnóstico do `crm-db-bridge` (+12 more)
+Cohesion: 0.09
+Nodes (22): `AutoTestJobStatusCard` sempre "untested", Banner "Credenciais alteradas" não mostra qual secret mudou, "Carregando..." infinito no seletor de empresas (front), Checklist operacional por ambiente, Como promover sem editar migration histórica, `connections-auto-test`, 🔁 Edge Functions que dependem de credenciais CRM, 🩺 Endpoints de Diagnóstico do `crm-db-bridge` (+14 more)
 
 ### Community 446 - "QuoteItemsList.tsx"
 Cohesion: 0.12
 Nodes (15): Fase 1 — Análise estática, QuoteItemEditorSheet(), QuoteItemEditorSheetProps, QuoteItemRow(), QuoteItemRowProps, QuoteItemsList(), QuoteItemsListProps, QuoteProductCustomization() (+7 more)
 
-### Community 447 - "check-ledger-manifest-drift.mjs"
-Cohesion: 0.13
-Nodes (19): argv, baselineArg, computeDriftCandidates(), declaredVersionOf(), DEFAULT_BASELINE_PATH, fetchLiveLedgerVersions(), loadBaseline(), localVersions() (+11 more)
+### Community 447 - "BrandColorPicker.tsx"
+Cohesion: 0.22
+Nodes (17): Grupo G — Identidade, CRM e marca (031–035), BrandColorPicker(), ColorKey, ContrastBadge(), LABEL, Props, SWATCHES, SwatchField() (+9 more)
 
 ### Community 448 - "secretNormalizers.ts"
-Cohesion: 0.22
-Nodes (19): ConnectionStatus, ResolveStatusInput, resolveSupabaseConnectionStatus(), SecretLite, NormalizationResult, normalizeBitrixDomain(), normalizeBitrixWebhook(), normalizeDefault() (+11 more)
+Cohesion: 0.14
+Nodes (26): Props, NormalizationResult, normalizeBitrixDomain(), normalizeBitrixWebhook(), normalizeDefault(), normalizeDigitsOnly(), normalizeJwt(), normalizeMcpUrl() (+18 more)
 
 ### Community 449 - "SkeletonLoaders.tsx"
 Cohesion: 0.16
@@ -5761,12 +5750,12 @@ Cohesion: 0.15
 Nodes (18): addEventListener(), checkAuth(), checkBridge(), checkRest(), CloudNotReadyError, CloudStatus, CloudStatusSnapshot, deriveStatus() (+10 more)
 
 ### Community 452 - "personalization/selectors.ts"
-Cohesion: 0.10
-Nodes (11): calculateTableScore(), rankTablesByCriteria(), ColorOption, PriceTable, PriceTableFilters, SizeOption, TableSelectionCriteria, Technique (+3 more)
+Cohesion: 0.09
+Nodes (17): calculateTableScore(), rankTablesByCriteria(), PriceTableInput, TechniqueInput, ColorOption, PriceCalculationParams, PriceTable, PriceTableFilters (+9 more)
 
 ### Community 453 - "transformers.ts"
-Cohesion: 0.14
-Nodes (15): extractTiersFromRaw(), faixaToPriceTier(), rawTableToPriceTableInput(), rawTechniqueToTechniqueInput(), rawToTecnicaUnificada(), tabelaToPriceTableInput(), tecnicaToTechniqueInput(), transformRawTables() (+7 more)
+Cohesion: 0.17
+Nodes (12): extractTiersFromRaw(), faixaToPriceTier(), rawTableToPriceTableInput(), rawTechniqueToTechniqueInput(), rawToTecnicaUnificada(), tabelaToPriceTableInput(), tecnicaToTechniqueInput(), transformRawTables() (+4 more)
 
 ### Community 454 - "receive-crm-callback.fuzz.test.ts"
 Cohesion: 0.13
@@ -5776,9 +5765,9 @@ Nodes (19): KEY(), makeToggle(), validBody(), buildQuoteUpdates(), CallbackBody,
 Cohesion: 0.13
 Nodes (18): SavedSimulation, SimulationClient, SimulationOption, SimulationProduct, SimulationResult, SimulationScenario, SimulatorState, SimulatorStep (+10 more)
 
-### Community 457 - "market-intelligence-insights/index.ts"
+### Community 457 - "E2E (Playwright)"
 Cohesion: 0.11
-Nodes (17): aggregateData(), AggregatedSummary, buildCacheKey(), buildFallback(), FOCUS_LABELS, focusFallbackNextAction(), InsightFocus, InsightPayload (+9 more)
+Nodes (18): Adicionando um novo seletor, Adicionar novas tabelas, Checklist reutilizável para fluxos críticos (padrão de automação), Checklist rápido (copiar/colar em issue, PR ou spec), CI, Cleanup automático (pós-suite), Cobertura por módulo, Comandos (+10 more)
 
 ### Community 458 - "20260108014732_22444765-aa2c-47b2-afb4-f942541d622d.sql"
 Cohesion: 0.18
@@ -5787,6 +5776,14 @@ Nodes (21): idx_addresses_company, idx_companies_bitrix, idx_companies_cnpj, idx
 ### Community 459 - "public.product_notebook_specs"
 Cohesion: 0.13
 Nodes (10): idx_pnf_feature_id, idx_pnf_product_id, idx_pns_cover_mat, idx_pns_paper_format, idx_pns_product_id, idx_pns_source, public.product_notebook_features, public.product_notebook_specs (+2 more)
+
+### Community 461 - "public.fn_super_filtro"
+Cohesion: 0.04
+Nodes (5): applyVoiceFilters(), VoiceFilters, base, public.fn_super_filtro(), public.fn_super_filtro()
+
+### Community 462 - "Relatório de Arquitetura Back-End — Análise Sênior Exaustiva"
+Cohesion: 0.11
+Nodes (17): 1. Sumário Executivo, 2. Metodologia e Escopo, 4. Roadmap de Correções (Priorizado), 5. Benchmarking vs. Padrões de Mercado, 6. Tabela Consolidada de Findings, 7. Apêndice — Contexto Operacional, Decisões Arquiteturais (ADRs), Incidentes Confirmados (+9 more)
 
 ### Community 466 - "_live-client.ts"
 Cohesion: 0.11
@@ -5805,28 +5802,28 @@ Cohesion: 0.10
 Nodes (19): ✅ ARIA Labels, Atalhos de Teclado, Checklist, ✅ Contraste de Cores, ✅ Formulários Acessíveis, ♿ Guia de Acessibilidade (a11y), ✅ Imagens, ✅ Navegação por Teclado (+11 more)
 
 ### Community 470 - "stockFetcher.ts"
-Cohesion: 0.14
-Nodes (19): Achados e correções, Arquivos alterados, Auditoria do Módulo "Estoque" — 2026-06-18, ✅ CORRIGIDO (2ª rodada) — F4 (Alta): "Risco de Ruptura" preditivo agora usa velocidade REAL, ✅ CORRIGIDO — F2 (Média): chegadas futuras 4–6 eram descartadas silenciosamente, ✅ CORRIGIDO — F3 (Média): testes de `FutureStockModal` quebrados, FutureStockModal(), ALLOWED_FILTER_KEYS (+11 more)
+Cohesion: 0.13
+Nodes (20): Achados e correções, Arquivos alterados, Auditoria do Módulo "Estoque" — 2026-06-18, ✅ CORRIGIDO (2ª rodada) — F4 (Alta): "Risco de Ruptura" preditivo agora usa velocidade REAL, ✅ CORRIGIDO — F1 (Alta): janela de "Estoque Futuro" super/subestimava quantidades, ✅ CORRIGIDO — F2 (Média): chegadas futuras 4–6 eram descartadas silenciosamente, ✅ CORRIGIDO — F3 (Média): testes de `FutureStockModal` quebrados, FutureStockModal() (+12 more)
 
 ### Community 471 - "stock-filter.ts"
-Cohesion: 0.17
-Nodes (19): ✅ CORRIGIDO — F1 (Alta): janela de "Estoque Futuro" super/subestimava quantidades, applyStockFilters(), buildFilterContext(), buildStockIndexes(), FilterContext, futureWithinWindow(), hasIncomingWithinWindow(), INCOMING_WINDOW_DAYS (+11 more)
+Cohesion: 0.18
+Nodes (18): applyStockFilters(), buildFilterContext(), buildStockIndexes(), FilterContext, futureWithinWindow(), hasIncomingWithinWindow(), INCOMING_WINDOW_DAYS, matchMinQuantity() (+10 more)
 
 ### Community 472 - "kill-switch-client.ts"
 Cohesion: 0.13
 Nodes (19): BUG-02 — `kill-switch-client.ts`: SSR rollout bias, coerceSwitchCheck(), generateUUID(), getBucketKey(), getKillSwitchState(), KillSwitchQueryResult, KillSwitchRow, KillSwitchRpcResult (+11 more)
 
 ### Community 473 - "PARTE 4 — GAPS E DÍVIDA TÉCNICA (BAIXA SEVERIDADE)"
-Cohesion: 0.10
-Nodes (21): BAIXO-002: `useRBAC` Mapeia `dev → 'admin'` — Legacy Confusion, BAIXO-003: 384 Migrações — Nomenclatura Inconsistente, BAIXO-004: OG Meta Tags com URL Antiga do Lovable Preview, BAIXO-006: Comentários Extensos no Código de Produção, BAIXO-007: `chunkSizeWarningLimit: 2000` no Vite — Suprimindo Warning Real, BAIXO-008: `sourcemap: false` em Produção — Dificulta Debug, BAIXO-009: `enable_signup = false` — Sem Processo de Onboarding Documentado, BAIXO-010: Sem Política de Expiração de Sessions (+13 more)
+Cohesion: 0.11
+Nodes (19): BAIXO-011 a BAIXO-018: Itens Adicionais, E22 · Resolver os 2 CVEs `high`, E23 · Eliminar o lockfile duplo, E24 · Consertar o `tsconfig.json` raiz, E25 · TypeScript 5.4.5 → 5.9.x, E26 · Vitest 4 → 5 e `@vitest/coverage-v8` 4 → 5, E27 · Tailwind 3.4.19 → 4.x, E28 · Zod 3.25.76 → 4.x (+11 more)
 
 ### Community 474 - "Auditoria de Migração: `process_spot_products` → `fn_process_raw_v2`"
 Cohesion: 0.10
 Nodes (20): 1. Veredito, 2.1 Legada `process_spot_products` (hardcoded para SPOT), 2.2 Nova `fn_process_raw_v2(p_supplier_id uuid, p_batch_size int=100, p_bulk_mode bool=true)`, 2. As duas funções, 3. Mapa de paridade funcional (feature-by-feature), 4.1 Integridade dos dados existentes (3.612 raw / 1.200 prod / 3.612 var), 4.2 Execução idempotente real (sem pendências), 4.3 Teste funcional END-TO-END (sintético, rollback total) (+12 more)
 
 ### Community 475 - "PresetsBar.tsx"
-Cohesion: 0.16
-Nodes (15): 🟠 ALTO, BUG-SF-03 — `ordenacao` ausente de `SECTION_GROUPS` → seção de ordenação nunca renderiza no sidebar, BUG-SF-04 — `preset-utils.ts` usa threshold errado para priceRange (500 vs 9999), BUG-SF-05 — `preset-utils.ts` conta apenas 12 de 24+ tipos de filtro, BUG-SF-06 — Lógica OR em vez de AND para ramos + segmentos quando ambos selecionados, useFilterPresets(), countFilters, PRESET_COLORS (+7 more)
+Cohesion: 0.12
+Nodes (21): 🟠 ALTO, BUG-SF-03 — `ordenacao` ausente de `SECTION_GROUPS` → seção de ordenação nunca renderiza no sidebar, BUG-SF-04 — `preset-utils.ts` usa threshold errado para priceRange (500 vs 9999), BUG-SF-05 — `preset-utils.ts` conta apenas 12 de 24+ tipos de filtro, BUG-SF-06 — Lógica OR em vez de AND para ramos + segmentos quando ambos selecionados, RamosFilterProps, SuppliersFilterProps, defaultFilters (+13 more)
 
 ### Community 476 - "🔍 Relatório de Auditoria Exaustiva de Integrações"
 Cohesion: 0.10
@@ -5834,15 +5831,15 @@ Nodes (20): 🚨 BUG-001 — CRÍTICO — anon key real exposta no .env.example,
 
 ### Community 477 - "Auditoria Super Filtro — 26/05/2026"
 Cohesion: 0.10
-Nodes (20): Auditoria Super Filtro — 26/05/2026, Ação tomada, BUG-15 — `featured`, `isNew`, `hasPersonalization` não filtram, BUG-16 — `gender` não filtra no Super Filtro, BUG-18 — `techniques` e `tags` exibidos como ativos mas sem filtro, BUG-19 — Stale closure no debouncedSearch effect, BUG-20 — Fuzzy search usa URL param stale, BUG-22 — `useCatalogState.activeFiltersCount` usa `< 500` (+12 more)
+Nodes (20): Auditoria Super Filtro — 26/05/2026, Ação tomada, BUG-15 — `featured`, `isNew`, `hasPersonalization` não filtram, BUG-16 — `gender` não filtra no Super Filtro, BUG-18 — `techniques` e `tags` exibidos como ativos mas sem filtro, BUG-20 — Fuzzy search usa URL param stale, BUG-21 — `useCatalogFiltering` priceRange usa `< 500`, BUG-22 — `useCatalogState.activeFiltersCount` usa `< 500` (+12 more)
 
 ### Community 478 - "Receita em 5 passos"
 Cohesion: 0.10
 Nodes (20): 1. Criar o schema, 2. Importar no index.ts, 3. Substituir o parsing manual, 4. Anexar headers de versionamento nas respostas de sucesso, 5. Adicionar testes em `tests/contracts/`, Autenticação do produtor (n8n) — vigente desde 2026-05-24, Backward compatibility, Casos especiais (+12 more)
 
 ### Community 479 - "ZoneCommandPalette.tsx"
-Cohesion: 0.12
-Nodes (16): Hooks Auditados sem Bugs (Round 5), Round 5 — BUG-20 a BUG-26 (2026-05-27), Totais Acumulados, FocusContext, ALL_EXPANDED, loadInitial(), useZoneCollapse(), ALL_VISIBLE (+8 more)
+Cohesion: 0.10
+Nodes (21): Hooks Auditados sem Bugs (Round 5), Round 5 — BUG-20 a BUG-26 (2026-05-27), Totais Acumulados, EMPTY, FocusContext, loadInitial(), __TEST__, useFocusContext() (+13 more)
 
 ### Community 480 - "Bugs Corrigidos nesta Rodada"
 Cohesion: 0.10
@@ -5860,9 +5857,9 @@ Nodes (21): 1. O cenário {#1-o-cenário}, 2. A descoberta arquitetural crítica
 Cohesion: 0.10
 Nodes (21): Causa raiz revisitada, Checklist de melhoria contínua (PMO), Comandos de validação rápida (próximas 24-72h), Conexões — substituiu ALTER DATABASE bloqueado no Supabase Cloud, Encerramento, Erro de processo capturado e corrigido, Estado do `external-db-bridge` (kill-switch), F3.1 — Otimização de `fn_run_schema_drift_check()` (+13 more)
 
-### Community 484 - "Relatório de Validação — Fix "Desfazer Exclusão" (toast duplicado)"
-Cohesion: 0.10
-Nodes (19): Arquivos adicionados por esta validação, Conclusão, Fase 1 — Auditoria estática, Fase 2 — Testes unitários, Fase 3 — Cobertura de asserts do plano, Fase 4 — Playwright (coleta), Fase 5 — Simulação de UI stacking (verificação lógica), Fase 6 — Regressões cruzadas (+11 more)
+### Community 484 - "Fluxo 9 — Orçamento (quote)"
+Cohesion: 0.05
+Nodes (32): Fluxo 9 — Orçamento (quote), Arquivos adicionados por esta validação, Conclusão, Fase 1 — Auditoria estática, Fase 2 — Testes unitários, Fase 3 — Cobertura de asserts do plano, Fase 4 — Playwright (coleta), Fase 5 — Simulação de UI stacking (verificação lógica) (+24 more)
 
 ### Community 485 - "sw.js"
 Cohesion: 0.13
@@ -5888,9 +5885,9 @@ Nodes (14): BAND_CLASS, HealthScoreInfoDialog(), Props, BucketKey, matches(), Pr
 Cohesion: 0.15
 Nodes (16): logoCache, logoPromises, processLogoTransparent(), Props, fmt(), ProductImageTransparent(), ProposalProductTable(), Props (+8 more)
 
-### Community 491 - "UpsellPlusPlus.tsx"
-Cohesion: 0.17
-Nodes (18): COMPLEMENTARY_MAP, generateSuggestions(), PRIORITY_ORDER, QUANTITY_TIERS, suggestAddPosition(), suggestComplementary(), suggestQuantityTier(), suggestTechniqueUpgrades() (+10 more)
+### Community 491 - "T14 — E2E Smoke Gate Fix (Hidratação SPA)"
+Cohesion: 0.11
+Nodes (18): Acompanhamento (não-bloqueante), Causa raiz (reproduzida e quantificada localmente), Cenários simulados antes do commit, Commits, Como confirmar que funcionou, Diagnóstico, Imediatos, `playwright.config.ts` (commit `8c3bb0b`) (+10 more)
 
 ### Community 492 - "20260622111500_supplier_reliability_pipeline_v1.sql"
 Cohesion: 0.14
@@ -5920,21 +5917,21 @@ Nodes (19): 1. Contexto, 2. Migration 1: RLS auth.uid() wrapper, 3. Migration 2:
 Cohesion: 0.10
 Nodes (19): 12.1 Backup e PITR, 12.2 Soft-Delete, 12.3 Auditoria de Ações, 12.4 Staging / Ambiente de Desenvolvimento, 12.5 LGPD / Privacidade, 12.6 Monitoramento de Service Role no Frontend, 12.7 Conformidade com Políticas de Governança, 12.8 Sumário da Seção 12 (+11 more)
 
-### Community 506 - "A11Y Clickable — SSOT de divs clicáveis"
+### Community 506 - "magazine-flakiness-report.mjs"
 Cohesion: 0.11
-Nodes (18): 1. Card animado com seleção (`motion.div` + `isPressed` + `strictTarget`), 2. Elemento semântico customizado (`as="article"`), 3. Wrapper de shadcn (`as={Card}`), 4. Ação com `stopPropagation` (thumb dentro de card), 5. `role` semântico (`link`, `menuitem`, `tab`), 6. Radix `asChild` — **NÃO** envolver com `<Clickable>`, A11Y Clickable — SSOT de divs clicáveis, API (+10 more)
+Nodes (17): args, bySuite, failAll, flaky, jsonReport, md, OUT_DIR, PATTERN_RAW (+9 more)
 
 ### Community 507 - "drift-baseline.test.mjs"
-Cohesion: 0.12
-Nodes (17): Fase 10 — Segurança e governança contínua (E94–E100), Contexto de risco, Dependabot / npm audit — Dismissal Baseline, Próximos passos, Vulnerabilidades com override aplicado, Vulnerabilidades sem fix disponível (dismissal datado), 0. Sumário executivo, prepareWorkdir() (+9 more)
+Cohesion: 0.11
+Nodes (25): Corolário — baseline do drift-check e comandos que apagam o ledger, Corolário — baseline do drift-check e comandos que apagam o ledger, Fase 10 — Segurança e governança contínua (E94–E100), P200-E036 · [A] · P1 · Inventariar event triggers em vez de descartá-los ✅, 0. Sumário executivo, byCodeUnit(), findBaseline(), isStatementMissingFromDump() (+17 more)
 
 ### Community 508 - "Ambientes e Paridade Mínima (local / CI / staging)"
 Cohesion: 0.10
 Nodes (19): 1) Objetivo, 2) Ambientes, 3.1 Frontend (mínimo obrigatório), 3.2 Testes E2E / smoke (quando aplicável), 3.3 Backend / Edge Functions (segredos), 3) Variáveis obrigatórias por ambiente, 4) Política de segredos, 5) Limitações de execução (por ambiente) (+11 more)
 
 ### Community 509 - "A) Tabela por DOMÍNIO"
-Cohesion: 0.13
-Nodes (16): A) Tabela por DOMÍNIO, D-8 — Colisão de nome já resolvida (registro positivo), ExternalCollection, ExternalCollectionProduct, useExternalCollectionMutations(), useExternalCollections(), useExternalCollectionsManager(), createUnavailableResult() (+8 more)
+Cohesion: 0.24
+Nodes (10): A) Tabela por DOMÍNIO, createUnavailableResult(), useWizardPricing(), resolveTitle(), toast(), ToastActionElement, ToastInput, ToastReturn (+2 more)
 
 ### Community 510 - "Redeploy T7 — Triagem de PRs Dependabot"
 Cohesion: 0.10
@@ -5945,28 +5942,28 @@ Cohesion: 0.10
 Nodes (20): 01 · Arquitetura — **7.5/10** (Alto ×2) =, 03 · Autorização — **8.0/10** (Crítico ×3) ↑ de 7.5, 04 · Banco de Dados — **8.5/10** (Alto ×2) =, 05 · CI/CD — **8.5/10** (Padrão ×1) ↓ de 9.0, 06 · Data Integrity — **8.0/10** (Crítico ×3) =, 07 · Documentação — **7.5/10** (Padrão ×1) ↓ de 8.0, 08 · Infraestrutura / DevOps — **7.5/10** (Padrão ×1) =, 09 · Logging / Monitoring — **9.0/10** (Padrão ×1) ↑ de 8.5 (+12 more)
 
 ### Community 512 - "undoToast.tsx"
-Cohesion: 0.13
-Nodes (14): 2. Testes unitários — `CartHeaderButton.undoSnapshot.test.ts`, 3. Fuzz 500 + race 50 — `scripts/validate-cart-undo.mjs`, 4. Fase 4 (E2E Playwright) — não executada, 5. Gaps encontrados, 6. Critério de sucesso, Validação — Undo ao remover item do carrinho, AddToCartInput, ActionToastOptions (+6 more)
+Cohesion: 0.12
+Nodes (16): 4.11 `docs/validation/*.md` e `docs/historico/RECOVERY_PLAN.md` (+ `orphan-edges-2026-05-10.md`), 2. Testes unitários — `CartHeaderButton.undoSnapshot.test.ts`, 3. Fuzz 500 + race 50 — `scripts/validate-cart-undo.mjs`, 4. Fase 4 (E2E Playwright) — não executada, 5. Gaps encontrados, 6. Critério de sucesso, Validação — Undo ao remover item do carrinho, Estado da SSOT (+8 more)
 
 ### Community 513 - "catalog-search-audit.spec.ts"
 Cohesion: 0.14
 Nodes (17): ACCENT_PAIRS, ADVERSARIAL, CASE_VARIANTS, COMMON_TERMS, everyCardMatches(), gridCount(), gridTitles(), MULTIWORD (+9 more)
 
-### Community 514 - "🔍 Relatório de Análise de Performance - MainLayout"
-Cohesion: 0.12
-Nodes (19): 1. Componentes que Montam Juntos, 2.1 `useCrmCompanies` no Header (CRÍTICO), 2.2 `useExternalCollections` na inicialização, 2.3 `pendingApprovalCount` no Sidebar, 2. Queries que Podem ser Otimizadas, 3.1 Lazy-load do `useCrmCompanies` (Alta Prioridade), 3.2 Defer CollectionsProvider (Média Prioridade), 3.3 Paralelizar Lazy Loading (+11 more)
+### Community 514 - "1.5 — Pendências decisórias da fase"
+Cohesion: 0.04
+Nodes (72): Home, cliente, aliases e 404, 5. Home, dashboard e clientes (ProtectedRoute), Mapa do caminho, 1. Features de produto, 2. Flags de plataforma (registro `src/lib/feature-flags.ts`), 3. Superfícies externas gerenciadas, 4. Critério de conclusão da etapa 004, Readiness e Lifecycle por Feature — v0.1 RASCUNHO (2026-08-29) (+64 more)
 
 ### Community 515 - "EnhancedErrorBoundary"
-Cohesion: 0.14
-Nodes (6): 4.1 Formato agora emitido (pós-instrumentação), createErrorId(), EnhancedErrorBoundary, Boom(), mockUseDevGate, renderBoundary()
+Cohesion: 0.06
+Nodes (26): 📊 CRM & Quotes, 🛠️ Infrastructure & Stability, 🛍️ Product Catalog & UX, 🔐 Security & Authentication, Technical Audit & Hardening Report, 1. Resumo executivo, 2. Impacto no usuário, 3.1 Caminho observado (produção) (+18 more)
 
 ### Community 516 - "IncidentDetailsDrawer.tsx"
 Cohesion: 0.15
 Nodes (18): IncidentDetailsDrawer(), LatencyCell(), METRIC_TILE_CLASSES, MetricTile(), Props, SEV_META, StatusPill(), DeliveryEvent (+10 more)
 
 ### Community 517 - "VoiceSearchOverlay.tsx"
-Cohesion: 0.23
-Nodes (16): getThemeHSL(), hsl(), hsla(), PhaseColors, usePhaseColors(), VoiceOrb(), VoiceSuggestionsPanel(), VoiceTranscriptPanel() (+8 more)
+Cohesion: 0.19
+Nodes (18): getThemeHSL(), hsl(), hsla(), PhaseColors, usePhaseColors(), VoiceOrb(), SUGGESTION_COMMANDS, VoiceSuggestionsPanel() (+10 more)
 
 ### Community 518 - "useSupplierComparison.ts"
 Cohesion: 0.19
@@ -5985,8 +5982,8 @@ Cohesion: 0.23
 Nodes (14): bulkRestoreSummary, BulkRestoreTone, adversarialCount, confirmDialogConfirmLabel(), deleteConfirmDialogDescription(), deleteConfirmDialogTitle(), deletedToastTitle(), itemRemovedToastTitle() (+6 more)
 
 ### Community 522 - "AppRoutes.tsx"
-Cohesion: 0.14
-Nodes (18): adminRoutes, AppProviders, AppRoutes(), MainLayout, ProtectedAppLayout(), RouteSuspense(), RouteSuspenseDone(), homeAndClientRoutes (+10 more)
+Cohesion: 0.13
+Nodes (17): adminRoutes, AppRoutes(), RouteSuspense(), RouteSuspenseDone(), homeAndClientRoutes, notFoundRoute, AdminTemasPage, ClientDetailPage (+9 more)
 
 ### Community 523 - "stock.ts"
 Cohesion: 0.11
@@ -6009,8 +6006,8 @@ Cohesion: 0.11
 Nodes (15): argv, changelogText, DRY, emitterMatch, emitterText, idx, KIND, KINDS (+7 more)
 
 ### Community 529 - "Auditoria & Estabilização de Performance do Backend — 2026-06-15"
-Cohesion: 0.12
-Nodes (17): 1. TL;DR, 2. Diagnóstico (causa-raiz), 3. Correções aplicadas (todas verificadas ao vivo), 4. Verificação as-built (estado ao vivo em 2026-06-15), 5.1 🔴 `supplier_products_raw_history_legacy` — 5.080 MB (maior objeto do banco), 5.2 Supressão de UPDATEs no-op na `supplier_products_raw` (durabilidade), 5. Decisões pendentes (alto impacto — requerem aprovação do Joaquim), 6. Plano de validação (24–48h) (+9 more)
+Cohesion: 0.09
+Nodes (20): 1. TL;DR, 2. Diagnóstico (causa-raiz), 3. Correções aplicadas (todas verificadas ao vivo), 4. Verificação as-built (estado ao vivo em 2026-06-15), 5.1 🔴 `supplier_products_raw_history_legacy` — 5.080 MB (maior objeto do banco), 5.2 Supressão de UPDATEs no-op na `supplier_products_raw` (durabilidade), 5. Decisões pendentes (alto impacto — requerem aprovação do Joaquim), 6. Plano de validação (24–48h) (+12 more)
 
 ### Community 530 - "ADR — contrato de saúde EMA e pipeline de ruptura"
 Cohesion: 0.11
@@ -6020,17 +6017,17 @@ Nodes (18): 10. Evidências reproduzíveis (somente leitura), 1. Decisão execut
 Cohesion: 0.11
 Nodes (14): Cenários simulados antes das novas correções, Continuação forward-only validada em 28/08/2026, Contratos, código e Edge Functions concluídos, Dependências, CI, SEO e acessibilidade, Estado remoto e limites que continuam explícitos, Evidências reproduzidas após instalação limpa, Fechamento final de GitHub e produção em 28/08/2026, Fechamento operacional do PR #1800 (+6 more)
 
-### Community 532 - "🔍 Auditoria Exaustiva — APIs Externas"
-Cohesion: 0.11
-Nodes (17): 1.1 Achados reais — ação recomendada (fora do escopo desta etapa `[RO]`), 1.2 Falsos positivos — investigados e descartados, 1. Lista (a) — código referenciando objetos inexistentes, APIs Externas Auditadas, 🔍 Auditoria Exaustiva — APIs Externas, Metodologia, Métricas da Auditoria, Não-Problemas (falsos positivos investigados) (+9 more)
+### Community 532 - "quote-sync-promo-champions/index.ts"
+Cohesion: 0.14
+Nodes (13): baseLog, Body, cors, handler(), hmacSha256Hex(), json(), normalizeTs(), safeJson() (+5 more)
 
 ### Community 533 - "🔎 Detalhamento das 10 regras mais volumosas"
 Cohesion: 0.11
 Nodes (18): 🔎 Detalhamento das 10 regras mais volumosas, ⚙️ `eqeqeq` — 24 erros em 12 arquivos, 📋 Inventário completo por arquivo (212), ⚙️ `no-eq-null` — 24 erros em 12 arquivos, 🔧 `no-promise-executor-return` — 22 erros em 9 arquivos, 🔧 `no-restricted-syntax` — 35 erros em 16 arquivos, 🔧 `no-shadow` — 22 erros em 11 arquivos, 📏 Por regra (+10 more)
 
-### Community 534 - "KitLibraryPage.tsx"
-Cohesion: 0.18
-Nodes (17): 5.17 Área 17 — Biblioteca, exemplos e suporte contextual (KM-161…170), buildCustomKitInsert(), CustomKitInsertPayload, applySort(), customKitCoverImage(), deleteOwnKit(), EmptyState(), extractDraftClientName() (+9 more)
+### Community 534 - "breadcrumb.tsx"
+Cohesion: 0.16
+Nodes (12): @radix-ui/react-slot, Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, Button, ButtonProps (+4 more)
 
 ### Community 535 - "CartHeaderActions.render.test.tsx"
 Cohesion: 0.12
@@ -6042,11 +6039,11 @@ Nodes (18): 6.1 Implementar botão Apple no `SocialLoginButtons.tsx`, 6.2 Config
 
 ### Community 537 - "🇧🇷 REMOÇÃO DE i18n E CONFIGURAÇÃO PT-BR - GIFTS-STORE"
 Cohesion: 0.11
-Nodes (19): 1️⃣ **Configurar locale pt-BR no Componente Calendar**, 2️⃣ **Criar Utilitário de Formatação de Data**, 3️⃣ **Substituir Formatações Manuais de Data**, 4️⃣ **Adicionar Configuração Global de Locale (Opcional)**, 5️⃣ **Configurar Timezone para Brasília (Opcional)**, **Antes:**, 🔧 **AÇÕES NECESSÁRIAS**, 📅 **Bibliotecas de Data Encontradas:** (+11 more)
+Nodes (18): 1. **Calendário**, 2. **Formatação de Datas**, 3. **Gráficos e BI**, 4. **Notificações**, **Antes:**, 📅 **Bibliotecas de Data Encontradas:**, ✅ **BOA NOTÍCIA: QUASE TUDO JÁ ESTÁ CORRETO!**, 📝 **CHECKLIST DE IMPLEMENTAÇÃO** (+10 more)
 
-### Community 538 - "Fluxo 6 — Comparação"
-Cohesion: 0.15
-Nodes (15): Fluxo 6 — Comparação, ⚠️ A ARMADILHA do grep ingênuo (medida, não teórica), useComparison(), ComparisonScoreWeights, DEFAULT_SCORE_WEIGHTS, normalizeHigherBetter(), normalizeLowerBetter(), ProductScore (+7 more)
+### Community 538 - "checkLoginGate.ts"
+Cohesion: 0.14
+Nodes (14): 11.0 Resumo, 11.1 Auditoria técnica 20/22 dimensões (2026-10-02) — `docs/audits/AUDITORIA_20DIM_2026-10-02.md`, 11.2 Plano JEV 100 (2026-09-28) — `docs/plans/PLANO_MELHORIAS_CORRECOES_JEV_100_ETAPAS_2026-09-28.md`, 11. Planos gerais de correções, melhorias e consolidação de auditorias, Anexo A09 — Planos gerais de correções, melhorias e consolidação de auditorias, CHECK_LOGIN_OPERATIONAL_REASONS, CheckLoginGateResponse, evaluateLoginGate() (+6 more)
 
 ### Community 539 - "13 — Runtime do Banco Canônico (medição ao vivo)"
 Cohesion: 0.11
@@ -6062,11 +6059,11 @@ Nodes (19): Atualização de execução — 10/09/2026, Comandos existentes para
 
 ### Community 542 - "ONDA 9 — EDGE FUNCTIONS: FAIL-OPEN, CORS E TIMEOUTS (E091–E100)"
 Cohesion: 0.11
-Nodes (18): ONDA 9 — EDGE FUNCTIONS: FAIL-OPEN, CORS E TIMEOUTS (E091–E100), P200-E091 · [A] · P1 · Timeout em `fetchWithBreaker`, P200-E092 · [A] · P1 · Timeout nas 10 funções que chamam LLM e API externa, P200-E093 · [A] · P1 · Restringir os padrões de origem do CORS, P200-E094 · [A] · P2 · `Allow-Origin: *` só em rota realmente anônima, P200-E095 · [A] · P2 · Ligar o snapshot de CORS a um gate, P200-E096 · [A] · P2 · `image-proxy` — anti-hotlink fail-closed e sem open redirect ✅, P200-E097 · [A] · P2 · `get-visitor-info` — HTTPS, IP validado e breaker (+10 more)
+Nodes (17): ONDA 9 — EDGE FUNCTIONS: FAIL-OPEN, CORS E TIMEOUTS (E091–E100), P200-E091 · [A] · P1 · Timeout em `fetchWithBreaker`, P200-E092 · [A] · P1 · Timeout nas 10 funções que chamam LLM e API externa, P200-E093 · [A] · P1 · Restringir os padrões de origem do CORS, P200-E095 · [A] · P2 · Ligar o snapshot de CORS a um gate, P200-E096 · [A] · P2 · `image-proxy` — anti-hotlink fail-closed e sem open redirect ✅, P200-E097 · [A] · P2 · `get-visitor-info` — HTTPS, IP validado e breaker, P200-E098 · [C] · P1 · Mover o enforcement de login para Auth Hook (+9 more)
 
 ### Community 543 - "Fase 1 — As 20 Dimensões"
-Cohesion: 0.11
-Nodes (19): 01 · Arquitetura — **7.5/10** (Alto ×2), 02 · Autenticação — **8.5/10** (Crítico ×3) ↑ de 8.0, 03 · Autorização — **7.5/10** (Crítico ×3) ↓ de 8.0, 04 · Banco de Dados — **8.5/10** (Alto ×2) ↑ de 8.0, 05 · CI/CD — **9.0/10** (Padrão ×1), 06 · Data Integrity — **8.0/10** (Crítico ×3) ↑ de 7.5, 07 · Documentação — **8.0/10** (Padrão ×1), 08 · Infraestrutura / DevOps — **7.5/10** (Padrão ×1) ↑ de 7.0 (+11 more)
+Cohesion: 0.06
+Nodes (32): 2.1 TypeScript baseline gate (`scripts/check-tsc-baseline.mjs`), 01 · Arquitetura — **7.5/10** (Alto ×2), 02 · Autenticação — **8.5/10** (Crítico ×3) ↑ de 8.0, 03 · Autorização — **7.5/10** (Crítico ×3) ↓ de 8.0, 04 · Banco de Dados — **8.5/10** (Alto ×2) ↑ de 8.0, 05 · CI/CD — **9.0/10** (Padrão ×1), 06 · Data Integrity — **8.0/10** (Crítico ×3) ↑ de 7.5, 07 · Documentação — **8.0/10** (Padrão ×1) (+24 more)
 
 ### Community 544 - "📊 Status Pós-Colapso — Follow-up de 25/05/2026"
 Cohesion: 0.11
@@ -6088,17 +6085,17 @@ Nodes (15): acceptsVersion(), argv, cmpSemver(), COMPAT, COMPAT_MODES, errors, E
 Cohesion: 0.11
 Nodes (10): AnimatedCounterProps, dotColors, dotSizes, FadeInViewProps, HoverCard, HoverCardProps, PulseDotProps, SlideInProps (+2 more)
 
-### Community 549 - "RupturePanelEma.tsx"
-Cohesion: 0.18
-Nodes (14): RuptureLevelBadge(), STYLES, buildWhatsAppLink(), CONFIDENCE_STYLE, exportCSV(), fmt(), LEVEL_ORDER, Props (+6 more)
+### Community 549 - "Top-10 Queries Auditadas"
+Cohesion: 0.13
+Nodes (15): 10. `useClientHistory` — cliente 360°, 1. `useExternalProducts` — listagem paginada, 2. `useProductDetail` — produto + variants + images, 3. `useQuotesList` — kanban de orçamentos, 5. `useStockAlerts` — header indicator, 6. `useSupplierStats`, 7. `useCategoryTree` — sidebar, 8. `useDiscountApprovalRequests` — admin queue (+7 more)
 
-### Community 550 - "QuantityPriceCalculator.tsx"
-Cohesion: 0.26
-Nodes (14): Props, QuantityComparisonTable(), Props, TechniqueConfigCard(), Props, TechniqueMultiSelector(), availableSizes, CalcProduct (+6 more)
+### Community 550 - "rls-integration-tests/index.ts"
+Cohesion: 0.13
+Nodes (11): CaseResult, classify(), Expect, Op, runCase(), fn(), SENSITIVE_FUNCTIONS, SERVICE_ROLE_KEY (+3 more)
 
 ### Community 551 - "useSupplierReliabilityServer.ts"
-Cohesion: 0.15
-Nodes (16): fetchRawReliability(), RawData, USE_SERVER_SIDE, useSupplierReliability(), useSupplierReliabilityClientSide(), UseSupplierReliabilityResult, buildReliabilityWindow(), fetchMvReliability() (+8 more)
+Cohesion: 0.06
+Nodes (40): D-1 — Simulador de preço: o legado inteiro ficou órfão (⚠️ maior achado), D-2 — Comparação: hook localStorage vs. store Zustand (mesma chave), D-4 — "Vistos recentemente": três arquivos, dois mortos, D-5 — Técnicas de gravação: PT vs. unificado, D-7 — Confiabilidade de fornecedor: dual-path por feature flag (padrão saudável), D-9 — Fachadas de notificação (3 camadas, todas vivas), D) Duplicação e refactor abandonado, fetchRawReliability() (+32 more)
 
 ### Community 552 - "futureStock.battery.test.ts"
 Cohesion: 0.17
@@ -6129,16 +6126,16 @@ Cohesion: 0.11
 Nodes (17): 1. Diagnóstico em uma frase, 2. Evidências coletadas (ao vivo), 3. Problemas priorizados, 4. Arquitetura-alvo da padronização (de-para), 5. Roteiro de migração (não-disruptivo, em fases), 6. Quick wins (propostas SQL — revisar antes de aplicar), 7. Resumo executivo para decisão, P0 — `active` **e** `is_active` (flag duplicada) (+9 more)
 
 ### Community 559 - "5. Achados NÃO auto-corrigidos (remediação documentada)"
-Cohesion: 0.11
-Nodes (17): 1. Sumário executivo, 2. Metodologia, 4.1 🔴→🟢 `category_ancestors` — buraco de DML anônimo (ERROR 0013), 4.2 🔴→🟢 3 tabelas de backup esquecidas em `public.*` (ERROR 0013), 4.3 🟡→🟢 `auth_rls_initplan` user-facing (PERF 0003), 4. O que foi CORRIGIDO (aplicado em produção + migration), 5.A ⚠️ `types.ts` desatualizado — `personalization_techniques` (REGRA #4), 5. Achados NÃO auto-corrigidos (remediação documentada) (+9 more)
+Cohesion: 0.04
+Nodes (44): 1. Sumário executivo, 2. Metodologia, 3. O que foi verificado e está SAUDÁVEL, 4.1 🔴→🟢 `category_ancestors` — buraco de DML anônimo (ERROR 0013), 4.2 🔴→🟢 3 tabelas de backup esquecidas em `public.*` (ERROR 0013), 4.3 🟡→🟢 `auth_rls_initplan` user-facing (PERF 0003), 4. O que foi CORRIGIDO (aplicado em produção + migration), 5.A ⚠️ `types.ts` desatualizado — `personalization_techniques` (REGRA #4) (+36 more)
 
 ### Community 560 - "session-recovery.ts"
-Cohesion: 0.17
-Nodes (16): F. `NoveltyProductGrid.integration.test.tsx` — código quebrado em runtime, G. T-FIX-5b anti-padrão `forEach(expect)` em 3 testes, H. `useSparklineSales.tsx:142` — `!= null` (eqeqeq + safer), I. Console.log de diagnóstico vazando em produção, J. Non-null assertions em `useProductsColorsBatch.ts`, K. `ProductCard.tsx` / `ProductDetail.tsx` — missing useEffect deps, L. `session-recovery.test.ts` — imports não usados, 🟡 P2 — bugs latentes / qualidade (+8 more)
+Cohesion: 0.40
+Nodes (8): L. `session-recovery.test.ts` — imports não usados, attachSessionRevalidation(), BAD_JWT_PATTERNS, isBadJwtError(), maybeRecoverFromError(), recoverSession(), mocks, resetModule()
 
-### Community 561 - "Inventário de proveniência — mocks, fallbacks e consumidores downstream"
-Cohesion: 0.11
-Nodes (15): Contrato alvo para a etapa 57 — depende de autorização de design/PO, Convenção de leitura da matriz, Escopo e método, Evidências e comandos somente leitura executados, Inventário de proveniência — mocks, fallbacks e consumidores downstream, Limites desta fotografia, Política que exige escolha do PO, Resumo executivo (+7 more)
+### Community 561 - "Grupo C — Frontend (T21–T30)"
+Cohesion: 0.13
+Nodes (14): Grupo C — Frontend (T21–T30), T21 — useQuery/useMutation e Chaves de Cache ⚠️, T22 — `select('*')` em Tabelas Sensíveis 🔴, T23 — Auth State e Race Conditions ⚠️, T24 — Validação de Formulários ⚠️, T25 — Error Boundaries e Toasts Técnicos ⚠️, T26 — Realtime Subscriptions ✅, T28 — Rotas Protegidas ✅ (+6 more)
 
 ### Community 562 - "Plano de melhorias e correções — checklist de 100 etapas"
 Cohesion: 0.11
@@ -6148,9 +6145,9 @@ Nodes (17): Como usar o checklist, Critério global de conclusão, Funções sug
 Cohesion: 0.11
 Nodes (17): 10. Funcoes legacy nao removidas, 1. vacuum-analyze-weekly NUNCA EXECUTOU, 2. cleanup-log-tables-weekly NUNCA EXECUTOU, 3. 142 indices nunca utilizados, 4. 60 FK sem indice de cobertura, 5. products com 36 TRIGGERS, 6. product_variants com 20 TRIGGERS, 7. product_images: 10.11% dead tuples (+9 more)
 
-### Community 564 - "magazineMetrics.ts"
-Cohesion: 0.14
-Nodes (13): 2.1 TypeScript baseline gate (`scripts/check-tsc-baseline.mjs`), 09 · Logging / Monitoring — **8.5/10** (Padrão ×1), Consumidor: por que o AuthContext já é imune, AuthStallMetrics, log, MagazineRenderMetrics, PublishMetrics, createClientLogger() (+5 more)
+### Community 564 - "QuotesConfigurableList.tsx"
+Cohesion: 0.17
+Nodes (12): 1.7 — Páginas órfãs e cleanup auxiliar (executada 07/05/2026 - sessão de noite), Grupo 2 — 57 subcomponentes de página (não roteados, COM importador verificado) — ✅ alcançáveis, Guardas de execução, formatCurrency(), renderQuoteCell(), ALL_COLUMNS, ColumnDef, PrefetchRow() (+4 more)
 
 ### Community 565 - "node"
 Cohesion: 0.12
@@ -6181,8 +6178,8 @@ Cohesion: 0.11
 Nodes (17): Após os 3 passos, Cliques exatos, Cliques exatos, Cliques exatos, Fechar issue, Fechar issue, ⚠️ Nuance importante para você (único maintainer), Passo 1 — Storage policy `recibos_authenticated_read` (+9 more)
 
 ### Community 572 - "Redeploy Fase 3 — Plano de Execução (T24–T30)"
-Cohesion: 0.11
-Nodes (17): Cenários / gaps, Como atualizar este documento, Decisões já tomadas (pelo Joaquim em sessão de 2026-05-12), Estado pós-Fase 2 (linha de base), Meta 10/10 (critérios de saída desta fase), Ordem de execução, Pendências que NÃO são desta fase (para Fase 4+), Por que esse documento existe (+9 more)
+Cohesion: 0.10
+Nodes (20): Cenários / gaps, Cenários simulados / gaps, Como atualizar este documento, Decisões já tomadas (pelo Joaquim em sessão de 2026-05-12), Estado pós-Fase 2 (linha de base), Meta 10/10 (critérios de saída desta fase), Ordem de execução, Pendências que NÃO são desta fase (para Fase 4+) (+12 more)
 
 ### Community 573 - "T14 UPDATE 10 — Verificação Pós-Fix: Smoke Gate (2026-05-23 14:26 UTC)"
 Cohesion: 0.11
@@ -6202,31 +6199,31 @@ Nodes (17): A regra implementada (Fase 1 — Anti-padrão A), Anti-padrão A —
 
 ### Community 577 - "Auditoria Técnica — 2026-06-18 (Fase 1 read-only)"
 Cohesion: 0.12
-Nodes (17): Atualização — Onda P0 aplicada (2026-06-18), Auditoria Técnica — 2026-06-18 (Fase 1 read-only), Itens informativos (não são bugs), ✅ Onda P1 — toast-leaks de fornecedores (parcial — aplicado), P0-1 · `AdminUsuariosPage.tsx:84` — `ReferenceError: rolesLoaded is not defined`, ✅ P0-1 — Corrigido, P0 — Runtime bloqueante, ⏸️ P1 — RPC/types pendentes (NÃO aplicado — requer aprovação BD) (+9 more)
+Nodes (16): Atualização — Onda P0 aplicada (2026-06-18), Auditoria Técnica — 2026-06-18 (Fase 1 read-only), Itens informativos (não são bugs), ✅ Onda P1 — toast-leaks de fornecedores (parcial — aplicado), P0-1 · `AdminUsuariosPage.tsx:84` — `ReferenceError: rolesLoaded is not defined`, ✅ P0-1 — Corrigido, P0 — Runtime bloqueante, ⏸️ P1 — RPC/types pendentes (NÃO aplicado — requer aprovação BD) (+8 more)
 
-### Community 578 - "safeToast.ts"
-Cohesion: 0.16
-Nodes (16): P1-1 · `useProductsLightweight.ts:61,64` — campos fantasma na resolução de categoria, P1-2 · `useSupplierSalesRanking.ts:49,64` — RPC fora do types.ts, P1-3 · Toast leaks (+7) — vazamento de erro técnico, P1-4 · 4 edge functions sem entrada no `edge-authz-manifest.ts`, P1 — Funcional / segurança UX, currentRoles, installSafeToast(), looksTechnical() (+8 more)
+### Community 578 - "sanitizeError"
+Cohesion: 0.08
+Nodes (34): T27 — Sanitização de Inputs ✅, 2.3 Toast leaks gate (`scripts/check-toast-leaks.mjs`), P1-1 · `useProductsLightweight.ts:61,64` — campos fantasma na resolução de categoria, P1-2 · `useSupplierSalesRanking.ts:49,64` — RPC fora do types.ts, P1-3 · Toast leaks (+7) — vazamento de erro técnico, P1-4 · 4 edge functions sem entrada no `edge-authz-manifest.ts`, P1 — Funcional / segurança UX, P0-1. Vite com erro de sintaxe persistente em `ReplenishmentCards.tsx` (HMR stale) (+26 more)
 
-### Community 579 - "Relatório de Incidente — `EnhancedErrorBoundary` em `/inteligencia-comercial`"
-Cohesion: 0.12
-Nodes (17): 1. Resumo executivo, 2. Impacto no usuário, 3.1 Caminho observado (produção), 3.2 Variações a testar ao reproduzir (para isolar o gatilho), 3.3 Reprodução no sandbox — **bloqueada**, 3. Passos de reprodução, 4.2 Como coletar (checklist para quem reproduzir), 4.3 Stack real da ocorrência do usuário (+9 more)
+### Community 579 - "Bloco A — Kit Maker: fechar o que ficou pela metade (E01–E14)"
+Cohesion: 0.14
+Nodes (15): Bloco A — Kit Maker: fechar o que ficou pela metade (E01–E14), E02 — `description` > 160 chars não pode derrubar a sugestão inteira, E03 — Descriptor live dedicado para `kit-ai-builder`, E04 — Telemetria de IA provada em produção, E06 — Mensagem do circuit breaker não culpa o usuário, E07 — `positionX/Y` vêm da área escolhida, E08 — Limite de dimensão da arte vem da área, não só da técnica, E09 — Teste de UI "2 áreas → 2 opções" e "sem área → select ausente" (+7 more)
 
 ### Community 580 - "append-edge-deploy-receipt.test.mjs"
 Cohesion: 0.17
 Nodes (15): appendReceiptRow(), codeCell(), DEFAULT_LOG_PATH, __dirname, formatReceiptRow(), parseCliOptions(), plainCell(), ROOT (+7 more)
 
-### Community 581 - "check-edge-zod-ratchet.mjs"
-Cohesion: 0.11
-Nodes (13): baseline, BASELINE_PATH, bodyAccepting, exemptKeys, FN_DIR, fnDirs, newUnvalidated, REGISTRY (+5 more)
+### Community 581 - "quote-view-typography.ts"
+Cohesion: 0.23
+Nodes (10): qvSpacing, QvSpacingKey, qvType, QvTypeKey, QuoteClientInfo(), QuoteClientInfoProps, QuoteItem, QuoteTotalsSummaryProps (+2 more)
 
 ### Community 582 - "e2e-feature-summary.mjs"
 Cohesion: 0.12
 Nodes (16): byE2eName, byFeature, C, extractE2eName(), failedByE2eName, failedFeatures, featureKey(), mdLines (+8 more)
 
 ### Community 583 - "ConnectionsIncidentStrip.tsx"
-Cohesion: 0.19
-Nodes (15): ConnectionsIncidentStrip(), IncidentCard(), SEV_META, getIncidentTargetZone(), getZoneAnchorId(), getZoneLabel(), navigateToZone(), TargetZone (+7 more)
+Cohesion: 0.27
+Nodes (11): ConnectionsIncidentStrip(), IncidentCard(), SEV_META, getIncidentTargetZone(), getZoneAnchorId(), getZoneLabel(), navigateToZone(), TargetZone (+3 more)
 
 ### Community 584 - "DiscountApprovalQueue.tsx"
 Cohesion: 0.18
@@ -6281,8 +6278,8 @@ Cohesion: 0.12
 Nodes (16): Cenários `collections` (6/6), Cenários `custom_kits` (5/5), Cenários `favorite_lists` (6/6), Cenários `seller_carts` (7/7), Conclusão, Conclusão NV-003, Detalhes por Grupo, Matriz RLS — Isolamento Tenant A × B (+8 more)
 
 ### Community 597 - "Auditoria exaustiva + correção do Supabase — instruções para o Claude Code"
-Cohesion: 0.12
-Nodes (16): 0. Parâmetros (preencha antes de rodar), 1. Objetivo, 2. Escopo, 3. Regras invioláveis, 5. Formato de cada achado, 6.1 Classe de escrita, 6.2 Caminho obrigatório de toda correção, 6.3 Funcionalidade pendente/parcial — critério de "pronta" (+8 more)
+Cohesion: 0.06
+Nodes (30): 0. Parâmetros (preencha antes de rodar), 1. Objetivo, 2. Escopo, 3. Regras invioláveis, 4. Fase A — Auditoria (somente leitura), 5. Formato de cada achado, 6.1 Classe de escrita, 6.2 Caminho obrigatório de toda correção (+22 more)
 
 ### Community 598 - "ADR — contratos de observabilidade das Edge Functions `visual-search` e `e2e-cleanup`"
 Cohesion: 0.12
@@ -6297,8 +6294,8 @@ Cohesion: 0.12
 Nodes (16): 🔵 ACHADO B05 — 136 Produtos com `category_id ≠ main_category_id`, `audit_log` vs `audit_logs` vs `admin_audit_log`, 🔴 BUG B01 (FALSO POSITIVO) — quote_items subtotal, 🔴 BUG B02 — `negotiation_markup_percent` não persistido, 🟠 BUG B03 — Tabelas Duplicadas com Schemas Idênticos, 🟡 BUG B04 — 4 Produtos Ativos Sem Preço, ✅ Checklist de Ações Pendentes, Evidência (+8 more)
 
 ### Community 601 - "Contract validation package"
-Cohesion: 0.12
-Nodes (15): Adicionando um novo schema, Contract validation package, Endpoints migrados e sunsets, Estrutura, Formato de erro canônico, Por que existe, Smoke contract test (HTTP real), Testando (+7 more)
+Cohesion: 0.08
+Nodes (21): Adicionando um novo schema, Contract validation package, Endpoints migrados e sunsets, Estrutura, Formato de erro canônico, Por que existe, Smoke contract test (HTTP real), Testando (+13 more)
 
 ### Community 602 - "material_types"
 Cohesion: 0.14
@@ -6308,17 +6305,17 @@ Nodes (12): "public"."create_material_with_equivalence"(), "public"."debug_link_
 Cohesion: 0.12
 Nodes (16): 1. **URL/Endpoint Afetado**, 2. **Erro Exato**, 3. **Contexto**, 📋 Checklist de Diagnóstico, Conexões Específicas, 🔍 Diagnóstico de Comunicação com Banco de Dados, 🔧 Endpoints de Teste Rápido, 🚨 Erros Comuns e Soluções (+8 more)
 
-### Community 604 - "LocationCard.tsx"
-Cohesion: 0.22
-Nodes (14): Fluxo 5 — Personalização / gravação, ConfigurationPanel(), countUniqueTechniques(), extractTechLabel(), groupAreasByTechnique(), LocationCard(), LocationCardProps, LocationGroupData (+6 more)
+### Community 604 - "post-login-redirect.ts"
+Cohesion: 0.29
+Nodes (13): AUTH_BLOCKED_PREFIXES, clearPostLoginRedirect(), consumePostLoginRedirect(), isAuthRoutePath(), isSafeRedirectPath(), peekPostLoginRedirect(), safeDecode(), savePostLoginRedirect() (+5 more)
 
 ### Community 605 - "10 — TESTES (auditoria de estado)"
-Cohesion: 0.12
-Nodes (16): 10 — TESTES (auditoria de estado), A.1 Censo de arquivos, linhas e declarações, A.2 Distribuição por tipo (heurística de caminho + nome), A.3 Top diretórios por volume de casos, A.4 Runners declarados, A) Panorama quantitativo, D.1 Diretórios de `src/components` sem cobertura por import, D.2 Diretórios de `src/hooks` sem cobertura por import (+8 more)
+Cohesion: 0.09
+Nodes (26): 10 — TESTES (auditoria de estado), A.1 Censo de arquivos, linhas e declarações, A.2 Distribuição por tipo (heurística de caminho + nome), A.3 Top diretórios por volume de casos, A.4 Runners declarados, A) Panorama quantitativo, C.2 — Suíte desligada, C.4 — Sem runner (órfãos) (+18 more)
 
-### Community 606 - "Bloco 2 — Kit Maker (A03, A04)"
-Cohesion: 0.12
-Nodes (16): 1. Orçamento: preço, personalização sem preço, limites comerciais, 2. Peso, frete, física e dados de embalagem, 3. Personalização, arte e mockup, 4. Biblioteca 'Meus kits', vitrine e templates, 5. Estado, persistência, colaboração, rotas, 6. Catálogo de itens e caixas (UI), 7. IA do Kit Maker, 8. Sistema visual, a11y e responsivo (código) (+8 more)
+### Community 606 - "immutableCache.ts"
+Cohesion: 0.19
+Nodes (10): CacheEntry, Entity, getCachedByIds(), getFresh(), INFLIGHT, INFLIGHT_BY_ID, now(), put() (+2 more)
 
 ### Community 607 - "Onda 5 — GlitchTip init (Sentry SDK compatível)"
 Cohesion: 0.12
@@ -6328,13 +6325,13 @@ Nodes (16): Contexto, Decisões arquiteturais, `.env.example` (novo, ~50 linhas)
 Cohesion: 0.12
 Nodes (17): Bloco B — Kit Maker: validação real com sessão autenticada (E15–E30), E15 — `[PO]` Usuário dedicado `kitmaker.e2e` e cliente descartável, E16 — Fixture de auth do Kit Maker reaproveitando `auth.setup.ts`, E17 — Aposentar `e2e/kit-builder.spec.ts` obsoleto, E18 — Spec real do Fluxo 1 (itens → caixas → personalização → revisão), E19 — Selo "Fluxo 2" visível nos 4 passos, E20 — Spec real do Fluxo 2 (caixa → itens compatíveis → revisão), E21 — Workflow `kit-maker-e2e.yml` com `skipped` documentado (+9 more)
 
-### Community 609 - "Fase 3 — Produção fora do caminho de PR; credenciais e escrita automática (E25–E40)"
-Cohesion: 0.12
-Nodes (17): E25 — `migration-dry-run` não executa SQL de PR em produção (P0), E26 — Traces e relatórios com senha E2E deixam de ir para artefatos públicos; rotação (P0), E27 — Nenhum job de `pull_request` recebe PAT da Management API nem `service_role`, E28 — `drafts-index-check` e `edge-integration-all` não tocam produção a partir de PR, E29 — Login real em produção só onde é inevitável, e uma vez por run, E30 — Role Postgres somente-leitura para o CI e PAT só em escrita gated, E31 — Token de GitHub App para PRs e pushes de bot, E32 — `persist-credentials: false` em todo checkout com token de escrita (+9 more)
+### Community 609 - "Bloco F — Edge functions: deploy, drift e ledger (E63–E74)"
+Cohesion: 0.15
+Nodes (13): Bloco F — Edge functions: deploy, drift e ledger (E63–E74), E63 — Deploy no push para `main` só das funções alteradas, E64 — Retry com backoff no deploy, E65 — Drift check também no push para `main`, E66 — `supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md` (recibo de deploy), E67 — Retro-registrar os 2 casos de deploy fora do fluxo, E68 — Drift check manual das 108 funções, anexado, E69 — Lint contra trailing whitespace em `supabase/functions/` (+5 more)
 
 ### Community 610 - "Fase 4 — Gates honestos: nada verde sem testar, nada que não possa falhar (E41–E58)"
 Cohesion: 0.12
-Nodes (17): E41 — `_secrets-check` em todo job autenticado, com falha em `push: main`, E42 — Mínimo de testes executados após todo Playwright, com JSON padronizado, E43 — Snapshots: `updateSnapshots: 'none'` no CI e `retries: 0` em visual, E45 — Shell estrito em todos os workflows (`pipefail`), E46 — `freight-quality-gates`: pisos reais, sem gate decorativo, sem duplicação, skip explícito, E47 — Flakiness e mutation medidos de verdade (`retry` global, `rg` ausente, `--only`), E49 — Frete: porta certa, cobertura honesta, caminho crítico que falha, E50 — `e2e-customization-collapse`: quatro defeitos estruturais (+9 more)
+Nodes (17): E41 — `_secrets-check` em todo job autenticado, com falha em `push: main`, E42 — Mínimo de testes executados após todo Playwright, com JSON padronizado, E43 — Snapshots: `updateSnapshots: 'none'` no CI e `retries: 0` em visual, E45 — Shell estrito em todos os workflows (`pipefail`), E46 — `freight-quality-gates`: pisos reais, sem gate decorativo, sem duplicação, skip explícito, E48 — Estoque: benchmark com baseline, unit no piso, visual com baseline, E49 — Frete: porta certa, cobertura honesta, caminho crítico que falha, E50 — `e2e-customization-collapse`: quatro defeitos estruturais (+9 more)
 
 ### Community 611 - "Bugs — Detalhe Completo"
 Cohesion: 0.12
@@ -6409,8 +6406,8 @@ Cohesion: 0.15
 Nodes (14): assert(), capture(), captured, CapturedRequest, EdgeHandler, ENV_NAMES, invoke(), json() (+6 more)
 
 ### Community 629 - "magazine-import-local/index.ts"
-Cohesion: 0.16
-Nodes (11): bodySchema, itemSchema, magazineSchema, importLocalMagazineBatch(), LocalMagazineImportItem, LocalMagazineImportPayload, LocalMagazineImportResult, LocalMagazineImportSummary (+3 more)
+Cohesion: 0.22
+Nodes (8): importLocalMagazineBatch(), LocalMagazineImportItem, LocalMagazineImportPayload, LocalMagazineImportResult, LocalMagazineImportSummary, MagazineImportRpcClient, record(), RpcResult
 
 ### Community 630 - "20251227180001_audit_log_universal.sql"
 Cohesion: 0.15
@@ -6444,17 +6441,17 @@ Nodes (15): 10. Checklist da parte read-only das etapas 7 e 66, 3. Kill switches
 Cohesion: 0.12
 Nodes (15): 0. Reconfirmação dos números do plano (eram números de 09-15/09-16, aqui remedidos em 09-16), 1.1 Duplicata exata (mesma tree de commit alcançável) — 45 commits, 1.2 Stash automático (WIP/index/untracked) — 63 commits, 1.3 Superado (assunto+conteúdo já em HEAD) — 10 commits, 1.5 Ruído de coordenação (merge octopus de stash) — 2 commits, 1.6 Resumo da classificação, 1. Commits dangling — classificação completa (125 commits), 2. Estado dos worktrees (+7 more)
 
-### Community 638 - "useClientBI"
+### Community 638 - "Fase 7 — Banco e Supabase ops (E63–E74)"
 Cohesion: 0.15
-Nodes (15): 📝 Changelog deste documento, 3 fixes adicionais aplicados após review automático (commit `8c8e85442`), Decisão de produto registrada, O que ficou mantido (decisão Caminho C), O que foi editado (17 arquivos), O que foi removido (17 arquivos deletados), O que foi renomeado (1 arquivo), Pegadinha resolvida em pleno voo (+7 more)
+Nodes (13): E63 — Preflight de segurança transacional no [DBA-E15], E64 — Ledger dentro da transação do [DBA-E15] (ou compensação explícita), E65 — Fim do chicken-and-egg entre [DBA-E15] e `migrations-sync-log-gate`/`db-schema-drift-check`, E66 — `db-schema-drift-check`: substituir `db diff --linked` (quebrado) pela comparação textual, E67 — `delete-orphan-edges.yml`: allowlist, environment e sem injeção, E68 — `migration-dry-run.yml`: validação de caminho, `lock_timeout`, sem silêncio, E69 — Produção não é tocada a partir de PR, E70 — Unificar nomes de segredos/variáveis do Supabase (+5 more)
 
 ### Community 639 - "Auditoria Exaustiva: Banco de Dados ↔ Front-end — Promo Gifts v4"
-Cohesion: 0.12
-Nodes (15): 0. ⚠️ Achado crítico de ambiente (ler primeiro), 2. Acoplamento do front-end com o banco, 3. Validação de relacionamentos (FKs), 4.1 Tabelas órfãs reais (zero referência em `src/` **e** `supabase/functions/`), 4. Cobertura tabela ↔ front (as 299 tabelas, classificadas), 5. 🔴 Gaps e bugs encontrados (priorizados), 6. Diagrama ER (núcleo), 7. As 30 tarefas (status) (+7 more)
+Cohesion: 0.14
+Nodes (13): 0. ⚠️ Achado crítico de ambiente (ler primeiro), 1. Panorama do banco oficial (schema `public`), 2. Acoplamento do front-end com o banco, 3. Validação de relacionamentos (FKs), 4.1 Tabelas órfãs reais (zero referência em `src/` **e** `supabase/functions/`), 4. Cobertura tabela ↔ front (as 299 tabelas, classificadas), 6. Diagrama ER (núcleo), 7. As 30 tarefas (status) (+5 more)
 
 ### Community 640 - "ColorGroupFilter.tsx"
-Cohesion: 0.17
-Nodes (14): 3.12 Observações, COLOR_SWATCH_SIZE_CLASSES, ColorFilterSelection, ColorGroupFilter(), ColorGroupFilterProps, ColorSwatch(), ColorSwatchBar(), ColorSwatchBarProps (+6 more)
+Cohesion: 0.18
+Nodes (13): COLOR_SWATCH_SIZE_CLASSES, ColorFilterSelection, ColorGroupFilter(), ColorGroupFilterProps, ColorSwatch(), ColorSwatchBar(), ColorSwatchBarProps, ColorSwatchProps (+5 more)
 
 ### Community 641 - "error-reporter.ts"
 Cohesion: 0.17
@@ -6469,8 +6466,8 @@ Cohesion: 0.23
 Nodes (13): Fluxo 1 — Catálogo / listagem, CATALOG_BATCH_PAGES, CATALOG_PAGE_SIZE, fetchBestSellerCatalogPage(), fetchCatalogPage(), getStockStatus(), isWithinNoveltyWindow(), loadCategoriesMap() (+5 more)
 
 ### Community 644 - "MockupLayoutButtons.test.tsx"
-Cohesion: 0.13
-Nodes (12): B) O que está realmente protegido, E62 — Gerar e commitar as baselines que faltam (uma PR por suíte, revisada), baseProps, Props, setup(), toastError, ui(), BASE_VALID (+4 more)
+Cohesion: 0.14
+Nodes (12): B) O que está realmente protegido, MockupLayoutButtons(), baseProps, Props, setup(), toastError, ui(), BASE_VALID (+4 more)
 
 ### Community 645 - "Onda 10 — sync-quote-bitrix auth hardening (B-2 encerrada)"
 Cohesion: 0.12
@@ -6489,16 +6486,16 @@ Cohesion: 0.12
 Nodes (15): Agente 2 — RLS/Performance e Cron/Pipelines (incidente 2026-10-13), Consolidação de jobs redundantes de MV, Diagnóstico, Evidência (antes/depois), `variant_supplier_sources` (20.344 linhas), Fase 3 — RLS / performance, Fase 6 — Cron / pipelines, Inventário, Limitação de execução — DROP POLICY bloqueado (+7 more)
 
 ### Community 649 - "Observabilidade — Promo Gifts"
-Cohesion: 0.12
-Nodes (15): 3. Webhooks — métricas e dashboard, 4. Alertas Sentry, 5. Rotas críticas instrumentadas (client), 6. Como debugar uma falha, 7. Gates de CI, 8. Inventário de prontidão (T26 do redeploy Fase 3, 2026-05-12), 9. Debug toggle: `window.__DEBUG_QUOTE_TABLE`, Cobertura E2E (+7 more)
+Cohesion: 0.17
+Nodes (11): 1. Correlação ponta-a-ponta (`request_id`), 3. Webhooks — métricas e dashboard, 4. Alertas Sentry, 5. Rotas críticas instrumentadas (client), 6. Como debugar uma falha, 7. Gates de CI, 8. Inventário de prontidão (T26 do redeploy Fase 3, 2026-05-12), Gaps conhecidos (Fase 4+ — não bloqueia redeploy 10/10) (+3 more)
 
-### Community 650 - "Otimizações de Performance — Guia Técnico"
-Cohesion: 0.13
-Nodes (14): API do hook, Comportamento por tipo de evento, Guardas de execução, Otimizações de Performance — Guia Técnico, Prefetch do chunk lazy, Prefetch on-hover em cards, Restrições que guiaram as decisões, Sumário (+6 more)
+### Community 650 - "Bundle Size Gate e Report"
+Cohesion: 0.07
+Nodes (29): API do hook, Apêndice, Arquivos-fonte (path:line), Ações em FAIL (🔴, > 15%) — o gate bloqueou o PR, Ações em WARN (⚠️, 5–15%), Bundle Size Gate e Report, Camadas do gate bloqueante, Chunks "🆕" (novos) (+21 more)
 
 ### Community 651 - "Plano A/B — Desligamento do `external-db-bridge`"
-Cohesion: 0.12
-Nodes (15): Critérios de Sucesso, Cronómetro estimado, Fase 0 — Pré-rollout (estado atual), Fase 1 — Canary 5% (24h de observação), Fase 2 — Quarter 25% (48h), Fase 3 — Half 50% (48h), Fase 4 — Full 100% (mantém em monitoramento por 7d), Fase 5 — Limpeza definitiva (após 7d em 100%) (+7 more)
+Cohesion: 0.13
+Nodes (14): Cronómetro estimado, Fase 0 — Pré-rollout (estado atual), Fase 1 — Canary 5% (24h de observação), Fase 2 — Quarter 25% (48h), Fase 3 — Half 50% (48h), Fase 4 — Full 100% (mantém em monitoramento por 7d), Fase 5 — Limpeza definitiva (após 7d em 100%), Fases (+6 more)
 
 ### Community 652 - "Execução controlada do plano de reconciliação — 22/09/2026"
 Cohesion: 0.12
@@ -6572,9 +6569,9 @@ Nodes (5): public.fn_site_pipeline_health(), public.fn_site_promote_to_gold(), p
 Cohesion: 0.13
 Nodes (14): ⚠️ Aplicar UNIQUE no BD Gold, ⚠️ E2E smoke em staging, Magazine — Entrega 2026-07-12 (parte 2), O que foi entregue no sandbox, O que precisa ser executado no GitHub Actions (fora do sandbox), ✅ Teste de regressão `publish()` async, ✅ Testes de dedup + UNIQUE draft, Como executar localmente (+6 more)
 
-### Community 670 - "ConfigurationPanelV6"
-Cohesion: 0.15
-Nodes (11): 🧪 E2E — Colapso do LocationPanel (personalização), ConfigurationPanelV6(), renderPanel(), setCollapsedMock, technique, hookState, renderPanel(), technique (+3 more)
+### Community 670 - "print-area-grouping.ts"
+Cohesion: 0.17
+Nodes (5): FlattenedTechnique, getUniqueTechniques(), groupPrintAreasByComponent(), PrintAreaSummary, summarizeGroups()
 
 ### Community 671 - "check-package-duplicate-scripts.mjs"
 Cohesion: 0.20
@@ -6584,9 +6581,9 @@ Nodes (13): checkPackageDuplicateScriptsFromFile(), checkPackageDuplicateScripts
 Cohesion: 0.16
 Nodes (14): consolidated, e2e, e2eSummaryPath, integration, integrationSummaryPath, md, outDir, pct() (+6 more)
 
-### Community 673 - "gen-edges-readme.mjs"
-Cohesion: 0.12
-Nodes (14): allDirs, byCategory, callers, catOrder, catTitles, FUNCS_DIR, loc, manifest (+6 more)
+### Community 673 - "public.discount_approval_requests"
+Cohesion: 0.15
+Nodes (12): "public"."assert_quote_discount_integrity"(), "trg_audit_discount_approval", "trg_audit_discount_approval_requests", "trg_dar_check_valid_until_future", "trg_dar_enforce_initial_status", "trg_dar_enforce_seller_id", "trg_dar_forbid_reopen", "trg_dar_set_snapshot_hash" (+4 more)
 
 ### Community 674 - "publish-ssot-schema.mjs"
 Cohesion: 0.13
@@ -6601,24 +6598,24 @@ Cohesion: 0.14
 Nodes (12): cases, CNPJ_ERROR_MESSAGES, CONSTRAINTS, fails, LEAK_PATTERNS, makeFuzzInput(), NOISE, pick() (+4 more)
 
 ### Community 677 - "SmokeTestChecklist.tsx"
-Cohesion: 0.17
-Nodes (14): ALLOWED_SECRET_NAMES, ALLOWED_SECRET_PREFIXES, isAllowedSecretName(), SecretNameValidation, validateSecretName(), INITIAL_STEPS, makeTestValue(), Props (+6 more)
+Cohesion: 0.11
+Nodes (24): mapConnectionToTester(), CancelledError, isRetryableSecretError(), RetryOptions, withRetryBackoff(), getMinLength(), MIN_SUFFIX_LENGTH, ALLOWED_SECRET_NAMES (+16 more)
 
 ### Community 678 - "McpAuditFeed.tsx"
 Cohesion: 0.24
 Nodes (12): McpAuditFeed(), toCsv(), McpAuditFilters(), Props, arr(), McpAuditRow(), META, Props (+4 more)
 
 ### Community 679 - "`formatEngravingTitle`"
-Cohesion: 0.15
-Nodes (14): Assinatura, Cabeçalho da gravação confirmada — estados, Exemplos, `formatEngravingTitle`, Módulo de Customização (personalização/gravação), Personalizando o ícone, Regras, Testes (+6 more)
+Cohesion: 0.22
+Nodes (8): Assinatura, Cabeçalho da gravação confirmada — estados, Exemplos, `formatEngravingTitle`, Módulo de Customização (personalização/gravação), Personalizando o ícone, Regras, Testes
 
 ### Community 680 - "useClientSeasonality.ts"
 Cohesion: 0.17
 Nodes (15): buildClientCells(), buildIndustryCells(), buildInsight(), ClientMonthCell, ClientRow, findNextPeak(), IndustryMonthCell, IndustryRow (+7 more)
 
-### Community 681 - "useReplenishments.ts"
-Cohesion: 0.19
-Nodes (15): addDaysISO(), daysSinceLocal(), deriveStockStatus(), fetchReposicao(), isGoneError(), mapRow(), ReplenishmentStatsDisplay, ReplenishmentStatus (+7 more)
+### Community 681 - "4. Documentos de feature, ADRs, arquitetura e handoffs"
+Cohesion: 0.17
+Nodes (11): 4.0 Resumo, 4.10 `docs/architecture/*.md` e `docs/arquitetura/*.md`, 4.12 Observações, 4.2 Autenticação / SSO (`AUTH-SSO-ACTIVATION.md`, `AUTH-GOOGLE-SETUP.md`, `AUTH-GOOGLE-PROD-CHECKLIST.md`), 4.3 Notificações (`NOTIFICATION_SYSTEM.md`, `notifications-module-audit.md`), 4.5 RBAC (`RBAC_HELPERS.md`, `RBAC_MATRIX.md`), 4.7 Promo Champions (`docs/promo-champions/{README.md,migration.sql,migration-helpers.sql,receive-quote-sync.ts}`), 4.9 Handoffs, sessões, decision log, issues-pendentes, coordenação, protocolo multiagente, ownership (+3 more)
 
 ### Community 682 - "useAutoSaveQuote.ts"
 Cohesion: 0.19
@@ -6629,16 +6626,16 @@ Cohesion: 0.20
 Nodes (12): clearDegradationLog(), DEGRADATION_LOG_CAP, DegradationAggregate, DegradationEvent, emit(), hydrateDegradationLog(), isValidEvent(), listeners (+4 more)
 
 ### Community 684 - "price-response.adapter.ts"
-Cohesion: 0.27
-Nodes (14): adaptPriceResponse(), adaptPriceResponseWithMeta(), AnyRec, asObj(), isDefined(), markupToMargin(), normalizeV7Aliases(), num() (+6 more)
+Cohesion: 0.23
+Nodes (16): adaptPriceResponse(), adaptPriceResponseWithMeta(), AdaptResult, AnyRec, asObj(), isDefined(), markupToMargin(), normalizeV7Aliases() (+8 more)
 
 ### Community 685 - "useComparisonStore.ts"
-Cohesion: 0.22
-Nodes (11): applyState(), CompareItem, CompareVariantInfo, ComparisonActions, ComparisonState, ComparisonStore, itemKey(), itemKeyFromItem() (+3 more)
+Cohesion: 0.20
+Nodes (12): addItem(), applyState(), CompareItem, CompareVariantInfo, ComparisonActions, ComparisonState, ComparisonStore, itemKey() (+4 more)
 
-### Community 686 - "Edge Functions — Catálogo"
-Cohesion: 0.12
-Nodes (15): 🔐 Autenticadas (qualquer user logado) (25), 🔍 Como investigar uma função, 🏗 Convenções, 🛠 Dev-only (13), Edge Functions — Catálogo, 🚨 Funções potencialmente órfãs, Mecanismos de autenticação aceitos por endpoint, 🌐 Públicas (sem autenticação) (15) (+7 more)
+### Community 686 - "Bloco E — Revista: gaps das duas auditorias (E51–E62)"
+Cohesion: 0.17
+Nodes (12): Bloco E — Revista: gaps das duas auditorias (E51–E62), E51 — Teste "token de revista despublicada → 401" nas 4 edges públicas, E52 — Descriptors dedicados para as 4 edges de revista, E53 — Teste dedicado de `page_order === null`, E54 — `magazine-schema.ts`: `subtitle`/`status`/`view_count` alinhados ao banco, E55 — Decidir a remoção de `magazine-schema.ts`, E56 — Renomear `magazine-guard.ts` → `magazine-input-validation.ts`, E57 — Anotação `z.ZodType<Partial<T>>` nos 2 schemas sem ela (+4 more)
 
 ### Community 687 - "_authz.ts"
 Cohesion: 0.17
@@ -6657,8 +6654,8 @@ Cohesion: 0.13
 Nodes (7): idx_product_faqs_category_id, idx_product_faqs_product_id, idx_product_group_members_group_id, idx_product_images_organization_id, idx_product_kit_components_padronizacao_id, idx_product_target_audiences_category_id, idx_supplier_products_raw_import_batch_id
 
 ### Community 695 - "jspdf"
-Cohesion: 0.15
-Nodes (12): T30 — Code Splitting e Bundle Size ✅, Riscos identificados, SEÇÃO 2 — AUDITORIA DE DEPENDÊNCIAS, Versões principais, jspdf, jspdf-autotable, ExportOptions, exportPDF() (+4 more)
+Cohesion: 0.14
+Nodes (17): jspdf, jspdf-autotable, ExportOptions, exportPDF(), Client, formatCurrency(), formatResponseTime(), statusConfig (+9 more)
 
 ### Community 696 - "11.4 Achados"
 Cohesion: 0.13
@@ -6669,24 +6666,24 @@ Cohesion: 0.13
 Nodes (14): 10. Desconhecidos que exigem nova evidência ou autorização, 11. Validação deste inventário, 1. Resultado executivo, 3.1 Drift check com falso verde, 3. Ambiente, deploy e versão, 4. Autorização, JWT e configuração, 6. Testes e documentação associados, 7. Evidência de scheduler, não de resposta HTTP (+6 more)
 
 ### Community 698 - "useStepUpAuth.ts"
-Cohesion: 0.14
-Nodes (13): 1. Os 15 enums e seus valores ao vivo, 2. Union manual duplicada em `src/` (risco real), 3. Teste novo, 4. Execução, E44 — Contrato de enums: teste de consistência `types.ts` ↔ union manual em `src/`, Problema, Resumo, ChallengeRequest (+5 more)
+Cohesion: 0.13
+Nodes (14): 1. Os 15 enums e seus valores ao vivo, 2. Union manual duplicada em `src/` (risco real), 3. Teste novo, 4. Execução, E44 — Contrato de enums: teste de consistência `types.ts` ↔ union manual em `src/`, Problema, Resumo, ChallengeRequest (+6 more)
 
 ### Community 699 - "OnboardingContext.tsx"
 Cohesion: 0.13
 Nodes (13): 7.1 Resultado de `npm run build` (prod) — ✅ verde, 7.2 Resultado de `npm run test` (vitest full suite) — ❌ vermelho, mas pré-existente, 7.3 Os 4 `react-hooks/rules-of-hooks` — **CORRIGIDOS NESTE PR**, 7.6 Apontamentos cruciais que NÃO estavam na passada 1, 7.8 Pass-3 — execução em batch de todas as correções tractables, 7. Senior QA Deep Dive — execução real (passada 2), 6A — Categoria G (PR mergeada + resíduo), 6B — Categoria H (PR fechada sem merge) — verificar objetivo no `main` (+5 more)
 
-### Community 700 - "KitIsometricPreview.tsx"
-Cohesion: 0.16
-Nodes (13): 5.18 Área 18 — Responsividade, acessibilidade, textos e efeitos (KM-171…180), colorFor(), iso(), KitIsometricPreview(), KitIsometricPreviewProps, packItems(), PALETTE, PlacedItem (+5 more)
+### Community 700 - "Fase 2 — Cortar volume, fila e duplicação (E13–E24)"
+Cohesion: 0.17
+Nodes (12): E13 — Um único projeto Vercel ligado ao repositório, E14 — PRs de bot e PRs só de docs não disparam a esteira inteira, E15 — Um dono para lint/tsc/build/unit por PR; `ci.yml`, `quality-gate.yml`, `full-ci.yml`, `playwright.yml` deixam de duplicar, E16 — Smoke roda uma vez e tem um dono (Gate 3), E17 — `e2e.yml`: regressão escopada, shardada e que cabe no timeout, E18 — Um esquema de cache, abaixo da cota, com poda semanal, E19 — `cancel-in-progress` só em PR (R2) em todos os arquivos, E21 — `workers` e paralelismo real no Playwright (+4 more)
 
-### Community 701 - "🟠 P1 — Alto risco"
-Cohesion: 0.13
-Nodes (14): Auditoria Exaustiva — promo-gifts-v4 (últimos 200 commits), P0-1. `magazine_public_view_events_2026_07..10`: anon lê/grava/apaga PII sem RLS, 🔴 P0 — Exposição crítica ativa (corrigir HOJE), P1-1. Service_role key vazada no histórico git (repo PÚBLICO), P1-2. 380 funções `SECURITY DEFINER` executáveis por `anon` (+422 por `authenticated`), P1-3. 104 `security_definer_view` (ERROR) expõem catálogo com privilégios do criador, P1-4. CI vermelho no `main` — deploy de produção não é bloqueado pelos gates, P1-5. CodeQL — 6 achados HIGH em código de runtime (+6 more)
+### Community 701 - "check-event-triggers-drift.mjs"
+Cohesion: 0.17
+Nodes (8): added, dbUrl, liveNames, removed, ROOT, snapshot, snapshotNames, snapshotPath
 
-### Community 702 - "useProductsManager.ts"
-Cohesion: 0.20
-Nodes (11): Pendências pós-fix, CategoryOption, ProductFilters, ProductFiltersBar(), ProductFiltersBarProps, SupplierOption, AdminProduct, extractVideoUrl() (+3 more)
+### Community 702 - "run-e2e-quotes-undo.mjs"
+Cohesion: 0.17
+Nodes (11): args, __dirname, hasProjectArg, isListMode, missing, mockFlagIndex, passthrough, rawArgs (+3 more)
 
 ### Community 703 - "date-utils.ts"
 Cohesion: 0.27
@@ -6697,12 +6694,12 @@ Cohesion: 0.13
 Nodes (14): categories (duplicatas), 🔴 DROP — Remover (liberar espaço + acelerar INSERTs), image_validation_log / image_import_log, 🟢 KEEP — Manter (justificativa técnica), Outros, product_images (duplicatas), product_variants, products (indexes duplicados ou de baixa seletividade) (+6 more)
 
 ### Community 705 - "MfaChallengeDialog"
-Cohesion: 0.13
-Nodes (13): Frontend (commits na main), G1 — Colunas de pessoa do domínio Orçamento apontam para `profiles`, não `auth.users`, G2 — Nenhuma FK `NOT NULL` com `ON DELETE SET NULL`/`SET DEFAULT` (trava delete do pai), G3 — Nenhuma função `SECURITY DEFINER` sem `search_path` travado, G4 — `profiles.role` coerente com `user_roles` (espelho derivado), Guardrails de schema (invariantes — para wire em CI), Mapa de roles (enum PT → profiles EN), Mudanças aplicadas (no histórico de migrations do Supabase) (+5 more)
+Cohesion: 0.18
+Nodes (10): Frontend (commits na main), G1 — Colunas de pessoa do domínio Orçamento apontam para `profiles`, não `auth.users`, G2 — Nenhuma FK `NOT NULL` com `ON DELETE SET NULL`/`SET DEFAULT` (trava delete do pai), G3 — Nenhuma função `SECURITY DEFINER` sem `search_path` travado, G4 — `profiles.role` coerente com `user_roles` (espelho derivado), Guardrails de schema (invariantes — para wire em CI), Mapa de roles (enum PT → profiles EN), Mudanças aplicadas (no histórico de migrations do Supabase) (+2 more)
 
 ### Community 706 - "Auditoria Exaustiva de Hooks — promo-gifts-v4"
-Cohesion: 0.13
-Nodes (14): Auditoria Exaustiva de Hooks — promo-gifts-v4, Backlog (proximo PR), BUG-AF-01 — CORRIGIDO, BUG-GRAVACAO-01 — CORRIGIDO, BUG-GRAVACAO-02 — CORRIGIDO, BUG-LOADING-01 — CORRIGIDO, BUG-STOCK-01 — CORRIGIDO, BUG-STOCK-02 — CORRIGIDO (+6 more)
+Cohesion: 0.08
+Nodes (25): Auditoria Exaustiva de Hooks — promo-gifts-v4, Backlog (proximo PR), BUG-AF-01 — CORRIGIDO, BUG-CF-01 — CORRIGIDO, BUG-CF-02 — CORRIGIDO, BUG-CF-03 — CORRIGIDO, BUG-CS-01 — CORRIGIDO, BUG-CS-02 — CORRIGIDO (+17 more)
 
 ### Community 707 - "useIntelligenceBadgeSettings.ts"
 Cohesion: 0.18
@@ -6741,8 +6738,8 @@ Cohesion: 0.13
 Nodes (14): ✅ Checklist pré-merge, 🧪 Como testar, 🧭 Contratos, impacto e autorizações, 📋 Descrição, Documentação, 🔗 Issues relacionadas, ⚠️ Notas para o reviewer, 🔄 Plano de rollback (+6 more)
 
 ### Community 716 - "Auditoria Read-Only — 2026-06-19"
-Cohesion: 0.13
-Nodes (14): Auditoria Read-Only — 2026-06-19, ✅ Itens onde a auditoria **NÃO encontrou problema** (validação positiva), ❗ O que **eu me recuso** a fazer num único turno, P0-1. Vite com erro de sintaxe persistente em `ReplenishmentCards.tsx` (HMR stale), P0-2. 5 migrations em `qa/migrations-draft/` nunca aplicadas, P0-3. `MockupGenerator.tsx` usa `console.*` direto em arquivo de produção, 🔴 P0 — Bloqueantes / Críticos (corrigir antes de qualquer release), P1-1. `useCatalogState` tem teste `describe.skip` permanente com débito documentado (+6 more)
+Cohesion: 0.18
+Nodes (10): Auditoria Read-Only — 2026-06-19, ✅ Itens onde a auditoria **NÃO encontrou problema** (validação positiva), ❗ O que **eu me recuso** a fazer num único turno, P1-1. `useCatalogState` tem teste `describe.skip` permanente com débito documentado, P1-2. 74 ocorrências de `: any` / `as any` em `src/`, P1-3. Listeners de teclado sem garantia visível de cleanup, P1-5. `useNovelties.ts` com 764 linhas e `useProductsLightweight.ts` com 411 linhas, 🟡 P1 — Importantes (risco real, não bloqueia release) (+2 more)
 
 ### Community 717 - "2026-07-12_magazines.sql"
 Cohesion: 0.24
@@ -6761,8 +6758,8 @@ Cohesion: 0.14
 Nodes (8): react-dom, Props, Step, STEPS, PROPOSAL_COMPLEX, PROPOSAL_FIXTURES, PROPOSAL_MINIMAL, ProposalFixture
 
 ### Community 721 - "validate-supabase-config.mjs"
-Cohesion: 0.13
-Nodes (9): ROOT, CLIENT_PATH, __dirname, migrationFiles, MIGRATIONS_DIRS, migrationViolations, ROOT, stripSqlComments() (+1 more)
+Cohesion: 0.09
+Nodes (18): ROOT, __dirname, fmtDuration(), ghGet(), HEADERS, main(), [OWNER, REPO_NAME], p95() (+10 more)
 
 ### Community 722 - "check-route-ref-usage.mjs"
 Cohesion: 0.24
@@ -6785,8 +6782,8 @@ Cohesion: 0.14
 Nodes (12): applyMutation(), args, baseline, jsonReport, md, MUTATIONS, OUT_DIR, PATTERN (+4 more)
 
 ### Community 727 - "ErrorDetailsDialog.tsx"
-Cohesion: 0.20
-Nodes (13): ErrorDetailsDialog(), fmtMs(), KV(), Props, Section(), SectionProps, Props, CATEGORY_LABELS (+5 more)
+Cohesion: 0.16
+Nodes (17): ErrorDetailsDialog(), fmtMs(), KV(), Props, Section(), SectionProps, formatLatency(), latencyTone() (+9 more)
 
 ### Community 728 - "IncidentTimeline72h.tsx"
 Cohesion: 0.23
@@ -6809,12 +6806,12 @@ Cohesion: 0.30
 Nodes (13): fetchMagicUpBrandKit(), fetchMagicUpCampaigns(), fetchMagicUpHistory(), fetchMagicUpProducts(), MagicUpProduct, ProductColor, ProductImage, saveMagicUpCampaignRow() (+5 more)
 
 ### Community 733 - "quoteHelpers.ts"
-Cohesion: 0.28
-Nodes (11): buildInsertPayload(), buildItemsInsertPayload(), buildPersonalizationsInsertPayload(), buildUpdatePayload(), calculateQuoteTotals(), clampMarkup(), filterPersistableQuoteItems(), round2() (+3 more)
+Cohesion: 0.36
+Nodes (8): buildInsertPayload(), buildPersonalizationsInsertPayload(), buildUpdatePayload(), calculateQuoteTotals(), clampMarkup(), round2(), STATUS_LABELS, validateDiscount()
 
 ### Community 734 - "quoteTypes.ts"
 Cohesion: 0.22
-Nodes (6): applyNegotiationMarkup(), negotiationMarkupFactor(), PersonalizationTechnique, QuoteItem, QuoteItemPersonalization, product
+Nodes (8): applyNegotiationMarkup(), negotiationMarkupFactor(), PersonalizationTechnique, Quote, QuoteItem, QuoteItemPersonalization, { mockSingle, mockEq, mockSelect, mockFrom }, useQuoteConcurrencyGuard()
 
 ### Community 735 - "useFutureStockPreference.fuzz.test.ts"
 Cohesion: 0.30
@@ -6829,8 +6826,8 @@ Cohesion: 0.24
 Nodes (8): isNavItemActive(), isRestrictedPath(), RouteAccessRoles, ADMIN_ONLY_ROUTE_PREFIXES, canNavigateTo(), DEV_ONLY_ROUTE_PREFIXES, isAdminOnlyPath(), isDevOnlyPath()
 
 ### Community 738 - "rpc-validator.ts"
-Cohesion: 0.21
-Nodes (13): ALL_CONTRACTS, OPTIONS_CONTRACT, PRICE_CONTRACT, RpcContract, findFieldName(), isObject(), knownTopLevel(), resolvePath() (+5 more)
+Cohesion: 0.20
+Nodes (14): recordContractMismatch(), ALL_CONTRACTS, OPTIONS_CONTRACT, PRICE_CONTRACT, RpcContract, findFieldName(), isObject(), knownTopLevel() (+6 more)
 
 ### Community 739 - "query-config.ts"
 Cohesion: 0.15
@@ -6909,19 +6906,19 @@ Cohesion: 0.14
 Nodes (13): 10.1 Acesso a Logs via MCP, 10.2 Observabilidade Existente (via código e workflows), 10.3 Achados, 10.4 Sumário da Seção 10, Audit Log Tables (no banco), [ID-LOG-001] Logs de edge function não acessíveis via MCP nesta auditoria, [ID-LOG-002] Ausência de alertas automáticos para erros de edge function, [ID-LOG-003] `pg_net` sem alerta automático para taxa de falha (+5 more)
 
 ### Community 758 - "rls_matrix_test.sql"
-Cohesion: 0.18
-Nodes (10): organizations, public.can_access_quote(), public.is_coord_or_above(), public.is_org_owner_or_admin(), public.user_is_org_member(), user_organizations, "public"."classify_powerbank"(), "public"."classify_powerbank"() (+2 more)
+Cohesion: 0.09
+Nodes (20): order_items, orders, organizations, public.can_access_quote(), public.is_coord_or_above(), public.is_org_owner_or_admin(), public.user_is_org_member(), user_organizations (+12 more)
 
-### Community 759 - "4. Fase A — Auditoria (somente leitura)"
-Cohesion: 0.14
-Nodes (14): 4. Fase A — Auditoria (somente leitura), A.0 Baseline (prova de que nada mudou), A.10 Logs 7d, A.12 Lacunas operacionais, A.13 Funcionalidades pendentes ou parciais (o que falta para funcionar), A.1 Inventário, A.2 Drift (repo × produção), A.3 Segurança (+6 more)
+### Community 759 - "useErrorHandler.ts"
+Cohesion: 0.26
+Nodes (9): CHUNK_ERROR_PATTERNS, clearReloadAttempts(), ErrorHandlerOptions, getReloadAttempts(), handleChunkLoadError(), isChunkLoadError(), lazyWithRetry(), setReloadAttempts() (+1 more)
 
 ### Community 760 - "Test Battery (8 phases, 300+ scenarios)"
 Cohesion: 0.14
 Nodes (13): Bugs Fixed in This QA Round, Final Master Battery — 20/20 PASS, Kit Enrichment — Exhaustive QA Report, Phase 1 — Physical plausibility by type (16 type ranges × 3 dims = 48 checks), Phase 2 — Root cause analysis, Phase 3 — Dimension consistency (10 checks), Phase 4 — Trigger behavior (12 dynamic scenarios), Phase 5 — Idempotency (+5 more)
 
 ### Community 761 - "Índice de Documentação — Promo Gifts V4"
-Cohesion: 0.15
+Cohesion: 0.25
 Nodes (8): Auditorias, Banco de dados (canônico: `doufsxqlfjyuvxuezpln`), Como manter este índice, Operações e confiabilidade, Planos ativos, Regras e contexto de desenvolvimento, Segurança, Índice de Documentação — Promo Gifts V4
 
 ### Community 762 - "Auditoria crítica (re-teste ao vivo): `process_spot_products` → `fn_process_raw_v2`"
@@ -6944,17 +6941,17 @@ Nodes (13): 1. Resumo executivo, 2. Metodologia — 5 portões de evidência (to
 Cohesion: 0.14
 Nodes (13): Arquitetura de Imagens, Correções Aplicadas (2026-06-08), Inventário de Mídia SPOT × Cloudflare — 2026-06-08, Lote fev/2026 (main, gallery, set, ambient, logo, box, pouch), Lote mar/2026 (area, component, location, picotado), Melhorias Implementadas (2026-06-08), Objetos Criados no Banco, Pendências (+5 more)
 
-### Community 767 - "useProductsColorsBatch.aggregation.test.tsx"
-Cohesion: 0.16
-Nodes (13): 1.9 — Catálogo de commits Lovable bot (CONCLUÍDA 08/05/2026), Achados da auditoria inicial, Bancos de Dados, 📊 Estado Atual do Sistema, Hosting/Infra, Métricas de Código (em 07/05/2026), find(), MockBuilder (+5 more)
+### Community 767 - "circuit-breaker.ts"
+Cohesion: 0.17
+Nodes (5): BreakerConfig, CircuitBreaker, DEFAULT_CONFIG, registry, State
 
 ### Community 768 - "🔍 Auditoria Exaustiva Round 3 — Integrações Sistema"
 Cohesion: 0.14
 Nodes (13): 📊 Acumulado Total (Rounds 1 + 2 + 3), 🔍 Auditoria Exaustiva Round 3 — Integrações Sistema, 🔴 BUG-012 — `commemorative-dates`: SSOT bypass completo, 🟠 BUG-013 — `expert-chat`: fix BUG-011 incompleto (2 locais residuais), 🟡 BUG-014 — `cnpj-lookup`: `CNPJA_API_KEY` via `Deno.env.get()`, 🟡 BUG-015 — `bitrix-sync`: `BITRIX24_WEBHOOK_URL` via `Deno.env.get()`, 🛡️ Conformidade SSOT Pós-Round 3, Fix (+5 more)
 
 ### Community 769 - "README.md"
-Cohesion: 0.14
-Nodes (7): Convenção de nomeação, Diretório canônico, Histórico da reconciliação (mai/2026), Migrations do Supabase — SSOT de Schema, O que **não** é migration canônica, Regras operacionais, Status atual (2026-07-01)
+Cohesion: 0.08
+Nodes (19): 1. NÃO use `supabase db push`, 2. Como aplicar mudanças de schema corretamente, Arquitetura de deploy, ⚠️ Avisos críticos antes de qualquer deploy, Build local, Deployment Guide — Promo_Gifts, ⚠️ Exceção: policies em `storage.objects`, Prerequisites locais (+11 more)
 
 ### Community 770 - "Anexo — inventário completo (281 arquivos produtivos)"
 Cohesion: 0.14
@@ -6977,8 +6974,8 @@ Cohesion: 0.14
 Nodes (13): 1) Dados pessoais — sucesso, 2) Dados pessoais — erro de validação, 3) Senha — sucesso, 4) Senha — erros, 5) Preferências — sucesso e persistência, 6) Preferências — erro de backend, 7) Campos imutáveis, Cenários (+5 more)
 
 ### Community 775 - "Relatório QA — 2026-05-22"
-Cohesion: 0.14
-Nodes (14): Achados desta rodada, 🟠 Alto, Arquivos alterados, ✅ Confirmações positivas (regressões da auditoria anterior já corrigidas), 🔴 Crítico, Escopo solicitado, Extensão da rodada — destravamento da suíte de testes, Itens explicitamente fora desta rodada (delegados) (+6 more)
+Cohesion: 0.11
+Nodes (17): Achados desta rodada, 🟠 Alto, Arquivos alterados, ✅ Confirmações positivas (regressões da auditoria anterior já corrigidas), 🔴 Crítico, Escopo solicitado, Extensão da rodada — destravamento da suíte de testes, Impacto numérico (+9 more)
 
 ### Community 776 - "Redeploy 2026-05 — Fase 1.1 — Log de Execução"
 Cohesion: 0.14
@@ -6988,9 +6985,9 @@ Nodes (14): 1.A — Inventário das 3 tabelas, 1.B — Verificação de dependê
 Cohesion: 0.14
 Nodes (14): Arquitetura, Como adicionar à allowlist, Como executar manualmente, Como inspecionar resultados, Componentes implementados, Cron rodou mas não gravou log, Estado em produção (snapshot pós-Fase-3.5), Objetivo (+6 more)
 
-### Community 778 - "describe"
-Cohesion: 0.19
-Nodes (13): Cenários simulados / gaps, Sub-tarefas, T24 — Re-habilitar 65 testes skipados (Issue #151), 11.1 Escopo, 11.2 Validações antes de mergear, 11.3 PR template, 11.4 Comando para começar (próximo Claude), 11. Plano detalhado da Onda 2 (+5 more)
+### Community 778 - "11. Plano detalhado da Onda 2"
+Cohesion: 0.40
+Nodes (5): 11.1 Escopo, 11.2 Validações antes de mergear, 11.3 PR template, 11.4 Comando para começar (próximo Claude), 11. Plano detalhado da Onda 2
 
 ### Community 779 - "Redeploy T3 — Auditoria de Migrations"
 Cohesion: 0.14
@@ -7016,9 +7013,9 @@ Nodes (13): ⚠️ Alertas de segurança do Canal C, Cadência de ingestão (est
 Cohesion: 0.26
 Nodes (8): BASE_ROUTES, PERMISSION_MATRIX, PermissionRoute, resolvePaths(), Role, Role, generateUrlFixtures(), UrlFixtureSchema
 
-### Community 785 - "quote-list-responsive.spec.ts"
-Cohesion: 0.22
-Nodes (12): assertMirrorInSyncWithSSOT(), breakpointForWidth(), chromeHeight(), containerMaxHeight(), QUOTES_CHROME_BY_BREAKPOINT, QUOTES_MAX_VISIBLE_ROWS, QUOTES_MIN_VISIBLE_ROWS, QUOTES_ROW_H (+4 more)
+### Community 785 - "Faxina do Banco de Dados — 2026-06-20 · Tier 3b (funções + views, lote 1)"
+Cohesion: 0.18
+Nodes (10): 1. O que foi arquivado neste lote (11 objetos), 2. Metodologia (6 gates — endurecida vs. Tier 3), 3. Estado atual do `public` (pós-lote), 4. Pool de candidatos para os próximos lotes (NÃO movidos — requerem 1 verificação extra), 5. Rollback, Armadilhas reais encontradas (e evitadas), Faxina do Banco de Dados — 2026-06-20 · Tier 3b (funções + views, lote 1), Fora de escopo (decisão de produto / risco) — **mantidos** (+2 more)
 
 ### Community 786 - "Parte 1 — CustomizationOptions (HotSpots do editor visual)"
 Cohesion: 0.14
@@ -7036,9 +7033,9 @@ Nodes (13): all, ALLOWED_REFS, argv, byRef, EXCLUDE_DIRS, files, hasLegacyMarker
 Cohesion: 0.22
 Nodes (13): check, DRAFT_DIR, fetchAppliedVersions(), findCandidates(), loadAcknowledged(), main(), MIG_DIR, OUT (+5 more)
 
-### Community 790 - "cart-header-fuzz-report.mjs"
-Cohesion: 0.14
-Nodes (13): buckets, __dirname, INVARIANTS, JSON_TMP, orphans, OUT_DIR, OUT_FILE, raw (+5 more)
+### Community 790 - "ONDA 11 — GATES DE FRONTEND QUE NÃO RODAM (E111–E120)"
+Cohesion: 0.18
+Nodes (11): ONDA 11 — GATES DE FRONTEND QUE NÃO RODAM (E111–E120), P200-E111 · [D] · P0 · Fazer o Gate 1.1 realmente checar o tipo `Product`, P200-E112 · [D] · P1 · Fazer `npm run lint` rodar o ESLint, P200-E113 · [D] · P1 · Ligar o gate de vazamento de toast e corrigir as 2 regressões, P200-E114 · [D] · P1 · Proibir aumento do baseline de bundle sem label, P200-E115 · [D] · P2 · Corrigir a chave morta do teto de ícones, P200-E116 · [D] · P1 · Apontar o Gate 2 para a suíte de verdade, P200-E117 · [D] · P1 · Typecheck que inclua testes, com baseline próprio (+3 more)
 
 ### Community 791 - "ssot-report-markdown.mjs"
 Cohesion: 0.15
@@ -7071,6 +7068,10 @@ Nodes (12): AVAILABLE_STATUSES, CATALOG_STOCK_STATUSES, CatalogStockStatusValue,
 ### Community 798 - "personalizationSummary.ts"
 Cohesion: 0.32
 Nodes (11): DEFAULT_COLORS_COUNT, extractDimensionsFromNotes(), formatArea(), formatColors(), formatPersonalizationsList(), formatPersonalizationSummary(), formatTechniqueWithLocation(), normalizeColorsCount() (+3 more)
+
+### Community 799 - "devInfraGate"
+Cohesion: 0.12
+Nodes (10): 5.1 npm vs bun, 5.2 Como fazer squash merge quando GitHub MCP retorna 403, 5.3 Tag git como safety net permanente, 5.4 Husky pre-push com `--no-verify` em commits intermediários, 5.5 Coverage gate do CloudStatus — pragma v8 ignore vs testar dead code, 5.6 Quando deletar tests vs marcar como skip, 5.7 `.coderabbit.yaml` parsing issue, 5. Decisões técnicas tomadas (com justificativa) (+2 more)
 
 ### Community 800 - "useResolveProductsSelectComparison.ts"
 Cohesion: 0.19
@@ -7128,17 +7129,17 @@ Nodes (6): idx_category_ancestors_descendant_id, idx_eco_material_config_materia
 Cohesion: 0.15
 Nodes (12): 1. Diagnóstico Sistêmico, 2. Tabela de Remediação, 3.1 `dispatcher-failure-alert` (68 falhas/24h — 23.9%), 3.2 `hash-product-images` (56 falhas/24h — 19.6%), 3.3 `sync-is-stockout-universal` (65 falhas/24h — 22.8%), 3. Fixes Detalhados para os 3 Crons com Mais Falhas, 4. Análise de Impacto no Pool após os 3 Fixes, 5. Recomendação Estrutural (médio prazo) (+4 more)
 
-### Community 814 - "orders"
+### Community 814 - "ONDA 1 — GATES QUE MENTEM (E011–E020)"
 Cohesion: 0.18
-Nodes (10): order_items, orders, audit_orders, idx_orders_client, idx_orders_created, idx_orders_number, idx_orders_status, public.get_promo_sales_90d_by_product() (+2 more)
+Nodes (11): ONDA 1 — GATES QUE MENTEM (E011–E020), P200-E011 · [A] · P0 · Ressuscitar o `merge-reports` do E2E ✅, P200-E012 · [A] · P0 · Mover o guard de suíte vazia para dentro do shard ✅, P200-E013 · [A] · P0 · Excluir `chromium-authed` da matriz quando não há secret ✅, P200-E014 · [B] · P1 · Fazer o Gate 1.2 comparar contra o `pg_catalog` ✅, P200-E015 · [A] · P1 · Fazer o Gate 3 sempre executar alguma coisa ✅, P200-E016 · [A] · P1 · `deploy-vercel` não pode terminar verde sem deployar ✅, P200-E017 · [A] · P1 · CodeQL não pode passar verde sem analisar ✅ (+3 more)
 
 ### Community 815 - "imageProxy.ts"
 Cohesion: 0.17
 Nodes (8): ADR 0010 — `img-src https:` permanece amplo no CSP, Consequências / gatilho de revisão, Decisão, Evidência, Por que o risco residual é aceitável, getProxiedImageUrl(), PROXIED_DOMAINS, SUPABASE_FUNCTION_BASE
 
 ### Community 816 - "Fixes Executed"
-Cohesion: 0.15
-Nodes (11): Discovery, Fixes Executed, Kit Architecture — Two-Layer Integration (P0–P7), Obsolete in docs, P0 — CRITICAL: quantity semantics bug in component weights, P1 — Kit builder UNBLOCKED, P2 — Kit dimensions: 466 → 661 (+42%), P3 — Kit weights: 933 → 962 (100%) (+3 more)
+Cohesion: 0.08
+Nodes (20): Discovery, Fixes Executed, Kit Architecture — Two-Layer Integration (P0–P7), Obsolete in docs, P0 — CRITICAL: quantity semantics bug in component weights, P1 — Kit builder UNBLOCKED, P2 — Kit dimensions: 466 → 661 (+42%), P3 — Kit weights: 933 → 962 (100%) (+12 more)
 
 ### Community 817 - "🟡 FASE 2 — Faxina de Banco de Dados"
 Cohesion: 0.15
@@ -7180,13 +7181,13 @@ Nodes (12): Causa-raiz descoberta, Deliberadamente **não** feito (com justifica
 Cohesion: 0.15
 Nodes (12): `analytics`, `api`, Auditoria — 8 Schemas Extras (além de `public`), `cf_recon`, `classification_audit`, Conclusão, Detalhe por schema, `internal` (+4 more)
 
-### Community 827 - "Fluxo 4 — Detalhe do produto (PDP)"
-Cohesion: 0.24
-Nodes (11): Fluxo 4 — Detalhe do produto (PDP), aggregateDailySummaryByDate(), extractUniqueSupplierIds(), getActiveFlags(), IntelligenceFlag, ProductIntelligenceData, StockDailySummary, StockVelocity (+3 more)
+### Community 827 - "ONDA 7 — BACKUP, RECUPERAÇÃO E DETECÇÃO (E071–E080)"
+Cohesion: 0.18
+Nodes (11): ONDA 7 — BACKUP, RECUPERAÇÃO E DETECÇÃO (E071–E080), P200-E071 · [C] · P0 · Confirmar PITR e retenção, P200-E072 · [B] · P1 · Rotação automática do dump de recuperação, P200-E073 · [B] · P1 · Executar um restore de verdade ✅, P200-E074 · [A] · P1 · Agendar o drill trimestral, P200-E075 · [A] · P1 · Criar o destino do relatório de DDL fora de banda ✅, P200-E076 · [A] · P1 · Detector de DDL tem de ver policy, trigger e cron, P200-E077 · [A] · P2 · Pinar a major do PostgreSQL de fonte única (+3 more)
 
 ### Community 828 - "calculators.ts"
-Cohesion: 0.22
-Nodes (9): A.6 — Cálculo de preço, desconto, frete e volume, adjustPriceByArea(), adjustPriceByColors(), calculatePrice(), calculateTierSavings(), findPriceTier(), suggestNextTier(), PriceCalculationParams (+1 more)
+Cohesion: 0.24
+Nodes (8): A.6 — Cálculo de preço, desconto, frete e volume, adjustPriceByArea(), adjustPriceByColors(), calculatePrice(), calculateTierSavings(), findPriceTier(), suggestNextTier(), PrintArea
 
 ### Community 829 - "Onda 9 — Drop public_token_tables + cleanup de funções órfãs (B-8 encerrada)"
 Cohesion: 0.15
@@ -7200,9 +7201,9 @@ Nodes (12): 1. Pré-requisitos (15 min), 2. Clone & Install (10 min), 3. Variáv
 Cohesion: 0.15
 Nodes (13): Bloco G — CI: gates e higiene (E75–E86), E75 — `e2e-cnpj.yml` instala os browsers que a matriz usa, E76 — Vercel preview `promo-gifts-v4`: causa raiz ou status não bloqueante, E77 — Gate de bundle calibrado por chunk, E78 — Detector de spec E2E órfão, E79 — Invariante 5 automatizado: corpo do PR cita comando, E80 — Template de PR com "Etapa fechada" e "Aceite verificado", E81 — Corrigir retroativamente o corpo do PR #1891 (+5 more)
 
-### Community 832 - "Fase 1 — Estancar o check obrigatório e a divergência de produção (E01–E12)"
-Cohesion: 0.15
-Nodes (13): E01 — Gate 1.9 deixa de contar arquivos gerados (`types.ts`), E02 — Diagnóstico e correção do login do smoke em CI (Gate 3), E03 — `deploy-ready` distingue skip condicional de skip em cascata e deixa de bloquear Dependabot/forks, E04 — Ratchet de bundle que pode falhar e "só abaixa" de verdade, E05 — Reconciliar o ledger após o DDL via MCP de 13/10 (sem novo DDL), E06 — Decidir e aplicar (ou retirar de `main`) as migrations pendentes que mantêm o drift vermelho, E07 — Environment `production-readonly` e fim dos crons pendentes/cancelados, E08 — Usuário admin de E2E e `has_admin` como condição explícita (+5 more)
+### Community 832 - "UPDATE 2 — 2026-05-22 (~20:51 UTC): test.fixme + recuperação de corrupção base64-duplo"
+Cohesion: 0.18
+Nodes (10): 1. `5a16641` — test.fixme em 22.1 e 22.2 (eu, 20:45:13 UTC), 2. `8665829` — 🚨 CORRUPÇÃO BASE64-DUPLO em playwright.config.ts (sessão paralela, 20:45:49 UTC), 3. `c033e7186` — T-FIX-5 script de detecção de configs órfãos (sessão paralela, 20:48:34 UTC), 4. `3a9d7183` — fix(e2e): restore playwright.config.ts from double-base64 corruption (eu, 20:51:15 UTC), Commits adicionados nesta extensão, Lição reforçada (já documentada no projeto, agora com cicatriz prática), O que mudou desde o commit original deste doc, Resultado verificável no CI #463 (`0c650caa`) (+2 more)
 
 ### Community 833 - "Redeploy Fase 3 — Sign-off Final (T30)"
 Cohesion: 0.15
@@ -7261,8 +7262,8 @@ Cohesion: 0.15
 Nodes (10): Entregas, AppHealthKpis, AppHealthSummary, EdgeLatencyRow, HealthWindow, lookupRequestId(), RequestIdEvent, RequestIdLookup (+2 more)
 
 ### Community 847 - "AppHealthDashboard.tsx"
-Cohesion: 0.23
-Nodes (11): Complementaridade com Onda 20, Entregas, Onda 21 — Painel Live `invokeEdgeSafe` (client-side), Próxima onda, Simulações prévias, AppHealthDashboard(), fmtMs(), KpiCard() (+3 more)
+Cohesion: 0.13
+Nodes (17): Complementaridade com Onda 20, Entregas, Onda 21 — Painel Live `invokeEdgeSafe` (client-side), Próxima onda, Simulações prévias, Entregas, Invariantes preservados, Onda 20 — Observabilidade da superfície `invokeEdgeSafe` (+9 more)
 
 ### Community 848 - "Validação Exaustiva do Módulo Magazine — Rodada 2026-07-15"
 Cohesion: 0.19
@@ -7296,9 +7297,9 @@ Nodes (11): CRM_FULL, CRM_READONLY, getSecretImpact(), impactForPrefix(), PROMOB
 Cohesion: 0.24
 Nodes (11): ACTION_META, AttemptRow(), ReasonBadge(), StepUpAttemptsPanel(), toCsv(), ACTIONS, REASONS, StepUpAttemptRow (+3 more)
 
-### Community 856 - "StockHistoryChart.tsx"
-Cohesion: 0.27
-Nodes (9): MarketTooltip(), StockHistoryChart(), StockHistoryChartProps, SupplierChartFilter(), SupplierChartFilterProps, SupplierOption, SupplierComparisonCards(), mockData (+1 more)
+### Community 856 - "🟡 P0 — Requer aprovação do PO (não aplicado)"
+Cohesion: 0.18
+Nodes (10): 1. SECURITY DEFINER ACL — 10 violações, 2. Hardcoded UUID em edge function, 3. Edge functions sem logger estruturado SSOT (8), 5. RPCs ausentes em `types.ts` (correlato ao Fix #5 acima), 6. `check-client-structured-logging.mjs` ausente, Auditoria Técnica — 2026-06-18 (Full Scan), ✅ Corrigido nesta auditoria (P0 seguro), 🔵 Observações de menor severidade (+2 more)
 
 ### Community 857 - "useIntersectionObserver.test.ts"
 Cohesion: 0.22
@@ -7312,9 +7313,9 @@ Nodes (11): AREA_SHAPES, calculateCustomizationTotal(), calculateSetupCost(), ca
 Cohesion: 0.19
 Nodes (10): fetchSupplierSparklineBatch(), build(), Props, SPARKLINE_WINDOW_DAYS, SparklineCtx, SparklineCtxValue, SparklineSalesData, SparklineSalesProvider() (+2 more)
 
-### Community 860 - "useProductImages.ts"
-Cohesion: 0.19
-Nodes (8): fetchPrimaryImage(), fetchProductImages(), fetchProductImagesBatch(), ProductImage, ProductImageForDisplay, usePrimaryImage(), useProductImages(), useProductImagesBatch()
+### Community 860 - "Fluxo 4 — Detalhe do produto (PDP)"
+Cohesion: 0.10
+Nodes (20): Fluxo 4 — Detalhe do produto (PDP), aggregateDailySummaryByDate(), extractUniqueSupplierIds(), getActiveFlags(), IntelligenceFlag, ProductIntelligenceData, StockDailySummary, useProductIntelligenceData() (+12 more)
 
 ### Community 861 - "intelligenceAnalytics.ts"
 Cohesion: 0.24
@@ -7344,13 +7345,13 @@ Nodes (11): ApprovalChecklistItem, ApprovalReadinessInput, DiscountValidationInp
 Cohesion: 0.18
 Nodes (8): ALL_KNOWN_EVENTS, WEBHOOK_EVENTS_CATALOG, WebhookEvent, WebhookEventGroup, getEventSamplePayload(), isoNow(), SamplePayload, SAMPLES
 
-### Community 868 - "CartsListPage.tsx"
-Cohesion: 0.21
-Nodes (12): CartRow(), CartRowProps, CARTS_URL_KEYS, CartsListContent(), cartSubtotal(), DEADLINE_FILTER_OPTIONS, fold(), SORT_OPTIONS (+4 more)
+### Community 868 - "🚀 Setup Local"
+Cohesion: 0.18
+Nodes (11): 1. Clonar e instalar, 2. Configurar Supabase, 3. Variáveis de ambiente, 4. Rodar em desenvolvimento, Comandos disponíveis, E2E · Snapshots visuais de AlertDialog e ConfirmDialog, E2E · Snapshots visuais do bloco Frete (Quote Builder), E2E · Snapshots visuais do card "Condições" (Quote Builder) (+3 more)
 
-### Community 869 - "quote-builder-freight-block-fuzz.test.tsx"
-Cohesion: 0.15
-Nodes (8): LABEL_VARIANTS, LabelVariant, REMS, Scenario, SCENARIOS, Shipping, SHIPPINGS, WIDTHS
+### Community 869 - "CreateListDialog.tsx"
+Cohesion: 0.25
+Nodes (8): COLORS, CreateListDialog(), Props, FavoriteListsSidebar(), Props, CompanyItem, FavoritesClientPicker(), Props
 
 ### Community 870 - "useQuotesListPage.expiring.test.ts"
 Cohesion: 0.17
@@ -7460,13 +7461,13 @@ Nodes (11): Avisos / falsos-positivos esperados, BD CRM (Bitrix mirror), BD Exte
 Cohesion: 0.17
 Nodes (12): 43 verificações PostgreSQL aprovadas, Baseline e proveniência, Contrato de criação, Contrato de edição, Correções no consumidor, Critério de promoção, Evidências reproduzíveis, Limites e riscos residuais (+4 more)
 
-### Community 899 - "Deployment Guide — Promo_Gifts"
-Cohesion: 0.17
-Nodes (12): 1. NÃO use `supabase db push`, 2. Como aplicar mudanças de schema corretamente, Arquitetura de deploy, ⚠️ Avisos críticos antes de qualquer deploy, Build local, Deployment Guide — Promo_Gifts, ⚠️ Exceção: policies em `storage.objects`, Prerequisites locais (+4 more)
+### Community 899 - "QuoteItemsTable.tsx"
+Cohesion: 0.25
+Nodes (9): ProductThumb(), ProductThumbProps, qvThumb, QvThumbSize, QuoteItemsTable(), QuoteItemsTableProps, QuotePersonalization, RemovedProductBadge() (+1 more)
 
-### Community 900 - "useExternalSimulator.ts"
-Cohesion: 0.18
-Nodes (9): Fluxo 10 — Precificação / simulador, dbInvokeLocal(), ExternalPrintArea, ExternalProduct, GroupedPrintArea, ProductImageRecord, useExternalPrintAreas(), useExternalProductSearch() (+1 more)
+### Community 900 - "OrganizationContext.tsx"
+Cohesion: 0.22
+Nodes (8): FIXED_ORG, FIXED_VALUE, Organization, OrganizationContext, OrganizationContextType, OrganizationProvider(), OrgMember, useOrganization()
 
 ### Community 901 - "🔧 18. UTILITÁRIOS"
 Cohesion: 0.17
@@ -7521,8 +7522,8 @@ Cohesion: 0.18
 Nodes (11): 1. Estática, 2. Testes unitários (Vitest + RTL), 3. Regressão, 4. Contraste (WCAG), 5. A11y — checagens estáticas, 6. Cenários adversariais cobertos, 7. Gaps conhecidos (fora do escopo desta iteração), 8. Arquivos alterados/criados nesta validação (+3 more)
 
 ### Community 915 - "ChatMessageList.tsx"
-Cohesion: 0.26
-Nodes (10): 🚫 Removido do frontend (`src/`) — NÃO reintroduzir, react-markdown, remark-gfm, ChatEmptyState(), ChatEmptyStateProps, ChatMessageList(), ChatMessageListProps, Message (+2 more)
+Cohesion: 0.17
+Nodes (14): 🧪 E2E — Colapso do LocationPanel (personalização), 🛡️ Gates contra regressão, ✅ Mantido (backend / infra — não tocar sem aprovação do PO), Política "Follow-up" — Frontend vs Backend, 🚫 Removido do frontend (`src/`) — NÃO reintroduzir, react-markdown, remark-gfm, ChatEmptyState() (+6 more)
 
 ### Community 916 - "AuthBranding.tsx"
 Cohesion: 0.20
@@ -7585,12 +7586,12 @@ Cohesion: 0.26
 Nodes (10): AuditRowForPdf, buildDiscountAuditPdfPlan(), DiscountAuditPdfContext, DiscountAuditPdfPlan, EVENT_LABEL, exportDiscountAuditPdf(), fmtDate(), fmtPct() (+2 more)
 
 ### Community 931 - "calculations.ts"
-Cohesion: 0.29
-Nodes (9): applyMarkup(), calculateDiscountAmount(), calculateItemPersonalizationTotal(), calculateItemTotal(), calculateRealDiscountPercent(), calculateSubtotal(), QuoteItemCalculationParams, round2() (+1 more)
+Cohesion: 0.42
+Nodes (8): applyMarkup(), calculateDiscountAmount(), calculateItemPersonalizationTotal(), calculateItemTotal(), calculateRealDiscountPercent(), calculateSubtotal(), QuoteItemCalculationParams, round2()
 
-### Community 932 - "AdminDesignTokensPage.tsx"
-Cohesion: 0.20
-Nodes (11): AdminDesignTokensPage(), BORDER_WIDTHS, BRAND_TOKENS, FUNCTIONAL_TOKENS, GRADIENT_TOKENS, RADIUS_TOKENS, Section(), SHADOW_TOKENS (+3 more)
+### Community 932 - "product-search.ts"
+Cohesion: 0.33
+Nodes (9): dedupeById(), DEFAULT_FUSE_OPTIONS, escapeRegExp(), getBestFieldPosition(), getNormalizedValue(), normalizeProductSearch(), rankProductSearchResults(), SearchableProductLike (+1 more)
 
 ### Community 933 - "gravacao.ts"
 Cohesion: 0.17
@@ -7688,9 +7689,9 @@ Nodes (11): 3.1 Modelagem & multi-tenant, 3.2 Uso de JSONB, 3.3 Drift de migrati
 Cohesion: 0.18
 Nodes (11): Grupo A — Schema do DB ao Vivo (T01–T10), T01 — Tabelas ao Vivo vs Migrations Locais ⚠️, T02 — Cobertura de RLS por Tabela ⚠️, T03 — Índices vs Queries Frequentes 🔴, T04 — Funções RPC no DB vs Código ✅, T05 — Triggers Ativos ⚠️, T06 — Views e Materialized Views ✅, T07 — Extensões Habilitadas ⚠️ (+3 more)
 
-### Community 961 - "Grupo B — Edge Functions (T11–T20)"
-Cohesion: 0.18
-Nodes (11): Grupo B — Edge Functions (T11–T20), T11 — Funções Deployadas vs Locais ⚠️, T12 — `verify_jwt=false` sem Proteção Manual 🔴, T13 — Padrão de Autenticação por Função ⚠️, T14 — Cobertura de CORS ✅, T15 — Logging Estruturado 🔴, T16 — Tratamento de Erros ⚠️, T17 — Circuit Breaker 🔴 (+3 more)
+### Community 961 - "simulation-orchestrator/handler_characterization_test.ts"
+Cohesion: 0.22
+Nodes (10): dbCalls, EdgeHandler, ENV_NAMES, json(), localSupabaseFetch(), mockJwt(), originalEnv, request() (+2 more)
 
 ### Community 962 - "Grupo D — Segurança (T31–T40)"
 Cohesion: 0.18
@@ -7700,13 +7701,9 @@ Nodes (11): Grupo D — Segurança (T31–T40), T31 — SECURITY DEFINER e searc
 Cohesion: 0.18
 Nodes (10): B14 — Coherence regression from density fixes (84 kits), B15 — Single-component-is-kit modeling flaw (9 kits), B16 — Docs' parser lost first dimension (17 kits), B17 — My P4 fits: ROUND(vol,2) zeroed items < 5cm³, B18 — PRODUCTION BUG: custom_kits INSERT trigger broken, Bugs Found Auditing My Own P0–P8 Work, Final E2E (proves builder works end-to-end), Final State (+2 more)
 
-### Community 964 - "Faxina do Banco de Dados — 2026-06-20 · Tier 3b (funções + views, lote 1)"
-Cohesion: 0.18
-Nodes (10): 1. O que foi arquivado neste lote (11 objetos), 2. Metodologia (6 gates — endurecida vs. Tier 3), 3. Estado atual do `public` (pós-lote), 4. Pool de candidatos para os próximos lotes (NÃO movidos — requerem 1 verificação extra), 5. Rollback, Armadilhas reais encontradas (e evitadas), Faxina do Banco de Dados — 2026-06-20 · Tier 3b (funções + views, lote 1), Fora de escopo (decisão de produto / risco) — **mantidos** (+2 more)
-
-### Community 965 - "Faxina do Banco de Dados — 2026-06-20 · Tier 3b (funções + views, lote 1)"
-Cohesion: 0.18
-Nodes (10): 1. O que foi arquivado neste lote (11 objetos), 2. Metodologia (6 gates — endurecida vs. Tier 3), 3. Estado atual do `public` (pós-lote), 4. Pool de candidatos para os próximos lotes (NÃO movidos — requerem 1 verificação extra), 5. Rollback, Armadilhas reais encontradas (e evitadas), Faxina do Banco de Dados — 2026-06-20 · Tier 3b (funções + views, lote 1), Fora de escopo (decisão de produto / risco) — **mantidos** (+2 more)
+### Community 965 - "Banco canônico — inventário por `pg_catalog`"
+Cohesion: 0.20
+Nodes (10): Banco canônico — inventário por `pg_catalog`, Constraints e índices, Enums e extensões, Funções, triggers e views, Jobs e cron, Matriz de completude por classe de objeto, Migrations e ledger, Privilégios (+2 more)
 
 ### Community 966 - "ADR — contrato por ação do `bitrix-sync`"
 Cohesion: 0.18
@@ -7729,8 +7726,8 @@ Cohesion: 0.18
 Nodes (11): 3.0 — Triagem decisória (concluída 07/05/2026), 3.1 — Recuperar acesso ao Supabase do Lovable, 3.2 — Auditoria do banco Lovable, 3.3 — Replicação no banco de Produtos, 3.4 — Atualizar código, 3.5 — Cutover (mudança ao vivo), 3.6 — Limpeza pós-migração, Definição de pronto (+3 more)
 
 ### Community 971 - "advancedFilters.ts"
-Cohesion: 0.18
-Nodes (10): BUG-SF-16 — `quantityRange` em `AdvancedFilterState` nunca utilizado, AdvancedFilterState, CategoryOption, ColorGroupData, ColorOption, MaterialOption, StockFilterOption, SupplierOption (+2 more)
+Cohesion: 0.11
+Nodes (17): 🟢 BAIXO, BUG-SF-14 — `publicoAlvo` e `endomarketing` mostram "Carregando..." mesmo quando produtos ainda não foram solicitados, BUG-SF-15 — `useFilterPanelState` instancia `useAdvancedFilters()` criando dupla requisição, BUG-SF-16 — `quantityRange` em `AdvancedFilterState` nunca utilizado, BUG-SF-17 — `hasActiveFilters` na PresetsBar trata mudança de `sortBy` como filtro ativo, BUG-SF-18 — `SECTION_CONFIG` declara ícone duplicado para `genero` e `estoque` (ambos usam `Users`/`Package`), BUG-SF-19 — Double-debounce no campo de busca, BUG-SF-20 — Chip de `'search'` em `clearSingleFilter` não limpa o campo visual da SmartSearchInput (+9 more)
 
 ### Community 972 - "📊 Análise Exaustiva — Tabela Bronze"
 Cohesion: 0.18
@@ -7760,9 +7757,9 @@ Nodes (10): 1. `dispatcher-log-sync` — `*/2 * * * *`, 2. `generate-blurhashes`
 Cohesion: 0.18
 Nodes (11): 30. Report-URI (relatórios de CSP) ✅ IMPLEMENTADO_TOTAL, 31. Vercel (hospedagem/deploy) ✅ IMPLEMENTADO_TOTAL, 32. GitHub API (validação de credenciais na UI) ✅ IMPLEMENTADO_TOTAL, 33. Ecossistema GitHub Actions (CI) ✅ IMPLEMENTADO_TOTAL, 34. Lighthouse CI 🟨 IMPLEMENTADO_PARCIAL, 35. Slack (alerta de sentinela) 🟨 IMPLEMENTADO_PARCIAL, 36. Google Fonts ✅ IMPLEMENTADO_TOTAL, 37. Google OAuth (login social via Supabase Auth) ✅ IMPLEMENTADO_TOTAL (+3 more)
 
-### Community 979 - "AuditHistory.tsx"
-Cohesion: 0.27
-Nodes (8): D.1 — `src/components/audit/AuditReport.tsx` ⬛, actionConfig, AuditHistory(), AuditHistoryProps, FieldChange(), fieldLabels, formatFieldValue(), renderWithClient()
+### Community 979 - "ONDA 12 — TIPOS, CASTS E DÍVIDA CONGELADA (E121–E130)"
+Cohesion: 0.20
+Nodes (10): ONDA 12 — TIPOS, CASTS E DÍVIDA CONGELADA (E121–E130), P200-E121 · [D] · P1 · Fechar os 3 casts em argumento de RPC, P200-E122 · [D] · P1 · Tipar `authService` com os tipos do SDK, P200-E123 · [D] · P1 · Validar os `jsonb` do `magazineService` com zod, P200-E125 · [D] · P2 · Tipar o mapper de mockup em vez de assertar campo a campo, P200-E126 · [D] · P2 · Transformar os 5 ratchets em descendentes com meta, P200-E127 · [D] · P2 · Zerar o baseline de `any` que já está em zero, P200-E128 · [D] · P2 · Plano de split dos 15 arquivos acima de 1000 linhas (+2 more)
 
 ### Community 980 - "📊 Guia de Integração - Botão Export Excel"
 Cohesion: 0.18
@@ -7776,17 +7773,17 @@ Nodes (11): 1.10 Verificação de Senhas Comprometidas, 1.1 Autenticação de Us
 Cohesion: 0.18
 Nodes (11): 2.10 Sugestões Contextuais, 2.1 Chat com Especialista IA, 2.2 Recomendações de IA, 2.3 Busca Semântica, 2.4 Busca Visual (por Imagem), 2.5 Geração de Mockups (composição em canvas, sem IA), 2.6 Layout de Aprovação de Mockups, 2.7 Gerenciamento de Prompts IA (+3 more)
 
-### Community 983 - "Bugs Corrigidos — Round 1 (PR #476)"
-Cohesion: 0.18
-Nodes (11): BUG-CF-01 — CORRIGIDO, BUG-CF-02 — CORRIGIDO, BUG-CF-03 — CORRIGIDO, BUG-CS-01 — CORRIGIDO, BUG-CS-02 — CORRIGIDO, BUG-CS-03 — CORRIGIDO, BUG-CS-04 — CORRIGIDO, BUG-CS-05 — CORRIGIDO (+3 more)
+### Community 983 - "Plano de reconciliação Local ↔ GitHub ↔ Supabase canônico — 50 etapas"
+Cohesion: 0.20
+Nodes (10): A. Controle de mudança e simulação de falhas (01–06), B. Git, proveniência e publicação de código (07–14), C. Ledger e migrations (15–25), D. Catálogo vivo, snapshots e integridade do banco (26–34), E. Tipos, contratos e testes de aplicação (35–41), F. Edge Functions, deploy e comportamento online (42–46), G. Gates, segurança e certificação (47–50), Linha de base e limites (+2 more)
 
-### Community 984 - "Bundle Size Gate e Report"
-Cohesion: 0.18
-Nodes (11): Ações em FAIL (🔴, > 15%) — o gate bloqueou o PR, Ações em WARN (⚠️, 5–15%), Bundle Size Gate e Report, Camadas do gate bloqueante, Chunks "🆕" (novos), Interpretando o report — guia rápido, Modelo de dados do baseline, Normalização de nome de chunk (hash rotativo) (+3 more)
+### Community 984 - "Fase 9 — Consolidação e custo (E85–E93)"
+Cohesion: 0.20
+Nodes (10): E85 — `e2e-quotes.yml` consolidado (matriz) substitui 12 workflows, E86 — `e2e-focused.yml` para os focados de UI (cnpj, dialogs, calendar, swatch, thumb, personalization, collapse, optimized-image, color-swatch), E87 — Apagar `build-typecheck.yml` e `credentials-audit.yml`; `codeql` e `security` sem duplicação, E88 — Um único dono para lint/tsc/build/smoke por PR, E89 — Política de artefatos e poda de cache, E90 — `url-state-unit`, `ts-unused-ratchet`, `lint-untyped-from`, `magazine-*`: filtros de caminho e cadência, E91 — gh-pages: poda dos relatórios E2E, E92 — `stock-dashboard-stress`, `magazine-flakiness`, `daily-flows`: cadência e custo dos noturnos (+2 more)
 
-### Community 985 - "Sequência"
-Cohesion: 0.18
-Nodes (10): Conclusão (20), Notas de execução, Pendências menores (17-19), Plano de correção exaustiva — 20 etapas, Post-mortem CRM bridge (6-8), Quick wins / desbloqueio CI (1-5), Redução eslint-baseline — top arquivos (14-16) — **TODAS ADIADAS**, Redução tsc-baseline — top 5 arquivos (9-13) (+2 more)
+### Community 985 - "check-route-error-element.mjs"
+Cohesion: 0.20
+Nodes (8): asJson, IGNORE_DIR, IGNORE_FILE_SUFFIX, ROOT, RULES, SRC, violations, walk()
 
 ### Community 986 - "01 — Escopo, evidências e contratos de aceite"
 Cohesion: 0.18
@@ -7904,13 +7901,13 @@ Nodes (11): Grupo I — revisão, preço final e orçamento, KM100-081 — Const
 Cohesion: 0.18
 Nodes (11): Grupo J — testes de aceitação, integração e produção, KM100-091 — Tornar os testes existentes exigentes, KM100-092 — Consolidar baselines visuais aprovadas, KM100-093 — Fechar testes reais de integração e concorrência, KM100-094 — Fechar acessibilidade e compatibilidade, KM100-095 — Medir desempenho e observabilidade, KM100-096 — Reconciliar documentação e cobertura final, KM100-097 — Preparar integração com revisão semântica (+3 more)
 
-### Community 1015 - "ONDA 0 — DESBLOQUEIO (E001–E010) · **BLOQUEANTE**"
-Cohesion: 0.18
-Nodes (11): ONDA 0 — DESBLOQUEIO (E001–E010) · **BLOQUEANTE**, P200-E001 · [C] · P0 · Rotar a `service_role` do projeto canônico, P200-E002 · [A] · P0 · Remover a chave hardcoded dos scripts de enriquecimento ✅, P200-E003 · [A] · P0 · Dar regras ao gitleaks ✅, P200-E004 · [B] · P0 · Consertar o `Gate 3 - E2E Smoke` ✅, P200-E005 · [C] · P0 · Fechar o bypass de admin no ruleset, P200-E006 · [C] · P0 · Remover a branch protection clássica órfã, P200-E007 · [A] · P0 · Fazer o Gate E23 poder falhar ✅ (+3 more)
+### Community 1015 - "eslint-baseline-scope-add.mjs"
+Cohesion: 0.20
+Nodes (7): args, cfg, DEFAULT, globs, ROOT, SCOPE_PATH, set
 
-### Community 1016 - "ONDA 10 — A SUÍTE DE TESTES ESTÁ VERMELHA (E101–E110)"
-Cohesion: 0.18
-Nodes (11): ONDA 10 — A SUÍTE DE TESTES ESTÁ VERMELHA (E101–E110), P200-E101 · [D] · P0 · Consertar o lockfile apontando para registry privado, P200-E102 · [D] · P0 · Mockar a rede nos testes de edge function, P200-E103 · [D] · P0 · Corrigir o teste de contrato do `MockupProductSelector`, P200-E104 · [D] · P1 · Atualizar o teste do gate de bundle, P200-E105 · [D] · P2 · Timeout local no fuzz de limite de carrinho, P200-E106 · [D] · P1 · A suíte não pode escrever em arquivo versionado, P200-E107 · [D] · P1 · Decidir o destino dos 39 testes P0 vazios (+3 more)
+### Community 1016 - "check-collapse-baselines.mjs"
+Cohesion: 0.20
+Nodes (8): args, byVp, __dirname, missing, only, SNAP_DIR, STATES, VIEWPORTS
 
 ### Community 1017 - "ONDA 3 — BASELINE E DRIFT DE SCHEMA (E031–E040)"
 Cohesion: 0.18
@@ -7920,9 +7917,9 @@ Nodes (11): ONDA 3 — BASELINE E DRIFT DE SCHEMA (E031–E040), P200-E031 · [B
 Cohesion: 0.18
 Nodes (11): ONDA 4 — RLS E POLICIES (E041–E050), P200-E041 · [A] · P0 · Fechar leitura anônima de tabelas fiscais e de suprimento ✅, P200-E042 · [A] · P1 · Lote 1 das 248 policies sem `TO` explícito ✅, P200-E043 · [A] · P1 · Reprovar policy nova com `roles={public}` ✅, P200-E044 · [A] · P1 · Baseline de policies sem filtro de schema ✅, P200-E045 · [A] · P1 · Implementar o gate de RLS sem policy ✅, P200-E046 · [C] · P1 · Decidir a migration `internal_deny_direct_access`, P200-E047 · [A] · P2 · Uma `RESTRICTIVE` por tabela sensível ✅ (+3 more)
 
-### Community 1019 - "ONDA 6 — QUALIDADE DAS MIGRATIONS (E061–E070)"
-Cohesion: 0.18
-Nodes (11): ONDA 6 — QUALIDADE DAS MIGRATIONS (E061–E070), P200-E061 · [A] · P0 · `CREATE INDEX` em tabela grande exige `CONCURRENTLY`, P200-E062 · [A] · P1 · Documentar e avisar sobre o opt-out de transação, P200-E063 · [A] · P1 · Rollback como arquivo, não como comentário, P200-E064 · [A] · P0 · Remover o project-ref proibido das migrations, P200-E065 · [A] · P1 · Tornar a migration de reconciliação replayável, P200-E066 · [A] · P1 · `SECURITY DEFINER` sem `pg_temp` no `search_path`, P200-E067 · [A] · P2 · Extensões fora do schema `extensions` (+3 more)
+### Community 1019 - "CategorySidebarPanel.tsx"
+Cohesion: 0.31
+Nodes (7): CategorySidebarPanel(), CategorySidebarPanelProps, TreeNode(), CategoryTreeNavigation(), CategoryTreeNavigationProps, SearchResult(), TreeNode()
 
 ### Community 1020 - "Fase B — Paridade Local × GitHub"
 Cohesion: 0.18
@@ -7961,16 +7958,16 @@ Cohesion: 0.18
 Nodes (11): 🟡 #10 — `log_min_duration_statement = -1` (queries lentas não são logadas), 🔴 #1 — CAUSA RAIZ — `external-db-bridge` em loop de invocação, 🔴 #2 — `purge-expired-security` cron com 99% de falha, 🔴 #3 — Conexões PostgREST zumbi (10 dias idle), 🟠 #4 — `fn_run_schema_drift_check()` no limite do statement_timeout, 🟠 #5 — Policy `profiles_select` quebra para `anon`, 🟠 #6 — Auth fixo em 10 conexões absolutas, 🟡 #7 — Schema `public` com 279 tabelas (327 MB) (+3 more)
 
 ### Community 1029 - "REST Native Migration"
-Cohesion: 0.18
-Nodes (11): Antes (bridge), Arquitetura, Depois (REST nativo), Kill-switch, O que mudou, Policies removidas (supersedidas), Proximos passos, REST Native Migration (+3 more)
+Cohesion: 0.17
+Nodes (12): Antes (bridge), Arquitetura, Degradacao graciosa, Depois (REST nativo), Kill-switch, O que mudou, Policies removidas (supersedidas), Proximos passos (+4 more)
 
-### Community 1030 - "credentials.test.ts"
-Cohesion: 0.20
-Nodes (6): Rotação de chave usada por cron jobs (`apikey`), 🔐 Rotação de Credenciais CRM, invalidateCredentialCache(), ALIAS_CONTRACT, clearAll(), clearEnv()
+### Community 1030 - "MagicUpBrandKitPanel.tsx"
+Cohesion: 0.31
+Nodes (7): MagicUpBrandKitPanel(), MagicUpBrandKitPanelProps, parseWordList(), MagicUpBrandSafetyChecklist(), MagicUpBrandSafetyChecklistProps, MagicUpLogoLibrary(), MagicUpLogoLibraryProps
 
 ### Community 1031 - "Runbook — Hardening do `generate_quote_number`"
-Cohesion: 0.18
-Nodes (10): 0. Decisões fixadas (não alterar sem nova aprovação), 1. Pré-deploy (rodar antes), 2.1. Criar o índice UNIQUE — **FORA de transação**, 2.2. Substituir a função do trigger — **dentro de transação**, 2. Deploy (rodar nesta ordem), 3. Verificação pós-deploy (rodar imediatamente), 4. Monitoramento pós-deploy (24h), 5. Rollback (+2 more)
+Cohesion: 0.17
+Nodes (11): 0. Decisões fixadas (não alterar sem nova aprovação), 1. Pré-deploy (rodar antes), 2.1. Criar o índice UNIQUE — **FORA de transação**, 2.2. Substituir a função do trigger — **dentro de transação**, 2. Deploy (rodar nesta ordem), 3. Verificação pós-deploy (rodar imediatamente), 4. Monitoramento pós-deploy (24h), 5. Rollback (+3 more)
 
 ### Community 1032 - "🔬 Validação Direta nas Fontes — 10 Achados Cruzados com o Banco"
 Cohesion: 0.18
@@ -7989,8 +7986,8 @@ Cohesion: 0.24
 Nodes (6): auditPptxImageParserExposure(), main(), PRODUCTION_SOURCE_ROOTS, SOURCE_EXTENSIONS, walk(), temporaryRoots
 
 ### Community 1036 - "Inventário de Branches — adm01-debug/Promo_Gifts_V4"
-Cohesion: 0.18
-Nodes (10): 1. Contagem por Categoria, 2. Contagem por Prefixo / Origem, 3. Clusters de Sobreposição, 4. TOP 9 Candidatas (categorias C/D/E/G), 5. Branches Categoria A (já incorporadas — candidatas a cleanup), 6. Branches Categoria B (vazias / triviais — candidatas a cleanup), 7. Branches Categoria F (39 branches descartáveis), 8. NÃO VERIFICADO / Limitações (+2 more)
+Cohesion: 0.20
+Nodes (9): 1. Contagem por Categoria, 2. Contagem por Prefixo / Origem, 3. Clusters de Sobreposição, 5. Branches Categoria A (já incorporadas — candidatas a cleanup), 6. Branches Categoria B (vazias / triviais — candidatas a cleanup), 7. Branches Categoria F (39 branches descartáveis), 8. NÃO VERIFICADO / Limitações, 9. Arquivos de Dados (+1 more)
 
 ### Community 1037 - "Relatório de Testes Exaustivos V2 — Pipeline Silver"
 Cohesion: 0.18
@@ -8021,8 +8018,8 @@ Cohesion: 0.18
 Nodes (9): @radix-ui/react-dropdown-menu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuRadioItem, DropdownMenuSeparator, DropdownMenuSubContent (+1 more)
 
 ### Community 1044 - "ssot-report.mjs"
-Cohesion: 0.18
-Nodes (8): runBuildAndCheckWarnings(), stripAnsi(), argv, gates, JSON_ONLY, summary, OUT_ARG, SCHEMA_VERSION
+Cohesion: 0.25
+Nodes (6): argv, gates, JSON_ONLY, summary, OUT_ARG, SCHEMA_VERSION
 
 ### Community 1045 - "check-codeowners-coverage.mjs"
 Cohesion: 0.20
@@ -8036,13 +8033,13 @@ Nodes (10): ALLOWLIST_FILE, extractSandboxAttrs(), FORBIDDEN, IGNORE_DIRS, isUns
 Cohesion: 0.18
 Nodes (9): C, covMatch, describeStack, lines, ROOT, SPEC, src, testsSeen (+1 more)
 
-### Community 1048 - "ci-metrics.mjs"
-Cohesion: 0.27
-Nodes (9): __dirname, fmtDuration(), ghGet(), HEADERS, main(), [OWNER, REPO_NAME], p95(), paginate() (+1 more)
+### Community 1048 - "useProductMatch.simulation.test.ts"
+Cohesion: 0.20
+Nodes (7): CATS, DESCRIPTORS, MATERIALS, STOCKS, SUPS, VALID_TYPES, WORDS
 
-### Community 1049 - "freight-quest-load-test.mjs"
-Cohesion: 0.29
-Nodes (9): buildEndpoints(), checkSLA(), computeStats(), executeRequest(), main(), RAMP_STAGES, runStage(), SUPABASE_URL (+1 more)
+### Community 1049 - "ref_node_process"
+Cohesion: 0.03
+Nodes (56): FILE_THRESHOLDS, lines, summary, SUMMARY_PATH, TOLERANCE_PP, TRACKED_FILES, findEntry(), getPct() (+48 more)
 
 ### Community 1050 - "massive-load-test.mjs"
 Cohesion: 0.24
@@ -8084,9 +8081,9 @@ Nodes (9): useIncidentSeverityCounts(), fetchIncidents(), INCIDENT_SEV_WEIGHT, I
 Cohesion: 0.27
 Nodes (9): buildTree(), setPaths(), CascadeSelects(), CategoryCascadeSelector(), CategoryCascadeSelectorProps, CategoryTreeDialog(), CatNode, TreeNode() (+1 more)
 
-### Community 1061 - "QuoteBuilderStepper.tsx"
-Cohesion: 0.27
-Nodes (6): QuoteBuilderNavigationProps, QuoteBuilderStep, QuoteBuilderStepper(), QuoteBuilderStepperProps, StepDef, STEPS
+### Community 1061 - "AuthContext.tsx"
+Cohesion: 0.03
+Nodes (59): @testing-library/jest-dom, CatalogToolbar, CatalogToolbarInner(), CatalogToolbarProps, FilterPanelSkeleton(), LazyFilterPanel, mockProps, renderToolbar() (+51 more)
 
 ### Community 1062 - "chart.tsx"
 Cohesion: 0.27
@@ -8229,8 +8226,8 @@ Cohesion: 0.18
 Nodes (9): fuzzPost(), HUGE_STRINGS, INVALID_DATES, INVALID_SHIPPING_COSTS, INVALID_UUIDS, MALFORMED_JSON_RAW, PATH_TRAVERSALS, SQL_INJECTIONS (+1 more)
 
 ### Community 1099 - "useKitBuilderQuote.test.ts"
-Cohesion: 0.24
-Nodes (8): createSupabaseMock(), MockOptions, MutationCall, SupabaseMock, UpdateCall, KIT_STATE, loadHook(), { validateKitStockForQuote }
+Cohesion: 0.29
+Nodes (6): createSupabaseMock(), MockOptions, MutationCall, SupabaseMock, UpdateCall, loadHook()
 
 ### Community 1100 - "webhook-matrix-1000.test.ts"
 Cohesion: 0.25
@@ -8328,9 +8325,9 @@ Nodes (9): Ação 1 — REVOKE: `mcp_kv_get` de `authenticated` (crítico), Aç�
 Cohesion: 0.20
 Nodes (9): Conclusão, P1 — Requer decisão/investigação adicional (não resolvido aqui), P2 — Débito técnico real, baixa urgência, P3 — Confirmado superado por trabalho posterior (sem ação necessária), P4 — Tabela-alvo não existe mais (achado moot, não é gap), P5 — Funções sem chamador vivo, ou com chamador que já sabe que a função não existe, P6 — Utilitário/baixo risco, provavelmente superado ou não crítico, Resultado por prioridade (+1 more)
 
-### Community 1124 - "§3. Segurança / RLS"
-Cohesion: 0.20
-Nodes (10): §3. Segurança / RLS, 🟡 ATENÇÃO — A1: `product_groups` e `product_group_members` — SELECT aberto para qualquer autenticado, 🟡 ATENÇÃO — A2: `product_components` — SELECT aberto para qualquer autenticado, 🟡 ATENÇÃO — A3: `integration_credentials` — subscription Realtime sem filtro, 🟡 ATENÇÃO — A4: `discount_approval_requests` — subscription sem filtro por usuário, 🟡 ATENÇÃO — A5: `product_price_freshness_overrides` — SELECT aberto para qualquer autenticado, ✅ BOM — Tabelas com RLS bem configurado, 🔴 CRÍTICO — C1: Policies "Allow all" nunca removidas em tabelas core (+2 more)
+### Community 1124 - "common/__tests__/useSearchHistory.test.ts"
+Cohesion: 0.25
+Nodes (6): 🐛 LocalStorage Unification (BUG-GS-05), localStorageMock, store, HistoryItem, HistoryType, useSearchHistory()
 
 ### Community 1125 - "Checklist de Compatibilidade"
 Cohesion: 0.20
@@ -8340,33 +8337,33 @@ Nodes (9): Checklist de Compatibilidade, Classes Tailwind para Dark Mode, Compon
 Cohesion: 0.20
 Nodes (9): Ledger de recibos — `MIGRATIONS_SYNC_LOG.md` (E75), MCP como leitura vs. escrita (E75), O que o detector automático faz (e o que não faz), Política de DDL — quando MCP/dashboard é aceitável (E12/E75), Por que isso importa (casos medidos), Reconciliação com `mode: repair-only` (E05/E75), Referências, Regra (+1 more)
 
-### Community 1127 - "DECISION-LOG v2 — Onda "CI Green" (we-dream-big / PromoGifts)"
-Cohesion: 0.20
-Nodes (9): 1. O QUE FOI FEITO (executado e commitado), #27 — FECHADO, 2. DESCOBERTA CRÍTICA: a MAIN está MUITO quebrada (pré-existente), 3. REGRAS / FATOS PERMANENTES (relembrar), 4. PRÓXIMOS PASSOS, DECISION-LOG v2 — Onda "CI Green" (we-dream-big / PromoGifts), Itens da sessão anterior (v1) — mantidos, MAPA dos 20 arquivos restantes (categorizado p/ próximos PRs) (+1 more)
+### Community 1127 - "useDevGate"
+Cohesion: 0.10
+Nodes (20): 12.8 Testes pulados (varredura 8), 1. O QUE FOI FEITO (executado e commitado), #27 — FECHADO, Itens da sessão anterior (v1) — mantidos, PR #35 — `fix/ci-tests-green-onmain` (base: main fresca), 13 · Operacionalidade — **7.5/10** (Padrão ×1) ↑ de 7.0, Causa raiz, Follow-ups técnicos (sem urgência) (+12 more)
 
 ### Community 1128 - "Colapso do LocationPanel — máscara & limiar de pixel diff"
 Cohesion: 0.20
 Nodes (9): 2. Onde ajustar `threshold` e `maxDiffPixelRatio`, 3. Como adicionar novas regiões dinâmicas à máscara, 4. Modo de calibragem, 5. Comandos úteis, 6. Baseline ausente?, 7. Overrides via variáveis de ambiente, 8. Baseline check standalone, 9. CSV enriquecido (`calibration-<vp>.csv`) (+1 more)
 
-### Community 1129 - "C) As sete armadilhas"
-Cohesion: 0.20
-Nodes (9): C.2 — Suíte desligada, C.4 — Sem runner (órfãos), C.5 — Alvo inexistente (import que não resolve no disco), C.6 — Testes que fazem grep/regex no código-fonte em vez de testar comportamento, C.7 — Snapshots, C) As sete armadilhas, ALLOWLIST, grepInProd() (+1 more)
+### Community 1129 - "quote-builder-freight-block-consumers.contract.test.ts"
+Cohesion: 0.40
+Nodes (4): C.6 — Testes que fazem grep/regex no código-fonte em vez de testar comportamento, ALLOWLIST, grepInProd(), TESTIDS
 
 ### Community 1130 - "🗄️ 32. TABELAS DO BANCO DE DADOS (COMPLETO)"
 Cohesion: 0.20
 Nodes (10): 🗄️ 32. TABELAS DO BANCO DE DADOS (COMPLETO), Carrinho, Clientes e CRM, Core, Cores e Categorias, Estoque, Notificações, Outros (+2 more)
 
 ### Community 1131 - "Kit Maker — plano corretivo de implementação em 100 etapas"
-Cohesion: 0.20
-Nodes (10): Base de evidências e incertezas, Estratégia de publicação e recuperação, Evidência mínima por entrega, Kit Maker — plano corretivo de implementação em 100 etapas, Matriz mínima de simulações antes e durante a execução, Ordem e entregas revisáveis, Referências e decisões de composição, Regras de conclusão (+2 more)
+Cohesion: 0.10
+Nodes (20): Base de evidências e incertezas, Estratégia de publicação e recuperação, Evidência mínima por entrega, Grupo F — catálogo de caixas e recomendação, Kit Maker — plano corretivo de implementação em 100 etapas, KM100-051 — Construir tela de escolha de caixa, KM100-052 — Implementar filtros específicos de embalagem, KM100-053 — Construir preview e seleção da caixa (+12 more)
 
-### Community 1132 - "Grupo F — catálogo de caixas e recomendação"
-Cohesion: 0.20
-Nodes (10): Grupo F — catálogo de caixas e recomendação, KM100-051 — Construir tela de escolha de caixa, KM100-052 — Implementar filtros específicos de embalagem, KM100-053 — Construir preview e seleção da caixa, KM100-054 — Reconciliar a validação de encaixe, KM100-055 — Calcular ocupação e espaço livre coerentes, KM100-056 — Construir ranking de caixas recomendadas, KM100-057 — Reconstruir página de recomendações (+2 more)
+### Community 1132 - "PARTE 4 — GAPS E DÍVIDA TÉCNICA (BAIXA SEVERIDADE)"
+Cohesion: 0.22
+Nodes (9): BAIXO-002: `useRBAC` Mapeia `dev → 'admin'` — Legacy Confusion, BAIXO-003: 384 Migrações — Nomenclatura Inconsistente, BAIXO-004: OG Meta Tags com URL Antiga do Lovable Preview, BAIXO-006: Comentários Extensos no Código de Produção, BAIXO-007: `chunkSizeWarningLimit: 2000` no Vite — Suprimindo Warning Real, BAIXO-008: `sourcemap: false` em Produção — Dificulta Debug, BAIXO-009: `enable_signup = false` — Sem Processo de Onboarding Documentado, BAIXO-010: Sem Política de Expiração de Sessions (+1 more)
 
-### Community 1133 - "Fase 5 — Escolha da caixa, Fluxo 2 (KM3-041 a 048)"
-Cohesion: 0.20
-Nodes (10): Fase 5 — Escolha da caixa, Fluxo 2 (KM3-041 a 048), KM3-041 — Filtros dimensionais mínimo e máximo, KM3-042 — Material como checkboxes com contagem, KM3-043 — Acabamento e Fechamento com contagem `[PO D1, D2]`, KM3-044 — Faixa de preço com slider, KM3-045 — Ordenação e busca por código, KM3-046 — Prévia lateral completa, KM3-047 — Selo "Fluxo 2" e botão "Guia do Kit Maker" (+2 more)
+### Community 1133 - "useExternalCollections.ts"
+Cohesion: 0.28
+Nodes (6): D-8 — Colisão de nome já resolvida (registro positivo), ExternalCollection, ExternalCollectionProduct, useExternalCollectionMutations(), useExternalCollections(), useExternalCollectionsManager()
 
 ### Community 1134 - "FASE 1 — Integridade do ledger de migrations (E06–E15)"
 Cohesion: 0.20
@@ -8376,13 +8373,13 @@ Nodes (10): E06 · Reconciliar e regerar a matriz completa arquivo ↔ ledger `[
 Cohesion: 0.20
 Nodes (10): E16 · Formalizar as 8 views `v_*_public` SECURITY DEFINER como superfície anônima `[GIT]` ✅ Concluída em 2026-09-16 (265/265 colunas conferidas; achado `REQUER-PO` não corrigido nesta etapa), E17 · Revisar as 11 SECDEF executáveis por `anon` `[REQUER-PO]`, E18 · Revisar as 94 SECDEF executáveis por `authenticated` (+25 desde julho) `[REQUER-PO]`, E19 · Decidir as 2 tabelas com RLS sem policy `[REQUER-PO]`, E20 · Inventário das 82 FKs para `auth.users` `[DB-RO]` ✅ Concluída em 2026-09-16, E21 · Validar a constraint `NOT VALID` `[REQUER-PO]`, E22 · Gate permanente "anon sem escrita" `[GIT]` ✅ Concluída em 2026-09-16, E23 · FORCE RLS e revogação em tabelas de segredo `[REQUER-PO]` (+2 more)
 
-### Community 1136 - "FASE 3 — Capacidade, armazenamento e partições (E25–E33)"
-Cohesion: 0.20
-Nodes (10): E25 · Automação de partições de `supplier_products_raw_history` `[REQUER-PO]` — **prazo: antes de 2026-12-15**, E26 · Política de retenção da history Bronze `[REQUER-PO]`, E27 · Recuperar o espaço de `stock_snapshots` `[REQUER-PO]`, E28 · Retenção/agregação de `stock_daily_summary` `[REQUER-PO]`, E29 · Índices: criar os 4 que faltam, remover os 3 que sobram `[REQUER-PO]`, E30 · Plano de capacidade e alerta de crescimento `[GIT]` + `[REQUER-PO]` ✅ Preparado em 2026-09-16 (aplicação aguarda PO), E31 · Inventário e agenda de refresh das 12 materialized views `[DB-RO]` ✅ Concluída em 2026-09-16, E32 · Autovacuum por tabela para alta rotatividade `[REQUER-PO]` (+2 more)
+### Community 1136 - "FASE 1 — Higiene do GitHub: issues e branches (E9–E16)"
+Cohesion: 0.22
+Nodes (9): E10 · Fechar issue #1809 (Gate 1 TS regressão) `[GIT]`, E11 · Fechar issue #784 (edge functions órfãs) `[GIT]`, E12 · Triar issue #563 (drift-check antigo) `[GIT]`, E13 · Revalidar issue #1832 (deploy failure 2026-09-05) `[GIT]`, E14 · Triagem completa de #1341 (gitleaks, 3 meses em aberto) `[SEGURANÇA]`, E15 · Decidir as 5 branches locais órfãs `[GIT]`, E16 · Retomar E49 do plano DBA (higiene de repositório) `[GIT]` — **prazo: pptxgenjs antes de 2026-10-09**, E9 · Fechar issue #1000 (`personalization_techniques` ausente de `types.ts`) `[GIT]` (+1 more)
 
 ### Community 1137 - "ONDA 14 — BUILD, BUNDLE E CÓDIGO MORTO (E141–E150)"
-Cohesion: 0.20
-Nodes (10): ONDA 14 — BUILD, BUNDLE E CÓDIGO MORTO (E141–E150), P200-E141 · [D] · P1 · Tirar o visualizer do build de produção, P200-E143 · [D] · P2 · Remover a config de teste morta do `vite.config.ts`, P200-E144 · [D] · P2 · Corrigir a opção inválida de cobertura, P200-E145 · [D] · P2 · Quebrar o CSS render-blocking de 392 KB, P200-E146 · [D] · P2 · Code-split a rota de catálogo antes de bater o teto, P200-E147 · [D] · P2 · Remover os 5 componentes mortos confirmados, P200-E148 · [D] · P2 · Triar os 116 arquivos sem import restantes (+2 more)
+Cohesion: 0.12
+Nodes (17): 1.1 Achados reais — ação recomendada (fora do escopo desta etapa `[RO]`), 1.2 Falsos positivos — investigados e descartados, 1. Lista (a) — código referenciando objetos inexistentes, Não-Problemas (falsos positivos investigados), ONDA 14 — BUILD, BUNDLE E CÓDIGO MORTO (E141–E150), P200-E141 · [D] · P1 · Tirar o visualizer do build de produção, P200-E142 · [D] · P1 · Decidir o destino do `lazy-client`, P200-E143 · [D] · P2 · Remover a config de teste morta do `vite.config.ts` (+9 more)
 
 ### Community 1138 - "7. Errata e gaps descobertos na validação pós-publicação (2026-09-27)"
 Cohesion: 0.20
@@ -8468,13 +8465,13 @@ Nodes (9): BASELINE_PATH, buildReport(), DIST_ASSETS, extractChunkPrefix(), form
 Cohesion: 0.24
 Nodes (9): argv, __dirname, GATE_MODE, loadManifest(), main(), MANIFEST_PATH, REQUIRED_TABLES, ROOT (+1 more)
 
-### Community 1159 - "check-chunk-cycles.test.mjs"
-Cohesion: 0.29
-Nodes (7): auditChunkCycles(), findStronglyConnectedComponents(), visit(), main(), readChunkGraph(), temporaryRoots, ./lazy-E5f6g7h8.js
+### Community 1159 - "check-doc-refs.mjs"
+Cohesion: 0.22
+Nodes (5): ALLOWED_PREFIXES, args, errors, ROOT, warnings
 
-### Community 1160 - "check-toast-leaks.mjs"
-Cohesion: 0.33
-Nodes (9): BASELINE_PATH, countByKey(), findLeaks(), keyOf(), LEAK_PATTERNS, listSourceFiles(), loadBaseline(), main() (+1 more)
+### Community 1160 - "check-production-harnesses.mjs"
+Cohesion: 0.31
+Nodes (6): auditProductionHarnesses(), forbiddenMarkers, main(), textExtensions, walk(), temporaryRoots
 
 ### Community 1161 - "dry-run-migration-draft.mjs"
 Cohesion: 0.36
@@ -8508,9 +8505,9 @@ Nodes (8): BulkCollectionRow, addProductToCollection, createCollection, ctx, isP
 Cohesion: 0.27
 Nodes (7): buildHookValue(), mockUseVariantStock, product(), renderDashboard(), summaryOf(), toast, variant()
 
-### Community 1169 - "simulator/TechniqueCard.tsx"
-Cohesion: 0.42
-Nodes (8): InlineConfigForm(), TechniqueCard(), TechniqueCardProps, getSlaInfo(), getTechniqueStyle(), getTechniqueThumbnail(), TECHNIQUE_THUMBNAILS, TechniquePreview()
+### Community 1169 - "plan-status.mjs"
+Cohesion: 0.22
+Nodes (8): args, __dirname, etapas, jsonMode, label, PLAN_PATH, ROOT, sections
 
 ### Community 1170 - "LoadingState.tsx"
 Cohesion: 0.20
@@ -8773,12 +8770,12 @@ Cohesion: 0.22
 Nodes (8): 1. Estado ao vivo (confirmado via `pg_catalog`, read-only), 2. Opção A (pg_partman) vs Opção B (função + pg_cron) — decisão, 3. Desenho entregue, 4. Efeito esperado, teste de reversão, 5. Resumo para aprovação, E25 — Automação de partições de `supplier_products_raw_history` (2026-09-16), Por que não depende do schema `ops` (E30), Por que o alerta não passa por `fn_cron_safe_run`
 
 ### Community 1240 - "E30 — Plano de capacidade e alerta de crescimento"
-Cohesion: 0.22
-Nodes (8): Artefatos preparados (não aplicados), Checklist de conclusão (do plano), Cron: escolha de `p_key`, Decisão de schema, E30 — Plano de capacidade e alerta de crescimento, O que NÃO foi feito nesta etapa, Problema medido, RLS e superfície de acesso
+Cohesion: 0.25
+Nodes (7): Checklist de conclusão (do plano), Cron: escolha de `p_key`, Decisão de schema, E30 — Plano de capacidade e alerta de crescimento, O que NÃO foi feito nesta etapa, Problema medido, RLS e superfície de acesso
 
-### Community 1241 - "Auditoria de Documentação — SSOT Supabase"
+### Community 1241 - "tsc-baseline-generate.mjs"
 Cohesion: 0.22
-Nodes (9): ✏️ Arquivos alterados nesta auditoria, Auditoria de Documentação — SSOT Supabase, 🔎 Classificação das 24 menções ao legado, 📎 Comandos de reprodução, ✅ Critérios 10/10, 🔒 Documentos de topo (após auditoria), 🛡️ Fora de escopo (não alterado), 📊 Inventário (+1 more)
+Nodes (8): baseline, BASELINE_PATH, counts, lines, res, ROOT, sorted, TSC_BIN
 
 ### Community 1242 - "🟣 FASE 4 — Integração com CRM Externo"
 Cohesion: 0.22
@@ -8804,9 +8801,9 @@ Nodes (9): 20.1 Supabase (Lovable Cloud), 20.2 Banco de Dados Externo (Promobrin
 Cohesion: 0.22
 Nodes (9): ⚠️ Armadilhas e lições aprendidas, Lição 1: Lovable foi DESINSTALADO do GitHub em 07/05/2026, Lição 2: Pre-commit hook reformata o arquivo todo, Lição 3: Trabalho paralelo entre instâncias, Lição 4: Migration de DROP no Lovable é trabalho desperdiçado, Lição 5: Anon key NÃO faz DDL, Lição 6: Lovable adiciona edge functions automaticamente, Lição 7: SECURITY DEFINER drift no banco Produtos (+1 more)
 
-### Community 1248 - "Onda 1 — Hardening de Auth em Edge Functions"
-Cohesion: 0.22
-Nodes (8): Checklist pós-deploy, Como rotacionar os secrets, `connections-auto-test` — auth single-mode, Onda 1 — Hardening de Auth em Edge Functions, Problema, Retrocompat, Rollback de emergência, Solução implementada
+### Community 1248 - "useScheduledReports.ts"
+Cohesion: 0.25
+Nodes (8): calculateNextRun(), CreateReportInput, FREQUENCY_LABELS, REPORT_TYPE_LABELS, ReportFrequency, ReportType, ScheduledReport, useScheduledReports()
 
 ### Community 1249 - "__tests__/useDebounce.test.ts"
 Cohesion: 0.36
@@ -8824,9 +8821,9 @@ Nodes (8): Concorrência simulada, Execução canônica, Invariantes comuns, Inv
 Cohesion: 0.22
 Nodes (9): 4A — F1 Docs (sem risco), 4B — F2/F4 CI e scripts (governança), 4C — F3 E2E, 4D — F5 `src/`, 4E — F6 migrations novas (sem renome), 4F — F7 renome/movimentação de migrations, 4G — F8 Segurança RLS (Onda 4+5) e fechamento, FASE 4 — PR #2228 `claude/hopeful-heisenberg-dt4bl3` (E161–E195) (+1 more)
 
-### Community 1253 - "findBaseline"
-Cohesion: 0.25
-Nodes (9): §1 — DIAGNÓSTICO: POR QUE OS PLANOS ANTERIORES NÃO FECHARAM, A consequência prática, O que está certo e não deve ser mexido, O segundo eixo: o scanner cego, O terceiro eixo: o drift de schema que nunca rodou, Placar da auditoria, findBaseline(), ledgerSnapshotName() (+1 more)
+### Community 1253 - "MagazineEditorPage.hooksOrder.test.tsx"
+Cohesion: 0.33
+Nodes (5): baseMagazine(), Boundary, makeItem(), mockGet, mountAndAssertStable()
 
 ### Community 1254 - "check-supabase-migration-ledger.mjs"
 Cohesion: 0.47
@@ -8924,21 +8921,21 @@ Nodes (8): ALLOW, cwd, PATTERNS, scanFile(), SEARCH_ROOTS, SKIP_DIRS, violations
 Cohesion: 0.22
 Nodes (7): critical, pct, raw, repo, rows, testFiles, walk()
 
-### Community 1278 - "stress-burst.mjs"
-Cohesion: 0.28
-Nodes (7): BURST_CONCURRENCY, BURST_DURATION_SECONDS, ENDPOINTS, makeRequest(), percentile(), runBurst(), SUPABASE_URL
+### Community 1278 - "useFavoritesStore.ts"
+Cohesion: 0.33
+Nodes (8): FavoriteItem, FavoritesActions, FavoritesState, FavoritesStore, FavoriteVariantInfo, loadFromStorage(), saveToStorage(), useFavoritesStore
 
 ### Community 1279 - "UrgencyBadge.tsx"
 Cohesion: 0.33
 Nodes (8): FlashSaleBadge(), LastUnitsBadge(), LimitedStockBadge(), TrendingBadge(), UrgencyBadge(), UrgencyBadgeProps, urgencyConfig, UrgencyType
 
-### Community 1280 - "MarketIntelligenceInsightsCard.tsx"
-Cohesion: 0.28
-Nodes (8): buildDiagnosisMention(), FILTER_LABEL, FOCUS_OPTIONS, InsightFocus, InsightResponse, InsightRow(), MarketIntelligenceInsightsCard(), Props
+### Community 1280 - "20260611130808_seo_recreate_views_v3.sql"
+Cohesion: 0.36
+Nodes (5): public.vw_products_seo_status, public.vw_seo_dashboard, public.vw_sitemap_all, public.vw_sitemap_categories, public.vw_sitemap_products
 
-### Community 1281 - "MagicUpCampaignPanel.tsx"
-Cohesion: 0.33
-Nodes (6): MagicUpCampaignPanel(), MagicUpCampaignPanelProps, MagicUpCampaignPresets(), MagicUpCampaignPresetsProps, MagicUpCampaignSummary(), MagicUpCampaignSummaryProps
+### Community 1281 - "AdImageResult.tsx"
+Cohesion: 0.10
+Nodes (21): 7.5 Magic Up — ADR de fronteira e guia de acessibilidade da Onda 5, 4. Componentes cobertos, AdImageResult(), AdImageResultProps, GenerationHistoryItem, MagicUpBatchGenerationPanel(), MagicUpCampaignPanel(), MagicUpCampaignPanelProps (+13 more)
 
 ### Community 1282 - "pdfHardcodedColors.test.ts"
 Cohesion: 0.22
@@ -8956,25 +8953,25 @@ Nodes (7): AccessibleModal(), AccessibleModalProps, FOCUSABLE_SELECTOR, FocusTra
 Cohesion: 0.28
 Nodes (6): PaginationContent, PaginationItem, PaginationLink(), PaginationLinkProps, PaginationNext(), PaginationPrevious()
 
-### Community 1286 - "StatusBadge.tsx"
-Cohesion: 0.25
-Nodes (7): STATUS_ALIAS_MAP, StatusBadge(), StatusBadgeProps, statusBadgeVariants, statusIcons, statusLabels, StatusValue
-
-### Community 1287 - "useSmokeTests.ts"
-Cohesion: 0.22
-Nodes (8): SmokeModuleFailureRate, SmokeSummaryMetrics, SmokeTestRow, SmokeTestRpcClient, SmokeTestsData, SmokeTestTrend, SmokeTrendPoint, useSmokeTests()
-
-### Community 1288 - "useClientVsIndustry.ts"
+### Community 1286 - "DevRoute.test.tsx"
 Cohesion: 0.31
-Nodes (8): BenchmarkRow, buildInsight(), classify(), ClientVsIndustryResult, ComparisonClassification, MetricComparison, pctDelta(), useClientVsIndustry()
+Nodes (8): baseAuthShape, mockUseAuth, PathProbe(), Persona, renderAgente(), renderProtected(), renderSupervisor(), TECH_ROUTES
+
+### Community 1287 - "Plano de melhorias e correções em exatamente 100 etapas"
+Cohesion: 0.25
+Nodes (8): Banco, jobs e migrations — leitura primeiro, CI, dependências e gates determinísticos, Edge, integrações, testes e observabilidade, Fundação, proteção e critérios de aceite, Ligações quebradas entre código e banco, Limpeza autorizada e release, Módulos parciais e experiência do usuário, Plano de melhorias e correções em exatamente 100 etapas
+
+### Community 1288 - "Credentials Audit"
+Cohesion: 0.25
+Nodes (7): Adding new credentials, Baseline burn-down, Credentials Audit, How it runs, Local usage, Platform-managed credentials (allowlisted), Why
 
 ### Community 1289 - "useListUrlState.fuzz.test.tsx"
-Cohesion: 0.22
-Nodes (5): DEADLINE_VALUES, K, KEYS, SORT_VALUES, STATUS_VALUES
+Cohesion: 0.17
+Nodes (8): 6. O que está bem construído (e deve ser preservado), DEADLINE_VALUES, K, KEYS, SORT_VALUES, STATUS_VALUES, iso(), raw()
 
-### Community 1290 - "useCustomizationCollapsePrefs.ts"
-Cohesion: 0.36
-Nodes (7): upsertMock, log, Map, migrateLegacyCollapseKeys(), readLocal(), useCustomizationCollapsePrefs(), writeLocal()
+### Community 1290 - "color_variations"
+Cohesion: 0.32
+Nodes (5): "public"."fn_auto_vincular_cor_variante"(), "public"."fn_backfill_feminine_links"(), "public"."fn_color_equiv_ensure_primary"(), "public"."fn_color_equiv_ensure_primary_stmt"(), "public"."fn_pn_sync_products_is_new"()
 
 ### Community 1291 - "useMaterialTypes.ts"
 Cohesion: 0.22
@@ -9000,9 +8997,9 @@ Nodes (6): SpeechRecognition, SpeechRecognitionConstructor, SpeechRecognitionEve
 Cohesion: 0.44
 Nodes (6): FLOW_GREETINGS, getGreeting(), getHighestRole(), getRandomGreeting(), isSupervisorOrAbove(), ROLE_HIERARCHY
 
-### Community 1297 - "bi/mockData.ts"
-Cohesion: 0.22
-Nodes (8): getMockIndustryTrends(), getMockSeasonality(), MOCK_CLIENT_STATS, MockClientStats, MockIndustryTrend, MockSeasonalityClientCell, MockSeasonalityIndustryCell, MONTH_LABELS_PT
+### Community 1297 - "3. ACHADOS ABERTOS (revisão 2026-09-16)"
+Cohesion: 0.25
+Nodes (8): 3. ACHADOS ABERTOS (revisão 2026-09-16), ℹ️ P6 (NOVO, 2026-09-16, gate fechado no mesmo dia) — 8 views SECURITY DEFINER sem `security_invoker`, expostas a `anon`, 🟢 P1 (07-16) — `anon` com GRANT de escrita — **FECHADO**, 🟠 P2 (07-16) — cron jobs multi-statement — **ainda aberto, piorou em contagem**, 🟡 P3 (07-16) — cron jobs desligados — **inalterado**, 🟡 P4 (07-16) — drift de documentação em `products` — **ainda aberto**, 🔴 P5 (NOVO, 2026-09-16) — 2 tabelas com RLS habilitada e zero policies, ⚠️ P7 (NOVO, 2026-09-16) — SECDEF executáveis por `authenticated` cresceu 36% (69 → 94)
 
 ### Community 1298 - "logger.ts"
 Cohesion: 0.31
@@ -9036,9 +9033,9 @@ Nodes (8): COLOR_CLASSES, ColorKey, DeltaBadge(), ITEMS, KpiData, KpiItem, Trend
 Cohesion: 0.22
 Nodes (6): builder, MagRow, Result, results, Scenario, state
 
-### Community 1306 - "useRecentlyViewedStore.ts"
-Cohesion: 0.33
-Nodes (7): loadFromStorage(), RecentlyViewedActions, RecentlyViewedItem, RecentlyViewedState, RecentlyViewedStore, saveToStorage(), useRecentlyViewedStore
+### Community 1306 - "check-edge-cors-headers.mjs"
+Cohesion: 0.43
+Nodes (7): checkInlineFunction(), checkSharedCors(), extractCorsLiterals(), listFunctionDirs(), main(), SERVER_ONLY_ALLOWLIST, SHARED_CORS
 
 ### Community 1307 - "customization.ts"
 Cohesion: 0.22
@@ -9048,9 +9045,9 @@ Nodes (8): CustomizationOptionsResponse, CustomizationPriceResponseV6, GravacaoL
 Cohesion: 0.39
 Nodes (8): deltaE(), findNearestPantone(), getBestPantoneMatch(), getCatalogWithLab(), hexToRgb(), PantoneMatch, PantoneWithLab, rgbToLab()
 
-### Community 1309 - "productPdfExport.ts"
-Cohesion: 0.39
-Nodes (8): exportProductPdf(), formatBool(), formatCurrency(), formatDimension(), getAutoTable(), getJsPDF(), nonEmpty(), ProductPdfOptions
+### Community 1309 - "classify-unledgered-migrations.mjs"
+Cohesion: 0.25
+Nodes (6): byKind, list, outDir, PATTERNS, results, ROOT
 
 ### Community 1310 - "image-utils.fuzz.test.ts"
 Cohesion: 0.28
@@ -9320,9 +9317,9 @@ Nodes (7): 1. Estado ao vivo `[RO]`, 2. Achado central — BYPASSRLS torna FORCE
 Cohesion: 0.25
 Nodes (7): Causa raiz, Correção, Impacto, Não foi feito (fora de escopo deste documento), O que aconteceu, Por que não foi notado antes, Pós-mortem — 29+ commits de governança presos só no disco local (2026-09-17)
 
-### Community 1384 - "PARTE 2 — VULNERABILIDADES DE ALTA SEVERIDADE"
+### Community 1384 - "test-failures-report.mjs"
 Cohesion: 0.25
-Nodes (8): ALTO-001: `webhook-dispatcher` — Endpoint Sem Autenticação com Service Role Key, ALTO-002: Content-Security-Policy Ausente no `index.html`, ALTO-003: CSP com Placeholder `{{nonce}}` Não Substituído nas Edge Functions, ALTO-004: Kong 2.8.1 em Self-Hosted — Versão com CVEs Conhecidos, ALTO-005: Branch `main` sem Proteção — Push Direto por Qualquer Colaborador, ALTO-006: `collections` Table — Qualquer Agente Pode Deletar Collections, ALTO-007: Containers Supabase Auth Exited na VPS, PARTE 2 — VULNERABILIDADES DE ALTA SEVERIDADE
+Nodes (6): byCat, lines, order, plain, PRIORITY, rows
 
 ### Community 1385 - ""public"."product_kit_components""
 Cohesion: 0.25
@@ -9364,9 +9361,9 @@ Nodes (7): Contexto, Impacto, Onda 4 — esbuild preservar console.warn/error em
 Cohesion: 0.25
 Nodes (8): Como ativar / desativar o kill-switch, Identificar callers (quem ainda chama), Impacto esperado nos logs do Postgres, Mudança 1 — Adicionar import (linha ~36), Mudança 2 — Inserir checagem do kill-switch (linha ~451), Patch manual: `external-db-bridge/index.ts` — kill-switch integration, Por que esse patch não foi feito via PR automatizado, Validação após aplicar
 
-### Community 1396 - "FASE 3 — Qualidade de código e CI (E23–E30)"
-Cohesion: 0.25
-Nodes (8): E23 · Expor `src/` ao `tsc` no build (#691) `[CI]`, E25 · Corrigir os 6 testes de `tests/hooks/**` e plugar no CI (#1811) `[CI]`, E26 · Decidir a semântica de array-vazio na escrita (#537) `[CÓDIGO]`, E27 · Medir cobertura real de testes vs. threshold declarado `[CI]`, E28 · Inventariar workflows GitHub Actions ativos vs. órfãos `[CI]`, E29 · Priorizar a causa raiz do `db-schema-drift-check` vermelho `[DB-RO]`, E30 · Documentar o "quality-gate.yml" real para onboarding `[DOCS]`, FASE 3 — Qualidade de código e CI (E23–E30)
+### Community 1396 - "EdgeInvokeLivePanel.tsx"
+Cohesion: 0.36
+Nodes (7): EdgeInvokeLivePanel(), fmtMs(), fmtPct(), MiniKpi(), MiniKpiProps, WINDOW_OPTIONS, WindowMs
 
 ### Community 1397 - "FASE 2 — Testes e cobertura"
 Cohesion: 0.25
@@ -9400,9 +9397,9 @@ Nodes (7): Comportamento esperado pós-merge, Gap A — `20260511200056_create_p
 Cohesion: 0.25
 Nodes (8): 4.1 Origem da Onda 1 (2026-05-08, antes desta sessão), 4.2 Decisão npm vs bun (você + Claude, em sessão anterior), 4.3 Os 8 commits originais da Onda 1 (preservados via tag), 4.4 Fluxo do PR #102, 4.5 Validação cruzada do merge (executada ainda em 2026-05-09), 4.6 Simulação exaustiva de 60+ cenários antes do delete (esta sessão), 4.7 Plano refinado de delete em 5 etapas (executado nesta sessão), 4. Histórico cronológico — do início ao fim da Onda 1
 
-### Community 1405 - "5. Decisões técnicas tomadas (com justificativa)"
+### Community 1405 - "catalog-stock-status.ts"
 Cohesion: 0.25
-Nodes (8): 5.1 npm vs bun, 5.2 Como fazer squash merge quando GitHub MCP retorna 403, 5.3 Tag git como safety net permanente, 5.4 Husky pre-push com `--no-verify` em commits intermediários, 5.5 Coverage gate do CloudStatus — pragma v8 ignore vs testar dead code, 5.6 Quando deletar tests vs marcar como skip, 5.7 `.coderabbit.yaml` parsing issue, 5. Decisões técnicas tomadas (com justificativa)
+Nodes (5): CATALOG_LOW_STOCK_THRESHOLD, CATALOG_STOCK_STATUS_COLOR, CATALOG_STOCK_STATUS_LABEL, CatalogStockStatus, getCatalogStockStatus()
 
 ### Community 1406 - "9. Estado da infraestrutura"
 Cohesion: 0.25
@@ -9436,9 +9433,9 @@ Nodes (7): Cache headers, Como gerar, Open Graph Image — Self-hosted, Opção 
 Cohesion: 0.25
 Nodes (7): 1. Cálculos derivados (client), 2. Persistência (Supabase), 4. UI / a11y, 5. Integrações, 6. e2e, 8. Automação, Regressão — Preço read-only em Itens de Orçamento
 
-### Community 1415 - "QA Report — Quotes Hardening (2026-06-25)"
+### Community 1415 - "useProductsColorsBatch.ts"
 Cohesion: 0.29
-Nodes (7): Gaps / Riscos remanescentes, Inspeção DB (`doufsxqlfjyuvxuezpln`), Invariantes verificadas (matriz + fuzz), QA Report — Quotes Hardening (2026-06-25), Recomendações, Resumo executivo, sanitizeQuoteStatus()
+Nodes (5): B. `ProductGrid.tsx` — violação Rules-of-Hooks, GLOBAL_COLORS_CACHE, ProductColorDot, useProductsColorsBatch(), VariantRow
 
 ### Community 1416 - "FiltersPage.test.tsx"
 Cohesion: 0.25
@@ -9456,17 +9453,17 @@ Nodes (7): 1. Inventário de Workflows — Estado atual na Main (SHA `4562f376`)
 Cohesion: 0.25
 Nodes (7): args, claude, claudeGates, gate, missing, yaml, yamlGates
 
-### Community 1420 - "generate-theme-report.mjs"
-Cohesion: 0.25
-Nodes (7): CSV_FILE, csvRows, failures, HTML_FILE, INPUT_DIR, JSON_FILE, reportDir
+### Community 1420 - "1. Evidência medida (fotografia de 2026-09-16)"
+Cohesion: 0.29
+Nodes (7): 1.1 Ledger de migrations × arquivos, 1.2 Postura de segurança, 1.3 Capacidade física, 1.4 Desempenho e cron, 1.5 Contratos código × banco, 1.6 Git, 1. Evidência medida (fotografia de 2026-09-16)
 
 ### Community 1421 - "ResolveProductsSelectComparisonCard.tsx"
 Cohesion: 0.43
 Nodes (7): DeltaDirection, deltaTone(), formatMs(), formatPct(), MetricRow(), ResolveProductsSelectComparisonCard(), SamplesBadge()
 
-### Community 1422 - "ClientCategoryRadar.tsx"
-Cohesion: 0.36
-Nodes (7): classify(), ClientCategoryRadar(), fmtBRL(), fmtPct(), MergedRow, Props, STATUS_META
+### Community 1422 - "FASE 3 — PRs abertas (exceto #2228) (E111–E160)"
+Cohesion: 0.29
+Nodes (7): 3.0 Mapa das 17 PRs abertas, 3A — Gate 3: #2271, #2269, #2267, 3B — Dependabot, 3C — PRs pequenas de CI (Claude), 3D — PRs do Devin, FASE 3 — PRs abertas (exceto #2228) (E111–E160), useSalesHistoryMacro()
 
 ### Community 1423 - "ClientVsIndustryComparison.tsx"
 Cohesion: 0.43
@@ -9484,9 +9481,9 @@ Nodes (7): contrastRatio(), hexToRgb(), Pair, PAIRS, relativeLuminance(), REPORT
 Cohesion: 0.36
 Nodes (6): estimateItemHeight(), { html2canvasMock, jsPdfCtorMock, jsPdfInstanceFactory }, itemsBudget(), makeData(), makeItem(), paginateItems()
 
-### Community 1427 - "RecentReplenishmentsWidget.tsx"
-Cohesion: 0.39
-Nodes (7): daysSinceNoon(), formatDaysAgo(), getRecencyVariant(), Recency, RECENCY_STYLES, RecentReplenishmentsWidget(), SupplierBreakdown
+### Community 1427 - "FASE 0 — Desbloqueio imediato"
+Cohesion: 0.29
+Nodes (7): E01 · Documentar o finding 0029 órfão e destravar o CI/CD Pipeline, E02 · Restaurar cobertura do módulo de estoque acima do threshold, E03 · Fast-forward do `main` e poda de branches mortos, E04 · Triagem dos 2 stashes órfãos, E05 · Ressincronizar o grafo graphify, E06 · Fechar o ciclo do PR #1860, FASE 0 — Desbloqueio imediato
 
 ### Community 1428 - "ColorSwatch.ssot.test.tsx"
 Cohesion: 0.32
@@ -9500,17 +9497,17 @@ Nodes (7): CATEGORIES, Category, DATAS_COMEMORATIVAS, ENDOMARKETING, PUBLICO_ALV
 Cohesion: 0.43
 Nodes (7): DeviceInfo, generateDeviceFingerprint(), getBrowserName(), getDeviceInfo(), getDeviceType(), getOSName(), useDeviceDetection()
 
-### Community 1431 - "useClientHealthScore.ts"
-Cohesion: 0.36
-Nodes (7): ClientHealthScoreResult, HealthScoreBreakdown, HealthTier, ratioScore(), recencyScore(), tierFromScore(), useClientHealthScore()
+### Community 1431 - "qa/migrations-draft — Guia de uso"
+Cohesion: 0.29
+Nodes (6): Fluxo canônico (draft → migration), qa/migrations-draft — Guia de uso, Rascunhos vigentes, Regeneração automática da tabela acima, Regras, Relação com `supabase/migrations/`
 
-### Community 1432 - "useConnectionsOverviewFilters.ts"
-Cohesion: 0.25
-Nodes (5): DEFAULT_FILTERS, OverviewFilters, OverviewStatusFilter, OverviewWindowFilter, WINDOW_MS
+### Community 1432 - "StockEmptyFiltersHint.tsx"
+Cohesion: 0.38
+Nodes (4): ActiveFilterChip, collectActiveFilters(), Props, StockEmptyFiltersHint()
 
-### Community 1433 - "useContextualSuggestions.ts"
-Cohesion: 0.32
-Nodes (7): ContextualSuggestion, deriveSection(), FILTER_LABELS, isActiveValue(), RouteContext, useContextualSuggestions(), UseContextualSuggestionsOptions
+### Community 1433 - "DevChallengeContext.tsx"
+Cohesion: 0.33
+Nodes (5): ChallengeRequest, DevChallengeContext, DevChallengeContextValue, PendingChallenge, useDevChallenge()
 
 ### Community 1434 - "feedbackSounds.ts"
 Cohesion: 0.46
@@ -10013,8 +10010,8 @@ Cohesion: 0.29
 Nodes (7): 🧠 34. INTELIGÊNCIA DE MERCADO (`/inteligencia-comercial`), Backend, Componentes, Painel Admin, Performance, MarketIntelInsightsUsagePanel(), StatTile()
 
 ### Community 1577 - "Incidente 2026-10-13 — Baseline para comparação em 30 dias"
-Cohesion: 0.29
-Nodes (6): 1. Tamanho do banco, 3. Permissões corrigidas nesta sessão (estado ANTES → DEPOIS), 4. Achado de segurança: credencial exposta em `COMMENT ON`, 5. Observabilidade — estado dos detectores existentes, 6. Pendências que exigem decisão do PO (não executadas por esta sessão), Incidente 2026-10-13 — Baseline para comparação em 30 dias
+Cohesion: 0.13
+Nodes (14): BUG-19 — Stale closure no debouncedSearch effect, Descrição, Fix aplicado, Infra & Observabilidade, Simulador & Filtros, 1. Tamanho do banco, 2. Erros / telemetria (janela de 24h, medida em 2026-10-13), 3. Permissões corrigidas nesta sessão (estado ANTES → DEPOIS) (+6 more)
 
 ### Community 1578 - "Matriz consolidada dos três planos de 50 etapas — 2026-09"
 Cohesion: 0.29
@@ -10040,9 +10037,9 @@ Nodes (6): Contenção, Depois que passar, Diagnóstico (somente leitura), Não 
 Cohesion: 0.29
 Nodes (6): Allowlist explícita, Comandos, Por que não confiar só no RLS?, Seller-scope checker, Sinais aceitos como "scope aplicado", Tabelas monitoradas
 
-### Community 1584 - "13. Comandos úteis para retomar"
+### Community 1584 - "quoteVariant.contract.test.ts"
 Cohesion: 0.29
-Nodes (7): 13.1 Pegar estado atual do repo, 13.2 Validar repo está saudável, 13.3 Acessar histórico granular dos 8 commits da Onda 1, 13.4 Rollback de emergência (se algo quebrar), 13.5 Iniciar Onda 2, 13.6 Comandos de auditoria para o próximo Claude verificar a faxina, 13. Comandos úteis para retomar
+Nodes (3): buildItemsInsertPayload(), filterPersistableQuoteItems(), product
 
 ### Community 1586 - "crm_callback_events_retention.sql"
 Cohesion: 0.43
@@ -10080,10 +10077,6 @@ Nodes (6): 1. Matriz de execução, 3. Diff da correção (referência), 4. Gaps
 Cohesion: 0.43
 Nodes (4): magazine_reader_state_token_idx, magazine_reader_state_touch, magazine_reader_state_user_idx, public.magazine_reader_state
 
-### Community 1597 - "build-cors-snapshot.mjs"
-Cohesion: 0.48
-Nodes (6): classify(), extractCorsLiterals(), listFunctions(), main(), SNAPSHOT_PATH, tokenizeList()
-
 ### Community 1598 - "check-edge-request-id-propagation.mjs"
 Cohesion: 0.48
 Nodes (6): checkInternalCalls(), checkLogger(), checkResponsePropagation(), CRITICAL_EDGES, main(), readSource()
@@ -10092,9 +10085,9 @@ Nodes (6): checkInternalCalls(), checkLogger(), checkResponsePropagation(), CRIT
 Cohesion: 0.29
 Nodes (6): files, ROOT, SKIP_PATTERNS, TARGET_DIRS, violations, walk()
 
-### Community 1600 - "check-no-template-thumbnail.mjs"
-Cohesion: 0.29
-Nodes (6): ALLOWLIST, BANNED_FILES, errors, projectRoot, srcRoot, walk()
+### Community 1600 - "format-engraving-title.ts"
+Cohesion: 0.43
+Nodes (6): ACRONYMS, capitalizeWord(), firstNonEmpty(), formatEngravingTitle(), FormatEngravingTitleInput, normalizeSegment()
 
 ### Community 1601 - "list-migration-drafts.mjs"
 Cohesion: 0.33
@@ -10108,25 +10101,21 @@ Nodes (3): BLOCKS, CAUSES, violations
 Cohesion: 0.29
 Nodes (3): REASONS, SCOPES, violations
 
-### Community 1604 - "ssot-report-annotations.mjs"
-Cohesion: 0.29
-Nodes (4): argv, failed, inArg, RX
+### Community 1604 - "Roadmap de Correção"
+Cohesion: 0.33
+Nodes (6): Roadmap de Correção, Sprint 0 — Hotfixes (≤ 2 dias), Sprint 1 — Segurança (1 semana), Sprint 2 — Resiliência (2 semanas), Sprint 3 — Qualidade (1 mês), RoleAuditLogPanel()
 
 ### Community 1605 - "ssot-report-summary.mjs"
 Cohesion: 0.38
 Nodes (6): argv, build(), countErrorLines(), fmtMs(), inArg, { md }
 
-### Community 1606 - "typecheck-edge-functions.mjs"
-Cohesion: 0.48
-Nodes (6): checkFunction(), ensureDeno(), listFilesToCheck(), listFunctions(), main(), SKIP
-
 ### Community 1607 - "verify-roboflow-setup.js"
 Cohesion: 0.48
 Nodes (5): checkEdgeFunction(), checkProductImagesTable(), checkRoboflowCredentials(), main(), testDatabaseConnection()
 
-### Community 1608 - "ConnectionErrorDetailsDialog.tsx"
-Cohesion: 0.38
-Nodes (6): ConnectionErrorDetailsDialog(), DetailRow, formatRelative(), KIND_META, suggestionFromMessage(), SUGGESTIONS
+### Community 1608 - "9. Magazine"
+Cohesion: 0.33
+Nodes (6): 9. Magazine, Contratos detectados, Critérios de sucesso propostos, Decisões pendentes do PO, Rollback, flags e pendências, Testes encontrados
 
 ### Community 1609 - "OwnershipRepairDialog"
 Cohesion: 0.38
@@ -10137,12 +10126,12 @@ Cohesion: 0.29
 Nodes (3): EventLike, trashOnClick(), trashPointerDown()
 
 ### Community 1612 - "BridgeMetricsSummary.tsx"
-Cohesion: 0.48
-Nodes (5): BridgeMetricsSummary, BridgeMetricsSummaryProps, BYTE_UNITS, formatBytes(), latencyClass()
+Cohesion: 0.29
+Nodes (8): BridgeMetricsOverlay(), BridgeMetricsOverlay, DevOnlyBridgeOverlay(), BridgeMetricsSummary, BridgeMetricsSummaryProps, BYTE_UNITS, formatBytes(), latencyClass()
 
-### Community 1613 - "MarketIntelligenceChart.tsx"
-Cohesion: 0.43
-Nodes (6): generateMockMarketData(), MacroSupplierComparison(), MarketDataPoint, MarketIntelligenceChart(), MarketMacroTooltip(), Props
+### Community 1613 - "🏗️ Decisões Arquiteturais"
+Cohesion: 0.33
+Nodes (6): 1. Domain-Driven Design — Cada sistema com um propósito, 2. Banco unificado de Produtos, 3. Snapshot vs Referência (decisão sobre clientes em orçamentos), 4. Sistema restrito a colaboradores, 5. Plano Supabase, 🏗️ Decisões Arquiteturais
 
 ### Community 1614 - "ZeroResultSubstitutes.tsx"
 Cohesion: 0.38
@@ -10164,25 +10153,25 @@ Nodes (6): Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle
 Cohesion: 0.29
 Nodes (4): MiniStatCardProps, StatCardProps, StatVariant, variantStyles
 
-### Community 1619 - "useIndustryTrends.ts"
-Cohesion: 0.38
-Nodes (6): deriveCategory(), IndustryTopProduct, IndustryTrendItem, IndustryTrendsResult, mockToItem(), useIndustryTrends()
+### Community 1619 - "SEÇÃO 4 — EDGE FUNCTIONS SUPABASE"
+Cohesion: 0.33
+Nodes (6): O que foi encontrado, PROBLEMA CRÍTICO: Rate Limiter em Memória Efêmera, PROBLEMA: CSP com Nonce Placeholder Literal, PROBLEMA: Image Proxy — Content-Type não validado, PROBLEMA: `verify_jwt = false` em 10 Edge Functions, SEÇÃO 4 — EDGE FUNCTIONS SUPABASE
 
 ### Community 1620 - "useBridgeMetrics.ts"
 Cohesion: 0.33
 Nodes (6): BridgeMetricsEntry, BridgeMetricsFilter, BridgeMetricsReturn, BridgeMetricsSummary, samplesToEntries(), useBridgeMetrics()
 
-### Community 1621 - "useSalesHistory.ts"
-Cohesion: 0.38
-Nodes (6): DailySalesPoint, emptyKpis(), newDailyPoint(), SalesKpis, SellerRanking, useSalesHistory()
+### Community 1621 - "Dependabot / npm audit — Dismissal Baseline"
+Cohesion: 0.33
+Nodes (5): Contexto de risco, Dependabot / npm audit — Dismissal Baseline, Próximos passos, Vulnerabilidades com override aplicado, Vulnerabilidades sem fix disponível (dismissal datado)
 
-### Community 1622 - "useVoiceCommandHistory.ts"
-Cohesion: 0.43
-Nodes (6): CommandPattern, detectCommandType(), normalizeCommand(), useVoiceCommandHistory(), UseVoiceCommandHistoryReturn, VoiceCommandRecord
+### Community 1622 - "🔧 **AÇÕES NECESSÁRIAS**"
+Cohesion: 0.33
+Nodes (6): 1️⃣ **Configurar locale pt-BR no Componente Calendar**, 2️⃣ **Criar Utilitário de Formatação de Data**, 3️⃣ **Substituir Formatações Manuais de Data**, 4️⃣ **Adicionar Configuração Global de Locale (Opcional)**, 5️⃣ **Configurar Timezone para Brasília (Opcional)**, 🔧 **AÇÕES NECESSÁRIAS**
 
-### Community 1623 - "useProductCustomizationOptions.ts"
-Cohesion: 0.38
-Nodes (5): classifyError(), TechniquesErrorKind, TechniquesLoadError, useProductCustomizationOptions(), UseProductCustomizationOptionsArgs
+### Community 1623 - "FASE 2 — Limpeza das branches mortas (E076–E110)"
+Cohesion: 0.33
+Nodes (6): 2A — Categoria A (0 commits à frente), 2B — Categoria B (commits sem efeito líquido), 2C — Categoria C (recibos E15), 2D — Categoria E (bots obsoletos), 2E — Fechamento da Fase 2, FASE 2 — Limpeza das branches mortas (E076–E110)
 
 ### Community 1624 - "useSupplierFiscalData.ts"
 Cohesion: 0.33
@@ -10512,17 +10501,17 @@ Nodes (5): Edge Functions com verify_jwt=false, Evidência coletada em: 2026-10-
 Cohesion: 0.33
 Nodes (5): EXPLAIN — Top queries por tempo total (pg_stat_statements), Query #1 — v_products_public ORDER BY created_at DESC (1,507,971 ms total), Query #2 — v_products_public ORDER BY name ASC (1,389,220 ms total), Query #3 — tags full scan (1,005,555 ms total), Top-10 resumo (dados de pg_stat_statements)
 
-### Community 1736 - "CI — ESTRUTURA DE GATES E PADRÃO E12"
+### Community 1736 - "Fase A — Controle de mudança e preservação multiagente"
 Cohesion: 0.33
-Nodes (6): CI — ESTRUTURA DE GATES E PADRÃO E12, Detector de DDL fora do fluxo (E12 corolário), Gates obrigatórios (required checks em `main`), Inventário de segredos — E98, Padrão E12 — 20 regras obrigatórias para workflows (E99 — atualizado 2026-10-18), Quem roda o quê (E99 — 2026-10-18)
+Nodes (6): E01 — Congelar a linha de base da reconciliação `[RO]`, E02 — Criar o inventário de refs locais e remotas `[RO]`, E03 — Preservar commits e objetos inalcançáveis `[GIT]`, E04 — Auditar stashes, checkpoints e cópias temporárias `[RO]`, E05 — Definir o ledger de decisões multiagente `[GIT]`, Fase A — Controle de mudança e preservação multiagente
 
 ### Community 1737 - "ECC for Codex CLI"
 Cohesion: 0.33
 Nodes (5): ECC for Codex CLI, MCP Baseline, Multi-Agent Support, Repo Skill, Workflow Files
 
-### Community 1738 - "🔒 Checklist de SSOT (revisão de PR — obrigatório)"
+### Community 1738 - "Fase G — Código, Edge Functions e banco vivo"
 Cohesion: 0.33
-Nodes (6): 1. Código runtime, 2. Documentação (`.md`), 3. Migrations e schema, 4. Gates automáticos verdes, 5. Se o PR precisa mencionar o legado, 🔒 Checklist de SSOT (revisão de PR — obrigatório)
+Nodes (6): E41 — Comparar Edge Functions locais e implantadas `[DB-RO]`, E42 — Validar Auth, redirects e providers `[DB-RO]`, E43 — Validar Storage, buckets e policies `[DB-RO]`, E44 — Executar testes transacionais com rollback `[DB-RO]`, E45 — Regenerar e comparar tipos Supabase `[GIT]`, Fase G — Código, Edge Functions e banco vivo
 
 ### Community 1739 - "oauth-error-messages.ts"
 Cohesion: 0.40
@@ -10592,9 +10581,9 @@ Nodes (5): Gate de validação final, Nota sobre o placar do script vs. execuç�
 Cohesion: 0.33
 Nodes (6): 6.1 — Atualizar README do projeto, 6.2 — Runbooks operacionais, 6.3 — Documentação técnica, 6.4 — Handoff pra equipe futura, Definição de pronto, ⚪ FASE 6 — Documentação Final e Handoff
 
-### Community 1756 - "📋 Anexos"
+### Community 1756 - "10. Pendências críticas antes da Onda 2"
 Cohesion: 0.33
-Nodes (6): Anexo A: Histórico de Commits da Faxina (em ordem cronológica), Anexo B: Projetos Supabase, Anexo C: Pendências Críticas (snapshots de risco), Anexo D: Decisões Arquiteturais Registradas (ADRs), Anexo E: Como editar este documento, 📋 Anexos
+Nodes (6): 10.1 🔴 ROTACIONAR PAT (segurança crítica), 10.2 🟡 Investigar full vitest suite hang no CI, 10.3 🟢 Reativar 2 tests skipados na Onda 1, 10.4 🟢 Corrigir `.coderabbit.yaml`, 10.5 🟢 Decisão sobre branch protection da main, 10. Pendências críticas antes da Onda 2
 
 ### Community 1757 - "🟡 Médio"
 Cohesion: 0.33
@@ -10604,9 +10593,9 @@ Nodes (6): M1) Segurança central do banco depende de credenciais CI indisponív
 Cohesion: 0.33
 Nodes (6): 3.9 Mobile, PWA e offline, offlineFallback(), 3. Auto-save, GlobalOfflineAlert(), QuoteAutoSave(), useOfflineGuard()
 
-### Community 1759 - "Technical Audit & Hardening Report"
+### Community 1759 - "Onda 15 — Auth hooks/integrations hardening"
 Cohesion: 0.33
-Nodes (5): 📊 CRM & Quotes, 🛠️ Infrastructure & Stability, 🛍️ Product Catalog & UX, 🔐 Security & Authentication, Technical Audit & Hardening Report
+Nodes (5): Critério de aceite, Mudanças aplicadas, Onda 15 — Auth hooks/integrations hardening, Próximo passo — Onda 16 (fora de escopo), Simulação — mapa exaustivo dos call sites
 
 ### Community 1760 - "Kit Maker — Cobertura de áreas de gravação (etapa 11)"
 Cohesion: 0.33
@@ -10692,21 +10681,17 @@ Nodes (6): 1. NÃO seja afoito, 2. NÃO mexa no banco do Lovable a não ser que 
 Cohesion: 0.33
 Nodes (6): 🟡 AVALIAR (decisão Joaquim — 7 perguntas listadas acima), Edge functions (94 painel × 80 repo), 📊 Inventário do banco do Lovable (resumo), 🟢 MIGRAR (essencial), 🔴 NÃO MIGRAR, Tabelas (~120 total)
 
-### Community 1782 - "purgeOrphanCartPrefs.test.ts"
+### Community 1782 - "useUnsavedChangesGuard.test.ts"
 Cohesion: 0.40
-Nodes (4): 6. Edge cases fechados (Fase 1.3), ORPHAN_PREFIXES, purgeOrphanCartPrefs(), length()
+Nodes (4): addEventSpy, removeEventSpy, useUnsavedChangesGuard(), UseUnsavedChangesGuardOptions
 
 ### Community 1783 - "Rate-Limiter Monitoring — Consumidores"
 Cohesion: 0.33
 Nodes (5): CI — auto-redeploy, Consumidores validados (smoke test pós-deploy), Observabilidade e alertas, Rate-limit específico, Rate-Limiter Monitoring — Consumidores
 
-### Community 1785 - "Fase D — Restaurar observabilidade real do Supabase"
+### Community 1786 - "quoteHandoffTelemetry.ts"
 Cohesion: 0.33
-Nodes (6): E26 — Restaurar autenticação local da CLI `[DB-RO]`, E27 — Restaurar a credencial de banco no GitHub Actions `[GIT]`, E28 — Eliminar o falso verde do drift check `[GIT]` ✅ Workflow corrigido em `origin/main`; ainda `BLOQUEADO` na prática (ver §1.1), E29 — Fixar e validar o alvo canônico em todos os caminhos `[RO]`, E30 — Ler o ledger remoto sem aplicar nada `[DB-RO]`, Fase D — Restaurar observabilidade real do Supabase
-
-### Community 1786 - "Fase E — Reconciliação bidirecional do ledger"
-Cohesion: 0.33
-Nodes (6): E31 — Calcular `remoto − local` `[DB-RO]`, E32 — Calcular `local − remoto` `[DB-RO]`, E33 — Comparar statements das versões compartilhadas `[DB-RO]`, E34 — Classificar os três IDs históricos inválidos `[DB-RO]`, E35 — Produzir matriz de decisão por migration `[RO]`, Fase E — Reconciliação bidirecional do ledger
+Nodes (4): QUOTE_HANDOFF_EVENT_TYPE, QUOTE_HANDOFF_NAME_PREFIX, QuoteHandoffMetadata, QuoteHandoffSource
 
 ### Community 1787 - "Fase F — Auditoria completa do schema por `pg_catalog`"
 Cohesion: 0.33
@@ -10740,9 +10725,9 @@ Nodes (5): API Security, Authentication, Data Protection, Monitoring, Security B
 Cohesion: 0.33
 Nodes (5): Condição de encerramento, Contexto, Controles compensatórios, Exposição validada, Mitigação temporária — `image-size` via `pptxgenjs`
 
-### Community 1795 - "14. Handoff específico para próximo Claude"
+### Community 1795 - "magazineEdgeContract.test.ts"
 Cohesion: 0.33
-Nodes (6): 14.1 Cara, seja bem-vindo. Aqui está o contexto comprimido., 14.2 Como começar, 14.3 Bugs conhecidos / armadilhas, 14.4 Quando perguntar ao usuário vs quando agir, 14.5 Token usage, 14. Handoff específico para próximo Claude
+Nodes (4): calls, nextReply, RecordedCall, VALID_PAYLOAD
 
 ### Community 1796 - "15. Exemplo Real — Têxtil GOIABA WOMEN 30511"
 Cohesion: 0.33
@@ -10772,10 +10757,6 @@ Nodes (5): exclude, include, mode, notes, $schema
 Cohesion: 0.33
 Nodes (5): Branch Protection — Quote Summary (sticky header + action buttons), Como configurar (UI do GitHub), Configuração via API (alternativa), Manutenção, Required check a marcar
 
-### Community 1804 - "Rastreamento draft → migration → DB"
-Cohesion: 0.33
-Nodes (5): Como agir, Como ler a coluna "Candidatos", Legenda, Rastreamento draft → migration → DB, Tabela
-
 ### Community 1805 - "input-otp.tsx"
 Cohesion: 0.33
 Nodes (5): input-otp, InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot
@@ -10784,9 +10765,9 @@ Nodes (5): input-otp, InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot
 Cohesion: 0.40
 Nodes (5): checkFile(), CRITICAL_MODULES, LEGACY_ALLOWLIST, main(), ROOT
 
-### Community 1808 - "HighLimitTelemetryCard.tsx"
+### Community 1808 - "🔵 FASE 0 — Auditoria Inicial"
 Cohesion: 0.40
-Nodes (5): ERROR_COLORS, ERROR_KINDS_FOR_STACK, formatTick(), HighLimitTelemetryCard(), RANGE_LABEL
+Nodes (5): Achados que viraram ações nas próximas fases, Definição de pronto ✅, 🔵 FASE 0 — Auditoria Inicial, Objetivo, Tarefas
 
 ### Community 1809 - "ProductsListingLatencyAlert.tsx"
 Cohesion: 0.53
@@ -10796,17 +10777,17 @@ Nodes (5): formatMs(), formatPct(), Metric(), ProductsListingLatencyAlert(), TON
 Cohesion: 0.53
 Nodes (5): ClientColumn(), ClientComparator(), fmtBRL(), Props, tierBadge()
 
-### Community 1811 - "ClientOverview360.tsx"
-Cohesion: 0.53
-Nodes (5): ClientOverview360(), DeltaPill(), fmtBRL(), fmtDate(), Props
+### Community 1812 - "9. Debug toggle: `window.__DEBUG_QUOTE_TABLE`"
+Cohesion: 0.40
+Nodes (5): 9. Debug toggle: `window.__DEBUG_QUOTE_TABLE`, Cobertura E2E, Como interpretar, Habilitar, Logs emitidos
 
-### Community 1812 - "IndustryTrendingProducts.tsx"
-Cohesion: 0.47
-Nodes (5): fmtBRL(), IndustryTrendingProducts(), normalize(), Props, trendIcon
+### Community 1814 - "useCatalogRealStats.ts"
+Cohesion: 0.50
+Nodes (4): CatalogRealStats, HIDDEN_CATEGORY_PATTERNS, isHiddenCategory(), useCatalogRealStats()
 
-### Community 1815 - "ProductCustomizationOptions.tsx"
-Cohesion: 0.47
-Nodes (3): isCircularLocation(), ProductCustomizationOptions(), ProductCustomizationOptionsProps
+### Community 1815 - "CnpjFormHarness.tsx"
+Cohesion: 0.50
+Nodes (4): CnpjFormHarness(), readInitialFromQuery(), SavedShape, Window
 
 ### Community 1817 - "FloatingParticles.tsx"
 Cohesion: 0.40
@@ -10816,13 +10797,17 @@ Nodes (5): FloatingParticles, FloatingParticlesProps, lerp(), Particle, PHASE_CO
 Cohesion: 0.33
 Nodes (3): BICategoryFocusContext, BICategoryFocusContextValue, FocusedCategorySlug
 
-### Community 1820 - "useClientCategoryAffinity.ts"
-Cohesion: 0.40
-Nodes (5): buildMockResult(), CategoryAggregate, ClientCategoryAffinityResult, ClientTopProductRow, useClientCategoryAffinity()
+### Community 1820 - "ColorSwatchesHarness.tsx"
+Cohesion: 0.50
+Nodes (4): COLORS_24, ColorSwatchesHarness(), COUNTS, MockCard()
 
-### Community 1821 - "useIndustryCategoryTrends.ts"
-Cohesion: 0.40
-Nodes (5): buildMockResult(), IndustryCategoryAggregate, IndustryCategoryTrendsResult, IndustryRow, useIndustryCategoryTrends()
+### Community 1821 - "🔍 Auditoria Exaustiva Round 2 — APIs Externas"
+Cohesion: 0.50
+Nodes (3): 🔍 Auditoria Exaustiva Round 2 — APIs Externas, Métricas da Auditoria (Round 2), Não-Problemas (falsos positivos investigados)
+
+### Community 1822 - "access-denied-strings.tsx"
+Cohesion: 0.50
+Nodes (3): ACCESS_DENIED_STRINGS, Role, RoleCopy
 
 ### Community 1823 - "dailyCatalogDefaults.ts"
 Cohesion: 0.40
@@ -10832,10 +10817,6 @@ Nodes (5): CATALOG_SORT_SESSION_KEY, CATALOG_VIEW_MODE_KEY, DAILY_RESET_KEY, ens
 Cohesion: 0.33
 Nodes (3): insertError, toastError, toastSuccess
 
-### Community 1825 - "useQuoteConcurrencyGuard.test.ts"
-Cohesion: 0.40
-Nodes (3): { mockSingle, mockEq, mockSelect, mockFrom }, ConflictInfo, useQuoteConcurrencyGuard()
-
 ### Community 1826 - "bug-g7-regression.unit.test.ts"
 Cohesion: 0.53
 Nodes (4): catalogState(), filtersPage(), quickView(), readSrc()
@@ -10843,10 +10824,6 @@ Nodes (4): catalogState(), filtersPage(), quickView(), readSrc()
 ### Community 1828 - "dev-route-telemetry.ts"
 Cohesion: 0.40
 Nodes (5): DevRouteUxEvent, recent, recordDevRouteTelemetry(), RecordParams, shouldDrop()
-
-### Community 1829 - "log-access-denied.ts"
-Cohesion: 0.47
-Nodes (5): loadThrottle(), logAccessDenied(), LogAccessDeniedInput, saveThrottle(), ThrottleMap
 
 ### Community 1830 - "executive-summary.ts"
 Cohesion: 0.40
@@ -10860,9 +10837,9 @@ Nodes (4): PREWARM_TABLES, prewarmExternalDb(), PrewarmTable, warmAllTables()
 Cohesion: 0.40
 Nodes (5): classifyDegradable(), CODE_MAP, DegradationReason, degradeOrThrow(), SupabaseLikeError
 
-### Community 1833 - "future-stock-stats.ts"
-Cohesion: 0.53
-Nodes (5): computeFutureStockStats(), daysUntil(), dedupeFutureEntries(), FutureStockStats, safeQty()
+### Community 1833 - "CalendarHarness.tsx"
+Cohesion: 0.83
+Nodes (3): CalendarHarness(), parseMonth(), parseSelected()
 
 ### Community 1834 - "magazine-status-config.ts"
 Cohesion: 0.40
@@ -10892,9 +10869,9 @@ Nodes (5): ColorLike, findMatchingColorIndex(), hexDistance(), normalizeColorNam
 Cohesion: 0.33
 Nodes (3): ENGRAVING_TABLES, ExpectedTable, TableDiff
 
-### Community 1842 - "useMagazineProductFavorites.ts"
-Cohesion: 0.73
-Nodes (4): key(), read(), useMagazineProductFavorites(), write()
+### Community 1842 - "ProductsStep.tsx"
+Cohesion: 0.16
+Nodes (16): Fase 8 — Produtos (79–86), COVER_PAGE, FAMILY_LABEL, productPrice(), ProductsStep(), Props, SortMode, Props (+8 more)
 
 ### Community 1843 - "mapRestoreCartError.ts"
 Cohesion: 0.47
@@ -11140,10 +11117,6 @@ Nodes (5): Matriz de cobertura, Personas, RLS Test Suite, Setup, Status
 Cohesion: 0.33
 Nodes (4): CHILD_POLICY_SNAPSHOT, EXPECTED_POLICIES, POLICY_SNAPSHOT, PolicyExpectation
 
-### Community 1956 - "security-headers.test.ts"
-Cohesion: 0.33
-Nodes (4): allHeaders, VercelConfig, VercelHeader, VercelHeaderBlock
-
 ### Community 1957 - "contract_smoke_schema.sql"
 Cohesion: 0.33
 Nodes (5): public.inbound_webhook_endpoints, public.outbound_webhooks, public.product_sync_logs, public.products, public.webhook_request_nonces
@@ -11304,10 +11277,6 @@ Nodes (5): A.12 — LACUNAS OPERACIONAIS, Auth — Limite de conexões absoluto,
 Cohesion: 0.40
 Nodes (5): A.2 — DRIFT REPO × PRODUÇÃO, Chamadas suspeitas no código fonte, Edge Functions, Migrations, SSOT confirmado
 
-### Community 1997 - "🔗 Cross-reference Issue ↔ PR (obrigatório)"
-Cohesion: 0.40
-Nodes (5): 🔗 Cross-reference Issue ↔ PR (obrigatório), Por que isso importa, Quando uma PR descobre uma nova questão (que não vai resolver agora), Quando uma PR vai resolver uma issue existente, Workflow que faz isso
-
 ### Community 2000 - "📊 CATEGORIES (Categorias)"
 Cohesion: 0.40
 Nodes (5): 📊 CATEGORIES (Categorias), **Policy 1: org_members_view_categories**, **Policy 2: org_admins_create_categories**, **Policy 3: org_admins_update_categories**, **Policy 4: org_admins_delete_categories**
@@ -11336,9 +11305,9 @@ Nodes (4): Ação imediata necessária, Contagem de achados por severidade, Inve
 Cohesion: 0.40
 Nodes (4): Auditoria Técnica — 20 Dimensões, Implementado nesta rodada (auditoria → ação), Scorecard, Top 10 ações por ROI
 
-### Community 2007 - "🧪 **TESTES A REALIZAR**"
-Cohesion: 0.40
-Nodes (5): 1. **Calendário**, 2. **Formatação de Datas**, 3. **Gráficos e BI**, 4. **Notificações**, 🧪 **TESTES A REALIZAR**
+### Community 2007 - "🎯 **JUSTIFICATIVA DA DECISÃO:**"
+Cohesion: 0.67
+Nodes (3): 🎯 **JUSTIFICATIVA DA DECISÃO:**, **Motivos de negócio:**, **Motivos técnicos:**
 
 ### Community 2008 - "✅ **RESUMO FINAL**"
 Cohesion: 0.40
@@ -11415,10 +11384,6 @@ Nodes (4): 20260625120000_align_quote_status_check — RESOLVIDO (não aplicar),
 ### Community 2026 - "E01 — Linha de base registrada (2026-09-16)"
 Cohesion: 0.40
 Nodes (4): Checklist de conclusão (E01), E01 — Linha de base registrada (2026-09-16), Estado do git, Estado do ledger de migrations
-
-### Community 2027 - "🚀 **ROADMAP ATUALIZADO (SEM i18n):**"
-Cohesion: 0.40
-Nodes (5): **Q1 2026:**, **Q2 2026:**, **Q3 2026:**, **Q4 2026:**, 🚀 **ROADMAP ATUALIZADO (SEM i18n):**
 
 ### Community 2028 - "Helpers semânticos de RBAC (RLS)"
 Cohesion: 0.40
@@ -11564,10 +11529,6 @@ Nodes (4): getPrefetchHandlers(), prefetched, prefetchRoute(), routeImportMap
 Cohesion: 0.50
 Nodes (4): getSupplierBadgeClasses(), getSupplierColors(), SUPPLIER_COLORS, SupplierColorConfig
 
-### Community 2076 - "applyVoiceFilters.ts"
-Cohesion: 0.50
-Nodes (3): applyVoiceFilters(), VoiceFilters, base
-
 ### Community 2077 - "CartHeader.contract-snapshot.test.ts"
 Cohesion: 0.50
 Nodes (4): CATALOG, computeHeaderMeta(), Item, norm()
@@ -11627,10 +11588,6 @@ Nodes (3): idx_quote_comments_created, idx_quote_comments_quote, quote_comments
 ### Community 2095 - "sync_jobs"
 Cohesion: 0.60
 Nodes (3): idx_sync_jobs_created, idx_sync_jobs_status, sync_jobs
-
-### Community 2096 - "20251228000005_quote_versioning.sql"
-Cohesion: 0.40
-Nodes (3): create_quote_version(), idx_quotes_parent, idx_quotes_version
 
 ### Community 2097 - "public.password_reset_requests"
 Cohesion: 0.60
@@ -11839,10 +11796,6 @@ Nodes (4): "trg_mgj_calculate_cost", "trg_mgj_charge_credits", "trg_mgj_incremen
 ### Community 2298 - "sql-legacy — SQL histórico não-migration"
 Cohesion: 0.40
 Nodes (4): Referência, Regras, Situação de cada arquivo, sql-legacy — SQL histórico não-migration
-
-### Community 2301 - "platform-ops.test.ts"
-Cohesion: 0.40
-Nodes (4): AUTH, CT, OK200, OK200CORS
 
 ### Community 2302 - "quote-flow.test.ts"
 Cohesion: 0.40
@@ -12232,10 +12185,6 @@ Nodes (3): packages, release-type, $schema
 Cohesion: 0.50
 Nodes (3): defaultAdvancedFilters, SORT_OPTIONS, STOCK_FILTER_OPTIONS
 
-### Community 2416 - "external-rpc.ts"
-Cohesion: 0.67
-Nodes (3): invokeExternalRpc(), isRetryableError(), RETRYABLE_PATTERNS
-
 ### Community 2418 - "ema-health.ts"
 Cohesion: 0.50
 Nodes (3): EmaHealthComponentV1, EmaHealthResponseV1, EmaHealthStatus
@@ -12416,6 +12365,10 @@ Nodes (3): idx_stock_daily_summary_supplier_branch_id, idx_stock_daily_summary_s
 Cohesion: 0.50
 Nodes (3): idx_stock_snapshots_supplier_branch_id, idx_stock_snapshots_supplier_id, idx_stock_snapshots_variant_id
 
+### Community 2744 - "log-login-attempt-race.test.ts"
+Cohesion: 0.24
+Nodes (4): AUTH, CT, CT_JSON, VALID_BODY
+
 ### Community 2745 - "aiRecommendationsJsonParsing.test.ts"
 Cohesion: 0.50
 Nodes (3): parseAIResponseContent(), validJSON, validRecommendations
@@ -12566,23 +12519,23 @@ Nodes (3): stg_products_processed_idx, stg_products_prod_reference_uidx, "suppli
 
 ## Knowledge Gaps
 - **63 isolated node(s):** `../tsconfig.app.json`, `@fontsource/archivo-black`, `@fontsource/dm-serif-display`, `@fontsource/great-vibes`, `@fontsource/inter` (+58 more)
-  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 32208 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
-- **4439 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 32201 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+- **4443 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `vitest` connect `ref_lib` to `EnhancedErrorBoundary`, `ref_integrations`, `ref_components`, `useSupplierComparison.ts`, `kit-template-icons.ts`, `react-router-dom`, `ref_hooks`, `mockupWizardStep.test.ts`, `@testing-library/react`, `ref_node_fs`, `ref_types`, `searchStates.test.ts`, `react`, `undoCopy.ts`, `check-pptx-image-parser-exposure.test.mjs`, `ProductCard.tsx`, `ref_utils`, `fetch-all-pages.test.ts`, `__tests__/format-utils.test.ts`, `date-fns`, `CartHeaderActions.render.test.tsx`, `concludeCheck`, `framer-motion`, `waitForMagazinePrintReadiness`, `ref_node_child_process`, `applyVoiceFilters.ts`, `ref_services`, `ref_node_url`, `QuoteKanbanBoard.tsx`, `CartHeader.contract-snapshot.test.ts`, `QuotesListPage.deleteDisabled.test.tsx`, `SidebarReorganized.tsx`, `QuotesListPage.layout.test.tsx`, `CartHeaderButton.tsx`, `RupturePanelEma.tsx`, `QuoteBuilderStepper.tsx`, `quoteNumberConcurrency.test.ts`, `futureStock.battery.test.ts`, `useProductsByColor.test.ts`, `useSellerCarts.updateItemQuantity.rollback.test.tsx`, `order-payment-simulator.ts`, `_live-suite.ts`, `CartStatusSelect.fuzz.test.tsx`, `resolveColorStock.colorFallback.test.ts`, `session-recovery.ts`, `ref_pages`, `MagazineTemplatesGalleryPage.tsx`, `check-types-inventory-drift.mjs`, `webhook-schemas.ts`, `ref_node_os`, `MagazineListPage.tsx`, `package.json`, `check-migration-filename-contract.mjs`, `Bugs Detalhados`, `PdfGenerationDialog.tsx`, `append-edge-deploy-receipt.test.mjs`, `GlobalSearchPalette.tsx`, `ref_fs`, `MagazineEditorPage.tsx`, `useZeroResultSubstitutes.test.tsx`, `freight-quest-fuzzer.test.ts`, `CartHeaderButton.delete.test.tsx`, `useKitBuilderQuote.test.ts`, `webhook-matrix-1000.test.ts`, `rest-native.ts`, `ProductMatchPage.tsx`, `route-no-error-element.test.tsx`, `A) Tabela por FERRAMENTA`, `commercial-intelligence.test.ts`, `ringsOf`, `ProductColorSelector.tsx`, `useReplenishments.test.ts`, `hooks-audit-regression.unit.test.ts`, `magazineService.ts`, `ProductFormStepContent.tsx`, `MockupConfigPanel.tsx`, `stock-filter.perf.test.ts`, `kit-detection.ts`, `ReplenishmentProductGrid.tsx`, `CartHeader.invariants.fuzz.test.ts`, `useQuotesListPage.test.ts`, `build-migration-ledger-manifest.mjs`, `mockEdgeFunctionFetch`, `bridgeCallMetrics.ts`, `C) As sete armadilhas`, `products-detail.ts`, `watermarkTokens.ts`, `useProductLeafCategories.tsx`, `@supabase/supabase-js`, `sellerCartRestoreHelpers.tsx`, `reduced-app-navigation.test.tsx`, `drift-baseline.mjs`, `StockDashboard.tsx`, `currency-input.tsx`, `MockupLayoutButtons.test.tsx`, `useProductsLightweight.ts`, `editorRecovery.ts`, `parseContract`, `check-chunk-cycles.test.mjs`, `BulkAddToCollectionModal.test.tsx`, `StockDashboard.test.tsx`, `theme-presets.ts`, `C.1 — Teste-espelho (o teste reimplementa a lógica e testa a si mesmo)`, `useSellerCarts.versionGuard.test.tsx`, `processTranscript.ts`, `check-edge-verify-jwt-allowlist.mjs`, `integration/log-login-attempt.test.ts`, `MagazineStatsCards.test.tsx`, `lastInternalRoute.ts`, `ConfigurationPanelV6`, `check-package-duplicate-scripts.mjs`, `useQuotesListPage.singleDelete.test.tsx`, `QuotesStatusChips.tsx`, `currency.ts`, `VariantStockTable.tsx`, `QuoteItemsTable.tsx`, `external-db/index.ts`, `check-supabase-reference-catalog.mjs`, `useAutoSaveQuote.ts`, `PARTE 3 — VULNERABILIDADES DE SEVERIDADE MÉDIA`, `useMagazineGoldImport`, `useComparisonStore.ts`, `_authz.ts`, `PageUtilities.test.ts`, `vercel-headers-precedence.test.ts`, `useTechniquePricing.test.ts`, `simulation-orchestrator/index.ts`, `check-workflow-contracts.mjs`, `SupplierRiskPanel.tsx`, `ai-usage.test.ts`, `log-login-attempt-race.test.ts`, `aiRecommendationsJsonParsing.test.ts`, `super-filtro-price-sentinel.test.ts`, `preview-zoom-shortcuts.test.tsx`, `append-migration-receipt.test.mjs`, `check-public-views-drift.mjs`, `useVoiceAgent.test.ts`, `magazine-service-fuzz.test.ts`, `collapse-reflow.spec.ts`, `quote-calculations.test.ts`, `cartViewModePrefs.ts`, `magic-up-result-panel-keyboard.test.tsx`, `Numeração de Orçamentos (`quote_number`) — Arquitetura`, ``SEC-012` 🟡 MÉDIO — Cobertura de Zod desigual`, `KitLibraryPage.ownership.test.ts`, `postgrest.ts`, `react-dom`, `check-summary-color-tokens.mjs`, `client.ts`, `LogoPositionEditor.tsx`, `useNovelties.ts`, `quoteHelpers.ts`, `quoteTypes.ts`, `useFutureStockPreference.fuzz.test.ts`, `mfaNavigationAnalytics.ts`, `__tests__/useDebounce.test.ts`, `restricted-routes.ts`, `ONDA 8 — EDGE FUNCTIONS: AUTORIZAÇÃO E EXPOSIÇÃO DE DADOS (E081–E090)`, `collapsedItemsStorage.fuzz.test.ts`, `check-supabase-migration-ledger.mjs`, `cnpj-exhaustive.test.ts`, `LocationPanel.tsx`, `product-webhook/index.ts`, `useConnectionTester.test.tsx`, `ProductFormFullscreen.tsx`, `promote-draft-migration.mjs`, `NotificationDrawer.tsx`, `purgeOrphanCartPrefs.test.ts`, `stock-benchmark.test.ts`, `sanitizeError`, `useOrgData.test.ts`, `useQuoteBuilderState.helpers.ts`, `sentry.ts`, `platform-ops.test.ts`, `quote-flow.test.ts`, `useProductsColorsBatch.aggregation.test.tsx`, `webhooks.test.ts`, `check-dependency-audit.mjs`, `pdfHardcodedColors.test.ts`, `setup-strict-side-effects.ts`, `sw-harness.ts`, `magazine-guard.ts`, `preflight-migration-apply.mjs`, `useListUrlState.fuzz.test.tsx`, `useCustomizationCollapsePrefs.ts`, `zod`, `stockFetcher.test.ts`, `matrix-automated.spec.ts`, `auth-utils.ts`, `navigationMetrics.ts`, `auth-debug.ts`, `ResetPassword.updatePassword.test.tsx`, `useQuotesListPage.bulkDelete.test.tsx`, `ProductCustomizationOptions.tsx`, `useQuotesListPage.duplicateUndo.test.tsx`, `QuoteBuilderSummaryCollapseAll.fuzz.test.ts`, `Clickable.fuzz.test.tsx`, `magazinePublish.fuzz.test.ts`, `shipping-deadline.ts`, `stock-status.ts`, `mockup-audit.test.ts`, `personalizationSummary.ts`, `useSellerCarts.addItem-toast.test.tsx`, `useQuoteConcurrencyGuard.test.ts`, `bug-g7-regression.unit.test.ts`, `CartHeaderExhaustiveFuzz.test.ts`, `ui/ConfirmDialog.tsx`, `useFavoritesStore.ts`, `useCatalogFiltering`, `image-utils.fuzz.test.ts`, `critical-tables-rls.test.ts`, `PersonalizationConfig.tsx`, `OrganizationContext.tsx`, `useMagazineProductFavorites.ts`, `mapRestoreCartError.ts`, `CartNotesLeakGuards.test.tsx`, `invokeTelemetrySink.ts`, `SSOCallbackPage.test.tsx`, `secretValidators.ts`, `StockAlertsIndicator.tsx`, `PropostaComercialTailwind.tsx`, `Fluxo 4 — Detalhe do produto (PDP)`, `masks.ts`, `cnpj-display-contract.test.ts`, `preview-ring-fuzz.test.tsx`, `SellerCartContext.tsx`, `QuoteBuilder.test.ts`, `setup-ref-warning-capture.ts`, `supabase-schema-contract.test.ts`, `DevInfraGate.ts`, `StockHistoryChart.tsx`, `useIntersectionObserver.test.ts`, `stock-filter.stress.test.ts`, `discount-validation-messages.ts`, `PopoverQtyInput.tsx`, `PageTransition.tsx`, `ProposalSections.tsx`, `quote-builder-freight-block-fuzz.test.tsx`, `CartHeaderButton.undoSnapshot.test.ts`, `QuickAddToQuote.guard.test.ts`, `QuoteBuilderActionButtons.fuzz.test.ts`, `useMagazineReaderState.ts`, `useQuotesListPage.expiring.test.ts`, `check-migrations-sync-log-gate.mjs`, `KitComposition.test.tsx`, `vercel-health-ready.test.ts`, `useErrorHandler.ts`, `FutureStockDialog.tsx`, `magic-up-onda5.test.tsx`, `health-score.ts`, `FiltersPage.test.tsx`, `pdfContrastReport.test.ts`, `PdfGenerationModule.test.ts`, `notifications-metrics.ts`, `ColorSwatch.ssot.test.tsx`, `sitemap.ts`, `TurnstileWidget.test.tsx`, `SizeFilter.tsx`, `StockBadge.tsx`, `ColumnSelector.tsx`, `useMockupDraft.test.ts`, `useGenericFuzzySearch.ts`, `useDebouncedCartItemActions.ts`, `oauth-pending.ts`, `kit-coverage.ts`, `stock-filter.fuzz.test.ts`, `exportDiscountAuditPdf.ts`, `calculations.ts`, `ResetPassword.test.tsx`, `log-login-attempt-fuzz.test.ts`, `product-sorting.ts`, `rbac-permissions.test.ts`, `tests/lib/theme-presets.test.ts`, `rls-seller-policies.spec.ts`, `security-headers.test.ts`, `supplierReliability.fuzz.test.ts`, `freight-coverage-validation.test.ts`, `quote-shipping-validation.test.ts`, `sales-goal.fuzz.test.ts`, `tests/p0/_mocks.ts`, `PriceFreshnessBadge.colorAndIcon.test.tsx`, `PriceFreshnessBadge.thresholdHosts.test.tsx`, `edge-function-harness.ts`, `receive-crm-callback.duplicates-and-dispatcher.test.ts`, `QuoteItemsList.tsx`, `check-ledger-manifest-drift.mjs`, `secretNormalizers.ts`, `setup.ts`, `freight-calculations.test.ts`, `receive-crm-callback.fuzz.test.ts`, `freight-property-based.test.ts`, `_live-client.ts`, `AuditHistory.tsx`, `external-db-bridge-telemetry.test.ts`, `kill-switch-client.ts`, `PresetsBar.tsx`, `StockHealthBreakdownDrawer.tsx`, `ProposalProductTable.tsx`, `freight-quest-webhook-simulation.test.ts`, `rupture-risk.simulation.test.ts`, `image-proxy.ts`, `drift-baseline.test.mjs`?**
-  _High betweenness centrality (0.148) - this node is a cross-community bridge._
+- **Why does `vitest` connect `ref_lib` to `EnhancedErrorBoundary`, `ref_integrations`, `ref_components`, `useSupplierComparison.ts`, `kit-template-icons.ts`, `react-router-dom`, `ref_hooks`, `mockupWizardStep.test.ts`, `ref_contexts`, `ref_node_fs`, `ref_types`, `searchStates.test.ts`, `react`, `undoCopy.ts`, `check-pptx-image-parser-exposure.test.mjs`, `ProductCard.tsx`, `ref_utils`, `fetch-all-pages.test.ts`, `__tests__/format-utils.test.ts`, `date-fns`, `CartHeaderActions.render.test.tsx`, `useProductMatch.simulation.test.ts`, `framer-motion`, `parseContract`, `ref_node_child_process`, `concludeCheck`, `ref_services`, `ref_node_url`, `QuoteKanbanBoard.tsx`, `CartHeader.contract-snapshot.test.ts`, `QuotesListPage.deleteDisabled.test.tsx`, `SidebarNavGroup.suspense.test.tsx`, `QuotesListPage.layout.test.tsx`, `MockupApprovalTemplate.tsx`, `AuthContext.tsx`, `quoteNumberConcurrency.test.ts`, `append-migration-receipt.test.mjs`, `futureStock.battery.test.ts`, `useProductsByColor.test.ts`, `useSellerCarts.updateItemQuantity.rollback.test.tsx`, `order-payment-simulator.ts`, `_live-suite.ts`, `CartStatusSelect.fuzz.test.tsx`, `resolveColorStock.colorFallback.test.ts`, `quoteVariant.contract.test.ts`, `session-recovery.ts`, `MagazineTemplatesGalleryPage.tsx`, `ref_pages`, `ref_https`, `webhook-schemas.ts`, `check-types-inventory-drift.mjs`, `ref_node_os`, `MagazineEditorPage.tsx`, `intelligenceAnalytics.failure-event.test.ts`, `package.json`, `check-migration-filename-contract.mjs`, `PdfGenerationDialog.tsx`, `sanitizeError`, `append-edge-deploy-receipt.test.mjs`, `GlobalSearchPalette.tsx`, `ref_fs`, `pagination.ts`, `useZeroResultSubstitutes.test.tsx`, `freight-quest-fuzzer.test.ts`, `CartHeaderButton.delete.test.tsx`, `useKitBuilderQuote.test.ts`, `webhook-matrix-1000.test.ts`, `rest-native.ts`, `ProductMatchPage.tsx`, `route-no-error-element.test.tsx`, `A) Tabela por FERRAMENTA`, `Ferramentas e Magazine`, `commercial-intelligence.test.ts`, `ringsOf`, `ProductColorSelector.tsx`, `hooks-audit-regression.unit.test.ts`, `magazineService.ts`, `stock-filter.perf.test.ts`, `MockupConfigPanel.tsx`, `kit-detection.ts`, `localStorage`, `ReplenishmentProductGrid.tsx`, `common/__tests__/useSearchHistory.test.ts`, `CartHeader.invariants.fuzz.test.ts`, `build-migration-ledger-manifest.mjs`, `useQuotesListPage.test.ts`, `bridgeCallMetrics.ts`, `quote-builder-freight-block-consumers.contract.test.ts`, `mockEdgeFunctionFetch`, `products-detail.ts`, `watermarkTokens.ts`, `useProductLeafCategories.tsx`, `@supabase/supabase-js`, `sellerCartRestoreHelpers.tsx`, `reduced-app-navigation.test.tsx`, `drift-baseline.mjs`, `StockDashboard.tsx`, `currency-input.tsx`, `MockupLayoutButtons.test.tsx`, `useProductsLightweight.ts`, `editorRecovery.ts`, `check-production-harnesses.mjs`, `@/lib`, `useRuptureAlerts.test.tsx`, `MagazinePageRenderer`, `BulkAddToCollectionModal.test.tsx`, `StockDashboard.test.tsx`, `theme-presets.ts`, `C.1 — Teste-espelho (o teste reimplementa a lógica e testa a si mesmo)`, `useSellerCarts.versionGuard.test.tsx`, `processTranscript.ts`, `check-edge-verify-jwt-allowlist.mjs`, `MagazineStatsCards.test.tsx`, `lastInternalRoute.ts`, `useQuotesListPage.singleDelete.test.tsx`, `check-package-duplicate-scripts.mjs`, `ref_node_process`, `QuotesStatusChips.tsx`, `currency.ts`, `VariantStockTable.tsx`, `QuoteItemDetailSheet.tsx`, `check-supabase-reference-catalog.mjs`, `useAutoSaveQuote.ts`, `PARTE 3 — VULNERABILIDADES DE SEVERIDADE MÉDIA`, `useMagazineGoldImport`, `useComparisonStore.ts`, `_authz.ts`, `PageUtilities.test.ts`, `vercel-headers-precedence.test.ts`, `useTechniquePricing.test.ts`, `outcomes.ts`, `check-workflow-contracts.mjs`, `ai-usage.test.ts`, `log-login-attempt-race.test.ts`, `aiRecommendationsJsonParsing.test.ts`, `super-filtro-price-sentinel.test.ts`, `useStepUpAuth.ts`, `useMockupDraft.test.ts`, `preview-zoom-shortcuts.test.tsx`, `check-ledger-statements-gate.mjs`, `useVoiceAgent.test.ts`, `magazine-service-fuzz.test.ts`, `collapse-reflow.spec.ts`, `quote-calculations.test.ts`, `cartViewModePrefs.ts`, `magic-up-result-panel-keyboard.test.tsx`, `Numeração de Orçamentos (`quote_number`) — Arquitetura`, ``SEC-012` 🟡 MÉDIO — Cobertura de Zod desigual`, `KitLibraryPage.ownership.test.ts`, `postgrest.ts`, `react-dom`, `check-summary-color-tokens.mjs`, `client.ts`, `LogoPositionEditor.tsx`, `useNovelties.ts`, `quoteHelpers.ts`, `quoteTypes.ts`, `useFutureStockPreference.fuzz.test.ts`, `mfaNavigationAnalytics.ts`, `__tests__/useDebounce.test.ts`, `restricted-routes.ts`, `ONDA 8 — EDGE FUNCTIONS: AUTORIZAÇÃO E EXPOSIÇÃO DE DADOS (E081–E090)`, `collapsedItemsStorage.fuzz.test.ts`, `MagazineEditorPage.hooksOrder.test.tsx`, `check-supabase-migration-ledger.mjs`, `cnpj-exhaustive.test.ts`, `LocationPanel.tsx`, `product-webhook/index.ts`, `useConnectionTester.test.tsx`, `ProductFormFullscreen.tsx`, `promote-draft-migration.mjs`, `NotificationDrawer.tsx`, `useUnsavedChangesGuard.test.ts`, `stock-benchmark.test.ts`, `useOrgData.test.ts`, `useQuoteBuilderState.helpers.ts`, `sentry.ts`, `quote-flow.test.ts`, `webhooks.test.ts`, `check-dependency-audit.mjs`, `sw-harness.ts`, `pdfHardcodedColors.test.ts`, `magazineEdgeContract.test.ts`, `setup-strict-side-effects.ts`, `magazine-guard.ts`, `DevRoute.test.tsx`, `preflight-migration-apply.mjs`, `useListUrlState.fuzz.test.tsx`, `zod`, `stockFetcher.test.ts`, `matrix-automated.spec.ts`, `auth-utils.ts`, `navigationMetrics.ts`, `auth-debug.ts`, `ResetPassword.updatePassword.test.tsx`, `useQuotesListPage.bulkDelete.test.tsx`, `useQuotesListPage.duplicateUndo.test.tsx`, `QuoteBuilderSummaryCollapseAll.fuzz.test.ts`, `Clickable.fuzz.test.tsx`, `magazinePublish.fuzz.test.ts`, `shipping-deadline.ts`, `stock-status.ts`, `personalizationSummary.ts`, `image-utils.fuzz.test.ts`, `useSellerCarts.addItem-toast.test.tsx`, `CartHeaderExhaustiveFuzz.test.ts`, `CartHeaderButton.tsx`, `bug-g7-regression.unit.test.ts`, `ui/ConfirmDialog.tsx`, `useFavoritesStore.ts`, `critical-tables-rls.test.ts`, `PersonalizationConfig.tsx`, `ProductsStep.tsx`, `mapRestoreCartError.ts`, `CartNotesLeakGuards.test.tsx`, `invokeTelemetrySink.ts`, `SSOCallbackPage.test.tsx`, `StockAlertsIndicator.tsx`, `PropostaComercialTailwind.tsx`, `cnpj-display-contract.test.ts`, `masks.ts`, `SocialProof.tsx`, `preview-ring-fuzz.test.tsx`, `@tanstack/react-query`, `QuoteBuilder.test.ts`, `setup-ref-warning-capture.ts`, `supabase-schema-contract.test.ts`, `magazine.ts`, `DevInfraGate.ts`, `check-migration-filename-contract.mjs`, `useIntersectionObserver.test.ts`, `Fluxo 4 — Detalhe do produto (PDP)`, `stock-filter.stress.test.ts`, `discount-validation-messages.ts`, `PopoverQtyInput.tsx`, `PageTransition.tsx`, `ProposalSections.tsx`, `useQuotesListPage.expiring.test.ts`, `CartHeaderButton.undoSnapshot.test.ts`, `QuickAddToQuote.guard.test.ts`, `QuoteBuilderActionButtons.fuzz.test.ts`, `useMagazineReaderState.ts`, `KitComposition.test.tsx`, `vercel-health-ready.test.ts`, `login-flow.test.ts`, `FutureStockDialog.tsx`, `magic-up-onda5.test.tsx`, `OrganizationContext.tsx`, `health-score.ts`, `FiltersPage.test.tsx`, `pdfContrastReport.test.ts`, `PdfGenerationModule.test.ts`, `notifications-metrics.ts`, `ColorSwatch.ssot.test.tsx`, `sitemap.ts`, `StockEmptyFiltersHint.tsx`, `TurnstileWidget.test.tsx`, `useProductsByCategory.ts`, `StockBadge.tsx`, `ColumnSelector.tsx`, `useDebouncedCartItemActions.ts`, `useGenericFuzzySearch.ts`, `oauth-pending.ts`, `kit-coverage.ts`, `stock-filter.fuzz.test.ts`, `exportDiscountAuditPdf.ts`, `ResetPassword.test.tsx`, `log-login-attempt-fuzz.test.ts`, `useReplenishments.test.ts`, `rbac-permissions.test.ts`, `product-sorting.ts`, `tests/lib/theme-presets.test.ts`, `rls-seller-policies.spec.ts`, `supplierReliability.fuzz.test.ts`, `freight-coverage-validation.test.ts`, `quote-shipping-validation.test.ts`, `sales-goal.fuzz.test.ts`, `tests/p0/_mocks.ts`, `webhook-contracts.test.ts`, `PriceFreshnessBadge.colorAndIcon.test.tsx`, `PriceFreshnessBadge.thresholdHosts.test.tsx`, `edge-function-harness.ts`, `receive-crm-callback.duplicates-and-dispatcher.test.ts`, `QuoteItemsList.tsx`, `setup.ts`, `secretNormalizers.ts`, `freight-calculations.test.ts`, `receive-crm-callback.fuzz.test.ts`, `freight-property-based.test.ts`, `public.fn_super_filtro`, `_live-client.ts`, `external-db-bridge-telemetry.test.ts`, `kill-switch-client.ts`, `PresetsBar.tsx`, `StockHealthBreakdownDrawer.tsx`, `ProposalProductTable.tsx`, `freight-quest-webhook-simulation.test.ts`, `rupture-risk.simulation.test.ts`, `image-proxy.ts`, `drift-baseline.test.mjs`?**
+  _High betweenness centrality (0.155) - this node is a cross-community bridge._
 - **What connects `../tsconfig.app.json`, `@fontsource/archivo-black`, `@fontsource/dm-serif-display` to the rest of the system?**
   _63 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `BACKUP_SCHEMA_ONLY_2026-09-16.sql` be split into smaller, more focused modules?**
   _Cohesion score 0.0017873100983020554 - nodes in this community are weakly interconnected._
 - **Why does `pairs` connect `"public"."fn_promote_notebook_specs"` to `recalibrate-watermark-thresholds.mjs`, `"public"."fn_promote_notebook_specs"`, `"public"."fn_promote_notebook_specs"`?**
-  _High betweenness centrality (0.093) - this node is a cross-community bridge._
+  _High betweenness centrality (0.095) - this node is a cross-community bridge._
 - **Should `ALL_IN_ONE.sql` be split into smaller, more focused modules?**
   _Cohesion score 0.001841620626151013 - nodes in this community are weakly interconnected._
-- **Why does `base` connect `applyVoiceFilters.ts` to `public.fn_super_filtro`, `public.fn_super_filtro`, `public.fn_super_filtro`?**
-  _High betweenness centrality (0.093) - this node is a cross-community bridge._
+- **Why does `base` connect `public.fn_super_filtro` to `public.fn_super_filtro`?**
+  _High betweenness centrality (0.091) - this node is a cross-community bridge._
 - **Should `20261015140000_baseline_schema.sql` be split into smaller, more focused modules?**
   _Cohesion score 0.0018552875695732839 - nodes in this community are weakly interconnected._
