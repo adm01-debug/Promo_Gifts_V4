@@ -1,4 +1,4 @@
--- Rollback: 20261027200000_supplier_stricker_rls_deny_all.sql
+-- Rollback: 20261027195959_supplier_stricker_rls_deny_all.sql
 -- Remove RLS e policy deny_all das 17 tabelas de supplier_stricker.
 
 DROP POLICY IF EXISTS deny_all ON supplier_stricker.canceled_products;

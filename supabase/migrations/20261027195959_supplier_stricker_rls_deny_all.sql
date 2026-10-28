@@ -1,4 +1,4 @@
--- Migration: 20261027200000_supplier_stricker_rls_deny_all.sql
+-- Migration: 20261027195959_supplier_stricker_rls_deny_all.sql
 -- CONTEXTO: Schema supplier_stricker tem 17 tabelas sem RLS e grants SELECT
 -- a `authenticated` já existentes. Schema USAGE não concedido → hoje inacessível.
 -- RISCO: se GRANT USAGE ON SCHEMA supplier_stricker TO authenticated for adicionado,

@@ -351,7 +351,7 @@ description: "Deployment has failed — run this Vercel CLI command: npx vercel 
 | Migration | Evidência ao vivo | Próximo passo / bloqueio |
 |---|---|---|
 | `20261027180000` | `generate-blurhashes` existe, está inativo e ainda usa o schedule antigo; versão pendente | Aplicar pelo workflow E15 após resolver o run Production já aguardando revisão |
-| `20261027200000` | 17 tabelas `supplier_stricker` sem RLS; 13 nomes da migration antiga existiam, mas quatro estavam incorretos | Corrigida neste PR para as 17 tabelas reais e rollback alinhado; aplicar somente após merge e preflight |
+| `20261027195959` (substitui `20261027200000`, nunca aplicada) | 17 tabelas `supplier_stricker` sem RLS; a migration pendente anterior nomeava quatro tabelas incorretamente | Nova versão corretiva usa os 17 nomes reais; aplicar somente após merge e preflight |
 | `20261027220000` | `xbz-image-uploader` está ativo sem o segredo necessário | Migration de desativação pendente; aplicar por E15 após liberar o bloqueio atual de concorrência |
 | `20261027230000` | As três entradas stale do allowlist foram confirmadas | Aplicar por E15 após revisão |
 | `20261027233000` | `XBZ_IMAGE_UPLOADER_CRON_SECRET` não existe no Vault | Bloqueada; novo preflight da migration também exige o segredo |
