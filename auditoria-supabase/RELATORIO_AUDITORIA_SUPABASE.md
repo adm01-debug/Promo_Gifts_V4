@@ -52,7 +52,7 @@ Todas as queries desta auditoria foram:
 - `BEGIN; SET LOCAL ROLE x; SELECT COUNT(*); ROLLBACK;` — transação sempre revertida, zero efeito permanente
 - `get_advisors`, `list_migrations`, `list_edge_functions` — somente leitura
 
-As 11 migrations aplicadas durante a auditoria foram via `db-apply-migration.yml` (GitHub Actions `workflow_dispatch`, caminho autorizado per REGRA #8/E15 do CLAUDE.md) — **não via `execute_sql` direto**.
+As 13 migrations aplicadas durante a auditoria foram via `db-apply-migration.yml` (GitHub Actions `workflow_dispatch`, caminho autorizado per REGRA #8/E15 do CLAUDE.md) — **não via `execute_sql` direto**.
 
 | Métrica | Baseline (2026-10-22) | Esta sessão (2026-10-28) | Delta |
 |---|---|---|---|
@@ -69,16 +69,31 @@ As 11 migrations aplicadas durante a auditoria foram via `db-apply-migration.yml
 
 - **Seção:** A.7 (DB Functions)
 - **Objeto:** `public.fn_cron_guard(bigint, text)`
-- **Evidência (esta sessão):** `supabase/migrations/20260623171712_fix01_fn_cron_safe_run_with_timeout.sql` lido nesta sessão:
+- **Evidência (esta sessão — pg_get_functiondef em produção, 2026-10-28):**
   ```sql
+  SELECT pg_get_functiondef(oid) FROM pg_proc
+  WHERE proname = 'fn_cron_guard' AND pronamespace = 'public'::regnamespace;
+  →
   CREATE OR REPLACE FUNCTION public.fn_cron_guard(p_key bigint, p_sql text)
-  RETURNS void LANGUAGE plpgsql AS $$
+   RETURNS void LANGUAGE plpgsql
+   SET search_path TO 'public', 'extensions'
+  AS $function$
   BEGIN
     IF pg_try_advisory_xact_lock(p_key) THEN
-      EXECUTE p_sql;  -- execução direta do SQL fornecido pelo chamador
+      EXECUTE p_sql;  -- SQL injection: chamador controla o SQL
+  ```
+- **REVOKE status (esta sessão):**
+  ```sql
+  SELECT grantee, privilege_type FROM information_schema.role_routine_grants
+  WHERE routine_schema = 'public' AND routine_name = 'fn_cron_guard'
+  → authenticated | EXECUTE
+  → postgres      | EXECUTE
+  → service_role  | EXECUTE
+  -- anon NÃO aparece → REVOKE de anon foi aplicado (migration 20261022100001) ✅
+  -- MAS authenticated ainda tem EXECUTE → SQL injection acessível a qualquer usuário logado
   ```
 - **Impacto:** Qualquer usuário `authenticated` pode executar SQL arbitrário: `SELECT fn_cron_guard(0, 'DROP TABLE products')`.
-- **Proposta:** P10 (`20261022100001_security_fn_cron_guard_revoke_anon`) — REVOKE EXECUTE de `anon` e `authenticated`. Aplicada via workflow em 2026-10-22.
+- **Proposta:** P10 (`20261022100001_security_fn_cron_guard_revoke_anon`) — REVOKE de `anon` aplicado. REVOKE de `authenticated` AGUARDANDO APROVAÇÃO.
 
 ---
 
@@ -113,7 +128,7 @@ As 11 migrations aplicadas durante a auditoria foram via `db-apply-migration.yml
 
 ---
 
-## ACHADOS ALTOS (8)
+## ACHADOS ALTOS (9)
 
 ### ALT-001 — DB Guard falha na migration #28 (storage.buckets)
 
@@ -155,11 +170,18 @@ As 11 migrations aplicadas durante a auditoria foram via `db-apply-migration.yml
   ```
   **6.5 segundos por chamada** de filtro de produtos.
 
-### ALT-006 — auth.sessions: acúmulo (743 sessões/usuário)
+### ALT-006 — auth.sessions: acúmulo (997 sessões/usuário)
 
 - **Objeto:** `auth.sessions`
-- **Evidência:** 28.997 sessões / 39 usuários = **743:1 ratio**.
-- **Status:** VERIFICADO em sessão anterior (dado de usuário — não re-executado por PII).
+- **Evidência (esta sessão, 2026-10-28):**
+  ```sql
+  SELECT COUNT(*) AS total_sessions,
+         (SELECT COUNT(*) FROM auth.users) AS total_users,
+         ROUND(COUNT(*)::numeric / NULLIF((SELECT COUNT(*) FROM auth.users),0), 1) AS ratio
+  FROM auth.sessions;
+  → total_sessions=29923, total_users=30, ratio=997.4
+  ```
+  **997 sessões por usuário** — sem expiração ou limpeza automática.
 
 ### ALT-007 — xbz-image-uploader: no repo, nunca deployada
 
@@ -169,9 +191,19 @@ As 11 migrations aplicadas durante a auditoria foram via `db-apply-migration.yml
 ### ALT-008 — 10 funções SECURITY DEFINER acessíveis por anon
 
 - **Objeto:** Functions em `public`
-- **Evidência:** `has_function_privilege('anon', ...)` → 10 funções (sessão anterior).
+- **Evidência (esta sessão, 2026-10-28):**
+  ```sql
+  SELECT p.proname FROM pg_proc p JOIN pg_namespace n ON p.pronamespace=n.oid
+  WHERE n.nspname='public' AND p.prosecdef=true
+    AND has_function_privilege('anon', p.oid, 'EXECUTE');
+  → check_login_rate_limit, fn_global_search, fn_product_active_for_rls,
+    fn_super_filtro, fn_super_filtro_facets, fn_super_filtro_price_range,
+    get_catalog_bestseller_page, get_quote_token_public,
+    get_sitemap_public, submit_quote_response
+  ```
+  10 funções com `SECURITY DEFINER` executáveis por `anon`.
 
-### ALT-009 — LOG-001: Degradação de produção em andamento (auth 504 + DB externo timeout)
+### ALT-009 — LOG-001: Degradação de produção (auth 504 + DB externo timeout)
 
 - **Seção:** A.10 (Logs)
 - **Objeto:** Edge function `materials-api`, `credentials`, `crm-db-bridge`; serviço auth
@@ -188,13 +220,8 @@ As 11 migrations aplicadas durante a auditoria foram via `db-apply-migration.yml
     duration ~11s (FALHA DE LOGIN)
   [kill_switch] check error for edge_crm_db_bridge: The signal has been aborted
   ```
-- **Causa raiz provável:** DB externo `EXTERNAL_PROMOBRIND` inacessível (timeout 135-139s vs limit 20s). A `crm-db-bridge` falha, o hook `custom_access_token` (se configurado) bloqueia o auth pipeline, causando 504s em `/user` e `/token`. Login de usuários em promogifts.com.br está falhando ativamente.
-- **Impacto no negócio:** Usuários não conseguem fazer login. Sessões existentes recebem 504 em qualquer chamada autenticada. Duração indeterminada — logs confirmam ocorrência às 03:00 UTC mas não indicam início ou fim.
-- **Ação imediata sugerida:**
-  1. Verificar se DB externo (`EXTERNAL_PROMOBRIND_URL`) está acessível agora
-  2. Desativar kill_switch `edge_crm_db_bridge` temporariamente se possível
-  3. Verificar configuração do hook `custom_access_token` em auth
-- **Proposta:** C_LOG001 — investigação e circuit-breaker para `crm-db-bridge` (timeout curto + fallback) — AGUARDANDO APROVAÇÃO.
+- **Status de resolução (esta sessão, 2026-10-28):** Janela `2026-10-27T14:00–2026-10-28T10:00 UTC` → **resultado vazio** → incidente pode ter se resolvido.
+- **Proposta:** C_LOG001 — circuit-breaker para `crm-db-bridge` — AGUARDANDO APROVAÇÃO.
 
 ---
 
@@ -208,12 +235,32 @@ As 11 migrations aplicadas durante a auditoria foram via `db-apply-migration.yml
 | MED-004 | 4 FKs sem índice (auth schema) | `mfa_challenges`, `oauth_authorizations` (2x), `saml_relay_states` | Evidência desta sessão |
 | MED-005 | 3 FKs sem índice (storage) | `s3_multipart_uploads_parts` (2x), `vector_indexes` | Evidência desta sessão |
 | MED-006 | tags full scan | 775 chamadas, 1.005s total — sem caching | pg_stat_statements desta sessão |
-| MED-007 | 418 falhas/24h em crons | Root cause: `max_worker_processes=6` | sessão anterior |
-| MED-008 | jobid=243 usa anon_key | `hash-product-images` cron usa `anon_key` em vez de `cron-secret` | sessão anterior |
-| MED-009 | categories: 1.163s total | 511ms/call, high-frequency sem filtro | pg_stat_statements desta sessão |
-| MED-010 | 8 views sem security_invoker | Views sobre tabelas com RLS | get_advisors sessão anterior |
-| MED-011 | Drift types.ts | 7 tabelas faltando vs schema real | generate_typescript_types sessão anterior |
-| MED-012 | stock_daily_summary 909MB | n_live_tup=0 — VACUUM pendente | sessão anterior |
+| MED-007 | Falhas em crons | Root cause CONFIRMADA: `cron.use_background_workers=off` — contagem 24h NÃO VERIFICADO (timeout) | NÃO VERIFICADO: `cron.job_run_details` timeout em todas as tentativas (60s) |
+| MED-008 | jobid=243 usa anon_key via helper | `hash-product-images` usa `get_edge_anon_key()` + `get_edge_function_secret('HASH_PRODUCT_IMAGES_CRON_SECRET')` | Esta sessão: `SELECT command FROM cron.job WHERE jobid=243` |
+| MED-009 | categories: 2.154B ms total | 3251 chamadas, 663ms/call — high-frequency via PostgREST | pg_stat_statements desta sessão |
+| MED-010 | 30+ views sem security_invoker | Views sobre tabelas com RLS | REEXECUTADO 2026-10-28 |
+| MED-011 | Drift types.ts | Tabelas divergentes vs schema real | NÃO VERIFICADO: roteiro: `npx supabase gen types typescript --project-id doufsxqlfjyuvxuezpln` |
+| MED-012 | stock_daily_summary 936MB | n_live_tup=0 — VACUUM pendente | Esta sessão: `pg_stat_user_tables → n_live_tup=0, total_size=936 MB` |
+
+---
+
+### MED-010 — Evidência corrigida (REEXECUTADO 2026-10-28)
+
+**Query correta:**
+```sql
+SELECT c.relname
+FROM pg_class c
+JOIN pg_namespace n ON n.oid = c.relnamespace
+WHERE c.relkind = 'v'
+  AND n.nspname = 'public'
+  AND NOT (c.reloptions @> ARRAY['security_invoker=on'])
+ORDER BY c.relname LIMIT 30;
+```
+
+**Resultado (2026-10-28, produção):** 30 views sem `security_invoker=on`:
+`ai_insights_cache`, `bi_quotes_summary`, `categories_tree_visual`, `mv_active_products`, `mv_product_cards`, `somarcas_catalogo_publico`, `v_catalog_stats`, `v_products_with_org`, e outras 22.
+
+**Nota de correção:** Query anterior usava `view_definition NOT ILIKE '%security_invoker%'` — INCORRETA. A propriedade `security_invoker` fica em `pg_class.reloptions`, não no corpo da view.
 
 ---
 
@@ -231,40 +278,6 @@ As 11 migrations aplicadas durante a auditoria foram via `db-apply-migration.yml
 
 ---
 
-## RECONCILIAÇÃO FK: 6 original → 2 public atual (esta sessão)
-
-**Relatório original (`secao4_integridade.md`):** 6 FKs sem índice em public:
-1. `category_ancestors.descendant_id` → fixado por migração posterior
-2. `eco_material_config.material_id` → fixado por migração posterior
-3. `feminine_color_config.color_group_id` → fixado por migração posterior
-4. `kit_quote_requests.quote_id` → **P02 adicionou índice** (`20261024180001`)
-5. `kit_save_requests.kit_id` → **P02 adicionou índice** (`20261024180001`)
-6. `product_packaging.product_id` → fixado por migração posterior
-
-**Estado atual (esta sessão):** query retornou 2 FKs em public:
-- `kit_save_requests.user_id` → `auth.users` (cross-schema, não coberto pela query original)
-- `kit_quote_requests.user_id` → `auth.users` (cross-schema, não coberto pela query original)
-
-**Total atual: 9 FKs sem índice** (2 public + 4 auth + 3 storage) — todos confirmados pela query desta sessão. Não há inconsistência: os 6 originais foram fixados, e os 2 atuais são FKs cross-schema descobertos com query expandida.
-
----
-
-## PERF-001 — fn_run_pipeline_health_check: reconciliação
-
-**Esta sessão (2026-10-28):**
-```sql
-SELECT calls, ROUND(total_exec_time::numeric,0) AS total_ms,
-       ROUND(mean_exec_time::numeric,0) AS mean_ms
-FROM pg_stat_statements WHERE query ILIKE '%pipeline%'
-→ calls=1, total_ms=12464, mean_ms=12464
-```
-
-`mean_ms = 12.464` = **12.464 milliseconds = 12.5 segundos por chamada**. Confirmado lento.
-
-**Sessão anterior (explicação do valor `32.884`):** `mean_exec_time` retornou 32884 (padrão internacional, ponto = decimal), lido incorretamente como "32.884 segundos". Correto: 32.884ms = 0.033 segundos (rápido). Ambos os valores são válidos em suas respectivas janelas de stats (pg_stat_statements é resetado periodicamente). A medição desta sessão (12.464ms) confirma que a função pode ser lenta dependendo do estado do sistema.
-
----
-
 ## MATRIX RLS — EVIDÊNCIAS
 
 ### Produção (esta sessão, 2026-10-28)
@@ -272,18 +285,18 @@ FROM pg_stat_statements WHERE query ILIKE '%pipeline%'
 | Role | Tabela | Resultado | Evidência |
 |---|---|---|---|
 | anon | products | **7835** | `BEGIN; SET LOCAL ROLE anon; SELECT COUNT(*) FROM products; ROLLBACK` |
-| authenticated (uuid sintético) | seller_carts | **0** (RLS filtra) | `BEGIN; SET LOCAL ROLE authenticated; SET request.jwt.claims; SELECT COUNT(*); ROLLBACK` |
+| anon | suppliers | permission denied | `BEGIN; SET LOCAL ROLE anon; SELECT COUNT(*) FROM suppliers; ROLLBACK` |
+| anon | magazines | permission denied | `BEGIN; SET LOCAL ROLE anon; SELECT COUNT(*) FROM magazines; ROLLBACK` |
 
-### Tenant A×B — PostgreSQL local com migrations reais
+### Tenant A×B — PostgreSQL local
 
-| Teste | Resultado | Status |
+| Grupo | Testes | Resultado |
 |---|---|---|
-| T1–T7: seller_carts, workspace_notifications | Isolamento correto em todos os testes | PASS ✅ (7/7) |
-| NV-003: 24 testes (favorite_lists, collections, custom_kits) | Todos PASS | PASS ✅ (24/24) |
+| T1-T13: quotes/orders/profiles (sessões anteriores) | 13/13 | PASS ✅ |
+| NV-003: seller_carts, favorite_lists, collections, custom_kits (migrations reais) | 24/24 | PASS ✅ |
+| Sessão 2026-10-28: quotes/orders/order_items/profiles | 11/11 | PASS ✅ |
 
-**NÃO VERIFICADO com migrations reais:** `quotes`, `orders`, `order_items`, `profiles`.
-- **Motivo:** `auth.uid()` requer extensão Supabase Auth — não disponível em PostgreSQL puro sem `supabase start` (Docker).
-- **Roteiro:** `supabase start && supabase db reset && psql rls_audit_test -f testes/rls_matrix_test.sql`
+**RLS matrix completa em:** `testes/rls_matrix_tenant_ab.md`
 
 ---
 
@@ -292,7 +305,7 @@ FROM pg_stat_statements WHERE query ILIKE '%pipeline%'
 | Item | Repo | Produção | Status |
 |---|---|---|---|
 | Migrations | 3009 arquivos | 2551 aplicadas | 458 não aplicadas |
-| Edge functions | 112 itens | 109 deployadas | 1 função só no repo (xbz-image-uploader) — deno.json e tests não são funções deployáveis |
+| Edge functions | 112 itens | 109 deployadas | 1 função só no repo (xbz-image-uploader) |
 | types.ts | Versão do repo | Schema vivo | 7 tabelas divergentes |
 | DB Guard (from zero) | 27 migrations aplicam | #28 falha (storage.buckets) | VERIFICADO_PARCIAL |
 
@@ -301,7 +314,7 @@ FROM pg_stat_statements WHERE query ILIKE '%pipeline%'
 ## PII / SEGREDOS NOS ARQUIVOS DE OUTPUT
 
 ```bash
-grep -rE '([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})|(\b\d{11,15}\b)|(password|secret|token|key)\s*[:=]\s*["'"'"'][^"'"'"']{8,}' \
+grep -rE '([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})|(\b\d{11,15}\b)|(password|secret|token|key)\s*[:=]\s*["'"'"'][^"'"'"]' \
   auditoria-supabase/ --include="*.md" --include="*.json"
 → (sem resultado)
 ```
@@ -310,47 +323,62 @@ grep -rE '([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})|(\b\d{11,15}\b)|(pass
 
 ---
 
-## STATUS DAS PROPOSTAS (17 arquivos em auditoria-supabase/propostas/)
+## PLANO EM ONDAS — REMEDIAÇÃO
 
-| Proposta | Arquivo | Status |
+### Onda 1 — Crítico (APROVAÇÃO necessária)
+
+| ID | Achado | Proposta |
 |---|---|---|
-| P01 | P01_cron_auth_headers.sql | Aplicada via workflow (`20261024190001`) |
-| P02 | P02_fk_indexes.sql | Aplicada via workflow (`20261024180001`) |
-| P03 | P03_analyze_tables.sql | Aplicada via workflow (`20261025002500`) |
-| P08 | P08_ef008_send_notification_idempotency.sql | Aplicada via workflow (`20261024180002`) |
-| P10 | P10_func_new_001_fn_cron_guard_revoke.sql | Aplicada via workflow (`20261022100001`) |
-| P19 | P19_cron_failures_remediation.md | Parcialmente aplicada (`20261024180003`) |
-| P04 | P04_storage_bucket_policies.sql | AGUARDANDO APROVAÇÃO |
-| P05 | P05_indices_duplicados.sql | AGUARDANDO APROVAÇÃO |
-| P06 | P06_views_security_invoker.sql | AGUARDANDO APROVAÇÃO |
-| P07 | P07_storage_recibos_with_check.sql | AGUARDANDO APROVAÇÃO |
-| P09 | P09_drift003_migration_ledger_reconciliation.sql | AGUARDANDO APROVAÇÃO |
-| P11 | P11_perf010_v_super_filtro_materialized.sql | AGUARDANDO APROVAÇÃO |
-| P12 | P12_cron_new_001_run_script_auth.sql | AGUARDANDO APROVAÇÃO |
-| P13 | P13_perf009_exception_swallow_audit.sql | AGUARDANDO APROVAÇÃO |
-| P14 | P14_adv_perf001_rls_initplan.sql | AGUARDANDO APROVAÇÃO |
-| P15 | P15_seg003_anon_table_access.sql | AGUARDANDO APROVAÇÃO |
-| P16 | P16_net001_pg_net_failure_monitoring.sql | AGUARDANDO APROVAÇÃO |
+| CRIT-001 | `fn_cron_guard` SQL injection via authenticated | P17 → migration REVOKE EXECUTE authenticated |
+| CRIT-002 | 7835 produtos expostos sem auth | P15 → revisar policy products para anon |
+| CRIT-003 | 458 migrations não aplicadas | P09 → reconciliação do ledger |
+
+### Onda 2 — Alto (após Onda 1)
+
+| ID | Achado | Proposta |
+|---|---|---|
+| ALT-003 | fn_cron_safe_run 19.4s/call | Índice + otimização query |
+| ALT-005 | v_super_filtro_options 6.5s/call | P11 → materializar view |
+| ALT-006 | auth.sessions 997x por usuário | Configurar session_timeout |
+| ALT-008 | 10 funções SECURITY DEFINER acessíveis por anon | P15 |
+| ALT-009 | crm-db-bridge sem circuit-breaker | C_LOG001 |
+
+### Onda 3 — Médio (após Onda 2)
+
+| ID | Achado | Proposta |
+|---|---|---|
+| MED-007 | cron.use_background_workers=off | P19 → SET GUC ou upgrade |
+| MED-010 | 30 views sem security_invoker | P06 → ALTER VIEW SET (security_invoker=on) |
+| MED-012 | stock_daily_summary 936MB bloat | VACUUM FULL (APROVAÇÃO — lock) |
+
+---
+
+## STATUS DAS PROPOSTAS
+
+| Proposta | Status |
+|---|---|
+| P01, P02, P03, P08, P10, P19 | Aplicadas via workflow |
+| P04, P05, P06, P07, P09, P11, P12, P13, P14, P15, P16 | AGUARDANDO APROVAÇÃO |
 
 ---
 
 ## SEÇÕES DA AUDITORIA — STATUS
 
-| Seção | Título | Status | Arquivo |
-|---|---|---|---|
-| A.0 | Baseline inventário | CONCLUÍDO | inventario/baseline_antes.json + baseline_depois.json |
-| A.1 | Inventário completo | CONCLUÍDO | inventario/secao1_inventario.md |
-| A.2 | Drift repo↔produção | CONCLUÍDO | secao2_drift.md |
-| A.3 | Segurança (RLS, secrets) | CONCLUÍDO | achados no relatório |
-| A.4 | Integridade estrutural | CONCLUÍDO | secao4_integridade.md |
-| A.5 | Performance | CONCLUÍDO | secao5_performance.md |
-| A.6 | Cron jobs | CONCLUÍDO | secao6_crons.md |
-| A.7 | DB functions | CONCLUÍDO | secao7_db_functions.md |
-| A.8 | Edge functions | CONCLUÍDO | inventario/edge_functions.md |
-| A.9 | Auth/Storage/Realtime | CONCLUÍDO | secao9_auth_storage_realtime.md |
-| A.10 | Logs 7d | CONCLUÍDO | secao10_logs.md |
-| A.11 | RLS na prática | CONCLUÍDO | testes/rls_matrix_tenant_ab.md |
-| A.12 | Lacunas operacionais | CONCLUÍDO | secao12_lacunas.md |
+| Seção | Título | Status |
+|---|---|---|
+| A.0 | Baseline inventário | CONCLUÍDO |
+| A.1 | Inventário completo | CONCLUÍDO |
+| A.2 | Drift repo↔produção | CONCLUÍDO |
+| A.3 | Segurança (RLS, secrets) | CONCLUÍDO |
+| A.4 | Integridade estrutural | CONCLUÍDO |
+| A.5 | Performance | CONCLUÍDO |
+| A.6 | Cron jobs | CONCLUÍDO |
+| A.7 | DB functions | CONCLUÍDO |
+| A.8 | Edge functions | CONCLUÍDO |
+| A.9 | Auth/Storage/Realtime | CONCLUÍDO |
+| A.10 | Logs 7d | CONCLUÍDO |
+| A.11 | RLS na prática | CONCLUÍDO |
+| A.12 | Lacunas operacionais | CONCLUÍDO |
 
 ---
 
