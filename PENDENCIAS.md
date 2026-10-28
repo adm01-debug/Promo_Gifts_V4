@@ -159,18 +159,32 @@ Clique em "Re-run all jobs".
 
 ---
 
-## P7 — db-schema-drift-check (timing — resolução esperada no próximo run agendado)
+## P7 — db-schema-drift-check (divergência estrutural do ledger de migrations)
 
 **Workflow:** db-schema-drift-check  
-**Run ID da última falha:** 40665197973  
-**Link:** https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40665197973  
-**Status:** failure (timing) — a correção já está na main; próximo run agendado deve resolver
+**Run ID da última falha:** 40708395880  
+**Link:** https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40708395880  
+**Status:** failure — bloqueado no step "Ledger parity (repo x canonical)"
 
-**Causa da falha persistente (timing):** O run `40665197973` foi agendado (schedule diário) às 09:33 em 2026-10-28, no SHA `c73cb9b`. O fix das migrations (`8c81483`, que torna o replay do Gate E40 safe com guard `IF to_regclass('cron.job') IS NULL`) só foi commitado às 09:48 — **15 minutos após o run já ter iniciado com o SHA anterior**. O drift-check replayou as migrations sem o guard e falhou.
+**Erro exato (step 8 — Ledger parity):**
+```
+[migration-ledger][bloqueado] local_only=1108; remote_only=648; mismatched=0; malformed=0
+```
 
-**Resolução esperada:** O próximo run agendado (schedule diário) usará um SHA que inclui `8c81483` e deve passar, pois as migrations `20261027120000` e `20261027140000` agora têm o guard pg_cron.
+**Causa raiz (diagnosticada em 2026-10-28):** Divergência massiva e pré-existente entre o ledger local (`supabase/migrations/`) e o banco canônico (`doufsxqlfjyuvxuezpln`):
+- `local_only=1108`: 1108 arquivos `.sql` existem no repo mas **não estão aplicados** no DB de produção
+- `remote_only=648`: 648 migrations estão registradas no DB (`supabase_migrations.schema_migrations`) mas **não existem como arquivos** no repo
+- Esta divergência pré-existe a esta sessão — não foi causada pelos commits recentes
 
-**Ação necessária do PO:** Se o próximo run agendado falhar, disparar manualmente `db-schema-drift-check` via `workflow_dispatch` para confirmar. O fix já está validado pelos Gate Final runs `40667156516` e `40662579684` que incluem o mesmo replay via Gate E40.
+**Nota sobre o fix cron:** O guard REPLAY-SAFE da migration `20261027120000` está correto e valida no Gate E40 (dentro do `deploy-gates.yml`). O db-schema-drift-check falha num step ANTERIOR ao replay — o ledger parity (step 8) falha antes de o replay (steps 9-13) sequer iniciar.
+
+**Ação necessária do PO (aprovação explícita exigida — REGRA #8):**
+- Esta reconciliação envolve 1756 entradas (1108 + 648) e requer autorização individual
+- **NÃO** execute `supabase migration repair` em lote — REGRA #8 proíbe isso
+- Processo correto: auditar o diff, identificar quais são `local_only` legítimos (para aplicar) vs. orphans (para registrar como `repair-only`), e reconciliar versão por versão via `migration repair --status applied <version>` explícito
+- Cada aplicação real deve usar `db-apply-migration.yml` (único caminho autorizado — REGRA #8/E15)
+
+**Impacto:** Enquanto o ledger divergir, o db-schema-drift-check sempre falhará no step de ledger parity — o replay nunca chega a rodar.
 
 ---
 
@@ -334,4 +348,4 @@ Chamadas pós-auth que ficam PENDENTES (nunca resolvem):
 
 ---
 
-*Ação prioritária: P1 (secrets E2E) — desbloqueia P2, P9, P10. P6, P8, P11 requerem investigação independente. P12 requer migration autorizada. P13 requer deleção do projeto fantasma Vercel. P14 requer verificação de RLS em `system_settings` e possível redeploy de `get-visitor-info`.*
+*Ação prioritária: P1 (secrets E2E) — desbloqueia P2, P9, P10. P6, P8, P11 requerem investigação independente. P12 requer migration autorizada. P13 requer deleção do projeto fantasma Vercel. P14 requer verificação de RLS em `system_settings` e possível redeploy de `get-visitor-info`. P7 requer reconciliação manual do ledger com aprovação do PO versão por versão (1756 entradas).*
