@@ -3,13 +3,14 @@
   "data": "2026-10-28",
   "main_sha_baseline": "62af0798dd71812979667ac29f596d25f3ef191b",
   "merges_executados_esta_sessao": [],
-  "ultima_atualizacao": "2026-10-28T04:45:00Z",
+  "ultima_atualizacao": "2026-10-28T05:30:00Z",
   "resumo": {
     "total_prs": 12,
     "total_analisadas": 12,
+    "merge_candidate": 1,
     "fechada_sem_merge": 1,
     "aguarda_po": 4,
-    "bloqueado": 7,
+    "bloqueado": 6,
     "mergeadas_esta_sessao": 0
   },
   "prs": [
@@ -75,7 +76,7 @@
       "branch": "claude_pink/awesome-ride-d25ur3",
       "conflito_com_main": false,
       "draft": false,
-      "ci_status": "deploy-gates rodando em 39e6bf76 — aguardando Gate Final"
+      "ci_status": "deploy-gates queued (run 40631972278) em 39e6bf76 — aguardando Gate Final"
     },
     {
       "numero": 2680,
