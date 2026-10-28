@@ -11,8 +11,7 @@ const REF = new Date(2026, 6, 2); // 02/jul/2026
 
 afterEach(() => cleanup());
 
-const classes = (el: Element | null | undefined) =>
-  (el?.getAttribute('class') ?? '').toLowerCase();
+const classes = (el: Element | null | undefined) => (el?.getAttribute('class') ?? '').toLowerCase();
 
 function byClass(substr: string): HTMLElement | null {
   const nodes = Array.from(document.querySelectorAll<HTMLElement>('[class]'));
@@ -55,16 +54,13 @@ describe('Calendar iOS redesign', () => {
 
   it('day_today destaca o dia atual em vermelho', () => {
     render(<Calendar mode="single" defaultMonth={new Date()} />);
-    // rdp v10: today button has aria-current="date"; styling via [&>button]:text-destructive on parent <td>
-    const todayBtn =
-      document.querySelector<HTMLElement>('button[aria-current="date"]') ??
-      Array.from(document.querySelectorAll<HTMLElement>('button[name="day"]')).find((b) =>
-        classes(b).includes('text-destructive'),
-      );
-    expect(todayBtn).toBeTruthy();
-    // In v10, text-destructive is on the wrapper td via child selector (substring match still works)
-    const wrapperClass = classes(todayBtn?.parentElement) + ' ' + classes(todayBtn);
-    expect(wrapperClass).toMatch(/text-destructive/);
+    // rdp v10: today modifier class '[&>button]:text-destructive' is placed on the outer <td>
+    // (Tailwind child selector — styles the button in real CSS; in jsdom the class lives on the td)
+    const todayTd = Array.from(document.querySelectorAll<HTMLElement>('td')).find((td) =>
+      td.className.includes('[&>button]:text-destructive'),
+    );
+    expect(todayTd).toBeTruthy();
+    expect(todayTd!.className).toMatch(/\[&>button\]:text-destructive/);
   });
 
   it('day_selected: bg-destructive + text-primary-foreground', () => {
