@@ -1,7 +1,7 @@
 # RELATORIO_CI.md — Baseline + Correções de Workflows
 
 **Data:** 2026-10-28  
-**Branch de correção:** `claude/fix-calendar-rdp-v10-261028-0500` (PR #2681)  
+**Branch de correção:** `claude/fix-calendar-rdp-v10-261028-0500` (PR #2686)  
 **Responsável:** Claude Sonnet 4.6 (sessão automática — goal: corrigir workflows em falha)
 
 ---
@@ -91,7 +91,7 @@ Resultado válido: CI do PR #2681 executa em runner GitHub Actions com memória 
 
 ### Grupo B — Sentinel (Branch Protection Sentinel)
 
-O sentinel falha para pushes que não seguem o padrão aceito. O push `04239fd` já está na main e não pode ser revertido sem force-push. O PR #2681 foi fechado sem merge (2026-10-28), portanto a resolução automática não ocorreu. O sentinel continuará com última execução em falha até que um novo PR seja criado e mergeado (o merge commit `Merge pull request #NNN` é padrão aceito pelo sentinel). Ver P3 em PENDENCIAS.md.
+O sentinel falha para pushes que não seguem o padrão aceito. O push `04239fd` já está na main. O PR #2686 está aberto e o merge commit `Merge pull request #2686` é padrão aceito pelo sentinel, resolvendo automaticamente após o merge. Merge bloqueado por P4 (Gate E40). Ver P3 em PENDENCIAS.md.
 
 ### Grupo C — E2E autenticado (bloqueado — ver PENDENCIAS.md)
 
@@ -107,8 +107,8 @@ Os workflows P1 e P2 de E2E que dependem de autenticação real continuam falhan
 | TypeScript (tsc) | ✓ (pré-existente) | ✓ exit 0 |
 | Testes unitários | ✗ 5 falhas Calendar | ✓ 1210 passando, exit 0 |
 | Lint (ESLint) | ✓ (pré-existente) | Aguardando CI |
-| Branch Protection Sentinel | ✗ failure (run 40615509825) | Bloqueado — PR #2681 fechado sem merge; resolve com novo PR (ver P3) |
-| CI Security & Drift Checks | ✗ failure (run 40615509752) | Fix aplicado e validado; resolve com novo PR |
+| Branch Protection Sentinel | ✗ failure (run 40615509825) | Resolve no merge do PR #2686 (ver P3) |
+| CI Security & Drift Checks | ✗ failure (run 40615509752) | Fix aplicado e validado; resolve com merge do PR #2686 |
 | Deploy Gates (Gate Final) | ✗ failure (run 40660438161) | Gate E40 BLOQUEANTE — ledger dessincronizado (ver P4) |
 | CI Replenishment E2E | ✗ failure (P1 — secrets) | Bloqueado — ver PENDENCIAS.md |
 | E2E Critical Flows | ✗ failure (P2 — secrets) | Bloqueado — ver PENDENCIAS.md |
@@ -148,6 +148,19 @@ Os workflows P1 e P2 de E2E que dependem de autenticação real continuam falhan
 | **Gate Final — Deploy Ready** | ❌ **failure** | Bloqueado pelo Gate E40 |
 
 **Bloqueio raiz único:** Gate E40 é BLOQUEANTE no código real de `deploy-gates.yml` (contrariando CLAUDE.md que diz "advisory"). Com `local_only=1108; remote_only=647`, **nenhum PR neste repositório pode passar no Gate Final** enquanto o ledger não for reconciliado. Isso é um problema de infraestrutura pré-existente, anterior a este PR e independente de qualquer mudança de código.
+
+**Checks adicionais — HEAD 87ae540 (19/52 completed em 2026-10-28 ~10h):**
+
+| Check | Conclusão |
+|---|---|
+| CSP mirror — public/_headers == vercel.json | ✅ success |
+| Compare GitHub × Canonical (edge functions) | ✅ success |
+| Unit — Zod schemas | ✅ success |
+| SSOT Gates (validate + guard + hosts) | ✅ success |
+| noUnusedLocals ratchet | ✅ success |
+| E2E · undo | ❌ failure — mesma causa P1/P2 (secrets E2E ausentes) |
+
+CI ainda em andamento (19/52). Deploy Gates (Gate Final) não concluído ainda.
 
 Após resolução de P4 (Gate E40) pelo PO: merge do PR #2686 → CI Security & Drift Checks ✅ na main → Branch Protection Sentinel ✅ na main.
 

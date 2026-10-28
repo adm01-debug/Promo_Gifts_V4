@@ -1,7 +1,7 @@
 # PENDENCIAS.md — Itens bloqueados por secret/permissão/infraestrutura
 
 **Atualizado:** 2026-10-28  
-**Branch:** `claude/fix-calendar-rdp-v10-261028-0500` (PR #2681)
+**Branch:** `claude/fix-calendar-rdp-v10-261028-0500` (PR #2686)
 
 ---
 
