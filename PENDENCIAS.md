@@ -167,4 +167,35 @@ Este é um processo destrutivo de infraestrutura de banco de produção. Não po
 
 ---
 
+---
+
+## P6 — E2E · undo (falhas pré-existentes no main)
+
+**Workflow:** E2E · undo  
+**Run ID da última falha no PR:** 40667936090  
+**Link:** https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40667936090  
+**Status:** failure — pré-existente (3+ runs consecutivos falhando em main antes deste PR)
+
+**Erros exatos:**
+```
+1. [chromium-authed] › e2e/flows/04p-quotes-expiration-column.spec.ts:149
+   Error: status presente em primeiro acesso
+   expect(iStatus).toBeGreaterThanOrEqual(0) → recebeu -1
+   (coluna "status" não encontrada na lista de IDs de colunas)
+
+2. [chromium-authed] › e2e/flows/04r-undo-toast-a11y-keyboard.spec.ts:150
+   Error: expect(count).toBe(0) → recebeu 1
+   (click após 500ms ainda aciona onUndo — timing flake/regressão)
+```
+
+**Causa:** Falhas de lógica de aplicação — `E2E_MOCK_AUTH: 1` e secrets presentes, login funcionou. Coluna "status" não está na ordem esperada, e timer do undo toast não está expirando antes do click nos 500ms.
+
+**Confirmação que NÃO é causado por este PR:** Este PR altera apenas 3 arquivos de teste unitário (calendar, date-picker). O workflow `E2E · undo` já falhava em main 3 vezes consecutivas antes desta branch ser criada.
+
+**Ação necessária do PO:**
+- Investigar `04p-quotes-expiration-column.spec.ts`: verificar se coluna "status" foi removida ou reordenada na UI de orçamentos
+- Investigar `04r-undo-toast-a11y-keyboard.spec.ts:150`: aumentar timeout do timer ou corrigir race condition no undo toast (500ms pode ser insuficiente em CI)
+
+---
+
 *Ação prioritária única: resolver P4 (Gate E40) — desbloqueia P3, P5 e permite que P1/P2 sejam validados após merge. Sem P4, nenhum PR passa no Gate Final.*
