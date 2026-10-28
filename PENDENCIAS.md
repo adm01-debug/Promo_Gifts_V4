@@ -129,7 +129,8 @@ Nenhuma — o próximo push em `main` (quando este PR for mergeado) vai criar um
 ## P6 — `Running Copilot Code Review` — Bot externo (não controlável)
 
 **Status:** Aparece como "action_required" no workflow list  
-**Impacto:** Informativo — não bloqueia CI
+**Impacto:** Informativo — não bloqueia CI  
+**Nota adicional:** Exibiu `conclusion=failure` no commit `4357a2d4` (PR #2663). Bot externo — não controlável via código.
 
 ### Causa raiz
 `Running Copilot Code Review` é um check dinâmico criado pelo GitHub Copilot bot quando ele revisa um PR. Não é um workflow YAML no repositório — é uma check run criada pelo GitHub App do Copilot.
@@ -255,19 +256,50 @@ Mesma raiz do P11: o fix (PR #2663) está pronto mas aguarda aprovação do PO p
 
 ---
 
+## P14 — `edge-integration-all.yml` — `validate-access` em produção é versão antiga
+
+**Run ID baseline:** 40556584737 (commit `ac0fe47`)  
+**Status:** FALHA — 6 testes falham em `tests/edge-functions/live/validate-access.test.ts`  
+**Impacto:** Alto — função `validate-access` em prod aceita inputs inválidos como válidos
+
+### Causa raiz
+A edge function `validate-access` deployada em produção (`doufsxqlfjyuvxuezpln`) é versão antiga sem validação de input. O código no repo (desde commit `ac0fe47`) já tem validação (`missingBodyResponse`, `invalidJsonResponse`, `validationErrorResponse`), mas o Supabase ainda serve a versão antiga.
+
+Erro exato: `AssertionError: JSON inválido: deveria ser 4xx: expected 200 to be greater than or equal to 400`
+
+Cenários com falha (todos retornam HTTP 200, esperado ≥ 400):
+- JSON inválido: `{"Content-Type": "application/json"}` com body `{brokenJson}`
+- Body vazio: sem body
+- Array: `[1, 2, 3]`
+- String crua: `"texto"`
+- null
+- número: `42`
+
+### Por que não foi resolvido
+Deploy de edge function via MCP direto é proibido (REGRA #8 corolário). O único caminho autorizado é `deploy-edge-functions.yml` via `workflow_dispatch`.
+
+### Ação necessária
+`APROVADO` → dispatch `deploy-edge-functions.yml` com `function_name: validate-access`  
+(deploy pontual, não deploya as demais 105 funções)
+
+**Risco:** produção (deploy de function única, baixo risco).
+
+---
+
 ## Resumo de prioridades
 
 | # | Workflow | Prioridade | Decisão do PO |
 |---|---|---|---|
 | **P11** | **`deploy-gates.yml` (main)** | **CRÍTICA** | **Aprovar e mergear PR #2663** |
 | P9 | `db-apply-migration.yml` rollback header | ALTA (aguarda re-dispatch) | Re-disparar com `version=20261027160000` |
+| P14 | `edge-integration-all.yml` — `validate-access` prod desatualizada | ALTA | `APROVADO` → dispatch `deploy-edge-functions.yml` `function_name: validate-access` |
 | P1 | `edge-functions-drift-check.yml` | ALTA | Deploy de 106 funções em prod — precisa de `APROVADO` |
 | P5 | `e2e-magazine-header.yml` | ALTA | Migração zustand v5 — trabalho de desenvolvimento |
 | P2 | `ci-security-drift.yml` | MÉDIA | Fix de seletores E2E — pode ser delegado |
 | P3 | `e2e-swatch-quickview.yml` | MÉDIA | Investigação de dados de teste |
 | P10 | `ci-replenishment-module.yml` screenshot diff | MÉDIA | Decisão sobre paridade visual |
 | P4 | `e2e.yml` | BAIXA | Nenhuma ação — próximo push resolve |
-| P6 | `Running Copilot Code Review` | NENHUMA | Ignorar |
+| P6 | `Running Copilot Code Review` | NENHUMA | Ignorar (bot externo; exibiu failure em `4357a2d4`) |
 | P7 | `deploy-gates.yml` react-day-picker fix | RESOLVIDO (no PR) | Merge do PR #2663 aplica o fix |
 | P8 | `branch-protection-sentinel.yml` | NÃO RESOLVÍVEL | Histórico de commit, nada a fazer |
 | P12 | `uptime-monitor.yml` | BAIXA | Monitor externo — aguardar próximos runs após merge |
