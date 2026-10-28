@@ -216,6 +216,45 @@ Fix inclui código TypeScript em `src/` (código de aplicação). Merge em `main
 
 ---
 
+## P12 — `uptime-monitor.yml` — Health check externo (serviço down ou DNS)
+
+**Run ID:** 40602942609  
+**Status:** FALHA em main (commit `4c5fdd72`)  
+**Impacto:** Baixo — monitor externo; não bloqueia CI/deploy
+
+### Causa raiz
+`uptime-monitor.yml` é um workflow de schedule (30 min) que faz HTTP GET na URL de produção do projeto e falha se o status não for 2xx. A falha pode ser:
+- Serviço temporariamente indisponível durante a janela de deploy causada pelo commit `4c5fdd72` do Lovable
+- DNS/CDN transitório
+- Bug no próprio workflow (auth, URL, timeout)
+
+### Por que não foi resolvido
+- Workflow de monitoramento periódico — falhas transitórias são esperadas durante deploys
+- Não há código de aplicação a corrigir; o próximo run (30 min depois) deve voltar a verde se o deploy estabilizou
+- Se falhas persistirem após merge do PR #2663, investigar URL e timeout do workflow
+
+### Ação necessária
+Nenhuma imediata — monitorar próximas execuções após merge do PR #2663. Se ainda falhar: verificar URL e timeout em `uptime-monitor.yml`.
+
+---
+
+## P13 — `e2e.yml` (Critical Flows & Error Boundaries) — Falha em main
+
+**Run ID:** 40597996472  
+**Status:** FALHA em main (commit `4c5fdd72` — react-day-picker v10 pelo Lovable)  
+**Impacto:** Alto — testes E2E críticos bloqueados
+
+### Causa raiz
+O `e2e.yml` roda os critical flows e error boundaries do app. A falha no commit `4c5fdd72` é consequência direta do mesmo bug do react-day-picker v10 que quebrou o Gate 1 TypeScript (P11/P7): o bundle não compila com erros TS, então o app não sobe no CI e os E2E falham.
+
+### Por que não foi resolvido
+Mesma raiz do P11: o fix (PR #2663) está pronto mas aguarda aprovação do PO para merge em main. O `e2e.yml` voltará a passar automaticamente após o merge do PR #2663.
+
+### Ação necessária
+`APROVADO` → PO aprova e mergeia PR #2663. O `e2e.yml` será re-triggerado pelo push em main e deve passar.
+
+---
+
 ## Resumo de prioridades
 
 | # | Workflow | Prioridade | Decisão do PO |
@@ -231,3 +270,5 @@ Fix inclui código TypeScript em `src/` (código de aplicação). Merge em `main
 | P6 | `Running Copilot Code Review` | NENHUMA | Ignorar |
 | P7 | `deploy-gates.yml` react-day-picker fix | RESOLVIDO (no PR) | Merge do PR #2663 aplica o fix |
 | P8 | `branch-protection-sentinel.yml` | NÃO RESOLVÍVEL | Histórico de commit, nada a fazer |
+| P12 | `uptime-monitor.yml` | BAIXA | Monitor externo — aguardar próximos runs após merge |
+| **P13** | **`e2e.yml` Critical Flows** | **ALTA** | **Mesma raiz do P11 — resolve com merge do PR #2663** |

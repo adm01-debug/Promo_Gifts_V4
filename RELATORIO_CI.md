@@ -60,7 +60,7 @@ Commit atual: `4c5fdd72` (react-day-picker v8→v10 bump pelo Lovable, posterior
 | `npm run build` (Vite) | ✅ OK — exit 0 |
 | `npm run lint` (ESLint) | ✅ OK — 0 erros, 0 warnings |
 | `npx tsc --noEmit` | ✅ OK — exit 0 (sem erros TypeScript no baseline) |
-| `npx vitest run` | ⚠️ Não concluído localmente (timeout; runner CI executa em ~8 min) |
+| `npx vitest run` | ✅ OK — exit 0 (10 suites, todos os testes passaram; confirmado task b8y6sdtjn) |
 | `node scripts/validate-supabase-config.mjs` | ✅ OK — canônico `doufsxqlfjyuvxuezpln` confirmado |
 | `node scripts/check-eslint-baseline.mjs` | ✅ OK — baseline: 0 erros |
 
