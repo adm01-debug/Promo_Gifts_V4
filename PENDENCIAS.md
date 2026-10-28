@@ -345,4 +345,34 @@ at e2e/quotes/quote-view-no-presentation-mode.spec.ts:369
 
 ---
 
-*Ação prioritária única: resolver P4 (Gate E40) — desbloqueia P3, P5, P7 e permite que P1/P2/P9/P10 sejam validados após merge. P8 e P11/P12 requerem ações separadas do PO independentes de P4.*
+---
+
+## P13 — Vercel deployment failure (pré-existente em todos os commits desta branch)
+
+**Check:** Vercel commit status  
+**Deployment IDs com falha:**
+- `dpl_B5Yf4S5kEH9wNh4aASkq6M56psbW` (sha `af8000c`, 2026-10-28 10:32)
+- deployments anteriores na mesma branch: `ba8384c`, `77bab46` (falhas relatadas na sessão anterior, não investigadas por 404 no MCP)
+
+**Erro reportado:**
+```
+Vercel: Deployment has failed
+context: "Vercel"
+description: "Deployment has failed — run this Vercel CLI command: npx vercel inspect dpl_B5Yf4S5kEH9wNh4aASkq6M56psbW --logs"
+```
+
+**Causa raiz provável:** Falha de "Resource provisioning" relacionada ao projeto fantasma `promo-gifts-reconciliation-integrity-20260915` (`prj_W1Zdi6BQWkAwQx5VJjpSNlZubeok`) criado em 2026-09-15 — incidente documentado na REGRA #11 do CLAUDE.md. Esse projeto fantasma conectado ao mesmo repo pode causar conflito de deployments.
+
+**Evidências de que NÃO é causado por este PR:**
+1. Falhas ocorrem em TODOS os commits desta branch (documentação + testes unitários), sem alterar código de produção
+2. Arquivos alterados (`.test.tsx`, `.md`) são excluídos do build Vite
+3. O MCP Vercel retorna 404 para todos os deployments desta branch — indicativo de problema de configuração de projeto, não de build
+
+**Ação necessária do PO:**
+- Verificar se o projeto fantasma `prj_W1Zdi6BQWkAwQx5VJjpSNlZubeok` ainda existe em https://vercel.com/juca1 e deletá-lo
+- Após deletar: re-run do Vercel deployment via novo push ou re-trigger
+- Confirmar que `.vercel/project.json` contém `"projectId": "prj_9UfugNYCuboH2R0XB04Jv8PpjDpZ"` (projeto canônico)
+
+---
+
+*Ação prioritária única: resolver P4 (Gate E40) — desbloqueia P3, P5, P7 e permite que P1/P2/P9/P10 sejam validados após merge. P8, P11, P12 e P13 requerem ações separadas do PO independentes de P4.*
