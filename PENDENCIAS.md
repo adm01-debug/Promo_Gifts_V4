@@ -365,6 +365,129 @@ Nenhum dos nossos commits (P16, P10, docs) tocou qualquer componente relacionado
 
 ---
 
+## P17 — Kit Coverage Integration — RLS permission denied (produto_kit_components / v_kit_component_complete)
+
+**Run ID:** 40628415319  
+**Workflow:** `edge-integration-all.yml` (job: kit-coverage-integration ou equivalente)  
+**Status:** FALHA — erro de permissão RLS  
+**Impacto:** Alto — cobertura de kits completamente bloqueada em CI
+
+### Causa raiz
+Step de integração de kits falha com:
+```
+permission denied for table product_kit_components
+permission denied for view v_kit_component_complete
+```
+O role de teste (provavelmente `authenticated` ou role de service account do CI) não tem GRANT de SELECT nas tabelas/views de componentes de kits. A RLS está habilitada mas a policy ou o GRANT para o role do CI está ausente.
+
+### Por que não foi resolvido
+Corrigir requer DDL: `GRANT SELECT ON product_kit_components, v_kit_component_complete TO <role>` ou criação de policy RLS. DDL via `execute_sql` em sessão de agente é proibido (REGRA #8 corolário E056). O caminho correto é migration SQL + PR + `db-apply-migration.yml`.
+
+### Ação necessária
+`APROVADO` → autorizar criação de migration com:
+```sql
+GRANT SELECT ON public.product_kit_components TO authenticated;
+GRANT SELECT ON public.v_kit_component_complete TO authenticated;
+```
+Ou revisar a RLS policy existente. Migration deve passar pelo workflow `db-apply-migration.yml`.
+
+**Risco:** baixo (somente GRANT de leitura, não altera estrutura de dados).
+
+---
+
+## P18 — `uptime-monitor.yml` — Edge function `health-check` retornando HTTP ≥ 400
+
+**Run ID:** 40627515243  
+**Status:** FALHA — curl exit 22 (HTTP ≥ 400)  
+**Impacto:** Médio — monitor de uptime alarma falso positivo em produção
+
+### Causa raiz
+O workflow `uptime-monitor.yml` faz `curl --fail` em endpoints específicos. O endpoint da edge function `health-check` está retornando status HTTP ≥ 400. Os demais endpoints (`site`, `check-login`, `auth-health`) passam normalmente (exit 0). Apenas o probe `health-check` falha (exit 22 = curl HTTP error).
+
+Possíveis causas:
+- Edge function `health-check` retornando erro (500, 404, ou 401)
+- Versão deployada em produção diverge do repo (igual ao drift de P1/P14)
+- Lógica da função: verifica algum recurso que está degradado
+
+### Por que não foi resolvido
+Requer investigação do código da `health-check` + logs de execução em `doufsxqlfjyuvxuezpln`. Deploy corretivo segue o mesmo caminho de P14 (`deploy-edge-functions.yml`).
+
+### Ação necessária
+1. Verificar logs da function `health-check` no Supabase canônico
+2. Se versão deployada diverge do repo: dispatch `deploy-edge-functions.yml` com `function_name: health-check`
+3. Se a function tem bug: corrigir código + PR + dispatch
+
+---
+
+## P19 — `Nightly Full CI` — E2E `magazine-header`: `E2E_USER_EMAIL/PASSWORD` ausentes no runner nightly
+
+**Run ID:** 40622763252 (job 122605008157)  
+**Status:** FALHA — 14 testes falharam por ausência de secrets  
+**Impacto:** Alto — teste de magazine header completamente bloqueado no nightly
+
+### Causa raiz
+O runner do workflow nightly (`schedule`) não tem acesso às secrets `E2E_USER_EMAIL` e `E2E_USER_PASSWORD`. O helper `loginAs` opera em modo estrito (`E21`):
+```
+[loginAs] E21 — modo estrito: E2E_USER_EMAIL/PASSWORD ausentes em CI
+```
+Todos os 14 testes do `e2e-magazine-header.yml` falharam com este erro.
+
+### Por que não foi resolvido
+Secrets são configuradas por environment no GitHub Actions. O workflow nightly provavelmente usa um environment diferente (ou nenhum) que não herda as secrets de E2E. Requer acesso ao GitHub Settings → Environments para configurar.
+
+### Ação necessária
+Configurar `E2E_USER_EMAIL` e `E2E_USER_PASSWORD` no environment usado pelo workflow `nightly-full-ci.yml` (ou `.github/workflows/e2e-magazine-header.yml` se tiver trigger schedule próprio).
+
+**Alternativa:** configurar as secrets como repository-level secrets (não environment-scoped) se forem seguras para todos os runners.
+
+---
+
+## P20 — `Nightly Full CI` — E2E `color-swatch`: auth redirect em CI (pré-existente)
+
+**Run ID:** 40622763252  
+**Status:** FALHA — `page.waitForSelector('[data-testid="product-card"]')` timeout  
+**Impacto:** Médio — testes visuais de swatch bloqueados no nightly
+
+### Causa raiz
+Mesma causa raiz do P10 (`ci-replenishment-module.yml`): JWT expira durante bateria longa de testes; `gotoAndSettle` redireciona para `/login` silenciosamente; o componente alvo nunca monta.
+
+Erro exato:
+```
+page.waitForSelector('[data-testid="product-card"]') timeout
+```
+O browser estava em `/login` mas o teste esperava product cards da página de catálogo.
+
+**Esta falha é pré-existente em `main`** — não foi introduzida pelo PR #2663. O fix de URL guard (commits `cbe33d3`/`9e2ef4f`) cobre `/reposicao`, mas não cobre `color-swatch` que provavelmente navega para `/catalog` ou similar.
+
+### Por que não foi resolvido
+O fix de P10 adicionado nesta sessão cobre `novidades-reposicao-card-parity.spec.ts`. O spec `color-swatch` é arquivo diferente — requer auditoria separada do mesmo padrão de URL guard.
+
+### Ação necessária
+Aplicar o mesmo padrão de URL guard em `e2e/visual/color-swatch.spec.ts` (ou caminho equivalente): após cada `gotoAndSettle`, verificar `page.url().includes(route)` e chamar `test.skip` se auth redirected.
+
+---
+
+## P21 — Vercel `Resource provisioning failed` — projeto fantasma (REGRA #11)
+
+**Deployment:** `dpl_BnkramEriSzzEuC8wQWGgskGehPd` (commit `32021c5`)  
+**Status:** `BUILD_FAILED` — `Resource provisioning failed`  
+**Impacto:** Cada push para `main` dispara 2× builds Vercel; um deles falha com "Resource provisioning failed"
+
+### Causa raiz
+Incidente REGRA #11 (2026-09-15): agente rodou `vercel link` dentro de um worktree sem herdar `.vercel/project.json`. Criou projeto fantasma `promo-gifts-reconciliation-integrity-20260915` (`prj_W1Zdi6BQWkAwQx5VJjpSNlZubeok`) conectado ao mesmo repositório. O Vercel agora dispara build simultânea dos dois projetos a cada push — o projeto fantasma não tem os recursos provisionados e falha com `Resource provisioning failed`.
+
+**Este erro NÃO é causado pelo PR #2663** — é infra-estrutura de fundo desde 15/09/2026.
+
+### Por que não foi resolvido
+Requer acesso ao dashboard Vercel para remover/desconectar o projeto fantasma `prj_W1Zdi6BQWkAwQx5VJjpSNlZubeok`. Não é uma mudança de código.
+
+### Ação necessária (requer PO)
+1. No dashboard Vercel (`vercel.com/juca1`): localizar projeto `promo-gifts-reconciliation-integrity-20260915`
+2. Desconectar do repositório GitHub ou deletar o projeto
+3. Confirmar que apenas `prj_9UfugNYCuboH2R0XB04Jv8PpjDpZ` permanece conectado ao repo
+
+---
+
 ## Resumo de prioridades
 
 | # | Workflow | Prioridade | Decisão do PO |
@@ -385,4 +508,9 @@ Nenhum dos nossos commits (P16, P10, docs) tocou qualquer componente relacionado
 | P12 | `uptime-monitor.yml` | BAIXA | Monitor externo — aguardar próximos runs após merge |
 | **P13** | **`e2e.yml` Critical Flows** | **ALTA** | **Mesma raiz do P11 — resolve com merge do PR #2663** |
 | **P15** | **Gate E40 `deploy-gates.yml` ledger drift (local=1108; remote=647)** | **CRÍTICA** | **Investigar se threshold mudou ou se é divergência pré-existente; reconciliação exige tarefa separada** |
+| **P17** | Kit Coverage Integration — `product_kit_components` permission denied | ALTA | Autorizar migration GRANT SELECT para role authenticated |
+| P18 | `uptime-monitor.yml` — `health-check` retorna HTTP ≥ 400 | MÉDIA | Verificar logs + redeploy via `deploy-edge-functions.yml` `function_name: health-check` |
+| P19 | Nightly Full CI — magazine-header: `E2E_USER_EMAIL/PASSWORD` ausentes | ALTA | Configurar secrets no environment do nightly runner |
+| P20 | Nightly Full CI — color-swatch: auth redirect (pré-existente, igual P10) | MÉDIA | Aplicar URL guard em `color-swatch.spec.ts` |
 | P17 | `e2e-quotes-matrix.yml` — snapshot `quote-actions-menu` 128px vs 133px | MÉDIA | Atualizar baselines de snapshot (não bloqueia PR #2663) |
+| P21 | Vercel `Resource provisioning failed` — projeto fantasma REGRA #11 | INFRA | Remover projeto fantasma `prj_W1Zdi6BQWkAwQx5VJjpSNlZubeok` (requer ação PO no dashboard Vercel) |
