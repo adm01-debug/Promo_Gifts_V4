@@ -79,14 +79,14 @@ Commit atual: `62af0798dd` (PR #2673 — baselines visuais pós-v10, 8 PNGs)
 | Pre-push hook `check-eslint-baseline.mjs` | ✅ OK — nenhuma regressão detectada |
 | CI `deploy-gates.yml` no PR branch | ✅ [Run #40601426870 — success](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40601426870) — commit `c391f4e`, Gate E40 skipped (sem migration files naquele commit) |
 
-**HEAD atual da branch (`44cd1a8`):**
+**HEAD atual da branch (`74fabb1`):**
 
 | Check | Resultado |
 |---|---|
 | Gate 1 TypeScript | ✅ Fix em `90264719` — confirmado por run #40601426870 (commit `c391f4e`) |
 | Gate E40 (db-schema-drift-check) | ❌ FALHA esperada — P15 (647 remote_only migrations, pré-existente) |
 | Gate Final | ❌ FALHA esperada — bloqueado por Gate E40 (P15) |
-| Deploy Gates run `44cd1a8` | ⏳ Run #40624145702 — PENDING (GitHub Actions runner backlog, criado 03:00 UTC) |
+| Deploy Gates run `74fabb1` | ⏳ Run #40625119953 — PENDING (GitHub Actions runner backlog) |
 
 ---
 
