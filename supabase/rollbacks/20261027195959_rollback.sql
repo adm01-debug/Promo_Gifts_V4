@@ -1,38 +1,41 @@
 -- Rollback: 20261027195959_supplier_stricker_rls_deny_all.sql
--- Remove RLS e policy deny_all das 17 tabelas de supplier_stricker.
+-- Remove somente a policy deny_all criada pela migration e desabilita RLS
+-- nas tabelas Stricker que ela protege.
 
-DROP POLICY IF EXISTS deny_all ON supplier_stricker.canceled_products;
-DROP POLICY IF EXISTS deny_all ON supplier_stricker.category_mappings;
-DROP POLICY IF EXISTS deny_all ON supplier_stricker.colors;
-DROP POLICY IF EXISTS deny_all ON supplier_stricker.stg_colors;
-DROP POLICY IF EXISTS deny_all ON supplier_stricker.customization_options;
-DROP POLICY IF EXISTS deny_all ON supplier_stricker.customization_tables;
-DROP POLICY IF EXISTS deny_all ON supplier_stricker.stg_customizations;
-DROP POLICY IF EXISTS deny_all ON supplier_stricker.stg_images;
-DROP POLICY IF EXISTS deny_all ON supplier_stricker.optionals;
-DROP POLICY IF EXISTS deny_all ON supplier_stricker.stg_product_types;
-DROP POLICY IF EXISTS deny_all ON supplier_stricker.product_types;
-DROP POLICY IF EXISTS deny_all ON supplier_stricker.products;
-DROP POLICY IF EXISTS deny_all ON supplier_stricker.stg_optionals;
-DROP POLICY IF EXISTS deny_all ON supplier_stricker.stg_products;
-DROP POLICY IF EXISTS deny_all ON supplier_stricker.stg_stock;
-DROP POLICY IF EXISTS deny_all ON supplier_stricker.stocks;
-DROP POLICY IF EXISTS deny_all ON supplier_stricker.sync_log;
-
-ALTER TABLE supplier_stricker.canceled_products     DISABLE ROW LEVEL SECURITY;
-ALTER TABLE supplier_stricker.category_mappings     DISABLE ROW LEVEL SECURITY;
-ALTER TABLE supplier_stricker.colors                DISABLE ROW LEVEL SECURITY;
-ALTER TABLE supplier_stricker.stg_colors              DISABLE ROW LEVEL SECURITY;
-ALTER TABLE supplier_stricker.customization_options DISABLE ROW LEVEL SECURITY;
-ALTER TABLE supplier_stricker.customization_tables  DISABLE ROW LEVEL SECURITY;
-ALTER TABLE supplier_stricker.stg_customizations     DISABLE ROW LEVEL SECURITY;
-ALTER TABLE supplier_stricker.stg_images              DISABLE ROW LEVEL SECURITY;
-ALTER TABLE supplier_stricker.optionals             DISABLE ROW LEVEL SECURITY;
-ALTER TABLE supplier_stricker.stg_product_types       DISABLE ROW LEVEL SECURITY;
-ALTER TABLE supplier_stricker.product_types         DISABLE ROW LEVEL SECURITY;
-ALTER TABLE supplier_stricker.products              DISABLE ROW LEVEL SECURITY;
-ALTER TABLE supplier_stricker.stg_optionals         DISABLE ROW LEVEL SECURITY;
-ALTER TABLE supplier_stricker.stg_products          DISABLE ROW LEVEL SECURITY;
-ALTER TABLE supplier_stricker.stg_stock             DISABLE ROW LEVEL SECURITY;
-ALTER TABLE supplier_stricker.stocks                DISABLE ROW LEVEL SECURITY;
-ALTER TABLE supplier_stricker.sync_log              DISABLE ROW LEVEL SECURITY;
+DO $rollback$
+DECLARE
+  _table text;
+  _tables constant text[] := ARRAY[
+    'canceled_products',
+    'category_mappings',
+    'colors',
+    'stg_colors',
+    'customization_options',
+    'customization_tables',
+    'stg_customizations',
+    'stg_images',
+    'optionals',
+    'stg_product_types',
+    'product_types',
+    'products',
+    'stg_optionals',
+    'stg_products',
+    'stg_stock',
+    'stocks',
+    'sync_log'
+  ];
+BEGIN
+  FOREACH _table IN ARRAY _tables LOOP
+    IF to_regclass(format('%I.%I', 'supplier_stricker', _table)) IS NOT NULL THEN
+      EXECUTE format(
+        'DROP POLICY IF EXISTS deny_all ON supplier_stricker.%I',
+        _table
+      );
+      EXECUTE format(
+        'ALTER TABLE supplier_stricker.%I DISABLE ROW LEVEL SECURITY',
+        _table
+      );
+    END IF;
+  END LOOP;
+END;
+$rollback$;

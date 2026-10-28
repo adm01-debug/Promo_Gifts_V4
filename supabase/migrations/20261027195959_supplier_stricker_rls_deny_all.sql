@@ -1,124 +1,81 @@
 -- Migration: 20261027195959_supplier_stricker_rls_deny_all.sql
--- CONTEXTO: Schema supplier_stricker tem 17 tabelas sem RLS e grants SELECT
--- a `authenticated` já existentes. Schema USAGE não concedido → hoje inacessível.
--- RISCO: se GRANT USAGE ON SCHEMA supplier_stricker TO authenticated for adicionado,
--- todas as 17 tabelas ficam expostas irrestritamente (sem RLS = deny-all silencioso
--- nunca garante deny-all, cada policy ausente = acesso livre para quem tem USAGE).
--- FIX: habilitar RLS em todas as 17 tabelas com policy deny-all explícita.
--- Ao expor uma tabela via API no futuro: substituir a policy por uma USING real.
--- Evidência: auditoria 2026-10-27 docs/db/SCHEMAS_EXTRA_AUDIT_2026-10-27.md
--- Rollback: DROP POLICY deny_all ON supplier_stricker.X + ALTER TABLE X DISABLE ROW LEVEL SECURITY
+-- CONTEXTO: schema supplier_stricker contém tabelas com grants já concedidos,
+-- mas sem RLS. A falta atual de USAGE no schema não é uma barreira permanente.
+-- FIX: habilitar RLS e instalar policies RESTRICTIVE que negam todas as linhas.
+-- RESTRICTIVE garante que policies permissivas adicionadas no futuro não
+-- concedam acesso acidentalmente. Exponha uma tabela só após substituir a
+-- policy por uma regra aprovada.
+-- Evidência: docs/db/SCHEMAS_EXTRA_AUDIT_2026-10-27.md
+-- Esta versão substitui 20261027200000, ainda pendente e nunca aplicada.
 
--- ── PRÉ-CONDIÇÕES ──────────────────────────────────────────────────────────────
-
-DO $$
+DO $migration$
 DECLARE
-  missing text[];
+  _table text;
+  _tables constant text[] := ARRAY[
+    'canceled_products',
+    'category_mappings',
+    'colors',
+    'stg_colors',
+    'customization_options',
+    'customization_tables',
+    'stg_customizations',
+    'stg_images',
+    'optionals',
+    'stg_product_types',
+    'product_types',
+    'products',
+    'stg_optionals',
+    'stg_products',
+    'stg_stock',
+    'stocks',
+    'sync_log'
+  ];
+  _missing text[];
+  _unprotected text[];
 BEGIN
-  SELECT ARRAY_AGG(t) INTO missing
-  FROM UNNEST(ARRAY[
-    'canceled_products','category_mappings','colors','stg_colors',
-    'customization_options','customization_tables','stg_customizations','stg_images',
-    'optionals','stg_product_types','product_types','products',
-    'stg_optionals','stg_products','stg_stock','stocks','sync_log'
-  ]) t
-  WHERE NOT EXISTS (
-    SELECT 1 FROM pg_class c
-    JOIN pg_namespace n ON n.oid = c.relnamespace
-    WHERE n.nspname = 'supplier_stricker' AND c.relname = t AND c.relkind = 'r'
-  );
+  SELECT array_agg(t.table_name ORDER BY t.table_name)
+    INTO _missing
+    FROM unnest(_tables) AS t(table_name)
+   WHERE to_regclass(format('%I.%I', 'supplier_stricker', t.table_name)) IS NULL;
 
-  IF missing IS NOT NULL THEN
-    RAISE EXCEPTION 'Pré-condição falhou: tabelas não encontradas em supplier_stricker: %',
-      array_to_string(missing, ', ');
-  END IF;
-END;
-$$;
-
--- ── ENABLE RLS + POLICY DENY-ALL ──────────────────────────────────────────────
-
-ALTER TABLE supplier_stricker.canceled_products     ENABLE ROW LEVEL SECURITY;
-ALTER TABLE supplier_stricker.category_mappings     ENABLE ROW LEVEL SECURITY;
-ALTER TABLE supplier_stricker.colors                ENABLE ROW LEVEL SECURITY;
-ALTER TABLE supplier_stricker.stg_colors              ENABLE ROW LEVEL SECURITY;
-ALTER TABLE supplier_stricker.customization_options ENABLE ROW LEVEL SECURITY;
-ALTER TABLE supplier_stricker.customization_tables  ENABLE ROW LEVEL SECURITY;
-ALTER TABLE supplier_stricker.stg_customizations     ENABLE ROW LEVEL SECURITY;
-ALTER TABLE supplier_stricker.stg_images              ENABLE ROW LEVEL SECURITY;
-ALTER TABLE supplier_stricker.optionals             ENABLE ROW LEVEL SECURITY;
-ALTER TABLE supplier_stricker.stg_product_types       ENABLE ROW LEVEL SECURITY;
-ALTER TABLE supplier_stricker.product_types         ENABLE ROW LEVEL SECURITY;
-ALTER TABLE supplier_stricker.products              ENABLE ROW LEVEL SECURITY;
-ALTER TABLE supplier_stricker.stg_optionals         ENABLE ROW LEVEL SECURITY;
-ALTER TABLE supplier_stricker.stg_products          ENABLE ROW LEVEL SECURITY;
-ALTER TABLE supplier_stricker.stg_stock             ENABLE ROW LEVEL SECURITY;
-ALTER TABLE supplier_stricker.stocks                ENABLE ROW LEVEL SECURITY;
-ALTER TABLE supplier_stricker.sync_log              ENABLE ROW LEVEL SECURITY;
-
-CREATE POLICY deny_all ON supplier_stricker.canceled_products     USING (false);
-CREATE POLICY deny_all ON supplier_stricker.category_mappings     USING (false);
-CREATE POLICY deny_all ON supplier_stricker.colors                USING (false);
-CREATE POLICY deny_all ON supplier_stricker.stg_colors              USING (false);
-CREATE POLICY deny_all ON supplier_stricker.customization_options USING (false);
-CREATE POLICY deny_all ON supplier_stricker.customization_tables  USING (false);
-CREATE POLICY deny_all ON supplier_stricker.stg_customizations     USING (false);
-CREATE POLICY deny_all ON supplier_stricker.stg_images              USING (false);
-CREATE POLICY deny_all ON supplier_stricker.optionals             USING (false);
-CREATE POLICY deny_all ON supplier_stricker.stg_product_types       USING (false);
-CREATE POLICY deny_all ON supplier_stricker.product_types         USING (false);
-CREATE POLICY deny_all ON supplier_stricker.products              USING (false);
-CREATE POLICY deny_all ON supplier_stricker.stg_optionals         USING (false);
-CREATE POLICY deny_all ON supplier_stricker.stg_products          USING (false);
-CREATE POLICY deny_all ON supplier_stricker.stg_stock             USING (false);
-CREATE POLICY deny_all ON supplier_stricker.stocks                USING (false);
-CREATE POLICY deny_all ON supplier_stricker.sync_log              USING (false);
-
--- ── PÓS-CONDIÇÕES ─────────────────────────────────────────────────────────────
-
-DO $$
-DECLARE
-  not_rls text[];
-  no_policy text[];
-BEGIN
-  -- Verifica RLS habilitado
-  SELECT ARRAY_AGG(relname) INTO not_rls
-  FROM pg_class c
-  JOIN pg_namespace n ON n.oid = c.relnamespace
-  WHERE n.nspname = 'supplier_stricker'
-    AND c.relkind = 'r'
-    AND c.relname = ANY(ARRAY[
-      'canceled_products','category_mappings','colors','stg_colors',
-      'customization_options','customization_tables','stg_customizations','stg_images',
-      'optionals','stg_product_types','product_types','products',
-      'stg_optionals','stg_products','stg_stock','stocks','sync_log'
-    ])
-    AND NOT c.relrowsecurity;
-
-  IF not_rls IS NOT NULL THEN
-    RAISE EXCEPTION 'Pós-condição falhou: RLS não habilitado em: %',
-      array_to_string(not_rls, ', ');
+  IF _missing IS NOT NULL THEN
+    RAISE EXCEPTION 'Pré-condição falhou: tabelas ausentes em supplier_stricker: %',
+      array_to_string(_missing, ', ');
   END IF;
 
-  -- Verifica policy deny_all criada
-  SELECT ARRAY_AGG(DISTINCT c.relname) INTO no_policy
-  FROM pg_class c
-  JOIN pg_namespace n ON n.oid = c.relnamespace
-  WHERE n.nspname = 'supplier_stricker'
-    AND c.relkind = 'r'
-    AND c.relname = ANY(ARRAY[
-      'canceled_products','category_mappings','colors','stg_colors',
-      'customization_options','customization_tables','stg_customizations','stg_images',
-      'optionals','stg_product_types','product_types','products',
-      'stg_optionals','stg_products','stg_stock','stocks','sync_log'
-    ])
-    AND NOT EXISTS (
-      SELECT 1 FROM pg_policy p
-      WHERE p.polrelid = c.oid AND p.polname = 'deny_all'
+  FOREACH _table IN ARRAY _tables LOOP
+    EXECUTE format(
+      'ALTER TABLE supplier_stricker.%I ENABLE ROW LEVEL SECURITY',
+      _table
     );
+    EXECUTE format(
+      'CREATE POLICY deny_all ON supplier_stricker.%I AS RESTRICTIVE USING (false)',
+      _table
+    );
+  END LOOP;
 
-  IF no_policy IS NOT NULL THEN
-    RAISE EXCEPTION 'Pós-condição falhou: policy deny_all ausente em: %',
-      array_to_string(no_policy, ', ');
+  SELECT array_agg(c.relname ORDER BY c.relname)
+    INTO _unprotected
+    FROM pg_class AS c
+    JOIN pg_namespace AS n ON n.oid = c.relnamespace
+   WHERE n.nspname = 'supplier_stricker'
+     AND c.relname = ANY(_tables)
+     AND c.relkind = 'r'
+     AND (
+       NOT c.relrowsecurity
+       OR NOT EXISTS (
+         SELECT 1
+           FROM pg_policy AS p
+          WHERE p.polrelid = c.oid
+            AND p.polname = 'deny_all'
+            AND NOT p.polpermissive
+            AND pg_get_expr(p.polqual, p.polrelid) = 'false'
+       )
+     );
+
+  IF _unprotected IS NOT NULL THEN
+    RAISE EXCEPTION 'Pós-condição falhou: RLS/policy RESTRICTIVE deny_all inválida em: %',
+      array_to_string(_unprotected, ', ');
   END IF;
 END;
-$$;
+$migration$;
