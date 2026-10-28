@@ -233,7 +233,11 @@
       "diff_descricao": "Seletores: button[name='day'] → rdp v10 sem name attr; aria-selected em td não button. Fallbacks v8 mantidos.",
       "regressao": "NENHUMA — apenas arquivos de teste",
       "regra_negocio": "Válida — compatibilidade com rdp v10",
-      "motivo_bloqueio": "mergeable_state: blocked (CI pendente na branch). REGRA #10: outra sessão."
+      "motivo_bloqueio": "mergeable_state: blocked (CI pendente na branch). REGRA #10: outra sessão.",
+      "estado_final": "MERGEADA",
+      "merge_commit_sha": "ab70ca24300a2d9c8a1109a65a7b25ee02250a3e",
+      "merged_at": "2026-10-28T05:06:03Z",
+      "merged_by": "adm01-debug"
     },
     {
       "pr": 2680,
@@ -254,15 +258,24 @@
       "diff_descricao": "calendar.dimensions.test.tsx, calendar.redesign.test.tsx, date-picker-field.test.tsx. 25656 testes passing local. Seletores: button[aria-selected] → [aria-selected='true'] button; button[name='day'] → td[role='gridcell'] button.",
       "regressao": "NENHUMA — apenas arquivos .test.tsx, zero código de produção",
       "regra_negocio": "Válida — atualizar testes para nova API de biblioteca",
-      "motivo_bloqueio": "mergeable_state: blocked (CI pendente na branch). Não draft. Melhor candidato dentre os fixes de teste v10."
+      "motivo_bloqueio": "mergeable_state: blocked (CI pendente na branch). Não draft. Melhor candidato dentre os fixes de teste v10.",
+      "estado_final": "FECHADA_SEM_MERGE",
+      "closed_at": "2026-10-28T09:09:19Z",
+      "motivo_fechamento": "Fechada por ator externo enquanto CI ainda rodava. Fix rdp v10 já entrou no main via #2679 (merge_commit ab70ca24, 05:06Z). Conteúdo não perdido.",
+      "ci_tentativa4": {
+        "run_id": "40630803838",
+        "conclusion": "success",
+        "concluiu_em": "~09:54Z",
+        "nota": "CI passou mas PR já estava closed às 09:09Z — merge impossível"
+      }
     }
   ],
   "contagem_por_veredito": {
-    "MERGEADA": {"count": 5, "prs": [2662, 2664, 2665, 2667, 2673]},
+    "MERGEADA": {"count": 6, "prs": [2662, 2664, 2665, 2667, 2673, 2679]},
     "NÃO_MERGEAR": {"count": 10, "prs": [2600, 2631, 2668, 2670, 2671, 2672, 2674, 2675, 2676, 2680]},
     "AGUARDA_PO": {"count": 3, "prs": [2580, 2646, 2666]},
     "DECISÃO_HUMANA": {"count": 1, "prs": [2663]},
-    "AGUARDA_CI": {"count": 2, "prs": [2679, 2681]},
+    "FECHADA_SEM_MERGE": {"count": 1, "prs": [2681], "nota": "Fix já presente no main via #2679"},
     "TOTAL_ANALISADO": 21
   }
 }
