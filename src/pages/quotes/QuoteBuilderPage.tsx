@@ -566,7 +566,7 @@ export default function QuoteBuilderPage() {
                           selected={s.deliveryDate}
                           onSelect={s.handleDeliveryDateChange}
                           disabled={(date) => date < startOfDay(new Date())}
-                          initialFocus
+                          autoFocus
                         />
                       </PopoverContent>
                     </Popover>
