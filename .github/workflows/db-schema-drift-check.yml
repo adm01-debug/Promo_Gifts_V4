@@ -79,6 +79,7 @@ on:
 
 permissions:
   contents: read
+  packages: read  # autenticação no ghcr.io para pulls de imagens Docker (evita rate limit anônimo compartilhado)
   # pull-requests: write — removido E92 (não usado neste workflow)
 
 concurrency:
@@ -209,17 +210,20 @@ jobs:
           # Link da pasta de replay (o link do passo anterior vale só para a raiz do repo).
           supabase link --workdir /tmp/drift-wd --project-ref "$SUPABASE_PROJECT_REF"
 
-      - name: Pre-pull Supabase postgres image (retry ECR rate limits)
+      - name: Pre-pull Supabase postgres image (ghcr.io autenticado)
         if: steps.guard.outputs.enabled == 'true' && steps.replay.outputs.skip != 'true'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
           # supabase db diff arranca shadow DB local com esta imagem.
           # Registry lido de SUPABASE_INTERNAL_IMAGE_REGISTRY (ghcr.io, via step anterior).
-          # Pre-pull com retry evita falha no step seguinte por rate limit ou lentidão.
-          # Tag fixa para CLI 2.101.0 — atualizar junto com "Install Supabase CLI".
+          # Autenticação com GITHUB_TOKEN (packages: read) evita o rate limit anônimo compartilhado
+          # (44k req/min entre todos runners do GitHub Actions). Tag fixa para CLI 2.101.0.
           POSTGRES_IMAGE="${SUPABASE_INTERNAL_IMAGE_REGISTRY}/supabase/postgres:17.6.1.063"
           for attempt in 1 2 3 4 5; do
-            if docker pull "$POSTGRES_IMAGE"; then
+            if echo "$GITHUB_TOKEN" | docker login ghcr.io -u x-access-token --password-stdin \
+                && docker pull "$POSTGRES_IMAGE"; then
               echo "Pre-pull ok (tentativa $attempt)"
               break
             fi
