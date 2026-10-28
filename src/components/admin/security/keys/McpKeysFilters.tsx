@@ -179,6 +179,7 @@ export function McpKeysFilters({
               selected={fromDate}
               onSelect={(d) => onChange({ createdFrom: isoDate(d ?? undefined) })}
               disabled={(date) => (toDate ? date > toDate : false) || date > new Date()}
+              autoFocus
               locale={ptBR}
               className={cn('pointer-events-auto p-3')}
             />
@@ -205,6 +206,7 @@ export function McpKeysFilters({
               selected={toDate}
               onSelect={(d) => onChange({ createdTo: isoDate(d ?? undefined) })}
               disabled={(date) => (fromDate ? date < fromDate : false) || date > new Date()}
+              autoFocus
               locale={ptBR}
               className={cn('pointer-events-auto p-3')}
             />

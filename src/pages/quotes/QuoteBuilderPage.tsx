@@ -26,6 +26,7 @@ import { DeliveryModeToggle } from '@/pages/quotes/components/DeliveryModeToggle
 import {
   FileText,
   Package,
+  
   AlertTriangle,
   Calendar as CalendarIcon,
   Sparkles,
@@ -38,6 +39,7 @@ import {
 // FIX-C01: adicionado startOfDay para corrigir Calendar disabled — hoje sempre era bloqueado
 import { format, addDays, startOfDay } from 'date-fns';
 
+
 import { QuoteItemEditorSheet } from '@/components/quotes/QuoteItemEditorSheet';
 import { CompanyContactSelector } from '@/components/quotes/CompanyContactSelector';
 import { QuoteAutoSave } from '@/components/quotes/QuoteAutoSave';
@@ -45,6 +47,7 @@ import { QuoteConcurrencyAlert } from '@/components/quotes/QuoteConcurrencyAlert
 import { QuoteBuilderStepper } from '@/components/quotes/QuoteBuilderStepper';
 import { QuoteBuilderSummaryColumn } from '@/components/quotes/QuoteBuilderSummaryColumn';
 import { QuoteBuilderSkeleton } from '@/components/quotes/QuoteBuilderSkeleton';
+
 
 import { QuoteBuilderProductSearch } from '@/components/quotes/QuoteBuilderProductSearch';
 import { useQuoteBuilderState } from '@/hooks/quotes';
@@ -148,7 +151,9 @@ export default function QuoteBuilderPage() {
   }
 
   // FIX-E04: wrap handleSaveQuote to signal QuoteAutoSave when a server save succeeds.
-  const handleSaveQuoteWithSignal = async (...args: Parameters<typeof s.handleSaveQuote>) => {
+  const handleSaveQuoteWithSignal = async (
+    ...args: Parameters<typeof s.handleSaveQuote>
+  ) => {
     const result = await s.handleSaveQuote(...args);
     // handleSaveQuote returns updated_at string on success, undefined on failure/early-return
     if (result !== undefined) setServerSavedAt(Date.now());
@@ -264,7 +269,7 @@ export default function QuoteBuilderPage() {
 
             {/* Stepper ocupa todo o espaço restante após o botão Reset,
                 estendendo a timeline até a borda direita da página. */}
-            <div className="w-full min-w-0 flex-1 lg:flex lg:justify-end">
+            <div className="min-w-0 w-full flex-1 lg:flex lg:justify-end">
               <QuoteBuilderStepper
                 completedSteps={s.completedSteps}
                 activeStep={s.activeStep}
@@ -274,6 +279,10 @@ export default function QuoteBuilderPage() {
             </div>
           </div>
         </div>
+
+
+
+
 
         <div data-testid="quote-builder-grid" className="grid min-w-0 gap-4 lg:grid-cols-12">
           {/* COL 1 — Cliente + Condições */}
@@ -342,336 +351,332 @@ export default function QuoteBuilderPage() {
                 </div>
                 {!conditionsCollapsed && (
                   <div id="quote-conditions-body" className="space-y-3">
-                    <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
-                      {/* Validade | Proposta */}
-                      <div className="space-y-1.5">
-                        <Label className="text-xs text-muted-foreground">
-                          <span className="mr-1">📅</span>Validade | Proposta
-                        </Label>
-                        <Select
-                          value={s.validityDays}
-                          onValueChange={(val) => {
-                            s.setValidityDays(val);
-                            s.setValidUntil(
-                              format(addDays(new Date(), parseInt(val, 10) || 1), 'yyyy-MM-dd'),
-                            );
-                          }}
-                        >
-                          <SelectTrigger className="h-8 text-xs [&>span]:flex-1 [&>span]:text-left [&>span]:leading-none">
-                            <SelectValue placeholder="Selecione" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="1">1 dia</SelectItem>
-                            <SelectItem value="3">3 dias</SelectItem>
-                            <SelectItem value="7">7 dias</SelectItem>
-                            <SelectItem value="15">15 dias</SelectItem>
-                            <SelectItem value="30">30 dias</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
 
-                      {/* Forma | Pagamento */}
-                      <div className="space-y-1.5">
-                        <Label
-                          className={cn(
-                            'text-xs',
-                            s.validationErrors.includes('forma_pagamento')
-                              ? 'text-destructive'
-                              : 'text-muted-foreground',
-                          )}
-                        >
-                          Forma | Pagamento{' '}
-                          {s.validationErrors.includes('forma_pagamento') && (
-                            <span className="ml-1">*</span>
-                          )}
-                        </Label>
-                        <Select
-                          data-testid="payment-method-select-root"
-                          value={s.paymentMethod}
-                          onValueChange={s.setPaymentMethod}
-                        >
-                          <SelectTrigger
-                            data-testid="payment-method-select"
-                            className={cn(
-                              'h-8 text-xs [&>span]:flex-1 [&>span]:text-left [&>span]:leading-none',
-                              s.validationErrors.includes('forma_pagamento') &&
-                                'border-destructive',
-                            )}
-                          >
-                            <SelectValue placeholder="Selecione" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="boleto">Boleto Bancário</SelectItem>
-                            <SelectItem value="pix_transferencia">
-                              Transferência Bancária / Pix
-                            </SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                  {/* Validade | Proposta */}
+                  <div className="space-y-1.5">
+                    <Label className="text-xs text-muted-foreground">
+                      <span className="mr-1">📅</span>Validade | Proposta
+                    </Label>
+                    <Select
+                      value={s.validityDays}
+                      onValueChange={(val) => {
+                        s.setValidityDays(val);
+                        s.setValidUntil(
+                          format(addDays(new Date(), parseInt(val, 10) || 1), 'yyyy-MM-dd'),
+                        );
+                      }}
+                    >
+                      <SelectTrigger className="h-8 text-xs [&>span]:flex-1 [&>span]:text-left [&>span]:leading-none">
+                        <SelectValue placeholder="Selecione" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="1">1 dia</SelectItem>
+                        <SelectItem value="3">3 dias</SelectItem>
+                        <SelectItem value="7">7 dias</SelectItem>
+                        <SelectItem value="15">15 dias</SelectItem>
+                        <SelectItem value="30">30 dias</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
 
-                      {/* Prazo | Pagamento */}
-                      <div className="space-y-1.5">
-                        <Label
-                          className={cn(
-                            'text-xs',
-                            s.validationErrors.includes('prazo_pagamento')
-                              ? 'text-destructive'
-                              : 'text-muted-foreground',
-                          )}
-                        >
-                          Prazo | Pagamento{' '}
-                          {s.validationErrors.includes('prazo_pagamento') && (
-                            <span className="ml-1">*</span>
-                          )}
-                        </Label>
-                        <Select
-                          data-testid="payment-terms-select-root"
-                          value={s.paymentTerms}
-                          onValueChange={s.setPaymentTerms}
-                        >
-                          <SelectTrigger
-                            data-testid="payment-terms-select"
-                            className={cn(
-                              'h-8 text-xs [&>span]:flex-1 [&>span]:text-left [&>span]:leading-none',
-                              s.validationErrors.includes('prazo_pagamento') &&
-                                'border-destructive',
-                            )}
-                          >
-                            <SelectValue placeholder="Selecione" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="7_dias">7 dias a partir da entrega</SelectItem>
-                            <SelectItem value="14_dias">14 dias a partir da entrega</SelectItem>
-                            <SelectItem value="21_dias">21 dias a partir da entrega</SelectItem>
-                            <SelectItem value="28_dias">28 dias a partir da entrega</SelectItem>
-                            <SelectItem value="7_14_dias">
-                              7 e 14 dias a partir da entrega
-                            </SelectItem>
-                            <SelectItem value="50_50">
-                              50/50 | 50% entrada / 50% após entrega
-                            </SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    </div>
-
-                    {/* Entrega */}
-                    <div className="mt-1 space-y-1.5 border-t border-border/30 pt-3">
-                      <div
-                        className="flex flex-wrap items-center justify-between gap-2"
-                        data-testid="delivery-label-container"
-                      >
-                        <div className="flex items-center gap-1.5">
-                          <Label
-                            data-testid="delivery-label"
-                            className={cn(
-                              'text-xs',
-                              s.validationErrors.includes('prazo_entrega')
-                                ? 'text-destructive'
-                                : 'text-muted-foreground',
-                            )}
-                          >
-                            Prazo | Entrega{' '}
-                            {s.validationErrors.includes('prazo_entrega') && (
-                              <span className="ml-1">*</span>
-                            )}
-                          </Label>
-                          <TooltipProvider>
-                            <Tooltip>
-                              <TooltipTrigger asChild>
-                                <span
-                                  data-testid="delivery-info-tooltip-trigger"
-                                  className="inline-flex cursor-help align-middle text-muted-foreground/60 transition-colors hover:text-primary"
-                                >
-                                  <Info
-                                    className="h-3 w-3"
-                                    aria-label="Informação sobre prazo de entrega"
-                                  />
-                                </span>
-                              </TooltipTrigger>
-                              <TooltipContent
-                                data-testid="delivery-info-tooltip-content"
-                                side="top"
-                                className="max-w-xs text-[11px] leading-relaxed"
-                              >
-                                Antes de assumir o compromisso com seu Cliente, valide com todo o
-                                time (Fornecedores, Coordenador de Compras, Coordenador de
-                                Logística) a viabilidade do prazo.
-                              </TooltipContent>
-                            </Tooltip>
-                          </TooltipProvider>
-                          <DeliveryModeToggle
-                            value={s.deliveryMode}
-                            onChange={s.handleDeliveryModeChange}
-                          />
-                        </div>
-                      </div>
-
-                      <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
-                        <div>
-                          {s.deliveryMode === 'prazo' ? (
-                            <Select
-                              data-testid="delivery-time-select-root"
-                              value={s.deliveryTime}
-                              onValueChange={s.setDeliveryTime}
-                            >
-                              <SelectTrigger
-                                data-testid="delivery-time-select"
-                                className={cn(
-                                  'h-8 text-xs [&>span]:flex-1 [&>span]:text-left [&>span]:leading-none',
-                                  s.validationErrors.includes('prazo_entrega') &&
-                                    'border-destructive',
-                                )}
-                              >
-                                <SelectValue placeholder="Selecione" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="7_dias">7 dias | Após aprovação</SelectItem>
-                                <SelectItem value="14_dias">14 dias | Após aprovação</SelectItem>
-                                <SelectItem value="21_dias">21 dias | Após aprovação</SelectItem>
-                                <SelectItem value="28_dias">28 dias | Após aprovação</SelectItem>
-                                <SelectItem value="45_dias">45 dias | Após aprovação</SelectItem>
-                              </SelectContent>
-                            </Select>
-                          ) : (
-                            <Popover>
-                              <PopoverTrigger asChild>
-                                <Button
-                                  data-testid="delivery-date-picker"
-                                  variant="outline"
-                                  className={cn(
-                                    'h-8 w-full justify-start text-left text-xs font-normal',
-                                    !s.deliveryDate && 'text-muted-foreground',
-                                    s.validationErrors.includes('prazo_entrega') &&
-                                      'border-destructive',
-                                  )}
-                                >
-                                  <CalendarIcon className="mr-2 h-3.5 w-3.5" />
-                                  {s.deliveryDate
-                                    ? format(s.deliveryDate, 'dd/MM/yyyy')
-                                    : 'Selecione a data'}
-                                </Button>
-                              </PopoverTrigger>
-                              <PopoverContent
-                                className="w-[var(--radix-popover-trigger-width)] rounded-2xl border border-border/50 bg-card p-2 shadow-xl"
-                                align="start"
-                              >
-                                <Calendar
-                                  mode="single"
-                                  selected={s.deliveryDate}
-                                  onSelect={s.handleDeliveryDateChange}
-                                  disabled={(date) => date < startOfDay(new Date())}
-                                />
-                              </PopoverContent>
-                            </Popover>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Frete */}
-                    <div className="mt-1 border-t border-border/30 pt-3">
-                      <div
-                        className="grid grid-cols-1 items-end gap-3 md:grid-cols-3"
-                        data-testid="freight-grid"
-                      >
-                        <div className="space-y-1" data-testid="freight-grid-col-1">
-                          <Label
-                            htmlFor="freight-select"
-                            className={cn(
-                              'text-xs',
-                              s.validationErrors.includes('frete')
-                                ? 'text-destructive'
-                                : 'text-muted-foreground',
-                            )}
-                          >
-                            Frete{' '}
-                            {s.validationErrors.includes('frete') && (
-                              <span className="ml-1">*</span>
-                            )}
-                          </Label>
-                          <Select
-                            data-testid="shipping-type-select-root"
-                            value={s.shippingType}
-                            onValueChange={s.setShippingType}
-                          >
-                            <SelectTrigger
-                              id="freight-select"
-                              data-testid="shipping-type-select"
-                              aria-label="Modalidade de frete"
-                              className={cn(
-                                'h-8 text-xs [&>span]:flex-1 [&>span]:text-left [&>span]:leading-none',
-                                s.validationErrors.includes('frete') && 'border-destructive',
-                              )}
-                            >
-                              <SelectValue placeholder="Selecione" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="cif">CIF | Frete grátis</SelectItem>
-                              <SelectItem value="fob">FOB | Repassado ao cliente</SelectItem>
-                              <SelectItem value="fob_pre">FOB | Valor pré negociado</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-                        {s.shippingType === 'fob_pre' && (
-                          <div className="space-y-1" data-testid="freight-grid-col-2">
-                            <Label
-                              htmlFor="freight-value"
-                              className={cn(
-                                'text-xs',
-                                s.validationErrors.includes('valor_frete')
-                                  ? 'text-destructive'
-                                  : 'text-muted-foreground',
-                              )}
-                            >
-                              Valor R${' '}
-                              {s.validationErrors.includes('valor_frete') && (
-                                <span className="ml-1">*</span>
-                              )}
-                            </Label>
-                            <CurrencyInput
-                              id="freight-value"
-                              data-testid="shipping-cost-input"
-                              aria-label="Valor do frete em reais"
-                              value={s.shippingCost || 0}
-                              onChange={(n) => s.setShippingCost(Math.max(0, n))}
-                              className={cn(
-                                'h-8 text-xs',
-                                s.validationErrors.includes('valor_frete') && 'border-destructive',
-                              )}
-                            />
-                          </div>
-                        )}
-                      </div>
-                      {s.validationErrors.includes('frete') && (
-                        <p className="mt-0.5 flex items-center gap-1 text-[10px] text-destructive">
-                          <AlertTriangle className="h-3 w-3" />
-                          Selecione a modalidade de frete
-                        </p>
+                  {/* Forma | Pagamento */}
+                  <div className="space-y-1.5">
+                    <Label
+                      className={cn(
+                        'text-xs',
+                        s.validationErrors.includes('forma_pagamento')
+                          ? 'text-destructive'
+                          : 'text-muted-foreground',
                       )}
-                    </div>
-
-                    {s.companyInfo?.id && (
-                      <a
-                        href={`/ferramentas/bi?clientId=${s.companyInfo.id}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="group flex items-center gap-3 rounded-2xl border border-dashed border-primary/30 bg-primary/5 p-3 transition-colors hover:border-primary/50 hover:bg-primary/10"
+                    >
+                      Forma | Pagamento{' '}
+                      {s.validationErrors.includes('forma_pagamento') && (
+                        <span className="ml-1">*</span>
+                      )}
+                    </Label>
+                    <Select
+                      data-testid="payment-method-select-root"
+                      value={s.paymentMethod}
+                      onValueChange={s.setPaymentMethod}
+                    >
+                      <SelectTrigger
+                        data-testid="payment-method-select"
+                        className={cn(
+                          'h-8 text-xs [&>span]:flex-1 [&>span]:text-left [&>span]:leading-none',
+                          s.validationErrors.includes('forma_pagamento') && 'border-destructive',
+                        )}
                       >
-                        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/10">
-                          <Sparkles className="h-4 w-4 text-primary" />
-                        </div>
-                        <div className="min-w-0 flex-1">
-                          <p className="font-display text-sm font-semibold leading-tight">
-                            Inteligência completa deste cliente
-                          </p>
-                          <p className="mt-0.5 text-[11px] leading-tight text-muted-foreground">
-                            Histórico, afinidade, sazonalidade e tendência do setor
-                          </p>
-                        </div>
-                        <ExternalLink className="h-3.5 w-3.5 shrink-0 text-muted-foreground transition-colors group-hover:text-primary" />
-                      </a>
+                        <SelectValue placeholder="Selecione" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="boleto">Boleto Bancário</SelectItem>
+                        <SelectItem value="pix_transferencia">
+                          Transferência Bancária / Pix
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {/* Prazo | Pagamento */}
+                  <div className="space-y-1.5">
+                    <Label
+                      className={cn(
+                        'text-xs',
+                        s.validationErrors.includes('prazo_pagamento')
+                          ? 'text-destructive'
+                          : 'text-muted-foreground',
+                      )}
+                    >
+                      Prazo | Pagamento{' '}
+                      {s.validationErrors.includes('prazo_pagamento') && (
+                        <span className="ml-1">*</span>
+                      )}
+                    </Label>
+                    <Select
+                      data-testid="payment-terms-select-root"
+                      value={s.paymentTerms}
+                      onValueChange={s.setPaymentTerms}
+                    >
+                      <SelectTrigger
+                        data-testid="payment-terms-select"
+                        className={cn(
+                          'h-8 text-xs [&>span]:flex-1 [&>span]:text-left [&>span]:leading-none',
+                          s.validationErrors.includes('prazo_pagamento') && 'border-destructive',
+                        )}
+                      >
+                        <SelectValue placeholder="Selecione" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="7_dias">7 dias a partir da entrega</SelectItem>
+                        <SelectItem value="14_dias">14 dias a partir da entrega</SelectItem>
+                        <SelectItem value="21_dias">21 dias a partir da entrega</SelectItem>
+                        <SelectItem value="28_dias">28 dias a partir da entrega</SelectItem>
+                        <SelectItem value="7_14_dias">7 e 14 dias a partir da entrega</SelectItem>
+                        <SelectItem value="50_50">50/50 | 50% entrada / 50% após entrega</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  </div>
+
+
+                {/* Entrega */}
+                <div className="mt-1 space-y-1.5 border-t border-border/30 pt-3">
+                  <div
+                    className="flex flex-wrap items-center justify-between gap-2"
+                    data-testid="delivery-label-container"
+                  >
+                    <div className="flex items-center gap-1.5">
+                      <Label
+                        data-testid="delivery-label"
+                        className={cn(
+                          'text-xs',
+                          s.validationErrors.includes('prazo_entrega')
+                            ? 'text-destructive'
+                            : 'text-muted-foreground',
+                        )}
+                      >
+                        Prazo | Entrega{' '}
+                        {s.validationErrors.includes('prazo_entrega') && (
+                          <span className="ml-1">*</span>
+                        )}
+                      </Label>
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <span
+                              data-testid="delivery-info-tooltip-trigger"
+                              className="inline-flex cursor-help align-middle text-muted-foreground/60 transition-colors hover:text-primary"
+                            >
+                              <Info
+                                className="h-3 w-3"
+                                aria-label="Informação sobre prazo de entrega"
+                              />
+                            </span>
+                          </TooltipTrigger>
+                          <TooltipContent
+                            data-testid="delivery-info-tooltip-content"
+                            side="top"
+                            className="max-w-xs text-[11px] leading-relaxed"
+                          >
+                            Antes de assumir o compromisso com seu Cliente, valide com todo o time
+                            (Fornecedores, Coordenador de Compras, Coordenador de Logística) a
+                            viabilidade do prazo.
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                      <DeliveryModeToggle
+                        value={s.deliveryMode}
+                        onChange={s.handleDeliveryModeChange}
+                      />
+
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+
+                    <div>
+                   {s.deliveryMode === 'prazo' ? (
+                    <Select
+                      data-testid="delivery-time-select-root"
+                      value={s.deliveryTime}
+                      onValueChange={s.setDeliveryTime}
+                    >
+                      <SelectTrigger
+                        data-testid="delivery-time-select"
+                        className={cn(
+                          'h-8 text-xs [&>span]:flex-1 [&>span]:text-left [&>span]:leading-none',
+                          s.validationErrors.includes('prazo_entrega') && 'border-destructive',
+                        )}
+                      >
+                        <SelectValue placeholder="Selecione" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="7_dias">7 dias | Após aprovação</SelectItem>
+                        <SelectItem value="14_dias">14 dias | Após aprovação</SelectItem>
+                        <SelectItem value="21_dias">21 dias | Após aprovação</SelectItem>
+                        <SelectItem value="28_dias">28 dias | Após aprovação</SelectItem>
+                        <SelectItem value="45_dias">45 dias | Após aprovação</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  ) : (
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          data-testid="delivery-date-picker"
+                          variant="outline"
+                          className={cn(
+                            'h-8 w-full justify-start text-left text-xs font-normal',
+                            !s.deliveryDate && 'text-muted-foreground',
+                            s.validationErrors.includes('prazo_entrega') && 'border-destructive',
+                          )}
+                        >
+                          <CalendarIcon className="mr-2 h-3.5 w-3.5" />
+                          {s.deliveryDate
+                            ? format(s.deliveryDate, 'dd/MM/yyyy')
+                            : 'Selecione a data'}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent
+                        className="w-[var(--radix-popover-trigger-width)] rounded-2xl border border-border/50 bg-card p-2 shadow-xl"
+                        align="start"
+                      >
+                        <Calendar
+                          mode="single"
+                          selected={s.deliveryDate}
+                          onSelect={s.handleDeliveryDateChange}
+                          disabled={(date) => date < startOfDay(new Date())}
+                          autoFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
+                   )}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Frete */}
+                <div className="mt-1 border-t border-border/30 pt-3">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3 items-end" data-testid="freight-grid">
+                    <div className="space-y-1" data-testid="freight-grid-col-1">
+                      <Label
+                        htmlFor="freight-select"
+                        className={cn(
+                          'text-xs',
+                          s.validationErrors.includes('frete')
+                            ? 'text-destructive'
+                            : 'text-muted-foreground',
+                        )}
+                      >
+                        Frete {s.validationErrors.includes('frete') && <span className="ml-1">*</span>}
+                      </Label>
+                      <Select
+                        data-testid="shipping-type-select-root"
+                        value={s.shippingType}
+                        onValueChange={s.setShippingType}
+                      >
+                        <SelectTrigger
+                          id="freight-select"
+                          data-testid="shipping-type-select"
+                          aria-label="Modalidade de frete"
+                          className={cn(
+                            'h-8 text-xs [&>span]:flex-1 [&>span]:text-left [&>span]:leading-none',
+                            s.validationErrors.includes('frete') && 'border-destructive',
+                          )}
+                        >
+                          <SelectValue placeholder="Selecione" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="cif">CIF | Frete grátis</SelectItem>
+                          <SelectItem value="fob">FOB | Repassado ao cliente</SelectItem>
+                          <SelectItem value="fob_pre">FOB | Valor pré negociado</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    {s.shippingType === 'fob_pre' && (
+                      <div className="space-y-1" data-testid="freight-grid-col-2">
+                        <Label
+                          htmlFor="freight-value"
+                          className={cn(
+                            'text-xs',
+                            s.validationErrors.includes('valor_frete')
+                              ? 'text-destructive'
+                              : 'text-muted-foreground',
+                          )}
+                        >
+                          Valor R${' '}
+                          {s.validationErrors.includes('valor_frete') && (
+                            <span className="ml-1">*</span>
+                          )}
+                        </Label>
+                        <CurrencyInput
+                          id="freight-value"
+                          data-testid="shipping-cost-input"
+                          aria-label="Valor do frete em reais"
+                          value={s.shippingCost || 0}
+                          onChange={(n) => s.setShippingCost(Math.max(0, n))}
+                          className={cn(
+                            'h-8 text-xs',
+                            s.validationErrors.includes('valor_frete') && 'border-destructive',
+                          )}
+                        />
+                      </div>
                     )}
+                  </div>
+                  {s.validationErrors.includes('frete') && (
+                    <p className="mt-0.5 flex items-center gap-1 text-[10px] text-destructive">
+                      <AlertTriangle className="h-3 w-3" />
+                      Selecione a modalidade de frete
+                    </p>
+                  )}
+                </div>
+
+
+
+
+
+
+                {s.companyInfo?.id && (
+                  <a
+                    href={`/ferramentas/bi?clientId=${s.companyInfo.id}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-3 rounded-2xl border border-dashed border-primary/30 bg-primary/5 p-3 transition-colors hover:border-primary/50 hover:bg-primary/10"
+                  >
+                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+                      <Sparkles className="h-4 w-4 text-primary" />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="font-display text-sm font-semibold leading-tight">
+                        Inteligência completa deste cliente
+                      </p>
+                      <p className="mt-0.5 text-[11px] leading-tight text-muted-foreground">
+                        Histórico, afinidade, sazonalidade e tendência do setor
+                      </p>
+                    </div>
+                    <ExternalLink className="h-3.5 w-3.5 shrink-0 text-muted-foreground transition-colors group-hover:text-primary" />
+                  </a>
+                )}
                   </div>
                 )}
               </div>
@@ -704,6 +709,7 @@ export default function QuoteBuilderPage() {
           </div>
 
           {/* COL 2 removida — agora migrada para QuoteItemEditorSheet (drawer lateral) */}
+
 
           {/* COL 3 — Resumo */}
           <QuoteBuilderSummaryColumn
@@ -769,7 +775,7 @@ export default function QuoteBuilderPage() {
         onOpenChange={(open) => {
           if (!open) s.setActiveItemIndex(null);
         }}
-        item={s.activeItemIndex !== null ? (s.items[s.activeItemIndex] ?? null) : null}
+        item={s.activeItemIndex !== null ? s.items[s.activeItemIndex] ?? null : null}
         index={s.activeItemIndex}
         onUpdateQuantity={s.updateItemQuantity}
         onUpdatePrice={s.updateItemPrice}
@@ -787,6 +793,7 @@ export default function QuoteBuilderPage() {
         onAddProduct={() => s.setProductSearchOpen(true)}
         hasUnsavedChanges={hasUnsavedChanges}
       />
+
 
       <UnsavedChangesDialog
         open={showDialog}

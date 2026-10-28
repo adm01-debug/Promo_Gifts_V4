@@ -614,6 +614,7 @@ export const NotificationBell = React.forwardRef<HTMLDivElement, NotificationBel
                       </PopoverTrigger>
                       <PopoverContent className="w-auto p-0" align="start">
                         <Calendar
+                          autoFocus
                           mode="range"
                           defaultMonth={localDateRange?.from}
                           selected={localDateRange}
