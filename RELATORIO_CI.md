@@ -125,61 +125,65 @@ Os workflows P1 e P2 de E2E que dependem de autenticação real continuam falhan
 
 ## 5. Prova de conclusão — estado de cada workflow em falha
 
-**Run de referência:** [40660438161](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40660438161) (Deploy Gates, branch `2eb3c3d`, PR #2686)
+**Critério:** cada workflow em falha está NESTA tabela com `conclusion=success` verificado, ou com referência explícita ao item em `PENDENCIAS.md` que documenta o motivo exato do bloqueio.
 
-| Workflow em falha | Run ID original | Estado do fix | Prova / Bloqueio |
-|---|---|---|---|
-| CI Security & Drift Checks | [40615509752](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40615509752) | Fix aplicado — PR #2686 | Gate 2 ✅ no run 40660438161; merge bloqueado por Gate E40 (P5 em PENDENCIAS.md) |
-| Branch Protection Sentinel | [40615509825](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40615509825) | Resolve no merge do PR | PR #2686 pronto; merge bloqueado por Gate E40 (P3 em PENDENCIAS.md) |
-| CI Replenishment E2E | [40612760478](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40612760478) | Não corrigível sem secrets | Secrets ausentes (P1 em PENDENCIAS.md) |
-| E2E Critical Flows | [40615510053](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40615510053) | Não corrigível sem secrets | Secrets ausentes (P2 em PENDENCIAS.md) |
+**Run de referência (PR #2686):** [40660438161](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40660438161) — Deploy Gates na branch `2eb3c3d`
 
-**Gates do run 40660438161 (último Deploy Gates executado):**
+| # | Workflow em falha | Run ID da falha (main) | Desfecho | Evidência |
+|---|---|---|---|---|
+| 1 | CI Security & Drift Checks | [40615509752](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40615509752) | **PENDENCIAS.md P5** | Fix correto validado: Gate 2 ✅ run [40660438161](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40660438161); merge bloqueado por Gate E40 (P4) — requer ação do PO |
+| 2 | Branch Protection Sentinel | [40615509825](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40615509825) | **PENDENCIAS.md P3** | Resolve automaticamente após merge do PR #2686; merge bloqueado por Gate E40 (P4) — requer ação do PO |
+| 3 | CI Replenishment Module E2E | [40612760478](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40612760478) | **PENDENCIAS.md P1** | 4 secrets E2E ausentes (`E2E_USER_EMAIL`, `E2E_USER_PASSWORD`, `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY`) — requer ação do PO |
+| 4 | E2E — Critical Flows & Error Boundaries | [40615510053](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40615510053) | **PENDENCIAS.md P2** | Mesma causa de P1 (secrets ausentes) + tooltip timing — depende de P1 |
+| 5 | Deploy Gates (Gate Final) | [40660438161](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40660438161) | **PENDENCIAS.md P4** | Gate E40 BLOQUEANTE: `local_only=1108; remote_only=647` — ledger Supabase dessincronizado; requer aprovação PO + `db-apply-migration.yml` |
+| 6 | db-schema-drift-check | [40665197973](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40665197973) | **PENDENCIAS.md P7** | Consequência direta de P4; resolve automaticamente com P4 |
+| 7 | edge-functions-drift-check | [40663094555](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40663094555) | **PENDENCIAS.md P8** | Drift entre edge functions no GitHub e canônico `doufsxqlfjyuvxuezpln`; requer verificação de `drift-report.csv` + reconciliação pelo PO |
+| 8 | E2E — Personalization Flow | [40662579633](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40662579633) | **PENDENCIAS.md P9** | Secrets E2E ausentes — mesma causa de P1 |
+| 9 | E2E • Swatch QuickView | [40662579393](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40662579393) | **PENDENCIAS.md P10** | Secrets E2E (firefox/chromium) + `swatch-picker-v2` null em webkit; depende de P1 + investigação webkit |
+| 10 | Edge Integration Tests — All Functions | [40638774637](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40638774637) | **PENDENCIAS.md P11** | 11 falhas em 3 arquivos de edge function; causa raiz não determinada — requer análise de artefatos pelo PO |
+| 11 | Kit Coverage — Integration | [40628415319](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40628415319) | **PENDENCIAS.md P12** | `permission denied for view v_kit_component_complete` — GRANT SELECT ausente; requer migration via `db-apply-migration.yml` com aprovação PO |
 
-| Gate | Status | Observação |
-|---|---|---|
-| Gate 0 — SSOT | ✅ success | |
-| Gate 0.5 — Dependency Audit | ✅ success | |
-| Gate 0.6 — Dependency Review | ✅ success | |
-| Gate 1 — Lint + TypeScript | ✅ success | Sem erros de lint nem TS |
-| Gate 1.1–1.18 (steps internos) | ✅ success | Campos Product, drift types, contratos, etc. |
-| Gate 2 — Unit Tests (Vitest) | ✅ success | Fix Calendar RDP v10 — 1210 arquivos passando |
-| Gate 2.5 — PostgreSQL | ✅ success | |
-| Gate 3 — E2E Smoke | ✅ success | |
-| Gate 5 — SEO | ✅ success | |
-| Gate 5.5 — RPC restore_seller_cart | ✅ success | |
-| Gate 6 — Build | ✅ success | |
-| Gate E23 — Secret Scan | ✅ success | |
-| **Gate E40 — Schema Drift** | ❌ **failure** | `local_only=1108; remote_only=647` (P4 em PENDENCIAS.md) |
-| **Gate Final — Deploy Ready** | ❌ **failure** | Bloqueado pelo Gate E40 |
+**Resultado:** 11 workflows em falha no inventário. Nenhum tem `conclusion=success` neste momento. Todos estão registrados em `PENDENCIAS.md` com motivo exato do bloqueio e ação necessária do PO.
 
-**Bloqueio raiz único:** Gate E40 é BLOQUEANTE no código real de `deploy-gates.yml` (contrariando CLAUDE.md que diz "advisory"). Com `local_only=1108; remote_only=647`, **nenhum PR neste repositório pode passar no Gate Final** enquanto o ledger não for reconciliado. Isso é um problema de infraestrutura pré-existente, anterior a este PR e independente de qualquer mudança de código.
-
-**Checks adicionais — HEAD 87ae540 (19/52 completed em 2026-10-28 ~10h):**
-
-| Check | Conclusão |
-|---|---|
-| CSP mirror — public/_headers == vercel.json | ✅ success |
-| Compare GitHub × Canonical (edge functions) | ✅ success |
-| Unit — Zod schemas | ✅ success |
-| SSOT Gates (validate + guard + hosts) | ✅ success |
-| noUnusedLocals ratchet | ✅ success |
-| E2E · undo | ❌ failure — mesma causa P1/P2 (secrets E2E ausentes) |
-
-CI ainda em andamento (19/52). Deploy Gates (Gate Final) não concluído ainda.
-
-Após resolução de P4 (Gate E40) pelo PO: merge do PR #2686 → CI Security & Drift Checks ✅ na main → Branch Protection Sentinel ✅ na main.
+**Bloqueio raiz:** Gate E40 (P4) é BLOQUEANTE no código real de `deploy-gates.yml`. Com `local_only=1108; remote_only=647`, **nenhum PR pode passar no Gate Final** enquanto o ledger não for reconciliado. P1, P3, P5 dependem direta ou indiretamente de P4.
 
 ---
 
-## 6. Pendências — resumo
+**Gates do run 40660438161 (PR #2686 — evidência do fix de P5):**
 
-| Item | Workflow | Bloqueio | Ação do PO |
+| Gate | Status |
+|---|---|
+| Gate 0 — SSOT | ✅ success |
+| Gate 0.5 — Dependency Audit | ✅ success |
+| Gate 1 — Lint + TypeScript | ✅ success |
+| Gate 1.1–1.18 (steps internos) | ✅ success |
+| Gate 2 — Unit Tests (Vitest) | ✅ success — fix Calendar RDP v10 (1210 arquivos passando) |
+| Gate 2.5 — PostgreSQL | ✅ success |
+| Gate 3 — E2E Smoke | ✅ success |
+| Gate 5 — SEO | ✅ success |
+| Gate 5.5 — RPC restore_seller_cart | ✅ success |
+| Gate 6 — Build | ✅ success |
+| Gate E23 — Secret Scan | ✅ success |
+| **Gate E40 — Schema Drift** | ❌ failure — P4 (ledger `local_only=1108; remote_only=647`) |
+| **Gate Final — Deploy Ready** | ❌ failure — cascata de P4 |
+
+---
+
+## 6. Resumo de pendências (P1–P12)
+
+| Item | Workflow | Bloqueio | Ação necessária |
 |---|---|---|---|
-| P1 | CI Replenishment E2E | Secrets ausentes | Cadastrar 4 secrets em GitHub Actions |
-| P2 | E2E Critical Flows | Secrets ausentes (depende P1) | Idem P1 |
-| P3 | Branch Protection Sentinel | Merge bloqueado por P4 | Resolver P4, depois mergear PR #2686 |
-| P4 | Gate Final (Gate E40) | Ledger 1108/647 | Aprovar reconciliação + DATABASE_URL prod |
-| P5 | CI Security & Drift Checks | Merge bloqueado por P4 | Resolver P4, depois mergear PR #2686 |
+| P1 | CI Replenishment Module E2E | 4 secrets E2E ausentes | PO: cadastrar secrets no GitHub Actions |
+| P2 | E2E Critical Flows | Mesma causa de P1 | PO: depende de P1 |
+| P3 | Branch Protection Sentinel | Merge PR #2686 bloqueado por P4 | PO: resolver P4, depois mergear PR #2686 |
+| P4 | Deploy Gates (Gate E40) | Ledger `local_only=1108; remote_only=647` | PO: aprovar reconciliação + `db-apply-migration.yml` |
+| P5 | CI Security & Drift Checks | Merge PR #2686 bloqueado por P4 | PO: resolver P4, depois mergear PR #2686 |
+| P6 | E2E · undo | Falhas pré-existentes na main (coluna status + timing) | PO: investigar regressão na UI de orçamentos |
+| P7 | db-schema-drift-check | Consequência direta de P4 | Resolve com P4 |
+| P8 | edge-functions-drift-check | Drift GitHub × canônico (edge functions) | PO: verificar `drift-report.csv` e reconciliar |
+| P9 | E2E Personalization Flow | Secrets E2E ausentes | PO: depende de P1 |
+| P10 | E2E Swatch QuickView | Secrets (firefox/chromium) + webkit null | PO: depende de P1 + investigação webkit |
+| P11 | Edge Integration Tests | 11 falhas em 3 arquivos, causa raiz desconhecida | PO: verificar artefatos do run 40638774637 |
+| P12 | Kit Coverage Integration | `permission denied for view v_kit_component_complete` | PO: GRANT SELECT via migration autorizada |
 
-Ver `PENDENCIAS.md` para detalhes completos e passo a passo de cada item.
+Ver `PENDENCIAS.md` para detalhes completos de cada item.
