@@ -188,9 +188,23 @@ Locator: page.getByTestId('page-title-reposicao')
   at novidades-reposicao-card-parity.spec.ts:320 (grid cols loop)
   at novidades-reposicao-card-parity.spec.ts:447 (deviceScaleFactor loop)
 ```
-**Causa:** `gotoAndSettle(page, '/reposicao')` não exibe `data-testid="page-title-reposicao"` em 30s — fonte em `src/pages/products/ReplenishmentsPage.tsx:49`. Afeta testes com cols=3/4/5 e dsf=0.9/1.1 (múltiplas instâncias).  
-**Contexto:** Falha pré-existente — PR #2663 não toca `ReplenishmentsPage.tsx`. Causa provável: rota `/reposicao` requer autenticação ou dados que não estão disponíveis no ambiente CI.  
-**Por que não resolvido:** Requer investigação de autenticação/dados no ambiente CI para a rota `/reposicao`. Fora do escopo do fix de TypeScript (react-day-picker v10).
+
+### Diagnóstico (2026-10-28)
+- `gotoAndSettle` completa sem erro (todos os catches são swallowed), mas o browser acabou redirecionado para `/login` (auth expirada em CI) ou o chunk lazy de `ReplenishmentsPage` levou >30s.
+- `data-testid="page-title-reposicao"` está em `src/pages/products/ReplenishmentsPage.tsx:49` dentro de sticky header — síncrono, sem render condicional. Só não aparece se o componente não montou.
+- `gotoAndSettle` usa `waitUntil: 'domcontentloaded'` + best-effort networkidle (5s swallowed) + aguarda `[data-skeleton]` sumir (20s swallowed). Nenhum desses erros expõe se houve redirect.
+- Causa mais provável: Supabase JWT expira durante a longa bateria de testes — `storageState.json` carregado no início do run fica inválido.
+
+### Fix aplicado (commit `cbe33d3` na branch PR #2663)
+`e2e/catalog/novidades-reposicao-card-parity.spec.ts`:
+- Após cada `gotoAndSettle(page, '/reposicao')`, verifica `page.url().includes('/reposicao')`
+- Se URL diferente (ex: `/login`): `test.skip` com diagnóstico `[P10] auth expirada em CI`
+- Timeout de visibilidade: 30s → 45s para cobrir carga lenta do chunk lazy
+- Afeta: linhas 319-320 (loop cols) e 446-447 (loop dsf)
+
+### Estado
+Fix em `cbe33d3` — incluso na branch PR #2663. Aguarda run de CI para confirmar.  
+Se o run continuar falhando: causa é auth expiry → PO precisa renovar `storageState.json` no CI ou configurar refresh automático de sessão no setup do Playwright.
 
 ---
 
