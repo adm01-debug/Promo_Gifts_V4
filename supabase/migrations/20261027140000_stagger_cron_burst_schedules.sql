@@ -16,13 +16,14 @@
 --   reconcile-category-products  3,18,33,48 * * * *
 --   sm-stock-guard               3,18,33,48 * * * *
 
--- ── PRÉ-CONDIÇÕES ──────────────────────────────────────────────────────────────
-
 DO $$
 DECLARE
-  missing text[];
+  v_missing text[];
+  v_jobid   bigint;
+  v_bad     text[];
 BEGIN
-  SELECT ARRAY_AGG(n) INTO missing
+  -- Guard: se algum dos 5 jobs não existe (ambiente sem pg_cron) → migration é no-op
+  SELECT ARRAY_AGG(n) INTO v_missing
   FROM UNNEST(ARRAY[
     'anon-insert-rate-purge',
     'backfill-queue-reap-stuck',
@@ -32,55 +33,31 @@ BEGIN
   ]) n
   WHERE NOT EXISTS (SELECT 1 FROM cron.job WHERE jobname = n);
 
-  IF missing IS NOT NULL THEN
-    RAISE EXCEPTION 'Pré-condição falhou: jobs não encontrados: %', array_to_string(missing, ', ');
+  IF v_missing IS NOT NULL THEN
+    RAISE NOTICE 'jobs não encontrados em cron.job: % — migration sem efeito neste ambiente',
+      array_to_string(v_missing, ', ');
+    RETURN;
   END IF;
-END;
-$$;
 
--- ── CLUSTER :00/:15/:30/:45 — separar em minutos adjacentes ──────────────────
--- sync-is-stockout-universal fica em :00/:15/:30/:45 (âncora, não alterado)
--- anon-insert-rate-purge:    */15  → 1,16,31,46  (+1 min)
--- backfill-queue-reap-stuck: */15  → 2,17,32,47  (+2 min)
+  -- CLUSTER :00/:15/:30/:45 — separar em minutos adjacentes
+  SELECT jobid INTO v_jobid FROM cron.job WHERE jobname = 'anon-insert-rate-purge';
+  PERFORM cron.alter_job(job_id := v_jobid, schedule := '1,16,31,46 * * * *');
 
-SELECT cron.alter_job(
-  job_id   := (SELECT jobid FROM cron.job WHERE jobname = 'anon-insert-rate-purge'),
-  schedule := '1,16,31,46 * * * *'
-);
+  SELECT jobid INTO v_jobid FROM cron.job WHERE jobname = 'backfill-queue-reap-stuck';
+  PERFORM cron.alter_job(job_id := v_jobid, schedule := '2,17,32,47 * * * *');
 
-SELECT cron.alter_job(
-  job_id   := (SELECT jobid FROM cron.job WHERE jobname = 'backfill-queue-reap-stuck'),
-  schedule := '2,17,32,47 * * * *'
-);
+  -- CLUSTER :03/:18/:33/:48 — separar em minutos adjacentes
+  SELECT jobid INTO v_jobid FROM cron.job WHERE jobname = 'connections-health-check';
+  PERFORM cron.alter_job(job_id := v_jobid, schedule := '4,19,34,49 * * * *');
 
--- ── CLUSTER :03/:18/:33/:48 — separar em minutos adjacentes ─────────────────
--- cleanup-stale-ai-pending-logs fica em :03/:18/:33/:48 (âncora, não alterado)
--- connections-health-check:        3,18,33,48  → 4,19,34,49  (+1 min)
--- reconcile-category-products-count: 3,18,33,48 → 5,20,35,50 (+2 min)
--- sm-stock-guard:                  3,18,33,48  → 6,21,36,51  (+3 min)
+  SELECT jobid INTO v_jobid FROM cron.job WHERE jobname = 'reconcile-category-products-count';
+  PERFORM cron.alter_job(job_id := v_jobid, schedule := '5,20,35,50 * * * *');
 
-SELECT cron.alter_job(
-  job_id   := (SELECT jobid FROM cron.job WHERE jobname = 'connections-health-check'),
-  schedule := '4,19,34,49 * * * *'
-);
+  SELECT jobid INTO v_jobid FROM cron.job WHERE jobname = 'sm-stock-guard';
+  PERFORM cron.alter_job(job_id := v_jobid, schedule := '6,21,36,51 * * * *');
 
-SELECT cron.alter_job(
-  job_id   := (SELECT jobid FROM cron.job WHERE jobname = 'reconcile-category-products-count'),
-  schedule := '5,20,35,50 * * * *'
-);
-
-SELECT cron.alter_job(
-  job_id   := (SELECT jobid FROM cron.job WHERE jobname = 'sm-stock-guard'),
-  schedule := '6,21,36,51 * * * *'
-);
-
--- ── PÓS-CONDIÇÕES ─────────────────────────────────────────────────────────────
-
-DO $$
-DECLARE
-  bad_jobs text[];
-BEGIN
-  SELECT ARRAY_AGG(jobname || ' (' || schedule || ')') INTO bad_jobs
+  -- Pós-condição
+  SELECT ARRAY_AGG(jobname || ' (' || schedule || ')') INTO v_bad
   FROM cron.job
   WHERE
     (jobname = 'anon-insert-rate-purge'              AND schedule <> '1,16,31,46 * * * *') OR
@@ -89,9 +66,9 @@ BEGIN
     (jobname = 'reconcile-category-products-count'   AND schedule <> '5,20,35,50 * * * *') OR
     (jobname = 'sm-stock-guard'                      AND schedule <> '6,21,36,51 * * * *');
 
-  IF bad_jobs IS NOT NULL THEN
+  IF v_bad IS NOT NULL THEN
     RAISE EXCEPTION 'Pós-condição falhou: schedules incorretos após alter_job: %',
-      array_to_string(bad_jobs, '; ');
+      array_to_string(v_bad, '; ');
   END IF;
 END;
 $$;
