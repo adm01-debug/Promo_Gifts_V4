@@ -38,7 +38,7 @@
       "label": "lucide-react",
       "currentBytes": 8708
     },
-    "date-vendor": {
+    "time-vendor": {
       "maxBytes": 89296,
       "label": "date-fns",
       "currentBytes": 74413
@@ -83,7 +83,7 @@
       "Header": 85097,
       "MagicUp": 83970,
       "QuoteViewPage": 81683,
-      "date-vendor": 74413,
+      "time-vendor": 74413,
       "ProductMediaSection": 73503,
       "MagazinePageRenderer": 71620,
       "query-vendor": 69552,
