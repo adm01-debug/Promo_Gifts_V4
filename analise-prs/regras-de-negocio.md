@@ -1,17 +1,17 @@
 # Regras de Negócio — Promo Gifts V4
-**Sessão:** session_012WyySbh2tj8vhRQLBf3mHo (atualizado 2026-10-27)
+**Sessão:** session_012WyySbh2tj8vhRQLBf3mHo (atualizado 2026-10-28)
 **Sessão original:** session_01Ss1tXZ4cAbxBvdmu95uNPz (2026-10-25)
-**Data:** 2026-10-27
-**main HEAD atual:** `e0b569f18cdfc8c7bc63466e567597cf799aaae7` (PR #2660, 2026-10-27)
+**Data:** 2026-10-28
+**main HEAD atual:** `04239fdd42eef05589fb41b3f0e58a664621fbf7` (PR #2665 qs, 2026-10-28)
 **main HEAD original:** `c113300c034fb39126274fba9aa10ef05762ab13`
 
-**Verificação desta sessão:** Regras 1–9 abaixo foram conferidas contra main HEAD `e0b569f1` —
-nenhuma mudança nas regras de negócio entre 2026-10-25 e 2026-10-27. Código em
+**Verificação desta sessão:** Regras 1–9 abaixo foram conferidas contra main HEAD `04239fdd` —
+nenhuma mudança nas regras de negócio entre 2026-10-25 e 2026-10-28. Código em
 `src/integrations/supabase/client.ts` mantém `CURRENT_PROJECT_ID = 'doufsxqlfjyuvxuezpln'`
 (verificado via `grep doufsxqlfjyuvxuezpln src/integrations/supabase/client.ts` — linha 3).
 Tipo `Product` em `src/types/product-catalog.ts` mantém campos críticos price/sale_price/
-shortDescription/category_id/category_name (verificado — linhas 30–36, sem commits
-alterando este arquivo entre os dois main HEADs).
+shortDescription/category_id/category_name (verificado via grep na sessão anterior — sem
+commits alterando este arquivo entre os dois main HEADs).
 
 ## 1. SSOT do Supabase (REGRA #1)
 - Projeto canônico: `doufsxqlfjyuvxuezpln` (Gold/Medallion)

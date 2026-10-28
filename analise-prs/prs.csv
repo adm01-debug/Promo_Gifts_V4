@@ -4,14 +4,14 @@ number,title,author,draft,base,veredito,motivo,sha_merge,gate_final_run
 2600,"docs(analise-prs): rev46 — 20 PRs",claude,true,main,DRAFT_NOMERGE,"Body diz NÃO MERGEAR; obsoleta; REGRA #10",,
 2631,"chore: PENDENCIAS §4 e RELATORIO_CI",claude,false,main,DECISAO_HUMANA,"CONFLITO em PENDENCIAS.md e RELATORIO_CI.md",,
 2646,"fix(migrations): rollback header + packages:read",claude,false,main,DECISAO_HUMANA,"3 workflows + 3 migrations (REGRA #8)",,
-2662,"docs(audit): dossiês rev46 — 30 arquivos analise-prs/",claude,false,main,MERGEADO_AUTONOMO,"30 arquivos docs-only; CI verde",efacff0bef81c7d175aef629ab338634b6c4ffb2,40604545222
+2662,"docs(audit): dossiês rev46 — 30 arquivos analise-prs/",claude,false,main,MERGEADO_AUTONOMO,"30 arquivos docs-only; Gate1 falhou por TS pré-existente (4c5fdd72); Gate2 passou; pré-existente",efacff0bef81c7d175aef629ab338634b6c4ffb2,40609592189
 2663,"docs(ci): RELATORIO_CI.md + PENDENCIAS.md",claude,false,main,DECISAO_HUMANA,"supabase/migrations/ (REGRA #8) + behind",,
-2664,"docs(audit): auditoria Supabase — 15 arquivos auditoria-supabase/",claude,false,main,MERGEADO_AUTONOMO,"15 arquivos docs-only; CI verde",bd783873aa273a6da6f3351e8d1f670baaf950d2,40605745212
+2664,"docs(audit): auditoria Supabase — 15 arquivos auditoria-supabase/",claude,false,main,MERGEADO_AUTONOMO,"15 arquivos docs-only; Gate1 falhou por TS pré-existente (4c5fdd72); Gate2 passou; pré-existente",bd783873aa273a6da6f3351e8d1f670baaf950d2,40609991866
 2665,"chore(deps): bump qs 6.16.0→6.16.2",dependabot[bot],false,main,MERGEADO_AUTONOMO,"1 arquivo package-lock.json; CI main verde; merge-test CLEAN",04239fdd42eef05589fb41b3f0e58a664621fbf7,40615509956
 2666,"chore(main): release 1.0.0",release-please[bot],false,main,FECHAR,"Downgrade semver 1.2.1→1.0.0",,
 2667,"fix(calendar): react-day-picker v8→v10",dependabot[bot],false,main,CI_FALHOU,"Supersedida por #2670",,
 2668,"chore(analise-prs): inventário PRs",claude,true,main,DRAFT_NOMERGE,"DRAFT; reescreve prs.csv/prs.json com dados desatualizados",,
-2670,"fix: migra react-day-picker v8→v10 (classNames + Chevron + autoFocus)",adm01-debug,true,main,DRAFT,"Fix essencial CI main; 8 arquivos confirmados; owner deve converter para ready",,
+2670,"fix: migra react-day-picker v8→v10 (classNames + Chevron + autoFocus)",adm01-debug,true,main,DRAFT_NOMERGE,"DRAFT + SUPERSEDED — fix já está em main via SHA 8b0b6068; owner pode fechar",,
 2671,"chore(e2e): update calendar visual baselines (safe)",github-actions[bot],false,main,DECISAO_HUMANA,"Depende #2670; behind; 8 PNGs confirmados",,
 2672,"chore(e2e): update calendar visual baselines (force)",github-actions[bot],false,claude_pink/compassionate-keller-om34uo,DECISAO_HUMANA,"Base ≠ main; auxiliar de #2670; 8 PNGs confirmados",,
 2673,"chore(e2e): update calendar visual baselines (safe)",github-actions[bot],false,main,DECISAO_HUMANA,"blocked=reviewer solicitado; 8 PNGs baselines v10",,

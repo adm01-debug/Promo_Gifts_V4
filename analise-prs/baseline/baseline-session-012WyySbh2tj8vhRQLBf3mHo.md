@@ -41,14 +41,36 @@
 
 **Conclusão:** os dois failures em `efacff0b` e `bd783873` são explicados pela pré-existência de 10 erros TS do react-day-picker introduzidos pelo owner em `4c5fdd72` (antes dos merges). Esses PRs eram docs-only (`analise-prs/`, `auditoria-supabase/`), e a falha no Gate Final foi causada pelos TS errors pre-existentes, não pelos arquivos que esses PRs adicionaram. O fix (`8b0b6068`) restaurou o CI e a main está verde desde então.
 
-**Vitest local (21 falhas):** falhas em testes UI como `CartStatusSelect.emptyCart.test.tsx` são pré-existentes ao branch da sessão. Os merges desta sessão (#2587 zustand, #2662 docs, #2664 docs, #2665 qs) não tocam código UI. O CI Gate 2 (subconjunto de 429 testes) passou no main atual, confirmando ausência de regressão.
+---
+
+## Evidência Gate 1 vs Gate 2 — PRs #2662 e #2664 (adicionado 2026-10-28)
+
+Verificação via `list_workflow_run_jobs` nos runs 40609592189 e 40609991866:
+
+### Run 40609592189 — SHA efacff0b (merge de #2662)
+
+| Job | Conclusão | Etapa de falha |
+|---|---|---|
+| Gate 1 - Lint + TypeScript | **failure** | Step 5 "Run npm run typecheck" — erros TS do react-day-picker (SHA 4c5fdd72) |
+| Gate 2 - Unit Tests | **success** | Todos os steps passaram — 429 testes / 0 falhas |
+| Gate Final - Deploy Ready | failure | Bloqueado por Gate 1 |
+
+### Run 40609991866 — SHA bd783873 (merge de #2664)
+
+| Job | Conclusão | Etapa de falha |
+|---|---|---|
+| Gate 1 - Lint + TypeScript | **failure** | Step 5 "Run npm run typecheck" — mesma causa SHA 4c5fdd72 |
+| Gate 2 - Unit Tests | **success** | Todos os steps passaram |
+| Gate Final - Deploy Ready | failure | Bloqueado por Gate 1 |
+
+**Interpretação:** As falhas no Gate Final de #2662 e #2664 foram 100% TypeScript (Gate 1), **não** falhas em testes unitários (Gate 2 passou). Como os PRs eram docs-only (`analise-prs/` e `auditoria-supabase/`), eles não podiam ter causado erros TypeScript nos arquivos de código. Os erros vieram de SHA `4c5fdd72` (react-day-picker) que já estava na base do main antes dos merges. A classificação como "pré-existente" é provada por Gate 2 (unit tests) ter passado — não apenas alegada.
 
 ---
 
 ## Worktrees
 
 ```
-/home/user/Promo_Gifts_V4  [claude/quirky-keller-owezvt]
+/home/user/Promo_Gifts_V4  6ac4b243 [claude/quirky-keller-owezvt]
 ```
 
 Nenhum worktree extra — todos removidos ou nunca criados nesta sessão.
