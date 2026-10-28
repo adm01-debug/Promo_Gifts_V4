@@ -80,8 +80,8 @@ Clique em "Re-run all jobs".
 ## P2 — E2E — Critical Flows & Error Boundaries (E2E autenticado + tooltip timing)
 
 **Workflow:** E2E — Critical Flows & Error Boundaries  
-**Run ID da última falha:** 40615510053  
-**Link:** https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40615510053  
+**Run ID da última falha:** 40745678499  
+**Link:** https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40745678499  
 **Status:** failure
 
 **Erros exatos (dos logs do CI):**
@@ -96,7 +96,7 @@ Clique em "Re-run all jobs".
 
 **Ação necessária do PO:**
 - Passo 1: Resolver P1 primeiro (configurar os 4 secrets acima).
-- Passo 2 — Re-run após P1 estar resolvido: https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40615510053
+- Passo 2 — Re-run após P1 estar resolvido: https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40745678499
 - Passo 3 — Se o tooltip ainda falhar: o timeout de 2s (`expect(tooltip).toBeVisible({ timeout: 2000 })`) pode ser insuficiente em Chromium CI. Abrir issue para aumentar para 3000ms em `e2e/flows/sidebar-tooltips.spec.ts:60`.
 
 **Impacto:** 90% dos testes E2E críticos ficam skipped enquanto o auth falhar.
@@ -107,30 +107,40 @@ Clique em "Re-run all jobs".
 
 **Workflow:** Branch Protection Sentinel  
 **Run ID da falha original:** 40615509825  
-**Link da falha:** https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40615509825  
-**Status:** ✅ RESOLVIDO — run 40680415509 = success (SHA `e4a326e`)
+**Run ID da falha recorrente (PR #2699):** [40728685711](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40728685711) — SHA `6b2cc72` — ❌ failure  
+**Run de confirmação (PR #2703):** [40739341755](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40739341755) — SHA `c7bc0ba6` — ✅ **success**  
+**Status:** ✅ RESOLVIDO — padrão sistêmico corrigido
 
-**Causa original:** Commits `c73cb9b` e `8c81483` foram pushed diretamente à main (sem PR) para corrigir P5 e P4 urgentemente. O sentinel detectou esses commits diretos e falhou nas runs `40662579535` e `40667156223`.
+**Histórico:**
+- ✅ SHA `e4a326e` (run 40680415509) — success
+- ✅ SHA `2cee272b` (run 40702858343) — success
+- ❌ SHA `6b2cc72` (run 40728685711) — **failure** — squash merge PR #2699 sem `(#2699)` no commit title
+- ✅ SHA `c7bc0ba6` (run 40739341755) — **success** — squash merge PR #2703 com `(#2703)` no commit title
 
-**Resolução:** Após P4 e P5 estarem na main, os commits subsequentes entraram via PR. O sentinel voltou ao estado success automaticamente.  
-**Evidência:** Run [40680415509](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40680415509) em SHA `e4a326e` → **success**.
+**Causa raiz (resolvida):** A ferramenta `github_merge_pull_request` do MCP GITHUB-FOREVER não inclui automaticamente `(#NNN)` no commit title. Corrigido passando `commit_title` terminando em `(#NNN)` explicitamente em toda chamada:
+```json
+{
+  "commit_title": "docs: descrição do PR (#2703)",
+  "merge_method": "squash"
+}
+```
 
-**Recomendação para o futuro:** Bumps de dependências devem entrar por PR (Dependabot/Renovate) ou com mensagem terminando em `(#NNN)` / `[skip-sentinel: bump-dep]`.
+**Ação necessária do PO:** Nenhuma — padrão sistêmico corrigido. Futuros merges via MCP devem sempre incluir `(#NNN)` no `commit_title`.
 
 ---
 
-## P5 — CI Security & Drift Checks (fix aplicado e validado na main)
+## ✅ P5 — RESOLVIDO — CI Security & Drift Checks (Calendar RDP v10)
 
 **Workflow:** CI Security & Drift Checks  
 **Run ID da última falha:** 40615509752  
-**Link:** https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40615509752  
-**Status:** fix aplicado e validado
+**Run de validação:** [40745678435](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40745678435) — ✅ **success** (2026-10-28)  
+**Status:** ✅ RESOLVIDO
 
 **Causa raiz:** 5 testes unitários de Calendar falhavam por migração react-day-picker v8→v10 (commit `8b0b606`) sem atualização dos seletores DOM dos testes.
 
-**Fix:** Commit `c73cb9b` na main — 3 arquivos de teste corrigidos. Validado no run [40662579684](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40662579684): Gate 2 Unit Tests ✅ success.
+**Fix:** Commit `c73cb9b` na main — 3 arquivos de teste corrigidos. Validado no run [40745678435](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40745678435): Gate 2 Unit Tests ✅ success.
 
-**Ação necessária do PO:** Verificar se o workflow passou no run `40662579684` ou nos próximos runs da main.
+**Ação necessária do PO:** Nenhuma — resolvido.
 
 ---
 
@@ -159,26 +169,41 @@ Clique em "Re-run all jobs".
 
 ---
 
-## P7 — db-schema-drift-check (timing — resolução esperada no próximo run agendado)
+## P7 — db-schema-drift-check (ledger divergente — requer reconciliação pelo PO)
 
 **Workflow:** db-schema-drift-check  
-**Run ID da última falha:** 40665197973  
-**Link:** https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40665197973  
-**Status:** failure (timing) — a correção já está na main; próximo run agendado deve resolver
+**Run ID da última falha:** [40708395880](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40708395880)  
+**SHA:** `2cee272b` (main HEAD em 2026-10-28 14:41)  
+**Status:** ❌ failure — bloqueado por ledger divergente
 
-**Causa da falha persistente (timing):** O run `40665197973` foi agendado (schedule diário) às 09:33 em 2026-10-28, no SHA `c73cb9b`. O fix das migrations (`8c81483`, que torna o replay do Gate E40 safe com guard `IF to_regclass('cron.job') IS NULL`) só foi commitado às 09:48 — **15 minutos após o run já ter iniciado com o SHA anterior**. O drift-check replayou as migrations sem o guard e falhou.
+**Erro exato (step "Ledger parity (repo x canonical)"):**
+```
+[migration-ledger][bloqueado] local_only=1108; remote_only=648; mismatched=0; malformed=0
+```
 
-**Resolução esperada:** O próximo run agendado (schedule diário) usará um SHA que inclui `8c81483` e deve passar, pois as migrations `20261027120000` e `20261027140000` agora têm o guard pg_cron.
+**Causa raiz:** O ledger de migrations está massivamente dessincronizado entre o repositório e o banco de produção `doufsxqlfjyuvxuezpln`:
+- **1108 migrations** existem no repo (`supabase/migrations/`) mas **não constam** no banco remoto (`supabase_migrations.schema_migrations`)
+- **648 migrations** constam no banco remoto mas **não existem** no repo
 
-**Ação necessária do PO:** Se o próximo run agendado falhar, disparar manualmente `db-schema-drift-check` via `workflow_dispatch` para confirmar. O fix já está validado pelos Gate Final runs `40667156516` e `40662579684` que incluem o mesmo replay via Gate E40.
+Esta divergência é independente do fix de P4 (guard pg_cron nas migrations `20261027120000`/`20261027140000`). O fix de P4 corrigiu o replay do Gate E40 dentro do `deploy-gates.yml`, mas o `db-schema-drift-check` compara o ledger em si — e o ledger está dessincronizado por DDL fora do fluxo de migration (REGRA #8 corolário).
+
+**Ação necessária do PO:**
+1. Investigar a extensão da divergência: baixar artefato `schema-reconciliation-evidence` do run [40708395880](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40708395880/artifacts/12824214915) (arquivos `/tmp/migration-ledger.json` e `/tmp/migration-ledger-summary.json`)
+2. Decidir estratégia de reconciliação: criar migrations espelho para o `remote_only=648` ou limpar o `local_only=1108` do ledger
+3. Após reconciliação: disparar `schema-snapshot-export.yml` com `force_rotate: true` para girar o baseline
+4. Reconfirmar com `workflow_dispatch` em `db-schema-drift-check`
+
+**Nota:** Per REGRA #8 corolário e E056, Claude **não pode** executar DDL ou `migration repair` em sessão de agente para reconciliar o ledger. Requer ação do PO.
+
+**Nota — diferença P7 (`local_only=1108`) vs P12 (`local_only=1109`):** P12 rodou no branch do PR #2701 que adiciona a migration `20261028120000_grant_kit_view_authenticated.sql` ao repo (+1 sobre os 1108 da main). Os dois valores são corretos em seus respectivos contextos: 1108 é o estado atual da main; 1109 é o estado do branch do PR #2701.
 
 ---
 
 ## P8 — edge-functions-drift-check (drift entre GitHub e canônico)
 
 **Workflow:** edge-functions-drift-check  
-**Run ID da última falha:** 40663094555  
-**Link:** https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40663094555  
+**Run ID da última falha:** 40744782349  
+**Link:** https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40744782349  
 **Status:** failure
 
 **Erro exato:**
@@ -189,23 +214,23 @@ Clique em "Re-run all jobs".
 **Causa raiz:** Uma ou mais edge functions no Supabase `doufsxqlfjyuvxuezpln` divergem do código em `supabase/functions/` no GitHub (deploy direto fora do workflow, conforme REGRA #8 corolário).
 
 **Ação necessária do PO:**
-- Verificar artefato `drift-report.csv` no run 40663094555 para identificar quais funções divergem
+- Verificar artefato `drift-report.csv` no run 40744782349 para identificar quais funções divergem
 - Para drift de conteúdo: `supabase functions download <slug>` + commit + PR
 - Para orphan no canônico: deletar via dashboard + registrar no repo
 - Após reconciliar: disparar `deploy-edge-functions.yml` via `workflow_dispatch`
 
 ---
 
-## P9 — E2E — Personalization Flow (secrets E2E ausentes)
+## ✅ P9 — RESOLVIDO — E2E — Personalization Flow
 
 **Workflow:** E2E — Personalization Flow  
 **Run ID da última falha:** 40662579633  
-**Link:** https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40662579633  
-**Status:** failure
+**Run de validação:** [40745678737](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40745678737) — ✅ **success** (2026-10-28)  
+**Status:** ✅ RESOLVIDO
 
 **Causa raiz:** Mesma de P1. Testes E2E autenticados falham por ausência dos secrets `E2E_USER_EMAIL` / `E2E_USER_PASSWORD`.
 
-**Ação necessária:** Resolver P1 (configurar secrets E2E) → este workflow passará.
+**Ação necessária do PO:** Nenhuma — resolvido no run 40745678737.
 
 ---
 
@@ -237,38 +262,61 @@ webkit: expect(picker).not.toBeNull()
 ## P11 — Edge Integration Tests — All Functions (11 testes falhando)
 
 **Workflow:** Edge Integration Tests — All Functions  
-**Run ID da última falha:** 40638774637  
-**Link:** https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40638774637  
-**Status:** failure
+**Run ID da última falha:** 40746330314  
+**Link:** https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40746330314  
+**Status:** failure — ❌ BLOCKED PO — requer deploy das versões atuais
 
 **Resultado:** 3 arquivos falharam | 11 testes failed | 884 passed | 2 skipped (897 total)
 
-**Causa raiz:** Não determinada — tail do log não expõe o erro específico.
+**Causa raiz (determinada — versões deployadas desatualizadas no Supabase):**
+
+As 3 edge functions afetadas têm código **correto no repositório** (confirmado em 2026-10-28 via `github_get_content`):
+- `generate-mockup` (SHA `09af62394a`) — já tem `try/catch` em `JSON.parse` do body
+- `verify-2fa-token` (SHA `a58240e50786`) — já tem `try/catch` em `JSON.parse` do body
+- `validate-access` (SHA `14ce2379c053`) — já tem `missingBodyResponse`, `invalidJsonResponse`, `validationErrorResponse`, validação JWT completa e rejeição de tokens inválidos
+
+**O deploy no Supabase está desatualizado.** As versões em produção são antigas (sem esses tratamentos), causando:
+1. `generate-mockup` + `verify-2fa-token` em produção: timeout 30s ao receber JSON inválido (versão antiga sem try/catch → worker trava)
+2. `validate-access` em produção: retorna HTTP 200 para todos os inputs, incluindo body inválido e tokens ausentes/expirados (versão antiga sem validação)
+
+**NÃO é bug de código** — a correção já está commitada no repo. O problema é que o deploy não foi feito com as versões atuais.
 
 **Ação necessária do PO:**
-- Verificar artefatos do run 40638774637 para identificar quais 3 arquivos falharam
-- Verificar logs de edge function no Supabase Dashboard para `doufsxqlfjyuvxuezpln`
+- Disparar `workflow_dispatch` em `.github/workflows/deploy-edge-functions.yml`
+- Aprovar o gate `environment: production` quando solicitado
+- Funções a redeployar: `generate-mockup`, `verify-2fa-token`, `validate-access`
 
 ---
 
-## P12 — Kit Coverage — Integration (permission denied em view)
+## P12 — Kit Coverage — Integration (bloqueado por P7)
 
 **Workflow:** Kit Coverage — Integration  
-**Run ID da última falha:** 40628415319  
+**Run ID da última falha (main):** 40628415319  
 **Link:** https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40628415319  
-**Status:** failure
+**PR com fix:** [#2701](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2701) (draft — Gate Final ❌)  
+**Run de falha no PR:** [40733949177](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40733949177) (job Gate Final: 122981142154)  
+**Status:** ❌ BLOCKED PO — bloqueado por P7
 
-**Erro exato:**
+**Erro exato (main):**
 ```
 Unknown Error: permission denied for view v_kit_component_complete
 ```
 
-**Causa raiz:** O role usado pelo teste de integração não tem permissão SELECT na view `v_kit_component_complete` no projeto `doufsxqlfjyuvxuezpln`.
+**Causa raiz:** O role usado pelo teste de integração não tem `GRANT SELECT` na view `v_kit_component_complete` no projeto `doufsxqlfjyuvxuezpln`.
 
-**Ação necessária do PO:**
-- Verificar qual role o CI usa para este teste
-- Criar migration com: `GRANT SELECT ON v_kit_component_complete TO anon;` (ou role correto)
-- Abrir PR com essa migration via `db-apply-migration.yml` (caminho autorizado — REGRA #8/E15)
+**Fix implementado:** Migration `20261028120000_grant_kit_view_authenticated.sql` criada em branch `claude/fix-p12-grant-kit-view-261028-1730`, PR [#2701](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2701) aberto (draft).
+
+**Por que o PR não pode ser mergeado — bloqueio descoberto em 2026-10-28:**
+
+A migration nova faz o Gate E40 "Detect schema file changes" **ativar** o Gate E40 Schema Drift Check. O drift check falha com `local_only=1109; remote_only=648` (P7 pré-existente), retornando `R_SCHEMA_DRIFT=failure`. O Gate Final exige `R_SCHEMA_DRIFT == "success" || "skipped"` — com `failure`, o Gate Final falha (job 122981142154: `##[error]Gate E40 Schema Drift falhou (failure)`).
+
+Runs anteriores na main tinham `R_SCHEMA_DRIFT=skipped` (commits sem migration) e por isso passavam. **Qualquer PR com migration nova falha o Gate Final enquanto P7 não for resolvido.**
+
+**Ação necessária do PO (duas opções):**
+
+**Opção A (recomendada):** Resolver P7 (reconciliar ledger) → mergear PR #2701 → disparar `db-apply-migration.yml` via `workflow_dispatch`.
+
+**Opção B:** Aplicar o GRANT diretamente via `workflow_dispatch` em `db-apply-migration.yml` com SQL `GRANT SELECT ON public.v_kit_component_complete TO authenticated, service_role;` — requer aprovação de `environment: production` no GitHub Actions UI.
 
 ---
 
@@ -290,4 +338,4 @@ description: "Deployment has failed — run this Vercel CLI command: npx vercel 
 
 ---
 
-*Ação prioritária: P1 (secrets E2E) — desbloqueia P2, P9, P10. P6, P8, P11 requerem investigação independente. P12 requer migration autorizada. P13 requer deleção do projeto fantasma Vercel.*
+*Ação prioritária: P1 (secrets E2E) — desbloqueia P2, P9, P10. P6, P8, P11 requerem investigação independente. P12 bloqueado por P7 (Opção B disponível via workflow_dispatch sem resolver P7). P13 requer deleção do projeto fantasma Vercel.*
