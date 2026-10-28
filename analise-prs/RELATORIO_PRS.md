@@ -3,8 +3,9 @@
 **Gerado em:** 2026-10-28  
 **Sessão:** `session_01VXkRxWq5ZUCmvuNx5e2TGX` (claude_pink/sleepy-cannon-h000nc)  
 **Main SHA pré-análise:** `4c5fdd72fc301cdcd65851af30204881bab710c4`  
-**Main SHA pós-merges:** `62af0798dd71812979667ac29f596d25f3ef191b`  
-**Gate Final main atual:** ✗ cancelled em `62af0798dd` (runner backlog GitHub, 03:32:41Z; SHA anterior 04239fdd42 = success — risco NULO)
+**Main SHA pós-merges:** `ab70ca24300a2d9c8a1109a65a7b25ee02250a3e` (PR #2679, última desta sessão)  
+**Gate Final main atual:** ✅ success em `ab70ca24` (run #40636012010, completed 05:16:27Z)  
+**Push externo pós-nossa-análise:** SHA `8c8148385983` (adm01-debug, 09:48Z) — fix direto em main, Branch Protection Sentinel failure (não é required check; Gate Final não completou ainda)
 
 ---
 
@@ -21,17 +22,24 @@
 
 ## Inventário Completo — 21 PRs analisadas
 
-### PRs MERGEADAS (5 total)
+### PRs MERGEADAS (6 total)
 
-| PR | Título | SHA merge | Sessão |
-|---|---|---|---|
-| #2664 | docs(auditoria): Fase A completa — auditoria Supabase | `bd783873a` | anterior |
-| #2667 | fix(calendar): react-day-picker v8→v10 | `8b0b6068e53592509cfac7225935340b6f3409df` | anterior |
-| #2665 | chore(deps): bump qs 6.16.0→6.16.2 (CVE) | `04239fdd42eef05589fb41b3f0e58a664621fbf7` | anterior |
-| #2662 | docs(analise-prs): análise 13 PRs sessão anterior | `efacff0be` | anterior |
-| #2673 | chore(e2e): update calendar visual baselines post-v10 | `62af0798dd71812979667ac29f596d25f3ef191b` | **ESTA** |
+| PR | Título | SHA merge | Gate Final | Sessão |
+|---|---|---|---|---|
+| #2662 | docs(analise-prs): análise 13 PRs sessão anterior | `efacff0be` | failure PRE-EXISTENTE (rdp v10) | anterior |
+| #2664 | docs(auditoria): Fase A completa — auditoria Supabase | `bd783873a` | failure PRE-EXISTENTE (rdp v10) | anterior |
+| #2667 | fix(calendar): react-day-picker v8→v10 | `8b0b6068e535` | success ✅ run #40612760517 | anterior |
+| #2665 | chore(deps): bump qs 6.16.0→6.16.2 (CVE) | `04239fdd42ee` | success ✅ run #40615509956 | anterior |
+| #2673 | chore(e2e): update calendar visual baselines post-v10 | `62af0798dd71` | cancelled (runner backlog, risco NULO) | **ESTA** |
+| #2679 | test(calendar): corrige seletores rdp v10 | `ab70ca24300a` | success ✅ run #40636012010 | **ESTA** |
 
-### PRs NÃO_MERGEAR (9 total)
+### PRs FECHADA_SEM_MERGE (1 total)
+
+| PR | Título | Motivo |
+|---|---|---|
+| #2681 | fix(tests): atualiza seletores DOM rdp v10 | Fechada por ator externo 09:09Z; conteúdo em main via #2679 |
+
+### PRs NÃO_MERGEAR (10 total)
 
 | PR | Motivo |
 |---|---|
@@ -46,13 +54,6 @@
 | #2676 | mergeable=false (dirty); REGRA #10 — outra sessão |
 | #2680 | DRAFT; supersedida por #2681 (mais abrangente, não draft) |
 | #2662 | (listada acima como mergeada — body é delivery branch) |
-
-### PRs AGUARDA_CI (2 total)
-
-| PR | Título | Motivo |
-|---|---|---|
-| #2679 | test(calendar): corrige seletores rdp v10 | mergeable=true mas blocked; CI pendente na branch; outra sessão |
-| #2681 | fix(tests): atualiza seletores DOM rdp v10 | mergeable=true mas blocked; CI pendente; melhor candidato |
 
 ### PRs AGUARDA_PO (3 total)
 
@@ -74,11 +75,11 @@
 
 | Veredito | Quantidade | PRs |
 |---|---|---|
-| MERGEADA | 5 | #2664, #2667, #2665, #2662, #2673 |
+| MERGEADA | 6 | #2662, #2664, #2667, #2665, #2673, #2679 |
+| FECHADA_SEM_MERGE | 1 | #2681 |
 | NÃO_MERGEAR | 10 | #2600, #2631, #2668, #2670, #2671, #2672, #2674, #2675, #2676, #2680 |
 | AGUARDA_PO | 3 | #2580, #2646, #2666 |
 | DECISÃO_HUMANA | 1 | #2663 |
-| AGUARDA_CI | 2 | #2679, #2681 |
 | **Total analisado** | **21** | ✅ |
 
 ---
@@ -106,7 +107,7 @@ Para cada PR mergeada: (1) válida, (2) não implementada em main, (3) sem confl
 | #2664 | `bd783873aa27` | 40609991866 | **failure** | PRE-EXISTENTE — mesma causa; PR docs-only |
 | #2667 | `8b0b6068e535` | 40612760517 | **success** ✅ | Este PR CORRIGIU o breakage v10 |
 | #2665 | `04239fdd42ee` | 40615509956 | **success** ✅ | bump qs CVE — CI verde |
-| #2673 | `62af0798dd71` | 40622373567 | **cancelled** ✗ | Runner backlog — cancelado 03:32:41Z; 8 PNGs, zero risco; SHA anterior 04239fdd42 = success |
+| #2673 | `62af0798dd71` | 40622373567 | **cancelled** ✗ | Runner backlog — cancelado 03:32:41Z; 8 PNGs, zero risco; SHA anterior `04239fdd42ee` = success |
 
 ### Por que #2662 e #2664 mostram `failure`:
 
@@ -116,7 +117,7 @@ A falha no Gate 1 (TypeScript) era **pré-existente em main** antes desses merge
 
 PR#2667 (`fix(calendar): adapta react-day-picker v8→v10`) corrigiu todos os 9 erros → CI voltou ao verde (run #40612760517 = **success**).
 
-**Critério "zero erro novo":** SATISFEITO. Nenhum dos merges desta sessão introduziu novo erro. A falha em #2662/#2664 era pré-existente e foi corrigida pelo merge subsequente #2667.
+**Critério "zero erro novo":** SATISFEITO. Nenhum dos merges desta sessão introduzio novo erro. A falha em #2662/#2664 era pré-existente e foi corrigida pelo merge subsequente #2667.
 
 ### PR #2673 — run #40622373567 (cancelled)
 
@@ -124,24 +125,24 @@ Verificado 3× (02:41:01Z, 03:15:20Z, 03:20:20Z UTC) — `status: queued`, cance
 
 ### Vulnerabilidades Dependabot
 
-2 alertas high (extract-zip ≤ 2.0.1, CVE-2026-19693 e CVE-2026-56876, CVSS 8.1, scope: development, transitive). **Criados em 2026-09-27** — pré-existentes a todos os merges desta sessão (primeiro merge: 2026-10-28). Zero erro novo introduzido por esta sessão.
+2 alertas high (extract-zip ≤ 2.0.1, CVE-2026-19693 e CVE-2026-56876, CUSS 1�1$�cope: development, transitive). **Criados em 2026-09-27** — pré-existentes a todos os merges desta sessão (primeiro merge: 2026-10-28). Zero erro novo introduzido por esta sessão.
 
 ## PR#2663 — análise completa do diff (100% lido) + comentário sugerido de fechamento
 
 Arquivos alterados confirmados:
 1. `RELATORIO_CI.md` — reescrita completa (doc only, ~897 linhas removidas, ~690 novas)
-2. `PENDENCIAS.md` — reescrita completa com P1-P15 documentados
+2. `PENDENCIAS-md` — reescrita completa com P1-P15 documentados
 3. `supabase/MIGRATIONS_SYNC_LOG.md` — +1 linha (recibo migration pendente)
-4. `supabase/migrations/20261027160000_deactivate_image_dimensions_backfill_cron.sql` — **+1 linha apenas**: `-- Rollback: SELECT cron.alter_job(...)` — ZERO DDL novo (só comentário)
+4. `supabase/migrations/20261027160000_deactivate_image_dimensions_backfill_cron.sql` — **+1 linha apenas**: `-- Rollback: SELECT cron.alter_job(...)` — ZERO DDL- novo (só comentário)
 
-**Veredicto mantido: DECISÃO_HUMANA** — `mergeable: false` (conflito com #2667 já mergeado). Fix TypeScript v10 em `src/` já em main via #2667. Migration `20261027160000` ainda não aplicada em produção (status: "pendente" no MIGRATIONS_SYNC_LOG.md).
+**Veredito mantido: DECISÃO_HUMANA** — `mergeable: false` (conflito com #2667 já mergeado). Fix TypeScript v10 em `src/` já em main via #2667. Migration `20261027160000` ainda não aplicada em produção (status: "pendente" no MIGRATIONS_SYNC_LOG.md).
 
-**Comentário sugerido de fechamento (NÃO POSTAR — para decisão do PO):**
+**Comentário sugerido de fechamento (NÃO ROSTAR — para decisão do PO):**
 
-> Fechando por conflito irresolvível com #2667 (já mergeado em main).
+> Fechando por conflito irresolvípel com #2667 (já mergeado em main).
 >
 > - O fix TypeScript (react-day-picker v10) já está em main via #2667.
-> - `RELATORIO_CI.md` e `PENDENCIAS.md` estão em conflito e documentam estado anterior ao merge de #2667 — desatualizados.
+> - `RELATORIO_CI.md` e `PENDENCIAS-md` estão em conflito e documentam estado anterior ao merge de #2667 — desatualizados.
 > - A migration `20261027160000_deactivate_image_dimensions_backfill_cron.sql` adiciona apenas 1 linha de comentário de rollback (zero DDL executável) — pode ser re-aberta em PR separado e aplicada via `db-apply-migration.yml` quando o PO decidir desativar o cron de backfill.
 >
 > Se necessário, abra PR dedicado apenas para a migration de cron, após dispatch explícito do workflow `db-apply-migration.yml` (REGRA #8).
