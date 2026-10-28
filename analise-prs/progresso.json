@@ -4,7 +4,7 @@
   "status": "CONCLUIDO_21_PRS_ANALISADAS",
   "branch_trabalho": "claude_pink/sleepy-cannon-h000nc",
   "main_head_inicio": "4c5fdd72fc301cdcd65851af30204881bab710c4",
-  "main_head_fim": "62af0798dd71812979667ac29f596d25f3ef191b",
+  "main_head_fim": "ab70ca24300a2d9c8a1109a65a7b25ee02250a3e",
   "total_prs_inventariadas": 21,
   "ci_baseline": {
     "run_id": "40572329584",
@@ -54,7 +54,32 @@
       "run_id": "40622373567",
       "conclusion": "cancelled",
       "nota": "Runner backlog GitHub — verificado 3× (02:41, 03:15, 03:20 UTC), nunca saiu de queued; cancelado em 03:32:41Z por timeout do runner. PR#2673 = 8 PNGs only, zero código. SHA anterior 04239fdd42 (PR#2665) = success. Risco de regressão: NULO."
+    },
+    "pr_2679": {
+      "merge_sha": "ab70ca24300a2d9c8a1109a65a7b25ee02250a3e",
+      "run_id": "40636012010",
+      "check_run_id": "122646197090",
+      "conclusion": "success",
+      "nota": "Gate Final - Deploy Ready = success, completed 05:16:27Z. PR mergeada 05:06:03Z por adm01-debug (nossa sessão). test(calendar) rdp v10 selectors — 9 arquivos, +355/-189."
     }
+  },
+  "fechadas_sem_merge": [
+    {
+      "pr": 2681,
+      "titulo": "fix(tests): atualiza seletores DOM para react-day-picker v10",
+      "closed_at": "2026-10-28T09:09:19Z",
+      "merged": false,
+      "motivo": "Fechada por ator externo antes que CI concluísse (attempt 4 completou às ~09:54Z após fechamento). Conteúdo em main via PR #2679 (ab70ca24, 05:06Z)."
+    }
+  ],
+  "push_externo_pos_analise": {
+    "sha": "8c814838598330b4b8c0080c9dc93b4192a65d08",
+    "timestamp": "2026-10-28T09:48:38Z",
+    "autor": "adm01-debug",
+    "mensagem": "fix(migrations): torna 20261027120000 e 20261027140000 replay-safe — Gate E40",
+    "falha_detectada": "Branch Protection Sentinel (run #40667156223) — push direto sem PR, não segue padrão (NNN)",
+    "impacto_nos_nossos_merges": "ZERO — commit do PO pós-análise, não causado por nenhum de nossos merges",
+    "gate_final_required_check": "Não encontrado ainda (in_progress) — Branch Protection Sentinel NÃO é required check"
   },
   "vulnerabilidades_dependabot": {
     "nota": "2 alertas high (extract-zip ≤ 2.0.1, CVE-2026-19693 e CVE-2026-56876, CVSS 8.1, scope: development, transitive). Criados em 2026-09-27 — PRE-EXISTENTES a todos os merges desta sessão (primeiro merge: 2026-10-28). Zero erro novo introduzido."
@@ -226,18 +251,17 @@
     {
       "pr": 2679,
       "titulo": "test(calendar): corrige seletores de teste para react-day-picker v10",
-      "veredito": "AGUARDA_CI",
+      "veredito": "MERGEADA",
       "diff_lido": true,
       "diff_arquivos": 9,
       "diff_linhas": "+355/-189",
       "diff_descricao": "Seletores: button[name='day'] → rdp v10 sem name attr; aria-selected em td não button. Fallbacks v8 mantidos.",
       "regressao": "NENHUMA — apenas arquivos de teste",
       "regra_negocio": "Válida — compatibilidade com rdp v10",
-      "motivo_bloqueio": "mergeable_state: blocked (CI pendente na branch). REGRA #10: outra sessão.",
-      "estado_final": "MERGEADA",
       "merge_commit_sha": "ab70ca24300a2d9c8a1109a65a7b25ee02250a3e",
       "merged_at": "2026-10-28T05:06:03Z",
-      "merged_by": "adm01-debug"
+      "merged_by": "adm01-debug",
+      "gate_final": "run #40636012010, conclusion=success, completed 05:16:27Z"
     },
     {
       "pr": 2680,
@@ -251,14 +275,13 @@
     {
       "pr": 2681,
       "titulo": "fix(tests): atualiza seletores DOM para react-day-picker v10",
-      "veredito": "AGUARDA_CI",
+      "veredito": "FECHADA_SEM_MERGE",
       "diff_lido": true,
       "diff_arquivos": 5,
       "diff_linhas": "+171/-584",
       "diff_descricao": "calendar.dimensions.test.tsx, calendar.redesign.test.tsx, date-picker-field.test.tsx. 25656 testes passing local. Seletores: button[aria-selected] → [aria-selected='true'] button; button[name='day'] → td[role='gridcell'] button.",
       "regressao": "NENHUMA — apenas arquivos .test.tsx, zero código de produção",
       "regra_negocio": "Válida — atualizar testes para nova API de biblioteca",
-      "motivo_bloqueio": "mergeable_state: blocked (CI pendente na branch). Não draft. Melhor candidato dentre os fixes de teste v10.",
       "estado_final": "FECHADA_SEM_MERGE",
       "closed_at": "2026-10-28T09:09:19Z",
       "motivo_fechamento": "Fechada por ator externo enquanto CI ainda rodava. Fix rdp v10 já entrou no main via #2679 (merge_commit ab70ca24, 05:06Z). Conteúdo não perdido.",
