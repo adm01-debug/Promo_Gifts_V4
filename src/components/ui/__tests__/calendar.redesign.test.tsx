@@ -55,11 +55,9 @@ describe('Calendar iOS redesign', () => {
 
   it('day_today destaca o dia atual em vermelho', () => {
     render(<Calendar mode="single" defaultMonth={new Date()} />);
-    // react-day-picker v10: o modificador 'today' aplica-se ao <td>; a classe Tailwind
-    // "[&>button]:text-destructive" fica na string de classe do <td>, não do <button>
-    const todayCell = Array.from(document.querySelectorAll<HTMLElement>('td[role="gridcell"]')).find(
-      (td) => classes(td).includes('text-destructive'),
-    );
+    // react-day-picker v10: aria-current="date" identifica o <td> do dia de hoje
+    // (mais preciso do que buscar text-destructive, que domingos também têm)
+    const todayCell = document.querySelector<HTMLElement>('td[aria-current="date"]');
     expect(todayCell).toBeTruthy();
     expect(classes(todayCell)).toMatch(/text-destructive/);
   });
