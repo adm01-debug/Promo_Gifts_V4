@@ -10,7 +10,7 @@
 ## Baseline (main `62af0798`)
 
 | Check | Resultado |
-|-------|-----------|
+|-------|----------|
 | TypeScript (`tsc --noEmit`) | ✅ 0 erros |
 | `calendar.redesign.test.tsx` | ❌ 2 falhas (day_selected, day_outside) |
 | `date-picker-field.test.tsx` | ✅ 18/18 aprovados |
@@ -35,8 +35,8 @@ atualizou seletores de teste.
 ## Inventário Completo — 12 PRs abertas
 
 | PR | Título | Autor | Draft | Veredito | Motivo |
-|----|--------|-------|-------|----------|---------|
-| #2681 | fix(tests): react-day-picker v10 selectors | adm01-debug | Não | **MERGE CANDIDATE** | Aguarda Gate Final SHA `44f84c67` |
+|----|--------|-------|-------|----------|--------|
+| #2681 | fix(tests): react-day-picker v10 selectors | adm01-debug | Não | **MERGE CANDIDATE** | Aguarda Gate Final SHA `7286e3bc` |
 | #2680 | fix(tests): calendar selectors (similar) | adm01-debug | Sim | **BLOQUEADO** | Draft |
 | #2679 | test(calendar): selectors v10 | adm01-debug | Não | **BLOQUEADO** | Conflita com #2681 |
 | #2675 | docs(audit): relatório final | adm01-debug | Não | **AGUARDA PO** | Branch desta sessão + REGRA #10 |
@@ -91,8 +91,8 @@ Mudanças sólidas de CI, mas tocam arquivos protegidos. Requer aprovação PO.
 ## Status de merges nesta sessão
 
 | PR | SHA | Gate Final | Resultado |
-|----|-----|------------|-----------|
-| Aguardando #2681 | `44f84c67` | Em execução | — |
+|----|-----|------------|----------|
+| #2681 | `7286e3bc` | Deploy Gates CANCELADO → rerun disparado 04:10Z | Aguardando novo resultado |
 
 ---
 
@@ -107,8 +107,10 @@ Mudanças sólidas de CI, mas tocam arquivos protegidos. Requer aprovação PO.
 - [x] TypeScript: 0 erros
 - [x] prs.json criado
 - [x] Dossies criados para todas as 12 PRs
-- [ ] PR #2681 Gate Final: PENDENTE (CI em execução)
+- [ ] PR #2681 Gate Final: Deploy Gates rerun disparado (run 40629639891) — aguardando
 - [ ] Merge executado: 0/1
+- [x] progresso.json criado com per-PR
+- [x] regras-de-negocio.md reconstruído de fontes reais
 
 ---
 
