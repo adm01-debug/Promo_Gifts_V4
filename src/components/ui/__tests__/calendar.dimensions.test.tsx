@@ -75,7 +75,8 @@ describe('Calendar — dimensions contract', () => {
       <Calendar mode="single" selected={REF} defaultMonth={REF} />,
     );
     expect(container.querySelector('[role="grid"]')).toBeTruthy();
-    const sel = container.querySelector('button[aria-selected="true"]');
+    // react-day-picker v10: aria-selected vai para o <td>, não para o <button> interno
+    const sel = container.querySelector('[aria-selected="true"] button');
     expect(sel).toBeTruthy();
     const navBtn = Array.from(container.querySelectorAll<HTMLElement>('button')).find((b) =>
       /h-11\s+w-11/.test(b.getAttribute('class') ?? ''),
@@ -107,7 +108,8 @@ describe('Calendar — dimensions contract', () => {
       expect(classes(h)).toMatch(/md:text-\[7px\]/);
     }
 
-    const dayBtns = Array.from(container.querySelectorAll<HTMLElement>('button[name="day"]'));
+    // react-day-picker v10: botões de dia não têm name="day"; são filhos de td[role="gridcell"]
+    const dayBtns = Array.from(container.querySelectorAll<HTMLElement>('td[role="gridcell"] button'));
     expect(dayBtns.length).toBeGreaterThan(20);
     for (const b of dayBtns.slice(0, 10)) {
       expect(classes(b)).toMatch(/text-\[13px\]/);

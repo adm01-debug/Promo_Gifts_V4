@@ -55,17 +55,20 @@ describe('Calendar iOS redesign', () => {
 
   it('day_today destaca o dia atual em vermelho', () => {
     render(<Calendar mode="single" defaultMonth={new Date()} />);
-    const today = Array.from(document.querySelectorAll<HTMLElement>('button[name="day"]')).find(
-      (b) => classes(b).includes('text-destructive'),
+    // react-day-picker v10: o modificador 'today' aplica-se ao <td>; a classe Tailwind
+    // "[&>button]:text-destructive" fica na string de classe do <td>, não do <button>
+    const todayCell = Array.from(document.querySelectorAll<HTMLElement>('td[role="gridcell"]')).find(
+      (td) => classes(td).includes('text-destructive'),
     );
-    expect(today).toBeTruthy();
-    const c = classes(today);
-    expect(c).toMatch(/text-destructive/);
+    expect(todayCell).toBeTruthy();
+    expect(classes(todayCell)).toMatch(/text-destructive/);
   });
 
   it('day_selected: bg-destructive + text-primary-foreground', () => {
     render(<Calendar mode="single" selected={REF} defaultMonth={REF} />);
-    const sel = document.querySelector('button[aria-selected="true"]');
+    // react-day-picker v10: aria-selected vai para o <td>; as classes Tailwind
+    // "[&>button]:bg-destructive" ficam na string de classe do <td>
+    const sel = document.querySelector('[aria-selected="true"]');
     expect(sel).toBeTruthy();
     const c = classes(sel);
     expect(c).toMatch(/bg-destructive/);
