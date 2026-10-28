@@ -46,7 +46,7 @@
 
 | PR | Título | SHA merge | Gate Final (pré-merge) | Gate Final (pós-merge) |
 |----|--------|-----------|----------------------|----------------------|
-| #2679 | test(calendar): corrige seletores rdp v10 | `ab70ca24` | SUCCESS run 40631972278 | in_progress run 40636012010 |
+| #2679 | test(calendar): corrige seletores rdp v10 | `ab70ca24` | SUCCESS run 40631972278 | SUCCESS run 40636012010 |
 
 **Evidência do merge:** Squash merge em 2026-10-28T05:06:03Z. Mensagem: "test(calendar): corrige seletores de teste para react-day-picker v10 (#2679)".
 
@@ -168,7 +168,7 @@ Porém, os seguintes itens estão PENDENTES DE CONFIRMAÇÃO EXTERNA:
 - [x] progresso.json atualizado após cada PR
 - [x] Worktrees removidos (nenhum worktree ativo)
 - [x] Nenhuma escrita proibida no GitHub (apenas merge autorizado de #2679)
-- [ ] Gate Final pós-merge main: in_progress (run 40636012010 em `ab70ca24`) — aguardando
+- [x] Gate Final pós-merge main: SUCCESS (run 40636012010 em `ab70ca24`, completado 05:16Z)
 
 ---
 
@@ -235,7 +235,7 @@ Porém, os seguintes itens estão PENDENTES DE CONFIRMAÇÃO EXTERNA:
 - **Regra de negócio:** Válida — corrige seletores DOM para react-day-picker v10 (commit `4c5fdd72` que introduziu v10 não atualizou testes)
 - **Gate Final pré-merge:** SUCCESS (run 40631972278, 17 jobs SUCCESS/SKIPPED, SHA `39e6bf76`)
 - **Merge SHA:** `ab70ca24300a2d9c8a1109a65a7b25ee02250a3e` (squash, 2026-10-28T05:06:03Z)
-- **Gate Final pós-merge:** in_progress (run 40636012010)
+- **Gate Final pós-merge:** SUCCESS (run 40636012010, completado 05:16Z)
 
 ### #2680 — BLOQUEADO (Draft)
 - **Diff lido:** `analise-prs/dossies/PR-2680.md`

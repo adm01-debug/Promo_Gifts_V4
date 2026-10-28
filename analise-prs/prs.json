@@ -191,7 +191,7 @@
       "sha_merge": "ab70ca24300a2d9c8a1109a65a7b25ee02250a3e",
       "gate_final_run": "40631972278",
       "gate_final_pos_merge_run": "40636012010",
-      "gate_final_pos_merge_status": "in_progress"
+      "gate_final_pos_merge_status": "success"
     },
     {
       "numero": 2680,
