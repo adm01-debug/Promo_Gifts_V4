@@ -1,24 +1,13 @@
-number,title,author,draft,base,veredito,motivo,sha_merge,gate_final_run
-2580,"fix(banco): rollback header e23 force_rls",adm01-debug,true,main,DECISAO_HUMANA,"DRAFT + migrations + rollbacks (REGRA #8)",,
-2587,"chore(deps): zustand 4.5.7→5.0.16",dependabot[bot],false,main,MERGEADO_AUTONOMO,"Frontend-only dep; CI verde",16ad57c66e619100f76c113653cdab7a20a7871a,40544232971
-2600,"docs(analise-prs): rev46 — 20 PRs",claude,true,main,DRAFT_NOMERGE,"Body diz NÃO MERGEAR; obsoleta; REGRA #10",,
-2631,"chore: PENDENCIAS §4 e RELATORIO_CI",claude,false,main,DECISAO_HUMANA,"CONFLITO em PENDENCIAS.md e RELATORIO_CI.md",,
-2646,"fix(migrations): rollback header + packages:read",claude,false,main,DECISAO_HUMANA,"3 workflows + 3 migrations (REGRA #8)",,
-2662,"docs(audit): dossiês rev46 — 30 arquivos analise-prs/",claude,false,main,MERGEADO_AUTONOMO,"30 arquivos docs-only; Gate1 falhou por TS pré-existente (4c5fdd72); Gate2 passou; pré-existente",efacff0bef81c7d175aef629ab338634b6c4ffb2,40609592189
-2663,"docs(ci): RELATORIO_CI.md + PENDENCIAS.md",claude,false,main,DECISAO_HUMANA,"supabase/migrations/ (REGRA #8) + behind",,
-2664,"docs(audit): auditoria Supabase — 15 arquivos auditoria-supabase/",claude,false,main,MERGEADO_AUTONOMO,"15 arquivos docs-only; Gate1 falhou por TS pré-existente (4c5fdd72); Gate2 passou; pré-existente",bd783873aa273a6da6f3351e8d1f670baaf950d2,40609991866
-2665,"chore(deps): bump qs 6.16.0→6.16.2",dependabot[bot],false,main,MERGEADO_AUTONOMO,"1 arquivo package-lock.json; CI main verde; merge-test CLEAN",04239fdd42eef05589fb41b3f0e58a664621fbf7,40615509956
-2666,"chore(main): release 1.0.0",release-please[bot],false,main,FECHAR,"Downgrade semver 1.2.1→1.0.0",,
-2667,"fix(calendar): react-day-picker v8→v10",dependabot[bot],false,main,CI_FALHOU,"Supersedida por #2670",,
-2668,"chore(analise-prs): inventário PRs",claude,true,main,DRAFT_NOMERGE,"DRAFT; reescreve prs.csv/prs.json com dados desatualizados",,
-2670,"fix: migra react-day-picker v8→v10 (classNames + Chevron + autoFocus)",adm01-debug,false,main,FECHADO_OWNER,"Fechado pelo owner 2026-10-28T02:38:45Z sem merge — supersedida por SHA 8b0b6068",,
-2671,"chore(e2e): update calendar visual baselines (safe)",github-actions[bot],false,main,FECHADO_OWNER,"Fechada pelo owner 2026-10-28T02:38:46Z sem merge — dependia de #2670 fechada",,
-2672,"chore(e2e): update calendar visual baselines (force)",github-actions[bot],false,claude_pink/compassionate-keller-om34uo,FECHADO_OWNER,"Fechada pelo owner 2026-10-28T02:38:46Z sem merge — base ≠ main; auxiliar de #2670",,
-2673,"chore(e2e): update calendar visual baselines (safe)",github-actions[bot],false,main,MERGEADO_OWNER,"Mergeada pelo owner 2026-10-28T02:40:57Z — 8 PNGs baselines v10 confirmados",62af07988ee7a33ab680e2cbf87c70617eb0a6fb,
-2674,"docs(analise-prs): análise completa das 12 PRs abertas",claude,true,main,DRAFT_NOMERGE,"DRAFT; body=NÃO MERGEAR; mergeable=false; sessão externa",,
-2675,"docs(analise-prs): rev66 — sessão 012WyySbh2tj8vhRQLBf3mHo completa",adm01-debug,true,main,ENTREGA_SESSAO,"Entrega desta sessão — docs-only 156 arquivos; DRAFT=true; dirty (conflict com main)",,
-2676,"docs(auditoria): corrige bugs C3/C8 e finaliza artefatos da auditoria Supabase",adm01-debug,true,main,DRAFT_NOMERGE,"DRAFT + dirty (conflito) + branch claude_pink/*",,
-2677,"fix(tests): corrige seletores DOM para react-day-picker v10 (3 testes unitários quebrados)",adm01-debug,true,main,FECHADO_OWNER,"Fechado 2026-10-28T02:50:58Z sem merge — DRAFT; substituído por #2679 e #2680",,
-2678,"fix(tests): atualiza seletores de calendário para react-day-picker v10",adm01-debug,true,main,FECHADO_OWNER,"Fechado 2026-10-28T02:50:57Z sem merge — DRAFT; reaberto como #2680",,
-2679,"test(calendar): corrige seletores de teste para react-day-picker v10",adm01-debug,false,main,MERGE_CANDIDATE,"test-only; 9 commits únicos; worktree CLEAN; mergeable:true; Gate Final rodando em 39e6bf76",,
-2680,"fix(tests): atualiza seletores de calendário para react-day-picker v10",adm01-debug,true,main,DRAFT_NOMERGE,"DRAFT; reabertura de #2678; 27/27 testes locais passando; PO deve decidir vs #2679",,
+numero,titulo,autor,draft,branch,base,head_sha,veredito,motivo,diff_lido,merge_de_teste,ja_implementada,regressao,sha_merge,gate_final_run
+2580,"fix(banco): rollback header e23",adm01-debug,true,claude_red/fervent-boyd-o6dkdb,main,41198d9a,AGUARDA_PO,"Draft + migrations/ REGRA#8",true,"LIMPO (sem conflito)",false,false,,
+2600,"docs(analise-prs): rev46 — 20 PRs",adm01-debug,false,claude_04/optimistic-bohr-qplx94,main,b8ceafc9,BLOQUEADO,"Conflito real (dirty)",true,"CONFLITO dirty",false,false,,
+2631,"chore: PENDENCIAS §4 e RELATORIO_CI",adm01-debug,false,claude/chore-deploy-blocker-261027-1007,main,56b15c60,BLOQUEADO,"Conflito real (dirty)",true,"CONFLITO dirty",false,false,,
+2646,"fix(migrations): rollback headers",adm01-debug,false,claude_01/trusting-bouman-hqzlco,main,79c0c670,AGUARDA_PO,"workflows/+migrations/ REGRA#8",true,"LIMPO (sem conflito)",false,false,,
+2663,"docs(ci): RELATORIO_CI + PENDENCIAS",adm01-debug,false,claude_pink/trusting-rhodes-k3nvlb,main,1049c60a,AGUARDA_PO,"migrations/ REGRA#8",true,"LIMPO (sem conflito)",false,false,,
+2666,"chore(main): release 1.0.0",github-actions[bot],false,release-please--branches--main--components--gifts-store,main,dac526be,AGUARDA_PO,"Downgrade semver 1.2.1→1.0.0 PO confirmar",true,"LIMPO (sem conflito)",false,true,,
+2668,"chore(analise-prs): inventário",adm01-debug,true,claude_03/infallible-wu-3i7aqj,main,d0a3fb61,BLOQUEADO,"Draft sessao anterior",true,N/A,true,false,,
+2674,"docs(analise-prs): 12 PRs veredictos",adm01-debug,true,claude_04/silly-matsumoto-snuevw,main,b9fdaec9,BLOQUEADO,"Draft sessao anterior",true,N/A,false,false,,
+2675,"docs(audit): relatorio final",adm01-debug,false,claude/quirky-keller-owezvt,main,7e865727,AGUARDA_PO,"Branch desta sessao REGRA#10",true,N/A,false,false,,
+2679,"test(calendar): seletores rdp v10",adm01-debug,false,claude_pink/awesome-ride-d25ur3,main,39e6bf76ec07f54dacbcaed83268551b375cbda6,MERGEADA,"Gate Final SUCCESS run 40631972278",true,"LIMPO worktree EXIT:0",false,false,ab70ca24300a2d9c8a1109a65a7b25ee02250a3e,40631972278
+2680,"fix(tests): calendar selectors v10",adm01-debug,true,claude_pink/gifted-ardinghelli-5akz9t,main,913407cf,BLOQUEADO,"Draft",true,N/A,true,false,,
+2681,"fix(tests): rdp v10 selectors",adm01-debug,false,claude/fix-calendar-rdp-v10-261028-0500,main,99aa164f,FECHADA_SEM_MERGE,"Fechada 04:14Z sem merge",true,N/A,true,false,,
