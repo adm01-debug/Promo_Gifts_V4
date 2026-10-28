@@ -13,11 +13,11 @@
 |---|---|---|
 | Deploy Gates (Gate Final) | ✅ success | Runs 40667156516 e 40662579684 — P0/P4 RESOLVIDOS |
 | CI Security & Drift Checks | ✅ success (fix) | Fix Calendar RDP v10 — commit `c73cb9b` — P5 RESOLVIDO |
-| Branch Protection Sentinel | ⚠️ verificar | Pode ter resolvido após merges via PR — P3 |
+| Branch Protection Sentinel | ✅ success | RESOLVIDO — run 40702858343 (main SHA `2cee272b`) — P3 |
 | CI Replenishment Module E2E | ❌ failure | 4 secrets E2E ausentes — P1 |
 | E2E — Critical Flows & Error Boundaries | ❌ failure | Mesma causa P1 — P2 |
 | E2E · undo | ❌ failure | Falhas pré-existentes — P6 |
-| db-schema-drift-check | ⚠️ verificar | Deve ter resolvido com P4 — P7 |
+| db-schema-drift-check | ❌ failure | Ledger divergente: `local_only=1108; remote_only=648` — P7 aguarda PO |
 | edge-functions-drift-check | ❌ failure | Drift GitHub × canônico — P8 |
 | E2E — Personalization Flow | ❌ failure | Secrets E2E ausentes — P9 |
 | E2E • Swatch QuickView | ❌ failure | Secrets E2E + webkit null — P10 |
@@ -63,10 +63,10 @@ ESLint baseline gate [full] — atual: 0 erros, 0 warnings · baseline: 0 erros
 ### 2e. Testes unitários (Vitest)
 
 ```
-NODE_OPTIONS="--max-old-space-size=4096" npx vitest run → em execução (background)
+NODE_OPTIONS="--max-old-space-size=4096" npx vitest run → 1 arquivo com falha (3 testes), 1209 passando
 ```
 
-> Resultado a ser atualizado quando vitest completar. Referência: run CI [40662579684](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40662579684) — Gate 2 Unit Tests ✅ success (1210+ passando).
+> **3 testes TZ-dependentes falham localmente** (`date-utils.test.ts` — `formatTime`, `formatDateTime`, `formatDate` com strings ISO UTC esperando resultado em BRT). Causa: container de build local não define `TZ=America/Sao_Paulo`. São falhas **pré-existentes** — o Gate 2 no CI (`TZ=America/Sao_Paulo` configurado no runner) passa com 1210+ testes: run [40662579684](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40662579684) ✅ success. Não são regressão desta sessão.
 
 ---
 
@@ -138,11 +138,11 @@ END $$;
 | # | Workflow em falha | Run ID da falha (main) | Desfecho | Evidência |
 |---|---|---|---|---|
 | 1 | CI Security & Drift Checks | [40615509752](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40615509752) | **✅ RESOLVIDO — P5** | Fix commit `c73cb9b`; Gate 2 ✅ no run [40662579684](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40662579684) |
-| 2 | Branch Protection Sentinel | [40615509825](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40615509825) | **PENDENCIAS.md P3** | Verificar run recente na main — pode ter resolvido após merges via PR |
+| 2 | Branch Protection Sentinel | [40702858343](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40702858343) | **✅ RESOLVIDO — P3** | Run pós-merge (SHA `2cee272b`) → success |
 | 3 | CI Replenishment Module E2E | [40612760478](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40612760478) | **PENDENCIAS.md P1** | 4 secrets E2E ausentes — requer ação do PO |
 | 4 | E2E — Critical Flows & Error Boundaries | [40615510053](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40615510053) | **PENDENCIAS.md P2** | Mesma causa de P1 (secrets ausentes) + tooltip timing |
 | 5 | Deploy Gates (Gate Final) | [40660438161](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40660438161) | **✅ RESOLVIDO — P4** | Fix commit `8c81483`; run [40667156516](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40667156516) success |
-| 6 | db-schema-drift-check | [40665197973](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40665197973) | **PENDENCIAS.md P7** | Consequência de P4; verificar run recente |
+| 6 | db-schema-drift-check | [40708395880](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40708395880) | **❌ PENDENCIAS.md P7** | Ledger divergente: `local_only=1108; remote_only=648` — não é consequência de P4; requer reconciliação pelo PO |
 | 7 | edge-functions-drift-check | [40663094555](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40663094555) | **PENDENCIAS.md P8** | Drift GitHub × canônico — requer reconciliação pelo PO |
 | 8 | E2E — Personalization Flow | [40662579633](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40662579633) | **PENDENCIAS.md P9** | Secrets E2E ausentes — mesma causa de P1 |
 | 9 | E2E • Swatch QuickView | [40662579393](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40662579393) | **PENDENCIAS.md P10** | Secrets E2E + webkit null — depende de P1 |
@@ -154,7 +154,7 @@ END $$;
 
 **Workflows aguardando ação do PO:** P1 (E2E secrets), P2 (depende P1), P6 (UI regressão), P8 (edge functions drift), P9 (depende P1), P10 (depende P1 + webkit), P11 (edge integration), P12 (GRANT SELECT).
 
-**Verificar após esta PR:** P3 (Branch Protection Sentinel), P7 (db-schema-drift-check) — podem ter resolvido automaticamente com P4.
+**Verificado pós-merge (2026-10-28):** P3 (Branch Protection Sentinel) → ✅ RESOLVIDO (run 40702858343). P7 (db-schema-drift-check) → ❌ AINDA FALHA (run 40708395880) — causa raiz é ledger divergente (`local_only=1108; remote_only=648`), independente de P4; requer reconciliação pelo PO.
 
 ---
 

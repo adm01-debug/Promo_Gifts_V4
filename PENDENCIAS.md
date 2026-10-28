@@ -159,18 +159,31 @@ Clique em "Re-run all jobs".
 
 ---
 
-## P7 — db-schema-drift-check (timing — resolução esperada no próximo run agendado)
+## P7 — db-schema-drift-check (ledger divergente — requer reconciliação pelo PO)
 
 **Workflow:** db-schema-drift-check  
-**Run ID da última falha:** 40665197973  
-**Link:** https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40665197973  
-**Status:** failure (timing) — a correção já está na main; próximo run agendado deve resolver
+**Run ID da última falha:** [40708395880](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40708395880)  
+**SHA:** `2cee272b` (main HEAD em 2026-10-28 14:41)  
+**Status:** ❌ failure — bloqueado por ledger divergente
 
-**Causa da falha persistente (timing):** O run `40665197973` foi agendado (schedule diário) às 09:33 em 2026-10-28, no SHA `c73cb9b`. O fix das migrations (`8c81483`, que torna o replay do Gate E40 safe com guard `IF to_regclass('cron.job') IS NULL`) só foi commitado às 09:48 — **15 minutos após o run já ter iniciado com o SHA anterior**. O drift-check replayou as migrations sem o guard e falhou.
+**Erro exato (step "Ledger parity (repo x canonical)"):**
+```
+[migration-ledger][bloqueado] local_only=1108; remote_only=648; mismatched=0; malformed=0
+```
 
-**Resolução esperada:** O próximo run agendado (schedule diário) usará um SHA que inclui `8c81483` e deve passar, pois as migrations `20261027120000` e `20261027140000` agora têm o guard pg_cron.
+**Causa raiz:** O ledger de migrations está massivamente dessincronizado entre o repositório e o banco de produção `doufsxqlfjyuvxuezpln`:
+- **1108 migrations** existem no repo (`supabase/migrations/`) mas **não constam** no banco remoto (`supabase_migrations.schema_migrations`)
+- **648 migrations** constam no banco remoto mas **não existem** no repo
 
-**Ação necessária do PO:** Se o próximo run agendado falhar, disparar manualmente `db-schema-drift-check` via `workflow_dispatch` para confirmar. O fix já está validado pelos Gate Final runs `40667156516` e `40662579684` que incluem o mesmo replay via Gate E40.
+Esta divergência é independente do fix de P4 (guard pg_cron nas migrations `20261027120000`/`20261027140000`). O fix de P4 corrigiu o replay do Gate E40 dentro do `deploy-gates.yml`, mas o `db-schema-drift-check` compara o ledger em si — e o ledger está dessincronizado por DDL fora do fluxo de migration (REGRA #8 corolário).
+
+**Ação necessária do PO:**
+1. Investigar a extensão da divergência: baixar artefato `schema-reconciliation-evidence` do run [40708395880](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40708395880/artifacts/12824214915) (arquivos `/tmp/migration-ledger.json` e `/tmp/migration-ledger-summary.json`)
+2. Decidir estratégia de reconciliação: criar migrations espelho para o `remote_only=648` ou limpar o `local_only=1108` do ledger
+3. Após reconciliação: disparar `schema-snapshot-export.yml` com `force_rotate: true` para girar o baseline
+4. Reconfirmar com `workflow_dispatch` em `db-schema-drift-check`
+
+**Nota:** Per REGRA #8 corolário e E056, Claude **não pode** executar DDL ou `migration repair` em sessão de agente para reconciliar o ledger. Requer ação do PO.
 
 ---
 
