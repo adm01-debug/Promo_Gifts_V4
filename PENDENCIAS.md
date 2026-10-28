@@ -177,12 +177,20 @@ Nenhuma — ignorar como parte do processo de revisão. Se bloquear merge em alg
 
 ---
 
-## P10 — `ci-replenishment-module.yml` — E2E visual parity (screenshot diff)
+## P10 — `ci-replenishment-module.yml` — `/reposicao` não carrega em CI
 
-**Run ID:** 40563195442  
-**Status:** FALHA no commit `2fafe8e`  
-**Causa:** Testes de paridade visual (`novidades-reposicao-card-parity.spec.ts`) detectaram diferença nas dimensões dos cards entre `/novidades` e `/reposicao`. Screenshot diff registrado.  
-**Por que não resolvido:** Requer análise do componente de card e decisão se a diferença visual é intencional (redesign) ou regressão. Não é um erro de código TypeScript.
+**Run ID:** 40622370786  
+**Commit:** `62af0798dd` (main, 2026-10-28T02:41 UTC)  
+**Erro exato:**
+```
+Error: Timed out 30000ms waiting for expect(locator).toBeVisible()
+Locator: page.getByTestId('page-title-reposicao')
+  at novidades-reposicao-card-parity.spec.ts:320 (grid cols loop)
+  at novidades-reposicao-card-parity.spec.ts:447 (deviceScaleFactor loop)
+```
+**Causa:** `gotoAndSettle(page, '/reposicao')` não exibe `data-testid="page-title-reposicao"` em 30s — fonte em `src/pages/products/ReplenishmentsPage.tsx:49`. Afeta testes com cols=3/4/5 e dsf=0.9/1.1 (múltiplas instâncias).  
+**Contexto:** Falha pré-existente — PR #2663 não toca `ReplenishmentsPage.tsx`. Causa provável: rota `/reposicao` requer autenticação ou dados que não estão disponíveis no ambiente CI.  
+**Por que não resolvido:** Requer investigação de autenticação/dados no ambiente CI para a rota `/reposicao`. Fora do escopo do fix de TypeScript (react-day-picker v10).
 
 ---
 

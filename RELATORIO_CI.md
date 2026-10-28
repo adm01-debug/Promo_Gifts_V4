@@ -3,7 +3,7 @@
 **Sessão:** https://claude.ai/code/session_01VXkRxafXhqqt3j3oxCDguY  
 **Data:** 2026-10-28  
 **Branch de trabalho:** `claude_pink/focused-lamport-qyupp8` (tarefa exige esta branch — ver system prompt)  
-**HEAD main atual:** `4c5fdd72` (bump react-day-picker v8→v10 pelo Lovable)
+**HEAD main atual:** `62af0798dd` (PR #2673 — baselines visuais pós-v10)
 
 ---
 
@@ -27,30 +27,37 @@ Inventário obtido ao início da sessão (commit `e0b569f`):
 
 ---
 
-## Inventário atualizado — Últimas execuções no main (2026-10-27 23:37 UTC)
+## Inventário atualizado — Últimas execuções no main (2026-10-28 02:41 UTC)
 
-Commit atual: `4c5fdd72` (react-day-picker v8→v10 bump pelo Lovable, posterior ao baseline)
+Commit atual: `62af0798dd` (PR #2673 — baselines visuais pós-v10, 8 PNGs)
 
 | Workflow | Run ID | Status | Conclusão |
 |---|---|---|---|
-| **Deploy Gates** | **40597996716** | completed | **failure** |
-| **CI - Replenishment Module** | **40597996703** | completed | **failure** |
-| **E2E — Magazine Header Layout** | **40597996766** | completed | **failure** |
-| E2E (Playwright) | 40597996628 | completed | cancelled |
-| E2E • Swatch QuickView | 40597996615 | in_progress | — |
-| Branch Protection Sentinel | 40597996688 | completed | success |
-| schema-snapshot-export | 40597996669 | completed | success |
-| Lovable Autoheal | 40597996680 | completed | success |
-| UI · Visual & A11y | 40597996590 | completed | success |
-| Static Health Checks | 40597996616 | completed | success |
-| Policies Baseline | 40597996483 | completed | success |
-| Security Scan | 40597996429 | completed | success |
-| Gitleaks Full History Audit | 40597996486 | completed | success |
-| SSOT Supabase Guard | 40597996467 | completed | success |
-| Lovable Edit Tracker | 40597996430 | completed | success |
-| Workflow Lint | 40597996354 | completed | success |
+| **Deploy Gates** | **40622373567** | queued | — (GitHub runner backlog) |
+| **CI - Replenishment Module Quality Gate** | **40622370786** | completed | **failure** |
+| E2E (Playwright) | 40622373966 | in_progress | — |
+| E2E • Swatch QuickView | 40622372356 | in_progress | — |
+| Nightly Full CI | 40622763252 | queued | — |
+| Visual Baseline Tests — Nightly | 40622370764 | in_progress | — |
+| CI Security & Drift Checks | 40622371146 | in_progress | — |
+| Static Health Checks | 40622372307 | completed | success |
+| Policies Baseline | 40622372307 | completed | success |
+| Branch Protection Sentinel | 40622370806 | completed | success |
+| SSOT Supabase Guard | 40622370842 | completed | success |
+| Security Scan | 40622370757 | completed | success |
+| Gitleaks — Full History Audit | 40622370816 | completed | success |
+| E2E — Critical Flows & Error Boundaries | 40622370783 | completed | success |
+| CodeQL | 40622370853 | completed | success |
+| E2E — Personalization Flow | 40622371174 | completed | success |
+| Lovable Autoheal | 40622371728 | completed | success |
+| Quote Builder Delivery Quality | 40622370811 | completed | success |
+| Required Checks Guard | 40622371351 | completed | success |
+| Select Columns vs Types | 40622373229 | completed | success |
+| Release Please | 40622370763 | completed | success |
 
-**Falhas ativas no main em `4c5fdd72`:** 3 falhas + 1 cancelado
+**Falhas confirmadas no main `62af0798dd`:** 1 falha + vários in_progress/queued (Deploy Gates aguarda runner)
+
+> **Nota:** Deploy Gates da branch (`44cd1a8`, run #40624145702) também está em fila há >1h — GitHub Actions com backlog de runners. Último run concluído com success na branch: [#40601426870](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40601426870) (commit `c391f4e`, Gate E40 skipped).
 
 ## Baseline local (início da sessão — commit `e0b569f`)
 
@@ -72,14 +79,14 @@ Commit atual: `4c5fdd72` (react-day-picker v8→v10 bump pelo Lovable, posterior
 | Pre-push hook `check-eslint-baseline.mjs` | ✅ OK — nenhuma regressão detectada |
 | CI `deploy-gates.yml` no PR branch | ✅ [Run #40601426870 — success](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40601426870) — commit `c391f4e`, Gate E40 skipped (sem migration files naquele commit) |
 
-**HEAD atual da branch (`17b020a`):**
+**HEAD atual da branch (`44cd1a8`):**
 
 | Check | Resultado |
 |---|---|
-| Gate 1 TypeScript | ✅ Fix em `90264719` — confirmado por run #40601426870 |
+| Gate 1 TypeScript | ✅ Fix em `90264719` — confirmado por run #40601426870 (commit `c391f4e`) |
 | Gate E40 (db-schema-drift-check) | ❌ FALHA esperada — P15 (647 remote_only migrations, pré-existente) |
 | Gate Final | ❌ FALHA esperada — bloqueado por Gate E40 (P15) |
-| Deploy Gates run `17b020a` | ⏳ Run #40622853947 — QUEUED (runners GitHub Actions — triggering novo run com este commit) |
+| Deploy Gates run `44cd1a8` | ⏳ Run #40624145702 — PENDING (GitHub Actions runner backlog, criado 03:00 UTC) |
 
 ---
 
@@ -147,7 +154,7 @@ Commit atual: `4c5fdd72` (react-day-picker v8→v10 bump pelo Lovable, posterior
 | `e2e-magazine-header.yml` | Zustand v4→v5 quebrou navegação magazine | PENDENCIAS.md P5 | — |
 | `Running Copilot Code Review` | Bot externo | PENDENCIAS.md P6 | — |
 | `branch-protection-sentinel.yml` | Commit histórico sem PR | PENDENCIAS.md P8 | — |
-| `ci-replenishment-module.yml` | Screenshot diff visual | PENDENCIAS.md P10 | — |
+| `ci-replenishment-module.yml` | `page-title-reposicao` não visível em 30s — `/reposicao` não carrega em CI (dsf=1.0/0.9/1.1 e cols=3/4/5) | PENDENCIAS.md P10 | — |
 
 ---
 
