@@ -103,36 +103,29 @@ Clique em "Re-run all jobs".
 
 ---
 
-## ⚠️ P3 — PENDÊNCIA ATIVA RECORRENTE — Branch Protection Sentinel
+## ✅ P3 — RESOLVIDO — Branch Protection Sentinel
 
 **Workflow:** Branch Protection Sentinel  
 **Run ID da falha original:** 40615509825  
-**Run ID da falha recorrente:** [40728685711](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40728685711) — SHA `6b2cc72` (merge PR #2699)  
-**Status:** ❌ RECORRENTE — falhou novamente em 2026-10-28
+**Run ID da falha recorrente (PR #2699):** [40728685711](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40728685711) — SHA `6b2cc72` — ❌ failure  
+**Run de confirmação (PR #2703):** [40739341755](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40739341755) — SHA `c7bc0ba6` — ✅ **success**  
+**Status:** ✅ RESOLVIDO — padrão sistêmico corrigido
 
 **Histórico:**
 - ✅ SHA `e4a326e` (run 40680415509) — success
-- ✅ SHA `2cee272b` (run 40702858343) — success (pós-merge PR com commit title correto)
+- ✅ SHA `2cee272b` (run 40702858343) — success
 - ❌ SHA `6b2cc72` (run 40728685711) — **failure** — squash merge PR #2699 sem `(#2699)` no commit title
+- ✅ SHA `c7bc0ba6` (run 40739341755) — **success** — squash merge PR #2703 com `(#2703)` no commit title
 
-**Causa raiz:** A ferramenta `github_merge_pull_request` do MCP GITHUB-FOREVER faz squash merge sem incluir automaticamente `(#NNN)` no commit title. O commit title resultante foi `docs: P11 com causa raiz exata + PENDENCIAS.md e RELATORIO_CI.md atualizados` — não termina em `(#2699)`, não corresponde a nenhum padrão aceito pelo sentinel.
-
-**Erro exato do sentinel:**
-```
-1 commit(s) em push para main sem padrão aceito: 6b2cc72
-Subject: "docs: P11 com causa raiz exata + PENDENCIAS.md e RELATORIO_CI.md atualizados"
-Não termina em (#NNN), não é merge commit, não é bot oficial, não está na allowlist
-```
-
-**Correção sistêmica (para PR desta sessão e todos os futuros):** Sempre passar `commit_title` terminando em `(#NNN)` ao chamar `github_merge_pull_request`:
+**Causa raiz (resolvida):** A ferramenta `github_merge_pull_request` do MCP GITHUB-FOREVER não inclui automaticamente `(#NNN)` no commit title. Corrigido passando `commit_title` terminando em `(#NNN)` explicitamente em toda chamada:
 ```json
 {
-  "commit_title": "docs: atualiza P3 recorrente e runs pós-merge (#XXXX)",
+  "commit_title": "docs: descrição do PR (#2703)",
   "merge_method": "squash"
 }
 ```
 
-**Ação necessária do PO (opcional):** Considerar adicionar ao workflow do sentinel a verificação de `merge_commit_sha` no payload do push event para aceitar squash merges que vieram de PRs válidos, independente do formato do título. Ou configurar proteção de branch para exigir PRs com squash merge que use o título padrão do GitHub (`PR title (#NNN)`).
+**Ação necessária do PO:** Nenhuma — padrão sistêmico corrigido. Futuros merges via MCP devem sempre incluir `(#NNN)` no `commit_title`.
 
 ---
 
@@ -201,6 +194,8 @@ Esta divergência é independente do fix de P4 (guard pg_cron nas migrations `20
 4. Reconfirmar com `workflow_dispatch` em `db-schema-drift-check`
 
 **Nota:** Per REGRA #8 corolário e E056, Claude **não pode** executar DDL ou `migration repair` em sessão de agente para reconciliar o ledger. Requer ação do PO.
+
+**Nota — diferença P7 (`local_only=1108`) vs P12 (`local_only=1109`):** P12 rodou no branch do PR #2701 que adiciona a migration `20261028120000_grant_kit_view_authenticated.sql` ao repo (+1 sobre os 1108 da main). Os dois valores são corretos em seus respectivos contextos: 1108 é o estado atual da main; 1109 é o estado do branch do PR #2701.
 
 ---
 
