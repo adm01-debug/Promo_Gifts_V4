@@ -339,6 +339,32 @@ Este gate pode ser pré-existente ao PR e ter sido mascarado. Verificar:
 
 ---
 
+---
+
+## P17 — `e2e-quotes-matrix.yml` — Regressão visual snapshot `quote-actions-menu`
+
+**Run ID:** 40629301313 (commit `8ac51d7`, superseded por `32021c5`)  
+**Workflow:** E2E Quotes — Matrix (E77) — `.github/workflows/e2e-quotes-matrix.yml`  
+**Status:** FALHA — regressão visual pré-existente  
+
+### Causa raiz
+`quote-view-no-presentation-mode.spec.ts:369` — snapshot `quote-actions-menu-dark-mobile-chromium-public-linux.png`:
+- **Esperado:** 133px × 156px (baseline commitado)
+- **Recebido:** 128px × 156px (5px mais estreito)
+- 1673 pixels diferentes (ratio 0.09 — acima do threshold padrão 0.02)
+
+### Por que não foi resolvido
+Nenhum dos nossos commits (P16, P10, docs) tocou qualquer componente relacionado a quotes ou DropdownMenu. A regressão visual é pré-existente e originou de alguma mudança do Lovable no componente `quote-actions-menu`. Nossas mudanças: MIGRATIONS_SYNC_LOG.md, novidades-reposicao-card-parity.spec.ts (URL guards), documentação.
+
+### Ação necessária pelo PO
+1. Identificar qual commit do Lovable alterou o DropdownMenu de quotes (5px menor)
+2. Atualizar o snapshot: `npx playwright test e2e/quotes/quote-view-no-presentation-mode.spec.ts --update-snapshots --project=chromium-public` e commitar os novos baselines
+3. OU reverter a mudança visual no componente se foi involuntária
+
+**Este workflow é separado do `deploy-gates.yml` (Gate Final). Não bloqueia o merge do PR #2663.**
+
+---
+
 ## Resumo de prioridades
 
 | # | Workflow | Prioridade | Decisão do PO |
@@ -359,3 +385,4 @@ Este gate pode ser pré-existente ao PR e ter sido mascarado. Verificar:
 | P12 | `uptime-monitor.yml` | BAIXA | Monitor externo — aguardar próximos runs após merge |
 | **P13** | **`e2e.yml` Critical Flows** | **ALTA** | **Mesma raiz do P11 — resolve com merge do PR #2663** |
 | **P15** | **Gate E40 `deploy-gates.yml` ledger drift (local=1108; remote=647)** | **CRÍTICA** | **Investigar se threshold mudou ou se é divergência pré-existente; reconciliação exige tarefa separada** |
+| P17 | `e2e-quotes-matrix.yml` — snapshot `quote-actions-menu` 128px vs 133px | MÉDIA | Atualizar baselines de snapshot (não bloqueia PR #2663) |
