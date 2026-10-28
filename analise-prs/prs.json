@@ -1,216 +1,129 @@
-[
-  {
-    "number": 2580,
-    "title": "fix(banco): rollback header e23 force_rls",
-    "author": "adm01-debug",
-    "draft": true,
-    "base": "main",
-    "head_sha": "41198d9a332f3e75707ca070d62b27b2eb772792",
-    "mergeable": false,
-    "veredito": "DECISAO_HUMANA",
-    "motivo": "DRAFT + supabase/migrations/ + supabase/rollbacks/ (REGRA #8)",
-    "created_at": "2026-10-27"
+{
+  "meta": {
+    "gerado_em": "2026-10-28",
+    "sessao": "https://claude.ai/code/session_012WyySbh2tj8vhRQLBf3mHo",
+    "main_sha": "62af0798dd71812979667ac29f596d25f3ef191b",
+    "total_prs_abertas": 12,
+    "total_analisadas": 12
   },
-  {
-    "number": 2587,
-    "title": "chore(deps): zustand 4.5.7→5.0.16",
-    "author": "dependabot[bot]",
-    "draft": false,
-    "base": "main",
-    "head_sha": "16ad57c66e619100f76c113653cdab7a20a7871a",
-    "mergeable": true,
-    "veredito": "MERGEADO_AUTONOMO",
-    "sha_merge": "16ad57c66e619100f76c113653cdab7a20a7871a",
-    "gate_final_run": "40544232971",
-    "gate_final_conclusao": "success",
-    "created_at": "2026-10-27"
+  "prs": [
+    {
+      "number": 2681,
+      "title": "fix(tests): atualiza seletores DOM para react-day-picker v10",
+      "author": "adm01-debug",
+      "draft": false,
+      "base": "main",
+      "head_sha": "44f84c67",
+      "branch": "claude/fix-calendar-rdp-v10-261028-0500",
+      "veredito": "MERGE_CANDIDATE",
+      "motivo": "Corrige 2 testes falhos em main causados por migração react-day-picker v8→v10. Gate Final em execução.",
+      "aguarda": "Gate Final SUCCESS"
+    },
+    {
+      "number": 2680,
+      "title": "fix(tests): atualiza seletores de calendário para react-day-picker v10",
+      "author": "adm01-debug",
+      "draft": true,
+      "veredito": "BLOQUEADO",
+      "motivo": "Draft — não elegível para merge"
+    },
+    {
+      "number": 2679,
+      "title": "test(calendar): corrige seletores de teste para react-day-picker v10",
+      "author": "adm01-debug",
+      "draft": false,
+      "base": "main",
+      "head_sha": "73e0f0c4",
+      "branch": "claude_pink/awesome-ride-d25ur3",
+      "veredito": "BLOQUEADO",
+      "motivo": "Conflita com #2681 (mesmos arquivos de teste). Somente uma das duas pode ser mergeada. #2681 é preferida."
+    },
+    {
+      "number": 2675,
+      "title": "docs(audit): sessão session_012WyySbh2tj8vhRQLBf3mHo — relatório final",
+      "author": "adm01-debug",
+      "draft": false,
+      "base": "main",
+      "head_sha": "7a00a5fb",
+      "branch": "claude/quirky-keller-owezvt",
+      "veredito": "AGUARDA_PO",
+      "motivo": "Branch desta sessão com REGRA #10 (cross-agent delivery). Conteúdo de documentação — aguarda aprovação PO."
+    },
+    {
+      "number": 2674,
+      "title": "docs(analise-prs): análise completa das 12 PRs abertas — veredictos",
+      "author": "adm01-debug",
+      "draft": true,
+      "veredito": "BLOQUEADO",
+      "motivo": "Draft"
+    },
+    {
+      "number": 2668,
+      "title": "chore(analise-prs): inventário e relatório de todas as PRs abertas",
+      "author": "adm01-debug",
+      "draft": true,
+      "veredito": "BLOQUEADO",
+      "motivo": "Draft"
+    },
+    {
+      "number": 2666,
+      "title": "chore(main): release 1.0.0",
+      "author": "github-actions[bot]",
+      "draft": false,
+      "head_sha": "dac526be",
+      "veredito": "AGUARDA_PO",
+      "motivo": "Downgrade de versão 1.2.1→1.0.0 por release-please bot. Regressão semântica — requer confirmação do PO."
+    },
+    {
+      "number": 2663,
+      "title": "docs(ci): RELATORIO_CI.md + PENDENCIAS.md — baseline de falhas e deploy",
+      "author": "adm01-debug",
+      "draft": false,
+      "head_sha": "1049c60a",
+      "veredito": "AGUARDA_PO",
+      "motivo": "Toca supabase/migrations/ → REGRA #8: PRs com migrations aguardam PO."
+    },
+    {
+      "number": 2646,
+      "title": "fix(migrations): adiciona cabeçalho -- Rollback: nas migrations",
+      "author": "adm01-debug",
+      "draft": false,
+      "head_sha": "79c0c670",
+      "veredito": "AGUARDA_PO",
+      "motivo": "Toca .github/workflows/ + supabase/migrations/ → REGRA #8."
+    },
+    {
+      "number": 2631,
+      "title": "chore: atualiza PENDENCIAS §4 e RELATORIO_CI",
+      "author": "adm01-debug",
+      "draft": false,
+      "head_sha": "b093f023",
+      "branch": "claude/chore-deploy-blocker-261027-1007",
+      "veredito": "BLOQUEADO",
+      "motivo": "Conflito real com main: mergeable_state=dirty."
+    },
+    {
+      "number": 2600,
+      "title": "docs(analise-prs): rev46 — análise completa 20 PRs (7 mergeadas)",
+      "author": "adm01-debug",
+      "draft": false,
+      "head_sha": "d7b6aaff",
+      "veredito": "BLOQUEADO",
+      "motivo": "Conflito real apesar de API reportar mergeable=true. Tentativa de merge retornou 405."
+    },
+    {
+      "number": 2580,
+      "title": "fix(banco): adiciona rollback header e arquivo rollback para e23",
+      "author": "adm01-debug",
+      "draft": true,
+      "veredito": "BLOQUEADO",
+      "motivo": "Draft + toca supabase/migrations/"
+    }
+  ],
+  "contagem_por_veredito": {
+    "MERGE_CANDIDATE": 1,
+    "AGUARDA_PO": 4,
+    "BLOQUEADO": 7
   },
-  {
-    "number": 2600,
-    "title": "docs(analise-prs): rev46 — 20 PRs",
-    "author": "claude",
-    "draft": true,
-    "base": "main",
-    "head_sha": null,
-    "mergeable": false,
-    "veredito": "DRAFT_NOMERGE",
-    "motivo": "PR body diz NÃO MERGEAR ESTA PR; obsoleta; REGRA #10",
-    "created_at": "2026-10-26"
-  },
-  {
-    "number": 2631,
-    "title": "chore: PENDENCIAS §4 e RELATORIO_CI",
-    "author": "claude",
-    "draft": false,
-    "base": "main",
-    "head_sha": "b093f023f2d988f8eeb447ca224ec2fd56a3d6ae",
-    "mergeable": false,
-    "veredito": "DECISAO_HUMANA",
-    "motivo": "CONFLITO em PENDENCIAS.md e RELATORIO_CI.md",
-    "created_at": "2026-10-27"
-  },
-  {
-    "number": 2646,
-    "title": "fix(migrations): rollback header + packages:read",
-    "author": "claude",
-    "draft": false,
-    "base": "main",
-    "head_sha": "79c0c670f33744fecc01f5c9b6617578c57a3fd2",
-    "mergeable": true,
-    "veredito": "DECISAO_HUMANA",
-    "motivo": "3 .github/workflows/ + 3 supabase/migrations/ (REGRA #8)",
-    "created_at": "2026-10-27"
-  },
-  {
-    "number": 2662,
-    "title": "docs(audit): dossiês rev46 — 30 arquivos analise-prs/",
-    "author": "claude",
-    "draft": false,
-    "base": "main",
-    "head_sha": "749f9608e92164d0b8202cb5709e878648a5f1be",
-    "mergeable": true,
-    "veredito": "MERGEADO_AUTONOMO",
-    "sha_merge": "efacff0bef81c7d175aef629ab338634b6c4ffb2",
-    "gate_final_run": "40609592189",
-    "gate_final_conclusao": "failure",
-    "gate_final_nota": "falha PRE-EXISTENTE: SHA 4c5fdd72 (merge do owner em #2588) já tinha 10 erros TS react-day-picker antes deste merge; PR é docs-only (analise-prs/), não introduziu erros novos; fix em SHA 8b0b6068 run 40612760517",
-    "created_at": "2026-10-28"
-  },
-  {
-    "number": 2663,
-    "title": "docs(ci): RELATORIO_CI.md + PENDENCIAS.md",
-    "author": "claude",
-    "draft": false,
-    "base": "main",
-    "head_sha": "a96baae31b1438cdcf25b94e6ba31ee196d421a9",
-    "mergeable": true,
-    "veredito": "DECISAO_HUMANA",
-    "motivo": "supabase/migrations/ (REGRA #8) + branch behind",
-    "created_at": "2026-10-28"
-  },
-  {
-    "number": 2664,
-    "title": "docs(audit): auditoria Supabase — 15 arquivos auditoria-supabase/",
-    "author": "claude",
-    "draft": false,
-    "base": "main",
-    "head_sha": "872a0ee2",
-    "mergeable": true,
-    "veredito": "MERGEADO_AUTONOMO",
-    "sha_merge": "bd783873aa273a6da6f3351e8d1f670baaf950d2",
-    "gate_final_run": "40609991866",
-    "gate_final_conclusao": "failure",
-    "gate_final_nota": "falha PRE-EXISTENTE: mesma causa do #2662 (SHA 4c5fdd72); PR é docs-only (auditoria-supabase/); fix em SHA 8b0b6068 run 40612760517",
-    "created_at": "2026-10-28"
-  },
-  {
-    "number": 2665,
-    "title": "chore(deps): bump qs 6.16.0→6.16.2",
-    "author": "dependabot[bot]",
-    "draft": false,
-    "base": "main",
-    "head_sha": "1bda4d605946b81b47a65963557d5d4c6bb1c54b",
-    "mergeable": true,
-    "veredito": "MERGEADO_AUTONOMO",
-    "sha_merge": "04239fdd42eef05589fb41b3f0e58a664621fbf7",
-    "gate_final_run": "40615509956",
-    "gate_final_conclusao": "success",
-    "created_at": "2026-10-27"
-  },
-  {
-    "number": 2666,
-    "title": "chore(main): release 1.0.0",
-    "author": "release-please[bot]",
-    "draft": false,
-    "base": "main",
-    "head_sha": "6a254ef57746f30b93a404c8286de40eb76b4613",
-    "mergeable": true,
-    "veredito": "FECHAR",
-    "motivo": "Downgrade semver 1.2.1→1.0.0; nunca mergear",
-    "created_at": "2026-10-27"
-  },
-  {
-    "number": 2667,
-    "title": "fix(calendar): react-day-picker v8→v10",
-    "author": "dependabot[bot]",
-    "draft": false,
-    "base": "main",
-    "head_sha": "c2ed28a7c8ae59e120c7f929cff3557c52fcf682",
-    "mergeable": true,
-    "veredito": "CI_FALHOU",
-    "motivo": "Supersedida por fix direto no main (SHA 8b0b6068); CONFLICT em calendar.tsx",
-    "created_at": "2026-10-27"
-  },
-  {
-    "number": 2668,
-    "title": "chore(analise-prs): inventário PRs",
-    "author": "claude",
-    "draft": true,
-    "base": "main",
-    "head_sha": "d0a3fb612eaf230f9866bd6817f9a40bf72c24ba",
-    "mergeable": true,
-    "veredito": "DRAFT_NOMERGE",
-    "motivo": "DRAFT; diff: reescreve prs.csv (46→10 linhas) e prs.json com dados desatualizados da sessão anterior",
-    "created_at": "2026-10-28"
-  },
-  {
-    "number": 2670,
-    "title": "fix: migra react-day-picker v8→v10 (classNames + Chevron + autoFocus)",
-    "author": "adm01-debug",
-    "draft": true,
-    "base": "main",
-    "head_sha": "0ed16e619f253d64cce54dfbcb60b22b8b5123eb",
-    "mergeable": true,
-    "veredito": "DRAFT_NOMERGE",
-    "motivo": "DRAFT + SUPERSEDED — fix já está em main via SHA 8b0b6068; owner pode fechar",
-    "created_at": "2026-10-28"
-  },
-  {
-    "number": 2671,
-    "title": "chore(e2e): update calendar visual baselines (safe)",
-    "author": "github-actions[bot]",
-    "draft": false,
-    "base": "main",
-    "head_sha": "f0deb7a941fd18e1eecd5c9029c2bc0808a26d6b",
-    "mergeable": true,
-    "veredito": "DECISAO_HUMANA",
-    "motivo": "Depende #2670 que foi supersedida; behind; diff confirmado: 8 PNGs em e2e/",
-    "created_at": "2026-10-28"
-  },
-  {
-    "number": 2672,
-    "title": "chore(e2e): update calendar visual baselines (force)",
-    "author": "github-actions[bot]",
-    "draft": false,
-    "base": "claude_pink/compassionate-keller-om34uo",
-    "head_sha": null,
-    "mergeable": false,
-    "veredito": "DECISAO_HUMANA",
-    "motivo": "Base ≠ main; PR auxiliar de #2670; diff confirmado: 8 PNGs em e2e/",
-    "created_at": "2026-10-28"
-  },
-  {
-    "number": 2673,
-    "title": "chore(e2e): update calendar visual baselines (safe)",
-    "author": "github-actions[bot]",
-    "draft": false,
-    "base": "main",
-    "head_sha": null,
-    "mergeable": false,
-    "veredito": "DECISAO_HUMANA",
-    "motivo": "blocked — reviewer adm01-debug solicitado; depende de #2670 ser resolvido antes",
-    "created_at": "2026-10-28"
-  },
-  {
-    "number": 2674,
-    "title": "docs(analise-prs): análise completa 12 PRs",
-    "author": "claude",
-    "draft": true,
-    "base": "main",
-    "head_sha": null,
-    "mergeable": false,
-    "veredito": "DRAFT_NOMERGE",
-    "motivo": "DRAFT; body=NÃO MERGEAR; sessão externa com dados desatualizados",
-    "created_at": "2026-10-28"
-  }
-]
+  "merges_executados_esta_sessao": []
+}
