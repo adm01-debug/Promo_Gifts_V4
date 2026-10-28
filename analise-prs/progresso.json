@@ -13,8 +13,15 @@
   "ci_gate_final_pr2679": {
     "run_id": "40623857734",
     "sha": "0cb3c5257d919bb2c39482a7f5978f47ff6753b4",
-    "status": "queued",
-    "conclusao": null
+    "status": "cancelled",
+    "conclusao": "cancelled",
+    "nota": "Cancelado em 2026-10-28T03:12Z — runners stuck >1h. Novo run triggerado via push em 515bd64."
+  },
+  "ci_gate_final_pr2679_v2": {
+    "sha": "515bd64ca6e933a95b15cdeae6969925fe815b08",
+    "status": "pending",
+    "conclusao": null,
+    "nota": "Novo run triggerado via push neste commit"
   },
   "ci_main_atual": {
     "sha": "62af0798",
