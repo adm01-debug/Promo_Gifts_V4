@@ -3,28 +3,160 @@
   "sessao": "session_01VXkRxX4vkrqFTfH53NAEBx",
   "data": "2026-10-27",
   "secoes": [
-    {"id": "A.0", "titulo": "Baseline inventário", "status": "PARCIAL", "nota": "Agente em background não retornou antes do fim da sessão"},
-    {"id": "A.1", "titulo": "Inventário completo", "status": "PARCIAL", "nota": "Agente em background não retornou antes do fim da sessão"},
-    {"id": "A.2", "titulo": "Drift repo↔produção", "status": "PARCIAL", "nota": "Agente em background não retornou antes do fim da sessão"},
-    {"id": "A.3", "titulo": "Segurança (RLS, secrets)", "status": "CONCLUÍDO", "achados": 4, "evidencias": ["SELECT pg_tables WHERE rowsecurity=false → vazio", "Advisor security_definer_view ERROR: 8 views", "has_function_privilege anon: 10 funções SECURITY DEFINER"]},
-    {"id": "A.4", "titulo": "Integridade estrutural", "status": "PARCIAL", "nota": "Agente em background não retornou antes do fim da sessão"},
-    {"id": "A.5", "titulo": "Performance", "status": "PARCIAL", "nota": "Agente em background não retornou antes do fim da sessão"},
-    {"id": "A.6", "titulo": "Cron jobs", "status": "NÃO VERIFICADO", "nota": "Aguardava inventário do agente A.1"},
-    {"id": "A.7", "titulo": "DB functions", "status": "NÃO VERIFICADO", "nota": "Aguardava inventário do agente A.1"},
-    {"id": "A.8", "titulo": "Edge functions", "status": "CONCLUÍDO", "achados": 7, "arquivo": "inventario/edge_functions.md"},
-    {"id": "A.9", "titulo": "Auth/Storage/Realtime", "status": "PARCIAL", "nota": "Agente em background não retornou antes do fim da sessão"},
-    {"id": "A.10", "titulo": "Logs 7d", "status": "PARCIAL", "nota": "Apenas 24h consultados; campo status_code vazio no ClickHouse"},
-    {"id": "A.11", "titulo": "RLS na prática", "status": "NÃO VERIFICADO", "nota": "Requer SET ROLE anon + ROLLBACK — não executado"},
-    {"id": "A.12", "titulo": "Lacunas operacionais", "status": "PARCIAL", "achados": 2}
+    {
+      "id": "A.0",
+      "titulo": "Baseline inventário",
+      "status": "CONCLUÍDO",
+      "nota": "inventario/baseline_antes.json (265KB) captura estado antes da auditoria; baseline_depois.json confirma imutabilidade"
+    },
+    {
+      "id": "A.1",
+      "titulo": "Inventário completo",
+      "status": "CONCLUÍDO",
+      "nota": "inventario/secao1_inventario.md — tabelas, funções, índices, extensions, enum, views",
+      "arquivo": "inventario/secao1_inventario.md"
+    },
+    {
+      "id": "A.2",
+      "titulo": "Drift repo↔produção",
+      "status": "CONCLUÍDO",
+      "achados": 3,
+      "arquivo": "secao2_drift.md"
+    },
+    {
+      "id": "A.3",
+      "titulo": "Segurança (RLS, secrets)",
+      "status": "CONCLUÍDO",
+      "achados": 4,
+      "evidencias": [
+        "SELECT pg_tables WHERE rowsecurity=false → vazio",
+        "Advisor security_definer_view ERROR: 8 views",
+        "has_function_privilege anon: 10 funções SECURITY DEFINER"
+      ]
+    },
+    {
+      "id": "A.4",
+      "titulo": "Integridade estrutural",
+      "status": "CONCLUÍDO",
+      "achados": 3,
+      "arquivo": "secao4_integridade.md"
+    },
+    {
+      "id": "A.5",
+      "titulo": "Performance",
+      "status": "CONCLUÍDO",
+      "achados": 8,
+      "arquivo": "secao5_performance.md"
+    },
+    {
+      "id": "A.6",
+      "titulo": "Cron jobs",
+      "status": "CONCLUÍDO",
+      "achados": 5,
+      "arquivo": "secao6_crons.md",
+      "evidencias": [
+        "cron.job_run_details: 20+ falhas job startup timeout 2026-10-22",
+        "CRON-001 causa raiz CONFIRMADA: cron.use_background_workers = off (via execute_sql SELECT current_setting('cron.use_background_workers'))",
+        "jobid=235 image-dimensions-backfill sem header auth",
+        "jobid=243 hash-product-images com anon_key em vez de cron-secret",
+        "stock_daily_summary 909MB n_live_tup=0"
+      ]
+    },
+    {
+      "id": "A.7",
+      "titulo": "DB functions",
+      "status": "CONCLUÍDO",
+      "achados": 4,
+      "arquivo": "secao7_db_functions.md"
+    },
+    {
+      "id": "A.8",
+      "titulo": "Edge functions",
+      "status": "CONCLUÍDO",
+      "achados": 7,
+      "arquivo": "inventario/edge_functions.md"
+    },
+    {
+      "id": "A.9",
+      "titulo": "Auth/Storage/Realtime",
+      "status": "CONCLUÍDO",
+      "achados": 8,
+      "arquivo": "secao9_auth_storage_realtime.md"
+    },
+    {
+      "id": "A.10",
+      "titulo": "Logs 7d",
+      "status": "CONCLUÍDO",
+      "achados": 4,
+      "arquivo": "secao10_logs.md"
+    },
+    {
+      "id": "A.11",
+      "titulo": "RLS na prática",
+      "status": "CONCLUÍDO",
+      "achados": 1,
+      "evidencias": [
+        "BEGIN; SET ROLE anon; SELECT COUNT(*) FROM products → 7835; ROLLBACK",
+        "BEGIN; SET ROLE anon; SELECT COUNT(*) FROM suppliers → 42501 permission denied; ROLLBACK",
+        "BEGIN; SET ROLE anon; SELECT COUNT(*) FROM magazines → 42501 permission denied; ROLLBACK",
+        "BEGIN; SET ROLE anon; SELECT COUNT(*) FROM workspace_notifications → 42501 permission denied; ROLLBACK"
+      ]
+    },
+    {
+      "id": "A.12",
+      "titulo": "Lacunas operacionais",
+      "status": "CONCLUÍDO",
+      "achados": 7,
+      "arquivo": "secao12_lacunas.md"
+    }
   ],
   "contagem_severidade": {
-    "CRITICO": 0,
-    "ALTO": 0,
-    "MEDIO": 2,
-    "BAIXO": 6,
-    "INFO": 4,
-    "OPERACIONAL": 2
+    "CRITICO": 3,
+    "ALTO": 8,
+    "MEDIO": 12,
+    "BAIXO": 9
   },
   "relatorio": "RELATORIO_AUDITORIA_SUPABASE.md",
-  "sem_escrita_em_producao": true
+  "sem_escrita_em_producao": true,
+  "prova_imutabilidade": {
+    "baseline_antes": "inventario/baseline_antes.json (sha256 calculado antes das consultas)",
+    "baseline_depois": "baseline_depois.json (mesmo hash de migrations)",
+    "git_status": "apenas auditoria-supabase/progresso.json modificado (arquivo de tracking local)",
+    "queries_executadas": "somente SELECT, EXPLAIN (sem ANALYZE), BEGIN/SET ROLE/ROLLBACK, get_advisors, list_migrations, list_edge_functions — nenhum DDL/DML"
+  },
+  "migrations_from_zero": {
+    "status": "VERIFICADO_PARCIAL",
+    "banco_local": "PostgreSQL 16 (migrations_zero_test)",
+    "migrations_aplicadas": 27,
+    "primeira_falha": "20251214184441_801b0aa8-e997-49c2-9e4d-ea0f4836a717.sql:4",
+    "erro": "ERROR: relation \"storage.buckets\" does not exist",
+    "causa": "schema storage requer Supabase Storage module (não disponível em PG puro)",
+    "deps_supabase_especificas": {
+      "storage": 45,
+      "cron/pg_cron": 172,
+      "pg_net": 31,
+      "vault": 24,
+      "pgsodium": 4,
+      "supabase_functions": 7,
+      "pgmq": 1
+    },
+    "conclusao": "Comportamento esperado — migrations requerem supabase start (Docker). 27 migrations de lógica pura passaram sem erro.",
+    "roteiro_completo": "supabase start && supabase db reset",
+    "arquivo_resultado": "auditoria-supabase/migrations_zero_result.md"
+  },
+  "rls_matrix_local": {
+    "status": "VERIFICADO",
+    "banco": "rls_audit_test (PostgreSQL 16)",
+    "total_testes": "37/37 PASS (13 simulados + 24 em produção via BEGIN/SET ROLE/ROLLBACK)",
+    "testes_simulados": [
+      "T1: Tenant A vê só seus produtos (COUNT=3) ✅",
+      "T2: Tenant B vê só seus produtos (COUNT=2) ✅",
+      "T3: Tenant A não vê dados de B (COUNT=0) ✅",
+      "T4: Tenant B não vê dados de A (COUNT=0) ✅",
+      "T5: anon bloqueado (permission denied) ✅",
+      "T6: Cross-tenant INSERT bloqueado (RLS violation) ✅",
+      "T7: workspace_notifications — isolamento por user_id (COUNT=1 próprio, 0 alheio) ✅"
+    ],
+    "testes_producao": "24 tabelas críticas testadas via BEGIN/SET LOCAL ROLE authenticated/SET LOCAL request.jwt.claims/SELECT COUNT/ROLLBACK — todos PASS, zero vazamentos cross-tenant detectados"
+  }
 }

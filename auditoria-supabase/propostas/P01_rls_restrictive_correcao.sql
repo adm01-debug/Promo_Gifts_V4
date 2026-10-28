@@ -39,17 +39,27 @@ CREATE POLICY rls_restrictive_system_kill_switches_authenticated
 */
 
 -- 2. ai_usage_quotas
---    Risco: usuário pode ver/alterar quotas de outros usuários
---    Correção: filtrar por user_id = auth.uid()
+--    ATENÇÃO: ai_usage_quotas NÃO tem coluna user_id. É tabela de configuração por app_role
+--    (colunas: id, role, monthly_limit, is_unlimited, created_at, updated_at).
+--    Políticas existentes (ai_usage_quotas_admin_*) já usam is_dev() OR has_role(..., 'admin').
+--    Problema: rls_restrictive_ai_usage_quotas (ALL, USING (true)) é permissivo demais.
+--    Correção: dropar a policy ALL=true e criar política de escrita restrita a admin.
 
 /*
-DROP POLICY IF EXISTS rls_restrictive_ai_usage_quotas_authenticated ON public.ai_usage_quotas;
-CREATE POLICY rls_restrictive_ai_usage_quotas_authenticated
+DROP POLICY IF EXISTS rls_restrictive_ai_usage_quotas ON public.ai_usage_quotas;
+-- SELECT: qualquer authenticated pode ver (para conhecer sua própria quota de uso)
+CREATE POLICY rls_restrictive_ai_usage_quotas_read
+  ON public.ai_usage_quotas
+  FOR SELECT
+  TO authenticated
+  USING (true);
+-- WRITE: apenas admin/dev
+CREATE POLICY rls_restrictive_ai_usage_quotas_write
   ON public.ai_usage_quotas
   FOR ALL
   TO authenticated
-  USING (user_id = auth.uid())
-  WITH CHECK (user_id = auth.uid());
+  USING (is_dev() OR has_role(auth.uid(), 'admin'::app_role))
+  WITH CHECK (is_dev() OR has_role(auth.uid(), 'admin'::app_role));
 */
 
 -- 3. kit_collaborators

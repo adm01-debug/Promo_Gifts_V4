@@ -41,11 +41,21 @@ GRANT SELECT ON products, product_variants, suppliers TO anon;
 
 **Impacto:** segredos de integração ficam criptografados em repouso e fora do alcance de SQL injection
 
-**Passos:**
+⚠️ **ATENÇÃO CRÍTICA ANTES DE EXECUTAR O PASSO 4:**
+`supabase/functions/_shared/credentials.ts` (função `resolveCredential`, linha ~410) lê diretamente
+`.select("secret_value")` na tabela `integration_credentials`. Também lê `secret_name` e `is_active`.
+**O DROP COLUMN do passo 4 vai quebrar TODAS as edge functions que usam resolveCredential/resolveCredentials.**
+É obrigatório atualizar `credentials.ts` para ler de `vault_secret_id` via `vault.decrypted_secrets`
+ANTES de fazer o DROP COLUMN, e deployar a edge function atualizada antes de aplicar a migration.
+
+**Passos (ordem obrigatória):**
 1. Para cada linha: `SELECT vault.create_secret(secret_value, provider) FROM integration_credentials`
 2. Adicionar coluna `vault_secret_id UUID REFERENCES vault.secrets(id)`
 3. Popular com os IDs dos secrets criados
-4. `ALTER TABLE integration_credentials DROP COLUMN secret_value` (migration separada, após validação)
+4. **Antes de prosseguir:** atualizar `credentials.ts` → `resolveCredential()` passa a usar
+   `vault.decrypted_secrets` via `vault_secret_id`; deploy da edge function atualizada via
+   `deploy-edge-functions.yml`; validar em staging que credenciais resolvem corretamente
+5. `ALTER TABLE integration_credentials DROP COLUMN secret_value` (migration separada, após validação)
 
 **Via:** `db-apply-migration.yml` em duas fases (adicionar coluna + popular; depois remover coluna)
 
@@ -110,14 +120,25 @@ grep -r "hardening_health_snapshots" supabase/functions/ src/
 
 ---
 
-## C8 — BAIXO: Adicionar filtro de tenant na policy ai_usage_quotas
+## C8 — BAIXO: Corrigir policy rls_restrictive_ai_usage_quotas (qual=true)
+
+**Contexto:** `ai_usage_quotas` é uma tabela de configuração por tipo de role (`app_role` enum),
+não por usuário. Não existe coluna `user_id`. Colunas reais: `id, role, monthly_limit, is_unlimited, created_at, updated_at`.
+As policies existentes (`ai_usage_quotas_admin_*`) já usam `is_dev() OR has_role(auth.uid(), 'admin')`.
+A policy `rls_restrictive_ai_usage_quotas` (ALL, qual=true) deve ser alinhada com esse padrão.
 
 **Migration:**
 ```sql
-DROP POLICY "policy_name" ON ai_usage_quotas;
-CREATE POLICY "ai_usage_quotas_own_only" ON ai_usage_quotas
+DROP POLICY IF EXISTS rls_restrictive_ai_usage_quotas ON public.ai_usage_quotas;
+-- SELECT: qualquer authenticated pode ver os limites (para conhecer sua quota)
+CREATE POLICY rls_restrictive_ai_usage_quotas_read ON public.ai_usage_quotas
+  FOR SELECT TO authenticated
+  USING (true);
+-- WRITE: apenas admin/service_role
+CREATE POLICY rls_restrictive_ai_usage_quotas_write ON public.ai_usage_quotas
   FOR ALL TO authenticated
-  USING (user_id = auth.uid());
+  USING (is_dev() OR has_role(auth.uid(), 'admin'::app_role))
+  WITH CHECK (is_dev() OR has_role(auth.uid(), 'admin'::app_role));
 ```
 
 ---

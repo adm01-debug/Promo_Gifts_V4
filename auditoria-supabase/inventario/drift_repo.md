@@ -7,7 +7,7 @@ _Gerado em 2026-10-27 — Seção A.2 do inventário de auditoria_
 
 - `client.ts` linha 24: `const CURRENT_PROJECT_ID = "doufsxqlfjyuvxuezpln";` ✓
 - `config.toml` linha 1: `project_id = "doufsxqlfjyuvxuezpln"` ✓
-- `pqpdolkaeqlyzpdpbizo` não está em código executável ✓
+- `pqpdolkaeqlyzpdpbizo` não está em código executável ✓ <!-- [LEGACY_INFORMATIVO] -->
 
 ---
 
