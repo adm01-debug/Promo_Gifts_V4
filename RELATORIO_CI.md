@@ -1,4 +1,33 @@
 # RELATÓRIO CI — Promo Gifts V4
+
+## Adendo de auditoria — 2026-10-28 (checkout `c344508711797a730893644449b16a05f12f4fce`)
+
+Este adendo substitui os snapshots antigos abaixo para o estado observado nesta data. O checkout local `main` e `origin/main` apontam para o mesmo SHA `c344508711797a730893644449b16a05f12f4fce`.
+
+| Workflow | Última execução na `main` | Estado | Evidência / diagnóstico curto |
+|---|---|---|---|
+| E2E — Critical Flows & Error Boundaries | [40762904577](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762904577) | `failure` | Teste Catalog→Kit; rota `/produtos` respondeu HTTP 500. |
+| CI Security & Drift Checks | [40762904949](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762904949) | `failure` | 6 testes Playwright falham; overlay modal `z-[80]` intercepta cliques no catálogo e Kit Builder. |
+| E2E • Swatch QuickView (Lista + Tabela) | [40762904693](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762904693) | `failure` | Firefox teve 14 falhas: ausência de toolbar em `/novidades` e nenhum produto com swatches V2 entre os 20 primeiros; job WebKit foi encerrado pelo runner (`shutdown signal`). |
+| Edge Integration Tests — All Functions | [40762354015](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762354015) | `failure` | 2 testes live de `crm-db-bridge` recebem HTTP 503 para body vazio e string crua; contrato do teste exige resposta abaixo de 500. Execução na SHA anterior `cf85bd7b`. |
+| E2E — Magazine Header Layout | [40762354171](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762354171) | `failure` | Navegação fica em `/magazine`, mas os testes esperam `/magazine/<slug>`; execução na SHA anterior `cf85bd7b`. |
+
+Os demais workflows reportados na execução da SHA atual incluem verdes — Deploy Gates [40762904944](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762904944), Branch Protection Sentinel [40762904734](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762904734), CodeQL [40762904933](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762904933), E2E Personalization [40762904578](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762904578), Supabase Linter Gate [40762904662](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762904662), UI Visual & A11y [40762904979](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762904979) e outros verificadores de CI na mesma SHA. Execuções `cancelled`/`skipped` não foram classificadas como falha.
+
+### Supabase canônico — reconciliação pendente, sem alteração aplicada
+
+Projeto canônico consultado: `doufsxqlfjyuvxuezpln`. O ledger remoto lista 2.552 versões; o repositório contém 3.004 IDs de migration únicos. A comparação de IDs encontrou 463 versões somente locais e 11 versões somente no ledger remoto. **Isso demonstra divergência de ledger, não prova que o DDL correspondente esteja ausente ou presente.** O Gate E40 Schema Drift já falhou em PR de reconciliação; portanto, nenhuma migration foi aplicada, reparada ou reconciliada às cegas. A classificação por conteúdo e evidência continua pendente em `PENDENCIAS.md`.
+
+O gate local `check:types-inventory-drift` passou sem remoções em relação ao commit-base; a comparação `--live` não rodou, pois `DATABASE_URL` não está configurada. A listagem disponível de tabelas via MCP não incluiu o conjunto completo de views; não há prova completa de igualdade do schema live com `types.ts`.
+
+### Correção de segurança ainda não publicada
+
+A Edge Function canônica `rls-audit` está ativa na versão 278. Foi aberto o PR [#2715](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2715) (commit `090320e1`) para exigir perfil `dev` com autorização server-side antes de usar `service_role`. PR aberto; nenhum deploy foi executado. A função remota permanece sem essa correção até aprovação/merge e execução do workflow oficial de deploy. Ver PENDENCIAS P16.
+
+### Validação local da correção no PR #2715
+
+Build, lint, typecheck, teste focado de autorização (2 pass), gate de autorização de Edge Functions (111/111) e `git diff --check` passaram. A suíte integral reportou 25.657 testes aprovados, 1.134 ignorados e 24 TODO, mas Vitest terminou também com um erro assíncrono não tratado (`window is not defined`) vindo de timer em `LocationPanel.tsx`; o teste isolado do painel passou 12/12. `deno check` não concluiu porque o cache local não contém `npm:@supabase/supabase-js@2.49.4`.
+
 **Gerado em:** 2026-10-28  
 **Branch de correção:** `fix/ci-workflows` (esta sessão)  
 **SHA main no momento do diagnóstico:** `8c81483` (pós-fix Gate E40)  

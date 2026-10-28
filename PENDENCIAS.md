@@ -3,6 +3,8 @@
 **Atualizado:** 2026-10-28  
 **Branch:** `fix/ci-workflows` (esta sessão)
 
+> **Adendo de auditoria:** os itens abaixo contêm histórico de sessões anteriores e seus snapshots podem estar desatualizados. Para o estado conferido em 2026-10-28, consulte P14–P16 no final deste arquivo e o adendo no topo de `RELATORIO_CI.md`. Nesta auditoria não foi aplicada alteração ao banco canônico.
+
 ---
 
 ## ✅ P0 — RESOLVIDO — Deploy Gates na main (Gate Final)
@@ -339,3 +341,35 @@ description: "Deployment has failed — run this Vercel CLI command: npx vercel 
 ---
 
 *Ação prioritária: P1 (secrets E2E) — desbloqueia P2, P9, P10. P6, P8, P11 requerem investigação independente. P12 bloqueado por P7 (Opção B disponível via workflow_dispatch sem resolver P7). P13 requer deleção do projeto fantasma Vercel.*
+
+---
+
+## P14 — Divergência entre IDs do ledger Supabase e migrations versionadas
+
+**Projeto:** `doufsxqlfjyuvxuezpln` (canônico). O ledger remoto lista 2.552 versões; o repositório contém 3.004 IDs de migration únicos. A comparação encontrou 463 IDs somente locais e 11 somente remotos.
+
+**Interpretação:** a divergência dos IDs não demonstra, por si só, quais alterações de DDL estão ou não presentes no schema real. O Gate E40 Schema Drift falhou durante a tentativa anterior de reconciliação (PR #2714). Não aplicar `db push`, `migration repair` em lote, reset ou DDL manual com base apenas nessa diferença.
+
+**Ação pendente:** classificar individualmente as versões divergentes usando SQL/ledger e evidência do schema em `pg_catalog`, respeitando o fluxo aprovado em `.github/workflows/db-apply-migration.yml`. Até a classificação e um plano de reconciliação revisado, nenhuma alteração no canônico foi aplicada por esta auditoria.
+
+## P15 — Workflows com última execução `failure` na main
+
+Estado apurado em `c344508711797a730893644449b16a05f12f4fce`; as execuções mais antigas são indicadas.
+
+| Workflow | Execução | Causa identificada / próximo diagnóstico |
+|---|---|---|
+| E2E — Critical Flows & Error Boundaries | [40762904577](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762904577) | Fluxo Catálogo→Kit: rota `/produtos` respondeu HTTP 500. Localizar a exceção no trace/artifact e corrigir a causa raiz. |
+| CI Security & Drift Checks | [40762904949](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762904949) | Seis testes Playwright não conseguem clicar porque modal fixo de onboarding (`z-[80]`) intercepta eventos de ponteiro. Determinar se a fixture deve dispensar o modal ou se há defeito de interação, sem mudar o comportamento do usuário às cegas. |
+| E2E • Swatch QuickView | [40762904693](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762904693) | Firefox: toolbar esperada ausente em `/novidades` e nenhum produto com swatches V2 entre os primeiros 20. O job WebKit foi interrompido por shutdown do runner; separar problema de dados/seletor da interrupção de infraestrutura. |
+| Edge Integration Tests — All Functions | [40762354015](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762354015) | Dois testes live de `crm-db-bridge` receberam HTTP 503 para body vazio e string crua, violando o contrato “sem 5xx”. A execução é da SHA `cf85bd7b`; verificar versão remota vs código versionado antes de escolher correção/deploy/configuração. |
+| E2E — Magazine Header Layout | [40762354171](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762354171) | URL permaneceu em `/magazine`, mas o teste exige `/magazine/<slug>`. A execução é da SHA `cf85bd7b`; confirmar rota e fixture, sem enfraquecer a asserção. |
+
+**Verdes na SHA atual:** Deploy Gates [40762904944](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762904944), Branch Protection Sentinel [40762904734](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762904734), CodeQL [40762904933](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762904933), E2E Personalization [40762904578](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762904578), Supabase Linter Gate [40762904662](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762904662), UI Visual & A11y [40762904979](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762904979) e outros verificadores do adendo em `RELATORIO_CI.md`. Runs `cancelled`/`skipped` não foram contados como falha.
+
+## P16 — Autorização insuficiente na Edge Function `rls-audit`
+
+**Estado remoto observado:** função `rls-audit` ativa na versão 278 do projeto canônico, `verify_jwt=true`; o handler aceitava qualquer usuário autenticado antes de executar operações de teste usando `service_role`.
+
+**Correção versionada:** PR [#2715](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2715), commit `090320e1`, exige papel `dev` por `authorize()` com validação server-side antes das operações privilegiadas. Um teste estático cobre a ordem da autorização. Não houve deploy nem alteração de schema/dados.
+
+**Estado:** PR aberto; implantação depende de aprovação/merge e do workflow oficial de deploy de Edge Functions. Até então, a correção existe na branch do PR e **não** no runtime canônico. Não publicar por MCP/dashboard.
