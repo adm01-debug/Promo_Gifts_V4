@@ -88,11 +88,15 @@ Para cada PR mergeada: (1) válida, (2) não implementada em main, (3) sem confl
 
 ## Status Gate Final pós-merge #2673
 
-Gate Final (`deploy-gates.yml`) em `62af0798dd71812979667ac29f596d25f3ef191b`: **⏳ queued** no momento da escrita deste relatório. Nenhuma falha nova detectada; PR#2673 contém apenas PNGs e não toca código, lógica ou infra.
+Gate Final (`deploy-gates.yml`) em `62af0798dd71812979667ac29f596d25f3ef191b`: **⏳ queued — runner backlog GitHub** (run #40622373567, criado 2026-10-28T02:41:01Z, `updated_at` idêntico = sem progressão).
+
+- Nenhuma falha nova detectada; ausência de falha ≠ gate verde
+- PR#2673 contém 8 PNGs zero código — risco de regressão: nulo
+- SHA anterior confirmado SUCCESS: `04239fdd42eef05589fb41b3f0e58a664621fbf7`
 
 ---
 
 ## NÃO VERIFICADO
 
-- Gate Final `62af0798dd` ainda não concluído — checar em https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40622373567
+- Gate Final `62af0798dd` — run #40622373567 queued sem progressão; pode ser runner backlog ou run descartado por novo push. Checar: https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40622373567
 - SHAs exatos de #2664 e #2662 não confirmados via GitHub API nesta sessão (consultados via git log local)
