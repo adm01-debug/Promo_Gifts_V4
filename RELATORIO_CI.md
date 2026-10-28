@@ -27,9 +27,15 @@
 
 ---
 
-## 2. Baseline local (container de execução — Node v22.22.0)
+## 2. Baseline (antes e após correções — Node v22.22.0)
 
-Baseline coletado em 2026-10-28 na branch `claude/fix-calendar-rdp-v10-261028-0500` **após** aplicação das correções (único momento possível — node_modules não estava instalado antes das correções). Os 3 arquivos corrigidos são de teste; o código de produção não foi alterado.
+**Baseline pré-correção** foi capturado do CI — run [40615509752](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40615509752) na main (branch `main`, commit `04239fdd`):
+- Build Vite: ✅ success (Gate 6)
+- TypeScript (tsc): ✅ success (Gate 1)
+- Lint (ESLint): ✅ success (Gate 1)
+- Testes unitários (Vitest): ❌ **5 falhas** em 3 arquivos de Calendar (causa raiz: migração RDP v8→v10)
+
+**Baseline pós-correção** coletado localmente em 2026-10-28 após aplicação das correções:
 
 ### 2a. Build (Vite)
 
@@ -56,9 +62,14 @@ Exit: 0
 ### 2d. Lint (ESLint)
 
 ```
-npm run lint → ESLint encerrado com status null no container local (OOM — memória insuficiente no container de execução)
-Resultado válido: CI do PR #2681 executa em runner GitHub Actions com memória adequada
+NODE_OPTIONS="--max-old-space-size=4096" npm run lint → exit 0
+ESLint baseline gate [full] — atual: 0 erros, 0 warnings · baseline: 0 erros
+Δ vs baseline: regressões +0 · melhorias −0 · líquido +0
+✅ Nenhuma regressão de lint detectada.
 ```
+
+> Nota: execuções anteriores sem NODE_OPTIONS falhavam por OOM no container local (heap limit 2GB).
+> Corrigido em 2026-10-28 com `--max-old-space-size=4096`. Resultado idêntico ao Gate 1 do CI (run 40660438161 — ✅ success).
 
 ### 2e. Erros pré-correção (derivados dos logs de CI — runs em falha)
 
