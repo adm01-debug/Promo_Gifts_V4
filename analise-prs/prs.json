@@ -1,129 +1,20 @@
 {
-  "meta": {
-    "gerado_em": "2026-10-28",
-    "sessao": "https://claude.ai/code/session_012WyySbh2tj8vhRQLBf3mHo",
-    "main_sha": "62af0798dd71812979667ac29f596d25f3ef191b",
-    "total_prs_abertas": 12,
-    "total_analisadas": 12
-  },
+  "gerado_em": "2026-10-28",
+  "sessao": "https://claude.ai/code/session_012WyySbh2tj8vhRQLBf3mHo",
+  "main_sha": "62af0798dd71812979667ac29f596d25f3ef191b",
+  "total": 12,
   "prs": [
-    {
-      "number": 2681,
-      "title": "fix(tests): atualiza seletores DOM para react-day-picker v10",
-      "author": "adm01-debug",
-      "draft": false,
-      "base": "main",
-      "head_sha": "44f84c67",
-      "branch": "claude/fix-calendar-rdp-v10-261028-0500",
-      "veredito": "MERGE_CANDIDATE",
-      "motivo": "Corrige 2 testes falhos em main causados por migração react-day-picker v8→v10. Gate Final em execução.",
-      "aguarda": "Gate Final SUCCESS"
-    },
-    {
-      "number": 2680,
-      "title": "fix(tests): atualiza seletores de calendário para react-day-picker v10",
-      "author": "adm01-debug",
-      "draft": true,
-      "veredito": "BLOQUEADO",
-      "motivo": "Draft — não elegível para merge"
-    },
-    {
-      "number": 2679,
-      "title": "test(calendar): corrige seletores de teste para react-day-picker v10",
-      "author": "adm01-debug",
-      "draft": false,
-      "base": "main",
-      "head_sha": "73e0f0c4",
-      "branch": "claude_pink/awesome-ride-d25ur3",
-      "veredito": "BLOQUEADO",
-      "motivo": "Conflita com #2681 (mesmos arquivos de teste). Somente uma das duas pode ser mergeada. #2681 é preferida."
-    },
-    {
-      "number": 2675,
-      "title": "docs(audit): sessão session_012WyySbh2tj8vhRQLBf3mHo — relatório final",
-      "author": "adm01-debug",
-      "draft": false,
-      "base": "main",
-      "head_sha": "7a00a5fb",
-      "branch": "claude/quirky-keller-owezvt",
-      "veredito": "AGUARDA_PO",
-      "motivo": "Branch desta sessão com REGRA #10 (cross-agent delivery). Conteúdo de documentação — aguarda aprovação PO."
-    },
-    {
-      "number": 2674,
-      "title": "docs(analise-prs): análise completa das 12 PRs abertas — veredictos",
-      "author": "adm01-debug",
-      "draft": true,
-      "veredito": "BLOQUEADO",
-      "motivo": "Draft"
-    },
-    {
-      "number": 2668,
-      "title": "chore(analise-prs): inventário e relatório de todas as PRs abertas",
-      "author": "adm01-debug",
-      "draft": true,
-      "veredito": "BLOQUEADO",
-      "motivo": "Draft"
-    },
-    {
-      "number": 2666,
-      "title": "chore(main): release 1.0.0",
-      "author": "github-actions[bot]",
-      "draft": false,
-      "head_sha": "dac526be",
-      "veredito": "AGUARDA_PO",
-      "motivo": "Downgrade de versão 1.2.1→1.0.0 por release-please bot. Regressão semântica — requer confirmação do PO."
-    },
-    {
-      "number": 2663,
-      "title": "docs(ci): RELATORIO_CI.md + PENDENCIAS.md — baseline de falhas e deploy",
-      "author": "adm01-debug",
-      "draft": false,
-      "head_sha": "1049c60a",
-      "veredito": "AGUARDA_PO",
-      "motivo": "Toca supabase/migrations/ → REGRA #8: PRs com migrations aguardam PO."
-    },
-    {
-      "number": 2646,
-      "title": "fix(migrations): adiciona cabeçalho -- Rollback: nas migrations",
-      "author": "adm01-debug",
-      "draft": false,
-      "head_sha": "79c0c670",
-      "veredito": "AGUARDA_PO",
-      "motivo": "Toca .github/workflows/ + supabase/migrations/ → REGRA #8."
-    },
-    {
-      "number": 2631,
-      "title": "chore: atualiza PENDENCIAS §4 e RELATORIO_CI",
-      "author": "adm01-debug",
-      "draft": false,
-      "head_sha": "b093f023",
-      "branch": "claude/chore-deploy-blocker-261027-1007",
-      "veredito": "BLOQUEADO",
-      "motivo": "Conflito real com main: mergeable_state=dirty."
-    },
-    {
-      "number": 2600,
-      "title": "docs(analise-prs): rev46 — análise completa 20 PRs (7 mergeadas)",
-      "author": "adm01-debug",
-      "draft": false,
-      "head_sha": "d7b6aaff",
-      "veredito": "BLOQUEADO",
-      "motivo": "Conflito real apesar de API reportar mergeable=true. Tentativa de merge retornou 405."
-    },
-    {
-      "number": 2580,
-      "title": "fix(banco): adiciona rollback header e arquivo rollback para e23",
-      "author": "adm01-debug",
-      "draft": true,
-      "veredito": "BLOQUEADO",
-      "motivo": "Draft + toca supabase/migrations/"
-    }
-  ],
-  "contagem_por_veredito": {
-    "MERGE_CANDIDATE": 1,
-    "AGUARDA_PO": 4,
-    "BLOQUEADO": 7
-  },
-  "merges_executados_esta_sessao": []
+    {"numero": 2580, "veredito": "AGUARDA_PO"},
+    {"numero": 2600, "veredito": "BLOQUEADO"},
+    {"numero": 2631, "veredito": "BLOQUEADO"},
+    {"numero": 2646, "veredito": "AGUARDA_PO"},
+    {"numero": 2663, "veredito": "AGUARDA_PO"},
+    {"numero": 2666, "veredito": "AGUARDA_PO"},
+    {"numero": 2668, "veredito": "BLOQUEADO"},
+    {"numero": 2674, "veredito": "BLOQUEADO"},
+    {"numero": 2675, "veredito": "AGUARDA_PO"},
+    {"numero": 2679, "veredito": "BLOQUEADO"},
+    {"numero": 2680, "veredito": "BLOQUEADO"},
+    {"numero": 2681, "veredito": "FECHADA_SEM_MERGE"}
+  ]
 }
