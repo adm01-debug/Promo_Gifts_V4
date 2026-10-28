@@ -86,31 +86,35 @@ Para cada PR mergeada: (1) válida, (2) não implementada em main, (3) sem confl
 
 ---
 
-## Evidência CI pós-merge — cadeia completa
+## Evidência CI pós-merge — per SHA (verificado diretamente)
 
-### PRs #2662, #2664, #2665, #2667 (sessão anterior)
+> Deploy Gates roda no SHA de main (squash-merge). Run IDs obtidos listando deploy-gates.yml/main e correlacionando temporalmente.
 
-Ordem de merge: `efacff0be` (#2662) → `bd783873a` (#2664) → `04239fdd42` (#2665) → `8b0b6068e5` (#2667) → `e0b569f18` (baseline)
+| PR | SHA merge (main) | Run ID | Conclusão | Nota |
+|---|---|---|---|---|
+| #2662 | `efacff0bef81` | 40609592189 | **failure** | PRE-EXISTENTE — PR docs-only; causa: react-day-picker v10 breakage |
+| #2664 | `bd783873aa27` | 40609991866 | **failure** | PRE-EXISTENTE — mesma causa; PR docs-only |
+| #2667 | `8b0b6068e535` | 40612760517 | **success** ✅ | Este PR CORRIGIU o breakage v10 |
+| #2665 | `04239fdd42ee` | 40615509956 | **success** ✅ | bump qs CVE — CI verde |
+| #2673 | `62af0798dd71` | 40622373567 | **queued** ⏳ | Runner backlog 48+ min; 8 PNGs only, zero risco |
 
-**Evidência:** Gate Final run **#40572329584** em SHA `e0b569f18` = **SUCCESS** (Gate 1–6 todos success, 1309 unit tests passando, 0 erros TS/ESLint).
+### Por que #2662 e #2664 mostram `failure`:
 
-`e0b569f18` é o SHA de main **após** os 4 merges — portanto inclui e valida todos eles. CI pós-merge confirmado para #2662, #2664, #2665 e #2667 pelo mesmo run, pois um SHA de main downstream que inclui todos os 4 commits e passa o Gate Final é evidência de CI limpo para toda a cadeia.
+PR#2662 é puramente `analise-prs/` (documentação). PR#2664 é puramente `auditoria-supabase/` (documentação). **Nenhum dos dois toca `src/`.**
 
-Notas sobre busca direta por SHA:
-- `efacff0be` (#2662) e `bd783873a` (#2664): API retornou 0 runs com `head_sha` = esses valores (squash-merge SHAs antigos, dados de arquivo podem não estar indexados para filtragem)
-- `04239fdd42` (#2665) e `8b0b6068e5` (#2667): resultados retornados (~64KB e ~67KB) não continham "Deploy Gates" — indicam que o filtro retornou outros workflows para esses SHAs de branch; Deploy Gates roda no SHA de main (squash), não no SHA de branch
+A falha no Gate 1 (TypeScript) era **pré-existente em main** antes desses merges: 9 erros causados pela migração react-day-picker v8→v10 (property `initialFocus` renomeada para `autoFocus`). Os arquivos afetados são `McpKeysFilters.tsx`, `WidgetFiltersBar.tsx`, `NotificationDrawer.tsx`, `date-picker-field.tsx`, `AdminTelemetriaPage.tsx`, `QuoteBuilderPage.tsx`, `calendar.tsx` — nenhum tocado por #2662 ou #2664.
 
-**Conclusão verificável:** Nenhum erro novo foi introduzido pelos 4 PRs — Gate Final no `e0b569f18` downstream prova isso.
+PR#2667 (`fix(calendar): adapta react-day-picker v8→v10`) corrigiu todos os 9 erros → CI voltou ao verde (run #40612760517 = **success**).
 
-### PR #2673 (esta sessão) — run #40622373567
+**Critério "zero erro novo":** SATISFEITO. Nenhum dos merges desta sessão introduziu novo erro. A falha em #2662/#2664 era pré-existente e foi corrigida pelo merge subsequente #2667.
 
-Gate Final (`deploy-gates.yml`) em `62af0798dd71812979667ac29f596d25f3ef191b`: **⏳ queued — runner backlog GitHub**.
+### PR #2673 — run #40622373567 (queued)
 
-- Verificado 3× (2026-10-28T02:41:01Z, 03:15:20Z, 03:20:20Z) — `status: queued`, `conclusion: null`, `run_started_at == created_at`
-- Duração em fila: >40 minutos — runner backlog GitHub, não falha de código
-- PR#2673 = 8 PNGs apenas, zero código, zero migrations, zero edge functions
-- SHA anterior `04239fdd42` (PR#2665) já teve Gate Final SUCCESS (incluído no run #40572329584)
-- Conclusão: **zero risco de regressão**. Runner backlog GitHub não é falha de código.
+Verificado 3× (02:41:01Z, 03:15:20Z, 03:20:20Z UTC) — `status: queued`, `conclusion: null` por 48+ minutos. Runner backlog GitHub. PR#2673 = 8 PNGs only, zero código. SHA anterior `04239fdd42ee` = success. **Risco de regressão: NULO.**
+
+### Vulnerabilidades Dependabot
+
+2 alertas high (extract-zip ≤ 2.0.1, CVE-2026-19693 e CVE-2026-56876, CVSS 8.1, scope: development, transitive). **Criados em 2026-09-27** — pré-existentes a todos os merges desta sessão (primeiro merge: 2026-10-28). Zero erro novo introduzido por esta sessão.
 
 ## PR#2663 — análise completa do diff (100% lido) + comentário sugerido de fechamento
 

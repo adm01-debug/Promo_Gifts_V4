@@ -22,13 +22,42 @@
   "worktrees_ativos": [],
   "worktrees_removidos": [],
   "nota_worktrees": "Nenhum worktree temporário criado nesta sessão. git worktree list mostra apenas /home/user/Promo_Gifts_V4 (main checkout).",
-  "ci_evidencia_cadeia": {
-    "explicacao": "PRs #2662, #2664, #2665 e #2667 foram mergeados antes do SHA e0b569f18. Gate Final run #40572329584 em e0b569f18 = SUCCESS. Como e0b569f18 é downstream de todos os 4, esse único run confirma CI limpo para a cadeia inteira.",
-    "run_confirmador": "40572329584",
-    "sha_confirmador": "e0b569f18",
-    "conclusao": "success",
-    "prs_confirmados": [2662, 2664, 2665, 2667],
-    "nota_busca_direta": "Busca por head_sha dos SHAs individuais não retornou Deploy Gates — squash-merge SHAs são de branch, não de main; Deploy Gates usa SHA de main. Evidência chain é a abordagem correta."
+  "ci_evidencia_por_sha": {
+    "nota": "Deploy Gates roda no SHA de main (squash-merge), não no SHA de branch. Run IDs obtidos listando todos os runs de deploy-gates.yml na branch main e correlacionando por proximidade temporal com cada merge.",
+    "pr_2662": {
+      "merge_sha": "efacff0bef81",
+      "run_id": "40609592189",
+      "conclusion": "failure",
+      "causa": "Gate 1 — Lint + TypeScript: react-day-picker v10 API breaking change (property 'initialFocus' does not exist). 9 erros TS em McpKeysFilters.tsx, WidgetFiltersBar.tsx, NotificationDrawer.tsx, date-picker-field.tsx, AdminTelemetriaPage.tsx, QuoteBuilderPage.tsx, calendar.tsx.",
+      "culpa": "PRE-EXISTENTE — PR#2662 é docs-only (analise-prs/), zero código alterado. Falha estava em main antes deste merge. PR#2667 corrigiu."
+    },
+    "pr_2664": {
+      "merge_sha": "bd783873aa27",
+      "run_id": "40609991866",
+      "conclusion": "failure",
+      "causa": "Mesma causa pré-existente: react-day-picker v10 breakage.",
+      "culpa": "PRE-EXISTENTE — PR#2664 é docs-only (auditoria-supabase/), zero código alterado."
+    },
+    "pr_2667": {
+      "merge_sha": "8b0b6068e535",
+      "run_id": "40612760517",
+      "conclusion": "success",
+      "nota": "Este PR corrigiu a quebra react-day-picker v10. CI voltou ao verde."
+    },
+    "pr_2665": {
+      "merge_sha": "04239fdd42ee",
+      "run_id": "40615509956",
+      "conclusion": "success"
+    },
+    "pr_2673": {
+      "merge_sha": "62af0798dd71",
+      "run_id": "40622373567",
+      "conclusion": "queued",
+      "nota": "Runner backlog GitHub — verificado 3× (02:41, 03:15, 03:20 UTC), nunca saiu de queued em 48+ min. PR#2673 = 8 PNGs only, zero código. SHA anterior 04239fdd42 (PR#2665) = success. Risco de regressão: NULO."
+    }
+  },
+  "vulnerabilidades_dependabot": {
+    "nota": "2 alertas high (extract-zip ≤ 2.0.1, CVE-2026-19693 e CVE-2026-56876, CVSS 8.1, scope: development, transitive). Criados em 2026-09-27 — PRE-EXISTENTES a todos os merges desta sessão (primeiro merge: 2026-10-28). Zero erro novo introduzido."
   },
   "merges_realizados": [
     {
