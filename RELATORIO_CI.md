@@ -138,6 +138,8 @@ Os workflows P1 e P2 de E2E que dependem de autenticação real continuam falhan
 
 **Critério:** cada workflow em falha está NESTA tabela com `conclusion=success` verificado, ou com referência explícita ao item em `PENDENCIAS.md` que documenta o motivo exato do bloqueio.
 
+**⛔ CONDIÇÃO DE PROCESSO BLOQUEADA (P0):** A exigência "reexecução dos workflows de push na main com conclusion=success" está documentada em `PENDENCIAS.md` **seção P0 (BLOQUEIO SISTÊMICO)** como impossível enquanto o PO não resolver P4 (Gate E40 — ledger dessincronizado). Sem resolução de P4, nenhum PR passa no Gate Final, nenhum merge ocorre, portanto nenhum push em `main` é possível por via do PR #2686. Esta é uma dependência exclusiva do PO — não há ação técnica de agente que desbloqueie.
+
 **Run de referência (PR #2686):** [40660438161](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40660438161) — Deploy Gates na branch `2eb3c3d`
 
 | # | Workflow em falha | Run ID da falha (main) | Desfecho | Evidência |

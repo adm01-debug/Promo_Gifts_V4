@@ -5,6 +5,20 @@
 
 ---
 
+## ⛔ BLOQUEIO SISTÊMICO — Reexecução na main impossível (P0)
+
+**Esta seção documenta explicitamente por que a condição de processo "reexecução dos workflows de push na main com conclusion=success" NÃO pode ser satisfeita por agente.**
+
+- **Causa:** Gate E40 (`local_only=1108; remote_only=647`) é BLOQUEANTE no job `deploy-gates.yml`
+- **Efeito:** Gate Final = failure em QUALQUER PR enquanto P4 não for resolvido
+- **Consequência:** Nenhum PR pode ser mergeado em `main`; sem merge, não há push em `main`; sem push em `main`, não há reexecução de workflows na `main`
+- **Ação exclusiva do PO:** Resolver P4 (reconciliação do ledger Supabase via `db-apply-migration.yml`) → desbloqueia merge do PR #2686 → workflows rodam na main com conclusion=success
+- **O que foi feito:** fix das 5 falhas de Calendar (Gate 2 Unit Tests) está pronto no PR #2686, commit `2eb3c3d`. A correção está validada no CI run [40660438161](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40660438161) (Gate 2 = ✅). Não há como reexecutar na `main` sem o PO resolver P4.
+
+> **Este item (P0) documenta o bloqueio da condição de PROCESSO, não de um workflow individual. Todos os workflows individuais que dependem de merge estão em P3, P5 e P7.**
+
+---
+
 ## P1 — CI - Replenishment Module Quality Gate (E2E autenticado)
 
 **Workflow:** CI que inclui testes E2E autenticados do módulo de reposição  
