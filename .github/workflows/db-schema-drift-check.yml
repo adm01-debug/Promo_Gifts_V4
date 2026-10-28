@@ -41,7 +41,7 @@ name: db-schema-drift-check
 # Variavel sobrescrivivel (nao-secret):
 #   SUPABASE_PROJECT_REF (default: doufsxqlfjyuvxuezpln)
 #
-# Sessões em produção (investigação 2026-10-15, runs 38730003472/38734310352):
+# Sessões em produção (investigacção 2026-10-15, runs 38730003472/38734310352):
 #   - Este job só abre conexões remotas em `link`, `migration list` e na fase
 #     migra do `db diff` (consultas de catálogo, sem pg_dump e sem lock por
 #     tabela). O `db diff` primeiro replaya as migrations num shadow LOCAL; se
@@ -50,14 +50,14 @@ name: db-schema-drift-check
 #     por SET de sessão do próprio pg_dump) vistas no mesmo horário vinham do
 #     `supabase db dump` de schema-snapshot-export.yml, que roda em paralelo
 #     no mesmo PR. Ver recomendação no PR/relatório; aqui só endurecemos este
-#     job para não deixar cliente vivo contra o canônico após o step:
+#     job para não deixar cliente vivo contra o canônico apös o step:
 #       * `timeout --signal=INT` no `db diff` (cancelamento limpo do CLI);
 #       * step `if: always()` que remove containers do CLI (shadow + migra).
 # =============================================================================
 
 on:
   schedule:
-    - cron: '29 9 * * *' # 06:29 BRT — E89: ≥20min after edge-functions-drift-check (09:06), ≥20min before restore-seller-cart-rpc (09:49)
+    - cron: '29 9 * * *' # 06:29 BRT — E89: ≅20min after edge-functions-drift-check (09:06), ≅20min before restore-seller-cart-rpc (09:49)
   pull_request:
     paths:
       - 'supabase/migrations/**'
@@ -107,8 +107,8 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false  # E32
-          # E57: usa o SHA exato do head do PR (não o merge commit do tip do branch).
-          # Para eventos sem PR, github.sha já aponta para o commit correto.
+          # E57: usa o SHA exato do head do PR (nao o merge commit do tip do branch).
+          # Para eventos sem PR, github.sha ja aponta para o commit correto.
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
       - name: Gate - secrets obrigatórios presentes?
         id: guard
@@ -119,9 +119,9 @@ jobs:
               echo "## Drift check bloqueado"
               echo
               echo "SUPABASE_ACCESS_TOKEN e/ou SUPABASE_DB_PASSWORD ausentes."
-              echo "O resultado não pode ser considerado válido sem consulta live ao projeto canônico."
+              echo "O resultado nao pode ser considerado valido sem consulta live ao projeto canonico."
             } >> "$GITHUB_STEP_SUMMARY"
-            echo "::error::SUPABASE_ACCESS_TOKEN e/ou SUPABASE_DB_PASSWORD ausentes; não é permitido pular a validação live."
+            echo "::error::SUPABASE_ACCESS_TOKEN e/ou SUPABASE_DB_PASSWORD ausentes; nao e permitido pular a validacao live."
             exit 1
           fi
           echo "enabled=true" >> "$GITHUB_OUTPUT"
@@ -145,8 +145,8 @@ jobs:
           # supabase/setup-cli@v2 define SUPABASE_INTERNAL_IMAGE_REGISTRY=ghcr.io via $GITHUB_ENV.
           # E104 sobrescrevia para ECR Public (public.ecr.aws) porque ghcr.io tinha rate-limit.
           # A partir de 2026-10-24, ECR Public passou a retornar "toomanyrequests: Data limit exceeded"
-          # em todas as tentativas (4 runs consecutivas); ghcr.io (44k req/min) é preferível para
-          # um único job de drift check. Reverte para ghcr.io explicitamente.
+          # em todas as tentativas (4 runs consecutivas); ghcr.io (44k req/min) e preferivel para
+          # um unico job de drift check. Reverte para ghcr.io explicitamente.
           echo "SUPABASE_INTERNAL_IMAGE_REGISTRY=ghcr.io" >> "$GITHUB_ENV"
 
       - name: Link canonical project
@@ -161,16 +161,16 @@ jobs:
         run: |
           set -euo pipefail
           # CLI 2.101 pode devolver tabela textual mesmo com --output-format.
-          # O parser local aceita a tabela e o JSON de versões mais novas.
+          # O parser local aceita a tabela e o JSON de versoes mais novas.
           supabase migration list --linked --output-format json > /tmp/migration-ledger.json
           if ! node scripts/check-supabase-migration-ledger.mjs \
             /tmp/migration-ledger.json --summary /tmp/migration-ledger-summary.json; then
             {
               echo "## Ledger de migrations divergente"
               echo
-              echo "Há migrations locais não aplicadas, versões exclusivas do remoto ou pares incompatíveis."
-              echo "O \`db diff\` não será executado porque o shadow replay seria enganoso."
-              echo "Não execute \`db push\` em lote: reconcilie cada versão por efeito e autorização."
+              echo "Ha migrations locais nao aplicadas, versoes exclusivas do remoto ou pares incompativeis."
+              echo "O `db diff` nao sera executado porque o shadow replay seria enganoso."
+              echo "Nao execute `db push` em lote: reconcilie cada versao por efeito e autorizacao."
               echo
               echo '```json'
               cat /tmp/migration-ledger-summary.json
@@ -189,25 +189,25 @@ jobs:
           if ! node scripts/drift-baseline.mjs prepare-workdir \
             --ledger /tmp/migration-ledger.json --out /tmp/drift-wd > /tmp/drift-wd.json 2> /tmp/drift-wd.stderr; then
             if [ "$ALLOW_MISSING_BASELINE" = "true" ] && grep -q 'nenhum baseline' /tmp/drift-wd.stderr; then
-              echo "::notice::Sem baseline (bootstrap) — o primeiro baseline é gerado sem comparação."
+              echo "::notice::Sem baseline (bootstrap) — o primeiro baseline e gerado sem comparacao."
               echo "## Bootstrap: sem baseline anterior para comparar" >> "$GITHUB_STEP_SUMMARY"
               echo "skip=true" >> "$GITHUB_OUTPUT"
               exit 0
             fi
             {
-              echo "## Drift check sem baseline válido"
+              echo "## Drift check sem baseline valido"
               echo
               echo '```'
               cat /tmp/drift-wd.stderr
               echo '```'
               echo "Gere o baseline rodando schema-snapshot-export.yml (workflow_dispatch) e"
-              echo "mergeie a PR de bot/schema-snapshot. Não copie o baseline para supabase/migrations/."
+              echo "mergeie a PR de bot/schema-snapshot. Nao copie o baseline para supabase/migrations/."
             } >> "$GITHUB_STEP_SUMMARY"
             echo "::error::$(cat /tmp/drift-wd.stderr)"
             exit 1
           fi
           cat /tmp/drift-wd.json
-          # Link da pasta de replay (o link do passo anterior vale só para a raiz do repo).
+          # Link da pasta de replay (o link do passo anterior vale so para a raiz do repo).
           supabase link --workdir /tmp/drift-wd --project-ref "$SUPABASE_PROJECT_REF"
 
       - name: Pre-pull Supabase postgres image (ghcr.io autenticado)
@@ -218,20 +218,20 @@ jobs:
           set -euo pipefail
           # supabase db diff arranca shadow DB local com esta imagem.
           # Registry lido de SUPABASE_INTERNAL_IMAGE_REGISTRY (ghcr.io, via step anterior).
-          # Autenticação com GITHUB_TOKEN (packages: read) evita o rate limit anônimo compartilhado
+          # Autenticacao com GITHUB_TOKEN (packages: read) evita o rate limit anonimo compartilhado
           # (44k req/min entre todos runners do GitHub Actions). Tag fixa para CLI 2.101.0.
           POSTGRES_IMAGE="${SUPABASE_INTERNAL_IMAGE_REGISTRY}/supabase/postgres:17.6.1.063"
           for attempt in 1 2 3 4 5; do
-            # Tenta autenticado (evita rate limit anônimo); cai em anônimo se caller não tiver packages: read
+            # Tenta autenticado (evita rate limit anonimo); cai em anonimo se caller nao tiver packages: read
             if echo "$GITHUB_TOKEN" | docker login ghcr.io -u x-access-token --password-stdin 2>/dev/null \
                 && docker pull "$POSTGRES_IMAGE"; then
               echo "Pre-pull ok autenticado (tentativa $attempt)"
-              break
-            elif docker pull "$POSTGRES_IMAGE"; then
-              echo "Pre-pull ok anônimo (tentativa $attempt)"
+  break
+            elif docker pull "$POSGRES_IMAGE"; then
+              echo "Pre-pull ok anonimo (tentativa $attempt)"
               break
             fi
-            [ "$attempt" -lt 5 ] || { echo "::error::Pre-pull de $POSTGRES_IMAGE falhou após 5 tentativas"; exit 1; }
+            [ "$attempt" -lt 5 ] || { echo "::error::Pre-pull de $POSTGRES_IMAGE falhou apos 5 tentativas"; exit 1; }
             wait_s=$((attempt * 30))
             echo "Tentativa $attempt falhou — aguardando ${wait_s}s antes de tentar novamente"
             sleep "$wait_s"
@@ -241,7 +241,7 @@ jobs:
         if: steps.guard.outputs.enabled == 'true' && steps.replay.outputs.skip != 'true'
         run: |
           set -euo pipefail
-          # Limite próprio < timeout do job: SIGINT deixa o CLI cancelar o
+          # Limite proprio < timeout do job: SIGINT deixa o CLI cancelar o
           # contexto e remover os containers shadow/migra antes do runner morrer.
           # E035: schemas lidos do arquivo compartilhado (mesmo usado pelo export)
           SCHEMAS=$(grep -v '^#' supabase/baseline/schemas.txt | grep -v '^$' | tr '\n' ',' | sed 's/,$//')
@@ -254,17 +254,17 @@ jobs:
               echo "::error::supabase db diff excedeu 18 min e foi interrompido (rc=$rc)."
             fi
             # Replay quebrado no shadow: quase sempre uma migration registrada
-            # depois do dump cujo SQL já estava no baseline (repair-only de DDL
-            # feita fora do fluxo) ou aplicada fora da ordem de versão. O
-            # remédio é um baseline novo, não editar a migration.
-            last=$(grep -o 'Applying migration [^ ]*' /tmp/diff.stderr | tail -1 || true)  # ok: grep retorna 1 quando não há match; resultado vazio é válido
+            # depois do dump cujo SQL ja estava no baseline (repair-only de DDL
+            # feita fora do fluxo) ou aplicada fora da ordem de versao. O
+            # remedio e um baseline novo, nao editar a migration.
+            last=$(grep -o 'Applying migration [^ ]*' /tmp/diff.stderr | tail -1 || true)  # ok: grep retorna 1 quando nao ha match; resultado vazio e valido
             if [ -n "$last" ]; then
               {
                 echo "## Replay do baseline falhou"
                 echo
-                echo "Último passo: \`$last\`."
-                echo "Se a migration foi registrada com \`mode: repair-only\` depois do baseline (DDL já"
-                echo "existia no dump) ou aplicada fora da ordem de versão, gere um baseline novo:"
+                echo "Ultimo passo: \`$last\`."
+                echo "Se a migration foi registrada com \`mode: repair-only\` depois do baseline (DDL ja"
+                echo "existia no dump) ou aplicada fora da ordem de versao, gere um baseline novo:"
                 echo "\`schema-snapshot-export.yml\` (workflow_dispatch) e merge da PR de bot/schema-snapshot."
               } >> "$GITHUB_STEP_SUMMARY"
             fi
@@ -283,7 +283,7 @@ jobs:
               echo "O schema canonico tem DDL ($cnt linha(s) fora da allowlist) nao descrito por migration."
               echo "Provavel objeto criado direto em producao sem migration."
               echo
-              echo "### Resíduo (fora da allowlist)"
+              echo "### Residuo (fora da allowlist)"
               echo '```sql'
               cat /tmp/schema_drift.clean
               echo '```'
@@ -297,7 +297,7 @@ jobs:
             echo "## Sem drift de schema"
             echo
             echo "Baseline $baseline + $replayed migration(s) aplicada(s) depois dele descrevem"
-            echo "o schema public do projeto canonico (fora o ruído em supabase/baseline/drift-allowlist.txt)."
+            echo "o schema public do projeto canonico (fora o ruido em supabase/baseline/drift-allowlist.txt)."
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Event trigger drift check (E036)
@@ -315,17 +315,17 @@ jobs:
           node scripts/check-cron-drift.mjs
 
       # Garante que nenhum container do CLI (shadow DB / edge-runtime migra)
-      # continue conectado ao canônico depois do step — inclusive em cancel
-      # (cancel-in-progress) ou timeout. Só toca containers rotulados pelo CLI.
+      # continue conectado ao canonico depois do step — inclusive em cancel
+      # (cancel-in-progress) ou timeout. So toca containers rotulados pelo CLI.
       - name: Cleanup Supabase CLI containers
         if: ${{ always() && steps.guard.outputs.enabled == 'true' }}
         run: |
           set -uo pipefail
-          ids=$(docker ps -aq --filter "label=com.supabase.cli.project" || true)  # ok: docker pode não estar rodando; ids vazio = nada a remover
+          ids=$(docker ps -aq --filter "label=com.supabase.cli.project" || true)  # ok: docker pode nao estar rodando; ids vazio = nada a remover
           if [ -n "$ids" ]; then
             echo "Removendo containers do Supabase CLI: $ids"
-            # shellcheck disable=SC2086 # lista de IDs separada por espaço/linha
-            docker rm -f $ids || true  # ok: cleanup best-effort; falha não deve abortar o job
+            # shellcheck disable=SC2086 # lista de IDs separada por spaco/linha
+            docker rm -f $ids || true  # ok: cleanup best-effort; falha nao deve abortar o job
           else
             echo "Nenhum container do Supabase CLI ativo."
           fi
