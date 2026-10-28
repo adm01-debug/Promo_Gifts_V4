@@ -11,6 +11,29 @@
 
 ---
 
+## 🚨 ALERTA CRÍTICO — Gate E40 FAILURE no main (2026-10-28T05:40Z)
+
+**SHA atual do main:** `5d12084e3ee18a5c94e41b5cf29bfb43206de710`  
+**Run:** [40638774759](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40638774759)  
+**Gate com falha:** Gate E40 — Schema Drift Check  
+**Todos os outros gates:** ✅ SUCCESS (Gate 0, 0.5, 1, 2, 2.5, 3, 4, 5, 5.5, 6, E23)
+
+**Causa raiz:** A migration `20261027120000_fix_connections_auto_test_cron_secret.sql` contém uma pré-condição DO block que verifica se o cron job `connections-auto-test` existe em `cron.job`. O PG local do replay do drift check não tem esse cron job, então a migration falha com:
+```
+ERROR: Pré-condição falhou: cron.job connections-auto-test não encontrado (SQLSTATE P0001)
+```
+
+**Importante:** PR #2646 **não introduziu** este defeito. A migration `20261027120000` já existia no main. A PR #2646 corrigiu a autenticação Docker do Gate E40 (que antes falhava silenciosamente no pull do ghcr.io), fazendo o gate rodar pela primeira vez e revelar o defeito latente.
+
+**Decisão necessária (PO):** Corrigir ou fazer allowlist da pré-condição em `20261027120000`. Opções:
+1. Adicionar linha ao `supabase/baseline/drift-allowlist.txt` para ignorar o erro na pré-condição (se a pré-condição não for necessária no replay)
+2. Alterar a migration para não falhar em ambiente sem o cron job (wrap em `DO ... IF EXISTS`)
+3. Adicionar um fixture do cron job no script de replay do Gate E40
+
+**Todos os merges estão parados** até esta falha ser resolvida.
+
+---
+
 ## ⚠️ RISCOS E DECISÕES HUMANAS (PO)
 
 > Esta seção deve ser lida antes de qualquer ação.
