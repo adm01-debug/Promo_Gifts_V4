@@ -161,4 +161,34 @@ sudo -u postgres psql -c "DROP DATABASE IF EXISTS audit_rls_test; CREATE DATABAS
 sudo -u postgres psql -d audit_rls_test -f /tmp/rls_matrix_test.sql
 ```
 
-O arquivo `/tmp/rls_matrix_test.sql` está em `/home/user/Promo_Gifts_V4/auditoria-supabase/testes/rls_matrix_test.sql`.
+---
+
+## Sessão 2026-10-28 — Testes quotes/orders/order_items/profiles (VERIFICADO)
+
+**Ambiente:** PostgreSQL 16 local (cluster `main`, banco `rls_test_audit`)  
+**Método:** `BEGIN; SET LOCAL ROLE authenticated; SELECT set_config('test.current_user_id', ..., true); SELECT ...; ROLLBACK;`  
+**Políticas replicadas de produção:** extraídas via `pg_policies` esta sessão  
+**Funções helper replicadas de produção:** `user_is_org_member`, `is_org_owner_or_admin`, `is_coord_or_above`, `is_supervisor_or_above`, `has_role` (via `pg_get_functiondef` esta sessão)  
+**Mock de auth.uid():** `CREATE FUNCTION auth.uid() RETURNS uuid AS $$ SELECT current_setting('test.current_user_id',true)::uuid $$`  
+**FORCE ROW LEVEL SECURITY:** aplicado em todas as 4 tabelas
+
+### Resultado: 11/11 PASS ✓
+
+| ID | Teste | Esperado | Obtido | Status |
+|---|---|---|---|---|
+| T01 | user_a SELECT orders org_a | 1 | 1 | **PASS ✓** |
+| T02 | user_b SELECT orders org_a (cross-tenant) | 0 | 0 | **PASS ✓** |
+| T03 | user_c SELECT orders org_a (admin) | 1 | 1 | **PASS ✓** |
+| T04 | user_a SELECT order_items da ordem de org_a | 1 | 1 | **PASS ✓** |
+| T05 | user_b SELECT order_items da ordem de org_a (cross-tenant) | 0 | 0 | **PASS ✓** |
+| T06 | user_a SELECT quotes org_a (seller) | 1 | 1 | **PASS ✓** |
+| T07 | user_b SELECT quotes org_a (cross-tenant) | 0 | 0 | **PASS ✓** |
+| T08 | user_c SELECT quotes org_a (supervisor) | 1 | 1 | **PASS ✓** |
+| T09 | user_a SELECT own profile | 1 | 1 | **PASS ✓** |
+| T10 | user_a SELECT other user's profile | 0 | 0 | **PASS ✓** |
+| T11 | user_c SELECT user_a's profile (supervisor) | 1 | 1 | **PASS ✓** |
+
+**Conclusão:** Isolamento por tenant CORRETO para quotes, orders, order_items e profiles.  
+Nenhum vazamento cross-tenant detectado nos cenários testados.
+
+**Limitação:** Políticas extraídas de produção via `pg_policies` (leitura direta), não via migrations do repositório do zero. As funções helper foram extraídas via `pg_get_functiondef` em produção. O banco PostgreSQL 16 local não tem a extensão Supabase Auth, então `auth.uid()` foi mockado via `current_setting`. Para teste completo com migrations reais: `supabase start && supabase db reset`.
