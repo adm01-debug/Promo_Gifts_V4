@@ -1,6 +1,8 @@
 {
-  "rev": 63,
-  "ultima_atualizacao": "2026-10-28T07:00:00Z",
+  "rev": 65,
+  "ultima_atualizacao": "2026-10-28T09:00:00Z",
+  "nota_rev64": "Correção run IDs: #2662 40604545222→40609592189; #2664 40605745212→40609991866; prs.csv #2670 DRAFT→DRAFT_NOMERGE; baseline adicionado evidência Gate1 vs Gate2",
+  "nota_rev65": "Corrige veredito 2670 de DRAFT para DRAFT_NOMERGE em vereditos_finais e contagem_vereditos_final; alinha com prs.csv commit eb83d0ca",
   "sessao_01Ss1tXZ4cAbxBvdmu95uNPz": {
     "data": "2026-10-25",
     "rev": 22,
@@ -147,21 +149,13 @@
         "number": 2662,
         "sha": "efacff0bef81c7d175aef629ab338634b6c4ffb2",
         "titulo": "docs(audit): análise PRs sessão anterior — dossiês rev46 (30 arquivos analise-prs/)",
-        "gate_final": "run_40604545222 success"
+        "gate_final": "run_40609592189 failure [pré-existente: Gate1-typecheck falhou por SHA 4c5fdd72 (10 erros TS react-day-picker); Gate2-unit-tests PASSOU (success); PR docs-only não introduziu erros novos]"
       },
       {
         "number": 2664,
         "sha": "bd783873aa273a6da6f3351e8d1f670baaf950d2",
         "titulo": "docs(audit): auditoria Supabase — relatório completo + inventário (15 arquivos auditoria-supabase/)",
-        "gate_final": "run_40605745212 success (pre-merge head 872a0ee2)"
-      },
-      {
-        "number": 2665,
-        "sha": "04239fdd42eef05589fb41b3f0e58a664621fbf7",
-        "titulo": "chore(deps): bump qs 6.16.0→6.16.2",
-        "gate_final": "run_40615509956 success",
-        "gate_final_job": "122579082567",
-        "gate_final_completed_at": "2026-10-28T01:37:53Z"
+        "gate_final": "run_40609991866 failure [pré-existente: mesma causa SHA 4c5fdd72; Gate1-typecheck FALHOU; Gate2-unit-tests PASSOU; fix em SHA 8b0b6068 run 40612760517]"
       }
     ],
     "vereditos_finais": {
@@ -176,17 +170,16 @@
       "2666": "FECHAR",
       "2667": "CI_FALHOU",
       "2668": "DRAFT_NOMERGE",
-      "2670": "DRAFT",
+      "2670": "DRAFT_NOMERGE",
       "2671": "DECISAO_HUMANA",
       "2672": "DECISAO_HUMANA"
     },
     "contagem_vereditos_final": {
       "MERGEADO_AUTONOMO": 3,
       "DECISAO_HUMANA": 6,
-      "DRAFT_NOMERGE": 2,
+      "DRAFT_NOMERGE": 3,
       "CI_FALHOU": 2,
       "FECHAR": 1,
-      "DRAFT": 1,
       "total_analisadas": 15
     },
     "diffs_confirmados": {
