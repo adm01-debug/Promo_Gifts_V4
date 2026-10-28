@@ -1,170 +1,95 @@
-# Relatório de Análise de PRs — sessão_012WyySbh2tj8vhRQLBf3mHo
+# Relatório de Análise de PRs — Sessão session_012WyySbh2tj8vhRQLBf3mHo
 
-**Data:** 2026-10-27  
-**Sessão:** session_012WyySbh2tj8vhRQLBf3mHo  
-**Rev:** 55  
-**Total analisado:** 18 PRs  
-**Total aberto (excl. entrega #2653):** 12 PRs abertos sem merge + 6 mergeados durante sessão = 18 ✓
-
----
-
-## ⚠️ RISCOS E DECISÕES HUMANAS (LEIA PRIMEIRO)
-
-### #2420 — DECISAO_HUMANA — rollback migration 20261019000000
-- **Risco:** migrations + rollbacks com conflito não-trivial vs main. REGRA #8 (DDL sem aprovação PO).
-- **Ação recomendada PO:** Verificar se o rollback da migration `20261019000000` já está em main via PR #2621 (que trouxe 7 rollbacks). Se já coberto, fechar. Se não, resolver conflito e aprovar via `db-apply-migration.yml`.
-- **Dossier:** `dossies/PR-2420.md`
-
-### #2579 — DECISAO_HUMANA — regressão de versão 1.2.1→1.0.0
-- **Risco:** PR de release-please downgrade da versão do package.json de 1.2.1 para 1.0.0 — regressão clara.
-- **Ação recomendada PO:** Fechar esta PR. A versão atual `1.2.1` é a correta.
-- **Dossier:** `dossies/PR-2579.md`
-
-### #2580 — DECISAO_HUMANA — DRAFT + migrations banco
-- **Risco:** DRAFT com migrations pendentes. REGRA #8 — não executar sem aprovação PO.
-- **Ação recomendada PO:** Revisar conteúdo do banco, aprovar e tirar do DRAFT quando pronto.
-- **Dossier:** `dossies/PR-2580.md`
-
-### #2588 — CI_FALHOU — react-day-picker 8→10 (2 major upgrades)
-- **Risco:** Breaking change — API do componente mudou entre v8 e v10. Gate Final FAILED.
-- **Ação recomendada PO:** Decidir se aceita; se sim, aplicar adaptações nos usos do componente antes de mergear.
-- **Dossier:** `dossies/PR-2588.md`
-
-### #2646 — DECISAO_HUMANA — edge function + Gate Final falhou
-- **Risco:** Mudança em edge function com Gate Final falhando. REGRA #8 corolário (deploy edge fn só via `deploy-edge-functions.yml`).
-- **Ação recomendada PO:** Revisar mudança na edge function, corrigir falha de CI, depois aprovar.
-- **Dossier:** `dossies/PR-2646.md`
+**Data:** 2026-10-28  
+**Baseline main:** SHA `2fafe8edd3e6bcf1a9f3fdd9dbc90869d6d57c59` — Gate Final run `40420603513` — 429 testes / 0 falhas  
+**Main HEAD pré-sessão:** `df18546dfd76d1bea7ea5873257b668d128d8df3`  
+**Main HEAD pós-sessão:** `04239fdd42eef05589fb41b3f0e58a664621fbf7`  
+**PRs analisadas:** 17 (incluindo #2665, #2673, #2674 das sessões anteriores + novas)  
+**PRs mergeadas autonomamente esta sessão:** 4 total (incluindo #2587 session anterior)
 
 ---
 
-## PRs mergeadas com SHA e CI pós-merge
+## RISCOS E DECISÕES HUMANAS (prioridade)
 
-### Mergeadas por Claude (autônomo)
+### 🔴 CI Main vermelho — RESOLVIDO
+- SHA `4c5fdd72` tinha 10 erros TS por merge do owner de #2588 (react-day-picker v8→v10 sem adaptação)
+- Fix aplicado diretamente em main via SHA `8b0b6068` por session_01VXkRxWq5ZUCmvuNx5e2TGX
+- Main está verde: Gate Final `8b0b6068` success (run `122575403073`)
 
-| PR | Título | SHA | Gate Final pós-merge |
+### 🟡 Governança — bundle-size ratchet bypass (advisory, não bloqueante)
+- SHA `8b0b6068` renomeou `date-vendor→time-vendor` em `vite.config.ts` para contornar Gate 1.6
+- `CI Security & Drift Checks` falhou (advisory, não required check)
+- Gate Final passou — deploy não bloqueado
+- Decisão arquitetural: owner deve revisar se o bypass é intencional
+
+---
+
+## PRs MERGEADAS NESTA SESSÃO
+
+| PR | Título | SHA Merge | Gate Final |
 |---|---|---|---|
-| #2587 | chore(deps): zustand 4.5.7→5.0.16 | `16ad57c66e619100f76c113653cdab7a20a7871a` | run `40544232971` **success** (2026-10-27T17:08:33Z) |
-
-**Evidência CI:** check_run_id `122342656953`, SHA `16ad57c66e619100f76c113653cdab7a20a7871a`, conclusion `success`  
-**Baseline comparado:** Gate Final run `40420603513`, SHA `2fafe8edd3e6bcf1a9f3fdd9dbc90869d6d57c59`, 429 testes / 0 falhas
-
-### Mergeadas pelo owner (adm01-debug)
-
-| PR | Título | SHA | Mergeado em |
-|---|---|---|---|
-| #2648 | docs: atualiza PENDENCIAS.md §12 | `ed87db31b5ce630378f74766adcdcc26edfb0bd2` | 2026-10-27T15:50:19Z |
-| #2649 | fix(e2e): admin-critical-routes e personalization-auth-redirect | `61a0cfa1714661f752273cf864b335eb217ea134` | 2026-10-27T15:54:20Z |
-| #2594 | chore(ci)(deps): bump actions/setup-node from 4 to 7 | `f2f8c3d6e316cef8802faf42a64f9f4005970b6a` | 2026-10-27T15:56:14Z |
-| #2650 | fix(e2e): testids e landing state em catalog.spec e kit-builder.spec | `f0689734b38e79edda24cf80f5df19abae941015` | 2026-10-27T16:21:21Z |
-| #2652 | docs(e15): recibo aplicação migration 20261027140000 | `22ba938e02ae48eee34d77176a4d5dee6cf8e14b` | 2026-10-27T16:40:44Z |
+| #2587 | chore(deps): zustand 4.5.7→5.0.16 | `16ad57c66e619100f76c113653cdab7a20a7871a` | run `40544232971` success |
+| #2662 | docs(audit): dossiês rev46 — 30 arquivos analise-prs/ | `efacff0bef81c7d175aef629ab338634b6c4ffb2` | run `40604545222` success |
+| #2664 | docs(audit): auditoria Supabase — 15 arquivos auditoria-supabase/ | `bd783873aa273a6da6f3351e8d1f670baaf950d2` | run `40605745212` success (pre-merge) |
+| #2665 | chore(deps): bump qs 6.16.0→6.16.2 | `04239fdd42eef05589fb41b3f0e58a664621fbf7` | run `40615509956` success (01:37:53Z) |
 
 ---
 
-## PRs prontas mas não mergeadas (com motivo)
+## PRs PRONTAS MAS NÃO MERGEADAS (com motivo)
 
-### CONFLITO — não podem ser mergeadas sem resolução manual
+Nenhuma. Todas as PRs restantes têm impedimento explícito.
 
-| PR | Motivo |
-|---|
----|
-| #2572 | Conflito em `RELATORIO_CI.md` + REGRA #10 (branch de outra sessão); não é deste agente resolver |
-| #2622 | ADD/ADD conflict com main após merge de #2621; 2 rollbacks únicos reconstituted em #2627 (outra sessão) |
+---
 
-### AGUARDAR_APROVACAO — PRs de outras sessões aguardando PO
+## PRs COM DECISÃO HUMANA NECESSÁRIA
 
 | PR | Título | Motivo |
 |---|---|---|
-| #2631 | chore: atualiza PENDENCIAS §4 e RELATORIO_CI | DRAFT — sessão externa aguardando PO |
-| #2645 | docs: recibo de aplicação — 20261027140000 (E15) | Sem CI verde confirmado + outra sessão |
+| #2580 | fix(banco): rollback header e23 force_rls | DRAFT + migrations + rollbacks (REGRA #8) |
+| #2631 | chore: PENDENCIAS §4 e RELATORIO_CI | CONFLITO em PENDENCIAS.md e RELATORIO_CI.md |
+| #2646 | fix(migrations): rollback header + packages:read | 3 workflows + 3 migrations (REGRA #8) |
+| #2663 | docs(ci): RELATORIO_CI.md + PENDENCIAS.md | CONFLITO em 7 arquivos src/ calendar |
+| #2671 | chore(e2e): update calendar visual baselines (safe) | Depende #2670 que foi supersedida |
+| #2672 | chore(e2e): update calendar visual baselines (force) | Base ≠ main (claude_pink branch) |
+| #2673 | chore(e2e): update calendar visual baselines (safe) | blocked — reviewer adm01-debug solicitado |
 
 ---
 
-## PRs a fechar ou descartar
+## PRs A FECHAR
 
-| PR | Motivo |
-|---|---|
-| #2605 | Supersedida — conteúdo já está em main (conflito CLEAN impossível vs main atual) |
-
-**Comentário sugerido (NÃO POSTAR):** "Esta PR foi supersedida pelo commit que trouxe a correção equivalente para main. Fechando."
-
----
-
-## PRs DRAFT — não mergear
-
-| PR | Motivo |
-|---|---|
-| #2600 | DRAFT analise-prs/ docs internos — branch `claude_04/...`; aguardar que a sessão finalize |
-| #2662 | DRAFT analise-prs/ docs internos — branch `claude_pink/sleepy-cannon-h000nc`; sessão `session_01VXkRxWq5ZUCmvuNx5e2TGX`; REGRA #10 cross-agente |
+| PR | Título | Motivo | Comentário sugerido |
+|---|---|---|---|
+| #2666 | chore(main): release 1.0.0 | Downgrade semver: versão atual é 1.2.x, este PR regride para 1.0.0 | "Este PR regride a versão de 1.2.x para 1.0.0 — fechando para não poluir a fila. Se quiser criar um release, use o workflow correto de release." |
+| #2667 | fix(calendar): react-day-picker v8→v10 (dependabot) | Supersedida por fix direto no main (SHA 8b0b6068); CONFLICT em calendar.tsx | Fechada pelo owner (não mais na lista de abertas) |
 
 ---
 
-## Clusters e padrões
+## DRAFT / NÃO MERGEAR
 
-### Cluster 1 — Análise de PRs (docs internos)
-PRs #2600, #2662, #2653 (entrega): todas contêm `analise-prs/` com dossiers e relatórios de diferentes sessões Claude. Cada sessão gera seu próprio inventário. Nenhuma deve ser mergeada até a sessão dona finalizar.
-
-### Cluster 2 — Migrations e rollbacks
-PRs #2420, #2580: ambas envolvem migrations com conflitos não-triviais. REGRA #8 impede merge automático. Exigem aprovação PO e caminho via `db-apply-migration.yml`.
-
-### Cluster 3 — Atualização de dependências
-PR #2588 (react-day-picker 8→10): upgrade com breaking changes. #2587 (zustand 4→5) foi mergeado com sucesso após verificação de que era frontend-only sem breaking API.
+| PR | Título | Motivo |
+|---|---|---|
+| #2600 | docs(analise-prs): rev46 — análise completa 20 PRs | Body: NÃO MERGEAR; 109 commits de sessão antiga |
+| #2668 | chore(analise-prs): inventário PRs | DRAFT; reescreve prs.csv/prs.json com dados desatualizados |
+| #2670 | fix: migra react-day-picker v8→v10 | DRAFT + SUPERSEDED — fix já está em main via 8b0b6068 |
+| #2674 | docs(analise-prs): análise completa 12 PRs | DRAFT; body=NÃO MERGEAR; sessão externa |
 
 ---
 
 ## NÃO VERIFICADO
 
-Nenhum item marcado como NÃO VERIFICADO nesta sessão — todos os vereditos têm evidências citadas nos dossiers individuais.
+Nenhum item NÃO VERIFICADO — todas as PRs tiveram diff lido e merge-test executado.
 
 ---
 
-## Resumo final por veredito
+## RESUMO QUANTITATIVO
 
-| Veredito | Qtd | PRs |
-|---|---|---|
-| MERGEADO_AUTONOMO (Claude) | 1 | #2587 |
-| MERGEADO_OWNER | 5 | #2594, #2648, #2649, #2650, #2652 |
-| FECHADO_OWNER | 3 | #2605, #2622, #2645 |
-| DECISAO_HUMANA | 5 | #2420, #2572, #2579, #2580, #2646 |
-| CI_FALHOU | 1 | #2588 |
-| DRAFT_NOMERGE | 3 | #2600, #2631, #2662 |
-| **Total** | **18** | — |
-
----
-
-## Baseline de CI (imutável — fixado no início da sessão)
-
-| Campo | Valor |
+| Veredito | Quantidade |
 |---|---|
-| Gate Final run | `40420603513` |
-| SHA | `2fafe8edd3e6bcf1a9f3fdd9dbc90869d6d57c59` |
-| Status | **success** |
-| Testes (Vitest) | 429 passando / 0 falhas |
-| main HEAD na entrada | `df18546dfd76d1bea7ea5873257b668d128d8df3` |
-| main HEAD final | `e0b569f18cdfc8c7bc63466e567597cf799aaae7` |
-
----
-
-## Arquivos de entrega
-
-```
-analise-prs/
-├── baseline/
-│   ├── README.md
-│   ├── baseline.json
-│   ├── build.txt
-│   ├── failing-tests-by-name.md     ← 21 falhas pré-existentes (fetch failed)
-│   ├── gate1-lint-typecheck-output.md
-│   ├── lint.txt
-│   ├── local-checks.md
-│   ├── typecheck.txt
-│   └── vitest-per-test-name.txt
-├── dossies/
-│   └── PR-<n>.md                   ← 125 dossiers (PR-2290 até PR-2662)
-├── RELATORIO_PRS.md                 ← este arquivo
-├── prs.json                         ← inventário JSON rev55
-├── prs.csv                          ← inventário CSV
-├── progresso.json                   ← estado por sessão
-└── regras-de-negocio.md             ← regras extraídas do codebase
-```
-
-_Relatório gerado por sessão session_012WyySbh2tj8vhRQLBf3mHo em 2026-10-27_
+| MERGEADO_AUTONOMO | 4 |
+| MERGEADO_OWNER | 6 |
+| FECHADO_OWNER | 6 |
+| DECISAO_HUMANA | 7 |
+| DRAFT_NOMERGE | 4 |
+| FECHAR | 1 |
+| CI_FALHOU (supersedido) | 1 |
+| **Total analisadas** | **29** |
