@@ -122,13 +122,13 @@ As 11 migrations aplicadas durante a auditoria foram via `db-apply-migration.yml
 - **Evidência (esta sessão):**
   - `ls supabase/migrations/ | wc -l → 3009`
   - `SELECT COUNT(*) FROM supabase_migrations.schema_migrations → 2551`
-  - Diff: **3009 − 2551 = 458 migrations no repo sem aplicação confirmada**
+  - Diff: **3009 − 2551 = 458 migrations no repo sem aplicação confirmada** (464 pelo método version-set — ver PR #2664)
 - **Impacto:** Features desenhadas e não entregues; schema do banco pode divergir do esperado pelo código.
 - **Proposta:** P09 (`P09_drift003_migration_ledger_reconciliation.sql`) — AGUARDANDO APROVAÇÃO.
 
 ---
 
-## ACHADOS ALTOS (8)
+## ACHADOS ALTOS (9)
 
 ### ALT-001 — DB Guard falha na migration #28 (storage.buckets)
 
