@@ -19,8 +19,8 @@
 ## ✅ P4 — RESOLVIDO — Gate E40 Schema Drift (ledger dessincronizado)
 
 **Workflow:** Deploy Gates (Gate Final)  
-**Run com falha:** [40660438161](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40660438161)  
-**Fix:** Commit `8c81483` na main — migrations corrigidas tornaram o Gate E40 verde.  
+**Run ID da falha:** [40660438161](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40660438161)  
+**Fix:** Commit `8c81483` na main → migrations corrigidas tornaram o Gate E40 verde.  
 **Runs de validação:** `40667156516` e `40662579684` ambos com `conclusion: success`.
 
 ---
@@ -34,7 +34,7 @@
 
 **Erro exato (dos logs do CI):**
 ```
-e2e/helpers/auth.ts — Timeout 75000ms exceeded.
+e2e/helpers/auth.ts → Timeout 75000ms exceeded.
 Error: Timed out 75s waiting for expect(locator).not.toHaveURL()
 Expected pattern: not matching /login/
 Received string: "http://localhost:8080/login"
@@ -108,12 +108,12 @@ Clique em "Re-run all jobs".
 **Workflow:** Branch Protection Sentinel  
 **Run ID da falha original:** 40615509825  
 **Link da falha:** https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40615509825  
-**Status:** ✅ RESOLVIDO — run 40680415509 = success (SHA `e4a326e`)
+**Status:** ✅ RESOLVIDO — run 40702858343 = success (SHA `2cee272b`)
 
 **Causa original:** Commits `c73cb9b` e `8c81483` foram pushed diretamente à main (sem PR) para corrigir P5 e P4 urgentemente. O sentinel detectou esses commits diretos e falhou nas runs `40662579535` e `40667156223`.
 
 **Resolução:** Após P4 e P5 estarem na main, os commits subsequentes entraram via PR. O sentinel voltou ao estado success automaticamente.  
-**Evidência:** Run [40680415509](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40680415509) em SHA `e4a326e` → **success**.
+**Evidência:** Run [40702858343](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40702858343) em SHA `2cee272b` → **success**.
 
 **Recomendação para o futuro:** Bumps de dependências devem entrar por PR (Dependabot/Renovate) ou com mensagem terminando em `(#NNN)` / `[skip-sentinel: bump-dep]`.
 
@@ -143,12 +143,12 @@ Clique em "Re-run all jobs".
 
 **Erros exatos:**
 ```
-1. [chromium-authed] › e2e/flows/04p-quotes-expiration-column.spec.ts:149
+1. [chromium-authed] → e2e/flows/04p-quotes-expiration-column.spec.ts:149
    Error: status presente em primeiro acesso
    expect(iStatus).toBeGreaterThanOrEqual(0) → recebeu -1
    (coluna "status" não encontrada na lista de IDs de colunas)
 
-2. [chromium-authed] › e2e/flows/04r-undo-toast-a11y-keyboard.spec.ts:150
+2. [chromium-authed] → e2e/flows/04r-undo-toast-a11y-keyboard.spec.ts:150
    Error: expect(count).toBe(0) → recebeu 1
    (click após 500ms ainda aciona onUndo — timing flake/regressão)
 ```
@@ -159,18 +159,31 @@ Clique em "Re-run all jobs".
 
 ---
 
-## P7 — db-schema-drift-check (timing — resolução esperada no próximo run agendado)
+## P7 — db-schema-drift-check (ledger divergente — requer reconciliação pelo PO)
 
 **Workflow:** db-schema-drift-check  
-**Run ID da última falha:** 40665197973  
-**Link:** https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40665197973  
-**Status:** failure (timing) — a correção já está na main; próximo run agendado deve resolver
+**Run ID da última falha:** [40708395880](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40708395880)  
+**SHA:** `2cee272b` (main HEAD em 2026-10-28 14:41)  
+**Status:** ❌ failure — bloqueado por ledger divergente
 
-**Causa da falha persistente (timing):** O run `40665197973` foi agendado (schedule diário) às 09:33 em 2026-10-28, no SHA `c73cb9b`. O fix das migrations (`8c81483`, que torna o replay do Gate E40 safe com guard `IF to_regclass('cron.job') IS NULL`) só foi commitado às 09:48 — **15 minutos após o run já ter iniciado com o SHA anterior**. O drift-check replayou as migrations sem o guard e falhou.
+**Erro exato (step "Ledger parity (repo x canonical)"):**
+```
+[migration-ledger][bloqueado] local_only=1108; remote_only=648; mismatched=0; malformed=0
+```
 
-**Resolução esperada:** O próximo run agendado (schedule diário) usará um SHA que inclui `8c81483` e deve passar, pois as migrations `20261027120000` e `20261027140000` agora têm o guard pg_cron.
+**Causa raiz:** O ledger de migrations está massivamente dessincronizado entre o repositório e o banco de produção `doufsxqlfjyuvxuezpln`:
+- **1108 migrations** existem no repo (`supabase/migrations/`) mas **não constam** no banco remoto (`supabase_migrations.schema_migrations`)
+- **648 migrations** constam no banco remoto mas **não existem** no repo
 
-**Ação necessária do PO:** Se o próximo run agendado falhar, disparar manualmente `db-schema-drift-check` via `workflow_dispatch` para confirmar. O fix já está validado pelos Gate Final runs `40667156516` e `40662579684` que incluem o mesmo replay via Gate E40.
+Esta divergência é independente do fix de P4 (guard pg_cron nas migrations `20261027120000`/`20261027140000`). O fix de P4 corrigiu o replay do Gate E40 dentro do `deploy-gates.yml`, mas o `db-schema-drift-check` compara o ledger em si — e o ledger está dessincronizado por DDL fora do fluxo de migration (REGRA #8 corolário).
+
+**Ação necessária do PO:**
+1. Investigar a extensão da divergência: baixar artefato `schema-reconciliation-evidence` do run [40708395880](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40708395880/artifacts/128242149315) (arquivos `/tmp/migration-ledger.json` e `/tmp/migration-ledger-summary.json`)
+2. Decidir estratégia de reconciliação: criar migrations espelho para o `remote_only=648` ou limpar o `local_only=1108` do ledger
+3. Após reconciliação: disparar `schema-snapshot-export.yml` com `force_rotate: true` para girar o baseline
+4. Reconfirmar com `workflow_dispatch` em `db-schema-drift-check`
+
+**Nota:** Per REGRA #8 corolário e E056, Claude **não pode** executar DDL ou `migration repair` em sessão de agente para reconciliar o ledger. Requer ação do PO.
 
 ---
 
@@ -243,11 +256,18 @@ webkit: expect(picker).not.toBeNull()
 
 **Resultado:** 3 arquivos falharam | 11 testes failed | 884 passed | 2 skipped (897 total)
 
-**Causa raiz:** Não determinada — tail do log não expõe o erro específico.
+**Causa raiz (determinada nesta sessão — 3 causas reais em 3 edge functions):**
 
-**Ação necessária do PO:**
-- Verificar artefatos do run 40638774637 para identificar quais 3 arquivos falharam
-- Verificar logs de edge function no Supabase Dashboard para `doufsxqlfjyuvxuezpln`
+1. **`generate-mockup.test.ts`** (2 falhas) — Timeout 30000ms: a edge function `generate-mockup` **trava (hang)** quando recebe input inválido (JSON inválido, body vazio). Causa: ausência de `try/catch` no parse do JSON do request body — a função fica suspensa e o teste expira em 30s.
+
+2. **`verify-2fa-token.test.ts`** (3 falhas) — Timeout 30000ms: mesma causa na edge function `verify-2fa-token` — input inválido (JSON inválido, body vazio, campos ausentes) causa hang da função por falta de tratamento de erro no parse.
+
+3. **`validate-access.test.ts`** (6 falhas) — AssertionError `expected 200 to be greater than or equal to 400`: a edge function `validate-access` **retorna HTTP 200** para qualquer input sem validar o body (JSON inválido, body vazio, array, string crua, null, número). Deveria retornar 4xx para input inválido.
+
+**Ação necessária:**
+- Estes são bugs de código nas edge functions (não requerem autorização do PO para correção)
+- Fix: adicionar `try/catch` no parse do request body em `generate-mockup` e `verify-2fa-token`; adicionar validação de input em `validate-access` para retornar 4xx em body inválido
+- Deploy via `.github/workflows/deploy-edge-functions.yml` (`workflow_dispatch`) após PR aprovada
 
 ---
 
