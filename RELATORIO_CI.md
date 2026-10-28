@@ -14,10 +14,16 @@
 | CI Security & Drift Checks | 40615509752 | **failure** | 3 testes unitários de Calendar quebrados: migração react-day-picker v8→v10 (commit `8b0b606`) não atualizou os seletores DOM dos testes |
 | CI - Replenishment Module Quality Gate | 40612760478 | **failure** | E2E autenticado falha: helper aguarda redirect pós-login por 75s mas URL permanece em `/login` — ausência de secrets E2E no CI (`E2E_USER_EMAIL`, `E2E_USER_PASSWORD`) |
 | E2E — Critical Flows & Error Boundaries | 40615510053 | **failure** | (a) Sidebar tooltip não aparece em 2s após hover; (b) check-playwright-min-executed: apenas 1/10 testes executados, 90% skipped por requireAuth — mesma causa dos secrets E2E |
-| Deploy Gates (Gate Final) | — | success | |
+| Deploy Gates (Gate Final — Gate E40) | 40660438161 | **failure** | Gate E40 BLOQUEANTE: `local_only=1108; remote_only=647` (ver P4) |
+| db-schema-drift-check | 40665197973 | **failure** | Consequência de P4 — replay baseline diverge do canônico pelo mesmo drift (ver P7) |
+| edge-functions-drift-check | 40663094555 | **failure** | Edge functions GitHub ≠ canônico em `doufsxqlfjyuvxuezpln` (ver P8) |
+| E2E — Personalization Flow | 40662579633 | **failure** | Secrets E2E ausentes — mesma causa P1 (ver P9) |
+| E2E • Swatch QuickView (Lista + Tabela) | 40662579393 | **failure** | Secrets E2E ausentes (firefox/chromium) + picker V2 null (webkit) (ver P10) |
+| Edge Integration Tests — All Functions | 40638774637 | **failure** | 11 testes falhando em 3 arquivos — causa raiz não determinada (ver P11) |
+| Kit Coverage — Integration | 40628415319 | **failure** | `permission denied for view v_kit_component_complete` — GRANT ausente (ver P12) |
 | CodeQL | — | success | |
 | Static Health Checks | — | success | |
-| … (20+ outros) | — | success | |
+| … (15+ outros) | — | success | |
 
 ---
 

@@ -198,4 +198,151 @@ Este é um processo destrutivo de infraestrutura de banco de produção. Não po
 
 ---
 
-*Ação prioritária única: resolver P4 (Gate E40) — desbloqueia P3, P5 e permite que P1/P2 sejam validados após merge. Sem P4, nenhum PR passa no Gate Final.*
+## P7 — db-schema-drift-check (consequência direta de P4)
+
+**Workflow:** db-schema-drift-check  
+**Run ID da última falha:** 40665197973  
+**Link:** https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40665197973  
+**Status:** failure
+
+**Job:** Migrations x Canonical schema  
+**Step:** Schema drift check (baseline + replay x remote)
+
+**Causa raiz:** Consequência direta de P4. O drift-check replaya `supabase/baseline/` + migrations contra o schema vivo, mas como o ledger está dessincronizado (`local_only=1108; remote_only=647`), o replay diverge do canônico e o check falha.
+
+**Ação necessária:** Resolver P4 → este workflow passará automaticamente.
+
+---
+
+## P8 — edge-functions-drift-check (drift entre GitHub e canônico)
+
+**Workflow:** edge-functions-drift-check  
+**Run ID da última falha:** 40663094555  
+**Link:** https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40663094555  
+**Status:** failure
+
+**Job:** Compare GitHub × Canonical  
+**Erro exato:**
+```
+##[error]Drift detectado entre GitHub e canônico. Veja sumário do job e artefato drift-report.csv.
+##[error]Resoluções possíveis:
+##[error]  1. Drift de conteúdo: rodar 'supabase functions download <slug>' e commit no repo
+##[error]  2. Órfã no canônico: deletar via dashboard ou commit em supabase/functions/<slug>/
+##[error]  3. Sem deploy: aguardar workflow Deploy Edge Functions ou disparar manual
+```
+
+**Causa raiz:** Uma ou mais edge functions no Supabase `doufsxqlfjyuvxuezpln` divergem do código em `supabase/functions/` no GitHub (deploy direto fora do workflow, conforme REGRA #8 corolário).
+
+**Ação necessária do PO:**
+- Verificar artefato `drift-report.csv` no run 40663094555 para identificar quais funções divergem
+- Para drift de conteúdo: `supabase functions download <slug>` + commit + PR
+- Para orphan no canônico: deletar via dashboard + registrar no repo
+- Após reconciliar: disparar `deploy-edge-functions.yml` via `workflow_dispatch`
+
+---
+
+## P9 — E2E — Personalization Flow (secrets E2E ausentes)
+
+**Workflow:** E2E — Personalization Flow  
+**Run ID da última falha:** 40662579633  
+**Link:** https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40662579633  
+**Status:** failure
+
+**Job:** E2E — Personalization Journey  
+**Step:** Run Personalization E2E Tests
+
+**Causa raiz:** Mesma de P1. Testes E2E autenticados falham por ausência dos secrets `E2E_USER_EMAIL` / `E2E_USER_PASSWORD`. Artefato de 254MB enviado (screenshots de falha).
+
+**Ação necessária:** Resolver P1 (configurar secrets E2E) → este workflow passará.
+
+---
+
+## P10 — E2E • Swatch QuickView (secrets E2E + dados de produto ausentes)
+
+**Workflow:** E2E • Swatch QuickView (Lista + Tabela)  
+**Run ID da última falha:** 40662579393  
+**Link:** https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40662579393  
+**Status:** failure
+
+**Jobs falhando:** firefox • swatch→QV, chromium • swatch→QV, webkit • swatch→QV
+
+**Erros exatos:**
+```
+firefox: check-playwright-min-executed → min. de testes não atingido (auth falhou)
+webkit: expect(picker).not.toBeNull()
+        "nenhum produto com color_swatches V2 em ${route.path}"
+        at e2e/catalog/swatch-picker-v2-focus-and-quickview.spec.ts:103
+```
+
+**Causa raiz (dois problemas):**
+1. Firefox/chromium: autenticação E2E falhou — mesma causa P1 (secrets ausentes)
+2. Webkit: picker V2 retorna null — produtos com `color_swatches V2` podem não existir em produção ou seletor mudou
+
+**Ação necessária do PO:**
+- Resolver P1 primeiro (secrets E2E) → valida se firefox/chromium passam
+- Investigar webkit: verificar se existem produtos com `color_swatches` V2 em produção (`doufsxqlfjyuvxuezpln`) e se o seletor de picker V2 está correto
+
+---
+
+## P11 — Edge Integration Tests — All Functions (11 testes falhando)
+
+**Workflow:** Edge Integration Tests — All Functions  
+**Run ID da última falha:** 40638774637  
+**Link:** https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40638774637  
+**Status:** failure
+
+**Job:** Edge Functions · Integration All  
+**Resultado:** 3 arquivos falharam | 11 testes failed | 884 passed | 2 skipped (897 total)
+
+**Causa raiz:** Não determinada — tail do log não expõe o erro específico. 3 arquivos de teste de integração de edge functions falhando. Pode ser: timeout de função, permissão, dado ausente, ou regressão de deploy.
+
+**Ação necessária do PO:**
+- Verificar artefatos do run 40638774637 para identificar quais 3 arquivos falharam
+- Os testes rodam contra edge functions em `doufsxqlfjyuvxuezpln` ao vivo — verificar logs de edge function no Supabase Dashboard
+
+---
+
+## P12 — Kit Coverage — Integration (permission denied em view)
+
+**Workflow:** Kit Coverage — Integration  
+**Run ID da última falha:** 40628415319  
+**Link:** https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40628415319  
+**Status:** failure
+
+**Job:** kit-coverage-integration  
+**Erro exato:**
+```
+Unknown Error: permission denied for view v_kit_component_complete
+
+FAIL src/lib/external-db/kit-coverage.integration.test.ts
+  > kit-coverage / integração (view vs base no SSOT real)
+  > cobertura média da view ≥ 70%
+Unknown Error: permission denied for view v_kit_component_complete
+```
+
+**Causa raiz:** O role usado pelo teste de integração (provavelmente `anon` ou `service_role` sem o GRANT correto) não tem permissão SELECT na view `v_kit_component_complete` no projeto `doufsxqlfjyuvxuezpln`. View provavelmente criada sem GRANT adequado.
+
+**Ação necessária do PO:**
+- Verificar qual role o CI usa para este teste (provavelmente `anon` via `VITE_SUPABASE_PUBLISHABLE_KEY`)
+- Criar migration com: `GRANT SELECT ON v_kit_component_complete TO anon;` (ou role correto)
+- Abrir PR com essa migration via `db-apply-migration.yml` (caminho autorizado — REGRA #8/E15)
+
+---
+
+## Nota — E2E · view-no-presentation-mode (flake visual no PR #2686)
+
+**Contexto:** No CI do PR #2686 (run 40667936090), o job `E2E · view-no-presentation-mode` falhou com diff visual:
+```
+Expected an image 133px by 156px, received 128px by 156px.
+1673 pixels (ratio 0.09) are different.
+Snapshot: quote-actions-menu-dark-mobile-chromium-public-linux.png
+at e2e/quotes/quote-view-no-presentation-mode.spec.ts:369
+```
+
+**Classificação:** Flake de CI — este workflow **não aparece** na lista de falhas recentes do main (query `is:failure branch:main`). O PR #2686 altera apenas 3 arquivos de teste unitário de Calendar (sem código de produção). A diferença de 5px de largura em screenshot é característica de variação de renderização entre execuções de CI.
+
+**Ação:** Nenhuma — não é regressão introduzida por este PR.
+
+---
+
+*Ação prioritária única: resolver P4 (Gate E40) — desbloqueia P3, P5, P7 e permite que P1/P2/P9/P10 sejam validados após merge. P8 e P11/P12 requerem ações separadas do PO independentes de P4.*
