@@ -1584,6 +1584,7 @@ Detalhes, métricas antes/depois e one-shots: docs/EXECUCAO_CORRECOES_MEDALLION_
 |---|---|---|---|---|
 | `20261022195616` | `662fa38e1e09eed7d26ae55e0a1f46beca1793837aa9217d8f6e220c4817056f` | E99 repair-only (mirror) | 2026-10-22T19:56:16Z | em produção via SELECT pg_get_functiondef — SECURITY DEFINER + search_path confirmados |
 | `20261022203935` | `83558c38fda00255556c265c7ba669c85650a1508a7b2acdb99902fed3746575` | E99 repair-only (mirror) | 2026-10-22T20:39:35Z | em produção via SELECT pg_get_functiondef — auth.uid() guard confirmado |
+| `20261027160000` | `a344bd19ef3a0fbc6d1a82a8032a0ddcfa04167201820057126e04cd34cf24d2` | pendente — aguarda `db-apply-migration.yml` dispatch pelo PO (P9/PENDENCIAS.md) | 2026-10-27T16:00:00Z | não aplicada em produção ainda — migration criada nesta PR para pre-registrar recibo conforme gate 1.13.3 |
 
 **Próximo passo obrigatório:** após merge desta PR, disparar `schema-snapshot-export.yml` com `force_rotate: true` para regenerar baseline (REGRA #8 corolário).
 
