@@ -3,7 +3,7 @@
   "data": "2026-10-28",
   "main_sha_baseline": "62af0798dd71812979667ac29f596d25f3ef191b",
   "merges_executados_esta_sessao": [],
-  "ultima_atualizacao": "2026-10-28T04:20:00Z",
+  "ultima_atualizacao": "2026-10-28T04:45:00Z",
   "resumo": {
     "total_prs": 12,
     "total_analisadas": 12,
@@ -13,17 +13,82 @@
     "mergeadas_esta_sessao": 0
   },
   "prs": [
-    {"numero": 2580, "veredito": "AGUARDA_PO", "motivo": "Draft + migrations/ REGRA#8"},
-    {"numero": 2600, "veredito": "BLOQUEADO", "motivo": "Conflito real (dirty)"},
-    {"numero": 2631, "veredito": "BLOQUEADO", "motivo": "Conflito real (dirty)"},
-    {"numero": 2646, "veredito": "AGUARDA_PO", "motivo": "workflows/+migrations/ REGRA#8"},
-    {"numero": 2663, "veredito": "AGUARDA_PO", "motivo": "migrations/ REGRA#8"},
-    {"numero": 2666, "veredito": "AGUARDA_PO", "motivo": "Downgrade semver PO confirmar"},
-    {"numero": 2668, "veredito": "BLOQUEADO", "motivo": "Draft sessao anterior"},
-    {"numero": 2674, "veredito": "BLOQUEADO", "motivo": "Draft sessao anterior"},
-    {"numero": 2675, "veredito": "AGUARDA_PO", "motivo": "Branch desta sessao REGRA#10"},
-    {"numero": 2679, "veredito": "BLOQUEADO", "motivo": "Conflito com main"},
-    {"numero": 2680, "veredito": "BLOQUEADO", "motivo": "Draft"},
-    {"numero": 2681, "veredito": "FECHADA_SEM_MERGE", "motivo": "Fechada em 04:14Z sem merge", "head_sha_final": "99aa164f657338c5ecd6ce604ea6ee2b112b5869"}
+    {
+      "numero": 2580,
+      "veredito": "AGUARDA_PO",
+      "motivo": "Draft + migrations/ REGRA#8",
+      "diff_lido": true
+    },
+    {
+      "numero": 2600,
+      "veredito": "BLOQUEADO",
+      "motivo": "Conflito real (dirty)",
+      "diff_lido": true
+    },
+    {
+      "numero": 2631,
+      "veredito": "BLOQUEADO",
+      "motivo": "Conflito real (dirty)",
+      "diff_lido": true
+    },
+    {
+      "numero": 2646,
+      "veredito": "AGUARDA_PO",
+      "motivo": "workflows/+migrations/ REGRA#8",
+      "diff_lido": true
+    },
+    {
+      "numero": 2663,
+      "veredito": "AGUARDA_PO",
+      "motivo": "migrations/ REGRA#8",
+      "diff_lido": true
+    },
+    {
+      "numero": 2666,
+      "veredito": "AGUARDA_PO",
+      "motivo": "Downgrade semver PO confirmar",
+      "diff_lido": true
+    },
+    {
+      "numero": 2668,
+      "veredito": "BLOQUEADO",
+      "motivo": "Draft sessao anterior",
+      "diff_lido": true
+    },
+    {
+      "numero": 2674,
+      "veredito": "BLOQUEADO",
+      "motivo": "Draft sessao anterior",
+      "diff_lido": true
+    },
+    {
+      "numero": 2675,
+      "veredito": "AGUARDA_PO",
+      "motivo": "Branch desta sessao REGRA#10",
+      "diff_lido": true
+    },
+    {
+      "numero": 2679,
+      "veredito": "MERGE_CANDIDATE",
+      "motivo": "test-only; 9 commits únicos vs main; worktree merge CLEAN (EXIT:0); mergeable:true; Gate Final rodando em 39e6bf76",
+      "diff_lido": true,
+      "branch": "claude_pink/awesome-ride-d25ur3",
+      "conflito_com_main": false,
+      "draft": false,
+      "ci_status": "deploy-gates rodando em 39e6bf76 — aguardando Gate Final"
+    },
+    {
+      "numero": 2680,
+      "veredito": "BLOQUEADO",
+      "motivo": "Draft",
+      "diff_lido": true
+    },
+    {
+      "numero": 2681,
+      "veredito": "FECHADA_SEM_MERGE",
+      "motivo": "Fechada em 04:14Z sem merge",
+      "head_sha_final": "99aa164f657338c5ecd6ce604ea6ee2b112b5869",
+      "diff_lido": true
+    }
   ]
 }

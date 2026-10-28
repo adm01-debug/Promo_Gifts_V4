@@ -20,5 +20,5 @@ number,title,author,draft,base,veredito,motivo,sha_merge,gate_final_run
 2676,"docs(auditoria): corrige bugs C3/C8 e finaliza artefatos da auditoria Supabase",adm01-debug,true,main,DRAFT_NOMERGE,"DRAFT + dirty (conflito) + branch claude_pink/*",,
 2677,"fix(tests): corrige seletores DOM para react-day-picker v10 (3 testes unitários quebrados)",adm01-debug,true,main,FECHADO_OWNER,"Fechado 2026-10-28T02:50:58Z sem merge — DRAFT; substituído por #2679 e #2680",,
 2678,"fix(tests): atualiza seletores de calendário para react-day-picker v10",adm01-debug,true,main,FECHADO_OWNER,"Fechado 2026-10-28T02:50:57Z sem merge — DRAFT; reaberto como #2680",,
-2679,"test(calendar): corrige seletores de teste para react-day-picker v10",adm01-debug,true,main,DRAFT_NOMERGE,"DRAFT + branch claude_pink/*; concorre com #2680 nos mesmos 3 arquivos de teste",,
+2679,"test(calendar): corrige seletores de teste para react-day-picker v10",adm01-debug,false,main,MERGE_CANDIDATE,"test-only; 9 commits únicos; worktree CLEAN; mergeable:true; Gate Final rodando em 39e6bf76",,
 2680,"fix(tests): atualiza seletores de calendário para react-day-picker v10",adm01-debug,true,main,DRAFT_NOMERGE,"DRAFT; reabertura de #2678; 27/27 testes locais passando; PO deve decidir vs #2679",,
