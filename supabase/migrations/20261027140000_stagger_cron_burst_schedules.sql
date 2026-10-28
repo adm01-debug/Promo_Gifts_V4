@@ -16,12 +16,27 @@
 --   reconcile-category-products  3,18,33,48 * * * *
 --   sm-stock-guard               3,18,33,48 * * * *
 
--- ── PRÉ-CONDIÇÕES ──────────────────────────────────────────────────────────────
+-- REPLAY-SAFE: pré/pós condições e ALTER_JOB dentro de bloco único que
+-- retorna silenciosamente quando cron.job não existe (ambiente de replay).
 
 DO $$
 DECLARE
-  missing text[];
+  missing  text[];
+  bad_jobs text[];
 BEGIN
+  -- Guard: sem pg_cron ou jobs ausentes → skip (ambiente de replay)
+  IF to_regclass('cron.job') IS NULL OR NOT EXISTS (
+    SELECT 1 FROM cron.job
+    WHERE jobname IN (
+      'anon-insert-rate-purge','backfill-queue-reap-stuck',
+      'connections-health-check','reconcile-category-products-count','sm-stock-guard'
+    )
+  ) THEN
+    RAISE NOTICE 'Pré-condição: jobs de cron não encontrados — skip (ambiente de replay ou jobs ainda não criados)';
+    RETURN;
+  END IF;
+
+  -- Pré-condição: todos os 5 jobs devem existir
   SELECT ARRAY_AGG(n) INTO missing
   FROM UNNEST(ARRAY[
     'anon-insert-rate-purge',
@@ -35,51 +50,35 @@ BEGIN
   IF missing IS NOT NULL THEN
     RAISE EXCEPTION 'Pré-condição falhou: jobs não encontrados: %', array_to_string(missing, ', ');
   END IF;
-END;
-$$;
 
--- ── CLUSTER :00/:15/:30/:45 — separar em minutos adjacentes ──────────────────
--- sync-is-stockout-universal fica em :00/:15/:30/:45 (âncora, não alterado)
--- anon-insert-rate-purge:    */15  → 1,16,31,46  (+1 min)
--- backfill-queue-reap-stuck: */15  → 2,17,32,47  (+2 min)
+  -- ── CLUSTER :00/:15/:30/:45 — separar em minutos adjacentes ────────────────
+  PERFORM cron.alter_job(
+    job_id   := (SELECT jobid FROM cron.job WHERE jobname = 'anon-insert-rate-purge'),
+    schedule := '1,16,31,46 * * * *'
+  );
 
-SELECT cron.alter_job(
-  job_id   := (SELECT jobid FROM cron.job WHERE jobname = 'anon-insert-rate-purge'),
-  schedule := '1,16,31,46 * * * *'
-);
+  PERFORM cron.alter_job(
+    job_id   := (SELECT jobid FROM cron.job WHERE jobname = 'backfill-queue-reap-stuck'),
+    schedule := '2,17,32,47 * * * *'
+  );
 
-SELECT cron.alter_job(
-  job_id   := (SELECT jobid FROM cron.job WHERE jobname = 'backfill-queue-reap-stuck'),
-  schedule := '2,17,32,47 * * * *'
-);
+  -- ── CLUSTER :03/:18/:33/:48 — separar em minutos adjacentes ────────────────
+  PERFORM cron.alter_job(
+    job_id   := (SELECT jobid FROM cron.job WHERE jobname = 'connections-health-check'),
+    schedule := '4,19,34,49 * * * *'
+  );
 
--- ── CLUSTER :03/:18/:33/:48 — separar em minutos adjacentes ─────────────────
--- cleanup-stale-ai-pending-logs fica em :03/:18/:33/:48 (âncora, não alterado)
--- connections-health-check:        3,18,33,48  → 4,19,34,49  (+1 min)
--- reconcile-category-products-count: 3,18,33,48 → 5,20,35,50 (+2 min)
--- sm-stock-guard:                  3,18,33,48  → 6,21,36,51  (+3 min)
+  PERFORM cron.alter_job(
+    job_id   := (SELECT jobid FROM cron.job WHERE jobname = 'reconcile-category-products-count'),
+    schedule := '5,20,35,50 * * * *'
+  );
 
-SELECT cron.alter_job(
-  job_id   := (SELECT jobid FROM cron.job WHERE jobname = 'connections-health-check'),
-  schedule := '4,19,34,49 * * * *'
-);
+  PERFORM cron.alter_job(
+    job_id   := (SELECT jobid FROM cron.job WHERE jobname = 'sm-stock-guard'),
+    schedule := '6,21,36,51 * * * *'
+  );
 
-SELECT cron.alter_job(
-  job_id   := (SELECT jobid FROM cron.job WHERE jobname = 'reconcile-category-products-count'),
-  schedule := '5,20,35,50 * * * *'
-);
-
-SELECT cron.alter_job(
-  job_id   := (SELECT jobid FROM cron.job WHERE jobname = 'sm-stock-guard'),
-  schedule := '6,21,36,51 * * * *'
-);
-
--- ── PÓS-CONDIÇÕES ─────────────────────────────────────────────────────────────
-
-DO $$
-DECLARE
-  bad_jobs text[];
-BEGIN
+  -- Pós-condição: schedules devem ter sido aplicados
   SELECT ARRAY_AGG(jobname || ' (' || schedule || ')') INTO bad_jobs
   FROM cron.job
   WHERE
