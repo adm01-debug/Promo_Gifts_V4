@@ -39,9 +39,9 @@
       "currentBytes": 8720
     },
     "date-vendor": {
-      "maxBytes": 64196,
+      "maxBytes": 89292,
       "label": "date-fns",
-      "currentBytes": 53496
+      "currentBytes": 74410
     },
     "charts-vendor": {
       "maxBytes": 528146,
