@@ -8,7 +8,6 @@
 import * as React from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { DayPicker } from 'react-day-picker';
-import type { Day } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 
 import { cn } from '@/lib/utils';
@@ -36,7 +35,9 @@ function Calendar({
       )}
       formatters={{
         formatWeekdayName: (date) => {
-          const narrow = ptBR.localize?.day(date.getDay() as Day, { width: 'narrow' }) ?? '';
+          const narrow =
+            ptBR.localize?.day(date.getDay() as 0 | 1 | 2 | 3 | 4 | 5 | 6, { width: 'narrow' }) ??
+            '';
           return narrow.charAt(0).toUpperCase();
         },
         formatCaption: (date) => {
