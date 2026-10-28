@@ -222,9 +222,13 @@ jobs:
           # (44k req/min entre todos runners do GitHub Actions). Tag fixa para CLI 2.101.0.
           POSTGRES_IMAGE="${SUPABASE_INTERNAL_IMAGE_REGISTRY}/supabase/postgres:17.6.1.063"
           for attempt in 1 2 3 4 5; do
-            if echo "$GITHUB_TOKEN" | docker login ghcr.io -u x-access-token --password-stdin \
+            # Tenta autenticado (evita rate limit anônimo); cai em anônimo se caller não tiver packages: read
+            if echo "$GITHUB_TOKEN" | docker login ghcr.io -u x-access-token --password-stdin 2>/dev/null \
                 && docker pull "$POSTGRES_IMAGE"; then
-              echo "Pre-pull ok (tentativa $attempt)"
+              echo "Pre-pull ok autenticado (tentativa $attempt)"
+              break
+            elif docker pull "$POSTGRES_IMAGE"; then
+              echo "Pre-pull ok anônimo (tentativa $attempt)"
               break
             fi
             [ "$attempt" -lt 5 ] || { echo "::error::Pre-pull de $POSTGRES_IMAGE falhou após 5 tentativas"; exit 1; }
