@@ -173,7 +173,10 @@ Nenhuma — ignorar como parte do processo de revisão. Se bloquear merge em alg
 
 **Run ID:** 40595866232 (falhou) → fix commitado nesta sessão  
 **Status:** CORRIGIDO — adicionado `-- Rollback:` na linha 2 de `20261027160000_deactivate_image_dimensions_backfill_cron.sql`  
-**Ação pendente:** PO precisa re-disparar `db-apply-migration.yml` com `version=20261027160000` para aplicar a migration em produção.
+**Ação pendente:** PO precisa re-disparar `db-apply-migration.yml` com os seguintes inputs para aplicar a migration em produção:
+- `version`: `20261027160000`
+- `approved_by`: `ti@promobrindes.com.br` (ou login GitHub do revisor aprovador)
+- `mode`: `apply` (padrão)
 
 ---
 
@@ -302,7 +305,10 @@ Cenários com falha (todos retornam HTTP 200, esperado ≥ 400):
 Deploy de edge function via MCP direto é proibido (REGRA #8 corolário). O único caminho autorizado é `deploy-edge-functions.yml` via `workflow_dispatch`.
 
 ### Ação necessária
-`APROVADO` → dispatch `deploy-edge-functions.yml` com `function_name: validate-access`  
+`APROVADO` → dispatch `deploy-edge-functions.yml` com os seguintes inputs:
+- `function_name`: `validate-access`
+- Branch/ref aprovada: `claude_pink/focused-lamport-qyupp8` (commit HEAD aprovado na PR #2663)
+
 (deploy pontual, não deploya as demais 105 funções)
 
 **Risco:** produção (deploy de function única, baixo risco).
@@ -494,8 +500,8 @@ Requer acesso ao dashboard Vercel para remover/desconectar o projeto fantasma `p
 |---|---|---|
 |---|---|
 | **P11** | **`deploy-gates.yml` (main)** | **CRÍTICA** | **Aprovar e mergear PR #2663** |
-| P9 | `db-apply-migration.yml` rollback header | ALTA (aguarda re-dispatch) | Re-disparar com `version=20261027160000` |
-| P14 | `edge-integration-all.yml` — `validate-access` prod desatualizada | ALTA | `APROVADO` → dispatch `deploy-edge-functions.yml` `function_name: validate-access` |
+| P9 | `db-apply-migration.yml` rollback header | ALTA (aguarda re-dispatch) | Re-disparar com `version=20261027160000` + `approved_by=<revisor>` |
+| P14 | `edge-integration-all.yml` — `validate-access` prod desatualizada | ALTA | `APROVADO` → dispatch `deploy-edge-functions.yml` `function_name: validate-access` na branch `claude_pink/focused-lamport-qyupp8` |
 | P1 | `edge-functions-drift-check.yml` | ALTA | Deploy de 106 funções em prod — precisa de `APROVADO` |
 | P5 | `e2e-magazine-header.yml` | ALTA | Migração zustand v5 — trabalho de desenvolvimento |
 | P2 | `ci-security-drift.yml` | MÉDIA | Fix de seletores E2E — pode ser delegado |
@@ -503,7 +509,7 @@ Requer acesso ao dashboard Vercel para remover/desconectar o projeto fantasma `p
 | P10 | `ci-replenishment-module.yml` screenshot diff | MÉDIA | Decisão sobre paridade visual |
 | P4 | `e2e.yml` | BAIXA | Nenhuma ação — próximo push resolve |
 | P6 | `Running Copilot Code Review` | NENHUMA | Ignorar (bot externo; exibiu failure em `4357a2d4`) |
-| P7 | `deploy-gates.yml` react-day-picker fix | RESOLVIDO (no PR) | Merge do PR #2663 aplica o fix |
+| P7 | `deploy-gates.yml` react-day-picker fix | PENDENTE MERGE (fix no PR #2663) | Ver P11 — merge do PR #2663 aplica o fix e restaura main |
 | P8 | `branch-protection-sentinel.yml` | NÃO RESOLVÍVEL | Histórico de commit, nada a fazer |
 | P12 | `uptime-monitor.yml` | BAIXA | Monitor externo — aguardar próximos runs após merge |
 | **P13** | **`e2e.yml` Critical Flows** | **ALTA** | **Mesma raiz do P11 — resolve com merge do PR #2663** |
