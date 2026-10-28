@@ -32,7 +32,7 @@ import { parseSupabaseMigrationLedgerOutput } from './check-supabase-migration-l
 
 export const BASELINE_DIR = join('supabase', 'baseline');
 export const BASELINE_NAME_RE = /^(\d{14})_baseline_schema\.sql$/;
-// Mesma regra do CLI (`^([0-9]+)_(.*)\.sql$`): a versão é o prefixo numérico, de
+// Mesma regra do CLI (`^([0-9]+)_(.*)\. sql$`): a versão é o prefixo numérico, de
 // qualquer largura. Produção tem versões de 3, 8 e 19 dígitos no ledger
 // (001, 20260712, 2026062311292414001); exigir 14 dígitos aqui descartaria em
 // silêncio uma migration dessas aplicada depois do dump e o drift-check
@@ -78,6 +78,11 @@ ALTER DEFAULT PRIVILEGES IN SCHEMA public REVOKE ALL ON FUNCTIONS FROM anon, aut
 // replay aborta com "job auto-block-offenders não encontrado". Esta semente é
 // gravada como migration B+1 na pasta temporária (jobs são dado, não schema:
 // não alteram o diff). Idempotente e tolerante a shadow sem pg_cron.
+//
+// Jobs adicionados em 2026-10-28 (E40 Gate fix) — migrations 20261027120000–234500
+// exigem: connections-auto-test, anon-insert-rate-purge, backfill-queue-reap-stuck,
+// connections-health-check, reconcile-category-products-count, sm-stock-guard,
+// generate-blurhashes (active=false), xbz-image-uploader (active=true).
 export const REPLAY_CRON_SEED_FILE = 'drift_replay_cron_seed.sql';
 export const REPLAY_CRON_SEED_SQL = `
 -- Semente de jobs do pg_cron para o replay (scripts/drift-baseline.mjs).
@@ -103,6 +108,46 @@ BEGIN
     END LOOP;
     PERFORM cron.unschedule(v_id);
     PERFORM cron.schedule('image-dimensions-backfill', '0 * * * *', 'SELECT 1');
+  END IF;
+  -- 20261027120000 exige connections-auto-test existindo em cron.job.
+  IF to_regclass('cron.job') IS NOT NULL
+     AND NOT EXISTS (SELECT 1 FROM cron.job WHERE jobname = 'connections-auto-test') THEN
+    PERFORM cron.schedule('connections-auto-test', '9,24,39,54 * * * *', 'SELECT 1');
+  END IF;
+  -- 20261027140000 exige 5 jobs existindo: altera apenas o schedule.
+  IF to_regclass('cron.job') IS NOT NULL
+     AND NOT EXISTS (SELECT 1 FROM cron.job WHERE jobname = 'anon-insert-rate-purge') THEN
+    PERFORM cron.schedule('anon-insert-rate-purge', '*/15 * * * *', 'SELECT 1');
+  END IF;
+  IF to_regclass('cron.job') IS NOT NULL
+     AND NOT EXISTS (SELECT 1 FROM cron.job WHERE jobname = 'backfill-queue-reap-stuck') THEN
+    PERFORM cron.schedule('backfill-queue-reap-stuck', '*/15 * * * *', 'SELECT 1');
+  END IF;
+  IF to_regclass('cron.job') IS NOT NULL
+     AND NOT EXISTS (SELECT 1 FROM cron.job WHERE jobname = 'connections-health-check') THEN
+    PERFORM cron.schedule('connections-health-check', '3,18,33,48 * * * *', 'SELECT 1');
+  END IF;
+  IF to_regclass('cron.job') IS NOT NULL
+     AND NOT EXISTS (SELECT 1 FROM cron.job WHERE jobname = 'reconcile-category-products-count') THEN
+    PERFORM cron.schedule('reconcile-category-products-count', '3,18,33,48 * * * *', 'SELECT 1');
+  END IF;
+  IF to_regclass('cron.job') IS NOT NULL
+     AND NOT EXISTS (SELECT 1 FROM cron.job WHERE jobname = 'sm-stock-guard') THEN
+    PERFORM cron.schedule('sm-stock-guard', '3,18,33,48 * * * *', 'SELECT 1');
+  END IF;
+  -- 20261027180000 exige generate-blurhashes existindo com active=false.
+  IF to_regclass('cron.job') IS NOT NULL
+     AND NOT EXISTS (SELECT 1 FROM cron.job WHERE jobname = 'generate-blurhashes') THEN
+    PERFORM cron.schedule('generate-blurhashes', '*/2 * * * *', 'SELECT 1');
+    PERFORM cron.alter_job(
+      job_id := (SELECT jobid FROM cron.job WHERE jobname = 'generate-blurhashes'),
+      active := false
+    );
+  END IF;
+  -- 20261027220000 exige xbz-image-uploader existindo com active=true.
+  IF to_regclass('cron.job') IS NOT NULL
+     AND NOT EXISTS (SELECT 1 FROM cron.job WHERE jobname = 'xbz-image-uploader') THEN
+    PERFORM cron.schedule('xbz-image-uploader', '*/30 * * * *', 'SELECT 1');
   END IF;
 END
 $seed$;
@@ -352,7 +397,7 @@ function scanLine(line, state) {
     } else if (c === '$') {
       // Tag pode ter dígitos ($q1$) e só abre dollar-quote fora de identificador
       // (`col$1$x` é nome, não literal).
-      const tag = /[A-Za-z0-9_$]/.test(line[i - 1] ?? '') ? null : /^\$(?:[A-Za-z_][A-Za-z_0-9]*)?\$/.exec(line.slice(i));
+      const tag = /[A-Za-z0-9_$]/.test(line[i - 1] ?? '') ? null : /^\$(?:[A-Za-z_][A-Za-z_0-9]*)?\.\$/.exec(line.slice(i));
       if (tag) {
         state.dollar = tag[0];
         i += tag[0].length - 1;
@@ -371,7 +416,7 @@ function scanLine(line, state) {
 // 2026-10-15 (baseline 20261015140000), cada uma neutralizada reescrevendo o
 // texto de replay para a forma que reproduz o catálogo de produção:
 //
-// 1. `(ARRAY['a'::character varying, …])::"text"[]` — o parser achata o cast
+// 1. `(ARRAY['a'::character varying, …]):"text"[]` — o parser achata o cast
 //    quando ele incide direto sobre o ARRAY[] e guarda `ARRAY[('a')::text, …]`;
 //    produção guarda o ArrayCoerceExpr. Passar por `::character varying[]`
 //    antes impede o achatamento e o catálogo fica idêntico ao remoto
@@ -382,7 +427,7 @@ function scanLine(line, state) {
 //    o `db diff` compara o array bruto; ordenar alfabeticamente reproduz
 //    produção.
 const VARCHAR_ARRAY_CAST =
-  /\(ARRAY\[((?:'(?:[^']|'')*'::character varying(?:, )?)+)\]\)::"text"\[\]/g;
+  /\(ARRAY\[((?:'(?:[^']|'')*'::character varying(?:, )?)+)\])::"text"\[\]/g;
 const POLICY_ROLES =
   /^(CREATE POLICY "(?<name>(?:[^"]|"")+)" ON (?:"(?:[^"]|"")+"\.)?"(?<table>(?:[^"]|"")+)"(?: AS (?:PERMISSIVE|RESTRICTIVE))?(?: FOR (?:ALL|SELECT|INSERT|UPDATE|DELETE))? TO )((?:"(?:[^"]|"")+"|[A-Za-z_][A-Za-z_0-9]*)(?:, (?:"(?:[^"]|"")+"|[A-Za-z_][A-Za-z_0-9]*))*)(?=\s|;|$)/;
 
@@ -622,7 +667,7 @@ export function loadAllowlist(text) {
 // continua no resíduo.
 const FUNCTION_START = /^[ \t]*CREATE[ \t]+(?:OR[ \t]+REPLACE[ \t]+)?(FUNCTION|PROCEDURE)\b/gim;
 const DOLLAR_AS = /\bAS\s+(\$[A-Za-z_][A-Za-z_0-9]*\$|\$\$)/i;
-const DOLLAR_TAG = /\$(?:[A-Za-z_][A-Za-z_0-9]*)?\$/y;
+const DOLLAR_TAG = /\$(?:[A-Za-z_][A-Za-z_0-9]*)?\.\$/y;
 // Atributos entre o fechamento do corpo e o `;` (`$$ SECURITY DEFINER;`, `STABLE`,
 // `SET search_path = ''`): mudam comportamento e o `db diff` nunca os emite depois
 // do corpo, então fazem parte da comparação. Varredura linear (sem regex com
@@ -823,7 +868,7 @@ export function collapseSqlWhitespace(text) {
       emit(text.slice(i, j + 1));
       i = j + 1;
     } else if (c === '$') {
-      const tag = /^\$(?:[A-Za-z_][A-Za-z_0-9]*)?\$/.exec(text.slice(i));
+      const tag = /^\$(?:[A-Za-z_][A-Za-z_0-9]*)?\.\$/.exec(text.slice(i));
       const prev = text[i - 1] ?? '';
       if (tag && !/[A-Za-z0-9_$]/.test(prev)) {
         const end = text.indexOf(tag[0], i + tag[0].length);
