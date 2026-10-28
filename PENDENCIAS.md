@@ -269,45 +269,59 @@ webkit: expect(picker).not.toBeNull()
 **Workflow:** Edge Integration Tests — All Functions  
 **Run ID da última falha:** 40638774637  
 **Link:** https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40638774637  
-**Status:** failure
+**Status:** failure — ❌ BLOCKED PO — requer deploy das versões atuais
 
 **Resultado:** 3 arquivos falharam | 11 testes failed | 884 passed | 2 skipped (897 total)
 
-**Causa raiz (determinada — 3 edge functions com bugs de código):**
+**Causa raiz (determinada — versões deployadas desatualizadas no Supabase):**
 
-1. **`generate-mockup`** — hang em input inválido por falta de try/catch no `JSON.parse` do body. Quando body não é JSON válido, a exception não é capturada e o worker trava até o timeout de 30s do runner Deno.
+As 3 edge functions afetadas têm código **correto no repositório** (confirmado em 2026-10-28 via `github_get_content`):
+- `generate-mockup` (SHA `09af62394a`) — já tem `try/catch` em `JSON.parse` do body
+- `verify-2fa-token` (SHA `a58240e50786`) — já tem `try/catch` em `JSON.parse` do body
+- `validate-access` (SHA `14ce2379c053`) — já tem `missingBodyResponse`, `invalidJsonResponse`, `validationErrorResponse`, validação JWT completa e rejeição de tokens inválidos
 
-2. **`verify-2fa-token`** — mesma causa: `JSON.parse(await req.text())` sem try/catch. Token inválido ou body malformado → hang → timeout 30s.
+**O deploy no Supabase está desatualizado.** As versões em produção são antigas (sem esses tratamentos), causando:
+1. `generate-mockup` + `verify-2fa-token` em produção: timeout 30s ao receber JSON inválido (versão antiga sem try/catch → worker trava)
+2. `validate-access` em produção: retorna HTTP 200 para todos os inputs, incluindo body inválido e tokens ausentes/expirados (versão antiga sem validação)
 
-3. **`validate-access`** — retorna HTTP 200 para qualquer input, incluindo token inválido/expirado/ausente. Deveria retornar 401/403 para input inválido, mas a validação do token não está implementada corretamente — todo request cai no bloco `return new Response(JSON.stringify({ valid: true }), ...)` sem validar o token.
+**NÃO é bug de código** — a correção já está commitada no repo. O problema é que o deploy não foi feito com as versões atuais.
 
-**Fixável por código — não depende de PO.** Requer nova branch + PR com:
-- Try/catch em `generate-mockup` e `verify-2fa-token` retornando HTTP 400 em JSON inválido
-- Fix de validação em `validate-access` retornando 401/403 para tokens inválidos
-- Deploy via `deploy-edge-functions.yml` (workflow_dispatch)
-
-**Ação necessária do PO:** Aprovar o PR quando aberto.
+**Ação necessária do PO:**
+- Disparar `workflow_dispatch` em `.github/workflows/deploy-edge-functions.yml`
+- Aprovar o gate `environment: production` quando solicitado
+- Funções a redeployar: `generate-mockup`, `verify-2fa-token`, `validate-access`
 
 ---
 
-## P12 — Kit Coverage — Integration (permission denied em view)
+## P12 — Kit Coverage — Integration (bloqueado por P7)
 
 **Workflow:** Kit Coverage — Integration  
-**Run ID da última falha:** 40628415319  
+**Run ID da última falha (main):** 40628415319  
 **Link:** https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40628415319  
-**Status:** failure
+**PR com fix:** [#2701](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2701) (draft — Gate Final ❌)  
+**Run de falha no PR:** [40733949177](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40733949177) (job Gate Final: 122981142154)  
+**Status:** ❌ BLOCKED PO — bloqueado por P7
 
-**Erro exato:**
+**Erro exato (main):**
 ```
 Unknown Error: permission denied for view v_kit_component_complete
 ```
 
-**Causa raiz:** O role usado pelo teste de integração não tem permissão SELECT na view `v_kit_component_complete` no projeto `doufsxqlfjyuvxuezpln`.
+**Causa raiz:** O role usado pelo teste de integração não tem `GRANT SELECT` na view `v_kit_component_complete` no projeto `doufsxqlfjyuvxuezpln`.
 
-**Ação necessária do PO:**
-- Verificar qual role o CI usa para este teste
-- Criar migration com: `GRANT SELECT ON v_kit_component_complete TO anon;` (ou role correto)
-- Abrir PR com essa migration via `db-apply-migration.yml` (caminho autorizado — REGRA #8/E15)
+**Fix implementado:** Migration `20261028120000_grant_kit_view_authenticated.sql` criada em branch `claude/fix-p12-grant-kit-view-261028-1730`, PR [#2701](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2701) aberto (draft).
+
+**Por que o PR não pode ser mergeado — bloqueio descoberto em 2026-10-28:**
+
+A migration nova faz o Gate E40 "Detect schema file changes" **ativar** o Gate E40 Schema Drift Check. O drift check falha com `local_only=1109; remote_only=648` (P7 pré-existente), retornando `R_SCHEMA_DRIFT=failure`. O Gate Final exige `R_SCHEMA_DRIFT == "success" || "skipped"` — com `failure`, o Gate Final falha (job 122981142154: `##[error]Gate E40 Schema Drift falhou (failure)`).
+
+Runs anteriores na main tinham `R_SCHEMA_DRIFT=skipped` (commits sem migration) e por isso passavam. **Qualquer PR com migration nova falha o Gate Final enquanto P7 não for resolvido.**
+
+**Ação necessária do PO (duas opções):**
+
+**Opção A (recomendada):** Resolver P7 (reconciliar ledger) → mergear PR #2701 → disparar `db-apply-migration.yml` via `workflow_dispatch`.
+
+**Opção B:** Aplicar o GRANT diretamente via `workflow_dispatch` em `db-apply-migration.yml` com SQL `GRANT SELECT ON public.v_kit_component_complete TO authenticated, service_role;` — requer aprovação de `environment: production` no GitHub Actions UI.
 
 ---
 
@@ -329,4 +343,4 @@ description: "Deployment has failed — run this Vercel CLI command: npx vercel 
 
 ---
 
-*Ação prioritária: P1 (secrets E2E) — desbloqueia P2, P9, P10. P6, P8, P11 requerem investigação independente. P12 requer migration autorizada. P13 requer deleção do projeto fantasma Vercel.*
+*Ação prioritária: P1 (secrets E2E) — desbloqueia P2, P9, P10. P6, P8, P11 requerem investigação independente. P12 bloqueado por P7 (Opção B disponível via workflow_dispatch sem resolver P7). P13 requer deleção do projeto fantasma Vercel.*
