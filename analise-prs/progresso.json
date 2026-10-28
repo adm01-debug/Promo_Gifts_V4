@@ -31,11 +31,18 @@
     "nota": "Run queued 20+ min sem iniciar — cancelado em 2026-10-28T04:08Z. Novo push para retrigger."
   },
   "ci_gate_final_pr2679_v4": {
+    "run_id": "40630295218",
+    "sha": "f85652c",
+    "status": "cancelled",
+    "conclusao": "cancelled",
+    "nota": "Auto-cancelado por concorrência quando run 40630089377 (PR#2680) foi cancelado em 04:16Z"
+  },
+  "ci_gate_final_pr2679_v5": {
     "run_id": null,
     "sha": "pending",
     "status": "pending",
     "conclusao": null,
-    "nota": "Retrigger via push em 2026-10-28T04:08Z"
+    "nota": "Retrigger v5 — 04:20Z após liberar slot de concorrência (cancelei 40630803748 + 40630803605 de PR#2681)"
   },
   "ci_main_atual": {
     "sha": "62af0798",
