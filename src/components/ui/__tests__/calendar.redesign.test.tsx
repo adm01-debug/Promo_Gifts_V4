@@ -54,25 +54,23 @@ describe('Calendar iOS redesign', () => {
 
   it('day_today destaca o dia atual em vermelho', () => {
     render(<Calendar mode="single" defaultMonth={new Date()} />);
-    // v10: today modifier class on <td> via [&>button]:text-destructive child selector, not on <button>
-    const todayCell = Array.from(document.querySelectorAll<HTMLElement>('[class]')).find(
-      (el) =>
-        (el.getAttribute('class') ?? '').includes('[&>button]:text-destructive') &&
-        el.querySelector('button') !== null,
+    // rdp v10: today modifier class '[&>button]:text-destructive' is placed on the outer <td>
+    // (Tailwind child selector — styles the button in real CSS; in jsdom the class lives on the td)
+    const todayTd = Array.from(document.querySelectorAll<HTMLElement>('td')).find((td) =>
+      td.className.includes('[&>button]:text-destructive'),
     );
-    expect(todayCell).toBeTruthy();
-    const c = todayCell!.getAttribute('class') ?? '';
-    expect(c).toMatch(/\[&>button\]:text-destructive/);
+    expect(todayTd).toBeTruthy();
+    expect(todayTd!.className).toMatch(/\[&>button\]:text-destructive/);
   });
 
   it('day_selected: bg-destructive + text-primary-foreground', () => {
     render(<Calendar mode="single" selected={REF} defaultMonth={REF} />);
-    // v10: aria-selected on <td>, selected classes use [&>button]:bg-destructive child selector on <td>
+    // rdp v10: aria-selected on <td> wrapper; rdp v8: on <button>
     const sel = document.querySelector('[aria-selected="true"]');
     expect(sel).toBeTruthy();
-    const c = sel!.getAttribute('class') ?? '';
-    expect(c).toMatch(/\[&>button\]:bg-destructive/);
-    expect(c).toMatch(/\[&>button\]:text-primary-foreground/);
+    const c = classes(sel);
+    expect(c).toMatch(/bg-destructive/);
+    expect(c).toMatch(/text-primary-foreground/);
   });
 
   it('day_outside é oculto (invisible + pointer-events-none)', () => {

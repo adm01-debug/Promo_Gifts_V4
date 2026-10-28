@@ -57,10 +57,10 @@ describe('DatePickerField — comportamento e a11y', () => {
     await user.click(trigger);
     const dialog = await screen.findByRole('dialog');
     // Seleciona o dia 15 no mês atual do calendário aberto.
-    // v10: click handler is on <button> inside <td>, not the gridcell itself
-    const day15cell = within(dialog).getByRole('gridcell', { name: /^15$/ });
-    const day15btn = within(day15cell).getByRole('button');
-    await user.click(day15btn);
+    const day15Cell = within(dialog).getByRole('gridcell', { name: /15/ });
+    // rdp v10: click the button inside the gridcell (clicking <td> alone doesn't trigger selection)
+    const day15Btn = day15Cell.querySelector<HTMLElement>('button') ?? day15Cell;
+    await user.click(day15Btn);
     expect(onChange).toHaveBeenCalledWith('2026-07-15');
   });
 
