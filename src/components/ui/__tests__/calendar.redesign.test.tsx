@@ -11,8 +11,7 @@ const REF = new Date(2026, 6, 2); // 02/jul/2026
 
 afterEach(() => cleanup());
 
-const classes = (el: Element | null | undefined) =>
-  (el?.getAttribute('class') ?? '').toLowerCase();
+const classes = (el: Element | null | undefined) => (el?.getAttribute('class') ?? '').toLowerCase();
 
 function byClass(substr: string): HTMLElement | null {
   const nodes = Array.from(document.querySelectorAll<HTMLElement>('[class]'));
@@ -25,7 +24,7 @@ describe('Calendar iOS redesign', () => {
     render(<Calendar mode="single" defaultMonth={REF} />);
     const caption = byClass('capitalize');
     expect(caption).toBeTruthy();
-    expect(caption!.textContent?.toLowerCase()).toMatch(/julho\s*2026/);
+    expect(caption!.textContent?.toLowerCase()).toMatch(/julho\s2026/);
   });
 
   it('caption tem text-[15px] + font-bold + tracking-tight', () => {
@@ -39,7 +38,7 @@ describe('Calendar iOS redesign', () => {
 
   it('weekday cells: 7 células com 1 letra (D/S/T/Q/Q/S/S)', () => {
     render(<Calendar mode="single" defaultMonth={REF} />);
-    const heads = Array.from(document.querySelectorAll<HTMLElement>('th, [role="columnheader"]'));
+    const heads = Array.from(document.querySelectorAll<HTMLB�ement>('th, [role="columnheader"]'));
     const active = heads.filter((h) => (h.textContent ?? '').trim().length > 0);
     expect(active.length).toBeGreaterThanOrEqual(7);
     for (const h of active.slice(0, 7)) {
@@ -55,19 +54,18 @@ describe('Calendar iOS redesign', () => {
 
   it('day_today destaca o dia atual em vermelho', () => {
     render(<Calendar mode="single" defaultMonth={new Date()} />);
-    // react-day-picker v10: o modificador 'today' aplica-se ao <td>; a classe Tailwind
-    // "[&>button]:text-destructive" fica na string de classe do <td>, não do <button>
-    const todayCell = Array.from(document.querySelectorAll<HTMLElement>('td[role="gridcell"]')).find(
-      (td) => classes(td).includes('text-destructive'),
+    // rdp v10: today modifier class '[&>button]:text-destructive' is placed on the outer <td>
+    // (Tailwind child selector — styles the button in real CSS; in jsdom the class lives on the td)
+    const todayTd = Array.from(document.querySelectorAll<HTMLElement>('td')).find((td) =>
+      td.className.includes('[&>button]:text-destructive'),
     );
-    expect(todayCell).toBeTruthy();
-    expect(classes(todayCell)).toMatch(/text-destructive/);
+    expect(todayTd).toBeTruthy();
+    expect(todayTd!.className).toMatch(/\[&>button\]:text-destructive/);
   });
 
   it('day_selected: bg-destructive + text-primary-foreground', () => {
     render(<Calendar mode="single" selected={REF} defaultMonth={REF} />);
-    // react-day-picker v10: aria-selected vai para o <td>; as classes Tailwind
-    // "[&>button]:bg-destructive" ficam na string de classe do <td>
+    // rdp v10: aria-selected on <td> wrapper; rdp v8: on <button>
     const sel = document.querySelector('[aria-selected="true"]');
     expect(sel).toBeTruthy();
     const c = classes(sel);
