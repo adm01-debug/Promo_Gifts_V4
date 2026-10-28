@@ -290,24 +290,35 @@ webkit: expect(picker).not.toBeNull()
 
 ---
 
-## P12 — Kit Coverage — Integration (permission denied em view)
+## P12 — Kit Coverage — Integration (bloqueado por P7)
 
 **Workflow:** Kit Coverage — Integration  
-**Run ID da última falha:** 40628415319  
+**Run ID da última falha (main):** 40628415319  
 **Link:** https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40628415319  
-**Status:** failure
+**PR com fix:** [#2701](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2701) (draft — Gate Final ❌)  
+**Run de falha no PR:** [40733949177](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40733949177) (job Gate Final: 122981142154)  
+**Status:** ❌ BLOCKED PO — bloqueado por P7
 
-**Erro exato:**
+**Erro exato (main):**
 ```
 Unknown Error: permission denied for view v_kit_component_complete
 ```
 
-**Causa raiz:** O role usado pelo teste de integração não tem permissão SELECT na view `v_kit_component_complete` no projeto `doufsxqlfjyuvxuezpln`.
+**Causa raiz:** O role usado pelo teste de integração não tem `GRANT SELECT` na view `v_kit_component_complete` no projeto `doufsxqlfjyuvxuezpln`.
 
-**Ação necessária do PO:**
-- Verificar qual role o CI usa para este teste
-- Criar migration com: `GRANT SELECT ON v_kit_component_complete TO anon;` (ou role correto)
-- Abrir PR com essa migration via `db-apply-migration.yml` (caminho autorizado — REGRA #8/E15)
+**Fix implementado:** Migration `20261028120000_grant_kit_view_authenticated.sql` criada em branch `claude/fix-p12-grant-kit-view-261028-1730`, PR [#2701](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2701) aberto (draft).
+
+**Por que o PR não pode ser mergeado — bloqueio descoberto em 2026-10-28:**
+
+A migration nova faz o Gate E40 "Detect schema file changes" **ativar** o Gate E40 Schema Drift Check. O drift check falha com `local_only=1109; remote_only=648` (P7 pré-existente), retornando `R_SCHEMA_DRIFT=failure`. O Gate Final exige `R_SCHEMA_DRIFT == "success" || "skipped"` — com `failure`, o Gate Final falha (job 122981142154: `##[error]Gate E40 Schema Drift falhou (failure)`).
+
+Runs anteriores na main tinham `R_SCHEMA_DRIFT=skipped` (commits sem migration) e por isso passavam. **Qualquer PR com migration nova falha o Gate Final enquanto P7 não for resolvido.**
+
+**Ação necessária do PO (duas opções):**
+
+**Opção A (recomendada):** Resolver P7 (reconciliar ledger) → mergear PR #2701 → disparar `db-apply-migration.yml` via `workflow_dispatch`.
+
+**Opção B:** Aplicar o GRANT diretamente via `workflow_dispatch` em `db-apply-migration.yml` com SQL `GRANT SELECT ON public.v_kit_component_complete TO authenticated, service_role;` — requer aprovação de `environment: production` no GitHub Actions UI.
 
 ---
 
@@ -329,4 +340,4 @@ description: "Deployment has failed — run this Vercel CLI command: npx vercel 
 
 ---
 
-*Ação prioritária: P1 (secrets E2E) — desbloqueia P2, P9, P10. P6, P8, P11 requerem investigação independente. P12 requer migration autorizada. P13 requer deleção do projeto fantasma Vercel.*
+*Ação prioritária: P1 (secrets E2E) — desbloqueia P2, P9, P10. P6, P8, P11 requerem investigação independente. P12 bloqueado por P7 (Opção B disponível via workflow_dispatch sem resolver P7). P13 requer deleção do projeto fantasma Vercel.*
