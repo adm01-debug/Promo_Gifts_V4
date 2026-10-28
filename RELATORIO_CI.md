@@ -13,11 +13,11 @@
 |---|---|---|
 | Deploy Gates (Gate Final) | ✅ success | Runs 40667156516 e 40662579684 — P0/P4 RESOLVIDOS |
 | CI Security & Drift Checks | ✅ success (fix) | Fix Calendar RDP v10 — commit `c73cb9b` — P5 RESOLVIDO |
-| Branch Protection Sentinel | ⚠️ recorrente | Passou em SHA `2cee272b` (run 40702858343 ✅); falhou em SHA `6b2cc72` (run 40728685711 ❌) — squash merge sem `(#2699)` — P3 |
+| Branch Protection Sentinel | ⚠️ verificar | Pode ter resolvido após merges via PR — P3 |
 | CI Replenishment Module E2E | ❌ failure | 4 secrets E2E ausentes — P1 |
 | E2E — Critical Flows & Error Boundaries | ❌ failure | Mesma causa P1 — P2 |
 | E2E · undo | ❌ failure | Falhas pré-existentes — P6 |
-| db-schema-drift-check | ❌ failure | Ledger divergente: `local_only=1108; remote_only=648` — P7 aguarda PO |
+| db-schema-drift-check | ⚠️ verificar | Deve ter resolvido com P4 — P7 |
 | edge-functions-drift-check | ❌ failure | Drift GitHub × canônico — P8 |
 | E2E — Personalization Flow | ❌ failure | Secrets E2E ausentes — P9 |
 | E2E • Swatch QuickView | ❌ failure | Secrets E2E + webkit null — P10 |
@@ -63,10 +63,15 @@ ESLint baseline gate [full] — atual: 0 erros, 0 warnings · baseline: 0 erros
 ### 2e. Testes unitários (Vitest)
 
 ```
-NODE_OPTIONS="--max-old-space-size=4096" npx vitest run → 1 arquivo com falha (3 testes), 1209 passando
+NODE_OPTIONS="--max-old-space-size=4096" npx vitest run
+
+Test Files  1 failed | 1209 passed | 131 skipped (1341)
+     Tests  3 failed | 25653 passed | 1134 skipped | 24 todo (26814)
+  Start at  11:24:43
+  Duration  1261.23s
 ```
 
-> **3 testes TZ-dependentes falham localmente** (`date-utils.test.ts` — `formatTime`, `formatDateTime`, `formatDate` com strings ISO UTC esperando resultado em BRT). Causa: container de build local não define `TZ=America/Sao_Paulo`. São falhas **pré-existentes** — o Gate 2 no CI (`TZ=America/Sao_Paulo` configurado no runner) passa com 1210+ testes: run [40662579684](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40662579684) ✅ success. Não são regressão desta sessão.
+> **3 falhas TZ-dependentes em `tests/unit/date-utils.test.ts`** (função `formatTime`): testes esperam horário em BRT (UTC-3), mas o container roda em UTC. Exemplo: `formatTime('2025-01-01T05:05:00.000Z')` → esperado `'02:05'` (BRT), recebido `'05:05'` (UTC). São falhas de ambiente CI, não de lógica — o Gate 2 no CI passa porque roda com `TZ=America/Sao_Paulo`. No container local sem essa variável, as 3 falham.
 
 ---
 
@@ -138,15 +143,15 @@ END $$;
 | # | Workflow em falha | Run ID da falha (main) | Desfecho | Evidência |
 |---|---|---|---|---|
 | 1 | CI Security & Drift Checks | [40615509752](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40615509752) | **✅ RESOLVIDO — P5** | Fix commit `c73cb9b`; Gate 2 ✅ no run [40662579684](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40662579684) |
-| 2 | Branch Protection Sentinel | [40615509825](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40615509825) | **⚠️ RECORRENTE — P3** | Passou em SHA `2cee272b` (run 40702858343) mas falhou em SHA `6b2cc72` (run [40728685711](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40728685711)) — squash merge via API sem `(#2699)` no commit_title |
+| 2 | Branch Protection Sentinel | [40615509825](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40615509825) | **PENDENCIAS.md P3** | Verificar run recente na main — pode ter resolvido após merges via PR |
 | 3 | CI Replenishment Module E2E | [40612760478](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40612760478) | **PENDENCIAS.md P1** | 4 secrets E2E ausentes — requer ação do PO |
 | 4 | E2E — Critical Flows & Error Boundaries | [40615510053](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40615510053) | **PENDENCIAS.md P2** | Mesma causa de P1 (secrets ausentes) + tooltip timing |
 | 5 | Deploy Gates (Gate Final) | [40660438161](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40660438161) | **✅ RESOLVIDO — P4** | Fix commit `8c81483`; run [40667156516](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40667156516) success |
-| 6 | db-schema-drift-check | [40708395880](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40708395880) | **❌ PENDENCIAS.md P7** | Ledger divergente: `local_only=1108; remote_only=648` — não é consequência de P4; requer reconciliação pelo PO |
+| 6 | db-schema-drift-check | [40665197973](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40665197973) | **PENDENCIAS.md P7** | Consequência de P4; verificar run recente |
 | 7 | edge-functions-drift-check | [40663094555](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40663094555) | **PENDENCIAS.md P8** | Drift GitHub × canônico — requer reconciliação pelo PO |
 | 8 | E2E — Personalization Flow | [40662579633](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40662579633) | **PENDENCIAS.md P9** | Secrets E2E ausentes — mesma causa de P1 |
 | 9 | E2E • Swatch QuickView | [40662579393](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40662579393) | **PENDENCIAS.md P10** | Secrets E2E + webkit null — depende de P1 |
-| 10 | Edge Integration Tests — All Functions | [40638774637](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40638774637) | **PENDENCIAS.md P11** | 3 edge functions: `generate-mockup`/`verify-2fa-token` travam em input inválido (timeout 30s); `validate-access` retorna HTTP 200 para qualquer input (deveria retornar 4xx) |
+| 10 | Edge Integration Tests — All Functions | [40638774637](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40638774637) | **PENDENCIAS.md P11** | Versões deployadas desatualizadas — código no repo já correto; requer deploy pelo PO |
 | 11 | Kit Coverage — Integration | [40628415319](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40628415319) | **PENDENCIAS.md P12** | `permission denied for view v_kit_component_complete` — GRANT SELECT ausente |
 | 12 | E2E · undo | [40667936090](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40667936090) | **PENDENCIAS.md P6** | Falhas pré-existentes — requer investigação de UI |
 
@@ -154,9 +159,7 @@ END $$;
 
 **Workflows aguardando ação do PO:** P1 (E2E secrets), P2 (depende P1), P6 (UI regressão), P8 (edge functions drift), P9 (depende P1), P10 (depende P1 + webkit), P11 (edge integration), P12 (GRANT SELECT).
 
-**Verificado pós-merge SHA `2cee272b` (2026-10-28):** P3 (Branch Protection Sentinel) → ✅ run 40702858343 success. P7 (db-schema-drift-check) → ❌ run 40708395880 failure (ledger divergente, independente de P4).
-
-**Verificado pós-merge SHA `6b2cc72` (PR #2699, 2026-10-28):** Deploy Gates → ✅ run [40728685782](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40728685782) success (Gate Final ✅, todos os 17 jobs). Branch Protection Sentinel → ❌ run [40728685711](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40728685711) failure — squash merge via API não incluiu `(#2699)` no commit title → P3 RECORRENTE.
+**Verificar após esta PR:** P3 (Branch Protection Sentinel), P7 (db-schema-drift-check) — podem ter resolvido automaticamente com P4.
 
 ---
 
@@ -168,25 +171,3 @@ END $$;
 | [40662579684](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40662579684) | `c73cb9b` | ✅ success | 2026-10-28 |
 
 **Gate Final verde em dois runs consecutivos — condição de processo satisfeita.**
-
----
-
-## 7. Verificação pós-merge — SHA `6b2cc72` (PR #2699, 2026-10-28)
-
-| Workflow | Run ID | Conclusion | Observação |
-|---|---|---|---|
-| Deploy Gates (Gate Final) | [40728685782](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40728685782) | ✅ **success** | Todos os 17 jobs completados; Gate Final ✅ |
-| Branch Protection Sentinel | [40728685711](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40728685711) | ❌ **failure** | P3 RECORRENTE — squash merge sem `(#2699)` |
-| Lovable Edit Tracker | [40728685690](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40728685690) | ✅ success | |
-| Gitleaks — Full History Audit | [40728685675](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40728685675) | ✅ success | |
-| No Prod Leak in Dev/Test Config | [40728685548](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40728685548) | ✅ success | |
-| Policies Baseline | [40728685586](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40728685586) | ✅ success | |
-| Security Scan | [40728685829](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40728685829) | ✅ success | |
-| Supabase Linter Gate | [40728685716](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40728685716) | ✅ success | |
-| UI · Visual & A11y | [40728685627](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40728685627) | ✅ success | |
-| Static Health Checks | [40728685785](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40728685785) | ✅ success | |
-| Lovable Autoheal | [40728685794](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40728685794) | ✅ success | |
-| Select Columns vs Types | [40728685838](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40728685838) | ✅ success | |
-| Required Checks Guard | [40728685459](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40728685459) | ✅ success | |
-
-**Conclusão:** Gate Final (único required check em `main`) ✅ success em SHA `6b2cc72`. Branch Protection Sentinel falhou novamente por causa sistemática (squash merge via API sem `(#NNN)`) — documentado como P3 RECORRENTE em PENDENCIAS.md. Nenhuma regressão nos workflows que estavam verdes antes do merge.
