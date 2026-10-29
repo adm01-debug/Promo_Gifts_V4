@@ -14,7 +14,7 @@
  *   npm run e2e:collapse:update      # semeia/atualiza baselines (usar 1x)
  */
 import { test, expect, requireAuth } from "../fixtures/test-base";
-import { gotoAndSettle } from "../helpers/nav";
+import { openQuoteWithPersonalizableProduct } from "../helpers/location-panel-quote";
 import { TID } from "../fixtures/selectors";
 import type { Locator, Page } from "@playwright/test";
 import { existsSync, mkdirSync, writeFileSync } from "node:fs";
@@ -23,14 +23,13 @@ import { fileURLToPath } from "node:url";
 import { describeConfig, getMaskSelectors, getThresholds } from "./mask-config";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const SNAPSHOT_DIR = join(__dirname, "collapse-reflow.spec.ts-snapshots");
 
 /**
  * Falha cedo com mensagem clara se a baseline não existir, sugerindo o comando
  * npm exato para gerar/atualizar (por viewport ou geral).
  */
 function assertBaselineExists(fileName: string, viewport: string): void {
-  const full = join(SNAPSHOT_DIR, fileName);
+  const full = test.info().snapshotPath(fileName);
   if (existsSync(full)) return;
   const cmd = `npm run e2e:collapse:update:${viewport}`;
   const hint =
@@ -96,13 +95,10 @@ for (const vp of VIEWPORTS) {
     test.beforeEach(() => requireAuth());
 
     test(`colapsar reduz altura e não deixa gap residual [${vp.label}]`, async ({ page }) => {
-      await gotoAndSettle(page, "/orcamentos/novo");
+      await openQuoteWithPersonalizableProduct(page);
 
       const toggle = page.locator(TOGGLE).first();
-      if (!(await toggle.isVisible({ timeout: 5_000 }).catch(() => false))) {
-        expect(false, "[E108] Painel de personalização indisponível neste ambiente.").toBeTruthy();
-        return;
-      }
+      await expect(toggle).toBeVisible();
 
       const shell = page.locator(SHELL).first();
       await expect(shell).toBeVisible();
