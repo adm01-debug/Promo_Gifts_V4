@@ -1,7 +1,7 @@
 # RELATÓRIO CI — Promo Gifts V4
 **Gerado em:** 2026-10-29
 **Branch desta auditoria:** `fix/graphify-reproducible-version-20261029`
-**SHA `main` consultado:** `6b48bebcb2ff5ff922298523f4678383d392ae46` (2026-10-29)
+**SHA `main` consultado:** `66d032afa8e31cd4f9b2f60508613794cef928d4` (2026-10-29)
 
 ## 8. Revalidação completa por workflow — 2026-10-29
 
@@ -199,3 +199,40 @@ Auditoria somente leitura: ledger remoto 2.552 versões; repositório 3.009 arqu
 | `npm run graphify:refresh` + `npm run graphify:sql` | — | ambos executados com `graphifyy==0.9.91` | relatórios e mapa SQL atualizados localmente |
 
 O commit de reprodutibilidade está na branch dedicada `fix/graphify-reproducible-version-20261029` e não foi mesclado. Não mesclar enquanto os checks obrigatórios do PR não concluírem e os bloqueios de CI/Supabase desta auditoria estiverem tratados ou explicitamente aceitos pelo processo de governança.
+
+## 12. Atualização de sincronização e checks do PR #2743 — 2026-10-29
+
+- A `main` local e `origin/main` estão em `66d032afa8e31cd4f9b2f60508613794cef928d4`. A branch deste relatório está em `debcd712a278d5ec2d6353cc670ad8a5335c06b1`, igual ao branch remoto e ao HEAD do PR [#2743](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2743).
+- O PR #2743 está aberto e bloqueado. No snapshot de 21:35 UTC, 46 check runs estavam: 11 `success`, 4 `skipped`, 1 `neutral`, 1 `failure`, 22 `queued` e 7 `in_progress`. A falha identificada é o Copilot Reviewer com HTTP 402 por quota de uso adicional; o preview Vercel também está `ERROR`, mas os logs consultados não indicaram causa. Não houve merge nem rerun nesta atualização.
+- A seção P19 de [`PENDENCIAS.md`](./PENDENCIAS.md) contém a reconciliação atual do checkout/branch e a auditoria somente leitura do canônico. Em `pg_catalog`, os nomes de 398 tabelas, 197 views e 15 enums coincidem com o inventário local de `types.ts`; a reconciliação das 3.004 versões locais e 2.552 remotas permanece pendente.
+- A correção também removeu o snapshot antigo do topo de `PENDENCIAS.md` e alinhou os números do mapa Graphify ao relatório versionado. Essas alterações são documentais e não alteram runtime, APIs, migrations, schema ou dados.
+
+## 13. Inventário mais recente da `main` e validação documental — 2026-10-29
+
+### Último run por workflow na `main`
+
+Consulta individual dos 119 workflows ativos, filtrando `branch=main` e `per_page=1`, concluída em 21:34 UTC. O inventário substitui os contadores anteriores nas seções 8 e 11; os snapshots mais antigos permanecem apenas como histórico.
+
+| Estado | Quantidade |
+|---|---:|
+| `success` | 58 |
+| `failure` | 27 |
+| `cancelled` | 3 |
+| `in_progress` | 3 |
+| `queued` | 2 |
+| `pending` | 2 |
+| `skipped` | 2 |
+| `waiting` | 1 |
+| Sem execução na `main` | 21 |
+
+As 27 falhas e suas evidências resumidas estão em [`PENDENCIAS.md`, seção P19](./PENDENCIAS.md). As causas sem log/assertion suficiente estão marcadas como não confirmadas; elas não foram corrigidas por hipótese. Os estados queued, pending, waiting, in_progress, skipped e cancelled não foram contados como falha.
+
+### Comparação baseline × final local
+
+| Verificação | Baseline `66d032af` | Final desta revisão | Resultado |
+|---|---|---|---|
+| `npm run build:verify` | Passou em baseline anterior | Passou: typecheck, lint baseline sem regressões, guards canônicos, build, ciclos de chunks e harnesses | Sem piora |
+| Suíte completa Vitest | 1.222 arquivos; 25.716 testes aprovados; 130 arquivos/1.135 testes skipped; 24 TODO | 1.222 arquivos; 25.718 testes aprovados; 130 arquivos/1.135 testes skipped; 24 TODO | +2 testes aprovados; skips/TODO iguais |
+| `git diff --check` | — | Passou nos arquivos documentais alterados | Sem whitespace inválido |
+
+Esta revisão só altera documentação e números de auditoria. Não executou reruns de workflows, alteração em `main`, deploy, migration, repair, DDL ou mudança de dados. A branch e o PR #2743 continuam separados da `main`; o PR permanece bloqueado por checks externos/pendentes descritos em P19.
