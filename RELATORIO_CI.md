@@ -179,3 +179,50 @@ Os itens abaixo estão documentados em `PENDENCIAS.md` com o motivo exato do blo
 - Ledger remoto: 2.552 IDs; máximo `20261027160000`.
 - Comparação local: 3.009 arquivos SQL, 3.004 IDs únicos, 463 IDs apenas locais, 11 IDs apenas remotos e 5 versões duplicadas localmente. O gate E40 anteriormente produziu contagem em escopo diferente (1.109/648), ainda não reconciliada; números não são intercambiáveis.
 - Nenhuma migration, dado operacional, schema ou objeto do banco foi alterado. Os IDs divergentes permanecem sem classificação e impedem declarar sincronização total. A classificação precisa preceder qualquer aplicação pelo workflow autorizado do repositório.
+
+## Revalidação de sincronização e CI — 2026-10-29 03:12 UTC
+
+### Repositório
+
+- Checkout principal local e `origin/main`: `c344508711797a730893644449b16a05f12f4fce`.
+- Branch da PR #2717 local e remota: `b0206929eee037e6fea13ac787114d5765d3884b`; PR aberta, base `c3445087`, sem merge. O código de correção está publicado na branch da PR, não em `main`.
+- A árvore principal possui somente alterações locais geradas em `graphify-out/GRAPH_REPORT.md` e `graphify-out/manifest.json`. O Graphify foi atualizado no worktree da PR, mas esses dois arquivos ainda não estão no commit remoto.
+- Os gates locais após o commit b0206929e continuam conforme evidência já registrada: lint, typecheck, build e suíte completa aprovados. Não houve alteração de aplicação depois desse commit.
+
+### Última execução de cada workflow na `main`
+
+Consulta ao MCP GitHub com filtro `branch=main`, agrupada pelo nome do workflow e usando a execução mais recente:
+
+| Resultado | Quantidade |
+|---|---:|
+| success | 24 |
+| failure | 6 |
+| cancelled | 3 |
+| skipped | 2 |
+| **Total** | **35** |
+
+| Workflow falho | Execução | Evidência resumida / situação |
+|---|---:|---|
+| Nightly Full CI | [40808174535](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40808174535) | Duas shards E2E e dois E2E visuais falharam. No shard 2, testes da grade de reposição não encontraram o título `h3` nos itens de lista e faltou baseline para screenshot de foco em desktop; a shard também lista testes de autenticação de mockup. Causa raiz ainda não comprovada. |
+| E2E — Critical Flows & Error Boundaries | [40762904577](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762904577) | Falso positivo da checagem textual de `500`, que podia casar com conteúdo numérico do catálogo. Correção já publicada na PR #2717; o check E2E correspondente passou no head b0206929e, aguardando conclusão de todos os checks da PR. |
+| CI Security & Drift Checks | [40762904949](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762904949) | Quality gate reportou falhas de locators/espera nos E2E, imagens sem conclusão de carregamento e erros HTTP 503/504 no caminho PostgREST. Causa raiz operacional ainda não isolada. |
+| E2E • Swatch QuickView (Lista + Tabela) | [40762904693](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762904693) | Falhas por ausência de linhas/produtos com swatches e timeouts de interação. Na execução da PR #2717, WebKit recebeu sinal de shutdown do runner e Chromium/Firefox ainda estavam em execução às 03:12 UTC. |
+| Edge Integration Tests — All Functions | [40762354015](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762354015) | Testes do `crm-db-bridge` enviaram payload inválido e receberam HTTP 503, embora esperassem resposta não-5xx. Não foi feito deploy; requer comparar contrato e versão implantada. |
+| E2E — Magazine Header Layout | [40762354171](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762354171) | O teste clicava no contêiner `article`, e não no link interno. Correção publicada na PR #2717; os checks Magazine Header OK e E2E Magazine Header (authed) passaram no head b0206929e. |
+
+Workflows verdes relevantes: Deploy Gates [40762904944](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762904944), Branch Protection Sentinel [40762904734](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762904734), CodeQL [40762904933](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762904933), Supabase Linter Gate [40762904662](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762904662), Workflow Lint [40762354220](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762354220) e Uptime Monitor [40810441318](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40810441318).
+
+### PR #2717 — head b0206929e
+
+A PR continua aberta e sem merge. Na consulta de 03:12 UTC havia dois checks em execução: Chromium e Firefox do Swatch QuickView. Também permaneciam não verdes: WebKit (shutdown do runner), Copilot reviewer (HTTP 402/quota e bloqueio de firewall), snapshot mobile dark em `view-no-presentation-mode` (diferença visual aproximada de 5 px), teste de paridade Novidades/Reposição (título `page-title-novidades` ausente) e dois jobs cancelados de E2E/visual baseline. Não houve atualização de snapshot nem relaxamento de assertions. Sem todos os checks obrigatórios verdes, não fazer merge.
+
+### Banco Supabase canônico — somente leitura
+
+- Projeto `doufsxqlfjyuvxuezpln`: `ACTIVE_HEALTHY`, PostgreSQL 17.6.1.063.
+- Paridade estrutural gerada pelo Supabase MCP e extraída do `types.ts` local: `public` — 398 Tables, 197 Views, 1.020 Functions, 15 Enums, 2 CompositeTypes; `graphql_public` — 1 Function. A contagem estrutural coincide com a evidência anterior; não houve alteração de tipos ou schema nesta PR.
+- Ledger: 2.552 versões remotas, máximo `20261027160000`; repositório: 3.009 arquivos SQL, 3.004 IDs únicos, 463 IDs apenas locais, 11 apenas remotos e 5 IDs duplicados localmente. O gate E40 reporta contagens diferentes por usar outro escopo/filtro; a divergência de metodologia segue pendente.
+- Nenhuma migration, DDL, dado operacional, tabela ou Edge Function foi alterada no Supabase. Dados de clientes/produtos são operacionais e não devem ser copiados ao GitHub.
+
+### Resultado desta revalidação
+
+A sincronização de código está correta entre os checkouts locais e as refs remotas correspondentes, mas a correção de E2E ainda não chegou a `main`, pois a PR não passou todos os checks. A estrutura de tipos corresponde ao canônico; o ledger não está reconciliado e não foi modificado. A atualização local do Graphify e os novos registros desta auditoria precisam ser versionados na branch da PR após estabilizar a execução em andamento.

@@ -425,3 +425,39 @@ Na consulta de 2026-10-29 00:22 UTC havia outras 7 execuções ainda em andament
 - Últimas falhas na `main`: Uptime Monitor (run [40793110088](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40793110088), PostgREST/health check indisponível), E2E Critical Flows (run [40762904577](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762904577), falha no fluxo Catalog→Kit), CI Security & Drift (run [40762904949](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762904949), specs E2E autenticadas falharam) e Swatch QuickView (run [40762904693](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762904693), runner WebKit cancelado e job Chromium falhou). Essas falhas seguem sem correção validada em `main`.
 - Supabase canônico confirmado pelo projeto `doufsxqlfjyuvxuezpln` (Promo_Gifts_V4, PostgreSQL 17.6, ACTIVE_HEALTHY). Consulta somente leitura: 2.552 migrations no ledger; última `20261027160000`. Comparação exata com `supabase/migrations`: 3.009 arquivos locais, 3.004 IDs únicos, 463 IDs apenas locais, 11 apenas remotos e cinco IDs duplicados localmente (`20260525232003`, `20260622111500`, `20260622130000`, `20260623000008`, `20260902220800`). Não houve escrita no banco.
 - Bloqueio de segurança: divergências do ledger precisam ser classificadas antes de qualquer aplicação ou `migration repair`; usar exclusivamente o workflow de produção documentado em `AGENTS.md`. Não copiar dados operacionais de produtos/clientes para o GitHub. Types estruturais estavam alinhados na auditoria anterior; não regenerei nem alterei o schema nesta etapa.
+
+## Revalidação de 2026-10-29 03:12 UTC — estado atual dos bloqueios
+
+Esta seção substitui as contagens anteriores de workflows/PR nos registros históricos P15–P17; os detalhes históricos foram preservados.
+
+### Workflows na main com última execução falha
+
+| Workflow | Run | Estado / causa observada | Próxima ação segura |
+|---|---:|---|---|
+| Nightly Full CI | [40808174535](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40808174535) | Falhas em duas shards E2E e dois testes visuais. A grade de reposição não disponibilizou `h3` no primeiro item de lista e falta snapshot de foco desktop; raiz ainda não confirmada. | Reproduzir com a mesma conta/dados de E2E e revisar o erro-context; não gerar snapshots novos sem comparação visual. |
+| E2E — Critical Flows & Error Boundaries | [40762904577](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762904577) | A checagem de texto `500` tinha falso positivo no conteúdo numérico. Fix está na PR #2717 e o E2E passou no head b0206929e. | Aguardar demais checks; merge somente com required checks verdes. |
+| CI Security & Drift Checks | [40762904949](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762904949) | Locators e carregamento de imagem falharam; há 503/504 no caminho PostgREST. | Reproduzir E2E e correlacionar logs de API; não mascarar a falha com retry/timeout relaxado. |
+| E2E • Swatch QuickView | [40762904693](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762904693) | Linhas/produtos com swatches ausentes e timeouts. Head da PR ainda sem resultado final para Chromium/Firefox; WebKit foi interrompido pelo runner. | Aguardar jobs atuais e, com o run concluído, rerodar apenas WebKit uma vez; se repetir, registrar como infraestrutura. |
+| Edge Integration Tests — All Functions | [40762354015](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762354015) | `crm-db-bridge` respondeu 503 a payloads inválidos, contra expectativa não-5xx. | Comparar contrato do handler e versão implantada; qualquer deploy somente pelo workflow autorizado. |
+| E2E — Magazine Header Layout | [40762354171](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762354171) | Clique no contêiner não navegava para a revista. Fix em PR #2717; os checks de Magazine passaram no head b0206929e. | Aguardar checks obrigatórios e merge seguro. |
+
+Na consulta, 24 das 35 últimas execuções por workflow estavam verdes; inclui Deploy Gates, CodeQL, Supabase Linter, Branch Protection Sentinel, Workflow Lint e Uptime Monitor. Três estavam canceladas e duas ignoradas; essas categorias não foram contadas como falha concluída.
+
+### PR #2717 — bloqueios que impedem declarar sucesso
+
+**Head:** `b0206929eee037e6fea13ac787114d5765d3884b`. A PR está aberta, sem merge. Dois checks (Chromium e Firefox do Swatch QuickView) continuavam em execução às 03:12 UTC.
+
+- WebKit: runner recebeu sinal de encerramento antes de iniciar auth; nenhum resultado de teste foi produzido. Aguardando fim do workflow para um rerun único.
+- Copilot reviewer: serviço falhou com HTTP 402 (quota/uso adicional); log também relata bloqueio de firewall para `api.github.com`. Isso não equivale a revisão aprovada; depende de cota/rede do serviço.
+- `view-no-presentation-mode`: diferença visual de cerca de 5 px no menu mobile dark; requer avaliação visual, sem atualizar baseline até aprovação.
+- E2E de paridade Novidades/Reposição: `page-title-novidades` não ficou visível após navegação; 13 passaram, 3 falharam. Causa do estado da rota/dados ainda não comprovada.
+- Dois jobs de E2E/visual baseline foram cancelados; aguardam confirmação de origem/status final.
+- Os checks Magazine Header e E2E Critical Flows passam no head atual, evidenciando as duas correções publicadas na PR.
+
+## P18 — Divergência entre Graphify local e branch remota
+
+O comando `graphify update .` foi executado no worktree da PR após as alterações, mas `graphify-out/GRAPH_REPORT.md` e `graphify-out/manifest.json` estão modificados localmente e ainda não foram commitados. Após estabilização do run atual, revisar o diff gerado, versionar a atualização do grafo com o relatório CI e seguir o processo de reteste pós-commit.
+
+## P19 — Reconciliação do ledger canônico (sem alteração de banco)
+
+A comparação read-only atual confirmou 3.009 arquivos locais, 3.004 IDs únicos e 2.552 versões no Supabase canônico; 463 IDs existem apenas localmente, 11 apenas no ledger remoto e 5 IDs estão duplicados em arquivos locais. O Gate E40 usa filtro/escopo distinto e retorna outro total. Não aplicar migrations, fazer `migration repair`, `db push` ou alterar registros do ledger até reconciliar a metodologia e classificar cada ID com evidência. Nenhum schema ou dado foi alterado nesta auditoria.

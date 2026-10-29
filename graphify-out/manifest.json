@@ -834,9 +834,9 @@
     "semantic_hash": ""
   },
   "e2e/catalog/novidades-reposicao-card-parity.spec.ts": {
-    "mtime": 1793230089.2668402,
-    "seen": 1793235469.370423,
-    "ast_hash": "858d80aa7430f67cdd80546d485a0f21",
+    "mtime": 1793238948.215707,
+    "seen": 1793242411.2891002,
+    "ast_hash": "1751b4da6277654eef41822e14c5e92f",
     "semantic_hash": ""
   },
   "e2e/catalog/pagination-filters.spec.ts": {
@@ -1044,8 +1044,8 @@
     "semantic_hash": ""
   },
   "e2e/fixtures/generated-urls.json": {
-    "mtime": 1793234886.019042,
-    "seen": 1793235469.370443,
+    "mtime": 1793242310.210431,
+    "seen": 1793242411.2895534,
     "ast_hash": "b4a646f812acda609d7985a591b0f991",
     "semantic_hash": ""
   },
@@ -1356,9 +1356,9 @@
     "semantic_hash": ""
   },
   "e2e/flows/04p-quotes-expiration-column.spec.ts": {
-    "mtime": 1793230089.2706358,
-    "seen": 1793235469.3704703,
-    "ast_hash": "68ff36686191780ecd3199538f078737",
+    "mtime": 1793240171.8204296,
+    "seen": 1793242411.2902308,
+    "ast_hash": "69896e67afca8cad6424c3d58bbb08d9",
     "semantic_hash": ""
   },
   "e2e/flows/04q-quotes-single-delete-undo-edge-cases.spec.ts": {
@@ -1992,15 +1992,15 @@
     "semantic_hash": ""
   },
   "e2e/flows/magazine-header-align.spec.ts": {
-    "mtime": 1793230089.2733822,
-    "seen": 1793235469.3705277,
-    "ast_hash": "3ded16e497d6fb5124cccf7965da3c4d",
+    "mtime": 1793241808.864822,
+    "seen": 1793242411.291595,
+    "ast_hash": "e8fc73fe6340cbd5722002b25282f1db",
     "semantic_hash": ""
   },
   "e2e/flows/magazine-header-responsive.spec.ts": {
-    "mtime": 1793230089.2733822,
-    "seen": 1793235469.3705282,
-    "ast_hash": "74da253074269053ebb2af6521fddc2f",
+    "mtime": 1793241808.8688219,
+    "seen": 1793242411.2915957,
+    "ast_hash": "a6b86865e82a3ddae1eb2a9fe9b79030",
     "semantic_hash": ""
   },
   "e2e/flows/magazine-preview-sticky-smoke.spec.ts": {
@@ -4008,8 +4008,8 @@
     "semantic_hash": ""
   },
   "public/schemas/ssot-report.schema.json": {
-    "mtime": 1793235232.9102974,
-    "seen": 1793235469.3707106,
+    "mtime": 1793242048.7721286,
+    "seen": 1793242411.2961214,
     "ast_hash": "5f7c1a0d8db2e261abb51ec9125a64d5",
     "semantic_hash": ""
   },
@@ -47622,20 +47622,20 @@
     "semantic_hash": ""
   },
   "qa/exports/proposal-10015-26.html": {
-    "mtime": 1793235317.9822817,
-    "seen": 1793235469.3764634,
+    "mtime": 1793242131.616106,
+    "seen": 1793242411.4123323,
     "ast_hash": "92ca7a7ea332a554b7785b08a7828793",
     "semantic_hash": ""
   },
   "qa/exports/proposal-complex-99999-26.html": {
-    "mtime": 1793235317.9902818,
-    "seen": 1793235469.3764641,
+    "mtime": 1793242131.6241062,
+    "seen": 1793242411.4123333,
     "ast_hash": "04240878120d40179aa6e7ce7356afe8",
     "semantic_hash": ""
   },
   "qa/exports/proposal-minimal-00001-26.html": {
-    "mtime": 1793235317.9862816,
-    "seen": 1793235469.376465,
+    "mtime": 1793242131.6201062,
+    "seen": 1793242411.412334,
     "ast_hash": "cf17ac99e7adfb32411e5abee571a3ff",
     "semantic_hash": ""
   },
@@ -50868,15 +50868,15 @@
     "semantic_hash": ""
   },
   "PENDENCIAS.md": {
-    "mtime": 1793235034.5319939,
-    "seen": 1793235469.3759844,
-    "ast_hash": "5bd74d0aea88821f87a27bb1b0ef00c6",
+    "mtime": 1793240907.2163954,
+    "seen": 1793242411.4022772,
+    "ast_hash": "2f818e2df8618df733ade37acbcee07a",
     "semantic_hash": ""
   },
   "RELATORIO_CI.md": {
-    "mtime": 1793235034.5319939,
-    "seen": 1793235469.3759866,
-    "ast_hash": "7a1ba2d47e36f33f9cdb06473113e264",
+    "mtime": 1793240919.276389,
+    "seen": 1793242411.4023001,
+    "ast_hash": "c9d1c59f14f39e5a5ea632046e96b999",
     "semantic_hash": ""
   },
   "analise-branches/RELATORIO_BRANCHES.md": {
