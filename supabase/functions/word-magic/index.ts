@@ -7,11 +7,15 @@ import { resolveCredential } from '../_shared/credentials.ts';
 import { createStructuredLogger } from '../_shared/structured-logger.ts';
 import { getOrCreateRequestId } from '../_shared/request-id.ts';
 import { fetchWithBreaker, CircuitOpenError, circuitOpenResponse } from '../_shared/external-fetch.ts';
+import { applyRateLimit, rateLimiters } from '../_shared/rate-limiter.ts';
+import { acquireAiQuota, logAiUsage } from '../_shared/ai-usage.ts';
 
 // ─── Constantes ─────────────────────────────────────────────────────────────────────────────
 
+/** Nome desta função no rate limiter (`check_edge_rate_limit`) e em `ai_usage_logs`. */
+export const AI_FUNCTION_NAME = 'word-magic';
 const DEEPSEEK_API_URL    = 'https://api.deepseek.com/v1/chat/completions';
-const DEEPSEEK_MODEL      = 'deepseek-v4-flash'; // MIGRADO: deepseek-chat depreca 24/jul/2026
+export const DEEPSEEK_MODEL = 'deepseek-v4-flash'; // MIGRADO: deepseek-chat depreca 24/jul/2026 — Flash, NUNCA Pro
 const MAX_TOKENS          = 2048; // FIX: era 700 no processador batch → textos truncados
 // Timeout do fetch DeepSeek: previne isolate pendurado ~150s se a API não responder.
 // 60s é suficiente para gerações complexas e menor que o limite da plataforma.
@@ -87,6 +91,34 @@ Deno.serve(async (req) => {
     // 1. Autenticação obrigatória
     const auth = await authenticateRequest(req);
 
+    // 1b. Limite de uso por usuário (SSOT `rateLimiters.ai` = 20 req/min).
+    //     Sem este teto, um laço com force_regenerate esgota a chave DeepSeek.
+    //     Mesmo padrão da edge mockup-assistant: 401 → 429 → 4xx do corpo.
+    const rateLimited = await applyRateLimit(req, rateLimiters.ai, () => auth.userId);
+    if (rateLimited) {
+      const headers = new Headers(rateLimited.headers);
+      for (const [name, value] of Object.entries(corsHeaders)) headers.set(name, value);
+      headers.set('X-Request-Id', __reqId);
+      return new Response(rateLimited.body, { status: rateLimited.status, headers });
+    }
+
+    // 1c. Registro de consumo (SSOT `logAiUsage` → tabela ai_usage_logs, a mesma
+    //     que alimenta o painel de uso de IA). Só é chamado quando a chamada ao
+    //     provedor de fato saiu — cache hit e falha de validação não consomem IA.
+    const logUsage = (params: {
+      status: 'success' | 'error';
+      inputTokens?: number;
+      outputTokens?: number;
+      errorMessage?: string;
+    }) =>
+      logAiUsage({
+        userId: auth.userId,
+        functionName: AI_FUNCTION_NAME,
+        model: DEEPSEEK_MODEL,
+        durationMs: Date.now() - startMs,
+        ...params,
+      });
+
     // 2. Parse + validação do body
     let rawBody: unknown;
     try { rawBody = await req.json(); }
@@ -147,6 +179,23 @@ Deno.serve(async (req) => {
           ai_generated_at: product.ai_generated_at,
         }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // 5b. Quota atômica do usuário (`acquire_ai_quota`, SSOT de ai-usage.ts):
+    //     reserva a vaga ANTES de tocar o provedor — mesmo caminho da rota de IA
+    //     do `_shared/ai-router`. Esgotada → 429, sem gastar a chave DeepSeek.
+    const quota = await acquireAiQuota(auth.userId, AI_FUNCTION_NAME, DEEPSEEK_MODEL);
+    if (!quota.allowed) {
+      return new Response(
+        JSON.stringify({
+          error:    'Limite de uso de IA atingido.',
+          reason:   quota.reason ?? 'quota_exceeded',
+          used:     quota.used,
+          limit:    quota.limit,
+          remaining: quota.remaining,
+        }),
+        { status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json', 'X-Request-Id': __reqId } }
       );
     }
 
@@ -275,6 +324,7 @@ Deno.serve(async (req) => {
         p_error:         errMsg,
         p_generation_ms: generationMs,
       });
+      await logUsage({ status: 'error', errorMessage: errMsg });
       return new Response(
         JSON.stringify({ error: isAbort ? 'Timeout da IA. Tente novamente.' : 'Erro de conexão com a IA.' }),
         { status: 504, headers: { ...corsHeaders, 'Content-Type': 'application/json', 'X-Request-Id': __reqId } }
@@ -294,6 +344,7 @@ Deno.serve(async (req) => {
         p_error:          `DeepSeek HTTP ${dsResponse.status}: ${errText.slice(0, 200)}`,
         p_generation_ms:  generationMs,
       });
+      await logUsage({ status: 'error', errorMessage: `DeepSeek HTTP ${dsResponse.status}` });
       return new Response(
         JSON.stringify({ error: `Geração AI falhou (HTTP ${dsResponse.status})` }),
         { status: 502, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -317,6 +368,7 @@ Deno.serve(async (req) => {
         p_error:         'Resposta AI não é JSON válido',
         p_generation_ms: generationMs,
       });
+      await logUsage({ status: 'error', errorMessage: 'Resposta AI não é JSON válido' });
       return new Response(
         JSON.stringify({ error: 'Resposta da IA inválida. Tente novamente.' }),
         { status: 502, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -327,6 +379,14 @@ Deno.serve(async (req) => {
     const aiTitle       = enrichment.ai_title?.trim()       || product.name;
     const aiDescription = enrichment.ai_description?.trim() || '';
     const aiSummary     = enrichment.ai_summary?.trim()     || '';
+
+    // 11b. Consumo registrado assim que o provedor respondeu com JSON válido —
+    //      independe do save (a chave DeepSeek já foi usada nesta altura).
+    await logUsage({
+      status:       'success',
+      inputTokens:  dsData.usage?.prompt_tokens     ?? 0,
+      outputTokens: dsData.usage?.completion_tokens ?? 0,
+    });
 
     // 12. Salvar via fn_save_ai_enrichment_results (respeita locked_fields + histórico)
     const { data: saveResult, error: saveErr } = await supabase.rpc('fn_save_ai_enrichment_results', {
