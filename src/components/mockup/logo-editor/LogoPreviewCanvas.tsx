@@ -1,3 +1,4 @@
+import { useId } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Palette } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -19,6 +20,7 @@ interface LogoPreviewCanvasProps {
   techniqueColorConfig?: TechniqueColorConfig | null;
   techniqueName?: string;
   onPointerDown: (e: React.PointerEvent) => void;
+  onKeyDown?: (e: React.KeyboardEvent) => void;
   onColorConfigClick?: () => void;
 }
 
@@ -37,11 +39,15 @@ export function LogoPreviewCanvas({
   techniqueColorConfig,
   techniqueName,
   onPointerDown,
+  onKeyDown,
   onColorConfigClick,
 }: LogoPreviewCanvasProps) {
   const isCanvasProcessed =
     processedLogoUrl &&
     (techniqueColorConfig?.category === 'laser' || techniqueColorConfig?.category === 'serigrafia');
+
+  const hasLogo = Boolean(logoPreview && logoDisplay);
+  const instructionsId = useId();
 
   return (
     <>
@@ -72,8 +78,17 @@ export function LogoPreviewCanvas({
         // RefObject<T | null> (from useRef<T | null>) is structurally identical to
         // the LegacyRef<T> the JSX ref prop expects in @types/react 18.3; narrow the type param.
         ref={containerRef as React.RefObject<HTMLDivElement>}
-        className="relative aspect-square overflow-hidden rounded-lg border bg-muted/30"
+        className="relative aspect-square overflow-hidden rounded-lg border bg-muted/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        role="group"
+        aria-label="Área de posicionamento do logo"
+        aria-describedby={instructionsId}
+        tabIndex={hasLogo ? 0 : undefined}
+        onKeyDown={hasLogo ? (e) => e.target === e.currentTarget && onKeyDown?.(e) : undefined}
       >
+        <span id={instructionsId} className="sr-only">
+          Use as setas do teclado para mover o logo em passos finos. Segure Shift para passos
+          maiores.
+        </span>
         <img
           src={productImageUrl}
           alt="Imagem do produto para preview de personalização"
