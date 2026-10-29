@@ -18,8 +18,6 @@
  *      contendo texto de "Desfazer".
  */
 import { test, expect } from "../fixtures/test-base";
-import { dismissOnboardingTour } from "../helpers/auth";
-import { installMockAuth, isMockAuthEnabled } from "../helpers/mock-auth";
 import { gotoAndSettle } from "../helpers/nav";
 
 test.use({ trace: "retain-on-failure", screenshot: "only-on-failure" });
@@ -72,13 +70,13 @@ async function getUndoCount(page: import("@playwright/test").Page) {
 
 test.describe("Toast Desfazer — acessibilidade + teclado", () => {
   test.beforeEach(async ({ page }) => {
-    if (isMockAuthEnabled()) await installMockAuth(page);
-    // Qualquer rota autenticada serve; a home carrega os providers e o
-    // `<Toaster />`. Não precisamos de dados de orçamento.
-    await gotoAndSettle(page, "/orcamentos");
-    // O tour de onboarding (overlay full-screen) intercepta cliques e prende o
-    // foco; sem dispensá-lo, Tab/clique nunca chegam ao toast.
-    await dismissOnboardingTour(page);
+    // O harness DEV importa o componente e disponibiliza o disparador global,
+    // sem autenticação, dados do banco ou overlays de onboarding.
+    await gotoAndSettle(page, "/__test/undo-toast?interactive=1");
+    await expect(page.getByTestId("harness-ready")).toHaveAttribute(
+      "data-harness-mode",
+      "interactive",
+    );
   });
 
   test("A. aria-label começa com 'Desfazer ação' e cita segundos restantes/totais", async ({
