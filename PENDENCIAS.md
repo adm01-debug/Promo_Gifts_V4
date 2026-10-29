@@ -169,33 +169,16 @@ Clique em "Re-run all jobs".
 
 ---
 
-## P7 — db-schema-drift-check (ledger divergente — requer reconciliação pelo PO)
+## ✅ P7 — RESOLVIDO — `db-schema-drift-check` (ledger e schema canônico)
 
-**Workflow:** db-schema-drift-check
-**Run ID da última falha:** [40708395880](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40708395880)
-**SHA:** `2cee272b` (main HEAD em 2026-10-28 14:41)
-**Status:** ❌ failure — bloqueado por ledger divergente
+**Última validação:** [run 40876229387](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40876229387), workflow_dispatch no HEAD `0ada518ed41535d46a61b0ff45856648598867c7` — `conclusion: success`.
 
-**Erro exato (step "Ledger parity (repo x canonical)"):**
-```
-[migration-ledger][bloqueado] local_only=1108; remote_only=648; mismatched=0; malformed=0
-```
+**Evidências dos steps:**
+- `Ledger parity (repo x canonical)`: `[migration-ledger][ok] 1901 versões alinhadas.`
+- `Schema drift check (baseline + replay x remote)`: sem drift de schema; 26 funções iguais ao replay, com apenas ruído de comentário de coluna no dump.
+- O workflow também concluiu os checks de event triggers e cron jobs.
 
-**Causa raiz:** O ledger de migrations está massivamente dessincronizado entre o repositório e o banco de produção `doufsxqlfjyuvxuezpln`:
-- **1108 migrations** existem no repo (`supabase/migrations/`) mas **não constam** no banco remoto (`supabase_migrations.schema_migrations`)
-- **648 migrations** constam no banco remoto mas **não existem** no repo
-
-Esta divergência é independente do fix de P4 (guard pg_cron nas migrations `20261027120000`/`20261027140000`). O fix de P4 corrigiu o replay do Gate E40 dentro do `deploy-gates.yml`, mas o `db-schema-drift-check` compara o ledger em si — e o ledger está dessincronizado por DDL fora do fluxo de migration (REGRA #8 corolário).
-
-**Ação necessária do PO:**
-1. Investigar a extensão da divergência: baixar artefato `schema-reconciliation-evidence` do run [40708395880](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40708395880/artifacts/12824214915) (arquivos `/tmp/migration-ledger.json` e `/tmp/migration-ledger-summary.json`)
-2. Decidir estratégia de reconciliação: criar migrations espelho para o `remote_only=648` ou limpar o `local_only=1108` do ledger
-3. Após reconciliação: disparar `schema-snapshot-export.yml` com `force_rotate: true` para girar o baseline
-4. Reconfirmar com `workflow_dispatch` em `db-schema-drift-check`
-
-**Nota:** Per REGRA #8 corolário e E056, Claude **não pode** executar DDL ou `migration repair` em sessão de agente para reconciliar o ledger. Requer ação do PO.
-
-**Nota — diferença P7 (`local_only=1108`) vs P12 (`local_only=1109`):** P12 rodou no branch do PR #2701 que adiciona a migration `20261028120000_grant_kit_view_authenticated.sql` ao repo (+1 sobre os 1108 da main). Os dois valores são corretos em seus respectivos contextos: 1108 é o estado atual da main; 1109 é o estado do branch do PR #2701.
+Esta execução substitui o diagnóstico histórico do run `40708395880` (1.108 versões locais e 648 remotas reportadas pelo código antigo). A validação foi somente leitura; nenhuma migration, reparo de ledger ou alteração de schema foi aplicada ao Supabase canônico.
 
 ---
 
