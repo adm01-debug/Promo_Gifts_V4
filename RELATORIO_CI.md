@@ -1,8 +1,42 @@
 # RELATÓRIO CI — Promo Gifts V4
-**Gerado em:** 2026-10-28  
+**Gerado em:** 2026-10-29
 **Branch de correção:** `fix/ci-workflows` (esta sessão)  
 **SHA main no momento do diagnóstico:** `8c81483` (pós-fix Gate E40)  
 **SHA main final (pós-merge PR #2708):** `d784edb6` (atualização PENDENCIAS.md — sem alteração de código)
+
+## 8. Revalidação completa por workflow — 2026-10-29
+
+Inventário atualizado pela API do GitHub Actions: **119 workflows ativos**, cada um consultado individualmente com `branch=main` e `per_page=1` para obter sua última execução na `main`.
+
+| Estado da última execução na main | Quantidade | Interpretação |
+|---|---:|---|
+| `success` | 58 | Última execução verde |
+| `failure` | 31 | Todos registrados com execução, step/causa conhecida quando disponível e próximo passo em [`PENDENCIAS.md`](./PENDENCIAS.md), seção “Inventário completo da main — 2026-10-29” |
+| `cancelled` | 4 | Não classificados como falha segundo o critério solicitado |
+| `skipped` | 2 | Não classificados como falha |
+| `waiting` / `pending` | 3 | Uma aprovação de produção e duas execuções pendentes; não classificadas como falha concluída |
+| Sem execução na `main` | 21 | Não há status de execução para classificar |
+
+Exemplos dos gates e workflows que seguem verdes na última execução consultada: Deploy Gates [40762904944](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762904944), Branch Protection Sentinel [40762904734](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762904734), CodeQL [40762904933](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762904933), Security Scan [40762904705](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762904705), Quote Builder Delivery Quality [40762904715](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762904715), Gitleaks [40831579045](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40831579045), E2E Personalization [40762904578](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762904578), Uptime Monitor [40840104154](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40840104154), Supabase Linter [40832540788](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40832540788), CRM Callback [40830207224](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40830207224), Quote Number Hardening [40829600472](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40829600472) e Daily flows [40829415239](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40829415239).
+
+**Prova de regressão local do PR #2721:** `npm run build:verify` passou; `npm test` passou com 1.210 arquivos e 25.656 testes (1.134 skipped, 24 TODO). Isso comprova a execução local desse branch, mas não equivale a comparar cada um dos 31 workflows vermelhos com uma baseline equivalente; essas falhas remotas permanecem abertas ou aguardam a evidência/ação indicada em `PENDENCIAS.md`. Não houve alteração em `main`, deploy de aplicação, schema, migration ou dados do Supabase nesta revalidação.
+
+## 9. Estado de sincronização dos branches e do canônico — 2026-10-29
+
+- PR [#2721](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2721), SHA `a172c252`: 74 checks; 54 success, 8 failure, 8 skipped, 3 cancelled, 1 neutral. Os oito checks falhos permanecem como bloqueio de merge; a lista e os links estão nos checks do PR.
+- PR [#2714](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2714), SHA `ca316674`: 48 checks; 34 success, 6 failure, 6 skipped, 1 cancelled, 1 neutral. Gate E40 e Gate Final falham; PR não integrado.
+- PR documental [#2725](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2725), SHA `e4ef6e5`: 28 checks; 19 success, 1 failure, 7 skipped, 1 neutral. O check Copilot falhou no step `Processing Request (Linux)` durante limpeza; a API recusou rerun com HTTP 403 (“Jobs in this workflow run cannot be re-run”).
+- Supabase canônico `doufsxqlfjyuvxuezpln`: `ACTIVE_HEALTHY`, PG 17.6.1.063; 2.552 entradas no ledger, última `20261027160000`. No checkout: 3.009 arquivos SQL, 3.004 versões únicas; comparação de IDs indica 2.541 compartilhadas, 463 locais e 11 remotas, além de cinco grupos duplicados localmente. Esse inventário não comprova equivalência do conteúdo SQL nem do schema ao vivo; E40 continua bloqueando a reconciliação.
+- O checkout desta sessão tem saídas Graphify não commitadas em `.graphifyignore`, `graphify-out/GRAPH_REPORT.md` e `graphify-out/manifest.json`; portanto, não estão no GitHub. Nenhuma migration, DDL, dado operacional ou conteúdo do Supabase foi alterado.
+
+**Resultado da auditoria:** não há prova de sincronização completa entre checkout, `main` e banco. Código aguarda checks nos PRs; reconciliação de migrations aguarda classificação do drift; artefatos Graphify locais ainda aguardam revisão. O relatório registra as diferenças sem promover conteúdo local para produção ou fazer alterações destrutivas.
+
+## 10. Graphify — separação SQL e benchmark direcionado — 2026-10-29
+
+- O mapa SQL foi extraído em corpus temporário isolado dos 3.188 arquivos SQL versionados e consultado com sucesso. Resultado após clustering: 17.839 nós, 32.709 arestas e 2.633 comunidades. A saída local está em `graphify-out/sql/graphify-out/`, caminho ignorado pelo Git; o mapa não está compartilhado no repositório.
+- Graphify 0.9.68 foi executado isoladamente via `uvx` sobre o mesmo `graphify-out/graph.json` usado por 0.9.97. No benchmark, 0.9.97 reportou custo médio de ~1.623 tokens/consulta e redução 1.664×; 0.9.68 reportou ~218.295 tokens/consulta e redução 12,4×. Em busca direcionada, a versão atual encontrou caminho reverso de 2 saltos via `contains`; a 0.9.68 não encontrou caminho. Busca não direcionada concordou nas duas versões.
+- Decisão técnica baseada no resultado: 0.9.68 não substitui a versão homologada. A separação funcional SQL está validada localmente, mas falta versionar um comando repetível de rebuild e concluir a revisão do relatório/métricas de conectividade.
+- A reconstrução SQL não altera migrations, schema nem dados. A consulta validou extração e navegação estrutural, não a semântica/executabilidade das migrations.
 
 ---
 
@@ -19,7 +53,7 @@
 | Edge Integration Tests — All | [40735988490](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40735988490) | ❌ failure | SHA `9bb37c44` — versões edge functions desatualizadas (P11) |
 | edge-functions-drift-check | [40740410933](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40740410933) | ❌ failure | SHA `c7bc0ba6` — drift GitHub × canônico (P8) |
 | db-schema-drift-check | [40708395880](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40708395880) | ❌ failure | workflow_dispatch SHA `2cee272b` — ledger divergente (P7) |
-| Kit Coverage — Integration | [40628415319](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40628415319) | ❌ failure | schedule SHA `62af0798` — GRANT ausente (P12) |
+| Kit Coverage — Integration | [40813871454](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40813871454) | ❌ failure | chave publishable sem sessão autenticada; chamada como `anon` sem SELECT na view/tabela. Usar identidade E2E aprovada e fixture determinística; não conceder leitura anon. |
 | E2E Quotes — Matrix (E77) | N/A | N/A | Workflow só roda em PR; 0 execuções na main |
 
 > `*` success via `requireAuth`: os testes verificam se as secrets E2E estão presentes; sem elas, o suite é skipped integralmente e o workflow retorna success. A causa raiz (secrets ausentes) está em P1.
@@ -54,5 +88,5 @@ Os itens abaixo estão documentados em `PENDENCIAS.md` com o motivo exato do blo
 | P7 | db-schema-drift-check | `local_only=1108; remote_only=648` - ledger divergente | Reconciliar via `db-apply-migration.yml` ou `migration repair` com versão explícita |
 | P8 | edge-functions-drift-check | Drift GitHub × canônico (funções no repo divergem das deployadas) | Disparar `deploy-edge-functions.yml` (workflow_dispatch) e aprovar `environment: production` |
 | P11 | Edge Integration Tests — All | Versões deployadas desatualizadas (código no repo correto) | Disparar `deploy-edge-functions.yml` (workflow_dispatch) |
-| P12 | Kit Coverage — Integration | `permission denied for view v_kit_component_complete` | Opção A: resolver P7 e mergear PR #2701 com GRANT. Opção B: `db-apply-migration.yml` com GRANT SELECT |
+| P12 | Kit Coverage — Integration | `permission denied` para `v_kit_component_complete` e `product_kit_components`; o workflow está como `anon`, enquanto o canônico já concede SELECT a `authenticated`/`service_role` | Autenticar o teste com uma identidade E2E somente-leitura aprovada e fixar a fixture. Sem grant a `anon`; PR #2701 segue bloqueado por drift/ledger e não corrige sozinho a identidade da chamada |
 | P13 | N/A (Vercel infra) | Projeto fantasma `prj_W1Zdi6BQWkAwQx5VJjpSNlZubeok` gerando builds duplicados | Deletar projeto fantasma no dashboard Vercel |
