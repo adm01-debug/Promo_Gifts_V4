@@ -16,6 +16,7 @@
 import { test, expect, requireAuth } from "../fixtures/test-base";
 import { gotoAndSettle } from "../helpers/nav";
 import { e2eName } from "../helpers/e2e-resources";
+import { installMockAuth, isMockAuthEnabled } from "../helpers/mock-auth";
 import { requireE2EBaseUrl } from "../helpers/require-env-base-url";
 
 // Matriz de fusos: a contagem regressiva usa `new Date(y,m,d)` local, então
@@ -30,6 +31,7 @@ const SUPABASE_ANON_KEY =
   process.env.VITE_SUPABASE_ANON_KEY ||
   process.env.SUPABASE_ANON_KEY ||
   "";
+const QUOTES_REST = /\/rest\/v1\/quotes(\?|$)/i;
 
 interface ExpirationSeed {
   name: string;
@@ -144,9 +146,49 @@ for (const tz of TIMEZONES) {
 // navegação fora→volta. Posição é validada via ordem dos headers.
 test.describe("Cotações · coluna Expiração — regressão de layout", () => {
   test.use({ timezoneId: "America/Sao_Paulo", locale: "pt-BR" });
-  test.beforeEach(() => requireAuth());
+  test.beforeEach(async ({ page }) => {
+    requireAuth();
+    if (isMockAuthEnabled()) {
+      await installMockAuth(page);
+      await page.route(/\/rest\/v1\/.+/i, (route) => {
+        if (route.request().method() !== "GET") return route.continue();
+        return route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          headers: { "Content-Range": "0-0/0" },
+          body: "[]",
+        });
+      });
+    }
+  });
 
   test("ordem Status → Expiração → Nº Orçamento sobrevive a reload e navegação", async ({ page }) => {
+    // Este teste valida só a estrutura da tabela. Fornece uma linha sintética
+    // para não depender de seed/RLS nem gravar no Supabase durante o E2E mock.
+    await page.route(QUOTES_REST, (route) => {
+      if (route.request().method() !== "GET") return route.continue();
+      return route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        headers: { "Content-Range": "0-0/1" },
+        body: JSON.stringify([
+          {
+            id: "00000000-0000-0000-0000-000000000001",
+            quote_number: "E2E-001/26",
+            seller_id: "00000000-0000-0000-0000-e2e0e2e0e2e0",
+            client_name: "Cliente de teste",
+            client_company: "Empresa de teste",
+            status: "draft",
+            subtotal: 100,
+            total: 100,
+            valid_until: "2026-12-31",
+            created_at: "2026-10-01T12:00:00Z",
+            updated_at: "2026-10-01T12:00:00Z",
+          },
+        ]),
+      });
+    });
+
     await gotoAndSettle(page, "/orcamentos");
 
     const expectOrder = async (label: string) => {
