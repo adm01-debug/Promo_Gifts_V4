@@ -1,1 +1,27 @@
-failed to load config from /home/user/Promo_Gifts_V4/vitest.config.ts
+# Baseline de testes — 2026-10-29
+# SHA main: 4b4206abf947a87f56b1dc7effbf9739f530d80b
+# Branch: claude/eloquent-ramanujan-0yt2fo
+# Comando: NODE_OPTIONS="--max-old-space-size=4096" npx vitest run tests/scripts/ --reporter=verbose
+
+## Resultado
+Test Files  37 passed (37)
+     Tests  523 passed | 3 skipped (526)
+  Start at  2026-10-29 16:10:39
+  Duration  84.03s
+
+## Testes pulados (não falhos)
+- 3 skipped (detalhes implícitos no report; nenhum FAIL)
+
+## Testes falhos por nome
+NENHUM — todos os 523 testes passam.
+
+## Subset executado
+tests/scripts/ — 37 arquivos de teste de gates/contratos/scripts de CI
+(suite completa rodando em background em task b0fjnqovi; resultado parcial acima
+ é evidência de que o vitest carrega e executa corretamente na branch atual)
+
+## Nota sobre contexto anterior
+Em contexto anterior, baseline/tests.txt continha apenas:
+  "failed to load config from /home/user/Promo_Gifts_V4/vitest.config.ts"
+Esse erro era OOM do pre-push hook, não falha de carregamento do vitest.
+Na execução atual (NODE_OPTIONS adequado), o vitest carrega e passa sem erros.
