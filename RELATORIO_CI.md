@@ -260,3 +260,11 @@ As 27 falhas e suas evidências resumidas estão em [`PENDENCIAS.md`, seção P1
 | `git diff --check` | — | Passou nos arquivos documentais alterados | Sem whitespace inválido |
 
 Esta revisão só altera documentação e números de auditoria. Não executou reruns de workflows, alteração em `main`, deploy, migration, repair, DDL ou mudança de dados. A branch e o PR #2743 continuam separados da `main`; o PR permanece bloqueado por checks externos/pendentes descritos em P19.
+
+## 14. Revalidação após sincronização da branch Graphify — 2026-10-29
+
+- Branch `fix/graphify-reproducible-version-20261029`, commit final `5818692d`, publicada por push normal. O merge `8021e0d58` incorpora `origin/main` `9a97f9a2`; `origin/main` é ancestral da branch.
+- Pós-commit: `npm run build:verify` passou (typecheck, ESLint 0 erros/0 avisos e sem regressão, guards SSOT e build). `npm test` passou com 1.247 arquivos/25.871 testes; 130 arquivos/1.135 testes skipped e 24 TODO. Baseline local imediatamente anterior ao commit Graphify: mesmos totais.
+- Graphify foi atualizado com o comando versionado `npm run graphify:refresh`, `graphifyy==0.9.91`: 41.230 nós, 69.904 relações e 2.163 comunidades; 14.852 nós de baixa conectividade/18.109 elegíveis. O benchmark pré-merge continua identificado como fotografia `7eea1696` em `docs/graphify/AUDITORIA_MAPAS_E_BENCHMARK_2026-10-29.md`.
+- PR #2743 permanece aberto: Actions sem falhas/pending no snapshot consultado, mas status Vercel falhou no deployment `dpl_7hEenqjmJq6mxN1oTAuZzZKrDisb`; `vercel inspect --logs` não expõe a causa. PR #2745 está atrás da `main`. PR #2747 tem Gate 5 falhando por HTTP 500/504 no RPC de audit, E2E de reposição bloqueado por latência Auth/PostgREST, Copilot Reviewer com falha de firewall e Preview Vercel sem diagnóstico; ver P20 de `PENDENCIAS.md`. Rerun do Gate 5 read-only está na fila.
+- Nenhum merge dos PRs #2743/#2745/#2747, alteração no banco, migration, DDL ou deploy foi feito nesta etapa.
