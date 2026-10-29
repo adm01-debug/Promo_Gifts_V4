@@ -68,4 +68,29 @@ describe('Graphify TypeScript type references', () => {
     ]));
     expect(enrichGraphWithTypeReferences(graph, program, { root }).added).toBe(0);
   });
+
+  it('skips files absent from the primary graph instead of inventing source nodes', () => {
+    const root = mkdtempSync(path.join(os.tmpdir(), 'graphify-ts-unmapped-'));
+    temporaryDirectories.push(root);
+    mkdirSync(path.join(root, 'src'), { recursive: true });
+    writeFileSync(path.join(root, 'src/types.ts'), 'export interface Product { id: string }\n');
+    writeFileSync(path.join(root, 'src/unmapped.ts'), 'import type { Product } from "./types"; export type Cart = Product;\n');
+    const program = ts.createProgram([path.join(root, 'src/types.ts'), path.join(root, 'src/unmapped.ts')], {
+      strict: true,
+      noEmit: true,
+      target: ts.ScriptTarget.ES2022,
+      module: ts.ModuleKind.ESNext,
+      moduleResolution: ts.ModuleResolutionKind.Bundler,
+    });
+    const graph = {
+      nodes: [
+        { id: 'src_types', label: 'types.ts', _origin: 'ast', file_type: 'code', source_file: 'src/types.ts', source_location: 'L1' },
+      ],
+      links: [],
+    };
+    const result = enrichGraphWithTypeReferences(graph, program, { root });
+    expect(result.skippedUnmappedSources).toBeGreaterThan(0);
+    expect(graph.nodes).toHaveLength(1);
+    expect(graph.links).toHaveLength(0);
+  });
 });
