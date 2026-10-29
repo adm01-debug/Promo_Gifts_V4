@@ -163,6 +163,9 @@ test.describe("Cotações · coluna Expiração — regressão de layout", () =>
       expect(iNum, `quote_number presente em ${label}`).toBeGreaterThan(iExp);
     };
 
+    // A lista é montada após o carregamento assíncrono dos orçamentos. Aguarda
+    // o cabeçalho real da tabela antes de inspecionar a ordem no primeiro acesso.
+    await expect(page.getByTestId("quotes-col-header-expiration")).toBeVisible({ timeout: 10_000 });
     await expectOrder("primeiro acesso");
 
     await page.reload();
