@@ -69,6 +69,51 @@ Este snapshot substitui os estados históricos abaixo somente para a situação 
 
 **Gate Final verde em 5 runs consecutivos na main — condição de processo satisfeita.**
 
+## 8. Revalidação — 2026-10-29 00:22 UTC
+
+Consulta nova ao MCP GitHub, após o commit `7e3bfebe` da PR #2717:
+
+| Estado da última execução por workflow na `main` | Quantidade |
+|---|---:|
+| `success` | 22 |
+| `failure` | 5 |
+| `cancelled` | 3 |
+| `skipped` | 2 |
+| `in_progress` | 1 |
+| **Total** | **33** |
+
+| Workflow em falha | Run | Causa/evidência atual |
+|---|---:|---|
+| CI Security & Drift Checks | [40762904949](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762904949) | Fluxos E2E autenticados sem conclusão; já registrado acima, exige reprodução com a conta/dados E2E. |
+| E2E — Critical Flows & Error Boundaries | [40762904577](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762904577) | Falso positivo de asserção (`500` também casa com `6.500 produtos`); fix está na PR #2717, ainda sem merge. |
+| E2E — Magazine Header Layout | [40762354171](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762354171) | A navegação esperada `/magazine/{id}` não ocorreu; causa não comprovada. |
+| Edge Integration Tests — All Functions | [40762354015](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762354015) | `crm-db-bridge` retornou 503 para entrada inválida; exige comparar código implantado e contrato antes de qualquer deploy. |
+| Uptime Monitor | [40793110088](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40793110088) | Probe `health-check` falhou; investigação e bloqueio registrados em P14 abaixo e em `PENDENCIAS.md`. |
+
+Workflows verdes confirmados na mesma consulta incluem Deploy Gates ([40762904944](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762904944)), Branch Protection Sentinel ([40762904734](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762904734)), CodeQL ([40762904933](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762904933)), Supabase Linter Gate ([40762904662](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762904662)) e Workflow Lint ([40762354220](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762354220)). Swatch QuickView estava em execução no momento da consulta.
+
+### Estado da PR #2717
+
+A PR segue aberta, branch `fix/e2e-vite-port-isolation`, head `7e3bfebecc07c3076c8d0b381f8ab71aae78fe24`; não foi mergeada. Na consulta de 2026-10-29 00:22 UTC havia 21 execuções associadas ao head: 10 verdes, 7 em execução, 3 falhas e 1 ignorada.
+
+| Check com falha | Run | Evidência resumida |
+|---|---:|---|
+| E2E Focused UI — thumb-quickview | [40792695754](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40792695754) | `loginViaUI` expirou após 75 s e permaneceu em `/login`; 21 testes foram skipped e 4 passaram. Logs PostgREST no mesmo intervalo mostram 504 em consultas autenticadas a `profiles`; manter como bloqueio dependente de disponibilidade/autenticação, sem enfraquecer o E2E. |
+| E2E Quotes — Matrix | [40792695757](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40792695757) | Snapshot mobile dark do menu divergiu; 26 passaram, 7 skipped. Não atualizar baseline sem revisar o diff visual e aprovar a mudança. |
+| Copilot Code Review | [40792708888](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40792708888) | Falha de quota/uso adicional do serviço; não equivale a aprovação de revisão. |
+
+### Repositório e Supabase canônico — reconciliação
+
+- Checkout `main` local e `origin/main` coincidem em `c344508711797a730893644449b16a05f12f4fce`. As correções de E2E citadas acima estão publicadas somente na branch/PR #2717; ainda não fazem parte de `main`.
+- A auditoria estrutural anterior encontrou correspondência dos objetos públicos entre os types locais e o catálogo canônico (398 Tables, 197 Views, 1.020 Functions, 15 Enums e 2 CompositeTypes). Isso não significa que o ledger de migrations esteja sincronizado.
+- Comparação exata já realizada por IDs: 3.004 versões únicas locais vs. 2.552 no ledger canônico; 463 IDs apenas locais e 11 apenas remotos. Há também uma saída do gate E40 com `local_only=1109; remote_only=648`, que usa outro escopo/filtro. As métricas não são intercambiáveis; as migrations divergentes permanecem sem classificação e não foram aplicadas/reparadas nesta auditoria.
+- Nenhum DDL, migration, dado operacional ou Edge Function foi alterado no Supabase canônico.
+- A execução local `graphify update` está alinhada ao commit de origem `c3445087`, mas alterou apenas `graphify-out/GRAPH_REPORT.md` e `graphify-out/manifest.json` no checkout principal. Esses artefatos ainda não estão commitados; o binário instalado é 0.9.91 e a skill local declara 0.9.94.
+
+### Uptime Monitor — evidência
+
+Run [40793110088](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40793110088) reportou `site=0`, `health-check=22`, `check-login (OPTIONS)=0`, `auth-health=0`. O workflow já envia `apikey` e `Authorization` à `health-check`; portanto, não se trata de ausência desses headers. A Edge Function canônica está ativa na versão 275 com `verify_jwt=true`, e o código faz uma consulta limitada a `public.profiles` com timeout de 1.500 ms. Os logs do projeto mostram respostas PostgREST 504 para consultas a `profiles` e cancelamentos PostgreSQL por `statement timeout` no mesmo período. O health check administrativo do banco respondeu, mas isso não invalida os 504 da API. A causa operacional exata dos timeouts ainda não foi isolada; não desativamos JWT nem mascaramos o resultado do probe.
+
 ---
 
 ## 7. Workflows aguardando ação do PO

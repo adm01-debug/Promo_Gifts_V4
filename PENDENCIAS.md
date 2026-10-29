@@ -361,3 +361,41 @@ description: "Deployment has failed — run this Vercel CLI command: npx vercel 
 ---
 
 *Ação prioritária: P1 (secrets E2E) — desbloqueia P2, P9, P10. P6, P8, P11 requerem investigação independente. P12 bloqueado por P7 (Opção B disponível via workflow_dispatch sem resolver P7). P13 requer deleção do projeto fantasma Vercel.*
+
+## P14 — Uptime Monitor: `health-check` retorna 503/timeout
+
+**Run mais recente na `main`:** [40793110088](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40793110088) — SHA `c344508711797a730893644449b16a05f12f4fce`, schedule, 2026-10-29 00:17 UTC.
+
+**Issue automática:** [#2718](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2718).
+**Status:** ❌ bloqueado por degradação observada no caminho Supabase Edge Function → PostgREST/PostgreSQL; causa operacional detalhada ainda não isolada.
+
+**Resultado dos probes:** `site=0`, `health-check=22`, `check-login (OPTIONS)=0`, `auth-health=0` (`curl` exit 22 = HTTP >= 400).
+
+**Evidência:**
+- O workflow `.github/workflows/uptime-monitor.yml` já envia `apikey` e `Authorization: Bearer` para `health-check`; remover ou desabilitar `verify_jwt` não é correção demonstrada.
+- Edge Function `health-check` ativa na versão 275, `verify_jwt=true`; a verificação interna consulta `public.profiles` com timeout de 1.500 ms.
+- Logs da função em 00:18–00:20 UTC registram `database timeout after 1500ms` e HTTP 503. Logs PostgREST no mesmo intervalo mostram HTTP 504 em requisições autenticadas a `profiles`; logs PostgreSQL registram cancelamentos por `statement timeout`.
+- O MCP administrativo conseguiu consultar o Postgres, mas esse teste isolado não prova disponibilidade do caminho PostgREST usado pela função.
+
+**Ação necessária:** investigar a origem dos statement timeouts/504 no caminho de API, confirmar com novo run do monitor e só então propor correção mínima. Não alterar o endpoint para sempre retornar 200, não remover a autenticação, não fazer deploy da Edge Function diretamente via MCP/dashboard e não alterar schema/dados.
+
+## P15 — PR #2717 ainda não está pronta para merge
+
+**PR:** [#2717](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2717), head `7e3bfebecc07c3076c8d0b381f8ab71aae78fe24`, aberta e sem merge.
+
+| Check | Run | Bloqueio observado |
+|---|---:|---|
+| E2E Focused UI — thumb-quickview | [40792695754](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40792695754) | Login E2E permaneceu em `/login` após 75 s; no mesmo intervalo há respostas 504 em consultas autenticadas a `profiles`. Corrigir após estabilizar/investigar autenticação/API; não pular ou enfraquecer o teste. |
+| E2E Quotes — Matrix | [40792695757](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40792695757) | Snapshot mobile dark do menu divergiu. Revisar imagem/diff e comportamento antes de atualizar o baseline. |
+| Copilot Code Review | [40792708888](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40792708888) | Serviço de review falhou por limite de uso/quota; não representa review aprovada. |
+
+Na consulta de 2026-10-29 00:22 UTC havia outras 7 execuções ainda em andamento. A PR deve permanecer aberta até que todos os checks obrigatórios terminem sem falhas e a divergência visual seja validada.
+
+## P16 — Ledger de migrations canônico ainda não reconciliado
+
+**Projeto:** `doufsxqlfjyuvxuezpln`.
+**Evidência anterior por comparação exata de IDs:** 3.004 versões únicas locais; 2.552 no ledger remoto; 463 local-only e 11 remote-only. O gate E40 também reportou `local_only=1109; remote_only=648`, sob outro escopo/filtro ainda não reconciliado com essa contagem.
+
+**Status:** ❌ não sincronizado/classificação pendente. Os types estruturais públicos foram comparados anteriormente e estavam alinhados; isso não resolve o ledger.
+
+**Ação necessária:** alinhar/documentar os dois métodos de comparação e classificar cada ID divergente como migration legítima, baseline histórica ou registro fora de banda. Até essa reconciliação, não executar `db push`, `migration repair` em massa, nem aplicar/registrar migrations por MCP/dashboard. Qualquer aplicação necessária deve seguir o workflow controlado autorizado no repositório, com as migrations versionadas e pré-checks aprovados.
