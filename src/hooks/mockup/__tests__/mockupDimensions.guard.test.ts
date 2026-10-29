@@ -8,6 +8,7 @@
  * ao serviço de geração (WYSIWYG).
  */
 import { renderHook, act } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 const { draftApi, api, toastMock, colorAnalysis, positionHistory } = vi.hoisted(() => ({
@@ -123,7 +124,7 @@ const AREA_WITH_LOGO = {
 };
 
 async function setup(product: unknown) {
-  const hook = renderHook(() => useMockupGenerator());
+  const hook = renderHook(() => useMockupGenerator(), { wrapper: MemoryRouter });
   await act(async () => {
     hook.result.current.setProductSelection({
       product: product as never,
