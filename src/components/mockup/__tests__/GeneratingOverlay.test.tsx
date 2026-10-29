@@ -29,7 +29,9 @@ describe('GeneratingOverlay', () => {
   it('não avança por cronômetro: texto idêntico após o tempo passar', async () => {
     const { container } = render(<GeneratingOverlay isVisible />);
     const before = container.textContent;
-    await new Promise((r) => setTimeout(r, 300));
+    await new Promise((r) => {
+      setTimeout(r, 300);
+    });
     expect(container.textContent).toBe(before);
   });
 

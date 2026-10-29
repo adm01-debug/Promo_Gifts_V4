@@ -26,14 +26,21 @@ const RAD = Math.PI / 180;
 function cornersOf(width: number, height: number, deg: number) {
   const cos = Math.cos(deg * RAD);
   const sin = Math.sin(deg * RAD);
-  return ([[-1, -1], [1, -1], [1, 1], [-1, 1]] as const).map(([sx, sy]) => {
+  return (
+    [
+      [-1, -1],
+      [1, -1],
+      [1, 1],
+      [-1, 1],
+    ] as const
+  ).map(([sx, sy]) => {
     const x = (sx * width) / 2;
     const y = (sy * height) / 2;
     return { x: x * cos - y * sin, y: x * sin + y * cos };
   });
 }
 
-function px(value: string | undefined | null): number {
+function px(value: string | null | undefined): number {
   return Number.parseFloat(String(value ?? '').replace('px', ''));
 }
 
@@ -89,7 +96,12 @@ describe('getMarkFootprint — bbox da marca girada/escalada', () => {
   });
 
   it('contém os 4 cantos da marca em 15° e 90° (corte não passa por subestimativa)', () => {
-    for (const [deg, scale] of [[15, 1], [90, 1], [15, 0.4], [90, 3]] as const) {
+    for (const [deg, scale] of [
+      [15, 1],
+      [90, 1],
+      [15, 0.4],
+      [90, 3],
+    ] as const) {
       const footprint = getMarkFootprint(WIDE_LOGO, deg, scale);
       const cantos = cornersOf(WIDE_LOGO.widthPx * scale, WIDE_LOGO.heightPx * scale, deg);
       for (const canto of cantos) {
@@ -102,16 +114,38 @@ describe('getMarkFootprint — bbox da marca girada/escalada', () => {
 
 describe('isMarkClipped — a marca ultrapassa a área de aplicação?', () => {
   it.each([
-    { nome: 'marca pequena no centro', fp: { width: 120, height: 40 }, pos: { x: 50, y: 50 }, clipped: false },
-    { nome: 'marca na borda esquerda', fp: { width: 120, height: 40 }, pos: { x: 5, y: 50 }, clipped: true },
-    { nome: 'marca maior que a área', fp: { width: 480, height: 160 }, pos: { x: 50, y: 50 }, clipped: true },
-    { nome: 'marca girada mais alta que a área', fp: { width: 80, height: 500 }, pos: { x: 50, y: 50 }, clipped: true },
+    {
+      nome: 'marca pequena no centro',
+      fp: { width: 120, height: 40 },
+      pos: { x: 50, y: 50 },
+      clipped: false,
+    },
+    {
+      nome: 'marca na borda esquerda',
+      fp: { width: 120, height: 40 },
+      pos: { x: 5, y: 50 },
+      clipped: true,
+    },
+    {
+      nome: 'marca maior que a área',
+      fp: { width: 480, height: 160 },
+      pos: { x: 50, y: 50 },
+      clipped: true,
+    },
+    {
+      nome: 'marca girada mais alta que a área',
+      fp: { width: 80, height: 500 },
+      pos: { x: 50, y: 50 },
+      clipped: true,
+    },
   ])('$nome', ({ fp, pos, clipped }) => {
     expect(isMarkClipped(fp, pos, { width: AREA_PX, height: AREA_PX })).toBe(clipped);
   });
 
   it('área ainda não medida (0px) não afirma corte', () => {
-    expect(isMarkClipped({ width: 480, height: 160 }, { x: 50, y: 50 }, { width: 0, height: 0 })).toBe(false);
+    expect(
+      isMarkClipped({ width: 480, height: 160 }, { x: 50, y: 50 }, { width: 0, height: 0 }),
+    ).toBe(false);
   });
 });
 
