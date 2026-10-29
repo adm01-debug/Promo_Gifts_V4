@@ -111,9 +111,11 @@ Nenhum dos 4 PRs mergeados continha:
 
 ## 🔍 NÃO VERIFICADO / PENDENTE
 
-- **CI do main `8f992fdd`** (run 40968551210): `queued` desde 22:47Z — gargalo de runners no GitHub. Main avançou para `9a97f9a2` (commits do Lovable 22:56Z). Nenhuma conclusão disponível às 23:15Z.
-- **#2747** (run 40970640916, SHA `3a5521b1`): Gate Final `pending` desde 23:05Z — runners em congestionamento. Merge aguardando Gate Final ✅.
-- **#2745** (run 40969209908, SHA `696ad700`): Gate Final `queued` desde 22:53Z (>20min) — runners em congestionamento. Merge aguardando Gate Final ✅.
+- **CI do main `8f992fdd`** (run 40968551210): `queued` desde 22:47Z — gargalo severo de runners no GitHub (>40min na fila às 23:30Z). Main avançou para `9a97f9a2` (Lovable 22:56Z). Sem conclusão disponível.
+- **#2747** (run 40970640916, SHA `3a5521b1`): Gate Final `queued` desde 23:05Z (>25min às 23:30Z) — runners em congestionamento. Merge aguardando Gate Final ✅.
+- **#2745** (run 40969209908, SHA `696ad700`): Gate Final `queued` desde 22:53Z (>37min às 23:30Z) — runners em congestionamento. Merge aguardando Gate Final ✅.
+- **Sessão paralela** (session_01RfQzo8Ean3zudG2sEN79b6): criou PR #2750 (`claude/feat-analise-prs-v4-20261029-2310`) com análise de PRs adicionais (#2739–#2751) às 23:27Z. Não interfere com esta sessão.
+- **Vitest**: SIGTERM (exit 143) no worktree `9a97f9a2` — falha ambiental pré-existente (sem Supabase no container), não é regressão dos merges #2741/#2742. Worktree removido em 23:30Z.
 
 ## ✅ BASELINE MAIN `9a97f9a2` (2026-10-29)
 

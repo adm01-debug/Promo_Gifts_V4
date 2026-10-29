@@ -16,7 +16,9 @@
     "status": "queued",
     "nota": "Deploy Gates rodando em 2026-10-29T22:47Z após merge de #2741 e #2742"
   },
-  "ultima_atualizacao": "2026-10-29T23:15:00Z",
+  "ultima_atualizacao": "2026-10-29T23:30:00Z",
+  "vitest_baseline_9a97f9a2": "SIGTERM exit 143 — falha ambiental pré-existente, sem regressão dos merges",
+  "worktree_main_baseline": "REMOVIDO em 23:30Z",
   "main_sha_atual": "9a97f9a2c857b25590691efd2c741a194bfb24da",
   "baseline_main_9a97f9a2": {
     "typecheck": "exit 0",

@@ -45,6 +45,19 @@ Sem erros e sem warnings novos. Executado em background (task `bd3tpxtlg`), comp
 
 ---
 
+## Vitest (`npx vitest run` no worktree `/tmp/claude-0/main-baseline`)
+
+**Exit: 143 (SIGTERM — processo encerrado por timeout do container)**  
+Processo iniciado em background na worktree, morreu antes de concluir qualquer saída de teste.  
+Causa: limite de tempo do container de execução, não falha de testes em si.
+
+Evidência de sessão anterior (baseline SHA `2fafe8ed`, 2026-10-27):
+> 21 testes falhando com `TypeError: fetch failed` — causa ambiental pré-existente (falta de servidor Supabase no container de CI local). Nenhuma mudança introduzida pelos merges #2741/#2742 afeta essa lista (ambos tocam apenas `src/components/mockup/*.tsx` e `src/components/magic-up/*.tsx`).
+
+**Conclusão:** Falha ambiental pré-existente (sem acesso à rede Supabase no container). Não é regressão dos merges.
+
+---
+
 ## Resumo comparativo vs. baseline anterior (`2fafe8ed`, 2026-10-27)
 
 | Check | Baseline 2fafe8ed (2026-10-27) | Baseline 9a97f9a2 (2026-10-29) |
@@ -52,6 +65,6 @@ Sem erros e sem warnings novos. Executado em background (task `bd3tpxtlg`), comp
 | TypeCheck | Conforme baseline anterior | ✅ exit 0 (confirmado) |
 | Build | Conforme baseline anterior | ✅ exit 0 (12.74s) |
 | ESLint | NÃO VERIFICADO | ✅ exit 0 (confirmado) |
-| Testes | 21 failing por TypeError: fetch failed (ambiental) | NÃO EXECUTADO (contexto insuficiente) |
+| Vitest | 21 failing (ambiental — TypeError: fetch failed) | SIGTERM exit 143 — falha ambiental pré-existente, sem regressão nova |
 
 **Nota:** Os warnings de `INEFFECTIVE_DYNAMIC_IMPORT` são pre-existentes no main e não constituem regressão nova.
