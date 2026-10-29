@@ -74,6 +74,8 @@ jobs:
 
       - name: E051 — repair-only exige ack de rotação do baseline
         if: inputs.mode == 'repair-only'
+        env:
+          ACK_BASELINE_ROTATION: ${{ inputs.ack_baseline_rotation }}
         run: |
           set -euo pipefail
           {
@@ -86,7 +88,7 @@ jobs:
             echo "**Ação obrigatória após este workflow:**"
             echo "Disparar \`schema-snapshot-export.yml\` com \`force_rotate: true\` para gerar novo baseline."
           } >> "$GITHUB_STEP_SUMMARY"
-          if [ "${{ inputs.ack_baseline_rotation }}" != "true" ]; then
+          if [ "$ACK_BASELINE_ROTATION" != "true" ]; then
             echo "::error::repair-only requer ack_baseline_rotation=true — confirme que você agendará a rotação do baseline (schema-snapshot-export force_rotate=true) antes de prosseguir. Ver E051."
             exit 1
           fi
