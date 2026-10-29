@@ -16,7 +16,7 @@
     "status": "queued",
     "nota": "Deploy Gates rodando em 2026-10-29T22:47Z após merge de #2741 e #2742"
   },
-  "ultima_atualizacao": "2026-10-30T00:30:00Z",
+  "ultima_atualizacao": "2026-10-30T01:10:00Z",
   "vitest_baseline_9a97f9a2": "SIGTERM exit 143 — falha ambiental pré-existente. Os 5 arquivos de teste falhando em 2fafe8ed não foram modificados até 9a97f9a2 (confirmado via git diff). Documentado em baseline/vitest-baseline-9a97f9a2.md",
   "worktree_main_baseline": "REMOVIDO em 23:30Z",
   "main_sha_atual": "9a97f9a2c857b25590691efd2c741a194bfb24da",
@@ -37,7 +37,7 @@
     "branch": "fix/ratchet-weekly-sigpipe-20261029",
     "sha": "696ad700",
     "status": "queued",
-    "nota": "Ainda queued às 00:30Z (+1h37min na fila). Gargalo de runners GitHub Actions."
+    "nota": "Ainda queued às 01:10Z. PR HEAD mudou para 47b6f55e (merge de origin/main). Novo Deploy Gates NÃO criado para 47b6f55e (runner congestion). Deploy Gates 40969209908 ainda queued para SHA anterior. Outros workflows (SSOT Guard, edge-drift, no-prod-leak) também queued para 47b6f55e desde 23:44Z."
   },
   "ci_pr2747": {
     "run_id": 40970640916,
@@ -69,7 +69,7 @@
     {"numero": 2742, "veredito": "MERGEADA", "sha": "8f992fdde05943c9bcd4d0ca925ec221f4828f41"},
     {"numero": 2743, "veredito": "NÃO MERGEAR", "motivo": "Magazine Header OK = failure (run 40961676490, job 123777247522, 1 anotação, 22:57Z) — Gate Final bloqueado"},
     {"numero": 2744, "veredito": "NÃO MERGEAR", "motivo": "DRAFT + título [NÃO MESCLAR] + edge function sem workflow"},
-    {"numero": 2745, "veredito": "AGUARDANDO_CI", "motivo": "fix legítimo — Gate Final run 40969209908 queued desde 22:53Z (runner congestion)"},
+    {"numero": 2745, "veredito": "AGUARDANDO_CI", "motivo": "fix legítimo — PR HEAD agora 47b6f55e (merge de origin/main às 23:35Z). Gate Final sem run para 47b6f55e ainda. Deploy Gates 40969209908 queued para SHA anterior 696ad700. Runner congestion >2h."},
     {"numero": 2747, "veredito": "AGUARDANDO_CI", "motivo": "fix(types) aditivo — Gate Final run 40970640916 pending desde 23:05Z (SHA 3a5521b1, base main 9a97f9a2)"},
     {"numero": 2746, "veredito": "NÃO MERGEAR", "motivo": "DRAFT"}
   ]
