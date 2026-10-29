@@ -1,8 +1,8 @@
 import { useEffect, useId, useState } from 'react';
 import { Badge } from '@/components/ui/badge';
-import { AlertTriangle, Palette } from 'lucide-react';
+import { AlertTriangle, Info, Palette, Ruler } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import type { TechniqueFilter } from './logoTechniqueFilters';
+import { TECHNIQUE_FILTERS, type TechniqueFilter } from './logoTechniqueFilters';
 import type { TechniqueColorConfig } from '../techniqueColorUtils';
 
 /** Bbox de uma marca depois de girar/escalar, em px. */
@@ -102,6 +102,110 @@ function useAreaSize(ref: React.RefObject<HTMLDivElement | null>): CanvasSize {
   return area;
 }
 
+/** Estado de geometria do preview — três rótulos, três níveis de confiança. */
+export type GeometryState = 'ilustrativa' | 'sem_regra' | 'validada';
+
+/**
+ * Fatos de geometria disponíveis no editor. Nenhum deles é inventado aqui:
+ * vêm do cadastro do produto (dimensões), dos limites oficiais da área de
+ * gravação (a "máscara") e do tamanho da logo escolhido pelo usuário.
+ */
+export interface GeometryFacts {
+  /** Filtro de técnica EFETIVO — o mesmo que a prévia aplica. Decide se há regra. */
+  techniqueFilter: TechniqueFilter;
+  productWidthCm?: number | null;
+  productHeightCm?: number | null;
+  maxWidthCm?: number | null;
+  maxHeightCm?: number | null;
+  logoWidthCm?: number | null;
+  logoHeightCm?: number | null;
+}
+
+export interface GeometryDescriptor {
+  state: GeometryState;
+  /** Rótulo exibido. Medidas em cm SÓ no estado `validada`. */
+  label: string;
+  /** Números por trás do rótulo — `null` fora de `validada` (nunca falsa precisão). */
+  measuresCm: {
+    logoWidthCm: number;
+    logoHeightCm: number;
+    areaWidthCm: number;
+    areaHeightCm: number;
+  } | null;
+}
+
+const positiveOrNull = (v: number | null | undefined): number | null =>
+  typeof v === 'number' && Number.isFinite(v) && v > 0 ? v : null;
+
+/** cm com 1 casa, no padrão pt-BR, sem depender de ICU. */
+const formatCm = (v: number) => v.toFixed(1).replace('.', ',');
+
+/** true quando a técnica casa uma regra de simulação conhecida (não o `default`). */
+export function techniqueHasRule(techniqueFilter: TechniqueFilter): boolean {
+  return techniqueFilter !== TECHNIQUE_FILTERS.default;
+}
+
+/**
+ * Rotula a geometria da prévia. Decisão do mais restritivo ao mais frouxo:
+ *
+ *  1. `sem_regra`   — técnica sem regra de simulação: NUNCA vira selo de compatível e
+ *                     nenhuma medida é exibida (régua só com regra + fronteira oficial).
+ *  2. `validada`    — técnica com regra + dimensões reais do produto + limites oficiais
+ *                     da área (a máscara): ÚNICO estado que mostra medidas em cm.
+ *  3. `ilustrativa` — dimensões conhecidas mas SEM máscara oficial (ou dimensões
+ *                     ausentes, trava Q13): posicionamento ilustrativo, sem fronteira
+ *                     oficial desenhada e sem cm.
+ */
+export function describeGeometry(facts: GeometryFacts): GeometryDescriptor {
+  if (!techniqueHasRule(facts.techniqueFilter)) {
+    return {
+      state: 'sem_regra',
+      label: 'Técnica sem regra de área · sem selo de compatibilidade',
+      measuresCm: null,
+    };
+  }
+
+  const productW = positiveOrNull(facts.productWidthCm);
+  const productH = positiveOrNull(facts.productHeightCm);
+  const areaW = positiveOrNull(facts.maxWidthCm);
+  const areaH = positiveOrNull(facts.maxHeightCm);
+  const logoW = positiveOrNull(facts.logoWidthCm);
+  const logoH = positiveOrNull(facts.logoHeightCm);
+
+  if (
+    (productW !== null || productH !== null) &&
+    areaW !== null &&
+    areaH !== null &&
+    logoW !== null &&
+    logoH !== null
+  ) {
+    return {
+      state: 'validada',
+      label:
+        `Geometria validada · logo ${formatCm(logoW)} × ${formatCm(logoH)} cm` +
+        ` · área oficial ${formatCm(areaW)} × ${formatCm(areaH)} cm`,
+      measuresCm: {
+        logoWidthCm: logoW,
+        logoHeightCm: logoH,
+        areaWidthCm: areaW,
+        areaHeightCm: areaH,
+      },
+    };
+  }
+
+  return {
+    state: 'ilustrativa',
+    label: 'Geometria ilustrativa · posicionamento sem fronteira oficial',
+    measuresCm: null,
+  };
+}
+
+const GEOMETRY_ICONS: Record<GeometryState, typeof Ruler> = {
+  validada: Ruler,
+  ilustrativa: Info,
+  sem_regra: AlertTriangle,
+};
+
 interface LogoPreviewCanvasProps {
   containerRef: React.RefObject<HTMLDivElement | null>;
   productImageUrl: string;
@@ -116,6 +220,16 @@ interface LogoPreviewCanvasProps {
   colorConfigFilter: { filter: string; opacity: number } | null;
   techniqueColorConfig?: TechniqueColorConfig | null;
   techniqueName?: string;
+  /**
+   * Fatos de geometria (cm) para rotular a prévia: dimensões reais do produto,
+   * limites oficiais da área e tamanho real da logo. Ausentes ⇒ prévia ilustrativa.
+   */
+  productWidthCm?: number | null;
+  productHeightCm?: number | null;
+  maxWidthCm?: number | null;
+  maxHeightCm?: number | null;
+  logoWidthCm?: number | null;
+  logoHeightCm?: number | null;
   onPointerDown: (e: React.PointerEvent) => void;
   onKeyDown?: (e: React.KeyboardEvent) => void;
   onColorConfigClick?: () => void;
@@ -135,6 +249,12 @@ export function LogoPreviewCanvas({
   colorConfigFilter,
   techniqueColorConfig,
   techniqueName,
+  productWidthCm,
+  productHeightCm,
+  maxWidthCm,
+  maxHeightCm,
+  logoWidthCm,
+  logoHeightCm,
   onPointerDown,
   onKeyDown,
   onColorConfigClick,
@@ -154,6 +274,16 @@ export function LogoPreviewCanvas({
   const dragWidth = logoDisplay && footprint ? Math.max(logoDisplay.widthPx, footprint.width) : 0;
   const dragHeight = logoDisplay && footprint ? Math.max(logoDisplay.heightPx, footprint.height) : 0;
   const clipped = footprint ? isMarkClipped(footprint, { x: positionX, y: positionY }, area) : false;
+  const geometry = describeGeometry({
+    techniqueFilter,
+    productWidthCm,
+    productHeightCm,
+    maxWidthCm,
+    maxHeightCm,
+    logoWidthCm,
+    logoHeightCm,
+  });
+  const GeometryIcon = GEOMETRY_ICONS[geometry.state];
 
   return (
     <>
@@ -273,11 +403,28 @@ export function LogoPreviewCanvas({
             variant="destructive"
             role="status"
             data-testid="logo-clip-warning"
-            className="pointer-events-none absolute bottom-2 left-1/2 z-10 -translate-x-1/2 gap-1 text-[10px]"
+            className="pointer-events-none absolute bottom-10 left-1/2 z-10 -translate-x-1/2 gap-1 text-[10px]"
           >
             <AlertTriangle aria-hidden="true" className="h-3 w-3" />
             Marca cortada pela área de aplicação
           </Badge>
+        )}
+
+        {/* Rótulo do estado de geometria (Codex p.11): medidas em cm só quando validada */}
+        {logoPreview && logoDisplay && (
+          <div
+            data-testid="logo-geometry-state"
+            data-state={geometry.state}
+            className={cn(
+              'pointer-events-none absolute inset-x-2 bottom-2 flex items-start gap-1.5 rounded-md border px-2 py-1 text-[10px] leading-snug backdrop-blur-sm',
+              geometry.state === 'validada'
+                ? 'border-primary/30 bg-primary/5 text-foreground'
+                : 'border-border bg-background/90 text-muted-foreground',
+            )}
+          >
+            <GeometryIcon aria-hidden="true" className="mt-px h-3 w-3 flex-shrink-0" />
+            <span>{geometry.label}</span>
+          </div>
         )}
 
         {/* Live preview badge + Color config badge */}
