@@ -7,9 +7,7 @@
  * BUG-J: isDraftLoading now exposed in return object.
  */
 
-import { dbInvoke } from '@/lib/db/postgrest';
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
-import { useLocation } from 'react-router-dom';
 import { toast } from 'sonner';
 import { needsConversion, ensureSupportedFormat } from '@/lib/image-converter';
 import { getCdnUrl } from '@/utils/image-utils';
@@ -26,10 +24,8 @@ import { useProductsContext } from '@/contexts/ProductsContext';
 import { getMockupWizardStep } from '@/components/mockup/mockupWizardStep';
 import { showMockupSuccessToast } from '@/components/mockup/MockupSuccessToast';
 import type { TechniqueColorConfig } from '@/components/mockup/techniqueColorUtils';
-import { adaptTabelaPrecoRows } from '@/lib/personalization/adapters';
 import type { PersonalizationArea } from '@/components/mockup/MultiAreaManager';
 import type { MockupProductSelection } from '@/components/mockup/MockupProductSelector';
-import type { Product } from '@/hooks/products';
 import type { MockupClient } from '@/components/mockup/MockupConfigPanel';
 import type { ArtFileAttachment } from '@/components/mockup/ArtFileUpload';
 import {
@@ -43,111 +39,24 @@ import {
   deleteMockupFromDb,
 } from '@/hooks/mockup/mockupGenerationService';
 import { buildHistoryClients } from '@/hooks/mockup/mockupHistoryClients';
+import { useMockupAreaRetry } from '@/hooks/mockup/useMockupAreaRetry';
+import { useMockupEntryParams } from '@/hooks/mockup/useMockupEntryParams';
+import {
+  MAX_BATCH_AREAS,
+  MISSING_DIMENSIONS_REFUSAL,
+  resolveProductDimensions,
+  hasRealProductDimensions,
+  logoLimitWarnings,
+  loadMockupTechniques,
+  saveBatchResults,
+  failedAreaErrors,
+  type BatchMockupResult,
+  type MockupGenerationOutcome,
+} from '@/hooks/mockup/mockupGeneratorModel';
 
 import { logger } from '@/lib/logger';
 
-/** Máximo de áreas (com logo) por lote de geração (decisão Q14). */
-export const MAX_BATCH_AREAS = 6;
-
-export interface BatchMockupResult {
-  /** Id estável da área — nomes de área podem se repetir. */
-  areaId?: string;
-  areaName: string;
-  url: string;
-}
 export type { Technique, GeneratedMockup };
-
-/** Código/servidor de recusa quando o produto não tem medidas reais (cm). */
-export const MISSING_DIMENSIONS_ERROR_CODE = 'missing_dimensions' as const;
-/** HTTP status equivalente na edge generate-mockup (mesmo valor em production). */
-export const MISSING_DIMENSIONS_STATUS = 422 as const;
-export const MISSING_DIMENSIONS_MESSAGE =
-  'Este produto não tem medidas (cm) cadastradas. Peça ao administrador do catálogo para informar a largura e/ou a altura do produto antes de gerar o mockup.';
-
-/** Motivo pelo qual a geração foi recusada no cliente (sem chamar a edge). */
-export type MockupGenerationErrorCode = 'edge_error' | 'missing_dimensions';
-
-export interface MockupGenerationRefusal {
-  code: MockupGenerationErrorCode;
-  message: string;
-  /** HTTP status equivalente ao erro da edge generate-mockup. */
-  status?: number;
-}
-
-/** Retorno tipado de `generateMockup` no sucesso e nas recusas (os guards de
- * reentrância/validação devolvem `undefined`; a UI usa `missingDimensions`). */
-export type MockupGenerationOutcome = { ok: false; error: MockupGenerationRefusal } | { ok: true };
-
-export interface ProductPhysicalDimensions {
-  widthCm: number | null;
-  heightCm: number | null;
-}
-
-/** Aceita apenas número finito > 0; qualquer outra coisa (0/negativo/NaN) ⇒ null. */
-function positiveCm(value: unknown): number | null {
-  return typeof value === 'number' && Number.isFinite(value) && value > 0 ? value : null;
-}
-
-/** Milímetros → cm (só quando positivo), espelhando a regra do payload da edge. */
-function mmToCm(value: unknown): number | null {
-  const mm = positiveCm(value);
-  return mm === null ? null : mm / 10;
-}
-
-/**
- * Deriva as dimensões físicas reais (cm) do produto na MESMA precedência usada no
- * payload WYSIWYG da geração: largura = dimensions.width_cm → dimensions.diameter_cm
- * → metadata.width_mm/10; altura = dimensions.height_cm → metadata.height_mm/10.
- * Produto sem nenhuma dessas fontes ⇒ { widthCm: null, heightCm: null }.
- */
-export function resolveProductDimensions(
-  product: Product | null | undefined,
-): ProductPhysicalDimensions {
-  const dims = product?.dimensions ?? null;
-  const meta = product?.metadata ?? null;
-  return {
-    widthCm: positiveCm(dims?.width_cm) ?? positiveCm(dims?.diameter_cm) ?? mmToCm(meta?.width_mm),
-    heightCm: positiveCm(dims?.height_cm) ?? mmToCm(meta?.height_mm),
-  };
-}
-
-/**
- * true quando o produto traz ao menos uma medida real (cm) — mesmo critério do
- * portão da edge (422 missing_dimensions). Sem nenhuma medida o mockup sairia com
- * escala inventada, então o hook recusa em vez de estimar 8×20 cm em silêncio.
- */
-export function hasRealProductDimensions(dimensions: ProductPhysicalDimensions): boolean {
-  return dimensions.widthCm !== null || dimensions.heightCm !== null;
-}
-
-/** Entradas aceitas para pré-selecionar o produto do gerador (a ordem importa). */
-export interface MockupEntryRefs {
-  /** Query string do deep link: `?product_id=` (legado) ou `?productId=` (QuickQuoteFAB). */
-  search?: string | null;
-  /** `location.state` do router: `preSelectedProduct.id` (badge "Visualizar com Logo"). */
-  routerState?: unknown;
-}
-
-/**
- * A-7: resolve o id do produto pré-selecionado a partir das três entradas do
- * gerador, na ordem: `?product_id=` (deep link legado) → `?productId=`
- * (QuickQuoteFAB) → `state.preSelectedProduct.id` (ProductCategoryBadges).
- * Entrada vazia ou de tipo errado é ignorada (sem erro); sem nenhuma entrada
- * válida devolve null. A validação contra o catálogo é do chamador.
- */
-export function resolveEntryProductId({ search, routerState }: MockupEntryRefs = {}):
-  string | null {
-  const params = new URLSearchParams(search ?? '');
-  for (const key of ['product_id', 'productId']) {
-    const value = params.get(key)?.trim();
-    if (value) return value;
-  }
-  if (!routerState || typeof routerState !== 'object') return null;
-  const preSelected = (routerState as { preSelectedProduct?: { id?: unknown } | null })
-    .preSelectedProduct;
-  const id = preSelected?.id;
-  return typeof id === 'string' && id.trim() ? id.trim() : null;
-}
 
 export function useMockupGenerator() {
   const { user } = useAuth();
@@ -175,10 +84,6 @@ export function useMockupGenerator() {
   const [activeAreaId, setActiveAreaId] = useState<string | null>(null);
   const [generatedMockup, setGeneratedMockup] = useState<string | null>(null);
   const [generatedBatchMockups, setGeneratedBatchMockups] = useState<BatchMockupResult[]>([]);
-  // Erro por área (id estável) do último lote + áreas em regeração individual.
-  const [areaErrors, setAreaErrors] = useState<Record<string, string>>({});
-  const [retryingAreaIds, setRetryingAreaIds] = useState<string[]>([]);
-  const retryingRef = useRef<Set<string>>(new Set());
   const [artAttachments, setArtAttachments] = useState<ArtFileAttachment[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   // Re-entrancy guard for generateMockup: setIsLoading(true) is async/batched and
@@ -407,47 +312,15 @@ export function useMockupGenerator() {
     };
   }, [isLoadingData, techniques, loadDraft, hasDraftRestored, getProductById]);
 
-  const urlParamsApplied = useRef(false);
-  const location = useLocation();
-  useEffect(() => {
-    if (urlParamsApplied.current || isLoadingData || !hasDraftRestored) return;
-    const params = new URLSearchParams(window.location.search);
-    // A-7: aceita os três formatos de entrada (deep link, QuickQuoteFAB, router state).
-    const productId = resolveEntryProductId({
-      search: window.location.search,
-      routerState: location.state,
-    });
-    if (!productId) return;
-    urlParamsApplied.current = true;
-    const product = getProductById(productId);
-    if (product)
-      setProductSelection({
-        product,
-        variant: null,
-        imageUrl: product.images?.[0] || '/placeholder.svg',
-      });
-    const techniqueName = params.get('technique');
-    if (techniqueName && techniques.length > 0) {
-      const technique = techniques.find(
-        (t) => t.name.toLowerCase() === techniqueName.toLowerCase(),
-      );
-      if (technique) setSelectedTechnique(technique);
-    }
-    // T9 FIX: only remove the params we processed — preserve everything else.
-    const hasEntryParams =
-      params.has('product_id') || params.has('productId') || params.has('technique');
-    if (!hasEntryParams) return;
-    const newParams = new URLSearchParams(window.location.search);
-    newParams.delete('product_id');
-    newParams.delete('productId');
-    newParams.delete('technique');
-    const newSearch = newParams.toString();
-    window.history.replaceState(
-      {},
-      '',
-      window.location.pathname + (newSearch ? `?${newSearch}` : ''),
-    );
-  }, [isLoadingData, hasDraftRestored, techniques, getProductById, location.state]);
+  // A-7: pré-seleção pelo deep link (?product_id / ?productId / ?technique) ou router state.
+  useMockupEntryParams({
+    isLoadingData,
+    hasDraftRestored,
+    techniques,
+    getProductById,
+    setProductSelection,
+    setSelectedTechnique,
+  });
 
   useEffect(() => {
     if (!hasDraftRestored || isRestoringDraft.current) return;
@@ -479,26 +352,7 @@ export function useMockupGenerator() {
 
   const fetchData = useCallback(async () => {
     try {
-      // MIGRAÇÃO REST-NATIVO (2026-05-30): dbInvoke (REST-native-first, silencioso
-      // quando o kill-switch `edge_external_db_bridge` está OFF) em vez do invokeWithRetry
-      // legado, que disparava o banner de "catálogo indisponível" no estado OFF esperado.
-      // `tabela_preco_gravacao_oficial` está na whitelist do REST nativo e possui coluna `ativo`.
-      const { records: rawRecords } = await dbInvoke<Record<string, unknown>>({
-        table: 'tabela_preco_gravacao_oficial',
-        operation: 'select',
-        filters: { ativo: true },
-        limit: 100,
-        countMode: 'none',
-      });
-      const records = adaptTabelaPrecoRows(rawRecords ?? []);
-      const techniquesData = records.map((r) => ({
-        id: r.id,
-        name: r.name ?? r.nome ?? '',
-        code: r.codigo_curto ?? r.codigo_tabela ?? r.code ?? r.codigo ?? null,
-      }));
-      techniquesData.sort((a: Technique, b: Technique) =>
-        (a.name || '').localeCompare(b.name || ''),
-      );
+      const techniquesData = await loadMockupTechniques();
       setTechniques(techniquesData);
     } catch (error) {
       logger.error('Error fetching data:', error);
@@ -652,6 +506,20 @@ export function useMockupGenerator() {
     [generatedMockup, selectedProduct, selectedTechnique],
   );
 
+  // Erro por área do último lote + regerar só a área que falhou (estado próprio).
+  const { areaErrors, setAreaErrors, retryingAreaIds, retryArea } = useMockupAreaRetry({
+    isGeneratingRef,
+    personalizationAreas,
+    getProductImage,
+    selectedTechnique,
+    selectedProduct,
+    productDimensions,
+    saveMockupToHistory,
+    fetchHistory,
+    setGeneratedBatchMockups,
+    setGeneratedMockup,
+  });
+
   const generateMockup = useCallback(async (): Promise<MockupGenerationOutcome | undefined> => {
     // Re-entrancy guard (see isGeneratingRef): block a second concurrent generation
     // that slips through before the isLoading-driven `disabled` re-render commits.
@@ -667,50 +535,21 @@ export function useMockupGenerator() {
       );
       return;
     }
-    // Q13/Q24: produto sem dimensões reais NÃO gera — o mockup sairia com escala
-    // inventada (o editor estima 8×20 cm). Espelha o portão da edge (422
-    // missing_dimensions) e devolve erro tipado para a UI pedir o cadastro das
-    // medidas ao catálogo. Nunca chamamos a edge neste caminho.
+    // Q13/Q24: sem medidas reais NÃO gera (escala inventada); espelha o 422 da edge e
+    // devolve erro tipado para a UI pedir o cadastro das medidas. Não chama a edge.
     if (missingDimensions) {
-      const error: MockupGenerationRefusal = {
-        code: MISSING_DIMENSIONS_ERROR_CODE,
-        status: MISSING_DIMENSIONS_STATUS,
-        message: MISSING_DIMENSIONS_MESSAGE,
-      };
-      setGenerationError(error.message);
-      toast.error(error.message);
-      return { ok: false, error };
+      setGenerationError(MISSING_DIMENSIONS_REFUSAL.message);
+      toast.error(MISSING_DIMENSIONS_REFUSAL.message);
+      return { ok: false, error: MISSING_DIMENSIONS_REFUSAL };
     }
     const productImage = getProductImage();
     if (!productImage) {
       toast.error('O produto selecionado não possui imagem');
       return;
     }
-    // BUG-NO-DIM-VALIDATION FIX: warn if any logo exceeds the technique/area limit.
-    // Non-blocking — we still generate; the server will composite what it receives.
-    for (const area of areasWithLogos) {
-      const techW =
-        selectedTechnique && 'maxWidth' in selectedTechnique
-          ? (selectedTechnique as TechniqueWithLimits).maxWidth
-          : null;
-      const techH =
-        selectedTechnique && 'maxHeight' in selectedTechnique
-          ? (selectedTechnique as TechniqueWithLimits).maxHeight
-          : null;
-      const maxW = area.maxWidthCm ?? techW;
-      const maxH = area.maxHeightCm ?? techH;
-      if (maxW && area.logoWidth > maxW + 0.5) {
-        toast.warning(
-          `"${area.name}": logo ${area.logoWidth.toFixed(1)} cm excede o limite de ${maxW} cm de largura.`,
-          { duration: 5000 },
-        );
-      }
-      if (maxH && area.logoHeight > maxH + 0.5) {
-        toast.warning(
-          `"${area.name}": logo ${area.logoHeight.toFixed(1)} cm excede o limite de ${maxH} cm de altura.`,
-          { duration: 5000 },
-        );
-      }
+    // BUG-NO-DIM-VALIDATION FIX: avisa (sem bloquear) logo acima do limite da técnica/área.
+    for (const message of logoLimitWarnings(areasWithLogos, selectedTechnique)) {
+      toast.warning(message, { duration: 5000 });
     }
 
     isGeneratingRef.current = true;
@@ -751,41 +590,19 @@ export function useMockupGenerator() {
           onDownload: () => downloadMockup(result.singleUrl ?? undefined),
         });
       } else {
-        // T5 FIX: parallel DB writes.
-        // Associação por id estável da área (nomes repetidos não colidem). Sem areaId
-        // (resposta legada) cai no índice — nunca no nome.
-        const batchSaveResults = await Promise.allSettled(
-          result.batchResults.map((r, i) => {
-            const area = r.areaId
-              ? areasWithLogos.find((a) => a.id === r.areaId)
-              : areasWithLogos[i];
-            if (!area) return Promise.resolve({ recordId: null, r });
-            return saveMockupToHistory(r.url, area).then((recordId) => ({ recordId, r }));
-          }),
+        // T5 FIX: gravação paralela, casada por id estável da área (não pelo nome).
+        const savedLast = await saveBatchResults(
+          result.batchResults,
+          areasWithLogos,
+          saveMockupToHistory,
         );
         // Áreas que não voltaram no lote ficam com erro próprio + regerar individual.
-        if (result.batchResults.every((r) => r.areaId)) {
-          const okIds = new Set(result.batchResults.map((r) => r.areaId));
-          const errs: Record<string, string> = {};
-          for (const a of areasWithLogos) {
-            if (!okIds.has(a.id)) errs[a.id] = 'Falha ao gerar esta área. Tente regerar só ela.';
-          }
-          setAreaErrors(errs);
-        }
-        const lastFulfilled = batchSaveResults
-          .filter(
-            (
-              res,
-            ): res is PromiseFulfilledResult<{
-              recordId: string | null;
-              r: BatchMockupResult;
-            }> => res.status === 'fulfilled',
-          )
-          .pop();
-        if (lastFulfilled?.value.recordId) {
-          setLastSavedMockupUrl(lastFulfilled.value.r.url);
+        const failed = failedAreaErrors(result.batchResults, areasWithLogos);
+        if (failed) setAreaErrors(failed);
+        if (savedLast) {
+          setLastSavedMockupUrl(savedLast.url);
           setLastSavedLayoutMode('ai');
-          setLastSavedRecordId(lastFulfilled.value.recordId);
+          setLastSavedRecordId(savedLast.recordId);
         }
         setGeneratedMockup(result.batchResults[0]?.url || result.singleUrl || null);
         setGeneratedBatchMockups(result.batchResults);
@@ -818,65 +635,8 @@ export function useMockupGenerator() {
     missingDimensions,
     downloadMockup,
     fetchHistory,
+    setAreaErrors,
   ]);
-
-  // Regera SÓ uma área que falhou no lote; as já salvas permanecem intactas.
-  const retryArea = useCallback(
-    async (areaId: string) => {
-      if (isGeneratingRef.current || retryingRef.current.has(areaId)) return;
-      const area = personalizationAreas.find((a) => a.id === areaId);
-      const productImage = getProductImage();
-      if (!area?.logoPreview || !selectedTechnique || !productImage) {
-        toast.error('Não foi possível regerar esta área: faltam logo, técnica ou imagem.');
-        return;
-      }
-      retryingRef.current.add(areaId);
-      setRetryingAreaIds((prev) => [...prev, areaId]);
-      try {
-        const result = await generateMockupApi({
-          productImage,
-          productName: selectedProduct?.name ?? '',
-          technique: selectedTechnique,
-          areas: [area],
-          // Mesmo resolvedor de dimensões da geração em lote (fonte única).
-          productWidthCm: productDimensions.widthCm,
-          productHeightCm: productDimensions.heightCm,
-        });
-        const url = result.singleUrl ?? result.batchResults[0]?.url;
-        if (!url) throw new Error('O serviço não retornou uma imagem.');
-        await saveMockupToHistory(url, area);
-        setGeneratedBatchMockups((prev) => [
-          ...prev.filter((b) => b.areaId !== areaId),
-          { areaId, areaName: area.name, url },
-        ]);
-        setGeneratedMockup((prev) => prev ?? url);
-        setAreaErrors((prev) => {
-          const rest = { ...prev };
-          delete rest[areaId];
-          return rest;
-        });
-        toast.success(`Área "${area.name}" gerada com sucesso!`);
-        fetchHistory();
-      } catch (error: unknown) {
-        logger.error('Error regenerating area mockup:', error);
-        const message = error instanceof Error ? error.message : 'Erro ao gerar esta área';
-        setAreaErrors((prev) => ({ ...prev, [areaId]: message }));
-        toast.error(message);
-      } finally {
-        retryingRef.current.delete(areaId);
-        setRetryingAreaIds((prev) => prev.filter((id) => id !== areaId));
-      }
-    },
-    [
-      personalizationAreas,
-      getProductImage,
-      selectedTechnique,
-      selectedProduct,
-      productDimensions,
-      saveMockupToHistory,
-      fetchHistory,
-    ],
-  );
 
   const deleteMockup = useCallback(async () => {
     if (!mockupToDelete) return;
@@ -917,7 +677,7 @@ export function useMockupGenerator() {
     positionHistory.clear();
     await clearDraft();
     logoColorAnalysis.clearAnalysis();
-  }, [positionHistory, clearDraft, logoColorAnalysis]);
+  }, [positionHistory, clearDraft, logoColorAnalysis, setAreaErrors]);
 
   const handleShareMockup = useCallback((mockup: GeneratedMockup) => {
     const text = `Confira o mockup: ${mockup.product_name} com ${mockup.technique_name}`;

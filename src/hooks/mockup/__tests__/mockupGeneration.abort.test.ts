@@ -111,7 +111,7 @@ async function setupReadyToGenerate() {
 
   act(() => {
     rendered.result.current.setSelectedClient({ id: 'cli-1', name: 'Cliente X' });
-    rendered.result.current.setProductSelection(selectionFor('prod-1'));
+    rendered.result.current.setProductSelection(selectionFor('prod-1') as never);
     rendered.result.current.setSelectedTechnique({ id: 'pat-1', name: 'Serigrafia', code: 'silk' });
     rendered.result.current.setPersonalizationAreas([areaWithLogo()]);
   });
@@ -152,7 +152,7 @@ describe('Q16 — timeout único e cancelamento da geração de mockup', () => {
   it('(1) passa signal à edge e limita a chamada a 30 s em uma única tentativa', async () => {
     const { result } = await setupReadyToGenerate();
 
-    let generation: Promise<void> = Promise.resolve();
+    let generation: Promise<unknown> = Promise.resolve();
     act(() => {
       generation = result.current.generateMockup();
     });
@@ -177,7 +177,7 @@ describe('Q16 — timeout único e cancelamento da geração de mockup', () => {
   it('(2) resetForm durante a geração aborta a chamada e nada é inserido', async () => {
     const { result } = await setupReadyToGenerate();
 
-    let generation: Promise<void> = Promise.resolve();
+    let generation: Promise<unknown> = Promise.resolve();
     act(() => {
       generation = result.current.generateMockup();
     });
@@ -222,7 +222,7 @@ describe('Q16 — timeout único e cancelamento da geração de mockup', () => {
   it('(4) trocar de produto cancela a geração anterior e nada é inserido', async () => {
     const { result } = await setupReadyToGenerate();
 
-    let generation: Promise<void> = Promise.resolve();
+    let generation: Promise<unknown> = Promise.resolve();
     act(() => {
       generation = result.current.generateMockup();
     });
@@ -232,7 +232,7 @@ describe('Q16 — timeout único e cancelamento da geração de mockup', () => {
     expect(signal?.aborted).toBe(false);
 
     act(() => {
-      result.current.setProductSelection(selectionFor('prod-2'));
+      result.current.setProductSelection(selectionFor('prod-2') as never);
     });
     expect(signal?.aborted).toBe(true);
 

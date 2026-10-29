@@ -83,7 +83,8 @@ vi.mock('@/components/mockup/mockupWizardStep', () => ({ getMockupWizardStep: ()
 vi.mock('@/components/mockup/MockupSuccessToast', () => ({ showMockupSuccessToast: vi.fn() }));
 vi.mock('sonner', () => ({ toast: Object.assign(vi.fn(), toastMock) }));
 
-import { useMockupGenerator, MAX_BATCH_AREAS } from '../useMockupGenerator';
+import { useMockupGenerator } from '../useMockupGenerator';
+import { MAX_BATCH_AREAS } from '../mockupGeneratorModel';
 
 const makeArea = (id: string, name: string) => ({
   id,
