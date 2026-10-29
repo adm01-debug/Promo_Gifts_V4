@@ -356,7 +356,7 @@ Inventário limitado à última execução observada na `main` por workflow. Os 
 
 **Verdes na fotografia:** 25 workflows com última execução `success` entre 36 workflows observados; consultar os runs da `main` para a lista completa. Não houve rerun de workflows verdes.
 
-**Estado do PR #2720 na consulta seguinte:** Gate Final, Gate 1 e Gate 3 passaram; 27 checks passaram, 3 foram skipped, 1 ficou neutral e o job de revisão Copilot falhou. O Copilot retornou HTTP 402 (`You've reached your additional usage limit for your plan`) e registrou bloqueio de rede para `api.github.com`. É falha de quota/serviço, não erro do código deste PR. Não mesclar enquanto houver check vermelho.
+**Estado do PR #2720:** no commit inicial `1df94731b`, Gate Final, Gate 1 e Gate 3 passaram. Após os commits documentais enviados no SHA atual `d3b705038969f3105da7f8a8c7f11d2939c5f7b4`, a última consulta encontrou 23 checks `success`, 3 `skipped`, 1 `neutral`, Gate 1 e Gate 3 ainda `in_progress`, e revisão Copilot em `failure`. O run mais recente da revisão é [40824279431](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40824279431): HTTP 402 (`You've reached your additional usage limit for your plan`) e bloqueio de rede para `api.github.com`. É falha de quota/serviço, não erro do código deste PR. Não mesclar enquanto houver checks pendentes ou vermelhos.
 
 ### Ledger de migrations — comparação local × banco canônico
 
