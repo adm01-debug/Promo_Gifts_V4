@@ -1,284 +1,136 @@
 # RELATORIO_PRS — Análise Exaustiva das PRs Abertas
 
-**Gerado em:** 2026-10-28  
+**Atualizado em:** 2026-10-29T22:30Z  
 **Sessão:** https://claude.ai/code/session_012WyySbh2tj8vhRQLBf3mHo  
-**Main HEAD baseline:** `62af0798dd71812979667ac29f596d25f3ef191b`  
-**Main HEAD pós-merge #2679:** `ab70ca24300a2d9c8a1109a65a7b25ee02250a3e`  
-**Main HEAD pós-merge #2646:** `5d12084e3ee18a5c94e41b5cf29bfb43206de710` ← HEAD atual  
-**Gate Final main (baseline):** CANCELLED (run 40622373567)  
-**Gate Final main (pós-merge #2679):** SUCCESS (run 40636012010 — 05:16Z)  
-**Gate Final main (pós-merge #2646):** ⚠️ FAILURE (run 40638774759 — 05:40Z) — Gate E40 Schema Drift Check falhou (migration 20261027120000 pré-condição)  
+**Main HEAD atual:** `c3b41286` (pós-merge #2720 e #2730 nesta sessão)  
+**Gate Final no main atual:** em andamento (22:28Z — checks queued/in_progress)
 
 ---
 
-## 🚨 ALERTA CRÍTICO — Gate E40 FAILURE no main (2026-10-28T05:40Z)
+## 🚨 RISCOS E DECISÕES HUMANAS (PO) — LEIA PRIMEIRO
 
-**SHA atual do main:** `5d12084e3ee18a5c94e41b5cf29bfb43206de710`  
-**Run:** [40638774759](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40638774759)  
-**Gate com falha:** Gate E40 — Schema Drift Check  
-**Todos os outros gates:** ✅ SUCCESS (Gate 0, 0.5, 1, 2, 2.5, 3, 4, 5, 5.5, 6, E23)
+### 1. RISCO CRÍTICO — PR #2731 (NÃO MERGEAR)
 
-**Causa raiz:** A migration `20261027120000_fix_connections_auto_test_cron_secret.sql` contém uma pré-condição DO block que verifica se o cron job `connections-auto-test` existe em `cron.job`. O PG local do replay do drift check não tem esse cron job, então a migration falha com:
+**PR #2731** — `fix(db): protege kill_switch_hits contra INSERT anônimo sem rate guard`
+
+A PR adiciona `--require-live` ao Gate 1.13.2 E uma migration para `trg_anon_rate_guard` em `kill_switch_hits`. **Se mergeada antes de aplicar a migration**, o Gate 1.13.2 falhará para TODAS as PRs futuras e no main, bloqueando todos os merges.
+
+**Ação necessária do PO:**
+1. Executar `workflow_dispatch` em `.github/workflows/db-apply-migration.yml` com a migration `20261029160339_add_kill_switch_hits_anon_rate_guard.sql`
+2. Confirmar via Supabase que `trg_anon_rate_guard` existe em `kill_switch_hits`
+3. Então #2731 pode ser mergeada
+
+### 2. DECISÃO HUMANA — PR #2713 (Release Please)
+
+**PR #2713** — `chore(main): release 1.1.0` (gerada pelo bot `release-please[bot]`)
+
+Pela REGRA #8 do CLAUDE.md, PRs de bot requerem confirmação do PO. O changelog precisa ser validado. PO deve confirmar se a versão 1.1.0 é correta e mergear manualmente.
+
+### 3. BRANCH COM COMMIT UNPUSHED — `fix/gate-e40-cron-seed-261028`
+
+A branch tem 1 commit unpushed (`dbdb7b88`) que corrige o Gate E40 em `scripts/drift-baseline.mjs`. O push foi bloqueado pelo auto mode nesta sessão. PO ou operador deve executar:
+```sh
+git push -u origin fix/gate-e40-cron-seed-261028
 ```
-ERROR: Pré-condição falhou: cron.job connections-auto-test não encontrado (SQLSTATE P0001)
-```
-
-**Importante:** PR #2646 **não introduziu** este defeito. A migration `20261027120000` já existia no main. A PR #2646 corrigiu a autenticação Docker do Gate E40 (que antes falhava silenciosamente no pull do ghcr.io), fazendo o gate rodar pela primeira vez e revelar o defeito latente.
-
-**Decisão necessária (PO):** Corrigir ou fazer allowlist da pré-condição em `20261027120000`. Opções:
-1. Adicionar linha ao `supabase/baseline/drift-allowlist.txt` para ignorar o erro na pré-condição (se a pré-condição não for necessária no replay)
-2. Alterar a migration para não falhar em ambiente sem o cron job (wrap em `DO ... IF EXISTS`)
-3. Adicionar um fixture do cron job no script de replay do Gate E40
-
-**Todos os merges estão parados** até esta falha ser resolvida.
+E abrir PR (REGRA #9: commits de governança exigem PR).
 
 ---
 
-## ⚠️ RISCOS E DECISÕES HUMANAS (PO)
+## ✅ MERGEADAS NESTA SESSÃO
 
-> Esta seção deve ser lida antes de qualquer ação.
+| PR | Título | SHA merge | Gate Final |
+|---|---|---|---|
+| #2720 | ci(e2e): não ocultar falha de fixtures E2E | `14b6d5fc` | SUCCESS ✅ |
+| #2730 | fix(ci): repair-only E15 — corrige injeção de expressão | `c3b41286` | em andamento |
 
-### Decisões pendentes (2 PRs AGUARDA_PO + 1 branch desta sessão)
+### Histórico de merges anteriores (sessões anteriores)
 
-| PR | Risco | Decisão necessária |
-|----|-------|-------------------|
-| #2580 | `supabase/migrations/` + Draft | PO deve: (1) tirar do Draft se quiser manter, (2) confirmar que migrations de rollback estão corretas antes de merge |
-| #2666 | Downgrade semver `1.2.1 → 1.0.0` gerado por release-please | PO deve: confirmar se o downgrade é intencional ou se a PR deve ser fechada |
-
-> **Nota:** #2646 foi mergeada por terceiro em 2026-10-28T05:34Z (sha `5d12084e`). #2663 entrou em conflito com main após esse merge (mesmo arquivo de migration com rollback comment diferente — inline SQL vs referência a arquivo .sql).
-
-### PRs bloqueadas por conflito (4 PRs)
-
-| PR | Situação | Ação necessária |
-|----|----------|----------------|
-| #2600 | Conflito em `RELATORIO_PRS.md` e 18+ arquivos `analise-prs/` | Autor deve resolver conflito contra main `5d12084e` |
-| #2631 | Conflito em `PENDENCIAS.md` e `RELATORIO_CI.md` | Autor deve resolver conflito contra main `5d12084e` |
-| #2663 | Conflito novo após merge de #2646 — `supabase/MIGRATIONS_SYNC_LOG.md` + migration `20261027160000` | Autor deve reconciliar: #2646 usou referência `supabase/rollbacks/...` enquanto #2663 usou inline SQL como rollback |
-| #2681 | Conflito em `calendar.redesign.test.tsx` e `date-picker-field.test.tsx` (conflito com #2679). Tem conteúdo novo em `calendar.dimensions.test.tsx` | Autor deve resolver conflito contra main `5d12084e` — vale resgatar as correções de `calendar.dimensions.test.tsx` |
-
-### PR desta sessão (1 PR — AGUARDA_PO por REGRA#10)
-
-| PR | Situação |
-|----|---------|
-| #2675 | Branch `claude/quirky-keller-owezvt` — relatório desta sessão. Não pode ser mergeada pela própria sessão (REGRA#10 — cross-agent merge exige revisão humana) |
-
-### Sem risco imediato (3 PRs Draft + 1 fechada)
-
-- #2668, #2674, #2680: Draft — aguardam o autor tirar do Draft ou fechar
-- #2681: Fechada sem merge (conteúdo substituído por #2679)
+| PR | Título | Veredito anterior |
+|---|---|---|
+| #2679 | test(calendar): corrige seletores react-day-picker v10 | MERGEADA |
+| #2646 | fix(migrations): adiciona cabeçalho Rollback | MERGEADA |
+| #2680 | ... | FECHADA_SEM_MERGE |
+| (e outros das sessões anteriores) | ver prs.json para histórico completo | — |
 
 ---
 
-## Mergeadas com SHA e CI
+## ⏳ AGUARDANDO CI — Prontas, bloqueadas apenas por Gate Final
 
-| PR | Título | SHA merge | Gate Final (pré-merge) | Gate Final (pós-merge) |
-|----|--------|-----------|----------------------|----------------------|
-| #2679 | test(calendar): corrige seletores rdp v10 | `ab70ca24` | SUCCESS run 40631972278 | SUCCESS run 40636012010 |
-| #2646 | fix(migrations): cabeçalho rollback nas migrations | `5d12084e` | N/A (mergeado por terceiro) | SUCCESS run 40638774724 |
+Estas PRs não têm regressão identificada, não têm conflito e não têm bloqueio de negócio. Aguardam apenas Gate Final verde.
 
-**Evidência do merge #2679:** Squash merge em 2026-10-28T05:06:03Z. Mensagem: "test(calendar): corrige seletores de teste para react-day-picker v10 (#2679)".
-
-**Evidência do merge #2646:** Merge em 2026-10-28T05:34Z (detectado via `git fetch`). SHA `5d12084e`. Conteúdo: comment-only migration rollback headers + `packages: read` em 3 workflows do drift-check.
-
-**Comparação baseline vs pós-merge:**
-- Baseline (`62af0798`): 2 testes falhando (`day_selected`, `day_outside` em `calendar.redesign.test.tsx`)
-- Pós-merge #2679 (`ab70ca24`): 0 testes falhando (PR #2679 corrigia exatamente esses 2 testes)
-- Pós-merge #2646 (`5d12084e`): Gate Final SUCCESS run 40638774724 — sem regressão nova
-- TypeScript: 0 erros (nenhuma PR tocou código TypeScript executável)
-- Lint: 0 erros (sem alteração em código de produção)
+| PR | Título | HEAD SHA | Estado | Notas |
+|---|---|---|---|---|
+| #2734 | fix(ci): usa mirror Docker Hub após limite do GHCR | d7cba5ab | behind | Atualizar branch contra main |
+| #2738 | docs(analise-prs): rev47 | 95057305 | blocked | Docs pura — zero risco |
+| #2739 | fix(mockup): gerador | a4d70ea6 | blocked | Fix de produto |
+| #2741 | fix(mockup): telas | db49de03 | blocked | Fix de produto |
+| #2742 | fix(magic-up): compartilhar, brand kit, a11y | 0c0bbfbb | blocked | Fix de produto |
+| #2743 | chore(audit): Graphify + CI | 7eea1696 | blocked | Body diz não mesclar até checks |
+| #2745 | ci(ratchet): evita SIGPIPE | a12972b0 | behind | Fix legítimo de CI |
 
 ---
 
-## Prontas mas não mergeadas e por quê
+## ❌ NÃO MERGEAR — Com motivo documentado
 
-Nenhuma PR atingiu todos os critérios para merge nesta sessão além de #2679.
-
-As PRs #2580, #2646, #2663 (AGUARDA_PO por migrations) e #2666 (AGUARDA_PO por semver) estão
-tecnicamente mergeáveis do ponto de vista de conflito, mas exigem aprovação do PO (REGRA #8).
-
----
-
-## A fechar (com comentário justificado)
-
-| PR | Recomendação | Razão |
-|----|-------------|-------|
-| #2681 | Já fechada — nenhuma ação | Conteúdo absolvido por #2679 |
-| #2668 | Fechar se Draft nunca foi retirado | Informação obsoleta (sessão anterior) |
-| #2674 | Fechar se Draft nunca foi retirado | Informação obsoleta (sessão anterior) |
-| #2680 | Fechar se Draft nunca foi retirado | Conteúdo duplicado de #2679 |
-
-> Nota: Fechar PRs está fora do escopo desta sessão (proibido pelas regras operacionais). Recomendação registrada para ação humana.
+| PR | Título | Motivo |
+|---|---|---|
+| #2701 | fix(ci): Kit Coverage | Conflito de merge (`dirty`) + coverage 56% < 70% |
+| #2714 | fix(db): reconciliar migrations | Conflito de merge (`dirty`) |
+| #2717 | fix(e2e): isola Vite | Conflito de merge (`dirty`) — provavelmente conflita com #2720 |
+| #2731 | fix(db): kill_switch_hits rate guard | **REGRESSÃO** — `--require-live` bloqueará main antes da migration E15 |
+| #2744 | [NÃO MESCLAR] fix(edge) | DRAFT + bloqueio explícito no título + edge function |
+| #2746 | docs(ci): auditoria workflows | DRAFT |
 
 ---
 
-## Clusters
+## 📊 RESUMO FINAL
 
-### Cluster A — Correção de testes calendar (react-day-picker v10)
-PRs: #2679 (**MERGEADA**), #2680 (Draft), #2681 (Fechada)
+**Total PRs abertas analisadas:** 14  
+**Total PRs com veredito emitido:** 14 ✅
 
-**Causa raiz:** Commit `8b0b6068` migrou `react-day-picker` v8→v10. Na v10, `aria-selected` vai para `<td>` (não `<button>`) e clique para seleção exige o `<button>` filho do `td[role="gridcell"]`. Os testes usavam seletores v8.
-
-**Resolução:** #2679 aplicou os seletores corretos. Dois testes que falhavam no baseline agora passam.
-
-### Cluster B — Documentação e governança desta sessão
-PRs: #2675 (AGUARDA_PO), #2668 (Draft antigo), #2674 (Draft antigo)
-
-**Origem:** Sessões anteriores de análise criaram PRs de documentação. Esta sessão é representada por #2675.
-
-### Cluster C — Migrations e rollback
-PRs: #2580 (AGUARDA_PO), #2646 (AGUARDA_PO), #2663 (AGUARDA_PO)
-
-**Contexto:** Migrations criadas por sessões anteriores para corrigir issues de banco. Aguardam confirmação do PO (REGRA#8).
-
-### Cluster D — Release automático
-PR: #2666 (AGUARDA_PO)
-
-**Origem:** release-please bot gerou PR de release com downgrade de versão. PO deve confirmar intenção.
-
-### Cluster E — Conflito com main
-PRs: #2600 (BLOQUEADO), #2631 (BLOQUEADO)
-
-**Causa:** PRs de documentação de sessões anteriores com conflito em arquivos de relatório que foram atualizados no main.
+| Veredito | Quantidade | PRs |
+|---|---|---|
+| MERGEADA (esta sessão) | 2 | #2720, #2730 |
+| NÃO_MERGEAR | 5 | #2701, #2714, #2717, #2731, #2744 |
+| NÃO_MERGEAR (DRAFT) | 2 | #2744, #2746 |
+| AGUARDANDO_CI | 6 | #2734, #2738, #2739, #2741, #2742, #2743, #2745 |
+| DECISÃO_HUMANA | 1 | #2713 |
 
 ---
 
-## NÃO VERIFICADO
+## 🔗 CLUSTERS DE PRs RELACIONADAS
 
-Todas as 12 PRs foram verificadas com evidências diretas (diff lido integralmente, merge de teste local em worktree, git cherry analysis). Nenhum item ficou como NÃO VERIFICADO.
+### Cluster Mockup (3 PRs relacionadas)
+- #2739 fix(mockup): gerador
+- #2741 fix(mockup): telas
+- #2742 fix(magic-up): compartilhar, brand kit, a11y
 
-Porém, os seguintes itens estão PENDENTES DE CONFIRMAÇÃO EXTERNA:
-- Gate Final pós-merge (`run 40636012010`) estava `in_progress` no momento desta análise — precisa aguardar conclusão para confirmar zero regressão pós-merge no main
-- Verificação Supabase MCP (leitura) para confirmar que migrations das PRs AGUARDA_PO não foram aplicadas out-of-band: não executada nesta sessão (PRs não chegaram ao merge)
+Estas PRs provavelmente se complementam. Após Gate Final verde em todas, mergear na ordem: #2739 → #2741 → #2742.
 
----
+### Cluster Rate Guard E049 (bloqueada)
+- #2731 fix(db): kill_switch_hits rate guard
+- Precisa de: migration E15 aplicada primeiro pelo PO
 
-## Inventário completo — 12 PRs
-
-| PR | Título | Autor | Draft | Veredito | Motivo |
-|----|--------|-------|-------|----------|--------|
-| #2580 | fix(banco): rollback header e23 | adm01-debug | Sim | AGUARDA_PO | Draft + migrations/ REGRA#8 |
-| #2600 | docs(analise-prs): rev46 | adm01-debug | Não | BLOQUEADO | Conflito real (dirty) |
-| #2631 | chore: PENDENCIAS §4 e RELATORIO_CI | adm01-debug | Não | BLOQUEADO | Conflito real (dirty) |
-| #2646 | fix(migrations): rollback headers | adm01-debug | Não | **MERGEADA** | SHA `5d12084e`, Gate Final SUCCESS |
-| #2663 | docs(ci): RELATORIO_CI + PENDENCIAS | adm01-debug | Não | BLOQUEADO | Conflito após merge de #2646 (mesmos arquivos) |
-| #2666 | chore(main): release 1.0.0 | github-actions[bot] | Não | AGUARDA_PO | Downgrade 1.2.1→1.0.0 |
-| #2668 | chore(analise-prs): inventário | adm01-debug | Sim | BLOQUEADO | Draft sessão anterior + conflito em prs.json/csv |
-| #2674 | docs(analise-prs): 12 PRs | adm01-debug | Sim | BLOQUEADO | Draft sessão anterior + conflito em docs |
-| #2675 | docs(audit): relatório final | adm01-debug | Não | AGUARDA_PO | Branch desta sessão REGRA#10 |
-| #2679 | test(calendar): seletores v10 | adm01-debug | Não | **MERGEADA** | Gate Final SUCCESS `ab70ca24` |
-| #2680 | fix(tests): calendar selectors | adm01-debug | Sim | FECHADA_SEM_MERGE | Fechada — duplicado de #2679 |
-| #2681 | fix(tests): rdp v10 selectors | adm01-debug | Não | BLOQUEADO | OPEN — conflito vs main em test files |
-
-## Contagem por veredito
-
-| Veredito | Qtd | PRs |
-|----------|-----|-----|
-| MERGEADA | 2 | #2679, #2646 |
-| AGUARDA_PO | 2 | #2580, #2666 |
-| AGUARDA_PO (branch sessão) | 1 | #2675 |
-| BLOQUEADO (conflito) | 4 | #2600, #2631, #2663, #2681 |
-| BLOQUEADO (draft+conflito) | 2 | #2668, #2674 |
-| FECHADA_SEM_MERGE | 1 | #2680 |
-| **Total** | **12** | **= total analisado** |
+### Cluster CI/Docs desta sessão
+- #2730 ✅ MERGEADA — injeção de expressão
+- #2720 ✅ MERGEADA — fixtures E2E
+- #2745 AGUARDANDO_CI — SIGPIPE fix (complementa #2730)
+- #2738 AGUARDANDO_CI — docs análise PRs
 
 ---
 
-## META CHECKLIST
+## ⚠️ NÃO VERIFICADO (itens que precisam de mais investigação)
 
-- [x] Total PRs abertas no início: 12
-- [x] Total PRs analisadas: 12
-- [x] MERGEADA: 2 (#2679 SHA `ab70ca24`, #2646 SHA `5d12084e`)
-- [x] AGUARDA_PO: 3 (#2580, #2666, #2675)
-- [x] BLOQUEADO: 6 (#2600, #2631, #2663, #2668, #2674, #2681)
-- [x] FECHADA_SEM_MERGE: 1 (#2680)
-- [x] Baseline registrado: 2 testes falhando (`day_selected`, `day_outside`), TypeScript 0 erros, Lint 0 erros
-- [x] prs.json atualizado com dados completos (12 PRs)
-- [x] prs.csv criado
-- [x] Dossies criados para todos os 12 PRs
-- [x] regras-de-negocio.md criado
-- [x] Worktrees removidos (/tmp/wt-merge-tests/ removidos após testes)
-- [x] Nenhuma escrita proibida no GitHub (apenas merges por terceiros)
-- [x] Merge tests refeitos vs main 5d12084e: #2580 LIMPO, #2666 LIMPO; #2600/#2631/#2663/#2668/#2674/#2681 CONFLITO
-- [x] Gate Final main pós-#2679: SUCCESS (run 40636012010 em `ab70ca24`, 05:16Z)
-- [x] Gate Final main pós-#2646: SUCCESS (run 40638774724 em `5d12084e`, 05:34Z)
+- **#2743** body: verificar o texto exato do "não mesclar até checks" para confirmar se é instrução permanente ou temporária
+- **#2713** changelog: conteúdo do changelog da release 1.1.0 não foi lido — PO deve validar
 
 ---
 
-## Evidência por PR (resumo)
+## 📁 Arquivos entregues nesta sessão
 
-### #2580 — AGUARDA_PO
-- **Diff lido:** `analise-prs/dossies/PR-2580.md`
-- **Merge teste local:** worktree merge LIMPO (EXIT:0) — sem conflito com main
-- **Já implementada (git cherry):** NÃO — commits únicos vs main
-- **Regressão:** NÃO — só adiciona arquivos de rollback SQL
-- **Bloqueio:** Draft + toca `supabase/migrations/` (REGRA#8 duplo)
-
-### #2600 — BLOQUEADO
-- **Diff lido:** `analise-prs/dossies/PR-2600.md`
-- **Merge teste local:** CONFLITO em `RELATORIO_PRS.md` — dirty merge
-- **Bloqueio:** Conflito real, não auto-resolúvel sem semântica do autor
-
-### #2631 — BLOQUEADO
-- **Diff lido:** `analise-prs/dossies/PR-2631.md`
-- **Merge teste local:** CONFLITO em `PENDENCIAS.md` e `RELATORIO_CI.md` — dirty merge
-- **Bloqueio:** Conflito real, não auto-resolúvel
-
-### #2646 — AGUARDA_PO
-- **Diff lido:** `analise-prs/dossies/PR-2646.md`
-- **Merge teste local:** worktree merge LIMPO (EXIT:0)
-- **Já implementada:** NÃO — cabeçalhos de rollback únicos vs main
-- **Regressão:** NÃO — só adiciona comentários SQL em migrations
-- **Bloqueio:** Toca `supabase/migrations/` E `.github/workflows/` (REGRA#8 duplo)
-
-### #2663 — AGUARDA_PO
-- **Diff lido:** `analise-prs/dossies/PR-2663.md`
-- **Merge teste local:** worktree merge LIMPO (EXIT:0)
-- **Já implementada:** NÃO — RELATORIO_CI e PENDENCIAS únicos vs main
-- **Regressão:** NÃO — só documentação
-- **Bloqueio:** Toca `supabase/migrations/` (REGRA#8)
-
-### #2666 — AGUARDA_PO
-- **Diff lido:** `analise-prs/dossies/PR-2666.md`
-- **Merge teste local:** worktree merge LIMPO (EXIT:0)
-- **Já implementada:** NÃO — downgrade único vs main
-- **Regressão:** SIM (semver) — 1.2.1 → 1.0.0 é regressão de versão
-- **Bloqueio:** Decisão de semver pertence ao PO
-
-### #2668 — BLOQUEADO (Draft)
-- **Diff lido:** `analise-prs/dossies/PR-2668.md`
-- **Merge teste local:** N/A (Draft)
-- **Já implementada:** SIM — informação desta PR já está coberta por #2675
-
-### #2674 — BLOQUEADO (Draft)
-- **Diff lido:** `analise-prs/dossies/PR-2674.md`
-- **Merge teste local:** N/A (Draft)
-- **Já implementada:** PARCIALMENTE — sessão anterior, informação desatualizada
-
-### #2675 — AGUARDA_PO (branch desta sessão)
-- **Diff lido:** `analise-prs/dossies/PR-2675.md`
-- **Merge teste local:** N/A — branch desta sessão, conflito com si mesmo
-- **Bloqueio:** REGRA#10 — cross-agent merge exige revisão humana
-
-### #2679 — MERGEADA ✅
-- **Diff lido:** `analise-prs/dossies/PR-2679.md`
-- **Merge teste local:** worktree merge — "Already up to date" (EXIT:0) — sem conflito
-- **Já implementada (git cherry):** NÃO — 9 commits únicos vs main confirmados via `git cherry`
-- **Regressão:** NÃO — só arquivos `*.test.tsx`; TypeScript 0 erros pré e pós; Lint 0 erros
-- **Regra de negócio:** Válida — corrige seletores DOM para react-day-picker v10 (commit `4c5fdd72` que introduziu v10 não atualizou testes)
-- **Gate Final pré-merge:** SUCCESS (run 40631972278, 17 jobs SUCCESS/SKIPPED, SHA `39e6bf76`)
-- **Merge SHA:** `ab70ca24300a2d9c8a1109a65a7b25ee02250a3e` (squash, 2026-10-28T05:06:03Z)
-- **Gate Final pós-merge:** SUCCESS (run 40636012010, completado 05:16Z)
-
-### #2680 — BLOQUEADO (Draft)
-- **Diff lido:** `analise-prs/dossies/PR-2680.md`
-- **Merge teste local:** N/A (Draft)
-- **Já implementada:** SIM — conteúdo substituído por #2679 (mergeada)
-
-### #2681 — FECHADA_SEM_MERGE
-- **Diff lido:** `analise-prs/dossies/PR-2681.md`
-- **Status:** Fechada por terceiro em 04:14Z antes desta sessão realizar o merge
-- **Já implementada:** SIM — conteúdo equivalente mergeado via #2679
-
----
-
-*Relatório gerado por Claude Code — sessão https://claude.ai/code/session_012WyySbh2tj8vhRQLBf3mHo*
+- `analise-prs/baseline/state.md` — atualizado com main `c3b41286`
+- `analise-prs/dossies/PR-2701.md` .. `PR-2746.md` — 14 dossiers criados
+- `analise-prs/prs.json` — atualizado com 14 PRs abertas
+- `analise-prs/prs.csv` — atualizado
+- `analise-prs/progresso.json` — atualizado com main `c3b41286`
+- `analise-prs/RELATORIO_PRS.md` — este arquivo

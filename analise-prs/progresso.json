@@ -1,105 +1,34 @@
 {
-  "sessao": "https://claude.ai/code/session_012WyySbh2tj8vhRQLBf3mHo",
-  "data": "2026-10-28",
+  "sessao": "session_012WyySbh2tj8vhRQLBf3mHo",
+  "data": "2026-10-29",
   "main_sha_baseline": "62af0798dd71812979667ac29f596d25f3ef191b",
+  "main_sha_atual": "c3b41286",
   "merges_executados_esta_sessao": [
-    {
-      "pr": 2679,
-      "merge_sha": "ab70ca24300a2d9c8a1109a65a7b25ee02250a3e",
-      "head_sha": "39e6bf76ec07f54dacbcaed83268551b375cbda6",
-      "metodo": "squash",
-      "timestamp": "2026-10-28T05:06Z",
-      "gate_final": "SUCCESS (run 40631972278)",
-      "branch": "claude_pink/awesome-ride-d25ur3"
-    }
+    {"pr": 2720, "sha": "14b6d5fc", "titulo": "ci(e2e): não ocultar falha de fixtures E2E"},
+    {"pr": 2730, "sha": "c3b41286", "titulo": "fix(ci): repair-only E15 — corrige injeção de expressão"}
   ],
-  "ultima_atualizacao": "2026-10-28T05:06:00Z",
+  "ultima_atualizacao": "2026-10-29T22:30:00Z",
   "resumo": {
-    "total_prs": 12,
-    "total_analisadas": 12,
-    "merge_candidate": 1,
-    "fechada_sem_merge": 1,
-    "aguarda_po": 4,
-    "bloqueado": 6,
-    "mergeadas_esta_sessao": 1
+    "total_prs_abertas": 14,
+    "nao_mergear": 5,
+    "aguardando_ci": 6,
+    "decisao_humana": 1,
+    "draft_nao_mergear": 2
   },
   "prs": [
-    {
-      "numero": 2580,
-      "veredito": "AGUARDA_PO",
-      "motivo": "Draft + migrations/ REGRA#8",
-      "diff_lido": true
-    },
-    {
-      "numero": 2600,
-      "veredito": "BLOQUEADO",
-      "motivo": "Conflito real (dirty)",
-      "diff_lido": true
-    },
-    {
-      "numero": 2631,
-      "veredito": "BLOQUEADO",
-      "motivo": "Conflito real (dirty)",
-      "diff_lido": true
-    },
-    {
-      "numero": 2646,
-      "veredito": "AGUARDA_PO",
-      "motivo": "workflows/+migrations/ REGRA#8",
-      "diff_lido": true
-    },
-    {
-      "numero": 2663,
-      "veredito": "AGUARDA_PO",
-      "motivo": "migrations/ REGRA#8",
-      "diff_lido": true
-    },
-    {
-      "numero": 2666,
-      "veredito": "AGUARDA_PO",
-      "motivo": "Downgrade semver PO confirmar",
-      "diff_lido": true
-    },
-    {
-      "numero": 2668,
-      "veredito": "BLOQUEADO",
-      "motivo": "Draft sessao anterior",
-      "diff_lido": true
-    },
-    {
-      "numero": 2674,
-      "veredito": "BLOQUEADO",
-      "motivo": "Draft sessao anterior",
-      "diff_lido": true
-    },
-    {
-      "numero": 2675,
-      "veredito": "AGUARDA_PO",
-      "motivo": "Branch desta sessao REGRA#10",
-      "diff_lido": true
-    },
-    {
-      "numero": 2679,
-      "veredito": "MERGE_CANDIDATE",
-      "motivo": "test-only; 9 commits únicos vs main; worktree merge CLEAN (EXIT:0); mergeable:true; Gate Final rodando em 39e6bf76",
-      "diff_lido": true,
-      "branch": "claude_pink/awesome-ride-d25ur3",
-      "conflito_com_main": false,
-      "draft": false,
-      "ci_status": "Gate Final SUCCESS (run 40631972278) — MERGEADA em ab70ca24"
-    },
-    {
-      "numero": 2680,
-      "veredito": "BLOQUEADO",
-      "motivo": "Draft",
-      "diff_lido": true
-    },
-    {
-      "numero": 2681,
-      "veredito": "FECHADA_SEM_MERGE",
-      "motivo": "Fechada em 04:14Z sem merge",
-      "head_sha_final": "99aa164f657338c5ecd6ce604ea6ee2b112b5869",
-      "diff_lido": true
-    }
+    {"numero": 2701, "titulo": "fix(ci): autentica integração Kit Coverage com usuário E2E", "head_sha": "c5e6937b", "mergeable_state": "dirty", "draft": false, "veredito": "NÃO MERGEAR", "motivo": "conflito de merge + coverage 56% < threshold 70%"},
+    {"numero": 2713, "titulo": "chore(main): release 1.1.0", "head_sha": "05e19726", "mergeable_state": "unknown", "draft": false, "veredito": "DECISÃO_HUMANA", "motivo": "PR de bot (release-please) — REGRA #8 requer confirmação do PO"},
+    {"numero": 2714, "titulo": "fix(db): reconciliar migrations pendentes com o canônico", "head_sha": "bc8038db", "mergeable_state": "dirty", "draft": false, "veredito": "NÃO MERGEAR", "motivo": "conflito de merge"},
+    {"numero": 2717, "titulo": "fix(e2e): isola servidor Vite no CI de paridade", "head_sha": "48926a9d", "mergeable_state": "dirty", "draft": false, "veredito": "NÃO MERGEAR", "motivo": "conflito de merge (provavelmente com #2720)"},
+    {"numero": 2731, "titulo": "fix(db): protege kill_switch_hits contra INSERT anônimo sem rate guard", "head_sha": "6db2040f", "mergeable_state": "behind", "draft": false, "veredito": "NÃO MERGEAR", "motivo": "REGRESSÃO CRÍTICA: --require-live no Gate 1.13.2 bloqueará todos os merges até migration ser aplicada via E15"},
+    {"numero": 2734, "titulo": "fix(ci): usa mirror Docker Hub após limite do GHCR", "head_sha": "d7cba5ab", "mergeable_state": "behind", "draft": false, "veredito": "AGUARDANDO_CI", "motivo": "Gate Final não rodou no HEAD atual"},
+    {"numero": 2738, "titulo": "docs(analise-prs): rev47", "head_sha": "95057305", "mergeable_state": "blocked", "draft": false, "veredito": "AGUARDANDO_CI", "motivo": "documentação pura — aguarda Gate Final verde"},
+    {"numero": 2739, "titulo": "fix(mockup): gerador — medidas, timeout 30s, lote parcial, erros", "head_sha": "a4d70ea6", "mergeable_state": "blocked", "draft": false, "veredito": "AGUARDANDO_CI", "motivo": "aguarda Gate Final verde"},
+    {"numero": 2741, "titulo": "fix(mockup): telas — histórico, resultado, foto original, upload, erros", "head_sha": "db49de03", "mergeable_state": "blocked", "draft": false, "veredito": "AGUARDANDO_CI", "motivo": "aguarda Gate Final verde"},
+    {"numero": 2742, "titulo": "fix(magic-up): compartilhar, brand kit, a11y, i18n e timeout", "head_sha": "0c0bbfbb", "mergeable_state": "blocked", "draft": false, "veredito": "AGUARDANDO_CI", "motivo": "aguarda Gate Final verde"},
+    {"numero": 2743, "titulo": "chore(audit): fixa Graphify e atualiza estado CI", "head_sha": "7eea1696", "mergeable_state": "blocked", "draft": false, "veredito": "AGUARDANDO_CI", "motivo": "body diz não mesclar até checks — aguarda Gate Final verde"},
+    {"numero": 2744, "titulo": "[NÃO MESCLAR] fix(edge): limites e tempo do Magic-Up", "head_sha": "2f379368", "mergeable_state": "blocked", "draft": true, "veredito": "NÃO MERGEAR", "motivo": "DRAFT + bloqueio explícito no título + edge function sem testes passando"},
+    {"numero": 2745, "titulo": "ci(ratchet): evita SIGPIPE no relatório de diff", "head_sha": "a12972b0", "mergeable_state": "behind", "draft": false, "veredito": "AGUARDANDO_CI", "motivo": "fix legítimo — Gate Final não rodou ainda (PR nova)"},
+    {"numero": 2746, "titulo": "docs(ci): auditoria completa de workflows com falha", "head_sha": "826ae60e", "mergeable_state": "unknown", "draft": true, "veredito": "NÃO MERGEAR", "motivo": "DRAFT"}
   ]
 }
