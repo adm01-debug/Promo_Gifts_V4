@@ -96,7 +96,8 @@ vi.mock('@/components/mockup/mockupWizardStep', () => ({ getMockupWizardStep: ()
 vi.mock('@/components/mockup/MockupSuccessToast', () => ({ showMockupSuccessToast: vi.fn() }));
 vi.mock('sonner', () => ({ toast: Object.assign(vi.fn(), toastMock) }));
 
-import { useMockupGenerator, resolveEntryProductId } from '../useMockupGenerator';
+import { useMockupGenerator } from '../useMockupGenerator';
+import { resolveEntryProductId } from '../mockupGeneratorModel';
 
 interface Entry {
   /** query string do deep link (formato 1 e 2) */
@@ -114,7 +115,6 @@ function renderGenerator(entry: Entry = {}) {
       MemoryRouter,
       {
         initialEntries: [{ pathname: '/mockup-generator', state: entry.state ?? null }],
-        future: { v7_startTransition: true, v7_relativePathSplatPath: true },
       },
       children,
     );

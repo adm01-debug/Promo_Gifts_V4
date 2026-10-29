@@ -105,13 +105,13 @@ vi.mock('@/components/mockup/mockupWizardStep', () => ({ getMockupWizardStep: ()
 vi.mock('@/components/mockup/MockupSuccessToast', () => ({ showMockupSuccessToast: vi.fn() }));
 vi.mock('sonner', () => ({ toast: Object.assign(vi.fn(), toastMock) }));
 
+import { useMockupGenerator } from '../useMockupGenerator';
 import {
-  useMockupGenerator,
   resolveProductDimensions,
   hasRealProductDimensions,
   MISSING_DIMENSIONS_ERROR_CODE,
   MISSING_DIMENSIONS_STATUS,
-} from '../useMockupGenerator';
+} from '../mockupGeneratorModel';
 
 const AREA_WITH_LOGO = {
   id: 'area-1',

@@ -322,7 +322,7 @@ export function LogoPreviewCanvas({
         onKeyDown={hasLogo ? (e) => e.target === e.currentTarget && onKeyDown?.(e) : undefined}
       >
         <span id={instructionsId} className="sr-only">
-          Use as setas do teclado para mover o logo em passos finos. Segure Shift para passos
+          Use setas do teclado para mover o logo em passos finos. Segure Shift para passos
           maiores.
         </span>
         <img

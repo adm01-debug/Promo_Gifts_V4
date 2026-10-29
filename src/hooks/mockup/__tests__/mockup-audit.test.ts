@@ -42,11 +42,13 @@ describe('Analise estatica — useMockupGenerator.ts', () => {
   });
 
   describe('T5 — Batch DB saves: Promise.allSettled', () => {
+    // A gravação do lote vive em mockupGeneratorModel.saveBatchResults (usada pelo hook).
+    const modelSrc = readSrc('src/hooks/mockup/mockupGeneratorModel.ts');
     it('usa Promise.allSettled', () => {
-      expect(src).toContain('Promise.allSettled');
+      expect(modelSrc).toContain('Promise.allSettled');
     });
     it('resultado filtrado por "fulfilled"', () => {
-      expect(src).toContain("res.status === 'fulfilled'");
+      expect(modelSrc).toContain("res.status === 'fulfilled'");
     });
   });
 
@@ -57,17 +59,19 @@ describe('Analise estatica — useMockupGenerator.ts', () => {
   });
 
   describe('T9 — URL params preservados', () => {
+    // A leitura dos params de entrada vive em useMockupEntryParams (usado pelo hook).
+    const entrySrc = readSrc('src/hooks/mockup/useMockupEntryParams.ts');
     it('usa URLSearchParams.delete para product_id', () => {
-      expect(src).toContain("newParams.delete('product_id')");
+      expect(entrySrc).toContain("newParams.delete('product_id')");
     });
     it('usa URLSearchParams.delete para technique', () => {
-      expect(src).toContain("newParams.delete('technique')");
+      expect(entrySrc).toContain("newParams.delete('technique')");
     });
     it('NAO usa replaceState com pathname puro', () => {
-      expect(src).not.toContain("replaceState({}, '', window.location.pathname)");
+      expect(entrySrc).not.toContain("replaceState({}, '', window.location.pathname)");
     });
     it('URL final preserva params extras', () => {
-      expect(src).toMatch(/newSearch\s*\?\s*`\?\${newSearch}`\s*:\s*''/);
+      expect(entrySrc).toMatch(/newSearch\s*\?\s*`\?\${newSearch}`\s*:\s*''/);
     });
   });
 
