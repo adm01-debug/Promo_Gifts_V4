@@ -40,6 +40,24 @@
 
 **Gate Final verde em 5 runs consecutivos na main — condição de processo satisfeita.**
 
+## 8. Revalidação posterior — 2026-10-29
+
+**SHA atual da `main`:** `c344508711797a730893644449b16a05f12f4fce` (confirmado por `git ls-remote`).
+
+Na consulta das últimas execuções por workflow, foram observados 36 workflows distintos: 25 com `success` e 7 com `failure`; os demais estavam em estados não concluídos ou sem conclusão. As sete falhas mais recentes e as evidências disponíveis estão registradas em `PENDENCIAS.md` (runs 40813871454, 40808174535, 40762904577, 40762904949, 40762904693, 40762354015 e 40762354171). Os workflows verdes permanecem verdes na fotografia; não foram rerodados.
+
+### Baseline local antes da alteração de documentação
+
+No branch `fix/ci-workflows`, commit de código `1df94731b8527f915f102edaec319e985b742790`:
+
+| Verificação | Resultado |
+|---|---|
+| `npm run e2e:generate-fixtures` | ✅ Passou; 64 URLs, 18 rotas base; schema validado |
+| `npm run build:verify` | ✅ Passou; typecheck, lint sem erros/avisos e build |
+| `npm test` | ✅ 1.210 arquivos passaram; 25.656 testes passaram; 131 arquivos / 1.134 testes skipped e 24 TODOs preservados |
+
+O relatório deve receber os resultados finais após o commit documental; não declarar o PR pronto para merge enquanto os checks obrigatórios estiverem pendentes/falhando.
+
 ---
 
 ## 7. Workflows aguardando ação do PO
