@@ -3,7 +3,7 @@
 **Atualizado:** 2026-10-29
 **Branch da revalidação:** `fix/graphify-reproducible-version-20261029`
 
-> Revalidação independente mais recente: veja a seção **Inventário completo da main — 2026-10-29** abaixo. Ela substitui os IDs/status antigos deste arquivo quando houver conflito.
+> Revalidação operacional mais recente: veja P19 ao final deste arquivo. Inventários anteriores permanecem como histórico e não substituem os status atualizados em P19.
 
 ## Auditoria de sincronização local × GitHub × Supabase — snapshot substituído
 
@@ -620,6 +620,58 @@ Validação local após os dois commits do PR: `npm run build:verify`, actionlin
 - `main` local e `origin/main` coincidem em `66d032afa8e31cd4f9b2f60508613794cef928d4`.
 - PR [#2743](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2743) está aberto, `mergeable=true`, mas `mergeable_state=blocked`. No snapshot consultado às 21:35 UTC havia 46 checks: 11 sucessos, 4 ignorados, 1 neutro, 1 falha, 22 em fila e 7 em execução. A falha do Copilot Reviewer é HTTP 402 por limite de uso esgotado e bloqueio de firewall para `api.github.com` ([run](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40956599165/job/123738194938)). O status do preview Vercel também falhou; o deployment [C1PJS46Myp56uWZ2cWJiD68EsNHo](https://vercel.com/juca1/promo-gifts-v4/C1PJS46Myp56uWZ2cWJiD68EsNHo) consta como `ERROR`, mas a consulta de logs não expôs causa. Não mesclar enquanto checks obrigatórios estiverem pendentes ou falhos.
 - A listagem atual retornou 14 PRs abertas. As PRs seguem sem merge nesta etapa; conflitos e decisões de governança devem ser revalidados individualmente antes de qualquer integração.
+
+### Últimas execuções na `main` — snapshot 2026-10-29T21:34Z
+
+Inventário feito consultando individualmente os 119 workflows ativos com `branch=main` e `per_page=1`. Apenas a última execução encontrada por workflow foi classificada.
+
+| Estado | Quantidade |
+|---|---:|
+| `success` | 58 |
+| `failure` | 27 |
+| `cancelled` | 3 |
+| `in_progress` | 3 |
+| `queued` | 2 |
+| `pending` | 2 |
+| `skipped` | 2 |
+| `waiting` | 1 |
+| Sem execução na `main` | 21 |
+
+As 27 falhas mais recentes:
+
+| Workflow | Run | Evidência / causa atual |
+|---|---|---|
+| Copilot | [40750158539](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40750158539) | HTTP 402: limite adicional de uso esgotado. Bloqueio externo de quota. |
+| Regenerate Supabase Types | [26378664155](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/26378664155) | Step de commit/push/PR falhou; logs expiraram com HTTP 410. Causa técnica não verificável com a evidência retida. |
+| edge-functions-drift-check | [40848475790](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40848475790) | 29 hashes de Edge Functions divergem; o artefato não identifica qual lado é fonte legítima. |
+| E2E Critical Flows & Error Boundaries | [40949474074](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40949474074) | `Run Quote Full Flow E2E` terminou exit 1; o resumo disponível não contém assertion/causa-raiz. |
+| Supplier Comparison CI | [39253399818](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39253399818) | API não retornou jobs/logs para a execução. Causa não verificável. |
+| OptimizedImage E2E CI | [39263929298](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39263929298) | `Setup E2E` falhou; resumo não preserva o motivo. A atribuição anterior a lockfile permanece não comprovada. |
+| Global Search Quality Gate | [39263929104](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39263929104) | Setup/instalação falhou; resumo não contém stderr conclusivo. Há registro antigo de lockfile divergente, não confirmado nesta falha. |
+| CI Replenishment Module Quality Gate | [40949474442](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40949474442) | Auditoria E2E de paridade visual `/novidades` × `/reposicao` falhou; sem assertion no resumo. |
+| Kit Coverage — Integration | [40813871454](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40813871454) | Três testes anon recebem `permission denied` em `v_kit_component_complete` e `product_kit_components`. Não conceder SELECT a `anon`; modelar teste autenticado ou corrigir o contrato com aprovação. |
+| Update Quote Visual Snapshots | [39997674586](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39997674586) | `[E108]`: fixture de orçamento enviado ausente; sete testes falharam. |
+| E2E Discount Approval | [39263929177](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39263929177) | `Setup E2E` falhou; resumo não preserva a causa-raiz. |
+| E2E ColorSwatch Grid | [39263932330](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39263932330) | `Setup E2E` falhou; resumo não preserva a causa-raiz. |
+| E2E Dialogs visual PR check | [39253396759](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39253396759) | API não retornou jobs/logs. Causa não verificável. |
+| E2E Check Calendar snapshots | [39253393953](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39253393953) | API não retornou jobs/logs. Causa não verificável. |
+| E2E PDF Dialog | [40893179038](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40893179038) | Trecho do job indica drift do threshold e artefato `watermark-threshold-recalibration-*`; o registro antigo que atribuía a falha à fixture E108 não corresponde a este run. |
+| PDF Visual Regression | [39253404824](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39253404824) | API não retornou jobs/logs. Causa não verificável. |
+| Magazine typed queries — dry-run | [39257701249](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39257701249) | `Install dependencies` falhou; resumo não preserva stderr conclusivo. A hipótese antiga de lockfile ainda precisa ser reproduzida. |
+| migration-dry-run | [35506272165](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/35506272165) | `psql` não resolve o hostname mascarado; confirmar DNS/conectividade do runner sem expor secrets. |
+| E2E Magazine Header Layout | [40949474466](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40949474466) | `Run Magazine Header E2E` terminou exit 1; sem assertion-raiz no resumo. |
+| Ratchet Weekly | [40296887709](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40296887709) | Exit code 141/SIGPIPE no passo de comparação. A correção proposta no workflow ainda não tem execução verde na `main`. |
+| E2E Cart — Matrix | [40140248814](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40140248814) | Registro da execução indica timeout de login e timeout de clique no popover de remoção; o resumo atual não isola qual assert causou a conclusão. |
+| E2E Freight — Matrix | [39141334040](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39141334040) | Setup Auth E21: usuário de teste permaneceu em `/login`; reproduzir a configuração de autenticação. |
+| E2E Stock — Matrix | [39257701140](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39257701140) | `npm ci` falhou; resumo/tail não confirma a raiz. O diagnóstico antigo de EUSAGE/lockfile precisa de reprodução. |
+| CI Security & Drift Checks | [40949474454](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40949474454) | Os testes E2E críticos reportaram dez falhas, sem detalhes das assertions no resumo consultado. |
+| Nightly Full CI | [40808174535](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40808174535) | Falhas E2E em seletores ColorSwatch/Kit Builder e visuais Magazine Header conforme relatório; causa comum não demonstrada. |
+| E2E atualizar snapshots visuais (E155) | [39999649279](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39999649279) | Elementos esperados não encontrados; cinco falhas. Não atualizar snapshot sem confirmar contrato visual. |
+| Python Package using Conda | [39670397287](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39670397287) | `EnvironmentFileNotFound`: workflow referencia `environment.yml` ausente. Correção deve apontar para manifesto existente ou versionar o ambiente requerido, sem contornar o erro. |
+
+Os status não terminais/fora de falha no mesmo snapshot foram mantidos separados: `in_progress` — Visual Baseline Tests — Nightly [40949473771](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40949473771), Edge Integration Tests — All Functions [40949473466](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40949473466), E2E Swatch QuickView [40949474491](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40949474491); `queued` — Deploy Gates [40949474206](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40949474206), Uptime Monitor [40958856642](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40958856642); `pending` — SECURITY DEFINER ACL — Multi-Env [40899426158](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40899426158), E2E restore_seller_cart RPC [40852813455](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40852813455); `waiting` — Deploy Edge Functions [40757296680](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40757296680). Não são falhas concluídas.
+
+**Baseline × final desta revisão documental:** `npm run build:verify` passou (typecheck, lint baseline sem regressões, guards e build); `npm test -- --reporter=dot` passou com 1.222 arquivos, 25.718 testes aprovados, 130 arquivos/1.135 testes skipped e 24 TODO. O snapshot principal de workflow é atual até 21:34 UTC; validação local concluída às 21:44 UTC. Nenhum workflow foi rerun e nenhum teste/snapshot foi enfraquecido.
 
 ### Supabase canônico — leitura apenas
 

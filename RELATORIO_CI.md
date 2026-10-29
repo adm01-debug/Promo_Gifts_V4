@@ -206,3 +206,33 @@ O commit de reprodutibilidade está na branch dedicada `fix/graphify-reproducibl
 - O PR #2743 está aberto e bloqueado. No snapshot de 21:35 UTC, 46 check runs estavam: 11 `success`, 4 `skipped`, 1 `neutral`, 1 `failure`, 22 `queued` e 7 `in_progress`. A falha identificada é o Copilot Reviewer com HTTP 402 por quota de uso adicional; o preview Vercel também está `ERROR`, mas os logs consultados não indicaram causa. Não houve merge nem rerun nesta atualização.
 - A seção P19 de [`PENDENCIAS.md`](./PENDENCIAS.md) contém a reconciliação atual do checkout/branch e a auditoria somente leitura do canônico. Em `pg_catalog`, os nomes de 398 tabelas, 197 views e 15 enums coincidem com o inventário local de `types.ts`; a reconciliação das 3.004 versões locais e 2.552 remotas permanece pendente.
 - A correção também removeu o snapshot antigo do topo de `PENDENCIAS.md` e alinhou os números do mapa Graphify ao relatório versionado. Essas alterações são documentais e não alteram runtime, APIs, migrations, schema ou dados.
+
+## 13. Inventário mais recente da `main` e validação documental — 2026-10-29
+
+### Último run por workflow na `main`
+
+Consulta individual dos 119 workflows ativos, filtrando `branch=main` e `per_page=1`, concluída em 21:34 UTC. O inventário substitui os contadores anteriores nas seções 8 e 11; os snapshots mais antigos permanecem apenas como histórico.
+
+| Estado | Quantidade |
+|---|---:|
+| `success` | 58 |
+| `failure` | 27 |
+| `cancelled` | 3 |
+| `in_progress` | 3 |
+| `queued` | 2 |
+| `pending` | 2 |
+| `skipped` | 2 |
+| `waiting` | 1 |
+| Sem execução na `main` | 21 |
+
+As 27 falhas e suas evidências resumidas estão em [`PENDENCIAS.md`, seção P19](./PENDENCIAS.md). As causas sem log/assertion suficiente estão marcadas como não confirmadas; elas não foram corrigidas por hipótese. Os estados queued, pending, waiting, in_progress, skipped e cancelled não foram contados como falha.
+
+### Comparação baseline × final local
+
+| Verificação | Baseline `66d032af` | Final desta revisão | Resultado |
+|---|---|---|---|
+| `npm run build:verify` | Passou em baseline anterior | Passou: typecheck, lint baseline sem regressões, guards canônicos, build, ciclos de chunks e harnesses | Sem piora |
+| Suíte completa Vitest | 1.222 arquivos; 25.716 testes aprovados; 130 arquivos/1.135 testes skipped; 24 TODO | 1.222 arquivos; 25.718 testes aprovados; 130 arquivos/1.135 testes skipped; 24 TODO | +2 testes aprovados; skips/TODO iguais |
+| `git diff --check` | — | Passou nos arquivos documentais alterados | Sem whitespace inválido |
+
+Esta revisão só altera documentação e números de auditoria. Não executou reruns de workflows, alteração em `main`, deploy, migration, repair, DDL ou mudança de dados. A branch e o PR #2743 continuam separados da `main`; o PR permanece bloqueado por checks externos/pendentes descritos em P19.
