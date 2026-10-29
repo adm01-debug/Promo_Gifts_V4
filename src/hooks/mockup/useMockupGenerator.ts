@@ -16,6 +16,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import {
   useFilteredTechniques,
   useProductCustomizationOptionsForMockup,
+  resolveTechnique,
   type CustomizationOption,
   type TechniqueWithLimits,
 } from './useMockupTechniques';
@@ -205,10 +206,10 @@ export function useMockupGenerator() {
     fetchData();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // F-03: reconcilia a técnica restaurada com o id canônico de filteredTechniques.
   useEffect(() => {
-    if (selectedTechnique && filteredTechniques.length > 0)
-      if (!filteredTechniques.some((t) => t.id === selectedTechnique.id))
-        setSelectedTechnique(null);
+    if (!selectedTechnique || filteredTechniques.length === 0) return;
+    setSelectedTechnique(resolveTechnique(filteredTechniques, selectedTechnique));
   }, [filteredTechniques, selectedTechnique]);
 
   useEffect(() => {
@@ -259,8 +260,11 @@ export function useMockupGenerator() {
                 imageUrl: product.images?.[0] || '/placeholder.svg',
               });
           }
-          if (draft.techniqueId) {
-            const technique = techniques.find((t) => t.id === draft.techniqueId);
+          if (draft.techniqueId || draft.techniqueName) {
+            const technique = resolveTechnique(techniques, {
+              id: draft.techniqueId,
+              name: draft.techniqueName,
+            });
             if (technique) setSelectedTechnique(technique);
           }
           if (draft.clientId && draft.clientName)
@@ -303,9 +307,7 @@ export function useMockupGenerator() {
       });
     const techniqueName = params.get('technique');
     if (techniqueName && techniques.length > 0) {
-      const technique = techniques.find(
-        (t) => t.name.toLowerCase() === techniqueName.toLowerCase(),
-      );
+      const technique = resolveTechnique(techniques, { name: techniqueName });
       if (technique) setSelectedTechnique(technique);
     }
     // T9 FIX: only remove the params we processed — preserve everything else.
@@ -701,14 +703,12 @@ export function useMockupGenerator() {
   const loadFromHistory = useCallback(
     async (mockup: GeneratedMockup) => {
       const product = mockup.product_id ? getProductById(mockup.product_id) : null;
-      // BUG-11 FIX: technique_id is now always null (BUG-10 fix) because the FK points to
-      // personalization_techniques but the UI loads from tabela_preco_gravacao_oficial.
-      // Fall back to name-matching so the technique is correctly pre-selected when loading from history.
-      const technique =
-        (mockup.technique_id && techniques.find((t) => t.id === mockup.technique_id)) ||
-        (mockup.technique_name &&
-          techniques.find((t) => t.name.toLowerCase() === mockup.technique_name?.toLowerCase())) ||
-        null;
+      // BUG-11 FIX: technique_id pode vir null ou com id de outro espaço; resolveTechnique
+      // cai para nome/código para pré-selecionar corretamente ao carregar do histórico.
+      const technique = resolveTechnique(techniques, {
+        id: mockup.technique_id,
+        name: mockup.technique_name,
+      });
       if (product)
         setProductSelection({
           product,
