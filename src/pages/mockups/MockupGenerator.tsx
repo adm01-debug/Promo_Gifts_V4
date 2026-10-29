@@ -107,9 +107,8 @@ export default function MockupGenerator() {
 
   const technique = useTechniqueHandlers({
     hasLogo: mg.hasLogo,
-    // Cast: useMockupGenerator narrows to Technique|TechniqueWithLimits; useTechniqueHandlers
-    // expects MockupTechnique (less restrictive due to [key: string]: unknown). Both are compatible
-    // structurally, but TS can't widen a Dispatch<SetStateAction<T>> to a (t: U) => void without help.
+    // Cast: Technique|TechniqueWithLimits (hook) e MockupTechnique (handlers) são compatíveis
+    // estruturalmente, mas o TS não alarga Dispatch<SetStateAction<T>> para (t: U) => void.
     selectedTechnique: mg.selectedTechnique as MockupTechnique | null,
     setSelectedTechnique: mg.setSelectedTechnique as (t: MockupTechnique | null) => void,
     setGeneratedMockup: mg.setGeneratedMockup,
@@ -353,9 +352,7 @@ export default function MockupGenerator() {
                   onLogoUpload={mg.handleAreaLogoUpload}
                   onLogoRemove={() => {
                     mg.logoColorAnalysis.clearAnalysis();
-                    if (mg.activeArea) {
-                      mg.updateActiveArea({ logoPreview: null, logoFile: null });
-                    }
+                    if (mg.activeArea) mg.updateActiveArea({ logoPreview: null, logoFile: null });
                     mg.setGeneratedMockup(null);
                   }}
                   productLocations={mg.productLocations}
