@@ -10,6 +10,9 @@
  *  4. user_id e resolvido server-side via auth.admin.
  *  5. dryRun = true por default.
  *  6. Apaga apenas dados de aplicacao. NUNCA apaga auth.users.
+ *  7. Tambem remove os mockups do usuario de teste: linhas de `generated_mockups`
+ *     e os objetos do bucket `mockup-assets` sob o prefixo `${userId}/`
+ *     (`logos/` e `mockups/`). Nenhum outro prefixo e tocado.
  */
 // @ts-ignore - Deno runtime
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.4";
@@ -49,6 +52,14 @@ function getClientIp(req: Request): string {
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL") ?? "";
 const RATE_LIMIT_MAX = Math.max(1, Number(Deno.env.get("E2E_CLEANUP_RATE_LIMIT_MAX") ?? "30"));
 const RATE_LIMIT_WINDOW = Math.max(10, Number(Deno.env.get("E2E_CLEANUP_RATE_LIMIT_WINDOW_SECONDS") ?? "60"));
+
+// Bucket dos mockups e subpastas por usuario gravadas por `src/lib/mockup-storage.ts`
+// (`${userId}/logos/<ts>-<nome>.<ext>`) e pelo gerador (`${userId}/mockups/<ts>-<uuid>.png`).
+// Listar exatamente estas duas subpastas cobre todos os objetos do usuario de teste
+// sem alcancar nenhum outro prefixo do bucket.
+const MOCKUP_BUCKET = "mockup-assets";
+const MOCKUP_USER_SUBDIRS = ["logos", "mockups"] as const;
+const STORAGE_LIST_LIMIT = 1000;
 
 function timingSafeEqual(a: string, b: string): boolean {
   const enc = new TextEncoder();
@@ -135,6 +146,7 @@ Deno.serve(async (req: Request) => {
 
     // 5. Cleanup (application data only)
     const deleted: Record<string, number> = {};
+    const errors: Record<string, string> = {};
     const tables = [
       { table: "quotes", column: "seller_id" },
       { table: "orders", column: "seller_id" },
@@ -142,6 +154,9 @@ Deno.serve(async (req: Request) => {
       { table: "workspace_notifications", column: "user_id" },
       { table: "follow_up_reminders", column: "seller_id" },
       { table: "mockup_drafts", column: "user_id" },
+      // BUG-EF-E2E-MOCKUPS: generated_mockups faltava na lista — as linhas do
+      // historico de mockups dos testes sobreviviam ao cleanup.
+      { table: "generated_mockups", column: "user_id" },
       { table: "favorites", column: "user_id" },
     ];
 
@@ -163,13 +178,45 @@ Deno.serve(async (req: Request) => {
       }
     }
 
+    // 6. Storage: remove os objetos de mockup do usuario de teste (logos/ e
+    //    mockups/). Escopo estrito ao prefixo `${userId}/`; nenhum outro
+    //    prefixo do bucket e listado ou removido.
+    const mockupPaths: string[] = [];
+    for (const subdir of MOCKUP_USER_SUBDIRS) {
+      const prefix = `${userId}/${subdir}`;
+      const { data: entries, error } = await supabase.storage
+        .from(MOCKUP_BUCKET)
+        .list(prefix, { limit: STORAGE_LIST_LIMIT });
+      if (error) {
+        errors[`storage:${MOCKUP_BUCKET}/${subdir}`] = error.message;
+        continue;
+      }
+      for (const entry of entries ?? []) {
+        if (entry?.name) mockupPaths.push(`${prefix}/${entry.name}`);
+      }
+    }
+
+    if (mockupPaths.length > 0) {
+      if (dryRun) {
+        deleted[`storage:${MOCKUP_BUCKET}`] = mockupPaths.length;
+      } else {
+        const { error } = await supabase.storage.from(MOCKUP_BUCKET).remove(mockupPaths);
+        if (error) errors[`storage:${MOCKUP_BUCKET}`] = error.message;
+        else deleted[`storage:${MOCKUP_BUCKET}`] = mockupPaths.length;
+      }
+    }
+
     const totalMs = Date.now() - startMs;
     await supabase.from("e2e_cleanup_audit").insert({
       ip: clientIp, status: "success", dry_run: dryRun,
       user_id: userId, totals: deleted, total_ms: totalMs,
     }).maybeSingle();
 
-    return jsonResponse({ ok: true, dryRun, userId, deleted, totalMs });
+    return jsonResponse({
+      ok: true, dryRun, userId, deleted,
+      ...(Object.keys(errors).length > 0 ? { errors } : {}),
+      totalMs,
+    });
 
   } catch (err) {
     const msg = err instanceof Error ? err.message : "unknown";
