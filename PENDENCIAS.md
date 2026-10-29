@@ -1,9 +1,9 @@
 # PENDENCIAS.md — Itens bloqueados por secret/permissão/infraestrutura
 
-**Atualizado:** 2026-10-28  
+**Atualizado:** 2026-10-29 01:15 UTC
 **Branch:** `fix/ci-workflows` (esta sessão)
 
-> **Adendo de auditoria:** os itens abaixo contêm histórico de sessões anteriores e seus snapshots podem estar desatualizados. Para o estado conferido em 2026-10-28, consulte P14–P16 no final deste arquivo e o adendo no topo de `RELATORIO_CI.md`. Nesta auditoria não foi aplicada alteração ao banco canônico.
+> **Adendo de auditoria:** os itens abaixo contêm histórico de sessões anteriores. Para o estado conferido em 2026-10-29 01:15 UTC, consulte P17 no final deste arquivo e o adendo no topo de `RELATORIO_CI.md`. Nesta auditoria não foi aplicada alteração ao banco canônico.
 
 ---
 
@@ -373,3 +373,15 @@ Estado apurado em `c344508711797a730893644449b16a05f12f4fce`; as execuções mai
 **Correção versionada:** PR [#2715](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2715), commit `090320e1`, exige papel `dev` por `authorize()` com validação server-side antes das operações privilegiadas. Um teste estático cobre a ordem da autorização. Não houve deploy nem alteração de schema/dados.
 
 **Estado:** PR aberto; implantação depende de aprovação/merge e do workflow oficial de deploy de Edge Functions. Até então, a correção existe na branch do PR e **não** no runtime canônico. Não publicar por MCP/dashboard.
+
+## P17 — Rechecagem da sincronização GitHub × Supabase — 2026-10-29 01:15 UTC
+
+**Sincronização:** checkout local `main` = `origin/main` em `c344508711797a730893644449b16a05f12f4fce`. Correções recentes permanecem em PRs; a PR #2717 está no HEAD `7c5f525996ee7dec3443f2886e92efdd9326fa3a`, aberta e `unstable`, sem merge. As alterações locais do Graphify são artefatos gerados, não código-fonte publicado.
+
+**CI:** inventário das últimas execuções de 34 workflows na `main`: 24 `success`, 5 `failure`, 3 `cancelled`, 2 `skipped`. Falhas: E2E Critical Flows [40762904577](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762904577); CI Security & Drift [40762904949](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762904949); Swatch QuickView [40762904693](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762904693); Edge Integration Tests [40762354015](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762354015); Magazine Header [40762354171](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762354171). O Uptime Monitor está verde em [40798430891](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40798430891); a oscilação anterior de P14 segue sem causa raiz comprovada.
+
+**PR #2717:** 27 checks observados: 19 verdes, 2 falhos, 5 em andamento e 1 ignorado. A revisão Copilot [40798295714](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40798295714) retornou HTTP 402 por limite de uso e reportou bloqueio de firewall para `api.github.com`; não representa aprovação. O E2E Quotes [40798283756](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40798283756) contém desvio visual mobile dark de 5 px e falha ao localizar cabeçalho de status no primeiro acesso. Espera candidata não reproduzida em ambiente isolado foi descartada sem commit. Não atualizar snapshots nem enfraquecer testes sem validação.
+
+**Banco canônico `doufsxqlfjyuvxuezpln`:** auditoria somente leitura, status `ACTIVE_HEALTHY`, PostgreSQL 17.6. Ledger com 2.552 IDs até `20261027160000`; repo com 3.009 arquivos SQL e 3.004 IDs únicos, incluindo 463 somente locais, 11 somente remotos e 5 IDs duplicados localmente. A contagem bruta ainda não bate com o Gate E40 (`local_only=1109; remote_only=648`), cujo escopo precisa ser reconciliado. Checagem estrutural de types contra `origin/main` sem remoções/alterações, mas o modo live foi pulado. Nenhuma migration, DDL, Edge Function, schema ou dado operacional foi alterado.
+
+**Próximos passos:** esclarecer o escopo do Gate E40, classificar cada ID de migration e corrigir/retestar as falhas de CI. Qualquer alteração de schema deve ser versionada e passar pelo fluxo E15, com as aprovações exigidas; não usar `db push`, DDL direto ou `migration repair` em massa. Dados operacionais de clientes e produtos não devem ser copiados para o GitHub.

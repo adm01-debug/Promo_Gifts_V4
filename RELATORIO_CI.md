@@ -1,5 +1,35 @@
 # RELATÓRIO CI — Promo Gifts V4
 
+## Atualização da auditoria — 2026-10-29 01:15 UTC
+
+Rechecagem via MCP `GITHUB - MCP - FOREVER` de `main`, da PR #2717 e do Supabase canônico.
+
+- Última execução por workflow na `main` (34 workflows): **24 success, 5 failure, 3 cancelled, 2 skipped**.
+- PR #2717: 27 checks — **19 success, 2 failure, 5 em andamento, 1 skipped**. Continua aberta e `unstable`.
+- `Uptime Monitor` voltou a passar no run [40798430891](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40798430891); isso não identifica a causa dos timeouts anteriores de P14.
+
+| Workflow / check | Execução | Estado | Diagnóstico / bloqueio |
+|---|---:|---|---|
+| E2E — Critical Flows (main) | [40762904577](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762904577) | failure | Falso positivo na busca de `500` dentro de conteúdo que inclui `6.500`; correção de asserção está na PR #2717, não na main. |
+| CI Security & Drift (main) | [40762904949](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762904949) | failure | Quality gate com E2E autenticados falhando; timeout relatado no fluxo inicial do Kit Builder requer reprodução com a conta E2E. |
+| Swatch QuickView (main) | [40762904693](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762904693) | failure | Firefox apresentou falhas de toolbar/swatches; Chromium também falhou sem causa isolada; WebKit terminou durante encerramento do runner. |
+| Edge Integration Tests (main) | [40762354015](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762354015) | failure | `crm-db-bridge` respondeu HTTP 503 para dois casos de body inválido, acima do esperado pelo teste. |
+| Magazine Header (main) | [40762354171](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762354171) | failure | Navegação ficou em `/magazine` quando o teste esperava `/magazine/{id}`; correção funcional ainda não comprovada. |
+| Copilot Code Review (PR #2717) | [40798295714](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40798295714) | failure | HTTP 402 por limite de uso e bloqueio de firewall para `api.github.com`; não representa revisão aprovada. |
+| E2E Quotes — Matrix (PR #2717) | [40798283756](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40798283756) | failure | Snapshot mobile dark diverge 5 px; teste de ordem das colunas não encontra o cabeçalho de status no primeiro acesso. Espera candidata não validada com DB isolado foi descartada. |
+
+Cinco checks da PR #2717 ainda estavam em andamento (`E2E (Playwright)`, qualidade de reposição, visual nightly, Magazine Header e Swatch QuickView). Não mesclar até conclusão e resolução dos bloqueios.
+
+### Sincronização do código e do banco
+
+- Checkout `main` local e remoto coincidem em `c344508711797a730893644449b16a05f12f4fce`; correções mais recentes estão em PRs e ainda não foram incorporadas à `main`.
+- PR #2717 tem HEAD `7c5f525996ee7dec3443f2886e92efdd9326fa3a`, aberta, sem merge.
+- Supabase `doufsxqlfjyuvxuezpln`: consulta somente leitura; projeto ativo e saudável, PostgreSQL 17.6. Ledger tem 2.552 IDs até `20261027160000`; repositório tem 3.009 arquivos SQL e 3.004 IDs únicos, com 463 IDs locais ausentes do ledger, 11 remotos sem arquivo local e cinco duplicidades locais.
+- `check-types-inventory-drift` contra `origin/main` não reportou remoções/alterações estruturais; sua comparação live foi pulada. A leitura anterior por `pg_catalog` encontrou 398 tabelas, 197 views/materialized views, 1.334 funções e 15 enums. Isso não resolve a divergência de migrations.
+- Não houve escrita no banco. A métrica bruta de IDs não é intercambiável com o gate E40 (`local_only=1109; remote_only=648`); esclarecer filtros e classificar cada ID antes de qualquer reconciliação. Sem `db push`, DDL direto ou `migration repair` em massa; aplicar apenas pelo fluxo E15, com migration versionada e aprovação.
+
+Esta atualização supersede os estados anteriores somente para a consulta registrada; o restante do documento é histórico.
+
 ## Adendo de auditoria — 2026-10-28 (checkout `c344508711797a730893644449b16a05f12f4fce`)
 
 Este adendo substitui os snapshots antigos abaixo para o estado observado nesta data. O checkout local `main` e `origin/main` apontam para o mesmo SHA `c344508711797a730893644449b16a05f12f4fce`.
