@@ -406,6 +406,28 @@ Consulta ao GitHub Actions: 119 workflows ativos; para cada um foi consultada a 
 *Ação prioritária: P1 (secrets E2E) — desbloqueia P2, P9, P10. P6, P8, P11 requerem investigação independente. P12 bloqueado por P7 (Opção B disponível via workflow_dispatch sem resolver P7). P13 requer deleção do projeto fantasma Vercel.*
 
 
+## ADENDO — inventário atualizado em 2026-10-29
+
+Esta seção registra as últimas execuções da `main` observadas nesta data. Os itens abaixo continuam falhando; erros E2E sem causa de infraestrutura comprovada ficam pendentes de reprodução e inspeção dos artefatos, sem atribuição especulativa.
+
+| Workflow | Última execução com falha | Evidência observada | Situação |
+|---|---|---|---|
+| Kit Coverage — Integration | [40813871454](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40813871454) | `permission denied for view v_kit_component_complete`; mesmo bloqueio descrito em P12 | P12 continua pendente; não conceder GRANT fora do fluxo aprovado |
+| Nightly Full CI | [40808174535](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40808174535) | 4 jobs falharam: color-swatch (timeouts de seletores, 8 testes), Playwright shard 1 (11), magazine-header visual (14) e shard 2 (23). Artefatos do run contêm traces e screenshots | Causa comum ainda não comprovada; reproduzir cada grupo antes de corrigir |
+| E2E — Critical Flows & Error Boundaries | [40762904577](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762904577) | `26-catalog-to-kit-flow`: `expect(locator).not.toContainText(expected)` falhou ao verificar a lista do catálogo | Reproduzir e inspecionar `error-context.md` do artefato antes de alterar UI/dados |
+| CI Security & Drift Checks | [40762904949](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762904949) | 6 E2E falharam: filtros/estado vazio do catálogo, transição de imagem e edição, criação e reset do Kit Builder | Causa raiz ainda não isolada; traces anexados ao run |
+| E2E • Swatch QuickView | [40762904693](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762904693) | Falha em Chromium/Firefox/WebKit; o log mostra setup de autenticação e servidor Vite ignorados, seguido de falhas na suíte. P10 documenta o risco de secrets e de produtos V2 ausentes | P10 pendente; confirmar autenticação e dados V2 antes de mexer no seletor |
+| Edge Integration Tests — All Functions | [40762354015](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762354015) | 2 testes de body vazio/string crua em `crm-db-bridge` receberam HTTP 503, mas esperavam resposta abaixo de 500 | Raiz ainda não determinada; verificar função implantada e dependências via leitura, sem deploy direto |
+| E2E — Magazine Header Layout | [40762354171](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762354171) | Suite responsiva falhou com 14 casos; wrapper `Magazine Header OK` propagou a falha | Inspecionar traces/screenshots e reproduzir antes de corrigir |
+
+### Copilot Review — PR #2719
+
+Run [40818209296](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40818209296), no SHA `883b9a4d`, falhou por limite adicional de uso do Copilot e bloqueio de firewall a `api.github.com`. A nova tentativa [40819621886](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40819621886), no SHA `239d3737`, também falhou: `statusCode: 402`, `errorCode: quota`, `You've reached your additional usage limit for your plan`. O responsável do repositório precisa liberar/elevar a cota do Copilot Actions. Não contornar billing nem firewall; a falha mais recente aponta quota, não firewall.
+
+### Correção do PR #2719
+
+O Gate 1.3 apontou uma referência fictícia a uma migration `001.sql` (inexistente) na fixture `tests/scripts/graphify-metrics.test.mjs`. A fixture foi ajustada para compor o caminho em segmentos. Os três contratos de migration e o teste direcionado passaram localmente; `build:verify` e a suíte integral também passaram após o commit `239d3737`. O PR foi atualizado e aguarda novos checks; não foi mergeado.
+
 ## P14 — Revisor automático do Copilot (limite de uso e firewall)
 
 **Workflow:** `copilot-pull-request-reviewer` no PR [#2721](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2721)
@@ -449,7 +471,6 @@ Esta atualização substitui o estado operacional antigo de P7, P8, P12, P13 e P
 Critério: apenas a execução mais recente de cada workflow na `main`; runs de PR são listados separadamente em P15.
 
 | Workflow | Último run | Estado | Causa/evidência disponível |
-|---|---|---|---|
 | Uptime Monitor | [#40883033798](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40883033798) | failure | Issue [#2727](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2727): site `0`, `health-check` curl `22`, `check-login` OPTIONS `0`, Auth `0`. Uma chamada read-only posterior a `health-check?fresh=1` respondeu com `database=healthy` e `external_db=healthy`; provável intermitência, ainda não encerrada até haver run agendado verde. |
 | edge-functions-drift-check | [#40848475790](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40848475790) | failure | 29 funções divergentes, detalhadas em P15; a evidência não determina qual hash é a fonte correta. |
 | Kit Coverage — Integration | [#40813871454](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40813871454) | failure | `permission denied` para `v_kit_component_complete` e `product_kit_components`; P12/P15 registram a validação e os limites para correção. |
