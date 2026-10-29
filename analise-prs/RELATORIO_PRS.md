@@ -101,7 +101,7 @@
 
 | PR | Branch | Causa |
 |---|---|---|
-| #2717 | `fix/e2e-vite-port-isolation` | Conflito com main — autor deve resolver |
+| #2717 | `fix/e2e-vite-port-isolation` | Conflito com main + toca `.github/workflows/replenishment-quality.yml` (REGRA #8) |
 | #2716 | `docs/auditoria-sync-canonico-2026-10-28` | Conflito + branch de outra sessão |
 | #2707 | `e66-edge-deploy-receipt-40747468580` | Conflito + branch de bot |
 | #2695 | `docs/reconciliar-espelho-google-20261028` | Conflito com main |
