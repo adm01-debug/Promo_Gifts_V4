@@ -198,6 +198,15 @@ export function LocationPanel({
   const [announcement, setAnnouncement] = useState('');
   const [isSwapping, setIsSwapping] = useState(false);
   const reduceMotion = useReducedMotion();
+  const pendingTimeoutsRef = useRef<Set<ReturnType<typeof setTimeout>>>(new Set());
+
+  useEffect(
+    () => () => {
+      for (const timeoutId of pendingTimeoutsRef.current) clearTimeout(timeoutId);
+      pendingTimeoutsRef.current.clear();
+    },
+    [],
+  );
 
   // Hidrata estado inicial: confirmada > rascunho persistido > nada.
   const initialDraft = useMemo<LocationDraft | null>(
@@ -364,10 +373,15 @@ export function LocationPanel({
       setSelectedTechnique(technique);
       setIsPickerOpen(false);
       setIsSwapping(true);
-      setTimeout(() => setIsSwapping(false), reduceMotion ? 0 : 140);
+      const swapTimeout = setTimeout(() => {
+        pendingTimeoutsRef.current.delete(swapTimeout);
+        setIsSwapping(false);
+      }, reduceMotion ? 0 : 140);
+      pendingTimeoutsRef.current.add(swapTimeout);
 
       // Foco automático no controle ajustado se houve clamp (A11y)
-      setTimeout(() => {
+      const focusTimeout = setTimeout(() => {
+        pendingTimeoutsRef.current.delete(focusTimeout);
         if (forcedW) {
           document.querySelector<HTMLElement>('[data-testid="customization-width-input"]')?.focus();
         } else if (forcedH) {
@@ -380,6 +394,7 @@ export function LocationPanel({
             ?.focus();
         }
       }, 50);
+      pendingTimeoutsRef.current.add(focusTimeout);
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional: see comment above
     [selectedTechnique, toast, reduceMotion],
