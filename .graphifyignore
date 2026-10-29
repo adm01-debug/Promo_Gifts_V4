@@ -45,6 +45,11 @@ coverage/
 .coverage/
 build/
 
+# === SQL EM MAPA SEPARADO ===
+# Migrations, snapshots e testes SQL são indexados em graphify-out/sql/.
+# Evita misturar DDL/fixtures com o mapa de módulos da aplicação.
+*.sql
+
 # === GRAFOS PROPRIOS ===
 graphify-out/graph.json
 graphify-out/graph.html
