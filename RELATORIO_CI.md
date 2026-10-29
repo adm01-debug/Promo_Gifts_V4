@@ -158,3 +158,34 @@ O fallback do GHCR para a imagem oficial Docker Hub foi exercitado com sucesso: 
 | Gate final CI | N/A | Passou | `success` |
 
 Não houve alteração em arquivos da aplicação: o PR #2734 toca apenas `.github/workflows/contract-tests.yml`. Nenhum teste foi removido/pulado/afrouxado. Nenhuma migration ou escrita no Supabase foi executada.
+
+## 11. Revalidação pós-merge #2719 — 2026-10-29
+
+### Repositório e checks remotos
+
+- `origin/main` e o checkout local foram sincronizados por fast-forward no SHA `66d032afa8e31cd4f9b2f60508613794cef928d4`; este é o merge do PR #2719. O PR #2721 também está incorporado na `main` via `6b48bebcb2ff5ff922298523f4678383d392ae46`.
+- Inventário atual dos 119 workflows ativos, consultando individualmente a execução mais recente na branch `main`: 40 `success`, 24 `failure`, 20 `queued`, 8 `pending`, 1 `in_progress`, 1 `waiting`, 2 `skipped`, 2 `cancelled` e 21 sem execução. A lista de 24 falhas com causa/evidência está em P18 de `PENDENCIAS.md`.
+- Na própria revisão do merge, `Supabase Preview` falhou com `Remote migration versions not found in local migrations directory`. O novo `Uptime Monitor` [40950084617](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40950084617) falhou somente no probe `health-check` (curl 22); site, `check-login` OPTIONS e Auth Health passaram. A issue automática [#2740](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2740) registra a ocorrência. Não marcar o conjunto pós-merge como verde.
+
+### Baseline local antes da correção de reprodutibilidade Graphify
+
+Executados no SHA `66d032afa8e31cd4f9b2f60508613794cef928d4`, antes de alterar scripts:
+
+| Verificação | Resultado |
+|---|---|
+| `npm ci` | Concluído; reportou 13 vulnerabilidades no audit da instalação (1 moderada e 12 altas), sem aplicar upgrades automáticos. |
+| `npm run build:verify` | Passou: typecheck, lint baseline sem erros/avisos novos, build Vite, guard canônico e verificações do bundle. Warnings existentes de chunk permaneceram. |
+| `npm test -- --reporter=dot` | 1.222 arquivos passaram, 130 ignorados; 25.716 testes passaram, 1.135 ignorados, 24 TODO; exit 0. |
+
+### Graphify — execução local de validação
+
+- O comando de refresh agora está sendo fixado em `graphifyy==0.9.91`, a versão homologada documentada, em vez de depender do Graphify global (0.9.97 neste host). A atualização rodou com 0.9.91 e produziu mapa principal com 40.810 nós, 69.347 relações e 2.192 comunidades.
+- Referências TypeScript: 1.714 pares encontrados, 0 novas arestas porque já estavam presentes no mapa; 10.343 referências externas ignoradas, 46 arquivos de origem sem nó e 2 declarações não mapeáveis. Métrica: 14.730 nós de baixa conectividade entre 17.972 nós elegíveis; foram excluídos 4.104 nós estruturais de arquivo, 5.444 de configuração, 13.168 não-código e 122 dependências.
+- Mapa SQL foi reconstruído isoladamente, sem API/LLM, a partir dos 3.189 arquivos SQL versionados no commit `66d032afa8e31cd4f9b2f60508613794cef928d4`: 20.306 nós e 21.533 relações. `build-metadata.json` registra `version=0.9.91` e SHA de corpus `038be531e7e2e8dd83e0f039c2f1d117d443bbb8c3ab8c79680501bce5f533d2`. O mapa está em diretório ignorado e não versiona schema/dados.
+- Limitação observada sem regressão de TypeScript: o parser Graphify registra erro sintático em `src/integrations/supabase/types.ts` na linha 42.514; a geração prossegue e o typecheck independente passa. O relatório inclui o aviso de comunidades que precisam ser renomeadas pelo comando de etiquetagem, sem LLM executado nesta sessão.
+
+### Supabase canônico
+
+Auditoria somente leitura: ledger remoto 2.552 versões; repositório 3.009 arquivos SQL/3.004 IDs únicos, 2.541 comuns, 463 locais apenas e 11 remotos apenas; cinco prefixos duplicados. `pg_catalog` confirmou por nome 398 tabelas, 197 views e 15 enums contra os tipos locais; funções ainda não foram comparadas. Nenhuma migration, DDL, repair, deploy de Edge Function ou dado operacional foi alterado. A divergência que bloqueou `Supabase Preview` permanece pendente e não autoriza sincronização automática.
+
+O refresh Graphify e os sete testes focados passaram nesta etapa; `npm run build:verify` e a suíte completa após o commit ainda precisam ser executados. Não mesclar o PR de reprodutibilidade antes da conclusão dos checks obrigatórios e da documentação dos bloqueios remotos.
