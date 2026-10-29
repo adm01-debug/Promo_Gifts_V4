@@ -14,6 +14,7 @@ import {
   type SelectedClient,
   type ProductColor,
 } from '@/hooks/intelligence/useMagicUpState';
+import { prepareMagicUpShare } from '@/hooks/intelligence/magicUpShare';
 import type { ScenePrompt } from '@/components/magic-up/PromptBank';
 import type { GenerationHistoryItem } from '@/components/magic-up/AdImageResult';
 import {
@@ -478,15 +479,12 @@ export function useMagicUpGeneration(deps: GenerationDeps) {
   );
 
   const handleShare = useCallback(() => {
-    if (!currentVariation?.imageUrl) return;
-    const clientGreeting = deps.selectedClient ? `Olá ${deps.selectedClient.name}! ` : '';
-    const text =
-      deps.copyPack.whatsapp ||
-      `${clientGreeting}✨ Confira a imagem publicitária: ${deps.selectedProduct?.name}${deps.selectedColor ? ` (${deps.selectedColor.name})` : ''} com ${deps.selectedTechnique?.name || 'personalização'}`;
-    window.open(
-      `https://wa.me/?text=${encodeURIComponent(`${text}\n${currentVariation.imageUrl}`)}`,
-      '_blank',
-    );
+    const share = prepareMagicUpShare(deps, currentVariation?.imageUrl ?? null);
+    if (!share.ok) {
+      toast.error(share.reason);
+      return;
+    }
+    window.open(share.url, '_blank');
   }, [currentVariation, deps]);
 
   const handleToggleFavorite = useCallback(async () => {
