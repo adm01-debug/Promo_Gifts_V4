@@ -144,16 +144,14 @@
 - Gate Final: ✅ (run anterior ao início desta sessão)
 
 ### SHA `4b4206abf947a87f56b1dc7effbf9739f530d80b` (após merges #2580 e #2712)
-- Gate Final: ❌ (run 40899426264)
-- Job falho: `Gate E40 - Schema Drift Check / Migrations x Canonical schema` (job 123537661730)
-- Step falho: `Schema drift check (baseline + replay x remote)` (step 11)
-- **Causa raiz:** rate limit transitório no ghcr.io ao tentar pull de `ghcr.io/supabase/gotrue:v2.197.0`
-  ```
-  failed to pull docker image: Error response from daemon: toomanyrequests:
-  retry-after: 187.993µs, allowed: 44000/minute
-  ```
-- **Não é regressão de código** — falha de infraestrutura CI (ghcr.io throttling), independente dos merges desta sessão
-- **Ação:** rerun dos jobs falhos disparado (run 40899426264)
+- Gate Final: ❌ persistente (run 40899426264 — tentativas 1 e 2)
+- Job falho: `Gate E40 - Schema Drift Check / Migrations x Canonical schema`
+  - Tentativa 1: job 123537661730 — step 11 (`Schema drift check`) — `toomanyrequests: retry-after: 187.993µs, allowed: 44000/minute` ao puxar `ghcr.io/supabase/gotrue:v2.197.0`
+  - Tentativa 2 (rerun): job 123549958421 — step 10 (`Pre-pull Supabase postgres image`) — `Error response from daemon: toomanyrequests: retry-after: 401.556µs, allowed: 44000/minute` após 5 tentativas com backoff (90s, 120s), ao puxar `ghcr.io/supabase/postgres:17.6.1.063`
+- **Gates que passam no rerun 2:** R_SSOT ✅, R_LINT ✅, R_UNIT ✅, R_DB_INT ✅, R_E2E ✅, R_BUILD ✅, R_SECRETS ✅, R_SECRET_SCAN ✅, R_SEO ✅, R_RESTORE ✅
+- **Causa raiz confirmada:** rate limit persistente do ghcr.io — falha de infraestrutura CI, não regressão de código
+- **Correção exige:** ajuste em `.github/workflows/db-schema-drift-check.yml` (autenticação Docker ou mirror de imagem) — PROIBIDO nesta sessão (REGRA: não tocar `.github/workflows/`)
+- **Impacto nos merges desta sessão:** zero — o Gate E40 falha com a mesma causa antes e depois dos merges desta sessão; os demais gates passam
 
 ---
 
