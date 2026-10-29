@@ -499,16 +499,16 @@ Pare. Rode `npm run plan:status`. Antes de abrir a Onda 5:
 
 O ledger (`supabase_migrations.schema_migrations`) e o schema real divergem em vários pontos, e a divergência é silenciosa por desenho. 477 migrations marcadas `local_only` nunca rodaram em produção.
 
-#### P200-E051 · [A] · P1 · `repair-only` tem de avisar que quebra o replay
+#### P200-E051 · [A] · P1 · `repair-only` tem de avisar que quebra o replay — ✅ concluída em 2026-10-29
 **Arquivo:** `.github/workflows/db-apply-migration.yml:33-38`
 **Fazer:** `mode: repair-only` registra versão no ledger sem rodar SQL — condição que o `CLAUDE.md` diz quebrar o replay do baseline — e o workflow não avisa nem exige rotação. Emitir aviso bloqueante no summary e exigir dispatch de `schema-snapshot-export.yml` com `force_rotate: true` na sequência.
-**Pronto:** um dispatch `repair-only` de teste imprime o aviso e falha se a rotação não for agendada
+**Pronto:** teste de contrato executa o bloco real do workflow em isolamento: sem ack, falha e imprime o aviso; com ack, prossegue. Sem dispatch no ambiente de produção.
 **Origem:** A2-19
 
-#### P200-E052 · [A] · P1 · Recibo tem de distinguir aplicação de registro
+#### P200-E052 · [A] · P1 · Recibo tem de distinguir aplicação de registro — ✅ concluída em 2026-10-29
 **Arquivo:** `.github/workflows/db-apply-migration.yml:300-308`, `scripts/append-migration-receipt.mjs`
 **Fazer:** o job `receipt` grava `--metodo="E15" --status="aplicada"` sem olhar `inputs.mode`, então um `repair-only` (zero SQL executado) produz recibo indistinguível de aplicação real. Propagar `inputs.mode` e gravar `método=repair` + `status=registrada-sem-aplicar`.
-**Pronto:** `grep -c "registrada-sem-aplicar" supabase/MIGRATIONS_SYNC_LOG.md` ≥ 1 após um repair de teste
+**Pronto:** teste de contrato executa o bloco real de recibo em diretório temporário nos modos `repair-only` e `apply`, comprovando método/status distintos sem tocar no ledger canônico.
 **Origem:** A2-20
 
 #### P200-E053 · [C] · P1 · Fechar as 179 versões aguardando `repair`
