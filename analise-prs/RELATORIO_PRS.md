@@ -12,14 +12,14 @@
 | Veredicto | Qtd | PRs |
 |---|---|---|
 | DECISAO_HUMANA | 4 | #2731, #2730, #2720, #2714 |
-| AGUARDAR_CI | 3 | #2721, #2719, #2713 |
+| AGUARDAR_CI | 2 | #2719, #2713 |
 | CONFLITO | 5 | #2717, #2716, #2707, #2695, #2693 |
 | AGUARDA_CI_DRAFT | 4 | #2711, #2701, #2688, #2674 |
 | NAO_MERGEAR | 1 | #2729 |
-| **MERGEADO** | **0** | — |
+| **MERGEADO** | **1** | **#2721** |
 | **TOTAL** | **17** | — |
 
-**Nenhuma PR foi mergeada nesta sessão.** Todas as PRs elegíveis tecnicamente (#2721, #2713) têm `mergeable_state: blocked` — Gate Final não rodou ou tem falhas no HEAD atual.
+**PR #2721 mergeada** (squash, SHA `6b48bebcb2ff5ff922298523f4678383d392ae46`). Gate Final ✅, merge local limpo, 0 erros TS/lint, testes OK.
 
 ---
 
@@ -67,12 +67,13 @@
 
 ### AGUARDAR_CI — Sem workflow/migration, mas CI bloqueada
 
-#### PR #2721 — fix(kit-maker): cancela timers ao desmontar painel
-- **Branch:** `fix/location-panel-timeout-cleanup` | HEAD: `00412ccc`
-- **Diff:** `useTrackedTimeout.ts` (novo hook), `LocationPanel.tsx` (cleanup), teste de regressão
-- **Status:** `mergeable_state: blocked`, Gate Final = zero check runs no HEAD atual, Smoke failure registrado
-- **Negócio:** Fix real de memory leak (timers não cancelados no unmount). PR de alta qualidade.
-- **Ação:** Mergear quando `Gate Final ✅` + `mergeable_state: clean`.
+#### PR #2721 — fix(kit-maker): cancela timers ao desmontar painel ✅ MERGEADA
+- **Branch:** `fix/location-panel-timeout-cleanup` | HEAD: `00412ccc` | **Merge SHA:** `6b48bebcb2ff5ff922298523f4678383d392ae46`
+- **Diff:** `useTrackedTimeout.ts` (novo hook 22 linhas), `LocationPanel.tsx` (2 setTimeout → scheduleTrackedTimeout), e2e helper, graphify auto-update
+- **Gate Final:** ✅ success em `00412ccc`; `mergeable_state: unstable` (não-required checks — não bloqueante)
+- **Evidências:** git cherry 7 commits `+` (não estavam em main); merge local limpo; tsc 0 erros; eslint 0 erros; vitest 523 passed + 3 falhas pré-existentes (date-utils)
+- **Negócio:** Elimina memory leak real — timers de setTimeout não eram cancelados ao desmontar LocationPanel.
+- **Mergeado:** 2026-10-29 via squash
 
 #### PR #2719 — chore(build): separa mapas SQL e amplia referências Graphify
 - **Branch:** `chore/graphify-audit-improvements-20261029` | HEAD: `fcc306cc`

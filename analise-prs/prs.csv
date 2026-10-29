@@ -2,7 +2,7 @@ numero,titulo,branch,autor,draft,veredicto,motivo
 2731,"fix(db): protege kill_switch_hits contra INSERT anônimo",fix/p200-e049-rate-guard,adm01-debug,false,DECISAO_HUMANA,"Toca .github/workflows/deploy-gates.yml + supabase/migrations/ (REGRA #8)"
 2730,"fix(ci): protege contrato de repair-only em E15",fix/p200-e051-e052,adm01-debug,false,DECISAO_HUMANA,"Toca .github/workflows/db-apply-migration.yml (REGRA #8)"
 2729,"docs(analise-prs): relatório completo",claude/eloquent-ramanujan-0yt2fo,adm01-debug,true,NAO_MERGEAR,"Branch desta sessão, draft"
-2721,"fix(kit-maker): cancela timers ao desmontar painel",fix/location-panel-timeout-cleanup,adm01-debug,false,AGUARDAR_CI,"Gate Final não rodou no HEAD 00412ccc; blocked"
+2721,"fix(kit-maker): cancela timers ao desmontar painel",fix/location-panel-timeout-cleanup,adm01-debug,false,MERGEADO,"SHA 6b48bebcb2ff5ff922298523f4678383d392ae46 — Gate Final ✅ 00412ccc; merge local limpo; tsc/lint/tests OK"
 2720,"ci(e2e): não ocultar falha na geração de fixtures",fix/ci-workflows,adm01-debug,false,DECISAO_HUMANA,"Toca .github/actions/e2e-setup/action.yml (REGRA #8)"
 2719,"chore(build): separa mapas SQL e amplia referências Graphify",chore/graphify-audit-improvements-20261029,adm01-debug,false,AGUARDAR_CI,"Gate Final failure no SHA fcc306cc"
 2717,"fix(e2e): isola servidor Vite no CI de paridade",fix/e2e-vite-port-isolation,adm01-debug,false,CONFLITO,"mergeable_state: dirty"

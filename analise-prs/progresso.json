@@ -5,7 +5,7 @@
   "sha_main_baseline": "4b4206abf947a87f56b1dc7effbf9739f530d80b",
   "total_prs_analisadas": 17,
   "resumo": {
-    "MERGEADO": 0,
+    "MERGEADO": 1,
     "DECISAO_HUMANA": 4,
     "AGUARDAR_CI": 3,
     "CONFLITO": 5,
@@ -13,239 +13,49 @@
     "NAO_MERGEAR": 1
   },
   "prs": [
-    {
-      "numero": 2731,
-      "titulo": "fix(db): protege kill_switch_hits contra INSERT anônimo",
-      "branch": "fix/p200-e049-rate-guard",
-      "autor": "adm01-debug",
-      "draft": false,
-      "veredicto": "DECISAO_HUMANA",
-      "motivo": "Toca .github/workflows/deploy-gates.yml + supabase/migrations/20261029160339 (REGRA #8)",
-      "dossie": "analise-prs/dossies/PR-2731.md",
-      "mergeado_sha": null
-    },
-    {
-      "numero": 2730,
-      "titulo": "fix(ci): protege contrato de repair-only em E15",
-      "branch": "fix/p200-e051-e052",
-      "autor": "adm01-debug",
-      "draft": false,
-      "veredicto": "DECISAO_HUMANA",
-      "motivo": "Toca .github/workflows/db-apply-migration.yml (REGRA #8)",
-      "dossie": "analise-prs/dossies/PR-2730.md",
-      "mergeado_sha": null
-    },
-    {
-      "numero": 2729,
-      "titulo": "docs(analise-prs): relatório completo",
-      "branch": "claude/eloquent-ramanujan-0yt2fo",
-      "autor": "adm01-debug",
-      "draft": true,
-      "veredicto": "NAO_MERGEAR",
-      "motivo": "Branch desta sessão, draft",
-      "dossie": "analise-prs/dossies/PR-2729.md",
-      "mergeado_sha": null
-    },
-    {
-      "numero": 2721,
-      "titulo": "fix(kit-maker): cancela timers ao desmontar painel",
-      "branch": "fix/location-panel-timeout-cleanup",
-      "autor": "adm01-debug",
-      "draft": false,
-      "head_sha": "00412ccc3cd997b508af7511427bb3368aef023d",
-      "veredicto": "AGUARDAR_CI",
-      "motivo": "Gate Final não rodou no HEAD 00412ccc; mergeable_state=blocked; Smoke failure",
-      "dossie": "analise-prs/dossies/PR-2721.md",
-      "mergeado_sha": null
-    },
-    {
-      "numero": 2720,
-      "titulo": "ci(e2e): não ocultar falha na geração de fixtures",
-      "branch": "fix/ci-workflows",
-      "autor": "adm01-debug",
-      "draft": false,
-      "veredicto": "DECISAO_HUMANA",
-      "motivo": "Toca .github/actions/e2e-setup/action.yml (REGRA #8)",
-      "dossie": "analise-prs/dossies/PR-2720.md",
-      "mergeado_sha": null
-    },
-    {
-      "numero": 2719,
-      "titulo": "chore(build): separa mapas SQL e amplia referências Graphify",
-      "branch": "chore/graphify-audit-improvements-20261029",
-      "autor": "adm01-debug",
-      "draft": false,
-      "head_sha": "fcc306cc",
-      "veredicto": "AGUARDAR_CI",
-      "motivo": "Gate Final failure no SHA fcc306cc",
-      "dossie": "analise-prs/dossies/PR-2719.md",
-      "mergeado_sha": null
-    },
-    {
-      "numero": 2717,
-      "titulo": "fix(e2e): isola servidor Vite no CI de paridade",
-      "branch": "fix/e2e-vite-port-isolation",
-      "autor": "adm01-debug",
-      "draft": false,
-      "veredicto": "CONFLITO",
-      "motivo": "mergeable_state: dirty",
-      "dossie": "analise-prs/dossies/PR-2717.md",
-      "mergeado_sha": null
-    },
-    {
-      "numero": 2716,
-      "titulo": "docs(auditoria): atualiza estado de CI e sincronização canônica",
-      "branch": "docs/auditoria-sync-canonico-2026-10-28",
-      "autor": "adm01-debug",
-      "draft": false,
-      "veredicto": "CONFLITO",
-      "motivo": "mergeable_state: dirty + branch de outra sessão (REGRA #10)",
-      "dossie": "analise-prs/dossies/PR-2716.md",
-      "mergeado_sha": null
-    },
-    {
-      "numero": 2714,
-      "titulo": "fix(db): reconciliar migrations pendentes com o canônico",
-      "branch": "fix/reconcile-canonical-pending-migrations",
-      "autor": "adm01-debug",
-      "draft": false,
-      "veredicto": "DECISAO_HUMANA",
-      "motivo": "Toca supabase/migrations/ (REGRA #8)",
-      "dossie": "analise-prs/dossies/PR-2714.md",
-      "mergeado_sha": null
-    },
-    {
-      "numero": 2713,
-      "titulo": "chore(main): release 1.1.0",
-      "branch": "release-please--branches--main--components--gifts-store",
-      "autor": "github-actions[bot]",
-      "draft": false,
-      "head_sha": "0addb04e0d80a27d94a149a414f8af5aac5aa8f7",
-      "veredicto": "AGUARDAR_CI",
-      "motivo": "Gate Final não rodou no HEAD 0addb04e; mergeable_state=blocked",
-      "dossie": "analise-prs/dossies/PR-2713.md",
-      "mergeado_sha": null
-    },
-    {
-      "numero": 2711,
-      "titulo": "docs(ci): RELATORIO_CI.md v3",
-      "branch": "claude_pink/fix-relatorio-final-281028-1530",
-      "autor": "adm01-debug",
-      "draft": true,
-      "veredicto": "AGUARDA_CI_DRAFT",
-      "motivo": "Draft + branch de outra sessão",
-      "dossie": "analise-prs/dossies/PR-2711.md",
-      "mergeado_sha": null
-    },
-    {
-      "numero": 2707,
-      "titulo": "docs: recibo de deploy de edge function(s)",
-      "branch": "e66-edge-deploy-receipt-40747468580",
-      "autor": "github-actions[bot]",
-      "draft": false,
-      "veredicto": "CONFLITO",
-      "motivo": "mergeable_state: dirty + branch de bot",
-      "dossie": "analise-prs/dossies/PR-2707.md",
-      "mergeado_sha": null
-    },
-    {
-      "numero": 2701,
-      "titulo": "fix(ci): autentica integração Kit Coverage com usuário E2E",
-      "branch": "claude/fix-p12-grant-kit-view-261028-1730",
-      "autor": "adm01-debug",
-      "draft": true,
-      "veredicto": "AGUARDA_CI_DRAFT",
-      "motivo": "Draft + branch de outra sessão",
-      "dossie": "analise-prs/dossies/PR-2701.md",
-      "mergeado_sha": null
-    },
-    {
-      "numero": 2695,
-      "titulo": "docs(db): corrige status do espelho de migration Google",
-      "branch": "docs/reconciliar-espelho-google-20261028",
-      "autor": "adm01-debug",
-      "draft": false,
-      "veredicto": "CONFLITO",
-      "motivo": "mergeable_state: dirty",
-      "dossie": "analise-prs/dossies/PR-2695.md",
-      "mergeado_sha": null
-    },
-    {
-      "numero": 2693,
-      "titulo": "docs(auditoria): relatório final auditoria Supabase",
-      "branch": "claude_pink/peaceful-planck-q4ee1i",
-      "autor": "adm01-debug",
-      "draft": false,
-      "veredicto": "CONFLITO",
-      "motivo": "mergeable_state: dirty + branch de outra sessão",
-      "dossie": "analise-prs/dossies/PR-2693.md",
-      "mergeado_sha": null
-    },
-    {
-      "numero": 2688,
-      "titulo": "fix(ci): torna migration 20261027120000 replay-safe",
-      "branch": "claude_pink/focused-lamport-qyupp8",
-      "autor": "adm01-debug",
-      "draft": true,
-      "veredicto": "AGUARDA_CI_DRAFT",
-      "motivo": "Draft + branch de outra sessão",
-      "dossie": "analise-prs/dossies/PR-2688.md",
-      "mergeado_sha": null
-    },
-    {
-      "numero": 2674,
-      "titulo": "docs(analise-prs): análise completa das 12 PRs abertas",
-      "branch": "claude_pink/sleepy-cannon-h000nc",
-      "autor": "adm01-debug",
-      "draft": true,
-      "veredicto": "AGUARDA_CI_DRAFT",
-      "motivo": "Draft + branch de outra sessão",
-      "dossie": "analise-prs/dossies/PR-2674.md",
-      "mergeado_sha": null
-    }
+    {"numero": 2731, "titulo": "fix(db): protege kill_switch_hits contra INSERT anônimo", "branch": "fix/p200-e049-rate-guard", "autor": "adm01-debug", "draft": false, "veredicto": "DECISAO_HUMANA", "motivo": "Toca .github/workflows/deploy-gates.yml + supabase/migrations/20261029160339 (REGRA #8)", "dossie": "analise-prs/dossies/PR-2731.md", "mergeado_sha": null},
+    {"numero": 2730, "titulo": "fix(ci): protege contrato de repair-only em E15", "branch": "fix/p200-e051-e052", "autor": "adm01-debug", "draft": false, "veredicto": "DECISAO_HUMANA", "motivo": "Toca .github/workflows/db-apply-migration.yml (REGRA #8)", "dossie": "analise-prs/dossies/PR-2730.md", "mergeado_sha": null},
+    {"numero": 2729, "titulo": "docs(analise-prs): relatório completo", "branch": "claude/eloquent-ramanujan-0yt2fo", "autor": "adm01-debug", "draft": true, "veredicto": "NAO_MERGEAR", "motivo": "Branch desta sessão, draft", "dossie": "analise-prs/dossies/PR-2729.md", "mergeado_sha": null},
+    {"numero": 2721, "titulo": "fix(kit-maker): cancela timers ao desmontar painel", "branch": "fix/location-panel-timeout-cleanup", "autor": "adm01-debug", "draft": false, "head_sha": "00412ccc3cd997b508af7511427bb3368aef023d", "veredicto": "MERGEADO", "motivo": "Gate Final ✅ HEAD 00412ccc; merge local limpo; typecheck 0 erros; testes OK (3 falhas pré-existentes)", "dossie": "analise-prs/dossies/PR-2721.md", "mergeado_sha": "6b48bebcb2ff5ff922298523f4678383d392ae46"},
+    {"numero": 2720, "titulo": "ci(e2e): não ocultar falha na geração de fixtures", "branch": "fix/ci-workflows", "autor": "adm01-debug", "draft": false, "veredicto": "DECISAO_HUMANA", "motivo": "Toca .github/actions/e2e-setup/action.yml (REGRA #8)", "dossie": "analise-prs/dossies/PR-2720.md", "mergeado_sha": null},
+    {"numero": 2719, "titulo": "chore(build): separa mapas SQL e amplia referências Graphify", "branch": "chore/graphify-audit-improvements-20261029", "autor": "adm01-debug", "draft": false, "head_sha": "fcc306cc", "veredicto": "AGUARDAR_CI", "motivo": "Gate Final failure no SHA fcc306cc", "dossie": "analise-prs/dossies/PR-2719.md", "mergeado_sha": null},
+    {"numero": 2717, "titulo": "fix(e2e): isola servidor Vite no CI de paridade", "branch": "fix/e2e-vite-port-isolation", "autor": "adm01-debug", "draft": false, "veredicto": "CONFLITO", "motivo": "mergeable_state: dirty", "dossie": "analise-prs/dossies/PR-2717.md", "mergeado_sha": null},
+    {"numero": 2716, "titulo": "docs(auditoria): atualiza estado de CI e sincronização canônica", "branch": "docs/auditoria-sync-canonico-2026-10-28", "autor": "adm01-debug", "draft": false, "veredicto": "CONFLITO", "motivo": "mergeable_state: dirty + branch de outra sessão (REGRA #10)", "dossie": "analise-prs/dossies/PR-2716.md", "mergeado_sha": null},
+    {"numero": 2714, "titulo": "fix(db): reconciliar migrations pendentes com o canônico", "branch": "fix/reconcile-canonical-pending-migrations", "autor": "adm01-debug", "draft": false, "veredicto": "DECISAO_HUMANA", "motivo": "Toca supabase/migrations/ (REGRA #8)", "dossie": "analise-prs/dossies/PR-2714.md", "mergeado_sha": null},
+    {"numero": 2713, "titulo": "chore(main): release 1.1.0", "branch": "release-please--branches--main--components--gifts-store", "autor": "github-actions[bot]", "draft": false, "head_sha": "0addb04e0d80a27d94a149a414f8af5aac5aa8f7", "veredicto": "AGUARDAR_CI", "motivo": "Gate Final não rodou no HEAD 0addb04e; mergeable_state=blocked", "dossie": "analise-prs/dossies/PR-2713.md", "mergeado_sha": null},
+    {"numero": 2711, "titulo": "docs(ci): RELATORIO_CI.md v3", "branch": "claude_pink/fix-relatorio-final-281028-1530", "autor": "adm01-debug", "draft": true, "veredicto": "AGUARDA_CI_DRAFT", "motivo": "Draft + branch de outra sessão", "dossie": "analise-prs/dossies/PR-2711.md", "mergeado_sha": null},
+    {"numero": 2707, "titulo": "docs: recibo de deploy de edge function(s)", "branch": "e66-edge-deploy-receipt-40747468580", "autor": "github-actions[bot]", "draft": false, "veredicto": "CONFLITO", "motivo": "mergeable_state: dirty + branch de bot", "dossie": "analise-prs/dossies/PR-2707.md", "mergeado_sha": null},
+    {"numero": 2701, "titulo": "fix(ci): autentica integração Kit Coverage com usuário E2E", "branch": "claude/fix-p12-grant-kit-view-261028-1730", "autor": "adm01-debug", "draft": true, "veredicto": "AGUARDA_CI_DRAFT", "motivo": "Draft + branch de outra sessão", "dossie": "analise-prs/dossies/PR-2701.md", "mergeado_sha": null},
+    {"numero": 2695, "titulo": "docs(db): corrige status do espelho de migration Google", "branch": "docs/reconciliar-espelho-google-20261028", "autor": "adm01-debug", "draft": false, "veredicto": "CONFLITO", "motivo": "mergeable_state: dirty", "dossie": "analise-prs/dossies/PR-2695.md", "mergeado_sha": null},
+    {"numero": 2693, "titulo": "docs(auditoria): relatório final auditoria Supabase", "branch": "claude_pink/peaceful-planck-q4ee1i", "autor": "adm01-debug", "draft": false, "veredicto": "CONFLITO", "motivo": "mergeable_state: dirty + branch de outra sessão", "dossie": "analise-prs/dossies/PR-2693.md", "mergeado_sha": null},
+    {"numero": 2688, "titulo": "fix(ci): torna migration 20261027120000 replay-safe", "branch": "claude_pink/focused-lamport-qyupp8", "autor": "adm01-debug", "draft": true, "veredicto": "AGUARDA_CI_DRAFT", "motivo": "Draft + branch de outra sessão", "dossie": "analise-prs/dossies/PR-2688.md", "mergeado_sha": null},
+    {"numero": 2674, "titulo": "docs(analise-prs): análise completa das 12 PRs abertas", "branch": "claude_pink/sleepy-cannon-h000nc", "autor": "adm01-debug", "draft": true, "veredicto": "AGUARDA_CI_DRAFT", "motivo": "Draft + branch de outra sessão", "dossie": "analise-prs/dossies/PR-2674.md", "mergeado_sha": null}
   ],
   "baseline": {
-    "typecheck": {
-      "arquivo": "analise-prs/baseline/typecheck.txt",
-      "exit_code": 0,
-      "erros": 0,
-      "nota": "npx tsc --noEmit — zero erros TypeScript no SHA 4b4206ab"
-    },
-    "build": {
-      "arquivo": "analise-prs/baseline/build.txt",
-      "exit_code": 0,
-      "duracao_s": 16.87,
-      "erros": 0,
-      "warnings": 13,
-      "nota": "13 INEFFECTIVE_DYNAMIC_IMPORT warnings — pré-existentes, não bloqueantes"
-    },
-    "tests": {
-      "arquivo": "analise-prs/baseline/tests.txt",
-      "exit_code": 0,
-      "test_files": 37,
-      "tests_passed": 523,
-      "tests_skipped": 3,
-      "tests_failed": 0,
-      "falhas_pre_existentes": [
-        "tests/unit/date-utils.test.ts > formatDateTime > returns dd/MM/yyyy HH:mm for ISO string (BRT)",
-        "tests/unit/date-utils.test.ts > formatTime > returns HH:mm for ISO string",
-        "tests/unit/date-utils.test.ts > formatTime > zero-pads hours and minutes"
-      ]
-    },
-    "lint": {
-      "arquivo": "analise-prs/baseline/lint.txt",
-      "exit_code": 0,
-      "erros": 0,
-      "warnings": 0,
-      "nota": "NODE_OPTIONS=--max-old-space-size=4096 npx eslint src — zero erros"
+    "typecheck": {"arquivo": "analise-prs/baseline/typecheck.txt", "exit_code": 0, "erros": 0, "nota": "npx tsc --noEmit — zero erros TypeScript no SHA 4b4206ab"},
+    "build": {"arquivo": "analise-prs/baseline/build.txt", "exit_code": 0, "duracao_s": 16.87, "erros": 0, "warnings": 13, "nota": "13 INEFFECTIVE_DYNAMIC_IMPORT warnings — pré-existentes, não bloqueantes"},
+    "tests": {"arquivo": "analise-prs/baseline/tests.txt", "exit_code": 0, "test_files": 37, "tests_passed": 523, "tests_skipped": 3, "tests_failed": 0, "falhas_pre_existentes": ["tests/unit/date-utils.test.ts > formatDateTime > returns dd/MM/yyyy HH:mm for ISO string (BRT)", "tests/unit/date-utils.test.ts > formatTime > returns HH:mm for ISO string", "tests/unit/date-utils.test.ts > formatTime > zero-pads hours and minutes"]},
+    "lint": {"arquivo": "analise-prs/baseline/lint.txt", "exit_code": 0, "erros": 0, "warnings": 0, "nota": "NODE_OPTIONS=--max-old-space-size=4096 npx eslint src — zero erros"}
+  },
+  "gate_e40_status": {"status": "VERMELHO_PRE_EXISTENTE", "causa": "ghcr.io rate limit: toomanyrequests", "imagem": "supabase/postgres:17.6.1.063", "primeiro_detectado": "pre-existente no main 4b4206ab"},
+  "merges_realizados": [
+    {
+      "pr": 2721,
+      "titulo": "fix(kit-maker): cancela timers ao desmontar painel",
+      "branch": "fix/location-panel-timeout-cleanup",
+      "merge_sha": "6b48bebcb2ff5ff922298523f4678383d392ae46",
+      "metodo": "squash",
+      "timestamp": "2026-10-29T17:20:00Z",
+      "evidencias": {
+        "gate_final_head": "00412ccc — success",
+        "merge_local": "limpo, sem conflitos",
+        "typecheck": "0 erros",
+        "eslint_arquivos_alterados": "0 erros",
+        "unit_tests": "523 passed, 3 pre-existentes",
+        "cherry": "7 commits todos + (não estavam em main)",
+        "ci_pos_merge": "6b48bebc — rodando (queued/in_progress)"
+      }
     }
-  },
-  "gate_e40_status": {
-    "status": "VERMELHO_PRE_EXISTENTE",
-    "causa": "ghcr.io rate limit: toomanyrequests",
-    "imagem": "supabase/postgres:17.6.1.063",
-    "primeiro_detectado": "pre-existente no main 4b4206ab"
-  },
-  "merges_realizados": [],
-  "nota": "Nenhuma PR mergeada: PRs elegíveis (#2721, #2713) têm mergeable_state=blocked com Gate Final não concluído"
+  ],
+  "nota": "PR #2721 mergeada via squash (SHA 6b48bebc). Demais PRs: 4 DECISAO_HUMANA, 2 AGUARDAR_CI, 5 CONFLITO, 4 DRAFT, 1 NAO_MERGEAR"
 }
