@@ -60,6 +60,8 @@ vi.mock('@tanstack/react-virtual', () => ({
     getVirtualItems: () =>
       Array.from({ length: count }, (_, index) => ({ index, key: index, start: 0, size: 280 })),
     getTotalSize: () => count * 280,
+    // A grade da main (#2100) remede as linhas quando a largura muda.
+    measure: () => undefined,
   }),
 }));
 
