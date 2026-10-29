@@ -30,17 +30,26 @@ DialogOverlay.displayName = DialogPrimitive.Overlay.displayName;
 
 // ---------------------------------------------------------------------------
 // A11y helpers
+//
+// BUG-A11Y-2 (mesmo defeito já corrigido em alert-dialog.tsx em 2026-06-25):
+// o dist do Radix não publica `displayName` nos wrappers da casa (o nome real
+// é 'Dialog.Title', com ponto), então casar só por string fazia
+// childrenHaveType() devolver false mesmo com um DialogTitle na árvore. O
+// fallback sr-only "Diálogo" era injetado em cada diálogo e, por vir primeiro
+// no DOM (getElementById devolve o primeiro), assumia o nome acessível.
 // ---------------------------------------------------------------------------
 
 /**
- * Walks a React children tree (shallow + 1 level deep) looking for a node
- * whose type matches any of the given display names or component references.
+ * Walks a React children tree (recursivo até `maxDepth`) looking for a node
+ * whose type matches any of the given component references or display names.
  * Returns true as soon as the first match is found.
  */
 function childrenHaveType(
   children: React.ReactNode,
   types: Array<React.ElementType | string>,
+  maxDepth = 8,
 ): boolean {
+  if (maxDepth === 0) return false;
   let found = false;
   React.Children.forEach(children, (child) => {
     if (found) return;
@@ -52,28 +61,13 @@ function childrenHaveType(
       found = true;
       return;
     }
-    // One level deeper (e.g. DialogHeader wrapping DialogTitle)
     const nested = (child.props as { children?: React.ReactNode }).children;
-    if (nested) {
-      React.Children.forEach(nested, (grandchild) => {
-        if (found) return;
-        if (!React.isValidElement(grandchild)) return;
-        const gt = grandchild.type as React.ElementType;
-        if (types.some((m) => m === gt || (gt as { displayName?: string }).displayName === m)) {
-          found = true;
-        }
-      });
+    if (nested && maxDepth > 1) {
+      found = childrenHaveType(nested, types, maxDepth - 1);
     }
   });
   return found;
 }
-
-// Display names Radix looks for internally
-const TITLE_TYPES: Array<React.ElementType | string> = [DialogPrimitive.Title, 'DialogTitle'];
-const DESCRIPTION_TYPES: Array<React.ElementType | string> = [
-  DialogPrimitive.Description,
-  'DialogDescription',
-];
 
 // ---------------------------------------------------------------------------
 
@@ -107,13 +101,25 @@ const DialogContent = React.forwardRef<
   //      does not skip the warning. Injecting a real hidden element is the
   //      only reliable fix.
   //
-  // Both checks walk children shallowly + one level deep, covering the
-  // common pattern of wrapping title/description inside DialogHeader.
-  // Dialogs that already have DialogTitle + DialogDescription are unaffected
-  // (the scan short-circuits on the first match).
+  // Both checks walk the children tree recursivamente (profundidade 8),
+  // cobrindo o padrão comum de title/description dentro de DialogHeader,
+  // wrappers e divs de layout. Dialogs que já têm DialogTitle + DialogDescription
+  // não são afetados (a varredura para no primeiro match).
 
-  const hasTitle = childrenHaveType(children, TITLE_TYPES);
-  const hasDescription = childrenHaveType(children, DESCRIPTION_TYPES);
+  // Referências por identidade (independem de `displayName`, que o dist do
+  // Radix não publica nestes wrappers) — resolvidas em tempo de render.
+  const hasTitle = childrenHaveType(children, [
+    DialogPrimitive.Title,
+    DialogTitle,
+    'DialogTitle',
+    'Dialog.Title',
+  ]);
+  const hasDescription = childrenHaveType(children, [
+    DialogPrimitive.Description,
+    DialogDescription,
+    'DialogDescription',
+    'Dialog.Description',
+  ]);
   const { handleClose } = useOverlayInteractivity();
 
   // Radix Dialog natively handles: focus trap, escape key, scroll lock.
