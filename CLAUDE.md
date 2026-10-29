@@ -1,6 +1,6 @@
 # CLAUDE.md — Instruções para Claude Code (sessões automáticas)
 # Lido pelo Claude Code ao iniciar cada sessão neste repositório.
-# Última atualização: 2026-10-24 — REGRA #11: proíbe vercel link/pull fora do raiz; .vercel/project.json fixado no repo.
+# Última atualização: 2026-10-29 — E056 aplica a proibição de DDL via execute_sql a todos os agentes; AGENTS.md espelhado.
 # 2026-10-15: baseline do drift-check + comandos que apagam o ledger (REGRA #8). 2026-10-14: E88/E89/E91/E92.
 
 ## CONTEXTO DO PROJETO
@@ -304,7 +304,8 @@ do PO. Isso não aplica DDL, só registra. Ver `docs/db/POLITICA_DDL.md`.
 ### Corolário — proibição de DDL via execute_sql em sessão de agente (E056)
 `execute_sql` com DDL (CREATE, ALTER, DROP, GRANT, REVOKE, CREATE POLICY,
 ALTER TABLE, CREATE INDEX, CREATE FUNCTION, `cron.alter_job`, etc.) é
-**proibido em sessão de agente Claude** — mesmo quando o PO ou humano pede
+**proibido em sessão de qualquer agente de desenvolvimento assistido por IA
+(Claude Code, Codex, OpenCode ou equivalente)** — mesmo quando o PO ou humano pede
 explicitamente, mesmo em emergência.
 
 DDL via `execute_sql` direto não gera entrada no ledger e não é detectado
