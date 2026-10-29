@@ -1,7 +1,9 @@
 # Baseline de typecheck — 2026-10-29
-# SHA main: 4b4206abf947a87f56b1dc7effbf9739f530d80b
-# Branch: claude/eloquent-ramanujan-0yt2fo (local SHA: daca677d0c0ce7325d5606a6158dfdefa599470b)
-# Comando: npx tsc --noEmit
+# SHA local (delivery branch): 950573054 (remoto) / 1326e6ae (local pré-reset)
+# SHA main (origin/main): 66d032afa8e31cd4f9b2f60508613794cef928d4
+# Branch: claude/eloquent-ramanujan-0yt2fo
+# Comando: npm run typecheck (tsc -p tsconfig.app.json --noEmit)
+# Gerado em: 2026-10-29 — sessão https://claude.ai/code/session_01RfQzo8Ean3zudG2sEN79b6
 
 ## Resultado
 Exit code: 0
@@ -9,6 +11,13 @@ Exit code: 0
 ## Erros TypeScript
 NENHUM — typecheck passa sem erros.
 
+## Saída do comando
+(output vazio — zero erros TypeScript)
+
+## Testes que FALHAM por nome no typecheck
+Não aplicável — typecheck não executa testes. Ver unit-tests.txt.
+
 ## Nota
-`npx tsc --noEmit` retornou exit 0 com output vazio.
-Zero erros TypeScript no main atual.
+O delivery branch difere de main apenas em `analise-prs/` (documentação).
+Zero código de produção alterado → typecheck idêntico ao de origin/main.
+Confirmado com: npm run typecheck → EXIT:0 localmente na sessão 01RfQzo8Ean3zudG2sEN79b6.
