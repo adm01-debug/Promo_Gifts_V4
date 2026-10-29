@@ -138,6 +138,25 @@
 
 ---
 
+## Gate Final — Evidência de CI
+
+### SHA `d5e787842267c2a62ff3666582b77a08cd01d632` (baseline)
+- Gate Final: ✅ (run anterior ao início desta sessão)
+
+### SHA `4b4206abf947a87f56b1dc7effbf9739f530d80b` (após merges #2580 e #2712)
+- Gate Final: ❌ (run 40899426264)
+- Job falho: `Gate E40 - Schema Drift Check / Migrations x Canonical schema` (job 123537661730)
+- Step falho: `Schema drift check (baseline + replay x remote)` (step 11)
+- **Causa raiz:** rate limit transitório no ghcr.io ao tentar pull de `ghcr.io/supabase/gotrue:v2.197.0`
+  ```
+  failed to pull docker image: Error response from daemon: toomanyrequests:
+  retry-after: 187.993µs, allowed: 44000/minute
+  ```
+- **Não é regressão de código** — falha de infraestrutura CI (ghcr.io throttling), independente dos merges desta sessão
+- **Ação:** rerun dos jobs falhos disparado (run 40899426264)
+
+---
+
 ## Métricas da Sessão
 
 - **PRs analisados:** 21
