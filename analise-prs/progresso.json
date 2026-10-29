@@ -43,16 +43,27 @@
     "run_id": 40970640916,
     "branch": "fix/types-workspace-notification-idempotency-20261029",
     "sha": "3a5521b1",
-    "status": "queued",
-    "nota": "Ainda queued às 00:30Z (+1h25min na fila). Gargalo de runners GitHub Actions."
+    "status": "FALHOU",
+    "nota": "Gate 1 falhou no Gate 1.3 (Migration contracts). Causa: arquivos analise-prs/ de 9a97f9a2 (sessão paralela) contêm referências a paths de migrations inexistentes (20261029160339, 20261027120000, 20261027195959). Verificado 2026-10-30T00:00Z. Arquivos da branch claude/quirky-keller-owezvt NÃO têm as referências ruins. PR #2755 vai corrigir main quando mergeado."
   },
+  "pr2755_corrects_gate13": {
+    "pr": 2755,
+    "branch": "claude/quirky-keller-owezvt",
+    "sha_head": "e4f0218d",
+    "sha_base": "07bc2b09",
+    "status": "AGUARDANDO_CI",
+    "criado_em": "2026-10-30T00:00Z",
+    "nota": "PR com arquivos analise-prs/ corretos (sem referências a migrations inexistentes). Quando mergeado, corrige Gate 1.3 em main e desbloqueia PR #2747."
+  },
+  "ultima_atualizacao": "2026-10-30T00:00:00Z",
   "resumo": {
     "total_prs_abertas_ao_final": 14,
     "total_analisadas_esta_sessao": 14,
     "mergeadas_esta_sessao": 2,
     "nao_mergear": 9,
     "aguardando_ci": 2,
-    "decisao_humana": 1
+    "decisao_humana": 1,
+    "pr_governanca_aberto": "#2755 (claude/quirky-keller-owezvt → main)"
   },
   "prs": [
     {"numero": 2701, "veredito": "NÃO MERGEAR", "motivo": "conflito de merge + coverage 56% < threshold 70%"},
@@ -70,7 +81,7 @@
     {"numero": 2743, "veredito": "NÃO MERGEAR", "motivo": "Magazine Header OK = failure (run 40961676490, job 123777247522, 1 anotação, 22:57Z) — Gate Final bloqueado"},
     {"numero": 2744, "veredito": "NÃO MERGEAR", "motivo": "DRAFT + título [NÃO MESCLAR] + edge function sem workflow"},
     {"numero": 2745, "veredito": "AGUARDANDO_CI", "motivo": "fix legítimo — PR HEAD agora 47b6f55e (merge de origin/main às 23:35Z). Gate Final sem run para 47b6f55e ainda. Deploy Gates 40969209908 queued para SHA anterior 696ad700. Runner congestion >2h."},
-    {"numero": 2747, "veredito": "AGUARDANDO_CI", "motivo": "fix(types) aditivo — Gate Final run 40970640916 pending desde 23:05Z (SHA 3a5521b1, base main 9a97f9a2)"},
+    {"numero": 2747, "veredito": "AGUARDANDO_CI", "motivo": "fix(types) aditivo — Gate 1.3 falhou por referências ruins em main (9a97f9a2, sessão paralela). Aguarda merge de PR #2755 para corrigir main, então re-sincronizar e rodar CI novamente."},
     {"numero": 2746, "veredito": "NÃO MERGEAR", "motivo": "DRAFT"}
   ]
 }
