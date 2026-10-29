@@ -3935,8 +3935,8 @@
     "semantic_hash": "0c08d857b3dcc9d5d8e183980cdfac0b"
   },
   "public/schemas/ssot-report.schema.json": {
-    "mtime": 1793279564.710296,
-    "seen": 1793279869.6240323,
+    "mtime": 1793301557.047821,
+    "seen": 1793301890.0987983,
     "ast_hash": "5f7c1a0d8db2e261abb51ec9125a64d5",
     "semantic_hash": "5f7c1a0d8db2e261abb51ec9125a64d5",
     "ast_empty": true
@@ -5016,10 +5016,10 @@
     "semantic_hash": "022081687c109f39b8f6e5ef325de331"
   },
   "scripts/qa/diff-proposal-pdfs.mjs": {
-    "mtime": 1793218695.1780095,
-    "seen": 1793262012.177084,
-    "ast_hash": "5088096fbb4899d00d45dbde114b009b",
-    "semantic_hash": "5088096fbb4899d00d45dbde114b009b"
+    "mtime": 1793299988.8039417,
+    "seen": 1793301890.1026156,
+    "ast_hash": "8d66c98a396e3b522c4e177c3f79e118",
+    "semantic_hash": ""
   },
   "scripts/qa/fuzz-calendar-dimensions.mjs": {
     "mtime": 1793218695.1780095,
@@ -10596,10 +10596,10 @@
     "semantic_hash": "0b687424ab90b477db996a327d0d93b4"
   },
   "src/components/pdf/proposal/__tests__/pdfContrastReport.test.ts": {
-    "mtime": 1793218695.227268,
-    "seen": 1793262012.194284,
-    "ast_hash": "1c6d3d8c8e137e0b193f4bda6ebd4ce3",
-    "semantic_hash": "1c6d3d8c8e137e0b193f4bda6ebd4ce3"
+    "mtime": 1793299988.8039417,
+    "seen": 1793301890.1220472,
+    "ast_hash": "638b598dfea231dd85208947bb5cf094",
+    "semantic_hash": ""
   },
   "src/components/pdf/proposal/__tests__/totalsBlocksEmitLocal.test.tsx": {
     "mtime": 1793218695.227268,
@@ -21200,10 +21200,10 @@
     "semantic_hash": "60ddfffef519749f5623edbd161698ef"
   },
   "supabase/functions/_shared/dispatcher-auth.test.ts": {
-    "mtime": 1793218695.3206208,
-    "seen": 1793262012.22789,
-    "ast_hash": "44ef9b1dc899c173f62b683c7e00697d",
-    "semantic_hash": "44ef9b1dc899c173f62b683c7e00697d"
+    "mtime": 1793299988.8039417,
+    "seen": 1793301890.1582043,
+    "ast_hash": "9295a445adb35cf28da556bb09b3b403",
+    "semantic_hash": ""
   },
   "supabase/functions/_shared/dispatcher-auth.ts": {
     "mtime": 1793218695.3206208,
@@ -21212,10 +21212,10 @@
     "semantic_hash": "4c65591a85edac3a6fd9424ecfaa088c"
   },
   "supabase/functions/_shared/edge-authz-manifest.ts": {
-    "mtime": 1793218695.3206208,
-    "seen": 1793262012.2279232,
-    "ast_hash": "ae6ebc1bfa96401170a6a858f6de541e",
-    "semantic_hash": "ae6ebc1bfa96401170a6a858f6de541e"
+    "mtime": 1793299988.8039417,
+    "seen": 1793301890.1582263,
+    "ast_hash": "75dbfd3f2b6c4b5c8553b1fb7f9a7e92",
+    "semantic_hash": ""
   },
   "supabase/functions/_shared/error-response.ts": {
     "mtime": 1793218695.3206208,
@@ -22022,10 +22022,10 @@
     "semantic_hash": "9a4796b40969ff234e5408b09d50535e"
   },
   "supabase/functions/rls-audit/index.ts": {
-    "mtime": 1793218695.3325863,
-    "seen": 1793262012.230436,
-    "ast_hash": "555a50e8c25fdd091acf0dfce273b94d",
-    "semantic_hash": "555a50e8c25fdd091acf0dfce273b94d"
+    "mtime": 1793299988.8039417,
+    "seen": 1793301890.1608002,
+    "ast_hash": "a8326123de14716fd6c8093d38973261",
+    "semantic_hash": ""
   },
   "supabase/functions/rls-integration-tests/index.ts": {
     "mtime": 1793218695.3325863,
@@ -26330,10 +26330,10 @@
     "semantic_hash": "dcbfeeda28722db8de6de9680581cc4d"
   },
   "tests/security/edge-authz-bypass.test.ts": {
-    "mtime": 1793218695.4858873,
-    "seen": 1793262012.2995758,
-    "ast_hash": "72ffb9f49db79a90e4defcc207307699",
-    "semantic_hash": "72ffb9f49db79a90e4defcc207307699"
+    "mtime": 1793299988.807942,
+    "seen": 1793301890.1752052,
+    "ast_hash": "20e2454189af70168c60bfd3d54c0237",
+    "semantic_hash": ""
   },
   "tests/security/edge-authz-role-cases.spec.ts": {
     "mtime": 1793218695.4858873,
@@ -27604,9 +27604,9 @@
     "semantic_hash": ""
   },
   "AGENTS.md": {
-    "mtime": 1793218694.9997742,
-    "seen": 1793253147.2971814,
-    "ast_hash": "90f30517b5934645e011e6f5bb42f03f",
+    "mtime": 1793299988.7999418,
+    "seen": 1793301890.1771395,
+    "ast_hash": "206ad430d666d6f96da2ff38d0d62651",
     "semantic_hash": ""
   },
   "CHANGELOG.md": {
@@ -27616,9 +27616,9 @@
     "semantic_hash": ""
   },
   "CLAUDE.md": {
-    "mtime": 1793218694.9997742,
-    "seen": 1793253147.2971828,
-    "ast_hash": "83ec3b2ae2e9e701226c285d78766471",
+    "mtime": 1793299988.7999418,
+    "seen": 1793301890.1771548,
+    "ast_hash": "ea1fbb0352182274f3815868ea5b49cd",
     "semantic_hash": ""
   },
   "CONTRIBUTING.md": {
@@ -29950,20 +29950,20 @@
     "semantic_hash": ""
   },
   "qa/exports/proposal-10015-26.html": {
-    "mtime": 1793279666.7382946,
-    "seen": 1793279869.71905,
+    "mtime": 1793301678.1124275,
+    "seen": 1793301890.1892517,
     "ast_hash": "92ca7a7ea332a554b7785b08a7828793",
     "semantic_hash": ""
   },
   "qa/exports/proposal-complex-99999-26.html": {
-    "mtime": 1793279666.7462945,
-    "seen": 1793279869.7190506,
+    "mtime": 1793301678.1244273,
+    "seen": 1793301890.1892526,
     "ast_hash": "04240878120d40179aa6e7ce7356afe8",
     "semantic_hash": ""
   },
   "qa/exports/proposal-minimal-00001-26.html": {
-    "mtime": 1793279666.7422945,
-    "seen": 1793279869.719052,
+    "mtime": 1793301678.1164274,
+    "seen": 1793301890.1892536,
     "ast_hash": "cf17ac99e7adfb32411e5abee571a3ff",
     "semantic_hash": ""
   },
@@ -30142,9 +30142,9 @@
     "semantic_hash": ""
   },
   "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md": {
-    "mtime": 1793218695.3065026,
-    "seen": 1793253147.2976522,
-    "ast_hash": "81531b3ba35226954836778dbea1b220",
+    "mtime": 1793299988.8039417,
+    "seen": 1793301890.1901596,
+    "ast_hash": "345600ae818a73f77a4e3894b9aad4ac",
     "semantic_hash": ""
   },
   "supabase/MIGRATIONS_README.md": {
@@ -31807,15 +31807,15 @@
     "semantic_hash": "d59cac90d4d9f7a093b1521d7b8985fa"
   },
   "PENDENCIAS.md": {
-    "mtime": 1793279345.6115186,
-    "seen": 1793279869.7054236,
-    "ast_hash": "3e3f9632547c0db70663ab32ee992976",
+    "mtime": 1793299988.7999418,
+    "seen": 1793301890.177171,
+    "ast_hash": "960fae7f27a2f2d60e8839dc27403e33",
     "semantic_hash": ""
   },
   "RELATORIO_CI.md": {
-    "mtime": 1793252964.352941,
-    "seen": 1793253147.2971864,
-    "ast_hash": "55440ebc1c6c5b95d74a4daeed90d18a",
+    "mtime": 1793299988.8039417,
+    "seen": 1793301890.1772013,
+    "ast_hash": "8d4159390c4f56dd9aea9cf95469daef",
     "semantic_hash": ""
   },
   "analise-branches/RELATORIO_BRANCHES.md": {
@@ -33649,9 +33649,9 @@
     "semantic_hash": ""
   },
   "docs/estado/PENDENCIAS.md": {
-    "mtime": 1793218695.095366,
-    "seen": 1793253147.2975066,
-    "ast_hash": "88eeed842ec77684b23df0f1f8bab339",
+    "mtime": 1793299988.8039417,
+    "seen": 1793301890.1858332,
+    "ast_hash": "2f75b8fd2af29057a22483861e829005",
     "semantic_hash": ""
   },
   "docs/estado/PROGRESSO.md": {
@@ -33734,9 +33734,9 @@
     "semantic_hash": ""
   },
   "docs/plans/PLANO_MELHORIAS_CORRECOES_200_ETAPAS_2026-10-18.md": {
-    "mtime": 1793218695.1026537,
-    "seen": 1793253147.2975419,
-    "ast_hash": "e8d502c77faf39011debab471fbe010e",
+    "mtime": 1793299988.8039417,
+    "seen": 1793301890.1867707,
+    "ast_hash": "89ff83b6648fe825e2409cd4e850a6c1",
     "semantic_hash": ""
   },
   "docs/plans/PLANO_WORKFLOWS_CI_V2_100_ETAPAS_2026-10-14.md": {
