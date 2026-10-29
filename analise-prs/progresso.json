@@ -6,10 +6,10 @@
   "total_prs_analisadas": 17,
   "resumo": {
     "MERGEADO": 1,
-    "DECISAO_HUMANA": 4,
+    "DECISAO_HUMANA": 6,
     "AGUARDAR_CI": 2,
-    "CONFLITO": 5,
-    "AGUARDA_CI_DRAFT": 4,
+    "CONFLITO": 4,
+    "AGUARDA_CI_DRAFT": 3,
     "NAO_MERGEAR": 1
   },
   "prs": [
@@ -87,8 +87,8 @@
       "branch": "fix/e2e-vite-port-isolation",
       "autor": "adm01-debug",
       "draft": false,
-      "veredicto": "CONFLITO",
-      "motivo": "mergeable_state: dirty",
+      "veredicto": "DECISAO_HUMANA+CONFLITO",
+      "motivo": "Toca .github/workflows/replenishment-quality.yml (REGRA #8) + mergeable_state: dirty",
       "dossie": "analise-prs/dossies/PR-2717.md",
       "mergeado_sha": null
     },
@@ -187,8 +187,8 @@
       "branch": "claude_pink/focused-lamport-qyupp8",
       "autor": "adm01-debug",
       "draft": true,
-      "veredicto": "AGUARDA_CI_DRAFT",
-      "motivo": "Draft + branch de outra sessão",
+      "veredicto": "DECISAO_HUMANA",
+      "motivo": "Toca .github/workflows/db-schema-drift-check.yml (REGRA #8) + draft + typo $POSGRES_IMAGE",
       "dossie": "analise-prs/dossies/PR-2688.md",
       "mergeado_sha": null
     },
@@ -265,5 +265,5 @@
       }
     }
   ],
-  "nota": "PR #2721 mergeada via squash (SHA 6b48bebc). Gate Final pós-merge ✅. Demais PRs: 4 DECISAO_HUMANA, 2 AGUARDAR_CI, 5 CONFLITO, 4 DRAFT, 1 NAO_MERGEAR"
+  "nota": "PR #2721 mergeada via squash (SHA 6b48bebc). Gate Final pós-merge ✅. Demais PRs: 6 DECISAO_HUMANA, 2 AGUARDAR_CI, 4 CONFLITO, 3 DRAFT, 1 NAO_MERGEAR. Verditos atualizados em 2026-10-29 com leitura de diff completa via GitHub API."
 }
