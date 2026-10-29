@@ -529,7 +529,7 @@ O ledger (`supabase_migrations.schema_migrations`) e o schema real divergem em v
 **Pronto:** o gate reprova com uma versão em `schema_migrations` sem linha correspondente no `MIGRATIONS_SYNC_LOG.md` há >24h
 **Origem:** A5-44, A2-21
 
-#### P200-E056 · [A] · P1 · Bloquear DDL por `execute_sql` em sessão de agente
+#### P200-E056 · [A] · P1 · Bloquear DDL por `execute_sql` em sessão de agente ✅
 **Arquivo:** `CLAUDE.md` (corolário da REGRA #8), `supabase/migrations/20261015120000_reconcilia_oob_incidente_2026_10_13.sql:22-60`
 **Fazer:** a policy `variant_stocks_select_org` e 7 `cron.alter_job` foram aplicados por `execute_sql` fora de migration e fora do ledger em 2026-10-13, só virando migration espelho 2 dias depois. Escrever no `CLAUDE.md` que `execute_sql` com DDL é proibido em sessão de agente, e que toda mudança de `cron.job` nasce como migration no mesmo PR.
 **Pronto:** `grep -c "execute_sql" CLAUDE.md` inclui a proibição explícita de DDL
