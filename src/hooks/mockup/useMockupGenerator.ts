@@ -28,6 +28,7 @@ import type { TechniqueColorConfig } from '@/components/mockup/techniqueColorUti
 import { adaptTabelaPrecoRows } from '@/lib/personalization/adapters';
 import type { PersonalizationArea } from '@/components/mockup/MultiAreaManager';
 import type { MockupProductSelection } from '@/components/mockup/MockupProductSelector';
+import type { Product } from '@/hooks/products';
 import type { MockupClient } from '@/components/mockup/MockupConfigPanel';
 import type { ArtFileAttachment } from '@/components/mockup/ArtFileUpload';
 import {
@@ -43,6 +44,69 @@ import {
 
 import { logger } from '@/lib/logger';
 export type { Technique, GeneratedMockup };
+
+/** Código/servidor de recusa quando o produto não tem medidas reais (cm). */
+export const MISSING_DIMENSIONS_ERROR_CODE = 'missing_dimensions' as const;
+/** HTTP status equivalente na edge generate-mockup (mesmo valor em production). */
+export const MISSING_DIMENSIONS_STATUS = 422 as const;
+export const MISSING_DIMENSIONS_MESSAGE =
+  'Este produto não tem medidas (cm) cadastradas. Peça ao administrador do catálogo para informar a largura e/ou a altura do produto antes de gerar o mockup.';
+
+/** Motivo pelo qual a geração foi recusada no cliente (sem chamar a edge). */
+export type MockupGenerationErrorCode = 'edge_error' | 'missing_dimensions';
+
+export interface MockupGenerationRefusal {
+  code: MockupGenerationErrorCode;
+  message: string;
+  /** HTTP status equivalente ao erro da edge generate-mockup. */
+  status?: number;
+}
+
+/** Retorno tipado de `generateMockup` no sucesso e nas recusas (os guards de
+ * reentrância/validação devolvem `undefined`; a UI usa `missingDimensions`). */
+export type MockupGenerationOutcome = { ok: false; error: MockupGenerationRefusal } | { ok: true };
+
+export interface ProductPhysicalDimensions {
+  widthCm: number | null;
+  heightCm: number | null;
+}
+
+/** Aceita apenas número finito > 0; qualquer outra coisa (0/negativo/NaN) ⇒ null. */
+function positiveCm(value: unknown): number | null {
+  return typeof value === 'number' && Number.isFinite(value) && value > 0 ? value : null;
+}
+
+/** Milímetros → cm (só quando positivo), espelhando a regra do payload da edge. */
+function mmToCm(value: unknown): number | null {
+  const mm = positiveCm(value);
+  return mm === null ? null : mm / 10;
+}
+
+/**
+ * Deriva as dimensões físicas reais (cm) do produto na MESMA precedência usada no
+ * payload WYSIWYG da geração: largura = dimensions.width_cm → dimensions.diameter_cm
+ * → metadata.width_mm/10; altura = dimensions.height_cm → metadata.height_mm/10.
+ * Produto sem nenhuma dessas fontes ⇒ { widthCm: null, heightCm: null }.
+ */
+export function resolveProductDimensions(
+  product: Product | null | undefined,
+): ProductPhysicalDimensions {
+  const dims = product?.dimensions ?? null;
+  const meta = product?.metadata ?? null;
+  return {
+    widthCm: positiveCm(dims?.width_cm) ?? positiveCm(dims?.diameter_cm) ?? mmToCm(meta?.width_mm),
+    heightCm: positiveCm(dims?.height_cm) ?? mmToCm(meta?.height_mm),
+  };
+}
+
+/**
+ * true quando o produto traz ao menos uma medida real (cm) — mesmo critério do
+ * portão da edge (422 missing_dimensions). Sem nenhuma medida o mockup sairia com
+ * escala inventada, então o hook recusa em vez de estimar 8×20 cm em silêncio.
+ */
+export function hasRealProductDimensions(dimensions: ProductPhysicalDimensions): boolean {
+  return dimensions.widthCm !== null || dimensions.heightCm !== null;
+}
 
 export function useMockupGenerator() {
   const { user } = useAuth();
@@ -135,6 +199,13 @@ export function useMockupGenerator() {
   const activeArea =
     personalizationAreas.find((a) => a.id === activeAreaId) || personalizationAreas[0];
   const selectedProduct = productSelection?.product ?? null;
+  // Dimensões físicas reais (cm) do produto — fonte única do guard de geração e
+  // do payload WYSIWYG. Sem nenhuma medida, `missingDimensions` sinaliza a recusa.
+  const productDimensions = useMemo(
+    () => resolveProductDimensions(selectedProduct),
+    [selectedProduct],
+  );
+  const missingDimensions = !!selectedProduct && !hasRealProductDimensions(productDimensions);
   const filteredTechniques = useFilteredTechniques(techniques, selectedProduct);
   const { data: customizationOptions } = useProductCustomizationOptionsForMockup(
     selectedProduct?.id,
@@ -536,7 +607,7 @@ export function useMockupGenerator() {
     [generatedMockup, selectedProduct, selectedTechnique],
   );
 
-  const generateMockup = useCallback(async () => {
+  const generateMockup = useCallback(async (): Promise<MockupGenerationOutcome | undefined> => {
     // Re-entrancy guard (see isGeneratingRef): block a second concurrent generation
     // that slips through before the isLoading-driven `disabled` re-render commits.
     if (isGeneratingRef.current) return;
@@ -544,6 +615,20 @@ export function useMockupGenerator() {
     if (!selectedClient || !productSelection || !selectedTechnique || areasWithLogos.length === 0) {
       toast.error('Selecione empresa, produto, técnica e faça upload de pelo menos um logo');
       return;
+    }
+    // Q13/Q24: produto sem dimensões reais NÃO gera — o mockup sairia com escala
+    // inventada (o editor estima 8×20 cm). Espelha o portão da edge (422
+    // missing_dimensions) e devolve erro tipado para a UI pedir o cadastro das
+    // medidas ao catálogo. Nunca chamamos a edge neste caminho.
+    if (missingDimensions) {
+      const error: MockupGenerationRefusal = {
+        code: MISSING_DIMENSIONS_ERROR_CODE,
+        status: MISSING_DIMENSIONS_STATUS,
+        message: MISSING_DIMENSIONS_MESSAGE,
+      };
+      setGenerationError(error.message);
+      toast.error(error.message);
+      return { ok: false, error };
     }
     const productImage = getProductImage();
     if (!productImage) {
@@ -590,15 +675,10 @@ export function useMockupGenerator() {
         productName: selectedProduct?.name ?? '',
         technique: selectedTechnique,
         areas: personalizationAreas,
-        // Same derivation the preview uses (LogoPositionEditor) so the generated
-        // mockup matches the on-screen logo size (WYSIWYG); null ⇒ edge /20 fallback.
-        productWidthCm:
-          selectedProduct?.dimensions?.width_cm ??
-          selectedProduct?.dimensions?.diameter_cm ??
-          (selectedProduct?.metadata?.width_mm ? selectedProduct.metadata.width_mm / 10 : null),
-        productHeightCm:
-          selectedProduct?.dimensions?.height_cm ??
-          (selectedProduct?.metadata?.height_mm ? selectedProduct.metadata.height_mm / 10 : null),
+        // Fonte única das dimensões físicas (mesmo resolvedor do guard acima e da
+        // derivação validada pela edge) — o mockup sai no tamanho que a tela mostra.
+        productWidthCm: productDimensions.widthCm,
+        productHeightCm: productDimensions.heightCm,
       });
       if (result.singleUrl && result.batchResults.length === 0) {
         setGeneratedMockup(result.singleUrl);
@@ -644,11 +724,13 @@ export function useMockupGenerator() {
       // BUG-3 FIX: history panel was stale after generation because fetchHistory() was
       // only called once on mount. Refresh it now so the new record appears immediately.
       fetchHistory();
+      return { ok: true };
     } catch (error: unknown) {
       logger.error('Error generating mockup:', error);
       const errorMessage = error instanceof Error ? error.message : 'Erro ao gerar mockup';
       setGenerationError(errorMessage);
       toast.error(errorMessage);
+      return { ok: false, error: { code: 'edge_error', message: errorMessage } };
     } finally {
       setIsLoading(false);
       isGeneratingRef.current = false;
@@ -661,6 +743,8 @@ export function useMockupGenerator() {
     getProductImage,
     saveMockupToHistory,
     selectedProduct,
+    productDimensions,
+    missingDimensions,
     downloadMockup,
     fetchHistory,
   ]);
@@ -843,6 +927,7 @@ export function useMockupGenerator() {
       setActiveTab,
       wizardStep,
       hasLogo,
+      missingDimensions,
       hasUserInteractedPosition,
       positionHistory,
       logoColorAnalysis,
@@ -896,6 +981,7 @@ export function useMockupGenerator() {
       activeTab,
       wizardStep,
       hasLogo,
+      missingDimensions,
       hasUserInteractedPosition,
       positionHistory,
       logoColorAnalysis,
