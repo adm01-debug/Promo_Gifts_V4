@@ -1,7 +1,7 @@
 # RELATÓRIO CI — Promo Gifts V4
 **Gerado em:** 2026-10-29
 **Branch desta auditoria:** `fix/graphify-reproducible-version-20261029`
-**SHA `main` consultado:** `6b48bebcb2ff5ff922298523f4678383d392ae46` (2026-10-29)
+**SHA `main` consultado:** `66d032afa8e31cd4f9b2f60508613794cef928d4` (2026-10-29)
 
 ## 8. Revalidação completa por workflow — 2026-10-29
 
@@ -199,3 +199,10 @@ Auditoria somente leitura: ledger remoto 2.552 versões; repositório 3.009 arqu
 | `npm run graphify:refresh` + `npm run graphify:sql` | — | ambos executados com `graphifyy==0.9.91` | relatórios e mapa SQL atualizados localmente |
 
 O commit de reprodutibilidade está na branch dedicada `fix/graphify-reproducible-version-20261029` e não foi mesclado. Não mesclar enquanto os checks obrigatórios do PR não concluírem e os bloqueios de CI/Supabase desta auditoria estiverem tratados ou explicitamente aceitos pelo processo de governança.
+
+## 12. Atualização de sincronização e checks do PR #2743 — 2026-10-29
+
+- A `main` local e `origin/main` estão em `66d032afa8e31cd4f9b2f60508613794cef928d4`. A branch deste relatório está em `debcd712a278d5ec2d6353cc670ad8a5335c06b1`, igual ao branch remoto e ao HEAD do PR [#2743](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2743).
+- O PR #2743 está aberto e bloqueado. No snapshot de 21:35 UTC, 46 check runs estavam: 11 `success`, 4 `skipped`, 1 `neutral`, 1 `failure`, 22 `queued` e 7 `in_progress`. A falha identificada é o Copilot Reviewer com HTTP 402 por quota de uso adicional; o preview Vercel também está `ERROR`, mas os logs consultados não indicaram causa. Não houve merge nem rerun nesta atualização.
+- A seção P19 de [`PENDENCIAS.md`](./PENDENCIAS.md) contém a reconciliação atual do checkout/branch e a auditoria somente leitura do canônico. Em `pg_catalog`, os nomes de 398 tabelas, 197 views e 15 enums coincidem com o inventário local de `types.ts`; a reconciliação das 3.004 versões locais e 2.552 remotas permanece pendente.
+- A correção também removeu o snapshot antigo do topo de `PENDENCIAS.md` e alinhou os números do mapa Graphify ao relatório versionado. Essas alterações são documentais e não alteram runtime, APIs, migrations, schema ou dados.

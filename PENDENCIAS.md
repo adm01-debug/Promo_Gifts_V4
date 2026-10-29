@@ -5,18 +5,9 @@
 
 > Revalidação independente mais recente: veja a seção **Inventário completo da main — 2026-10-29** abaixo. Ela substitui os IDs/status antigos deste arquivo quando houver conflito.
 
-## Auditoria de sincronização local × GitHub × Supabase — 2026-10-29
+## Auditoria de sincronização local × GitHub × Supabase — snapshot substituído
 
-| Área | Evidência atual | Resultado |
-|---|---|---|
-| Código local e GitHub | Branch local `fix/location-panel-timeout-cleanup`, SHA `a172c252f0b8dafebcefa5a37903214ecc44efc4`; PR [#2721](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2721) aponta para o mesmo SHA e continua aberto. | O código está publicado no branch/PR, mas não incorporado à `main` (`c344508`). Há 8 checks falhos; não é seguro integrar ainda. |
-| Reconciliação de migrations | PR [#2714](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2714), SHA `ca316674db0110136e6cbbabee8fbe103aa8ff15`, continua aberto e bloqueado pelo Gate E40. | Não aplicar nem reparar ledger/schema enquanto o drift não for classificado e aprovado. |
-| Ledger local × canônico | Repositório: 3.004 versões distintas em 3.009 arquivos SQL; canônico: 2.552 entradas; 2.541 versões compartilhadas, 463 apenas locais e 11 apenas remotas. Existem 5 grupos de versão duplicada no repositório. | Divergência confirmada. As 11 versões remotas e as 463 locais exigem classificação individual; contagens, sozinhas, não autorizam `migration repair` ou DDL. |
-| Banco canônico | Projeto `doufsxqlfjyuvxuezpln`: `ACTIVE_HEALTHY`, PostgreSQL 17.6.1.063; migration mais recente `20261027160000`. | Saúde operacional verificada; isso não significa paridade do ledger nem do schema. Nenhuma escrita foi executada. |
-| Este registro | PR documental [#2725](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2725), SHA `e4ef6e5d9339042fbfdd9087d25ebc4c8fefcd08`, aberto. | O check Copilot [falhou no step de limpeza](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40843346745); tentativa de rerun foi recusada pela API (`403`, jobs desta execução não podem ser reexecutados). A causa operacional é do workflow/serviço e permanece pendente. |
-| Graphify local | `.graphifyignore`, `graphify-out/GRAPH_REPORT.md` e `graphify-out/manifest.json` têm alterações locais não commitadas; o relatório foi gerado em `a172c252`. O mapa SQL foi reconstruído isoladamente a partir de 3.188 arquivos versionados: 17.839 nós, 32.709 arestas e 2.633 comunidades; consulta de validação encontrou objetos SQL esperados. | O mapa SQL está em diretório ignorado (`graphify-out/sql/graphify-out/`) e ainda não há comando versionado de rebuild. Avaliação isolada do Graphify 0.9.68 encontrou regressão: benchmark caiu de 1.664×/1.623 tokens (0.9.97) para 12,4×/218.295 tokens e um caminho direcionado reverso não foi encontrado. Manter 0.9.97 homologado; não substituir sem corrigir e repetir o benchmark. |
-
-**Conclusão:** a sincronização total não foi atingida. As alterações de aplicação estão em PR, não na `main`; o ledger/schema segue divergente; e há alterações locais de Graphify ainda sem revisão/publicação. Não copiar dados operacionais de clientes ou produtos para o repositório.
+O quadro originalmente registrado aqui descrevia o estado anterior aos merges dos PRs #2719 e #2721 e não deve ser tratado como evidência atual. A revalidação mais recente está em **P19 — Revalidação de sincronização e Graphify**, ao final deste arquivo. Os registros históricos detalhados permanecem nas seções P15–P18. Não copiar dados operacionais de clientes ou produtos para o repositório.
 
 ## P18 — Revalidação após os merges #2719 e #2721 — 2026-10-29
 
@@ -620,3 +611,25 @@ Validação local após os dois commits do PR: `npm run build:verify`, actionlin
 - Nenhum DDL, migration, `repair`, deploy de função ou alteração de dados foi executado. A reconciliação requer classificação/aprovação por versão e o fluxo versionado; os dados operacionais de clientes/produtos não devem ser copiados para o GitHub.
 
 **Próximas ações:** (1) reproduzir as 26 falhas por grupo com o ambiente correspondente e atualizar cada run via rerun seguro/execução normal; os casos sem logs/job têm causa explicitamente não confirmada; (2) obter aprovação visual antes de corrigir swatches; (3) investigar latência de Auth/REST/Edge sem expor dados ou mudar secrets; (4) titular/admin tratar quota do Copilot; (5) classificar as 474 diferenças do ledger e cinco prefixos duplicados antes de qualquer reconciliação. Nenhum workflow foi reexecutado nesta auditoria, pois alguns envolvem publicação de snapshots, migration ou operações externas e não eram seguros para rerun indiscriminado.
+
+## P19 — Revalidação de sincronização e Graphify — 2026-10-29T21:35Z
+
+### Código e GitHub
+
+- Checkout limpo na branch `fix/graphify-reproducible-version-20261029`, HEAD `debcd712a278d5ec2d6353cc670ad8a5335c06b1`, igual ao branch remoto.
+- `main` local e `origin/main` coincidem em `66d032afa8e31cd4f9b2f60508613794cef928d4`.
+- PR [#2743](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2743) está aberto, `mergeable=true`, mas `mergeable_state=blocked`. No snapshot consultado às 21:35 UTC havia 46 checks: 11 sucessos, 4 ignorados, 1 neutro, 1 falha, 22 em fila e 7 em execução. A falha do Copilot Reviewer é HTTP 402 por limite de uso esgotado e bloqueio de firewall para `api.github.com` ([run](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40956599165/job/123738194938)). O status do preview Vercel também falhou; o deployment [C1PJS46Myp56uWZ2cWJiD68EsNHo](https://vercel.com/juca1/promo-gifts-v4/C1PJS46Myp56uWZ2cWJiD68EsNHo) consta como `ERROR`, mas a consulta de logs não expôs causa. Não mesclar enquanto checks obrigatórios estiverem pendentes ou falhos.
+- A listagem atual retornou 14 PRs abertas. As PRs seguem sem merge nesta etapa; conflitos e decisões de governança devem ser revalidados individualmente antes de qualquer integração.
+
+### Supabase canônico — leitura apenas
+
+- Projeto `doufsxqlfjyuvxuezpln`: `ACTIVE_HEALTHY`, PostgreSQL 17.6.1.063. O ledger tem 2.552 versões; a mais recente é `20261027160000`.
+- O repositório contém 3.009 arquivos SQL e 3.004 IDs distintos, com 2.541 IDs compartilhados, 463 somente locais, 11 somente remotos e cinco grupos de IDs duplicados, conforme a comparação registrada em P18. A divergência permanece aberta e requer classificação por migration; nenhuma contagem autoriza `repair` ou DDL.
+- Consulta somente leitura em `pg_catalog` comparou nomes em `public`: 398 tabelas (incluindo particionadas), 197 views e 15 enums; todos os nomes coincidem com `src/integrations/supabase/types.ts`. As 1.334 funções vivas incluem overloads e não foram comparadas por assinatura/definição; o inventário TypeScript lista 1.020 nomes de funções. Igualdade dos nomes de objetos não prova igualdade de colunas, políticas ou definições.
+- Nenhuma escrita, DDL, migration, repair, deploy de Edge Function ou cópia de dados operacionais foi executada.
+
+### Graphify — consistência documental
+
+- A saída Graphify versionada e validada registra 40.810 nós, 69.347 arestas e 2.192 comunidades; o artefato foi construído sobre a `main` no SHA `66d032af`. A seção de estado do mapa em `docs/graphify/AUDITORIA_MAPAS_E_BENCHMARK_2026-10-29.md` foi alinhada a esses resultados.
+- A execução documentada do mapa SQL separado usou 3.189 arquivos versionados, 20.306 nós e 21.533 arestas. A saída permanece local/ignorada; nenhum conteúdo do banco foi exportado para o grafo.
+- A instrumentação TypeScript contou 1.714 pares de referências; zero arestas novas foram adicionadas porque as relações já estavam presentes. Foram ignoradas 10.343 referências externas; 46 arquivos de origem e duas declarações não tinham nó interno mapeável.
