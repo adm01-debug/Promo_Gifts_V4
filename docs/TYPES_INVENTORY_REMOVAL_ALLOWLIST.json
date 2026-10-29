@@ -17,5 +17,14 @@
     "mantê-la para sempre — ela só precisa existir enquanto a remoção estiver",
     "dentro da janela comparada pelo --base usado)."
   ],
-  "entries": []
+  "entries": [
+    {
+      "schema": "public",
+      "category": "Tables",
+      "name": "supplier_products_raw_history_p2026_06",
+      "reason": "Removida do types.ts após comparação com os tipos gerados para o schema canônico em 2026-10-07: a partição não existe no banco; não é remoção de objeto do banco.",
+      "approvedBy": "PO (solicitação explícita de atualização dos tipos em 2026-10-07)",
+      "date": "2026-10-07"
+    }
+  ]
 }
