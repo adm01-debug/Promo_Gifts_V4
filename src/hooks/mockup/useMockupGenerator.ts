@@ -43,6 +43,7 @@ import { useMockupAreaRetry } from '@/hooks/mockup/useMockupAreaRetry';
 import { useMockupEntryParams } from '@/hooks/mockup/useMockupEntryParams';
 import {
   MAX_BATCH_AREAS,
+  MISSING_DIMENSIONS_MESSAGE,
   MISSING_DIMENSIONS_REFUSAL,
   resolveProductDimensions,
   hasRealProductDimensions,
@@ -538,8 +539,8 @@ export function useMockupGenerator() {
     // Q13/Q24: sem medidas reais NÃO gera (escala inventada); espelha o 422 da edge e
     // devolve erro tipado para a UI pedir o cadastro das medidas. Não chama a edge.
     if (missingDimensions) {
-      setGenerationError(MISSING_DIMENSIONS_REFUSAL.message);
-      toast.error(MISSING_DIMENSIONS_REFUSAL.message);
+      setGenerationError(MISSING_DIMENSIONS_MESSAGE);
+      toast.error(MISSING_DIMENSIONS_MESSAGE);
       return { ok: false, error: MISSING_DIMENSIONS_REFUSAL };
     }
     const productImage = getProductImage();
