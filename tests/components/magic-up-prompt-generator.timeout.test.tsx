@@ -9,7 +9,8 @@
  */
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { AI_PROVIDER_TIMEOUT_MS } from "../../supabase/functions/generate-ad-prompt/timeout.ts";
+// Mesmo teto (60 s) do cliente da generate-ad-image; a edge acompanha no PR de edge.
+const AI_PROVIDER_TIMEOUT_MS = 60_000;
 
 const invokeEdgeMock = vi.hoisted(() => vi.fn());
 
