@@ -2,7 +2,7 @@
  * ProductLoaderAndColorSelector — extracted from MockupProductSelector
  */
 import { useMemo, useEffect } from 'react';
-import { ArrowLeft, AlertTriangle, Loader2 } from 'lucide-react';
+import { ArrowLeft, AlertTriangle, Loader2, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
@@ -20,8 +20,18 @@ interface Props {
 }
 
 export function ProductLoaderAndColorSelector({ productId, onSelect, onBack }: Props) {
-  const { data: fullProduct, isLoading: isLoadingProduct } = useProduct(productId);
-  const { data: variants, isLoading: isLoadingVariants } = useExternalVariantStock(productId);
+  const {
+    data: fullProduct,
+    isLoading: isLoadingProduct,
+    isError: isProductError,
+    refetch: refetchProduct,
+  } = useProduct(productId);
+  const {
+    data: variants,
+    isLoading: isLoadingVariants,
+    isError: isVariantsError,
+    refetch: refetchVariants,
+  } = useExternalVariantStock(productId);
 
   const sortedVariants = useMemo(() => {
     if (!variants) return [];
@@ -44,16 +54,29 @@ export function ProductLoaderAndColorSelector({ productId, onSelect, onBack }: P
   // double-fires under React 18 StrictMode, causing onSelect to be called multiple
   // times before setPendingProductId(null) could unmount this component.
   // Hook placed BEFORE all early returns to satisfy Rules of Hooks.
+  // FIX (A-estados): erro de carga NÃO é "produto sem variantes". Sem estas
+  // guardas, um produto cuja carga de variantes FALHOU era auto-selecionado
+  // sem cor e o mockup saía com a cor errada, sem o vendedor saber.
   useEffect(() => {
     if (
       !isLoadingProduct &&
       !isLoadingVariants &&
+      !isProductError &&
+      !isVariantsError &&
       fullProduct &&
       (!variants || variants.length === 0)
     ) {
       onSelect(null, fullProduct);
     }
-  }, [isLoadingProduct, isLoadingVariants, fullProduct, variants, onSelect]);
+  }, [
+    isLoadingProduct,
+    isLoadingVariants,
+    isProductError,
+    isVariantsError,
+    fullProduct,
+    variants,
+    onSelect,
+  ]);
 
   const formatStock = (qty: number) =>
     qty >= 1000 ? `${(qty / 1000).toFixed(1)}k` : qty.toString();
@@ -74,6 +97,46 @@ export function ProductLoaderAndColorSelector({ productId, onSelect, onBack }: P
           {Array.from({ length: 6 }).map((_, i) => (
             <Skeleton key={i} className="h-20 rounded-lg" />
           ))}
+        </div>
+      </div>
+    );
+  }
+
+  // FIX (A-estados): falha de carga tem estado de erro PRÓPRIO. Antes, erro nas
+  // variantes caía no ramo "sem variantes" e selecionava o produto sem cor.
+  if (isProductError || isVariantsError) {
+    return (
+      <div className="space-y-4 rounded-lg border border-border/30 p-4">
+        <div className="flex items-center gap-2">
+          <Button variant="ghost" size="sm" onClick={onBack}>
+            <ArrowLeft aria-hidden="true" className="mr-1 h-4 w-4" /> Voltar
+          </Button>
+        </div>
+        <div role="alert" className="flex flex-col items-center gap-3 py-6 text-center">
+          <AlertTriangle aria-hidden="true" className="h-8 w-8 text-destructive" />
+          <div className="space-y-1">
+            <p className="text-sm font-medium">
+              {isVariantsError
+                ? 'Não foi possível carregar a lista de cores deste produto'
+                : 'Não foi possível carregar o produto'}
+            </p>
+            <p className="text-xs text-muted-foreground">
+              Tente novamente antes de continuar — sem isso a cor do mockup pode sair errada.
+            </p>
+          </div>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => {
+              if (isProductError) refetchProduct();
+              if (isVariantsError) refetchVariants();
+            }}
+            className="gap-2"
+          >
+            <RefreshCw aria-hidden="true" className="h-3.5 w-3.5" />
+            Tentar novamente
+          </Button>
         </div>
       </div>
     );
