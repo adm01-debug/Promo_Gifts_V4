@@ -20,6 +20,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { useMediaQuery } from '@/hooks/ui/useMediaQuery';
 import { TechniqueTooltip } from './TechniqueTooltip';
+import { LoadErrorBlock } from './MockupConfigPanelLoadError';
 import { MockupClientSelector } from './MockupClientSelector';
 import { MockupProductSelector, type MockupProductSelection } from './MockupProductSelector';
 import { MultiAreaManager, type PersonalizationArea } from './MultiAreaManager';
@@ -70,6 +71,14 @@ interface MockupConfigPanelProps {
   onClientSelect: (client: MockupClient | null) => void;
   onReset: () => void;
   filteredTechniques: Technique[];
+  /** Erro de carga das técnicas (null/undefined = sem erro); avisa no bloco da técnica. */
+  techniquesError?: string | null;
+  /** Retry da carga de técnicas (mesma carga que falhou). */
+  onRetryTechniques?: () => void;
+  /** Erro de carga do catálogo de produtos (null/undefined = sem erro). */
+  productsError?: string | null;
+  /** Retry da carga de produtos (mesma carga que falhou). */
+  onRetryProducts?: () => void;
   // Multi-area props
   activeAreaId: string | null;
   onAreasChange: (areas: PersonalizationArea[]) => void;
@@ -103,6 +112,10 @@ export function MockupConfigPanel({
   onClientSelect,
   onReset,
   filteredTechniques,
+  techniquesError,
+  onRetryTechniques,
+  productsError,
+  onRetryProducts,
   activeAreaId,
   onAreasChange,
   onActiveAreaChange,
@@ -163,6 +176,16 @@ export function MockupConfigPanel({
               isCompleted={!!productSelection}
               summary={productSelection?.product.name}
             >
+              {/* A-estados: falha de carga do catálogo avisa no próprio bloco, acima do seletor
+                  (que continua mostrando o produto já escolhido). */}
+              {productsError && (
+                <LoadErrorBlock
+                  testId="mockup-products-error"
+                  title="Não foi possível carregar produtos"
+                  message={productsError}
+                  onRetry={onRetryProducts}
+                />
+              )}
               <MockupProductSelector selection={productSelection} onSelect={onProductSelect} />
             </MobileCollapsibleSection>
 
@@ -183,6 +206,17 @@ export function MockupConfigPanel({
                 )
               }
             >
+              {/* A-estados: falha de carga das técnicas avisa no próprio bloco, acima do Select
+                  (que sozinho cairia no vazio "Selecione um produto primeiro"). O resto do
+                  painel continua montado. */}
+              {techniquesError && (
+                <LoadErrorBlock
+                  testId="mockup-techniques-error"
+                  title="Não foi possível carregar técnicas"
+                  message={techniquesError}
+                  onRetry={onRetryTechniques}
+                />
+              )}
               <Select
                 value={selectedTechnique?.id ?? ''}
                 onValueChange={(value) => {
