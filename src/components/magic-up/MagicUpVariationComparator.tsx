@@ -44,11 +44,23 @@ export function MagicUpVariationComparator({
 
   const handleArrowKey = (e: React.KeyboardEvent<HTMLButtonElement>, currentIndex: number) => {
     const total = variations.length;
+    // E-24: mesma regra dos dots/thumbnails do MagicUpResultPanel — modo NÃO-WRAP.
+    // ArrowRight/Down no último e ArrowLeft/Up no primeiro param no limite (não ciclam);
+    // Home/End sempre saltam para os extremos.
     let nextIndex: number | null = null;
-    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') nextIndex = (currentIndex + 1) % total;
-    else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp')
-      nextIndex = (currentIndex - 1 + total) % total;
-    else if (e.key === 'Home') nextIndex = 0;
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+      if (currentIndex >= total - 1) {
+        e.preventDefault();
+        return;
+      }
+      nextIndex = currentIndex + 1;
+    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+      if (currentIndex <= 0) {
+        e.preventDefault();
+        return;
+      }
+      nextIndex = currentIndex - 1;
+    } else if (e.key === 'Home') nextIndex = 0;
     else if (e.key === 'End') nextIndex = total - 1;
     if (nextIndex === null) return;
     e.preventDefault();
