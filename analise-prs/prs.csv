@@ -1,18 +1,18 @@
-numero,titulo,autor,branch,mergeable_state,commits,arquivos,adicoes,remocoes,decisao,mergeado,sha_merge
-2580,"docs(db): adiciona cabeçalho de rollback para migration e23","claude-code[bot]","claude/fix-migration-rollback-e23","behind",3,2,9,0,"ANALISAR_CI",false,
-2693,"docs(audit): relatório de auditoria Supabase — schema + RLS + edge functions","claude_pink","claude_pink/peaceful-planck-q4ee1i","unknown",12,18,12806,4642,"AGUARDAR_CI",false,
-2695,"docs(db): sincronização de migration receipts e ledger","claude-code[bot]","claude/docs-migration-sync","behind",10,3,48,21,"ANALISAR_CI",false,
-2707,"docs: recibo de deploy de edge function(s) — run 40747468580 (E66)","github-actions[bot]","e66-edge-deploy-receipt-40747468580","behind",1,1,1,0,"ANALISAR_CI",false,
-2712,"docs: recibo de deploy de edge function(s) — run 40750221254 (E66)","github-actions[bot]","e66-edge-deploy-receipt-40750221254","behind",1,1,110,0,"ANALISAR_CI",false,
-2713,"chore(release): release 1.1.0","release-please[bot]","release-please--branches--main","blocked",1,4,212,4,"AGUARDAR",false,
-2714,"fix(db): reconciliação de migrations — ledger vs schema ao vivo","claude-code[bot]","claude/fix-migration-reconciliation","behind",10,15,,,,"DECISAO_HUMANA",false,
-2715,"fix(security): substitui auth manual por authorize() em rls-audit edge function (#2715)","claude-code[bot]","claude/fix-rls-audit-auth","merged",1,1,10,8,"MERGEADO",true,74b8119a
-2716,"docs(ci): inventário parcial de workflows (draft)","claude-code[bot]","claude/docs-ci-inventory-partial","behind",3,2,,,,"NAO_MERGEAR",false,
-2717,"ci: atualiza workflow de deploy de edge functions","claude-code[bot]","claude/fix-deploy-edge-functions-workflow","behind",2,1,,,,"DECISAO_HUMANA",false,
-2719,"chore(graphify): regenera grafo de conhecimento do repositório","claude-code[bot]","claude/graphify-regeneration","behind",1,,,,,"AGUARDAR",false,
-2720,"ci: corrige configuração do Gate Final e atualiza required checks","claude-code[bot]","claude/fix-ci-gate-final-config","behind",2,3,,,,"DECISAO_HUMANA",false,
-2721,"fix(e2e): corrige testes E2E — rotas de checkout autenticado","claude-code[bot]","claude/fix-e2e-checkout-authed","behind",3,,,,,"AGUARDAR",false,
-2722,"fix(auth): corrige teste de status HTTP para authorizeCron (503→401)","claude-code[bot]","claude/fix-authorizecron-status-503-to-401","merged",1,1,2,2,"MERGEADO",true,0d76b50b
-2723,"fix(security): corrige race condition em temp file do pdfContrastReport (CodeQL #117)","claude-code[bot]","claude/fix-codql-117-temp-file-race","merged",1,1,5,3,"MERGEADO",true,cfb85281
-2725,"docs(ci): inventário completo CI — 119 workflows, PEND-D02/C02/C03/D03/S03 (#2725)","claude-code[bot]","claude/docs-ci-inventory-complete","merged",2,3,,,,"MERGEADO",true,bfb39b85
-2728,"docs(governance): sincroniza AGENTS e amplia regra E056 (#2728)","claude-code[bot]","claude/docs-governance-agents-e056","merged",1,2,,,,"MERGEADO",true,d5e78784
+numero,titulo,branch,autor,draft,veredicto,motivo
+2731,"fix(db): protege kill_switch_hits contra INSERT anônimo",fix/p200-e049-rate-guard,adm01-debug,false,DECISAO_HUMANA,"Toca .github/workflows/deploy-gates.yml + supabase/migrations/ (REGRA #8)"
+2730,"fix(ci): protege contrato de repair-only em E15",fix/p200-e051-e052,adm01-debug,false,DECISAO_HUMANA,"Toca .github/workflows/db-apply-migration.yml (REGRA #8)"
+2729,"docs(analise-prs): relatório completo",claude/eloquent-ramanujan-0yt2fo,adm01-debug,true,NAO_MERGEAR,"Branch desta sessão, draft"
+2721,"fix(kit-maker): cancela timers ao desmontar painel",fix/location-panel-timeout-cleanup,adm01-debug,false,AGUARDAR_CI,"Gate Final não rodou no HEAD 00412ccc; blocked"
+2720,"ci(e2e): não ocultar falha na geração de fixtures",fix/ci-workflows,adm01-debug,false,DECISAO_HUMANA,"Toca .github/actions/e2e-setup/action.yml (REGRA #8)"
+2719,"chore(build): separa mapas SQL e amplia referências Graphify",chore/graphify-audit-improvements-20261029,adm01-debug,false,AGUARDAR_CI,"Gate Final failure no SHA fcc306cc"
+2717,"fix(e2e): isola servidor Vite no CI de paridade",fix/e2e-vite-port-isolation,adm01-debug,false,CONFLITO,"mergeable_state: dirty"
+2716,"docs(auditoria): atualiza estado de CI e sincronização canônica",docs/auditoria-sync-canonico-2026-10-28,adm01-debug,false,CONFLITO,"mergeable_state: dirty + branch de outra sessão"
+2714,"fix(db): reconciliar migrations pendentes com o canônico",fix/reconcile-canonical-pending-migrations,adm01-debug,false,DECISAO_HUMANA,"Toca supabase/migrations/ (REGRA #8)"
+2713,"chore(main): release 1.1.0",release-please--branches--main--components--gifts-store,github-actions[bot],false,AGUARDAR_CI,"Gate Final não rodou no HEAD 0addb04e; blocked"
+2711,"docs(ci): RELATORIO_CI.md v3",claude_pink/fix-relatorio-final-281028-1530,adm01-debug,true,AGUARDA_CI_DRAFT,"Draft + branch de outra sessão"
+2707,"docs: recibo de deploy de edge function(s)",e66-edge-deploy-receipt-40747468580,github-actions[bot],false,CONFLITO,"mergeable_state: dirty"
+2701,"fix(ci): autentica integração Kit Coverage com usuário E2E",claude/fix-p12-grant-kit-view-261028-1730,adm01-debug,true,AGUARDA_CI_DRAFT,"Draft + branch de outra sessão"
+2695,"docs(db): corrige status do espelho de migration Google",docs/reconciliar-espelho-google-20261028,adm01-debug,false,CONFLITO,"mergeable_state: dirty"
+2693,"docs(auditoria): relatório final auditoria Supabase",claude_pink/peaceful-planck-q4ee1i,adm01-debug,false,CONFLITO,"mergeable_state: dirty"
+2688,"fix(ci): torna migration 20261027120000 replay-safe",claude_pink/focused-lamport-qyupp8,adm01-debug,true,AGUARDA_CI_DRAFT,"Draft + branch de outra sessão"
+2674,"docs(analise-prs): análise completa das 12 PRs abertas",claude_pink/sleepy-cannon-h000nc,adm01-debug,true,AGUARDA_CI_DRAFT,"Draft + branch de outra sessão"
