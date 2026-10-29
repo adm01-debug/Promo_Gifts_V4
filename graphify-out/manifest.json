@@ -3918,8 +3918,8 @@
     "semantic_hash": ""
   },
   "public/schemas/ssot-report.schema.json": {
-    "mtime": 1793303553.4642358,
-    "seen": 1793303662.0380428,
+    "mtime": 1793305007.8119838,
+    "seen": 1793305365.4860404,
     "ast_hash": "5f7c1a0d8db2e261abb51ec9125a64d5",
     "semantic_hash": ""
   },
@@ -29910,20 +29910,20 @@
     "semantic_hash": ""
   },
   "qa/exports/proposal-10015-26.html": {
-    "mtime": 1793303553.4962358,
-    "seen": 1793303662.0441887,
+    "mtime": 1793305148.8143647,
+    "seen": 1793305365.621688,
     "ast_hash": "92ca7a7ea332a554b7785b08a7828793",
     "semantic_hash": ""
   },
   "qa/exports/proposal-complex-99999-26.html": {
-    "mtime": 1793303553.4962358,
-    "seen": 1793303662.0441911,
+    "mtime": 1793305148.8303647,
+    "seen": 1793305365.6216903,
     "ast_hash": "04240878120d40179aa6e7ce7356afe8",
     "semantic_hash": ""
   },
   "qa/exports/proposal-minimal-00001-26.html": {
-    "mtime": 1793303553.5002358,
-    "seen": 1793303662.0441935,
+    "mtime": 1793305148.8223646,
+    "seen": 1793305365.6216922,
     "ast_hash": "cf17ac99e7adfb32411e5abee571a3ff",
     "semantic_hash": ""
   },
@@ -31740,15 +31740,15 @@
     "semantic_hash": ""
   },
   "PENDENCIAS.md": {
-    "mtime": 1793304602.4350474,
-    "seen": 1793304667.4504762,
-    "ast_hash": "b8abbb98be0ddaeef5ccf0d9d1b4b439",
+    "mtime": 1793305446.3188207,
+    "seen": 1793305518.729999,
+    "ast_hash": "0e553c752e374a206dc53313201f0696",
     "semantic_hash": ""
   },
   "RELATORIO_CI.md": {
-    "mtime": 1793303568.9562368,
-    "seen": 1793303662.0429947,
-    "ast_hash": "6b13d639e0812281f67bd57860947a6d",
+    "mtime": 1793305446.3188207,
+    "seen": 1793305518.7300265,
+    "ast_hash": "c218b8efdfc97aad9c208c906d96b327",
     "semantic_hash": ""
   },
   "analise-branches/RELATORIO_BRANCHES.md": {
@@ -33966,9 +33966,9 @@
     "semantic_hash": ""
   },
   "docs/graphify/AUDITORIA_MAPAS_E_BENCHMARK_2026-10-29.md": {
-    "mtime": 1793304602.4350474,
-    "seen": 1793304667.4604144,
-    "ast_hash": "1e56bb397254cb4b8ce1a66f6a3fc76f",
+    "mtime": 1793305446.3188207,
+    "seen": 1793305518.7405317,
+    "ast_hash": "3a654f6ea2691ad06d7a654bd99bb34b",
     "semantic_hash": ""
   },
   "e2e/customization/collapse-reflow.spec.ts-snapshots/location-panel-collapsed-desktop-chromium-authed-linux.png": {
