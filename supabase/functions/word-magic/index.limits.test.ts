@@ -16,7 +16,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { readFileSync } from "node:fs";
 import path from "node:path";
 
-const PRODUCT_ID = "00000000-0000-0000-0000-000000000001";
+// UUID v4 válido: o z.string().uuid() da main recusa o UUID "nulo" (versão 0).
+const PRODUCT_ID = "11111111-1111-4111-8111-111111111111";
 const FLASH_MODEL = "deepseek-v4-flash";
 const SRC_PATH = "supabase/functions/word-magic/index.ts";
 
