@@ -1,18 +1,21 @@
-numero,titulo,branch,autor,draft,veredicto,motivo
-2731,"fix(db): protege kill_switch_hits contra INSERT anônimo",fix/p200-e049-rate-guard,adm01-debug,false,DECISAO_HUMANA,"Toca .github/workflows/deploy-gates.yml + supabase/migrations/ (REGRA #8)"
-2730,"fix(ci): protege contrato de repair-only em E15",fix/p200-e051-e052,adm01-debug,false,DECISAO_HUMANA,"Toca .github/workflows/db-apply-migration.yml (REGRA #8)"
-2729,"docs(analise-prs): relatório completo",claude/eloquent-ramanujan-0yt2fo,adm01-debug,true,NAO_MERGEAR,"Branch desta sessão, draft"
-2721,"fix(kit-maker): cancela timers ao desmontar painel",fix/location-panel-timeout-cleanup,adm01-debug,false,MERGEADO,"SHA 6b48bebcb2ff5ff922298523f4678383d392ae46 — Gate Final ✅ 00412ccc; merge local limpo; tsc/lint/tests OK"
-2720,"ci(e2e): não ocultar falha na geração de fixtures",fix/ci-workflows,adm01-debug,false,DECISAO_HUMANA,"Toca .github/actions/e2e-setup/action.yml (REGRA #8)"
-2719,"chore(build): separa mapas SQL e amplia referências Graphify",chore/graphify-audit-improvements-20261029,adm01-debug,false,CONFLITO,"mergeable_state: dirty após merge de #2721; HEAD 4fd4e8ff; Gate Final failure"
-2717,"fix(e2e): isola servidor Vite no CI de paridade",fix/e2e-vite-port-isolation,adm01-debug,false,DECISAO_HUMANA,"Toca .github/workflows/replenishment-quality.yml (REGRA #8). Merge local limpo (branch rebased)"
-2716,"docs(auditoria): atualiza estado de CI e sincronização canônica",docs/auditoria-sync-canonico-2026-10-28,adm01-debug,false,CONFLITO,"mergeable_state: dirty + branch de outra sessão"
-2714,"fix(db): reconciliar migrations pendentes com o canônico",fix/reconcile-canonical-pending-migrations,adm01-debug,false,DECISAO_HUMANA,"Toca supabase/migrations/ (REGRA #8)"
-2713,"chore(main): release 1.1.0",release-please--branches--main--components--gifts-store,github-actions[bot],false,AGUARDAR_CI,"Gate Final não rodou no HEAD d6826029; blocked; Supabase Preview failure"
-2711,"docs(ci): RELATORIO_CI.md v3",claude_pink/fix-relatorio-final-281028-1530,adm01-debug,true,AGUARDA_CI_DRAFT,"Draft + branch de outra sessão"
-2707,"docs: recibo de deploy de edge function(s)",e66-edge-deploy-receipt-40747468580,github-actions[bot],false,CONFLITO,"mergeable_state: dirty"
-2701,"fix(ci): autentica integração Kit Coverage com usuário E2E",claude/fix-p12-grant-kit-view-261028-1730,adm01-debug,true,AGUARDA_CI_DRAFT,"Draft + branch de outra sessão"
-2695,"docs(db): corrige status do espelho de migration Google",docs/reconciliar-espelho-google-20261028,adm01-debug,false,CONFLITO,"mergeable_state: dirty"
-2693,"docs(auditoria): relatório final auditoria Supabase",claude_pink/peaceful-planck-q4ee1i,adm01-debug,false,CONFLITO,"mergeable_state: dirty"
-2688,"fix(ci): torna migration 20261027120000 replay-safe",claude_pink/focused-lamport-qyupp8,adm01-debug,true,DECISAO_HUMANA,"Toca .github/workflows/db-schema-drift-check.yml (REGRA #8) + draft + typo $POSGRES_IMAGE"
-2674,"docs(analise-prs): análise completa das 12 PRs abertas",claude_pink/sleepy-cannon-h000nc,adm01-debug,true,AGUARDA_CI_DRAFT,"Draft + branch de outra sessão"
+number,title,branch,merge_test,gate_final,mergeable_state,verdict,changed_files,notes
+2735,docs(auditoria): sync CI 2026-10-29,docs/auditoria-sync-ci-20261029,LIMPO,SUCCESS,unstable,MERGEADA,2,squash 27f4261
+2733,test(cloud-status): CloudStatusContext P200-E131,fix/p200-e131-cloud-status-hook,LIMPO,SUCCESS,unstable,MERGEADA,2,squash 8bc08b1
+2721,fix(kit-maker): cancela timers,fix/kit-maker-timer-cancel,LIMPO,SUCCESS,clean,MERGEADA,N/A,squash 6b48beb sessao-anterior
+2734,fix(ci): auth GHCR contract-tests,fix/contract-tests-ghcr-auth,LIMPO,SUCCESS,unstable,DECISAO_HUMANA,1,.github/workflows/contract-tests.yml
+2720,fix/ci-workflows,fix/ci-workflows,CONFLITO,—,—,CONFLITO+DECISAO_HUMANA,N/A,.github/workflows/+conflito
+2714,fix(migrations): reconcile canonical,fix/reconcile-canonical-pending-migrations,CONFLITO,—,—,CONFLITO+DECISAO_HUMANA,N/A,supabase/migrations/+conflito
+2688,various,claude_pink/focused-lamport-qyupp8,CONFLITO,—,—,CONFLITO+DECISAO_HUMANA,N/A,draft+.github/workflows/+conflito
+2731,fix(rate-guard): P200-E049,fix/p200-e049-rate-guard,LIMPO,FAILURE,—,AGUARDAR_CI,N/A,base desatualizada precisa rebase
+2713,chore(main): release 1.1.0,release-please--branches--main--components--gifts-store,LIMPO,0 runs,blocked,AGUARDAR_CI,4,autorelease:pending blocked
+2730,fix(p200-e051-e052),fix/p200-e051-e052,CONFLITO,—,—,CONFLITO,N/A,
+2719,chore(graphify): audit,chore/graphify-audit-improvements-20261029,CONFLITO,—,—,CONFLITO,N/A,
+2717,fix(e2e): vite port isolation,fix/e2e-vite-port-isolation,CONFLITO,—,—,CONFLITO,N/A,
+2716,docs(auditoria): sync canonico,docs/auditoria-sync-canonico-2026-10-28,CONFLITO,—,—,CONFLITO,N/A,
+2711,docs(ci): RELATORIO_CI v3,claude_pink/fix-relatorio-final-281028-1530,CONFLITO,—,—,CONFLITO,N/A,draft
+2707,docs: edge deploy receipt,e66-edge-deploy-receipt-40747468580,CONFLITO,—,—,CONFLITO,N/A,
+2701,fix(ci): kit coverage auth,claude/fix-p12-grant-kit-view-261028-1730,CONFLITO,—,—,CONFLITO,N/A,draft
+2695,docs(db): espelho google,docs/reconciliar-espelho-google-20261028,CONFLITO,—,—,CONFLITO,N/A,
+2693,docs(auditoria): relatorio Supabase,claude_pink/peaceful-planck-q4ee1i,CONFLITO,—,—,CONFLITO,N/A,
+2729,analise-prs deliverables,claude/eloquent-ramanujan-0yt2fo,N/A,N/A,N/A,NAO_MERGEAR,N/A,branch desta sessao draft
+2674,docs(analise-prs): analise 12 PRs,claude_pink/sleepy-cannon-h000nc,CONFLITO,—,—,CONFLITO,N/A,draft
