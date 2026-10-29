@@ -1,5 +1,7 @@
 # PENDENCIAS.md — Itens bloqueados por secret/permissão/infraestrutura
 
+**Atualizado:** 2026-10-28
+**Branch:** `fix/ci-workflows` (esta sessão)
 **Atualizado:** 2026-10-29
 **Branch da revalidação:** `docs/revalidacao-planos-20261029`
 
@@ -8,7 +10,6 @@
 ## Auditoria de sincronização local × GitHub × Supabase — 2026-10-29
 
 | Área | Evidência atual | Resultado |
-|---|---|---|
 | Código local e GitHub | Branch local `fix/location-panel-timeout-cleanup`, SHA `a172c252f0b8dafebcefa5a37903214ecc44efc4`; PR [#2721](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2721) aponta para o mesmo SHA e continua aberto. | O código está publicado no branch/PR, mas não incorporado à `main` (`c344508`). Há 8 checks falhos; não é seguro integrar ainda. |
 | Reconciliação de migrations | PR [#2714](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2714), SHA `ca316674db0110136e6cbbabee8fbe103aa8ff15`, continua aberto e bloqueado pelo Gate E40. | Não aplicar nem reparar ledger/schema enquanto o drift não for classificado e aprovado. |
 | Ledger local × canônico | Repositório: 3.004 versões distintas em 3.009 arquivos SQL; canônico: 2.552 entradas; 2.541 versões compartilhadas, 463 apenas locais e 11 apenas remotas. Existem 5 grupos de versão duplicada no repositório. | Divergência confirmada. As 11 versões remotas e as 463 locais exigem classificação individual; contagens, sozinhas, não autorizam `migration repair` ou DDL. |
@@ -26,25 +27,25 @@
 - Run [40667156516](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40667156516) — SHA `8c81483` — **success** (fix Gate E40 + replay-safe migrations)
 - Run [40662579684](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40662579684) — SHA `c73cb9b` — **success** (fix Calendar RDP v10)
 
-**Causa original:** Gate E40 (`local_only=1108; remote_only=647`) era BLOQUEANTE.  
+**Causa original:** Gate E40 (`local_only=1108; remote_only=647`) era BLOQUEANTE.
 **Fix:** Commit `8c81483` — migrations `20261027120000` e `20261027140000` tornadas replay-safe com guard `IF to_regclass('cron.job') IS NULL OR NOT EXISTS (...) THEN RAISE NOTICE + RETURN`.
 
 ---
 
 ## ✅ P4 — RESOLVIDO — Gate E40 Schema Drift (ledger dessincronizado)
 
-**Workflow:** Deploy Gates (Gate Final)  
-**Run com falha:** [40660438161](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40660438161)  
-**Fix:** Commit `8c81483` na main — migrations corrigidas tornaram o Gate E40 verde.  
+**Workflow:** Deploy Gates (Gate Final)
+**Run com falha:** [40660438161](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40660438161)
+**Fix:** Commit `8c81483` na main — migrations corrigidas tornaram o Gate E40 verde.
 **Runs de validação:** `40667156516` e `40662579684` ambos com `conclusion: success`.
 
 ---
 
 ## P1 — CI - Replenishment Module Quality Gate (E2E autenticado)
 
-**Workflow:** CI que inclui testes E2E autenticados do módulo de reposição  
-**Run ID da última falha:** 40612760478  
-**Link:** https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40612760478  
+**Workflow:** CI que inclui testes E2E autenticados do módulo de reposição
+**Run ID da última falha:** 40612760478
+**Link:** https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40612760478
 **Status:** failure
 
 **Erro exato (dos logs do CI):**
@@ -94,9 +95,9 @@ Clique em "Re-run all jobs".
 
 ## P2 — E2E — Critical Flows & Error Boundaries (E2E autenticado + tooltip timing)
 
-**Workflow:** E2E — Critical Flows & Error Boundaries  
-**Run ID da última falha:** 40745678499  
-**Link:** https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40745678499  
+**Workflow:** E2E — Critical Flows & Error Boundaries
+**Run ID da última falha:** 40745678499
+**Link:** https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40745678499
 **Status:** failure
 
 **Erros exatos (dos logs do CI):**
@@ -120,10 +121,10 @@ Clique em "Re-run all jobs".
 
 ## ✅ P3 — RESOLVIDO — Branch Protection Sentinel
 
-**Workflow:** Branch Protection Sentinel  
-**Run ID da falha original:** 40615509825  
-**Run ID da falha recorrente (PR #2699):** [40728685711](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40728685711) — SHA `6b2cc72` — ❌ failure  
-**Run de confirmação (PR #2703):** [40739341755](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40739341755) — SHA `c7bc0ba6` — ✅ **success**  
+**Workflow:** Branch Protection Sentinel
+**Run ID da falha original:** 40615509825
+**Run ID da falha recorrente (PR #2699):** [40728685711](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40728685711) — SHA `6b2cc72` — ❌ failure
+**Run de confirmação (PR #2703):** [40739341755](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40739341755) — SHA `c7bc0ba6` — ✅ **success**
 **Status:** ✅ RESOLVIDO — padrão sistêmico corrigido
 
 **Histórico:**
@@ -146,9 +147,9 @@ Clique em "Re-run all jobs".
 
 ## ✅ P5 — RESOLVIDO — CI Security & Drift Checks (Calendar RDP v10)
 
-**Workflow:** CI Security & Drift Checks  
-**Run ID da última falha:** 40615509752  
-**Run de validação:** [40745678435](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40745678435) — ✅ **success** (2026-10-28)  
+**Workflow:** CI Security & Drift Checks
+**Run ID da última falha:** 40615509752
+**Run de validação:** [40745678435](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40745678435) — ✅ **success** (2026-10-28)
 **Status:** ✅ RESOLVIDO
 
 **Causa raiz:** 5 testes unitários de Calendar falhavam por migração react-day-picker v8→v10 (commit `8b0b606`) sem atualização dos seletores DOM dos testes.
@@ -161,9 +162,9 @@ Clique em "Re-run all jobs".
 
 ## P6 — E2E · undo (falhas pré-existentes no main)
 
-**Workflow:** E2E · undo  
-**Run ID da última falha:** 40667936090  
-**Link:** https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40667936090  
+**Workflow:** E2E · undo
+**Run ID da última falha:** 40667936090
+**Link:** https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40667936090
 **Status:** failure — pré-existente (3+ runs consecutivos falhando na main antes desta sessão)
 
 **Erros exatos:**
@@ -184,39 +185,24 @@ Clique em "Re-run all jobs".
 
 ---
 
-## P7 — db-schema-drift-check (ledger divergente — requer reconciliação pelo PO)
+## ✅ P7 — RESOLVIDO — `db-schema-drift-check` (ledger e schema canônico)
 
-**Workflow:** db-schema-drift-check  
-**Run ID da última falha:** [40708395880](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40708395880)  
-**SHA:** `2cee272b` (main HEAD em 2026-10-28 14:41)  
-**Status:** ❌ failure — bloqueado por ledger divergente
+**Última validação:** [run 40876229387](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40876229387), workflow_dispatch no HEAD `0ada518ed41535d46a61b0ff45856648598867c7` — `conclusion: success`.
 
-**Erro exato (step "Ledger parity (repo x canonical)"):**
-```
-[migration-ledger][bloqueado] local_only=1108; remote_only=648; mismatched=0; malformed=0
-```
+**Evidências dos steps:**
+- `Ledger parity (repo x canonical)`: `[migration-ledger][ok] 1901 versões alinhadas.`
+- `Schema drift check (baseline + replay x remote)`: sem drift de schema; 26 funções iguais ao replay, com apenas ruído de comentário de coluna no dump.
+- O workflow também concluiu os checks de event triggers e cron jobs.
 
-**Causa raiz:** O ledger de migrations está massivamente dessincronizado entre o repositório e o banco de produção `doufsxqlfjyuvxuezpln`:
-- **1108 migrations** existem no repo (`supabase/migrations/`) mas **não constam** no banco remoto (`supabase_migrations.schema_migrations`)
-- **648 migrations** constam no banco remoto mas **não existem** no repo
-
-Esta divergência é independente do fix de P4 (guard pg_cron nas migrations `20261027120000`/`20261027140000`). O fix de P4 corrigiu o replay do Gate E40 dentro do `deploy-gates.yml`, mas o `db-schema-drift-check` compara o ledger em si — e o ledger está dessincronizado por DDL fora do fluxo de migration (REGRA #8 corolário).
-
-**Ação necessária do PO:**
-1. Investigar a extensão da divergência: baixar artefato `schema-reconciliation-evidence` do run [40708395880](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40708395880/artifacts/12824214915) (arquivos `/tmp/migration-ledger.json` e `/tmp/migration-ledger-summary.json`)
-2. Decidir estratégia de reconciliação: criar migrations espelho para o `remote_only=648` ou limpar o `local_only=1108` do ledger
-3. Após reconciliação: disparar `schema-snapshot-export.yml` com `force_rotate: true` para girar o baseline
-4. Reconfirmar com `workflow_dispatch` em `db-schema-drift-check`
-
-**Nota:** Per REGRA #8 corolário e E056, Claude **não pode** executar DDL ou `migration repair` em sessão de agente para reconciliar o ledger. Requer ação do PO.
-
-**Nota — diferença P7 (`local_only=1108`) vs P12 (`local_only=1109`):** P12 rodou no branch do PR #2701 que adiciona a migration `20261028120000_grant_kit_view_authenticated.sql` ao repo (+1 sobre os 1108 da main). Os dois valores são corretos em seus respectivos contextos: 1108 é o estado atual da main; 1109 é o estado do branch do PR #2701.
+Esta execução substitui o diagnóstico histórico do run `40708395880` (1.108 versões locais e 648 remotas reportadas pelo código antigo). A validação foi somente leitura; nenhuma migration, reparo de ledger ou alteração de schema foi aplicada ao Supabase canônico.
 
 ---
 
 ## P8 — edge-functions-drift-check (drift entre GitHub e canônico)
 
-**Workflow:** edge-functions-drift-check  
+**Workflow:** edge-functions-drift-check
+**Run ID da última falha:** 40744782349
+**Link:** https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40744782349
 **Run ID da última falha:** 40756284439 (2026-10-28 19:39 UTC; SHA `da7bdb8`)
 **Link:** https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40756284439
 **Status:** failure — atualização para `main=c213051` é documental e não alterou edge functions.
@@ -241,9 +227,9 @@ Esta divergência é independente do fix de P4 (guard pg_cron nas migrations `20
 
 ## ✅ P9 — RESOLVIDO — E2E — Personalization Flow
 
-**Workflow:** E2E — Personalization Flow  
-**Run ID da última falha:** 40662579633  
-**Run de validação:** [40745678737](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40745678737) — ✅ **success** (2026-10-28)  
+**Workflow:** E2E — Personalization Flow
+**Run ID da última falha:** 40662579633
+**Run de validação:** [40745678737](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40745678737) — ✅ **success** (2026-10-28)
 **Status:** ✅ RESOLVIDO
 
 **Causa raiz:** Mesma de P1. Testes E2E autenticados falham por ausência dos secrets `E2E_USER_EMAIL` / `E2E_USER_PASSWORD`.
@@ -254,9 +240,9 @@ Esta divergência é independente do fix de P4 (guard pg_cron nas migrations `20
 
 ## P10 — E2E • Swatch QuickView (secrets E2E + dados de produto ausentes)
 
-**Workflow:** E2E • Swatch QuickView (Lista + Tabela)  
-**Run ID da última falha:** 40662579393  
-**Link:** https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40662579393  
+**Workflow:** E2E • Swatch QuickView (Lista + Tabela)
+**Run ID da última falha:** 40662579393
+**Link:** https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40662579393
 **Status:** failure
 
 **Erros exatos:**
@@ -279,9 +265,9 @@ webkit: expect(picker).not.toBeNull()
 
 ## P11 — Edge Integration Tests — All Functions (11 testes falhando)
 
-**Workflow:** Edge Integration Tests — All Functions  
-**Run ID da última falha:** 40746330314  
-**Link:** https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40746330314  
+**Workflow:** Edge Integration Tests — All Functions
+**Run ID da última falha:** 40746330314
+**Link:** https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40746330314
 **Status:** failure — ❌ BLOCKED PO — requer deploy das versões atuais
 
 **Resultado:** 3 arquivos falharam | 11 testes failed | 884 passed | 2 skipped (897 total)
@@ -302,24 +288,36 @@ As 3 edge functions afetadas têm código **correto no repositório** (confirmad
 
 ---
 
+## P12 — Kit Coverage — Integration (cobertura insuficiente na view)
+
+**Workflow:** Kit Coverage — Integration
+**Run ID da última falha:** 40874620158 (SHA `6bcc383e438390a44d7538db9c3b0b82f4c0926f`)
+**Link:** https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40874620158
+**Status:** failure — autenticação e consultas passaram; a cobertura dos dados reais continua abaixo do mínimo.
 ## P12 — Kit Coverage — Integration (identidade do teste incompatível com os grants)
 
-**Workflow:** Kit Coverage — Integration  
 **Run ID da última falha (main):** 40628415319  
 **Link:** https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40628415319  
 **PR com fix:** [#2701](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2701) (draft — Gate Final ❌)  
 **Run de falha no PR:** [40733949177](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40733949177) (job Gate Final: 122981142154)  
 **Status:** ❌ BLOQUEADO — o workflow consulta como `anon`; PR #2701 também tem checks de ledger/E40 em falha.
 
-**Erro exato (main):**
-```
-Unknown Error: permission denied for view v_kit_component_complete
-```
+**Resultado observado:** autenticação e as duas consultas ao Supabase passaram. A terceira asserção falhou com `Cobertura 56% < threshold 70%` para o kit descoberto dinamicamente.
 
+**Causa confirmada para a permissão:** nenhuma migration de GRANT faltava. Consulta somente leitura a `pg_catalog`/`has_table_privilege` confirmou SELECT para `authenticated` e `service_role`, e ausência para `anon`, tanto em `public.v_kit_component_complete` quanto em `public.product_kit_components`. O teste usava o cliente sem sessão autenticada. A correção de código autentica o usuário E2E e não abre acesso anônimo.
 **Causa raiz confirmada em consulta read-only (2026-10-29):** O workflow fornece URL e chave publishable, mas não autentica uma sessão; as consultas são executadas como `anon`. No canônico `doufsxqlfjyuvxuezpln`, `anon` não tem `SELECT` na view `v_kit_component_complete` nem na tabela `product_kit_components`; `authenticated` e `service_role` têm. A view está configurada com `security_invoker=true`. A policy de leitura não substitui o `GRANT`. A fixture `KIT_FIXTURE_ID` também está vazia, mas isso não causa o erro de permissão.
 
-**Fix implementado:** Migration `20261028120000_grant_kit_view_authenticated.sql` criada em branch `claude/fix-p12-grant-kit-view-261028-1730`, PR [#2701](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2701) aberto (draft).
+**Gate C25:** corrigido no commit `353d99d31`; a exceção vale somente para o workflow, job autenticado e comando de integração específicos. Os 23 testes do contrato passaram localmente. O run [Deploy Gates #40868363085](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40868363085) terminou com `conclusion: success`, incluindo lint/typecheck, testes unitários, E2E Smoke e build.
 
+**Gap restante — contrato/qualidade da view e fixture:**
+- A definição canônica consultada em `pg_get_viewdef` não projeta `component_description`, `primary_image_url`, `images` e `supplier_component_code`, campos que o teste inclui na métrica. A entrada `v_kit_component_complete` em `src/integrations/supabase/types.ts` também omite esses quatro campos, portanto os tipos locais refletem a view remota; o gap está entre o contrato do teste (view como superset da tabela base) e a projeção real.
+- Recontagem somente leitura no Supabase canônico, usando a mesma lista de 15 campos e o mesmo arredondamento do teste: 5 de 978 kits ativos com componentes atingem 70% na tabela base; a média por kit é 52,7%. A seleção dinâmica sem ordenação escolhe um kit qualquer, por isso a falha não é reprodutível. A execução atual no SHA `6bcc383e4` repetiu 56% para o kit selecionado: [run #40874620158](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40874620158).
+- A definição de `v_kit_component_complete` não foi encontrada nas migrations versionadas fora de arquivos de backup/ledger; sua origem e o contrato pretendido ainda precisam ser reconciliados antes de propor DDL. Não alterar a view nem mascarar a divergência ajustando o threshold.
+- O teste não deve reduzir o threshold nem conceder SELECT a `anon` para mascarar o problema.
+
+**Estado do PR #2701:** https://github.com/adm01-debug/Promo_Gifts_V4/pull/2701 — draft. A branch foi atualizada com a `main` de 2026-10-28 e o conflito documental foi reconciliado; ainda não deve ser mesclada enquanto a integração de cobertura estiver vermelha. Commits `353d99d31`, `cb4b745c6` e `6bcc383e4` estão publicados no branch do PR, que incorpora a `main` atual e já não tem conflito documental. O dispatch mais recente falhou somente na cobertura descrita acima; as duas primeiras asserções passaram no run #40874620158.
+
+**Próximo passo:** revisar e aprovar o contrato esperado da view e definir fixture estável que atenda à métrica. Se for aprovada uma mudança de schema, versionar uma migration não destrutiva, validar pelo fluxo obrigatório E15 e atualizar os tipos; não aplicar DDL diretamente via MCP/dashboard. Nenhum GRANT a `anon`, DDL, migration ou dado operacional foi alterado nesta correção.
 **Status dos checks consultados em 2026-10-29:** a execução do PR #2701 ([run 40733949177](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40733949177)) falhou no Deploy Gates; também falharam `db-schema-drift-check` ([run 40733948852](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40733948852)) e `migrations-sync-log-gate` ([run 40733948824](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40733948824)). A divergência atual do ledger está discriminada em PEND-D02 (463 versões locais e 11 versões remotas sem correspondência); os números antigos `local_only=1109; remote_only=648` não são usados nesta revalidação por não coincidirem com o snapshot atual. O PR não está liberado para merge.
 
 **Ação técnica necessária:** Ajustar o workflow/teste para autenticar com uma conta E2E somente-leitura aprovada e definir fixture determinística; verificar o escopo RLS e repetir o workflow. Não liberar `SELECT` a `anon` e não aplicar DDL diretamente. A migration do PR #2701 pode ser avaliada como grant versionado para ambientes novos, mas não corrige as chamadas anônimas e o PR segue bloqueado por `Deploy Gates`, `db-schema-drift-check` e `migrations-sync-log-gate` ([run 40733949177](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40733949177), [run 40733948852](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40733948852), [run 40733948824](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40733948824)). Qualquer alteração no canônico segue exclusivamente o fluxo E15 depois da classificação e aprovação necessárias.
@@ -404,9 +402,9 @@ Consulta ao GitHub Actions: 119 workflows ativos; para cada um foi consultada a 
 
 ---
 
+*Ação prioritária: P1 (secrets E2E) — desbloqueia P2, P9, P10. P6, P8 e P11 requerem investigação independente. P12 requer decisão sobre o contrato da view e uma fixture de integração determinística; o último run falhou em 56% contra o mínimo de 70%. P13 requer investigação do projeto Vercel informado.*
 *Ação prioritária: P1 (secrets E2E) — desbloqueia P2, P9, P10. P6, P8, P11 requerem investigação independente. P12 bloqueado por P7 (Opção B disponível via workflow_dispatch sem resolver P7). P13 requer deleção do projeto fantasma Vercel.*
 
----
 
 ## ADENDO — inventário atualizado em 2026-10-29
 
