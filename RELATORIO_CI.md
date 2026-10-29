@@ -1,8 +1,8 @@
 # RELATÓRIO CI — Promo Gifts V4
 
-## Snapshot final de auditoria — 2026-10-29, `main` em `c3445087`; PR #2717 em `6bb88165`
+## Snapshot final de auditoria — 2026-10-29, `main` em `c3445087`; PR #2717 em `c4d41bd0`
 
-Consulta feita pelo MCP GitHub: 33 workflows observados na `main`; 23 com última execução verde, 4 vermelhas, 3 canceladas, 2 ignoradas e 1 em execução (rerun WebKit, tentativa 2). No PR #2717, 68 checks: 49 verdes, 7 vermelhos, 5 em execução, 6 ignorados e 1 neutro. Não houve merge.
+Consulta feita pelo MCP GitHub: 33 workflows observados na `main`; 23 com última execução verde, 4 vermelhas, 3 canceladas, 2 ignoradas e 1 em execução (rerun WebKit, tentativa 2). No SHA `c4d41bd0` do PR #2717, 65 checks: 45 verdes, 4 vermelhos, 9 em execução, 6 ignorados e 1 neutro. Não houve merge.
 
 | Workflow | Run | SHA | Estado | Evidência resumida |
 |---|---:|---|---|---|
@@ -14,7 +14,7 @@ Consulta feita pelo MCP GitHub: 33 workflows observados na `main`; 23 com últim
 
 ### Baseline local e validações pós-commit
 
-No conteúdo final do PR #2717 (`6bb8816530ffcede9891344800e205a47ecfd4ef`), foram repetidos `actionlint`, `npm run lint`, `npm run typecheck`, `npm run build` e `npm test`: tudo passou; lint registrou 0 erros e 0 avisos. Vitest: 1.210 arquivos aprovados, 131 ignorados; 25.656 testes aprovados, 1.134 ignorados e 24 TODO. A execução durou 293,26 s. O E2E direcionado para catálogo passou com autenticação simulada; a verificação dependente de dados reais foi ignorada nesse modo. O CI completo do PR permanece bloqueado: 49 checks verdes, 7 falhos, 5 em andamento, 6 ignorados e 1 neutro na última consulta. Nenhum teste foi apagado, pulado ou enfraquecido por essa correção.
+No commit de documentação `c4d41bd0` do PR #2717, `actionlint`, `npm run lint`, `npm run typecheck`, `npm run build` e `npm test` passaram: lint 0 erros/avisos; Vitest 1.210 arquivos aprovados, 131 ignorados; 25.656 testes aprovados, 1.134 ignorados e 24 TODO, em 307,38 s. O E2E direcionado de catálogo passou anteriormente com autenticação simulada; o teste dependente de dados reais foi ignorado nesse modo. Para o novo ajuste do caso `undo`, o teste foi reproduzido antes da correção (falhou: esperado 0, recebido 1) e depois passou localmente (2 testes incluindo setup); a causa era duração mínima de 1.000 ms no componente contra espera de 700 ms no spec. O diff final da correção ainda requer repetição pós-commit da suíte completa; o próximo run de CI do PR confirmará os checks. Nenhum teste foi apagado, pulado ou enfraquecido.
 
 ### Repositório e Supabase canônico
 
@@ -23,7 +23,7 @@ No conteúdo final do PR #2717 (`6bb8816530ffcede9891344800e205a47ecfd4ef`), for
 - Inventário estrutural de tipos (AST TypeScript, local vs `supabase_generate_typescript_types` do projeto): `public` coincide integralmente — 398 Tables, 197 Views, 1.020 Functions, 15 Enums e 2 CompositeTypes. `graphql_public.graphql` aparece no local e foi confirmado no `pg_catalog` vivo; o gerador remoto omite esse schema auxiliar. Não há drift estrutural identificado nos tipos.
 - Comparação somente leitura do ledger: 3.004 IDs únicos em `supabase/migrations`, 2.552 IDs remotos, 2.541 em comum, 463 apenas locais e 11 apenas remotos. A divergência segue em análise pelo PR #2714; nenhuma migration foi aplicada nesta auditoria.
 - Nota de reconciliação: o Gate E40 do PR #2714 reportou `local_only=1109; remote_only=648`; esse contrato usa escopo/filtros diferentes da comparação bruta de IDs acima. A diferença entre os métodos precisa ser explicada antes de classificar ou aplicar qualquer migration.
-- PRs relacionados ainda abertos: #2714 (reconciliação de migrations), #2715 (guarda de segurança RLS), #2716 (relatório de auditoria) e #2717 (isolamento do servidor E2E e falso positivo de `500`). Na última consulta ao SHA `6bb88165` do PR #2717: 49 checks verdes, 7 falhos, 5 em andamento, 6 ignorados e 1 neutro. Falhas: reviewer Copilot sem cota; Magazine Header não navega para `/magazine/{id}`; Personalization não encontra `[data-testid="product-card"]`; screenshot móvel 5 px mais estreito que o baseline; teste de `undo` observa uma chamada a `onUndo` no cenário de expiração; WebKit cancelado pelo runner. Nenhum PR foi mesclado nesta etapa.
+- PRs relacionados ainda abertos: #2714 (reconciliação de migrations), #2715 (guarda de segurança RLS), #2716 (relatório de auditoria) e #2717 (isolamento do servidor E2E e falso positivo de `500`). No SHA `c4d41bd0` do PR #2717: 45 checks verdes, 4 falhos, 9 em andamento, 6 ignorados e 1 neutro. Falhas: reviewer Copilot sem cota; WebKit cancelado pelo runner; screenshot móvel 5 px mais estreito; e `undo` chamando `onUndo` antes da expiração real. A última foi reproduzida e corrigida neste commit; o CI ainda precisa verificar. Nenhum PR foi mesclado nesta etapa.
 - A checkout local `main` coincide com `origin/main` em `c3445087`; restam apenas artefatos Graphify gerados e não commitados (`GRAPH_REPORT.md` e `manifest.json`). O relatório local foi atualizado para 2026-10-28 pelo pacote 0.9.91, enquanto a skill indica 0.9.94; o `manifest.json` teve alteração volumosa de metadados. Os artefatos seguem fora do PR para reconciliação do gerador antes de publicação.
 
 Este snapshot substitui os estados históricos abaixo somente para a situação verificada em 2026-10-29; os registros anteriores permanecem como histórico.
