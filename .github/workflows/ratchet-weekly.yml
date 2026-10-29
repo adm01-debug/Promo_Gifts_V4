@@ -122,7 +122,8 @@ jobs:
             echo "Baselines melhoraram:"
             # Armazena diff em variavel para evitar SIGPIPE (exit 141) com | head -N em bash -eo pipefail
             DIFF_OUT=$(git diff .tsc-ratchet-baseline bundle-size-baseline.json)
-            echo "$DIFF_OUT" | head -40
+            # sed consome toda a entrada; head fecha o pipe cedo e gera SIGPIPE (141) com pipefail.
+            sed -n '1,40p' <<< "$DIFF_OUT"
           fi
 
       - name: Credencial de push sem token em disco (E32)
