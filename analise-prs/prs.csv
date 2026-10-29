@@ -1,20 +1,25 @@
-number,title,author,draft,base,head_sha,mergeable,created_at,changed_files,commits
-2667,fix(calendar): adapta react-day-picker v8→v10 (classNames + components + autoFocus),adm01-debug,False,main,79ac4d6a360725004df622032358bf8c27efda74,,2026-10-27T23:18:04Z,N/A,N/A
-2666,chore(main): release 1.0.0,github-actions[bot],False,main,6a254ef57746f30b93a404c8286de40eb76b4613,,2026-10-27T22:54:45Z,N/A,N/A
-2665,chore(deps)(deps-dev): bump qs from 6.16.0 to 6.16.2,dependabot[bot],False,main,1bda4d605946b81b47a65963557d5d4c6bb1c54b,,2026-10-27T22:53:25Z,N/A,N/A
-2664,docs(auditoria): Fase A completa — auditoria Supabase doufsxqlfjyuvxuezpln 2026-10-27,adm01-debug,False,main,13dfda60d369cb110d31ea38ce4a1558030866cf,,2026-10-27T22:36:19Z,N/A,N/A
-2663,docs(ci): RELATORIO_CI.md + PENDENCIAS.md — baseline de falhas e deploy validate-access,adm01-debug,False,main,40cb1e219987ded2ea09b5d423fdc15b2e7d3ded,,2026-10-27T22:33:08Z,N/A,N/A
-2662,docs(analise-prs): análise exaustiva 13 PRs — 1 merge (#2588) — session_01VXkRxWq5ZUCmvuNx5e2TGX,adm01-debug,False,main,869ca457ddc10d920369a393e72c941c48510901,,2026-10-27T22:03:50Z,N/A,N/A
-2646,fix(migrations): adiciona cabeçalho -- Rollback: nas migrations 20261027160000 e 20261027220000,adm01-debug,False,main,79c0c670f33744fecc01f5c9b6617578c57a3fd2,,2026-10-27T14:18:32Z,N/A,N/A
-2631,chore: atualiza PENDENCIAS §4 e RELATORIO_CI — bloqueio deploy confirmado,adm01-debug,False,main,b093f023f2d988f8eeb447ca224ec2fd56a3d6ae,,2026-10-27T09:52:24Z,N/A,N/A
-2600,docs(analise-prs): rev46 — análise completa 20 PRs (7 mergeadas),adm01-debug,False,main,d7b6aaff442bd8eee8495510069083213d297c51,,2026-10-26T22:04:32Z,N/A,N/A
-2580,fix(banco): adiciona rollback header e arquivo rollback para e23,adm01-debug,True,main,41198d9a332f3e75707ca070d62b27b2eb772792,,2026-10-25T21:49:53Z,N/A,N/A
-2668,chore(analise-prs): inventário e relatório de todas as PRs abertas,adm01-debug,False,main,N/A,True,2026-10-27T23:25:00Z,N/A,N/A
-2670,fix(calendar): corrige Calendar.tsx para react-day-picker v10,adm01-debug,False,main,7d2a142d0d8fcab1c7c9d6978b3e5042b251d7c1,,2026-10-27T23:50:00Z,N/A,8
-2671,chore(e2e): update calendar visual baselines,github-actions[bot],False,main,f0deb7a941fd18e1eecd5c9029c2bc0808a26d6b,,2026-10-28T00:10:00Z,N/A,1
-2672,chore(e2e): update calendar visual baselines (force),github-actions[bot],False,claude_pink/compassionate-keller-om34uo,8e7212203a320fa71912590dfc110000fa2cc3e1,,2026-10-28T00:16:14Z,8,1
-2673,chore(e2e): update calendar visual baselines post-v10,github-actions[bot],False,main,62af0798dd71812979667ac29f596d25f3ef191b,,2026-10-28T00:30:00Z,8,1
-2675,docs(audit): relatório final sessão anterior (4 merges autônomos),adm01-debug,False,main,N/A,False,2026-10-27T23:30:00Z,N/A,N/A
-2677,fix(tests): corrige seletores calendar/date-picker para react-day-picker v10,adm01-debug,False,main,a310471017a58ba8ba1e759ac9c6e355cc978bf2,,2026-10-28T02:20:00Z,N/A,1
-2678,fix(tests): atualiza seletores de calendário para react-day-picker v10,adm01-debug,True,main,bd9d256615e7af99331059952c88d462e24c12de,,2026-10-28T02:40:58Z,3,2
-2679,test(calendar): corrige seletores de teste para react-day-picker v10,adm01-debug,False,main,0cb3c5257d919bb2c39482a7f5978f47ff6753b4,True,2026-10-28T02:56:45Z,3,2
+number,title,author,draft,base,state,branch,created_at,files_protegidos,merge_test,gate_final,veredicto,motivo,sha_merge
+2721,chore: atualiza PENDENCIAS §4 e RELATORIO_CI,adm01-debug,false,main,merged,chore/atualiza-pendencias-relatorio,2026-10-29,[],LIMPO,SUCCESS,MERGEADA,Docs+config; Gate Final ✅; sem arquivos protegidos,6b48beb
+2735,docs(analise-prs): rev46 — análise completa 20 PRs,adm01-debug,false,main,merged,docs/analise-prs-rev46,2026-10-29,[],LIMPO,SUCCESS,MERGEADA,Docs only; Gate Final ✅,27f4261
+2733,fix(banco): adiciona rollback header e arquivo rollback,adm01-debug,false,main,merged,fix/banco-rollback,2026-10-29,[],LIMPO,SUCCESS,MERGEADA,Fix docs/scripts; Gate Final ✅,8bc08b1
+2695,docs(db): corrige status do espelho de migration Google,adm01-debug,false,main,merged,docs/reconciliar-espelho-google-20261028,[],LIMPO,SUCCESS,MERGEADA,Docs only; Gate Final ✅; merge LIMPO; sem arquivos protegidos,8da42aa9
+2737,docs(auditoria): relatório de auditoria Supabase — revisão final,adm01-debug,false,main,merged,docs/auditoria-supabase-final,[],LIMPO,SUCCESS,MERGEADA,Docs only; sem arquivos protegidos,c7f9f4ba
+2707,docs: recibo de deploy de edge function(s) — run 40747468580,adm01-debug,false,main,merged,e66-edge-deploy-receipt-40747468580,[],LIMPO,SUCCESS,MERGEADA,Docs only; conflito resolúvel via update_pr_branch,37ea10a3
+2736,"test+docs(mockup/magic-up): entregas de teste e doc da fábrica VPS (lote A)",adm01-debug,false,main,merged,integra/vps-testes-docs,[],LIMPO,SUCCESS,MERGEADA,Tests+docs; typecheck verde; sem arquivos protegidos,31ebc2d3
+2719,chore(build): separa mapas SQL e amplia referências Graphify,adm01-debug,false,main,merged,chore/graphify-audit-improvements-20261029,[],BEHIND,SUCCESS,MERGEADA,Docs/chore graphify; sem arquivos protegidos; atualizado antes do merge,66d032af
+2734,fix(ci): usa mirror Docker Hub após limite do GHCR,adm01-debug,false,main,open,fix/contract-tests-ghcr-auth,[.github/workflows/contract-tests.yml],LIMPO,SUCCESS,DECISAO_HUMANA,Toca .github/workflows/contract-tests.yml (REGRA #8),
+2731,fix(db): protege kill_switch_hits contra INSERT anônimo sem rate guard,adm01-debug,false,main,open,fix/p200-e049-rate-guard,"[.github/workflows/deploy-gates.yml, supabase/migrations/20261029160339_add_kill_switch_hits_anon_rate_guard.sql]",LIMPO,FAILURE_INFRA,DECISAO_HUMANA,Toca .github/workflows/ + supabase/migrations/ (REGRA #8),
+2730,fix(ci): protege contrato de repair-only em E15,adm01-debug,false,main,open,fix/p200-e051-e052,[.github/workflows/db-apply-migration.yml],CONFLITO,UNKNOWN,DECISAO_HUMANA,Toca .github/workflows/ (REGRA #8) + conflito com main,
+2729,docs(analise-prs): relatório completo — 21 PRs analisadas,adm01-debug,true,main,closed,claude/eloquent-ramanujan-0yt2fo,[],N/A,SUCCESS,NAO_MERGEAR,Branch de entrega desta sessão — fechada pelo PO,
+2720,ci(e2e): não ocultar falha na geração de fixtures,adm01-debug,false,main,open,fix/ci-workflows,[.github/workflows/],CONFLITO,UNKNOWN,DECISAO_HUMANA,Toca .github/workflows/ (REGRA #8) + conflito com main,
+2717,fix(e2e): isola servidor Vite no CI de paridade,adm01-debug,false,main,open,fix/e2e-vite-port-isolation,[.github/workflows/replenishment-quality.yml],CONFLITO,UNKNOWN,DECISAO_HUMANA,Toca .github/workflows/ (REGRA #8) + conflito com main,
+2716,docs(auditoria): atualiza estado de CI e sincronização canônica,adm01-debug,false,main,closed,docs/auditoria-sync-canonico-2026-10-28,[],CONFLITO,UNKNOWN,CONFLITO,Conflito em documentação — fechada externamente,
+2714,fix(db): reconciliar migrations pendentes com o canônico,adm01-debug,false,main,open,fix/reconcile-canonical-pending-migratio,[supabase/migrations/],CONFLITO,UNKNOWN,DECISAO_HUMANA,Toca supabase/migrations/ (REGRA #8) + conflito com main,
+2713,chore(main): release 1.1.0,github-actions[bot],false,main,open,release-please--branches--main--componen,[],LIMPO,BLOCKED_NO_RUNS,AGUARDAR_REVISAO_PO,Release PR por bot; PR bloqueada (0 Gate Final runs); PO deve validar CHANGELOG,
+2711,docs(ci): RELATORIO_CI.md v3 — tabela de prova consolidada,adm01-debug,true,main,closed,claude_pink/fix-relatorio-final-281028-1,[],CONFLITO,UNKNOWN,CONFLITO,Draft de outra sessão (claude_pink/); conflito com main; fechada externamente,
+2707,docs: recibo de deploy de edge function(s) — run 40747468580,adm01-debug,false,main,merged,e66-edge-deploy-receipt-40747468580,[],LIMPO,SUCCESS,MERGEADA,Docs only; merge realizado nesta sessão,37ea10a3
+2701,fix(ci): autentica integração Kit Coverage com usuário E2E,adm01-debug,true,main,open,claude/fix-p12-grant-kit-view-261028-173,[],CONFLITO,UNKNOWN,CONFLITO,Draft de outra sessão; conflito com main,
+2695,docs(db): corrige status do espelho de migration Google,adm01-debug,false,main,merged,docs/reconciliar-espelho-google-20261028,[],LIMPO,SUCCESS,MERGEADA,Docs only; Gate Final ✅,8da42aa9
+2693,docs(auditoria): relatório final auditoria Supabase doufsxqlfjyuvxuezpln,adm01-debug,false,main,closed,claude_pink/peaceful-planck-q4ee1i,[],CONFLITO,UNKNOWN,CONFLITO,Sessão outra (claude_pink/); conflito com main; fechada externamente,
+2688,fix(ci): torna migration 20261027120000 replay-safe — desbloqueia Gate 1.13.3,adm01-debug,true,main,closed,claude_pink/focused-lamport-qyupp8,"[.github/workflows/, supabase/migrations/20261027120000]",CONFLITO,UNKNOWN,DECISAO_HUMANA,Toca .github/workflows/ + supabase/migrations/ (REGRA #8); draft; outra sessão; fechada externamente,
+2674,docs(analise-prs): análise completa das 12 PRs abertas — versão anterior,adm01-debug,true,main,closed,claude_pink/sleepy-cannon-h000nc,[],CONFLITO,UNKNOWN,OBSOLETA,Análise de sessão anterior completamente superada; draft; conflito; fechada,

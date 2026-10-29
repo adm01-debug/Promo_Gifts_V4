@@ -6,6 +6,24 @@ import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import type { PersonalizationArea } from './MultiAreaManager';
 
+// Regra única do logo do mockup (SVG fora: a edge generate-mockup rejeita SVG).
+// Mensagens idênticas às do arraste em MultiAreaManager.
+export const LOGO_ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
+export const LOGO_ALLOWED_EXTENSIONS = ['.png', '.jpg', '.jpeg', '.webp'];
+export const LOGO_MAX_BYTES = 10 * 1024 * 1024;
+export const LOGO_FORMAT_ERROR = 'Formato não suportado. Use JPG, PNG ou WebP.';
+export const LOGO_SIZE_ERROR = 'Arquivo muito grande. Tamanho máximo: 10 MB.';
+
+/** Valida extensão, tipo e tamanho do logo. Retorna a mensagem de erro ou null. */
+export function validateLogoFile(file: File): string | null {
+  const ext = `.${file.name.split('.').pop()?.toLowerCase() ?? ''}`;
+  if (!LOGO_ALLOWED_TYPES.includes(file.type) || !LOGO_ALLOWED_EXTENSIONS.includes(ext)) {
+    return LOGO_FORMAT_ERROR;
+  }
+  if (file.size > LOGO_MAX_BYTES) return LOGO_SIZE_ERROR;
+  return null;
+}
+
 interface AreaCardProps {
   area: PersonalizationArea;
   index: number;
@@ -36,12 +54,11 @@ export const AreaCard = memo(
       e.stopPropagation();
       const file = e.target.files?.[0];
       if (file) {
-        if (file.type.startsWith('image/')) {
-          onLogoUpload(file);
+        const invalid = validateLogoFile(file);
+        if (invalid) {
+          toast.error(invalid);
         } else {
-          toast.error(
-            `${file.name}: use uma imagem (PNG, JPG, SVG) para posicionar o logo. Arquivos vetoriais (.cdr, .ai, .eps) podem ser anexados em "Arquivos de Arte (Vetor)".`,
-          );
+          onLogoUpload(file);
         }
       }
       // Reset input so the same file can be re-selected
@@ -146,7 +163,7 @@ export const AreaCard = memo(
             <div className="relative">
               <input
                 type="file"
-                accept="image/*"
+                accept="image/png,image/jpeg,image/webp"
                 onChange={handleFileChange}
                 onClick={(e) => e.stopPropagation()}
                 className="absolute inset-0 z-10 h-full w-full cursor-pointer opacity-0"
@@ -192,7 +209,7 @@ export const AreaCard = memo(
             <div className="relative flex-shrink-0">
               <input
                 type="file"
-                accept="image/*"
+                accept="image/png,image/jpeg,image/webp"
                 onChange={handleFileChange}
                 onClick={(e) => e.stopPropagation()}
                 className="absolute inset-0 z-10 h-full w-full cursor-pointer opacity-0"

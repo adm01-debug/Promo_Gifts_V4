@@ -26,7 +26,10 @@ interface TechniqueTooltipProps {
   className?: string;
 }
 
-// Visual examples and descriptions for each technique
+// Referência descritiva por técnica.
+// NÃO contém limites numéricos: qualquer número de limite (cores, dimensões,
+// setup) é lido do cadastro da técnica, recebido via props. Os campos
+// qualitativos abaixo são apenas estimativas e aparecem rotulados como tal.
 const TECHNIQUE_INFO: Record<
   string,
   {
@@ -40,23 +43,23 @@ const TECHNIQUE_INFO: Record<
 > = {
   bordado: {
     description: 'Técnica premium com fios de alta qualidade',
-    durability: 'Altíssima - 500+ lavagens',
-    colors: 'Até 15 cores',
+    durability: 'Muito alta',
+    colors: 'Muitas cores',
     bestFor: 'Camisas, bonés, jaquetas',
     visualStyle: 'Textura 3D com linhas visíveis',
     gradient: 'from-warning to-brand-primary',
   },
   silk: {
     description: 'Serigrafia tradicional para grandes quantidades',
-    durability: 'Alta - 200+ lavagens',
-    colors: 'Até 6 cores (por tela)',
+    durability: 'Alta',
+    colors: 'Cores sólidas (uma tela por cor)',
     bestFor: 'Camisetas, sacolas, uniformes',
     visualStyle: 'Cores sólidas e vibrantes',
     gradient: 'from-blue-500 to-cyan-600',
   },
   dtf: {
     description: 'Transfer digital com detalhes fotográficos',
-    durability: 'Alta - 100+ lavagens',
+    durability: 'Alta',
     colors: 'Ilimitadas (CMYK)',
     bestFor: 'Fotos, gradientes, designs complexos',
     visualStyle: 'Acabamento brilhante',
@@ -72,7 +75,7 @@ const TECHNIQUE_INFO: Record<
   },
   sublimacao: {
     description: 'A tinta penetra no material poliéster',
-    durability: 'Permanente - não descasca',
+    durability: 'Permanente (não descasca)',
     colors: 'Ilimitadas (CMYK)',
     bestFor: 'Poliéster branco, canecas, mousepads',
     visualStyle: 'Integrado ao tecido',
@@ -80,7 +83,7 @@ const TECHNIQUE_INFO: Record<
   },
   hot_stamping: {
     description: 'Aplicação de foil metálico com calor',
-    durability: 'Alta - efeito luxuoso',
+    durability: 'Alta',
     colors: 'Metálicos (ouro, prata)',
     bestFor: 'Embalagens, agendas, couro',
     visualStyle: 'Brilho metálico premium',
@@ -89,14 +92,14 @@ const TECHNIQUE_INFO: Record<
   tampografia: {
     description: 'Impressão em superfícies irregulares',
     durability: 'Alta',
-    colors: 'Até 4 cores',
+    colors: 'Poucas cores',
     bestFor: 'Canetas, brindes pequenos',
     visualStyle: 'Preciso em curvas',
     gradient: 'from-indigo-500 to-violet-600',
   },
   uv: {
     description: 'Impressão UV com secagem instantânea',
-    durability: 'Alta - resistente a UV',
+    durability: 'Alta (resistente a UV)',
     colors: 'Ilimitadas + branco',
     bestFor: 'Acrílico, vidro, metal',
     visualStyle: 'Textura levemente relevo',
@@ -127,6 +130,23 @@ function getTechniqueInfo(technique: Technique) {
 export function TechniqueTooltip({ technique, children, className }: TechniqueTooltipProps) {
   const info = getTechniqueInfo(technique);
 
+  // Dados do cadastro (props vindas do RPC). Só renderizamos um número de
+  // limite quando o cadastro realmente o traz — nada de valor fixo no código.
+  const maxColors = typeof technique.maxColors === 'number' ? technique.maxColors : null;
+  const hasDimensions =
+    typeof technique.maxWidth === 'number' && typeof technique.maxHeight === 'number';
+  const setupCost = typeof technique.setupCost === 'number' ? technique.setupCost : null;
+  const isCurved = technique.isCurved === true;
+
+  const hasCadastroData =
+    Boolean(technique.locationName) ||
+    hasDimensions ||
+    maxColors !== null ||
+    setupCost !== null ||
+    Boolean(technique.groupCode) ||
+    Boolean(technique.variationLabel) ||
+    isCurved;
+
   return (
     <HoverCard openDelay={700} closeDelay={100}>
       <HoverCardTrigger asChild>
@@ -149,38 +169,61 @@ export function TechniqueTooltip({ technique, children, className }: TechniqueTo
 
         {/* Details */}
         <div className="space-y-2 p-3">
+          {/* Durabilidade — não há campo no cadastro: sempre estimativa rotulada */}
           <div className="text-tooltip flex items-start gap-1.5">
             <Clock className="mt-0.5 h-4 w-4 text-muted-foreground" aria-hidden="true" />
             <div>
               <span className="text-muted-foreground">Durabilidade:</span>
               <span className="ml-1 font-medium">{info.durability}</span>
+              <span
+                data-testid="tooltip-durabilidade-estimativa"
+                className="text-tooltip ml-1 text-muted-foreground"
+              >
+                (estimativa)
+              </span>
             </div>
           </div>
 
+          {/* Cores — limite do cadastro quando existir; senão, estimativa rotulada */}
           <div className="text-tooltip flex items-start gap-1.5">
             <Palette className="mt-0.5 h-4 w-4 text-muted-foreground" aria-hidden="true" />
             <div>
               <span className="text-muted-foreground">Cores:</span>
-              <span className="ml-1 font-medium">{info.colors}</span>
+              {maxColors !== null ? (
+                <>
+                  <span className="ml-1 font-medium tabular-nums" data-testid="tooltip-cores-valor">
+                    Até {maxColors}
+                  </span>
+                  {technique.chargesPerColor && (
+                    <span className="text-tooltip ml-1 text-muted-foreground">(cobra por cor)</span>
+                  )}
+                </>
+              ) : (
+                <span className="ml-1 font-medium">
+                  {info.colors}
+                  <span
+                    data-testid="tooltip-cores-estimativa"
+                    className="text-tooltip ml-1 text-muted-foreground"
+                  >
+                    (estimativa)
+                  </span>
+                </span>
+              )}
             </div>
           </div>
 
+          {/* Ideal para — referência genérica da técnica, não valida as áreas do produto */}
           <div className="text-tooltip flex items-start gap-1.5">
             <Info className="mt-0.5 h-4 w-4 text-muted-foreground" aria-hidden="true" />
             <div>
               <span className="text-muted-foreground">Ideal para:</span>
               <span className="ml-1 font-medium">{info.bestFor}</span>
+              <span className="text-tooltip ml-1 text-muted-foreground">(estimativa)</span>
             </div>
           </div>
 
           {/* ─── Dados reais do produto/área (vindos do RPC) ─── */}
-          {(technique.locationName ||
-            technique.maxWidth ||
-            technique.maxColors !== null ||
-            technique.setupCost !== null ||
-            technique.groupCode ||
-            technique.variationLabel ||
-            technique.isCurved) && (
+          {hasCadastroData && (
             <div className="mt-1.5 space-y-1 border-t border-white/5 pt-2">
               {technique.locationName && (
                 <div className="text-tooltip flex items-start gap-1.5">
@@ -203,7 +246,7 @@ export function TechniqueTooltip({ technique, children, className }: TechniqueTo
                   </div>
                 </div>
               )}
-              {technique.maxWidth && technique.maxHeight && (
+              {hasDimensions && (
                 <div className="text-tooltip flex items-start gap-1.5">
                   <Ruler className="mt-0.5 h-3.5 w-3.5 text-muted-foreground" aria-hidden="true" />
                   <div>
@@ -214,7 +257,7 @@ export function TechniqueTooltip({ technique, children, className }: TechniqueTo
                   </div>
                 </div>
               )}
-              {technique.maxColors !== null && (
+              {maxColors !== null && (
                 <div className="text-tooltip flex items-start gap-1.5">
                   <Palette
                     className="mt-0.5 h-3.5 w-3.5 text-muted-foreground"
@@ -222,27 +265,20 @@ export function TechniqueTooltip({ technique, children, className }: TechniqueTo
                   />
                   <div>
                     <span className="text-muted-foreground">Máx cores:</span>
-                    <span className="ml-1 font-medium">{technique.maxColors}</span>
-                    {technique.chargesPerColor && (
-                      <span className="text-tooltip ml-1 text-muted-foreground">
-                        (cobra por cor)
-                      </span>
-                    )}
+                    <span className="ml-1 font-medium tabular-nums">{maxColors}</span>
                   </div>
                 </div>
               )}
-              {typeof technique.setupCost === 'number' && technique.setupCost > 0 && (
+              {setupCost !== null && setupCost > 0 && (
                 <div className="text-tooltip flex items-start gap-1.5">
                   <Wrench className="mt-0.5 h-3.5 w-3.5 text-muted-foreground" aria-hidden="true" />
                   <div>
                     <span className="text-muted-foreground">Setup:</span>
-                    <span className="ml-1 font-medium tabular-nums">
-                      R$ {technique.setupCost.toFixed(2)}
-                    </span>
+                    <span className="ml-1 font-medium tabular-nums">R$ {setupCost.toFixed(2)}</span>
                   </div>
                 </div>
               )}
-              {technique.isCurved && (
+              {isCurved && (
                 <Badge variant="outline" className="text-tooltip h-auto px-1.5 py-0.5">
                   Suporta curvo
                 </Badge>
