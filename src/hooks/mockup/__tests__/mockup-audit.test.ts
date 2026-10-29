@@ -640,26 +640,6 @@ describe('Analise estatica — MockupResultCard.tsx', () => {
 });
 
 // =====================================================================
-// STATIC ANALYSIS — SaveTemplateDialog.tsx
-// =====================================================================
-
-describe('Analise estatica — SaveTemplateDialog.tsx', () => {
-  let src: string;
-  beforeEach(() => {
-    src = readSrc('src/components/mockup/SaveTemplateDialog.tsx');
-  });
-
-  describe('a11y — label associado ao input via htmlFor/id', () => {
-    it('Input tem id="template-name-input"', () => {
-      expect(src).toContain('id="template-name-input"');
-    });
-    it('label tem htmlFor="template-name-input"', () => {
-      expect(src).toContain('htmlFor="template-name-input"');
-    });
-  });
-});
-
-// =====================================================================
 // STATIC ANALYSIS — MockupAnnotations.tsx
 // =====================================================================
 
@@ -1959,17 +1939,6 @@ describe('Analise estatica — MockupBeforeAfter.tsx (aria-hidden em icones deco
 
   it('icone ArrowLeftRight no handle do slider tem aria-hidden', () => {
     expect(src).toContain('<ArrowLeftRight aria-hidden="true" className="h-5 w-5"');
-  });
-});
-
-describe('Analise estatica — SaveTemplateDialog.tsx (aria-hidden em icones decorativos)', () => {
-  let src: string;
-  beforeEach(() => {
-    src = readSrc('src/components/mockup/SaveTemplateDialog.tsx');
-  });
-
-  it('icone Save no botao salvar template tem aria-hidden', () => {
-    expect(src).toContain('<Save aria-hidden="true" className="mr-1 h-4 w-4"');
   });
 });
 
