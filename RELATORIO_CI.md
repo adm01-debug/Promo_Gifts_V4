@@ -182,3 +182,12 @@ O fallback do GHCR para a imagem oficial Docker Hub foi exercitado com sucesso: 
 | Gate final CI | N/A | Passou | `success` |
 
 Não houve alteração em arquivos da aplicação: o PR #2734 toca apenas `.github/workflows/contract-tests.yml`. Nenhum teste foi removido/pulado/afrouxado. Nenhuma migration ou escrita no Supabase foi executada.
+
+## 10. Ratchet Weekly — reprodução e correção candidata — 2026-10-29
+
+- Último run consultado na `main`: [40296887709](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40296887709), falha exit 141 no passo `Detectar se baselines melhoraram`.
+- Reprodução sob `bash -eo pipefail`: `echo "$DIFF_OUT" | head -40` retorna 141; leitura com `sed -n '1,40p' <<< "$DIFF_OUT"` retorna 0. `actionlint .github/workflows/ratchet-weekly.yml` passou.
+- Correção candidata em [PR #2745](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2745). Após commit e atualização da branch para o SHA atual da `main` (`c3b412869`), `npm run build:verify` passou (typecheck, ESLint 0 erros/0 avisos, guards e build) e `npm test` passou com 1.223 arquivos / 25.720 testes; 130 arquivos / 1.135 testes ignorados; 24 TODO. O baseline limpo `c3b412869` também passou com os mesmos totais.
+- Estado remoto: a implantação Vercel Preview do PR retornou `ERROR`; `vercel inspect --json` não expôs código ou mensagem, e `--logs` não trouxe logs de build. Os checks de Actions ainda estavam na fila no snapshot consultado. **Não mesclado**; a execução verde pós-merge na `main` permanece necessária para fechar a falha.
+- Auditoria adicional read-only identificou drift de tipo `public.workspace_notifications.idempotency_key text NULL`, corrigido apenas em `types.ts` na [PR #2747](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2747); sem alteração de schema/dados. A PR também aguarda checks e está bloqueada pela implantação Vercel sem diagnóstico.
+- No Uptime Monitor [40958856642](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40958856642), `health-check` devolveu 503 porque a probe `profiles` excedeu 1,5 s; PostgREST registrou concentração de 504 na mesma janela. A causa-raiz da degradação não foi provada e nenhuma alteração ao banco/endpoint foi feita.
