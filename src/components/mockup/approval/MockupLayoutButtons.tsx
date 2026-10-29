@@ -74,8 +74,9 @@ interface MockupLayoutButtonsProps {
   ) => void;
   /** Callback when layout image is captured from the approval template */
   onLayoutCaptured?: (layoutDataUrl: string) => void;
-  /** Trigger AI mockup generation (async) */
-  onGenerateMockup?: () => Promise<void>;
+  /** Trigger AI mockup generation (async). Pode devolver um resultado tipado
+   * (ex.: recusa por dimensões ausentes) — daí `unknown`, não `void`. */
+  onGenerateMockup?: () => Promise<unknown>;
   /** Whether AI mockup is currently being generated */
   isGeneratingMockup?: boolean;
 }
