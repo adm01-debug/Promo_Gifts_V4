@@ -359,6 +359,9 @@ export default function MockupGenerator() {
                     mg.setGeneratedMockup(null);
                   }}
                   productLocations={mg.productLocations}
+                  areaErrors={mg.areaErrors}
+                  retryingAreaIds={mg.retryingAreaIds}
+                  onRetryArea={mg.retryArea}
                   logoColorAnalysis={mg.logoColorAnalysis}
                   artAttachments={mg.artAttachments}
                   onArtAttachmentsChange={mg.setArtAttachments}
@@ -534,7 +537,7 @@ export default function MockupGenerator() {
                       <div className="grid grid-cols-2 gap-2">
                         {mg.generatedBatchMockups.map((batch, idx) => (
                           <div
-                            key={idx}
+                            key={batch.areaId ?? idx}
                             className="overflow-hidden rounded-lg border border-border/30 bg-card"
                           >
                             <img
