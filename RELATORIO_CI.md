@@ -1,8 +1,25 @@
 # RELATÓRIO CI — Promo Gifts V4
-**Gerado em:** 2026-10-28  
+**Gerado em:** 2026-10-29
 **Branch de correção:** `fix/ci-workflows` (esta sessão)  
 **SHA main no momento do diagnóstico:** `8c81483` (pós-fix Gate E40)  
 **SHA main final (pós-merge PR #2708):** `d784edb6` (atualização PENDENCIAS.md — sem alteração de código)
+
+## 8. Revalidação completa por workflow — 2026-10-29
+
+Inventário atualizado pela API do GitHub Actions: **119 workflows ativos**, cada um consultado individualmente com `branch=main` e `per_page=1` para obter sua última execução na `main`.
+
+| Estado da última execução na main | Quantidade | Interpretação |
+|---|---:|---|
+| `success` | 58 | Última execução verde |
+| `failure` | 31 | Todos registrados com execução, step/causa conhecida quando disponível e próximo passo em [`PENDENCIAS.md`](./PENDENCIAS.md), seção “Inventário completo da main — 2026-10-29” |
+| `cancelled` | 4 | Não classificados como falha segundo o critério solicitado |
+| `skipped` | 2 | Não classificados como falha |
+| `waiting` / `pending` | 3 | Uma aprovação de produção e duas execuções pendentes; não classificadas como falha concluída |
+| Sem execução na `main` | 21 | Não há status de execução para classificar |
+
+Exemplos dos gates e workflows que seguem verdes na última execução consultada: Deploy Gates [40762904944](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762904944), Branch Protection Sentinel [40762904734](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762904734), CodeQL [40762904933](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762904933), Security Scan [40762904705](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762904705), Quote Builder Delivery Quality [40762904715](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762904715), Gitleaks [40831579045](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40831579045), E2E Personalization [40762904578](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762904578), Uptime Monitor [40840104154](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40840104154), Supabase Linter [40832540788](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40832540788), CRM Callback [40830207224](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40830207224), Quote Number Hardening [40829600472](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40829600472) e Daily flows [40829415239](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40829415239).
+
+**Prova de regressão local do PR #2721:** `npm run build:verify` passou; `npm test` passou com 1.210 arquivos e 25.656 testes (1.134 skipped, 24 TODO). Isso comprova a execução local desse branch, mas não equivale a comparar cada um dos 31 workflows vermelhos com uma baseline equivalente; essas falhas remotas permanecem abertas ou aguardam a evidência/ação indicada em `PENDENCIAS.md`. Não houve alteração em `main`, deploy de aplicação, schema, migration ou dados do Supabase nesta revalidação.
 
 ---
 
