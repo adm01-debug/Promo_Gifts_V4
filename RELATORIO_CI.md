@@ -1,11 +1,11 @@
 # RELATÓRIO CI — Promo Gifts V4
 
-## Atualização da auditoria — 2026-10-29 01:23 UTC
+## Atualização da auditoria — 2026-10-29 01:29 UTC
 
 Rechecagem via MCP `GITHUB - MCP - FOREVER` de `main`, da PR #2717 e do Supabase canônico.
 
 - Última execução por workflow na `main` (34 workflows): **24 success, 5 failure, 3 cancelled, 2 skipped**.
-- PR #2717: 27 checks — **19 success, 4 failure, 3 em andamento, 1 skipped**. Continua aberta e `unstable`.
+- PR #2717: 27 checks — **19 success, 4 failure, 1 em andamento, 2 cancelled, 1 skipped**. Continua aberta e `unstable`.
 - `Uptime Monitor` voltou a passar no run [40798430891](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40798430891); isso não identifica a causa dos timeouts anteriores de P14.
 
 | Workflow / check | Execução | Estado | Diagnóstico / bloqueio |
@@ -20,7 +20,7 @@ Rechecagem via MCP `GITHUB - MCP - FOREVER` de `main`, da PR #2717 e do Supabase
 | CI — Replenishment Module Quality Gate (PR #2717) | [40798283431](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40798283431) | failure | Paridade de cards: 3 falhas — alinhamento do rodapé preço/estoque, screenshot diff e altura fixa em tablet 768px; 12 passaram, 1 ignorado. |
 | E2E — Magazine Header Layout (PR #2717) | [40798283590](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40798283590) | failure | 7 falhas de layout/alinhamento responsivo do header/sidebar (sm/lg/xl e título longo); 4 passaram, 4 ignorados e 2 flaky. Consultar trace/artifacts antes de corrigir. |
 
-Três checks da PR #2717 ainda estavam em andamento: `E2E (Playwright)`, visual nightly e Swatch QuickView. Não mesclar até conclusão e resolução dos bloqueios.
+Na consulta de 01:29 UTC, `E2E (Playwright)` e visual nightly estavam cancelados, Swatch QuickView seguia em andamento. Não mesclar até conclusão válida e resolução dos bloqueios.
 
 ### Sincronização do código e do banco
 
@@ -31,6 +31,8 @@ Três checks da PR #2717 ainda estavam em andamento: `E2E (Playwright)`, visual 
 - Não houve escrita no banco. A métrica bruta de IDs não é intercambiável com o gate E40 (`local_only=1109; remote_only=648`); esclarecer filtros e classificar cada ID antes de qualquer reconciliação. Sem `db push`, DDL direto ou `migration repair` em massa; aplicar apenas pelo fluxo E15, com migration versionada e aprovação.
 
 Esta atualização supersede os estados anteriores somente para a consulta registrada; o restante do documento é histórico.
+
+Validação pós-commit `a96c0b52`: lint e typecheck passaram; build passou com os gates de ciclo e harness; Vitest concluiu com 1.210 arquivos e 25.656 testes passando, 131 arquivos e 1.134 testes ignorados, 24 TODO, mais 1 erro assíncrono não tratado (`ReferenceError: window is not defined`) em timer de `LocationPanel.tsx:367`, proveniente de `LocationPanel.test.tsx`. O comando `npm test` terminou com exit 1 por esse erro já conhecido; contagens de testes não regrediram em relação ao baseline registrado.
 
 ## Adendo de auditoria — 2026-10-28 (checkout `c344508711797a730893644449b16a05f12f4fce`)
 
