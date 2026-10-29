@@ -182,7 +182,10 @@ test.describe('editor de logo do mockup — posicionamento por teclado', () => {
 
     // 9. Tecla que não é seta não move o logo, e o canvas segue com o foco.
     await page.keyboard.press('a');
-    await page.waitForTimeout(200);
+    // Dois quadros de animação: tempo para um movimento indevido aparecer.
+    await page.evaluate(
+      () => new Promise<void>((r) => requestAnimationFrame(() => requestAnimationFrame(() => r()))),
+    );
     expect(await lerPosicaoVisivel(page)).toEqual({ x: 50, y: 50 });
     await expect(canvas).toBeFocused();
   });
