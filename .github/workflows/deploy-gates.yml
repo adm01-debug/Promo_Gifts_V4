@@ -330,7 +330,10 @@ jobs:
           SUPABASE_PROJECT_REF: doufsxqlfjyuvxuezpln
       - name: Gate 1.13.2 — Anon-insert rate guard manifest (E049)
         if: needs.changes.outputs.docs_only != 'true'
-        run: node scripts/check-anon-insert-rate-guard.mjs --gate
+        run: node scripts/check-anon-insert-rate-guard.mjs --gate --require-live
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_PROJECT_REF: doufsxqlfjyuvxuezpln
       - name: Gate 1.13.3 — Migration receipts (E055)
         if: needs.changes.outputs.docs_only != 'true'
         run: node scripts/check-migration-receipts.mjs --gate
