@@ -11,9 +11,9 @@
 
 | Veredicto | Qtd | PRs |
 |---|---|---|
-| DECISAO_HUMANA | 5 | #2731, #2730, #2720, #2714, #2688 |
-| AGUARDAR_CI | 2 | #2719, #2713 |
-| CONFLITO | 5 | #2717, #2716, #2707, #2695, #2693 |
+| DECISAO_HUMANA | 6 | #2731, #2730, #2720, #2717, #2714, #2688 |
+| AGUARDAR_CI | 1 | #2713 |
+| CONFLITO | 5 | #2719, #2716, #2707, #2695, #2693 |
 | AGUARDA_CI_DRAFT | 3 | #2711, #2701, #2674 |
 | NAO_MERGEAR | 1 | #2729 |
 | **MERGEADO** | **1** | **#2721** |
@@ -63,6 +63,13 @@
 - **Negócio:** Reconciliação de schema. Risco alto sem revisão humana.
 - **Bloqueio:** Toca migrations de produção.
 
+#### PR #2717 — fix(e2e): isola servidor Vite no CI de paridade
+- **Branch:** `fix/e2e-vite-port-isolation`
+- **Arquivos críticos:** `.github/workflows/replenishment-quality.yml` (+2 env vars: `E2E_BASE_URL`, `E2E_FORCE_START_SERVER`)
+- **Merge local:** LIMPO contra main `c344508` (branch foi rebased). GitHub API reportava `dirty` mas merge local confirmou sem conflitos.
+- **Negócio:** Isola porta Vite no CI para evitar flakiness E2E. PR válida.
+- **Bloqueio:** Toca `.github/workflows/` → REGRA #8 obrigatória.
+
 #### PR #2688 — fix(ci): torna migration 20261027120000 replay-safe
 - **Branch:** `claude_pink/focused-lamport-qyupp8`
 - **Arquivos críticos:** `.github/workflows/db-schema-drift-check.yml`
@@ -101,7 +108,7 @@
 
 | PR | Branch | Causa |
 |---|---|---|
-| #2717 | `fix/e2e-vite-port-isolation` | Conflito com main + toca `.github/workflows/replenishment-quality.yml` (REGRA #8) |
+| #2719 | `chore/graphify-audit-improvements-20261029` | `mergeable_state: dirty` após merge de #2721; HEAD `4fd4e8ff` |
 | #2716 | `docs/auditoria-sync-canonico-2026-10-28` | Conflito + branch de outra sessão |
 | #2707 | `e66-edge-deploy-receipt-40747468580` | Conflito + branch de bot |
 | #2695 | `docs/reconciliar-espelho-google-20261028` | Conflito com main |
@@ -145,9 +152,9 @@ Cada PR dos 16 restantes tem impedimento legítimo e documentado:
 
 | Veredicto | Qtd | Motivo |
 |---|---|---|
-| DECISAO_HUMANA | 5 | Tocam `.github/workflows/`, `.github/actions/` ou `supabase/migrations/` → REGRA #8 |
-| AGUARDAR_CI | 2 | #2719: Gate Final ❌ failure em `4fd4e8ff`; #2713: Gate Final não rodou em `d6826029` (blocked) |
-| CONFLITO | 5 | `mergeable_state: dirty` — conflito real com main, não resolvível sem PR do autor |
+| DECISAO_HUMANA | 6 | Tocam `.github/workflows/`, `.github/actions/` ou `supabase/migrations/` → REGRA #8; #2717 merge local limpo mas toca workflow |
+| AGUARDAR_CI | 1 | #2713: Gate Final não rodou em `d6826029` (blocked); Supabase Preview failure |
+| CONFLITO | 5 | `mergeable_state: dirty` — conflito real com main; #2719 ficou dirty após merge de #2721 |
 | AGUARDA_CI_DRAFT | 3 | PRs em draft de outras sessões — não autorizadas para merge autônomo (REGRA #10) |
 | NAO_MERGEAR | 1 | #2729 — branch de entrega desta sessão (esta PR) |
 
