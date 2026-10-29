@@ -140,7 +140,7 @@ describe('getMockupVariantPhotos', () => {
   });
 
   it('sem foto nenhuma devolve lista vazia (nunca inventa placeholder)', () => {
-    expect(getMockupVariantPhotos(null, makeProduct({ images: null, image_url: null }))).toEqual(
+    expect(getMockupVariantPhotos(null, makeProduct({ images: [], image_url: undefined }))).toEqual(
       [],
     );
   });
@@ -190,7 +190,7 @@ describe('MockupProductSelector — galeria de fotos reais (Codex M04)', () => {
   });
 
   it('produto sem foto utilizável não deixa avançar', async () => {
-    catalog.product = makeProduct({ images: null, image_url: null });
+    catalog.product = makeProduct({ images: [], image_url: undefined });
     catalog.products = [catalog.product];
     catalog.variants = [makeVariant({ images: null, selected_thumbnail: null })];
 

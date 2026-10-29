@@ -83,7 +83,12 @@ describe('ArtFileUpload — comportamento', () => {
 
   it('bloqueia segundo envio enquanto um upload está em andamento', async () => {
     let release: (v: { error: null }) => void = () => {};
-    uploadMock.mockImplementationOnce(() => new Promise((res) => (release = res)));
+    uploadMock.mockImplementationOnce(
+      () =>
+        new Promise((res) => {
+          release = res;
+        }),
+    );
     const { zone } = renderUpload();
     const good = () => ({
       dataTransfer: { files: [fileOf('a.ai', 'application/illustrator', 1000)] },
@@ -104,7 +109,7 @@ describe('ArtFileUpload — comportamento', () => {
   it('dropzone recebe foco por Tab e Enter abre o seletor', async () => {
     const user = userEvent.setup();
     const { zone } = renderUpload();
-    const input = zone.querySelector('input[type="file"]') as HTMLInputElement;
+    const input = zone.querySelector<HTMLInputElement>('input[type="file"]')!;
     const clickSpy = vi.spyOn(input, 'click');
 
     await user.tab();

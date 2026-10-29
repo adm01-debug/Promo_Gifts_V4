@@ -26,8 +26,8 @@ import { logger } from '@/lib/logger';
 import type { TechniqueColorConfig } from '../../techniqueColorUtils';
 
 vi.mock('@/utils/laser-logo-processor', () => ({
-  processLogoForLaser: vi.fn(async (source: string) => `laser:${source}`),
-  processLogoForSerigrafia: vi.fn(async (source: string) => `serigrafia:${source}`),
+  processLogoForLaser: vi.fn((source: string) => Promise.resolve(`laser:${source}`)),
+  processLogoForSerigrafia: vi.fn((source: string) => Promise.resolve(`serigrafia:${source}`)),
 }));
 
 vi.mock('@/lib/logger', () => ({
@@ -57,6 +57,11 @@ const SERIGRAFIA: TechniqueColorConfig = {
 let producedCanvases: { width: number; height: number }[];
 /** URL de blob -> logo de origem, para o dublê de Image saber as dimensões. */
 let sourceByBlobUrl: Map<string, string>;
+/** createObjectURL/revokeObjectURL originais, restaurados após cada teste. */
+let originalObjectUrl: {
+  create: typeof URL.createObjectURL;
+  revoke: typeof URL.revokeObjectURL;
+};
 
 class FakeImage {
   onload: (() => void) | null = null;
@@ -95,34 +100,33 @@ beforeEach(() => {
   const blobBySource = new Map<string, Blob>();
   vi.stubGlobal(
     'fetch',
-    vi.fn(async (input: string) => {
+    vi.fn((input: string) => {
       const source = String(input);
       let blob = blobBySource.get(source);
       if (!blob) {
         blob = new Blob([source], { type: 'image/png' });
         blobBySource.set(source, blob);
       }
-      return { blob: async () => blob };
+      return Promise.resolve({ blob: () => Promise.resolve(blob) });
     }),
   );
 
-  vi.stubGlobal(
-    'URL',
-    Object.assign(class extends URL {}, {
-      createObjectURL: vi.fn((blob: Blob) => {
-        const source = [...blobBySource.entries()].find(([, b]) => b === blob)?.[0] ?? '';
-        const url = `blob:mock-${sourceByBlobUrl.size}`;
-        sourceByBlobUrl.set(url, source);
-        return url;
-      }),
-      revokeObjectURL: vi.fn(),
-    }),
-  );
+  // URL real (o código usa `new URL`) com createObjectURL/revokeObjectURL dublês.
+  originalObjectUrl = { create: URL.createObjectURL, revoke: URL.revokeObjectURL };
+  URL.createObjectURL = vi.fn((blob: Blob) => {
+    const source = [...blobBySource.entries()].find(([, b]) => b === blob)?.[0] ?? '';
+    const url = `blob:mock-${sourceByBlobUrl.size}`;
+    sourceByBlobUrl.set(url, source);
+    return url;
+  });
+  URL.revokeObjectURL = vi.fn();
 
   vi.stubGlobal('Image', FakeImage);
 });
 
 afterEach(() => {
+  URL.createObjectURL = originalObjectUrl.create;
+  URL.revokeObjectURL = originalObjectUrl.revoke;
   vi.unstubAllGlobals();
 });
 

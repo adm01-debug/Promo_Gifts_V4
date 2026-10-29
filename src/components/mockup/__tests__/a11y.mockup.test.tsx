@@ -81,7 +81,7 @@ describe('ProductSearchCombobox — a11y', () => {
   it('não tem violações axe no estado fechado', async () => {
     const { container } = renderCombobox();
     const results = await axe(container);
-    expect(results).toHaveNoViolations();
+    expect(results.violations).toEqual([]);
   });
 
   it('não tem violações axe no estado aberto (lista exposta)', async () => {
@@ -91,13 +91,13 @@ describe('ProductSearchCombobox — a11y', () => {
     // O Popover renderiza em portal no document.body — fora do `container` do render.
     expect(document.body.querySelector('[role="listbox"]')).not.toBeNull();
     const results = await axe(document.body);
-    expect(results).toHaveNoViolations();
+    expect(results.violations).toEqual([]);
   });
 
   it('não tem violações axe com um produto já selecionado', async () => {
     const { container } = renderCombobox({ selectedProduct: products[0] });
     const results = await axe(container);
-    expect(results).toHaveNoViolations();
+    expect(results.violations).toEqual([]);
   });
 
   it('o gatilho expõe nome acessível e estado expandido', () => {
@@ -179,7 +179,7 @@ describe('MockupColorSelector — a11y', () => {
   it('não tem violações axe', async () => {
     const { container } = renderSelector();
     const results = await axe(container);
-    expect(results).toHaveNoViolations();
+    expect(results.violations).toEqual([]);
   });
 
   it('cada variante é um botão com nome acessível (cor + estoque)', () => {
@@ -234,7 +234,7 @@ describe('LogoSizeControls — a11y', () => {
   it('não tem violações axe', async () => {
     const { container } = renderControls();
     const results = await axe(container);
-    expect(results).toHaveNoViolations();
+    expect(results.violations).toEqual([]);
   });
 
   it('os três sliders têm nome acessível distinto', () => {

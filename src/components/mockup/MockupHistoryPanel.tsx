@@ -506,8 +506,7 @@ const MockupGridCard = memo(
             aria-label={`Selecionar ${mockup.product_name} para comparação`}
             tabIndex={0}
             className={cn(
-              // A-5: visível sem hover (toque/teclado não têm :hover); alvo de 44px
-              // via ::after — 24px visuais (h-6 w-6) + 10px por lado.
+              // A-5: visível sem hover; alvo de 44px via ::after (24px visuais + 10px por lado).
               'relative flex h-6 w-6 cursor-pointer items-center justify-center rounded-md border-2 bg-background/80 backdrop-blur-sm transition-all after:absolute after:-inset-2.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
               isCompareSelected
                 ? 'border-primary bg-primary text-primary-foreground'
@@ -633,7 +632,7 @@ const MockupGridCard = memo(
             mockupUrl={mockup.mockup_url}
             productName={mockup.product_name}
             techniqueName={mockup.technique_name}
-            className="h-11 w-11 min-h-11 min-w-11 p-0 shadow-md [&>svg]:h-4 [&>svg]:w-4"
+            className="h-11 min-h-11 w-11 min-w-11 p-0 shadow-md [&>svg]:h-4 [&>svg]:w-4"
           />
           <Tooltip>
             <TooltipTrigger asChild>
@@ -793,7 +792,7 @@ const MockupListRow = memo(
             mockupUrl={mockup.mockup_url}
             productName={mockup.product_name}
             techniqueName={mockup.technique_name}
-            className="h-11 w-11 min-h-11 min-w-11 p-0 [&>svg]:h-4 [&>svg]:w-4"
+            className="h-11 min-h-11 w-11 min-w-11 p-0 [&>svg]:h-4 [&>svg]:w-4"
           />
           <Tooltip>
             <TooltipTrigger asChild>

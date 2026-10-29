@@ -77,7 +77,7 @@ describe('MockupResultCard — confete sem cores fora do Blue Premium', () => {
 
     expect(colors).toEqual(EXPECTED_COLORS);
     expect(colors?.every((color) => color.startsWith('hsl('))).toBe(true);
-    expect(colors?.some((color) => /#/.test(color))).toBe(false);
+    expect(colors?.some((color) => color.includes('#'))).toBe(false);
   });
 
   it('não usa as cores legadas (roxo/laranja) do confete antigo', () => {
