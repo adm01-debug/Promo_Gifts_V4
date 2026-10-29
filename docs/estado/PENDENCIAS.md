@@ -26,3 +26,13 @@ Esta seção registra evidência nova consultada após o snapshot de 2026-10-25;
 | PEND-S03 | Gitleaks 8.30.1 varreu o histórico completo (17.505 commits, 471 MB) com a configuração versionada e encontrou 0 achados. | Não reproduz o alerta histórico de segredo versionado sob as regras atuais; isso não comprova rotação de credenciais anteriormente expostas em serviços externos. | Confirmar rotação no provedor/painéis e revisar a allowlist do scanner antes de encerrar o incidente. |
 
 Validações locais associadas ao PR #2721: `npm test` — 1.210 arquivos passaram; 25.656 testes passaram, 1.134 skipped, 24 TODO; `npm run build:verify` passou (typecheck, lint baseline e build). O branch do PR #2721 está publicado; a `main` e o banco não foram alterados nesta revalidação.
+
+## Revalidação complementar — 2026-10-29 06:41 BRT
+
+- Checkout: branch `fix/location-panel-timeout-cleanup`, HEAD `a172c252f0b8`, igual ao HEAD remoto da branch do PR #2721; `origin/main` e GitHub `main` em `c34450871179`. O checkout tem somente três arquivos de Graphify modificados sem commit (`.graphifyignore`, `graphify-out/GRAPH_REPORT.md`, `graphify-out/manifest.json`); não foram incluídos no PR.
+- Validação local: lint e typecheck passaram; build passou; suíte completa Vitest passou (1.210 arquivos, 25.658 testes; 131 arquivos e 1.134 testes ignorados, 24 TODO); teste focado de `LocationPanel` passou (13/13). O gate de drift estrutural passou contra `origin/main`; a validação de configuração confirmou o projeto canônico.
+- Comparação read-only de `public.Tables`, `public.Views` e `public.Enums` extraídos do `types.ts` com `pg_catalog`: respectivamente 398/398, 197/197 e 15/15, sem objetos faltantes ou extras.
+- O run de E2E focado disparado com baselines, [40850003738](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40850003738), continua vermelho: 4 testes não encontram o painel de personalização (`E108`) no cenário provisionado; 1 passou. Isso não autoriza atualizar snapshots. O PR #2721 também mantém checks E2E/audit vermelhos e status Vercel failure; não mesclar.
+- A diferença do ledger permanece: 2.552 versões no canônico versus 3.004 únicas no repo, 463 somente no repo e 11 somente no canônico. Nenhuma migration/DDL/repair foi aplicada nesta auditoria. A reconciliação continua bloqueada no PR #2714 até classificação e aprovação pelo fluxo E15.
+
+Esta validação cobre lint, typecheck, build, testes, configuração canônica e objetos tipados; não declara concluída a auditoria integral das 200 etapas nem equipara dados operacionais do banco ao conteúdo versionável do GitHub.
