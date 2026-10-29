@@ -6,6 +6,7 @@
  */
 import { createElement, type ReactNode } from 'react';
 import { renderHook, act, waitFor } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { useMockupGenerator } from '../useMockupGenerator';
@@ -97,7 +98,7 @@ function areaWithLogo() {
 function makeWrapper() {
   const client = new QueryClient({ defaultOptions: { queries: { retry: false, gcTime: 0 } } });
   return ({ children }: { children: ReactNode }) =>
-    createElement(QueryClientProvider, { client }, children);
+    createElement(MemoryRouter, null, createElement(QueryClientProvider, { client }, children));
 }
 
 /** Resolve a edge mais tarde, como uma geração lenta real. */

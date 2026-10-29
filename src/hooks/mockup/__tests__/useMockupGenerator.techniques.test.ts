@@ -10,6 +10,7 @@
  */
 import { createElement, type ReactNode } from 'react';
 import { renderHook, act, waitFor } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import type { MockupDraftData } from '../useMockupDraft';
@@ -150,7 +151,7 @@ function makeHistoryMockup(overrides: Partial<GeneratedMockup> = {}): GeneratedM
 function makeWrapper() {
   const client = new QueryClient({ defaultOptions: { queries: { retry: false, gcTime: 0 } } });
   return ({ children }: { children: ReactNode }) =>
-    createElement(QueryClientProvider, { client }, children);
+    createElement(MemoryRouter, null, createElement(QueryClientProvider, { client }, children));
 }
 
 beforeEach(() => {

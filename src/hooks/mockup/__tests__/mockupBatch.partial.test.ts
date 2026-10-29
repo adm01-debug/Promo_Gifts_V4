@@ -3,6 +3,7 @@
  * permite regerar só ela (máx. 6 áreas). Resultados associados por id estável da área.
  */
 import { renderHook, act } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 const { draftApi, api, toastMock, colorAnalysis, positionHistory } = vi.hoisted(() => ({
@@ -88,7 +89,7 @@ const makeArea = (id: string, name: string) => ({
 });
 
 async function setup(areas: ReturnType<typeof makeArea>[]) {
-  const hook = renderHook(() => useMockupGenerator());
+  const hook = renderHook(() => useMockupGenerator(), { wrapper: MemoryRouter });
   await act(async () => {
     hook.result.current.setProductSelection({
       product: PRODUCT as never,
