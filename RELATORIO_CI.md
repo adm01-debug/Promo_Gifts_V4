@@ -56,7 +56,13 @@ No branch `fix/ci-workflows`, commit de código `1df94731b8527f915f102edaec319e9
 | `npm run build:verify` | ✅ Passou; typecheck, lint sem erros/avisos e build |
 | `npm test` | ✅ 1.210 arquivos passaram; 25.656 testes passaram; 131 arquivos / 1.134 testes skipped e 24 TODOs preservados |
 
-O relatório deve receber os resultados finais após o commit documental; não declarar o PR pronto para merge enquanto os checks obrigatórios estiverem pendentes/falhando.
+Após o commit documental `6ded30e64`, a suíte completa repetiu o mesmo resultado: 1.210 arquivos passaram, 25.656 testes passaram, 131 arquivos/1.134 testes foram skipped e 24 permaneceram TODO. `build:verify` também passou após esse commit, incluindo typecheck, lint (0 erros/0 warnings, sem regressão) e build. O check E2E de fixtures geradas foi validado anteriormente no commit de código `1df94731b`.
+
+### Paridade do ledger Supabase
+
+Consulta somente leitura em `doufsxqlfjyuvxuezpln`: 2.552 versões únicas no ledger remoto, hash MD5 ordenado `ba0ba22d8bcc705632cdeb5a888880c6`, versão mais recente `20261027160000`. O checkout contém 3.009 arquivos de migration, 3.004 versões distintas, hash `dbcbcffc885877af2cef536dc6cbc9cd`, com 5 colisões locais; o diff previamente calculado registra 463 versões apenas locais e 11 apenas remotas. Nenhuma migration foi aplicada nem reconciliada. O PR #2720 altera apenas configuração de CI e documentação, portanto não requer alteração do banco.
+
+Estado atual do PR #2720: Gate Final, Gate 1 e Gate 3 passaram; 27 checks success, 3 skipped, 1 neutral e revisão Copilot falhou por quota HTTP 402. Manter sem merge até resolver o check vermelho, conforme o processo; não declarar sincronização completa do projeto enquanto o PR e a divergência do ledger estiverem pendentes.
 
 ---
 

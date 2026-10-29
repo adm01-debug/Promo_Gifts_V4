@@ -356,4 +356,15 @@ Inventário limitado à última execução observada na `main` por workflow. Os 
 
 **Verdes na fotografia:** 25 workflows com última execução `success` entre 36 workflows observados; consultar os runs da `main` para a lista completa. Não houve rerun de workflows verdes.
 
-**Bloqueio no PR #2720:** o job de revisão Copilot falhou com HTTP 402 (`You've reached your additional usage limit for your plan`) e também registrou bloqueio de rede para `api.github.com`. É falha de serviço/quota, não erro do código deste PR. Gate 1 e Gate 3 ainda estavam em execução na última consulta; manter o PR aberto até a conclusão dos checks.
+**Estado do PR #2720 na consulta seguinte:** Gate Final, Gate 1 e Gate 3 passaram; 27 checks passaram, 3 foram skipped, 1 ficou neutral e o job de revisão Copilot falhou. O Copilot retornou HTTP 402 (`You've reached your additional usage limit for your plan`) e registrou bloqueio de rede para `api.github.com`. É falha de quota/serviço, não erro do código deste PR. Não mesclar enquanto houver check vermelho.
+
+### Ledger de migrations — comparação local × banco canônico
+
+Consulta somente leitura em `doufsxqlfjyuvxuezpln` em 2026-10-29:
+
+| Fonte | Arquivos/linhas | Versões únicas | Hash MD5 ordenado das versões | Última versão |
+|---|---:|---:|---|---|
+| Repositório local (`supabase/migrations`) | 3.009 arquivos | 3.004 | `dbcbcffc885877af2cef536dc6cbc9cd` | `20261027234500` |
+| `supabase_migrations.schema_migrations` | 2.552 linhas | 2.552 | `ba0ba22d8bcc705632cdeb5a888880c6` | `20261027160000` |
+
+O diff previamente calculado contém **463 versões apenas locais e 11 apenas remotas**; há ainda 5 colisões de versão entre arquivos locais. A versão do banco é ledger, não prova isolada de que cada DDL esteja ou não no schema. Classificar os arquivos locais e remotos antes de qualquer reconciliação; não executar `db push`, `repair` ou DDL manual nesta auditoria. A alteração do PR #2720 é somente workflow/documentação e não adiciona migration.
