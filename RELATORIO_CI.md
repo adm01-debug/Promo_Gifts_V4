@@ -115,3 +115,26 @@ O fallback do GHCR para a imagem oficial Docker Hub foi exercitado com sucesso: 
 | Gate final CI | N/A | Passou | `success` |
 
 Não houve alteração em arquivos da aplicação: o PR #2734 toca apenas `.github/workflows/contract-tests.yml`. Nenhum teste foi removido/pulado/afrouxado. Nenhuma migration ou escrita no Supabase foi executada.
+
+## 9. Revalidação de CI e paridade — 2026-10-29
+
+### Baseline × final da branch de atualização Graphify
+
+O baseline completo foi executado antes das correções Graphify. O estado final foi executado após integrar `origin/main` (`8bc08b12`), aplicar os ajustes de métricas/referências e atualizar os artefatos.
+
+| Verificação | Baseline | Final | Resultado |
+|---|---:|---:|---|
+| `npm run build:verify` — TypeScript, lint baseline e build | Passou; ESLint 0 erros/0 warnings | Passou; TypeScript sem erros, ESLint 0 erros/0 warnings, guards/build/chunk cycles/harnesses passaram | Sem regressão |
+| Testes focais Graphify | Não havia teste focal novo no baseline | 2 arquivos, 7 testes aprovados | Aprovado |
+| Suíte completa Vitest | 1.212 arquivos aprovados, 131 skipped; 25.666 testes aprovados, 1.134 skipped, 24 TODO | 1.213 arquivos aprovados, 131 skipped; 25.668 testes aprovados, 1.134 skipped, 24 TODO | +1 arquivo e +2 testes herdados da `main`; nenhum teste removido/afrouxado |
+| Graphify principal/SQL | Relatório anterior, com SQL misturado e métrica não atualizada | Principal: 35.483 nós/63.632 relações/1.897 comunidades; SQL: 3.189 arquivos/20.291 nós/21.533 relações | Saídas reproduzíveis com `0.9.91` |
+
+O comando de build não alterou código da aplicação. A tentativa inicial de `npm run test:graphify` usou um script inexistente; foi substituída pelos testes focais via `npx vitest run ...`, que passaram. A suíte completa finalizou com sucesso.
+
+### Snapshot GitHub Actions e banco
+
+Na `main` `8bc08b12`, foram consultados individualmente os 119 workflows ativos (excluindo runs de PR): 62 success, 25 failure, 21 sem execução, 7 aguardando/em andamento, 2 skipped e 2 cancelled. Os 25 bloqueios, links de evidência e limites de diagnóstico estão na seção P18 de `PENDENCIAS.md`; não reexecutei runs que poderiam publicar snapshots, aplicar migration ou fazer deploy externo.
+
+Supabase canônico `doufsxqlfjyuvxuezpln`: 2.552 versões únicas no ledger; checkout com 3.009 arquivos e 3.004 versões, 2.541 compartilhadas, 463 somente locais e 11 somente remotas, além de cinco duplicidades locais. Tables/Views/Enums de `public` coincidem com `pg_catalog` por nome (398/398, 197/197, 15/15). Funções não foram comparadas ao vivo. Nenhuma escrita, DDL, migration repair, deploy ou cópia de dados operacionais foi feita.
+
+O PR #2719 foi atualizado apenas localmente durante esta validação; após publicar os commits, os novos checks do PR ainda precisam concluir. Não mesclar enquanto houver check obrigatório falho. `main` e o banco canônico não foram modificados por esta branch.

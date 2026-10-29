@@ -28,7 +28,7 @@ Os totais do benchmark são da extração comparativa e não devem ser comparado
 
 ## Estado dos mapas em 2026-10-29
 
-- Mapa principal após integrar a `main` `8bc08b12` e excluir SQL do corpus (extraído com `0.9.91`): 35.480 nós, 63.629 relações, 1.923 comunidades; `directed: false`. Os resultados do benchmark isolado na seção anterior continuam sendo o snapshot histórico da comparação de versões.
+- Mapa principal após integrar a `main` `8bc08b12` e excluir SQL do corpus (extraído com `0.9.91`): 35.483 nós, 63.632 relações, 1.897 comunidades; `directed: false`. Os resultados do benchmark isolado na seção anterior continuam sendo o snapshot histórico da comparação de versões.
 - Enriquecimento TypeScript: 1.714 arestas `references_type`; 10.343 referências externas ignoradas; 46 arquivos de origem sem nó no mapa e 2 declarações internas sem nó mapeável.
 - Mapa SQL separado (execução reproduzível a partir de `HEAD`): 3.189 arquivos versionados, 20.291 nós e 21.533 relações; `build-metadata.json` registra commit, versão, quantidade de arquivos e SHA-256 do corpus. Saída em `graphify-out/sql/graphify-out/graph.json`, não versionada.
 - A métrica de baixa conectividade foi recalculada após a extração: 14.620 nós entre 17.844 nós elegíveis. Nós estruturais de arquivo foram excluídos da população.
