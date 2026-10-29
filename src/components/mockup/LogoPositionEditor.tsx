@@ -63,8 +63,6 @@ export const LogoPositionEditor = memo(
     const { ref: containerRef, size: containerSize } = useElementSize<HTMLDivElement>();
     const productBounds = useProductBounds(productImageUrl);
     const { processedLogoUrl } = useLogoProcessing(logoPreview, techniqueColorConfig);
-    const { handlePointerDown } = useLogoDrag(containerRef, positionX, positionY, onPositionChange);
-
     const techniqueFilter = useMemo(
       () => getTechniqueFilter(techniqueCode, techniqueName),
       [techniqueCode, techniqueName],
@@ -148,6 +146,12 @@ export const LogoPositionEditor = memo(
       productBounds,
     ]);
 
+    const { handlePointerDown, handleKeyDown } = useLogoDrag(containerRef, positionX, positionY, onPositionChange, {
+      logoWidthPx: logoDisplay?.widthPx,
+      logoHeightPx: logoDisplay?.heightPx,
+      rotationDeg: logoRotation,
+    });
+
     const userScaleFactor = (logoScale || 100) / 100;
 
     return (
@@ -183,6 +187,7 @@ export const LogoPositionEditor = memo(
             techniqueColorConfig={techniqueColorConfig}
             techniqueName={techniqueName}
             onPointerDown={handlePointerDown}
+            onKeyDown={handleKeyDown}
             onColorConfigClick={onColorConfigClick}
           />
 
