@@ -13,6 +13,8 @@
  * estão presentes; do contrário roda como skip silencioso.
  */
 import { describe, it, expect } from 'vitest';
+import { readFileSync } from 'node:fs';
+import { URL as NodeURL } from 'node:url';
 import {
   EDGE_AUTHZ_MANIFEST,
 } from '../../supabase/functions/_shared/edge-authz-manifest';
@@ -78,5 +80,26 @@ describe('Manifest integrity — generate-mockup', () => {
     // skipAnonBypassTest era falso-positivo herdado da categoria "public" incorreta:
     // a função SEMPRE exige JWT, então não deve dispensar o teste de bypass anônimo.
     expect(e?.skipAnonBypassTest).not.toBe(true);
+  });
+});
+
+describe('Manifest integrity — rls-audit', () => {
+  it('exige perfil dev validado no servidor antes de usar service_role', () => {
+    const entry = EDGE_AUTHZ_MANIFEST['rls-audit'];
+    expect(entry?.category).toBe('dev');
+    expect(entry?.enforcedBy).not.toBe('custom');
+
+    const source = readFileSync(
+      new NodeURL('../../supabase/functions/rls-audit/index.ts', import.meta.url),
+      'utf8',
+    );
+    const guardIndex = source.indexOf('const auth = await authorize(req');
+    const roleIndex = source.indexOf('requireRole: "dev"', guardIndex);
+    const firstAdminMutationIndex = source.search(/\.from\("quotes"\)\s*\.insert/);
+
+    expect(guardIndex).toBeGreaterThanOrEqual(0);
+    expect(roleIndex).toBeGreaterThan(guardIndex);
+    expect(source.slice(guardIndex, firstAdminMutationIndex)).toContain('enforceServerSide: true');
+    expect(firstAdminMutationIndex).toBeGreaterThan(roleIndex);
   });
 });
