@@ -18,6 +18,7 @@ import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { TechniqueCard } from './TechniqueCard';
 import { ConfigurationPanelV6 } from './ConfigurationPanelV6';
+import { useTrackedTimeout } from './useTrackedTimeout';
 import { cn } from '@/lib/utils';
 import type {
   TechniqueOption,
@@ -193,15 +194,7 @@ export function LocationPanel({
   const [announcement, setAnnouncement] = useState('');
   const [isSwapping, setIsSwapping] = useState(false);
   const reduceMotion = useReducedMotion();
-  const pendingTimeoutsRef = useRef<Set<ReturnType<typeof setTimeout>>>(new Set());
-
-  useEffect(
-    () => () => {
-      for (const timeoutId of pendingTimeoutsRef.current) clearTimeout(timeoutId);
-      pendingTimeoutsRef.current.clear();
-    },
-    [],
-  );
+  const scheduleTrackedTimeout = useTrackedTimeout();
 
   // Hidrata estado inicial: confirmada > rascunho persistido > nada.
   const initialDraft = useMemo<LocationDraft | null>(
@@ -368,18 +361,10 @@ export function LocationPanel({
       setSelectedTechnique(technique);
       setIsPickerOpen(false);
       setIsSwapping(true);
-      const swapTimeout = setTimeout(
-        () => {
-          pendingTimeoutsRef.current.delete(swapTimeout);
-          setIsSwapping(false);
-        },
-        reduceMotion ? 0 : 140,
-      );
-      pendingTimeoutsRef.current.add(swapTimeout);
+      scheduleTrackedTimeout(() => setIsSwapping(false), reduceMotion ? 0 : 140);
 
       // Foco automático no controle ajustado se houve clamp (A11y)
-      const focusTimeout = setTimeout(() => {
-        pendingTimeoutsRef.current.delete(focusTimeout);
+      scheduleTrackedTimeout(() => {
         if (forcedW) {
           document.querySelector<HTMLElement>('[data-testid="customization-width-input"]')?.focus();
         } else if (forcedH) {
@@ -392,10 +377,9 @@ export function LocationPanel({
             ?.focus();
         }
       }, 50);
-      pendingTimeoutsRef.current.add(focusTimeout);
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional: see comment above
-    [selectedTechnique, toast, reduceMotion],
+    [selectedTechnique, toast, reduceMotion, scheduleTrackedTimeout],
   );
 
   const handlePriceCalculated = useCallback(
