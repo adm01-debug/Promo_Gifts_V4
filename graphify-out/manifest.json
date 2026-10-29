@@ -3935,8 +3935,8 @@
     "semantic_hash": "0c08d857b3dcc9d5d8e183980cdfac0b"
   },
   "public/schemas/ssot-report.schema.json": {
-    "mtime": 1793268308.535909,
-    "seen": 1793268581.077929,
+    "mtime": 1793279564.710296,
+    "seen": 1793279869.6240323,
     "ast_hash": "5f7c1a0d8db2e261abb51ec9125a64d5",
     "semantic_hash": "5f7c1a0d8db2e261abb51ec9125a64d5",
     "ast_empty": true
@@ -26300,10 +26300,10 @@
     "semantic_hash": "1661f25159f9310583ecbca55878c957"
   },
   "tests/scripts/wraparound-monitor-check.test.mjs": {
-    "mtime": 1793218695.484514,
-    "seen": 1793262012.2994914,
-    "ast_hash": "3e003cef987804a4d3f64d178428b76d",
-    "semantic_hash": "3e003cef987804a4d3f64d178428b76d"
+    "mtime": 1793279797.4862108,
+    "seen": 1793279869.7031374,
+    "ast_hash": "9a8421e39af5717b548b3aac222161b2",
+    "semantic_hash": ""
   },
   "tests/search/GlobalSearchHelpers.test.tsx": {
     "mtime": 1793218695.484514,
@@ -29950,20 +29950,20 @@
     "semantic_hash": ""
   },
   "qa/exports/proposal-10015-26.html": {
-    "mtime": 1793268414.452178,
-    "seen": 1793268581.2406933,
+    "mtime": 1793279666.7382946,
+    "seen": 1793279869.71905,
     "ast_hash": "92ca7a7ea332a554b7785b08a7828793",
     "semantic_hash": ""
   },
   "qa/exports/proposal-complex-99999-26.html": {
-    "mtime": 1793268414.460178,
-    "seen": 1793268581.2406964,
+    "mtime": 1793279666.7462945,
+    "seen": 1793279869.7190506,
     "ast_hash": "04240878120d40179aa6e7ce7356afe8",
     "semantic_hash": ""
   },
   "qa/exports/proposal-minimal-00001-26.html": {
-    "mtime": 1793268414.456178,
-    "seen": 1793268581.2407002,
+    "mtime": 1793279666.7422945,
+    "seen": 1793279869.719052,
     "ast_hash": "cf17ac99e7adfb32411e5abee571a3ff",
     "semantic_hash": ""
   },
@@ -31807,9 +31807,9 @@
     "semantic_hash": "d59cac90d4d9f7a093b1521d7b8985fa"
   },
   "PENDENCIAS.md": {
-    "mtime": 1793252964.352941,
-    "seen": 1793253147.297184,
-    "ast_hash": "fd31dbf9019fdeb7a7e18cf52eb07cc0",
+    "mtime": 1793279345.6115186,
+    "seen": 1793279869.7054236,
+    "ast_hash": "3e3f9632547c0db70663ab32ee992976",
     "semantic_hash": ""
   },
   "RELATORIO_CI.md": {
