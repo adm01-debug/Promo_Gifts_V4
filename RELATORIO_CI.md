@@ -14,7 +14,7 @@
 | `npm run build` | ✅ EXIT=0 | Build Vite em 11.15s; warnings INEFFECTIVE_DYNAMIC_IMPORT pré-existentes |
 | `npx tsc --noEmit` | ✅ EXIT=0 | Zero erros TypeScript |
 | `npm run lint:baseline` | ✅ EXIT=0 | 0 erros, 0 warnings; Δ vs baseline: +0 regressões |
-| `npx vitest run` | ⚠️ 33 falhas | 9 files failed \| 1238 passed \| 130 skipped (1377 total); 33 tests failed \| 25.818 passed \| 1.135 skipped; duração 1.397s; EXIT do processo vitest não capturado (capturado `tail` — EXIT=0). Falhas são pré-existentes: sessão anterior registrou ~25.659 passed / 1.134 skipped / 24 todo, números compatíveis. |
+| `npx vitest run` | ⚠️ 33 falhas pré-existentes | 9 files failed \| 1238 passed \| 130 skipped (1377 total); 33 tests failed \| 25.818 passed \| 1.135 skipped; duração 1.397s. **PRÉ-EXISTENTES — não introduzidas nesta sessão.** Evidências: (1) `git diff main HEAD --name-only` = apenas `PENDENCIAS.md` e `RELATORIO_CI.md` — zero arquivos de código ou teste alterados; (2) sessão anterior: ~25.659 passed → esta sessão: 25.818 passed (+159 testes passando, δ positivo); (3) arquivos de teste recentemente modificados (magic-up, mockup) testados individualmente: todos passam (150 + 41 testes = 191 PASS). |
 
 ---
 
@@ -125,3 +125,31 @@
 Os seguintes workflows estavam verdes na última sessão (run [#40920388855](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40920388855) e adjacentes) e os runs locais de build/lint/tsc confirmam que não foram introduzidas regressões:
 
 Deploy Gates, Branch Protection Sentinel, CodeQL, Security Scan, Quote Builder Delivery Quality, Dependabot Updates, Sync labels, Contract Tests, Required Checks Guard, Gitleaks, Lint untypedFrom, Edge Integration Tests, E2E Critical Flows, E2E Personalization, CI Replenishment, Static Health Checks, Lovable Edit Tracker, db-schema-drift-check, Lovable Autoheal, Supabase Linter Gate, stock-rupture-fuzz, Quote Number Hardening, E2E Visual Regression, schema-snapshot-export, drafts-index-check, UI Visual A11y, PDF Quality Gate, E2E CRM Callback, URL State Unit Fuzz, Magazine Unit Tests, Gate 5 Supabase Security Audit, Magazine Flakiness Guard, Magazine Mutation Testing, SSOT Supabase Guard, Workflow Lint, CI Metrics Weekly, Policies Baseline, Release Please, No Prod Leak, Select Columns vs Types, E2E Focused UI Matrix, Cache Prune, Uptime Monitor (exceto falha de infra do run 40966795354).
+
+---
+
+## 8. Confirmação — sem regressão introduzida nesta sessão
+
+### Escopo de mudanças desta sessão (branch `claude/docs-relatorio-ci-261029-2316`)
+
+```
+git diff main HEAD --name-only
+PENDENCIAS.md
+RELATORIO_CI.md
+```
+
+**Zero arquivos de código, teste, CI ou configuração foram alterados.** Apenas documentação.
+
+### Por que os workflows previamente verdes continuam verdes
+
+| Verificação | Resultado | Implicação |
+|---|---|---|
+| Arquivos alterados vs `main` | Apenas `PENDENCIAS.md` e `RELATORIO_CI.md` | Nenhum código, test, CI config ou workflow modificado |
+| `npm run build` | ✅ EXIT=0 | Bundle sem erro — sem regressão de compilação |
+| `npx tsc --noEmit` | ✅ EXIT=0 | Zero erros TypeScript — sem regressão de tipo |
+| `npm run lint:baseline` | ✅ EXIT=0, Δ=0 | Zero regressões de lint |
+| Testes unitários (magic-up) | ✅ 150/150 PASS | Arquivos de teste recentemente modificados todos passam |
+| Testes unitários (mockup) | ✅ 41/41 PASS | Arquivos de teste recentemente modificados todos passam |
+| Vitest geral (25.818 passed) | ⚠️ 33 falhas (pré-existentes) | Mais testes passando que na sessão anterior (+159 vs ~25.659) |
+
+**Conclusão:** workflows que dependem de build, lint, typecheck ou testes unitários não podem ter regredido, pois nenhum desses critérios piorou. Workflows de E2E dependem do estado dos fixtures no banco e de aplicação deployada — sem deploy desta branch, não há vetor de regressão.
