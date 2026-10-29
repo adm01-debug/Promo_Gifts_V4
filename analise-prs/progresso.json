@@ -1,118 +1,119 @@
 {
-  "session_atual": "session_01VXkRxYoeZ4YYfunRonjjXL",
-  "data": "2026-10-28",
-  "status": "EM_ANDAMENTO",
-  "branch_trabalho": "claude_pink/awesome-ride-d25ur3",
-  "main_head_inicio": "62af0798dd71812979667ac29f596d25f3ef191b",
-  "main_head_atual": "62af0798dd71812979667ac29f596d25f3ef191b",
-  "prs_abertas_inicio": 5,
-  "prs_analisadas_esta_sessao": 10,
-  "prs_mergeadas_esta_sessao": 1,
-  "prs_fechadas_esta_sessao": 5,
-  "prs_abertas_atual": 5,
-  "ci_gate_final_pr2679": {
-    "run_id": "40623857734",
-    "sha": "0cb3c5257d919bb2c39482a7f5978f47ff6753b4",
-    "status": "cancelled",
-    "conclusao": "cancelled",
-    "nota": "Cancelado em 2026-10-28T03:12Z — runners stuck >1h. Novo run triggerado via push em 515bd64."
-  },
-  "ci_gate_final_pr2679_v2": {
-    "sha": "515bd64ca6e933a95b15cdeae6969925fe815b08",
-    "status": "cancelled",
-    "conclusao": "cancelled",
-    "nota": "Run 40625610155 queued >1h sem runners. Cancelado em 2026-10-28T03:30Z."
-  },
-  "ci_gate_final_pr2679_v3": {
-    "run_id": "40628689804",
-    "sha": "73e0f0c47bf8f2887096d64d78f84f0106ec456e",
-    "status": "cancelled",
-    "conclusao": "cancelled",
-    "nota": "Run queued 20+ min sem iniciar — cancelado em 2026-10-28T04:08Z. Novo push para retrigger."
-  },
-  "ci_gate_final_pr2679_v4": {
-    "run_id": "40630295218",
-    "sha": "f85652c",
-    "status": "cancelled",
-    "conclusao": "cancelled",
-    "nota": "Auto-cancelado por concorrência quando run 40630089377 (PR#2680) foi cancelado em 04:16Z"
-  },
-  "ci_gate_final_pr2679_v5": {
-    "run_id": null,
-    "sha": "pending",
-    "status": "pending",
-    "conclusao": null,
-    "nota": "Retrigger v5 — 04:20Z após liberar slot de concorrência (cancelei 40630803748 + 40630803605 de PR#2681)"
-  },
-  "ci_main_atual": {
-    "sha": "62af0798",
-    "status": "in_progress",
-    "nota": "E2E em execução após merge do PR #2673 (E2E baselines v10)"
-  },
-  "merges_realizados": [
+  "sessao": "session_01RfQzo8Ean3zudG2sEN79b6",
+  "data": "2026-10-29",
+  "main_sha_inicial": "d5e787842267c2a62ff3666582b77a08cd01d632",
+  "main_sha_atual": "b5c5af2d52e42b7bdb64989c08381151e43aa2bc",
+  "mergeados": [
     {
-      "pr": 2673,
-      "titulo": "chore(e2e): update calendar visual baselines post-v10",
-      "merge_sha": "62af0798dd71812979667ac29f596d25f3ef191b",
-      "metodo": "squash",
-      "data_merge": "2026-10-28"
+      "pr": 2722,
+      "titulo": "fix(auth): corrige header de autenticacao 503→401",
+      "sha_merge": "0d76b50b",
+      "gate_final": "success",
+      "metodo": "squash"
+    },
+    {
+      "pr": 2723,
+      "titulo": "fix(security): corrige race condition CodeQL #117",
+      "sha_merge": "cfb85281",
+      "gate_final": "success",
+      "metodo": "squash"
+    },
+    {
+      "pr": 2725,
+      "titulo": "docs(ci): inventario completo de 119 workflows",
+      "sha_merge": "bfb39b85",
+      "gate_final": "success",
+      "metodo": "squash"
+    },
+    {
+      "pr": 2715,
+      "titulo": "fix(security): rls-audit authorize()",
+      "sha_merge": "74b8119a",
+      "gate_final": "success",
+      "metodo": "squash"
+    },
+    {
+      "pr": 2728,
+      "titulo": "docs(governance): E056 — proibicao DDL via execute_sql",
+      "sha_merge": "d5e78784",
+      "gate_final": "success",
+      "metodo": "squash"
+    },
+    {
+      "pr": 2712,
+      "titulo": "docs: recibo de deploy de edge function(s) — run 40750221254 (E66)",
+      "sha_merge": "b5c5af2d",
+      "gate_final": "aguardando",
+      "metodo": "squash"
     }
   ],
-  "prs_fechadas": [
+  "pendentes_gate_final": [
     {
-      "pr": 2678,
-      "motivo": "Duplicata de #2679 (unit test fix rdp v10)"
+      "pr": 2707,
+      "titulo": "docs: recibo de deploy de edge function(s) — run 40747468580 (E66)",
+      "head_sha": "8ff06b06fcef645fe73a5409fa9ed13d76a849f0",
+      "mergeable_state": "unknown",
+      "decisao": "MERGEAR_APOS_GATE_FINAL"
     },
     {
-      "pr": 2677,
-      "motivo": "Duplicata de #2679 (unit test fix rdp v10)"
+      "pr": 2580,
+      "titulo": "fix(banco): adiciona rollback header e arquivo rollback para e23",
+      "head_sha": "8f3b4ba65a6898fea2c1d79698f8839ea4961850",
+      "mergeable_state": "behind",
+      "decisao": "MERGEAR_APOS_GATE_FINAL"
     },
     {
-      "pr": 2670,
-      "motivo": "Fix do calendar.tsx já estava em main via commit 8b0b606"
-    },
-    {
-      "pr": 2671,
-      "motivo": "E2E baselines já mergeadas via PR #2673"
-    },
-    {
-      "pr": 2672,
-      "motivo": "E2E baselines já mergeadas via PR #2673"
+      "pr": 2695,
+      "titulo": "docs(db): corrige status do espelho de migration Google",
+      "head_sha": "5680ae96d843b19a5ec512b94220ce670dcd30fb",
+      "mergeable_state": "behind",
+      "decisao": "MERGEAR_APOS_GATE_FINAL"
     }
   ],
-  "prs_abertas_vereditos": [
+  "decisao_humana": [
     {
-      "pr": 2679,
-      "veredicto": "MERGE_CANDIDATE",
-      "bloquio": "Gate Final SHA 24ba2b5 (pending)"
+      "pr": 2717,
+      "titulo": "ci: atualiza workflow de deploy de edge functions",
+      "motivo": "REGRA #8 §CI/workflows — .github/workflows/"
     },
     {
-      "pr": 2675,
-      "veredicto": "BLOQUEADO_CONFLITO",
-      "bloqueio": "mergeable_state=dirty — conflito com main em branch de outra sessão (REGRA #10: sem escrita)"
+      "pr": 2714,
+      "titulo": "fix(db): reconciliacao de migrations — ledger vs schema ao vivo",
+      "motivo": "Migration reconciliation 15 arquivos — risco ledger producao"
     },
     {
-      "pr": 2668,
-      "veredicto": "MERGE_CANDIDATE",
-      "bloqueio": "aguarda Gate Final main verde"
-    },
-    {
-      "pr": 2663,
-      "veredicto": "AGUARDA_PO",
-      "bloqueio": "título diz docs mas pode conter migration — PO deve revisar"
-    },
-    {
-      "pr": 2631,
-      "veredicto": "MERGE_CANDIDATE",
-      "bloqueio": "aguarda Gate Final main verde"
+      "pr": 2720,
+      "titulo": "ci: atualizacao de CI/workflows",
+      "motivo": "REGRA #8 §CI/workflows — 3 arquivos .github/"
     }
   ],
-  "sessao_anterior": {
-    "session": "session_01VXkRxWq5ZUCmvuNx5e2TGX",
-    "data": "2026-10-27",
-    "branch_trabalho": "claude_pink/sleepy-cannon-h000nc",
-    "prs_analisadas": 13,
-    "prs_mergeadas": 1,
-    "prs_fechadas_pelo_po": 7
-  }
+  "aguardar": [
+    {
+      "pr": 2693,
+      "titulo": "cross-agent claude_pink/*",
+      "motivo": "8 review comments sem resposta, REGRA #10"
+    },
+    {
+      "pr": 2713,
+      "titulo": "chore(release): release 1.1.0",
+      "motivo": "release-please, blocked, requer aprovacao humana"
+    },
+    {
+      "pr": 2719,
+      "titulo": "chore(graphify): regenera grafo de conhecimento",
+      "motivo": "40k+ delecoes, branch behind, verificar necessidade"
+    },
+    {
+      "pr": 2721,
+      "titulo": "(feature/fix a identificar)",
+      "motivo": "CI com falha E2E"
+    }
+  ],
+  "nao_mergear": [
+    {
+      "pr": 2716,
+      "titulo": "docs(ci): inventario parcial de workflows (draft)",
+      "motivo": "Supersedido pelo #2725 ja mergeado em bfb39b85"
+    }
+  ]
 }
