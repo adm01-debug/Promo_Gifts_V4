@@ -1,22 +1,25 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { MockupToolbar } from '../MockupToolbar';
 
 function renderToolbar(over: Partial<React.ComponentProps<typeof MockupToolbar>> = {}) {
   return render(
-    <TooltipProvider>
-      <MockupToolbar
-        canUndo={false}
-        canRedo={false}
-        onUndo={vi.fn()}
-        onRedo={vi.fn()}
-        isDraftSaving={false}
-        lastSaved={null}
-        draftError={null}
-        {...over}
-      />
-    </TooltipProvider>,
+    <MemoryRouter>
+      <TooltipProvider>
+        <MockupToolbar
+          canUndo={false}
+          canRedo={false}
+          onUndo={vi.fn()}
+          onRedo={vi.fn()}
+          isDraftSaving={false}
+          lastSaved={null}
+          draftError={null}
+          {...over}
+        />
+      </TooltipProvider>
+    </MemoryRouter>,
   );
 }
 
