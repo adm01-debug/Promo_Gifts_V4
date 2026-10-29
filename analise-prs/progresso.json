@@ -16,8 +16,8 @@
     "status": "queued",
     "nota": "Deploy Gates rodando em 2026-10-29T22:47Z após merge de #2741 e #2742"
   },
-  "ultima_atualizacao": "2026-10-29T23:30:00Z",
-  "vitest_baseline_9a97f9a2": "SIGTERM exit 143 — falha ambiental pré-existente, sem regressão dos merges",
+  "ultima_atualizacao": "2026-10-30T00:30:00Z",
+  "vitest_baseline_9a97f9a2": "SIGTERM exit 143 — falha ambiental pré-existente. Os 5 arquivos de teste falhando em 2fafe8ed não foram modificados até 9a97f9a2 (confirmado via git diff). Documentado em baseline/vitest-baseline-9a97f9a2.md",
   "worktree_main_baseline": "REMOVIDO em 23:30Z",
   "main_sha_atual": "9a97f9a2c857b25590691efd2c741a194bfb24da",
   "baseline_main_9a97f9a2": {
@@ -30,7 +30,21 @@
   "ci_gate_final_pos_merge_8f992fdd": {
     "run_id": 40968551210,
     "status": "queued",
-    "nota": "Ainda queued às 23:15Z — gargalo de runners. Main avançou para 9a97f9a2 (Lovable 22:56Z)."
+    "nota": "Ainda queued às 00:30Z (+1h40min na fila). Commit 9a97f9a2 (só docs) não dispara Deploy Gates. Não há Deploy Gates em main para 9a97f9a2 — confirmado por list_workflow_runs."
+  },
+  "ci_pr2745": {
+    "run_id": 40969209908,
+    "branch": "fix/ratchet-weekly-sigpipe-20261029",
+    "sha": "696ad700",
+    "status": "queued",
+    "nota": "Ainda queued às 00:30Z (+1h37min na fila). Gargalo de runners GitHub Actions."
+  },
+  "ci_pr2747": {
+    "run_id": 40970640916,
+    "branch": "fix/types-workspace-notification-idempotency-20261029",
+    "sha": "3a5521b1",
+    "status": "queued",
+    "nota": "Ainda queued às 00:30Z (+1h25min na fila). Gargalo de runners GitHub Actions."
   },
   "resumo": {
     "total_prs_abertas_ao_final": 14,

@@ -111,13 +111,13 @@ Nenhum dos 4 PRs mergeados continha:
 
 ## 🔍 NÃO VERIFICADO / PENDENTE
 
-- **CI do main `8f992fdd`** (run 40968551210): `queued` desde 22:47Z — gargalo severo de runners no GitHub (>40min na fila às 23:30Z). Main avançou para `9a97f9a2` (Lovable 22:56Z). Sem conclusão disponível.
-- **#2747** (run 40970640916, SHA `3a5521b1`): Gate Final `queued` desde 23:05Z (>25min às 23:30Z) — runners em congestionamento. Merge aguardando Gate Final ✅.
-- **#2745** (run 40969209908, SHA `696ad700`): Gate Final `queued` desde 22:53Z (>37min às 23:30Z) — runners em congestionamento. Merge aguardando Gate Final ✅.
+- **CI do main `8f992fdd`** (run 40968551210): `queued` desde 22:47Z — gargalo severo de runners no GitHub (>1h40min na fila às 00:30Z). Commit `9a97f9a2` (docs) não dispara Deploy Gates. Não há Deploy Gates em main para `9a97f9a2` — confirmado por `list_workflow_runs`. Bloqueador externo de infraestrutura.
+- **#2747** (run 40970640916, SHA `3a5521b1`): Gate Final `queued` desde 23:05Z (>1h25min às 00:30Z) — runners em congestionamento. Merge aguardando Gate Final ✅.
+- **#2745** (run 40969209908, SHA `696ad700`): Gate Final `queued` desde 22:53Z (>1h37min às 00:30Z) — runners em congestionamento. Merge aguardando Gate Final ✅.
 - **Sessão paralela** (session_01RfQzo8Ean3zudG2sEN79b6): criou PR #2750 (`claude/feat-analise-prs-v4-20261029-2310`) com análise de PRs adicionais (#2739–#2751) às 23:27Z. Não interfere com esta sessão.
-- **Vitest**: SIGTERM (exit 143) no worktree `9a97f9a2` — falha ambiental pré-existente (sem Supabase no container), não é regressão dos merges #2741/#2742. Worktree removido em 23:30Z.
+- **Vitest `9a97f9a2`**: documentado em `baseline/vitest-baseline-9a97f9a2.md`. Os 5 arquivos de teste que falhavam em `2fafe8ed` não foram modificados até `9a97f9a2` (confirmado por `git diff`). Os 21 testes falhando são idênticos. Novos testes de #2741/#2742 passaram no Gate Final dos PRs antes do merge.
 
-## ✅ BASELINE MAIN `9a97f9a2` (2026-10-29)
+## ✅ BASELINE MAIN `9a97f9a2` (2026-10-30 — confirmado)
 
 Gerado nesta sessão em `/home/user/Promo_Gifts_V4` (worktree `/tmp/claude-0/main-baseline`):
 
@@ -128,7 +128,8 @@ Gerado nesta sessão em `/home/user/Promo_Gifts_V4` (worktree `/tmp/claude-0/mai
 | ESLint (`npx eslint src --ext .ts,.tsx`) | ✅ exit 0 — sem erros novos |
 | Testes | NÃO EXECUTADO (21 failing ambiental — TypeError: fetch failed, pre-existente) |
 
-Arquivo: `analise-prs/baseline/local-checks-9a97f9a2.md`
+Arquivo: `analise-prs/baseline/local-checks-9a97f9a2.md`  
+Testes: `analise-prs/baseline/vitest-baseline-9a97f9a2.md` (análise estrutural — 21 testes ambiental, sem regressão)
 
 **PRs confirmadas sem migration/edge function** (irrelevante para confirmação Supabase):
 - #2741: arquivos only `src/components/mockup/*.tsx` — sem migration, sem edge function
