@@ -16,6 +16,15 @@ function normalizedSourcePath(value) {
   return String(value ?? '').replaceAll('\\', '/').replace(/^\.\//, '');
 }
 
+function isStructuralFileNode(node) {
+  const source = normalizedSourcePath(node?.source_file);
+  if (!source || node._origin !== 'ast' || node.file_type !== 'code') return false;
+  const basename = path.posix.basename(source);
+  const expectedId = source.replace(/\.[^.]+$/, '').toLowerCase()
+    .replace(/[^\p{L}\p{N}_]+/gu, '_').replace(/_+/g, '_').replace(/^_|_$/g, '');
+  return node.label === basename && node.id === expectedId && node.source_location === 'L1';
+}
+
 export function exclusionReason(node) {
   const source = normalizedSourcePath(node?.source_file);
   if (!source || node.file_type !== 'code') return 'non-code';
@@ -41,6 +50,7 @@ export function calculateLowConnectivity(graph) {
   const excluded = {};
   for (const node of graph.nodes) {
     let reason = exclusionReason(node);
+    if (!reason && isStructuralFileNode(node)) reason = 'structural-file-node';
     if (reason) excluded[reason] = (excluded[reason] ?? 0) + 1;
     else eligible.add(node.id);
   }
@@ -89,8 +99,9 @@ export function replaceKnowledgeGapMetrics(report, metrics) {
   const nextSection = report.indexOf('\n## ', sectionStart + 1);
   const end = nextSection < 0 ? report.length : nextSection;
   const section = report.slice(sectionStart, end);
+  const countLabel = metrics.lowConnectivityCount === 1 ? 'nó' : 'nós';
   const lowLine = metrics.lowConnectivityCount > 0
-    ? `- **${metrics.lowConnectivityCount} nós de baixa conectividade (grau ≤ 1):** ` +
+    ? `- **${metrics.lowConnectivityCount} ${countLabel} de baixa conectividade (grau ≤ 1):** ` +
       metrics.sample.map((node) => `\`${node.label}\` (${node.source_file})`).join(', ') +
       (metrics.lowConnectivityCount > metrics.sample.length ? ` (+${metrics.lowConnectivityCount - metrics.sample.length} mais)` : '') +
       `\n  Métrica calculada sobre ${metrics.eligibleNodeCount} nós de código elegíveis, usando as relações do grafo principal para medir o grau; ` +
@@ -99,11 +110,24 @@ export function replaceKnowledgeGapMetrics(report, metrics) {
 
   const lines = section.split('\n');
   const filtered = [];
+  let lowLineInserted = false;
   for (let i = 0; i < lines.length; i += 1) {
     const line = lines[i];
     if (/^- \*\*\d+ isolated node\(s\):/.test(line)) {
       filtered.push(lowLine);
+      lowLineInserted = true;
       if (lines[i + 1]?.trimStart().startsWith('These have ≤1 connection')) i += 1;
+      continue;
+    }
+    if (/^- \*\*\d+ nós? de baixa conectividade \(grau ≤ 1\):/.test(line)) {
+      filtered.push(lowLine);
+      lowLineInserted = true;
+      if (lines[i + 1]?.trimStart().startsWith('Métrica calculada sobre ')) i += 1;
+      continue;
+    }
+    if (/^- \*\*Nenhum nó de baixa conectividade \(grau ≤ 1\)\*\*/.test(line)) {
+      filtered.push(lowLine);
+      lowLineInserted = true;
       continue;
     }
     if (/thin communities.*explore isolated nodes/i.test(line)) {
@@ -115,7 +139,7 @@ export function replaceKnowledgeGapMetrics(report, metrics) {
     }
     filtered.push(line);
   }
-  if (!filtered.some((line) => /nós de baixa conectividade/i.test(line))) {
+  if (!lowLineInserted) {
     const insertion = filtered.findIndex((line, index) => index > 0 && line.startsWith('- **'));
     if (insertion >= 0) filtered.splice(insertion, 0, lowLine);
     else filtered.push(lowLine);
