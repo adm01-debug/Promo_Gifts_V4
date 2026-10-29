@@ -290,23 +290,25 @@ webkit: expect(picker).not.toBeNull()
 
 ---
 
-## P12 — Kit Coverage — Integration (permission denied em view)
+## P12 — Kit Coverage — Integration (cobertura insuficiente na view)
 
 **Workflow:** Kit Coverage — Integration  
-**Run ID da última falha:** 40864283651
-**Link:** https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40864283651
-**Status:** failure — a falha de permissão foi corrigida no branch do PR #2701; o run agora chega às asserções de cobertura.
+**Run ID da última falha:** 40868366077 (SHA `353d99d318ec304a85d7eecd55e63b62debfb95b`)
+**Link:** https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40868366077
+**Status:** failure — autenticação e consultas passaram; a cobertura dos dados reais continua abaixo do mínimo.
 
 **Resultado observado:** autenticação e as duas consultas ao Supabase passaram. A terceira asserção falhou com `Cobertura 56% < threshold 70%` para o kit descoberto dinamicamente.
 
 **Causa confirmada para a permissão:** nenhuma migration de GRANT faltava. Consulta somente leitura a `pg_catalog`/`has_table_privilege` confirmou SELECT para `authenticated` e `service_role`, e ausência para `anon`, tanto em `public.v_kit_component_complete` quanto em `public.product_kit_components`. O teste usava o cliente sem sessão autenticada. A correção de código autentica o usuário E2E e não abre acesso anônimo.
+
+**Gate C25:** corrigido no commit `353d99d31`; a exceção vale somente para o workflow, job autenticado e comando de integração específicos. Os 23 testes do contrato passaram localmente. O run [Deploy Gates #40868363085](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40868363085) terminou com `conclusion: success`, incluindo lint/typecheck, testes unitários, E2E Smoke e build.
 
 **Gap restante — contrato/qualidade da view e fixture:**
 - A definição canônica de `v_kit_component_complete` não projeta `component_description`, `primary_image_url`, `images` e `supplier_component_code`, campos que o teste inclui na métrica.
 - A tabela base contém alguns valores nesses campos, mas a cobertura é baixa: entre 978 kits ativos com componentes, somente 2 atingem 70% na métrica da tabela base. A seleção dinâmica sem ordenação escolhe um kit qualquer, por isso o threshold não é reprodutível.
 - O teste não deve reduzir o threshold nem conceder SELECT a `anon` para mascarar o problema.
 
-**Estado do PR #2701:** https://github.com/adm01-debug/Promo_Gifts_V4/pull/2701 — draft, não pronto para merge. Commit `f7a241503aa882c61f816eee3e69359e263dd14d` está no branch remoto. Checks de PR ainda em execução no momento deste registro; o dispatch de integração acima falhou.
+**Estado do PR #2701:** https://github.com/adm01-debug/Promo_Gifts_V4/pull/2701 — draft e não mergeável; branch divergente/conflitante com `main`. Commit `353d99d318ec304a85d7eecd55e63b62debfb95b` está no branch remoto. O dispatch mais recente de integração falhou somente na cobertura de dados descrita acima.
 
 **Próximo passo:** revisar e aprovar o contrato esperado da view e definir fixture estável que atenda à métrica. Se for aprovada uma mudança de schema, versionar uma migration não destrutiva, validar pelo fluxo obrigatório E15 e atualizar os tipos; não aplicar DDL diretamente via MCP/dashboard. Nenhum GRANT a `anon`, DDL, migration ou dado operacional foi alterado nesta correção.
 
