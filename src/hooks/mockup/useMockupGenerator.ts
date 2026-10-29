@@ -838,13 +838,9 @@ export function useMockupGenerator() {
           productName: selectedProduct?.name ?? '',
           technique: selectedTechnique,
           areas: [area],
-          productWidthCm:
-            selectedProduct?.dimensions?.width_cm ??
-            selectedProduct?.dimensions?.diameter_cm ??
-            (selectedProduct?.metadata?.width_mm ? selectedProduct.metadata.width_mm / 10 : null),
-          productHeightCm:
-            selectedProduct?.dimensions?.height_cm ??
-            (selectedProduct?.metadata?.height_mm ? selectedProduct.metadata.height_mm / 10 : null),
+          // Mesmo resolvedor de dimensões da geração em lote (fonte única).
+          productWidthCm: productDimensions.widthCm,
+          productHeightCm: productDimensions.heightCm,
         });
         const url = result.singleUrl ?? result.batchResults[0]?.url;
         if (!url) throw new Error('O serviço não retornou uma imagem.');
@@ -876,6 +872,7 @@ export function useMockupGenerator() {
       getProductImage,
       selectedTechnique,
       selectedProduct,
+      productDimensions,
       saveMockupToHistory,
       fetchHistory,
     ],
