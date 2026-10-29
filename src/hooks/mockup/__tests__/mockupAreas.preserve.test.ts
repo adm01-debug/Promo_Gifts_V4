@@ -24,14 +24,14 @@ const {
   colorAnalysis,
   positionHistory,
 } = vi.hoisted(() => {
-  const draftState = { current: null as null | Record<string, unknown> };
+  const sharedDraft = { current: null as Record<string, unknown> | null };
   return {
-    draftState,
+    draftState: sharedDraft,
     // Identidade estavel: o hook real usa useCallback; um mock que devolve um objeto novo
     // a cada render re-dispara os efeitos e (no comportamento com bug) entra em loop.
     draftApi: {
-      saveDraft: vi.fn(async () => true),
-      loadDraft: vi.fn(async () => draftState.current),
+      saveDraft: vi.fn(() => Promise.resolve(true)),
+      loadDraft: vi.fn(() => Promise.resolve(sharedDraft.current)),
       clearDraft: vi.fn(async () => {}),
     },
     locationsByProduct: {} as Record<string, Array<Record<string, unknown>>>,
@@ -77,7 +77,7 @@ vi.mock('@/contexts/ProductsContext', () => ({
 }));
 
 vi.mock('@/lib/db/postgrest', () => ({
-  dbInvoke: vi.fn(async () => ({ records: [] })),
+  dbInvoke: vi.fn(() => Promise.resolve({ records: [] })),
 }));
 
 // O service real so e usado por `createDefaultArea`; o resto e mockado para isolar o efeito.
@@ -91,9 +91,9 @@ vi.mock('@/hooks/mockup/mockupGenerationService', () => ({
     logoHeight: 5,
     logoPreview: null,
   }),
-  fetchMockupHistory: vi.fn(async () => []),
-  saveMockupToDb: vi.fn(async () => null),
-  generateMockupApi: vi.fn(async () => ({ singleUrl: null, batchResults: [] })),
+  fetchMockupHistory: vi.fn(() => Promise.resolve([])),
+  saveMockupToDb: vi.fn(() => Promise.resolve(null)),
+  generateMockupApi: vi.fn(() => Promise.resolve({ singleUrl: null, batchResults: [] })),
   downloadMockupAsPdf: vi.fn(async () => {}),
   deleteMockupFromDb: vi.fn(async () => {}),
 }));
@@ -149,9 +149,7 @@ const LOCATIONS_X = [
     location_code: 'frente',
     location_name: 'Frente',
     location_order: 1,
-    options: [
-      { efetiva_largura_max: 10, efetiva_altura_max: 6, max_cores: 4, is_curved: false },
-    ],
+    options: [{ efetiva_largura_max: 10, efetiva_altura_max: 6, max_cores: 4, is_curved: false }],
   },
   {
     location_code: 'costas',
@@ -216,7 +214,7 @@ describe('B F-02 — locations nao recriam areas ja preenchidas', () => {
     );
 
     // chegada tardia das locations do MESMO produto
-    await act(async () => {
+    act(() => {
       locationsByProduct['prod-x'] = LOCATIONS_X;
       rerender();
     });
@@ -244,7 +242,7 @@ describe('B F-02 — locations nao recriam areas ja preenchidas', () => {
       ),
     );
 
-    await act(async () => {
+    act(() => {
       result.current.setProductSelection({
         product: PRODUCT_Y as never,
         variant: null,
@@ -267,7 +265,7 @@ describe('B F-02 — locations nao recriam areas ja preenchidas', () => {
     const { result, rerender } = renderHook(() => useMockupGenerator(), { wrapper: MemoryRouter });
     await waitFor(() => expect(result.current.productLocations).toBeNull());
 
-    await act(async () => {
+    act(() => {
       result.current.setProductSelection({
         product: PRODUCT_Y as never,
         variant: null,
@@ -279,7 +277,7 @@ describe('B F-02 — locations nao recriam areas ja preenchidas', () => {
     const areaId = result.current.personalizationAreas[0].id;
 
     // novo objeto de locations (identidade nova) para o MESMO produto
-    await act(async () => {
+    act(() => {
       locationsByProduct['prod-y'] = LOCATIONS_Y.map((l) => ({ ...l }));
       rerender();
     });

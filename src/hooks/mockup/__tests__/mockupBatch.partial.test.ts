@@ -8,8 +8,8 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 const { draftApi, api, toastMock, colorAnalysis, positionHistory } = vi.hoisted(() => ({
   draftApi: {
-    saveDraft: vi.fn(async () => true),
-    loadDraft: vi.fn(async () => null),
+    saveDraft: vi.fn(() => Promise.resolve(true)),
+    loadDraft: vi.fn(() => Promise.resolve(null)),
     clearDraft: vi.fn(async () => {}),
   },
   api: {
@@ -45,7 +45,7 @@ vi.mock('@/contexts/AuthContext', () => ({
 vi.mock('@/contexts/ProductsContext', () => ({
   useProductsContext: () => ({ getProductById: () => PRODUCT }),
 }));
-vi.mock('@/lib/db/postgrest', () => ({ dbInvoke: vi.fn(async () => ({ records: [] })) }));
+vi.mock('@/lib/db/postgrest', () => ({ dbInvoke: vi.fn(() => Promise.resolve({ records: [] })) }));
 vi.mock('@/hooks/mockup/mockupGenerationService', () => ({
   createDefaultArea: () => ({
     id: 'default',
@@ -56,7 +56,7 @@ vi.mock('@/hooks/mockup/mockupGenerationService', () => ({
     logoHeight: 5,
     logoPreview: null,
   }),
-  fetchMockupHistory: vi.fn(async () => []),
+  fetchMockupHistory: vi.fn(() => Promise.resolve([])),
   saveMockupToDb: api.saveMockupToDb,
   generateMockupApi: api.generateMockupApi,
   downloadMockupAsPdf: vi.fn(async () => {}),
@@ -95,9 +95,9 @@ const makeArea = (id: string, name: string) => ({
   logoPreview: 'data:image/png;base64,AAAA',
 });
 
-async function setup(areas: ReturnType<typeof makeArea>[]) {
+function setup(areas: ReturnType<typeof makeArea>[]) {
   const hook = renderHook(() => useMockupGenerator(), { wrapper: MemoryRouter });
-  await act(async () => {
+  act(() => {
     hook.result.current.setProductSelection({
       product: PRODUCT as never,
       variant: null,
@@ -113,8 +113,8 @@ async function setup(areas: ReturnType<typeof makeArea>[]) {
 describe('lote multi-área — falha parcial e id estável', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    api.saveMockupToDb.mockImplementation(
-      async (p: { area: { id: string } }) => `rec-${p.area.id}`,
+    api.saveMockupToDb.mockImplementation((p: { area: { id: string } }) =>
+      Promise.resolve(`rec-${p.area.id}`),
     );
   });
 
@@ -127,13 +127,15 @@ describe('lote multi-área — falha parcial e id estável', () => {
         { url: 'u3', areaName: 'Lado', areaId: 'a3' },
       ],
     });
-    const { result } = await setup(areas);
+    const { result } = setup(areas);
 
     await act(async () => {
       await result.current.generateMockup();
     });
 
-    const savedIds = api.saveMockupToDb.mock.calls.map((c) => c[0].area.id).sort();
+    const savedIds = api.saveMockupToDb.mock.calls
+      .map((c) => c[0].area.id)
+      .sort((a, b) => a.localeCompare(b));
     expect(savedIds).toEqual(['a1', 'a3']);
     expect(Object.keys(result.current.areaErrors)).toEqual(['a2']);
     expect(result.current.generatedBatchMockups.map((b) => b.areaId)).toEqual(['a1', 'a3']);
@@ -152,11 +154,11 @@ describe('lote multi-área — falha parcial e id estável', () => {
     ]);
     expect(api.saveMockupToDb.mock.calls.map((c) => c[0].area.id)).toEqual(['a2']);
     expect(result.current.areaErrors).toEqual({});
-    expect(result.current.generatedBatchMockups.map((b) => b.areaId).sort()).toEqual([
-      'a1',
-      'a2',
-      'a3',
-    ]);
+    expect(
+      result.current.generatedBatchMockups
+        .map((b) => b.areaId ?? '')
+        .sort((a, b) => a.localeCompare(b)),
+    ).toEqual(['a1', 'a2', 'a3']);
   });
 
   it('falha na regeração individual mantém o erro próprio da área', async () => {
@@ -165,7 +167,7 @@ describe('lote multi-área — falha parcial e id estável', () => {
       singleUrl: 'u1',
       batchResults: [{ url: 'u1', areaName: 'Frente', areaId: 'a1' }],
     });
-    const { result } = await setup(areas);
+    const { result } = setup(areas);
     await act(async () => {
       await result.current.generateMockup();
     });
@@ -181,7 +183,7 @@ describe('lote multi-área — falha parcial e id estável', () => {
     const areas = Array.from({ length: MAX_BATCH_AREAS + 1 }, (_, i) =>
       makeArea(`a${i}`, `Área ${i}`),
     );
-    const { result } = await setup(areas);
+    const { result } = setup(areas);
     await act(async () => {
       await result.current.generateMockup();
     });
@@ -199,7 +201,7 @@ describe('lote multi-área — falha parcial e id estável', () => {
         { url: 'u1', areaName: 'Frente', areaId: 'a1' },
       ],
     });
-    const { result } = await setup(areas);
+    const { result } = setup(areas);
     await act(async () => {
       await result.current.generateMockup();
     });
