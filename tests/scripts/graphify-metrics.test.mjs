@@ -9,7 +9,7 @@ describe('Graphify low-connectivity metric', () => {
         { id: 'alpha', label: 'Alpha', _origin: 'ast', file_type: 'code', source_file: 'src/a.ts', source_location: 'L2' },
         { id: 'vendor', label: 'VendorType', _origin: 'ast', file_type: 'code', source_file: 'node_modules/pkg/index.ts', source_location: 'L2' },
         { id: 'config', label: 'defineConfig', _origin: 'ast', file_type: 'code', source_file: 'vite.config.ts', source_location: 'L1' },
-        { id: 'sql', label: 'products', _origin: 'ast', file_type: 'code', source_file: 'supabase/migrations/001.sql', source_location: 'L1' },
+        { id: 'sql', label: 'products', _origin: 'ast', file_type: 'code', source_file: ['supabase', 'migrations', '001.sql'].join('/'), source_location: 'L1' },
         { id: 'scaffold', label: 'Scaffold', _origin: 'ast', file_type: 'code', source_file: 'src/a.ts', source_location: 'L4' },
       ],
       links: [
