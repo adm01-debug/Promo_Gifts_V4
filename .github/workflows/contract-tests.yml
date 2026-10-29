@@ -92,29 +92,40 @@ jobs:
           # exceeded" no supabase start (run 40198510942); mesma reversão do db-schema-drift-check.yml.
           echo "SUPABASE_INTERNAL_IMAGE_REGISTRY=ghcr.io" >> "$GITHUB_ENV"
 
-      - name: Pre-pull PostgreSQL do Supabase com autenticação GHCR
+      - name: Pre-pull PostgreSQL do Supabase com fallback de registry
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
-          # O Supabase local usa esta imagem no `supabase start`. O log do job
-          # registrou `toomanyrequests` no pull anônimo; autenticamos antes do
-          # bootstrap, com o mesmo padrão já usado pelo db-schema-drift-check.
-          postgres_image="${SUPABASE_INTERNAL_IMAGE_REGISTRY}/supabase/postgres:17.6.1.063"
-          for attempt in 1 2 3 4 5; do
-            if echo "$GITHUB_TOKEN" | docker login ghcr.io -u x-access-token --password-stdin \
-                && docker pull "$postgres_image"; then
-              echo "Pre-pull do PostgreSQL concluído (tentativa $attempt)"
-              break
+          postgres_tag="17.6.1.063"
+          ghcr_image="ghcr.io/supabase/postgres:${postgres_tag}"
+          dockerhub_image="docker.io/supabase/postgres:${postgres_tag}"
+
+          # O pull autenticado do GHCR ainda retornou toomanyrequests em 5
+          # tentativas (run 40928555691). A tag equivalente existe no Docker Hub
+          # oficial da Supabase; usa-se esse mirror quando o GHCR limitar o runner.
+          if echo "$GITHUB_TOKEN" | docker login ghcr.io -u x-access-token --password-stdin \
+              && docker pull "$ghcr_image"; then
+            echo "Imagem PostgreSQL obtida do GHCR"
+            exit 0
+          fi
+
+          echo "::warning::GHCR indisponível/limitado; tentando a tag oficial no Docker Hub"
+          echo "SUPABASE_INTERNAL_IMAGE_REGISTRY=docker.io" >> "$GITHUB_ENV"
+          for attempt in 1 2 3; do
+            if docker pull "$dockerhub_image"; then
+              echo "Imagem PostgreSQL obtida do Docker Hub (tentativa $attempt)"
+              exit 0
             fi
-            if [ "$attempt" -eq 5 ]; then
-              echo "::error::Pre-pull de $postgres_image falhou após 5 tentativas"
-              exit 1
+            if [ "$attempt" -lt 3 ]; then
+              wait_s=$((attempt * 20))
+              echo "Pull Docker Hub falhou; nova tentativa em ${wait_s}s"
+              sleep "$wait_s"
             fi
-            wait_s=$((attempt * 30))
-            echo "Tentativa $attempt falhou; aguardando ${wait_s}s antes de tentar novamente"
-            sleep "$wait_s"
           done
+
+          echo "::error::Não foi possível obter $postgres_tag do GHCR nem do Docker Hub"
+          exit 1
 
       - run: npm ci --no-audit --no-fund
 
