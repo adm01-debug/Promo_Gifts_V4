@@ -98,6 +98,11 @@ export function useMockupGenerator() {
   const [hasDraftRestored, setHasDraftRestored] = useState(false);
   const [showDraftRestoredNotice, setShowDraftRestoredNotice] = useState(false);
   const isRestoringDraft = useRef(false);
+  // B F-02 FIX: produto cujas areas ja estao materializadas em `personalizationAreas`
+  // (rascunho/historico restaurado ou locations ja aplicadas). Impede que o efeito de
+  // `productLocations` recrie as areas — e apague logo, posicao e tamanho — quando o RPC
+  // resolve tarde ou o memo e recalculado para o MESMO produto. So outro produto recria.
+  const areasProductIdRef = useRef<string | null>(null);
   const historyPushTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
   const draftNoticeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [activeTab, setActiveTab] = useState<'generator' | 'history'>('generator');
@@ -173,6 +178,10 @@ export function useMockupGenerator() {
 
   useEffect(() => {
     if (!productLocations || isRestoringDraft.current || !hasDraftRestored) return;
+    const productId = selectedProduct?.id ?? null;
+    // B F-02 FIX: as areas deste produto ja estao em estado (rascunho/historico restaurado
+    // ou locations ja aplicadas). Recriar aqui apagaria logo, posicao e tamanho — preserva.
+    if (productId && areasProductIdRef.current === productId) return;
     const newAreas: PersonalizationArea[] = productLocations
       .sort((a, b) => a.order - b.order)
       .map((loc) => ({
@@ -193,8 +202,9 @@ export function useMockupGenerator() {
     if (newAreas.length > 0) {
       setPersonalizationAreas(newAreas);
       setActiveAreaId(newAreas[0].id);
+      areasProductIdRef.current = productId;
     }
-  }, [productLocations, hasDraftRestored]);
+  }, [productLocations, hasDraftRestored, selectedProduct]);
 
   useEffect(() => {
     if (!activeAreaId && personalizationAreas.length > 0)
@@ -268,6 +278,9 @@ export function useMockupGenerator() {
           if (draft.personalizationAreas.length > 0) {
             setPersonalizationAreas(draft.personalizationAreas);
             setActiveAreaId(draft.personalizationAreas[0].id);
+            // B F-02: as areas restauradas pertencem a este produto — a chegada tardia das
+            // locations (mesmo produto) nao pode recria-las.
+            areasProductIdRef.current = draft.productId ?? null;
           }
           setShowDraftRestoredNotice(true);
           if (draftNoticeTimeoutRef.current) clearTimeout(draftNoticeTimeoutRef.current);
@@ -674,6 +687,8 @@ export function useMockupGenerator() {
     setSelectedClient(null);
     setPersonalizationAreas([createDefaultArea()]);
     setActiveAreaId(null);
+    // B F-02: reset volta ao estado "sem areas" — o proximo produto pode materializar locations.
+    areasProductIdRef.current = null;
     setGeneratedMockup(null);
     setGeneratedBatchMockups([]);
     setArtAttachments([]);
@@ -744,6 +759,9 @@ export function useMockupGenerator() {
       };
       setPersonalizationAreas([restoredArea]);
       setActiveAreaId(restoredArea.id);
+      // B F-02: areas carregadas do historico pertencem a `product` — nao recriar quando as
+      // locations chegarem tarde para o mesmo produto.
+      areasProductIdRef.current = product?.id ?? null;
       setGeneratedMockup(null);
       setHasUserInteractedPosition(true);
       positionHistory.clear();
