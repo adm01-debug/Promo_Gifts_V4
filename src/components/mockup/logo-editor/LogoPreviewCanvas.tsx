@@ -1,9 +1,106 @@
-import { useId } from 'react';
+import { useEffect, useId, useState } from 'react';
 import { Badge } from '@/components/ui/badge';
-import { Palette } from 'lucide-react';
+import { AlertTriangle, Palette } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { TechniqueFilter } from './logoTechniqueFilters';
 import type { TechniqueColorConfig } from '../techniqueColorUtils';
+
+/** Bbox de uma marca depois de girar/escalar, em px. */
+export interface MarkFootprint {
+  width: number;
+  height: number;
+}
+
+/** Tamanho medido da área de aplicação (o preview), em px. */
+export interface CanvasSize {
+  width: number;
+  height: number;
+}
+
+/**
+ * Bbox real da marca depois do giro (`rotationDeg`) e da escala (`scaleFactor`).
+ *
+ * A <img> usa `object-contain` dentro da caixa de calibração (`logoDisplay`), então
+ * a caixa cheia é um limite superior: a bbox nunca subestima a marca girada e um
+ * corte não passa em branco. Antes disso a caixa era fixa COM `overflow-hidden` —
+ * girar 90° uma marca larga (ou escalar acima de 1) a cortava sem aviso.
+ */
+export function getMarkFootprint(
+  logoDisplay: { widthPx: number; heightPx: number },
+  rotationDeg: number,
+  scaleFactor: number,
+): MarkFootprint {
+  const radians = (rotationDeg * Math.PI) / 180;
+  const cos = Math.abs(Math.cos(radians));
+  const sin = Math.abs(Math.sin(radians));
+  const width = Math.abs(logoDisplay.widthPx * scaleFactor);
+  const height = Math.abs(logoDisplay.heightPx * scaleFactor);
+  return {
+    width: width * cos + height * sin,
+    height: width * sin + height * cos,
+  };
+}
+
+/** Tolerância em px: não acusa corte por arredondamento sub-pixel. */
+const CLIP_TOLERANCE_PX = 0.5;
+
+/**
+ * A marca (na bbox girada/escalada) ultrapassa a área de aplicação? A área tem
+ * `overflow-hidden`, então o que passa da borda é cortado. Área de tamanho 0 =
+ * ainda não medida: aí não afirmamos corte (não inventamos aviso sem dado).
+ */
+export function isMarkClipped(
+  footprint: MarkFootprint,
+  position: { x: number; y: number },
+  area: CanvasSize,
+  tolerance: number = CLIP_TOLERANCE_PX,
+): boolean {
+  if (area.width <= 0 || area.height <= 0) return false;
+
+  const centerX = (position.x / 100) * area.width;
+  const centerY = (position.y / 100) * area.height;
+
+  return (
+    centerX - footprint.width / 2 < -tolerance ||
+    centerX + footprint.width / 2 > area.width + tolerance ||
+    centerY - footprint.height / 2 < -tolerance ||
+    centerY + footprint.height / 2 > area.height + tolerance
+  );
+}
+
+/** Mede a área de aplicação (o preview) e acompanha mudanças de tamanho. */
+function useAreaSize(ref: React.RefObject<HTMLDivElement | null>): CanvasSize {
+  const [area, setArea] = useState<CanvasSize>({ width: 0, height: 0 });
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+
+    const update = () => {
+      const rect = el.getBoundingClientRect();
+      // clientWidth/Height é a caixa de conteúdo (o que `overflow-hidden` recorta de
+      // verdade: sem a borda do card). Cai para o rect quando ainda não há layout.
+      const width = el.clientWidth || rect.width || 0;
+      const height = el.clientHeight || rect.height || width;
+      setArea((previous) =>
+        previous.width === width && previous.height === height ? previous : { width, height },
+      );
+    };
+
+    update();
+
+    if (typeof ResizeObserver !== 'undefined') {
+      const observer = new ResizeObserver(update);
+      observer.observe(el);
+      return () => observer.disconnect();
+    }
+
+    window.addEventListener('resize', update);
+    return () => window.removeEventListener('resize', update);
+  }, [ref]);
+
+  return area;
+}
 
 interface LogoPreviewCanvasProps {
   containerRef: React.RefObject<HTMLDivElement | null>;
@@ -48,6 +145,15 @@ export function LogoPreviewCanvas({
 
   const hasLogo = Boolean(logoPreview && logoDisplay);
   const instructionsId = useId();
+  const area = useAreaSize(containerRef);
+
+  // A caixa da marca (não é a área de aplicação) cresce com o giro/escala para nunca
+  // cortar a marca; `dragWidth/dragHeight` mantêm a pega do arraste no tamanho de
+  // calibração — a área de interação nunca encolhe abaixo dela.
+  const footprint = logoDisplay ? getMarkFootprint(logoDisplay, logoRotation, userScaleFactor) : null;
+  const dragWidth = logoDisplay && footprint ? Math.max(logoDisplay.widthPx, footprint.width) : 0;
+  const dragHeight = logoDisplay && footprint ? Math.max(logoDisplay.heightPx, footprint.height) : 0;
+  const clipped = footprint ? isMarkClipped(footprint, { x: positionX, y: positionY }, area) : false;
 
   return (
     <>
@@ -106,39 +212,52 @@ export function LogoPreviewCanvas({
           }}
         />
 
-        {logoPreview && logoDisplay ? (
+        {logoPreview && logoDisplay && footprint ? (
           <div
-            className={cn(
-              'absolute touch-none select-none overflow-hidden',
-              'cursor-grab active:cursor-grabbing',
-              'rounded-sm ring-2 ring-primary/30',
-            )}
+            data-testid="logo-drag-area"
+            // Área de interação: fica no tamanho de calibração para a pega não encolher.
+            className={cn('absolute touch-none select-none', 'cursor-grab active:cursor-grabbing')}
             onPointerDown={onPointerDown}
             style={{
               left: `${positionX}%`,
               top: `${positionY}%`,
-              width: `${logoDisplay.widthPx}px`,
-              height: `${logoDisplay.heightPx}px`,
+              width: `${dragWidth}px`,
+              height: `${dragHeight}px`,
               transform: `translate(-50%, -50%)`,
             }}
           >
-            <img
-              src={isCanvasProcessed ? processedLogoUrl : logoPreview}
-              alt="Logo para personalização"
-              className="absolute inset-0 h-full w-full object-contain"
+            {/* Caixa da marca: acompanha giro/escala e NÃO recorta (antes era fixa com
+                `overflow-hidden` e cortava a marca girada sem aviso). */}
+            <div
+              data-testid="logo-brand-box"
+              data-clipped={clipped ? 'true' : 'false'}
+              className="absolute left-1/2 top-1/2 rounded-sm ring-2 ring-primary/30"
               style={{
-                transform: `rotate(${logoRotation}deg) scale(${userScaleFactor})`,
-                opacity: isCanvasProcessed
-                  ? 0.92
-                  : (colorConfigFilter?.opacity ?? techniqueFilter.opacity),
-                filter: !isCanvasProcessed
-                  ? (colorConfigFilter?.filter ?? techniqueFilter.filter)
-                  : 'none',
-                mixBlendMode: techniqueFilter.blend as React.CSSProperties['mixBlendMode'],
+                width: `${footprint.width}px`,
+                height: `${footprint.height}px`,
+                transform: `translate(-50%, -50%)`,
               }}
-              draggable={false}
-              loading="lazy"
-            />
+            >
+              <img
+                src={isCanvasProcessed ? processedLogoUrl : logoPreview}
+                alt="Logo para personalização"
+                className="absolute left-1/2 top-1/2 object-contain"
+                style={{
+                  width: `${logoDisplay.widthPx}px`,
+                  height: `${logoDisplay.heightPx}px`,
+                  transform: `translate(-50%, -50%) rotate(${logoRotation}deg) scale(${userScaleFactor})`,
+                  opacity: isCanvasProcessed
+                    ? 0.92
+                    : (colorConfigFilter?.opacity ?? techniqueFilter.opacity),
+                  filter: !isCanvasProcessed
+                    ? (colorConfigFilter?.filter ?? techniqueFilter.filter)
+                    : 'none',
+                  mixBlendMode: techniqueFilter.blend as React.CSSProperties['mixBlendMode'],
+                }}
+                draggable={false}
+                loading="lazy"
+              />
+            </div>
           </div>
         ) : (
           <div className="absolute inset-0 flex items-center justify-center bg-background/80">
@@ -146,6 +265,19 @@ export function LogoPreviewCanvas({
               Faça upload do logo para posicioná-lo
             </p>
           </div>
+        )}
+
+        {/* Aviso explícito de corte: a marca ultrapassa a área de aplicação */}
+        {logoPreview && clipped && (
+          <Badge
+            variant="destructive"
+            role="status"
+            data-testid="logo-clip-warning"
+            className="pointer-events-none absolute bottom-2 left-1/2 z-10 -translate-x-1/2 gap-1 text-[10px]"
+          >
+            <AlertTriangle aria-hidden="true" className="h-3 w-3" />
+            Marca cortada pela área de aplicação
+          </Badge>
         )}
 
         {/* Live preview badge + Color config badge */}
