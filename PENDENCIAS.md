@@ -3,7 +3,7 @@
 **Atualizado:** 2026-10-29
 **Branch da revalidação:** `fix/graphify-reproducible-version-20261029`
 
-> Revalidação operacional mais recente: veja P19 ao final deste arquivo. Inventários anteriores permanecem como histórico e não substituem os status atualizados em P19.
+> Revalidação operacional mais recente: veja P20 ao final deste arquivo. P18 e P19 permanecem como snapshots históricos.
 
 ## Auditoria de sincronização local × GitHub × Supabase — snapshot substituído
 
@@ -685,3 +685,25 @@ Os status não terminais/fora de falha no mesmo snapshot foram mantidos separado
 - A saída Graphify foi regenerada com a versão homologada `graphifyy 0.9.91` sobre o SHA `7eea1696`: 40.829 nós, 69.366 arestas e 2.207 comunidades; 14.730 nós de baixa conectividade em 17.972 nós de código elegíveis. O relatório e os números estão alinhados em `docs/graphify/AUDITORIA_MAPAS_E_BENCHMARK_2026-10-29.md`.
 - A execução documentada do mapa SQL separado usou 3.189 arquivos versionados, 20.306 nós e 21.533 arestas. A saída permanece local/ignorada; nenhum conteúdo do banco foi exportado para o grafo.
 - A instrumentação TypeScript contou 1.714 pares de referências; zero arestas novas foram adicionadas porque as relações já estavam presentes. Foram ignoradas 10.343 referências externas; 46 arquivos de origem e duas declarações não tinham nó interno mapeável.
+
+## P20 — estado após sincronização com `main` e checks dos PRs — 2026-10-29T23:23Z
+
+### Branch Graphify e validação local
+
+- A branch `fix/graphify-reproducible-version-20261029` foi sincronizada por merge normal com `origin/main` no SHA `9a97f9a2c857b25590691efd2c741a194bfb24da`; o merge é `8021e0d58`. A resolução manteve `PENDENCIAS.md` da branch porque continha evidências P18/P19 posteriores que faltavam na versão da `main`.
+- O PR [#2743](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2743) foi atualizado até `5818692d243e2f3ede2d4ff8bfb69f86f5e50090`. `origin/main` é ancestral da branch; o checkout local está publicado e sem conflitos.
+- Após o merge, `npm run build:verify` passou: typecheck, ESLint com 0 erros/0 avisos e sem regressões, guard SSOT, build Vite, ciclos de chunks e harnesses de produção.
+- A suíte completa passou após o commit final: 1.247 arquivos e 25.871 testes aprovados; 130 arquivos/1.135 testes skipped e 24 TODO. O baseline imediatamente anterior ao refresh Graphify teve os mesmos totais. Nenhum teste foi removido ou enfraquecido.
+- A saída Graphify foi atualizada com `npm run graphify:refresh`, fixado em `graphifyy==0.9.91`, a partir da árvore de código do merge `8021e0d58`: 41.230 nós, 69.904 relações após referências TypeScript, 2.163 comunidades e 14.852 nós de baixa conectividade em 18.109 nós de código elegíveis. Exclusões: 4.134 nós estruturais, 5.445 de configuração, 13.420 não código e 122 dependências. Esse snapshot posterior é distinto do benchmark histórico em `7eea1696`.
+- Nenhuma migration, DDL, repair, deploy de Edge Function ou escrita no Supabase foi feita.
+
+### Checks externos ainda bloqueando integração
+
+- PR #2743: os check runs do GitHub consultados no novo HEAD não indicavam falha nem fila. O status de commit do Vercel, porém, está `failure` no deployment [`dpl_7hEenqjmJq6mxN1oTAuZzZKrDisb`](https://vercel.com/juca1/promo-gifts-v4/7hEenqjmJq6mxN1oTAuZzZKrDisb). `npx vercel inspect ... --logs` retornou somente `status Error`, sem `errorCode`, mensagem ou log de build. `Devin Review` aparece como sucesso técnico, mas a descrição confirma que a revisão foi ignorada por trial encerrado/sem créditos; não conta como revisão realizada. Não mesclar enquanto o status obrigatório do Preview estiver falho.
+- PR #2747 — [Gate 5 — Supabase Security Audit, run 40970640671](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40970640671): o audit SECURITY DEFINER passou em 570 funções; o smoke subsequente recebeu HTTP 500, 504 e 500 em três tentativas e encerrou como `inconclusive` por indisponibilidade do serviço. Rerun somente desse workflow read-only foi solicitado; tentativa 2 está `queued` neste snapshot.
+- PR #2747 — [CI - Replenishment Module Quality Gate, run 40970640650](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40970640650): dois specs autenticados falharam no login. `check-login` retornou 200, mas o token Auth demorou 17,155 s; `system_settings` demorou 47,192 s e `get_profile_and_roles` permaneceu pendente por 42,878 s. No retry, chamadas a Auth/PostgREST também ficaram pendentes por 35–80 s. Evidência compatível com lentidão/disponibilidade da API canônica; causa operacional raiz ainda não foi identificada. Não alterar o teste nem aumentar timeouts para ocultar o sintoma.
+- PR #2747 — [Copilot Reviewer, run 40970654901](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40970654901): falha no job de revisão automática durante preparação/firewall do agente. É infraestrutura do serviço Copilot, sem correção de código comprovada.
+- PR #2747: o deployment Vercel [`dpl_HDE1NN5Stb2tz79XJrRmN4412wwB`](https://vercel.com/juca1/promo-gifts-v4/HDE1NN5Stb2tz79XJrRmN4412wwB) também está `ERROR`, sem causa exposta pela CLI.
+- PR #2745 permanece atrás da `main`; seus checks incluem itens em fila. Nenhum dos PRs #2743, #2745 ou #2747 foi mesclado nesta etapa.
+
+**Próxima ação:** consultar os logs/alertas operacionais do Supabase para Auth/PostgREST no intervalo 23:05–23:20 UTC e obter o detalhe do build no painel Vercel; aguardar o rerun read-only do Gate 5. Revalidar os checks dos três PRs antes de qualquer decisão de merge.

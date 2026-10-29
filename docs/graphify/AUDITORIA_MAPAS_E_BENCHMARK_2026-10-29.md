@@ -34,6 +34,12 @@ Os totais do benchmark são da extração comparativa e não devem ser comparado
 - Mapa SQL separado (última execução validada): 3.189 arquivos, 20.306 nós e 21.533 relações; saída em `graphify-out/sql/graphify-out/graph.json`, não versionada.
 - Nós de baixa conectividade no mapa principal são recalculados no pós-processamento a cada atualização; o número vigente aparece na seção `Knowledge Gaps` do `graphify-out/GRAPH_REPORT.md`.
 
+### Refresh após sincronização com `main` — 2026-10-29
+
+Após incorporar a árvore de código da `main` no commit `8021e0d58`, a versão fixada `graphifyy 0.9.91` gerou o relatório atual com 41.230 nós, 69.904 relações após o enriquecimento TypeScript e 2.163 comunidades. A métrica recalculada encontrou 14.852 nós de baixa conectividade entre 18.109 nós de código elegíveis; foram excluídos 4.134 nós estruturais, 5.445 de configuração, 13.420 não código e 122 dependências. O benchmark em `7eea1696` acima permanece como fotografia comparativa anterior, não como contagem do relatório atual.
+
+O parser Graphify ainda registra erro parcial em `src/integrations/supabase/types.ts:42514`; o typecheck e o build independentes passam. A extração é completada com aviso e não altera o código-fonte.
+
 ## Atualização reproduzível
 
 ```sh
