@@ -130,3 +130,28 @@ Os itens abaixo estão documentados em `PENDENCIAS.md` com o motivo exato do blo
 | P11 | Edge Integration Tests — All | Versões deployadas desatualizadas (código no repo correto) | Disparar `deploy-edge-functions.yml` (workflow_dispatch) |
 | P12 | Kit Coverage — Integration | `permission denied for view v_kit_component_complete` | Opção A: resolver P7 e mergear PR #2701 com GRANT. Opção B: `db-apply-migration.yml` com GRANT SELECT |
 | P13 | N/A (Vercel infra) | Projeto fantasma `prj_W1Zdi6BQWkAwQx5VJjpSNlZubeok` gerando builds duplicados | Deletar projeto fantasma no dashboard Vercel |
+
+## Atualização de auditoria — 2026-10-28/29
+
+### Estado sincronizado
+
+- Checkout local `main` e `origin/main` coincidem em `c344508711797a730893644449b16a05f12f4fce`.
+- A PR [#2717](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2717) permanece aberta: branch remota `5a2e578a269459129d2a24dc2a6047471724003b`, base `c3445087`. Foram feitas duas correções locais ainda não commitadas para o teste de undo: usar o harness DEV (`/__test/undo-toast?interactive=1`) no lugar da rota autenticada que redirecionava a `/login`, e ocultar o toast visual estático somente no modo interativo.
+- Validação local reportada para essa correção: spec undo 7/7; snapshots visuais do toast 8/8 sem alteração; fluxo Catalog→Kit 6/6. `quote-view-no-presentation-mode`: 25/27; o snapshot do menu mobile dark diverge 5 px e requer avaliação visual; o AlertDialog falhou sob carga paralela e passou isolado. Nenhum snapshot foi atualizado.
+- As correções locais ainda não foram commitadas/pushadas; portanto não estão no GitHub nem em `main`. A PR tinha 7 checks falhos, 5 em execução, 49 verdes, 6 ignorados e 1 neutro na consulta. Sem merge.
+
+### Falhas atuais na última execução observada da main
+
+| Workflow | Run | Causa observada |
+|---|---|---|
+| Uptime Monitor | [40793110088](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40793110088) | Probe `health-check` falhou; issue #2718 foi aberta automaticamente. Investigar PostgREST/health check. |
+| E2E — Critical Flows & Error Boundaries | [40762904577](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762904577) | Job E2E de fluxo de catálogo→kit falhou. |
+| CI Security & Drift Checks | [40762904949](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762904949) | E2E crítico autenticado falhou; requer causa por teste antes de corrigir. |
+| E2E • Swatch QuickView (Lista + Tabela) | [40762904693](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762904693) | WebKit cancelado por shutdown do runner; Chromium falhou e precisa diagnóstico de teste. |
+
+### Supabase canônico — somente leitura
+
+- Projeto identificado: `doufsxqlfjyuvxuezpln` (Promo_Gifts_V4), status `ACTIVE_HEALTHY`, PostgreSQL 17.6.
+- Ledger remoto: 2.552 IDs; máximo `20261027160000`.
+- Comparação local: 3.009 arquivos SQL, 3.004 IDs únicos, 463 IDs apenas locais, 11 IDs apenas remotos e 5 versões duplicadas localmente. O gate E40 anteriormente produziu contagem em escopo diferente (1.109/648), ainda não reconciliada; números não são intercambiáveis.
+- Nenhuma migration, dado operacional, schema ou objeto do banco foi alterado. Os IDs divergentes permanecem sem classificação e impedem declarar sincronização total. A classificação precisa preceder qualquer aplicação pelo workflow autorizado do repositório.
