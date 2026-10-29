@@ -358,7 +358,7 @@ Esta seção registra as últimas execuções da `main` observadas nesta data. O
 
 ### Copilot Review — PR #2719
 
-Run anterior [40818209296](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40818209296) falhou com a mensagem de limite adicional de uso do plano Copilot e bloqueio de firewall a `api.github.com`. O novo run [40819621886](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40819621886), no SHA `239d3737`, está em andamento. Não contornar billing nem firewall; se falhar novamente, o responsável do repositório deve liberar o uso do Copilot Actions e permitir o endpoint conforme a configuração oficial do runner.
+Run [40818209296](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40818209296), no SHA `883b9a4d`, falhou por limite adicional de uso do Copilot e bloqueio de firewall a `api.github.com`. A nova tentativa [40819621886](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40819621886), no SHA `239d3737`, também falhou: `statusCode: 402`, `errorCode: quota`, `You've reached your additional usage limit for your plan`. O responsável do repositório precisa liberar/elevar a cota do Copilot Actions. Não contornar billing nem firewall; a falha mais recente aponta quota, não firewall.
 
 ### Correção do PR #2719
 

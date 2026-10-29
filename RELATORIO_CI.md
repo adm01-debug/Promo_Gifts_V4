@@ -88,7 +88,7 @@ No branch `chore/graphify-audit-improvements-20261029`, após corrigir o falso p
 | Contratos do Gate 1.3 | falha por fixture Graphify citando caminho inexistente | 3 scripts passaram |
 | Teste direcionado `graphify-metrics.test.mjs` | 4 testes passaram | 4 testes passaram |
 
-O commit `239d3737` foi enviado ao branch do PR #2719. Os checks do novo SHA estão reexecutando; o PR permanece aberto até todos os checks obrigatórios concluírem com sucesso. A falha anterior de Copilot Review (limite de uso e firewall) está registrada em `PENDENCIAS.md`.
+O commit `239d3737` foi enviado ao branch do PR #2719. Após o push de documentação `5c80d276`, os checks desse SHA tinham 18 conclusões success, 25 em andamento, 6 skipped e 1 neutral, sem falhas concluídas. A nova revisão Copilot no SHA anterior `239d3737` falhou por cota HTTP 402; está registrada em `PENDENCIAS.md`. O PR permanece aberto até todos os checks obrigatórios do SHA atual concluírem com sucesso.
 
 ### Repositório e Supabase canônico
 
