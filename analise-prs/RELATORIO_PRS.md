@@ -80,10 +80,10 @@ Evidência adicional: `quality-gate` foi ✅ SUCCESS em `37ea10a3` (5º merge, S
 | #2734 | fix(ci): usa mirror Docker Hub após limite do GHCR | open | **DECISAO_HUMANA** | `.github/workflows/contract-tests.yml` (REGRA #8) |
 | #2733 | fix(banco): adiciona rollback header e arquivo rollback | merged | **MERGEADA ✅** | SHA `8bc08b1` — squash 2026-10-29 |
 | #2731 | fix(db): protege kill_switch_hits contra INSERT anônimo | open | **DECISAO_HUMANA** | `.github/workflows/deploy-gates.yml` + `supabase/migrations/` (REGRA #8) |
-| #2730 | fix(ci): protege contrato de repair-only em E15 | open | **DECISAO_HUMANA** | `.github/workflows/db-apply-migration.yml` (REGRA #8) |
+| #2730 | fix(ci): protege contrato de repair-only em E15 | merged (PO) | **MERGEADA pelo PO ✅** | merged_at 2026-10-29T22:20:35Z |
 | #2729 | docs(analise-prs): relatório completo — 21 PRs | closed | **NAO_MERGEAR** | Branch de entrega desta sessão — fechada pelo PO |
 | #2721 | chore: atualiza PENDENCIAS ¶4 e RELATORIO_CI | merged | **MERGEADA ✅** | SHA `6b48beb` — squash 2026-10-29 |
-| #2720 | ci(e2e): não ocultar falha na geração de fixtures | open | **DECISAO_HUMANA** | `.github/actions/e2e-setup/action.yml` (REGRA #8); merge LIMPO |
+| #2720 | ci(e2e): não ocultar falha na geração de fixtures | merged (PO) | **MERGEADA pelo PO ✅** | merged_at 2026-10-29T22:20:19Z |
 | ~~#2719~~ | ~~chore(build): separa mapas SQL e amplia referências Graphify~~ | merged | **MERGEADA ✅** | SHA `66d032af` — squash 2026-10-29 |
 | #2717 | fix(e2e): isola servidor Vite no CI de paridade | open | **DECISAO_HUMANA** | `.github/workflows/replenishment-quality.yml` (REGRA #8) + conflito |
 | #2716 | docs(auditoria): atualiza estado CI e sincronização canônica | closed | **CONFLITO** | Conflito em documentação — fechada externamente |
@@ -96,23 +96,23 @@ Evidência adicional: `quality-gate` foi ✅ SUCCESS em `37ea10a3` (5º merge, S
 | #2714 | fix(db): reconciliar migrations pendentes com o canônico | open | **DECISAO_HUMANA** | `supabase/migrations/` (4 novas migrations DDL — REGRA #8) |
 | #2713 | chore(main): release 1.1.0 | open | **AGUARDAR_REVISAO_PO** | Bot PR; Supabase Preview falhou; validar CHANGELOG |
 | #2711 | docs(ci): RELATORIO_CI.md v3 — tabela de prova consolidada | closed | **CONFLITO** | Draft; `claude_pink/`; conflito; fechada externamente |
-| #2738 | docs(analise-prs): relatório final — análise exaustiva 23 PRs | open | **PENDENTE_GATE** | Delivery branch; HEAD `61554a29`; Gate Final queued (22:44Z) |
+| #2738 | docs(analise-prs): relatório final — análise exaustiva 23 PRs | merged | **MERGEADA ✅** | SHA `9a97f9a2` — delivery sessão anterior |
 
 ---
 
-## Contagem por veredito
+## Contagem por veredito (sessão 1 — 24 PRs)
 
 | Veredito | Quantidade | PRs |
 |---|---|---|
 | MERGEADA (esta sessão) | 8 | #2721, #2735, #2733, #2695, #2707, #2737, #2736, #2719 |
-| PENDENTE_GATE (delivery) | 1 | #2738 (HEAD `61554a29`, Gate Final queued) |
-| DECISAO_HUMANA (open) | 6 | #2734, #2731, #2730, #2720, #2717, #2714 |
-| DECISAO_HUMANA (fechada ext.) | 1 | #2688 (closed) |
-| DECISAO_HUMANA (draft outra sessão) | 1 | #2701 (REGRA #8 + draft + REGRA #10) |
+| MERGEADA (delivery) | 1 | #2738 (SHA `9a97f9a2`) |
+| MERGEADA pelo PO | 2 | #2730, #2720 |
+| DECISAO_HUMANA (open) | 5 | #2734, #2731, #2717, #2714, #2701 |
+| DECISAO_HUMANA (closed ext.) | 1 | #2688 |
 | CONFLITO (closed ext.) | 4 | #2716, #2711, #2693, #2674 |
 | AGUARDAR_REVISAO_PO | 1 | #2713 |
-| NAO_MERGEAR (delivery anterior) | 1 | #2729 (fechada pelo PO) |
-| **Total analisadas** | **24** | ✅ (23 originais + #2738 delivery desta sessão) |
+| NAO_MERGEAR | 1 | #2729 |
+| **Total** | **24** | |
 
 ---
 
@@ -150,16 +150,6 @@ Evidência adicional: `quality-gate` foi ✅ SUCCESS em `37ea10a3` (5º merge, S
 - Gate Final: ✅ SUCCESS (run `40947643944`, SHA `6db2040f`); Merge test: LIMPO
 - **Ação:** DBA deve revisar migration; Gate E40 ✅ confirmado no retry
 
-### #2730 — fix(ci): protege contrato de repair-only em E15
-- **Por quê DECISAO_HUMANA:** `.github/workflows/db-apply-migration.yml` (workflow crítico E15)
-- Fix de segurança E051/E052 (shell injection). Merge test: LIMPO
-- **Ação:** PO aprovar o workflow
-
-### #2720 — ci(e2e): não ocultar falha na geração de fixtures
-- **Por quê DECISAO_HUMANA:** `.github/actions/e2e-setup/action.yml`
-- Remove `|| true` que ocultava falhas. Merge test: LIMPO (sem conflito)
-- **Ação:** PO pode mergear diretamente se aprovado a action
-
 ### #2717 — fix(e2e): isola servidor Vite no CI de paridade
 - **Por quê DECISAO_HUMANA:** `.github/workflows/replenishment-quality.yml`
 - Conflito com main: requer resolução manual
@@ -175,31 +165,70 @@ Evidência adicional: `quality-gate` foi ✅ SUCCESS em `37ea10a3` (5º merge, S
 - Fix legítimo: adiciona signInWithPassword ao teste de integração
 - **Ação:** PO deve promover de draft; branch de outra sessão (REGRA #10)
 
----
+### #2745 — ci(ratchet): evita SIGPIPE no relatório de diff
+- **Por quê DECISAO_HUMANA:** `.github/workflows/ratchet-weekly.yml`
+- Fix válido. Gate Final aguardando.
+- **Ação:** PO aprovar o workflow
 
-## Meta checklist
+### #2749 — fix(ci): sentinel SHA allowlist + E2E PDF Dialog skip
+- **Por quê DECISAO_HUMANA:** `.github/workflows/branch-protection-sentinel.yml` + draft
+- Fix válido (allowlist + skip E2E flaky).
+- **Ação:** PO promover de draft e aprovar workflow
 
-- [x] Total PRs abertas analisadas: 23 (via `refs/pull/*` na data da análise)
-- [x] Total com delivery: 24
-- [x] Dossiês criados: `analise-prs/dossies/PR-{n}.md` — um por PR
-- [x] prs.json: 23 entradas com veredito
-- [x] prs.csv: 23 linhas
-- [x] Merges: 8 PRs squash-mergeadas
-- [x] DECISAO_HUMANA: 8 PRs sinalizadas (6 open + 1 closed ext. + 1 draft outra sessão)
-- [x] CONFLITO: 4 PRs fechadas externamente
-- [x] AGUARDAR_REVISAO_PO: 1 PR (#2713)
-- [x] OBSOLETA: 1 PR (#2674)
-- [x] NAO_MERGEAR: 1 PR (#2729)
-- [x] regras-de-negocio.md: criado
-- [x] typecheck baseline: `analise-prs/baseline/typecheck.txt` — npm run typecheck EXIT:0
-- [x] unit-tests baseline: `analise-prs/baseline/unit-tests.txt` — 334/334 ✅, zero falhando POR NOME
-- [x] CI pós-merge verificado: E2E PRÉ-EXISTENTES (run `40762904949`); Gate 2.5 INFRA (HTTP 544); quality-gate FLAKE (✅ em `37ea10a3`)
-- [x] Zero regressão de código confirmada nos 8 merges
-- [x] Produção Supabase: N/A — 0 das 8 mergeadas tinham migrations ou edge functions
-- [x] Worktrees: nenhum adicional — apenas clone principal `/home/user/Promo_Gifts_V4`
-- [ ] Gate Final `66d032af`: attempt 2 (run `40949474206`) queued desde 22:33Z — runner backlog
-- [ ] PR #2738 (delivery): HEAD `61554a29`, Gate Final queued 22:44Z — aguardando merge final
+### #2744 — [NÃO MESCLAR] fix(edge): limites e tempo do MagazineAI
+- **Por quê DECISAO_HUMANA:** título explícito + draft + edge functions
+- **Ação:** PO autorizar explicitamente
 
 ---
 
-*Gerado por Claude Code — sessão https://claude.ai/code/session_01RfQzo8Ean3zudG2sEN79b6*
+## Atualização — sessão 2026-10-29 (continuação)
+
+**Main HEAD (início desta continuação):** `9a97f9a2c857b25590691efd2c741a194bfb24da` (PR #2738 delivery mergeada)
+
+### Correções de veredito (PRs da sessão anterior)
+
+| PR | Veredito anterior | Veredito correto | Evidência |
+|---|---|---|---|
+| #2730 | DECISAO_HUMANA (open) | **MERGEADA pelo PO ✅** | `merged: true`, `merged_at: 2026-10-29T22:20:35Z`, `merged_by: adm01-debug` |
+| #2720 | DECISAO_HUMANA (open) | **MERGEADA pelo PO ✅** | `merged: true`, `merged_at: 2026-10-29T22:20:19Z`, `merged_by: adm01-debug` |
+| #2738 | PENDENTE_GATE | **MERGEADA ✅** | SHA `9a97f9a2c857b25590691efd2c741a194bfb24da` — sessão anterior delivery |
+
+### Novas PRs abertas na sessão atual (7 PRs)
+
+| PR | Título | Estado | Veredito | Motivo |
+|---|---|---|---|---|
+| #2749 | fix(ci): sentinel SHA allowlist + E2E PDF Dialog skip | open/draft | **DECISAO_HUMANA** | `.github/workflows/branch-protection-sentinel.yml` (REGRA #8) + draft |
+| #2747 | fix(types): sincroniza idempotency_key de notificações | open | **AGUARDANDO_CI** | `src/integrations/supabase/types.ts` apenas; branch atualizada SHA `3a5521b1`; Gate Final rodando |
+| #2746 | docs(ci): auditoria completa de workflows com falha | open/draft | **DRAFT_SKIP** | draft; só documentação |
+| #2745 | ci(ratchet): evita SIGPIPE no relatório de diff | open | **DECISAO_HUMANA** | `.github/workflows/ratchet-weekly.yml` (REGRA #8) |
+| #2744 | [NÃO MESCLAR] fix(edge): limites e tempo do MagazineAI | open/draft | **DECISAO_HUMANA** | draft + título proíbe merge + edge functions |
+| #2743 | chore(audit): fixa Graphify e atualiza estado CI | open | **CONFLITO** | `mergeable: false`, `mergeable_state: dirty` |
+| #2739 | fix(mockup): gerador — medidas, timeout 30s, lote parcial | open | **AGUARDANDO_CI** | `src/**` 32 arquivos; branch atualizada; Gate Final rodando |
+
+### Status das PRs AGUARDANDO_CI
+
+| PR | Branch SHA (pós-update) | Status Gate Final | Ação |
+|---|---|---|---|
+| #2747 | `3a5521b1ff9908b15db79219cf5706918054b763` | `blocked` (CI rodando) | Merge automático quando Gate Final ✅ |
+| #2739 | Nova SHA (update_pr_branch 2026-10-29T23:07Z) | Aguardando | Merge quando Gate Final ✅ |
+
+### Total acumulado (todas as sessões)
+
+| Veredito | Quantidade |
+|---|---|
+| MERGEADA (sessão 1, 8 PRs) | #2721, #2735, #2733, #2695, #2707, #2737, #2736, #2719 |
+| MERGEADA (delivery sessão 1) | #2738 (SHA `9a97f9a2`) |
+| MERGEADA pelo PO | #2730, #2720 |
+| AGUARDANDO_CI (branches atualizadas) | #2747, #2739 |
+| DECISAO_HUMANA (open) | #2734, #2731, #2717, #2714, #2749, #2745, #2744 |
+| DECISAO_HUMANA (draft/outra sessão) | #2701 |
+| CONFLITO (open) | #2743 |
+| CONFLITO (closed ext.) | #2716, #2711, #2693, #2674 |
+| AGUARDAR_REVISAO_PO | #2713 |
+| DRAFT_SKIP | #2746 |
+| NAO_MERGEAR | #2729 |
+| **Total analisadas** | **31 PRs** |
+
+---
+
+*Atualizado por Claude Code — sessão https://claude.ai/code/session_01RfQzo8Ean3zudG2sEN79b6*
