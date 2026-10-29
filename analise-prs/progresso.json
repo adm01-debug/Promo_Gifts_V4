@@ -7,8 +7,8 @@
   "resumo": {
     "MERGEADO": 1,
     "DECISAO_HUMANA": 6,
-    "AGUARDAR_CI": 2,
-    "CONFLITO": 4,
+    "AGUARDAR_CI": 1,
+    "CONFLITO": 5,
     "AGUARDA_CI_DRAFT": 3,
     "NAO_MERGEAR": 1
   },
@@ -75,9 +75,9 @@
       "branch": "chore/graphify-audit-improvements-20261029",
       "autor": "adm01-debug",
       "draft": false,
-      "head_sha": "fcc306cc",
-      "veredicto": "AGUARDAR_CI",
-      "motivo": "Gate Final failure no SHA fcc306cc",
+      "head_sha": "4fd4e8ff",
+      "veredicto": "CONFLITO",
+      "motivo": "mergeable_state: dirty (conflito com main após merge do #2721). HEAD SHA atualizado para 4fd4e8ff",
       "dossie": "analise-prs/dossies/PR-2719.md",
       "mergeado_sha": null
     },
@@ -120,9 +120,9 @@
       "branch": "release-please--branches--main--components--gifts-store",
       "autor": "github-actions[bot]",
       "draft": false,
-      "head_sha": "0addb04e0d80a27d94a149a414f8af5aac5aa8f7",
+      "head_sha": "d6826029d87b",
       "veredicto": "AGUARDAR_CI",
-      "motivo": "Gate Final não rodou no HEAD 0addb04e; mergeable_state=blocked",
+      "motivo": "mergeable_state: blocked; Gate Final não rodou no HEAD d6826029; Supabase Preview failure (categories.level); bot release-please",
       "dossie": "analise-prs/dossies/PR-2713.md",
       "mergeado_sha": null
     },
