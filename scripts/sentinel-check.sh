@@ -19,13 +19,14 @@ set -euo pipefail
 export LC_ALL="${LC_ALL:-C.UTF-8}"
 
 if [[ $# -lt 3 ]]; then
-  echo "ERRO: uso: $0 \"<subject>\" \"<full-message>\" \"<author>\"" >&2
+  echo "ERRO: uso: $0 \"<subject>\" \"<full-message>\" \"<author>\" [sha]" >&2
   exit 2
 fi
 
 SUBJECT="$1"
 FULL_MSG="$2"
 AUTHOR="$3"
+COMMIT_SHA="${4:-}"
 
 # Normaliza CRLF (Git Bash / Windows)
 SUBJECT=$(printf '%s' "$SUBJECT" | tr -d '\r')
@@ -147,6 +148,29 @@ if echo "$SUBJECT" | grep -qiE "^Merge branch '${AGENT_PREFIXES}"; then
   if [[ -n "$PREFIX_A" && -n "$PREFIX_B" && "$PREFIX_A" != "$PREFIX_B" ]]; then
     echo "ERRO: merge cross-agente (${PREFIX_A}/* → ${PREFIX_B}/*) sem PR. Abra um PR em vez de mergear diretamente entre branches de agentes diferentes (P200-E189)."
     exit 1
+  fi
+fi
+
+# ----------------------------------------------------------------------------
+# Regra 7.5: SHA allowlist histórica — commits isentos pontuais
+# Lê .github/SENTINEL_SHA_ALLOWLIST.txt (linhas: <SHA-completo>  # comentário)
+# Usado para grandfathering de commits diretos em main revisados e aprovados.
+# Requer que o SHA seja passado como 4º argumento ($4).
+# NUNCA adicionar entradas genéricas — cada SHA deve estar justificado no arquivo.
+# ----------------------------------------------------------------------------
+if [[ -n "$COMMIT_SHA" ]]; then
+  ALLOWLIST_FILE="$(git rev-parse --show-toplevel 2>/dev/null)/.github/SENTINEL_SHA_ALLOWLIST.txt"
+  if [[ -f "$ALLOWLIST_FILE" ]]; then
+    # Extrai apenas SHAs (primeiro campo de cada linha não-comentário)
+    while IFS= read -r line; do
+      [[ "$line" =~ ^[[:space:]]*# ]] && continue
+      [[ -z "$line" ]] && continue
+      ALLOWLISTED_SHA="${line%%[[:space:]]*}"
+      if [[ -n "$ALLOWLISTED_SHA" && "$COMMIT_SHA" == "$ALLOWLISTED_SHA" ]]; then
+        echo "sha-allowlist: ${COMMIT_SHA:0:7}"
+        exit 0
+      fi
+    done < "$ALLOWLIST_FILE"
   fi
 fi
 
