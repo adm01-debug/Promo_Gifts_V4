@@ -170,6 +170,7 @@ exports[`NegotiationMarkupCard — snapshots visuais por viewport > snapshot em 
         style="transform: var(--radix-slider-thumb-transform); position: absolute; left: calc(20% + 0px);"
       >
         <span
+          aria-label="Margem de negociação em porcentagem"
           aria-orientation="horizontal"
           aria-valuemax="50"
           aria-valuemin="0"
@@ -480,6 +481,7 @@ exports[`NegotiationMarkupCard — snapshots visuais por viewport > snapshot em 
         style="transform: var(--radix-slider-thumb-transform); position: absolute; left: calc(20% + 0px);"
       >
         <span
+          aria-label="Margem de negociação em porcentagem"
           aria-orientation="horizontal"
           aria-valuemax="50"
           aria-valuemin="0"
