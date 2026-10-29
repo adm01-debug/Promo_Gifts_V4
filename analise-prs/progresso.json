@@ -2,33 +2,43 @@
   "sessao": "session_012WyySbh2tj8vhRQLBf3mHo",
   "data": "2026-10-29",
   "main_sha_baseline": "62af0798dd71812979667ac29f596d25f3ef191b",
-  "main_sha_atual": "c3b41286",
+  "main_sha_pos_2741": "6ac842c22e37a46c499e91460794bbb1d56b5f5d",
+  "main_sha_pos_2742": "8f992fdde05943c9bcd4d0ca925ec221f4828f41",
   "merges_executados_esta_sessao": [
     {"pr": 2720, "sha": "14b6d5fc", "titulo": "ci(e2e): não ocultar falha de fixtures E2E"},
-    {"pr": 2730, "sha": "c3b41286", "titulo": "fix(ci): repair-only E15 — corrige injeção de expressão"}
+    {"pr": 2730, "sha": "c3b41286", "titulo": "fix(ci): repair-only E15 — corrige injeção de expressão"},
+    {"pr": 2741, "sha": "6ac842c22e37a46c499e91460794bbb1d56b5f5d", "titulo": "fix(mockup): telas — histórico, resultado, foto original, upload, erros", "gate_pr": "run 40958040560 success"},
+    {"pr": 2742, "sha": "8f992fdde05943c9bcd4d0ca925ec221f4828f41", "titulo": "fix(magic-up): compartilhar, brand kit, a11y, i18n e timeout", "gate_pr": "run 40956354730 success"}
   ],
-  "ultima_atualizacao": "2026-10-29T22:30:00Z",
+  "ci_gate_final_pos_merge": {
+    "sha": "8f992fdd",
+    "run_id": 40968551210,
+    "status": "queued",
+    "nota": "Deploy Gates rodando em 2026-10-29T22:47Z após merge de #2741 e #2742"
+  },
+  "ultima_atualizacao": "2026-10-29T22:49:00Z",
   "resumo": {
-    "total_prs_abertas": 14,
-    "nao_mergear": 5,
-    "aguardando_ci": 6,
-    "decisao_humana": 1,
-    "draft_nao_mergear": 2
+    "total_prs_analisadas": 14,
+    "mergeadas": 4,
+    "nao_mergear": 7,
+    "aguardando_ci_ou_humano": 3
   },
   "prs": [
-    {"numero": 2701, "titulo": "fix(ci): autentica integração Kit Coverage com usuário E2E", "head_sha": "c5e6937b", "mergeable_state": "dirty", "draft": false, "veredito": "NÃO MERGEAR", "motivo": "conflito de merge + coverage 56% < threshold 70%"},
-    {"numero": 2713, "titulo": "chore(main): release 1.1.0", "head_sha": "05e19726", "mergeable_state": "unknown", "draft": false, "veredito": "DECISÃO_HUMANA", "motivo": "PR de bot (release-please) — REGRA #8 requer confirmação do PO"},
-    {"numero": 2714, "titulo": "fix(db): reconciliar migrations pendentes com o canônico", "head_sha": "bc8038db", "mergeable_state": "dirty", "draft": false, "veredito": "NÃO MERGEAR", "motivo": "conflito de merge"},
-    {"numero": 2717, "titulo": "fix(e2e): isola servidor Vite no CI de paridade", "head_sha": "48926a9d", "mergeable_state": "dirty", "draft": false, "veredito": "NÃO MERGEAR", "motivo": "conflito de merge (provavelmente com #2720)"},
-    {"numero": 2731, "titulo": "fix(db): protege kill_switch_hits contra INSERT anônimo sem rate guard", "head_sha": "6db2040f", "mergeable_state": "behind", "draft": false, "veredito": "NÃO MERGEAR", "motivo": "REGRESSÃO CRÍTICA: --require-live no Gate 1.13.2 bloqueará todos os merges até migration ser aplicada via E15"},
-    {"numero": 2734, "titulo": "fix(ci): usa mirror Docker Hub após limite do GHCR", "head_sha": "d7cba5ab", "mergeable_state": "behind", "draft": false, "veredito": "AGUARDANDO_CI", "motivo": "Gate Final não rodou no HEAD atual"},
-    {"numero": 2738, "titulo": "docs(analise-prs): rev47", "head_sha": "95057305", "mergeable_state": "blocked", "draft": false, "veredito": "AGUARDANDO_CI", "motivo": "documentação pura — aguarda Gate Final verde"},
-    {"numero": 2739, "titulo": "fix(mockup): gerador — medidas, timeout 30s, lote parcial, erros", "head_sha": "a4d70ea6", "mergeable_state": "blocked", "draft": false, "veredito": "AGUARDANDO_CI", "motivo": "aguarda Gate Final verde"},
-    {"numero": 2741, "titulo": "fix(mockup): telas — histórico, resultado, foto original, upload, erros", "head_sha": "db49de03", "mergeable_state": "blocked", "draft": false, "veredito": "AGUARDANDO_CI", "motivo": "aguarda Gate Final verde"},
-    {"numero": 2742, "titulo": "fix(magic-up): compartilhar, brand kit, a11y, i18n e timeout", "head_sha": "0c0bbfbb", "mergeable_state": "blocked", "draft": false, "veredito": "AGUARDANDO_CI", "motivo": "aguarda Gate Final verde"},
-    {"numero": 2743, "titulo": "chore(audit): fixa Graphify e atualiza estado CI", "head_sha": "7eea1696", "mergeable_state": "blocked", "draft": false, "veredito": "AGUARDANDO_CI", "motivo": "body diz não mesclar até checks — aguarda Gate Final verde"},
-    {"numero": 2744, "titulo": "[NÃO MESCLAR] fix(edge): limites e tempo do Magic-Up", "head_sha": "2f379368", "mergeable_state": "blocked", "draft": true, "veredito": "NÃO MERGEAR", "motivo": "DRAFT + bloqueio explícito no título + edge function sem testes passando"},
-    {"numero": 2745, "titulo": "ci(ratchet): evita SIGPIPE no relatório de diff", "head_sha": "a12972b0", "mergeable_state": "behind", "draft": false, "veredito": "AGUARDANDO_CI", "motivo": "fix legítimo — Gate Final não rodou ainda (PR nova)"},
-    {"numero": 2746, "titulo": "docs(ci): auditoria completa de workflows com falha", "head_sha": "826ae60e", "mergeable_state": "unknown", "draft": true, "veredito": "NÃO MERGEAR", "motivo": "DRAFT"}
+    {"numero": 2701, "veredito": "NÃO MERGEAR", "motivo": "conflito de merge + coverage 56% < threshold 70%"},
+    {"numero": 2713, "veredito": "DECISÃO_HUMANA", "motivo": "bot release-please — REGRA #8 requer confirmação do PO"},
+    {"numero": 2714, "veredito": "NÃO MERGEAR", "motivo": "conflito de merge"},
+    {"numero": 2717, "veredito": "NÃO MERGEAR", "motivo": "conflito de merge"},
+    {"numero": 2720, "veredito": "MERGEADA", "sha": "14b6d5fc"},
+    {"numero": 2730, "veredito": "MERGEADA", "sha": "c3b41286"},
+    {"numero": 2731, "veredito": "NÃO MERGEAR", "motivo": "REGRESSÃO CRÍTICA: --require-live no Gate 1.13.2 quebra CI antes da migration ser aplicada"},
+    {"numero": 2734, "veredito": "NÃO MERGEAR", "motivo": "só adiciona .github/workflows/ — constraint proibido"},
+    {"numero": 2738, "veredito": "NÃO MERGEAR", "motivo": "Gate Final falhou com 12 anotações"},
+    {"numero": 2739, "veredito": "NÃO MERGEAR", "motivo": "Gate Final falhou com 3 anotações"},
+    {"numero": 2741, "veredito": "MERGEADA", "sha": "6ac842c22e37a46c499e91460794bbb1d56b5f5d"},
+    {"numero": 2742, "veredito": "MERGEADA", "sha": "8f992fdde05943c9bcd4d0ca925ec221f4828f41"},
+    {"numero": 2743, "veredito": "AGUARDANDO_CI", "motivo": "body diz não mesclar até checks passarem — 0 gate runs"},
+    {"numero": 2744, "veredito": "NÃO MERGEAR", "motivo": "DRAFT + título [NÃO MESCLAR] + edge function sem workflow"},
+    {"numero": 2745, "veredito": "AGUARDANDO_CI", "motivo": "fix legítimo — 0 gate runs ainda"},
+    {"numero": 2746, "veredito": "NÃO MERGEAR", "motivo": "DRAFT"}
   ]
 }
