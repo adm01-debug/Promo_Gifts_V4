@@ -142,8 +142,8 @@ describe('A18 — baixar imagem e ficha com mesma revisão, data e referência',
       </TooltipProvider>,
     );
 
-    // Abre a ficha da imagem gerada (mesmo resultado que o card mostra).
-    fireEvent.click(await screen.findByRole('button', { name: /Gerar Layout - IA/ }));
+    // Abre a ficha da imagem gerada pelo botão "Gerar documento" (mesmo resultado que o card mostra).
+    fireEvent.click(await screen.findByRole('button', { name: /Gerar documento/ }));
 
     const ficha = await screen.findByRole('dialog');
     const texto = ficha.textContent ?? '';
