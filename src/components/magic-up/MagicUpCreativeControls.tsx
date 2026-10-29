@@ -19,6 +19,44 @@ import {
   toHuman,
   type MagicUpCreativeControls as Controls,
 } from '@/pages/magic-up/magicUpStrategy';
+import { getMoodColor } from './promptGeneratorConstants';
+
+/**
+ * Tradução do mood devolvido pela IA (palavra crua, em inglês: warm, elegant...).
+ * Chaves em minúsculo, espelhando MOOD_COLORS. Mood fora do mapa é exibido como veio.
+ */
+export const MOOD_LABELS: Record<string, string> = {
+  warm: 'Acolhedor',
+  elegant: 'Elegante',
+  dynamic: 'Dinâmico',
+  serene: 'Sereno',
+  bold: 'Ousado',
+  playful: 'Divertido',
+  professional: 'Profissional',
+  cozy: 'Aconchegante',
+};
+
+export function translateMood(mood: string): string {
+  const label = MOOD_LABELS[mood.trim().toLowerCase()];
+  return typeof label === 'string' ? label : mood;
+}
+
+/**
+ * Badge de mood dos cenários gerados pela IA.
+ * Mood conhecido vira o rótulo em português; mood desconhecido aparece como veio,
+ * em itálico (sinal visual de que é valor cru, não traduzido).
+ */
+export function MagicUpMoodBadge({ mood }: { mood: string }) {
+  const known = typeof MOOD_LABELS[mood.trim().toLowerCase()] === 'string';
+  return (
+    <Badge
+      variant="outline"
+      className={cn('border px-1.5 py-0 text-[8px]', getMoodColor(mood), !known && 'italic')}
+    >
+      {translateMood(mood)}
+    </Badge>
+  );
+}
 
 interface MagicUpCreativeControlsProps {
   value: Controls;
@@ -83,7 +121,7 @@ export function MagicUpCreativeControls({ value, onChange }: MagicUpCreativeCont
 
         <div className="space-y-2">
           <div className="flex items-center justify-between gap-2">
-            <Label className="text-xs text-muted-foreground">Negative prompt</Label>
+            <Label className="text-xs text-muted-foreground">O que evitar</Label>
             <Badge variant="outline" className="text-[10px]">
               {value.negativePrompt.length} ativos
             </Badge>

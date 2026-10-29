@@ -16,7 +16,6 @@ import {
   EyeOff,
   Building2,
   Search,
-  X,
   Sparkles,
   Briefcase,
   Zap,
@@ -42,6 +41,7 @@ import { MagicUpCreativeControls } from '@/components/magic-up/MagicUpCreativeCo
 import { MagicUpRefinementActions } from '@/components/magic-up/MagicUpRefinementActions';
 import { MagicUpBatchGenerationPanel } from '@/components/magic-up/MagicUpBatchGenerationPanel';
 import { BRIEF_OPTIONS, toHuman, type MagicUpBrief } from '@/pages/magic-up/magicUpStrategy';
+import { MagicUpSelectedCompanyRow } from '@/pages/magic-up/MagicUpSelectedCompanyRow';
 
 type MagicUpStateReturn = ReturnType<typeof useMagicUpState>;
 
@@ -132,33 +132,7 @@ function ClientCard({ m }: { m: MagicUpStateReturn }) {
       </CardHeader>
       <CardContent>
         {m.selectedClient ? (
-          <div className="flex items-center gap-3 rounded-lg border border-primary/20 bg-primary/5 p-2">
-            {m.selectedClient.logo_url && (
-              <img
-                src={m.selectedClient.logo_url}
-                alt=""
-                className="h-8 w-8 rounded border bg-background object-contain"
-                loading="lazy"
-              />
-            )}
-            <div className="min-w-0 flex-1">
-              <p className="truncate text-sm font-medium">{m.selectedClient.name}</p>
-              {m.selectedClient.ramo_atividade && (
-                <p className="text-[10px] text-muted-foreground">
-                  {m.selectedClient.ramo_atividade}
-                </p>
-              )}
-            </div>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-7 w-7 shrink-0"
-              onClick={m.handleClearClient}
-              aria-label="Fechar"
-            >
-              <X className="h-3.5 w-3.5" />
-            </Button>
-          </div>
+          <MagicUpSelectedCompanyRow client={m.selectedClient} onRemove={m.handleClearClient} />
         ) : (
           <div className="relative">
             <Search className="absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -610,26 +584,15 @@ function GenerateButton({ m }: { m: MagicUpStateReturn }) {
       <label
         className={cn(
           'flex cursor-pointer items-center justify-between gap-3 rounded-lg border px-3 py-2 transition-colors',
-          m.fastMode
-            ? 'border-amber-400/60 bg-amber-50/60 dark:border-amber-700/60 dark:bg-amber-950/30'
-            : 'border-border bg-muted/30 hover:bg-muted/50',
+          m.fastMode ? 'border-warning/60 bg-warning/10' : 'border-border bg-muted/30 hover:bg-muted/50',
         )}
       >
         <div className="flex items-center gap-2 text-sm">
-          <Zap
-            className={cn(
-              'h-4 w-4',
-              m.fastMode ? 'text-amber-600 dark:text-amber-400' : 'text-muted-foreground',
-            )}
-          />
+          <Zap className={cn('h-4 w-4', m.fastMode ? 'text-warning' : 'text-muted-foreground')} />
           <div className="flex flex-col">
             <span className="font-medium">
               Modo Rápido{' '}
-              {m.fastMode && (
-                <span className="text-xs font-normal text-amber-700 dark:text-amber-400">
-                  (Nano Banana)
-                </span>
-              )}
+              {m.fastMode && <span className="text-xs font-normal text-warning">(Nano Banana)</span>}
             </span>
             <span className="text-[11px] leading-tight text-muted-foreground">
               {m.fastMode
