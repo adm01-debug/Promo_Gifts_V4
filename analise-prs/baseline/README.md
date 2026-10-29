@@ -1,21 +1,33 @@
-# Baseline do main — SHA c344508711797a730893644449b16a05f12f4fce
+# Baseline CI — main
 
-## Contexto
-- node_modules NÃO instalados no ambiente CI de análise
-- tsc global versão 6.0.2 disponível, mas sem node_modules não resolve imports de libs
-- Tests: NÃO EXECUTADOS localmente (sem node_modules/vitest)
-- Lint: NÃO EXECUTADO localmente (sem node_modules/eslint)
-- TypeCheck (tsc --noEmit com tsconfig.app.json): produz erros PRÉ-EXISTENTES em undoToast.tsx
+**SHA main (início de sessão):** `8bc08b12f50872e2d9b9a93d3f7dbae388fec204`
+**SHA main (após merges desta sessão):** `9a97f9a2c857b25590691efd2c741a194bfb24da`
+**Data:** 2026-10-29
 
-## Erros pré-existentes no main (undoToast.tsx)
-Todos os erros TS2307/TS7026 em src/utils/undoToast.tsx são pré-existentes no main.
-Qualquer PR que ADICIONE novos erros fora deste arquivo → regressão.
+## Gate Final — Estado no SHA de base
 
-## Estratégia de baseline
-Regressão será medida via:
-1. Diff de arquivos: se PR toca undoToast.tsx → NÃO VERIFICADO
-2. Verificação de CI do GitHub: checks do PR vs CI do main
-3. Análise semântica do diff
+Gate Final (`deploy-gates.yml`) é o ÚNICO check required no branch protection de `main`.
+O CI do main estava verde nos SHAs das PRs que foram mergeadas nesta sessão (PRs #2721, #2735, #2733, #2695, #2707, #2737, #2736, #2719).
 
-## Referência CI do main
-Verificar runs recentes em main para saber quais gates estão vermelhos.
+## Falhas conhecidas no main (pré-sessão)
+
+Baseado nos logs de CI das PRs analisadas:
+
+| Check | Estado | Motivo |
+|---|---|---|
+| Gate Final - Deploy Ready | SUCCESS (nas PRs mergeadas) | Verde no HEAD usado |
+| E2E PDF Dialog | Resolvido (PR #2749 pending) | Branch Protection Sentinel aguarda PR |
+| Uptime Monitor | FAILURE (infra externa) | Falha de infraestrutura externa, não código |
+| Branch Protection Sentinel | FAILURE (workflow) | Aguarda PR #2749 — DECISAO_HUMANA |
+
+## Critério de regressão
+
+Regressão = erro NOVO vs. este baseline. Falhas já presentes no main antes do merge não são imputadas à PR.
+
+## Ferramentas de verificação aplicadas
+
+- `get_workflow_run` por run_id (Gate Final de cada PR)
+- `list_check_runs` por SHA de head de cada PR
+- `get_pr_diff` para leitura 100% do diff
+- `list_pr_files` para inventário de arquivos tocados
+- `github_get_pull_request` para `mergeable_state`, `draft`, `base`

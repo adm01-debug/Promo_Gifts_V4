@@ -1,0 +1,21 @@
+{
+  "sha_base": "8bc08b12f50872e2d9b9a93d3f7dbae388fec204",
+  "sha_pos_merges": "9a97f9a2c857b25590691efd2c741a194bfb24da",
+  "data": "2026-10-29",
+  "gate_final_required": true,
+  "gate_final_workflow": ".github/workflows/deploy-gates.yml",
+  "falhas_conhecidas_main": [
+    {"check": "uptime-monitor", "tipo": "infra_externa", "bloqueante": false},
+    {"check": "branch-protection-sentinel", "tipo": "aguarda_pr_2749", "bloqueante": false}
+  ],
+  "merges_desta_sessao": [
+    {"pr": 2721, "sha_merge": "6b48beb", "gate_final": "SUCCESS"},
+    {"pr": 2735, "sha_merge": "27f4261", "gate_final": "SUCCESS"},
+    {"pr": 2733, "sha_merge": "8bc08b1", "gate_final": "SUCCESS"},
+    {"pr": 2695, "sha_merge": "8da42aa9", "gate_final": "SUCCESS"},
+    {"pr": 2707, "sha_merge": "37ea10a3", "gate_final": "SUCCESS"},
+    {"pr": 2737, "sha_merge": "c7f9f4ba", "gate_final": "SUCCESS"},
+    {"pr": 2736, "sha_merge": "31ebc2d3", "gate_final": "SUCCESS"},
+    {"pr": 2719, "sha_merge": "66d032af", "gate_final": "SUCCESS"}
+  ]
+}
