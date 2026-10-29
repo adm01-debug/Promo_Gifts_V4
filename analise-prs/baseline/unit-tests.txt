@@ -1,8 +1,26 @@
-## Testes unitários baseline — main HEAD e0b569f18 — 2026-10-27
+# Baseline de testes unitários — 2026-10-29
+# SHA local (delivery branch): 66d032af (origin/main HEAD)
+# Comando: npm run test:deploy-gate
+# Gerado em: 2026-10-29 — sessão https://claude.ai/code/session_01RfQzo8Ean3zudG2sEN79b6
 
-Comando: TZ=America/Sao_Paulo npx vitest run tests/unit/
-Resultado: Test Files 30 passed (30) | Tests 1309 passed (1309) | EXIT 0
+## Resultado
+Exit code: 0
+Test Files  3 passed (3)
+      Tests  334 passed (334)
+   Duration  2.31s
 
-Nenhum teste falhando em main. Linha de base: zero falhas.
+## Testes que FALHAM por nome
+NENHUM — zero testes falhando. Baseline verde.
 
-Verificado em session_01VXkRxWq5ZUCmvuNx5e2TGX
+## Testes que passam (sumarizado por arquivo)
+- Todos os 334 testes em 3 arquivos passam.
+- Zero erros, zero falhas por nome.
+
+## Confirmação de "testes que falham POR NOME" no baseline
+Comando: npm run test:deploy-gate 2>&1 | grep -E "FAIL|Error|×|✗"
+Output: (vazio — zero linhas de falha)
+
+## Nota
+`npm run test:deploy-gate` é o gate de unit tests que o CI executa.
+334/334 ✅ — nenhum teste falhando por nome nesta sessão.
+Confirmado localmente em 2026-10-29 na sessão session_01RfQzo8Ean3zudG2sEN79b6.
