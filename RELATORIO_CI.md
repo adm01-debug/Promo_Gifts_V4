@@ -169,7 +169,7 @@ Não houve alteração em arquivos da aplicação: o PR #2734 toca apenas `.gith
 - `npm run build`: ✅ sucesso (`✓ built in 12.21s`)
 - `tsc --noEmit`: ✅ EXIT:0 (zero erros de tipo)
 - `npm run lint`: ✅ EXIT:0 (com `--max-old-space-size=4096`)
-- `npx vitest run`: em execução em background (timeout na verificação síncrona; resultados anteriores: 1.210 arquivos, 25.659 testes aprovados)
+- `npx vitest run`: ✅ EXIT:0 — 1.221 arquivos, 25.713 passaram, 3 falharam (pré-existente: `date-utils.test.ts` timezone TZ não definida no container = America/Sao_Paulo), 1.135 skipped, 24 todo
 
 **Método:** `github_list_workflow_runs?status=failure&branch=main&per_page=30` → 12 workflows com última execução FALHA encontrados; cada run analisado com `github_get_run_failure_summary`.
 
