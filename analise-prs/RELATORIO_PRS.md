@@ -74,17 +74,18 @@
 - **Evidências:** git cherry 7 commits `+` (não estavam em main); merge local limpo; tsc 0 erros; eslint 0 erros; vitest 523 passed + 3 falhas pré-existentes (date-utils)
 - **Negócio:** Elimina memory leak real — timers de setTimeout não eram cancelados ao desmontar LocationPanel.
 - **Mergeado:** 2026-10-29 via squash
+- **Pós-merge:** Gate Final main SHA `6b48beb` = ✅ success (run `40920388855`, concluído `2026-10-29T17:27:45Z`)
 
 #### PR #2719 — chore(build): separa mapas SQL e amplia referências Graphify
-- **Branch:** `chore/graphify-audit-improvements-20261029` | HEAD: `fcc306cc`
-- **Status:** Gate Final = failure no SHA `fcc306cc`
+- **Branch:** `chore/graphify-audit-improvements-20261029` | HEAD: `4fd4e8ff`
+- **Status:** Gate Final = ❌ failure no SHA `4fd4e8ffc8706cf1faa88d1dd8ea74f2ad26548b` (run `123601293683`)
 - **Negócio:** Manutenção de Graphify. Sem impacto funcional direto.
 - **Ação:** Aguardar CI verde.
 
 #### PR #2713 — chore(main): release 1.1.0 (release-please)
-- **Branch:** `release-please--branches--main` | HEAD: `0addb04e`
+- **Branch:** `release-please--branches--main` | HEAD: `d6826029`
 - **Arquivos:** `.release-please-manifest.json`, `CHANGELOG.md`, `package.json`, `package-lock.json`
-- **Status:** `mergeable_state: blocked`, Gate Final = zero check runs
+- **Status:** `mergeable_state: blocked`, Gate Final = zero check runs em `d6826029d87bb5bf071a37b405f3c476cadd267d`
 - **Negócio:** Bump semântico 1.0.0→1.1.0 com changelog automático.
 - **Ação:** Mergear quando `Gate Final ✅` + `mergeable_state: clean`.
 
@@ -118,6 +119,32 @@
 #### PR #2729 — docs(analise-prs): relatório completo
 - **Branch:** `claude/eloquent-ramanujan-0yt2fo` (esta sessão)
 - Branch de trabalho desta sessão, em draft, com dados de sessão anterior. Não mergeável.
+
+---
+
+## META CUMPRIDA
+
+| Item | Resultado |
+|---|---|
+| Total PRs abertas | **17** |
+| Total PRs analisadas | **17** (100%) |
+| MERGEADAS autonomamente | **1** — #2721 SHA `6b48bebcb2ff5ff922298523f4678383d392ae46` |
+| Gate Final main após merge #2721 | ✅ success (SHA `6b48beb`, run `40920388855`, concluído `2026-10-29T17:27:45Z`) |
+| Produção após merge #2721 | ✅ Nenhuma migration ou edge function alterada — verificação MCP não necessária |
+| Outras escritas no GitHub | ❌ Nenhuma (apenas merge de #2721 + 1 comentário informativo em #2729) |
+| Worktrees extras | ❌ Nenhum (`git worktree list` = somente `/home/user/Promo_Gifts_V4`) |
+
+### Por que apenas 1 PR mergeada (não mais)
+
+Cada PR dos 16 restantes tem impedimento legítimo e documentado:
+
+| Veredicto | Qtd | Motivo |
+|---|---|---|
+| DECISAO_HUMANA | 4 | Tocam `.github/workflows/`, `.github/actions/` ou `supabase/migrations/` → REGRA #8 |
+| AGUARDAR_CI | 2 | #2719: Gate Final ❌ failure em `4fd4e8ff`; #2713: Gate Final não rodou em `d6826029` (blocked) |
+| CONFLITO | 5 | `mergeable_state: dirty` — conflito real com main, não resolvível sem PR do autor |
+| AGUARDA_CI_DRAFT | 4 | PRs em draft de outras sessões — não autorizadas para merge autônomo (REGRA #10) |
+| NAO_MERGEAR | 1 | #2729 — branch de entrega desta sessão (esta PR) |
 
 ---
 
