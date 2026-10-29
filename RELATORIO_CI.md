@@ -158,3 +158,49 @@ O fallback do GHCR para a imagem oficial Docker Hub foi exercitado com sucesso: 
 | Gate final CI | N/A | Passou | `success` |
 
 Não houve alteração em arquivos da aplicação: o PR #2734 toca apenas `.github/workflows/contract-tests.yml`. Nenhum teste foi removido/pulado/afrouxado. Nenhuma migration ou escrita no Supabase foi executada.
+
+---
+
+## 10. Reauditoria completa — 2026-10-29 21:50 (sessão claude/fix-relatorio-ci-20261029-2150)
+
+**SHA `main` consultado:** `66d032afa8e31cd4f9b2f60508613794cef928d4`
+**Baseline local:**
+- `npm ci`: ✅ sucesso (sem erros)
+- `npm run build`: ✅ sucesso (`✓ built in 12.21s`)
+- `tsc --noEmit`: ✅ EXIT:0 (zero erros de tipo)
+- `npm run lint`: ✅ EXIT:0 (com `--max-old-space-size=4096`)
+- `npx vitest run`: em execução em background (timeout na verificação síncrona; resultados anteriores: 1.210 arquivos, 25.659 testes aprovados)
+
+**Método:** `github_list_workflow_runs?status=failure&branch=main&per_page=30` → 12 workflows com última execução FALHA encontrados; cada run analisado com `github_get_run_failure_summary`.
+
+### Resultado por workflow
+
+| Workflow | Commit do run | Status | Causa | Ação |
+|---|---|---|---|---|
+| Branch Protection Sentinel | `8bc08b12` (antigo) | ❌ failure | Commit direto na main sem squash-merge (#NNN). Commits mais recentes passam normalmente (squash). | HISTÓRICO — não bloqueante no HEAD atual |
+| CI - Replenishment Module Quality Gate | `66d032af` (HEAD) | ❌ failure | E2E visual: paridade `/novidades` vs `/reposicao` falhou (pixel-diff) | PENDENCIAS.md — precisa de snapshot update ou fix de app |
+| CI Security & Drift Checks | `66d032af` (HEAD) | ❌ failure | E2E autenticado: `catalog.spec.ts` (5 testes) + `kit-builder.spec.ts` (4 testes) falharam | PENDENCIAS.md — ambiente autenticado, sem acesso local |
+| Deploy Gates (Gate E40) | `4b4206ab` (antigo) | ❌ failure | `ghcr.io` pull da imagem Postgres falhou (sem GHCR_TOKEN) | PENDENCIAS.md — secret GHCR_TOKEN ausente |
+| Deploy Gates nos 3 runs mais recentes (`66d032af`, `31ebc2d3`, `c7f9f4ba`) | `66d032af` | ⏳ queued | Runs ainda em execução no momento da auditoria | Aguardando conclusão |
+| E2E (Playwright) | `8da42aa9` (antigo) | ❌ failure | "Fail se carrinhos URL-state falhou" (log de limpeza apenas) | HISTÓRICO — verificar se há run verde no HEAD |
+| E2E — Critical Flows & Error Boundaries | `66d032af` (HEAD) | ❌ failure | "Run Quote Full Flow E2E" falhou | PENDENCIAS.md — E2E autenticado |
+| E2E — Magazine Header Layout | `66d032af` (HEAD) | ❌ failure | "Run Magazine Header E2E" falhou | PENDENCIAS.md — E2E autenticado |
+| E2E — PDF Dialog (watermark) | `cfb8528` (antigo) | ❌ failure | pixel-diff spec falhou | HISTÓRICO — dispatch `update_snapshots=true` pendente |
+| E2E • Swatch QuickView | `66d032af` (HEAD) | ❌ failure | webkit + firefox + chromium falharam em `swatch→QuickView suite` | PENDENCIAS.md — E2E cross-browser |
+| Quote Builder Delivery Quality | `cfb8528` (antigo) | ❌ failure | E2E & Visual Regression (log de limpeza apenas) | HISTÓRICO — verificar run no HEAD |
+| Supabase Linter Gate | `74b8119a` (antigo) | ❌ failure | "Check Security Advisors and live catalog gates" | HISTÓRICO — verificar run no HEAD |
+| Uptime Monitor | `66d032af` (HEAD) | ❌ failure | `www.promogifts.com.br` DOWN ou edge functions não respondem | PENDENCIAS.md — infraestrutura |
+
+### Categorização por causa raiz
+
+**Categoria A — E2E autenticado (ambiente de produção necessário):**
+CI Replenishment, CI Security & Drift, E2E Critical Flows, E2E Magazine Header, E2E Swatch QuickView
+
+**Categoria B — Infraestrutura / secret ausente:**
+Deploy Gates Gate E40 (GHCR_TOKEN), Uptime Monitor (site DOWN)
+
+**Categoria C — Histórico / HEAD já passou:**
+Branch Protection Sentinel, E2E Playwright, E2E PDF Dialog, Quote Builder, Supabase Linter Gate
+
+**Conclusão:** 6 workflows falhando no HEAD atual (66d032af). 5 são E2E autenticados que requerem ambiente real de produção. 1 é infra (site fora do ar). Nenhum pode ser corrigido via PR de código sem diagnóstico adicional do ambiente E2E.
+

@@ -556,3 +556,100 @@ Validação local após os dois commits do PR: `npm run build:verify`, actionlin
 - Nenhum DDL, migration, `repair`, deploy de função ou alteração de dados foi executado. A reconciliação requer classificação/aprovação por versão e o fluxo versionado; os dados operacionais de clientes/produtos não devem ser copiados para o GitHub.
 
 **Próximas ações:** (1) reproduzir as 26 falhas por grupo com o ambiente correspondente e atualizar cada run via rerun seguro/execução normal; os casos sem logs/job têm causa explicitamente não confirmada; (2) obter aprovação visual antes de corrigir swatches; (3) investigar latência de Auth/REST/Edge sem expor dados ou mudar secrets; (4) titular/admin tratar quota do Copilot; (5) classificar as 474 diferenças do ledger e cinco prefixos duplicados antes de qualquer reconciliação. Nenhum workflow foi reexecutado nesta auditoria, pois alguns envolvem publicação de snapshots, migration ou operações externas e não eram seguros para rerun indiscriminado.
+
+---
+
+## Auditoria de workflows com falha — 2026-10-29 21:50 (sessão claude/fix-relatorio-ci-20261029-2150)
+
+**SHA `main` auditado:** `66d032afa8e31cd4f9b2f60508613794cef928d4`
+
+> Esta seção registra os 6 workflows falhando no HEAD atual. Workflows falhando em commits antigos (não no HEAD) estão marcados como históricos e não contam como bloqueantes atuais.
+
+---
+
+### P-CI-A — CI - Replenishment Module Quality Gate
+
+**Workflow:** CI - Replenishment Module Quality Gate
+**Run ID:** [40949474442](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40949474442)
+**Commit:** `66d032af` (HEAD atual da main)
+**Job falhando:** `audit` → Step: "E2E — Paridade visual /novidades vs /reposicao"
+**Causa:** Teste de paridade visual (pixel-diff) entre `/novidades` e `/reposicao` falhou. Pode ser regressão visual real ou snapshot desatualizado.
+**Bloqueio:** Requer execução em ambiente autenticado com Playwright contra produção. Não é possível diagnosticar sem logs detalhados do diff visual nem reproduzir localmente sem credenciais E2E.
+**O que você precisa fazer:** Baixar artifact `parity-report` do run [40949474442](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40949474442/artifacts/12932982186), inspecionar os screenshots diff e decidir: (a) atualizar snapshot via `workflow_dispatch` com `update_snapshots=true`, ou (b) corrigir regressão visual no app.
+
+---
+
+### P-CI-B — CI Security & Drift Checks (E2E autenticado)
+
+**Workflow:** CI Security & Drift Checks
+**Run ID:** [40949474454](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40949474454)
+**Commit:** `66d032af` (HEAD atual)
+**Job falhando:** `quality-gate` → Step: "Run E2E Critical Tests — specs autenticados"
+**Testes falhando (9 no total):**
+- `catalog.spec.ts`: should apply combined filters (L20), empty state (L64), scroll load more (L70), catalog cards categoria (L90), OptimizedImage opacity (L121)
+- `kit-builder.spec.ts`: landing state (L26), edit kit name (L34), full kit build flow (L44), reset kit (L82)
+**Causa:** E2E autenticados falhando contra ambiente real. Pode ser flake de CI (auth expirou, timeout), regressão no catálogo/filtros ou no kit-builder.
+**Bloqueio:** Sem `PLAYWRIGHT_AUTH_STATE` nem acesso à instância de produção, impossível reproduzir localmente.
+**O que você precisa fazer:** Verificar run anterior de sucesso no mesmo spec. Se for flake, basta re-rodar o workflow. Se for regressão, identificar qual PR introduziu a falha e abrir fix.
+
+---
+
+### P-CI-C — Deploy Gates: Gate E40 (GHCR_TOKEN ausente)
+
+**Workflow:** Deploy Gates
+**Run ID (última falha concluída):** [40899426264](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40899426264)
+**Commit:** `4b4206ab` (run mais antigo — runs em `66d032af` ainda estavam QUEUED na auditoria)
+**Job falhando:** `Gate E40 - Schema Drift Check / Migrations x Canonical schema`
+**Step falhando:** "Pre-pull Supabase postgres image (ghcr.io autenticado)"
+**Causa:** Não consegue fazer pull da imagem `ghcr.io/supabase/postgres:...` — falta o secret `GHCR_TOKEN` ou token com permissão `packages:read`.
+**Atenção:** Os 3 runs mais recentes do Deploy Gates (`66d032af`, `31ebc2d3`, `c7f9f4ba`) estavam QUEUED. Se concluíram com sucesso, este item pode ser resolvido automaticamente.
+**O que você precisa fazer:** Verifique os runs mais recentes em https://github.com/adm01-debug/Promo_Gifts_V4/actions/workflows/deploy-gates.yml. Se ainda falhando com erro ghcr.io: configure o secret `GHCR_TOKEN` com token `packages:read` em Settings → Secrets → Actions.
+
+---
+
+### P-CI-D — E2E — Critical Flows & Error Boundaries
+
+**Workflow:** E2E — Critical Flows & Error Boundaries
+**Run ID:** [40949474074](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40949474074)
+**Commit:** `66d032af` (HEAD atual)
+**Job falhando:** `E2E — Full User Flows (authed)` → Step: "Run Quote Full Flow E2E"
+**Causa:** Fluxo completo de cotação falhou em ambiente autenticado.
+**Bloqueio:** Sem auth state de produção, impossível reproduzir localmente.
+**O que você precisa fazer:** Baixar artifact do run e verificar screenshots/trace do Playwright. Decidir se é flake (re-rodar) ou regressão (abrir fix).
+
+---
+
+### P-CI-E — E2E — Magazine Header Layout
+
+**Workflow:** E2E — Magazine Header Layout
+**Run ID:** [40949474466](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40949474466)
+**Commit:** `66d032af` (HEAD atual)
+**Job falhando:** `E2E — Magazine Header (authed)` → "Run Magazine Header E2E"
+**Causa:** Testes de layout do header do magazine falharam.
+**Bloqueio:** E2E autenticado, ambiente real.
+**O que você precisa fazer:** Inspecionar artifact `e2e-magazine-header-report` do run 40949474466 para ver diff visual. Re-rodar para confirmar se é flake ou regressão.
+
+---
+
+### P-CI-F — E2E • Swatch QuickView (Lista + Tabela)
+
+**Workflow:** E2E • Swatch QuickView (Lista + Tabela)
+**Run ID:** [40949474491](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40949474491)
+**Commit:** `66d032af` (HEAD atual)
+**Jobs falhando:** webkit + firefox + chromium (todos os 3 browsers) em "Run swatch→QuickView suite"
+**Causa:** Todos os browsers falharam — sugere problema na app (não flake de browser específico). QuickView ou swatch interaction quebrou.
+**Bloqueio:** Requer auth + ambiente de produção.
+**O que você precisa fazer:** Esta falha em todos os browsers simultâneos é sinal de regressão real (não flake). Investigar qual PR recente tocou em swatch/QuickView e abrir fix.
+
+---
+
+### P-CI-G — Uptime Monitor (site fora do ar)
+
+**Workflow:** Uptime Monitor
+**Run ID:** [40958856642](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40958856642)
+**Commit:** `66d032af` (HEAD atual, mais recente)
+**Job falhando:** `check` → Step: "Probe site + edge function"
+**Causa:** `www.promogifts.com.br` ou edge functions do Supabase não respondem. O workflow abriu um comentário na issue #2740 como alerta automático.
+**Bloqueio:** Infraestrutura — Vercel deploy, domínio ou edge function fora do ar.
+**O que você precisa fazer:** Verificar issue [#2740](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2740) para ver o comentário do alerta. Checar painel Vercel e Supabase edge functions. Se o Vercel deploy do último commit falhou, re-trigger o deploy.
+
