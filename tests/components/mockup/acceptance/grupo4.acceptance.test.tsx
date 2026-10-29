@@ -232,7 +232,7 @@ describe('A10 — editar após gerar marca o resultado antigo e a ficha não mis
 
   it('regerar depois de editar: a ficha da nova geração traz só cliente, produto, medida e imagem dela, sem resíduo da anterior', async () => {
     const tecnica = {
-      name: TECNICA_SERIGRAFIA.name,
+      name: TECNICA_SERIGRAFIA.name ?? '',
       code: TECNICA_SERIGRAFIA.code,
       maxWidth: TECNICA_SERIGRAFIA.maxWidth,
       maxHeight: TECNICA_SERIGRAFIA.maxHeight,

@@ -165,10 +165,11 @@ describe('A12 — Esc fecha camada e recarregar não apaga o rascunho', () => {
 
     // 2) "Recarregar": instância NOVA do hook sobre o mesmo armazenamento.
     const segunda = renderHookWithProviders(() => useMockupDraft());
-    let reaberto: MockupDraftData | null = null;
+    const caixa: { reaberto: MockupDraftData | null } = { reaberto: null };
     await act(async () => {
-      reaberto = await segunda.result.current.loadDraft();
+      caixa.reaberto = await segunda.result.current.loadDraft();
     });
+    const { reaberto } = caixa;
 
     // O rascunho sobreviveu ao recarregar — nada foi apagado.
     expect(reaberto).not.toBeNull();
