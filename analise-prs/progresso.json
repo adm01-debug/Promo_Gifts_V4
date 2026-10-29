@@ -87,8 +87,8 @@
       "branch": "fix/e2e-vite-port-isolation",
       "autor": "adm01-debug",
       "draft": false,
-      "veredicto": "DECISAO_HUMANA+CONFLITO",
-      "motivo": "Toca .github/workflows/replenishment-quality.yml (REGRA #8) + mergeable_state: dirty",
+      "veredicto": "DECISAO_HUMANA",
+      "motivo": "Toca .github/workflows/replenishment-quality.yml (REGRA #8). Merge local limpo (branch rebased após análise inicial que mostrava dirty)",
       "dossie": "analise-prs/dossies/PR-2717.md",
       "mergeado_sha": null
     },
