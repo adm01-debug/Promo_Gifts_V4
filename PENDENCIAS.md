@@ -1,5 +1,21 @@
 # PENDENCIAS.md — Itens bloqueados por secret/permissão/infraestrutura
 
+## Snapshot incremental em 2026-10-29 02:26 UTC — PR #2717 `9c921e8d`
+
+Este snapshot supersede os estados anteriores abaixo para o SHA consultado; os registros antigos ficam como histórico.
+
+- `main` e checkout principal: `c344508711797a730893644449b16a05f12f4fce`.
+- PR [#2717](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2717): aberta, sem merge, base `c3445087`; HEAD `9c921e8d3855c4326bd1c1f2e328a113555df648`.
+- Checks observados: 76 no total — 58 success, 5 failure, 6 in progress, 6 skipped e 1 neutral. Não mesclar enquanto houver falha ou execução pendente.
+- Falhas: [E2E Quotes — Matrix](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40805437712): o job `E2E · undo` passou após isolar os dados de tabela; permanece falhando o snapshot mobile dark do menu (baseline 133×156 px, atual 128×156 px; mesma diferença de 5 px em commits anteriores). Não atualizar snapshot ou tolerância sem revisar e aprovar a aparência.
+- Falhas: [E2E — Magazine Header Layout](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40805437763): 3 casos esperavam navegação para `/magazine/{id}`, mas permaneceram em `/magazine`; reproduzir e obter trace/dados do editor antes de alterar produto ou teste.
+- Falha: [E2E • Swatch QuickView](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40805437721): o job WebKit recebeu sinal de shutdown/cancelamento do runner após o setup; outros projetos ainda estavam em execução no snapshot. Tratar como infraestrutura até haver falha de asserção reproduzível.
+- Falha: [Copilot Code Review](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40805448737): o processo foi bloqueado pelo firewall do runner ao acessar `api.github.com`; não equivale a revisão concluída.
+- Seis checks ainda estavam ativos no instante da consulta: visual baselines, E2E gates, Chromium/Firefox swatch, audit e verificações associadas. Consultar GitHub antes de qualquer decisão de merge.
+- Correção do teste da coluna de cotações enviada nos commits `b0b06663` e `9c921e8d`: instala mock de autenticação no modo mock, fornece resposta de leitura sintética e aguarda a tabela antes de conferir Status → Expiração → Nº Orçamento. O check confirma `E2E · undo` verde; o código do produto não foi alterado.
+- Validação local após `9c921e8d`: lint (0 erros/avisos, 0 regressões), typecheck e build passaram; suíte completa: 1.210 arquivos passaram/131 ignorados; 25.656 testes passaram/1.134 ignorados/24 TODO. E2E direcionado da tabela passou com mock; não houve escrita no banco.
+- Supabase canônico: sem alterações. Tipos estruturais continuam alinhados; ledger de migrations segue pendente de classificação e recibos, conforme seção P16 abaixo.
+
 ## Revalidação final em 2026-10-29 — `main` `c3445087`; PR #2717 `c4d41bd0`
 
 Consulta de workflows: 33 workflows observados na `main`: 23 com última execução verde, 4 vermelhas, 3 canceladas, 2 ignoradas e 1 em execução (rerun WebKit, tentativa 2). No SHA `c4d41bd0`, o PR #2717 tinha 65 checks: 45 verdes, 4 falhos, 9 em execução, 6 ignorados e 1 neutro. O PR não foi mesclado. Nenhuma migration, dado ou função remota foi alterada.

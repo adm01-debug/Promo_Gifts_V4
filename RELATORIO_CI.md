@@ -1,5 +1,28 @@
 # RELATÓRIO CI — Promo Gifts V4
 
+## Atualização incremental — 2026-10-29 02:26 UTC, PR #2717 `9c921e8d`
+
+`main` continua em `c344508711797a730893644449b16a05f12f4fce`. A PR #2717 está aberta, base `c3445087`, HEAD `9c921e8d3855c4326bd1c1f2e328a113555df648`; não houve merge nem alteração do banco canônico.
+
+No instante da consulta, GitHub reportava 76 checks: 58 success, 5 failure, 6 in progress, 6 skipped e 1 neutral. As falhas identificadas foram:
+
+| Check | Run | Causa observada |
+|---|---|---|
+| E2E Quotes — Matrix (E77) | [40805437712](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40805437712) | `undo` passou; continua falhando o snapshot dark mobile do menu: esperado 133×156 px, recebido 128×156 px. A mesma diferença já ocorria nos commits anteriores do PR. Não atualizar baseline/tolerância sem revisão visual. |
+| E2E — Magazine Header Layout | [40805437763](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40805437763) | Três testes esperavam URL `/magazine/{id}` e permaneceram em `/magazine`; causa ainda não comprovada. |
+| E2E • Swatch QuickView (Lista + Tabela) | [40805437721](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40805437721) | Runner recebeu shutdown no job WebKit; Chromium/Firefox ainda estavam ativos quando o snapshot foi registrado. Não há falha de asserção WebKit confirmada. |
+| Copilot Code Review | [40805448737](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40805448737) | O firewall do runner bloqueou a chamada do Copilot CLI a `api.github.com`; não houve revisão concluída. |
+
+Checks ainda em execução no momento da consulta: visual baselines, e2e gates, Chromium/Firefox do Swatch e audit. Consultar o estado atual antes de mesclar.
+
+### Mudanças e regressão local neste snapshot
+
+Foram enviados ao PR #2717 os commits `e0c76a1e` (alinhamento de cards medido por linha), `b0b06663` (espera explícita pelo cabeçalho) e `9c921e8d` (setup mock e resposta sintética para a tabela). A correção de cotações conserva a ordem Status → Expiração → Nº Orçamento e não grava dados no Supabase. O E2E direcionado local passou com setup mock: 2/2. Após o último commit, lint passou com 0 erros/avisos e 0 regressões; typecheck passou; build passou com os guardas SSOT, análise de ciclos e verificação de harnesses; a suíte completa passou com 1.210 arquivos/25.656 testes, 131 arquivos/1.134 testes ignorados e 24 TODO. O snapshot visual pendente não foi atualizado e o limiar não foi afrouxado.
+
+### Estado do Supabase
+
+Não houve alteração de schema, migration ou dado operacional. A comparação anterior entre o inventário de tipos e `pg_catalog` continua alinhada para as tabelas, views e enums públicos. A divergência do ledger (463 versões somente locais, 11 somente remotas e 5 IDs duplicados localmente na comparação por ID) permanece sem reconciliação; aguarda classificação e evidências de execução. Nenhuma migration foi aplicada ou reparada nesta atualização.
+
 ## Snapshot final de auditoria — 2026-10-29, `main` em `c3445087`; PR #2717 em `c4d41bd0`
 
 Consulta feita pelo MCP GitHub: 33 workflows observados na `main`; 23 com última execução verde, 4 vermelhas, 3 canceladas, 2 ignoradas e 1 em execução (rerun WebKit, tentativa 2). No SHA `c4d41bd0` do PR #2717, 65 checks: 45 verdes, 4 vermelhos, 9 em execução, 6 ignorados e 1 neutro. Não houve merge.
