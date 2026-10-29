@@ -3918,8 +3918,8 @@
     "semantic_hash": ""
   },
   "public/schemas/ssot-report.schema.json": {
-    "mtime": 1793306729.8840008,
-    "seen": 1793307049.9139466,
+    "mtime": 1793310565.4579399,
+    "seen": 1793311078.0893435,
     "ast_hash": "5f7c1a0d8db2e261abb51ec9125a64d5",
     "semantic_hash": ""
   },
@@ -26935,7 +26935,7 @@
   },
   ".claude/homunculus/instincts/inherited/promo-gifts-v4-instincts.yaml": {
     "mtime": 1793218694.9899879,
-    "seen": 1793253147.2970943,
+    "seen": 1793314517.651689,
     "ast_hash": "42f838605cab616bb0ca9fb29a612cec",
     "semantic_hash": ""
   },
@@ -29910,20 +29910,20 @@
     "semantic_hash": ""
   },
   "qa/exports/proposal-10015-26.html": {
-    "mtime": 1793306783.7585843,
-    "seen": 1793307050.080986,
+    "mtime": 1793310677.2107759,
+    "seen": 1793311078.1835527,
     "ast_hash": "92ca7a7ea332a554b7785b08a7828793",
     "semantic_hash": ""
   },
   "qa/exports/proposal-complex-99999-26.html": {
-    "mtime": 1793306783.7745843,
-    "seen": 1793307050.0809877,
+    "mtime": 1793310677.2186391,
+    "seen": 1793311078.1835537,
     "ast_hash": "04240878120d40179aa6e7ce7356afe8",
     "semantic_hash": ""
   },
   "qa/exports/proposal-minimal-00001-26.html": {
-    "mtime": 1793306783.7625842,
-    "seen": 1793307050.0809896,
+    "mtime": 1793310677.2147076,
+    "seen": 1793311078.1835554,
     "ast_hash": "cf17ac99e7adfb32411e5abee571a3ff",
     "semantic_hash": ""
   },
@@ -31740,15 +31740,15 @@
     "semantic_hash": ""
   },
   "PENDENCIAS.md": {
-    "mtime": 1793306265.6569347,
-    "seen": 1793307050.0560658,
-    "ast_hash": "21d3b2a5d03619415e97429cc521f845",
+    "mtime": 1793310291.8305488,
+    "seen": 1793311078.170594,
+    "ast_hash": "28a871347179a6d7ae9c419d8f7f2950",
     "semantic_hash": ""
   },
   "RELATORIO_CI.md": {
-    "mtime": 1793306265.6569347,
-    "seen": 1793307050.0561056,
-    "ast_hash": "27cb5db97e34e01ae9f9e165d734c150",
+    "mtime": 1793310299.187839,
+    "seen": 1793311078.1706407,
+    "ast_hash": "171a85b2d6dcbc5d376ae01ab8e6b5e9",
     "semantic_hash": ""
   },
   "analise-branches/RELATORIO_BRANCHES.md": {
@@ -34074,9 +34074,9 @@
     "semantic_hash": ""
   },
   "docs/graphify/AUDITORIA_MAPAS_E_BENCHMARK_2026-10-29.md": {
-    "mtime": 1793306265.6569347,
-    "seen": 1793307050.0755527,
-    "ast_hash": "21f5b04e9aa7622d82a7d6e7e8f4ab12",
+    "mtime": 1793309776.5313168,
+    "seen": 1793311078.1801994,
+    "ast_hash": "803200677602578aee2ecc15066622b2",
     "semantic_hash": ""
   },
   "e2e/customization/collapse-reflow.spec.ts-snapshots/location-panel-collapsed-desktop-chromium-authed-linux.png": {

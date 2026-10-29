@@ -682,6 +682,6 @@ Os status não terminais/fora de falha no mesmo snapshot foram mantidos separado
 
 ### Graphify — consistência documental
 
-- A saída Graphify versionada e validada registra 40.810 nós, 69.347 arestas e 2.192 comunidades; o artefato foi construído sobre a `main` no SHA `66d032af`. A seção de estado do mapa em `docs/graphify/AUDITORIA_MAPAS_E_BENCHMARK_2026-10-29.md` foi alinhada a esses resultados.
+- A saída Graphify foi regenerada com a versão homologada `graphifyy 0.9.91` sobre o SHA `7eea1696`: 40.829 nós, 69.366 arestas e 2.207 comunidades; 14.730 nós de baixa conectividade em 17.972 nós de código elegíveis. O relatório e os números estão alinhados em `docs/graphify/AUDITORIA_MAPAS_E_BENCHMARK_2026-10-29.md`.
 - A execução documentada do mapa SQL separado usou 3.189 arquivos versionados, 20.306 nós e 21.533 arestas. A saída permanece local/ignorada; nenhum conteúdo do banco foi exportado para o grafo.
 - A instrumentação TypeScript contou 1.714 pares de referências; zero arestas novas foram adicionadas porque as relações já estavam presentes. Foram ignoradas 10.343 referências externas; 46 arquivos de origem e duas declarações não tinham nó interno mapeável.
