@@ -26935,8 +26935,8 @@
   },
   ".claude/homunculus/instincts/inherited/promo-gifts-v4-instincts.yaml": {
     "mtime": 1793218694.9899879,
-    "seen": 1793253147.2970943,
-    "ast_hash": "",
+    "seen": 1793314517.651689,
+    "ast_hash": "42f838605cab616bb0ca9fb29a612cec",
     "semantic_hash": ""
   },
   ".claude/skills/promo-gifts-v4/SKILL.md": {
@@ -34113,12 +34113,6 @@
     "mtime": 1793306265.660935,
     "seen": 1793307050.0822365,
     "ast_hash": "0dc7f663653a93f7cb0c7f474a138e57",
-    "semantic_hash": ""
-  },
-  "package-lock.json": {
-    "mtime": 1793218846.5219262,
-    "seen": 1793311078.1873612,
-    "ast_hash": "ed228c21e4b8d33394b70e27c1384b20",
     "semantic_hash": ""
   }
 }
