@@ -1,11 +1,11 @@
 # RELATÓRIO CI — Promo Gifts V4
 
-## Atualização da auditoria — 2026-10-29 01:15 UTC
+## Atualização da auditoria — 2026-10-29 01:23 UTC
 
 Rechecagem via MCP `GITHUB - MCP - FOREVER` de `main`, da PR #2717 e do Supabase canônico.
 
 - Última execução por workflow na `main` (34 workflows): **24 success, 5 failure, 3 cancelled, 2 skipped**.
-- PR #2717: 27 checks — **19 success, 2 failure, 5 em andamento, 1 skipped**. Continua aberta e `unstable`.
+- PR #2717: 27 checks — **19 success, 4 failure, 3 em andamento, 1 skipped**. Continua aberta e `unstable`.
 - `Uptime Monitor` voltou a passar no run [40798430891](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40798430891); isso não identifica a causa dos timeouts anteriores de P14.
 
 | Workflow / check | Execução | Estado | Diagnóstico / bloqueio |
@@ -17,8 +17,10 @@ Rechecagem via MCP `GITHUB - MCP - FOREVER` de `main`, da PR #2717 e do Supabase
 | Magazine Header (main) | [40762354171](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762354171) | failure | Navegação ficou em `/magazine` quando o teste esperava `/magazine/{id}`; correção funcional ainda não comprovada. |
 | Copilot Code Review (PR #2717) | [40798295714](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40798295714) | failure | HTTP 402 por limite de uso e bloqueio de firewall para `api.github.com`; não representa revisão aprovada. |
 | E2E Quotes — Matrix (PR #2717) | [40798283756](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40798283756) | failure | Snapshot mobile dark diverge 5 px; teste de ordem das colunas não encontra o cabeçalho de status no primeiro acesso. Espera candidata não validada com DB isolado foi descartada. |
+| CI — Replenishment Module Quality Gate (PR #2717) | [40798283431](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40798283431) | failure | Paridade de cards: 3 falhas — alinhamento do rodapé preço/estoque, screenshot diff e altura fixa em tablet 768px; 12 passaram, 1 ignorado. |
+| E2E — Magazine Header Layout (PR #2717) | [40798283590](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40798283590) | failure | 7 falhas de layout/alinhamento responsivo do header/sidebar (sm/lg/xl e título longo); 4 passaram, 4 ignorados e 2 flaky. Consultar trace/artifacts antes de corrigir. |
 
-Cinco checks da PR #2717 ainda estavam em andamento (`E2E (Playwright)`, qualidade de reposição, visual nightly, Magazine Header e Swatch QuickView). Não mesclar até conclusão e resolução dos bloqueios.
+Três checks da PR #2717 ainda estavam em andamento: `E2E (Playwright)`, visual nightly e Swatch QuickView. Não mesclar até conclusão e resolução dos bloqueios.
 
 ### Sincronização do código e do banco
 
