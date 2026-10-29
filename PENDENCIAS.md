@@ -18,6 +18,70 @@
 
 **Conclusão:** a sincronização total não foi atingida. As alterações de aplicação estão em PR, não na `main`; o ledger/schema segue divergente; e há alterações locais de Graphify ainda sem revisão/publicação. Não copiar dados operacionais de clientes ou produtos para o repositório.
 
+## P18 — Revalidação após os merges #2719 e #2721 — 2026-10-29
+
+### Estado do repositório
+
+- O PR [#2719](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2719) foi mesclado em `main` no commit `66d032afa8e31cd4f9b2f60508613794cef928d4`. A `main` local foi atualizada por fast-forward para o mesmo SHA e estava limpa antes desta correção. Os seis itens de Graphify (métrica em português, população filtrada, referências TypeScript, mapa SQL separado, benchmark de versão e retenção da versão homologada) estão no repositório.
+- O PR [#2721](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2721) também foi mesclado em `main`, no commit `6b48bebcb2ff5ff922298523f4678383d392ae46`; o código e os testes do painel de localização estão no histórico da `main` atual.
+- Os checks pós-merge ainda não terminaram. O check `Supabase Preview` falhou com `Remote migration versions not found in local migrations directory`; o workflow [Uptime Monitor #40950084617](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40950084617) falhou porque `health-check` retornou curl 22; site, OPTIONS de `check-login` e Auth Health passaram. Issue automática [#2740](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2740). Não declarar o merge como integralmente verde.
+- A branch de trabalho para fixar o Graphify em `0.9.91` e corrigir as limitações observadas está em revisão local; não foi enviada nem mesclada nesta evidência. O workspace raiz de `main` foi sincronizado ao SHA do GitHub; artefatos antigos de Graphify ficaram preservados no stash `preserva artefatos Graphify locais antes da sincronização da main 2026-10-29` e não foram reaplicados.
+
+### Inventário das últimas execuções na `main`
+
+Consulta individual aos 119 workflows ativos, com `branch=main`, excluindo PRs e usando apenas a última execução por workflow. Runs sem conclusão (queued/pending/in_progress/waiting), cancelados, skipped e sem execução não foram contados como falha.
+
+| Estado da última execução | Workflows |
+|---|---:|
+| `success` | 40 |
+| `failure` | 24 |
+| `queued` | 20 |
+| `pending` | 8 |
+| `in_progress` | 1 |
+| `waiting` | 1 |
+| `skipped` | 2 |
+| `cancelled` | 2 |
+| Sem run na `main` | 21 |
+
+As 24 falhas atuais e a evidência resumida são:
+
+| Workflow | Último run | Causa observada ou limite da evidência |
+|---|---|---|
+| Copilot | [40750158539](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40750158539) | HTTP 402 por limite de uso adicional; causa operacional do serviço. |
+| Regenerate Supabase Types | [26378664155](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/26378664155) | Falha no passo de commit/push/abertura de PR; logs expiraram (HTTP 410), então a causa raiz não foi confirmada. |
+| edge-functions-drift-check | [40848475790](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40848475790) | 29 hashes divergentes entre GitHub e produção; a evidência não identifica qual lado é fonte legítima. |
+| Supplier Comparison CI | [39253399818](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39253399818) | API de jobs/logs retornou 404; causa técnica não confirmada. |
+| OptimizedImage E2E CI | [39263929298](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39263929298) | Preflight detectou pacote/lockfile incompatíveis no SHA `50f513e7`. |
+| Global Search Quality Gate | [39263929104](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39263929104) | Lockfile contém `realtime/storage 2.117.3`, manifesto exige `2.118.0`. |
+| Kit Coverage — Integration | [40813871454](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40813871454) | `permission denied` em `v_kit_component_complete` e `product_kit_components`; não conceder acesso a `anon`. |
+| Update Quote Visual Snapshots | [39997674586](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39997674586) | Fixture não contém orçamento em estado `enviada` (`E108`). |
+| E2E Discount Approval | [39263929177](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39263929177) | Incompatibilidade pacote/lockfile no preflight. |
+| E2E ColorSwatch Grid | [39263932330](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39263932330) | Incompatibilidade pacote/lockfile no preflight. |
+| E2E Dialogs visual PR check | [39253396759](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39253396759) | API de jobs/logs retornou 404; causa técnica não confirmada. |
+| E2E Check Calendar snapshots | [39253393953](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39253393953) | API de jobs/logs retornou 404; causa técnica não confirmada. |
+| E2E PDF Dialog | [40893179038](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40893179038) | Nove testes sem fixtures de orçamento `enviada`/`rascunho` (`E108`). |
+| PDF Visual Regression | [39253404824](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39253404824) | API de jobs/logs retornou 404; causa técnica não confirmada. |
+| Magazine typed queries — dry-run | [39257701249](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39257701249) | `npm ci` bloqueado por divergências entre package e lockfile (Supabase, jspdf-autotable, lucide, React/DOM, fast-equals). |
+| migration-dry-run | [35506272165](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/35506272165) | `psql` não resolveu o hostname DNS; conectividade/secret do runner precisa ser verificada. |
+| Uptime Monitor | [40950084617](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40950084617) | `health-check` retornou curl 22; site, `check-login` OPTIONS e Auth Health passaram. Issue [#2740](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2740); causa do endpoint ainda não identificada. |
+| Ratchet Weekly — Baixar baselines | [40296887709](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40296887709) | Exit 141 após diff, compatível com SIGPIPE/`pipefail`; a correção está no workflow atual, mas não há run verde posterior na `main`. |
+| E2E Cart — Matrix | [40140248814](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40140248814) | Timeout no login Auth/REST; latência é hipótese, não causa operacional confirmada. |
+| E2E Freight — Matrix | [39141334040](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39141334040) | Setup de login E2E expirou (`E21`, 75 s); causa externa ainda não confirmada. |
+| E2E Stock — Matrix | [39257701140](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39257701140) | `npm ci` falhou com lockfile incompatível no SHA correspondente. |
+| Nightly Full CI | [40808174535](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40808174535) | Falhas em seletores/snapshots/requisições E2E; não há causa comum demonstrada. |
+| E2E atualizar snapshots visuais (E155) | [39999649279](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39999649279) | Dialog do editor de orçamento não apareceu após Escape em cinco viewports; 85 testes passaram. |
+| Python Package using Conda | [39670397287](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39670397287) | `environment.yml` ausente no workflow. |
+
+O `Branch Protection Sentinel` não está nesta lista: sua última execução pós-merge estava `queued`, portanto não conta como falha. Não foram disparados reruns indiscriminados; há workflows de snapshot, deploy e banco com efeitos externos.
+
+### Supabase canônico — somente leitura
+
+- Projeto `doufsxqlfjyuvxuezpln`: `ACTIVE_HEALTHY`, PostgreSQL 17.6.1.063. O check `Supabase Preview` no merge #2719 falhou por onze versões remotas ausentes da pasta local.
+- Ledger remoto: 2.552 versões distintas. Repositório: 3.009 arquivos SQL, 3.004 versões distintas e cinco prefixos duplicados (`20260525232003`, `20260622111500`, `20260622130000`, `20260623000008`, `20260902220800`). Comparação de IDs: 2.541 comuns, 463 locais somente e 11 remotas somente.
+- As 11 remotas sem arquivo local são: `001`, `002`, `003`, `004`, `005`, `20260611014515`, `2026062311292414001`, `20260623_bugalert1`, `20260623_create_process_notifications_queue_rpcs`, `20260623_fix_google_provider_secret_name`, `20260712`.
+- Comparação nominal via `pg_catalog`: `public` contém 398 tabelas, 197 views e 15 enums presentes no inventário local. O inventário completo de funções ainda não foi reconciliado. Igualdade de nomes não comprova igualdade de definições.
+- Nenhuma escrita, DDL, migration repair, deploy de edge function, reset ou cópia de dados operacionais foi realizada. Não aplicar/reparar versões até classificar os 463/11 IDs e os cinco prefixos duplicados via fluxo aprovado E15.
+
 ---
 
 ## ✅ P0 — RESOLVIDO — Deploy Gates na main (Gate Final)
