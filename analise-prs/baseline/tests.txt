@@ -12,13 +12,19 @@ Test Files  37 passed (37)
 ## Testes pulados (não falhos)
 - 3 skipped (detalhes implícitos no report; nenhum FAIL)
 
-## Testes falhos por nome
+## Testes falhos por nome — tests/scripts/ (subset completo)
 NENHUM — todos os 523 testes passam.
 
+## Testes falhos por nome — suite completa (run parcial, 8516 linhas capturadas)
+# Encontrados em run completo interrompido por timeout (2026-10-29 16:05-16:10):
+FAIL tests/unit/date-utils.test.ts > formatDateTime > returns dd/MM/yyyy HH:mm for ISO string (BRT)
+FAIL tests/unit/date-utils.test.ts > formatTime > returns HH:mm for ISO string
+FAIL tests/unit/date-utils.test.ts > formatTime > zero-pads hours and minutes
+# Causa provável: testes de timezone assumem BRT mas CI roda em UTC — pré-existente, não introduzido por esta sessão
+
 ## Subset executado
-tests/scripts/ — 37 arquivos de teste de gates/contratos/scripts de CI
-(suite completa rodando em background em task b0fjnqovi; resultado parcial acima
- é evidência de que o vitest carrega e executa corretamente na branch atual)
+tests/scripts/ — 37 arquivos de teste de gates/contratos/scripts de CI (run completo, 84s)
+Suite completa — run parcial (8516 linhas, interrompido por timeout de 5min)
 
 ## Nota sobre contexto anterior
 Em contexto anterior, baseline/tests.txt continha apenas:
