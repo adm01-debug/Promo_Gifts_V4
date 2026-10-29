@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Layers, ChevronDown, ChevronUp, Copy } from 'lucide-react';
+import { Layers, ChevronDown, ChevronUp, Copy, RefreshCw } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
@@ -40,6 +40,10 @@ interface MultiAreaManagerProps {
   onActiveAreaChange: (areaId: string | null) => void;
   onLogoUpload: (areaId: string, file: File) => void;
   onLogoRemove?: (areaId: string) => void;
+  /** Erro por id de área do último lote; a área ganha botão para regerar só ela. */
+  areaErrors?: Record<string, string>;
+  retryingAreaIds?: string[];
+  onRetryArea?: (areaId: string) => void;
   productLocations?: { code: string; name: string; order: number }[] | null;
 }
 
@@ -50,6 +54,9 @@ export function MultiAreaManager({
   onActiveAreaChange,
   onLogoUpload,
   onLogoRemove,
+  areaErrors,
+  retryingAreaIds,
+  onRetryArea,
 }: MultiAreaManagerProps) {
   const [isExpanded, setIsExpanded] = useState(true);
   const [isDraggingOver, setIsDraggingOver] = useState(false);
@@ -166,6 +173,37 @@ export function MultiAreaManager({
                 />
               ))}
             </div>
+
+            {areas
+              .filter((a) => areaErrors?.[a.id])
+              .map((area) => (
+                <div
+                  key={area.id}
+                  role="alert"
+                  className="flex items-center justify-between gap-2 rounded-md border border-destructive/30 bg-destructive/5 px-2 py-1.5 text-xs text-destructive"
+                >
+                  <span>
+                    {area.name}: {areaErrors?.[area.id]}
+                  </span>
+                  {onRetryArea && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      disabled={retryingAreaIds?.includes(area.id)}
+                      onClick={() => onRetryArea(area.id)}
+                    >
+                      <RefreshCw
+                        className={cn(
+                          'mr-1 h-3 w-3',
+                          retryingAreaIds?.includes(area.id) && 'animate-spin',
+                        )}
+                        aria-hidden="true"
+                      />
+                      Regerar esta área
+                    </Button>
+                  )}
+                </div>
+              ))}
 
             {areas.length > 1 && activeAreaHasLogo && (
               <Button
