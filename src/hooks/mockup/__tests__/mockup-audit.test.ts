@@ -1515,14 +1515,8 @@ describe('Analise estatica — GeneratingOverlay.tsx (aria-hidden em icones deco
     src = readSrc('src/components/mockup/GeneratingOverlay.tsx');
   });
 
-  it('icone CurrentIcon animado tem aria-hidden', () => {
-    expect(src).toContain('animate-bounce text-primary" aria-hidden="true"');
-  });
-  it('icone Check no passo concluido tem aria-hidden', () => {
-    expect(src).toContain('<Check className="h-4 w-4" aria-hidden="true"');
-  });
-  it('icone StepIcon no passo atual tem aria-hidden', () => {
-    expect(src).toContain('<StepIcon className="h-4 w-4" aria-hidden="true"');
+  it('icone do spinner tem aria-hidden', () => {
+    expect(src).toMatch(/<Loader2[^>]*aria-hidden="true"/s);
   });
 });
 
