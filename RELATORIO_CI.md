@@ -21,6 +21,16 @@ Exemplos dos gates e workflows que seguem verdes na última execução consultad
 
 **Prova de regressão local do PR #2721:** `npm run build:verify` passou; `npm test` passou com 1.210 arquivos e 25.656 testes (1.134 skipped, 24 TODO). Isso comprova a execução local desse branch, mas não equivale a comparar cada um dos 31 workflows vermelhos com uma baseline equivalente; essas falhas remotas permanecem abertas ou aguardam a evidência/ação indicada em `PENDENCIAS.md`. Não houve alteração em `main`, deploy de aplicação, schema, migration ou dados do Supabase nesta revalidação.
 
+## 9. Estado de sincronização dos branches e do canônico — 2026-10-29
+
+- PR [#2721](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2721), SHA `a172c252`: 74 checks; 54 success, 8 failure, 8 skipped, 3 cancelled, 1 neutral. Os oito checks falhos permanecem como bloqueio de merge; a lista e os links estão nos checks do PR.
+- PR [#2714](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2714), SHA `ca316674`: 48 checks; 34 success, 6 failure, 6 skipped, 1 cancelled, 1 neutral. Gate E40 e Gate Final falham; PR não integrado.
+- PR documental [#2725](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2725), SHA `e4ef6e5`: 28 checks; 19 success, 1 failure, 7 skipped, 1 neutral. O check Copilot falhou no step `Processing Request (Linux)` durante limpeza; a API recusou rerun com HTTP 403 (“Jobs in this workflow run cannot be re-run”).
+- Supabase canônico `doufsxqlfjyuvxuezpln`: `ACTIVE_HEALTHY`, PG 17.6.1.063; 2.552 entradas no ledger, última `20261027160000`. No checkout: 3.009 arquivos SQL, 3.004 versões únicas; comparação de IDs indica 2.541 compartilhadas, 463 locais e 11 remotas, além de cinco grupos duplicados localmente. Esse inventário não comprova equivalência do conteúdo SQL nem do schema ao vivo; E40 continua bloqueando a reconciliação.
+- O checkout desta sessão tem saídas Graphify não commitadas em `.graphifyignore`, `graphify-out/GRAPH_REPORT.md` e `graphify-out/manifest.json`; portanto, não estão no GitHub. Nenhuma migration, DDL, dado operacional ou conteúdo do Supabase foi alterado.
+
+**Resultado da auditoria:** não há prova de sincronização completa entre checkout, `main` e banco. Código aguarda checks nos PRs; reconciliação de migrations aguarda classificação do drift; artefatos Graphify locais ainda aguardam revisão. O relatório registra as diferenças sem promover conteúdo local para produção ou fazer alterações destrutivas.
+
 ---
 
 ## 1. Inventário de Workflows — Estado atual na Main (SHA `4562f376`)

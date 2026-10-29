@@ -5,6 +5,19 @@
 
 > Revalidação independente mais recente: veja a seção **Inventário completo da main — 2026-10-29** abaixo. Ela substitui os IDs/status antigos deste arquivo quando houver conflito.
 
+## Auditoria de sincronização local × GitHub × Supabase — 2026-10-29
+
+| Área | Evidência atual | Resultado |
+|---|---|---|
+| Código local e GitHub | Branch local `fix/location-panel-timeout-cleanup`, SHA `a172c252f0b8dafebcefa5a37903214ecc44efc4`; PR [#2721](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2721) aponta para o mesmo SHA e continua aberto. | O código está publicado no branch/PR, mas não incorporado à `main` (`c344508`). Há 8 checks falhos; não é seguro integrar ainda. |
+| Reconciliação de migrations | PR [#2714](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2714), SHA `ca316674db0110136e6cbbabee8fbe103aa8ff15`, continua aberto e bloqueado pelo Gate E40. | Não aplicar nem reparar ledger/schema enquanto o drift não for classificado e aprovado. |
+| Ledger local × canônico | Repositório: 3.004 versões distintas em 3.009 arquivos SQL; canônico: 2.552 entradas; 2.541 versões compartilhadas, 463 apenas locais e 11 apenas remotas. Existem 5 grupos de versão duplicada no repositório. | Divergência confirmada. As 11 versões remotas e as 463 locais exigem classificação individual; contagens, sozinhas, não autorizam `migration repair` ou DDL. |
+| Banco canônico | Projeto `doufsxqlfjyuvxuezpln`: `ACTIVE_HEALTHY`, PostgreSQL 17.6.1.063; migration mais recente `20261027160000`. | Saúde operacional verificada; isso não significa paridade do ledger nem do schema. Nenhuma escrita foi executada. |
+| Este registro | PR documental [#2725](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2725), SHA `e4ef6e5d9339042fbfdd9087d25ebc4c8fefcd08`, aberto. | O check Copilot [falhou no step de limpeza](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40843346745); tentativa de rerun foi recusada pela API (`403`, jobs desta execução não podem ser reexecutados). A causa operacional é do workflow/serviço e permanece pendente. |
+| Graphify local | `.graphifyignore`, `graphify-out/GRAPH_REPORT.md` e `graphify-out/manifest.json` têm alterações locais não commitadas; o relatório foi gerado em `a172c252`. | Ainda não está no GitHub. A atualização removeu SQL do mapa principal, mas a separação em grafo SQL e as demais validações do plano Graphify não estão concluídas; não integrar esses artefatos volumosos sem revisão. |
+
+**Conclusão:** a sincronização total não foi atingida. As alterações de aplicação estão em PR, não na `main`; o ledger/schema segue divergente; e há alterações locais de Graphify ainda sem revisão/publicação. Não copiar dados operacionais de clientes ou produtos para o repositório.
+
 ---
 
 ## ✅ P0 — RESOLVIDO — Deploy Gates na main (Gate Final)
