@@ -1,0 +1,57 @@
+{
+  "sha_base": "8bc08b12f50872e2d9b9a93d3f7dbae388fec204",
+  "sha_pos_merges": "9a97f9a2c857b25590691efd2c741a194bfb24da",
+  "data": "2026-10-29",
+  "nota_deploy_gates_em_main": "Deploy Gates NAO disparou em push para main apos PR #2719 (docs-only/chore). O workflow usa paths-ignore que excluiu esse push. Deploy Gates RODOU e PASSOU em todas as 8 PRs antes de cada merge.",
+  "runs_em_main_sha_9a97f9a2": [
+    {"run_id": 40969607792, "nome": "Static Health Checks", "status": "completed", "conclusion": "success"},
+    {"run_id": 40969607824, "nome": "SSOT Supabase Guard", "status": "completed", "conclusion": "success"},
+    {"run_id": 40969607897, "nome": "Security Scan", "status": "completed", "conclusion": "success"},
+    {"run_id": 40969607927, "nome": "Gitleaks Full History Audit", "status": "completed", "conclusion": "success"},
+    {"run_id": 40969607904, "nome": "Policies Baseline", "status": "completed", "conclusion": "success"},
+    {"run_id": 40969607838, "nome": "Supabase Linter Gate", "status": "completed", "conclusion": "success"},
+    {"run_id": 40969607845, "nome": "CodeQL", "status": "completed", "conclusion": "success"},
+    {"run_id": 40969607793, "nome": "Select Columns vs Types", "status": "completed", "conclusion": "success"},
+    {"run_id": 40969607907, "nome": "UI Visual A11y", "status": "completed", "conclusion": "success"},
+    {"run_id": 40969607919, "nome": "Quote Builder Delivery Quality", "status": "completed", "conclusion": "success"},
+    {"run_id": 40969607855, "nome": "Required Checks Guard", "status": "completed", "conclusion": "success"},
+    {"run_id": 40969607960, "nome": "Release Please", "status": "completed", "conclusion": "success"},
+    {"run_id": 40969607989, "nome": "E2E Personalization Flow", "status": "completed", "conclusion": "failure", "tipo": "pre_existente"},
+    {"run_id": 40969607706, "nome": "Branch Protection Sentinel", "status": "completed", "conclusion": "failure", "tipo": "pre_existente_aguarda_pr_2749"}
+  ],
+  "falhas_conhecidas_main": [
+    {"check": "E2E Personalization Flow", "run_id": 40969607989, "tipo": "pre_existente", "bloqueante_gate_final": false},
+    {"check": "Branch Protection Sentinel", "run_id": 40969607706, "tipo": "aguarda_pr_2749_REGRA8", "bloqueante_gate_final": false},
+    {"check": "Uptime Monitor", "run_id": 40973971965, "tipo": "infra_externa_intermitente", "bloqueante_gate_final": false}
+  ],
+  "logs_supabase_pos_merges": {
+    "janela": "2026-10-29T18:00Z a 2026-10-29T23:59Z",
+    "fonte": "postgres_logs",
+    "erros_encontrados": [
+      {"mensagem": "database postgres has a collation version mismatch", "tipo": "plataforma_supabase_pre_existente", "origem_merge": false},
+      {"mensagem": "column companies.owner_id does not exist", "tipo": "erro_app_pre_existente", "origem_merge": false},
+      {"mensagem": "duration 30028ms SELECT pg_sleep(30)", "tipo": "cron_lento_pre_existente", "origem_merge": false}
+    ],
+    "conclusao": "Zero erros novos introduzidos pelos 8 merges desta sessao"
+  },
+  "analise_local_worktree": {
+    "status": "NAO_REALIZADA",
+    "motivo": "OOM: npm run lint:baseline falha com heap limit. Analise de diff via GitHub API (get_pr_diff, list_pr_files) documentada nos dossiers."
+  },
+  "gate_final_required": true,
+  "gate_final_workflow": ".github/workflows/deploy-gates.yml",
+  "merges_desta_sessao": [
+    {"pr": 2721, "sha_merge": "6b48beb", "gate_final_pr": "success"},
+    {"pr": 2735, "sha_merge": "27f4261", "gate_final_pr": "success"},
+    {"pr": 2733, "sha_merge": "8bc08b1", "gate_final_pr": "success"},
+    {"pr": 2695, "sha_merge": "8da42aa9", "gate_final_pr": "success"},
+    {"pr": 2707, "sha_merge": "37ea10a3", "gate_final_pr": "success"},
+    {"pr": 2737, "sha_merge": "c7f9f4ba", "gate_final_pr": "success"},
+    {"pr": 2736, "sha_merge": "31ebc2d3", "gate_final_pr": "success"},
+    {"pr": 2719, "sha_merge": "66d032af", "gate_final_pr": "success"}
+  ],
+  "prs_aguardando_ci": [
+    {"pr": 2747, "run_id": 40970640916, "status": "queued", "sha": "3a5521b1ff9908b15db79219cf5706918054b763"},
+    {"pr": 2739, "run_id": 40970786956, "status": "queued", "sha": "0faeca3cc3e8b2a6ffdb1393438d2216c7d112ae"}
+  ]
+}
