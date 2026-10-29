@@ -83,7 +83,7 @@ describe("AdImageResult — galeria do histórico: sem interativo aninhado (E-25
     const results = await axe(container);
 
     expect(results.violations.filter((v) => v.id === "nested-interactive")).toEqual([]);
-    expect(results).toHaveNoViolations();
+    expect(results.violations).toEqual([]);
   });
 
   it("o item abre por um <button> nativo, sem role='button' aninhando as ações", () => {

@@ -70,9 +70,9 @@ describe("MagicUpCurationStatus — radiogroup acessível", () => {
     expect(tabbable[0]).toHaveAccessibleName(radioName("good"));
     expect(checkedRadio()).toBe(tabbable[0]);
 
-    radios()
-      .filter((radio) => radio.getAttribute("aria-checked") === "false")
-      .forEach((radio) => expect(radio).toHaveAttribute("tabindex", "-1"));
+    const unchecked = radios().filter((radio) => radio.getAttribute("aria-checked") === "false");
+    expect(unchecked).not.toHaveLength(0);
+    for (const radio of unchecked) expect(radio).toHaveAttribute("tabindex", "-1");
   });
 
   it("Tab entra direto no radio marcado, sem parar no container", async () => {
@@ -151,7 +151,8 @@ describe("MagicUpCurationStatus — radiogroup acessível", () => {
     const onChange = vi.fn();
     render(<MagicUpCurationStatus value="draft" disabled onChange={onChange} />);
 
-    radios().forEach((radio) => expect(radio).toBeDisabled());
+    expect(radios()).not.toHaveLength(0);
+    for (const radio of radios()) expect(radio).toBeDisabled();
     fireEvent.keyDown(screen.getByRole("radiogroup", { name: "Curadoria" }), { key: "ArrowRight" });
     fireEvent.keyDown(screen.getByRole("radiogroup", { name: "Curadoria" }), { key: "End" });
     expect(onChange).not.toHaveBeenCalled();

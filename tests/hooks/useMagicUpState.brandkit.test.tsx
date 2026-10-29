@@ -14,7 +14,7 @@ import React from "react";
 import { renderHook, waitFor, act } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { useMagicUpState, type SelectedClient } from "@/hooks/intelligence/useMagicUpState";
+import { useMagicUpState } from "@/hooks/intelligence/useMagicUpState";
 import type { MagicUpBrandLogo } from "@/pages/magic-up/magicUpStrategy";
 
 const mocks = vi.hoisted(() => ({
@@ -119,13 +119,6 @@ const wrapper = ({ children }: { children: React.ReactNode }) => (
     {children}
   </QueryClientProvider>
 );
-
-const client: SelectedClient = {
-  id: "client-1",
-  name: "ACME",
-  logo_url: "https://crm.example.com/acme.png",
-  cor_primaria_hex: "#000000",
-};
 
 beforeEach(() => {
   vi.clearAllMocks();

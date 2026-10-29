@@ -18,8 +18,7 @@ export interface MagicUpShareSource {
 }
 
 export type MagicUpShareResult =
-  | { ok: true; url: string; text: string }
-  | { ok: false; reason: string };
+  { ok: false; reason: string } | { ok: true; url: string; text: string };
 
 export const MAGIC_UP_SHARE_NO_IMAGE_REASON =
   'Gere uma imagem antes de compartilhar no WhatsApp';

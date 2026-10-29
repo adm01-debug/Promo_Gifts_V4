@@ -9,7 +9,7 @@ vi.mock('sonner', () => ({ toast: { success: vi.fn(), error: vi.fn() } }));
 
 import { useLogoColorAnalysis } from '../useLogoColorAnalysis';
 
-let imageMode: 'load' | 'error' = 'load';
+let imageMode: 'error' | 'load' = 'load';
 const createdImages: Array<{ crossOrigin: string | null }> = [];
 
 class FakeImage {
@@ -20,6 +20,9 @@ class FakeImage {
   onerror: (() => void) | null = null;
   constructor() {
     createdImages.push(this);
+  }
+  get src(): string {
+    return '';
   }
   set src(_v: string) {
     queueMicrotask(() => (imageMode === 'load' ? this.onload?.() : this.onerror?.()));
