@@ -1047,7 +1047,7 @@ Os 5 ratchets de dívida técnica estão todos exatamente no baseline: 889 index
 
 ### ONDA 13 — REACT: VAZAMENTOS, RE-RENDER E ACESSIBILIDADE (E131–E140)
 
-#### P200-E131 · [D] · P0 · Eliminar o hook condicional em `CloudStatusContext`
+#### P200-E131 · [D] · P0 · Eliminar o hook condicional em `CloudStatusContext` ✅
 **Arquivo:** `src/contexts/CloudStatusContext.tsx:47-53`
 **Fazer:** `useCloudStatus()` é chamado **condicionalmente**, depois de `if (ctx) return ctx`, com `eslint-disable react-hooks/rules-of-hooks` por cima. A contagem de hooks muda se o provider montar ou desmontar → React #310, exatamente a classe de regressão que o `CLAUDE.md` REGRA #7 cita em `MagazineEditorPage` (2026-07-16). Dar default ao `createContext` ou expor `useCloudStatusStandalone` separado.
 **Pronto:** `grep -c "rules-of-hooks" src/contexts/CloudStatusContext.tsx` → `0`; montar/desmontar o provider não lança React #310
