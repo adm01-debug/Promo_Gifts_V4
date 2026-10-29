@@ -11,10 +11,10 @@
 
 | Veredicto | Qtd | PRs |
 |---|---|---|
-| DECISAO_HUMANA | 4 | #2731, #2730, #2720, #2714 |
+| DECISAO_HUMANA | 5 | #2731, #2730, #2720, #2714, #2688 |
 | AGUARDAR_CI | 2 | #2719, #2713 |
 | CONFLITO | 5 | #2717, #2716, #2707, #2695, #2693 |
-| AGUARDA_CI_DRAFT | 4 | #2711, #2701, #2688, #2674 |
+| AGUARDA_CI_DRAFT | 3 | #2711, #2701, #2674 |
 | NAO_MERGEAR | 1 | #2729 |
 | **MERGEADO** | **1** | **#2721** |
 | **TOTAL** | **17** | — |
@@ -63,6 +63,12 @@
 - **Negócio:** Reconciliação de schema. Risco alto sem revisão humana.
 - **Bloqueio:** Toca migrations de produção.
 
+#### PR #2688 — fix(ci): torna migration 20261027120000 replay-safe
+- **Branch:** `claude_pink/focused-lamport-qyupp8`
+- **Arquivos críticos:** `.github/workflows/db-schema-drift-check.yml`
+- **Negócio:** Adiciona `permissions: packages: read` + docker login para resolver ghcr.io rate limit no drift-check. PR válida mas contém typo: `$POSGRES_IMAGE` (deveria ser `$POSTGRES_IMAGE`) na linha de fallback anônimo.
+- **Bloqueio:** Toca `.github/workflows/` + draft + branch de outra sessão + typo no fallback.
+
 ---
 
 ### AGUARDAR_CI — Sem workflow/migration, mas CI bloqueada
@@ -109,7 +115,6 @@
 |---|---|---|
 | #2711 | `claude_pink/fix-relatorio-final-281028-1530` | Docs CI — outra sessão |
 | #2701 | `claude/fix-p12-grant-kit-view-261028-1730` | Kit Coverage auth — outra sessão |
-| #2688 | `claude_pink/focused-lamport-qyupp8` | Migration replay-safe — outra sessão |
 | #2674 | `claude_pink/sleepy-cannon-h000nc` | Análise PRs — outra sessão |
 
 ---
@@ -140,10 +145,10 @@ Cada PR dos 16 restantes tem impedimento legítimo e documentado:
 
 | Veredicto | Qtd | Motivo |
 |---|---|---|
-| DECISAO_HUMANA | 4 | Tocam `.github/workflows/`, `.github/actions/` ou `supabase/migrations/` → REGRA #8 |
+| DECISAO_HUMANA | 5 | Tocam `.github/workflows/`, `.github/actions/` ou `supabase/migrations/` → REGRA #8 |
 | AGUARDAR_CI | 2 | #2719: Gate Final ❌ failure em `4fd4e8ff`; #2713: Gate Final não rodou em `d6826029` (blocked) |
 | CONFLITO | 5 | `mergeable_state: dirty` — conflito real com main, não resolvível sem PR do autor |
-| AGUARDA_CI_DRAFT | 4 | PRs em draft de outras sessões — não autorizadas para merge autônomo (REGRA #10) |
+| AGUARDA_CI_DRAFT | 3 | PRs em draft de outras sessões — não autorizadas para merge autônomo (REGRA #10) |
 | NAO_MERGEAR | 1 | #2729 — branch de entrega desta sessão (esta PR) |
 
 ---
