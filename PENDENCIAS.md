@@ -707,3 +707,28 @@ Os status não terminais/fora de falha no mesmo snapshot foram mantidos separado
 - PR #2745 permanece atrás da `main`; seus checks incluem itens em fila. Nenhum dos PRs #2743, #2745 ou #2747 foi mesclado nesta etapa.
 
 **Próxima ação:** consultar os logs/alertas operacionais do Supabase para Auth/PostgREST no intervalo 23:05–23:20 UTC e obter o detalhe do build no painel Vercel; aguardar o rerun read-only do Gate 5. Revalidar os checks dos três PRs antes de qualquer decisão de merge.
+
+## P21 — revalidação de CI, sincronização do PR Ratchet e referências de migrations — 2026-10-29T23:46Z
+
+### PR #2745 — branch atualizada com `main`
+
+- Merge normal de `origin/main` (`9a97f9a2`) em `fix/ratchet-weekly-sigpipe-20261029`, commit `47b6f55e3e32d68e36bd86281da48c9779ff136f`; sem conflitos e com a `main` como ancestral.
+- `npm run build:verify`: passou (typecheck, lint baseline, build, guards, ciclos e harnesses). `npm test`: 1.247 arquivos passaram; 25.869 testes passaram, 1.135 skipped e 24 TODO.
+- O push normal foi concluído; o primeiro bloqueio do hook foi OOM do ESLint no heap padrão. Repetição com `NODE_OPTIONS=--max-old-space-size=4096` executou o mesmo hook integralmente, com 0 erros, 0 warnings e 0 regressões.
+- No snapshot 23:46Z, workflows deste head: 1 `success`, 10 `queued`, 1 `in_progress`, 2 `skipped` e 1 `neutral`; nenhum check de qualidade concluído aparece como falha. Vercel Agent Review foi pulado por billing desabilitado e não conta como review. PR [#2745](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2745) segue sem merge até todos os checks obrigatórios terminarem.
+
+### PR #2743 — estado atualizado e causa comprovada do Copilot
+
+- Head `632d1f1411e62d41c694d3cda952867ea628f61a`; no snapshot 23:46Z, 57 check runs: 24 `success`, 18 `queued`, 8 `in_progress`, 5 `skipped`, 1 `failure` e 1 `neutral`.
+- Copilot Reviewer falhou no run [40973814939](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40973814939): log informa limite adicional de uso atingido (HTTP 402/quota) e bloqueio de `api.github.com` pelo firewall do runner. É bloqueio de serviço/configuração; não há correção de aplicação demonstrada. Vercel Agent Review foi pulado por billing desabilitado.
+- O Preview Vercel continua falhando no deployment [`dpl_CiCk44mFZqGRKWxjwCkpdwgv222c`](https://vercel.com/juca1/promo-gifts-v4/CiCk44mFZqGRKWxjwCkpdwgv222c). `vercel inspect --logs` retornou apenas `status Error`, sem código/etapa que permita atribuir causa. PR [#2743](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2743) permanece bloqueado.
+
+### PR #2747 — gates e diagnóstico de E2E
+
+- O rerun read-only do Gate 5 terminou com sucesso na tentativa 2 do run [40970640671](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40970640671); o registro anterior de `inconclusive` em P20 é histórico e foi substituído por este resultado.
+- O Gate 1.3 — contrato de referências de migrations falhou no run [40970640916](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40970640916) por nove caminhos inválidos em `analise-prs/`: duas referências apontavam para arquivo ausente/versão sem nome; outras eram propostas em branches de PR, não arquivos da `main`. Os caminhos versionados foram corrigidos e a proposta não mesclada foi rotulada como ausente da `main`; `node scripts/check-migration-path-references.mjs` agora passa sem novas referências quebradas. Nenhum arquivo de migration foi criado ou alterado.
+- QuickView continua falhando nos três browsers no run [40970640906](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40970640906): a spec depende do catálogo remoto para encontrar produto com `color_swatches V2`; executou 5 testes, 4 com falha inesperada e skips acima do limite. Não há fixture de produto determinística nesse workflow. Não reduzi o gate nem converti falhas em skips.
+- Full User Flows falhou em [40970640931](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40970640931): 9 de 10 testes foram skipped porque a sessão de teste permaneceu em `/login`. O setup usa login real; chamadas Auth/PostgREST apresentaram 504 e longas pendências em execuções correlatas. A evidência aponta latência/indisponibilidade e sessão ausente, mas não demonstra uma única causa operacional; não alterar credenciais, timeouts ou limiares por hipótese.
+- CI Replenishment falhou no E2E autenticado [40970640650](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40970640650), também com sessão em `/login` e chamadas Auth/PostgREST lentas. Copilot Reviewer falhou por limites do serviço. O PR [#2747](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2747) segue bloqueado por Gate 1.3 no head antigo e E2E não verdes.
+
+Nenhum banco foi escrito; nenhuma migration, DDL, repair, deploy de Edge Function ou mudança de comportamento da aplicação foi executada. As pendências externas são: billing/quotas do Copilot e Vercel, diagnóstico do build Vercel no painel e disponibilidade/Auth/PostgREST do Supabase para E2E autenticado. Nenhum merge foi feito.

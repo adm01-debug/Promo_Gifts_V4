@@ -268,3 +268,30 @@ Esta revisão só altera documentação e números de auditoria. Não executou r
 - Graphify foi atualizado com o comando versionado `npm run graphify:refresh`, `graphifyy==0.9.91`: 41.230 nós, 69.904 relações e 2.163 comunidades; 14.852 nós de baixa conectividade/18.109 elegíveis. O benchmark pré-merge continua identificado como fotografia `7eea1696` em `docs/graphify/AUDITORIA_MAPAS_E_BENCHMARK_2026-10-29.md`.
 - PR #2743 permanece aberto: Actions sem falhas/pending no snapshot consultado, mas status Vercel falhou no deployment `dpl_7hEenqjmJq6mxN1oTAuZzZKrDisb`; `vercel inspect --logs` não expõe a causa. PR #2745 está atrás da `main`. PR #2747 tem Gate 5 falhando por HTTP 500/504 no RPC de audit, E2E de reposição bloqueado por latência Auth/PostgREST, Copilot Reviewer com falha de firewall e Preview Vercel sem diagnóstico; ver P20 de `PENDENCIAS.md`. Rerun do Gate 5 read-only está na fila.
 - Nenhum merge dos PRs #2743/#2745/#2747, alteração no banco, migration, DDL ou deploy foi feito nesta etapa.
+
+## 15. Revalidação de branches, CI e referências de migrations — 2026-10-29T23:46Z
+
+### PR #2745 após sincronização normal com `main`
+
+- Merge commit `47b6f55e3e32d68e36bd86281da48c9779ff136f`; `origin/main` (`9a97f9a2`) é ancestral e o worktree está limpo. O push normal atualizou o PR.
+- `npm run build:verify`: aprovado. `npm test`: 1.247 arquivos passaram; 25.869 testes passaram, 1.135 skipped e 24 TODO.
+- O hook pre-push passou com heap Node de 4 GB, ESLint 0 erros/0 warnings/0 regressões. A primeira tentativa, com heap default, parou por OOM e não enviou o commit; não houve bypass do hook.
+- No snapshot remoto 23:46Z, checks do head: 1 success, 10 queued, 1 in progress, 2 skipped e 1 neutral. PR não mesclado; aguardar conclusão dos checks. Vercel Agent Review neutral informa billing de uso desabilitado.
+
+### Diagnóstico atualizado dos PRs #2743 e #2747
+
+- PR #2743, head `632d1f141`: 57 checks — 24 success, 18 queued, 8 in progress, 5 skipped, 1 failure e 1 neutral. Copilot Reviewer falhou por quota adicional excedida (HTTP 402) e bloqueio de `api.github.com` pelo firewall; o Preview Vercel `dpl_CiCk44mFZqGRKWxjwCkpdwgv222c` falha, mas a inspeção de logs não expõe a causa. Não mesclar.
+- PR #2747: rerun read-only do Gate 5 passou na tentativa 2. Gate 1.3 falha por referências a arquivos de migration inexistentes em documentação de PRs; a causa foi reproduzida localmente e as referências foram corrigidas na branch #2743. O check local `node scripts/check-migration-path-references.mjs` passou sem novas referências inválidas.
+- E2E QuickView depende do catálogo Supabase remoto e não instala fixture de produto V2; o run executou 5 testes e teve 4 falhas inesperadas, além de excesso de skips. Full User Flows e Replenishment E2E falham porque o login fica em `/login`; logs mostram chamadas Auth/PostgREST lentas ou com 504, sem raiz única confirmada. Não foram afrouxados gates, testes, snapshots ou credenciais.
+- Copilot Reviewer #2747 está bloqueado por quota/firewall. Nenhuma alteração no banco, migration, DDL, repair, deploy de Edge Function ou runtime ocorreu.
+
+### Comparação local
+
+| Verificação no merge #2745 | Resultado |
+|---|---|
+| `npm run build:verify` | Passou; typecheck, lint, build e guards sem erro |
+| `npm test` | 1.247 arquivos aprovados; 25.869 testes aprovados; 1.135 skipped; 24 TODO |
+| Hook pre-push | Passou com heap 4 GB; ESLint 0 regressões |
+| `node scripts/check-migration-path-references.mjs` na branch #2743 | Passou após corrigir nove referências documentais |
+
+Não declarar integração concluída: os PRs continuam abertos, os checks do #2745 estão majoritariamente na fila e #2743/#2747 conservam bloqueios externos e E2E. Inventário e evidências detalhados estão em [PENDENCIAS.md, P21](./PENDENCIAS.md).
