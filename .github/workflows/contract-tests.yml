@@ -65,6 +65,9 @@ jobs:
     # e supabase CLI exige tokens válidos pra subir o stack)
     if: github.event_name == 'workflow_dispatch' || github.event.pull_request.head.repo.full_name == github.repository
     timeout-minutes: 15
+    permissions:
+      contents: read
+      packages: read  # autentica os pulls do GHCR e reduz o limite anônimo compartilhado
     env:
       N8N_PRODUCT_WEBHOOK_SECRET: contract-test-secret
       WEBHOOK_DISPATCHER_SECRET: contract-test-secret
@@ -88,6 +91,30 @@ jobs:
           # O override para ECR Public (E104) passou a falhar com "toomanyrequests: Data limit
           # exceeded" no supabase start (run 40198510942); mesma reversão do db-schema-drift-check.yml.
           echo "SUPABASE_INTERNAL_IMAGE_REGISTRY=ghcr.io" >> "$GITHUB_ENV"
+
+      - name: Pre-pull PostgreSQL do Supabase com autenticação GHCR
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          # O Supabase local usa esta imagem no `supabase start`. O log do job
+          # registrou `toomanyrequests` no pull anônimo; autenticamos antes do
+          # bootstrap, com o mesmo padrão já usado pelo db-schema-drift-check.
+          postgres_image="${SUPABASE_INTERNAL_IMAGE_REGISTRY}/supabase/postgres:17.6.1.063"
+          for attempt in 1 2 3 4 5; do
+            if echo "$GITHUB_TOKEN" | docker login ghcr.io -u x-access-token --password-stdin \
+                && docker pull "$postgres_image"; then
+              echo "Pre-pull do PostgreSQL concluído (tentativa $attempt)"
+              break
+            fi
+            if [ "$attempt" -eq 5 ]; then
+              echo "::error::Pre-pull de $postgres_image falhou após 5 tentativas"
+              exit 1
+            fi
+            wait_s=$((attempt * 30))
+            echo "Tentativa $attempt falhou; aguardando ${wait_s}s antes de tentar novamente"
+            sleep "$wait_s"
+          done
 
       - run: npm ci --no-audit --no-fund
 
