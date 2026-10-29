@@ -291,8 +291,8 @@ As 3 edge functions afetadas têm código **correto no repositório** (confirmad
 ## P12 — Kit Coverage — Integration (cobertura insuficiente na view)
 
 **Workflow:** Kit Coverage — Integration
-**Run ID da última falha:** 40872852127 (SHA `cb4b745c63f8d0aa72d5e8063efdeb91ef820d8f`)
-**Link:** https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40872852127
+**Run ID da última falha:** 40874620158 (SHA `6bcc383e438390a44d7538db9c3b0b82f4c0926f`)
+**Link:** https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40874620158
 **Status:** failure — autenticação e consultas passaram; a cobertura dos dados reais continua abaixo do mínimo.
 
 **Resultado observado:** autenticação e as duas consultas ao Supabase passaram. A terceira asserção falhou com `Cobertura 56% < threshold 70%` para o kit descoberto dinamicamente.
@@ -303,11 +303,11 @@ As 3 edge functions afetadas têm código **correto no repositório** (confirmad
 
 **Gap restante — contrato/qualidade da view e fixture:**
 - A definição canônica consultada em `pg_get_viewdef` não projeta `component_description`, `primary_image_url`, `images` e `supplier_component_code`, campos que o teste inclui na métrica. A entrada `v_kit_component_complete` em `src/integrations/supabase/types.ts` também omite esses quatro campos, portanto os tipos locais refletem a view remota; o gap está entre o contrato do teste (view como superset da tabela base) e a projeção real.
-- Recontagem somente leitura no Supabase canônico, usando a mesma lista de 15 campos e o mesmo arredondamento do teste: 5 de 978 kits ativos com componentes atingem 70% na tabela base; a média por kit é 52,7%. A seleção dinâmica sem ordenação escolhe um kit qualquer, por isso a falha não é reprodutível. A execução atual no SHA `cb4b745c6` repetiu 56% para o kit selecionado: [run #40872852127](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40872852127).
+- Recontagem somente leitura no Supabase canônico, usando a mesma lista de 15 campos e o mesmo arredondamento do teste: 5 de 978 kits ativos com componentes atingem 70% na tabela base; a média por kit é 52,7%. A seleção dinâmica sem ordenação escolhe um kit qualquer, por isso a falha não é reprodutível. A execução atual no SHA `6bcc383e4` repetiu 56% para o kit selecionado: [run #40874620158](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40874620158).
 - A definição de `v_kit_component_complete` não foi encontrada nas migrations versionadas fora de arquivos de backup/ledger; sua origem e o contrato pretendido ainda precisam ser reconciliados antes de propor DDL. Não alterar a view nem mascarar a divergência ajustando o threshold.
 - O teste não deve reduzir o threshold nem conceder SELECT a `anon` para mascarar o problema.
 
-**Estado do PR #2701:** https://github.com/adm01-debug/Promo_Gifts_V4/pull/2701 — draft. A branch foi atualizada com a `main` de 2026-10-28 e o conflito documental foi reconciliado; ainda não deve ser mesclada enquanto a integração de cobertura estiver vermelha. Commits `353d99d31` e `cb4b745c6` estão publicados no branch do PR. O dispatch mais recente falhou somente na cobertura descrita acima; as duas primeiras asserções passaram no run #40872852127.
+**Estado do PR #2701:** https://github.com/adm01-debug/Promo_Gifts_V4/pull/2701 — draft. A branch foi atualizada com a `main` de 2026-10-28 e o conflito documental foi reconciliado; ainda não deve ser mesclada enquanto a integração de cobertura estiver vermelha. Commits `353d99d31`, `cb4b745c6` e `6bcc383e4` estão publicados no branch do PR, que incorpora a `main` atual e já não tem conflito documental. O dispatch mais recente falhou somente na cobertura descrita acima; as duas primeiras asserções passaram no run #40874620158.
 
 **Próximo passo:** revisar e aprovar o contrato esperado da view e definir fixture estável que atenda à métrica. Se for aprovada uma mudança de schema, versionar uma migration não destrutiva, validar pelo fluxo obrigatório E15 e atualizar os tipos; não aplicar DDL diretamente via MCP/dashboard. Nenhum GRANT a `anon`, DDL, migration ou dado operacional foi alterado nesta correção.
 
