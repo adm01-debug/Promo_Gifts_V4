@@ -98,7 +98,7 @@ Deno.serve(async (req: Request) => {
   }
 
   try {
-    const contractResult = await parseContract(req, E2eCleanupSchemas, { corsHeaders });
+    const contractResult = await parseContract(req, E2eCleanupSchemas, { corsHeaders: _reqCorsHeaders });
     if (!contractResult.ok) return contractResult.response;
     const { data: body, responseHeaders } = contractResult;
     contractResponseHeaders = responseHeaders;
