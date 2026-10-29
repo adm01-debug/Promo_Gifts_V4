@@ -31,7 +31,8 @@ import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import { sanitizeError } from '@/lib/security/sanitize-error';
 import type { ScenePrompt } from './PromptBank';
-import { OBJECTIVES, TONES, AUDIENCES, SEASONS, getMoodColor } from './promptGeneratorConstants';
+import { OBJECTIVES, TONES, AUDIENCES, SEASONS } from './promptGeneratorConstants';
+import { MagicUpMoodBadge } from './MagicUpCreativeControls';
 import type { PrintAreaWithTechniques } from '@/types/gravacao';
 import { PromptCustomizationPanel } from './PromptCustomizationPanel';
 
@@ -242,8 +243,6 @@ export function PromptGenerator({
     onSelectPrompt(scenePrompt);
   };
 
-  // getMoodColor imported from ./promptGeneratorConstants
-
   const safePrintAreas = printAreas ?? [];
   const hasPrintAreas = safePrintAreas.length > 0;
 
@@ -422,12 +421,7 @@ export function PromptGenerator({
                         </p>
                       </div>
                       <div className="flex shrink-0 items-center gap-1">
-                        <Badge
-                          variant="outline"
-                          className={cn('border px-1.5 py-0 text-[8px]', getMoodColor(gp.mood))}
-                        >
-                          {gp.mood}
-                        </Badge>
+                        <MagicUpMoodBadge mood={gp.mood} />
                       </div>
                     </div>
                     <p className="mb-2 line-clamp-2 text-[11px] text-muted-foreground">
