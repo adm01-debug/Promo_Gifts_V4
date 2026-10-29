@@ -1,7 +1,7 @@
 # PENDENCIAS.md — Itens bloqueados por secret/permissão/infraestrutura
 
 **Atualizado:** 2026-10-29
-**Branch da revalidação:** `docs/revalidacao-planos-20261029`
+**Branch da revalidação:** `fix/graphify-reproducible-version-20261029`
 
 > Revalidação independente mais recente: veja a seção **Inventário completo da main — 2026-10-29** abaixo. Ela substitui os IDs/status antigos deste arquivo quando houver conflito.
 
@@ -25,7 +25,7 @@
 - O PR [#2719](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2719) foi mesclado em `main` no commit `66d032afa8e31cd4f9b2f60508613794cef928d4`. A `main` local foi atualizada por fast-forward para o mesmo SHA e estava limpa antes desta correção. Os seis itens de Graphify (métrica em português, população filtrada, referências TypeScript, mapa SQL separado, benchmark de versão e retenção da versão homologada) estão no repositório.
 - O PR [#2721](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2721) também foi mesclado em `main`, no commit `6b48bebcb2ff5ff922298523f4678383d392ae46`; o código e os testes do painel de localização estão no histórico da `main` atual.
 - Os checks pós-merge ainda não terminaram. O check `Supabase Preview` falhou com `Remote migration versions not found in local migrations directory`; o workflow [Uptime Monitor #40950084617](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40950084617) falhou porque `health-check` retornou curl 22; site, OPTIONS de `check-login` e Auth Health passaram. Issue automática [#2740](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2740). Não declarar o merge como integralmente verde.
-- A branch de trabalho para fixar o Graphify em `0.9.91` e corrigir as limitações observadas está em revisão local; não foi enviada nem mesclada nesta evidência. O workspace raiz de `main` foi sincronizado ao SHA do GitHub; artefatos antigos de Graphify ficaram preservados no stash `preserva artefatos Graphify locais antes da sincronização da main 2026-10-29` e não foram reaplicados.
+- A branch dedicada contém a correção de reprodutibilidade Graphify, separada da `main` e ainda não mesclada. O workspace raiz de `main` foi sincronizado ao SHA do GitHub; artefatos antigos de Graphify ficaram preservados no stash `preserva artefatos Graphify locais antes da sincronização da main 2026-10-29` e não foram reaplicados.
 
 ### Inventário das últimas execuções na `main`
 

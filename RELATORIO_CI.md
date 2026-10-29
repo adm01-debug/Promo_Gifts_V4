@@ -1,6 +1,6 @@
 # RELATÓRIO CI — Promo Gifts V4
 **Gerado em:** 2026-10-29
-**Branch desta auditoria documental:** `docs/auditoria-sync-ci-20261029`
+**Branch desta auditoria:** `fix/graphify-reproducible-version-20261029`
 **SHA `main` consultado:** `6b48bebcb2ff5ff922298523f4678383d392ae46` (2026-10-29)
 
 ## 8. Revalidação completa por workflow — 2026-10-29
@@ -188,4 +188,14 @@ Executados no SHA `66d032afa8e31cd4f9b2f60508613794cef928d4`, antes de alterar s
 
 Auditoria somente leitura: ledger remoto 2.552 versões; repositório 3.009 arquivos SQL/3.004 IDs únicos, 2.541 comuns, 463 locais apenas e 11 remotos apenas; cinco prefixos duplicados. `pg_catalog` confirmou por nome 398 tabelas, 197 views e 15 enums contra os tipos locais; funções ainda não foram comparadas. Nenhuma migration, DDL, repair, deploy de Edge Function ou dado operacional foi alterado. A divergência que bloqueou `Supabase Preview` permanece pendente e não autoriza sincronização automática.
 
-O refresh Graphify e os sete testes focados passaram nesta etapa; `npm run build:verify` e a suíte completa após o commit ainda precisam ser executados. Não mesclar o PR de reprodutibilidade antes da conclusão dos checks obrigatórios e da documentação dos bloqueios remotos.
+### Anti-regressão final na branch `fix/graphify-reproducible-version-20261029`
+
+| Verificação | Baseline em `66d032af` | Após a mudança | Resultado |
+|---|---:|---:|---|
+| `npm ci` | concluído; 13 avisos de vulnerabilidade reportados (1 moderada, 12 altas) | não repetido; lockfile inalterado | dependências instaladas; sem upgrade automático |
+| `npm run build:verify` | passou | passou; typecheck, lint baseline com 0 regressões, build e guards canônicos aprovados | sem piora |
+| Suíte completa Vitest | 1.222 arquivos / 25.716 testes aprovados; 130 arquivos / 1.135 testes ignorados; 24 TODO | 1.222 arquivos / 25.718 testes aprovados; mesmos skips/TODO | +2 testes, nenhuma regressão |
+| Testes focados Graphify | — | 2 arquivos, 7 testes passaram | aprovado |
+| `npm run graphify:refresh` + `npm run graphify:sql` | — | ambos executados com `graphifyy==0.9.91` | relatórios e mapa SQL atualizados localmente |
+
+O commit de reprodutibilidade está na branch dedicada `fix/graphify-reproducible-version-20261029` e não foi mesclado. Não mesclar enquanto os checks obrigatórios do PR não concluírem e os bloqueios de CI/Supabase desta auditoria estiverem tratados ou explicitamente aceitos pelo processo de governança.
