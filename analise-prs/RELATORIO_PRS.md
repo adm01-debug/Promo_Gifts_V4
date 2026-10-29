@@ -56,8 +56,8 @@ Nenhum dos 4 PRs mergeados continha:
 
 | # | Título | Motivo |
 |---|--------|--------|
-| 2747 | fix(types): sincroniza idempotency_key | AGUARDANDO_CI — Gate Final queued (run 40967094479, todos os jobs ainda `queued`) |
-| 2745 | ci(ratchet): evita SIGPIPE no relatório de diff | AGUARDANDO_CI — checks iniciados 22:53Z, Gate Final ainda não disponível |
+| 2747 | fix(types): sincroniza idempotency_key | AGUARDANDO_CI — Gate Final run 40970640916 `pending` desde 23:05Z (SHA 3a5521b1, base main 9a97f9a2) |
+| 2745 | ci(ratchet): evita SIGPIPE no relatório de diff | AGUARDANDO_CI — Gate Final run 40969209908 `queued` desde 22:53Z (runner congestion) |
 
 ---
 
@@ -111,10 +111,22 @@ Nenhum dos 4 PRs mergeados continha:
 
 ## 🔍 NÃO VERIFICADO / PENDENTE
 
-- **CI do main `8f992fdd`** (run 40968551210): `queued` desde 22:47Z — gargalo de runners no GitHub. Main avançou para `9a97f9a2` (commits do Lovable 22:56Z). Nenhuma conclusão disponível.
-- **#2747** (run 40967094479): todos os jobs ainda `queued` às 22:57Z — sem Gate Final.
-- **#2745** (SHA `696ad700`): checks iniciados 22:53Z, ainda `queued`/`in_progress` — sem Gate Final.
-- **Baseline do main `9a97f9a2`**: não executado localmente (baseline de 2026-10-27 SHA `2fafe8ed` existe em analise-prs/baseline/; CI pós-merge em `8f992fdd` ainda queued).
+- **CI do main `8f992fdd`** (run 40968551210): `queued` desde 22:47Z — gargalo de runners no GitHub. Main avançou para `9a97f9a2` (commits do Lovable 22:56Z). Nenhuma conclusão disponível às 23:15Z.
+- **#2747** (run 40970640916, SHA `3a5521b1`): Gate Final `pending` desde 23:05Z — runners em congestionamento. Merge aguardando Gate Final ✅.
+- **#2745** (run 40969209908, SHA `696ad700`): Gate Final `queued` desde 22:53Z (>20min) — runners em congestionamento. Merge aguardando Gate Final ✅.
+
+## ✅ BASELINE MAIN `9a97f9a2` (2026-10-29)
+
+Gerado nesta sessão em `/home/user/Promo_Gifts_V4` (worktree `/tmp/claude-0/main-baseline`):
+
+| Check | Resultado |
+|-------|-----------|
+| TypeCheck (`npx tsc --noEmit`) | ✅ exit 0 — sem erros |
+| Build (`npm run build`) | ✅ exit 0 — 12.74s, apenas warnings pré-existentes INEFFECTIVE_DYNAMIC_IMPORT |
+| ESLint (`npx eslint src --ext .ts,.tsx`) | ✅ exit 0 — sem erros novos |
+| Testes | NÃO EXECUTADO (21 failing ambiental — TypeError: fetch failed, pre-existente) |
+
+Arquivo: `analise-prs/baseline/local-checks-9a97f9a2.md`
 
 **PRs confirmadas sem migration/edge function** (irrelevante para confirmação Supabase):
 - #2741: arquivos only `src/components/mockup/*.tsx` — sem migration, sem edge function

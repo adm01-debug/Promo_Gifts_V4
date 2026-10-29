@@ -16,12 +16,19 @@
     "status": "queued",
     "nota": "Deploy Gates rodando em 2026-10-29T22:47Z após merge de #2741 e #2742"
   },
-  "ultima_atualizacao": "2026-10-29T23:05:00Z",
+  "ultima_atualizacao": "2026-10-29T23:15:00Z",
   "main_sha_atual": "9a97f9a2c857b25590691efd2c741a194bfb24da",
+  "baseline_main_9a97f9a2": {
+    "typecheck": "exit 0",
+    "build": "exit 0 (12.74s)",
+    "eslint": "exit 0",
+    "testes": "NÃO EXECUTADO (ambiental — TypeError: fetch failed, 21 failing no baseline anterior)",
+    "arquivo": "analise-prs/baseline/local-checks-9a97f9a2.md"
+  },
   "ci_gate_final_pos_merge_8f992fdd": {
     "run_id": 40968551210,
     "status": "queued",
-    "nota": "Ainda queued às 23:05Z — gargalo de runners. Main avançou para 9a97f9a2 (Lovable 22:56Z)."
+    "nota": "Ainda queued às 23:15Z — gargalo de runners. Main avançou para 9a97f9a2 (Lovable 22:56Z)."
   },
   "resumo": {
     "total_prs_abertas_ao_final": 14,
@@ -46,7 +53,8 @@
     {"numero": 2742, "veredito": "MERGEADA", "sha": "8f992fdde05943c9bcd4d0ca925ec221f4828f41"},
     {"numero": 2743, "veredito": "NÃO MERGEAR", "motivo": "Magazine Header OK = failure (run 40961676490, job 123777247522, 1 anotação, 22:57Z) — Gate Final bloqueado"},
     {"numero": 2744, "veredito": "NÃO MERGEAR", "motivo": "DRAFT + título [NÃO MESCLAR] + edge function sem workflow"},
-    {"numero": 2745, "veredito": "AGUARDANDO_CI", "motivo": "fix legítimo — 0 gate runs ainda"},
+    {"numero": 2745, "veredito": "AGUARDANDO_CI", "motivo": "fix legítimo — Gate Final run 40969209908 queued desde 22:53Z (runner congestion)"},
+    {"numero": 2747, "veredito": "AGUARDANDO_CI", "motivo": "fix(types) aditivo — Gate Final run 40970640916 pending desde 23:05Z (SHA 3a5521b1, base main 9a97f9a2)"},
     {"numero": 2746, "veredito": "NÃO MERGEAR", "motivo": "DRAFT"}
   ]
 }
