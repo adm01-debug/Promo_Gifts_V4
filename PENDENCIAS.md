@@ -339,3 +339,15 @@ description: "Deployment has failed — run this Vercel CLI command: npx vercel 
 ---
 
 *Ação prioritária: P1 (secrets E2E) — desbloqueia P2, P9, P10. P6, P8, P11 requerem investigação independente. P12 bloqueado por P7 (Opção B disponível via workflow_dispatch sem resolver P7). P13 requer deleção do projeto fantasma Vercel.*
+
+---
+
+## P14 — Revisor automático do Copilot (limite de uso e firewall)
+
+**Workflow:** `copilot-pull-request-reviewer` no PR [#2721](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2721)
+**Run:** [40855745394](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40855745394) — check `123386150511`, SHA `159467243a2041b93af03affa98c51f7cfb7aadb`
+**Status:** falha operacional do serviço de revisão, sem indicação de regressão no código.
+
+**Erro exato do log:** a API do Copilot respondeu HTTP `402` com `You've reached your additional usage limit for your plan`; o agente também reportou bloqueio de firewall ao acessar `api.github.com`.
+
+**Ação necessária do PO/administrador:** verificar e ampliar o limite de uso do Copilot ou aguardar a renovação do limite; ajustar a allowlist do firewall de Copilot Actions para permitir `api.github.com`; depois reexecutar o check. O check terminou em falha mesmo com os demais 22 checks do SHA concluídos com sucesso (7 skipped); o PR #2721 permanece aberto e não foi mesclado.
