@@ -6,6 +6,7 @@
  */
 import { createElement, type ReactNode } from 'react';
 import { renderHook, act, waitFor } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { useMockupGenerator } from '../useMockupGenerator';
@@ -74,8 +75,8 @@ vi.mock('@/lib/supabase-untyped', () => {
   return { untypedFrom: () => builder };
 });
 
-const PRODUCT_1 = { id: 'prod-1', name: 'Caneca', images: ['p1.png'] };
-const PRODUCT_2 = { id: 'prod-2', name: 'Copo', images: ['p2.png'] };
+const PRODUCT_1 = { id: 'prod-1', name: 'Caneca', images: ['p1.png'], dimensions: { width_cm: 8, height_cm: 10 } };
+const PRODUCT_2 = { id: 'prod-2', name: 'Copo', images: ['p2.png'], dimensions: { width_cm: 7, height_cm: 12 } };
 
 function selectionFor(id: string) {
   const product = id === 'prod-1' ? PRODUCT_1 : PRODUCT_2;
@@ -97,7 +98,7 @@ function areaWithLogo() {
 function makeWrapper() {
   const client = new QueryClient({ defaultOptions: { queries: { retry: false, gcTime: 0 } } });
   return ({ children }: { children: ReactNode }) =>
-    createElement(QueryClientProvider, { client }, children);
+    createElement(MemoryRouter, null, createElement(QueryClientProvider, { client }, children));
 }
 
 /** Resolve a edge mais tarde, como uma geração lenta real. */

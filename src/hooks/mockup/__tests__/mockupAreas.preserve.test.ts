@@ -11,6 +11,7 @@
  * A prova e pelo contrato observavel do hook (o que o chamador ve em `personalizationAreas`).
  */
 import { renderHook, act, waitFor } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 // ── Estado compartilhado com os mocks (hoisted antes dos imports) ─────────────
@@ -205,7 +206,7 @@ describe('B F-02 — locations nao recriam areas ja preenchidas', () => {
   it('preserva logo/posicao/tamanho quando a lista de locations chega tarde (mesmo produto)', async () => {
     draftState.current = RESTORED_DRAFT;
 
-    const { result, rerender } = renderHook(() => useMockupGenerator());
+    const { result, rerender } = renderHook(() => useMockupGenerator(), { wrapper: MemoryRouter });
 
     // rascunho restaurado (com logo/posicao/tamanho)
     await waitFor(() =>
@@ -236,7 +237,7 @@ describe('B F-02 — locations nao recriam areas ja preenchidas', () => {
     draftState.current = RESTORED_DRAFT;
     locationsByProduct['prod-y'] = LOCATIONS_Y;
 
-    const { result } = renderHook(() => useMockupGenerator());
+    const { result } = renderHook(() => useMockupGenerator(), { wrapper: MemoryRouter });
     await waitFor(() =>
       expect(result.current.personalizationAreas[0]?.logoPreview).toBe(
         'data:image/png;base64,AAAA',
@@ -263,7 +264,7 @@ describe('B F-02 — locations nao recriam areas ja preenchidas', () => {
   it('nao recria as areas ao re-renderizar o MESMO produto', async () => {
     locationsByProduct['prod-y'] = LOCATIONS_Y;
 
-    const { result, rerender } = renderHook(() => useMockupGenerator());
+    const { result, rerender } = renderHook(() => useMockupGenerator(), { wrapper: MemoryRouter });
     await waitFor(() => expect(result.current.productLocations).toBeNull());
 
     await act(async () => {

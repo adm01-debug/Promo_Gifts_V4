@@ -3,6 +3,7 @@
  * permite regerar só ela (máx. 6 áreas). Resultados associados por id estável da área.
  */
 import { renderHook, act } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 const { draftApi, api, toastMock, colorAnalysis, positionHistory } = vi.hoisted(() => ({
@@ -29,7 +30,14 @@ const { draftApi, api, toastMock, colorAnalysis, positionHistory } = vi.hoisted(
   },
 }));
 
-const PRODUCT = { id: 'prod-x', name: 'Caneca X', sku: 'CX', images: ['x.png'] };
+const PRODUCT = {
+  id: 'prod-x',
+  name: 'Caneca X',
+  sku: 'CX',
+  images: ['x.png'],
+  // Medidas reais: sem elas a trava Q13 recusa a geração antes da edge.
+  dimensions: { width_cm: 8, height_cm: 10 },
+};
 
 vi.mock('@/contexts/AuthContext', () => ({
   useAuth: () => ({ user: { id: 'user-test-001' } }),
@@ -88,7 +96,7 @@ const makeArea = (id: string, name: string) => ({
 });
 
 async function setup(areas: ReturnType<typeof makeArea>[]) {
-  const hook = renderHook(() => useMockupGenerator());
+  const hook = renderHook(() => useMockupGenerator(), { wrapper: MemoryRouter });
   await act(async () => {
     hook.result.current.setProductSelection({
       product: PRODUCT as never,
