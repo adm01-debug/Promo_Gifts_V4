@@ -160,7 +160,7 @@ export function ProductLoaderAndColorSelector({ productId, onSelect, onBack }: P
 
   if (!variants || variants.length === 0) {
     return (
-      <div className="flex animate-pulse items-center gap-3 rounded-lg border border-border/30 bg-card p-3">
+      <div className="flex animate-pulse items-center gap-3 rounded-lg border border-border/30 bg-card p-3 motion-reduce:animate-none">
         <Skeleton className="h-11 w-11 rounded-lg" />
         <Skeleton className="h-4 w-40" />
       </div>
@@ -193,8 +193,17 @@ export function ProductLoaderAndColorSelector({ productId, onSelect, onBack }: P
               key={variant.id}
               type="button"
               onClick={() => onSelect(variant, fullProduct)}
+              // A11y (WCAG 4.1.2): nome acessível explícito com cor + estoque — o
+              // conteúdo visual (miniatura, nome repetido, símbolos ⊕/△) não descreve
+              // o estado de forma confiável para leitores de tela.
+              aria-label={`${variant.color_name || 'Sem cor'} — ${
+                outOfStock
+                  ? 'estoque zerado'
+                  : `${variant.stock_quantity ?? 0} unidades em estoque`
+              }`}
               className={cn(
-                'group relative flex flex-col items-center gap-1.5 rounded-lg border p-2 text-left transition-all duration-200',
+                'group relative flex min-h-[44px] flex-col items-center gap-1.5 rounded-lg border p-2 text-left transition-all duration-200 motion-reduce:transition-none',
+                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background',
                 outOfStock
                   ? 'border-border/20 opacity-60 hover:opacity-80'
                   : 'border-border/30 hover:border-primary/40 hover:bg-accent/40',
