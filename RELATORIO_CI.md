@@ -1,20 +1,20 @@
 # RELATÓRIO CI — Promo Gifts V4
 
-## Snapshot de auditoria — 2026-10-28, `main` em `c3445087`
+## Snapshot final de auditoria — 2026-10-29, `main` em `c3445087`; PR #2717 em `6bb88165`
 
-Consulta feita pelo MCP GitHub em `main`: 33 workflows observados; 23 com última execução verde, 5 com última execução vermelha, 3 canceladas e 2 ignoradas. As execuções listadas abaixo são as últimas de cada workflow na branch `main` no momento da consulta.
+Consulta feita pelo MCP GitHub: 33 workflows observados na `main`; 23 com última execução verde, 4 vermelhas, 3 canceladas, 2 ignoradas e 1 em execução (rerun WebKit, tentativa 2). No PR #2717, 68 checks: 49 verdes, 7 vermelhos, 5 em execução, 6 ignorados e 1 neutro. Não houve merge.
 
 | Workflow | Run | SHA | Estado | Evidência resumida |
 |---|---:|---|---|---|
 | E2E — Critical Flows & Error Boundaries | [40762904577](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762904577) | `c3445087` | failure; correção em PR #2717 | Teste de catálogo procurava a substring `500`, que também aparece em `6.500 produtos`; PR #2717 troca a asserção por mensagens explícitas de erro. |
 | CI Security & Drift Checks | [40762904949](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762904949) | `c3445087` | failure | Seis testes E2E autenticados falharam; o log mostra clique do botão inicial do Kit Builder excedendo 120 s. Requer diagnóstico com a sessão/dados de teste reais. |
-| E2E • Swatch QuickView (Lista + Tabela) | [40762904693](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762904693) | `c3445087` | failure | O runner recebeu sinal de encerramento durante o projeto WebKit; não há falha de asserção confirmada no trecho do log. Reexecutar para distinguir falha transitória de regressão. |
+| E2E • Swatch QuickView (Lista + Tabela) | [40762904693](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762904693) | `c3445087` | in progress (tentativa 2) | A tentativa anterior recebeu sinal de encerramento durante WebKit; a tentativa 2 ainda não concluiu. |
 | Edge Integration Tests — All Functions | [40762354015](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762354015) | `cf85bd7b` | failure | `crm-db-bridge`: dois casos de entrada inválida receberam HTTP 503, mas o contrato de teste espera resposta abaixo de 500. Investigar função implantada e logs antes de deploy. |
 | E2E — Magazine Header Layout | [40762354171](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762354171) | `cf85bd7b` | failure | Após clicar no primeiro cartão, a URL ficou em `/magazine`; o teste esperava `/magazine/{id}`. A causa ainda não está comprovada. |
 
-### Baseline local e validações
+### Baseline local e validações pós-commit
 
-Na `main` `c3445087`, `npm run build`, `npm run lint`, `npm run typecheck` e `npm test` passaram localmente: lint 0 erros/0 avisos; Vitest 1.210 arquivos aprovados, 131 ignorados; 25.656 testes aprovados, 1.134 ignorados e 24 TODO. No commit `9336e0520` do PR #2717, a repetição pós-commit de `actionlint`, lint, typecheck, build e Vitest passou; a suíte E2E isolada de catálogo passou (2 testes incluindo setup). O teste que depende de dados de catálogo foi ignorado no modo de autenticação simulada. O CI completo do PR, na última consulta, tinha 48 checks verdes, 6 falhos, 6 em andamento, 6 ignorados e 1 neutro; segue bloqueado e não foi considerado concluído.
+No conteúdo final do PR #2717 (`6bb8816530ffcede9891344800e205a47ecfd4ef`), foram repetidos `actionlint`, `npm run lint`, `npm run typecheck`, `npm run build` e `npm test`: tudo passou; lint registrou 0 erros e 0 avisos. Vitest: 1.210 arquivos aprovados, 131 ignorados; 25.656 testes aprovados, 1.134 ignorados e 24 TODO. A execução durou 293,26 s. O E2E direcionado para catálogo passou com autenticação simulada; a verificação dependente de dados reais foi ignorada nesse modo. O CI completo do PR permanece bloqueado: 49 checks verdes, 7 falhos, 5 em andamento, 6 ignorados e 1 neutro na última consulta. Nenhum teste foi apagado, pulado ou enfraquecido por essa correção.
 
 ### Repositório e Supabase canônico
 
@@ -23,10 +23,10 @@ Na `main` `c3445087`, `npm run build`, `npm run lint`, `npm run typecheck` e `np
 - Inventário estrutural de tipos (AST TypeScript, local vs `supabase_generate_typescript_types` do projeto): `public` coincide integralmente — 398 Tables, 197 Views, 1.020 Functions, 15 Enums e 2 CompositeTypes. `graphql_public.graphql` aparece no local e foi confirmado no `pg_catalog` vivo; o gerador remoto omite esse schema auxiliar. Não há drift estrutural identificado nos tipos.
 - Comparação somente leitura do ledger: 3.004 IDs únicos em `supabase/migrations`, 2.552 IDs remotos, 2.541 em comum, 463 apenas locais e 11 apenas remotos. A divergência segue em análise pelo PR #2714; nenhuma migration foi aplicada nesta auditoria.
 - Nota de reconciliação: o Gate E40 do PR #2714 reportou `local_only=1109; remote_only=648`; esse contrato usa escopo/filtros diferentes da comparação bruta de IDs acima. A diferença entre os métodos precisa ser explicada antes de classificar ou aplicar qualquer migration.
-- PRs relacionados ainda abertos: #2714 (reconciliação de migrations), #2715 (guarda de segurança RLS), #2716 (relatório de auditoria) e #2717 (isolamento do servidor E2E e falso positivo de `500`). Na última consulta ao SHA `9336e0520` do PR #2717: 45 checks verdes, 8 em andamento, 4 falhos, 6 ignorados e 1 neutro. As falhas são o reviewer Copilot por limite de uso (`quota`), duas specs do workflow E2E Quotes (snapshot móvel divergente e toast duplicado após expiração) e WebKit cancelado pelo runner. Nenhum PR foi mesclado nesta etapa.
-- A checkout local `main` coincide com `origin/main` em `c3445087`; restam apenas artefatos Graphify gerados e não commitados (`GRAPH_REPORT.md` e `manifest.json`). O relatório local está atualizado para 2026-10-28, mas o gerador avisa que o pacote instalado é 0.9.91 enquanto a skill é 0.9.94; o `manifest.json` teve alteração volumosa de metadados de mtime/seen. Essa atualização não foi incluída no PR de E2E e segue para reconciliação antes de publicar, para não misturar o diff gerado ao fix de CI.
+- PRs relacionados ainda abertos: #2714 (reconciliação de migrations), #2715 (guarda de segurança RLS), #2716 (relatório de auditoria) e #2717 (isolamento do servidor E2E e falso positivo de `500`). Na última consulta ao SHA `6bb88165` do PR #2717: 49 checks verdes, 7 falhos, 5 em andamento, 6 ignorados e 1 neutro. Falhas: reviewer Copilot sem cota; Magazine Header não navega para `/magazine/{id}`; Personalization não encontra `[data-testid="product-card"]`; screenshot móvel 5 px mais estreito que o baseline; teste de `undo` observa uma chamada a `onUndo` no cenário de expiração; WebKit cancelado pelo runner. Nenhum PR foi mesclado nesta etapa.
+- A checkout local `main` coincide com `origin/main` em `c3445087`; restam apenas artefatos Graphify gerados e não commitados (`GRAPH_REPORT.md` e `manifest.json`). O relatório local foi atualizado para 2026-10-28 pelo pacote 0.9.91, enquanto a skill indica 0.9.94; o `manifest.json` teve alteração volumosa de metadados. Os artefatos seguem fora do PR para reconciliação do gerador antes de publicação.
 
-Este snapshot substitui os estados históricos abaixo somente para a situação verificada em 2026-10-28; os registros anteriores permanecem como histórico.
+Este snapshot substitui os estados históricos abaixo somente para a situação verificada em 2026-10-29; os registros anteriores permanecem como histórico.
 
 **Gerado em:** 2026-10-28  
 **Branch de correção:** `fix/ci-workflows` (esta sessão)  
