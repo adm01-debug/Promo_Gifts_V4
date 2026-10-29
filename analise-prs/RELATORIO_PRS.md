@@ -52,17 +52,16 @@ Nenhum dos 4 PRs mergeados continha:
 
 ---
 
-## ❌ PRs PRONTAS NÃO MERGEADAS E POR QUÊ
+## ⏳ PRs AGUARDANDO CI
 
 | # | Título | Motivo |
 |---|--------|--------|
-| 2747 | fix(types): sincroniza idempotency_key | AGUARDANDO_CI — Gate Final queued (run 40967094479) |
-| 2743 | chore(audit): fixa Graphify e atualiza estado CI | AGUARDANDO_CI — 0 gate runs; body diz "não mesclar até checks" |
-| 2745 | ci(ratchet): evita SIGPIPE no relatório de diff | AGUARDANDO_CI — 0 gate runs |
+| 2747 | fix(types): sincroniza idempotency_key | AGUARDANDO_CI — Gate Final queued (run 40967094479, todos os jobs ainda `queued`) |
+| 2745 | ci(ratchet): evita SIGPIPE no relatório de diff | AGUARDANDO_CI — checks iniciados 22:53Z, Gate Final ainda não disponível |
 
 ---
 
-## 🚫 PRs A FECHAR (COMENTÁRIO SUGERIDO — NÃO POSTADO)
+## 🚫 PRs NÃO MERGEAR (COMENTÁRIO SUGERIDO — NÃO POSTADO)
 
 | # | Título | Motivo |
 |---|--------|--------|
@@ -73,6 +72,7 @@ Nenhum dos 4 PRs mergeados continha:
 | 2734 | fix(ci): mirror Docker Hub | Só adiciona `.github/workflows/` — constraint proibido |
 | 2738 | docs(analise-prs): rev47 | Gate Final ❌ — 12 anotações |
 | 2739 | fix(mockup): gerador | Gate Final ❌ — 3 anotações |
+| 2743 | chore(audit): fixa Graphify e atualiza estado CI | Magazine Header OK ❌ (run 40961676490, 1 anotação, 22:57Z) |
 | 2744 | [NÃO MESCLAR] fix(edge): limites Magic-Up | DRAFT + título "[NÃO MESCLAR]" + edge deploy não-versionado |
 | 2746 | docs(ci): auditoria completa de workflows | DRAFT |
 | 2749 | fix(ci): sentinel SHA allowlist + E2E PDF Dialog | DRAFT |
@@ -87,28 +87,38 @@ Nenhum dos 4 PRs mergeados continha:
 
 ---
 
-## 📊 CONTAGEM FINAL POR VEREDITO (16 PRs analisadas)
+## 📊 CONTAGEM FINAL POR VEREDITO
+
+**PRs abertas ao final desta sessão: 14**  
+**Total analisadas nesta sessão: 14** (as 14 abertas — exclui #2720 e #2730 mergeadas em sessão anterior)
 
 | Veredito | Count | PRs |
 |----------|-------|-----|
-| MERGEADA | 4 | #2720, #2730, #2741, #2742 |
-| AGUARDANDO_CI | 3 | #2747, #2743, #2745 |
+| MERGEADA esta sessão | 2 | #2741, #2742 |
+| AGUARDANDO_CI | 2 | #2747, #2745 |
 | DECISÃO_HUMANA | 1 | #2713 |
 | NÃO MERGEAR (conflito) | 3 | #2701, #2714, #2717 |
 | NÃO MERGEAR (regressão/risco) | 2 | #2731, #2734 |
 | NÃO MERGEAR (Gate Final ❌) | 2 | #2738, #2739 |
+| NÃO MERGEAR (Magazine Header ❌) | 1 | #2743 |
 | NÃO MERGEAR (DRAFT) | 3 | #2744, #2746, #2749 |
-| **TOTAL** | **18** | (14 originais + 2 mergeadas = histórico; 2 novas) |
+| **TOTAL ABERTOS** | **14** | 2 mergeadas + 2 AGUARDANDO + 1 HUMANA + 9 NÃO MERGEAR |
 
-*Nota: 14 abertas no início + 2 novas (#2747, #2749) = 16 analisadas; 4 foram mergeadas durante a sessão.*
+*Histórico de sessão: 4 PRs mergeadas no total (#2720 e #2730 em sessão anterior, #2741 e #2742 nesta sessão).*  
+*PRs novas aparecidas durante análise: #2747, #2749 — incluídas nos 14 analisados desta sessão.*
 
 ---
 
-## 🔍 NÃO VERIFICADO
+## 🔍 NÃO VERIFICADO / PENDENTE
 
-- CI do main `8f992fdd` (run 40968551210): ainda queued — comparação baseline pendente
-- PR #2747: Gate Final queued (run 40967094479) — não pode ser mergeada ainda
-- PRs #2743, #2745: 0 gate runs — aguardam CI iniciar
+- **CI do main `8f992fdd`** (run 40968551210): `queued` desde 22:47Z — gargalo de runners no GitHub. Main avançou para `9a97f9a2` (commits do Lovable 22:56Z). Nenhuma conclusão disponível.
+- **#2747** (run 40967094479): todos os jobs ainda `queued` às 22:57Z — sem Gate Final.
+- **#2745** (SHA `696ad700`): checks iniciados 22:53Z, ainda `queued`/`in_progress` — sem Gate Final.
+- **Baseline do main `9a97f9a2`**: não executado localmente (baseline de 2026-10-27 SHA `2fafe8ed` existe em analise-prs/baseline/; CI pós-merge em `8f992fdd` ainda queued).
+
+**PRs confirmadas sem migration/edge function** (irrelevante para confirmação Supabase):
+- #2741: arquivos only `src/components/mockup/*.tsx` — sem migration, sem edge function
+- #2742: arquivos only `src/components/magic-up/*.tsx` — sem migration, sem edge function
 
 ---
 

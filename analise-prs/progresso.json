@@ -16,12 +16,20 @@
     "status": "queued",
     "nota": "Deploy Gates rodando em 2026-10-29T22:47Z após merge de #2741 e #2742"
   },
-  "ultima_atualizacao": "2026-10-29T22:49:00Z",
+  "ultima_atualizacao": "2026-10-29T23:05:00Z",
+  "main_sha_atual": "9a97f9a2c857b25590691efd2c741a194bfb24da",
+  "ci_gate_final_pos_merge_8f992fdd": {
+    "run_id": 40968551210,
+    "status": "queued",
+    "nota": "Ainda queued às 23:05Z — gargalo de runners. Main avançou para 9a97f9a2 (Lovable 22:56Z)."
+  },
   "resumo": {
-    "total_prs_analisadas": 14,
-    "mergeadas": 4,
-    "nao_mergear": 7,
-    "aguardando_ci_ou_humano": 3
+    "total_prs_abertas_ao_final": 14,
+    "total_analisadas_esta_sessao": 14,
+    "mergeadas_esta_sessao": 2,
+    "nao_mergear": 9,
+    "aguardando_ci": 2,
+    "decisao_humana": 1
   },
   "prs": [
     {"numero": 2701, "veredito": "NÃO MERGEAR", "motivo": "conflito de merge + coverage 56% < threshold 70%"},
@@ -36,7 +44,7 @@
     {"numero": 2739, "veredito": "NÃO MERGEAR", "motivo": "Gate Final falhou com 3 anotações"},
     {"numero": 2741, "veredito": "MERGEADA", "sha": "6ac842c22e37a46c499e91460794bbb1d56b5f5d"},
     {"numero": 2742, "veredito": "MERGEADA", "sha": "8f992fdde05943c9bcd4d0ca925ec221f4828f41"},
-    {"numero": 2743, "veredito": "AGUARDANDO_CI", "motivo": "body diz não mesclar até checks passarem — 0 gate runs"},
+    {"numero": 2743, "veredito": "NÃO MERGEAR", "motivo": "Magazine Header OK = failure (run 40961676490, job 123777247522, 1 anotação, 22:57Z) — Gate Final bloqueado"},
     {"numero": 2744, "veredito": "NÃO MERGEAR", "motivo": "DRAFT + título [NÃO MESCLAR] + edge function sem workflow"},
     {"numero": 2745, "veredito": "AGUARDANDO_CI", "motivo": "fix legítimo — 0 gate runs ainda"},
     {"numero": 2746, "veredito": "NÃO MERGEAR", "motivo": "DRAFT"}
