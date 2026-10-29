@@ -1,0 +1,1 @@
+failed to load config from /home/user/Promo_Gifts_V4/vitest.config.ts
