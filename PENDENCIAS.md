@@ -351,3 +351,31 @@ description: "Deployment has failed — run this Vercel CLI command: npx vercel 
 **Erro exato do log:** a API do Copilot respondeu HTTP `402` com `You've reached your additional usage limit for your plan`; o agente também reportou bloqueio de firewall ao acessar `api.github.com`.
 
 **Ação necessária do PO/administrador:** verificar e ampliar o limite de uso do Copilot ou aguardar a renovação do limite; ajustar a allowlist do firewall de Copilot Actions para permitir `api.github.com`; depois reexecutar o check. O check terminou em falha mesmo com os demais 22 checks do SHA concluídos com sucesso (7 skipped); o PR #2721 permanece aberto e não foi mesclado.
+
+---
+
+## P15 — Auditoria de sincronização local, GitHub e Supabase (2026-10-29)
+
+Esta atualização substitui o estado operacional antigo de P7, P8, P12, P13 e P14 acima. Os registros anteriores ficam preservados como histórico.
+
+### Código e GitHub
+
+- A `main` remota e `origin/main` local estão no SHA `c344508711797a730893644449b16a05f12f4fce`.
+- A correção de timers de `LocationPanel` e a fixture determinística de `wraparound-monitor-check` estão no branch remoto `fix/location-panel-timeout-cleanup`, SHA `3d8c6d7ee32afd201c327f15c4b092ca933fea01`, PR [#2721](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2721). O branch está publicado e cinco commits à frente da `main`; o PR segue aberto.
+- Validação local desse SHA: `npm run build:verify` passou; suíte completa passou com 1.210 arquivos e 25.658 testes aprovados, 131 arquivos/1.134 testes ignorados e 24 `todo`. O teste focado da fixture passou 13/13.
+- No retrato de checks consultado, o PR #2721 tinha 49 sucessos, 4 falhas, 11 em andamento, 4 ignorados e 1 neutro, de 69 checks. Falhas: revisor Copilot (P14); `E2E · view-no-presentation-mode`; `webkit • swatch→QV`; `E2E — Personalization Journey`. O WebKit recebeu sinal de encerramento do runner; as demais falhas E2E precisam de diagnóstico antes de atribuir causa. Não mesclar enquanto checks obrigatórios estiverem em falha ou em andamento.
+- O PR [#2701](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2701) segue aberto em rascunho. Seu escopo atual altera workflow, contrato/testes e documentação; **não contém migration**. No SHA `64c3299cf11471177e36047f5436b0312300489e`, o check de Edge Integration falhou e dois cenários WebKit foram encerrados pelo runner; Firefox e Chromium ainda estavam em andamento no retrato consultado.
+
+### Supabase canônico `doufsxqlfjyuvxuezpln`
+
+- A última execução consultada do `db-schema-drift-check` na `main`, [#40850667779](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40850667779), concluiu com sucesso. O run de auditoria read-only no branch do PR, [#40876229387](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40876229387), também concluiu com sucesso e reportou 1.901 versões alinhadas. Não foi executado DDL, migration repair ou alteração de dados nesta auditoria.
+- A falha mais recente de Kit Coverage na `main`, [#40813871454](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40813871454), confirma `permission denied` para `v_kit_component_complete` e `product_kit_components`.
+- No branch do PR #2701, a autenticação e as consultas passaram, mas a validação read-only [#40874620158](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40874620158) encontrou cobertura média de 56%, abaixo do limite de 70%; `component_description`, `primary_image_url`, `images` e `supplier_component_code` estão 100% nulos/ausentes na projeção testada. O threshold não foi reduzido. Qualquer correção de grants/schema depende de migration aprovada e do fluxo `db-apply-migration.yml` (REGRA #8); os dados faltantes exigem decisão sobre a fonte/projeção correta.
+- O último `edge-functions-drift-check` consultado na `main`, [#40848475790](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40848475790), falhou e o artefato `drift_report.csv` lista 29 funções com hashes divergentes: `ai-recommendations`, `bitrix-sync`, `cnpj-lookup`, `collections-watcher`, `connections-auto-test`, `connections-hub-audit`, `crm-db-bridge`, `e2e-cleanup`, `ema-pipeline-health`, `favorites-watcher`, `generate-ad-image`, `generate-mockup`, `kit-ai-builder`, `log-login-attempt`, `magazine-import-local`, `magazine-public-react`, `mcp-keys-issue`, `mcp-keys-revoke`, `migrate-helper`, `product-webhook`, `quote-sync-promo-champions`, `receive-crm-callback`, `secrets-manager`, `send-scheduled-reports`, `simulation-orchestrator`, `trends-insights`, `visual-search`, `webhook-dispatcher` e `webhook-inbound`. O relatório não classifica qual lado é a fonte correta; não redeployar em lote antes de comparar o conteúdo. Reconciliar pelo fluxo versionado de edge functions e repetir o drift check.
+
+### Vercel e revisão automática
+
+- Nos PRs #2721 e #2701, os deployments de preview falharam. Para #2721, o deployment `dpl_DQuWCfk9kxMH6xRLCZ2Cm5NML6CL` está em `ERROR` (`target=preview`, URL `promo-gifts-v4-bidofskh4-juca1.vercel.app`). O `vercel inspect --logs` confirmou o estado, mas não retornou a causa do build. No #2701, o status do GitHub apontou o deployment `dpl_HuGju4o5L7BunzckbtgrXE5QLvC4`. A hipótese antiga de projeto Vercel fantasma não foi confirmada por essa evidência; obter logs de build do Vercel antes de atribuir causa ou alterar configuração.
+- A execução mais recente do revisor Copilot em #2721 é [#40882061472](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40882061472), SHA `3d8c6d7ee32afd201c327f15c4b092ca933fea01`. O log confirma HTTP 402 (`additional usage limit`) e bloqueio de firewall para `api.github.com`; é falha operacional do serviço, não um parecer de código.
+
+**Conclusão desta auditoria:** o código local da correção está publicado em branch/PR e validado localmente; ainda não está na `main` nem em produção. O schema/ledger tem execução recente bem-sucedida, mas Kit Coverage permanece falhando e 29 Edge Functions continuam em drift sem classificação. O banco canônico não foi alterado. Os PRs e previews permanecem bloqueados pelos checks/deploys acima.
