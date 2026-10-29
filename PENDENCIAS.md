@@ -379,3 +379,23 @@ Esta atualização substitui o estado operacional antigo de P7, P8, P12, P13 e P
 - A execução mais recente do revisor Copilot em #2721 é [#40882061472](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40882061472), SHA `3d8c6d7ee32afd201c327f15c4b092ca933fea01`. O log confirma HTTP 402 (`additional usage limit`) e bloqueio de firewall para `api.github.com`; é falha operacional do serviço, não um parecer de código.
 
 **Conclusão desta auditoria:** o código local da correção está publicado em branch/PR e validado localmente; ainda não está na `main` nem em produção. O schema/ledger tem execução recente bem-sucedida, mas Kit Coverage permanece falhando e 29 Edge Functions continuam em drift sem classificação. O banco canônico não foi alterado. Os PRs e previews permanecem bloqueados pelos checks/deploys acima.
+
+---
+
+## P16 — Inventário das últimas falhas de workflows na `main` (2026-10-29)
+
+Critério: apenas a execução mais recente de cada workflow na `main`; runs de PR são listados separadamente em P15.
+
+| Workflow | Último run | Estado | Causa/evidência disponível |
+|---|---|---|---|
+| Uptime Monitor | [#40883033798](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40883033798) | failure | Issue [#2727](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2727): site `0`, `health-check` curl `22`, `check-login` OPTIONS `0`, Auth `0`. Uma chamada read-only posterior a `health-check?fresh=1` respondeu com `database=healthy` e `external_db=healthy`; provável intermitência, ainda não encerrada até haver run agendado verde. |
+| edge-functions-drift-check | [#40848475790](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40848475790) | failure | 29 funções divergentes, detalhadas em P15; a evidência não determina qual hash é a fonte correta. |
+| Kit Coverage — Integration | [#40813871454](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40813871454) | failure | `permission denied` para `v_kit_component_complete` e `product_kit_components`; P12/P15 registram a validação e os limites para correção. |
+| Nightly Full CI | [#40808174535](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40808174535) | failure | Falharam E2E visual `color-swatch`, shards 1 e 2 do Playwright E2E e E2E visual `magazine-header`. Os trechos de log disponíveis mostraram encerramento/limpeza do runner, sem causa de assertion suficientemente legível; investigar os artefatos de teste antes de alterar testes ou snapshots. |
+| CI Security & Drift Checks | [#40762904949](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762904949) | failure | Gate de E2E crítico: no fluxo Kit Builder, o modal/overlay interceptou o clique em “Começar pelos itens” e causou timeout; o cenário de catálogo também registrou `TypeError: Failed to fetch`. São duas causas a reproduzir separadamente. |
+| E2E • Swatch QuickView (Lista + Tabela) | [#40762904693](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762904693) | failure | Chromium e Firefox falharam; o job WebKit recebeu sinal de encerramento do runner antes de concluir. A execução repetida em PR também foi cancelada pelo runner, portanto não há validação de correção. |
+| E2E — Critical Flows & Error Boundaries | [#40762904577](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762904577) | failure | Fluxo autenticado Catálogo → Kit falhou no caso “catalog loads product list without crash”; rotas críticas mobile e error boundaries passaram. |
+
+Nos 38 workflows com execução encontrada desde 2026-10-28, os demais concluídos não aparecem como falha; dois estavam `pending` no momento da consulta (`SECURITY DEFINER ACL — Multi-Env` e `E2E · restore_seller_cart RPC (multi-env)`) e não foram classificados como falha. Workflows antes verdes devem continuar verdes após as correções.
+
+**Próximo passo:** diagnosticar os sete workflows acima por causa raiz, reproduzir antes/depois e abrir correções em PRs. O `health-check` precisa de uma próxima execução agendada com sucesso para fechar a ocorrência; nenhuma alteração de dados ou schema canônico é necessária com a evidência atual.
