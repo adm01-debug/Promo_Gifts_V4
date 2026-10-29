@@ -252,6 +252,8 @@ describe('A20 — raster 10 MB e arte original 25 MB', () => {
     expect(supa.upload).not.toHaveBeenCalled();
     expect(onAttachmentsChange).not.toHaveBeenCalled();
 
+    // Um envio por vez (trava do ArtFileUpload): espera o anterior liberar.
+    await waitFor(() => expect(arte.container.querySelector('[aria-busy="true"]')).toBeNull());
     // 25 MB exatos: aceito e registrado como anexo.
     fireEvent.change(input, { target: { files: [arteVetorialDe(25 * MB)] } });
     await waitFor(() => expect(supa.upload).toHaveBeenCalledTimes(1));
@@ -260,6 +262,8 @@ describe('A20 — raster 10 MB e arte original 25 MB', () => {
       expect.objectContaining({ original_name: 'arte.ai', file_extension: '.ai', file_size_bytes: 25 * MB }),
     ]);
 
+    // Um envio por vez (trava do ArtFileUpload): espera o anterior liberar.
+    await waitFor(() => expect(arte.container.querySelector('[aria-busy="true"]')).toBeNull());
     // Formato fora da lista de arte vetorial: recusado antes de qualquer upload.
     fireEvent.change(input, {
       target: { files: [arquivoComTamanho(1024, 'malicioso.exe', 'application/octet-stream')] },

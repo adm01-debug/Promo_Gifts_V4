@@ -85,6 +85,7 @@ export function LogoSizeControls({
             min={1}
             max={effectiveMaxW}
             step={0.5}
+            aria-label="Largura (cm)"
           />
         </div>
 
@@ -124,6 +125,7 @@ export function LogoSizeControls({
             min={1}
             max={effectiveMaxH}
             step={0.5}
+            aria-label="Altura (cm)"
           />
         </div>
 
@@ -186,6 +188,7 @@ export function LogoSizeControls({
             max={500}
             step={5}
             disabled={!logoPreview}
+            aria-label="Escala (%)"
           />
         </div>
 

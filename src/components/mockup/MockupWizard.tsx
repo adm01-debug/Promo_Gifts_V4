@@ -113,7 +113,7 @@ export const MockupWizard = forwardRef<HTMLDivElement, MockupWizardProps>(
 
             {/* Progress line filled */}
             <div
-              className="absolute left-[5%] top-5 h-1 rounded-full bg-gradient-to-r from-primary to-primary/80 shadow-[0_0_8px_rgba(var(--primary),0.4)] transition-all duration-500 ease-out"
+              className="absolute left-[5%] top-5 h-1 rounded-full bg-gradient-to-r from-primary to-primary/80 shadow-[0_0_8px_hsl(var(--primary)/0.4)] transition-all duration-500 ease-out"
               style={{ width: `${progressPercent * 0.9}%` }}
             />
 

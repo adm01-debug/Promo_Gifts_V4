@@ -89,10 +89,18 @@ export function ProductSearchCombobox({
           variant="outline"
           role="combobox"
           aria-expanded={open}
+          // A11y (WCAG 4.1.2 / axe button-name): o gatilho é um <button role=combobox>
+          // cujo conteúdo (thumbnail + nome/SKU) muda com a seleção. O nome acessível
+          // tem que ser estável e descrever a AÇÃO, não depender do conteúdo interno.
+          aria-label={
+            selectedProduct
+              ? `Produto selecionado: ${selectedProduct.name}. Alterar busca`
+              : placeholder
+          }
           disabled={disabled}
           data-testid="mockup-product-combobox-trigger"
           className={cn(
-            'h-auto min-h-[42px] w-full justify-between px-3 py-2 font-normal',
+            'h-auto min-h-[44px] w-full justify-between px-3 py-2 font-normal',
             !selectedProduct && 'text-muted-foreground',
             className,
           )}
@@ -178,7 +186,7 @@ export function ProductSearchCombobox({
               <div className="py-6 text-center">
                 <Loader2
                   aria-hidden="true"
-                  className="mx-auto mb-2 h-6 w-6 animate-spin text-primary"
+                  className="mx-auto mb-2 h-6 w-6 animate-spin text-primary motion-reduce:animate-none"
                 />
                 <p className="text-sm text-muted-foreground">Buscando...</p>
               </div>

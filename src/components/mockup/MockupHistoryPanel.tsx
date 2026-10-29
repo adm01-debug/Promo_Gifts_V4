@@ -506,10 +506,11 @@ const MockupGridCard = memo(
             aria-label={`Selecionar ${mockup.product_name} para comparação`}
             tabIndex={0}
             className={cn(
-              'flex h-6 w-6 cursor-pointer items-center justify-center rounded-md border-2 bg-background/80 backdrop-blur-sm transition-all',
+              // A-5: visível sem hover; alvo de 44px via ::after (24px visuais + 10px por lado).
+              'relative flex h-6 w-6 cursor-pointer items-center justify-center rounded-md border-2 bg-background/80 backdrop-blur-sm transition-all after:absolute after:-inset-2.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
               isCompareSelected
                 ? 'border-primary bg-primary text-primary-foreground'
-                : 'border-muted-foreground/30 opacity-0 group-hover:opacity-100',
+                : 'border-muted-foreground/30',
             )}
             onClick={(e) => {
               e.stopPropagation();
@@ -611,14 +612,15 @@ const MockupGridCard = memo(
             {safeFormatDistance(mockup.created_at)}
           </div>
         </div>
-        <div className="absolute right-2 top-2 flex translate-y-1 gap-1.5 opacity-0 transition-all duration-200 group-hover:translate-y-0 group-hover:opacity-100">
+        {/* A-5: ações sempre visíveis — toque e teclado não têm :hover */}
+        <div className="absolute right-2 top-2 flex gap-1.5" data-testid="mockup-card-actions">
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
                 size="icon"
                 aria-label={`Regenerar mockup de ${mockup.product_name}`}
                 variant="secondary"
-                className="h-8 w-8 shadow-md"
+                className="shadow-md"
                 onClick={() => onLoadFromHistory(mockup)}
               >
                 <RotateCcw className="h-4 w-4" aria-hidden="true" />
@@ -630,7 +632,7 @@ const MockupGridCard = memo(
             mockupUrl={mockup.mockup_url}
             productName={mockup.product_name}
             techniqueName={mockup.technique_name}
-            className="h-8 w-8 p-0 shadow-md [&>svg]:h-4 [&>svg]:w-4"
+            className="h-11 min-h-11 w-11 min-w-11 p-0 shadow-md [&>svg]:h-4 [&>svg]:w-4"
           />
           <Tooltip>
             <TooltipTrigger asChild>
@@ -638,7 +640,7 @@ const MockupGridCard = memo(
                 size="icon"
                 aria-label={`Baixar mockup de ${mockup.product_name}`}
                 variant="secondary"
-                className="h-8 w-8 shadow-md"
+                className="shadow-md"
                 onClick={() => onDownload(mockup.layout_url || mockup.mockup_url)}
               >
                 <Download className="h-4 w-4" aria-hidden="true" />
@@ -653,7 +655,7 @@ const MockupGridCard = memo(
                 aria-label={`Excluir mockup de ${mockup.product_name}`}
                 data-testid="delete-mockup-button"
                 variant="destructive"
-                className="h-8 w-8 shadow-md"
+                className="shadow-md"
                 onClick={() => onDelete(mockup.id)}
               >
                 <Trash2 className="h-4 w-4" aria-hidden="true" />
@@ -771,14 +773,14 @@ const MockupListRow = memo(
             </span>
           </div>
         </div>
-        <div className="flex shrink-0 items-center gap-1.5 opacity-0 transition-opacity group-hover:opacity-100">
+        {/* A-5: ações sempre visíveis — toque e teclado não têm :hover */}
+        <div className="flex shrink-0 items-center gap-1.5" data-testid="mockup-row-actions">
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
                 size="icon"
                 aria-label={`Regenerar mockup de ${mockup.product_name}`}
                 variant="secondary"
-                className="h-8 w-8"
                 onClick={() => onLoadFromHistory(mockup)}
               >
                 <RotateCcw className="h-4 w-4" aria-hidden="true" />
@@ -790,7 +792,7 @@ const MockupListRow = memo(
             mockupUrl={mockup.mockup_url}
             productName={mockup.product_name}
             techniqueName={mockup.technique_name}
-            className="h-8 w-8 p-0 [&>svg]:h-4 [&>svg]:w-4"
+            className="h-11 min-h-11 w-11 min-w-11 p-0 [&>svg]:h-4 [&>svg]:w-4"
           />
           <Tooltip>
             <TooltipTrigger asChild>
@@ -798,7 +800,6 @@ const MockupListRow = memo(
                 size="icon"
                 aria-label={`Baixar mockup de ${mockup.product_name}`}
                 variant="secondary"
-                className="h-8 w-8"
                 onClick={() => onDownload(mockup.layout_url || mockup.mockup_url)}
               >
                 <Download className="h-4 w-4" aria-hidden="true" />
@@ -813,7 +814,6 @@ const MockupListRow = memo(
                 aria-label={`Excluir mockup de ${mockup.product_name}`}
                 data-testid="delete-mockup-button"
                 variant="destructive"
-                className="h-8 w-8"
                 onClick={() => onDelete(mockup.id)}
               >
                 <Trash2 className="h-4 w-4" aria-hidden="true" />
