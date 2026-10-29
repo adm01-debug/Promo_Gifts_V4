@@ -653,3 +653,40 @@ Validação local após os dois commits do PR: `npm run build:verify`, actionlin
 **Bloqueio:** Infraestrutura — Vercel deploy, domínio ou edge function fora do ar.
 **O que você precisa fazer:** Verificar issue [#2740](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2740) para ver o comentário do alerta. Checar painel Vercel e Supabase edge functions. Se o Vercel deploy do último commit falhou, re-trigger o deploy.
 
+
+---
+
+## P-CI-H — Branch Protection Sentinel — 6 commits históricos em main sem padrão aceito
+
+**Workflow:** Branch Protection Sentinel  
+**Run:** [#40965131389](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40965131389)  
+**Commit HEAD:** `c3b41286` (PR #2730 squash-merge)  
+**Status:** `failure` (concluído 2026-10-29T22:32 UTC)
+
+**Erro exato:**
+```
+6 commit(s) em push para main sem padrão aceito: 153630f 0368038 4e83d97 e2518bb c55c678 9d9dd2a
+```
+
+**Causa raiz:** O Sentinel audita o range completo do push (`PUSH_BEFORE=14b6d5fc` → `PUSH_AFTER=c3b41286`). Os 6 commits listados são commits históricos já presentes em `main` que não seguem os padrões aceitos (squash `(#NNN)`, merge de PR, bots, ou `[skip-sentinel: reason]`). Esses commits entraram em `main` antes desta sessão, provavelmente via push direto de sessão anterior.
+
+**Por que não é corrigível retroativamente:** Corrigir exigiria reescrever o histórico de `main` (force push), que é proibido pelas regras do projeto.
+
+**Bloqueio:** Requer decisão do PO sobre os 6 commits:
+- Opção A: Aceitar o histórico atual e adicionar os SHAs `153630f 0368038 4e83d97 e2518bb c55c678 9d9dd2a` à allowlist do sentinel (`scripts/sentinel-check.sh`) via PR
+- Opção B: Reescrever o histórico (force push em `main`) — **requer aprovação explícita + bypass do branch protection**
+
+**O que você precisa fazer:** Escolher entre opção A ou B acima. Para opção A, abrir PR que adicione os SHAs à allowlist do sentinel.
+
+---
+
+## Resumo de status dos workflows "históricos" auditados em 2026-10-29 no HEAD c3b41286
+
+| Workflow | Run | Conclusão | Verificado |
+|---|---|---|---|
+| Supabase Linter Gate | [#40965131418](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40965131418) | ✅ `success` | 2026-10-29 22:25 UTC |
+| Quote Builder Delivery Quality | [#40965131574](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40965131574) | ✅ `success` | 2026-10-29 22:30 UTC |
+| Branch Protection Sentinel | [#40965131389](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40965131389) | ❌ `failure` | Ver P-CI-H acima |
+| E2E PDF Dialog | [#40893179038](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40893179038) | ❌ `failure` | Documentado na tabela P17 — falta fixture `[E108]` |
+| E2E Playwright | [#40965131258](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40965131258) | ⏳ `pending` | Ainda em andamento ao fechar esta sessão |
+| Deploy Gates | [#40965131457](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40965131457) | ⏳ `queued` | Ainda em andamento ao fechar esta sessão |
