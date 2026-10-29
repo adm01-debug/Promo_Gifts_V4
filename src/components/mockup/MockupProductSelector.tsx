@@ -24,6 +24,7 @@ import {
 } from '@/components/ui/dialog';
 import { useProductsCatalog, type ExternalVariantStock, type Product } from '@/hooks/products';
 import { ProductLoaderAndColorSelector } from './MockupColorSelector';
+import { MockupPhotoPicker } from './MockupPhotoPicker';
 
 export interface MockupProductSelection {
   product: Product;
@@ -32,6 +33,47 @@ export interface MockupProductSelection {
   colorHex?: string;
   /** Image URL to use for the mockup (variant-specific if available) */
   imageUrl: string;
+}
+
+/** Sufixo de tamanho do Cloudflare Images no fim da URL de uma foto. */
+const CDN_SIZE_SUFFIX = /\/(thumbnail|small|card|medium|large|public)$/;
+
+/**
+ * Fotos REAIS disponíveis para a geração — sempre a ORIGINAL, nunca a miniatura,
+ * nunca o placeholder.
+ *
+ * A variante manda: usa as fotos dela (`images`) e a foto por trás da
+ * `selected_thumbnail` — que é uma miniatura, por isso é resolvida de volta ao
+ * original correspondente. Só quando a variante não tem foto nenhuma é que caem
+ * as fotos do próprio produto (ex.: produto sem variantes). A mesma foto em
+ * tamanhos diferentes conta uma vez só (dedupe pela base do CDN).
+ */
+export function getMockupVariantPhotos(
+  variant: ExternalVariantStock | null,
+  product: Product | null,
+): string[] {
+  const isRealPhoto = (source: string | null | undefined): source is string => {
+    const url = source?.trim();
+    return Boolean(url) && url !== '/placeholder.svg';
+  };
+
+  const variantPhotos = (
+    variant ? [...(variant.images ?? []), variant.selected_thumbnail] : []
+  ).filter(isRealPhoto);
+  const productPhotos = [...(product?.images ?? []), product?.image_url ?? null].filter(
+    isRealPhoto,
+  );
+  const sources = variantPhotos.length > 0 ? variantPhotos : productPhotos;
+
+  const seen = new Set<string>();
+  const photos: string[] = [];
+  for (const url of sources) {
+    const base = url.replace(CDN_SIZE_SUFFIX, '');
+    if (seen.has(base)) continue;
+    seen.add(base);
+    photos.push(getCdnUrl(url, 'public'));
+  }
+  return photos;
 }
 
 interface MockupProductSelectorProps {
@@ -82,6 +124,11 @@ export function MockupProductSelector({
 
   // Internal state: product picked, loading full data or choosing color
   const [pendingProductId, setPendingProductId] = useState<string | null>(null);
+  // Internal state: variant picked, choosing which REAL photo goes to generation
+  const [pendingVariant, setPendingVariant] = useState<{
+    variant: ExternalVariantStock | null;
+    product: Product;
+  } | null>(null);
 
   // Colunas reais do grid. Medida por largura (viewport) para casar com as classes
   // responsivas: o virtualizador fatia as LINHAS com esta contagem.
@@ -152,20 +199,21 @@ export function MockupProductSelector({
   };
 
   const handleColorSelect = (variant: ExternalVariantStock | null, product: Product) => {
-    const variantThumb = variant?.selected_thumbnail
-      ? getCdnUrl(variant.selected_thumbnail, 'thumbnail')
-      : null;
-    const variantFirstImg = variant?.images?.[0] ? getCdnUrl(variant.images[0], 'thumbnail') : null;
-    const imageUrl = variantThumb || variantFirstImg || product.images?.[0] || '/placeholder.svg';
-
-    onSelect({
-      product,
-      variant,
-      colorName: variant?.color_name ?? undefined,
-      colorHex: variant?.color_hex ?? undefined,
-      imageUrl,
-    });
     setPendingProductId(null);
+    setPendingVariant({ variant, product });
+  };
+
+  // Confirma a FOTO escolhida: a geração recebe o original dela, nunca a miniatura.
+  const confirmPhoto = (photo: string) => {
+    if (!pendingVariant) return;
+    onSelect({
+      product: pendingVariant.product,
+      variant: pendingVariant.variant,
+      colorName: pendingVariant.variant?.color_name ?? undefined,
+      colorHex: pendingVariant.variant?.color_hex ?? undefined,
+      imageUrl: photo,
+    });
+    setPendingVariant(null);
     setIsDialogOpen(false);
   };
 
@@ -180,8 +228,9 @@ export function MockupProductSelector({
     return (
       <div className="flex items-center gap-3 rounded-lg border border-border/30 bg-card p-3">
         <div className="h-11 w-11 shrink-0 overflow-hidden rounded-lg bg-muted">
+          {/* Miniatura na prévia; a geração usa `selection.imageUrl` (original). */}
           <img
-            src={selection.imageUrl}
+            src={getCdnUrl(selection.imageUrl, 'thumbnail')}
             alt={selection.product.name}
             className="h-full w-full object-cover"
             loading="lazy"
@@ -227,6 +276,18 @@ export function MockupProductSelector({
           <X aria-hidden="true" className="h-3.5 w-3.5" />
         </Button>
       </div>
+    );
+  }
+
+  // ─── State: variant picked, choosing the REAL photo used for generation ───
+  if (pendingVariant) {
+    return (
+      <MockupPhotoPicker
+        product={pendingVariant.product}
+        photos={getMockupVariantPhotos(pendingVariant.variant, pendingVariant.product)}
+        onPick={confirmPhoto}
+        onBack={() => setPendingVariant(null)}
+      />
     );
   }
 
