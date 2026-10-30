@@ -8,18 +8,18 @@
     "build": "exit 0 — built in 16.66s"
   },
   "total_prs_abertos_original": 19,
-  "total_prs_abertos_atuais": 17,
-  "analisados": 24,
-  "dossies_completos": 24,
+  "total_prs_abertos_atuais": 16,
+  "analisados": 28,
+  "dossies_completos": 28,
   "veredictos": {
-    "MERGEADA": ["#2768", "#2759", "#2734", "#2770", "#2783"],
-    "DECISAO_HUMANA": ["#2758", "#2745", "#2743", "#2731", "#2717", "#2714", "#2701", "#2776"],
-    "DRAFT": ["#2767", "#2766", "#2764", "#2750", "#2749", "#2746", "#2771", "#2785"],
+    "MERGEADA": ["#2768", "#2759", "#2734", "#2770", "#2783", "#2791", "#2792"],
+    "DECISAO_HUMANA": ["#2758", "#2745", "#2743", "#2731", "#2717", "#2714", "#2701", "#2776", "#2793"],
+    "DRAFT": ["#2767", "#2766", "#2764", "#2750", "#2749", "#2746", "#2771", "#2785", "#2789"],
     "DRAFT_E_DECISAO_HUMANA": ["#2744"],
     "BLOQUEADA_CONFLITO": ["#2747"],
     "BLOQUEADA_PROVAVEL_CONFLITO": ["#2739"]
   },
-  "mergeados_nesta_sessao": ["#2768", "#2759", "#2734", "#2770", "#2783"],
+  "mergeados_nesta_sessao": ["#2768", "#2759", "#2734", "#2770", "#2783", "#2791", "#2792"],
   "merge_sha_2768": "852346720522787142cf452f01db40472cff2fea",
   "merge_em_2768": "2026-10-30T05:40:16Z",
   "merge_sha_2759": "8382faf8330c4354aba69f6c5eba3b085eee2ded",
@@ -111,7 +111,8 @@
   "dossies_reescritos_nesta_sessao": [
     "PR-2701", "PR-2714", "PR-2717", "PR-2731", "PR-2734", "PR-2739",
     "PR-2743", "PR-2744", "PR-2745", "PR-2747", "PR-2758", "PR-2766", "PR-2767",
-    "PR-2770", "PR-2771", "PR-2776", "PR-2783", "PR-2785"
+    "PR-2770", "PR-2771", "PR-2776", "PR-2783", "PR-2785",
+    "PR-2789", "PR-2791", "PR-2792", "PR-2793"
   ],
   "nao_verificado_resolvidos": {
     "2714": "SQL lido 100%: deny_all RESTRICTIVE em supplier_stricker (sem GRANT USAGE), pré/pós-condições, aditivo",
@@ -154,5 +155,19 @@
     "gate3_e2e_finalizado": "2026-10-30T08:18:20Z",
     "gate_final_finalizado": "2026-10-30T08:18:26Z"
   },
+  "merge_sha_2791": "0b628fd3ddccb52e0182ff55b26102cfc3e6a930",
+  "merge_em_2791": "2026-10-30T~08:45Z",
+  "gate_final_pre_merge_2791": {
+    "run_id": 41023834458,
+    "job_id": 123963552903,
+    "sha": "94e4c19199aadf2560d79f97e30ccb70a9f2dbda",
+    "status": "completed",
+    "conclusion": "success",
+    "completado": "2026-10-30T08:20:54Z"
+  },
+  "merge_sha_2792": "62e21cc6794b2088285b0f47526ee75d3c652fca",
+  "merge_em_2792": "2026-10-30T~08:47Z",
+  "main_sha_pos_2792": "62e21cc6794b2088285b0f47526ee75d3c652fca",
+  "novos_prs_descobertos": ["#2789", "#2791", "#2792", "#2793"],
   "meta_pendente": null
 }
