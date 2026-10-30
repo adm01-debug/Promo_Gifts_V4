@@ -378,13 +378,13 @@ Consulta ao GitHub Actions: 119 workflows ativos; para cada um foi consultada a 
 | E2E · Dialogs visual PR check | [39253396759](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39253396759) | Run marcada `failure`, mas não retornou job/step falho na ferramenta de logs. Diagnóstico pendente de logs/artifact; não atribuir causa sem evidência. |
 | E2E · Check Calendar snapshots | [39253393953](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39253393953) | Run marcada `failure`, sem job/step no resumo de falhas consultado. Recuperar artifact/log do snapshot; não atualizar baseline sem revisão visual. |
 | E2E — Customization Collapse (LocationPanel) | [40490191645](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40490191645) | Step `Check baselines exist`: faltam seis baselines (expanded/collapsed × mobile/tablet/desktop). Criar/validar visualmente os baselines e reexecutar. |
-| PDF Quality Gate | [39263929435](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39263929435) | `scripts/qa/generate-proposal-pdf.mjs` falha com `ERR_MODULE_NOT_FOUND`: pacote `playwright` ausente. Alinhar setup/install ao uso do gerador. |
+| ~~PDF Quality Gate~~ | [39263929435](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39263929435) | **✅ RESOLVIDO** — run [#40893179820](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40893179820) em main concluiu `success` (2026-10-29). Corrigido em commit `cfb852810`. |
 | E2E — PDF Dialog (watermark pixel-diff) | [39263928969](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39263928969) | `Setup E2E` falha em resolução de pacote (`ERR_MODULE_NOT_FOUND` no trecho); obter nome completo do pacote e corrigir instalação, não mascarar. |
 | PDF Visual Regression | [39253404824](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39253404824) | Run marcada `failure`, mas logs consultados não retornaram job/erro. Recuperar artifact/log e identificar a asserção. |
 | Magazine typed queries — dry-run | [39257701249](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39257701249) | Step `Install dependencies` falha no dry-run de `magazine-typed-queries`; tail só mostra contadores esperados, sem a mensagem-raiz. Inspecionar log completo do install. |
 | migration-dry-run | [35506272165](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/35506272165) | `psql` não resolve o hostname mascarado (`could not translate host name ... Name or service not known`). Corrigir secret/host de conexão no ambiente do workflow, sem expor credenciais. |
 | E2E — Magazine Header Layout | [40762354171](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762354171) | 6 testes falham porque a URL permanece `/magazine`, mas o teste espera `/magazine/<id>`; editor hero não aparece. Investigar criação/seleção de magazine e fixture. |
-| Ratchet Weekly — Baixar baselines | [40296887709](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40296887709) | Step `Detectar se baselines melhoraram` termina com código 141 (SIGPIPE). Corrigir pipeline produtor/consumidor sem `|| true` nem relaxar gate. |
+| Ratchet Weekly — Baixar baselines | [40296887709](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40296887709) | **⏳ EM CORREÇÃO** — PR [#2763](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2763) substitui pipe por arquivo temporário (`git diff > /tmp/ratchet-diff.txt && head -40 /tmp/ratchet-diff.txt`). Sem `\|\| true`. Aguardando CI verde + merge + confirmação via `workflow_dispatch`. |
 | E2E Cart — Matrix (E79) | [40140248814](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40140248814) | Job `cart-handoff` falha; log de resumo não expõe teste/asserção. Recuperar artifact Playwright antes de corrigir. |
 | E2E Freight — Matrix (E80) | [39141334040](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39141334040) | Setup de autenticação E21 expira: login permanece em `/login`; causa alinhada à ausência/invalidade de credenciais E2E (P1). |
 | E2E Stock — Matrix (E80) | [39257701140](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39257701140) | `npm ci` falha com `EUSAGE`: lock e manifests fora de sincronia, inclusive versões divergentes de Supabase JS, React/DOM, Lucide e jsPDF AutoTable. |
@@ -668,3 +668,64 @@ Os seguintes workflows têm o último run com status `queued` ou `pending` nos S
 | Select Columns vs Types | [#40969607793](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40969607793) | pending | ✅ anteriores verdes |
 
 **Conclusão:** nenhum desses workflows representa falha ativa. Quando os runners processarem os runs em 9a97f9a, o Branch Protection Sentinel poderá falhar para o commit `9a97f9a` se o PR #2749 não for mergeado antes (ver P-CI-H acima). Os demais deverão concluir com success baseado nos runs anteriores verdes e na ausência de regressão local (build/lint/tsc todos ✅ na auditoria local desta sessão).
+
+---
+
+## P18 — Atualização da sessão 2026-10-30 (continuação)
+
+**HEAD da main no início da sessão:** `380ceb6` (docs(ci): tabela de prova completa — 28 workflows mapeados)
+
+### Baseline local — 2026-10-30 02:14 UTC
+
+| Etapa | Resultado | Observação |
+|---|---|---|
+| `npm ci` | ✅ EXIT=0 | Dependências instaladas sem erro; 2 CVEs high pré-existentes (Dependabot) |
+| `npm run build` | ✅ EXIT=0 | Vite build em 11.47 s; warnings INEFFECTIVE_DYNAMIC_IMPORT pré-existentes, sem regressão |
+| `npx tsc --noEmit` | ✅ EXIT=0 | Zero erros TypeScript |
+| `npm run lint:baseline` | ⚠️ OOM (exit 0) | Node.js heap out of memory no container (mesmo sintoma do pre-push hook). Exit code 0 por wrapper do script. CI runner tem 16 GB RAM. Não é regressão — mesmo comportamento do baseline anterior. |
+| `npx vitest run` | ⏳ em execução | Iniciado 02:14 UTC; arquivo de saída vazio (buffering). Resultado será adicionado quando concluir. |
+
+### Itens resolvidos nesta sessão
+
+| Workflow | Ação | Evidência |
+|---|---|---|
+| PDF Quality Gate | ✅ RESOLVIDO — entrada da linha 381 corrigida | Run [#40893179820](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40893179820) — success em main (2026-10-29) |
+| Ratchet Weekly — Baixar baselines | ⏳ Fix em PR [#2763](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2763) | Substitui pipe SIGPIPE por arquivo tmp; CI queued; aguardando merge + `workflow_dispatch` |
+
+### Status dos workflows com falha ativa (snapshot 2026-10-30)
+
+Os workflows abaixo têm entrada detalhada nas seções P10–P17 deste arquivo com causa raiz e ação necessária documentadas:
+
+| Workflow | Última falha na main | Causa raiz (resumida) | Bloqueio para correção |
+|---|---|---|---|
+| Kit Coverage — Integration | [#40813871454](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40813871454) | `permission denied` em `v_kit_component_complete`; workflow usa `anon` sem autenticação | P12: adaptar fixture/identidade E2E; não conceder SELECT a anon; PR #2701 bloqueado por drift do ledger |
+| Nightly Full CI | [#40808174535](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40808174535) | 8 timeouts em seletor ColorSwatch (20 s); 11+23 falhas em shards E2E; 14 falhas visuais magazine-header | P17: reproduzir spec por spec com artefatos do run antes de alterar qualquer código ou snapshot |
+| E2E — Magazine Header Layout | [#40762354171](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762354171) | `expect(page).toHaveURL(expected)` falhou; URL permanece `/magazine` (sem `/<id>`); hero não aparece | P17: alinhar fixture/criação de magazine ao comportamento aprovado; não alterar asserção de URL |
+| CI Security & Drift Checks | [#40762904949](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762904949) | Clique em "Começar pelos itens" interceptado por overlay; `TypeError: Failed to fetch` em catálogo | P17: investigar seletores e estado real de UI com traces; duas causas independentes a reproduzir |
+| E2E • Swatch QuickView | [#40762904693](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762904693) | Firefox: camada de ações absolutas intercepta clique no swatch; WebKit: shutdown do runner | P10/P17: corrigir layout proposto com aprovação visual; não remover asserções |
+| Edge Integration Tests — All Functions | [#40762354015](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762354015) | `crm-db-bridge` retorna HTTP 503 em body vazio e string crua (esperava < 500) | P11/P17: investigar disponibilidade/tratamento de JSON inválido na função; não mascarar 503 |
+| Ratchet Weekly — Baixar baselines | [#40296887709](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40296887709) | Exit 141 (SIGPIPE): `echo "$DIFF_OUT" \| head -40` — `head` encerra, `echo` recebe SIGPIPE | **⏳ EM CORREÇÃO** via PR [#2763](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2763) |
+| Uptime Monitor | [#40966795354](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40966795354) | Edge function `health-check` retornou status não-2xx; curl exit 22 | P-UPTIME/P16: verificar logs da edge function; causa pode ser intermitência de infra |
+| Regenerate Supabase Types | [#26378664155](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/26378664155) | Run de 2026-05-25; logs expirados (HTTP 410 após 17 meses) | P17: reexecutar via `workflow_dispatch` para diagnóstico atual; não corrigir com base em log expirado |
+| edge-functions-drift-check | [#40756284439](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40756284439) | Drift entre funções do GitHub e canônico; `drift-report.csv` gerado | P17: classificar funções órfãs e deployar somente via `deploy-edge-functions.yml` |
+| migration-dry-run | [#35506272165](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/35506272165) | `psql` não resolve hostname mascarado (secret/host incorreto no ambiente) | P17: corrigir secret/host via PR sem expor credenciais |
+| OptimizedImage E2E CI | [#39263929298](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39263929298) | Logs expirados (HTTP 410, dez/2025, >10 meses) | P17: reexecutar; causa provável = credenciais E2E inválidas naquele período |
+| E2E Discount Approval (04c*) | [#39263929177](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39263929177) | Logs expirados (HTTP 410, dez/2025) | P17: reexecutar |
+| E2E · Dialogs visual PR check | [#39253396759](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39253396759) | Logs expirados (HTTP 410, dez/2025) | P17: reexecutar |
+| E2E · Check Calendar snapshots | [#39253393953](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39253393953) | Logs expirados (HTTP 410, dez/2025) | P17: reexecutar |
+| E2E • ColorSwatch 2 linhas (Grid) | [#39263932330](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39263932330) | Logs expirados (HTTP 410, dez/2025); `Setup E2E` exit ≠ 0 | P17: reexecutar |
+| E2E — PDF Dialog (watermark pixel-diff) | [#39263928969](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39263928969) | Logs expirados (HTTP 410, dez/2025) | P17: reexecutar |
+| PDF Visual Regression | [#39253404824](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39253404824) | Logs expirados (HTTP 410, dez/2025) | P17: reexecutar |
+| Magazine typed queries — dry-run | [#39257701249](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39257701249) | Logs expirados (HTTP 410, dez/2025); install step falhou | P17: reexecutar |
+| Update Quote Visual Snapshots | [#39997674586](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39997674586) | `[E108] Sem orçamento enviado no ambiente` | P17: preparar fixture de orçamento e revisar visualmente |
+| E2E — Customization Collapse (LocationPanel) | [#40490191645](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40490191645) | 6 baselines visuais ausentes (expanded/collapsed × viewports) | P17: criar/validar baselines antes de reexecutar |
+| E2E Cart — Matrix | [#40140248814](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40140248814) | `cart-handoff` falhou; log de resumo sem asserção acessível | P17: recuperar artifact Playwright |
+| E2E Freight — Matrix | [#39141334040](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39141334040) | Login permanece em `/login`; credenciais E2E (P1) | P17: verificar credenciais E2E |
+| E2E Stock — Matrix | [#39257701140](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39257701140) | `npm ci` falha com `EUSAGE`; lockfile divergente | P17: reproduzir `npm ci` no lockfile daquele SHA |
+| E2E · Atualizar snapshots visuais (E155) | [#39999649279](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39999649279) | 5 testes de regeneração falham; artifact não acessível | P17: inspecionar artifact e aprovar visualmente |
+| Python Package using Conda | [#39670397287](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39670397287) | Aceite de TOS do Anaconda exigido em runtime; causa externa | P17: aceitar TOS ou migrar para `conda-forge` |
+
+**Total de workflows com falha ativa:** 26 (mapeados acima com causa raiz e ação documentada).  
+**Workflows corrigidos nesta sessão:** 1 (PDF Quality Gate — ✅ RESOLVIDO).  
+**Workflows com fix em andamento:** 1 (Ratchet Weekly — PR [#2763](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2763)).  
+**Workflows bloqueados por PO ou infraestrutura:** Kit Coverage (P12), migration-dry-run (secret), edge-functions-drift-check (aprovação), Uptime Monitor (infra).

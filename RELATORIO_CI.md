@@ -1,8 +1,22 @@
 # RELATORIO_CI.md — Auditoria de Workflows CI/CD
 
-**Gerado:** 2026-10-29 · **Atualizado:** 2026-10-30  
-**HEAD da main:** `c64f613b18f37802127fccf574becb6496eb1755` (2026-10-30)  
+**Gerado:** 2026-10-29 · **Atualizado:** 2026-10-30 02:20 UTC  
+**HEAD da main:** `380ceb6238dc4ea4f093bd61ce8dd5419c74ab91` (2026-10-30)  
 **Sessão:** https://claude.ai/code/session_01RfQzo7S3K6o49UBUDoCtUe
+
+---
+
+## 0. Baseline Local — Sessão atual (main em 380ceb6 — 2026-10-30 02:14 UTC)
+
+| Etapa | Comando | Resultado | Observação |
+|---|---|---|---|
+| Instalação | `npm ci --prefer-offline` | ✅ EXIT=0 | 2 CVEs high pré-existentes (Dependabot); sem erro novo |
+| Build | `npm run build` | ✅ EXIT=0 | Vite built in 11.47s; warnings `INEFFECTIVE_DYNAMIC_IMPORT` pré-existentes |
+| Typecheck | `npx tsc --noEmit` | ✅ EXIT=0 | Zero erros TypeScript |
+| Lint | `npm run lint:baseline` | ⚠️ OOM container | Node.js heap out of memory no container (mesmo comportamento do pre-push hook). Wrapper script retorna exit 0. CI runner tem 16 GB RAM e passa normalmente. Não é regressão. |
+| Testes unitários | `npx vitest run` | ⏳ em execução | Iniciado 02:14 UTC, buffer vazio (vitest escreve saída no final). Sessão anterior: 3 falhas pré-existentes, 25.866 passed, exit 0. |
+
+> Alterações desta sessão: `ratchet-weekly.yml` (1 arquivo CI) + `PENDENCIAS.md` + `RELATORIO_CI.md` (docs). Zero arquivos TypeScript, de testes ou de componentes alterados → sem vetor de regressão.
 
 ---
 
