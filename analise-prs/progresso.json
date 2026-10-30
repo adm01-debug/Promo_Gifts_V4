@@ -2,58 +2,76 @@
   "sessao": "session_01RfQzo8Ean3zudG2sEN79b6",
   "data_analise": "2026-10-30",
   "main_sha_inicio": "3bfc9dc5",
-  "main_sha_fim": "6bc42d68",
-  "total_prs_analisadas": 18,
-  "intervalo_prs": "2701-2840",
+  "main_sha_fim": "6bc42d682c14265ae39d087f8ef7b4f5a8746628",
+  "total_prs_analisadas": 22,
+  "intervalo_prs": "2701-2842",
+
   "veredictos": {
-    "JA_MESCLADA": {"count": 2, "prs": [2813, 2840]},
-    "CI_FALHOU": {"count": 4, "prs": [2739, 2810, 2822, 2825]},
-    "DECISAO_HUMANA": {"count": 9, "prs": [2701, 2731, 2744, 2758, 2821, 2823, 2827, 2836, 2839]},
-    "AGUARDANDO": {"count": 1, "prs": [2824]},
-    "DRAFT": {"count": 1, "prs": [2834]},
-    "SESSION_DELIVERY": {"count": 1, "prs": [2831]}
+    "JA_MESCLADA": {
+      "count": 3,
+      "prs": [2813, 2840, 2831],
+      "nota": "2831 = SESSION_DELIVERY (branch desta sessão, usada como entrega)"
+    },
+    "CI_FALHOU": {
+      "count": 4,
+      "prs": [2739, 2810, 2822, 2825],
+      "detalhes": {
+        "2739": "Gate Final falhou — timeout 30s mockup generator",
+        "2810": "Gate 1.9 ratchet — aumentou TODO/FIXME count",
+        "2822": "Gate 1.3 — baseline check-migration-path-references desatualizado",
+        "2825": "Gate 1.3 — baseline desatualizado pós-merge de updates"
+      }
+    },
+    "DECISAO_HUMANA": {
+      "count": 11,
+      "prs": [2701, 2731, 2744, 2758, 2821, 2823, 2824, 2826, 2827, 2836, 2839],
+      "regras_aplicadas": {
+        "REGRA_8_workflows": [2701, 2731, 2821, 2823, 2824, 2826, 2839],
+        "REGRA_8_migrations": [2731, 2744, 2823],
+        "REGRA_8_edge_functions": [2744],
+        "REGRA_8_body_instrucao_humana": [2758],
+        "REGRA_10_codex_branch": [2827, 2836, 2839]
+      }
+    },
+    "AGUARDANDO_GATE_FINAL": {
+      "count": 2,
+      "prs": [2830, 2842],
+      "detalhes": {
+        "2830": "docs-only, aguardando Gate Final verde",
+        "2842": "docs-only, blocked — conflito após merge #2840"
+      }
+    },
+    "DRAFT": {
+      "count": 1,
+      "prs": [2834]
+    },
+    "SESSION_DELIVERY": {
+      "count": 1,
+      "prs": [2832],
+      "nota": "Branch claude/chore-analise-prs-261030-1600 = entrega principal desta sessão"
+    }
   },
-  "total_check": "2+4+9+1+1+1=18 OK",
+
+  "total_check": "3+4+11+2+1+1=22 OK",
+
   "prs_mescladas_nesta_sessao": 0,
-  "nota_merges": "Nenhuma PR elegível para merge nesta sessão. PRs #2813 e #2840 foram mescladas por outras sessões durante a análise.",
-  "prs_mescladas_outras_sessoes": [
-    {"pr": 2813, "merge_sha": "468ac058", "timestamp": "2026-10-30T17:59Z", "sessao": "session_01RfQzo6Dg97Uj4nSrMJfhpy"},
-    {"pr": 2840, "merge_sha": "6bc42d68", "timestamp": "2026-10-30T18:49Z", "sessao": "session_01RfQzo7S3K6o49UBUDoCtUe"}
+  "nota_zero_merges": "Nenhuma PR elegível para merge automático: todas são DECISAO_HUMANA, CI_FALHOU, AGUARDANDO, DRAFT ou JÁ_MESCLADA",
+
+  "dossies_criados": [
+    "PR-2701.md", "PR-2731.md", "PR-2739.md", "PR-2744.md", "PR-2758.md",
+    "PR-2810.md", "PR-2813.md", "PR-2821.md", "PR-2822.md", "PR-2823.md",
+    "PR-2824.md", "PR-2825.md", "PR-2826.md", "PR-2827.md", "PR-2830.md",
+    "PR-2831.md", "PR-2832.md", "PR-2834.md", "PR-2836.md", "PR-2839.md",
+    "PR-2840.md", "PR-2842.md"
   ],
-  "worktrees": "Nenhum worktree criado. Análise via list_pr_files + Gate Final por PR. Nenhum merge de teste realizado.",
-  "baseline": {
-    "arquivo": "analise-prs/baseline/vitest-scripts-output.txt",
-    "comando": "timeout 45 node --max-old-space-size=512 node_modules/.bin/vitest run tests/scripts/ --reporter=verbose",
-    "sha_execucao": "3bfc9dc5 (main no início da sessão)",
-    "arquivos_de_teste_visíveis": 19,
-    "testes_capturados": 301,
-    "falhas": 0,
-    "nota": "Execução interrompida por timeout de 45s; todos os testes capturados passaram. Gate 2 completo requer VITE_SUPABASE_URL (não disponível no container)."
-  },
-  "entregaveis": [
-    "analise-prs/baseline/vitest-scripts-output.txt",
-    "analise-prs/regras-de-negocio.md",
-    "analise-prs/progresso.json",
-    "analise-prs/prs.csv",
-    "analise-prs/prs.json",
-    "analise-prs/RELATORIO_PRS.md",
-    "analise-prs/dossies/PR-2701.md",
-    "analise-prs/dossies/PR-2731.md",
-    "analise-prs/dossies/PR-2739.md",
-    "analise-prs/dossies/PR-2744.md",
-    "analise-prs/dossies/PR-2758.md",
-    "analise-prs/dossies/PR-2810.md",
-    "analise-prs/dossies/PR-2813.md",
-    "analise-prs/dossies/PR-2821.md",
-    "analise-prs/dossies/PR-2822.md",
-    "analise-prs/dossies/PR-2823.md",
-    "analise-prs/dossies/PR-2824.md",
-    "analise-prs/dossies/PR-2825.md",
-    "analise-prs/dossies/PR-2827.md",
-    "analise-prs/dossies/PR-2831.md",
-    "analise-prs/dossies/PR-2834.md",
-    "analise-prs/dossies/PR-2836.md",
-    "analise-prs/dossies/PR-2839.md",
-    "analise-prs/dossies/PR-2840.md"
-  ]
+
+  "artifacts_entregues": {
+    "baseline_vitest": "analise-prs/baseline/vitest-scripts-output.txt",
+    "regras_negocio": "analise-prs/regras-de-negocio.md",
+    "progresso": "analise-prs/progresso.json",
+    "prs_json": "analise-prs/prs.json",
+    "prs_csv": "analise-prs/prs.csv",
+    "relatorio": "analise-prs/RELATORIO_PRS.md",
+    "dossies_count": 22
+  }
 }
