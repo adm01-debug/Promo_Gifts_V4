@@ -44,9 +44,15 @@
   "merge_em_2734": "2026-10-30T07:08:00Z",
   "main_sha_pos_2734": "50e6724177689fd097851c97fa9eb8e745473983",
   "gate_final_pos_merge_2734": {
-    "nota": "CI rodando — workflows em in_progress no SHA 50e6724177689fd097851c97fa9eb8e745473983 (07:07:48Z)"
+    "run_id": 41018173746,
+    "gate_final_job_id": 123941789871,
+    "sha": "50e6724177689fd097851c97fa9eb8e745473983",
+    "status": "completed",
+    "conclusion": "success",
+    "iniciado": "2026-10-30T07:16:07Z",
+    "finalizado": "2026-10-30T07:16:11Z"
   },
-  "pendente": "Gate Final pós-#2734 em andamento",
+  "pendente": null,
   "test_merges_executados": "2026-10-30",
   "test_merges_main_sha": "99b4f7fc60674cc5ccb222b3f28c115fa24fcca2",
   "test_merges_resultado": {
@@ -118,6 +124,6 @@
     "2766": "OK_vazio_SUPERSEDED",
     "2767": "OK_vazio_SUPERSEDED"
   },
-  "meta_cumprida": false,
-  "meta_pendente": "Gate Final pós-#2734 (SHA 50e6724177689fd097851c97fa9eb8e745473983) em andamento — aguardando conclusão"
+  "meta_cumprida": true,
+  "meta_pendente": null
 }
