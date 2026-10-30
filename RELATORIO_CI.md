@@ -499,3 +499,43 @@ Os 5 workflows com runs ativas para `4b16b988` estão todos `status=queued, conc
 - P20-E — Quote Builder Quality: baselines visuais desatualizados
 
 **Todos os workflows required** (Gate Final, Compare GitHub × Canonical, CodeQL, Gitleaks, Assert Gate Final): última run concluída = ✅ `success`.
+
+## Seção 9 — Fotografia atual das execuções na `main` (SHA `85234672`, 2026-10-30)
+
+Consulta do MCP GitHub concluída aproximadamente às 05:42 UTC, por workflow ativo, `branch=main`, sem runs de PR. Foram encontrados 119 workflows: 98 com execução e 21 sem execução na `main`. Entre os 98: 53 `success`, 21 `failure`, 18 sem conclusão (11 `pending`, 2 `queued`, 5 `in_progress`), 4 `cancelled` e 2 `skipped`. **A seção 8 acima é o snapshot anterior; esta seção é a fotografia atual.**
+
+### Workflows em falha
+
+As 21 execuções concluídas em falha estão detalhadas com causa e bloqueio em [PENDENCIAS.md — P21](PENDENCIAS.md):
+
+- Copilot: [#41009321542](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41009321542) — O step `Processing Request (Linux)` retornou `SessionModelError`, HTTP 402, `errorCode=quota`: limite adicional do plano Copilot atingido.
+- Regenerate Supabase Types: [#26378664155](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/26378664155) — O step `Commit, push, and open PR` falhou. GitHub Actions retorna HTTP 410 ao buscar os logs retidos; a causa técnica não pode ser confirmada.
+- edge-functions-drift-check: [#40848475790](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40848475790) — O comparador reportou divergência de hash/estado em 29 Edge Functions; os nomes e hashes estão registrados em P15. O relatório não determina qual lado é a fonte correta.
+- Supplier Comparison CI: [#39253399818](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39253399818) — O resumo de falha não retorna jobs/steps e não há artefato disponível nesta execução. A causa raiz não é demonstrável com a evidência retida.
+- OptimizedImage E2E CI: [#39263929298](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39263929298) — O job `test` falhou no step `Setup E2E`; não há artefato, e o trecho retido não contém a mensagem causal.
+- Global Search Quality Gate: [#39263929104](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39263929104) — `Playwright - Cross-browser E2E` falhou em `Setup E2E`; `Vitest - Component Tests` falhou em `Install dependencies`. O material retido não apresenta o erro original e não há artefato.
+- Kit Coverage — Integration: [#40999068927](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40999068927) — Erro do teste: `Unknown Error: Could not query the database for the schema cache. Retrying.` O PostgREST do projeto canônico não forneceu o schema cache; 3 testes foram skipped.
+- Update Quote Visual Snapshots: [#39997674586](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39997674586) — Sete testes falharam com `[E108] Sem orçamento enviado no ambiente`.
+- E2E Discount Approval (04c*): [#39263929177](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39263929177) — O job `Playwright — 04ck (badge pendentes ao vivo) ×3` falhou em `Setup E2E`; resumo e logs retidos não expõem a causa original.
+- E2E • ColorSwatch 2 linhas (Grid): [#39263932330](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39263932330) — O job `ColorSwatch grid (2 linhas + clipping + +N)` falhou durante `Setup E2E`; não há artefato disponível nem mensagem causal no resumo.
+- E2E · Dialogs visual PR check: [#39253396759](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39253396759) — A API de diagnóstico não retornou job/step e não há artefato disponível.
+- E2E · Check Calendar snapshots: [#39253393953](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39253393953) — A API de diagnóstico não retornou job/step e não há artefato disponível.
+- PDF Visual Regression: [#39253404824](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39253404824) — A API de diagnóstico não retornou job/step e não há artefato disponível.
+- Magazine typed queries — dry-run: [#39257701249](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39257701249) — O job `Aplica patch em cópia e valida` falhou em `Install dependencies`. O resumo não traz o erro de instalação; há um artefato de revalidação de 44.106 bytes ainda listado no run.
+- migration-dry-run: [#35506272165](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/35506272165) — O step `Dry-run drafts` registrou falha de resolução DNS do hostname mascarado do PostgreSQL (`could not translate host name ... Name or service not known`), conforme evidência histórica em P17.
+- Uptime Monitor: [#41006588920](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41006588920) — O probe de `health-check` falhou (curl exit 22); site, `check-login` por OPTIONS e Auth Health passaram. Uma consulta autenticada anterior leu `database=unhealthy` e timeout de 1.500 ms; um SELECT independente não prova saúde do probe.
+- E2E Cart — Matrix (E79): [#40140248814](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40140248814) — Dois diagnósticos distintos: um job falha no login E2E; outro expira em `locator.click` após 120 s no popover de remoção.
+- E2E Freight — Matrix (E80): [#39141334040](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39141334040) — Setup de autenticação E21 expira e deixa a página em `/login`; artefato E2E ainda consta no run.
+- E2E Stock — Matrix (E80): [#39257701140](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39257701140) — Dois jobs falharam no step `npm ci --no-audit --no-fund`. P17 também registra `EUSAGE` por divergência entre lockfile e manifests; outra anotação histórica sugere registry/rate-limit sem comprovação.
+- Nightly Full CI: [#40993462227](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40993462227) — Jobs `color-swatch` tiveram 8 timeouts de seletores; o job `magazine-header` reportou ausência de credenciais E2E (14 casos); os dois shards Playwright foram cancelados após timeout e não produziram `playwright-report/`. Não há evidência que autorize regenerar os baselines.
+- E2E · Atualizar snapshots visuais (E155): [#39999649279](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39999649279) — O passo de regeneração falhou com `element(s) not found`; artifact `visual-diffs-39999649279` está disponível.
+
+### Workflows verdes e ainda em andamento
+
+Os 53 workflows com sucesso e os 18 workflows sem conclusão, com nome, run e estado, estão listados em P21 de [PENDENCIAS.md](PENDENCIAS.md). Os quatro `cancelled`, dois `skipped` e 21 workflows sem run não foram classificados como falha.
+
+### Comparação baseline × final
+
+Baseline local registrado nas seções anteriores: `npm ci` passou; `npm run build:verify` passou (TypeScript, ESLint com delta zero, guards e Vite); `npm test` passou com 1.247 arquivos e 25.869 testes aprovados, 1.135 skipped e 24 todo. As correções de código/configuração avaliadas nesta rodada já foram incorporadas ao `main` por PR independente (#2763); este registro é documental e não modifica aplicação, testes, workflow ou banco. O teste completo será repetido após o commit documental, conforme o procedimento CI.
+
+**Limitação operacional:** 21 falhas continuam abertas ou sem evidência suficiente para correção responsável. Não foram enfraquecidos gates/testes, regenerados snapshots, aplicadas migrations, escritos dados no Supabase ou aprovados deploys. A lista exata de bloqueios está em P21.
