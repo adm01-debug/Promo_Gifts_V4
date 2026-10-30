@@ -133,3 +133,41 @@ O PR [#2800](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2800) permanece 
 - **Estado:** `completed/skipped` — "This git branch is not associated with any Supabase Branch. You can open a PR to create a new branch."
 - **Causa:** Push direto à `main` (sem PR): o Supabase Branching App não cria preview para pushes em main, apenas para PRs. Estado `skipped` é comportamento esperado — não é falha.
 - **Impacto:** Nenhum. Não é required check.
+
+## Atualização P28 — inventário da `main` após PR #2800 (2026-10-30T14:07Z)
+
+**HEAD verificado:** `cba9944d12a61699a3ca855388e5842c5d6948b3` (merge do PR #2800). Inventário obtido pelo MCP GitHub, filtrado para `branch=main` e excluídos PRs. Conforme a regra do projeto, execuções pendentes não são classificadas como falha.
+
+### Última falha concluída e execução substituta
+
+| Workflow | Execução concluída | Evidência | Execução mais recente na ponta atual |
+|---|---|---|---|
+| Uptime Monitor | [#41064302786](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41064302786), `failure`, SHA `a7c02ac1` | Step `Probe site + edge function`: `site=0`, `health-check=22`, `check-login (OPTIONS)=0`, `auth-health=0`. Verificação independente posterior: site e `/auth/v1/health` responderam HTTP 200; `health-check?fresh=1` respondeu HTTP 503 após 1,912 s, com `database timeout after 1500ms`; `external_db` permaneceu saudável. Isso evidencia timeout na consulta ao banco durante a janela, mas não identifica causa operacional mais profunda. | [#41069035787](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41069035787), `queued`, SHA `cba9944d`; aguardando execução/conclusão. **Não é falha concluída.** |
+
+**Ação pendente se o novo run falhar pelo mesmo motivo:** o responsável administrativo do projeto deve investigar métricas, locks e plano/RLS da leitura de `profiles` na janela do timeout. Não alterar consulta, timeout, schema ou Edge Function sem diagnóstico causal. Nenhuma escrita, migration ou implantação no Supabase foi feita nesta auditoria.
+
+### Falhas anteriores agora substituídas por execuções na ponta atual
+
+Os failures abaixo eram da ponta `a7c02ac1`. Suas execuções mais recentes foram criadas para `cba9944d` e ainda não tinham conclusão neste snapshot; portanto não entram como falhas atuais:
+
+| Workflow | Última falha anterior | Execução mais recente em `cba9944d` | Estado observado |
+|---|---|---|---|
+| Branch Protection Sentinel | [#41061596613](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41061596613) | [#41067472290](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41067472290) | `queued` |
+| Quote Builder Delivery Quality | [#41061596692](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41061596692) | [#41067473669](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41067473669) | `queued` |
+| E2E — Personalization Flow | [#41061596766](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41061596766) | [#41067472705](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41067472705) | `queued` |
+| E2E — Critical Flows & Error Boundaries | [#41061596576](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41061596576) | [#41067472836](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41067472836) | `queued` |
+
+### Verdes e outros estados observados
+
+No SHA atual, estavam `success`: CodeQL [#41067472531](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41067472531), Gitleaks [#41067472331](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41067472331), Lovable Autoheal [#41067472322](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41067472322), No Prod Leak [#41067473724](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41067473724), Security Scan [#41067472550](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41067472550), Select Columns vs Types [#41067472392](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41067472392), Static Health Checks [#41067472691](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41067472691) e UI Visual & A11y [#41067472498](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41067472498). Os demais workflows de push relevantes listados abaixo estavam `queued`/`pending`; `skipped` e `cancelled` não foram chamados de falha sem evidência adicional.
+
+---
+
+## P29 — correção local do tour de kits e validação
+
+Dois commits locais nesta branch corrigem findings reproduzidos na auditoria:
+
+- `52f1aecbb fix(ci): protege acessos a amostras administrativas` — resolve cinco erros de acesso indexado TypeScript nos painéis de conexões administrativas; a contagem de erros cai de 872 para 867, sem aumento do baseline.
+- `2f914e1af fix(e2e): persiste encerramento do tour controlado` — persiste o encerramento do tour mesmo quando controlado pelo componente pai, fecha o tour se estiver visível antes da ação do teste E2E e adiciona teste unitário de regressão.
+
+Validação após ambos os commits e novamente após rebase em `cba9944d`: `npm run build:verify` passou; suíte completa passou com **1.251 arquivos e 25.901 testes aprovados**, 130 arquivos/1.135 testes ignorados e 24 TODO. Teste unitário focado passou (1/1). Os testes não foram enfraquecidos. A reprodução Playwright autenticada local permanece indisponível porque `E2E_USER_EMAIL` e `E2E_USER_PASSWORD` não estão configurados no ambiente local; os secrets não foram solicitados nem expostos. A evidência remota ainda depende dos checks do PR, a ser aberto após a atualização documental.

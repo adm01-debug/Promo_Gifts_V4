@@ -417,3 +417,33 @@ A PR [#2816](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2816) está aber
 ### Validação local já registrada
 
 Após o commit documental `5ad880a1e`, `npm run build:verify` e `npm test -- --reporter=dot --silent` passaram (1.250 arquivos; 25.898 testes aprovados, 1.135 skipped e 24 todo). O merge com `7e56ae49` e este snapshot também são apenas documentais; a validação será repetida após o commit de reconciliação, antes do push.
+
+## Atualização P28 — inventário da ponta atual da `main` (2026-10-30T14:07Z)
+
+**HEAD:** `cba9944d12a61699a3ca855388e5842c5d6948b3` (merge do PR #2800). Inventário consultado no MCP GitHub, apenas branch `main`, excluídos PRs. A regra deste relatório é contar como falha somente a execução mais recente concluída; `queued`/`pending` não são falhas.
+
+### Workflows antes falhos, estado atual
+
+| Workflow | Falha anterior | Última execução na ponta atual | Classificação |
+|---|---|---|---|
+| Uptime Monitor | [#41064302786](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41064302786), SHA `a7c02ac1`, `failure`; probe agregada indicou `site=0`, `health-check=22`, OPTIONS e auth health `0` | [#41069035787](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41069035787), SHA `cba9944d`, `queued` | Aguardando novo resultado. Uma verificação posterior ao run falho encontrou site e Auth health HTTP 200, mas Health Check HTTP 503 com `database timeout after 1500ms`; causa operacional não estabelecida. |
+| Branch Protection Sentinel | [#41061596613](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41061596613) | [#41067472290](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41067472290), `queued` | Pendente; não classificar como falha atual. |
+| Quote Builder Delivery Quality | [#41061596692](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41061596692) | [#41067473669](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41067473669), `queued` | Pendente; não classificar como falha atual. |
+| E2E — Personalization Flow | [#41061596766](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41061596766) | [#41067472705](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41067472705), `queued` | Pendente; não classificar como falha atual. |
+| E2E — Critical Flows & Error Boundaries | [#41061596576](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41061596576) | [#41067472836](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41067472836), `queued` | Pendente; não classificar como falha atual. |
+
+**Acompanhamento do Uptime:** o check independente posterior verificou HTTP 200 para o site e `/auth/v1/health`. `health-check?fresh=1` respondeu HTTP 503 em 1,912 s: `database timeout after 1500ms`, com `database` unhealthy e `external_db` healthy. Logs agregados PostgreSQL no intervalo investigado registraram timeouts e referências a `profiles`; isso não identifica por si só lock, carga ou plano de execução. Próximo passo: aguardar o run agendado atual e, se repetir, encaminhar métricas/locks/plano da consulta de `profiles` ao responsável administrativo. Sem alterações no banco, edge functions ou timeouts.
+
+### Execuções verdes e pendentes na ponta atual
+
+`success` em `cba9944d`: CodeQL [#41067472531](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41067472531), Gitleaks [#41067472331](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41067472331), Lovable Autoheal [#41067472322](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41067472322), No Prod Leak [#41067473724](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41067473724), Security Scan [#41067472550](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41067472550), Select Columns vs Types [#41067472392](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41067472392), Static Health Checks [#41067472691](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41067472691) e UI Visual & A11y [#41067472498](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41067472498). Deploy Gates [#41067473692](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41067473692), CI Security & Drift [#41067472831](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41067472831), Playwright [#41067472827](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41067472827), Supabase Linter [#41067472740](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41067472740), Visual Baseline [#41067472895](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41067472895), além dos quatro workflows acima, estavam em fila/pendentes. Portanto, ainda não há prova final de que todos os workflows anteriormente verdes permanecem verdes em cada job da ponta atual.
+
+### Correções locais auditadas — commits antes do PR
+
+- `52f1aecbb`: corrigidos cinco erros de indexed access em dois painéis administrativos. TSC observado: 872 → 867 erros; baseline configurado permanece em 872.
+- `2f914e1af`: tour controlado agora persiste conclusão; teste E2E fecha o tour se visível antes de iniciar; teste unitário cobre modo controlado.
+- Teste unitário focado: 1/1 aprovado.
+- Após cada commit e após rebase em `cba9944d`: `NODE_OPTIONS=--max-old-space-size=4096 npm run build:verify` aprovado e `npm test -- --reporter=dot --silent` aprovado (**1.251 arquivos / 25.901 testes aprovados; 130 arquivos / 1.135 skipped; 24 todo**). Sem evidência de regressão local.
+- A reprodução E2E autenticada local não pôde ser executada: `E2E_USER_EMAIL` e `E2E_USER_PASSWORD` ausentes. A verificação será remota via PR; nenhum segredo foi exibido.
+
+**Próximo passo:** validar diff/format, commitar a atualização documental, repetir build e suíte completa conforme o protocolo pós-commit, enviar a branch e abrir PR para revisão. Não mesclar: mudanças de código da aplicação em PR podem disparar deploy de produção, vedado pelo protocolo desta auditoria.
