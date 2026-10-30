@@ -400,7 +400,7 @@ Nenhum código, teste, CI config ou workflow foi alterado. Portanto:
 ### Required checks — estado no HEAD `2fbab03e`
 
 | Required Check | Status |
-|---|---|
+|---|
 | Gate Final - Deploy Ready | ⏳ queued (run [#41007110676](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41007110676)) — backlog de runner; última conclusão verde: run [#41000678286](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41000678286) ✅ |
 | Compare GitHub × Canonical | ✅ success (pré-existente, sem alteração de edge functions) |
 | Analyze (javascript-typescript) | ✅ success (pré-existente) |
@@ -556,3 +556,46 @@ Os 5 workflows com runs ativas para `4b16b988` estão todos `status=queued, conc
 | Compare GitHub × Canonical | ✅ success | ✅ success | sem regressão |
 | Gitleaks (Gate E23) | ✅ success | ✅ success | sem regressão |
 | CodeQL | ✅ success | ✅ success | sem regressão |
+
+---
+
+## Seção 10 — Baseline local (2026-10-30T06:07Z) + Gate Final `99b4f7fc` (attempt 2)
+
+**HEAD local:** `069c799` = `99b4f7fc` (main) — branch `claude/festive-feynman-0kp1jc` rebased on main
+**SHA main atual:** `99b4f7fc60674cc5ccb222b3f28c115fa24fcca2` (PR #2777)
+
+### Baseline local executado
+
+| Comando | Resultado | Observação |
+|---|---|---|
+| `npm install --prefer-offline` | ✅ OK | Sem erros de instalação |
+| `npm run build` | ✅ OK (11.36s) | `✓ built in 11.36s` — sem erro |
+| `npx tsc --noEmit` | ✅ OK (0 erros) | Saída vazia = sem erros TS |
+| `npm run test:ci-core` | ✅ 957/957 passed (39.56s) | 41 arquivos, 41 workers |
+| `npx eslint src --max-warnings 0` | ⚠️ OOM no container | `v8::OOMErrorHandler` / Aborted — limitação de memória do container; CI passa (Gate 1) |
+
+> **Limitação do container:** `npx vitest run` completo (25.866+ testes) é encerrado pelo timeout do container (SIGTERM após 240s). A suíte completa só roda em CI — Gate Final serve como validação. Registrado nesta seção para transparência.
+
+### Gate Final `99b4f7fc` — attempt 1 (failure → HTTP 544)
+
+**Run:** [#41011270536 attempt 1](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41011270536) — `conclusion=failure`
+**Job falho:** `Gate 2.5 - PostgreSQL Transactional Integrity`
+**Etapa:** `Block frontend promotion until canonical quote RPC contract is live`
+**Causa raiz:** `check:quote-rpc:canonical -- --require-live` recebeu HTTP 544 do Supabase (`doufsxqlfjyuvxuezpln`) em 3 tentativas — erro de conectividade externa, não de código
+**Evidência:** mesma codebase rodou `conclusion=success` em run `#41009722428` (SHA `852346720...`, minutos antes); PR #2777 é docs-only (zero mudança de código)
+**Todos os outros gates:** success (Gate 0, 0.5, 1, 2, 3, 5, 5.5, 6, E23)
+
+### Gate Final `99b4f7fc` — attempt 2 ✅ SUCCESS
+
+**Run:** [#41011270536 attempt 2](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41011270536) — `conclusion=success` (06:05:55Z → 06:11:31Z)
+**Resultado:** Todos os gates passaram. Confirmado `conclusion=success` para SHA `99b4f7fc60674cc5ccb222b3f28c115fa24fcca2` (HEAD atual da main).
+**Conclusão:** HTTP 544 na attempt 1 foi erro de conectividade transiente do Supabase — não é falha de código. CI verde no rerun.
+
+### Comparação baseline × final — Seção 10
+
+| Métrica | Baseline (início sessão, SHA `c64f613b`) | Final (HEAD `99b4f7fc`) | Δ |
+|---|---|---|---|
+| Gate Final required check | ✅ success | ✅ **success** run [#41011270536 att.2](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41011270536) | sem regressão |
+| `npm run build` | ✅ OK | ✅ OK (11.36s) | sem regressão |
+| `npx tsc --noEmit` | ✅ 0 erros | ✅ 0 erros | sem regressão |
+| `npm run test:ci-core` | ✅ 957 passed | ✅ 957 passed (39.56s) | sem regressão |
