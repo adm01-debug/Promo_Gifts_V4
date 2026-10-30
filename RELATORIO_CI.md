@@ -301,3 +301,24 @@ O PR [#2839](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2839) permaneceu
 O Preview Vercel mais recente dessa ponta [deployment `dpl_DA4xKV65oceEM3ir9pjSe5BeZu2r`](https://vercel.com/juca1/promo-gifts-v4/DA4xKV65oceEM3ir9pjSe5BeZu2r) está `failure`. Inspeção read-only do CLI 65.8.0 confirmou `target=preview`, `readyState=ERROR`, builder `READY`, `output=[]`; `inspect --logs` retornou somente `status Error`. A causa não foi provada; PENDENCIAS.md §P39 solicita log acessível no painel Vercel. Nenhum deploy ou configuração foi alterado.
 
 A `main` segue no SHA `9541666bf62883b06117b03cae0368b2c7d55314`. A última execução do Uptime Monitor é [#41124195036](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41124195036), `failure` em `health-check=22`; demais falhas, Gate Final verde e E2E Playwright cancelado permanecem conforme Seções 15–18 e PENDENCIAS.md §P38. Nenhum push posterior à `main` foi observado.
+
+## 20. Snapshot remoto dos PRs #2839/#2845 (2026-10-30T21:04Z)
+
+### Baseline e main
+
+A `main` permaneceu no SHA `9541666bf62883b06117b03cae0368b2c7d55314`. O último Gate Final observado nela, [#41115240969](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41115240969), está `success`. As últimas falhas individuais permanecem: Uptime Monitor [#41124195036](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41124195036), Swatch QuickView [#41115240881](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41115240881), CI Security & Drift [#41115240942](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41115240942), E2E Critical [#41115240508](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41115240508), E2E Personalization [#41115240723](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41115240723) e Copilot Review [#41115245979](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41115245979). Causas, evidências e próximos passos estão atualizados em PENDENCIAS.md §§P33–P40. E2E Playwright [#41115240773](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41115240773) foi cancelado, não falhou.
+
+### Comparação do head do PR #2839
+
+| Verificação | Resultado remoto no head `cb727e159a6da7070a2880b59f3682393167ec62` |
+|---|---|
+| Gate Final — Deploy Ready | ✅ `success`, run [#41126957278](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41126957278); gates obrigatórios de build, testes unitários, lint/TS e E2E Smoke concluíram sem falha. |
+| E2E Quotes Matrix | ❌ Run [#41126957055](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41126957055), falhas no teste de expiração do UndoToast e divergência do snapshot dark-mobile. São workflows além do Gate Final e continuam pendentes de diagnóstico/correção; não houve alteração de assertion nem baseline visual. |
+| E2E Swatch QuickView | ⏳ Run [#41126957198](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41126957198) ainda `in_progress`; job WebKit recebeu shutdown do runner, Chromium/Firefox ainda não tinham resultado final. |
+| Visual Baseline | ⏳ Run [#41126957052](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41126957052) ainda `in_progress`. |
+| Vercel Preview | ❌ Deployment [`dpl_3MU9UcatcuC3esiK4uiWN7GJkoHR`](https://vercel.com/juca1/promo-gifts-v4/3MU9UcatcuC3esiK4uiWN7GJkoHR); status sem causa do build. Requer log do painel. |
+| Revisão | ⏸️ CODEOWNER válido ainda não registrado; a regra exige revisão e o owner mapeado no catch-all é o mesmo usuário que abriu o PR. Copilot também está sem cota. |
+
+O PR #2839 não foi mesclado. O PR #2845 teve Gate Final `success` em [#41127458572](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41127458572), mas segue sem revisão CODEOWNER válida. As limitações e dependências externas estão em PENDENCIAS.md §P40.
+
+Sem regressão confirmada nos gates do Gate Final do #2839; isso não equivale a todos os workflows verdes, pois os workflows E2E adicionais, o Preview Vercel e a revisão ainda bloqueiam o PR. Nenhuma alteração foi feita no Supabase, em produção ou nas regras de proteção.
