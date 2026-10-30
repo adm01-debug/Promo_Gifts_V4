@@ -628,3 +628,55 @@ Sem aprovação do PO, o workflow continuará falhando quando `EXTERNAL_PROMOBRI
 **Impacto no Gate Final:** NÃO — não é required check de `main`.
 
 **Ação necessária do PO:** Verificar se os endpoints estão operacionais. Se for falha transitória de probe, nenhuma ação necessária. NÃO desabilitar a proteção de environment `production` — ela protege deploys de edge functions e migrations, não tem relação com este workflow.
+
+---
+
+### P19-H — copilot-pull-request-reviewer (pré-existente — bloqueio operacional de quota)
+
+**Check run:** `copilot-pull-request-reviewer` — `conclusion=failure` no PR #2763 (SHA `2bb3a988`).
+
+**Causa raiz:** Limite de uso adicional do Copilot atingido. O bot de revisão retorna HTTP 402 (`You've reached your additional usage limit for your plan`). Mesmo padrão documentado em P14 e P15.
+
+**Confirmação de pré-existência:** Falha também em PRs anteriores (#2721, #2734) na main. Não relacionado às mudanças do PR #2763.
+
+**Impacto no Gate Final:** NÃO — `copilot-pull-request-reviewer` não está em `.github/required-checks.json`. Não bloqueia deploy.
+
+**Ação necessária do PO:** Verificar em GitHub → Settings → Copilot → limitar de uso ou aguardar renovação do ciclo de billing.
+
+---
+
+### P19-I — chromium/firefox/webkit • swatch→QV (pré-existente — mesma causa de P19-D)
+
+**Check runs:** `chromium • swatch→QV`, `firefox • swatch→QV`, `webkit • swatch→QV` — `conclusion=failure` no PR #2763 (SHA `2bb3a988`).
+
+**Causa raiz:** Mesma documentada em P19-D — `[E108] Sem produtos com color_swatches em /reposicao`. As rotas satélite não retornaram produtos com o campo `color_swatches` no ambiente CI.
+
+**Confirmação de pré-existência:** O workflow `e2e-swatch-quickview.yml` já falhava em SHAs anteriores ao PR #2763 (ex.: SHA `380ceb6`, run [#40988483565](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40988483565)). Não introduzido por este PR.
+
+**Impacto no Gate Final:** NÃO — `e2e-swatch-quickview.yml` é workflow separado, não é required check de `main`.
+
+---
+
+### P19-J — E2E Focused · thumb-quickview (pré-existente)
+
+**Check run:** `E2E Focused · thumb-quickview` — `conclusion=failure` no PR #2763 (SHA `2bb3a988`).
+
+**Causa raiz:** O job `E2E Focused · thumb-quickview` é parte do workflow `e2e-focused.yml` que testa fluxos QuickView com swatch/thumb. Falha pela mesma causa estrutural de P19-D/P19-I — dados de produto com `color_swatches` ausentes no ambiente CI.
+
+**Confirmação de pré-existência:** Falha em SHAs anteriores ao PR #2763. O PR #2763 não altera nenhum componente de QuickView ou swatch. Confirmado por diff: mudanças do PR são em `.migration-refs-baseline.json`, `AdImageResult.tsx` (outline-none a11y), `ratchet-weekly.yml` (SIGPIPE), `.security/policies-baseline.json`, e arquivos de documentação.
+
+**Impacto no Gate Final:** NÃO — não está em `.github/required-checks.json`. Não bloqueia deploy.
+
+---
+
+### P19-K — E2E · view-no-presentation-mode (pré-existente)
+
+**Check run:** `E2E · view-no-presentation-mode` — `conclusion=failure` no PR #2763 (SHA `2bb3a988`).
+
+**Causa raiz:** Teste Playwright do modo de visualização sem apresentação falha no ambiente CI. Documentado em P15 como falha recorrente em PRs anteriores (`E2E · view-no-presentation-mode` também falhou no PR #2721, SHA `3d8c6d7`).
+
+**Confirmação de pré-existência:** O PR #2763 não altera código de visualização/presentation. Falha em PRs anteriores confirmada em P15 (listada como uma das 4 falhas do PR #2721).
+
+**Impacto no Gate Final:** `E2E · view-no-presentation-mode` é um shard individual do workflow `e2e-playwright.yml`. O Gate 3 (`Gate 3 - E2E Smoke`) agrega os shards e pode tolerar falhas de shards individuais se o agregador passar. Não é required check direto de `main`.
+
+**Nota:** Se Gate 3 falhar por causa deste shard, diagnosticar o teste específico antes de alterar lógica de smoke.
