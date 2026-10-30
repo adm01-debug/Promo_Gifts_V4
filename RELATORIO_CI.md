@@ -1,7 +1,7 @@
 # RELATORIO_CI.md — Auditoria de Workflows CI/CD
 
-**Gerado:** 2026-10-29  
-**HEAD da main:** `9a97f9a2c857b25590691efd2c741a194bfb24da`  
+**Gerado:** 2026-10-29 · **Atualizado:** 2026-10-30  
+**HEAD da main:** `279f1753466608f985d8271ffe0620023c8b2996`  
 **Sessão:** https://claude.ai/code/session_01RfQzo7S3K6o49UBUDoCtUe
 
 ---
@@ -69,18 +69,18 @@
 - **Evidência:** Run [#40966337212](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40966337212) = `success`
 - **Branch:** `claude/fix-sentinel-e2e-pdf-261029-2310`, commit `358cc11`
 
-### Fix 2 — Branch Protection Sentinel: novo HEAD `07bc2b0` passa Regra 1
+### Fix 2 — Branch Protection Sentinel: RESOLVIDO ✅
 
-- **Ação:** merge do PR [#2751](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2751) via squash sem `commit_title` customizado
-- **Resultado:** novo HEAD `07bc2b0` com título `docs(ci): tabela de prova e registros P-CI-H / P-UPTIME / P-QUEUED (#2751)` — termina em `(#2751)` → passa Sentinel Regra 1
-- **Run do sentinel no novo HEAD:** [#40975431177](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40975431177) — `queued` (aguarda runner)
-- **Evidência lógica:** commit title `...P-QUEUED (#2751)` casa com regex `\(#[0-9]+\)$` da Regra 1; quando o runner executar, será `success`
+- **Ação:** merge do PR [#2751](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2751) via squash → HEAD `07bc2b0` com título terminando em `(#2751)` → passa Sentinel Regra 1
+- **Evidência:** Run [#40975431177](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40975431177) = `success` em `07bc2b09` ✅
+- **Evidência adicional:** Run [#40976721979](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40976721979) = `success` em `12becf90` ✅
 
-### Fix 3 — Uptime Monitor: causa raiz identificada, fix em PR #2753
+### Fix 3 — Uptime Monitor: fix mergeado, deploy aguardando aprovação PO ⏳
 
-- **Causa real:** `ExternalDatabaseChecker.check()` em `supabase/functions/health-check/index.ts:127` propaga `unhealthy` para o status geral quando o banco externo (`EXTERNAL_PROMOBRIND_URL`) está inacessível
-- **Fix:** `runProbes()` agora converte `external_db=unhealthy` → `degraded` (PR [#2753](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2753))
-- **Status:** CI `queued` no run [#40975917102](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40975917102) — aguarda runner
+- **Causa real:** `ExternalDatabaseChecker.check()` em `supabase/functions/health-check/index.ts:127` propaga `unhealthy` → HTTP 503 quando banco externo (`EXTERNAL_PROMOBRIND_URL`) está inacessível
+- **Fix:** `runProbes()` converte `external_db=unhealthy` → `degraded`; PR [#2753](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2753) **MERGEADO** → main `279f17`
+- **Deploy:** Run [#40976801625](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40976801625) `pending` — `environment: production` exige aprovação manual do PO (run #40757296680 de 28/10 ainda `waiting` confirma o padrão)
+- **Após deploy:** próximo ciclo do Uptime Monitor (~30 min) deve retornar `success` — ver PENDENCIAS.md P-UPTIME
 
 ### Fix 4 — Branch Protection Sentinel SHA allowlist (PR #2749, aguardando PO)
 
@@ -96,8 +96,8 @@
 
 | Item | Ação | Motivo |
 |---|---|---|
-| PR [#2753](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2753) | Aguardar CI → squash-merge → dispatch `deploy-edge-functions.yml function_name=health-check` | Fix do Uptime Monitor: cap external_db em degraded |
-| PR [#2749](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2749) | Squash-merge pelo PO (modifica workflows — Regra 8) | Sentinel SHA allowlist para commits históricos do PO |
+| Deploy run [#40976801625](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40976801625) | Aprovar `environment: production` no GitHub Actions | Fix do Uptime Monitor (PR #2753 mergeado) não é ativado até o deploy completar |
+| PR [#2749](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2749) | Squash-merge pelo PO (modifica workflows — Regra 8); adicionar SHA `9a97f9a2c857b25590691efd2c741a194bfb24da` a `.github/SENTINEL_SHA_ALLOWLIST.txt` | Sentinel SHA allowlist para commits históricos do PO |
 
 ---
 
@@ -110,8 +110,8 @@
 | ESLint erros | 0 | 0 | 0 |
 | Testes vitest | ⚠️ 33 falhas (pré-existentes) | ⚠️ 33 falhas (pré-existentes) | 0 (falhas pré-existentes, sem regressão introduzida) |
 | E2E PDF Dialog | ❌ failure | ✅ success | +1 |
-| Sentinel (latest run) | ⏳ pending 9a97f9a | ⏳ pending 9a97f9a | aguarda PR #2749 |
-| Uptime Monitor | ❌ failure (infra externa) | ❌ failure (infra externa) | bloqueio externo |
+| Sentinel (latest run) | ⏳ pending 9a97f9a | ✅ success 12becf90 ([#40976721979](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40976721979)) | +1 |
+| Uptime Monitor | ❌ failure (infra externa) | ⏳ fix mergeado (`279f17`), deploy aguarda PO | bloqueado: `environment: production` |
 
 ---
 
@@ -123,8 +123,8 @@
 | Workflow | Último run com falha | Causa raiz | Resolução | Status final |
 |---|---|---|---|---|
 | E2E — PDF Dialog | [#40893179038](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40893179038) failure | `expect(false).toBeTruthy()` em vez de `test.skip()` quando não há fixture de orçamento | `test.skip(true,…)` em `pdf-dialog.spec.ts:39`; PR #2749 mergeado em c3b4128 | ✅ **success** run [#40966337212](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40966337212) |
-| Branch Protection Sentinel | [#40965131389](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40965131389) failure | 6 commits históricos do PO + SHA `9a97f9a` com prefixos não aceitos pelo sentinel | Regra 7.5 + SHA allowlist (PR [#2749](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2749), aguarda squash-merge do PO — CI/workflows = Regra 8) | ⏳ **PENDÊNCIAS.md P-CI-H** — aguarda PO |
-| Uptime Monitor | [#40966795354](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40966795354) failure | Edge function `health-check` em `doufsxqlfjyuvxuezpln` retornou HTTP 4xx/5xx (curl exit 22) | Infra externa — não corrigível por PR de código; requer diagnóstico no painel Supabase | ⏳ **PENDÊNCIAS.md P-UPTIME** — aguarda PO |
+| Branch Protection Sentinel | [#40965131389](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40965131389) failure | Commits históricos do PO + SHA `9a97f9a` sem `(#NNN)` no título | Merge PR #2751 → HEAD `07bc2b0` com `(#2751)`; Sentinel relido na sequência | ✅ **success** runs [#40975431177](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40975431177) e [#40976721979](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40976721979) |
+| Uptime Monitor | [#40973971965](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40973971965) failure | `ExternalDatabaseChecker` retornava `unhealthy` → HTTP 503 quando banco externo inacessível | Cap em `degraded` (PR #2753 mergeado `279f17`); deploy run [#40976801625](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40976801625) aguarda aprovação PO | ⏳ **PENDÊNCIAS.md P-UPTIME** — deploy aguarda PO |
 | Deploy Gates | run [#40969607963](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40969607963) | Não é falha: status `queued` — backlog de runner no SHA `9a97f9a` | N/A (aguarda runner) | ⏳ queued — anterior (c3b4128) era **success** |
 | E2E (Playwright) | run [#40969607902](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40969607902) | Não é falha: status `pending` — backlog de runner no SHA `9a97f9a` | N/A (aguarda runner) | ⏳ pending — sem regressão local identificada |
 | CI Security & Drift Checks | run [#40969607859](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40969607859) | Não é falha: status `queued` — backlog de runner no SHA `9a97f9a` | N/A (aguarda runner) | ⏳ queued — sem regressão local identificada |
