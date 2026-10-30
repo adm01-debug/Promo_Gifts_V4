@@ -1,1 +1,1933 @@
-{"_comment":"Referências legadas a paths de migration que não existem mais. Congelado em 2026-07-01. Atualizado em 2026-07-03: PR_COMMENT.md (gerado em runtime). NOVAS referências quebradas falham CI — para aceitar uma nova entrada aqui, rode `node scripts/check-migration-path-references.mjs --update-baseline` e justifique no PR.","entries":[{"file":".github/pulls/refactor-magazine-typed-queries.md","ref":"qa/migrations-draft/2026-07-12_magazine_items_unique_product.sql"},{"file":".github/workflows/deploy-gates.yml","ref":"supabase/migrations-snapshot/ALL_IN_ONE"},{"file":".github/workflows/drafts-index-check.yml","ref":"qa/migrations-draft/PR_COMMENT.md"},{"file":".github/workflows/schema-snapshot-export.yml","ref":"supabase/migrations-snapshot/SCHEMA_DRIFT.sql"},{"file":"CONTRIBUTING.md","ref":"supabase/migrations/README.md"},{"file":"docs/adr/0006-migration-baseline.md","ref":"supabase/migrations/README.md"},{"file":"docs/arquitetura/products-padronizacao-recomendacoes.md","ref":"supabase/migrations/20260602120000_"},{"file":"docs/arquivo/2026-06/AUDITORIA_GAPS_CRITICOS_fn_process_raw_v2_2026-06-04.md","ref":"supabase/migrations/20260604T000000Z_fix_raw_v2_product_type_and_overflows.sql"},{"file":"docs/arquivo/2026-06/FAXINA_DB_2026-06-20_TIER3b.md","ref":"supabase/migrations/20260620190000_faxina_tier3b_b1_archive_dead_fns_views.sql"},{"file":"docs/arquivo/2026-06/FAXINA_DB_2026-06-20_TIER3B.md","ref":"supabase/migrations/20260620190000_faxina_tier3b_b1_archive_dead_fns_views.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json","ref":"supabase/migrations/001_notification_system.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json","ref":"supabase/migrations/002_notification_preferences.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json","ref":"supabase/migrations/003_notification_templates.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json","ref":"supabase/migrations/004_notification_functions.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json","ref":"supabase/migrations/005_push_subscriptions.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json","ref":"supabase/migrations/20260602_001_add_fk_indexes_critical.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json","ref":"supabase/migrations/20260602_002_fix_cron_jobs_never_ran.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json","ref":"supabase/migrations/20260602_003_log_retention_policy.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json","ref":"supabase/migrations/20260602_004_remove_unused_indexes_safe.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json","ref":"supabase/migrations/20260610120000_silver_depara_01_apply_transform_color_resolver.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json","ref":"supabase/migrations/20260611120000_fix_standardize_variant_fcode_fhex_swallowed_by_comment.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json","ref":"supabase/migrations/20260611120000_v2_01_helpers_display_name_tokenize.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json","ref":"supabase/migrations/20260611120100_v2_02_fn_enrich_padronizacao.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json","ref":"supabase/migrations/20260611120200_v2_03_fn_standardize_raw_v3.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json","ref":"supabase/migrations/20260611120300_v2_04_promote_display_name_category_chain.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json","ref":"supabase/migrations/20260611120400_v2_05_monitoring_coverage.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json","ref":"supabase/migrations/20260611124000_fn_dryrun_standardize_supplier_real_rollback.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json","ref":"supabase/migrations/20260615_001_drop_ai_provider_quotas_zombie.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json","ref":"supabase/migrations/20260615_002_fix_ai_quota_and_cache_bugs.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json","ref":"supabase/migrations/20260615_fix_asia_product_names_cleanup.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json","ref":"supabase/migrations/20260618000001_link_unlinked_content_hash_dupes.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json","ref":"supabase/migrations/20260618160000_revoke_all_view_write_grants_bulk.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json","ref":"supabase/migrations/20260619000001_fix_is_shared_on_canonical_null.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json","ref":"supabase/migrations/20260619000001_mockup_bug_fixes_logo_url_nullable_position_precision.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json","ref":"supabase/migrations/20260619000001_mv_leaf_covering_index_safe_idx.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json","ref":"supabase/migrations/20260619000002_mockup_composite_index_user_created.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json","ref":"supabase/migrations/20260619000003_close_gaps_and_harden_triggers.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json","ref":"supabase/migrations/20260619100000_fix_reposicao_rpcs.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json","ref":"supabase/migrations/20260620000001_mockup_client_logo_rotation_cols.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json","ref":"supabase/migrations/20260620150000_fix_catalog_critical_bugs.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json","ref":"supabase/migrations/20260620160000_faxina_tier3_archive_dead_views.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json","ref":"supabase/migrations/20260620160000_fix_favorites_bugs_all.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json","ref":"supabase/migrations/20260620160000_fix_update_quote_client_cnpj_clearable.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json","ref":"supabase/migrations/20260620170000_fix_favorites_gaps_11_12.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json","ref":"supabase/migrations/20260620170000_fix_update_quote_contact_fields_clearable.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json","ref":"supabase/migrations/20260620190000_faxina_tier3b_b1_archive_dead_fns_views.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json","ref":"supabase/migrations/20260620190000_heal_faxina_live_tables.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json","ref":"supabase/migrations/20260620190000_reposicao_revoke_anon_grants.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json","ref":"supabase/migrations/20260621_fix_console_bugs_404_403.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json","ref":"supabase/migrations/20260621_fix_create_rpc_get_favorite_list_counts.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json","ref":"supabase/migrations/20260621_fix_create_rpc_get_promo_sales_90d_by_product.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json","ref":"supabase/migrations/20260621_fix_product_variants_add_next_entry_alias_columns.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json","ref":"supabase/migrations/20260621_fix_rls_coverage_missing_tables.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json","ref":"supabase/migrations/20260621000000_fix_favorites_security_position.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json","ref":"supabase/migrations/20260621100000_restore_broken_trigger_dependencies.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json","ref":"supabase/migrations/20260621120000_reconcile_unarchive_live_rpcs.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json","ref":"supabase/migrations/20260621210000_onboarding_auto_assign_org_canonica.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json","ref":"supabase/migrations/20260622_ai_usage_logs_hardening_observability.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json","ref":"supabase/migrations/20260622_categories_active_generated_compat.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json","ref":"supabase/migrations/20260622_color_swatches.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json","ref":"supabase/migrations/20260622_drop_categories_active_legacy.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json","ref":"supabase/migrations/20260622_fix_categories_active_column_alias.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json","ref":"supabase/migrations/20260622_fix_fn_system_health_summary_security_invoker.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json","ref":"supabase/migrations/20260622_get_favorite_list_counts_user_id_overload.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json","ref":"supabase/migrations/20260622_icon_semantic_improvements.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json","ref":"supabase/migrations/20260622_restore_get_favorite_list_counts_noarg.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json","ref":"supabase/migrations/20260622130000_smoke_tests_v30_trends_fix.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json","ref":"supabase/migrations/20260623_fix_generated_always_columns_batch.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json","ref":"supabase/migrations/20260623_fix_search_analytics_add_seller_id.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json","ref":"supabase/migrations/20260623_fix_search_analytics_seller_id_not_generated.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json","ref":"supabase/migrations/20260623000001_products_name_m1_add_column_comment.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json","ref":"supabase/migrations/20260623120000_harden_get_favorite_list_counts_revoke_anon.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json","ref":"supabase/migrations/20260623130000_fix_restore_trigger_notify_discount_approval.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json","ref":"supabase/migrations/20260712_fix_rls_policies_critical.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json","ref":"supabase/migrations/20260712_performance_indexes.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json","ref":"supabase/migrations/20260713_001_secdef_revoke_webhook_locks.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json","ref":"supabase/migrations/20260714_fix_rename_unique_cart_item_variant_constraint.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json","ref":"supabase/migrations/20260716000041_revoke_anon_b2b_catalog_secdef_functions.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json","ref":"supabase/migrations/20260716000042_fix_fn_global_search_quote_data_exposure.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json","ref":"supabase/migrations/20260716000043_fn_get_similar_products_security_invoker.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json","ref":"supabase/migrations/20260716000044_revoke_anon_fn_log_search_analytics.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json","ref":"supabase/migrations/20260716000045_revoke_anon_catalog_authenticated_only_functions.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json","ref":"supabase/migrations/20260716000046_revoke_anon_all_remaining_catalog_functions.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/001_notification_system.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/002_notification_preferences.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/003_notification_templates.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/004_notification_functions.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/005_push_subscriptions.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/20260602_001_add_fk_indexes_critical.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/20260602_002_fix_cron_jobs_never_ran.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/20260602_003_log_retention_policy.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/20260602_004_remove_unused_indexes_safe.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/20260610120000_silver_depara_01_apply_transform_color_resolver.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/20260611120000_fix_standardize_variant_fcode_fhex_swallowed_by_comment.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/20260611120000_v2_01_helpers_display_name_tokenize.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/20260611120100_v2_02_fn_enrich_padronizacao.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/20260611120200_v2_03_fn_standardize_raw_v3.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/20260611120300_v2_04_promote_display_name_category_chain.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/20260611120400_v2_05_monitoring_coverage.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/20260611124000_fn_dryrun_standardize_supplier_real_rollback.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/20260615_001_drop_ai_provider_quotas_zombie.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/20260615_002_fix_ai_quota_and_cache_bugs.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/20260615_fix_asia_product_names_cleanup.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/20260618000001_link_unlinked_content_hash_dupes.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/20260618160000_revoke_all_view_write_grants_bulk.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/20260619000001_fix_is_shared_on_canonical_null.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/20260619000001_mockup_bug_fixes_logo_url_nullable_position_precision.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/20260619000001_mv_leaf_covering_index_safe_idx.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/20260619000002_mockup_composite_index_user_created.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/20260619000003_close_gaps_and_harden_triggers.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/20260619100000_fix_reposicao_rpcs.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/20260620000001_mockup_client_logo_rotation_cols.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/20260620150000_fix_catalog_critical_bugs.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/20260620160000_faxina_tier3_archive_dead_views.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/20260620160000_fix_favorites_bugs_all.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/20260620160000_fix_update_quote_client_cnpj_clearable.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/20260620170000_fix_favorites_gaps_11_12.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/20260620170000_fix_update_quote_contact_fields_clearable.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/20260620190000_faxina_tier3b_b1_archive_dead_fns_views.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/20260620190000_heal_faxina_live_tables.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/20260620190000_reposicao_revoke_anon_grants.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/20260621_fix_console_bugs_404_403.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/20260621_fix_create_rpc_get_favorite_list_counts.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/20260621_fix_create_rpc_get_promo_sales_90d_by_product.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/20260621_fix_product_variants_add_next_entry_alias_columns.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/20260621_fix_rls_coverage_missing_tables.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/20260621000000_fix_favorites_security_position.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/20260621100000_restore_broken_trigger_dependencies.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/20260621120000_reconcile_unarchive_live_rpcs.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/20260621210000_onboarding_auto_assign_org_canonica.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/20260622_ai_usage_logs_hardening_observability.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/20260622_categories_active_generated_compat.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/20260622_color_swatches.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/20260622_drop_categories_active_legacy.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/20260622_fix_categories_active_column_alias.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/20260622_fix_fn_system_health_summary_security_invoker.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/20260622_get_favorite_list_counts_user_id_overload.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/20260622_icon_semantic_improvements.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/20260622_restore_get_favorite_list_counts_noarg.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/20260622130000_smoke_tests_v30_trends_fix.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/20260623_fix_generated_always_columns_batch.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/20260623_fix_search_analytics_add_seller_id.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/20260623_fix_search_analytics_seller_id_not_generated.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/20260623000001_products_name_m1_add_column_comment.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/20260623120000_harden_get_favorite_list_counts_revoke_anon.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/20260623130000_fix_restore_trigger_notify_discount_approval.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/20260712_fix_rls_policies_critical.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/20260712_performance_indexes.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/20260713_001_secdef_revoke_webhook_locks.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/20260714_fix_rename_unique_cart_item_variant_constraint.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/20260716000041_revoke_anon_b2b_catalog_secdef_functions.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/20260716000042_fix_fn_global_search_quote_data_exposure.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/20260716000043_fn_get_similar_products_security_invoker.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/20260716000044_revoke_anon_fn_log_search_analytics.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/20260716000045_revoke_anon_catalog_authenticated_only_functions.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/20260716000046_revoke_anon_all_remaining_catalog_functions.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/bronze_stalled_cleanup_20260623.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/create_process_notifications_queue_rpcs_20260623.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/cron_p0_disable_webhook_outbox_missing_secret_20260623.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/fix_rls_head_requests.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/fn_system_health_summary_bughsc1_check2_20260623.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/gravacao_fix1_dtf_tiers_7_20260623.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/gravacao_fix3_personalization_technique_mappings_20260623.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/gravacao_fix4_drop_dead_calculate_personalization_price_20260623.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/gravacao_fix5_reactivate_hot_stamping_20260623.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/gravacao_fix6_health_check_p2_warning_20260623.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/indexes_3_missing_fk_indexes_20260623.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/products_1_sku_promo_backfill_and_autosync_trigger_20260623.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/products_2c_quality_dashboard_fix2_20260623.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/products_3_new_check_constraints_20260623.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/products_5_ai_coverage_view_20260623.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/products_5_comments_high_null_cols_20260623.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/products_8_ai_columns_and_table_comment_20260623.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/products_cleanup_7_hard_delete_xbz_manual_v2_20260623.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/products_comments_core_batch1_20260623.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/products_dimensions_5_drop_jsonb_column_20260623.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/products_dimensions_b1_backfill_scalars_from_jsonb_20260623.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/products_dimensions_d1_add_dimension_source_column_20260623.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/products_flag_morta_a1_hardening_check_constants_20260623.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/products_indexes_8_drop_dead_indexes_20260623.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/products_ncm_6_fix_format_and_comment_20260623.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/products_quality_10_sku_promo_constraint_20260623.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/products_quality_9_is_deleted_hardening_20260623.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/v_system_alerts_bugalert1_cron_threshold_20260623.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/v_system_alerts_bugalert2_ai_worker_detection_20260623.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/v_system_alerts_cron_threshold_fix_20260623.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/verify_rls_policies.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/vpp_4c_expose_ipi_ncm_bitrix_20260623.sql"},{"file":"docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json","ref":"supabase/migrations/vss_2_comment_zero_fill_columns_v2_20260623.sql"},{"file":"docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json","ref":"supabase/migrations/20260602_001_add_fk_indexes_critical.sql"},{"file":"docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json","ref":"supabase/migrations/20260602_002_fix_cron_jobs_never_ran.sql"},{"file":"docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json","ref":"supabase/migrations/20260602_003_log_retention_policy.sql"},{"file":"docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json","ref":"supabase/migrations/20260602_004_remove_unused_indexes_safe.sql"},{"file":"docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json","ref":"supabase/migrations/20260610120000_silver_depara_01_apply_transform_color_resolver.sql"},{"file":"docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json","ref":"supabase/migrations/20260611120000_fix_standardize_variant_fcode_fhex_swallowed_by_comment.sql"},{"file":"docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json","ref":"supabase/migrations/20260611120000_v2_01_helpers_display_name_tokenize.sql"},{"file":"docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json","ref":"supabase/migrations/20260611120100_v2_02_fn_enrich_padronizacao.sql"},{"file":"docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json","ref":"supabase/migrations/20260611120200_v2_03_fn_standardize_raw_v3.sql"},{"file":"docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json","ref":"supabase/migrations/20260611120300_v2_04_promote_display_name_category_chain.sql"},{"file":"docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json","ref":"supabase/migrations/20260611120400_v2_05_monitoring_coverage.sql"},{"file":"docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json","ref":"supabase/migrations/20260611124000_fn_dryrun_standardize_supplier_real_rollback.sql"},{"file":"docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json","ref":"supabase/migrations/20260615_001_drop_ai_provider_quotas_zombie.sql"},{"file":"docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json","ref":"supabase/migrations/20260615_002_fix_ai_quota_and_cache_bugs.sql"},{"file":"docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json","ref":"supabase/migrations/20260615_fix_asia_product_names_cleanup.sql"},{"file":"docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json","ref":"supabase/migrations/20260618000001_link_unlinked_content_hash_dupes.sql"},{"file":"docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json","ref":"supabase/migrations/20260618160000_revoke_all_view_write_grants_bulk.sql"},{"file":"docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json","ref":"supabase/migrations/20260619000001_fix_is_shared_on_canonical_null.sql"},{"file":"docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json","ref":"supabase/migrations/20260619000001_mockup_bug_fixes_logo_url_nullable_position_precision.sql"},{"file":"docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json","ref":"supabase/migrations/20260619000001_mv_leaf_covering_index_safe_idx.sql"},{"file":"docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json","ref":"supabase/migrations/20260619000002_mockup_composite_index_user_created.sql"},{"file":"docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json","ref":"supabase/migrations/20260619000003_close_gaps_and_harden_triggers.sql"},{"file":"docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json","ref":"supabase/migrations/20260619100000_fix_reposicao_rpcs.sql"},{"file":"docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json","ref":"supabase/migrations/20260620150000_fix_catalog_critical_bugs.sql"},{"file":"docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json","ref":"supabase/migrations/20260620160000_faxina_tier3_archive_dead_views.sql"},{"file":"docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json","ref":"supabase/migrations/20260620160000_fix_favorites_bugs_all.sql"},{"file":"docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json","ref":"supabase/migrations/20260620160000_fix_update_quote_client_cnpj_clearable.sql"},{"file":"docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json","ref":"supabase/migrations/20260620170000_fix_favorites_gaps_11_12.sql"},{"file":"docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json","ref":"supabase/migrations/20260620170000_fix_update_quote_contact_fields_clearable.sql"},{"file":"docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json","ref":"supabase/migrations/20260620190000_faxina_tier3b_b1_archive_dead_fns_views.sql"},{"file":"docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json","ref":"supabase/migrations/20260620190000_heal_faxina_live_tables.sql"},{"file":"docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json","ref":"supabase/migrations/20260620190000_reposicao_revoke_anon_grants.sql"},{"file":"docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json","ref":"supabase/migrations/20260621_fix_console_bugs_404_403.sql"},{"file":"docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json","ref":"supabase/migrations/20260621_fix_create_rpc_get_favorite_list_counts.sql"},{"file":"docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json","ref":"supabase/migrations/20260621_fix_create_rpc_get_promo_sales_90d_by_product.sql"},{"file":"docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json","ref":"supabase/migrations/20260621_fix_product_variants_add_next_entry_alias_columns.sql"},{"file":"docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json","ref":"supabase/migrations/20260621_fix_rls_coverage_missing_tables.sql"},{"file":"docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json","ref":"supabase/migrations/20260621000000_fix_favorites_security_position.sql"},{"file":"docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json","ref":"supabase/migrations/20260621100000_restore_broken_trigger_dependencies.sql"},{"file":"docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json","ref":"supabase/migrations/20260621120000_reconcile_unarchive_live_rpcs.sql"},{"file":"docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json","ref":"supabase/migrations/20260621210000_onboarding_auto_assign_org_canonica.sql"},{"file":"docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json","ref":"supabase/migrations/20260622_ai_usage_logs_hardening_observability.sql"},{"file":"docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json","ref":"supabase/migrations/20260622_categories_active_generated_compat.sql"},{"file":"docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json","ref":"supabase/migrations/20260622_color_swatches.sql"},{"file":"docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json","ref":"supabase/migrations/20260622_drop_categories_active_legacy.sql"},{"file":"docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json","ref":"supabase/migrations/20260622_fix_categories_active_column_alias.sql"},{"file":"docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json","ref":"supabase/migrations/20260622_fix_fn_system_health_summary_security_invoker.sql"},{"file":"docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json","ref":"supabase/migrations/20260622_get_favorite_list_counts_user_id_overload.sql"},{"file":"docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json","ref":"supabase/migrations/20260622_icon_semantic_improvements.sql"},{"file":"docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json","ref":"supabase/migrations/20260622_restore_get_favorite_list_counts_noarg.sql"},{"file":"docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json","ref":"supabase/migrations/20260622130000_smoke_tests_v30_trends_fix.sql"},{"file":"docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json","ref":"supabase/migrations/20260623_fix_generated_always_columns_batch.sql"},{"file":"docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json","ref":"supabase/migrations/20260623_fix_search_analytics_add_seller_id.sql"},{"file":"docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json","ref":"supabase/migrations/20260623_fix_search_analytics_seller_id_not_generated.sql"},{"file":"docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json","ref":"supabase/migrations/20260623000001_products_name_m1_add_column_comment.sql"},{"file":"docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json","ref":"supabase/migrations/20260623120000_harden_get_favorite_list_counts_revoke_anon.sql"},{"file":"docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json","ref":"supabase/migrations/20260712_fix_rls_policies_critical.sql"},{"file":"docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json","ref":"supabase/migrations/20260712_performance_indexes.sql"},{"file":"docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json","ref":"supabase/migrations/20260713_001_secdef_revoke_webhook_locks.sql"},{"file":"docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json","ref":"supabase/migrations/20260714_fix_rename_unique_cart_item_variant_constraint.sql"},{"file":"docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json","ref":"supabase/migrations/20260716000041_revoke_anon_b2b_catalog_secdef_functions.sql"},{"file":"docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json","ref":"supabase/migrations/20260716000042_fix_fn_global_search_quote_data_exposure.sql"},{"file":"docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json","ref":"supabase/migrations/20260716000043_fn_get_similar_products_security_invoker.sql"},{"file":"docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json","ref":"supabase/migrations/20260716000044_revoke_anon_fn_log_search_analytics.sql"},{"file":"docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json","ref":"supabase/migrations/20260716000045_revoke_anon_catalog_authenticated_only_functions.sql"},{"file":"docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json","ref":"supabase/migrations/20260716000046_revoke_anon_all_remaining_catalog_functions.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json","ref":"supabase/migrations/001_notification_system.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json","ref":"supabase/migrations/002_notification_preferences.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json","ref":"supabase/migrations/003_notification_templates.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json","ref":"supabase/migrations/004_notification_functions.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json","ref":"supabase/migrations/005_push_subscriptions.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json","ref":"supabase/migrations/20260602_001_add_fk_indexes_critical.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json","ref":"supabase/migrations/20260602_002_fix_cron_jobs_never_ran.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json","ref":"supabase/migrations/20260602_003_log_retention_policy.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json","ref":"supabase/migrations/20260602_004_remove_unused_indexes_safe.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json","ref":"supabase/migrations/20260610120000_silver_depara_01_apply_transform_color_resolver.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json","ref":"supabase/migrations/20260611014515_fn_dryrun_standardize_supplier_real_rollback.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json","ref":"supabase/migrations/20260611120000_fix_standardize_variant_fcode_fhex_swallowed_by_comment.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json","ref":"supabase/migrations/20260611120000_v2_01_helpers_display_name_tokenize.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json","ref":"supabase/migrations/20260611120100_v2_02_fn_enrich_padronizacao.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json","ref":"supabase/migrations/20260611120200_v2_03_fn_standardize_raw_v3.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json","ref":"supabase/migrations/20260611120300_v2_04_promote_display_name_category_chain.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json","ref":"supabase/migrations/20260611120400_v2_05_monitoring_coverage.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json","ref":"supabase/migrations/20260611124000_fn_dryrun_standardize_supplier_real_rollback.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json","ref":"supabase/migrations/20260615_001_drop_ai_provider_quotas_zombie.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json","ref":"supabase/migrations/20260615_002_fix_ai_quota_and_cache_bugs.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json","ref":"supabase/migrations/20260615_fix_asia_product_names_cleanup.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json","ref":"supabase/migrations/20260618000001_link_unlinked_content_hash_dupes.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json","ref":"supabase/migrations/20260618160000_revoke_all_view_write_grants_bulk.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json","ref":"supabase/migrations/20260619000001_fix_is_shared_on_canonical_null.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json","ref":"supabase/migrations/20260619000001_mockup_bug_fixes_logo_url_nullable_position_precision.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json","ref":"supabase/migrations/20260619000001_mv_leaf_covering_index_safe_idx.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json","ref":"supabase/migrations/20260619000002_mockup_composite_index_user_created.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json","ref":"supabase/migrations/20260619000003_close_gaps_and_harden_triggers.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json","ref":"supabase/migrations/20260619100000_fix_reposicao_rpcs.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json","ref":"supabase/migrations/20260620000001_mockup_client_logo_rotation_cols.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json","ref":"supabase/migrations/20260620150000_fix_catalog_critical_bugs.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json","ref":"supabase/migrations/20260620160000_faxina_tier3_archive_dead_views.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json","ref":"supabase/migrations/20260620160000_fix_favorites_bugs_all.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json","ref":"supabase/migrations/20260620160000_fix_update_quote_client_cnpj_clearable.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json","ref":"supabase/migrations/20260620170000_fix_favorites_gaps_11_12.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json","ref":"supabase/migrations/20260620170000_fix_update_quote_contact_fields_clearable.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json","ref":"supabase/migrations/20260620190000_faxina_tier3b_b1_archive_dead_fns_views.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json","ref":"supabase/migrations/20260620190000_heal_faxina_live_tables.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json","ref":"supabase/migrations/20260620190000_reposicao_revoke_anon_grants.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json","ref":"supabase/migrations/20260621_fix_console_bugs_404_403.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json","ref":"supabase/migrations/20260621_fix_create_rpc_get_favorite_list_counts.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json","ref":"supabase/migrations/20260621_fix_create_rpc_get_promo_sales_90d_by_product.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json","ref":"supabase/migrations/20260621_fix_product_variants_add_next_entry_alias_columns.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json","ref":"supabase/migrations/20260621_fix_rls_coverage_missing_tables.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json","ref":"supabase/migrations/20260621000000_fix_favorites_security_position.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json","ref":"supabase/migrations/20260621100000_restore_broken_trigger_dependencies.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json","ref":"supabase/migrations/20260621120000_reconcile_unarchive_live_rpcs.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json","ref":"supabase/migrations/20260621210000_onboarding_auto_assign_org_canonica.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json","ref":"supabase/migrations/20260622_ai_usage_logs_hardening_observability.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json","ref":"supabase/migrations/20260622_categories_active_generated_compat.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json","ref":"supabase/migrations/20260622_color_swatches.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json","ref":"supabase/migrations/20260622_drop_categories_active_legacy.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json","ref":"supabase/migrations/20260622_fix_categories_active_column_alias.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json","ref":"supabase/migrations/20260622_fix_fn_system_health_summary_security_invoker.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json","ref":"supabase/migrations/20260622_get_favorite_list_counts_user_id_overload.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json","ref":"supabase/migrations/20260622_icon_semantic_improvements.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json","ref":"supabase/migrations/20260622_restore_get_favorite_list_counts_noarg.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json","ref":"supabase/migrations/20260622130000_smoke_tests_v30_trends_fix.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json","ref":"supabase/migrations/20260623_fix_generated_always_columns_batch.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json","ref":"supabase/migrations/20260623_fix_search_analytics_add_seller_id.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json","ref":"supabase/migrations/20260623_fix_search_analytics_seller_id_not_generated.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json","ref":"supabase/migrations/20260623000001_products_name_m1_add_column_comment.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json","ref":"supabase/migrations/2026062311292414001_add_full_path_readable_propagation_triggers.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json","ref":"supabase/migrations/20260623120000_harden_get_favorite_list_counts_revoke_anon.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json","ref":"supabase/migrations/20260623130000_fix_restore_trigger_notify_discount_approval.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json","ref":"supabase/migrations/20260712_fix_rls_policies_critical.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json","ref":"supabase/migrations/20260712_performance_indexes.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json","ref":"supabase/migrations/20260713_001_secdef_revoke_webhook_locks.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json","ref":"supabase/migrations/20260714_fix_rename_unique_cart_item_variant_constraint.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json","ref":"supabase/migrations/20260716000041_revoke_anon_b2b_catalog_secdef_functions.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json","ref":"supabase/migrations/20260716000042_fix_fn_global_search_quote_data_exposure.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json","ref":"supabase/migrations/20260716000043_fn_get_similar_products_security_invoker.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json","ref":"supabase/migrations/20260716000044_revoke_anon_fn_log_search_analytics.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json","ref":"supabase/migrations/20260716000045_revoke_anon_catalog_authenticated_only_functions.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json","ref":"supabase/migrations/20260716000046_revoke_anon_all_remaining_catalog_functions.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/001_notification_system.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/002_notification_preferences.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/003_notification_templates.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/004_notification_functions.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/005_push_subscriptions.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/20260602_001_add_fk_indexes_critical.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/20260602_002_fix_cron_jobs_never_ran.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/20260602_003_log_retention_policy.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/20260602_004_remove_unused_indexes_safe.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/20260610120000_silver_depara_01_apply_transform_color_resolver.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/20260611014515_fn_dryrun_standardize_supplier_real_rollback.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/20260611120000_fix_standardize_variant_fcode_fhex_swallowed_by_comment.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/20260611120000_v2_01_helpers_display_name_tokenize.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/20260611120100_v2_02_fn_enrich_padronizacao.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/20260611120200_v2_03_fn_standardize_raw_v3.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/20260611120300_v2_04_promote_display_name_category_chain.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/20260611120400_v2_05_monitoring_coverage.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/20260611124000_fn_dryrun_standardize_supplier_real_rollback.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/20260615_001_drop_ai_provider_quotas_zombie.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/20260615_002_fix_ai_quota_and_cache_bugs.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/20260615_fix_asia_product_names_cleanup.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/20260618000001_link_unlinked_content_hash_dupes.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/20260618160000_revoke_all_view_write_grants_bulk.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/20260619000001_fix_is_shared_on_canonical_null.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/20260619000001_mockup_bug_fixes_logo_url_nullable_position_precision.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/20260619000001_mv_leaf_covering_index_safe_idx.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/20260619000002_mockup_composite_index_user_created.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/20260619000003_close_gaps_and_harden_triggers.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/20260619100000_fix_reposicao_rpcs.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/20260620000001_mockup_client_logo_rotation_cols.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/20260620150000_fix_catalog_critical_bugs.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/20260620160000_faxina_tier3_archive_dead_views.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/20260620160000_fix_favorites_bugs_all.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/20260620160000_fix_update_quote_client_cnpj_clearable.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/20260620170000_fix_favorites_gaps_11_12.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/20260620170000_fix_update_quote_contact_fields_clearable.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/20260620190000_faxina_tier3b_b1_archive_dead_fns_views.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/20260620190000_heal_faxina_live_tables.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/20260620190000_reposicao_revoke_anon_grants.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/20260621_fix_console_bugs_404_403.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/20260621_fix_create_rpc_get_favorite_list_counts.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/20260621_fix_create_rpc_get_promo_sales_90d_by_product.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/20260621_fix_product_variants_add_next_entry_alias_columns.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/20260621_fix_rls_coverage_missing_tables.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/20260621000000_fix_favorites_security_position.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/20260621100000_restore_broken_trigger_dependencies.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/20260621120000_reconcile_unarchive_live_rpcs.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/20260621210000_onboarding_auto_assign_org_canonica.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/20260622_ai_usage_logs_hardening_observability.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/20260622_categories_active_generated_compat.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/20260622_color_swatches.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/20260622_drop_categories_active_legacy.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/20260622_fix_categories_active_column_alias.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/20260622_fix_fn_system_health_summary_security_invoker.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/20260622_get_favorite_list_counts_user_id_overload.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/20260622_icon_semantic_improvements.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/20260622_restore_get_favorite_list_counts_noarg.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/20260622130000_smoke_tests_v30_trends_fix.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/20260623_fix_generated_always_columns_batch.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/20260623_fix_search_analytics_add_seller_id.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/20260623_fix_search_analytics_seller_id_not_generated.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/20260623000001_products_name_m1_add_column_comment.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/2026062311292414001_add_full_path_readable_propagation_triggers.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/20260623120000_harden_get_favorite_list_counts_revoke_anon.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/20260623130000_fix_restore_trigger_notify_discount_approval.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/20260712_fix_rls_policies_critical.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/20260712_performance_indexes.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/20260713_001_secdef_revoke_webhook_locks.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/20260714_fix_rename_unique_cart_item_variant_constraint.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/20260716000041_revoke_anon_b2b_catalog_secdef_functions.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/20260716000042_fix_fn_global_search_quote_data_exposure.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/20260716000043_fn_get_similar_products_security_invoker.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/20260716000044_revoke_anon_fn_log_search_analytics.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/20260716000045_revoke_anon_catalog_authenticated_only_functions.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/20260716000046_revoke_anon_all_remaining_catalog_functions.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/bronze_stalled_cleanup_20260623.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/create_process_notifications_queue_rpcs_20260623.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/cron_p0_disable_webhook_outbox_missing_secret_20260623.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/fix_rls_head_requests.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/fn_system_health_summary_bughsc1_check2_20260623.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/gravacao_fix1_dtf_tiers_7_20260623.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/gravacao_fix3_personalization_technique_mappings_20260623.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/gravacao_fix4_drop_dead_calculate_personalization_price_20260623.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/gravacao_fix5_reactivate_hot_stamping_20260623.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/gravacao_fix6_health_check_p2_warning_20260623.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/indexes_3_missing_fk_indexes_20260623.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/products_1_sku_promo_backfill_and_autosync_trigger_20260623.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/products_2c_quality_dashboard_fix2_20260623.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/products_3_new_check_constraints_20260623.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/products_5_ai_coverage_view_20260623.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/products_5_comments_high_null_cols_20260623.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/products_8_ai_columns_and_table_comment_20260623.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/products_cleanup_7_hard_delete_xbz_manual_v2_20260623.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/products_comments_core_batch1_20260623.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/products_dimensions_5_drop_jsonb_column_20260623.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/products_dimensions_b1_backfill_scalars_from_jsonb_20260623.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/products_dimensions_d1_add_dimension_source_column_20260623.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/products_flag_morta_a1_hardening_check_constants_20260623.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/products_indexes_8_drop_dead_indexes_20260623.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/products_ncm_6_fix_format_and_comment_20260623.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/products_quality_10_sku_promo_constraint_20260623.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/products_quality_9_is_deleted_hardening_20260623.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/v_system_alerts_bugalert1_cron_threshold_20260623.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/v_system_alerts_bugalert2_ai_worker_detection_20260623.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/v_system_alerts_cron_threshold_fix_20260623.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/verify_rls_policies.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/vpp_4c_expose_ipi_ncm_bitrix_20260623.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json","ref":"supabase/migrations/vss_2_comment_zero_fill_columns_v2_20260623.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_RECONCILIADAS_2026-09-11.json","ref":"supabase/migrations/2026062311292414001_add_full_path_readable_propagation_triggers.sql"},{"file":"docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_RECONCILIADAS_2026-09-11.json","ref":"supabase/migrations/20260712_legacy_initial.sql"},{"file":"docs/AUDIT_FRONTEND_DATABASE.md","ref":"supabase/migrations/20251228_audit_trail.sql"},{"file":"docs/auditoria-planejado-nao-executado-2026-10-11/A07_integracoes_infra.md","ref":"supabase/migrations/cron_p0_disable_webhook_outbox_missing_secret_20260623.sql"},{"file":"docs/estado/07_EDGE_FUNCTIONS.md","ref":"supabase/migrations/20260419130037_...sql"},{"file":"docs/estado/07_EDGE_FUNCTIONS.md","ref":"supabase/migrations/20260424154125_...sql"},{"file":"docs/estado/08_DADOS_SCHEMA.md","ref":"supabase/migrations/20260602_002_fix_cron_jobs_never_ran.sql"},{"file":"docs/estado/08_DADOS_SCHEMA.md","ref":"supabase/migrations/20260611120400_v2_05_monitoring_coverage.sql"},{"file":"docs/estado/08_DADOS_SCHEMA.md","ref":"supabase/migrations/20260622_ai_usage_logs_hardening_observability.sql"},{"file":"docs/estado/08_DADOS_SCHEMA.md","ref":"supabase/migrations/gravacao_fix4_drop_dead_calculate_personalization_price_20260623.sql"},{"file":"docs/estado/11_INTEGRACOES.md","ref":"supabase/migrations/20260524204148_"},{"file":"docs/estado/11_INTEGRACOES.md","ref":"supabase/migrations/20260524210300_"},{"file":"docs/estado/11_INTEGRACOES.md","ref":"supabase/migrations/20260525200103_"},{"file":"docs/estado/11_INTEGRACOES.md","ref":"supabase/migrations/20260526141659_"},{"file":"docs/estado/11_INTEGRACOES.md","ref":"supabase/migrations/20260529164602_"},{"file":"docs/estado/11_INTEGRACOES.md","ref":"supabase/migrations/20260531120000_"},{"file":"docs/estado/11_INTEGRACOES.md","ref":"supabase/migrations/20260616172001_"},{"file":"docs/estado/11_INTEGRACOES.md","ref":"supabase/migrations/20260620150000_fix_catalog_critical_bugs.sql"},{"file":"docs/estado/14_LACUNAS_COBERTURA.md","ref":"supabase/migrations/20260619150603_...sql"},{"file":"docs/historico/RECOVERY_PLAN.md","ref":"supabase/migrations/_recovery/"},{"file":"docs/NOTIFICATION_SYSTEM.md","ref":"supabase/migrations/001_notification_system.sql"},{"file":"docs/NOTIFICATION_SYSTEM.md","ref":"supabase/migrations/002_notification_preferences.sql"},{"file":"docs/NOTIFICATION_SYSTEM.md","ref":"supabase/migrations/003_notification_templates.sql"},{"file":"docs/NOTIFICATION_SYSTEM.md","ref":"supabase/migrations/004_notification_functions.sql"},{"file":"docs/prompts/magazine-module-implementation-prompt.md","ref":"qa/migrations-draft/2026-07-12_magazine_reader_state.sql"},{"file":"docs/prompts/magazine-module-implementation-prompt.md","ref":"qa/migrations-draft/2026-07-12_magazines.sql"},{"file":"docs/redeploy/REDEPLOY-T3-MIGRATIONS-AUDIT.md","ref":"supabase/migrations/README.md"},{"file":"docs/sessoes/2026-05-09-09h57-onda-1-completa-handoff.md","ref":"supabase/migrations/README.md"},{"file":"inventario/branches.json","ref":"supabase/migrations/20261015150000"},{"file":"qa/reports/magazine-exhaustive-validation-2026-07-15.md","ref":"qa/migrations-draft/2026-07-12_magazine_items_unique_product.sql"},{"file":"qa/reports/magazine-followup-2026-07-12.md","ref":"qa/migrations-draft/2026-07-12_magazine_items_unique_product.sql"},{"file":"qa/reports/magazine-publish-fuzz-2026-07-15.md","ref":"qa/migrations-draft/2026-07-15_magazine_public_token_trigger.sql"},{"file":"scripts/build-drafts-pr-comment.mjs","ref":"qa/migrations-draft/PR_COMMENT.md"},{"file":"scripts/check-no-db-push.mjs","ref":"supabase/migrations/20260623120000_harden_get_favorite_list_counts_revoke_anon.sql"},{"file":"src/lib/external-db/product-types.ts","ref":"supabase/migrations/20250103070000"},{"file":"src/lib/feature-flags.ts","ref":"qa/migrations-draft/2026-07-12_magazines.sql"},{"file":"tests/scripts/check-migration-filename-contract.test.mjs","ref":"supabase/migrations/001_notification_system.sql"},{"file":"tests/scripts/check-migration-filename-contract.test.mjs","ref":"supabase/migrations/20260826010203_add_catalog_contract.sql"},{"file":"tests/scripts/check-migration-filename-contract.test.mjs","ref":"supabase/migrations/20260826010203_existing.sql"},{"file":"tests/scripts/check-migration-filename-contract.test.mjs","ref":"supabase/migrations/20260826010203_first_change.sql"},{"file":"tests/scripts/check-migration-filename-contract.test.mjs","ref":"supabase/migrations/20260826010203_second_change.sql"},{"file":"tests/scripts/check-no-db-push.test.mjs","ref":"supabase/migrations/README.md"},{"file":"tests/security/restore-seller-cart-rpc.test.ts","ref":"supabase/migrations/20260713101342_...sql"}]}
+{
+  "_comment": "Referências legadas a paths de migration que não existem mais. Congelado em 2026-07-01. Atualizado em 2026-07-03: PR_COMMENT.md (gerado em runtime). NOVAS referências quebradas falham CI — para aceitar uma nova entrada aqui, rode `node scripts/check-migration-path-references.mjs --update-baseline` e justifique no PR.",
+  "entries": [
+    {
+      "file": ".github/pulls/refactor-magazine-typed-queries.md",
+      "ref": "qa/migrations-draft/2026-07-12_magazine_items_unique_product.sql"
+    },
+    {
+      "file": ".github/workflows/deploy-gates.yml",
+      "ref": "supabase/migrations-snapshot/ALL_IN_ONE"
+    },
+    {
+      "file": ".github/workflows/drafts-index-check.yml",
+      "ref": "qa/migrations-draft/PR_COMMENT.md"
+    },
+    {
+      "file": ".github/workflows/schema-snapshot-export.yml",
+      "ref": "supabase/migrations-snapshot/SCHEMA_DRIFT.sql"
+    },
+    {
+      "file": "analise-prs/dossies/PR-2731.md",
+      "ref": "supabase/migrations/20261029160339_add_kill_switch_hits_anon_rate_guard.sql"
+    },
+    {
+      "file": "CONTRIBUTING.md",
+      "ref": "supabase/migrations/README.md"
+    },
+    {
+      "file": "docs/adr/0006-migration-baseline.md",
+      "ref": "supabase/migrations/README.md"
+    },
+    {
+      "file": "docs/arquitetura/products-padronizacao-recomendacoes.md",
+      "ref": "supabase/migrations/20260602120000_"
+    },
+    {
+      "file": "docs/arquivo/2026-06/AUDITORIA_GAPS_CRITICOS_fn_process_raw_v2_2026-06-04.md",
+      "ref": "supabase/migrations/20260604T000000Z_fix_raw_v2_product_type_and_overflows.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-06/FAXINA_DB_2026-06-20_TIER3b.md",
+      "ref": "supabase/migrations/20260620190000_faxina_tier3b_b1_archive_dead_fns_views.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-06/FAXINA_DB_2026-06-20_TIER3B.md",
+      "ref": "supabase/migrations/20260620190000_faxina_tier3b_b1_archive_dead_fns_views.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json",
+      "ref": "supabase/migrations/001_notification_system.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json",
+      "ref": "supabase/migrations/002_notification_preferences.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json",
+      "ref": "supabase/migrations/003_notification_templates.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json",
+      "ref": "supabase/migrations/004_notification_functions.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json",
+      "ref": "supabase/migrations/005_push_subscriptions.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json",
+      "ref": "supabase/migrations/20260602_001_add_fk_indexes_critical.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json",
+      "ref": "supabase/migrations/20260602_002_fix_cron_jobs_never_ran.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json",
+      "ref": "supabase/migrations/20260602_003_log_retention_policy.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json",
+      "ref": "supabase/migrations/20260602_004_remove_unused_indexes_safe.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json",
+      "ref": "supabase/migrations/20260610120000_silver_depara_01_apply_transform_color_resolver.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json",
+      "ref": "supabase/migrations/20260611120000_fix_standardize_variant_fcode_fhex_swallowed_by_comment.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json",
+      "ref": "supabase/migrations/20260611120000_v2_01_helpers_display_name_tokenize.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json",
+      "ref": "supabase/migrations/20260611120100_v2_02_fn_enrich_padronizacao.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json",
+      "ref": "supabase/migrations/20260611120200_v2_03_fn_standardize_raw_v3.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json",
+      "ref": "supabase/migrations/20260611120300_v2_04_promote_display_name_category_chain.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json",
+      "ref": "supabase/migrations/20260611120400_v2_05_monitoring_coverage.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json",
+      "ref": "supabase/migrations/20260611124000_fn_dryrun_standardize_supplier_real_rollback.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json",
+      "ref": "supabase/migrations/20260615_001_drop_ai_provider_quotas_zombie.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json",
+      "ref": "supabase/migrations/20260615_002_fix_ai_quota_and_cache_bugs.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json",
+      "ref": "supabase/migrations/20260615_fix_asia_product_names_cleanup.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json",
+      "ref": "supabase/migrations/20260618000001_link_unlinked_content_hash_dupes.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json",
+      "ref": "supabase/migrations/20260618160000_revoke_all_view_write_grants_bulk.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json",
+      "ref": "supabase/migrations/20260619000001_fix_is_shared_on_canonical_null.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json",
+      "ref": "supabase/migrations/20260619000001_mockup_bug_fixes_logo_url_nullable_position_precision.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json",
+      "ref": "supabase/migrations/20260619000001_mv_leaf_covering_index_safe_idx.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json",
+      "ref": "supabase/migrations/20260619000002_mockup_composite_index_user_created.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json",
+      "ref": "supabase/migrations/20260619000003_close_gaps_and_harden_triggers.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json",
+      "ref": "supabase/migrations/20260619100000_fix_reposicao_rpcs.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json",
+      "ref": "supabase/migrations/20260620000001_mockup_client_logo_rotation_cols.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json",
+      "ref": "supabase/migrations/20260620150000_fix_catalog_critical_bugs.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json",
+      "ref": "supabase/migrations/20260620160000_faxina_tier3_archive_dead_views.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json",
+      "ref": "supabase/migrations/20260620160000_fix_favorites_bugs_all.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json",
+      "ref": "supabase/migrations/20260620160000_fix_update_quote_client_cnpj_clearable.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json",
+      "ref": "supabase/migrations/20260620170000_fix_favorites_gaps_11_12.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json",
+      "ref": "supabase/migrations/20260620170000_fix_update_quote_contact_fields_clearable.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json",
+      "ref": "supabase/migrations/20260620190000_faxina_tier3b_b1_archive_dead_fns_views.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json",
+      "ref": "supabase/migrations/20260620190000_heal_faxina_live_tables.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json",
+      "ref": "supabase/migrations/20260620190000_reposicao_revoke_anon_grants.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json",
+      "ref": "supabase/migrations/20260621_fix_console_bugs_404_403.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json",
+      "ref": "supabase/migrations/20260621_fix_create_rpc_get_favorite_list_counts.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json",
+      "ref": "supabase/migrations/20260621_fix_create_rpc_get_promo_sales_90d_by_product.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json",
+      "ref": "supabase/migrations/20260621_fix_product_variants_add_next_entry_alias_columns.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json",
+      "ref": "supabase/migrations/20260621_fix_rls_coverage_missing_tables.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json",
+      "ref": "supabase/migrations/20260621000000_fix_favorites_security_position.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json",
+      "ref": "supabase/migrations/20260621100000_restore_broken_trigger_dependencies.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json",
+      "ref": "supabase/migrations/20260621120000_reconcile_unarchive_live_rpcs.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json",
+      "ref": "supabase/migrations/20260621210000_onboarding_auto_assign_org_canonica.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json",
+      "ref": "supabase/migrations/20260622_ai_usage_logs_hardening_observability.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json",
+      "ref": "supabase/migrations/20260622_categories_active_generated_compat.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json",
+      "ref": "supabase/migrations/20260622_color_swatches.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json",
+      "ref": "supabase/migrations/20260622_drop_categories_active_legacy.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json",
+      "ref": "supabase/migrations/20260622_fix_categories_active_column_alias.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json",
+      "ref": "supabase/migrations/20260622_fix_fn_system_health_summary_security_invoker.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json",
+      "ref": "supabase/migrations/20260622_get_favorite_list_counts_user_id_overload.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json",
+      "ref": "supabase/migrations/20260622_icon_semantic_improvements.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json",
+      "ref": "supabase/migrations/20260622_restore_get_favorite_list_counts_noarg.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json",
+      "ref": "supabase/migrations/20260622130000_smoke_tests_v30_trends_fix.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json",
+      "ref": "supabase/migrations/20260623_fix_generated_always_columns_batch.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json",
+      "ref": "supabase/migrations/20260623_fix_search_analytics_add_seller_id.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json",
+      "ref": "supabase/migrations/20260623_fix_search_analytics_seller_id_not_generated.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json",
+      "ref": "supabase/migrations/20260623000001_products_name_m1_add_column_comment.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json",
+      "ref": "supabase/migrations/20260623120000_harden_get_favorite_list_counts_revoke_anon.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json",
+      "ref": "supabase/migrations/20260623130000_fix_restore_trigger_notify_discount_approval.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json",
+      "ref": "supabase/migrations/20260712_fix_rls_policies_critical.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json",
+      "ref": "supabase/migrations/20260712_performance_indexes.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json",
+      "ref": "supabase/migrations/20260713_001_secdef_revoke_webhook_locks.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json",
+      "ref": "supabase/migrations/20260714_fix_rename_unique_cart_item_variant_constraint.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json",
+      "ref": "supabase/migrations/20260716000041_revoke_anon_b2b_catalog_secdef_functions.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json",
+      "ref": "supabase/migrations/20260716000042_fix_fn_global_search_quote_data_exposure.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json",
+      "ref": "supabase/migrations/20260716000043_fn_get_similar_products_security_invoker.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json",
+      "ref": "supabase/migrations/20260716000044_revoke_anon_fn_log_search_analytics.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json",
+      "ref": "supabase/migrations/20260716000045_revoke_anon_catalog_authenticated_only_functions.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-08-28.json",
+      "ref": "supabase/migrations/20260716000046_revoke_anon_all_remaining_catalog_functions.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/001_notification_system.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/002_notification_preferences.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/003_notification_templates.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/004_notification_functions.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/005_push_subscriptions.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/20260602_001_add_fk_indexes_critical.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/20260602_002_fix_cron_jobs_never_ran.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/20260602_003_log_retention_policy.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/20260602_004_remove_unused_indexes_safe.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/20260610120000_silver_depara_01_apply_transform_color_resolver.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/20260611120000_fix_standardize_variant_fcode_fhex_swallowed_by_comment.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/20260611120000_v2_01_helpers_display_name_tokenize.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/20260611120100_v2_02_fn_enrich_padronizacao.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/20260611120200_v2_03_fn_standardize_raw_v3.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/20260611120300_v2_04_promote_display_name_category_chain.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/20260611120400_v2_05_monitoring_coverage.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/20260611124000_fn_dryrun_standardize_supplier_real_rollback.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/20260615_001_drop_ai_provider_quotas_zombie.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/20260615_002_fix_ai_quota_and_cache_bugs.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/20260615_fix_asia_product_names_cleanup.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/20260618000001_link_unlinked_content_hash_dupes.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/20260618160000_revoke_all_view_write_grants_bulk.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/20260619000001_fix_is_shared_on_canonical_null.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/20260619000001_mockup_bug_fixes_logo_url_nullable_position_precision.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/20260619000001_mv_leaf_covering_index_safe_idx.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/20260619000002_mockup_composite_index_user_created.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/20260619000003_close_gaps_and_harden_triggers.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/20260619100000_fix_reposicao_rpcs.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/20260620000001_mockup_client_logo_rotation_cols.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/20260620150000_fix_catalog_critical_bugs.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/20260620160000_faxina_tier3_archive_dead_views.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/20260620160000_fix_favorites_bugs_all.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/20260620160000_fix_update_quote_client_cnpj_clearable.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/20260620170000_fix_favorites_gaps_11_12.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/20260620170000_fix_update_quote_contact_fields_clearable.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/20260620190000_faxina_tier3b_b1_archive_dead_fns_views.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/20260620190000_heal_faxina_live_tables.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/20260620190000_reposicao_revoke_anon_grants.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/20260621_fix_console_bugs_404_403.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/20260621_fix_create_rpc_get_favorite_list_counts.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/20260621_fix_create_rpc_get_promo_sales_90d_by_product.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/20260621_fix_product_variants_add_next_entry_alias_columns.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/20260621_fix_rls_coverage_missing_tables.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/20260621000000_fix_favorites_security_position.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/20260621100000_restore_broken_trigger_dependencies.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/20260621120000_reconcile_unarchive_live_rpcs.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/20260621210000_onboarding_auto_assign_org_canonica.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/20260622_ai_usage_logs_hardening_observability.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/20260622_categories_active_generated_compat.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/20260622_color_swatches.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/20260622_drop_categories_active_legacy.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/20260622_fix_categories_active_column_alias.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/20260622_fix_fn_system_health_summary_security_invoker.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/20260622_get_favorite_list_counts_user_id_overload.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/20260622_icon_semantic_improvements.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/20260622_restore_get_favorite_list_counts_noarg.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/20260622130000_smoke_tests_v30_trends_fix.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/20260623_fix_generated_always_columns_batch.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/20260623_fix_search_analytics_add_seller_id.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/20260623_fix_search_analytics_seller_id_not_generated.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/20260623000001_products_name_m1_add_column_comment.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/20260623120000_harden_get_favorite_list_counts_revoke_anon.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/20260623130000_fix_restore_trigger_notify_discount_approval.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/20260712_fix_rls_policies_critical.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/20260712_performance_indexes.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/20260713_001_secdef_revoke_webhook_locks.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/20260714_fix_rename_unique_cart_item_variant_constraint.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/20260716000041_revoke_anon_b2b_catalog_secdef_functions.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/20260716000042_fix_fn_global_search_quote_data_exposure.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/20260716000043_fn_get_similar_products_security_invoker.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/20260716000044_revoke_anon_fn_log_search_analytics.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/20260716000045_revoke_anon_catalog_authenticated_only_functions.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/20260716000046_revoke_anon_all_remaining_catalog_functions.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/bronze_stalled_cleanup_20260623.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/create_process_notifications_queue_rpcs_20260623.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/cron_p0_disable_webhook_outbox_missing_secret_20260623.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/fix_rls_head_requests.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/fn_system_health_summary_bughsc1_check2_20260623.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/gravacao_fix1_dtf_tiers_7_20260623.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/gravacao_fix3_personalization_technique_mappings_20260623.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/gravacao_fix4_drop_dead_calculate_personalization_price_20260623.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/gravacao_fix5_reactivate_hot_stamping_20260623.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/gravacao_fix6_health_check_p2_warning_20260623.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/indexes_3_missing_fk_indexes_20260623.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/products_1_sku_promo_backfill_and_autosync_trigger_20260623.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/products_2c_quality_dashboard_fix2_20260623.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/products_3_new_check_constraints_20260623.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/products_5_ai_coverage_view_20260623.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/products_5_comments_high_null_cols_20260623.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/products_8_ai_columns_and_table_comment_20260623.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/products_cleanup_7_hard_delete_xbz_manual_v2_20260623.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/products_comments_core_batch1_20260623.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/products_dimensions_5_drop_jsonb_column_20260623.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/products_dimensions_b1_backfill_scalars_from_jsonb_20260623.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/products_dimensions_d1_add_dimension_source_column_20260623.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/products_flag_morta_a1_hardening_check_constants_20260623.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/products_indexes_8_drop_dead_indexes_20260623.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/products_ncm_6_fix_format_and_comment_20260623.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/products_quality_10_sku_promo_constraint_20260623.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/products_quality_9_is_deleted_hardening_20260623.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/v_system_alerts_bugalert1_cron_threshold_20260623.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/v_system_alerts_bugalert2_ai_worker_detection_20260623.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/v_system_alerts_cron_threshold_fix_20260623.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/verify_rls_policies.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/vpp_4c_expose_ipi_ncm_bitrix_20260623.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-08/MANIFESTO_MIGRATIONS_FORWARD_ONLY_2026-08-26.json",
+      "ref": "supabase/migrations/vss_2_comment_zero_fill_columns_v2_20260623.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json",
+      "ref": "supabase/migrations/20260602_001_add_fk_indexes_critical.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json",
+      "ref": "supabase/migrations/20260602_002_fix_cron_jobs_never_ran.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json",
+      "ref": "supabase/migrations/20260602_003_log_retention_policy.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json",
+      "ref": "supabase/migrations/20260602_004_remove_unused_indexes_safe.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json",
+      "ref": "supabase/migrations/20260610120000_silver_depara_01_apply_transform_color_resolver.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json",
+      "ref": "supabase/migrations/20260611120000_fix_standardize_variant_fcode_fhex_swallowed_by_comment.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json",
+      "ref": "supabase/migrations/20260611120000_v2_01_helpers_display_name_tokenize.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json",
+      "ref": "supabase/migrations/20260611120100_v2_02_fn_enrich_padronizacao.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json",
+      "ref": "supabase/migrations/20260611120200_v2_03_fn_standardize_raw_v3.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json",
+      "ref": "supabase/migrations/20260611120300_v2_04_promote_display_name_category_chain.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json",
+      "ref": "supabase/migrations/20260611120400_v2_05_monitoring_coverage.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json",
+      "ref": "supabase/migrations/20260611124000_fn_dryrun_standardize_supplier_real_rollback.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json",
+      "ref": "supabase/migrations/20260615_001_drop_ai_provider_quotas_zombie.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json",
+      "ref": "supabase/migrations/20260615_002_fix_ai_quota_and_cache_bugs.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json",
+      "ref": "supabase/migrations/20260615_fix_asia_product_names_cleanup.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json",
+      "ref": "supabase/migrations/20260618000001_link_unlinked_content_hash_dupes.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json",
+      "ref": "supabase/migrations/20260618160000_revoke_all_view_write_grants_bulk.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json",
+      "ref": "supabase/migrations/20260619000001_fix_is_shared_on_canonical_null.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json",
+      "ref": "supabase/migrations/20260619000001_mockup_bug_fixes_logo_url_nullable_position_precision.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json",
+      "ref": "supabase/migrations/20260619000001_mv_leaf_covering_index_safe_idx.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json",
+      "ref": "supabase/migrations/20260619000002_mockup_composite_index_user_created.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json",
+      "ref": "supabase/migrations/20260619000003_close_gaps_and_harden_triggers.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json",
+      "ref": "supabase/migrations/20260619100000_fix_reposicao_rpcs.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json",
+      "ref": "supabase/migrations/20260620150000_fix_catalog_critical_bugs.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json",
+      "ref": "supabase/migrations/20260620160000_faxina_tier3_archive_dead_views.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json",
+      "ref": "supabase/migrations/20260620160000_fix_favorites_bugs_all.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json",
+      "ref": "supabase/migrations/20260620160000_fix_update_quote_client_cnpj_clearable.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json",
+      "ref": "supabase/migrations/20260620170000_fix_favorites_gaps_11_12.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json",
+      "ref": "supabase/migrations/20260620170000_fix_update_quote_contact_fields_clearable.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json",
+      "ref": "supabase/migrations/20260620190000_faxina_tier3b_b1_archive_dead_fns_views.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json",
+      "ref": "supabase/migrations/20260620190000_heal_faxina_live_tables.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json",
+      "ref": "supabase/migrations/20260620190000_reposicao_revoke_anon_grants.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json",
+      "ref": "supabase/migrations/20260621_fix_console_bugs_404_403.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json",
+      "ref": "supabase/migrations/20260621_fix_create_rpc_get_favorite_list_counts.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json",
+      "ref": "supabase/migrations/20260621_fix_create_rpc_get_promo_sales_90d_by_product.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json",
+      "ref": "supabase/migrations/20260621_fix_product_variants_add_next_entry_alias_columns.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json",
+      "ref": "supabase/migrations/20260621_fix_rls_coverage_missing_tables.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json",
+      "ref": "supabase/migrations/20260621000000_fix_favorites_security_position.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json",
+      "ref": "supabase/migrations/20260621100000_restore_broken_trigger_dependencies.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json",
+      "ref": "supabase/migrations/20260621120000_reconcile_unarchive_live_rpcs.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json",
+      "ref": "supabase/migrations/20260621210000_onboarding_auto_assign_org_canonica.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json",
+      "ref": "supabase/migrations/20260622_ai_usage_logs_hardening_observability.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json",
+      "ref": "supabase/migrations/20260622_categories_active_generated_compat.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json",
+      "ref": "supabase/migrations/20260622_color_swatches.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json",
+      "ref": "supabase/migrations/20260622_drop_categories_active_legacy.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json",
+      "ref": "supabase/migrations/20260622_fix_categories_active_column_alias.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json",
+      "ref": "supabase/migrations/20260622_fix_fn_system_health_summary_security_invoker.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json",
+      "ref": "supabase/migrations/20260622_get_favorite_list_counts_user_id_overload.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json",
+      "ref": "supabase/migrations/20260622_icon_semantic_improvements.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json",
+      "ref": "supabase/migrations/20260622_restore_get_favorite_list_counts_noarg.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json",
+      "ref": "supabase/migrations/20260622130000_smoke_tests_v30_trends_fix.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json",
+      "ref": "supabase/migrations/20260623_fix_generated_always_columns_batch.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json",
+      "ref": "supabase/migrations/20260623_fix_search_analytics_add_seller_id.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json",
+      "ref": "supabase/migrations/20260623_fix_search_analytics_seller_id_not_generated.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json",
+      "ref": "supabase/migrations/20260623000001_products_name_m1_add_column_comment.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json",
+      "ref": "supabase/migrations/20260623120000_harden_get_favorite_list_counts_revoke_anon.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json",
+      "ref": "supabase/migrations/20260712_fix_rls_policies_critical.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json",
+      "ref": "supabase/migrations/20260712_performance_indexes.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json",
+      "ref": "supabase/migrations/20260713_001_secdef_revoke_webhook_locks.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json",
+      "ref": "supabase/migrations/20260714_fix_rename_unique_cart_item_variant_constraint.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json",
+      "ref": "supabase/migrations/20260716000041_revoke_anon_b2b_catalog_secdef_functions.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json",
+      "ref": "supabase/migrations/20260716000042_fix_fn_global_search_quote_data_exposure.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json",
+      "ref": "supabase/migrations/20260716000043_fn_get_similar_products_security_invoker.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json",
+      "ref": "supabase/migrations/20260716000044_revoke_anon_fn_log_search_analytics.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json",
+      "ref": "supabase/migrations/20260716000045_revoke_anon_catalog_authenticated_only_functions.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/CLASSIFICACAO_MIGRATIONS_SEM_LEDGER_2026-09-16.json",
+      "ref": "supabase/migrations/20260716000046_revoke_anon_all_remaining_catalog_functions.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
+      "ref": "supabase/migrations/001_notification_system.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
+      "ref": "supabase/migrations/002_notification_preferences.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
+      "ref": "supabase/migrations/003_notification_templates.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
+      "ref": "supabase/migrations/004_notification_functions.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
+      "ref": "supabase/migrations/005_push_subscriptions.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
+      "ref": "supabase/migrations/20260602_001_add_fk_indexes_critical.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
+      "ref": "supabase/migrations/20260602_002_fix_cron_jobs_never_ran.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
+      "ref": "supabase/migrations/20260602_003_log_retention_policy.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
+      "ref": "supabase/migrations/20260602_004_remove_unused_indexes_safe.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
+      "ref": "supabase/migrations/20260610120000_silver_depara_01_apply_transform_color_resolver.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
+      "ref": "supabase/migrations/20260611014515_fn_dryrun_standardize_supplier_real_rollback.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
+      "ref": "supabase/migrations/20260611120000_fix_standardize_variant_fcode_fhex_swallowed_by_comment.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
+      "ref": "supabase/migrations/20260611120000_v2_01_helpers_display_name_tokenize.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
+      "ref": "supabase/migrations/20260611120100_v2_02_fn_enrich_padronizacao.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
+      "ref": "supabase/migrations/20260611120200_v2_03_fn_standardize_raw_v3.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
+      "ref": "supabase/migrations/20260611120300_v2_04_promote_display_name_category_chain.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
+      "ref": "supabase/migrations/20260611120400_v2_05_monitoring_coverage.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
+      "ref": "supabase/migrations/20260611124000_fn_dryrun_standardize_supplier_real_rollback.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
+      "ref": "supabase/migrations/20260615_001_drop_ai_provider_quotas_zombie.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
+      "ref": "supabase/migrations/20260615_002_fix_ai_quota_and_cache_bugs.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
+      "ref": "supabase/migrations/20260615_fix_asia_product_names_cleanup.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
+      "ref": "supabase/migrations/20260618000001_link_unlinked_content_hash_dupes.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
+      "ref": "supabase/migrations/20260618160000_revoke_all_view_write_grants_bulk.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
+      "ref": "supabase/migrations/20260619000001_fix_is_shared_on_canonical_null.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
+      "ref": "supabase/migrations/20260619000001_mockup_bug_fixes_logo_url_nullable_position_precision.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
+      "ref": "supabase/migrations/20260619000001_mv_leaf_covering_index_safe_idx.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
+      "ref": "supabase/migrations/20260619000002_mockup_composite_index_user_created.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
+      "ref": "supabase/migrations/20260619000003_close_gaps_and_harden_triggers.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
+      "ref": "supabase/migrations/20260619100000_fix_reposicao_rpcs.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
+      "ref": "supabase/migrations/20260620000001_mockup_client_logo_rotation_cols.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
+      "ref": "supabase/migrations/20260620150000_fix_catalog_critical_bugs.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
+      "ref": "supabase/migrations/20260620160000_faxina_tier3_archive_dead_views.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
+      "ref": "supabase/migrations/20260620160000_fix_favorites_bugs_all.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
+      "ref": "supabase/migrations/20260620160000_fix_update_quote_client_cnpj_clearable.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
+      "ref": "supabase/migrations/20260620170000_fix_favorites_gaps_11_12.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
+      "ref": "supabase/migrations/20260620170000_fix_update_quote_contact_fields_clearable.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
+      "ref": "supabase/migrations/20260620190000_faxina_tier3b_b1_archive_dead_fns_views.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
+      "ref": "supabase/migrations/20260620190000_heal_faxina_live_tables.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
+      "ref": "supabase/migrations/20260620190000_reposicao_revoke_anon_grants.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
+      "ref": "supabase/migrations/20260621_fix_console_bugs_404_403.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
+      "ref": "supabase/migrations/20260621_fix_create_rpc_get_favorite_list_counts.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
+      "ref": "supabase/migrations/20260621_fix_create_rpc_get_promo_sales_90d_by_product.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
+      "ref": "supabase/migrations/20260621_fix_product_variants_add_next_entry_alias_columns.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
+      "ref": "supabase/migrations/20260621_fix_rls_coverage_missing_tables.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
+      "ref": "supabase/migrations/20260621000000_fix_favorites_security_position.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
+      "ref": "supabase/migrations/20260621100000_restore_broken_trigger_dependencies.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
+      "ref": "supabase/migrations/20260621120000_reconcile_unarchive_live_rpcs.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
+      "ref": "supabase/migrations/20260621210000_onboarding_auto_assign_org_canonica.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
+      "ref": "supabase/migrations/20260622_ai_usage_logs_hardening_observability.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
+      "ref": "supabase/migrations/20260622_categories_active_generated_compat.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
+      "ref": "supabase/migrations/20260622_color_swatches.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
+      "ref": "supabase/migrations/20260622_drop_categories_active_legacy.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
+      "ref": "supabase/migrations/20260622_fix_categories_active_column_alias.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
+      "ref": "supabase/migrations/20260622_fix_fn_system_health_summary_security_invoker.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
+      "ref": "supabase/migrations/20260622_get_favorite_list_counts_user_id_overload.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
+      "ref": "supabase/migrations/20260622_icon_semantic_improvements.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
+      "ref": "supabase/migrations/20260622_restore_get_favorite_list_counts_noarg.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
+      "ref": "supabase/migrations/20260622130000_smoke_tests_v30_trends_fix.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
+      "ref": "supabase/migrations/20260623_fix_generated_always_columns_batch.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
+      "ref": "supabase/migrations/20260623_fix_search_analytics_add_seller_id.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
+      "ref": "supabase/migrations/20260623_fix_search_analytics_seller_id_not_generated.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
+      "ref": "supabase/migrations/20260623000001_products_name_m1_add_column_comment.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
+      "ref": "supabase/migrations/2026062311292414001_add_full_path_readable_propagation_triggers.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
+      "ref": "supabase/migrations/20260623120000_harden_get_favorite_list_counts_revoke_anon.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
+      "ref": "supabase/migrations/20260623130000_fix_restore_trigger_notify_discount_approval.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
+      "ref": "supabase/migrations/20260712_fix_rls_policies_critical.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
+      "ref": "supabase/migrations/20260712_performance_indexes.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
+      "ref": "supabase/migrations/20260713_001_secdef_revoke_webhook_locks.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
+      "ref": "supabase/migrations/20260714_fix_rename_unique_cart_item_variant_constraint.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
+      "ref": "supabase/migrations/20260716000041_revoke_anon_b2b_catalog_secdef_functions.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
+      "ref": "supabase/migrations/20260716000042_fix_fn_global_search_quote_data_exposure.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
+      "ref": "supabase/migrations/20260716000043_fn_get_similar_products_security_invoker.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
+      "ref": "supabase/migrations/20260716000044_revoke_anon_fn_log_search_analytics.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
+      "ref": "supabase/migrations/20260716000045_revoke_anon_catalog_authenticated_only_functions.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json",
+      "ref": "supabase/migrations/20260716000046_revoke_anon_all_remaining_catalog_functions.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/001_notification_system.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/002_notification_preferences.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/003_notification_templates.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/004_notification_functions.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/005_push_subscriptions.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/20260602_001_add_fk_indexes_critical.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/20260602_002_fix_cron_jobs_never_ran.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/20260602_003_log_retention_policy.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/20260602_004_remove_unused_indexes_safe.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/20260610120000_silver_depara_01_apply_transform_color_resolver.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/20260611014515_fn_dryrun_standardize_supplier_real_rollback.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/20260611120000_fix_standardize_variant_fcode_fhex_swallowed_by_comment.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/20260611120000_v2_01_helpers_display_name_tokenize.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/20260611120100_v2_02_fn_enrich_padronizacao.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/20260611120200_v2_03_fn_standardize_raw_v3.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/20260611120300_v2_04_promote_display_name_category_chain.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/20260611120400_v2_05_monitoring_coverage.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/20260611124000_fn_dryrun_standardize_supplier_real_rollback.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/20260615_001_drop_ai_provider_quotas_zombie.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/20260615_002_fix_ai_quota_and_cache_bugs.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/20260615_fix_asia_product_names_cleanup.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/20260618000001_link_unlinked_content_hash_dupes.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/20260618160000_revoke_all_view_write_grants_bulk.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/20260619000001_fix_is_shared_on_canonical_null.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/20260619000001_mockup_bug_fixes_logo_url_nullable_position_precision.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/20260619000001_mv_leaf_covering_index_safe_idx.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/20260619000002_mockup_composite_index_user_created.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/20260619000003_close_gaps_and_harden_triggers.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/20260619100000_fix_reposicao_rpcs.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/20260620000001_mockup_client_logo_rotation_cols.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/20260620150000_fix_catalog_critical_bugs.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/20260620160000_faxina_tier3_archive_dead_views.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/20260620160000_fix_favorites_bugs_all.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/20260620160000_fix_update_quote_client_cnpj_clearable.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/20260620170000_fix_favorites_gaps_11_12.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/20260620170000_fix_update_quote_contact_fields_clearable.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/20260620190000_faxina_tier3b_b1_archive_dead_fns_views.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/20260620190000_heal_faxina_live_tables.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/20260620190000_reposicao_revoke_anon_grants.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/20260621_fix_console_bugs_404_403.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/20260621_fix_create_rpc_get_favorite_list_counts.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/20260621_fix_create_rpc_get_promo_sales_90d_by_product.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/20260621_fix_product_variants_add_next_entry_alias_columns.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/20260621_fix_rls_coverage_missing_tables.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/20260621000000_fix_favorites_security_position.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/20260621100000_restore_broken_trigger_dependencies.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/20260621120000_reconcile_unarchive_live_rpcs.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/20260621210000_onboarding_auto_assign_org_canonica.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/20260622_ai_usage_logs_hardening_observability.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/20260622_categories_active_generated_compat.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/20260622_color_swatches.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/20260622_drop_categories_active_legacy.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/20260622_fix_categories_active_column_alias.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/20260622_fix_fn_system_health_summary_security_invoker.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/20260622_get_favorite_list_counts_user_id_overload.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/20260622_icon_semantic_improvements.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/20260622_restore_get_favorite_list_counts_noarg.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/20260622130000_smoke_tests_v30_trends_fix.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/20260623_fix_generated_always_columns_batch.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/20260623_fix_search_analytics_add_seller_id.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/20260623_fix_search_analytics_seller_id_not_generated.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/20260623000001_products_name_m1_add_column_comment.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/2026062311292414001_add_full_path_readable_propagation_triggers.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/20260623120000_harden_get_favorite_list_counts_revoke_anon.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/20260623130000_fix_restore_trigger_notify_discount_approval.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/20260712_fix_rls_policies_critical.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/20260712_performance_indexes.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/20260713_001_secdef_revoke_webhook_locks.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/20260714_fix_rename_unique_cart_item_variant_constraint.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/20260716000041_revoke_anon_b2b_catalog_secdef_functions.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/20260716000042_fix_fn_global_search_quote_data_exposure.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/20260716000043_fn_get_similar_products_security_invoker.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/20260716000044_revoke_anon_fn_log_search_analytics.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/20260716000045_revoke_anon_catalog_authenticated_only_functions.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/20260716000046_revoke_anon_all_remaining_catalog_functions.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/bronze_stalled_cleanup_20260623.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/create_process_notifications_queue_rpcs_20260623.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/cron_p0_disable_webhook_outbox_missing_secret_20260623.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/fix_rls_head_requests.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/fn_system_health_summary_bughsc1_check2_20260623.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/gravacao_fix1_dtf_tiers_7_20260623.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/gravacao_fix3_personalization_technique_mappings_20260623.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/gravacao_fix4_drop_dead_calculate_personalization_price_20260623.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/gravacao_fix5_reactivate_hot_stamping_20260623.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/gravacao_fix6_health_check_p2_warning_20260623.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/indexes_3_missing_fk_indexes_20260623.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/products_1_sku_promo_backfill_and_autosync_trigger_20260623.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/products_2c_quality_dashboard_fix2_20260623.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/products_3_new_check_constraints_20260623.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/products_5_ai_coverage_view_20260623.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/products_5_comments_high_null_cols_20260623.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/products_8_ai_columns_and_table_comment_20260623.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/products_cleanup_7_hard_delete_xbz_manual_v2_20260623.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/products_comments_core_batch1_20260623.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/products_dimensions_5_drop_jsonb_column_20260623.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/products_dimensions_b1_backfill_scalars_from_jsonb_20260623.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/products_dimensions_d1_add_dimension_source_column_20260623.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/products_flag_morta_a1_hardening_check_constants_20260623.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/products_indexes_8_drop_dead_indexes_20260623.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/products_ncm_6_fix_format_and_comment_20260623.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/products_quality_10_sku_promo_constraint_20260623.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/products_quality_9_is_deleted_hardening_20260623.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/v_system_alerts_bugalert1_cron_threshold_20260623.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/v_system_alerts_bugalert2_ai_worker_detection_20260623.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/v_system_alerts_cron_threshold_fix_20260623.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/verify_rls_policies.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/vpp_4c_expose_ipi_ncm_bitrix_20260623.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_LOCAL_2026-09-16.json",
+      "ref": "supabase/migrations/vss_2_comment_zero_fill_columns_v2_20260623.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_RECONCILIADAS_2026-09-11.json",
+      "ref": "supabase/migrations/2026062311292414001_add_full_path_readable_propagation_triggers.sql"
+    },
+    {
+      "file": "docs/arquivo/2026-09/MANIFESTO_MIGRATIONS_RECONCILIADAS_2026-09-11.json",
+      "ref": "supabase/migrations/20260712_legacy_initial.sql"
+    },
+    {
+      "file": "docs/AUDIT_FRONTEND_DATABASE.md",
+      "ref": "supabase/migrations/20251228_audit_trail.sql"
+    },
+    {
+      "file": "docs/auditoria-planejado-nao-executado-2026-10-11/A07_integracoes_infra.md",
+      "ref": "supabase/migrations/cron_p0_disable_webhook_outbox_missing_secret_20260623.sql"
+    },
+    {
+      "file": "docs/estado/07_EDGE_FUNCTIONS.md",
+      "ref": "supabase/migrations/20260419130037_...sql"
+    },
+    {
+      "file": "docs/estado/07_EDGE_FUNCTIONS.md",
+      "ref": "supabase/migrations/20260424154125_...sql"
+    },
+    {
+      "file": "docs/estado/08_DADOS_SCHEMA.md",
+      "ref": "supabase/migrations/20260602_002_fix_cron_jobs_never_ran.sql"
+    },
+    {
+      "file": "docs/estado/08_DADOS_SCHEMA.md",
+      "ref": "supabase/migrations/20260611120400_v2_05_monitoring_coverage.sql"
+    },
+    {
+      "file": "docs/estado/08_DADOS_SCHEMA.md",
+      "ref": "supabase/migrations/20260622_ai_usage_logs_hardening_observability.sql"
+    },
+    {
+      "file": "docs/estado/08_DADOS_SCHEMA.md",
+      "ref": "supabase/migrations/gravacao_fix4_drop_dead_calculate_personalization_price_20260623.sql"
+    },
+    {
+      "file": "docs/estado/11_INTEGRACOES.md",
+      "ref": "supabase/migrations/20260524204148_"
+    },
+    {
+      "file": "docs/estado/11_INTEGRACOES.md",
+      "ref": "supabase/migrations/20260524210300_"
+    },
+    {
+      "file": "docs/estado/11_INTEGRACOES.md",
+      "ref": "supabase/migrations/20260525200103_"
+    },
+    {
+      "file": "docs/estado/11_INTEGRACOES.md",
+      "ref": "supabase/migrations/20260526141659_"
+    },
+    {
+      "file": "docs/estado/11_INTEGRACOES.md",
+      "ref": "supabase/migrations/20260529164602_"
+    },
+    {
+      "file": "docs/estado/11_INTEGRACOES.md",
+      "ref": "supabase/migrations/20260531120000_"
+    },
+    {
+      "file": "docs/estado/11_INTEGRACOES.md",
+      "ref": "supabase/migrations/20260616172001_"
+    },
+    {
+      "file": "docs/estado/11_INTEGRACOES.md",
+      "ref": "supabase/migrations/20260620150000_fix_catalog_critical_bugs.sql"
+    },
+    {
+      "file": "docs/estado/14_LACUNAS_COBERTURA.md",
+      "ref": "supabase/migrations/20260619150603_...sql"
+    },
+    {
+      "file": "docs/historico/RECOVERY_PLAN.md",
+      "ref": "supabase/migrations/_recovery/"
+    },
+    {
+      "file": "docs/NOTIFICATION_SYSTEM.md",
+      "ref": "supabase/migrations/001_notification_system.sql"
+    },
+    {
+      "file": "docs/NOTIFICATION_SYSTEM.md",
+      "ref": "supabase/migrations/002_notification_preferences.sql"
+    },
+    {
+      "file": "docs/NOTIFICATION_SYSTEM.md",
+      "ref": "supabase/migrations/003_notification_templates.sql"
+    },
+    {
+      "file": "docs/NOTIFICATION_SYSTEM.md",
+      "ref": "supabase/migrations/004_notification_functions.sql"
+    },
+    {
+      "file": "docs/prompts/magazine-module-implementation-prompt.md",
+      "ref": "qa/migrations-draft/2026-07-12_magazine_reader_state.sql"
+    },
+    {
+      "file": "docs/prompts/magazine-module-implementation-prompt.md",
+      "ref": "qa/migrations-draft/2026-07-12_magazines.sql"
+    },
+    {
+      "file": "docs/redeploy/REDEPLOY-T3-MIGRATIONS-AUDIT.md",
+      "ref": "supabase/migrations/README.md"
+    },
+    {
+      "file": "docs/sessoes/2026-05-09-09h57-onda-1-completa-handoff.md",
+      "ref": "supabase/migrations/README.md"
+    },
+    {
+      "file": "inventario/branches.json",
+      "ref": "supabase/migrations/20261015150000"
+    },
+    {
+      "file": "qa/reports/magazine-exhaustive-validation-2026-07-15.md",
+      "ref": "qa/migrations-draft/2026-07-12_magazine_items_unique_product.sql"
+    },
+    {
+      "file": "qa/reports/magazine-followup-2026-07-12.md",
+      "ref": "qa/migrations-draft/2026-07-12_magazine_items_unique_product.sql"
+    },
+    {
+      "file": "qa/reports/magazine-publish-fuzz-2026-07-15.md",
+      "ref": "qa/migrations-draft/2026-07-15_magazine_public_token_trigger.sql"
+    },
+    {
+      "file": "scripts/build-drafts-pr-comment.mjs",
+      "ref": "qa/migrations-draft/PR_COMMENT.md"
+    },
+    {
+      "file": "scripts/check-no-db-push.mjs",
+      "ref": "supabase/migrations/20260623120000_harden_get_favorite_list_counts_revoke_anon.sql"
+    },
+    {
+      "file": "src/lib/external-db/product-types.ts",
+      "ref": "supabase/migrations/20250103070000"
+    },
+    {
+      "file": "src/lib/feature-flags.ts",
+      "ref": "qa/migrations-draft/2026-07-12_magazines.sql"
+    },
+    {
+      "file": "tests/scripts/check-migration-filename-contract.test.mjs",
+      "ref": "supabase/migrations/001_notification_system.sql"
+    },
+    {
+      "file": "tests/scripts/check-migration-filename-contract.test.mjs",
+      "ref": "supabase/migrations/20260826010203_add_catalog_contract.sql"
+    },
+    {
+      "file": "tests/scripts/check-migration-filename-contract.test.mjs",
+      "ref": "supabase/migrations/20260826010203_existing.sql"
+    },
+    {
+      "file": "tests/scripts/check-migration-filename-contract.test.mjs",
+      "ref": "supabase/migrations/20260826010203_first_change.sql"
+    },
+    {
+      "file": "tests/scripts/check-migration-filename-contract.test.mjs",
+      "ref": "supabase/migrations/20260826010203_second_change.sql"
+    },
+    {
+      "file": "tests/scripts/check-no-db-push.test.mjs",
+      "ref": "supabase/migrations/README.md"
+    },
+    {
+      "file": "tests/security/restore-seller-cart-rpc.test.ts",
+      "ref": "supabase/migrations/20260713101342_...sql"
+    }
+  ]
+}

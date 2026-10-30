@@ -459,6 +459,11 @@ O único controle de drift de schema nunca rodou. A ordem desta onda importa: le
 **Pronto:** a migration está aplicada com recibo em `MIGRATIONS_SYNC_LOG.md`, **ou** foi movida para `supabase/sql-legacy/` com a razão escrita
 **Origem:** A2-15
 
+**Revalidação 2026-10-30 (somente leitura):** a policy `internal_deny_direct_access` não foi
+encontrada no catálogo e a versão `20260716000055` não aparece no ledger consultado. A existência
+do arquivo não autoriza aplicá-lo; a etapa segue pendente de decisão explícita do PO e do fluxo
+versionado de migration previsto nas regras do projeto.
+
 #### P200-E047 · [A] · P2 · Uma `RESTRICTIVE` por tabela sensível ✅
 **Arquivo:** migration nova
 **Fazer:** com só 2 RESTRICTIVE em 950, o default do modelo é união (OR). Introduzir uma RESTRICTIVE por tabela sensível, no padrão de E046, para que o default passe a ser interseção nessas tabelas.
@@ -476,6 +481,12 @@ O único controle de drift de schema nunca rodou. A ordem desta onda importa: le
 **Fazer:** 18 policies dão a `anon` comandos não-SELECT; 7 são INSERT reais (`analytics_events`, `catalog_analytics`, `product_views`, `search_analytics`, `frontend_telemetry`, `kill_switch_hits`, `password_reset_requests`) com `WITH CHECK` só de forma, sem limite de volume. Confirmar no `pg_trigger` que o guard cobre as 7 e verificar essa cobertura **no gate**, não só ao vivo.
 **Pronto:** o gate de policies reprova se uma das 7 tabelas perder o trigger
 **Origem:** A2-39
+
+**Revalidação 2026-10-30 (somente leitura):** o trigger `trg_anon_rate_guard` foi encontrado
+em seis tabelas existentes da lista. `public.kill_switch_hits` não existe em `pg_class` no
+catálogo consultado. A etapa segue parcial: corrigir o inventário para os alvos reais e manter
+um teste do gate para cada tabela que o projeto efetivamente publicar; não contar a tabela
+inexistente como falta de trigger.
 
 #### P200-E050 · [A] · P2 · Unificar as duas allowlists do lint 0029 ✅
 **Arquivo:** `.security/lint-0029-allowlist.json` (93 entradas), `.security/supabase-linter-baseline.json` (50, `generated_at` 2026-07-13)
@@ -845,61 +856,61 @@ Metade do plano. `npm run plan:status` e três decisões:
 
 `TZ=America/Sao_Paulo npx vitest run` sai **exit 1**: 11 testes em 4 arquivos falhando, 1201 arquivos passando, 1146 de 26658 testes skipped, 934,87s. Nenhum gate novo de teste faz sentido antes de a suíte fechar verde.
 
-#### P200-E101 · [D] · P0 · Consertar o lockfile apontando para registry privado
+#### P200-E101 · [D] · P0 · Consertar o lockfile apontando para registry privado ✅
 **Arquivo:** `package-lock.json:13905`
 **Fazer:** 1 de 1273 entradas `resolved` aponta para `europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/pngjs/-/pngjs-7.0.0.tgz` — registry privado da Lovable, que entrou em `517581693` (PR do dependabot #2055). `npm ci` falha com 403 fora do sandbox da Lovable, e uma dependência de build de produção vem de um registry que o time não controla. (O CI do GitHub hoje consegue instalar, então isso não é o que quebra a esteira — é risco de cadeia de suprimento e de ambiente local.) Reinstalar `pngjs` com `--registry=https://registry.npmjs.org` e commitar o lock com host público.
 **Pronto:** `grep -c "pkg.dev" package-lock.json` → `0` **e** `npm ci` completa num container limpo
 **Origem:** A3-01
 
-#### P200-E102 · [D] · P0 · Mockar a rede nos testes de edge function
+#### P200-E102 · [D] · P0 · Mockar a rede nos testes de edge function ✅
 **Arquivo:** `tests/edge-functions/catalog-integration.test.ts:4`
 **Fazer:** `BASE_URL = https://nmojwpihnslkssljowjh.supabase.co` com `fetch` de rede **real** (falha `ENOTFOUND`). Esse é um terceiro project-ref, nem o canônico nem o proibido, e está hardcoded em 36 arquivos de `tests/` contra 27 com o canônico. Mockar o `fetch` e trocar o ref pelo canônico nos 36.
 **Pronto:** `grep -rc "nmojwpihnslkssljowjh" tests/` → `0` **e** o arquivo passa sem rede
 **Origem:** A3-03
 
-#### P200-E103 · [D] · P0 · Corrigir o teste de contrato do `MockupProductSelector`
+#### P200-E103 · [D] · P0 · Corrigir o teste de contrato do `MockupProductSelector` ✅
 **Arquivo:** `tests/components/mockup/MockupProductSelector.test.tsx`
 **Fazer:** 7 de 7 testes do bloco "grade responsiva e honestidade" falham — `waitFor` estoura esperando `getAllByTestId('mockup-product-row')`, porque o componente nunca renderiza linhas no jsdom. Pela REGRA #5 do `CLAUDE.md`: o componente mudou de propósito, então corrija o teste de **contrato**, não persiga o snapshot.
 **Pronto:** `npx vitest run tests/components/mockup/MockupProductSelector.test.tsx` → exit `0`
 **Origem:** A3-23
 
-#### P200-E104 · [D] · P1 · Atualizar o teste do gate de bundle
+#### P200-E104 · [D] · P1 · Atualizar o teste do gate de bundle ✅
 **Arquivo:** `scripts/__tests__/check-bundle-size.test.ts:196`
 **Fazer:** `expected 100000 to be 180000` — o teste assere `maxBytes === atual × 1.2`, mas o script faz `min(atual × 1.2, prev)` desde o hardening E04. O teste está defasado e deixa a suíte vermelha. Atualizar a asserção para o invariante E04.
 **Pronto:** `npx vitest run scripts/__tests__/check-bundle-size.test.ts` → exit `0`
 **Origem:** A3-24
 
-#### P200-E105 · [D] · P2 · Timeout local no fuzz de limite de carrinho
+#### P200-E105 · [D] · P2 · Timeout local no fuzz de limite de carrinho ✅
 **Arquivo:** `src/components/cart/__tests__/CartLimitExhaustive.test.tsx:187`
 **Fazer:** fuzz de 200 seeds × até 120 itens estoura o `testTimeout: 15000` global. Reduzir `SEEDS` ou passar timeout local no `it` — não subir o timeout global, que esconderia regressão de tempo nos outros 26 mil testes.
 **Pronto:** o arquivo passa com o `testTimeout` global intacto em 15000
 **Origem:** A3-25
 
-#### P200-E106 · [D] · P1 · A suíte não pode escrever em arquivo versionado
+#### P200-E106 · [D] · P1 · A suíte não pode escrever em arquivo versionado ✅
 **Arquivo:** `src/components/pdf/proposal/__tests__/pdfContrastReport.test.ts`, `tests/simulation/daily-flows.harness.test.ts`, teste do schema SSOT, `tests/setup-strict-side-effects.ts`
 **Fazer:** a suíte unitária escreve em 4 arquivos versionados (`public/schemas/ssot-report*.schema.json`, `versions.json`, `qa/reports/pdf-contrast-report.md`) e cria 2 arquivos novos por dia (`daily-flows-simulation-<data>.{json,md}`). Toda rodada local suja a árvore de trabalho. Escrever em tmpdir ou mockar `fs`, e estender `setup-strict-side-effects.ts` para pegar escrita em disco.
 **Pronto:** `npx vitest run && git status --porcelain` → saída vazia
 **Origem:** A3-20, C-10
 
-#### P200-E107 · [D] · P1 · Decidir o destino dos 39 testes P0 vazios
+#### P200-E107 · [D] · P1 · Decidir o destino dos 39 testes P0 vazios ✅
 **Arquivo:** `tests/p0/` (5 arquivos)
 **Fazer:** 39 testes marcados **P0** — auth recovery, RLS, webhooks Bitrix e n8n, integrações externas — são todos `it.skip` com corpo `expect(true).toBe(true)`. A cobertura P0 executável é **zero**, e o diretório existe simulando o contrário. Implementar os 39 ou remover o diretório. Não deixar como está.
 **Pronto:** `grep -rc "expect(true).toBe(true)" tests/p0/` → `0` (implementados ou diretório removido)
 **Origem:** A3-11
 
-#### P200-E108 · [D] · P1 · E2E com dataset vazio deve reprovar, não pular
+#### P200-E108 · [D] · P1 · E2E com dataset vazio deve reprovar, não pular ✅
 **Arquivo:** `e2e/` (207 ocorrências em 97 arquivos)
 **Fazer:** 207 `test.skip(true, 'sem dados no dataset')` sob guard de catálogo vazio: num ambiente sem seed, a suíte e2e fica **verde** sem testar nada. Reprovar (não pular) quando a pré-condição de dataset estiver vazia — o skip silencioso é a mesma classe de falso verde da Onda 1.
 **Pronto:** uma execução contra catálogo vazio reprova com mensagem clara, em vez de passar
 **Origem:** A3-13
 
-#### P200-E109 · [D] · P1 · `--min` proporcional no guard de testes executados
+#### P200-E109 · [D] · P1 · `--min` proporcional no guard de testes executados ✅
 **Arquivo:** `scripts/check-min-tests-executed.mjs:16`
 **Fazer:** o guard que existe exatamente contra E108 tem default `--min=1` — passa com **1** spec executado. Default proporcional ao número de specs do projeto, e `--min` explícito em cada invocação.
 **Pronto:** `grep -c "min=1" scripts/check-min-tests-executed.mjs` → `0`; o guard reprova com 1 spec de 97 executado
 **Origem:** A3-14
 
-#### P200-E110 · [D] · P1 · Fechar a suíte verde e travar
+#### P200-E110 · [D] · P1 · Fechar a suíte verde e travar ✅
 **Arquivo:** `package.json`, `.github/workflows/deploy-gates.yml`
 **Fazer:** com E101–E109 fechadas, rodar a suíte inteira e confirmar exit 0. Só então apontar o Gate 2 para ela (ver E116). Esta etapa é o portão da onda: sem suíte verde, as ondas de frontend seguintes não têm rede de segurança.
 **Pronto:** `TZ=America/Sao_Paulo npx vitest run` → exit `0`, com `0 failed`
@@ -913,49 +924,49 @@ Metade do plano. `npm run plan:status` e três decisões:
 
 14 scripts `check:*` existem, funcionam, e **nada os invoca**. Gate que não executa é documentação.
 
-#### P200-E111 · [D] · P0 · Fazer o Gate 1.1 realmente checar o tipo `Product`
+#### P200-E111 · [D] · P0 · Fazer o Gate 1.1 realmente checar o tipo `Product` ✅
 **Arquivo:** `scripts/check-product-type-fields.mjs:80-90`
 **Fazer:** o gate da REGRA #2 grepa um blob concatenado que **inclui** `types.ts` (64.840 linhas, 19 colunas `sale_price`) com regex case-insensitive. Resultado: passa mesmo se `interface Product` for apagada inteira. O gate que protege a cicatriz de junho não protege nada. Parsear a interface via TypeScript Compiler API, como já foi feito no gate de types-inventory (E41).
 **Pronto:** o gate reprova ao se remover `sale_price` de `src/types/product-catalog.ts`, com `types.ts` intacto
 **Origem:** A3-04
 
-#### P200-E112 · [D] · P1 · Fazer `npm run lint` rodar o ESLint
+#### P200-E112 · [D] · P1 · Fazer `npm run lint` rodar o ESLint ✅
 **Arquivo:** `package.json` (`scripts.lint`, `scripts.typecheck`)
 **Fazer:** os dois são `node scripts/check-tsc-baseline.mjs` — `npm run lint` **não roda ESLint**. O entrypoint real é `lint:check`/`lint:baseline`. Apontar `lint` para `lint:baseline` e `typecheck` para `typecheck:full`. Verificar o que o `deploy-gates.yml` invoca e corrigir junto.
 **Pronto:** `npm run lint 2>&1 | grep -c eslint` ≥ 1
 **Origem:** A3-07
 
-#### P200-E113 · [D] · P1 · Ligar o gate de vazamento de toast e corrigir as 2 regressões
+#### P200-E113 · [D] · P1 · Ligar o gate de vazamento de toast e corrigir as 2 regressões ✅
 **Arquivo:** `scripts/check-toast-leaks.mjs`, `src/components/admin/suppliers-manager/useSuppliersManager.ts:530`, `src/pages/products/SellerCartsPage.tsx:229`
 **Fazer:** o gate funciona, está **exit 1 em `main`** com 2 regressões, e nenhum workflow o chama — a regressão entrou porque o gate nunca roda. Em `useSuppliersManager.ts:530`, `toast.error(err instanceof Error && err.message ? err.message : hay)` vaza mensagem técnica de edge function direto na UI; trocar por copy amigável + `description: sanitizeError(err)`. Em `SellerCartsPage.tsx:229`, passar `decision.message` por `sanitizeError`. Depois adicionar o gate ao `deploy-gates.yml`.
 **Pronto:** `node scripts/check-toast-leaks.mjs` → exit `0` **e** o gate aparece no `deploy-gates.yml`
 **Origem:** A3-08, A3-09, A3-10
 
-#### P200-E114 · [D] · P1 · Proibir aumento do baseline de bundle sem label
+#### P200-E114 · [D] · P1 · Proibir aumento do baseline de bundle sem label ✅
 **Arquivo:** `scripts/check-bundle-size.mjs`, `bundle-size-baseline.json`
 **Fazer:** em `95c1a1f4e` (2026-10-05) uma PR de redação de PII subiu `maxTotalBytes` em +292.840 (13.493.936 → 13.786.776) e `maxChunkBytes` em +81.935 (953.362 → 1.035.297), furando o invariante E04 "ratchet só desce" que o próprio script implementa em `check-bundle-size.mjs:146-148`. Reprovar aumento de limite sem label `ratchet-override`, no mesmo molde do Gate 1.7.
 **Pronto:** PR que sobe `maxTotalBytes` sem o label reprova
 **Origem:** A3-05
 
-#### P200-E115 · [D] · P2 · Corrigir a chave morta do teto de ícones
+#### P200-E115 · [D] · P2 · Corrigir a chave morta do teto de ícones ✅
 **Arquivo:** `bundle-size-baseline.json` (`criticalChunks.icons-vendor`), `vite.config.ts:86`
 **Fazer:** o teto de 250 KB para `lucide-react` **nunca avalia**: o grupo em `vite.config.ts:86` se chama `critical-icons` e `grep -c icons-vendor vite.config.ts` devolve `0`. O gate imprime "não encontrado no build" como info e segue. Renomear a chave para `critical-icons` (o chunk real tem 8,5 KB).
 **Pronto:** `node scripts/check-bundle-size.mjs` avalia o chunk em vez de reportar "não encontrado"
 **Origem:** A3-26
 
-#### P200-E116 · [D] · P1 · Apontar o Gate 2 para a suíte de verdade
+#### P200-E116 · [D] · P1 · Apontar o Gate 2 para a suíte de verdade ✅
 **Arquivo:** `package.json` (`test:deploy-gate`), `.github/workflows/deploy-gates.yml:276`
 **Fazer:** o gate de deploy roda **3 de 1358** arquivos de teste (0,22%); `test:ci-core` roda 27. Apontar o Gate 2 para a suíte completa, ou no mínimo para `test:ci-core`. Só depois de E110 (suíte verde), senão o required check vira vermelho permanente. Se a suíte completa levar os 934s medidos, shardear — mas não reduzir a cobertura para caber no tempo.
 **Pronto:** o Gate 2 executa ≥27 arquivos de teste e o run fica dentro do `timeout-minutes`
 **Origem:** A3-12, A1-27
 
-#### P200-E117 · [D] · P1 · Typecheck que inclua testes, com baseline próprio
+#### P200-E117 · [D] · P1 · Typecheck que inclua testes, com baseline próprio ✅
 **Arquivo:** `tsconfig.app.json` (bloco `exclude`), `package.json`
 **Fazer:** o único typecheck de CI exclui todos os testes. `npx tsc --noEmit -p tsconfig.eslint.json` (src + tests + e2e + scripts) dá **836 erros** — TS2339 173, TS2345 116, TS7006 91, TS2322 81, TS2307 38 — em ~1358 arquivos que nunca passam por `tsc`. Criar `typecheck:tests` com baseline próprio (descendente) e ligar o `test.typecheck`. Não tentar zerar os 836 nesta etapa: travar o número e drenar.
 **Pronto:** `npm run typecheck:tests` sai `0` contra o baseline de 836 e reprova em 837
 **Origem:** A3-06
 
-#### P200-E118 · [D] · P2 · Ligar ou apagar os 14 gates órfãos
+#### P200-E118 · [D] · P2 · Ligar ou apagar os 14 gates órfãos ✅
 **Arquivo:** `package.json` (14 scripts `check:*`), `.github/workflows/`
 **Fazer:** `doc-refs`, `schema-reference-drift`, `seller-scope`, `route-error-element`, `aschild-nesting`, `route-ref-usage`, `client-structured-logging`, `no-inline-cors`, `summary-color-tokens`, `critical-coverage`, `observability`, `toast-leaks` (já em E113), `proposed-configs` e `public-views-drift` existem, rodam e nada os invoca. Para cada um: ligar no CI **ou** deletar. Gate não executado é pior que gate ausente, porque sugere cobertura.
 **Pronto:** `node scripts/plan-status.mjs --orphan-gates` → `0` scripts `check:*` sem invocação em `.github/workflows/`
@@ -981,25 +992,25 @@ Metade do plano. `npm run plan:status` e três decisões:
 
 Os 5 ratchets de dívida técnica estão todos exatamente no baseline: 889 indexed-access, 135 arquivos grandes, 51 TODO, 2227 `as <Tipo>`, 0 `as any`. Zero progresso em 500 commits. O único que mudou foi o de bundle, **para cima**. Ratchet que só congela é dívida eterna com cerimônia.
 
-#### P200-E121 · [D] · P1 · Fechar os 3 casts em argumento de RPC
+#### P200-E121 · [D] · P1 · Fechar os 3 casts em argumento de RPC ✅
 **Arquivo:** `src/lib/kit-builder/persistence.ts:100-101`, `src/services/magazineService.ts:438`, `src/hooks/favorites/useFavoriteQuickAdd.ts:75`
 **Fazer:** 3 ocorrências de `(x ?? null) as unknown as string|number|Json` em **argumento de RPC** que o `types.ts` declara não-nulo. Ou o `types.ts` está errado, ou é um 400/500 esperando acontecer em produção. Conferir a assinatura real no `pg_catalog` e corrigir `types.ts` ou o call site — não o cast.
 **Pronto:** os 3 `as unknown as` não existem mais e a chamada compila com o tipo real do RPC
 **Origem:** A3-16
 
-#### P200-E122 · [D] · P1 · Tipar `authService` com os tipos do SDK
+#### P200-E122 · [D] · P1 · Tipar `authService` com os tipos do SDK ✅
 **Arquivo:** `src/services/authService.ts:40-161`
 **Fazer:** 11 casts de `supabase.auth.*` para `Promise<{data: UnknownData; error: unknown}>` escondem o tipo de retorno real do `@supabase/supabase-js@^2.117.3` — um breaking change de shape em versão **minor** compila sem erro. Remover os casts e usar os tipos do SDK. É o maior ofensor do projeto e está no caminho de autenticação.
 **Pronto:** `grep -c "as unknown as" src/services/authService.ts` → `0` e `npm run typecheck:full` sai `0`
 **Origem:** A3-18, A3-17
 
-#### P200-E123 · [D] · P1 · Validar os `jsonb` do `magazineService` com zod
+#### P200-E123 · [D] · P1 · Validar os `jsonb` do `magazineService` com zod ✅
 **Arquivo:** `src/services/magazineService.ts:74,78,97,100,105,108`
 **Fazer:** 9 casts de coluna `jsonb` (`row.product_snapshot`, `row.branding`, `row.page_order`) para tipo de domínio **sem nenhuma validação**. O arquivo tem 11 commits na janela e histórico de sobrescrita (`7716ae9`). Validar com zod na borda do service: `jsonb` é dado não tipado por natureza, e cast não o torna tipado.
 **Pronto:** `grep -c "as unknown as" src/services/magazineService.ts` → `0`; schema zod cobre os 3 campos
 **Origem:** A3-19
 
-#### P200-E124 · [D] · P1 · Criar o ratchet de `as unknown as`
+#### P200-E124 · [D] · P1 · Criar o ratchet de `as unknown as` ✅
 **Arquivo:** `.as-unknown-baseline.json` (novo), `scripts/check-as-unknown-baseline.mjs` (novo)
 **Fazer:** 276 ocorrências de `as unknown as` em `src/`, **zero** cobertas por ratchet — `check-as-assertions-baseline.mjs` exclui `as unknown` por desenho, e `as any` real já é 0. É o único escape hatch de tipo sem gate, e é por onde a dívida sai. Criar baseline **descendente** (meta de redução, não trava). Top ofensores depois de E122/E123: `useNovelties` 9, `persistence` 7.
 **Pronto:** `node scripts/check-as-unknown-baseline.mjs` sai `0` no número atual e reprova em qualquer aumento
@@ -1011,13 +1022,13 @@ Os 5 ratchets de dívida técnica estão todos exatamente no baseline: 889 index
 **Pronto:** `grep -c " as " src/hooks/mockup/mockupGenerationService.ts` ≤ 10 e o ratchet global desce
 **Origem:** A3-43
 
-#### P200-E126 · [D] · P2 · Transformar os 5 ratchets em descendentes com meta
+#### P200-E126 ✅ · [D] · P2 · Transformar os 5 ratchets em descendentes com meta ✅
 **Arquivo:** `.indexed-access-baseline.json`, `.file-size-baseline.json`, `.todo-baseline.json`, `.as-assertions-baseline.json`, `.any-type-baseline.json`
 **Fazer:** os 5 estão exatamente no baseline — 889, 135, 51, 2227, 0 — sem nenhum progresso em 500 commits. Acrescentar a cada um um campo `meta` com alvo e data, e fazer o gate semanal (`ratchet-weekly.yml`) reportar a distância do alvo. Travar sem meta é congelar.
 **Pronto:** os 5 arquivos têm `meta.target` e `meta.deadline`, e o relatório semanal imprime a distância
 **Origem:** A3-40, A3-41, A3-42
 
-#### P200-E127 · [D] · P2 · Zerar o baseline de `any` que já está em zero
+#### P200-E127 ✅ · [D] · P2 · Zerar o baseline de `any` que já está em zero ✅
 **Arquivo:** `.any-type-baseline.json` (`productionAnyCount: 1`)
 **Fazer:** o valor atual medido é **0** — as 6 linhas com `as any` em `src/` estão em JSDoc. O baseline está defasado desde 2026-07-17 e permite 1. Rodar `node scripts/update-any-type-baseline.mjs` e travar em 0.
 **Pronto:** `jq '.productionAnyCount' .any-type-baseline.json` → `0`
@@ -1029,7 +1040,7 @@ Os 5 ratchets de dívida técnica estão todos exatamente no baseline: 889 index
 **Pronto:** os 3 piores ficam abaixo de 800 linhas e `.file-size-baseline.json` desce
 **Origem:** A3-41
 
-#### P200-E129 · [D] · P2 · Ratchet descendente de `eslint-disable`
+#### P200-E129 · [D] · P2 · Ratchet descendente de `eslint-disable` ✅
 **Arquivo:** `src/` (502 `eslint-disable`, 109 de `react-hooks/exhaustive-deps`)
 **Fazer:** `react-hooks/exhaustive-deps` está silenciado 109 vezes — `useQuoteBuilderState.ts` 6, `KitLibraryPage.tsx` 4, `GlobalSearchPalette.tsx` 4, `QuoteAutoSave.tsx` 4 — num total de 502 `eslint-disable` em `src/`. **É por isso que o ESLint reporta 0 erros em 2612 arquivos.** Criar ratchet descendente.
 **Pronto:** `scripts/check-eslint-disable-baseline.mjs` existe, trava no número atual e reprova aumento

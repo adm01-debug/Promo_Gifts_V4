@@ -469,9 +469,9 @@ jobs:
       - name: Setup Node CI
         if: needs.changes.outputs.docs_only != 'true'
         uses: ./.github/actions/setup-node-ci
-      # Gate rapido de regressao. Suites amplas seguem no CI principal:
-      # `test:quality`, `Hook tests` e `Test Coverage`.
-      - run: npm run test:deploy-gate
+      # E116: suíte de contratos completa (27 arquivos) em vez dos 3 de test:deploy-gate.
+      # Só habilitado após E110 (suíte verde confirmada via CI Gate 2 em 82efe51d).
+      - run: npm run test:ci-core
         if: needs.changes.outputs.docs_only != 'true'
       - name: Webhook scenario matrix (contratos Zod, 0 HTTP)
         if: needs.changes.outputs.docs_only != 'true'

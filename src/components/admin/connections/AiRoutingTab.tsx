@@ -167,7 +167,7 @@ export function AiRoutingTab() {
     const next = [...form.fallback_model_ids];
     const target = idx + dir;
     if (target < 0 || target >= next.length) return;
-    [next[idx], next[target]] = [next[target], next[idx]];
+    const _t = next[target]!; next[target] = next[idx]!; next[idx] = _t;
     setForm({ ...form, fallback_model_ids: next });
   };
 
