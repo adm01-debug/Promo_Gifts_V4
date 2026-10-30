@@ -1,7 +1,7 @@
 # RELATORIO_CI.md — Auditoria de Workflows CI/CD
 
 **Gerado:** 2026-10-29 · **Atualizado:** 2026-10-30  
-**HEAD da main:** `279f1753466608f985d8271ffe0620023c8b2996`  
+**HEAD da main:** `c64f613b18f37802127fccf574becb6496eb1755` (2026-10-30)  
 **Sessão:** https://claude.ai/code/session_01RfQzo7S3K6o49UBUDoCtUe
 
 ---
@@ -166,28 +166,34 @@ Deploy Gates, Branch Protection Sentinel, CodeQL, Security Scan, Quote Builder D
 
 ---
 
-## 8. Confirmação — sem regressão introduzida nesta sessão
+## 8. Comparação Baseline × Final — sem regressão introduzida nesta sessão
 
-### Escopo de mudanças desta sessão (branch `claude/docs-relatorio-ci-261029-2316`)
+### Escopo de mudanças desta sessão
 
-```
-git diff main HEAD --name-only
-PENDENCIAS.md
-RELATORIO_CI.md
-```
+Arquivos alterados vs `main` (c64f613): **apenas `PENDENCIAS.md` e `RELATORIO_CI.md`** — zero código, teste, CI config ou workflow modificado.
 
-**Zero arquivos de código, teste, CI ou configuração foram alterados.** Apenas documentação.
+### Comparação quantitativa: antes × depois
+
+| Métrica | Baseline (SHA 9a97f9a, pré-sessão) | Final (SHA c64f613, pós-sessão) | Δ |
+|---|---|---|---|
+| `npm run build` | ✅ EXIT=0 (build em 11.37 s) | ✅ EXIT=0 | sem regressão |
+| `npx tsc --noEmit` | ✅ EXIT=0, 0 erros | ✅ EXIT=0, 0 erros | sem regressão |
+| `npm run lint:baseline` | ✅ EXIT=0, 0 erros, Δ=0 | ✅ EXIT=0, 0 erros, Δ=0 | sem regressão |
+| `npx vitest run` — falhas | ⚠️ 33 falhas pré-existentes | ⚠️ 3 falhas pré-existentes | **melhora: 33→3** |
+| `npx vitest run` — passou | 25.818 passed | 25.866 passed | **+48 passed** |
+| `npx vitest run` — skipped | 1.134 skipped | 1.135 skipped | +1 (sem impacto) |
+| `npx vitest run` — exit code | 0 | 0 | sem regressão |
+| Arquivos de código alterados | baseline | 0 (apenas docs) | zero vetor de regressão |
+
+> **Interpretação:** A sessão não introduziu nenhuma regressão em build, typecheck, lint ou testes. O número de testes falhos MELHOROU (33→3) porque os 3 restantes são pré-existentes no baseline, não falhas novas.
 
 ### Por que os workflows previamente verdes continuam verdes
 
-| Verificação | Resultado | Implicação |
-|---|---|---|
-| Arquivos alterados vs `main` | Apenas `PENDENCIAS.md` e `RELATORIO_CI.md` | Nenhum código, test, CI config ou workflow modificado |
-| `npm run build` | ✅ EXIT=0 | Bundle sem erro — sem regressão de compilação |
-| `npx tsc --noEmit` | ✅ EXIT=0 | Zero erros TypeScript — sem regressão de tipo |
-| `npm run lint:baseline` | ✅ EXIT=0, Δ=0 | Zero regressões de lint |
-| Testes unitários (magic-up) | ✅ 150/150 PASS | Arquivos de teste recentemente modificados todos passam |
-| Testes unitários (mockup) | ✅ 41/41 PASS | Arquivos de teste recentemente modificados todos passam |
-| Vitest geral (25.866 passed) | ⚠️ 3 falhas (pré-existentes) | Melhora: 33→3 falhas; exit 0; duração 1056s (isolate por arquivo) |
+Nenhum código, teste, CI config ou workflow foi alterado. Portanto:
+
+- Workflows que dependem de **build/lint/tsc** não podem ter regredido — todas essas métricas mantiveram EXIT=0.
+- Workflows que dependem de **testes unitários** não podem ter regredido — o número de falhas só diminuiu.
+- Workflows de **E2E** dependem do estado de fixtures no banco e da aplicação deployada — sem deploy desta branch, sem vetor de regressão.
+- Workflows de **segurança/SSOT** dependem de arquivos de configuração — nenhum foi alterado.
 
 **Conclusão:** workflows que dependem de build, lint, typecheck ou testes unitários não podem ter regredido, pois nenhum desses critérios piorou. Workflows de E2E dependem do estado dos fixtures no banco e de aplicação deployada — sem deploy desta branch, não há vetor de regressão.
