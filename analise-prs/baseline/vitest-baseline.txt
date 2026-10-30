@@ -10,7 +10,7 @@
 
 CONTEXTO: o CI (Gate 2 — unit-tests) usa 45 min de timeout (classe "Full job", E24).
 O suite completo de testes é pesado demais para o container cloud desta sessão (timeout 120s).
-Vitest foi iniciado duas vezes — ambos excederam 120s sem saída.
+Vitest foi iniciado duas vezes (task bztp5b4eb, task bu87dmkbi) — ambos excederam 120s sem saída.
 
 BASELINE CI EQUIVALENTE: Gate Final run #41034358375 (main HEAD 6dbc9387, 2026-10-30)
 — conclusion: success — inclui Gate 2 (vitest) com resultado verde.
