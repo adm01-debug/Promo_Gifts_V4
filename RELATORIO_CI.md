@@ -626,13 +626,13 @@ Os 5 workflows com runs ativas para `4b16b988` estão todos `status=queued, conc
 
 ---
 
-## Seção 11 — Fotografia atual das execuções na `main` (SHA `8382faf8`, 2026-10-30)
+## Seção 11 — Fotografia atual das execuções na `main` (SHA `0d53488e`, 2026-10-30)
 
-Consulta do MCP GitHub concluída aproximadamente às 07:03 UTC, por workflow ativo, `branch=main`, excluindo runs de PR. Foram encontrados 119 workflows ativos: 98 com run e 21 sem execução na `main`. Entre os 98: 57 `success`, 21 `failure`, 16 sem conclusão (6 `pending`, 10 `in_progress`), 2 `cancelled` e 2 `skipped`. **A Seção 8 acima é o snapshot operacional anterior; a Seção 9 registra a prova do Gate Final; a Seção 10 documenta a validação local e a prova de release; esta Seção 11 é a fotografia operacional atual.**
+Consulta do MCP GitHub concluída aproximadamente às 07:14 UTC, por workflow ativo, `branch=main`, excluindo runs de PR. Foram encontrados 119 workflows ativos: 98 com run e 21 sem execução na `main`. Entre os 98: 55 `success`, 22 `failure`, 17 sem conclusão (5 `pending`, 7 `in_progress`, 5 `queued`), 2 `cancelled` e 2 `skipped`. **A Seção 8 acima é o snapshot operacional anterior; a Seção 9 registra a prova do Gate Final; a Seção 10 documenta a validação local e a prova de release; esta Seção 11 é a fotografia operacional atual.**
 
 ### Workflows em falha
 
-As 21 execuções concluídas em falha estão discriminadas com causa e bloqueio em P22 de [PENDENCIAS.md](PENDENCIAS.md):
+As 22 execuções concluídas em falha estão discriminadas com causa e bloqueio em P22 de [PENDENCIAS.md](PENDENCIAS.md):
 
 - Regenerate Supabase Types: [#26378664155](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/26378664155) — O step `Commit, push, and open PR` falhou. GitHub Actions retorna HTTP 410 ao buscar os logs retidos; a causa técnica não pode ser confirmada.
 - edge-functions-drift-check: [#40848475790](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40848475790) — O comparador reportou divergência de hash/estado em 29 Edge Functions; os nomes e hashes estão registrados em P15. O relatório não determina qual lado é a fonte correta.
@@ -654,14 +654,15 @@ As 21 execuções concluídas em falha estão discriminadas com causa e bloqueio
 - Nightly Full CI: [#40993462227](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40993462227) — Jobs `color-swatch` tiveram 8 timeouts de seletores; o job `magazine-header` reportou ausência de credenciais E2E (14 casos); os dois shards Playwright foram cancelados após timeout e não produziram `playwright-report/`. Não há evidência que autorize regenerar os baselines.
 - E2E · Atualizar snapshots visuais (E155): [#39999649279](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39999649279) — O passo de regeneração falhou com `element(s) not found`; artifact `visual-diffs-39999649279` está disponível.
 - Copilot: [#41014961856](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41014961856) — `Processing Request (Linux)` falhou com `SessionModelError`, HTTP 402, `errorType=quota`: o uso adicional do plano Copilot atingiu o limite, confirmado no log.
-- Release Please: [#41017130066](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41017130066) — ao processar o PR #2759 de release `1.2.0`, falhou com `tag_name already_exists`; a tag `v1.2.0` e a release correspondente já existem. P22 registra reconciliação de versão pendente sem exclusão/recriação de tag.
+- Branch Protection Sentinel: [#41018173680](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41018173680) — o step `Audit every commit in push` rejeitou o SHA `50e6724`: `1 commit(s) em push para main sem padrão aceito`.
+- E2E — Magazine Header Layout: [#41017130091](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41017130091) — dois testes falharam no estado vazio da sidebar nos viewports `sm`/`xl`, quatro ficaram flaky; artefato com screenshot, vídeo e traces disponível. P22 registra revisão visual pendente.
 
 ### Workflows verdes e ainda em andamento
 
-Os 57 workflows verdes e os 16 sem conclusão, com nomes, links e estados, estão listados em P22 de [PENDENCIAS.md](PENDENCIAS.md). Os cinco `cancelled`, dois `skipped` e 21 sem run não foram classificados como falha.
+Os 55 workflows verdes e os 17 sem conclusão, com nomes, links e estados, estão listados em P22 de [PENDENCIAS.md](PENDENCIAS.md). Os cinco `cancelled`, dois `skipped` e 21 sem run não foram classificados como falha.
 
 ### Comparação baseline × final
 
 Baseline desta sessão: `npm ci` passou; `npm run build:verify` passou (TypeScript, ESLint com delta zero, guards e build Vite); suíte pós-commit passou integralmente com 1.248 arquivos e 25.883 testes aprovados, 130 arquivos/1.135 testes skipped e 24 todo. A primeira execução teve erro transitório de teardown; o teste indicado passou 13/13 e a repetição integral passou sem erro. Validações repetidas após os commits documentais passaram sem regressões.
 
-**Escopo:** a sessão atualiza documentação de CI e reconcilia inventário. Não alterou comportamento da aplicação, testes, workflows, snapshots, secrets ou banco canônico, exceto que o merge do branch-base traz para o branch os commits já existentes até `8382faf8`; o PR continua documental em relação à main. Não houve deploy, migration ou aprovação manual de produção. As 21 falhas estão discriminadas em P22; os 16 runs sem conclusão precisam de nova consulta quando terminarem.
+**Escopo:** a sessão atualiza documentação de CI e reconcilia inventário. Não alterou comportamento da aplicação, testes, workflows, snapshots, secrets ou banco canônico, exceto que o merge do branch-base traz para o branch os commits já existentes até `0d53488e`; o PR continua documental em relação à main. Não houve deploy, migration ou aprovação manual de produção. As 22 falhas estão discriminadas em P22; os 17 runs sem conclusão precisam de nova consulta quando terminarem.
