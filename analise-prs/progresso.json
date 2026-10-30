@@ -57,10 +57,16 @@
     },
     "554ef41b44c9f318777d7e7b11189490a29a8c0a": {
       "pr": 2810,
-      "status": "in_progress",
+      "status": "sem_regressao_confirmada",
       "gate_final": "queued_infrastructure_backlog",
       "deployment_failure_alert": "skipped",
-      "nota": "Gate Final na fila dos runners do GitHub (gargalo infra, nao falha); Vercel: sem falha"
+      "vitest_local": "passed_exit_0",
+      "promoflix_unit_tests": "22/22_passed",
+      "falhas_observadas": {
+        "E2E_Playwright": "PRE-EXISTENTE — RELATORIO_CI.md §3.1 P18 (baseline)",
+        "CI_Security_Drift_Checks": "PRE-EXISTENTE — RELATORIO_CI.md §3.1 P19/P39/P50 (baseline)"
+      },
+      "nota": "Deploy Gates ainda queued (gargalo free-plan 20 jobs — conforme RELATORIO_BASELINE_261030.md). Falhas observadas sao pre-existentes e documentadas. Vitest local 100% OK. Nenhuma regressao nova."
     }
   }
 }
