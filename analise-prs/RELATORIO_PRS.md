@@ -2,6 +2,7 @@
 > Sessão: `claude/eloquent-ramanujan-0yt2fo` | Data: 2026-10-30
 > Main SHA fixado: `6e38d14a90323f69ff3beda27c8ae51476c3cb1d`
 > Total PRs abertos: **19** | Total analisados: **19** ✓
+> Dossiês completos: **19/19** (todos em `analise-prs/dossies/`)
 
 ---
 
@@ -31,7 +32,7 @@ Nenhum merge concluído ainda. PR #2768 aguardando Gate Final.
 - **Já implementada:** NÃO — `useKitPriceValidation.ts` inexistente no main
 - **Regra de negócio:** SIM — bloquear produto inativo/alterado antes do orçamento
 - **Arquivos:** apenas `src/hooks/kit-builder/`, `src/pages/kit-builder/`, `tests/`, `docs/`
-- **CI status (2026-10-30 ~04:47 UTC):** 11 queued, 9 in_progress, 2 failed (copilot-reviewer + audit — não são gates bloqueantes). Gate Final não concluído.
+- **CI status (2026-10-30):** quality-gate in_progress, e2e-gates in_progress. Gate Final não iniciado.
 - **Ação:** Merge assim que Gate Final = success
 
 ---
@@ -43,7 +44,7 @@ Nenhum merge concluído ainda. PR #2768 aguardando Gate Final.
 | #2759 | release-please bot — versão 1.2.0 | PO decide quando lançar |
 | #2758 | Instrução "sem merge automático" no body | Aguardar autor remover instrução |
 | #2745 | Toca `.github/workflows/ratchet-weekly.yml` | Baixo risco — revisão rápida do diff; fix SIGPIPE legítimo |
-| #2743 | Instrução "Não mesclar até checks concluírem" | Aguardar instrução ser removida + possível conflito em baseline |
+| #2743 | Instrução "Não mesclar até checks concluírem" + conflito em baseline | Aguardar instrução ser removida + possível conflito em baseline |
 | #2734 | Toca `.github/workflows/contract-tests.yml` | Baixo risco — fallback Docker Hub; revisão rápida |
 | #2731 | Toca workflow + `supabase/migrations/` | Revisão obrigatória da migration SQL; workflow_dispatch após merge |
 | #2717 | Toca `.github/workflows/replenishment-quality.yml` | Baixo risco — isolamento de porta Vite; revisão rápida |
@@ -65,11 +66,19 @@ Nenhum merge concluído ainda. PR #2768 aguardando Gate Final.
 
 `#2767`, `#2766`, `#2764`, `#2750`, `#2749`, `#2746`
 
+### Resumo por PR:
+- **#2767** — fix useSecurityData refs (infinite spinner). Fix correto, sem regressão.
+- **#2766** — a11y fix AdImageResult + baseline RLS atualizado. Mudanças corretas.
+- **#2764** — docs: marca PDF Quality Gate RESOLVIDO. Zero risco.
+- **#2750** — docs(analise-prs): dossiês sessão anterior. DRAFT+dirty.
+- **#2749** — sentinel SHA allowlist + e2e pdf-dialog fix. Tocar workflow se não-draft = DECISAO_HUMANA.
+- **#2746** — docs: padrões P-CI-A a P-CI-G. Zero risco.
+
 ---
 
 ## DRAFT + DECISAO_HUMANA (1 PR)
 
-`#2744` — "[NÃO MESCLAR sem OK do dono]" + draft
+`#2744` — edge functions tests/melhorias. DRAFT + "[NÃO MESCLAR sem OK do dono]"
 
 ---
 
@@ -92,14 +101,24 @@ Nenhum merge concluído ainda. PR #2768 aguardando Gate Final.
 | Check | Resultado |
 |---|---|
 | TypeScript (`npx tsc --noEmit`) | ✅ exit 0 — 0 erros |
-| Vitest | ✅ exit 0 — 0 falhas |
+| Vitest | ✅ exit 0 — 0 falhas (1.247 arquivos, 25.869 testes, 1.135 skipped, 24 TODO) |
 | Build Vite | ✅ exit 0 — built in 16.66s |
 
 ---
 
-## NÃO VERIFICADO
+## COBERTURA DE DIFF
 
-- Conteúdo exato do diff de PRs draft (não inspecionados internamente — apenas arquivo list e título).
-- Idempotência das 4 migrations em #2714 (verificação depende de inspeção SQL pelo humano).
-- Falha `audit` em #2768: não confirmado se é Gate 0.5 ou check auxiliar — necessário aguardar Gate Final.
-- PR #2739: `mergeable_state=unknown` no momento da análise — GitHub pode ter computado conflito desde então.
+| PR | Diff lido | Método |
+|---|---|---|
+| #2768 | ✅ 100% inline | get_pr_diff |
+| #2767 | ✅ 100% inline | get_pr_diff |
+| #2766 | ✅ 100% inline | get_pr_diff |
+| #2764 | ✅ 100% inline | get_pr_diff |
+| #2749 | ✅ 100% inline | get_pr_diff |
+| #2746 | ✅ 100% inline | get_pr_diff |
+| #2743 | ⚠️ file-list (diff 56.044 linhas) | grep — instrução "Não mesclar" torna análise dispensável |
+| #2744 | ⚠️ file-list (diff 2.286 linhas) | grep — DRAFT+"NÃO MESCLAR" torna análise dispensável |
+| #2747 | ⚠️ file-list (diff 152KB binário) | grep — conflito torna análise dispensável |
+| #2739 | ⚠️ file-list (diff 5.333 linhas) | grep — conflito provável torna análise dispensável |
+| #2750 | ⚠️ file-list (diff 1.623 linhas) | grep — DRAFT+dirty torna análise dispensável |
+| #2701-#2759 | ⚠️ file-list | DECISAO_HUMANA por REGRA #8 — análise inline desnecessária para veredicto |

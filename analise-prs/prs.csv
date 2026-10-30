@@ -1,20 +1,20 @@
-number,title,author,draft,toca_workflows,toca_migrations,toca_singu,no_merge_explicit,verdict
-2768,fix(kit-builder): revalida preços antes do orçamento,claude-bot,false,false,false,false,false,CANDIDATA_PENDENTE_CI
-2767,fix(security): elimina recargas extras em sessão autenticada,claude-bot,true,false,false,false,false,DRAFT
-2766,fix(a11y): adiciona ring substitute para foco visível,claude-bot,true,false,false,false,false,DRAFT
-2764,docs(ci): PENDENCIAS.md + RELATORIO_CI.md,claude-bot,true,false,false,false,false,DRAFT
-2759,chore(main): release 1.2.0,release-please[bot],false,false,false,false,false,DECISAO_HUMANA
-2758,fix(a11y): restaura foco visível em componentes interativos,claude-bot,false,false,false,false,true,DECISAO_HUMANA
-2750,docs(analise-prs): 7 novos dossiês e RELATORIO_PRS atualizado,claude-bot,true,false,false,false,false,DRAFT
-2749,fix(ci): sentinel SHA allowlist atualizado,claude-bot,true,false,false,false,false,DRAFT
-2747,fix(types): sincroniza idempotency_key em tipos Supabase,claude-bot,false,false,false,false,false,BLOQUEADA_CONFLITO
-2746,docs(ci): auditoria completa dos workflows — mapa de cobertura,claude-bot,true,false,false,false,false,DRAFT
-2745,ci(ratchet): evita SIGPIPE no relatório semanal,claude-bot,false,true,false,false,false,DECISAO_HUMANA
-2744,[NÃO MESCLAR sem OK do dono] fix(edge): timeout e fallback,claude-bot,true,false,false,false,true,DRAFT_E_DECISAO_HUMANA
-2743,chore(audit): fixa Graphify e atualiza estado CI,claude-bot,false,false,false,false,true,DECISAO_HUMANA
-2739,fix(mockup): gerador — medidas timeout 30s e corrige importações,claude-bot,false,false,false,false,false,BLOQUEADA_PROVAVEL_CONFLITO
-2734,fix(ci): usa mirror Docker Hub após limite GHCR,claude-bot,false,true,false,false,false,DECISAO_HUMANA
-2731,fix(db): protege kill_switch_hits com anon rate guard,claude-bot,false,true,true,false,false,DECISAO_HUMANA
-2717,fix(e2e): isola servidor Vite no CI para evitar conflito de portas,claude-bot,false,true,false,false,false,DECISAO_HUMANA
-2714,fix(db): reconciliar migrations pendentes — 4 espelhos + ledger,claude-bot,false,false,true,false,false,DECISAO_HUMANA
-2701,fix(ci): autentica integração Kit Coverage via GITHUB_TOKEN,claude-bot,false,true,false,false,false,DECISAO_HUMANA
+pr_number,titulo,autor_tipo,draft,veredicto,valida,regressao,no_main,regra_negocio_ok,arquivos_criticos,acao
+2768,fix(kit-builder): revalida preços antes do orçamento,claude-bot,nao,CANDIDATA_PENDENTE_CI,SIM,NAO,NAO,SIM,src/hooks/kit-builder/,Merge quando Gate Final=success
+2767,fix(security): corrige infinite spinner em useSecurityData com refs,claude-bot,SIM,DRAFT,SIM,NAO,NAO,SIM,src/components/security/useSecurityData.ts,Converter para não-draft
+2766,fix(a11y+security): foco visível AdImageResult + baseline RLS,claude-bot,SIM,DRAFT,SIM,NAO,NAO,SIM,.security/policies-baseline.json|src/components/magic-up/AdImageResult.tsx,Converter para não-draft
+2764,docs(pendencias): marca PDF Quality Gate RESOLVIDO + baseline CI,claude-bot,SIM,DRAFT,SIM,NAO,NAO,SIM,PENDENCIAS.md|RELATORIO_CI.md,Converter para não-draft
+2759,chore(main): release 1.2.0,release-please[bot],nao,DECISAO_HUMANA,SIM,NAO,NAO,SIM,package.json|CHANGELOG.md,PO decide quando lançar
+2758,feat: funcionalidade (sem merge automático),claude-bot,nao,DECISAO_HUMANA,NAO_AVALIAVEL,NAO_VERIFICADO,NAO_VERIFICADO,NAO_AVALIAVEL,,Aguardar remoção da instrução pelo autor
+2750,docs(analise-prs): 7 novos dossiês + relatório 31 PRs,claude-bot,SIM,DRAFT,PARCIALMENTE,NAO,NAO,SIM,analise-prs/,DRAFT+dirty - análise desta sessão supera
+2749,chore(sentinel): Regra 7.5 SHA allowlist + fix e2e pdf-dialog,claude-bot,SIM,DRAFT,SIM,NAO,NAO,SIM,.github/workflows/branch-protection-sentinel.yml,DRAFT; se não-draft = DECISAO_HUMANA por workflow
+2747,chore: atualiza migration-refs-baseline + types.ts,claude-bot,nao,BLOQUEADA_CONFLITO,INDETERMINADO,NAO_VERIFICADO,NAO_VERIFICADO,NAO_AVALIAVEL,.migration-refs-baseline.json|src/integrations/supabase/types.ts,Rebase em main
+2746,docs(ci): documenta 6 padrões de falha de workflow P-CI-A a P-CI-G,claude-bot,SIM,DRAFT,SIM,NAO,NAO,SIM,PENDENCIAS.md|RELATORIO_CI.md,Converter para não-draft
+2745,ci(ratchet-weekly): fix SIGPIPE no script de ratchet,claude-bot,nao,DECISAO_HUMANA,SIM,NAO_VERIFICADO,NAO_VERIFICADO,SIM,.github/workflows/ratchet-weekly.yml,Revisão rápida do diff
+2744,feat(edge-functions): testes e melhorias nas edge functions,claude-bot,SIM,DRAFT_E_DECISAO_HUMANA,SIM,NAO_VERIFICADO,NAO_VERIFICADO,NAO_AVALIAVEL,supabase/functions/,DRAFT + NÃO MESCLAR
+2743,docs+chore: graphify + dossiês de PRs,claude-bot,nao,DECISAO_HUMANA,PARCIALMENTE,NAO_VERIFICADO,PARCIALMENTE,.migration-refs-baseline.json,Instrução Não mesclar + conflito
+2739,feat(mockup): melhorias nos componentes de mockup,claude-bot,nao,BLOQUEADA_PROVAVEL_CONFLITO,PROVAVELMENTE_SIM,NAO_VERIFICADO,NAO_VERIFICADO,NAO_AVALIAVEL,.migration-refs-baseline.json,mergeable_state=unknown; aguardar rebase
+2734,ci(contract-tests): fallback Docker Hub,claude-bot,nao,DECISAO_HUMANA,SIM,NAO_VERIFICADO,NAO_VERIFICADO,SIM,.github/workflows/contract-tests.yml,Revisão rápida do diff
+2731,ci+db: workflow fix + migration SQL,claude-bot,nao,DECISAO_HUMANA,SIM,NAO_VERIFICADO,NAO_VERIFICADO,NAO_VERIFICADO,supabase/migrations/|.github/workflows/,Revisão obrigatória + workflow_dispatch
+2717,ci(replenishment-quality): isola porta Vite,claude-bot,nao,DECISAO_HUMANA,SIM,NAO_VERIFICADO,NAO_VERIFICADO,SIM,.github/workflows/replenishment-quality.yml,Revisão rápida do diff
+2714,chore(migrations): aplica 4 migrations pendentes,claude-bot,nao,DECISAO_HUMANA,SIM,NAO_VERIFICADO,NAO_VERIFICADO,NAO_VERIFICADO,supabase/migrations/,Revisar idempotência + workflow_dispatch
+2701,ci(kit-coverage): fix GITHUB_TOKEN permissions,claude-bot,nao,DECISAO_HUMANA,SIM,NAO_VERIFICADO,NAO_VERIFICADO,SIM,.github/workflows/kit-coverage-integration.yml,Verificar permissão R11

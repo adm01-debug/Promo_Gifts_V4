@@ -4,11 +4,12 @@
   "main_sha": "6e38d14a90323f69ff3beda27c8ae51476c3cb1d",
   "baseline": {
     "tsc": "exit 0 — sem erros",
-    "vitest": "exit 0 — sem falhas",
+    "vitest": "exit 0 — sem falhas (1.247 arquivos, 25.869 testes, 1.135 skipped, 24 TODO)",
     "build": "exit 0 — built in 16.66s"
   },
   "total_prs_abertos": 19,
   "analisados": 19,
+  "dossies_completos": 19,
   "veredictos": {
     "CANDIDATA_PENDENTE_CI": ["#2768"],
     "DECISAO_HUMANA": ["#2759", "#2758", "#2745", "#2743", "#2734", "#2731", "#2717", "#2714", "#2701"],
@@ -18,5 +19,5 @@
     "BLOQUEADA_PROVAVEL_CONFLITO": ["#2739"]
   },
   "mergeados_nesta_sessao": [],
-  "pendente": "Aguardando Gate Final em #2768"
+  "pendente": "Aguardando Gate Final em #2768 (SHA 70b887e6c7b6e610884d90793a2c9fca085492b7)"
 }
