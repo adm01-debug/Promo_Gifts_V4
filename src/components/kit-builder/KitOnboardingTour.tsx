@@ -60,7 +60,7 @@ export function KitOnboardingTour({ open: openProp, onOpenChange }: KitOnboardin
   };
 
   const finish = () => {
-    if (!isControlled) localStorage.setItem(STORAGE_KEY, '1');
+    if (typeof window !== 'undefined') window.localStorage.setItem(STORAGE_KEY, '1');
     close(false);
   };
 
