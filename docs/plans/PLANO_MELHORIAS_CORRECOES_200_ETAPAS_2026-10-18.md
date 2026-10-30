@@ -981,13 +981,13 @@ Metade do plano. `npm run plan:status` e três decisões:
 
 Os 5 ratchets de dívida técnica estão todos exatamente no baseline: 889 indexed-access, 135 arquivos grandes, 51 TODO, 2227 `as <Tipo>`, 0 `as any`. Zero progresso em 500 commits. O único que mudou foi o de bundle, **para cima**. Ratchet que só congela é dívida eterna com cerimônia.
 
-#### P200-E121 · [D] · P1 · Fechar os 3 casts em argumento de RPC
+#### P200-E121 · [D] · P1 · Fechar os 3 casts em argumento de RPC ✅
 **Arquivo:** `src/lib/kit-builder/persistence.ts:100-101`, `src/services/magazineService.ts:438`, `src/hooks/favorites/useFavoriteQuickAdd.ts:75`
 **Fazer:** 3 ocorrências de `(x ?? null) as unknown as string|number|Json` em **argumento de RPC** que o `types.ts` declara não-nulo. Ou o `types.ts` está errado, ou é um 400/500 esperando acontecer em produção. Conferir a assinatura real no `pg_catalog` e corrigir `types.ts` ou o call site — não o cast.
 **Pronto:** os 3 `as unknown as` não existem mais e a chamada compila com o tipo real do RPC
 **Origem:** A3-16
 
-#### P200-E122 · [D] · P1 · Tipar `authService` com os tipos do SDK
+#### P200-E122 · [D] · P1 · Tipar `authService` com os tipos do SDK ✅
 **Arquivo:** `src/services/authService.ts:40-161`
 **Fazer:** 11 casts de `supabase.auth.*` para `Promise<{data: UnknownData; error: unknown}>` escondem o tipo de retorno real do `@supabase/supabase-js@^2.117.3` — um breaking change de shape em versão **minor** compila sem erro. Remover os casts e usar os tipos do SDK. É o maior ofensor do projeto e está no caminho de autenticação.
 **Pronto:** `grep -c "as unknown as" src/services/authService.ts` → `0` e `npm run typecheck:full` sai `0`
