@@ -993,7 +993,7 @@ Os 5 ratchets de dívida técnica estão todos exatamente no baseline: 889 index
 **Pronto:** `grep -c "as unknown as" src/services/authService.ts` → `0` e `npm run typecheck:full` sai `0`
 **Origem:** A3-18, A3-17
 
-#### P200-E123 · [D] · P1 · Validar os `jsonb` do `magazineService` com zod
+#### P200-E123 · [D] · P1 · Validar os `jsonb` do `magazineService` com zod ✅
 **Arquivo:** `src/services/magazineService.ts:74,78,97,100,105,108`
 **Fazer:** 9 casts de coluna `jsonb` (`row.product_snapshot`, `row.branding`, `row.page_order`) para tipo de domínio **sem nenhuma validação**. O arquivo tem 11 commits na janela e histórico de sobrescrita (`7716ae9`). Validar com zod na borda do service: `jsonb` é dado não tipado por natureza, e cast não o torna tipado.
 **Pronto:** `grep -c "as unknown as" src/services/magazineService.ts` → `0`; schema zod cobre os 3 campos
