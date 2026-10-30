@@ -15,11 +15,32 @@ function runProbe(httpCode: string, curlExit: number) {
   const curlPath = join(binDir, 'curl');
   writeFileSync(
     curlPath,
-    '#!/usr/bin/env bash\nprintf "%s\\n" "$FAKE_HTTP_CODE"\nexit "$FAKE_CURL_EXIT"\n',
+    [
+      '#!/usr/bin/env bash',
+      'printf "%s\\n" "$@" >> "$FAKE_CURL_ARGS_LOG"',
+      'output_path=""',
+      'while (($#)); do',
+      '  case "$1" in',
+      '    -o) output_path="$2"; shift 2 ;;',
+      '    -w) shift 2 ;;',
+      '    *) shift ;;',
+      '  esac',
+      'done',
+      'if [[ "$output_path" == "/dev/null" ]]; then',
+      '  :',
+      'else',
+      '  printf "SENSITIVE_BODY_SENTINEL"',
+      'fi',
+      'printf "\\n%s" "$FAKE_HTTP_CODE"',
+      'exit "$FAKE_CURL_EXIT"',
+      '',
+    ].join('\n'),
     { mode: 0o755 },
   );
   const outputPath = join(tempDir, 'github-output.txt');
+  const argsLogPath = join(tempDir, 'curl-args.txt');
   writeFileSync(outputPath, '');
+  writeFileSync(argsLogPath, '');
 
   const result = spawnSync('bash', [scriptPath], {
     cwd: process.cwd(),
@@ -28,6 +49,7 @@ function runProbe(httpCode: string, curlExit: number) {
       ...process.env,
       PATH: `${binDir}:${process.env.PATH ?? ''}`,
       GITHUB_OUTPUT: outputPath,
+      FAKE_CURL_ARGS_LOG: argsLogPath,
       SUPABASE_ANON_KEY: 'test-key-never-printed',
       SITE_URL: 'https://site.test/',
       FN_URL: 'https://edge.test/health-check',
@@ -43,6 +65,7 @@ function runProbe(httpCode: string, curlExit: number) {
     stdout: result.stdout,
     stderr: result.stderr,
     outputs: readFileSync(outputPath, 'utf8'),
+    curlArgs: readFileSync(argsLogPath, 'utf8'),
   };
 }
 
@@ -57,6 +80,10 @@ describe('uptime-probe', () => {
     expect(result.exitCode).toBe(0);
     expect(result.outputs).toContain('fn=0\nfn_http=200');
     expect(result.outputs).toContain('site=0\nsite_http=200');
+    expect(result.curlArgs.match(/^-o\n\/dev\/null$/gm)).toHaveLength(4);
+    expect(`${result.stdout}${result.stderr}${result.outputs}`).not.toContain(
+      'SENSITIVE_BODY_SENTINEL',
+    );
     expect(`${result.stdout}${result.stderr}${result.outputs}`).not.toContain(
       'test-key-never-printed',
     );
