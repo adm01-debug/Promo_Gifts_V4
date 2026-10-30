@@ -212,6 +212,8 @@ Nenhuma migration, DDL, escrita no Supabase ou deploy Edge foi executado. Não h
 
 ### Revalidação P25 — workflows e PRs — 2026-10-30
 
+Este snapshot às 00:31 UTC foi supersedido pelo P26 abaixo.
+
 Snapshot às 00:31 UTC, após o release `1.1.0` (`3b7dc731`). Foram agrupadas as 100 execuções mais recentes na `main`: **34 workflows**, com **17 success, 2 skipped, 11 queued/pending/in_progress e 4 failures**.
 
 | Workflow em falha | Run | Causa comprovada | Situação |
@@ -226,3 +228,44 @@ Os 17 workflows verdes deste snapshot: Static Health Checks, Supabase Linter Gat
 PR [#2743](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2743) aguarda atualização do head local e conclusão dos checks. PR [#2745](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2745) tem Gate 1.3 reprodutivelmente bloqueado por nove referências documentais a migrations inexistentes; a correção textual está preparada, sem criar SQL ou migration. PR [#2747](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2747) permanece behind, com QuickView e Full User Flows falhando em sua última execução. PR #2758 segue aberto; sem merge de código de aplicação nesta etapa.
 
 Após o commit que registrar este relatório, repetir build, lint, typecheck e suíte completa conforme a política anti-regressão. Nenhuma operação de banco ou deploy de Edge foi realizada.
+
+### Revalidação P26 — main após commit documental 5f74691 — 2026-10-30
+
+Snapshot às 01:03 UTC, 100 runs recentes agrupados em 34 workflows: **19 success, 2 skipped, 3 cancelled, 7 queued/pending/in_progress e 3 failures**.
+
+| Workflow falho | Run mais recente | Causa comprovada | Estado |
+|---|---|---|---|
+| Branch Protection Sentinel | [#40982927226](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40982927226) | O commit `5f74691` não segue os padrões de mensagem aceitos; o job de ruleset da main passou. | Falha registrada; sem reescrita da main. Usar commits por PR com título aceito nas próximas alterações. |
+| CI Security & Drift Checks | [#40982927264](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40982927264) | `check:outline-none` detectou 1 violação nova em `AdImageResult.tsx:188`, sem ring substituto. | Correção em PR [#2758](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2758); aguardar revisão/checks, sem merge de alteração visual nesta execução. |
+| Uptime Monitor | [#40982473994](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40982473994) | Probes repetem o alerta já registrado: site 0, `health-check` 22, check-login OPTIONS 0, auth-health 0. | Fix #2753 está na main; deploy [#40976801625](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40976801625) permanece pending, 0 jobs; requer aprovação de produção pelo PO. |
+
+Os 19 workflows com conclusão `success`: Lovable Edit Tracker, SSOT Supabase Guard, Policies Baseline, Static Health Checks, Required Checks Guard, Release Please, Select Columns vs Types, Gitleaks — Full History Audit, UI · Visual & A11y, Security Scan, Lovable Autoheal, No Prod Leak in Dev/Test Config, Supabase Linter Gate, E2E — Personalization Flow, Quote Number Hardening — Verify (canonical DB), schema-snapshot-export, Workflow Lint, Magazine Unit Tests e CI - Replenishment Module Quality Gate.
+
+O último `Quote Builder Delivery Quality` no snapshot estava `in_progress` ([#40982927130](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40982927130)). O run anterior [#40981144356](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40981144356) falhou em 4 testes E2E: login obteve 200 em token/user, consultas de products/color_groups/product_variants retornaram 401 e `get_profile_and_roles` ficou pendente até o timeout de 75 segundos. Não se afirma resolução até um run concluído com success.
+
+## Pendências externas para fechar a meta
+
+- **PO:** aprovar o deploy `health-check` no environment `production` do run [#40976801625](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40976801625); depois aguardar e confirmar o próximo Uptime Monitor verde.
+- **PO/reviewers:** revisar e concluir checks do PR [#2758](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2758); só então decidir o release da correção a11y.
+- **Infra/DBA de testes:** diagnosticar a autorização/latência do usuário E2E: token e user respondem 200, consultas retornam 401 e RPC de perfil não conclui. Nenhuma credencial ou banco foi alterado.
+- **Governança:** revisar a mensagem do commit `5f74691` que fez o Sentinel falhar; não reescrever histórico da main.
+
+Build/typecheck/lint e suíte local passaram após commits anteriores na branch Ratchet; esta atualização documental no branch Graphify ainda aguarda validação local pós-merge e push.
+
+### Revalidação P27 — último estado dos workflows da main — 2026-10-30
+
+Snapshot 01:05 UTC; 100 runs agrupados em 34 workflows: **21 success, 2 skipped, 3 cancelled, 5 queued/pending/in_progress e 3 failures**. Este snapshot supersede o estado operacional de P26, preservado acima como histórico.
+
+| Workflow falho | Run atual | Causa/bloqueio |
+|---|---|---|
+| Branch Protection Sentinel | [#40982927226](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40982927226) | Commit documental `5f74691` não corresponde ao padrão de mensagem aceito. Ruleset ativo; não reescrever histórico da main. |
+| CI Security & Drift Checks | [#40982927264](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40982927264) | Violação a11y em `AdImageResult.tsx:188`; fix em [PR #2758](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2758), aguardando checks/revisão. |
+| Uptime Monitor | [#40982473994](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40982473994) | Health-check curl 22; o deploy #2753 [#40976801625](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40976801625) permanece pending desde 23:59 UTC, com 0 jobs e lista de aprovações pendentes vazia. O workflow declara environment production; a causa do não início precisa ser verificada pelo responsável. Não duplicar o deploy. |
+
+Quote Builder Delivery Quality concluiu success no run [#40982927130](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40982927130), substituindo o run anterior falho descrito no P26. Workflows verdes: Lovable Edit Tracker, SSOT Supabase Guard, Policies Baseline, Static Health Checks, Required Checks Guard, Release Please, Select Columns vs Types, Gitleaks — Full History Audit, UI · Visual & A11y, Security Scan, Lovable Autoheal, No Prod Leak in Dev/Test Config, Supabase Linter Gate, E2E — Personalization Flow, CodeQL, Quote Builder Delivery Quality, Quote Number Hardening — Verify (canonical DB), schema-snapshot-export, Workflow Lint, Magazine Unit Tests e CI - Replenishment Module Quality Gate. Os workflows pendentes/em execução não são chamados de verdes.
+
+PR #2743 (Graphify/documentação) e PR #2745 (Ratchet/SIGPIPE) continuam sem merge enquanto seus próprios checks não estiverem verdes. Nenhuma alteração foi aplicada no Supabase. Validação local pré-commit do merge Graphify: `npm run build:verify` passou (TypeScript, lint baseline Δ0, guards canônicos e Vite); `npm test` passou com 1.247 arquivos, 25.871 testes, 1.135 ignorados e 24 TODO. No branch Ratchet, `build:verify`, suíte (1.247 arquivos/25.869 testes), `actionlint` e checker das referências passaram; commit `b2018e7` foi enviado por push normal.
+
+### Bloqueio externo de preview Vercel — 2026-10-30, 01:10 UTC
+
+Os PRs [#2743](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2743), [#2745](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2745) e [#2758](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2758) exibem status Vercel failure. `vercel inspect --json` retornou `readyState: ERROR`, embora o build relacionado esteja `READY` e sem arquivos em `output`; `vercel inspect --logs` não forneceu causa, apenas `status ● Error`. Não há evidência suficiente para alterar código ou configuração. Ação necessária do proprietário: abrir cada deployment no painel Vercel e verificar eventos/diagnóstico da fase final. Nenhum redeploy nem merge foi realizado.
