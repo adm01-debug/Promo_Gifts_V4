@@ -375,10 +375,10 @@
     "src/components/search/GlobalSearchIdleState.tsx": 2,
     "src/components/search/GlobalSearchPalette.tsx": 3,
     "src/components/search/SmartSearchInput.tsx": 1,
+    "src/components/search/useGlobalSearch.ts": 12,
     "src/components/search/VisualSearchButton.tsx": 4,
     "src/components/search/VoiceSearchOverlay.tsx": 2,
     "src/components/search/search-types.ts": 1,
-    "src/components/search/useGlobalSearch.ts": 12,
     "src/components/search/voice/VoiceOrb.tsx": 1,
     "src/components/search/voice/VoiceOverlaySections.tsx": 1,
     "src/components/search/voice/VoiceSuggestionsPanel.tsx": 1,
@@ -863,6 +863,7 @@
     "src/utils/product-sorting.ts": 4,
     "src/utils/proposalPdfReactGenerator.ts": 3,
     "src/utils/undoToast.tsx": 1,
-    "src/utils/viacep.ts": 1
+    "src/utils/viacep.ts": 1,
+    "src/components/products/gallery/usePromoFlixPlayer.ts": 1
   }
 }
