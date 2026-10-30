@@ -1,45 +1,140 @@
-# Regras de Negócio — Promo Brindes V4
-> Extraído de: `src/types/`, `supabase/migrations/`, `docs/`, `tests/`, CLAUDE.md
-> Data: 2026-10-30 | main SHA: 6e38d14a9
+# Regras de Negócio — Promo Gifts V4
+# Construído a partir de fontes reais (não de memória)
+# Última atualização: 2026-10-30 | Sessão: https://claude.ai/code/session_01RfQzo8Ean3zudG2sEN79b6
 
-## 1. Produto e Catálogo
+---
 
-- **Product type obrigatório**: `price: number`, `sale_price?: number`, `shortDescription: string`, `category_id?: string`, `category_name?: string` (REGRA #2).
-- Produto inativo não pode entrar em orçamento nem Kit Builder.
-- Preço de venda (`sale_price`) tem precedência sobre `price` na exibição.
+## 1. SSOT Supabase (Fonte: `src/integrations/supabase/client.ts:24`, `CLAUDE.md REGRA #1`)
 
-## 2. Kit Builder
+- Projeto canônico de produção: `doufsxqlfjyuvxuezpln` (Gold/Medallion)
+- `CURRENT_PROJECT_ID = "doufsxqlfjyuvxuezpln"` — campo imutável em `src/integrations/supabase/client.ts:24`
+- `pqpdolkaeqlyzpdpbizo` = SINGU (ambiente externo, READ-ONLY, nunca escrever)
+- Guarda no Gate 0 CI: `scripts/validate-supabase-config.mjs`
+- Risco histórico: commit de Lovable reverte silenciosamente — incidente 401 em 2026-06-11
 
-- Revalidação de preço obrigatória antes de gerar orçamento (PR #2768).
-- Produto com preço alterado ou status inativo bloqueia a criação do orçamento.
+---
 
-## 3. Orçamento (Quote)
+## 2. Tipo `Product` — Campos Críticos (Fonte: `src/types/product-catalog.ts:25-42`, `CLAUDE.md REGRA #2`)
 
-- Fluxo: rascunho → enviado → aprovado/recusado.
-- Estado "rascunho" nunca dispara e-mail.
-- RPC `restore_seller_cart` presente e testada no banco canônico (Gate 5.5).
+```typescript
+// src/types/product-catalog.ts:25 — interface Product
+export interface Product {
+  id: string;
+  name: string;
+  shortDescription: string;   // linha 30 — obrigatório (REGRA #2)
+  price: number;               // linha 31 — obrigatório (REGRA #2)
+  sale_price?: number;         // linha 32 — opcional (REGRA #2)
+  category_id?: string | null; // linha 35 — (REGRA #2)
+  category_name?: string | null; // linha 36 — (REGRA #2)
+  // ... demais campos opcionais
+}
+```
 
-## 4. Magazine
+**Invariante:** estes 5 campos nunca podem ser removidos. Gate 1.1 verifica no CI.
 
-- Tabelas: `magazines`, `magazine_items`, `magazine_templates` — protegidas em REGRA #4.
+---
 
-## 5. Segurança
+## 3. Status de Orçamentos (Fonte: `src/types/quote.ts:10-25`)
 
-- Projeto canônico: `doufsxqlfjyuvxuezpln` (REGRA #1). Nunca referenciar `pqpdolkaeqlyzpdpbizo`.
-- RLS habilitado em todas as tabelas sensíveis; zero policies = deny-all (Gate 1.13.1).
-- Rate guard anon em 7 tabelas com INSERT anônimo (Gate 1.13.2).
-- DDL só via workflow `db-apply-migration.yml` (REGRA #8/E015).
+```typescript
+// src/types/quote.ts:10
+export const QUOTE_STATUSES = [
+  'approved',   // aprovado pelo cliente
+  'draft',      // rascunho em edição
+  'rejected',   // recusado pelo cliente
+  'sent',       // enviado aguardando resposta
+];
+export type QuoteStatus = z.infer<typeof quoteStatusSchema>;  // linha 25
+export type ClientResponse = 'approved' | 'changes_requested' | 'rejected';  // linha 32
+```
 
-## 6. CI / Governança
+**Regra:** `draft` não pode aparecer em listagens públicas de clientes. Gate 1.5 verifica.
 
-- Gate Final ("Gate Final - Deploy Ready") é o único check required em `main`.
-- Workflows em `.github/workflows/` e migrations em `supabase/migrations/` exigem revisão humana (REGRA #8).
+---
 
-## 7. Acessibilidade (a11y)
+## 4. RLS — Políticas de Segurança (Fonte: `supabase/migrations/`, `docs/04_EXPLICACAO_DAS_POLICIES.md`)
 
-- Todos os componentes interativos devem ter foco visível (ring substitute).
+- **Leitura pública de produtos:** só itens ativos
+- **Escrita de products:** restrita a org owner/admin
+- **recently_viewed_products:** users só podem atualizar os próprios registros
+- **Regra crítica RLS:** tabelas com RLS habilitada e zero policies = deny-all silencioso → Gate 1.13.1 bloqueia
+- **Anon-insert rate guard:** 7 tabelas com INSERT anônimo possuem trigger de rate guard → Gate 1.13.2
 
-## 8. Versão e Release
+---
 
-- Release gerenciado pelo bot `release-please` via PR `chore(main): release X.Y.Z`.
-- Merge de release PR é decisão do PO.
+## 5. DDL e Migrations (Fonte: `CLAUDE.md REGRA #8`, `docs/db/POLITICA_DDL.md`)
+
+- **Único caminho autorizado** para migration em prod: workflow `.github/workflows/db-apply-migration.yml`
+- **`execute_sql` via MCP** = proibido para DDL em sessão de agente (E056)
+- **`supabase db push`** = proibido (REGRA #1 §7)
+- **Migrations em PR** que tocam `supabase/migrations/` → AGUARDA PO (sem exceção)
+- Ledger de reconciliação: `supabase/MIGRATIONS_SYNC_LOG.md`
+- Baseline do drift-check: `supabase/baseline/*.sql` — NUNCA copiar para `migrations/`
+
+---
+
+## 6. CI / Gate Final (Fonte: `CLAUDE.md CI — ESTRUTURA DE GATES`, `.github/workflows/deploy-gates.yml`)
+
+- **Único required check em `main`:** "Gate Final - Deploy Ready" em `deploy-gates.yml`
+- Gate Final = agregador de todos os gates em sequência
+- Gate 0: SSOT Supabase (validate-supabase-config.mjs)
+- Gate 1: Lint + TypeScript (0 erros é baseline)
+- Gate 2: Testes unitários (passando no CI)
+- Gate 3: E2E Smoke (Playwright chromium)
+- **Regressão** = nova falha além do baseline. Corrigir causa raiz, nunca burlar.
+- `paths-ignore: docs/**` — PRs que tocam só `docs/` não disparam CI
+
+---
+
+## 7. Vercel (Fonte: `CLAUDE.md REGRA #11`, `.vercel/project.json`)
+
+- Projeto canônico: `prj_9UfugNYCuboH2R0XB04Jv8PpjDpZ` (team `juca1`)
+- `.vercel/project.json` está versionado — NUNCA deletar
+- Proibido `vercel link` fora do raiz do repositório (incidente 2026-09-15)
+
+---
+
+## 8. Tipos derivados do banco (Fonte: `src/integrations/supabase/types.ts`, `CLAUDE.md REGRA #4`)
+
+- **Tabelas obrigatórias em types.ts:**
+  - `personalization_techniques`, `products`, `product_variants`, `suppliers`
+  - `supplier_products_raw`, `magazines`, `magazine_items`, `magazine_templates`
+- Gate 1.2: drift estrutural — nenhuma tabela pode desaparecer sem entrada em `docs/TYPES_INVENTORY_REMOVAL_ALLOWLIST.json`
+- Script de verificação: `npm run check:types-inventory-drift`
+
+---
+
+## 9. Agentes e Cross-Agent Merge (Fonte: `CLAUDE.md REGRA #10`, E189)
+
+- 6 agentes escrevem no repo: Claude, Codex, Devin, Lovable, github-actions, cline
+- Prefixos de branch: `claude/*`, `codex/*`, `devin/*` etc.
+- **Cross-agent merge sem PR** = proibido (Gate 1.18)
+- Sentinel: `scripts/sentinel-check.sh` recusa merge commit entre prefixos de agentes diferentes
+
+---
+
+## 10. Arquivos Protegidos (Fonte: `CLAUDE.md — ARQUIVOS PROTEGIDOS`)
+
+| Arquivo | Regra |
+|---|---|
+| `src/integrations/supabase/client.ts` | REGRA #1 — SSOT |
+| `scripts/validate-supabase-config.mjs` | Gate 0 guard |
+| `.env.example` | Referência canônica de vars |
+| `.lovableignore` | Proteção contra Lovable |
+| `.github/CODEOWNERS` | Revisão obrigatória |
+| `scripts/sentinel-check.sh` | Branch Protection Sentinel |
+| `.github/workflows/deploy-gates.yml` | Gate Final pipeline |
+| `.vercel/project.json` | Vercel canônico (REGRA #11) |
+| `docs/SCHEMA_REFERENCE.md` | pg_catalog do BD canônico |
+
+---
+
+## 11. Contrato de Calendário (Fonte: `src/components/ui/__tests__/calendar.redesign.test.tsx`)
+
+- Baseline de 2 falhas em main: `day_selected` e `day_outside`
+- Causa: migração react-day-picker v8→v10 sem atualizar seletores DOM
+- DOM v10: `aria-selected` vai para `<td>`, não para `<button>`
+
+---
+
+*Fontes verificadas em 2026-10-30 contra código em `126062c1b919c1e84b70cacf96ab3fdda7494211` (main HEAD pós-merge #2826)*

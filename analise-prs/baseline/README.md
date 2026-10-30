@@ -1,65 +1,49 @@
-# Baseline CI - Main SHA 9a97f9a2c857b25590691efd2c741a194bfb24da
+# Baseline de CI — main `8bafc7d5a0a1f0f6a06d88adc6577098f873dfcb`
 
-Data: 2026-10-29
-Sessao: https://claude.ai/code/session_01RfQzo8Ean3zudG2sEN79b6
-SHA inicial: 8bc08b12f50872e2d9b9a93d3f7dbae388fec204
-SHA pos-8-merges: 9a97f9a2c857b25590691efd2c741a194bfb24da
+**Data:** 2026-10-22
+**SHA fixado:** `8bafc7d5a0a1f0f6a06d88adc6577098f873dfcb` (após merge PR #2356, sessão session_012WyySbh2tj8vhRQLBf3mHo)
+**SHA anterior:** `8e8053b9ed85142e85809783cd3acf9a3077ecde` (sessão anterior)
+**Fonte:** GitHub Actions check runs via API + `npx tsc --noEmit` rodado no container cloud
 
-## Deploy Gates no Main
+## Resultado do Gate Final
 
-O workflow deploy-gates.yml NAO disparou no push para main apos PR #2719 (docs-only/chore).
-O workflow usa paths-ignore que excluiu esse push.
+**Gate Final - Deploy Ready: `failure`** (pré-existente em main)
 
-Deploy Gates RODOU e PASSOU em todas as 8 PRs antes de cada merge:
-Evidencia: conclusion: success verificada via github_get_workflow_run (FOREVER MCP) antes
-de cada operacao de github_merge_pull_request.
+O main já estava vermelho antes de qualquer análise. Regressão é medida como:
+> "qualquer check que passe em main e falhe após o merge" OU "qualquer novo check failure não presente neste baseline"
 
-## Checks que Rodaram em Main 9a97f9a2c8 (pos-merges)
+## Checks com failure em main (`8e8053b9`)
 
-| Workflow | Run ID | Resultado |
-|---|---|---|
-| Static Health Checks | 40969607792 | success |
-| SSOT Supabase Guard | 40969607824 | success |
-| Security Scan | 40969607897 | success |
-| Gitleaks Full History Audit | 40969607927 | success |
-| Policies Baseline | 40969607904 | success |
-| Supabase Linter Gate | 40969607838 | success |
-| CodeQL | 40969607845 | success |
-| Select Columns vs Types | 40969607793 | success |
-| UI Visual A11y | 40969607907 | success |
-| Quote Builder Delivery Quality | 40969607919 | success |
-| Required Checks Guard | 40969607855 | success |
-| Release Please | 40969607960 | success |
-| E2E Personalization Flow | 40969607989 | FAILURE (PRE-EXISTENTE) |
-| Branch Protection Sentinel | 40969607706 | FAILURE (PRE-EXISTENTE - aguarda PR #2749) |
+| Check | Conclusão |
+|---|---|
+| `Gate Final - Deploy Ready` | `failure` |
+| `Gate 0.5 - Dependency Audit` | `failure` |
+| `Gate 1 - Lint + TypeScript` | `failure` |
+| `E2E — Error Boundaries (sem auth)` | `failure` |
+| `E2E — Full User Flows (authed)` | `failure` |
+| `E2E — Personalization Journey` | `failure` |
+| `cart-invariants-summary` | `failure` |
+| `cart-invariants (chromium-authed · shard 1/2)` | `failure` |
+| `cart-invariants (chromium-authed · shard 2/2)` | `failure` |
+| `cart-invariants (firefox-authed · shard 1/2)` | `failure` |
+| `cart-invariants (firefox-authed · shard 2/2)` | `failure` |
+| `Migrations x Canonical schema` | `failure` |
+| `check` (×8 entradas) | `failure` |
 
-## Falhas Conhecidas (Pre-Existentes - NAO Introduzidas pelos Merges)
+## Checks com success em main (`8e8053b9`) — amostra relevante
 
-E2E Personalization Flow (run 40969607989): pre-existente, nao bloqueante para Gate Final
-Branch Protection Sentinel (run 40969607706): aguarda PR #2749 (DECISAO_HUMANA, REGRA #8)
-Uptime Monitor: infra externa intermitente
+| Check | Conclusão |
+|---|---|
+| `Gate 0 - SSOT Supabase (project ID canônico)` | `success` |
+| `Gate 2 - Unit Tests` | `success` |
+| `Gate 2.5 - PostgreSQL Transactional Integrity` | `success` |
+| `Gate 4 - Lighthouse CI` | `success` |
+| `Gate 5 - SEO Sanity Check` | `success` |
+| `Gate 5.5 - RPC restore_seller_cart presente no canônico` | `success` |
+| `Gate E23 - Secret Scan (gitleaks)` | `success` |
+| `Assert Gate Final is required on main` | `success` |
 
-## Logs Supabase (postgres_logs) Pos-Merges 18:00-23:59 UTC
+## Nota sobre CI local
 
-Erros encontrados - NENHUM introduzido pelos merges:
-- database postgres has a collation version mismatch: plataforma Supabase, pre-existente
-- column companies.owner_id does not exist: erro app pre-existente (nenhum merge tocou companies)
-- duration 30028ms SELECT pg_sleep(30): cron lento pre-existente
-
-Conclusao: zero erros novos introduzidos pelos 8 merges.
-
-## Analise Local (Worktree)
-
-NAO REALIZADA. Motivo: OOM - npm run lint:baseline falha com heap limit no ambiente remoto.
-Analise de diff realizada via GitHub API (get_pr_diff, list_pr_files) para cada PR.
-Evidencia documentada nos dossiers individuais.
-
-## PRs Aguardando CI
-
-| PR | Run ID | Status | Desde |
-|---|---|---|---|
-| #2747 | 40970640916 | queued | 23:05Z |
-| #2739 | 40970786956 | queued | 23:06Z |
-
-Causa: backlog de runners GitHub Actions.
-Merge automatico via check-in trig_01SKnYnGKKstgSPBksfF9c67 as 00:02Z.
+`npm ci` retorna 403 no container cloud.
+O baseline é derivado exclusivamente dos check runs do GitHub Actions.
