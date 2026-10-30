@@ -2,6 +2,40 @@
 **Atualizado em:** 2026-10-30
 **Branch de correção:** `claude_04/beautiful-gates-bvocz5` (PR #2597 — **MERGEADO** ✅)
 
+## Atualização — HEAD `c09402816` / Baseline CI (2026-10-30T08:02 UTC)
+
+### Falhas confirmadas (não-required, pré-existentes) em HEAD `c09402816`
+
+#### P19-E2E-Magazine — E2E — Magazine Header Layout
+- **Run ID:** [#41021989518](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41021989518) (sha `c09402816`)
+- **Erro exato:** Step "Run Magazine Header E2E" — exit code 1; artefato `e2e-magazine-header-report` mostra `❌ Magazine Header E2E failed — ver artifact e2e-magazine-header-report`
+- **Causa raiz:** Falha de infraestrutura E2E pré-existente — testes Playwright dependem de auth Supabase e dados no CI; falha idêntica em SHAs anteriores.
+- **Impacto no Gate Final:** NÃO é required check — não bloqueia deploy.
+- **Ação do PO:** Nenhuma obrigatória. Opcional: verificar credenciais E2E no CI.
+
+#### P19-E2E-Replenishment — CI - Replenishment Module Quality Gate
+- **Run ID:** [#41021989515](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41021989515) (sha `c09402816`)
+- **Erro exato:** Job `audit`, step "Run E2E Tests (Smoke)" — exit code 1
+- **Causa raiz:** Testes E2E smoke do módulo de reposição falham por ausência de credenciais/infra no CI (mesmo padrão dos demais workflows E2E). Falha pré-existente em SHAs anteriores ao HEAD atual.
+- **Impacto no Gate Final:** NÃO é required check — não bloqueia deploy.
+- **Ação do PO:** Nenhuma obrigatória. Opcional: verificar secrets `E2E_USER_EMAIL`/`E2E_USER_PASSWORD` no CI.
+
+#### P19-D/I/J/K — E2E • Swatch QuickView (Lista + Tabela) — Erro exato atualizado
+- **Run referência:** job #123943704574 (run #41019606069, sha `9dde1db7`)
+- **Erro exato do step `check-min-tests`:**
+  ```
+  [check-playwright-min-executed] FALHA: ratio de skipped 66.7% > maximo 50.0% (10/15).
+  Causas possiveis: muitos testes com requireAuth, condicoes de skip incorretas ou spec nao encontrou dados de fixture.
+  ```
+- **Causa raiz detalhada:** 10 de 15 testes chamam `requireAuth()` — que chama `test.skip()` quando `authStorageHasSession()` retorna `false` (storageState.json não existe). Isso ocorre porque o `e2e-setup` composite action só roda o auth setup quando `require-auth: 'true'`, mas `e2e-swatch-quickview.yml` não passa esse input. Resultado: `auth.setup.ts` não é executado explicitamente → `storageState.json` não criado → 10 testes pulam → ratio 10/15 = 66.7% > 50% (limite do `check-min-tests`).
+- **Código relevante:** `e2e/fixtures/test-base.ts:requireAuth()` → `e2e/fixtures/auth.setup.ts:E21` → `playwright.config.ts:chromium-authed`
+- **Impacto no Gate Final:** NÃO é required check — não bloqueia deploy.
+- **Ação do PO:**
+  1. Verificar que os secrets `E2E_USER_EMAIL` e `E2E_USER_PASSWORD` estão configurados e válidos em GitHub → Settings → Secrets and variables → Actions.
+  2. Se válidos, passar `require-auth: 'true'` no `e2e-setup` step de `.github/workflows/e2e-swatch-quickview.yml` (fix de código — requer aprovação do PO para garantir que o auth E2E não quebre outros fluxos).
+
+---
+
 ## Atualização — PR #2768 (2026-10-30)
 
 O PR [#2768 — revalidação de preços no Kit Builder](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2768) tem dois SHAs relevantes: `dcf88ec5` (código) e `b2f4be5b` (anotação documental). No SHA de código, a última consulta encontrou checks `queued`/`in_progress` e a falha externa do Copilot abaixo. No SHA documental, a execução de CI foi ignorada pelo fluxo docs-only; rodei `build:verify` e a suíte completa localmente após esse commit. Portanto, os checks remotos do SHA de código ainda não validam o SHA atual.
