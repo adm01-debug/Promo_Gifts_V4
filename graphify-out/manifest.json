@@ -3894,9 +3894,9 @@
     "semantic_hash": ""
   },
   "package.json": {
-    "mtime": 1793306977.4145393,
-    "seen": 1793307049.91388,
-    "ast_hash": "a28914059a44d6d2987934cf3d34bac1",
+    "mtime": 1793319991.9621038,
+    "seen": 1793330796.4534395,
+    "ast_hash": "7b110a8896aae8fa0461b43181a4cdaf",
     "semantic_hash": ""
   },
   "playwright.config.ts": {
@@ -3918,8 +3918,8 @@
     "semantic_hash": ""
   },
   "public/schemas/ssot-report.schema.json": {
-    "mtime": 1793315353.3308704,
-    "seen": 1793315627.7575822,
+    "mtime": 1793330442.4680011,
+    "seen": 1793330796.453503,
     "ast_hash": "5f7c1a0d8db2e261abb51ec9125a64d5",
     "semantic_hash": ""
   },
@@ -21708,9 +21708,9 @@
     "semantic_hash": ""
   },
   "supabase/functions/health-check/index.ts": {
-    "mtime": 1793218695.3276722,
-    "seen": 1793253147.2942493,
-    "ast_hash": "74def0f201f072e4d9814a39285f9ba8",
+    "mtime": 1793318552.4947603,
+    "seen": 1793330796.5104904,
+    "ast_hash": "453af5098cf7cc8819e0e13abaf1655b",
     "semantic_hash": ""
   },
   "supabase/functions/image-proxy/index.ts": {
@@ -26936,7 +26936,7 @@
   ".claude/homunculus/instincts/inherited/promo-gifts-v4-instincts.yaml": {
     "mtime": 1793218694.9899879,
     "seen": 1793314517.651689,
-    "ast_hash": "42f838605cab616bb0ca9fb29a612cec",
+    "ast_hash": "",
     "semantic_hash": ""
   },
   ".claude/skills/promo-gifts-v4/SKILL.md": {
@@ -27570,9 +27570,9 @@
     "semantic_hash": ""
   },
   "CHANGELOG.md": {
-    "mtime": 1793218846.5219262,
-    "seen": 1793253147.2971818,
-    "ast_hash": "fda83a17518c0e6e829be067c6d91162",
+    "mtime": 1793319991.9593964,
+    "seen": 1793330796.526091,
+    "ast_hash": "986f34793de038bd175eda7a9e4c15dc",
     "semantic_hash": ""
   },
   "CLAUDE.md": {
@@ -29910,20 +29910,20 @@
     "semantic_hash": ""
   },
   "qa/exports/proposal-10015-26.html": {
-    "mtime": 1793315425.5668495,
-    "seen": 1793315627.8475544,
+    "mtime": 1793330535.783401,
+    "seen": 1793330796.5384233,
     "ast_hash": "92ca7a7ea332a554b7785b08a7828793",
     "semantic_hash": ""
   },
   "qa/exports/proposal-complex-99999-26.html": {
-    "mtime": 1793315425.5748496,
-    "seen": 1793315627.8475554,
+    "mtime": 1793330535.7874012,
+    "seen": 1793330796.5384247,
     "ast_hash": "04240878120d40179aa6e7ce7356afe8",
     "semantic_hash": ""
   },
   "qa/exports/proposal-minimal-00001-26.html": {
-    "mtime": 1793315425.5708494,
-    "seen": 1793315627.8475566,
+    "mtime": 1793330535.7874012,
+    "seen": 1793330796.5384264,
     "ast_hash": "cf17ac99e7adfb32411e5abee571a3ff",
     "semantic_hash": ""
   },
@@ -30858,9 +30858,9 @@
     "semantic_hash": ""
   },
   ".release-please-manifest.json": {
-    "mtime": 1793218846.5219262,
-    "seen": 1793253147.2913475,
-    "ast_hash": "31a542588d2346c67e1ba53283396e01",
+    "mtime": 1793319991.9532204,
+    "seen": 1793330796.441268,
+    "ast_hash": "0adcc346096243aef09d0df192abc0ab",
     "semantic_hash": ""
   },
   ".security/edge-zod-ratchet.json": {
@@ -31122,21 +31122,21 @@
     "semantic_hash": ""
   },
   "analise-prs/baseline/baseline.json": {
-    "mtime": 1793218695.0039413,
-    "seen": 1793253147.2913687,
-    "ast_hash": "8560342e264e89c928071dc67a2a9418",
+    "mtime": 1793327190.9161165,
+    "seen": 1793330796.4415061,
+    "ast_hash": "ae3e4fd1f92edb31086c99d7edfb7ae2",
     "semantic_hash": ""
   },
   "analise-prs/progresso.json": {
-    "mtime": 1793315045.2654746,
-    "seen": 1793315627.7461407,
-    "ast_hash": "ca9ebc3b87619df31e2b8dac57dd15bf",
+    "mtime": 1793327190.9161165,
+    "seen": 1793330796.441512,
+    "ast_hash": "e64e0a2fb3fd8c1be4a4f459b7b8aa79",
     "semantic_hash": ""
   },
   "analise-prs/prs.json": {
-    "mtime": 1793315045.2654746,
-    "seen": 1793315627.746142,
-    "ast_hash": "a355a4c6dc70b46592b67e8fbe054c2f",
+    "mtime": 1793327245.8212855,
+    "seen": 1793330796.441513,
+    "ast_hash": "817db0fea42b427600b4026f0482009f",
     "semantic_hash": ""
   },
   "auditoria-supabase/baseline_depois.json": {
@@ -31740,15 +31740,15 @@
     "semantic_hash": ""
   },
   "PENDENCIAS.md": {
-    "mtime": 1793315069.3961575,
-    "seen": 1793315627.8354275,
-    "ast_hash": "ef531b3eca5260f9dfe8dba04ed6d61d",
+    "mtime": 1793330231.6952138,
+    "seen": 1793330796.5261202,
+    "ast_hash": "8caf12a44d02535c44c0929371d84e4d",
     "semantic_hash": ""
   },
   "RELATORIO_CI.md": {
-    "mtime": 1793315045.2629268,
-    "seen": 1793315627.8354568,
-    "ast_hash": "c81ecc55753026d1f47ff17db97a0651",
+    "mtime": 1793330237.5032127,
+    "seen": 1793330796.5261488,
+    "ast_hash": "5d09a199a10389356590945423c24d76",
     "semantic_hash": ""
   },
   "analise-branches/RELATORIO_BRANCHES.md": {
@@ -31854,15 +31854,15 @@
     "semantic_hash": ""
   },
   "analise-prs/RELATORIO_PRS.md": {
-    "mtime": 1793315045.263254,
-    "seen": 1793315627.8357823,
-    "ast_hash": "6a5f887cc7883d84b9ee8fdcccd86fdb",
+    "mtime": 1793323783.9622233,
+    "seen": 1793330796.5265872,
+    "ast_hash": "9d82cd74acb4f4c017853a1e7c060061",
     "semantic_hash": ""
   },
   "analise-prs/baseline/build.txt": {
-    "mtime": 1793315045.263254,
-    "seen": 1793315627.835785,
-    "ast_hash": "643851d1573aa49dc1476e241b7d9029",
+    "mtime": 1793327190.9161165,
+    "seen": 1793330796.5265925,
+    "ast_hash": "3186e124aba6e655199b38935e6555e8",
     "semantic_hash": ""
   },
   "analise-prs/baseline/ci-per-test-name.md": {
@@ -31872,9 +31872,9 @@
     "semantic_hash": ""
   },
   "analise-prs/baseline/lint.txt": {
-    "mtime": 1793315045.263254,
-    "seen": 1793315627.8358028,
-    "ast_hash": "9fa600104ada6d9442dd8a60d69a348c",
+    "mtime": 1793327190.9161165,
+    "seen": 1793330796.5266168,
+    "ast_hash": "3b8e6f1062a55f4f954571a866ded153",
     "semantic_hash": ""
   },
   "analise-prs/baseline/main-sha.txt": {
@@ -31890,9 +31890,9 @@
     "semantic_hash": ""
   },
   "analise-prs/baseline/state.md": {
-    "mtime": 1793218695.0041432,
-    "seen": 1793253147.297202,
-    "ast_hash": "bd887074938146599945e8a495f1aa66",
+    "mtime": 1793327190.9161165,
+    "seen": 1793330796.5266588,
+    "ast_hash": "e75f95f07ed197380ad4f2928bdded06",
     "semantic_hash": ""
   },
   "analise-prs/baseline/tsc-errors.txt": {
@@ -31902,9 +31902,9 @@
     "semantic_hash": ""
   },
   "analise-prs/baseline/typecheck.txt": {
-    "mtime": 1793315045.263254,
-    "seen": 1793315627.835841,
-    "ast_hash": "33e9b0652ef059a792b2ed05ea9c089f",
+    "mtime": 1793327190.9161165,
+    "seen": 1793330796.5267148,
+    "ast_hash": "efa514025a59e395c1835f442bc7110f",
     "semantic_hash": ""
   },
   "analise-prs/baseline/unit-tests.txt": {
@@ -32106,9 +32106,9 @@
     "semantic_hash": ""
   },
   "analise-prs/dossies/PR-2420.md": {
-    "mtime": 1793218695.0045547,
-    "seen": 1793253147.2972245,
-    "ast_hash": "6afde87b796e414f7467571308f6c76b",
+    "mtime": 1793327190.9161165,
+    "seen": 1793330796.5272887,
+    "ast_hash": "be55ab63c1322e1201fead676d83f77e",
     "semantic_hash": ""
   },
   "analise-prs/dossies/PR-2422.md": {
@@ -32484,45 +32484,45 @@
     "semantic_hash": ""
   },
   "analise-prs/dossies/PR-2572.md": {
-    "mtime": 1793218695.0045547,
-    "seen": 1793253147.2972584,
-    "ast_hash": "3f0c5ec9ce04915525813ae526995d98",
+    "mtime": 1793327190.9161165,
+    "seen": 1793330796.5283198,
+    "ast_hash": "fe6cb824ee2b7287d5e8f0791b18b8c4",
     "semantic_hash": ""
   },
   "analise-prs/dossies/PR-2579.md": {
-    "mtime": 1793218695.0045547,
-    "seen": 1793253147.297259,
-    "ast_hash": "34ad4b34f5ab2f392a4d856b501f97dc",
+    "mtime": 1793327190.9161165,
+    "seen": 1793330796.5283206,
+    "ast_hash": "c3b95f70b8f449bfb28c1aa26e2ad981",
     "semantic_hash": ""
   },
   "analise-prs/dossies/PR-2580.md": {
-    "mtime": 1793315045.264879,
-    "seen": 1793315627.8374746,
-    "ast_hash": "b2e255242b9fee46dd45daacd6b65c89",
+    "mtime": 1793327190.9161165,
+    "seen": 1793330796.5283215,
+    "ast_hash": "0c58964b568e4c04e67ea59c34471697",
     "semantic_hash": ""
   },
   "analise-prs/dossies/PR-2588.md": {
-    "mtime": 1793218695.0045547,
-    "seen": 1793253147.2972603,
-    "ast_hash": "aa9b3eda9f98fd56a4822ea06b17cc6e",
+    "mtime": 1793327190.9161165,
+    "seen": 1793330796.5283241,
+    "ast_hash": "31c1512ad2aed7a2541cb46b8ddff549",
     "semantic_hash": ""
   },
   "analise-prs/dossies/PR-2600.md": {
-    "mtime": 1793218695.0045547,
-    "seen": 1793253147.297261,
-    "ast_hash": "003180b210000cd552b8711fd41df24a",
+    "mtime": 1793327190.9161165,
+    "seen": 1793330796.5283265,
+    "ast_hash": "b98abdb356d1dffe77181440c19eb1e8",
     "semantic_hash": ""
   },
   "analise-prs/dossies/PR-2605.md": {
-    "mtime": 1793218695.0045547,
-    "seen": 1793253147.2972615,
-    "ast_hash": "1e456193bf8f96fdb3a61edc4254d091",
+    "mtime": 1793327190.9161165,
+    "seen": 1793330796.5283277,
+    "ast_hash": "dc5b3ad24802071b030a40f22d7ffb23",
     "semantic_hash": ""
   },
   "analise-prs/dossies/PR-2622.md": {
-    "mtime": 1793218695.0045547,
-    "seen": 1793253147.2972622,
-    "ast_hash": "3f626d3713e35415b028bb89fd5e2296",
+    "mtime": 1793327190.9161165,
+    "seen": 1793330796.5283284,
+    "ast_hash": "cfd606d786668f964a3d6e0ad4ee568d",
     "semantic_hash": ""
   },
   "analise-prs/dossies/PR-2625.md": {
@@ -32538,39 +32538,39 @@
     "semantic_hash": ""
   },
   "analise-prs/dossies/PR-2631.md": {
-    "mtime": 1793218695.0045547,
-    "seen": 1793253147.2972636,
-    "ast_hash": "1aca1305380e95ad1270f7490dfbba33",
+    "mtime": 1793327190.9161165,
+    "seen": 1793330796.5283625,
+    "ast_hash": "3a280eabcb8035c79150399e1fe90089",
     "semantic_hash": ""
   },
   "analise-prs/dossies/PR-2645.md": {
-    "mtime": 1793218695.0045547,
-    "seen": 1793253147.2972643,
-    "ast_hash": "0d1fcc27652a6300c1e0d1c3a89af655",
+    "mtime": 1793327190.9161165,
+    "seen": 1793330796.5283632,
+    "ast_hash": "72cae23967396d755e8de6393ed78e2c",
     "semantic_hash": ""
   },
   "analise-prs/dossies/PR-2646.md": {
-    "mtime": 1793218695.0045547,
-    "seen": 1793253147.2972648,
-    "ast_hash": "2d36498758b2e92fbd54d517729e929c",
+    "mtime": 1793327190.9161165,
+    "seen": 1793330796.528364,
+    "ast_hash": "27174dedb734f5954625b8242f4a49bd",
     "semantic_hash": ""
   },
   "analise-prs/dossies/PR-2653.md": {
-    "mtime": 1793218695.0045547,
-    "seen": 1793253147.2972658,
-    "ast_hash": "cca37b962718f1a353fc56b3aa6ed32a",
+    "mtime": 1793327190.9161165,
+    "seen": 1793330796.5283675,
+    "ast_hash": "d19a04d452a43a7a7b397e8ac3d59e54",
     "semantic_hash": ""
   },
   "analise-prs/dossies/PR-2662.md": {
-    "mtime": 1793218695.0045547,
-    "seen": 1793253147.2972665,
-    "ast_hash": "8fd3abc6c38660046b223722095e8b9a",
+    "mtime": 1793327190.9161165,
+    "seen": 1793330796.5283718,
+    "ast_hash": "0962c50baa8f86aa2a80ed574ea505f3",
     "semantic_hash": ""
   },
   "analise-prs/dossies/PR-2663.md": {
-    "mtime": 1793218695.0045547,
-    "seen": 1793253147.2972672,
-    "ast_hash": "281794cf819fda5355587211380ad4ad",
+    "mtime": 1793327190.9161165,
+    "seen": 1793330796.5283725,
+    "ast_hash": "caab19d7e7cdad6d7c1ecd0d43b4750c",
     "semantic_hash": ""
   },
   "analise-prs/dossies/PR-2664.md": {
@@ -32580,15 +32580,15 @@
     "semantic_hash": ""
   },
   "analise-prs/dossies/PR-2665.md": {
-    "mtime": 1793218695.0045547,
-    "seen": 1793253147.2972684,
-    "ast_hash": "3fc8e97cbb260328614177c581fba93d",
+    "mtime": 1793327190.9161165,
+    "seen": 1793330796.5283904,
+    "ast_hash": "70359d04a27132fc3d9dc7c1ce33c629",
     "semantic_hash": ""
   },
   "analise-prs/dossies/PR-2666.md": {
-    "mtime": 1793218695.0045547,
-    "seen": 1793253147.297269,
-    "ast_hash": "34f902945066e6e0f1a1bc6c4d93fc07",
+    "mtime": 1793327190.9161165,
+    "seen": 1793330796.528391,
+    "ast_hash": "8360a3b7428593be2c3b103045184a20",
     "semantic_hash": ""
   },
   "analise-prs/dossies/PR-2667.md": {
@@ -32598,27 +32598,27 @@
     "semantic_hash": ""
   },
   "analise-prs/dossies/PR-2668.md": {
-    "mtime": 1793218695.0045547,
-    "seen": 1793253147.29727,
-    "ast_hash": "ecfcad14475160a2ef786701ba4f478d",
+    "mtime": 1793327190.9161165,
+    "seen": 1793330796.5284078,
+    "ast_hash": "307f74de7badbbbd1aa8f6363c395bd1",
     "semantic_hash": ""
   },
   "analise-prs/dossies/PR-2675.md": {
-    "mtime": 1793218695.0045547,
-    "seen": 1793253147.2972705,
-    "ast_hash": "8bb28daf7fc74e1eda63bcc3b4673a1c",
+    "mtime": 1793327190.9161165,
+    "seen": 1793330796.5284102,
+    "ast_hash": "da21e91324514816103f8ddea6f2b71d",
     "semantic_hash": ""
   },
   "analise-prs/dossies/PR-2679.md": {
-    "mtime": 1793218695.0045547,
-    "seen": 1793253147.297271,
-    "ast_hash": "906003f71066a2991e1e465f006be224",
+    "mtime": 1793327190.9161165,
+    "seen": 1793330796.5284138,
+    "ast_hash": "90826f1bb4b3cbe6260a5999a4b69cb4",
     "semantic_hash": ""
   },
   "analise-prs/regras-de-negocio.md": {
-    "mtime": 1793315045.2654746,
-    "seen": 1793315627.8378174,
-    "ast_hash": "ceb323ee7aaa6f233e7760d9731eaa81",
+    "mtime": 1793327190.9161165,
+    "seen": 1793330796.528756,
+    "ast_hash": "25521640be291964f6ec9669d6bc2493",
     "semantic_hash": ""
   },
   "auditoria-supabase/A5_VALIDATION_REPORT.md": {
@@ -34074,9 +34074,9 @@
     "semantic_hash": ""
   },
   "docs/graphify/AUDITORIA_MAPAS_E_BENCHMARK_2026-10-29.md": {
-    "mtime": 1793314553.9695098,
-    "seen": 1793315627.8443716,
-    "ast_hash": "0fddc953a8e5c50c45e9f93f21af2581",
+    "mtime": 1793316251.143821,
+    "seen": 1793330796.535017,
+    "ast_hash": "c45004610534fc64b72e4a529727f92f",
     "semantic_hash": ""
   },
   "e2e/customization/collapse-reflow.spec.ts-snapshots/location-panel-collapsed-desktop-chromium-authed-linux.png": {
@@ -34296,9 +34296,9 @@
     "semantic_hash": ""
   },
   "analise-prs/baseline/README.md": {
-    "mtime": 1793315045.263254,
-    "seen": 1793315627.8357837,
-    "ast_hash": "6921cb4f2579d23359d602310b9e3bcb",
+    "mtime": 1793327190.9161165,
+    "seen": 1793330796.52659,
+    "ast_hash": "3effab2d2fe019524f680652bbdd4107",
     "semantic_hash": ""
   },
   "analise-prs/baseline/tests.txt": {
@@ -34314,15 +34314,15 @@
     "semantic_hash": ""
   },
   "analise-prs/dossies/PR-2674.md": {
-    "mtime": 1793315045.264879,
-    "seen": 1793315627.8377662,
-    "ast_hash": "2332e219f163173458af1ed744134c22",
+    "mtime": 1793327190.9161165,
+    "seen": 1793330796.5284092,
+    "ast_hash": "cdd54eba84911a9c991b9dcf9001aa21",
     "semantic_hash": ""
   },
   "analise-prs/dossies/PR-2688.md": {
-    "mtime": 1793315045.264879,
-    "seen": 1793315627.8377984,
-    "ast_hash": "57f0e2a25deda9814b59316c6900eb48",
+    "mtime": 1793322203.0941594,
+    "seen": 1793330796.5284157,
+    "ast_hash": "6deebcab3a79dbc9754802ce21d898a1",
     "semantic_hash": ""
   },
   "analise-prs/dossies/PR-2693.md": {
@@ -34338,9 +34338,9 @@
     "semantic_hash": ""
   },
   "analise-prs/dossies/PR-2701.md": {
-    "mtime": 1793315045.2654746,
-    "seen": 1793315627.8378005,
-    "ast_hash": "487501412464883d6d8bc1ab694b0d47",
+    "mtime": 1793327190.9161165,
+    "seen": 1793330796.5284488,
+    "ast_hash": "df09847c8a489b80a881e9e8b8d7b307",
     "semantic_hash": ""
   },
   "analise-prs/dossies/PR-2707.md": {
@@ -34362,15 +34362,15 @@
     "semantic_hash": ""
   },
   "analise-prs/dossies/PR-2713.md": {
-    "mtime": 1793315045.2654746,
-    "seen": 1793315627.8378031,
-    "ast_hash": "d4994e5aa8ffb1c2a592739275f1f120",
+    "mtime": 1793327190.9161165,
+    "seen": 1793330796.5285108,
+    "ast_hash": "e7b568424ea3299852a17388df2d3104",
     "semantic_hash": ""
   },
   "analise-prs/dossies/PR-2714.md": {
-    "mtime": 1793315045.2654746,
-    "seen": 1793315627.8378038,
-    "ast_hash": "9ea940cbaa303b8191234101c50e4c92",
+    "mtime": 1793323783.9622233,
+    "seen": 1793330796.5285115,
+    "ast_hash": "8827bccebd3678d4f7d06fe43091d414",
     "semantic_hash": ""
   },
   "analise-prs/dossies/PR-2715.md": {
@@ -34386,9 +34386,9 @@
     "semantic_hash": ""
   },
   "analise-prs/dossies/PR-2717.md": {
-    "mtime": 1793315045.2654746,
-    "seen": 1793315627.8378062,
-    "ast_hash": "3ddd835a1b13a6e5dd14aab98acd4da7",
+    "mtime": 1793327190.9161165,
+    "seen": 1793330796.5285447,
+    "ast_hash": "27f65258996b1404f7f295e3b3d746f8",
     "semantic_hash": ""
   },
   "analise-prs/dossies/PR-2719.md": {
@@ -34446,9 +34446,9 @@
     "semantic_hash": ""
   },
   "analise-prs/dossies/PR-2731.md": {
-    "mtime": 1793315045.2654746,
-    "seen": 1793315627.837812,
-    "ast_hash": "d2b8aaef3111da168988ef0da0a43318",
+    "mtime": 1793327473.8300302,
+    "seen": 1793330796.5286827,
+    "ast_hash": "9f512bcaa6a89d26288a5d845af94317",
     "semantic_hash": ""
   },
   "analise-prs/dossies/PR-2733.md": {
@@ -34458,9 +34458,9 @@
     "semantic_hash": ""
   },
   "analise-prs/dossies/PR-2734.md": {
-    "mtime": 1793315045.2654746,
-    "seen": 1793315627.8378139,
-    "ast_hash": "22f5eadb656bed2761d638ec04c81e0b",
+    "mtime": 1793327190.9161165,
+    "seen": 1793330796.5286987,
+    "ast_hash": "04ebd869500f67ad55f3793667217f01",
     "semantic_hash": ""
   },
   "analise-prs/dossies/PR-2735.md": {
@@ -34482,9 +34482,327 @@
     "semantic_hash": ""
   },
   "analise-prs/dossies/PR-2738.md": {
-    "mtime": 1793315045.2654746,
-    "seen": 1793315627.8378165,
-    "ast_hash": "9dcd726fff16a36853abfa732a94df06",
+    "mtime": 1793327190.9161165,
+    "seen": 1793330796.528746,
+    "ast_hash": "21fc4ed8762a08f4a57f57c6bfdd29ca",
+    "semantic_hash": ""
+  },
+  "analise-prs/baseline/checks-main-8bafc7d5.json": {
+    "mtime": 1793327190.9161165,
+    "seen": 1793330796.4415073,
+    "ast_hash": "4a2ac2ef29c89568745cc7363b0cd6eb",
+    "semantic_hash": ""
+  },
+  "analise-prs/baseline/checks-main-8e8053b9.json": {
+    "mtime": 1793327190.9161165,
+    "seen": 1793330796.4415085,
+    "ast_hash": "327b633c9a5fea21f06f520e7fbc709c",
+    "semantic_hash": ""
+  },
+  "analise-prs/baseline/checks-main-a0560fdc.json": {
+    "mtime": 1793327190.9161165,
+    "seen": 1793330796.44151,
+    "ast_hash": "1ef2a74b6e59ad0dfa743a5e51f19a31",
+    "semantic_hash": ""
+  },
+  "analise-prs/baseline/checks-main-f2f8c3d6.json": {
+    "mtime": 1793327190.9161165,
+    "seen": 1793330796.4415107,
+    "ast_hash": "df346155b5f1e3c21e15c0153da5920d",
+    "semantic_hash": ""
+  },
+  "analise-prs/baseline/pr-diffs-summary.json": {
+    "mtime": 1793327190.9161165,
+    "seen": 1793330796.4415112,
+    "ast_hash": "a4cbc377956f5c6caf1f8293de754e36",
+    "semantic_hash": ""
+  },
+  "analise-prs/RELATORIO_VALIDACAO_EXAUSTIVA.md": {
+    "mtime": 1793327190.9161165,
+    "seen": 1793330796.5265887,
+    "ast_hash": "6a4fe753f7fbc0ac929ab9ab55c86178",
+    "semantic_hash": ""
+  },
+  "analise-prs/baseline/baseline-session-012WyySbh2tj8vhRQLBf3mHo.md": {
+    "mtime": 1793327190.9161165,
+    "seen": 1793330796.5265913,
+    "ast_hash": "72caef09b578528df17de7174c92a1b0",
+    "semantic_hash": ""
+  },
+  "analise-prs/baseline/ci-comparison-a0560fdc-vs-f6f9889a.md": {
+    "mtime": 1793327190.9161165,
+    "seen": 1793330796.5265937,
+    "ast_hash": "0fdd72929974f2d365570f10bd5128b9",
+    "semantic_hash": ""
+  },
+  "analise-prs/baseline/failing-tests-by-name.md": {
+    "mtime": 1793327190.9161165,
+    "seen": 1793330796.5266142,
+    "ast_hash": "53962be54008ee6605e800011c403b4b",
+    "semantic_hash": ""
+  },
+  "analise-prs/baseline/gate1-lint-typecheck-output.md": {
+    "mtime": 1793327190.9161165,
+    "seen": 1793330796.5266154,
+    "ast_hash": "6e4b10c4335f52700283f5c139532bea",
+    "semantic_hash": ""
+  },
+  "analise-prs/baseline/local-checks-9a97f9a2.md": {
+    "mtime": 1793327190.9161165,
+    "seen": 1793330796.5266178,
+    "ast_hash": "2445e7c702831d67634be88eb8c5fec7",
+    "semantic_hash": ""
+  },
+  "analise-prs/baseline/local-checks.md": {
+    "mtime": 1793327190.9161165,
+    "seen": 1793330796.5266185,
+    "ast_hash": "43389c0fee09cc93ef3e7ffc1d7c69ce",
+    "semantic_hash": ""
+  },
+  "analise-prs/baseline/merge-test-diffs.md": {
+    "mtime": 1793327190.9161165,
+    "seen": 1793330796.5266562,
+    "ast_hash": "aa16cd1c739c8818cfa884bea2f8892d",
+    "semantic_hash": ""
+  },
+  "analise-prs/baseline/post-merge-ci-comparison.md": {
+    "mtime": 1793327190.9161165,
+    "seen": 1793330796.5266573,
+    "ast_hash": "58283616c78953bb2e3bdeea27c87b08",
+    "semantic_hash": ""
+  },
+  "analise-prs/baseline/vitest-baseline-9a97f9a2.md": {
+    "mtime": 1793327190.9161165,
+    "seen": 1793330796.5267324,
+    "ast_hash": "205aba8a7c52d0de11d6438aa9afdb0b",
+    "semantic_hash": ""
+  },
+  "analise-prs/baseline/vitest-failing-tests.md": {
+    "mtime": 1793327190.9161165,
+    "seen": 1793330796.5267336,
+    "ast_hash": "f2a7da5414be579fbb525ef8978e6fc1",
+    "semantic_hash": ""
+  },
+  "analise-prs/dossies/PR-2338.md": {
+    "mtime": 1793327190.9161165,
+    "seen": 1793330796.5271473,
+    "ast_hash": "99546f091437faba4cc8c247d730f5a4",
+    "semantic_hash": ""
+  },
+  "analise-prs/dossies/PR-2349.md": {
+    "mtime": 1793327190.9161165,
+    "seen": 1793330796.527148,
+    "ast_hash": "be5800e6f0c82d838178f5b317f5e668",
+    "semantic_hash": ""
+  },
+  "analise-prs/dossies/PR-2351.md": {
+    "mtime": 1793327190.9161165,
+    "seen": 1793330796.5271492,
+    "ast_hash": "feb4caa4c74c7c0337f9ae2880c2ff9e",
+    "semantic_hash": ""
+  },
+  "analise-prs/dossies/PR-2352.md": {
+    "mtime": 1793327190.9161165,
+    "seen": 1793330796.5271502,
+    "ast_hash": "f623b33ac1833cb9f9b70706d64027aa",
+    "semantic_hash": ""
+  },
+  "analise-prs/dossies/PR-2354.md": {
+    "mtime": 1793327190.9161165,
+    "seen": 1793330796.5271509,
+    "ast_hash": "11ed32a83d1dfa85bb275775e7e465df",
+    "semantic_hash": ""
+  },
+  "analise-prs/dossies/PR-2356.md": {
+    "mtime": 1793327190.9161165,
+    "seen": 1793330796.5271513,
+    "ast_hash": "78888b4e9ba4343dca00374fb1ecac45",
+    "semantic_hash": ""
+  },
+  "analise-prs/dossies/PR-2587.md": {
+    "mtime": 1793327190.9161165,
+    "seen": 1793330796.5283232,
+    "ast_hash": "955e0d2a498e20bf5f2f262a8e7c74e1",
+    "semantic_hash": ""
+  },
+  "analise-prs/dossies/PR-2594.md": {
+    "mtime": 1793327190.9161165,
+    "seen": 1793330796.528325,
+    "ast_hash": "e0cb2bd256d734a5f3250819d1f54561",
+    "semantic_hash": ""
+  },
+  "analise-prs/dossies/PR-2648.md": {
+    "mtime": 1793327190.9161165,
+    "seen": 1793330796.5283647,
+    "ast_hash": "5f445c0732bda7c3d5b7616ef56bae19",
+    "semantic_hash": ""
+  },
+  "analise-prs/dossies/PR-2649.md": {
+    "mtime": 1793327190.9161165,
+    "seen": 1793330796.5283651,
+    "ast_hash": "2f4048c0d1ca75da23078d49faaade20",
+    "semantic_hash": ""
+  },
+  "analise-prs/dossies/PR-2650.md": {
+    "mtime": 1793327190.9161165,
+    "seen": 1793330796.528366,
+    "ast_hash": "07d878ce12d90c77036046f55f980a84",
+    "semantic_hash": ""
+  },
+  "analise-prs/dossies/PR-2652.md": {
+    "mtime": 1793327190.9161165,
+    "seen": 1793330796.5283668,
+    "ast_hash": "b8424acec45c683edfa104e0a835d904",
+    "semantic_hash": ""
+  },
+  "analise-prs/dossies/PR-2654.md": {
+    "mtime": 1793327190.9161165,
+    "seen": 1793330796.5283682,
+    "ast_hash": "fbbd09a4d0adbf76d02c9fc2a779c38d",
+    "semantic_hash": ""
+  },
+  "analise-prs/dossies/PR-2655.md": {
+    "mtime": 1793327190.9161165,
+    "seen": 1793330796.528369,
+    "ast_hash": "2fa217af1ca98a6c3eb0dcc4f68992e0",
+    "semantic_hash": ""
+  },
+  "analise-prs/dossies/PR-2656.md": {
+    "mtime": 1793327190.9161165,
+    "seen": 1793330796.5283697,
+    "ast_hash": "0033967ae6934ae5225a389f673b2c6c",
+    "semantic_hash": ""
+  },
+  "analise-prs/dossies/PR-2657.md": {
+    "mtime": 1793327190.9161165,
+    "seen": 1793330796.5283701,
+    "ast_hash": "eaf2f0d8e53864ea21951837914ff172",
+    "semantic_hash": ""
+  },
+  "analise-prs/dossies/PR-2658.md": {
+    "mtime": 1793327190.9161165,
+    "seen": 1793330796.5283706,
+    "ast_hash": "060070e54260dac85dee027504b9542b",
+    "semantic_hash": ""
+  },
+  "analise-prs/dossies/PR-2673.md": {
+    "mtime": 1793327190.9161165,
+    "seen": 1793330796.5284085,
+    "ast_hash": "f12f2d5c9e27a87871bac766bdf2b4b6",
+    "semantic_hash": ""
+  },
+  "analise-prs/dossies/PR-2676.md": {
+    "mtime": 1793327190.9161165,
+    "seen": 1793330796.5284111,
+    "ast_hash": "c0771874f8094328ed3616af1e8eced5",
+    "semantic_hash": ""
+  },
+  "analise-prs/dossies/PR-2677.md": {
+    "mtime": 1793327190.9161165,
+    "seen": 1793330796.5284119,
+    "ast_hash": "22162e4e357811bc7c7d96da387e580c",
+    "semantic_hash": ""
+  },
+  "analise-prs/dossies/PR-2678.md": {
+    "mtime": 1793327190.9161165,
+    "seen": 1793330796.5284126,
+    "ast_hash": "6ad5e1c33b9c31e7e91822e37af5417a",
+    "semantic_hash": ""
+  },
+  "analise-prs/dossies/PR-2680.md": {
+    "mtime": 1793327190.9161165,
+    "seen": 1793330796.5284142,
+    "ast_hash": "18209a2de6510d3fe70f399746e0a567",
+    "semantic_hash": ""
+  },
+  "analise-prs/dossies/PR-2681.md": {
+    "mtime": 1793327190.9161165,
+    "seen": 1793330796.5284147,
+    "ast_hash": "3e836cbf24480214ef0eb617036bc6c9",
+    "semantic_hash": ""
+  },
+  "analise-prs/dossies/PR-2739.md": {
+    "mtime": 1793327190.9161165,
+    "seen": 1793330796.5287468,
+    "ast_hash": "42abef632eec5e31c3a41cb1d2b5d991",
+    "semantic_hash": ""
+  },
+  "analise-prs/dossies/PR-2741.md": {
+    "mtime": 1793327190.9161165,
+    "seen": 1793330796.5287476,
+    "ast_hash": "b6c3ac756eece95b41e9650f2c05bcc4",
+    "semantic_hash": ""
+  },
+  "analise-prs/dossies/PR-2742.md": {
+    "mtime": 1793327190.9161165,
+    "seen": 1793330796.5287483,
+    "ast_hash": "8fd43b005df3580016bc30e2565b1f53",
+    "semantic_hash": ""
+  },
+  "analise-prs/dossies/PR-2743.md": {
+    "mtime": 1793327190.9161165,
+    "seen": 1793330796.5287488,
+    "ast_hash": "e10bfbf4be2f90fcefaac6444e47f78b",
+    "semantic_hash": ""
+  },
+  "analise-prs/dossies/PR-2744.md": {
+    "mtime": 1793327190.9161165,
+    "seen": 1793330796.5287502,
+    "ast_hash": "a22d013955cb07aed3bd52944a920149",
+    "semantic_hash": ""
+  },
+  "analise-prs/dossies/PR-2745.md": {
+    "mtime": 1793327190.9161165,
+    "seen": 1793330796.528751,
+    "ast_hash": "5bc5330501486d796d48261f0a368a20",
+    "semantic_hash": ""
+  },
+  "analise-prs/dossies/PR-2746.md": {
+    "mtime": 1793327190.9161165,
+    "seen": 1793330796.5287516,
+    "ast_hash": "7b66c58bcfc4ae50556b42b418041d8e",
+    "semantic_hash": ""
+  },
+  "analise-prs/dossies/PR-2747.md": {
+    "mtime": 1793327190.9161165,
+    "seen": 1793330796.528752,
+    "ast_hash": "a7bfeab29b540b5713916d4a51dcb9b0",
+    "semantic_hash": ""
+  },
+  "analise-prs/dossies/PR-2749.md": {
+    "mtime": 1793327190.9161165,
+    "seen": 1793330796.5287528,
+    "ast_hash": "e1373260d5a3aacadba36044eac4e21d",
+    "semantic_hash": ""
+  },
+  "analise-prs/dossies/PR-2750.md": {
+    "mtime": 1793327190.9161165,
+    "seen": 1793330796.5287535,
+    "ast_hash": "ea5bf06bb4a8bc398729a489b8160d2c",
+    "semantic_hash": ""
+  },
+  "analise-prs/dossies/PR-2755.md": {
+    "mtime": 1793327190.9161165,
+    "seen": 1793330796.5287542,
+    "ast_hash": "fd480fd6e62cdd2b282fde265d6c825f",
+    "semantic_hash": ""
+  },
+  "analise-prs/dossies/PR-2758.md": {
+    "mtime": 1793327190.9161165,
+    "seen": 1793330796.5287547,
+    "ast_hash": "94e304846b879e070499909043417235",
+    "semantic_hash": ""
+  },
+  "analise-prs/dossies/PR-2759.md": {
+    "mtime": 1793327190.9161165,
+    "seen": 1793330796.5287552,
+    "ast_hash": "d5b733571e345d2187fe2507b02b4703",
+    "semantic_hash": ""
+  },
+  "package-lock.json": {
+    "mtime": 1793319991.9618185,
+    "seen": 1793330796.5417833,
+    "ast_hash": "244bba9092610860abbec3114bf1ccaf",
     "semantic_hash": ""
   }
 }
