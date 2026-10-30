@@ -629,3 +629,49 @@ O último run completo e autoritativo é:
 - **Falhas não-required**: 7 workflows, todos documentados com causa exata em PENDENCIAS.md §P30
 - **Branch de trabalho**: `claude/fix-ci-workflows-261030-1730`
 - **Ação PO necessária**: ver PENDENCIAS.md §P30 tabela "Ações pendentes"
+
+---
+
+## P31 — Baseline local + inventário HEAD `b92bcf876` (2026-10-30T19:00Z)
+
+### Baseline local (HEAD `b92bcf876`)
+
+| Comando | Resultado | Evidência |
+|---|---|---|
+| `npm ci` | ✅ **success** (carregado de §P29) | Código funcional idêntico — `b92bcf876` toca apenas `analise-prs/**` (docs-only) |
+| `npm run build` | ✅ **success** — built in 12.73s (executado) | INEFFECTIVE_DYNAMIC_IMPORT esperado; chunk-cycles OK; exit 0 |
+| `npx tsc --noEmit` | ✅ **success** — exit 0 (executado) | Zero erros TypeScript em `b92bcf876` |
+| `npx vitest run` | ⚠️ **timeout** (carregado de §P29) | Container remoto sem VITE_SUPABASE_URL — Gate 2 (unit-tests) é fonte autoritativa |
+
+**`b92bcf876` toca apenas `analise-prs/**`** — paths-ignore ativo: Gates 1 (lint/TS), 2 (unit-tests) e 3 (E2E smoke) são skipped pelo workflow. O Gate Final depende apenas de gates não-skipped.
+
+### Inventário completo de falhas — filtro `status=failure` branch=`main` (2026-10-30T19:00Z)
+
+| Workflow | Run | SHA | Causa raiz | Required? | Em PENDENCIAS |
+|---|---|---|---|---|---|
+| Branch Protection Sentinel | [#41088401698](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41088401698) | `b92bcf876` | Lovable push sem `(#NNN)` — recorrente | NÃO | §P31 |
+| Uptime Monitor | [#41086920368](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41086920368) | `52570b33` | health-check exit 22 — função desatualizada | NÃO | §P30/P31 |
+| E2E Critical Flows | [#41081845232](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41081845232) | `52570b33` | sidebar-tooltips.spec.ts 2 testes — regressão UI tooltip | NÃO | §P31 (novo) |
+| E2E Personalization | [#41081845950](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41081845950) | `52570b33` | loginViaUI timeout — auth-CI (SUPABASE_SERVICE_ROLE_KEY) | NÃO | §P31 (novo) |
+| CI Security & Drift | [#41081845238](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41081845238) | `52570b33` | storageState.json sem sb-*-auth-token — auth-CI | NÃO | §P30/P31 |
+| E2E Magazine Header | [#41067472825](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41067472825) | `cba9944d` | storageState.json sem token — auth-CI | NÃO | §P30 |
+| E2E Swatch QuickView | [#41067472586](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41067472586) | `cba9944d` | executed=5 < minimo=10 — secrets E2E ausentes | NÃO | §P30 |
+| Quote Builder Delivery | [#41061596692](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41061596692) | `a7c02ac1` | quote-builder-delivery.spec.ts 4 testes — regressão UI tooltip | NÃO | §P31 (novo) |
+| CI Replenishment | [#41061415964](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41061415964) | `ff61eec4` | loginViaUI timeout localhost:8080/login — auth-CI | NÃO | §P31 (novo) |
+| Copilot Code Review | [#41045066850](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41045066850) | `22ca2b3f` | HTTP 402 — cota Copilot | NÃO | §P30 |
+| edge-functions-drift | [#41034830573](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034830573) | `7299c88c` | 31 funções em drift | NÃO | §P30 |
+
+**Total:** 11 falhas — NENHUMA é required check. Gate Final (único required) aguarda runner em `b92bcf876`.
+
+### Gate Final para `b92bcf876`
+
+- **Deploy Gates** [#41088401807](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41088401807) — SHA `b92bcf876` — `queued` (runner backlog, não é falha de código)
+- `b92bcf876` é docs-only (`analise-prs/**`): paths-ignore reduz gates executados
+- **Antecessor `cba9944d`**: Gate Final [#41067473692](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41067473692) ✅ success (15 jobs, 2 skipped) — sem regressão introduzida
+
+### Resumo P31
+
+- **Required check**: Gate Final em `b92bcf876` aguarda runner (queued) — antecessor `cba9944d` ✅ success
+- **Falhas não-required**: 11 workflows, todas documentadas com causa exata em PENDENCIAS.md §P31
+- **4 workflows novos documentados nesta seção** (não estavam em §P30): E2E Critical Flows, E2E Personalization, Quote Builder Delivery, CI Replenishment
+- **Zero required checks afetados** — nenhum bloqueio de deploy
