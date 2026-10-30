@@ -14,7 +14,7 @@
 | `npm run build` | ✅ EXIT=0 | Build Vite em 11.37s; warnings INEFFECTIVE_DYNAMIC_IMPORT pré-existentes |
 | `npx tsc --noEmit` | ✅ EXIT=0 | Zero erros TypeScript |
 | `npm run lint:baseline` | ✅ EXIT=0 | 0 erros, 0 warnings; Δ vs baseline: +0 regressões |
-| `npx vitest run` | ⚠️ falhas pré-existentes | Em andamento — resultado registrado na seção 8 quando concluir |
+| `npx vitest run` | ⚠️ 3 falhas pré-existentes | 3 failed \| 25866 passed \| 1135 skipped — exit 0; melhora em relação ao baseline anterior (33 falhas) |
 
 > **Baseline anterior (9a97f9a):** build ✅, tsc ✅, lint ✅, vitest 33 falhas pré-existentes (25.818 passed). Nenhuma regressão entre 9a97f9a e 279f17 — mudança foi apenas `health-check/index.ts` +6/-1 linhas.
 
@@ -165,6 +165,6 @@ RELATORIO_CI.md
 | `npm run lint:baseline` | ✅ EXIT=0, Δ=0 | Zero regressões de lint |
 | Testes unitários (magic-up) | ✅ 150/150 PASS | Arquivos de teste recentemente modificados todos passam |
 | Testes unitários (mockup) | ✅ 41/41 PASS | Arquivos de teste recentemente modificados todos passam |
-| Vitest geral (25.818 passed) | ⚠️ 33 falhas (pré-existentes) | Mais testes passando que na sessão anterior (+159 vs ~25.659) |
+| Vitest geral (25.866 passed) | ⚠️ 3 falhas (pré-existentes) | Melhora: 33→3 falhas; exit 0; duração 1056s (isolate por arquivo) |
 
 **Conclusão:** workflows que dependem de build, lint, typecheck ou testes unitários não podem ter regredido, pois nenhum desses critérios piorou. Workflows de E2E dependem do estado dos fixtures no banco e de aplicação deployada — sem deploy desta branch, não há vetor de regressão.
