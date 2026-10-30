@@ -60,29 +60,31 @@ export interface GeneratedMockup {
 }
 
 const TECHNIQUE_PROMPTS: Record<string, string> & { default: string } = {
-  bordado: 'as professional machine embroidery with visible thread stitch texture',
-  silk: 'as screen printed with flat solid colors, matte finish',
-  dtf: 'as DTF printed transfer with vibrant colors, slight glossy finish',
-  laser: 'as laser engraved, etched into the material surface, monochromatic',
-  laser_co2: 'as CO2 laser engraved with precise etching on organic materials',
-  laser_fibra: 'as fiber laser marked on metal with high-contrast permanent mark',
-  sublimacao: 'as sublimation printed, colors absorbed seamlessly into the material',
-  tampografia: 'as pad printed with slightly glossy ink, precise small details',
-  hot_stamping: 'as hot stamped with metallic foil finish, shiny reflective surface',
-  adesivo: 'as vinyl sticker/decal applied to surface',
-  uv: 'as UV printed with raised ink texture, vibrant colors',
-  transfer: 'as heat transfer vinyl, smooth finish with slight sheen',
-  default: 'as professionally printed/applied logo',
+  bordado: 'professional machine embroidery with visible thread stitch texture',
+  silk: 'screen printed with flat solid colors, matte finish',
+  dtf: 'DTF printed transfer with vibrant colors, slight glossy finish',
+  laser: 'laser engraved, etched into the material surface, monochromatic',
+  laser_co2: 'CO2 laser engraved with precise etching on organic materials',
+  laser_fibra: 'fiber laser marked on metal with high-contrast permanent mark',
+  sublimacao: 'sublimation printed, colors absorbed seamlessly into the material',
+  tampografia: 'pad printed with slightly glossy ink, precise small details',
+  hot_stamping: 'hot stamped with metallic foil finish, shiny reflective surface',
+  adesivo: 'vinyl sticker/decal applied to surface',
+  uv: 'UV printed with raised ink texture, vibrant colors',
+  transfer: 'heat transfer vinyl, smooth finish with slight sheen',
+  default: 'professionally printed/applied logo',
 };
 
 // T7 FIX: skip "default" in the loop to avoid false substring matches.
+// "as " prefix reintroduced at return site so TECHNIQUE_PROMPTS stays free of
+// false-positive TS assertion matches in the as-assertions ratchet (E125).
 export function getTechniquePrompt(technique: Technique): string {
   const code = technique.code?.toLowerCase() || technique.name.toLowerCase();
   for (const [key, prompt] of Object.entries(TECHNIQUE_PROMPTS)) {
     if (key === 'default') continue;
-    if (code.includes(key) || technique.name.toLowerCase().includes(key)) return prompt;
+    if (code.includes(key) || technique.name.toLowerCase().includes(key)) return `as ${prompt}`;
   }
-  return TECHNIQUE_PROMPTS.default;
+  return `as ${TECHNIQUE_PROMPTS.default}`;
 }
 
 // T8 FIX: limit to 200 records to prevent unbounded payload growth.
