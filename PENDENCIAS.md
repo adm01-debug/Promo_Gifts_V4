@@ -998,3 +998,21 @@ A tabela lista **todos os 24** workflows cujo último run na `main` concluiu em 
 ### PR #2743 — checks após o push do SHA `a43a32d6`
 
 Consulta às 02:47 UTC: PR aberto, `mergeable=true`, `mergeable_state=blocked`. O status do SHA `a43a32d6fdf5875258e887b37b5bbbff3a6f30c1` tinha 1 falha (`Running Copilot Code Review`, run [#40993721191](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40993721191)), 23 jobs `queued`, 9 `in_progress`, 6 `success`, 5 `skipped` e 1 `neutral`. A falha Copilot traz erro HTTP 402 (`errorCode=quota`) por limite adicional de uso, e a allowlist do firewall bloqueia `api.github.com`. Não mesclar enquanto houver checks queued/in-progress ou a falha pendente.
+
+## P33 — confirmação nominal dos verdes e delta de estado — 2026-10-30
+
+**Reconsulta:** 03:04 UTC; `main` permanece no SHA `604de54c030c521def563b26351361e6472fafcf`. Não houve novo run de `main` após o snapshot P32. O último run de `E2E (Playwright)` [#40991104520](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40991104520) mudou de `in_progress` para `cancelled`; `Nightly Full CI` [#40993462227](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40993462227) e `E2E • Swatch QuickView` [#40991104522](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40991104522) permanecem `in_progress`. Os três workflows `pending` permanecem os listados em P32.
+
+| Estado atualizado da `main` | Quantidade |
+|---|---:|
+| `success` | 61 |
+| `failure` | 24 |
+| `cancelled` | 6 |
+| `skipped` | 2 |
+| `pending` | 3 |
+| `in_progress` | 2 |
+| Sem execução | 21 |
+
+Comparei nominalmente os 119 workflows com os últimos runs na `main` no snapshot anterior (02:16 UTC) e no estado atual (03:04 UTC): **os 61 workflows que estavam em `success` continuam em `success`; regressões: 0**. A tabela completa das 24 falhas não mudou desde P32; os runs `cancelled`, `pending` e `in_progress` não foram classificados como sucesso.
+
+**PR #2743 após o push `d3442b031`:** às 03:00 UTC, `mergeable_state=blocked`; Copilot falhou em [#40994713467](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40994713467) por HTTP 402 (`quota`) e firewall para `api.github.com`. Havia 23 checks `queued`, 1 `in_progress`, 4 `success`, 4 `skipped` e 1 `neutral`. Não mesclar enquanto os checks não concluírem com sucesso.
