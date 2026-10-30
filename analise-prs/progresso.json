@@ -8,18 +8,18 @@
     "build": "exit 0 — built in 16.66s"
   },
   "total_prs_abertos_original": 19,
-  "total_prs_abertos_atuais": 17,
-  "analisados": 24,
-  "dossies_completos": 24,
+  "total_prs_abertos_atuais": 16,
+  "analisados": 28,
+  "dossies_completos": 28,
   "veredictos": {
-    "MERGEADA": ["#2768", "#2759", "#2734", "#2770", "#2783"],
-    "DECISAO_HUMANA": ["#2758", "#2745", "#2743", "#2731", "#2717", "#2714", "#2701", "#2776"],
-    "DRAFT": ["#2767", "#2766", "#2764", "#2750", "#2749", "#2746", "#2771", "#2785"],
+    "MERGEADA": ["#2768", "#2759", "#2734", "#2770", "#2783", "#2791", "#2792"],
+    "DECISAO_HUMANA": ["#2758", "#2745", "#2743", "#2731", "#2717", "#2714", "#2701", "#2776", "#2793"],
+    "DRAFT": ["#2767", "#2766", "#2764", "#2750", "#2749", "#2746", "#2771", "#2785", "#2789"],
     "DRAFT_E_DECISAO_HUMANA": ["#2744"],
     "BLOQUEADA_CONFLITO": ["#2747"],
     "BLOQUEADA_PROVAVEL_CONFLITO": ["#2739"]
   },
-  "mergeados_nesta_sessao": ["#2768", "#2759", "#2734", "#2770", "#2783"],
+  "mergeados_nesta_sessao": ["#2768", "#2759", "#2734", "#2770", "#2783", "#2791", "#2792"],
   "merge_sha_2768": "852346720522787142cf452f01db40472cff2fea",
   "merge_em_2768": "2026-10-30T05:40:16Z",
   "merge_sha_2759": "8382faf8330c4354aba69f6c5eba3b085eee2ded",
@@ -59,11 +59,14 @@
   "merge_em_2783": "2026-10-30T07:47Z",
   "main_sha_pos_2783": "c09402816aa882fc8e9577d8a2352a663e515dc9",
   "gate_final_pos_merge_2783": {
+    "run_id": 41021989586,
     "sha": "c09402816aa882fc8e9577d8a2352a663e515dc9",
-    "status": "em_andamento",
-    "nota": "CI iniciando — runs queued/pending em 2026-10-30T07:45Z"
+    "status": "completed",
+    "conclusion": "success",
+    "iniciado": "2026-10-30T07:45:01Z",
+    "finalizado": "2026-10-30T08:18:26Z"
   },
-  "pendente": "gate_final_2783",
+  "pendente": null,
   "test_merges_executados": "2026-10-30",
   "test_merges_main_sha": "99b4f7fc60674cc5ccb222b3f28c115fa24fcca2",
   "test_merges_resultado": {
@@ -117,9 +120,11 @@
   },
   "nao_verificado_remanescente": {
     "2747_verificado_2026-10-30": "public.notifications.idempotency_key AUSENTE em produção (SELECT vazio via MCP). idempotency_key existe apenas em public.sequence_email_reservations (tabela diferente). Migration para notifications.idempotency_key ausente desta PR e do banco — pendência confirmada com evidência real.",
-    "2776": "Diff não lido — no_merge_explicit no body bloqueia antes da leitura completa ser necessária",
-    "2771": "DRAFT — diff não lido",
-    "2785": "DRAFT — diff não lido"
+    "2771": "DRAFT — diff não lido"
+  },
+  "nao_verificado_resolvidos_v2": {
+    "2776": "Diff lido 100%: persistence.ts:110 remove `as unknown as Json`→`as Json`; authService.ts simplifica getProfileAndRoles; docs PENDENCIAS.md P22 + RELATORIO_CI.md S11. Veredicto mantido: DECISAO_HUMANA (no_merge_explicit no body).",
+    "2785": "Diff lido 100%: mesmos fixes E121+E122 que #2776 em branch separada. Veredicto mantido: DRAFT."
   },
   "test_merges_vs_c16381a5": {
     "2701": "CONFLITO — PENDENCIAS.md",
@@ -142,5 +147,26 @@
     "2767": "OK_vazio_SUPERSEDED"
   },
   "meta_cumprida": true,
-  "meta_pendente": "aguardando_gate_final_pos_2783"
+  "gate_final_run_definitivo": {
+    "run_id": 41021989586,
+    "sha": "c09402816aa882fc8e9577d8a2352a663e515dc9",
+    "conclusion": "success",
+    "gate3_e2e_finalizado": "2026-10-30T08:18:20Z",
+    "gate_final_finalizado": "2026-10-30T08:18:26Z"
+  },
+  "merge_sha_2791": "0b628fd3ddccb52e0182ff55b26102cfc3e6a930",
+  "merge_em_2791": "2026-10-30T~08:45Z",
+  "gate_final_pre_merge_2791": {
+    "run_id": 41023834458,
+    "job_id": 123963552903,
+    "sha": "94e4c19199aadf2560d79f97e30ccb70a9f2dbda",
+    "status": "completed",
+    "conclusion": "success",
+    "completado": "2026-10-30T08:20:54Z"
+  },
+  "merge_sha_2792": "62e21cc6794b2088285b0f47526ee75d3c652fca",
+  "merge_em_2792": "2026-10-30T~08:47Z",
+  "main_sha_pos_2792": "62e21cc6794b2088285b0f47526ee75d3c652fca",
+  "novos_prs_descobertos": ["#2789", "#2791", "#2792", "#2793"],
+  "meta_pendente": null
 }
