@@ -2,8 +2,8 @@
 > Sessão: `claude/eloquent-ramanujan-0yt2fo` | Data: 2026-10-30
 > Main SHA fixado: `6e38d14a90323f69ff3beda27c8ae51476c3cb1d`
 > Main SHA pós-merges: `62e21cc6794b2088285b0f47526ee75d3c652fca` (#2792 — release 1.3.1)
-> Total PRs analisados: **28** (19 originais + 9 novos: #2770, #2771, #2776, #2783, #2785, #2789, #2791, #2792, #2793)
-> PRs abertos atualmente: **16**
+> Total PRs analisados: **29** (19 originais + 10 novos: #2770, #2771, #2776, #2783, #2785, #2789, #2791, #2792, #2793, #2794)
+> PRs abertos atualmente: **18**
 
 ---
 
@@ -47,6 +47,8 @@
 
 **Evidência #2792:** squash-merge confirmado em `2026-10-30T~08:47Z` via `merge_pull_request` FOREVER MCP. SHA `62e21cc6794b2088285b0f47526ee75d3c652fca`. 4 arquivos: CHANGELOG.md (+versão 1.3.1), package.json (1.3.0→1.3.1), package-lock.json, .release-please-manifest.json. Padrão idêntico a #2759 e #2783.
 
+**Confirmação MCP produção:** nenhuma das 7 PRs mergeadas tocou `supabase/migrations/` ou edge functions — verificação via MCP de migration aplicada / edge function deployada é explicitamente N/A para todos os 7 merges.
+
 ---
 
 ## DECISAO_HUMANA (9 PRs)
@@ -74,9 +76,9 @@
 
 ---
 
-## DRAFT (9 PRs — não elegíveis)
+## DRAFT (10 PRs — não elegíveis)
 
-`#2767`, `#2766`, `#2764`, `#2750`, `#2749`, `#2746`, `#2771`, `#2785`, `#2789`
+`#2767`, `#2766`, `#2764`, `#2750`, `#2749`, `#2746`, `#2771`, `#2785`, `#2789`, `#2794`
 
 ### Resumo por PR:
 - **#2767** — **SUPERSEDED** — staged diff vazio; commit `82efe51d0` no main resolve o mesmo problema.
@@ -87,7 +89,8 @@
 - **#2750** — docs(analise-prs): dossiês sessão anterior. DRAFT+dirty.
 - **#2749** — sentinel SHA allowlist + e2e pdf-dialog fix. Toca workflow se não-draft = DECISAO_HUMANA.
 - **#2746** — docs: padrões P-CI-A a P-CI-G. Zero risco. Converter de draft para elegível.
-- **#2789** — fix(kit): estimador de peso fase 1. DRAFT. Verificar sobreposição com #2791 (mergeada).
+- **#2789** — fix(kit): estimador de peso fase 1. DRAFT. Substituído por #2794 (já com #2791 mergeada).
+- **#2794** — fix(ratchet): E125 — remove falso positivo `'as '` em TECHNIQUE_PROMPTS. Baseline 2160→2146. Autor: PO (adm01-debug). `mergeable_state: "behind"` — sem conflito. Elegível após PO retirar draft.
 
 ---
 
@@ -103,11 +106,52 @@
 |---|---|---|
 | MERGEADA | 7 | #2768, #2759, #2734, #2770, #2783, #2791, #2792 |
 | DECISAO_HUMANA | 9 | #2701, #2714, #2717, #2731, #2743, #2745, #2758, #2776, #2793 |
-| DRAFT | 9 | #2746, #2749, #2750, #2764, #2766, #2767, #2771, #2785, #2789 |
+| DRAFT | 10 | #2746, #2749, #2750, #2764, #2766, #2767, #2771, #2785, #2789, #2794 |
 | DRAFT_E_DECISAO_HUMANA | 1 | #2744 |
 | BLOQUEADA_CONFLITO | 1 | #2747 |
 | BLOQUEADA_PROVAVEL_CONFLITO | 1 | #2739 |
-| **TOTAL ANALISADOS** | **28** | |
+| **TOTAL ANALISADOS** | **29** | |
+
+---
+
+## CLUSTERS
+
+### Bot-geradas Release Please (github-actions[bot])
+`#2759`, `#2783`, `#2792` — auto-abertas pelo Release Please após cada merge de fix. Todas MERGEADAS. Padrão: CHANGELOG + package.json + lockfile + manifest. Sem código executável.
+
+### Ratchet semanal (ratchet-weekly.yml)
+`#2770` — auto-aberta pelo workflow de ratchet semanal (E41). MERGEADA. 1 arquivo: bundle-size-baseline.json.
+
+### Superseded (conteúdo já em main)
+`#2758`, `#2766`, `#2767` — staged diff vazio em test-merge. Confirmado: focus-visible em AdImageResult.tsx:188 e commit `82efe51d0` já em main. Podem ser fechadas como obsoletas.
+
+### Cadeia kit-builder (estimador de peso)
+`#2789` (DRAFT, substituída) → `#2791` (MERGEADA, fase final) → `#2794` (DRAFT, fix ratchet E125 derivado do merge de #2791). #2791 é o resultado final; #2789 e #2794 são derivados.
+
+### Migrations/RLS — REGRA #8 + CONFLITO
+`#2714`, `#2731`, `#2747` — todas têm CONFLITO contra main E caem na REGRA #8 (migrations/workflows). Veredicto DECISAO_HUMANA + BLOQUEADA independente de qualidade do SQL.
+
+### Workflows CI — REGRA #8
+`#2701`, #2717, `#2731`, `#2745`, `#2793` — todos tocam `.github/workflows/`. Revisão humana obrigatória. #2731 é duplo (workflow + migration). #2793 é refatoração legítima sem risco funcional.
+
+### Análise desta sessão (PRs de auditoria)
+`#2771`, `#2750` — DRAFTs que documentam PRs da sessão anterior de auditoria. Não tocam código de negócio.
+
+---
+
+## INVENTÁRIO REFS/PULL/* (29 = 18 abertos + 7 merged + 4 fechados)
+
+### 18 abertos (analisados)
+`#2701`, `#2714`, `#2717`, `#2731`, `#2739`, `#2743`, `#2744`, `#2745`, `#2746`, `#2747`,
+`#2749`, `#2750`, `#2758`, `#2764`, `#2771`, `#2776`, `#2793`, `#2794`
+
+### 7 mergeados nesta sessão
+`#2768`, `#2759`, `#2734`, `#2770`, `#2783`, `#2791`, `#2792`
+
+### 4 fechados (não por esta sessão — eram DRAFTs)
+`#2766`, `#2767`, `#2785`, `#2789`
+
+> Total: 18 + 7 + 4 = **29 PRs analisados**. Todos os PRs abertos no início da sessão (19 originais) foram analisados; 10 novos descobertos durante a análise foram igualmente cobertos.
 
 ---
 
@@ -118,6 +162,8 @@
 | TypeScript (`npx tsc --noEmit`) | ✅ exit 0 — 0 erros |
 | Vitest | ✅ exit 0 — 0 falhas (1.247 arquivos, 25.869 testes, 1.135 skipped, 24 TODO) |
 | Build Vite (`npm run build`) | ✅ exit 0 — built in 16.66s |
+
+**Testes falhando por nome:** Nenhum. O main no SHA `6e38d14a9` tem todos os testes passando (exit 0). Ver `analise-prs/baseline/failing-tests.md` para evidência detalhada.
 
 ---
 
@@ -165,6 +211,7 @@ Evidência dos conflitos:
 
 | PR | Diff lido | Método |
 |---|---|---|
+| #2794 | ✅ 100% (3 arquivos, 23 add/22 del) | list_pr_files + get_pull_request body |
 | #2768 | ✅ 100% inline | get_pr_diff — mergeada |
 | #2783 | ✅ file-list (4 arquivos) | list_pr_files — mergeada |
 | #2776 | ✅ 100% inline | get_pr_diff — TypeScript fixes persistence.ts:110 + authService.ts; docs PENDENCIAS.md/RELATORIO_CI.md |
@@ -202,10 +249,10 @@ Evidência dos conflitos:
 
 ## ARQUIVOS ENTREGUES
 
-- `analise-prs/baseline/` — tsc, vitest, build, test-merges
+- `analise-prs/baseline/` — tsc, vitest, build, test-merges, failing-tests.md (por nome)
 - `analise-prs/regras-de-negocio.md` — regras extraídas do codebase
 - `analise-prs/prs.json` — inventário completo
 - `analise-prs/prs.csv` — inventário CSV
 - `analise-prs/progresso.json` — estado da sessão
-- `analise-prs/dossies/PR-<n>.md` — 28 dossiês (PR-2701 até PR-2793)
+- `analise-prs/dossies/PR-<n>.md` — 29 dossiês (PR-2701 até PR-2794)
 - `analise-prs/RELATORIO_PRS.md` — este arquivo
