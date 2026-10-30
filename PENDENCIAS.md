@@ -822,4 +822,40 @@ O único required check (`Gate Final - Deploy Ready`) para `b92bcf876` está `qu
 `pending`: CI Security & Drift, E2E Critical Flows, E2E Swatch QuickView, E2E Playwright, E2E Personalization.
 `in_progress`: Quote Builder Delivery, Supabase Linter Gate.
 `success` já confirmado: Policies Baseline, SSOT Supabase Guard, Security Scan, UI Visual & A11y, No Prod Leak, Static Health Checks, Release Please, Lovable Edit Tracker, Select Columns vs Types.
+
+---
+
+## P32 — Inventário atualizado da `main@554ef41b` (2026-10-30T23:20Z)
+
+**Método:** catálogo de workflows do GitHub Actions e última execução por workflow filtrada para `branch=main`. Foram encontrados 88 workflows: 18 com última conclusão `failure`, 61 `success`, quatro `cancelled`, três `queued/pending`, um `in_progress` e um `skipped`. Somente as 18 falhas abaixo entram no inventário de falhas; execuções canceladas ou ainda abertas ficam fora dele.
+
+### Últimas execuções em `failure`
+
+| Workflow | Última execução | Evidência da causa / bloqueio atual |
+|---|---|---|
+| Branch Protection Sentinel | [#41134852421](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852421) | O log acusa 23 commits do push sem o padrão aceito no subject (`(#NNN)`). Falha estrutural da integração Lovable. PR #2839 propõe alterar a janela auditada; ainda sem conclusão verde na `main`. |
+| E2E (Playwright) | [#41134852533](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852533) | Três testes de `/carrinhos` falharam: defaults explícitos `status=all`, `sort=recent` e busca vazia persistem após hidratação/reload. Correção em `fix/e2e-url-state-defaults-20261030`; validação unitária e suíte completa local verdes. CI autenticado da PR ainda precisa confirmar. |
+| Copilot | [#41115245979](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41115245979) | Erro HTTP 402: limite adicional de uso do plano Copilot atingido. PO precisa regularizar a cota em GitHub Copilot. |
+| Regenerate Supabase Types | [#26378664155](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/26378664155) | Falha antiga (25/05). GitHub retorna HTTP 410 ao baixar logs; causa técnica não pode ser confirmada sem rerun. Bloqueio exato para diagnóstico: logs expirados/indisponíveis. Não houve alteração no banco. |
+| Supplier Comparison CI | [#39253399818](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39253399818) | GitHub retorna HTTP 404 ao baixar os logs e a API de resumo não lista jobs. Causa não confirmável com a evidência retida; precisa de nova execução para diagnosticar. |
+| OptimizedImage E2E CI | [#39263929298](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39263929298) | `Setup E2E` falhou porque `npm ci` detectou divergência entre `package.json` e `package-lock.json` e orientou regenerar/commitar o lockfile. No checkout atual, `npm ci` conclui; run ainda não foi atualizado na `main`. |
+| Global Search Quality Gate | [#39263929104](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39263929104) | `npm ci` no job de Vitest terminou com erro de uso por lockfile divergente; o job Playwright também falhou na etapa de setup pela mesma verificação de lockfile. O `npm ci` atual passa localmente; falta uma execução recente verde na `main`. |
+| Kit Coverage — Integration | [#40999068927](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40999068927) | A integração falhou consultando `v_products_public`: PostgREST informou que não conseguiu consultar o schema cache; suíte teve um arquivo de teste falho e três casos ignorados. Requer diagnóstico do estado/cache do serviço de produtos; nenhuma alteração de banco foi feita. |
+| Update Quote Visual Snapshots | [#39997674586](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39997674586) | Sete specs falharam; evidência explícita `[E108] Sem orçamento enviado no ambiente` ao preparar cenários de orçamento. O ambiente E2E precisa de fixture/dado de orçamento enviado antes de atualizar snapshots. Nenhum snapshot foi afrouxado nesta execução. |
+| E2E Discount Approval (04c*) | [#39263929177](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39263929177) | `Setup E2E` detectou divergência `package.json` × lockfile (`npm ci`); a instalação foi interrompida antes dos testes. O checkout atual instala com `npm ci`, mas falta novo run verde. |
+| E2E • ColorSwatch 2 linhas (Grid) | [#39263932330](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39263932330) | `Setup E2E` interrompido pela mesma divergência entre manifest e lockfile (`npm ci`). O checkout atual instala com `npm ci`; falta nova execução verde. |
+| E2E · Dialogs visual PR check | [#39253396759](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39253396759) | Logs do run não estão mais disponíveis (HTTP 404); motivo técnico não verificável. Precisa rerun para identificar a causa, sem presumir falha de código. |
+| E2E · Check Calendar snapshots | [#39253393953](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39253393953) | Logs do run não estão mais disponíveis (HTTP 404); motivo técnico não verificável. Precisa rerun para identificar a causa. |
+| PDF Visual Regression | [#39253404824](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39253404824) | Logs do run não estão mais disponíveis (HTTP 404); motivo técnico não verificável. Precisa rerun para identificar a causa. |
+| migration-dry-run | [#35506272165](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/35506272165) | `psql` não conseguiu resolver o hostname do banco (`could not translate host name ... Name or service not known`) durante leitura de `pg_proc`. Bloqueio de DNS/credencial/host no ambiente do workflow; sem DDL aplicada. |
+| E2E — Magazine Header Layout | [#41067472825](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41067472825) | Login autenticado ficou em `/login` por 75 s; `storageState.json` terminou sem token `sb-*-auth-token`, apesar de `E2E_USER_*` presentes. Bloqueio no fluxo de autenticação do runner/conta E2E; exige investigar conectividade e credenciais, não alterar dados do canônico. |
+| E2E Cart — Matrix (E79) | [#40140248814](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40140248814) | Teste de exclusão por popover excedeu timeout de 120 s ao clicar em `cart-delete-confirm`; o job foi cancelado durante a execução seguinte. Requer reprodução E2E com credenciais e ambiente atuais. |
+| E2E Freight — Matrix (E80) | [#39141334040](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39141334040) | Setup de autenticação permaneceu em `/login` por 75 s e não gerou sessão autenticada; 14 testes não chegaram a executar. Mesmo bloqueio de autenticação E2E, sem evidência de falha nos testes funcionais. |
+
+### Estado não concluído (não contado como falha)
+
+- `E2E • Swatch QuickView (Lista + Tabela)` [#41134852559](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852559) permanecia `in_progress` no instante da consulta.
+- `Deploy Edge Functions` [#41048773110](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41048773110) e `SECURITY DEFINER ACL — Multi-Env` [#41039602639](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41039602639) permaneciam aguardando aprovação/execução (`pending`). Não foram aprovados nem alterados.
+
+**Proteção de produção:** a correção de URL-state altera o comportamento da aplicação. A PR correspondente será deixada aberta para CI e revisão; não será mesclada nesta sessão, pois o merge pode disparar deploy de produção. O Supabase canônico não foi alterado.
 | 5 | Branch Protection Sentinel | Avaliar tolerância ou configurar Lovable para usar formato de commit com `(#NNN)` |
