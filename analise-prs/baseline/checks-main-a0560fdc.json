@@ -1,0 +1,322 @@
+{
+  "sha": "a0560fdc62744c6bf4ba182914cc76dec06aecb1",
+  "ref": "main",
+  "date": "2026-10-27",
+  "session": "session_012WyySbh2tj8vhRQLBf3mHo",
+  "gate_final": "failure",
+  "note": "Baseline gerado nesta sessão. Gate Final = failure é pré-existente (Edge Functions + Dependency Audit). Regressão medida pela diferença.",
+  "checks": [
+    {
+      "name": "Analyze (javascript-typescript) (javascript-typescript)",
+      "status": "completed",
+      "conclusion": "success",
+      "id": 122356030446
+    },
+    {
+      "name": "Assert Gate Final is required on main",
+      "status": "completed",
+      "conclusion": "success",
+      "id": 122356031243
+    },
+    {
+      "name": "CSP mirror — public/_headers == vercel.json",
+      "status": "completed",
+      "conclusion": "success",
+      "id": 122356031064
+    },
+    {
+      "name": "Check no prod leak",
+      "status": "completed",
+      "conclusion": "success",
+      "id": 122356031712
+    },
+    {
+      "name": "Check select() columns vs types.ts",
+      "status": "completed",
+      "conclusion": "success",
+      "id": 122356031615
+    },
+    {
+      "name": "Detectar mudanças (docs-only bypass E14)",
+      "status": "completed",
+      "conclusion": "success",
+      "id": 122356033544
+    },
+    {
+      "name": "Drift de policies vs baseline assinado",
+      "status": "completed",
+      "conclusion": "success",
+      "id": 122356032081
+    },
+    {
+      "name": "E2E — Error Boundaries (sem auth)",
+      "status": "completed",
+      "conclusion": "success",
+      "id": 122358009782
+    },
+    {
+      "name": "E2E — Full User Flows (authed)",
+      "status": "completed",
+      "conclusion": "success",
+      "id": 122358010210
+    },
+    {
+      "name": "E2E — Mobile Critical Routes",
+      "status": "completed",
+      "conclusion": "success",
+      "id": 122358010396
+    },
+    {
+      "name": "E2E — Personalization Journey",
+      "status": "completed",
+      "conclusion": "success",
+      "id": 122356033437
+    },
+    {
+      "name": "ESLint auto-fix (Lovable commits)",
+      "status": "completed",
+      "conclusion": "success",
+      "id": 122356030595
+    },
+    {
+      "name": "Edge Functions · Integration All",
+      "status": "completed",
+      "conclusion": "failure",
+      "id": 122356030662
+    },
+    {
+      "name": "Gate 0 - SSOT Supabase (project ID canônico)",
+      "status": "completed",
+      "conclusion": "success",
+      "id": 122356033684
+    },
+    {
+      "name": "Gate 0.5 - Dependency Audit",
+      "status": "completed",
+      "conclusion": "failure",
+      "id": 122356207833
+    },
+    {
+      "name": "Gate 0.6 - Dependency Review",
+      "status": "completed",
+      "conclusion": "skipped",
+      "id": 122356210514
+    },
+    {
+      "name": "Gate 1 - Lint + TypeScript",
+      "status": "completed",
+      "conclusion": "success",
+      "id": 122356207902
+    },
+    {
+      "name": "Gate 2 - Unit Tests",
+      "status": "completed",
+      "conclusion": "success",
+      "id": 122356207930
+    },
+    {
+      "name": "Gate 2.5 - PostgreSQL Transactional Integrity",
+      "status": "completed",
+      "conclusion": "success",
+      "id": 122356207767
+    },
+    {
+      "name": "Gate 3 - E2E Smoke",
+      "status": "completed",
+      "conclusion": "success",
+      "id": 122356274632
+    },
+    {
+      "name": "Gate 4 - Lighthouse CI",
+      "status": "completed",
+      "conclusion": "success",
+      "id": 122356207942
+    },
+    {
+      "name": "Gate 5 - SEO Sanity Check",
+      "status": "completed",
+      "conclusion": "success",
+      "id": 122356207813
+    },
+    {
+      "name": "Gate 5.5 - RPC restore_seller_cart presente no canônico",
+      "status": "completed",
+      "conclusion": "success",
+      "id": 122356208105
+    },
+    {
+      "name": "Gate 6 - Build",
+      "status": "completed",
+      "conclusion": "success",
+      "id": 122359198094
+    },
+    {
+      "name": "Gate E23 - Secret Scan (gitleaks)",
+      "status": "completed",
+      "conclusion": "success",
+      "id": 122356209189
+    },
+    {
+      "name": "Gate E23 - Verifica secrets E2E / Verifica secrets E2E",
+      "status": "completed",
+      "conclusion": "success",
+      "id": 122356208093
+    },
+    {
+      "name": "Gate E40 - Detect schema file changes",
+      "status": "completed",
+      "conclusion": "success",
+      "id": 122356207824
+    },
+    {
+      "name": "Gate E40 - Schema Drift Check",
+      "status": "completed",
+      "conclusion": "skipped",
+      "id": 122356326577
+    },
+    {
+      "name": "Gate Final - Deploy Ready",
+      "status": "completed",
+      "conclusion": "failure",
+      "id": 122361675344
+    },
+    {
+      "name": "Ghost Check Guard — required-checks.json vs workflows",
+      "status": "completed",
+      "conclusion": "success",
+      "id": 122356030865
+    },
+    {
+      "name": "Gitleaks — Secret Scan",
+      "status": "completed",
+      "conclusion": "success",
+      "id": 122356030322
+    },
+    {
+      "name": "OptimizedImage · unit",
+      "status": "completed",
+      "conclusion": "success",
+      "id": 122356030249
+    },
+    {
+      "name": "Rastrear edições do Lovable",
+      "status": "completed",
+      "conclusion": "success",
+      "id": 122356029287
+    },
+    {
+      "name": "SSOT Gates (validate + guard + hosts)",
+      "status": "completed",
+      "conclusion": "success",
+      "id": 122356031373
+    },
+    {
+      "name": "Scan complete git history for leaked secrets",
+      "status": "completed",
+      "conclusion": "success",
+      "id": 122356031612
+    },
+    {
+      "name": "Secrets Inventory Check (E40)",
+      "status": "completed",
+      "conclusion": "success",
+      "id": 122356030719
+    },
+    {
+      "name": "Seed/regen do baseline + PR",
+      "status": "completed",
+      "conclusion": "skipped",
+      "id": 122356034557
+    },
+    {
+      "name": "Supabase Preview",
+      "status": "completed",
+      "conclusion": "failure",
+      "id": 122356543472
+    },
+    {
+      "name": "Verificação de saúde pós-merge",
+      "status": "completed",
+      "conclusion": "success",
+      "id": 122356031619
+    },
+    {
+      "name": "Verify Branch Protection is enabled on main",
+      "status": "completed",
+      "conclusion": "success",
+      "id": 122356030227
+    },
+    {
+      "name": "Verify push to main matches accepted patterns",
+      "status": "completed",
+      "conclusion": "success",
+      "id": 122356029832
+    },
+    {
+      "name": "alert",
+      "status": "completed",
+      "conclusion": "skipped",
+      "id": 122356407255
+    },
+    {
+      "name": "audit",
+      "status": "completed",
+      "conclusion": "failure",
+      "id": 122356040443
+    },
+    {
+      "name": "check",
+      "status": "completed",
+      "conclusion": "success",
+      "id": 122357183246
+    },
+    {
+      "name": "e2e-gates",
+      "status": "in_progress",
+      "conclusion": null,
+      "id": 122360507122
+    },
+    {
+      "name": "linter",
+      "status": "completed",
+      "conclusion": "success",
+      "id": 122356031593
+    },
+    {
+      "name": "lovable-protected-audit",
+      "status": "completed",
+      "conclusion": "skipped",
+      "id": 122356031866
+    },
+    {
+      "name": "quality-gate",
+      "status": "completed",
+      "conclusion": "failure",
+      "id": 122362326229
+    },
+    {
+      "name": "quality-gate",
+      "status": "completed",
+      "conclusion": "success",
+      "id": 122356029262
+    },
+    {
+      "name": "release-please",
+      "status": "completed",
+      "conclusion": "success",
+      "id": 122356030254
+    },
+    {
+      "name": "secrets-check / Verifica secrets E2E",
+      "status": "completed",
+      "conclusion": "success",
+      "id": 122360507897
+    },
+    {
+      "name": "security-audit",
+      "status": "completed",
+      "conclusion": "success",
+      "id": 122362326549
+    }
+  ]
+}
