@@ -257,8 +257,9 @@ test.describe('Paridade visual — cards Novidades vs Reposição', () => {
   });
 
   // Viewports extras (além dos 5 projects do playwright.config) para validar
-  // que a altura responsiva do BaseProductGridCard (h-[400px] mobile,
-  // sm:h-[430px] desktop) se mantém fixa também em tablets.
+  // que os cards permanecem alinhados dentro de cada linha também em tablets.
+  // As linhas são virtualizadas e o card usa min-height; comparar alturas de
+  // linhas diferentes confundia variação legítima de conteúdo com desalinhamento.
   const EXTRA_VIEWPORTS = [
     { w: 600, h: 900, label: 'tablet-sm-600' },
     { w: 768, h: 1024, label: 'tablet-768' },
@@ -268,7 +269,7 @@ test.describe('Paridade visual — cards Novidades vs Reposição', () => {
   ] as const;
 
   for (const vp of EXTRA_VIEWPORTS) {
-    test(`altura fixa do card em viewport ${vp.label} (${vp.w}x${vp.h})`, async ({ page }) => {
+    test(`cards alinhados por linha em viewport ${vp.label} (${vp.w}x${vp.h})`, async ({ page }) => {
       await page.setViewportSize({ width: vp.w, height: vp.h });
       await gotoAndSettle(page, '/reposicao');
       await expect(page.getByTestId('page-title-reposicao')).toBeVisible({ timeout: 30_000 });
@@ -278,22 +279,37 @@ test.describe('Paridade visual — cards Novidades vs Reposição', () => {
       const count = await items.count();
       if (count === 0) { test.skip(true, `[E108] Sem reposições em ${vp.label} (ambiente sem dados).`); return; }
       const sampleSize = Math.min(count, 6);
-      const heights: number[] = [];
-      for (let i = 0; i < sampleSize; i++) {
-        const b = await items.nth(i).boundingBox();
-        if (b) heights.push(b.height);
+      const samples = await items.evaluateAll((elements) =>
+        elements.slice(0, 6).flatMap((element) => {
+          const row = element.closest<HTMLElement>('[data-index]');
+          if (!row) return [];
+          return [{ row: row.dataset.index ?? 'unknown', height: element.getBoundingClientRect().height }];
+        }),
+      );
+      const heightsByRow = new Map<string, number[]>();
+      for (const sample of samples) {
+        const rowHeights = heightsByRow.get(sample.row) ?? [];
+        rowHeights.push(sample.height);
+        heightsByRow.set(sample.row, rowHeights);
       }
-      const min = Math.min(...heights);
-      const max = Math.max(...heights);
-      const expected = vp.w < 640 ? 400 : 420;
       const tol = tolForViewport(vp.w);
+      const rowSpreads = [...heightsByRow].map(([row, heights]) => ({
+        row,
+        spread: Math.max(...heights) - Math.min(...heights),
+      }));
       // eslint-disable-next-line no-console
       console.log(
-        `[card-parity:viewport ${vp.label}] expected=${expected}px min=${min} max=${max} spread=${(max - min).toFixed(2)}px tol=${tol}px`,
+        `[card-parity:viewport ${vp.label}] sample=${sampleSize} ` +
+          `rowSpreads=[${rowSpreads.map(({ row, spread }) => `${row}:${spread.toFixed(2)}px`).join(', ')}] tol=${tol}px`,
       );
-      expect(max - min, `cards variam em ${vp.label}: spread=${(max - min).toFixed(2)}px`).toBeLessThanOrEqual(tol);
-      // Altura absoluta não verificada: cards de Reposição têm sparkline extra (~32px)
-      // que os torna intencionalmente mais altos que o min-h-[420px] baseline.
+      expect(rowSpreads.length, `nenhuma linha mensurável em ${vp.label}`).toBeGreaterThan(0);
+      for (const { row, spread } of rowSpreads) {
+        expect(spread, `cards desalinhados na linha ${row} em ${vp.label}: spread=${spread.toFixed(2)}px`)
+          .toBeLessThanOrEqual(tol);
+      }
+      // A altura absoluta e diferenças entre linhas são legítimas: o card tem
+      // min-h, e textos/swatches variam com o produto. O contrato é alinhamento
+      // dos itens que compartilham a mesma linha do grid.
 
       // Baseline screenshot diff por viewport (snapshot persistente).
       const card = items.first();
