@@ -1,7 +1,7 @@
 # RELATORIO_CI.md — Auditoria de Workflows CI/CD
 
 **Gerado:** 2026-10-29 · **Atualizado:** 2026-10-30T12:00 UTC
-**HEAD da main:** `7299c88c21d1c67ac65f5beafc18bdf350ced277` (release 1.3.2, 2026-10-30)
+**HEAD da main:** `b0d1376abeb1e541b42a2197e29489e024c819f2` (docs-only, 2026-10-30)
 **HEAD anterior:** `c09402816` (baseline local)
 **Sessão:** https://claude.ai/code/session_01RfQzo7S3K6o49UBUDoCtUe
 
@@ -257,13 +257,15 @@ O último run conhecido de Copilot associado à `main` segue [#41045066850](http
 
 Após `npm ci`, `npm audit --audit-level=high` retornou 12 high e 1 moderate. O grupo high está na cadeia de ferramenta de desenvolvimento `@lhci/cli@0.15.1` → Lighthouse/Puppeteer/proxy-agent, incluindo `basic-ftp`, `extract-zip` e `chromium-bidi`/`zod`; não é dependência runtime de produção. O `npm audit fix --dry-run` propôs somente `ip-address` 10.7.2 → 10.7.5, resolvendo o moderate. A resolução automática dos high oferecida pelo npm troca `@lhci/cli@0.15.1` por `0.13.0` (`semver-major`) e Lighthouse `12.6.1` por `11.4.0`; isso é downgrade funcional e não foi aplicado. Gate 0.5 ainda não havia concluído no run Deploy Gates #41048978175, portanto o efeito remoto precisa ser confirmado. Próximo passo: analisar uma atualização upstream segura para o conjunto Lighthouse CI sem contornar o gate nem degradar a versão principal do Lighthouse.
 
-## Atualização P25 — falha mais recente da `main` e rerun (2026-10-30T12:00Z)
+## Atualização P25 — estado dos gates e retries na `main` (2026-10-30T12:10Z)
 
-- **Supabase Linter Gate:** run [#41051701308](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41051701308), SHA `b0d1376a`. No step `Check Security Advisors and live catalog gates`, `scripts/check-anon-write-grants.mjs` encerrou com `Auditoria pg_catalog falhou`; o helper de consulta read-only registrou duas tentativas `TimeoutError` e resposta HTTP 544. Os checks anteriores de Security Advisors e das allowlists reportaram findings dentro das allowlists. A falha observada é de consulta/serviço, não evidência de grants divergentes. Tentativa 2 via rerun oficial estava `queued` às 12:06Z; resultado pendente.
+- **Supabase Linter Gate:** run [#41051701308](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41051701308), SHA `b0d1376a`, tentativa 1 falhou em `check-anon-write-grants.mjs` após `TimeoutError` e HTTP 544 no helper de consulta read-only. A tentativa 2 pelo rerun oficial concluiu `success` às 12:09Z. Os findings anteriores passaram nas allowlists; não há evidência de divergência de grants. A repetição verde tira o workflow da lista de falhas atuais; não identifica por si só a causa do erro HTTP 544.
+- **E2E — Personalization Flow:** run [#41051701270](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41051701270), SHA `b0d1376a`, tentativa 1 terminou com 4 specs falhos e 1 aprovado. A coleta de chamadas reporta PostgREST `color_groups`, `v_products_public` e `categories` pendentes por 26–27 s e RPC `get_profile_and_roles` pendente até ~69 s; `loginViaUI` permaneceu em `/login` após 75 s. Não há status HTTP no log para comprovar uma causa única. Rerun oficial apenas dos jobs falhos foi solicitado; tentativa 2 estava `queued` às 12:09Z aguardando runner. Não foram reduzidos timeouts nem removidas asserções.
 - **Inventário dos demais failures:** Uptime Monitor [#41048983078](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41048983078) continua sendo a execução mais recente concluída em `main` e falhou sem expor os códigos de cada probe; Copilot Code Review [#41045066850](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41045066850) continua falhando por HTTP 402/quota. A deploy de `health-check` [#41048773110](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41048773110) segue aguardando aprovação `production` pelo PO. Veja PENDENCIAS.md §P25.
-- **Runs não concluídos:** Deploy Gates [#41051701334](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41051701334) estava `queued`; E2E/CI listados no snapshot ainda estavam `in_progress`. Não foram contabilizados como falha.
-- **Checks verdes recentes em `b0d1376a`:** Static Health Checks #41051701175; Lovable Edit Tracker #41051701271; SSOT Supabase Guard #41051701274; Gitleaks #41051701264; Required Checks Guard #41051701090; Security Scan #41051701095; Select Columns vs Types #41051701257; No Prod Leak #41051701142; Release Please #41051701201; UI Visual & A11y #41051701253; Lovable Autoheal #41051701208; Quote Builder Delivery Quality #41051701199; Policies Baseline #41051701281; Branch Protection Sentinel #41051701282; CodeQL #41051701079 — todos `success`.
-- **Validação local pós-merge de documentação:** no worktree do PR, `npm run build:verify` aprovado (typecheck, lint baseline sem regressões, build e guardas de produção); suíte completa: 1.250 arquivos aprovados, 130 skipped; 25.898 testes aprovados, 1.135 skipped e 24 todo. `git diff --check` foi repetido após resolver conflitos; a validação final desta revisão será registrada no commit do PR.
+- **Runs não concluídos:** Deploy Gates [#41051701334](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41051701334) e o rerun da Personalization [#41051701270](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41051701270) estavam `queued`; E2E/CI listados no snapshot também estavam `in_progress`. Não foram contabilizados como falha final.
+- **Edge functions drift:** o último `edge-functions-drift-check` é [#41048782448](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41048782448), `cancelled`; portanto não é uma falha concluída mais recente. O deploy de `health-check` [#41048773110](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41048773110) segue `pending` de aprovação de produção, sem evidência de que o drift foi corrigido.
+- **Checks verdes recentes em `b0d1376a`:** Static Health Checks #41051701175; Lovable Edit Tracker #41051701271; SSOT Supabase Guard #41051701274; Gitleaks #41051701264; Required Checks Guard #41051701090; Security Scan #41051701095; Select Columns vs Types #41051701257; No Prod Leak #41051701142; Release Please #41051701201; UI Visual & A11y #41051701253; Lovable Autoheal #41051701208; Quote Builder Delivery Quality #41051701199; Policies Baseline #41051701281; Branch Protection Sentinel #41051701282; CodeQL #41051701079; Supabase Linter Gate #41051701308 (tentativa 2); além de Mark stale issues and pull requests #41047015308 — todos `success`.
+- **Validação local pós-merge de documentação:** no commit `e975c4fef` (mesmo código de aplicação do SHA `b0d1376a`; a atualização de `main` que veio depois é apenas documental), `npm run build:verify` passou (typecheck, lint baseline sem regressões, build e guardas de produção); suíte completa: 1.250 arquivos aprovados, 130 skipped; 25.898 testes aprovados, 1.135 skipped e 24 todo. A revisão atual também altera somente documentação. A validação final do commit atualizado será repetida antes do push.
 
 ---
 
@@ -317,3 +319,30 @@ Total: **33 runs stale cancelados**.
 | Supabase Preview | skipped | PENDENCIAS.md §P22-supabase-preview — comportamento esperado |
 
 **Regressões introduzidas:** Nenhuma. Todos os failures são pré-existentes ou decorrentes de runner saturation.
+
+---
+
+## Atualização P26 — E2E e estado da ponta da `main` (2026-10-30T12:19Z)
+
+### E2E — Critical Flows & Error Boundaries
+
+O run mais recente concluído para o workflow é [#41051701108](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41051701108), SHA `b0d1376a`, `failure`. `E2E — Mobile Critical Routes` e `E2E — Error Boundaries (sem auth)` passaram; `E2E — Full User Flows (authed)` falhou. O setup de autenticação teve credenciais presentes e 1 teste passou. No teste de hover/sidebar, `loginViaUI` permaneceu em `/login` por 75 s; houve PostgREST/Edge requests pendentes por aproximadamente 16–70 s e `get-visitor-info` respondeu HTTP 403 após ~40,7 s. O gate de quantidade recebeu 1 teste executado e 9 ignorados (mínimo 10; razão de skipped 90%, limite 50%).
+
+O padrão comprova lentidão/rejeição de algumas chamadas no run, mas não uma causa única do produto/serviço. A consulta read-only agregada aos logs unificados do Supabase, limitada a fontes Edge/Postgres, rotas/status e janela 12:00–12:13Z, retornou zero linhas; portanto não há corroboração independente nesta sessão. Ação pendente: PO/admin inspecionar Auth, PostgREST e Edge Functions nos dashboards, sem alterar schema nem enfraquecer testes; reexecutar os jobs falhos após estabilizar as dependências.
+
+### Inventário e estados não concluídos
+
+- Copilot Code Review [#41045066850](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41045066850): último failure concluído conhecido, HTTP 402/quota excedida; requer intervenção de billing/admin.
+- Uptime Monitor [#41053317735](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41053317735): run mais recente entrou `in_progress` às 12:19Z; o último concluído [#41048983078](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41048983078) era `failure`. O run atual ainda não pode ser classificado.
+- E2E Personalization [#41051701270](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41051701270): tentativa 2 `in_progress` às 12:15Z; resultado da tentativa 1 documentado em P25.
+- Deploy Gates [#41051701334](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41051701334): `queued`; não é falha concluída.
+- Supabase Linter Gate [#41051701308](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41051701308): tentativa 2 `success`; a falha de timeout/HTTP 544 da tentativa 1 foi superada no rerun.
+- Deploy protegido de `health-check` [#41048773110](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41048773110): `pending` de aprovação humana em `production`. Edge drift-check mais recente [#41048782448](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41048782448) foi `cancelled`; não há prova de deploy/reconciliação concluída.
+
+### Checks verdes recentes em `b0d1376a`
+
+Permanecem verdes: Static Health Checks, Lovable Edit Tracker, SSOT Supabase Guard, Gitleaks, Required Checks Guard, Security Scan, Select Columns vs Types, No Prod Leak, Release Please, UI Visual & A11y, Lovable Autoheal, Quote Builder Delivery Quality, Policies Baseline, Branch Protection Sentinel, CodeQL, Supabase Linter Gate (tentativa 2) e Mark stale issues and pull requests. IDs e links estão em PENDENCIAS.md §P25.
+
+### Validação local do commit documental
+
+Após `3d277b164`, `npm run build:verify` e a suíte completa passaram: 1.250 arquivos, 25.898 testes aprovados (130 arquivos e 1.135 testes skipped; 24 todo); lint baseline não registrou regressão. Somente documentos foram alterados. Nenhuma regressão local foi encontrada; os failures remotos do E2E continuam pendentes de investigação das dependências externas.
