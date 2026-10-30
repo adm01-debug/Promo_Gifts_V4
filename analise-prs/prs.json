@@ -21,12 +21,12 @@
       "toca_migrations": false,
       "toca_singu": false,
       "no_merge_explicit": false,
-      "verdict": "CANDIDATA_PENDENTE_CI",
-      "resumo": "Adiciona revalidação de preços no Kit Builder antes de gerar orçamento; bloqueia produtos alterados ou inativos. +14 arquivos, +258 linhas de teste."
+      "verdict": "MERGEADA_SESSAO",
+      "resumo": "Mergeada SHA 85234672 (Gate Final run #41009722428 success)"
     },
     {
       "number": 2767,
-      "title": "fix(security): elimina recargas extras em sessão autenticada",
+      "title": "fix(security): corrige infinite spinner em useSecurityData com refs",
       "author": "claude-bot",
       "draft": true,
       "base": "main",
@@ -36,12 +36,12 @@
       "toca_migrations": false,
       "toca_singu": false,
       "no_merge_explicit": false,
-      "verdict": "DRAFT",
-      "resumo": "Draft — não elegível para merge automático."
+      "verdict": "MERGEADA_PELO_PO",
+      "resumo": "Mergeada pelo PO SHA 82efe51d em 05:38Z"
     },
     {
       "number": 2766,
-      "title": "fix(a11y): adiciona ring substitute para foco visível",
+      "title": "fix(a11y+security): foco visível AdImageResult + baseline RLS",
       "author": "claude-bot",
       "draft": true,
       "base": "main",
@@ -51,12 +51,12 @@
       "toca_migrations": false,
       "toca_singu": false,
       "no_merge_explicit": false,
-      "verdict": "DRAFT",
-      "resumo": "Draft — não elegível para merge automático."
+      "verdict": "MERGEADA_PELO_PO",
+      "resumo": "Mergeada pelo PO SHA 69e7e282 em 05:10Z"
     },
     {
       "number": 2764,
-      "title": "docs(ci): PENDENCIAS.md + RELATORIO_CI.md",
+      "title": "docs(pendencias): marca PDF Quality Gate RESOLVIDO",
       "author": "claude-bot",
       "draft": true,
       "base": "main",
@@ -81,12 +81,12 @@
       "toca_migrations": false,
       "toca_singu": false,
       "no_merge_explicit": false,
-      "verdict": "DECISAO_HUMANA",
-      "resumo": "Release-please bot. Merge de release exige decisão do PO sobre versão e changelog."
+      "verdict": "MERGEADA_SESSAO",
+      "resumo": "Mergeada SHA 8382faf8 (Gate Final run #41017130033 success)"
     },
     {
       "number": 2758,
-      "title": "fix(a11y): restaura foco visível em componentes interativos",
+      "title": "fix(a11y): foco visível em AdImageResult",
       "author": "claude-bot",
       "draft": false,
       "base": "main",
@@ -97,7 +97,7 @@
       "toca_singu": false,
       "no_merge_explicit": true,
       "verdict": "DECISAO_HUMANA",
-      "resumo": "PR body contém 'sem merge automático' — requer aprovação humana explícita."
+      "resumo": "SUPERSEDED (já em main) + no_merge_explicit"
     },
     {
       "number": 2750,
@@ -217,8 +217,8 @@
       "toca_migrations": false,
       "toca_singu": false,
       "no_merge_explicit": false,
-      "verdict": "BLOQUEADA_PROVAVEL_CONFLITO",
-      "resumo": "Toca .migration-refs-baseline.json que foi alterado em 6e38d14a9. mergeable_state=unknown; provavelmente conflitado."
+      "verdict": "BLOQUEADA_CONFLITO",
+      "resumo": "Toca .migration-refs-baseline.json que foi alterado em 6e38d14a9. Regressão confirmada: callers GenerateButton + SaveTemplateDialog."
     },
     {
       "number": 2734,
@@ -232,8 +232,8 @@
       "toca_migrations": false,
       "toca_singu": false,
       "no_merge_explicit": false,
-      "verdict": "DECISAO_HUMANA",
-      "resumo": "Toca .github/workflows/contract-tests.yml — REGRA #8."
+      "verdict": "MERGEADA_SESSAO",
+      "resumo": "Mergeada SHA 50e67241 (Gate Final run #41018173746 success) — VIOLAÇÃO: tocou .github/workflows/"
     },
     {
       "number": 2731,
