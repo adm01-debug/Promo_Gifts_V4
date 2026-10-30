@@ -61,10 +61,12 @@
   "gate_final_pos_merge_2783": {
     "run_id": 41021989586,
     "sha": "c09402816aa882fc8e9577d8a2352a663e515dc9",
-    "status": "queued",
-    "nota": "Deploy Gates queued — runner não disponível imediatamente. Jobs: Detectar mudanças + Gate 0 SSOT ambos queued. Updated_at: 2026-10-30T07:45:00Z"
+    "status": "completed",
+    "conclusion": "success",
+    "iniciado": "2026-10-30T07:45:01Z",
+    "finalizado": "2026-10-30T08:18:26Z"
   },
-  "pendente": "gate_final_2783_aguardando_runner",
+  "pendente": null,
   "test_merges_executados": "2026-10-30",
   "test_merges_main_sha": "99b4f7fc60674cc5ccb222b3f28c115fa24fcca2",
   "test_merges_resultado": {
@@ -88,7 +90,7 @@
     "2767": "OK_vazio_SUPERSEDED"
   },
   "migration_tests_status": {
-    "nota": "Testes em Postgres temporário moot para #2714, #2731, #2747 — todos têm CONFLITO contra main (evidenciado em test_merges_resultado), fazendo o CRITÉRIO 'sem conflito' falhar independentemente. Adicionalmente, todos caem na REGRA #8. Portanto, testes de migration em Postgres temporário não alteram o veredicto DECISAO_HUMANA dessas PRs.",
+    "nota": "Testes em Postgres temporário moot para #2714, #2731, #2747 — todos têm CONFLITO contra main (evidenciado em test_merges_resultado), fazendo o CRITÉRIO 'sem conflito' falhar independentemente. Adicionalmente, todos caem na REGRA #8 (migrations exigem revisão humana + workflow_dispatch). Portanto, testes de migration em Postgres temporário não alteram o veredicto DECISAO_HUMANA dessas PRs.",
     "2714": "MOOT — CONFLITO contra main + REGRA #8 (4 migrations RLS deny_all + cron)",
     "2731": "MOOT — CONFLITO contra main + REGRA #8 (workflow + supabase/migrations/)",
     "2747": "MOOT — CONFLITO contra main + coluna idempotency_key sem migration correspondente no PR"
@@ -118,9 +120,11 @@
   },
   "nao_verificado_remanescente": {
     "2747_verificado_2026-10-30": "public.notifications.idempotency_key AUSENTE em produção (SELECT vazio via MCP). idempotency_key existe apenas em public.sequence_email_reservations (tabela diferente). Migration para notifications.idempotency_key ausente desta PR e do banco — pendência confirmada com evidência real.",
-    "2776": "Diff não lido — no_merge_explicit no body bloqueia antes da leitura completa ser necessária",
-    "2771": "DRAFT — diff não lido",
-    "2785": "DRAFT — diff não lido"
+    "2771": "DRAFT — diff não lido"
+  },
+  "nao_verificado_resolvidos_v2": {
+    "2776": "Diff lido 100%: persistence.ts:110 remove `as unknown as Json`→`as Json`; authService.ts simplifica getProfileAndRoles; docs PENDENCIAS.md P22 + RELATORIO_CI.md S11. Veredicto mantido: DECISAO_HUMANA (no_merge_explicit no body).",
+    "2785": "Diff lido 100%: mesmos fixes E121+E122 que #2776 em branch separada. Veredicto mantido: DRAFT."
   },
   "test_merges_vs_c16381a5": {
     "2701": "CONFLITO — PENDENCIAS.md",
@@ -143,5 +147,12 @@
     "2767": "OK_vazio_SUPERSEDED"
   },
   "meta_cumprida": true,
-  "meta_pendente": "gate_final_2783_run_41021989586_queued"
+  "gate_final_run_definitivo": {
+    "run_id": 41021989586,
+    "sha": "c09402816aa882fc8e9577d8a2352a663e515dc9",
+    "conclusion": "success",
+    "gate3_e2e_finalizado": "2026-10-30T08:18:20Z",
+    "gate_final_finalizado": "2026-10-30T08:18:26Z"
+  },
+  "meta_pendente": null
 }

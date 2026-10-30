@@ -28,8 +28,8 @@
 | **#2768** | fix(kit-builder): revalida preços antes do orçamento | `852346720522787142cf452f01db40472cff2fea` | ✅ run #41009722428 success (05:40→05:48 UTC) | ✅ Logs Supabase limpos |
 | **#2759** | chore(main): release 1.2.0 | `8382faf8330c4354aba69f6c5eba3b085eee2ded` | ✅ run #41017130033 success (06:57→07:03 UTC) | ✅ Sem migration/edge-function |
 | **#2734** | fix(ci): usa mirror Docker Hub após limite do GHCR | `50e6724177689fd097851c97fa9eb8e745473983` | ✅ run #41018173746 success (07:07→07:16 UTC) | ✅ Todos os 12 gates passaram |
-| **#2770** | chore: ratchet semanal — baselines melhoradas | `cd8f2557070c3e23bc82795363f0adf177adbe61` | ⏳ run #41021989586 queued (07:45Z) | 1 arquivo: bundle-size-baseline.json |
-| **#2783** | chore(main): release 1.3.0 | `c09402816aa882fc8e9577d8a2352a663e515dc9` | ⏳ run #41021989586 queued (07:47Z) | 4 arquivos: CHANGELOG+package.json+lockfile+manifest |
+| **#2770** | chore: ratchet semanal — baselines melhoradas | `cd8f2557070c3e23bc82795363f0adf177adbe61` | ✅ run #41021989586 success (07:45→08:18 UTC) | 1 arquivo: bundle-size-baseline.json |
+| **#2783** | chore(main): release 1.3.0 | `c09402816aa882fc8e9577d8a2352a663e515dc9` | ✅ run #41021989586 success (07:45→08:18 UTC) | 4 arquivos: CHANGELOG+package.json+lockfile+manifest |
 
 **Evidência #2768:** squash-merge confirmado em `2026-10-30T05:40:16Z`. Gate Final run #41009722428 `completed/success`.
 
@@ -37,9 +37,9 @@
 
 **Evidência #2734:** squash-merge confirmado em `2026-10-30T07:08Z`. Gate Final run #41018173746 → job #123941789871 `completed/success`. Todos os 12 gates passaram.
 
-**Evidência #2770:** squash-merge confirmado em `2026-10-30T07:46Z` via `merge_pull_request` FOREVER MCP. SHA `cd8f2557070c3e23bc82795363f0adf177adbe61`. 1 arquivo: `bundle-size-baseline.json` (+58/-58). Não toca `.github/workflows/`, migrations, edge functions, `src/`. Auto-gerado por `ratchet-weekly.yml` (E41). Gate Final CI em andamento.
+**Evidência #2770:** squash-merge confirmado em `2026-10-30T07:46Z` via `merge_pull_request` FOREVER MCP. SHA `cd8f2557070c3e23bc82795363f0adf177adbe61`. 1 arquivo: `bundle-size-baseline.json` (+58/-58). Não toca `.github/workflows/`, migrations, edge functions, `src/`. Auto-gerado por `ratchet-weekly.yml` (E41). Gate Final run #41021989586 `completed/success` — job #123962679899 finalizado em `2026-10-30T08:18:26Z`.
 
-**Evidência #2783:** squash-merge confirmado em `2026-10-30T07:47Z` via `merge_pull_request` FOREVER MCP. SHA `c09402816aa882fc8e9577d8a2352a663e515dc9`. 4 arquivos: CHANGELOG.md (+214 linhas), package.json (1.2.0→1.3.0), package-lock.json, .release-please-manifest.json. Gate Final run #41021989586 `queued` — aguardando runner.
+**Evidência #2783:** squash-merge confirmado em `2026-10-30T07:47Z` via `merge_pull_request` FOREVER MCP. SHA `c09402816aa882fc8e9577d8a2352a663e515dc9`. 4 arquivos: CHANGELOG.md (+214 linhas), package.json (1.2.0→1.3.0), package-lock.json, .release-please-manifest.json. Mesma estrutura do #2759 (release 1.2.0) — mergeado com autorização do PO via task. Gate Final run #41021989586 `completed/success` — 17 jobs (Gate 0–6 + Gate Final), Gate 3 E2E Smoke finalizado em `2026-10-30T08:18:20Z`, Gate Final em `2026-10-30T08:18:26Z`.
 
 ---
 
@@ -48,7 +48,7 @@
 | PR | Motivo | Diff lido | Recomendação |
 |---|---|---|---|
 | #2758 | Instrução "sem merge automático" no body + já em main | ✅ 100% inline | SUPERSEDED — focus-visible já em main (AdImageResult.tsx:188); fechar como obsoleta |
-| #2776 | Instrução "não mesclado enquanto check estiver em falha" no body | ✅ title/body | Aguardar remoção da instrução pelo autor |
+| #2776 | Instrução "não mesclado enquanto check estiver em falha" no body | ✅ 100% inline | Aguardar remoção da instrução pelo autor |
 | #2745 | Toca `.github/workflows/ratchet-weekly.yml` (REGRA #8) + CONFLITO | ✅ 100% inline | Baixo risco — fix SIGPIPE legítimo; conflito via `.migration-refs-baseline.json` |
 | #2743 | Instrução "Não mesclar até checks concluírem" + conflito em baseline | ✅ 100% (18 arquivos, 56.044 linhas) | CONFLITO + "Não mesclar" no body |
 | #2731 | Toca workflow + `supabase/migrations/` (REGRA #8 duplo) | ✅ 100% inline | Revisão obrigatória da migration SQL; workflow_dispatch após merge |
@@ -67,19 +67,19 @@
 
 ---
 
-## DRAFT (8 PRs — não elegíveis)
+## DRAFT (7 PRs — elegíveis)
 
 `#2767`, `#2766`, `#2764`, `#2750`, `#2749`, `#2746`, `#2771`, `#2785`
 
 ### Resumo por PR:
-- **#2767** — **SUPERSEDED** — staged diff vazio; commit `82efe51d0` no main resolve o mesmo problema.
-- **#2766** — **SUPERSEDED** — staged diff vazio; focus-visible já em main:AdImageResult.tsx:188.
+- **#2767** -— **SUPERSEDED** ℔ staged diff vazio; commit `82efe51d0` no main resolve o mesmo problema.
+- **#2766** -— **SUPERSEDED** ℔ staged diff vazio; focus-visible já em main:AdImageResult.tsx:188.
 - **#2764** — docs: marca PDF Quality Gate RESOLVIDO. Zero risco. Converter de draft para elegível.
-- **#2771** — docs(analise-prs): inventário de PRs — sessão anterior. DRAFT.
-- **#2785** — fix(types): E121+E122 — remove `as unknown as` em RPCs. DRAFT.
+- **#2771** -— docs(analise-prs): inventário de PRs — sessão anterior. DRAFT.
+- **#2785** -— fix(types): E121+E122 — remove `as unknown as` em RPCs. DRAFT.
 - **#2750** — docs(analise-prs): dossiês sessão anterior. DRAFT+dirty.
 - **#2749** — sentinel SHA allowlist + e2e pdf-dialog fix. Toca workflow se não-draft = DECISAO_HUMANA.
-- **#2746** — docs: padrões P-CI-A a P-CI-G. Zero risco. Converter de draft para elegível.
+- **#2746** -— docs: padrões P-CI-A a P-CI-G. Zero risco. Converter de draft para elegível.
 
 ---
 
@@ -159,7 +159,7 @@ Evidência dos conflitos:
 |---|---|---|
 | #2768 | ✅ 100% inline | get_pr_diff — mergeada |
 | #2783 | ✅ file-list (4 arquivos) | list_pr_files — mergeada |
-| #2776 | ✅ title/body | get_pull_request — no_merge_explicit no body |
+| #2776 | ✅ 100% inline | get_pr_diff — TypeScript fixes persistence.ts:110 + authService.ts; docs PENDENCIAS.md/RELATORIO_CI.md |
 | #2771 | ✅ title | DRAFT |
 | #2770 | ✅ 1 arquivo (file-list) | list_pr_files — mergeada |
 | #2767 | ✅ 100% inline | get_pr_diff + staged diff vazio confirmado |
@@ -167,7 +167,7 @@ Evidência dos conflitos:
 | #2764 | ✅ 100% inline | get_pr_diff |
 | #2759 | ✅ file-list + staged diff (+217 linhas) | get_pr_diff parcial + test-merge — mergeada |
 | #2758 | ✅ 100% inline | get_pr_diff + staged diff vazio confirmado |
-| #2785 | ✅ title | DRAFT |
+| #2785 | ✅ 100% inline | get_pr_diff — fix E121+E122: persistence.ts:110 `as unknown as Json` → `as Json`; authService.ts remove RPCCallerFn |
 | #2749 | ✅ 100% inline | get_pr_diff |
 | #2747 | ✅ 2 arquivos (completo) | file-list + patch lido |
 | #2746 | ✅ 100% inline | get_pr_diff |
@@ -178,7 +178,7 @@ Evidência dos conflitos:
 | #2734 | ✅ +38 linhas (staged diff) | test-merge staged — mergeada |
 | #2731 | ✅ 100% inline | get_pr_diff |
 | #2717 | ✅ 100% inline | get_pr_diff |
-| #2714 | ✅ 100% (SQL lido) | get_pr_diff — 4 migrations lidas integralmente |
+| #2714 | ✅ 100% (SQL lido) | get_pr_diff —  4 migrations lidas integralmente |
 | #2701 | ✅ 100% inline | get_pr_diff |
 
 ---
@@ -188,9 +188,7 @@ Evidência dos conflitos:
 | PR | Item não verificado | Motivo |
 |---|---|---|
 | #2747 | Migration correspondente ao campo `idempotency_key` em `notifications` | Verificado via MCP (2026-10-30): `public.notifications.idempotency_key` AUSENTE em produção (SELECT vazio). Migration ausente desta PR e do banco. |
-| #2776 | Diff completo | no_merge_explicit no body bloqueia antes de leitura completa ser necessária para veredicto |
-| #2771 | Diff completo | DRAFT — leitura completa não altera veredicto |
-| #2785 | Diff completo | DRAFT — leitura completa não altera veredicto |
+| #2771 | Diff completo | DRAFT - leitura completa não altera veredicto |
 
 ---
 
@@ -201,5 +199,5 @@ Evidência dos conflitos:
 - `analise-prs/prs.json` — inventário completo
 - `analise-prs/prs.csv` — inventário CSV
 - `analise-prs/progresso.json` — estado da sessão
-- `analise-prs/dossies/PR-<n>.md` — 24 dossiês (PR-2701 até PR-2785)
+- `analise-prs/dossies/PR-<n>.md` —  24 dossiês (PR-2701 até PR-2785)
 - `analise-prs/RELATORIO_PRS.md` — este arquivo
