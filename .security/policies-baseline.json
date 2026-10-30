@@ -1,7 +1,7 @@
 {
   "version": 1,
   "pending_seed": false,
-  "generated_at": "2026-10-19T21:24:53.880Z",
+  "generated_at": "2026-10-30T03:43:55.000Z",
   "project_ref": "doufsxqlfjyuvxuezpln",
   "schemas_checked": [
     "public",
@@ -8198,26 +8198,6 @@
     {
       "schemaname": "public",
       "tablename": "supplier_products_raw_history",
-      "policyname": "hist_select_admin",
-      "permissive": "PERMISSIVE",
-      "roles": "{authenticated}",
-      "cmd": "SELECT",
-      "qual": "is_admin_or_above(( SELECT ( SELECT auth.uid() AS uid) AS uid))",
-      "with_check": ""
-    },
-    {
-      "schemaname": "public",
-      "tablename": "supplier_products_raw_history_p2026_07",
-      "policyname": "hist_all_service",
-      "permissive": "PERMISSIVE",
-      "roles": "{service_role}",
-      "cmd": "ALL",
-      "qual": "true",
-      "with_check": "true"
-    },
-    {
-      "schemaname": "public",
-      "tablename": "supplier_products_raw_history_p2026_07",
       "policyname": "hist_select_admin",
       "permissive": "PERMISSIVE",
       "roles": "{authenticated}",
