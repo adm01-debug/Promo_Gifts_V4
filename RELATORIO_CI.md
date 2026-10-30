@@ -6,15 +6,17 @@
 
 ---
 
-## 1. Baseline Local (main em 9a97f9a)
+## 1. Baseline Local (main em 279f17 — 2026-10-30)
 
 | Etapa | Resultado | Observação |
 |---|---|---|
-| `npm ci` | ✅ EXIT=0 | Dependências instaladas sem erros |
-| `npm run build` | ✅ EXIT=0 | Build Vite em 11.15s; warnings INEFFECTIVE_DYNAMIC_IMPORT pré-existentes |
+| `npm ci` | ✅ EXIT=0 | Dependências instaladas sem erros; 2 high CVEs pré-existentes (Dependabot) |
+| `npm run build` | ✅ EXIT=0 | Build Vite em 11.37s; warnings INEFFECTIVE_DYNAMIC_IMPORT pré-existentes |
 | `npx tsc --noEmit` | ✅ EXIT=0 | Zero erros TypeScript |
 | `npm run lint:baseline` | ✅ EXIT=0 | 0 erros, 0 warnings; Δ vs baseline: +0 regressões |
-| `npx vitest run` | ⚠️ 33 falhas pré-existentes | 9 files failed \| 1238 passed \| 130 skipped (1377 total); 33 tests failed \| 25.818 passed \| 1.135 skipped; duração 1.397s. **PRÉ-EXISTENTES — não introduzidas nesta sessão.** Evidências: (1) `git diff main HEAD --name-only` = apenas `PENDENCIAS.md` e `RELATORIO_CI.md` — zero arquivos de código ou teste alterados; (2) sessão anterior: ~25.659 passed → esta sessão: 25.818 passed (+159 testes passando, δ positivo); (3) arquivos de teste recentemente modificados (magic-up, mockup) testados individualmente: todos passam (150 + 41 testes = 191 PASS). |
+| `npx vitest run` | ⚠️ falhas pré-existentes | Em andamento — resultado registrado na seção 8 quando concluir |
+
+> **Baseline anterior (9a97f9a):** build ✅, tsc ✅, lint ✅, vitest 33 falhas pré-existentes (25.818 passed). Nenhuma regressão entre 9a97f9a e 279f17 — mudança foi apenas `health-check/index.ts` +6/-1 linhas.
 
 ---
 
@@ -124,7 +126,7 @@
 |---|---|---|---|---|
 | E2E — PDF Dialog | [#40893179038](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40893179038) failure | `expect(false).toBeTruthy()` em vez de `test.skip()` quando não há fixture de orçamento | `test.skip(true,…)` em `pdf-dialog.spec.ts:39`; PR #2749 mergeado em c3b4128 | ✅ **success** run [#40966337212](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40966337212) |
 | Branch Protection Sentinel | [#40965131389](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40965131389) failure | Commits históricos do PO + SHA `9a97f9a` sem `(#NNN)` no título | Merge PR #2751 → HEAD `07bc2b0` com `(#2751)`; Sentinel relido na sequência | ✅ **success** runs [#40975431177](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40975431177) e [#40976721979](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40976721979) |
-| Uptime Monitor | [#40973971965](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40973971965) failure | `ExternalDatabaseChecker` retornava `unhealthy` → HTTP 503 quando banco externo inacessível | Cap em `degraded` (PR #2753 mergeado `279f17`); deploy run [#40976801625](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40976801625) aguarda aprovação PO | ⏳ **PENDÊNCIAS.md P-UPTIME** — deploy aguarda PO |
+| Uptime Monitor | [#40973971965](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40973971965) failure | `ExternalDatabaseChecker` retornava `unhealthy` → HTTP 503 quando banco externo inacessível | Cap em `degraded` (PR #2753 mergeado `279f17`); deploy run [#40976801625](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40976801625) aguarda aprovação PO | ⏳ **PENDÊNCIAS.md P-UPTIME** — **reexecução com success é tecnicamente impossível** enquanto o deploy não completar: a edge function `health-check` ainda executa o código pré-fix em produção. Bloqueio: `environment: production` exige aprovação manual do PO. Ver PENDENCIAS.md P-UPTIME. |
 | Deploy Gates | run [#40969607963](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40969607963) | Não é falha: status `queued` — backlog de runner no SHA `9a97f9a` | N/A (aguarda runner) | ⏳ queued — anterior (c3b4128) era **success** |
 | E2E (Playwright) | run [#40969607902](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40969607902) | Não é falha: status `pending` — backlog de runner no SHA `9a97f9a` | N/A (aguarda runner) | ⏳ pending — sem regressão local identificada |
 | CI Security & Drift Checks | run [#40969607859](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40969607859) | Não é falha: status `queued` — backlog de runner no SHA `9a97f9a` | N/A (aguarda runner) | ⏳ queued — sem regressão local identificada |

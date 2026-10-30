@@ -622,7 +622,7 @@ Validação local após os dois commits do PR: `npm run build:verify`, actionlin
 
 ---
 
-## P-UPTIME — Uptime Monitor: deploy aguarda aprovação PO
+## P-UPTIME — Uptime Monitor: deploy aguarda aprovação PO (BLOQUEIO EXTERNO)
 
 **Workflow:** Uptime Monitor  
 **Última run com falha:** [#40973971965](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40973971965) — SHA `9a97f9a` — `failure` (23:33 UTC 2026-10-29)  
@@ -633,11 +633,15 @@ Validação local após os dois commits do PR: `npm run build:verify`, actionlin
 **Fix:** PR [#2753](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2753) — **MERGEADO** em main `279f1753` (2026-10-29 23:59 UTC)  
 `runProbes()` converte `external_db=unhealthy` → `degraded`; banco interno continua propagando `unhealthy`.
 
-**Bloqueio atual:** Deploy run [#40976801625](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40976801625) está `pending` (00:00 UTC 2026-10-30). O padrão anterior — run #40757296680 (Oct 28) ainda em `waiting` há >30h — confirma que `environment: production` no workflow `deploy-edge-functions.yml` exige aprovação manual do PO.
+**Por que reexecução com `success` é impossível sem ação do PO:**  
+A edge function `health-check` ainda executa o código pré-fix em produção (`doufsxqlfjyuvxuezpln`). O código corrigido está em `main` (`279f17`) mas NÃO foi deployado. O Uptime Monitor faz curl na edge function em produção — enquanto o binário em produção for o anterior, qualquer nova execução do workflow continuará retornando `failure` (HTTP 503 → curl exit 22). Não há nenhuma ação técnica que eu possa tomar para fazer o workflow retornar `success` sem o deploy completar. O deploy run [#40976801625](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40976801625) está `pending` em `environment: production`, que exige aprovação manual humana no GitHub Actions. O run #40757296680 (28/10, >30h em `waiting`) confirma o padrão.
+
+**Bloqueio:** `environment: production` em `.github/workflows/deploy-edge-functions.yml` — aprovação manual do PO. Não existe contorno técnico.
 
 **Ação necessária do PO:**
-1. Aprovar `environment: production` no run [#40976801625](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40976801625)
-2. Após deploy completar, aguardar próximo run do Uptime Monitor (~30 min) → confirmar `success`
+1. Acessar https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40976801625
+2. Clicar em "Review deployments" → selecionar `production` → "Approve and deploy"
+3. Após deploy completar, aguardar próximo run do Uptime Monitor (~30 min) → confirmar `success`
 
 ---
 
