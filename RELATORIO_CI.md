@@ -626,9 +626,9 @@ Os 5 workflows com runs ativas para `4b16b988` estão todos `status=queued, conc
 
 ---
 
-## Seção 11 — Fotografia atual das execuções na `main` (SHA `0d53488e`, 2026-10-30)
+## Seção 11 — Fotografia das execuções na `main` (snapshot do SHA `0d53488e`, 2026-10-30)
 
-Consulta do MCP GitHub concluída aproximadamente às 07:14 UTC, por workflow ativo, `branch=main`, excluindo runs de PR. Foram encontrados 119 workflows ativos: 98 com run e 21 sem execução na `main`. Entre os 98: 55 `success`, 22 `failure`, 17 sem conclusão (5 `pending`, 7 `in_progress`, 5 `queued`), 2 `cancelled` e 2 `skipped`. **A Seção 8 acima é o snapshot operacional anterior; a Seção 9 registra a prova do Gate Final; a Seção 10 documenta a validação local e a prova de release; esta Seção 11 é a fotografia operacional atual.**
+Consulta do MCP GitHub concluída aproximadamente às 07:14 UTC, por workflow ativo, `branch=main`, excluindo runs de PR. Foram encontrados 119 workflows ativos: 98 com run e 21 sem execução na `main`. Entre os 98: 55 `success`, 22 `failure`, 17 sem conclusão (5 `pending`, 7 `in_progress`, 5 `queued`), 2 `cancelled` e 2 `skipped`. A `main` avançou para `9dde1db7` às 07:21 UTC após esta coleta; portanto, os estados abaixo descrevem somente o SHA `0d53488e`. **A Seção 8 acima é um snapshot operacional anterior; as Seções 9 e 10 registram validações anteriores; esta Seção 11 é o inventário detalhado coletado às 07:14 UTC.**
 
 ### Workflows em falha
 
@@ -665,4 +665,58 @@ Os 55 workflows verdes e os 17 sem conclusão, com nomes, links e estados, estã
 
 Baseline desta sessão: `npm ci` passou; `npm run build:verify` passou (TypeScript, ESLint com delta zero, guards e build Vite); suíte pós-commit passou integralmente com 1.248 arquivos e 25.883 testes aprovados, 130 arquivos/1.135 testes skipped e 24 todo. A primeira execução teve erro transitório de teardown; o teste indicado passou 13/13 e a repetição integral passou sem erro. Validações repetidas após os commits documentais passaram sem regressões.
 
-**Escopo:** a sessão atualiza documentação de CI e reconcilia inventário. Não alterou comportamento da aplicação, testes, workflows, snapshots, secrets ou banco canônico, exceto que o merge do branch-base traz para o branch os commits já existentes até `0d53488e`; o PR continua documental em relação à main. Não houve deploy, migration ou aprovação manual de produção. As 22 falhas estão discriminadas em P22; os 17 runs sem conclusão precisam de nova consulta quando terminarem.
+**Escopo:** a sessão atualiza documentação de CI e reconcilia inventário. Não alterou comportamento da aplicação, testes, workflows, snapshots, secrets ou banco canônico; o branch incorpora apenas commits já existentes na `main` até `9dde1db7`, além desta atualização documental. Não houve deploy, migration ou aprovação manual de produção. As 22 falhas estão discriminadas em P22 para o snapshot `0d53488e`; os runs posteriores na `main` precisam de consulta separada antes de usar o relatório como estado atual.
+### Gate Final `e799980e` — ✅ SUCCESS (registro de 06:53 UTC)
+
+**Run:** [#41016209116](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41016209116) — `conclusion=success` (completed 06:53:07Z)
+**SHA:** `e799980e85f5f474b357253f4a20d3f56a374e1b` (HEAD observado às 06:53 UTC em 2026-10-30, merge de PR #2781)
+**Resultado:** Gate Final - Deploy Ready passou com `success`. Único required check na main = verde.
+
+### Inventário completo — HEAD `e799980e` (2026-10-30)
+
+| Workflow | Run ID | SHA | Conclusão | Observação |
+|---|---|---|---|---|
+| **Gate Final - Deploy Ready** | [#41016209116](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41016209116) | e799980e | ✅ **success** | ÚNICO required check — verde |
+| Branch Protection Sentinel | [#41016209012](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41016209012) | e799980e | ✅ success | Squash-merge com sufixo `(#2781)` — sentinel satisfeito |
+| E2E — Critical Flows | [#41016209081](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41016209081) | e799980e | ✅ success | — |
+| E2E — Personalization Flow | [#41016208973](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41016208973) | e799980e | ✅ success | — |
+| Gitleaks — Full History Audit | [#41016368494](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41016368494) | e799980e | ✅ success | — |
+| Security Scan | [#41016209174](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41016209174) | e799980e | ✅ success | — |
+| SSOT Supabase Guard | [#41016209042](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41016209042) | e799980e | ✅ success | — |
+| Policies Baseline | [#41016209029](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41016209029) | e799980e | ✅ success | — |
+| Lovable Autoheal | [#41016209160](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41016209160) | e799980e | ✅ success | — |
+| Lovable Edit Tracker | [#41016209019](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41016209019) | e799980e | ✅ success | — |
+| No Prod Leak in Dev/Test | [#41016208999](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41016208999) | e799980e | ✅ success | — |
+| Quote Builder Delivery Quality | [#41016208946](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41016208946) | e799980e | ✅ success | — |
+| Release Please | [#41016208926](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41016208926) | e799980e | ✅ success | — |
+| Required Checks Guard | [#41016209119](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41016209119) | e799980e | ✅ success | — |
+| Select Columns vs Types | [#41016209111](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41016209111) | e799980e | ✅ success | — |
+| Static Health Checks | [#41016209093](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41016209093) | e799980e | ✅ success | — |
+| Supabase Linter Gate | [#41016209195](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41016209195) | e799980e | ✅ success | — |
+| UI Visual & A11y | [#41016209187](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41016209187) | e799980e | ✅ success | — |
+| Deployment Failure Alert | [#41016258651](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41016258651) | e799980e | ⏭️ skipped | Condição de ativação não atendida (sem falha de deploy) |
+| Lovable Protected-File Audit | [#41016208931](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41016208931) | e799980e | ⏭️ skipped | Condição de ativação não atendida |
+| Uptime Monitor | [#41015546508](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41015546508) | c16381a5 | ✅ success | P-UPTIME RESOLVIDO — deploy edge function `health-check` concluído |
+| E2E — CRM Callback | [#41015075192](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41015075192) | c16381a5 | ✅ success | — |
+| Copilot Code Review | [#41014961856](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41014961856) | c16381a5 | ❌ failure | P19-H — HTTP 402 billing quota. Evento `dynamic` (não é push para main). NÃO é required check. Aguarda PO. |
+| CodeQL | [#41016209082](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41016209082) | e799980e | ⏳ in_progress | Long-running security scan. NÃO é required check. Normal. |
+| E2E (Playwright) | [#41016209191](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41016209191) | e799980e | ⏳ in_progress | NÃO é required check. |
+| E2E — Swatch QuickView | [#41016209178](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41016209178) | e799980e | ⏳ pending/stuck | P19-D/I/J/K — produto `color_swatches` depreciado. NÃO é required check. |
+| CI Security & Drift Checks | [#41016209086](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41016209086) | e799980e | ⏳ pending/stuck | NÃO é required check. |
+
+> **Nota sobre in_progress/pending:** CodeQL, E2E Playwright, E2E Swatch e CI Security & Drift Checks ainda correndo/presos na fila em 06:53Z. Nenhum é required check — Gate Final ignorou todos e concluiu `success`.
+
+### Comparação baseline × final — Seção final (e799980e)
+
+| Métrica | Baseline (início sessão, SHA `c64f613b`) | Final (HEAD `e799980e`) | Δ |
+|---|---|---|---|
+| Gate Final required check | ✅ success (SHA `c64f613b`) | ✅ **success** [#41016209116](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41016209116) | sem regressão |
+| Branch Protection Sentinel | ✅ success | ✅ **success** [#41016209012](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41016209012) | corrigido (era ❌ em f14321e2) |
+| Uptime Monitor | ❌ failure (exit 22) | ✅ **success** [#41015546508](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41015546508) | **P-UPTIME RESOLVIDO** |
+| Workflows verdes (non-required) | 17 success | 20 success | +3 corrigidos |
+| Workflows com falha bloqueante | 1 (Gate Final intermitente) | **0** | resolvido |
+
+**Conclusão final:** O único required check (`Gate Final - Deploy Ready`) está verde em `e799980e`. Todas as falhas restantes são não-required e documentadas em PENDENCIAS.md:
+- **P19-H**: Copilot Code Review — HTTP 402 billing quota (requer PO)
+- **P19-D/I/J/K**: E2E Swatch — produto `color_swatches` depreciado (pré-existente)
+- **P21**: Branch Protection Sentinel em `f14321e2` — push direto sem `(#NNN)`. Resolvido em e799980e.

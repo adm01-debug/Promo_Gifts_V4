@@ -792,9 +792,9 @@ Inventário produzido a partir de `github_list_workflow_runs` com `status=failur
 
 ---
 
-## P22 — Inventário atual das últimas execuções na `main` (2026-10-30)
+## P22 — Inventário histórico das últimas execuções na `main` (2026-10-30)
 
-**Snapshot:** `0d53488ec631e893d43ae6c92f9f72eb9808f6d5` (main; consulta concluída por volta de 07:14 UTC). Foram consultados os 119 workflows ativos, filtrando `branch=main` e excluindo execuções de PR: 98 tinham run; 21 não tinham. Dos 98 resultados, 55 estavam `success`, 22 `failure`, 17 sem conclusão (5 `pending`, 7 `in_progress`, 5 `queued`), 2 `cancelled` e 2 `skipped`. **A tabela abaixo contém somente workflows cuja última execução consultada concluiu `failure`.** Os snapshots anteriores estão preservados no histórico; esta seção é a fotografia operacional atual.
+**Snapshot:** `0d53488ec631e893d43ae6c92f9f72eb9808f6d5` (main; consulta concluída por volta de 07:14 UTC). Foram consultados os 119 workflows ativos, filtrando `branch=main` e excluindo execuções de PR: 98 tinham run; 21 não tinham. Dos 98 resultados, 55 estavam `success`, 22 `failure`, 17 sem conclusão (5 `pending`, 7 `in_progress`, 5 `queued`), 2 `cancelled` e 2 `skipped`. **A tabela abaixo contém somente workflows cuja última execução consultada concluiu `failure`.** Após a coleta, `main` avançou para `9dde1db7` (07:21 UTC); esta seção permanece como fotografia histórica do SHA e horário indicados, e não certifica os estados após esse avanço.
 
 | Workflow | Último run com `failure` | Evidência e causa/bloqueio exatos | Próxima ação / classificação |
 |---|---|---|---|
