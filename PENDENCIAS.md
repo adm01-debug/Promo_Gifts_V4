@@ -2,6 +2,61 @@
 **Atualizado em:** 2026-10-30
 **Branch de correção:** `claude_04/beautiful-gates-bvocz5` (PR #2597 — **MERGEADO** ✅)
 
+## Atualização — HEAD `7299c88c` (2026-10-30T09:40 UTC)
+
+**Gate Final - Deploy Ready:** [#41034358375](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358375) — ✅ **SUCCESS**
+
+### Workflows com FAILURE em HEAD `7299c88c`
+
+#### P21-edge-drift — edge-functions-drift-check
+- **Run ID:** [#41034830573](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034830573) (sha `7299c88c`)
+- **Erro exato:** `Drift detectado entre GitHub e canônico. 31 função(ões) com conteúdo diferente.`
+- **Causa raiz:** Funções edge deployadas em Supabase canônico (`doufsxqlfjyuvxuezpln`) divergem do código no repositório. Drift acumulado.
+- **Ação tomada:** Dispatch de `deploy-edge-functions.yml` enviado — run [#41034820685](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034820685) em andamento (status `pending`).
+- **Ação do PO:** Após conclusão do `Deploy Edge Functions`, disparar manualmente `edge-functions-drift-check` via Actions → workflow_dispatch para confirmar resolução.
+- **Impacto no Gate Final:** NÃO é required check — não bloqueia deploy.
+
+#### P21-personalization — E2E — Personalization Flow
+- **Run ID:** [#41034358338](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358338) (sha `7299c88c`)
+- **Job falho:** `E2E — Personalization Journey` (job #123991438319)
+- **Step falho:** Step 5 "Run Personalization E2E Tests" — exit code 1
+- **Erro exato:** Testes Playwright de personalização falham com asserções; auth setup (step 4) concluiu com sucesso; check-min-tests (step 6) passou — portanto NÃO é problema de ratio de skipped. Falha em asserções de UI/dados no fluxo de personalização.
+- **Artefato:** `personalization-e2e-artifacts.zip` (artifact ID 12967601546, ~87MB com screenshots/vídeos/traces)
+- **Causa raiz:** Falha de asserção em teste E2E — pode ser dado de fixture ausente no CI, UI alterada pelo Lovable sem atualização dos testes, ou timeout de elemento.
+- **Impacto no Gate Final:** NÃO é required check — não bloqueia deploy.
+- **Ação do PO:** Baixar artefato `personalization-e2e-artifacts.zip` do run #41034358338 e inspecionar screenshots/traces para identificar a asserção que falhou.
+
+#### P21-copilot — Running Copilot Code Review
+- **Run ID:** [#41031412599](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41031412599) (sha `b2ba9f9e`, último no workflow)
+- **Erro exato:** HTTP 402 — quota de uso do Copilot esgotada (`api.business.githubcopilot.com`)
+- **Causa raiz:** Plano GitHub atual não inclui Copilot Code Review com cota suficiente.
+- **Impacto no Gate Final:** NÃO é required check — não bloqueia deploy.
+- **Ação do PO:** Habilitar/aumentar plano GitHub Copilot em Settings → Billing & plans.
+
+### Workflows ainda EM ANDAMENTO em HEAD `7299c88c` (2026-10-30T09:40 UTC)
+Os workflows abaixo estavam `in_progress` no momento desta atualização — resultado pendente:
+- `E2E — Magazine Header Layout` (#41034358625)
+- `E2E • Swatch QuickView (Lista + Tabela)` (#41034358495)
+- `E2E — Critical Flows & Error Boundaries` (#41034358180)
+- `E2E (Playwright)` (#41034358354)
+- `Visual Baseline Tests — Nightly` (#41034358175)
+- `Edge Integration Tests — All Functions` (#41034358210)
+- `CI - Replenishment Module Quality Gate` (#41034358297)
+- `CI Security & Drift Checks` (#41034358666)
+
+### Workflows com SUCESSO em HEAD `7299c88c` (verde — sem regressão)
+- Gate Final - Deploy Ready ✅
+- Quote Builder Delivery Quality ✅ (#41034358444) — **RESOLVIDO** (era failure em `b2ba9f9e`)
+- Branch Protection Sentinel ✅, Supabase Linter Gate ✅, CodeQL ✅
+- Static Health Checks ✅, Security Scan ✅, Workflow Lint ✅
+- No Prod Leak ✅, Gitleaks ✅, SSOT Supabase Guard ✅
+- Policies Baseline ✅, db-schema-drift-check ✅, schema-snapshot-export ✅
+- Select Columns vs Types ✅, Required Checks Guard ✅
+- Magazine Unit Tests ✅, UI · Visual & A11y ✅, Release Please ✅
+- Lovable Edit Tracker ✅, Lovable Autoheal ✅
+
+---
+
 ## Atualização — HEAD `c09402816` / Baseline CI (2026-10-30T08:02 UTC)
 
 ### Falhas confirmadas (não-required, pré-existentes) em HEAD `c09402816`
