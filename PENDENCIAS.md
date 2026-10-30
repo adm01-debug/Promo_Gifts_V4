@@ -840,3 +840,30 @@ Consulta read-only às últimas execuções de `push` na `main`. As causas obser
 - Gate Final — Deploy Ready: [#41110207159](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41110207159) — `success` em `6bc42d682`.
 - Também concluíram `success` nesta ponta: Security Scan [#41110207040](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41110207040), Required Checks Guard [#41110207046](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41110207046), No Prod Leak [#41110206990](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41110206990), UI · Visual & A11y [#41110207385](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41110207385) e Static Health Checks [#41110207108](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41110207108).
 - Swatch QuickView [#41110207138](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41110207138) ainda estava `in_progress` na consulta; não foi contado como sucesso nem falha concluída.
+
+## P33 — Revalidação de workflows na main `9541666bf` (2026-10-30T19:45Z)
+
+Consulta read-only aos runs mais recentes da `main`; falha só é contabilizada quando a execução mais recente terminou com `conclusion=failure`. Runs `queued`, `pending` ou `in_progress` permanecem em acompanhamento.
+
+| Workflow / verificação | Run / evidência | Resultado comprovado | Encaminhamento |
+|---|---|---|---|
+| Uptime Monitor | [#41116269946](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41116269946), SHA `9541666b` | `failure`: `site=0`, `health-check=22`, `check-login OPTIONS=0`, `auth-health=0`. O monitor encontrou resposta HTTP não-2xx somente na Edge Function `health-check`; não falhou por ausência da chave no fonte. Issue [#2841](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2841) recebeu a ocorrência. | PO: revisar e aprovar, se aplicável, o deploy versionado de `health-check` pelo workflow `deploy-edge-functions.yml` e ambiente `production`; depois confirmar novo probe verde. Não houve deploy nesta sessão. |
+| E2E — Personalization Flow | [#41115240723](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41115240723), SHA `9541666b` | `failure`: três testes expiraram em `loginViaUI`, permanecendo em `/login`. Nos traces, `POST auth/v1/token` retornou `200` em uma tentativa, `GET auth/v1/user` retornou `200`, enquanto algumas chamadas PostgREST/functions ficaram pendentes; parte de `profiles`, `categories` e `product_variants` respondeu `200`. Isso não prova uma causa única nem regressão do fluxo. | Não reproduzível localmente nesta sessão: `E2E_USER_EMAIL`, `E2E_USER_PASSWORD`, `VITE_SUPABASE_URL` e `VITE_SUPABASE_PUBLISHABLE_KEY` não estão disponíveis no ambiente local. PO: confirmar no GitHub Actions que a conta E2E segue ativa e repetir o run; se persistir com auth e endpoints saudáveis, abrir diagnóstico do redirecionamento em PR separado. Não alterar asserts nem timeouts. |
+| Running Copilot Code Review | [#41115245979](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41115245979), SHA `9541666b` | `failure`: erro HTTP `402`, `SessionModelError` informa que o limite adicional de uso do plano Copilot foi atingido. | PO: regularizar cota/plano Copilot; depois reexecutar o workflow. |
+
+### Check externo Supabase Preview (não é workflow de Actions)
+
+O check do app Supabase [#124269702734](https://github.com/adm01-debug/Promo_Gifts_V4/runs/124269702734) reportou `Remote migration versions not found in local migrations directory.` Ele não é uma execução de workflow GitHub Actions e, portanto, fica fora da tabela de falhas da auditoria de workflows. A divergência de ledger continua sem classificação nesta evidência. Não apliquei migration, `repair`, DDL ou alteração de dados no projeto canônico; reconciliar exige inspeção administrativa read-only e versionamento revisado antes de qualquer ação autorizada.
+
+### Execuções não contabilizadas como falha neste snapshot
+
+- Deploy Gates / Gate Final [#41115240969](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41115240969): `in_progress` às 19:45Z; ainda sem conclusão final.
+- E2E Critical Flows [#41115240508](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41115240508): `queued`.
+- E2E Playwright [#41115240773](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41115240773) e Swatch QuickView [#41115240881](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41115240881): `pending`.
+- CI Security & Drift [#41115240942](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41115240942): `queued`.
+
+Checks concluídos ainda verdes na ponta `9541666bf` incluem Gate 3 E2E Smoke, Gate 0 SSOT, Gate 0.5 Dependency Audit, Gate 2 Unit Tests, Gate 2.5 PostgreSQL Transactional Integrity, Gate 5 SEO, Gate 5.5 RPC `restore_seller_cart`, Quote Builder Delivery Quality, Security Scan, Required Checks Guard, Branch Protection Sentinel, CodeQL e UI Visual & A11y. O Gate Final não foi declarado verde enquanto o run acima permanecer sem conclusão.
+
+### PR #2839 — snapshot do head `6f72c73eb`
+
+O PR [#2839](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2839) permanece aberto e não foi mesclado. Na consulta às 19:45Z, os checks Actions do head tinham jobs ainda `queued`/`in_progress`; não encontrei falha concluída no head, mas a validação remota não terminou e aguarda revisão humana. Não fazer merge antes da conclusão dos checks obrigatórios e da revisão.

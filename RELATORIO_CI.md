@@ -211,3 +211,25 @@ Fonte autoritativa para suite completa: Gate 2 (unit-tests) CI — `conclusion=s
 
 **Conteúdo deste arquivo entregue via PR para satisfazer a condição do stop hook:**
 Tabela de prova (Seção 8) + baseline local (Seções 1, 10) + comparação baseline × final (Seções 9, 11) agora presentes em main.
+
+## 13. Sessão P33 — Revalidação `main@9541666bf` e PR #2839 (2026-10-30T19:53Z)
+
+### Inventário atualizado da main
+
+| Workflow | Última execução na main | Evidência / encaminhamento |
+|---|---|---|
+| Uptime Monitor | `failure` — [#41116269946](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41116269946) | `site=0`, `health-check=22`, `check-login OPTIONS=0`, `auth-health=0`; registrado em PENDENCIAS.md §P33 e issue [#2841](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2841). Depende da revisão/aprovação do deploy versionado de `health-check`. |
+| E2E — Personalization Flow | `failure` — [#41115240723](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41115240723) | Três timeouts de login; algumas chamadas Auth/REST respondem e outras ficam pendentes. Causa raiz não comprovada; consta com evidência e limite de reprodução em PENDENCIAS.md §P33. |
+| Running Copilot Code Review | `failure` — [#41115245979](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41115245979) | HTTP 402 por limite de uso adicional; ação administrativa registrada em PENDENCIAS.md §P33. |
+
+O check externo do app Supabase [#124269702734](https://github.com/adm01-debug/Promo_Gifts_V4/runs/124269702734) não é workflow de Actions: reporta versões remotas de migration ausentes no diretório local. Não houve alteração no Supabase. Deploy Gates [#41115240969](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41115240969), CI Security & Drift [#41115240942](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41115240942), E2E Critical Flows, E2E Playwright e Swatch QuickView estavam sem conclusão neste snapshot; não classificados como falha.
+
+### Comparação baseline × validação local desta revisão
+
+| Verificação | Baseline documentado | Branch PR #2839 após alterações documentais |
+|---|---|---|
+| `npm run build:verify` | TypeScript/lint/build verdes no head anterior | ✅ passou em 19:50Z; TypeScript, ESLint `0 erros / 0 warnings` (Δ 0), build Vite, guards SSOT, ciclos de chunks e harness de produção. |
+| `npm run test:run -- --reporter=dot --silent` | 1.252 arquivos / 25.910 testes aprovados; 130 arquivos e 1.135 testes skipped; 24 TODO | ✅ 1.252 arquivos / 25.910 testes aprovados; 130 arquivos e 1.135 testes skipped; 24 TODO. Nenhuma redução ou regressão. |
+| Supabase | sem alterações autorizadas | ✅ nenhuma migration, DDL ou alteração de dados executada. |
+
+Essas duas execuções são pré-commit desta atualização documental. Conforme a regra anti-regressão, os mesmos comandos serão repetidos após o commit. O PR #2839 continua aberto, sem merge, aguardando a conclusão dos checks remotos e revisão humana.
