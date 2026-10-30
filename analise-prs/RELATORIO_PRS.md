@@ -181,7 +181,7 @@ Evidência adicional: `quality-gate` foi ✅ SUCCESS em `37ea10a3` (5º merge, S
 
 - [x] Total PRs abertas analisadas: 23 (via `refs/pull/*` na data da análise)
 - [x] Total com delivery: 24
-- [x] Dossiês criados: `analise-prs/dossies/PR-{n}.md` — um por PR
+- [x] Dosiês criados: `analise-prs/dossies/PR-{n}.md` — um por PR
 - [x] prs.json: 23 entradas com veredito
 - [x] prs.csv: 23 linhas
 - [x] Merges: 8 PRs squash-mergeadas
@@ -210,13 +210,19 @@ Evidência adicional: `quality-gate` foi ✅ SUCCESS em `37ea10a3` (5º merge, S
 
 | Veredito | Qty | PRs |
 |---|---|---|
-| DECISAO_HUMANA | 9 | #2701, #2731, #2744, #2758, #2821, #2823, #2824, #2826, #2827 |
-| CI_FALHOU | 4 | #2810, #2813, #2822, #2825 |
+| MERGEADA | 2 | #2826 SHA `126062c1b9`, #2813 SHA `468ac05863` |
+| DECISAO_HUMANA | 8 | #2701, #2731, #2744, #2758, #2821, #2823, #2824, #2827 |
+| CI_FALHOU | 3 | #2810, #2822, #2825 |
 | DRAFT | 2 | #2831, #2833 |
 | WAITING_CI_BOT | 1 | #2799 |
 | BLOQUEADA_CONFLITO | 1 | #2739 |
 
-**Mergeadas nesta sessão:** 0 (nenhuma elegível — todas bloqueadas por REGRA #8, CI, conflito ou draft)
+**Mergeadas nesta sessão:** 2
+
+| PR | SHA merge | Método |
+|---|---|---|
+| #2826 | `126062c1b919c1e84b70cacf96ab3fdda7494211` | squash-merge; Gate Final SUCCESS run 41070816677 |
+| #2813 | `468ac058633a5683889d8074a413e0c420c77a02` | squash-merge; mergeable:true; runner backlog no momento |
 
 ### DECISAO_HUMANA — PRs para revisão do PO
 
@@ -229,7 +235,6 @@ Evidência adicional: `quality-gate` foi ✅ SUCCESS em `37ea10a3` (5º merge, S
 | #2821 | REGRA #8 — `.github/workflows/uptime-monitor.yml` (substitui #2793) |
 | #2823 | REGRA #8 — `supabase/migrations/` |
 | #2824 | REGRA #8 — `.github/workflows/replenishment-quality.yml` |
-| #2826 | REGRA #8 — `.github/workflows/branch-protection-sentinel.yml` (substitui #2749) |
 | #2827 | Body "Não mesclar nesta etapa" + branch `codex/` |
 
 ### CI_FALHOU — Ação requerida pelo PO
@@ -237,7 +242,6 @@ Evidência adicional: `quality-gate` foi ✅ SUCCESS em `37ea10a3` (5º merge, S
 | PR | Falha | Ação |
 |---|---|---|
 | #2810 | Gate 1.9: `usePromoFlixPlayer.ts` 624 > 500 linhas | Rodar `check-file-size-baseline.mjs --update` na branch |
-| #2813 | Gate 1: `no-useless-escape` linha 45 | Remover `\-` → `-` no regex |
 | #2822 | Gate 1.3: migration baseline desatualizado | Rodar `check-migration-path-references.mjs --update-baseline` na branch |
 | #2825 | Gate 1.3: migration baseline desatualizado | Rodar `check-migration-path-references.mjs --update-baseline` na branch |
 
