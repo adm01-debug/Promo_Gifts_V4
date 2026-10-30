@@ -185,7 +185,7 @@ export function AdImageResult({
                     interativo aninhado para leitores de tela (axe nested-interactive). */}
                 <button
                   type="button"
-                  className="block w-full cursor-pointer text-left focus-visible:outline-none"
+                  className="block w-full cursor-pointer text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
                   onClick={() => onSelectHistory?.(item)}
                   aria-label={`Selecionar histórico ${item.product_name}`}
                 >
