@@ -422,13 +422,13 @@ export function usePersonalizationManager() {
     const newIndex = components.findIndex((c) => c.id === over.id);
     const reordered = arrayMove(components, oldIndex, newIndex);
     for (let i = 0; i < reordered.length; i++) {
-      if (reordered[i].sort_order !== i) {
+      if (reordered[i]!.sort_order !== i) {
         // BUG-REORDER-SORT-SILENT-FAIL FIX: bare await swallowed RLS errors and
         // still showed toast.success to the user even when the DB update failed.
         const { error: sortErr } = await supabase
           .from('product_components')
           .update({ sort_order: i })
-          .eq('id', reordered[i].id);
+          .eq('id', reordered[i]!.id);
         if (sortErr) {
           logger.warn('[personalization-manager] sort_order update failed at index', i, ':', sortErr);
           toast.error('Erro ao reordenar componentes');
