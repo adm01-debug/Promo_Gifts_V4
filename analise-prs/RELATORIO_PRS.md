@@ -12,11 +12,12 @@
 | Risco | PRs | Ação |
 |---|---|---|
 | Conflito com main em `.migration-refs-baseline.json` | #2747, #2739 | Rebase necessário antes de qualquer merge |
-| Workflows — REGRA #8 proíbe merge automático | #2745, #2734, #2717, #2701, #2731 | Revisão humana obrigatória |
+| Workflows — REGRA #8 proibe merge automático | #2745, #2734, #2717, #2701, #2731 | Revisão humana obrigatória |
 | Migrations — REGRA #8 + E015 | #2714, #2731 | Revisão + workflow_dispatch após merge |
 | Instrução explícita "não mergear" | #2758, #2744, #2743 | Aguardar remoção da instrução pelo autor |
 | Release PR — decisão de versão é do PO | #2759 | PO decide quando lançar 1.2.0 |
 | PRs superseded (já em main) | #2758, #2766, #2767 | Podem ser fechadas como obsoletas |
+| Regressão confirmada em callers | #2739 | `GenerateButton`→MagicUpConfigPanel.tsx; `SaveTemplateDialog`→CartUtilComponents.tsx+CartDialogs.tsx |
 
 ---
 
@@ -47,7 +48,7 @@ Todas as 19 PRs foram analisadas. #2768 foi a única candidata sem pendências. 
 | #2734 | Toca `.github/workflows/contract-tests.yml` (REGRA #8) | ✅ +38 linhas (staged diff) | Baixo risco — adiciona fallback Docker Hub + `permissions.packages: read`; revisão rápida |
 | #2731 | Toca workflow + `supabase/migrations/` (REGRA #8 duplo) | ✅ 100% inline | Revisão obrigatória da migration SQL; workflow_dispatch para migration após merge |
 | #2717 | Toca `.github/workflows/replenishment-quality.yml` (REGRA #8) + CONFLITO | ✅ 100% inline | Fix legítimo — adiciona `E2E_BASE_URL`/`E2E_FORCE_START_SERVER`; conflito via `.migration-refs-baseline.json` |
-| #2714 | Toca `supabase/migrations/` — 4 migrations RLS deny_all + cron (REGRA #8) | ⚠️ file-list (4 migrations) | Revisar idempotência SQL manualmente; conflict + REGRA #8 impedem merge automático |
+| #2714 | Toca `supabase/migrations/` — 4 migrations RLS deny_all + cron (REGRA #8) | ✅ 100% (SQL lido) | SQL aditivo + pré/pós-condições presentes; aguarda resolução drift do PENDENCIAS.md |
 | #2701 | Toca `.github/workflows/kit-coverage-integration.yml` (REGRA #8) + CONFLITO | ✅ 100% inline | Fix de GITHUB_TOKEN — verificar permissão R11 (workflow PR: sem `contents: write`) |
 
 ---
@@ -57,7 +58,7 @@ Todas as 19 PRs foram analisadas. #2768 foi a única candidata sem pendências. 
 | PR | Motivo | Diff lido | Ação |
 |---|---|---|---|
 | #2747 | Conflito dirty em `.migration-refs-baseline.json`; migration sem schema correspondente | ✅ 2 arquivos (+3 linhas `types.ts` + `migration-refs`) | Rebase em main + adicionar migration correspondente em `supabase/migrations/` |
-| #2739 | Conflito em `.migration-refs-baseline.json`; remoção de 3 componentes com callers não verificados | ✅ file-list (35 arquivos) | Rebase em main + verificar callers de `GenerateButton`, `SaveTemplateDialog`, `TemplateSelector` |
+| #2739 | Conflito em `.migration-refs-baseline.json`; remoção de 3 componentes com callers confirmados | ✅ file-list (35 arquivos) + callers verificados | Rebase em main + verificar que callers de `GenerateButton`, `SaveTemplateDialog` foram atualizados no diff |
 
 ---
 
@@ -143,16 +144,17 @@ Evidência completa em `analise-prs/baseline/test-merges.md`.
 | #2759 | ✅ file-list + staged diff (+217 linhas) | get_pr_diff parcial + test-merge |
 | #2758 | ✅ 100% inline | get_pr_diff + staged diff vazio confirmado |
 | #2749 | ✅ 100% inline | get_pr_diff |
+| #2748 | — | PR não existe na lista |
 | #2747 | ✅ 2 arquivos (completo) | file-list + patch lido |
 | #2746 | ✅ 100% inline | get_pr_diff |
 | #2745 | ✅ 100% inline | get_pr_diff |
 | #2744 | ✅ 100% inline | get_pr_diff — lido em chunks (2.286 linhas) |
 | #2743 | ⚠️ file-list (56.044 linhas) | File-list apenas — instrução "Não mesclar" |
-| #2739 | ✅ file-list (35 arquivos) | file-list + análise de componentes removidos |
+| #2739 | ✅ file-list (35 arquivos) + callers verificados | file-list + git grep callers confirmados |
 | #2734 | ✅ +38 linhas (staged diff) | test-merge staged |
 | #2731 | ✅ 100% inline | get_pr_diff |
 | #2717 | ✅ 100% inline | get_pr_diff |
-| #2714 | ✅ file-list (4 migrations) | file-list — conteúdo SQL não lido |
+| #2714 | ✅ 100% (SQL lido) | get_pr_diff — 4 migrations lidas integralmente |
 | #2701 | ✅ 100% inline | get_pr_diff |
 
 ---
@@ -163,11 +165,15 @@ Itens que não foram possíveis verificar exaustivamente, com motivo:
 
 | PR | Item não verificado | Motivo |
 |---|---|---|
-| #2714 | Conteúdo SQL das 4 migrations (RLS deny_all + cron) | Diff de 52KB não lido — DECISAO_HUMANA por REGRA #8 independentemente do SQL |
-| #2714 | Idempotência das migrations aplicadas em cadeia no Postgres temp | REGRA #8 impede merge automático — análise de idempotência desnecessária para veredito |
 | #2743 | Diff completo (56.044 linhas — graphify rebuild + docs) | Instrução humana "Não mesclar" no body torna análise completa desnecessária para veredito |
-| #2739 | Callers de `GenerateButton`, `SaveTemplateDialog`, `TemplateSelector` (componentes removidos) | Conflito impede merge; callers verificados antes de rebase pelo autor |
 | #2747 | Migration correspondente ao campo `idempotency_key` | PR não inclui migration — coluna não existe em produção sem migration separada |
+
+### Itens anteriormente NÃO VERIFICADO — resolvidos nesta sessão:
+
+| PR | Item | Evidência |
+|---|---|---|
+| #2714 | SQL das 4 migrations | Lido 100%: deny_all RESTRICTIVE em `supplier_stricker` (schema sem GRANT USAGE), pré/pós-condições presentes. Aditivo, não-destrutivo. DECISAO_HUMANA por REGRA #8 independente do conteúdo |
+| #2739 | Callers de `GenerateButton`, `SaveTemplateDialog`, `TemplateSelector` | `git grep origin/main`: `GenerateButton` → `MagicUpConfigPanel.tsx`; `SaveTemplateDialog` → `CartUtilComponents.tsx` + `CartDialogs.tsx`; `TemplateSelector` → sem callers externos. Regressão confirmada se callers não atualizados no diff da PR |
 
 ---
 
