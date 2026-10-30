@@ -37,9 +37,9 @@ const CENTER_TOLERANCE_PX = 8;
 
 async function openFirstEditor(page: Page): Promise<boolean> {
   await gotoAndSettle(page, "/magazine");
-  // The article is only a container; the interactive link is nested around
-  // the thumbnail. Clicking the article center can hit non-interactive space
-  // and leave the route at /magazine.
+  // The article is a container; navigation belongs to its accessible link.
+  // Clicking the article itself does not activate the card and leaves the page
+  // at /magazine, so target the interactive control explicitly.
   const firstCard = page.locator('[data-testid^="magazine-card-"]').first();
   try {
     await firstCard.waitFor({ state: 'attached', timeout: 10_000 });

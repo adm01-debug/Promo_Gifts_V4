@@ -38,9 +38,9 @@ const FREEZE_CSS = `
 
 async function openFirstEditor(page: Page): Promise<boolean> {
   await gotoAndSettle(page, "/magazine");
-  // The article is only a container; the interactive link is nested around
-  // the thumbnail. Clicking the article center can hit non-interactive space
-  // and leave the route at /magazine.
+  // The article is a container; navigation belongs to its accessible link.
+  // Clicking the article itself does not activate the card and leaves the page
+  // at /magazine, so target the interactive control explicitly.
   const firstCard = page.locator('[data-testid^="magazine-card-"]').first();
   const hasMagazine = await firstCard.count();
   if (hasMagazine === 0) return false;

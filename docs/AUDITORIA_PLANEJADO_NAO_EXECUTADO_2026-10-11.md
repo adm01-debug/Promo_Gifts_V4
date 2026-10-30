@@ -67,8 +67,10 @@ planos, e cada plano é contado separadamente para mostrar há quanto tempo o te
 
 - **Kit Maker — gravação a R$ 0:** personalização sem preço calculado entra como zero no total, e a
   validação do kit não exige personalização válida. → A03 KM2-117/119/146
-- **Kit Maker — orçamento não revalida preço**, não aplica pedido mínimo nem múltiplos (a view
-  `vw_products_min_quantity` existe e não é usada), desconto fixo em zero. → A03 KM2-133/135/139 · A04 KMC-084
+- **Kit Maker — revalidação comercial incompleta:** desde 2026-10-30, o cliente reconsulta
+  `sale_price`/`active` antes do RPC e bloqueia preço divergente ou leitura indisponível; a RPC
+  ainda não recalcula/valida atomicamente. Pedido mínimo/múltiplos continuam ausentes e desconto
+  segue fixo em zero. → A03 KM2-133/135/139 · A04 KMC-084 · `docs/estado/backlog/funcionalidades.md` FT-078
 - **Kit Maker — frete subestimado:** `maxWeight` da caixa nunca é preenchido e `weight_g = 0` é tratado
   como peso conhecido; o frete é tabela fixa sem CEP. → A03 KM2-099/138 · A09 PC-110
 - **Selos e BI com dado simulado apresentado como real** ("Fornecedor verificado", "Hot Item", Cliente 360,
