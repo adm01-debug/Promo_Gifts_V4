@@ -127,7 +127,6 @@ export function QuoteBuilderSummaryColumn({
     showOnlyStale,
     setShowOnlyStale,
     groupedByProduct,
-    activeDragId,
     setActiveDragId,
     collapsedItemKeys,
     toggleItemCollapsed,

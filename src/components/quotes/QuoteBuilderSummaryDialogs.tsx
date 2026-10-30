@@ -30,7 +30,7 @@ interface QuoteBuilderSummaryDialogsProps {
   handleRequestApproval: () => void;
   confirmSaveDraftOpen: boolean;
   setConfirmSaveDraftOpen: (v: boolean) => void;
-  saveDraftBtnRef: React.RefObject<HTMLButtonElement>;
+  saveDraftBtnRef: React.RefObject<HTMLButtonElement | null>;
   confirmAllOpen: boolean;
   handleConfirmAllDialogChange: (open: boolean) => void;
   staleCount: number;
@@ -158,6 +158,7 @@ export function QuoteBuilderSummaryDialogs({
                   <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
                     Seu Limite
                   </p>
+
                   <p className="mt-0.5 text-sm font-semibold">{maxDiscountPercent}%</p>
                 </div>
                 <div data-testid="quote-approval-requested">
