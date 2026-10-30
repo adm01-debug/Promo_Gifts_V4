@@ -1,33 +1,20 @@
-number,title,author,draft,base,state,branch,created_at,files_protegidos,merge_test,gate_final,veredicto,motivo,sha_merge
-2721,chore: atualiza PENDENCIAS §4 e RELATORIO_CI,adm01-debug,false,main,merged,chore/atualiza-pendencias-relatorio,2026-10-29,[],LIMPO,SUCCESS,MERGEADA,Docs+config; Gate Final ✅; sem arquivos protegidos,6b48beb
-2735,docs(analise-prs): rev46 — análise completa 20 PRs,adm01-debug,false,main,merged,docs/analise-prs-rev46,2026-10-29,[],LIMPO,SUCCESS,MERGEADA,Docs only; Gate Final ✅,27f4261
-2733,fix(banco): adiciona rollback header e arquivo rollback,adm01-debug,false,main,merged,fix/banco-rollback,2026-10-29,[],LIMPO,SUCCESS,MERGEADA,Fix docs/scripts; Gate Final ✅,8bc08b1
-2695,docs(db): corrige status do espelho de migration Google,adm01-debug,false,main,merged,docs/reconciliar-espelho-google-20261028,[],LIMPO,SUCCESS,MERGEADA,Docs only; Gate Final ✅; merge LIMPO; sem arquivos protegidos,8da42aa9
-2737,docs(auditoria): relatório de auditoria Supabase — revisão final,adm01-debug,false,main,merged,docs/auditoria-supabase-final,[],LIMPO,SUCCESS,MERGEADA,Docs only; sem arquivos protegidos,c7f9f4ba
-2707,docs: recibo de deploy de edge function(s) — run 40747468580,adm01-debug,false,main,merged,e66-edge-deploy-receipt-40747468580,[],LIMPO,SUCCESS,MERGEADA,Docs only; conflito resolúvel via update_pr_branch,37ea10a3
-2736,"test+docs(mockup/magic-up): entregas de teste e doc da fábrica VPS (lote A)",adm01-debug,false,main,merged,integra/vps-testes-docs,[],LIMPO,SUCCESS,MERGEADA,Tests+docs; typecheck verde; sem arquivos protegidos,31ebc2d3
-2719,chore(build): separa mapas SQL e amplia referências Graphify,adm01-debug,false,main,merged,chore/graphify-audit-improvements-20261029,[],BEHIND,SUCCESS,MERGEADA,Docs/chore graphify; sem arquivos protegidos; atualizado antes do merge,66d032af
-2734,fix(ci): usa mirror Docker Hub após limite do GHCR,adm01-debug,false,main,open,fix/contract-tests-ghcr-auth,[.github/workflows/contract-tests.yml],LIMPO,SUCCESS,DECISAO_HUMANA,Toca .github/workflows/contract-tests.yml (REGRA #8),
-2731,fix(db): protege kill_switch_hits contra INSERT anônimo sem rate guard,adm01-debug,false,main,open,fix/p200-e049-rate-guard,"[.github/workflows/deploy-gates.yml, supabase/migrations/20261029160339_add_kill_switch_hits_anon_rate_guard.sql]",LIMPO,FAILURE_INFRA,DECISAO_HUMANA,Toca .github/workflows/ + supabase/migrations/ (REGRA #8),
-2730,fix(ci): protege contrato de repair-only em E15,adm01-debug,false,main,open,fix/p200-e051-e052,[.github/workflows/db-apply-migration.yml],CONFLITO,UNKNOWN,DECISAO_HUMANA,Toca .github/workflows/ (REGRA #8) + conflito com main,
-2729,docs(analise-prs): relatório completo — 21 PRs analisadas,adm01-debug,true,main,closed,claude/eloquent-ramanujan-0yt2fo,[],N/A,SUCCESS,NAO_MERGEAR,Branch de entrega desta sessão — fechada pelo PO,
-2720,ci(e2e): não ocultar falha na geração de fixtures,adm01-debug,false,main,open,fix/ci-workflows,[.github/workflows/],CONFLITO,UNKNOWN,DECISAO_HUMANA,Toca .github/workflows/ (REGRA #8) + conflito com main,
-2717,fix(e2e): isola servidor Vite no CI de paridade,adm01-debug,false,main,open,fix/e2e-vite-port-isolation,[.github/workflows/replenishment-quality.yml],CONFLITO,UNKNOWN,DECISAO_HUMANA,Toca .github/workflows/ (REGRA #8) + conflito com main,
-2716,docs(auditoria): atualiza estado de CI e sincronização canônica,adm01-debug,false,main,closed,docs/auditoria-sync-canonico-2026-10-28,[],CONFLITO,UNKNOWN,CONFLITO,Conflito em documentação — fechada externamente,
-2714,fix(db): reconciliar migrations pendentes com o canônico,adm01-debug,false,main,open,fix/reconcile-canonical-pending-migratio,[supabase/migrations/],CONFLITO,UNKNOWN,DECISAO_HUMANA,Toca supabase/migrations/ (REGRA #8) + conflito com main,
-2713,chore(main): release 1.1.0,github-actions[bot],false,main,open,release-please--branches--main--componen,[],LIMPO,BLOCKED_NO_RUNS,AGUARDAR_REVISAO_PO,Release PR por bot; PR bloqueada (0 Gate Final runs); PO deve validar CHANGELOG,
-2711,docs(ci): RELATORIO_CI.md v3 — tabela de prova consolidada,adm01-debug,true,main,closed,claude_pink/fix-relatorio-final-281028-1,[],CONFLITO,UNKNOWN,CONFLITO,Draft de outra sessão (claude_pink/); conflito com main; fechada externamente,
-2707,docs: recibo de deploy de edge function(s) — run 40747468580,adm01-debug,false,main,merged,e66-edge-deploy-receipt-40747468580,[],LIMPO,SUCCESS,MERGEADA,Docs only; merge realizado nesta sessão,37ea10a3
-2701,fix(ci): autentica integração Kit Coverage com usuário E2E,adm01-debug,true,main,open,claude/fix-p12-grant-kit-view-261028-173,[],CONFLITO,UNKNOWN,CONFLITO,Draft de outra sessão; conflito com main,
-2695,docs(db): corrige status do espelho de migration Google,adm01-debug,false,main,merged,docs/reconciliar-espelho-google-20261028,[],LIMPO,SUCCESS,MERGEADA,Docs only; Gate Final ✅,8da42aa9
-2693,docs(auditoria): relatório final auditoria Supabase doufsxqlfjyuvxuezpln,adm01-debug,false,main,closed,claude_pink/peaceful-planck-q4ee1i,[],CONFLITO,UNKNOWN,CONFLITO,Sessão outra (claude_pink/); conflito com main; fechada externamente,
-2688,fix(ci): torna migration 20261027120000 replay-safe — desbloqueia Gate 1.13.3,adm01-debug,true,main,closed,claude_pink/focused-lamport-qyupp8,"[.github/workflows/, supabase/migrations/20261027120000]",CONFLITO,UNKNOWN,DECISAO_HUMANA,Toca .github/workflows/ + supabase/migrations/ (REGRA #8); draft; outra sessão; fechada externamente,
-2674,docs(analise-prs): análise completa das 12 PRs abertas — versão anterior,adm01-debug,true,main,closed,claude_pink/sleepy-cannon-h000nc,[],CONFLITO,UNKNOWN,OBSOLETA,Análise de sessão anterior completamente superada; draft; conflito; fechada,
-2739,fix(mockup): gerador — medidas + timeout 30s + lote parcial + editor de logo,adm01-debug,false,main,open,integra/vps-mockup-gerador,2026-10-29,[],LIMPO,PENDING,AGUARDANDO_CI,32 arquivos src/**; Gate Final run 40970786956 status=queued,
-2743,chore(audit): fixa Graphify e atualiza estado CI,adm01-debug,false,main,open,TBD,2026-10-29,[],CONFLITO,UNKNOWN,CONFLITO,mergeable: false / dirty,
-2744,"[NÃO MESCLAR sem OK do dono] fix(edge): limites e tempo do MagazineAI",adm01-debug,true,main,open,TBD,2026-10-29,[supabase/functions/],UNKNOWN,UNKNOWN,DECISAO_HUMANA,draft + NÃO MESCLAR + edge functions,
-2745,ci(ratchet): evita SIGPIPE no relatório de diff,adm01-debug,false,main,open,TBD,2026-10-29,[.github/workflows/ratchet-weekly.yml],UNKNOWN,UNKNOWN,DECISAO_HUMANA,.github/workflows/ (REGRA #8),
-2746,docs(ci): auditoria completa de workflows com falha,adm01-debug,true,main,open,TBD,2026-10-29,[],UNKNOWN,UNKNOWN,DRAFT_SKIP,draft; docs only,
-2747,fix(types): sincroniza idempotency_key de notificações,adm01-debug,false,main,open,fix/types-workspace-notification-idempotency-20261029,2026-10-29,[],LIMPO,PENDING,AGUARDANDO_CI,1 arquivo types.ts; Gate Final run 40970640916 status=queued,
-2749,fix(ci): sentinel SHA allowlist + E2E PDF Dialog skip,adm01-debug,true,main,open,TBD,2026-10-29,[.github/workflows/branch-protection-sentinel.yml],UNKNOWN,UNKNOWN,DECISAO_HUMANA,.github/workflows/ (REGRA #8) + draft,
-2751,docs(ci): tabela de prova e registros P-CI-H / P-UPTIME / P-QUEUED,adm01-debug,true,main,open,claude/docs-relatorio-ci-261029-2316,2026-10-29,[],LIMPO,UNKNOWN,DECISAO_HUMANA,draft + outra sessão Claude (REGRA #10),
+number,title,author,draft,toca_workflows,toca_migrations,toca_singu,no_merge_explicit,verdict
+2768,fix(kit-builder): revalida preços antes do orçamento,claude-bot,false,false,false,false,false,CANDIDATA_PENDENTE_CI
+2767,fix(security): elimina recargas extras em sessão autenticada,claude-bot,true,false,false,false,false,DRAFT
+2766,fix(a11y): adiciona ring substitute para foco visível,claude-bot,true,false,false,false,false,DRAFT
+2764,docs(ci): PENDENCIAS.md + RELATORIO_CI.md,claude-bot,true,false,false,false,false,DRAFT
+2759,chore(main): release 1.2.0,release-please[bot],false,false,false,false,false,DECISAO_HUMANA
+2758,fix(a11y): restaura foco visível em componentes interativos,claude-bot,false,false,false,false,true,DECISAO_HUMANA
+2750,docs(analise-prs): 7 novos dossiês e RELATORIO_PRS atualizado,claude-bot,true,false,false,false,false,DRAFT
+2749,fix(ci): sentinel SHA allowlist atualizado,claude-bot,true,false,false,false,false,DRAFT
+2747,fix(types): sincroniza idempotency_key em tipos Supabase,claude-bot,false,false,false,false,false,BLOQUEADA_CONFLITO
+2746,docs(ci): auditoria completa dos workflows — mapa de cobertura,claude-bot,true,false,false,false,false,DRAFT
+2745,ci(ratchet): evita SIGPIPE no relatório semanal,claude-bot,false,true,false,false,false,DECISAO_HUMANA
+2744,[NÃO MESCLAR sem OK do dono] fix(edge): timeout e fallback,claude-bot,true,false,false,false,true,DRAFT_E_DECISAO_HUMANA
+2743,chore(audit): fixa Graphify e atualiza estado CI,claude-bot,false,false,false,false,true,DECISAO_HUMANA
+2739,fix(mockup): gerador — medidas timeout 30s e corrige importações,claude-bot,false,false,false,false,false,BLOQUEADA_PROVAVEL_CONFLITO
+2734,fix(ci): usa mirror Docker Hub após limite GHCR,claude-bot,false,true,false,false,false,DECISAO_HUMANA
+2731,fix(db): protege kill_switch_hits com anon rate guard,claude-bot,false,true,true,false,false,DECISAO_HUMANA
+2717,fix(e2e): isola servidor Vite no CI para evitar conflito de portas,claude-bot,false,true,false,false,false,DECISAO_HUMANA
+2714,fix(db): reconciliar migrations pendentes — 4 espelhos + ledger,claude-bot,false,false,true,false,false,DECISAO_HUMANA
+2701,fix(ci): autentica integração Kit Coverage via GITHUB_TOKEN,claude-bot,false,true,false,false,false,DECISAO_HUMANA
