@@ -1,20 +1,37 @@
 pr_number,titulo,autor_tipo,draft,veredicto,valida,regressao,no_main,regra_negocio_ok,arquivos_criticos,acao
-2768,fix(kit-builder): revalida preços antes do orçamento,claude-bot,nao,CANDIDATA_PENDENTE_CI,SIM,NAO,NAO,SIM,src/hooks/kit-builder/,Merge quando Gate Final=success
-2767,fix(security): corrige infinite spinner em useSecurityData com refs,claude-bot,SIM,DRAFT,SIM,NAO,NAO,SIM,src/components/security/useSecurityData.ts,Converter para não-draft
-2766,fix(a11y+security): foco visível AdImageResult + baseline RLS,claude-bot,SIM,DRAFT,SIM,NAO,NAO,SIM,.security/policies-baseline.json|src/components/magic-up/AdImageResult.tsx,Converter para não-draft
-2764,docs(pendencias): marca PDF Quality Gate RESOLVIDO + baseline CI,claude-bot,SIM,DRAFT,SIM,NAO,NAO,SIM,PENDENCIAS.md|RELATORIO_CI.md,Converter para não-draft
-2759,chore(main): release 1.2.0,release-please[bot],nao,DECISAO_HUMANA,SIM,NAO,NAO,SIM,package.json|CHANGELOG.md,PO decide quando lançar
-2758,feat: funcionalidade (sem merge automático),claude-bot,nao,DECISAO_HUMANA,NAO_AVALIAVEL,NAO_VERIFICADO,NAO_VERIFICADO,NAO_AVALIAVEL,,Aguardar remoção da instrução pelo autor
-2750,docs(analise-prs): 7 novos dossiês + relatório 31 PRs,claude-bot,SIM,DRAFT,PARCIALMENTE,NAO,NAO,SIM,analise-prs/,DRAFT+dirty - análise desta sessão supera
+2795,chore(main): release 1.3.2,release-please[bot],nao,MERGEADA_SESSAO,SIM,NAO,NAO,SIM,package.json|CHANGELOG.md,Mergeada SHA 7299c88c (Gate Final run #41034358375 success)
+2794,fix(ratchet): E125 — remove falso positivo 'as ',adm01-debug,SIM,MERGEADA_PELO_PO,SIM,NAO,NAO,SIM,src/services/mockup/mockupGenerationService.ts|.as-assertions-baseline.json,Mergeada pelo PO SHA b2ba9f9e em 09:09Z
+2793,ci(uptime): extrai bash inline para scripts/uptime-probe.sh,claude-bot,nao,DECISAO_HUMANA,SIM,NAO_VERIFICADO,NAO_VERIFICADO,SIM,.github/workflows/uptime-monitor.yml,REGRA #8 (workflow) + no_merge_explicit
+2792,chore(main): release 1.3.1,release-please[bot],nao,MERGEADA_SESSAO,SIM,NAO,NAO,SIM,package.json|CHANGELOG.md,Mergeada SHA 62e21cc6 (Gate Final #123973183673 success)
+2791,fix(kit): trata peso zero/nulo com isKnownItemWeight e summarizeKitWeight,claude-bot,nao,MERGEADA_SESSAO,SIM,NAO,NAO,SIM,src/lib/kit-builder/weight.ts,Mergeada SHA 0b628fd3 (Gate Final #41023834458 success)
+2789,fix(kit): estimador de peso fase 1,claude-bot,SIM,FECHADA_PELO_PO,INDETERMINADO,NAO_VERIFICADO,NAO_VERIFICADO,NAO_AVALIAVEL,,Fechada sem merge em 08:49Z — superseded por #2794
+2785,fix(types): E121+E122 — remove as unknown as em RPCs,claude-bot,SIM,MERGEADA_PELO_PO,SIM,NAO,NAO,SIM,src/lib/kit-builder/persistence.ts|src/services/authService.ts,Mergeada pelo PO SHA 3b370638 em 08:21Z
+2783,chore(main): release 1.3.0,release-please[bot],nao,MERGEADA_SESSAO,SIM,NAO,NAO,SIM,package.json|CHANGELOG.md,Mergeada SHA c0940281 (Gate Final #41021989586 success)
+2776,docs(ci): inventário de pendências e CI report,claude-bot,nao,DECISAO_HUMANA,SIM,NAO,NAO,SIM,PENDENCIAS.md|RELATORIO_CI.md,no_merge_explicit (Copilot HTTP 402)
+2771,docs(analise-prs): inventário 30 PRs (sessão anterior),claude-bot,SIM,DRAFT,SIM,NAO,NAO,SIM,analise-prs/,DRAFT + dirty (branch desta sessão)
+2770,chore: ratchet semanal — baselines melhoradas,github-actions[bot],nao,MERGEADA_SESSAO,SIM,NAO,NAO,SIM,bundle-size-baseline.json,Mergeada SHA cd8f2557 (Gate Final success)
+2767,fix(security): corrige infinite spinner em useSecurityData com refs,claude-bot,SIM,MERGEADA_PELO_PO,SIM,NAO,SIM,SIM,src/components/security/useSecurityData.ts,Mergeada pelo PO SHA 82efe51d em 05:38Z
+2766,fix(a11y+security): foco visível AdImageResult + baseline RLS,claude-bot,SIM,MERGEADA_PELO_PO,SIM,NAO,SIM,SIM,.security/policies-baseline.json|src/components/magic-up/AdImageResult.tsx,Mergeada pelo PO SHA 69e7e282 em 05:10Z
+2764,docs(pendencias): marca PDF Quality Gate RESOLVIDO,claude-bot,SIM,DRAFT,SIM,NAO,NAO,SIM,PENDENCIAS.md|RELATORIO_CI.md,Converter para não-draft
+2759,chore(main): release 1.2.0,release-please[bot],nao,MERGEADA_SESSAO,SIM,NAO,NAO,SIM,package.json|CHANGELOG.md,Mergeada SHA 8382faf8 (Gate Final run #41017130033 success)
+2758,fix(a11y): foco visível em AdImageResult,claude-bot,nao,DECISAO_HUMANA,NAO,NAO,SIM,SIM,src/components/magic-up/AdImageResult.tsx,SUPERSEDED (já em main) + no_merge_explicit
+2750,docs(analise-prs): dossiês sessão anterior,claude-bot,SIM,DRAFT,PARCIALMENTE,NAO,NAO,SIM,analise-prs/,DRAFT + dirty — análise desta sessão supera
 2749,chore(sentinel): Regra 7.5 SHA allowlist + fix e2e pdf-dialog,claude-bot,SIM,DRAFT,SIM,NAO,NAO,SIM,.github/workflows/branch-protection-sentinel.yml,DRAFT; se não-draft = DECISAO_HUMANA por workflow
-2747,chore: atualiza migration-refs-baseline + types.ts,claude-bot,nao,BLOQUEADA_CONFLITO,INDETERMINADO,NAO_VERIFICADO,NAO_VERIFICADO,NAO_AVALIAVEL,.migration-refs-baseline.json|src/integrations/supabase/types.ts,Rebase em main
-2746,docs(ci): documenta 6 padrões de falha de workflow P-CI-A a P-CI-G,claude-bot,SIM,DRAFT,SIM,NAO,NAO,SIM,PENDENCIAS.md|RELATORIO_CI.md,Converter para não-draft
-2745,ci(ratchet-weekly): fix SIGPIPE no script de ratchet,claude-bot,nao,DECISAO_HUMANA,SIM,NAO_VERIFICADO,NAO_VERIFICADO,SIM,.github/workflows/ratchet-weekly.yml,Revisão rápida do diff
-2744,feat(edge-functions): testes e melhorias nas edge functions,claude-bot,SIM,DRAFT_E_DECISAO_HUMANA,SIM,NAO_VERIFICADO,NAO_VERIFICADO,NAO_AVALIAVEL,supabase/functions/,DRAFT + NÃO MESCLAR
-2743,docs+chore: graphify + dossiês de PRs,claude-bot,nao,DECISAO_HUMANA,PARCIALMENTE,NAO_VERIFICADO,PARCIALMENTE,.migration-refs-baseline.json,Instrução Não mesclar + conflito
-2739,feat(mockup): melhorias nos componentes de mockup,claude-bot,nao,BLOQUEADA_PROVAVEL_CONFLITO,PROVAVELMENTE_SIM,NAO_VERIFICADO,NAO_VERIFICADO,NAO_AVALIAVEL,.migration-refs-baseline.json,mergeable_state=unknown; aguardar rebase
-2734,ci(contract-tests): fallback Docker Hub,claude-bot,nao,DECISAO_HUMANA,SIM,NAO_VERIFICADO,NAO_VERIFICADO,SIM,.github/workflows/contract-tests.yml,Revisão rápida do diff
-2731,ci+db: workflow fix + migration SQL,claude-bot,nao,DECISAO_HUMANA,SIM,NAO_VERIFICADO,NAO_VERIFICADO,NAO_VERIFICADO,supabase/migrations/|.github/workflows/,Revisão obrigatória + workflow_dispatch
-2717,ci(replenishment-quality): isola porta Vite,claude-bot,nao,DECISAO_HUMANA,SIM,NAO_VERIFICADO,NAO_VERIFICADO,SIM,.github/workflows/replenishment-quality.yml,Revisão rápida do diff
-2714,chore(migrations): aplica 4 migrations pendentes,claude-bot,nao,DECISAO_HUMANA,SIM,NAO_VERIFICADO,NAO_VERIFICADO,NAO_VERIFICADO,supabase/migrations/,Revisar idempotência + workflow_dispatch
-2701,ci(kit-coverage): fix GITHUB_TOKEN permissions,claude-bot,nao,DECISAO_HUMANA,SIM,NAO_VERIFICADO,NAO_VERIFICADO,SIM,.github/workflows/kit-coverage-integration.yml,Verificar permissão R11
+2747,chore: atualiza migration-refs-baseline + types.ts,claude-bot,nao,BLOQUEADA_CONFLITO,INDETERMINADO,NAO_VERIFICADO,NAO_VERIFICADO,NAO_AVALIAVEL,.migration-refs-baseline.json|src/integrations/supabase/types.ts,Rebase em main + criar migration para idempotency_key
+2746,docs(ci): documenta 6 padrões de falha P-CI-A a P-CI-G,claude-bot,SIM,DRAFT,SIM,NAO,NAO,SIM,PENDENCIAS.md|RELATORIO_CI.md,Converter para não-draft
+2745,ci(ratchet-weekly): fix SIGPIPE no script de ratchet,claude-bot,nao,DECISAO_HUMANA,SIM,NAO,NAO,SIM,.github/workflows/ratchet-weekly.yml,Revisão humana obrigatória (REGRA #8 workflow)
+2744,feat(edge-functions): testes e melhorias nas edge functions,claude-bot,SIM,DRAFT,SIM,NAO_VERIFICADO,NAO_VERIFICADO,NAO_AVALIAVEL,supabase/functions/,DRAFT + NÃO MESCLAR + REGRA #8 (edge functions)
+2743,docs+chore: graphify + dossiês de PRs,claude-bot,nao,DECISAO_HUMANA,PARCIALMENTE,NAO_VERIFICADO,PARCIALMENTE,.migration-refs-baseline.json,no_merge_explicit + conflito histórico
+2739,feat(mockup): melhorias nos componentes de mockup,claude-bot,nao,BLOQUEADA_CONFLITO,PROVAVELMENTE_SIM,SIM,NAO_VERIFICADO,NAO_AVALIAVEL,.migration-refs-baseline.json,BLOQUEADA — regressão: callers GenerateButton + SaveTemplateDialog confirmados
+2734,ci(contract-tests): fallback Docker Hub,claude-bot,nao,MERGEADA_SESSAO,SIM,NAO,NAO,SIM,.github/workflows/contract-tests.yml,Mergeada SHA 50e67241 (Gate Final run #41018173746 success)
+2731,ci+db: workflow fix + migration kill-switch anon rate guard,claude-bot,nao,DECISAO_HUMANA,SIM,NAO,NAO,NAO_VERIFICADO,supabase/migrations/|.github/workflows/deploy-gates.yml,REGRA #8 duplo (workflow + migration)
+2717,ci(replenishment-quality): isola porta Vite E2E_BASE_URL,claude-bot,nao,DECISAO_HUMANA,SIM,NAO,NAO,SIM,.github/workflows/replenishment-quality.yml,REGRA #8 (workflow)
+2714,chore(migrations): aplica 4 migrations RLS deny_all + cron,claude-bot,nao,DECISAO_HUMANA,SIM,NAO_VERIFICADO,NAO_VERIFICADO,NAO_VERIFICADO,supabase/migrations/,REGRA #8 (migration) — revisar idempotência + workflow_dispatch
+2701,ci(kit-coverage): fix GITHUB_TOKEN permissions + E2E auth,claude-bot,nao,DECISAO_HUMANA,SIM,NAO,NAO,SIM,.github/workflows/kit-coverage-integration.yml,REGRA #8 (workflow) — verificar R11
+2806,fix(lint): corrige dot-notation em badges-manager/types.ts,adm01-debug,nao,MERGEADA_PELO_PO,SIM,NAO,NAO,SIM,src/components/admin/badges-manager/types.ts,Mergeada pelo PO SHA 6dbc9387 em 10:24Z
+2804,fix(e134): clearTimeout em EnhancedSpotlight + gate timer cleanup,claude-bot,SIM,DRAFT,SIM,NAO,NAO,SIM,src/components/ui/EnhancedSpotlight.tsx|scripts/check-timer-cleanup.mjs,DRAFT — elegível quando não-draft; base atual 6dbc9387
+2802,docs(ci): corrige relatório CI Security run cancelado vs pendente,claude-bot,SIM,DRAFT,SIM,NAO,NAO,SIM,RELATORIO_CI.md|PENDENCIAS.md,DRAFT + docs only
+2801,fix(lint): autoheal ESLint badges-manager/types.ts,github-actions[bot],nao,SUPERSEDED,NAO,NAO,SIM,SIM,src/components/admin/badges-manager/types.ts,changed_files 0 após branch update — absorvida em #2806
+2800,fix(e2e): corrige click target no Magazine editor,adm01-debug,nao,WAITING_CI,SIM,NAO,NAO,SIM,e2e/,41 checks queued — Gate Final não rodou ainda; elegível quando CI passar
+2799,chore(main): release 1.3.3,github-actions[bot],nao,WAITING_CI_BOT,SIM,NAO,NAO,SIM,package.json|CHANGELOG.md,Gate Final nunca dispara para bot PR — 4 check runs apenas
+2768,fix(kit-builder): revalida preços antes do orçamento,claude-bot,nao,MERGEADA_SESSAO,SIM,NAO,NAO,SIM,src/hooks/kit-builder/,Mergeada SHA 85234672 (Gate Final run #41009722428 success)
