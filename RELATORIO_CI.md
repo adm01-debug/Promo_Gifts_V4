@@ -786,3 +786,52 @@ Os 5 workflows com runs ativas para `4b16b988` estão todos `status=queued, conc
 **Conclusão final:** O único required check (`Gate Final - Deploy Ready`) está verde em `9dde1db7`. Todas as falhas restantes são não-required e documentadas em PENDENCIAS.md:
 - **P19-H**: Copilot Code Review — HTTP 402 billing quota (requer PO)
 - **P19-D/I/J/K**: E2E Swatch — produto `color_swatches` depreciado (pré-existente, não é regressão desta sessão)
+
+---
+
+### Gate Final `5edddfb` — ⏳ queued (2026-10-30T09:58Z)
+
+**Run:** [#41037319404](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41037319404) — `status=queued`  
+**SHA:** `5edddfb14ee4e33008e735f3f3710e902a9b45cb` (commit direto — fix(ts): E130 noUncheckedIndexedAccess)  
+**Resultado:** Gate Final ainda na fila ao iniciar esta sessão.
+
+### Regressões introduzidas por `5edddfb` (push direto em main)
+
+| Workflow | Run | Conclusão | Causa raiz | Fix |
+|---|---|---|---|---|
+| CI Security & Drift Checks | [#41037319229](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41037319229) | ❌ failure | Lint ESLint: `src/components/admin/badges-manager/types.ts:254` — `['neutral']` em bracket notation; deve ser `.neutral` (dot-notation) | ✅ corrigido nesta sessão (PR #2803) |
+| Branch Protection Sentinel | [#41037319362](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41037319362) | ❌ failure | Commit `5edddfb` foi push direto em main sem PR/squash-merge — sentinel exige sufixo `(#NNN)` | ✅ corrigido via squash-merge PR #2803 |
+
+### Inventário completo — HEAD `5edddfb` (workflows pendentes)
+
+| Workflow | Run | Conclusão | Observação |
+|---|---|---|---|
+| Branch Protection Sentinel | [#41037319362](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41037319362) | ❌ failure | Resolvido por squash-merge PR #2803 |
+| CI Security & Drift Checks | [#41037319229](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41037319229) | ❌ failure | Lint `.neutral` — resolvido por PR #2803 |
+| CI - Replenishment Module | [#41037319198](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41037319198) | ❌ failure | Pré-existente — registrado em PENDENCIAS.md |
+| Copilot Code Review | — | ❌ failure | P19-H — HTTP 402 billing. Aguarda PO. |
+| E2E — Personalization Flow | [#41037319203](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41037319203) | ⏳ in_progress | NÃO é required check |
+| Visual Baseline Tests — Nightly | [#41037319176](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41037319176) | ⏳ in_progress | NÃO é required check |
+| E2E (Playwright) | [#41037319241](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41037319241) | ⏳ pending | NÃO é required check |
+| E2E — Critical Flows | [#41037319140](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41037319140) | ⏳ pending | NÃO é required check |
+| E2E • Swatch QuickView | [#41037319250](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41037319250) | ⏳ pending | P19-D/I/J/K pré-existente |
+| Deploy Gates | [#41037319404](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41037319404) | ⏳ queued | ÚNICO required check — aguardando |
+
+---
+
+### Sessão 2026-10-30 P22 — Resumo
+
+**Sessão anterior (P21)** deixou `5edddfb` na main via push direto, introduzindo 2 regressões.  
+**Esta sessão (P22):**  
+1. Identificou regressão CI Security (lint dot-notation em `badges-manager/types.ts:254`)  
+2. Identificou regressão Branch Protection Sentinel (push direto sem PR)  
+3. Corrigiu `COLOR_TOKEN_CLASSES['neutral']!` → `COLOR_TOKEN_CLASSES.neutral!`  
+4. Abriu PR #2803 → squash-merge corrige ambas as regressões  
+
+**Workflows não-required em falha (pré-existentes, não regressões desta sessão):**
+- P19-H: Copilot Code Review — HTTP 402 (requer PO habilitar plano)
+- P19-D/I/J/K: E2E Swatch — produto depreciado (pré-existente)
+- P21-edge-drift: edge-functions-drift-check — aprovação PO pendente (#41034820685)
+- P21-personalization: E2E Personalization — artefatos de log disponíveis para PO baixar
+- P21-magazine-header: E2E Magazine Header — auth E2E CI (PO: provisionar secret)
+- P21-critical-flows: E2E Critical Flows — auth E2E CI (PO: provisionar secret)
