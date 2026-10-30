@@ -981,13 +981,13 @@ Metade do plano. `npm run plan:status` e três decisões:
 
 Os 5 ratchets de dívida técnica estão todos exatamente no baseline: 889 indexed-access, 135 arquivos grandes, 51 TODO, 2227 `as <Tipo>`, 0 `as any`. Zero progresso em 500 commits. O único que mudou foi o de bundle, **para cima**. Ratchet que só congela é dívida eterna com cerimônia.
 
-#### P200-E121 · [D] · P1 · Fechar os 3 casts em argumento de RPC
+#### P200-E121 · [D] · P1 · Fechar os 3 casts em argumento de RPC ✅
 **Arquivo:** `src/lib/kit-builder/persistence.ts:100-101`, `src/services/magazineService.ts:438`, `src/hooks/favorites/useFavoriteQuickAdd.ts:75`
 **Fazer:** 3 ocorrências de `(x ?? null) as unknown as string|number|Json` em **argumento de RPC** que o `types.ts` declara não-nulo. Ou o `types.ts` está errado, ou é um 400/500 esperando acontecer em produção. Conferir a assinatura real no `pg_catalog` e corrigir `types.ts` ou o call site — não o cast.
 **Pronto:** os 3 `as unknown as` não existem mais e a chamada compila com o tipo real do RPC
 **Origem:** A3-16
 
-#### P200-E122 · [D] · P1 · Tipar `authService` com os tipos do SDK
+#### P200-E122 · [D] · P1 · Tipar `authService` com os tipos do SDK ✅
 **Arquivo:** `src/services/authService.ts:40-161`
 **Fazer:** 11 casts de `supabase.auth.*` para `Promise<{data: UnknownData; error: unknown}>` escondem o tipo de retorno real do `@supabase/supabase-js@^2.117.3` — um breaking change de shape em versão **minor** compila sem erro. Remover os casts e usar os tipos do SDK. É o maior ofensor do projeto e está no caminho de autenticação.
 **Pronto:** `grep -c "as unknown as" src/services/authService.ts` → `0` e `npm run typecheck:full` sai `0`
@@ -1011,13 +1011,13 @@ Os 5 ratchets de dívida técnica estão todos exatamente no baseline: 889 index
 **Pronto:** `grep -c " as " src/hooks/mockup/mockupGenerationService.ts` ≤ 10 e o ratchet global desce
 **Origem:** A3-43
 
-#### P200-E126 · [D] · P2 · Transformar os 5 ratchets em descendentes com meta ✅
+#### P200-E126 ✅ · [D] · P2 · Transformar os 5 ratchets em descendentes com meta ✅
 **Arquivo:** `.indexed-access-baseline.json`, `.file-size-baseline.json`, `.todo-baseline.json`, `.as-assertions-baseline.json`, `.any-type-baseline.json`
 **Fazer:** os 5 estão exatamente no baseline — 889, 135, 51, 2227, 0 — sem nenhum progresso em 500 commits. Acrescentar a cada um um campo `meta` com alvo e data, e fazer o gate semanal (`ratchet-weekly.yml`) reportar a distância do alvo. Travar sem meta é congelar.
 **Pronto:** os 5 arquivos têm `meta.target` e `meta.deadline`, e o relatório semanal imprime a distância
 **Origem:** A3-40, A3-41, A3-42
 
-#### P200-E127 · [D] · P2 · Zerar o baseline de `any` que já está em zero ✅
+#### P200-E127 ✅ · [D] · P2 · Zerar o baseline de `any` que já está em zero ✅
 **Arquivo:** `.any-type-baseline.json` (`productionAnyCount: 1`)
 **Fazer:** o valor atual medido é **0** — as 6 linhas com `as any` em `src/` estão em JSDoc. O baseline está defasado desde 2026-07-17 e permite 1. Rodar `node scripts/update-any-type-baseline.mjs` e travar em 0.
 **Pronto:** `jq '.productionAnyCount' .any-type-baseline.json` → `0`

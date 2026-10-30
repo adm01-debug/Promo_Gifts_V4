@@ -476,13 +476,15 @@ Esse run supersede a falha antiga em `c3b4128`. O PR #2749 (allowlist do SHA `9a
 ## P-UPTIME — Uptime Monitor: INVESTIGAÇÃO PENDENTE ⚠️
 
 **Workflow:** Uptime Monitor  
-**Última execução com falha na main:** [#41024514553](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41024514553) — SHA `c0940281` — `failure` (2026-10-30 08:09 UTC). A execução registrou site `0`; health-check `22`; check-login (OPTIONS) `0`; auth-health `0`. A anterior [#41020809123](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41020809123) teve a mesma evidência. A última execução anterior com sucesso foi [#41018096960](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41018096960).
+**Última execução com falha na main:** [#41027506381](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41027506381) — SHA `548adbab` — `failure` (2026-10-30 08:35 UTC). É a última run de `main` disponível na consulta. Como ela usou o probe antigo, registrou `curl exit 22` no health-check, sem o status HTTP; os valores não permitem reconstruir retroativamente o status. A última run anterior com sucesso foi [#41018096960](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41018096960).
 
-**Evidência registrada pelo workflow antigo:** `curl` exit 22 com `-f` comprova resposta HTTP de erro no health-check, mas o workflow não guardava o status. Portanto, as execuções não permitem distinguir 401/404/5xx nem comprovar causa no banco externo. A hipótese de indisponibilidade de `EXTERNAL_PROMOBRIND_URL` anotada anteriormente não está confirmada.
+**Verificação direta posterior (somente leitura):** site `200`; endpoint `health-check` `503`; check-login (OPTIONS) `200`; auth-health `200`. Os logs da Edge Function registraram `health_degraded`: a verificação do banco interno excedeu o limite de 1.500 ms (`database timeout after 1500ms`, observado em ~1.503 ms); `external_db` foi ignorado por ausência de credenciais. Isso não confirma a hipótese antiga de falha do banco externo.
+
+**Sinais correlatos no Postgres, sem causalidade comprovada:** na janela `08:50–09:10 UTC` de 30/10, a consulta agregada somente leitura encontrou 54 cancelamentos por `statement timeout` no PostgREST, 19 no Realtime e 4 timeouts de inicialização de jobs do cron. A coincidência temporal reforça a necessidade de investigar latência/capacidade do banco, mas não prova qual consulta ou componente originou o timeout do health-check. Não elevar o limite de 1.500 ms como paliativo antes de identificar a causa.
 
 **Correção em revisão:** branch `fix/uptime-http-status-20261030` registra código HTTP junto com exit code do curl, sem gravar corpo, headers ou chave. Inclui cenários automatizados para HTTP 200, HTTP 503 e falha de transporte (`000`). A mudança melhora o diagnóstico da próxima execução; não corrige nem mascara a indisponibilidade observada.
 
-**Bloqueio exato:** a run antiga não pode ser reconstruída porque o status HTTP não foi registrado. A próxima execução após integração da instrumentação é necessária para identificar o status real. Não foi feito deploy, alteração de segredo ou mudança no Supabase.
+**Bloqueio exato:** a causa subjacente da lentidão do banco ainda não foi identificada. A branch do PR #2793 foi atualizada com a instrumentação e precisa passar os checks aplicáveis; somente depois de eventual merge, a próxima execução agendada na `main` dará status HTTP produzido pelo próprio workflow. Em paralelo, a análise de capacidade/latência precisa de evidência operacional adicional. Não foi feito deploy, alteração de segredo ou mudança no Supabase.
 
 ---
 
@@ -556,7 +558,7 @@ Verificado localmente: `node scripts/check-outline-none.mjs` → `✅ 0 regress�
 
 **Diagnóstico histórico (não confirmado para esta run):** `Probe site + edge function` falhou em um dos endpoints e o monitor criou/comentou na issue #2752. Na ocasião, a hipótese foi indisponibilidade de `EXTERNAL_PROMOBRIND_URL`; o workflow não registrava HTTP status, então não há evidência suficiente para confirmá-la. Ver P-UPTIME para a última evidência e instrumentação proposta.
 
-**Estado histórico:** esta nota descreve runs anteriores e hipótese de causa relacionada ao deploy. Para a última evidência na main, ver P-UPTIME acima: a run #41020809123 registrou apenas curl exit 22 em health-check, sem HTTP status, portanto a causa específica permanece desconhecida.
+**Estado histórico:** esta nota descreve runs anteriores e uma hipótese de causa relacionada ao deploy que não foi confirmada. Para a evidência atual, ver P-UPTIME acima: a run #41027506381 não guardou status HTTP; a verificação direta posterior encontrou HTTP 503 e timeout na checagem do banco interno, mas ainda não identifica a causa operacional da lentidão.
 
 ---
 
@@ -614,11 +616,11 @@ Verificado localmente: `node scripts/check-outline-none.mjs` → `✅ 0 regress�
 
 **Runs no main:** [#40998220633](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40998220633), [#40995668739](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40995668739), etc. — `conclusion=failure` repetido.
 
-**Evidência histórica:** probes curl falharam em runs anteriores. Essa anotação não identifica a causa da run atual; ver P-UPTIME, que registra o último run e explicita a limitação dos dados disponíveis.
+**Evidência histórica:** probes curl falharam em runs anteriores. Essa anotação não identifica a causa operacional; ver P-UPTIME para a última run, o probe direto e os limites da evidência disponível.
 
 **Impacto no Gate Final:** NÃO — não é required check de `main`.
 
-**Próximo passo:** após integrar a instrumentação descrita em P-UPTIME, usar o status HTTP da próxima run para investigar o endpoint que falhar.
+**Próximo passo:** após o PR #2793 passar os checks e ser integrado, usar o status HTTP da próxima run da `main`; continuar a análise da latência/capacidade do banco sem alterar limites ou schema sem causa comprovada.
 
 ---
 

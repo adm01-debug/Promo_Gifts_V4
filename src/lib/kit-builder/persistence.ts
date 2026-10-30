@@ -107,7 +107,7 @@ export async function persistCustomKitAtomically({
     p_request_id: requestId,
     p_kit_id: (kitId ?? null)!, // nullable em PG; PostgREST não modela nullability
     p_expected_revision: (kitId ? expectedRevision : null)!, // idem
-    p_payload: payload as unknown as Json,
+    p_payload: payload as Json,
   });
 
   if (error) throw error;
