@@ -50,7 +50,7 @@ function stripBearer(s: string, changes: string[]): string {
   const m = BEARER_PREFIX_RE.exec(s);
   if (m) {
     changes.push('prefixo Bearer removido');
-    return m[1];
+    return m[1]!;
   }
   return s;
 }
