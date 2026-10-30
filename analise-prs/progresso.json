@@ -1,80 +1,61 @@
 {
   "sessao": "session_012WyySbh2tj8vhRQLBf3mHo",
-  "data": "2026-10-29",
+  "data_inicio": "2026-10-29",
+  "data_atualizacao": "2026-10-30T02:15Z",
   "main_sha_baseline": "62af0798dd71812979667ac29f596d25f3ef191b",
-  "main_sha_pos_2741": "6ac842c22e37a46c499e91460794bbb1d56b5f5d",
-  "main_sha_pos_2742": "8f992fdde05943c9bcd4d0ca925ec221f4828f41",
-  "main_sha_pos_2757": "0ca54ff134cfce504590b45c1bc2641ed7bb379f",
-  "merges_executados_esta_sessao": [
+  "main_sha_atual": "380ceb6238dc4ea4f093bd61ce8dd5419c74ab91",
+  "nota_main": "Após merge de #2757 (0ca54ff1), depois branch updates de #2747 e #2739 pusaram main para 380ceb62",
+
+  "merges_todas_as_sessoes": [
+    {"pr": 2695, "sha": "8da42aa9067b212384f14b2f52d4bec7cb0aed40", "titulo": "docs(db): corrige status espelho migration Google", "gate": "SUCCESS"},
+    {"pr": 2707, "sha": "37ea10a3818ee4545235cfb94625fcab42fa3101", "titulo": "docs: recibo deploy edge function run 40747468580", "gate": "PENDENTE"},
+    {"pr": 2719, "sha": "66d032afa8e31cd4f9b2f60508613794cef928d4", "titulo": "chore(build): separa mapas SQL e amplia referências Graphify", "gate": "PENDENTE"},
     {"pr": 2720, "sha": "14b6d5fc", "titulo": "ci(e2e): não ocultar falha de fixtures E2E"},
+    {"pr": 2721, "sha": "6b48beb", "titulo": "chore: atualiza PENDENCIAS §4 e RELATORIO_CI", "gate": "SUCCESS"},
     {"pr": 2730, "sha": "c3b41286", "titulo": "fix(ci): repair-only E15 — corrige injeção de expressão"},
-    {"pr": 2741, "sha": "6ac842c22e37a46c499e91460794bbb1d56b5f5d", "titulo": "fix(mockup): telas — histórico, resultado, foto original, upload, erros", "gate_pr": "run 40958040560 success"},
-    {"pr": 2742, "sha": "8f992fdde05943c9bcd4d0ca925ec221f4828f41", "titulo": "fix(magic-up): compartilhar, brand kit, a11y, i18n e timeout", "gate_pr": "run 40956354730 success"},
-    {"pr": 2757, "sha": "0ca54ff134cfce504590b45c1bc2641ed7bb379f", "titulo": "fix(dossies): remove prefixo supabase/ em refs de migration — corrige Gate 1.3", "gate_pr": "run 40979492111 success"}
+    {"pr": 2733, "sha": "8bc08b1", "titulo": "fix(banco): adiciona rollback header e arquivo rollback", "gate": "SUCCESS"},
+    {"pr": 2735, "sha": "27f4261", "titulo": "docs(analise-prs): rev46 — análise completa 20 PRs", "gate": "SUCCESS"},
+    {"pr": 2736, "sha": "31ebc2d35c6e2d703733776baa066b5a5d34d495", "titulo": "test+docs(mockup/magic-up): entregas VPS lote A", "gate": "PENDENTE"},
+    {"pr": 2737, "sha": "c7f9f4ba960f56981d860103c6adc7ea76c63bec", "titulo": "docs(auditoria): relatório auditoria Supabase revisão final", "gate": "PENDENTE"},
+    {"pr": 2741, "sha": "6ac842c22e37a46c499e91460794bbb1d56b5f5d", "titulo": "fix(mockup): telas — histórico, resultado, foto original, upload, erros", "gate": "SUCCESS"},
+    {"pr": 2742, "sha": "8f992fdde05943c9bcd4d0ca925ec221f4828f41", "titulo": "fix(magic-up): compartilhar, brand kit, a11y, i18n e timeout", "gate": "SUCCESS"},
+    {"pr": 2757, "sha": "0ca54ff134cfce504590b45c1bc2641ed7bb379f", "titulo": "fix(dossies): remove prefixo supabase/ em refs de migration — corrige Gate 1.3", "gate": "SUCCESS"}
   ],
-  "ultima_atualizacao": "2026-10-30T00:47Z",
-  "main_sha_atual": "0ca54ff134cfce504590b45c1bc2641ed7bb379f",
-  "baseline_main_9a97f9a2": {
-    "typecheck": "exit 0",
-    "build": "exit 0 (12.74s)",
-    "eslint": "exit 0",
-    "testes": "NÃO EXECUTADO (ambiental — TypeError: fetch failed, 21 failing no baseline anterior)",
-    "arquivo": "analise-prs/baseline/local-checks-9a97f9a2.md"
-  },
-  "pr2755_corrects_gate13": {
-    "pr": 2755,
-    "branch": "claude/quirky-keller-owezvt",
-    "sha_head": "e4f0218d",
-    "status": "SUBSTITUIDO_POR_2757",
-    "nota": "Substituído por PR #2757 que corrige diretamente os arquivos dos dossiês."
-  },
-  "pr2757_corrects_gate13": {
-    "pr": 2757,
-    "branch": "fix/gate13-dossier-refs-20261030",
-    "sha_merge": "0ca54ff134cfce504590b45c1bc2641ed7bb379f",
-    "status": "MERGEADA",
-    "mergeado_em": "2026-10-30T00:32Z",
-    "nota": "Remove prefixo supabase/ de 2 dossiês. Gate Final ✅ run 40979492111. Main agora em 0ca54ff1."
-  },
-  "deploy_gates_aguardando": {
-    "pr2745": {"run_id": 40981268878, "branch": "fix/ratchet-weekly-sigpipe-20261029", "head_sha": "71abfbe792bbcbab0dc99b9bab7187fd38bd471b", "status": "queued", "criado_em": "2026-10-30T00:41:31Z"},
-    "pr2747": {"run_id": 40981272464, "branch": "fix/types-workspace-notification-idempotency-20261029", "head_sha": "4ebcf159caf14ca6800805c7ae25f97c10fdca3a", "status": "queued", "criado_em": "2026-10-30T00:41:33Z"},
-    "pr2756": {"run_id": 40981276656, "branch": "claude/docs-relatorio-final-261030-0015", "head_sha": "f629fa5f3db70468a6442637eb71f37b5d0ad723", "status": "queued", "criado_em": "2026-10-30T00:41:35Z"}
-  },
-  "check_in_agendado": {"trigger_id": "trig_01HwWsYpW3yBxueQ5xvo4bvQ", "fire_at": "2026-10-30T01:08:00Z"},
+
+  "prs_abertas_estado_atual": [
+    {"numero": 2701, "titulo": "fix(ci): autentica integração Kit Coverage", "veredito": "NAO_MERGEAR", "motivo": "Body: 'O PR continua em rascunho e não deve ser mesclado até que a causa de P12 seja resolvida'"},
+    {"numero": 2714, "titulo": "fix(db): reconciliar migrations pendentes", "veredito": "DECISAO_HUMANA", "motivo": "Toca supabase/migrations/ (REGRA #8) — 4 novas migrations DDL"},
+    {"numero": 2717, "titulo": "fix(e2e): isola servidor Vite no CI de paridade", "veredito": "DECISAO_HUMANA", "motivo": "Toca .github/workflows/ (REGRA #8) + conflito com main"},
+    {"numero": 2731, "titulo": "fix(db): protege kill_switch_hits contra INSERT anônimo", "veredito": "DECISAO_HUMANA", "motivo": "Toca .github/workflows/ + supabase/migrations/ (REGRA #8)"},
+    {"numero": 2734, "titulo": "fix(ci): usa mirror Docker Hub após limite GHCR", "veredito": "DECISAO_HUMANA", "motivo": "Toca .github/workflows/ (REGRA #8)"},
+    {"numero": 2739, "titulo": "fix(mockup): gerador — medidas, timeout 30s, lote parcial", "veredito": "AGUARDANDO_CI", "sha_head": "f490f5b1cd7a6105576579337659317d914e676c", "acao": "MERGEAR quando clean"},
+    {"numero": 2743, "titulo": "chore(audit): fixa Graphify", "veredito": "NAO_MERGEAR", "motivo": "mergeable_state: dirty (conflito com main)"},
+    {"numero": 2744, "titulo": "fix(edge): limites Magic Up", "veredito": "NAO_MERGEAR", "motivo": "Draft + título NÃO MESCLAR"},
+    {"numero": 2745, "titulo": "ci(ratchet): evita SIGPIPE", "veredito": "DECISAO_HUMANA", "motivo": "Toca .github/workflows/ratchet-weekly.yml (REGRA #8)"},
+    {"numero": 2746, "titulo": "docs(ci): auditoria workflows", "veredito": "NAO_MERGEAR", "motivo": "Draft"},
+    {"numero": 2747, "titulo": "fix(types): sincroniza idempotency_key de notificações", "veredito": "AGUARDANDO_CI", "sha_head": "d0c1ad79310015c741478164266446a87f62078c", "acao": "MERGEAR quando clean"},
+    {"numero": 2749, "titulo": "fix(ci): sentinel SHA allowlist", "veredito": "NAO_MERGEAR", "motivo": "Draft + toca .github/workflows/"},
+    {"numero": 2750, "titulo": "docs(analise-prs): 7 novos dossiês", "veredito": "NAO_MERGEAR", "motivo": "Draft de outra sessão"},
+    {"numero": 2755, "titulo": "docs(analise-prs): relatório exaustivo PRs sessão 2026-10-29", "veredito": "AGUARDANDO_CI", "sha_head": "b529bda1838560c13237f5725e4525a1f9b36fa4", "nota": "Conflito PENDENCIAS.md resolvido — merge commit 8d702817 — push concluído 02:10Z"},
+    {"numero": 2758, "titulo": "fix(a11y): restaura foco visível", "veredito": "NAO_MERGEAR_AUTOMATICO", "motivo": "Body contém instrução de revisão humana antes do merge"},
+    {"numero": 2759, "titulo": "chore(main): release 1.2.0", "veredito": "AGUARDAR_REVISAO_PO", "motivo": "Release PR do bot — REGRA #8 — decisão do PO"}
+  ],
+
   "resumo": {
-    "total_prs_rastreadas": 22,
-    "total_analisadas": 22,
-    "pendentes_analise": 0,
-    "mergeadas": 5,
-    "nao_mergear": 11,
+    "total_prs_abertas_analisadas": 16,
+    "mergeadas_esta_sessao": 3,
+    "mergeadas_sessoes_anteriores": 10,
+    "total_mergeadas_historico": 13,
     "aguardando_ci": 3,
-    "aguardando_revisao_humana": 1,
-    "decisao_humana_po": 1,
-    "substituida": 1
+    "nao_mergear": 6,
+    "decisao_humana": 5,
+    "aguardar_revisao_po": 1,
+    "nao_mergear_automatico": 1
   },
-  "prs": [
-    {"numero": 2701, "veredito": "NÃO MERGEAR", "motivo": "conflito de merge + coverage 56% < threshold 70%"},
-    {"numero": 2713, "veredito": "DECISÃO_HUMANA", "motivo": "bot release-please — REGRA #8 requer confirmação do PO"},
-    {"numero": 2714, "veredito": "NÃO MERGEAR", "motivo": "conflito de merge"},
-    {"numero": 2717, "veredito": "NÃO MERGEAR", "motivo": "conflito de merge"},
-    {"numero": 2720, "veredito": "MERGEADA", "sha": "14b6d5fc"},
-    {"numero": 2730, "veredito": "MERGEADA", "sha": "c3b41286"},
-    {"numero": 2731, "veredito": "NÃO MERGEAR", "motivo": "REGRESSÃO CRÍTICA: --require-live no Gate 1.13.2 quebra CI"},
-    {"numero": 2734, "veredito": "NÃO MERGEAR", "motivo": "só adiciona .github/workflows/ — constraint proibido"},
-    {"numero": 2739, "veredito": "NÃO MERGEAR", "motivo": "Gate Final falhou com 3 anotações"},
-    {"numero": 2741, "veredito": "MERGEADA", "sha": "6ac842c22e37a46c499e91460794bbb1d56b5f5d"},
-    {"numero": 2742, "veredito": "MERGEADA", "sha": "8f992fdde05943c9bcd4d0ca925ec221f4828f41"},
-    {"numero": 2743, "veredito": "NÃO MERGEAR", "motivo": "Gate Final bloqueado — Magazine Header OK = failure"},
-    {"numero": 2744, "veredito": "NÃO MERGEAR", "motivo": "DRAFT + título NÃO MESCLAR + edge function sem workflow"},
-    {"numero": 2745, "veredito": "AGUARDANDO_CI", "motivo": "ci(ratchet): evita SIGPIPE — base atualizada para 0ca54ff1, Gate Final run 40981268878 queued"},
-    {"numero": 2746, "veredito": "NÃO MERGEAR", "motivo": "DRAFT"},
-    {"numero": 2747, "veredito": "AGUARDANDO_CI", "motivo": "fix(types): idempotency_key — base atualizada para 0ca54ff1, Gate Final run 40981272464 queued"},
-    {"numero": 2749, "veredito": "NÃO MERGEAR", "motivo": "DRAFT"},
-    {"numero": 2750, "veredito": "NÃO MERGEAR", "motivo": "DRAFT"},
-    {"numero": 2755, "veredito": "SUBSTITUIDO_POR_2757", "motivo": "PR de governança supersedido pelo PR #2757 mais específico"},
-    {"numero": 2756, "veredito": "AGUARDANDO_CI", "motivo": "docs(ci): estado final Sentinel — base atualizada para 0ca54ff1, Gate Final run 40981276656 queued"},
-    {"numero": 2757, "veredito": "MERGEADA", "sha": "0ca54ff134cfce504590b45c1bc2641ed7bb379f", "motivo": "corrige Gate 1.3 — remove prefixo supabase/ em 2 dossiês"},
-    {"numero": 2758, "veredito": "AGUARDANDO_REVISÃO_HUMANA", "motivo": "fix(a11y): foco visível no histórico — autor pediu sem merge automático nesta execução"}
-  ]
+
+  "check_in_ativo": {
+    "trigger_id": "trig_01DvFEu1XhoyAjqVzjjHRKRQ",
+    "fire_at": "2026-10-30T02:50:00Z",
+    "objetivo": "Mergear #2747, #2739 e #2755 quando clean; produzir META CUMPRIDA"
+  }
 }
