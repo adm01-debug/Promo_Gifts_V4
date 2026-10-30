@@ -296,7 +296,7 @@
   "lint-staged": {
     "src/**/*.{ts,tsx}": [
       "prettier --write",
-      "node scripts/check-eslint-baseline.mjs"
+      "node --max-old-space-size=512 scripts/check-eslint-baseline.mjs"
     ],
     "src/**/*.css": [
       "prettier --write"
