@@ -233,3 +233,11 @@ O check externo do app Supabase [#124269702734](https://github.com/adm01-debug/P
 | Supabase | sem alterações autorizadas | ✅ nenhuma migration, DDL ou alteração de dados executada. |
 
 Essas duas execuções são pré-commit desta atualização documental. Conforme a regra anti-regressão, os mesmos comandos serão repetidos após o commit. O PR #2839 continua aberto, sem merge, aguardando a conclusão dos checks remotos e revisão humana.
+
+## 14. Fechamento da rodada `main@9541666bf` (2026-10-30T20:03Z)
+
+O Gate Final — Deploy Ready concluiu `success` no run [#41115240969](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41115240969). O E2E — Critical Flows concluiu `failure` no run [#41115240508](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41115240508): os casos de tooltip não chegaram aos asserts, pois `loginViaUI` ficou em `/login`; `auth/v1/token` respondeu `504` após 56,9 s no primeiro try e vários requests Auth/PostgREST permaneceram pendentes no retry. A causa e os limites da evidência estão em PENDENCIAS.md §P34. Não considerar isso uma falha de tooltip sem execução autenticada válida.
+
+Continuavam sem conclusão na hora da consulta: CI Security & Drift [#41115240942](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41115240942) e E2E Playwright [#41115240773](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41115240773) `in_progress`; E2E Swatch QuickView [#41115240881](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41115240881) `pending`. Não foram contados como falhas.
+
+No head `08bcf8a3d` do PR #2839, a consulta retornou 45 checks: 9 `success`, 2 `skipped`, 1 `neutral`, 33 sem conclusão e nenhum `failure` concluído. O PR segue aberto e bloqueado enquanto aguarda checks e revisão humana. Gate Final verde em main não substitui esses requisitos do PR.

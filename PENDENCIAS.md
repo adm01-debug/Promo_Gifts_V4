@@ -867,3 +867,20 @@ Checks concluídos ainda verdes na ponta `9541666bf` incluem Gate 3 E2E Smoke, G
 ### PR #2839 — snapshot do head `6f72c73eb`
 
 O PR [#2839](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2839) permanece aberto e não foi mesclado. Na consulta às 19:45Z, os checks Actions do head tinham jobs ainda `queued`/`in_progress`; não encontrei falha concluída no head, mas a validação remota não terminou e aguarda revisão humana. Não fazer merge antes da conclusão dos checks obrigatórios e da revisão.
+
+## P34 — Fechamento parcial da rodada `main@9541666bf` (2026-10-30T20:03Z)
+
+Atualização dos estados que ainda estavam pendentes em §P33:
+
+| Workflow | Run | Resultado / causa comprovada | Encaminhamento |
+|---|---|---|---|
+| E2E — Critical Flows & Error Boundaries | [#41115240508](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41115240508), SHA `9541666b` | `failure`. O step de tooltips não chegou aos asserts de tooltip: o helper `loginViaUI` expirou em `/login`. No primeiro try, `POST auth/v1/token` retornou `504` após 56.932 ms; `system_settings`, `get-visitor-info` e `log-login-attempt` ficaram pendentes. No retry, token e `auth/v1/user` responderam `200`, mas `get_profile_and_roles`, `profiles`, `products`, `product_images`, `product_variants`, `categories`, `suppliers`, `color_groups` e outros requests ficaram pendentes por ~57–72 s. O gate de mínimo de testes também falhou; não atribuir a falha aos tooltips, pois os testes não autenticaram/avançaram até os asserts. | Mesma dependência intermitente Auth/PostgREST documentada em §P32/§P33. Não há reprodução local sem variáveis e credenciais E2E. PO: verificar telemetria/limites/saúde do projeto e a conta de teste; depois reexecutar. Sem mudar comportamento de produto, asserts ou timeouts sem causa reproduzida. |
+
+### Gate obrigatório e execuções ainda abertas
+
+- Gate Final — Deploy Ready [#41115240969](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41115240969): `success` em `main@9541666bf` (confirmado às 20:03Z); não há falha no único required check.
+- CI Security & Drift [#41115240942](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41115240942) e E2E Playwright [#41115240773](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41115240773): `in_progress`.
+- E2E Swatch QuickView [#41115240881](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41115240881): `pending`.
+- PR #2839 no head `08bcf8a3d`: 45 checks reportados, 9 `success`, 2 `skipped`, 1 `neutral`, 33 ainda não concluídos e nenhum `failure` concluído na consulta das 20:03Z. PR continua bloqueado por checks/revisão; não mesclar.
+
+Esta atualização não altera o snapshot histórico de §P33. Nenhuma execução pendente foi contada como falha e nenhuma alteração foi feita no Supabase.
