@@ -57,12 +57,12 @@
 - **Impacto no Gate Final:** NÃO é required check — não bloqueia deploy.
 - **Ação do PO:** Provisionar `SUPABASE_SERVICE_ROLE_KEY` ou similar para que setup de auth gere sessão válida antes dos testes.
 
-#### P21-ci-security — CI Security & Drift Checks
-- **Run ID:** [#41034358666](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358666) (sha `7299c88c`) — **pending** (0 jobs) — criado 09:33:58, nunca pegou runner
-- **Erro exato:** 0 jobs iniciados — workflow travado na fila do runner GitHub Actions. Nenhum step executado.
-- **Causa raiz:** Possível concurrency group bloqueado por outro workflow, ou runner timeout na fila. Fora do controle do código.
+#### ~~P21-ci-security~~ — CI Security & Drift Checks — RESOLVIDO (cancelled por design)
+- **Run ID:** [#41034358666](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358666) (sha `7299c88c`) — **cancelled** — cancelado pelo grupo de concorrência quando push `d9aa6939` chegou às 09:57 UTC
+- **Causa raiz:** `ci-security-drift-checks.yml` usa `concurrency: cancel-in-progress: true` em push events. Quando `d9aa6939` foi pushed às 09:57 e depois `5edddfb` às 09:58, as runs anteriores foram canceladas automaticamente. Este é o comportamento esperado do CI — não é falha.
+- **Estado atual:** Nova run [#41037319229](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41037319229) em `5edddfb` foi criada e está em fila.
 - **Impacto no Gate Final:** NÃO é required check — não bloqueia deploy.
-- **Ação do PO:** Cancelar manualmente o run #41034358666 e re-disparar via workflow_dispatch ou aguardar próximo push para nova execução.
+- **Ação do PO:** Nenhuma. A run foi cancelada por design de CI (cancel-in-progress). O workflow executará automaticamente no próximo push.
 
 ### Workflows ainda EM ANDAMENTO em HEAD `7299c88c` (2026-10-30T10:20 UTC)
 Os workflows abaixo ainda estão `in_progress`:

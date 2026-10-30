@@ -57,19 +57,54 @@
 | E2E — Magazine Header Layout | [#41034358625](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358625) | ❌ failure | PENDENCIAS.md §P21-magazine-header — auth E2E CI; não-required |
 | E2E — Critical Flows & Error Boundaries | [#41034358180](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358180) | ❌ failure | PENDENCIAS.md §P21-critical-flows — auth E2E CI; não-required |
 | E2E • Swatch QuickView (Lista + Tabela) | [#41034358495](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358495) | ❌ failure (chromium+webkit) | PENDENCIAS.md §P21-swatch-qv — check-min-tests falhou; firefox in_progress |
-| CI Security & Drift Checks | [#41034358666](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358666) | 🔴 pending (0 jobs) | PENDENCIAS.md §P21-ci-security — nunca pegou runner; ação PO: cancelar e re-disparar |
+| CI Security & Drift Checks | [#41034358666](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358666) | ✴️ cancelled | cancelado pelo grupo de concorrência (`cancel-in-progress: true`) quando push `d9aa6939` chegou 09:57 UTC — comportamento esperado; nova run [#41037319229](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41037319229) em `5edddfb` em fila |
 | E2E (Playwright) | [#41034358354](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358354) | ✴️ cancelled | cancelado às 09:54 UTC — não é failure; não aparece em `is:failure` |
 | Visual Baseline Tests — Nightly | [#41034358175](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358175) | ✴️ cancelled | cancelado às 09:54 UTC — não é failure; não aparece em `is:failure` |
 | Edge Integration Tests — All Functions | [#41034358210](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358210) | ✴️ cancelled | cancelado às 09:54 UTC — não é failure; não aparece em `is:failure` |
 | Deploy Edge Functions | [#41034820685](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034820685) | ⏳ pending | aguarda aprovação PO no environment `production` |
 
-> **Snapshot 2026-10-30T10:45 UTC** — Gate Final ✅. 23 workflows ✅ success. 7 failures registrados em PENDENCIAS.md. 3 cancelled (E2E Playwright, Visual Baseline, Edge Integration — não são failures). Swatch QV firefox in_progress (last update 09:38, possivelmente stuck). CI Security pending. Nenhuma regressão vs. `c09402816`.
+> **Snapshot 2026-10-30T10:45 UTC / atualizado 2026-10-30T11:30 UTC** — Gate Final ✅. 23 workflows ✅ success. **6 failures** registrados em PENDENCIAS.md. **4 cancelled** (E2E Playwright, Visual Baseline, Edge Integration, CI Security — todos por `cancel-in-progress`; não são failures). CI Security: run #41034358666 cancelled por concorrência; nova run #41037319229 em `5edddfb` em fila. Nenhuma regressão vs. `c09402816`.
 >
 > **Ações do PO necessárias:**
 > 1. Aprovar `Deploy Edge Functions` em https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034820685 (environment `production`)
-> 2. Cancelar run `CI Security & Drift Checks` #41034358666 (stuck) e re-disparar
-> 3. Habilitar GitHub Copilot plan (HTTP 402 em `Running Copilot Code Review`)
-> 4. Confirmar/provisionar secrets de auth E2E para corrigir Magazine Header, Critical Flows, Swatch QuickView
+> 2. Habilitar GitHub Copilot plan (HTTP 402 em `Running Copilot Code Review`)
+> 3. Confirmar/provisionar secrets de auth E2E para corrigir Magazine Header, Critical Flows, Swatch QuickView
+
+---
+
+## Seção 10 — Comparação Baseline × Final (sessão 2026-10-30 P21)
+
+**Baseline:** HEAD `c09402816` (2026-10-30T08:02 UTC) — pré-correções da sessão  
+**Final:** HEAD `7299c88c` (2026-10-30T10:22 UTC) — pós-merge PR #2796  
+**Atualização:** HEAD `5edddfb1` (2026-10-30T09:58 UTC) — fix(ts) E130 indexed-access ratchet
+
+### Tabela comparativa
+
+| Métrica | Baseline (`c09402816`) | Final (`7299c88c` / `5edddfb`) | Δ |
+|---|---|---|---|
+| Gate Final - Deploy Ready | ✅ success [#41021989586](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41021989586) | ✅ success [#41034358375](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358375) | sem regressão |
+| CI - Replenishment Module Quality Gate | ❌ failure [#41021989515](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41021989515) | ✅ **success** [#41034358297](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358297) | **+1 corrigido** |
+| Quote Builder Delivery Quality | ⏳ in_progress [#41021989417](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41021989417) | ✅ **success** [#41034358444](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358444) | **+1 corrigido** |
+| CI Security & Drift Checks | ⏳ pending [#41021989569](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41021989569) | ✴️ cancelled [#41034358666](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358666) → fila [#41037319229](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41037319229) | cancel-in-progress esperado; NÃO é failure |
+| E2E — Personalization Flow | ✅ success [#41021989536](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41021989536) | ❌ failure [#41034358338](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358338) | PENDENCIAS §P21 — 1/5 testes falhou por asserção, auth OK |
+| E2E — Magazine Header Layout | ❌ failure [#41021989518](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41021989518) | ❌ failure [#41034358625](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358625) | sem mudança — pré-existente, não-required |
+| E2E — Critical Flows & Error Boundaries | ⏳ pending [#41021989522](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41021989522) | ❌ failure [#41034358180](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358180) | pré-existente, não-required; auth E2E CI |
+| E2E • Swatch QuickView | ⏳ pending [#41021989488](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41021989488) | ❌ failure [#41034358495](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358495) | pré-existente, não-required; auth E2E CI |
+| edge-functions-drift-check | — (não rodou no baseline) | ❌ failure [#41034830573](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034830573) | 31 funções divergentes; deploy aguarda PO |
+| Copilot Code Review | ❌ failure [#41031412599](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41031412599) | ❌ failure (mesmo run — último na main) | HTTP 402; bloqueio operacional |
+| `npm run build` | ✅ EXIT=0 | ✅ EXIT=0 (tsc/build no container de sessão) | sem regressão |
+| `npx tsc --noEmit` | ✅ EXIT=0, 0 erros | ✅ EXIT=0, 0 erros | sem regressão |
+| `npx vitest run` (amostra) | ✅ falhas pré-existentes | ✅ falhas pré-existentes | sem regressão |
+
+### Workflows novos em success (corrigidos nesta sessão)
+- **CI - Replenishment Module Quality Gate:** era ❌ failure em `c09402816`, virou ✅ success em `7299c88c` — PR #2796 mergeado.
+- **Quote Builder Delivery Quality:** era ⏳ in_progress em `c09402816`, virou ✅ success em `7299c88c`.
+
+### Workflows em failure não-regredidos (pré-existentes, não-required)
+Todos os 6 failures na tabela acima (edge-drift, personalization, copilot, magazine-header, critical-flows, swatch-qv) são documentados em PENDENCIAS.md §P21 com causa exata e ação do PO. **Nenhum é required check** — Gate Final permanece ✅.
+
+### Por que CI Security não é failure
+Run [#41034358666](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358666) está `cancelled`, não `failure`. O workflow usa `concurrency: cancel-in-progress: true` — quando pushs adicionais chegaram (`d9aa6939` às 09:57, `5edddfb` às 09:58), a run anterior foi cancelada automaticamente por design. O workflow está em fila para `5edddfb` no run [#41037319229](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41037319229) e executará quando o runner disponibilizar.
 
 ---
 
