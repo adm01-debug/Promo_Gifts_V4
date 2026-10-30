@@ -243,3 +243,40 @@ CodeQL, Gitleaks, Lint untypedFrom, Lovable Autoheal, Lovable Edit Tracker, No P
 | 2 | Deploy Edge Functions | Aprovar run [#41034820685](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034820685) em `production` → resolve Uptime Monitor + drift |
 | 3 | Copilot billing | Regularizar cota → resolve Running Copilot Code Review |
 | 4 | Branch Protection Sentinel | Decidir sobre integração Lovable (tolerar ou ajustar) |
+
+---
+
+## P30 — Inventário completo HEAD `52570b33` / `cba9944d` (2026-10-30T17:30Z)
+
+**HEAD atual da main:** `52570b33` (squash PR #2828, RELATORIO_CI.md §P29)
+**Runs de referência:** executados sobre `cba9944d` (antecessor direto de `52570b33`); runs de `52570b33` ainda em andamento no momento deste registro.
+
+### Workflows com última execução = `failure` (verificados)
+
+| Workflow | Run | SHA | Causa raiz | Tipo de bloqueio | Required check? |
+|---|---|---|---|---|---|
+| CI Security & Drift Checks | [#41067472831](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41067472831) | `cba9944d` | **CAUSA COMPROVADA (log job 124110648431):** `auth.setup` falhou — `storageState.json` gerado sem token `sb-*-auth-token` válido porque `GET auth/v1/user`, `POST rest/v1/rpc/get_profile_and_roles` e demais chamadas pós-token ficaram PENDENTES ~51s em CI (timeout 75s). Sem auth válido, todos os 8 testes `chromium-authed` falham com `Expected: visible, Received: undefined` (nenhum elemento carregou pois a sessão não existe). 2 testes passaram no retry indicando flakiness de auth no runner. Mesma causa-raiz do Magazine Header. | Infra/auth-CI — `GET auth/v1/user` pendente no runner CI; requer `SUPABASE_SERVICE_ROLE_KEY` ou investigação de rate-limit no runner | NÃO |
+| E2E — Magazine Header Layout | [#41067472825](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41067472825) | `cba9944d` | **CAUSA COMPROVADA (log job 124105733359, step "Run Magazine Header E2E"):** `auth.setup` completou mas `storageState.json` não continha token `sb-*-auth-token` — `GET auth/v1/user` ficou PENDENTE 51134ms (de 75000ms). Step imprimiu: `❌ storageState.json sem token de sessão Supabase (sb-*-auth-token) — login E2E falhou com credenciais fornecidas.` → exit 1. Nenhum teste Playwright rodou. Mesma causa-raiz do CI Security & Drift. | Infra/auth-CI — `GET auth/v1/user` pendente no runner CI; requer `SUPABASE_SERVICE_ROLE_KEY` ou investigação de rate-limit no runner | NÃO |
+| E2E • Swatch QuickView | [#41067472586](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41067472586) | `cba9944d` | `check-playwright-min-executed`: `executed=5, minimo=10`; `ratio skipped=66.7% > 50%`. Log: "Causas possíveis: secrets E2E ausentes, spec list vazia ou Playwright abortou antes de rodar". Browsers webkit+chromium+firefox todos falharam. Mesma causa-raiz de auth-CI (ver acima). | Infra/auth-CI — mesma causa `GET auth/v1/user` pendente; requer `SUPABASE_SERVICE_ROLE_KEY` ou secrets `E2E_USER_*` válidos | NÃO |
+| Uptime Monitor | [#41081887544](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41081887544) | `52570b33` | Probe `health-check` exit 22 (curl HTTP error não-2xx) — edge function `health-check` em versão desatualizada. Issue [#2829](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2829) criada. Fix está no código (PR #2753 na main) mas deploy da função pendente de aprovação em `production`. | PO-BLOCKED: aprovar deploy de edge functions via `.github/workflows/deploy-edge-functions.yml` (workflow_dispatch `health-check`) | NÃO (schedule) |
+| Running Copilot Code Review | [#41045066850](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41045066850) | `22ca2b3f` | HTTP 402 — cota adicional Copilot esgotada. Log: `errorType: quota`. | PO-BLOCKED: regularizar billing Copilot GitHub | NÃO |
+| edge-functions-drift-check | [#41034830573](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034830573) | `7299c88c` | 31 funções em drift entre código no GitHub e estado canônico deployado — deploy via MCP/dashboard sem PR (REGRA #8 corolário). | PO-BLOCKED: dispatch `deploy-edge-functions.yml` para reconciliar; ou abrir PRs de migration espelho para cada função — REGRA #8 aplica | NÃO (workflow_dispatch/schedule) |
+| Branch Protection Sentinel | [#41081845698](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41081845698) | `52570b33` | Push do Lovable sem formato `(#NNN)` no commit message — REGRA #7 estrutural. Falha recorrente a cada push do bot. | PO-BLOCKED: decidir tolerância ou ajustar integração Lovable | NÃO |
+
+### Workflows verdes na ponta `cba9944d` / `52570b33` (verificados)
+
+Branch Protection Sentinel ✅ (cba9944d — mas falha em 52570b33 por novo push Lovable), CI Replenishment ✅, CodeQL ✅, Deploy Gates ✅ (run [#41067473692](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41067473692) — 15 jobs success, 2 skipped), E2E Critical Flows ✅, E2E Personalization ✅, Gitleaks ✅, Lovable Autoheal ✅, Lovable Edit Tracker ✅, No Prod Leak ✅, Policies Baseline ✅, Required Checks Guard ✅, SSOT Supabase Guard ✅, Security Scan ✅, Select Columns vs Types ✅, Static Health Checks ✅, Supabase Linter Gate ✅, TS Unused Locals Ratchet ✅, UI Visual & A11y ✅.
+
+### Nenhum required check afetado
+
+O único required check (`Gate Final - Deploy Ready`) executou com sucesso em `cba9944d` (run [#41067473692](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41067473692), job 124135936896, 15:09:03Z — 15 jobs ✅, 2 skipped ⏭️). Os 7 workflows em falha documentados acima NÃO são required checks.
+
+### Ações pendentes do PO (P30 consolidada)
+
+| # | Item | Ação concreta |
+|---|---|---|
+| 1 | Uptime Monitor + edge-drift | Dispatch `deploy-edge-functions.yml` (`workflow_dispatch`, `function_name: health-check`) em GitHub Actions > Production env approval |
+| 2 | E2E Swatch QuickView | Verificar/renovar secrets `E2E_USER_EMAIL` / `E2E_USER_PASSWORD` no repo (Settings > Secrets > Actions) |
+| 3 | Copilot Code Review | Regularizar billing/cota Copilot no GitHub org |
+| 4 | CI Security & Drift / Magazine Header | Investigar flakiness de auth em `chromium-authed` e fixture da spec Magazine Header — pode precisar de `E2E_USER_*` secret review (mesmo item #2) |
+| 5 | Branch Protection Sentinel | Avaliar tolerância ou configurar Lovable para usar formato de commit com `(#NNN)` |
