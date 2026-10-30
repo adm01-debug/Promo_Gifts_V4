@@ -13,7 +13,7 @@
     "prod_audit",
     "supplier_stricker"
   ],
-  "sha256": "925c96f4c818a2c66260c0d1a74a6ad88fa1ffb04d994a511c6c6b0b3fa7edab",
+  "sha256": "7ea06d275b54e1966407d2cee269e4c66467777fa7dbc52ef14af2321c25b51c",
   "policies": [
     {
       "schemaname": "cf_recon",
