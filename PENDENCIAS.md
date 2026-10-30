@@ -473,7 +473,7 @@ Esse run supersede a falha antiga em `c3b4128`. O PR #2749 (allowlist do SHA `9a
 
 ---
 
-## P-UPTIME — Uptime Monitor: deploy aguarda aprovação PO (BLOQUEIO EXTERNO)
+## P-UPTIME — Uptime Monitor: RESOLVIDO ✅ (deploy concluído)
 
 **Workflow:** Uptime Monitor  
 **Última run com falha:** [#40978818572](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40978818572) — SHA `279f17` — `failure` (2026-10-30)  
@@ -777,9 +777,24 @@ Inventário produzido a partir de `github_list_workflow_runs` com `status=failur
 
 ---
 
-## P21 — Inventário atual das últimas execuções na `main` (2026-10-30)
+## P21 — Branch Protection Sentinel — commit `f14321e2` (push direto por sessão Claude)
 
-**Snapshot:** `c16381a5a29fcdca3e49b73b96107953aed6b51c` (main; consulta concluída por volta de 06:39 UTC). Foram consultados os 119 workflows ativos, filtrando `branch=main` e excluindo execuções de PR: 98 tinham run; 21 não tinham. Dos 98 resultados, 61 estavam `success`, 21 `failure`, 9 sem conclusão (6 `pending`, 3 `in_progress`), 5 `cancelled` e 2 `skipped`. **A tabela abaixo contém somente workflows cuja última execução consultada concluiu `failure`.** O snapshot anterior está preservado no histórico deste relatório; esta seção é a fotografia operacional atual.
+**Run ID:** [41013710581](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41013710581) (sha `f14321e2`, main, 2026-10-30)
+**Workflow:** `.github/workflows/branch-protection-sentinel.yml`
+**Erro:** `1 commit(s) em push para main sem padrão aceito: f14321e` — Regra 1 do sentinel: commit direto em `main` SEM merge via PR e SEM sufixo `(#NNN)`.
+**Causa raiz:** Sessão Claude `session_01RfQzo6Dg97Uj4nSrMJfhpy` empurrou diretamente em `main` o commit `f14321e2` com mensagem `feat(ci): E116 — Gate 2 executa test:ci-core (27 arquivos) [ONDA 11]`. Violação dupla: (a) push direto em main sem PR (viola REGRA #9 do CLAUDE.md), (b) mensagem não termina em `(#NNN)` (viola convenção do sentinel). Esta sessão NÃO criou este commit.
+
+**Por que não posso corrigir:** Commit já está na main. Force-push em main é proibido (REGRA #9). O histórico não pode ser reescrito.
+
+**Impacto no Gate Final:** NÃO é required check — não bloqueia deploy nem PRs futuros. Gate Final (run [#41013710667](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41013710667)) está `success` no mesmo SHA `f14321e2`.
+
+**Resolução:** Próximos merges via squash com sufixo `(#NNN)` retornarão verde. O commit `f14321e2` fica registrado como violação histórica de processo.
+
+---
+
+## P22 — Inventário atual das últimas execuções na `main` (2026-10-30)
+
+**Snapshot:** `e799980e85f5f474b357253f4a20d3f56a374e1b` (main; consulta concluída por volta de 06:50 UTC). Foram consultados os 119 workflows ativos, filtrando `branch=main` e excluindo execuções de PR: 98 tinham run; 21 não tinham. Dos 98 resultados, 58 estavam `success`, 21 `failure`, 12 sem conclusão (6 `pending`, 5 `in_progress`, 1 `queued`), 5 `cancelled` e 2 `skipped`. **A tabela abaixo contém somente workflows cuja última execução consultada concluiu `failure`.** Os snapshots anteriores estão preservados no histórico; esta seção é a fotografia operacional atual.
 
 | Workflow | Último run com `failure` | Evidência e causa/bloqueio exatos | Próxima ação / classificação |
 |---|---|---|---|
@@ -806,24 +821,27 @@ Inventário produzido a partir de `github_list_workflow_runs` com `status=failur
 | CI - Replenishment Module Quality Gate | [#41009722286](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41009722286) | Dois testes E2E expiraram no login; a URL permaneceu `/login` após 75 s. `auth/v1/token` e chamadas REST ficaram pendentes/failed no ambiente remoto. | **Bloqueio de autenticação/rede E2E:** investigar ambiente e chamadas Supabase; preservar os testes e o timeout. |
 ### Runs da `main` ainda sem conclusão
 
-Estes 9 workflows não foram classificados como falha nesta fotografia:
+Estes 12 workflows não foram classificados como falha nesta fotografia:
 
 | Workflow | Run | Estado |
 |---|---:|---|
 | Deploy Edge Functions | [#40976801625](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40976801625) | pending — aguarda aprovação manual de produção; não aprovada |
-| E2E (Playwright) | [#41014960572](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41014960572) | pending |
-| E2E • Swatch QuickView (Lista + Tabela) | [#41014960434](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41014960434) | pending |
+| E2E (Playwright) | [#41016209191](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41016209191) | pending |
+| E2E • Swatch QuickView (Lista + Tabela) | [#41016209178](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41016209178) | pending |
 | SECURITY DEFINER ACL — Multi-Env | [#40899426158](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40899426158) | pending |
 | E2E · restore_seller_cart RPC (multi-env) | [#40852813455](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40852813455) | pending |
-| CI Security & Drift Checks | [#41014960494](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41014960494) | pending |
-| CodeQL | [#41014960448](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41014960448) | in_progress |
-| Deploy Gates | [#41014960476](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41014960476) | in_progress |
-| E2E — Critical Flows & Error Boundaries | [#41014960393](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41014960393) | in_progress |
+| CI Security & Drift Checks | [#41016209086](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41016209086) | pending |
+| CodeQL | [#41016209082](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41016209082) | in_progress |
+| Quote Builder Delivery Quality | [#41016208946](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41016208946) | in_progress |
+| Deploy Gates | [#41016209116](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41016209116) | in_progress |
+| E2E — Critical Flows & Error Boundaries | [#41016209081](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41016209081) | in_progress |
+| E2E — Personalization Flow | [#41016208973](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41016208973) | in_progress |
+| Gitleaks — Full History Audit | [#41016368494](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41016368494) | queued |
 
 ### Workflows verdes nesta fotografia
 
-Os 61 workflows cuja última execução na `main` concluiu `success` foram: Branch Protection Sentinel; Cross-reference PR ↔ Issue; Deploy to Vercel (Manual Fallback); Security Scan; Quote Builder Delivery Quality; Dependabot Updates; Sync labels; Contract Tests; Required Checks Guard; Gitleaks — Full History Audit; Lint untypedFrom; E2E — Personalization Flow; Static Health Checks; Lovable Edit Tracker; db-schema-drift-check; Lovable Autoheal; Supabase Linter Gate; stock-rupture-fuzz; Quote Number Hardening — Verify (canonical DB); E2E — Visual Regression (Preview button); schema-snapshot-export; drafts-index-check; UI · Visual & A11y; E2E · Update Confirm Dialog snapshots; E2E · Update Alert Dialog snapshots; E2E · Update Dialog snapshots; E2E · Update Quote Freight snapshots; E2E · Update Calendar snapshots; E2E — Customization Collapse (LocationPanel); PDF Quality Gate; E2E — PDF Dialog (watermark pixel-diff, authed); E2E — CRM Callback (approved → V4 → CRM); URL State — Unit & Fuzz; Magazine Unit Tests; Gate 5 — Supabase Security Audit; E2E · Update Magazine Ring snapshots; Magazine Flakiness Guard; Magazine Mutation Testing; SSOT Supabase Guard; log-login-attempt — Fuzz Stress Weekly; Auth surface fuzz (weekly); Daily flows simulation; TS Unused Locals Ratchet; Uptime Monitor; capacity-growth-report; ddl-out-of-band-detector; pgss-slo-report; wraparound-monitor-report; Workflow Lint; Template — Workflow Name Here; Ratchet Weekly — Baixar baselines; CI Metrics Weekly (E66/E87); Policies Baseline; Release Please; No Prod Leak in Dev/Test Config; Select Columns vs Types; E2E Focused UI — Matrix (E78); Cache Prune; DR Drill Reminder; Python Package using Conda; Mark stale issues and pull requests.
+Os 58 workflows cuja última execução na `main` concluiu `success` foram: Branch Protection Sentinel; Cross-reference PR ↔ Issue; Deploy to Vercel (Manual Fallback); Security Scan; Dependabot Updates; Sync labels; Contract Tests; Required Checks Guard; Lint untypedFrom; Static Health Checks; Lovable Edit Tracker; db-schema-drift-check; Lovable Autoheal; Supabase Linter Gate; stock-rupture-fuzz; Quote Number Hardening — Verify (canonical DB); E2E — Visual Regression (Preview button); schema-snapshot-export; drafts-index-check; UI · Visual & A11y; E2E · Update Confirm Dialog snapshots; E2E · Update Alert Dialog snapshots; E2E · Update Dialog snapshots; E2E · Update Quote Freight snapshots; E2E · Update Calendar snapshots; E2E — Customization Collapse (LocationPanel); PDF Quality Gate; E2E · PDF Dialog (watermark pixel-diff, authed); E2E — CRM Callback (approved → V4 → CRM); URL State — Unit & Fuzz; Magazine Unit Tests; Gate 5 — Supabase Security Audit; E2E · Update Magazine Ring snapshots; Magazine Flakiness Guard; Magazine Mutation Testing; SSOT Supabase Guard; log-login-attempt — Fuzz Stress Weekly; Auth surface fuzz (weekly); Daily flows simulation; TS Unused Locals Ratchet; Uptime Monitor; capacity-growth-report; ddl-out-of-band-detector; pgss-slo-report; wraparound-monitor-report; Workflow Lint; Template — Workflow Name Here; Ratchet Weekly — Baixar baselines; CI Metrics Weekly (E66/E87); Policies Baseline; Release Please; No Prod Leak in Dev/Test Config; Select Columns vs Types; E2E Focused UI — Matrix (E78); Cache Prune; DR Drill Reminder; Python Package using Conda; Mark stale issues and pull requests.
 
-Os 5 `cancelled`, 2 `skipped` e 21 workflows sem run na `main` não foram classificados como falha. O snapshot representa as últimas execuções consultadas do SHA `c16381a5` por volta de 06:39 UTC; os 9 runs sem conclusão devem ser reconsultados quando concluírem.
+Os 5 `cancelled`, 2 `skipped` e 21 workflows sem run na `main` não foram classificados como falha. O snapshot representa as últimas execuções consultadas do SHA `e799980e` por volta de 06:50 UTC; os 12 runs sem conclusão devem ser reconsultados quando terminarem.
 
 **Segurança e escopo:** não houve escrita no Supabase, deploy, aprovação manual, alteração de workflow/teste/snapshot ou mudança de código de aplicação. Os bloqueios sem evidência reproduzível permanecem registrados sem hipótese apresentada como causa confirmada.
