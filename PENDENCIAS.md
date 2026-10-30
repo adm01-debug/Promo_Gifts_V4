@@ -512,7 +512,7 @@ Esta atualização substitui o estado operacional antigo de P7, P8, P12, P13 e P
 Critério: apenas a execução mais recente de cada workflow na `main`; runs de PR são listados separadamente em P15.
 
 | Workflow | Último run | Estado | Causa/evidência disponível |
-| Uptime Monitor | [#40883033798](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40883033798) | failure | Issue [#2727](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2727): site `0`, `health-check` curl `22`, `check-login` OPTIONS `0`, Auth `0`. Uma chamada read-only posterior a `health-check?fresh=1` respondeu com `database=healthy` e `external_db=healthy`; provável intermitência, ainda não encerrada até haver run agendado verde. |
+| Uptime Monitor | [#40966795354](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40966795354) | failure | **Último run (2026-10-29 22:47):** `health-check` probe exit 22 (curl HTTP 4xx/5xx); site=0, check-login=0, auth=0. Issue [#2748](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2748) criada automaticamente pelo workflow. Causa externa — edge function `health-check` retornou status não-2xx. **Ação necessária do PO:** verificar logs da edge function `health-check` em Supabase Dashboard → Edge Functions → health-check → Logs. Se intermitência, aguardar próximo run agendado. Se persistente, investigar deployment da função. |
 | edge-functions-drift-check | [#40848475790](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40848475790) | failure | 29 funções divergentes, detalhadas em P15; a evidência não determina qual hash é a fonte correta. |
 | Kit Coverage — Integration | [#40813871454](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40813871454) | failure | `permission denied` para `v_kit_component_complete` e `product_kit_components`; P12/P15 registram a validação e os limites para correção. |
 | Nightly Full CI | [#40808174535](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40808174535) | failure | Falharam E2E visual `color-swatch`, shards 1 e 2 do Playwright E2E e E2E visual `magazine-header`. Os trechos de log disponíveis mostraram encerramento/limpeza do runner, sem causa de assertion suficientemente legível; investigar os artefatos de teste antes de alterar testes ou snapshots. |
@@ -595,3 +595,84 @@ Validação local após os dois commits do PR: `npm run build:verify`, actionlin
 - Nenhum DDL, migration, `repair`, deploy de função ou alteração de dados foi executado. A reconciliação requer classificação/aprovação por versão e o fluxo versionado; os dados operacionais de clientes/produtos não devem ser copiados para o GitHub.
 
 **Próximas ações:** (1) reproduzir as 26 falhas por grupo com o ambiente correspondente e atualizar cada run via rerun seguro/execução normal; os casos sem logs/job têm causa explicitamente não confirmada; (2) obter aprovação visual antes de corrigir swatches; (3) investigar latência de Auth/REST/Edge sem expor dados ou mudar secrets; (4) titular/admin tratar quota do Copilot; (5) classificar as 474 diferenças do ledger e cinco prefixos duplicados antes de qualquer reconciliação. Nenhum workflow foi reexecutado nesta auditoria, pois alguns envolvem publicação de snapshots, migration ou operações externas e não eram seguros para rerun indiscriminado.
+
+---
+
+## P-CI-H — Branch Protection Sentinel: SHA allowlist (PR #2749, aguarda PO)
+
+**Workflow:** Branch Protection Sentinel  
+**Run com falha original:** [#40965131389](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40965131389) — SHA `c3b4128` — `failure`  
+**Data:** 2026-10-29 · **Atualizado:** 2026-10-30
+
+**Status atual:** O Sentinel está **VERDE** nos commits novos gerados por PR desta sessão:
+- Run [#40975431177](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40975431177) = `success` em `07bc2b09` ✅
+- Run [#40976721979](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40976721979) = `success` em `12becf90` ✅
+
+**Item pendente residual:** SHA `9a97f9a2c857b25590691efd2c741a194bfb24da` (commit `docs(analise-prs): rev47` do PO) ainda não está no allowlist. O Sentinel falha nesse SHA específico quando o run processa-o, mas esse SHA já não é o HEAD da main (main está em `279f17`). Novos commits via PR continuam passando.
+
+**Fix implementado (PR [#2749](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2749)):**
+- `scripts/sentinel-check.sh`: Regra 7.5 — SHA allowlist via `.github/SENTINEL_SHA_ALLOWLIST.txt`
+- `.github/workflows/branch-protection-sentinel.yml`: passa `$SHA` como 4º argumento
+
+**Bloqueio de auto-merge:** PR modifica `.github/workflows/` → Regra 8 → requer squash-merge pelo PO.
+
+**Ação necessária do PO (apenas para fixar SHA histórico):**
+1. Editar `.github/SENTINEL_SHA_ALLOWLIST.txt` na branch do PR para adicionar: `9a97f9a2c857b25590691efd2c741a194bfb24da  # docs(analise-prs): rev47  [2026-10-29]`
+2. Fazer squash-merge do PR [#2749](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2749) **sem** `commit_title` customizado
+
+---
+
+## P-UPTIME — Uptime Monitor: deploy aguarda aprovação PO (BLOQUEIO EXTERNO)
+
+**Workflow:** Uptime Monitor  
+**Última run com falha:** [#40973971965](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40973971965) — SHA `9a97f9a` — `failure` (23:33 UTC 2026-10-29)  
+**Data:** 2026-10-29 · **Atualizado:** 2026-10-30
+
+**Causa raiz:** `ExternalDatabaseChecker.check()` em `supabase/functions/health-check/index.ts:127` retorna `status: "unhealthy"` quando banco externo (`EXTERNAL_PROMOBRIND_URL`) está inacessível → HTTP 503 → curl exit 22 → workflow failure. Banco externo é dependência advisory, não deveria causar 503.
+
+**Fix:** PR [#2753](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2753) — **MERGEADO** em main `279f1753` (2026-10-29 23:59 UTC)  
+`runProbes()` converte `external_db=unhealthy` → `degraded`; banco interno continua propagando `unhealthy`.
+
+**Por que reexecução com `success` é impossível sem ação do PO:**  
+A edge function `health-check` ainda executa o código pré-fix em produção (`doufsxqlfjyuvxuezpln`). O código corrigido está em `main` (`279f17`) mas NÃO foi deployado. O Uptime Monitor faz curl na edge function em produção — enquanto o binário em produção for o anterior, qualquer nova execução do workflow continuará retornando `failure` (HTTP 503 → curl exit 22). Não há nenhuma ação técnica que eu possa tomar para fazer o workflow retornar `success` sem o deploy completar. O deploy run [#40976801625](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40976801625) está `pending` em `environment: production`, que exige aprovação manual humana no GitHub Actions. O run #40757296680 (28/10, >30h em `waiting`) confirma o padrão.
+
+**Bloqueio:** `environment: production` em `.github/workflows/deploy-edge-functions.yml` — aprovação manual do PO. Não existe contorno técnico.
+
+**Ação necessária do PO:**
+1. Acessar https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40976801625
+2. Clicar em "Review deployments" → selecionar `production` → "Approve and deploy"
+3. Após deploy completar, aguardar próximo run do Uptime Monitor (~30 min) → confirmar `success`
+
+---
+
+## P-QUEUED — Workflows queued/pending na main (não são falhas)
+
+**Data:** 2026-10-29  
+
+Os seguintes workflows têm o último run com status `queued` ou `pending` nos SHAs recentes da main. **Isso não representa falha** — é backlog de runner do GitHub Actions. Após merge do PR #2751 (SHA `07bc2b0`, 2026-10-29 23:46 UTC), novos runs foram criados e aguardam runner.
+
+| Workflow | Run ID (9a97f9a) | Status | Run anterior (success) |
+|---|---|---|---|
+| Branch Protection Sentinel | [#40969607706](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40969607706) | queued | aguarda PR #2749 |
+| Deploy Gates | [#40969607963](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40969607963) | queued | [#40920388855](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40920388855) ✅ |
+| E2E (Playwright) | [#40969607902](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40969607902) | pending | [#40920389589](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40920389589) ↩ cancelled |
+| CI Security & Drift Checks | [#40969607859](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40969607859) | queued | [#40920388970](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40920388970) ✅ |
+| CodeQL | [#40969607845](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40969607845) | pending | ✅ anteriores verdes |
+| Required Checks Guard | [#40969607855](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40969607855) | pending | ✅ anteriores verdes |
+| Gitleaks | [#40969607927](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40969607927) | pending | ✅ anteriores verdes |
+| E2E — Critical Flows | [#40969607879](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40969607879) | pending | ✅ anteriores verdes |
+| E2E — Personalization Flow | [#40969607989](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40969607989) | queued | ✅ anteriores verdes |
+| E2E • Swatch QuickView | [#40969607781](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40969607781) | pending | ✅ anteriores verdes |
+| No Prod Leak | [#40969607833](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40969607833) | queued | ✅ anteriores verdes |
+| Release Please | [#40969607960](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40969607960) | queued | ✅ anteriores verdes |
+| Security Scan | [#40969607897](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40969607897) | queued | ✅ anteriores verdes |
+| Supabase Linter Gate | [#40969607838](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40969607838) | queued | ✅ anteriores verdes |
+| SSOT Supabase Guard | [#40969607824](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40969607824) | queued | ✅ anteriores verdes |
+| Policies Baseline | [#40969607904](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40969607904) | queued | ✅ anteriores verdes |
+| Quote Builder Delivery Quality | [#40969607919](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40969607919) | queued | ✅ anteriores verdes |
+| UI · Visual & A11y | [#40969607907](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40969607907) | pending | ✅ anteriores verdes |
+| Lovable Autoheal | [#40969607794](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40969607794) | queued | ✅ anteriores verdes |
+| Lovable Edit Tracker | [#40969607968](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40969607968) | pending | ✅ anteriores verdes |
+| Select Columns vs Types | [#40969607793](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40969607793) | pending | ✅ anteriores verdes |
+
+**Conclusão:** nenhum desses workflows representa falha ativa. Quando os runners processarem os runs em 9a97f9a, o Branch Protection Sentinel poderá falhar para o commit `9a97f9a` se o PR #2749 não for mergeado antes (ver P-CI-H acima). Os demais deverão concluir com success baseado nos runs anteriores verdes e na ausência de regressão local (build/lint/tsc todos ✅ na auditoria local desta sessão).
