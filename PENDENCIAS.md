@@ -623,18 +623,22 @@ Validação local após os dois commits do PR: `npm run build:verify`, actionlin
 ## P-UPTIME — Uptime Monitor: edge function health-check com HTTP 4xx/5xx
 
 **Workflow:** Uptime Monitor
-**Run com falha:** [#40966795354](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40966795354) — SHA `c3b4128` — `failure`
-**Data:** 2026-10-29 22:47 UTC
+**Última run com falha:** [#40973971965](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40973971965) — SHA `9a97f9a` — `failure` (23:33 UTC 2026-10-29)
+**Padrão observado:** alternância success/failure a cada ~30 min (run #40970726399 = success 23:05; run #40973971965 = failure 23:33)
 
-**Causa raiz:** Probe `curl` retornou exit code 22 (HTTP 4xx/5xx) ao acessar a edge function `health-check` em `doufsxqlfjyuvxuezpln.supabase.co/functions/v1/health-check`. Os campos `site`, `check-login` e `auth` todos retornaram 0.
+**Causa raiz identificada (2026-10-29 sessão atual):**
+`supabase/functions/health-check/index.ts` — `ExternalDatabaseChecker.check()` (linha 127) retorna `status: "unhealthy"` quando o banco externo (`EXTERNAL_PROMOBRIND_URL`) é intermitentemente inacessível. O `runProbes()` (linha 161) propaga qualquer `unhealthy` para o status geral → HTTP 503 → curl exit 22 → workflow failure.
+O banco externo é uma dependência **advisory** (não é o canônico `doufsxqlfjyuvxuezpln`); sua falha não deveria resultar em 503.
 
-**Classificação:** Falha de infraestrutura externa. Não é corrigível por mudança de código no repositório.
+**Fix implementado:** PR [#2753](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2753) — `fix(edge-fn): cap external_db em degraded no health-check`
+Mudança em `runProbes()`: converte `external_db=unhealthy` → `degraded` antes de calcular o status geral. Banco interno (`database`) continua propagando `unhealthy` normalmente.
 
-**Ação necessária do PO:**
-1. Acessar Supabase Dashboard → Projeto `doufsxqlfjyuvxuezpln` → Edge Functions → `health-check` → Logs
-2. Verificar se a função está deployada e saudável
-3. Se persistente: redeployar via `.github/workflows/deploy-edge-functions.yml` com `function_name=health-check`
-4. Se intermitência: aguardar o próximo run agendado (a cada 30 min); se o próximo run passar, considerar fluke
+**Estado atualizado (2026-10-30):** PR [#2753](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2753) foi mesclado no commit `279f175`. A correção está versionada na `main`; resta confirmar o deploy da edge function `health-check` e observar uma execução agendada bem-sucedida do Uptime Monitor.
+
+**Passos para fechar este item:**
+1. Confirmar se `.github/workflows/deploy-edge-functions.yml` já publicou `health-check` após o merge.
+2. Se não, executar o dispatch autorizado com `function_name=health-check` e validar o resultado.
+3. Aguardar próximo run agendado do Uptime Monitor e confirmar `success`.
 
 ---
 
@@ -642,7 +646,7 @@ Validação local após os dois commits do PR: `npm run build:verify`, actionlin
 
 **Data:** 2026-10-29
 
-Os seguintes workflows têm o último run com status `queued` ou `pending` no SHA `9a97f9a`. **Isso não representa falha** — é backlog de runner do GitHub Actions. Os runs anteriores (SHA `c3b4128`) foram `success` para todos exceto os listados em P-CI-H e P-UPTIME acima.
+Os seguintes workflows têm o último run com status `queued` ou `pending` nos SHAs recentes da main. **Isso não representa falha** — é backlog de runner do GitHub Actions. Após merge do PR #2751 (SHA `07bc2b0`, 2026-10-29 23:46 UTC), novos runs foram criados e aguardam runner.
 
 | Workflow | Run ID (9a97f9a) | Status | Run anterior (success) |
 |---|---|---|---|

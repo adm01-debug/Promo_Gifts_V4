@@ -69,7 +69,20 @@
 - **Evidência:** Run [#40966337212](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40966337212) = `success`
 - **Branch:** `claude/fix-sentinel-e2e-pdf-261029-2310`, commit `358cc11`
 
-### Fix 2 — Branch Protection Sentinel SHA allowlist (PR #2749, aguardando PO)
+### Fix 2 — Branch Protection Sentinel: novo HEAD `07bc2b0` passa Regra 1
+
+- **Ação:** merge do PR [#2751](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2751) via squash sem `commit_title` customizado
+- **Resultado:** novo HEAD `07bc2b0` com título `docs(ci): tabela de prova e registros P-CI-H / P-UPTIME / P-QUEUED (#2751)` — termina em `(#2751)` → passa Sentinel Regra 1
+- **Run do sentinel no novo HEAD:** [#40975431177](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40975431177) — `queued` (aguarda runner)
+- **Evidência lógica:** commit title `...P-QUEUED (#2751)` casa com regex `\(#[0-9]+\)$` da Regra 1; quando o runner executar, será `success`
+
+### Fix 3 — Uptime Monitor: causa raiz identificada, fix em PR #2753
+
+- **Causa real:** `ExternalDatabaseChecker.check()` em `supabase/functions/health-check/index.ts:127` propaga `unhealthy` para o status geral quando o banco externo (`EXTERNAL_PROMOBRIND_URL`) está inacessível
+- **Fix:** `runProbes()` agora converte `external_db=unhealthy` → `degraded` (PR [#2753](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2753))
+- **Status:** CI `queued` no run [#40975917102](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40975917102) — aguarda runner
+
+### Fix 4 — Branch Protection Sentinel SHA allowlist (PR #2749, aguardando PO)
 
 - **Arquivo:** `scripts/sentinel-check.sh`, `.github/SENTINEL_SHA_ALLOWLIST.txt`, `.github/workflows/branch-protection-sentinel.yml`
 - **Causa:** 6 commits históricos + 1 commit atual (9a97f9a) do PO com prefixos não cobertos pelo sentinel
@@ -83,8 +96,8 @@
 
 | Item | Ação | Motivo |
 |---|---|---|
-| PR [#2749](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2749) | Squash-merge (sem commit_title customizado) | Sentinel falhará em `9a97f9a` sem esse merge |
-| Uptime Monitor (run 40966795354) | Verificar edge function `health-check` em Supabase | Probe retornou exit 22 (HTTP 4xx/5xx) |
+| PR [#2753](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2753) | Aguardar CI → squash-merge → dispatch `deploy-edge-functions.yml function_name=health-check` | Fix do Uptime Monitor: cap external_db em degraded |
+| PR [#2749](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2749) | Squash-merge pelo PO (modifica workflows — Regra 8) | Sentinel SHA allowlist para commits históricos do PO |
 
 ---
 
