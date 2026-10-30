@@ -1,7 +1,7 @@
 # RELATORIO_CI.md — Auditoria de Workflows CI/CD
 
 **Gerado:** 2026-10-29 · **Atualizado:** 2026-10-30
-**HEAD da main:** `380ceb6238dc4ea4f093bd61ce8dd5419c74ab91` (snapshot P30, 2026-10-30)
+**HEAD da main:** `604de54c030c521def563b26351361e6472fafcf` (snapshot P31, 2026-10-30)
 **Sessão:** https://claude.ai/code/session_01RfQzo7S3K6o49UBUDoCtUe
 
 ---
@@ -339,3 +339,12 @@ Após o commit `826801f68`, a revalidação local foi concluída: `npm run build
 O Gate 1.3 permanece falhando na `main` [#40988483538](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40988483538) porque a correção da baseline está nesta branch e ainda não chegou à `main`; a reprodução local passou. `CI Security & Drift Checks` continua apontando a violação WCAG já registrada em `AdImageResult.tsx:188` e coberta pelo PR #2758. O Uptime Monitor segue bloqueado pelo deploy production pendente e aprovação do PO.
 
 A execução local validada antes desta reconciliação (SHA `26082f23b`) manteve o baseline: `npm run build:verify` passou; `npm test`: 1.247 arquivos e 25.871 testes aprovados, 1.135 skipped e 24 TODO; checker de paths de migration aprovado com 481 referências; lint Δ0. O merge da main avançou o checkout para `380ceb623` e teve conflitos apenas em `PENDENCIAS.md`/`RELATORIO_CI.md`, resolvidos preservando P17 atualizado, P28/P29 e o inventário P30. Reexecutar baseline completo após o commit de resolução antes do push normal.
+
+
+### Revalidação P31 — inventário após avanço da main para `604de54c` — 2026-10-30
+
+Consultei individualmente as 119 definições ativas entre 02:29 e 02:31 UTC, usando o último run de cada workflow na `main` e excluindo execuções de PR. Resultado: **61 success, 24 failure, 5 cancelled, 2 skipped, 3 pending, 1 queued, 2 in_progress e 21 sem run**. A lista integral das 24 falhas, links, causas observadas e bloqueios está em `PENDENCIAS.md` §P31. Os estados queued/pending/in_progress não foram apresentados como verdes.
+
+O novo `Deploy Gates` [#40991104565](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40991104565) falhou no Gate 1.3 por duas referências textuais no dossiê de PR-2731 a um caminho de migration proposto, inexistente na main. Reproduzi localmente o mesmo erro em `node scripts/check-migration-path-references.mjs`; ajustei o dossiê para distinguir a migration proposta de um arquivo versionado e o checker local passou. O `CI Security & Drift Checks` [#40991104549](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40991104549) continua falhando no gate WCAG por `focus-visible:outline-none` sem ring em `AdImageResult.tsx:188`; a correção visual está em PR #2758 e requer aceite de design, portanto foi registrada como bloqueio, sem alteração visual nesta sessão. O Uptime Monitor [#40989993974](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40989993974) falha com curl 22; seu deploy está `pending`, mas a API de deployments pendentes retornou `[]`, logo a causa e a ação necessária não estão confirmadas.
+
+A branch incorpora a main `604de54c` e preserva as mudanças recebidas no relatório extenso de PRs. O inventário P31 foi documentado; executar novamente build, lint, typecheck, suíte completa, checker de paths e `git diff --check` depois do commit de resolução, antes do push. Não houve escrita no Supabase, migration, deploy, force push ou alteração direta da main.

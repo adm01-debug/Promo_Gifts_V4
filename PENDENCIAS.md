@@ -1,7 +1,7 @@
 # PENDENCIAS.md — Itens bloqueados por secret/permissão/infraestrutura
 
-**Atualizado:** 2026-10-29
-**Branch da revalidação:** `fix/location-panel-timeout-cleanup` e `fix/p200-e051-e052`
+**Atualizado:** 2026-10-30
+**Branch da revalidação atual:** `fix/graphify-reproducible-version-20261029` (PR #2743)
 
 > Revalidação independente mais recente: veja a seção **Inventário completo da main — 2026-10-29** abaixo. Ela substitui os IDs/status antigos deste arquivo quando houver conflito.
 
@@ -39,25 +39,25 @@ Consulta somente leitura em `pg_catalog` no projeto canônico `doufsxqlfjyuvxuez
 - Run [40667156516](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40667156516) — SHA `8c81483` — **success** (fix Gate E40 + replay-safe migrations)
 - Run [40662579684](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40662579684) — SHA `c73cb9b` — **success** (fix Calendar RDP v10)
 
-**Causa original:** Gate E40 (`local_only=1108; remote_only=647`) era BLOQUEANTE.  
+**Causa original:** Gate E40 (`local_only=1108; remote_only=647`) era BLOQUEANTE.
 **Fix:** Commit `8c81483` — migrations `20261027120000` e `20261027140000` tornadas replay-safe com guard `IF to_regclass('cron.job') IS NULL OR NOT EXISTS (...) THEN RAISE NOTICE + RETURN`.
 
 ---
 
 ## ✅ P4 — RESOLVIDO — Gate E40 Schema Drift (ledger dessincronizado)
 
-**Workflow:** Deploy Gates (Gate Final)  
-**Run com falha:** [40660438161](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40660438161)  
-**Fix:** Commit `8c81483` na main — migrations corrigidas tornaram o Gate E40 verde.  
+**Workflow:** Deploy Gates (Gate Final)
+**Run com falha:** [40660438161](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40660438161)
+**Fix:** Commit `8c81483` na main — migrations corrigidas tornaram o Gate E40 verde.
 **Runs de validação:** `40667156516` e `40662579684` ambos com `conclusion: success`.
 
 ---
 
 ## P1 — CI - Replenishment Module Quality Gate (E2E autenticado)
 
-**Workflow:** CI que inclui testes E2E autenticados do módulo de reposição  
-**Run ID da última falha:** 40612760478  
-**Link:** https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40612760478  
+**Workflow:** CI que inclui testes E2E autenticados do módulo de reposição
+**Run ID da última falha:** 40612760478
+**Link:** https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40612760478
 **Status:** failure
 
 **Erro exato (dos logs do CI):**
@@ -107,9 +107,9 @@ Clique em "Re-run all jobs".
 
 ## P2 — E2E — Critical Flows & Error Boundaries (E2E autenticado + tooltip timing)
 
-**Workflow:** E2E — Critical Flows & Error Boundaries  
-**Run ID da última falha:** 40745678499  
-**Link:** https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40745678499  
+**Workflow:** E2E — Critical Flows & Error Boundaries
+**Run ID da última falha:** 40745678499
+**Link:** https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40745678499
 **Status:** failure
 
 **Erros exatos (dos logs do CI):**
@@ -134,9 +134,9 @@ Clique em "Re-run all jobs".
 ## ✅ P3 — RESOLVIDO — Branch Protection Sentinel
 
 **Workflow:** Branch Protection Sentinel
-**Run ID da falha original:** 40615509825  
-**Run ID da falha recorrente (PR #2699):** [40728685711](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40728685711) — SHA `6b2cc72` — ❌ failure  
-**Run de confirmação (PR #2703):** [40739341755](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40739341755) — SHA `c7bc0ba6` — ✅ **success**  
+**Run ID da falha original:** 40615509825
+**Run ID da falha recorrente (PR #2699):** [40728685711](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40728685711) — SHA `6b2cc72` — ❌ failure
+**Run de confirmação (PR #2703):** [40739341755](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40739341755) — SHA `c7bc0ba6` — ✅ **success**
 **Status:** ✅ RESOLVIDO — padrão sistêmico corrigido
 
 **Histórico:**
@@ -159,9 +159,9 @@ Clique em "Re-run all jobs".
 
 ## ✅ P5 — RESOLVIDO — CI Security & Drift Checks (Calendar RDP v10)
 
-**Workflow:** CI Security & Drift Checks  
-**Run ID da última falha:** 40615509752  
-**Run de validação:** [40745678435](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40745678435) — ✅ **success** (2026-10-28)  
+**Workflow:** CI Security & Drift Checks
+**Run ID da última falha:** 40615509752
+**Run de validação:** [40745678435](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40745678435) — ✅ **success** (2026-10-28)
 **Status:** ✅ RESOLVIDO
 
 **Causa raiz:** 5 testes unitários de Calendar falhavam por migração react-day-picker v8→v10 (commit `8b0b606`) sem atualização dos seletores DOM dos testes.
@@ -174,9 +174,9 @@ Clique em "Re-run all jobs".
 
 ## P6 — E2E · undo (falhas pré-existentes no main)
 
-**Workflow:** E2E · undo  
-**Run ID da última falha:** 40667936090  
-**Link:** https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40667936090  
+**Workflow:** E2E · undo
+**Run ID da última falha:** 40667936090
+**Link:** https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40667936090
 **Status:** failure — pré-existente (3+ runs consecutivos falhando na main antes desta sessão)
 
 **Erros exatos:**
@@ -199,9 +199,9 @@ Clique em "Re-run all jobs".
 
 ## P7 — db-schema-drift-check (ledger divergente — requer reconciliação pelo PO)
 
-**Workflow:** db-schema-drift-check  
-**Run ID da última falha:** [40708395880](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40708395880)  
-**SHA:** `2cee272b` (main HEAD em 2026-10-28 14:41)  
+**Workflow:** db-schema-drift-check
+**Run ID da última falha:** [40708395880](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40708395880)
+**SHA:** `2cee272b` (main HEAD em 2026-10-28 14:41)
 **Status:** ❌ failure — bloqueado por ledger divergente
 
 **Erro exato (step "Ledger parity (repo x canonical)"):**
@@ -229,7 +229,7 @@ Esta divergência é independente do fix de P4 (guard pg_cron nas migrations `20
 
 ## P8 — edge-functions-drift-check (drift entre GitHub e canônico)
 
-**Workflow:** edge-functions-drift-check  
+**Workflow:** edge-functions-drift-check
 **Run ID da última falha:** 40756284439 (2026-10-28 19:39 UTC; SHA `da7bdb8`)
 **Link:** https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40756284439
 **Status:** failure — atualização para `main=c213051` é documental e não alterou edge functions.
@@ -254,9 +254,9 @@ Esta divergência é independente do fix de P4 (guard pg_cron nas migrations `20
 
 ## ✅ P9 — RESOLVIDO — E2E — Personalization Flow
 
-**Workflow:** E2E — Personalization Flow  
-**Run ID da última falha:** 40662579633  
-**Run de validação:** [40745678737](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40745678737) — ✅ **success** (2026-10-28)  
+**Workflow:** E2E — Personalization Flow
+**Run ID da última falha:** 40662579633
+**Run de validação:** [40745678737](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40745678737) — ✅ **success** (2026-10-28)
 **Status:** ✅ RESOLVIDO
 
 **Causa raiz:** Mesma de P1. Testes E2E autenticados falham por ausência dos secrets `E2E_USER_EMAIL` / `E2E_USER_PASSWORD`.
@@ -267,9 +267,9 @@ Esta divergência é independente do fix de P4 (guard pg_cron nas migrations `20
 
 ## P10 — E2E • Swatch QuickView (secrets E2E + dados de produto ausentes)
 
-**Workflow:** E2E • Swatch QuickView (Lista + Tabela)  
-**Run ID da última falha:** 40662579393  
-**Link:** https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40662579393  
+**Workflow:** E2E • Swatch QuickView (Lista + Tabela)
+**Run ID da última falha:** 40662579393
+**Link:** https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40662579393
 **Status:** failure
 
 **Erros exatos:**
@@ -292,9 +292,9 @@ webkit: expect(picker).not.toBeNull()
 
 ## P11 — Edge Integration Tests — All Functions (11 testes falhando)
 
-**Workflow:** Edge Integration Tests — All Functions  
-**Run ID da última falha:** 40746330314  
-**Link:** https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40746330314  
+**Workflow:** Edge Integration Tests — All Functions
+**Run ID da última falha:** 40746330314
+**Link:** https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40746330314
 **Status:** failure — ❌ BLOCKED PO — requer deploy das versões atuais
 
 **Resultado:** 3 arquivos falharam | 11 testes failed | 884 passed | 2 skipped (897 total)
@@ -317,11 +317,11 @@ As 3 edge functions afetadas têm código **correto no repositório** (confirmad
 
 ## P12 — Kit Coverage — Integration (identidade do teste incompatível com os grants)
 
-**Workflow:** Kit Coverage — Integration  
-**Run ID da última falha (main):** 40628415319  
-**Link:** https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40628415319  
-**PR com fix:** [#2701](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2701) (draft — Gate Final ❌)  
-**Run de falha no PR:** [40733949177](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40733949177) (job Gate Final: 122981142154)  
+**Workflow:** Kit Coverage — Integration
+**Run ID da última falha (main):** 40628415319
+**Link:** https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40628415319
+**PR com fix:** [#2701](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2701) (draft — Gate Final ❌)
+**Run de falha no PR:** [40733949177](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40733949177) (job Gate Final: 122981142154)
 **Status:** ❌ BLOQUEADO — o workflow consulta como `anon`; PR #2701 também tem checks de ledger/E40 em falha.
 
 **Erro exato (main):**
@@ -617,7 +617,7 @@ Esse run supersede a falha antiga em `c3b4128`. O PR #2749 (allowlist do SHA `9a
 ## P-UPTIME — Uptime Monitor: edge function health-check com HTTP 4xx/5xx
 
 **Workflow:** Uptime Monitor
-**Última run com falha:** [#40978818572](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40978818572) — SHA `279f17` — `failure` (2026-10-30)
+**Última run com falha:** [#40989993974](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40989993974) — SHA `279f17` — `failure` (2026-10-30)
 **Data:** 2026-10-29 · **Atualizado:** 2026-10-30
 
 **Causa raiz identificada (2026-10-29 sessão atual):**
@@ -628,7 +628,7 @@ O banco externo é uma dependência **advisory** (não é o canônico `doufsxqlf
 Mudança em `runProbes()`: converte `external_db=unhealthy` → `degraded` antes de calcular o status geral. Banco interno (`database`) continua propagando `unhealthy` normalmente.
 
 **Por que reexecução com `success` é impossível sem ação do PO:**
-A edge function `health-check` ainda executa o código pré-fix em produção (`doufsxqlfjyuvxuezpln`). O código corrigido está em `main` (`279f17`) mas NÃO foi deployado. O Uptime Monitor faz curl na edge function em produção — enquanto o binário em produção for o anterior, as execuções do workflow podem continuar retornando `failure` quando `EXTERNAL_PROMOBRIND_URL` estiver inacessível (HTTP 503 → curl exit 22). Não há nenhuma ação técnica que eu possa tomar para fazer o workflow retornar `success` sem o deploy completar. O deploy run [#40976801625](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40976801625) está `pending` em `environment: production`, que exige aprovação manual humana no GitHub Actions. O run #40757296680 (28/10, >30h em `waiting`) confirma o padrão.
+A edge function `health-check` ainda executa o código pré-fix em produção (`doufsxqlfjyuvxuezpln`). O código corrigido está em `main` (`279f17`) mas NÃO foi deployado. O Uptime Monitor faz curl na edge function em produção — enquanto o binário em produção for o anterior, as execuções do workflow podem continuar retornando `failure` quando `EXTERNAL_PROMOBRIND_URL` estiver inacessível (HTTP 503 → curl exit 22). O deploy run [#40976801625](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40976801625) permanece `pending`, mas a consulta de deployments pendentes retornou uma lista vazia. Portanto, ainda não há evidência de uma aprovação manual acionável nem do bloqueio exato; investigar o estado do environment/deploy com o owner antes de afirmar que depende de aprovação. O run #40757296680 (28/10, >30h em `waiting`) é evidência histórica, não prova do estado atual.
 
 **Passos restantes:** aguardar o run de deploy pendente sem iniciar outro deploy concorrente; após seu término, confirmar um run agendado verde do Uptime Monitor. Não houve deploy manual/MCP nesta sessão.
 
@@ -682,7 +682,7 @@ O commit documental local `400d4d49` passou `npm run build:verify` e a suíte: 1
 
 | Workflow | Último run | Causa/estado verificável | Próximo passo |
 |---|---|---|---|
-| Uptime Monitor | [#40978818572](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40978818572) — `failure`, SHA `279f1753` | `site=0`, `health-check=22`, `check-login OPTIONS=0`, `auth-health=0`. A correção do PR [#2753](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2753) já está na main, mas o deploy de `health-check` permanece sem runner. | Deploy Edge Functions [#40976801625](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40976801625) está `pending`, sem jobs criados e sem aprovação de ambiente pendente. Aguardar runner; não disparar deploy duplicado. Depois confirmar um run agendado verde. |
+| Uptime Monitor | [#40989993974](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40989993974) — `failure`, SHA `279f1753` | `site=0`, `health-check=22`, `check-login OPTIONS=0`, `auth-health=0`. A correção do PR [#2753](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2753) já está na main, mas o deploy de `health-check` permanece sem runner. | Deploy Edge Functions [#40976801625](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40976801625) está `pending`, sem jobs criados e sem aprovação de ambiente pendente. Aguardar runner; não disparar deploy duplicado. Depois confirmar um run agendado verde. |
 | Running Copilot Code Review | [#40975434366](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40975434366) — `failure`, SHA `07bc2b09` | HTTP 402: limite de uso adicional do plano Copilot atingido; o agente também foi bloqueado pelo firewall ao acessar `api.github.com`. | Ação do proprietário: ajustar/renovar a cota de uso do Copilot e permitir o host necessário na configuração de firewall do agente. Rerun somente após essa alteração. |
 
 As falhas anteriores de `CI Security & Drift Checks`, `E2E — Personalization Flow` e `E2E — Magazine Header Layout` não são classificadas como falhas ativas neste snapshot: seus runs mais recentes na main (`#40979462838`, `#40979462646` e `#40979462696`) estão `in_progress`/`queued` no SHA `3b7dc731`. Não estão consideradas resolvidas até conclusão `success`.
@@ -704,7 +704,7 @@ Nenhuma migration, DDL, escrita no Supabase ou deploy de Edge Function foi execu
 |---|---|---|---|
 | Release Please | [#40979462721](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40979462721) — `failure` | Release Please encontrou PR #2713 para `1.1.0`; a criação do GitHub Release falhou com `tag_name already_exists` para `v1.1.0`. O log confirma a tag duplicada; não removi tag/release nem forcei outra publicação. | Revisar idempotência da configuração de release com o responsável pelo release; não apagar a tag existente. |
 | CI Security & Drift Checks | [#40979462838](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40979462838) — `failure` | Gate `check:outline-none`: nova violação WCAG 2.4.7 em `src/components/magic-up/AdImageResult.tsx:188`, botão sem ring substituto. | Corrigida localmente e enviada no PR [#2758](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2758). Build, lint, typecheck e testes locais passaram; PR aberto com checks ainda em andamento/falhas externas. Não mesclar antes dos checks e do fluxo de release da UI. |
-| Uptime Monitor | [#40978818572](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40978818572) — `failure` | Probe: `site=0`, `health-check=22`, `check-login OPTIONS=0`, `auth-health=0`. PR #2753 está na main, porém deploy [#40976801625](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40976801625) segue `pending` sem jobs. | Aguardar o deploy pendente e a execução agendada seguinte. Sem deploy duplicado. |
+| Uptime Monitor | [#40989993974](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40989993974) — `failure` | Probe: `site=0`, `health-check=22`, `check-login OPTIONS=0`, `auth-health=0`. PR #2753 está na main, porém deploy [#40976801625](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40976801625) segue `pending` sem jobs. | Aguardar o deploy pendente e a execução agendada seguinte. Sem deploy duplicado. |
 | Running Copilot Code Review | [#40975434366](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40975434366) — `failure` | HTTP 402 por limite de uso adicional do plano Copilot; log também reporta bloqueio de `api.github.com` pelo firewall do agente. | Ação do proprietário: ajustar a cota e permitir o host na política do agente; rerun após mudança. |
 
 No mesmo snapshot: **17 success**, **2 skipped**, **11 queued/pending/in_progress**, além das quatro falhas acima. Os 17 workflows verdes são Static Health Checks, Supabase Linter Gate, Security Scan, SSOT Supabase Guard, Select Columns vs Types, Gitleaks — Full History Audit, schema-snapshot-export, Workflow Lint, Branch Protection Sentinel, UI · Visual & A11y, Lovable Edit Tracker, E2E — Personalization Flow, Required Checks Guard, CodeQL, Lovable Autoheal, Policies Baseline e No Prod Leak in Dev/Test Config. Runs em fila/execução não são declarados verdes.
@@ -848,13 +848,13 @@ Os outros estados não-falhos no snapshot: E2E (Playwright) `in_progress`; Deplo
 
 A tabela lista **todos os 26** workflows cujo último run na `main` concluiu em falha. As causas históricas permanecem com evidência em P28; as linhas novas/alteradas trazem o diagnóstico mais recente. Um bloqueio não confirmado continua explicitamente classificado como não diagnosticado.
 
-| Workflow | Último run | Causa observada e ação/blocker |
+| Workflow | Último run | Causa observada e ação/bloqueio |
 |---|---|---|
 | Copilot | [#40975434366](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40975434366) | HTTP 402 de quota e firewall bloqueando `api.github.com`; ação do administrador: regularizar cota/allowlist. |
 | Deploy Gates | [#40988483538](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40988483538) | Gate 1.3 reprova referência de manifesto histórico para migration arquivada. Baseline corrigida localmente nesta branch e checker local passa; a falha permanece na `main` até o PR #2743 ser aprovado/mesclado com checks verdes. Nenhum SQL foi recriado/executado. |
 | Regenerate Supabase Types | [#26378664155](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/26378664155) | Run antigo; a API de logs retorna HTTP 410. Reexecutar pelo fluxo autorizado para diagnosticar o estado atual. |
 | edge-functions-drift-check | [#40848475790](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40848475790) | Drift detectado; identificar os slugs pelo artifact e reconciliar via PR, sem deploy direto. |
-| Supplier Comparison CI | [#39253399818](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39253399818) | Run histórico sem jobs/logs acessíveis pela API; causa-raiz não recuperável. |
+| Supplier Comparison CI | [#39253399818](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39253399818) | Run histórico sem jobs/logs acessíveis pela API; causa não confirmada com os logs disponíveis. |
 | OptimizedImage E2E CI | [#39263929298](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39263929298) | `Setup E2E` falhou, sem mensagem-raiz no trecho retido; recuperar stderr/reproduzir antes de mudar o teste. |
 | Global Search Quality Gate | [#39263929104](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39263929104) | `npm ci` EUSAGE por divergência entre manifests e lockfile no SHA histórico; corrigir lock em PR após reprodução. |
 | Kit Coverage — Integration | [#40813871454](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40813871454) | `anon` recebe `permission denied` em `product_kit_components`/`v_kit_component_complete`; ajustar identidade/fixture do teste, sem grant público ou DDL direto. |
@@ -885,3 +885,58 @@ A tabela lista **todos os 26** workflows cujo último run na `main` concluiu em 
 - Workflows em progresso/pendentes não são contados como falha: E2E (Playwright) [#40988483544](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40988483544) está `in_progress`; Deploy Edge Functions [#40976801625](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40976801625), SECURITY DEFINER ACL — Multi-Env [#40899426158](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40899426158) e E2E · restore_seller_cart RPC [#40852813455](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40852813455) estão `pending`.
 
 **Sem regressão local registrada:** no SHA `26082f23b`, `npm run build:verify` e `npm test` passaram; a execução completa teve 1.247 arquivos aprovados, 25.871 testes aprovados, 1.135 skipped e 24 TODO, iguais ao baseline. O commit de reconciliação P30 ainda será validado conforme o processo após ser criado. Nenhum workflow foi desativado, teste enfraquecido, DDL/migration executada, segredo exposto, deploy disparado ou dado do Supabase alterado.
+
+## P31 — inventário da `main` após o commit 604de54 — 2026-10-30
+
+**Snapshot:** consultas individuais concluídas entre 02:29 e 02:31 UTC, para cada workflow ativo, `branch=main`, `exclude_pull_requests=true`, `per_page=1`. HEAD: `604de54c030c521def563b26351361e6472fafcf`.
+
+| Estado | Quantidade |
+|---|---:|
+| `success` | 61 |
+| `failure` | 24 |
+| `cancelled` | 5 |
+| `skipped` | 2 |
+| `pending` | 3 |
+| `queued` | 1 |
+| `in_progress` | 2 |
+| Sem execução na `main` | 21 |
+
+### Workflows em `failure` no snapshot P31
+
+A tabela lista **todos os 24** workflows cujo último run na `main` concluiu em falha. As causas históricas permanecem com evidência em P28; as linhas novas/alteradas trazem o diagnóstico mais recente. Um bloqueio não confirmado continua explicitamente classificado como não diagnosticado.
+
+| Workflow | Último run | Causa observada e ação/bloqueio |
+|---|---|---|
+| Copilot | [#40975434366](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40975434366) | HTTP 402 de quota e firewall bloqueando `api.github.com`; ação do administrador: regularizar cota/allowlist. |
+| Deploy Gates | [#40991104565](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40991104565) | Gate 1.3 falha por duas referências textuais a um arquivo de migration que não está versionado na `main`, dentro do dossier do PR #2731. A branch corrige o texto para identificar a migration como proposta do PR sem apresentá-la como arquivo existente; o checker local passa após essa correção. Nenhum SQL foi recriado/executado. |
+| Regenerate Supabase Types | [#26378664155](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/26378664155) | Run antigo; a API de logs retorna HTTP 410. Reexecutar pelo fluxo autorizado para diagnosticar o estado atual. |
+| edge-functions-drift-check | [#40848475790](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40848475790) | Drift detectado; identificar os slugs pelo artifact e reconciliar via PR, sem deploy direto. |
+| Supplier Comparison CI | [#39253399818](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39253399818) | Run histórico sem jobs/logs acessíveis pela API; causa não confirmada com os logs disponíveis. |
+| OptimizedImage E2E CI | [#39263929298](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39263929298) | `Setup E2E` falhou, sem mensagem-raiz no trecho retido; recuperar stderr/reproduzir antes de mudar o teste. |
+| Global Search Quality Gate | [#39263929104](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39263929104) | `npm ci` EUSAGE por divergência entre manifests e lockfile no SHA histórico; corrigir lock em PR após reprodução. |
+| Kit Coverage — Integration | [#40813871454](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40813871454) | `anon` recebe `permission denied` em `product_kit_components`/`v_kit_component_complete`; ajustar identidade/fixture do teste, sem grant público ou DDL direto. |
+| Update Quote Visual Snapshots | [#39997674586](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39997674586) | `[E108] Sem orçamento enviado no ambiente`; preparar fixture e revisar visualmente antes de atualizar snapshot. |
+| E2E Discount Approval | [#39263929177](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39263929177) | Falha em `Setup E2E`; logs retidos não mostram causa específica. |
+| E2E • ColorSwatch 2 linhas (Grid) | [#39263932330](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39263932330) | Falha em `Setup E2E`; causa não aparece no log retido. |
+| E2E · Dialogs visual PR check | [#39253396759](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39253396759) | API não devolveu jobs/logs do run histórico; causa não confirmada. |
+| E2E · Check Calendar snapshots | [#39253393953](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39253393953) | API não devolveu jobs/logs do run histórico; causa não confirmada. |
+| PDF Visual Regression | [#39253404824](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39253404824) | API não devolveu jobs/logs do run histórico; causa não confirmada. |
+| Magazine typed queries — dry-run | [#39257701249](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39257701249) | `Install dependencies` falhou, mas stderr do gerenciador não está retido; reproduzir no SHA indicado antes de alterar deps. |
+| migration-dry-run | [#35506272165](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/35506272165) | `psql` não resolve o hostname mascarado. Owner precisa verificar o secret/host no ambiente; nenhuma migration aplicada. |
+| Uptime Monitor | [#40989993974](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40989993974) | `Probe site + edge function` falha com curl 22. O fix do health-check está na `main`; o deploy [#40976801625](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40976801625) continua `pending`, mas a API de aprovações pendentes retornou `[]`. Causa e ação necessária ainda não confirmadas; não atribuir a bloqueio do PO. |
+| Ratchet Weekly — Baixar baselines | [#40296887709](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40296887709) | Código 141/SIGPIPE em pipeline `echo | head`; correção no PR #2745 ainda sem checks/preview verdes. |
+| E2E Cart — Matrix | [#40140248814](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40140248814) | Diagnósticos distintos: falha no handoff de autenticação e timeout de 120 s no popover de remoção; inspecionar/reproduzir cada cenário. |
+| E2E Freight — Matrix | [#39141334040](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39141334040) | `E21 — login falhou em CI`; credenciais/serviço do ambiente requerem verificação do owner. |
+| E2E Stock — Matrix | [#39257701140](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39257701140) | `npm ci` EUSAGE no lockfile do SHA histórico; reconciliar manifest/lock por PR, sem flexibilizar instalação. |
+| CI Security & Drift Checks | [#40991104549](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40991104549) | Gate WCAG 2.4.7: `src/components/magic-up/AdImageResult.tsx:188` usa `focus-visible:outline-none` sem ring no mesmo literal. Fix está no PR #2758; não mesclado. |
+| Nightly Full CI | [#40808174535](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40808174535) | E2E ColorSwatch e Kit Builder excedem timeouts; investigar cada trace sem aumentar timeout ou reduzir cobertura. |
+| E2E · Atualizar snapshots visuais (E155) | [#39999649279](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39999649279) | `element(s) not found`; confirmar fluxo/elemento esperado antes de atualizar baseline. |
+
+
+### Estados não classificados como falha
+
+`E2E (Playwright)` está `queued` ([#40991104520](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40991104520)); `E2E — Critical Flows` está `in_progress` ([#40991104562](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40991104562)); `E2E • Swatch QuickView` está `in_progress` ([#40991104522](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40991104522)). `Deploy Edge Functions` ([#40976801625](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40976801625)), `SECURITY DEFINER ACL — Multi-Env` ([#40899426158](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40899426158)) e `restore_seller_cart RPC` ([#40852813455](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40852813455)) permanecem `pending`. A consulta `list_pending_deployments` para o deploy retornou `[]`; causa e ação necessária seguem não confirmadas. Esses estados não foram contados como sucesso nem falha.
+
+**Causa nova confirmada em Deploy Gates:** o run [#40991104565](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40991104565) falhou no Gate 1.3 porque o checker encontrou duas menções do dossier PR-2731 que pareciam apontar para um arquivo real sob `supabase/migrations/`, embora a migration seja apenas proposta na branch desse PR. A correção documental nesta branch remove a referência enganosa ao diretório sem alterar migration ou schema. Reproduzida localmente antes da correção e aprovada depois por `node scripts/check-migration-path-references.mjs`.
+
+**Workflows com `success` no snapshot:** a contagem inclui 61 workflows em `success`; as falhas acima não foram confundidas com runs pendentes/cancelados. O inventário é por definição ativa e seu último run na `main`, não por run mais recente de PR.
