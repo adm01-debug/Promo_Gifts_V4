@@ -1,6 +1,6 @@
 # RELATORIO_CI.md — Auditoria de Workflows CI/CD
 
-**Gerado:** 2026-10-29 · **Atualizado:** 2026-10-30T09:43 UTC  
+**Gerado:** 2026-10-29 · **Atualizado:** 2026-10-30T10:05 UTC  
 **HEAD da main:** `7299c88c21d1c67ac65f5beafc18bdf350ced277` (release 1.3.2, 2026-10-30)  
 **HEAD anterior:** `c09402816` (baseline local)  
 **Sessão:** https://claude.ai/code/session_01RfQzo7S3K6o49UBUDoCtUe
@@ -59,11 +59,11 @@
 | E2E (Playwright) | [#41034358354](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358354) | ⏳ in_progress | — |
 | Visual Baseline Tests — Nightly | [#41034358175](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358175) | ⏳ in_progress | — |
 | Edge Integration Tests — All Functions | [#41034358210](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358210) | ⏳ in_progress | — |
-| CI - Replenishment Module Quality Gate | [#41034358297](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358297) | ⏳ in_progress | — |
-| CI Security & Drift Checks | [#41034358666](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358666) | ⏳ in_progress | — |
+| CI - Replenishment Module Quality Gate | [#41034358297](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358297) | ✅ success | — (concluído 09:46 UTC) |
+| CI Security & Drift Checks | [#41034358666](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358666) | ⏳ pending | — |
 | Deploy Edge Functions | [#41034820685](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034820685) | ⏳ pending | dispatch manual para corrigir edge-drift |
 
-> Snapshot 2026-10-30T09:43 UTC — workflows `in_progress` serão atualizados no próximo ciclo (wakeup 09:59 UTC).
+> Snapshot 2026-10-30T10:05 UTC — CI Replenishment ✅ confirmado. 7 workflows ainda in_progress/pending: Magazine Header, Swatch QuickView, Critical Flows, E2E Playwright, Visual Baseline, Edge Integration, CI Security. Wakeup agendado ~10:25 UTC para resultado final.
 
 ---
 
