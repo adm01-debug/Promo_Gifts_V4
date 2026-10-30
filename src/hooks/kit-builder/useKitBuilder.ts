@@ -23,6 +23,7 @@ import {
   normalizeKitItemLine,
   calculateTotalItemsVolume,
   calculateVolumeUsagePercent,
+  summarizeKitWeight,
   calculateUsableVolume,
   checkItemFits,
   calculateTotalKitPrice,
@@ -95,12 +96,10 @@ export function useKitBuilder({ initialFlow = 'box-first' }: UseKitBuilderOption
     const availableVolume = Math.max(0, usableVolume - totalItemsVolume);
     const volumeUsagePercent = calculateVolumeUsagePercent(totalItemsVolume, boxVolume);
 
-    const boxWeight = selectedBox?.weight || 0;
-    const itemsWeight = selectedItems.reduce(
-      (sum, item) => sum + (item.weight || 0) * item.quantity,
-      0,
+    const { totalWeightGrams: totalWeight, itemsWeightGrams: itemsWeight } = summarizeKitWeight(
+      selectedItems,
+      selectedBox,
     );
-    const totalWeight = boxWeight + itemsWeight;
 
     const pricing = calculateTotalKitPrice(
       selectedBox,

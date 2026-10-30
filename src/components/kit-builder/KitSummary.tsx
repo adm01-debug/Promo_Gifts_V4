@@ -11,7 +11,12 @@ import { KitVisualPreview } from './KitVisualPreview';
 import { DiscontinuedItemsAlert } from './DiscontinuedItemsAlert';
 import { FreightEstimator } from './FreightEstimator';
 import { useKitStockValidation, type KitStockStatus } from '@/hooks/kit-builder';
-import { calculateTotalKitPrice, type KitIdentity, type KitState } from '@/lib/kit-builder';
+import {
+  calculateTotalKitPrice,
+  summarizeKitWeight,
+  type KitIdentity,
+  type KitState,
+} from '@/lib/kit-builder';
 import { KitIdentificationCard } from './kit-summary/KitIdentificationCard';
 import { KitStatsCards } from './kit-summary/KitStatsCards';
 import { KitCompositionCard } from './kit-summary/KitCompositionCard';
@@ -78,11 +83,10 @@ export function KitSummary({
   // `totalWeight` soma apenas os pesos conhecidos (nunca assume 0 para um
   // item sem peso cadastrado); esta contagem existe para o FreightEstimator
   // avisar quando o total exibido é parcial, não a composição completa.
-  const itemsWithUnknownWeight = useMemo(() => {
-    const missingItems = items.filter((item) => item.weight === undefined).length;
-    const missingBox = box && box.weight === undefined ? 1 : 0;
-    return missingItems + missingBox;
-  }, [items, box]);
+  const itemsWithUnknownWeight = useMemo(
+    () => summarizeKitWeight(items, box).unknownWeightCount,
+    [items, box],
+  );
   const personalizedCount =
     (personalization.box.enabled ? 1 : 0) +
     Object.values(personalization.items).filter((p) => p.enabled).length;
