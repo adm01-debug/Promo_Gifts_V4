@@ -18,6 +18,8 @@
     "BLOQUEADA_CONFLITO": ["#2747"],
     "BLOQUEADA_PROVAVEL_CONFLITO": ["#2739"]
   },
-  "mergeados_nesta_sessao": [],
-  "pendente": "Aguardando Gate Final em #2768 (SHA 70b887e6c7b6e610884d90793a2c9fca085492b7)"
+  "mergeados_nesta_sessao": ["#2768"],
+  "merge_sha_2768": "852346720522787142cf452f01db40472cff2fea",
+  "merge_em_2768": "2026-10-30T05:40:16Z",
+  "pendente": null
 }
