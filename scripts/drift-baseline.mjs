@@ -422,26 +422,45 @@ function roundTripRewrite(line, counts) {
 export function sanitizeBaselineForReplay(sql) {
   const kept = [];
   const removed = [];
-  const rewrites = { varcharArrayCasts: 0, policyRoleOrders: 0 };
+  const rewrites = { varcharArrayCasts: 0, policyRoleOrders: 0, materializedViewPopulation: 0 };
   const state = { quote: false, ident: false, dollar: null };
   const inLiteral = () => state.quote || state.ident || state.dollar;
   let skipping = false;
+  let inMaterializedView = false;
   sql.split('\n').forEach((line, index) => {
     const atStatementStart = !skipping && !inLiteral();
     if (atStatementStart && isStatementMissingFromDump(line)) {
       skipping = true;
       removed.push({ line: index + 1, statement: line.trim().slice(0, 90) });
     }
+    if (!skipping && !inLiteral() && /^\s*CREATE\s+MATERIALIZED\s+VIEW\b/i.test(line)) {
+      inMaterializedView = true;
+    }
+    // Schema-only dumps create materialized views with WITH NO DATA even when
+    // the live object is populated. That catalog flag is not schema drift. The
+    // shadow has empty source tables, so omit only this standalone pg_dump
+    // clause to align relispopulated without suppressing query-definition DDL.
+    const materializedViewNoData = inMaterializedView
+      && /^([ \t]*)WITH\s+NO\s+DATA;[ \t]*$/i.exec(line);
     const startedOutside = !skipping && !inLiteral();
     const terminated = scanLine(line, state);
     // `$` na linha só impede a reescrita quando pode ser dollar-quote (corpo de
     // função inline); policy tem `$` legítimo em regex de string ('…$').
     const rewritable = startedOutside && !inLiteral() && (!line.includes('$') || line.startsWith('CREATE POLICY '));
     if (skipping) {
-      if (terminated && !inLiteral()) skipping = false;
+      if (terminated && !inLiteral()) {
+        skipping = false;
+        inMaterializedView = false;
+      }
       return;
     }
-    kept.push(rewritable ? roundTripRewrite(line, rewrites) : line);
+    if (materializedViewNoData) {
+      rewrites.materializedViewPopulation += 1;
+      kept.push(`${materializedViewNoData[1]};`);
+    } else {
+      kept.push(rewritable ? roundTripRewrite(line, rewrites) : line);
+    }
+    if (terminated && !inLiteral()) inMaterializedView = false;
   });
   return { sql: kept.join('\n'), removed, rewrites };
 }
