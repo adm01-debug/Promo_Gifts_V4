@@ -899,7 +899,7 @@ Metade do plano. `npm run plan:status` e três decisões:
 **Pronto:** `grep -c "min=1" scripts/check-min-tests-executed.mjs` → `0`; o guard reprova com 1 spec de 97 executado
 **Origem:** A3-14
 
-#### P200-E110 · [D] · P1 · Fechar a suíte verde e travar
+#### P200-E110 · [D] · P1 · Fechar a suíte verde e travar ✅
 **Arquivo:** `package.json`, `.github/workflows/deploy-gates.yml`
 **Fazer:** com E101–E109 fechadas, rodar a suíte inteira e confirmar exit 0. Só então apontar o Gate 2 para ela (ver E116). Esta etapa é o portão da onda: sem suíte verde, as ondas de frontend seguintes não têm rede de segurança.
 **Pronto:** `TZ=America/Sao_Paulo npx vitest run` → exit `0`, com `0 failed`
