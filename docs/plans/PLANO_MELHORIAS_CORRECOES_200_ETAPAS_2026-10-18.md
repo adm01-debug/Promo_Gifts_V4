@@ -845,55 +845,55 @@ Metade do plano. `npm run plan:status` e três decisões:
 
 `TZ=America/Sao_Paulo npx vitest run` sai **exit 1**: 11 testes em 4 arquivos falhando, 1201 arquivos passando, 1146 de 26658 testes skipped, 934,87s. Nenhum gate novo de teste faz sentido antes de a suíte fechar verde.
 
-#### P200-E101 · [D] · P0 · Consertar o lockfile apontando para registry privado
+#### P200-E101 · [D] · P0 · Consertar o lockfile apontando para registry privado ✅
 **Arquivo:** `package-lock.json:13905`
 **Fazer:** 1 de 1273 entradas `resolved` aponta para `europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/pngjs/-/pngjs-7.0.0.tgz` — registry privado da Lovable, que entrou em `517581693` (PR do dependabot #2055). `npm ci` falha com 403 fora do sandbox da Lovable, e uma dependência de build de produção vem de um registry que o time não controla. (O CI do GitHub hoje consegue instalar, então isso não é o que quebra a esteira — é risco de cadeia de suprimento e de ambiente local.) Reinstalar `pngjs` com `--registry=https://registry.npmjs.org` e commitar o lock com host público.
 **Pronto:** `grep -c "pkg.dev" package-lock.json` → `0` **e** `npm ci` completa num container limpo
 **Origem:** A3-01
 
-#### P200-E102 · [D] · P0 · Mockar a rede nos testes de edge function
+#### P200-E102 · [D] · P0 · Mockar a rede nos testes de edge function ✅
 **Arquivo:** `tests/edge-functions/catalog-integration.test.ts:4`
 **Fazer:** `BASE_URL = https://nmojwpihnslkssljowjh.supabase.co` com `fetch` de rede **real** (falha `ENOTFOUND`). Esse é um terceiro project-ref, nem o canônico nem o proibido, e está hardcoded em 36 arquivos de `tests/` contra 27 com o canônico. Mockar o `fetch` e trocar o ref pelo canônico nos 36.
 **Pronto:** `grep -rc "nmojwpihnslkssljowjh" tests/` → `0` **e** o arquivo passa sem rede
 **Origem:** A3-03
 
-#### P200-E103 · [D] · P0 · Corrigir o teste de contrato do `MockupProductSelector`
+#### P200-E103 · [D] · P0 · Corrigir o teste de contrato do `MockupProductSelector` ✅
 **Arquivo:** `tests/components/mockup/MockupProductSelector.test.tsx`
 **Fazer:** 7 de 7 testes do bloco "grade responsiva e honestidade" falham — `waitFor` estoura esperando `getAllByTestId('mockup-product-row')`, porque o componente nunca renderiza linhas no jsdom. Pela REGRA #5 do `CLAUDE.md`: o componente mudou de propósito, então corrija o teste de **contrato**, não persiga o snapshot.
 **Pronto:** `npx vitest run tests/components/mockup/MockupProductSelector.test.tsx` → exit `0`
 **Origem:** A3-23
 
-#### P200-E104 · [D] · P1 · Atualizar o teste do gate de bundle
+#### P200-E104 · [D] · P1 · Atualizar o teste do gate de bundle ✅
 **Arquivo:** `scripts/__tests__/check-bundle-size.test.ts:196`
 **Fazer:** `expected 100000 to be 180000` — o teste assere `maxBytes === atual × 1.2`, mas o script faz `min(atual × 1.2, prev)` desde o hardening E04. O teste está defasado e deixa a suíte vermelha. Atualizar a asserção para o invariante E04.
 **Pronto:** `npx vitest run scripts/__tests__/check-bundle-size.test.ts` → exit `0`
 **Origem:** A3-24
 
-#### P200-E105 · [D] · P2 · Timeout local no fuzz de limite de carrinho
+#### P200-E105 · [D] · P2 · Timeout local no fuzz de limite de carrinho ✅
 **Arquivo:** `src/components/cart/__tests__/CartLimitExhaustive.test.tsx:187`
 **Fazer:** fuzz de 200 seeds × até 120 itens estoura o `testTimeout: 15000` global. Reduzir `SEEDS` ou passar timeout local no `it` — não subir o timeout global, que esconderia regressão de tempo nos outros 26 mil testes.
 **Pronto:** o arquivo passa com o `testTimeout` global intacto em 15000
 **Origem:** A3-25
 
-#### P200-E106 · [D] · P1 · A suíte não pode escrever em arquivo versionado
+#### P200-E106 · [D] · P1 · A suíte não pode escrever em arquivo versionado ✅
 **Arquivo:** `src/components/pdf/proposal/__tests__/pdfContrastReport.test.ts`, `tests/simulation/daily-flows.harness.test.ts`, teste do schema SSOT, `tests/setup-strict-side-effects.ts`
 **Fazer:** a suíte unitária escreve em 4 arquivos versionados (`public/schemas/ssot-report*.schema.json`, `versions.json`, `qa/reports/pdf-contrast-report.md`) e cria 2 arquivos novos por dia (`daily-flows-simulation-<data>.{json,md}`). Toda rodada local suja a árvore de trabalho. Escrever em tmpdir ou mockar `fs`, e estender `setup-strict-side-effects.ts` para pegar escrita em disco.
 **Pronto:** `npx vitest run && git status --porcelain` → saída vazia
 **Origem:** A3-20, C-10
 
-#### P200-E107 · [D] · P1 · Decidir o destino dos 39 testes P0 vazios
+#### P200-E107 · [D] · P1 · Decidir o destino dos 39 testes P0 vazios ✅
 **Arquivo:** `tests/p0/` (5 arquivos)
 **Fazer:** 39 testes marcados **P0** — auth recovery, RLS, webhooks Bitrix e n8n, integrações externas — são todos `it.skip` com corpo `expect(true).toBe(true)`. A cobertura P0 executável é **zero**, e o diretório existe simulando o contrário. Implementar os 39 ou remover o diretório. Não deixar como está.
 **Pronto:** `grep -rc "expect(true).toBe(true)" tests/p0/` → `0` (implementados ou diretório removido)
 **Origem:** A3-11
 
-#### P200-E108 · [D] · P1 · E2E com dataset vazio deve reprovar, não pular
+#### P200-E108 · [D] · P1 · E2E com dataset vazio deve reprovar, não pular ✅
 **Arquivo:** `e2e/` (207 ocorrências em 97 arquivos)
 **Fazer:** 207 `test.skip(true, 'sem dados no dataset')` sob guard de catálogo vazio: num ambiente sem seed, a suíte e2e fica **verde** sem testar nada. Reprovar (não pular) quando a pré-condição de dataset estiver vazia — o skip silencioso é a mesma classe de falso verde da Onda 1.
 **Pronto:** uma execução contra catálogo vazio reprova com mensagem clara, em vez de passar
 **Origem:** A3-13
 
-#### P200-E109 · [D] · P1 · `--min` proporcional no guard de testes executados
+#### P200-E109 · [D] · P1 · `--min` proporcional no guard de testes executados ✅
 **Arquivo:** `scripts/check-min-tests-executed.mjs:16`
 **Fazer:** o guard que existe exatamente contra E108 tem default `--min=1` — passa com **1** spec executado. Default proporcional ao número de specs do projeto, e `--min` explícito em cada invocação.
 **Pronto:** `grep -c "min=1" scripts/check-min-tests-executed.mjs` → `0`; o guard reprova com 1 spec de 97 executado
@@ -999,7 +999,7 @@ Os 5 ratchets de dívida técnica estão todos exatamente no baseline: 889 index
 **Pronto:** `grep -c "as unknown as" src/services/magazineService.ts` → `0`; schema zod cobre os 3 campos
 **Origem:** A3-19
 
-#### P200-E124 · [D] · P1 · Criar o ratchet de `as unknown as`
+#### P200-E124 · [D] · P1 · Criar o ratchet de `as unknown as` ✅
 **Arquivo:** `.as-unknown-baseline.json` (novo), `scripts/check-as-unknown-baseline.mjs` (novo)
 **Fazer:** 276 ocorrências de `as unknown as` em `src/`, **zero** cobertas por ratchet — `check-as-assertions-baseline.mjs` exclui `as unknown` por desenho, e `as any` real já é 0. É o único escape hatch de tipo sem gate, e é por onde a dívida sai. Criar baseline **descendente** (meta de redução, não trava). Top ofensores depois de E122/E123: `useNovelties` 9, `persistence` 7.
 **Pronto:** `node scripts/check-as-unknown-baseline.mjs` sai `0` no número atual e reprova em qualquer aumento
@@ -1011,13 +1011,13 @@ Os 5 ratchets de dívida técnica estão todos exatamente no baseline: 889 index
 **Pronto:** `grep -c " as " src/hooks/mockup/mockupGenerationService.ts` ≤ 10 e o ratchet global desce
 **Origem:** A3-43
 
-#### P200-E126 · [D] · P2 · Transformar os 5 ratchets em descendentes com meta
+#### P200-E126 · [D] · P2 · Transformar os 5 ratchets em descendentes com meta ✅
 **Arquivo:** `.indexed-access-baseline.json`, `.file-size-baseline.json`, `.todo-baseline.json`, `.as-assertions-baseline.json`, `.any-type-baseline.json`
 **Fazer:** os 5 estão exatamente no baseline — 889, 135, 51, 2227, 0 — sem nenhum progresso em 500 commits. Acrescentar a cada um um campo `meta` com alvo e data, e fazer o gate semanal (`ratchet-weekly.yml`) reportar a distância do alvo. Travar sem meta é congelar.
 **Pronto:** os 5 arquivos têm `meta.target` e `meta.deadline`, e o relatório semanal imprime a distância
 **Origem:** A3-40, A3-41, A3-42
 
-#### P200-E127 · [D] · P2 · Zerar o baseline de `any` que já está em zero
+#### P200-E127 · [D] · P2 · Zerar o baseline de `any` que já está em zero ✅
 **Arquivo:** `.any-type-baseline.json` (`productionAnyCount: 1`)
 **Fazer:** o valor atual medido é **0** — as 6 linhas com `as any` em `src/` estão em JSDoc. O baseline está defasado desde 2026-07-17 e permite 1. Rodar `node scripts/update-any-type-baseline.mjs` e travar em 0.
 **Pronto:** `jq '.productionAnyCount' .any-type-baseline.json` → `0`
@@ -1029,7 +1029,7 @@ Os 5 ratchets de dívida técnica estão todos exatamente no baseline: 889 index
 **Pronto:** os 3 piores ficam abaixo de 800 linhas e `.file-size-baseline.json` desce
 **Origem:** A3-41
 
-#### P200-E129 · [D] · P2 · Ratchet descendente de `eslint-disable`
+#### P200-E129 · [D] · P2 · Ratchet descendente de `eslint-disable` ✅
 **Arquivo:** `src/` (502 `eslint-disable`, 109 de `react-hooks/exhaustive-deps`)
 **Fazer:** `react-hooks/exhaustive-deps` está silenciado 109 vezes — `useQuoteBuilderState.ts` 6, `KitLibraryPage.tsx` 4, `GlobalSearchPalette.tsx` 4, `QuoteAutoSave.tsx` 4 — num total de 502 `eslint-disable` em `src/`. **É por isso que o ESLint reporta 0 erros em 2612 arquivos.** Criar ratchet descendente.
 **Pronto:** `scripts/check-eslint-disable-baseline.mjs` existe, trava no número atual e reprova aumento
