@@ -24,6 +24,10 @@ import {
 } from '@/components/ui/dialog';
 import { useProductsCatalog, type ExternalVariantStock, type Product } from '@/hooks/products';
 import { ProductLoaderAndColorSelector } from './MockupColorSelector';
+import { MockupPhotoPicker } from './MockupPhotoPicker';
+import { getMockupVariantPhotos } from './mockupVariantPhotos';
+
+export { getMockupVariantPhotos };
 
 export interface MockupProductSelection {
   product: Product;
@@ -82,6 +86,11 @@ export function MockupProductSelector({
 
   // Internal state: product picked, loading full data or choosing color
   const [pendingProductId, setPendingProductId] = useState<string | null>(null);
+  // Internal state: variant picked, choosing which REAL photo goes to generation
+  const [pendingVariant, setPendingVariant] = useState<{
+    variant: ExternalVariantStock | null;
+    product: Product;
+  } | null>(null);
 
   // Colunas reais do grid. Medida por largura (viewport) para casar com as classes
   // responsivas: o virtualizador fatia as LINHAS com esta contagem.
@@ -152,20 +161,21 @@ export function MockupProductSelector({
   };
 
   const handleColorSelect = (variant: ExternalVariantStock | null, product: Product) => {
-    const variantThumb = variant?.selected_thumbnail
-      ? getCdnUrl(variant.selected_thumbnail, 'thumbnail')
-      : null;
-    const variantFirstImg = variant?.images?.[0] ? getCdnUrl(variant.images[0], 'thumbnail') : null;
-    const imageUrl = variantThumb || variantFirstImg || product.images?.[0] || '/placeholder.svg';
-
-    onSelect({
-      product,
-      variant,
-      colorName: variant?.color_name ?? undefined,
-      colorHex: variant?.color_hex ?? undefined,
-      imageUrl,
-    });
     setPendingProductId(null);
+    setPendingVariant({ variant, product });
+  };
+
+  // Confirma a FOTO escolhida: a geração recebe o original dela, nunca a miniatura.
+  const confirmPhoto = (photo: string) => {
+    if (!pendingVariant) return;
+    onSelect({
+      product: pendingVariant.product,
+      variant: pendingVariant.variant,
+      colorName: pendingVariant.variant?.color_name ?? undefined,
+      colorHex: pendingVariant.variant?.color_hex ?? undefined,
+      imageUrl: photo,
+    });
+    setPendingVariant(null);
     setIsDialogOpen(false);
   };
 
@@ -180,8 +190,9 @@ export function MockupProductSelector({
     return (
       <div className="flex items-center gap-3 rounded-lg border border-border/30 bg-card p-3">
         <div className="h-11 w-11 shrink-0 overflow-hidden rounded-lg bg-muted">
+          {/* Miniatura na prévia; a geração usa `selection.imageUrl` (original). */}
           <img
-            src={selection.imageUrl}
+            src={getCdnUrl(selection.imageUrl, 'thumbnail')}
             alt={selection.product.name}
             className="h-full w-full object-cover"
             loading="lazy"
@@ -227,6 +238,18 @@ export function MockupProductSelector({
           <X aria-hidden="true" className="h-3.5 w-3.5" />
         </Button>
       </div>
+    );
+  }
+
+  // ─── State: variant picked, choosing the REAL photo used for generation ───
+  if (pendingVariant) {
+    return (
+      <MockupPhotoPicker
+        product={pendingVariant.product}
+        photos={getMockupVariantPhotos(pendingVariant.variant, pendingVariant.product)}
+        onPick={confirmPhoto}
+        onBack={() => setPendingVariant(null)}
+      />
     );
   }
 

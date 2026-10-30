@@ -32,37 +32,49 @@ export function useLogoColorAnalysis() {
 
   const analyzeImage = useCallback(async (imageBase64: string) => {
     // 1. Resize image locally before sending to edge function for faster processing
-    // Color analysis doesn't need high resolution
-    const resizeImage = (base64: string): Promise<string> => {
-      return new Promise((resolve) => {
+    // Color analysis doesn't need high resolution.
+    // Falha de carregamento/CORS rejeita (vira estado de erro visível) em vez de
+    // mandar silenciosamente a imagem original ou uma lista vazia.
+    const resizeImage = (base64: string, signal: AbortSignal): Promise<string> => {
+      return new Promise((resolve, reject) => {
         const img = new Image();
+        // Imagem remota precisa de CORS anônimo para o canvas poder exportar pixels.
+        if (/^https?:/i.test(base64)) img.crossOrigin = 'anonymous';
         img.onload = () => {
-          const canvas = document.createElement('canvas');
-          const MAX_SIZE = 200; // Small is fine for color extraction
-          let width = img.width;
-          let height = img.height;
-
-          if (width > height) {
-            if (width > MAX_SIZE) {
-              height *= MAX_SIZE / width;
-              width = MAX_SIZE;
-            }
-          } else if (height > MAX_SIZE) {
-            width *= MAX_SIZE / height;
-            height = MAX_SIZE;
-          }
-
-          canvas.width = width;
-          canvas.height = height;
-          const ctx = canvas.getContext('2d');
-          if (!ctx) {
-            resolve(base64);
+          if (signal.aborted) {
+            reject(new DOMException('Aborted', 'AbortError'));
             return;
           }
-          ctx.drawImage(img, 0, 0, width, height);
-          resolve(canvas.toDataURL('image/png', 0.8));
+          try {
+            const canvas = document.createElement('canvas');
+            const MAX_SIZE = 200; // Small is fine for color extraction
+            let width = img.width;
+            let height = img.height;
+
+            if (width > height) {
+              if (width > MAX_SIZE) {
+                height *= MAX_SIZE / width;
+                width = MAX_SIZE;
+              }
+            } else if (height > MAX_SIZE) {
+              width *= MAX_SIZE / height;
+              height = MAX_SIZE;
+            }
+
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            if (!ctx) {
+              resolve(base64);
+              return;
+            }
+            ctx.drawImage(img, 0, 0, width, height);
+            resolve(canvas.toDataURL('image/png', 0.8));
+          } catch {
+            reject(new Error('Não foi possível ler a imagem da logo (CORS ou imagem inválida)'));
+          }
         };
-        img.onerror = () => resolve(base64);
+        img.onerror = () => reject(new Error('Não foi possível carregar a imagem da logo'));
         img.src = base64;
       });
     };
@@ -71,20 +83,26 @@ export function useLogoColorAnalysis() {
     if (abortRef.current) abortRef.current.abort();
     const controller = new AbortController();
     abortRef.current = controller;
+    const isStale = () => controller.signal.aborted || abortRef.current !== controller;
 
     setIsAnalyzing(true);
     setError(null);
     setColors([]);
 
     try {
-      const resizedBase64 = await resizeImage(imageBase64);
+      const resizedBase64 = await resizeImage(imageBase64, controller.signal);
+      if (isStale()) return [];
 
       const { data, error: fnError } = await invokeEdge<{
         error?: string;
         colors?: Array<{ name: string; hex: string }>;
       }>('analyze-logo-colors', {
         body: { imageBase64: resizedBase64 },
+        signal: controller.signal,
       });
+
+      // Resposta de uma análise antiga nunca pode sobrescrever a mais recente.
+      if (isStale()) return [];
 
       if (fnError) throw new Error(fnError.message);
 
@@ -115,13 +133,13 @@ export function useLogoColorAnalysis() {
       return mapped;
     } catch (err: unknown) {
       if (err instanceof Error && err.name === 'AbortError') return [];
-      if (controller.signal.aborted) return [];
+      if (isStale()) return [];
       const msg = err instanceof Error ? err.message : 'Erro ao analisar cores da logo';
       setError(msg);
       toast.error(msg);
       return [];
     } finally {
-      if (!controller.signal.aborted) setIsAnalyzing(false);
+      if (abortRef.current === controller) setIsAnalyzing(false);
     }
   }, []);
 
@@ -132,6 +150,9 @@ export function useLogoColorAnalysis() {
   }, []);
 
   const clearAnalysis = useCallback(() => {
+    abortRef.current?.abort();
+    abortRef.current = null;
+    setIsAnalyzing(false);
     setColors([]);
     setError(null);
   }, []);
