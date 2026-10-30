@@ -126,7 +126,7 @@ export function ImageUploadButton({
         // — bare await discarded the error, calling onRemove even on failure.
         const { error: removeErr } = await supabase.storage
           .from('personalization-images')
-          .remove([filePath]);
+          .remove([filePath!]);
         if (removeErr) throw removeErr;
       }
       onRemove();

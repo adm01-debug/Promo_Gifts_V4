@@ -1,6 +1,6 @@
 # Backlog de funcionalidades (O5) — FT-xxx
 
-> Base: auditoria `docs/AUDITORIA_PLANEJADO_NAO_EXECUTADO_2026-10-11.md` (+ anexos) **reverificada no código de `main` @ `7d3bd4b` (2026-10-25)**, mais itens de `docs/estado/12`. Somente leitura; estado = FEITA / PARCIAL / AUSENTE / ÓRFÃ, evidência arquivo:linha.
+> Base: auditoria `docs/AUDITORIA_PLANEJADO_NAO_EXECUTADO_2026-10-11.md` (+ anexos), atualizada parcialmente em 2026-10-30; mais itens de `docs/estado/12`. Estado = FEITA / PARCIAL / AUSENTE / ÓRFÃ, evidência arquivo:linha. As atualizações desta data cobrem KM2-135 e dependências diretas, NEW-KM-01 e a correção da evidência de CD-058; não representam nova auditoria dos 416 itens.
 > **Fontes ausentes:** `docs/resgate/MAPA_2026-10-24.md`, `resgate-online/` e clusters C007..C011 **não existem** na `main` nem têm referência local — NÃO VERIFICADO (provavelmente em outra branch/máquina; pendente de o PO apontar).
 > **416 itens FT** (coluna `FT`). Itens "Outro dono" (segurança, CI, DDL/banco, backup) ficam só com ID nas seções finais de cada bloco e pertencem às frentes O2/O3/O4. Linhas podem se repetir entre blocos quando o mesmo ID de origem aparece em mais de um plano: a ordem de execução abaixo é a referência.
 
@@ -9,11 +9,11 @@
 | Ordem | Tema | Origem | Natureza | Dependência |
 |---|---|---|---|---|
 | 1 | Links públicos de coleção/comparação/favoritos mortos | RP-030 | front (corrigir/remover botões e rotas fantasma) | PO: rotas públicas foram descontinuadas em 07/05 → default: remover |
-| 2 | Anonimização LGPD sem botão para o titular | CD-058 | front (edge existe) | nenhuma |
+| 2 | Homologar fluxo E2E da anonimização LGPD | CD-058 | E2E/homologação | conta descartável em sandbox; não executar anonimização irreversível em conta de produção |
 | 3 | Kit Maker: filtro/rótulo "Publicados" | KMM-075/KMX-037 | front | D7 PO → default: publicado = status `shared` |
-| 4 | Kit Maker: `weight_g=0` tratado como peso conhecido; `maxWeight` | NEW-KM-01, KM2-096 | front | — |
+| 4 | Kit Maker: limite de peso máximo da caixa | KM2-096 | front/dados | depende de definição e cadastro confiável de carga máxima (D1/D2) |
 | 5 | Selos/BI com mock apresentados como real | RP-021/042–044, IA-002 | front | PO proveniência → default: mostrar badge "simulado" e não persistir notificação |
-| 6 | Kit Maker: preço/mínimo/múltiplo no servidor | KM2-135/139, KMC-084 | sql/RPC | **migration → PR separada, aguarda aprovação** |
+| 6 | Kit Maker: preço/mínimo/múltiplo no servidor | KM2-135/139, KMC-084 | sql/RPC | **Revalidação parcial no cliente implementada; validação autoritativa e regras de mínimo/múltiplo ainda dependem de decisão/aprovação** |
 | 7 | Painel de ruptura EMA em `/estoque` | CD-042 | front | stock_notes exige migration (aprovação) |
 | 8 | Bitrix: UI invocando `bitrix-sync` | RP-016 | front/edge | PO escolhe CRM oficial |
 | 9 | PDF de revista no servidor | MG-003 | edge+sql | migration/bucket (aprovação) |
@@ -37,7 +37,7 @@ Mudanças relevantes vs auditoria de 10-11 (14 dias): (a) RP-038 tem cron no ban
 | FT-005 | A01-RP-038 | Relatórios agendados | PARCIAL (gatilho existe fora do repo) | UI: CustomizableDashboard.tsx:24,240; edges process-/send-scheduled-reports; cron-config.sql só 4 jobs (:12,31,50,72), nenhuma migration agenda; MAS snapshot de produção tem jobs `process-scheduled-reports` (5 * * * *) e `send-scheduled-reports` (10 * * * *) ativos (CRON_JOB_DATA_2026-09-16.json:58-75) e doc incidente 10-13 os cita. Envio é pulado sem chave Resend (send-scheduled-reports/index.ts:55) | sql/edge | P2 | P | MIG (versionar cron, REGRA #8); segredo e-mail (infra); confirmar em pg_cron vivo |
 | FT-006 | A10-CD-060 | Edge functions sem gatilho (lista omitida na auditoria) | PARCIAL / não reproduzível | Heurística própria (sem front, sem outra function, sem workflow/migration/cron): anonymize-user, crm-callback-alerts, product-visual-search, test-contract-orchestrator, test-inventory-orchestrator (+ mcp-query e migrate-helper = 410 descomissionadas). Snapshot cron não lista nenhuma. Lista exata de 12 do PO não recuperável pelo texto público | edge | P2 | M | PO (confirmar lista); decidir ligar/aposentar cada uma |
 | FT-007 | A10-CD-042 (+RP-022, CD-054, RP-034) | Painel ruptura EMA / pedido de compra / notas de estoque | PARCIAL | Montado: useRuptureAlerts (StockDashboard.tsx:30,242), filtro/KPI "risco de ruptura" (:264-327,558-600), SupplierRiskPanel (:726; usa ProductRiskDetail/WhatIfPanel), flag useEmaRupture lida em 4 pontos. NÃO montados (0 importadores): RupturePanelEma.tsx, StockHeroRiskBanner.tsx, PurchaseOrderModal.tsx (só por RupturePanelEma), useRuptureKpiSummary, useSavedStockViews, useStockNotes; StockRiskHero removido. `stock_notes` sem migration nem types (rg só em useStockNotes.ts) | front+sql | P1 | M | MIG (stock_notes, REGRA #8); PO (montar painel/banner ou apagar); RPC fn_ema_* (ver migrations) |
-| FT-008 | A10-CD-058 | Anonimização LGPD (direito ao esquecimento) | AUSENTE (front) — backend FEITO | Edge supabase/functions/anonymize-user/index.ts existe, documentada em docs/LGPD.md:17 e teste live; `rg anonymize-user src` = 0; sem botão em perfil/privacidade | front | P0 | P | nenhuma técnica; PO confirma fluxo (frase "EXCLUIR MINHA CONTA") |
+| FT-008 | A10-CD-058 | Anonimização LGPD (direito ao esquecimento) | PARCIAL | `AnonymizeAccountDialog.tsx` chama `anonymize-user`, exige a frase `EXCLUIR MINHA CONTA` e encerra sessão; `Header.tsx` monta a ação no menu do usuário. Há shim de teste live, mas falta prova de execução E2E em sandbox nesta auditoria; não executar ação irreversível em conta de produção. | front + edge | P0 | P | conta descartável em sandbox para prova E2E |
 | FT-009 | A01-RP-016 + IN-042 | Bitrix24 completo / sync clientes | PARCIAL | bitrix-sync/index.ts:17-23 (get_companies/deals/sync_full/create_deal...) sem NENHUM invoke no front (Bitrix24Tab.tsx não chama; só label em Breadcrumbs.tsx:56); sem OAuth (README.md:463 afirma OAuth2); `bitrix_clients/bitrix_deals/sync_logs` ausentes de types.ts (migrations existem: 20260524220119_restore_bitrix_clients...; sync_logs só em migrations de hardening). Fluxo vivo é orçamento→Bitrix: sync-quote-bitrix chamado em QuoteBitrixSync.ts:117 | edge+front+sql | P1 | M | PO (Bitrix × Promo Champions como CRM oficial); regenerar types (MIG/pg_catalog) |
 | FT-010 | A10-CD-035 (+RP-062, CD-036, CD-038) | Flags decorativas / sem config remota | ÓRFÃ | 13 flags; consumidas só: useEmaRupture, supplierReliability, useColorSwatchesV2 (isFeatureEnabled em useRuptureAlerts.ts:58, useSupplierRiskBreakdown.ts:32, StockDashboard.tsx:127, VariantStockTable.tsx:368, ProductCard.tsx:235...). Sem consumidor: mfa, ai_recommendations, presentation_mode, voice_commands, magic_up, e2e_tests, advanced_analytics, custom_kits_v2, crm_bridge_enabled, magazineModule. setFeatureFlag/getAllFlags só no próprio feature-flags.ts | front | P2 | P (remover) / M (gate real + config remota) | PO |
 | FT-011 | A10-CD-043 (+RP-001 resíduo) | Peças de orçamento: assinatura, aprovação, validade, margem, filtros | ÓRFÃ | 0 importadores de produção: QuoteSignaturePad, QuoteApprovalCard, QuoteValidityBanner, MarginInsightBadge, QuoteFilters, QuoteBuilderNavigation, ItemsListEditor, useQuoteTemplates (QuoteCard é homônimo local em QuoteKanbanBoard.tsx:118) | front | P2 | M (montar) / P (apagar) | PO (aprovação pública foi descontinuada) |
@@ -132,8 +132,9 @@ Paths relativos a `src/components/kit-builder/` quando só o nome do arquivo apa
 - KM2-117/119/146: o risco 'personalização sem preço = R$0 no orçamento' está mitigado no cliente (isValid + throw). Falta só a defesa no servidor (junto com KM2-135).
 - Sem outras mudanças materiais detectadas: demais lacunas da auditoria seguem iguais.
 
-### Novo achado
-- NEW-KM-01 weight_g=0 tratado como conhecido (ver grupo 2).
+### Atualização — peso inválido no Kit Maker (2026-10-30)
+- NEW-KM-01 resolvido no cliente: valores nulos, zero, negativos ou não finitos são tratados como peso desconhecido; a soma inclui somente pesos positivos medidos e a estimativa informa linhas sem peso, inclusive a caixa.
+- Evidência: `src/lib/kit-builder/weight.ts`; transformação em `src/hooks/kit-builder/useKitBuilderTransformers.ts`; integração em `useKitBuilder.ts` e `components/kit-builder/KitSummary.tsx`; testes em `tests/lib/kit-builder/weight.test.ts` e `tests/hooks/useKitBuilderTransformers.test.ts`.
 
 
 ### 1. Orçamento: preço, personalização sem preço, limites comerciais
@@ -143,7 +144,7 @@ Paths relativos a `src/components/kit-builder/` quando só o nome do arquivo apa
 | FT-075 | KM2-117 | Personalização sem preço não vira R$0 no orçamento | FEITA | useKitBuilder.ts:161-182 (isValid exige preço + qtd precificada); useKitBuilderQuote.ts:105-111,136-142 (throw se preço ausente). Resíduo: price-calculator.ts:18-28 ainda soma 0 só na exibição; RPC não revalida | hook | P1 (resíduo P2) | P | — | ✔ |
 | FT-076 | KM2-146 | Validações impeditivas / observações | PARCIAL | Bloqueio por personalização ok (KitActionsBar.tsx:55 + isValid); checklist casa texto de mensagem (kit-summary/KitValidationChecklist.tsx:19,45); obs. sem sanitização | UI | P2 | M | — | ✔ |
 | FT-077 | KM2-119 | Confirmar personalização sem falso sucesso | PARCIAL | 'Concluído' exige técnica+preço+qtd (PersonalizationConfig.tsx:1077-1089); sem ação 'confirmar' nem invalidação por versão/área | UI | P2 | M | — | ✔ |
-| FT-078 | KM2-135, KMC-084 | Revalidar preço antes de criar orçamento | AUSENTE | unit_price vem do browser (useKitBuilderQuote.ts:243,275); só estoque reconsultado (:365); RPC create_kit_quote_transactional (20260912150000_…sql) sem recálculo/diff de preço | hook + RPC | P0 | G | migration/DDL (aprovação PO); política de divergência | ✔ |
+| FT-078 | KM2-135, KMC-084 | Revalidar preço antes de criar orçamento | PARCIAL | `useKitPriceValidation.ts` consulta `id,sale_price,active` via alias Gold `products` imediatamente antes do fluxo de criação; bloqueia preço divergente ou consulta indisponível (`useKitBuilderQuote.ts`). A RPC continua recebendo valores do cliente e não recalcula; resta validação autoritativa/atômica, política comercial e confirmação guiada | hook + RPC | P0 | G | migration/DDL e política de divergência exigem aprovação PO | ✔ |
 | FT-079 | KM2-139 | Pedido mínimo, múltiplos, prazo, desconto | AUSENTE | 0 refs a mínimo/múltiplo em kit-builder; vw_products_min_quantity só em types.ts:1011; discount_percent:0 fixo (useKitBuilderQuote.ts:214); kitQuantity sem teto | hook + RPC | P0 | G | decisão PO (regra) + view/RPC | ✔ |
 | FT-080 | KM2-133 | Arredondamento monetário | AUSENTE | float cru: price-calculator.ts:77-110; subtotal/total enviados em useKitBuilderQuote.ts:201,213; sem toCents/round | lib | P1 | M | paridade com numeric do PG | ✔ |
 | FT-081 | KM2-131 | Fonte autoritativa de preço | PARCIAL | useKitBuilderTransformers.ts:24 fallback sale_price ?? base_price silencioso; sem contrato único | lib | P1 | M | decisão PO | ✔ |
@@ -160,7 +161,7 @@ Paths relativos a `src/components/kit-builder/` quando só o nome do arquivo apa
 |---|---|---|---|---|---|---|---|---|---|
 | FT-088 | KM2-099 | Revalidar encaixe/peso no servidor | AUSENTE | fn_check_item_fits sem chamada em src (só types.ts); RPC de orçamento sem checagem de encaixe; validação 100% no cliente (volume-calculator.ts, box-recommendations.ts) | RPC + lib | P1 | G | DDL + decisão de fonte (PO) | ✔ |
 | FT-089 | KM2-096, KMC-054 | maxWeight da caixa nunca preenchido | PARCIAL | Check existe (useKitBuilder.ts:140-145) mas só types.ts:40 declara maxWeight; transformers só mapeiam weight (useKitBuilderTransformers.ts:102,141) → regra nunca dispara | lib | P1 | M | D1/D2 (dado de carga máxima) | ✔ |
-| FT-090 | NEW-KM-01 | weight_g=0 tratado como peso conhecido | AUSENTE | `weight_g ?? undefined` mantém 0 (transformers :102,:141); KitSummary.tsx:81-85 só conta undefined; useKitBuilder.ts:99-103 usa `||0`; FreightEstimator.tsx:75 avisa só se soma=0 → frete subestimado sem aviso | lib + UI | P1 | P | — | ✔ |
+| FT-090 | NEW-KM-01 | weight_g=0 tratado como peso conhecido | FEITA | `isKnownItemWeight` rejeita zero, negativo e não finito; `summarizeKitWeight` exclui peso inválido da soma e conta itens/caixa sem peso; transformers normalizam `weight_g` inválido para desconhecido; testes de unidade e transformação | lib + UI | P1 | P | — | ✔ |
 | FT-091 | KM2-138, KMX-044 | Frete: tabela fixa sem CEP | PARCIAL | FreightEstimator.tsx:4,29-60 tabela SP fixa, rotulada estimativa, aviso de peso parcial (:76-103); sem CEP/validade/transportadora | UI | P1 | M | D4 | ✔ |
 | FT-092 | KMM-067 | Frete real por CEP | AUSENTE | supabase/functions sem freight-quote (só kit-ai-builder, kit-identity-suggest) | edge | P2 | G | D4 + provedor | ✔ |
 | FT-093 | KM2-055 | Landing promete 'peso verificado' | PARCIAL | KitMakerLanding.tsx:59 'ocupação e peso são verificados' sem maxWeight alimentado | UI | P1 | P | — | ✔ |
@@ -262,12 +263,12 @@ Paths relativos a `src/components/kit-builder/` quando só o nome do arquivo apa
 
 | Estado | IDs |
 |---|---|
-| FEITA | 1 |
-| PARCIAL | 153 |
-| AUSENTE | 33 |
+| FEITA | 2 |
+| PARCIAL | 154 |
+| AUSENTE | 31 |
 | ÓRFÃ | 2 |
 | Outro dono | 125 |
-| Total IDs | 314 (+1 novo achado NEW-KM-01 AUSENTE) |
+| Total IDs | 314 (+1 novo achado NEW-KM-01, agora FEITA) |
 
 ## Bloco 3 — Magazine, Mockup, Magic Up e IA (A05)
 

@@ -18,6 +18,7 @@ import {
 import type { Json } from '@/integrations/supabase/types';
 import { newRequestId } from '@/lib/telemetry/requestId';
 import { validateKitStockForQuote } from '@/hooks/kit-builder/useKitStockValidation';
+import { validateKitPricesForQuote } from '@/hooks/kit-builder/useKitPriceValidation';
 
 export interface KitQuoteClient {
   client_cnpj?: string;
@@ -362,6 +363,18 @@ export function useKitBuilderQuote() {
       }
 
       if (!serverConfirmedCommit) {
+        const livePrices = await validateKitPricesForQuote(kitState.box, kitState.items);
+        if (livePrices.status === 'changed') {
+          throw new KitQuoteValidationError(
+            `O preço de ${livePrices.productNames.join(', ')} mudou desde a montagem. Atualize o catálogo e confira o novo valor antes de criar o orçamento.`,
+          );
+        }
+        if (livePrices.status === 'unavailable') {
+          throw new KitQuoteValidationError(
+            'Não foi possível confirmar os preços atuais do catálogo. Nenhum orçamento foi criado.',
+          );
+        }
+
         const liveStock = await validateKitStockForQuote(kitState.items, kitState.box, kitQuantity);
         if (liveStock.status === 'unknown') {
           throw new KitQuoteValidationError(

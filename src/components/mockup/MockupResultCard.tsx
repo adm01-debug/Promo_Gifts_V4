@@ -20,6 +20,33 @@ import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { MockupBeforeAfter } from './MockupBeforeAfter';
 import { MockupAnnotations, type Annotation } from './MockupAnnotations';
 import { ShareMenu } from './ShareMenu';
+import { useReducedMotion } from '@/hooks/ui/useReducedMotion';
+
+/**
+ * Tokens de cor do tema (Blue Premium) usados na celebração.
+ * A cor do confete NUNCA é literal: vem da variável CSS, que acompanha
+ * tema claro/escuro e alto contraste.
+ */
+const CONFETTI_TOKEN_VARS = ['--brand-primary', '--brand-primary-glow', '--success'] as const;
+
+/** Converte o valor HSL de um token ("217 91% 60%") em cor CSS ("hsl(217 91% 60%)"). */
+function tokenValueToCssColor(rawValue: string): string | null {
+  const parts = rawValue.trim().split(/\s+/);
+  if (parts.length !== 3) return null;
+  if (parts.some((part) => part === '' || Number.isNaN(parseFloat(part)))) return null;
+  return `hsl(${parts.join(' ')})`;
+}
+
+/**
+ * Cores do confete derivadas dos tokens do tema — zero hex no componente.
+ * Exportada para o teste provar a derivação sem montar o canvas.
+ */
+export function getConfettiTokenColors(): string[] {
+  if (typeof window === 'undefined' || typeof document === 'undefined') return [];
+  const styles = getComputedStyle(document.documentElement);
+  return CONFETTI_TOKEN_VARS.map((name) => tokenValueToCssColor(styles.getPropertyValue(name)))
+    .filter((color): color is string => color !== null);
+}
 
 interface MockupResultCardProps {
   generatedMockup: string | null;
@@ -55,21 +82,33 @@ export const MockupResultCard = memo(
     const [isFullscreen, setIsFullscreen] = useState(false);
     const [fullscreenZoom, setFullscreenZoom] = useState(1);
     const [isClientMode, setIsClientMode] = useState(false);
+    const prefersReducedMotion = useReducedMotion();
 
     // Trigger success animation when mockup is generated
     useEffect(() => {
-      if (generatedMockup && !isLoading) {
-        setShowSuccess(true);
+      if (!generatedMockup || isLoading) return;
+
+      setShowSuccess(true);
+      const timer = setTimeout(() => setShowSuccess(false), 2400);
+
+      // Movimento reduzido: nada de confete — o sucesso continua indicado
+      // pelos estados do card (check, anel) sem animação.
+      if (!prefersReducedMotion) {
+        const colors = getConfettiTokenColors();
         confetti({
-          particleCount: 100,
-          spread: 70,
+          // Celebração discreta: poucas partículas, abertura curta.
+          particleCount: 28,
+          spread: 45,
+          startVelocity: 24,
           origin: { y: 0.6 },
-          colors: ['#7c3aed', '#a855f7', '#f97316', '#22c55e'],
+          // Guarda extra do próprio canvas-confetti (além do hook).
+          disableForReducedMotion: true,
+          ...(colors.length > 0 ? { colors } : {}),
         });
-        const timer = setTimeout(() => setShowSuccess(false), 3000);
-        return () => clearTimeout(timer);
       }
-    }, [generatedMockup, isLoading]);
+
+      return () => clearTimeout(timer);
+    }, [generatedMockup, isLoading, prefersReducedMotion]);
 
     // BUG-RC2 FIX: reset zoom when a new mockup URL is set so the user
     // doesn't see a newly-generated mockup at whatever zoom they had before.
