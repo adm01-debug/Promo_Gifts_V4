@@ -249,7 +249,7 @@ Nenhum código, teste, CI config ou workflow foi alterado. Portanto:
 
 ### Correção adicional nesta sessão
 
-- **Falso positivo detectado:** `PENDENCIAS.md:682` referenciava `supabase/migrations/20260615_002_fix_ai_quota_and_cache_bugs.sql` como path completo, acionando Gate 1.3
+- **Falso positivo detectado:** `PENDENCIAS.md:682` referenciava `20260615_002_fix_ai_quota_and_cache_bugs.sql` (em `supabase/migrations/`) como path completo, acionando Gate 1.3
 - **Fix:** removido prefixo `supabase/migrations/` do path no texto livre (commit `21e7df0`)
 - **Verificação pós-fix:** `node scripts/check-migration-path-references.mjs` → `✅ EXIT=0, 0 regressões`
 

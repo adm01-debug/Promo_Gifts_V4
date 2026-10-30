@@ -18,6 +18,10 @@
       "ref": "supabase/migrations-snapshot/SCHEMA_DRIFT.sql"
     },
     {
+      "file": "analise-prs/dossies/PR-2731.md",
+      "ref": "supabase/migrations/20261029160339_add_kill_switch_hits_anon_rate_guard.sql"
+    },
+    {
       "file": "CONTRIBUTING.md",
       "ref": "supabase/migrations/README.md"
     },
