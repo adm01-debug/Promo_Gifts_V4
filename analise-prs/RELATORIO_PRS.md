@@ -146,7 +146,7 @@ Evidência adicional: `quality-gate` foi ✅ SUCCESS em `37ea10a3` (5º merge, S
 - **Ação:** PO pode mergear diretamente se aprovado o workflow
 
 ### #2731 — fix(db): protege kill_switch_hits contra INSERT anônimo
-- **Por quê DECISAO_HUMANA:** `.github/workflows/deploy-gates.yml` + `migrations/20261029160339_add_kill_switch_hits_anon_rate_guard.sql`
+- **Por quê DECISAO_HUMANA:** `.github/workflows/deploy-gates.yml` + migration proposta `20261029160339_add_kill_switch_hits_anon_rate_guard.sql` (presente na branch do PR; ausente da `main`)
 - Gate Final: ✅ SUCCESS (run `40947643944`, SHA `6db2040f`); Merge test: LIMPO
 - **Ação:** DBA deve revisar migration; Gate E40 ✅ confirmado no retry
 

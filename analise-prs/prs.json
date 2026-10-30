@@ -25,7 +25,7 @@
     "state": "open",
     "branch": "fix/p200-e049-rate-guard",
     "created_at": "2026-10-29",
-    "files_protegidos": [".github/workflows/deploy-gates.yml", "migrations/20261029160339_add_kill_switch_hits_anon_rate_guard.sql"],
+    "files_protegidos": [".github/workflows/deploy-gates.yml", "migration proposta 20261029160339_add_kill_switch_hits_anon_rate_guard.sql (branch do PR; ausente da main)"],
     "merge_test": "LIMPO",
     "gate_final": "FAILURE_INFRA",
     "gate_final_nota": "E40 falhou por GHCR toomanyrequests; todos os outros gates passaram",
