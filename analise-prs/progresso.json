@@ -10,15 +10,7 @@
     {"pr": 2741, "sha": "6ac842c22e37a46c499e91460794bbb1d56b5f5d", "titulo": "fix(mockup): telas — histórico, resultado, foto original, upload, erros", "gate_pr": "run 40958040560 success"},
     {"pr": 2742, "sha": "8f992fdde05943c9bcd4d0ca925ec221f4828f41", "titulo": "fix(magic-up): compartilhar, brand kit, a11y, i18n e timeout", "gate_pr": "run 40956354730 success"}
   ],
-  "ci_gate_final_pos_merge": {
-    "sha": "8f992fdd",
-    "run_id": 40968551210,
-    "status": "queued",
-    "nota": "Deploy Gates rodando em 2026-10-29T22:47Z após merge de #2741 e #2742"
-  },
-  "ultima_atualizacao": "2026-10-30T01:10:00Z",
-  "vitest_baseline_9a97f9a2": "SIGTERM exit 143 — falha ambiental pré-existente. Os 5 arquivos de teste falhando em 2fafe8ed não foram modificados até 9a97f9a2 (confirmado via git diff). Documentado em baseline/vitest-baseline-9a97f9a2.md",
-  "worktree_main_baseline": "REMOVIDO em 23:30Z",
+  "ultima_atualizacao": "2026-10-30T00:33Z",
   "main_sha_atual": "9a97f9a2c857b25590691efd2c741a194bfb24da",
   "baseline_main_9a97f9a2": {
     "typecheck": "exit 0",
@@ -27,43 +19,34 @@
     "testes": "NÃO EXECUTADO (ambiental — TypeError: fetch failed, 21 failing no baseline anterior)",
     "arquivo": "analise-prs/baseline/local-checks-9a97f9a2.md"
   },
-  "ci_gate_final_pos_merge_8f992fdd": {
-    "run_id": 40968551210,
-    "status": "queued",
-    "nota": "Ainda queued às 00:30Z (+1h40min na fila). Commit 9a97f9a2 (só docs) não dispara Deploy Gates. Não há Deploy Gates em main para 9a97f9a2 — confirmado por list_workflow_runs."
-  },
-  "ci_pr2745": {
-    "run_id": 40969209908,
-    "branch": "fix/ratchet-weekly-sigpipe-20261029",
-    "sha": "696ad700",
-    "status": "queued",
-    "nota": "Ainda queued às 01:10Z. PR HEAD mudou para 47b6f55e (merge de origin/main). Novo Deploy Gates NÃO criado para 47b6f55e (runner congestion). Deploy Gates 40969209908 ainda queued para SHA anterior. Outros workflows (SSOT Guard, edge-drift, no-prod-leak) também queued para 47b6f55e desde 23:44Z."
-  },
-  "ci_pr2747": {
-    "run_id": 40970640916,
-    "branch": "fix/types-workspace-notification-idempotency-20261029",
-    "sha": "3a5521b1",
-    "status": "FALHOU",
-    "nota": "Gate 1 falhou no Gate 1.3 (Migration contracts). Causa: arquivos analise-prs/ de 9a97f9a2 (sessão paralela) contêm referências a paths de migrations inexistentes (20261029160339, 20261027120000, 20261027195959). Verificado 2026-10-30T00:00Z. Arquivos da branch claude/quirky-keller-owezvt NÃO têm as referências ruins. PR #2755 vai corrigir main quando mergeado."
-  },
   "pr2755_corrects_gate13": {
     "pr": 2755,
     "branch": "claude/quirky-keller-owezvt",
     "sha_head": "e4f0218d",
-    "sha_base": "07bc2b09",
-    "status": "AGUARDANDO_CI",
-    "criado_em": "2026-10-30T00:00Z",
-    "nota": "PR com arquivos analise-prs/ corretos (sem referências a migrations inexistentes). Quando mergeado, corrige Gate 1.3 em main e desbloqueia PR #2747."
+    "status": "SUBSTITUIDO_POR_2757",
+    "nota": "Substituído por PR #2757 que corrige diretamente os arquivos dos dossiês."
   },
-  "ultima_atualizacao": "2026-10-30T00:00:00Z",
+  "pr2757_corrects_gate13": {
+    "pr": 2757,
+    "branch": "fix/gate13-dossier-refs-20261030",
+    "sha_head": "f3878c82",
+    "status": "AGUARDANDO_CI",
+    "criado_em": "2026-10-30T00:24Z",
+    "run_id": 40979492111,
+    "nota": "Remove prefixo supabase/ de 2 dossiês. SSOT Guard pass. Deploy Gates queued por runner congestion."
+  },
+  "prs_novas_detectadas": [
+    {"numero": 2756, "titulo": "docs(ci): estado final Sentinel", "status": "AGUARDANDO_CI_ANALISE"},
+    {"numero": 2758, "titulo": "fix(a11y): restaura foco visível no histórico", "status": "AGUARDANDO_CI_ANALISE"}
+  ],
   "resumo": {
-    "total_prs_abertas_ao_final": 14,
-    "total_analisadas_esta_sessao": 14,
-    "mergeadas_esta_sessao": 2,
+    "total_prs_abertas": 17,
+    "total_analisadas": 15,
+    "pendentes_analise": 2,
+    "mergeadas": 4,
     "nao_mergear": 9,
-    "aguardando_ci": 2,
-    "decisao_humana": 1,
-    "pr_governanca_aberto": "#2755 (claude/quirky-keller-owezvt → main)"
+    "aguardando_ci": 3,
+    "decisao_humana": 1
   },
   "prs": [
     {"numero": 2701, "veredito": "NÃO MERGEAR", "motivo": "conflito de merge + coverage 56% < threshold 70%"},
@@ -72,16 +55,21 @@
     {"numero": 2717, "veredito": "NÃO MERGEAR", "motivo": "conflito de merge"},
     {"numero": 2720, "veredito": "MERGEADA", "sha": "14b6d5fc"},
     {"numero": 2730, "veredito": "MERGEADA", "sha": "c3b41286"},
-    {"numero": 2731, "veredito": "NÃO MERGEAR", "motivo": "REGRESSÃO CRÍTICA: --require-live no Gate 1.13.2 quebra CI antes da migration ser aplicada"},
+    {"numero": 2731, "veredito": "NÃO MERGEAR", "motivo": "REGRESSÃO CRÍTICA: --require-live no Gate 1.13.2 quebra CI"},
     {"numero": 2734, "veredito": "NÃO MERGEAR", "motivo": "só adiciona .github/workflows/ — constraint proibido"},
-    {"numero": 2738, "veredito": "NÃO MERGEAR", "motivo": "Gate Final falhou com 12 anotações"},
     {"numero": 2739, "veredito": "NÃO MERGEAR", "motivo": "Gate Final falhou com 3 anotações"},
     {"numero": 2741, "veredito": "MERGEADA", "sha": "6ac842c22e37a46c499e91460794bbb1d56b5f5d"},
     {"numero": 2742, "veredito": "MERGEADA", "sha": "8f992fdde05943c9bcd4d0ca925ec221f4828f41"},
-    {"numero": 2743, "veredito": "NÃO MERGEAR", "motivo": "Magazine Header OK = failure (run 40961676490, job 123777247522, 1 anotação, 22:57Z) — Gate Final bloqueado"},
-    {"numero": 2744, "veredito": "NÃO MERGEAR", "motivo": "DRAFT + título [NÃO MESCLAR] + edge function sem workflow"},
-    {"numero": 2745, "veredito": "AGUARDANDO_CI", "motivo": "fix legítimo — PR HEAD agora 47b6f55e (merge de origin/main às 23:35Z). Gate Final sem run para 47b6f55e ainda. Deploy Gates 40969209908 queued para SHA anterior 696ad700. Runner congestion >2h."},
-    {"numero": 2747, "veredito": "AGUARDANDO_CI", "motivo": "fix(types) aditivo — Gate 1.3 falhou por referências ruins em main (9a97f9a2, sessão paralela). Aguarda merge de PR #2755 para corrigir main, então re-sincronizar e rodar CI novamente."},
-    {"numero": 2746, "veredito": "NÃO MERGEAR", "motivo": "DRAFT"}
+    {"numero": 2743, "veredito": "NÃO MERGEAR", "motivo": "Gate Final bloqueado — Magazine Header OK = failure"},
+    {"numero": 2744, "veredito": "NÃO MERGEAR", "motivo": "DRAFT + título NÃO MESCLAR + edge function sem workflow"},
+    {"numero": 2745, "veredito": "AGUARDANDO_CI", "motivo": "fix legítimo — Gate 1.3 bloqueado por main. Aguarda merge de #2757."},
+    {"numero": 2746, "veredito": "NÃO MERGEAR", "motivo": "DRAFT"},
+    {"numero": 2747, "veredito": "AGUARDANDO_CI", "motivo": "fix(types) aditivo — Gate 1.3 bloqueado. Aguarda merge de #2757."},
+    {"numero": 2749, "veredito": "NÃO MERGEAR", "motivo": "DRAFT"},
+    {"numero": 2750, "veredito": "NÃO MERGEAR", "motivo": "DRAFT"},
+    {"numero": 2755, "veredito": "SUBSTITUIDO_POR_2757", "motivo": "PR de governança supersedido pelo PR #2757 mais específico"},
+    {"numero": 2756, "veredito": "PENDENTE_ANALISE", "motivo": "nova PR detectada — CI queued"},
+    {"numero": 2757, "veredito": "AGUARDANDO_CI", "motivo": "corrige Gate 1.3 em main — SSOT Guard pass, Deploy Gates queued"},
+    {"numero": 2758, "veredito": "PENDENTE_ANALISE", "motivo": "nova PR detectada — CI queued"}
   ]
 }
