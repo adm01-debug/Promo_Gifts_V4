@@ -396,3 +396,17 @@ Principais grupos de causa: autenticação/redirect em E2E; fixtures/dataset de 
 A tabela de 24 falhas descreve o último resultado concluído observado na `main`, separadamente dos checks do PR #2839. Os commits locais `42114dbb8` (correções E2E) e `a02ec1a07` (inventário) foram publicados no branch do PR às 21:58Z. No momento da consulta, PR #2839 refletia `mergeable=false`, `mergeable_state=dirty`; uma integração read-only confirmou conflito de conteúdo em `RELATORIO_CI.md`, resolvido preservando as seções dos dois lados e registrando a decisão no ledger. O commit de integração ainda requer validação e push.
 
 A `main` avançou para `554ef41b44c9f318777d7e7b11189490a29a8c0a` às 21:58Z. Foram observados 28 runs novos nesse SHA; 25 estavam `pending/queued`, dois `skipped` e o alerta de falha também `skipped`. Até esses workflows concluírem, as 24 falhas da tabela PENDENCIAS.md §P42 permanecem os últimos resultados concluídos, não uma afirmação de que os novos runs falharam. A validação local no commit `a02ec1a07` passou: `npm run build:verify` (TypeScript, ESLint 0 erros/0 warnings, build e guards SSOT) e `npm run test:run -- --reporter=dot --silent` (1.252 arquivos e 25.910 testes passaram; 130 arquivos/1.135 testes skipped; 24 TODO). As duas specs E2E corrigidas passaram isoladamente (7/7 e 27/27), não como substituto da matriz remota completa.
+
+## 25. Integração de `main@554ef41b4` e validação do plano de 200 etapas — 30/10/2026 às 22:16Z
+
+A resolução do conflito em `RELATORIO_CI.md` preservou a Seção 13/P35 da `main` e anexou o histórico do PR como Seções 14–24. O merge inclui a alteração já presente na `main` que extrai `PromoFlixPlayer` para `usePromoFlixPlayer`; não alterou schema, migrations, dados ou configuração Supabase. O ledger de conflitos registra a decisão.
+
+Na primeira execução integral após integrar a `main`, 1 teste novo falhou porque esperava os totais antigos do plano P200 (`claimed=86`, `todo=103`), enquanto o conteúdo atualizado da `main` classifica 84 reivindicadas, 11 bloqueadas e 105 pendentes. Foram corrigidos somente os totais e a distribuição da onda 0 esperados pelo teste (`claimed=5`, `blocked=3`, `todo=2`); nenhum assert ou critério foi removido. A spec focada passou 4/4.
+
+| Verificação no conteúdo integrado | Resultado |
+|---|---|
+| `npm run build:verify` | ✅ TypeScript, ESLint (0 erros/0 avisos, sem regressão), guards SSOT e build Vite passaram. |
+| `npm run test:run -- --reporter=dot --silent` | ✅ 1.253 arquivos e 25.915 testes passaram; 130 arquivos/1.135 testes skipped; 24 TODO. A falha inicial de expectativa desatualizada foi corrigida e a repetição integral passou. |
+| `npx vitest run tests/scripts/plan-status.test.mjs --reporter=dot` | ✅ 4/4 testes passaram após ajustar os totais aos dados vigentes do plano. |
+
+Os resultados acima foram obtidos após o commit de integração e antes do commit corretivo das expectativas; serão repetidos após esse commit corretivo. Os 24 workflows previamente observados em falha na `main` (§24/P42) ainda requerem reconsulta: novos runs disparados pelo avanço de `main` estavam pendentes no snapshot anterior.
