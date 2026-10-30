@@ -82,9 +82,9 @@ export function getTechniquePrompt(technique: Technique): string {
   const code = technique.code?.toLowerCase() || technique.name.toLowerCase();
   for (const [key, prompt] of Object.entries(TECHNIQUE_PROMPTS)) {
     if (key === 'default') continue;
-    if (code.includes(key) || technique.name.toLowerCase().includes(key)) return 'as ' + prompt;
+    if (code.includes(key) || technique.name.toLowerCase().includes(key)) return `as ${prompt}`;
   }
-  return 'as ' + TECHNIQUE_PROMPTS.default;
+  return `as ${TECHNIQUE_PROMPTS.default}`;
 }
 
 // T8 FIX: limit to 200 records to prevent unbounded payload growth.
