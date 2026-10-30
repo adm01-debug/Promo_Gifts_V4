@@ -313,12 +313,11 @@ jobs:
           # Cobertura do manifest de autorização — o script existia órfão
           # de workflow (achado da validação exaustiva 2026-10).
           node scripts/check-edge-authorization.mjs
-      # Gate 1.13 — Baseline assinado de RLS policies (auditoria 20-dim Onda 3).
-      # Bloqueante quando credenciado; sem SUPABASE_ACCESS_TOKEN (forks) ou com
-      # baseline pendente de seed inicial, degrada para static-pass.
-      - name: Gate 1.13 — Policies baseline vs pg_policies live (bloqueante c/ credenciais)
-        if: needs.changes.outputs.docs_only != 'true'
-        run: node scripts/check-policies-baseline.mjs
+      # Gate 1.13 — baseline de RLS comparada ao vivo em push e PR interno comum.
+      # Forks e Dependabot não recebem Actions secrets; pulam explicitamente.
+      - name: Gate 1.13 — Policies baseline vs pg_policies live (bloqueante)
+        if: needs.changes.outputs.docs_only != 'true' && (github.event_name != 'pull_request' || (github.event.pull_request.head.repo.full_name == github.repository && github.actor != 'dependabot[bot]'))
+        run: node scripts/check-policies-baseline.mjs --require-live
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
           SUPABASE_PROJECT_REF: doufsxqlfjyuvxuezpln
@@ -515,6 +514,10 @@ jobs:
     needs: [ssot-gate]
     uses: ./.github/workflows/_secrets-check.yml
     secrets: inherit
+    with:
+      # Secrets estão disponíveis em PRs internos comuns e em eventos da main.
+      # Forks e Dependabot não recebem Actions secrets e devem manter o skip.
+      fail_if_missing: ${{ github.event_name != 'pull_request' || (github.event.pull_request.head.repo.full_name == github.repository && github.actor != 'dependabot[bot]') }}
 
   e2e-smoke:
     name: Gate 3 - E2E Smoke

@@ -102,7 +102,7 @@ Derivadas do que fez os planos anteriores falharem. Valem para as 200 etapas.
 
 **R4 — Uma etapa, um PR.** Limite por PR: 10 arquivos de workflow, **ou** 1 workflow crítico (`deploy-gates.yml`, `db-apply-migration.yml`, `deploy-edge-functions.yml`, `schema-snapshot-export.yml`, `branch-protection-sentinel.yml`), **ou** 1 migration, **ou** 1 edge function. Nunca mistura de categorias. O que destruiu a rastreabilidade antes foi o oposto: PR #1865 com 136 arquivos e 747.111 linhas levando os dois workflows mais críticos de governança junto com 6 migrations, uma auditoria tripla e um plano de 50 etapas.
 
-**R5 — PR obrigatório, inclusive para o CODEOWNER.** Toda mudança em `.github/**`, `CODEOWNERS`, `supabase/migrations/**`, `scripts/check-*` e `.gitleaks.toml` passa por PR. Push direto em `main` só para reverter incidente em curso, e com postmortem no mesmo dia. A REGRA #9 atual pede `git push` e apenas sugere PR — esse buraco foi usado 69 vezes na janela. A etapa P200-E009 fecha o texto da regra.
+**R5 — PR obrigatório, inclusive para o CODEOWNER.** Toda mudança em `.github/**`, `CODEOWNERS`, `supabase/migrations/**`, `scripts/check-*` e `.gitleaks.toml` passa por PR. Push direto em `main` é proibido, inclusive para reverter incidente em curso; a resposta emergencial usa PR de reversão/correção, mantém os gates e registra postmortem no mesmo dia. A REGRA #9 atual exige PR e proíbe escrita direta em `main`.
 
 **R6 — ID global no commit e no PR.** Formato `P200-ENNN` no assunto do commit e no corpo do PR. O namespace `E01..E100` está repetido em mais de 20 planos: `git log --grep E15` devolve 31 commits de planos diferentes, o que torna rastreio por histórico impossível. Prefixo único resolve.
 
@@ -188,21 +188,20 @@ No mesmo pedido, apagar o ruleset **24121385** ("Protect main branch", criado 20
 
 #### P200-E007 · [A] · P0 · Fazer o Gate E23 poder falhar ✅
 **Arquivo:** `.github/workflows/deploy-gates.yml:323-326`, `.github/workflows/_secrets-check.yml:28`
-**Fazer:** o gate chama o reusable sem `fail_if_missing`, cujo default é `false`, então o job sempre sai 0 e a checagem `[[ "$R_SECRETS" == "success" ]]` na linha 551 é tautológica. Passar `with: { fail_if_missing: true }`, **ou** — se a intenção é só expor o output `has_e2e` — remover o gate da tabela de bloqueantes do `CLAUDE.md` e apagar a linha 551 do agregador. Decidir uma das duas e não deixar as duas meias.
-**Pronto:** `grep -A3 "_secrets-check.yml" .github/workflows/deploy-gates.yml | grep -c "fail_if_missing: true"` → `1`, ou a linha 551 deixa de existir e o `CLAUDE.md` marca E23 como não-bloqueante
+**Fazer:** o gate chamava o reusable sem `fail_if_missing`, cujo default é `false`, então o job sempre saía 0 e a checagem de `R_SECRETS` no agregador era tautológica. Passar `fail_if_missing` como true em eventos onde os secrets devem existir (push e PR interno), preservando o skip em PRs de forks que não recebem secrets do repositório. Alternativa: se a intenção for só expor o output `has_e2e`, remover o gate da tabela de bloqueantes do `CLAUDE.md` e apagar a checagem correspondente do agregador. Decidir uma das duas e não deixar as duas meias.
+**Pronto:** teste automatizado confirma `fail_if_missing` obrigatório em push/PR interno comum e desabilitado em fork-PR ou PR do Dependabot, que não recebe Actions secrets; actionlint valida o YAML.
 **Origem:** A1-01, A1-15
 
-#### P200-E008 · [A] · P0 · Fazer o Gate 1.13 comparar de verdade ✅
+#### P200-E008 · [A] · P0 · Fazer o Gate 1.13 comparar de verdade ⏳
 **Arquivo:** `.github/workflows/deploy-gates.yml:239-243`, `scripts/check-policies-baseline.mjs:233-250`
-**Fazer:** o gate roda sem `--require-live` e o script devolve `STATIC_PASS` exit 0 em `missing-config`, `network-error` e HTTP `429|5xx`. Sem token ou num 5xx transitório, 950 policies de RLS passam sem comparar nada. Acrescentar `--require-live` no step (como `policies-baseline.yml:166` já faz) e restringir o `static-pass` a PR de fork, com `if:` explícito.
-Mesmo padrão em `supabase-security-gate.yml:63-81`: o "Gate 5 — Supabase Security Audit" pula **todos** os passos live em `pull_request` e não é required check, então em PR não audita nada ao vivo. Habilitar os passos live para PRs do próprio repositório (o guard de fork já existe em `:97`).
-**Pronto:** `grep -c "require-live" .github/workflows/deploy-gates.yml` ≥ 1; o gate reprova sem `SUPABASE_ACCESS_TOKEN`; o Gate 5 executa passos live em PR do próprio repo
+**Fazer:** o gate precisa usar `--require-live` em push e PR interno comum, com condição explícita para pular forks e Dependabot, que não recebem `SUPABASE_ACCESS_TOKEN`. Assim, ausência de credencial ou falha da Management API não vira aprovação estática. No `supabase-security-gate.yml`, habilitar checks live em PRs internos comuns e restringi-los explicitamente a eventos com credenciais.
+**Pronto:** teste automatizado confirma `--require-live` no Gate 1.13 e nos checks live do Gate 5, além do skip explícito para fork e Dependabot; `node scripts/check-policies-baseline.mjs --require-live` sem credenciais termina inconclusive (exit 2); Gate Final e Gate 5 passam no CI.
 **Origem:** A1-02, A2-10, A2-41
 
 #### P200-E009 · [A] · P0 · Reescrever a REGRA #9: governança exige PR, não push ✅
 **Arquivo:** `CLAUDE.md` (REGRA #9)
-**Fazer:** o texto atual pede `git push` ao final da sessão e apenas *sugere* abrir PR. O buraco foi usado 69 vezes na janela, quase tudo em `.github/**`. Reescrever: mudança em `.github/**`, `CODEOWNERS`, `supabase/migrations/**`, `scripts/check-*` e `.gitleaks.toml` exige **PR**, inclusive do CODEOWNER; push direto em `main` só para reverter incidente em curso, com postmortem no mesmo dia.
-**Pronto:** `grep -c "exige PR" CLAUDE.md` ≥ 1 **e** `grep -c "git push ao final" CLAUDE.md` → `0`
+**Fazer:** o texto anterior enfatizava concluir a sessão com push, enquanto o fluxo seguro exige revisão e integração por PR. Mudanças em `.github/**`, `CODEOWNERS`, `supabase/migrations/**`, `scripts/check-*` e `.gitleaks.toml` exigem PR, inclusive quando o autor é CODEOWNER. Push direto em `main` é proibido; mesmo incidente ativo usa PR emergencial de reversão/correção, preservando os gates.
+**Pronto:** `grep -ic "sempre em PR" CLAUDE.md` ≥ 1; `grep -ic "git push ao final" CLAUDE.md` → `0`; conteúdo do corpo de `CLAUDE.md` e `AGENTS.md` coincide; teste de espelhamento passa.
 **Origem:** A5-41, A5-55, C-04
 
 #### P200-E010 · [A] · P1 · Criar `npm run plan:status` ✅

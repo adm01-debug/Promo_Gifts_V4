@@ -343,35 +343,30 @@ PR #1899).
 
 ---
 
-## REGRA #9 — SESSÃO QUE GERA COMMIT DE GOVERNANÇA TERMINA COM `git push`
+## REGRA #9 — MUDANÇAS DE GOVERNANÇA CRÍTICA SEMPRE EM PR
 
-**Por quê:** em 2026-09-17, uma auditoria encontrou 29+ commits que existiam
-só localmente havia múltiplas sessões — incluindo os dois workflows mais
-importantes do plano DBA (`db-apply-migration.yml`/E15, o único caminho
-autorizado para aplicar migration; `ddl-out-of-band-detector.yml`/E12).
-Enquanto não enviados, essas proteções **não existiam** do ponto de vista de
-quem revisa no GitHub — mesmo efeito prático de nunca terem sido construídas.
-A causa foi processual, não técnica: nenhuma sessão anterior deu `git push`
-ao terminar. Ver `docs/plans/PLANO_ENGENHARIA_SENIOR_50_ETAPAS_2026-09-17.md`
+**Por quê:** em 2026-09-17, uma auditoria encontrou 29+ commits de segurança,
+CI/CD e governança que permaneceram apenas locais. Enquanto não revisadas e
+integradas pelo fluxo do repositório, essas proteções não existiam para os
+demais colaboradores. Ver `docs/plans/PLANO_ENGENHARIA_SENIOR_50_ETAPAS_2026-09-17.md`
 §1 (achado #1) e `docs/POSMORTEM_COMMITS_LOCAIS_2026-09-17.md`.
 
 ### SEMPRE faça:
-- Se a sessão criar 1+ commit relevante para segurança, CI/CD ou governança
-  (workflows, gates, migrations, scripts `check:*`) → `git push` ao final da
-  sessão e **abrir PR** — nunca deixar orphan branch.
-- Arquivos de governança críticos (`.github/**`, `CODEOWNERS`, `supabase/migrations/**`,
-  `scripts/check-*`, `.gitleaks.toml`) exigem PR aberto (não apenas push). A revisão
-  humana é parte do processo — commit de governança sem PR aberto = proteção invisível.
-- Se o branch já tiver PR aberto → nada extra a fazer, o push já o atualiza.
+- Alterações em `.github/**`, `CODEOWNERS`, `supabase/migrations/**`,
+  `scripts/check-*` e `.gitleaks.toml` devem ser feitas em branch e enviadas
+  por PR para `main`, inclusive quando o autor for CODEOWNER.
+- Manter o PR aberto até a revisão humana e todos os checks obrigatórios
+  concluírem; o merge é parte do processo de proteção.
+- Enviar os commits para a branch do PR e atualizar esse PR durante a sessão;
+  nunca deixar alterações críticas apenas locais ou em branch sem PR.
+- Para incidente ativo, abrir um PR emergencial de reversão/correção e seguir
+  os mesmos gates; a urgência não autoriza escrita direta em `main`.
 
 ### NUNCA faça:
-- Terminar uma sessão de governança/segurança com commits só no disco local,
-  assumindo que "a próxima sessão empurra".
-- Fazer `git push --force` em branch compartilhado sem confirmação explícita
-  do humano (isso continua exigindo aprovação — REGRA #9 pede push normal,
-  não força bruta).
-- Fazer push de arquivos de governança sem abrir PR — push solitário deixa
-  proteções reais ocultas da revisão (incidente 2026-09-17: 29 commits locais).
+- Fazer push direto para `main`, inclusive para alterações de governança ou
+  correção emergencial; use um PR revisável.
+- Deixar commits críticos sem PR aberto, supondo que outra sessão os enviará.
+- Reescrever histórico de branch compartilhada com `git push --force`.
 
 ---
 

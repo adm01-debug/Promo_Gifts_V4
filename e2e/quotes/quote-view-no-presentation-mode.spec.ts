@@ -201,7 +201,9 @@ for (const theme of ['light', 'dark'] as const) {
       (window as unknown as { __deleteQuoteSpy: (id: string) => Promise<void> }).__deleteQuoteSpy =
         () =>
           new Promise((_, reject) =>
-            setTimeout(() => reject(new Error('ETIMEDOUT: upstream 504 after 30000ms')), 250),
+            // Janela suficiente para a asserção do estado de loading mesmo
+            // sob carga do runner; o timeout continua determinístico.
+            setTimeout(() => reject(new Error('ETIMEDOUT: upstream 504 after 30000ms')), 1000),
           );
     });
     await page.setViewportSize({ width: 375, height: 667 });
@@ -234,7 +236,9 @@ for (const theme of ['light', 'dark'] as const) {
     await page.addInitScript(() => {
       (window as unknown as { __deleteQuoteCalls: string[] }).__deleteQuoteCalls = [];
       (window as unknown as { __deleteQuoteSpy: (id: string) => Promise<void> }).__deleteQuoteSpy =
-        () => new Promise((resolve) => setTimeout(resolve, 600));
+        // Mantém a operação pendente durante a asserção de Escape mesmo sob
+        // carga do runner, sem reduzir as verificações de estado intermediário.
+        () => new Promise((resolve) => setTimeout(resolve, 2000));
     });
     await page.setViewportSize({ width: 375, height: 667 });
     await openHarness(page, theme);

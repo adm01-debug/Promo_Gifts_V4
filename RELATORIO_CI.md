@@ -261,3 +261,164 @@ Tabela de prova (Seção 8) + baseline local (Seções 1, 10) + comparação bas
 | test:ci-core | ✅ 957 testes | ✅ 957 testes | Sem regressão |
 | Gate Final | ✅ success | ✅ success | Sem regressão |
 | Workflows NÃO-REQUIRED em falha | 8 (PO-BLOCKED) | 8 (PO-BLOCKED) | Sem regressão — mesmos bloqueios estruturais |
+
+## 14. Sessão P33 — Revalidação `main@9541666bf` e PR #2839 (2026-10-30T19:53Z)
+
+### Inventário atualizado da main
+
+| Workflow | Última execução na main | Evidência / encaminhamento |
+|---|---|---|
+| Uptime Monitor | `failure` — [#41116269946](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41116269946) | `site=0`, `health-check=22`, `check-login OPTIONS=0`, `auth-health=0`; registrado em PENDENCIAS.md §P33 e issue [#2841](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2841). Depende da revisão/aprovação do deploy versionado de `health-check`. |
+| E2E — Personalization Flow | `failure` — [#41115240723](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41115240723) | Três timeouts de login; algumas chamadas Auth/REST respondem e outras ficam pendentes. Causa raiz não comprovada; consta com evidência e limite de reprodução em PENDENCIAS.md §P33. |
+| Running Copilot Code Review | `failure` — [#41115245979](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41115245979) | HTTP 402 por limite de uso adicional; ação administrativa registrada em PENDENCIAS.md §P33. |
+
+O check externo do app Supabase [#124269702734](https://github.com/adm01-debug/Promo_Gifts_V4/runs/124269702734) não é workflow de Actions: reporta versões remotas de migration ausentes no diretório local. Não houve alteração no Supabase. Deploy Gates [#41115240969](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41115240969), CI Security & Drift [#41115240942](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41115240942), E2E Critical Flows, E2E Playwright e Swatch QuickView estavam sem conclusão neste snapshot; não classificados como falha.
+
+### Comparação baseline × validação local desta revisão
+
+| Verificação | Baseline documentado | Branch PR #2839 após alterações documentais |
+|---|---|---|
+| `npm run build:verify` | TypeScript/lint/build verdes no head anterior | ✅ passou em 19:50Z; TypeScript, ESLint `0 erros / 0 warnings` (Δ 0), build Vite, guards SSOT, ciclos de chunks e harness de produção. |
+| `npm run test:run -- --reporter=dot --silent` | 1.252 arquivos / 25.910 testes aprovados; 130 arquivos e 1.135 testes skipped; 24 TODO | ✅ 1.252 arquivos / 25.910 testes aprovados; 130 arquivos e 1.135 testes skipped; 24 TODO. Nenhuma redução ou regressão. |
+| Supabase | sem alterações autorizadas | ✅ nenhuma migration, DDL ou alteração de dados executada. |
+
+Essas duas execuções são pré-commit desta atualização documental. Conforme a regra anti-regressão, os mesmos comandos serão repetidos após o commit. O PR #2839 continua aberto, sem merge, aguardando a conclusão dos checks remotos e revisão humana.
+
+## 15. Fechamento da rodada `main@9541666bf` (2026-10-30T20:03Z)
+
+O Gate Final — Deploy Ready concluiu `success` no run [#41115240969](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41115240969). O E2E — Critical Flows concluiu `failure` no run [#41115240508](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41115240508): os casos de tooltip não chegaram aos asserts, pois `loginViaUI` ficou em `/login`; `auth/v1/token` respondeu `504` após 56,9 s no primeiro try e vários requests Auth/PostgREST permaneceram pendentes no retry. A causa e os limites da evidência estão em PENDENCIAS.md §P34. Não considerar isso uma falha de tooltip sem execução autenticada válida.
+
+Continuavam sem conclusão na hora da consulta: CI Security & Drift [#41115240942](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41115240942) e E2E Playwright [#41115240773](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41115240773) `in_progress`; E2E Swatch QuickView [#41115240881](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41115240881) `pending`. Não foram contados como falhas.
+
+No head `08bcf8a3d` do PR #2839, a consulta retornou 45 checks: 9 `success`, 2 `skipped`, 1 `neutral`, 33 sem conclusão e nenhum `failure` concluído. O PR segue aberto e bloqueado enquanto aguarda checks e revisão humana. Gate Final verde em main não substitui esses requisitos do PR.
+
+## 16. Atualização final da rodada `main@9541666bf` (2026-10-30T20:12Z)
+
+### Inventário de workflows que ainda têm última execução falha na `main`
+
+| Workflow | Última execução na `main` | Causa / estado |
+|---|---|---|
+| Uptime Monitor | [#41120620323](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41120620323) — `failure` | `health-check=22`; site, `check-login` OPTIONS e `auth-health` retornaram 0. Falha repetida registrada em PENDENCIAS.md §P35 e issue #2841; depende de revisão/aprovação do deploy versionado da Edge Function e de novo probe. |
+| E2E — Personalization Flow | [#41115240723](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41115240723) — `failure` | Timeouts de login e chamadas Auth/PostgREST pendentes; causa raiz não comprovada e reprodução local bloqueada por falta de credenciais E2E. PENDENCIAS.md §P33. |
+| E2E — Critical Flows & Error Boundaries | [#41115240508](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41115240508) — `failure` | `auth/v1/token` recebeu `504` após 56,9s no primeiro try e chamadas Auth/PostgREST ficaram pendentes no retry; asserts de tooltip não foram alcançados. PENDENCIAS.md §P34–P35. |
+| CI Security & Drift Checks | [#41115240942](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41115240942) — `failure` | Única suíte falha foi `QuoteBuilderSummaryAlignment.fuzz.test.ts`: o teste lia o componente anterior à extração. Correção mínima está no PR #2839 e passou localmente; só pode ser encerrada após revisão, merge e novo run verde na `main`. |
+| Running Copilot Code Review | [#41115245979](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41115245979) — `failure` | HTTP 402 por cota adicional do Copilot esgotada; ação administrativa do PO registrada em PENDENCIAS.md §P33–P35. |
+
+### Checks verdes, em andamento e PR #2839
+
+- Gate Final — Deploy Ready [#41115240969](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41115240969) concluiu `success` em `main@9541666bf`; os checks concluídos já verdes permanecem verdes conforme PENDENCIAS.md §P33–P35.
+- E2E Playwright [#41115240773](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41115240773) foi `cancelled`, não contado como falha. E2E Swatch QuickView [#41115240881](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41115240881) estava `in_progress` às 20:12Z, também não contado como falha.
+- PR [#2839](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2839), head `1fa22f47250b2d0f27891c75ecbbdf5f0cf97505`, seguia aberto e bloqueado, sem revisão humana. A consulta encontrou 3 checks concluídos, 50 pendentes e nenhuma falha concluída no head. Não mesclar enquanto os checks exigidos não concluírem e a revisão não ocorrer.
+- O check Supabase Preview [#124269702734](https://github.com/adm01-debug/Promo_Gifts_V4/runs/124269702734) segue como integração externa, não workflow Actions; informa versões remotas de migrations ausentes no repositório e permanece sem classificação. Nenhum comando de escrita, migration, `repair`, DDL ou deploy foi executado no Supabase.
+
+### Validação local anti-regressão pós-commit
+
+| Verificação | Baseline local anterior | Resultado confirmado após o commit documental |
+|---|---|---|
+| `npm run build:verify` | TypeScript, ESLint `0 erros / 0 warnings`, build Vite e guards passaram | ✅ Passou novamente; sem mudança de código executável. |
+| `npm run test:run -- --reporter=dot --silent` | 1.252 arquivos / 25.910 testes aprovados; 130 arquivos / 1.135 testes skipped; 24 TODO | ✅ Passou novamente: 1.252 arquivos / 25.910 testes aprovados; 130 arquivos / 1.135 testes skipped; 24 TODO. |
+
+Sem redução de testes aprovados nem erro novo. Esta atualização altera somente `PENDENCIAS.md` e `RELATORIO_CI.md`.
+
+## 17. Fechamento do E2E Swatch QuickView na `main@9541666bf` (2026-10-30T20:19Z)
+
+O run [#41115240881](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41115240881) concluiu `failure` após a consulta registrada na Seção 16. A análise dos logs de Chromium, Firefox e WebKit encontrou quatro falhas iguais em cada navegador e uma passagem; não foi um erro exclusivo de engine.
+
+| Workflow | Run / jobs | Evidência | Estado |
+|---|---|---|---|
+| E2E • Swatch QuickView (Lista + Tabela) | [#41115240881](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41115240881) — jobs Firefox `124285252899`, Chromium `124285253446`, WebKit `124285253516` | Em cada engine: `4 failed`, `1 passed`, `10 skipped`; o guard contabilizou `executed=5`, `expected=1`, `unexpected=4`, `flaky=0`. As quatro rotas sem picker/candidato foram `/produtos`, `/filtros`, `/novidades` e `/reposicao`. Nas rotas satélite, erro `[E108] Sem produtos com color_swatches`; nas rotas obrigatórias, `picker=null`. Retry repetiu a falha. O step de mínimo de testes falhou por consequência da contagem. | 📋 PENDENCIAS.md §P36. Está comprovado que o ambiente E2E não encontrou os produtos elegíveis esperados; não está comprovado se faltam registros elegíveis nos dados consultados ou se filtro/renderização os omite. Sem consulta ou escrita no banco nesta sessão. Requer validação de catálogo/dados e correção aprovada, seguida de nova execução nos três navegadores. |
+
+Esta evidência não altera as outras linhas do inventário da Seção 16. O único required check da `main` continuava verde no último run confirmado [#41115240969](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41115240969); os bloqueios de Auth/PostgREST, Uptime Monitor e cota Copilot seguem documentados em §P33–P35. A correção de teste do CI Security continua pendente de revisão e de resultado remoto no PR #2839. O PR permanece sem merge; nenhum schema ou dado Supabase foi alterado.
+
+## 18. Status externo do Preview Vercel no PR #2839 (2026-10-30T20:23Z)
+
+O status Vercel reportado para o head `0ef67ce6d9aff9cb2944ffd6511d560b2db0f013` do PR [#2839](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2839) está `failure`: [deployment `dpl_7htod9VFENqZhyCed91EQEJgZjKM`](https://vercel.com/juca1/promo-gifts-v4/7htod9VFENqZhyCed91EQEJgZjKM). A inspeção read-only do deployment informa `target=preview`, `readyState=ERROR`; o build `@vercel/vc-build` aparece `READY`, sem itens de saída reportados. A consulta `vercel inspect <deployment> --logs` foi tentada com CLI 59.5.0 e 65.8.0 no diretório raiz, corretamente vinculado ao projeto canônico; nenhuma das versões devolveu logs úteis. A causa não pode ser inferida desta evidência.
+
+O status pertence ao Preview do PR e não é uma execução de workflow na `main`; permanece como bloqueio de revisão/merge em PENDENCIAS.md §P37. Próximo passo: obter no painel Vercel o log de build completo e classificar a causa antes de qualquer mudança. Nenhum deploy, alteração de projeto Vercel ou mudança de configuração foi feita.
+
+## 19. Revalidação após a atualização do PR #2839 (2026-10-30T20:38Z)
+
+Após o push do commit `dd98f63281662a755bf92e6e9027f60da4e2229d`, a consulta de Actions por branch e schedule confirma que a ponta da `main` permanece `9541666bf62883b06117b03cae0368b2c7d55314`. A última falha do Uptime Monitor foi renovada pelo schedule [#41124195036](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41124195036), mas repetiu o mesmo resultado: `site=0`, `health-check=22`, `check-login (OPTIONS)=0`, `auth-health=0`. O caminho segue registrado em §P35/P38 e issue #2841; nenhum deploy foi executado.
+
+As demais últimas falhas da `main` permanecem as da Seção 16: E2E Personalization [#41115240723], E2E Critical Flows [#41115240508], CI Security & Drift [#41115240942], Swatch QuickView [#41115240881] e Copilot Code Review [#41115245979]. Gate Final [#41115240969] segue `success`; E2E Playwright [#41115240773] segue `cancelled`, não contado como falha. Os checks concluídos verdes no SHA da `main` continuam verdes; não foi observado push posterior.
+
+O PR #2839 continua aberto e bloqueado. Após o novo head, o status Actions consultado reporta 29 checks: 26 `queued`, 1 `success`, 1 `skipped` e 1 `neutral`; a revisão humana ainda não foi registrada. O Preview Vercel novo [deployment `dpl_9YgK49YiDcEBGYVRf19R91B3rfkb`](https://vercel.com/juca1/promo-gifts-v4/9YgK49YiDcEBGYVRf19R91B3rfkb) também falhou. A inspeção read-only com Vercel CLI 65.8.0 confirma `target=preview`, `readyState=ERROR`, builder `READY`, `output=[]`; `inspect --logs` novamente não trouxe logs úteis. Causa permanece sem comprovação e requer inspeção do painel pelo PO (PENDENCIAS.md §P37–P38).
+
+## 20. Estado do PR #2839 após o push `439cb1e5` (2026-10-30T20:46Z)
+
+O PR [#2839](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2839) permaneceu aberto e `mergeable_state=blocked`. A consulta ao head `439cb1e5b5c021cacc0f400cca8f45fb0537792f` retornou 36 checks: 32 `queued`, 1 `success`, 2 `skipped` e 1 `neutral`, sem falha Actions concluída nessa consulta; ainda não havia revisão humana. Devin Review declarou revisão pulada por trial expirado e créditos esgotados — isso não é uma aprovação.
+
+O Preview Vercel mais recente dessa ponta [deployment `dpl_DA4xKV65oceEM3ir9pjSe5BeZu2r`](https://vercel.com/juca1/promo-gifts-v4/DA4xKV65oceEM3ir9pjSe5BeZu2r) está `failure`. Inspeção read-only do CLI 65.8.0 confirmou `target=preview`, `readyState=ERROR`, builder `READY`, `output=[]`; `inspect --logs` retornou somente `status Error`. A causa não foi provada; PENDENCIAS.md §P39 solicita log acessível no painel Vercel. Nenhum deploy ou configuração foi alterado.
+
+A `main` segue no SHA `9541666bf62883b06117b03cae0368b2c7d55314`. A última execução do Uptime Monitor é [#41124195036](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41124195036), `failure` em `health-check=22`; demais falhas, Gate Final verde e E2E Playwright cancelado permanecem conforme Seções 16–19 e PENDENCIAS.md §P38. Nenhum push posterior à `main` foi observado.
+
+## 21. Snapshot remoto dos PRs #2839/#2845 (2026-10-30T21:04Z)
+
+### Baseline e main
+
+A `main` permaneceu no SHA `9541666bf62883b06117b03cae0368b2c7d55314`. O último Gate Final observado nela, [#41115240969](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41115240969), está `success`. As últimas falhas individuais permanecem: Uptime Monitor [#41124195036](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41124195036), Swatch QuickView [#41115240881](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41115240881), CI Security & Drift [#41115240942](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41115240942), E2E Critical [#41115240508](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41115240508), E2E Personalization [#41115240723](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41115240723) e Copilot Review [#41115245979](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41115245979). Causas, evidências e próximos passos estão atualizados em PENDENCIAS.md §§P33–P40. E2E Playwright [#41115240773](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41115240773) foi cancelado, não falhou.
+
+### Comparação do head do PR #2839
+
+| Verificação | Resultado remoto no head `cb727e159a6da7070a2880b59f3682393167ec62` |
+|---|---|
+| Gate Final — Deploy Ready | ✅ `success`, run [#41126957278](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41126957278); gates obrigatórios de build, testes unitários, lint/TS e E2E Smoke concluíram sem falha. |
+| E2E Quotes Matrix | ❌ Run [#41126957055](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41126957055), falhas no teste de expiração do UndoToast e divergência do snapshot dark-mobile. São workflows além do Gate Final e continuam pendentes de diagnóstico/correção; não houve alteração de assertion nem baseline visual. |
+| E2E Swatch QuickView | ⏳ Run [#41126957198](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41126957198) ainda `in_progress`; job WebKit recebeu shutdown do runner, Chromium/Firefox ainda não tinham resultado final. |
+| Visual Baseline | ⏳ Run [#41126957052](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41126957052) ainda `in_progress`. |
+| Vercel Preview | ❌ Deployment [`dpl_3MU9UcatcuC3esiK4uiWN7GJkoHR`](https://vercel.com/juca1/promo-gifts-v4/3MU9UcatcuC3esiK4uiWN7GJkoHR); status sem causa do build. Requer log do painel. |
+| Revisão | ⏸️ CODEOWNER válido ainda não registrado; a regra exige revisão e o owner mapeado no catch-all é o mesmo usuário que abriu o PR. Copilot também está sem cota. |
+
+O PR #2839 não foi mesclado. O PR #2845 teve Gate Final `success` em [#41127458572](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41127458572), mas segue sem revisão CODEOWNER válida. As limitações e dependências externas estão em PENDENCIAS.md §P40.
+
+Sem regressão confirmada nos gates do Gate Final do #2839; isso não equivale a todos os workflows verdes, pois os workflows E2E adicionais, o Preview Vercel e a revisão ainda bloqueiam o PR. Nenhuma alteração foi feita no Supabase, em produção ou nas regras de proteção.
+
+## 22. Revalidação E2E em 30/10/2026 às 21:25Z
+
+No head `f1f05aa39bb6bde53fdd55c6e2b100d89f31b29b` do PR #2839, Gate Final [#41128906563](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41128906563) concluiu `success`. E2E Quotes Matrix [#41128906515](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41128906515) falhou em dois grupos. Reproduzi e corrigi os testes localmente sem remover/afrouxar asserções: `04r-undo-toast-a11y-keyboard.spec.ts` passou 7/7 com `CI=true` e 2 workers; `quote-view-no-presentation-mode.spec.ts` passou 27/27 com `CI=true` e 2 workers. No segundo grupo, aumentei apenas delays artificiais do harness para 1.000/2.000 ms e alinhei o PNG dark-mobile ao resultado reproduzível de 128×156 px, que diferia em 5 px de largura do baseline de 133×156 px. Nenhum estilo ou comportamento da aplicação foi alterado.
+
+As alterações ainda eram locais e não faziam parte do SHA consultado acima. A suíte unitária completa e `npm run build:verify` pós-commit estavam pendentes naquele instante. E2E Swatch QuickView [#41128906303](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41128906303) continuava `in_progress` às 21:25Z, com Chromium/Firefox sem conclusão e WebKit encerrado após cancelamento do passo de testes; não foi contado como falha final. Vercel Preview seguia falho sem diagnóstico, Copilot Review estava sem cota e a revisão CODEOWNER exigida não havia sido registrada (PENDENCIAS.md §P41). Gate Final verde não equivale a todos os workflows do PR verdes. Nenhuma alteração foi feita no Supabase, produção ou proteção de branch.
+
+## 23. Validação local e bloqueios adicionais em 30/10/2026 às 21:49Z
+
+No commit local `42114dbb8`, `npm run build:verify` passou: TypeScript, ESLint `0 erros / 0 warnings`, build Vite e guards SSOT. A suíte unitária completa `npm run test:run -- --reporter=dot --silent` passou com 1.252 arquivos e 25.910 testes aprovados; 130 arquivos/1.135 testes foram skipped e 24 permaneceram TODO. As duas specs E2E corrigidas passaram isoladamente em modo CI com 2 workers (7/7 e 27/27); isso não equivale a executar os jobs E2E completos.
+
+O workflow CI - Replenishment Module Quality Gate [#41128906205](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41128906205), referente ao SHA anterior `f1f05aa39bb6bde53fdd55c6e2b100d89f31b29b`, terminou `failure`: lint, TypeScript e smoke passaram, mas duas specs de paridade falharam ao esperar `page-title-novidades` após navegar a `/novidades`. O HTML de falha mostra a raiz ainda com `nprogress-busy`. A evidência não separa falha de sessão/Auth, rede ou montagem da rota; as credenciais `E2E_USER_EMAIL/PASSWORD` não estão disponíveis localmente para reproduzir a execução autenticada. O bloqueio e a limitação estão em PENDENCIAS.md §P41.
+
+E2E Swatch QuickView [#41128906303](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41128906303) seguia `in_progress` às 21:49Z, com Chromium e Firefox executando; o WebKit foi `failure` após shutdown do runner cancelar o passo de teste, sem assertion falha no trecho final do log. Não foi classificado como conclusão do workflow. No PR #2839, o Gate Final do head anterior [#41128906563](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41128906563) permaneceu `success`. O Preview Vercel, a revisão CODEOWNER, a cota do Copilot e os workflows extras seguem bloqueios documentados em PENDENCIAS.md §P41. A branch ainda não foi publicada após o commit local, portanto nenhum resultado remoto valida `42114dbb8`.
+
+## 24. Inventário read-only de falhas mais recentes na main — 30/10/2026
+
+Consulta GitHub MCP FOREVER sobre 119 workflows. **24 têm a última execução concluída na `main` com `failure`**; causas e bloqueios por workflow estão em PENDENCIAS.md §P42, com links diretos aos runs. O Gate Final — Deploy Ready mais recente consultado na `main`, [#41115240969](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41115240969), está `success`. Não houve rerun, correção remota, alteração em `main` ou mudança no Supabase nesta etapa.
+
+Principais grupos de causa: autenticação/redirect em E2E; fixtures/dataset de produtos e orçamentos; divergência de asserções/snapshots; indisponibilidade de schema cache; setup/instalação com logs insuficientes em runs históricos; limite de uso Copilot. Runs sem jobs, sem logs ou com logs expirados estão registrados como causa não comprovada e requerem execução diagnóstica; não foram classificados como bugs confirmados.
+
+A tabela de 24 falhas descreve o último resultado concluído observado na `main`, separadamente dos checks do PR #2839. Os commits locais `42114dbb8` (correções E2E) e `a02ec1a07` (inventário) foram publicados no branch do PR às 21:58Z. No momento da consulta, PR #2839 refletia `mergeable=false`, `mergeable_state=dirty`; uma integração read-only confirmou conflito de conteúdo em `RELATORIO_CI.md`, resolvido preservando as seções dos dois lados e registrando a decisão no ledger. O commit de integração ainda requer validação e push.
+
+A `main` avançou para `554ef41b44c9f318777d7e7b11189490a29a8c0a` às 21:58Z. Foram observados 28 runs novos nesse SHA; 25 estavam `pending/queued`, dois `skipped` e o alerta de falha também `skipped`. Até esses workflows concluírem, as 24 falhas da tabela PENDENCIAS.md §P42 permanecem os últimos resultados concluídos, não uma afirmação de que os novos runs falharam. A validação local no commit `a02ec1a07` passou: `npm run build:verify` (TypeScript, ESLint 0 erros/0 warnings, build e guards SSOT) e `npm run test:run -- --reporter=dot --silent` (1.252 arquivos e 25.910 testes passaram; 130 arquivos/1.135 testes skipped; 24 TODO). As duas specs E2E corrigidas passaram isoladamente (7/7 e 27/27), não como substituto da matriz remota completa.
+
+## 25. Integração de `main@554ef41b4` e validação do plano de 200 etapas — 30/10/2026 às 22:16Z
+
+A resolução do conflito em `RELATORIO_CI.md` preservou a Seção 13/P35 da `main` e anexou o histórico do PR como Seções 14–24. O merge inclui a alteração já presente na `main` que extrai `PromoFlixPlayer` para `usePromoFlixPlayer`; não alterou schema, migrations, dados ou configuração Supabase. O ledger de conflitos registra a decisão.
+
+Na primeira execução integral após integrar a `main`, 1 teste novo falhou porque esperava os totais antigos do plano P200 (`claimed=86`, `todo=103`), enquanto o conteúdo atualizado da `main` classifica 84 reivindicadas, 11 bloqueadas e 105 pendentes. Foram corrigidos somente os totais e a distribuição da onda 0 esperados pelo teste (`claimed=5`, `blocked=3`, `todo=2`); nenhum assert ou critério foi removido. A spec focada passou 4/4.
+
+| Verificação no conteúdo integrado | Resultado |
+|---|---|
+| `npm run build:verify` | ✅ TypeScript, ESLint (0 erros/0 avisos, sem regressão), guards SSOT e build Vite passaram. |
+| `npm run test:run -- --reporter=dot --silent` | ✅ 1.253 arquivos e 25.915 testes passaram; 130 arquivos/1.135 testes skipped; 24 TODO. A falha inicial de expectativa desatualizada foi corrigida e a repetição integral passou. |
+| `npx vitest run tests/scripts/plan-status.test.mjs --reporter=dot` | ✅ 4/4 testes passaram após ajustar os totais aos dados vigentes do plano. |
+
+**Escopo temporal:** a tabela registra a primeira repetição feita no working tree após corrigir as expectativas de P200, antes de gravar o commit corretivo. Portanto, ela não prova o estado do commit `44560c93d`; as validações pós-commit estão registradas na §26/P45 e serão atualizadas após as correções desta revisão. Os 24 workflows observados em falha na `main` (§24/P42) requerem reconsulta independente; runs pendentes não contam como falhas concluídas.
+
+## 26. Atualização das falhas da main e causa do Branch Protection Sentinel — 30/10/2026 às 22:33Z
+
+No `main@554ef41b44c9f318777d7e7b11189490a29a8c0a`, três falhas da fotografia anterior foram superadas por execuções concluídas em sucesso: E2E Critical Flows [#41134852668](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852668), E2E Personalization [#41134852480](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852480) e Replenishment [#41134852537](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852537). Assim, das 24 falhas anteriores, 21 ainda são o último resultado concluído; soma-se o novo failure do Sentinel, totalizando **22 workflows com última execução observada em falha**.
+
+| Estado novo na main | Evidência |
+|---|---|
+| Falha | Branch Protection Sentinel [#41134852421](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852421): detector não reconheceu o sufixo squash `(#2810)` e tentou validar 23 commits internos da integração como push comum. O job de verificação do ruleset passou. Causa e correção propostas em PENDENCIAS.md §P45. |
+| Sucesso que substitui falhas anteriores | Critical Flows #41134852668; Personalization #41134852480; Replenishment #41134852537. |
+| Ainda sem conclusão | CI Security [#41134852492](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852492) e Swatch QuickView [#41134852559](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852559) estavam sem conclusão. Deploy Gates [#41134852574](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852574), E2E Playwright [#41134852533](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852533) e Visual Baseline [#41134852595](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852595) também estavam na fila/em execução. Nenhum foi contado como failure novo. |
+
+A implementação no commit `92a73a7eb` extraía reconhecimento de títulos de merge, mas a revisão do PR identificou que limitar a auditoria ao HEAD ignorava commits anteriores ao squash no mesmo push. O diff atual da branch substitui essa lógica pelo cálculo first-parent e por testes de histórico Git temporário; ainda não está commitado nem validado integralmente. No commit `92a73a7eb`, `build:verify` e Vitest completos passaram pós-commit (1.254 arquivos/25.924 testes aprovados; 130 arquivos/1.135 skipped; 24 TODO); essa evidência cobre somente a implementação anterior. Nenhuma alteração em produção, `main` ou Supabase foi feita.

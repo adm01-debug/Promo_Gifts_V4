@@ -7,6 +7,8 @@ on:
   pull_request:
     paths:
       - 'scripts/sentinel-check.sh'
+      - 'scripts/sentinel-push-range.sh'
+      - 'tests/scripts/sentinel-push-range.test.mjs'
       - '.github/workflows/branch-protection-sentinel.yml'
       - '.github/workflows/sentinel-self-test.yml'
   workflow_dispatch:
@@ -171,3 +173,17 @@ jobs:
             exit 1
           fi
           echo "✅ lista vazia → NONE correto"
+
+  test-push-range-selection:
+    name: Test Sentinel push range selection
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false  # E32
+      - uses: ./.github/actions/setup-node-ci
+        with:
+          install: 'true'
+      - name: Test first-parent range selection
+        run: TZ=America/Sao_Paulo npx vitest run tests/scripts/sentinel-push-range.test.mjs --reporter=dot
