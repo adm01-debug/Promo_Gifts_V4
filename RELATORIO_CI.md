@@ -446,4 +446,31 @@ Após o commit documental `5ad880a1e`, `npm run build:verify` e `npm test -- --r
 - Após cada commit e após rebase em `cba9944d`: `NODE_OPTIONS=--max-old-space-size=4096 npm run build:verify` aprovado e `npm test -- --reporter=dot --silent` aprovado (**1.251 arquivos / 25.901 testes aprovados; 130 arquivos / 1.135 skipped; 24 todo**). Sem evidência de regressão local.
 - A reprodução E2E autenticada local não pôde ser executada: `E2E_USER_EMAIL` e `E2E_USER_PASSWORD` ausentes. A verificação será remota via PR; nenhum segredo foi exibido.
 
-**Próximo passo:** validar diff/format, commitar a atualização documental, repetir build e suíte completa conforme o protocolo pós-commit, enviar a branch e abrir PR para revisão. Não mesclar: mudanças de código da aplicação em PR podem disparar deploy de produção, vedado pelo protocolo desta auditoria.
+**Próximo passo:** validar diff/format, registrar os novos resultados concluídos da `main` em P30, repetir build e suíte completa após esse commit, enviar a atualização ao PR #2827 e acompanhar os checks/retries. Não mesclar: mudanças de código da aplicação em PR podem disparar deploy de produção, vedado pelo protocolo desta auditoria.
+
+## Atualização P30 — falhas na ponta atual e retries (2026-10-30T14:28Z)
+
+**HEAD da `main`:** `cba9944d12a61699a3ca855388e5842c5d6948b3`.
+
+### Situação das falhas anteriores
+
+| Workflow | Run mais recente concluído no HEAD atual | Resultado | Causa demonstrada | Run/ação seguinte |
+|---|---|---|---|---|
+| Uptime Monitor | [#41069035787](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41069035787), tentativa 1 | `failure` | Issue automática [#2820](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2820): site, preflight de login e Auth health responderam; `health-check` retornou `curl` exit 22. Em verificação autenticada independente a função variou de 503 a 200 saudável. | Tentativa 2 do run original `queued`. |
+| CI - Replenishment Module Quality Gate | [#41067472887](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41067472887), tentativa 1 | `failure` | O login E2E não concluiu: Auth token retornou 504 após 39–55 s ou ficou pendente; `system_settings` retornou 503/lento/pendente; `get-visitor-info` retornou 403/lento/pendente. Lint, typecheck e testes unitários/integrados passaram. | Tentativa 2 `queued`. |
+| E2E — Personalization Flow | [#41067472705](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41067472705), tentativa 1 | `failure` | O login não saiu da página e os cenários funcionais não foram alcançados. Auth token 200 em 10,4 s; chamadas `system_settings`, `profiles` e `get-visitor-info` demoraram de 5,4 a 28,5 s, além de uma Edge request pendente. | Tentativa 2 `queued`. |
+| Branch Protection Sentinel | [#41067472290](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41067472290) | `success` | Corrigido/sucedido na ponta atual. | Nenhuma. |
+| Quote Builder Delivery Quality | [#41067473669](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41067473669) | `success` | Falha anterior substituída por execução verde na ponta atual. | Nenhuma. |
+| E2E — Critical Flows & Error Boundaries | [#41067472836](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41067472836) | `success` | Falha anterior substituída por execução verde na ponta atual. | Nenhuma. |
+
+O retry foi solicitado via GitHub MCP para os três runs falhos; no snapshot P30, as novas tentativas continuam `queued`, sem novo resultado conclusivo. A fila não foi atribuída a uma causa sem evidência.
+
+### Evidência de serviço externo e limites do diagnóstico
+
+Consulta read-only agregada aos logs de `postgres_logs` entre 14:00–14:30Z: 311 eventos totais, 60 eventos com menção a timeout/cancelamento e zero menções textuais a `profiles`. A Edge Function `health-check` respondeu HTTP 503 em uma sondagem autenticada e HTTP 200 `healthy` em sondagem posterior com `?fresh=1`; a API Auth health respondeu HTTP 200. Isso comprova intermitência na janela, mas não identifica se a raiz está em capacidade, locks, rede ou plano. Ação administrativa pendente: correlacionar métricas e locks do banco/serviços com os horários dos runs antes de qualquer mudança. Nenhuma escrita, migration, mudança de schema, alteração de timeout ou deploy foi feita no Supabase.
+
+### PR aberto e validação local
+
+PR [#2827](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2827) aberto da branch `codex/ci-audit-latest-20261030` para `main`. No snapshot, todos os checks recém-disparados do PR estavam `queued`. Não mesclar até todos passarem e revisão concluir: PR inclui correção de comportamento do tour, cujo merge poderia disparar deploy de produção.
+
+Após o commit documental `ce14ad51f`, `NODE_OPTIONS=--max-old-space-size=4096 npm run build:verify` passou (typecheck, lint baseline 0/0, guards e build) e `npm test -- --reporter=dot --silent` passou com **1.251 arquivos/25.901 testes aprovados**, 130 arquivos/1.135 testes skipped e 24 TODO. O hook pre-push ESLint inicialmente atingiu o heap default de 2 GB; repetido com heap 4 GB, passou com 0 erros e 0 warnings. Checks do PR ainda pendentes.

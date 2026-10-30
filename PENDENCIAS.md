@@ -170,4 +170,29 @@ Dois commits locais nesta branch corrigem findings reproduzidos na auditoria:
 - `52f1aecbb fix(ci): protege acessos a amostras administrativas` — resolve cinco erros de acesso indexado TypeScript nos painéis de conexões administrativas; a contagem de erros cai de 872 para 867, sem aumento do baseline.
 - `2f914e1af fix(e2e): persiste encerramento do tour controlado` — persiste o encerramento do tour mesmo quando controlado pelo componente pai, fecha o tour se estiver visível antes da ação do teste E2E e adiciona teste unitário de regressão.
 
-Validação após ambos os commits e novamente após rebase em `cba9944d`: `npm run build:verify` passou; suíte completa passou com **1.251 arquivos e 25.901 testes aprovados**, 130 arquivos/1.135 testes ignorados e 24 TODO. Teste unitário focado passou (1/1). Os testes não foram enfraquecidos. A reprodução Playwright autenticada local permanece indisponível porque `E2E_USER_EMAIL` e `E2E_USER_PASSWORD` não estão configurados no ambiente local; os secrets não foram solicitados nem expostos. A evidência remota ainda depende dos checks do PR, a ser aberto após a atualização documental.
+Validação após ambos os commits e novamente após rebase em `cba9944d`: `npm run build:verify` passou; suíte completa passou com **1.251 arquivos e 25.901 testes aprovados**, 130 arquivos/1.135 testes ignorados e 24 TODO. Teste unitário focado passou (1/1). Os testes não foram enfraquecidos. A reprodução Playwright autenticada local permanece indisponível porque `E2E_USER_EMAIL` e `E2E_USER_PASSWORD` não estão configurados no ambiente local; os secrets não foram solicitados nem expostos. O PR [#2827](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2827) foi aberto; seus checks remotos estão pendentes.
+
+## Atualização P30 — retries e falhas atuais da `main` (2026-10-30T14:28Z)
+
+**HEAD auditado:** `cba9944d12a61699a3ca855388e5842c5d6948b3`. Últimos runs conferidos no MCP GitHub para `main`, excluindo PRs.
+
+### Falhas concluídas e tentativas de validação
+
+| Workflow | Falha no SHA atual | Trecho/evidência | Reexecução |
+|---|---|---|---|
+| Uptime Monitor | [#41069035787](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41069035787), tentativa 1, `failure`: `site=0`, `health-check=22`, OPTIONS e Auth health `0` | A issue automática [#2820](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2820) confirma que apenas a probe `health-check` falhou. Teste autenticado independente durante a auditoria oscilou entre HTTP 503 e HTTP 200 saudável; no retorno saudável, banco principal 862 ms e external DB 2.661 ms. | Tentativa 2 do mesmo run está `queued`; sem conclusão ainda. |
+| CI - Replenishment Module Quality Gate | [#41067472887](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41067472887), tentativa 1, `failure` no step `Run E2E Tests (Smoke)` | Lint, typecheck e unit/integration passaram. O helper `loginViaUI` não saiu da tela de login. O log registra `auth/v1/token` com HTTP 504 (39–55 s) e uma chamada pendente por 75 s; `system_settings` teve respostas 503 e chamadas lentas/pendentes; `get-visitor-info` teve 403 e chamadas lentas/pendentes. | Tentativa 2 está `queued`; sem conclusão ainda. |
+| E2E — Personalization Flow | [#41067472705](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41067472705), tentativa 1, `failure` no step `Run Personalization E2E Tests` | O login não completou e os cenários não alcançaram as asserções funcionais: token Auth HTTP 200 em 10,4 s, `system_settings` em 13,9–19,3 s, `profiles` em 5,4 s e `get-visitor-info` em 10,9–28,5 s, com outra chamada pendente. | Tentativa 2 está `queued`; sem conclusão ainda. |
+
+**Diagnóstico operacional read-only:** no intervalo 14:00–14:30Z, a consulta agregada de logs PostgreSQL contou 311 eventos, 60 menções a timeout/cancelamento e zero menções a `profiles`. Isso confirma degradação/timeouts no banco durante a janela, mas não localiza causa em tabela, lock, plano ou policy. A resposta HTTP 503 intermitente da função de health-check e as chamadas Auth/PostgREST/Edge demoradas corroboram falha externa transitória; não justificam alterar código de produto, limites de timeout, políticas ou schema sem evidência causal. A chamada autenticada posterior `health-check?fresh=1` voltou HTTP 200 `healthy`; não prova que o serviço permaneceu estável.
+
+### Outros workflows que voltaram a verde no SHA atual
+
+- Branch Protection Sentinel [#41067472290](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41067472290) — `success`.
+- Quote Builder Delivery Quality [#41067473669](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41067473669) — `success`.
+- E2E — Critical Flows & Error Boundaries [#41067472836](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41067472836) — `success`.
+- Também `success` na ponta atual: CodeQL, Gitleaks, Lovable Autoheal, No Prod Leak, Policies Baseline, Security Scan, Select Columns vs Types, SSOT Supabase Guard, Static Health Checks, Supabase Linter Gate, UI Visual & A11y, Lovable Edit Tracker e Release Please (links no snapshot P28 acima).
+
+### PR das correções locais
+
+PR [#2827](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2827) aberto, sem merge. Os checks do PR estão `queued` neste snapshot. A mudança do tour altera comportamento de aplicação; conforme o protocolo, não mesclar enquanto os checks e a revisão não concluírem, pois o merge pode publicar em produção. Nenhuma alteração no Supabase foi feita; as consultas foram agregadas e somente leitura.
