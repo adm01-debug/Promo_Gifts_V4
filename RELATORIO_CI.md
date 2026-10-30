@@ -1,5 +1,35 @@
 # RELATORIO_CI.md — Auditoria de Workflows CI/CD
 
+## Atualização da auditoria — 2026-10-30 (base limpa `7cd8cb1343f48bc5b1ad2cd8a6df0a1bb87f7d20`)
+
+### Baseline local, antes de qualquer correção
+
+| Etapa | Resultado | Evidência |
+|---|---|---|
+| `npm ci` | ✅ EXIT=0 | 1.167 pacotes instalados; npm reportou 13 advisories (12 high), não alterados nesta correção |
+| `npm run build:verify` | ✅ EXIT=0 | TypeScript, lint baseline, guardas Supabase e build Vite concluídos |
+| `npm test` | ✅ EXIT=0 | 1.247 arquivos passaram, 130 skipped; 25.869 testes passaram, 1.135 skipped, 24 todo |
+
+### Inventário atualizado da última execução por workflow na `main`
+
+Foram inventariados 42 nomes de workflow: 11 com última conclusão `failure`, 24 `success`, 2 `skipped`, 3 `cancelled` e 1 ainda `pending`. `queued`/`pending` não foram contabilizados como falhas.
+
+| Workflow | Run | Estado | Causa observada / provável |
+|---|---:|---|---|
+| Uptime Monitor | [41003613613](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41003613613) | failure | Health-check canônico retornou HTTP 503 e `database timeout after 1500ms`; monitor preservado |
+| Kit Coverage — Integration | [40999068927](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40999068927) | failure | PostgREST `PGRST002`, falha ao consultar schema cache antes das asserções |
+| E2E — Personalization Flow | [40998398325](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40998398325) | failure | Auth E21/latência elevada e falhas de visibilidade que exigem fixture e trace para separar causas |
+| Branch Protection Sentinel | [40998398421](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40998398421) | failure | Commit legítimo de PR #2765 não correspondeu ao padrão de título aceito pelo sentinel |
+| CI Security & Drift Checks | [40998398311](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40998398311) | failure | Ratchet WCAG apontou `outline-none` sem anel de foco em `AdImageResult.tsx:188`; correção local iniciada nesta branch |
+| E2E — Critical Flows & Error Boundaries | [40998398458](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40998398458) | failure | Limite mínimo bloqueou: 1 teste executado e 9 skipped após falha de setup Auth |
+| Policies Baseline | [40998398360](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40998398360) | failure | Baseline registra duas policies da partição `supplier_products_raw_history_p2026_07`, inexistente no schema vivo |
+| Deploy Gates | [40998399039](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40998399039) | failure | Falha agregada pelo Gate 1.13/Policies Baseline; Gate 6 build ficou skipped, sem falha independente de build |
+| E2E • Swatch QuickView | [40998398393](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40998398393) | failure | Falhas de visibilidade em Chromium/Firefox/WebKit; E21 em parte da matriz, falha WebKit ainda precisa de artefato focado |
+| Nightly Full CI | [40993462227](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40993462227) | failure | Color-swatch com timeouts de seletor; magazine-header sem credenciais E2E no runner |
+| Running Copilot Code Review | [40975434366](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40975434366) | failure | Serviço do Copilot encerrou o processamento; histórico de resposta HTTP 402/quota registrado em `PENDENCIAS.md` |
+
+As 24 conclusões `success` devem ser lidas como fotografia temporal da listagem na `main`; esta atualização não afirma que os 11 workflows já foram saneados remotamente.
+
 **Gerado:** 2026-10-29 · **Atualizado:** 2026-10-30  
 **HEAD da main:** `c64f613b18f37802127fccf574becb6496eb1755` (2026-10-30)  
 **Sessão:** https://claude.ai/code/session_01RfQzo7S3K6o49UBUDoCtUe
