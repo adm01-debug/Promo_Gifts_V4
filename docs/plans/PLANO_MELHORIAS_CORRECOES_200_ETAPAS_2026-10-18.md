@@ -197,10 +197,10 @@ Mesmo padrão em `supabase-security-gate.yml:63-81`: o "Gate 5 — Supabase Secu
 **Pronto:** `grep -c "require-live" .github/workflows/deploy-gates.yml` ≥ 1; o gate reprova sem `SUPABASE_ACCESS_TOKEN`; o Gate 5 executa passos live em PR do próprio repo
 **Origem:** A1-02, A2-10, A2-41
 
-#### P200-E009 · [A] · P0 · Reescrever a REGRA #9: governança exige PR, não push ✅
+#### P200-E009 · [A] · P0 · Reescrever a REGRA #9: governança exige PR, não push ⏳
 **Arquivo:** `CLAUDE.md` (REGRA #9)
-**Fazer:** o texto atual pede `git push` ao final da sessão e apenas *sugere* abrir PR. O buraco foi usado 69 vezes na janela, quase tudo em `.github/**`. Reescrever: mudança em `.github/**`, `CODEOWNERS`, `supabase/migrations/**`, `scripts/check-*` e `.gitleaks.toml` exige **PR**, inclusive do CODEOWNER; push direto em `main` só para reverter incidente em curso, com postmortem no mesmo dia.
-**Pronto:** `grep -c "exige PR" CLAUDE.md` ≥ 1 **e** `grep -c "git push ao final" CLAUDE.md` → `0`
+**Fazer:** o texto atual enfatiza concluir a sessão com push, enquanto o fluxo seguro exige revisão e integração por PR. Mudanças em `.github/**`, `CODEOWNERS`, `supabase/migrations/**`, `scripts/check-*` e `.gitleaks.toml` exigem PR, inclusive quando o autor é CODEOWNER. Push direto em `main` é proibido; mesmo incidente ativo usa PR emergencial de reversão/correção, preservando os gates.
+**Pronto:** `grep -ic "sempre em PR" CLAUDE.md` ≥ 1; `grep -ic "git push ao final" CLAUDE.md` → `0`; conteúdo do corpo de `CLAUDE.md` e `AGENTS.md` coincide; teste de espelhamento passa.
 **Origem:** A5-41, A5-55, C-04
 
 #### P200-E010 · [A] · P1 · Criar `npm run plan:status` ✅
