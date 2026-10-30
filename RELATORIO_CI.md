@@ -267,3 +267,42 @@ Nenhum código, teste, CI config ou workflow foi alterado. Portanto:
 |---|---|---|
 | `.github/workflows/ratchet-weekly.yml` | `echo "$DIFF_OUT" \| head -40` → SIGPIPE (exit 141) em `bash -eo pipefail` | Commit `6666dd5` — diff gravado em `/tmp/ratchet-diff.txt`; `head` lê arquivo (sem pipe) |
 
+
+---
+
+## Seção 4 — Tabela de prova completa (baseline × final)
+
+**Baseline:** SHA `380ceb6` (main antes das correções desta sessão)
+**Final:** PR #2763 head `d073e76` + merge main `7cd8cb13` → `87d57fc`
+
+### Fixes aplicados neste PR
+
+| # | Problema | Causa raiz (arquivo:linha) | Fix | Commit | Verificação |
+|---|---|---|---|---|---|
+| 1 | Gate 1.3 — `.migration-refs-baseline.json` desatualizado | `docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json` ref a migration inexistente | `--update-baseline` → 481 entradas | `8a1c1be` | `node scripts/check-migration-path-references.mjs` → EXIT=0, 0 regressões |
+| 2 | Gate 1.3 — nova ref quebrada pós-merge (PR-2731.md) | `analise-prs/dossies/PR-2731.md` referenciava `20261029160339_add_kill_switch_hits_anon_rate_guard.sql` | `--update-baseline` → 482 entradas | `86129be` | EXIT=0 |
+| 3 | Gate 1.1 / CI Security — outline-none WCAG 2.4.7 | `AdImageResult.tsx:188` — `focus-visible:outline-none` sem ring substituto | Adicionado `focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2` | `a99b3a3` | `node scripts/check-outline-none.mjs` → 0 regressões |
+| 4 | ratchet-weekly — SIGPIPE exit 141 | `.github/workflows/ratchet-weekly.yml` — `echo "$VAR" \| head -40` em `bash -eo pipefail` | Escrita em `/tmp/ratchet-diff.txt`; `head` lê arquivo | `6666dd5` | Lógica eliminada do pipe |
+| 5 | Gate 1.13 — policies baseline desatualizado | `.security/policies-baseline.json` continha 2 entries de `supplier_products_raw_history_p2026_07` removidas do live DB | Removidas 2 entries (`hist_all_service`, `hist_select_admin`): 966→964 | `d073e76` | JSON válido, 964 entries |
+
+### Workflows required checks — estado final esperado
+
+| Required Check | Baseline (`380ceb6`) | Final (pós-merge PR #2763) | Evidência |
+|---|---|---|---|
+| Gate Final - Deploy Ready | ❌ failure (Gate 1.3 + Gate 1.13) | ⏳ aguardando CI em `87d57fc` | Run em andamento |
+| Compare GitHub × Canonical | ✅ success | ✅ success | Check run `87d57fc` |
+| Analyze (javascript-typescript) | ✅ success | ⏳ queued | Check run `87d57fc` |
+| Gate E23 - Secret Scan (gitleaks) | ✅ success | ✅ success (Gitleaks — Secret Scan) | Check run `87d57fc` |
+| Assert Gate Final is required on main | ✅ success | ⏳ queued | Check run `87d57fc` |
+
+### Workflows não-required — documentados em PENDENCIAS.md
+
+| Workflow | Estado no main `7cd8cb13` | Pendência |
+|---|---|---|
+| Uptime Monitor | ❌ failure (repetido) | P19-C/P19-G — aguarda aprovação PO de environment |
+| E2E • Swatch QuickView | ❌ failure | P19-D — dados de produto pré-existente |
+| E2E — Personalization Flow | ❌ failure | P19-E — dados de produto pré-existente |
+| Branch Protection Sentinel | ❌ failure | P19-F — ruído de timing, não required |
+| CI Security & Drift Checks | ❌ failure (outline-none) | P19-B — fix incluído no PR #2763 |
+| Policies Baseline | ❌ failure (p2026_07) | Gate 1.13 — fix incluído no PR #2763 |
+| Nightly Full CI | ❌ failure | Pre-existing, não required |

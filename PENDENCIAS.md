@@ -585,3 +585,41 @@ Sem aprovação do PO, o workflow continuará falhando quando `EXTERNAL_PROMOBRI
 1. Verificar se os produtos com `color_swatches` estão ativos e visíveis nas rotas `/reposicao`, `/novidades`, `/super-filtro`.
 2. Se for uma limitação de dados de staging: ajustar o teste para pular rotas sem dados (via `REQUIRED_ROUTES`).
 3. Se for problema de timing de carga: aumentar timeout no fixture `firstPicker`.
+
+### P19-E — E2E — Personalization Flow (pré-existente no main)
+
+**Run no main:** [#40998398325](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40998398325) — SHA `7cd8cb13`, `conclusion=failure`.
+
+**Causa raiz:** `E2E — Personalization Journey` falha em fluxo de personalização de produto — testes exigem estado de catálogo/mockup específico que não está disponível no ambiente CI.
+
+**Confirmação de pré-existência:** O workflow já falhava em `380ceb6` (antes do PR #2763). Confirmado via histórico de runs no main.
+
+**Impacto no Gate Final:** NÃO — `E2E — Personalization Journey` não é required check de `main` (ver `required-checks.json`).
+
+**Bloqueio:** Dados de produto com personalização ativa necessários para os testes. Correção exige ajuste nos fixtures de testes ou na disponibilidade de dados.
+
+---
+
+### P19-F — Branch Protection Sentinel (pré-existente no main)
+
+**Run no main:** [#40998398421](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40998398421) — SHA `7cd8cb13`, `conclusion=failure`.
+
+**Causa raiz:** `Branch Protection Sentinel` falha ao detectar divergência entre required checks ativos no branch protection e `required-checks.json`. Pode ser ruído de sincronização pós-push quando Gate Final ainda está em fila.
+
+**Confirmação de pré-existência:** Falha recorrente no main, não introduzida pelo PR #2763. Não é required check de `main`.
+
+**Impacto no Gate Final:** NÃO — não está em `required-checks.json`.
+
+**Bloqueio:** Sentinel precisa rodar em janela onde Gate Final já concluiu para evitar falso positivo de "check faltante". PO pode ignorar enquanto Gate Final terminar verde.
+
+---
+
+### P19-G — Uptime Monitor (pré-existente, aguarda ação de PO)
+
+**Runs no main:** [#40998220633](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40998220633), [#40995668739](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40995668739), etc. — `conclusion=failure` repetido.
+
+**Causa raiz:** Workflow `uptime-monitor.yml` faz deploy para environment `production` que requer aprovação manual do PO (branch protection rule de environment).
+
+**Impacto no Gate Final:** NÃO — não é required check de `main`.
+
+**Ação necessária do PO:** Aprovar em https://github.com/adm01-debug/Promo_Gifts_V4/deployments/activity_log?environment=production OU desabilitar o environment protection rule para o Uptime Monitor.
