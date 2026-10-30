@@ -5,6 +5,20 @@ Todas as mudanças notáveis deste projeto são documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/),
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.4.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.3.2...v1.4.0) (2026-10-30)
+
+
+### Features
+
+* **E128:** split SupplierFormDialog.tsx em sub-componentes por aba ([a7c02ac](https://github.com/adm01-debug/Promo_Gifts_V4/commit/a7c02ac15934d75c623b8f5792313b471c320258))
+
+
+### Bug Fixes
+
+* **lint:** corrige dot-notation em badges-manager/types.ts ([#2806](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2806)) ([6dbc938](https://github.com/adm01-debug/Promo_Gifts_V4/commit/6dbc9387fedbd1118613eb07eb2315bfc1e722ea))
+* **spotlight:** timer cleanup e134 — clearTimeout no useEffect ([ff61eec](https://github.com/adm01-debug/Promo_Gifts_V4/commit/ff61eec48743c82f7cd5bec70255062157de578c))
+* **ts:** E130 — noUncheckedIndexedAccess: drain indexed-access ratchet 889→867 (-22 erros) ([5edddfb](https://github.com/adm01-debug/Promo_Gifts_V4/commit/5edddfb14ee4e33008e735f3f3710e902a9b45cb))
+
 ## [1.3.2](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.3.1...v1.3.2) (2026-10-30)
 
 
