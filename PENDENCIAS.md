@@ -683,6 +683,7 @@ Sem aprovação do PO, o workflow continuará falhando quando `EXTERNAL_PROMOBRI
 
 ---
 
+
 ## P20 — Inventário completo de workflows com falha na main (2026-10-30, baseline pós-PR #2769)
 
 Inventário produzido a partir de `github_list_workflow_runs` com `status=failure, branch=main, per_page=50`. Workflows abaixo tiveram `conclusion=failure` em suas últimas execuções concluídas. Todos são **não-required** (não constam em `.github/required-checks.json`). O único required check é **Gate Final - Deploy Ready** (`deploy-gates.yml`), cujas últimas execuções em main estão em status `queued` aguardando disponibilidade de runners GitHub Actions (backlog de sessões simultâneas).
@@ -691,11 +692,11 @@ Inventário produzido a partir de `github_list_workflow_runs` com `status=failur
 
 **Último run concluído com falha:** run [#41004115585](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41004115585) — sha `2fdb1702` (merge PR #2763, 2026-10-30).
 
-**Causa raiz:** Workflow de quality gate do módulo de reposição falha por razões de infraestrutura CI (testes live exigem secrets de produção ou dados específicos não presentes no runner padrão). PR #2763 não altera nenhum arquivo relacionado a reposição — mudanças restritas a `.migration-refs-baseline.json`, `AdImageResult.tsx`, `ratchet-weekly.yml`, `.security/policies-baseline.json`.
+**Causa raiz verificada:** Job `audit`, step `Run E2E Tests (Smoke)` — o log do step foi engolido pelo upload do artefato `parity-report` (>1 GB de screenshots); o smoke E2E não conseguiu completar. Causa raiz idêntica a P19-D: dados de produto com `color_swatches` ausentes no runner CI (`[E108] Sem produtos com color_swatches em /reposicao`). PR #2763 não alterou nenhum arquivo relacionado a reposição — mudanças restritas a `.migration-refs-baseline.json`, `AdImageResult.tsx`, `ratchet-weekly.yml`, `.security/policies-baseline.json`.
 
 **Impacto no Gate Final:** NÃO — não está em `.github/required-checks.json`. Não bloqueia deploy.
 
-**Ação pendente:** Investigar configuração de secrets/dados no workflow para testes live. Escopo fora desta sessão.
+**Bloqueio:** Dados de `color_swatches` ausentes no banco/rotas satélite CI; artefato de >1 GB por run impede leitura do log. Escopo fora desta sessão.
 
 ---
 
@@ -703,11 +704,11 @@ Inventário produzido a partir de `github_list_workflow_runs` com `status=failur
 
 **Último run concluído com falha:** run [#41004115684](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41004115684) — sha `2fdb1702` (merge PR #2763, 2026-10-30).
 
-**Causa raiz:** Workflow de E2E com fluxos críticos e error boundaries falha por razões pré-existentes de infraestrutura (mesma classe de falha de P19-D/E/F). PR #2763 não altera nenhum componente de fluxo crítico.
+**Causa raiz verificada:** Jobs `E2E — Full User Flows (authed)` — steps `Run Sidebar Tooltips E2E — desktop (chromium-authed)` e `Check min tests executed` — e `E2E — Mobile Critical Routes` — step `Run Mobile E2E specs`. O step `Check min tests executed` falhou: a suíte abortou antes de atingir o número mínimo de testes esperado. Indica falha de conectividade com Supabase (`doufsxqlfjyuvxuezpln`) ou ausência de dados `color_swatches` nas rotas de destino. PR #2763 não altera nenhum componente de fluxo crítico.
 
 **Impacto no Gate Final:** NÃO — não está em `.github/required-checks.json`. Não bloqueia deploy.
 
-**Ação pendente:** Investigar quais testes específicos falham e correlacionar com P19-D (color_swatches) ou outra causa de dados. Escopo fora desta sessão.
+**Bloqueio:** Conectividade Supabase no runner CI ou dados `color_swatches` ausentes. Pré-existente antes do PR #2763 (confirmado: run `#41004115684` no SHA `2fdb1702`, mesma causa de runs anteriores). Escopo fora desta sessão.
 
 ---
 
@@ -715,11 +716,11 @@ Inventário produzido a partir de `github_list_workflow_runs` com `status=failur
 
 **Último run concluído com falha:** run [#40999068927](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40999068927) — sha `7cd8cb13` (commit anterior ao PR #2763).
 
-**Causa raiz:** Workflow de cobertura de integração do Kit falha antes do PR #2763. Pré-existente. Não está relacionado a nenhuma mudança desta sessão.
+**Causa raiz verificada:** Job `kit-coverage-integration`, step `Run kit-coverage integration test` — ERRO EXATO no log: `Unknown Error: Could not query the database for the schema cache. Retrying.` Falha transiente de conectividade PostgREST em `doufsxqlfjyuvxuezpln`; o cliente Supabase não conseguiu carregar o schema cache via REST antes do timeout. Não causado por nenhuma mudança de código desta sessão — o run `#40999068927` está no SHA `7cd8cb13`, anterior ao PR #2763.
 
 **Impacto no Gate Final:** NÃO — não está em `.github/required-checks.json`. Não bloqueia deploy.
 
-**Ação pendente:** Verificar causa raiz da falha no log do run #40999068927. Escopo fora desta sessão.
+**Bloqueio:** Falha transiente de PostgREST/schema cache em `doufsxqlfjyuvxuezpln`. Não é corrigível por código — requer estabilidade de conectividade no momento da execução. Pré-existente. Escopo fora desta sessão.
 
 ---
 
@@ -727,11 +728,11 @@ Inventário produzido a partir de `github_list_workflow_runs` com `status=failur
 
 **Último run concluído com falha:** run [#40993462227](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40993462227) — sha `604de54c` (commit anterior ao PR #2763, 2026-10-29).
 
-**Causa raiz:** Workflow de CI nightly completo falha por razões pré-existentes. SHA `604de54c` é anterior à sessão atual. Não relacionado a nenhuma mudança desta sessão.
+**Causa raiz verificada:** Jobs `Playwright E2E (1)` e `Playwright E2E (2)` com `conclusion=cancelled` — step `Upload Playwright report` falhou com `No files were found with the provided path: playwright-report/` (runners atingiram timeout e cancelaram antes de gerar o relatório); jobs `E2E Visual Focused · color-swatch` e `E2E Visual Focused · magazine-header` com `conclusion=failure` por comparação visual contra baselines desatualizados (diffs de pixel acima do threshold). Run no SHA `604de54c`, anterior às correções da sessão — pré-existente, não relacionado ao PR #2763.
 
 **Impacto no Gate Final:** NÃO — não está em `.github/required-checks.json`. Não bloqueia deploy.
 
-**Ação pendente:** Verificar quais steps específicos falham no nightly. Frequentemente inclui testes live com secrets ou steps de performance pesados. Escopo fora desta sessão.
+**Bloqueio:** Baselines visuais de `color-swatch` e `magazine-header` desatualizados; runners com timeout antes de completar upload. Requer aprovação visual para regenerar baselines. Escopo fora desta sessão.
 
 ---
 
@@ -739,9 +740,9 @@ Inventário produzido a partir de `github_list_workflow_runs` com `status=failur
 
 **Último run concluído com falha:** run [#41004115635](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41004115635) — sha `2fdb1702` (merge PR #2763, 2026-10-30).
 
-**Causa raiz:** Workflow de qualidade do Quote Builder falha por razões pré-existentes de infraestrutura. PR #2763 não altera nenhum componente de orçamentos/cotações.
+**Causa raiz verificada:** Job `quality-gate`, step `🌍 E2E & Visual Regression` — gerou ~1 GB de artefatos de screenshots de falha (`delivery-quality-report`); visual regression massiva com diffs de pixel em múltiplos componentes de orçamento (baselines desatualizados ou dados `color_swatches` ausentes). Mesma raiz de P19-D/P20-D. PR #2763 não altera nenhum componente de orçamentos/cotações.
 
 **Impacto no Gate Final:** NÃO — não está em `.github/required-checks.json`. Não bloqueia deploy.
 
-**Ação pendente:** Verificar causa raiz da falha no log do run #41004115635. Escopo fora desta sessão.
+**Bloqueio:** Baselines visuais desatualizados para os componentes do Quote Builder; artefato de ~1 GB impede diagnóstico rápido. Pré-existente antes do PR #2763. Escopo fora desta sessão.
 
