@@ -278,6 +278,6 @@ As 23 falhas, runs, causas comprovadas e lacunas de logs/artifacts estão tabela
 
 #### Baseline e validação desta atualização
 
-O baseline completo anterior a esta atualização documental foi `npm ci` EXIT=0; `npm run build:verify` EXIT=0 (TypeScript, lint com zero regressões e build); `npm test` passou com 1.247 arquivos, 25.871 testes passados, 1.135 skipped e 24 TODO. Esse resultado é da árvore validada antes de integrar a `main` `a9a079fd`; **a validação completa será repetida no commit final que incorpora essa `main` e P28**, e seus resultados serão registrados abaixo. Nenhum snapshot/teste será atualizado ou enfraquecido para obter sucesso.
+Após o commit de integração, `npm run build:verify` passou: TypeScript sem erros, lint baseline em 0 regressões, guards Supabase e build Vite aprovados. `npm test` passou com **1.247 arquivos e 25.871 testes passados**, 1.135 skipped e 24 TODO — sem piora contra o baseline registrado. O relatório foi alterado somente para registrar este snapshot; conforme anti-regressão, ambos os comandos serão repetidos após o commit final consolidado. Nenhum snapshot/teste foi atualizado ou enfraquecido.
 
 Nenhuma mudança de código da aplicação, API, workflow, teste, contrato ou schema foi introduzida nesta consolidação. Nenhuma migration/DDL, escrita no Supabase, deploy de Edge Function, force push ou alteração direta da `main` foi executada. O commit será enviado por push normal ao branch do PR; PRs com checks/preview falhos ou pendentes não serão mesclados.
