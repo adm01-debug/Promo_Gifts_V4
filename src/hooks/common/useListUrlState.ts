@@ -108,23 +108,13 @@ export function useListUrlState<K extends string>(
   const updateParamRef = useRef(updateParam);
   updateParamRef.current = updateParam;
 
-  // Canonicaliza deep-links que chegam com filtros explícitos no valor
-  // default. A busca textual já tem um efeito próprio de debounce; quando o
-  // `searchKey` ainda está no default, deixamos esse efeito removê-lo primeiro
-  // para evitar duas navegações concorrentes no mesmo commit. A mudança de
-  // locationKey então reexecuta este normalizador para os demais filtros.
+  // Canonicaliza deep-links e navegações de histórico que chegam com filtros
+  // explícitos no valor default, inclusive a busca textual. Uma única escrita
+  // remove todos os defaults gerenciados; o efeito de debounce abaixo ignora
+  // uma busca já vazia/default e deixa essa normalização cuidar dela.
   useEffect(() => {
     const params = new URLSearchParams(searchParamsRef.current);
     const defaults = keysRef.current;
-    const searchValue = searchKey ? params.get(searchKey) : null;
-    if (
-      searchKey &&
-      params.has(searchKey) &&
-      (!searchValue || searchValue === defaults[searchKey])
-    ) {
-      return;
-    }
-
     let changed = false;
     for (const [key, defaultValue] of Object.entries(defaults)) {
       if (params.has(key) && (!params.get(key) || params.get(key) === defaultValue)) {
@@ -152,7 +142,9 @@ export function useListUrlState<K extends string>(
     if (!searchKey) return;
     const defaultValue = keysRef.current[searchKey];
     const target = !debouncedSearch || debouncedSearch === defaultValue ? null : debouncedSearch;
-    if (searchParamsRef.current.get(searchKey) === target) return;
+    const current = searchParamsRef.current.get(searchKey);
+    if (target === null && (!current || current === defaultValue)) return;
+    if (current === target) return;
     updateParamRef.current(searchKey, debouncedSearch, defaultValue);
   }, [debouncedSearch, searchKey]);
 

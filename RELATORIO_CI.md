@@ -266,14 +266,14 @@ Tabela de prova (Seção 8) + baseline local (Seções 1, 10) + comparação bas
 
 ### Inventário remoto da main
 
-Consulta pelo MCP GitHub a cada workflow, filtrada por `branch=main`, encontrou 88 workflows: 18 últimas execuções concluídas em `failure`, 61 em `success`, quatro `cancelled`, três `queued/pending`, uma `in_progress` e uma `skipped`. Os 18 failures e seus links, causas ou limites de evidência estão registrados em `PENDENCIAS.md §P32`. Entre os workflows verdes na ponta estavam Deploy Gates [#41134852574](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852574), E2E — Personalization Flow [#41134852480](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852480), E2E — Critical Flows [#41134852668](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852668), Quote Builder Delivery [#41134852447](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852447), CI Replenishment [#41134852537](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852537), Supabase Linter Gate [#41134852587](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852587), CodeQL [#41134852598](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852598), Gitleaks [#41134852499](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852499) e Uptime Monitor [#41142298925](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41142298925).
+Consulta pelo MCP GitHub às 119 definições de workflow, filtrada por `branch=main`, encontrou 98 com run e 21 sem execução: 22 últimas execuções concluídas em `failure`, 65 em `success`, cinco `cancelled`, três `pending`, uma `in_progress` e duas `skipped`. Os 22 failures e seus links, causas ou limites de evidência estão registrados em `PENDENCIAS.md §P32`. Entre os workflows verdes na ponta estavam Deploy Gates [#41134852574](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852574), E2E — Personalization Flow [#41134852480](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852480), E2E — Critical Flows [#41134852668](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852668), Quote Builder Delivery [#41134852447](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852447), CI Replenishment [#41134852537](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852537), Supabase Linter Gate [#41134852587](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852587), CodeQL [#41134852598](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852598), Gitleaks [#41134852499](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852499) e Uptime Monitor [#41142298925](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41142298925).
 
 ### Diagnóstico e correção reproduzida localmente
 
-- Baseline limpo `main@554ef41b`: `npm ci` e `npm run build:verify` passaram; a suíte completa tinha uma falha reproduzível no teste de alinhamento, que buscava JSX no arquivo anterior à extração do componente (`QuoteBuilderSummaryItems.tsx`).
-- Commit `07adb0675 test(quotes): atualiza fonte do teste de alinhamento`: corrigiu a referência do teste à fonte que contém o JSX.
-- Commit `c9f02f970 fix(listas): normaliza filtros padrão na URL`: remove da URL defaults explícitos de filtros no deep-link, preserva valores ativos e parâmetros externos, e cobre o caso de busca com debounce sem concorrência de navegações.
-- O inventário Playwright mostrou três falhas E2E autenticadas de `/carrinhos` mantendo parâmetros default após hidratação/reload. A causa foi reproduzida em testes unitários/fuzz locais; a correção funcional agora está no branch desta PR.
+- Baseline limpo `main@554ef41b`: `npm ci` e `npm run build:verify` passaram; a suíte completa tinha uma falha no teste de alinhamento, que procurava `leading-[1.125rem]` em `QuoteBuilderSummaryColumn.tsx` após o JSX ser extraído para `QuoteBuilderSummaryItems.tsx`.
+- Commit `07adb0675 test(quotes): atualiza fonte do teste de alinhamento`: apontou a asserção ao componente que contém o JSX.
+- Commit `c9f02f970 fix(listas): normaliza filtros padrão na URL`: normalizou defaults nos deep-links; a revisão independente identificou também o caso POP com busca já vazia, coberto pela revisão subsequente.
+- Os logs Playwright mostram duas falhas de `/carrinhos` e `/orcamentos` em que `status=all` persistiu e uma expectativa textual desatualizada (`Próximos 3 dias` versus o rótulo atual `Próximos (3 dias)`). A versão atual do branch normaliza defaults no deep-link/POP, preserva filtros ativos e parâmetros externos, e alinha a expectativa textual ao rótulo existente sem relaxar a asserção.
 
 ### Baseline × final local
 
@@ -281,12 +281,12 @@ Consulta pelo MCP GitHub a cada workflow, filtrada por `branch=main`, encontrou 
 |---|---:|---:|---|
 | `npm ci` | ✅ | ✅ | Sem regressão |
 | `npm run build:verify` (TypeScript, lint baseline, build e guards) | ✅ | ✅ | Sem regressão |
-| Suíte Vitest completa | 1.250 arquivos passaram; 1 falha no teste de alinhamento de quotes; 25.900 testes passaram | 1.251 arquivos passaram; 25.912 testes passaram; 130 arquivos/1.135 testes skipped; 24 TODO | Falha de baseline corrigida; testes passando não diminuíram |
-| Testes focados URL-state | Falhas E2E remotas em `/carrinhos`; sem reprodução unitária prévia | 380/380 testes unitários/fuzz passaram | Correção funcional validada localmente |
+| Suíte Vitest completa | 1.250 arquivos passaram; 1 falha no teste de alinhamento de quotes; 25.900 testes passaram | 1.251 arquivos passaram; 25.913 testes passaram; 130 arquivos/1.135 testes skipped; 24 TODO | Falha de baseline corrigida; testes passando não diminuíram |
+| Testes focados URL-state | A suíte unitária/fuzz não reproduzia a navegação POP de volta a defaults vazios | 381/381 testes unitários/fuzz passaram após incluir deep-link, filtros ativos, params externos e POP com busca vazia | Correção funcional validada localmente |
 
 ### Estado remoto e limite de publicação
 
-- A última execução E2E da `main` continua sendo [#41134852533](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852533), `failure`; essa execução antecede a correção.
+- A última execução E2E da `main` continua sendo [#41134852533](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852533), `failure`; essa execução antecede a correção funcional e a atualização da expectativa textual.
 - Não há `E2E_USER_EMAIL`, `E2E_USER_PASSWORD` ou `E2E_BASE_URL` no ambiente local, portanto não foi possível reproduzir os testes autenticados Playwright localmente. A validação remota exige a execução da PR.
 - A alteração de `useListUrlState` muda comportamento da aplicação. A PR será aberta e deixada sem merge para não disparar o deploy de produção sem revisão/aceite do PO.
 - Nenhuma migration, DDL, escrita de dados, deploy ou consulta de escrita no Supabase foi realizada.
