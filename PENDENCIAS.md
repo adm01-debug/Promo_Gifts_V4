@@ -604,13 +604,18 @@ Sem aprovação do PO, o workflow continuará falhando quando `EXTERNAL_PROMOBRI
 
 **Run no main:** [#40998398421](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40998398421) — SHA `7cd8cb13`, `conclusion=failure`.
 
-**Causa raiz:** `Branch Protection Sentinel` falha ao detectar divergência entre required checks ativos no branch protection e `required-checks.json`. Pode ser ruído de sincronização pós-push quando Gate Final ainda está em fila.
+**O que o Sentinel verifica (ver `.github/workflows/branch-protection-sentinel.yml:245-298`):**
+- `required_status_checks` com `Gate Final - Deploy Ready` presente no ruleset de `main`
+- `pull_request` (aprovação de PR obrigatória no ruleset)
+- `non_fast_forward` (sem push direto em `main`)
 
-**Confirmação de pré-existência:** Falha recorrente no main, não introduzida pelo PR #2763. Não é required check de `main`.
+**Causa raiz:** O job `check-protection-config` falhou ao validar as regras efetivas do branch `main` via `GET /repos/{owner}/{repo}/rules/branches/main`. Pode indicar ausência de ruleset ou desabilitação temporária de uma das 3 regras acima.
+
+**Diagnóstico antes de ignorar:** Ao ver nova falha do Sentinel, verificar qual das 3 regras está ausente no output do job antes de classificar como falso positivo. Falha real de branch protection é crítica — permite push direto em `main`.
+
+**Confirmação de pré-existência:** Run `#40998398421` no main, SHA `7cd8cb13`, não introduzida pelo PR #2763. Não é required check de `main`.
 
 **Impacto no Gate Final:** NÃO — não está em `required-checks.json`.
-
-**Bloqueio:** Sentinel precisa rodar em janela onde Gate Final já concluiu para evitar falso positivo de "check faltante". PO pode ignorar enquanto Gate Final terminar verde.
 
 ---
 
