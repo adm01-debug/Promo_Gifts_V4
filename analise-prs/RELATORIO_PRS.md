@@ -3,7 +3,7 @@
 > Main SHA fixado: `6e38d14a90323f69ff3beda27c8ae51476c3cb1d`
 > Main SHA pós-merges: `8382faf8330c4354aba69f6c5eba3b085eee2ded` (#2759 — release 1.2.0)
 > Total PRs abertos: **19** | Total analisados: **19** ✓
-> Dossiês completos: **19/19** (todos em `analise-prs/dossies/`)
+> Dosiês completos: **19/19** (todos em `analise-prs/dossies/`)
 
 ---
 
@@ -26,19 +26,19 @@
 
 | PR | Título | SHA | Gate Final | CI Produção |
 |---|---|---|---|---|
-| **#2768** | fix(kit-builder): revalida preços antes do orçamento | `852346720522787142cf452f01db40472cff2fea` | ✅ run #41009722428 success (05:40→05:48 UTC) | ✅ Logs Supabase limpos |
-| **#2759** | chore(main): release 1.2.0 | `8382faf8330c4354aba69f6c5eba3b085eee2ded` | ✅ run #41017130033 success (06:57→07:03 UTC) | ✅ Sem migration/edge-function; +217 linhas CHANGELOG/package.json/manifest/lockfile |
-| **#2734** | fix(ci): usa mirror Docker Hub após limite do GHCR | `50e6724177689fd097851c97fa9eb8e745473983` | ⏳ Gate Final in_progress (07:07Z) | ✅ CI pré-merge run #41017219587 success; Gate Final pós-merge em andamento |
+| **#2768** | fix(kit-builder): revalida preços antes do orçamento | `852346720522787142cf452f01db40472cff2fea` | ✅ run #41009722428 success (05:40←05:48 UTC) | ✅ Logs Supabase limpos |
+| **#2759** | chore(main): release 1.2.0 | `8382faf8330c4354aba69f6c5eba3b085eee2ded` | ✅ run #41017130033 success (06:57←07:03 UTC) | ✅ Sem migration/edge-function; +217 linhas CHANGELOG/package.json/manifest/lockfile |
+| **#2734** | fix(ci): usa mirror Docker Hub após limite do GHCR | `50e6724177689fd097851c97fa9eb8e745473983` | ✅ run #41018173746 success (07:07←07:16 UTC) | ✅ Todos os 12 gates passaram; Gate Final job #123941789871 completed/success |
 
 **Evidência #2768:** `merge_pull_request` → squash-merge confirmado em `2026-10-30T05:40:16Z`. Gate Final run #41009722428 `completed/success`.
 
-**Evidência #2759:** `merge_pull_request` → squash-merge confirmado em `2026-10-30T06:57:27Z`. Gate Final run #41017130033 `completed/success` (06:57→07:03Z). Test-merge vs main `c16381a5`: OK_sem_conflito; staged diff: +217 linhas 4 arquivos (CHANGELOG.md, package.json, manifest.json, package-lock.json). PR bot (release-please) mas diff confirmado 100%.
+**Evidência #2759:** `merge_pull_request` → squash-merge confirmado em `2026-10-30T06:57:27Z`. Gate Final run #41017130033 `completed/success` (06:57←07:03Z). Test-merge vs main `c16381a5`: OK_sem_conflito; staged diff: +217 linhas 4 arquivos (CHANGELOG.md, package.json, manifest.json, package-lock.json). PR bot (release-please) mas diff confirmado 100%.
 
-**Evidência #2734:** `merge_pull_request` → squash-merge confirmado em `2026-10-30T07:08Z`. SHA pós-merge `50e6724177689fd097851c97fa9eb8e745473983`. CI pré-merge run #41017219587 `completed/success` (07:05:53Z). Staged diff: +38 linhas `contract-tests.yml` (fallback Docker Hub + `permissions.packages: read`). Test-merge OK_sem_conflito. Gate Final pós-merge em andamento.
+**Evidência #2734:** `merge_pull_request` → squash-merge confirmado em `2026-10-30T07:08Z`. SHA pós-merge `50e6724177689fd097851c97fa9eb8e745473983`. CI pré-merge run #41017219587 `completed/success` (07:05:53Z). Staged diff: +38 linhas `contract-tests.yml` (fallback Docker Hub + `permissions.packages: read`). Test-merge OK_sem_conflito. Gate Final run #41018173746 → Gate Final job #123941789871 `completed/success` (07:16:07Z←07:16:11Z). Todos os 12 gates passaram (Gate 0, 0.5, 1, 2, 2.5, 3, 4, 5, 5.5, 6, E23, Gate Final). Supabase production check N/A — PR toca apenas `.github/workflows/contract-tests.yml`, sem migration ou edge function.
 
 ---
 
-## DECISAO_HUMANA (7 PRs)
+## DECISAO_HUMANA (8 PRs — após merge #2759)
 
 | PR | Motivo | Diff lido | Recomendação |
 |---|---|---|---|
@@ -69,7 +69,7 @@
 - **#2767** — fix useSecurityData refs (infinite spinner). Fix correto, sem regressão. **SUPERSEDED** — staged diff vazio; commit `82efe51d0` no main resolve o mesmo problema.
 - **#2766** — a11y fix AdImageResult + baseline RLS atualizado. **SUPERSEDED** — staged diff vazio; focus-visible já em main:AdImageResult.tsx:188.
 - **#2764** — docs: marca PDF Quality Gate RESOLVIDO. Zero risco. Converter de draft para elegível.
-- **#2750** — docs(analise-prs): dossiês sessão anterior. DRAFT+dirty.
+- **#2750** — docs(analise-prs): dosiês sessão anterior. DRAFT+dirty.
 - **#2749** — sentinel SHA allowlist + e2e pdf-dialog fix. Toca workflow se não-draft = DECISAO_HUMANA.
 - **#2746** — docs: padrões P-CI-A a P-CI-G. Zero risco. Converter de draft para elegível.
 
@@ -126,7 +126,7 @@ Evidência dos conflitos:
 | #2714 | CONFLITO | — | Impede merge |
 | #2717 | CONFLITO | — | Impede merge |
 | #2731 | CONFLITO | — | Impede merge |
-| #2734 | OK | +38 linhas (workflow) | **MERGEADA** |
+| #2734 | OK | +38 linhas (workflow) | Em main: NÃO |
 | #2739 | CONFLITO | — | Impede merge |
 | #2743 | CONFLITO | — | Impede merge |
 | #2744 | OK | +1.926 linhas, 21 arquivos | Em main: NÃO |
@@ -162,7 +162,7 @@ Evidência completa em `analise-prs/baseline/test-merges.md`.
 | #2744 | ✅ 100% inline | get_pr_diff — lido em chunks (2.286 linhas) |
 | #2743 | ✅ 100% inline | get_pr_diff — 18 arquivos lidos integralmente (56.044 linhas) |
 | #2739 | ✅ file-list (35 arquivos) + callers verificados | file-list + git grep callers confirmados |
-| #2734 | ✅ +38 linhas (staged diff) | test-merge staged — mergeada |
+| #2734 | ✅ +38 linhas (staged diff) | test-merge staged |
 | #2731 | ✅ 100% inline | get_pr_diff |
 | #2717 | ✅ 100% inline | get_pr_diff |
 | #2714 | ✅ 100% (SQL lido) | get_pr_diff — 4 migrations lidas integralmente |
@@ -193,5 +193,5 @@ Evidência completa em `analise-prs/baseline/test-merges.md`.
 - `analise-prs/prs.json` — inventário completo
 - `analise-prs/prs.csv` — inventário CSV
 - `analise-prs/progresso.json` — estado da sessão
-- `analise-prs/dossies/PR-<n>.md` — 19 dossiês (PR-2701 até PR-2768)
+- `analise-prs/dossies/PR-<n>.md` — 19 dosiês (PR-2701 até PR-2768)
 - `analise-prs/RELATORIO_PRS.md` — este arquivo
