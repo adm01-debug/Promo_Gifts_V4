@@ -5,6 +5,14 @@ Todas as mudanças notáveis deste projeto são documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/),
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.3.1](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.3.0...v1.3.1) (2026-10-30)
+
+
+### Bug Fixes
+
+* **auth:** E121+E122 — remove double-cast as unknown as Json e simplifica getProfileAndRoles ([3b37063](https://github.com/adm01-debug/Promo_Gifts_V4/commit/3b3706384969eb0b11210fc881910aafe3ce1967))
+* **kit:** trata peso zero/nulo com isKnownItemWeight e summarizeKitWeight ([#2791](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2791)) ([0b628fd](https://github.com/adm01-debug/Promo_Gifts_V4/commit/0b628fd3ddccb52e0182ff55b26102cfc3e6a930))
+
 ## [1.3.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.2.0...v1.3.0) (2026-10-30)
 
 
