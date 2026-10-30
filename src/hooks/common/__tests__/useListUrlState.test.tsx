@@ -320,6 +320,47 @@ describe('useListUrlState — botão voltar do navegador durante debounce penden
     expect(result.current.searchInput).toBe('old');
   });
 
+  it('normaliza defaults após POP quando a busca já está vazia e preserva params externos', async () => {
+    let navigateBack: (() => void) | null = null;
+    let currentSearch = '';
+    const NavigateCapture = () => {
+      const navigate = useNavigate();
+      const location = useLocation();
+      navigateBack = () => navigate(-1);
+      currentSearch = location.search;
+      return null;
+    };
+    const wrapper = ({ children }: { children: ReactNode }) => (
+      <MemoryRouter
+        initialEntries={[
+          '/carrinhos?status=all&deadline=all&sort=recent&q=&utm=email',
+          '/carrinhos',
+        ]}
+      >
+        <NavigateCapture />
+        {children}
+      </MemoryRouter>
+    );
+
+    const { result } = renderHook(
+      () => useListUrlState({ keys: CARTS_KEYS, searchKey: 'q', debounceMs: 250 }),
+      { wrapper },
+    );
+    expect(result.current.searchInput).toBe('');
+
+    act(() => navigateBack?.());
+
+    await waitFor(() => {
+      const params = new URLSearchParams(currentSearch);
+      expect(params.has('status')).toBe(false);
+      expect(params.has('deadline')).toBe(false);
+      expect(params.has('sort')).toBe(false);
+      expect(params.has('q')).toBe(false);
+      expect(params.get('utm')).toBe('email');
+    });
+    expect(result.current.searchInput).toBe('');
+  });
+
   it('não interfere em navegação PUSH/REPLACE normal (só reage a POP)', async () => {
     const wrapper = ({ children }: { children: ReactNode }) => (
       <MemoryRouter initialEntries={['/carrinhos']}>{children}</MemoryRouter>
