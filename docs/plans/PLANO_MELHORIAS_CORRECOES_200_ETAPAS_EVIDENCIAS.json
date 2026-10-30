@@ -1,5 +1,13 @@
 {
   "schemaVersion": 1,
   "plan": "PLANO_MELHORIAS_CORRECOES_200_ETAPAS_2026-10-18.md",
-  "records": {}
+  "records": {
+    "E010": {
+      "criterion": "`node scripts/plan-status.mjs --json | jq '.total'` → `200`; `npx vitest run tests/scripts/plan-status.test.mjs` passa; o relatório não conta ✅ sem recibo como etapa verificada.",
+      "exitCode": 0,
+      "evidence": "Comando literal do critério retornou 200; testes focados: 4/4; build: npm run build:verify passou (typecheck, lint sem erros/avisos, build e guards); suíte completa pós-commit 71db806a89642b21f350e047052106a1dc704065: 1.251 arquivos passaram, 130 skipped; 25.904 testes passaram, 1.135 skipped, 24 todo. O JSON informa total=200, verified=0 antes deste recibo, claimed=86, blocked=11, pending=103.",
+      "verifiedAt": "2026-10-30T18:01:14.365Z",
+      "commit": "71db806a89642b21f350e047052106a1dc704065"
+    }
+  }
 }
