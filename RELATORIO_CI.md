@@ -400,7 +400,7 @@ Nenhum código, teste, CI config ou workflow foi alterado. Portanto:
 ### Required checks — estado no HEAD `2fbab03e`
 
 | Required Check | Status |
-|---|
+|---|---|
 | Gate Final - Deploy Ready | ⏳ queued (run [#41007110676](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41007110676)) — backlog de runner; última conclusão verde: run [#41000678286](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41000678286) ✅ |
 | Compare GitHub × Canonical | ✅ success (pré-existente, sem alteração de edge functions) |
 | Analyze (javascript-typescript) | ✅ success (pré-existente) |
@@ -599,3 +599,27 @@ Os 5 workflows com runs ativas para `4b16b988` estão todos `status=queued, conc
 | `npm run build` | ✅ OK | ✅ OK (11.36s) | sem regressão |
 | `npx tsc --noEmit` | ✅ 0 erros | ✅ 0 erros | sem regressão |
 | `npm run test:ci-core` | ✅ 957 passed | ✅ 957 passed (39.56s) | sem regressão |
+
+---
+
+### Gate Final `f14321e2` — ✅ SUCCESS
+
+**Run:** [#41013710667](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41013710667) — `conclusion=success`  
+**SHA:** `f14321e2b4b96bca1cbf3562a36ddabe5eb28c0d` (HEAD atual da main em 2026-10-30)  
+**Resultado:** Gate Final - Deploy Ready passou com `success`. Único required check na main = verde.
+
+### Tabela de prova final — HEAD `f14321e2`
+
+| Workflow | Run ID | Conclusão | Observação |
+|---|---|---|---|
+| **Gate Final - Deploy Ready** | [#41013710667](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41013710667) | ✅ **success** | ÚNICO required check — verde |
+| Release Please | [#41013710530](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41013710530) | ✅ success | — |
+| Workflow Lint | [#41013710643](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41013710643) | ✅ success | — |
+| Policies Baseline | [#41013710666](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41013710666) | ✅ success | — |
+| Security Scan | [#41013710555](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41013710555) | ✅ success | — |
+| Branch Protection Sentinel | [#41013710581](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41013710581) | ❌ failure | P21 — push direto por sessão anterior sem `(#NNN)`. NÃO é required check. |
+| Copilot Code Review | — | ❌ failure | P19-H — HTTP 402 billing. NÃO é required check. Aguarda PO. |
+| E2E Swatch ColorPicker | — | ❌ failure | P19-D/I/J/K — pré-existente, produto depreciado. NÃO é required check. |
+| Uptime Monitor | [#41012624970](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41012624970) | ✅ success | P-UPTIME RESOLVIDO — deploy edge function concluído |
+
+**Conclusão:** O único required check (`Gate Final - Deploy Ready`) está verde em `f14321e2`. Todas as falhas restantes são não-required e documentadas em PENDENCIAS.md (P19-H, P19-D/I/J/K, P21).
