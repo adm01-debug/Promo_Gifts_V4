@@ -499,3 +499,60 @@ Os 5 workflows com runs ativas para `4b16b988` estão todos `status=queued, conc
 - P20-E — Quote Builder Quality: baselines visuais desatualizados
 
 **Todos os workflows required** (Gate Final, Compare GitHub × Canonical, CodeQL, Gitleaks, Assert Gate Final): última run concluída = ✅ `success`.
+
+---
+
+## Seção 9 — Prova final HEAD `852346720...` (2026-10-30T05:48Z)
+
+**HEAD da main:** `852346720522787142cf452f01db40472cff2fea` (PR #2768 — fix kit-builder, outra sessão)
+**Gate Final:** ✅ `conclusion=success` — run [#41009722428](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41009722428) (completado 05:48Z)
+
+### Testes unitários locais (Gate 2 — subset test:ci-core)
+
+| Comando | Resultado | Detalhe |
+|---|---|---|
+| `npm run test:ci-core` (41 arquivos, Gate 2 CI) | ✅ EXIT=0 | **41 arquivos passaram, 957 testes passaram, 0 falhas**, em 28.12s |
+
+> **Nota:** `test:ci-core` é o **exato subset usado pelo Gate 2 no CI GitHub Actions** (41 arquivos específicos, definidos em `package.json`). A suíte completa (`npx vitest run`) tem 25.866+ testes e excede o timeout do container de sessão (~120s); o Gate 2 de CI usa `test:ci-core` por design. Resultado local confirma que o Gate 2 passaria.
+
+### Required checks — estado final (HEAD `852346720...`)
+
+| Required Check | Status final | Evidência |
+|---|---|---|
+| Gate Final - Deploy Ready | ✅ **success** | run [#41009722428](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41009722428) |
+| Compare GitHub × Canonical | ✅ **success** | pré-existente, sem alteração de edge functions |
+| Analyze (javascript-typescript) | ✅ **success** | pré-existente |
+| Gate E23 - Secret Scan (gitleaks) | ✅ **success** | pré-existente |
+| Assert Gate Final is required on main | ✅ **success** | pré-existente |
+
+### Tabela de prova — todos os workflows com falha registrados nesta sessão
+
+| # | Workflow | Causa raiz documentada | Status final | Evidência |
+|---|---|---|---|---|
+| 1 | Gate Final (Gate 1.3 + 1.13) | `.migration-refs-baseline.json` desatualizado; `policies-baseline.json` sha256 inválido | ✅ **success** | run [#41000678286](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41000678286) — PR #2763 |
+| 2 | CI Security & Drift Checks | `AdImageResult.tsx:188` — `outline-none` WCAG 2.4.7 sem ring substituto | ✅ **success** | Gate 1 CI no run [#41000678286](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41000678286) |
+| 3 | Ratchet Weekly | `echo "$VAR" \| head -40` → SIGPIPE exit 141 em `bash -eo pipefail` | ✅ **fix mergeado** | PR #2763 — `ratchet-weekly.yml` arquivo tmp |
+| 4 | E2E PDF Dialog | `[E108]` fixture de orçamento rascunho ausente | ✅ **success** | run [#40966337212](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40966337212) |
+| 5 | Branch Protection Sentinel | Commits históricos sem `(#NNN)` | ✅ **success** | run [#40979462648](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40979462648) |
+| 6 | Uptime Monitor | `health-check` edge fn HTTP 503; fix mergeado `279f17` | **PENDENCIAS.md P-UPTIME** | Deploy run [#40976801625](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40976801625) aguarda aprovação PO `environment: production` |
+| 7 | copilot-pull-request-reviewer | HTTP 402 quota billing — serviço externo | **PENDENCIAS.md P19-H** | Bloqueio operacional de plano/quota |
+| 8 | E2E Swatch QuickView | Dados `color_swatches` ausentes no CI | **PENDENCIAS.md P19-D/P19-I** | Pré-existente, não required |
+| 9 | E2E Focused · thumb-quickview | Mesma causa P19-D | **PENDENCIAS.md P19-J** | Pré-existente, não required |
+| 10 | E2E · view-no-presentation-mode | Falha recorrente Playwright (P15) | **PENDENCIAS.md P19-K** | Pré-existente, não required |
+| 11 | CI Replenishment | Artefato parity-report >1 GB; `color_swatches` ausentes | **PENDENCIAS.md P20-A** | Pré-existente, não required |
+| 12 | E2E Critical Flows | `Check min tests executed` falhou; conectividade Supabase | **PENDENCIAS.md P20-B** | Pré-existente, não required |
+| 13 | Kit Coverage Integration | `Unknown Error: Could not query the database for the schema cache` | **PENDENCIAS.md P20-C** | Pré-existente, não required |
+| 14 | Nightly Full CI | `playwright-report/` ausente + baselines visuais desatualizados | **PENDENCIAS.md P20-D** | Pré-existente, não required |
+| 15 | Quote Builder Delivery Quality | ~1 GB artefatos; baselines visuais desatualizados | **PENDENCIAS.md P20-E** | Pré-existente, não required |
+
+### Comparação baseline × final (sem regressão)
+
+| Métrica | Baseline (SHA `380ceb6`, início da sessão) | Final (HEAD `852346720...`) | Δ |
+|---|---|---|---|
+| Gate Final required check | ❌ failure (Gate 1.3 + 1.13) | ✅ **success** run [#41009722428](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41009722428) | **corrigido** |
+| test:ci-core (Gate 2 subset) | ✅ 957 passed | ✅ **957 passed, 41 arquivos, 28.12s** | sem regressão |
+| `npm run build` | ✅ EXIT=0 | ✅ EXIT=0 | sem regressão |
+| `npx tsc --noEmit` | ✅ 0 erros | ✅ 0 erros | sem regressão |
+| Compare GitHub × Canonical | ✅ success | ✅ success | sem regressão |
+| Gitleaks (Gate E23) | ✅ success | ✅ success | sem regressão |
+| CodeQL | ✅ success | ✅ success | sem regressão |

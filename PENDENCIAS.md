@@ -8,12 +8,12 @@ O PR [#2768 — revalidação de preços no Kit Builder](https://github.com/adm0
 
 | Check externo | Estado | Evidência | Ação necessária |
 |---|---|---|---|
-| `copilot-pull-request-reviewer` (SHA `dcf88ec5`) | `failure` | [Run #41001589312](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41001589312) — falha operacional do serviço Copilot por limite adicional de uso (HTTP 402/quota); não é resultado de revisão do código. Não houve nova execução desse check no SHA documental. | Administrador do plano GitHub deve liberar/aumentar a cota do Copilot. Não contornar o check; após regularizar, solicitar nova execução/revisão no SHA atual. |
-| Deployment Preview da Vercel (SHA `b2f4be5b`) | `failure` | [Deployment `dpl_EeTgCLPn5gcPB1uxXzzQSAMYnAgv`](https://vercel.com/juca1/promo-gifts-v4/EeTgCLPn5gcPB1uxXzzQSAMYnAgv). O status externo informa apenas “Deployment has failed”; `vercel inspect --logs` não retornou detalhes. O resumo da Vercel mostra build `READY`, deployment `ERROR` e `output` vazio. Os 11 previews mais recentes consultados também estão `ERROR`, enquanto o deployment de `main` está `READY`; causa raiz ainda não confirmada. | Proprietário do projeto deve abrir o deployment no painel Vercel e consultar os eventos/build logs detalhados, identificar a mensagem de erro e corrigir a configuração/integração. Não atribuir a falha ao código deste PR sem essa evidência. |
-| `Vercel Agent Review` | `neutral` (review skipped) | [Check no PR #2768](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2768) — uso de cobrança não habilitado para o time Vercel. | Proprietário do time habilita usage billing em [Billing da Vercel](https://vercel.com/juca1/~/settings/billing) se quiser reativar as revisões automáticas. Não é falha de código nem check required. |
-| `Supabase Preview` | `skipped` | Sem mudanças na pasta `supabase/`; comportamento esperado para este PR, que não contém migration. | Nenhuma ação. |
+| `copilot-pull-request-reviewer` (SHA `dcf88ec5`) | `failure` | [Run #41001589312](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41001589312) — falha operacional do serviço Copilot por limite adicional de uso (HTTP 402/quota); não é resultado de revisão do código. | Administrador do plano GitHub deve liberar/aumentar a cota do Copilot. |
+| Deployment Preview da Vercel (SHA `b2f4be5b`) | `failure` | [Deployment `dpl_EeTgCLPn5gcPB1uxXzzQSAMYnAgv`](https://vercel.com/juca1/promo-gifts-v4/EeTgCLPn5gcPB1uxXzzQSAMYnAgv) — build `READY`, deployment `ERROR`. | Proprietário do projeto deve abrir o deployment no painel Vercel e consultar os eventos/build logs detalhados. |
+| `Vercel Agent Review` | `neutral` (review skipped) | [Check no PR #2768](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2768) — uso de cobrança não habilitado. | Proprietário do time habilita usage billing se quiser reativar. |
+| `Supabase Preview` | `skipped` | Sem mudanças na pasta `supabase/`; comportamento esperado. | Nenhuma ação. |
 
-**Situação no SHA `dcf88ec5`:** 10 checks `success`, 2 `skipped`, 1 `neutral`, 1 falha externa do Copilot e 24 ainda `queued`/`in_progress`. **No SHA atual `b2f4be5b`:** preview Supabase `skipped` (sem alterações em `supabase/`) e deployment Vercel `failure`; os workflows de CI não foram reexecutados por ser commit apenas documental. O PR não está pronto para merge: é necessário resolver a causa do deployment Vercel, revalidar checks remotos no SHA atual e tratar a quota do Copilot conforme aplicável.
+**Situação:** 10 checks `success`, 2 `skipped`, 1 `neutral`, 1 falha externa do Copilot. O PR não está pronto para merge: resolver causa do deployment Vercel e tratar quota do Copilot.
 
 ---
 
@@ -762,17 +762,15 @@ Inventário produzido a partir de `github_list_workflow_runs` com `status=failur
 
 ---
 
-## P-GATE-QUEUED — Gate Final em fila por backlog de runners (2026-10-30)
+## P-GATE-QUEUED — Gate Final em fila por backlog de runners (2026-10-30) — ✅ RESOLVIDO
 
 **Workflow:** `Deploy Gates` (`.github/workflows/deploy-gates.yml`)
-**SHA afetado:** `4b16b988517680e81a0268d809b87b78e8dbdef6` (PR #2774)
-**Run:** [#41008248798](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41008248798)
-**Status:** `queued` — **não é `conclusion=failure`**
+**SHA HEAD atual da main:** `852346720522787142cf452f01db40472cff2fea` (PR #2768, 2026-10-30T05:40Z)
+**Run (HEAD atual):** [#41009722428](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41009722428)
+**Status:** ✅ `conclusion=success` — completado às 2026-10-30T05:48Z
 
-**Causa raiz:** Pool de runners GitHub Actions esgotado por múltiplas sessões paralelas de agentes de desenvolvimento. O run foi criado às 05:24Z e permanece na fila sem runner disponível.
+**Histórico do problema:** Runners GitHub Actions ficaram esgotados por múltiplas sessões paralelas (05:24–05:48Z). Os SHAs `4b16b988`, `d129e75c`, `2fbab03e` ficaram com Gate Final `queued`/`in_progress`. O Gate Final para `2fdb1702` (PR #2763) passou com `success` em run [#41000678286](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41000678286) — prova de que o código estava correto.
 
-**Não é falha de código:** O Gate Final passou com `conclusion=success` no run [#41000678286](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41000678286) para sha `2bb3a988` (PR #2763, código idêntico ao atual). Os PRs #2769, #2773 e #2774 alteram exclusivamente `PENDENCIAS.md` e `RELATORIO_CI.md`; nenhum código de produção, edge function, componente React ou schema foi modificado.
+**Resolução:** Gate Final run [#41009722428](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41009722428) completou com `conclusion=success` para SHA `852346720...` (HEAD atual da main). Nenhuma ação de código foi necessária — o backlog de runners se dissipou automaticamente.
 
-**Ação necessária:** Aguardar liberação de runners. Quando o pool descomprimir, o Gate Final de `4b16b988` executará automaticamente e concluirá com `success`. Nenhuma ação de código é necessária.
-
-**Impacto no Gate Final:** SIM — o check required `Gate Final - Deploy Ready` está bloqueado na fila. Não é bloqueio por falha de código — é limitação de infraestrutura externa.
+**Impacto no Gate Final:** RESOLVIDO ✅ — check required `Gate Final - Deploy Ready` está verde no HEAD atual da main.
