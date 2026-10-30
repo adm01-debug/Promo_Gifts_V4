@@ -557,13 +557,13 @@ Os 5 workflows com runs ativas para `4b16b988` estão todos `status=queued, conc
 | Gitleaks (Gate E23) | ✅ success | ✅ success | sem regressão |
 | CodeQL | ✅ success | ✅ success | sem regressão |
 
-## Seção 10 — Fotografia atual das execuções na `main` (SHA `99b4f7fc`, 2026-10-30)
+## Seção 10 — Fotografia atual das execuções na `main` (SHA `f14321e2`, 2026-10-30)
 
-Consulta do MCP GitHub concluída aproximadamente às 06:18 UTC, por workflow ativo, `branch=main`, excluindo runs de PR. Foram encontrados 119 workflows ativos: 98 com run e 21 sem execução na `main`. Entre os 98: 61 `success`, 25 `failure`, 5 sem conclusão (3 `pending`, 2 `in_progress`), 5 `cancelled` e 2 `skipped`. **A Seção 8 acima é o snapshot anterior; a Seção 9 registra o Gate Final verde; esta Seção 10 é o inventário operacional atual.**
+Consulta do MCP GitHub concluída aproximadamente às 06:24 UTC, por workflow ativo, `branch=main`, excluindo runs de PR. Foram encontrados 119 workflows ativos: 98 com run e 21 sem execução na `main`. Entre os 98: 63 `success`, 22 `failure`, 6 sem conclusão (5 `pending`, 1 `in_progress`), 5 `cancelled` e 2 `skipped`. **A Seção 8 acima é o snapshot anterior; a Seção 9 registra a prova do Gate Final; esta Seção 10 é a fotografia operacional deste SHA.**
 
 ### Workflows em falha
 
-As 25 execuções concluídas em falha estão discriminadas com causa e bloqueio em P21 de [PENDENCIAS.md](PENDENCIAS.md):
+As 22 execuções concluídas em falha estão discriminadas com causa e bloqueio em P21 de [PENDENCIAS.md](PENDENCIAS.md):
 
 - Regenerate Supabase Types: [#26378664155](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/26378664155) — O step `Commit, push, and open PR` falhou. GitHub Actions retorna HTTP 410 ao buscar os logs retidos; a causa técnica não pode ser confirmada.
 - edge-functions-drift-check: [#40848475790](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40848475790) — O comparador reportou divergência de hash/estado em 29 Edge Functions; os nomes e hashes estão registrados em P15. O relatório não determina qual lado é a fonte correta.
@@ -579,24 +579,21 @@ As 25 execuções concluídas em falha estão discriminadas com causa e bloqueio
 - PDF Visual Regression: [#39253404824](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39253404824) — A API de diagnóstico não retornou job/step e não há artefato disponível.
 - Magazine typed queries — dry-run: [#39257701249](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39257701249) — O job `Aplica patch em cópia e valida` falhou em `Install dependencies`. O resumo não traz o erro de instalação; há um artefato de revalidação de 44.106 bytes ainda listado no run.
 - migration-dry-run: [#35506272165](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/35506272165) — O step `Dry-run drafts` registrou falha de resolução DNS do hostname mascarado do PostgreSQL (`could not translate host name ... Name or service not known`), conforme evidência histórica em P17.
-- Uptime Monitor: [#41006588920](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41006588920) — O probe de `health-check` falhou (curl exit 22); site, `check-login` por OPTIONS e Auth Health passaram. Uma consulta autenticada anterior leu `database=unhealthy` e timeout de 1.500 ms; um SELECT independente não prova saúde do probe.
 - E2E Cart — Matrix (E79): [#40140248814](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40140248814) — Dois diagnósticos distintos: um job falha no login E2E; outro expira em `locator.click` após 120 s no popover de remoção.
 - E2E Freight — Matrix (E80): [#39141334040](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39141334040) — Setup de autenticação E21 expira e deixa a página em `/login`; artefato E2E ainda consta no run.
 - E2E Stock — Matrix (E80): [#39257701140](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39257701140) — Dois jobs falharam no step `npm ci --no-audit --no-fund`. P17 também registra `EUSAGE` por divergência entre lockfile e manifests; outra anotação histórica sugere registry/rate-limit sem comprovação.
 - Nightly Full CI: [#40993462227](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40993462227) — Jobs `color-swatch` tiveram 8 timeouts de seletores; o job `magazine-header` reportou ausência de credenciais E2E (14 casos); os dois shards Playwright foram cancelados após timeout e não produziram `playwright-report/`. Não há evidência que autorize regenerar os baselines.
 - E2E · Atualizar snapshots visuais (E155): [#39999649279](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39999649279) — O passo de regeneração falhou com `element(s) not found`; artifact `visual-diffs-39999649279` está disponível.
-- Quote Builder Delivery Quality: [#41011270350](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41011270350) — O step `🌍 E2E & Visual Regression` teve dois testes que ficaram em `/login`; um relatou `auth/v1/token -> FAILED net::ERR_FAILED`. O helper expirou após 75 s aguardando o redirect.
 - Copilot: [#41011271465](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41011271465) — `Processing Request (Linux)` falhou com `SessionModelError`, HTTP 402, `errorCode=quota`: limite adicional do plano Copilot atingido.
 - CI - Replenishment Module Quality Gate: [#41009722286](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41009722286) — Dois testes E2E expiraram no login; a URL permaneceu `/login` após 75 s. `auth/v1/token` e chamadas REST ficaram pendentes/failed no ambiente remoto.
-- E2E • Swatch QuickView (Lista + Tabela): [#41011270385](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41011270385) — Quatro testes falharam com `[E108] Sem produtos com color_swatches em /reposicao (rota satélite)`; 10 de 15 ficaram skipped (66,7%, acima do limite 50%).
-- E2E — Critical Flows & Error Boundaries: [#41011270401](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41011270401) — O teste de tooltips na sidebar falhou após scroll: o tooltip esperado para “Coloque produtos lado a lado e ajude o cliente a decidir com segurança.” não apareceu em até 2 s (`element(s) not found`).
+- Branch Protection Sentinel: [#41013710581](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41013710581) — O step `Audit every commit in push` rejeitou o SHA `f14321e`: `1 commit(s) em push para main sem padrão aceito`. A mensagem observada foi `feat(ci): E116 — Gate 2 executa test:ci-core (27 arquivos) [ONDA 11]`.
 
 ### Workflows verdes e ainda em andamento
 
-Os 61 workflows verdes e os 5 sem conclusão, com nomes, links e estados, estão listados em P21 de [PENDENCIAS.md](PENDENCIAS.md). Os cinco `cancelled`, dois `skipped` e 21 sem run não foram classificados como falha.
+Os 63 workflows verdes e os 6 sem conclusão, com nomes, links e estados, estão listados em P21 de [PENDENCIAS.md](PENDENCIAS.md). Os cinco `cancelled`, dois `skipped` e 21 sem run não foram classificados como falha.
 
 ### Comparação baseline × final
 
-Baseline desta sessão: `npm ci` passou; `npm run build:verify` passou (TypeScript, ESLint com delta zero, guards e build Vite); a suíte pós-commit passou integralmente com 1.248 arquivos e 25.883 testes aprovados, 130 arquivos/1.135 testes skipped e 24 todo. Uma primeira execução teve erro transitório de teardown; o teste específico passou 13/13 e a repetição completa passou sem erro. A validação foi repetida após a reconciliação com main e passou sem regressão.
+Baseline desta sessão: `npm ci` passou; `npm run build:verify` passou (TypeScript, ESLint com delta zero, guards e build Vite); suíte pós-commit passou integralmente com 1.248 arquivos e 25.883 testes aprovados, 130 arquivos/1.135 testes skipped e 24 todo. A primeira execução teve erro transitório de teardown; o teste indicado passou 13/13 e a repetição integral passou sem erro. Validações repetidas após os commits documentais passaram sem regressões.
 
-**Escopo:** esta sessão atualiza somente documentação de CI e reconcilia inventário. Não alterou aplicação, APIs, workflows, testes, snapshots, secrets ou banco canônico. Não houve deploy, migration ou aprovação manual de produção. Os 25 bloqueios estão discriminados em P21; os 5 runs ainda abertos precisam de consulta após conclusão.
+**Escopo:** a sessão atualiza documentação de CI e reconcilia inventário. Não alterou comportamento da aplicação, testes, workflows, snapshots, secrets ou banco canônico, exceto que o merge do branch-base traz para o branch o commit já existente `f14321e2` de `deploy-gates.yml`; o PR continua documental em relação à main. Não houve deploy, migration ou aprovação manual de produção. Os 22 bloqueios estão discriminados em P21; os 6 runs abertos precisam de consulta após conclusão.
