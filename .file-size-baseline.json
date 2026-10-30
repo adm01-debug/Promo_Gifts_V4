@@ -67,6 +67,7 @@
     "src/components/products/customization/ConfigurationPanelV6.tsx": 550,
     "src/components/products/customization/LocationPanel.tsx": 623,
     "src/components/products/gallery/PromoFlixPlayer.tsx": 1516,
+    "src/components/products/gallery/usePromoFlixPlayer.ts": 624,
     "src/components/quotes/PdfGenerationDialog.tsx": 630,
     "src/components/quotes/QuoteBuilderSummaryColumn.tsx": 1698,
     "src/components/quotes/QuoteItemsTable.tsx": 579,
@@ -139,8 +140,7 @@
     "src/pages/tools/VisualSearchPage.tsx": 1274,
     "src/services/magazineService.ts": 820,
     "src/services/quoteService.ts": 552,
-    "src/types/stock.ts": 555,
-    "src/components/products/gallery/usePromoFlixPlayer.ts": 624
+    "src/types/stock.ts": 555
   },
   "meta": {
     "target": 100,
