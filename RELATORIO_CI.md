@@ -358,3 +358,10 @@ A branch incorpora a main `604de54c` e preserva as mudanças recebidas no relat�
 | `git diff --check HEAD^1 HEAD -- PENDENCIAS.md RELATORIO_CI.md analise-prs/dossies/PR-2731.md` | ✅ sem whitespace inválido nos arquivos reconciliados |
 
 O `git diff --check` abrangente aponta espaços finais em documentos importados sem alteração semântica do PR #2755 na `main`; eles representam quebras Markdown já presentes no conteúdo recebido. O commit passou pelos hooks locais, incluindo guardas canônicas. Não houve escrita no Supabase, migration, deploy, force push ou alteração direta da main. Após registrar esta evidência, os comandos obrigatórios serão repetidos após o próximo commit antes do push normal.
+
+
+### Revalidação P32 — estado consolidado após os runs do SHA `604de54c` — 2026-10-30
+
+Nova consulta individual das 119 definições ativas, concluída entre 02:47:34 e 02:49:06 UTC. Snapshot: **61 success, 24 failure, 5 cancelled, 2 skipped, 3 pending, 3 in_progress e 21 sem run**. O total segue 119. A tabela completa e os links dos 24 últimos runs falhos da `main` estão em `PENDENCIAS.md` §P32. Mudanças contra P31: `E2E — Critical Flows` concluiu `failure` em [#40991104562](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40991104562), `Nightly Full CI` passou de falha para `in_progress` no run [#40993462227](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40993462227), e o Uptime Monitor recebeu a falha mais recente [#40992714992](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40992714992). A contagem final permanece 24.
+
+Após o push normal do SHA `a43a32d6fdf5875258e887b37b5bbbff3a6f30c1`, o PR #2743 está `mergeable_state=blocked`: 1 falha Copilot por HTTP 402/cota e firewall para `api.github.com`, 23 checks em fila e 9 em execução na consulta das 02:47 UTC. O PR não foi mergeado. Sem escrita no Supabase ou deploy.

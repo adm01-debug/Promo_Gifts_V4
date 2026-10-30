@@ -940,3 +940,61 @@ A tabela lista **todos os 24** workflows cujo último run na `main` concluiu em 
 **Causa nova confirmada em Deploy Gates:** o run [#40991104565](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40991104565) falhou no Gate 1.3 porque o checker encontrou duas menções do dossier PR-2731 que pareciam apontar para um arquivo real sob `supabase/migrations/`, embora a migration seja apenas proposta na branch desse PR. A correção documental nesta branch remove a referência enganosa ao diretório sem alterar migration ou schema. Reproduzida localmente antes da correção e aprovada depois por `node scripts/check-migration-path-references.mjs`.
 
 **Workflows com `success` no snapshot:** a contagem inclui 61 workflows em `success`; as falhas acima não foram confundidas com runs pendentes/cancelados. O inventário é por definição ativa e seu último run na `main`, não por run mais recente de PR.
+
+## P32 — inventário final da `main` e estado do PR #2743 — 2026-10-30
+
+**Snapshot:** consultas individuais concluídas entre 02:47:34 e 02:49:06 UTC, para cada workflow ativo, `branch=main`, `exclude_pull_requests=true`, `per_page=1`. HEAD: `604de54c030c521def563b26351361e6472fafcf`.
+
+| Estado | Quantidade |
+|---|---:|
+| `success` | 61 |
+| `failure` | 24 |
+| `cancelled` | 5 |
+| `skipped` | 2 |
+| `pending` | 3 |
+| `in_progress` | 3 |
+| Sem execução na `main` | 21 |
+
+### Workflows em `failure` no snapshot P32
+
+A tabela lista **todos os 24** workflows cujo último run na `main` concluiu em falha. As causas históricas permanecem com evidência em P28; as linhas novas/alteradas trazem o diagnóstico mais recente. Um bloqueio não confirmado continua explicitamente classificado como não diagnosticado.
+
+| Workflow | Último run | Causa observada e ação/bloqueio |
+|---|---|---|
+| Copilot | [#40975434366](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40975434366) | HTTP 402 de quota e firewall bloqueando `api.github.com`; ação do administrador: regularizar cota/allowlist. |
+| Deploy Gates | [#40991104565](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40991104565) | Gate 1.3 falha por duas referências textuais a um arquivo de migration que não está versionado na `main`, dentro do dossier do PR #2731. A branch corrige o texto para identificar a migration como proposta do PR sem apresentá-la como arquivo existente; o checker local passa após essa correção. Nenhum SQL foi recriado/executado. |
+| Regenerate Supabase Types | [#26378664155](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/26378664155) | Run antigo; a API de logs retorna HTTP 410. Reexecutar pelo fluxo autorizado para diagnosticar o estado atual. |
+| edge-functions-drift-check | [#40848475790](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40848475790) | Drift detectado; identificar os slugs pelo artifact e reconciliar via PR, sem deploy direto. |
+| E2E — Critical Flows & Error Boundaries | [#40991104562](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40991104562) | Os passos `Run Admin Critical Routes E2E` e `Check min tests executed` falharam. O log retido lista as rotas `/admin/seguranca`, `/admin/rate-limit`, `/admin/rls-denials` e `/admin/workflows`; somente 1 teste foi executado de 10 esperados e 9 foram skipped. A causa específica da falha de rota não aparece no resumo; inspecionar trace/artifacts e auth do ambiente, sem reduzir o gate de execução mínima. |
+| Supplier Comparison CI | [#39253399818](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39253399818) | Run histórico sem jobs/logs acessíveis pela API; causa não confirmada com os logs disponíveis. |
+| OptimizedImage E2E CI | [#39263929298](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39263929298) | `Setup E2E` falhou, sem mensagem-raiz no trecho retido; recuperar stderr/reproduzir antes de mudar o teste. |
+| Global Search Quality Gate | [#39263929104](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39263929104) | `npm ci` EUSAGE por divergência entre manifests e lockfile no SHA histórico; corrigir lock em PR após reprodução. |
+| Kit Coverage — Integration | [#40813871454](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40813871454) | `anon` recebe `permission denied` em `product_kit_components`/`v_kit_component_complete`; ajustar identidade/fixture do teste, sem grant público ou DDL direto. |
+| Update Quote Visual Snapshots | [#39997674586](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39997674586) | `[E108] Sem orçamento enviado no ambiente`; preparar fixture e revisar visualmente antes de atualizar snapshot. |
+| E2E Discount Approval | [#39263929177](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39263929177) | Falha em `Setup E2E`; logs retidos não mostram causa específica. |
+| E2E • ColorSwatch 2 linhas (Grid) | [#39263932330](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39263932330) | Falha em `Setup E2E`; causa não aparece no log retido. |
+| E2E · Dialogs visual PR check | [#39253396759](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39253396759) | API não devolveu jobs/logs do run histórico; causa não confirmada. |
+| E2E · Check Calendar snapshots | [#39253393953](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39253393953) | API não devolveu jobs/logs do run histórico; causa não confirmada. |
+| PDF Visual Regression | [#39253404824](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39253404824) | API não devolveu jobs/logs do run histórico; causa não confirmada. |
+| Magazine typed queries — dry-run | [#39257701249](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39257701249) | `Install dependencies` falhou, mas stderr do gerenciador não está retido; reproduzir no SHA indicado antes de alterar deps. |
+| migration-dry-run | [#35506272165](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/35506272165) | `psql` não resolve o hostname mascarado. Owner precisa verificar o secret/host no ambiente; nenhuma migration aplicada. |
+| Uptime Monitor | [#40992714992](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40992714992) | `Probe site + edge function` terminou com `site=0`, `health-check=22`, `check-login OPTIONS=0` e `auth-health=0`. O deploy [#40976801625](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40976801625) segue `pending`; a API de aprovações pendentes retornou `[]`. A causa e a ação necessária continuam sem confirmação. |
+| Ratchet Weekly — Baixar baselines | [#40296887709](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40296887709) | Código 141/SIGPIPE em pipeline `echo | head`; correção no PR #2745 ainda sem checks/preview verdes. |
+| E2E Cart — Matrix | [#40140248814](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40140248814) | Diagnósticos distintos: falha no handoff de autenticação e timeout de 120 s no popover de remoção; inspecionar/reproduzir cada cenário. |
+| E2E Freight — Matrix | [#39141334040](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39141334040) | `E21 — login falhou em CI`; credenciais/serviço do ambiente requerem verificação do owner. |
+| E2E Stock — Matrix | [#39257701140](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39257701140) | `npm ci` EUSAGE no lockfile do SHA histórico; reconciliar manifest/lock por PR, sem flexibilizar instalação. |
+| CI Security & Drift Checks | [#40991104549](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40991104549) | Gate WCAG 2.4.7: `src/components/magic-up/AdImageResult.tsx:188` usa `focus-visible:outline-none` sem ring no mesmo literal. Fix está no PR #2758; não mesclado. |
+| E2E · Atualizar snapshots visuais (E155) | [#39999649279](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39999649279) | `element(s) not found`; confirmar fluxo/elemento esperado antes de atualizar baseline. |
+
+
+### Estados não classificados como falha
+
+`E2E (Playwright)` [#40991104520](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40991104520), `E2E • Swatch QuickView` [#40991104522](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40991104522) e `Nightly Full CI` [#40993462227](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40993462227) estão `in_progress`. `Deploy Edge Functions` [#40976801625](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40976801625), `SECURITY DEFINER ACL — Multi-Env` [#40899426158](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40899426158) e `restore_seller_cart RPC` [#40852813455](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40852813455) estão `pending`. A consulta `list_pending_deployments` para o deploy retornou `[]`; causa/ação seguem não confirmadas. Nenhum desses estados foi contado como `success` ou `failure`.
+
+**Causa nova confirmada em Deploy Gates:** o run [#40991104565](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40991104565) falhou no Gate 1.3 porque o checker encontrou duas menções do dossier PR-2731 que pareciam apontar para um arquivo real sob `supabase/migrations/`, embora a migration seja apenas proposta na branch desse PR. A correção documental nesta branch remove a referência enganosa ao diretório sem alterar migration ou schema. Reproduzida localmente antes da correção e aprovada depois por `node scripts/check-migration-path-references.mjs`.
+
+**Workflows com `success` no snapshot:** a contagem inclui 61 workflows em `success`; as falhas acima não foram confundidas com runs pendentes/cancelados. O inventário é por definição ativa e seu último run na `main`, não por run mais recente de PR.
+
+### PR #2743 — checks após o push do SHA `a43a32d6`
+
+Consulta às 02:47 UTC: PR aberto, `mergeable=true`, `mergeable_state=blocked`. O status do SHA `a43a32d6fdf5875258e887b37b5bbbff3a6f30c1` tinha 1 falha (`Running Copilot Code Review`, run [#40993721191](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40993721191)), 23 jobs `queued`, 9 `in_progress`, 6 `success`, 5 `skipped` e 1 `neutral`. A falha Copilot traz erro HTTP 402 (`errorCode=quota`) por limite adicional de uso, e a allowlist do firewall bloqueia `api.github.com`. Não mesclar enquanto houver checks queued/in-progress ou a falha pendente.
