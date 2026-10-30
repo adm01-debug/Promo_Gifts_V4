@@ -823,3 +823,20 @@ O único required check (`Gate Final - Deploy Ready`) para `b92bcf876` está `qu
 `in_progress`: Quote Builder Delivery, Supabase Linter Gate.
 `success` já confirmado: Policies Baseline, SSOT Supabase Guard, Security Scan, UI Visual & A11y, No Prod Leak, Static Health Checks, Release Please, Lovable Edit Tracker, Select Columns vs Types.
 | 5 | Branch Protection Sentinel | Avaliar tolerância ou configurar Lovable para usar formato de commit com `(#NNN)` |
+
+## P32 — Revalidação de workflows na main `6bc42d682` (2026-10-30T19:20Z)
+
+Consulta read-only às últimas execuções de `push` na `main`. As causas observadas foram separadas entre defeito de teste corrigível e dependência externa; nenhum gate foi enfraquecido.
+
+| Workflow | Run | Resultado / causa comprovada | Estado e ação |
+|---|---|---|---|
+| Branch Protection Sentinel | [#41110207016](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41110207016) | `failure`: o push de `6bc42d6` não segue um padrão aceito para merge de PR. O log identifica 1 commit direto na `main` sem padrão aceito. | Incidente já ocorrido; não reescrever histórico nem criar allowlist. Evitar novos pushes diretos e exigir PR. |
+| E2E — Critical Flows & Error Boundaries | [#41110207002](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41110207002) | `failure`: setup autenticado registrou `auth/v1/token` sem resposta dentro do timeout, URL permaneceu em `/login`, e chamadas REST ficaram pendentes por ~65–70 s. Os 7 testes sem autenticação de Error Boundaries passaram. | Bloqueio de disponibilidade/latência no caminho Supabase Auth/REST do CI; investigar telemetria e rate limit com o PO. Não alterar segredos nem banco sem evidência/autorização. |
+| Quote Builder Delivery Quality | [#41110207172](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41110207172) | `failure`: 3 cenários E2E autenticados terminaram em timeout de login; `auth/v1/token` e chamadas REST ficaram pendentes. Os 4 testes unitários do tooltip passaram. | Mesma dependência externa de Auth/REST observada acima; não classificar como regressão do tooltip sem execução autenticada válida. Investigar com o PO. |
+| CI Security & Drift Checks | [#41110207018](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41110207018) | `failure`: 1.129 arquivos e 24.967 testes passaram; a única falha foi `QuoteBuilderSummaryAlignment.fuzz.test.ts`, que lia `QuoteBuilderSummaryColumn.tsx` embora os tokens verificados estejam em `QuoteBuilderSummaryItems.tsx`. Reproduzida localmente no SHA `6bc42d6`. | Correção do alvo de leitura preparada no PR [#2839](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2839), commit `2d7b6815c`; testes focados e suíte completa passam no branch. Falha da `main` só será encerrada após merge revisado e novo run verde na `main`. |
+
+### Gate obrigatório e checks verdes nesta ponta
+
+- Gate Final — Deploy Ready: [#41110207159](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41110207159) — `success` em `6bc42d682`.
+- Também concluíram `success` nesta ponta: Security Scan [#41110207040](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41110207040), Required Checks Guard [#41110207046](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41110207046), No Prod Leak [#41110206990](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41110206990), UI · Visual & A11y [#41110207385](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41110207385) e Static Health Checks [#41110207108](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41110207108).
+- Swatch QuickView [#41110207138](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41110207138) ainda estava `in_progress` na consulta; não foi contado como sucesso nem falha concluída.
