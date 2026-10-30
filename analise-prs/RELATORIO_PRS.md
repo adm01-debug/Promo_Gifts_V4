@@ -276,9 +276,9 @@ Evidência adicional: `quality-gate` foi ✅ SUCCESS em `37ea10a3` (5º merge, S
 | #2844 | docs: RELATORIO_CI §13 + PENDENCIAS §P35 | `a24ee07be166d35dd2d0e8c20f7547290e0d4348` | docs-only bypass E14 ✅, Gate 0 ✅, Deployment Failure Alert: skipped |
 | #2845 | docs(auditoria): revalida portão inicial do P200 | `637fe57eee3e00d012da3c1da843b088c2e695a7` | docs-only bypass E14 ✅, Gate 0 ✅, Deployment Failure Alert: skipped |
 | #2836 | fix(plan-status): corrige parser para 200 step IDs | `6bd5ce61c3fe5a81b3a74d763ac05851c1129f80` | Gate Final ✅ na branch antes do merge, Deployment Failure Alert: skipped |
-| #2810 | feat(e128): split PromoFlixPlayer 1512→699 linhas + hook | `554ef41b44c9f318777d7e7b11189490a29a8c0a` | Gate Final: **pendente** (quality-gate/e2e-gates em execução); 33/39 checks ✅; Deployment Failure Alert: skipped; 2 falhas pré-existentes no baseline (Supabase Preview, Verify push pattern) |
+| #2810 | feat(e128): split PromoFlixPlayer 1512→699 linhas + hook | `554ef41b44c9f318777d7e7b11189490a29a8c0a` | Gate Final ✅ success (job `124355046790`, run `41134852574`, concluído `22:53:31Z`); Deployment Failure Alert: skipped; sem regressão nova |
 
-> **Gate Final main HEAD `554ef41b4`:** em execução às 22:17Z em 2026-10-30. Jobs ainda em andamento: `quality-gate`, `e2e-gates`, `audit`, `visual-baseline`, `Gate 0 SSOT`. Nenhuma falha nova detectada além do baseline.
+> **Gate Final main HEAD `554ef41b4`:** ✅ `conclusion: success` — job `124355046790`, run `41134852574`, completado `2026-10-30T22:53:31Z`. Falhas observadas (E2E Playwright, CI Security Drift) = pré-existentes documentadas em RELATORIO_CI.md §3.1 e RELATORIO_BASELINE_261030.md.
 
 ### DECISAO_HUMANA — PRs para revisão do PO
 
@@ -308,5 +308,14 @@ Evidência adicional: `quality-gate` foi ✅ SUCCESS em `37ea10a3` (5º merge, S
 | #2744 | DRAFT |
 | #2731 | REGRA#8 duplo + histórico desconectado de main |
 | #2701 | REGRA#8 + histórico desconectado de main + DRAFT |
+
+### NÃO VERIFICADO
+
+| Item | Razão |
+|---|---|
+| Merge-test local de PR #2839 (diff real) | PR não mergeada; análise parou em DECISÃO_HUMANA por REGRA #8 (`.github/workflows/deploy-gates.yml` + `CLAUDE.md`) |
+| Merge-test local de PRs CI_FALHOU (#2822, #2739) | CI falhado antes da análise; merge de teste não executado |
+| Verificação Supabase produção pós-merge | Nenhuma das 4 PRs mergeadas tocou `supabase/migrations/` ou `supabase/functions/` (evidência: `git diff --name-only` count=0 para #2810 e #2836; #2844/#2845 docs-only) |
+| Títulos exatos de PR #2839 via GitHub API | Recuperado via dossier gerado em sessão anterior (compactada) |
 
 *Gerado por Claude Code — sessão session_014nTibSuSPcPvDsPZWiwQbH — 2026-10-30*
