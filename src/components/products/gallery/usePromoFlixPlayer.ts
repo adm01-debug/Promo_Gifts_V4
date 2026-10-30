@@ -5,6 +5,7 @@ import { toast } from 'sonner';
 
 type HlsType = InstanceType<typeof Hls>;
 
+// E128: extracted from PromoFlixPlayer.tsx
 export const PLAYBACK_RATES = [0.5, 0.75, 1, 1.25, 1.5, 2] as const;
 
 export function formatTime(secs: number): string {
