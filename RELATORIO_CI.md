@@ -1,7 +1,7 @@
 # RELATORIO_CI.md — Auditoria de Workflows CI/CD
 
-**Gerado:** 2026-10-29 · **Atualizado:** 2026-10-30  
-**HEAD da main:** `c64f613b18f37802127fccf574becb6496eb1755` (2026-10-30)  
+**Gerado:** 2026-10-29 · **Atualizado:** 2026-10-30
+**HEAD da main:** `380ceb6238dc4ea4f093bd61ce8dd5419c74ab91` (snapshot P30, 2026-10-30)
 **Sessão:** https://claude.ai/code/session_01RfQzo7S3K6o49UBUDoCtUe
 
 ---
@@ -330,3 +330,12 @@ O `Deploy Gates` [#40985564449](https://github.com/adm01-debug/Promo_Gifts_V4/ac
 `Quote Builder Delivery Quality` falhou no step E2E/visual e `E2E — Critical Flows` no spec de tooltips desktop; ambos produziram artifacts Playwright, mas os resumos/log tails consultados não revelaram a assertion. Permanecem pendentes de inspeção desses relatórios antes de qualquer fix. O Uptime Monitor repetiu curl 22; deploy de `health-check` segue `pending`, sem aprovação listada. Nada foi deployado nem gravado no banco.
 
 Após o commit `826801f68`, a revalidação local foi concluída: `npm run build:verify` passou (TypeScript, lint com 0 erros/avisos e Δ0, guards Supabase, build Vite, verificação de ciclos e harness de produção); `npm test` passou com 1.247 arquivos e 25.871 testes, 1.135 skipped e 24 TODO; `node scripts/check-migration-path-references.mjs` passou com 481 referências. Os resultados coincidem com o baseline P28; nenhuma regressão foi observada. Este registro documental será commitado e os gates serão repetidos após o novo commit. Sem merge enquanto houver checks/preview falhos ou pendentes.
+
+
+### Revalidação P30 — inventário da main após o avanço para `380ceb623` — 2026-10-30
+
+Às 02:16 UTC consultei individualmente os 119 workflows ativos da `main`. O snapshot atualizado é: **61 success, 26 failure, 5 cancelled, 2 skipped, 3 pending, 1 in_progress e 21 sem execução na main**. O run `Quote Builder Delivery Quality` [#40988483472](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40988483472) agora está `success`; `E2E — Critical Flows` [#40988483529](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40988483529) e `E2E • Swatch QuickView` [#40988483565](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40988483565) concluíram `failure` após o snapshot inicial. A lista completa das 26 falhas, com causa observada ou limitação e ação necessária, está em `PENDENCIAS.md` §P30.
+
+O Gate 1.3 permanece falhando na `main` [#40988483538](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40988483538) porque a correção da baseline está nesta branch e ainda não chegou à `main`; a reprodução local passou. `CI Security & Drift Checks` continua apontando a violação WCAG já registrada em `AdImageResult.tsx:188` e coberta pelo PR #2758. O Uptime Monitor segue bloqueado pelo deploy production pendente e aprovação do PO.
+
+A execução local validada antes desta reconciliação (SHA `26082f23b`) manteve o baseline: `npm run build:verify` passou; `npm test`: 1.247 arquivos e 25.871 testes aprovados, 1.135 skipped e 24 TODO; checker de paths de migration aprovado com 481 referências; lint Δ0. O merge da main avançou o checkout para `380ceb623` e teve conflitos apenas em `PENDENCIAS.md`/`RELATORIO_CI.md`, resolvidos preservando P17 atualizado, P28/P29 e o inventário P30. Reexecutar baseline completo após o commit de resolução antes do push normal.

@@ -133,7 +133,7 @@ Clique em "Re-run all jobs".
 
 ## ✅ P3 — RESOLVIDO — Branch Protection Sentinel
 
-**Workflow:** Branch Protection Sentinel  
+**Workflow:** Branch Protection Sentinel
 **Run ID da falha original:** 40615509825  
 **Run ID da falha recorrente (PR #2699):** [40728685711](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40728685711) — SHA `6b2cc72` — ❌ failure  
 **Run de confirmação (PR #2703):** [40739341755](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40739341755) — SHA `c7bc0ba6` — ✅ **success**  
@@ -600,8 +600,8 @@ Validação local após os dois commits do PR: `npm run build:verify`, actionlin
 
 ## ✅ P-CI-H — RESOLVIDO — Branch Protection Sentinel
 
-**Workflow:** Branch Protection Sentinel  
-**Run com falha original:** [#40965131389](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40965131389) — SHA `c3b4128` — `failure`  
+**Workflow:** Branch Protection Sentinel
+**Run com falha original:** [#40965131389](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40965131389) — SHA `c3b4128` — `failure`
 **Data:** 2026-10-29 · **Resolvido:** 2026-10-30
 
 **Resolução:** O Sentinel retornou `success` na main atual (`3b7dc731eea29a1ec7a69f6dae5ca97fb89c7739` — "chore(main): release 1.1.0 (#2713)", push de 2026-10-30T00:24:09Z):
@@ -616,8 +616,8 @@ Esse run supersede a falha antiga em `c3b4128`. O PR #2749 (allowlist do SHA `9a
 
 ## P-UPTIME — Uptime Monitor: edge function health-check com HTTP 4xx/5xx
 
-**Workflow:** Uptime Monitor  
-**Última run com falha:** [#40978818572](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40978818572) — SHA `279f17` — `failure` (2026-10-30)  
+**Workflow:** Uptime Monitor
+**Última run com falha:** [#40978818572](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40978818572) — SHA `279f17` — `failure` (2026-10-30)
 **Data:** 2026-10-29 · **Atualizado:** 2026-10-30
 
 **Causa raiz identificada (2026-10-29 sessão atual):**
@@ -627,7 +627,7 @@ O banco externo é uma dependência **advisory** (não é o canônico `doufsxqlf
 **Fix implementado:** PR [#2753](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2753) — `fix(edge-fn): cap external_db em degraded no health-check`
 Mudança em `runProbes()`: converte `external_db=unhealthy` → `degraded` antes de calcular o status geral. Banco interno (`database`) continua propagando `unhealthy` normalmente.
 
-**Por que reexecução com `success` é impossível sem ação do PO:**  
+**Por que reexecução com `success` é impossível sem ação do PO:**
 A edge function `health-check` ainda executa o código pré-fix em produção (`doufsxqlfjyuvxuezpln`). O código corrigido está em `main` (`279f17`) mas NÃO foi deployado. O Uptime Monitor faz curl na edge function em produção — enquanto o binário em produção for o anterior, as execuções do workflow podem continuar retornando `failure` quando `EXTERNAL_PROMOBRIND_URL` estiver inacessível (HTTP 503 → curl exit 22). Não há nenhuma ação técnica que eu possa tomar para fazer o workflow retornar `success` sem o deploy completar. O deploy run [#40976801625](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40976801625) está `pending` em `environment: production`, que exige aprovação manual humana no GitHub Actions. O run #40757296680 (28/10, >30h em `waiting`) confirma o padrão.
 
 **Passos restantes:** aguardar o run de deploy pendente sem iniciar outro deploy concorrente; após seu término, confirmar um run agendado verde do Uptime Monitor. Não houve deploy manual/MCP nesta sessão.
@@ -828,3 +828,60 @@ Em relação ao P28, quatro workflows terminaram verdes: CodeQL, E2E — Persona
 Os outros estados não-falhos no snapshot: E2E (Playwright) `in_progress`; Deploy Edge Functions, E2E • Swatch QuickView, SECURITY DEFINER ACL — Multi-Env e E2E · restore_seller_cart RPC `pending`; cinco `cancelled` e dois `skipped`. Não declarar essas execuções verdes até conclusão `success`.
 
 **Validação desta correção:** a reprodução local falhou antes da atualização da baseline e passou depois. A baseline mantém as referências quebradas realmente presentes no checkout (481); a entrada nova tem trilha Git confirmando o arquivamento do arquivo. No commit `826801f68`, `npm run build:verify`, `npm test` (1.247 arquivos, 25.871 testes passados, 1.135 skipped, 24 TODO) e `node scripts/check-migration-path-references.mjs` passaram; resultado igual ao baseline P28, sem regressão. O novo commit que registra esta evidência ainda terá os gates repetidos. Nenhuma migration, DDL, escrita no Supabase, deploy, force push ou alteração da `main` foi feita.
+
+
+## P30 — inventário atualizado da `main` e diagnóstico das falhas — 2026-10-30
+
+**Snapshot:** 02:16 UTC; catálogo completo de 119 workflows ativos, com consulta individual do último run de `main` (`exclude_pull_requests=true`, `per_page=1`). HEAD observado: `380ceb6238dc4ea4f093bd61ce8dd5419c74ab91`.
+
+| Estado da última execução | Quantidade |
+|---|---:|
+| `success` | 61 |
+| `failure` | 26 |
+| `cancelled` | 5 |
+| `skipped` | 2 |
+| `pending` | 3 |
+| `in_progress` | 1 |
+| Sem execução na `main` | 21 |
+
+### Workflows que estão em `failure` no snapshot P30
+
+A tabela lista **todos os 26** workflows cujo último run na `main` concluiu em falha. As causas históricas permanecem com evidência em P28; as linhas novas/alteradas trazem o diagnóstico mais recente. Um bloqueio não confirmado continua explicitamente classificado como não diagnosticado.
+
+| Workflow | Último run | Causa observada e ação/blocker |
+|---|---|---|
+| Copilot | [#40975434366](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40975434366) | HTTP 402 de quota e firewall bloqueando `api.github.com`; ação do administrador: regularizar cota/allowlist. |
+| Deploy Gates | [#40988483538](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40988483538) | Gate 1.3 reprova referência de manifesto histórico para migration arquivada. Baseline corrigida localmente nesta branch e checker local passa; a falha permanece na `main` até o PR #2743 ser aprovado/mesclado com checks verdes. Nenhum SQL foi recriado/executado. |
+| Regenerate Supabase Types | [#26378664155](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/26378664155) | Run antigo; a API de logs retorna HTTP 410. Reexecutar pelo fluxo autorizado para diagnosticar o estado atual. |
+| edge-functions-drift-check | [#40848475790](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40848475790) | Drift detectado; identificar os slugs pelo artifact e reconciliar via PR, sem deploy direto. |
+| Supplier Comparison CI | [#39253399818](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39253399818) | Run histórico sem jobs/logs acessíveis pela API; causa-raiz não recuperável. |
+| OptimizedImage E2E CI | [#39263929298](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39263929298) | `Setup E2E` falhou, sem mensagem-raiz no trecho retido; recuperar stderr/reproduzir antes de mudar o teste. |
+| Global Search Quality Gate | [#39263929104](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39263929104) | `npm ci` EUSAGE por divergência entre manifests e lockfile no SHA histórico; corrigir lock em PR após reprodução. |
+| Kit Coverage — Integration | [#40813871454](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40813871454) | `anon` recebe `permission denied` em `product_kit_components`/`v_kit_component_complete`; ajustar identidade/fixture do teste, sem grant público ou DDL direto. |
+| Update Quote Visual Snapshots | [#39997674586](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39997674586) | `[E108] Sem orçamento enviado no ambiente`; preparar fixture e revisar visualmente antes de atualizar snapshot. |
+| E2E Discount Approval | [#39263929177](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39263929177) | Falha em `Setup E2E`; logs retidos não mostram causa específica. |
+| E2E • ColorSwatch 2 linhas (Grid) | [#39263932330](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39263932330) | Falha em `Setup E2E`; causa não aparece no log retido. |
+| E2E · Dialogs visual PR check | [#39253396759](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39253396759) | API não devolveu jobs/logs do run histórico; causa não confirmada. |
+| E2E · Check Calendar snapshots | [#39253393953](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39253393953) | API não devolveu jobs/logs do run histórico; causa não confirmada. |
+| PDF Visual Regression | [#39253404824](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39253404824) | API não devolveu jobs/logs do run histórico; causa não confirmada. |
+| Magazine typed queries — dry-run | [#39257701249](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39257701249) | `Install dependencies` falhou, mas stderr do gerenciador não está retido; reproduzir no SHA indicado antes de alterar deps. |
+| migration-dry-run | [#35506272165](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/35506272165) | `psql` não resolve o hostname mascarado. Owner precisa verificar o secret/host no ambiente; nenhuma migration aplicada. |
+| Uptime Monitor | [#40989993974](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40989993974) | `Probe site + edge function` falha com curl 22. O fix do health-check está em `main`, mas o deploy [#40976801625](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40976801625) continua `pending` no environment `production`; aprovação do PO necessária. |
+| Ratchet Weekly — Baixar baselines | [#40296887709](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40296887709) | Código 141/SIGPIPE em pipeline `echo | head`; correção no PR #2745 ainda sem checks/preview verdes. |
+| E2E Cart — Matrix | [#40140248814](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40140248814) | Diagnósticos distintos: falha no handoff de autenticação e timeout de 120 s no popover de remoção; inspecionar/reproduzir cada cenário. |
+| E2E Freight — Matrix | [#39141334040](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39141334040) | `E21 — login falhou em CI`; credenciais/serviço do ambiente requerem verificação do owner. |
+| E2E Stock — Matrix | [#39257701140](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39257701140) | `npm ci` EUSAGE no lockfile do SHA histórico; reconciliar manifest/lock por PR, sem flexibilizar instalação. |
+| CI Security & Drift Checks | [#40988483478](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40988483478) | Gate WCAG 2.4.7: `src/components/magic-up/AdImageResult.tsx:188` usa `focus-visible:outline-none` sem ring no mesmo literal. Fix está no PR #2758; não mesclado. |
+| Nightly Full CI | [#40808174535](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40808174535) | E2E ColorSwatch e Kit Builder excedem timeouts; investigar cada trace sem aumentar timeout ou reduzir cobertura. |
+| E2E · Atualizar snapshots visuais (E155) | [#39999649279](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39999649279) | `element(s) not found`; confirmar fluxo/elemento esperado antes de atualizar baseline. |
+| E2E — Critical Flows & Error Boundaries | [#40988483529](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40988483529) | Spec `27-admin-critical-routes.spec.ts`: `/admin/conexoes` e `/admin/rate-limit` terminaram com `body` vazio; a asserção `not.toContainText(500...)` expirou em 120 s. 8 testes passaram, 3 ficaram flaky e 2 falharam. Inspecionar screenshot/trace e disponibilidade das rotas antes de corrigir spec. |
+| E2E • Swatch QuickView (Lista + Tabela) | [#40988483565](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40988483565) | Quatro rotas (catálogo, super-filtro, novidades, reposição) não têm produto com `color_swatches` (`[E108]`); 10 testes foram skipped e a checagem de mínimo falhou. Corrigir fixture/dataset do ambiente, sem reduzir o gate. |
+
+### Mudanças desde o snapshot P29
+
+- `Quote Builder Delivery Quality` foi de falha para **success** no run [#40988483472](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40988483472).
+- A falha de `E2E — Critical Flows` mudou: no run mais novo, falharam rotas admin com corpo vazio; o artifact e os caminhos de trace estão registrados no próprio run.
+- `E2E • Swatch QuickView` concluiu `failure` no run [#40988483565](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40988483565), com evidência de fixture `color_swatches` ausente.
+- Workflows em progresso/pendentes não são contados como falha: E2E (Playwright) [#40988483544](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40988483544) está `in_progress`; Deploy Edge Functions [#40976801625](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40976801625), SECURITY DEFINER ACL — Multi-Env [#40899426158](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40899426158) e E2E · restore_seller_cart RPC [#40852813455](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40852813455) estão `pending`.
+
+**Sem regressão local registrada:** no SHA `26082f23b`, `npm run build:verify` e `npm test` passaram; a execução completa teve 1.247 arquivos aprovados, 25.871 testes aprovados, 1.135 skipped e 24 TODO, iguais ao baseline. O commit de reconciliação P30 ainda será validado conforme o processo após ser criado. Nenhum workflow foi desativado, teste enfraquecido, DDL/migration executada, segredo exposto, deploy disparado ou dado do Supabase alterado.
