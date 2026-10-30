@@ -924,3 +924,22 @@ O step `Check min tests executed` falhou como consequência de terem sido execut
 O status Vercel do head `0ef67ce6d9aff9cb2944ffd6511d560b2db0f013` do PR [#2839](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2839) concluiu `failure`: [deploy `dpl_7htod9VFENqZhyCed91EQEJgZjKM`](https://vercel.com/juca1/promo-gifts-v4/7htod9VFENqZhyCed91EQEJgZjKM). A inspeção foi feita no diretório raiz vinculado ao projeto canônico (`prj_9UfugNYCuboH2R0XB04Jv8PpjDpZ`) e em CLIs Vercel 59.5.0 e 65.8.0. O JSON retornado informa `target=preview`, `readyState=ERROR`; o build `@vercel/vc-build` aparece `READY`, mas sem itens em `output`. `vercel inspect ... --logs` não retornou log de build utilizável em nenhuma das versões. Portanto, a causa subjacente permanece não comprovada; não inferir que seja falha do código nem que seja irrelevante por ser documentação.
 
 **Encaminhamento:** PO deve abrir o deployment no painel Vercel e compartilhar/revisar o log de build completo ou indicar a causa exibida pelo painel. Sem esse dado não é seguro propor correção. Nenhum comando de deploy, link, alteração de configuração ou criação de projeto foi executado. O PR segue bloqueado também por esse status, checks Actions pendentes e ausência de revisão humana.
+
+## P38 — Revalidação de `main` e PR #2839 após novo snapshot (2026-10-30T20:38Z)
+
+Nova consulta às execuções por branch e schedule confirma que a ponta da `main` continua em `9541666bf62883b06117b03cae0368b2c7d55314`. A única falha mais recente que mudou desde §P35–P36 é o Uptime Monitor; sua causa observada repete o probe de `health-check` e não revela resposta/erro interno adicional.
+
+| Workflow | Última execução observada | Resultado e encaminhamento |
+|---|---|---|
+| Uptime Monitor | [#41124195036](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41124195036), schedule, atualizado às 20:34Z | `failure`; `site=0`, `health-check=22`, `check-login (OPTIONS)=0`, `auth-health=0`. Mesmo resultado da execução #41120620323; a issue #2841 e o encaminhamento ao PO de §P35 continuam válidos. Não houve deploy. |
+| E2E — Personalization Flow | [#41115240723](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41115240723) | Continua como última falha conhecida; bloqueio de Auth/PostgREST e credenciais E2E sem nova execução. §P33/P35. |
+| E2E — Critical Flows & Error Boundaries | [#41115240508](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41115240508) | Continua como última falha conhecida; Auth/PostgREST impediu chegar aos asserts. §P34/P35. |
+| CI Security & Drift Checks | [#41115240942](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41115240942) | Continua como última falha da `main`; correção de teste está no PR #2839, ainda sem conclusão remota. §P35. |
+| E2E • Swatch QuickView | [#41115240881](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41115240881) | Continua como última falha da `main`; quatro rotas sem candidato com swatches em cada navegador. §P36. |
+| Running Copilot Code Review | [#41115245979](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41115245979) | Continua como última falha conhecida; HTTP 402 por cota adicional esgotada, ação administrativa do PO. §P35. |
+
+Gate Final — Deploy Ready [#41115240969](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41115240969) segue como último Gate Final confirmado na `main`, `success`; Playwright [#41115240773](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41115240773) segue `cancelled`, não falha. Checks concluídos verdes do push `9541666bf` permanecem verdes; não há push posterior à `main` nesta consulta.
+
+O commit `dd98f63281662a755bf92e6e9027f60da4e2229d` atualizou o PR #2839. A consulta após o push reporta 29 checks: 26 `queued`, 1 `success`, 1 `skipped`, 1 `neutral`; nenhum merge autorizado/realizado. O novo status externo Vercel falhou no Preview [deployment `dpl_9YgK49YiDcEBGYVRf19R91B3rfkb`](https://vercel.com/juca1/promo-gifts-v4/9YgK49YiDcEBGYVRf19R91B3rfkb). A inspeção read-only com CLI 65.8.0 confirmou `target=preview`, `readyState=ERROR`; o builder consta `READY`, `output=[]`. `inspect --logs` novamente só retornou `status Error`, sem log utilizável. Causa não comprovada; mantém-se a solicitação de evidência do painel em §P37.
+
+Nenhuma ação foi realizada no banco Supabase, edge function, produção ou projeto Vercel. O PR segue bloqueado por checks em fila, status Preview falho e revisão humana ausente.
