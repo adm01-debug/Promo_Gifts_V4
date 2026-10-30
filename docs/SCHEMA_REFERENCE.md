@@ -90,7 +90,11 @@ Inalterado desde 2026-07-16.
 
 ---
 
-## 2. POSTURA DE SEGURANÇA — ESTADO REAL
+## 2. POSTURA DE SEGURANÇA — BASELINE DE 2026-09-16
+
+> Esta tabela registra a comparação histórica de 16/09/2026, não uma fotografia atual do
+> banco. Para os controles reconsultados em 30/10/2026, prevalece a subseção 3.1 abaixo;
+> os demais números continuam sem revalidação nesta rodada.
 
 | Controle | 07-16 | **09-16** | Status |
 |---|---|---|---|
@@ -110,17 +114,23 @@ Inalterado desde 2026-07-16.
 
 ---
 
-## 3. ACHADOS ABERTOS (revisão 2026-09-16)
+## 3. ACHADOS ABERTOS (baseline de 2026-09-16)
+
+> Os estados e números abaixo são o retrato da revisão de 16/09/2026. A revalidação
+> somente leitura de 30/10/2026 está registrada na subseção 3.1; use-a para decidir
+> o estado atual e não trate o retrato histórico como evidência viva.
 
 ### 🟢 P1 (07-16) — `anon` com GRANT de escrita — **FECHADO**
 
 Confirmado `0` tabelas hoje. Mecanismo que substituiu os grants diretos: as 8 views `v_*_public`
 SECURITY DEFINER (P6). Manter gate permanente (E22 do plano DBA) para não regredir.
 
-### 🟠 P2 (07-16) — cron jobs multi-statement — **ainda aberto, piorou em contagem**
+### 🟠 P2 (07-16) — cron jobs com possível múltiplas instruções — **baseline histórica**
 
-Hoje: **59 cron jobs ativos multi-statement** (query §8.4). Mesma regra do bug #13
-(`VACUUM` em pg_cron deve ser single-statement). Ver E37 do plano DBA.
+Na revisão de 16/09: **59 cron jobs ativos classificados como multi-statement** (query §8.4).
+Essa contagem é histórica; veja a revalidação lexical de 30/10 na §3.1 antes de tratá-la
+como estado atual. A regra do bug #13 (`VACUUM` em pg_cron deve ser single-statement)
+continua válida. Ver E37 do plano DBA.
 
 ### 🟡 P3 (07-16) — cron jobs desligados — **inalterado**
 
@@ -130,16 +140,45 @@ Hoje: **59 cron jobs ativos multi-statement** (query §8.4). Mesma regra do bug 
 
 Não reverificado nesta rodada (fora do escopo desta regeneração). Ver E45 do plano DBA.
 
-### 🔴 P5 (NOVO, 2026-09-16) — 2 tabelas com RLS habilitada e zero policies
+### 🔴 P5 (NOVO, 2026-09-16) — 2 tabelas com RLS habilitada e zero policies (baseline histórica)
 
 `magazine_duplicate_requests` e `anon_catalog_grant_audit_log`. Achado ao investigar: existe uma
 migration (`20260716000055_dynamic_explicit_deny_rls_no_policy_tables.sql`) desenhada especificamente
 para varrer todas as tabelas RLS-sem-policy e adicionar uma policy `RESTRICTIVE ... USING (false)`
-chamada `internal_deny_direct_access` — **mas essa migration nunca foi aplicada** (`SELECT count(*)
-FROM pg_policies WHERE policyname='internal_deny_direct_access'` → **0** em todo o banco). Não é
-falha de desenho, é falha de execução: a correção já existe, pronta, e nunca rodou. Ver E19 do
-plano DBA — pode ser resolvido rodando essa migration (ou uma equivalente atualizada) pelo caminho
-apropriado (`[REQUER-PO]`).
+chamada `internal_deny_direct_access`. Na consulta de 16/09, a policy não foi encontrada. Essa
+observação é histórica e não prova que as tabelas continuam sem policies nem que a migration seja
+adequada para o estado atual; veja a revalidação de 30/10 abaixo. Qualquer decisão sobre essa
+migration segue `[REQUER-PO]` e o fluxo versionado.
+
+### 3.1 Revalidação somente leitura — 2026-10-30
+
+Consulta ao catálogo vivo (`pg_catalog`/`pg_policies`) encontrou diferenças frente ao retrato
+acima:
+
+- `public.anon_catalog_grant_audit_log` possui 2 policies e
+  `public.magazine_duplicate_requests` possui 3. Portanto, a afirmação de que essas duas
+  tabelas estão hoje com RLS e zero policies está desatualizada.
+- A policy `internal_deny_direct_access` não foi encontrada. A migration versionada
+  `20260716000055_dynamic_explicit_deny_rls_no_policy_tables.sql` não consta no ledger
+  consultado. **E046 continua pendente de decisão do PO**; não aplicar nem arquivar a migration
+  por inferência a partir desta auditoria.
+- Os cron jobs `process-webhook-outbox` e `pipeline-classify-categories` continuam inativos.
+  Reativação é decisão operacional e não foi feita nesta auditoria.
+- A contagem atual consultada foi de 100 funções `public` `SECURITY DEFINER` executáveis por
+  `authenticated` (o baseline P7 era 94). Ainda falta revisão função a função; a contagem não
+  demonstra, por si só, vulnerabilidade.
+- Uma busca lexical encontrou 58 jobs de cron ativos cujo comando contém mais de um `;`.
+  Isso é uma triagem, não uma confirmação de 58 comandos SQL multi-statement; E37 continua
+  exigindo classificação semântica.
+- O rate guard `fn_anon_insert_rate_guard` foi encontrado em 6 das 7 tabelas listadas em E049;
+  `public.kill_switch_hits` não existe em `pg_class` no catálogo consultado. As outras 6
+  tabelas existentes tinham o trigger `trg_anon_rate_guard`. Corrigir a lista/gate para testar
+  os alvos existentes; não tratar `kill_switch_hits` como tabela desprotegida sem confirmar
+  que ela deve existir.
+- Os advisors de performance e segurança não concluíram uma execução utilizável nesta rodada;
+  o retorno expirou por timeout. A leitura não substitui essa verificação.
+
+Nenhuma migration, alteração de cron ou mudança de dados foi executada.
 
 ### ℹ️ P6 (NOVO, 2026-09-16, gate fechado no mesmo dia) — 8 views SECURITY DEFINER sem `security_invoker`, expostas a `anon`
 
@@ -163,10 +202,12 @@ registrada; status `REQUER-PO`, não corrigido nesta etapa (regra do plano: acha
 correção é etapa `[REQUER-PO]` separada). Detalhe completo em
 `docs/E16_VIEWS_PUBLIC_SECDEF_2026-09-16.md`.
 
-### ⚠️ P7 (NOVO, 2026-09-16) — SECDEF executáveis por `authenticated` cresceu 36% (69 → 94)
+### ⚠️ P7 (NOVO, 2026-09-16) — SECDEF executáveis por `authenticated` (baseline histórica: 69 → 94)
 
-25 funções novas desde 07-16. Uma delas (`zapp_catalog_stats`) já bloqueou o CI (gate lint 0029,
-resolvido na PR #1863). As outras 24 não foram revisadas individualmente. Ver E18 do plano DBA.
+O retrato de 16/09 apontava 25 funções novas desde 07-16. Uma delas (`zapp_catalog_stats`) já
+bloqueou o CI (gate lint 0029, resolvido na PR #1863). A revalidação de 30/10 encontrou 100
+funções `public` executáveis por `authenticated`; ainda falta revisar cada função. Ver E18 do
+plano DBA e a §3.1 para o escopo/limite dessa contagem.
 
 ---
 
