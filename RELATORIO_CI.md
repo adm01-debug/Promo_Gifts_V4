@@ -557,13 +557,13 @@ Os 5 workflows com runs ativas para `4b16b988` estão todos `status=queued, conc
 | Gitleaks (Gate E23) | ✅ success | ✅ success | sem regressão |
 | CodeQL | ✅ success | ✅ success | sem regressão |
 
-## Seção 10 — Fotografia atual das execuções na `main` (SHA `f14321e2`, 2026-10-30)
+## Seção 10 — Fotografia atual das execuções na `main` (SHA `c16381a5`, 2026-10-30)
 
-Consulta do MCP GitHub concluída aproximadamente às 06:24 UTC, por workflow ativo, `branch=main`, excluindo runs de PR. Foram encontrados 119 workflows ativos: 98 com run e 21 sem execução na `main`. Entre os 98: 63 `success`, 22 `failure`, 6 sem conclusão (5 `pending`, 1 `in_progress`), 5 `cancelled` e 2 `skipped`. **A Seção 8 acima é o snapshot anterior; a Seção 9 registra a prova do Gate Final; esta Seção 10 é a fotografia operacional deste SHA.**
+Consulta do MCP GitHub concluída aproximadamente às 06:39 UTC, por workflow ativo, `branch=main`, excluindo runs de PR. Foram encontrados 119 workflows ativos: 98 com run e 21 sem execução na `main`. Entre os 98: 61 `success`, 21 `failure`, 9 sem conclusão (6 `pending`, 3 `in_progress`), 5 `cancelled` e 2 `skipped`. **A Seção 8 acima é o snapshot anterior; a Seção 9 registra a prova do Gate Final; esta Seção 10 é a fotografia operacional deste SHA.**
 
 ### Workflows em falha
 
-As 22 execuções concluídas em falha estão discriminadas com causa e bloqueio em P21 de [PENDENCIAS.md](PENDENCIAS.md):
+As 21 execuções concluídas em falha estão discriminadas com causa e bloqueio em P21 de [PENDENCIAS.md](PENDENCIAS.md):
 
 - Regenerate Supabase Types: [#26378664155](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/26378664155) — O step `Commit, push, and open PR` falhou. GitHub Actions retorna HTTP 410 ao buscar os logs retidos; a causa técnica não pode ser confirmada.
 - edge-functions-drift-check: [#40848475790](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40848475790) — O comparador reportou divergência de hash/estado em 29 Edge Functions; os nomes e hashes estão registrados em P15. O relatório não determina qual lado é a fonte correta.
@@ -584,16 +584,15 @@ As 22 execuções concluídas em falha estão discriminadas com causa e bloqueio
 - E2E Stock — Matrix (E80): [#39257701140](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39257701140) — Dois jobs falharam no step `npm ci --no-audit --no-fund`. P17 também registra `EUSAGE` por divergência entre lockfile e manifests; outra anotação histórica sugere registry/rate-limit sem comprovação.
 - Nightly Full CI: [#40993462227](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40993462227) — Jobs `color-swatch` tiveram 8 timeouts de seletores; o job `magazine-header` reportou ausência de credenciais E2E (14 casos); os dois shards Playwright foram cancelados após timeout e não produziram `playwright-report/`. Não há evidência que autorize regenerar os baselines.
 - E2E · Atualizar snapshots visuais (E155): [#39999649279](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39999649279) — O passo de regeneração falhou com `element(s) not found`; artifact `visual-diffs-39999649279` está disponível.
-- Copilot: [#41011271465](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41011271465) — `Processing Request (Linux)` falhou com `SessionModelError`, HTTP 402, `errorCode=quota`: limite adicional do plano Copilot atingido.
+- Copilot: [#41014961856](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41014961856) — `Processing Request (Linux)` falhou com `SessionModelError`, HTTP 402, `errorType=quota`: o uso adicional do plano Copilot atingiu o limite, confirmado no log.
 - CI - Replenishment Module Quality Gate: [#41009722286](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41009722286) — Dois testes E2E expiraram no login; a URL permaneceu `/login` após 75 s. `auth/v1/token` e chamadas REST ficaram pendentes/failed no ambiente remoto.
-- Branch Protection Sentinel: [#41013710581](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41013710581) — O step `Audit every commit in push` rejeitou o SHA `f14321e`: `1 commit(s) em push para main sem padrão aceito`. A mensagem observada foi `feat(ci): E116 — Gate 2 executa test:ci-core (27 arquivos) [ONDA 11]`.
 
 ### Workflows verdes e ainda em andamento
 
-Os 63 workflows verdes e os 6 sem conclusão, com nomes, links e estados, estão listados em P21 de [PENDENCIAS.md](PENDENCIAS.md). Os cinco `cancelled`, dois `skipped` e 21 sem run não foram classificados como falha.
+Os 61 workflows verdes e os 9 sem conclusão, com nomes, links e estados, estão listados em P21 de [PENDENCIAS.md](PENDENCIAS.md). Os cinco `cancelled`, dois `skipped` e 21 sem run não foram classificados como falha.
 
 ### Comparação baseline × final
 
 Baseline desta sessão: `npm ci` passou; `npm run build:verify` passou (TypeScript, ESLint com delta zero, guards e build Vite); suíte pós-commit passou integralmente com 1.248 arquivos e 25.883 testes aprovados, 130 arquivos/1.135 testes skipped e 24 todo. A primeira execução teve erro transitório de teardown; o teste indicado passou 13/13 e a repetição integral passou sem erro. Validações repetidas após os commits documentais passaram sem regressões.
 
-**Escopo:** a sessão atualiza documentação de CI e reconcilia inventário. Não alterou comportamento da aplicação, testes, workflows, snapshots, secrets ou banco canônico, exceto que o merge do branch-base traz para o branch o commit já existente `f14321e2` de `deploy-gates.yml`; o PR continua documental em relação à main. Não houve deploy, migration ou aprovação manual de produção. Os 22 bloqueios estão discriminados em P21; os 6 runs abertos precisam de consulta após conclusão.
+**Escopo:** a sessão atualiza documentação de CI e reconcilia inventário. Não alterou comportamento da aplicação, testes, workflows, snapshots, secrets ou banco canônico, exceto que o merge do branch-base traz para o branch os commits já existentes até `c16381a5`; o PR continua documental em relação à main. Não houve deploy, migration ou aprovação manual de produção. As 21 falhas estão discriminadas em P21; os 9 runs sem conclusão precisam de nova consulta quando terminarem.
