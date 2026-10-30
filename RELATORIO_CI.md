@@ -1,6 +1,6 @@
 # RELATORIO_CI.md — Auditoria de Workflows CI/CD
 
-**Gerado:** 2026-10-29 · **Atualizado:** 2026-10-30T10:05 UTC  
+**Gerado:** 2026-10-29 · **Atualizado:** 2026-10-30T10:22 UTC  
 **HEAD da main:** `7299c88c21d1c67ac65f5beafc18bdf350ced277` (release 1.3.2, 2026-10-30)  
 **HEAD anterior:** `c09402816` (baseline local)  
 **Sessão:** https://claude.ai/code/session_01RfQzo7S3K6o49UBUDoCtUe
@@ -21,7 +21,7 @@
 
 ---
 
-## 3. Quadro CI — HEAD `7299c88c` (2026-10-30T09:43 UTC)
+## 3. Quadro CI — HEAD `7299c88c` (2026-10-30T10:22 UTC)
 
 **Gate Final - Deploy Ready:** [#41034358375](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358375) — ✅ **SUCCESS** (required check)
 
@@ -30,10 +30,8 @@
 | Workflow | Run ID | Conclusão | Registro |
 |---|---|---|---|
 | Gate Final - Deploy Ready | [#41034358375](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358375) | ✅ success | — |
-| edge-functions-drift-check | [#41034830573](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034830573) | ❌ failure | PENDENCIAS.md §P21-edge-drift — deploy dispatched #41034820685 |
-| E2E — Personalization Flow | [#41034358338](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358338) | ❌ failure | PENDENCIAS.md §P21-personalization |
-| Running Copilot Code Review | [#41031412599](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41031412599) | ❌ failure | PENDENCIAS.md §P21-copilot — HTTP 402, ação PO |
-| Quote Builder Delivery Quality | [#41034358444](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358444) | ✅ success | — (era failure em `b2ba9f9e`) |
+| CI - Replenishment Module Quality Gate | [#41034358297](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358297) | ✅ success | — (RESOLVIDO — era failure em `b2ba9f9e`) |
+| Quote Builder Delivery Quality | [#41034358444](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358444) | ✅ success | — (RESOLVIDO — era failure em `b2ba9f9e`) |
 | Branch Protection Sentinel | [#41034358683](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358683) | ✅ success | — |
 | Supabase Linter Gate | [#41034358651](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358651) | ✅ success | — |
 | CodeQL | [#41034358439](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358439) | ✅ success | — |
@@ -53,17 +51,25 @@
 | Release Please | [#41034359264](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034359264) | ✅ success | — |
 | Lovable Edit Tracker | [#41034358435](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358435) | ✅ success | — |
 | Lovable Autoheal | [#41034358406](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358406) | ✅ success | — |
-| E2E — Magazine Header Layout | [#41034358625](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358625) | ⏳ in_progress | — |
-| E2E • Swatch QuickView (Lista + Tabela) | [#41034358495](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358495) | ⏳ in_progress | — |
-| E2E — Critical Flows & Error Boundaries | [#41034358180](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358180) | ⏳ in_progress | — |
-| E2E (Playwright) | [#41034358354](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358354) | ⏳ in_progress | — |
-| Visual Baseline Tests — Nightly | [#41034358175](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358175) | ⏳ in_progress | — |
-| Edge Integration Tests — All Functions | [#41034358210](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358210) | ⏳ in_progress | — |
-| CI - Replenishment Module Quality Gate | [#41034358297](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358297) | ✅ success | — (concluído 09:46 UTC) |
-| CI Security & Drift Checks | [#41034358666](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358666) | ⏳ pending | — |
-| Deploy Edge Functions | [#41034820685](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034820685) | ⏳ pending | dispatch manual para corrigir edge-drift |
+| edge-functions-drift-check | [#41034830573](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034830573) | ❌ failure | PENDENCIAS.md §P21-edge-drift — ação PO: aprovar deploy #41034820685 |
+| E2E — Personalization Flow | [#41034358338](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358338) | ❌ failure | PENDENCIAS.md §P21-personalization — ação PO: baixar artefatos |
+| Running Copilot Code Review | [#41031412599](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41031412599) | ❌ failure | PENDENCIAS.md §P21-copilot — HTTP 402, ação PO: habilitar Copilot |
+| E2E — Magazine Header Layout | [#41034358625](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358625) | ❌ failure | PENDENCIAS.md §P21-magazine-header — auth E2E CI; não-required |
+| E2E — Critical Flows & Error Boundaries | [#41034358180](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358180) | ❌ failure | PENDENCIAS.md §P21-critical-flows — auth E2E CI; não-required |
+| E2E • Swatch QuickView (Lista + Tabela) | [#41034358495](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358495) | ❌ failure (chromium+webkit) | PENDENCIAS.md §P21-swatch-qv — check-min-tests falhou; firefox in_progress |
+| CI Security & Drift Checks | [#41034358666](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358666) | 🔴 pending (0 jobs) | PENDENCIAS.md §P21-ci-security — nunca pegou runner; ação PO: cancelar e re-disparar |
+| E2E (Playwright) | [#41034358354](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358354) | ⏳ in_progress | header-sticky gate em andamento desde 09:34:57 |
+| Visual Baseline Tests — Nightly | [#41034358175](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358175) | ⏳ in_progress | testes visuais autenticados em andamento |
+| Edge Integration Tests — All Functions | [#41034358210](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358210) | ⏳ in_progress | LIVE tests em andamento; primeiros 10 steps ✅ |
+| Deploy Edge Functions | [#41034820685](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034820685) | ⏳ pending | aguarda aprovação PO no environment `production` |
 
-> Snapshot 2026-10-30T10:05 UTC — CI Replenishment ✅ confirmado. 7 workflows ainda in_progress/pending: Magazine Header, Swatch QuickView, Critical Flows, E2E Playwright, Visual Baseline, Edge Integration, CI Security. Wakeup agendado ~10:25 UTC para resultado final.
+> **Snapshot 2026-10-30T10:22 UTC** — Gate Final ✅. 23 workflows ✅ success. 7 failures registrados em PENDENCIAS.md (6 não-required + 1 stuck queue). 3 ainda in_progress (E2E Playwright, Visual Baseline, Edge Integration). Nenhuma regressão vs. `c09402816`.
+>
+> **Ações do PO necessárias:**
+> 1. Aprovar `Deploy Edge Functions` em https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034820685 (environment `production`)
+> 2. Cancelar run `CI Security & Drift Checks` #41034358666 (stuck) e re-disparar
+> 3. Habilitar GitHub Copilot plan (HTTP 402 em `Running Copilot Code Review`)
+> 4. Confirmar/provisionar secrets de auth E2E para corrigir Magazine Header, Critical Flows, Swatch QuickView
 
 ---
 

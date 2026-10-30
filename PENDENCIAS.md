@@ -2,7 +2,7 @@
 **Atualizado em:** 2026-10-30
 **Branch de correção:** `claude_04/beautiful-gates-bvocz5` (PR #2597 — **MERGEADO** ✅)
 
-## Atualização — HEAD `7299c88c` (2026-10-30T09:40 UTC)
+## Atualização — HEAD `7299c88c` (2026-10-30T10:20 UTC)
 
 **Gate Final - Deploy Ready:** [#41034358375](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358375) — ✅ **SUCCESS**
 
@@ -33,19 +33,47 @@
 - **Impacto no Gate Final:** NÃO é required check — não bloqueia deploy.
 - **Ação do PO:** Habilitar/aumentar plano GitHub Copilot em Settings → Billing & plans.
 
-### Workflows ainda EM ANDAMENTO em HEAD `7299c88c` (2026-10-30T09:40 UTC)
-Os workflows abaixo estavam `in_progress` no momento desta atualização — resultado pendente:
-- `E2E — Magazine Header Layout` (#41034358625)
-- `E2E • Swatch QuickView (Lista + Tabela)` (#41034358495)
-- `E2E — Critical Flows & Error Boundaries` (#41034358180)
-- `E2E (Playwright)` (#41034358354)
-- `Visual Baseline Tests — Nightly` (#41034358175)
-- `Edge Integration Tests — All Functions` (#41034358210)
-- `CI - Replenishment Module Quality Gate` (#41034358297)
-- `CI Security & Drift Checks` (#41034358666)
+#### P21-magazine-header — E2E — Magazine Header Layout
+- **Run ID:** [#41034358625](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358625) (sha `7299c88c`) — **completed/failure**
+- **Job falho:** `E2E — Magazine Header (authed)` — step 5 "Run Magazine Header E2E" — exit code 1
+- **Erro exato:** `❌ Magazine Header E2E failed — ver artifact e2e-magazine-header-report` (artifact ID 12968775070, 141MB)
+- **Causa raiz:** Falha em testes Playwright autenticados — padrão idêntico a run anterior (#41021989518 em `c09402816`). Auth Supabase no CI não produz sessão válida, causando `test.skip()` em excesso ou falha de asserção.
+- **Impacto no Gate Final:** NÃO é required check — não bloqueia deploy.
+- **Ação do PO:** Confirmar/provisionar secret `SUPABASE_SERVICE_ROLE_KEY` no CI para que auth funcione, ou baixar artifact `e2e-magazine-header-report-41034358625` para diagnóstico.
+
+#### P21-critical-flows — E2E — Critical Flows & Error Boundaries
+- **Run ID:** [#41034358180](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358180) (sha `7299c88c`) — **completed/failure**
+- **Job falho:** `E2E — Full User Flows (authed)` (job #123991436315) — step 8 "Run Sidebar Tooltips E2E — desktop (chromium-authed)" — exit code 1
+- **Erro exato:** Step "Run Sidebar Tooltips E2E — desktop (chromium-authed)" falhou; artefato `e2e-full-flows-report-41034358180` (ID 12967414040, 206MB)
+- **Causa raiz:** Falha nos testes Playwright autenticados de sidebar tooltips — padrão de auth CI idêntico aos demais E2E.
+- **Impacto no Gate Final:** NÃO é required check — não bloqueia deploy.
+- **Ação do PO:** Baixar artefato do run para diagnóstico detalhado, ou confirmar secrets de auth E2E.
+
+#### P21-swatch-qv — E2E • Swatch QuickView (Lista + Tabela)
+- **Run ID:** [#41034358495](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358495) (sha `7299c88c`) — in_progress (firefox), chromium+webkit já failure
+- **Jobs falhos:** `chromium • swatch→QV` (job #123993202573) e `webkit • swatch→QV` (job #123993203321) — ambos falharam no step 4 "Run swatch→QuickView suite" e step 5 "Check min tests executed"
+- **Erro exato:** `check-min-tests` — ratio de skipped > 50% (padrão idêntico ao anterior — auth CI não gera sessão válida → `requireAuth()` → `test.skip()`)
+- **Causa raiz:** Sessão Supabase ausente no `storageState.json` — mesmo padrão documentado em P19-D/I/J/K.
+- **Impacto no Gate Final:** NÃO é required check — não bloqueia deploy.
+- **Ação do PO:** Provisionar `SUPABASE_SERVICE_ROLE_KEY` ou similar para que setup de auth gere sessão válida antes dos testes.
+
+#### P21-ci-security — CI Security & Drift Checks
+- **Run ID:** [#41034358666](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358666) (sha `7299c88c`) — **pending** (0 jobs) — criado 09:33:58, nunca pegou runner
+- **Erro exato:** 0 jobs iniciados — workflow travado na fila do runner GitHub Actions. Nenhum step executado.
+- **Causa raiz:** Possível concurrency group bloqueado por outro workflow, ou runner timeout na fila. Fora do controle do código.
+- **Impacto no Gate Final:** NÃO é required check — não bloqueia deploy.
+- **Ação do PO:** Cancelar manualmente o run #41034358666 e re-disparar via workflow_dispatch ou aguardar próximo push para nova execução.
+
+### Workflows ainda EM ANDAMENTO em HEAD `7299c88c` (2026-10-30T10:20 UTC)
+Os workflows abaixo ainda estão `in_progress`:
+- `E2E (Playwright)` (#41034358354) — step "header-sticky gate" em andamento desde 09:34:57
+- `Visual Baseline Tests — Nightly` (#41034358175) — testes visuais autenticados em andamento
+- `Edge Integration Tests — All Functions` (#41034358210) — LIVE tests em andamento; primeiros 10 steps passaram ✅
+- `E2E • Swatch QuickView (Lista + Tabela)` (#41034358495) — firefox ainda rodando (chromium+webkit já failure)
 
 ### Workflows com SUCESSO em HEAD `7299c88c` (verde — sem regressão)
-- Gate Final - Deploy Ready ✅
+- Gate Final - Deploy Ready ✅ (#41034358375)
+- CI - Replenishment Module Quality Gate ✅ (#41034358297) — **RESOLVIDO** (era failure em `b2ba9f9e`)
 - Quote Builder Delivery Quality ✅ (#41034358444) — **RESOLVIDO** (era failure em `b2ba9f9e`)
 - Branch Protection Sentinel ✅, Supabase Linter Gate ✅, CodeQL ✅
 - Static Health Checks ✅, Security Scan ✅, Workflow Lint ✅
