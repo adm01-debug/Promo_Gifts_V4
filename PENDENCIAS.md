@@ -127,6 +127,39 @@ O PR [#2800](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2800) permanece 
 - **Impacto no Gate Final:** NÃO é required check — não afeta deploy.
 - **Ação do PO:** Se step 27 falhar com auth 504: confirmar/provisionar `SUPABASE_SERVICE_ROLE_KEY` no CI.
 
+---
+
+## P25 — Sessão 2026-10-30 — Gate 1.10 indexed-access ratchet (HEAD `7e56ae49`)
+
+### Estado
+
+Gate Final [#41054206726](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41054206726) para HEAD `7e56ae49` concluiu com **failure** em Gate 1.10 (indexed-access ratchet).
+
+**Causa raiz confirmada:** `.indexed-access-baseline.json` salvo com valor incorreto (867) em commit `5edddfb14`. O count real do `tsc --noUncheckedIndexedAccess` naquele commit era 872 (verificado via checkout + execução local). Undercount de 5 erros fez o ratchet disparar falsamente no HEAD seguinte.
+
+**Fix aplicado:** PR #2819 (`claude/fix-indexed-access-baseline-261030-1248`, SHA `403221ab4c`) atualiza `.indexed-access-baseline.json` de 867 → 872. CI em andamento:
+- Gate 0/0.5/E23 todos ✅ success
+- Gate 1/2/3 ⏭ skipped (docs-only bypass — esperado para `.json` de config)
+- Deploy Gates [#41058787098](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41058787098) aguardando runners para Gate 2.5/0.6/5/E40/4/5.5
+
+**Ação do PO:** Nenhuma — fix de código puro, sem dependência de billing, secret ou aprovação de environment.
+
+**Prova de que o fix é correto:** `git checkout 5edddfb14 -- . && tsc -p tsconfig.app.json --noEmit --noUncheckedIndexedAccess 2>&1 | grep -c "^" → 872`. Delta pós-fix: 872 vs 872 = 0.
+
+### Items PO-blocked ativos (pré-existentes, inalterados por esta sessão)
+
+| Item | Workflow | Ação necessária |
+|---|---|---|
+| §P21-copilot | Running Copilot Code Review | Habilitar GitHub Copilot billing plan |
+| §P21-edge-drift | edge-functions-drift-check | Aprovar deploy [#41034820685](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034820685) em environment `production` |
+| §P21-personalization | E2E — Personalization Flow | Provisionar `SUPABASE_SERVICE_ROLE_KEY` no CI |
+| §P21-magazine-header | E2E — Magazine Header Layout | Mesma causa raiz que personalization |
+| §P21-critical-flows | E2E — Critical Flows & Error Boundaries | Mesma causa raiz que personalization |
+
+**Nenhum desses é required check — não bloqueiam o Gate Final.**
+
+---
+
 ### P22-supabase-preview — Supabase Preview (SHA `e5323824`)
 
 - **Check run:** [#124023725095](https://github.com/adm01-debug/Promo_Gifts_V4/runs/124023725095) (SHA `e5323824`)
