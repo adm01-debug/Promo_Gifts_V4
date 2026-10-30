@@ -1011,13 +1011,13 @@ Os 5 ratchets de dívida técnica estão todos exatamente no baseline: 889 index
 **Pronto:** `grep -c " as " src/hooks/mockup/mockupGenerationService.ts` ≤ 10 e o ratchet global desce
 **Origem:** A3-43
 
-#### P200-E126 · [D] · P2 · Transformar os 5 ratchets em descendentes com meta ✅
+#### P200-E126 ✅ · [D] · P2 · Transformar os 5 ratchets em descendentes com meta ✅
 **Arquivo:** `.indexed-access-baseline.json`, `.file-size-baseline.json`, `.todo-baseline.json`, `.as-assertions-baseline.json`, `.any-type-baseline.json`
 **Fazer:** os 5 estão exatamente no baseline — 889, 135, 51, 2227, 0 — sem nenhum progresso em 500 commits. Acrescentar a cada um um campo `meta` com alvo e data, e fazer o gate semanal (`ratchet-weekly.yml`) reportar a distância do alvo. Travar sem meta é congelar.
 **Pronto:** os 5 arquivos têm `meta.target` e `meta.deadline`, e o relatório semanal imprime a distância
 **Origem:** A3-40, A3-41, A3-42
 
-#### P200-E127 · [D] · P2 · Zerar o baseline de `any` que já está em zero ✅
+#### P200-E127 ✅ · [D] · P2 · Zerar o baseline de `any` que já está em zero ✅
 **Arquivo:** `.any-type-baseline.json` (`productionAnyCount: 1`)
 **Fazer:** o valor atual medido é **0** — as 6 linhas com `as any` em `src/` estão em JSDoc. O baseline está defasado desde 2026-07-17 e permite 1. Rodar `node scripts/update-any-type-baseline.mjs` e travar em 0.
 **Pronto:** `jq '.productionAnyCount' .any-type-baseline.json` → `0`
