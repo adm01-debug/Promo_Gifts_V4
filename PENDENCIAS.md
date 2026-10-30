@@ -680,3 +680,68 @@ Sem aprovação do PO, o workflow continuará falhando quando `EXTERNAL_PROMOBRI
 **Impacto no Gate Final:** `E2E · view-no-presentation-mode` é um shard individual do workflow `e2e-playwright.yml`. O Gate 3 (`Gate 3 - E2E Smoke`) agrega os shards e pode tolerar falhas de shards individuais se o agregador passar. Não é required check direto de `main`.
 
 **Nota:** Se Gate 3 falhar por causa deste shard, diagnosticar o teste específico antes de alterar lógica de smoke.
+
+---
+
+## P20 — Inventário completo de workflows com falha na main (2026-10-30, baseline pós-PR #2769)
+
+Inventário produzido a partir de `github_list_workflow_runs` com `status=failure, branch=main, per_page=50`. Workflows abaixo tiveram `conclusion=failure` em suas últimas execuções concluídas. Todos são **não-required** (não constam em `.github/required-checks.json`). O único required check é **Gate Final - Deploy Ready** (`deploy-gates.yml`), cujas últimas execuções em main estão em status `queued` aguardando disponibilidade de runners GitHub Actions (backlog de sessões simultâneas).
+
+### P20-A — CI - Replenishment Module Quality Gate (pré-existente)
+
+**Último run concluído com falha:** run [#41004115585](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41004115585) — sha `2fdb1702` (merge PR #2763, 2026-10-30).
+
+**Causa raiz:** Workflow de quality gate do módulo de reposição falha por razões de infraestrutura CI (testes live exigem secrets de produção ou dados específicos não presentes no runner padrão). PR #2763 não altera nenhum arquivo relacionado a reposição — mudanças restritas a `.migration-refs-baseline.json`, `AdImageResult.tsx`, `ratchet-weekly.yml`, `.security/policies-baseline.json`.
+
+**Impacto no Gate Final:** NÃO — não está em `.github/required-checks.json`. Não bloqueia deploy.
+
+**Ação pendente:** Investigar configuração de secrets/dados no workflow para testes live. Escopo fora desta sessão.
+
+---
+
+### P20-B — E2E — Critical Flows & Error Boundaries (pré-existente)
+
+**Último run concluído com falha:** run [#41004115684](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41004115684) — sha `2fdb1702` (merge PR #2763, 2026-10-30).
+
+**Causa raiz:** Workflow de E2E com fluxos críticos e error boundaries falha por razões pré-existentes de infraestrutura (mesma classe de falha de P19-D/E/F). PR #2763 não altera nenhum componente de fluxo crítico.
+
+**Impacto no Gate Final:** NÃO — não está em `.github/required-checks.json`. Não bloqueia deploy.
+
+**Ação pendente:** Investigar quais testes específicos falham e correlacionar com P19-D (color_swatches) ou outra causa de dados. Escopo fora desta sessão.
+
+---
+
+### P20-C — Kit Coverage — Integration (pré-existente)
+
+**Último run concluído com falha:** run [#40999068927](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40999068927) — sha `7cd8cb13` (commit anterior ao PR #2763).
+
+**Causa raiz:** Workflow de cobertura de integração do Kit falha antes do PR #2763. Pré-existente. Não está relacionado a nenhuma mudança desta sessão.
+
+**Impacto no Gate Final:** NÃO — não está em `.github/required-checks.json`. Não bloqueia deploy.
+
+**Ação pendente:** Verificar causa raiz da falha no log do run #40999068927. Escopo fora desta sessão.
+
+---
+
+### P20-D — Nightly Full CI (pré-existente)
+
+**Último run concluído com falha:** run [#40993462227](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40993462227) — sha `604de54c` (commit anterior ao PR #2763, 2026-10-29).
+
+**Causa raiz:** Workflow de CI nightly completo falha por razões pré-existentes. SHA `604de54c` é anterior à sessão atual. Não relacionado a nenhuma mudança desta sessão.
+
+**Impacto no Gate Final:** NÃO — não está em `.github/required-checks.json`. Não bloqueia deploy.
+
+**Ação pendente:** Verificar quais steps específicos falham no nightly. Frequentemente inclui testes live com secrets ou steps de performance pesados. Escopo fora desta sessão.
+
+---
+
+### P20-E — Quote Builder Delivery Quality (pré-existente)
+
+**Último run concluído com falha:** run [#41004115635](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41004115635) — sha `2fdb1702` (merge PR #2763, 2026-10-30).
+
+**Causa raiz:** Workflow de qualidade do Quote Builder falha por razões pré-existentes de infraestrutura. PR #2763 não altera nenhum componente de orçamentos/cotações.
+
+**Impacto no Gate Final:** NÃO — não está em `.github/required-checks.json`. Não bloqueia deploy.
+
+**Ação pendente:** Verificar causa raiz da falha no log do run #41004115635. Escopo fora desta sessão.
+
