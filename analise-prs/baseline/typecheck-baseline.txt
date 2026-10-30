@@ -1,0 +1,6 @@
+## Typecheck Baseline — main HEAD 6dbc9387fedbd1118613eb07eb2315bfc1e722ea
+## Data: 2026-10-30
+## Comando: npx tsc --noEmit
+## Resultado: EXIT 0 — zero erros TypeScript
+
+Nenhum erro de typecheck. O TypeScript compila limpo no main atual.

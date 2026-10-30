@@ -1,0 +1,19 @@
+## Build Baseline — main HEAD 6dbc9387fedbd1118613eb07eb2315bfc1e722ea
+## Data: 2026-10-30
+## Comando: npm run build
+## Resultado: EXIT 0 — build bem-sucedido em 21.72s
+
+Warnings (não bloqueantes — todos pré-existentes):
+- [INEFFECTIVE_DYNAMIC_IMPORT] src/lib/external-db/index.ts — dinâmico + estático simultâneo
+- [INEFFECTIVE_DYNAMIC_IMPORT] src/lib/crm-db.ts — dinâmico + estático simultâneo
+- [INEFFECTIVE_DYNAMIC_IMPORT] src/components/cart/CartCompanyPickerDialog.tsx
+- [INEFFECTIVE_DYNAMIC_IMPORT] src/components/cart/CartSelectorDialog.tsx
+- [INEFFECTIVE_DYNAMIC_IMPORT] src/components/collections/AddToCollectionModal.tsx
+- [INEFFECTIVE_DYNAMIC_IMPORT] src/components/products/ProductQuickView.tsx
+- [INEFFECTIVE_DYNAMIC_IMPORT] src/components/products/VariantPickerDialog.tsx
+- [INEFFECTIVE_DYNAMIC_IMPORT] src/components/products/share/SharePreviewDialog.tsx
+
+Saída final:
+  ✓ built in 21.72s
+  [chunk-cycles] OK: no static import cycles between production chunks.
+  [production-harnesses] OK: no /__test routes or harness chunks in dist/.
