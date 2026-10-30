@@ -4,14 +4,16 @@
   "main_sha_baseline": "62af0798dd71812979667ac29f596d25f3ef191b",
   "main_sha_pos_2741": "6ac842c22e37a46c499e91460794bbb1d56b5f5d",
   "main_sha_pos_2742": "8f992fdde05943c9bcd4d0ca925ec221f4828f41",
+  "main_sha_pos_2757": "0ca54ff134cfce504590b45c1bc2641ed7bb379f",
   "merges_executados_esta_sessao": [
     {"pr": 2720, "sha": "14b6d5fc", "titulo": "ci(e2e): não ocultar falha de fixtures E2E"},
     {"pr": 2730, "sha": "c3b41286", "titulo": "fix(ci): repair-only E15 — corrige injeção de expressão"},
     {"pr": 2741, "sha": "6ac842c22e37a46c499e91460794bbb1d56b5f5d", "titulo": "fix(mockup): telas — histórico, resultado, foto original, upload, erros", "gate_pr": "run 40958040560 success"},
-    {"pr": 2742, "sha": "8f992fdde05943c9bcd4d0ca925ec221f4828f41", "titulo": "fix(magic-up): compartilhar, brand kit, a11y, i18n e timeout", "gate_pr": "run 40956354730 success"}
+    {"pr": 2742, "sha": "8f992fdde05943c9bcd4d0ca925ec221f4828f41", "titulo": "fix(magic-up): compartilhar, brand kit, a11y, i18n e timeout", "gate_pr": "run 40956354730 success"},
+    {"pr": 2757, "sha": "0ca54ff134cfce504590b45c1bc2641ed7bb379f", "titulo": "fix(dossies): remove prefixo supabase/ em refs de migration — corrige Gate 1.3", "gate_pr": "run 40979492111 success"}
   ],
-  "ultima_atualizacao": "2026-10-30T00:33Z",
-  "main_sha_atual": "9a97f9a2c857b25590691efd2c741a194bfb24da",
+  "ultima_atualizacao": "2026-10-30T00:47Z",
+  "main_sha_atual": "0ca54ff134cfce504590b45c1bc2641ed7bb379f",
   "baseline_main_9a97f9a2": {
     "typecheck": "exit 0",
     "build": "exit 0 (12.74s)",
@@ -29,24 +31,27 @@
   "pr2757_corrects_gate13": {
     "pr": 2757,
     "branch": "fix/gate13-dossier-refs-20261030",
-    "sha_head": "f3878c82",
-    "status": "AGUARDANDO_CI",
-    "criado_em": "2026-10-30T00:24Z",
-    "run_id": 40979492111,
-    "nota": "Remove prefixo supabase/ de 2 dossiês. SSOT Guard pass. Deploy Gates queued por runner congestion."
+    "sha_merge": "0ca54ff134cfce504590b45c1bc2641ed7bb379f",
+    "status": "MERGEADA",
+    "mergeado_em": "2026-10-30T00:32Z",
+    "nota": "Remove prefixo supabase/ de 2 dossiês. Gate Final ✅ run 40979492111. Main agora em 0ca54ff1."
   },
-  "prs_novas_detectadas": [
-    {"numero": 2756, "titulo": "docs(ci): estado final Sentinel", "status": "AGUARDANDO_CI_ANALISE"},
-    {"numero": 2758, "titulo": "fix(a11y): restaura foco visível no histórico", "status": "AGUARDANDO_CI_ANALISE"}
-  ],
+  "deploy_gates_aguardando": {
+    "pr2745": {"run_id": 40981268878, "branch": "fix/ratchet-weekly-sigpipe-20261029", "head_sha": "71abfbe792bbcbab0dc99b9bab7187fd38bd471b", "status": "queued", "criado_em": "2026-10-30T00:41:31Z"},
+    "pr2747": {"run_id": 40981272464, "branch": "fix/types-workspace-notification-idempotency-20261029", "head_sha": "4ebcf159caf14ca6800805c7ae25f97c10fdca3a", "status": "queued", "criado_em": "2026-10-30T00:41:33Z"},
+    "pr2756": {"run_id": 40981276656, "branch": "claude/docs-relatorio-final-261030-0015", "head_sha": "f629fa5f3db70468a6442637eb71f37b5d0ad723", "status": "queued", "criado_em": "2026-10-30T00:41:35Z"}
+  },
+  "check_in_agendado": {"trigger_id": "trig_01HwWsYpW3yBxueQ5xvo4bvQ", "fire_at": "2026-10-30T01:08:00Z"},
   "resumo": {
-    "total_prs_abertas": 17,
-    "total_analisadas": 15,
-    "pendentes_analise": 2,
-    "mergeadas": 4,
-    "nao_mergear": 9,
+    "total_prs_rastreadas": 22,
+    "total_analisadas": 22,
+    "pendentes_analise": 0,
+    "mergeadas": 5,
+    "nao_mergear": 11,
     "aguardando_ci": 3,
-    "decisao_humana": 1
+    "aguardando_revisao_humana": 1,
+    "decisao_humana_po": 1,
+    "substituida": 1
   },
   "prs": [
     {"numero": 2701, "veredito": "NÃO MERGEAR", "motivo": "conflito de merge + coverage 56% < threshold 70%"},
@@ -62,14 +67,14 @@
     {"numero": 2742, "veredito": "MERGEADA", "sha": "8f992fdde05943c9bcd4d0ca925ec221f4828f41"},
     {"numero": 2743, "veredito": "NÃO MERGEAR", "motivo": "Gate Final bloqueado — Magazine Header OK = failure"},
     {"numero": 2744, "veredito": "NÃO MERGEAR", "motivo": "DRAFT + título NÃO MESCLAR + edge function sem workflow"},
-    {"numero": 2745, "veredito": "AGUARDANDO_CI", "motivo": "fix legítimo — Gate 1.3 bloqueado por main. Aguarda merge de #2757."},
+    {"numero": 2745, "veredito": "AGUARDANDO_CI", "motivo": "ci(ratchet): evita SIGPIPE — base atualizada para 0ca54ff1, Gate Final run 40981268878 queued"},
     {"numero": 2746, "veredito": "NÃO MERGEAR", "motivo": "DRAFT"},
-    {"numero": 2747, "veredito": "AGUARDANDO_CI", "motivo": "fix(types) aditivo — Gate 1.3 bloqueado. Aguarda merge de #2757."},
+    {"numero": 2747, "veredito": "AGUARDANDO_CI", "motivo": "fix(types): idempotency_key — base atualizada para 0ca54ff1, Gate Final run 40981272464 queued"},
     {"numero": 2749, "veredito": "NÃO MERGEAR", "motivo": "DRAFT"},
     {"numero": 2750, "veredito": "NÃO MERGEAR", "motivo": "DRAFT"},
     {"numero": 2755, "veredito": "SUBSTITUIDO_POR_2757", "motivo": "PR de governança supersedido pelo PR #2757 mais específico"},
-    {"numero": 2756, "veredito": "PENDENTE_ANALISE", "motivo": "nova PR detectada — CI queued"},
-    {"numero": 2757, "veredito": "AGUARDANDO_CI", "motivo": "corrige Gate 1.3 em main — SSOT Guard pass, Deploy Gates queued"},
-    {"numero": 2758, "veredito": "PENDENTE_ANALISE", "motivo": "nova PR detectada — CI queued"}
+    {"numero": 2756, "veredito": "AGUARDANDO_CI", "motivo": "docs(ci): estado final Sentinel — base atualizada para 0ca54ff1, Gate Final run 40981276656 queued"},
+    {"numero": 2757, "veredito": "MERGEADA", "sha": "0ca54ff134cfce504590b45c1bc2641ed7bb379f", "motivo": "corrige Gate 1.3 — remove prefixo supabase/ em 2 dossiês"},
+    {"numero": 2758, "veredito": "AGUARDANDO_REVISÃO_HUMANA", "motivo": "fix(a11y): foco visível no histórico — autor pediu sem merge automático nesta execução"}
   ]
 }
