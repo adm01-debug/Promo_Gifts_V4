@@ -473,26 +473,16 @@ Esse run supersede a falha antiga em `c3b4128`. O PR #2749 (allowlist do SHA `9a
 
 ---
 
-## P-UPTIME — Uptime Monitor: RESOLVIDO ✅ (deploy concluído)
+## P-UPTIME — Uptime Monitor: INVESTIGAÇÃO PENDENTE ⚠️
 
 **Workflow:** Uptime Monitor  
-**Última run com falha:** [#40978818572](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40978818572) — SHA `279f17` — `failure` (2026-10-30)  
-**Data:** 2026-10-29 · **Atualizado:** 2026-10-30
+**Última execução com falha na main:** [#41020809123](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41020809123) — SHA `9dde1db7` — `failure` (2026-10-30 07:33 UTC). A execução anterior [#41018096960](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41018096960) foi `success`.
 
-**Causa raiz:** `ExternalDatabaseChecker.check()` em `supabase/functions/health-check/index.ts:127` retorna `status: "unhealthy"` quando banco externo (`EXTERNAL_PROMOBRIND_URL`) está inacessível → HTTP 503 → curl exit 22 → workflow failure. Banco externo é dependência advisory, não deveria causar 503.
+**Evidência registrada pelo workflow antigo:** site `0`; health-check `22`; check-login (OPTIONS) `0`; auth-health `0`. `curl` exit 22 com `-f` comprova resposta HTTP de erro, mas o workflow não guardava o status. Portanto, essa execução não permite distinguir 401/404/5xx nem comprovar causa no banco externo. A hipótese de indisponibilidade de `EXTERNAL_PROMOBRIND_URL` anotada anteriormente não está confirmada para esta run.
 
-**Fix:** PR [#2753](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2753) — **MERGEADO** em main `279f1753` (2026-10-29 23:59 UTC)  
-`runProbes()` converte `external_db=unhealthy` → `degraded`; banco interno continua propagando `unhealthy`.
+**Correção em revisão:** branch `fix/uptime-http-status-20261030` registra código HTTP junto com exit code do curl, sem gravar corpo, headers ou chave. Inclui cenários automatizados para HTTP 200, HTTP 503 e falha de transporte (`000`). A mudança melhora o diagnóstico da próxima execução; não corrige nem mascara a indisponibilidade observada.
 
-**Por que reexecução com `success` é impossível sem ação do PO:**  
-A edge function `health-check` ainda executa o código pré-fix em produção (`doufsxqlfjyuvxuezpln`). O código corrigido está em `main` (`279f17`) mas NÃO foi deployado. O Uptime Monitor faz curl na edge function em produção — enquanto o binário em produção for o anterior, as execuções do workflow podem continuar retornando `failure` quando `EXTERNAL_PROMOBRIND_URL` estiver inacessível (HTTP 503 → curl exit 22). Não há nenhuma ação técnica que eu possa tomar para fazer o workflow retornar `success` sem o deploy completar. O deploy run [#40976801625](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40976801625) está `pending` em `environment: production`, que exige aprovação manual humana no GitHub Actions. O run #40757296680 (28/10, >30h em `waiting`) confirma o padrão.
-
-**Bloqueio:** `environment: production` em `.github/workflows/deploy-edge-functions.yml` — aprovação manual do PO. Não existe contorno técnico.
-
-**Ação necessária do PO:**
-1. Acessar https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40976801625
-2. Clicar em "Review deployments" → selecionar `production` → "Approve and deploy"
-3. Após deploy completar, aguardar próximo run do Uptime Monitor (~30 min) → confirmar `success`
+**Bloqueio exato:** a run antiga não pode ser reconstruída porque o status HTTP não foi registrado. A próxima execução após integração da instrumentação é necessária para identificar o status real. Não foi feito deploy, alteração de segredo ou mudança no Supabase.
 
 ---
 
@@ -564,21 +554,9 @@ Verificado localmente: `node scripts/check-outline-none.mjs` → `✅ 0 regress�
 
 ### P19-C — Uptime Monitor (run [#40989993974](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40989993974))
 
-**Causa raiz:** `Probe site + edge function` falhou em `https://www.promogifts.com.br/` ou  
-`https://doufsxqlfjyuvxuezpln.supabase.co/functions/v1/health-check`. O monitor criou/comentou  
-na issue #2752. A edge function `health-check` retorna `unhealthy`/503 quando  
-`EXTERNAL_PROMOBRIND_URL` está inacessível (ver P-UPTIME para causa raiz e fix mergeado).
+**Diagnóstico histórico (não confirmado para esta run):** `Probe site + edge function` falhou em um dos endpoints e o monitor criou/comentou na issue #2752. Na ocasião, a hipótese foi indisponibilidade de `EXTERNAL_PROMOBRIND_URL`; o workflow não registrava HTTP status, então não há evidência suficiente para confirmá-la. Ver P-UPTIME para a última evidência e instrumentação proposta.
 
-**Fix de código:** PR [#2753](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2753) **MERGEADO** em `279f17` (2026-10-29). O código em `main` converte `external_db=unhealthy` → `degraded`, mas o binário em produção ainda é o anterior.
-
-**Bloqueio:** deploy da edge function `health-check` requer aprovação manual do PO em  
-`environment: production`. Dispatch manual disparado em 2026-10-30T02:41 UTC para confirmar se é flake.  
-Sem aprovação do PO, o workflow continuará falhando quando `EXTERNAL_PROMOBRIND_URL` estiver inacessível.
-
-**Ação necessária do PO:**
-1. Acessar https://github.com/adm01-debug/Promo_Gifts_V4/deployments/activity_log?environment=production
-2. Aprovar o deploy pendente da edge function `health-check`
-3. Após deploy, próximo run do Uptime Monitor (~30 min) deve retornar `success`
+**Estado histórico:** esta nota descreve runs anteriores e hipótese de causa relacionada ao deploy. Para a última evidência na main, ver P-UPTIME acima: a run #41020809123 registrou apenas curl exit 22 em health-check, sem HTTP status, portanto a causa específica permanece desconhecida.
 
 ---
 
@@ -632,15 +610,15 @@ Sem aprovação do PO, o workflow continuará falhando quando `EXTERNAL_PROMOBRI
 
 ---
 
-### P19-G — Uptime Monitor (pré-existente, aguarda ação de PO)
+### P19-G — Uptime Monitor (registro histórico; estado atual em P-UPTIME)
 
 **Runs no main:** [#40998220633](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40998220633), [#40995668739](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40995668739), etc. — `conclusion=failure` repetido.
 
-**Causa raiz:** Os probes curl (`site`, `health-check`, `check-login`, `auth-health`) falharam — o workflow não usa `environment: production` e não requer aprovação de deploy. A falha indica indisponibilidade temporária dos endpoints monitorados.
+**Evidência histórica:** probes curl falharam em runs anteriores. Essa anotação não identifica a causa da run atual; ver P-UPTIME, que registra o último run e explicita a limitação dos dados disponíveis.
 
 **Impacto no Gate Final:** NÃO — não é required check de `main`.
 
-**Ação necessária do PO:** Verificar se os endpoints estão operacionais. Se for falha transitória de probe, nenhuma ação necessária. NÃO desabilitar a proteção de environment `production` — ela protege deploys de edge functions e migrations, não tem relação com este workflow.
+**Próximo passo:** após integrar a instrumentação descrita em P-UPTIME, usar o status HTTP da próxima run para investigar o endpoint que falhar.
 
 ---
 
