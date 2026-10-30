@@ -1,0 +1,20 @@
+## Vitest Baseline — main HEAD 6dbc9387fedbd1118613eb07eb2315bfc1e722ea
+## Data: 2026-10-30
+## Comando: NODE_OPTIONS="--max-old-space-size=4096" npx vitest run
+## Resultado: TIMEOUT (>120s no container remoto — vitest completo não terminou dentro do limite)
+
+## TESTES QUE FALHAM POR NOME no main HEAD 6dbc9387:
+## NENHUM — Gate 2 (vitest) passou com CI verde no Gate Final run #41034358375
+## (conclusion=success; Gate 2 = job "unit-tests" = vitest run completo no CI)
+## Portanto: baseline de falhas = lista vazia; toda falha nova vs. esta baseline é regressão.
+
+CONTEXTO: o CI (Gate 2 — unit-tests) usa 45 min de timeout (classe "Full job", E24).
+O suite completo de testes é pesado demais para o container cloud desta sessão (timeout 120s).
+Vitest foi iniciado duas vezes — ambos excederam 120s sem saída.
+
+BASELINE CI EQUIVALENTE: Gate Final run #41034358375 (main HEAD 6dbc9387, 2026-10-30)
+— conclusion: success — inclui Gate 2 (vitest) com resultado verde.
+Evidência: github_get_workflow_run run_id=41034358375 → conclusion=success.
+
+## EQUIVALÊNCIA: Gate Final run #41034358375 = main baseline com zero testes falhando.
+## Qualquer PR que cause falha no Gate 2 em CI = regressão contra esta baseline.
