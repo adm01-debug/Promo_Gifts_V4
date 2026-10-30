@@ -7,8 +7,8 @@ import {
   DragOverlay,
   type DragEndEvent,
   type DragStartEvent,
+  type useSensors,
 } from '@dnd-kit/core';
-import type { useSensors } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import {
   ChevronDown,
