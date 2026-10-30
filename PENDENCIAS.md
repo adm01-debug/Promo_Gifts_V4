@@ -2,6 +2,20 @@
 **Atualizado em:** 2026-10-30
 **Branch de correção:** `claude_04/beautiful-gates-bvocz5` (PR #2597 — **MERGEADO** ✅)
 
+## Atualização — snapshot da main `7299c88c` (2026-10-30)
+
+Consulta MCP posterior ao snapshot `b2ba9f9e` do relatório: as execuções ainda `pending`/`in_progress` abaixo não são classificadas como falhas. Duas execuções concluídas seguem bloqueadas:
+
+| Workflow | Run mais recente concluído observado | Evidência | Próxima ação |
+|---|---|---|---|
+| E2E — Personalization Flow | [#41034358338](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358338) | O teste `92-personalization-auth-redirect.spec.ts` não encontrou `[data-testid="product-name"]` para “Conj. Para petiscos em bambu - 3 pçs”; no retry, o login ficou em `/login` enquanto `get_profile_and_roles` e `user_roles` demoraram, excedendo 75 s. | Reproduzir com o usuário/dados E2E configurados e inspecionar o trace; separar falha de dados/rota da latência de autenticação. Não alterar assert ou ignorar o teste. |
+| edge-functions-drift-check | [#41034830573](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034830573) | Artefato `drift_report.csv` lista as mesmas 31 funções divergentes do snapshot anterior. | Classificar cada função comparando o conteúdo local e canônico; reconciliar em PR e deploy pontual apenas pelo workflow autorizado. Nenhum deploy foi feito nesta auditoria. |
+| Running Copilot Code Review | [#41031412599](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41031412599) | Falha externa durante limpeza do agente/processos órfãos; sem resultado de revisão. | Ação do administrador/licença/serviço Copilot; não é correção de código. |
+
+**Ainda pendentes no instante da consulta:** Deploy Edge Functions [#41034820685](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034820685) (`workflow_dispatch`), CI Security & Drift Checks [#41034358666](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358666), E2E Magazine Header [#41034358625](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358625), E2E Swatch QuickView [#41034358495](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358495), E2E Critical Flows [#41034358180](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358180), Visual Baseline [#41034358175](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358175), Edge Integration [#41034358210](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358210) e E2E Playwright [#41034358354](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358354). Reconsultar antes de declarar conclusão. O dispatch de deploy não foi acionado por esta auditoria.
+
+O trabalho desta sessão não alterou o Supabase canônico, não fez deploy e não modificou comportamento da aplicação.
+
 ## Atualização — PR #2768 (2026-10-30)
 
 O PR [#2768 — revalidação de preços no Kit Builder](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2768) tem dois SHAs relevantes: `dcf88ec5` (código) e `b2f4be5b` (anotação documental). No SHA de código, a última consulta encontrou checks `queued`/`in_progress` e a falha externa do Copilot abaixo. No SHA documental, a execução de CI foi ignorada pelo fluxo docs-only; rodei `build:verify` e a suíte completa localmente após esse commit. Portanto, os checks remotos do SHA de código ainda não validam o SHA atual.
