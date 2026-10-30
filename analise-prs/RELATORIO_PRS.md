@@ -2,9 +2,9 @@
 > Sessão: `claude/eloquent-ramanujan-0yt2fo` | Data: 2026-10-30
 > Main SHA fixado: `6e38d14a90323f69ff3beda27c8ae51476c3cb1d`
 > Main SHA pós-merges: `5edddfb14ee4e33008e735f3f3710e902a9b45cb` (pós #2794/#2795 pelo PO e release)
-> Total PRs analisados: **34** (30 na fase principal + #2797, #2806, #2807, #2810 descobertos tardiamente — ver §RECONCILIAÇÃO)
+> Total PRs analisados: **35** (30 na fase principal + #2797, #2806, #2807, #2810, #2827 descobertos tardiamente — ver §RECONCILIAÇÃO)
 > PRs resolvidos: **15** (8 por esta sessão + 6 mergeados pelo PO + 1 fechado pelo PO)
-> PRs abertos atualmente: **17** (todo elegível foi mergeado)
+> PRs abertos atualmente: **18** (todo elegível foi mergeado)
 > Test-merge vs main atual (`5edddfb14`): todos os 9 PRs com `mergeable: null` têm **0 conflitos** (git merge-tree 2026-10-30)
 
 ---
@@ -132,13 +132,14 @@ Ambos podem ser fechados pelo PO quando esta sessão for arquivada.
 
 ---
 
-## DECISAO_HUMANA (9 PRs)
+## DECISAO_HUMANA (10 PRs)
 
 | PR | Motivo | Diff lido | Recomendação |
 |---|---|---|---|
 | #2758 | Instrução "sem merge automático" no body + já em main | ✅ 100% inline | SUPERSEDED — focus-visible já em main (AdImageResult.tsx:188); fechar como obsoleta |
 | #2776 | Instrução "não mesclado enquanto check estiver em falha" no body | ✅ 100% inline | Aguardar remoção da instrução pelo autor |
 | #2793 | Toca `.github/workflows/uptime-monitor.yml` (REGRA #8) | ✅ 100% inline | Refatoração legítima; revisão humana obrigatória (workflow) |
+| #2827 | Instrução "Não mesclar" no body (branch codex/) | ✅ github_get_pull_request 2026-10-30 | DECISAO_HUMANA — aguardar revisão humana |
 | #2745 | Toca `.github/workflows/ratchet-weekly.yml` (REGRA #8) + CONFLITO | ✅ 100% inline | Baixo risco — fix SIGPIPE legítimo; conflito via `.migration-refs-baseline.json` |
 | #2743 | Instrução "Não mesclar até checks concluírem" + conflito em baseline | ✅ 100% (18 arquivos, 56.044 linhas) | CONFLITO + "Não mesclar" no body |
 | #2731 | Toca workflow + `supabase/migrations/` (REGRA #8 duplo) | ✅ 100% inline | Revisão obrigatória da migration SQL; workflow_dispatch após merge |
@@ -186,13 +187,13 @@ Ambos podem ser fechados pelo PO quando esta sessão for arquivada.
 | MERGEADA (por esta sessão) | 8 | #2768, #2759, #2734, #2770, #2783, #2791, #2792, #2795 |
 | MERGEADA PELO PO | 6 | #2766, #2767, #2785, #2794, #2797, #2806 (adm01-debug; 2026-10-30) |
 | FECHADA PELO PO (sem merge) | 1 | #2789 (superseded por #2794) |
-| DECISAO_HUMANA | 9 | #2701, #2714, #2717, #2731, #2743, #2745, #2758, #2776, #2793 |
+| DECISAO_HUMANA | 10 | #2701, #2714, #2717, #2731, #2743, #2745, #2758, #2776, #2793, #2827 |
 | DRAFT | 6 | #2746, #2749, #2750, #2764, #2771, #2744 |
 | DRAFT_E_DECISAO_HUMANA | 0 | (#2744 reclassificado: DRAFT) |
 | BLOQUEADA_CONFLITO | 2 | #2747, #2739 |
-| **TOTAL ANALISADOS** | **34** | 30 na fase principal + 4 tardios (#2797, #2806, #2807, #2810) |
+| **TOTAL ANALISADOS** | **35** | 30 na fase principal + 5 tardios (#2797, #2806, #2807, #2810, #2827) |
 | **TOTAL RESOLVIDOS** | **15** | 8 merges sessão + 6 merges PO + 1 fechada PO |
-| **TOTAL ABERTOS** | **17** | 9 DECISAO_HUMANA + 6 DRAFT + 2 BLOQUEADA_CONFLITO |
+| **TOTAL ABERTOS** | **18** | 10 DECISAO_HUMANA + 6 DRAFT + 2 BLOQUEADA_CONFLITO |
 
 ---
 
@@ -305,7 +306,7 @@ Evidência dos conflitos:
 - `analise-prs/prs.json` — inventário completo
 - `analise-prs/prs.csv` — inventário CSV
 - `analise-prs/progresso.json` — estado da sessão
-- `analise-prs/dossies/PR-<n>.md` — **39 dossiês** (PR-2701 até PR-2810, todos os 39 PRs) — cobertura 100%
+- `analise-prs/dossies/PR-<n>.md` — **40 dossiês** (PR-2701 até PR-2827, todos os 40 PRs) — cobertura 100%
 - `analise-prs/RELATORIO_PRS.md` — este arquivo
 
 ---
@@ -374,9 +375,9 @@ Evidência: `analise-prs/baseline/vitest-baseline.txt` — contém "TESTES QUE F
 
 ---
 
-## RECONCILIAÇÃO DE CONTAGEM (34 total, não 30)
+## RECONCILIAÇÃO DE CONTAGEM (35 total, não 30)
 
-O `progresso.json` registrou `analisados: 30` porque parou de ser atualizado após a fase principal. Quatro PRs foram descobertos tardiamente (após as 10:00Z):
+O `progresso.json` registrou `analisados: 30` porque parou de ser atualizado após a fase principal. Cinco PRs foram descobertos tardiamente (após as 10:00Z):
 
 | PR | Descoberta | Veredicto | Motivo |
 |---|---|---|---|
@@ -384,9 +385,10 @@ O `progresso.json` registrou `analisados: 30` porque parou de ser atualizado ap�
 | #2806 | ~10:24Z | MERGEADA_PELO_PO | Aberta e mergeada pelo PO durante a sessão (SHA `6dbc9387`) |
 | #2807 | ~10:30Z | DRAFT | Nova PR de refatoração Gate 1.9 (SupplierFormDialog 1273→747 linhas) |
 | #2810 | ~10:30Z | DRAFT | Nova PR de refatoração Gate 1.9 (PromoFlixPlayer 1512→699 linhas) |
+| #2827 | ~10:30Z | DECISAO_HUMANA | Nova PR Codex com instrução "Não mesclar nesta etapa" no body |
 
-**Contagem final (autoritativa — RELATORIO_PRS.md):** 34 PRs analisadas.
-**progresso.json:** stale em 30 — não reflete os 4 tardios. RELATORIO_PRS.md é a SSOT.
+**Contagem final (autoritativa — RELATORIO_PRS.md):** 35 PRs analisadas.
+**progresso.json:** stale em 30 — não reflete os 5 tardios. RELATORIO_PRS.md é a SSOT.
 
 ---
 
@@ -412,7 +414,7 @@ Gate 6 Build estava `in_progress` às 09:39:30Z mas `updated_at` da run confirma
 
 ---
 
-## FASE FINAL — PRs #2799–#2816 (descobertas após contagem de 34)
+## FASE FINAL — PRs #2799–#2827 (descobertas após contagem de 34)
 
 **Seis PRs adicionais** descobertas na fase final da sessão (após commit `21c37ef08`):
 
@@ -425,15 +427,17 @@ Gate 6 Build estava `in_progress` às 09:39:30Z mas `updated_at` da run confirma
 | [#2804](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2804) | fix(e134): clearTimeout em EnhancedSpotlight | DRAFT | Draft, elegível quando não-draft + CI verde |
 | [#2807](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2807) | feat(E128): split SupplierFormDialog 1273→747 linhas | DRAFT | Draft, refatoração estrutural Gate 1.9 |
 | [#2810](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2810) | feat(e128): split PromoFlixPlayer 1512→699 linhas | DRAFT | Draft, refatoração estrutural Gate 1.9 |
-| [#2813](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2813) | refactor(quotes): E128 QuoteBuilderSummaryColumn 1697→588 | DRAFT | Draft, refatoração estrutural Gate 1.9 |
+| [#2813](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2813) | refactor(quotes): E128 QuoteBuilderSummaryColumn 1697→588 | AGUARDANDO_GATE_FINAL | `draft: false`, `mergeable: true`; aguarda Gate Final CI |
 | [#2816](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2816) | docs(ci): registra falhas atuais da main | BLOQUEADA_CONFLITO | `mergeable_state: "dirty"` — base desatualizado (opened before #2806 merged) |
+| [#2827](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2827) | fix(ci): corrige erros TypeScript e persistência do tour de kits | DECISAO_HUMANA | Instrução "Não mesclar nesta etapa" no body (branch codex/) |
 
 **Evidências:**
 - #2816 `mergeable: false`, `mergeable_state: "dirty"` — `github_get_pull_request` #2816 (2026-10-30T12:xx)
-- #2813 `draft: true` — `github_get_pull_request` #2813
+- #2813 `draft: false`, `mergeable: true` — `github_get_pull_request` #2813
 - #2800 `Gate 3 - E2E Smoke: cancelled`, `Gate 1 - Lint + TypeScript: cancelled` — `github_list_check_runs` SHA `55dbf6ef`
 - #2801 `changed_files: 0` — superseded pela PR #2806 (mesma mudança)
 - #2799 apenas 5 check_runs, Gate Final nunca aparece — bot PR sem trigger de Gate Final
+- #2827 `merged: false`, `draft: false`, `mergeable: true`, `mergeable_state: "blocked"` (CI queued) — `github_get_pull_request` (2026-10-30). Body contém "Não mesclar nesta etapa".
 
 **Contagem final atualizada:**
 
@@ -441,12 +445,12 @@ Gate 6 Build estava `in_progress` às 09:39:30Z mas `updated_at` da run confirma
 |---|---|---|
 | MERGEADA (esta sessão) | #2768, #2759, #2734, #2770, #2783, #2791, #2792, #2795 | 8 |
 | MERGEADA_PELO_PO | #2766, #2767, #2785, #2794, #2797, #2806 | 6 |
-| DECISAO_HUMANA | #2701, #2714, #2717, #2731, #2743, #2745, #2758, #2776, #2793 | 9 |
+| DECISAO_HUMANA | #2701, #2714, #2717, #2731, #2743, #2745, #2758, #2776, #2793, #2827 | 10 |
 | DRAFT | #2744(?), #2746, #2749, #2750, #2764, #2771, #2789, #2802, #2804, #2807, #2810, #2813 | 12 |
 | BLOQUEADA_CONFLITO | #2739, #2747, #2816 | 3 |
 | SUPERSEDED | #2801 | 1 |
 | WAITING_CI | #2800 | 1 |
 | WAITING_CI_BOT | #2799 | 1 |
-| **TOTAL** | | **41** |
+| **TOTAL** | | **42** |
 
 > Nota: progresso.json atualizado para 40 (exclui #2744 que é DRAFT_E_DECISAO_HUMANA — categoria separada). prs.csv tem 40 linhas de dados (header excluído).
