@@ -190,11 +190,10 @@ No mesmo pedido, apagar o ruleset **24121385** ("Protect main branch", criado 20
 **Pronto:** `grep -Fq "fail_if_missing: \${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository }}" .github/workflows/deploy-gates.yml` passa; actionlint valida a expressão e, em fork-PR, Gate E23 não exige credenciais indisponíveis.
 **Origem:** A1-01, A1-15
 
-#### P200-E008 · [A] · P0 · Fazer o Gate 1.13 comparar de verdade ✅
+#### P200-E008 · [A] · P0 · Fazer o Gate 1.13 comparar de verdade ⏳
 **Arquivo:** `.github/workflows/deploy-gates.yml:239-243`, `scripts/check-policies-baseline.mjs:233-250`
-**Fazer:** o gate roda sem `--require-live` e o script devolve `STATIC_PASS` exit 0 em `missing-config`, `network-error` e HTTP `429|5xx`. Sem token ou num 5xx transitório, 950 policies de RLS passam sem comparar nada. Acrescentar `--require-live` no step (como `policies-baseline.yml:166` já faz) e restringir o `static-pass` a PR de fork, com `if:` explícito.
-Mesmo padrão em `supabase-security-gate.yml:63-81`: o "Gate 5 — Supabase Security Audit" pula **todos** os passos live em `pull_request` e não é required check, então em PR não audita nada ao vivo. Habilitar os passos live para PRs do próprio repositório (o guard de fork já existe em `:97`).
-**Pronto:** `grep -c "require-live" .github/workflows/deploy-gates.yml` ≥ 1; o gate reprova sem `SUPABASE_ACCESS_TOKEN`; o Gate 5 executa passos live em PR do próprio repo
+**Fazer:** o gate precisa usar `--require-live` em push e PR interno, com condição explícita para pular apenas PRs de fork que não recebem `SUPABASE_ACCESS_TOKEN`. Assim, ausência de credencial ou falha da Management API não vira aprovação estática. No `supabase-security-gate.yml`, habilitar CHECKs 3 e 4 em PRs internos e restringi-los explicitamente a esses eventos, como os demais checks que usam credenciais.
+**Pronto:** teste automatizado confirma `--require-live` no Gate 1.13, condição de fork explícita nos três steps e que os CHECKs 3/4 do Gate 5 rodam em push e PR interno; `node scripts/check-policies-baseline.mjs --require-live` sem credenciais termina inconclusive (exit 2); Gate Final e Gate 5 passam no CI.
 **Origem:** A1-02, A2-10, A2-41
 
 #### P200-E009 · [A] · P0 · Reescrever a REGRA #9: governança exige PR, não push ✅
