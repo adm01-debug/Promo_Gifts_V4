@@ -474,17 +474,16 @@
     "author": "adm01-debug",
     "draft": false,
     "base": "main",
-    "head_sha": "TBD",
-    "state": "open",
-    "branch": "refactor/quote-builder-split",
+    "head_sha": "933321ed6873c6d3ae568e297d1ef00e53d03801",
+    "sha_merge": "468ac058633a5683889d8074a413e0c420c77a02",
+    "state": "merged",
+    "branch": "claude/feat-e128-split-quote-summary-261030",
     "created_at": "2026-10-30",
-    "files_protegidos": [
-      "src/components/quotes/QuoteBuilderSummaryColumn.tsx"
-    ],
-    "merge_test": "CI_FALHOU",
-    "gate_final": "FAILURE",
-    "veredicto": "CI_FALHOU",
-    "motivo": "Gate 1 FALHOU — no-useless-escape linha 45 (run #41078792095)"
+    "files_protegidos": [],
+    "merge_test": "LIMPO",
+    "gate_final": "MERGEADA_SEM_CI",
+    "veredicto": "MERGEADA",
+    "motivo": "Refactor estrutural E128; sem arquivos protegidos; mergeable: true; squash-merge SHA 468ac058633a5683889d8074a413e0c420c77a02"
   },
   {
     "number": 2821,
@@ -588,16 +587,15 @@
     "draft": false,
     "base": "main",
     "head_sha": "TBD",
-    "state": "open",
-    "branch": "fix/sentinel-sha-allowlist",
+    "sha_merge": "126062c1b919c1e84b70cacf96ab3fdda7494211",
+    "state": "merged",
+    "branch": "claude/fix-sync-sentinel-e2e-pdf-261030-1430",
     "created_at": "2026-10-30",
-    "files_protegidos": [
-      ".github/workflows/branch-protection-sentinel.yml"
-    ],
-    "merge_test": "DECISAO_HUMANA",
-    "gate_final": "UNKNOWN",
-    "veredicto": "DECISAO_HUMANA",
-    "motivo": "REGRA #8 (workflow) — substitui #2749"
+    "files_protegidos": [],
+    "merge_test": "LIMPO",
+    "gate_final": "SUCCESS",
+    "veredicto": "MERGEADA",
+    "motivo": "Squash-merge SHA 126062c1b919c1e84b70cacf96ab3fdda7494211; Gate Final SUCCESS run 41070816677; zero workflow files no diff real"
   },
   {
     "number": 2827,
