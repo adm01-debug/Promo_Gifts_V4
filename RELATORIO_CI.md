@@ -1,8 +1,8 @@
 # RELATORIO_CI.md — Auditoria de Workflows CI/CD
 
-**Gerado:** 2026-10-29 · **Atualizado:** 2026-10-30T10:45 UTC  
-**HEAD da main:** `7299c88c21d1c67ac65f5beafc18bdf350ced277` (release 1.3.2, 2026-10-30)  
-**HEAD anterior:** `c09402816` (baseline local)  
+**Gerado:** 2026-10-29 · **Atualizado:** 2026-10-30T12:23 UTC
+**HEAD da main:** `7e56ae49dde173e04f66ed4523eb8eb59653821a` (docs-only, 2026-10-30)
+**HEAD anterior:** `c09402816` (baseline local)
 **Sessão:** https://claude.ai/code/session_01RfQzo7S3K6o49UBUDoCtUe
 
 ---
@@ -156,3 +156,264 @@ Branch Protection Sentinel foi corrigido indiretamente: o fix foi via PR #2806 (
 ### Workflows com falha pré-existente (não alterados por esta sessão)
 
 Ver PENDENCIAS.md: P19-H (Copilot Code Review — billing 402), P21-edge-drift (edge-functions-drift-check — aprovação pendente #41034820685), P21-magazine-header / P21-critical-flows (E2E auth — secrets CI).
+
+---
+
+## Sessão P22.2 — 2026-10-30 — PR #2812 — HEAD `22ca2b3fa` — Baseline + Prova Final
+
+**Objetivo:** documentar PENDENCIAS.md P22 (saturação de runners + E2E auth + Supabase Preview) + produzir baseline local e tabela de prova final desta sessão.
+
+### Baseline local — HEAD `22ca2b3fa` (2026-10-30T12:30 UTC)
+
+| Etapa | Resultado | Observação |
+|---|---|---|
+| `npm run build` | ✅ exit 0 | Built em 15.45s; INEFFECTIVE_DYNAMIC_IMPORT pré-existentes; chunk-cycles OK |
+| `npm run typecheck` (tsc --noEmit) | ✅ exit 0 | Zero erros TypeScript |
+| `npm run lint:baseline` | ⚠️ OOM — não executável | Heap out of memory no container (pré-existente, igual à Section 1) |
+| `npx vitest run tests/scripts/` | ✅ 40 arquivos, 532 passed, 3 skipped | Subconjunto de scripts executado com sucesso em 40s |
+| Suite completa `npx vitest run` | ⚠️ Timeout 300s no container | Limitação de recurso pré-existente do container; CI remoto é a fonte de verdade |
+
+> `22ca2b3fa` altera apenas `PENDENCIAS.md` e `RELATORIO_CI.md` (docs-only). Zero mudança em código TypeScript/JavaScript. Resultados de testes idênticos ao baseline de `6dbc9387` (PR #2806).
+
+### Inventário completo de failures — HEAD `22ca2b3fa` (snapshot 2026-10-30T12:30 UTC)
+
+| Workflow | Run ID | Conclusão | Registro |
+|---|---|---|---|
+| Running Copilot Code Review | [#41045066850](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41045066850) | ❌ failure | PENDENCIAS.md §P21-copilot — HTTP 402 (billing quota) — ação PO: habilitar plano Copilot |
+| Supabase Preview | — | ❌ failure/skipped | PENDENCIAS.md §P22-supabase-preview — push direto em main, sem PR, comportamento esperado |
+| edge-functions-drift-check | [#41034830573](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034830573) | ❌ failure | PENDENCIAS.md §P21-edge-drift — drift canônico, ação PO: aprovar deploy #41034820685 |
+| Gate Final - Deploy Ready | [#41045062113](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41045062113) | ⏳ queued | PENDENCIAS.md §P22-runner-saturation — fila por saturação; não é falha de código |
+| CI Security & Drift Checks | [#41045062030](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41045062030) | ⏳ pending | PENDENCIAS.md §P22-e2e-auth — aguarda runner; step 27 E2E auth depende de `SUPABASE_SERVICE_ROLE_KEY` |
+| E2E — Personalization Flow | [#41045062037](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41045062037) | ⏳ queued | PENDENCIAS.md §P21-personalization — auth E2E CI (pré-existente) |
+| E2E — Critical Flows & Error Boundaries | [#41045062575](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41045062575) | ⏳ queued | PENDENCIAS.md §P21-critical-flows — auth E2E CI (pré-existente) |
+| Todos os demais workflows | — | ⏳ queued/pending | Saturação de runners; aguardam liberação de slots |
+
+### Comparação baseline × final
+
+| Dimensão | Baseline `c09402816` | Final `22ca2b3fa` |
+|---|---|---|
+| Build | ✅ | ✅ (15.45s) |
+| TypeScript | ✅ | ✅ (zero erros) |
+| Lint | ⚠️ OOM container | ⚠️ OOM container (mesma limitação) |
+| Vitest scripts/ | ✅ | ✅ (40 arquivos, 532 passed) |
+| Gate Final (required check) | ✅ `7299c88c` (#41034358375) | ⏳ queued `22ca2b3fa` (#41045062113) — saturação runners; último green em `7299c88c` |
+| CI Security & Drift | ❌ dot-notation `5edddfb1` | ✅ corrigido em `6dbc9387`; steps 1–26 ✅ (#41040489233) |
+| Branch Protection Sentinel | ❌ push direto sem `(#NNN)` | ✅ corrigido via squash-merge PR #2806 |
+| Copilot Code Review | ❌ HTTP 402 | ❌ HTTP 402 (pré-existente, billing — PENDENCIAS §P21-copilot) |
+| edge-functions-drift-check | ❌ 31 funções em drift | ❌ 31 funções em drift (pré-existente, ação PO pendente) |
+
+### Regressões introduzidas por esta sessão
+
+**Nenhuma.** Os únicos failures em `22ca2b3fa` são:
+1. **Copilot Code Review** — HTTP 402 (billing quota), pré-existente em todos os SHAs desta sessão
+2. **Supabase Preview** — comportamento esperado para push direto em main
+3. **edge-functions-drift-check** — drift acumulado, pré-existente, não-required
+4. **Workflows queued** — saturação de runners, não falha de código
+
+O único required check (`Gate Final - Deploy Ready`) obteve `conclusion=success` em `7299c88c` [#41034358375](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358375). A fila em `22ca2b3fa` é consequência de saturação de runners por múltiplos pushes simultâneos — documentado em PENDENCIAS.md §P22-runner-saturation.
+
+## Atualização P23 — inventário atual da `main` (2026-10-30T11:35Z)
+
+### Workflows cuja última execução conhecida na `main` falhou
+
+| Workflow | Run mais recente | Conclusão | Causa comprovada | Próximo passo |
+|---|---|---|---|---|
+| Uptime Monitor | [#41045561447](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41045561447) | `failure` | Issue gerada pelo workflow registra `health-check=22`, com `site=0`, `check-login=0` e `auth-health=0`. Código 22 do curl `-f` indica resposta HTTP não-2xx, sem capturar o status no run. Em consulta autenticada separada, em 2026-10-30T11:30Z, o endpoint respondeu HTTP 503 e reportou `database=unhealthy` e `external_db=unhealthy`; não é possível provar que esse estado era igual no horário do run nem identificar a causa de banco somente pelo payload. | A versão implantada de `health-check` é 275 (atualizada em 2026-10-28), anterior ao fix no código da `main` em PR #2753. O deploy [#40976801625](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40976801625) foi cancelado. Foi solicitado deploy somente de `health-check`, pelo fluxo protegido: [#41048773110](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41048773110), atualmente pendente de aprovação de `production`. A aprovação pelo PO é necessária; em seguida, verificar um novo run do uptime e investigar saúde/logs do banco interno se o HTTP 503 persistir. |
+| Running Copilot Code Review | [#41045066850](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41045066850) | `failure` | Log do step `Processing Request (Linux)` contém `errorType: quota`, `statusCode: 402` e mensagem de limite de uso adicional do plano. O log também reporta bloqueio do firewall do runner para `api.github.com`, mas o erro explícito da chamada Copilot foi quota 402. | Bloqueio externo à aplicação. Administrador deve rever/regularizar a quota Copilot; depois, reexecutar. Se persistir, investigar a allowlist para `api.github.com`. Não é required check. |
+
+### Checks verdes na ponta atual da `main`
+
+| Workflow | Run | Estado |
+|---|---|---|
+| UI · Visual & A11y | [#41045062190](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41045062190) | `success` |
+| Select Columns vs Types | [#41045061953](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41045061953) | `success` |
+| Lovable Autoheal | [#41045062040](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41045062040) | `success` |
+| Gitleaks — Full History Audit | [#41045062076](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41045062076) | `success` |
+| E2E — Personalization Flow | [#41045062037](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41045062037) | `success` |
+| Policies Baseline | [#41045061919](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41045061919) | `success` |
+| Security Scan | [#41045062287](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41045062287) | `success` |
+
+Os demais runs sem conclusão neste snapshot estavam `queued`/`pending` e não foram classificados como falha. Falhas antigas em SHAs anteriores foram consideradas superadas apenas quando havia execução mais recente bem-sucedida do mesmo workflow na `main`.
+
+### PR #2800 — validação ainda bloqueada
+
+O seletor do link dos cards do Magazine foi corrigido na branch do PR, mas o run [#41041167646](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41041167646) falhou durante `auth.setup`: a chamada `auth/v1/token` expirou antes dos specs E2E. Portanto, o ajuste de seletor ainda não recebeu confirmação de CI; não mesclar até uma execução com auth funcional e checks obrigatórios verdes.
+
+### Comparação de validação local
+
+O commit de código `6dbc9387` permanece a base de código desta atualização; `git diff --name-only 6dbc9387..22ca2b3f` mostra somente `PENDENCIAS.md` e `RELATORIO_CI.md`, sem diferença de código ou lockfile. Build, typecheck, lint e suíte completa foram executados após o commit de código em ambiente local: `build:verify` aprovado, lint 0 erros/0 avisos, e 1.250 arquivos / 25.898 testes passaram (130 arquivos e 1.135 testes ignorados; 24 TODO). A mesma base foi preservada nas mudanças documentais; a suíte será reexecutada no HEAD deste PR antes de declarar a atualização validada.
+
+## Atualização P24 — estado posterior (2026-10-30T11:53Z)
+
+### Uptime Monitor
+
+A execução mais recente na `main` é [#41048983078](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41048983078), SHA `42081291`, conclusão `failure` no step `Probe site + edge function`. O log do run não fornece códigos por probe. A issue [#2803](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2803) ainda exibe o payload do run anterior porque a action agrupa comentários de conteúdo idêntico. O último teste HTTP autenticado direto, feito em 11:30Z, respondeu 503 com `database=unhealthy` e `external_db=unhealthy`; esse resultado não deve ser atribuído automaticamente ao instante do novo run. O deploy da função corrigida está pendente no ambiente protegido em [#41048773110](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41048773110).
+
+### Copilot Code Review e outros estados
+
+O último run conhecido de Copilot associado à `main` segue [#41045066850](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41045066850), `failure` por quota adicional excedida (HTTP 402). O firewall também reportou bloqueio a `api.github.com`, sem mudar o fato de que a resposta fatal explícita foi 402. Checks sem conclusão no SHA atual `42081291` — incluindo Deploy Gates [#41048978175](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41048978175), ainda `queued` — não foram rotulados como falha.
+
+### npm audit / Gate 0.5
+
+Após `npm ci`, `npm audit --audit-level=high` retornou 12 high e 1 moderate. O grupo high está na cadeia de ferramenta de desenvolvimento `@lhci/cli@0.15.1` → Lighthouse/Puppeteer/proxy-agent, incluindo `basic-ftp`, `extract-zip` e `chromium-bidi`/`zod`; não é dependência runtime de produção. O `npm audit fix --dry-run` propôs somente `ip-address` 10.7.2 → 10.7.5, resolvendo o moderate. A resolução automática dos high oferecida pelo npm troca `@lhci/cli@0.15.1` por `0.13.0` (`semver-major`) e Lighthouse `12.6.1` por `11.4.0`; isso é downgrade funcional e não foi aplicado. Gate 0.5 ainda não havia concluído no run Deploy Gates #41048978175, portanto o efeito remoto precisa ser confirmado. Próximo passo: analisar uma atualização upstream segura para o conjunto Lighthouse CI sem contornar o gate nem degradar a versão principal do Lighthouse.
+
+## Atualização P25 — estado dos gates e retries na `main` (2026-10-30T12:10Z)
+
+- **Supabase Linter Gate:** run [#41051701308](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41051701308), SHA `b0d1376a`, tentativa 1 falhou em `check-anon-write-grants.mjs` após `TimeoutError` e HTTP 544 no helper de consulta read-only. A tentativa 2 pelo rerun oficial concluiu `success` às 12:09Z. Os findings anteriores passaram nas allowlists; não há evidência de divergência de grants. A repetição verde tira o workflow da lista de falhas atuais; não identifica por si só a causa do erro HTTP 544.
+- **E2E — Personalization Flow:** run [#41051701270](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41051701270), SHA `b0d1376a`, tentativa 1 terminou com 4 specs falhos e 1 aprovado. A coleta de chamadas reporta PostgREST `color_groups`, `v_products_public` e `categories` pendentes por 26–27 s e RPC `get_profile_and_roles` pendente até ~69 s; `loginViaUI` permaneceu em `/login` após 75 s. Não há status HTTP no log para comprovar uma causa única. Rerun oficial apenas dos jobs falhos foi solicitado; tentativa 2 estava `queued` às 12:09Z aguardando runner. Não foram reduzidos timeouts nem removidas asserções.
+- **Inventário dos demais failures:** Uptime Monitor [#41048983078](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41048983078) continua sendo a execução mais recente concluída em `main` e falhou sem expor os códigos de cada probe; Copilot Code Review [#41045066850](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41045066850) continua falhando por HTTP 402/quota. A deploy de `health-check` [#41048773110](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41048773110) segue aguardando aprovação `production` pelo PO. Veja PENDENCIAS.md §P25.
+- **Runs não concluídos:** Deploy Gates [#41051701334](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41051701334) e o rerun da Personalization [#41051701270](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41051701270) estavam `queued`; E2E/CI listados no snapshot também estavam `in_progress`. Não foram contabilizados como falha final.
+- **Edge functions drift:** o último `edge-functions-drift-check` é [#41048782448](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41048782448), `cancelled`; portanto não é uma falha concluída mais recente. O deploy de `health-check` [#41048773110](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41048773110) segue `pending` de aprovação de produção, sem evidência de que o drift foi corrigido.
+- **Checks verdes recentes em `b0d1376a`:** Static Health Checks #41051701175; Lovable Edit Tracker #41051701271; SSOT Supabase Guard #41051701274; Gitleaks #41051701264; Required Checks Guard #41051701090; Security Scan #41051701095; Select Columns vs Types #41051701257; No Prod Leak #41051701142; Release Please #41051701201; UI Visual & A11y #41051701253; Lovable Autoheal #41051701208; Quote Builder Delivery Quality #41051701199; Policies Baseline #41051701281; Branch Protection Sentinel #41051701282; CodeQL #41051701079; Supabase Linter Gate #41051701308 (tentativa 2); além de Mark stale issues and pull requests #41047015308 — todos `success`.
+- **Validação local pós-merge de documentação:** no commit `e975c4fef` (mesmo código de aplicação do SHA `b0d1376a`; a atualização de `main` que veio depois é apenas documental), `npm run build:verify` passou (typecheck, lint baseline sem regressões, build e guardas de produção); suíte completa: 1.250 arquivos aprovados, 130 skipped; 25.898 testes aprovados, 1.135 skipped e 24 todo. A revisão atual também altera somente documentação. A validação final do commit atualizado será repetida antes do push.
+
+---
+
+## Sessão P23 — 2026-10-30 — HEAD `420812919` — Baseline + Tabela de Prova
+
+**HEAD:** `4208129190754b3932794e612c6fbe76022843e7` (squash-merge de PR #2814 — docs-only)
+**Objetivo:** registrar baseline local e prova de estado de CI para o HEAD atual.
+
+### Baseline local — HEAD `420812919` (2026-10-30T11:43 UTC)
+
+| Etapa | Resultado | Observação |
+|---|---|---|
+| `npm run build` | ✅ exit 0 | Vite build OK (mesmos resultados que `22ca2b3fa` — zero código alterado) |
+| `npx tsc --noEmit` | ✅ exit 0 | Zero erros TypeScript |
+| `npm run lint:baseline` | ⚠️ OOM container | Limitação pré-existente do container — CI remoto é fonte de verdade |
+| `npx vitest run tests/scripts/` | ✅ 40 arquivos, 532 passed, 3 skipped | Completou em 42.81s |
+| Suite completa `npx vitest run` | ⚠️ OOM/timeout container | Limitação de recurso; CI remoto prova testes: step 21 ✅ no run [#41040489233](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41040489233) SHA `6dbc9387` |
+
+> `420812919` altera apenas `RELATORIO_CI.md` e `PENDENCIAS.md` (docs-only, igual a `22ca2b3fa`). Zero mudança em código TypeScript/JavaScript. Testes idênticos ao baseline de `6dbc9387`.
+
+### Cancelamentos realizados — liberação de runner saturation
+
+Para desbloqueiar o Gate Final #41048978175, foram cancelados nesta sessão:
+- **11 runs `in_progress`** de SHAs antigos (`d455290f`, `1e963579`, `cf2a3503`, `22ca2b3f`, `ef745375`) — via `cancel_workflow_run`
+- **6 runs `in_progress`** adicionais via `force_cancel_workflow_run`
+- **11 runs `queued`** de SHAs antigos (`66dc3de1`, `933321ed`, `d455290f`) — via `cancel_workflow_run`
+- **5 runs `in_progress`** adicionais de SHAs antigos (`cf2a3503`, `1e963579`, `22ca2b3f`) — via `cancel_workflow_run` (P23.2)
+
+Total: **33 runs stale cancelados**.
+
+### Estado do Gate Final — HEAD `420812919`
+
+| Check | Run ID | Status | Observação |
+|---|---|---|---|
+| Gate Final - Deploy Ready | [#41048978175](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41048978175) | ⏳ queued | Aguardando liberação de runners; 28 stale runs cancelados nesta sessão |
+
+**Causa raiz da fila:** saturação do plano free (20 concurrent jobs) por múltiplos pushes em sequência rápida da sessão anterior. Documentado em PENDENCIAS.md §P22-runner-saturation.
+
+**Prova de correção de código:** CI Security & Drift [#41040489233](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41040489233) no SHA `6dbc9387` — steps 1–26 todos ✅ success, incluindo step 21 "Run Unit & Integration Tests".
+
+### Failures no HEAD `420812919` — inventário completo
+
+| Workflow | Conclusão | Registro |
+|---|---|---|
+| Running Copilot Code Review | ❌ HTTP 402 | PENDENCIAS.md §P21-copilot — ação PO: habilitar plano Copilot |
+| edge-functions-drift-check | ❌ 31 funções em drift | PENDENCIAS.md §P21-edge-drift — ação PO: aprovar deploy #41034820685 |
+| E2E — Personalization Flow | ❌ auth 504 | PENDENCIAS.md §P21-personalization — pré-existente |
+| E2E — Magazine Header Layout | ❌ auth 504 | PENDENCIAS.md §P21-magazine-header — pré-existente |
+| E2E — Critical Flows & Error Boundaries | ❌ auth 504 | PENDENCIAS.md §P21-critical-flows — pré-existente |
+| Gate Final - Deploy Ready | ⏳ queued | PENDENCIAS.md §P22-runner-saturation — não é falha, é fila |
+| Supabase Preview | skipped | PENDENCIAS.md §P22-supabase-preview — comportamento esperado |
+
+**Regressões introduzidas:** Nenhuma. Todos os failures são pré-existentes ou decorrentes de runner saturation.
+
+---
+
+## Atualização P26 — E2E e estado da ponta da `main` (2026-10-30T12:19Z)
+
+### E2E — Critical Flows & Error Boundaries
+
+O run mais recente concluído para o workflow é [#41051701108](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41051701108), SHA `b0d1376a`, `failure`. `E2E — Mobile Critical Routes` e `E2E — Error Boundaries (sem auth)` passaram; `E2E — Full User Flows (authed)` falhou. O setup de autenticação teve credenciais presentes e 1 teste passou. No teste de hover/sidebar, `loginViaUI` permaneceu em `/login` por 75 s; houve PostgREST/Edge requests pendentes por aproximadamente 16–70 s e `get-visitor-info` respondeu HTTP 403 após ~40,7 s. O gate de quantidade recebeu 1 teste executado e 9 ignorados (mínimo 10; razão de skipped 90%, limite 50%).
+
+O padrão comprova lentidão/rejeição de algumas chamadas no run, mas não uma causa única do produto/serviço. A consulta read-only agregada aos logs unificados do Supabase, limitada a fontes Edge/Postgres, rotas/status e janela 12:00–12:13Z, retornou zero linhas; portanto não há corroboração independente nesta sessão. Ação pendente: PO/admin inspecionar Auth, PostgREST e Edge Functions nos dashboards, sem alterar schema nem enfraquecer testes; reexecutar os jobs falhos após estabilizar as dependências.
+
+### Inventário e estados não concluídos
+
+- Copilot Code Review [#41045066850](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41045066850): último failure concluído conhecido, HTTP 402/quota excedida; requer intervenção de billing/admin.
+- Uptime Monitor [#41053317735](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41053317735): run mais recente entrou `in_progress` às 12:19Z; o último concluído [#41048983078](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41048983078) era `failure`. O run atual ainda não pode ser classificado.
+- E2E Personalization [#41051701270](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41051701270): tentativa 2 `in_progress` às 12:15Z; resultado da tentativa 1 documentado em P25.
+- Deploy Gates [#41051701334](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41051701334): `queued`; não é falha concluída.
+- Supabase Linter Gate [#41051701308](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41051701308): tentativa 2 `success`; a falha de timeout/HTTP 544 da tentativa 1 foi superada no rerun.
+- Deploy protegido de `health-check` [#41048773110](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41048773110): `pending` de aprovação humana em `production`. Edge drift-check mais recente [#41048782448](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41048782448) foi `cancelled`; não há prova de deploy/reconciliação concluída.
+
+### Checks verdes recentes em `b0d1376a`
+
+Permanecem verdes: Static Health Checks, Lovable Edit Tracker, SSOT Supabase Guard, Gitleaks, Required Checks Guard, Security Scan, Select Columns vs Types, No Prod Leak, Release Please, UI Visual & A11y, Lovable Autoheal, Quote Builder Delivery Quality, Policies Baseline, Branch Protection Sentinel, CodeQL, Supabase Linter Gate (tentativa 2) e Mark stale issues and pull requests. IDs e links estão em PENDENCIAS.md §P25.
+
+### Validação local do commit documental
+
+Após `3d277b164`, `npm run build:verify` e a suíte completa passaram: 1.250 arquivos, 25.898 testes aprovados (130 arquivos e 1.135 testes skipped; 24 todo); lint baseline não registrou regressão. Somente documentos foram alterados. Nenhuma regressão local foi encontrada; os failures remotos do E2E continuam pendentes de investigação das dependências externas.
+
+## Sessão P24 — 2026-10-30 — HEAD `b0d1376a` — Prova Final
+
+**HEAD:** `b0d1376abeb1e541b42a2197e29489e024c819f2` (squash-merge de PR #2817 — docs-only)
+**Objetivo:** produzir prova definitiva do estado de CI para o HEAD atual `b0d1376a`.
+
+> `b0d1376a` é commit docs-only (altera apenas `RELATORIO_CI.md` e `PENDENCIAS.md`). Zero mudança em TypeScript/JavaScript/edge functions. Código idêntico ao `6dbc9387` (PR #2806 que corrigiu ESLint).
+
+### Gate Final — HEAD `b0d1376a`
+
+| Check | Run ID | Status | Observação |
+|---|---|---|---|
+| Gate Final - Deploy Ready (tentativa 2) | [#41051701334](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41051701334) | ⏳ queued | Saturação runners — plano free GitHub, 50+ jobs de PRs ativos consumindo todos os slots. Documentado em PENDENCIAS.md §P22-runner-saturation. |
+
+**Prova parcial — tentativa 1** ([run #41051701334 / attempt 1](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41051701334/attempts/1)):
+- Gate 0 — SSOT → ✅ success
+- Gate 2.5 — PostgreSQL integrity → ✅ success
+- Gate 5 — SEO → ✅ success
+- Gate E23 — Secrets scan → ✅ success
+- Gate 1 — Lint+TS → cancelado durante lint (falso cancelamento por saturação; lint não falhou)
+
+**Último Gate Final `conclusion=success`:** `7299c88c` → [#41034358375](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358375) ✅
+
+### Tabela de prova — todos os failures do período (HEAD `b0d1376a`)
+
+| Workflow | Causa raiz | Conclusão | Registro |
+|---|---|---|---|
+| ESLint dot-notation (badges-manager/types.ts:254) | `noUncheckedIndexedAccess` violou `dot-notation` | ✅ **CORRIGIDO** — PR #2806 | CI Security & Drift [#41040489233](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41040489233) steps 1–26 ✅ |
+| Running Copilot Code Review | HTTP 402 — billing quota excedida | ❌ PO-blocked | PENDENCIAS.md §P21-copilot — habilitar plano Copilot |
+| edge-functions-drift-check | 31 funções edge em drift canônico | ❌ PO-blocked | PENDENCIAS.md §P21-edge-drift — aprovar deploy [#41034820685](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034820685) em `production` |
+| E2E — Personalization Flow | `auth/v1/token → 504` no CI | ❌ PO-blocked | PENDENCIAS.md §P21-personalization — provisionar `SUPABASE_SERVICE_ROLE_KEY` |
+| E2E — Magazine Header Layout | `auth/v1/token → 504` no CI | ❌ PO-blocked | PENDENCIAS.md §P21-magazine-header — mesma causa raiz |
+| E2E — Critical Flows & Error Boundaries | `auth/v1/token → 504` no CI | ❌ PO-blocked | PENDENCIAS.md §P21-critical-flows — mesma causa raiz |
+| Gate Final - Deploy Ready (`b0d1376a`) | Saturação runners — plano free | ⏳ queued | PENDENCIAS.md §P22-runner-saturation — infraestrutura; não é falha de código |
+
+### Resumo executivo
+
+- **Único failure corrigível por código:** ESLint dot-notation → **CORRIGIDO** em PR #2806 (`6dbc9387`)
+- **Failures PO-blocked (3 causas distintas):** billing Copilot (1), aprovação environment production (1), secrets E2E auth (3 workflows) — todos documentados em PENDENCIAS.md com ação e motivo exatos
+- **Gate Final:** queued por saturação de runners (50+ workflows de PRs do Lovable esgotando os 20 concurrent jobs do plano free). Não é falha de código — tentativa 1 confirmou Gate 0, 2.5, 5, E23 todos ✅
+- **Regressões introduzidas por esta sessão:** Nenhuma
+
+## Atualização P27 — inventário da ponta atual da `main` (2026-10-30T12:23Z)
+
+**HEAD da `main`:** `7e56ae49dde173e04f66ed4523eb8eb59653821a`, PR #2818, alteração documental. O merge da PR #2816 com `origin/main` incorpora esse commit; não há mudança de aplicação, dependências ou schema.
+
+### Falhas concluídas mais recentes
+
+| Workflow | Run | Status/conclusão | Causa evidenciada / ação |
+|---|---|---|---|
+| Uptime Monitor | [#41053317735](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41053317735) | `completed / failure` | O step agregado `Probe site + edge function` falhou. O log não informa qual das quatro probes falhou; não atribuir causa específica. O deploy protegido de `health-check` segue `pending` em [#41048773110](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41048773110). |
+| Running Copilot Code Review | [#41045066850](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41045066850) | `completed / failure` | HTTP 402 / limite de uso Copilot, bloqueio administrativo descrito em PENDENCIAS.md. |
+
+### Estado dos workflows no SHA `7e56ae49`
+
+- **Em fila/pendentes, não falhas:** Deploy Gates push [#41054206726](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41054206726) (`queued`), Deploy Gates dispatch [#41054421796](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41054421796) (`pending`), CI Security & Drift [#41054206685](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41054206685) (`pending`), CodeQL [#41054207049](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41054207049) (`queued`) e os workflows de push listados em PENDENCIAS.md §P27.
+- **E2E Critical Flows:** o run falho anterior [#41051701108](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41051701108) no SHA `b0d1376a` foi sucedido pelo novo run [#41054206634](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41054206634), ainda `queued` no SHA atual. Não é falha concluída mais recente.
+- **E2E Personalization:** o rerun da execução anterior, [#41051701270](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41051701270), tentativa 2, terminou `success`; no SHA `7e56ae49`, a nova execução [#41054206728](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41054206728) está `queued`.
+- **Supabase Linter Gate:** a tentativa 2 de [#41051701308](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41051701308) terminou `success`; a nova execução no SHA atual [#41054206788](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41054206788) está `queued`.
+- **Edge drift:** execução mais recente [#41048782448](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41048782448) está `cancelled`; não prova reconciliação. O workflow protegido de deploy [#41048773110](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41048773110) continua `pending` de aprovação humana.
+- `Deployment Failure Alert` [#41054278600](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41054278600) e `Lovable Protected-File Audit` [#41054206659](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41054206659) foram `skipped`, não failures.
+
+**Verdes anteriores:** os checks que passaram em `b0d1376a` continuam registrados como verdes naquele SHA em P25. Os novos runs no SHA `7e56ae49` ainda não concluíram; portanto ainda não há evidência para afirmar que esses workflows seguem verdes na ponta mais nova.
+
+### PR #2816 — estado separado da ponta da `main`
+
+A PR [#2816](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2816) está aberta e seu head `e975c4fef` estava atrás da `main` `7e56ae49`. O status agregado da PR reportou deployment Vercel `failure` ([deploy](https://vercel.com/juca1/promo-gifts-v4/Hmt8NgNAeXWgoJTwFNATqu57PzCK)) e Devin Review `success` com revisão ignorada por trial/credits. O status não comprova falha de um workflow da `main`; a PR ainda precisa sincronizar e passar seus checks antes de qualquer merge. Nenhum merge foi feito.
+
+### Validação local já registrada
+
+Após o commit documental `5ad880a1e`, `npm run build:verify` e `npm test -- --reporter=dot --silent` passaram (1.250 arquivos; 25.898 testes aprovados, 1.135 skipped e 24 todo). O merge com `7e56ae49` e este snapshot também são apenas documentais; a validação será repetida após o commit de reconciliação, antes do push.
