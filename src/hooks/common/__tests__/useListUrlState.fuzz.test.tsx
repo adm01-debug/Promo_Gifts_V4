@@ -203,9 +203,7 @@ describe('EDGE — caracteres especiais / URI encoding', () => {
 });
 
 describe('EDGE — deep-link com todos os defaults explícitos', () => {
-  it('URL com valores default é lida corretamente e clearAll é no-op efetivo', async () => {
-    // Nota: quem colocou defaults na URL foi um agente externo; o hook não
-    // "normaliza" ao montar. Mas clearAll deve limpar tudo mesmo assim.
+  it('normaliza defaults explícitos e clearAll preserva a limpeza', async () => {
     const { wrapper, getSearch } = mkWrapper(
       '/x?status=all&deadline=all&sort=recent&q=',
     );
@@ -217,6 +215,14 @@ describe('EDGE — deep-link com todos os defaults explícitos', () => {
     expect(result.current.values.deadline).toBe('all');
     expect(result.current.values.sort).toBe('recent');
     expect(result.current.values.q).toBe('');
+
+    await waitFor(() => {
+      const params = new URLSearchParams(getSearch());
+      expect(params.has('status')).toBe(false);
+      expect(params.has('deadline')).toBe(false);
+      expect(params.has('sort')).toBe(false);
+      expect(params.has('q')).toBe(false);
+    });
 
     act(() => result.current.clearAll());
     await waitFor(() => {

@@ -80,6 +80,39 @@ describe('useListUrlState — contrato de /carrinhos (deadline/sort/q)', () => {
     expect(result.current.values.q).toBe('');
   });
 
+  it('remove defaults explícitos ao hidratar e preserva filtros ativos e params externos', async () => {
+    const { wrapper, getSearch } = makeWrapper(
+      '/carrinhos?status=all&deadline=overdue&sort=recent&q=abc&utm=email',
+    );
+    const { result } = renderHook(
+      () => useListUrlState({ keys: CARTS_KEYS, searchKey: 'q', debounceMs: 250 }),
+      { wrapper },
+    );
+
+    await waitFor(() => {
+      const params = new URLSearchParams(getSearch());
+      expect(params.has('status')).toBe(false);
+      expect(params.has('sort')).toBe(false);
+      expect(params.get('deadline')).toBe('overdue');
+      expect(params.get('q')).toBe('abc');
+      expect(params.get('utm')).toBe('email');
+    });
+    expect(result.current.values.deadline).toBe('overdue');
+    expect(result.current.values.q).toBe('abc');
+  });
+
+  it('limpa defaults explícitos do deep-link sem searchKey', async () => {
+    const { wrapper, getSearch } = makeWrapper('/x?status=all&sort=recent&page=2');
+    renderHook(() => useListUrlState({ keys: { status: 'all', sort: 'recent' } }), { wrapper });
+
+    await waitFor(() => {
+      const params = new URLSearchParams(getSearch());
+      expect(params.has('status')).toBe(false);
+      expect(params.has('sort')).toBe(false);
+      expect(params.get('page')).toBe('2');
+    });
+  });
+
   it('preserva params NÃO gerenciados quando clearAll é chamado', async () => {
     // Só limpa as chaves declaradas em `keys`. Params externos (paginação,
     // rastreio, etc.) devem permanecer intactos.
