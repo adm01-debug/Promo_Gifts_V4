@@ -566,3 +566,22 @@ Sem aprovação do PO, o workflow continuará falhando quando `EXTERNAL_PROMOBRI
 1. Acessar https://github.com/adm01-debug/Promo_Gifts_V4/deployments/activity_log?environment=production
 2. Aprovar o deploy pendente da edge function `health-check`
 3. Após deploy, próximo run do Uptime Monitor (~30 min) deve retornar `success`
+
+---
+
+### P19-D — E2E • Swatch QuickView (workflow `e2e-swatch-quickview.yml`, pré-existente)
+
+**Run no main:** [#40988483565](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40988483565) — SHA `380ceb6`, `conclusion=failure` (antes do PR #2763).
+
+**Causa raiz:** Teste `swatch-picker-v2-focus-and-quickview.spec.ts:100` falha com `[E108] Sem produtos com color_swatches em /reposicao (rota satélite)`. O teste exige dados reais de produto com `color_swatches` nas rotas `/catalogo`, `/super-filtro`, `/novidades` e `/reposicao`. No ambiente CI (Supabase prod), essas rotas não retornaram produtos com esse campo no momento da execução.
+
+**Confirmação de pré-existência:** O workflow já falhava em `380ceb6` (SHA anterior ao nosso PR). Não foi introduzido pelo PR #2763 — nossos changes tocam apenas `.migration-refs-baseline.json`, `AdImageResult.tsx` (foco a11y), `PENDENCIAS.md` e `RELATORIO_CI.md`.
+
+**Impacto no Gate Final:** NÃO — `e2e-swatch-quickview.yml` é workflow separado de `deploy-gates.yml`. Não é required check de `main`.
+
+**Bloqueio:** Dados de catálogo com `color_swatches` devem estar presentes nas rotas satélite para o teste passar. Não é corrigível por código sem ajuste de dados ou lógica de skip.
+
+**O que o PO pode fazer:**
+1. Verificar se os produtos com `color_swatches` estão ativos e visíveis nas rotas `/reposicao`, `/novidades`, `/super-filtro`.
+2. Se for uma limitação de dados de staging: ajustar o teste para pular rotas sem dados (via `REQUIRED_ROUTES`).
+3. Se for problema de timing de carga: aumentar timeout no fixture `firstPicker`.
