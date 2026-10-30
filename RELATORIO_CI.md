@@ -410,3 +410,15 @@ Na primeira execução integral após integrar a `main`, 1 teste novo falhou por
 | `npx vitest run tests/scripts/plan-status.test.mjs --reporter=dot` | ✅ 4/4 testes passaram após ajustar os totais aos dados vigentes do plano. |
 
 Os resultados acima foram obtidos após o commit de integração e antes do commit corretivo das expectativas; serão repetidos após esse commit corretivo. Os 24 workflows previamente observados em falha na `main` (§24/P42) ainda requerem reconsulta: novos runs disparados pelo avanço de `main` estavam pendentes no snapshot anterior.
+
+## 26. Atualização das falhas da main e causa do Branch Protection Sentinel — 30/10/2026 às 22:33Z
+
+No `main@554ef41b44c9f318777d7e7b11189490a29a8c0a`, três falhas da fotografia anterior foram superadas por execuções concluídas em sucesso: E2E Critical Flows [#41134852668](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852668), E2E Personalization [#41134852480](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852480) e Replenishment [#41134852537](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852537). Assim, das 24 falhas anteriores, 21 ainda são o último resultado concluído; soma-se o novo failure do Sentinel, totalizando **22 workflows com última execução observada em falha**.
+
+| Estado novo na main | Evidência |
+|---|---|
+| Falha | Branch Protection Sentinel [#41134852421](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852421): detector não reconheceu o sufixo squash `(#2810)` e tentou validar 23 commits internos da integração como push comum. O job de verificação do ruleset passou. Causa e correção propostas em PENDENCIAS.md §P45. |
+| Sucesso que substitui falhas anteriores | Critical Flows #41134852668; Personalization #41134852480; Replenishment #41134852537. |
+| Ainda sem conclusão | CI Security [#41134852492](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852492) e Swatch QuickView [#41134852559](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852559) estavam sem conclusão. Deploy Gates [#41134852574](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852574), E2E Playwright [#41134852533](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852533) e Visual Baseline [#41134852595](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852595) também estavam na fila/em execução. Nenhum foi contado como failure novo. |
+
+A correção no branch do PR #2839 extrai a detecção de título de merge para script testável e mantém auditoria do intervalo inteiro para títulos comuns sem marcador de PR. O teste inclui o título real do #2810 e casos negativos. A validação pré-commit passou: `actionlint` nos dois workflows; `check-workflow-contracts --gate` sem violação bloqueante (um aviso advisory C27); `build:verify`; Vitest 1.254 arquivos/25.924 testes aprovados, 130 arquivos/1.135 skipped e 24 TODO. A repetição pós-commit segue necessária. Nenhuma alteração em produção, `main` ou Supabase foi feita.

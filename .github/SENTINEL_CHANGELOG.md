@@ -1,5 +1,19 @@
 # Sentinel Changelog
 
+## v2.1.2 — 2026-10-30 — Reconhece títulos de squash na detecção de merge PR
+
+**Contexto:** o push `main@554ef41b4` terminou com falha no Branch Protection Sentinel
+[#41134852421](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852421).
+O título final do PR #2810 termina em `(#2810)` e já é aceito por `sentinel-check.sh`,
+mas a etapa que decide auditar somente o commit final reconhecia apenas títulos
+`Merge ... #NNN` e `merge(pr-NNN):`. Por isso, a auditoria tratou como push comum os
+23 commits internos trazidos pela integração do PR.
+
+**Correção:** a detecção de título foi extraída para
+`scripts/sentinel-pr-merge-subject.sh`, chamada pelo workflow e coberta por testes
+para squash, merge padrão/customizado e push comum. O escopo fail-closed continua:
+sem marcador válido de PR, o intervalo completo continua sendo auditado.
+
 ## v2.1.1 — 2026-10-29 — Regra 7.5: SHA allowlist histórica (P-CI-H)
 
 **Contexto:** Push direto em main entre `14b6d5fc` e `c3b41286` (por TIPROMO)
