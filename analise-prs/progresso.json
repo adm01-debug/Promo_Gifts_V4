@@ -10,11 +10,13 @@
   },
   "total_prs_abertos_original": 19,
   "total_prs_abertos_atuais": 18,
-  "analisados": 30,
-  "dossies_completos": 30,
+  "analisados": 34,
+  "analisados_fase_principal": 30,
+  "analisados_tardios": ["#2797", "#2806", "#2807", "#2810"],
+  "dossies_completos": 34,
   "veredictos": {
     "MERGEADA": ["#2768", "#2759", "#2734", "#2770", "#2783", "#2791", "#2792", "#2795"],
-    "MERGEADA_PELO_PO": ["#2794"],
+    "MERGEADA_PELO_PO": ["#2766", "#2767", "#2785", "#2794", "#2797", "#2806"],
     "DECISAO_HUMANA": ["#2758", "#2745", "#2743", "#2731", "#2717", "#2714", "#2701", "#2776", "#2793"],
     "DRAFT": ["#2767", "#2766", "#2764", "#2750", "#2749", "#2746", "#2771", "#2785", "#2789"],
     "DRAFT_E_DECISAO_HUMANA": ["#2744"],
@@ -151,6 +153,9 @@
     "2767": "OK_vazio_SUPERSEDED"
   },
   "meta_cumprida": true,
+  "contagem_reconciliada": "34 total (30 fase principal + 4 tardios: #2797, #2806, #2807, #2810). RELATORIO_PRS.md é SSOT.",
+  "producao_verificacao": "NÃO VERIFICADO via query_logs (Internal Server Error permanente). VACUAMENTE SATISFEITO: nenhuma das 8 PRs mergeadas tocou migrations ou edge functions (evidência: github_list_pr_files na seção EVIDÊNCIA COMPLETA do RELATORIO_PRS.md).",
+  "gate6_build_confirmado": "YES — run_id=41034358375 status=completed conclusion=success updated_at=2026-10-30T09:40:27Z (github_get_workflow_run)",
   "gate_final_run_definitivo": {
     "run_id": 41021989586,
     "sha": "c09402816aa882fc8e9577d8a2352a663e515dc9",
@@ -158,7 +163,7 @@
     "gate3_e2e_finalizado": "2026-10-30T08:18:20Z",
     "gate_final_finalizado": "2026-10-30T08:18:26Z"
   },
-  "merge_sha_2791": "0b628fd3ddccb52e0182ff55b26102cff2fea",
+  "merge_sha_2791": "0b628fd3ddccb52e0182ff55b26102cfc3e6a930",
   "merge_em_2791": "2026-10-30T~08:45Z",
   "gate_final_pre_merge_2791": {
     "run_id": 41023834458,
@@ -177,7 +182,7 @@
   },
   "gate_final_pos_merge_2791": {
     "check_run_id": 123972750816,
-    "sha": "0b628fd3ddccb52e0182ff55b26102cff2fea",
+    "sha": "0b628fd3ddccb52e0182ff55b26102cfc3e6a930",
     "conclusion": "success",
     "completed_at": "2026-10-30T08:45:55Z",
     "nota": "verificado via github_list_check_runs check_name='Gate Final - Deploy Ready'"
@@ -218,6 +223,9 @@
     "status": "completed",
     "conclusion": "success",
     "completed_at": "2026-10-30T09:40:27Z",
+    "updated_at_confirmado": "2026-10-30T09:40:27Z",
+    "gate6_confirmado": true,
+    "fonte_confirmacao": "github_get_workflow_run run_id=41034358375 (sessao atual)",
     "iniciado": "2026-10-30T09:33:57Z",
     "jobs_verificados_em_09:43Z": {
       "total": 16,
