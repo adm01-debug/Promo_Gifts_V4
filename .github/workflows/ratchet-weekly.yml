@@ -111,6 +111,31 @@ jobs:
           VITE_SUPABASE_URL: https://placeholder.supabase.co
           VITE_SUPABASE_ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.placeholder
 
+      - name: Distância dos alvos de ratchet (E126)
+        run: |
+          node - <<'EOF'
+          const fs = require('fs');
+          const files = [
+            { file: '.indexed-access-baseline.json', key: 'errorCount', label: 'indexed-access' },
+            { file: '.file-size-baseline.json', key: null, label: 'file-size', countFn: d => Object.keys(d.files || {}).length },
+            { file: '.todo-baseline.json', key: 'productionTodoCount', label: 'TODO/FIXME' },
+            { file: '.as-assertions-baseline.json', key: 'productionAsCount', label: 'as-assertions' },
+            { file: '.any-type-baseline.json', key: 'productionAnyCount', label: 'as-any' },
+          ];
+          for (const { file, key, label, countFn } of files) {
+            try {
+              const d = JSON.parse(fs.readFileSync(file, 'utf8'));
+              const current = countFn ? countFn(d) : d[key];
+              const meta = d.meta;
+              if (!meta) { console.log(`  ${label}: ${current} (sem meta)`); continue; }
+              const dist = current - meta.target;
+              const pct = meta.target > 0 ? Math.round((1 - current / meta.target) * 100) : 100;
+              const status = dist <= 0 ? '✅ ATINGIDO' : `${dist} acima do alvo (${meta.target})`;
+              console.log(`  ${label}: ${current} → alvo ${meta.target} até ${meta.deadline} — ${status}`);
+            } catch (e) { console.log(`  ${label}: erro lendo ${file}`); }
+          }
+          EOF
+
       - name: Detectar se baselines melhoraram
         id: diff
         run: |
