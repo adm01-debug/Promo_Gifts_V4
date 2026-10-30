@@ -153,3 +153,21 @@ O PR [#2800](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2800) permanece 
 - **Estado:** `completed/skipped` — "This git branch is not associated with any Supabase Branch. You can open a PR to create a new branch."
 - **Causa:** Push direto à `main` (sem PR): o Supabase Branching App não cria preview para pushes em main, apenas para PRs. Estado `skipped` é comportamento esperado — não é falha.
 - **Impacto:** Nenhum. Não é required check.
+
+## Atualização P29 — últimas conclusões da main e ratchet (2026-10-30T12:45Z)
+
+### Falhas concluídas no SHA `7e56ae49`
+
+| Workflow | Run mais recente | Causa evidenciada / estado |
+|---|---|---|
+| Uptime Monitor | [#41056934202](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41056934202) | Falhou no step agregado `Probe site + edge function`. Probes reportadas: site=0, health-check=22, check-login OPTIONS=0 e auth-health=0. O exit 22 identifica a probe de health-check como falha, mas não determina sozinho a causa raiz. O deploy protegido [#41048773110](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41048773110) ainda exige aprovação do ambiente `production`; depois, reexecutar o Uptime Monitor. |
+| Copilot Code Review | [#41045066850](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41045066850) | HTTP 402 por quota/billing do Copilot. Bloqueio externo; administrador precisa regularizar o plano/quota. |
+| E2E — Critical Flows & Error Boundaries | [#41054206634](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41054206634) | Login e endpoints de Auth responderam 200, mas `system_settings` retornou 401 e chamadas REST/RPC/Edge ficaram pendentes por 56–80 s. O fluxo permaneceu em `/login`; 1/10 testes rodou e 9 foram ignorados, falhando o limite mínimo. Os dados não identificam a causa entre autorização, serviço ou dependência. Ação: revisar logs/saúde de Auth e PostgREST no intervalo do run e só então repetir o job; não afrouxar o gate. |
+
+### Gate de TypeScript
+
+O Deploy Gates [#41054206726](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41054206726) falhou no Gate 1.10: 872 diagnósticos contra baseline 867; o Gate Final falhou como consequência. A comparação local contra o commit que criou o baseline mostrou os mesmos 872 diagnósticos, sem novos diagnósticos introduzidos desde então. Foram adicionadas verificações de existência em dois componentes administrativos para corrigir cinco acessos inseguros preexistentes, sem atualizar o baseline nem alterar a política do gate. Validação local após a correção: ratchet 867/867; `npm run build:verify` passou com typecheck, lint baseline (0 erros/avisos) e build; suíte completa passou com 1.250 arquivos e 25.898 testes (1.135 skipped, 24 todo). Os mesmos checks serão repetidos após o commit, antes do push.
+
+### Demais execuções no SHA `7e56ae49`
+
+Os workflows com sucesso estão listados em RELATORIO_CI.md §P29. CI Security & Drift [#41054206685](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41054206685) e Swatch QuickView [#41054206843](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41054206843) permaneciam em andamento na última consulta. E2E Playwright [#41054206752](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41054206752) e Deploy Gates dispatch [#41054421796](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41054421796) foram cancelados; não são contados como falhas. Nenhuma afirmação de sucesso será feita para os dois runs ainda ativos até obter conclusão.
