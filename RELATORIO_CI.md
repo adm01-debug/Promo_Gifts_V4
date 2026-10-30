@@ -347,4 +347,14 @@ Consultei individualmente as 119 definições ativas entre 02:29 e 02:31 UTC, us
 
 O novo `Deploy Gates` [#40991104565](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40991104565) falhou no Gate 1.3 por duas referências textuais no dossiê de PR-2731 a um caminho de migration proposto, inexistente na main. Reproduzi localmente o mesmo erro em `node scripts/check-migration-path-references.mjs`; ajustei o dossiê para distinguir a migration proposta de um arquivo versionado e o checker local passou. O `CI Security & Drift Checks` [#40991104549](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40991104549) continua falhando no gate WCAG por `focus-visible:outline-none` sem ring em `AdImageResult.tsx:188`; a correção visual está em PR #2758 e requer aceite de design, portanto foi registrada como bloqueio, sem alteração visual nesta sessão. O Uptime Monitor [#40989993974](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40989993974) falha com curl 22; seu deploy está `pending`, mas a API de deployments pendentes retornou `[]`, logo a causa e a ação necessária não estão confirmadas.
 
-A branch incorpora a main `604de54c` e preserva as mudanças recebidas no relatório extenso de PRs. O inventário P31 foi documentado; executar novamente build, lint, typecheck, suíte completa, checker de paths e `git diff --check` depois do commit de resolução, antes do push. Não houve escrita no Supabase, migration, deploy, force push ou alteração direta da main.
+A branch incorpora a main `604de54c` e preserva as mudanças recebidas no relatório extenso de PRs. O commit de resolução `168bc87c4` foi validado depois de criado:
+
+| Validação | Resultado após `168bc87c4` |
+|---|---|
+| `NODE_OPTIONS=--max-old-space-size=4096 npm run build:verify` | ✅ exit 0 — TypeScript; lint 0 erros/avisos, Δ0; guardas Supabase; build Vite; ciclos e harnesses de produção |
+| `NODE_OPTIONS=--max-old-space-size=4096 npm test` | ✅ exit 0 — 1.247 arquivos passaram, 130 skipped; 25.871 testes passaram, 1.135 skipped e 24 TODO; igual ao baseline P28 |
+| `node scripts/check-migration-path-references.mjs` | ✅ exit 0 — 481 referências legadas já catalogadas, nenhuma nova referência quebrada |
+| `python3 -m json.tool analise-prs/prs.json` | ✅ JSON válido |
+| `git diff --check HEAD^1 HEAD -- PENDENCIAS.md RELATORIO_CI.md analise-prs/dossies/PR-2731.md` | ✅ sem whitespace inválido nos arquivos reconciliados |
+
+O `git diff --check` abrangente aponta espaços finais em documentos importados sem alteração semântica do PR #2755 na `main`; eles representam quebras Markdown já presentes no conteúdo recebido. O commit passou pelos hooks locais, incluindo guardas canônicas. Não houve escrita no Supabase, migration, deploy, force push ou alteração direta da main. Após registrar esta evidência, os comandos obrigatórios serão repetidos após o próximo commit antes do push normal.
