@@ -11,7 +11,7 @@
   "analisados": 19,
   "dossies_completos": 19,
   "veredictos": {
-    "CANDIDATA_PENDENTE_CI": ["#2768"],
+    "MERGEADA": ["#2768"],
     "DECISAO_HUMANA": ["#2759", "#2758", "#2745", "#2743", "#2734", "#2731", "#2717", "#2714", "#2701"],
     "DRAFT": ["#2767", "#2766", "#2764", "#2750", "#2749", "#2746"],
     "DRAFT_E_DECISAO_HUMANA": ["#2744"],
@@ -54,5 +54,18 @@
     "2767": "OK_sem_conflito"
   },
   "worktrees_pendentes": 0,
-  "evidencia_test_merges": "analise-prs/baseline/test-merges.md"
+  "evidencia_test_merges": "analise-prs/baseline/test-merges.md",
+  "test_merges_staged_diffs": {
+    "2758": "VAZIO — já em main (focus-visible AdImageResult.tsx:188)",
+    "2766": "VAZIO — já em main (focus-visible AdImageResult.tsx:188)",
+    "2767": "VAZIO — já em main (commit 82efe51d0 no main)",
+    "2734": "+38 linhas workflow contract-tests.yml (NÃO em main)",
+    "2759": "+217 linhas 4 arquivos CHANGELOG/package.json/manifest/lockfile (NÃO em main)",
+    "2744": "+1926 linhas 21 arquivos edge functions (NÃO em main)"
+  },
+  "relatorio_atualizado": "2026-10-30",
+  "dossies_reescritos_nesta_sessao": [
+    "PR-2701", "PR-2714", "PR-2717", "PR-2731", "PR-2734", "PR-2739",
+    "PR-2743", "PR-2744", "PR-2745", "PR-2747", "PR-2758", "PR-2766", "PR-2767"
+  ]
 }
