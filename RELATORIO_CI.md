@@ -241,3 +241,31 @@ O Gate Final — Deploy Ready concluiu `success` no run [#41115240969](https://g
 Continuavam sem conclusão na hora da consulta: CI Security & Drift [#41115240942](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41115240942) e E2E Playwright [#41115240773](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41115240773) `in_progress`; E2E Swatch QuickView [#41115240881](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41115240881) `pending`. Não foram contados como falhas.
 
 No head `08bcf8a3d` do PR #2839, a consulta retornou 45 checks: 9 `success`, 2 `skipped`, 1 `neutral`, 33 sem conclusão e nenhum `failure` concluído. O PR segue aberto e bloqueado enquanto aguarda checks e revisão humana. Gate Final verde em main não substitui esses requisitos do PR.
+
+## 15. Atualização final da rodada `main@9541666bf` (2026-10-30T20:12Z)
+
+### Inventário de workflows que ainda têm última execução falha na `main`
+
+| Workflow | Última execução na `main` | Causa / estado |
+|---|---|---|
+| Uptime Monitor | [#41120620323](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41120620323) — `failure` | `health-check=22`; site, `check-login` OPTIONS e `auth-health` retornaram 0. Falha repetida registrada em PENDENCIAS.md §P35 e issue #2841; depende de revisão/aprovação do deploy versionado da Edge Function e de novo probe. |
+| E2E — Personalization Flow | [#41115240723](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41115240723) — `failure` | Timeouts de login e chamadas Auth/PostgREST pendentes; causa raiz não comprovada e reprodução local bloqueada por falta de credenciais E2E. PENDENCIAS.md §P33. |
+| E2E — Critical Flows & Error Boundaries | [#41115240508](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41115240508) — `failure` | `auth/v1/token` recebeu `504` após 56,9s no primeiro try e chamadas Auth/PostgREST ficaram pendentes no retry; asserts de tooltip não foram alcançados. PENDENCIAS.md §P34–P35. |
+| CI Security & Drift Checks | [#41115240942](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41115240942) — `failure` | Única suíte falha foi `QuoteBuilderSummaryAlignment.fuzz.test.ts`: o teste lia o componente anterior à extração. Correção mínima está no PR #2839 e passou localmente; só pode ser encerrada após revisão, merge e novo run verde na `main`. |
+| Running Copilot Code Review | [#41115245979](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41115245979) — `failure` | HTTP 402 por cota adicional do Copilot esgotada; ação administrativa do PO registrada em PENDENCIAS.md §P33–P35. |
+
+### Checks verdes, em andamento e PR #2839
+
+- Gate Final — Deploy Ready [#41115240969](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41115240969) concluiu `success` em `main@9541666bf`; os checks concluídos já verdes permanecem verdes conforme PENDENCIAS.md §P33–P35.
+- E2E Playwright [#41115240773](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41115240773) foi `cancelled`, não contado como falha. E2E Swatch QuickView [#41115240881](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41115240881) estava `in_progress` às 20:12Z, também não contado como falha.
+- PR [#2839](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2839), head `1fa22f47250b2d0f27891c75ecbbdf5f0cf97505`, seguia aberto e bloqueado, sem revisão humana. A consulta encontrou 3 checks concluídos, 50 pendentes e nenhuma falha concluída no head. Não mesclar enquanto os checks exigidos não concluírem e a revisão não ocorrer.
+- O check Supabase Preview [#124269702734](https://github.com/adm01-debug/Promo_Gifts_V4/runs/124269702734) segue como integração externa, não workflow Actions; informa versões remotas de migrations ausentes no repositório e permanece sem classificação. Nenhum comando de escrita, migration, `repair`, DDL ou deploy foi executado no Supabase.
+
+### Validação local anti-regressão pós-commit
+
+| Verificação | Baseline local anterior | Resultado confirmado após o commit documental |
+|---|---|---|
+| `npm run build:verify` | TypeScript, ESLint `0 erros / 0 warnings`, build Vite e guards passaram | ✅ Passou novamente; sem mudança de código executável. |
+| `npm run test:run -- --reporter=dot --silent` | 1.252 arquivos / 25.910 testes aprovados; 130 arquivos / 1.135 testes skipped; 24 TODO | ✅ Passou novamente: 1.252 arquivos / 25.910 testes aprovados; 130 arquivos / 1.135 testes skipped; 24 TODO. |
+
+Sem redução de testes aprovados nem erro novo. Esta atualização altera somente `PENDENCIAS.md` e `RELATORIO_CI.md`.
