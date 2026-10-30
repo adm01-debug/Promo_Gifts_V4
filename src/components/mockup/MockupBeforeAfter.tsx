@@ -13,6 +13,13 @@ interface MockupBeforeAfterProps {
   className?: string;
 }
 
+// A divisória fica entre 2% e 98% para o puxador não sair do quadro.
+const MIN_POSITION = 2;
+const MAX_POSITION = 98;
+const KEYBOARD_STEP = 1;
+
+const clampPosition = (value: number) => Math.max(MIN_POSITION, Math.min(MAX_POSITION, value));
+
 export function MockupBeforeAfter({ beforeImage, afterImage, className }: MockupBeforeAfterProps) {
   const [sliderPosition, setSliderPosition] = useState(50);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -23,8 +30,34 @@ export function MockupBeforeAfter({ beforeImage, afterImage, className }: Mockup
     if (!container) return;
     const rect = container.getBoundingClientRect();
     const x = ((clientX - rect.left) / rect.width) * 100;
-    setSliderPosition(Math.max(2, Math.min(98, x)));
+    setSliderPosition(clampPosition(x));
   }, []);
+
+  // Teclado: setas movem 1 ponto, Home/End vão aos extremos (WAI-ARIA APG slider).
+  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
+    let next: number | null = null;
+    switch (e.key) {
+      case 'ArrowLeft':
+      case 'ArrowDown':
+        next = sliderPosition - KEYBOARD_STEP;
+        break;
+      case 'ArrowRight':
+      case 'ArrowUp':
+        next = sliderPosition + KEYBOARD_STEP;
+        break;
+      case 'Home':
+        next = MIN_POSITION;
+        break;
+      case 'End':
+        next = MAX_POSITION;
+        break;
+      default:
+        return;
+    }
+    e.preventDefault();
+    e.stopPropagation();
+    setSliderPosition(clampPosition(next));
+  }, [sliderPosition]);
 
   const handlePointerDown = useCallback(
     (e: React.PointerEvent) => {
@@ -50,11 +83,20 @@ export function MockupBeforeAfter({ beforeImage, afterImage, className }: Mockup
   return (
     <div
       ref={containerRef}
+      role="slider"
+      aria-label="Comparação antes e depois"
+      aria-valuemin={MIN_POSITION}
+      aria-valuemax={MAX_POSITION}
+      aria-valuenow={Math.round(sliderPosition)}
+      aria-valuetext={`${Math.round(sliderPosition)}% de posicionamento`}
+      tabIndex={0}
       className={cn(
         'relative cursor-col-resize touch-none select-none overflow-hidden rounded-xl border-2 border-primary/20',
         'aspect-square bg-muted/30',
+        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background',
         className,
       )}
+      onKeyDown={handleKeyDown}
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}

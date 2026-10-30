@@ -244,7 +244,7 @@ describe("contract: product-webhook v1", () => {
     if (!r.ok) {
       expectUnified422(r.response, ["action"]);
       const body = r.response.body as { fields: Array<{ code: string }> };
-      expect(body.fields.some((f) => f.code === "invalid_enum_value")).toBe(true);
+      expect(body.fields.some((f) => f.code === "invalid_value")).toBe(true);
     }
   });
 
@@ -519,7 +519,7 @@ describe("contract: external-db-bridge", () => {
 describe("contract: send-notification", () => {
   it("accepts a valid notification", () => {
     const r = parseAgainst(SendNotificationSchemaV1, {
-      user_id: "11111111-1111-1111-1111-111111111111",
+      user_id: "11111111-1111-1111-8111-111111111111",
       title: "Hello",
       body: "World",
     });
@@ -538,7 +538,7 @@ describe("contract: send-notification", () => {
 
   it("422 on empty title", () => {
     const r = parseAgainst(SendNotificationSchemaV1, {
-      user_id: "11111111-1111-1111-1111-111111111111",
+      user_id: "11111111-1111-1111-8111-111111111111",
       title: "",
       body: "World",
     });
@@ -548,7 +548,7 @@ describe("contract: send-notification", () => {
 
   it("422 on unknown notification type", () => {
     const r = parseAgainst(SendNotificationSchemaV1, {
-      user_id: "11111111-1111-1111-1111-111111111111",
+      user_id: "11111111-1111-1111-8111-111111111111",
       title: "T",
       body: "B",
       type: "alert",

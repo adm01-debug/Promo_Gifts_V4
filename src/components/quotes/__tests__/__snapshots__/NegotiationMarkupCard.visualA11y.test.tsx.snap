@@ -1,6 +1,6 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`NegotiationMarkupCard — snapshots visuais por viewport > snapshot em 'desktop' (1440 px) sem rótulo de preço final 1`] = `
+exports[`NegotiationMarkupCard — snapshots visuais por viewport > snapshot em desktop (1440 px) sem rótulo de preço final 1`] = `
 <div
   class="space-y-2 rounded-xl border border-border/50 bg-gradient-to-br from-card to-muted/20 px-3 py-2.5 sm:space-y-1.5 sm:px-2.5 sm:py-2"
   data-testid="negotiation-markup-card"
@@ -170,6 +170,7 @@ exports[`NegotiationMarkupCard — snapshots visuais por viewport > snapshot em 
         style="transform: var(--radix-slider-thumb-transform); position: absolute; left: calc(20% + 0px);"
       >
         <span
+          aria-label="Margem de negociação em porcentagem"
           aria-orientation="horizontal"
           aria-valuemax="50"
           aria-valuemin="0"
@@ -310,7 +311,7 @@ exports[`NegotiationMarkupCard — snapshots visuais por viewport > snapshot em 
 </div>
 `;
 
-exports[`NegotiationMarkupCard — snapshots visuais por viewport > snapshot em 'mobile' (375 px) sem rótulo de preço final 1`] = `
+exports[`NegotiationMarkupCard — snapshots visuais por viewport > snapshot em mobile (375 px) sem rótulo de preço final 1`] = `
 <div
   class="space-y-2 rounded-xl border border-border/50 bg-gradient-to-br from-card to-muted/20 px-3 py-2.5 sm:space-y-1.5 sm:px-2.5 sm:py-2"
   data-testid="negotiation-markup-card"
@@ -480,6 +481,7 @@ exports[`NegotiationMarkupCard — snapshots visuais por viewport > snapshot em 
         style="transform: var(--radix-slider-thumb-transform); position: absolute; left: calc(20% + 0px);"
       >
         <span
+          aria-label="Margem de negociação em porcentagem"
           aria-orientation="horizontal"
           aria-valuemax="50"
           aria-valuemin="0"

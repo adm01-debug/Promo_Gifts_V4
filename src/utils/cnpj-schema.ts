@@ -16,9 +16,8 @@ export const cnpjOptionalSchema = z
   .nullable()
   .optional()
   .transform((v) => {
-    const raw = v?.trim() ?? '';
-    if (raw === '') return null;
-    return normalizeCnpj(raw);
+    if (v === null || v === undefined || v === '') return null;
+    return normalizeCnpj(v);
   })
   .refine((v) => v === null || isNormalizedCnpj(v), {
     message: 'CNPJ deve conter exatamente 14 dígitos (sem máscara).',

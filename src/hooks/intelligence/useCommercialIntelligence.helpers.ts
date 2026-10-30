@@ -350,7 +350,7 @@ export async function fetchSegmentData(args: {
     orders = await fetchAllPages<{ client_company: string | null; total: number | null }>(
       (from, to) =>
         supabase
-          .from('orders')
+          .from('orders') // rls-allow: respeita can_view_all_sales server-side
           .select('client_company, total')
           .gte('created_at', since)
           .order('id', { ascending: true })
@@ -490,7 +490,7 @@ export async function fetchTopClients(args: {
       total: number | null;
     }>((from, to) =>
       supabase
-        .from('orders')
+        .from('orders') // rls-allow: respeita can_view_all_sales server-side
         .select('client_name, client_company, total')
         .gte('created_at', since)
         .order('id', { ascending: true })

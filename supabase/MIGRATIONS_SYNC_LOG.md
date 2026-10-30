@@ -712,6 +712,16 @@ f6def33d0c79c66aab118335ed95d9e3a9b40536cca5cd397bacc54e7858ae96
 | `20260916155725` | `SEM_ARQUIVO_LOCAL` | `f078d1d8a52658adb5d48b148798d1f3` | n/d | n/d (pré-E48; ledger não registra por linha) | 2026-09-16 15:57:25 UTC | n/d (não capturado retroativamente; ver E07 — verificação por objeto) |
 | `20260922170000` | `266f0963a9e7b1d30e8594d7c6218747b6a79baf16aa272249e864f55a64b29b` | `badcb6626e975ee80bab7d562a6c12cc` | GitHub Actions, disparado por `adm01-debug` | E15 (run 35760867980) | 2026-09-22 18:34:03 UTC | recibo E15 abaixo; apply, repair e post-check aprovados — ver `## Recibos — E15` |
 | `20260923114500` | `18663b52473fa9fd0edb031495ebe1ed8fc8c0ea0c262631a3b3bf035d8d91b7` | `87c7eefd2929c273fbedd75e4d61c423` | GitHub Actions, disparado por `adm01-debug` | E15 (run 35857184284) | 2026-09-23 11:56:55 UTC | recibo E15 abaixo; post-check confirmou version no ledger — ver `## Recibos — E15` |
+| `20260417001408` | `d544558d96f6be7d1b4e2a6af7269d11ac516836f8ca134a06e682dae2d14a7c` | `n/d` | claude-code (sessão PR #2376) | retroactive-file-fix (arquivo modificado — não reaplicado em prod; adicionou guarda pg_has_role em ALTER TABLE realtime.messages para compatibilidade com Preview branches) | 2026-10-23 UTC | PR #2376 — arquivo corrigido; migration original já estava no ledger de prod; nenhuma DDL nova aplicada |
+| `20261027120000` | `5d4be00c38b6b610a40e077226ef05ff362222946c2c54b688a0a19c331fb82d` | `—` | claude-code (PR #2603) | E15 (run 40469025943) | 2026-10-27 10:38:50 UTC | Post-check confirmou a versão no ledger. O hash aplicado permanece no recibo E15; o arquivo versionado foi posteriormente tornado replay-safe (commits 8c81483 e 9bb37c44f; SHA atual `76f011d27aef2a34e389a1a3a846ea8304e7d135e5c5da9ed3bc2251dafa7a26`). Não reaplicar. | aplicada; hash pós-aplicação documentado |
+| `20261027140000` | `e63a43b30c5bce7d3e1e7f6f6829fc692e4b95b5a229b07b24c353ac97fc07cf` | `—` | claude-code (PR #2603) | E15 (run 40512572184) | 2026-10-27 13:58:20 UTC | Post-check confirmou a versão no ledger. O hash aplicado permanece no recibo E15; o arquivo versionado foi posteriormente tornado replay-safe (commits 8c81483 e 9bb37c44f; SHA atual `fb095888f074b4cc77b938e82f317627bd5a982b32e8d929e2152d51adb53572`). Não reaplicar. | aplicada; hash pós-aplicação documentado |
+| `20261027160000` | `c20b8190eee43e9a40fe8cc084040f25c94d1c1ef59335efda3da8d39ac6e8d6` | `—` | claude-code (PR #2646) | E15 (run 40670021078) | 2026-10-28 10:13:23 UTC | Post-check confirmou a versão no ledger; o SHA do arquivo coincide com o recibo E15 abaixo. | aplicada |
+| `20261027180000` | `1b47a1d2eadd49608f36331d6be6e93e7478022ed97cbbbae9617e455bcb38a4` | `—` | claude-code (PR #2603) | E15 | 2026-10-27 UTC (previsto) | pendente — a ser aplicado via db-apply-migration.yml após merge do PR #2603 |
+| `20261027200000` | `9737df0d29ff332d5ae3d359c2d4c068c894ef861bbbd6e0a8b0e50caf710c5a` | `—` | claude-code (PR #2603) | E15 | 2026-10-27 UTC (previsto) | pendente — a ser aplicado via db-apply-migration.yml após merge do PR #2603 |
+| `20261027220000` | `fb16901b0c1edd37080aada4edd16de71cbb6e128dca12764cfc22947f6797af` | `—` | claude-code (PR #2646) | E15 | 2026-10-27 UTC (previsto) | a aplicar via db-apply-migration.yml após merge do PR #2646 (arquivo revisado no PR #2646) |
+| `20261027230000` | `2d6a57f537d962a89ff44e80244f94ad0baff9292cfcd8bd65a295978107ff26` | `—` | claude-code (PR #2646) | E15 | 2026-10-27 UTC (previsto) | a aplicar via db-apply-migration.yml após merge do PR #2646 (arquivo revisado no PR #2646) |
+| `20261027233000` | `bd5d0bc3262f9b34b6108c42c7ec186f8f9066d97dbd881a6276a2bb97d87885` | `—` | claude-code (PR #2603) | E15 | 2026-10-27 UTC (previsto) | pendente — a ser aplicado via db-apply-migration.yml após merge do PR #2603 |
+| `20261027234500` | `272850e119d8798e7aac9242e4b774309f22a8227e7b6bbac4a086ab945f6cec` | `—` | claude-code (PR #2603) | E15 | 2026-10-27 UTC (previsto) | pendente — a ser aplicado via db-apply-migration.yml após merge do PR #2603 |
 
 
 </details>
@@ -740,7 +750,7 @@ próprio pacote de aprovação ("Nenhuma ação abaixo foi executada").
 |---|---|---|---|---|---|---|---|
 | `20260623_bugalert1` | `—` (arquivo nunca existiu — stub) | `—` | — | `repair --status reverted` (proposto) | — | Stub com reticências literais em `VIEW ... AS ...` — nunca executável; objeto real já vive sob `20260623182623` (canônica, aplicada, arquivo presente) | **proposto, aguardando aprovação PO** |
 | `20260623_create_process_notifications_queue_rpcs` | `—` (arquivo nunca existiu — stub) | `—` | — | `repair --status reverted` (proposto) | — | Stub com reticências literais em `RETURNS TABLE(...)` — nunca executável; objeto real já vive sob `20260623201801` (canônica, aplicada, arquivo presente) | **proposto, aguardando aprovação PO** |
-| `20260623_fix_google_provider_secret_name` | `—` (sem arquivo local; UPDATE real, sem migration commitada) | `—` | — | backfill de arquivo canônico (`20260916181609_backfill_fix_google_provider_secret_name_20260623.sql`, ainda **não criado**) + `repair --status applied` (proposto) | — | `UPDATE ai_providers SET secret_name='GEMINI_API_KEY' WHERE slug='google' AND secret_name='GOOGLE_API_KEY'` já está de fato aplicado em produção (confirmado ao vivo: `secret_name` já é `GEMINI_API_KEY`); a entrada original permanece no ledger sem alteração; o backfill seria idempotente/no-op | **proposto, aguardando aprovação PO** |
+| `20260623_fix_google_provider_secret_name` | `20260916181609_backfill_fix_google_provider_secret_name_20260623.sql` (arquivo-espelho, não é replay da alteração original) | `—` | — | backfill idempotente + eventual `repair --status applied` da versão espelho (proposto; não executado) | — | O efeito original (`ai_providers.secret_name='GEMINI_API_KEY'` para `slug='google'`) já está no banco e a entrada legada permanece no ledger. A versão-espelho `20260916181609` ainda não está no ledger; não executar como nova alteração. | **espelho documentado; reconciliação de ledger aguarda decisão PO** |
 | `2026062311292414001` | `c03d47ba1092d52f69f53f24c0fd4a4bda564df820c78a5bf3d36c8f349cab1d` (`2026062311292414001_add_full_path_readable_propagation_triggers.sql`) | `295937419d88bdce784aba42f37ef5e4` (confirmado ao vivo nesta sessão, fora do filtro do backfill em massa por ter 19 dígitos em vez de 14 — consultado à parte) | — | nenhuma ação proposta (`não mexer` — decisão explícita da E09) | `2026-06-23 11:29:24` (lido do prefixo válido dos 14 primeiros dígitos; sufixo `14001` é o defeito de formato) | Malformado (19 dígitos em vez de 14) mas internamente consistente: arquivo, ledger e objetos vivos batem entre si; `migration repair` para corrigir o formato é risco desnecessário para um ID já consistente | **documentado — sem remediação proposta** |
 
 ## Recibos — E15 (workflow de aplicação controlada)
@@ -778,6 +788,15 @@ da execução e consulta read-only ao catálogo/ledger, sem reaplicar SQL.
 | `20261018170000` | `6cabab062ea6746dab49dd5d8ddc73dbf8b0ffeb1c66a609ac876cebfb80c8c4` | — | — (aguardando `workflow_dispatch` E15 pelo PO) | E15 | — | pendente: E069/P200 — DROP INDEX CONCURRENTLY `idx_user_organizations_user` (coberto por prefixo de `idx_user_organizations_user_org_covering`); aprovado por comercial@aquarellaprint.com.br | **pendente — não aplicada** |
 | `20261018170100` | `30a5041cbc6b7cd0d74a8145dc3a33a6340cc0522ec9466e0f5686b027dbac2a` | — | — (aguardando `workflow_dispatch` E15 pelo PO) | E15 | — | pendente: E070/P200 — cron.schedule purga mensal de kit_save_requests, kit_quote_requests, magazine_duplicate_requests (30 dias, domingos madrugada UTC); transaction: none — cron.schedule não suporta transação | **pendente — não aplicada** |
 | `20261019000000` | `9626173482db8a8d0bc5aa13aaca719a7b96ca4f411b48d1a356d46b4fc04885` | — | Claude Code (sessão claude.ai/code/session_011wnE6Ws1vdYTuoEHrSDoa7, aprovado PO ti@promobrindes.com.br — "resolva por mim! eu autorizo!!") | E99 mirror OOB — recibo documental | 2026-10-19 | PR #2296 mergeado em main; arquivo `20261019000000_mirror_oob_frontend_telemetry_v_system_health_dashboard.sql` commitado; DDL dos 2 objetos (`frontend_telemetry_size_caps_check` + `v_system_health_dashboard`) aplicada via MCP antes da migration; recibo retroativo (E99 corolário); `migration repair --status applied 20261019000000` pendente via workflow E15 (REGRA #8) | **aplicada via MCP (OOB) — recibo documental** |
+| `20261022000000` | `59de927fcd55b764b70cd084f452aa914bbc2f555aca475caf08fb5b0cc16bef` | — | — (aguardando `workflow_dispatch` E15 pelo PO) | E15 | — | pendente: REVOKE EXECUTE ON FUNCTION public.fn_backfill_queue_reap_stuck(integer, integer) FROM PUBLIC — gap de segurança (Qodo High): qualquer `authenticated` pode chamar rotina SECURITY DEFINER de manutenção de fila com parâmetros arbitrários (p_stuck_minutes=0, p_max_attempts=1), reaping jobs em voo. PR #2338. | **pendente — não aplicada** |
+| `20261022000100` | `3053ee2aa80da1521b32638bc8b45b14ee7fe7a81cf1ef645051a95e8a47d0bb` | — | — (aguardando `workflow_dispatch` E15 pelo PO) | E15 | — | pendente: REVOKE EXECUTE ON FUNCTION public.fn_detect_recurring_errors_last_hour(integer) FROM PUBLIC — gap de segurança (Qodo High): qualquer `authenticated` pode chamar função SECURITY DEFINER de diagnóstico com parâmetros arbitrários, expondo dados de telemetria de erros internos. PR #2338. | **pendente — não aplicada** |
+| `20261022193000` | `eaa8a33524f37c7a7f24ddb6c8a23c0a873101d94f01aa9b6257d5423f4b9e68` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por PO adm01-debug — autorizado no chat 2026-10-22 17:40 BRT) | E15 | 2026-10-22 20:45:58 UTC | job post-check da run 39850901884 confirmou a version no ledger | aplicada |
+| `20261022194000` | `7d9a9129c04e1c1de1f51a56854d057ca2406af511fd1dd7eed5f5fe94287b76` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por adm01-debug) | E15 | 2026-10-23 09:55:32 UTC | job post-check da run 39894328218 confirmou a version no ledger | aplicada |
+| `20261022194100` | `99992c9628981dcc0f87252ce0c1cd307633c96f1324391db390cf65fecdf450` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por adm01-debug) | E15 | 2026-10-23 10:01:56 UTC | job post-check da run 39935978048 confirmou a version no ledger | aplicada |
+| `20261022194200` | `e11ce4c31251d4584e99c3a98af1a475da1346504393c8cafb4ad27382c2fac3` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por adm01-debug) | E15 | 2026-10-23 09:57:59 UTC | job post-check da run 39922326892 confirmou a version no ledger | aplicada |
+| `20261027120000` | `5d4be00c38b6b610a40e077226ef05ff362222946c2c54b688a0a19c331fb82d` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-10-27 10:38:50 UTC | job post-check da run 40469025943 confirmou a version no ledger | aplicada |
+| `20261027140000` | `e63a43b30c5bce7d3e1e7f6f6829fc692e4b95b5a229b07b24c353ac97fc07cf` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-10-27 13:58:20 UTC | job post-check da run 40512572184 confirmou a version no ledger | aplicada |
+| `20261027160000` | `c20b8190eee43e9a40fe8cc084040f25c94d1c1ef59335efda3da8d39ac6e8d6` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-10-28 10:13:23 UTC | job post-check da run 40670021078 confirmou a version no ledger | aplicada |
 
 ### Evidências do recibo `20260922170000`
 
@@ -1467,4 +1486,110 @@ no repo mas NÃO estão aplicadas no banco — decisão registrada no ADR 0009
 (aplicá-las regrediria a fn_standardize_variant viva). Reconciliar antes de
 qualquer `supabase db push`.
 
+---
+
+## 2026-10-22 — Auditoria DRIFT-003: 448 migrations sem ledger identificadas
+
+**Tipo:** Auditoria documental (`[GIT]`) — nenhuma escrita no banco.
+**Sessão:** https://claude.ai/code/session_01GfYDwdVBZip5FzMr8MZ4Be
+**Relatório completo:** `supabase/MIGRATIONS_DRIFT_REPORT.md`
+
+### Resumo do drift identificado
+
+| Métrica | Valor |
+|---|---|
+| Arquivos `.sql` no repo | 2975 |
+| Entradas no ledger (`schema_migrations`) | 2528 |
+| **Migrations sem ledger (drift)** | **448** |
+| Período do drift | 2026-05-11 a 2026-10-13 |
+
+### Distribuição por tipo
+
+| Tipo | Quantidade |
+|---|---|
+| OTHER (DO $precondition$ / idempotentes) | 144 |
+| POLICY (CREATE/DROP POLICY, REVOKE, GRANT) | 88 |
+| FUNCTION (CREATE OR REPLACE FUNCTION) | 73 |
+| DDL_TABLE (CREATE/ALTER/DROP TABLE) | 71 |
+| DML (INSERT/UPDATE/backfill) | 36 |
+| DDL_INDEX (CREATE/DROP INDEX) | 26 |
+| CRON (cron.schedule/alter_job) | 10 |
+
+### 5 migrations mais críticas sem ledger (repair-only markers criados)
+
+| Versão | Arquivo | Impacto |
+|---|---|---|
+| `20260525232003` | `fix_339_personalization_missing_columns.sql` | 6 colunas ausentes em personalization_techniques |
+| `20260622111500` | `supplier_reliability_pipeline_v1.sql` | Pipeline completo supplier_replenishment_events |
+| `20260622130000` | `fix_color_swatches_column_and_view_plus_favorites_grant.sql` | `products.color_swatches` — HTTP 400 sem ela |
+| `20260623000008` | `products_name_m8_max_length.sql` | CHECK constraint em `products` |
+| `20260902220800` | `rls_enable_spr_history_partitions_and_fix_creator.sql` | RLS em partições supplier_products_raw_history |
+
+### Próximo passo
+
+Para cada migration, obter aprovação do PO e executar:
+```bash
+gh workflow run db-apply-migration.yml \
+  -f version=<VERSAO> \
+  -f mode=repair-only \
+  -f approved_by=PO_EMAIL
+```
+
+Ver `supabase/MIGRATIONS_DRIFT_REPORT.md` §Plano de Reconciliação para prioridade completa.
+
 Detalhes, métricas antes/depois e one-shots: docs/EXECUCAO_CORRECOES_MEDALLION_2026-06-10.md
+
+---
+
+## 2026-10-22 — Auditoria de Segurança e Performance (sessão P17/P18/P19)
+
+**Tipo:** Migrations criadas em PR — **não aplicadas ainda** (pendentes de `workflow_dispatch` em `db-apply-migration.yml`).
+**Sessão:** https://claude.ai/code/session_01GfYDwdVBZip5FzMr8MZ4Be
+**Branch:** `claude/happy-faraday-0vgza3`
+**Aprovação necessária:** PO via REGRA #8 / E15 antes de `workflow_dispatch`.
+
+### Recibos pendentes (placeholder Gate 1.3.3)
+
+| versão | sha256 arquivo | md5 statements | executor | método | data UTC | pós-check |
+|---|---|---|---|---|---|---|
+| `20261022100001` | `91404707c71551f6060fc1845cfdd24b608cb6338a2685a92f6b4f98f1f9334f` | aplicado via E15 | Claude FASE-B-P10-auto (https://claude.ai/code/session_01JPgV7FqkG4UuFBJWiJa9FB) | db-apply-migration.yml run #40165954774 | 2026-10-25T05:36 UTC | anon_has_execute=false ✅; ledger_count=1 ✅ (job 4 Recibo falhou — non-critical, entrada manual) |
+| `20261022100010` | `8ff71060a255026b55cfd1a7bbd817b7a0de05b79aac68a2b2d8a3d766a35ac7` | `—` (não aplicado) | Claude sessão P18/auditoria | E15 (pendente) | pendente | pendente — 50 ALTER POLICY auth.uid() → (SELECT auth.uid()) em 24 tabelas (ADV-PERF-001) |
+| `20261022100011` | `19392e733d888cb4147bf5ccaace6007d99f4b7870eb8d7c1eaa7b07cf90670d` | `—` (não aplicado) | Claude sessão P18/auditoria | E15 (pendente) | pendente | pendente — 13 DROP INDEX unused (~779 MB); 7 deferred (unique/GIN — aprovação PO) |
+| `20261022100020` | `c429599dc3becf972269b08c994cef994a28c591ba47c41524b5390019546d8a` | `—` (não aplicado) | Claude sessão P19/auditoria | E15 (pendente) | pendente | pendente — dispatcher-failure-alert: */5 → 3,13,23,33,43,53 (offset +3min, P19) |
+| `20261022100021` | `4c3ddf72ef90ac779830893686099c48ef1eb6c524c0269a7b2551665816c888` | `—` (não aplicado) | Claude sessão P19/auditoria | E15 (pendente) | pendente | pendente — hash-product-images: */5 → 4,14,24,34,44,54 (offset +4min, P19) |
+| `20261022100022` | `2cc1e34477a862cccd3c0b7d5925179a755cdda50a7e646bad41e40f277675c7` | `—` (não aplicado) | Claude sessão P19/auditoria | E15 (pendente) | pendente | pendente — sync-is-stockout-universal: */5 → */10 (frequência reduzida, P19) |
+| `20261022193000` | `eaa8a33524f37c7a7f24ddb6c8a23c0a873101d94f01aa9b6257d5423f4b9e68` | — (md5 query timeout; stmts_null=false confirmado) | sessão autônoma pré-FASE-B (P19_cron001) | n/d (autônoma — aplicada antes do início de FASE B; ver correcoes.md §P19_cron001) | 2026-10-22 ~19:30 UTC | ledger_count=1 ✅ (SELECT version FROM schema_migrations WHERE version='20261022193000' — sessão 01JPgV7FqkG4UuFBJWiJa9FB, 2026-10-25) |
+| `20261022194000` | `58785577281c32a9646a416653629d1a69764bb4e4bfc1e310e3b00171e28048` | `—` (não aplicado) | Claude sessão E30/segurança | E15 (pendente) | pendente | pendente — REVOKE INSERT,UPDATE,DELETE,REFERENCES,TRIGGER ON external_connections FROM anon (brecha E30) |
+| `20261022194100` | `389601c24ab27be5fd302b3244724a30966a3ccb280941892ab0116ef1a8888c` | `—` (não aplicado) | Claude sessão E40/segurança | E15 (pendente) | pendente | pendente — REVOKE ALL ON mockup_approval_links FROM anon (brecha E40) |
+| `20261022194200` | `0685d1c62e3908de2b0932809a0bd9adc2cbd3394cb4ce5897e4ddf2d3ccdbb5` | `—` (não aplicado) | Claude sessão E18-complement/segurança | E15 (pendente) | pendente | pendente — REVOKE EXECUTE ON mcp_kv_get FROM authenticated (brecha E18 complemento) |
+| `20261024163500` | `7345f667cddc4f123943a5ad0e961736c810b87df747d5178e91f947723aa857` | aplicado via E15 | Claude sessão fix-audit-acl-regrole (https://claude.ai/code/session_016AQbKL51RKSh8VtWxj4b1G) | db-apply-migration.yml (externa — aplicada entre snapshot 2026-10-24T16:05 e início de FASE B) | 2026-10-24 ~16:05 UTC | confirmado via SELECT FROM supabase_migrations.schema_migrations (sessão 01JPgV7FqkG4UuFBJWiJa9FB, 2026-10-25); ver baseline_depois.json delta[1] |
+| `20261024180001` | `855670ae90ad588f045c4672eaba5ca8d28280d620dd6c6e3d55343cd4baf77b` | aplicado via E15 | Claude FASE-B-P02-auto (https://claude.ai/code/session_01JPgV7FqkG4UuFBJWiJa9FB) | db-apply-migration.yml run #40164828396 | 2026-10-25T05:32 UTC | idx_kit_quote_requests_quote_id ✅; idx_kit_save_requests_kit_id ✅ (job 4 Recibo falhou — non-critical, entrada manual) |
+| `20261024180002` | `84ca72d9da2c14b8018e57236a5b5b33cac888068beeab35b2030869ffc86cd1` | aplicado via E15 | Claude FASE-B-P08-auto (https://claude.ai/code/session_01JPgV7FqkG4UuFBJWiJa9FB) | db-apply-migration.yml run #40166677491 | 2026-10-25T05:47 UTC | idempotency_key_exists=1 ✅; ledger_count=1 ✅ (job 4 Recibo falhou — non-critical, entrada manual) |
+| `20261024180003` | `f810068550bbfa2da6179d3772f8187821df732417d48dafd15ffd27acfb2a94` | aplicado via E15 | Claude FASE-B-P19-auto (https://claude.ai/code/session_01JPgV7FqkG4UuFBJWiJa9FB) | db-apply-migration.yml run #40167137573 | 2026-10-25T05:58 UTC | schedule=15min (1,16,31,46) ✅; ledger_count=1 ✅ (job 4 Recibo falhou — non-critical, entrada manual) |
+| `20261024190001` | `eb5c03f7d8f690297ce6960ef0803d7c205fb3999891cbb2ef0a4b85dc82c030` | aplicado via E15 | Claude FASE-B-P01-auto (https://claude.ai/code/session_01JPgV7FqkG4UuFBJWiJa9FB) | db-apply-migration.yml run #40166925674 | 2026-10-25T05:52 UTC | x-cron-secret ✅; ledger_count=1 ✅ (job 4 Recibo falhou — non-critical, entrada manual) |
+| `20261025002500` | `6ce2ca6a8a4228486ae5123574845a11a1f1e59b6e4a316628dc6a56925c1f59` | aplicado via E15 | Claude FASE-B-P03-auto (https://claude.ai/code/session_01JPgV7FqkG4UuFBJWiJa9FB) | db-apply-migration.yml run #40165426404 | 2026-10-25T05:28 UTC | categories last_analyze=2026-10-25T05:28 ✅; ledger_count=1 ✅ (job 4 Recibo falhou — non-critical, entrada manual) |
+
+---
+
+## 2026-10-25 — E99: Mirrors repair-only para DDL out-of-band (20261022195616 e 20261022203935)
+
+**Tipo:** Migrations espelho E99 — repair-only (DDL já aplicada em produção via MCP; arquivos SQL criados como documentação e para drift-check).
+**Sessão:** https://claude.ai/code/session_01HxRBtssJabMB3jTgNY5B9W
+**Branch:** `claude/chore-e99-mirror-update-company-fields-261025-1100`
+**Contexto:** Detectado na análise de branches (sessão analise-branches 2026-10-24): versões `20261022195616` e `20261022203935` presentes no ledger `supabase_migrations.schema_migrations` de produção (`doufsxqlfjyuvxuezpln`) mas sem arquivo SQL correspondente no git — DDL out-of-band aplicada via MCP (E056 corolário).
+**Função:** `public.update_company_fields(uuid, jsonb)` — fix SECURITY DEFINER + search_path (E30) + guard auth.uid() (E18).
+
+### Recibos E99 repair-only
+
+| versão | sha256 arquivo | método | data UTC aplicação real | pós-check |
+|---|---|---|---|---|
+| `20261022195616` | `662fa38e1e09eed7d26ae55e0a1f46beca1793837aa9217d8f6e220c4817056f` | E99 repair-only (mirror) | 2026-10-22T19:56:16Z | em produção via SELECT pg_get_functiondef — SECURITY DEFINER + search_path confirmados |
+| `20261022203935` | `83558c38fda00255556c265c7ba669c85650a1508a7b2acdb99902fed3746575` | E99 repair-only (mirror) | 2026-10-22T20:39:35Z | em produção via SELECT pg_get_functiondef — auth.uid() guard confirmado |
+
+**Próximo passo obrigatório:** após merge desta PR, disparar `schema-snapshot-export.yml` com `force_rotate: true` para regenerar baseline (REGRA #8 corolário).
+
+## Nota de governança — 2026-10-27
+
+Squash merge do PR #2599 (commit `2ca5ef04`) foi realizado via API com mensagem customizada,
+sem o sufixo `(#2599)` exigido pelo Branch Protection Sentinel. Este commit via PR #XXXX
+restaura o padrão `(#NNN)` no HEAD de `main`.

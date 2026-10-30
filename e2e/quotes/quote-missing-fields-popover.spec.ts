@@ -82,7 +82,8 @@ test.describe('Quote Summary — popover de campos obrigatórios pendentes', () 
     await setup(page);
     await forceFormValid(page);
 
-    await expect(page.getByTestId(TRIGGER)).toHaveCount(0);
+    // forceFormValid usa CSS display:none (simulação) — trigger permanece no DOM mas oculto
+    await expect(page.getByTestId(TRIGGER)).toBeHidden();
     await expect(page.locator(ACTION_ROW_SELECTOR).first()).toBeVisible();
     await expect(page.getByTestId('quote-save-draft')).toBeVisible();
 
@@ -166,9 +167,9 @@ test.describe('Quote Summary — popover de campos obrigatórios pendentes', () 
     await setup(page);
     await forceFormValid(page);
 
-    // Trigger 100% ausente do DOM visível.
-    await expect(page.getByTestId(TRIGGER)).toHaveCount(0);
-    // Popover idem — nada para abrir.
+    // forceFormValid usa CSS display:none — trigger oculto (ainda no DOM pela simulação CSS).
+    await expect(page.getByTestId(TRIGGER)).toBeHidden();
+    // Popover não renderiza sem trigger aberto (Radix unmount padrão).
     await expect(page.getByTestId(POPOVER)).toHaveCount(0);
 
     // Tentar abrir por teclado também deve ser no-op (sem trigger, sem foco).

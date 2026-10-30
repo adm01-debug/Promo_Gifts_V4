@@ -1,6 +1,7 @@
 # CLAUDE.md — Instruções para Claude Code (sessões automáticas)
 # Lido pelo Claude Code ao iniciar cada sessão neste repositório.
-# Última atualização: 2026-10-15 — baseline do drift-check + comandos que apagam o ledger (REGRA #8). 2026-10-14: E88/E89/E91/E92.
+# Última atualização: 2026-10-29 — E056 aplica a proibição de DDL via execute_sql a todos os agentes; AGENTS.md espelhado.
+# 2026-10-15: baseline do drift-check + comandos que apagam o ledger (REGRA #8). 2026-10-14: E88/E89/E91/E92.
 
 ## CONTEXTO DO PROJETO
 
@@ -9,6 +10,35 @@
 - **Arquitetura de dados:** Medallion Bronze → Silver → Gold (Supabase PG17)
 - **UI builder:** Lovable (gpt-engineer-app[bot]) commita diretamente em `main`
 - **CI:** 40+ workflows GitHub Actions com quality gates numerados (Gate 0–6+)
+- **Vercel:** projeto canônico `prj_9UfugNYCuboH2R0XB04Jv8PpjDpZ` (team `juca1`). `.vercel/project.json` está versionado no repo — NÃO crie outro projeto.
+
+---
+
+## REGRA #11 — VERCEL CLI (PROIBIÇÃO DE LINK FORA DO RAIZ)
+
+**Incidente 2026-09-15:** um agente rodou `vercel link` dentro de um worktree em
+`/tmp/promo-gifts-reconciliation-integrity-20260915` sem herdar `.vercel/project.json`.
+Isso criou o projeto fantasma `promo-gifts-reconciliation-integrity-20260915`
+(`prj_W1Zdi6BQWkAwQx5VJjpSNlZubeok`) conectado ao mesmo repo, causando 2× builds
+em todo push desde então e provável causa dos `Resource provisioning failed`.
+
+### NUNCA faça:
+- Rodar `vercel link`, `vercel pull`, `vercel env pull` ou `vc link` fora do diretório
+  raiz do repositório (ex: dentro de worktree, `/tmp`, diretório externo).
+- Deletar ou sobrescrever `.vercel/project.json` — ele ancora o projeto canônico.
+- Criar projeto Vercel novo sem aprovação explícita do PO.
+
+### SEMPRE faça:
+- Antes de qualquer comando Vercel CLI: verificar que `pwd` é o raiz do repo e que
+  `.vercel/project.json` contém `"projectId": "prj_9UfugNYCuboH2R0XB04Jv8PpjDpZ"`.
+- Se precisar de env vars do Vercel: `vercel env pull .env.local` **só no raiz**, nunca
+  em worktree ou diretório temporário.
+
+### Por quê:
+`.vercel/project.json` não existe em worktrees clonados via `git worktree add` (ignorado
+por padrão em versões antigas do CLI); o CLI cria projeto novo automaticamente quando não
+encontra o arquivo. O arquivo agora está versionado no repo para garantir que qualquer
+clone ou worktree herde o vínculo correto.
 
 ---
 
@@ -274,7 +304,8 @@ do PO. Isso não aplica DDL, só registra. Ver `docs/db/POLITICA_DDL.md`.
 ### Corolário — proibição de DDL via execute_sql em sessão de agente (E056)
 `execute_sql` com DDL (CREATE, ALTER, DROP, GRANT, REVOKE, CREATE POLICY,
 ALTER TABLE, CREATE INDEX, CREATE FUNCTION, `cron.alter_job`, etc.) é
-**proibido em sessão de agente Claude** — mesmo quando o PO ou humano pede
+**proibido em sessão de qualquer agente de desenvolvimento assistido por IA
+(Claude Code, Codex, OpenCode ou equivalente)** — mesmo quando o PO ou humano pede
 explicitamente, mesmo em emergência.
 
 DDL via `execute_sql` direto não gera entrada no ledger e não é detectado
@@ -508,6 +539,7 @@ linha nesse arquivo com dono, escopo e rotação declarados.
 | `.github/CODEOWNERS` | Proteção de revisão obrigatória |
 | `scripts/sentinel-check.sh` | Guarda do Branch Protection Sentinel |
 | `.github/workflows/deploy-gates.yml` | Pipeline de deploy com Gate 0 |
+| `.vercel/project.json` | Âncora do projeto Vercel canônico — não deletar (REGRA #11) |
 | ~~`.github/workflows/quality-gate.yml`~~ | Deletado em E15 — gates migrados para deploy-gates.yml (Gates 1.15/1.16) |
 | `docs/SCHEMA_REFERENCE.md` | Retrato pg_catalog do BD canônico — REGRA #8 |
 

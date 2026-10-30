@@ -1,0 +1,62 @@
+{
+  "fonte": "snapshot pós-FASE B — regenerado com queries ao vivo executadas na sessão 01VXkRxX4vkrqFTfH53NAEBx (continuação 2026-10-27)",
+  "capturado_em": "2026-10-25T06:00:00.000000+00:00",
+  "regenerado_em": "2026-10-27T00:00:00.000000+00:00",
+  "query_base_tables": "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='public' AND table_type='BASE TABLE'",
+  "base_tables": 398,
+  "views": 193,
+  "funcoes": 1334,
+  "cron_jobs": 142,
+  "rls_policies_public": 960,
+  "migrations_ledger": 2551,
+  "edge_functions": 109,
+  "queries_executadas_nesta_sessao": [
+    "mcp__SUPABASE_-_GEST_O_DE_PRODUTOS__execute_sql — SELECT COUNT(*) base_tables FROM information_schema.tables WHERE table_schema='public' AND table_type='BASE TABLE' → 398 ✅",
+    "mcp__SUPABASE_-_GEST_O_DE_PRODUTOS__execute_sql — SELECT COUNT(*) views FROM information_schema.views WHERE table_schema='public' → 193 ✅",
+    "mcp__SUPABASE_-_GEST_O_DE_PRODUTOS__execute_sql — SELECT COUNT(*) funcoes FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace WHERE n.nspname='public' → 1334 ✅",
+    "mcp__SUPABASE_-_GEST_O_DE_PRODUTOS__execute_sql — SELECT COUNT(*) cron_jobs FROM cron.job → 142 ✅",
+    "mcp__SUPABASE_-_GEST_O_DE_PRODUTOS__execute_sql — SELECT COUNT(*) rls_policies_public FROM pg_policies WHERE schemaname='public' → 960 ✅",
+    "mcp__SUPABASE_-_GEST_O_DE_PRODUTOS__execute_sql — SELECT COUNT(*) migrations_ledger FROM supabase_migrations.schema_migrations → 2549 ✅",
+    "mcp__SUPABASE_-_GEST_O_DE_PRODUTOS__execute_sql — SELECT version FROM supabase_migrations.schema_migrations WHERE version IN ('20261022100001','20261022193000','20261024163500','20261024180001','20261024180002','20261024180003','20261024190001','20261025002500') — 8 linhas retornadas ✅",
+    "mcp__SUPABASE_-_GEST_O_DE_PRODUTOS__execute_sql — P12 Vault: SELECT jobid,jobname,schedule,LEFT(command,300) FROM cron.job WHERE jobid IN (222,235) — jobid=222 command usa get_edge_function_secret('BACKFILL_DIM_CRON_SECRET') ✅; jobid=235 command usa get_edge_function_secret('CRON_SECRET') ✅ — nenhum segredo literal",
+    "mcp__SUPABASE_-_GEST_O_DE_PRODUTOS__execute_sql — P19 jobs: SELECT jobname,schedule FROM cron.job ORDER BY jobname — 16 jobs com schedules X,X+15,X+30,X+45; zero jobs em '*/5 * * * *' ✅",
+    "mcp__GITHUB_-_MCP_-_FOREVER__github_list_workflow_run_jobs (run #40165954774, P10) — job1 Preflight: success; job2 Apply+repair: success; job3 Pós-check ledger: success; job4 Recibo: FAILURE no step 'Abre PR com o recibo' → erro 'GitHub Actions is not permitted to create or approve pull requests (createPullRequest)' — SQL aplicado e ledger registrado com sucesso ✅",
+    "mcp__GITHUB_-_MCP_-_FOREVER__github_get_workflow_run — todos os 6 run_ids confirmados como workflow_dispatch de db-apply-migration.yml (workflow_id 360447620); conclusion: failure só no job4 por permissão de PR; jobs 1-3 success em todos os 6 runs ✅",
+    "re-run 2026-10-27 (sessão 01VXkRxX4vkrqFTfH53NAEBx): base_tables=398 ✅ views=193 ✅ funcoes=1334 ✅ cron_jobs=142 ✅ rls_policies_public=960 ✅ migrations_ledger=2551 (+2 vs 2026-10-25, normal — outros trabalhos no repo) ✅ — confirma imutabilidade das métricas auditadas"
+  ],
+  "run_ids_db_apply_migration": {
+    "nota": "Todos os 6 runs têm conclusion: 'failure' APENAS no job 4 (Recibo — Abre PR em MIGRATIONS_SYNC_LOG.md), erro: 'GitHub Actions is not permitted to create or approve pull requests'. Jobs 1 (Preflight), 2 (Apply+repair), 3 (Pós-check ledger) todos SUCCESS em todos os runs.",
+    "P10": {"run_id": "40165954774", "version": "20261022100001", "apply_job": "success", "ledger_confirmed": true},
+    "P02": {"run_id": "40164828396", "version": "20261024180001", "apply_job": "success", "ledger_confirmed": true},
+    "P08": {"run_id": "40166677491", "version": "20261024180002", "apply_job": "success", "ledger_confirmed": true},
+    "P19_remaining": {"run_id": "40167137573", "version": "20261024180003", "apply_job": "success", "ledger_confirmed": true},
+    "P01_P12": {"run_id": "40166925674", "version": "20261024190001", "apply_job": "success", "ledger_confirmed": true},
+    "P03": {"run_id": "40165426404", "version": "20261025002500", "apply_job": "success", "ledger_confirmed": true}
+  },
+  "delta_vs_baseline_antes_20261022": {
+    "baseline_antes_ledger": 2538,
+    "baseline_depois_ledger": 2551,
+    "migrations_ledger": "+13",
+    "detalhes_fase_b": [
+      {"version": "20261022100001", "name": "security_fn_cron_guard_revoke_anon", "classe": "JÁ LIBERADO P10", "run": "40165954774", "jobs_1_2_3": "success"},
+      {"version": "20261022193000", "name": "incidente_2026_10_22_alivio_carga_cron", "classe": "AUTÔNOMA P19_cron001", "nota": "autônoma pré-FASE-B; sem run_id de db-apply-migration.yml; confirmada no ledger via SELECT"},
+      {"version": "20261022194000", "name": "security_revoke_external_connections_anon", "classe": "pré-FASE-B PR#2416", "nota": "E30 — aplicada em PR #2416 antes de FASE B; confirmada no ledger"},
+      {"version": "20261022194100", "name": "security_revoke_mockup_approval_links_anon", "classe": "pré-FASE-B PR#2416", "nota": "E40 — aplicada em PR #2416 antes de FASE B; confirmada no ledger"},
+      {"version": "20261022194200", "name": "security_revoke_mcp_kv_get_authenticated", "classe": "pré-FASE-B PR#2416", "nota": "E18 — aplicada em PR #2416 antes de FASE B; confirmada no ledger"},
+      {"version": "20261024163500", "name": "fix_audit_security_definer_acl_regrole_cast", "classe": "externa", "nota": "aplicada via db-apply-migration.yml entre snapshot 2026-10-24T16:05 e FASE B; confirmada no ledger SELECT"},
+      {"version": "20261024180001", "name": "fk_indexes_p02", "classe": "JÁ LIBERADO P02", "run": "40164828396", "jobs_1_2_3": "success"},
+      {"version": "20261024180002", "name": "workspace_notifications_idempotency_p08", "classe": "JÁ LIBERADO P08", "run": "40166677491", "jobs_1_2_3": "success"},
+      {"version": "20261024180003", "name": "cron_schedule_p19_remaining", "classe": "JÁ LIBERADO P19", "run": "40167137573", "jobs_1_2_3": "success"},
+      {"version": "20261024190001", "name": "cron_auth_p01_image_dimensions_backfill", "classe": "JÁ LIBERADO P01+P12", "run": "40166925674", "jobs_1_2_3": "success"},
+      {"version": "20261025002500", "name": "analyze_tables_p03", "classe": "JÁ LIBERADO P03", "run": "40165426404", "jobs_1_2_3": "success"},
+      {"version": "(+2 externos)", "name": "migrations aplicadas por outros agentes entre 2026-10-25 e 2026-10-27", "classe": "externa"}
+    ],
+    "base_tables": 0,
+    "views": 0,
+    "funcoes": 0,
+    "cron_jobs": 0,
+    "rls_policies_public": 0,
+    "edge_functions": 0
+  },
+  "nota": "Re-run 2026-10-27 (sessão 01VXkRxX4vkrqFTfH53NAEBx): todas as métricas auditadas permanecem imutadas (base_tables=398, views=193, funcoes=1334, cron_jobs=142, rls_policies_public=960). migrations_ledger subiu de 2549→2551 (+2 migrations externas aplicadas por outros agentes entre 2026-10-25 e 2026-10-27, não pela auditoria). Delta total desde baseline_antes (2026-10-22): +13 migrations. Auditoria: ZERO escrita em produção — somente SELECT, EXPLAIN sem ANALYZE, get_advisors, list_migrations, list_edge_functions."
+}

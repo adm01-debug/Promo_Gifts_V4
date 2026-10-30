@@ -72,6 +72,42 @@ ALTER DEFAULT PRIVILEGES IN SCHEMA public REVOKE ALL ON SEQUENCES FROM anon, aut
 ALTER DEFAULT PRIVILEGES IN SCHEMA public REVOKE ALL ON FUNCTIONS FROM anon, authenticated, service_role;
 `;
 
+// O baseline não carrega linhas do pg_cron (só schema), mas as migrations
+// 20261024180003 (job `auto-block-offenders`) e 20261024190001 (jobid 235) exigem jobs já existentes. Em produção
+// ele vem de 20260623171736; no shadow, que parte do baseline, nunca existe e o
+// replay aborta com "job auto-block-offenders não encontrado". Esta semente é
+// gravada como migration B+1 na pasta temporária (jobs são dado, não schema:
+// não alteram o diff). Idempotente e tolerante a shadow sem pg_cron.
+export const REPLAY_CRON_SEED_FILE = 'drift_replay_cron_seed.sql';
+export const REPLAY_CRON_SEED_SQL = `
+-- Semente de jobs do pg_cron para o replay (scripts/drift-baseline.mjs).
+DO $seed$
+DECLARE
+  v_id bigint;
+  v_n int := 0;
+BEGIN
+  IF to_regclass('cron.job') IS NOT NULL
+     AND NOT EXISTS (SELECT 1 FROM cron.job WHERE jobname = 'auto-block-offenders') THEN
+    PERFORM cron.schedule('auto-block-offenders', '1,6,11,16,21,26,31,36,41,46,51,56 * * * *', 'SELECT 1');
+  END IF;
+  -- 20261024190001 e 20261025002500 exigem este job com jobid=235. O role do
+  -- replay não tem UPDATE em cron.job: avança a sequence agendando/removendo
+  -- jobs temporários até o próximo jobid ser 235.
+  IF to_regclass('cron.job') IS NOT NULL
+     AND NOT EXISTS (SELECT 1 FROM cron.job WHERE jobname = 'image-dimensions-backfill') THEN
+    LOOP
+      v_id := cron.schedule('drift-seed-tmp-' || v_n, '0 * * * *', 'SELECT 1');
+      v_n := v_n + 1;
+      EXIT WHEN v_id >= 234 OR v_n > 1000;
+      PERFORM cron.unschedule(v_id);
+    END LOOP;
+    PERFORM cron.unschedule(v_id);
+    PERFORM cron.schedule('image-dimensions-backfill', '0 * * * *', 'SELECT 1');
+  END IF;
+END
+$seed$;
+`;
+
 const SECRET_PATTERNS = [
   ['jwt', /eyJ[A-Za-z0-9_-]{10,}\.eyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}/],
   ['supabase-pat', /\bsbp_[a-f0-9]{30,}\b/],
@@ -246,8 +282,11 @@ export function prepareWorkdir({ rootDir, outDir, appliedVersions, projectRef })
   const sanitized = sanitizeBaselineForReplay(readFileSync(baseline.file, 'utf8'));
   writeFileSync(join(outMigrations, REPLAY_SEED_NAME), REPLAY_SEED_SQL);
   writeFileSync(join(outMigrations, baseline.name), sanitized.sql);
+  // Migration própria em B+1 (sessão nova, role padrão): no fim do baseline o
+  // cron.job já está sem privilégio. As migrations replayadas começam em B+2.
+  writeFileSync(join(outMigrations, replayFileName(baseline.version, 0, REPLAY_CRON_SEED_FILE)), REPLAY_CRON_SEED_SQL);
   replay.forEach((f, i) => {
-    copyFileSync(join(migrationsDir, f), join(outMigrations, replayFileName(baseline.version, i, f)));
+    copyFileSync(join(migrationsDir, f), join(outMigrations, replayFileName(baseline.version, i + 1, f)));
   });
   return {
     baselineVersion: baseline.version,
@@ -1009,9 +1048,16 @@ export function splitDiffStatements(sql) {
   return stmts;
 }
 
+// Session-level SET statements emitted by `supabase db diff` in some shadow
+// scenarios — not schema objects, strip before allowlist validation.
+const SESSION_NOISE_EXACT = new Set([
+  'set check_function_bodies = off;',
+]);
+
 export function filterDiff(diffSql, allowlist) {
   return splitDiffStatements(diffSql).filter((stmt) => {
     const first = stmt.split('\n').find((l) => l.trim() && !l.trim().startsWith('--')) ?? '';
+    if (SESSION_NOISE_EXACT.has(first.trim().toLowerCase())) return false;
     return !allowlist.some((re) => re.test(first.trim()));
   });
 }

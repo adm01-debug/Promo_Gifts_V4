@@ -81,6 +81,14 @@ jobs:
         with:
           version: 2.101.0
 
+      - name: Garante registry ghcr.io (E104 — revertido de ECR por data-limit)
+        run: |
+          set -euo pipefail
+          # supabase/setup-cli define SUPABASE_INTERNAL_IMAGE_REGISTRY=ghcr.io via $GITHUB_ENV.
+          # O override para ECR Public (E104) passou a falhar com "toomanyrequests: Data limit
+          # exceeded" no supabase start (run 40198510942); mesma reversão do db-schema-drift-check.yml.
+          echo "SUPABASE_INTERNAL_IMAGE_REGISTRY=ghcr.io" >> "$GITHUB_ENV"
+
       - run: npm ci --no-audit --no-fund
 
       - name: Start Supabase stack

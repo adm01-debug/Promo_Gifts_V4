@@ -99,6 +99,13 @@ vi.mock('@/components/admin/connections/SecretField', () => ({
   SecretField: () => <div data-testid="secret-field-mock" />,
 }));
 
+// AutoTestJobStatusCard calls supabase.rpc in a useEffect; the async
+// continuation fires setLoading(false) after jsdom teardown → window is not
+// defined. Mock the component to remove the async leak.
+vi.mock('@/components/admin/connections/AutoTestJobStatusCard', () => ({
+  AutoTestJobStatusCard: () => <div data-testid="auto-test-job-status-mock" />,
+}));
+
 describe('Admin Module Structural Comparison', () => {
   it('Conexoes and Usuarios should share matching container hierarchy', () => {
     const { container: conexoes } = render(<AdminConexoesPage />, { wrapper });

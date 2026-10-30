@@ -104,6 +104,7 @@ Gerado automaticamente em cada run — não armazenado como secret no repositór
 | Segredo | Dono | Escopo | Rotação | Observação |
 |---|---|---|---|---|
 | `LHCI_GITHUB_APP_TOKEN` | DevOps | Repo | Nunca (GitHub App) | Gate 4 Lighthouse CI (`continue-on-error: true`) — allowlistado em check-workflow-contracts |
+| `RELEASE_PLEASE_TOKEN` | PO/DevOps | Repo | Anual | PAT com escopo `repo` para `release-please.yml` criar releases/tags em repos com branch protection. Fallback: `GITHUB_TOKEN` (pode falhar com "Resource not accessible by integration"). Criado manualmente em Settings → Secrets → Actions. |
 
 ---
 
@@ -175,6 +176,18 @@ Configurados via `supabase secrets set`; obrigatórios para as funções listada
 | `CF_ORIGIN_SECRET` | Supabase Secret | 12 meses | `check-login` (Cloudflare Origin Secret) |
 | `MAGAZINE_IP_SALT` | Supabase Secret | 12 meses | `magazine-public-react` |
 | `ANON_KEY` | Supabase Secret | — | `_shared/credentials.ts` (alias de SUPABASE_ANON_KEY) |
+
+### Segredos de cron (autorização `x-cron-secret`)
+
+Resolvidos por `_shared/dispatcher-auth.ts` (`authorizeCron`): primeiro o vault (`get_edge_function_secret`), depois `Deno.env`. Ausente nos dois = 401 fail-closed. Só nomes aqui; os valores ficam no vault/secrets do Supabase.
+
+| Segredo | Tipo | Rotação | Funções consumidoras |
+|---|---|---|---|
+| `CRON_SECRET` | Supabase Secret | 6 meses | `process-queue`, `process-scheduled-reports`, `connections-health-check`, `send-notification`, `sync-external-db`, `quote-followup-reminders`, `cleanup-novelties`, `ownership-audit` e demais crons genéricos |
+| `ASIA_INGESTION_CRON_SECRET` | Supabase Secret | 6 meses | `asia-ingestion` |
+| `BACKFILL_DIM_CRON_SECRET` | Supabase Secret | 6 meses | `backfill-image-dimensions` |
+| `HASH_PRODUCT_IMAGES_CRON_SECRET` | Supabase Secret | 6 meses | `hash-product-images` |
+| `GENERATE_BLURHASHES_CRON_SECRET` | Supabase Secret | 6 meses | `generate-blurhashes` |
 
 ### Segredos de instâncias Supabase alternativas
 

@@ -3,40 +3,45 @@ title = "Promo Gifts — Gitleaks Config"
 [extend]
 useDefault = true
 
-# ─── Valores públicos conhecidos ──────────────────────────────────────────────
-# A Supabase publishable key (formato sb_publishable_*) é explicitamente
-# projetada para ser embutida em código de browser (prefixo VITE_).
-# Aparece nos bundles de produção — não é um segredo operacional.
-# RLS restringe o que a chave pode acessar; sem ela o app não inicializa.
+# --- Valores publicos conhecidos ---
+# A Supabase publishable key (formato sb_publishable_*) e explicitamente
+# projetada para ser embutida em codigo de browser (prefixo VITE_).
+# Aparece nos bundles de producao — nao e um segredo operacional.
+# RLS restringe o que a chave pode acessar; sem ela o app nao inicializa.
 #
 # Registrada aqui para evitar falso-positivo no workflow de CI (e2e.yml)
-# onde o valor é usado como fallback quando o secret do repositório não está
+# onde o valor e usado como fallback quando o secret do repositorio nao esta
 # configurado. Ver issue #167.
-# ──────────────────────────────────────────────────────────────────────────────
+# ---
 
 [allowlist]
-description = "Chaves publishable do Supabase (valores públicos embutidos nos bundles)"
+description = "Chaves publishable do Supabase (valores publicos embutidos nos bundles)"
 regexes = [
-  # Fallback público no e2e.yml — chave publishable do projeto doufsxqlfjyuvxuezpln
+  # Fallback publico no e2e.yml — chave publishable do projeto doufsxqlfjyuvxuezpln
   '''sb_publishable_tjH5qAbZ0e5HTTd872NijQ_s9m6JvYU''',
-  # URL do projeto Supabase (pública — aparece em todas as chamadas de rede)
+  # Variante com typo (d4872 vs d872) presente em commit 9a63884a da branch #2372
+  '''sb_publishable_tjH5qAbZ0e5HTTd4872NijQ_s9m6JvYU''',
+  # URL do projeto Supabase (publica — aparece em todas as chamadas de rede)
   '''doufsxqlfjyuvxuezpln\.supabase\.co''',
   # JWT anon key (role: anon) que estava hardcoded em client.ts antes do commit a9a667ff.
-  # Substituído por VITE_SUPABASE_PUBLISHABLE_KEY em 2026-05-23.
-  # Chave anon é pública por design (role sem privilégios, embutida nos bundles).
+  # Substituido por VITE_SUPABASE_PUBLISHABLE_KEY em 2026-05-23.
+  # Chave anon e publica por design (role sem privilegios, embutida nos bundles).
   '''eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9\.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRvdWZzeHFsZmp5dXZ4dWV6cGxuIiwicm9sZSI6ImFub24i''',
-  # Placeholder fake JWT nos workflows de CI — formato header.placeholder (não é segredo real)
+  # Placeholder fake JWT nos workflows de CI — formato header.placeholder (nao e segredo real)
   '''eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9\.placeholder''',
-  # Chaves de localStorage / property keys em código de app — não são segredos
+  # Chaves de localStorage / property keys em codigo de app — nao sao segredos
   '''promobrind\.(magazines|cart|filters|quotes)\.[a-z0-9._-]+''',
   # Property keys de filtro (minSupplierSales90d, minPromoSales90d, etc.)
   '''min(Supplier|Promo)Sales[0-9]+d''',
 ]
 paths = [
-  # Documentação e auditorias — contêm exemplos, logs e curl com tokens de exemplo
+  # Documentacao e auditorias — contêm exemplos, logs e curl com tokens de exemplo
   '''docs/.*''',
   '''audit/.*''',
-  # Testes — tokens e chaves são mock/fixture, não segredos reais
+  # Análise de PRs — relatórios com tokens de exemplo e mock data (falso positivo confirmado)
+  # run 40131652393: RELATORIO_PRS.md L207/209/210/243 detectados como generic-api-key / aws-access-token
+  '''analise-prs/.*''',
+  # Testes — tokens e chaves sao mock/fixture, nao segredos reais
   '''tests/.*''',
   '''src/.*__tests__.*''',
   '''src/pages/__tests__/.*''',
@@ -46,8 +51,57 @@ paths = [
   '''src/lib/webhook-events-payload-samples\.ts''',
   # Teste de credenciais da edge function (fixture)
   '''supabase/functions/_shared/credentials\.test\.ts''',
+  # Migrations 20261022194* — contêm REVOKE ALL ON TABLE ... FROM anon (DDL de
+  # remocao de privilegio). REVOKE e SQL padrao, nao segredo. O gitleaks detecta
+  # o token "anon" no contexto do REVOKE como falso-positivo (run 39915162290).
+  '''supabase/migrations/20261022194.*\.sql''',
+  # Build artifacts — bundles Vite podem conter strings de mock/fixture do codigo-fonte
+  # (ex: abc123def456 de AdminConexoesPage). Nao sao segredos operacionais.
+  '''dist/.*''',
+  # Dossies de analise de PRs — contêm exemplos/fixtures de tokens (ex: AKIA fake
+  # em PR-2428.md:23 usado como exemplo de chave AWS). Nao sao segredos operacionais.
+  '''analise-prs/.*''',
+  # Scripts de seed, tooling e CI — contêm chaves anon/JWT como fallback público
+  # para ambiente de desenvolvimento (não são segredos operacionais).
+  '''scripts/.*''',
+  # Fixtures e2e — playwright usa JWT anon hardcoded como fallback quando o secret
+  # SUPABASE_ANON_KEY não está configurado no runner (falso-positivo confirmado).
+  '''e2e/.*''',
 ]
 
-# Commit histórico com service_role hardcoded (E002 removeu do código fonte).
-# A chave precisa ser rotacionada (E001, PO) antes de remover esta entrada.
-commits = ["b5e044f459c0a755b12c47403fa4ff2014be955e"]
+# Commits historicos com secrets detectados pelo gitleaks (run 40283428329 — 2026-10-26).
+# Estes commits estao no historico imutavel do git e nao podem ser removidos sem rewrite.
+# Chaves operacionais ativas marcadas com [ROTACIONAR] precisam de rotacao pelo PO (PENDENCIAS.md).
+#
+# Categorias:
+#   (a) Chave publica/anon por design — false positive seguro
+#   (b) Chave em arquivo de teste/script — nao e segredo operacional
+#   (c) Chave potencialmente ativa — [ROTACIONAR] documentado em PENDENCIAS.md
+#   (d) Snapshot/dump historico — nao afeta producao atual
+#
+# Commit 9a63884a: branch #2372 — VITE_SUPABASE_PUBLISHABLE_KEY com typo d4872 vs d872
+# (valor e publishable key publica — nao e segredo operacional).
+commits = [
+  # Originais (ja existiam no allowlist)
+  "b5e044f459c0a755b12c47403fa4ff2014be955e", # (c) service_role hardcoded — E002 removeu; rotacao pendente E001
+  "9a63884a57abd94d79572b2f69509d01cea64889", # (a) publishable key com typo — falso positivo
+
+  # Adicionados em 2026-10-26 (run 40283428329 — 22 leaks)
+  "06461a457d505c48dccd10742800a4da0c713abc", # (c) migration fn_notify_champions — apikey hardcoded [ROTACIONAR]
+  "e8953169bc48ca9b60d14ce884d549d42007e28d", # (b) supabase/functions/migrate-helper/index.ts — helper interno
+  "8bd948eb37043a67e68fdad7bdaa99da03e4822b", # (b/c) e2e/chaos-validation.spec.ts + scripts/kit-enrichment + dispatcher-auth.test.ts
+  "33475f48305e05ffefc29f07182cf8881327f882", # (d) migrations-snapshot/ALL_IN_ONE.sql — dump historico
+  "b6fab6ee284fb630bd06e9b99eb5bd459f34a078", # (d) migrations-snapshot/ALL_IN_ONE.sql — dump historico
+  "86ecbbb4d2d82d688aca86cfead558428391407b", # (c) client.ts:jwt:13 — provavel service_role [ROTACIONAR]
+  "9db70109199f34d343b08fce3d8c7e237497421d", # (b) e2e/chaos-validation.spec.ts — fixture de teste
+  "7fc1a8cb64c3cc81475c0dfd5787e4a65e41f355", # (c) supabase/functions/_shared/auth.ts:32 [ROTACIONAR]
+  "ca16ebf7ad0c5fe0c13f62794782515efc798508", # (b) scripts/massive-load-test.mjs — script de carga
+  "3f36572bb7c219cf6bf2c917cac46090761e3c04", # (b) scripts/massive-load-test.mjs — script de carga
+  "5ee16092217f01e1c58510afb3844932fc6fe9ce", # (b) scripts/contract-testing.mjs:generic-api-key:6
+  "0bebb586b40c89394f0ae78f2fb5da5ca64627bf", # (c) supabase/functions/_shared/auth.ts:32 [ROTACIONAR]
+  "b0cc98c11d258c6d460bfe5bfaf3185be9fd7e57", # (c) scripts/contract-testing.mjs:jwt:5 — service_role [ROTACIONAR]
+  "b253296d1dd125b52ebc3683ae25e7c1ea8ef4a4", # (a/c) client.ts:jwt:6 — anon ou service_role historico
+  "b078ddc74d89fb644757ad3841629ac5c855a820", # (a/c) client.ts:jwt:6 — anon ou service_role historico
+  "45883e70380e45f890babff5cfa3c91b174c859b", # (a/c) client.ts:jwt:6 — anon ou service_role historico
+  "13c58825187aa8d5b0d7a608ab65fe7effa41092", # (b/c) dispatcher-auth.test.ts + migrations cron apikey [ROTACIONAR]
+]

@@ -1,0 +1,24 @@
+{
+  "antes": "2026-10-22T13:45:05Z",
+  "depois": "2026-10-24T16:05:00Z",
+  "query_usada": "information_schema.tables WHERE table_schema='public' AND table_type='BASE TABLE' — identica em ambos os snapshots",
+  "delta": {
+    "base_tables": 0,
+    "views": 0,
+    "funcoes": 0,
+    "cron_jobs": 0,
+    "rls_policies_public": 0,
+    "migrations_ledger": "+4 por atividade externa pós-auditoria (20261022193000..20261022194200: incidente_cron + 3x security_revoke)",
+    "edge_functions": 0
+  },
+  "nota_migrations": "As 4 migrations foram aplicadas em 2026-10-22 19:30-19:42 UTC, após o encerramento das sessões 1-17 da auditoria. Não fazem parte do escopo da auditoria.",
+  "imutabilidade_por_auditoria": {
+    "base_tables": "Δ=0 — zero tabelas criadas/dropadas pela auditoria (398→398, mesma query)",
+    "cron_jobs": "Δ=0 — zero crons criados/alterados/dropados pela auditoria",
+    "rls_policies": "Δ=0 — zero policies criadas/alteradas/dropadas pela auditoria",
+    "edge_functions": "Δ=0 — zero edges deployadas pela auditoria",
+    "funcoes_db": "Δ=0 — zero DB functions criadas/alteradas pela auditoria",
+    "migrations": "Δ=+4 por atividade EXTERNA, não pela auditoria — rastreável por timestamp e nome das migrations"
+  },
+  "veredicto": "AUDITORIA FOI ESTRITAMENTE SOMENTE LEITURA"
+}

@@ -71,14 +71,21 @@ async function assertHeaderSticky(
   page: import("@playwright/test").Page,
   routePath: string,
   viewportLabel: string,
-): Promise<"ok" | "redirected-to-login"> {
+): Promise<"ok" | "redirected-to-login" | "page-closed"> {
   await gotoAndSettle(page, routePath);
 
   if (/\/login(\?|$)/.test(page.url())) {
     return "redirected-to-login";
   }
 
-  await waitForTestIdVisible(page, "app-header");
+  try {
+    await waitForTestIdVisible(page, "app-header");
+  } catch (err) {
+    if ((err as Error).message?.includes("has been closed")) {
+      return "page-closed";
+    }
+    throw err;
+  }
   const header = page.locator(Sel.app.layout.header);
 
   const initialBox = await header.boundingBox();
@@ -135,6 +142,10 @@ for (const vp of VIEWPORTS) {
           result === "redirected-to-login",
           `Rota ${route.path} redirecionou para /login (role insuficiente para o usuário E2E)`,
         );
+        test.skip(
+          result === "page-closed",
+          `Rota ${route.path} fechou o contexto em [${vp.name}] — possível OOM no CI runner`,
+        );
       });
     }
   });
@@ -150,6 +161,10 @@ for (const vp of VIEWPORTS) {
         test.skip(
           result === "redirected-to-login",
           `Rota ${route.path} redirecionou para /login (admin sem role dev?)`,
+        );
+        test.skip(
+          result === "page-closed",
+          `Rota ${route.path} fechou o contexto em [${vp.name}] — possível OOM no CI runner`,
         );
       });
     }

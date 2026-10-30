@@ -99,7 +99,7 @@ export function transformToKitBox(product: ExternalProductForKit): KitBox | null
     material: resolveProductMaterial(product),
     materials: resolveAllProductMaterials(product),
     finish: product.packaging_finish || undefined,
-    weight: product.weight_g ?? undefined,
+    weight: product.weight_g || undefined,
   };
 }
 
@@ -138,7 +138,7 @@ export function transformToKitItem(
     depth: dimensions.depth,
     volume,
     dimensionsKnown,
-    weight: product.weight_g ?? undefined,
+    weight: product.weight_g || undefined,
     material: resolveProductMaterial(product),
     category: resolvedCategory,
     quantity: 1,

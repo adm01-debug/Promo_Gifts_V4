@@ -946,6 +946,7 @@ export function BoxSelector({
                           variant={recommendation.status === 'inconclusive' ? 'outline' : 'default'}
                           disabled={!isSelectable}
                           aria-label={`Selecionar caixa ${box.name}`}
+                          data-testid="box-option"
                           onFocus={() => setFocusedBoxId(box.id)}
                           onClick={() => onSelect(box)}
                         >
@@ -1089,6 +1090,7 @@ export function BoxSelector({
                           variant={recommendation.status === 'inconclusive' ? 'outline' : 'default'}
                           disabled={!isSelectable}
                           aria-label={`Selecionar caixa ${box.name}`}
+                          data-testid="box-option"
                           onFocus={() => setFocusedBoxId(box.id)}
                           onClick={() => onSelect(box)}
                         >

@@ -78,7 +78,7 @@ jobs:
             --project=chromium-authed \
             --max-failures=1 \
             --reporter=github,list \
-            && touch playwright-report/.header-sticky-passed
+            && mkdir -p playwright-report && touch playwright-report/.header-sticky-passed
         continue-on-error: true
 
       - name: 🛑 Fail-fast se header sticky falhou

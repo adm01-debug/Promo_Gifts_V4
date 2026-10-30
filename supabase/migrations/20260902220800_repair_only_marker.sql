@@ -1,0 +1,14 @@
+-- REPAIR-ONLY: Esta migration foi aplicada diretamente em produção (OOB DDL)
+-- Arquivo original: 20260902220800_rls_enable_spr_history_partitions_and_fix_creator.sql
+-- Data de aplicação estimada: 2026-09-02 22:08 UTC
+-- Tabelas afetadas: supplier_products_raw_history_p2026_11,
+--                   supplier_products_raw_history_p2026_12,
+--                   função public.fn_purge_spr_history
+-- Descrição: Habilita RLS nas partições p2026_11 e p2026_12 de supplier_products_raw_history.
+--            Recria fn_purge_spr_history para criar partições futuras com RLS habilitada.
+--            STATUS COMENTADO NO ORIGINAL: "Aplicada em produção via MCP em 2026-09-02"
+--            Advisor ERROR rls_disabled_in_public reportado e corrigido nesta migration.
+-- Reconciliação pendente: registrar no ledger via db-apply-migration.yml mode=repair-only
+-- Aprovação necessária: PO deve autorizar via workflow_dispatch
+-- Referência: supabase/MIGRATIONS_DRIFT_REPORT.md — DRIFT-003
+-- Sessão: https://claude.ai/code/session_01GfYDwdVBZip5FzMr8MZ4Be — 2026-10-22

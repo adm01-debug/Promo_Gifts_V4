@@ -150,8 +150,8 @@ describe("SOURCE PARITY — código de produção contém as funções esperadas
 // 4) buildQuoteUpdates — cobertura exaustiva por event_type
 // ─────────────────────────────────────────────────────────────────────────
 const ISO = "2026-07-06T16:00:00.000Z";
-const UUID1 = "00000000-0000-0000-0000-000000000001";
-const UUID2 = "00000000-0000-0000-0000-000000000002";
+const UUID1 = "00000000-0000-4000-8000-000000000001";
+const UUID2 = "00000000-0000-4000-8000-000000000002";
 
 describe("buildQuoteUpdates — mapping por event_type", () => {
   it("approved (mínimo) — não seta approved_by_client_name", () => {

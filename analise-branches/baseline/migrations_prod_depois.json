@@ -1,0 +1,7 @@
+{
+  "snapshot_ts": "2026-10-24T21:30:00Z",
+  "last_version": "20261022203935",
+  "last_name": "update_company_fields_security_fix",
+  "count_verificado": true,
+  "note": "Snapshot ao vivo via list_migrations nesta sessão — idêntico ao antes. Migrations 20261022194000/194100/194200 ausentes (brechas abertas). Nenhuma migration foi aplicada."
+}

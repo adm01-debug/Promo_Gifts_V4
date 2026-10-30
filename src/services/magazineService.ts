@@ -70,7 +70,9 @@ function parseJsonb<T>(
     { success: false; error: { issues: unknown[] } } | { success: true; data: T };
   if (result.success) return result.data;
   logger.warn(`[magazineService] shape drift em ${field} (id=${rowId}):`, result.error.issues);
-  return fallback;
+  // Retorna os dados brutos (cast) quando o valor é um objeto — preserva campos válidos (ex.: name)
+  // mesmo em snapshots legados com campos ausentes. Fallback só para null/primitivos inválidos.
+  return (value !== null && typeof value === 'object' ? value : fallback) as T;
 }
 
 function rowToItem(row: MagazineItemRow): MagazineItem {

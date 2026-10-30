@@ -104,7 +104,7 @@ export default defineConfig(({ mode }) => {
                 priority: 65,
               },
               { name: 'ui-vendor', test: /node_modules[\/](?:@radix-ui|cmdk)[\/]/, priority: 60 },
-              { name: 'date-vendor', test: /node_modules[\/]date-fns[\/]/, priority: 50 },
+              { name: 'time-vendor', test: /node_modules[\/]date-fns[\/]/, priority: 50 },
               {
                 name: 'charts-vendor',
                 test: /node_modules[\/](?:recharts|d3-[^/]+)[\/]/,

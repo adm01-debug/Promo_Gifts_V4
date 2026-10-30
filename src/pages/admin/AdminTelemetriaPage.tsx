@@ -512,7 +512,7 @@ export default function AdminTelemetriaPage() {
                     selected={customDateFrom}
                     onSelect={setCustomDateFrom}
                     disabled={(date) => date > new Date()}
-                    initialFocus
+                    autoFocus
                     className="pointer-events-auto p-3"
                   />
                 </PopoverContent>
@@ -540,7 +540,7 @@ export default function AdminTelemetriaPage() {
                     disabled={(date) =>
                       date > new Date() || (customDateFrom ? date < customDateFrom : false)
                     }
-                    initialFocus
+                    autoFocus
                     className="pointer-events-auto p-3"
                   />
                 </PopoverContent>

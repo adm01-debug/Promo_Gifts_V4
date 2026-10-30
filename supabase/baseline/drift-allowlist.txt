@@ -11,3 +11,4 @@
 #   - Ruído do próprio `db diff` (ex.: objeto que o shadow cria por padrão e
 #     o remoto não tem) entra aqui; objeto criado em produção sem migration
 #     NÃO entra — vira migration espelho (REGRA #8, docs/db/POLITICA_DDL.md).
+

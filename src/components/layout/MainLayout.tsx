@@ -141,7 +141,7 @@ export function MainLayout({ children }: MainLayoutProps) {
         </div>
 
         <div className="isolate flex min-h-screen min-w-0 flex-1 flex-col print:min-h-0">
-          <Suspense fallback={<div style={{ height: 56 }} className="print:hidden" />}>
+          <Suspense fallback={<div style={{ position: 'fixed', top: 0, right: 0, left: 0, zIndex: 40, height: 56 }} className="print:hidden" />}>
             <Header onMenuToggle={() => setSidebarOpen(!sidebarOpen)} sidebarOpen={sidebarOpen} />
           </Suspense>
 

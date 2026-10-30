@@ -11,8 +11,7 @@ const REF = new Date(2026, 6, 2);
 
 afterEach(() => cleanup());
 
-const classes = (el: Element | null | undefined) =>
-  (el?.getAttribute('class') ?? '').toLowerCase();
+const classes = (el: Element | null | undefined) => (el?.getAttribute('class') ?? '').toLowerCase();
 
 describe('Calendar — dimensions contract', () => {
   it('container root mantém padding confortável no mobile e compacto em md', () => {
@@ -23,7 +22,6 @@ describe('Calendar — dimensions contract', () => {
     expect(c).toMatch(/md:p-1\.5/);
     expect(c).not.toMatch(/(^|\s)p-4(\s|$)/);
   });
-
 
   it('caption_label é text-[15px] (não text-2xl)', () => {
     const { container } = render(<Calendar mode="single" defaultMonth={REF} />);
@@ -58,7 +56,6 @@ describe('Calendar — dimensions contract', () => {
     }
   });
 
-
   it('ícones nav seguem escala mobile/md atual', () => {
     const { container } = render(<Calendar mode="single" defaultMonth={REF} />);
     const svgs = Array.from(container.querySelectorAll<SVGElement>('svg'));
@@ -71,11 +68,10 @@ describe('Calendar — dimensions contract', () => {
   });
 
   it('mantém a11y: role grid, focus-visible:ring nos nav, aria-selected em selected', () => {
-    const { container } = render(
-      <Calendar mode="single" selected={REF} defaultMonth={REF} />,
-    );
+    const { container } = render(<Calendar mode="single" selected={REF} defaultMonth={REF} />);
     expect(container.querySelector('[role="grid"]')).toBeTruthy();
-    const sel = container.querySelector('button[aria-selected="true"]');
+    // react-day-picker v10: aria-selected vai para o <td>, não para o <button> interno
+    const sel = container.querySelector('[aria-selected="true"] button');
     expect(sel).toBeTruthy();
     const navBtn = Array.from(container.querySelectorAll<HTMLElement>('button')).find((b) =>
       /h-11\s+w-11/.test(b.getAttribute('class') ?? ''),
@@ -98,8 +94,9 @@ describe('Calendar — dimensions contract', () => {
     const hasGap0Row = rows.some((c) => /(^|\s)gap-0(\s|$)/.test(c));
     expect(hasGap0Row, 'ao menos uma row com gap-0').toBe(true);
 
-    const heads = Array.from(container.querySelectorAll<HTMLElement>('th, [role="columnheader"]'))
-      .filter((h) => (h.textContent ?? '').trim().length > 0);
+    const heads = Array.from(
+      container.querySelectorAll<HTMLElement>('th, [role="columnheader"]'),
+    ).filter((h) => (h.textContent ?? '').trim().length > 0);
     expect(heads.length).toBeGreaterThanOrEqual(7);
     for (const h of heads.slice(0, 7)) {
       expect(classes(h)).toMatch(/text-\[10px\]/);
@@ -107,7 +104,10 @@ describe('Calendar — dimensions contract', () => {
       expect(classes(h)).toMatch(/md:text-\[7px\]/);
     }
 
-    const dayBtns = Array.from(container.querySelectorAll<HTMLElement>('button[name="day"]'));
+    // react-day-picker v10: botões de dia não têm name="day"; são filhos de td[role="gridcell"]
+    const dayBtns = Array.from(
+      container.querySelectorAll<HTMLElement>('td[role="gridcell"] button'),
+    );
     expect(dayBtns.length).toBeGreaterThan(20);
     for (const b of dayBtns.slice(0, 10)) {
       expect(classes(b)).toMatch(/text-\[13px\]/);

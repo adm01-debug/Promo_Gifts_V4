@@ -125,18 +125,28 @@ for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
       },
       body: "{}",
     });
-    if (res.status === 504) {
-      lastError = { kind: "http", status: 504 };
-      console.warn(`⚠️  [security-definer-acl] HTTP 504 (tentativa ${attempt}/${MAX_RETRIES}) — aguardando ${RETRY_DELAY_MS / 1000}s antes de tentar novamente...`);
+    if (res.status === 500 || res.status === 503 || res.status === 504) {
+      lastError = { kind: "http", status: res.status };
+      console.warn(`⚠️  [security-definer-acl] HTTP ${res.status} (tentativa ${attempt}/${MAX_RETRIES}) — aguardando ${RETRY_DELAY_MS / 1000}s antes de tentar novamente...`);
       if (attempt < MAX_RETRIES) {
         await sleep(RETRY_DELAY_MS);
         continue;
       }
-      // All retries exhausted with 504: infrastructure issue, not a security violation
-      console.warn("⚠️  [security-definer-acl] HTTP 504 após 3 tentativas — serviço Supabase temporariamente indisponível.");
-      console.warn("   Gate considerado como pass condicional: timeout de infra não indica violação de segurança.");
-      console.warn("   A próxima execução (push/cron) verificará o estado real.");
-      process.exit(0);
+      // All retries exhausted: report INCONCLUSIVE — a persistent HTTP 500 may
+      // indicate a broken RPC/SQL, not just transient infra. Fail-open would
+      // silently pass a broken security audit (Codex review P2).
+      concludeCheck({
+        check: "security-definer-acl",
+        status: CHECK_RESULT_STATUS.INCONCLUSIVE,
+        summary: `HTTP ${res.status} após ${MAX_RETRIES} tentativas — serviço Supabase indisponível`,
+        details: {
+          reason: "http-error-exhausted",
+          maskedUrl: maskUrl(url),
+          httpStatus: res.status,
+          attempts: MAX_RETRIES,
+        },
+        stream: "stdout",
+      });
     }
     lastError = null;
     break;

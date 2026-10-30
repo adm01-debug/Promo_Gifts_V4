@@ -79,6 +79,7 @@ on:
 
 permissions:
   contents: read
+  packages: read  # autenticação no ghcr.io para pulls de imagens Docker (evita rate limit anônimo compartilhado)
   # pull-requests: write — removido E92 (não usado neste workflow)
 
 concurrency:
@@ -94,7 +95,7 @@ jobs:
   drift:
     name: Migrations x Canonical schema
     runs-on: ubuntu-24.04
-    timeout-minutes: 12
+    timeout-minutes: 25
     # E27: SUPABASE_ACCESS_TOKEN não deve chegar a PRs de forks
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     env:
@@ -136,6 +137,17 @@ jobs:
         uses: supabase/setup-cli@45a513f8c64c0bc8e0e3dfe572b5c95be85f6359 # v2
         with:
           version: 2.101.0
+
+      - name: Garante registry ghcr.io (E104 — revertido de ECR por data-limit)
+        if: steps.guard.outputs.enabled == 'true'
+        run: |
+          set -euo pipefail
+          # supabase/setup-cli@v2 define SUPABASE_INTERNAL_IMAGE_REGISTRY=ghcr.io via $GITHUB_ENV.
+          # E104 sobrescrevia para ECR Public (public.ecr.aws) porque ghcr.io tinha rate-limit.
+          # A partir de 2026-10-24, ECR Public passou a retornar "toomanyrequests: Data limit exceeded"
+          # em todas as tentativas (4 runs consecutivas); ghcr.io (44k req/min) é preferível para
+          # um único job de drift check. Reverte para ghcr.io explicitamente.
+          echo "SUPABASE_INTERNAL_IMAGE_REGISTRY=ghcr.io" >> "$GITHUB_ENV"
 
       - name: Link canonical project
         if: steps.guard.outputs.enabled == 'true'
@@ -198,6 +210,29 @@ jobs:
           # Link da pasta de replay (o link do passo anterior vale só para a raiz do repo).
           supabase link --workdir /tmp/drift-wd --project-ref "$SUPABASE_PROJECT_REF"
 
+      - name: Pre-pull Supabase postgres image (ghcr.io autenticado)
+        if: steps.guard.outputs.enabled == 'true' && steps.replay.outputs.skip != 'true'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          # supabase db diff arranca shadow DB local com esta imagem.
+          # Registry lido de SUPABASE_INTERNAL_IMAGE_REGISTRY (ghcr.io, via step anterior).
+          # Autenticação com GITHUB_TOKEN (packages: read) evita o rate limit anônimo compartilhado
+          # (44k req/min entre todos runners do GitHub Actions). Tag fixa para CLI 2.101.0.
+          POSTGRES_IMAGE="${SUPABASE_INTERNAL_IMAGE_REGISTRY}/supabase/postgres:17.6.1.063"
+          for attempt in 1 2 3 4 5; do
+            if echo "$GITHUB_TOKEN" | docker login ghcr.io -u x-access-token --password-stdin \
+                && docker pull "$POSTGRES_IMAGE"; then
+              echo "Pre-pull ok (tentativa $attempt)"
+              break
+            fi
+            [ "$attempt" -lt 5 ] || { echo "::error::Pre-pull de $POSTGRES_IMAGE falhou após 5 tentativas"; exit 1; }
+            wait_s=$((attempt * 30))
+            echo "Tentativa $attempt falhou — aguardando ${wait_s}s antes de tentar novamente"
+            sleep "$wait_s"
+          done
+
       - name: Schema drift check (baseline + replay x remote)
         if: steps.guard.outputs.enabled == 'true' && steps.replay.outputs.skip != 'true'
         run: |
@@ -207,12 +242,12 @@ jobs:
           # E035: schemas lidos do arquivo compartilhado (mesmo usado pelo export)
           SCHEMAS=$(grep -v '^#' supabase/baseline/schemas.txt | grep -v '^$' | tr '\n' ',' | sed 's/,$//')
           rc=0
-          timeout --signal=INT --kill-after=30s 9m \
+          timeout --signal=INT --kill-after=60s 18m \
             supabase db diff --workdir /tmp/drift-wd --linked --schema "$SCHEMAS" \
             > /tmp/schema_drift.sql 2> /tmp/diff.stderr || rc=$?
           if [ "$rc" -ne 0 ]; then
             if [ "$rc" -eq 124 ] || [ "$rc" -eq 137 ]; then
-              echo "::error::supabase db diff excedeu 9 min e foi interrompido (rc=$rc)."
+              echo "::error::supabase db diff excedeu 18 min e foi interrompido (rc=$rc)."
             fi
             # Replay quebrado no shadow: quase sempre uma migration registrada
             # depois do dump cujo SQL já estava no baseline (repair-only de DDL

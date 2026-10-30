@@ -1,4 +1,5 @@
 -- E23 — FORCE RLS e revogação em tabelas de segredo
+-- Rollback: supabase/rollbacks/20260916202000_rollback.sql
 -- Plano: docs/plans/PLANO_DBA_CORRECOES_MELHORIAS_50_ETAPAS_2026-09-16.md (linhas 494-501)
 --
 -- Tabelas alvo (5 das 6 do plano — mcp_api_keys já tem FORCE, confirmado ao

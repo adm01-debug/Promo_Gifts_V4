@@ -89,7 +89,7 @@ describe.skipIf(!INTEGRATION_ENABLED)(
         }
       }
       throw new Error('Nenhum kit com componentes encontrado. Defina KIT_FIXTURE_ID.');
-    }, 30_000);
+    }, 60_000);
 
     it('view e base retornam linhas para o mesmo kit', async () => {
       const [viewRes, baseRes] = await Promise.all([

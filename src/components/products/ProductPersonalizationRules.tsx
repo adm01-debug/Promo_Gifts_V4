@@ -163,10 +163,10 @@ export function ProductPersonalizationRules({
     },
   });
 
-  // Fetch product-specific rules via external DB
   const { data: productComponents, isLoading: loadingProductRules } = useQuery({
     queryKey: ['product-custom-rules', productData?.productDbId],
     queryFn: async () => {
+      if (!(await supabase.auth.getSession()).data.session) return null; // anon: sem EXECUTE
       if (!productData?.productDbId || productData.source !== 'product') return null;
 
       try {

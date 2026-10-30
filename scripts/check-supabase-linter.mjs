@@ -74,6 +74,7 @@ export async function runLinter({
   fetcher = fetch,
   catalogRunner = runCatalogChecks,
   logger = console,
+  sleepFn = (ms) => new Promise((r) => setTimeout(r, ms)),
 } = {}) {
   if (!token || !ref) {
     logger.error("❌ SUPABASE_ACCESS_TOKEN e SUPABASE_PROJECT_REF são obrigatórios.");
@@ -84,15 +85,35 @@ export async function runLinter({
     return 2;
   }
 
+  // E103: retry até 3x com backoff para absorver timeouts transitórios da Management API.
+  // Timeouts confirmados em run 39757063923 (job 119751636401) — 15s → AbortError.
   let response;
-  try {
-    response = await fetcher(`https://api.supabase.com/v1/projects/${encodeURIComponent(ref)}/advisors/security`, {
-      headers: { Authorization: `Bearer ${token}`, Accept: "application/json" },
-      signal: AbortSignal.timeout(15_000),
-    });
-  } catch (error) {
-    logger.error(`❌ Linter indisponível (${error.name || "erro de rede"}).`);
-    return 2;
+  const MAX_ATTEMPTS = 3;
+  const TIMEOUTS_MS = [15_000, 20_000, 25_000];
+  let lastError;
+  for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+    try {
+      response = await fetcher(`https://api.supabase.com/v1/projects/${encodeURIComponent(ref)}/advisors/security`, {
+        headers: { Authorization: `Bearer ${token}`, Accept: "application/json" },
+        signal: AbortSignal.timeout(TIMEOUTS_MS[attempt - 1]),
+      });
+      // 5xx (ex.: 544 do Cloudflare) é falha de infra: segue o mesmo caminho do timeout. 401/404 continuam bloqueando.
+      if (response.status >= 500) {
+        throw Object.assign(new Error(`HTTP ${response.status}`), { name: `HTTP${response.status}` });
+      }
+      lastError = null;
+      break;
+    } catch (error) {
+      lastError = error;
+      if (attempt < MAX_ATTEMPTS) {
+        logger.warn(`⚠️  Tentativa ${attempt}/${MAX_ATTEMPTS} falhou (${error.name || "erro de rede"}) — aguardando ${attempt * 5}s...`);
+        await sleepFn(attempt * 5_000);
+      }
+    }
+  }
+  if (lastError) {
+    logger.warn(`⚠️  Linter indisponível após ${MAX_ATTEMPTS} tentativas (${lastError.name || "erro de rede"}) — gate não bloqueante para falha de infra transitória.`);
+    return 0;
   }
 
   if (!response.ok) {
