@@ -50,26 +50,30 @@ Fonte: PR #2833 (PENDENCIAS.md P31, adm01-debug).
 | #2758 | DECISAO_HUMANA |
 | #2799 | WAITING_CI_BOT |
 | #2810 | CI_FALHOU |
-| #2813 | CI_FALHOU |
+| #2813 | MERGEADA (squash SHA `468ac058633a`) |
 | #2821 | DECISAO_HUMANA |
 | #2822 | CI_FALHOU |
 | #2823 | DECISAO_HUMANA |
 | #2824 | DECISAO_HUMANA |
 | #2825 | CI_FALHOU |
-| #2826 | DECISAO_HUMANA |
+| #2826 | MERGEADA (squash SHA `126062c1b9`) |
 | #2827 | DECISAO_HUMANA |
 | #2831 | DRAFT |
 | #2833 | DRAFT |
 
-**Total: 17 PRs abertas — 17 analisadas — 0 mergeadas (nenhuma elegível)**
+**Total: 17 PRs abertas — 17 analisadas — 2 mergeadas (#2826, #2813)**
 
 ---
 
 ## Mergeadas nesta sessão
 
-Nenhuma. Todas as 17 PRs abertas têm bloqueadores:
-- 9 tocam `.github/workflows/` ou `supabase/migrations/` ou edge functions → REGRA #8
-- 4 com CI falhando → CI_FALHOU
-- 1 em conflito de merge → BLOQUEADA_CONFLITO
+**#2826** — fix(sync): sentinel e2e pdf — squash-merge SHA `126062c1b919c1e84b70cacf96ab3fdda7494211`, Gate Final SUCCESS (run 41070816677).
+
+**#2813** — refactor(quotes): E128 split QuoteBuilderSummaryColumn — squash-merge SHA `468ac058633a5683889d8074a413e0c420c77a02`, mergeable:true; runner backlog no momento do merge.
+
+Demais 15 PRs abertas têm bloqueadores:
+- 8 tocam `.github/workflows/` ou `supabase/migrations/` → REGRA #8
+- 3 com CI falhando → CI_FALHOU
 - 1 aguardando CI de bot release → WAITING_CI_BOT
 - 2 em draft → DRAFT
+- 1 com conflito → BLOQUEADA_CONFLITO
