@@ -1,7 +1,7 @@
 {
   "sessao": "claude/eloquent-ramanujan-0yt2fo",
   "data": "2026-10-30",
-  "main_sha": "6e38d14a90323f69ff3beda27c8ae51476c3cb1d",
+  "main_sha": "cba9944d12a61699a3ca855388e5842c5d6948b3",
   "baseline": {
     "tsc": "exit 0 — sem erros",
     "vitest": "exit 0 — sem falhas (1.247 arquivos, 25.869 testes, 1.135 skipped, 24 TODO)",
@@ -10,13 +10,21 @@
   },
   "total_prs_abertos_original": 19,
   "total_prs_abertos_atuais": 18,
-  "analisados": 40,
+  "analisados": 46,
   "analisados_fase_principal": 30,
   "analisados_tardios": [
     "#2797",
     "#2806",
     "#2807",
-    "#2810"
+    "#2810",
+    "#2813",
+    "#2816",
+    "#2821",
+    "#2822",
+    "#2823",
+    "#2824",
+    "#2825",
+    "#2826"
   ],
   "dossies_completos": 34,
   "veredictos": {
@@ -47,7 +55,11 @@
       "#2714",
       "#2701",
       "#2776",
-      "#2793"
+      "#2793",
+      "#2821",
+      "#2823",
+      "#2824",
+      "#2826"
     ],
     "DRAFT": [
       "#2767",
@@ -60,18 +72,20 @@
       "#2785",
       "#2789",
       "#2807",
-      "#2810",
-      "#2813"
+      "#2810"
     ],
     "DRAFT_E_DECISAO_HUMANA": [
       "#2744"
     ],
+    "AGUARDANDO_GATE_FINAL": [
+      "#2739",
+      "#2813",
+      "#2822",
+      "#2825"
+    ],
     "BLOQUEADA_CONFLITO": [
       "#2747",
       "#2816"
-    ],
-    "BLOQUEADA_PROVAVEL_CONFLITO": [
-      "#2739"
     ]
   },
   "mergeados_nesta_sessao": [
