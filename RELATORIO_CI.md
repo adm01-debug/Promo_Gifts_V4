@@ -174,3 +174,36 @@ RELATORIO_CI.md
 - No commit anterior à sincronização (`400d4d49`), `npm run build:verify` passou (typecheck, lint com 0 regressões, guards e build) e `npm test` passou: 1.247 arquivos, 25.871 testes; 1.135 skipped e 24 TODO. O merge recém-resolvido ainda precisa repetir build/test antes do push.
 - O PR #2743 segue bloqueado por Copilot Reviewer (quota HTTP 402/firewall) e Preview Vercel sem logs diagnósticos. PR #2745 recebeu um segundo avanço da `main`; seu novo merge também está em validação antes de ser publicado. PR #2747 mantém QuickView e E2E autenticados não verdes; Gate 5 read-only passou na tentativa 2.
 - Nenhuma alteração de aplicação, API, schema, migration, DDL, repair, deploy de Edge Function ou dado operacional foi feita. Não mesclar PR com checks obrigatórios pendentes/falhos.
+
+## 10. Inventário pós-release 1.1.0 e resultado final desta sessão — 2026-10-30
+
+### Baseline e validação local
+
+| Validação | Resultado | Evidência |
+|---|---|---|
+| `npm ci` | ✅ EXIT=0 | Baseline registrado na seção 1; lockfile permaneceu sincronizado. |
+| `npm run build:verify` | ✅ EXIT=0 | Typecheck, lint, guards Supabase e build Vite passaram; ESLint em 0 erros/avisos e Δ=0. Repetido nos branches Graphify, Ratchet e foco acessível. |
+| `npm test` — branch Graphify | ✅ 25.871 testes | 1.247 arquivos passaram; 1.135 skipped e 24 TODO. Os dois testes adicionais pertencem às mudanças Graphify deste branch. |
+| `npm test` — base `main`/Ratchet e correção a11y | ✅ 25.869 testes | 1.247 arquivos passaram; 1.135 skipped e 24 TODO; sem teste apagado ou relaxado nesta correção. |
+| `npm run check:outline-none` | ✅ 0 regressões | A violação `AdImageResult.tsx:188` foi reproduzida e corrigida no PR [#2758](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2758). |
+| `actionlint .github/workflows/ratchet-weekly.yml` | ✅ EXIT=0 | Workflow Ratchet corrigido e validado no branch do PR [#2745](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2745). |
+| `node scripts/check-migration-path-references.mjs` | ✅ EXIT=0 | Nenhuma referência quebrada nova; 481 entradas legadas permanecem na baseline. |
+
+### Último run de cada workflow na `main`
+
+Snapshot às 00:26 UTC, usando as 400 execuções mais recentes, agrupadas em 38 workflows e verificando apenas o run mais recente por workflow:
+
+- 10 `success`, 2 `skipped`, 19 `queued`/`pending`, 5 `in_progress`, 2 `failure`.
+- Falhas ativas: Uptime Monitor [#40978818572](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40978818572) e Running Copilot Code Review [#40975434366](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40975434366). Causas e próximos passos estão em `PENDENCIAS.md` §P24.
+- Deploy Edge Functions [#40976801625](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40976801625) continua `pending`, sem jobs; portanto, a correção de `health-check` mesclada pelo PR #2753 ainda não foi comprovadamente publicada.
+- As falhas anteriores de Magazine Header, Personalization e CI Security têm runs mais recentes `queued`/`in_progress` no SHA `3b7dc731`; não são declaradas resolvidas antes do `success`.
+
+Os 10 workflows verdes deste snapshot são Static Health Checks, Lovable Autoheal, Policies Baseline, No Prod Leak in Dev/Test Config, Workflow Lint, Security Scan, Lint untypedFrom, TS Unused Locals Ratchet, E2E — PDF Dialog e Python Package using Conda. Os outros 26 workflows permanecem em fila, execução, falha ou skip conforme o estado acima.
+
+### Pull requests e decisão de release
+
+- PR [#2743](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2743): aberto; checks externos e autenticação E2E ainda não concluídos; sem merge.
+- PR [#2745](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2745): correção SIGPIPE sincronizada com `279f1753`, `build:verify`, suíte e actionlint locais passaram; CI remoto ainda pendente; sem merge.
+- PR [#2758](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2758): correção de acessibilidade, 1 arquivo; build/lint/typecheck/testes locais passaram; não mesclar nesta sessão porque a alteração visual de foco exige revisão/release do aplicativo.
+
+Nenhuma migration, DDL, escrita no Supabase ou deploy Edge foi executado. Não houve desativação de workflow, enfraquecimento de testes, `continue-on-error`, `|| true`, force push ou alteração direta da `main`.
