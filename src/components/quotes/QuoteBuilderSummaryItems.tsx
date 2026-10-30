@@ -5,10 +5,10 @@ import {
   DndContext,
   closestCenter,
   DragOverlay,
-  useSensors,
   type DragEndEvent,
   type DragStartEvent,
 } from '@dnd-kit/core';
+import type { useSensors } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import {
   ChevronDown,
