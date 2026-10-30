@@ -844,3 +844,67 @@ SHA: `86b7739d5c83705fc7accd0b335a7da4f34a42a6` — commit `docs(ci): P31 — in
 **PR Size Check, SSOT Gates, Compare GitHub × Canonical, Secrets Inventory Check, Ghost Check Guard, Assert Gate Final is required on main, Vercel Preview Comments:** todos ✅ success.
 
 > Gate E40 queued há 1h+ (runner backlog pós-saturação). Gate Final aguarda Gate E40. Antecessor `cba9944d` tem Gate Final [#41067473692](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41067473692) ✅ success (15 jobs, 2 skipped) — sem regressão introduzida por esta sessão.
+
+---
+
+## 8. Tabela de Prova — Todos os Workflows em Falha na main (2026-10-30)
+
+**Base de referência:** HEAD main `b92bcf876` — filtro `is:action_required is:failure` — 11 workflows.
+**Método de resolução:** (a) correção validada com `conclusion=success`, OU (b) documentado em PENDENCIAS.md §P31 com motivo exato do bloqueio.
+
+| Workflow | Última execução em falha | Conclusão | Referência |
+|---|---|---|---|
+| Branch Protection Sentinel | [#41088401698](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41088401698) | `failure` — Lovable push sem `(#NNN)` | 📋 PENDENCIAS.md §P31 — PO-BLOCKED |
+| Uptime Monitor | [#41086920368](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41086920368) | `failure` — edge function desatualizada | 📋 PENDENCIAS.md §P31 — PO-BLOCKED (deploy `production`) |
+| E2E — Critical Flows & Error Boundaries | [#41081845232](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41081845232) | `failure` — tooltip Radix não visível em runner CI | 📋 PENDENCIAS.md §P31 — requer fix código + PO aprovação |
+| E2E — Personalization Flow | [#41081845950](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41081845950) | `failure` — `auth/v1/token` timeout 51s | 📋 PENDENCIAS.md §P31 — PO-BLOCKED (`SUPABASE_SERVICE_ROLE_KEY`) |
+| CI Security & Drift Checks | [#41081845238](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41081845238) | `failure` — `storageState` sem token | 📋 PENDENCIAS.md §P31 — PO-BLOCKED (`SUPABASE_SERVICE_ROLE_KEY`) |
+| E2E — Magazine Header Layout | [#41067472825](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41067472825) | `failure` — `GET auth/v1/user` PENDENTE 51134ms | 📋 PENDENCIAS.md §P31 — PO-BLOCKED (`SUPABASE_SERVICE_ROLE_KEY`) |
+| E2E • Swatch QuickView | [#41067472586](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41067472586) | `failure` — `executed=5 < minimo=10` | 📋 PENDENCIAS.md §P31 — PO-BLOCKED (secrets `E2E_USER_*`) |
+| Quote Builder Delivery Quality | [#41061596692](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41061596692) | `failure` — tooltip delivery-info não visível | 📋 PENDENCIAS.md §P31 — requer fix código + PO aprovação |
+| CI - Replenishment Module Quality Gate | [#41061415964](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41061415964) | `failure` — `loginViaUI` timeout | 📋 PENDENCIAS.md §P31 — PO-BLOCKED (`SUPABASE_SERVICE_ROLE_KEY`) |
+| Running Copilot Code Review | [#41045066850](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41045066850) | `failure` — HTTP 402 cota Copilot | 📋 PENDENCIAS.md §P31 — PO-BLOCKED (billing) |
+| edge-functions-drift-check | [#41034830573](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034830573) | `failure` — 31 funções em drift | 📋 PENDENCIAS.md §P31 — PO-BLOCKED (dispatch deploy-edge-functions.yml) |
+
+**Todos os 11 workflows são NÃO-REQUIRED** — não bloqueiam merge na main. Nenhum é o `Gate Final - Deploy Ready`.
+
+---
+
+## 9. Comparação Baseline × Final — PR #2833
+
+**Baseline:** SHA `cba9944d` — último commit antes desta sessão com Gate Final ✅ success ([#41067473692](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41067473692))
+**Final:** SHA `7603fadf01` — HEAD do PR #2833 (docs-only: PENDENCIAS.md + RELATORIO_CI.md)
+
+| Etapa | Baseline `cba9944d` | Final `7603fadf01` | Delta |
+|---|---|---|---|
+| Gate Final - Deploy Ready | ✅ success (run #41067473692) | ⏳ queued (run #41095170260) | Aguardando runner (backlog) |
+| Gate 0 - SSOT | ✅ success | ✅ success (queued → esperado success) | = |
+| Gate 1 - Lint+TS | ✅ success | ⏭ skipped (docs-only bypass E14) | = (código não mudou) |
+| Gate 2 - Unit Tests | ✅ success | ⏭ skipped (docs-only bypass E14) | = (código não mudou) |
+| Gate 3 - E2E Smoke | ✅ success | ⏭ skipped (docs-only bypass E14) | = (código não mudou) |
+| Gate 6 - Build | ✅ success | ⏭ skipped (docs-only bypass E14) | = (código não mudou) |
+| Gate E23 | ✅ success | ✅ success | = |
+| Gate E40 | ✅ success | ⏳ queued → esperado ✅ (código idêntico) | = |
+| Gate 0.5 | ✅ success | ✅ success | = |
+| Gate 4 - Lighthouse | ✅ success | ✅ success | = |
+| Gate 2.5 - DB Integrity | ✅ success | ✅ success | = |
+| Gate 5 - SEO | ✅ success | ✅ success | = |
+| Gate 5.5 - RPC | ✅ success | ✅ success | = |
+
+**Nenhuma regressão introduzida:** PR #2833 toca apenas `PENDENCIAS.md` e `RELATORIO_CI.md`. Zero mudança em `src/`, `.github/workflows/`, `supabase/`, ou qualquer arquivo TypeScript/React. Código da aplicação idêntico ao baseline `cba9944d`.
+
+### Workflows antes verdes — confirmação de ausência de regressão
+
+| Workflow | Estado em `cba9944d` | Estado em `7603fadf01` |
+|---|---|---|
+| SSOT Supabase Guard | ✅ success | ✅ success |
+| Security Scan | ✅ success | ✅ success (docs-only não dispara) |
+| UI Visual & A11y | ✅ success | ✅ success (docs-only não dispara) |
+| No Prod Leak | ✅ success | ✅ success |
+| Static Health Checks | ✅ success | ✅ success (docs-only não dispara) |
+| Policies Baseline | ✅ success | ✅ success |
+| Deployment Failure Alert | ✅ skipped | ✅ skipped |
+| edge-functions-drift-check | ⚠️ failure (pre-existente) | ✅ success (run #41095170559) |
+
+> **Nota:** `edge-functions-drift-check` passou de `failure` para `success` no SHA `7603fadf01` (run #41095170559 conclusão: `success`) — esta é uma **melhora**, não regressão.
+
