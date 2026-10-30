@@ -181,7 +181,7 @@ Evidência adicional: `quality-gate` foi ✅ SUCCESS em `37ea10a3` (5º merge, S
 
 - [x] Total PRs abertas analisadas: 23 (via `refs/pull/*` na data da análise)
 - [x] Total com delivery: 24
-- [x] Dosiês criados: `analise-prs/dossies/PR-{n}.md` — um por PR
+- [x] Dossiês criados: `analise-prs/dossies/PR-{n}.md` — um por PR
 - [x] prs.json: 23 entradas com veredito
 - [x] prs.csv: 23 linhas
 - [x] Merges: 8 PRs squash-mergeadas
