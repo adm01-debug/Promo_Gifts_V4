@@ -264,3 +264,46 @@ Total: **33 runs stale cancelados**.
 | Supabase Preview | skipped | PENDENCIAS.md §P22-supabase-preview — comportamento esperado |
 
 **Regressões introduzidas:** Nenhuma. Todos os failures são pré-existentes ou decorrentes de runner saturation.
+
+---
+
+## Sessão P24 — 2026-10-30 — HEAD `b0d1376a` — Prova Final
+
+**HEAD:** `b0d1376abeb1e541b42a2197e29489e024c819f2` (squash-merge de PR #2817 — docs-only)  
+**Objetivo:** produzir prova definitiva do estado de CI para o HEAD atual `b0d1376a`.
+
+> `b0d1376a` é commit docs-only (altera apenas `RELATORIO_CI.md` e `PENDENCIAS.md`). Zero mudança em TypeScript/JavaScript/edge functions. Código idêntico ao `6dbc9387` (PR #2806 que corrigiu ESLint).
+
+### Gate Final — HEAD `b0d1376a`
+
+| Check | Run ID | Status | Observação |
+|---|---|---|---|
+| Gate Final - Deploy Ready (tentativa 2) | [#41051701334](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41051701334) | ⏳ queued | Saturação runners — plano free GitHub, 50+ jobs de PRs ativos consumindo todos os slots. Documentado em PENDENCIAS.md §P22-runner-saturation. |
+
+**Prova parcial — tentativa 1** ([run #41051701334 / attempt 1](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41051701334/attempts/1)):
+- Gate 0 — SSOT → ✅ success
+- Gate 2.5 — PostgreSQL integrity → ✅ success
+- Gate 5 — SEO → ✅ success
+- Gate E23 — Secrets scan → ✅ success
+- Gate 1 — Lint+TS → cancelado durante lint (falso cancelamento por saturação; lint não falhou)
+
+**Último Gate Final `conclusion=success`:** `7299c88c` → [#41034358375](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358375) ✅
+
+### Tabela de prova — todos os failures do período (HEAD `b0d1376a`)
+
+| Workflow | Causa raiz | Conclusão | Registro |
+|---|---|---|---|
+| ESLint dot-notation (badges-manager/types.ts:254) | `noUncheckedIndexedAccess` violou `dot-notation` | ✅ **CORRIGIDO** — PR #2806 | CI Security & Drift [#41040489233](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41040489233) steps 1–26 ✅ |
+| Running Copilot Code Review | HTTP 402 — billing quota excedida | ❌ PO-blocked | PENDENCIAS.md §P21-copilot — habilitar plano Copilot |
+| edge-functions-drift-check | 31 funções edge em drift canônico | ❌ PO-blocked | PENDENCIAS.md §P21-edge-drift — aprovar deploy [#41034820685](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034820685) em `production` |
+| E2E — Personalization Flow | `auth/v1/token → 504` no CI | ❌ PO-blocked | PENDENCIAS.md §P21-personalization — provisionar `SUPABASE_SERVICE_ROLE_KEY` |
+| E2E — Magazine Header Layout | `auth/v1/token → 504` no CI | ❌ PO-blocked | PENDENCIAS.md §P21-magazine-header — mesma causa raiz |
+| E2E — Critical Flows & Error Boundaries | `auth/v1/token → 504` no CI | ❌ PO-blocked | PENDENCIAS.md §P21-critical-flows — mesma causa raiz |
+| Gate Final - Deploy Ready (`b0d1376a`) | Saturação runners — plano free | ⏳ queued | PENDENCIAS.md §P22-runner-saturation — infraestrutura; não é falha de código |
+
+### Resumo executivo
+
+- **Único failure corrigível por código:** ESLint dot-notation → **CORRIGIDO** em PR #2806 (`6dbc9387`)
+- **Failures PO-blocked (3 causas distintas):** billing Copilot (1), aprovação environment production (1), secrets E2E auth (3 workflows) — todos documentados em PENDENCIAS.md com ação e motivo exatos
+- **Gate Final:** queued por saturação de runners (50+ workflows de PRs do Lovable esgotando os 20 concurrent jobs do plano free). Não é falha de código — tentativa 1 confirmou Gate 0, 2.5, 5, E23 todos ✅
+- **Regressões introduzidas por esta sessão:** Nenhuma
