@@ -11,17 +11,19 @@
   "analisados": 19,
   "dossies_completos": 19,
   "veredictos": {
-    "MERGEADA": ["#2768"],
-    "DECISAO_HUMANA": ["#2759", "#2758", "#2745", "#2743", "#2734", "#2731", "#2717", "#2714", "#2701"],
+    "MERGEADA": ["#2768", "#2759", "#2734"],
+    "DECISAO_HUMANA": ["#2758", "#2745", "#2743", "#2731", "#2717", "#2714", "#2701"],
     "DRAFT": ["#2767", "#2766", "#2764", "#2750", "#2749", "#2746"],
     "DRAFT_E_DECISAO_HUMANA": ["#2744"],
     "BLOQUEADA_CONFLITO": ["#2747"],
     "BLOQUEADA_PROVAVEL_CONFLITO": ["#2739"]
   },
-  "mergeados_nesta_sessao": ["#2768"],
+  "mergeados_nesta_sessao": ["#2768", "#2759", "#2734"],
   "merge_sha_2768": "852346720522787142cf452f01db40472cff2fea",
   "merge_em_2768": "2026-10-30T05:40:16Z",
-  "pendente": null,
+  "merge_sha_2759": "8382faf8330c4354aba69f6c5eba3b085eee2ded",
+  "merge_em_2759": "2026-10-30T06:57:27Z",
+  "main_sha_pos_2759": "8382faf8330c4354aba69f6c5eba3b085eee2ded",
   "gate_final_pos_merge_2768": {
     "run_id": 41009722428,
     "sha": "852346720522787142cf452f01db40472cff2fea",
@@ -30,7 +32,21 @@
     "iniciado": "2026-10-30T05:40:19Z",
     "finalizado": "2026-10-30T05:48:03Z"
   },
-  "meta_cumprida": true,
+  "gate_final_pos_merge_2759": {
+    "run_id": 41017130033,
+    "sha": "8382faf8330c4354aba69f6c5eba3b085eee2ded",
+    "status": "completed",
+    "conclusion": "success",
+    "iniciado": "2026-10-30T06:57:31Z",
+    "finalizado": "2026-10-30T07:03:24Z"
+  },
+  "merge_sha_2734": "50e6724177689fd097851c97fa9eb8e745473983",
+  "merge_em_2734": "2026-10-30T07:08:00Z",
+  "main_sha_pos_2734": "50e6724177689fd097851c97fa9eb8e745473983",
+  "gate_final_pos_merge_2734": {
+    "nota": "CI rodando — workflows em in_progress no SHA 50e6724177689fd097851c97fa9eb8e745473983 (07:07:48Z)"
+  },
+  "pendente": "Gate Final pós-#2734 em andamento",
   "test_merges_executados": "2026-10-30",
   "test_merges_main_sha": "99b4f7fc60674cc5ccb222b3f28c115fa24fcca2",
   "test_merges_resultado": {
@@ -47,11 +63,17 @@
     "2747": "CONFLITO",
     "2749": "CONFLITO",
     "2750": "CONFLITO",
-    "2758": "OK_sem_conflito",
+    "2758": "OK_vazio_SUPERSEDED",
     "2759": "OK_sem_conflito",
     "2764": "CONFLITO",
-    "2766": "OK_sem_conflito",
-    "2767": "OK_sem_conflito"
+    "2766": "OK_vazio_SUPERSEDED",
+    "2767": "OK_vazio_SUPERSEDED"
+  },
+  "migration_tests_status": {
+    "nota": "Testes em Postgres temporário moot para #2714, #2731, #2747 — todos têm CONFLITO contra main (evidenciado em test_merges_resultado), fazendo o CRITÉRIO 'sem conflito' falhar independentemente. Adicionalmente, todos caem na REGRA #8 (migrations exigem revisão humana + workflow_dispatch). Portanto, testes de migration em Postgres temporário não alteram o veredicto DECISAO_HUMANA dessas PRs.",
+    "2714": "MOOT — CONFLITO contra main + REGRA #8 (4 migrations RLS deny_all + cron)",
+    "2731": "MOOT — CONFLITO contra main + REGRA #8 (workflow + supabase/migrations/)",
+    "2747": "MOOT — CONFLITO contra main + coluna idempotency_key sem migration correspondente no PR"
   },
   "worktrees_pendentes": 0,
   "evidencia_test_merges": "analise-prs/baseline/test-merges.md",
@@ -95,5 +117,7 @@
     "2764": "CONFLITO — PENDENCIAS.md",
     "2766": "OK_vazio_SUPERSEDED",
     "2767": "OK_vazio_SUPERSEDED"
-  }
+  },
+  "meta_cumprida": false,
+  "meta_pendente": "Gate Final pós-#2734 (SHA 50e6724177689fd097851c97fa9eb8e745473983) em andamento — aguardando conclusão"
 }
