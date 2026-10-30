@@ -1,7 +1,8 @@
 # RELATORIO_CI.md — Auditoria de Workflows CI/CD
 
-**Gerado:** 2026-10-29 · **Atualizado:** 2026-10-30T08:02 UTC  
-**HEAD da main:** `c09402816aa882fc8e9577d8a2352a663e515dc9` (2026-10-30)  
+**Gerado:** 2026-10-29 · **Atualizado:** 2026-10-30T09:43 UTC  
+**HEAD da main:** `7299c88c21d1c67ac65f5beafc18bdf350ced277` (release 1.3.2, 2026-10-30)  
+**HEAD anterior:** `c09402816` (baseline local)  
 **Sessão:** https://claude.ai/code/session_01RfQzo7S3K6o49UBUDoCtUe
 
 ---
@@ -17,6 +18,52 @@
 | `npx vitest run` | ✅ 3 falhas pré-existentes | 3 failed \| 25880 passed \| 1135 skipped — exit 0; 1121s; mesmas 3 falhas de SHAs anteriores |
 
 > **Sem regressão introduzida:** tsc ✅ + build ✅ confirmam zero erro TypeScript ou de bundling. vitest e lint não executáveis localmente por limitação de recurso do container — CI remoto é a fonte de verdade.
+
+---
+
+## 3. Quadro CI — HEAD `7299c88c` (2026-10-30T09:43 UTC)
+
+**Gate Final - Deploy Ready:** [#41034358375](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358375) — ✅ **SUCCESS** (required check)
+
+### Tabela de prova — HEAD `7299c88c`
+
+| Workflow | Run ID | Conclusão | Registro |
+|---|---|---|---|
+| Gate Final - Deploy Ready | [#41034358375](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358375) | ✅ success | — |
+| edge-functions-drift-check | [#41034830573](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034830573) | ❌ failure | PENDENCIAS.md §P21-edge-drift — deploy dispatched #41034820685 |
+| E2E — Personalization Flow | [#41034358338](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358338) | ❌ failure | PENDENCIAS.md §P21-personalization |
+| Running Copilot Code Review | [#41031412599](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41031412599) | ❌ failure | PENDENCIAS.md §P21-copilot — HTTP 402, ação PO |
+| Quote Builder Delivery Quality | [#41034358444](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358444) | ✅ success | — (era failure em `b2ba9f9e`) |
+| Branch Protection Sentinel | [#41034358683](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358683) | ✅ success | — |
+| Supabase Linter Gate | [#41034358651](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358651) | ✅ success | — |
+| CodeQL | [#41034358439](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358439) | ✅ success | — |
+| Static Health Checks | [#41034358266](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358266) | ✅ success | — |
+| Security Scan | [#41034358247](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358247) | ✅ success | — |
+| Workflow Lint | [#41034358191](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358191) | ✅ success | — |
+| No Prod Leak in Dev/Test Config | [#41034358385](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358385) | ✅ success | — |
+| Gitleaks — Full History Audit | [#41034358335](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358335) | ✅ success | — |
+| SSOT Supabase Guard | [#41034358200](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358200) | ✅ success | — |
+| Policies Baseline | [#41034358387](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358387) | ✅ success | — |
+| db-schema-drift-check | [#41034399085](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034399085) | ✅ success | — |
+| schema-snapshot-export | [#41034358581](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358581) | ✅ success | — |
+| Select Columns vs Types | [#41034358230](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358230) | ✅ success | — |
+| Required Checks Guard | [#41034358228](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358228) | ✅ success | — |
+| Magazine Unit Tests | [#41034358339](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358339) | ✅ success | — |
+| UI · Visual & A11y | [#41034358631](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358631) | ✅ success | — |
+| Release Please | [#41034359264](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034359264) | ✅ success | — |
+| Lovable Edit Tracker | [#41034358435](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358435) | ✅ success | — |
+| Lovable Autoheal | [#41034358406](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358406) | ✅ success | — |
+| E2E — Magazine Header Layout | [#41034358625](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358625) | ⏳ in_progress | — |
+| E2E • Swatch QuickView (Lista + Tabela) | [#41034358495](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358495) | ⏳ in_progress | — |
+| E2E — Critical Flows & Error Boundaries | [#41034358180](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358180) | ⏳ in_progress | — |
+| E2E (Playwright) | [#41034358354](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358354) | ⏳ in_progress | — |
+| Visual Baseline Tests — Nightly | [#41034358175](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358175) | ⏳ in_progress | — |
+| Edge Integration Tests — All Functions | [#41034358210](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358210) | ⏳ in_progress | — |
+| CI - Replenishment Module Quality Gate | [#41034358297](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358297) | ⏳ in_progress | — |
+| CI Security & Drift Checks | [#41034358666](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358666) | ⏳ in_progress | — |
+| Deploy Edge Functions | [#41034820685](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034820685) | ⏳ pending | dispatch manual para corrigir edge-drift |
+
+> Snapshot 2026-10-30T09:43 UTC — workflows `in_progress` serão atualizados no próximo ciclo (wakeup 09:59 UTC).
 
 ---
 
