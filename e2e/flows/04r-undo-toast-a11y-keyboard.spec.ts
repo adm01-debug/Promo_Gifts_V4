@@ -147,44 +147,50 @@ test.describe("Toast Desfazer — acessibilidade + teclado", () => {
     await expect(page.locator(UNDO_TOAST)).toHaveCount(0, { timeout: 3_000 });
   });
 
-  test("E. clique após expiração (500ms) NÃO chama onUndo e não gera toasts duplicados", async ({
+  test("E. clique após expiração NÃO chama onUndo e não gera toasts duplicados", async ({
     page,
   }) => {
-    // Duration curta para expirar rápido — o wrapper dispara dismiss no
-    // onTimeout. Como estamos testando o botão em si (guarda `undone` +
-    // disabled), tentamos click FORÇADO enquanto ainda houver resíduo.
-    await showUndoToastInBrowser(page, 500);
-    await page.waitForTimeout(700);
+    // O componente aplica um mínimo de 1.000 ms a qualquer duração recebida.
+    // Observamos a transição real para expirado e tentamos o click no mesmo
+    // ciclo do DOM, antes do efeito passivo dispensar o toast. Assim o teste
+    // não clica aos 700 ms em um botão que ainda está ativo.
+    await showUndoToastInBrowser(page, 1000);
+    const expiredClickAttempted = await page.evaluate(
+      (sel) =>
+        new Promise<boolean>((resolve) => {
+          const observer = new MutationObserver(() => {
+            const button = document.querySelector<HTMLButtonElement>(sel);
+            if (button?.getAttribute("data-expired") !== "true") return;
 
-    // Aguarda expiração (state remainingMs <= 0). O toast é dismissed logo
-    // em seguida — pode não haver janela para clique normal. Tentamos
-    // vias diretas via DOM caso o toast já tenha sumido.
+            observer.disconnect();
+            // `dispatchEvent` simula um evento atrasado sobre eventual DOM
+            // residual; o estado expirado deve impedir que `onUndo` seja chamado.
+            button.dispatchEvent(
+              new MouseEvent("click", { bubbles: true, cancelable: true }),
+            );
+            resolve(true);
+          });
 
-    // Tentativa 1: click normal se o botão existir
-    const btnCount = await page.locator(UNDO_BTN).count();
-    if (btnCount > 0) {
-      await page
-        .locator(UNDO_BTN)
-        .click({ force: true, timeout: 1_000 })
-        .catch(() => {
-          /* disabled → click rejeitado, esperado */
-        });
-    }
-
-    // Tentativa 2: dispatch DOM em qualquer resíduo
-    await page.evaluate((sel) => {
-      document.querySelectorAll(sel).forEach((el) => {
-        try {
-          (el as HTMLButtonElement).click();
-        } catch {
-          /* ok */
-        }
-      });
-    }, UNDO_BTN);
+          observer.observe(document.body, {
+            subtree: true,
+            attributes: true,
+            attributeFilter: ["data-expired"],
+          });
+          window.setTimeout(() => {
+            observer.disconnect();
+            resolve(false);
+          }, 3_000);
+        }),
+      UNDO_BTN,
+    );
+    expect(expiredClickAttempted).toBe(true);
 
     // onUndo NUNCA foi chamado
     const count = await getUndoCount(page);
     expect(count).toBe(0);
+
+    // O toast expirado é removido pelo timeout, sem gerar confirmação de undo.
+    await expect(page.locator(UNDO_TOAST)).toHaveCount(0, { timeout: 3_000 });
 
     // Nenhum toast "Ação desfeita!" pode ter aparecido (fluxo de sucesso
     // do wrapper). Reassert estável por 500ms.
