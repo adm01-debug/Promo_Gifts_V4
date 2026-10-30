@@ -249,3 +249,60 @@ Evidência adicional: `quality-gate` foi ✅ SUCCESS em `37ea10a3` (5º merge, S
 ---
 
 *Gerado por Claude Code — sessão https://claude.ai/code/session_01RfQzo8Ean3zudG2sEN79b6*
+
+---
+
+## Sessão 2026-10-30 (tarde) — session_014nTibSuSPcPvDsPZWiwQbH
+
+**PRs abertas analisadas: 19**  
+**Main HEAD início:** `9541666bf62883b06117b03cae0368b2c7d55314` (Gate Final ✅ success)  
+**Branch de trabalho:** `claude/analise-merge-prs-abertas-shh8ez`
+
+### Contagem por veredito
+
+| Veredito | Qty | PRs |
+|---|---|---|
+| MERGEAR | 4 | #2845, #2844, #2836, #2810 |
+| DECISAO_HUMANA | 1 | #2839 |
+| JA_IMPLEMENTADA | 1 | #2758 |
+| CI_FALHOU | 2 | #2822, #2739 |
+| NAO_MERGEAR | 11 | #2831, #2827, #2826, #2825, #2824, #2823, #2821, #2799, #2744, #2731, #2701 |
+| **Total** | **19** | ✅ |
+
+### Merges executados
+
+| PR | Título | SHA merge | Gate Final pós-merge |
+|---|---|---|---|
+| #2844 | docs: RELATORIO_CI §13 + PENDENCIAS §P35 | `a24ee07be166d35dd2d0e8c20f7547290e0d4348` | in_progress (docs-only bypass ✅, runner queue) |
+| #2845 | docs(auditoria): revalida portão inicial do P200 | `637fe57eee3e00d012da3c1da843b088c2e695a7` | aguardando |
+
+### DECISAO_HUMANA — PRs para revisão do PO
+
+| PR | Razão |
+|---|---|
+| #2839 | Modifica `.github/workflows/deploy-gates.yml` + `CLAUDE.md` (REGRA #8 + arquivo protegido) |
+
+### CI_FALHOU — Ação requerida
+
+| PR | Falha |
+|---|---|
+| #2822 | types.ts regeneration — CI gates falharam |
+| #2739 | mockup refactor — CI falhado + conflitos |
+
+### NAO_MERGEAR — Razões principais
+
+| PR | Razão |
+|---|---|
+| #2831 | DRAFT |
+| #2827 | Body "Não mesclar nesta etapa" |
+| #2826 | REGRA#8 — `.github/workflows/branch-protection-sentinel.yml` |
+| #2825 | CI_FALHOU gate 1.3 migration baseline |
+| #2824 | REGRA#8 — `.github/workflows/replenishment-quality.yml` |
+| #2823 | REGRA#8 — `supabase/migrations/` DDL |
+| #2821 | REGRA#8 — `.github/workflows/uptime-monitor.yml` |
+| #2799 | Bot PR aguardando CI |
+| #2744 | DRAFT |
+| #2731 | REGRA#8 duplo + histórico desconectado de main |
+| #2701 | REGRA#8 + histórico desconectado de main + DRAFT |
+
+*Gerado por Claude Code — sessão session_014nTibSuSPcPvDsPZWiwQbH — 2026-10-30*
