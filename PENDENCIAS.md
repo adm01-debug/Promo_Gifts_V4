@@ -806,3 +806,30 @@ Sem execução na `main` (21): Delete Orphan Edge Functions; Copilot code review
 Os demais estados: CodeQL, Quote Builder Delivery Quality e E2E — Personalization Flow estavam `in_progress`; Deploy Gates, SSOT Supabase Guard e Release Please estavam `queued`; Deploy Edge Functions, E2E (Playwright), E2E — Critical Flows & Error Boundaries, E2E • Swatch QuickView, SECURITY DEFINER ACL — Multi-Env e E2E · restore_seller_cart RPC estavam `pending`; cinco execuções estavam `cancelled` e duas `skipped`. Reconsultar antes de afirmar estado final.
 
 **Conclusão P28:** o inventário identifica as falhas e registra explicitamente lacunas de logs/artifacts e dependências externas. Workflows históricos não foram declarados corrigidos sem um run verde. Nenhum workflow foi desativado, nenhum teste/asserção foi removido, e nenhuma escrita no Supabase, migration, DDL ou deploy foi feita.
+
+## P29 — delta do inventário e correção do Gate 1.3 — 2026-10-30
+
+**Snapshot:** 01:53 UTC; reconsulta individual das 119 definições ativas na `main`, com o mesmo critério P28; HEAD `a9a079fd92a3191654e82db748199fd1777b5af9`.
+
+| Estado | Quantidade |
+|---|---:|
+| `success` | 60 |
+| `failure` | 26 |
+| `cancelled` | 5 |
+| `skipped` | 2 |
+| `pending` | 4 |
+| `in_progress` | 1 |
+| Sem execução na `main` | 21 |
+
+Em relação ao P28, quatro workflows terminaram verdes: CodeQL, E2E — Personalization Flow, SSOT Supabase Guard e Release Please. Deploy Gates, Quote Builder Delivery Quality e E2E — Critical Flows terminaram falhos; o run do Uptime Monitor foi atualizado para um run mais recente. As outras falhas permanecem descritas na tabela P28.
+
+| Workflow | Último run na `main` | Causa/encaminhamento atualizado |
+|---|---|---|
+| Deploy Gates | [#40985564449](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40985564449) | Gate 1.3 reproduzido localmente: uma referência em `docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json` apontava para migration que não existe mais em `supabase/migrations/`. Histórico Git confirma que o SQL foi arquivado em `supabase/sql-legacy/` no commit [#2284 / `46275a9b2`](https://github.com/adm01-debug/Promo_Gifts_V4/commit/46275a9b2). O manifesto é um registro histórico e preserva o path original. Atualizei a baseline pelo comando oficial, removendo sete referências que deixaram de existir após reconciliação documental e registrando esta referência arquivada; baseline passou de 487 para 481 entradas. `node scripts/check-migration-path-references.mjs` agora passa localmente. A mudança aguarda CI do PR; nenhum SQL foi editado/executado. |
+| Quote Builder Delivery Quality | [#40985564312](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40985564312) | Step `E2E & Visual Regression` falhou; artifact `delivery-quality-report` [ID 12946624713](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40985564312/artifacts/12946624713) foi publicado (~1,04 GB). O tail retido mostra upload, não a assertion que falhou. Próximo passo: abrir o relatório Playwright e identificar o spec/erro antes de alterar código ou baseline. |
+| E2E — Critical Flows & Error Boundaries | [#40985564232](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40985564232) | Falharam `Run Sidebar Tooltips E2E — desktop (chromium-authed)` e a checagem derivada `Check min tests executed`; artifact `e2e-full-flows-report` [ID 12947149920](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40985564232/artifacts/12947149920) contém 42 arquivos. A causa/assertion do primeiro spec ainda precisa ser lida no artifact; não reduzir o mínimo de testes. |
+| Uptime Monitor | [#40986729163](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40986729163) | Continua falhando no step `Probe site + edge function` (curl 22, issue deduplicada #2752). Deploy [#40976801625](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40976801625) segue `pending`, sem jobs e sem aprovação pendente na API. Responsável deve inspecionar environment/run; não duplicar deploy nem alterar o canônico. |
+
+Os outros estados não-falhos no snapshot: E2E (Playwright) `in_progress`; Deploy Edge Functions, E2E • Swatch QuickView, SECURITY DEFINER ACL — Multi-Env e E2E · restore_seller_cart RPC `pending`; cinco `cancelled` e dois `skipped`. Não declarar essas execuções verdes até conclusão `success`.
+
+**Validação desta correção:** a reprodução local falhou antes da atualização da baseline e passou depois. A baseline mantém exatamente as referências quebradas realmente presentes no checkout (481); a entrada nova tem trilha de Git confirmando o arquivamento do arquivo. A execução completa build/typecheck/lint/testes pós-commit ainda será refeita após o commit desta atualização. Nenhuma migration, DDL, escrita no Supabase, deploy, force push ou alteração da `main` foi feita.
