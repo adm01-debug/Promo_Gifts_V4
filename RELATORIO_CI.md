@@ -802,3 +802,45 @@ Os 3 workflows em falha acima são **não-required** (não bloqueiam merge): Upt
 **Confirmação de workflows que continuam verdes** (sem regressão pelo PR #2833):
 - Gate E23 ✅, Gate E40 ✅, Gate 0.5 ✅, Gate 4 ✅ — todos success na SHA do PR
 - Nenhum workflow verde em `cba9944d`/`b92bcf876e` ficou vermelho nesta SHA
+
+---
+
+## 7. Baseline Completo — HEAD `86b7739d5` (PR #2833, 2026-10-30T19:00 UTC)
+
+SHA: `86b7739d5c83705fc7accd0b335a7da4f34a42a6` — commit `docs(ci): P31 — inventário completo 11 workflows em falha + baseline b92bcf876`
+
+| Etapa | Resultado | Evidência |
+|---|---|---|
+| `npm run build` | ✅ EXIT=0 | 12.73s — zero erros (carregado de §P28/§P29 — código idêntico) |
+| `npx tsc --noEmit` | ✅ EXIT=0 | zero erros TypeScript (carregado de §P28/§P29) |
+| `npm run lint:config` | ✅ EXIT=0 | `eslint.config.js` parseia e exporta 11 blocos de config |
+| `npm run lint:check` (NODE_OPTIONS=4GB) | ✅ EXIT=0 | `eslint src --max-warnings=0` — zero warnings, zero erros. Executado em sessão P32 com `NODE_OPTIONS='--max-old-space-size=4096' npm run lint:check` |
+| `npm run lint:baseline` | ❌ OOM | Heap out of memory (>2GB) — limitação pré-existente do container remoto, não regressão |
+| `npx vitest run` | ⚠️ timeout | Container sem VITE_SUPABASE_URL — Gate 2 CI é fonte autoritativa (success em `cba9944d`) |
+
+> **lint:check vs lint:baseline:** `lint:check = npm run lint:config && eslint src --max-warnings=0` completa com NODE_OPTIONS=4GB. `lint:baseline` roda `check-eslint-baseline.mjs` que consome >2GB heap — OOM pré-existente no container remoto (não é regressão introduzida por esta sessão). Gate 1 do CI (GitHub Actions, sem limitação de heap) é fonte autoritativa para lint completo.
+
+### Gates do PR #2833 SHA `86b7739d5` (check_runs — 2026-10-30T20:00Z)
+
+| Gate | Check Run ID | Status | Conclusão |
+|---|---|---|---|
+| Gate 0 - SSOT Supabase | — | completed | ✅ success |
+| Detectar mudanças (docs-only bypass E14) | — | completed | ✅ success |
+| Gate 0.5 - Dependency Audit | — | completed | ✅ success |
+| Gate 0.6 - Dependency Review | — | completed | ✅ success |
+| Gate E23 - Verifica secrets E2E | — | completed | ✅ success |
+| Gate E23 - Secret Scan (gitleaks) | — | completed | ✅ success |
+| Gate 4 - Lighthouse CI | — | completed | ✅ success |
+| Gate 2.5 - PostgreSQL Integrity | — | completed | ✅ success |
+| Gate 5 - SEO Sanity Check | — | completed | ✅ success |
+| Gate 5.5 - RPC restore_seller_cart | — | completed | ✅ success |
+| Gate 1 - Lint + TypeScript | — | completed | ⏭ skipped (docs-only bypass) |
+| Gate 2 - Unit Tests | — | completed | ⏭ skipped (docs-only bypass) |
+| Gate 3 - E2E Smoke | — | completed | ⏭ skipped (docs-only bypass) |
+| Gate 6 - Build | — | completed | ⏭ skipped (docs-only bypass) |
+| Gate E40 - Detect schema file changes | 124198006517 | **queued** | ⏳ aguardando runner (saturação) |
+| **Gate Final - Deploy Ready** | — | **queued** | ⏳ aguarda Gate E40 — run [#41092913234](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41092913234) |
+
+**PR Size Check, SSOT Gates, Compare GitHub × Canonical, Secrets Inventory Check, Ghost Check Guard, Assert Gate Final is required on main, Vercel Preview Comments:** todos ✅ success.
+
+> Gate E40 queued há 1h+ (runner backlog pós-saturação). Gate Final aguarda Gate E40. Antecessor `cba9944d` tem Gate Final [#41067473692](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41067473692) ✅ success (15 jobs, 2 skipped) — sem regressão introduzida por esta sessão.
