@@ -3,8 +3,9 @@ name: Branch Protection Sentinel
 # ============================================================================
 # CHANGELOG (resumo — detalhes em .github/SENTINEL_CHANGELOG.md):
 #
-# v2.1.2 (2026-10-30) — detecta sufixo squash `(#NNN)` ao limitar auditoria ao HEAD de PR
-#   • Compartilha a regra testada em scripts/sentinel-pr-merge-subject.sh
+# v2.1.3 (2026-10-30) — audita todos os commits do first-parent no intervalo do push
+#   • Squash no HEAD não pode ocultar commit anterior sem PR no mesmo push
+#   • A seleção do intervalo está isolada em scripts/sentinel-push-range.sh e testada
 #
 # v2.1.0 (2026-10-15) — E11: check-protection-config verifica regras específicas
 #   • Não mais verifica apenas "alguma regra existe", mas:
@@ -109,17 +110,11 @@ jobs:
                 git fetch --depth=200 origin "$PUSH_BEFORE" || true  # ok: commit pode ter sido force-pushed — sem ele a auditoria avança sem base
               fi
               if git cat-file -e "$PUSH_BEFORE" 2>/dev/null; then
-                # Se HEAD identifica squash/merge de PR, audita apenas HEAD
-                # (commits feature da branch da PR já foram revisados na PR).
-                # A detecção é compartilhada/testada em sentinel-pr-merge-subject.sh.
-                HEAD_SUBJECT=$(git log -1 --pretty=%s "$PUSH_AFTER")
-                if bash scripts/sentinel-pr-merge-subject.sh "$HEAD_SUBJECT"; then
-                  COMMITS=$(git rev-parse "$PUSH_AFTER")
-                  MODE="merge-commit PR (audita apenas HEAD ${PUSH_AFTER:0:7})"
-                else
-                  COMMITS=$(git log --pretty=%H "${PUSH_BEFORE}..${PUSH_AFTER}")
-                  MODE="push padrão (${PUSH_BEFORE:0:7}..${PUSH_AFTER:0:7})"
-                fi
+                # Audita todo o caminho principal do push. Isso mantém commits
+                # anteriores a um squash no intervalo e omite apenas o histórico
+                # lateral de uma branch incorporada por merge commit.
+                COMMITS=$(bash scripts/sentinel-push-range.sh "$PUSH_BEFORE" "$PUSH_AFTER")
+                MODE="push first-parent (${PUSH_BEFORE:0:7}..${PUSH_AFTER:0:7})"
               else
                 # Fix [15]: fail-closed — antes auditava só HEAD (fail-open).
                 # Agora falha defensivamente pedindo intervenção manual.

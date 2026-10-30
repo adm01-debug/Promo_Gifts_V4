@@ -28,10 +28,10 @@ describe('plan-status — evidência verificável', () => {
     const nextWave = summary.waves.find(({ wave }) => wave === 1);
 
     expect(summary.done).toBe(0);
-    expect(summary.claimed).toBe(84);
+    expect(summary.claimed).toBe(85);
     expect(summary.blocked).toBe(11);
-    expect(summary.todo).toBe(105);
-    expect(firstWave).toMatchObject({ done: 0, claimed: 5, blocked: 3, todo: 2 });
+    expect(summary.todo).toBe(104);
+    expect(firstWave).toMatchObject({ done: 0, claimed: 6, blocked: 3, todo: 1 });
     expect(summary.waveZeroClosed).toBe(false);
     expect(nextWave.eligible).toBe(false);
     expect(stages.filter(({ status }) => status === 'verified')).toHaveLength(0);

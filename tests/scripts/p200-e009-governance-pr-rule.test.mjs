@@ -22,8 +22,23 @@ describe('P200 E009 — governança de alterações críticas por PR', () => {
     const claude = readFileSync(resolve(ROOT, 'CLAUDE.md'), 'utf8');
     const rule = claude.slice(claude.indexOf('## REGRA #9 —'), claude.indexOf('## REGRA #10 —'));
 
-    expect(rule).toMatch(/`.github\/\*\*`[\s\S]*por PR para `main`/);
+    for (const path of ['`.github/**`', '`CODEOWNERS`', '`supabase/migrations/**`', '`scripts/check-*`', '`.gitleaks.toml`']) {
+      expect(rule, `caminho protegido: ${path}`).toContain(path);
+    }
+    expect(rule).toMatch(/por PR para `main`/);
     expect(rule).toMatch(/push direto para `main`/);
+    expect(rule).toMatch(/incidente ativo[\s\S]*PR emergencial[\s\S]*gates/);
     expect(rule).not.toContain('git push ao final');
+  });
+
+  it('não reintroduz a exceção de push direto por incidente no R5 do plano', () => {
+    const plan = readFileSync(resolve(ROOT, 'docs/plans/PLANO_MELHORIAS_CORRECOES_200_ETAPAS_2026-10-18.md'), 'utf8');
+    const start = plan.indexOf('**R5 — PR obrigatório');
+    const end = plan.indexOf('**R6 —', start);
+    const r5 = plan.slice(start, end);
+
+    expect(r5).toContain('Push direto em `main` é proibido');
+    expect(r5).toMatch(/PR de reversão\/correção/);
+    expect(r5).not.toMatch(/Push direto em `main` só para reverter incidente/);
   });
 });

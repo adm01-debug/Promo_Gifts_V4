@@ -1,5 +1,20 @@
 # Sentinel Changelog
 
+## v2.1.3 — 2026-10-30 — Audita todo o first-parent no intervalo do push
+
+**Contexto:** o review do PR #2839 demonstrou que limitar a auditoria a HEAD
+quando o título termina em `(#NNN)` perde commits anteriores sem PR no mesmo
+push (commit humano não revisado seguido de squash válido).
+
+**Correção:** o Sentinel usa `git rev-list --first-parent --reverse` no intervalo
+`PUSH_BEFORE..PUSH_AFTER`. Assim, audita cada commit do ramo de destino, na ordem
+cronológica, incluindo commits anteriores a squash, e não percorre commits
+laterais internos de merge commits já revisados na PR. `scripts/sentinel-push-range.sh`
+implementa a seleção com verificações de SHA e ancestralidade; testes criam
+históricos Git temporários para cobrir squash isolado, squash precedido por
+commit não revisado, merge real e intervalo inválido. O workflow
+`sentinel-self-test.yml` executa a regressão em PR.
+
 ## v2.1.2 — 2026-10-30 — Reconhece títulos de squash na detecção de merge PR
 
 **Contexto:** o push `main@554ef41b4` terminou com falha no Branch Protection Sentinel
@@ -9,10 +24,9 @@ mas a etapa que decide auditar somente o commit final reconhecia apenas títulos
 `Merge ... #NNN` e `merge(pr-NNN):`. Por isso, a auditoria tratou como push comum os
 23 commits internos trazidos pela integração do PR.
 
-**Correção:** a detecção de título foi extraída para
-`scripts/sentinel-pr-merge-subject.sh`, chamada pelo workflow e coberta por testes
-para squash, merge padrão/customizado e push comum. O escopo fail-closed continua:
-sem marcador válido de PR, o intervalo completo continua sendo auditado.
+**Correção histórica substituída pela v2.1.3:** a detecção do título final foi
+extraída para um helper, mas a otimização ignorava commits anteriores do mesmo
+push. O helper foi removido; a seleção agora usa o intervalo first-parent completo.
 
 ## v2.1.1 — 2026-10-29 — Regra 7.5: SHA allowlist histórica (P-CI-H)
 

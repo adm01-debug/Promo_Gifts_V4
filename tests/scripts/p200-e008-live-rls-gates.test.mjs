@@ -12,20 +12,20 @@ function stepsFor(path, job) {
   return workflow.jobs[job].steps;
 }
 
-const INTERNAL_REPO_OR_PUSH =
-  "github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository";
+const INTERNAL_REPO_OR_PUSH_WITH_SECRETS =
+  "github.event_name != 'pull_request' || (github.event.pull_request.head.repo.full_name == github.repository && github.actor != 'dependabot[bot]')";
 
 describe('P200 E008 — gates RLS exigem evidência live', () => {
-  it('Gate 1.13 exige consulta live em push e PR interno e pula forks explicitamente', () => {
+  it('Gate 1.13 exige consulta live em push e PR interno com secrets e pula forks/Dependabot', () => {
     const step = stepsFor('.github/workflows/deploy-gates.yml', 'lint-typecheck')
       .find(({ name }) => name?.startsWith('Gate 1.13 — Policies baseline'));
 
     expect(step).toBeDefined();
     expect(step.run).toBe('node scripts/check-policies-baseline.mjs --require-live');
-    expect(step.if).toContain(INTERNAL_REPO_OR_PUSH);
+    expect(step.if).toContain(INTERNAL_REPO_OR_PUSH_WITH_SECRETS);
   });
 
-  it('Gate 5 só usa credenciais nos checks live em push ou PR interno', () => {
+  it('Gate 5 só usa credenciais em push ou PR interno comum, sem Dependabot', () => {
     const steps = stepsFor('.github/workflows/supabase-security-gate.yml', 'supabase-security-gate');
     const names = [
       '🩺 RPC get_profile_and_roles smoke test',
@@ -36,7 +36,7 @@ describe('P200 E008 — gates RLS exigem evidência live', () => {
       const step = steps.find((candidate) => candidate.name === name);
       expect(step, `step encontrado: ${name}`).toBeDefined();
       expect(step.run).toContain('--require-live');
-      expect(step.if).toContain(INTERNAL_REPO_OR_PUSH);
+      expect(step.if).toContain(INTERNAL_REPO_OR_PUSH_WITH_SECRETS);
     }
   });
 
