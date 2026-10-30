@@ -1,140 +1,76 @@
-# Regras de Negócio — Promo Gifts V4
-# Construído a partir de fontes reais (não de memória)
-# Última atualização: 2026-10-30 | Sessão: https://claude.ai/code/session_01RfQzo8Ean3zudG2sEN79b6
+# Regras de Negócio — Decisão de Merge de PRs
 
----
+> Gerado em: 2026-10-30 | Sessão: session_01RfQzo8Ean3zudG2sEN79b6
 
-## 1. SSOT Supabase (Fonte: `src/integrations/supabase/client.ts:24`, `CLAUDE.md REGRA #1`)
+## Bloqueios Automáticos (DECISAO_HUMANA obrigatória)
 
-- Projeto canônico de produção: `doufsxqlfjyuvxuezpln` (Gold/Medallion)
-- `CURRENT_PROJECT_ID = "doufsxqlfjyuvxuezpln"` — campo imutável em `src/integrations/supabase/client.ts:24`
-- `pqpdolkaeqlyzpdpbizo` = SINGU (ambiente externo, READ-ONLY, nunca escrever)
-- Guarda no Gate 0 CI: `scripts/validate-supabase-config.mjs`
-- Risco histórico: commit de Lovable reverte silenciosamente — incidente 401 em 2026-06-11
+### REGRA #8 — Arquivos protegidos
+PRs que tocam qualquer dos seguintes caminhos requerem aprovação explícita do PO:
+- `.github/workflows/` — qualquer workflow CI/CD
+- `supabase/migrations/` — qualquer migration de banco
+- Secrets/variáveis de ambiente de produção
+- DDL via `execute_sql` (proibido completamente via E056)
+- Deploy de edge function via MCP (proibido — apenas via workflow_dispatch)
 
----
+### REGRA #10 — Cross-agent merge
+PRs em branches `codex/*`, `devin/*`, ou de qualquer outro agente diferente do agente atual só podem ser mescladas com aprovação do PO. Evidência: CLAUDE.md §REGRA #10 (E189).
 
-## 2. Tipo `Product` — Campos Críticos (Fonte: `src/types/product-catalog.ts:25-42`, `CLAUDE.md REGRA #2`)
+### DRAFT explícito
+PRs em estado Draft não são elegíveis para merge automático, independentemente do Gate Final.
 
-```typescript
-// src/types/product-catalog.ts:25 — interface Product
-export interface Product {
-  id: string;
-  name: string;
-  shortDescription: string;   // linha 30 — obrigatório (REGRA #2)
-  price: number;               // linha 31 — obrigatório (REGRA #2)
-  sale_price?: number;         // linha 32 — opcional (REGRA #2)
-  category_id?: string | null; // linha 35 — (REGRA #2)
-  category_name?: string | null; // linha 36 — (REGRA #2)
-  // ... demais campos opcionais
-}
+### Body com instrução de não mesclar
+Se o body da PR contiver frases como:
+- "NÃO MESCLAR"
+- "Não mesclar"
+- "sem merge automático"
+- "aguardando aprovação"
+- "não deve ser mesclado"
+
+A PR vai para DECISAO_HUMANA independente do resultado do Gate Final.
+
+## Critérios de CI
+
+### CI_FALHOU
+PR com Gate Final `conclusion: "failure"` em qualquer run. A PR permanece bloqueada até que o CI seja corrigido na branch.
+
+### AGUARDANDO
+PR com Gate Final verde mas branch desatualizada em relação a main (`mergeable_state: "behind"`) ou Gate ainda em execução. Pode ser resolvido com `update_pr_branch` + novo Gate Final verde.
+
+## Critérios de Negócio para Merge Automático
+
+Para ser elegível para merge automático, uma PR deve satisfazer **todas** as condições:
+
+1. Gate Final `conclusion: "success"` no último run
+2. Branch `claude/*` criada por agente autorizado desta sessão
+3. Sem arquivos protegidos (REGRA #8)
+4. Body não contém instrução de não mesclar
+5. Estado `open` (não `draft`)
+6. Branch não está em conflito (`mergeable_state != "dirty"`)
+7. As 4 perguntas obrigatórias devem ser respondidas afirmativamente:
+   - A PR ainda é válida? (não duplicada, não obsoleta)
+   - Não introduz regressão? (Gate verde + revisão do diff)
+   - Não está já em main? (confirmado via `merge_commit_sha` ou `list_commits`)
+   - A regra de negócio está correta? (título/body coerentes com o diff)
+
+## Hierarquia de Veredictos
+
+```
+DECISAO_HUMANA > CI_FALHOU > AGUARDANDO > DRAFT > JÁ_MESCLADA > SESSION_DELIVERY > ELEGÍVEL
 ```
 
-**Invariante:** estes 5 campos nunca podem ser removidos. Gate 1.1 verifica no CI.
+Uma PR classificada em categoria superior nunca avança para inferior mesmo que satisfaça os critérios inferiores.
 
----
+## Método de Merge
 
-## 3. Status de Orçamentos (Fonte: `src/types/quote.ts:10-25`)
+Squash-merge via `mcp__GITHUB_-_MCP_-_FOREVER__github_merge_pull_request` com `merge_method: "squash"`. Nunca merge commit, nunca rebase. Nunca via CLI local ou `git push` direto.
 
-```typescript
-// src/types/quote.ts:10
-export const QUOTE_STATUSES = [
-  'approved',   // aprovado pelo cliente
-  'draft',      // rascunho em edição
-  'rejected',   // recusado pelo cliente
-  'sent',       // enviado aguardando resposta
-];
-export type QuoteStatus = z.infer<typeof quoteStatusSchema>;  // linha 25
-export type ClientResponse = 'approved' | 'changes_requested' | 'rejected';  // linha 32
-```
+## PRs da Sessão 2026-10-30 — Diagnóstico por Veredicto
 
-**Regra:** `draft` não pode aparecer em listagens públicas de clientes. Gate 1.5 verifica.
-
----
-
-## 4. RLS — Políticas de Segurança (Fonte: `supabase/migrations/`, `docs/04_EXPLICACAO_DAS_POLICIES.md`)
-
-- **Leitura pública de produtos:** só itens ativos
-- **Escrita de products:** restrita a org owner/admin
-- **recently_viewed_products:** users só podem atualizar os próprios registros
-- **Regra crítica RLS:** tabelas com RLS habilitada e zero policies = deny-all silencioso → Gate 1.13.1 bloqueia
-- **Anon-insert rate guard:** 7 tabelas com INSERT anônimo possuem trigger de rate guard → Gate 1.13.2
-
----
-
-## 5. DDL e Migrations (Fonte: `CLAUDE.md REGRA #8`, `docs/db/POLITICA_DDL.md`)
-
-- **Único caminho autorizado** para migration em prod: workflow `.github/workflows/db-apply-migration.yml`
-- **`execute_sql` via MCP** = proibido para DDL em sessão de agente (E056)
-- **`supabase db push`** = proibido (REGRA #1 §7)
-- **Migrations em PR** que tocam `supabase/migrations/` → AGUARDA PO (sem exceção)
-- Ledger de reconciliação: `supabase/MIGRATIONS_SYNC_LOG.md`
-- Baseline do drift-check: `supabase/baseline/*.sql` — NUNCA copiar para `migrations/`
-
----
-
-## 6. CI / Gate Final (Fonte: `CLAUDE.md CI — ESTRUTURA DE GATES`, `.github/workflows/deploy-gates.yml`)
-
-- **Único required check em `main`:** "Gate Final - Deploy Ready" em `deploy-gates.yml`
-- Gate Final = agregador de todos os gates em sequência
-- Gate 0: SSOT Supabase (validate-supabase-config.mjs)
-- Gate 1: Lint + TypeScript (0 erros é baseline)
-- Gate 2: Testes unitários (passando no CI)
-- Gate 3: E2E Smoke (Playwright chromium)
-- **Regressão** = nova falha além do baseline. Corrigir causa raiz, nunca burlar.
-- `paths-ignore: docs/**` — PRs que tocam só `docs/` não disparam CI
-
----
-
-## 7. Vercel (Fonte: `CLAUDE.md REGRA #11`, `.vercel/project.json`)
-
-- Projeto canônico: `prj_9UfugNYCuboH2R0XB04Jv8PpjDpZ` (team `juca1`)
-- `.vercel/project.json` está versionado — NUNCA deletar
-- Proibido `vercel link` fora do raiz do repositório (incidente 2026-09-15)
-
----
-
-## 8. Tipos derivados do banco (Fonte: `src/integrations/supabase/types.ts`, `CLAUDE.md REGRA #4`)
-
-- **Tabelas obrigatórias em types.ts:**
-  - `personalization_techniques`, `products`, `product_variants`, `suppliers`
-  - `supplier_products_raw`, `magazines`, `magazine_items`, `magazine_templates`
-- Gate 1.2: drift estrutural — nenhuma tabela pode desaparecer sem entrada em `docs/TYPES_INVENTORY_REMOVAL_ALLOWLIST.json`
-- Script de verificação: `npm run check:types-inventory-drift`
-
----
-
-## 9. Agentes e Cross-Agent Merge (Fonte: `CLAUDE.md REGRA #10`, E189)
-
-- 6 agentes escrevem no repo: Claude, Codex, Devin, Lovable, github-actions, cline
-- Prefixos de branch: `claude/*`, `codex/*`, `devin/*` etc.
-- **Cross-agent merge sem PR** = proibido (Gate 1.18)
-- Sentinel: `scripts/sentinel-check.sh` recusa merge commit entre prefixos de agentes diferentes
-
----
-
-## 10. Arquivos Protegidos (Fonte: `CLAUDE.md — ARQUIVOS PROTEGIDOS`)
-
-| Arquivo | Regra |
-|---|---|
-| `src/integrations/supabase/client.ts` | REGRA #1 — SSOT |
-| `scripts/validate-supabase-config.mjs` | Gate 0 guard |
-| `.env.example` | Referência canônica de vars |
-| `.lovableignore` | Proteção contra Lovable |
-| `.github/CODEOWNERS` | Revisão obrigatória |
-| `scripts/sentinel-check.sh` | Branch Protection Sentinel |
-| `.github/workflows/deploy-gates.yml` | Gate Final pipeline |
-| `.vercel/project.json` | Vercel canônico (REGRA #11) |
-| `docs/SCHEMA_REFERENCE.md` | pg_catalog do BD canônico |
-
----
-
-## 11. Contrato de Calendário (Fonte: `src/components/ui/__tests__/calendar.redesign.test.tsx`)
-
-- Baseline de 2 falhas em main: `day_selected` e `day_outside`
-- Causa: migração react-day-picker v8→v10 sem atualizar seletores DOM
-- DOM v10: `aria-selected` vai para `<td>`, não para `<button>`
-
----
-
-*Fontes verificadas em 2026-10-30 contra código em `126062c1b919c1e84b70cacf96ab3fdda7494211` (main HEAD pós-merge #2826)*
+| Veredicto | PRs | Motivo principal |
+|---|---|---|
+| JÁ_MESCLADA | #2813, #2840 | Mescladas por outras sessões durante a análise |
+| CI_FALHOU | #2739, #2810, #2822, #2825 | Gate Final failure |
+| DECISAO_HUMANA | #2701, #2731, #2744, #2758, #2821, #2823, #2827, #2836, #2839 | REGRA #8 ou #10 ou body bloqueante |
+| AGUARDANDO | #2824 | Branch behind main |
+| DRAFT | #2834 | Estado Draft |
+| SESSION_DELIVERY | #2831 | Branch desta sessão de análise |

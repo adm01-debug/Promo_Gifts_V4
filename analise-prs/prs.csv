@@ -1,18 +1,19 @@
-pr,titulo,branch,head_sha,veredito,motivo,regra,merge_limpo,data_analise
-2701,"fix(ci): autentica kit coverage — workflows + PENDENCIAS","fix/ci-autentica-kit-coverage","c5e6937b","DECISAO_HUMANA","Toca .github/workflows/kit-coverage-integration.yml. Conflito em PENDENCIAS.md.","REGRA #8 — workflow file",false,"2026-10-30"
-2731,"feat: supabase migrations + workflow updates","feat/migrations-workflow-261030","6db2040f","DECISAO_HUMANA","Toca .github/workflows/deploy-gates.yml e supabase/migrations/. Conflito em PENDENCIAS.md.","REGRA #8 — workflow + migration",false,"2026-10-30"
-2739,"fix(mockup): gerador — medidas, timeout 30s, lote parcial, erros","integra/vps-mockup-gerador","b19c6099","CI_FALHOU","Gate 1.9 file-size ratchet: useMockupGenerator.ts 894L vs baseline 893L.","Gate 1.9",true,"2026-10-30"
-2744,"feat: edge functions + [NÃO MESCLAR]","feat/edge-functions-261030","2f379368","NAO_MERGEAR","Draft + instrução explícita [NÃO MESCLAR]. Toca supabase/functions/.","Instrução explícita + REGRA #8",true,"2026-10-30"
-2758,"fix: revisão humana necessária","fix/revisao-humana-261030","6a000b4e","NAO_MERGEAR","Body pede revisão humana explicitamente. Diff vazio.","Instrução explícita no body",true,"2026-10-30"
-2799,"chore(release): release-please bump version","release-please--branches--main","12cdb57c","AGUARDANDO_BOT","PR de release-please bot. Gate Final não dispara automaticamente para PRs de bot.","PR de bot — não interferir",true,"2026-10-30"
-2810,"fix(gallery): baseline JSONs + gallery files","fix/gallery-baselines-261030","d4c9f8be","CI_FALHOU","Gate 1.9 file-size ratchet — arquivo de baseline excede limite.","Gate 1.9",true,"2026-10-30"
-2813,"refactor(quotes): E128 — split QuoteBuilderSummaryColumn 1697→588 linhas","claude/feat-e128-split-quote-summary-261030","f3c166082e5a8b0264453d3347f24a13ed9238ea","AGUARDANDO_CI","quality-gate in_progress + Gates 1+2 queued. Aguardando Gate Final.",,true,"2026-10-30"
-2821,"feat(uptime): uptime-monitor + probe script + tests","claude/feat-uptime-monitor-261030","f6ea303c","DECISAO_HUMANA","Toca .github/workflows/uptime-monitor.yml. Confirmado por list_pr_files.","REGRA #8 — workflow file",true,"2026-10-30"
-2822,"fix(types): idempotency_key + migration-refs-baseline","claude/fix-types-idempotency-261030","5c813a8e","CI_FALHOU","Gate 1.3: migration contracts baseline outdated. .migration-refs-baseline.json + types.ts +3 linhas.","Gate 1.3",true,"2026-10-30"
-2823,"feat(rls): supplier stricker RLS deny-all + xbz image uploader","claude/feat-supplier-rls-261030","39cc57b5","DECISAO_HUMANA","Toca supabase/migrations/ (4 arquivos SQL).","REGRA #8 — supabase/migrations/",true,"2026-10-30"
-2824,"feat(ci): replenishment quality workflow","claude/feat-replenishment-quality-261030","85311e8b","DECISAO_HUMANA","Toca .github/workflows/replenishment-quality.yml. Confirmado por grep.","REGRA #8 — workflow file",true,"2026-10-30"
-2825,"fix(sync): graphify version + sentinel sync","claude/fix-sync-graphify-version-261030-1430","ac83cc97","CI_FALHOU","Gate 1.3 baseline outdated. Conflito em prs.json. Toca .github/SENTINEL_CHANGELOG.md (não é workflow).","Gate 1.3 + conflito",false,"2026-10-30"
-2826,"fix(sync): sentinel e2e pdf — graphify SKILL.md + migration-refs-baseline","claude/fix-sync-sentinel-e2e-pdf-261030-1430","e49436ffb3e9e4ffd46df477bf170ea2817c16c7","MERGEADA","Gate Final SUCCESS. Zero workflow files. Mergeada squash SHA 126062c1b919c1e84b70cacf96ab3fdda7494211.","",true,"2026-10-30"
-2827,"docs(ci): PENDENCIAS.md + RELATORIO_CI.md — codex branch","codex/docs-ci-pendencias-261030","7c439970","NAO_MERGEAR","Body: Não mesclar nesta etapa. Branch codex/ (agente diferente).","Instrução explícita + REGRA #10",true,"2026-10-30"
-2831,"docs(analise): análise de PRs — RELATORIO + dossiers","claude/chore-analise-prs-261029-superseded","e8554129","DRAFT_SUPERSEDED","27 conflitos. Supersedida por #2832 (mergeada). Docs-only.",,false,"2026-10-30"
-2833,"docs(ci): PENDENCIAS.md + RELATORIO_CI.md update","claude/docs-ci-update-261030","86b7739d","DRAFT","3 conflitos em RELATORIO_PRS.md/prs.csv/prs.json. Docs-only. Aguarda rebase pelo PO.",,false,"2026-10-30"
+numero,titulo_resumido,branch,sha,gate_final_run,gate_final_resultado,estado,veredicto,motivo_principal
+2701,fix grant kit-view,claude/fix-p12-grant-kit-view-261028-1730,c5e6937b,40964666017,success,open,DECISAO_HUMANA,".github/workflows/ + body: não deve ser mesclado"
+2731,fix rate-guard e049,fix/p200-e049-rate-guard,6db2040f,40947643944,success,open,DECISAO_HUMANA,"supabase/migrations/ + body: Não mesclar"
+2739,integra vps-mockup-gerador,integra/vps-mockup-gerador,b19c6099,41067609025,failure,open,CI_FALHOU,Gate Final failure
+2744,integra vps-edge,integra/vps-edge,2f379368,40957172894,success,draft,DECISAO_HUMANA,"DRAFT + body: NÃO MESCLAR sem OK do dono"
+2758,fix a11y focus ring,fix/a11y-focus-visible-ring-20261030,6a000b4e,41067562329,success,open,DECISAO_HUMANA,"0 files changed + body: sem merge automático"
+2810,feat e128 split PromoFlixPlayer,claude/feat-e128-split-promoflix-261030,1589089c,41110757377,failure,open,CI_FALHOU,Gate Final failure (conclusion=failure)
+2813,feat e128 split quote summary,claude/feat-e128-split-quote-summary-261030,5ca4f40d,,merged,JA_MESCLADA,Mesclada 17:59Z por session_01RfQzo6Dg97Uj4nSrMJfhpy (SHA 468ac058)
+2821,fix uptime http status,claude/fix-sync-uptime-http-status-261030-1410,f6ea303c,41070165805,success,open,DECISAO_HUMANA,.github/workflows/uptime-monitor.yml
+2822,fix sync types idempotency,claude/fix-sync-types-idempotency-261030-1410,5c813a8e,41070173501,failure,open,CI_FALHOU,Gate Final failure
+2823,fix (desconhecido),claude/,sha-desconhecido,,,open,DECISAO_HUMANA,"supabase/migrations/ + body: Não mergear automaticamente"
+2824,chore (desconhecido),claude/,85311e8b,41070800036,success,open,AGUARDANDO,Branch behind main (mergeable_state=behind)
+2825,fix (desconhecido),claude/,sha-desconhecido,41070810245,failure,open,CI_FALHOU,Gate Final failure
+2827,codex ci-audit,codex/ci-audit-latest-20261030,bf5c546,,,open,DECISAO_HUMANA,"REGRA #10 codex/ + dirty (conflito)"
+2831,docs analise-prs (esta sessão),claude/eloquent-ramanujan-0yt2fo,4247aa4b,,,open,SESSION_DELIVERY,Branch desta sessão de análise
+2834,docs ci baseline vitest,claude/fix-relatorio-baseline-vitest-261030-1745,b4ea8e30,,,draft,DRAFT,Estado Draft
+2836,codex plan-status,codex/plan-status-honesty-20261030,cb5bdeb,,,open,DECISAO_HUMANA,REGRA #10 codex/
+2839,codex e23 secrets,codex/e23-required-secrets-20261030,eb41977,,,open,DECISAO_HUMANA,"REGRA #8+#10: .github/workflows/ + codex/"
+2840,fix ci prova,claude/fix-ci-prova-261030-1900,2f09267,,,merged,JA_MESCLADA,Mesclada 18:49Z por session_01RfQzo7S3K6o49UBUDoCtUe (SHA 6bc42d68)
