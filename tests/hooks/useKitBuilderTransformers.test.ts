@@ -43,6 +43,21 @@ describe('transformToKitItem', () => {
   });
 
   it('does not convert an absent sale price into a free kit item', () => {
-    expect(transformToKitItem(product({ sale_price: undefined, base_price: undefined }))).toBeNull();
+    expect(
+      transformToKitItem(product({ sale_price: undefined, base_price: undefined })),
+    ).toBeNull();
+  });
+
+  it.each([0, -1, Number.NaN, Number.POSITIVE_INFINITY])(
+    'trata peso inválido (%s) como desconhecido',
+    (weight) => {
+      const item = transformToKitItem(product({ weight_g: weight }));
+      expect(item?.weight).toBeUndefined();
+    },
+  );
+
+  it('preserva um peso positivo medido', () => {
+    const item = transformToKitItem(product({ weight_g: 125 }));
+    expect(item?.weight).toBe(125);
   });
 });
