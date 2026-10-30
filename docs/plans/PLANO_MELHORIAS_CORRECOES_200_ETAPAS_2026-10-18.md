@@ -186,8 +186,8 @@ No mesmo pedido, apagar o ruleset **24121385** ("Protect main branch", criado 20
 
 #### P200-E007 · [A] · P0 · Fazer o Gate E23 poder falhar ✅
 **Arquivo:** `.github/workflows/deploy-gates.yml:323-326`, `.github/workflows/_secrets-check.yml:28`
-**Fazer:** o gate chama o reusable sem `fail_if_missing`, cujo default é `false`, então o job sempre sai 0 e a checagem `[[ "$R_SECRETS" == "success" ]]` na linha 551 é tautológica. Passar `with: { fail_if_missing: true }`, **ou** — se a intenção é só expor o output `has_e2e` — remover o gate da tabela de bloqueantes do `CLAUDE.md` e apagar a linha 551 do agregador. Decidir uma das duas e não deixar as duas meias.
-**Pronto:** `grep -A3 "_secrets-check.yml" .github/workflows/deploy-gates.yml | grep -c "fail_if_missing: true"` → `1`, ou a linha 551 deixa de existir e o `CLAUDE.md` marca E23 como não-bloqueante
+**Fazer:** o gate chamava o reusable sem `fail_if_missing`, cujo default é `false`, então o job sempre saía 0 e a checagem de `R_SECRETS` no agregador era tautológica. Passar `fail_if_missing` como true em eventos onde os secrets devem existir (push e PR interno), preservando o skip em PRs de forks que não recebem secrets do repositório. Alternativa: se a intenção for só expor o output `has_e2e`, remover o gate da tabela de bloqueantes do `CLAUDE.md` e apagar a checagem correspondente do agregador. Decidir uma das duas e não deixar as duas meias.
+**Pronto:** `grep -Fq "fail_if_missing: \${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository }}" .github/workflows/deploy-gates.yml` passa; actionlint valida a expressão e, em fork-PR, Gate E23 não exige credenciais indisponíveis.
 **Origem:** A1-01, A1-15
 
 #### P200-E008 · [A] · P0 · Fazer o Gate 1.13 comparar de verdade ✅

@@ -515,6 +515,10 @@ jobs:
     needs: [ssot-gate]
     uses: ./.github/workflows/_secrets-check.yml
     secrets: inherit
+    with:
+      # Secrets estão disponíveis em PRs internos e em eventos da main; forks
+      # não os recebem e devem manter o skip explícito do Gate 3.
+      fail_if_missing: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository }}
 
   e2e-smoke:
     name: Gate 3 - E2E Smoke
