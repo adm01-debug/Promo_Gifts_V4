@@ -746,7 +746,7 @@ Nenhuma migration, DDL, escrita no Supabase, alteração de workflow, deploy de 
 
 **Estado atual:** 21 success, 2 skipped, 3 cancelled, 5 queued/pending/in_progress e 3 failures. O run [#40982927130](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40982927130) de Quote Builder Delivery Quality concluiu **success**, removendo a falha E2E reportada no P26. Workflows verdes: Lovable Edit Tracker, SSOT Supabase Guard, Policies Baseline, Static Health Checks, Required Checks Guard, Release Please, Select Columns vs Types, Gitleaks — Full History Audit, UI · Visual & A11y, Security Scan, Lovable Autoheal, No Prod Leak in Dev/Test Config, Supabase Linter Gate, E2E — Personalization Flow, CodeQL, Quote Builder Delivery Quality, Quote Number Hardening — Verify (canonical DB), schema-snapshot-export, Workflow Lint, Magazine Unit Tests e CI - Replenishment Module Quality Gate. Pendentes incluem Deploy Gates, E2E Critical Flows, E2E Playwright, Swatch QuickView e o deploy protegido de Edge Functions. Runs pendentes não são contabilizados como sucesso.
 
-A correção a11y continua sem merge; o deploy pendente requer decisão/aprovação do PO. Nenhuma migration, escrita no Supabase, DDL, deploy, alteração direta da main ou force push foi executada.
+A correção a11y continua sem merge; o deploy pendente requer inspeção do responsável, pois não há job nem aprovação pendente listada pela API. Nenhuma migration, escrita no Supabase, DDL, deploy, alteração direta da main ou force push foi executada. Validação pré-commit Graphify: `npm run build:verify` passou com TypeScript, lint Δ0, guards e build; `npm test`: 1.247 arquivos, 25.871 testes passaram, 1.135 ignorados e 24 TODO.
 
 ### Bloqueio dos checks Vercel dos PRs — 01:10 UTC
 
