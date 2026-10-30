@@ -178,7 +178,7 @@ export function AdImageResult({
             {history.map((item) => (
               <div
                 key={item.id}
-                className="group relative overflow-hidden rounded-lg border transition-all hover:ring-2 hover:ring-primary/30 focus-within:ring-2 focus-within:ring-ring"
+                className="group relative overflow-hidden rounded-lg border transition-all focus-within:ring-2 focus-within:ring-ring hover:ring-2 hover:ring-primary/30"
               >
                 {/* Abrir o item é um <button> nativo: nada interativo vive dentro dele
                     (favoritar/excluir são irmãos na camada de ações), então não há
@@ -196,7 +196,7 @@ export function AdImageResult({
                     loading="lazy"
                   />
                 </button>
-                <div className="pointer-events-none absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-black/60 to-transparent p-2 opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100">
+                <div className="pointer-events-none absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-black/60 to-transparent p-2 opacity-0 transition-opacity group-focus-within:opacity-100 group-hover:opacity-100">
                   <p className="truncate text-[10px] font-medium text-primary-foreground">
                     {item.product_name}
                   </p>
