@@ -30,6 +30,13 @@ Foram inventariados 42 nomes de workflow: 11 com última conclusão `failure`, 2
 
 As 24 conclusões `success` devem ser lidas como fotografia temporal da listagem na `main`; esta atualização não afirma que os 11 workflows já foram saneados remotamente.
 
+### Correção local desta branch
+
+- `CI Security & Drift Checks`: o botão de seleção do histórico em `AdImageResult.tsx` agora tem anel `focus-visible`, sem retirar o foco de teclado. Commit `cfe95ad0d`.
+- `Policies Baseline`: removidas apenas as duas entradas associadas à partição `supplier_products_raw_history_p2026_07`, confirmada ausente em consulta somente leitura ao canônico. O SHA-256 do snapshot foi recalculado; nenhum DDL foi executado.
+- Pós-commit `cfe95ad0d`: `npm run build:verify` ✅; `npm test` ✅, 1.247 arquivos passaram (130 skipped), 25.869 testes passaram (1.135 skipped, 24 todo), sem diferença contra baseline.
+- A remoção de policies do arquivo ainda requer validação live pelo check do PR. Localmente `node scripts/check-policies-baseline.mjs` reporta `static-pass` porque este checkout não tem credenciais read-only do Supabase; esse resultado não é apresentado como validação live.
+
 **Gerado:** 2026-10-29 · **Atualizado:** 2026-10-30  
 **HEAD da main:** `c64f613b18f37802127fccf574becb6496eb1755` (2026-10-30)  
 **Sessão:** https://claude.ai/code/session_01RfQzo7S3K6o49UBUDoCtUe
