@@ -686,5 +686,53 @@
     "gate_final": null,
     "veredicto": "DRAFT",
     "motivo": "DRAFT — docs-only; elegível merge quando não-draft"
+  },
+  {
+    "number": 2834,
+    "title": "docs(analise): evidência baseline vitest — sessão 2026-10-30",
+    "author": "adm01-debug",
+    "draft": true,
+    "base": "main",
+    "head_sha": "TBD",
+    "state": "open",
+    "branch": "claude/fix-relatorio-baseline-vitest-261030-1745",
+    "created_at": "2026-10-30",
+    "files_protegidos": [],
+    "merge_test": "DRAFT",
+    "gate_final": "UNKNOWN",
+    "veredicto": "DRAFT",
+    "motivo": "DRAFT — branch de outra sessão Claude"
+  },
+  {
+    "number": 2836,
+    "title": "fix: improve plan-status honesty and criterion-based receipts",
+    "author": "adm01-debug",
+    "draft": false,
+    "base": "main",
+    "head_sha": "cb5bdebb780620fcc6a22be2fd1acc19dcd6ce6e",
+    "state": "open",
+    "branch": "codex/plan-status-honesty-20261030",
+    "created_at": "2026-10-30",
+    "files_protegidos": [],
+    "merge_test": "BEHIND",
+    "gate_final": "UNKNOWN",
+    "veredicto": "DECISAO_HUMANA",
+    "motivo": "REGRA #10 (branch codex/ = cross-agent merge requer aprovação PO) + body solicita revisão humana"
+  },
+  {
+    "number": 2838,
+    "title": "docs(ci): atualiza RELATORIO_CI.md com estado pós-session-261030",
+    "author": "adm01-debug",
+    "draft": false,
+    "base": "main",
+    "head_sha": "TBD",
+    "state": "closed",
+    "branch": "TBD",
+    "created_at": "2026-10-30",
+    "files_protegidos": [],
+    "merge_test": "N/A",
+    "gate_final": "N/A",
+    "veredicto": "FECHADA",
+    "motivo": "Fechada sem merge em 2026-10-30T18:29:42Z — não era PR aberta nesta análise"
   }
 ]
