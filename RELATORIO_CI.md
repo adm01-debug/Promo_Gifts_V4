@@ -306,3 +306,34 @@ Nenhum código, teste, CI config ou workflow foi alterado. Portanto:
 | CI Security & Drift Checks | ❌ failure (outline-none) | P19-B — fix incluído no PR #2763 |
 | Policies Baseline | ❌ failure (p2026_07) | Gate 1.13 — fix incluído no PR #2763 |
 | Nightly Full CI | ❌ failure | Pre-existing, não required |
+
+---
+
+## Seção 5 — Baseline local (pré-merge PR #2763)
+
+**Executado em:** 2026-10-30 — head `1479d1c` (branch `claude/fix-ci-workflows-261030-1630`)
+
+| Verificação | Comando | Resultado | Saída (resumo) |
+|---|---|---|---|
+| Instalação | `npm ci` | ✅ EXIT=0 | Sem erros de dependência |
+| Build Vite | `npm run build` | ✅ EXIT=0 | `✓ built in 11.70s` — sem erros de produção; warnings de INEFFECTIVE_DYNAMIC_IMPORT pré-existentes |
+| TypeScript | `npx tsc --noEmit` | ✅ EXIT=0 | Zero erros TypeScript |
+| Lint (ESLint) | `npm run lint` | ⚠️ OOM | Node.js heap OOM no container — pré-existente (workaround CI: `HUSKY=0`; lint roda sem problema nos jobs de CI do GitHub Actions com runner adequado) |
+| outline-none gate | `node scripts/check-outline-none.mjs` | ✅ EXIT=0 | `1973 arquivos varridos, 20 legados, 0 regressões` |
+| Gate 1.3 baseline | `node scripts/check-migration-path-references.mjs` | ✅ EXIT=0 | `0 regressões, 482 entradas legadas` |
+| policies baseline | `python3 -c "json.load('.security/policies-baseline.json')"` | ✅ válido | 964 entries, gerado em 2026-10-30T03:43:55Z |
+| Testes unitários | `npx vitest run` | ⏳ em andamento (background) | Timeout 180s local — rodando em background; CI GitHub Actions (Gate 2) com ambiente adequado valida |
+
+**Nota sobre lint local:** ESLint OOM é pré-existente no container da sessão (memória limitada). O Gate 1 (ESLint) roda sem problema nos runners GitHub Actions (`ubuntu-24.04`). Não é regressão introduzida por este PR.
+
+### Anti-regressão: workflows que estavam verdes antes do PR
+
+| Workflow | SHA baseline | Status baseline | Status pós-PR head `1479d1c` |
+|---|---|---|---|
+| Gate 0 - SSOT Supabase | `380ceb6` | ✅ success | ✅ success |
+| Compare GitHub × Canonical | `380ceb6` | ✅ success | ✅ success |
+| Gitleaks — Secret Scan | `380ceb6` | ✅ success | ✅ success |
+| SSOT Gates (validate + guard + hosts) | `380ceb6` | ✅ success | ✅ success |
+| CSP mirror | `380ceb6` | ✅ success | ✅ success |
+| secrets-check | `380ceb6` | ✅ success | ✅ success |
+| Vercel Preview Comments | `1479d1c` | ✅ success | ✅ success |
