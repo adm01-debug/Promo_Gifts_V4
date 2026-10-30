@@ -1,55 +1,22 @@
 {
-  "sessao": "https://claude.ai/code/session_01RfQzo8Ean3zudG2sEN79b6",
-  "data": "2026-10-29",
-  "main_sha_inicial": "8bc08b12f50872e2d9b9a93d3f7dbae388fec204",
-  "main_sha_final": "9a97f9a2c857b25590691efd2c741a194bfb24da",
-  "total_prs_analisadas": 32,
-  "total_prs_mergeadas": 8,
-  "total_prs_abertas_restantes": 14,
-  "total_prs_fechadas_externamente": 6,
-  "total_prs_nao_mergear": 1,
-  "prs_aguardando_ci": [
-    { "pr": 2747, "run_id": 40970640916, "status": "queued", "sha": "3a5521b1ff9908b15db79219cf5706918054b763" },
-    { "pr": 2739, "run_id": 40970786956, "status": "queued", "sha": "0faeca3cc3e8b2a6ffdb1393438d2216c7d112ae" }
-  ],
-  "merges": [
-    { "pr": 2721, "sha": "6b48beb", "metodo": "squash", "gate_final": "SUCCESS", "titulo": "chore: atualiza PENDENCIAS §4 e RELATORIO_CI" },
-    { "pr": 2735, "sha": "27f4261", "metodo": "squash", "gate_final": "SUCCESS", "titulo": "docs(analise-prs): rev46 — análise completa 20 PRs" },
-    { "pr": 2733, "sha": "8bc08b1", "metodo": "squash", "gate_final": "SUCCESS", "titulo": "fix(banco): adiciona rollback header e arquivo rollback" },
-    { "pr": 2695, "sha": "8da42aa9", "metodo": "squash", "gate_final": "SUCCESS", "titulo": "docs(db): corrige status do espelho de migration Google" },
-    { "pr": 2707, "sha": "37ea10a3", "metodo": "squash", "gate_final": "SUCCESS", "titulo": "docs: recibo de deploy de edge function(s) — run 40747468580" },
-    { "pr": 2737, "sha": "c7f9f4ba", "metodo": "squash", "gate_final": "SUCCESS", "titulo": "docs(auditoria): relatório de auditoria Supabase — revisão final" },
-    { "pr": 2736, "sha": "31ebc2d3", "metodo": "squash", "gate_final": "SUCCESS", "titulo": "test+docs(mockup/magic-up): entregas de teste e doc da fábrica VPS (lote A)" },
-    { "pr": 2719, "sha": "66d032af", "metodo": "squash", "gate_final": "SUCCESS", "titulo": "chore(build): separa mapas SQL e amplia referências Graphify" }
-  ],
-  "prs_abertas_decisao_humana": [
-    { "pr": 2734, "veredicto": "DECISAO_HUMANA", "motivo": ".github/workflows/ (REGRA #8)", "gate_final": "SUCCESS", "seguro_merge": true },
-    { "pr": 2731, "veredicto": "DECISAO_HUMANA", "motivo": ".github/workflows/ + supabase/migrations/ (REGRA #8)", "gate_final": "FAILURE_INFRA" },
-    { "pr": 2730, "veredicto": "DECISAO_HUMANA", "motivo": ".github/workflows/ (REGRA #8) + CONFLITO" },
-    { "pr": 2720, "veredicto": "DECISAO_HUMANA", "motivo": ".github/workflows/ (REGRA #8) + CONFLITO" },
-    { "pr": 2717, "veredicto": "DECISAO_HUMANA", "motivo": ".github/workflows/ (REGRA #8) + CONFLITO" },
-    { "pr": 2714, "veredicto": "DECISAO_HUMANA", "motivo": "supabase/migrations/ (REGRA #8) + CONFLITO" },
-    { "pr": 2745, "veredicto": "DECISAO_HUMANA", "motivo": ".github/workflows/ (REGRA #8)" },
-    { "pr": 2744, "veredicto": "DECISAO_HUMANA", "motivo": "DRAFT + NÃO MESCLAR + supabase/functions/ (REGRA #8 corolário)" },
-    { "pr": 2749, "veredicto": "DECISAO_HUMANA", "motivo": "DRAFT + .github/workflows/ (REGRA #8) — conserta Branch Protection Sentinel" },
-    { "pr": 2751, "veredicto": "DECISAO_HUMANA", "motivo": "DRAFT + outra sessão Claude (REGRA #10)" }
-  ],
-  "prs_conflito": [
-    { "pr": 2743, "veredicto": "CONFLITO", "motivo": "mergeable: false / dirty" },
-    { "pr": 2701, "veredicto": "CONFLITO", "motivo": "Draft de outra sessão + conflito com main" }
-  ],
-  "prs_aguardar_revisao_po": [
-    { "pr": 2713, "veredicto": "AGUARDAR_REVISAO_PO", "motivo": "Release PR bot; PO deve validar CHANGELOG" }
-  ],
-  "prs_draft_skip": [
-    { "pr": 2746, "veredicto": "DRAFT_SKIP", "motivo": "draft; docs only" }
-  ],
-  "prs_fechadas_externamente": [2729, 2716, 2711, 2693, 2688, 2674],
-  "regras_aplicadas": {
-    "regra_8_workflows": "Nunca merge autônomo em PRs tocando .github/workflows/",
-    "regra_8_migrations": "Nunca merge autônomo em PRs tocando supabase/migrations/",
-    "ssot": "doufsxqlfjyuvxuezpln — imutável",
-    "merge_method": "squash",
-    "forever_mcp": "Todos os writes no GitHub via mcp__GITHUB_-_MCP_-_FOREVER__*"
-  }
+  "sessao": "claude/eloquent-ramanujan-0yt2fo",
+  "data": "2026-10-30",
+  "main_sha": "6e38d14a90323f69ff3beda27c8ae51476c3cb1d",
+  "baseline": {
+    "tsc": "exit 0 — sem erros",
+    "vitest": "exit 0 — sem falhas",
+    "build": "exit 0 — built in 16.66s"
+  },
+  "total_prs_abertos": 19,
+  "analisados": 19,
+  "veredictos": {
+    "CANDIDATA_PENDENTE_CI": ["#2768"],
+    "DECISAO_HUMANA": ["#2759", "#2758", "#2745", "#2743", "#2734", "#2731", "#2717", "#2714", "#2701"],
+    "DRAFT": ["#2767", "#2766", "#2764", "#2750", "#2749", "#2746"],
+    "DRAFT_E_DECISAO_HUMANA": ["#2744"],
+    "BLOQUEADA_CONFLITO": ["#2747"],
+    "BLOQUEADA_PROVAVEL_CONFLITO": ["#2739"]
+  },
+  "mergeados_nesta_sessao": [],
+  "pendente": "Aguardando Gate Final em #2768"
 }

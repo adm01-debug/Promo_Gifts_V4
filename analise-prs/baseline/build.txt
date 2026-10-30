@@ -1,34 +1,5 @@
-# Baseline de build — 2026-10-29
-# SHA main: 4b4206abf947a87f56b1dc7effbf9739f530d80b
-# Branch: claude/eloquent-ramanujan-0yt2fo (local SHA: daca677d0c0ce7325d5606a6158dfdefa599470b)
-# Comando: npm run build
-
-## Resultado
-Exit code: 0
-Duração: 16.87s
-
-## Erros de build
-NENHUM — build Vite passa sem erros.
-
-## Warnings (INEFFECTIVE_DYNAMIC_IMPORT — pré-existentes, não bloqueantes)
-- src/services/telemetryService.ts — dinâmico + estático (EnhancedErrorBoundary, ProductCard, etc.)
-- src/lib/external-db/silent-empty-report.ts — dinâmico + estático (bridge, index, rest-native, etc.)
-- src/lib/db/postgrest.ts — dinâmico + estático (múltiplos hooks e componentes admin)
-- src/lib/external-db/immutableCache.ts — dinâmico + estático (products-detail)
-- src/hooks/products/useCatalogPrefetch.ts — dinâmico + estático (products/index)
-- src/lib/external-db/index.ts — dinâmico + estático (múltiplos)
-- src/lib/crm-db.ts — dinâmico + estático (múltiplos)
-- src/components/cart/CartCompanyPickerDialog.tsx — dinâmico + estático
-- src/components/cart/CartSelectorDialog.tsx — dinâmico + estático
-- src/components/collections/AddToCollectionModal.tsx — dinâmico + estático
-- src/components/products/ProductQuickView.tsx — dinâmico + estático
-- src/components/products/VariantPickerDialog.tsx — dinâmico + estático
-- src/components/products/share/SharePreviewDialog.tsx — dinâmico + estático
-
-## Checks pós-build
+=== Build baseline 2026-10-30 ===
+✓ built in 16.66s
 [chunk-cycles] OK: no static import cycles between production chunks.
 [production-harnesses] OK: no /__test routes or harness chunks in dist/.
-
-## Nota
-Todos os 13 warnings são INEFFECTIVE_DYNAMIC_IMPORT — pré-existentes no main.
-Zero erros de build. Regressão = qualquer novo erro (exit != 0) ou novo warning não listado.
+Exit: 0
