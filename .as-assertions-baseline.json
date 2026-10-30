@@ -860,5 +860,10 @@
     "src/utils/proposalPdfReactGenerator.ts": 3,
     "src/utils/undoToast.tsx": 1,
     "src/utils/viacep.ts": 1
+  },
+  "meta": {
+    "target": 1500,
+    "deadline": "2027-01-31",
+    "note": "Reduzir as <Tipo> via tipagem real, atacar top ofensores por sprint"
   }
 }

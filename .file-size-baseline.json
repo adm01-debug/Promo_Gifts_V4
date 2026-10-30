@@ -140,5 +140,11 @@
     "src/services/magazineService.ts": 820,
     "src/services/quoteService.ts": 552,
     "src/types/stock.ts": 555
+  },
+  "meta": {
+    "target": 100,
+    "deadline": "2027-01-31",
+    "note": "Split dos maiores: QuoteBuilderSummaryColumn, magazineService, tipos",
+    "currentCount": 137
   }
 }
