@@ -9,7 +9,7 @@
     {"numero": 2845, "veredito": "MERGEAR", "status": "MERGEADA", "sha_merge": "637fe57eee3e00d012da3c1da843b088c2e695a7"},
     {"numero": 2844, "veredito": "MERGEAR", "status": "MERGEADA", "sha_merge": "a24ee07be166d35dd2d0e8c20f7547290e0d4348"},
     {"numero": 2836, "veredito": "MERGEAR", "status": "MERGEADA", "sha_merge": "6bd5ce61c3fe5a81b3a74d763ac05851c1129f80"},
-    {"numero": 2810, "veredito": "MERGEAR", "status": "AGUARDANDO_CI_2836"},
+    {"numero": 2810, "veredito": "MERGEAR", "status": "MERGEADA", "sha_merge": "554ef41b44c9f318777d7e7b11189490a29a8c0a", "merged_by": "adm01-debug", "merged_at": "2026-10-30T21:58:04Z"},
     {"numero": 2839, "veredito": "DECISAO_HUMANA", "status": "NAO_MERGEADA"},
     {"numero": 2758, "veredito": "JA_IMPLEMENTADA", "status": "NAO_MERGEADA"},
     {"numero": 2822, "veredito": "CI_FALHOU", "status": "NAO_MERGEADA"},
@@ -26,7 +26,7 @@
     {"numero": 2731, "veredito": "NAO_MERGEAR", "razao": "REGRA#8 duplo + historico desconectado do main"},
     {"numero": 2701, "veredito": "NAO_MERGEAR", "razao": "REGRA#8 + historico desconectado do main + DRAFT"}
   ],
-  "prs_mergeadas": [2844, 2845, 2836],
+  "prs_mergeadas": [2844, 2845, 2836, 2810],
   "contagem_vereditos": {
     "MERGEAR": 4,
     "DECISAO_HUMANA": 1,
@@ -37,11 +37,30 @@
   "ci_pos_merge": {
     "a24ee07be166d35dd2d0e8c20f7547290e0d4348": {
       "pr": 2844,
-      "deploy_gates_run": "41133956842",
-      "status": "in_progress",
+      "status": "docs_only_bypass",
       "gate_0": "success",
       "docs_only_bypass": "success",
-      "gate_final": "pendente"
+      "deployment_failure_alert": "skipped"
+    },
+    "637fe57eee3e00d012da3c1da843b088c2e695a7": {
+      "pr": 2845,
+      "status": "docs_only_bypass",
+      "gate_0": "success",
+      "docs_only_bypass": "success",
+      "deployment_failure_alert": "skipped"
+    },
+    "6bd5ce61c3fe5a81b3a74d763ac05851c1129f80": {
+      "pr": 2836,
+      "status": "gate_final_green_pre_merge",
+      "gate_final_pre_merge": "success",
+      "deployment_failure_alert": "skipped"
+    },
+    "554ef41b44c9f318777d7e7b11189490a29a8c0a": {
+      "pr": 2810,
+      "status": "in_progress",
+      "gate_final": "queued_infrastructure_backlog",
+      "deployment_failure_alert": "skipped",
+      "nota": "Gate Final na fila dos runners do GitHub (gargalo infra, nao falha); Vercel: sem falha"
     }
   }
 }
