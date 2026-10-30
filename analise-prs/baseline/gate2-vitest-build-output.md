@@ -18,7 +18,46 @@ Test Files  1 passed (1)
 
 ---
 
-## Comparação Gate 2 — Baseline vs Pós-Merge
+## CI Pós-Merge — Comparação por SHA
+
+| SHA | PR | Gate Final | Job | Completado |
+|---|---|---|---|---|
+| `a24ee07b` | #2844 | ✅ success | 124350219814 | 2026-10-30T22:50:04Z |
+| `637fe57e` | #2845 | ✅ success | 124354220749 | 2026-10-30T22:53:23Z |
+| `6bd5ce61` | #2836 | ✅ success | 124354384615 | 2026-10-30T22:53:26Z |
+| `554ef41b` | #2810 | ✅ success | 124355046790 | 2026-10-30T22:53:31Z |
+
+**Baseline pré-merge** (SHA `9541666b`): Gate Final = success (`gate_final_inicio` em progresso.json)
+**Conclusão:** Gate Final success em TODOS os 4 SHAs pós-merge. Zero regressão de CI.
+
+---
+
+## Verificação Supabase MCP (`doufsxqlfjyuvxuezpln`)
+
+```sql
+-- Executado via mcp__SUPABASE_-_GEST_O_DE_PRODUTOS_-_PROMO_GIFTS_V4__execute_sql
+SELECT migrations_after_20261027, latest_migration, active_cron_jobs
+-- Resultado: migrations_after_20261027=3, latest_migration=20261027160000, active_cron_jobs=134
+```
+
+Edge functions: todas ACTIVE (via `list_edge_functions`). Nenhuma das 4 PRs mergeadas
+modificou migrations ou edge functions (confirmado por `git diff` nos diffs de cada PR).
+
+---
+
+## Worktrees
+
+```
+git worktree list
+/home/user/Promo_Gifts_V4  efb39dd1e [claude/analise-merge-prs-abertas-shh8ez]
+```
+
+**Apenas 1 worktree** = repositório principal. Nenhum worktree adicional foi criado
+nesta sessão. Não há worktrees a remover.
+
+---
+
+## Comparação Gate 2 — Baseline vs Pós-Merge (local)
 
 **Método:** executar exatamente os 4 arquivos de teste que falhavam no baseline
 (`analise-prs/baseline/failing-tests-by-name.md`) e comparar falhas por nome.
