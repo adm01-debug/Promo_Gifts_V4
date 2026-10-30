@@ -196,10 +196,10 @@ No mesmo pedido, apagar o ruleset **24121385** ("Protect main branch", criado 20
 **Pronto:** teste automatizado confirma `--require-live` no Gate 1.13, condição de fork explícita nos três steps e que os CHECKs 3/4 do Gate 5 rodam em push e PR interno; `node scripts/check-policies-baseline.mjs --require-live` sem credenciais termina inconclusive (exit 2); Gate Final e Gate 5 passam no CI.
 **Origem:** A1-02, A2-10, A2-41
 
-#### P200-E009 · [A] · P0 · Reescrever a REGRA #9: governança exige PR, não push ✅
+#### P200-E009 · [A] · P0 · Reescrever a REGRA #9: governança exige PR, não push ⏳
 **Arquivo:** `CLAUDE.md` (REGRA #9)
-**Fazer:** o texto atual pede `git push` ao final da sessão e apenas *sugere* abrir PR. O buraco foi usado 69 vezes na janela, quase tudo em `.github/**`. Reescrever: mudança em `.github/**`, `CODEOWNERS`, `supabase/migrations/**`, `scripts/check-*` e `.gitleaks.toml` exige **PR**, inclusive do CODEOWNER; push direto em `main` só para reverter incidente em curso, com postmortem no mesmo dia.
-**Pronto:** `grep -c "exige PR" CLAUDE.md` ≥ 1 **e** `grep -c "git push ao final" CLAUDE.md` → `0`
+**Fazer:** o texto atual enfatiza concluir a sessão com push, enquanto o fluxo seguro exige revisão e integração por PR. Mudanças em `.github/**`, `CODEOWNERS`, `supabase/migrations/**`, `scripts/check-*` e `.gitleaks.toml` exigem PR, inclusive quando o autor é CODEOWNER. Push direto em `main` é proibido; mesmo incidente ativo usa PR emergencial de reversão/correção, preservando os gates.
+**Pronto:** `grep -ic "sempre em PR" CLAUDE.md` ≥ 1; `grep -ic "git push ao final" CLAUDE.md` → `0`; conteúdo do corpo de `CLAUDE.md` e `AGENTS.md` coincide; teste de espelhamento passa.
 **Origem:** A5-41, A5-55, C-04
 
 #### P200-E010 · [A] · P1 · Criar `npm run plan:status` ✅
