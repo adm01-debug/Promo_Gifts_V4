@@ -371,3 +371,11 @@ Após o push normal do SHA `a43a32d6fdf5875258e887b37b5bbbff3a6f30c1`, o PR #274
 Comparei individualmente as 119 definições de workflow no snapshot P30 (02:16 UTC) com o estado atual da `main` (`604de54c`). Os **61 workflows que estavam em `success` continuam em `success`**; nenhuma regressão nominal foi encontrada. O estado de `E2E (Playwright)` mudou de execução para `cancelled`; `Nightly Full CI` e `E2E • Swatch QuickView` seguem `in_progress`. Não houve nova execução na `main` depois de P32. O delta e a contagem atualizada estão em `PENDENCIAS.md` §P33.
 
 No SHA publicado `d3442b0315e848726ef36fb06fca779afc824197`, PR #2743 segue aberto e bloqueado: Copilot falhou por limite de uso HTTP 402 e firewall de `api.github.com`; outros checks ainda estavam em fila. Não foi mergeado.
+
+### Revalidação P34 — atualização após transição dos workflows — 2026-10-30
+
+Às 03:16 UTC reconsultei individualmente as 119 definições ativas, filtrando o último run da `main` e excluindo runs de PR. Estado: **61 success, 24 failure, 6 cancelled, 2 skipped, 3 pending, 1 queued, 1 in_progress e 21 sem execução**. A mudança relevante desde P33: `E2E • Swatch QuickView` finalizou em falha; Uptime Monitor iniciou outro run e está `queued`, portanto seu run falho anterior deixa de contar como falha atual. Nightly Full CI continua em andamento. A lista de falhas vigentes e o bloqueio exato do Swatch estão em `PENDENCIAS.md` §P34.
+
+Os 61 workflows previamente verdes seguem verdes; não identifiquei regressão nominal. No run do Swatch, falhou apenas o job Firefox no step da suíte QuickView. O resumo disponível não mostra a assertion e termina no upload do artifact Playwright; a próxima ação é inspecionar trace/relatório, sem alterar ou enfraquecer o teste sem evidência.
+
+O push do SHA `fecbef8c61389ca573ef64d2b0b33e95069d464e` foi confirmado no remoto por comparação de `git ls-remote`. O PR #2743 permanece aberto. A nova rodada de checks desse SHA ainda estava majoritariamente `queued` na consulta às 03:12 UTC (29 queued, 1 in_progress, 1 success, 4 skipped e 1 neutral); não foi mergeado. Nenhuma migration, escrita Supabase, deploy ou alteração funcional foi feita.
