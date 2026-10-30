@@ -248,7 +248,7 @@ CodeQL, Gitleaks, Lint untypedFrom, Lovable Autoheal, Lovable Edit Tracker, No P
 
 ## P30 — Inventário completo HEAD `52570b33` / `cba9944d` (2026-10-30T17:30Z)
 
-**HEAD atual da main:** `52570b33` (squash PR #2828, RELATORIO_CI.md §P28)
+**HEAD atual da main:** `52570b33` (squash PR #2828, RELATORIO_CI.md §P29)
 **Runs de referência:** executados sobre `cba9944d` (antecessor direto de `52570b33`); runs de `52570b33` ainda em andamento no momento deste registro.
 
 ### Workflows com última execução = `failure` (verificados)
