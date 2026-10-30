@@ -476,9 +476,9 @@ Esse run supersede a falha antiga em `c3b4128`. O PR #2749 (allowlist do SHA `9a
 ## P-UPTIME — Uptime Monitor: INVESTIGAÇÃO PENDENTE ⚠️
 
 **Workflow:** Uptime Monitor  
-**Última execução com falha na main:** [#41020809123](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41020809123) — SHA `9dde1db7` — `failure` (2026-10-30 07:33 UTC). A execução anterior [#41018096960](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41018096960) foi `success`.
+**Última execução com falha na main:** [#41024514553](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41024514553) — SHA `c0940281` — `failure` (2026-10-30 08:09 UTC). A execução registrou site `0`; health-check `22`; check-login (OPTIONS) `0`; auth-health `0`. A anterior [#41020809123](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41020809123) teve a mesma evidência. A última execução anterior com sucesso foi [#41018096960](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41018096960).
 
-**Evidência registrada pelo workflow antigo:** site `0`; health-check `22`; check-login (OPTIONS) `0`; auth-health `0`. `curl` exit 22 com `-f` comprova resposta HTTP de erro, mas o workflow não guardava o status. Portanto, essa execução não permite distinguir 401/404/5xx nem comprovar causa no banco externo. A hipótese de indisponibilidade de `EXTERNAL_PROMOBRIND_URL` anotada anteriormente não está confirmada para esta run.
+**Evidência registrada pelo workflow antigo:** `curl` exit 22 com `-f` comprova resposta HTTP de erro no health-check, mas o workflow não guardava o status. Portanto, as execuções não permitem distinguir 401/404/5xx nem comprovar causa no banco externo. A hipótese de indisponibilidade de `EXTERNAL_PROMOBRIND_URL` anotada anteriormente não está confirmada.
 
 **Correção em revisão:** branch `fix/uptime-http-status-20261030` registra código HTTP junto com exit code do curl, sem gravar corpo, headers ou chave. Inclui cenários automatizados para HTTP 200, HTTP 503 e falha de transporte (`000`). A mudança melhora o diagnóstico da próxima execução; não corrige nem mascara a indisponibilidade observada.
 
