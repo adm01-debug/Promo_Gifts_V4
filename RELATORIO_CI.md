@@ -156,3 +156,34 @@ Branch Protection Sentinel foi corrigido indiretamente: o fix foi via PR #2806 (
 ### Workflows com falha pré-existente (não alterados por esta sessão)
 
 Ver PENDENCIAS.md: P19-H (Copilot Code Review — billing 402), P21-edge-drift (edge-functions-drift-check — aprovação pendente #41034820685), P21-magazine-header / P21-critical-flows (E2E auth — secrets CI).
+
+## Atualização P23 — inventário atual da `main` (2026-10-30T11:35Z)
+
+### Workflows cuja última execução conhecida na `main` falhou
+
+| Workflow | Run mais recente | Conclusão | Causa comprovada | Próximo passo |
+|---|---|---|---|---|
+| Uptime Monitor | [#41045561447](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41045561447) | `failure` | Issue gerada pelo workflow registra `health-check=22`, com `site=0`, `check-login=0` e `auth-health=0`. Código 22 do curl `-f` indica resposta HTTP não-2xx, sem capturar o status no run. Em consulta autenticada separada, em 2026-10-30T11:30Z, o endpoint respondeu HTTP 503 e reportou `database=unhealthy` e `external_db=unhealthy`; não é possível provar que esse estado era igual no horário do run nem identificar a causa de banco somente pelo payload. | A versão implantada de `health-check` é 275 (atualizada em 2026-10-28), anterior ao fix no código da `main` em PR #2753. O deploy [#40976801625](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40976801625) foi cancelado. Foi solicitado deploy somente de `health-check`, pelo fluxo protegido: [#41048773110](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41048773110), atualmente pendente de aprovação de `production`. A aprovação pelo PO é necessária; em seguida, verificar um novo run do uptime e investigar saúde/logs do banco interno se o HTTP 503 persistir. |
+| Running Copilot Code Review | [#41045066850](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41045066850) | `failure` | Log do step `Processing Request (Linux)` contém `errorType: quota`, `statusCode: 402` e mensagem de limite de uso adicional do plano. O log também reporta bloqueio do firewall do runner para `api.github.com`, mas o erro explícito da chamada Copilot foi quota 402. | Bloqueio externo à aplicação. Administrador deve rever/regularizar a quota Copilot; depois, reexecutar. Se persistir, investigar a allowlist para `api.github.com`. Não é required check. |
+
+### Checks verdes na ponta atual da `main`
+
+| Workflow | Run | Estado |
+|---|---|---|
+| UI · Visual & A11y | [#41045062190](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41045062190) | `success` |
+| Select Columns vs Types | [#41045061953](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41045061953) | `success` |
+| Lovable Autoheal | [#41045062040](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41045062040) | `success` |
+| Gitleaks — Full History Audit | [#41045062076](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41045062076) | `success` |
+| E2E — Personalization Flow | [#41045062037](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41045062037) | `success` |
+| Policies Baseline | [#41045061919](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41045061919) | `success` |
+| Security Scan | [#41045062287](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41045062287) | `success` |
+
+Os demais runs sem conclusão neste snapshot estavam `queued`/`pending` e não foram classificados como falha. Falhas antigas em SHAs anteriores foram consideradas superadas apenas quando havia execução mais recente bem-sucedida do mesmo workflow na `main`.
+
+### PR #2800 — validação ainda bloqueada
+
+O seletor do link dos cards do Magazine foi corrigido na branch do PR, mas o run [#41041167646](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41041167646) falhou durante `auth.setup`: a chamada `auth/v1/token` expirou antes dos specs E2E. Portanto, o ajuste de seletor ainda não recebeu confirmação de CI; não mesclar até uma execução com auth funcional e checks obrigatórios verdes.
+
+### Comparação de validação local
+
+O commit de código `6dbc9387` permanece a base de código desta atualização; `git diff --name-only 6dbc9387..22ca2b3f` mostra somente `PENDENCIAS.md` e `RELATORIO_CI.md`, sem diferença de código ou lockfile. Build, typecheck, lint e suíte completa foram executados após o commit de código em ambiente local: `build:verify` aprovado, lint 0 erros/0 avisos, e 1.250 arquivos / 25.898 testes passaram (130 arquivos e 1.135 testes ignorados; 24 TODO). A mesma base foi preservada nas mudanças documentais; a suíte será reexecutada no HEAD deste PR antes de declarar a atualização validada.
