@@ -41,6 +41,7 @@
     "src/components/products/ZoomableGallery.tsx": 1,
     "src/components/products/customization/LocationPanel.tsx": 2,
     "src/components/products/gallery/PromoFlixPlayer.tsx": 2,
+    "src/components/products/gallery/usePromoFlixPlayer.ts": 2,
     "src/components/products/table-view/TableRowActions.tsx": 1,
     "src/components/quotes/CompanyContactSelector.tsx": 1,
     "src/components/quotes/QuoteAutoSave.tsx": 4,
