@@ -514,3 +514,117 @@ Os seguintes workflows têm o último run com status `queued` ou `pending` nos S
 | Select Columns vs Types | [#40969607793](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40969607793) | pending | ✅ anteriores verdes |
 
 **Conclusão:** nenhum desses workflows representa falha ativa. Quando os runners processarem os runs em 9a97f9a, o Branch Protection Sentinel poderá falhar para o commit `9a97f9a` se o PR #2749 não for mergeado antes (ver P-CI-H acima). Os demais deverão concluir com success baseado nos runs anteriores verdes e na ausência de regressão local (build/lint/tsc todos ✅ na auditoria local desta sessão).
+
+---
+
+## P19 — Três workflows com falha na main — 2026-10-30 (EM CORREÇÃO via PR #2763)
+
+**Data:** 2026-10-30T02:41 UTC
+
+### P19-A — Deploy Gates (run [#40991104565](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40991104565))
+
+**Causa raiz:** Gate 1.3 — `check-migration-path-references.mjs` detecta referência inválida em  
+`docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json:61389`  
+→ `20260615_002_fix_ai_quota_and_cache_bugs.sql` (arquivo inexistente em `supabase/migrations/`).  
+Arquivo do ledger canônico arquivado em `/docs/arquivo/2026-09/` contém referência a migration que nunca foi commitada.
+
+**Fix em andamento:** PR [#2763](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2763) — commit `8a1c1be`  
+`node scripts/check-migration-path-references.mjs --update-baseline` regenerou `.migration-refs-baseline.json` com 481 entradas (adicionou a referência ao MANIFESTO_LEDGER como legada). CI rodando.
+
+**Bloqueio:** nenhum — aguarda merge do PR #2763 com CI verde.
+
+---
+
+### P19-B — CI Security & Drift Checks (run [#40991104549](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40991104549))
+
+**Causa raiz:** Gate `outline-none WCAG 2.4.7` — ratchet detecta 1 violação nova (baseline: 19):  
+`src/components/magic-up/AdImageResult.tsx:188` — `focus-visible:outline-none` sem ring substituto.  
+Viola WCAG 2.4.7 (foco visível): foco removido sem alternativa.
+
+**Fix em andamento:** PR [#2763](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2763) — commit `b69a33b`  
+Adicionou `focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2` no mesmo className.  
+Verificado localmente: `node scripts/check-outline-none.mjs` → `✅ 0 regressões`.
+
+**Bloqueio:** nenhum — aguarda merge do PR #2763 com CI verde.
+
+---
+
+### P19-C — Uptime Monitor (run [#40989993974](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40989993974))
+
+**Causa raiz:** `Probe site + edge function` falhou em `https://www.promogifts.com.br/` ou  
+`https://doufsxqlfjyuvxuezpln.supabase.co/functions/v1/health-check`. O monitor criou/comentou  
+na issue #2752. A edge function `health-check` retorna `unhealthy`/503 quando  
+`EXTERNAL_PROMOBRIND_URL` está inacessível (ver P-UPTIME para causa raiz e fix mergeado).
+
+**Fix de código:** PR [#2753](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2753) **MERGEADO** em `279f17` (2026-10-29). O código em `main` converte `external_db=unhealthy` → `degraded`, mas o binário em produção ainda é o anterior.
+
+**Bloqueio:** deploy da edge function `health-check` requer aprovação manual do PO em  
+`environment: production`. Dispatch manual disparado em 2026-10-30T02:41 UTC para confirmar se é flake.  
+Sem aprovação do PO, o workflow continuará falhando quando `EXTERNAL_PROMOBRIND_URL` estiver inacessível.
+
+**Ação necessária do PO:**
+1. Acessar https://github.com/adm01-debug/Promo_Gifts_V4/deployments/activity_log?environment=production
+2. Aprovar o deploy pendente da edge function `health-check`
+3. Após deploy, próximo run do Uptime Monitor (~30 min) deve retornar `success`
+
+---
+
+### P19-D — E2E • Swatch QuickView (workflow `e2e-swatch-quickview.yml`, pré-existente)
+
+**Run no main:** [#40988483565](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40988483565) — SHA `380ceb6`, `conclusion=failure` (antes do PR #2763).
+
+**Causa raiz:** Teste `swatch-picker-v2-focus-and-quickview.spec.ts:100` falha com `[E108] Sem produtos com color_swatches em /reposicao (rota satélite)`. O teste exige dados reais de produto com `color_swatches` nas rotas `/catalogo`, `/super-filtro`, `/novidades` e `/reposicao`. No ambiente CI (Supabase prod), essas rotas não retornaram produtos com esse campo no momento da execução.
+
+**Confirmação de pré-existência:** O workflow já falhava em `380ceb6` (SHA anterior ao nosso PR). Não foi introduzido pelo PR #2763 — nossos changes tocam apenas `.migration-refs-baseline.json`, `AdImageResult.tsx` (foco a11y), `PENDENCIAS.md` e `RELATORIO_CI.md`.
+
+**Impacto no Gate Final:** NÃO — `e2e-swatch-quickview.yml` é workflow separado de `deploy-gates.yml`. Não é required check de `main`.
+
+**Bloqueio:** Dados de catálogo com `color_swatches` devem estar presentes nas rotas satélite para o teste passar. Não é corrigível por código sem ajuste de dados ou lógica de skip.
+
+**O que o PO pode fazer:**
+1. Verificar se os produtos com `color_swatches` estão ativos e visíveis nas rotas `/reposicao`, `/novidades`, `/super-filtro`.
+2. Se for uma limitação de dados de staging: ajustar o teste para pular rotas sem dados (via `REQUIRED_ROUTES`).
+3. Se for problema de timing de carga: aumentar timeout no fixture `firstPicker`.
+
+### P19-E — E2E — Personalization Flow (pré-existente no main)
+
+**Run no main:** [#40998398325](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40998398325) — SHA `7cd8cb13`, `conclusion=failure`.
+
+**Causa raiz:** `E2E — Personalization Journey` falha em fluxo de personalização de produto — testes exigem estado de catálogo/mockup específico que não está disponível no ambiente CI.
+
+**Confirmação de pré-existência:** O workflow já falhava em `380ceb6` (antes do PR #2763). Confirmado via histórico de runs no main.
+
+**Impacto no Gate Final:** NÃO — `E2E — Personalization Journey` não é required check de `main` (ver `required-checks.json`).
+
+**Bloqueio:** Dados de produto com personalização ativa necessários para os testes. Correção exige ajuste nos fixtures de testes ou na disponibilidade de dados.
+
+---
+
+### P19-F — Branch Protection Sentinel (pré-existente no main)
+
+**Run no main:** [#40998398421](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40998398421) — SHA `7cd8cb13`, `conclusion=failure`.
+
+**O que o Sentinel verifica (ver `.github/workflows/branch-protection-sentinel.yml:245-298`):**
+- `required_status_checks` com `Gate Final - Deploy Ready` presente no ruleset de `main`
+- `pull_request` (aprovação de PR obrigatória no ruleset)
+- `non_fast_forward` (sem push direto em `main`)
+
+**Causa raiz:** O job `check-protection-config` falhou ao validar as regras efetivas do branch `main` via `GET /repos/{owner}/{repo}/rules/branches/main`. Pode indicar ausência de ruleset ou desabilitação temporária de uma das 3 regras acima.
+
+**Diagnóstico antes de ignorar:** Ao ver nova falha do Sentinel, verificar qual das 3 regras está ausente no output do job antes de classificar como falso positivo. Falha real de branch protection é crítica — permite push direto em `main`.
+
+**Confirmação de pré-existência:** Run `#40998398421` no main, SHA `7cd8cb13`, não introduzida pelo PR #2763. Não é required check de `main`.
+
+**Impacto no Gate Final:** NÃO — não está em `required-checks.json`.
+
+---
+
+### P19-G — Uptime Monitor (pré-existente, aguarda ação de PO)
+
+**Runs no main:** [#40998220633](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40998220633), [#40995668739](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40995668739), etc. — `conclusion=failure` repetido.
+
+**Causa raiz:** Os probes curl (`site`, `health-check`, `check-login`, `auth-health`) falharam — o workflow não usa `environment: production` e não requer aprovação de deploy. A falha indica indisponibilidade temporária dos endpoints monitorados.
+
+**Impacto no Gate Final:** NÃO — não é required check de `main`.
+
+**Ação necessária do PO:** Verificar se os endpoints estão operacionais. Se for falha transitória de probe, nenhuma ação necessária. NÃO desabilitar a proteção de environment `production` — ela protege deploys de edge functions e migrations, não tem relação com este workflow.
