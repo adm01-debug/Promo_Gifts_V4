@@ -679,7 +679,7 @@ Os seguintes workflows têm o último run com status `queued` ou `pending` nos S
 
 **Causa raiz:** Gate 1.3 — `check-migration-path-references.mjs` detecta referência inválida em  
 `docs/arquivo/2026-09/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json:61389`  
-→ `supabase/migrations/20260615_002_fix_ai_quota_and_cache_bugs.sql` (arquivo inexistente).  
+→ `20260615_002_fix_ai_quota_and_cache_bugs.sql` (arquivo inexistente em `supabase/migrations/`).  
 Arquivo do ledger canônico arquivado em `/docs/arquivo/2026-09/` contém referência a migration que nunca foi commitada.
 
 **Fix em andamento:** PR [#2763](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2763) — commit `8a1c1be`  
