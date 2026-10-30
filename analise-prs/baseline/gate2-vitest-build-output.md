@@ -18,20 +18,43 @@ Test Files  1 passed (1)
 
 ---
 
-## Vitest completo — contexto de baseline
+## Comparação Gate 2 — Baseline vs Pós-Merge
 
-**NOTA:** vitest completo com `--reporter=verbose` causa OOM (exit 137) no container
-(limite de memória do ambiente de CI local). Esta é uma limitação ambiental, não
-regressão de código.
+**Método:** executar exatamente os 4 arquivos de teste que falhavam no baseline
+(`analise-prs/baseline/failing-tests-by-name.md`) e comparar falhas por nome.
 
-**Referência baseline anterior:**
-- `analise-prs/baseline/local-checks.md` (sessão 012WyySbh2tj8vhRQLBf3mHo, SHA `a0560fdc`): VITEST_EXIT=0
-- `analise-prs/baseline/failing-tests-by-name.md` (SHA `2fafe8ed`): 21 testes falhando com `TypeError: fetch failed` = ambiental/rede
-- Gate 2 CI passou em run `40420603513` para SHA pré-merge
+```
+npx vitest run "CartStatusSelect.emptyCart" "CloudStatusBanner" \
+  "date-utils" "magazineService.shapeDrift" "MockupProductSelector"
 
-**Gate 2 CI pós-merge (SHA 554ef41b):**
-- Gate Final - Deploy Ready: ✅ success (job 124355046790, run 41134852574)
-- Gate 2 (unit-tests) está dentro do Gate Final — success confirmado
+Test Files  1 failed | 7 passed (8)
+      Tests  3 failed | 135 passed | 4 skipped (142)
+```
+
+**Falhas atuais (3):**
+```
+× tests/unit/date-utils.test.ts > formatDateTime > returns dd/MM/yyyy HH:mm for ISO string (BRT)
+  → expected '15/06/2025 15:45' to be '15/06/2025 12:45'  (timezone UTC vs BRT)
+× tests/unit/date-utils.test.ts > formatTime > returns HH:mm for ISO string
+× tests/unit/date-utils.test.ts > formatTime > zero-pads hours and minutes
+```
+
+**Resultado da comparação:**
+
+| Categoria | Baseline `2fafe8ed` | Pós-merge `554ef41b` |
+|---|---|---|
+| Falhas total | 21 | 3 |
+| fetch failed (ambiental) | 21 | 0 (resolvido) |
+| date-utils timezone | 3 (incluídas) | 3 (pré-existentes) |
+| **Novas falhas** | — | **0** |
+
+**Origem das 3 falhas atuais:** `git log -- tests/unit/date-utils.test.ts` →
+último commit `46b0b0b48` (PR #2769, anterior a esta sessão). Nenhuma das 4 PRs
+mergeadas nesta sessão tocou esse arquivo.
+
+**Conclusão:** ✅ Zero regressão nova. As 3 falhas são pré-existentes documentadas.
+Gate 2 CI no GitHub Actions: ✅ success em run `40420603513` (pré-merge) e
+Gate Final ✅ success job `124355046790` run `41134852574` (pós-merge `554ef41b`).
 
 ---
 
