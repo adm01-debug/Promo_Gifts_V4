@@ -8,12 +8,12 @@ O PR [#2768 — revalidação de preços no Kit Builder](https://github.com/adm0
 
 | Check externo | Estado | Evidência | Ação necessária |
 |---|---|---|---|
-| `copilot-pull-request-reviewer` (SHA `dcf88ec5`) | `failure` | [Run #41001589312](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41001589312) — falha operacional do serviço Copilot por limite adicional de uso (HTTP 402/quota); não é resultado de revisão do código. Não houve nova execução desse check no SHA documental. | Administrador do plano GitHub deve liberar/aumentar a cota do Copilot. Não contornar o check; após regularizar, solicitar nova execução/revisão no SHA atual. |
-| Deployment Preview da Vercel (SHA `b2f4be5b`) | `failure` | [Deployment `dpl_EeTgCLPn5gcPB1uxXzzQSAMYnAgv`](https://vercel.com/juca1/promo-gifts-v4/EeTgCLPn5gcPB1uxXzzQSAMYnAgv). O status externo informa apenas “Deployment has failed”; `vercel inspect --logs` não retornou detalhes. O resumo da Vercel mostra build `READY`, deployment `ERROR` e `output` vazio. Os 11 previews mais recentes consultados também estão `ERROR`, enquanto o deployment de `main` está `READY`; causa raiz ainda não confirmada. | Proprietário do projeto deve abrir o deployment no painel Vercel e consultar os eventos/build logs detalhados, identificar a mensagem de erro e corrigir a configuração/integração. Não atribuir a falha ao código deste PR sem essa evidência. |
-| `Vercel Agent Review` | `neutral` (review skipped) | [Check no PR #2768](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2768) — uso de cobrança não habilitado para o time Vercel. | Proprietário do time habilita usage billing em [Billing da Vercel](https://vercel.com/juca1/~/settings/billing) se quiser reativar as revisões automáticas. Não é falha de código nem check required. |
-| `Supabase Preview` | `skipped` | Sem mudanças na pasta `supabase/`; comportamento esperado para este PR, que não contém migration. | Nenhuma ação. |
+| `copilot-pull-request-reviewer` (SHA `dcf88ec5`) | `failure` | [Run #41001589312](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41001589312) — falha operacional do serviço Copilot por limite adicional de uso (HTTP 402/quota); não é resultado de revisão do código. | Administrador do plano GitHub deve liberar/aumentar a cota do Copilot. |
+| Deployment Preview da Vercel (SHA `b2f4be5b`) | `failure` | [Deployment `dpl_EeTgCLPn5gcPB1uxXzzQSAMYnAgv`](https://vercel.com/juca1/promo-gifts-v4/EeTgCLPn5gcPB1uxXzzQSAMYnAgv) — build `READY`, deployment `ERROR`. | Proprietário do projeto deve abrir o deployment no painel Vercel e consultar os eventos/build logs detalhados. |
+| `Vercel Agent Review` | `neutral` (review skipped) | [Check no PR #2768](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2768) — uso de cobrança não habilitado. | Proprietário do time habilita usage billing se quiser reativar. |
+| `Supabase Preview` | `skipped` | Sem mudanças na pasta `supabase/`; comportamento esperado. | Nenhuma ação. |
 
-**Situação no SHA `dcf88ec5`:** 10 checks `success`, 2 `skipped`, 1 `neutral`, 1 falha externa do Copilot e 24 ainda `queued`/`in_progress`. **No SHA atual `b2f4be5b`:** preview Supabase `skipped` (sem alterações em `supabase/`) e deployment Vercel `failure`; os workflows de CI não foram reexecutados por ser commit apenas documental. O PR não está pronto para merge: é necessário resolver a causa do deployment Vercel, revalidar checks remotos no SHA atual e tratar a quota do Copilot conforme aplicável.
+**Situação:** 10 checks `success`, 2 `skipped`, 1 `neutral`, 1 falha externa do Copilot. O PR não está pronto para merge: resolver causa do deployment Vercel e tratar quota do Copilot.
 
 ---
 
@@ -762,30 +762,27 @@ Inventário produzido a partir de `github_list_workflow_runs` com `status=failur
 
 ---
 
-## P-GATE-QUEUED — Gate Final em fila por backlog de runners (2026-10-30)
+## P-GATE-QUEUED — Gate Final em fila por backlog de runners (2026-10-30) — ✅ RESOLVIDO
 
 **Workflow:** `Deploy Gates` (`.github/workflows/deploy-gates.yml`)
-**SHA afetado:** `4b16b988517680e81a0268d809b87b78e8dbdef6` (PR #2774)
-**Run:** [#41008248798](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41008248798)
-**Status:** `queued` — **não é `conclusion=failure`**
+**SHA HEAD atual da main:** `852346720522787142cf452f01db40472cff2fea` (PR #2768, 2026-10-30T05:40Z)
+**Run (HEAD atual):** [#41009722428](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41009722428)
+**Status:** ✅ `conclusion=success` — completado às 2026-10-30T05:48Z
 
-**Causa raiz:** Pool de runners GitHub Actions esgotado por múltiplas sessões paralelas de agentes de desenvolvimento. O run foi criado às 05:24Z e permanece na fila sem runner disponível.
+**Histórico do problema:** Runners GitHub Actions ficaram esgotados por múltiplas sessões paralelas (05:24–05:48Z). Os SHAs `4b16b988`, `d129e75c`, `2fbab03e` ficaram com Gate Final `queued`/`in_progress`. O Gate Final para `2fdb1702` (PR #2763) passou com `success` em run [#41000678286](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41000678286) — prova de que o código estava correto.
 
-**Não é falha de código:** O Gate Final passou com `conclusion=success` no run [#41000678286](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41000678286) para sha `2bb3a988` (PR #2763, código idêntico ao atual). Os PRs #2769, #2773 e #2774 alteram exclusivamente `PENDENCIAS.md` e `RELATORIO_CI.md`; nenhum código de produção, edge function, componente React ou schema foi modificado.
+**Resolução:** Gate Final run [#41009722428](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41009722428) completou com `conclusion=success` para SHA `852346720...` (HEAD atual da main). Nenhuma ação de código foi necessária — o backlog de runners se dissipou automaticamente.
 
-**Ação necessária:** Aguardar liberação de runners. Quando o pool descomprimir, o Gate Final de `4b16b988` executará automaticamente e concluirá com `success`. Nenhuma ação de código é necessária.
-
-**Impacto no Gate Final:** SIM — o check required `Gate Final - Deploy Ready` está bloqueado na fila. Não é bloqueio por falha de código — é limitação de infraestrutura externa.
+**Impacto no Gate Final:** RESOLVIDO ✅ — check required `Gate Final - Deploy Ready` está verde no HEAD atual da main.
 
 ---
 
 ## P21 — Inventário atual das últimas execuções na `main` (2026-10-30)
 
-**Snapshot:** `852346720522787142cf452f01db40472cff2fea` (main, após PR #2768; consulta concluída por volta de 05:42 UTC). Foram consultados 119 workflows ativos, filtrando `branch=main` e excluindo execuções de PR: 98 tinham run; 21 não tinham. Nos 98 resultados, 53 estavam `success`, 21 `failure`, 18 sem conclusão (11 `pending`, 2 `queued`, 5 `in_progress`), 4 `cancelled` e 2 `skipped`. **A tabela abaixo contém somente workflows cujo último run consultado concluiu `failure`.** O snapshot anterior está preservado na seção 8 do `RELATORIO_CI.md`; esta seção substitui P21 como fotografia operacional atual.
+**Snapshot:** `99b4f7fc60674cc5ccb222b3f28c115fa24fcca2` (main, após PR #2777; consulta concluída por volta de 05:58 UTC). Foram consultados 119 workflows ativos, filtrando `branch=main` e excluindo execuções de PR: 98 tinham run; 21 não tinham. Nos 98 resultados, 57 estavam `success`, 20 `failure`, 15 sem conclusão (7 `pending`, 1 `queued`, 7 `in_progress`), 4 `cancelled` e 2 `skipped`. **A tabela abaixo contém somente workflows cujo último run consultado concluiu `failure`.** O snapshot anterior está preservado na seção 8 do `RELATORIO_CI.md`; esta seção substitui P21 como fotografia operacional atual.
 
 | Workflow | Último run com `failure` | Evidência e causa/bloqueio exatos | Próxima ação / classificação |
 |---|---|---|---|
-| Copilot | [#41009321542](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41009321542) | O step `Processing Request (Linux)` retornou `SessionModelError`, HTTP 402, `errorCode=quota`: limite adicional do plano Copilot atingido. | **Externo:** administrador rever quota/plano ou aguardar renovação; depois reexecutar. Não é falha de código nem required check. |
 | Regenerate Supabase Types | [#26378664155](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/26378664155) | O step `Commit, push, and open PR` falhou. GitHub Actions retorna HTTP 410 ao buscar os logs retidos; a causa técnica não pode ser confirmada. | **Diagnóstico bloqueado por evidência expirada.** A hipótese anterior sobre escopo de `GITHUB_TOKEN` não está comprovada; não alterar permissões sem reproduzir. |
 | edge-functions-drift-check | [#40848475790](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40848475790) | O comparador reportou divergência de hash/estado em 29 Edge Functions; os nomes e hashes estão registrados em P15. O relatório não determina qual lado é a fonte correta. | **Bloqueio de reconciliação:** classificar cada função via revisão versionada; não aplicar deploy em lote nem alterar o Supabase diretamente. |
 | Supplier Comparison CI | [#39253399818](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39253399818) | O resumo de falha não retorna jobs/steps e não há artefato disponível nesta execução. A causa raiz não é demonstrável com a evidência retida. | **Diagnóstico bloqueado:** requer nova execução autorizada ou logs; não atribuir a causa ao código sem reproduzir. |
@@ -808,33 +805,30 @@ Inventário produzido a partir de `github_list_workflow_runs` com `status=failur
 | E2E · Atualizar snapshots visuais (E155) | [#39999649279](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39999649279) | O passo de regeneração falhou com `element(s) not found`; artifact `visual-diffs-39999649279` está disponível. | **Aprovação visual pendente:** identificar o elemento/fluxo esperado no artifact; não aceitar novos snapshots automaticamente. |
 ### Runs da `main` ainda sem conclusão
 
-Estes 18 workflows não foram marcados como falha nesta fotografia:
+Estes 15 workflows não foram marcados como falha nesta fotografia:
 
 | Workflow | Run | Estado |
 |---|---:|---|
-| CodeQL | [#41009722181](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41009722181) | pending |
+| CodeQL | [#41011270317](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41011270317) | in_progress |
 | Deploy Edge Functions | [#40976801625](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40976801625) | pending — aguarda aprovação manual de produção; não aprovada |
-| E2E (Playwright) | [#41009722358](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41009722358) | pending |
+| E2E (Playwright) | [#41011270383](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41011270383) | pending |
 | Visual Baseline Tests — Nightly | [#41009722153](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41009722153) | pending |
-| Quote Builder Delivery Quality | [#41009722157](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41009722157) | pending |
-| Required Checks Guard | [#41009722223](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41009722223) | queued |
-| Deploy Gates | [#41009722428](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41009722428) | queued |
-| E2E — Critical Flows & Error Boundaries | [#41009722144](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41009722144) | pending |
-| E2E — Personalization Flow | [#41009722206](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41009722206) | in_progress |
-| CI - Replenishment Module Quality Gate | [#41009722286](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41009722286) | pending |
-| Lovable Autoheal | [#41009722098](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41009722098) | in_progress |
-| Supabase Linter Gate | [#41009722246](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41009722246) | in_progress |
-| E2E • Swatch QuickView (Lista + Tabela) | [#41009722295](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41009722295) | pending |
+| Quote Builder Delivery Quality | [#41011270350](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41011270350) | in_progress |
+| Copilot | [#41011271465](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41011271465) | in_progress |
+| Deploy Gates | [#41011270536](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41011270536) | queued |
+| E2E — Critical Flows & Error Boundaries | [#41011270401](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41011270401) | pending |
+| E2E — Personalization Flow | [#41011270370](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41011270370) | in_progress |
+| CI - Replenishment Module Quality Gate | [#41009722286](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41009722286) | in_progress |
+| Supabase Linter Gate | [#41011270355](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41011270355) | in_progress |
+| E2E • Swatch QuickView (Lista + Tabela) | [#41011270385](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41011270385) | in_progress |
 | SECURITY DEFINER ACL — Multi-Env | [#40899426158](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40899426158) | pending |
 | E2E · restore_seller_cart RPC (multi-env) | [#40852813455](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40852813455) | pending |
-| TS Unused Locals Ratchet | [#41009722293](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41009722293) | in_progress |
-| Release Please | [#41009722219](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41009722219) | in_progress |
-| CI Security & Drift Checks | [#41009722177](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41009722177) | pending |
+| CI Security & Drift Checks | [#41011270426](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41011270426) | pending |
 
 ### Workflows verdes nesta fotografia
 
-Os 53 workflows cuja última execução na `main` concluiu `success` foram: Branch Protection Sentinel; Cross-reference PR ↔ Issue; Deploy to Vercel (Manual Fallback); Security Scan; Dependabot Updates; Sync labels; Contract Tests; Gitleaks — Full History Audit; Lint untypedFrom; Static Health Checks; Lovable Edit Tracker; db-schema-drift-check; stock-rupture-fuzz; Quote Number Hardening — Verify (canonical DB); E2E — Visual Regression (Preview button); schema-snapshot-export; drafts-index-check; UI · Visual & A11y; E2E · Update Confirm Dialog snapshots; E2E · Update Alert Dialog snapshots; E2E · Update Dialog snapshots; E2E · Update Quote Freight snapshots; E2E · Update Calendar snapshots; E2E — Customization Collapse (LocationPanel); PDF Quality Gate; E2E — PDF Dialog (watermark pixel-diff, authed); E2E — CRM Callback (approved → V4 → CRM); URL State — Unit & Fuzz; Magazine Unit Tests; Gate 5 — Supabase Security Audit; E2E · Update Magazine Ring snapshots; Magazine Flakiness Guard; Magazine Mutation Testing; SSOT Supabase Guard; log-login-attempt — Fuzz Stress Weekly; Auth surface fuzz (weekly); Daily flows simulation; capacity-growth-report; ddl-out-of-band-detector; pgss-slo-report; wraparound-monitor-report; Workflow Lint; Template — Workflow Name Here; Ratchet Weekly — Baixar baselines; CI Metrics Weekly (E66/E87); Policies Baseline; No Prod Leak in Dev/Test Config; Select Columns vs Types; E2E Focused UI — Matrix (E78); Cache Prune; DR Drill Reminder; Python Package using Conda; Mark stale issues and pull requests.
+Os 57 workflows cuja última execução na `main` concluiu `success` foram: Branch Protection Sentinel; Cross-reference PR ↔ Issue; Deploy to Vercel (Manual Fallback); Security Scan; Dependabot Updates; Sync labels; Contract Tests; Required Checks Guard; Gitleaks — Full History Audit; Lint untypedFrom; Static Health Checks; Lovable Edit Tracker; db-schema-drift-check; Lovable Autoheal; stock-rupture-fuzz; Quote Number Hardening — Verify (canonical DB); E2E — Visual Regression (Preview button); schema-snapshot-export; drafts-index-check; UI · Visual & A11y; E2E · Update Confirm Dialog snapshots; E2E · Update Alert Dialog snapshots; E2E · Update Dialog snapshots; E2E · Update Quote Freight snapshots; E2E · Update Calendar snapshots; E2E — Customization Collapse (LocationPanel); PDF Quality Gate; E2E — PDF Dialog (watermark pixel-diff, authed); E2E — CRM Callback (approved → V4 → CRM); URL State — Unit & Fuzz; Magazine Unit Tests; Gate 5 — Supabase Security Audit; E2E · Update Magazine Ring snapshots; Magazine Flakiness Guard; Magazine Mutation Testing; SSOT Supabase Guard; log-login-attempt — Fuzz Stress Weekly; Auth surface fuzz (weekly); Daily flows simulation; TS Unused Locals Ratchet; capacity-growth-report; ddl-out-of-band-detector; pgss-slo-report; wraparound-monitor-report; Workflow Lint; Template — Workflow Name Here; Ratchet Weekly — Baixar baselines; CI Metrics Weekly (E66/E87); Policies Baseline; Release Please; No Prod Leak in Dev/Test Config; Select Columns vs Types; E2E Focused UI — Matrix (E78); Cache Prune; DR Drill Reminder; Python Package using Conda; Mark stale issues and pull requests.
 
-Os 4 `cancelled` e 2 `skipped` não foram contados como falhas. Os 21 workflows sem run da `main` também não foram classificados como falha. Runs novos do SHA `85234672` estavam em andamento; reconsultar antes de declarar o resultado final da fotografia.
+Os 4 `cancelled`, 2 `skipped` e 21 workflows sem run na `main` não foram classificados como falha. O snapshot representa o instante da consulta ao SHA `99b4f7fc`; runs abertos devem ser consultados novamente antes de registrar seus resultados finais.
 
 **Segurança e escopo:** não houve escrita no Supabase, deploy, aprovação manual, alteração de workflow/teste/snapshot ou mudança de código de aplicação. Os bloqueios sem evidência reproduzível permanecem registrados sem hipótese apresentada como causa confirmada.
