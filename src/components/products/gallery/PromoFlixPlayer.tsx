@@ -80,7 +80,6 @@ export function PromoFlixPlayer({
     isPlaying,
     currentTime,
     duration,
-    buffered,
     volume,
     isMuted,
     playbackRate,

@@ -156,7 +156,7 @@ export function usePromoFlixPlayer({
       });
     };
     const canPlayNativeHls = video.canPlayType('application/vnd.apple.mpegurl') !== '';
-    const isM3u8 = /\.m3u8(\?|$)/i.test(src) || /\/manifest\/video\.m3u8/i.test(src) || /cloudflarestream\.com.*manifest/i.test(src);
+    const isM3u8 = /\.m3u8(\?|$)/i.test(src) || /\/manifest\/video\.m3u8/i.test(src) || /^https?:\/\/[^/]*cloudflarestream\.com.*\/manifest/i.test(src);
     const useNative = !isHls || !isM3u8 || canPlayNativeHls;
     if (useNative) {
       video.src = src;
