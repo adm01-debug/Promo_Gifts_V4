@@ -1,6 +1,6 @@
 # RELATORIO_CI.md — Auditoria de Workflows CI/CD
 
-**Gerado:** 2026-10-29 · **Atualizado:** 2026-10-30T12:23 UTC
+**Gerado:** 2026-10-29 · **Atualizado:** 2026-10-30T12:36 UTC
 **HEAD da main:** `7e56ae49dde173e04f66ed4523eb8eb59653821a` (docs-only, 2026-10-30)
 **HEAD anterior:** `c09402816` (baseline local)
 **Sessão:** https://claude.ai/code/session_01RfQzo7S3K6o49UBUDoCtUe
@@ -417,3 +417,31 @@ A PR [#2816](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2816) está aber
 ### Validação local já registrada
 
 Após o commit documental `5ad880a1e`, `npm run build:verify` e `npm test -- --reporter=dot --silent` passaram (1.250 arquivos; 25.898 testes aprovados, 1.135 skipped e 24 todo). O merge com `7e56ae49` e este snapshot também são apenas documentais; a validação será repetida após o commit de reconciliação, antes do push.
+
+## Atualização P28 — conclusões e falha E2E no SHA `7e56ae49` (2026-10-30T12:36Z)
+
+O snapshot P27 de 12:23Z foi atualizado pelos novos runs da `main`. Nenhuma alteração de código foi feita para esses resultados.
+
+### Falhas concluídas mais recentes na `main`
+
+| Workflow | Run | Conclusão | Evidência e status |
+|---|---|---|---|
+| Uptime Monitor | [#41053317735](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41053317735) | `failure` | Step agregado `Probe site + edge function`; o log não identifica qual probe falhou. Deploy protegido de `health-check` [#41048773110](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41048773110) aguarda aprovação `production`. |
+| Running Copilot Code Review | [#41045066850](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41045066850) | `failure` | HTTP 402 / cota Copilot esgotada; ação de admin. |
+| E2E — Critical Flows & Error Boundaries | [#41054206634](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41054206634) | `failure` | Job autenticado: `auth/v1/token` retornou 200 em 3,5 s e `auth/v1/user` 200; `system_settings` recebeu 401 após 12 s e várias chamadas REST/RPC/Edge ficaram pendentes por 56–80 s. O login permaneceu em `/login` e o setup pulou specs; 1 teste executado, 9 skipped, razão 90%, acima do limite de 50%. Evidência confirma falha de dependência no fluxo de sessão/dados, mas não identifica causa raiz entre API, autorização ou serviço. Sem mudança de teste, segredo, schema ou código. |
+
+### Workflows que já passaram ou seguem ativos em `7e56ae49`
+
+- **Success:** Quote Number Hardening Verify [#41055540192](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41055540192), UI Visual & A11y [#41054206778](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41054206778), Release Please [#41054206617](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41054206617), Select Columns vs Types [#41054206658](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41054206658), Branch Protection Sentinel [#41054206673](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41054206673), Static Health [#41054206785](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41054206785), No Prod Leak [#41054206666](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41054206666), Gitleaks [#41054206653](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41054206653), Lovable Autoheal [#41054207025](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41054207025), Required Checks Guard [#41054206618](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41054206618), Policies Baseline [#41054206631](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41054206631), Supabase Linter [#41054206788](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41054206788), Lovable Edit Tracker [#41054206747](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41054206747), Personalization E2E [#41054206728](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41054206728), SSOT [#41054206549](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41054206549), Security Scan [#41054206640](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41054206640), CodeQL [#41054207049](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41054207049) e Quote Builder [#41054206663](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41054206663).
+- **Ainda sem conclusão:** Deploy Gates push [#41054206726](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41054206726) (Gate 0, Gate 2/2.5, Gate 0.5, Gate 4/5 e secret gates passaram; Gates 1, 3 e 5.5 estavam `in_progress`); CI Security & Drift [#41054206685](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41054206685) (security-audit success; quality-gate `in_progress`); Playwright [#41054206752](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41054206752) e Swatch QuickView [#41054206843](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41054206843) (`in_progress`).
+- Deploy Gates dispatch [#41054421796](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41054421796) terminou `cancelled`; o motivo não está disponível no resumo e não é contado como falha.
+- `Deployment Failure Alert` e `Lovable Protected-File Audit` ficaram `skipped` por condição, não são falhas.
+- Edge drift [#41048782448](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41048782448) permanece `cancelled`; não comprova sincronização. O deploy de `health-check` segue aguardando aprovação humana.
+
+### PR #2816 após sincronização
+
+A branch da PR foi atualizada e está baseada em `7e56ae49`; head `94b948612`. Os checks do PR indicam Vercel `failure` ([deployment](https://vercel.com/juca1/promo-gifts-v4/4AYVybqkXQSRyzmEKRAk7spGa1GR)) e Devin Review `success` com revisão omitida por falta de créditos. A PR está bloqueada e não foi mesclada. O status Vercel pertence à PR, não a um workflow da `main`.
+
+### Validação local pós-commit `94b948612`
+
+`NODE_OPTIONS=--max-old-space-size=4096 npm run build:verify` passou: typecheck, lint baseline (0 erros, 0 warnings; regressões +0), build Vite e guardas do projeto. A suíte completa também passou: 1.250 arquivos; 25.898 testes aprovados, 1.135 skipped e 24 todo. O hook pre-push repetiu lint baseline, sem regressões. O commit altera apenas `PENDENCIAS.md` e `RELATORIO_CI.md`.

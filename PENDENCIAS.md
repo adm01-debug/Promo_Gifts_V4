@@ -1,6 +1,26 @@
 # PENDÊNCIAS CI — Promo Gifts V4
-**Atualizado em:** 2026-10-30
+**Atualizado em:** 2026-10-30T12:36Z
 **Branch de correção:** `claude_04/beautiful-gates-bvocz5` (PR #2597 — **MERGEADO** ✅)
+
+## Atualização P28 — falhas e checks no SHA `7e56ae49` (2026-10-30T12:36Z)
+
+Esta seção substitui os estados pendentes do snapshot P27 (12:23Z). Últimos runs da `main` consultados: falhas concluídas abaixo; estados em fila/execução não contam como falhas.
+
+| Workflow | Run / conclusão | Erro e causa comprovada | Ação |
+|---|---|---|---|
+| Uptime Monitor | [#41053317735](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41053317735) — `failure` | Falhou o step agregado `Probe site + edge function`; o log não revela qual das quatro probes falhou. | Deploy protegido `health-check` [#41048773110](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41048773110) continua `pending` de aprovação em `production`. **PO:** aprovar e aguardar nova execução do monitor; identificar qual probe falha se persistir. Sem alterações de função ou banco. |
+| Running Copilot Code Review | [#41045066850](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41045066850) — `failure` | HTTP 402, cota adicional Copilot esgotada. | **PO/admin:** regularizar cota e então solicitar nova execução. Não é falha de código. |
+| E2E — Critical Flows & Error Boundaries | [#41054206634](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41054206634) — `failure` | Job `E2E — Full User Flows (authed)`: `check-login` 200, `auth/v1/token` 200 (3,5s), `auth/v1/user` 200; `system_settings` 401 após 12s e chamadas REST/RPC/Edge pendentes por 56–80s. Login ficou em `/login`. Só 1/10 testes rodou; 9 foram skipped, falhando o gate mínimo (90% skipped; máximo 50%). Causa final do 401/latência não está comprovada. | Investigar serviço/API/permissões do usuário de teste com evidência dos logs do projeto; corrigir a origem antes de repetir. Não enfraquecer o gate nem os asserts. A consulta read-only de logs unificados (12:20–12:35Z) não trouxe paths correlacionáveis; os logs PostgREST exibem apenas path `/`. Nenhum DDL, dado, secret ou código foi alterado. |
+
+### Sucessos e estados ainda não concluídos na mesma ponta
+
+- Passaram: Quote Number Hardening Verify [#41055540192](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41055540192), UI Visual & A11y [#41054206778](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41054206778), Release Please [#41054206617](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41054206617), Select Columns [#41054206658](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41054206658), Branch Protection [#41054206673](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41054206673), Static Health [#41054206785](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41054206785), No Prod Leak [#41054206666](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41054206666), Gitleaks [#41054206653](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41054206653), Autoheal [#41054207025](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41054207025), Required Checks [#41054206618](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41054206618), Policies [#41054206631](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41054206631), Supabase Linter [#41054206788](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41054206788), Lovable Edit Tracker [#41054206747](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41054206747), Personalization E2E [#41054206728](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41054206728), SSOT [#41054206549](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41054206549), Security Scan [#41054206640](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41054206640), CodeQL [#41054207049](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41054207049) e Quote Builder [#41054206663](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41054206663).
+- Ainda em execução: Deploy Gates push [#41054206726](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41054206726) (Gate 1, 3, 5.5), CI Security & Drift [#41054206685](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41054206685) (quality-gate), Playwright [#41054206752](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41054206752) e Swatch QuickView [#41054206843](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41054206843). Não são falhas concluídas.
+- Deploy Gates dispatch [#41054421796](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41054421796) foi `cancelled`, sem motivo exposto; `Deployment Failure Alert` e `Lovable Protected-File Audit` foram `skipped`. Edge drift [#41048782448](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41048782448) continua cancelado; deploy protegido aguardando PO.
+
+### PR #2816
+
+PR sincronizada com base `7e56ae49`, head `94b948612`, ainda aberta/bloqueada. Vercel falhou no deployment [dpl_4AYVybqkXQSRyzmEKRAk7spGa1GR](https://vercel.com/juca1/promo-gifts-v4/4AYVybqkXQSRyzmEKRAk7spGa1GR); Devin Review mostra sucesso com análise omitida por trial/créditos. Não mesclar até status requerido estar aprovado; este Vercel é status da PR, não workflow da `main`.
 
 ## Atualização P27 — inventário da ponta atual da `main` (2026-10-30T12:23Z)
 
