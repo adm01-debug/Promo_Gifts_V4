@@ -265,7 +265,7 @@ Nenhum código, teste, CI config ou workflow foi alterado. Portanto:
 
 | Arquivo | Problema | Fix |
 |---|---|---|
-| `.github/workflows/ratchet-weekly.yml` | `echo "$DIFF_OUT" \| head -40` → SIGPIPE (exit 141) em `bash -eo pipefail` | Commit `6666dd5` — diff gravado em `/tmp/ratchet-diff.txt`; `head` lê arquivo (sem pipe) |
+| `.github/workflows/ratchet-weekly.yml` | `echo "$DIFF_OUT" \| head -40` → SIGPIPE (exit 141) em `bash -eo pipefail` | Commit `6666dd5` — `git diff > /tmp/ratchet-diff.txt && head -40 /tmp/ratchet-diff.txt` (arquivo temporário de runner, não artefato auditável; ver `.github/workflows/ratchet-weekly.yml` lines 55-58 para o código definitivo) |
 
 
 ---

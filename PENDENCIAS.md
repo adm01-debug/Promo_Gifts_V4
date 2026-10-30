@@ -618,8 +618,8 @@ Sem aprovação do PO, o workflow continuará falhando quando `EXTERNAL_PROMOBRI
 
 **Runs no main:** [#40998220633](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40998220633), [#40995668739](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40995668739), etc. — `conclusion=failure` repetido.
 
-**Causa raiz:** Workflow `uptime-monitor.yml` faz deploy para environment `production` que requer aprovação manual do PO (branch protection rule de environment).
+**Causa raiz:** Os probes curl (`site`, `health-check`, `check-login`, `auth-health`) falharam — o workflow não usa `environment: production` e não requer aprovação de deploy. A falha indica indisponibilidade temporária dos endpoints monitorados.
 
 **Impacto no Gate Final:** NÃO — não é required check de `main`.
 
-**Ação necessária do PO:** Aprovar em https://github.com/adm01-debug/Promo_Gifts_V4/deployments/activity_log?environment=production OU desabilitar o environment protection rule para o Uptime Monitor.
+**Ação necessária do PO:** Verificar se os endpoints estão operacionais. Se for falha transitória de probe, nenhuma ação necessária. NÃO desabilitar a proteção de environment `production` — ela protege deploys de edge functions e migrations, não tem relação com este workflow.
