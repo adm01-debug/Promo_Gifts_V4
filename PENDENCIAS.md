@@ -598,34 +598,26 @@ Validação local após os dois commits do PR: `npm run build:verify`, actionlin
 
 ---
 
-## P-CI-H — Branch Protection Sentinel: SHA allowlist (PR #2749, aguarda PO)
+## ✅ P-CI-H — RESOLVIDO — Branch Protection Sentinel
 
 **Workflow:** Branch Protection Sentinel  
 **Run com falha original:** [#40965131389](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40965131389) — SHA `c3b4128` — `failure`  
-**Data:** 2026-10-29 · **Atualizado:** 2026-10-30
+**Data:** 2026-10-29 · **Resolvido:** 2026-10-30
 
-**Status atual:** O Sentinel está **VERDE** nos commits novos gerados por PR desta sessão:
-- Run [#40975431177](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40975431177) = `success` em `07bc2b09` ✅
-- Run [#40976721979](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40976721979) = `success` em `12becf90` ✅
+**Resolução:** O Sentinel retornou `success` na main atual (`3b7dc731eea29a1ec7a69f6dae5ca97fb89c7739` — "chore(main): release 1.1.0 (#2713)", push de 2026-10-30T00:24:09Z):
 
-**Item pendente residual:** SHA `9a97f9a2c857b25590691efd2c741a194bfb24da` (commit `docs(analise-prs): rev47` do PO) ainda não está no allowlist. O Sentinel falha nesse SHA específico quando o run processa-o, mas esse SHA já não é o HEAD da main (main está em `279f17`). Novos commits via PR continuam passando.
+- Run [#40979462648](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40979462648) = **`success`** em `3b7dc731` ✅
 
-**Fix implementado (PR [#2749](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2749)):**
-- `scripts/sentinel-check.sh`: Regra 7.5 — SHA allowlist via `.github/SENTINEL_SHA_ALLOWLIST.txt`
-- `.github/workflows/branch-protection-sentinel.yml`: passa `$SHA` como 4º argumento
+Esse run supersede a falha antiga em `c3b4128`. O PR #2749 (allowlist do SHA `9a97f9a`) continua aberto mas não é mais bloqueante — o HEAD da main evoluiu para além desse SHA e o Sentinel já passa.
 
-**Bloqueio de auto-merge:** PR modifica `.github/workflows/` → Regra 8 → requer squash-merge pelo PO.
-
-**Ação necessária do PO (apenas para fixar SHA histórico):**
-1. Editar `.github/SENTINEL_SHA_ALLOWLIST.txt` na branch do PR para adicionar: `9a97f9a2c857b25590691efd2c741a194bfb24da  # docs(analise-prs): rev47  [2026-10-29]`
-2. Fazer squash-merge do PR [#2749](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2749) **sem** `commit_title` customizado
+**Nota:** PR #2749 ainda pode ser mergeado pelo PO para proteger o SHA `9a97f9a` historicamente, mas não é ação urgente.
 
 ---
 
 ## P-UPTIME — Uptime Monitor: deploy aguarda aprovação PO (BLOQUEIO EXTERNO)
 
 **Workflow:** Uptime Monitor  
-**Última run com falha:** [#40973971965](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40973971965) — SHA `9a97f9a` — `failure` (23:33 UTC 2026-10-29)  
+**Última run com falha:** [#40978818572](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40978818572) — SHA `279f17` — `failure` (2026-10-30)  
 **Data:** 2026-10-29 · **Atualizado:** 2026-10-30
 
 **Causa raiz:** `ExternalDatabaseChecker.check()` em `supabase/functions/health-check/index.ts:127` retorna `status: "unhealthy"` quando banco externo (`EXTERNAL_PROMOBRIND_URL`) está inacessível → HTTP 503 → curl exit 22 → workflow failure. Banco externo é dependência advisory, não deveria causar 503.
