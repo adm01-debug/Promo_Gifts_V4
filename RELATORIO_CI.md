@@ -1,6 +1,6 @@
 # RELATORIO_CI.md — Auditoria de Workflows CI/CD
 
-**Gerado:** 2026-10-29 · **Atualizado:** 2026-10-30T10:22 UTC  
+**Gerado:** 2026-10-29 · **Atualizado:** 2026-10-30T10:45 UTC  
 **HEAD da main:** `7299c88c21d1c67ac65f5beafc18bdf350ced277` (release 1.3.2, 2026-10-30)  
 **HEAD anterior:** `c09402816` (baseline local)  
 **Sessão:** https://claude.ai/code/session_01RfQzo7S3K6o49UBUDoCtUe
@@ -58,12 +58,12 @@
 | E2E — Critical Flows & Error Boundaries | [#41034358180](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358180) | ❌ failure | PENDENCIAS.md §P21-critical-flows — auth E2E CI; não-required |
 | E2E • Swatch QuickView (Lista + Tabela) | [#41034358495](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358495) | ❌ failure (chromium+webkit) | PENDENCIAS.md §P21-swatch-qv — check-min-tests falhou; firefox in_progress |
 | CI Security & Drift Checks | [#41034358666](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358666) | 🔴 pending (0 jobs) | PENDENCIAS.md §P21-ci-security — nunca pegou runner; ação PO: cancelar e re-disparar |
-| E2E (Playwright) | [#41034358354](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358354) | ⏳ in_progress | header-sticky gate em andamento desde 09:34:57 |
-| Visual Baseline Tests — Nightly | [#41034358175](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358175) | ⏳ in_progress | testes visuais autenticados em andamento |
-| Edge Integration Tests — All Functions | [#41034358210](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358210) | ⏳ in_progress | LIVE tests em andamento; primeiros 10 steps ✅ |
+| E2E (Playwright) | [#41034358354](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358354) | ✴️ cancelled | cancelado às 09:54 UTC — não é failure; não aparece em `is:failure` |
+| Visual Baseline Tests — Nightly | [#41034358175](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358175) | ✴️ cancelled | cancelado às 09:54 UTC — não é failure; não aparece em `is:failure` |
+| Edge Integration Tests — All Functions | [#41034358210](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358210) | ✴️ cancelled | cancelado às 09:54 UTC — não é failure; não aparece em `is:failure` |
 | Deploy Edge Functions | [#41034820685](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034820685) | ⏳ pending | aguarda aprovação PO no environment `production` |
 
-> **Snapshot 2026-10-30T10:22 UTC** — Gate Final ✅. 23 workflows ✅ success. 7 failures registrados em PENDENCIAS.md (6 não-required + 1 stuck queue). 3 ainda in_progress (E2E Playwright, Visual Baseline, Edge Integration). Nenhuma regressão vs. `c09402816`.
+> **Snapshot 2026-10-30T10:45 UTC** — Gate Final ✅. 23 workflows ✅ success. 7 failures registrados em PENDENCIAS.md. 3 cancelled (E2E Playwright, Visual Baseline, Edge Integration — não são failures). Swatch QV firefox in_progress (last update 09:38, possivelmente stuck). CI Security pending. Nenhuma regressão vs. `c09402816`.
 >
 > **Ações do PO necessárias:**
 > 1. Aprovar `Deploy Edge Functions` em https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034820685 (environment `production`)
