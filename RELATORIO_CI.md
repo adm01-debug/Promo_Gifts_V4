@@ -680,3 +680,55 @@ Os 5 workflows com runs ativas para `4b16b988` estão todos `status=queued, conc
 - **P19-H**: Copilot Code Review — HTTP 402 billing quota (requer PO)
 - **P19-D/I/J/K**: E2E Swatch — produto `color_swatches` depreciado (pré-existente)
 - **P21**: Branch Protection Sentinel em `f14321e2` — push direto sem `(#NNN)`. Resolvido em e799980e.
+
+---
+
+### Gate Final `9dde1db7` — ✅ SUCCESS
+
+**Run:** [#41019605919](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41019605919) — `conclusion=success` (completed 07:30:14Z)  
+**SHA:** `9dde1db708f5ae23ab9c85765ba8e90eab4ac07b` (HEAD atual da main em 2026-10-30, squash merge PR #2784)  
+**Resultado:** Gate Final - Deploy Ready passou com `success`. Único required check na main = verde.
+
+### Inventário completo — HEAD `9dde1db7` (2026-10-30, 25 runs)
+
+| Workflow | SHA | Conclusão | Observação |
+|---|---|---|---|
+| **Gate Final - Deploy Ready** | 9dde1db7 | ✅ **success** [#41019605919](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41019605919) | ÚNICO required check — verde |
+| Branch Protection Sentinel | 9dde1db7 | ✅ success | Squash-merge com sufixo `(#2784)` — sentinel satisfeito |
+| CodeQL | 9dde1db7 | ✅ success | Long-running scan concluído com success |
+| E2E — Personalization Flow | 9dde1db7 | ✅ success | — |
+| Gitleaks — Full History Audit | 9dde1db7 | ✅ success | — |
+| Lovable Autoheal | 9dde1db7 | ✅ success | — |
+| Lovable Edit Tracker | 9dde1db7 | ✅ success | — |
+| No Prod Leak in Dev/Test | 9dde1db7 | ✅ success | — |
+| Policies Baseline | 9dde1db7 | ✅ success | — |
+| Release Please | 9dde1db7 | ✅ success | — |
+| Required Checks Guard | 9dde1db7 | ✅ success | — |
+| SSOT Supabase Guard | 9dde1db7 | ✅ success | — |
+| Security Scan | 9dde1db7 | ✅ success | — |
+| Select Columns vs Types | 9dde1db7 | ✅ success | — |
+| Static Health Checks | 9dde1db7 | ✅ success | — |
+| Supabase Linter Gate | 9dde1db7 | ✅ success | — |
+| UI Visual & A11y | 9dde1db7 | ✅ success | — |
+| Deployment Failure Alert | 9dde1db7 | ⏭️ skipped | Condição de ativação não atendida (sem falha de deploy) |
+| Lovable Protected-File Audit | 9dde1db7 | ⏭️ skipped | Condição de ativação não atendida |
+| CI Security & Drift Checks | 9dde1db7 | ⏳ in_progress | Long-running. NÃO é required check. |
+| E2E (Playwright) | 9dde1db7 | ⏳ in_progress | NÃO é required check. |
+| E2E — Critical Flows | 9dde1db7 | ⏳ in_progress | NÃO é required check. |
+| Quote Builder Delivery Quality | 9dde1db7 | ⏳ in_progress | NÃO é required check. |
+| E2E — Swatch QuickView | 9dde1db7 | ❌ failure | P19-D/I/J/K — produto `color_swatches` depreciado. NÃO é required check. |
+| Copilot Code Review | 9dde1db7 | ❌ failure | P19-H — HTTP 402 billing quota. NÃO é required check. Aguarda PO. |
+
+### Comparação baseline × final — Seção final (9dde1db7)
+
+| Métrica | Baseline (início sessão, SHA `c64f613b`) | Final (HEAD `9dde1db7`) | Δ |
+|---|---|---|---|
+| Gate Final required check | ✅ success | ✅ **success** [#41019605919](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41019605919) | sem regressão |
+| Branch Protection Sentinel | ✅ success | ✅ success | sem regressão |
+| Uptime Monitor | ❌ failure | ✅ success (resolvido em e799980e) | P-UPTIME RESOLVIDO (mantido) |
+| Workflows com falha bloqueante | 0 | **0** | sem regressão |
+| Falhas não-required documentadas | P19-H, P19-D/I/J/K | P19-H, P19-D/I/J/K | sem piora — mesmo conjunto pré-existente |
+
+**Conclusão final:** O único required check (`Gate Final - Deploy Ready`) está verde em `9dde1db7`. Todas as falhas restantes são não-required e documentadas em PENDENCIAS.md:
+- **P19-H**: Copilot Code Review — HTTP 402 billing quota (requer PO)
+- **P19-D/I/J/K**: E2E Swatch — produto `color_swatches` depreciado (pré-existente, não é regressão desta sessão)
