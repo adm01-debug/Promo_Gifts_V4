@@ -7,18 +7,19 @@
     "vitest": "exit 0 — sem falhas (1.247 arquivos, 25.869 testes, 1.135 skipped, 24 TODO)",
     "build": "exit 0 — built in 16.66s"
   },
-  "total_prs_abertos": 19,
-  "analisados": 19,
-  "dossies_completos": 19,
+  "total_prs_abertos_original": 19,
+  "total_prs_abertos_atuais": 17,
+  "analisados": 24,
+  "dossies_completos": 24,
   "veredictos": {
-    "MERGEADA": ["#2768", "#2759", "#2734"],
-    "DECISAO_HUMANA": ["#2758", "#2745", "#2743", "#2731", "#2717", "#2714", "#2701"],
-    "DRAFT": ["#2767", "#2766", "#2764", "#2750", "#2749", "#2746"],
+    "MERGEADA": ["#2768", "#2759", "#2734", "#2770", "#2783"],
+    "DECISAO_HUMANA": ["#2758", "#2745", "#2743", "#2731", "#2717", "#2714", "#2701", "#2776"],
+    "DRAFT": ["#2767", "#2766", "#2764", "#2750", "#2749", "#2746", "#2771", "#2785"],
     "DRAFT_E_DECISAO_HUMANA": ["#2744"],
     "BLOQUEADA_CONFLITO": ["#2747"],
     "BLOQUEADA_PROVAVEL_CONFLITO": ["#2739"]
   },
-  "mergeados_nesta_sessao": ["#2768", "#2759", "#2734"],
+  "mergeados_nesta_sessao": ["#2768", "#2759", "#2734", "#2770", "#2783"],
   "merge_sha_2768": "852346720522787142cf452f01db40472cff2fea",
   "merge_em_2768": "2026-10-30T05:40:16Z",
   "merge_sha_2759": "8382faf8330c4354aba69f6c5eba3b085eee2ded",
@@ -52,7 +53,18 @@
     "iniciado": "2026-10-30T07:16:07Z",
     "finalizado": "2026-10-30T07:16:11Z"
   },
-  "pendente": null,
+  "merge_sha_2770": "cd8f2557070c3e23bc82795363f0adf177adbe61",
+  "merge_em_2770": "2026-10-30T07:46Z",
+  "merge_sha_2783": "c09402816aa882fc8e9577d8a2352a663e515dc9",
+  "merge_em_2783": "2026-10-30T07:47Z",
+  "main_sha_pos_2783": "c09402816aa882fc8e9577d8a2352a663e515dc9",
+  "gate_final_pos_merge_2783": {
+    "run_id": 41021989586,
+    "sha": "c09402816aa882fc8e9577d8a2352a663e515dc9",
+    "status": "queued",
+    "nota": "Deploy Gates queued — runner não disponível imediatamente. Jobs: Detectar mudanças + Gate 0 SSOT ambos queued. Updated_at: 2026-10-30T07:45:00Z"
+  },
+  "pendente": "gate_final_2783_aguardando_runner",
   "test_merges_executados": "2026-10-30",
   "test_merges_main_sha": "99b4f7fc60674cc5ccb222b3f28c115fa24fcca2",
   "test_merges_resultado": {
@@ -76,7 +88,7 @@
     "2767": "OK_vazio_SUPERSEDED"
   },
   "migration_tests_status": {
-    "nota": "Testes em Postgres temporário moot para #2714, #2731, #2747 — todos têm CONFLITO contra main (evidenciado em test_merges_resultado), fazendo o CRITÉRIO 'sem conflito' falhar independentemente. Adicionalmente, todos caem na REGRA #8 (migrations exigem revisão humana + workflow_dispatch). Portanto, testes de migration em Postgres temporário não alteram o veredicto DECISAO_HUMANA dessas PRs.",
+    "nota": "Testes em Postgres temporário moot para #2714, #2731, #2747 — todos têm CONFLITO contra main (evidenciado em test_merges_resultado), fazendo o CRITÉRIO 'sem conflito' falhar independentemente. Adicionalmente, todos caem na REGRA #8. Portanto, testes de migration em Postgres temporário não alteram o veredicto DECISAO_HUMANA dessas PRs.",
     "2714": "MOOT — CONFLITO contra main + REGRA #8 (4 migrations RLS deny_all + cron)",
     "2731": "MOOT — CONFLITO contra main + REGRA #8 (workflow + supabase/migrations/)",
     "2747": "MOOT — CONFLITO contra main + coluna idempotency_key sem migration correspondente no PR"
@@ -89,12 +101,15 @@
     "2767": "VAZIO — já em main (commit 82efe51d0 no main)",
     "2734": "+38 linhas workflow contract-tests.yml (NÃO em main)",
     "2759": "+217 linhas 4 arquivos CHANGELOG/package.json/manifest/lockfile (NÃO em main)",
-    "2744": "+1926 linhas 21 arquivos edge functions (NÃO em main)"
+    "2744": "+1926 linhas 21 arquivos edge functions (NÃO em main)",
+    "2770": "+58/-58 bundle-size-baseline.json (NÃO em main)",
+    "2783": "+214 linhas CHANGELOG+package.json+lockfile+manifest (NÃO em main)"
   },
   "relatorio_atualizado": "2026-10-30",
   "dossies_reescritos_nesta_sessao": [
     "PR-2701", "PR-2714", "PR-2717", "PR-2731", "PR-2734", "PR-2739",
-    "PR-2743", "PR-2744", "PR-2745", "PR-2747", "PR-2758", "PR-2766", "PR-2767"
+    "PR-2743", "PR-2744", "PR-2745", "PR-2747", "PR-2758", "PR-2766", "PR-2767",
+    "PR-2770", "PR-2771", "PR-2776", "PR-2783", "PR-2785"
   ],
   "nao_verificado_resolvidos": {
     "2714": "SQL lido 100%: deny_all RESTRICTIVE em supplier_stricker (sem GRANT USAGE), pré/pós-condições, aditivo",
@@ -102,7 +117,10 @@
     "2743": "Diff lido 100% (18 arquivos, 56.044 linhas): fix reproducibilidade build-sql-graph.py (git show HEAD vs shutil.copyfile), remoção nós fantasma enrich-typescript-references.mjs, novos testes. Não toca workflows/migrations/src. DECISAO_HUMANA: CONFLITO + no_merge_explicit"
   },
   "nao_verificado_remanescente": {
-    "2747": "Migration para idempotency_key ausente do PR — coluna inexiste em produção"
+    "2747_verificado_2026-10-30": "public.notifications.idempotency_key AUSENTE em produção (SELECT vazio via MCP). idempotency_key existe apenas em public.sequence_email_reservations (tabela diferente). Migration para notifications.idempotency_key ausente desta PR e do banco — pendência confirmada com evidência real.",
+    "2776": "Diff não lido — no_merge_explicit no body bloqueia antes da leitura completa ser necessária",
+    "2771": "DRAFT — diff não lido",
+    "2785": "DRAFT — diff não lido"
   },
   "test_merges_vs_c16381a5": {
     "2701": "CONFLITO — PENDENCIAS.md",
@@ -125,5 +143,5 @@
     "2767": "OK_vazio_SUPERSEDED"
   },
   "meta_cumprida": true,
-  "meta_pendente": null
+  "meta_pendente": "gate_final_2783_run_41021989586_queued"
 }
