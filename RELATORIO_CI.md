@@ -1,7 +1,7 @@
 # RELATORIO_CI.md — Auditoria de Workflows CI/CD
 
-**Gerado:** 2026-10-29 · **Atualizado:** 2026-10-30T12:00 UTC
-**HEAD da main:** `b0d1376abeb1e541b42a2197e29489e024c819f2` (docs-only, 2026-10-30)
+**Gerado:** 2026-10-29 · **Atualizado:** 2026-10-30T12:23 UTC
+**HEAD da main:** `7e56ae49dde173e04f66ed4523eb8eb59653821a` (docs-only, 2026-10-30)
 **HEAD anterior:** `c09402816` (baseline local)
 **Sessão:** https://claude.ai/code/session_01RfQzo7S3K6o49UBUDoCtUe
 
@@ -346,3 +346,74 @@ Permanecem verdes: Static Health Checks, Lovable Edit Tracker, SSOT Supabase Gua
 ### Validação local do commit documental
 
 Após `3d277b164`, `npm run build:verify` e a suíte completa passaram: 1.250 arquivos, 25.898 testes aprovados (130 arquivos e 1.135 testes skipped; 24 todo); lint baseline não registrou regressão. Somente documentos foram alterados. Nenhuma regressão local foi encontrada; os failures remotos do E2E continuam pendentes de investigação das dependências externas.
+
+## Sessão P24 — 2026-10-30 — HEAD `b0d1376a` — Prova Final
+
+**HEAD:** `b0d1376abeb1e541b42a2197e29489e024c819f2` (squash-merge de PR #2817 — docs-only)
+**Objetivo:** produzir prova definitiva do estado de CI para o HEAD atual `b0d1376a`.
+
+> `b0d1376a` é commit docs-only (altera apenas `RELATORIO_CI.md` e `PENDENCIAS.md`). Zero mudança em TypeScript/JavaScript/edge functions. Código idêntico ao `6dbc9387` (PR #2806 que corrigiu ESLint).
+
+### Gate Final — HEAD `b0d1376a`
+
+| Check | Run ID | Status | Observação |
+|---|---|---|---|
+| Gate Final - Deploy Ready (tentativa 2) | [#41051701334](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41051701334) | ⏳ queued | Saturação runners — plano free GitHub, 50+ jobs de PRs ativos consumindo todos os slots. Documentado em PENDENCIAS.md §P22-runner-saturation. |
+
+**Prova parcial — tentativa 1** ([run #41051701334 / attempt 1](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41051701334/attempts/1)):
+- Gate 0 — SSOT → ✅ success
+- Gate 2.5 — PostgreSQL integrity → ✅ success
+- Gate 5 — SEO → ✅ success
+- Gate E23 — Secrets scan → ✅ success
+- Gate 1 — Lint+TS → cancelado durante lint (falso cancelamento por saturação; lint não falhou)
+
+**Último Gate Final `conclusion=success`:** `7299c88c` → [#41034358375](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358375) ✅
+
+### Tabela de prova — todos os failures do período (HEAD `b0d1376a`)
+
+| Workflow | Causa raiz | Conclusão | Registro |
+|---|---|---|---|
+| ESLint dot-notation (badges-manager/types.ts:254) | `noUncheckedIndexedAccess` violou `dot-notation` | ✅ **CORRIGIDO** — PR #2806 | CI Security & Drift [#41040489233](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41040489233) steps 1–26 ✅ |
+| Running Copilot Code Review | HTTP 402 — billing quota excedida | ❌ PO-blocked | PENDENCIAS.md §P21-copilot — habilitar plano Copilot |
+| edge-functions-drift-check | 31 funções edge em drift canônico | ❌ PO-blocked | PENDENCIAS.md §P21-edge-drift — aprovar deploy [#41034820685](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034820685) em `production` |
+| E2E — Personalization Flow | `auth/v1/token → 504` no CI | ❌ PO-blocked | PENDENCIAS.md §P21-personalization — provisionar `SUPABASE_SERVICE_ROLE_KEY` |
+| E2E — Magazine Header Layout | `auth/v1/token → 504` no CI | ❌ PO-blocked | PENDENCIAS.md §P21-magazine-header — mesma causa raiz |
+| E2E — Critical Flows & Error Boundaries | `auth/v1/token → 504` no CI | ❌ PO-blocked | PENDENCIAS.md §P21-critical-flows — mesma causa raiz |
+| Gate Final - Deploy Ready (`b0d1376a`) | Saturação runners — plano free | ⏳ queued | PENDENCIAS.md §P22-runner-saturation — infraestrutura; não é falha de código |
+
+### Resumo executivo
+
+- **Único failure corrigível por código:** ESLint dot-notation → **CORRIGIDO** em PR #2806 (`6dbc9387`)
+- **Failures PO-blocked (3 causas distintas):** billing Copilot (1), aprovação environment production (1), secrets E2E auth (3 workflows) — todos documentados em PENDENCIAS.md com ação e motivo exatos
+- **Gate Final:** queued por saturação de runners (50+ workflows de PRs do Lovable esgotando os 20 concurrent jobs do plano free). Não é falha de código — tentativa 1 confirmou Gate 0, 2.5, 5, E23 todos ✅
+- **Regressões introduzidas por esta sessão:** Nenhuma
+
+## Atualização P27 — inventário da ponta atual da `main` (2026-10-30T12:23Z)
+
+**HEAD da `main`:** `7e56ae49dde173e04f66ed4523eb8eb59653821a`, PR #2818, alteração documental. O merge da PR #2816 com `origin/main` incorpora esse commit; não há mudança de aplicação, dependências ou schema.
+
+### Falhas concluídas mais recentes
+
+| Workflow | Run | Status/conclusão | Causa evidenciada / ação |
+|---|---|---|---|
+| Uptime Monitor | [#41053317735](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41053317735) | `completed / failure` | O step agregado `Probe site + edge function` falhou. O log não informa qual das quatro probes falhou; não atribuir causa específica. O deploy protegido de `health-check` segue `pending` em [#41048773110](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41048773110). |
+| Running Copilot Code Review | [#41045066850](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41045066850) | `completed / failure` | HTTP 402 / limite de uso Copilot, bloqueio administrativo descrito em PENDENCIAS.md. |
+
+### Estado dos workflows no SHA `7e56ae49`
+
+- **Em fila/pendentes, não falhas:** Deploy Gates push [#41054206726](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41054206726) (`queued`), Deploy Gates dispatch [#41054421796](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41054421796) (`pending`), CI Security & Drift [#41054206685](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41054206685) (`pending`), CodeQL [#41054207049](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41054207049) (`queued`) e os workflows de push listados em PENDENCIAS.md §P27.
+- **E2E Critical Flows:** o run falho anterior [#41051701108](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41051701108) no SHA `b0d1376a` foi sucedido pelo novo run [#41054206634](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41054206634), ainda `queued` no SHA atual. Não é falha concluída mais recente.
+- **E2E Personalization:** o rerun da execução anterior, [#41051701270](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41051701270), tentativa 2, terminou `success`; no SHA `7e56ae49`, a nova execução [#41054206728](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41054206728) está `queued`.
+- **Supabase Linter Gate:** a tentativa 2 de [#41051701308](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41051701308) terminou `success`; a nova execução no SHA atual [#41054206788](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41054206788) está `queued`.
+- **Edge drift:** execução mais recente [#41048782448](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41048782448) está `cancelled`; não prova reconciliação. O workflow protegido de deploy [#41048773110](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41048773110) continua `pending` de aprovação humana.
+- `Deployment Failure Alert` [#41054278600](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41054278600) e `Lovable Protected-File Audit` [#41054206659](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41054206659) foram `skipped`, não failures.
+
+**Verdes anteriores:** os checks que passaram em `b0d1376a` continuam registrados como verdes naquele SHA em P25. Os novos runs no SHA `7e56ae49` ainda não concluíram; portanto ainda não há evidência para afirmar que esses workflows seguem verdes na ponta mais nova.
+
+### PR #2816 — estado separado da ponta da `main`
+
+A PR [#2816](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2816) está aberta e seu head `e975c4fef` estava atrás da `main` `7e56ae49`. O status agregado da PR reportou deployment Vercel `failure` ([deploy](https://vercel.com/juca1/promo-gifts-v4/Hmt8NgNAeXWgoJTwFNATqu57PzCK)) e Devin Review `success` com revisão ignorada por trial/credits. O status não comprova falha de um workflow da `main`; a PR ainda precisa sincronizar e passar seus checks antes de qualquer merge. Nenhum merge foi feito.
+
+### Validação local já registrada
+
+Após o commit documental `5ad880a1e`, `npm run build:verify` e `npm test -- --reporter=dot --silent` passaram (1.250 arquivos; 25.898 testes aprovados, 1.135 skipped e 24 todo). O merge com `7e56ae49` e este snapshot também são apenas documentais; a validação será repetida após o commit de reconciliação, antes do push.
