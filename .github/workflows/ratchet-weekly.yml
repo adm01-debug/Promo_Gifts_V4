@@ -120,9 +120,9 @@ jobs:
           else
             echo "has_changes=true" >> "$GITHUB_OUTPUT"
             echo "Baselines melhoraram:"
-            # Armazena diff em variavel; || true evita SIGPIPE (exit 141) quando diff > 40 linhas
-            DIFF_OUT=$(git diff .tsc-ratchet-baseline bundle-size-baseline.json)
-            echo "$DIFF_OUT" | head -40 || true
+            # Grava diff em arquivo tmp para evitar SIGPIPE ao truncar com head
+            git diff .tsc-ratchet-baseline bundle-size-baseline.json > /tmp/ratchet-diff.txt
+            head -40 /tmp/ratchet-diff.txt
           fi
 
       - name: Credencial de push sem token em disco (E32)
