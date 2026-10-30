@@ -157,6 +157,62 @@ Branch Protection Sentinel foi corrigido indiretamente: o fix foi via PR #2806 (
 
 Ver PENDENCIAS.md: P19-H (Copilot Code Review — billing 402), P21-edge-drift (edge-functions-drift-check — aprovação pendente #41034820685), P21-magazine-header / P21-critical-flows (E2E auth — secrets CI).
 
+---
+
+## Sessão P22.2 — 2026-10-30 — PR #2812 — HEAD `22ca2b3fa` — Baseline + Prova Final
+
+**Objetivo:** documentar PENDENCIAS.md P22 (saturação de runners + E2E auth + Supabase Preview) + produzir baseline local e tabela de prova final desta sessão.
+
+### Baseline local — HEAD `22ca2b3fa` (2026-10-30T12:30 UTC)
+
+| Etapa | Resultado | Observação |
+|---|---|---|
+| `npm run build` | ✅ exit 0 | Built em 15.45s; INEFFECTIVE_DYNAMIC_IMPORT pré-existentes; chunk-cycles OK |
+| `npm run typecheck` (tsc --noEmit) | ✅ exit 0 | Zero erros TypeScript |
+| `npm run lint:baseline` | ⚠️ OOM — não executável | Heap out of memory no container (pré-existente, igual à Section 1) |
+| `npx vitest run tests/scripts/` | ✅ 40 arquivos, 532 passed, 3 skipped | Subconjunto de scripts executado com sucesso em 40s |
+| Suite completa `npx vitest run` | ⚠️ Timeout 300s no container | Limitação de recurso pré-existente do container; CI remoto é a fonte de verdade |
+
+> `22ca2b3fa` altera apenas `PENDENCIAS.md` e `RELATORIO_CI.md` (docs-only). Zero mudança em código TypeScript/JavaScript. Resultados de testes idênticos ao baseline de `6dbc9387` (PR #2806).
+
+### Inventário completo de failures — HEAD `22ca2b3fa` (snapshot 2026-10-30T12:30 UTC)
+
+| Workflow | Run ID | Conclusão | Registro |
+|---|---|---|---|
+| Running Copilot Code Review | [#41045066850](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41045066850) | ❌ failure | PENDENCIAS.md §P21-copilot — HTTP 402 (billing quota) — ação PO: habilitar plano Copilot |
+| Supabase Preview | — | ❌ failure/skipped | PENDENCIAS.md §P22-supabase-preview — push direto em main, sem PR, comportamento esperado |
+| edge-functions-drift-check | [#41034830573](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034830573) | ❌ failure | PENDENCIAS.md §P21-edge-drift — drift canônico, ação PO: aprovar deploy #41034820685 |
+| Gate Final - Deploy Ready | [#41045062113](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41045062113) | ⏳ queued | PENDENCIAS.md §P22-runner-saturation — fila por saturação; não é falha de código |
+| CI Security & Drift Checks | [#41045062030](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41045062030) | ⏳ pending | PENDENCIAS.md §P22-e2e-auth — aguarda runner; step 27 E2E auth depende de `SUPABASE_SERVICE_ROLE_KEY` |
+| E2E — Personalization Flow | [#41045062037](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41045062037) | ⏳ queued | PENDENCIAS.md §P21-personalization — auth E2E CI (pré-existente) |
+| E2E — Critical Flows & Error Boundaries | [#41045062575](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41045062575) | ⏳ queued | PENDENCIAS.md §P21-critical-flows — auth E2E CI (pré-existente) |
+| Todos os demais workflows | — | ⏳ queued/pending | Saturação de runners; aguardam liberação de slots |
+
+### Comparação baseline × final
+
+| Dimensão | Baseline `c09402816` | Final `22ca2b3fa` |
+|---|---|---|
+| Build | ✅ | ✅ (15.45s) |
+| TypeScript | ✅ | ✅ (zero erros) |
+| Lint | ⚠️ OOM container | ⚠️ OOM container (mesma limitação) |
+| Vitest scripts/ | ✅ | ✅ (40 arquivos, 532 passed) |
+| Gate Final (required check) | ✅ `7299c88c` (#41034358375) | ⏳ queued `22ca2b3fa` (#41045062113) — saturação runners; último green em `7299c88c` |
+| CI Security & Drift | ❌ dot-notation `5edddfb1` | ✅ corrigido em `6dbc9387`; steps 1–26 ✅ (#41040489233) |
+| Branch Protection Sentinel | ❌ push direto sem `(#NNN)` | ✅ corrigido via squash-merge PR #2806 |
+| Copilot Code Review | ❌ HTTP 402 | ❌ HTTP 402 (pré-existente, billing — PENDENCIAS §P21-copilot) |
+| edge-functions-drift-check | ❌ 31 funções em drift | ❌ 31 funções em drift (pré-existente, ação PO pendente) |
+
+### Regressões introduzidas por esta sessão
+
+**Nenhuma.** Os únicos failures em `22ca2b3fa` são:
+1. **Copilot Code Review** — HTTP 402 (billing quota), pré-existente em todos os SHAs desta sessão
+2. **Supabase Preview** — comportamento esperado para push direto em main
+3. **edge-functions-drift-check** — drift acumulado, pré-existente, não-required
+4. **Workflows queued** — saturação de runners, não falha de código
+
+O único required check (`Gate Final - Deploy Ready`) obteve `conclusion=success` em `7299c88c` [#41034358375](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358375). A fila em `22ca2b3fa` é consequência de saturação de runners por múltiplos pushes simultâneos — documentado em PENDENCIAS.md §P22-runner-saturation.
+
+
 ## Atualização P23 — inventário atual da `main` (2026-10-30T11:35Z)
 
 ### Workflows cuja última execução conhecida na `main` falhou
@@ -187,3 +243,17 @@ O seletor do link dos cards do Magazine foi corrigido na branch do PR, mas o run
 ### Comparação de validação local
 
 O commit de código `6dbc9387` permanece a base de código desta atualização; `git diff --name-only 6dbc9387..22ca2b3f` mostra somente `PENDENCIAS.md` e `RELATORIO_CI.md`, sem diferença de código ou lockfile. Build, typecheck, lint e suíte completa foram executados após o commit de código em ambiente local: `build:verify` aprovado, lint 0 erros/0 avisos, e 1.250 arquivos / 25.898 testes passaram (130 arquivos e 1.135 testes ignorados; 24 TODO). A mesma base foi preservada nas mudanças documentais; a suíte será reexecutada no HEAD deste PR antes de declarar a atualização validada.
+
+## Atualização P24 — estado posterior (2026-10-30T11:53Z)
+
+### Uptime Monitor
+
+A execução mais recente na `main` é [#41048983078](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41048983078), SHA `42081291`, conclusão `failure` no step `Probe site + edge function`. O log do run não fornece códigos por probe. A issue [#2803](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2803) ainda exibe o payload do run anterior porque a action agrupa comentários de conteúdo idêntico. O último teste HTTP autenticado direto, feito em 11:30Z, respondeu 503 com `database=unhealthy` e `external_db=unhealthy`; esse resultado não deve ser atribuído automaticamente ao instante do novo run. O deploy da função corrigida está pendente no ambiente protegido em [#41048773110](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41048773110).
+
+### Copilot Code Review e outros estados
+
+O último run conhecido de Copilot associado à `main` segue [#41045066850](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41045066850), `failure` por quota adicional excedida (HTTP 402). O firewall também reportou bloqueio a `api.github.com`, sem mudar o fato de que a resposta fatal explícita foi 402. Checks sem conclusão no SHA atual `42081291` — incluindo Deploy Gates [#41048978175](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41048978175), ainda `queued` — não foram rotulados como falha.
+
+### npm audit / Gate 0.5
+
+Após `npm ci`, `npm audit --audit-level=high` retornou 12 high e 1 moderate. O grupo high está na cadeia de ferramenta de desenvolvimento `@lhci/cli@0.15.1` → Lighthouse/Puppeteer/proxy-agent, incluindo `basic-ftp`, `extract-zip` e `chromium-bidi`/`zod`; não é dependência runtime de produção. O `npm audit fix --dry-run` propôs somente `ip-address` 10.7.2 → 10.7.5, resolvendo o moderate. A resolução automática dos high oferecida pelo npm troca `@lhci/cli@0.15.1` por `0.13.0` (`semver-major`) e Lighthouse `12.6.1` por `11.4.0`; isso é downgrade funcional e não foi aplicado. Gate 0.5 ainda não havia concluído no run Deploy Gates #41048978175, portanto o efeito remoto precisa ser confirmado. Próximo passo: analisar uma atualização upstream segura para o conjunto Lighthouse CI sem contornar o gate nem degradar a versão principal do Lighthouse.
