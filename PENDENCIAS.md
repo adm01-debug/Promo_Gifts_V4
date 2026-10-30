@@ -1016,3 +1016,24 @@ Consulta às 02:47 UTC: PR aberto, `mergeable=true`, `mergeable_state=blocked`. 
 Comparei nominalmente os 119 workflows com os últimos runs na `main` no snapshot anterior (02:16 UTC) e no estado atual (03:04 UTC): **os 61 workflows que estavam em `success` continuam em `success`; regressões: 0**. A tabela completa das 24 falhas não mudou desde P32; os runs `cancelled`, `pending` e `in_progress` não foram classificados como sucesso.
 
 **PR #2743 após o push `d3442b031`:** às 03:00 UTC, `mergeable_state=blocked`; Copilot falhou em [#40994713467](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40994713467) por HTTP 402 (`quota`) e firewall para `api.github.com`. Havia 23 checks `queued`, 1 `in_progress`, 4 `success`, 4 `skipped` e 1 `neutral`. Não mesclar enquanto os checks não concluírem com sucesso.
+
+## P34 — reconsulta das últimas execuções na `main` — 2026-10-30
+
+**Snapshot:** 03:16 UTC. Consultei as 119 definições ativas (páginas 1–2) e, individualmente, o último run com `branch=main`, `exclude_pull_requests=true`, `per_page=1`. O SHA da `main` segue `604de54c030c521def563b26351361e6472fafcf`.
+
+| Estado da última execução | Quantidade |
+|---|---:|
+| `success` | 61 |
+| `failure` | 24 |
+| `cancelled` | 6 |
+| `skipped` | 2 |
+| `pending` | 3 |
+| `queued` | 1 |
+| `in_progress` | 1 |
+| Sem execução na `main` | 21 |
+
+O total é 119. Em relação ao snapshot P33, o `E2E • Swatch QuickView (Lista + Tabela)` concluiu com falha em [#40991104522](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40991104522), enquanto o run anterior `in_progress` saiu dessa categoria. O run do Uptime Monitor [#40995668739](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40995668739) está `queued`; por isso, o antigo run falho [#40992714992](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40992714992) não é mais a execução mais recente e não conta como falha atual. `Nightly Full CI` [#40993462227](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40993462227) segue `in_progress`. Os estados pendentes continuam sendo `Deploy Edge Functions` [#40976801625](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40976801625), `SECURITY DEFINER ACL — Multi-Env` [#40899426158](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40899426158) e `E2E · restore_seller_cart RPC (multi-env)` [#40852813455](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40852813455).
+
+**Atualização da lista de falhas P32:** permanecem as outras 23 linhas; substitua somente `Uptime Monitor` por `E2E • Swatch QuickView (Lista + Tabela)`. No run [#40991104522](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40991104522), o job `firefox • swatch→QV` falhou no step `Run swatch→QuickView suite (V1 + V2 + focus/QV)`. O resumo de log disponível termina durante o upload do artifact Playwright (4,6 GB) e não inclui a assertion que falhou. Bloqueio: inspecionar o relatório/trace do artifact antes de modificar teste ou snapshot; não há evidência para afrouxar o teste. A lista das 24 falhas atuais é, portanto, a tabela P32 com essa substituição, não incluindo o Uptime Monitor enquanto seu run mais recente continuar na fila.
+
+Os 61 workflows que estavam verdes no snapshot anterior permanecem verdes; não identifiquei regressão entre eles. Nenhuma migration, alteração do banco, deploy ou mudança de comportamento da aplicação foi feita.
