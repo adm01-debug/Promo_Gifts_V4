@@ -4,7 +4,7 @@
 **Base:** commit `d6cdb442a` (`main`)
 **Janela auditada:** últimos 500 commits — `dcc8e681ee82e4acf70a0dfc124ea81ce36edf9c..d6cdb442a` (2026-08-29 → 2026-10-15)
 **Método:** 5 auditorias paralelas e independentes (CI/CD, banco/migrations, frontend/TypeScript, edge functions/segurança, histórico/processo) + verificação direta da configuração ao vivo do GitHub pela API.
-**Status:** NÃO EXECUTADO. Plano preparado para execução por outro agente.
+**Status:** EM EXECUÇÃO — revalidado em 2026-10-30. Os marcadores ✅ são declarações históricas e não substituem recibos de verificação. O placar executável distingue etapas verificadas, marcadas sem evidência, bloqueadas por dependência externa e pendentes.
 
 ---
 
@@ -19,7 +19,9 @@ Você é o agente executor. Leia as seções §1 a §4 antes de tocar em qualque
 - §5 é a **rastreabilidade** achado → etapa.
 - §6 é o que ficou **deliberadamente de fora**, com a razão.
 
-Cada etapa tem um campo `Pronto:` com um comando e um código de saída esperado. Uma etapa só está concluída quando aquele comando devolve o que está escrito. Não existe "parcial" nem "não verificado" neste plano — foram esses dois estados que derreteram a matriz de controle anterior (46% das etapas de um plano ficaram em `⚠️ não verificado`).
+Cada etapa tem um campo `Pronto:` com critério verificável. Uma etapa só está concluída quando há um recibo válido em `PLANO_MELHORIAS_CORRECOES_200_ETAPAS_EVIDENCIAS.json`, com critério, saída zero, evidência, data e SHA do código verificado. O marcador ✅ no título é apenas uma declaração legada; sem recibo, o status é "marcada sem evidência". O `plan:status` nunca executa texto arbitrário do Markdown: há critérios com chamadas externas, autenticação e operações que não podem ser disparadas em lote. O comando deve ser revisado e executado isoladamente segundo as regras de segurança do projeto.
+
+Revalidação em 2026-10-30: o inventário local encontrou 200 etapas, 86 marcadas sem recibo, 11 da trilha C sem conclusão registrada e 103 sem conclusão registrada. A Onda 0 tem 7 marcadores legados e 3 dependências externas; portanto, permanece bloqueante. As declarações das Ondas 1 e 2 não autorizam avançar enquanto o portão da Onda 0 não for satisfeito.
 
 ---
 
@@ -96,7 +98,7 @@ Derivadas do que fez os planos anteriores falharem. Valem para as 200 etapas.
 
 **R2 — Lotes de 10 com portão.** 20 ondas de 10 etapas. A onda N+1 não abre com menos de 8 das 10 etapas da onda N fechadas. As 2 que não fecharem viram pendência nomeada no `plan:status`, não desaparecem. A taxa histórica é 29%: um plano de 200 executado em ondas de 10 com portão entrega mais que um plano de 200 executado em sequência livre.
 
-**R3 — Pronto é comando, não adjetivo.** Toda etapa traz `Pronto:` com comando e código de saída. "Feito", "parcial", "não verificado" e "provavelmente ok" não são estados válidos. Se a etapa não tem comando verificável, ela está mal escrita — recuse e reporte.
+**R3 — Pronto é critério verificável, não adjetivo.** Toda etapa traz `Pronto:` com um comando/critério e saída esperada. Um marcador ✅ sem recibo não fecha a etapa. Recibos devem apontar para código testado e conter evidência reproduzível. O `plan:status` não executa comandos extraídos do Markdown, pois alguns critérios consultam serviços externos ou poderiam causar efeitos colaterais; execute cada validação de forma explícita, após revisar seu escopo.
 
 **R4 — Uma etapa, um PR.** Limite por PR: 10 arquivos de workflow, **ou** 1 workflow crítico (`deploy-gates.yml`, `db-apply-migration.yml`, `deploy-edge-functions.yml`, `schema-snapshot-export.yml`, `branch-protection-sentinel.yml`), **ou** 1 migration, **ou** 1 edge function. Nunca mistura de categorias. O que destruiu a rastreabilidade antes foi o oposto: PR #1865 com 136 arquivos e 747.111 linhas levando os dois workflows mais críticos de governança junto com 6 migrations, uma auditoria tripla e um plano de 50 etapas.
 
@@ -204,9 +206,9 @@ Mesmo padrão em `supabase-security-gate.yml:63-81`: o "Gate 5 — Supabase Secu
 **Origem:** A5-41, A5-55, C-04
 
 #### P200-E010 · [A] · P1 · Criar `npm run plan:status` ✅
-**Arquivo:** `scripts/plan-status.mjs` (novo), `package.json`
-**Fazer:** script que lê este plano, extrai o comando de cada campo `Pronto:`, executa, e imprime o placar: `fechadas / abertas / falhando`, agrupado por onda e trilha. Saída em tabela no stdout e em `--json` para CI. Sem isso a medição deste plano vira outra auditoria de 1.258 linhas seis semanas depois.
-**Pronto:** `npm run plan:status` imprime placar com as 200 etapas e sai `0`; `npm run plan:status -- --json | jq '.total'` → `200`
+**Arquivo:** `scripts/plan-status.mjs`, `tests/scripts/plan-status.test.mjs`, `docs/plans/PLANO_MELHORIAS_CORRECOES_200_ETAPAS_EVIDENCIAS.json`, `package.json`
+**Fazer:** script que valida as 200 etapas e reporta recibos verificados, marcadores legados sem evidência, dependências externas e pendências, agrupados por onda/trilha e em JSON. Aplica os portões R1/R2: Onda 1+ fica bloqueada até a Onda 0 estar verificada 10/10; cada onda posterior só abre com ao menos 8/10 verificadas na onda anterior. O script não executa shell arbitrário vindo do documento: os critérios incluem chamadas externas e operações que precisam de revisão e execução isolada. Testes cobrem parsing, marcadores em posições distintas, recibo inválido e os portões das ondas.
+**Pronto:** `node scripts/plan-status.mjs --json | jq '.total'` → `200`; `npx vitest run tests/scripts/plan-status.test.mjs` passa; o relatório não conta ✅ sem recibo como etapa verificada.
 **Origem:** A5-01, A5-07, A5-08
 
 > **PORTÃO DA ONDA 0:** todas as 10 fechadas. E001, E005 e E006 são da trilha C — se o PO não responder, as etapas A/B da onda seguem, mas **nenhuma onda posterior abre** enquanto E004 e E005 estiverem abertas, porque são elas que fazem os gates valerem algo.
