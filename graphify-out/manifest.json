@@ -3918,8 +3918,8 @@
     "semantic_hash": ""
   },
   "public/schemas/ssot-report.schema.json": {
-    "mtime": 1793330442.4680011,
-    "seen": 1793330796.453503,
+    "mtime": 1793331448.7885556,
+    "seen": 1793332310.9306512,
     "ast_hash": "5f7c1a0d8db2e261abb51ec9125a64d5",
     "semantic_hash": ""
   },
@@ -18588,9 +18588,9 @@
     "semantic_hash": ""
   },
   "src/pages/kit-builder/useKitBuilderQuote.ts": {
-    "mtime": 1793218695.2890882,
-    "seen": 1793253147.2939239,
-    "ast_hash": "eca4e4f9f99fd3d37bb686bf0e395c85",
+    "mtime": 1793330887.3014877,
+    "seen": 1793332310.9783921,
+    "ast_hash": "a3266cfcf1d85db7917497c872ca1f09",
     "semantic_hash": ""
   },
   "src/pages/magazine/MagazineEditorPage.tsx": {
@@ -25968,9 +25968,9 @@
     "semantic_hash": ""
   },
   "tests/pages/kit-builder/useKitBuilderQuote.test.ts": {
-    "mtime": 1793218695.4834569,
-    "seen": 1793253147.2969856,
-    "ast_hash": "2a3a9f06b281376729588e4b9a670333",
+    "mtime": 1793331057.191996,
+    "seen": 1793332311.0018218,
+    "ast_hash": "1eb710cc25088fed1e2112d6eddca29c",
     "semantic_hash": ""
   },
   "tests/product-form-improvements.test.ts": {
@@ -29910,20 +29910,20 @@
     "semantic_hash": ""
   },
   "qa/exports/proposal-10015-26.html": {
-    "mtime": 1793330535.783401,
-    "seen": 1793330796.5384233,
+    "mtime": 1793331539.8725343,
+    "seen": 1793332311.0184953,
     "ast_hash": "92ca7a7ea332a554b7785b08a7828793",
     "semantic_hash": ""
   },
   "qa/exports/proposal-complex-99999-26.html": {
-    "mtime": 1793330535.7874012,
-    "seen": 1793330796.5384247,
+    "mtime": 1793331539.8805342,
+    "seen": 1793332311.018496,
     "ast_hash": "04240878120d40179aa6e7ce7356afe8",
     "semantic_hash": ""
   },
   "qa/exports/proposal-minimal-00001-26.html": {
-    "mtime": 1793330535.7874012,
-    "seen": 1793330796.5384264,
+    "mtime": 1793331539.8765342,
+    "seen": 1793332311.0184972,
     "ast_hash": "cf17ac99e7adfb32411e5abee571a3ff",
     "semantic_hash": ""
   },
@@ -32814,9 +32814,9 @@
     "semantic_hash": ""
   },
   "docs/AUDITORIA_PLANEJADO_NAO_EXECUTADO_2026-10-11.md": {
-    "mtime": 1793218695.0133421,
-    "seen": 1793253147.2973084,
-    "ast_hash": "64d66e66d9bbdb2de5c596520c89ef99",
+    "mtime": 1793331096.5568252,
+    "seen": 1793332311.0095181,
+    "ast_hash": "93fd89ac910d9cd551bdcb53addd94ab",
     "semantic_hash": ""
   },
   "docs/CONTRADI\u00c7\u00d5ES_DOCUMENTADAS.md": {
@@ -33462,15 +33462,15 @@
     "semantic_hash": ""
   },
   "docs/auditoria-planejado-nao-executado-2026-10-11/A03_kit_maker_plano_200.md": {
-    "mtime": 1793218695.0526383,
-    "seen": 1793253147.2974565,
-    "ast_hash": "d7c42f56bfbd42cc23bdaa8dcdbf41a0",
+    "mtime": 1793331111.9128246,
+    "seen": 1793332311.0134325,
+    "ast_hash": "4d8ab14aec4832d9f66369c1e6d53db0",
     "semantic_hash": ""
   },
   "docs/auditoria-planejado-nao-executado-2026-10-11/A04_kit_maker_planos_secundarios.md": {
-    "mtime": 1793218695.0526383,
-    "seen": 1793253147.297457,
-    "ast_hash": "5ae72e11bda3067e1f2f1b87fcb9fa93",
+    "mtime": 1793331111.9168246,
+    "seen": 1793332311.0134335,
+    "ast_hash": "8a8b858004a925f627d22dde671111f4",
     "semantic_hash": ""
   },
   "docs/auditoria-planejado-nao-executado-2026-10-11/A05_magazine_mockup_ia.md": {
@@ -33612,9 +33612,9 @@
     "semantic_hash": ""
   },
   "docs/estado/backlog/funcionalidades.md": {
-    "mtime": 1793218695.0985868,
-    "seen": 1793253147.29751,
-    "ast_hash": "7799e304b63617d0a3575e24fe55b102",
+    "mtime": 1793331096.5568252,
+    "seen": 1793332311.0149703,
+    "ast_hash": "8c1963fd3748b5eac447cc7316d8e611",
     "semantic_hash": ""
   },
   "docs/estado/backlog/supabase.md": {
@@ -34797,6 +34797,18 @@
     "mtime": 1793327190.9161165,
     "seen": 1793330796.5287552,
     "ast_hash": "d5b733571e345d2187fe2507b02b4703",
+    "semantic_hash": ""
+  },
+  "src/hooks/kit-builder/useKitPriceValidation.test.ts": {
+    "mtime": 1793331057.191996,
+    "seen": 1793332310.965021,
+    "ast_hash": "388e9413360ed96869439a1d4f025902",
+    "semantic_hash": ""
+  },
+  "src/hooks/kit-builder/useKitPriceValidation.ts": {
+    "mtime": 1793331245.5127897,
+    "seen": 1793332310.9650223,
+    "ast_hash": "f8bac7a821d210cab41b7a1d8b867b55",
     "semantic_hash": ""
   },
   "package-lock.json": {
