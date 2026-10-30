@@ -70,10 +70,30 @@
   ],
   "nao_verificado_resolvidos": {
     "2714": "SQL lido 100%: deny_all RESTRICTIVE em supplier_stricker (sem GRANT USAGE), pré/pós-condições, aditivo",
-    "2739": "Callers verificados: GenerateButton→MagicUpConfigPanel.tsx; SaveTemplateDialog→CartUtilComponents.tsx+CartDialogs.tsx; TemplateSelector→sem callers externos"
+    "2739": "Callers verificados: GenerateButton→MagicUpConfigPanel.tsx; SaveTemplateDialog→CartUtilComponents.tsx+CartDialogs.tsx; TemplateSelector→sem callers externos",
+    "2743": "Diff lido 100% (18 arquivos, 56.044 linhas): fix reproducibilidade build-sql-graph.py (git show HEAD vs shutil.copyfile), remoção nós fantasma enrich-typescript-references.mjs, novos testes. Não toca workflows/migrations/src. DECISAO_HUMANA: CONFLITO + no_merge_explicit"
   },
   "nao_verificado_remanescente": {
-    "2743": "Diff 56k linhas — instrução humana Não mesclar torna leitura desnecessária para veredito",
     "2747": "Migration para idempotency_key ausente do PR — coluna inexiste em produção"
+  },
+  "test_merges_vs_c16381a5": {
+    "2701": "CONFLITO — PENDENCIAS.md",
+    "2714": "CONFLITO — PENDENCIAS.md, RELATORIO_CI.md",
+    "2717": "CONFLITO — PENDENCIAS.md, RELATORIO_CI.md, graphify-out/GRAPH_REPORT.md, graphify-out/manifest.json",
+    "2731": "CONFLITO — PENDENCIAS.md",
+    "2734": "OK_sem_conflito",
+    "2739": "CONFLITO — .migration-refs-baseline.json",
+    "2743": "CONFLITO — .migration-refs-baseline.json, PENDENCIAS.md, RELATORIO_CI.md",
+    "2744": "OK_sem_conflito",
+    "2745": "CONFLITO — .github/workflows/ratchet-weekly.yml, analise-prs files",
+    "2746": "CONFLITO — PENDENCIAS.md, RELATORIO_CI.md",
+    "2747": "CONFLITO — .migration-refs-baseline.json",
+    "2749": "CONFLITO — PENDENCIAS.md",
+    "2750": "CONFLITO — analise-prs files",
+    "2758": "OK_vazio_SUPERSEDED",
+    "2759": "OK_sem_conflito",
+    "2764": "CONFLITO — PENDENCIAS.md",
+    "2766": "OK_vazio_SUPERSEDED",
+    "2767": "OK_vazio_SUPERSEDED"
   }
 }

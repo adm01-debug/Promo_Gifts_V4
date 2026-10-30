@@ -44,7 +44,7 @@ Todas as 19 PRs foram analisadas. #2768 foi a única candidata sem pendências. 
 | #2759 | release-please bot — versão 1.2.0 | ✅ 4 arquivos (CHANGELOG + package.json + manifest + lockfile) | PO decide quando lançar; test-merge staged: 4 arquivos +217 linhas |
 | #2758 | Instrução "sem merge automático" no body + já em main | ✅ 100% inline | SUPERSEDED — focus-visible já em main (AdImageResult.tsx:188); fechar como obsoleta |
 | #2745 | Toca `.github/workflows/ratchet-weekly.yml` (REGRA #8) + CONFLITO | ✅ 100% inline | Baixo risco — fix SIGPIPE legítimo (`sed -n '1,40p'`); conflito via `.migration-refs-baseline.json` |
-| #2743 | Instrução "Não mesclar até checks concluírem" + conflito em baseline | ⚠️ file-list (56.044 linhas) | Instruções no body por autor humano — aguardar remoção; conflito impede merge |
+| #2743 | Instrução "Não mesclar até checks concluírem" + conflito em baseline | ✅ 100% (18 arquivos, 56.044 linhas) | Diff lido: reproducibilidade graphify + PENDENCIAS rewrite; CONFLITO + "Não mesclar" no body |
 | #2734 | Toca `.github/workflows/contract-tests.yml` (REGRA #8) | ✅ +38 linhas (staged diff) | Baixo risco — adiciona fallback Docker Hub + `permissions.packages: read`; revisão rápida |
 | #2731 | Toca workflow + `supabase/migrations/` (REGRA #8 duplo) | ✅ 100% inline | Revisão obrigatória da migration SQL; workflow_dispatch para migration após merge |
 | #2717 | Toca `.github/workflows/replenishment-quality.yml` (REGRA #8) + CONFLITO | ✅ 100% inline | Fix legítimo — adiciona `E2E_BASE_URL`/`E2E_FORCE_START_SERVER`; conflito via `.migration-refs-baseline.json` |
@@ -149,7 +149,7 @@ Evidência completa em `analise-prs/baseline/test-merges.md`.
 | #2746 | ✅ 100% inline | get_pr_diff |
 | #2745 | ✅ 100% inline | get_pr_diff |
 | #2744 | ✅ 100% inline | get_pr_diff — lido em chunks (2.286 linhas) |
-| #2743 | ⚠️ file-list (56.044 linhas) | File-list apenas — instrução "Não mesclar" |
+| #2743 | ✅ 100% inline | get_pr_diff — 18 arquivos lidos integralmente (56.044 linhas) |
 | #2739 | ✅ file-list (35 arquivos) + callers verificados | file-list + git grep callers confirmados |
 | #2734 | ✅ +38 linhas (staged diff) | test-merge staged |
 | #2731 | ✅ 100% inline | get_pr_diff |
@@ -165,7 +165,6 @@ Itens que não foram possíveis verificar exaustivamente, com motivo:
 
 | PR | Item não verificado | Motivo |
 |---|---|---|
-| #2743 | Diff completo (56.044 linhas — graphify rebuild + docs) | Instrução humana "Não mesclar" no body torna análise completa desnecessária para veredito |
 | #2747 | Migration correspondente ao campo `idempotency_key` | PR não inclui migration — coluna não existe em produção sem migration separada |
 
 ### Itens anteriormente NÃO VERIFICADO — resolvidos nesta sessão:
@@ -174,6 +173,7 @@ Itens que não foram possíveis verificar exaustivamente, com motivo:
 |---|---|---|
 | #2714 | SQL das 4 migrations | Lido 100%: deny_all RESTRICTIVE em `supplier_stricker` (schema sem GRANT USAGE), pré/pós-condições presentes. Aditivo, não-destrutivo. DECISAO_HUMANA por REGRA #8 independente do conteúdo |
 | #2739 | Callers de `GenerateButton`, `SaveTemplateDialog`, `TemplateSelector` | `git grep origin/main`: `GenerateButton` → `MagicUpConfigPanel.tsx`; `SaveTemplateDialog` → `CartUtilComponents.tsx` + `CartDialogs.tsx`; `TemplateSelector` → sem callers externos. Regressão confirmada se callers não atualizados no diff da PR |
+| #2743 | Diff completo (56.044 linhas — graphify rebuild + docs) | Lido 100%: 18 arquivos — fix de reproducibilidade em `build-sql-graph.py` (`git show HEAD:{file}` + SHA digest), remoção de nós fantasma em `enrich-typescript-references.mjs`, novos testes. Não toca `.github/workflows/`, `supabase/migrations/` ou `src/`. DECISAO_HUMANA mantido: CONFLITO + "Não mesclar" no body |
 
 ---
 
