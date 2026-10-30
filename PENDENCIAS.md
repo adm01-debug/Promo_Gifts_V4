@@ -684,3 +684,23 @@ Os seguintes workflows têm o último run com status `queued` ou `pending` nos S
 - No PR #2747, o rerun read-only do Gate 5 [run 40970640671](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40970640671) passou na tentativa 2. QuickView [run 40970640906](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40970640906) continua falhando por dependência de catálogo remoto sem fixture determinística V2; os E2E autenticados [runs 40970640931](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40970640931) e [40970640650](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40970640650) mantêm falhas de login/limite de testes executados. A evidência mostra latência Auth/PostgREST e HTTP 504, sem raiz operacional única confirmada.
 
 O commit documental local `400d4d49` passou `npm run build:verify` e a suíte: 1.247 arquivos, 25.871 testes aprovados, 1.135 skipped e 24 TODO. A integração do merge mais recente com `main` ainda requer nova validação antes do push. Nenhum banco, migration, DDL, repair, função Edge ou dado operacional foi alterado.
+
+## P24 — inventário atualizado da main e bloqueios externos — 2026-10-30
+
+**Snapshot:** 00:26 UTC; 400 runs recentes da `main`, agrupados por workflow, resultaram em 38 workflows distintos. O commit atual da `main` é `3b7dc731`.
+
+| Workflow | Último run | Causa/estado verificável | Próximo passo |
+|---|---|---|---|
+| Uptime Monitor | [#40978818572](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40978818572) — `failure`, SHA `279f1753` | `site=0`, `health-check=22`, `check-login OPTIONS=0`, `auth-health=0`. A correção do PR [#2753](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2753) já está na main, mas o deploy de `health-check` permanece sem runner. | Deploy Edge Functions [#40976801625](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40976801625) está `pending`, sem jobs criados e sem aprovação de ambiente pendente. Aguardar runner; não disparar deploy duplicado. Depois confirmar um run agendado verde. |
+| Running Copilot Code Review | [#40975434366](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40975434366) — `failure`, SHA `07bc2b09` | HTTP 402: limite de uso adicional do plano Copilot atingido; o agente também foi bloqueado pelo firewall ao acessar `api.github.com`. | Ação do proprietário: ajustar/renovar a cota de uso do Copilot e permitir o host necessário na configuração de firewall do agente. Rerun somente após essa alteração. |
+
+As falhas anteriores de `CI Security & Drift Checks`, `E2E — Personalization Flow` e `E2E — Magazine Header Layout` não são classificadas como falhas ativas neste snapshot: seus runs mais recentes na main (`#40979462838`, `#40979462646` e `#40979462696`) estão `in_progress`/`queued` no SHA `3b7dc731`. Não estão consideradas resolvidas até conclusão `success`.
+
+**Estado do inventário:** 10 success, 2 skipped, 19 queued/pending, 5 in_progress e 2 failures. Os workflows verdes neste snapshot são Static Health Checks, Lovable Autoheal, Policies Baseline, No Prod Leak in Dev/Test Config, Workflow Lint, Security Scan, Lint untypedFrom, TS Unused Locals Ratchet, E2E — PDF Dialog e Python Package using Conda.
+
+**PRs desta auditoria:**
+- [#2743](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2743): Graphify/relatório; aberto, behind da main; checks ainda falhos ou pendentes, sem merge.
+- [#2745](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2745): correção SIGPIPE do Ratchet Weekly; branch atualizado para `279f1753`, checks ainda pendentes, sem merge.
+- [#2758](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2758): indicador de foco acessível no histórico de imagens; correção local aprovada por build/lint/typecheck/testes, PR aberto e sem merge por alterar UI publicada.
+
+Nenhuma migration, DDL, escrita no Supabase ou deploy de Edge Function foi executado nesta auditoria.
