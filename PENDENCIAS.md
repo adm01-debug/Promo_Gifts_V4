@@ -134,7 +134,117 @@ O PR [#2800](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2800) permanece 
 - **Causa:** Push direto à `main` (sem PR): o Supabase Branching App não cria preview para pushes em main, apenas para PRs. Estado `skipped` é comportamento esperado — não é falha.
 - **Impacto:** Nenhum. Não é required check.
 
-## Atualização P28 — inventário da `main` após PR #2800 (2026-10-30T14:07Z)
+---
+
+## P28 — Novos failures em `main` pós-Lovable (2026-10-30T13:40Z)
+
+### Contexto
+
+Em 2026-10-30T13:13-13:14Z o Lovable (`gpt-engineer-app[bot]`) fez dois pushes diretos à `main` (comportamento esperado — REGRA #7):
+- SHA `ff61eec4` — commit `fix(spotlight): timer cleanup`
+- SHA `a7c02ac1` — commit `feat(E128): split SupplierFormDialog.tsx em sub-componentes por aba`
+
+Esses pushes dispararam novos runs de workflow. Falhas abaixo são classificadas por tipo.
+
+---
+
+### P28-sentinel — Branch Protection Sentinel (dois SHAs)
+
+| Run | SHA | Conclusão |
+|---|---|---|
+| [#41061416107](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41061416107) | `ff61eec4` | `failure` |
+| [#41061596613](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41061596613) | `a7c02ac1` | `failure` |
+
+- **Causa raiz:** O `Branch Protection Sentinel` falha quando um commit é empurrado diretamente à `main` sem o formato de squash-merge `(#NNN)`. Lovable faz isso sistematicamente (REGRA #7 — comportamento documentado).
+- **Impacto no Gate Final:** NÃO é required check — não bloqueia deploy.
+- **Ação:** Padrão conhecido e aceito. Não fixável sem mudar a integração do Lovable ou remover o sentinel. PO deve decidir se deseja ajustar o `.lovableignore` ou tolerar essas falhas.
+
+---
+
+### P28-replenishment — CI - Replenishment Module Quality Gate (SHA `ff61eec4`)
+
+- **Run ID:** [#41061415964](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41061415964)
+- **Job falho:** `audit` — step 7 "Run E2E Tests (Smoke)"
+- **Erro exato (log):** `[loginViaUI] Timeout aguardando redirect pós-login` — `URL atual: http://localhost:8080/login` após 75000ms. Specs: `replenishment-stress.spec.ts`, 2 falhos, 1 passou. Helper: `e2e/helpers/auth.ts:123`
+- **Causa raiz:** Mesma causa de §P21-personalization — `auth/v1/token` retorna timeout 504/lento no CI. Não há mudança de código relacionada ao replenishment no commit `ff61eec4` (é apenas cleanup de timer no Spotlight).
+- **Impacto no Gate Final:** NÃO é required check — não bloqueia deploy.
+- **Ação do PO:** Provisionar `SUPABASE_SERVICE_ROLE_KEY` no CI (mesma ação de §P21-personalization).
+
+---
+
+### P28-quote-builder — Quote Builder Delivery Quality (SHA `a7c02ac1`)
+
+- **Run ID:** [#41061596692](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41061596692)
+- **Job falho:** `quality-gate` — step 5 "🌍 E2E & Visual Regression"
+- **Causa provável:** Padrão E2E auth timeout (artefato `delivery-quality-report` de 1GB uploadado mas job falhou no step E2E). Log tail não expõe o erro específico; padrão é idêntico ao §P21-personalization.
+- **Impacto no Gate Final:** NÃO é required check — não bloqueia deploy.
+- **Ação do PO:** Provisionar `SUPABASE_SERVICE_ROLE_KEY` no CI.
+
+---
+
+### P28-e2e-personalization — E2E — Personalization Flow (SHA `a7c02ac1`)
+
+- **Run ID:** [#41061596766](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41061596766)
+- **Causa raiz:** Mesma causa de §P21-personalization — auth 504 no CI.
+- **Impacto no Gate Final:** NÃO é required check.
+- **Ação do PO:** Provisionar `SUPABASE_SERVICE_ROLE_KEY` no CI.
+
+---
+
+### Resumo P28 — Nenhum required check afetado
+
+Todos os 5 novos failures (2× Branch Protection Sentinel + CI Replenishment + Quote Builder + E2E Personalization) ocorrem em workflows que NÃO são required checks para o Gate Final. O único required check (`Gate Final - Deploy Ready`) ainda não executou para o HEAD atual `a7c02ac1` da `main`.
+
+**PR #2819** (`claude/fix-indexed-access-baseline-261030-1248`, SHA `ae87ee412`) continua a correção válida para Gate 1.10. Deploy Gates run [#41064553276](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41064553276) em `queued` às 13:40Z.
+
+---
+
+## P29 — Inventário atualizado da main HEAD `a7c02ac1` (2026-10-30T14:00Z)
+
+Inventário completo dos workflows com última execução = `failure` na `main` no HEAD atual `a7c02ac1`.
+
+### Falhas concluídas (última execução = failure)
+
+| Workflow | Run | SHA | Causa raiz | Ação | Required check? |
+|---|---|---|---|---|---|
+| Branch Protection Sentinel | [#41061596613](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41061596613) | `a7c02ac1` | Lovable push direto sem formato `(#NNN)` — REGRA #7 estrutural | PO: decidir integração Lovable ou tolerar | NÃO |
+| CI - Replenishment Module Quality Gate | [#41061415964](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41061415964) | `ff61eec4` | `auth/v1/token` timeout 504 no CI — mesma causa §P21-personalization | PO: provisionar `SUPABASE_SERVICE_ROLE_KEY` | NÃO |
+| E2E — Personalization Flow | [#41061596766](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41061596766) | `a7c02ac1` | `auth/v1/token` timeout 504 no CI | PO: provisionar `SUPABASE_SERVICE_ROLE_KEY` | NÃO |
+| Quote Builder Delivery Quality | [#41061596692](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41061596692) | `a7c02ac1` | `auth/v1/token` timeout 504 no CI | PO: provisionar `SUPABASE_SERVICE_ROLE_KEY` | NÃO |
+| Uptime Monitor | [#41064302786](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41064302786) | `a7c02ac1` | Probe `health-check` exit 22 (curl HTTP error) — edge function retornando não-2xx. Issue [#2820](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2820) criada automaticamente. Causa: `health-check` em versão desatualizada (último deploy aprovado pendente). | PO: aprovar deploy [#41034820685](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034820685) em environment `production` (mesmo item §P21-edge-drift) | NÃO (schedule, não required check) |
+| Running Copilot Code Review | [#41045066850](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41045066850) | `22ca2b3f` | HTTP 402 — cota Copilot excedida | PO: regularizar billing Copilot | NÃO |
+
+### Falhas antigas supersedidas por runs mais recentes na main
+
+Os workflows abaixo falharam em SHAs mais antigos (`7e56ae49`) mas agora têm runs mais recentes em `a7c02ac1` (concluídos ou em progresso) — não contam mais como "última falha":
+
+| Workflow | Falha antiga | Run atual em `a7c02ac1` |
+|---|---|---|
+| CI Security & Drift Checks | `41054206685` (failure, `7e56ae49`) | `41061596603` (queued, `a7c02ac1`) |
+| Deploy Gates | `41054206726` (failure, `7e56ae49`) | `41061596966` (queued, `a7c02ac1`) |
+| E2E — Critical Flows & Error Boundaries | `41054206634` (failure, `7e56ae49`) | `41061596576` (in_progress, `a7c02ac1`) |
+| E2E • Swatch QuickView (Lista + Tabela) | `41054206843` (failure, `7e56ae49`) | `41061596646` (in_progress, `a7c02ac1`) |
+
+### Workflows verdes na ponta `a7c02ac1`
+
+CodeQL, Gitleaks, Lint untypedFrom, Lovable Autoheal, Lovable Edit Tracker, No Prod Leak in Dev/Test Config, Policies Baseline, Release Please, Required Checks Guard, SSOT Supabase Guard, Security Scan, Select Columns vs Types, Static Health Checks, Supabase Linter Gate, TS Unused Locals Ratchet, UI · Visual & A11y, schema-snapshot-export.
+
+### Estado do Gate Final na main
+
+- **Deploy Gates main** [#41061596966](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41061596966) — SHA `a7c02ac1` — `queued` às 13:35Z
+- **PR #2819 Deploy Gates** [#41064553276](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41064553276) — SHA `ae87ee412` — `queued` às 13:40Z
+- Ambos aguardam runner; check-in programado para 14:30Z
+
+### Ação pendente do PO (consolidada)
+
+| # | Item | Ação |
+|---|---|---|
+| 1 | `SUPABASE_SERVICE_ROLE_KEY` | Provisionar secret no CI → resolve 4+ falhas E2E |
+| 2 | Deploy Edge Functions | Aprovar run [#41034820685](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034820685) em `production` → resolve Uptime Monitor + drift |
+| 3 | Copilot billing | Regularizar cota → resolve Running Copilot Code Review |
+| 4 | Branch Protection Sentinel | Decidir sobre integração Lovable (tolerar ou ajustar) |
+
+## Snapshot 14:07Z — inventário da `main` após PR #2800
 
 **HEAD verificado:** `cba9944d12a61699a3ca855388e5842c5d6948b3` (merge do PR #2800). Inventário obtido pelo MCP GitHub, filtrado para `branch=main` e excluídos PRs. Conforme a regra do projeto, execuções pendentes não são classificadas como falha.
 
@@ -163,7 +273,7 @@ No SHA atual, estavam `success`: CodeQL [#41067472531](https://github.com/adm01-
 
 ---
 
-## P29 — correção local do tour de kits e validação
+## Correção local — tour de kits e validação (PR #2827)
 
 Dois commits locais nesta branch corrigem findings reproduzidos na auditoria:
 
@@ -262,4 +372,6 @@ HEAD permanece `cba9944d12a61699a3ca855388e5842c5d6948b3`; runs conferidos por w
 | Uptime Monitor | [#41077645794](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41077645794) | Issue automática [#2829](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2829): `site=0`, `health-check=22`, `check-login (OPTIONS)=0`, `auth-health=0`. Curl 22 indica resposta HTTP considerada erro pela probe; o workflow não capturou o status HTTP exato da função. | Falha isolada da `health-check`; como Auth, site e preflight responderam, correlacionar logs/métricas da função e capturar status HTTP na investigação. Não editar função, timeout ou banco sem evidência causal. |
 | E2E • Swatch QuickView (Lista + Tabela) | [#41067472586](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41067472586) | Chromium, Firefox e WebKit falharam. As anotações dos jobs registram erro E108: ausência de produtos com `color_swatches` em rotas como `/novidades` e `/reposicao`, ausência de picker V2 em `/filtros` e timeout de locator de 240 s; resumo: Chromium/Firefox 14 falhas cada, WebKit 4. | Indício de dependência de dados de catálogo mutáveis/indisponíveis e locators sem fallback determinístico; ainda não prova se é falta de dados, latência do Supabase ou regressão do seletor. Reproduzir sem afrouxar assertions e tornar os dados do teste determinísticos; nenhum produto foi alterado no banco. |
 
-Os demais workflows no mesmo HEAD incluem Deploy Gates e checks de segurança/qualidade já concluídos com `success` no snapshot anterior P33; conferir a execução mais recente por workflow antes de concluir a auditoria, pois o HEAD ainda não avançou. O PR #2827 agora está no head `9cd3e741d54bb5f7f2e40ac75455188452479610`; na primeira consulta havia 1 check `success`, 1 `neutral`, 2 `skipped` e 17 `queued`, sem novo failure concluído. A falha anterior do reviewer HTTP 402 pertence ao head anterior `2bb2edc59`; a nova execução do reviewer/checks ainda precisa concluir. PR aberto, sem merge e sem alteração do Supabase canônico.
+Os demais workflows no mesmo HEAD incluem Deploy Gates e checks de segurança/qualidade já concluídos com `success` no snapshot anterior P33; conferir a execução mais recente por workflow antes de concluir a auditoria, pois o código de `main` não avançou desde `cba9944d` (depois foi adicionado apenas um relatório documental em `52570b337`). O snapshot inicial do PR em `9cd3e741d` tinha 1 check `success`, 1 `neutral`, 2 `skipped` e 17 `queued`, sem novo failure concluído.
+
+Após o commit documental `bd9bb727c` enviado ao PR, o reviewer falhou novamente no run [#41083270510](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41083270510), HTTP 402 (`errorType: quota`, limite adicional do Copilot excedido; Request ID `A003:1069BA:DEDFD4:E9419E:6AE4BB3C`). O log também reporta bloqueio de firewall para `api.github.com`; a falha fatal explícita permanece a resposta de quota. Nesse head, havia 5 checks observados: 1 `success`, 1 `neutral`, 2 `skipped` e 1 `failure` (Copilot reviewer). **Ação administrativa:** regularizar a cota Copilot e repetir o check. O PR ficou em conflito porque `main` recebeu somente documentação (`52570b337`); conflito documental está sendo reconciliado neste branch. PR aberto, sem merge e sem alteração do Supabase canônico.
