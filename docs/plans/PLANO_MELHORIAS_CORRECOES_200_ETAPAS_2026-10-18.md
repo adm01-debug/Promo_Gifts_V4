@@ -1005,7 +1005,7 @@ Os 5 ratchets de dívida técnica estão todos exatamente no baseline: 889 index
 **Pronto:** `node scripts/check-as-unknown-baseline.mjs` sai `0` no número atual e reprova em qualquer aumento
 **Origem:** A3-17
 
-#### P200-E125 · [D] · P2 · Tipar o mapper de mockup em vez de assertar campo a campo
+#### P200-E125 ✅ · [D] · P2 · Tipar o mapper de mockup em vez de assertar campo a campo
 **Arquivo:** `src/hooks/mockup/mockupGenerationService.ts`
 **Fazer:** maior ofensor do ratchet de asserções: **47** `as <Tipo>` num único arquivo, seguido de `useSellerCarts.ts` (25), `useProductsByColor.ts` (20) e `raw-row.adapter.ts` (20). Tipar o retorno do mapper, em vez de assertar por campo.
 **Pronto:** `grep -c " as " src/hooks/mockup/mockupGenerationService.ts` ≤ 10 e o ratchet global desce

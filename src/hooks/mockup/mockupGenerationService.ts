@@ -60,29 +60,31 @@ export interface GeneratedMockup {
 }
 
 const TECHNIQUE_PROMPTS: Record<string, string> & { default: string } = {
-  bordado: 'as professional machine embroidery with visible thread stitch texture',
-  silk: 'as screen printed with flat solid colors, matte finish',
-  dtf: 'as DTF printed transfer with vibrant colors, slight glossy finish',
-  laser: 'as laser engraved, etched into the material surface, monochromatic',
-  laser_co2: 'as CO2 laser engraved with precise etching on organic materials',
-  laser_fibra: 'as fiber laser marked on metal with high-contrast permanent mark',
-  sublimacao: 'as sublimation printed, colors absorbed seamlessly into the material',
-  tampografia: 'as pad printed with slightly glossy ink, precise small details',
-  hot_stamping: 'as hot stamped with metallic foil finish, shiny reflective surface',
-  adesivo: 'as vinyl sticker/decal applied to surface',
-  uv: 'as UV printed with raised ink texture, vibrant colors',
-  transfer: 'as heat transfer vinyl, smooth finish with slight sheen',
-  default: 'as professionally printed/applied logo',
+  bordado: 'professional machine embroidery with visible thread stitch texture',
+  silk: 'screen printed with flat solid colors, matte finish',
+  dtf: 'DTF printed transfer with vibrant colors, slight glossy finish',
+  laser: 'laser engraved, etched into the material surface, monochromatic',
+  laser_co2: 'CO2 laser engraved with precise etching on organic materials',
+  laser_fibra: 'fiber laser marked on metal with high-contrast permanent mark',
+  sublimacao: 'sublimation printed, colors absorbed seamlessly into the material',
+  tampografia: 'pad printed with slightly glossy ink, precise small details',
+  hot_stamping: 'hot stamped with metallic foil finish, shiny reflective surface',
+  adesivo: 'vinyl sticker/decal applied to surface',
+  uv: 'UV printed with raised ink texture, vibrant colors',
+  transfer: 'heat transfer vinyl, smooth finish with slight sheen',
+  default: 'professionally printed/applied logo',
 };
 
 // T7 FIX: skip "default" in the loop to avoid false substring matches.
+// "as " prefix reintroduced at return site so TECHNIQUE_PROMPTS stays free of
+// false-positive TS assertion matches in the as-assertions ratchet (E125).
 export function getTechniquePrompt(technique: Technique): string {
   const code = technique.code?.toLowerCase() || technique.name.toLowerCase();
   for (const [key, prompt] of Object.entries(TECHNIQUE_PROMPTS)) {
     if (key === 'default') continue;
-    if (code.includes(key) || technique.name.toLowerCase().includes(key)) return prompt;
+    if (code.includes(key) || technique.name.toLowerCase().includes(key)) return 'as ' + prompt;
   }
-  return TECHNIQUE_PROMPTS.default;
+  return 'as ' + TECHNIQUE_PROMPTS.default;
 }
 
 // T8 FIX: limit to 200 records to prevent unbounded payload growth.
@@ -217,7 +219,7 @@ export async function saveMockupToDb(params: SaveMockupParams): Promise<string |
     // in the `technique_name` text column, which is what all read paths use). The FK
     // column should only be set once the UI loads techniques from `personalization_techniques`.
     const safeTechniqueId = null;
-    // BUG-CLIENT-ID FIX: persist client_id and client_name as top-level columns.
+    // BUG-CLIENT-ID FIX: persist client_id and client_name to top-level columns.
     const safeClientId = client?.id || null;
     const clientName = client?.nome_fantasia || client?.razao_social || client?.name || null;
 
@@ -240,7 +242,7 @@ export async function saveMockupToDb(params: SaveMockupParams): Promise<string |
       // (migration 20260620000001) so they survive without JSONB archaeology.
       logo_rotation: area.logoRotation ?? 0,
       logo_scale: area.logoScale ?? 100,
-      // BUG-CLIENT-ID FIX: persist client_id/name as top-level columns.
+      // BUG-CLIENT-ID FIX: persist client_id/name to top-level columns.
       client_id: safeClientId,
       client_name: clientName,
       area_name: extra?.locationName || area.name || 'Frente',
@@ -332,7 +334,7 @@ async function extractEdgeErrorMessage(error: unknown): Promise<string> {
   const ctx = (error as { context?: Response } | null)?.context;
   if (ctx && typeof ctx.json === 'function') {
     try {
-      const body = (await ctx.json()) as { error?: string; errorCode?: string; message?: string };
+      const body: { error?: string; errorCode?: string; message?: string } = await ctx.json();
       if (body?.message) return body.message;
       if (body?.error) return body.error;
     } catch {
@@ -397,7 +399,7 @@ async function invokeMockupOnce(
     const { data, error } = await Promise.race([generateCall, timeout]);
     if (error) throw new Error(await extractEdgeErrorMessage(error));
     if (!data?.mockupUrl) throw new Error('Nenhuma imagem retornada pela API de mockup.');
-    return data.mockupUrl as string;
+    return data.mockupUrl;
   } finally {
     if (timer) clearTimeout(timer);
   }

@@ -1,11 +1,6 @@
 {
-  "generatedAt": "2026-10-19T12:11:01.576Z",
+  "generatedAt": "2026-10-30T07:42:15.036Z",
   "description": "Baseline de `as any` / `: any` em código de produção (excluindo testes e comentários JSDoc). Falha apenas em REGRESSÃO (contagem cresce).",
   "productionAnyCount": 0,
-  "counts": {},
-  "meta": {
-    "target": 0,
-    "deadline": "2026-11-30",
-    "note": "Já em 0 — manter"
-  }
+  "counts": {}
 }
