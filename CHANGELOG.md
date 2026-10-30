@@ -5,6 +5,13 @@ Todas as mudanças notáveis deste projeto são documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/),
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.3.2](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.3.1...v1.3.2) (2026-10-30)
+
+
+### Bug Fixes
+
+* **ratchet:** E125 — remove falso positivo 'as ' em TECHNIQUE_PROMPTS ([#2794](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2794)) ([b2ba9f9](https://github.com/adm01-debug/Promo_Gifts_V4/commit/b2ba9f9e6e604c12de9b01aeae139cfd0d8d8656))
+
 ## [1.3.1](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.3.0...v1.3.1) (2026-10-30)
 
 
