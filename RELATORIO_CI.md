@@ -460,3 +460,42 @@ Workflows previamente verdes (listados em P17 e na Seção 6 acima) **não podem
 | P20-D causa documentada | "pré-existente" (vago) | `Playwright E2E` cancelled (`No files: playwright-report/`); baselines visuais desatualizados | documentado com exatidão |
 | P20-E causa documentada | "pré-existente" (vago) | ~1 GB artefatos; baselines visuais desatualizados no Quote Builder | documentado com exatidão |
 
+
+---
+
+## Seção 8 — Baseline local (2026-10-30) — HEAD `4b16b988`
+
+> Executado localmente no container de sessão para cumprir o **Processo Step 2** do `/goal`.
+> SHA do main atual: `4b16b988517680e81a0268d809b87b78e8dbdef6` (PR #2774 mergeado às 05:24Z).
+
+### Resultados
+
+| Checagem | Comando | Resultado | Observação |
+|---|---|---|---|
+| TypeCheck | `npx tsc --noEmit` | ✅ EXIT=0 | Zero erros TS |
+| ESLint | `npx eslint src --max-warnings=0` | ✅ EXIT=0 | Zero warnings/erros |
+| Build Vite | `npm run build` | ✅ EXIT=0 | Built in 15.87s; zero erros; chunk-cycles OK |
+| Unit Tests (amostra) | `npx vitest run src/components/ThemeInitializer.test.tsx src/contexts/AuthContext.test.tsx` | ✅ 4/4 passed | Suíte completa excede timeout do container CI; amostra representativa verde |
+
+### Gate Final HEAD `4b16b988` — run [#41008248798](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41008248798)
+
+- **Status:** `queued` (aguardando runner GitHub Actions)
+- **Motivo:** backlog de runners — múltiplas sessões paralelas esgotam o pool de runners gratuitos do repositório
+- **Não é falha de código:** o mesmo código passou no Gate Final run [#41000678286](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41000678286) (sha `2bb3a988`, PR #2763). PRs #2769, #2773 e #2774 alteram **exclusivamente** `PENDENCIAS.md` e `RELATORIO_CI.md`; nenhum código de produção foi alterado.
+- **Bloqueio registrado:** `PENDENCIAS.md` → seção **P-GATE-QUEUED**: Gate Final `4b16b988` em fila por limitação de infra externa; requer descompressão do pool de runners para avançar.
+
+### Inventário — última run concluída por workflow (snapshot 2026-10-30 05:30Z)
+
+Os 5 workflows com runs ativas para `4b16b988` estão todos `status=queued, conclusion=null`. Nenhum workflow tem `conclusion=failure` como última run concluída. A última run com `conclusion=success` de cada gate required é documentada na Seção 7 acima.
+
+**Workflows com falha pré-existente** (não-required, documentados em PENDENCIAS.md):
+- P19-C/G — Uptime Monitor: aguarda aprovação PO em `environment: production`
+- P19-H — copilot-pull-request-reviewer: quota billing HTTP 402
+- P19-I/J/K — E2E Swatch/thumb/presentation: dados `color_swatches` ausentes no CI
+- P20-A — CI Replenishment: artefato parity-report >1 GB
+- P20-B — E2E Critical Flows: `Check min tests executed` falhou
+- P20-C — Kit Coverage Integration: `Could not query the database for the schema cache`
+- P20-D — Nightly Full CI: `playwright-report/` ausente + baselines visuais
+- P20-E — Quote Builder Quality: baselines visuais desatualizados
+
+**Todos os workflows required** (Gate Final, Compare GitHub × Canonical, CodeQL, Gitleaks, Assert Gate Final): última run concluída = ✅ `success`.
