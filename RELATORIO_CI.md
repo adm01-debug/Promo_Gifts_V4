@@ -786,3 +786,43 @@ Os 5 workflows com runs ativas para `4b16b988` estão todos `status=queued, conc
 **Conclusão final:** O único required check (`Gate Final - Deploy Ready`) está verde em `9dde1db7`. Todas as falhas restantes são não-required e documentadas em PENDENCIAS.md:
 - **P19-H**: Copilot Code Review — HTTP 402 billing quota (requer PO)
 - **P19-D/I/J/K**: E2E Swatch — produto `color_swatches` depreciado (pré-existente, não é regressão desta sessão)
+
+
+---
+
+## Revalidação — 2026-10-30 — HEAD `b2ba9f9e`
+
+**Fonte:** MCP GitHub — última execução observada por workflow/evento na `main`, mais resumo do step falho e artefato de drift. Execuções `pending`/`in_progress` não são contabilizadas como falhas. O inventário detalhado, causas e ações estão em `PENDENCIAS.md`, seção “Revalidação atual — main `b2ba9f9e`”.
+
+### Baseline local e validação final deste commit documental
+
+| Verificação | Resultado | Observação |
+|---|---|---|
+| `npm ci` | ✅ | Lockfile intacto; 13 alertas no audit (1 moderate, 12 high) já presentes na árvore de dependências. |
+| `npm run build:verify` | ✅ | Typecheck sem erros, lint baseline sem regressão (0 erros/0 warnings; Δ +0), build Vite e guards concluídos. |
+| `npm test -- --reporter=dot` | ✅ | 1.250 arquivos aprovados, 130 ignorados; 25.898 testes aprovados, 1.135 ignorados e 24 `todo`. |
+| `git diff --check` | ✅ | Sem whitespace inválido. |
+| Prettier nos dois documentos alterados | ⚠️ baseline preexistente | `prettier --check` falha também no conteúdo original de `origin/main`; não reformatei os documentos inteiros por causa do ruído de diff. |
+
+As alterações desta revisão são documentais (`docs/SCHEMA_REFERENCE.md`, plano de 200 etapas, este relatório e `PENDENCIAS.md`); não alteram código de aplicação, workflows ou banco. O conjunto local passou após o commit documental; não há regressão de aplicação atribuível a essas mudanças.
+
+### Workflows na main — snapshot da consulta
+
+| Workflow | Run | Estado observado | Diagnóstico |
+|---|---|---|---|
+| **Gate Final - Deploy Ready** | [#41031394467](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41031394467) | ✅ `success` | Required check verde. |
+| Branch Protection Sentinel | [#41031394389](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41031394389) | ✅ `success` | — |
+| Workflow Lint | [#41031394221](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41031394221) | ✅ `success` | — |
+| CodeQL, Gitleaks, Security Scan | [CodeQL #41031394426](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41031394426), [Gitleaks #41031394510](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41031394510), [Security #41031394405](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41031394405) | ✅ `success` | — |
+| **E2E — Magazine Header Layout** | [#41031394478, tentativa 2](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41031394478) | ❌ `failure` | Login não escreveu token no `storageState`; ficou em `/login` até 75 s. Não validou layout. |
+| **E2E — Critical Flows** | [#41031394211](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41031394211) | ❌ `failure` | Cinco falhas de setup de login; `Check min tests executed` caiu porque os cenários autenticados foram pulados. |
+| **Quote Builder Delivery Quality** | [#41031394243](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41031394243) | ❌ `failure` | Dois specs presos em `/login`; evidência aponta autenticação, não regressão visual. |
+| **edge-functions-drift-check** | [#41032312996](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41032312996) | ❌ `failure` | Artefato lista 31 funções com hashes diferentes; revisar direção por função e reconciliar em PR. Nenhuma alteração no ambiente canônico. |
+| **Running Copilot Code Review** | [#41031412599](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41031412599) | ❌ `failure` | Falha no cleanup do agente/processos órfãos; sem revisão de código disponível. |
+| Uptime Monitor | [#41031127186](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41031127186) | ✅ `success` | Sucesso após falha anterior; não prova a causa da falha, ver P-UPTIME. |
+
+### Execuções sem conclusão — continuam pendentes
+
+Edge Integration Tests — All Functions [#41031394442](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41031394442), E2E Swatch QuickView [#41031394231](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41031394231), Visual Baseline Tests [#41031394253](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41031394253), E2E Playwright [#41031394403](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41031394403), CI Replenishment [#41031394348](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41031394348) e CI Security & Drift [#41031394338](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41031394338) estavam `pending`/`in_progress` na consulta. Reconsultar antes de concluir.
+
+**Conclusão deste snapshot:** required check verde; cinco workflows `main` concluídos falharam por três causas — autenticação E2E, drift de 31 Edge Functions e cleanup externo do Copilot — e estão descritos com causa e próxima ação em `PENDENCIAS.md`. Os workflows ainda em execução não foram contabilizados como falhas. Nenhuma migration, alteração de dados ou deploy de Edge Function foi realizado.
