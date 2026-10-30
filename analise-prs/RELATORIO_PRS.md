@@ -2,8 +2,8 @@
 > Sessão: `claude/eloquent-ramanujan-0yt2fo` | Data: 2026-10-30
 > Main SHA fixado: `6e38d14a90323f69ff3beda27c8ae51476c3cb1d`
 > Main SHA pós-merges: `5edddfb14ee4e33008e735f3f3710e902a9b45cb` (pós #2794/#2795 pelo PO e release)
-> Total PRs analisados: **30** (confirmado — ver contagem por veredicto)
-> PRs resolvidos: **13** (8 por esta sessão + 4 mergeados pelo PO + 1 fechado pelo PO)
+> Total PRs analisados: **34** (30 na fase principal + #2797, #2806, #2807, #2810 descobertos tardiamente — ver §RECONCILIAÇÃO)
+> PRs resolvidos: **15** (8 por esta sessão + 6 mergeados pelo PO + 1 fechado pelo PO)
 > PRs abertos atualmente: **17** (todo elegível foi mergeado)
 > Test-merge vs main atual (`5edddfb14`): todos os 9 PRs com `mergeable: null` têm **0 conflitos** (git merge-tree 2026-10-30)
 
@@ -34,7 +34,7 @@
 | **#2783** | chore(main): release 1.3.0 | `c09402816aa882fc8e9577d8a2352a663e515dc9` | ✅ run #41021989586 success (07:45→08:18 UTC) | 4 arquivos: CHANGELOG+package.json+lockfile+manifest |
 | **#2791** | fix(kit): trata peso zero/nulo com isKnownItemWeight e summarizeKitWeight | `0b628fd3ddccb52e0182ff55b26102cfc3e6a930` | ✅ run #41023834458 success (08:20:54 UTC) | 5 arquivos: weight.ts (novo) + 3 hooks/components + testes |
 | **#2792** | chore(main): release 1.3.1 | `62e21cc6794b2088285b0f47526ee75d3c652fca` | ✅ check_run #123973183673 success (08:47 UTC) | 4 arquivos: CHANGELOG+package.json+lockfile+manifest |
-| **#2795** | chore(main): release 1.3.2 | `7299c88c21d1c67ac65f5beafc18bdf350ced277` | ⏳ Gate Final aguardado (main push) | 4 arquivos: CHANGELOG+package.json+lockfile+manifest |
+| **#2795** | chore(main): release 1.3.2 | `7299c88c21d1c67ac65f5beafc18bdf350ced277` | ✅ run #41034358375 success (09:33→09:40 UTC) | 4 arquivos: CHANGELOG+package.json+lockfile+manifest |
 
 **Evidência #2768:** squash-merge confirmado em `2026-10-30T05:40:16Z`. Gate Final run #41009722428 `completed/success`.
 
@@ -54,7 +54,7 @@
 
 **Evidência #2791:** Gate Final pós-merge: check_run #123972750816 `success` em `2026-10-30T08:45:55Z`.
 
-**Evidência #2795:** squash-merge confirmado em `2026-10-30T09:33:53Z` via `merge_pull_request` FOREVER MCP. SHA `7299c88c21d1c67ac65f5beafc18bdf350ced277`. 4 arquivos: CHANGELOG.md, package.json (1.3.1→1.3.2), package-lock.json, .release-please-manifest.json. Padrão idêntico a #2759/#2783/#2792. Deploy Gates run #41034358375 `in_progress` desde `09:33:57Z` — padrão idêntico garante success (sem mudança de código, só metadados de release).
+**Evidência #2795:** squash-merge confirmado em `2026-10-30T09:33:53Z` via `merge_pull_request` FOREVER MCP. SHA `7299c88c21d1c67ac65f5beafc18bdf350ced277`. 4 arquivos: CHANGELOG.md, package.json (1.3.1→1.3.2), package-lock.json, .release-please-manifest.json. Gate Final run #41034358375 `status: "completed"`, `conclusion: "success"`, `updated_at: "2026-10-30T09:40:27Z"` — confirmado via `github_get_workflow_run` run_id=41034358375. Gate 6 Build concluiu antes de 09:40:27Z. Todos os 16 jobs success/skipped.
 
 ---
 
@@ -66,6 +66,8 @@
 | **#2767** | fix(security): corrige infinite spinner em useSecurityData | `82efe51d085710c5540f585cb7b5b753d17521a1` | adm01-debug | 2026-10-30T05:38:48Z |
 | **#2785** | fix(types): E121+E122 — remove as unknown as em RPCs | `3b3706384969eb0b11210fc881910aafe3ce1967` | adm01-debug | 2026-10-30T08:21:02Z |
 | **#2794** | fix(ratchet): E125 — remove falso positivo 'as ' em TECHNIQUE_PROMPTS | `b2ba9f9e6e604c12de9b01aeae139cfd0d8d8656` | adm01-debug | 2026-10-30T09:09:39Z |
+| **#2797** | fix(e130): adiciona `noUncheckedIndexedAccess` e corrige acessos indexados | `9c587706` | adm01-debug | 2026-10-30T10:xx:xxZ |
+| **#2806** | fix(lint): corrige dot-notation em badges-manager/types.ts | `6dbc9387fedbd1118613eb07eb2315bfc1e722ea` | adm01-debug | 2026-10-30T10:24:14Z |
 
 **Evidência #2766:** era DRAFT. PO converteu de draft e mergeou. `merged: true`, `merged_by.login: adm01-debug`, `merge_commit_sha: 69e7e282b0015429d2abb2ed15b17c110ca2fd15`.
 
@@ -182,14 +184,14 @@ Ambos podem ser fechados pelo PO quando esta sessão for arquivada.
 | Veredicto | Qtd | PRs |
 |---|---|---|
 | MERGEADA (por esta sessão) | 8 | #2768, #2759, #2734, #2770, #2783, #2791, #2792, #2795 |
-| MERGEADA PELO PO | 4 | #2766, #2767, #2785, #2794 (adm01-debug; 2026-10-30) |
+| MERGEADA PELO PO | 6 | #2766, #2767, #2785, #2794, #2797, #2806 (adm01-debug; 2026-10-30) |
 | FECHADA PELO PO (sem merge) | 1 | #2789 (superseded por #2794) |
 | DECISAO_HUMANA | 9 | #2701, #2714, #2717, #2731, #2743, #2745, #2758, #2776, #2793 |
 | DRAFT | 6 | #2746, #2749, #2750, #2764, #2771, #2744 |
 | DRAFT_E_DECISAO_HUMANA | 0 | (#2744 reclassificado: DRAFT) |
 | BLOQUEADA_CONFLITO | 2 | #2747, #2739 |
-| **TOTAL ANALISADOS** | **30** | (19 originais + 11 descobertos mid-session) |
-| **TOTAL RESOLVIDOS** | **13** | 8 merges sessão + 4 merges PO + 1 fechada PO |
+| **TOTAL ANALISADOS** | **34** | 30 na fase principal + 4 tardios (#2797, #2806, #2807, #2810) |
+| **TOTAL RESOLVIDOS** | **15** | 8 merges sessão + 6 merges PO + 1 fechada PO |
 | **TOTAL ABERTOS** | **17** | 9 DECISAO_HUMANA + 6 DRAFT + 2 BLOQUEADA_CONFLITO |
 
 ---
@@ -369,3 +371,82 @@ Para todos os casos de divergência, **prs.csv e este relatório são autoritati
 **Baseline aceita via CI equivalente:** Gate Final run #41034358375 (main HEAD `6dbc9387`) → `conclusion: success`. Inclui job `unit-tests` (Gate 2, vitest, 45 min timeout). Zero testes falhando = baseline vazia. Qualquer PR que cause falha nova no Gate 2 em CI = regressão contra esta baseline.
 
 Evidência: `analise-prs/baseline/vitest-baseline.txt` — contém "TESTES QUE FALHAM POR NOME: NENHUM" + run #41034358375.
+
+---
+
+## RECONCILIAÇÃO DE CONTAGEM (34 total, não 30)
+
+O `progresso.json` registrou `analisados: 30` porque parou de ser atualizado após a fase principal. Quatro PRs foram descobertos tardiamente (após as 10:00Z):
+
+| PR | Descoberta | Veredicto | Motivo |
+|---|---|---|---|
+| #2797 | ~10:15Z | MERGEADA_PELO_PO | Aberta e mergeada pelo PO durante a sessão (SHA `9c587706`) |
+| #2806 | ~10:24Z | MERGEADA_PELO_PO | Aberta e mergeada pelo PO durante a sessão (SHA `6dbc9387`) |
+| #2807 | ~10:30Z | DRAFT | Nova PR de refatoração Gate 1.9 (SupplierFormDialog 1273→747 linhas) |
+| #2810 | ~10:30Z | DRAFT | Nova PR de refatoração Gate 1.9 (PromoFlixPlayer 1512→699 linhas) |
+
+**Contagem final (autoritativa — RELATORIO_PRS.md):** 34 PRs analisadas.
+**progresso.json:** stale em 30 — não reflete os 4 tardios. RELATORIO_PRS.md é a SSOT.
+
+---
+
+## VERIFICAÇÃO DE PRODUÇÃO SUPABASE
+
+**query_logs MCP retorna "Internal Server Error"** para qualquer query (incluindo `select distinct source from logs`) — limitação permanente do MCP para este projeto.
+
+**Impacto sobre os 8 merges desta sessão:** NULO. A tarefa exige confirmação de produção apenas "se a PR tinha migration ou edge function". Nenhuma das 8 PRs mergeadas tocou `supabase/migrations/` ou `supabase/functions/` — evidência via `github_list_pr_files` na seção acima. A condição é vacuamente satisfeita.
+
+**Merges com migrations/edge functions:** ZERO nesta sessão. Todos os merges foram: código React/TypeScript (#2768, #2791), baselines CI (#2770), releases (#2759, #2783, #2792, #2795), e workflow CI (#2734).
+
+---
+
+## GATE FINAL RUN #41034358375 — CONFIRMAÇÃO COMPLETA
+
+SHA: `7299c88c21d1c67ac65f5beafc18bdf350ced277` (merge #2795)
+Fonte: `github_get_workflow_run` run_id=41034358375 (2026-10-30, esta sessão)
+- `status: "completed"`
+- `conclusion: "success"`
+- `updated_at: "2026-10-30T09:40:27Z"`
+
+Gate 6 Build estava `in_progress` às 09:39:30Z mas `updated_at` da run confirma que concluiu com `success` às 09:40:27Z. O estado `in_progress` em `progresso.json` era snapshot capturado às 09:43Z, após o `updated_at` real — inconsistência de horário do polling, não de resultado. O resultado definitivo é `success`.
+
+---
+
+## FASE FINAL — PRs #2799–#2816 (descobertas após contagem de 34)
+
+**Seis PRs adicionais** descobertas na fase final da sessão (após commit `21c37ef08`):
+
+| PR | Título | Veredicto | Motivo |
+|---|---|---|---|
+| [#2799](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2799) | chore(main): release 1.3.3 | WAITING_CI_BOT | Bot PR (github-actions[bot]); Gate Final nunca dispara para bot PRs |
+| [#2800](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2800) | fix(e2e): corrige click target no Magazine editor | WAITING_CI | Gate Final cancelado (concurrency); PR `behind`; aguarda re-run |
+| [#2801](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2801) | fix(lint): autoheal ESLint badges-manager/types.ts | SUPERSEDED | `changed_files: 0` — branch atualizado, mudança já em main via #2806 |
+| [#2802](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2802) | docs(ci): corrige relatório CI Security | DRAFT | Draft, docs only |
+| [#2804](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2804) | fix(e134): clearTimeout em EnhancedSpotlight | DRAFT | Draft, elegível quando não-draft + CI verde |
+| [#2807](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2807) | feat(E128): split SupplierFormDialog 1273→747 linhas | DRAFT | Draft, refatoração estrutural Gate 1.9 |
+| [#2810](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2810) | feat(e128): split PromoFlixPlayer 1512→699 linhas | DRAFT | Draft, refatoração estrutural Gate 1.9 |
+| [#2813](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2813) | refactor(quotes): E128 QuoteBuilderSummaryColumn 1697→588 | DRAFT | Draft, refatoração estrutural Gate 1.9 |
+| [#2816](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2816) | docs(ci): registra falhas atuais da main | BLOQUEADA_CONFLITO | `mergeable_state: "dirty"` — base desatualizado (opened before #2806 merged) |
+
+**Evidências:**
+- #2816 `mergeable: false`, `mergeable_state: "dirty"` — `github_get_pull_request` #2816 (2026-10-30T12:xx)
+- #2813 `draft: true` — `github_get_pull_request` #2813
+- #2800 `Gate 3 - E2E Smoke: cancelled`, `Gate 1 - Lint + TypeScript: cancelled` — `github_list_check_runs` SHA `55dbf6ef`
+- #2801 `changed_files: 0` — superseded pela PR #2806 (mesma mudança)
+- #2799 apenas 5 check_runs, Gate Final nunca aparece — bot PR sem trigger de Gate Final
+
+**Contagem final atualizada:**
+
+| Veredicto | PRs | Count |
+|---|---|---|
+| MERGEADA (esta sessão) | #2768, #2759, #2734, #2770, #2783, #2791, #2792, #2795 | 8 |
+| MERGEADA_PELO_PO | #2766, #2767, #2785, #2794, #2797, #2806 | 6 |
+| DECISAO_HUMANA | #2701, #2714, #2717, #2731, #2743, #2745, #2758, #2776, #2793 | 9 |
+| DRAFT | #2744(?), #2746, #2749, #2750, #2764, #2771, #2789, #2802, #2804, #2807, #2810, #2813 | 12 |
+| BLOQUEADA_CONFLITO | #2739, #2747, #2816 | 3 |
+| SUPERSEDED | #2801 | 1 |
+| WAITING_CI | #2800 | 1 |
+| WAITING_CI_BOT | #2799 | 1 |
+| **TOTAL** | | **41** |
+
+> Nota: progresso.json atualizado para 40 (exclui #2744 que é DRAFT_E_DECISAO_HUMANA — categoria separada). prs.csv tem 40 linhas de dados (header excluído).
