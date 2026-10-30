@@ -1,18 +1,19 @@
 # PENDÊNCIAS CI — Promo Gifts V4
-**Atualizado em:** 2026-10-27  
+**Atualizado em:** 2026-10-30
 **Branch de correção:** `claude_04/beautiful-gates-bvocz5` (PR #2597 — **MERGEADO** ✅)
 
 ## Atualização — PR #2768 (2026-10-30)
 
-O PR [#2768 — revalidação de preços no Kit Builder](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2768), no SHA `dcf88ec5cf215a67eefa90a75167648cffeebbc5`, tem checks de código ainda `queued`/`in_progress`; eles não são falhas e devem concluir antes de considerar o PR validado.
+O PR [#2768 — revalidação de preços no Kit Builder](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2768) tem dois SHAs relevantes: `dcf88ec5` (código) e `b2f4be5b` (anotação documental). No SHA de código, a última consulta encontrou checks `queued`/`in_progress` e a falha externa do Copilot abaixo. No SHA documental, a execução de CI foi ignorada pelo fluxo docs-only; rodei `build:verify` e a suíte completa localmente após esse commit. Portanto, os checks remotos do SHA de código ainda não validam o SHA atual.
 
 | Check externo | Estado | Evidência | Ação necessária |
 |---|---|---|---|
-| `copilot-pull-request-reviewer` | `failure` | [Run #41001589312](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41001589312) — falha operacional do serviço Copilot por limite adicional de uso (HTTP 402/quota); não é resultado de revisão do código. | Administrador do plano GitHub deve liberar/aumentar a cota de uso do Copilot. Não contornar o check; após regularizar, solicitar nova execução/revisão. |
+| `copilot-pull-request-reviewer` (SHA `dcf88ec5`) | `failure` | [Run #41001589312](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41001589312) — falha operacional do serviço Copilot por limite adicional de uso (HTTP 402/quota); não é resultado de revisão do código. Não houve nova execução desse check no SHA documental. | Administrador do plano GitHub deve liberar/aumentar a cota do Copilot. Não contornar o check; após regularizar, solicitar nova execução/revisão no SHA atual. |
+| Deployment Preview da Vercel (SHA `b2f4be5b`) | `failure` | [Deployment `dpl_EeTgCLPn5gcPB1uxXzzQSAMYnAgv`](https://vercel.com/juca1/promo-gifts-v4/EeTgCLPn5gcPB1uxXzzQSAMYnAgv). O status externo informa apenas “Deployment has failed”; `vercel inspect --logs` não retornou detalhes. O resumo da Vercel mostra build `READY`, deployment `ERROR` e `output` vazio. Os 11 previews mais recentes consultados também estão `ERROR`, enquanto o deployment de `main` está `READY`; causa raiz ainda não confirmada. | Proprietário do projeto deve abrir o deployment no painel Vercel e consultar os eventos/build logs detalhados, identificar a mensagem de erro e corrigir a configuração/integração. Não atribuir a falha ao código deste PR sem essa evidência. |
 | `Vercel Agent Review` | `neutral` (review skipped) | [Check no PR #2768](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2768) — uso de cobrança não habilitado para o time Vercel. | Proprietário do time habilita usage billing em [Billing da Vercel](https://vercel.com/juca1/~/settings/billing) se quiser reativar as revisões automáticas. Não é falha de código nem check required. |
 | `Supabase Preview` | `skipped` | Sem mudanças na pasta `supabase/`; comportamento esperado para este PR, que não contém migration. | Nenhuma ação. |
 
-**Situação na última consulta:** 10 checks `success`, 2 `skipped`, 1 `neutral`, 1 `failure` externa e 24 ainda `queued`/`in_progress`. Portanto, o PR não está pronto para merge; aguardar conclusão dos checks e resolver os bloqueios externos aplicáveis.
+**Situação no SHA `dcf88ec5`:** 10 checks `success`, 2 `skipped`, 1 `neutral`, 1 falha externa do Copilot e 24 ainda `queued`/`in_progress`. **No SHA atual `b2f4be5b`:** preview Supabase `skipped` (sem alterações em `supabase/`) e deployment Vercel `failure`; os workflows de CI não foram reexecutados por ser commit apenas documental. O PR não está pronto para merge: é necessário resolver a causa do deployment Vercel, revalidar checks remotos no SHA atual e tratar a quota do Copilot conforme aplicável.
 
 ---
 
