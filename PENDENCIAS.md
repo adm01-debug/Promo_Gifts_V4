@@ -904,3 +904,23 @@ Nova consulta às últimas execuções da `main@9541666bf`. Apenas resultados co
 - Os demais checks concluídos na ponta `9541666bf` permanecem verdes conforme o inventário §P33/§P34.
 - PR [#2839](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2839), head `1fa22f47250b2d0f27891c75ecbbdf5f0cf97505`: aberto e bloqueado, sem revisão humana. Na consulta de 20:12Z, 3 checks concluídos, 50 ainda pendentes e nenhuma falha concluída no head; não mesclar até todos os checks obrigatórios concluírem e haver revisão.
 - O check externo Supabase [#124269702734](https://github.com/adm01-debug/Promo_Gifts_V4/runs/124269702734) continua fora da categoria de workflows Actions. A divergência do ledger permanece não classificada. Nenhuma migration, `repair`, DDL ou alteração de dados foi executada.
+
+## P36 — Diagnóstico do E2E Swatch QuickView na `main@9541666bf` (2026-10-30T20:19Z)
+
+O run [#41115240881](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41115240881) terminou `failure` depois do snapshot de §P35. Os logs dos três navegadores (Chromium, Firefox e WebKit) mostram o mesmo resultado: em cada navegador, 4 testes falharam e 1 passou; o guard registrou `executed=5`, `expected=1`, `unexpected=4`, `flaky=0`, `skipped=10`.
+
+| Navegador | Evidência observada | Classificação |
+|---|---|---|
+| Chromium | Os testes não encontraram um picker V2 em `/produtos` e `/filtros`; nas rotas satélite `/novidades` e `/reposicao`, o teste lançou `[E108] Sem produtos com color_swatches`. | Falha reproduzida na seleção de dados/resultado exibido pelo ambiente E2E. A evidência não determina se faltam produtos elegíveis nos dados consultados ou se a consulta/renderização das rotas os excluiu. |
+| Firefox | Mesmas 4 rotas e mesmas mensagens (`picker=null` ou `[E108]`); uma tentativa de retry repetiu os resultados. | Mesmo bloqueio; não é falha específica de navegador. |
+| WebKit | Mesmas 4 rotas e mesmas mensagens; uma tentativa de retry repetiu os resultados. | Mesmo bloqueio; não é falha específica de navegador. |
+
+O step `Check min tests executed` falhou como consequência de terem sido executados somente 5 testes, embora o mínimo configurado fosse 10; não é uma causa independente. Os testes chegaram às páginas, mas nenhum candidato elegível com `color_swatches` foi encontrado nas rotas avaliadas. Não há prova suficiente para atribuir isso a ausência de linhas no banco, pois não foi feita consulta ao banco — e nenhuma escrita foi autorizada ou executada. Também não alterei fixtures, asserts, catálogo ou schema para mascarar o resultado.
+
+**Encaminhamento:** PO/equipe de produto deve confirmar, por consulta somente leitura autorizada e/ou inspeção do catálogo servido ao CI, se há produtos ativos com `color_swatches` V2 que devem aparecer nessas rotas. Se existirem, investigar o filtro/seleção/renderização de cada rota; se não existirem, decidir como fornecer dados E2E versionados e seguros sem copiar dados operacionais nem flexibilizar assertions. Depois da correção aprovada, repetir o workflow nos três navegadores e exigir sucesso antes de remover este bloqueio. Supabase permaneceu intacto.
+
+## P37 — Deploy Preview Vercel falho no PR #2839 (2026-10-30T20:23Z)
+
+O status Vercel do head `0ef67ce6d9aff9cb2944ffd6511d560b2db0f013` do PR [#2839](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2839) concluiu `failure`: [deploy `dpl_7htod9VFENqZhyCed91EQEJgZjKM`](https://vercel.com/juca1/promo-gifts-v4/7htod9VFENqZhyCed91EQEJgZjKM). A inspeção foi feita no diretório raiz vinculado ao projeto canônico (`prj_9UfugNYCuboH2R0XB04Jv8PpjDpZ`) e em CLIs Vercel 59.5.0 e 65.8.0. O JSON retornado informa `target=preview`, `readyState=ERROR`; o build `@vercel/vc-build` aparece `READY`, mas sem itens em `output`. `vercel inspect ... --logs` não retornou log de build utilizável em nenhuma das versões. Portanto, a causa subjacente permanece não comprovada; não inferir que seja falha do código nem que seja irrelevante por ser documentação.
+
+**Encaminhamento:** PO deve abrir o deployment no painel Vercel e compartilhar/revisar o log de build completo ou indicar a causa exibida pelo painel. Sem esse dado não é seguro propor correção. Nenhum comando de deploy, link, alteração de configuração ou criação de projeto foi executado. O PR segue bloqueado também por esse status, checks Actions pendentes e ausência de revisão humana.

@@ -269,3 +269,19 @@ No head `08bcf8a3d` do PR #2839, a consulta retornou 45 checks: 9 `success`, 2 `
 | `npm run test:run -- --reporter=dot --silent` | 1.252 arquivos / 25.910 testes aprovados; 130 arquivos / 1.135 testes skipped; 24 TODO | ✅ Passou novamente: 1.252 arquivos / 25.910 testes aprovados; 130 arquivos / 1.135 testes skipped; 24 TODO. |
 
 Sem redução de testes aprovados nem erro novo. Esta atualização altera somente `PENDENCIAS.md` e `RELATORIO_CI.md`.
+
+## 16. Fechamento do E2E Swatch QuickView na `main@9541666bf` (2026-10-30T20:19Z)
+
+O run [#41115240881](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41115240881) concluiu `failure` após a consulta registrada na Seção 15. A análise dos logs de Chromium, Firefox e WebKit encontrou quatro falhas iguais em cada navegador e uma passagem; não foi um erro exclusivo de engine.
+
+| Workflow | Run / jobs | Evidência | Estado |
+|---|---|---|---|
+| E2E • Swatch QuickView (Lista + Tabela) | [#41115240881](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41115240881) — jobs Firefox `124285252899`, Chromium `124285253446`, WebKit `124285253516` | Em cada engine: `4 failed`, `1 passed`, `10 skipped`; o guard contabilizou `executed=5`, `expected=1`, `unexpected=4`, `flaky=0`. As quatro rotas sem picker/candidato foram `/produtos`, `/filtros`, `/novidades` e `/reposicao`. Nas rotas satélite, erro `[E108] Sem produtos com color_swatches`; nas rotas obrigatórias, `picker=null`. Retry repetiu a falha. O step de mínimo de testes falhou por consequência da contagem. | 📋 PENDENCIAS.md §P36. Está comprovado que o ambiente E2E não encontrou os produtos elegíveis esperados; não está comprovado se faltam registros elegíveis nos dados consultados ou se filtro/renderização os omite. Sem consulta ou escrita no banco nesta sessão. Requer validação de catálogo/dados e correção aprovada, seguida de nova execução nos três navegadores. |
+
+Esta evidência não altera as outras linhas do inventário da Seção 15. O único required check da `main` continuava verde no último run confirmado [#41115240969](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41115240969); os bloqueios de Auth/PostgREST, Uptime Monitor e cota Copilot seguem documentados em §P33–P35. A correção de teste do CI Security continua pendente de revisão e de resultado remoto no PR #2839. O PR permanece sem merge; nenhum schema ou dado Supabase foi alterado.
+
+## 17. Status externo do Preview Vercel no PR #2839 (2026-10-30T20:23Z)
+
+O status Vercel reportado para o head `0ef67ce6d9aff9cb2944ffd6511d560b2db0f013` do PR [#2839](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2839) está `failure`: [deployment `dpl_7htod9VFENqZhyCed91EQEJgZjKM`](https://vercel.com/juca1/promo-gifts-v4/7htod9VFENqZhyCed91EQEJgZjKM). A inspeção read-only do deployment informa `target=preview`, `readyState=ERROR`; o build `@vercel/vc-build` aparece `READY`, sem itens de saída reportados. A consulta `vercel inspect <deployment> --logs` foi tentada com CLI 59.5.0 e 65.8.0 no diretório raiz, corretamente vinculado ao projeto canônico; nenhuma das versões devolveu logs úteis. A causa não pode ser inferida desta evidência.
+
+O status pertence ao Preview do PR e não é uma execução de workflow na `main`; permanece como bloqueio de revisão/merge em PENDENCIAS.md §P37. Próximo passo: obter no painel Vercel o log de build completo e classificar a causa antes de qualquer mudança. Nenhum deploy, alteração de projeto Vercel ou mudança de configuração foi feita.
