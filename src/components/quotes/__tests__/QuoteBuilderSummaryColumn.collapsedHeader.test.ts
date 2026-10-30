@@ -16,7 +16,7 @@ import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
 const SOURCE = readFileSync(
-  resolve(__dirname, '../QuoteBuilderSummaryColumn.tsx'),
+  resolve(__dirname, '../QuoteBuilderSummaryItems.tsx'),
   'utf-8',
 );
 const NEGOTIATION_SOURCE = readFileSync(
@@ -42,8 +42,8 @@ describe('QuoteBuilderSummaryColumn — header do item (visual/estrutural)', () 
     // Inline style com WebkitLineClamp:2 + display:-webkit-box (garante 2 linhas
     // mesmo quando o Tailwind purge/plugin não injeta line-clamp).
     expect(slice).toMatch(/WebkitLineClamp:\s*2/);
-    expect(slice).toMatch(/display:\s*['"]-webkit-box['"]/);
-    expect(slice).toMatch(/WebkitBoxOrient:\s*['"]vertical['"]/);
+    expect(slice).toMatch(/display:\s*['"]\-webkit\-box['"]/);
+    expect(slice).toMatch(/WebkitBoxOrient:\s*['"\]vertical['"\]]/);
     const namePara = /<p[\s\S]*?\{item\.product_name\}/.exec(slice);
     expect(namePara?.[0] ?? '').not.toMatch(/\btruncate\b/);
     expect(namePara?.[0] ?? '').toMatch(/\bbreak-words\b/);

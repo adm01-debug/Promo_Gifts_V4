@@ -20,6 +20,7 @@ import { resolve } from 'node:path';
 import { saveCollapsedItems, loadCollapsedItems } from '@/lib/quotes/collapsedItemsStorage';
 
 const SRC = readFileSync(resolve(__dirname, '../QuoteBuilderSummaryColumn.tsx'), 'utf8');
+const SRC_ITEMS = readFileSync(resolve(__dirname, '../QuoteBuilderSummaryItems.tsx'), 'utf8');
 
 // --- Helpers de simulação (espelham a lógica do componente) ---------------
 function computeAllCollapsed(itemKeys: string[], collapsed: Set<string>): boolean {
@@ -93,7 +94,7 @@ describe('CollapseAll · sanity de tokens no source (SSOT)', () => {
   });
 
   it('animação fade-in respeita prefers-reduced-motion', () => {
-    const matches = SRC.match(/animate-fade-in[^"]*motion-reduce:animate-none/g);
+    const matches = SRC_ITEMS.match(/animate-fade-in[^"]*motion-reduce:animate-none/g);
     expect(matches?.length).toBeGreaterThanOrEqual(2);
   });
 
