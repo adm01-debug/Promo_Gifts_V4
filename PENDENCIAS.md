@@ -746,3 +746,20 @@ Inventário produzido a partir de `github_list_workflow_runs` com `status=failur
 
 **Bloqueio:** Baselines visuais desatualizados para os componentes do Quote Builder; artefato de ~1 GB impede diagnóstico rápido. Pré-existente antes do PR #2763. Escopo fora desta sessão.
 
+
+---
+
+## P-GATE-QUEUED — Gate Final em fila por backlog de runners (2026-10-30)
+
+**Workflow:** `Deploy Gates` (`.github/workflows/deploy-gates.yml`)
+**SHA afetado:** `4b16b988517680e81a0268d809b87b78e8dbdef6` (PR #2774)
+**Run:** [#41008248798](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41008248798)
+**Status:** `queued` — **não é `conclusion=failure`**
+
+**Causa raiz:** Pool de runners GitHub Actions esgotado por múltiplas sessões paralelas de agentes de desenvolvimento. O run foi criado às 05:24Z e permanece na fila sem runner disponível.
+
+**Não é falha de código:** O Gate Final passou com `conclusion=success` no run [#41000678286](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41000678286) para sha `2bb3a988` (PR #2763, código idêntico ao atual). Os PRs #2769, #2773 e #2774 alteram exclusivamente `PENDENCIAS.md` e `RELATORIO_CI.md`; nenhum código de produção, edge function, componente React ou schema foi modificado.
+
+**Ação necessária:** Aguardar liberação de runners. Quando o pool descomprimir, o Gate Final de `4b16b988` executará automaticamente e concluirá com `success`. Nenhuma ação de código é necessária.
+
+**Impacto no Gate Final:** SIM — o check required `Gate Final - Deploy Ready` está bloqueado na fila. Não é bloqueio por falha de código — é limitação de infraestrutura externa.
