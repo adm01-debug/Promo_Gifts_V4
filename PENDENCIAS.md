@@ -212,3 +212,23 @@ Consulta pelo GitHub MCP; estados abaixo são um snapshot e precisam ser reconsu
 | [#2827 — TypeScript e tour de kits](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2827) | 1 `success`, 26 `queued`; nenhuma falha concluída observada. | Checks remotos ainda não terminaram; o PR inclui mudança de comportamento da aplicação. | Aguardar checks e revisão; sem merge enquanto não houver confirmação verde e revisão, pois pode disparar deploy de produção. |
 
 **Conclusão deste snapshot:** nenhum dos sete PRs está comprovadamente pronto para merge. As falhas do Copilot são bloqueios externos de quota/rede; os bloqueios de migration no #2823 são técnicos e reproduzíveis. Os três retries da `main` continuam sem nova conclusão; ver P30. A auditoria ampla dos planos do projeto permanece aberta. Nenhuma escrita no Supabase canônico foi realizada.
+
+## Atualização P32 — falhas concluídas na `main` e nova fila do PR #2827 (2026-10-30T14:58Z)
+
+Nova consulta ao GitHub MCP após a atualização do PR #2827. A `main` continua em `cba9944d12a61699a3ca855388e5842c5d6948b3`; o novo commit `68384e0424447c8ab96a1ea4f0b5b4023927e26d` foi enviado à branch do PR, sem merge.
+
+### Workflows com falha na execução mais recente da `main`
+
+| Workflow | Último run concluído | Causa demonstrada | Bloqueio/ação |
+|---|---|---|---|
+| Uptime Monitor | [#41069035787](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41069035787), tentativa 2, `failure` | A probe `health-check` não ficou saudável na janela; diagnóstico read-only independente observou timeout de banco de 1.500 ms e `external_db` saudável. A causa operacional abaixo da consulta ainda não foi identificada. | Pendente para administrador do projeto: correlacionar métricas/locks e plano da leitura de `profiles` no horário do run. Sem alteração de query, timeout, schema, edge function ou banco nesta sessão. |
+| E2E — Magazine Header Layout | [#41067472825](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41067472825), `failure` | O setup autenticado não gerou `storageState` com token. `auth/v1/token` respondeu HTTP 200 após 23,860 s, mas `get-visitor-info`, `auth/v1/user`, `get_profile_and_roles` e várias leituras REST ficaram pendentes por 43–79 s; login permaneceu em `/login` por 75 s. Nenhuma assertion de layout foi executada. | Bloqueio de disponibilidade/latência dos serviços Supabase durante o E2E; correlação administrativa necessária. Não tratar o PR #2800 como validado por este run e não enfraquecer/pular specs autenticados. |
+
+### Outras execuções da ponta atual
+
+- `CI - Replenishment Module Quality Gate` [#41067472887](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41067472887) e `E2E — Personalization Flow` [#41067472705](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41067472705) estavam `in_progress` na consulta de 14:58Z; não classificadas como falha nem sucesso até conclusão.
+- `Deploy Gates` [#41067473692](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41067473692) e Uptime agendado [#41072678043](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41072678043) ainda estavam `queued`/`pending`; sem conclusão.
+- `success` continuavam CodeQL [#41067472531](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41067472531), Gitleaks [#41067472331](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41067472331), Lovable Autoheal [#41067472322](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41067472322), No Prod Leak [#41067473724](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41067473724), Security Scan [#41067472550](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41067472550), Select Columns vs Types [#41067472392](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41067472392), Static Health Checks [#41067472691](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41067472691) e UI Visual & A11y [#41067472498](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41067472498).
+- PR [#2827](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2827), atualizado com `68384e042`, tinha 1 check `success`, 26 `queued` e nenhum `failure` concluído na consulta de 14:58Z. Não mesclar: inclui mudanças da aplicação e pode disparar deploy; aguardar checks/revisão.
+
+**Próxima etapa:** aguardar os runs `in_progress`/`queued` e reconsultar. Os bloqueios de Uptime e E2E autenticado requerem evidência operacional do Supabase; não há correção de código segura comprovada neste ponto. Nenhuma migration, escrita ou alteração no Supabase canônico foi realizada.
