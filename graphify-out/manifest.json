@@ -3918,8 +3918,8 @@
     "semantic_hash": ""
   },
   "public/schemas/ssot-report.schema.json": {
-    "mtime": 1793331448.7885556,
-    "seen": 1793333621.4978178,
+    "mtime": 1793333989.5872512,
+    "seen": 1793334326.7222362,
     "ast_hash": "5f7c1a0d8db2e261abb51ec9125a64d5",
     "semantic_hash": ""
   },
@@ -29910,20 +29910,20 @@
     "semantic_hash": ""
   },
   "qa/exports/proposal-10015-26.html": {
-    "mtime": 1793331539.8725343,
-    "seen": 1793333621.5892267,
+    "mtime": 1793334078.3550365,
+    "seen": 1793334326.813338,
     "ast_hash": "92ca7a7ea332a554b7785b08a7828793",
     "semantic_hash": ""
   },
   "qa/exports/proposal-complex-99999-26.html": {
-    "mtime": 1793331539.8805342,
-    "seen": 1793333621.5892277,
+    "mtime": 1793334078.3630278,
+    "seen": 1793334326.8133392,
     "ast_hash": "04240878120d40179aa6e7ce7356afe8",
     "semantic_hash": ""
   },
   "qa/exports/proposal-minimal-00001-26.html": {
-    "mtime": 1793331539.8765342,
-    "seen": 1793333621.5892289,
+    "mtime": 1793334078.3550365,
+    "seen": 1793334326.8133402,
     "ast_hash": "cf17ac99e7adfb32411e5abee571a3ff",
     "semantic_hash": ""
   },
@@ -31740,9 +31740,9 @@
     "semantic_hash": ""
   },
   "PENDENCIAS.md": {
-    "mtime": 1793333570.247964,
-    "seen": 1793333621.5778198,
-    "ast_hash": "2187bf29b04fdefbf865d43e0ef023c8",
+    "mtime": 1793333712.7171845,
+    "seen": 1793334326.8000054,
+    "ast_hash": "b7f601079abb4cae5b341ce1b105bee0",
     "semantic_hash": ""
   },
   "RELATORIO_CI.md": {
