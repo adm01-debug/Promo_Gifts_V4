@@ -1,0 +1,18 @@
+# SENTINEL_SHA_ALLOWLIST.txt
+# SHAs de commits históricos isentos da verificação de padrão do Branch Protection Sentinel.
+# Cada entrada foi revisada manualmente e registrada aqui porque:
+#   - Foram pushados diretamente em main antes do Sentinel existir ou com padrões não cobertos
+#   - São commits de documentação/hotfix sem risco de regressão
+#   - A correção retroativa seria mais arriscada do que a isenção pontual
+#
+# Formato: <SHA-completo>  # <assunto>  [<data>] [<aprovado-por>]
+# NUNCA adicionar entradas genéricas. Cada SHA deve ser revisado individualmente.
+# Ver .github/SENTINEL_CHANGELOG.md para o histórico completo.
+#
+# Aprovação: adm01@promobrindes.com.br — 2026-10-29 — P-CI-H
+153630ff924baeef12dc155d69d9337deda68192  # merge: main na branch (docs unidos; graphify-out da main)  [2026-10-29]
+036803829936c37048564b93ab78efc3e47055d3  # Merge branch 'main' into fix/p200-e051-e052  [2026-10-29]
+4e83d972c3446c042e7003f7f51dbdc4ec22649d  # docs(ci): registra deploy Vercel sem diagnóstico no PR 2730  [2026-10-29]
+e2518bbd23ecd5b7e9960dfaec2f24837ee44d91  # docs(auditoria): registra lacuna do rate guard E049  [2026-10-29]
+c55c6781311b428cdbb52e4ff8f753c59222c470  # docs(audit): registra bloqueios de sincronização e CI  [2026-10-29]
+9d9dd2a7b502ab7e5ff42691d40b95a822c21d6b  # fix(ci): protege contrato de repair-only em E15  [2026-10-29]

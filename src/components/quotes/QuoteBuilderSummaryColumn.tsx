@@ -2,68 +2,24 @@
  * QuoteBuilderSummaryColumn — Coluna 3: Resumo com cards de itens, desconto e CTAs
  */
 
-import { useState, useMemo, useEffect, useRef } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { CurrencyInput } from '@/components/ui/currency-input';
-import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogFooter,
-} from '@/components/ui/dialog';
-import {
   AlertTriangle,
-  ChevronDown,
+  CheckCircle2,
   ChevronsDownUp,
   ChevronsUpDown,
-  ChevronUp,
-  Edit,
-  GripVertical,
   Layers,
   Loader2,
-  Package,
-  Plus,
   Save,
   Send,
   Shield,
   ShoppingCart,
-  Trash2,
-  CheckCircle2,
+  Plus,
   X,
 } from 'lucide-react';
-import {
-  DndContext,
-  closestCenter,
-  KeyboardSensor,
-  PointerSensor,
-  useSensor,
-  useSensors,
-  DragOverlay,
-  type DragEndEvent,
-  type DragStartEvent,
-} from '@dnd-kit/core';
-import {
-  arrayMove,
-  SortableContext,
-  sortableKeyboardCoordinates,
-  useSortable,
-  verticalListSortingStrategy,
-} from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -72,35 +28,10 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { cn } from '@/lib/utils';
 import type { QuoteItem } from '@/hooks/quotes';
-import {
-  NegotiationMarkupCard,
-  NegotiationPriceComparison,
-} from '@/components/quotes/NegotiationMarkupCard';
-import { ProductThumb } from '@/components/quotes/ProductThumb';
-import { ConfirmDialog } from '@/components/common/ConfirmDialog';
-import {
-  getDiscountValidationMessage,
-  getApprovalChecklist,
-  isApprovalReady,
-  MIN_SELLER_NOTES_LENGTH,
-} from '@/lib/quotes/discount-validation-messages';
-import { getPriceFreshness } from '@/utils/price-freshness';
-import { PriceFreshnessBadge } from '@/components/products/PriceFreshnessBadge';
-import { formatColors, formatArea } from '@/lib/quotes/personalizationSummary';
-import {
-  loadCollapsedItems,
-  toggleCollapsedItem,
-  pruneCollapsedItems,
-  saveCollapsedItems,
-} from '@/lib/quotes/collapsedItemsStorage';
-import { toast } from 'sonner';
-import { showUndoToast } from '@/utils/undoToast';
-import { releaseScrollLockIfIdle } from '@/lib/dom/scroll-lock';
-import { logger } from '@/lib/logger';
-// BUG-C FIX: import SSOT round2 instead of duplicating it locally
-import { round2 } from '@/hooks/quotes/quoteHelpers';
-import { formatEngravingTitle } from '@/lib/customization/format-engraving-title';
-import { EngravingBadge } from './EngravingBadge';
+import { useQuoteSummaryState } from './useQuoteSummaryState';
+import { QuoteBuilderSummaryItems } from './QuoteBuilderSummaryItems';
+import { QuoteBuilderSummaryPricing } from './QuoteBuilderSummaryPricing';
+import { QuoteBuilderSummaryDialogs } from './QuoteBuilderSummaryDialogs';
 
 interface Props {
   items: QuoteItem[];
@@ -147,45 +78,6 @@ interface Props {
   onRestore?: (item: QuoteItem, index: number) => void;
 }
 
-/**
- * SortableSummaryCard — wrapper de drag-and-drop para um card do Resumo.
- *
- * Mantido FORA do render do componente pai para não recriar o hook em
- * cada ciclo (regra de hooks + perf). Expõe `dragAttributes`/`dragListeners`
- * via render-prop para que o handle (GripVertical) seja posicionado
- * inline pelo consumidor sem precisar de portais.
- */
-type SortableRenderArgs = {
-  dragAttributes: ReturnType<typeof useSortable>['attributes'];
-  dragListeners: ReturnType<typeof useSortable>['listeners'];
-  isDragging: boolean;
-};
-function SortableSummaryCard({
-  id,
-  dragDisabled,
-  children,
-}: {
-  id: string;
-  dragDisabled: boolean;
-  children: (args: SortableRenderArgs) => React.ReactNode;
-}) {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
-    id,
-    disabled: dragDisabled,
-  });
-  const style: React.CSSProperties = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-    opacity: isDragging ? 0.6 : undefined,
-    zIndex: isDragging ? 10 : undefined,
-  };
-  return (
-    <div ref={setNodeRef} style={style}>
-      {children({ dragAttributes: attributes, dragListeners: listeners, isDragging })}
-    </div>
-  );
-}
-
 export function QuoteBuilderSummaryColumn({
   items,
   activeItemIndex,
@@ -222,245 +114,56 @@ export function QuoteBuilderSummaryColumn({
   onAddProduct,
   onRestore,
 }: Props) {
-  const [approvalDialogOpen, setApprovalDialogOpen] = useState(false);
-  const [sellerNotes, setSellerNotes] = useState('');
-  const [confirmAllOpen, setConfirmAllOpen] = useState(false);
-  const [confirmSaveDraftOpen, setConfirmSaveDraftOpen] = useState(false);
-  const saveDraftBtnRef = useRef<HTMLButtonElement>(null);
-
-  const [showOnlyStale, setShowOnlyStale] = useState(false);
-  const [groupedByProduct, setGroupedByProduct] = useState(false);
-  const [activeDragId, setActiveDragId] = useState<string | null>(null);
-  // Persistência do colapso por orçamento via SSOT `collapsedItemsStorage`.
-  // - Chave única por quoteId (ou "new" para rascunho) — isola estado entre orçamentos.
-  // - `pruneCollapsedItems` limpa ids zumbis quando o usuário remove um produto.
-  const [collapsedItemKeys, setCollapsedItemKeys] = useState<Set<string>>(() =>
-    loadCollapsedItems(quoteId),
-  );
-  // Recarrega ao trocar de orçamento (transição "new" → id real após salvar).
-  useEffect(() => {
-    setCollapsedItemKeys(loadCollapsedItems(quoteId));
-  }, [quoteId]);
-  // Prune: remove do storage chaves de itens que não existem mais (exclusão).
-  useEffect(() => {
-    const currentIds = items.map((it, idx) => it.id ?? `__idx_${idx}`);
-    setCollapsedItemKeys((prev) => pruneCollapsedItems(quoteId, prev, currentIds));
-  }, [items, quoteId]);
-  const toggleItemCollapsed = (key: string) => {
-    setCollapsedItemKeys((prev) => toggleCollapsedItem(quoteId, prev, key));
-  };
-
-  // Toggle global: recolhe todos os itens abertos (ou expande todos se já estão todos recolhidos).
-  const allItemKeys = useMemo(() => items.map((it, idx) => it.id ?? `__idx_${idx}`), [items]);
-  const allCollapsed = allItemKeys.length > 0 && allItemKeys.every((k) => collapsedItemKeys.has(k));
-  const toggleAllCollapsed = () => {
-    const next = allCollapsed ? new Set<string>() : new Set<string>(allItemKeys);
-    setCollapsedItemKeys(next);
-    saveCollapsedItems(quoteId, next);
-  };
-
-  // Sensors do dnd-kit — pointer (mouse/touch) + keyboard (acessibilidade).
-  const dndSensors = useSensors(
-    useSensor(PointerSensor, { activationConstraint: { distance: 6 } }),
-    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
-  );
-
-  /**
-   * A ordem fica no estado do editor e segue no próximo save transacional do
-   * orçamento. O antigo UPDATE granular em quote_items concorria com a RPC
-   * global, podia deadlockar e não avançava quotes.version.
-   */
-  const stageOrderForTransactionalSave = () => {
-    setSkipAutosaveSortOrder?.(false);
-  };
-
-  const handleDragStart = (e: DragStartEvent) => {
-    setActiveDragId(String(e.active.id));
-  };
-
-  const handleDragEnd = (e: DragEndEvent) => {
-    const { active, over } = e;
-    setActiveDragId(null);
-    if (!over || active.id === over.id || !onReorder) return;
-    const oldIndex = items.findIndex((it, i) => (it.id ?? `__idx_${i}`) === String(active.id));
-    const newIndex = items.findIndex((it, i) => (it.id ?? `__idx_${i}`) === String(over.id));
-    if (oldIndex < 0 || newIndex < 0) return;
-    const reordered = arrayMove(items, oldIndex, newIndex).map((it, i) => ({
-      ...it,
-      sort_order: i,
-    }));
-    onReorder(reordered);
-    stageOrderForTransactionalSave();
-  };
-
-  const groupByProductId = () => {
-    if (!onReorder || items.length < 2) return;
-    const seen = new Map<string, number>();
-    items.forEach((it, i) => {
-      const key = it.product_id || `__no_pid_${i}`;
-      if (!seen.has(key)) seen.set(key, seen.size);
-    });
-    const grouped = [...items]
-      .map((it, i) => ({ it, i }))
-      .sort((a, b) => {
-        const ka = a.it.product_id || `__no_pid_${a.i}`;
-        const kb = b.it.product_id || `__no_pid_${b.i}`;
-        const ga = seen.get(ka) ?? 0;
-        const gb = seen.get(kb) ?? 0;
-        if (ga !== gb) return ga - gb;
-        return a.i - b.i;
-      })
-      .map(({ it }, i) => ({ ...it, sort_order: i }));
-    onReorder(grouped);
-    stageOrderForTransactionalSave();
-    setGroupedByProduct(true);
-    toast.success('Itens agrupados por produto');
-  };
-
-  const groupByCategory = () => {
-    if (!onReorder || items.length < 2) return;
-    const BUCKET_UNCAT = '__uncategorized__';
-    const seen = new Map<string, number>();
-    items.forEach((it) => {
-      const key = it.product_category_id || BUCKET_UNCAT;
-      if (!seen.has(key)) seen.set(key, seen.size);
-    });
-    // Garante bucket sem categoria por último.
-    if (seen.has(BUCKET_UNCAT)) {
-      seen.delete(BUCKET_UNCAT);
-      seen.set(BUCKET_UNCAT, seen.size);
-    }
-    const uncategorized = items.filter((it) => !it.product_category_id).length;
-    if (uncategorized > 0) {
-      logger.info('[QuoteBuilderSummaryColumn] quote_summary_group_uncategorized', {
-        count: uncategorized,
-        total: items.length,
-      });
-    }
-    const grouped = [...items]
-      .map((it, i) => ({ it, i }))
-      .sort((a, b) => {
-        const ka = a.it.product_category_id || BUCKET_UNCAT;
-        const kb = b.it.product_category_id || BUCKET_UNCAT;
-        const ga = seen.get(ka) ?? 0;
-        const gb = seen.get(kb) ?? 0;
-        if (ga !== gb) return ga - gb;
-        return a.i - b.i;
-      })
-      .map(({ it }, i) => ({ ...it, sort_order: i }));
-    onReorder(grouped);
-    stageOrderForTransactionalSave();
-    setGroupedByProduct(true);
-    toast.success('Itens agrupados por categoria');
-  };
-
-  // Snapshot do item arrastado para o DragOverlay.
-  const activeItemForOverlay = useMemo(() => {
-    if (!activeDragId) return null;
-    return items.find((it, i) => (it.id ?? `__idx_${i}`) === activeDragId) ?? null;
-  }, [activeDragId, items]);
-
-  // ── Base apresentada (subtotal + markup) — referência para converter desconto %/R$ ──
-  // BUG-D FIX: clamp markup to [0,50] so this mirrors calculateQuoteTotals exactly
-  const presentedSubtotal = useMemo(() => {
-    const clampedMarkup = Math.max(0, Math.min(50, negotiationMarkup || 0));
-    return round2((realSubtotal || 0) * (1 + clampedMarkup / 100));
-  }, [realSubtotal, negotiationMarkup]);
-
-  const handleDiscountTypeChange = (next: 'amount' | 'percent') => {
-    if (next === discountType) return;
-    if (presentedSubtotal > 0 && discountValue > 0) {
-      if (next === 'amount') {
-        setDiscountValue(
-          round2(Math.min(presentedSubtotal, presentedSubtotal * (discountValue / 100))),
-        );
-      } else {
-        const pct = (discountValue / presentedSubtotal) * 100;
-        setDiscountValue(round2(Math.max(0, Math.min(100, pct))));
-      }
-    } else if (presentedSubtotal === 0 && discountValue > 0) {
-      // BUG-DISCOUNT-ZERO FIX: with a 0 subtotal, any discount is meaningless.
-      // The old code only reset when switching TO percent (X% of 0 = 0); it forgot
-      // the reverse direction (R$ amount when subtotal is 0 also makes no sense).
-      setDiscountValue(0);
-    }
-    setDiscountType(next);
-  };
-
-  const staleIndexes = useMemo(() => {
-    const set = new Set<number>();
-    items.forEach((item, idx) => {
-      // BUG-STALE-CONFIRM FIX (summary): a confirmation is only valid when it
-      // postdates the last price update. Without this check, a re-priced item
-      // with an OLD price_confirmed_at would never show the badge in the summary
-      // column, causing stale prices to reach the client silently.
-      if (
-        item.price_confirmed_at &&
-        (!item.price_updated_at || item.price_confirmed_at >= item.price_updated_at)
-      )
-        return;
-      const f = getPriceFreshness(item.price_updated_at, item.price_freshness_threshold_days);
-      if (f.shouldWarn) set.add(idx);
-    });
-    return set;
-  }, [items]);
-
-  const staleCount = staleIndexes.size;
-  const visibleItems = useMemo(
-    () =>
-      showOnlyStale
-        ? items.map((it, idx) => ({ it, idx })).filter(({ idx }) => staleIndexes.has(idx))
-        : items.map((it, idx) => ({ it, idx })),
-    [items, showOnlyStale, staleIndexes],
-  );
-
-  useEffect(() => {
-    if (showOnlyStale && staleCount === 0) setShowOnlyStale(false);
-  }, [showOnlyStale, staleCount]);
-
-  const handleRequestApproval = () => {
-    onSave('pending_approval', sellerNotes);
-    setApprovalDialogOpen(false);
-    setSellerNotes('');
-  };
-
-  /**
-   * SCROLL-FIX-03: Dialog close handler com scroll-lock release explícito.
-   *
-   * O Dialog de aprovação usa Radix UI, que aplica `overflow: hidden` no body
-   * durante a abertura. Em condições de race (animação de fechamento + unmount
-   * rápido), o Radix pode não liberar o lock — deixando a página inteira
-   * sem scroll. O `releaseScrollLockIfIdle` do scroll-lock.ts já cuida disso
-   * globalmente, mas disparar explicitamente aqui garante liberação imediata
-   * sem depender da janela do MutationObserver ou do próximo pointerdown.
-   */
-  const handleApprovalDialogChange = (open: boolean) => {
-    setApprovalDialogOpen(open);
-    if (!open) {
-      // Defer para depois do frame de fechamento do Radix
-      requestAnimationFrame(() => releaseScrollLockIfIdle());
-    }
-  };
-
-  const handleConfirmAllDialogChange = (open: boolean) => {
-    setConfirmAllOpen(open);
-    if (!open) {
-      requestAnimationFrame(() => releaseScrollLockIfIdle());
-    }
-  };
+  const {
+    approvalDialogOpen,
+    setApprovalDialogOpen,
+    sellerNotes,
+    setSellerNotes,
+    confirmAllOpen,
+    setConfirmAllOpen,
+    confirmSaveDraftOpen,
+    setConfirmSaveDraftOpen,
+    saveDraftBtnRef,
+    showOnlyStale,
+    setShowOnlyStale,
+    groupedByProduct,
+    setActiveDragId,
+    collapsedItemKeys,
+    toggleItemCollapsed,
+    allCollapsed,
+    toggleAllCollapsed,
+    dndSensors,
+    handleDragStart,
+    handleDragEnd,
+    groupByProductId,
+    groupByCategory,
+    activeItemForOverlay,
+    presentedSubtotal,
+    handleDiscountTypeChange,
+    staleIndexes,
+    staleCount,
+    visibleItems,
+    handleRequestApproval,
+    handleApprovalDialogChange,
+    handleConfirmAllDialogChange,
+  } = useQuoteSummaryState({
+    items,
+    discountType,
+    setDiscountType,
+    discountValue,
+    setDiscountValue,
+    negotiationMarkup,
+    realSubtotal,
+    onSave,
+    onReorder,
+    quoteId,
+    setSkipAutosaveSortOrder,
+  });
 
   /**
    * SCROLL-FIX: altura da sticky column calculada via CSS var para garantir
    * que o INNER scroll container tenha altura EXPLÍCITA — sem depender de
    * `h-full` dentro de `overflow-hidden`, que falha em alguns contextos.
-   *
-   * Mudanças em relação à versão anterior:
-   *   ANTES: outer `lg:overflow-hidden` + inner `lg:h-full lg:overflow-y-auto`
-   *          → `overflow-hidden` no pai cria BFC; `h-full` pode resolver para
-   *            `auto` dentro do BFC, fazendo o `overflow-y-auto` nunca scrollar.
-   *   AGORA: outer SEM `overflow-hidden` (usa `overflow-clip` apenas para sombra)
-   *          + inner com `lg:max-h-[calc(...)]` EXPLÍCITO + `overflow-y-auto`
-   *          → scroll funciona em todos os browsers (Chrome, Firefox, Safari).
    */
   const STICKY_HEIGHT = 'lg:max-h-[calc(100vh-var(--header-h,56px)-var(--breadcrumb-h,40px)-2rem)]';
 
@@ -498,9 +201,6 @@ export function QuoteBuilderSummaryColumn({
           data-testid="quote-builder-summary-scroll"
           className={cn(
             'flex flex-col rounded-2xl border border-border/50 bg-card shadow-xl',
-            // Default desktop: bloco de baixo fixo, lista rola sozinha.
-            // Fallback p/ viewports curtos (<700px de altura): card inteiro vira scroll
-            // p/ evitar que o bloco fixo (desconto+markup+totais+CTAs) seja cortado.
             'lg:overflow-y-auto [@media(min-height:700px)]:lg:overflow-hidden',
             STICKY_HEIGHT,
           )}
@@ -648,649 +348,47 @@ export function QuoteBuilderSummaryColumn({
             </div>
           )}
 
-          {/* Product Cards — única área rolável no desktop */}
-          <div
-            data-testid="quote-summary-items-scroll"
-            className="lg:min-h-[140px] lg:flex-1 [@media(min-height:700px)]:lg:min-h-0 [@media(min-height:700px)]:lg:overflow-y-auto"
-          >
-            <div className="px-4">
-              <div className="space-y-3 pr-1">
-                {items.length === 0 ? (
-                  <div className="group flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-muted-foreground/20 bg-muted/5 p-8 transition-all duration-300 hover:border-primary/30">
-                    <div className="mb-3 rounded-full bg-muted/30 p-3 transition-colors group-hover:bg-primary/10">
-                      <Package className="h-6 w-6 text-muted-foreground/40 group-hover:text-primary/50" />
-                    </div>
-                    <p className="text-sm font-medium text-muted-foreground group-hover:text-primary/70">
-                      Nenhum item adicionado
-                    </p>
-                    <p className="mt-1 max-w-[150px] text-center text-[11px] text-muted-foreground/60">
-                      Busque produtos na coluna ao lado para começar
-                    </p>
-                  </div>
-                ) : visibleItems.length === 0 ? (
-                  <div className="flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-warning/30 bg-warning/[0.03] p-6">
-                    <CheckCircle2 className="mb-2 h-6 w-6 text-warning" />
-                    <p className="text-sm font-medium text-warning">Preços Confirmados</p>
-                    <button
-                      type="button"
-                      onClick={() => setShowOnlyStale(false)}
-                      className="mt-2 text-xs text-muted-foreground underline transition-colors hover:text-foreground"
-                    >
-                      Ver todos os itens
-                    </button>
-                  </div>
-                ) : (
-                  <DndContext
-                    sensors={dndSensors}
-                    collisionDetection={closestCenter}
-                    onDragStart={handleDragStart}
-                    onDragEnd={handleDragEnd}
-                    onDragCancel={() => setActiveDragId(null)}
-                  >
-                    <SortableContext
-                      items={visibleItems.map(({ it, idx }) => it.id ?? `__idx_${idx}`)}
-                      strategy={verticalListSortingStrategy}
-                    >
-                      {visibleItems.map(({ it: item, idx }) => {
-                        const persTotal = calculateItemPersonalizationTotal(item);
-                        const isActive = activeItemIndex === idx;
-                        const isStale = staleIndexes.has(idx);
-                        const sortableId = item.id ?? `__idx_${idx}`;
-                        const collapseKey = item.id ?? `__idx_${idx}`;
-                        const isCollapsed = collapsedItemKeys.has(collapseKey);
-                        // Drag desabilitado quando há filtro ativo (índices visíveis ≠ índices reais
-                        // do array `items`, o que tornaria a reordenação inconsistente).
-                        const dragDisabled = !onReorder || showOnlyStale;
-                        return (
-                          <SortableSummaryCard
-                            key={sortableId}
-                            id={sortableId}
-                            dragDisabled={dragDisabled}
-                          >
-                            {({ dragAttributes, dragListeners }) => (
-                              <div
-                                data-testid={`quote-summary-item-${idx}`}
-                                data-quote-item-id={item.id ?? ''}
-                                className={cn(
-                                  'cursor-pointer rounded-xl border transition-all',
-                                  isActive
-                                    ? 'border-primary/50 bg-primary/5 ring-1 ring-primary/20'
-                                    : 'border-border/60 bg-muted/30 hover:border-border',
-                                  isStale && !isActive && 'border-warning/40 bg-warning/[0.04]',
-                                  isStale && isActive && 'ring-warning/30',
-                                )}
-                                onClick={() => setActiveItemIndex(idx)}
-                              >
-                                <div className="space-y-2 p-3">
-                                  <div className="flex items-start gap-2">
-                                    {/* Handle de arrastar — antes da imagem do produto */}
-                                    <button
-                                      type="button"
-                                      aria-label="Arrastar para reordenar"
-                                      title="Arrastar para reordenar"
-                                      data-testid={`quote-summary-drag-handle-${idx}`}
-                                      className={cn(
-                                        'mt-1 shrink-0 touch-none rounded p-1 text-muted-foreground/50 transition-colors',
-                                        dragDisabled
-                                          ? 'cursor-not-allowed opacity-30'
-                                          : 'cursor-grab hover:bg-muted hover:text-foreground active:cursor-grabbing',
-                                      )}
-                                      onClick={(e) => e.stopPropagation()}
-                                      {...(dragDisabled ? {} : dragAttributes)}
-                                      {...(dragDisabled ? {} : dragListeners)}
-                                    >
-                                      <GripVertical className="h-4 w-4" />
-                                    </button>
-                                    <ProductThumb
-                                      src={item.product_image_url}
-                                      alt={item.product_name}
-                                      size="summary"
-                                      roundedClassName="rounded-lg"
-                                      data-testid="quote-summary-thumb"
-                                    />
-                                    <div className="min-w-0 flex-1 pr-4">
-                                      <p
-                                        className="overflow-hidden whitespace-normal break-words pr-2 text-sm font-medium leading-[1.125rem]"
-                                        style={{
-                                          display: '-webkit-box',
-                                          WebkitLineClamp: 2,
-                                          WebkitBoxOrient: 'vertical',
-                                        }}
-                                      >
-                                        {item.product_name}
-                                      </p>
-                                      <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-0.5">
-                                        <Badge
-                                          variant="secondary"
-                                          className="h-4 px-1.5 py-0 font-mono text-[10px]"
-                                        >
-                                          {item.product_sku}
-                                        </Badge>
-                                        {item.color_name && (
-                                          <div className="flex items-center gap-1">
-                                            <div
-                                              className="h-2.5 w-2.5 rounded-full border border-border/50"
-                                              style={{
-                                                backgroundColor: item.color_hex || '#CCC',
-                                              }}
-                                            />
-                                            <span className="text-[10px] text-muted-foreground">
-                                              {item.color_name}
-                                            </span>
-                                          </div>
-                                        )}
-                                      </div>
-                                    </div>
-                                    {isCollapsed && (
-                                      <div
-                                        data-testid={`quote-summary-collapsed-price-${idx}`}
-                                        className="flex shrink-0 items-start gap-8 tabular-nums"
-                                      >
-                                        <div className="flex flex-col items-center gap-2">
-                                          <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/70">
-                                            Qtd
-                                          </span>
-                                          <span className="text-xs font-medium leading-none">
-                                            {item.quantity}
-                                          </span>
-                                        </div>
-                                        <div className="flex flex-col items-end gap-2">
-                                          <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/70">
-                                            Vl Unitário
-                                          </span>
-                                          <span className="text-xs font-medium leading-none">
-                                            {formatCurrency(item.unit_price)}
-                                          </span>
-                                        </div>
-                                        <div className="flex flex-col items-end gap-2">
-                                          <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/70">
-                                            Subtotal
-                                          </span>
-                                          <span className="text-xs font-semibold leading-none text-foreground">
-                                            {formatCurrency(item.quantity * item.unit_price)}
-                                          </span>
-                                        </div>
-                                      </div>
-                                    )}
-                                    <div className="flex h-[1.125rem] shrink-0 items-center gap-0.5">
-                                      <TooltipProvider delayDuration={200}>
-                                        <Tooltip>
-                                          <TooltipTrigger asChild>
-                                            <Button
-                                              variant="ghost"
-                                              size="icon"
-                                              aria-label="Editar"
-                                              className={cn(
-                                                'relative h-3 w-3 rounded-sm before:absolute before:inset-[-10px] before:content-[""]',
-                                                isActive
-                                                  ? 'text-primary'
-                                                  : 'text-muted-foreground/70 hover:text-foreground',
-                                              )}
-                                              onClick={(e) => {
-                                                e.stopPropagation();
-                                                setActiveItemIndex(idx);
-                                              }}
-                                            >
-                                              <Edit className="h-2 w-2" />
-                                            </Button>
-                                          </TooltipTrigger>
-                                          <TooltipContent side="top" className="text-xs">
-                                            Ajustar este item
-                                          </TooltipContent>
-                                        </Tooltip>
-                                        <Tooltip>
-                                          <TooltipTrigger asChild>
-                                            <Button
-                                              variant="ghost"
-                                              size="icon"
-                                              aria-label="Excluir"
-                                              data-testid={`quote-summary-delete-${idx}`}
-                                              className="relative h-3 w-3 rounded-sm text-destructive/70 before:absolute before:inset-[-10px] before:content-[''] hover:bg-destructive/10 hover:text-destructive"
-                                              onClick={(e) => {
-                                                e.stopPropagation();
-                                                const snapshot = items[idx];
-                                                const removedIndex = idx;
-                                                removeItem(idx);
-                                                if (activeItemIndex === idx)
-                                                  setActiveItemIndex(null);
-                                                else if (
-                                                  activeItemIndex !== null &&
-                                                  activeItemIndex > idx
-                                                )
-                                                  setActiveItemIndex(activeItemIndex - 1);
-                                                if (snapshot && onRestore) {
-                                                  showUndoToast({
-                                                    title: 'Item removido',
-                                                    description: snapshot.product_name,
-                                                    duration: 5000,
-                                                    onUndo: () => onRestore(snapshot, removedIndex),
-                                                  });
-                                                }
-                                              }}
-                                            >
-                                              <Trash2 className="h-2 w-2" />
-                                            </Button>
-                                          </TooltipTrigger>
-                                          <TooltipContent side="top" className="text-xs">
-                                            Remover do orçamento
-                                          </TooltipContent>
-                                        </Tooltip>
-                                        <Tooltip>
-                                          <TooltipTrigger asChild>
-                                            <Button
-                                              variant="ghost"
-                                              size="icon"
-                                              aria-label={isCollapsed ? 'Expandir' : 'Recolher'}
-                                              aria-expanded={!isCollapsed}
-                                              aria-pressed={isCollapsed}
-                                              data-collapsed={isCollapsed}
-                                              data-testid={`quote-summary-toggle-${idx}`}
-                                              className="relative h-3 w-3 rounded-sm text-muted-foreground/70 before:absolute before:inset-[-10px] before:content-[''] hover:text-foreground"
-                                              onClick={(e) => {
-                                                e.stopPropagation();
-                                                toggleItemCollapsed(collapseKey);
-                                              }}
-                                            >
-                                              {isCollapsed ? (
-                                                <ChevronDown className="h-2 w-2" />
-                                              ) : (
-                                                <ChevronUp className="h-2 w-2" />
-                                              )}
-                                            </Button>
-                                          </TooltipTrigger>
-                                          <TooltipContent side="top" className="text-xs">
-                                            {isCollapsed ? 'Ver detalhes' : 'Ocultar detalhes'}
-                                          </TooltipContent>
-                                        </Tooltip>
-                                      </TooltipProvider>
-                                    </div>
-                                  </div>
-                                  {!isCollapsed && (
-                                    <div className="animate-fade-in motion-reduce:animate-none">
-                                      <div className="flex items-center gap-2 text-xs">
-                                        <span className="text-muted-foreground">Qtd:</span>
-                                        <span className="font-medium">{item.quantity}</span>
-                                        <span className="text-muted-foreground">×</span>
-                                        <span className="font-medium">
-                                          {formatCurrency(item.unit_price)}
-                                        </span>
-                                        <span className="ml-auto font-semibold tabular-nums text-foreground">
-                                          {formatCurrency(item.quantity * item.unit_price)}
-                                        </span>
-                                      </div>
-                                      {(item.price_updated_at || item.price_confirmed_at) && (
-                                        <div
-                                          onClick={(e) => e.stopPropagation()}
-                                          className="pt-0.5"
-                                        >
-                                          <PriceFreshnessBadge
-                                            priceUpdatedAt={item.price_updated_at}
-                                            thresholdDays={item.price_freshness_threshold_days}
-                                            confirmedAt={item.price_confirmed_at}
-                                            variant="inline"
-                                            onConfirm={
-                                              confirmItemPrice
-                                                ? () => {
-                                                    confirmItemPrice(idx);
-                                                    toast.success(
-                                                      'Preço confirmado com fornecedor',
-                                                      {
-                                                        description: item.product_name,
-                                                      },
-                                                    );
-                                                  }
-                                                : undefined
-                                            }
-                                          />
-                                        </div>
-                                      )}
-                                    </div>
-                                  )}
-                                </div>
-                                {!isCollapsed &&
-                                  item.personalizations &&
-                                  item.personalizations.length > 0 && (
-                                    <div className="animate-fade-in px-3 pb-3 pt-0 motion-reduce:animate-none">
-                                      <div className="mb-1.5 flex items-center justify-between">
-                                        <span className="text-[10px] font-medium uppercase tracking-wide text-muted-foreground">
-                                          Gravações ({item.personalizations.length})
-                                        </span>
-                                        <span className="text-xs font-semibold tabular-nums text-primary">
-                                          {formatCurrency(persTotal)}
-                                        </span>
-                                      </div>
-                                      <div className="space-y-1">
-                                        {item.personalizations.map((p, pIdx) => {
-                                          const metaParts = [
-                                            formatArea(p.width_cm, p.height_cm)
-                                              ? `Área ${formatArea(p.width_cm, p.height_cm)}`
-                                              : null,
-                                            formatColors(p.colors_count),
-                                            p.personalized_quantity
-                                              ? `${p.personalized_quantity} pç(s)`
-                                              : null,
-                                          ].filter(Boolean) as string[];
-                                          const meta = metaParts.join(' · ');
-                                          return (
-                                            <div
-                                              key={`${p.technique_id || p.technique_name}-${pIdx}`}
-                                              className="flex items-center justify-between gap-1 rounded-lg border border-border/40 bg-card px-2 py-1 text-xs"
-                                            >
-                                              <div className="flex min-w-0 flex-1 items-center gap-1.5">
-                                                <Badge
-                                                  variant="secondary"
-                                                  className="h-4 shrink-0 px-1 py-0 text-[9px] font-bold"
-                                                >
-                                                  {pIdx + 1}
-                                                </Badge>
-                                                <EngravingBadge
-                                                  variant="plain"
-                                                  title={formatEngravingTitle({
-                                                    nomeTabela: p.technique_name,
-                                                    fallback: 'Gravação',
-                                                  })}
-                                                  location={p.location_name || null}
-                                                  meta={meta || null}
-                                                  className="min-w-0 flex-1"
-                                                  data-testid="summary-engraving-badge"
-                                                />
-                                              </div>
-                                              <span className="shrink-0 font-bold tabular-nums text-foreground">
-                                                {formatCurrency(p.total_cost || 0)}
-                                              </span>
-                                            </div>
-                                          );
-                                        })}
-                                      </div>
-                                    </div>
-                                  )}
-                              </div>
-                            )}
-                          </SortableSummaryCard>
-                        );
-                      })}
-                    </SortableContext>
-                    <DragOverlay
-                      dropAnimation={{ duration: 180, easing: 'cubic-bezier(0.18,0.67,0.6,1.22)' }}
-                    >
-                      {activeItemForOverlay ? (
-                        <div
-                          data-testid="quote-summary-drag-overlay"
-                          className={cn(
-                            'pointer-events-none rounded-xl border-[1.5px] border-primary/60 bg-card p-3',
-                            'rotate-[0.5deg] scale-[1.02] shadow-2xl ring-2 ring-primary/40',
-                            'animate-fade-in',
-                          )}
-                        >
-                          <div className="flex items-center gap-2">
-                            <GripVertical className="h-4 w-4 text-primary" />
-                            <ProductThumb
-                              src={activeItemForOverlay.product_image_url}
-                              alt={activeItemForOverlay.product_name}
-                              size="compact"
-                              roundedClassName="rounded-lg"
-                              iconClassName="h-4 w-4"
-                              data-testid="quote-summary-drag-thumb"
-                            />
-                            <div className="min-w-0">
-                              <p className="truncate text-sm font-medium">
-                                {activeItemForOverlay.product_name}
-                              </p>
-                              <p className="text-[10px] text-muted-foreground">
-                                {activeItemForOverlay.quantity} ×{' '}
-                                {formatCurrency(activeItemForOverlay.unit_price)}
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-                      ) : null}
-                    </DragOverlay>
-                  </DndContext>
-                )}
-              </div>
-            </div>
-          </div>
+          {/* Product Cards */}
+          <QuoteBuilderSummaryItems
+            items={items}
+            activeItemIndex={activeItemIndex}
+            setActiveItemIndex={setActiveItemIndex}
+            removeItem={removeItem}
+            formatCurrency={formatCurrency}
+            calculateItemPersonalizationTotal={calculateItemPersonalizationTotal}
+            onReorder={onReorder}
+            confirmItemPrice={confirmItemPrice}
+            onRestore={onRestore}
+            showOnlyStale={showOnlyStale}
+            setShowOnlyStale={setShowOnlyStale}
+            visibleItems={visibleItems}
+            staleIndexes={staleIndexes}
+            collapsedItemKeys={collapsedItemKeys}
+            toggleItemCollapsed={toggleItemCollapsed}
+            dndSensors={dndSensors}
+            handleDragStart={handleDragStart}
+            handleDragEnd={handleDragEnd}
+            setActiveDragId={setActiveDragId}
+            activeItemForOverlay={activeItemForOverlay}
+          />
 
-          {/* Discount */}
-          {items.length > 0 && (
-            <div className="space-y-2.5 border-t border-border/50 bg-card/95 px-4 pt-3 shadow-[0_-16px_24px_-24px_hsl(var(--foreground)/0.55)] backdrop-blur supports-[backdrop-filter]:bg-card/85">
-              <div className="flex items-center gap-2">
-                <TooltipProvider delayDuration={200}>
-                  {(() => {
-                    const tooltipContent = (
-                      <TooltipContent
-                        side="top"
-                        align="start"
-                        id="quote-discount-tooltip"
-                        data-testid="quote-discount-tooltip"
-                        className="max-w-[240px] text-xs leading-relaxed"
-                      >
-                        <p className="mb-1 font-semibold">Como aplicar o desconto</p>
-                        <ul className="space-y-0.5 text-muted-foreground">
-                          <li>
-                            <span className="font-medium text-foreground">%</span> sobre o subtotal
-                            — ex.: 5 = 5%.
-                          </li>
-                          <li>
-                            <span className="font-medium text-foreground">R$</span> valor fixo —
-                            ex.: 50,00.
-                          </li>
-                        </ul>
-                        {maxDiscountPercent !== null && maxDiscountPercent !== undefined && (
-                          <p className="mt-1.5 border-t border-border/40 pt-1 text-[11px]">
-                            {isDiscountExceeded ? (
-                              <>
-                                <span className="font-semibold text-amber-500">
-                                  Acima do seu limite ({maxDiscountPercent}%).
-                                </span>{' '}
-                                Será enviado ao gestor comercial para aprovação antes do envio ao
-                                cliente.
-                              </>
-                            ) : (
-                              <>
-                                Limite sem aprovação do gestor:{' '}
-                                <span className="font-bold text-foreground">
-                                  {maxDiscountPercent}%
-                                </span>
-                                .
-                              </>
-                            )}
-                          </p>
-                        )}
-                      </TooltipContent>
-                    );
-                    return (
-                      <>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <span className="inline-flex">
-                              <Select
-                                value={discountType}
-                                onValueChange={(v) =>
-                                  handleDiscountTypeChange(v as 'amount' | 'percent')
-                                }
-                              >
-                                <SelectTrigger
-                                  data-testid="quote-discount-type-select"
-                                  className="h-8 w-16 text-xs"
-                                  aria-label="Tipo de desconto — alternar entre % e R$"
-                                  aria-describedby="quote-discount-tooltip"
-                                >
-                                  <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  <SelectItem value="percent">%</SelectItem>
-                                  <SelectItem value="amount">R$</SelectItem>
-                                </SelectContent>
-                              </Select>
-                            </span>
-                          </TooltipTrigger>
-                          {tooltipContent}
-                        </Tooltip>
-                        <div className="flex-1">
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <span className="inline-flex w-full">
-                                <CurrencyInput
-                                  data-testid="quote-discount-input"
-                                  value={discountValue}
-                                  onChange={setDiscountValue}
-                                  max={discountType === 'percent' ? 100 : presentedSubtotal}
-                                  aria-describedby="quote-discount-tooltip"
-                                  aria-invalid={isDiscountExceeded || undefined}
-                                  className={cn(
-                                    'h-8 w-full text-xs font-semibold tabular-nums',
-                                    isDiscountExceeded
-                                      ? 'border-amber-500/50 focus-visible:ring-amber-500/30'
-                                      : 'border-border/50',
-                                  )}
-                                />
-                              </span>
-                            </TooltipTrigger>
-                            {tooltipContent}
-                          </Tooltip>
-                        </div>
-                      </>
-                    );
-                  })()}
-                </TooltipProvider>
-              </div>
-              {(() => {
-                const rawPercent =
-                  discountType === 'percent'
-                    ? discountValue
-                    : presentedSubtotal > 0
-                      ? (discountValue / presentedSubtotal) * 100
-                      : 0;
-                const validation = getDiscountValidationMessage({
-                  rawPercent,
-                  realDiscountPercent,
-                  maxDiscountPercent: maxDiscountPercent ?? null,
-                  hasMarkup: (negotiationMarkup ?? 0) > 0,
-                  markupPercent: negotiationMarkup ?? 0,
-                });
-                if (validation.kind === 'idle' || validation.kind === 'within_limit') return null;
-                const palette =
-                  validation.severity === 'error'
-                    ? 'border-destructive/40 bg-destructive/10 text-destructive'
-                    : validation.severity === 'warning'
-                      ? 'border-amber-500/30 bg-amber-500/10 text-amber-600'
-                      : 'border-border/40 bg-muted/40 text-muted-foreground';
-                const iconClass =
-                  validation.severity === 'error'
-                    ? 'text-destructive'
-                    : validation.severity === 'warning'
-                      ? 'text-amber-500'
-                      : 'text-muted-foreground';
-                return (
-                  <div
-                    role="status"
-                    aria-live="polite"
-                    data-testid="quote-discount-validation"
-                    data-kind={validation.kind}
-                    className={cn('flex items-start gap-2 rounded-lg border px-3 py-2', palette)}
-                  >
-                    <AlertTriangle className={cn('mt-0.5 h-4 w-4 shrink-0', iconClass)} />
-                    <div className="space-y-0.5">
-                      {validation.title && (
-                        <p className="text-xs font-semibold leading-tight">{validation.title}</p>
-                      )}
-                      <p className="text-[11px] leading-snug opacity-90">
-                        {validation.description}
-                      </p>
-                      {validation.callToAction && (
-                        <p className="text-[11px] font-medium leading-snug">
-                          → {validation.callToAction}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                );
-              })()}
-              {discountAmount > 0 && (
-                <div
-                  className={cn(
-                    'flex flex-col gap-0.5 rounded-lg px-2.5 py-1.5 text-xs transition-colors',
-                    isDiscountExceeded
-                      ? 'border border-amber-500/30 bg-amber-500/10'
-                      : 'border border-destructive/20 bg-destructive/5',
-                  )}
-                  aria-live="polite"
-                  data-testid="discount-effective"
-                >
-                  <div className="flex justify-between text-destructive">
-                    <span className="font-medium">Desconto aplicado</span>
-                    <span
-                      className="font-semibold tabular-nums"
-                      data-testid="discount-effective-amount"
-                    >
-                      -{formatCurrency(discountAmount)}
-                    </span>
-                  </div>
-                  {presentedSubtotal > 0 && (
-                    <div className="flex justify-between text-[10px] text-muted-foreground">
-                      <span>Equivalente</span>
-                      <span className="tabular-nums" data-testid="discount-effective-equivalent">
-                        {discountType === 'percent'
-                          ? `${formatCurrency(discountAmount)} sobre ${formatCurrency(presentedSubtotal)}`
-                          : `${((discountAmount / (presentedSubtotal || 1)) * 100).toFixed(2).replace('.', ',')}% sobre ${formatCurrency(presentedSubtotal)}`}
-                      </span>
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* Negotiation Markup + Price Comparison (lado a lado) */}
-          {items.length > 0 && setNegotiationMarkup && (
-            <div className="px-4 pt-3">
-              <div className="flex flex-wrap items-start gap-3">
-                <div className="min-w-[280px] flex-1">
-                  <NegotiationMarkupCard
-                    value={negotiationMarkup}
-                    onChange={setNegotiationMarkup}
-                    realSubtotal={realSubtotal}
-                    apparentDiscountPercent={
-                      discountType === 'percent'
-                        ? discountValue
-                        : realSubtotal > 0
-                          ? (discountAmount /
-                              (realSubtotal * (1 + (negotiationMarkup || 0) / 100))) *
-                            100
-                          : 0
-                    }
-                    realDiscountPercent={realDiscountPercent}
-                    maxDiscountPercent={maxDiscountPercent ?? null}
-                    hidePriceComparison
-                  />
-                </div>
-                {negotiationMarkup > 0 && (
-                  <div className="min-w-[280px] flex-1">
-                    <NegotiationPriceComparison
-                      realSubtotal={realSubtotal}
-                      apparentDiscountPercent={
-                        discountType === 'percent'
-                          ? discountValue
-                          : realSubtotal > 0
-                            ? (discountAmount /
-                                (realSubtotal * (1 + (negotiationMarkup || 0) / 100))) *
-                              100
-                            : 0
-                      }
-                      realDiscountPercent={realDiscountPercent}
-                      presentedSubtotal={realSubtotal * (1 + negotiationMarkup / 100)}
-                      isOverLimit={
-                        maxDiscountPercent !== null &&
-                        maxDiscountPercent !== undefined &&
-                        realDiscountPercent > maxDiscountPercent
-                      }
-                    />
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
+          {/* Discount + Markup */}
+          <QuoteBuilderSummaryPricing
+            items={items}
+            discountType={discountType}
+            discountValue={discountValue}
+            setDiscountValue={setDiscountValue}
+            discountAmount={discountAmount}
+            presentedSubtotal={presentedSubtotal}
+            handleDiscountTypeChange={handleDiscountTypeChange}
+            isDiscountExceeded={isDiscountExceeded}
+            maxDiscountPercent={maxDiscountPercent}
+            negotiationMarkup={negotiationMarkup}
+            setNegotiationMarkup={setNegotiationMarkup}
+            realSubtotal={realSubtotal}
+            realDiscountPercent={realDiscountPercent}
+            formatCurrency={formatCurrency}
+          />
 
           {/* Footer — sticky bottom do scroll container */}
           <div
@@ -1462,235 +560,26 @@ export function QuoteBuilderSummaryColumn({
         </div>
       </div>
 
-      {/* Confirmação — Salvar Rascunho do orçamento inteiro */}
-      <Dialog
-        open={confirmSaveDraftOpen}
-        onOpenChange={(open) => {
-          setConfirmSaveDraftOpen(open);
-          // Restaura foco no botão que abriu o modal (Cancelar / Escape / clique fora)
-          if (!open) {
-            requestAnimationFrame(() => saveDraftBtnRef.current?.focus());
-          }
-        }}
-      >
-        <DialogContent
-          data-testid="quote-save-draft-confirm-dialog"
-          onOpenAutoFocus={(event) => {
-            // Foco inicial no botão de confirmação (ação primária) — reduz
-            // fricção de teclado: Enter confirma imediatamente após abrir.
-            // A11y: aria-label e texto do botão são idênticos ("Salvar Rascunho"),
-            // então leitores de tela anunciam a ação de forma inequívoca.
-            event.preventDefault();
-            requestAnimationFrame(() => {
-              const el = document.querySelector<HTMLButtonElement>(
-                '[data-testid="quote-save-draft-confirm"]',
-              );
-              el?.focus();
-            });
-          }}
-        >
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <Save className="h-5 w-5 text-primary" />
-              Salvar rascunho do orçamento?
-            </DialogTitle>
-            <DialogDescription>
-              Todas as alterações feitas neste orçamento (itens, quantidades, descontos, markup e
-              notas) serão gravadas no banco. O orçamento{' '}
-              <span className="font-semibold text-foreground">não</span> será enviado para aprovação
-              nem para o cliente.
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
-            <Button
-              variant="outline"
-              onClick={() => setConfirmSaveDraftOpen(false)}
-              disabled={quotesLoading}
-            >
-              Cancelar
-            </Button>
-            <Button
-              onClick={() => {
-                setConfirmSaveDraftOpen(false);
-                onSave('draft');
-              }}
-              disabled={quotesLoading}
-              data-testid="quote-save-draft-confirm"
-              aria-label="Salvar Rascunho"
-            >
-              {quotesLoading ? (
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              ) : (
-                <Save className="mr-2 h-4 w-4" />
-              )}
-              Salvar Rascunho
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      {/* Approval Request Dialog — SCROLL-FIX-03 via handleApprovalDialogChange */}
-
-      <Dialog open={approvalDialogOpen} onOpenChange={handleApprovalDialogChange}>
-        <DialogContent data-testid="quote-approval-dialog">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <Shield className="h-5 w-5 text-amber-500" />
-              Solicitar Aprovação de Desconto
-            </DialogTitle>
-            <DialogDescription>
-              O desconto real de{' '}
-              <span className="font-semibold text-foreground">
-                {realDiscountPercent.toFixed(2).replace('.', ',')}%
-              </span>{' '}
-              excede seu limite de{' '}
-              <span className="font-semibold text-foreground">{maxDiscountPercent}%</span>.
-              Justifique o motivo para o administrador.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4 py-2">
-            <div className="space-y-2 rounded-xl border border-border/40 bg-muted/50 p-3">
-              <div className="grid grid-cols-2 gap-3 text-sm">
-                <div data-testid="quote-approval-limit">
-                  <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
-                    Seu Limite
-                  </p>
-                  <p className="mt-0.5 text-sm font-semibold">{maxDiscountPercent}%</p>
-                </div>
-                <div data-testid="quote-approval-requested">
-                  <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
-                    Solicitado (real)
-                  </p>
-                  <p className="mt-0.5 text-sm font-bold text-amber-500">
-                    {realDiscountPercent.toFixed(2).replace('.', ',')}%
-                  </p>
-                </div>
-              </div>
-              <div className="relative h-2 overflow-hidden rounded-full bg-muted">
-                <div
-                  className="absolute inset-y-0 left-0 rounded-full bg-emerald-500/40"
-                  style={{ width: `${Math.min(maxDiscountPercent || 0, 100)}%` }}
-                />
-                <div
-                  className="absolute inset-y-0 left-0 rounded-full bg-amber-500"
-                  style={{ width: `${Math.min(realDiscountPercent, 100)}%` }}
-                />
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <Label>
-                Justificativa <span className="font-normal text-destructive">*</span>
-              </Label>
-              <Textarea
-                data-testid="quote-approval-justification"
-                value={sellerNotes}
-                onChange={(e) => setSellerNotes(e.target.value.slice(0, 1000))}
-                placeholder="Ex: Cliente estratégico, pedido de grande volume, negociação especial..."
-                rows={3}
-                autoFocus
-                maxLength={1000}
-                aria-invalid={sellerNotes.trim().length < MIN_SELLER_NOTES_LENGTH}
-              />
-              <div className="flex items-center justify-between text-xs">
-                <span
-                  className={cn(
-                    'font-medium',
-                    sellerNotes.trim().length < MIN_SELLER_NOTES_LENGTH
-                      ? 'text-amber-600'
-                      : 'text-emerald-600',
-                  )}
-                >
-                  Mín. {MIN_SELLER_NOTES_LENGTH} caracteres
-                </span>
-                <span className="text-muted-foreground">{sellerNotes.length}/1000</span>
-              </div>
-            </div>
-
-            {(() => {
-              const checklist = getApprovalChecklist({
-                hasItems: items.length > 0,
-                hasClient: isFormValid,
-                sellerNotesLength: sellerNotes.trim().length,
-              });
-              return (
-                <div
-                  data-testid="quote-approval-checklist"
-                  className="space-y-1.5 rounded-xl border border-border/40 bg-muted/30 p-3"
-                >
-                  <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-                    O que falta para enviar
-                  </p>
-                  <ul className="space-y-1">
-                    {checklist.map((c) => (
-                      <li
-                        key={c.key}
-                        data-testid={`quote-approval-check-${c.key}`}
-                        data-ok={c.ok}
-                        className="flex items-start gap-2 text-xs"
-                      >
-                        {c.ok ? (
-                          <CheckCircle2 className="mt-0.5 h-3.5 w-3.5 shrink-0 text-emerald-500" />
-                        ) : (
-                          <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0 text-amber-500" />
-                        )}
-                        <span
-                          className={
-                            c.ok ? 'text-muted-foreground line-through' : 'text-foreground'
-                          }
-                        >
-                          {c.label}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              );
-            })()}
-          </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => handleApprovalDialogChange(false)}>
-              Cancelar
-            </Button>
-            <Button
-              data-testid="quote-approval-submit"
-              className="gap-1.5 bg-amber-500 text-white hover:bg-amber-600"
-              onClick={handleRequestApproval}
-              disabled={
-                quotesLoading ||
-                !isApprovalReady({
-                  hasItems: items.length > 0,
-                  hasClient: isFormValid,
-                  sellerNotesLength: sellerNotes.trim().length,
-                })
-              }
-            >
-              {quotesLoading ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : (
-                <Shield className="h-4 w-4" />
-              )}
-              Enviar para Aprovação
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      {/* Confirm All Stale Prices Dialog — SCROLL-FIX-03 via handleConfirmAllDialogChange */}
-      <ConfirmDialog
-        open={confirmAllOpen}
-        onOpenChange={handleConfirmAllDialogChange}
-        variant="warning"
-        title="Confirmar preços com o fornecedor?"
-        description={`Você está confirmando que validou ${staleCount} preço(s) diretamente com o(s) fornecedor(es). O alerta de preço defasado será removido destes itens neste orçamento.`}
-        confirmText={`Confirmar ${staleCount} preço${staleCount === 1 ? '' : 's'}`}
-        cancelText="Cancelar"
-        onConfirm={() => {
-          confirmAllStalePrices?.();
-          setConfirmAllOpen(false);
-          setShowOnlyStale(false);
-          toast.success(`${staleCount} preço(s) confirmado(s) com fornecedor`);
-        }}
+      <QuoteBuilderSummaryDialogs
+        approvalDialogOpen={approvalDialogOpen}
+        handleApprovalDialogChange={handleApprovalDialogChange}
+        sellerNotes={sellerNotes}
+        setSellerNotes={setSellerNotes}
+        handleRequestApproval={handleRequestApproval}
+        confirmSaveDraftOpen={confirmSaveDraftOpen}
+        setConfirmSaveDraftOpen={setConfirmSaveDraftOpen}
+        saveDraftBtnRef={saveDraftBtnRef}
+        confirmAllOpen={confirmAllOpen}
+        handleConfirmAllDialogChange={handleConfirmAllDialogChange}
+        staleCount={staleCount}
+        setShowOnlyStale={setShowOnlyStale}
+        items={items}
+        isFormValid={isFormValid}
+        quotesLoading={quotesLoading}
+        onSave={onSave}
+        maxDiscountPercent={maxDiscountPercent}
+        realDiscountPercent={realDiscountPercent}
+        confirmAllStalePrices={confirmAllStalePrices}
       />
     </div>
   );
