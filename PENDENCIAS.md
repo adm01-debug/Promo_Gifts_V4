@@ -2,19 +2,33 @@
 **Atualizado em:** 2026-10-30
 **Branch de correção:** `claude_04/beautiful-gates-bvocz5` (PR #2597 — **MERGEADO** ✅)
 
-## Atualização — snapshot da main `7299c88c` (2026-10-30)
+## Atualização — snapshot da main `5edddfb14` (2026-10-30)
 
-Consulta MCP posterior ao snapshot `b2ba9f9e` do relatório: as execuções ainda `pending`/`in_progress` abaixo não são classificadas como falhas. Duas execuções concluídas seguem bloqueadas:
+Inventário MCP por SHA: duas execuções concluídas falharam. Workflows `pending`, `queued` ou `in_progress` não são classificados como falha.
 
-| Workflow | Run mais recente concluído observado | Evidência | Próxima ação |
+| Workflow | Run | Evidência confirmada | Situação / próxima ação |
 |---|---|---|---|
-| E2E — Personalization Flow | [#41034358338](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358338) | O teste `92-personalization-auth-redirect.spec.ts` não encontrou `[data-testid="product-name"]` para “Conj. Para petiscos em bambu - 3 pçs”; no retry, o login ficou em `/login` enquanto `get_profile_and_roles` e `user_roles` demoraram, excedendo 75 s. | Reproduzir com o usuário/dados E2E configurados e inspecionar o trace; separar falha de dados/rota da latência de autenticação. Não alterar assert ou ignorar o teste. |
-| edge-functions-drift-check | [#41034830573](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034830573) | Artefato `drift_report.csv` lista as mesmas 31 funções divergentes do snapshot anterior. | Classificar cada função comparando o conteúdo local e canônico; reconciliar em PR e deploy pontual apenas pelo workflow autorizado. Nenhum deploy foi feito nesta auditoria. |
-| Running Copilot Code Review | [#41031412599](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41031412599) | Falha externa durante limpeza do agente/processos órfãos; sem resultado de revisão. | Ação do administrador/licença/serviço Copilot; não é correção de código. |
+| Branch Protection Sentinel | [#41037319362](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41037319362) | Job `Audit every commit in push` rejeitou o commit `5edddfb14` por ter sido enviado diretamente para `main` sem padrão aceito pelo Sentinel. O job separado que verifica a proteção do branch passou. | Violação histórica de processo já registrada na main; não reescrever o histórico. Manter os próximos commits em PR com padrão de merge aceito. |
+| CI - Replenishment Module Quality Gate | [#41037319198](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41037319198) | O step `Lint check` encontrou 2 erros novos em `src/components/admin/badges-manager/types.ts:254:59`: `COLOR_TOKEN_CLASSES['neutral']` deve usar notação de ponto. | Corrigir com mudança semântica equivalente em PR, sem afrouxar lint; reexecutar lint, build e suíte completa. |
 
-**Ainda pendentes no instante da consulta:** Deploy Edge Functions [#41034820685](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034820685) (`workflow_dispatch`), CI Security & Drift Checks [#41034358666](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358666), E2E Magazine Header [#41034358625](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358625), E2E Swatch QuickView [#41034358495](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358495), E2E Critical Flows [#41034358180](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358180), Visual Baseline [#41034358175](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358175), Edge Integration [#41034358210](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358210) e E2E Playwright [#41034358354](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358354). Reconsultar antes de declarar conclusão. O dispatch de deploy não foi acionado por esta auditoria.
+### Workflows concluídos com sucesso no mesmo SHA
 
-O trabalho desta sessão não alterou o Supabase canônico, não fez deploy e não modificou comportamento da aplicação.
+`Lovable Edit Tracker` [#41037319258](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41037319258), `Release Please` [#41037319194](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41037319194), `Policies Baseline` [#41037319236](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41037319236), `No Prod Leak in Dev/Test Config` [#41037319169](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41037319169), `Gitleaks — Full History Audit` [#41037319195](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41037319195) e `Lint untypedFrom` [#41037319204](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41037319204).
+
+### Execuções sem conclusão no snapshot
+
+`Deploy Gates` #41037319404, `E2E (Playwright)` #41037319241, `CodeQL` #41037319240, `Quote Builder Delivery Quality` #41037319276, `E2E • Swatch QuickView` #41037319250, `Required Checks Guard` #41037319183, `E2E — Personalization Flow` #41037319203, `CI Security & Drift Checks` #41037319229, `E2E — Critical Flows` #41037319140, `Visual Baseline Tests` #41037319176, `UI · Visual & A11y` #41037319243, `Supabase Linter Gate` #41037319220, `TS Unused Locals Ratchet` #41037319191, `Lovable Autoheal` #41037319412, `Static Health Checks` #41037319165, `Select Columns vs Types` #41037319406, `SSOT Supabase Guard` #41037319264 e `Security Scan` #41037319256 estavam em fila, pendentes ou em andamento. Reconsultar antes de fechar o inventário.
+
+### Pendências ainda abertas de snapshots anteriores
+
+- **Magazine Header:** a falha de `7299c88c` foi causada pelos testes clicarem no `<article>` em vez do link acessível interno. PR [#2800](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2800) corrige os dois helpers, mas segue atrás da `main` e aguarda checks; ainda não está validado pelo CI.
+- **Personalization:** a execução [#41034358338](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358338) não encontrou inicialmente `[data-testid="product-name"]` para “Conj. Para petiscos em bambu - 3 pçs”; no retry o fluxo permaneceu em `/login`, com `get_profile_and_roles` pendente por 23,1 s e `user_roles` por 4,8 s. São sintomas observados; causa raiz não concluída.
+- **Critical Flows:** na execução [#41034358180](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358180), login continuou em `/login` até o timeout de 75 s; `GET system_settings` ficou pendente por cerca de 34,753 s. Isso não comprova ausência de secrets nem causa única.
+- **Swatch QuickView:** na execução [#41034358495](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358495), Chromium/WebKit falharam em cenários de redirect e ausência de produtos `color_swatches` V2 nas rotas `/produtos`, `/filtros`, `/novidades` e `/reposicao`. Não atribuir exclusivamente a auth sem diagnóstico adicional. Firefox não foi contado como falha no snapshot inicial; reconsultar run atual.
+- **Copilot Code Review:** [#41031412599](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41031412599) falhou durante `Processing Request (Linux)`/limpeza de processo órfão. Essa execução não prova HTTP 402 nem produziu resultado de revisão.
+- **Edge Functions:** o artefato de [#41034830573](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034830573) lista 31 conteúdos divergentes. O workflow de deploy [#41034820685](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034820685) aguarda o ambiente `production`; não aprovar nem implantar sem classificação e fluxo autorizado.
+
+Nenhuma migration, DDL, alteração operacional, dado ou deploy no Supabase canônico foi realizado nesta auditoria.
 
 ## Atualização — PR #2768 (2026-10-30)
 

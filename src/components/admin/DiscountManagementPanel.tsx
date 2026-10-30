@@ -310,7 +310,7 @@ export function DiscountManagementPanel() {
                                     : 'bg-muted text-muted-foreground',
                                 )}
                               >
-                                {(seller.full_name || seller.email || '?')[0].toUpperCase()}
+                                {(seller.full_name || seller.email || '?')[0]!.toUpperCase()}
                               </div>
                               <div>
                                 <p className="text-sm font-medium">

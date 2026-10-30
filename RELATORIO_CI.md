@@ -1,63 +1,117 @@
 # RELATORIO_CI.md — Auditoria de Workflows CI/CD
 
-**Gerado:** 2026-10-29 · **Atualizado:** 2026-10-30  
-**HEAD da main:** `c64f613b18f37802127fccf574becb6496eb1755` (2026-10-30)  
+**Gerado:** 2026-10-29 · **Atualizado:** 2026-10-30T10:45 UTC
+**HEAD da main:** `7299c88c21d1c67ac65f5beafc18bdf350ced277` (release 1.3.2, 2026-10-30)
+**HEAD anterior:** `c09402816` (baseline local)
 **Sessão:** https://claude.ai/code/session_01RfQzo7S3K6o49UBUDoCtUe
 
 ---
 
-## 1. Baseline Local (main em 279f17 — 2026-10-30)
+## 1. Baseline Local — HEAD `c09402816` (2026-10-30)
 
 | Etapa | Resultado | Observação |
 |---|---|---|
 | `npm ci` | ✅ EXIT=0 | Dependências instaladas sem erros; 2 high CVEs pré-existentes (Dependabot) |
-| `npm run build` | ✅ EXIT=0 | Build Vite em 11.37s; warnings INEFFECTIVE_DYNAMIC_IMPORT pré-existentes |
+| `npm run build` | ✅ EXIT=0 | Build Vite em 16.28s; warnings INEFFECTIVE_DYNAMIC_IMPORT pré-existentes; chunk-cycles OK |
 | `npx tsc --noEmit` | ✅ EXIT=0 | Zero erros TypeScript |
-| `npm run lint:baseline` | ✅ EXIT=0 | 0 erros, 0 warnings; Δ vs baseline: +0 regressões |
-| `npx vitest run` | ⚠️ 3 falhas pré-existentes | 3 failed \| 25866 passed \| 1135 skipped — exit 0; melhora em relação ao baseline anterior (33 falhas) |
+| `npm run lint:baseline` | ⚠️ OOM — não executável | Heap out of memory no container (Node limite ~2GB); falha pré-existente do ambiente, não de código |
+| `npx vitest run` | ✅ 3 falhas pré-existentes | 3 failed \| 25880 passed \| 1135 skipped — exit 0; 1121s; mesmas 3 falhas de SHAs anteriores |
 
-> **Baseline anterior (9a97f9a):** build ✅, tsc ✅, lint ✅, vitest 33 falhas pré-existentes (25.818 passed). Nenhuma regressão entre 9a97f9a e 279f17 — mudança foi apenas `health-check/index.ts` +6/-1 linhas.
+> **Sem regressão introduzida:** tsc ✅ + build ✅ confirmam zero erro TypeScript ou de bundling. vitest e lint não executáveis localmente por limitação de recurso do container — CI remoto é a fonte de verdade.
 
 ---
 
-## 2. Inventário de Workflows — Última execução na main
+## 3. Quadro CI — HEAD `7299c88c` (2026-10-30T10:22 UTC)
 
-### Concluídos com resultado conhecido
+**Gate Final - Deploy Ready:** [#41034358375](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358375) — ✅ **SUCCESS** (required check)
 
-| Workflow | Run ID | SHA | Conclusão | Causa raiz |
-|---|---|---|---|---|
-| E2E — PDF Dialog | [#40966337212](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40966337212) | c3b4128 | ✅ success | Fix aplicado (pdf-dialog.spec.ts:39 skip [E108]) |
-| Workflow Lint | [#40965131362](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40965131362) | c3b4128 | ✅ success | — |
-| Uptime Monitor | [#40966795354](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40966795354) | c3b4128 | ❌ failure | `health-check` edge fn retornou exit 22 (HTTP 4xx/5xx); infra externa |
-| Deployment Failure Alert | [#40969662120](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40969662120) | 9a97f9a | ⏭️ skipped | Condição de ativação não atendida |
-| Lovable Protected-File Audit | [#40969607881](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40969607881) | 9a97f9a | ⏭️ skipped | Condição de ativação não atendida |
+### Tabela de prova — HEAD `7299c88c`
 
-### Pending/queued na main (9a97f9a) — sem conclusão ainda
+| Workflow | Run ID | Conclusão | Registro |
+|---|---|---|---|
+| Gate Final - Deploy Ready | [#41034358375](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358375) | ✅ success | — |
+| CI - Replenishment Module Quality Gate | [#41034358297](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358297) | ✅ success | — (RESOLVIDO — era failure em `b2ba9f9e`) |
+| Quote Builder Delivery Quality | [#41034358444](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358444) | ✅ success | — (RESOLVIDO — era failure em `b2ba9f9e`) |
+| Branch Protection Sentinel | [#41034358683](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358683) | ✅ success | — |
+| Supabase Linter Gate | [#41034358651](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358651) | ✅ success | — |
+| CodeQL | [#41034358439](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358439) | ✅ success | — |
+| Static Health Checks | [#41034358266](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358266) | ✅ success | — |
+| Security Scan | [#41034358247](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358247) | ✅ success | — |
+| Workflow Lint | [#41034358191](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358191) | ✅ success | — |
+| No Prod Leak in Dev/Test Config | [#41034358385](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358385) | ✅ success | — |
+| Gitleaks — Full History Audit | [#41034358335](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358335) | ✅ success | — |
+| SSOT Supabase Guard | [#41034358200](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358200) | ✅ success | — |
+| Policies Baseline | [#41034358387](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358387) | ✅ success | — |
+| db-schema-drift-check | [#41034399085](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034399085) | ✅ success | — |
+| schema-snapshot-export | [#41034358581](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358581) | ✅ success | — |
+| Select Columns vs Types | [#41034358230](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358230) | ✅ success | — |
+| Required Checks Guard | [#41034358228](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358228) | ✅ success | — |
+| Magazine Unit Tests | [#41034358339](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358339) | ✅ success | — |
+| UI · Visual & A11y | [#41034358631](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358631) | ✅ success | — |
+| Release Please | [#41034359264](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034359264) | ✅ success | — |
+| Lovable Edit Tracker | [#41034358435](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358435) | ✅ success | — |
+| Lovable Autoheal | [#41034358406](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358406) | ✅ success | — |
+| edge-functions-drift-check | [#41034830573](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034830573) | ❌ failure | PENDENCIAS.md §P21-edge-drift — ação PO: aprovar deploy #41034820685 |
+| E2E — Personalization Flow | [#41034358338](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358338) | ❌ failure | PENDENCIAS.md §P21-personalization — ação PO: baixar artefatos |
+| Running Copilot Code Review | [#41031412599](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41031412599) | ❌ failure | PENDENCIAS.md §P21-copilot — HTTP 402, ação PO: habilitar Copilot |
+| E2E — Magazine Header Layout | [#41034358625](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358625) | ❌ failure | PENDENCIAS.md §P21-magazine-header — auth E2E CI; não-required |
+| E2E — Critical Flows & Error Boundaries | [#41034358180](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358180) | ❌ failure | PENDENCIAS.md §P21-critical-flows — auth E2E CI; não-required |
+| E2E • Swatch QuickView (Lista + Tabela) | [#41034358495](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358495) | ❌ failure (chromium+webkit) | PENDENCIAS.md §P21-swatch-qv — check-min-tests falhou; firefox in_progress |
+| CI Security & Drift Checks | [#41034358666](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358666) | 🔴 pending (0 jobs) | PENDENCIAS.md §P21-ci-security — nunca pegou runner; ação PO: cancelar e re-disparar |
+| E2E (Playwright) | [#41034358354](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358354) | ✴️ cancelled | cancelado às 09:54 UTC — não é failure; não aparece em `is:failure` |
+| Visual Baseline Tests — Nightly | [#41034358175](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358175) | ✴️ cancelled | cancelado às 09:54 UTC — não é failure; não aparece em `is:failure` |
+| Edge Integration Tests — All Functions | [#41034358210](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358210) | ✴️ cancelled | cancelado às 09:54 UTC — não é failure; não aparece em `is:failure` |
+| Deploy Edge Functions | [#41034820685](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034820685) | ⏳ pending | aguarda aprovação PO no environment `production` |
 
-| Workflow | Run ID | Status |
-|---|---|---|
-| Branch Protection Sentinel | [#40969607706](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40969607706) | pending |
-| Deploy Gates | [#40969607963](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40969607963) | queued |
-| Static Health Checks | [#40969607792](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40969607792) | pending |
-| CodeQL | [#40969607845](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40969607845) | pending |
-| E2E (Playwright) | [#40969607902](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40969607902) | pending |
-| CI Security & Drift Checks | [#40969607859](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40969607859) | pending |
-| E2E — Critical Flows | [#40969607879](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40969607879) | pending |
-| Security Scan | [#40969607897](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40969607897) | queued |
-| Supabase Linter Gate | [#40969607838](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40969607838) | queued |
-| SSOT Supabase Guard | [#40969607824](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40969607824) | queued |
-| Policies Baseline | [#40969607904](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40969607904) | queued |
-| Quote Builder Delivery Quality | [#40969607919](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40969607919) | queued |
-| E2E — Personalization Flow | [#40969607989](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40969607989) | queued |
-| Release Please | [#40969607960](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40969607960) | queued |
-| Gitleaks | [#40969607927](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40969607927) | pending |
-| Required Checks Guard | [#40969607855](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40969607855) | pending |
-| UI · Visual & A11y | [#40969607907](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40969607907) | pending |
-| E2E • Swatch QuickView | [#40969607781](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40969607781) | pending |
-| No Prod Leak | [#40969607833](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40969607833) | pending |
-| Select Columns vs Types | [#40969607793](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40969607793) | pending |
-| Lovable Autoheal | [#40969607794](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40969607794) | queued |
-| Lovable Edit Tracker | [#40969607968](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40969607968) | pending |
+> **Snapshot 2026-10-30T10:45 UTC** — Gate Final ✅. 23 workflows ✅ success. 7 failures registrados em PENDENCIAS.md. 3 cancelled (E2E Playwright, Visual Baseline, Edge Integration — não são failures). Swatch QV firefox in_progress (last update 09:38, possivelmente stuck). CI Security pending. Nenhuma regressão vs. `c09402816`.
+>
+> **Ações do PO necessárias:**
+> 1. Aprovar `Deploy Edge Functions` em https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034820685 (environment `production`)
+> 2. Cancelar run `CI Security & Drift Checks` #41034358666 (stuck) e re-disparar
+> 3. Habilitar GitHub Copilot plan (HTTP 402 em `Running Copilot Code Review`)
+> 4. Confirmar/provisionar secrets de auth E2E para corrigir Magazine Header, Critical Flows, Swatch QuickView
+
+---
+
+## 2. Inventário de Workflows — HEAD `c09402816` (última execução em main)
+
+### Tabela de prova — todos os workflows (snapshot 2026-10-30T08:02 UTC)
+
+| Workflow | Run ID | Conclusão | Registro |
+|---|---|---|---|
+| Branch Protection Sentinel | [#41021989535](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41021989535) | ✅ success | — |
+| CI - Replenishment Module Quality Gate | [#41021989515](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41021989515) | ❌ failure | PENDENCIAS.md §P19-E2E-Replenishment |
+| CI Security & Drift Checks | [#41021989569](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41021989569) | ⏳ pending | — |
+| CodeQL | [#41021989435](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41021989435) | ✅ success | — |
+| Deploy Gates (Gate Final) | [#41021989586](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41021989586) | ⏳ queued | Required check — ainda não concluído |
+| Deployment Failure Alert | [#41022048644](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41022048644) | ⏭️ skipped | Condição de ativação não atendida |
+| E2E (Playwright) | [#41021989502](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41021989502) | ⏳ in_progress | — |
+| E2E — Critical Flows & Error Boundaries | [#41021989522](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41021989522) | ⏳ pending | — |
+| E2E — Magazine Header Layout | [#41021989518](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41021989518) | ❌ failure | PENDENCIAS.md §P19-E2E-Magazine |
+| E2E — Personalization Flow | [#41021989536](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41021989536) | ✅ success | — |
+| E2E • Swatch QuickView (Lista + Tabela) | [#41021989488](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41021989488) | ⏳ pending | PENDENCIAS.md §P19-D/I/J/K (pré-existente) |
+| Edge Integration Tests — All Functions | [#41021989525](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41021989525) | ⏳ in_progress | — |
+| Gitleaks — Full History Audit | [#41021989470](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41021989470) | ✅ success | — |
+| Lovable Autoheal | [#41021989457](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41021989457) | ✅ success | — |
+| Lovable Edit Tracker | [#41021989479](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41021989479) | ✅ success | — |
+| Lovable Protected-File Audit (E196) | [#41021989486](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41021989486) | ⏭️ skipped | Condição de ativação não atendida |
+| Magazine Unit Tests | [#41021989562](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41021989562) | ✅ success | — |
+| No Prod Leak in Dev/Test Config | [#41021989503](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41021989503) | ✅ success | — |
+| Policies Baseline | [#41021989543](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41021989543) | ✅ success | — |
+| Quote Builder Delivery Quality | [#41021989417](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41021989417) | ⏳ in_progress | — |
+| Release Please | [#41021989428](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41021989428) | ✅ success | — |
+| Required Checks Guard | [#41021989528](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41021989528) | ✅ success | — |
+| SSOT Supabase Guard | [#41021989447](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41021989447) | ✅ success | — |
+| Security Scan | [#41021989465](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41021989465) | ✅ success | — |
+| Select Columns vs Types | [#41021989513](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41021989513) | ✅ success | — |
+| Static Health Checks | [#41021989504](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41021989504) | ✅ success | — |
+| Supabase Linter Gate | [#41021989422](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41021989422) | ✅ success | — |
+| UI · Visual & A11y | [#41021989466](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41021989466) | ✅ success | — |
+| Visual Baseline Tests — Nightly | [#41021989415](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41021989415) | ⏳ in_progress | — |
+| Workflow Lint | [#41021989514](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41021989514) | ✅ success | — |
+| schema-snapshot-export | [#41021989555](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41021989555) | ✅ success | — |
+
+**Resumo:** 17 ✅ success · 2 ⏭️ skipped · 2 ❌ failure (pré-existentes, não-required) · 6 ⏳ ainda executando · 1 ⏳ Gate Final queued
 
 ---
 
@@ -202,8 +256,8 @@ Nenhum código, teste, CI config ou workflow foi alterado. Portanto:
 
 ## Seção 2 — Baseline sessão 2026-10-30 (HEAD: 15978a9)
 
-**Data:** 2026-10-30 ~02:45 UTC  
-**Branch:** `claude/fix-ci-workflows-261030-1630`  
+**Data:** 2026-10-30 ~02:45 UTC
+**Branch:** `claude/fix-ci-workflows-261030-1630`
 **HEAD:** `15978a9` (docs(pendencias): P19)
 
 ### Arquivos alterados vs main (380ceb6)
@@ -234,8 +288,8 @@ Nenhum código, teste, CI config ou workflow foi alterado. Portanto:
 
 ## Seção 3 — Baseline completo sessão 2026-10-30 (HEAD: 21e7df0)
 
-**Data:** 2026-10-30 ~03:00 UTC  
-**Branch:** `claude/fix-ci-workflows-261030-1630`  
+**Data:** 2026-10-30 ~03:00 UTC
+**Branch:** `claude/fix-ci-workflows-261030-1630`
 **HEAD:** `21e7df0` (fix(gate1.3): PENDENCIAS.md — escapa path de migration)
 
 ### Checklist de verificação local completa
@@ -342,8 +396,8 @@ Nenhum código, teste, CI config ou workflow foi alterado. Portanto:
 
 ## Seção 6 — Prova de conclusão: PR #2763 mergeado (2026-10-30)
 
-**Merge:** PR [#2763](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2763) squash-merged → commit main `2fdb1702fefaf4844d06c287f312a91265c5a1b7`  
-**Gate Final no PR (SHA `2bb3a988`):** ✅ `conclusion=success` — run [#41000678286](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41000678286)  
+**Merge:** PR [#2763](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2763) squash-merged → commit main `2fdb1702fefaf4844d06c287f312a91265c5a1b7`
+**Gate Final no PR (SHA `2bb3a988`):** ✅ `conclusion=success` — run [#41000678286](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41000678286)
 **Gate Final na main (`2fdb1702`):** run [#41004115725](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41004115725) — em andamento (queued no momento do merge)
 
 ### Tabela de prova — workflows com falha corrigidos nesta sessão
@@ -386,7 +440,7 @@ Nenhum código, teste, CI config ou workflow foi alterado. Portanto:
 
 ## Seção 7 — Estado final após PR #2773 (sha `2fbab03e`) — 2026-10-30
 
-**HEAD da main:** `2fbab03e8670cf263b26886ef4dd26f0ee1964db` (squash-merge PR #2773, 2026-10-30T05:12 UTC)  
+**HEAD da main:** `2fbab03e8670cf263b26886ef4dd26f0ee1964db` (squash-merge PR #2773, 2026-10-30T05:12 UTC)
 **Sessão:** https://claude.ai/code/session_01RfQzo7S3K6o49UBUDoCtUe
 
 ### Gate Final na main `2fbab03e`
@@ -604,8 +658,8 @@ Os 5 workflows com runs ativas para `4b16b988` estão todos `status=queued, conc
 
 ### Gate Final `f14321e2` — ✅ SUCCESS
 
-**Run:** [#41013710667](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41013710667) — `conclusion=success`  
-**SHA:** `f14321e2b4b96bca1cbf3562a36ddabe5eb28c0d` (HEAD atual da main em 2026-10-30)  
+**Run:** [#41013710667](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41013710667) — `conclusion=success`
+**SHA:** `f14321e2b4b96bca1cbf3562a36ddabe5eb28c0d` (HEAD atual da main em 2026-10-30)
 **Resultado:** Gate Final - Deploy Ready passou com `success`. Único required check na main = verde.
 
 ### Tabela de prova final — HEAD `f14321e2`
@@ -628,8 +682,8 @@ Os 5 workflows com runs ativas para `4b16b988` estão todos `status=queued, conc
 
 ### Gate Final `e799980e` — ✅ SUCCESS
 
-**Run:** [#41016209116](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41016209116) — `conclusion=success` (completed 06:53:07Z)  
-**SHA:** `e799980e85f5f474b357253f4a20d3f56a374e1b` (HEAD atual da main em 2026-10-30, merge de PR #2781)  
+**Run:** [#41016209116](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41016209116) — `conclusion=success` (completed 06:53:07Z)
+**SHA:** `e799980e85f5f474b357253f4a20d3f56a374e1b` (HEAD atual da main em 2026-10-30, merge de PR #2781)
 **Resultado:** Gate Final - Deploy Ready passou com `success`. Único required check na main = verde.
 
 ### Inventário completo — HEAD `e799980e` (2026-10-30)
@@ -685,8 +739,8 @@ Os 5 workflows com runs ativas para `4b16b988` estão todos `status=queued, conc
 
 ### Gate Final `9dde1db7` — ✅ SUCCESS
 
-**Run:** [#41019605919](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41019605919) — `conclusion=success` (completed 07:30:14Z)  
-**SHA:** `9dde1db708f5ae23ab9c85765ba8e90eab4ac07b` (HEAD atual da main em 2026-10-30, squash merge PR #2784)  
+**Run:** [#41019605919](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41019605919) — `conclusion=success` (completed 07:30:14Z)
+**SHA:** `9dde1db708f5ae23ab9c85765ba8e90eab4ac07b` (HEAD atual da main em 2026-10-30, squash merge PR #2784)
 **Resultado:** Gate Final - Deploy Ready passou com `success`. Único required check na main = verde.
 
 ### Inventário completo — HEAD `9dde1db7` (2026-10-30, 25 runs)
@@ -778,3 +832,20 @@ Edge Integration Tests — All Functions [#41031394442](https://github.com/adm01
 Depois do snapshot acima, a main avançou para `7299c88c21d1c67ac65f5beafc18bdf350ced277`. A consulta atual encontrou duas execuções recentes concluídas em falha: E2E Personalization Flow [#41034358338](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358338) e edge-functions-drift-check [#41034830573](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034830573). A falha E2E mostra ausência do produto esperado no seletor e retry de autenticação preso em RPCs; causa precisa ser reproduzida com dados/credenciais E2E, sem afrouxar o contrato do teste. O artefato mais recente mantém 31 funções divergentes. Running Copilot Code Review continua com falha externa de cleanup em [#41031412599](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41031412599).
 
 Deploy Edge Functions [#41034820685](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034820685) (`workflow_dispatch`), E2E Magazine Header, E2E Swatch, E2E Critical Flows, Visual Baseline, Edge Integration, E2E Playwright e CI Security & Drift estavam pendentes ou em execução na consulta; não são contabilizados como falhas. O detalhe por execução e as ações estão em `PENDENCIAS.md`. Nenhum deploy ou alteração no banco canônico foi realizado.
+
+## Adendo — inventário atual da main `5edddfb14` (2026-10-30)
+
+Fonte: MCP GitHub, filtrado pelo SHA `5edddfb14ee4e33008e735f3f3710e902a9b45cb`. No momento da consulta, **duas execuções estavam concluídas com falha**; runs em fila, pendentes ou em execução não são falhas:
+
+| Workflow | Run | Estado | Diagnóstico confirmado |
+|---|---|---|---|
+| Branch Protection Sentinel | [#41037319362](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41037319362) | ❌ `failure` | O job `Audit every commit in push` rejeitou o commit `5edddfb14` por push direto em `main`; o job que verifica branch protection passou. É violação de processo já gravada no histórico e não deve ser tratada com reescrita/force push. |
+| CI - Replenishment Module Quality Gate | [#41037319198](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41037319198) | ❌ `failure` | O `Lint check` encontrou dois diagnósticos `dot-notation` em `src/components/admin/badges-manager/types.ts:254:59`; `COLOR_TOKEN_CLASSES['neutral']` deve ser convertido para acesso por ponto em PR. |
+
+No mesmo SHA passaram `Lovable Edit Tracker`, `Release Please`, `Policies Baseline`, `No Prod Leak in Dev/Test Config`, `Gitleaks — Full History Audit` e `Lint untypedFrom`. A maioria dos demais workflows ainda estava `queued`, `pending` ou `in_progress`; consultar novamente antes do fechamento. O Gate Final ainda estava `queued`, portanto não se declara o required check verde neste snapshot.
+
+### Baseline local após reconciliar o branch
+
+Os resultados de `npm ci`, `npm run build:verify` e `npm test -- --reporter=dot` registrados acima foram medidos antes da resolução da integração da `main` mais recente. Após concluir o merge local e resolver documentos, repetir os três comandos antes do commit e registrar os números finais. A suíte completa anterior teve 25.898 testes aprovados, 1.135 ignorados e 24 `todo`; esta continua sendo a referência até nova execução.
+
+O plano `docs/plans/PLANO_MELHORIAS_CORRECOES_200_ETAPAS_2026-10-18.md` segue parcialmente executado: `scripts/plan-status.mjs` reportou 84 concluídas, 11 aguardando o PO e 103 pendentes (198 itens contabilizados). Não declarar o plano concluído; decisões de segurança/produção permanecem pendentes, e o próprio plano exige fechar os bloqueios da Onda 0 antes de abrir as demais.
