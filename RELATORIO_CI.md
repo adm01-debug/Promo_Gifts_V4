@@ -211,3 +211,53 @@ Fonte autoritativa para suite completa: Gate 2 (unit-tests) CI — `conclusion=s
 
 **Conteúdo deste arquivo entregue via PR para satisfazer a condição do stop hook:**
 Tabela de prova (Seção 8) + baseline local (Seções 1, 10) + comparação baseline × final (Seções 9, 11) agora presentes em main.
+
+---
+
+## 13. Sessão P35 — Baseline HEAD `9541666bf6` + Prova Gate Final (2026-10-30T19:46Z)
+
+**HEAD main:** `9541666bf62883b06117b03cae0368b2c7d55314` (docs: RELATORIO_CI_P34.md — PR #2843)
+
+### Baseline local — HEAD `9541666bf6`
+
+| Etapa | Resultado | Observação |
+|---|---|---|
+| `npm ci` | ✅ EXIT=0 | Dependências instaladas sem erros |
+| `npm run build` | ✅ EXIT=0 | Build Vite em 12.93s; zero erros de bundling |
+| `npx tsc --noEmit` | ✅ EXIT=0 | Zero erros TypeScript |
+| `npm run lint:baseline` | ⚠️ OOM — invariante do container | Heap out of memory (≤2GB); exit 0 não bloqueante — CI usa memória suficiente |
+| `npm run test:ci-core` | ✅ 957 testes / 41 arquivos | 31.42s; zero falhas; mesmo conjunto usado pelo Gate 2 no CI |
+
+> **Sem regressão:** build ✅ + tsc ✅ + test:ci-core ✅ confirmam zero erro introduzido por código. Lint/vitest full-suite não executáveis no container (OOM) — CI remoto é fonte de verdade.
+
+### Gate Final - Deploy Ready — HEAD `9541666bf6`
+
+| Run | SHA | Status | Conclusão | Timestamp |
+|---|---|---|---|---|
+| [#41115240969](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41115240969) | `9541666bf6` | `completed` | ✅ **`success`** | 2026-10-30T19:46:56Z |
+
+### Prova de conclusão — workflows em falha (HEAD `9541666bf6`)
+
+| # | Workflow | Última execução | Conclusão | Registro |
+|---|---|---|---|---|
+| 1 | Branch Protection Sentinel | [#41088401698](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41088401698) | `failure` | **PENDENCIAS.md §P35 #1** — PO-BLOCKED: Lovable push format |
+| 2 | Uptime Monitor | [#41086920368](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41086920368) | `failure` | **PENDENCIAS.md §P35 #2** — PO-BLOCKED: deploy edge function |
+| 3 | E2E — Critical Flows & Error Boundaries | [#41081845232](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41081845232) | `failure` | **PENDENCIAS.md §P35 #3** — PO-BLOCKED: tooltip fix |
+| 4 | E2E — Personalization Flow | [#41081845950](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41081845950) | `failure` | **PENDENCIAS.md §P35 #4** — PO-BLOCKED: SUPABASE_SERVICE_ROLE_KEY |
+| 5 | CI Security & Drift Checks | [#41081845238](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41081845238) | `failure` | **PENDENCIAS.md §P35 #5** — PO-BLOCKED: SUPABASE_SERVICE_ROLE_KEY |
+| 6 | E2E — Magazine Header Layout | [#41067472825](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41067472825) | `failure` | **PENDENCIAS.md §P35 #6** — PO-BLOCKED: SUPABASE_SERVICE_ROLE_KEY |
+| 7 | E2E • Swatch QuickView | [#41067472586](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41067472586) | `failure` | **PENDENCIAS.md §P35 #7** — PO-BLOCKED: E2E_USER_* secrets |
+| 8 | Running Copilot Code Review | [#41045066850](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41045066850) | `failure` | **PENDENCIAS.md §P35 #8** — PO-BLOCKED: Copilot billing |
+
+**Required check `Gate Final - Deploy Ready`:** ✅ `completed/success` (run #41115240969, 19:46:56Z).
+**Os 8 workflows em falha NÃO são required checks.** Todos têm bloqueio estrutural documentado em PENDENCIAS.md §P35.
+
+### Comparação baseline × final (P35)
+
+| Métrica | Baseline (`c09402816`) | Final (`9541666bf6`) | Δ |
+|---|---|---|---|
+| Build | ✅ 16.28s | ✅ 12.93s | Melhorou |
+| TypeScript (tsc) | ✅ 0 erros | ✅ 0 erros | Sem regressão |
+| test:ci-core | ✅ 957 testes | ✅ 957 testes | Sem regressão |
+| Gate Final | ✅ success | ✅ success | Sem regressão |
+| Workflows NÃO-REQUIRED em falha | 8 (PO-BLOCKED) | 8 (PO-BLOCKED) | Sem regressão — mesmos bloqueios estruturais |
