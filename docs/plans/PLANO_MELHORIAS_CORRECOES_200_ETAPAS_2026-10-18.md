@@ -459,6 +459,11 @@ O único controle de drift de schema nunca rodou. A ordem desta onda importa: le
 **Pronto:** a migration está aplicada com recibo em `MIGRATIONS_SYNC_LOG.md`, **ou** foi movida para `supabase/sql-legacy/` com a razão escrita
 **Origem:** A2-15
 
+**Revalidação 2026-10-30 (somente leitura):** a policy `internal_deny_direct_access` não foi
+encontrada no catálogo e a versão `20260716000055` não aparece no ledger consultado. A existência
+do arquivo não autoriza aplicá-lo; a etapa segue pendente de decisão explícita do PO e do fluxo
+versionado de migration previsto nas regras do projeto.
+
 #### P200-E047 · [A] · P2 · Uma `RESTRICTIVE` por tabela sensível ✅
 **Arquivo:** migration nova
 **Fazer:** com só 2 RESTRICTIVE em 950, o default do modelo é união (OR). Introduzir uma RESTRICTIVE por tabela sensível, no padrão de E046, para que o default passe a ser interseção nessas tabelas.
@@ -476,6 +481,12 @@ O único controle de drift de schema nunca rodou. A ordem desta onda importa: le
 **Fazer:** 18 policies dão a `anon` comandos não-SELECT; 7 são INSERT reais (`analytics_events`, `catalog_analytics`, `product_views`, `search_analytics`, `frontend_telemetry`, `kill_switch_hits`, `password_reset_requests`) com `WITH CHECK` só de forma, sem limite de volume. Confirmar no `pg_trigger` que o guard cobre as 7 e verificar essa cobertura **no gate**, não só ao vivo.
 **Pronto:** o gate de policies reprova se uma das 7 tabelas perder o trigger
 **Origem:** A2-39
+
+**Revalidação 2026-10-30 (somente leitura):** o trigger `trg_anon_rate_guard` foi encontrado
+em seis tabelas existentes da lista. `public.kill_switch_hits` não existe em `pg_class` no
+catálogo consultado. A etapa segue parcial: corrigir o inventário para os alvos reais e manter
+um teste do gate para cada tabela que o projeto efetivamente publicar; não contar a tabela
+inexistente como falta de trigger.
 
 #### P200-E050 · [A] · P2 · Unificar as duas allowlists do lint 0029 ✅
 **Arquivo:** `.security/lint-0029-allowlist.json` (93 entradas), `.security/supabase-linter-baseline.json` (50, `generated_at` 2026-07-13)

@@ -879,6 +879,36 @@ Inventário produzido a partir de `github_list_workflow_runs` com `status=failur
 
 ---
 
+## Revalidação atual — main `b2ba9f9e` — 2026-10-30
+
+Consulta realizada em 2026-10-30 após o push que atualizou a `main` para `b2ba9f9e6e604c12de9b01aeae139cfd0d8d8656`. Só classifico como falha as execuções concluídas; itens `in_progress`/`pending` ficam separados abaixo.
+
+| Workflow | Última execução observada | Status | Causa / encaminhamento |
+|---|---:|---|---|
+| **Gate Final - Deploy Ready** | [#41031394467](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41031394467) | ✅ `success` | Check required da main verde. |
+| Branch Protection Sentinel | [#41031394389](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41031394389) | ✅ `success` | — |
+| Workflow Lint | [#41031394221](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41031394221) | ✅ `success` | — |
+| CodeQL / Gitleaks / Security Scan | [CodeQL #41031394426](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41031394426), [Gitleaks #41031394510](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41031394510), [Security #41031394405](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41031394405) | ✅ `success` | — |
+| Policies Baseline / Supabase Linter / SSOT Guard | [#41031394416](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41031394416), [#41031394406](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41031394406), [#41031394368](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41031394368) | ✅ `success` | — |
+| E2E — Personalization Flow | [#41031394308](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41031394308) | ✅ `success` | — |
+| **E2E — Magazine Header Layout** | [#41031394478, tentativa 2](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41031394478) | ❌ `failure` | Login E2E não gerou token Supabase em `storageState.json`; o endereço permaneceu em `/login` até `loginViaUI` atingir 75 s. O teste não chegou à validação do layout. Verificar no GitHub os secrets `E2E_USER_EMAIL`/`E2E_USER_PASSWORD` e a disponibilidade de Auth no ambiente canônico; não compartilhar credenciais no chat. |
+| **E2E — Critical Flows & Error Boundaries** | [#41031394211](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41031394211) | ❌ `failure` | O setup registrou cinco timeouts de login e pulou specs autenticados; `Check min tests executed` falhou por não alcançar o mínimo. Mesma pendência de autenticação E2E; não reduzir o mínimo nem pular o gate. |
+| **Quote Builder Delivery Quality** | [#41031394243](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41031394243) | ❌ `failure` | Dois specs falharam porque a navegação continuou em `/login` (timeout de 75 s). O artefato visual de ~774 MB não é evidência de regressão visual neste run. Verificar a autenticação E2E antes de revisar snapshots. |
+| **edge-functions-drift-check** | [#41032312996](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41032312996) | ❌ `failure` | O artefato `drift_report.csv` identificou hashes divergentes em 31 funções (slugs abaixo). Os hashes não determinam sozinhos qual lado deve prevalecer. Fazer revisão function-by-function em PR e usar o fluxo autorizado de deploy somente após classificar a direção; nenhum deploy foi feito. |
+| **Running Copilot Code Review** | [#41031412599](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41031412599) | ❌ `failure` | Step de limpeza do agente terminou com processos órfãos; não há resultado de revisão de código. Bloqueio do serviço GitHub Copilot, não correção local. |
+| Uptime Monitor | [#41031127186](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41031127186) | ✅ `success` | Sucesso posterior à falha [#41027506381](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41027506381). A causa da falha antiga permanece indeterminada; ver P-UPTIME. |
+
+**31 funções com hash divergente no artefato do drift check:** `ai-recommendations`, `bitrix-sync`, `cnpj-lookup`, `collections-watcher`, `connections-auto-test`, `connections-hub-audit`, `crm-db-bridge`, `e2e-cleanup`, `ema-pipeline-health`, `favorites-watcher`, `generate-ad-image`, `generate-mockup`, `health-check`, `kit-ai-builder`, `log-login-attempt`, `magazine-import-local`, `magazine-public-react`, `mcp-keys-issue`, `mcp-keys-revoke`, `migrate-helper`, `product-webhook`, `quote-sync-promo-champions`, `receive-crm-callback`, `rls-audit`, `secrets-manager`, `send-scheduled-reports`, `simulation-orchestrator`, `trends-insights`, `visual-search`, `webhook-dispatcher`, `webhook-inbound`.
+
+**Execuções ainda abertas no snapshot (não são falhas):** Edge Integration Tests — All Functions [#41031394442](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41031394442), E2E Swatch QuickView [#41031394231](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41031394231), Visual Baseline Tests [#41031394253](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41031394253), E2E Playwright [#41031394403](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41031394403), CI Replenishment [#41031394348](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41031394348) e CI Security & Drift [#41031394338](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41031394338). Reconsultar a conclusão antes de encerrar a auditoria.
+
+**PR #2793:** permanece aberto e atrás da `main`. Na branch `5c1402ab`, `CI - Replenishment Module Quality Gate` [#41031473126](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41031473126) falhou em dois E2E por login em `/login` após 75 s; `Running Copilot Code Review` [#41031488130](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41031488130) falhou na limpeza do agente. `Vercel Agent Review` ficou `neutral` por cobrança desabilitada; Supabase Preview foi `skipped` sem alterações em `supabase/`. Não mesclar até os checks exigidos estarem verdes ou o bloqueio operacional estar resolvido.
+
+**Ações necessárias:** (1) administrador verifica/revalida a conta e os secrets de teste E2E no GitHub, sem revelar valores; (2) reconciliar os 31 edge functions por PR, sem deploy em lote às cegas; (3) retomar/reexecutar o check Copilot quando o serviço estiver operacional; (4) aguardar e registrar as execuções ainda abertas. Nenhuma alteração foi feita no Supabase canônico.
+
+
+---
+
 ## P-GATE-QUEUED — Gate Final em fila por backlog de runners (2026-10-30) — ✅ RESOLVIDO
 
 **Workflow:** `Deploy Gates` (`.github/workflows/deploy-gates.yml`)
