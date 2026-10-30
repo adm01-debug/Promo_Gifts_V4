@@ -6,10 +6,10 @@
   "gate_final_inicio": "success",
   "total_prs": 19,
   "prs_analisadas": [
-    {"numero": 2845, "veredito": "MERGEAR", "status": "MERGEADA", "sha_merge": "pendente"},
+    {"numero": 2845, "veredito": "MERGEAR", "status": "MERGEADA", "sha_merge": "637fe57eee3e00d012da3c1da843b088c2e695a7"},
     {"numero": 2844, "veredito": "MERGEAR", "status": "MERGEADA", "sha_merge": "a24ee07be166d35dd2d0e8c20f7547290e0d4348"},
-    {"numero": 2836, "veredito": "MERGEAR", "status": "PENDENTE"},
-    {"numero": 2810, "veredito": "MERGEAR", "status": "PENDENTE"},
+    {"numero": 2836, "veredito": "MERGEAR", "status": "MERGEADA", "sha_merge": "6bd5ce61c3fe5a81b3a74d763ac05851c1129f80"},
+    {"numero": 2810, "veredito": "MERGEAR", "status": "AGUARDANDO_CI_2836"},
     {"numero": 2839, "veredito": "DECISAO_HUMANA", "status": "NAO_MERGEADA"},
     {"numero": 2758, "veredito": "JA_IMPLEMENTADA", "status": "NAO_MERGEADA"},
     {"numero": 2822, "veredito": "CI_FALHOU", "status": "NAO_MERGEADA"},
@@ -26,7 +26,7 @@
     {"numero": 2731, "veredito": "NAO_MERGEAR", "razao": "REGRA#8 duplo + historico desconectado do main"},
     {"numero": 2701, "veredito": "NAO_MERGEAR", "razao": "REGRA#8 + historico desconectado do main + DRAFT"}
   ],
-  "prs_mergeadas": [2844],
+  "prs_mergeadas": [2844, 2845, 2836],
   "contagem_vereditos": {
     "MERGEAR": 4,
     "DECISAO_HUMANA": 1,
