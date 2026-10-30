@@ -156,3 +156,58 @@ Branch Protection Sentinel foi corrigido indiretamente: o fix foi via PR #2806 (
 ### Workflows com falha pré-existente (não alterados por esta sessão)
 
 Ver PENDENCIAS.md: P19-H (Copilot Code Review — billing 402), P21-edge-drift (edge-functions-drift-check — aprovação pendente #41034820685), P21-magazine-header / P21-critical-flows (E2E auth — secrets CI).
+
+---
+
+## Sessão P22.2 — 2026-10-30 — PR #2812 — HEAD `22ca2b3fa` — Baseline + Prova Final
+
+**Objetivo:** documentar PENDENCIAS.md P22 (saturação de runners + E2E auth + Supabase Preview) + produzir baseline local e tabela de prova final desta sessão.
+
+### Baseline local — HEAD `22ca2b3fa` (2026-10-30T12:30 UTC)
+
+| Etapa | Resultado | Observação |
+|---|---|---|
+| `npm run build` | ✅ exit 0 | Built em 15.45s; INEFFECTIVE_DYNAMIC_IMPORT pré-existentes; chunk-cycles OK |
+| `npm run typecheck` (tsc --noEmit) | ✅ exit 0 | Zero erros TypeScript |
+| `npm run lint:baseline` | ⚠️ OOM — não executável | Heap out of memory no container (pré-existente, igual à Section 1) |
+| `npx vitest run tests/scripts/` | ✅ 40 arquivos, 532 passed, 3 skipped | Subconjunto de scripts executado com sucesso em 40s |
+| Suite completa `npx vitest run` | ⚠️ Timeout 300s no container | Limitação de recurso pré-existente do container; CI remoto é a fonte de verdade |
+
+> `22ca2b3fa` altera apenas `PENDENCIAS.md` e `RELATORIO_CI.md` (docs-only). Zero mudança em código TypeScript/JavaScript. Resultados de testes idênticos ao baseline de `6dbc9387` (PR #2806).
+
+### Inventário completo de failures — HEAD `22ca2b3fa` (snapshot 2026-10-30T12:30 UTC)
+
+| Workflow | Run ID | Conclusão | Registro |
+|---|---|---|---|
+| Running Copilot Code Review | [#41045066850](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41045066850) | ❌ failure | PENDENCIAS.md §P21-copilot — HTTP 402 (billing quota) — ação PO: habilitar plano Copilot |
+| Supabase Preview | — | ❌ failure/skipped | PENDENCIAS.md §P22-supabase-preview — push direto em main, sem PR, comportamento esperado |
+| edge-functions-drift-check | [#41034830573](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034830573) | ❌ failure | PENDENCIAS.md §P21-edge-drift — drift canônico, ação PO: aprovar deploy #41034820685 |
+| Gate Final - Deploy Ready | [#41045062113](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41045062113) | ⏳ queued | PENDENCIAS.md §P22-runner-saturation — fila por saturação; não é falha de código |
+| CI Security & Drift Checks | [#41045062030](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41045062030) | ⏳ pending | PENDENCIAS.md §P22-e2e-auth — aguarda runner; step 27 E2E auth depende de `SUPABASE_SERVICE_ROLE_KEY` |
+| E2E — Personalization Flow | [#41045062037](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41045062037) | ⏳ queued | PENDENCIAS.md §P21-personalization — auth E2E CI (pré-existente) |
+| E2E — Critical Flows & Error Boundaries | [#41045062575](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41045062575) | ⏳ queued | PENDENCIAS.md §P21-critical-flows — auth E2E CI (pré-existente) |
+| Todos os demais workflows | — | ⏳ queued/pending | Saturação de runners; aguardam liberação de slots |
+
+### Comparação baseline × final
+
+| Dimensão | Baseline `c09402816` | Final `22ca2b3fa` |
+|---|---|---|
+| Build | ✅ | ✅ (15.45s) |
+| TypeScript | ✅ | ✅ (zero erros) |
+| Lint | ⚠️ OOM container | ⚠️ OOM container (mesma limitação) |
+| Vitest scripts/ | ✅ | ✅ (40 arquivos, 532 passed) |
+| Gate Final (required check) | ✅ `7299c88c` (#41034358375) | ⏳ queued `22ca2b3fa` (#41045062113) — saturação runners; último green em `7299c88c` |
+| CI Security & Drift | ❌ dot-notation `5edddfb1` | ✅ corrigido em `6dbc9387`; steps 1–26 ✅ (#41040489233) |
+| Branch Protection Sentinel | ❌ push direto sem `(#NNN)` | ✅ corrigido via squash-merge PR #2806 |
+| Copilot Code Review | ❌ HTTP 402 | ❌ HTTP 402 (pré-existente, billing — PENDENCIAS §P21-copilot) |
+| edge-functions-drift-check | ❌ 31 funções em drift | ❌ 31 funções em drift (pré-existente, ação PO pendente) |
+
+### Regressões introduzidas por esta sessão
+
+**Nenhuma.** Os únicos failures em `22ca2b3fa` são:
+1. **Copilot Code Review** — HTTP 402 (billing quota), pré-existente em todos os SHAs desta sessão
+2. **Supabase Preview** — comportamento esperado para push direto em main
+3. **edge-functions-drift-check** — drift acumulado, pré-existente, não-required
+4. **Workflows queued** — saturação de runners, não falha de código
+
+O único required check (`Gate Final - Deploy Ready`) obteve `conclusion=success` em `7299c88c` [#41034358375](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358375). A fila em `22ca2b3fa` é consequência de saturação de runners por múltiplos pushes simultâneos — documentado em PENDENCIAS.md §P22-runner-saturation.
