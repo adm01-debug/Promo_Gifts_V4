@@ -417,3 +417,35 @@ A PR [#2816](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2816) está aber
 ### Validação local já registrada
 
 Após o commit documental `5ad880a1e`, `npm run build:verify` e `npm test -- --reporter=dot --silent` passaram (1.250 arquivos; 25.898 testes aprovados, 1.135 skipped e 24 todo). O merge com `7e56ae49` e este snapshot também são apenas documentais; a validação será repetida após o commit de reconciliação, antes do push.
+
+---
+
+## Sessão P25 — 2026-10-30 — HEAD `7e56ae49` — Gate Final + Baseline Completo
+
+HEAD: 7e56ae49dde173e04f66ed4523eb8eb59653821a (squash-merge de PR #2818 — docs P24)
+
+### Baseline local — HEAD `7e56ae49`
+
+Executado em 2026-10-30 (~12:28–12:52 UTC) — sessão P25 (continuação P24):
+
+| Etapa | Resultado | Evidência |
+|---|---|---|
+| `npm ci` | ✅ exit 0 | 2 CVE high pré-existentes (não introduzidos por esta sessão) |
+| `npm run build` | ✅ exit 0 | 16.33s, sem warnings |
+| `npx tsc --noEmit` | ✅ exit 0 | Zero erros de tipo |
+| `npx vitest run tests/scripts/` | ✅ exit 0 | 40 files, 532 passed, 3 skipped, 31.33s |
+| `npx vitest run` (full suite) | ✅ exit 0 | 1380 test files — 1250 passed, 130 skipped; 27057 tests — 25898 passed, 1135 skipped, 24 todo; 1113.86s |
+| `npx eslint src/` | ⚠️ OOM após 305s | Container heap limit (2GB) — restrição do ambiente remoto, não regressão de código. Evidência: `FATAL ERROR: Reached heap limit`. Gate 1 CI (GitHub Actions, mais memória) cobre lint de forma autoritativa. |
+
+### Gate Final — HEAD `7e56ae49`
+
+| Run | Evento | Status | Conclusão |
+|---|---|---|---|
+| [#41054206726](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41054206726) | push | ❌ completed 12:37Z | **failure** — Gate 1.10 (indexed-access ratchet +5: baseline 867 vs real 872). Demais gates: Gate 0/2/2.5/E23/0.5/5/5.5/3 todos ✅ |
+| [#41054421796](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41054421796) | workflow_dispatch | ❌ cancelado | Cancelado manualmente (desnecessário após push run iniciar) |
+
+### Diagnóstico Gate 1.10 — indexed-access ratchet
+
+- **Causa:** Baseline `.indexed-access-baseline.json` salvo como 867 em `5edddfb14`, mas o count real do tsc já era 872 naquele commit (verificado com `git checkout 5edddfb14 -- . && tsc --noUncheckedIndexedAccess` → 872 erros)
+- **Minha mudança** (`6dbc9387f`: `['neutral']!` → `.neutral!`) NÃO introduziu novos erros — `badges-manager/types.ts` tem zero erros com `--noUncheckedIndexedAccess`
+- **Fix:** Baseline atualizado de 867 → 872 em branch `claude/fix-indexed-access-baseline-261030-1248`
