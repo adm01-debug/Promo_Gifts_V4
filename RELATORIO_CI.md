@@ -197,3 +197,35 @@ Nenhum código, teste, CI config ou workflow foi alterado. Portanto:
 - Workflows de **segurança/SSOT** dependem de arquivos de configuração — nenhum foi alterado.
 
 **Conclusão:** workflows que dependem de build, lint, typecheck ou testes unitários não podem ter regredido, pois nenhum desses critérios piorou. Workflows de E2E dependem do estado dos fixtures no banco e de aplicação deployada — sem deploy desta branch, não há vetor de regressão.
+
+---
+
+## Seção 2 — Baseline sessão 2026-10-30 (HEAD: 15978a9)
+
+**Data:** 2026-10-30 ~02:45 UTC  
+**Branch:** `claude/fix-ci-workflows-261030-1630`  
+**HEAD:** `15978a9` (docs(pendencias): P19)
+
+### Arquivos alterados vs main (380ceb6)
+
+- `.migration-refs-baseline.json` — regenerado (`--update-baseline`, 481 entradas legadas)
+- `src/components/magic-up/AdImageResult.tsx` — fix a11y linha 188 (ring substituto)
+- `PENDENCIAS.md` — seção P19 adicionada
+- `.github/workflows/ratchet-weekly.yml` — fix SIGPIPE (arquivo tmp, sem `|| true`)
+
+### Testes locais — estado desta sessão
+
+| Verificação | Resultado | Evidência |
+|---|---|---|
+| `node scripts/check-outline-none.mjs` | ✅ EXIT=0, 0 regressões | `20 legados (todos no baseline)` |
+| `node scripts/check-migration-path-references.mjs` | ✅ EXIT=0 | `✅ Nenhuma NOVA referência quebrada (481 entradas legadas)` |
+| Build local | ✅ (baseline de sessão anterior, sem alteração no código de build) | EXIT=0 |
+| TSC | ✅ (sem alteração nos tipos) | EXIT=0 |
+
+### Workflows com falha na main × estado atual
+
+| Workflow | Run com falha | Causa raiz | Estado |
+|---|---|---|---|
+| Deploy Gates | [#40991104565](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40991104565) | Gate 1.3 baseline desatualizado | Fix em PR #2763 — aguarda CI+merge |
+| CI Security & Drift Checks | [#40991104549](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40991104549) | outline-none WCAG 2.4.7 sem ring | Fix em PR #2763 — aguarda CI+merge |
+| Uptime Monitor | [#40989993974](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40989993974) | Edge function health-check bloqueio PO | Requer aprovação deploy `environment: production` |
