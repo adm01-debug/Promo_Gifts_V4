@@ -8,9 +8,7 @@ type ProductPriceRow = {
 };
 
 export type KitPriceValidationResult =
-  | { status: 'unchanged' }
-  | { status: 'changed'; productNames: string[] }
-  | { status: 'unavailable' };
+  { status: 'changed'; productNames: string[] } | { status: 'unavailable' } | { status: 'unchanged' };
 
 function priceInCents(value: number): number | null {
   if (!Number.isFinite(value) || value < 0) return null;
@@ -63,11 +61,12 @@ export async function validateKitPricesForQuote(
   for (const line of lines) {
     const current = currentById.get(line.id);
     const capturedCents = priceInCents(line.price);
-    const currentCents = current?.sale_price === null || current?.sale_price === undefined
+    const currentPrice = current?.sale_price;
+    const currentCents = currentPrice === null || currentPrice === undefined
       ? null
-      : priceInCents(current.sale_price);
+      : priceInCents(currentPrice);
 
-    if (!current || current.active !== true || currentCents === null || capturedCents === null) {
+    if (current?.active !== true || currentCents === null || capturedCents === null) {
       return { status: 'unavailable' };
     }
     if (currentCents !== capturedCents) changedNames.add(line.name);
