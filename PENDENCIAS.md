@@ -9,7 +9,7 @@ Inventário MCP por SHA: duas execuções concluídas falharam. Workflows `pendi
 | Workflow | Run | Evidência confirmada | Situação / próxima ação |
 |---|---|---|---|
 | Branch Protection Sentinel | [#41037319362](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41037319362) | Job `Audit every commit in push` rejeitou o commit `5edddfb14` por ter sido enviado diretamente para `main` sem padrão aceito pelo Sentinel. O job separado que verifica a proteção do branch passou. | Violação histórica de processo já registrada na main; não reescrever o histórico. Manter os próximos commits em PR com padrão de merge aceito. |
-| CI - Replenishment Module Quality Gate | [#41037319198](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41037319198) | O step `Lint check` encontrou 2 erros novos em `src/components/admin/badges-manager/types.ts:254:59`: `COLOR_TOKEN_CLASSES['neutral']` deve usar notação de ponto. | Corrigir com mudança semântica equivalente em PR, sem afrouxar lint; reexecutar lint, build e suíte completa. |
+| CI - Replenishment Module Quality Gate | [#41037319198](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41037319198) | O step `Lint check` encontrou 2 erros novos em `src/components/admin/badges-manager/types.ts:254:59`: `COLOR_TOKEN_CLASSES['neutral']` deve usar notação de ponto. | Corrigido em `types.ts` por acesso equivalente `COLOR_TOKEN_CLASSES.neutral`; validar lint, build e suíte completa no PR #2797. |
 
 ### Workflows concluídos com sucesso no mesmo SHA
 
