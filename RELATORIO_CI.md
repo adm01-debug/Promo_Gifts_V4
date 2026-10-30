@@ -466,3 +466,31 @@ A branch da PR foi atualizada e está baseada em `7e56ae49`; head `94b948612`. O
 **Sem conclusão na última consulta:** CI Security & Drift [#41054206685](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41054206685) e Swatch QuickView [#41054206843](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41054206843) estavam `in_progress`; não contam como falhas nem como sucesso. E2E Playwright [#41054206752](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41054206752) e Deploy Gates dispatch [#41054421796](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41054421796) terminaram `cancelled`.
 
 **Validação local pré-commit:** ratchet 867/867, sem alteração do baseline; `npm run build:verify` passou (typecheck, lint baseline 0 erros/avisos, build Vite e guardas); suíte completa passou (1.250 arquivos, 25.898 testes, 1.135 skipped, 24 todo). Os checks serão repetidos no commit final. A PR #2816 continua aberta; não fazer merge até todos os checks requeridos da PR concluírem com sucesso.
+
+## Atualização P30 — falhas concluídas e causa do Kit Builder (2026-10-30T13:16Z)
+
+**SHA auditado na `main`:** `7e56ae49dde173e04f66ed4523eb8eb59653821a`. Somente execuções `completed/failure` são contadas como falhas. O inventário remoto foi consultado novamente às 13:15Z via GitHub MCP.
+
+### Últimas falhas concluídas
+
+| Workflow | Run | Resultado / evidência |
+|---|---|---|
+| Uptime Monitor | [#41056934202](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41056934202) | `failure`: a probe `health-check` retornou exit code 22; site, `check-login` e Auth Health passaram. A causa subjacente do erro HTTP ainda não foi identificada. Deploy protegido [#41048773110](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41048773110) aguarda aprovação `production`. |
+| Running Copilot Code Review | [#41045066850](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41045066850) | `failure`: HTTP 402 / quota Copilot; bloqueio administrativo externo. |
+| E2E — Critical Flows & Error Boundaries | [#41054206634](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41054206634) | `failure`: 1/10 testes executados e 9 skipped. Auth token e user responderam 200; `system_settings` respondeu 401 e chamadas REST/RPC/Edge ficaram pendentes. A evidência não estabelece a causa do 401/latência. |
+| Deploy Gates | [#41054206726](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41054206726) | `failure`: Gate 1.10 contou 872 diagnósticos contra baseline 867; Gate Final falhou derivativamente. A branch deste PR corrigiu cinco acessos inseguros, manteve baseline 867 e o ratchet local passou 867/867. |
+| CI Security & Drift Checks | [#41054206685](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41054206685) | `failure`: `security-audit` passou; falhou `quality-gate` no step 27 de E2E autenticado (6 testes falhos, 6 aprovados). Três falhas do Kit Builder foram causadas por `KitOnboardingTour` cobrindo o CTA com overlay `z-[80]`. Três falhas adicionais de catálogo não têm causa estabelecida no log resumido; permanecem pendentes de diagnóstico. |
+
+### Em execução ou cancelados
+
+- E2E • Swatch QuickView [#41054206843](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41054206843): continua `in_progress`; job Firefox falhou ([#124061436035](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41054206843/job/124061436035)), enquanto Chromium e WebKit permanecem ativos. Não declarar conclusão do workflow antes do status final. O artefato Firefox tem 450 MB e não foi baixado.
+- E2E Playwright [#41054206752](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41054206752): `cancelled`, não é falha concluída.
+- Permanecem verdes na ponta consultada: Quote Number Hardening Verify, UI Visual & A11y, Release Please, Select Columns vs Types, Branch Protection Sentinel, Static Health Checks, No Prod Leak, Gitleaks, Lovable Autoheal, Required Checks Guard, Policies Baseline, Supabase Linter Gate, Personalization E2E, SSOT Supabase Guard, Security Scan, CodeQL, Quote Builder Delivery Quality e Lovable Edit Tracker (links e IDs constam em PENDENCIAS.md §P29). Nenhum dos runs consultados mudou de `success` para falha.
+
+### Correção local do tour de onboarding
+
+Em `KitOnboardingTour`, `finish()` grava `kit-tour-completed` mesmo no uso controlado pelo pai; no E2E do Kit Builder, o helper fecha “Pular tour” quando o modal de primeira visita está aberto antes de clicar “Começar pelos itens”. Teste unitário confirma a gravação da flag e `onOpenChange(false)`. O teste focado passou (1 teste). `NODE_OPTIONS=--max-old-space-size=4096 npm run build:verify` também passou: typecheck, lint baseline 0 erros/avisos (regressões +0), build Vite e guardas. A suíte completa passou com 1.251 arquivos, 25.899 testes aprovados, 1.135 skipped e 24 todo. Repetir build e suíte depois do commit antes do push, conforme a regra anti-regressão. Essas alterações corrigem apenas o bloqueio do tour; não classificam as falhas do catálogo.
+
+### Validação local e PR
+
+Os resultados de baseline e da correção do ratchet constam em P29 e nos commits anteriores. Nesta revisão, antes do commit, `build:verify` e a suíte integral passaram (resultados descritos acima). A repetição após o commit continua obrigatória antes do push. PR [#2816](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2816) permanece aberta e não deve ser mesclada com check obrigatório vermelho/pendente.

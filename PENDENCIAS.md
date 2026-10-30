@@ -1,6 +1,6 @@
 # PENDÊNCIAS CI — Promo Gifts V4
-**Atualizado em:** 2026-10-30T12:36Z
-**Branch de correção:** `claude_04/beautiful-gates-bvocz5` (PR #2597 — **MERGEADO** ✅)
+**Atualizado em:** 2026-10-30T13:16Z
+**Branch de correção:** `docs/ci-latest-failures-20261030` (PR #2816 — aberta)
 
 ## Atualização P28 — falhas e checks no SHA `7e56ae49` (2026-10-30T12:36Z)
 
@@ -171,3 +171,30 @@ O Deploy Gates [#41054206726](https://github.com/adm01-debug/Promo_Gifts_V4/acti
 ### Demais execuções no SHA `7e56ae49`
 
 Os workflows com sucesso estão listados em RELATORIO_CI.md §P29. CI Security & Drift [#41054206685](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41054206685) e Swatch QuickView [#41054206843](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41054206843) permaneciam em andamento na última consulta. E2E Playwright [#41054206752](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41054206752) e Deploy Gates dispatch [#41054421796](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41054421796) foram cancelados; não são contados como falhas. Nenhuma afirmação de sucesso será feita para os dois runs ainda ativos até obter conclusão.
+
+
+## Atualização P30 — conclusão dos workflows e correção E2E local (2026-10-30T13:16Z)
+
+Esta atualização substitui os estados “em andamento” do P29 para os runs abaixo. O SHA auditado da `main` continua `7e56ae49dde173e04f66ed4523eb8eb59653821a`; somente `completed/failure` conta como falha.
+
+| Workflow | Último run na `main` | Evidência / estado | Próxima ação |
+|---|---|---|---|
+| Uptime Monitor | [#41056934202](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41056934202) — `failure` | Probe do site, check-login e Auth Health passaram; `health-check` terminou com exit code 22. Isso aponta a probe que falhou, mas não determina a causa HTTP/serviço. Deploy protegido [#41048773110](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41048773110) aguarda aprovação `production`. | PO/admin aprovar o deploy protegido; depois confirmar a execução do monitor e o status HTTP de health-check. |
+| Running Copilot Code Review | [#41045066850](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41045066850) — `failure` | HTTP 402 por quota/billing do Copilot; bloqueio externo. | PO/admin regularizar quota e disparar nova execução. |
+| E2E — Critical Flows & Error Boundaries | [#41054206634](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41054206634) — `failure` | O fluxo autenticado executou 1/10 testes, ignorou 9 e excedeu o limite de skips. O token Auth e `/auth/v1/user` responderam 200; `system_settings` respondeu 401 e chamadas REST/RPC/Edge ficaram pendentes. O log não fecha a causa do 401/latência. | Investigar sessão/permissões/serviços no Supabase com logs correlacionados. Não alterar secrets, schema nem gate sem causa comprovada. |
+| Deploy Gates | [#41054206726](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41054206726) — `failure` | Gate 1.10: 872 diagnósticos contra baseline 867; Gate Final falhou como consequência. A branch deste PR remove cinco acessos inseguros sem mudar o baseline; ratchet local passou 867/867. | Aguardar checks do PR #2816 e exigir resultado verde antes de qualquer merge. |
+| CI Security & Drift Checks | [#41054206685](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41054206685) — `failure` | `security-audit` passou; `quality-gate` falhou no E2E autenticado. Seis testes falharam e seis passaram. Três `e2e/kit-builder.spec.ts` falharam porque o tour de onboarding cobria o botão “Começar pelos itens” (`z-[80]` interceptou os cliques). Três `e2e/catalog.spec.ts` também falharam; o resumo/log disponível não estabelece a causa, então ficam sem classificação. | Correção de onboarding e teste unitário estão nesta branch, pendentes de CI. Investigar separadamente as três falhas de catálogo com artefato/log específico; não marcar como resolvidas. |
+
+### Swatch QuickView e workflows sem conclusão
+
+- E2E • Swatch QuickView [#41054206843](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41054206843) permanece `in_progress`. O job Firefox [#124061436035](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41054206843/job/124061436035) concluiu com falha na suíte e no mínimo de testes; os jobs Chromium e WebKit ainda estão em execução. Portanto o workflow não tem conclusão geral e não é listado como falha final. O artefato Firefox tem 450 MB e não foi baixado; a causa detalhada permanece pendente.
+- E2E Playwright [#41054206752](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41054206752) foi cancelado; cancelamento não é falha.
+- Os workflows que concluíram `success` no SHA auditado permanecem listados no RELATORIO_CI.md §P30. Não foi identificado workflow previamente verde que tenha mudado para falha.
+
+### Correção local de onboarding — ainda sem evidência remota
+
+`KitOnboardingTour.finish()` agora persiste `kit-tour-completed` também quando o componente é controlado pelo pai. O helper E2E fecha explicitamente “Pular tour” se o modal de primeira visita estiver visível antes de clicar “Começar pelos itens”. Um teste unitário verifica a persistência e `onOpenChange(false)`. Validação local nesta revisão: teste unitário focado 1/1; `npm run build:verify` passou (typecheck, lint baseline 0 erros/avisos, build e guardas); suíte completa passou (1.251 arquivos; 25.899 testes aprovados, 1.135 skipped, 24 todo). Repetir build e suíte após o commit, conforme regra anti-regressão. As alterações não resolvem nem classificam as três falhas de catálogo.
+
+### PR #2816
+
+A PR segue aberta e sem merge. A versão anterior tinha Vercel failure e Devin Review sem análise por falta de créditos; após atualizar o head com a correção E2E e o relatório P30, consultar os novos checks. Não mesclar enquanto qualquer check requerido estiver vermelho ou pendente.
