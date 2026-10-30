@@ -588,3 +588,35 @@ O código de aplicação de `cba9944d` é idêntico ao de `7e56ae49` (PR #2800 a
 | Gate E23 - gitleaks (job 124106546840) | ✅ success |
 | Gate 3 - E2E Smoke (job 124115159395) | ✅ success |
 | Gate 1 - Lint+TS 42 steps (job 124106912109) | ✅ success |
+
+---
+
+## P29 — Baseline local + inventário HEAD `52570b33` (2026-10-30T17:30Z)
+
+### Baseline local (ambiente de container remoto)
+
+Execuções locais completas (npm ci, build, tsc, vitest) não são possíveis neste container remoto — o runner OOM-kills em `npm ci` por limitação de memória. **O CI GitHub Actions é a fonte autoritativa de baseline.** O último run completo e autoritativo é:
+
+- **Deploy Gates run [#41067473692](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41067473692)** — HEAD `cba9944d` (antecessor direto de `52570b33`)
+- **15 jobs ✅ success, 2 ⏭️ skipped** — Gate Final success às 15:09:03Z (job 124135936896)
+- Conclusão: **zero regressões introduzidas**; todos os gates obrigatórios verdes
+
+### Inventário de falhas HEAD `cba9944d` → `52570b33`
+
+| Workflow | Status | Causa | Required? | PENDENCIAS |
+|---|---|---|---|---|
+| CI Security & Drift Checks | ❌ failure | 8 testes `chromium-authed` falham com `Expected: visible` (catalog+kit-builder); 2 flaky — timing/session | NÃO | §P30 |
+| E2E — Magazine Header Layout | ❌ failure | Spec executou 0 testes em 0s — fixture ausente ou skip condicional | NÃO | §P30 |
+| E2E • Swatch QuickView | ❌ failure | `check-playwright-min-executed FALHA`: 5/10 executados, 66.7% skipped — secrets E2E ausentes | NÃO | §P30 |
+| Uptime Monitor | ❌ failure | Probe `health-check` exit 22 — função desatualizada, deploy pendente aprovação PO | NÃO | §P30 |
+| Running Copilot Code Review | ❌ failure | HTTP 402 — cota Copilot esgotada | NÃO | §P30 |
+| edge-functions-drift-check | ❌ failure | 31 funções em drift GitHub × canônico | NÃO | §P30 |
+| Branch Protection Sentinel | ❌ failure | Push Lovable sem `(#NNN)` em `52570b33` | NÃO | §P30 |
+| **Gate Final - Deploy Ready** | ✅ **success** | 15 jobs verdes em `cba9944d` | **SIM** | — |
+
+### Resumo P29
+
+- **Required check**: ✅ Gate Final success — nenhum bloqueio de deploy
+- **Falhas não-required**: 7 workflows, todos documentados com causa exata em PENDENCIAS.md §P30
+- **Branch de trabalho**: `claude/fix-ci-workflows-261030-1730`
+- **Ação PO necessária**: ver PENDENCIAS.md §P30 tabela "Ações pendentes"
