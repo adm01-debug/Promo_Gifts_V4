@@ -64,6 +64,8 @@ export function useListUrlState<K extends string>(
   keysRef.current = keys;
   const searchParamsRef = useRef(searchParams);
   searchParamsRef.current = searchParams;
+  const setSearchParamsRef = useRef(setSearchParams);
+  setSearchParamsRef.current = setSearchParams;
 
   // Estado local do input textual (digitação fluida antes do debounce).
   const initialSearch = searchKey ? (searchParams.get(searchKey) ?? keys[searchKey]) : '';
@@ -105,6 +107,36 @@ export function useListUrlState<K extends string>(
   // `updateParam`.
   const updateParamRef = useRef(updateParam);
   updateParamRef.current = updateParam;
+
+  // Canonicaliza deep-links que chegam com filtros explícitos no valor
+  // default. A busca textual já tem um efeito próprio de debounce; quando o
+  // `searchKey` ainda está no default, deixamos esse efeito removê-lo primeiro
+  // para evitar duas navegações concorrentes no mesmo commit. A mudança de
+  // locationKey então reexecuta este normalizador para os demais filtros.
+  useEffect(() => {
+    const params = new URLSearchParams(searchParamsRef.current);
+    const defaults = keysRef.current;
+    const searchValue = searchKey ? params.get(searchKey) : null;
+    if (
+      searchKey &&
+      params.has(searchKey) &&
+      (!searchValue || searchValue === defaults[searchKey])
+    ) {
+      return;
+    }
+
+    let changed = false;
+    for (const [key, defaultValue] of Object.entries(defaults)) {
+      if (params.has(key) && (!params.get(key) || params.get(key) === defaultValue)) {
+        params.delete(key);
+        changed = true;
+      }
+    }
+    if (!changed) return;
+    setSearchParamsRef.current(params, { replace: true });
+    // Reexecuta apenas em navegação real ou mudança do mapa de defaults.
+    // Os setters do React Router mudam de identidade a cada navegação.
+  }, [locationKey, keysSignature, searchKey]);
 
   const setValue = useCallback(
     (key: K, value: string) => {
