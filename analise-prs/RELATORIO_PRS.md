@@ -202,27 +202,21 @@ Evidência adicional: `quality-gate` foi ✅ SUCCESS em `37ea10a3` (5º merge, S
 
 ---
 
-## Sessão 2026-10-30 — PRs #2701–#2832
+## Sessão 2026-10-30 — PRs #2701–#2833
 
-**Total PRs abertas analisadas nesta sessão:** 18  
-**Baseline main:** `52570b33767d3fdbf740cb78206ac7dbada4bbd1`
+**Total PRs abertas analisadas nesta sessão:** 17  
+**Baseline main HEAD:** `b92bcf876ef2fe28999d28778efaa9fa30e4064c`  
+**Gate Final main (último sucesso):** ✅ `cba9944d` (run #41067473692)
 
 | Veredito | Qty | PRs |
 |---|---|---|
-| DECISAO_HUMANA | 8 | #2701, #2731, #2758, #2821, #2823, #2824, #2826, #2827 |
+| DECISAO_HUMANA | 9 | #2701, #2731, #2744, #2758, #2821, #2823, #2824, #2826, #2827 |
 | CI_FALHOU | 4 | #2810, #2813, #2822, #2825 |
-| DRAFT | 2 | #2744, #2831 |
-| AGUARDANDO_GATE_FINAL | 2 | #2830, #2832 |
+| DRAFT | 2 | #2831, #2833 |
 | WAITING_CI_BOT | 1 | #2799 |
 | BLOQUEADA_CONFLITO | 1 | #2739 |
 
-### Mergeadas nesta sessão
-
-| PR | SHA merge | Método |
-|---|---|---|
-| #2828 | `52570b33` | Squash-merge via FOREVER MCP (Gate Final success) |
-| #2830 | aguardando CI | Squash-merge pendente — docs-only |
-| #2832 | aguardando CI | Squash-merge pendente — docs-only (esta sessão) |
+**Mergeadas nesta sessão:** 0 (nenhuma elegível — todas bloqueadas por REGRA #8, CI, conflito ou draft)
 
 ### DECISAO_HUMANA — PRs para revisão do PO
 
@@ -230,6 +224,7 @@ Evidência adicional: `quality-gate` foi ✅ SUCCESS em `37ea10a3` (5º merge, S
 |---|---|
 | #2701 | REGRA #8 — `.github/workflows/kit-coverage-integration.yml` |
 | #2731 | REGRA #8 duplo — workflow + migration |
+| #2744 | REGRA #8 — `supabase/functions/` (edge functions) + body "NÃO MESCLAR" |
 | #2758 | Superseded (#2766 já em main) + no_merge_explicit |
 | #2821 | REGRA #8 — `.github/workflows/uptime-monitor.yml` (substitui #2793) |
 | #2823 | REGRA #8 — `supabase/migrations/` |
@@ -245,6 +240,13 @@ Evidência adicional: `quality-gate` foi ✅ SUCCESS em `37ea10a3` (5º merge, S
 | #2813 | Gate 1: `no-useless-escape` linha 45 | Remover `\-` → `-` no regex |
 | #2822 | Gate 1.3: migration baseline desatualizado | Rodar `check-migration-path-references.mjs --update-baseline` na branch |
 | #2825 | Gate 1.3: migration baseline desatualizado | Rodar `check-migration-path-references.mjs --update-baseline` na branch |
+
+### DRAFT — Aguardando ação do PO
+
+| PR | Status |
+|---|---|
+| #2831 | Branch conflitada — substituída por #2832 |
+| #2833 | Docs-only (P31 inventário CI) — elegível após conversão para não-draft |
 
 ---
 

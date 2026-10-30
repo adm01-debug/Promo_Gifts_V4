@@ -1,7 +1,7 @@
 [
   {
     "number": 2674,
-    "title": "docs(analise-prs): an\u00e1lise completa das 12 PRs abertas \u2014 vers\u00e3o anterior",
+    "title": "docs(analise-prs): análise completa das 12 PRs abertas — versão anterior",
     "author": "adm01-debug",
     "draft": true,
     "base": "main",
@@ -13,11 +13,11 @@
     "merge_test": "CONFLITO",
     "gate_final": "UNKNOWN",
     "veredicto": "OBSOLETA",
-    "motivo": "An\u00e1lise de sess\u00e3o anterior completamente superada; draft; conflito com main; fechada"
+    "motivo": "Análise de sessão anterior completamente superada; draft; conflito com main; fechada"
   },
   {
     "number": 2688,
-    "title": "fix(ci): torna migration 20261027120000 replay-safe \u2014 desbloqueia Gate 1.13.3",
+    "title": "fix(ci): torna migration 20261027120000 replay-safe — desbloqueia Gate 1.13.3",
     "author": "adm01-debug",
     "draft": true,
     "base": "main",
@@ -32,11 +32,11 @@
     "merge_test": "CONFLITO",
     "gate_final": "UNKNOWN",
     "veredicto": "DECISAO_HUMANA",
-    "motivo": "Toca .github/workflows/ + supabase/migrations/ (REGRA #8); draft; outra sess\u00e3o; fechada externamente"
+    "motivo": "Toca .github/workflows/ + supabase/migrations/ (REGRA #8); draft; outra sessão; fechada externamente"
   },
   {
     "number": 2693,
-    "title": "docs(auditoria): relat\u00f3rio final auditoria Supabase doufsxqlfjyuvxuezpln",
+    "title": "docs(auditoria): relatório final auditoria Supabase doufsxqlfjyuvxuezpln",
     "author": "adm01-debug",
     "draft": false,
     "base": "main",
@@ -48,7 +48,7 @@
     "merge_test": "CONFLITO",
     "gate_final": "UNKNOWN",
     "veredicto": "CONFLITO",
-    "motivo": "Sess\u00e3o outra (claude_pink/); conflito com main; fechada externamente"
+    "motivo": "Sessão outra (claude_pink/); conflito com main; fechada externamente"
   },
   {
     "number": 2695,
@@ -65,11 +65,11 @@
     "merge_test": "LIMPO",
     "gate_final": "SUCCESS",
     "veredicto": "MERGEADA",
-    "motivo": "Docs only; Gate Final \u2705; merge LIMPO; sem arquivos protegidos"
+    "motivo": "Docs only; Gate Final ✅; merge LIMPO; sem arquivos protegidos"
   },
   {
     "number": 2701,
-    "title": "fix(ci): autentica integra\u00e7\u00e3o Kit Coverage com usu\u00e1rio E2E",
+    "title": "fix(ci): autentica integração Kit Coverage com usuário E2E",
     "author": "adm01-debug",
     "draft": true,
     "base": "main",
@@ -81,11 +81,11 @@
     "merge_test": "CONFLITO",
     "gate_final": "UNKNOWN",
     "veredicto": "CONFLITO",
-    "motivo": "Draft de outra sess\u00e3o; conflito com main"
+    "motivo": "Draft de outra sessão; conflito com main"
   },
   {
     "number": 2707,
-    "title": "docs: recibo de deploy de edge function(s) \u2014 run 40747468580",
+    "title": "docs: recibo de deploy de edge function(s) — run 40747468580",
     "author": "adm01-debug",
     "draft": false,
     "base": "main",
@@ -98,11 +98,11 @@
     "merge_test": "LIMPO",
     "gate_final": "PENDENTE",
     "veredicto": "MERGEADA",
-    "motivo": "Docs only; merge realizado nesta sess\u00e3o"
+    "motivo": "Docs only; merge realizado nesta sessão"
   },
   {
     "number": 2711,
-    "title": "docs(ci): RELATORIO_CI.md v3 \u2014 tabela de prova consolidada",
+    "title": "docs(ci): RELATORIO_CI.md v3 — tabela de prova consolidada",
     "author": "adm01-debug",
     "draft": true,
     "base": "main",
@@ -114,7 +114,7 @@
     "merge_test": "CONFLITO",
     "gate_final": "UNKNOWN",
     "veredicto": "CONFLITO",
-    "motivo": "Draft de outra sess\u00e3o (claude_pink/); conflito com main; fechada externamente"
+    "motivo": "Draft de outra sessão (claude_pink/); conflito com main; fechada externamente"
   },
   {
     "number": 2713,
@@ -134,7 +134,7 @@
   },
   {
     "number": 2714,
-    "title": "fix(db): reconciliar migrations pendentes com o can\u00f4nico",
+    "title": "fix(db): reconciliar migrations pendentes com o canônico",
     "author": "adm01-debug",
     "draft": false,
     "base": "main",
@@ -152,7 +152,7 @@
   },
   {
     "number": 2716,
-    "title": "docs(auditoria): atualiza estado de CI e sincroniza\u00e7\u00e3o can\u00f4nica",
+    "title": "docs(auditoria): atualiza estado de CI e sincronização canônica",
     "author": "adm01-debug",
     "draft": false,
     "base": "main",
@@ -164,7 +164,7 @@
     "merge_test": "CONFLITO",
     "gate_final": "UNKNOWN",
     "veredicto": "CONFLITO",
-    "motivo": "Conflito em documenta\u00e7\u00e3o \u2014 fechada externamente (n\u00e3o mergeada)"
+    "motivo": "Conflito em documentação — fechada externamente (não mergeada)"
   },
   {
     "number": 2717,
@@ -186,7 +186,7 @@
   },
   {
     "number": 2719,
-    "title": "chore(build): separa mapas SQL e amplia refer\u00eancias Graphify",
+    "title": "chore(build): separa mapas SQL e amplia referências Graphify",
     "author": "adm01-debug",
     "draft": false,
     "base": "main",
@@ -203,7 +203,7 @@
   },
   {
     "number": 2720,
-    "title": "ci(e2e): n\u00e3o ocultar falha na gera\u00e7\u00e3o de fixtures",
+    "title": "ci(e2e): não ocultar falha na geração de fixtures",
     "author": "adm01-debug",
     "draft": false,
     "base": "main",
@@ -221,7 +221,7 @@
   },
   {
     "number": 2721,
-    "title": "chore: atualiza PENDENCIAS \u00a74 e RELATORIO_CI",
+    "title": "chore: atualiza PENDENCIAS §4 e RELATORIO_CI",
     "author": "adm01-debug",
     "draft": false,
     "base": "main",
@@ -234,11 +234,11 @@
     "merge_test": "LIMPO",
     "gate_final": "SUCCESS",
     "veredicto": "MERGEADA",
-    "motivo": "Docs+config; Gate Final \u2705; sem arquivos protegidos"
+    "motivo": "Docs+config; Gate Final ✅; sem arquivos protegidos"
   },
   {
     "number": 2729,
-    "title": "docs(analise-prs): relat\u00f3rio completo \u2014 21 PRs analisadas",
+    "title": "docs(analise-prs): relatório completo — 21 PRs analisadas",
     "author": "adm01-debug",
     "draft": true,
     "base": "main",
@@ -250,7 +250,7 @@
     "merge_test": "N/A",
     "gate_final": "SUCCESS",
     "veredicto": "NAO_MERGEAR",
-    "motivo": "Branch de entrega desta sess\u00e3o \u2014 fechada pelo PO; nova PR ser\u00e1 aberta"
+    "motivo": "Branch de entrega desta sessão — fechada pelo PO; nova PR será aberta"
   },
   {
     "number": 2730,
@@ -272,7 +272,7 @@
   },
   {
     "number": 2731,
-    "title": "fix(db): protege kill_switch_hits contra INSERT an\u00f4nimo sem rate guard",
+    "title": "fix(db): protege kill_switch_hits contra INSERT anônimo sem rate guard",
     "author": "adm01-debug",
     "draft": false,
     "base": "main",
@@ -305,11 +305,11 @@
     "merge_test": "LIMPO",
     "gate_final": "SUCCESS",
     "veredicto": "MERGEADA",
-    "motivo": "Fix docs/scripts; Gate Final \u2705"
+    "motivo": "Fix docs/scripts; Gate Final ✅"
   },
   {
     "number": 2734,
-    "title": "fix(ci): usa mirror Docker Hub ap\u00f3s limite do GHCR",
+    "title": "fix(ci): usa mirror Docker Hub após limite do GHCR",
     "author": "adm01-debug",
     "draft": false,
     "base": "main",
@@ -327,7 +327,7 @@
   },
   {
     "number": 2735,
-    "title": "docs(analise-prs): rev46 \u2014 an\u00e1lise completa 20 PRs",
+    "title": "docs(analise-prs): rev46 — análise completa 20 PRs",
     "author": "adm01-debug",
     "draft": false,
     "base": "main",
@@ -340,11 +340,11 @@
     "merge_test": "LIMPO",
     "gate_final": "SUCCESS",
     "veredicto": "MERGEADA",
-    "motivo": "Docs only; Gate Final \u2705"
+    "motivo": "Docs only; Gate Final ✅"
   },
   {
     "number": 2736,
-    "title": "test+docs(mockup/magic-up): entregas de teste e doc da f\u00e1brica VPS (lote A)",
+    "title": "test+docs(mockup/magic-up): entregas de teste e doc da fábrica VPS (lote A)",
     "author": "adm01-debug",
     "draft": false,
     "base": "main",
@@ -361,7 +361,7 @@
   },
   {
     "number": 2737,
-    "title": "docs(auditoria): relat\u00f3rio de auditoria Supabase \u2014 revis\u00e3o final",
+    "title": "docs(auditoria): relatório de auditoria Supabase — revisão final",
     "author": "adm01-debug",
     "draft": false,
     "base": "main",
@@ -374,7 +374,7 @@
     "merge_test": "LIMPO",
     "gate_final": "PENDENTE",
     "veredicto": "MERGEADA",
-    "motivo": "Docs only; sem arquivos protegidos; merge realizado nesta sess\u00e3o"
+    "motivo": "Docs only; sem arquivos protegidos; merge realizado nesta sessão"
   },
   {
     "number": 2739,
@@ -392,7 +392,7 @@
     "merge_test": "BLOQUEADO",
     "gate_final": "UNKNOWN",
     "veredicto": "BLOQUEADA_CONFLITO",
-    "motivo": "Regress\u00e3o: callers GenerateButton + SaveTemplateDialog confirmados quebrados"
+    "motivo": "Regressão: callers GenerateButton + SaveTemplateDialog confirmados quebrados"
   },
   {
     "number": 2744,
@@ -466,7 +466,7 @@
     "merge_test": "CI_FALHOU",
     "gate_final": "FAILURE",
     "veredicto": "CI_FALHOU",
-    "motivo": "Gate 1.9 FALHOU \u2014 usePromoFlixPlayer.ts 624 linhas > limite 500 (run #41078748068)"
+    "motivo": "Gate 1.9 FALHOU — usePromoFlixPlayer.ts 624 linhas > limite 500 (run #41078748068)"
   },
   {
     "number": 2813,
@@ -484,7 +484,7 @@
     "merge_test": "CI_FALHOU",
     "gate_final": "FAILURE",
     "veredicto": "CI_FALHOU",
-    "motivo": "Gate 1 FALHOU \u2014 no-useless-escape linha 45 (run #41078792095)"
+    "motivo": "Gate 1 FALHOU — no-useless-escape linha 45 (run #41078792095)"
   },
   {
     "number": 2821,
@@ -502,7 +502,7 @@
     "merge_test": "DECISAO_HUMANA",
     "gate_final": "UNKNOWN",
     "veredicto": "DECISAO_HUMANA",
-    "motivo": "REGRA #8 (workflow) \u2014 substitui #2793"
+    "motivo": "REGRA #8 (workflow) — substitui #2793"
   },
   {
     "number": 2822,
@@ -521,7 +521,7 @@
     "merge_test": "CI_FALHOU",
     "gate_final": "FAILURE",
     "veredicto": "CI_FALHOU",
-    "motivo": "Gate 1.3 FALHOU \u2014 baseline desatualizado (run #41070173501)"
+    "motivo": "Gate 1.3 FALHOU — baseline desatualizado (run #41070173501)"
   },
   {
     "number": 2823,
@@ -539,7 +539,7 @@
     "merge_test": "DECISAO_HUMANA",
     "gate_final": "UNKNOWN",
     "veredicto": "DECISAO_HUMANA",
-    "motivo": "REGRA #8 (migration) \u2014 requer aprovacao PO"
+    "motivo": "REGRA #8 (migration) — requer aprovacao PO"
   },
   {
     "number": 2824,
@@ -579,7 +579,7 @@
     "merge_test": "CI_FALHOU",
     "gate_final": "FAILURE",
     "veredicto": "CI_FALHOU",
-    "motivo": "Gate 1.3 FALHOU \u2014 baseline desatualizado (run #41070810245)"
+    "motivo": "Gate 1.3 FALHOU — baseline desatualizado (run #41070810245)"
   },
   {
     "number": 2826,
@@ -597,7 +597,7 @@
     "merge_test": "DECISAO_HUMANA",
     "gate_final": "UNKNOWN",
     "veredicto": "DECISAO_HUMANA",
-    "motivo": "REGRA #8 (workflow) \u2014 substitui #2749"
+    "motivo": "REGRA #8 (workflow) — substitui #2749"
   },
   {
     "number": 2827,
@@ -635,7 +635,7 @@
     "merge_test": "LIMPO",
     "gate_final": "PENDING",
     "veredicto": "AGUARDANDO_GATE_FINAL",
-    "motivo": "Docs-only \u2014 elegivel merge quando Gate Final verde"
+    "motivo": "Docs-only — elegivel merge quando Gate Final verde"
   },
   {
     "number": 2831,
@@ -653,11 +653,11 @@
     "merge_test": "DRAFT",
     "gate_final": "UNKNOWN",
     "veredicto": "DRAFT",
-    "motivo": "Branch conflitada \u2014 substituida por #2832"
+    "motivo": "Branch conflitada — substituida por #2832"
   },
   {
     "number": 2832,
-    "title": "chore(analise-prs): deliverables sessao 2026-10-30 \u2014 prs.csv + dossies",
+    "title": "chore(analise-prs): deliverables sessao 2026-10-30 — prs.csv + dossies",
     "author": "claude-bot",
     "draft": false,
     "base": "main",
@@ -671,6 +671,22 @@
     "merge_test": "LIMPO",
     "gate_final": "PENDING",
     "veredicto": "AGUARDANDO_GATE_FINAL",
-    "motivo": "Docs-only \u2014 elegivel merge quando Gate Final verde"
+    "motivo": "Docs-only — elegivel merge quando Gate Final verde"
+  },
+  {
+    "number": 2833,
+    "title": "docs(ci): registra P31 — inventário de 11 workflows falhando em b92bcf876",
+    "author": "adm01-debug",
+    "draft": true,
+    "base": "main",
+    "head_sha": null,
+    "state": "open",
+    "branch": "unknown",
+    "created_at": "2026-10-30",
+    "files_protegidos": false,
+    "merge_test": null,
+    "gate_final": null,
+    "veredicto": "DRAFT",
+    "motivo": "DRAFT — docs-only; elegível merge quando não-draft"
   }
 ]
