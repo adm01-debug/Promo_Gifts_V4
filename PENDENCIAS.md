@@ -777,4 +777,49 @@ O único required check (`Gate Final - Deploy Ready`) executou com sucesso em `c
 | 2 | E2E Swatch QuickView | Verificar/renovar secrets `E2E_USER_EMAIL` / `E2E_USER_PASSWORD` no repo (Settings > Secrets > Actions) |
 | 3 | Copilot Code Review | Regularizar billing/cota Copilot no GitHub org |
 | 4 | CI Security & Drift / Magazine Header | Investigar flakiness de auth em `chromium-authed` e fixture da spec Magazine Header — pode precisar de `E2E_USER_*` secret review (mesmo item #2) |
+
+---
+
+## P31 — Inventário completo HEAD `b92bcf876` (2026-10-30T19:00Z)
+
+**HEAD atual da main:** `b92bcf876` (chore analise-prs, docs-only, paths-ignore ativo)
+**Método:** `status=failure` branch=`main` — lista as últimas execuções concluídas em falha por workflow.
+**Filtro equivalente a `is:action_required is:failure`:** 11 workflows identificados.
+
+### Workflows com última execução = `failure` (inventário completo HEAD `b92bcf876`)
+
+| Workflow | Run | SHA falha | Causa raiz comprovada | Required? |
+|---|---|---|---|---|
+| Branch Protection Sentinel | [#41088401698](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41088401698) | `b92bcf876` | Push do Lovable sem formato `(#NNN)` no commit message — falha recorrente a cada push do bot (REGRA #7 estrutural). PO-BLOCKED. | NÃO |
+| Uptime Monitor | [#41086920368](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41086920368) | `52570b33` | Probe `health-check` exit 22 — edge function desatualizada, deploy pendente aprovação `production`. PO-BLOCKED (mesmo §P30). | NÃO |
+| E2E — Critical Flows & Error Boundaries | [#41081845232](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41081845232) | `52570b33` | **CAUSA COMPROVADA (código verificado 2026-10-30):** `sidebar-tooltips.spec.ts` — 2 testes falharam em asserções de hover/tooltip (`Expected: visible, Received: hidden`). `chromium-authed` com auth SUCCEEDS. **Atributos presentes no código-fonte:** `data-tooltip-label` existe em `SidebarNavGroup.tsx:145,241` (condicionado a `item.tooltip`); `SidebarReorganized.tsx` tem 15+ itens com `tooltip:` definido. A falha é **comportamental em runtime** — Radix `<TooltipContent>` possivelmente não renderiza `[role="tooltip"]` visível no runner CI após mudança CSS/CSS-transition do Lovable. **Bloqueio para correção:** requer dev server rodando para debugging E2E interativo; fix alteraria código da aplicação → Vercel auto-deploy em `main` → PO deve aprovar PR de fix em branch separada antes do merge. | NÃO |
+| E2E — Personalization Flow | [#41081845950](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41081845950) | `52570b33` | **CAUSA COMPROVADA:** `loginViaUI` timeout — página /login nunca redirecionou após submit. `auth/v1/token` ficou PENDENTE no runner CI (mesma causa-raiz auth-CI de §P30 — `GET auth/v1/user` pendente ~51s). PO-BLOCKED: provisionar `SUPABASE_SERVICE_ROLE_KEY`. | NÃO |
+| CI Security & Drift Checks | [#41081845238](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41081845238) | `52570b33` | `storageState.json` gerado sem `sb-*-auth-token` — `GET auth/v1/user` PENDENTE ~51s no runner CI. Mesma causa §P30 (`cba9944d`), recorrente. PO-BLOCKED: provisionar `SUPABASE_SERVICE_ROLE_KEY`. | NÃO |
+| E2E — Magazine Header Layout | [#41067472825](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41067472825) | `cba9944d` | `storageState.json` sem token — `GET auth/v1/user` PENDENTE 51134ms. Mesma causa §P30. PO-BLOCKED. | NÃO |
+| E2E • Swatch QuickView | [#41067472586](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41067472586) | `cba9944d` | `executed=5 < minimo=10`, `ratio skipped=66.7% > 50%` — secrets `E2E_USER_*` ausentes ou auth-CI issue. PO-BLOCKED: revisar secrets (§P30 item #2). | NÃO |
+| Quote Builder Delivery Quality | [#41061596692](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41061596692) | `a7c02ac1` | **CAUSA COMPROVADA (código verificado 2026-10-30):** `quote-builder-delivery.spec.ts` — 4 testes falharam em asserções de tooltip hover/hide/alignment/guidance (`E2E_USER_EMAIL` presente = auth OK). **Atributos presentes no código-fonte:** `data-testid="delivery-info-tooltip-trigger"` em `QuoteBuilderPage.tsx:488`; `data-testid="delivery-info-tooltip-content"` em `QuoteBuilderPage.tsx:498`; `data-testid="delivery-label"` e `data-testid="delivery-label-container"` também presentes. A falha é **comportamental em runtime** — tooltip não exibe/esconde conforme esperado pelo spec após mudança Lovable. Mesmo bloqueio que E2E Critical Flows: fix altera código da aplicação → Vercel auto-deploy → PO deve aprovar PR de fix. | NÃO |
+| CI - Replenishment Module Quality Gate | [#41061415964](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41061415964) | `ff61eec4` | **CAUSA COMPROVADA:** `loginViaUI` timeout — permaneceu em `localhost:8080/login` sem redirecionar. Mesma causa auth-CI de E2E Personalization. PO-BLOCKED: provisionar `SUPABASE_SERVICE_ROLE_KEY`. | NÃO |
+| Running Copilot Code Review | [#41045066850](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41045066850) | `22ca2b3f` | HTTP 402 — cota Copilot esgotada. PO-BLOCKED: regularizar billing (§P30). | NÃO |
+| edge-functions-drift-check | [#41034830573](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034830573) | `7299c88c` | 31 funções em drift GitHub × canônico — deploy via MCP sem PR. PO-BLOCKED: dispatch `deploy-edge-functions.yml` (§P30). | NÃO |
+
+### Classificação por tipo de bloqueio
+
+| Causa raiz | Workflows afetados | Correção |
+|---|---|---|
+| `SUPABASE_SERVICE_ROLE_KEY` ausente (auth-CI) | CI Security & Drift, E2E Personalization, CI Replenishment, E2E Magazine Header, E2E Swatch QuickView | PO: provisionar secret |
+| Regressão de UI (tooltip hover/hide) — Lovable | E2E Critical Flows, Quote Builder Delivery | Dev: corrigir CSS/lógica tooltip em PR separado |
+| Lovable push sem `(#NNN)` | Branch Protection Sentinel | PO: decisão de integração |
+| Edge function desatualizada | Uptime Monitor, edge-functions-drift | PO: aprovar deploy |
+| Cota Copilot esgotada | Copilot Code Review | PO: billing |
+
+### Nenhum required check afetado
+
+O único required check (`Gate Final - Deploy Ready`) para `b92bcf876` está `queued` (#41088401807 — runner backlog, não erro de código). O antecessor `cba9944d` (run #41067473692) teve Gate Final ✅ success em 15 jobs.
+
+### Runs ainda em progresso em `b92bcf876` no momento deste registro
+
+`queued`: Deploy Gates (#41088401807), Required Checks Guard, Lovable Autoheal, CodeQL, Gitleaks.
+`pending`: CI Security & Drift, E2E Critical Flows, E2E Swatch QuickView, E2E Playwright, E2E Personalization.
+`in_progress`: Quote Builder Delivery, Supabase Linter Gate.
+`success` já confirmado: Policies Baseline, SSOT Supabase Guard, Security Scan, UI Visual & A11y, No Prod Leak, Static Health Checks, Release Please, Lovable Edit Tracker, Select Columns vs Types.
 | 5 | Branch Protection Sentinel | Avaliar tolerância ou configurar Lovable para usar formato de commit com `(#NNN)` |
