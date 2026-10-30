@@ -913,49 +913,49 @@ Metade do plano. `npm run plan:status` e três decisões:
 
 14 scripts `check:*` existem, funcionam, e **nada os invoca**. Gate que não executa é documentação.
 
-#### P200-E111 · [D] · P0 · Fazer o Gate 1.1 realmente checar o tipo `Product`
+#### P200-E111 · [D] · P0 · Fazer o Gate 1.1 realmente checar o tipo `Product` ✅
 **Arquivo:** `scripts/check-product-type-fields.mjs:80-90`
 **Fazer:** o gate da REGRA #2 grepa um blob concatenado que **inclui** `types.ts` (64.840 linhas, 19 colunas `sale_price`) com regex case-insensitive. Resultado: passa mesmo se `interface Product` for apagada inteira. O gate que protege a cicatriz de junho não protege nada. Parsear a interface via TypeScript Compiler API, como já foi feito no gate de types-inventory (E41).
 **Pronto:** o gate reprova ao se remover `sale_price` de `src/types/product-catalog.ts`, com `types.ts` intacto
 **Origem:** A3-04
 
-#### P200-E112 · [D] · P1 · Fazer `npm run lint` rodar o ESLint
+#### P200-E112 · [D] · P1 · Fazer `npm run lint` rodar o ESLint ✅
 **Arquivo:** `package.json` (`scripts.lint`, `scripts.typecheck`)
 **Fazer:** os dois são `node scripts/check-tsc-baseline.mjs` — `npm run lint` **não roda ESLint**. O entrypoint real é `lint:check`/`lint:baseline`. Apontar `lint` para `lint:baseline` e `typecheck` para `typecheck:full`. Verificar o que o `deploy-gates.yml` invoca e corrigir junto.
 **Pronto:** `npm run lint 2>&1 | grep -c eslint` ≥ 1
 **Origem:** A3-07
 
-#### P200-E113 · [D] · P1 · Ligar o gate de vazamento de toast e corrigir as 2 regressões
+#### P200-E113 · [D] · P1 · Ligar o gate de vazamento de toast e corrigir as 2 regressões ✅
 **Arquivo:** `scripts/check-toast-leaks.mjs`, `src/components/admin/suppliers-manager/useSuppliersManager.ts:530`, `src/pages/products/SellerCartsPage.tsx:229`
 **Fazer:** o gate funciona, está **exit 1 em `main`** com 2 regressões, e nenhum workflow o chama — a regressão entrou porque o gate nunca roda. Em `useSuppliersManager.ts:530`, `toast.error(err instanceof Error && err.message ? err.message : hay)` vaza mensagem técnica de edge function direto na UI; trocar por copy amigável + `description: sanitizeError(err)`. Em `SellerCartsPage.tsx:229`, passar `decision.message` por `sanitizeError`. Depois adicionar o gate ao `deploy-gates.yml`.
 **Pronto:** `node scripts/check-toast-leaks.mjs` → exit `0` **e** o gate aparece no `deploy-gates.yml`
 **Origem:** A3-08, A3-09, A3-10
 
-#### P200-E114 · [D] · P1 · Proibir aumento do baseline de bundle sem label
+#### P200-E114 · [D] · P1 · Proibir aumento do baseline de bundle sem label ✅
 **Arquivo:** `scripts/check-bundle-size.mjs`, `bundle-size-baseline.json`
 **Fazer:** em `95c1a1f4e` (2026-10-05) uma PR de redação de PII subiu `maxTotalBytes` em +292.840 (13.493.936 → 13.786.776) e `maxChunkBytes` em +81.935 (953.362 → 1.035.297), furando o invariante E04 "ratchet só desce" que o próprio script implementa em `check-bundle-size.mjs:146-148`. Reprovar aumento de limite sem label `ratchet-override`, no mesmo molde do Gate 1.7.
 **Pronto:** PR que sobe `maxTotalBytes` sem o label reprova
 **Origem:** A3-05
 
-#### P200-E115 · [D] · P2 · Corrigir a chave morta do teto de ícones
+#### P200-E115 · [D] · P2 · Corrigir a chave morta do teto de ícones ✅
 **Arquivo:** `bundle-size-baseline.json` (`criticalChunks.icons-vendor`), `vite.config.ts:86`
 **Fazer:** o teto de 250 KB para `lucide-react` **nunca avalia**: o grupo em `vite.config.ts:86` se chama `critical-icons` e `grep -c icons-vendor vite.config.ts` devolve `0`. O gate imprime "não encontrado no build" como info e segue. Renomear a chave para `critical-icons` (o chunk real tem 8,5 KB).
 **Pronto:** `node scripts/check-bundle-size.mjs` avalia o chunk em vez de reportar "não encontrado"
 **Origem:** A3-26
 
-#### P200-E116 · [D] · P1 · Apontar o Gate 2 para a suíte de verdade
+#### P200-E116 · [D] · P1 · Apontar o Gate 2 para a suíte de verdade ✅
 **Arquivo:** `package.json` (`test:deploy-gate`), `.github/workflows/deploy-gates.yml:276`
 **Fazer:** o gate de deploy roda **3 de 1358** arquivos de teste (0,22%); `test:ci-core` roda 27. Apontar o Gate 2 para a suíte completa, ou no mínimo para `test:ci-core`. Só depois de E110 (suíte verde), senão o required check vira vermelho permanente. Se a suíte completa levar os 934s medidos, shardear — mas não reduzir a cobertura para caber no tempo.
 **Pronto:** o Gate 2 executa ≥27 arquivos de teste e o run fica dentro do `timeout-minutes`
 **Origem:** A3-12, A1-27
 
-#### P200-E117 · [D] · P1 · Typecheck que inclua testes, com baseline próprio
+#### P200-E117 · [D] · P1 · Typecheck que inclua testes, com baseline próprio ✅
 **Arquivo:** `tsconfig.app.json` (bloco `exclude`), `package.json`
 **Fazer:** o único typecheck de CI exclui todos os testes. `npx tsc --noEmit -p tsconfig.eslint.json` (src + tests + e2e + scripts) dá **836 erros** — TS2339 173, TS2345 116, TS7006 91, TS2322 81, TS2307 38 — em ~1358 arquivos que nunca passam por `tsc`. Criar `typecheck:tests` com baseline próprio (descendente) e ligar o `test.typecheck`. Não tentar zerar os 836 nesta etapa: travar o número e drenar.
 **Pronto:** `npm run typecheck:tests` sai `0` contra o baseline de 836 e reprova em 837
 **Origem:** A3-06
 
-#### P200-E118 · [D] · P2 · Ligar ou apagar os 14 gates órfãos
+#### P200-E118 · [D] · P2 · Ligar ou apagar os 14 gates órfãos ✅
 **Arquivo:** `package.json` (14 scripts `check:*`), `.github/workflows/`
 **Fazer:** `doc-refs`, `schema-reference-drift`, `seller-scope`, `route-error-element`, `aschild-nesting`, `route-ref-usage`, `client-structured-logging`, `no-inline-cors`, `summary-color-tokens`, `critical-coverage`, `observability`, `toast-leaks` (já em E113), `proposed-configs` e `public-views-drift` existem, rodam e nada os invoca. Para cada um: ligar no CI **ou** deletar. Gate não executado é pior que gate ausente, porque sugere cobertura.
 **Pronto:** `node scripts/plan-status.mjs --orphan-gates` → `0` scripts `check:*` sem invocação em `.github/workflows/`
