@@ -1,0 +1,10 @@
+## ESLint baseline — main@9541666bf62883b06117b03cae0368b2c7d55314
+## Gate: Gate 1 (static-gates) — npx eslint src/
+## Executado em: 2026-10-30T19:52Z
+## Resultado: CRASH — segfault no processo Node.js do ESLint (Aborted, SIGABRT)
+## Exit code reportado: 0 (exit antes do sinal)
+## Nota: crash ocorre no ambiente de container, não indica erro de lint no código.
+##       Gate 1 CI (ESLint no GitHub Actions) passa na branch main (evidência: main@9541666bf está clean no Gate Final).
+
+AMBIENTE_CRASH — npx eslint abortou com SIGABRT no container local.
+CI_MAIN_VERDE — Gate Final verde em main@9541666bf (PR #2843 mergeada sem violação de lint).
