@@ -32,6 +32,7 @@ export {
 export { evaluateBoxForItems, rankBoxesForItems } from './box-recommendations';
 export type { BoxRecommendation, BoxRecommendationStatus } from './box-recommendations';
 export { resolveKitAICompositions } from './ai-composition';
+export { isKnownItemWeight, summarizeKitWeight } from './weight';
 
 // Persistence snapshot contract
 export { buildKitPersistencePayload, getPersistedKitStatus } from './persistence';
