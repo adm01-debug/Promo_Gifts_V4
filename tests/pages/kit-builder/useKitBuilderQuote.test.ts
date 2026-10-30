@@ -9,12 +9,14 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { act, renderHook } from '@testing-library/react';
 import { createSupabaseMock } from '../../helpers/supabase-mock';
 import type { KitState } from '@/hooks/useKitBuilder';
+import { dbInvoke } from '@/lib/db/postgrest';
 
 const { validateKitStockForQuote } = vi.hoisted(() => ({
   validateKitStockForQuote: vi.fn().mockResolvedValue({ status: 'available', alerts: [] }),
 }));
 
 vi.mock('@/hooks/kit-builder/useKitStockValidation', () => ({ validateKitStockForQuote }));
+vi.mock('@/lib/db/postgrest', () => ({ dbInvoke: vi.fn() }));
 
 vi.mock('@/lib/logger', () => ({ logger: { error: vi.fn(), warn: vi.fn(), info: vi.fn() } }));
 vi.mock('sonner', () => ({ toast: { success: vi.fn(), error: vi.fn() } }));
@@ -72,6 +74,14 @@ describe('useKitBuilderQuote — payloads', () => {
     vi.resetModules();
     validateKitStockForQuote.mockReset();
     validateKitStockForQuote.mockResolvedValue({ status: 'available', alerts: [] });
+    vi.mocked(dbInvoke).mockReset();
+    vi.mocked(dbInvoke).mockResolvedValue({
+      records: [
+        { id: 'box-1', sale_price: 50, active: true },
+        { id: 'item-1', sale_price: 10, active: true },
+      ],
+      count: null,
+    });
   });
 
   afterEach(() => {
@@ -172,6 +182,38 @@ describe('useKitBuilderQuote — payloads', () => {
     });
 
     expect(mock.calls.rpc).toHaveLength(0);
+  });
+
+  it('não cria orçamento quando o preço mudou desde a montagem do kit', async () => {
+    vi.mocked(dbInvoke).mockResolvedValueOnce({
+      records: [
+        { id: 'box-1', sale_price: 50, active: true },
+        { id: 'item-1', sale_price: 11, active: true },
+      ],
+      count: null,
+    });
+    const useHook = await loadHook({ user: { id: USER_ID } });
+    const { result } = renderHook(() => useHook());
+
+    await act(async () => {
+      await result.current.handleAddToQuote(KIT_STATE, 3);
+    });
+
+    expect(mock.calls.rpc.filter((call) => call.fn === 'create_kit_quote_transactional')).toHaveLength(0);
+    expect(validateKitStockForQuote).not.toHaveBeenCalled();
+  });
+
+  it('não cria orçamento quando o preço vigente não pode ser confirmado', async () => {
+    vi.mocked(dbInvoke).mockRejectedValueOnce(new Error('PostgREST indisponível'));
+    const useHook = await loadHook({ user: { id: USER_ID } });
+    const { result } = renderHook(() => useHook());
+
+    await act(async () => {
+      await result.current.handleAddToQuote(KIT_STATE, 3);
+    });
+
+    expect(mock.calls.rpc.filter((call) => call.fn === 'create_kit_quote_transactional')).toHaveLength(0);
+    expect(validateKitStockForQuote).not.toHaveBeenCalled();
   });
 
   it('não cria orçamento quando o estoque mudou depois da renderização', async () => {
@@ -370,6 +412,30 @@ describe('useKitBuilderQuote — payloads', () => {
     expect(calls[1].args?._request_id).toBe(calls[0].args?._request_id);
     expect(calls[1].args?._items).toEqual(calls[0].args?._items);
     expect(validateKitStockForQuote).toHaveBeenCalledTimes(2);
+    expect(dbInvoke).toHaveBeenCalledTimes(2);
+  });
+
+  it('não revalida preço nem estoque quando o ledger confirma o retry', async () => {
+    const useHook = await loadHook({
+      user: { id: USER_ID },
+      selects: { kit_quote_requests: { quote_id: 'quote-confirmado' } },
+    });
+    const rpc = vi.mocked(mock.client.rpc);
+    rpc
+      .mockResolvedValueOnce({ data: null, error: { message: 'Resposta perdida após commit' } })
+      .mockResolvedValueOnce({ data: { id: 'quote-confirmado' }, error: null });
+
+    const { result } = renderHook(() => useHook());
+    await act(async () => {
+      await result.current.handleAddToQuote(KIT_STATE, 2);
+    });
+    await act(async () => {
+      await result.current.handleAddToQuote(KIT_STATE, 2);
+    });
+
+    expect(dbInvoke).toHaveBeenCalledTimes(1);
+    expect(validateKitStockForQuote).toHaveBeenCalledTimes(1);
+    expect(rpc.mock.calls.filter(([fn]) => fn === 'create_kit_quote_transactional')).toHaveLength(2);
   });
 
   it('não duplica a operação quando o autosave cria o kit entre timeout e retry', async () => {
