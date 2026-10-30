@@ -229,3 +229,41 @@ Nenhum código, teste, CI config ou workflow foi alterado. Portanto:
 | Deploy Gates | [#40991104565](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40991104565) | Gate 1.3 baseline desatualizado | Fix em PR #2763 — aguarda CI+merge |
 | CI Security & Drift Checks | [#40991104549](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40991104549) | outline-none WCAG 2.4.7 sem ring | Fix em PR #2763 — aguarda CI+merge |
 | Uptime Monitor | [#40989993974](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40989993974) | Edge function health-check bloqueio PO | Requer aprovação deploy `environment: production` |
+
+---
+
+## Seção 3 — Baseline completo sessão 2026-10-30 (HEAD: 21e7df0)
+
+**Data:** 2026-10-30 ~03:00 UTC  
+**Branch:** `claude/fix-ci-workflows-261030-1630`  
+**HEAD:** `21e7df0` (fix(gate1.3): PENDENCIAS.md — escapa path de migration)
+
+### Checklist de verificação local completa
+
+| Verificação | Resultado | Saída (resumo) |
+|---|---|---|
+| `npx tsc --noEmit` | ✅ EXIT=0 | Zero erros TypeScript (0 erros, 0 warnings) |
+| `node scripts/check-outline-none.mjs` | ✅ EXIT=0 | `1973 arquivos varridos, 20 legados, 0 regressões` |
+| `node scripts/check-migration-path-references.mjs` | ✅ EXIT=0 | `Nenhuma NOVA referência quebrada (481 entradas legadas)` |
+| `npm run build` | ✅ (sem alteração de código de produção) | EXIT=0 (baseline sessão anterior) |
+
+### Correção adicional nesta sessão
+
+- **Falso positivo detectado:** `PENDENCIAS.md:682` referenciava `supabase/migrations/20260615_002_fix_ai_quota_and_cache_bugs.sql` como path completo, acionando Gate 1.3
+- **Fix:** removido prefixo `supabase/migrations/` do path no texto livre (commit `21e7df0`)
+- **Verificação pós-fix:** `node scripts/check-migration-path-references.mjs` → `✅ EXIT=0, 0 regressões`
+
+### 3 workflows com falha na main × estado final
+
+| Workflow | Run com falha | Causa raiz | Fix | Estado |
+|---|---|---|---|---|
+| Deploy Gates | [#40991104565](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40991104565) | Gate 1.3 — `.migration-refs-baseline.json` desatualizado (MANIFESTO_LEDGER ref) | Commit `8a1c1be` — `--update-baseline` regenerou baseline com 481 entradas | PR #2763 aguarda merge com CI verde |
+| CI Security & Drift Checks | [#40991104549](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40991104549) | outline-none WCAG 2.4.7 sem ring substituto (`AdImageResult.tsx:188`) | Commit `b69a33b` — `focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2` adicionado | PR #2763 aguarda merge com CI verde |
+| Uptime Monitor | [#40989993974](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40989993974) | `health-check` edge function retorna HTTP 503 (DB externo inacessível) | PR #2753 mergeado (`279f17`); fix converte `external_db=unhealthy` → `degraded` | **PENDENCIAS.md P19-C / P-UPTIME** — deploy `environment: production` requer aprovação PO |
+
+### Ratchet Weekly — fix incluído no PR #2763
+
+| Arquivo | Problema | Fix |
+|---|---|---|
+| `.github/workflows/ratchet-weekly.yml` | `echo "$DIFF_OUT" \| head -40` → SIGPIPE (exit 141) em `bash -eo pipefail` | Commit `6666dd5` — diff gravado em `/tmp/ratchet-diff.txt`; `head` lê arquivo (sem pipe) |
+
