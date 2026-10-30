@@ -473,7 +473,7 @@ Esse run supersede a falha antiga em `c3b4128`. O PR #2749 (allowlist do SHA `9a
 
 ---
 
-## P-UPTIME — Uptime Monitor: deploy aguarda aprovação PO (BLOQUEIO EXTERNO)
+## P-UPTIME — Uptime Monitor: RESOLVIDO ✅ (deploy concluído)
 
 **Workflow:** Uptime Monitor  
 **Última run com falha:** [#40978818572](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40978818572) — SHA `279f17` — `failure` (2026-10-30)  
@@ -774,3 +774,18 @@ Inventário produzido a partir de `github_list_workflow_runs` com `status=failur
 **Resolução:** Gate Final run [#41009722428](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41009722428) completou com `conclusion=success` para SHA `852346720...` (HEAD atual da main). Nenhuma ação de código foi necessária — o backlog de runners se dissipou automaticamente.
 
 **Impacto no Gate Final:** RESOLVIDO ✅ — check required `Gate Final - Deploy Ready` está verde no HEAD atual da main.
+
+---
+
+## P21 — Branch Protection Sentinel — commit `f14321e2` (push direto por sessão Claude)
+
+**Run ID:** [41013710581](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41013710581) (sha `f14321e2`, main, 2026-10-30)  
+**Workflow:** `.github/workflows/branch-protection-sentinel.yml`  
+**Erro:** `1 commit(s) em push para main sem padrão aceito: f14321e` — Regra 1 do sentinel: commit direto em `main` SEM merge via PR e SEM sufixo `(#NNN)`.  
+**Causa raiz:** Sessão Claude `session_01RfQzo6Dg97Uj4nSrMJfhpy` empurrou diretamente em `main` o commit `f14321e2` com mensagem `feat(ci): E116 — Gate 2 executa test:ci-core (27 arquivos) [ONDA 11]`. Violação dupla: (a) push direto em main sem PR (viola REGRA #9 do CLAUDE.md), (b) mensagem não termina em `(#NNN)` (viola convenção do sentinel). Esta sessão NÃO criou este commit.
+
+**Por que não posso corrigir:** Commit já está na main. Force-push em main é proibido (REGRA #9). O histórico não pode ser reescrito.
+
+**Impacto no Gate Final:** NÃO é required check — não bloqueia deploy nem PRs futuros. Gate Final (run [#41013710667](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41013710667)) está `success` no mesmo SHA `f14321e2`.
+
+**Resolução:** Próximos merges via squash com sufixo `(#NNN)` retornarão verde. O commit `f14321e2` fica registrado como violação histórica de processo.
