@@ -2,6 +2,123 @@
 **Atualizado em:** 2026-10-30
 **Branch de correção:** `claude_04/beautiful-gates-bvocz5` (PR #2597 — **MERGEADO** ✅)
 
+## Atualização — HEAD `7299c88c` (2026-10-30T10:20 UTC)
+
+**Gate Final - Deploy Ready:** [#41034358375](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358375) — ✅ **SUCCESS**
+
+### Workflows com FAILURE em HEAD `7299c88c`
+
+#### P21-edge-drift — edge-functions-drift-check
+- **Run ID:** [#41034830573](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034830573) (sha `7299c88c`)
+- **Erro exato:** `Drift detectado entre GitHub e canônico. 31 função(ões) com conteúdo diferente.`
+- **Causa raiz:** Funções edge deployadas em Supabase canônico (`doufsxqlfjyuvxuezpln`) divergem do código no repositório. Drift acumulado.
+- **Ação tomada:** Dispatch de `deploy-edge-functions.yml` enviado — run [#41034820685](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034820685) em andamento (status `pending`).
+- **Ação do PO:** Após conclusão do `Deploy Edge Functions`, disparar manualmente `edge-functions-drift-check` via Actions → workflow_dispatch para confirmar resolução.
+- **Impacto no Gate Final:** NÃO é required check — não bloqueia deploy.
+
+#### P21-personalization — E2E — Personalization Flow
+- **Run ID:** [#41034358338](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358338) (sha `7299c88c`)
+- **Job falho:** `E2E — Personalization Journey` (job #123991438319)
+- **Step falho:** Step 5 "Run Personalization E2E Tests" — exit code 1
+- **Erro exato:** Testes Playwright de personalização falham com asserções; auth setup (step 4) concluiu com sucesso; check-min-tests (step 6) passou — portanto NÃO é problema de ratio de skipped. Falha em asserções de UI/dados no fluxo de personalização.
+- **Artefato:** `personalization-e2e-artifacts.zip` (artifact ID 12967601546, ~87MB com screenshots/vídeos/traces)
+- **Causa raiz:** Falha de asserção em teste E2E — pode ser dado de fixture ausente no CI, UI alterada pelo Lovable sem atualização dos testes, ou timeout de elemento.
+- **Impacto no Gate Final:** NÃO é required check — não bloqueia deploy.
+- **Ação do PO:** Baixar artefato `personalization-e2e-artifacts.zip` do run #41034358338 e inspecionar screenshots/traces para identificar a asserção que falhou.
+
+#### P21-copilot — Running Copilot Code Review
+- **Run ID:** [#41031412599](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41031412599) (sha `b2ba9f9e`, último no workflow)
+- **Erro exato:** HTTP 402 — quota de uso do Copilot esgotada (`api.business.githubcopilot.com`)
+- **Causa raiz:** Plano GitHub atual não inclui Copilot Code Review com cota suficiente.
+- **Impacto no Gate Final:** NÃO é required check — não bloqueia deploy.
+- **Ação do PO:** Habilitar/aumentar plano GitHub Copilot em Settings → Billing & plans.
+
+#### P21-magazine-header — E2E — Magazine Header Layout
+- **Run ID:** [#41034358625](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358625) (sha `7299c88c`) — **completed/failure**
+- **Job falho:** `E2E — Magazine Header (authed)` — step 5 "Run Magazine Header E2E" — exit code 1
+- **Erro exato:** `❌ Magazine Header E2E failed — ver artifact e2e-magazine-header-report` (artifact ID 12968775070, 141MB)
+- **Causa raiz:** Falha em testes Playwright autenticados — padrão idêntico a run anterior (#41021989518 em `c09402816`). Auth Supabase no CI não produz sessão válida, causando `test.skip()` em excesso ou falha de asserção.
+- **Impacto no Gate Final:** NÃO é required check — não bloqueia deploy.
+- **Ação do PO:** Confirmar/provisionar secret `SUPABASE_SERVICE_ROLE_KEY` no CI para que auth funcione, ou baixar artifact `e2e-magazine-header-report-41034358625` para diagnóstico.
+
+#### P21-critical-flows — E2E — Critical Flows & Error Boundaries
+- **Run ID:** [#41034358180](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358180) (sha `7299c88c`) — **completed/failure**
+- **Job falho:** `E2E — Full User Flows (authed)` (job #123991436315) — step 8 "Run Sidebar Tooltips E2E — desktop (chromium-authed)" — exit code 1
+- **Erro exato:** Step "Run Sidebar Tooltips E2E — desktop (chromium-authed)" falhou; artefato `e2e-full-flows-report-41034358180` (ID 12967414040, 206MB)
+- **Causa raiz:** Falha nos testes Playwright autenticados de sidebar tooltips — padrão de auth CI idêntico aos demais E2E.
+- **Impacto no Gate Final:** NÃO é required check — não bloqueia deploy.
+- **Ação do PO:** Baixar artefato do run para diagnóstico detalhado, ou confirmar secrets de auth E2E.
+
+#### P21-swatch-qv — E2E • Swatch QuickView (Lista + Tabela)
+- **Run ID:** [#41034358495](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358495) (sha `7299c88c`) — in_progress (firefox), chromium+webkit já failure
+- **Jobs falhos:** `chromium • swatch→QV` (job #123993202573) e `webkit • swatch→QV` (job #123993203321) — ambos falharam no step 4 "Run swatch→QuickView suite" e step 5 "Check min tests executed"
+- **Erro exato:** `check-min-tests` — ratio de skipped > 50% (padrão idêntico ao anterior — auth CI não gera sessão válida → `requireAuth()` → `test.skip()`)
+- **Causa raiz:** Sessão Supabase ausente no `storageState.json` — mesmo padrão documentado em P19-D/I/J/K.
+- **Impacto no Gate Final:** NÃO é required check — não bloqueia deploy.
+- **Ação do PO:** Provisionar `SUPABASE_SERVICE_ROLE_KEY` ou similar para que setup de auth gere sessão válida antes dos testes.
+
+#### P21-ci-security — CI Security & Drift Checks
+- **Run ID:** [#41034358666](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034358666) (sha `7299c88c`) — **pending** (0 jobs) — criado 09:33:58, nunca pegou runner
+- **Erro exato:** 0 jobs iniciados — workflow travado na fila do runner GitHub Actions. Nenhum step executado.
+- **Causa raiz:** Possível concurrency group bloqueado por outro workflow, ou runner timeout na fila. Fora do controle do código.
+- **Impacto no Gate Final:** NÃO é required check — não bloqueia deploy.
+- **Ação do PO:** Cancelar manualmente o run #41034358666 e re-disparar via workflow_dispatch ou aguardar próximo push para nova execução.
+
+### Workflows ainda EM ANDAMENTO em HEAD `7299c88c` (2026-10-30T10:20 UTC)
+Os workflows abaixo ainda estão `in_progress`:
+- `E2E (Playwright)` (#41034358354) — step "header-sticky gate" em andamento desde 09:34:57
+- `Visual Baseline Tests — Nightly` (#41034358175) — testes visuais autenticados em andamento
+- `Edge Integration Tests — All Functions` (#41034358210) — LIVE tests em andamento; primeiros 10 steps passaram ✅
+- `E2E • Swatch QuickView (Lista + Tabela)` (#41034358495) — firefox ainda rodando (chromium+webkit já failure)
+
+### Workflows com SUCESSO em HEAD `7299c88c` (verde — sem regressão)
+- Gate Final - Deploy Ready ✅ (#41034358375)
+- CI - Replenishment Module Quality Gate ✅ (#41034358297) — **RESOLVIDO** (era failure em `b2ba9f9e`)
+- Quote Builder Delivery Quality ✅ (#41034358444) — **RESOLVIDO** (era failure em `b2ba9f9e`)
+- Branch Protection Sentinel ✅, Supabase Linter Gate ✅, CodeQL ✅
+- Static Health Checks ✅, Security Scan ✅, Workflow Lint ✅
+- No Prod Leak ✅, Gitleaks ✅, SSOT Supabase Guard ✅
+- Policies Baseline ✅, db-schema-drift-check ✅, schema-snapshot-export ✅
+- Select Columns vs Types ✅, Required Checks Guard ✅
+- Magazine Unit Tests ✅, UI · Visual & A11y ✅, Release Please ✅
+- Lovable Edit Tracker ✅, Lovable Autoheal ✅
+
+---
+
+## Atualização — HEAD `c09402816` / Baseline CI (2026-10-30T08:02 UTC)
+
+### Falhas confirmadas (não-required, pré-existentes) em HEAD `c09402816`
+
+#### P19-E2E-Magazine — E2E — Magazine Header Layout
+- **Run ID:** [#41021989518](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41021989518) (sha `c09402816`)
+- **Erro exato:** Step "Run Magazine Header E2E" — exit code 1; artefato `e2e-magazine-header-report` mostra `❌ Magazine Header E2E failed — ver artifact e2e-magazine-header-report`
+- **Causa raiz:** Falha de infraestrutura E2E pré-existente — testes Playwright dependem de auth Supabase e dados no CI; falha idêntica em SHAs anteriores.
+- **Impacto no Gate Final:** NÃO é required check — não bloqueia deploy.
+- **Ação do PO:** Nenhuma obrigatória. Opcional: verificar credenciais E2E no CI.
+
+#### P19-E2E-Replenishment — CI - Replenishment Module Quality Gate
+- **Run ID:** [#41021989515](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41021989515) (sha `c09402816`)
+- **Erro exato:** Job `audit`, step "Run E2E Tests (Smoke)" — exit code 1
+- **Causa raiz:** Testes E2E smoke do módulo de reposição falham por ausência de credenciais/infra no CI (mesmo padrão dos demais workflows E2E). Falha pré-existente em SHAs anteriores ao HEAD atual.
+- **Impacto no Gate Final:** NÃO é required check — não bloqueia deploy.
+- **Ação do PO:** Nenhuma obrigatória. Opcional: verificar secrets `E2E_USER_EMAIL`/`E2E_USER_PASSWORD` no CI.
+
+#### P19-D/I/J/K — E2E • Swatch QuickView (Lista + Tabela) — Erro exato atualizado
+- **Run referência:** job #123943704574 (run #41019606069, sha `9dde1db7`)
+- **Erro exato do step `check-min-tests`:**
+  ```
+  [check-playwright-min-executed] FALHA: ratio de skipped 66.7% > maximo 50.0% (10/15).
+  Causas possiveis: muitos testes com requireAuth, condicoes de skip incorretas ou spec nao encontrou dados de fixture.
+  ```
+- **Causa raiz detalhada:** 10 de 15 testes chamam `requireAuth()` — que chama `test.skip()` quando `authStorageHasSession()` retorna `false` (storageState.json não existe). Isso ocorre porque o `e2e-setup` composite action só roda o auth setup quando `require-auth: 'true'`, mas `e2e-swatch-quickview.yml` não passa esse input. Resultado: `auth.setup.ts` não é executado explicitamente → `storageState.json` não criado → 10 testes pulam → ratio 10/15 = 66.7% > 50% (limite do `check-min-tests`).
+- **Código relevante:** `e2e/fixtures/test-base.ts:requireAuth()` → `e2e/fixtures/auth.setup.ts:E21` → `playwright.config.ts:chromium-authed`
+- **Impacto no Gate Final:** NÃO é required check — não bloqueia deploy.
+- **Ação do PO:**
+  1. Verificar que os secrets `E2E_USER_EMAIL` e `E2E_USER_PASSWORD` estão configurados e válidos em GitHub → Settings → Secrets and variables → Actions.
+  2. Se válidos, passar `require-auth: 'true'` no `e2e-setup` step de `.github/workflows/e2e-swatch-quickview.yml` (fix de código — requer aprovação do PO para garantir que o auth E2E não quebre outros fluxos).
+
+---
+
 ## Atualização — PR #2768 (2026-10-30)
 
 O PR [#2768 — revalidação de preços no Kit Builder](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2768) tem dois SHAs relevantes: `dcf88ec5` (código) e `b2f4be5b` (anotação documental). No SHA de código, a última consulta encontrou checks `queued`/`in_progress` e a falha externa do Copilot abaixo. No SHA documental, a execução de CI foi ignorada pelo fluxo docs-only; rodei `build:verify` e a suíte completa localmente após esse commit. Portanto, os checks remotos do SHA de código ainda não validam o SHA atual.
@@ -758,6 +875,36 @@ Inventário produzido a partir de `github_list_workflow_runs` com `status=failur
 **Impacto no Gate Final:** NÃO — não está em `.github/required-checks.json`. Não bloqueia deploy.
 
 **Bloqueio:** Baselines visuais desatualizados para os componentes do Quote Builder; artefato de ~1 GB impede diagnóstico rápido. Pré-existente antes do PR #2763. Escopo fora desta sessão.
+
+
+---
+
+## Revalidação atual — main `b2ba9f9e` — 2026-10-30
+
+Consulta realizada em 2026-10-30 após o push que atualizou a `main` para `b2ba9f9e6e604c12de9b01aeae139cfd0d8d8656`. Só classifico como falha as execuções concluídas; itens `in_progress`/`pending` ficam separados abaixo.
+
+| Workflow | Última execução observada | Status | Causa / encaminhamento |
+|---|---:|---|---|
+| **Gate Final - Deploy Ready** | [#41031394467](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41031394467) | ✅ `success` | Check required da main verde. |
+| Branch Protection Sentinel | [#41031394389](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41031394389) | ✅ `success` | — |
+| Workflow Lint | [#41031394221](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41031394221) | ✅ `success` | — |
+| CodeQL / Gitleaks / Security Scan | [CodeQL #41031394426](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41031394426), [Gitleaks #41031394510](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41031394510), [Security #41031394405](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41031394405) | ✅ `success` | — |
+| Policies Baseline / Supabase Linter / SSOT Guard | [#41031394416](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41031394416), [#41031394406](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41031394406), [#41031394368](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41031394368) | ✅ `success` | — |
+| E2E — Personalization Flow | [#41031394308](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41031394308) | ✅ `success` | — |
+| **E2E — Magazine Header Layout** | [#41031394478, tentativa 2](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41031394478) | ❌ `failure` | Login E2E não gerou token Supabase em `storageState.json`; o endereço permaneceu em `/login` até `loginViaUI` atingir 75 s. O teste não chegou à validação do layout. Verificar no GitHub os secrets `E2E_USER_EMAIL`/`E2E_USER_PASSWORD` e a disponibilidade de Auth no ambiente canônico; não compartilhar credenciais no chat. |
+| **E2E — Critical Flows & Error Boundaries** | [#41031394211](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41031394211) | ❌ `failure` | O setup registrou cinco timeouts de login e pulou specs autenticados; `Check min tests executed` falhou por não alcançar o mínimo. Mesma pendência de autenticação E2E; não reduzir o mínimo nem pular o gate. |
+| **Quote Builder Delivery Quality** | [#41031394243](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41031394243) | ❌ `failure` | Dois specs falharam porque a navegação continuou em `/login` (timeout de 75 s). O artefato visual de ~774 MB não é evidência de regressão visual neste run. Verificar a autenticação E2E antes de revisar snapshots. |
+| **edge-functions-drift-check** | [#41032312996](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41032312996) | ❌ `failure` | O artefato `drift_report.csv` identificou hashes divergentes em 31 funções (slugs abaixo). Os hashes não determinam sozinhos qual lado deve prevalecer. Fazer revisão function-by-function em PR e usar o fluxo autorizado de deploy somente após classificar a direção; nenhum deploy foi feito. |
+| **Running Copilot Code Review** | [#41031412599](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41031412599) | ❌ `failure` | Step de limpeza do agente terminou com processos órfãos; não há resultado de revisão de código. Bloqueio do serviço GitHub Copilot, não correção local. |
+| Uptime Monitor | [#41031127186](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41031127186) | ✅ `success` | Sucesso posterior à falha [#41027506381](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41027506381). A causa da falha antiga permanece indeterminada; ver P-UPTIME. |
+
+**31 funções com hash divergente no artefato do drift check:** `ai-recommendations`, `bitrix-sync`, `cnpj-lookup`, `collections-watcher`, `connections-auto-test`, `connections-hub-audit`, `crm-db-bridge`, `e2e-cleanup`, `ema-pipeline-health`, `favorites-watcher`, `generate-ad-image`, `generate-mockup`, `health-check`, `kit-ai-builder`, `log-login-attempt`, `magazine-import-local`, `magazine-public-react`, `mcp-keys-issue`, `mcp-keys-revoke`, `migrate-helper`, `product-webhook`, `quote-sync-promo-champions`, `receive-crm-callback`, `rls-audit`, `secrets-manager`, `send-scheduled-reports`, `simulation-orchestrator`, `trends-insights`, `visual-search`, `webhook-dispatcher`, `webhook-inbound`.
+
+**Execuções ainda abertas no snapshot (não são falhas):** Edge Integration Tests — All Functions [#41031394442](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41031394442), E2E Swatch QuickView [#41031394231](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41031394231), Visual Baseline Tests [#41031394253](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41031394253), E2E Playwright [#41031394403](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41031394403), CI Replenishment [#41031394348](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41031394348) e CI Security & Drift [#41031394338](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41031394338). Reconsultar a conclusão antes de encerrar a auditoria.
+
+**PR #2793:** permanece aberto e atrás da `main`. Na branch `5c1402ab`, `CI - Replenishment Module Quality Gate` [#41031473126](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41031473126) falhou em dois E2E por login em `/login` após 75 s; `Running Copilot Code Review` [#41031488130](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41031488130) falhou na limpeza do agente. `Vercel Agent Review` ficou `neutral` por cobrança desabilitada; Supabase Preview foi `skipped` sem alterações em `supabase/`. Não mesclar até os checks exigidos estarem verdes ou o bloqueio operacional estar resolvido.
+
+**Ações necessárias:** (1) administrador verifica/revalida a conta e os secrets de teste E2E no GitHub, sem revelar valores; (2) reconciliar os 31 edge functions por PR, sem deploy em lote às cegas; (3) retomar/reexecutar o check Copilot quando o serviço estiver operacional; (4) aguardar e registrar as execuções ainda abertas. Nenhuma alteração foi feita no Supabase canônico.
 
 
 ---
