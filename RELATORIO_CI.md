@@ -381,3 +381,26 @@ Nenhum código, teste, CI config ou workflow foi alterado. Portanto:
 | Gate 3 (E2E Smoke) | ✅ success | ✅ success | sem regressão |
 | Gate 6 (Build CI) | ✅ success | ✅ success | sem regressão |
 | Arquivos de código alterados | baseline | `AdImageResult.tsx:188` (+1 class ring), `.migration-refs-baseline.json` (+1 entry), `.security/policies-baseline.json` (-2 entries stale, sha256 atualizado), `ratchet-weekly.yml` (SIGPIPE fix) | zero regressão: 4 arquivos, todos corrigindo falhas comprovadas |
+
+---
+
+## Seção 7 — Fotografia atual dos workflows na `main` (2026-10-30)
+
+**HEAD auditado:** `2fbab03e8670cf263b26886ef4dd26f0ee1964db`. Fonte: MCP GitHub, runs da branch `main`, consolidação por 42 nomes em cinco páginas. Ao registrar: 5 últimas execuções concluídas `failure`, 24 `success`, 2 `skipped`, 3 `cancelled` e 8 ativas. A lista e os estados não concluídos estão detalhados em `PENDENCIAS.md` P21; run ativo não foi tratado como falha.
+
+| Workflow com falha concluída | Última falha | Causa comprovada / bloqueio |
+|---|---|---|
+| CI - Replenishment Module Quality Gate | [#41004115585](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41004115585) | Auth E2E: múltiplos `POST auth/v1/token` retornaram 504 em 35–42 s; secrets estavam presentes; E21 e timeout de login |
+| Kit Coverage — Integration | [#40999068927](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40999068927) | PostgREST `PGRST002` consultando schema cache antes das asserções |
+| Nightly Full CI | [#40993462227](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40993462227) | Color-swatch: 8 timeouts; magazine-header: 14 setups E21 reportaram secrets E2E ausentes naquele job |
+| Running Copilot Code Review | [#41006961623](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41006961623) | HTTP 402, `errorCode=quota` no endpoint de uso adicional do Copilot |
+| Uptime Monitor | [#41006588920](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41006588920) | Apenas health-check com curl exit 22; demais probes exit 0. Deploy da função corrigida aguarda aprovação do PO em `production` |
+
+### Comprovação das correções já incorporadas
+
+- A correção WCAG de `AdImageResult.tsx` e a reconciliação do baseline de policies estão no main pelo PR #2763.
+- O run [Policies Baseline #41007110506](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41007110506) no SHA `2fbab03e` concluiu `success`; também passaram Branch Protection Sentinel [#41007110615](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41007110615), UI · Visual & A11y [#41007110608](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41007110608), Security Scan [#41007110569](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41007110569) e outros 20 workflows listados em P21.
+- O baseline local e a suíte pós-commit foram executados no worktree isolado de `main` equivalente em código: `npm ci` ✅, `npm run build:verify` ✅, `npm test` ✅ — 1.247 arquivos e 25.869 testes passaram (130 arquivos e 1.135 testes skipped; 24 todo). A comparação ficou idêntica ao baseline local; nenhum teste abaixo do baseline.
+- A última execução do required check `Deploy Gates` [#41007110676](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41007110676) estava `queued` no instante do snapshot; não reportar como sucesso ou falha até concluir.
+
+**Limites/pendências externas:** quota do Copilot, latência do Supabase Auth/PostgREST, secrets de E2E por job e aprovação manual de deploy são dependências operacionais. Não alteramos secrets, schema, dados, workflows ou proteção de produção para encobrir esses bloqueios.

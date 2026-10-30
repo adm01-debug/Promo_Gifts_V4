@@ -745,3 +745,68 @@ Inventário produzido a partir de `github_list_workflow_runs` com `status=failur
 
 **Ação pendente:** Verificar causa raiz da falha no log do run #41004115635. Escopo fora desta sessão.
 
+---
+
+## P21 — Retificação após conclusões do SHA `2fbab03e` (2026-10-30)
+
+**Fonte:** execuções mais recentes por workflow na `main`, consultadas em cinco páginas do MCP GitHub. Snapshot: 42 workflows — 5 últimas execuções concluídas com `failure`, 24 `success`, 2 `skipped`, 3 `cancelled` e 8 ainda `queued`/`pending`/`in_progress`. Runs ativos não foram contados como falha.
+
+Esta seção substitui causas genéricas do P20 quando há trecho de log mais específico. Nenhum teste foi enfraquecido, workflow desativado, migration aplicada ou dado do banco alterado.
+
+### P21-A — CI - Replenishment Module Quality Gate
+
+**Último run concluído com falha:** [#41004115585](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41004115585), SHA `2fdb1702`.
+
+**Causa comprovada:** setup E2E emitiu `E21-timeout — auth/v1/token não respondeu em CI`; chamadas `POST auth/v1/token` retornaram HTTP 504 após aproximadamente 35–42 s, intercaladas com respostas 200. `E2E_USER_EMAIL` e `E2E_USER_PASSWORD` estavam presentes e mascarados nos logs. O login expirou e os testes autenticados não chegaram a executar normalmente. Evidência: [job audit](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41004115585/job/123894992926).
+
+**Bloqueio/ação:** latência/instabilidade de Supabase Auth ou rate limit no runner; investigar logs de Auth/REST e reexecutar quando estável. Não trocar credenciais nem elevar timeout para mascarar. Não é required check.
+
+### P21-B — Kit Coverage — Integration
+
+**Último run concluído com falha:** [#40999068927](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40999068927), SHA `7cd8cb13`.
+
+**Causa comprovada:** a suíte Vitest falhou antes das asserções ao consultar o schema cache do PostgREST: `PGRST002: Could not query the database for the schema cache. Retrying.` Três testes foram skipped. Não há evidência de falha de lógica do Kit nesse run.
+
+**Bloqueio/ação:** serviço/schema cache PostgREST. Reexecutar quando o serviço estiver estável e inspecionar a mensagem completa; não alterar fixtures, grants ou migrations sem nova evidência. Não é required check.
+
+### P21-C — Nightly Full CI
+
+**Último run concluído com falha:** [#40993462227](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40993462227), SHA `604de54c`.
+
+**Causas observadas:** oito timeouts de seletor de 20 s nos testes de color-swatch; no job `magazine-header`, 14 setups E21 reportaram `E2E_USER_EMAIL/E2E_USER_PASSWORD` ausentes. Um job paralelo mascarou esses valores quando presentes; isso não prova que os secrets estavam disponíveis no job que falhou.
+
+**Bloqueio/ação:** administrador deve confirmar a presença dos dois Actions Secrets no job/ambiente `magazine-header`, sem compartilhar os valores. Depois, rerodar e capturar trace do color-swatch para distinguir fixture de seletor. Não aumentar timeout nem atualizar snapshots sem revisão. Não é required check.
+
+### P21-D — Running Copilot Code Review
+
+**Último run concluído com falha:** [#41006961623](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41006961623), SHA `69e7e282`.
+
+**Causa comprovada:** `Processing Request (Linux)` falhou com `SessionModelError`, HTTP 402, `errorCode=quota`: “You've reached your additional usage limit for your plan”. Evidência no job `123903936202`.
+
+**Bloqueio/ação:** quota/limite adicional da conta Copilot. Administrador deve rever limite ou aguardar renovação; depois reexecutar. Não é required check e não há correção no código do produto.
+
+### P21-E — Uptime Monitor
+
+**Último run concluído com falha:** [#41006588920](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41006588920), SHA `46b0b0b4`.
+
+**Causa observada:** somente `health-check` retornou curl exit 22; `site`, `check-login (OPTIONS)` e `auth-health` retornaram 0. O log do probe não preserva corpo/status HTTP. Em execução anterior e consulta autenticada somente leitura, `health-check` informou `database=unhealthy` e `database timeout after 1500ms`. Um `SELECT` direto ao banco canônico respondeu depois; isso não comprova que o probe interno da Edge Function passou. `P-UPTIME` já registra o fix de código mergeado e deploy da função aguardando aprovação manual em `environment: production`.
+
+**Bloqueio/ação:** confirmação do corpo atual e deploy continuam dependendo de aprovação do PO ao deploy versionado de `health-check` pelo fluxo obrigatório. Nenhum deploy foi feito nesta auditoria. Não desativar o monitor nem remover a aprovação de produção. Não é required check.
+
+### Execuções atuais ainda em andamento (não contar como falha)
+
+| Workflow | Run | Estado no snapshot | Observação |
+|---|---:|---|---|
+| CI Security & Drift Checks | [#41007110651](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41007110651) | pending | aguarda conclusão |
+| CodeQL | [#41007110620](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41007110620) | in_progress | aguarda conclusão |
+| Deploy Edge Functions | [#40976801625](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40976801625) | pending | aprovação manual `production`; não aprovada nesta auditoria |
+| Deploy Gates | [#41007110676](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41007110676) | queued | required check; aguardando runner |
+| E2E — Critical Flows & Error Boundaries | [#41007110527](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41007110527) | queued | aguarda runner |
+| E2E (Playwright) | [#41007110653](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41007110653) | pending | aguarda conclusão |
+| E2E • Swatch QuickView | [#41007110603](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41007110603) | in_progress | aguarda conclusão |
+| Quote Builder Delivery Quality | [#41007110564](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41007110564) | in_progress | aguarda conclusão; não contar como falha |
+
+### Workflows verdes nesta fotografia
+
+Os 24 workflows com `success` foram: Branch Protection Sentinel, E2E — Personalization Flow, E2E — PDF Dialog, Gitleaks — Full History Audit, Lint untypedFrom, Lovable Autoheal, Lovable Edit Tracker, Magazine Unit Tests, No Prod Leak in Dev/Test Config, Policies Baseline, Quote Number Hardening — Verify, Ratchet Weekly — Baixar baselines, Release Please, Required Checks Guard, schema-snapshot-export, Security Scan, Select Columns vs Types, SSOT Supabase Guard, Static Health Checks, stock-rupture-fuzz, Supabase Linter Gate, TS Unused Locals Ratchet, UI · Visual & A11y e Workflow Lint. Os 2 `skipped` e 3 `cancelled` permanecem distintos de falha. Os resultados dos oito runs ativos acima ainda não permitem afirmar `success` nem regressão.
+
