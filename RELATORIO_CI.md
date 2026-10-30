@@ -269,3 +269,15 @@ PR #2743 (Graphify/documentação) e PR #2745 (Ratchet/SIGPIPE) continuam sem me
 ### Bloqueio externo de preview Vercel — 2026-10-30, 01:10 UTC
 
 Os PRs [#2743](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2743), [#2745](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2745) e [#2758](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2758) exibem status Vercel failure. `vercel inspect --json` retornou `readyState: ERROR`, embora o build relacionado esteja `READY` e sem arquivos em `output`; `vercel inspect --logs` não forneceu causa, apenas `status ● Error`. Não há evidência suficiente para alterar código ou configuração. Ação necessária do proprietário: abrir cada deployment no painel Vercel e verificar eventos/diagnóstico da fase final. Nenhum redeploy nem merge foi realizado.
+
+### Revalidação P28 — catálogo completo de workflows — 2026-10-30
+
+Às 01:28 UTC consultei as duas páginas do catálogo (119 workflows ativos) e, para cada definição, solicitei individualmente o último run da branch `main`, excluindo PRs. Snapshot na SHA `a9a079fd92a3191654e82db748199fd1777b5af9`: **56 success, 23 failure, 5 cancelled, 2 skipped, 3 queued, 6 pending, 3 in_progress e 21 sem execução na main**. O método por workflow evita contar somente os workflows presentes nas últimas 100 execuções.
+
+As 23 falhas, runs, causas comprovadas e lacunas de logs/artifacts estão tabeladas em `PENDENCIAS.md` §P28. As falhas com correção aberta continuam bloqueadas por checks/revisão/preview; as que dependem de banco, autenticação, cota Copilot ou deploy aguardam ação do responsável. Runs pendentes e workflows sem run não são classificados como verdes.
+
+#### Baseline e validação desta atualização
+
+O baseline completo anterior a esta atualização documental foi `npm ci` EXIT=0; `npm run build:verify` EXIT=0 (TypeScript, lint com zero regressões e build); `npm test` passou com 1.247 arquivos, 25.871 testes passados, 1.135 skipped e 24 TODO. Esse resultado é da árvore validada antes de integrar a `main` `a9a079fd`; **a validação completa será repetida no commit final que incorpora essa `main` e P28**, e seus resultados serão registrados abaixo. Nenhum snapshot/teste será atualizado ou enfraquecido para obter sucesso.
+
+Nenhuma mudança de código da aplicação, API, workflow, teste, contrato ou schema foi introduzida nesta consolidação. Nenhuma migration/DDL, escrita no Supabase, deploy de Edge Function, force push ou alteração direta da `main` foi executada. O commit será enviado por push normal ao branch do PR; PRs com checks/preview falhos ou pendentes não serão mesclados.
