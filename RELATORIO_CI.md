@@ -365,3 +365,9 @@ O `git diff --check` abrangente aponta espaços finais em documentos importados 
 Nova consulta individual das 119 definições ativas, concluída entre 02:47:34 e 02:49:06 UTC. Snapshot: **61 success, 24 failure, 5 cancelled, 2 skipped, 3 pending, 3 in_progress e 21 sem run**. O total segue 119. A tabela completa e os links dos 24 últimos runs falhos da `main` estão em `PENDENCIAS.md` §P32. Mudanças contra P31: `E2E — Critical Flows` concluiu `failure` em [#40991104562](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40991104562), `Nightly Full CI` passou de falha para `in_progress` no run [#40993462227](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40993462227), e o Uptime Monitor recebeu a falha mais recente [#40992714992](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40992714992). A contagem final permanece 24.
 
 Após o push normal do SHA `a43a32d6fdf5875258e887b37b5bbbff3a6f30c1`, o PR #2743 está `mergeable_state=blocked`: 1 falha Copilot por HTTP 402/cota e firewall para `api.github.com`, 23 checks em fila e 9 em execução na consulta das 02:47 UTC. O PR não foi mergeado. Sem escrita no Supabase ou deploy.
+
+### Confirmação nominal dos checks verdes — 2026-10-30 03:04 UTC
+
+Comparei individualmente as 119 definições de workflow no snapshot P30 (02:16 UTC) com o estado atual da `main` (`604de54c`). Os **61 workflows que estavam em `success` continuam em `success`**; nenhuma regressão nominal foi encontrada. O estado de `E2E (Playwright)` mudou de execução para `cancelled`; `Nightly Full CI` e `E2E • Swatch QuickView` seguem `in_progress`. Não houve nova execução na `main` depois de P32. O delta e a contagem atualizada estão em `PENDENCIAS.md` §P33.
+
+No SHA publicado `d3442b0315e848726ef36fb06fca779afc824197`, PR #2743 segue aberto e bloqueado: Copilot falhou por limite de uso HTTP 402 e firewall de `api.github.com`; outros checks ainda estavam em fila. Não foi mergeado.
