@@ -8207,26 +8207,6 @@
     },
     {
       "schemaname": "public",
-      "tablename": "supplier_products_raw_history_p2026_07",
-      "policyname": "hist_all_service",
-      "permissive": "PERMISSIVE",
-      "roles": "{service_role}",
-      "cmd": "ALL",
-      "qual": "true",
-      "with_check": "true"
-    },
-    {
-      "schemaname": "public",
-      "tablename": "supplier_products_raw_history_p2026_07",
-      "policyname": "hist_select_admin",
-      "permissive": "PERMISSIVE",
-      "roles": "{authenticated}",
-      "cmd": "SELECT",
-      "qual": "is_admin_or_above(( SELECT ( SELECT auth.uid() AS uid) AS uid))",
-      "with_check": ""
-    },
-    {
-      "schemaname": "public",
       "tablename": "supplier_products_raw_history_p2026_08",
       "policyname": "hist_all_service",
       "permissive": "PERMISSIVE",
