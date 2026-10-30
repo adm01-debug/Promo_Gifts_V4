@@ -633,19 +633,15 @@ O banco externo é uma dependência **advisory** (não é o canônico `doufsxqlf
 **Fix implementado:** PR [#2753](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2753) — `fix(edge-fn): cap external_db em degraded no health-check`
 Mudança em `runProbes()`: converte `external_db=unhealthy` → `degraded` antes de calcular o status geral. Banco interno (`database`) continua propagando `unhealthy` normalmente.
 
-**Bloqueio atual:** runner backlog do GitHub — CI do PR #2753 está `queued` (run [#40975917102](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40975917102)). Assim que CI verde:
+**Estado atualizado em 2026-10-30:** PR #2753 já foi integrado à `main`; o bloqueio atual é o run do deploy de Edge Function [#40976801625](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40976801625), ainda `pending`, sem jobs criados. O run de Uptime [#40978818572](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40978818572) continuou falhando porque a nova versão da função ainda não teve execução de deploy comprovada. Consulte P25 para a fotografia atual.
 
-**Passos para fechar este item:**
-1. Aguardar CI do PR [#2753](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2753) (`queued → success`)
-2. Squash-merge PR #2753 **sem** `commit_title` customizado
-3. Dispatch `.github/workflows/deploy-edge-functions.yml` com `function_name=health-check`
-4. Aguardar próximo run agendado do Uptime Monitor (a cada 30 min) → confirmar `success`
+**Passos restantes:** aguardar o run de deploy pendente sem iniciar outro deploy concorrente; após seu término, confirmar um run agendado verde do Uptime Monitor. Não houve deploy manual/MCP nesta sessão.
 
 ---
 
 ## P-QUEUED — Workflows queued/pending na main (não são falhas)
 
-**Data:** 2026-10-29
+**Data:** 2026-10-29 — registro histórico, supersedido pelo inventário de 2026-10-30 em P25.
 
 Os seguintes workflows têm o último run com status `queued` ou `pending` nos SHAs recentes da main. **Isso não representa falha** — é backlog de runner do GitHub Actions. Após merge do PR #2751 (SHA `07bc2b0`, 2026-10-29 23:46 UTC), novos runs foram criados e aguardam runner.
 
@@ -704,3 +700,20 @@ As falhas anteriores de `CI Security & Drift Checks`, `E2E — Personalization F
 - [#2758](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2758): indicador de foco acessível no histórico de imagens; correção local aprovada por build/lint/typecheck/testes, PR aberto e sem merge por alterar UI publicada.
 
 Nenhuma migration, DDL, escrita no Supabase ou deploy de Edge Function foi executado nesta auditoria.
+
+## P25 — revalidação de workflows da main e estado dos PRs — 2026-10-30
+
+**Snapshot:** 00:31 UTC; 100 execuções mais recentes da `main`, agrupadas pelo nome do workflow (34 distintos). HEAD `3b7dc731eea29a1ec7a69f6dae5ca97fb89c7739`.
+
+| Workflow | Última execução | Evidência/causa | Ação ou bloqueio |
+|---|---|---|---|
+| Release Please | [#40979462721](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40979462721) — `failure` | Release Please encontrou PR #2713 para `1.1.0`; a criação do GitHub Release falhou com `tag_name already_exists` para `v1.1.0`. O log confirma a tag duplicada; não removi tag/release nem forcei outra publicação. | Revisar idempotência da configuração de release com o responsável pelo release; não apagar a tag existente. |
+| CI Security & Drift Checks | [#40979462838](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40979462838) — `failure` | Gate `check:outline-none`: nova violação WCAG 2.4.7 em `src/components/magic-up/AdImageResult.tsx:188`, botão sem ring substituto. | Corrigida localmente e enviada no PR [#2758](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2758). Build, lint, typecheck e testes locais passaram; PR aberto com checks ainda em andamento/falhas externas. Não mesclar antes dos checks e do fluxo de release da UI. |
+| Uptime Monitor | [#40978818572](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40978818572) — `failure` | Probe: `site=0`, `health-check=22`, `check-login OPTIONS=0`, `auth-health=0`. PR #2753 está na main, porém deploy [#40976801625](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40976801625) segue `pending` sem jobs. | Aguardar o deploy pendente e a execução agendada seguinte. Sem deploy duplicado. |
+| Running Copilot Code Review | [#40975434366](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40975434366) — `failure` | HTTP 402 por limite de uso adicional do plano Copilot; log também reporta bloqueio de `api.github.com` pelo firewall do agente. | Ação do proprietário: ajustar a cota e permitir o host na política do agente; rerun após mudança. |
+
+No mesmo snapshot: **17 success**, **2 skipped**, **11 queued/pending/in_progress**, além das quatro falhas acima. Os 17 workflows verdes são Static Health Checks, Supabase Linter Gate, Security Scan, SSOT Supabase Guard, Select Columns vs Types, Gitleaks — Full History Audit, schema-snapshot-export, Workflow Lint, Branch Protection Sentinel, UI · Visual & A11y, Lovable Edit Tracker, E2E — Personalization Flow, Required Checks Guard, CodeQL, Lovable Autoheal, Policies Baseline e No Prod Leak in Dev/Test Config. Runs em fila/execução não são declarados verdes.
+
+**PRs relevantes:** #2743 continua aberto e seus commits locais ainda aguardam push/validação; #2745 tem uma falha Gate 1.3 reproduzida localmente por nove referências documentais a migrations ausentes (correção documental pronta em branch de trabalho); #2747 permanece aberto/behind, com QuickView e Full User Flows falhando; #2758 contém a correção a11y citada. Nenhum PR foi mesclado nesta etapa.
+
+Nenhuma migration, DDL, escrita no Supabase, alteração de workflow, deploy de Edge Function ou exclusão de tag/release foi realizada.

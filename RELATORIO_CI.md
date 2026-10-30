@@ -189,7 +189,9 @@ RELATORIO_CI.md
 | `actionlint .github/workflows/ratchet-weekly.yml` | ✅ EXIT=0 | Workflow Ratchet corrigido e validado no branch do PR [#2745](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2745). |
 | `node scripts/check-migration-path-references.mjs` | ✅ EXIT=0 | Nenhuma referência quebrada nova; 481 entradas legadas permanecem na baseline. |
 
-### Último run de cada workflow na `main`
+### Último run de cada workflow na `main` — snapshot histórico P24
+
+Este snapshot de 00:26 UTC foi supersedido pelo inventário P25 abaixo. Seus números e estados não representam a situação mais recente.
 
 Snapshot às 00:26 UTC, usando as 400 execuções mais recentes, agrupadas em 38 workflows e verificando apenas o run mais recente por workflow:
 
@@ -207,3 +209,20 @@ Os 10 workflows verdes deste snapshot são Static Health Checks, Lovable Autohea
 - PR [#2758](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2758): correção de acessibilidade, 1 arquivo; build/lint/typecheck/testes locais passaram; não mesclar nesta sessão porque a alteração visual de foco exige revisão/release do aplicativo.
 
 Nenhuma migration, DDL, escrita no Supabase ou deploy Edge foi executado. Não houve desativação de workflow, enfraquecimento de testes, `continue-on-error`, `|| true`, force push ou alteração direta da `main`.
+
+### Revalidação P25 — workflows e PRs — 2026-10-30
+
+Snapshot às 00:31 UTC, após o release `1.1.0` (`3b7dc731`). Foram agrupadas as 100 execuções mais recentes na `main`: **34 workflows**, com **17 success, 2 skipped, 11 queued/pending/in_progress e 4 failures**.
+
+| Workflow em falha | Run | Causa comprovada | Situação |
+|---|---|---|---|
+| Release Please | [#40979462721](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40979462721) | Falha ao criar GitHub Release: tag `v1.1.0` já existe (`tag_name already_exists`) após identificar o PR de release #2713. | Pendente de revisão da idempotência pelo responsável de release; nenhuma tag/release foi excluída ou substituída. |
+| CI Security & Drift Checks | [#40979462838](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40979462838) | Gate de acessibilidade encontrou nova violação de `outline-none` em `AdImageResult.tsx:188`, sem ring substituto. | Correção reproduzida e PR [#2758](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2758) aberto. A validação local passou; aguardando checks e release seguro da UI. |
+| Uptime Monitor | [#40978818572](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40978818572) | Probes: site 0, `health-check` 22, `check-login OPTIONS` 0, `auth-health` 0. | PR #2753 está integrado, mas deploy [#40976801625](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40976801625) segue pending sem jobs; aguardar sem duplicar deploy. |
+| Running Copilot Code Review | [#40975434366](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40975434366) | HTTP 402 por limite de uso adicional do Copilot e bloqueio de `api.github.com` pelo firewall do agente. | Depende de ajuste de cota e allowlist de firewall pelo proprietário. |
+
+Os 17 workflows verdes deste snapshot: Static Health Checks, Supabase Linter Gate, Security Scan, SSOT Supabase Guard, Select Columns vs Types, Gitleaks — Full History Audit, schema-snapshot-export, Workflow Lint, Branch Protection Sentinel, UI · Visual & A11y, Lovable Edit Tracker, E2E — Personalization Flow, Required Checks Guard, CodeQL, Lovable Autoheal, Policies Baseline e No Prod Leak in Dev/Test Config. Os 11 workflows em fila/execução não foram tratados como verdes.
+
+PR [#2743](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2743) aguarda atualização do head local e conclusão dos checks. PR [#2745](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2745) tem Gate 1.3 reprodutivelmente bloqueado por nove referências documentais a migrations inexistentes; a correção textual está preparada, sem criar SQL ou migration. PR [#2747](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2747) permanece behind, com QuickView e Full User Flows falhando em sua última execução. PR #2758 segue aberto; sem merge de código de aplicação nesta etapa.
+
+Após o commit que registrar este relatório, repetir build, lint, typecheck e suíte completa conforme a política anti-regressão. Nenhuma operação de banco ou deploy de Edge foi realizada.
