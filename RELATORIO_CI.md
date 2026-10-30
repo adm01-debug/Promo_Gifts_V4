@@ -562,7 +562,7 @@ O código de aplicação de `cba9944d` é idêntico ao de `7e56ae49` (PR #2800 a
 | E2E — Critical Flows & Error Boundaries | `auth/v1/token → 504` | ❌ PO-blocked | PENDENCIAS.md §P29 |
 | Uptime Monitor | Edge fn `health-check` não deployada (v275) | ❌ PO-blocked | PENDENCIAS.md §P29 |
 | Branch Protection Sentinel | Push Lovable sem sufixo `(#NNN)` | ❌ PO-blocked | PENDENCIAS.md §P29 |
-| Gate Final - Deploy Ready | Job 124135936896 queued em 15:02:48Z (aguardando runner) | ⏳ pending | run [#41067473692](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41067473692) |
+| Gate Final - Deploy Ready | Job 124135936896 ✅ success 15:09:00–15:09:03Z | ✅ success | run [#41067473692](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41067473692) |
 
 ### Comparação baseline × final
 
@@ -573,7 +573,7 @@ O código de aplicação de `cba9944d` é idêntico ao de `7e56ae49` (PR #2800 a
 | tsc --noEmit | ✅ zero erros | ✅ idêntico |
 | vitest full suite | ✅ 25.898 tests passaram | ✅ idêntico |
 | Gate 1.10 indexed-access | ❌ baseline 867 vs real 872 | ✅ baseline 872 = real 872 (PR #2819) |
-| Gate Final (`cba9944d`) | ❌ (falha em `7e56ae49`) | ⏳ job 124135936896 queued 15:02:48Z |
+| Gate Final (`cba9944d`) | ❌ (falha em `7e56ae49`) | ✅ job 124135936896 success 15:09:03Z |
 | Regressões introduzidas | — | **Nenhuma** |
 
 ### Checks antes verdes que seguem verdes em `cba9944d`
