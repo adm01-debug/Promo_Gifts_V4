@@ -9,7 +9,9 @@ const box = { id: 'box-1', name: 'Caixa', price: 50 } as KitBox;
 const item = { id: 'item-1', name: 'Caneta', price: 10 } as KitItem;
 
 describe('validateKitPricesForQuote', () => {
-  beforeEach(() => dbInvokeMock.mockReset());
+  beforeEach(() => {
+    dbInvokeMock.mockReset();
+  });
 
   it('lê os preços atuais da camada Gold uma vez por produto', async () => {
     dbInvokeMock.mockResolvedValue({
@@ -20,7 +22,7 @@ describe('validateKitPricesForQuote', () => {
       count: null,
     });
 
-    await expect(validateKitPricesForQuote(box, [item])).resolves.toEqual({
+    await expect(validateKitPricesForQuote(box, [item, { ...item, lineId: 'item-1:repetido' }])).resolves.toEqual({
       status: 'unchanged',
     });
     expect(dbInvokeMock).toHaveBeenCalledWith({
@@ -59,6 +61,17 @@ describe('validateKitPricesForQuote', () => {
     });
   });
 
+  it('falha fechado para valores com fração de centavo', async () => {
+    dbInvokeMock.mockResolvedValue({
+      records: [{ id: 'item-1', sale_price: 1.005, active: true }],
+      count: null,
+    });
+
+    await expect(validateKitPricesForQuote(null, [{ ...item, price: 1.005 }])).resolves.toEqual({
+      status: 'unavailable',
+    });
+  });
+
   it.each([
     ['produto ausente', []],
     ['produto inativo', [{ id: 'item-1', sale_price: 10, active: false }]],
@@ -72,9 +85,7 @@ describe('validateKitPricesForQuote', () => {
   });
 
   it('falha fechado quando a consulta ao catálogo falha', async () => {
-    dbInvokeMock.mockImplementation(() => {
-      throw new Error('PostgREST indisponível');
-    });
+    dbInvokeMock.mockRejectedValueOnce(new Error('PostgREST indisponível'));
 
     await expect(validateKitPricesForQuote(box, [item])).resolves.toEqual({
       status: 'unavailable',

@@ -13,7 +13,15 @@ export type KitPriceValidationResult =
   | { status: 'unavailable' };
 
 function priceInCents(value: number): number | null {
-  return Number.isFinite(value) && value >= 0 ? Math.round(value * 100) : null;
+  if (!Number.isFinite(value) || value < 0) return null;
+
+  const scaled = value * 100;
+  const rounded = Math.round(scaled);
+  // Accept binary floating-point noise for prices that are actually in cents,
+  // but fail closed on fractional-cent amounts (for example, 1.005).
+  return Number.isSafeInteger(rounded) && Math.abs(scaled - rounded) <= 1e-7
+    ? rounded
+    : null;
 }
 
 /**

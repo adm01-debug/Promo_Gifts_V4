@@ -1,6 +1,6 @@
 # Backlog de funcionalidades (O5) — FT-xxx
 
-> Base: auditoria `docs/AUDITORIA_PLANEJADO_NAO_EXECUTADO_2026-10-11.md` (+ anexos) **reverificada no código de `main` @ `7d3bd4b` (2026-10-25)**, mais itens de `docs/estado/12`. Somente leitura; estado = FEITA / PARCIAL / AUSENTE / ÓRFÃ, evidência arquivo:linha.
+> Base: auditoria `docs/AUDITORIA_PLANEJADO_NAO_EXECUTADO_2026-10-11.md` (+ anexos), atualizada parcialmente em 2026-10-30 no checkout local; mais itens de `docs/estado/12`. Estado = FEITA / PARCIAL / AUSENTE / ÓRFÃ, evidência arquivo:linha. A atualização desta data cobre apenas KM2-135 e dependências diretas; não representa nova auditoria dos 416 itens.
 > **Fontes ausentes:** `docs/resgate/MAPA_2026-10-24.md`, `resgate-online/` e clusters C007..C011 **não existem** na `main` nem têm referência local — NÃO VERIFICADO (provavelmente em outra branch/máquina; pendente de o PO apontar).
 > **416 itens FT** (coluna `FT`). Itens "Outro dono" (segurança, CI, DDL/banco, backup) ficam só com ID nas seções finais de cada bloco e pertencem às frentes O2/O3/O4. Linhas podem se repetir entre blocos quando o mesmo ID de origem aparece em mais de um plano: a ordem de execução abaixo é a referência.
 
@@ -13,7 +13,7 @@
 | 3 | Kit Maker: filtro/rótulo "Publicados" | KMM-075/KMX-037 | front | D7 PO → default: publicado = status `shared` |
 | 4 | Kit Maker: `weight_g=0` tratado como peso conhecido; `maxWeight` | NEW-KM-01, KM2-096 | front | — |
 | 5 | Selos/BI com mock apresentados como real | RP-021/042–044, IA-002 | front | PO proveniência → default: mostrar badge "simulado" e não persistir notificação |
-| 6 | Kit Maker: preço/mínimo/múltiplo no servidor | KM2-135/139, KMC-084 | sql/RPC | **migration → PR separada, aguarda aprovação** |
+| 6 | Kit Maker: preço/mínimo/múltiplo no servidor | KM2-135/139, KMC-084 | sql/RPC | **Revalidação parcial no cliente implementada; validação autoritativa e regras de mínimo/múltiplo ainda dependem de decisão/aprovação** |
 | 7 | Painel de ruptura EMA em `/estoque` | CD-042 | front | stock_notes exige migration (aprovação) |
 | 8 | Bitrix: UI invocando `bitrix-sync` | RP-016 | front/edge | PO escolhe CRM oficial |
 | 9 | PDF de revista no servidor | MG-003 | edge+sql | migration/bucket (aprovação) |
@@ -143,7 +143,7 @@ Paths relativos a `src/components/kit-builder/` quando só o nome do arquivo apa
 | FT-075 | KM2-117 | Personalização sem preço não vira R$0 no orçamento | FEITA | useKitBuilder.ts:161-182 (isValid exige preço + qtd precificada); useKitBuilderQuote.ts:105-111,136-142 (throw se preço ausente). Resíduo: price-calculator.ts:18-28 ainda soma 0 só na exibição; RPC não revalida | hook | P1 (resíduo P2) | P | — | ✔ |
 | FT-076 | KM2-146 | Validações impeditivas / observações | PARCIAL | Bloqueio por personalização ok (KitActionsBar.tsx:55 + isValid); checklist casa texto de mensagem (kit-summary/KitValidationChecklist.tsx:19,45); obs. sem sanitização | UI | P2 | M | — | ✔ |
 | FT-077 | KM2-119 | Confirmar personalização sem falso sucesso | PARCIAL | 'Concluído' exige técnica+preço+qtd (PersonalizationConfig.tsx:1077-1089); sem ação 'confirmar' nem invalidação por versão/área | UI | P2 | M | — | ✔ |
-| FT-078 | KM2-135, KMC-084 | Revalidar preço antes de criar orçamento | AUSENTE | unit_price vem do browser (useKitBuilderQuote.ts:243,275); só estoque reconsultado (:365); RPC create_kit_quote_transactional (20260912150000_…sql) sem recálculo/diff de preço | hook + RPC | P0 | G | migration/DDL (aprovação PO); política de divergência | ✔ |
+| FT-078 | KM2-135, KMC-084 | Revalidar preço antes de criar orçamento | PARCIAL | `useKitPriceValidation.ts` consulta `id,sale_price,active` via alias Gold `products` imediatamente antes do fluxo de criação; bloqueia preço divergente ou consulta indisponível (`useKitBuilderQuote.ts`). A RPC continua recebendo valores do cliente e não recalcula; resta validação autoritativa/atômica, política comercial e confirmação guiada | hook + RPC | P0 | G | migration/DDL e política de divergência exigem aprovação PO | ✔ |
 | FT-079 | KM2-139 | Pedido mínimo, múltiplos, prazo, desconto | AUSENTE | 0 refs a mínimo/múltiplo em kit-builder; vw_products_min_quantity só em types.ts:1011; discount_percent:0 fixo (useKitBuilderQuote.ts:214); kitQuantity sem teto | hook + RPC | P0 | G | decisão PO (regra) + view/RPC | ✔ |
 | FT-080 | KM2-133 | Arredondamento monetário | AUSENTE | float cru: price-calculator.ts:77-110; subtotal/total enviados em useKitBuilderQuote.ts:201,213; sem toCents/round | lib | P1 | M | paridade com numeric do PG | ✔ |
 | FT-081 | KM2-131 | Fonte autoritativa de preço | PARCIAL | useKitBuilderTransformers.ts:24 fallback sale_price ?? base_price silencioso; sem contrato único | lib | P1 | M | decisão PO | ✔ |

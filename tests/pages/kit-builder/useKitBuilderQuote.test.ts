@@ -412,6 +412,30 @@ describe('useKitBuilderQuote — payloads', () => {
     expect(calls[1].args?._request_id).toBe(calls[0].args?._request_id);
     expect(calls[1].args?._items).toEqual(calls[0].args?._items);
     expect(validateKitStockForQuote).toHaveBeenCalledTimes(2);
+    expect(dbInvoke).toHaveBeenCalledTimes(2);
+  });
+
+  it('não revalida preço nem estoque quando o ledger confirma o retry', async () => {
+    const useHook = await loadHook({
+      user: { id: USER_ID },
+      selects: { kit_quote_requests: { quote_id: 'quote-confirmado' } },
+    });
+    const rpc = vi.mocked(mock.client.rpc);
+    rpc
+      .mockResolvedValueOnce({ data: null, error: { message: 'Resposta perdida após commit' } })
+      .mockResolvedValueOnce({ data: { id: 'quote-confirmado' }, error: null });
+
+    const { result } = renderHook(() => useHook());
+    await act(async () => {
+      await result.current.handleAddToQuote(KIT_STATE, 2);
+    });
+    await act(async () => {
+      await result.current.handleAddToQuote(KIT_STATE, 2);
+    });
+
+    expect(dbInvoke).toHaveBeenCalledTimes(1);
+    expect(validateKitStockForQuote).toHaveBeenCalledTimes(1);
+    expect(rpc.mock.calls.filter(([fn]) => fn === 'create_kit_quote_transactional')).toHaveLength(2);
   });
 
   it('não duplica a operação quando o autosave cria o kit entre timeout e retry', async () => {
