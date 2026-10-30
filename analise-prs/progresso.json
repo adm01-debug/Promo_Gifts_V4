@@ -58,7 +58,10 @@
     "554ef41b44c9f318777d7e7b11189490a29a8c0a": {
       "pr": 2810,
       "status": "sem_regressao_confirmada",
-      "gate_final": "queued_infrastructure_backlog",
+      "gate_final": "success",
+      "gate_final_run_id": 41134852574,
+      "gate_final_job_id": 124355046790,
+      "gate_final_completed_at": "2026-10-30T22:53:31Z",
       "deployment_failure_alert": "skipped",
       "vitest_local": "passed_exit_0",
       "promoflix_unit_tests": "22/22_passed",
@@ -66,7 +69,7 @@
         "E2E_Playwright": "PRE-EXISTENTE — RELATORIO_CI.md §3.1 P18 (baseline)",
         "CI_Security_Drift_Checks": "PRE-EXISTENTE — RELATORIO_CI.md §3.1 P19/P39/P50 (baseline)"
       },
-      "nota": "Deploy Gates ainda queued (gargalo free-plan 20 jobs — conforme RELATORIO_BASELINE_261030.md). Falhas observadas sao pre-existentes e documentadas. Vitest local 100% OK. Nenhuma regressao nova."
+      "nota": "Gate Final confirmado success (job 124355046790, run 41134852574). Falhas observadas sao pre-existentes e documentadas. Vitest local 100% OK. Nenhuma regressao nova."
     }
   }
 }
