@@ -778,38 +778,38 @@
   },
   {
     "number": 2846,
-    "title": "fix(e2e): normaliza query padrão na URL",
+    "title": "fix(listas): normaliza filtros padrão após navegação POP",
     "author": "adm01-debug",
     "draft": false,
     "base": "main",
-    "head_sha": "",
+    "head_sha": "00a79140848c34a1fe35805502db1579f906332d",
     "state": "open",
-    "branch": "fix/p200-e2e-normalize-default-query-url",
+    "branch": "fix/e2e-url-state-defaults-20261030",
     "created_at": "2026-10-31",
     "files_protegidos": [
       "src/hooks/common/useListUrlState.ts"
     ],
-    "merge_test": "SUCCESS",
-    "gate_final": "queued",
+    "merge_test": "MERGE_OK — sem conflito com main 554ef41b (verificado via GitHub API: mergeable=true, rebaseable=true)",
+    "gate_final": "blocked — Gate Final not triggered (mergeable_state=blocked)",
     "veredicto": "DECISAO_HUMANA",
     "motivo": "body proibe merge automatico + altera comportamento aplicacao useListUrlState + E2E falhou"
   },
   {
     "number": 2847,
-    "title": "ci(deploy): adiciona gate Supabase security + restringe permissions",
+    "title": "fix(ci-gates): endurece validação de credenciais e policies",
     "author": "adm01-debug",
     "draft": false,
     "base": "main",
-    "head_sha": "",
+    "head_sha": "3b1b9c34fdcec7016c4c2cff37a2b38b06e51d65",
     "state": "open",
-    "branch": "claude/p200-supabase-security-gate-261031",
+    "branch": "fix/p200-e007-e008-gates-20261031",
     "created_at": "2026-10-31",
     "files_protegidos": [
       ".github/workflows/deploy-gates.yml",
       ".github/workflows/supabase-security-gate.yml"
     ],
-    "merge_test": "SUCCESS",
-    "gate_final": "queued",
+    "merge_test": "MERGE_OK — sem conflito com main 554ef41b (verificado via GitHub API: mergeable=true, rebaseable=true)",
+    "gate_final": "blocked — Gate Final not triggered (mergeable_state=blocked)",
     "veredicto": "NAO_MERGEAR",
     "motivo": "REGRA#8 — .github/workflows (2 workflows protegidos) sem aprovação PO"
   },
@@ -819,15 +819,15 @@
     "author": "adm01-debug",
     "draft": false,
     "base": "main",
-    "head_sha": "",
+    "head_sha": "5709d30664b383256bdab20d4a95a1a81c4f0922",
     "state": "open",
-    "branch": "claude/p200-enforce-pr-for-governance-261031",
+    "branch": "fix/p200-e009-governance-pr-20261031",
     "created_at": "2026-10-31",
     "files_protegidos": [
       "CLAUDE.md",
       "AGENTS.md"
     ],
-    "merge_test": "SUCCESS",
+    "merge_test": "MERGE_OK — sem conflito com main 554ef41b (verificado via GitHub API: mergeable=true, rebaseable=true)",
     "gate_final": "failure (run #41154752023)",
     "veredicto": "CI_FALHOU",
     "motivo": "Gate Final completed/failure run #41154752023 — 6 annotations"
@@ -838,33 +838,33 @@
     "author": "adm01-debug",
     "draft": false,
     "base": "main",
-    "head_sha": "",
+    "head_sha": "744e0bd0e204cb662c236bf41814699f32ab3137",
     "state": "open",
-    "branch": "claude/p200-gitleaks-scripts-261031",
+    "branch": "fix/p200-e003-gitleaks-allowlist-20261031",
     "created_at": "2026-10-31",
     "files_protegidos": [
       ".gitleaks.toml"
     ],
-    "merge_test": "SUCCESS",
-    "gate_final": "queued",
+    "merge_test": "MERGE_OK — sem conflito com main 554ef41b (verificado via GitHub API: mergeable=true, rebaseable=true)",
+    "gate_final": "blocked — Gate Final not triggered (mergeable_state=blocked)",
     "veredicto": "DECISAO_HUMANA",
     "motivo": "REGRA#9 — .gitleaks.toml é arquivo protegido + Gate Final queued"
   },
   {
     "number": 2850,
-    "title": "fix/p200-e2e-default-query",
+    "title": "fix(url-state): remove filtros default de deep-links",
     "author": "adm01-debug",
     "draft": false,
     "base": "main",
-    "head_sha": "",
+    "head_sha": "81414f5b4f1d1bdd412b15da2980f5fd43f110f7",
     "state": "open",
-    "branch": "fix/p200-e2e-default-query",
+    "branch": "fix/p200-e2e-default-query-cleanup-20261031",
     "created_at": "2026-10-31",
     "files_protegidos": [
       "src/hooks/common/useListUrlState.ts"
     ],
-    "merge_test": "SUCCESS",
-    "gate_final": "queued",
+    "merge_test": "MERGE_OK — sem conflito com main 554ef41b (verificado via GitHub API: mergeable=true, rebaseable=true)",
+    "gate_final": "blocked — Gate Final not triggered (mergeable_state=blocked)",
     "veredicto": "DECISAO_HUMANA",
     "motivo": "body proibe merge automatico + altera comportamento aplicacao useListUrlState"
   },
@@ -882,7 +882,7 @@
     "merge_test": "SUCCESS (vitest 22/22 — merge-test local)",
     "gate_final": "failure (run #41157182500, job 124417568951) — Gate 0.5 Dependency Audit",
     "veredicto": "CI_FALHOU",
-    "motivo": "Gate 0.5 Dependency Audit falhou — CVE em dependência (npm audit --audit-level high)"
+    "motivo": "Gate 0.5 Dependency Audit falhou — 16 pacotes com 'unexpected moderate advisory' (baseline drift: @typescript-eslint/*, eslint, glob, rimraf, chrome-launcher, minimatch) — falha pré-existente no repo, não introduzida por esta PR (run #41157182500 job 124417568951 — output verificado em log bruto)"
   },
   {
     "number": 2852,
@@ -898,6 +898,6 @@
     "merge_test": "MERGE_OK",
     "gate_final": "failure — Gate 0.5 Dependency Audit conclusion=failure",
     "veredicto": "CI_FALHOU",
-    "motivo": "Gate 0.5 Dependency Audit falhou (mesmo CVE de #2851) — docs-only E14 bypass não cobre Gate 0.5"
+    "motivo": "Gate 0.5 Dependency Audit falhou (mesmos 16 pacotes de #2851) — baseline drift eslint/glob/rimraf/chrome-launcher — docs-only E14 bypass não cobre Gate 0.5 — falha pré-existente no repo"
   }
 ]

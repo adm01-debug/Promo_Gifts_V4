@@ -134,6 +134,22 @@ Nenhuma dessas PRs pode ser mergeada automaticamente. Requerem revisão humana.
 ### Cluster 4 — PRs mergeadas (entregas desta sessão)
 - **#2844**, **#2845**, **#2836**, **#2810** — todas mergeadas com Gate Final ✅
 
+### Cluster 5 — Gate 0.5 Dependency Audit (baseline drift pré-existente)
+PRs bloqueadas por Gate 0.5 com "unexpected moderate advisory" no eslint ecosystem (16 pacotes: @typescript-eslint/*, eslint, glob, rimraf, chrome-launcher, minimatch):
+- **#2851** (CI_FALHOU): test-only PR (+2/-2) — não introduziu o problema
+- **#2852** (CI_FALHOU): docs-only PR (+48/-3) — E14 bypass não cobre Gate 0.5
+- **Causa raiz:** baseline drift do `scripts/check-dependency-audit.mjs` — não relacionado a nenhuma dessas PRs
+- **Evidência:** job log 124417568951 (run #41157182500) — 16 linhas "unexpected moderate advisory" verificadas nesta sessão
+
+### Cluster 6 — PRs novas com DECISAO_HUMANA (body proíbe merge automático)
+PRs que explicitamente pedem revisão humana antes do merge:
+- **#2846** (DECISAO_HUMANA): `fix(listas): normaliza filtros padrão após navegação POP` — altera comportamento de app (`useListUrlState.ts`), body: "Deixe sem merge até revisão e aprovação"
+- **#2850** (DECISAO_HUMANA): `fix(url-state): remove filtros default de deep-links` — altera normalização de URL, body: "não vou mesclar essa alteração de aplicação automaticamente"
+- **#2849** (DECISAO_HUMANA): `fix(security): remove exceção ampla do gitleaks em scripts` — modifica `.gitleaks.toml` (escopo de scanning de segredos)
+
+### Cluster 7 — PRs de governança (REGRA #8 — workflows)
+- **#2847** (NAO_MERGEAR): `fix(ci-gates): endurece validação de credenciais e policies` — modifica `deploy-gates.yml` + `supabase-security-gate.yml`
+
 ---
 
 ## RESUMO POR VEREDITO
@@ -162,8 +178,8 @@ Nenhuma dessas PRs pode ser mergeada automaticamente. Requerem revisão humana.
 | #2848 | docs(governance): REGRA #9 | CI_FALHOU | Gate Final run #41154752023 = completed/failure (6 annotations) |
 | #2849 | fix(security): gitleaks scripts | DECISAO_HUMANA | `.gitleaks.toml` = arquivo protegido (REGRA #9); Gate Final queued |
 | #2850 | fix/p200-e2e-default-query | DECISAO_HUMANA | Body proíbe merge automático; altera `useListUrlState.ts` (comportamento de app) |
-| #2851 | test(quotes): fuzz source path | CI_FALHOU | Gate Final completed/failure (run #41157182500) — Gate 0.5 Dependency Audit falhou |
-| #2852 | docs(ci): PENDENCIAS + RELATORIO | CI_FALHOU | Gate 0.5 Dependency Audit falhou (mesmo CVE de #2851) — docs bypass E14 não cobre Gate 0.5 |
+| #2851 | test(quotes): fuzz source path | CI_FALHOU | Gate 0.5 Dependency Audit falhou — 16 pacotes com "unexpected moderate advisory" (baseline drift: @typescript-eslint/*, eslint, glob, rimraf, chrome-launcher, minimatch) — falha pré-existente no repo, não introduzida por esta PR — run #41157182500 job 124417568951 (log verificado nesta sessão) |
+| #2852 | docs(ci): PENDENCIAS + RELATORIO | CI_FALHOU | Gate 0.5 Dependency Audit falhou (mesmos 16 pacotes de #2851 — baseline drift eslint/glob/rimraf) — docs-only E14 bypass não cobre Gate 0.5 — falha pré-existente no repo |
 
 ---
 
@@ -268,9 +284,9 @@ npx vitest run "PromoFlix"  →  Test Files 1 passed (1) | Tests 22 passed (22) 
 
 | Arquivo | Descrição |
 |---|---|
-| `analise-prs/progresso.json` | SSOT de estado — 19 PRs, 5 vereditos |
-| `analise-prs/prs.json` | 42 entradas com campos completos |
-| `analise-prs/prs.csv` | 55 linhas — exportação tabular |
+| `analise-prs/progresso.json` | SSOT de estado — 27 PRs, 7 vereditos |
+| `analise-prs/prs.json` | 50 entradas com campos completos (head_sha reais de PRs #2846–#2852 obtidos via GitHub API nesta sessão) |
+| `analise-prs/prs.csv` | 63 linhas — exportação tabular |
 | `analise-prs/regras-de-negocio.md` | 11 seções extraídas de fontes reais |
 | `analise-prs/RELATORIO_PRS.md` | Este arquivo |
 | `analise-prs/dossies/PR-*.md` | Dossiê individual por PR (180+ arquivos) |
@@ -333,6 +349,23 @@ npx vitest run "PromoFlix"  →  Test Files 1 passed (1) | Tests 22 passed (22) 
 
 **Resultado:** vereditos confirmados. Nenhum PR mudou de categoria em relação à análise anterior.
 Unrelated history = branch com histórico desconectado do main → impossível mergear (pior que conflito).
+
+---
+
+## ITENS NAO_VERIFICADO (verificação parcial ou limitada)
+
+Os itens abaixo foram analisados com base em evidências indiretas (body da PR, diff API, estado de CI). A verificação direta por execução local de merge-test ou tsc não foi realizada nesta sessão para eles.
+
+| PR | Item não verificado diretamente | Motivo | Impacto no veredito |
+|---|---|---|---|
+| #2846 | merge-test local com tsc pós-merge | PR era nova quando adicionada à análise; verificado via GitHub API (mergeable=true, rebaseable=true, +208/-15 em 7 arquivos) | Não muda veredito: DECISAO_HUMANA por body explícito |
+| #2847 | merge-test local com tsc pós-merge | PR era nova; GitHub API: mergeable=true, rebaseable=true (+170/-22 em 7 arquivos) | Não muda veredito: NAO_MERGEAR por REGRA #8 (2 workflows) |
+| #2848 | conteúdo exato das 6 annotations do run #41154752023 | Gate Final failure — log não lido linha a linha | Não muda veredito: CI_FALHOU confirmado pela conclusion=failure da API |
+| #2849 | merge-test local com tsc pós-merge | PR era nova; GitHub API: mergeable=true, rebaseable=true (+16/-3 em 2 arquivos) | Não muda veredito: DECISAO_HUMANA por .gitleaks.toml + body |
+| #2850 | merge-test local com tsc pós-merge | PR era nova; GitHub API: mergeable=true, rebaseable=true (+63/-1 em 2 arquivos) | Não muda veredito: DECISAO_HUMANA por body explícito |
+| #2834 | conteúdo exato da branch (DRAFT) | PR em rascunho, rebaseable=false | Não muda veredito: DRAFT — não mergeável independentemente |
+
+**Nota:** head_sha de todas as 7 PRs novas (#2846–#2852) foram obtidos via `mcp__GITHUB_-_MCP_-_FOREVER__github_get_pull_request` nesta sessão (2026-10-31) — não eram "" como nas versões anteriores de prs.json.
 
 ---
 
@@ -401,4 +434,4 @@ Todos os worktrees temporários criados durante a sessão foram removidos.
 2. **PR #2822** — executar `node scripts/check-migration-path-references.mjs --update-baseline` na branch para corrigir Gate 1.3
 3. **PR #2739** — remover 1 linha em `useMockupGenerator.ts` ou executar `node scripts/check-file-size-baseline.mjs --update`
 4. **PRs #2846, #2849, #2850** — decisão do PO sobre comportamento de aplicação/segurança
-5. **PRs #2851, #2852** — bloqueadas por CVE em dependência (`npm audit --audit-level high`) — corrigir `package.json` no main
+5. **PRs #2851, #2852** — bloqueadas por Gate 0.5 Dependency Audit: 16 pacotes com "unexpected moderate advisory" (baseline drift no eslint ecosystem — @typescript-eslint/*, eslint, glob, rimraf, chrome-launcher, minimatch). Causa raiz pré-existente no repo (não introduzida por essas PRs). Correção: atualizar baseline do `scripts/check-dependency-audit.mjs` com `--update-baseline` após revisar os advisories.
