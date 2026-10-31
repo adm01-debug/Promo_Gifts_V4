@@ -144,8 +144,8 @@ Nenhuma dessas PRs pode ser mergeada automaticamente. Requerem revisão humana.
 | MERGEADA (PO) | 1 | #2826 |
 | NAO_MERGEAR | 11 | #2825, #2824, #2823, #2821, #2847, #2827, #2831, #2799, #2744, #2731, #2701 |
 | DECISAO_HUMANA | 4 | #2839, #2846, #2849, #2850 |
-| CI_FALHOU | 3 | #2822, #2739, #2848 |
-| AGUARDANDO_GATE_FINAL | 2 | #2851, #2852 |
+| CI_FALHOU | 4 | #2822, #2739, #2848, #2851 |
+| AGUARDANDO_GATE_FINAL | 1 | #2852 |
 | JA_IMPLEMENTADA | 1 | #2758 |
 | DRAFT | 1 | #2834 |
 | **TOTAL** | **27** | |
@@ -162,7 +162,7 @@ Nenhuma dessas PRs pode ser mergeada automaticamente. Requerem revisão humana.
 | #2848 | docs(governance): REGRA #9 | CI_FALHOU | Gate Final run #41154752023 = completed/failure (6 annotations) |
 | #2849 | fix(security): gitleaks scripts | DECISAO_HUMANA | `.gitleaks.toml` = arquivo protegido (REGRA #9); Gate Final queued |
 | #2850 | fix/p200-e2e-default-query | DECISAO_HUMANA | Body proíbe merge automático; altera `useListUrlState.ts` (comportamento de app) |
-| #2851 | test(quotes): fuzz source path | AGUARDANDO_GATE_FINAL | test-only +2/-2; Gate Final em andamento (Gate 1 in_progress, Gate 3 queued) |
+| #2851 | test(quotes): fuzz source path | CI_FALHOU | Gate Final completed/failure (run #41157182500) — Gate 0.5 Dependency Audit falhou |
 | #2852 | docs(ci): PENDENCIAS + RELATORIO | AGUARDANDO_GATE_FINAL | docs-only +48/-3; Gate Final em andamento (bypass ativado, demais queued) |
 
 ---

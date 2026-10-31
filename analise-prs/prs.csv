@@ -59,6 +59,6 @@ pr_number,titulo,autor_tipo,draft,veredicto,valida,regressao,no_main,regra_negoc
 2848,docs(governance): exige PR para mudanças de governança,adm01-debug,nao,CI_FALHOU,SIM,NAO,NAO,SIM,CLAUDE.md|AGENTS.md,Gate Final completed/failure run #41154752023 — 6 annotations
 2849,fix(security): remove exceção ampla do gitleaks em scripts,adm01-debug,nao,DECISAO_HUMANA,SIM,INDETERMINADO,NAO,SIM,.gitleaks.toml,REGRA#9 — arquivo protegido + Gate Final queued
 2850,fix/p200-e2e-default-query,adm01-debug,nao,DECISAO_HUMANA,SIM,INDETERMINADO,NAO,SIM,src/hooks/common/useListUrlState.ts,body proibe merge automatico + altera comportamento aplicacao
-2851,test(quotes): corrige origem do teste de alinhamento,adm01-debug,nao,AGUARDANDO_GATE_FINAL,SIM,NAO,NAO,SIM,src/components/quotes/__tests__/QuoteBuilderSummaryAlignment.fuzz.test.ts,test-only +2/-2 — Gate Final em andamento
+2851,test(quotes): corrige origem do teste de alinhamento,adm01-debug,nao,CI_FALHOU,SIM,NAO,NAO,SIM,src/components/quotes/__tests__/QuoteBuilderSummaryAlignment.fuzz.test.ts,test-only +2/-2 — Gate Final em andamento
 2852,docs(ci): atualiza relatório e pendências da ponta main,adm01-debug,nao,AGUARDANDO_GATE_FINAL,SIM,NAO,NAO,SIM,PENDENCIAS.md|RELATORIO_CI.md,docs-only +48/-3 — Gate Final em andamento (docs bypass)
 2834,docs(ci): evidência vitest sample — baseline 11 arquivos/137 testes dfec2236c,adm01-debug,SIM,DRAFT,SIM,NAO,NAO,SIM,docs/ci/BASELINE_VITEST_SAMPLE_261030.md,DRAFT + branch behind main (rebaseable:false) — aguardar conversão não-draft
