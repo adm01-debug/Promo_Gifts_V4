@@ -829,8 +829,8 @@
     ],
     "merge_test": "MERGE_OK — sem conflito com main 554ef41b (verificado via GitHub API: mergeable=true, rebaseable=true)",
     "gate_final": "failure (run #41154752023)",
-    "veredicto": "CI_FALHOU",
-    "motivo": "Gate Final completed/failure run #41154752023 — 6 annotations"
+    "veredicto": "NAO_MERGEAR",
+    "motivo": "REGRA#8 sessao — .github/workflows/deploy-gates.yml + supabase-security-gate.yml (Gate Final run #41154752023 confirma failure)"
   },
   {
     "number": 2849,
