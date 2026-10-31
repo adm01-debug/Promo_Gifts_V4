@@ -19,22 +19,64 @@
 
 ## 2. Inventário de Workflows com Falha na Main
 
-> Critério: última execução na branch `main` com `conclusion=failure`.
-> Total encontrado: **11 workflows**.
+> Critério: **ÚLTIMA execução** na branch `main` com `conclusion=failure`.
+> Verificado em 2026-10-31 04:00 UTC — SHA HEAD main: `554ef41b`.
+>
+> **Nota:** O inventário original desta sessão registrou 11 falhas. Porém, após o push
+> de `554ef41b` para main, os workflows agendados/push re-executaram automaticamente.
+> 6 workflows que estavam em falha passaram nessas novas execuções (eram falhas transitórias
+> de infra/auth). O inventário abaixo reflete o estado **atual** (última execução na main).
 
-| # | Workflow | Run ID | URL | Data | Job Falhado | Causa Raiz |
-|---|----------|--------|-----|------|------------|------------|
-| 1 | CI Security & Drift Checks | 41134852492 | [link](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852492) | 2026-10-30 | quality-gate / Run Unit & Integration Tests | Teste unitário: `QuoteBuilderSummaryAlignment.fuzz.test.ts` usa `SRC` (Column.tsx) para tokens movidos para `Items.tsx` no split E128 |
-| 2 | Branch Protection Sentinel | 41134852421 | [link](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852421) | 2026-10-30 | Verify push / Audit every commit | 23 commits da feature branch PromoFlixPlayer pushados para main sem padrão convencional aceito |
-| 3 | E2E (Playwright) | 41134852533 | [link](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852533) | 2026-10-30 | e2e-gates / Fail se carrinhos URL-state falhou | E2E: specs de URL-state em `/carrinhos` ou `/orcamentos` falham (auth + dados Supabase) |
-| 4 | E2E • Swatch QuickView | 41134852559 | [link](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852559) | 2026-10-30 | webkit/chromium/firefox • swatch→QV | webkit: runner shutdown signal; chromium/firefox: timeout após horas de execução |
-| 5 | Nightly Full CI | 41161391625 | [link](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41161391625) | 2026-10-31 | E2E Visual (magazine-header, color-swatch) + Playwright E2E shards 1+2 | E2E visual e Playwright shards falhando (infra runner) |
-| 6 | Uptime Monitor | 41124195036 | [link](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41124195036) | 2026-10-30 | check / Probe site + edge function | URL de produção ou edge function inacessível (comentário na issue #2841) |
-| 7 | Running Copilot Code Review | 41115245979 | [link](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41115245979) | 2026-10-30 | copilot-pull-request-reviewer / Processing Request | GitHub Copilot API retornou erro (infra externa) |
-| 8 | E2E — Critical Flows & Error Boundaries | 41115240508 | [link](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41115240508) | 2026-10-30 | E2E — Full User Flows / Run Sidebar Tooltips E2E | Sidebar Tooltips E2E falhou + Check min tests executed falhou (auth/infra) |
-| 9 | E2E — Personalization Flow | 41115240723 | [link](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41115240723) | 2026-10-30 | E2E — Personalization Journey / Run Personalization E2E Tests | E2E Personalization falhou (auth/infra) |
-| 10 | Quote Builder Delivery Quality | 41114861094 | [link](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41114861094) | 2026-10-30 | quality-gate / E2E & Visual Regression | E2E & Visual Regression falhou (auth/infra) |
-| 11 | CI - Replenishment Module Quality Gate | 41102931819 | [link](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41102931819) | 2026-10-30 | audit / Run E2E Tests (Smoke) | E2E Smoke falhou (auth/infra) |
+### 2a. Workflows em falha ATUALMENTE (5)
+
+| # | Workflow | Run ID (última) | URL | Causa Raiz | Status PR #2854 |
+|---|----------|----------------|-----|------------|----------------|
+| 1 | CI Security & Drift Checks | 41134852492 | [link](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852492) | Fuzz test lendo arquivo errado pós-split E128 | ✅ Fix commitado |
+| 2 | Branch Protection Sentinel | 41134852421 | [link](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852421) | 23 commits sem padrão convencional já em main | 📋 PENDENCIAS.md P1 |
+| 3 | E2E (Playwright) | 41134852533 | [link](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852533) | Bug `useListUrlState` — sem sync-on-mount para remover defaults da URL | ✅ Fix commitado |
+| 4 | E2E • Swatch QuickView | 41134852559 | [link](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852559) | webkit: runner shutdown; chromium/firefox: timeout (artefatos 5-8GB) | 📋 PENDENCIAS.md P3 |
+| 5 | Nightly Full CI | 41161391625 | [link](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41161391625) | E2E Visual regression + Playwright shards (infra runner) | 📋 PENDENCIAS.md P4 |
+
+### 2b. Workflows que ESTAVAM em falha e hoje estão VERDES (6)
+
+> Foram falhas transitórias de infra/auth que se resolveram nas re-execuções automáticas.
+
+| Workflow | Última execução com falha | Nova execução (success) |
+|----------|--------------------------|------------------------|
+| Uptime Monitor | [run/41124195036](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41124195036) | [run/41164886753](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41164886753) ✅ |
+| E2E — Critical Flows & Error Boundaries | [run/41115240508](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41115240508) | [run/41134852668](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852668) ✅ |
+| E2E — Personalization Flow | [run/41115240723](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41115240723) | [run/41134852480](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852480) ✅ |
+| Quote Builder Delivery Quality | [run/41114861094](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41114861094) | [run/41134852447](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852447) ✅ |
+| CI - Replenishment Module Quality Gate | [run/41102931819](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41102931819) | [run/41134852537](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852537) ✅ |
+| Running Copilot Code Review | [run/41115245979](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41115245979) | Nova execução automática ✅ |
+
+### 2c. Inventário de Workflows Verdes (23 workflows verdes em main `554ef41b`)
+
+| Workflow | Run ID | Conclusão |
+|----------|--------|-----------|
+| CI - Replenishment Module Quality Gate | [run/41134852537](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852537) | ✅ success |
+| CodeQL | [run/41134852598](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852598) | ✅ success |
+| Deploy Gates | [run/41134852574](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852574) | ✅ success |
+| E2E — Critical Flows & Error Boundaries | [run/41134852668](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852668) | ✅ success |
+| E2E — Personalization Flow | [run/41134852480](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852480) | ✅ success |
+| Gitleaks — Full History Audit | [run/41134852499](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852499) | ✅ success |
+| Lint untypedFrom | [run/41134852417](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852417) | ✅ success |
+| Lovable Autoheal | [run/41134852498](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852498) | ✅ success |
+| Lovable Edit Tracker | [run/41134852473](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852473) | ✅ success |
+| No Prod Leak in Dev/Test Config | [run/41134852508](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852508) | ✅ success |
+| Policies Baseline | [run/41134852459](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852459) | ✅ success |
+| Quote Builder Delivery Quality | [run/41134852447](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852447) | ✅ success |
+| Quote Number Hardening — Verify | [run/41151109037](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41151109037) | ✅ success |
+| Release Please | [run/41134852575](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852575) | ✅ success |
+| Required Checks Guard | [run/41134852511](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852511) | ✅ success |
+| SSOT Supabase Guard | [run/41134852478](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852478) | ✅ success |
+| Security Scan | [run/41134852405](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852405) | ✅ success |
+| Select Columns vs Types | [run/41134852427](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852427) | ✅ success |
+| Static Health Checks | [run/41134852435](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852435) | ✅ success |
+| Supabase Linter Gate | [run/41134852587](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852587) | ✅ success |
+| TS Unused Locals Ratchet | [run/41134852462](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852462) | ✅ success |
+| UI · Visual & A11y | [run/41134852453](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852453) | ✅ success |
+| Uptime Monitor | [run/41164886753](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41164886753) | ✅ success |
 
 ---
 
@@ -89,9 +131,13 @@ Não é possível corrigir por código — são falhas de autenticação/infra d
 
 | Ação | Status |
 |------|--------|
-| Fix de `QuoteBuilderSummaryAlignment.fuzz.test.ts` (split E128) | ✅ PR #2854 aberto |
-| PENDENCIAS.md criado com bloqueadores registrados | ✅ |
-| Baseline local documentado | ✅ |
+| Fix de `QuoteBuilderSummaryAlignment.fuzz.test.ts` (split E128) | ✅ commitado |
+| Fix de `useListUrlState.ts` — sync-on-mount para remover defaults da URL | ✅ commitado |
+| PENDENCIAS.md criado com bloqueadores registrados e diagnósticos verificados | ✅ |
+| Baseline local documentado (§1, §5) | ✅ |
+| Inventário de workflows verdes (§2c) | ✅ 23 verdes |
+| Comparação baseline × final incluindo lint OOM (§7) | ✅ sem piora |
+| PR #2854 aberto e inscrito para eventos de CI | ✅ CI em execução |
 
 ---
 
@@ -113,25 +159,41 @@ Test Files  1131 passed | 130 skipped (1261)
 
 ## 6. Prova de Conclusão
 
-| Workflow | Última Execução (falha) | PR de Correção | Status |
-|----------|------------------------|----------------|--------|
-| CI Security & Drift Checks | [run/41134852492](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852492) | [PR #2854](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2854) | ⏳ Aguardando CI do PR |
-| Branch Protection Sentinel | [run/41134852421](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852421) | — | 📋 PENDENCIAS.md |
-| E2E (Playwright) | [run/41134852533](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852533) | — | 📋 PENDENCIAS.md |
-| E2E • Swatch QuickView | [run/41134852559](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852559) | — | 📋 PENDENCIAS.md |
-| Nightly Full CI | [run/41161391625](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41161391625) | — | 📋 PENDENCIAS.md |
-| Uptime Monitor | [run/41124195036](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41124195036) | — | 📋 PENDENCIAS.md |
-| Running Copilot Code Review | [run/41115245979](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41115245979) | — | 📋 PENDENCIAS.md |
-| E2E — Critical Flows | [run/41115240508](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41115240508) | — | 📋 PENDENCIAS.md |
-| E2E — Personalization Flow | [run/41115240723](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41115240723) | — | 📋 PENDENCIAS.md |
-| Quote Builder Delivery Quality | [run/41114861094](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41114861094) | — | 📋 PENDENCIAS.md |
-| CI - Replenishment Module Quality Gate | [run/41102931819](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41102931819) | — | 📋 PENDENCIAS.md |
+> Estado verificado em 2026-10-31 04:00 UTC. Workflows que antes falhavam e hoje estão
+> verdes na main estão marcados ✅. Workflows com fix em andamento (PR #2854 com CI em
+> execução) estão marcados ⏳. Workflows bloqueados por infra/governança estão em 📋 PENDENCIAS.md.
+
+### Workflows corrigíveis — estado do fix
+
+| Workflow | Última Falha (run) | PR de Correção | Conclusão Esperada |
+|----------|-------------------|----------------|-------------------|
+| CI Security & Drift Checks | [run/41134852492](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852492) | [PR #2854](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2854) | ⏳ CI do PR em execução |
+| E2E (Playwright) | [run/41134852533](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852533) | [PR #2854](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2854) | ⏳ CI do PR em execução |
+
+### Workflows que JÁ estão verdes na main (resolução automática)
+
+| Workflow | Última Falha | Nova Execução Success | Conclusão |
+|----------|-------------|----------------------|-----------|
+| E2E — Critical Flows & Error Boundaries | [run/41115240508](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41115240508) | [run/41134852668](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852668) | ✅ success |
+| E2E — Personalization Flow | [run/41115240723](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41115240723) | [run/41134852480](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852480) | ✅ success |
+| Quote Builder Delivery Quality | [run/41114861094](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41114861094) | [run/41134852447](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852447) | ✅ success |
+| CI - Replenishment Module Quality Gate | [run/41102931819](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41102931819) | [run/41134852537](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852537) | ✅ success |
+| Uptime Monitor | [run/41124195036](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41124195036) | [run/41164886753](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41164886753) | ✅ success |
+| Running Copilot Code Review | [run/41115245979](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41115245979) | Re-execução automática | ✅ success |
+
+### Bloqueadores de infra/governança (PENDENCIAS.md)
+
+| Workflow | Última Falha | Motivo | Item |
+|----------|-------------|--------|------|
+| Branch Protection Sentinel | [run/41134852421](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852421) | 23 commits sem padrão já em main; não corrigível retroativamente sem force push | P1 |
+| E2E • Swatch QuickView | [run/41134852559](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852559) | Runner shutdown (webkit) + timeout 5-8GB artefatos | P3 |
+| Nightly Full CI | [run/41161391625](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41161391625) | E2E Visual baselines + Playwright shards (infra runner) | P4 |
 
 ---
 
 ## 7. Comparação Baseline × Final
 
-| Métrica | Baseline (main `554ef41b`) | Pós-PR #2854 (`fb619cea`) | Piora? |
+| Métrica | Baseline (main `554ef41b`) | Pós-PR #2854 (`3b4e42dd`) | Piora? |
 |---------|---------------------------|--------------------------|--------|
 | `npm run build` | ✅ EXIT 0 | ✅ EXIT 0 | Não |
 | `tsc --noEmit` | ✅ EXIT 0 (0 erros) | ✅ EXIT 0 (0 erros) | Não |
