@@ -142,9 +142,12 @@ Não é possível corrigir por código — são falhas de autenticação/infra d
 
 ---
 
-## 5. Resultado dos Testes Unitários (Baseline)
+## 5. Resultado dos Testes Unitários
 
-> Atualizado após conclusão do `vitest run` em background.
+### 5a. Suíte Completa — HEAD pós-correção (`08c73e6a`)
+
+> Executada localmente em 2026-10-31 com todos os 3 commits de correção já aplicados
+> (bc75380d fuzz-test E128, fb619cea useListUrlState mount, 7c553377 race condition search-sync).
 
 ```
 Test Files  1131 passed | 130 skipped (1261)
@@ -154,7 +157,27 @@ Test Files  1131 passed | 130 skipped (1261)
   Exit code: 0
 ```
 
-✅ **24.982 testes passando, 0 falhas.**
+✅ **24.982 testes passando, 0 falhas.** Verificado no HEAD com todas as correções.
+
+### 5b. Teste Direcionado dos Arquivos Modificados
+
+> Executado em 2026-10-31T04:33:23Z no HEAD `08c73e6a` para validação rápida pós-fix.
+
+```bash
+npx vitest run \
+  src/components/quotes/__tests__/QuoteBuilderSummaryAlignment.fuzz.test.ts \
+  src/hooks/common/__tests__/useListUrlState.test.tsx
+```
+
+```
+Test Files  2 passed (2)
+     Tests  20 passed (20)
+  Start at  04:33:23
+  Duration  3.94s
+  Exit code: 0
+```
+
+✅ **20 testes passando nos 2 arquivos diretamente modificados pelos fixes.**
 
 ---
 
