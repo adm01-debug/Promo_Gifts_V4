@@ -823,3 +823,23 @@ O único required check (`Gate Final - Deploy Ready`) para `b92bcf876` está `qu
 `in_progress`: Quote Builder Delivery, Supabase Linter Gate.
 `success` já confirmado: Policies Baseline, SSOT Supabase Guard, Security Scan, UI Visual & A11y, No Prod Leak, Static Health Checks, Release Please, Lovable Edit Tracker, Select Columns vs Types.
 | 5 | Branch Protection Sentinel | Avaliar tolerância ou configurar Lovable para usar formato de commit com `(#NNN)` |
+
+## P32 — baseline e critérios da Onda 0 revalidados (2026-10-31T00:46Z)
+
+### Baseline local em `main` `554ef41b44c9`
+
+- `npm ci`: exit 0; 1.168 pacotes auditados; 29 vulnerabilidades (17 moderadas, 12 altas).
+- `npm run build:verify`: exit 0; TypeScript sem erros, lint 0 erros/0 avisos, build e guards aprovados.
+- `npm run test:run -- --reporter=dot --silent`: exit 1; 1.250 arquivos passaram, 1 falhou, 130 ignorados. A falha é `QuoteBuilderSummaryAlignment.fuzz.test.ts` (espera `leading-[1.125rem]` ausente em `QuoteBuilderSummaryColumn.tsx`); o ajuste está no PR aberto [#2846](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2846), não em `main`.
+- `npm audit --audit-level high`: exit 1 por 12 vulnerabilidades altas em dependências de Lighthouse/Puppeteer. `npm audit fix --force` propõe downgrade major de `@lhci/cli`; não executar sem avaliar uma correção compatível.
+
+### Bloqueios atualizados
+
+| Item | Evidência | Estado |
+|---|---|---|
+| P200-E004 — Gate 3 e Deploy Gates | [Run #41150474823](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41150474823): Gate 3 - E2E Smoke = `success`, mas Gate Final = `failure` porque Gate 0.5 Dependency Audit falhou. O run anterior [#41147611100](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41147611100) passou; a condição de dois runs PR consecutivos verdes não está satisfeita. | Aberto; causa Gate 0.5 registrada acima. |
+| P200-E007 — E23 | Implementado na branch `fix/p200-e007-e008-gates-20261031`: E23 removido de `deploy-ready.needs`/agregação e declarado não bloqueante em `CLAUDE.md`; Gate 3 reprova skip em push/PR confiável. 5 testes focados passam. | Aguardando PR e validação remota; sem recibo ainda. |
+| P200-E008 — Policies baseline | Implementado na branch `fix/p200-e007-e008-gates-20261031`: execução live obrigatória para push/PR do repo, fork com validação estática sem token; checks live do Supabase Security Gate habilitados em PR confiável. Ausência local do token retorna `inconclusive`/exit 2. | Aguardando PR e validação remota; sem recibo ainda. |
+| P200-E009 — REGRA #9 | `CLAUDE.md` mantém o título antigo; o critério literal `grep -c "exige PR" CLAUDE.md` não encontra a frase exigida. | Pendente; será tratada em PR independente. |
+
+E001/E005/E006 continuam dependentes do PO conforme R13 do plano. Nenhuma alteração administrativa do Supabase/GitHub foi feita.
