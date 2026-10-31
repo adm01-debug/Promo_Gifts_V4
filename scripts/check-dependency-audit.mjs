@@ -156,6 +156,47 @@ export const REVIEWED_MINIMATCH_VIA = new Map([
   ['rimraf', ['glob']],
 ]);
 
+// Effects are part of the reviewed reachability graph too. A new consumer can
+// make an otherwise dev-only advisory affect a production path, so the gate
+// must fail if npm reports any additional dependent package.
+export const REVIEWED_MINIMATCH_EFFECTS = new Map([
+  ['@eslint-community/eslint-utils', ['@typescript-eslint/utils', 'eslint']],
+  ['@eslint/config-array', ['eslint']],
+  ['@eslint/eslintrc', ['eslint']],
+  ['@typescript-eslint/eslint-plugin', ['eslint-plugin-unused-imports']],
+  ['@typescript-eslint/parser', ['@typescript-eslint/eslint-plugin']],
+  ['@typescript-eslint/type-utils', ['@typescript-eslint/eslint-plugin']],
+  ['@typescript-eslint/typescript-estree', ['@typescript-eslint/parser', '@typescript-eslint/type-utils', '@typescript-eslint/utils']],
+  ['@typescript-eslint/utils', ['@typescript-eslint/eslint-plugin', '@typescript-eslint/type-utils']],
+  ['chrome-launcher', ['@lhci/cli']],
+  ['eslint', ['@eslint-community/eslint-utils', '@typescript-eslint/eslint-plugin', '@typescript-eslint/parser', '@typescript-eslint/type-utils', '@typescript-eslint/utils', 'eslint-plugin-unused-imports']],
+  ['eslint-plugin-jsx-a11y', []],
+  ['eslint-plugin-react', []],
+  ['eslint-plugin-unused-imports', []],
+  ['glob', ['rimraf']],
+  ['minimatch', ['@eslint/config-array', '@eslint/eslintrc', '@typescript-eslint/typescript-estree', 'eslint', 'eslint-plugin-jsx-a11y', 'eslint-plugin-react', 'glob']],
+  ['rimraf', ['chrome-launcher']],
+]);
+
+export const REVIEWED_MINIMATCH_RANGES = new Map([
+  ['@eslint-community/eslint-utils', '*'],
+  ['@eslint/config-array', '*'],
+  ['@eslint/eslintrc', '0.0.1 || >=0.1.1'],
+  ['@typescript-eslint/eslint-plugin', '*'],
+  ['@typescript-eslint/parser', '*'],
+  ['@typescript-eslint/type-utils', '>=5.9.2-alpha.0'],
+  ['@typescript-eslint/typescript-estree', '>=6.16.0'],
+  ['@typescript-eslint/utils', '*'],
+  ['chrome-launcher', '0.3.1 - 0.13.4'],
+  ['eslint', '0.7.1 - 2.0.0-rc.1 || >=4.1.0'],
+  ['eslint-plugin-jsx-a11y', '>=6.5.0'],
+  ['eslint-plugin-react', '>=7.23.0'],
+  ['eslint-plugin-unused-imports', '0.0.3 - 1.0.1 || >=1.1.4'],
+  ['glob', '3.0.0 - 13.0.6'],
+  ['minimatch', '<11.0.1'],
+  ['rimraf', '2.3.0 - 3.0.2 || >=4.2.0'],
+]);
+
 const REVIEWED_MINIMATCH_DIRECT_PACKAGES = new Set([
   '@typescript-eslint/eslint-plugin',
   '@typescript-eslint/parser',
@@ -167,7 +208,11 @@ const REVIEWED_MINIMATCH_DIRECT_PACKAGES = new Set([
 const MINIMATCH_ADVISORY_URL = 'https://github.com/advisories/GHSA-g3hv-75wg-m249';
 
 function isAllowedMinimatchChainPackage(packageName, vulnerability) {
-  if (!REVIEWED_MINIMATCH_VIA.has(packageName) || vulnerability.severity !== 'moderate') {
+  if (
+    !REVIEWED_MINIMATCH_VIA.has(packageName) ||
+    vulnerability.severity !== 'moderate' ||
+    vulnerability.range !== REVIEWED_MINIMATCH_RANGES.get(packageName)
+  ) {
     return false;
   }
   if (vulnerability.isDirect !== REVIEWED_MINIMATCH_DIRECT_PACKAGES.has(packageName)) {
@@ -178,8 +223,13 @@ function isAllowedMinimatchChainPackage(packageName, vulnerability) {
   if (packageName === 'minimatch') {
     const advisory = via[0];
     const fix = vulnerability.fixAvailable;
+    const expectedEffects = REVIEWED_MINIMATCH_EFFECTS.get(packageName);
     return (
       vulnerability.range === '<11.0.1' &&
+      Array.isArray(expectedEffects) &&
+      Array.isArray(vulnerability.effects) &&
+      vulnerability.effects.length === expectedEffects.length &&
+      vulnerability.effects.every((entry, index) => entry === expectedEffects[index]) &&
       via.length === 1 &&
       typeof advisory === 'object' &&
       advisory?.source === 1244012 &&
@@ -195,10 +245,15 @@ function isAllowedMinimatchChainPackage(packageName, vulnerability) {
   }
 
   const expectedVia = REVIEWED_MINIMATCH_VIA.get(packageName);
+  const expectedEffects = REVIEWED_MINIMATCH_EFFECTS.get(packageName);
   return (
     Array.isArray(expectedVia) &&
     via.length === expectedVia.length &&
-    via.every((entry, index) => entry === expectedVia[index])
+    via.every((entry, index) => entry === expectedVia[index]) &&
+    Array.isArray(expectedEffects) &&
+    Array.isArray(vulnerability.effects) &&
+    vulnerability.effects.length === expectedEffects.length &&
+    vulnerability.effects.every((entry, index) => entry === expectedEffects[index])
   );
 }
 
