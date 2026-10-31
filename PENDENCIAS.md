@@ -43,20 +43,36 @@ aceitos pelo `scripts/sentinel-check.sh`.
 **Última execução com falha:** [run/41134852533](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852533)
 **Data:** 2026-10-30
 
-**Erro exato:**
+**Erro exato verificado nos logs (job 124339662718):**
 ```
-Specs de URL-state em /carrinhos ou /orcamentos falharam.
+Error: expect(received).toBeNull()
+Received: "all"
+Timeout 3000ms exceeded while waiting on the predicate
+
+  47 |     await expect
+  48 |       .poll(() => new URL(page.url()).searchParams.get('status'), { timeout: 3_000 })
+> 49 |       .toBeNull();
+     |                   ^
+     at e2e/orcamentos/list-url-state-restore.spec.ts:49:8
 ```
 
-**Causa raiz:** Testes `list-url-state-restore.spec.ts` dependem de:
-- Credenciais E2E válidas (`E2E_USER_EMAIL`, `E2E_USER_PASSWORD`)
-- Dados de test fixtures em Supabase (`doufsxqlfjyuvxuezpln`)
-- Rotas `/carrinhos` e `/orcamentos` respondendo com estado correto
+Autenticação FUNCIONA (E2E_USER_EMAIL está configurado — `***` no log = secret presente).
 
-**O que o PO precisa fazer:**
-- Verificar se os secrets `E2E_USER_EMAIL` e `E2E_USER_PASSWORD` estão configurados no repositório GitHub (Settings → Secrets → Actions)
-- Verificar se a conta de teste tem dados válidos de carrinhos/orçamentos no Supabase
-- Executar os testes localmente com as credenciais para isolar se é problema de dados ou de código
+**Causa raiz (verificada por análise do código):** Bug em `useListUrlState.ts` — o hook
+garante via `updateParam` que defaults são removidos da URL quando o usuário altera filtros,
+mas NÃO havia efeito de sync-on-mount para remover params com valor = default quando a página
+é carregada com eles na URL (ex: `/orcamentos?status=all`).
+
+**3 testes falhando:**
+1. `e2e/carrinhos/list-url-state-restore.spec.ts:38` — reload preserva filtros e ordenação
+2. `e2e/carrinhos/list-url-state-restore.spec.ts:60` — valores default não poluem a URL após hidratação
+3. `e2e/orcamentos/list-url-state-restore.spec.ts:42` — valores default são removidos da URL após hidratação
+
+**Fix aplicado:** `src/hooks/common/useListUrlState.ts` — adicionado `useEffect` de mount
+que itera sobre `keyList` e remove params cujo valor = default via `setSearchParams`.
+Commitado em `fix/alignment-fuzz-test-e128-split` (ver PR #2854).
+
+**Status:** ✅ Fix de código aplicado e commitado. Aguarda CI verde no PR.
 
 ---
 
