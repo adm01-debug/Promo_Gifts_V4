@@ -5,6 +5,13 @@ Todas as mudanças notáveis deste projeto são documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/),
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.4.1](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.4.0...v1.4.1) (2026-10-31)
+
+
+### Bug Fixes
+
+* **ci:** remove workflow vazio que quebra actionlint ([d4e19a6](https://github.com/adm01-debug/Promo_Gifts_V4/commit/d4e19a64990e2d232f42c7b856462271538a8f7a))
+
 ## [1.4.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.3.2...v1.4.0) (2026-10-31)
 
 
