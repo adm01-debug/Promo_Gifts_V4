@@ -118,6 +118,8 @@ export function useListUrlState<K extends string>(
   // (ex: /orcamentos?status=all → /orcamentos após hidratação).
   // O contrato do hook garante que defaults não poluem deep-links; este efeito
   // aplica a limpeza quando a página é carregada com tais params na URL.
+  // O efeito é idempotente: também pode reavaliar quando o Router recria
+  // setSearchParams após navegações; só escreve se ainda houver defaults na URL.
   // Diagnóstico: E2E list-url-state-restore.spec.ts:49 — `status=all` não removido.
   useEffect(() => {
     const current = searchParamsRef.current;
@@ -131,8 +133,7 @@ export function useListUrlState<K extends string>(
       }
     }
     if (dirty) setSearchParams(next, { replace: true });
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- mount-only; keyList/keysRef/searchParamsRef/setSearchParams lidos frescos na primeira renderização, não podem ser deps (loop infinito via setSearchParams)
-  }, []);
+  }, [keyList, setSearchParams]);
 
   // Sincroniza busca debounced → URL. Idempotente: só navega se a URL ainda
   // não reflete o valor (evita replaceState redundante no mount e corta o loop).
