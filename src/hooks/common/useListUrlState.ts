@@ -114,13 +114,41 @@ export function useListUrlState<K extends string>(
     [updateParam, stableKeys, searchKey],
   );
 
+  // Sync-on-mount: remove da URL qualquer param com valor igual ao default
+  // (ex: /orcamentos?status=all → /orcamentos após hidratação).
+  // O contrato do hook garante que defaults não poluem deep-links; este efeito
+  // aplica a limpeza quando a página é carregada com tais params na URL.
+  // Diagnóstico: E2E list-url-state-restore.spec.ts:49 — `status=all` não removido.
+  useEffect(() => {
+    const current = searchParamsRef.current;
+    const defaults = keysRef.current;
+    let dirty = false;
+    const next = new URLSearchParams(current);
+    for (const k of keyList) {
+      if (current.get(k) === defaults[k]) {
+        next.delete(k);
+        dirty = true;
+      }
+    }
+    if (dirty) setSearchParams(next, { replace: true });
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- mount-only; keyList/keysRef/searchParamsRef/setSearchParams lidos frescos na primeira renderização, não podem ser deps (loop infinito via setSearchParams)
+  }, []);
+
   // Sincroniza busca debounced → URL. Idempotente: só navega se a URL ainda
   // não reflete o valor (evita replaceState redundante no mount e corta o loop).
+  // `q=` (string vazia) e ausência do param (`null`) são equivalentes —
+  // ambos representam "sem busca ativa". Sem essa normalização, o efeito de
+  // sync-on-mount (acima) que remove `q=` via setSearchParams(value, replace)
+  // pode ser sobrescrito quando este efeito faz setSearchParams(prev => …)
+  // com `prev = URL original`, restaurando os params que o cleanup acabou de
+  // remover (ex.: `status=all&sort=newest` ao carregar `?status=all&sort=newest&q=`).
   useEffect(() => {
     if (!searchKey) return;
     const defaultValue = keysRef.current[searchKey];
     const target = !debouncedSearch || debouncedSearch === defaultValue ? null : debouncedSearch;
-    if (searchParamsRef.current.get(searchKey) === target) return;
+    const rawUrl = searchParamsRef.current.get(searchKey);
+    const effectiveUrl = !rawUrl || rawUrl === defaultValue ? null : rawUrl;
+    if (effectiveUrl === target) return;
     updateParamRef.current(searchKey, debouncedSearch, defaultValue);
   }, [debouncedSearch, searchKey]);
 
