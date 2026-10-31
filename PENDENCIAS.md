@@ -1,5 +1,5 @@
 # PENDÊNCIAS CI — Promo Gifts V4
-**Atualizado em:** 2026-10-30 (BRT; consulta até 2026-10-31 01:50 UTC)
+**Atualizado em:** 2026-10-30 (BRT; consulta até 2026-10-31 02:02 UTC)
 **Branch de correção:** `claude_04/beautiful-gates-bvocz5` (PR #2597 — **MERGEADO** ✅)
 
 ## Revalidação da ponta da `main` — 2026-10-31 UTC / 2026-10-30 BRT
@@ -22,6 +22,10 @@ Inventário read-only dos 100 runs mais recentes consultados da `main`, cujo HEA
 | [#2849](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2849) | `Deploy Gates` enfileirado ([run #41155689252](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41155689252)); `CI - Replenishment Module Quality Gate` falhou ([run #41155689263](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41155689263)). | Aguardar Gate Final e diagnosticar a falha de reposição antes de merge. |
 | [#2850](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2850) | Gate Final enfileirado ([run #41156665314](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41156665314)); outros workflows ainda em execução/enfileirados na consulta. | Sem merge até todos os checks requeridos passarem; por alterar comportamento da aplicação, não mesclar se isso disparar deploy de produção. |
 | [#2851](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2851) | PR de teste-only criado; workflows recém-enfileirados ([Gate Final #41157182500](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41157182500)). | Aguardar checks remotos e a conclusão do Gate Final. Não mesclar enquanto houver checks pendentes ou vermelhos. |
+
+**Detalhe do CI - Replenishment Module Quality Gate:** nos PRs #2847, #2849 e #2850 o passo `E2E — Paridade visual /novidades vs /reposicao` falhou no teste de grade com cinco colunas: spread de altura `56.171875px` excedeu o limite existente de `48px` (`novidades-reposicao-card-parity.spec.ts:361`). Runs: [#41154240611](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41154240611), [#41155689263](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41155689263) e [#41156665115](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41156665115). O mesmo gate passou na execução da `main` [#41134852537](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852537). Causa entre branches não comprovada; revisar o artifact `parity-report` e comparar conteúdo/fixtures antes de decidir se é regressão visual ou variação de cenário. Não elevar tolerância nem atualizar baseline sem prova visual e aprovação. Os checks continuam bloqueadores para os PRs afetados.
+
+**Dependências:** nesta instalação limpa, `npm ci` terminou com exit 0, mas o resumo do npm reportou 29 vulnerabilidades no conjunto instalado (17 moderate, 12 high). Não rodei `npm audit fix` nem alterei versões. A falha exige triagem separada da cadeia de dependências; a execução de `Deploy Gates` na `main` permaneceu verde neste snapshot.
 
 Nenhum dado, schema, migration ou segredo foi alterado no Supabase nesta rodada.
 
