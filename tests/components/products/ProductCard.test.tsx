@@ -5,6 +5,8 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { fireEvent, screen } from "@testing-library/react";
 import { renderWithProviders } from "../render-helpers";
 import React from "react";
+import { useLocation } from "react-router-dom";
+import type { Product } from "@/types/product-catalog";
 
 vi.mock("@/utils/image-utils", () => ({
   getCdnUrl: vi.fn((url: string) => url),
@@ -253,6 +255,22 @@ describe("ProductCard", () => {
     fireEvent.click(bambooSwatch);
 
     expect(bambooSwatch).toHaveAttribute("aria-checked", "true");
+  });
+
+  it("não navega ao clicar na área de swatches do card", async () => {
+    const { ProductCard } = await import("@/components/products/ProductCard");
+    const CurrentRoute = () => <span data-testid="current-route">{useLocation().pathname}</span>;
+    renderWithProviders(
+      <>
+        <ProductCard product={mockProductWithSingleColor as unknown as Product} />
+        <CurrentRoute />
+      </>,
+      { route: "/produtos" },
+    );
+
+    fireEvent.click(screen.getByRole("radiogroup"));
+
+    expect(screen.getByTestId("current-route")).toHaveTextContent("/produtos");
   });
 
   it("renders product without colors gracefully", async () => {

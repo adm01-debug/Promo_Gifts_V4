@@ -486,8 +486,7 @@ export const ProductCard = memo(
         }
       };
 
-      // Multi-variant carousel — `allMatchingVariants` é derivado acima
-      // (TDZ FIX: precisa estar antes do primeiro useEffect que o consome).
+      // Multi-variant carousel: allMatchingVariants precede o primeiro useEffect (TDZ).
       const hasMultipleVariants = allMatchingVariants.length > 1;
       const safeVariantIdx = hasMultipleVariants
         ? Math.min(activeVariantIdx, allMatchingVariants.length - 1)
@@ -615,7 +614,8 @@ export const ProductCard = memo(
               actionBusyRef.current ||
               variantPickerOpen ||
               collectionModalOpen ||
-              quickViewOpen
+              quickViewOpen ||
+              (e.target instanceof Element && e.target.closest('[role="radiogroup"]'))
             ) {
               e.stopPropagation();
               return;
