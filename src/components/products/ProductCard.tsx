@@ -493,10 +493,8 @@ export const ProductCard = memo(
         ? Math.min(activeVariantIdx, allMatchingVariants.length - 1)
         : 0;
       const currentVariant = hasMultipleVariants ? allMatchingVariants[safeVariantIdx] : null;
-      const activeColorName =
-        currentVariant?.name ||
-        selectedColorFromStore ||
-        getActiveColorName(product, activeColorFilter);
+      const fallbackColor = () => getActiveColorName(product, activeColorFilter);
+      const activeColorName = currentVariant?.name || selectedColorFromStore || fallbackColor();
 
       // Se houver uma cor ativa (selecionada ou filtrada), forçamos a imagem dessa cor
       const currentImageUrl = useMemo(() => {
