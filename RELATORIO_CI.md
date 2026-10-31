@@ -261,3 +261,14 @@ Tabela de prova (Seção 8) + baseline local (Seções 1, 10) + comparação bas
 | test:ci-core | ✅ 957 testes | ✅ 957 testes | Sem regressão |
 | Gate Final | ✅ success | ✅ success | Sem regressão |
 | Workflows NÃO-REQUIRED em falha | 8 (PO-BLOCKED) | 8 (PO-BLOCKED) | Sem regressão — mesmos bloqueios estruturais |
+
+## 14. Baseline local — `main` `554ef41b44c9` (2026-10-31T00:46Z)
+
+| Etapa | Resultado | Evidência |
+|---|---|---|
+| `npm ci` | ✅ exit 0 | 1.168 pacotes auditados; aviso de 29 vulnerabilidades (17 moderadas, 12 altas). |
+| `npm run build:verify` | ✅ exit 0 | TypeScript sem erros; lint 0 erros/0 avisos; Vite build e guards passaram. |
+| `npm run test:run -- --reporter=dot --silent` | ❌ exit 1 | 1.250 arquivos passaram, 1 falhou, 130 ignorados; 25.900 testes passaram, 1.135 ignorados, 24 TODO. A falha é `QuoteBuilderSummaryAlignment.fuzz.test.ts`: espera `leading-[1.125rem]`, ausente em `QuoteBuilderSummaryColumn.tsx`. |
+| `npm audit --audit-level high` | ❌ exit 1 | 12 vulnerabilidades altas, concentradas em dependências transitivas de Lighthouse/Puppeteer (`basic-ftp`, `extract-zip`, `chromium-bidi`/`zod`). O caminho automático disponível propõe downgrade major de `@lhci/cli`; nenhuma alteração de dependência foi feita. |
+
+O teste de alinhamento já está sendo tratado no PR aberto [#2846](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2846); essa alteração ainda não está em `main` e não foi incorporada neste baseline. O status do Gate 0.5 permanece uma pendência de CI; ver `PENDENCIAS.md` §P32.

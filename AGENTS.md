@@ -1,7 +1,7 @@
 # AGENTS.md — espelho do CLAUDE.md (contexto multi-agente)
 
 > Este arquivo é gerado/espelhado a partir do `CLAUDE.md` para agentes que só leem AGENTS.md (Codex, OpenCode, etc.). Edite o CLAUDE.md; o corpo abaixo deve permanecer idêntico ao CLAUDE.md.
-> Última sincronização: 2026-10-29 (E056 ampliada a todos os agentes e espelho integral atualizado).
+> Última sincronização: 2026-10-31 (P200-E007/E008; espelho integral atualizado).
 
 ---
 
@@ -448,7 +448,7 @@ sequência; se qualquer um falhar, o deploy é bloqueado.
 | Gate 1.16 | Quotes list invariants — integridade da listagem de orçamentos | step | sim |
 | Gate 1.17 | CODEOWNERS coverage de gate files (E72) | step | sim |
 | Gate 1.18 | Ledger de conflitos semânticos (E188) — PRs de agentes diferentes bloqueados sem aprovação | step | sim |
-| Gate E23 | Secrets check — sem referências a segredos não declarados em `SEGREDOS.md` | job | sim |
+| Gate E23 | Sinalizador `has_e2e` — informa se Gate 3 pode executar testes autenticados | job | não (Gate 3 falhará se for pulado em push ou PR confiável) |
 | Gate 2 | Testes unitários (`vitest`) — job `unit-tests` | job | sim |
 | Gate 2.5 | Integridade transacional PostgreSQL — job `database-integrity` | job | sim |
 | Gate 3 | E2E Smoke (Playwright, chromium) — job `e2e-smoke` | job | sim |
