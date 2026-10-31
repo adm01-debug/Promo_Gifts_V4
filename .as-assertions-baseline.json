@@ -354,6 +354,8 @@
     "src/components/quotes/QuickQuoteFAB.tsx": 1,
     "src/components/quotes/QuoteAutoSave.tsx": 2,
     "src/components/quotes/QuoteBuilderSummaryColumn.tsx": 2,
+    "src/components/quotes/QuoteBuilderSummaryDialogs.tsx": 1,
+    "src/components/quotes/QuoteBuilderSummaryItems.tsx": 1,
     "src/components/quotes/QuoteItemEditorSheet.tsx": 1,
     "src/components/quotes/QuoteItemsList.tsx": 1,
     "src/components/quotes/QuoteItemsTable.tsx": 2,
@@ -738,9 +740,6 @@
     "src/pages/CustomizableDashboard.tsx": 1,
     "src/pages/QAPage.tsx": 1,
     "src/pages/Simulation.tsx": 3,
-    "src/pages/__visual/QuoteAddProductButtonHarness.tsx": 1,
-    "src/pages/__visual/QuoteFreightBlockHarness.tsx": 1,
-    "src/pages/__visual/QuoteItemsListMobileHarness.tsx": 2,
     "src/pages/admin/AdminAiUsagePage.tsx": 1,
     "src/pages/admin/AdminCadastrosPage.tsx": 1,
     "src/pages/admin/AdminClientPerformancePage.tsx": 1,
@@ -863,6 +862,10 @@
     "src/utils/product-sorting.ts": 4,
     "src/utils/proposalPdfReactGenerator.ts": 3,
     "src/utils/undoToast.tsx": 1,
-    "src/utils/viacep.ts": 1
+    "src/utils/viacep.ts": 1,
+    "src/pages/__visual/QuoteAddProductButtonHarness.tsx": 1,
+    "src/pages/__visual/QuoteFreightBlockHarness.tsx": 1,
+    "src/pages/__visual/QuoteItemsListMobileHarness.tsx": 2,
+    "src/components/products/gallery/usePromoFlixPlayer.ts": 1
   }
 }
