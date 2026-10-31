@@ -44167,6 +44167,7 @@ export type Database = {
           category: string
           created_at: string
           id: string
+          idempotency_key: string | null
           is_read: boolean
           message: string
           metadata: Json | null
@@ -44180,6 +44181,7 @@ export type Database = {
           category?: string
           created_at?: string
           id?: string
+          idempotency_key?: string | null
           is_read?: boolean
           message: string
           metadata?: Json | null
@@ -44193,6 +44195,7 @@ export type Database = {
           category?: string
           created_at?: string
           id?: string
+          idempotency_key?: string | null
           is_read?: boolean
           message?: string
           metadata?: Json | null
