@@ -41,7 +41,7 @@ test.describe('Carrinhos · restauração de filtros via URL @smoke', () => {
     await expect(page.getByTestId('page-title-carrinhos')).toBeVisible();
 
     // Estado antes do reload
-    await expect(page.getByTestId('carts-list-deadline-filter')).toContainText(/Próximos 3 dias/i);
+    await expect(page.getByTestId('carts-list-deadline-filter')).toContainText(/Próximos\s*\(3 dias\)/i);
     await expect(page.getByTestId('carts-list-sort')).toContainText(/Prazo: mais distante/i);
     await expect(page.getByTestId('carts-list-search')).toHaveValue('abc');
 
@@ -52,7 +52,7 @@ test.describe('Carrinhos · restauração de filtros via URL @smoke', () => {
     await expect(page).toHaveURL(/deadline=soon/);
     await expect(page).toHaveURL(/sort=deadline-desc/);
     await expect(page).toHaveURL(/q=abc/);
-    await expect(page.getByTestId('carts-list-deadline-filter')).toContainText(/Próximos 3 dias/i);
+    await expect(page.getByTestId('carts-list-deadline-filter')).toContainText(/Próximos\s*\(3 dias\)/i);
     await expect(page.getByTestId('carts-list-sort')).toContainText(/Prazo: mais distante/i);
     await expect(page.getByTestId('carts-list-search')).toHaveValue('abc');
   });
