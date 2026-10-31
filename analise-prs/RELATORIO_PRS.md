@@ -73,8 +73,14 @@ SELECT
 
 Resultado: `migrations_after_20261027=3, latest_migration=20261027160000, active_cron_jobs=134`
 
+**Re-verificação nesta sessão (2026-10-31T02:16:15Z):** `total_migrations=2552, latest_migration=20261027160000, active_cron_jobs=134` — idêntico ao check anterior. Nenhuma migration nova após os merges.
+
 Edge functions: todas ACTIVE (via `list_edge_functions`).  
-Nenhuma das 4 PRs mergeadas modificou migrations ou edge functions (confirmado por `git diff` nos diffs de cada PR).
+Nenhuma das 4 PRs mergeadas modificou migrations ou edge functions. Evidência por `git diff origin/main~N origin/main~(N-1) --name-only`:
+- #2844 (`a24ee07be`): `RELATORIO_CI.md` (1 arquivo — docs)
+- #2845 (`637fe57ee`): `docs/INDEX.md` + `docs/audits/P200_WAVE0_REVALIDACAO_2026-10-30.md` (2 arquivos — docs)
+- #2836 (`6bd5ce61c`): `scripts/plan-status.mjs` + testes (scripts — sem migration/edge function)
+- #2810 (`554ef41b4`): `PromoFlixPlayer.tsx` + `usePromoFlixPlayer.ts` (componentes React — sem migration/edge function)
 
 ---
 

@@ -83,7 +83,7 @@ Lotes 1-5: 136 arquivos, 1937 testes, 0 falhas
 
 ## BASELINE PÓS-MERGE (SHA `554ef41b`) — executado nesta sessão
 
-### TypeScript (`npx tsc -p tsconfig.app.json --noEmit`)
+### TypeScript (`npx tsc -p tsconfig.app.json --noEmit`) — re-executado 2026-10-31T02:10Z
 
 ```
 TSC_EXIT=0
@@ -91,6 +91,67 @@ Saída: (vazia — zero erros)
 ```
 
 **Resultado:** ✅ PASSA — zero erros TypeScript pós-merge das 4 PRs.
+
+---
+
+### Build (`npm run build`) — re-executado 2026-10-31T02:11Z
+
+```
+✓ built in 14.72s
+[chunk-cycles] OK: no static import cycles between production chunks.
+[production-harnesses] OK: no /__test routes or harness chunks in dist/.
+BUILD_EXIT=0
+```
+
+**Resultado:** ✅ Build limpo em 14.72s, zero ciclos, zero harnesses.
+
+---
+
+### Testes unitários (`npx vitest run tests/unit/`) — re-executado 2026-10-31T02:12Z
+
+```
+Test Files  1 failed | 30 passed (31)
+      Tests  3 failed | 1310 passed (1313)
+```
+
+**Falhas por nome (pré-existentes — MESMAS que o baseline pré-merge):**
+
+| Arquivo | Teste | Status |
+|---|---|---|
+| `tests/unit/date-utils.test.ts` | `formatDateTime > returns dd/MM/yyyy HH:mm for ISO string (BRT)` | FAIL |
+| `tests/unit/date-utils.test.ts` | `formatTime > returns HH:mm for ISO string` | FAIL |
+| `tests/unit/date-utils.test.ts` | `formatTime > zero-pads hours and minutes` | FAIL |
+
+**Conclusão:** Diff antes × depois = zero novas falhas.
+
+---
+
+### Lint pós-merge (via hook pre-push — 2026-10-31T02:03Z)
+
+```
+ESLint baseline gate [full] — atual: 0 erros, 0 warnings · baseline: 0 erros
+Δ vs baseline: regressões +0 · melhorias −0 · líquido +0
+✅ Nenhuma regressão de lint detectada.
+```
+
+Saída do hook pre-push no push de `30735da53` (task `bw8yjzxt2`, exit 0 confirmado).
+
+---
+
+### ESLint em worktree SHA `9541666b` (pré-merge) — executado 2026-10-31T02:15-02:18Z
+
+```
+# Worktree criado: scratchpad/lint-9541666b (detached HEAD 9541666bf)
+# npm ci: EXIT=0
+NODE_OPTIONS='--max-old-space-size=4096' node scripts/check-eslint-baseline.mjs
+
+ESLint baseline gate [full] — atual: 0 erros, 0 warnings · baseline: 0 erros
+Δ vs baseline: regressões +0 · melhorias −0 · líquido +0
+✅ Nenhuma regressão de lint detectada.
+ESLINT_EXIT=0
+```
+
+**Resultado:** ✅ 0 erros, 0 warnings em SHA `9541666b` (task `bhr4hy6ho` — exit 0 confirmado nesta sessão).
 
 ---
 
