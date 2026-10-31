@@ -14,7 +14,7 @@ import { describe, it, expect } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
-const SRC = readFileSync(resolve(__dirname, '../QuoteBuilderSummaryColumn.tsx'), 'utf8');
+const SRC = readFileSync(resolve(__dirname, '../QuoteBuilderSummaryItems.tsx'), 'utf8');
 
 // --- Extração dos tokens reais do source (SSOT) ---------------------------
 const REM_PX = 16; // base Tailwind
@@ -65,7 +65,7 @@ function simulate(_viewport: number, _dpr: number, _nameLen: number): Layout {
   return { containerH, buttonCenterY, textCenterY, touchSize, namePaddingRight };
 }
 
-describe('QuoteBuilderSummaryColumn — fuzz de alinhamento (centenas de simulações)', () => {
+describe('QuoteBuilderSummaryItems — fuzz de alinhamento (centenas de simulações)', () => {
   it('tokens-base coerentes (leading=18px, btn=12px, touch=32px)', () => {
     expect(LEADING_PX).toBe(18);
     expect(BTN_PX + 2 * TOUCH_INSET_PX).toBe(TOUCH_TARGET_MIN);
