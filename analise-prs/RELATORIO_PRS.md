@@ -253,3 +253,31 @@ npx vitest run "PromoFlix"  →  Test Files 1 passed (1) | Tests 22 passed (22) 
 | `analise-prs/dossies/PR-*.md` | Dossiê individual por PR (180+ arquivos) |
 | `analise-prs/baseline/gate2-vitest-build-output.md` | Comparação Gate 2 baseline × pós-merge |
 | `analise-prs/baseline/failing-tests-by-name.md` | 21 falhas do baseline (ambientais/timezone) |
+
+---
+
+## MERGE-TESTS LOCAIS — todos os 15 PRs restantes (2026-10-31)
+
+**Base:** `554ef41b44c9f318777d7e7b11189490a29a8c0a` (main pós-merges desta sessão)  
+**Método:** `git worktree add` + `git merge origin/<branch> --no-edit` + `npx tsc --noEmit`  
+**Baseline TSC no worktree:** 1 erro pré-existente (main `554ef41b` em worktree também mostra 1 — ambiente de worktree, não novo erro)
+
+| PR | Branch | Merge | TSC | Arquivos conflitantes | Impacto |
+|---|---|---|---|---|---|
+| #2701 | claude/fix-p12-grant-kit-view-261028-1730 | CONFLICT | N/A | Histórico desconectado | NAO_MERGEAR confirmado |
+| #2731 | fix/p200-e049-rate-guard | CONFLICT | N/A | Histórico desconectado | NAO_MERGEAR confirmado |
+| #2739 | integra/vps-mockup-gerador | SUCCESS | 1 (=base) | — | CI_FALHOU Gate 1.9 (+1 linha) |
+| #2744 | integra/vps-edge | CONFLICT | N/A | Histórico desconectado | NAO_MERGEAR confirmado |
+| #2758 | fix/a11y-focus-visible-ring | N/A (0 files) | N/A | — | JA_IMPLEMENTADA |
+| #2799 | release-please branch | SUCCESS ff | 1 (=base) | — | WAITING_CI confirmado |
+| #2821 | claude/fix-sync-uptime-http-status | SUCCESS | 1 (=base) | — | NAO_MERGEAR (REGRA #8) |
+| #2822 | claude/fix-sync-types-idempotency | SUCCESS | 1 (=base) | — | CI_FALHOU Gate 1.3 |
+| #2823 | claude/fix-sync-reconcile-migrations | CONFLICT | N/A | PENDENCIAS.md | NAO_MERGEAR (REGRA #8) |
+| #2824 | claude/fix-sync-e2e-vite-port-isolation | CONFLICT | N/A | RELATORIO_CI.md | NAO_MERGEAR (REGRA #8) |
+| #2825 | claude/fix-sync-graphify-version | CONFLICT | N/A | RELATORIO_CI.md, analise-prs/prs.json | CI_FALHOU |
+| #2826 | claude/fix-sync-sentinel-e2e-pdf | N/A (já mergeada pelo PO) | N/A | — | MERGEADA_PO |
+| #2827 | codex/ci-audit-latest-20261030 | CONFLICT | N/A | PENDENCIAS.md, RELATORIO_CI.md | NAO_MERGEAR (body instrui não mergear) |
+| #2831 | claude/eloquent-ramanujan-0yt2fo | CONFLICT | N/A | Histórico desconectado | NAO_MERGEAR (DRAFT) |
+| #2839 | codex/e23-required-secrets-20261030 | SUCCESS ff | 1 (=base) | — | DECISAO_HUMANA (REGRA #8+#10) |
+
+**Evidência completa por PR:** `analise-prs/dossies/PR-XXXX.md` → seção "MERGE-TEST LOCAL (2026-10-31)"

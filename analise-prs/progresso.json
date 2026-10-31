@@ -16,7 +16,7 @@
     {"numero": 2739, "veredito": "CI_FALHOU", "status": "NAO_MERGEADA"},
     {"numero": 2831, "veredito": "NAO_MERGEAR", "razao": "DRAFT"},
     {"numero": 2827, "veredito": "NAO_MERGEAR", "razao": "body diz nao mesclar nesta etapa"},
-    {"numero": 2826, "veredito": "NAO_MERGEAR", "razao": "REGRA#8 — .github/workflows/branch-protection-sentinel.yml"},
+    {"numero": 2826, "veredito": "MERGEADA_PELO_PO", "status": "MERGEADA", "merged_by": "adm01-debug", "merged_at": "2026-10-30T17:18:06Z", "razao": "PO aprovou pessoalmente — REGRA#8 .github/workflows/branch-protection-sentinel.yml"},
     {"numero": 2825, "veredito": "NAO_MERGEAR", "razao": "CI_FALHOU gate 1.3 migration baseline"},
     {"numero": 2824, "veredito": "NAO_MERGEAR", "razao": "REGRA#8 — .github/workflows/replenishment-quality.yml"},
     {"numero": 2823, "veredito": "NAO_MERGEAR", "razao": "REGRA#8 — supabase/migrations/ DDL"},
@@ -27,12 +27,17 @@
     {"numero": 2701, "veredito": "NAO_MERGEAR", "razao": "REGRA#8 + historico desconectado do main + DRAFT"}
   ],
   "prs_mergeadas": [2844, 2845, 2836, 2810],
+  "prs_mergeadas_pelo_po": [2826],
+  "merge_tests_completos": true,
+  "merge_tests_data": "2026-10-31",
+  "merge_tests_base_sha": "554ef41b44c9f318777d7e7b11189490a29a8c0a",
   "contagem_vereditos": {
     "MERGEAR": 4,
+    "MERGEADA_PELO_PO": 1,
     "DECISAO_HUMANA": 1,
     "JA_IMPLEMENTADA": 1,
     "CI_FALHOU": 2,
-    "NAO_MERGEAR": 11
+    "NAO_MERGEAR": 10
   },
   "ci_pos_merge": {
     "a24ee07be166d35dd2d0e8c20f7547290e0d4348": {
