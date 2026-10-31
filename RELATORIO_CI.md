@@ -1,10 +1,10 @@
 # RELATORIO_CI.md — Auditoria de Workflows CI/CD
 
-## Atualização de execução — 2026-10-31 02:02 UTC / 2026-10-30 BRT
+## Atualização de execução — 2026-10-31 02:50 UTC / 2026-10-30 BRT
 
 ### Baseline e revalidação local
 
-O baseline foi executado sobre `main` `554ef41b44c9f318777d7e7b11189490a29a8c0a`, antes das alterações desta rodada. A falha unitária conhecida apontava para um arquivo-fonte anterior à extração do componente. Após a correção do URL state no PR #2850 e a correção do caminho do teste no PR #2851, a validação final local ficou assim:
+O baseline foi executado sobre `main` `554ef41b44c9f318777d7e7b11189490a29a8c0a`, antes das alterações desta rodada. A falha unitária conhecida apontava para um arquivo-fonte anterior à extração do componente. Após a correção do URL state no PR #2850, do caminho do teste no PR #2851 e do escopo do audit em #2853, a validação local ficou assim:
 
 | Verificação | Baseline | Resultado após correções | Evidência |
 |---|---|---|---|
@@ -12,13 +12,13 @@ O baseline foi executado sobre `main` `554ef41b44c9f318777d7e7b11189490a29a8c0a`
 | TypeScript | ✅ | ✅ | Incluído no `npm run build:verify`; nenhum erro de tipo. |
 | Lint | ✅ | ✅ | Incluído no `npm run build:verify`; 0 erros, 0 warnings e nenhuma regressão contra o baseline. |
 | Build | ✅ | ✅ | `npm run build:verify` concluído, incluindo build Vite e verificações de produção. |
-| Suíte Vitest completa | ⚠️ 1 arquivo falhou por caminho obsoleto do teste (1.250 arquivos passaram, 1 falhou, 130 ignorados; 25.900 testes passaram, 1.135 ignorados e 24 TODO) | ✅ 1.251 arquivos passaram, 130 ignorados; 25.910 testes passaram, 1.135 ignorados e 24 TODO | Execução após o commit `4b9fbf59f`, no branch do PR [#2851](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2851). |
+| Suíte Vitest completa | ⚠️ 1 arquivo falhou por caminho obsoleto do teste (1.250 arquivos passaram, 1 falhou, 130 ignorados; 25.900 testes passaram, 1.135 ignorados e 24 TODO) | ⚠️ Mesma falha conhecida: 1.250 arquivos passaram, 1 falhou, 130 ignorados; 25.904 testes passaram, 1.135 ignorados e 24 TODO | Após o commit `2ee4e3a3c`, no branch do PR [#2853](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2853); nenhum novo arquivo/teste falhou. A correção isolada no PR [#2851](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2851) passou localmente com 1.251 arquivos e 25.910 testes. |
 
-O teste focado do componente passou 10/10; o hook de URL do PR #2850 passou 379/379 testes focados (incluindo fuzz). Os checks remotos dos PRs #2847–#2851 ainda estavam enfileirados ou em execução no momento da consulta; portanto, validação local verde não equivale a aprovação do GitHub. O inventário das falhas de `main`, causas, links e ações está em [PENDENCIAS.md](PENDENCIAS.md). Na `main` observada, `Deploy Gates`, CodeQL, E2E Critical Flows, E2E Personalization e `CI - Replenishment Module Quality Gate` estavam verdes; quatro workflows permaneciam em falha: Branch Protection Sentinel histórico, E2E Playwright, CI Security & Drift Checks e Swatch QuickView. Nos PRs #2847, #2849 e #2850, o gate visual de reposição mediu spread de 56,17 px para um limite de 48 px, embora o mesmo workflow estivesse verde na main; a causa da diferença entre branches ainda não foi comprovada e está registrada em `PENDENCIAS.md`.
+O teste focado do componente passou 10/10; o hook de URL do PR #2850 passou 379/379; os testes focados do audit #2853 passaram 20/20. A suíte de #2853 manteve exatamente uma falha do baseline, no caminho antigo do teste de alinhamento. Os checks remotos ainda estão pendentes; validação local não equivale à aprovação do GitHub. A leitura ampliada de 800 runs concluiu o inventário de 41 workflows únicos na `main`: seis últimas execuções estavam vermelhas (Branch Protection Sentinel, E2E Playwright, CI Security & Drift Checks, Swatch QuickView, Running Copilot Code Review e E2E Magazine Header); `Deploy Gates` estava verde. Causas, trechos de log, ações e estados dos PRs estão em [PENDENCIAS.md](PENDENCIAS.md). Nos PRs #2847, #2849 e #2850, o gate visual de reposição mediu spread de 56,17 px para um limite de 48 px, embora o mesmo workflow estivesse verde na main; a causa da diferença entre branches ainda não foi comprovada.
 
 Não houve alteração no Supabase, em dados operacionais, em schema, em migrations ou em segredos. PR #2850 altera comportamento da aplicação e permanece sem merge enquanto houver checks pendentes e risco de disparar deploy de produção; PR #2851 contém apenas correção de teste e aguarda o Gate Final remoto.
 
-**Gerado:** 2026-10-29 · **Atualizado:** 2026-10-31T02:02 UTC
+**Gerado:** 2026-10-29 · **Atualizado:** 2026-10-31T02:50 UTC
 **HEAD da main observado:** `554ef41b44c9f318777d7e7b11189490a29a8c0a` (2026-10-30)
 **HEAD anterior:** `c09402816` (baseline local)
 **Sessão:** https://claude.ai/code/session_01RfQzo7S3K6o49UBUDoCtUe
