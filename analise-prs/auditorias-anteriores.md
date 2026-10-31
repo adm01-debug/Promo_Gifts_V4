@@ -3,6 +3,7 @@
 **Gerado em:** 2026-10-31  
 **Sessão:** PROMO GIFTS V4 (bed6ac4e-1cfe-4adc-9a44-2d0604e1e401)  
 **SHA main referência:** `7f1d3d23b89a755903f8ac6f208de47852674ba4`  
+**Última revisão:** 2026-10-31 — corrigidos achados L e O após verificação cruzada com sessão paralela 92fcfee1  
 **Metodologia:** Leitura direta dos documentos históricos + verificação cruzada com código atual e banco
 
 ---
@@ -19,8 +20,6 @@
 | `analise-prs/regras-de-negocio.md` | 2026-10-29 | mesma sessão acima | — |
 
 **Fontes inacessíveis:** Nenhuma — todos os documentos listados foram lidos integralmente.
-
-**Nota:** Os dossiês individuais em `analise-prs/dossies/` cobrem PRs #2290 a #2832 (200+ arquivos). O conteúdo relevante foi consolidado via `RELATORIO_PRS.md` e `progresso.json`.
 
 ---
 
@@ -39,7 +38,7 @@
 | **Arquivos citados** | `useProductCustomizationOptions.ts:113`, `useProductEngravingOptions.ts:34`, `useMockupTechniques.ts:88`, `TechniqueMultiSelector.tsx:65`, `useSimulatorWizard.ts:60` |
 | **PR de correção** | #2351 (merge SHA `3e06378a5e`) |
 | **Verificação 2026-10-31** | Grep direto em `main@7f1d3d23` — todos os 5 arquivos têm `getSession()` guard antes da chamada RPC |
-| **Situação** | ✅ **CORRIGIDO E VERIFICADO** — guarda presente em `useProductCustomizationOptions.ts:89`, `useProductEngravingOptions.ts:24`, `useMockupTechniques.ts:81`, `TechniqueMultiSelector.tsx:34`, `useSimulatorWizard.ts:50` |
+| **Situação** | ✅ **CORRIGIDO E VERIFICADO** |
 
 #### Achado B — `fn_cron_guard` com vetor de SQL injection (sem auth)
 
@@ -49,25 +48,22 @@
 | **Descrito como** | `fn_cron_guard(bigint, text)` executa `EXECUTE p_sql`; anon pode chamar via anon key |
 | **Migration de correção** | `20261022100001` — REVOKE EXECUTE em `fn_cron_guard` |
 | **Verificação 2026-10-31** | Migration `20261022100001` aparece na lista de migrations aplicadas do banco `doufsxqlfjyuvxuezpln` |
-| **Situação** | ✅ **CORRIGIDO E VERIFICADO** — migration aplicada; REVOKE efetivo |
+| **Situação** | ✅ **CORRIGIDO E VERIFICADO** |
 
 #### Achado C — 13 DROP INDEX pendentes (`stock_snapshots`, 779 MB)
 
 | Campo | Detalhe |
 |---|---|
 | **Origem** | RELATORIO_VALIDACAO_EXAUSTIVA.md § PR #2352 |
-| **Descrito como** | Migration `20261022100011` remove 13 índices; 7 são unique constraints/GIN — exigem aprovação PO separada |
-| **Verificação 2026-10-31** | Não verificável diretamente sem acesso a `pg_stat_user_indexes` em tempo real |
-| **Situação** | ⚪ **NÃO VERIFICADO** — decisão PO pendente; documentado como diferido no relatório de 22/10; sem evidência de aplicação ou rejeição |
+| **Descrito como** | Migration `20261022100011` remove 13 índices; 7 são unique constraints/GIN — exigem aprovação PO |
+| **Situação** | ⚪ **NÃO VERIFICADO** — decisão PO pendente; sem evidência de aplicação ou rejeição |
 
 #### Achado D — 15 PRs de template incorreto (#2322–#2337)
 
 | Campo | Detalhe |
 |---|---|
-| **Origem** | RELATORIO_VALIDACAO_EXAUSTIVA.md § PRs que requerem ação humana |
-| **Descrito como** | Stacks erradas (Next.js, Python, Webpack) — fechar via PO |
-| **Verificação 2026-10-31** | Não checado individualmente — PRs antigas |
-| **Situação** | ⚪ **NÃO VERIFICADO** — presumivelmente fechadas, mas não confirmado |
+| **Origem** | RELATORIO_VALIDACAO_EXAUSTIVA.md |
+| **Situação** | ⚪ **NÃO VERIFICADO** — presumivelmente fechadas pelo PO |
 
 ---
 
@@ -79,27 +75,19 @@
 
 | Campo | Detalhe |
 |---|---|
-| **Origem** | RELATORIO_FINAL_META.md § Merge Realizado |
-| **Descrito como** | Bump de dependência; merge SHA `4c5fdd72`; Gate Final não triggerou |
-| **Verificação 2026-10-31** | SHA `4c5fdd72` é ancestral de `7f1d3d23` (main atual) — confirmado via git history |
+| **Verificação 2026-10-31** | SHA `4c5fdd72` é ancestral de `7f1d3d23` — confirmado via git history |
 | **Situação** | ✅ **CORRIGIDO E VERIFICADO** — em produção desde 27/10 |
 
-#### Achado F — Gate Final não triggerou em `4c5fdd72` (PR #2588)
+#### Achado F — Gate Final não triggerou em `4c5fdd72`
 
 | Campo | Detalhe |
 |---|---|
-| **Origem** | RELATORIO_FINAL_META.md § Nota sobre Gate Final |
-| **Descrito como** | `deploy-gates.yml` não apareceu nos 32 runs para SHA `4c5fdd72`; possível `paths-ignore` |
-| **Verificação 2026-10-31** | Comportamento esperado para deps-only commit; Branch Protection Sentinel passou ✅ |
-| **Situação** | ⚪ **SUPERADO POR MUDANÇA DE ARQUITETURA** — `deploy-gates.yml` tem filtro de path; comportamento correto por design |
+| **Situação** | ⚪ **SUPERADO** — `deploy-gates.yml` tem filtro de path; comportamento correto por design |
 
 #### Achado G — PRs de rollbacks/migrations bloqueadas em draft (#2580, #2600, #2631)
 
 | Campo | Detalhe |
 |---|---|
-| **Origem** | RELATORIO_FINAL_META.md § Verdicts por PR |
-| **Descrito como** | PRs draft tocando `supabase/migrations/` e `.github/workflows/` — proibidas por REGRA #8 |
-| **Verificação 2026-10-31** | Fechadas externamente pelo PO |
 | **Situação** | ✅ **CORRIGIDO E VERIFICADO** — fechadas pelo PO; sem impacto residual |
 
 ---
@@ -108,7 +96,7 @@
 
 **Escopo:** 23/24 PRs (2 sessões); 9 mergeadas; 6 DECISAO_HUMANA; 4 conflito/fechadas.
 
-#### Achado H — PRs DECISAO_HUMANA (6 da sessão de 29/10)
+#### Achado H — PRs DECISAO_HUMANA (sessão de 29/10)
 
 | PR | Título | Estado 2026-10-31 | Situação |
 |---|---|---|---|
@@ -121,46 +109,41 @@
 
 #### Achado I — PRs DECISAO_HUMANA (sessão de 30/10)
 
-| PR | Título | Estado 2026-10-31 | Situação |
-|---|---|---|---|
-| [#2821](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2821) | uptime-monitor.yml substitui #2793 | não verificado | ⚪ **NÃO VERIFICADO** |
-| [#2823](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2823) | supabase/migrations DDL | não verificado | ⚪ **NÃO VERIFICADO** |
-| [#2824](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2824) | replenishment-quality.yml | não verificado | ⚪ **NÃO VERIFICADO** |
-| [#2826](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2826) | branch-protection-sentinel.yml | não verificado | ⚪ **NÃO VERIFICADO** |
+| PR | Situação |
+|---|---|
+| [#2821](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2821) | ⚪ **NÃO VERIFICADO** |
+| [#2823](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2823) | ⚪ **NÃO VERIFICADO** |
+| [#2824](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2824) | ⚪ **NÃO VERIFICADO** |
+| [#2826](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2826) | ⚪ **NÃO VERIFICADO** |
 
 #### Achado J — E2E falhas pré-existentes `catalog.spec.ts` / `kit-builder.spec.ts`
 
 | Campo | Detalhe |
 |---|---|
-| **Origem** | RELATORIO_PRS.md § FALHAS CI INVESTIGADAS |
-| **Descrito como** | Falhas E2E em `66d032af` são PRÉ-EXISTENTES (run `40762904949` antes do baseline já falhava) |
-| **Verificação 2026-10-31** | Não re-verificado; auditoria de main de 31/10 não encontrou regressão introduzida |
 | **Situação** | ⚪ **NÃO VERIFICADO** no código atual — presumivelmente ainda pré-existente |
 
 #### Achado K — 4 PRs CI_FALHOU (Gate 1 / Gate 1.3)
 
 | PR | Falha | Situação |
 |---|---|---|
-| #2810 | `usePromoFlixPlayer.ts` 624 > 500 linhas | ⚪ **NÃO VERIFICADO** — PR aberta |
-| #2813 | `no-useless-escape` linha 45 | ⚪ **NÃO VERIFICADO** — PR aberta |
-| #2822 | migration baseline desatualizado | ⚪ **NÃO VERIFICADO** — PR aberta |
-| #2825 | migration baseline desatualizado | ⚪ **NÃO VERIFICADO** — PR aberta |
+| #2810 | `usePromoFlixPlayer.ts` 624 > 500 linhas | ⚪ **NÃO VERIFICADO** |
+| #2813 | `no-useless-escape` linha 45 | ⚪ **NÃO VERIFICADO** |
+| #2822 | migration baseline desatualizado | ⚪ **NÃO VERIFICADO** |
+| #2825 | migration baseline desatualizado | ⚪ **NÃO VERIFICADO** |
 
 ---
 
 ### 2.4 Auditorias de 2026-10-31 (esta sessão)
 
-Achados novos descobertos nesta sessão — sem documento histórico predecessor.
-
-#### Achado L — `stock_notes` ausente no banco (CRÍTICO)
+#### Achado L — `stock_notes` ausente no banco *(corrigido em revisão)*
 
 | Campo | Detalhe |
 |---|---|
 | **Origem** | Sessão bed6ac4e, 31/10 — cruzamento banco vs código |
 | **Localização** | `src/hooks/stock/useStockNotes.ts:52,67,85` (SELECT + INSERT + DELETE) |
-| **Impacto** | Qualquer acesso ao fluxo de notas de estoque → erro em produção |
-| **Ação** | PR [#2871](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2871) aberta — migration `20261031000000_create_stock_notes.sql` |
-| **Situação** | ⏳ **CONFIRMADO E PENDENTE** — PR aberta, aguarda merge + `db-apply-migration.yml` |
+| **Impacto real** | **0 callers em `src/`** — hook existe mas não é importado por nenhum componente ou página. Verificado via `search_code` em `main@7f1d3d23`: todas as 17 ocorrências são em `docs/`, `.as-*-baseline.json` e `audit/`, nunca em `src/`. Não causa erro em produção agora. |
+| **Ação** | PR [#2871](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2871) aberta com migration `20261031000000_create_stock_notes.sql`. Deve ser mergeada **antes** de qualquer PR que importe `useStockNotes`. |
+| **Situação** | ⚪ **CONFIRMADO E PENDENTE (baixa urgência)** — código dormido; tabela precisa existir antes de integrar o hook |
 
 #### Achado M — 6 migrations pendentes (última aplicada `20261027160000`)
 
@@ -172,36 +155,37 @@ Achados novos descobertos nesta sessão — sem documento histórico predecessor
 | `20261027230000` | Remove 3 entradas stale do allowlist | Baixa | ⏳ **CONFIRMADO E PENDENTE** |
 | `20261027233000` | Adiciona `XBZ_IMAGE_UPLOADER_CRON_SECRET` | Baixa | ⏳ **CONFIRMADO E PENDENTE** |
 | `20261027234500` | Reativa cron `xbz-image-uploader` | Baixa | ⏳ **CONFIRMADO E PENDENTE** |
-| `20261031000000` | Cria `stock_notes` (PR #2871) | **CRÍTICA** | ⏳ aguarda merge |
+| `20261031000000` | Cria `stock_notes` (PR #2871) | Baixa (hook dormido) | ⏳ aguarda merge antes de integrar hook |
 
 #### Achado N — 17 tabelas `supplier_stricker` sem RLS
 
 | Campo | Detalhe |
 |---|---|
-| **Origem** | Sessão bed6ac4e, 31/10 |
 | **Risco atual** | Baixo — schema sem `GRANT USAGE` para anon/authenticated |
 | **Risco futuro** | Alto se qualquer integração for grantada antes da RLS |
-| **Ação** | Aplicar migration `20261027200000_supplier_stricker_rls_deny_all.sql` via `db-apply-migration.yml` |
+| **Ação** | Aplicar migration `20261027200000` via `db-apply-migration.yml` |
 | **Situação** | ⏳ **CONFIRMADO E PENDENTE** |
 
-#### Achado O — 4 serviços mortos (0 imports em todo o projeto)
+#### Achado O — Serviços em `src/services/` *(corrigido em revisão)*
 
-| Arquivo | Situação |
-|---|---|
-| `src/services/mockupService.ts` | ⚪ **CONFIRMADO E PENDENTE** — duplica `mockupGenerationService.ts`; código morto |
-| `src/services/productAnalyticsService.ts` | ⚪ **CONFIRMADO E PENDENTE** — analytics nunca coletados |
-| `src/services/aiRecommendationsService.ts` | ⚪ **CONFIRMADO E PENDENTE** — hook usa edge diretamente; serviço bypassed |
-| `src/services/quotePricingService.ts` | ⚪ **CONFIRMADO E PENDENTE** — pricing delegado ao hook, não ao serviço |
+| Arquivo | Verificação 2026-10-31 | Situação |
+|---|---|---|
+| `src/services/mockupService.ts` | `search_code` retorna 0 hits — arquivo removido ou nunca referenciado | ⚪ **SUPERADO ou REMOVIDO** |
+| `src/services/productAnalyticsService.ts` | Não verificado individualmente | ⚪ **NÃO VERIFICADO** |
+| `src/services/aiRecommendationsService.ts` | Não verificado individualmente | ⚪ **NÃO VERIFICADO** |
+| `src/services/quotePricingService.ts` | Não verificado individualmente | ⚪ **NÃO VERIFICADO** |
+
+**Nota:** Sessão paralela 92fcfee1 afirma que todos os 4 foram removidos. `mockupService` confirmado ausente. Os outros 3 precisam de verificação direta do tree.
 
 #### Achado P — 5 edge functions potencialmente órfãs
 
-| Função | Impacto | Situação |
-|---|---|---|
-| `xbz-image-uploader` | Upload alternativo nunca acionado | ⚪ **CONFIRMADO E PENDENTE** |
-| `send-notification` | Notificações não disparadas pelo front | ⚪ **CONFIRMADO E PENDENTE** |
-| `magazine-public-react` | Provável duplicata de `magazine-public-view` | ⚪ **CONFIRMADO E PENDENTE** |
-| `intelligence-substitute-applied` | IA de substituição nunca invocada | ⚪ **CONFIRMADO E PENDENTE** |
-| `mcp-keys-issue/update/rotate` | Ciclo de vida de chaves MCP incompleto | ⚪ **CONFIRMADO E PENDENTE** |
+| Função | Situação |
+|---|---|
+| `xbz-image-uploader` | ⚪ **CONFIRMADO E PENDENTE** |
+| `send-notification` | ⚪ **CONFIRMADO E PENDENTE** |
+| `magazine-public-react` | ⚪ **CONFIRMADO E PENDENTE** |
+| `intelligence-substitute-applied` | ⚪ **CONFIRMADO E PENDENTE** |
+| `mcp-keys-issue/update/rotate` | ⚪ **CONFIRMADO E PENDENTE** — ciclo MCP incompleto |
 
 #### Achado Q — Branches não mergeados (274 analisados)
 
@@ -211,8 +195,6 @@ Achados novos descobertos nesta sessão — sem documento histórico predecessor
 | PARCIAL | 121 |
 | ABANDONADO | 100 |
 
-**Top 10 COMPLETO** (maior código real): `chore/graphify-sql-map-20261029` (7 netFiles), `importado/vps-fabrica/v2/s17-2610081946` (6 netFiles), e 8 branches da Fábrica Hermes (4 netFiles cada).
-
 **Situação:** ⚪ **CONFIRMADO E PENDENTE** — plano de 99 etapas disponível em session-state.
 
 ---
@@ -221,10 +203,10 @@ Achados novos descobertos nesta sessão — sem documento histórico predecessor
 
 | Recomendação | Auditorias | Status consolidado |
 |---|---|---|
-| Aplicar migrations pendentes via `db-apply-migration.yml` | 22/10, 27/10, 29/10, 31/10 | ⏳ **CONFIRMADO E PENDENTE** — 7 migrations (incluindo #2871) |
+| Aplicar migrations pendentes via `db-apply-migration.yml` | 22/10, 27/10, 29/10, 31/10 | ⏳ **CONFIRMADO E PENDENTE** — 7 migrations |
 | Não mergear DDL sem aprovação PO | Todas | ✅ Respeitado em todas as sessões |
 | E2E pré-existentes não são regressão | 29/10, 31/10 | ✅ Confirmado |
-| Fechar PRs de template incorreto | 22/10 | ⚪ Não verificado se foram fechadas |
+| Fechar PRs de template incorreto | 22/10 | ⚪ Não verificado |
 | Auth guard em callers de RPCs | 22/10 | ✅ CORRIGIDO E VERIFICADO |
 
 ---
@@ -233,9 +215,11 @@ Achados novos descobertos nesta sessão — sem documento histórico predecessor
 
 | Contradição | Documentos | Resolução |
 |---|---|---|
-| PR #2714 continha 4 migrations DDL que RELATORIO_PRS.md marcou como DECISAO_HUMANA; foi fechada sem merge em 30/10; as migrations NÃO aparecem como aplicadas no banco | RELATORIO_PRS.md vs estado do banco 31/10 | As migrations de #2714 são um subconjunto das 6 migrations pendentes atuais — precisam ser aplicadas via workflow, não via merge da PR |
-| PR #2717 (fix Vite CI) foi fechada sem merge por conflito; o fix é válido | RELATORIO_PRS.md | Solução: criar nova PR rebased para reaplicar o fix |
-| `fn_cron_guard` foi reportado como vetor de SQL injection em 22/10; migration aplicada; mas relatorio de 29/10 não menciona esta correção | RELATORIO_VALIDACAO_EXAUSTIVA vs RELATORIO_PRS | CORRIGIDO — migration confirmada aplicada |
+| PR #2714 continha 4 migrations DDL (DECISAO_HUMANA); foi fechada sem merge em 30/10; migrations NÃO estão no banco | RELATORIO_PRS.md vs estado do banco 31/10 | Migrations de #2714 são subconjunto das 6 pendentes — aplicar via workflow |
+| PR #2717 (fix Vite CI) fechada sem merge por conflito; fix é válido | RELATORIO_PRS.md | Criar nova PR rebased em main |
+| `fn_cron_guard` reportado como SQL injection em 22/10; migration aplicada; RELATORIO_PRS.md de 29/10 não menciona | RELATORIO_VALIDACAO_EXAUSTIVA vs RELATORIO_PRS | CORRIGIDO — migration confirmada aplicada |
+| **Achado L:** sessão bed6ac4e descreveu `stock_notes` como "erro em produção"; sessão 92fcfee1 identificou 0 callers | bed6ac4e vs 92fcfee1 | **Sessão 92fcfee1 está correta.** Confirmado via `search_code`: 0 callers em `src/`. Hook dormido. |
+| **Achado O:** sessão bed6ac4e listou 4 serviços como PENDENTE; sessão 92fcfee1 diz foram removidos | bed6ac4e vs 92fcfee1 | `mockupService` confirmado ausente. Os outros 3 dependem de verificação do tree. |
 
 ---
 
@@ -243,22 +227,20 @@ Achados novos descobertos nesta sessão — sem documento histórico predecessor
 
 | Item | Origem | Estado |
 |---|---|---|
-| Auth guard em 5 callers de `fn_get_product_customization_options` | PR #2351 (22/10) + PR de sessão subsequente | ✅ Em produção |
+| Auth guard em 5 callers de `fn_get_product_customization_options` | PR #2351 (22/10) | ✅ Em produção |
 | Migration `fn_cron_guard` REVOKE EXECUTE | 22/10, migration `20261022100001` | ✅ Aplicada |
 | Bump `react-day-picker` v8→v10 | PR #2588 (27/10) | ✅ Em produção |
 | 8 merges de PRs de docs/ci | Sessão 29/10 | ✅ Em produção |
-| Identificação de `stock_notes` ausente | 31/10 → PR #2871 | ⏳ Aguardando merge |
+| Identificação de `stock_notes` ausente | 31/10 → PR #2871 | ⚪ Urgência baixa — hook dormido |
 
 ---
 
-## 6. RECOMENDAÇÕES FORA DO ESCOPO
+## 6. RECOMENDAÇÕES FORA DO ESCOPO (backlog)
 
-Itens identificados mas não implementados por esta sessão (backlog):
-
-1. Recriar PR para fix de CI Vite (`#2717` fechada por conflito) — rebaser em main
+1. Recriar PR para fix de CI Vite (`#2717` fechada por conflito) — rebase em main
 2. Verificar e fechar PRs de template incorreto (#2322–#2337)
-3. Verificar estado de PRs da sessão de 30/10 (#2821, #2823, #2824, #2826) — não foram inspecionadas
-4. Avaliar 4 serviços mortos em `src/services/` — remover ou integrar
+3. Verificar estado de PRs da sessão de 30/10 (#2821, #2823, #2824, #2826)
+4. Verificar se `productAnalyticsService.ts`, `aiRecommendationsService.ts`, `quotePricingService.ts` foram removidos (como `mockupService`)
 5. Completar ciclo de vida das chaves MCP (issue/update/rotate)
 6. Decidir sobre 53 branches COMPLETO não mergeados — plano de 99 etapas disponível
 7. Drops de índices pendentes da migration `20261022100011` — aguarda análise PO
@@ -267,13 +249,13 @@ Itens identificados mas não implementados por esta sessão (backlog):
 
 ## 7. SUMÁRIO DE SITUAÇÕES
 
-| Situação | Quantidade | Achados |
-|---|---|---|
-| ✅ CORRIGIDO E VERIFICADO | 7 | A, B, E, G, PR #2730, PR #2720, PR #2734 |
-| ⏳ CONFIRMADO E PENDENTE | 5 | H(#2731, #2717, #2714), L, M(7 migrations), N |
-| ⚪ CONFIRMADO E PENDENTE (baixa urgência) | 7 | O(4 serviços), P(5 edges), Q(branches) |
-| ⚪ NÃO VERIFICADO | 6 | C, D, J, K(4 PRs), I(4 PRs sessão 30/10) |
-| ⚪ SUPERADO | 1 | F (Gate Final paths-ignore) |
+| Situação | Achados |
+|---|---|
+| ✅ CORRIGIDO E VERIFICADO | A, B, E, G, PR #2730, PR #2720, PR #2734 |
+| ⏳ CONFIRMADO E PENDENTE (urgente) | H(#2731), M(`20261027200000`), N(supplier_stricker RLS) |
+| ⚪ CONFIRMADO E PENDENTE (baixa urgência) | L(stock_notes hook dormido), P(5 edges), Q(branches), PR #2871 |
+| ⚪ NÃO VERIFICADO | C, D, J, K(4 PRs), I(4 PRs sessão 30/10), O(3 dos 4 serviços) |
+| ⚪ SUPERADO | F(Gate Final paths-ignore), O(mockupService removido) |
 
 ---
 
