@@ -1,7 +1,41 @@
 # Gate 2 (Vitest) + Build — Pós-Merge Sessão 014nTibSuSPcPvDsPZWiwQbH
 
-**Data:** 2026-10-30  
+**Data:** 2026-10-30 (atualizado 2026-10-31 com suite tests/components completa)
 **SHA main pós-merge:** `554ef41b44c9f318777d7e7b11189490a29a8c0a`
+
+---
+
+## tests/components — Suíte completa (2026-10-31 — 5 lotes)
+
+Executado na sessão atual sobre o código de main `554ef41b` (branch `claude/analise-merge-prs-abertas-shh8ez` diverge só em `analise-prs/` — código idêntico).
+
+| Lote | Arquivos | Testes | Falhas | Duração |
+|---|---|---|---|---|
+| Top-level A (40 arquivos) | 40 | 588 | 0 | 39.75s |
+| Top-level B (18 arquivos) | 18 | 643 | 0 | 24.26s |
+| Subdiretórios A (26 arquivos) | 26 | 310 | 0 | 27.83s |
+| Subdiretórios B (26 arquivos) | 26 | 131 | 0 | 30.00s |
+| Subdiretórios C (26 arquivos) | 26 | 265 | 0 | 28.12s |
+| **TOTAL** | **136** | **1937** | **0** | — |
+
+**Resultado:** ✅ Zero falhas em tests/components. Nenhuma regressão.
+
+## date-utils.test.ts — Falhas pré-existentes (confirmadas 2026-10-31)
+
+Executado: `npx vitest run tests/unit/date-utils.test.ts`
+
+Falhas encontradas (exatamente as mesmas do baseline):
+```
+× tests/unit/date-utils.test.ts > formatDateTime > returns dd/MM/yyyy HH:mm for ISO string (BRT)
+  → timezone UTC vs BRT (container não tem TZ=America/Sao_Paulo)
+× tests/unit/date-utils.test.ts > formatTime > returns HH:mm for ISO string
+× tests/unit/date-utils.test.ts > formatTime > zero-pads hours and minutes
+```
+
+Origem: `git log -- tests/unit/date-utils.test.ts` → último commit `46b0b0b48`
+(PR #2769, anterior a esta sessão). Nenhuma das 4 PRs mergeadas tocou esse arquivo.
+
+**Conclusão:** ✅ 3 falhas pré-existentes de timezone. Zero falhas novas.
 
 ---
 

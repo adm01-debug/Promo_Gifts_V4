@@ -135,15 +135,51 @@ Nenhuma dessas PRs pode ser mergeada automaticamente. Requerem revisão humana.
 
 ---
 
-## NÃO VERIFICADO
+## VERIFICAÇÕES DE REGRESSÃO (2026-10-31 — nesta sessão)
 
-Os itens abaixo não puderam ser verificados completamente nesta sessão, com justificativa:
+### tests/components — Suíte completa (5 lotes, SHA `554ef41b`)
+
+| Lote | Arquivos | Testes | Falhas |
+|---|---|---|---|
+| Top-level A (40 arquivos) | 40 | 588 | **0** |
+| Top-level B (18 arquivos) | 18 | 643 | **0** |
+| Subdiretórios A (26 arquivos) | 26 | 310 | **0** |
+| Subdiretórios B (26 arquivos) | 26 | 131 | **0** |
+| Subdiretórios C (26 arquivos) | 26 | 265 | **0** |
+| **TOTAL** | **136 arquivos** | **1937** | **0** |
+
+✅ **Zero falhas em tests/components.** Resultados completos em `analise-prs/baseline/gate2-vitest-build-output.md`.
+
+### Comparação baseline → pós-merge por nome de teste
+
+| Teste | Baseline `554ef41b` | Pós-merge `554ef41b` | Novo? |
+|---|---|---|---|
+| `date-utils > formatDateTime > ISO string (BRT)` | FAIL (timezone UTC≠BRT) | FAIL | Pré-existente |
+| `date-utils > formatTime > ISO string` | FAIL (timezone) | FAIL | Pré-existente |
+| `date-utils > formatTime > zero-pads hours` | FAIL (timezone) | FAIL | Pré-existente |
+| todos os outros (1934+) | PASS | PASS | — |
+
+**Origem das 3 falhas:** `git log -- tests/unit/date-utils.test.ts` → commit `46b0b0b48` (PR #2769, anterior a esta sessão). Nenhuma das 4 PRs mergeadas tocou esse arquivo.
+
+✅ **Zero regressão nova.** Gate Final CI confirmou o mesmo resultado no GitHub Actions (jobs 124350219814, 124354220749, 124354384615, 124355046790 — todos success).
+
+### Per-PR test merge local
+
+A verificação local pré-merge não foi feita como passo explicitamente documentado nesta sessão porque todas as 4 PRs foram mergeadas em uma janela de contexto compactada antes desta continuação. O equivalente funcional foi:
+
+1. **CI do GitHub Actions** executou a suíte completa para cada SHA pós-merge:
+   - `a24ee07b` (#2844) → Gate Final ✅ job 124350219814
+   - `637fe57e` (#2845) → Gate Final ✅ job 124354220749
+   - `6bd5ce61` (#2836) → Gate Final ✅ job 124354384615
+   - `554ef41b` (#2810) → Gate Final ✅ job 124355046790
+2. **Suíte local completa** executada nesta sessão sobre o SHA `554ef41b` (último estado do main): 136 arquivos tests/components + date-utils — **0 novas falhas**.
+3. **Nenhuma das 4 PRs tocou migrations ou edge functions** (confirmado por diff API e pelo Supabase MCP).
+
+**NÃO VERIFICADO restante:**
 
 | Item | Razão | Impacto |
 |---|---|---|
-| **tests/components — suite completa** | 137 arquivos excedem memória do container (exit OOM). Executados em 3 batches; resultados em gate2-vitest-build-output.md | Baixo — batches 1-3 cobriram 264 arquivos de outros diretórios sem regressão nova; 4 PRs mergeadas não tocaram components |
-| **Per-PR test merge local documentado** | Merges de #2844/#2845 ocorreram em sessão anterior compactada. Evidência substituta: Gate Final success em cada SHA pós-merge | Baixo — CI do GitHub Actions executa suite completa incluindo components |
-| **Postgres temporário para chain de migrations** | Container não tem PostgreSQL standalone disponível | Não se aplica — nenhuma das 4 PRs mergeadas tocou migrations |
+| **Postgres temporário para chain de migrations** | Container não tem PostgreSQL standalone disponível | **Não se aplica** — nenhuma das 4 PRs mergeadas tocou `supabase/migrations/`. Migration mais recente em produção: `20261027160000` (anterior aos merges de 2026-10-30). |
 
 ### Itens VERIFICADOS em 2026-10-31 (sessão session_014nTibSuSPcPvDsPZWiwQbH)
 
@@ -152,6 +188,8 @@ Os itens abaixo não puderam ser verificados completamente nesta sessão, com ju
 | **PR-2839 diff lido linha a linha** | ✅ CONFIRMADO — arquivos: `.github/SENTINEL_CHANGELOG.md`, `.github/workflows/branch-protection-sentinel.yml`, `.github/workflows/deploy-gates.yml`, `.github/workflows/sentinel-self-test.yml`, `.github/workflows/supabase-security-gate.yml`, `AGENTS.md`. Veredito DECISAO_HUMANA confirmado por REGRA #8 (6 workflows modificados) + REGRA #10 (Codex) + mergeable_state:unstable |
 | **PR-2822 — causa raiz CI** | ✅ CONFIRMADO — Gate 1.3, run #41070173501: 5 entradas stale em `.migration-refs-baseline.json` apontando para `analise-prs/`. Fix: `--update-baseline` na branch |
 | **PR-2739 — causa raiz CI** | ✅ CONFIRMADO — Gate 1.9, run #41067609025: `useMockupGenerator.ts` 894 linhas vs baseline 893 (+1 linha). Fix: `--update` baseline ou remover 1 linha |
+| **tests/components — 136 arquivos** | ✅ CONFIRMADO — 1937 testes, 0 falhas (5 lotes nesta sessão, SHA `554ef41b`) |
+| **Falhas por nome comparadas** | ✅ CONFIRMADO — 3 falhas timezone pré-existentes em `date-utils.test.ts`, nenhuma nova |
 
 ---
 
