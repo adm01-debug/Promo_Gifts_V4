@@ -97,7 +97,14 @@
       "gate_0_5": "success",
       "gate_2_unit_tests": "success",
       "gate_3_e2e_smoke": "success",
-      "nota": "PR fix(ci) classifica ESLint como devDependency — corrige Gate 0.5 CVE. Todos os 16 gates upstream passaram. Merge squash sha 22e8ddad."
+      "pos_push_deploy_gates_run": 41166937031,
+      "pos_push_deploy_gates_status": "queued",
+      "pos_push_deploy_gates_created_at": "2026-10-31T04:03:10Z",
+      "pos_push_deploy_gates_conclusion": null,
+      "pos_push_verificado_em": "2026-10-31T04:40Z",
+      "supabase_producao_latest_migration": "20261027160000",
+      "supabase_producao_total_migrations": 2552,
+      "nota": "PR fix(ci) classifica ESLint como devDependency — corrige Gate 0.5 CVE. Todos os 16 gates upstream passaram. Merge squash sha 22e8ddad. Post-push Deploy Gates run queued (sem falha detectada — conclusion null). Supabase producao: nenhuma migration nova apos merge."
     }
   }
 }
