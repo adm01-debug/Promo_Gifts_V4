@@ -261,3 +261,41 @@ Tabela de prova (Seção 8) + baseline local (Seções 1, 10) + comparação bas
 | test:ci-core | ✅ 957 testes | ✅ 957 testes | Sem regressão |
 | Gate Final | ✅ success | ✅ success | Sem regressão |
 | Workflows NÃO-REQUIRED em falha | 8 (PO-BLOCKED) | 8 (PO-BLOCKED) | Sem regressão — mesmos bloqueios estruturais |
+## Sessão P36 — falha de integração do CRM e baseline (2026-10-31)
+
+**Base:** `main` em `22e8ddad0cc41a1bab002ac077ca31558c149dda`.
+**Run principal:** [Edge Integration Tests — All Functions #41166936960](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41166936960).
+
+### Inventário remoto — snapshot 2026-10-31 05:05 UTC
+
+| Workflow | Estado observado | Causa / encaminhamento |
+|---|---|---|
+| Edge Integration Tests — All Functions | ❌ failure | Sete casos de `crm-db-bridge` receberam 503. Logs correlacionam consultas `companies` HTTP 500, breaker OPEN após cinco falhas e chamada anônima recebendo 503 antes da autenticação. Fix de ordem auth→breaker em branch/PR; causa do 500 permanece não determinada. |
+| CI Security & Drift Checks | ❌ failure | Fuzz test espera classe Tailwind no componente antigo após extração JSX; acompanhar PR #2854/#2855, sem relaxar teste. |
+| Kit Coverage — Integration | ❌ failure | Identidade anônima não pode ler view/tabela protegida; ajustar fixture para identidade autenticada, sem ampliar grants de produção. |
+| Nightly Full CI | ❌ failure | Falhas E2E independentes: credenciais Magazine Header, timeout de swatches, seletor ambíguo, snapshot ausente e `boundingBox` timeout; triagem por causa. |
+
+O snapshot contou apenas a última execução concluída por workflow na `main`. Quatro workflows estavam em falha: Edge Integration (#41166936960), CI Security & Drift (#41166937034), Kit Coverage (#41165671545) e Nightly Full CI (#41161391625). Permaneciam verdes, entre outros: Branch Protection Sentinel, Quote Builder Delivery, E2E Personalization, E2E Critical Flows, CI Replenishment, Workflow Lint, CodeQL, Security Scan, SSOT Guard e Required Checks Guard (runs #41166936857, #41166936912, #41166937008, #41166937009, #41166936939, #41166937102, #41166936989, #41166936980, #41166936890 e #41166936894). Deploy Gates e Magazine Header estavam `queued`; Swatch QuickView estava `in_progress`; Uptime Monitor estava `queued`. Um run cancelado não foi classificado como falha.
+
+### Baseline local anterior à edição
+
+| Comando | Resultado | Observação |
+|---|---|---|
+| `npm ci` | ✅ sucesso | 29 achados do audit (17 moderate, 12 high); sem upgrades automáticos. |
+| `npm run build:verify` | ✅ sucesso | Inclui typecheck, lint baseline e build. |
+| `npm test -- --reporter=dot` | ⚠️ 1 falha preexistente | 1.250 arquivos passaram, 1 falhou; 25.904 testes passaram, 1.135 skipped, 24 TODO. Falha em `QuoteBuilderSummaryAlignment.fuzz.test.ts:31`, localização de classe após extração JSX. |
+| `deno check supabase/functions/crm-db-bridge/index.ts` | ⚠️ ambiente | Deno não encontrou pacote npm `@supabase/supabase-js@2.49.4`; não valida nem invalida a mudança de fluxo. |
+| `npx vitest run tests/security/crm-db-bridge-auth-before-breaker.test.ts` | ✅ sucesso | Verifica que autenticação e resposta de erro precedem a checagem do circuit breaker. |
+
+### Comparação baseline × revisão
+
+| Dimensão | Baseline | Revisão local | Conclusão |
+|---|---|---|---|
+| Build/typecheck/lint | ✅ `build:verify` | ✅ `build:verify` | Typecheck, lint baseline (0 erros/0 warnings; regressões +0) e build passaram novamente pós-commit. |
+| Suíte completa | 1 falha conhecida em Quote Builder; 1.250 arquivos passaram | 1.251 arquivos passaram, 1 falhou, 130 skipped; 25.905 testes passaram, 1.135 skipped, 24 TODO | Mesma falha em `QuoteBuilderSummaryAlignment.fuzz.test.ts`; teste de regressão novo passou dentro da suíte completa. Nenhuma falha nova. |
+| Supabase | Leitura de logs apenas | Sem escrita/DDL/deploy | Nenhuma alteração no banco canônico. |
+| Produção | Sem alteração | PR de aplicação não mesclado | Merge/deploy bloqueado até revisão/fluxo autorizado. |
+
+### Próximo passo
+
+PR a abrir/atualizar com a alteração mínima. A prova final das execuções remotas em `main` e a classificação dos workflows que continuarem em falha devem ser adicionadas após a janela de execução. Não mesclar este PR nesta sessão porque altera código de aplicação com deploy de produção.
