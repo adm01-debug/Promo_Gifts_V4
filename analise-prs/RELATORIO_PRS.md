@@ -1,6 +1,6 @@
 # RELATÓRIO DE PRs ABERTAS — Promo Gifts V4
 **Sessão:** session_014nTibSuSPcPvDsPZWiwQbH  
-**Data:** 2026-10-30  
+**Data:** 2026-10-30 (atualizado 2026-10-31 — merge-tests completos)  
 **SHA main início:** `9541666bf62883b06117b03cae0368b2c7d55314`  
 **SHA main fim:** `554ef41b44c9f318777d7e7b11189490a29a8c0a`  
 **Total PRs abertas analisadas:** 19 / 19
@@ -37,7 +37,9 @@ Essas PRs precisam que o autor corrija os erros de CI antes de serem mergeadas.
 
 ---
 
-## PRs MERGEADAS NESTA SESSÃO
+## PRs MERGEADAS
+
+### Mergeadas por automação (sessão session_014nTibSuSPcPvDsPZWiwQbH)
 
 | PR | Título | SHA merge | Gate Final | Concluído |
 |---|---|---|---|---|
@@ -45,6 +47,12 @@ Essas PRs precisam que o autor corrija os erros de CI antes de serem mergeadas.
 | #2845 | fix(catalog): ajuste filtros | `637fe57e` | ✅ job 124354220749 | 2026-10-30T22:53:23Z |
 | #2836 | fix(cart): correção estado | `6bd5ce61` | ✅ job 124354384615 | 2026-10-30T22:53:26Z |
 | #2810 | feat: PromoFlixPlayer refactor | `554ef41b` | ✅ job 124355046790 | 2026-10-30T22:53:31Z |
+
+### Mergeada pelo PO (fora desta automação)
+
+| PR | Título | Merged by | Data | Observação |
+|---|---|---|---|---|
+| #2826 | fix(ci): sentinel e2e pdf | adm01-debug (PO) | 2026-10-30T17:18:06Z | Modifica `.github/workflows/branch-protection-sentinel.yml` (REGRA #8) — aprovada pelo PO pessoalmente |
 
 **Baseline pré-merge** (SHA `9541666b`): Gate Final = success  
 **Pós-merge** (SHA `554ef41b`): Gate Final = success  
@@ -86,7 +94,7 @@ Nenhuma das 4 PRs mergeadas modificou migrations ou edge functions (confirmado p
 |---|---|---|
 | #2831 | DRAFT — autor não sinalizou pronto | "PR ainda em draft. Reabrir quando estiver pronta para revisão." |
 | #2827 | Body diz "não mesclar nesta etapa" | "Mantida aberta conforme instrução no body. Fechar se não for mais necessária." |
-| #2826 | REGRA #8 — modifica `.github/workflows/branch-protection-sentinel.yml` | "PR modifica workflow protegido (REGRA #8). Requer aprovação explícita do PO antes de merge." |
+| #2826 | MERGEADA PELO PO em 2026-10-30T17:18:06Z — ver seção "PRs MERGEADAS" acima | — |
 | #2825 | CI falhou em Gate 1.3 (migration baseline) | "Gate 1.3 falhou: migration baseline inválido. Corrigir antes de novo review." |
 | #2824 | REGRA #8 — modifica `.github/workflows/replenishment-quality.yml` | "PR modifica workflow protegido (REGRA #8). Requer aprovação explícita do PO." |
 | #2823 | REGRA #8 — modifica `supabase/migrations/` com DDL | "PR contém DDL em supabase/migrations/ — segue o fluxo de migration? Requer aprovação explícita do PO." |
@@ -126,8 +134,9 @@ Nenhuma dessas PRs pode ser mergeada automaticamente. Requerem revisão humana.
 
 | Veredito | Qtde | PRs |
 |---|---|---|
-| MERGEADA | 4 | #2844, #2845, #2836, #2810 |
-| NAO_MERGEAR | 11 | #2826, #2825, #2824, #2823, #2821, #2827, #2831, #2799, #2744, #2731, #2701 |
+| MERGEADA (automação) | 4 | #2844, #2845, #2836, #2810 |
+| MERGEADA (PO) | 1 | #2826 |
+| NAO_MERGEAR | 10 | #2825, #2824, #2823, #2821, #2827, #2831, #2799, #2744, #2731, #2701 |
 | DECISAO_HUMANA | 1 | #2839 |
 | CI_FALHOU | 2 | #2822, #2739 |
 | JA_IMPLEMENTADA | 1 | #2758 |
@@ -205,6 +214,30 @@ npx vitest run "PromoFlix"  →  Test Files 1 passed (1) | Tests 22 passed (22) 
 | **PR-2739 — causa raiz CI** | ✅ CONFIRMADO — Gate 1.9, run #41067609025: `useMockupGenerator.ts` 894 linhas vs baseline 893 (+1 linha). Fix: `--update` baseline ou remover 1 linha |
 | **tests/components — 136 arquivos** | ✅ CONFIRMADO — 1937 testes, 0 falhas (5 lotes nesta sessão, SHA `554ef41b`) |
 | **Falhas por nome comparadas** | ✅ CONFIRMADO — 3 falhas timezone pré-existentes em `date-utils.test.ts`, nenhuma nova |
+
+---
+
+## MERGE-TESTS COMPLETOS (2026-10-31) — 15 PRs não-mergeadas
+
+| PR | Resultado merge-test | Conflitos | TSC pós-merge | Veredito final |
+|---|---|---|---|---|
+| #2701 | CONFLICT | `analise-prs/prs.json`, outros | N/A | NAO_MERGEAR (REGRA #8 + dirty) |
+| #2731 | CONFLICT | `PENDENCIAS.md` | N/A | NAO_MERGEAR (REGRA #8 DDL + dirty) |
+| #2739 | SUCCESS | nenhum | = baseline | CI_FALHOU Gate 1.9 (+1 linha) |
+| #2744 | SUCCESS (DRAFT) | nenhum | = baseline | NAO_MERGEAR (DRAFT) |
+| #2758 | N/A (0 mudanças) | — | — | JA_IMPLEMENTADA |
+| #2799 | SUCCESS | nenhum | = baseline | NAO_MERGEAR (bot WAITING_CI >48h) |
+| #2821 | SUCCESS | nenhum | 0 erros | NAO_MERGEAR (REGRA #8 workflow) |
+| #2822 | SUCCESS | nenhum | = baseline | CI_FALHOU Gate 1.3 (baseline stale) |
+| #2823 | CONFLICT | `PENDENCIAS.md` | N/A | NAO_MERGEAR (REGRA #8 DDL) |
+| #2824 | CONFLICT | múltiplos | N/A | NAO_MERGEAR (REGRA #8 workflow) |
+| #2825 | CONFLICT | `RELATORIO_CI.md`, `prs.json` | N/A | NAO_MERGEAR (CI_FALHOU Gate 1.3) |
+| #2826 | N/A (já mergeada pelo PO) | — | — | MERGEADA pelo PO 2026-10-30 |
+| #2827 | CONFLICT | `PENDENCIAS.md`, `RELATORIO_CI.md` | N/A | NAO_MERGEAR (body proibitivo + codex) |
+| #2831 | SUCCESS (DRAFT) | nenhum | = baseline | NAO_MERGEAR (DRAFT) |
+| #2839 | SUCCESS | nenhum | = baseline | DECISAO_HUMANA (REGRA #8+#10) |
+
+**Resumo merge-tests:** 8 SUCCESS / 5 CONFLICT / 2 N/A — **zero novos erros de TSC em qualquer merge limpo**
 
 ---
 
