@@ -130,55 +130,32 @@ dependentes de auth/infra. Mesma família que P2 e P3.
 
 ---
 
-## P5 — Uptime Monitor: probe de produção falhando
+## ~~P5~~ — Uptime Monitor: ✅ RESOLVIDO AUTOMATICAMENTE
 
 **Workflow:** Uptime Monitor
 **Última execução com falha:** [run/41124195036](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41124195036)
-**Data:** 2026-10-30
-
-**Erro:** "Probe site + edge function" falhou. O log indica que comentário idêntico já existe na issue #2841.
-
-**Causa raiz:** URL de produção (Vercel/Supabase edge function) inacessível no momento do probe.
-Pode ser outage temporário ou problema persistente.
-
-**O que o PO precisa fazer:**
-- Verificar a issue [#2841](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2841) para contexto do problema
-- Verificar se a edge function está operacional no dashboard Supabase
-- Verificar se o projeto Vercel `prj_9UfugNYCuboH2R0XB04Jv8PpjDpZ` está com deploy bem-sucedido
+**Nova execução com sucesso:** [run/41164886753](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41164886753) — conclusion=**success**
+**Resolução:** Falha transitória de probe. Outage temporário da Vercel/edge function resolvido.
 
 ---
 
-## P6 — Running Copilot Code Review: GitHub Copilot API failure
+## ~~P6~~ — Running Copilot Code Review: ✅ RESOLVIDO AUTOMATICAMENTE
 
 **Workflow:** Running Copilot Code Review
 **Última execução com falha:** [run/41115245979](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41115245979)
-**Data:** 2026-10-30
-
-**Erro:** "Processing Request (Linux)" falhou usando modelo `sweagent-capi:gpt-6.1-sol[ReasoningEffort=high]`
-
-**Causa raiz:** Falha na API do GitHub Copilot (serviço externo). Não é corrigível por código.
-
-**O que o PO precisa fazer:**
-- Verificar se o GitHub Copilot está ativo e autorizado no repositório
-- O workflow pode ser reexecutado manualmente para verificar se foi flake
+**Resolução:** Nova execução automática concluiu com sucesso — falha foi transitória na API do Copilot.
 
 ---
 
-## P7 — E2E — Critical Flows, Personalization, Quote Builder, Replenishment: auth/infra
+## ~~P7~~ — E2E — Critical Flows, Personalization, Quote Builder, Replenishment: ✅ RESOLVIDO AUTOMATICAMENTE
 
-**Workflows afetados:**
-- E2E — Critical Flows & Error Boundaries ([run/41115240508](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41115240508))
-- E2E — Personalization Flow ([run/41115240723](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41115240723))
-- Quote Builder Delivery Quality ([run/41114861094](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41114861094))
-- CI - Replenishment Module Quality Gate ([run/41102931819](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41102931819))
+**Workflows afetados (todos resolvidos):**
+- E2E — Critical Flows & Error Boundaries → [run/41134852668](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852668) ✅
+- E2E — Personalization Flow → [run/41134852480](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852480) ✅
+- Quote Builder Delivery Quality → [run/41134852447](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852447) ✅
+- CI - Replenishment Module Quality Gate → [run/41134852537](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852537) ✅
 
-**Causa comum:** Todos os jobs E2E autenticados falham. Jobs atingem a etapa de Playwright
-mas falham ao tentar autenticar ou acessar dados no Supabase.
-
-**O que o PO precisa fazer:**
-- Verificar e renovar os secrets de E2E: `E2E_USER_EMAIL`, `E2E_USER_PASSWORD`
-- Confirmar que a conta de teste tem acesso ativo no Supabase `doufsxqlfjyuvxuezpln`
-- Reexecutar os workflows após confirmar as credenciais
+**Resolução:** Falhas transitórias de auth/infra resolvidas automaticamente no re-run após push `554ef41b` em main.
 
 ---
 
@@ -215,12 +192,15 @@ retorna EXIT 0 (não bloqueante), mas a verificação de baseline ESLint não é
 
 ## Resumo de Ações Requeridas do PO
 
-| # | Ação | Workflows impactados |
-|---|------|---------------------|
-| 1 | Verificar/renovar secrets E2E (`E2E_USER_EMAIL`, `E2E_USER_PASSWORD`) | P2, P7 (5 workflows) |
-| 2 | Reexecutar Swatch QuickView + investigar artefatos gigantes | P3 |
-| 3 | Atualizar baselines visuais se UI mudou intencionalmente | P4 |
-| 4 | Verificar issue #2841 + edge function/Vercel deploy | P5 |
-| 5 | Verificar GitHub Copilot API no repositório | P6 |
-| 6 | Branch Protection Sentinel: próximos commits serão convencionais | P1 |
-| 7 | Investigar lint OOM: aumentar `--max-old-space-size` ou dividir check por domínio | P8 |
+> **Atualizado 2026-10-31:** P5, P6, P7 marcados como resolvidos (auto-resolução). Pendências ativas: P1, P2 (aguarda merge PR #2854), P3, P4, P8.
+
+| # | Ação | Workflows impactados | Status |
+|---|------|---------------------|--------|
+| 1 | Merge PR #2854 após Gate Final ✅ → rerun E2E Playwright em main | P2 | 🔄 Aguardando CI |
+| 2 | Reexecutar Swatch QuickView + investigar artefatos gigantes | P3 | 📋 Aberto |
+| 3 | Atualizar baselines visuais se UI mudou intencionalmente | P4 | 📋 Aberto |
+| 4 | Branch Protection Sentinel: próximos commits serão convencionais | P1 | 📋 Não corrigível retroativamente |
+| 5 | Investigar lint OOM: aumentar `--max-old-space-size` ou dividir check por domínio | P8 | 📋 Pré-existente |
+| ~~6~~ | ~~Verificar issue #2841 + edge function/Vercel~~ | ~~P5~~ | ✅ Auto-resolvido |
+| ~~7~~ | ~~Verificar GitHub Copilot API~~ | ~~P6~~ | ✅ Auto-resolvido |
+| ~~8~~ | ~~Renovar secrets E2E~~ | ~~P7~~ | ✅ Auto-resolvido |
