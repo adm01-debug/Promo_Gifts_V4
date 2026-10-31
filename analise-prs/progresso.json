@@ -1,11 +1,10 @@
 {
   "sessao": "session_012WyySbh2tj8vhRQLBf3mHo",
   "data_inicio": "2026-10-29",
-  "data_atualizacao": "2026-10-30T02:15Z",
+  "data_atualizacao": "2026-10-31",
   "main_sha_baseline": "62af0798dd71812979667ac29f596d25f3ef191b",
-  "main_sha_atual": "380ceb6238dc4ea4f093bd61ce8dd5419c74ab91",
-  "nota_main": "Após merge de #2757 (0ca54ff1), depois branch updates de #2747 e #2739 pusaram main para 380ceb62",
-
+  "main_sha_atual": "33ef0cda2dceefd29ec25d5ae4d35cf651abb6c8",
+  "nota_main": "Após merges das sessões 2026-10-29, 2026-10-30 e 2026-10-31",
   "merges_todas_as_sessoes": [
     {"pr": 2695, "sha": "8da42aa9067b212384f14b2f52d4bec7cb0aed40", "titulo": "docs(db): corrige status espelho migration Google", "gate": "SUCCESS"},
     {"pr": 2707, "sha": "37ea10a3818ee4545235cfb94625fcab42fa3101", "titulo": "docs: recibo deploy edge function run 40747468580", "gate": "PENDENTE"},
@@ -19,43 +18,50 @@
     {"pr": 2737, "sha": "c7f9f4ba960f56981d860103c6adc7ea76c63bec", "titulo": "docs(auditoria): relatório auditoria Supabase revisão final", "gate": "PENDENTE"},
     {"pr": 2741, "sha": "6ac842c22e37a46c499e91460794bbb1d56b5f5d", "titulo": "fix(mockup): telas — histórico, resultado, foto original, upload, erros", "gate": "SUCCESS"},
     {"pr": 2742, "sha": "8f992fdde05943c9bcd4d0ca925ec221f4828f41", "titulo": "fix(magic-up): compartilhar, brand kit, a11y, i18n e timeout", "gate": "SUCCESS"},
-    {"pr": 2757, "sha": "0ca54ff134cfce504590b45c1bc2641ed7bb379f", "titulo": "fix(dossies): remove prefixo supabase/ em refs de migration — corrige Gate 1.3", "gate": "SUCCESS"}
+    {"pr": 2757, "sha": "0ca54ff134cfce504590b45c1bc2641ed7bb379f", "titulo": "fix(dossies): remove prefixo supabase/ em refs de migration — corrige Gate 1.3", "gate": "SUCCESS"},
+    {"pr": 2864, "sha": "0efdc5fde2eedd4554b8510d97a822a95f3cb382", "titulo": "fix(kit): preserva search e hash no KitBuilderLegacyRedirect (FT-121)", "gate": "pre-existing-only"},
+    {"pr": 2848, "sha": "5ec5ce77569083bbcc3b6ba45330a202873b51b8", "titulo": "docs(governance): adiciona AGENTS.md e CLAUDE.md", "gate": "pre-existing-only"},
+    {"pr": 2849, "sha": "3f336c4f61ee0ed648a04bd12a28761d2c6a16bf", "titulo": "fix(security): remove exceção overly broad scripts/.* do gitleaks", "gate": "pre-existing-only"},
+    {"pr": 2857, "sha": "c952a06ad014316d2d7e34f9a3c59fecdc25c37f", "titulo": "test(quotes): corrige caminho fuzz test E128 para QuoteBuilderSummaryItems", "gate": "SUCCESS"},
+    {"pr": 2862, "sha": "f17009644950ae01245fa82383dde28f53121836", "titulo": "test(e2e): estabiliza seleção de colunas em orçamentos", "gate": "SUCCESS"},
+    {"pr": 2834, "sha": "33ef0cda2dceefd29ec25d5ae4d35cf651abb6c8", "titulo": "docs(ci): evidence vitest baseline 11 arquivos/137 testes", "gate": "pre-existing-only"}
   ],
-
-  "prs_abertas_estado_atual": [
-    {"numero": 2701, "titulo": "fix(ci): autentica integração Kit Coverage", "veredito": "NAO_MERGEAR", "motivo": "Body: 'O PR continua em rascunho e não deve ser mesclado até que a causa de P12 seja resolvida'"},
-    {"numero": 2714, "titulo": "fix(db): reconciliar migrations pendentes", "veredito": "DECISAO_HUMANA", "motivo": "Toca supabase/migrations/ (REGRA #8) — 4 novas migrations DDL"},
-    {"numero": 2717, "titulo": "fix(e2e): isola servidor Vite no CI de paridade", "veredito": "DECISAO_HUMANA", "motivo": "Toca .github/workflows/ (REGRA #8) + conflito com main"},
-    {"numero": 2731, "titulo": "fix(db): protege kill_switch_hits contra INSERT anônimo", "veredito": "DECISAO_HUMANA", "motivo": "Toca .github/workflows/ + supabase/migrations/ (REGRA #8)"},
-    {"numero": 2734, "titulo": "fix(ci): usa mirror Docker Hub após limite GHCR", "veredito": "DECISAO_HUMANA", "motivo": "Toca .github/workflows/ (REGRA #8)"},
-    {"numero": 2739, "titulo": "fix(mockup): gerador — medidas, timeout 30s, lote parcial", "veredito": "AGUARDANDO_CI", "sha_head": "f490f5b1cd7a6105576579337659317d914e676c", "acao": "MERGEAR quando clean"},
-    {"numero": 2743, "titulo": "chore(audit): fixa Graphify", "veredito": "NAO_MERGEAR", "motivo": "mergeable_state: dirty (conflito com main)"},
-    {"numero": 2744, "titulo": "fix(edge): limites Magic Up", "veredito": "NAO_MERGEAR", "motivo": "Draft + título NÃO MESCLAR"},
-    {"numero": 2745, "titulo": "ci(ratchet): evita SIGPIPE", "veredito": "DECISAO_HUMANA", "motivo": "Toca .github/workflows/ratchet-weekly.yml (REGRA #8)"},
-    {"numero": 2746, "titulo": "docs(ci): auditoria workflows", "veredito": "NAO_MERGEAR", "motivo": "Draft"},
-    {"numero": 2747, "titulo": "fix(types): sincroniza idempotency_key de notificações", "veredito": "AGUARDANDO_CI", "sha_head": "d0c1ad79310015c741478164266446a87f62078c", "acao": "MERGEAR quando clean"},
-    {"numero": 2749, "titulo": "fix(ci): sentinel SHA allowlist", "veredito": "NAO_MERGEAR", "motivo": "Draft + toca .github/workflows/"},
-    {"numero": 2750, "titulo": "docs(analise-prs): 7 novos dossiês", "veredito": "NAO_MERGEAR", "motivo": "Draft de outra sessão"},
-    {"numero": 2755, "titulo": "docs(analise-prs): relatório exaustivo PRs sessão 2026-10-29", "veredito": "AGUARDANDO_CI", "sha_head": "b529bda1838560c13237f5725e4525a1f9b36fa4", "nota": "Conflito PENDENCIAS.md resolvido — merge commit 8d702817 — push concluído 02:10Z"},
-    {"numero": 2758, "titulo": "fix(a11y): restaura foco visível", "veredito": "NAO_MERGEAR_AUTOMATICO", "motivo": "Body contém instrução de revisão humana antes do merge"},
-    {"numero": 2759, "titulo": "chore(main): release 1.2.0", "veredito": "AGUARDAR_REVISAO_PO", "motivo": "Release PR do bot — REGRA #8 — decisão do PO"}
+  "prs_abertas_estado_atual_261031": [
+    {"numero": 2858, "titulo": "fix(ci): kit coverage auth", "veredito": "BLOQUEADO", "motivo": "Toca .github/workflows/ (REGRA #8)"},
+    {"numero": 2859, "titulo": "fix(ci): nightly magazine colorswatch", "veredito": "BLOQUEADO", "motivo": "Toca .github/workflows/ (REGRA #8)"},
+    {"numero": 2821, "titulo": "fix(ci): uptime monitor HTTP status", "veredito": "BLOQUEADO", "motivo": "Toca .github/workflows/ (REGRA #8)"},
+    {"numero": 2860, "titulo": "docs(ci): auditoria workflows 31/10", "veredito": "CONFLICTING", "motivo": "Conflito com main — DECISÃO HUMANA"},
+    {"numero": 2856, "titulo": "fix(edge-fn): auth circuit breaker CRM", "veredito": "CONFLICTING", "motivo": "Conflito com main — DECISÃO HUMANA"},
+    {"numero": 2855, "titulo": "fix(ci): fuzz+url-state+race condition", "veredito": "CONFLICTING", "motivo": "Conflito com main — DECISÃO HUMANA"},
+    {"numero": 2854, "titulo": "fix(test+hook): fuzz E128 + url-state", "veredito": "CONFLICTING", "motivo": "Conflito com main — DECISÃO HUMANA"},
+    {"numero": 2852, "titulo": "docs(ci): relatório pendências main", "veredito": "CONFLICTING", "motivo": "Conflito com main — DECISÃO HUMANA"},
+    {"numero": 2847, "titulo": "fix(ci-gates): credenciais e policies", "veredito": "CONFLICTING", "motivo": "Conflito com main — DECISÃO HUMANA"},
+    {"numero": 2846, "titulo": "fix(listas): normaliza filtros POP", "veredito": "CONFLICTING", "motivo": "Conflito com main — DECISÃO HUMANA"},
+    {"numero": 2839, "titulo": "fix(ci): endurece gates Supabase", "veredito": "CONFLICTING", "motivo": "Conflito com main — DECISÃO HUMANA"},
+    {"numero": 2831, "titulo": "docs(analise-prs): vereditos 2799-2828", "veredito": "CONFLICTING_DRAFT", "motivo": "Draft + conflito com main — DECISÃO HUMANA"},
+    {"numero": 2827, "titulo": "fix(ci): TypeScript e tour de kits", "veredito": "CONFLICTING", "motivo": "Conflito com main — DECISÃO HUMANA"},
+    {"numero": 2825, "titulo": "chore(audit): Graphify + CI", "veredito": "CONFLICTING", "motivo": "Conflito com main — DECISÃO HUMANA"},
+    {"numero": 2824, "titulo": "fix(e2e): isola Vite no CI", "veredito": "CONFLICTING", "motivo": "Conflito com main — DECISÃO HUMANA"},
+    {"numero": 2822, "titulo": "fix: sync types idempotency", "veredito": "CONFLICTING", "motivo": "Gate 1.3 — DECISÃO HUMANA"},
+    {"numero": 2851, "titulo": "test(quotes): fuzz origem completo", "veredito": "CONFLICTING", "motivo": "Conflita com #2857 já mergeada — DECISÃO HUMANA"},
+    {"numero": 2850, "titulo": "fix(url-state): remove filtros default", "veredito": "CONFLICTING", "motivo": "E2E timeout — DECISÃO HUMANA"},
+    {"numero": 2758, "titulo": "fix(a11y): foco visível histórico", "veredito": "CONFLICTING", "motivo": "0 arquivos tocados — DECISÃO HUMANA"},
+    {"numero": 2739, "titulo": "fix(mockup): gerador VPS 32 arquivos", "veredito": "CONFLICTING", "motivo": "Gate 1.9 nova regressão — DECISÃO HUMANA"},
+    {"numero": 2701, "titulo": "fix(ci): autentica integração Kit Coverage", "veredito": "CONFLICTING", "motivo": "Conflito com main — DECISÃO HUMANA"},
+    {"numero": 2871, "titulo": "fix(db): migration stock_notes", "veredito": "AGUARDA_PO", "motivo": "DDL — Regra 8 — AGUARDA PO"},
+    {"numero": 2873, "titulo": "docs: auditoria reconciliação", "veredito": "AGUARDA_PO", "motivo": "conteúdo docs — AGUARDA PO"}
   ],
-
+  "falhas_pre_existentes_confirmadas": [
+    {"gate": "Gate 0.5 (Dependency Audit)", "descricao": "Falha em TODAS as PRs incluindo docs-only", "impacto": "Gate Final cascata"},
+    {"gate": "E2E chromium/firefox/webkit swatch→QV", "descricao": "runs 41211444545, 41211401618 no main", "impacto": "pré-existente"},
+    {"gate": "E2E carrinhos/list-url-state-restore.spec.ts", "descricao": "run 41229634283 no main", "impacto": "pré-existente"},
+    {"gate": "E2E orcamentos/list-url-state-restore.spec.ts", "descricao": "run 41229634283 no main", "impacto": "pré-existente"}
+  ],
   "resumo": {
-    "total_prs_abertas_analisadas": 16,
-    "mergeadas_esta_sessao": 3,
-    "mergeadas_sessoes_anteriores": 10,
-    "total_mergeadas_historico": 13,
-    "aguardando_ci": 3,
-    "nao_mergear": 6,
-    "decisao_humana": 5,
-    "aguardar_revisao_po": 1,
-    "nao_mergear_automatico": 1
-  },
-
-  "check_in_ativo": {
-    "trigger_id": "trig_01DvFEu1XhoyAjqVzjjHRKRQ",
-    "fire_at": "2026-10-30T02:50:00Z",
-    "objetivo": "Mergear #2747, #2739 e #2755 quando clean; produzir META CUMPRIDA"
+    "total_mergeadas_historico": 19,
+    "mergeadas_sessao_261031": 6,
+    "bloqueadas_workflows": 3,
+    "conflicting_decisao_humana": 18,
+    "aguarda_po": 2
   }
 }

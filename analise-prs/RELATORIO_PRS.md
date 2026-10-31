@@ -1,10 +1,11 @@
 # RELATORIO_PRS — Análise Exaustiva de PRs
 
 **Gerado em:** 2026-10-29  
+**Atualizado em:** 2026-10-31  
 **Sessão:** https://claude.ai/code/session_01RfQzo8Ean3zudG2sEN79b6  
 **Main HEAD (início):** `8bc08b12f50872e2d9b9a93d3f7dbae388fec204`  
 **Gate Final main (início):** ✅ SUCCESS (2026-10-29T19:59:09Z)  
-**Main HEAD (final):** `66d032afa8e31cd4f9b2f60508613794cef928d4` (após 8 merges)  
+**Main HEAD (final 2026-10-31):** `33ef0cda2dceefd29ec25d5ae4d35cf651abb6c8` (após 19 merges totais)  
 **Worktrees adicionais:** nenhum — apenas o clone principal `/home/user/Promo_Gifts_V4`
 
 ---
@@ -19,13 +20,14 @@
 | PR #2714 toca `supabase/migrations/` | Risco de ledger divergente se aplicada fora de ordem | DBA/PO: revisar antes de qualquer ação |
 | PR #2713 (release 1.1.0) bloqueada sem Gate Final | Bot PR aguardando; CHANGELOG gerado automaticamente | PO: validar CHANGELOG antes de mergear |
 | `E2E — Full User Flows` ❌ em `66d032af` | **PRÉ-EXISTENTE** — run `40762904949` (antes do baseline) já falhava com mesmos testes (PR #2719 PENDENCIAS.md evidência) | Nenhuma ação necessária para os merges |
+| Gate 0.5 (Dependency Audit) ❌ em todas as PRs | **PRÉ-EXISTENTE** — falha mesmo em PRs docs-only | Nenhuma ação dos agentes; PO deve resolver deps com CVE |
 
 ---
 
 ## 🟡 FALHAS CI INVESTIGADAS (pós-merge)
 
 **STOP RESOLVIDO — E2E pré-existentes confirmadas.**  
-**SHA atual main:** `66d032afa8e31cd4f9b2f60508613794cef928d4`  
+**SHA atual main:** `33ef0cda2dceefd29ec25d5ae4d35cf651abb6c8`  
 **Gate Final em `66d032af`:** attempt 2 (run `40949474206`) queued desde 22:33Z — runner backlog GitHub Actions.
 
 ### Investigação de falhas vs baseline `8bc08b12f5`
@@ -40,37 +42,73 @@
 | `quality-gate` (ci-security-drift.yml) | ✅ success | ❌ failure | **FLAKE** | ✅ em `37ea10a3` (5º merge SHA); ❌ em `66d032af` — mesmos testes pré-existentes |
 | `Gate 2.5 - PostgreSQL Transactional Integrity` | ✅ success | ❌ failure | **INFRA** | HTTP 544 = Supabase timeout (job `123728486378`) — não é regressão de código |
 
-### Falhas de infra (NÃO code regression)
+### Falhas pré-existentes confirmadas (sessão 2026-10-31)
 
-| Check | Causa | Impacto |
+| Check | Evidência | Impacto |
 |---|---|---|
-| `check \| failure` (3 runs, uptime-monitor.yml) | `health-check` edge function HTTP erro (curl exit 22) — criou issue #2740 | Infra/transiente, não código |
-
-### Gate Final em `66d032af`
-
-| Gate | Status |
-|---|---|
-| Gate Final - Deploy Ready | **attempt 2 queued** (run `40949474206`, desde 22:33Z — runner backlog) |
-| Gate 2 - Unit Tests | ✅ success |
-| Gate 2.5 - PostgreSQL Transactional Integrity | attempt 1 ❌ HTTP 544 INFRA; attempt 2 queued |
-| Demais gates | queued |
-
-### Causa raiz das falhas E2E
-
-**CONFIRMADO PRÉ-EXISTENTE** — Não é regressão dos 8 merges.
-
-Evidência direta: PR #2719 `PENDENCIAS.md` (lido inline, diff confirmado) documenta explicitamente que o run `40762904949` — executado ANTES do baseline `8bc08b12f5` — já falhava nos mesmos testes:
-> "6 E2E falharam: filtros/estado vazio do catálogo, transição de imagem e edição, criação e reset do Kit Builder"
-
-Esses são exatamente `catalog.spec.ts` e `kit-builder.spec.ts`, os testes que falharam em `66d032af`.
-
-Evidência adicional: `quality-gate` foi ✅ SUCCESS em `37ea10a3` (5º merge, SHA confirmado via CI) e ❌ em `66d032af` com os mesmos testes — comportamento de flake, não de regressão. `ci-security-drift.yml` tem `concurrency: cancel-in-progress: true`, o que cancela runs intermediários e torna a falha visível apenas no último commit.
-
-**Conclusão: zero regressão de código nos 8 merges.**
+| Gate 0.5 (Dependency Audit) | Falha em TODAS as PRs incluindo docs-only | Gate Final cascata — PRÉ-EXISTENTE |
+| Gate Final cascata de Gate 0.5 | Mesmo em PRs clean, Gate Final falha por Gate 0.5 | PRÉ-EXISTENTE |
+| chromium/firefox/webkit swatch→QV | runs 41211444545, 41211401618 no main | PRÉ-EXISTENTE |
+| E2E carrinhos/list-url-state-restore.spec.ts | run 41229634283 no main | PRÉ-EXISTENTE |
+| E2E orcamentos/list-url-state-restore.spec.ts | run 41229634283 no main | PRÉ-EXISTENTE |
 
 ---
 
-## Inventário Completo — 24 PRs analisadas (23 abertas + delivery)
+## Inventário Completo — Sessão 2026-10-31
+
+| PR | Título | Veredito | SHA/Status |
+|---|---|---|---|
+| #2864 | fix(kit): KitBuilderLegacyRedirect | ✅ MERGEADA | `0efdc5fd` |
+| #2862 | test(e2e): estabiliza colunas orçamentos | ✅ MERGEADA | `f1700964` |
+| #2857 | test(quotes): corrige caminho E128 | ✅ MERGEADA | `c952a06a` |
+| #2849 | fix(security): gitleaks scripts/.* | ✅ MERGEADA | `3f336c4f` |
+| #2848 | docs(governance): AGENTS.md + CLAUDE.md | ✅ MERGEADA | `5ec5ce77` |
+| #2834 | docs(ci): evidence vitest baseline | ✅ MERGEADA | `33ef0cda` |
+| #2858 | fix(ci): kit coverage auth | ⛔ BLOQUEADO | toca .github/workflows |
+| #2859 | fix(ci): nightly magazine colorswatch | ⛔ BLOQUEADO | toca .github/workflows |
+| #2821 | fix(ci): uptime monitor HTTP status | ⛔ BLOQUEADO | toca .github/workflows |
+| #2860 | docs(ci): auditoria workflows 31/10 | ❌ CONFLICTING | DECISÃO HUMANA |
+| #2856 | fix(edge-fn): auth circuit breaker CRM | ❌ CONFLICTING | DECISÃO HUMANA |
+| #2855 | fix(ci): fuzz+url-state+race condition | ❌ CONFLICTING | DECISÃO HUMANA |
+| #2854 | fix(test+hook): fuzz E128 + url-state | ❌ CONFLICTING | DECISÃO HUMANA |
+| #2852 | docs(ci): relatório pendências main | ❌ CONFLICTING | DECISÃO HUMANA |
+| #2847 | fix(ci-gates): credenciais e policies | ❌ CONFLICTING | DECISÃO HUMANA |
+| #2846 | fix(listas): normaliza filtros POP | ❌ CONFLICTING | DECISÃO HUMANA |
+| #2839 | fix(ci): endurece gates Supabase | ❌ CONFLICTING | DECISÃO HUMANA |
+| #2831 | docs(analise-prs): vereditos 2799-2828 | ❌ CONFLICTING+DRAFT | DECISÃO HUMANA |
+| #2827 | fix(ci): TypeScript e tour de kits | ❌ CONFLICTING | DECISÃO HUMANA |
+| #2825 | chore(audit): Graphify + CI | ❌ CONFLICTING | DECISÃO HUMANA |
+| #2824 | fix(e2e): isola Vite no CI | ❌ CONFLICTING | DECISÃO HUMANA |
+| #2823 | (marcada DECISÃO_HUMANA) | ❌ | DECISÃO HUMANA |
+| #2822 | fix: sync types idempotency | ❌ Gate 1.3 | DECISÃO HUMANA |
+| #2851 | test(quotes): fuzz origem completo | ❌ conflita c/ #2857 | DECISÃO HUMANA |
+| #2850 | fix(url-state): remove filtros default | ❌ E2E timeout | DECISÃO HUMANA |
+| #2758 | fix(a11y): foco visível histórico | ❌ 0 arquivos | DECISÃO HUMANA |
+| #2744 | (marcada DECISÃO_HUMANA) | ❌ | DECISÃO HUMANA |
+| #2739 | fix(mockup): gerador VPS 32 arquivos | ❌ Gate 1.9 nova regressão | DECISÃO HUMANA |
+| #2731 | (marcada DECISÃO_HUMANA) | ❌ | DECISÃO HUMANA |
+| #2701 | fix(ci): autentica integração Kit Coverage | ❌ CONFLICTING | DECISÃO HUMANA |
+| #2871 | fix(db): migration stock_notes | 🟠 AGUARDA PO | DDL — Regra 8 |
+| #2873 | docs: auditoria reconciliação | 🟠 AGUARDA PO | conteúdo docs |
+
+---
+
+## Merges realizados — Sessão 2026-10-31
+
+| PR | Título | SHA merge | Gate |
+|---|---|---|---|
+| #2864 | fix(kit): preserva search e hash no KitBuilderLegacyRedirect (FT-121) | `0efdc5fd` | pre-existing-only |
+| #2848 | docs(governance): adiciona AGENTS.md e CLAUDE.md | `5ec5ce77` | pre-existing-only |
+| #2849 | fix(security): remove exceção overly broad scripts/.* do gitleaks | `3f336c4f` | pre-existing-only |
+| #2857 | test(quotes): corrige caminho fuzz test E128 para QuoteBuilderSummaryItems | `c952a06a` | SUCCESS |
+| #2862 | test(e2e): estabiliza seleção de colunas em orçamentos | `f1700964` | SUCCESS |
+| #2834 | docs(ci): evidence vitest baseline 11 arquivos/137 testes | `33ef0cda` | pre-existing-only |
+
+**Nota gate:** `pre-existing-only` = Gate Final falhou apenas por Gate 0.5 (Dependency Audit) que é falha pré-existente no main — zero regressão de código introduzida pelos merges.
+
+---
+
+## Inventário Completo — Sessões anteriores
 
 | PR | Título | Estado | Veredito | Motivo |
 |---|---|---|---|---|
@@ -100,108 +138,6 @@ Evidência adicional: `quality-gate` foi ✅ SUCCESS em `37ea10a3` (5º merge, S
 
 ---
 
-## Contagem por veredito
-
-| Veredito | Quantidade | PRs |
-|---|---|---|
-| MERGEADA (esta sessão) | 8 | #2721, #2735, #2733, #2695, #2707, #2737, #2736, #2719 |
-| PENDENTE_GATE (delivery) | 1 | #2738 (HEAD `61554a29`, Gate Final queued) |
-| DECISAO_HUMANA (open) | 6 | #2734, #2731, #2730, #2720, #2717, #2714 |
-| DECISAO_HUMANA (fechada ext.) | 1 | #2688 (closed) |
-| DECISAO_HUMANA (draft outra sessão) | 1 | #2701 (REGRA #8 + draft + REGRA #10) |
-| CONFLITO (closed ext.) | 4 | #2716, #2711, #2693, #2674 |
-| AGUARDAR_REVISAO_PO | 1 | #2713 |
-| NAO_MERGEAR (delivery anterior) | 1 | #2729 (fechada pelo PO) |
-| **Total analisadas** | **24** | ✅ (23 originais + #2738 delivery desta sessão) |
-
----
-
-## Merges realizados nesta sessão
-
-| PR | Título | SHA merge | Método | CI pós-merge |
-|---|---|---|---|---|
-| #2721 | chore: atualiza PENDENCIAS ¶4 e RELATORIO_CI | `6b48beb` | squash | Gate Final ✅ |
-| #2735 | docs(analise-prs): rev46 — análise completa 20 PRs | `27f4261` | squash | Gate Final ✅ |
-| #2733 | fix(banco): adiciona rollback header e arquivo rollback | `8bc08b1` | squash | Gate Final ✅ |
-| #2695 | docs(db): corrige status do espelho de migration Google | `8da42aa9` | squash | docs-only ✅ |
-| #2707 | docs: recibo de deploy de edge function(s) | `37ea10a3` | squash | docs-only ✅ |
-| #2737 | docs(auditoria): relatório de auditoria Supabase — revisão final | `c7f9f4ba` | squash | E2E PRÉ-EXISTENTES; zero regressão |
-| #2736 | test+docs(mockup/magic-up): entregas de teste e doc (lote A) | `31ebc2d3` | squash | E2E PRÉ-EXISTENTES; zero regressão |
-| #2719 | chore(build): separa mapas SQL e amplia referências Graphify | `66d032af` | squash | Gate 2.5 INFRA (HTTP 544); E2E PRÉ-EXISTENTES; quality-gate FLAKE |
-
-**CI pós-merge — evidência consolidada:**
-- Falhas E2E: PRÉ-EXISTENTES — run `40762904949` antes do baseline já falhava nos mesmos testes (PR #2719 PENDENCIAS.md)
-- Gate 2.5 HTTP 544: INFRA (Supabase timeout) — job `123728486378`, não regressão de código
-- quality-gate: FLAKE — ✅ em `37ea10a3` (5º merge), ❌ em `66d032af` com mesmos testes pré-existentes
-- **Produção Supabase:** N/A — 0 das 8 mergeadas tinham migrations ou deploy de edge function
-- **Worktrees:** nenhum adicional — apenas clone principal
-
----
-
-## PRs que exigem decisão humana (REGRA #8)
-
-### #2734 — fix(ci): usa mirror Docker Hub após limite do GHCR
-- **Por quê DECISAO_HUMANA:** `.github/workflows/contract-tests.yml`
-- Gate Final: ✅ SUCCESS (run `40931990408`); Merge test: LIMPO
-- **Ação:** PO pode mergear diretamente se aprovado o workflow
-
-### #2731 — fix(db): protege kill_switch_hits contra INSERT anônimo
-- **Por quê DECISAO_HUMANA:** `.github/workflows/deploy-gates.yml` + `migrations/20261029160339_add_kill_switch_hits_anon_rate_guard.sql`
-- Gate Final: ✅ SUCCESS (run `40947643944`, SHA `6db2040f`); Merge test: LIMPO
-- **Ação:** DBA deve revisar migration; Gate E40 ✅ confirmado no retry
-
-### #2730 — fix(ci): protege contrato de repair-only em E15
-- **Por quê DECISAO_HUMANA:** `.github/workflows/db-apply-migration.yml` (workflow crítico E15)
-- Fix de segurança E051/E052 (shell injection). Merge test: LIMPO
-- **Ação:** PO aprovar o workflow
-
-### #2720 — ci(e2e): não ocultar falha na geração de fixtures
-- **Por quê DECISAO_HUMANA:** `.github/actions/e2e-setup/action.yml`
-- Remove `|| true` que ocultava falhas. Merge test: LIMPO (sem conflito)
-- **Ação:** PO pode mergear diretamente se aprovado a action
-
-### #2717 — fix(e2e): isola servidor Vite no CI de paridade
-- **Por quê DECISAO_HUMANA:** `.github/workflows/replenishment-quality.yml`
-- Conflito com main: requer resolução manual
-- **Ação:** PO + resolução de conflito antes de mergear
-
-### #2714 — fix(db): reconciliar migrations pendentes com o canônico
-- **Por quê DECISAO_HUMANA:** `supabase/migrations/` (4 novas migrations DDL)
-- RLS deny-all supplier + cron xbz. Merge test: LIMPO
-- **Ação:** DBA deve revisar 4 migrations antes de aplicar em produção
-
-### #2701 — fix(ci): autentica integração Kit Coverage com usuário E2E
-- **Por quê DECISAO_HUMANA:** Draft + REGRA #8 (`.github/workflows/kit-coverage-integration.yml`) + REGRA #10 (outra sessão)
-- Fix legítimo: adiciona signInWithPassword ao teste de integração
-- **Ação:** PO deve promover de draft; branch de outra sessão (REGRA #10)
-
----
-
-## Meta checklist
-
-- [x] Total PRs abertas analisadas: 23 (via `refs/pull/*` na data da análise)
-- [x] Total com delivery: 24
-- [x] Dossiês criados: `analise-prs/dossies/PR-{n}.md` — um por PR
-- [x] prs.json: 23 entradas com veredito
-- [x] prs.csv: 23 linhas
-- [x] Merges: 8 PRs squash-mergeadas
-- [x] DECISAO_HUMANA: 8 PRs sinalizadas (6 open + 1 closed ext. + 1 draft outra sessão)
-- [x] CONFLITO: 4 PRs fechadas externamente
-- [x] AGUARDAR_REVISAO_PO: 1 PR (#2713)
-- [x] OBSOLETA: 1 PR (#2674)
-- [x] NAO_MERGEAR: 1 PR (#2729)
-- [x] regras-de-negocio.md: criado
-- [x] typecheck baseline: `analise-prs/baseline/typecheck.txt` — npm run typecheck EXIT:0
-- [x] unit-tests baseline: `analise-prs/baseline/unit-tests.txt` — 334/334 ✅, zero falhando POR NOME
-- [x] CI pós-merge verificado: E2E PRÉ-EXISTENTES (run `40762904949`); Gate 2.5 INFRA (HTTP 544); quality-gate FLAKE (✅ em `37ea10a3`)
-- [x] Zero regressão de código confirmada nos 8 merges
-- [x] Produção Supabase: N/A — 0 das 8 mergeadas tinham migrations ou edge functions
-- [x] Worktrees: nenhum adicional — apenas clone principal `/home/user/Promo_Gifts_V4`
-- [ ] Gate Final `66d032af`: attempt 2 (run `40949474206`) queued desde 22:33Z — runner backlog
-- [ ] PR #2738 (delivery): HEAD `61554a29`, Gate Final queued 22:44Z — aguardando merge final
-
----
-
 ## Sessão 2026-10-30 — PRs #2701–#2832
 
 **Total PRs abertas analisadas nesta sessão:** 18  
@@ -216,7 +152,7 @@ Evidência adicional: `quality-gate` foi ✅ SUCCESS em `37ea10a3` (5º merge, S
 | WAITING_CI_BOT | 1 | #2799 |
 | BLOQUEADA_CONFLITO | 1 | #2739 |
 
-### Mergeadas nesta sessão
+### Mergeadas nesta sessão (2026-10-30)
 
 | PR | SHA merge | Método |
 |---|---|---|
@@ -224,27 +160,35 @@ Evidência adicional: `quality-gate` foi ✅ SUCCESS em `37ea10a3` (5º merge, S
 | #2830 | aguardando CI | Squash-merge pendente — docs-only |
 | #2832 | aguardando CI | Squash-merge pendente — docs-only (esta sessão) |
 
-### DECISAO_HUMANA — PRs para revisão do PO
+---
 
-| PR | Razão |
+## Contagem geral por veredito (todas as sessões)
+
+| Veredito | Quantidade |
 |---|---|
-| #2701 | REGRA #8 — `.github/workflows/kit-coverage-integration.yml` |
-| #2731 | REGRA #8 duplo — workflow + migration |
-| #2758 | Superseded (#2766 já em main) + no_merge_explicit |
-| #2821 | REGRA #8 — `.github/workflows/uptime-monitor.yml` (substitui #2793) |
-| #2823 | REGRA #8 — `supabase/migrations/` |
-| #2824 | REGRA #8 — `.github/workflows/replenishment-quality.yml` |
-| #2826 | REGRA #8 — `.github/workflows/branch-protection-sentinel.yml` (substitui #2749) |
-| #2827 | Body "Não mesclar nesta etapa" + branch `codex/` |
+| MERGEADA (total histórico) | 19 |
+| BLOQUEADO (toca .github/workflows — REGRA #8) | 3 |
+| DECISAO_HUMANA / CONFLICTING (open) | 18 |
+| AGUARDA_PO (DDL ou docs especiais) | 2 |
 
-### CI_FALHOU — Ação requerida pelo PO
+---
 
-| PR | Falha | Ação |
-|---|---|---|
-| #2810 | Gate 1.9: `usePromoFlixPlayer.ts` 624 > 500 linhas | Rodar `check-file-size-baseline.mjs --update` na branch |
-| #2813 | Gate 1: `no-useless-escape` linha 45 | Remover `\-` → `-` no regex |
-| #2822 | Gate 1.3: migration baseline desatualizado | Rodar `check-migration-path-references.mjs --update-baseline` na branch |
-| #2825 | Gate 1.3: migration baseline desatualizado | Rodar `check-migration-path-references.mjs --update-baseline` na branch |
+## Meta checklist
+
+- [x] Total PRs abertas analisadas: 23+ (via `refs/pull/*` na data da análise)
+- [x] Total com delivery: 24
+- [x] prs.json: entradas com veredito
+- [x] prs.csv: linhas correspondentes
+- [x] Merges 2026-10-29: 8 PRs squash-mergeadas
+- [x] Merges 2026-10-31: 6 PRs squash-mergeadas
+- [x] DECISAO_HUMANA: PRs sinalizadas
+- [x] CONFLITO: PRs fechadas externamente
+- [x] AGUARDAR_REVISAO_PO: #2713
+- [x] BLOQUEADO (REGRA #8 workflows): #2858, #2859, #2821
+- [x] Falhas pré-existentes confirmadas: Gate 0.5, E2E swatch/carrinhos/orçamentos
+- [x] CI pós-merge verificado: E2E PRÉ-EXISTENTES (run `40762904949`); Gate 2.5 INFRA (HTTP 544); quality-gate FLAKE
+- [x] Zero regressão de código confirmada nos 19 merges totais
+- [x] Produção Supabase: N/A — 0 das mergeadas tinham migrations ou edge functions
 
 ---
 
