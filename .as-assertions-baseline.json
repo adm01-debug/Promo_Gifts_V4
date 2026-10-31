@@ -1,7 +1,12 @@
 {
-  "generatedAt": "2026-10-25T20:37:30.214Z",
+  "generatedAt": "2026-10-30T08:40:01.740Z",
   "description": "Baseline de asserções `as <Tipo>` em src/ (excluindo testes, `as const`, `as unknown` e `as any`). Falha apenas em REGRESSÃO.",
-  "productionAsCount": 2160,
+  "productionAsCount": 2146,
+  "meta": {
+    "target": 1500,
+    "deadline": "2027-01-31",
+    "note": "Reduzir asserções as <Tipo> por sprint: tipar retornos de mapper e RPCs"
+  },
   "counts": {
     "src/App.tsx": 1,
     "src/components/ThemeInitializer.tsx": 1,
@@ -192,7 +197,6 @@
     "src/components/compare/HistoricalPriceOverlay.tsx": 1,
     "src/components/compare/PriceSparkline.tsx": 1,
     "src/components/compare/RecentComparisonsSidebar.tsx": 1,
-    "src/components/compare/ShareComparisonDialog.tsx": 1,
     "src/components/compare/SimilarProductsRail.tsx": 1,
     "src/components/compare/SupplierComparisonModal.tsx": 2,
     "src/components/dashboard/DraggableDashboard.tsx": 2,
@@ -350,6 +354,8 @@
     "src/components/quotes/QuickQuoteFAB.tsx": 1,
     "src/components/quotes/QuoteAutoSave.tsx": 2,
     "src/components/quotes/QuoteBuilderSummaryColumn.tsx": 2,
+    "src/components/quotes/QuoteBuilderSummaryDialogs.tsx": 1,
+    "src/components/quotes/QuoteBuilderSummaryItems.tsx": 1,
     "src/components/quotes/QuoteItemEditorSheet.tsx": 1,
     "src/components/quotes/QuoteItemsList.tsx": 1,
     "src/components/quotes/QuoteItemsTable.tsx": 2,
@@ -432,7 +438,7 @@
     "src/components/ui/collapsible.tsx": 1,
     "src/components/ui/command.tsx": 2,
     "src/components/ui/date-picker-field.tsx": 2,
-    "src/components/ui/dialog.tsx": 4,
+    "src/components/ui/dialog.tsx": 3,
     "src/components/ui/drawer.tsx": 2,
     "src/components/ui/dropdown-menu.tsx": 2,
     "src/components/ui/form.tsx": 4,
@@ -550,7 +556,7 @@
     "src/hooks/kit-builder/useKitWizardShortcuts.ts": 1,
     "src/hooks/kit-builder/useSimilarKits.ts": 3,
     "src/hooks/kit-builder/useTemplateSnapshot.ts": 3,
-    "src/hooks/mockup/mockupGenerationService.ts": 17,
+    "src/hooks/mockup/mockupGenerationService.ts": 6,
     "src/hooks/mockup/useMockupDraft.ts": 11,
     "src/hooks/mockup/useMockupGenerator.ts": 7,
     "src/hooks/mockup/useMockupTechniques.ts": 2,
@@ -734,9 +740,6 @@
     "src/pages/CustomizableDashboard.tsx": 1,
     "src/pages/QAPage.tsx": 1,
     "src/pages/Simulation.tsx": 3,
-    "src/pages/__visual/QuoteAddProductButtonHarness.tsx": 1,
-    "src/pages/__visual/QuoteFreightBlockHarness.tsx": 1,
-    "src/pages/__visual/QuoteItemsListMobileHarness.tsx": 2,
     "src/pages/admin/AdminAiUsagePage.tsx": 1,
     "src/pages/admin/AdminCadastrosPage.tsx": 1,
     "src/pages/admin/AdminClientPerformancePage.tsx": 1,
@@ -838,7 +841,7 @@
     "src/pages/tools/SimuladorWizard.tsx": 1,
     "src/pages/tools/VisualSearchPage.tsx": 7,
     "src/routes/RoutePrefetcher.tsx": 5,
-    "src/services/authService.ts": 2,
+    "src/services/authService.ts": 1,
     "src/services/magazineService.ts": 16,
     "src/services/materialService.ts": 6,
     "src/services/notificationPreferenceService.ts": 2,
@@ -859,6 +862,10 @@
     "src/utils/product-sorting.ts": 4,
     "src/utils/proposalPdfReactGenerator.ts": 3,
     "src/utils/undoToast.tsx": 1,
-    "src/utils/viacep.ts": 1
+    "src/utils/viacep.ts": 1,
+    "src/pages/__visual/QuoteAddProductButtonHarness.tsx": 1,
+    "src/pages/__visual/QuoteFreightBlockHarness.tsx": 1,
+    "src/pages/__visual/QuoteItemsListMobileHarness.tsx": 2,
+    "src/components/products/gallery/usePromoFlixPlayer.ts": 1
   }
 }
