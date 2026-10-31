@@ -33,19 +33,19 @@
     {"numero": 2851, "veredito": "CI_FALHOU", "razao": "Gate Final completed/failure (run #41157182500 job #124417568951 — Gate 0.5 Dependency Audit falhou)"},
     {"numero": 2852, "veredito": "CI_FALHOU", "razao": "Gate 0.5 Dependency Audit falhou (mesmo CVE de #2851) — docs-only pr mas Gate 0.5 não é bypassado pelo E14"},
     {"numero": 2834, "veredito": "DRAFT", "razao": "PR em rascunho, branch behind main e rebaseable:false — aguardar conversão não-draft", "head_sha": "b4ea8e30dd69aec86f771e663f975c6af1434c29"},
-    {"numero": 2853, "veredito": "CI_FALHOU", "razao": "Gate Final não executou (total_count:0) em SHA 2ee4e3a3 — body pede aguardar CI remoto"}
+    {"numero": 2853, "veredito": "MERGEAR", "status": "MERGEADA", "sha_merge": "22e8ddad0cc41a1bab002ac077ca31558c149dda", "gate_final_run": "41161750548", "gate_final_job": "124432489067", "gate_final_conclusion": "success", "gate_final_completed": "2026-10-31T04:02:34Z"}
   ],
-  "prs_mergeadas": [2844, 2845, 2836, 2810],
+  "prs_mergeadas": [2844, 2845, 2836, 2810, 2853],
   "prs_mergeadas_pelo_po": [2826],
   "merge_tests_completos": true,
   "merge_tests_data": "2026-10-31",
   "merge_tests_base_sha": "554ef41b44c9f318777d7e7b11189490a29a8c0a",
   "contagem_vereditos": {
-    "MERGEAR": 4,
+    "MERGEAR": 5,
     "MERGEADA_PELO_PO": 1,
     "DECISAO_HUMANA": 3,
     "JA_IMPLEMENTADA": 1,
-    "CI_FALHOU": 5,
+    "CI_FALHOU": 4,
     "NAO_MERGEAR": 13,
     "AGUARDANDO_GATE_FINAL": 0,
     "DRAFT": 1
@@ -86,6 +86,18 @@
         "CI_Security_Drift_Checks": "PRE-EXISTENTE — RELATORIO_CI.md §3.1 P19/P39/P50 (baseline)"
       },
       "nota": "Gate Final confirmado success (job 124355046790, run 41134852574). Falhas observadas sao pre-existentes e documentadas. Vitest local 100% OK. Nenhuma regressao nova."
+    },
+    "22e8ddad0cc41a1bab002ac077ca31558c149dda": {
+      "pr": 2853,
+      "status": "gate_final_green_pre_merge",
+      "gate_final_run": 41161750548,
+      "gate_final_job": 124432489067,
+      "gate_final_conclusion": "success",
+      "gate_final_completed_at": "2026-10-31T04:02:34Z",
+      "gate_0_5": "success",
+      "gate_2_unit_tests": "success",
+      "gate_3_e2e_smoke": "success",
+      "nota": "PR fix(ci) classifica ESLint como devDependency — corrige Gate 0.5 CVE. Todos os 16 gates upstream passaram. Merge squash sha 22e8ddad."
     }
   }
 }
