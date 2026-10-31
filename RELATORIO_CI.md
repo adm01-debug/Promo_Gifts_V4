@@ -395,3 +395,21 @@ Confirmados verdes no SHA `22e8ddad`: Deploy Gates/Gate Final [#41166937031](htt
 **Artifacts:** pelo GitHub MCP foram removidos artifacts autenticados `13039374227`, `13041158177` e `13041915637`, por risco de credencial em texto/capturas. Nenhum valor foi copiado ou salvo. A senha E2E precisa ser rotacionada e `E2E_USER_PASSWORD` atualizado pelo responsável; é necessária mitigação permanente na retenção de capturas/contextos. Nenhum dado/schema do Supabase foi alterado.
 
 **Escopo:** nenhuma escrita/DDL/migration/deploy no Supabase, nenhuma mudança de aplicação, snapshots ou assertions e nenhum merge. Nenhum resultado é declarado verde sem conclusão explícita.
+
+## Atualização — inventário completo da `main` em d4e19a6 (2026-10-31T13:32Z)
+
+### Inventário remoto
+
+O GitHub MCP consultou individualmente as 118 definições de workflow na branch `main`, excluindo execuções de PR. Dois retestes manuais read-only na `main` passaram (Dialogs e PDF Visual Regression), atualizando o snapshot: 22 últimas execuções com `failure`, 65 com `success`, 22 sem execução registrada e 9 em estado `cancelled`, `skipped`, `pending`, `waiting` ou `in_progress`. As 22 falhas, causa evidenciada/limite e ação segura estão listadas uma a uma em [PENDENCIAS.md, P36.9](PENDENCIAS.md#atualização-p369--inventário-completo-da-main-e-evidência-canônica-2026-10-31t1332z); os 65 verdes têm seus links e nomes registrados na mesma seção. Workflows sem run não foram contados como sucesso nem falha. Os checks de PR não entram no inventário da `main`.
+
+Entre as falhas atuais, o E128 em `QuoteBuilderSummaryAlignment.fuzz.test.ts:31` é a única falha da suíte Vitest e coincide com o baseline local. E2E Playwright falha em três invariantes URL-state. Outras pendências requerem fixture/credencial, logs que a API não entregou, reconciliação de drift ou inspeção visual; detalhes e limites de evidência estão na tabela P36.9. Nenhuma falha desconhecida foi rotulada como causa confirmada.
+
+### Baseline local e regressões
+
+- Validação pós-commit documental, 2026-10-31: `npm run build:verify` passou (typecheck, ESLint com 0 erros/avisos, guards e build Vite).
+- `npm test -- --reporter=dot --silent`: exit 1 pela mesma falha E128 do baseline: 1.250 arquivos passaram, 1 falhou, 130 ignorados; 25.904 testes passaram, 1.135 ignorados e 24 TODO. Não apareceu falha nova.
+- Não houve mudança de código de aplicação, comportamento, API, schema, snapshots ou assertions nesta atualização documental. O PR #2857 contém uma correção candidata para o teste E128, mas os checks E2E independentes seguem falhando; não está apto a merge.
+
+### Banco canônico
+
+A auditoria de `doufsxqlfjyuvxuezpln` foi somente leitura. E045 não encontrou tabelas RLS sem policies. E049 encontrou seis de sete tabelas com rate guard; `kill_switch_hits` permite INSERT anon e não tem trigger. E055 encontrou 11 versões elegíveis sem recibo de execução vigente, detalhadas em PENDENCIAS.md. Não houve escrita, DDL, migration, repair, deploy, alteração de dados ou segredo. Drift, rate guard e recibos sem evidência permanecem pendências; nenhuma migration foi aplicada.
