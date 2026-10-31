@@ -50,7 +50,7 @@ test.describe('ProductCard — swatch selecionado não é cortado', () => {
   for (const vp of VIEWPORTS) {
     test(`viewport ${vp.name}: nenhuma bolinha selecionada vaza do radiogroup`, async ({ page }) => {
       await page.setViewportSize({ width: vp.width, height: vp.height });
-      await gotoAndSettle(page, '/catalogo');
+      await gotoAndSettle(page, '/produtos');
       await settleCatalog(page);
 
       const cards = page.locator('[data-testid="product-card"]:has([role="radiogroup"])');
