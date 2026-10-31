@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
+  REVIEWED_MINIMATCH_VIA,
   evaluateAuditReport,
   RISK_REVIEW_DEADLINE,
 } from '../../scripts/check-dependency-audit.mjs';
@@ -148,6 +149,81 @@ describe('dependency audit policy', () => {
     expect(result.passed).toBe(true);
     expect(result.accepted).toEqual(expect.arrayContaining(['@lhci/cli', 'tmp', 'lighthouse']));
     expect(result.violations).toEqual([]);
+  });
+
+  it('accepts only the reviewed minimatch advisory and exact ESLint dependency graph', () => {
+    const vulnerabilities = Object.fromEntries(
+      [...REVIEWED_MINIMATCH_VIA].map(([name, via]) => [
+        name,
+        {
+          severity: 'moderate',
+          isDirect: [
+            '@typescript-eslint/eslint-plugin',
+            '@typescript-eslint/parser',
+            'eslint',
+            'eslint-plugin-jsx-a11y',
+            'eslint-plugin-react',
+            'eslint-plugin-unused-imports',
+          ].includes(name),
+          range: name === 'minimatch' ? '<11.0.1' : '*',
+          via:
+            name === 'minimatch'
+              ? [
+                  {
+                    source: 1244012,
+                    name: 'minimatch',
+                    dependency: 'minimatch',
+                    severity: 'moderate',
+                    range: '<11.0.1',
+                    url: 'https://github.com/advisories/GHSA-g3hv-75wg-m249',
+                  },
+                ]
+              : via,
+          fixAvailable:
+            name === 'minimatch'
+              ? { name: 'eslint-plugin-unused-imports', version: '1.1.3', isSemVerMajor: true }
+              : true,
+        },
+      ]),
+    );
+    const result = evaluateAuditReport({ vulnerabilities }, new Date('2026-10-31T12:00:00Z'));
+    expect(result.passed).toBe(true);
+    expect(result.accepted).toEqual([...REVIEWED_MINIMATCH_VIA.keys()]);
+    expect(result.violations).toEqual([]);
+  });
+
+  it('fails closed when the minimatch advisory or propagation graph changes', () => {
+    const vulnerabilities = {
+      minimatch: {
+        severity: 'moderate',
+        isDirect: false,
+        range: '<11.0.1',
+        via: [
+          {
+            source: 1244012,
+            name: 'minimatch',
+            dependency: 'minimatch',
+            severity: 'moderate',
+            range: '<11.0.1',
+            url: 'https://github.com/advisories/GHSA-unreviewed',
+          },
+        ],
+        fixAvailable: { name: 'eslint-plugin-unused-imports', version: '1.1.3', isSemVerMajor: true },
+      },
+      eslint: {
+        severity: 'moderate',
+        isDirect: true,
+        via: ['eslint-unreviewed-parent'],
+      },
+    };
+    const result = evaluateAuditReport({ vulnerabilities }, new Date('2026-10-31T12:00:00Z'));
+    expect(result.passed).toBe(false);
+    expect(result.violations).toEqual(
+      expect.arrayContaining([
+        expect.stringContaining('minimatch'),
+        expect.stringContaining('eslint'),
+      ]),
+    );
   });
 
   it('rejects an @lhci/cli transitive that became a direct dependency', () => {

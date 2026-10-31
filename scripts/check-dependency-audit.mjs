@@ -128,6 +128,80 @@ const ALLOWED_AJV_JSDOM_CHAIN_PACKAGES = new Set([
   'undici',    // transitive: jsdom → undici; moderate; vitest jsdom test environment
 ]);
 
+// minimatch — GHSA-g3hv-75wg-m249 (DoS via globparts amplification), advisory
+// published 2026-10-31. npm has no compatible fix for the installed minimatch
+// 3.x/10.x chain; its suggested fix downgrades eslint-plugin-unused-imports to
+// 1.1.3 (semver-major). The affected packages below are the exact ESLint
+// toolchain graph from npm audit; package.json classifies the toolchain as
+// devDependencies, so it is excluded from the production install/audit. Keep
+// this exception exact by package, directness and `via` graph; any new package,
+// advisory, severity or dependency path must fail closed. Revisit by
+// RISK_REVIEW_DEADLINE. (E206 — 2026-10-31)
+export const REVIEWED_MINIMATCH_VIA = new Map([
+  ['@eslint-community/eslint-utils', ['eslint']],
+  ['@eslint/config-array', ['minimatch']],
+  ['@eslint/eslintrc', ['minimatch']],
+  ['@typescript-eslint/eslint-plugin', ['@typescript-eslint/parser', '@typescript-eslint/type-utils', '@typescript-eslint/utils', 'eslint']],
+  ['@typescript-eslint/parser', ['@typescript-eslint/typescript-estree', 'eslint']],
+  ['@typescript-eslint/type-utils', ['@typescript-eslint/typescript-estree', '@typescript-eslint/utils', 'eslint']],
+  ['@typescript-eslint/typescript-estree', ['minimatch']],
+  ['@typescript-eslint/utils', ['@eslint-community/eslint-utils', '@typescript-eslint/typescript-estree', 'eslint']],
+  ['chrome-launcher', ['rimraf']],
+  ['eslint', ['@eslint-community/eslint-utils', '@eslint/config-array', '@eslint/eslintrc', 'minimatch']],
+  ['eslint-plugin-jsx-a11y', ['minimatch']],
+  ['eslint-plugin-react', ['minimatch']],
+  ['eslint-plugin-unused-imports', ['@typescript-eslint/eslint-plugin', 'eslint']],
+  ['glob', ['minimatch']],
+  ['minimatch', null],
+  ['rimraf', ['glob']],
+]);
+
+const REVIEWED_MINIMATCH_DIRECT_PACKAGES = new Set([
+  '@typescript-eslint/eslint-plugin',
+  '@typescript-eslint/parser',
+  'eslint',
+  'eslint-plugin-jsx-a11y',
+  'eslint-plugin-react',
+  'eslint-plugin-unused-imports',
+]);
+const MINIMATCH_ADVISORY_URL = 'https://github.com/advisories/GHSA-g3hv-75wg-m249';
+
+function isAllowedMinimatchChainPackage(packageName, vulnerability) {
+  if (!REVIEWED_MINIMATCH_VIA.has(packageName) || vulnerability.severity !== 'moderate') {
+    return false;
+  }
+  if (vulnerability.isDirect !== REVIEWED_MINIMATCH_DIRECT_PACKAGES.has(packageName)) {
+    return false;
+  }
+
+  const via = vulnerability.via ?? [];
+  if (packageName === 'minimatch') {
+    const advisory = via[0];
+    const fix = vulnerability.fixAvailable;
+    return (
+      vulnerability.range === '<11.0.1' &&
+      via.length === 1 &&
+      typeof advisory === 'object' &&
+      advisory?.source === 1244012 &&
+      advisory?.name === 'minimatch' &&
+      advisory?.dependency === 'minimatch' &&
+      advisory?.severity === 'moderate' &&
+      advisory?.range === '<11.0.1' &&
+      advisory?.url === MINIMATCH_ADVISORY_URL &&
+      fix?.name === 'eslint-plugin-unused-imports' &&
+      fix?.version === '1.1.3' &&
+      fix?.isSemVerMajor === true
+    );
+  }
+
+  const expectedVia = REVIEWED_MINIMATCH_VIA.get(packageName);
+  return (
+    Array.isArray(expectedVia) &&
+    via.length === expectedVia.length &&
+    via.every((entry, index) => entry === expectedVia[index])
+  );
+}
+
 // Únicos advisories aceitos dentro da cadeia build-time. Qualquer
 // advisory NOVO em um desses pacotes (objeto em `via` com URL fora do
 // conjunto) volta a bloquear o gate — a aceitação é por advisory,
@@ -166,6 +240,7 @@ const ALL_KNOWN_ACCEPTED_PACKAGES = new Set([
   ...ALLOWED_BRACES_CHAIN_TRANSITIVE,
   ...ALLOWED_ZOD_CHAIN_PACKAGES,
   ...ALLOWED_AJV_JSDOM_CHAIN_PACKAGES,
+  ...REVIEWED_MINIMATCH_VIA.keys(),
 ]);
 
 function isAllowedVitestPackage(packageName, vulnerability) {
@@ -340,6 +415,10 @@ export function evaluateAuditReport(report, now = new Date()) {
       continue;
     }
     if (isAllowedAjvJsdomPackage(packageName, vulnerability)) {
+      accepted.push(packageName);
+      continue;
+    }
+    if (isAllowedMinimatchChainPackage(packageName, vulnerability)) {
       accepted.push(packageName);
       continue;
     }
