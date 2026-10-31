@@ -298,4 +298,8 @@ O snapshot contou apenas a última execução concluída por workflow na `main`.
 
 ### Próximo passo
 
-PR a abrir/atualizar com a alteração mínima. A prova final das execuções remotas em `main` e a classificação dos workflows que continuarem em falha devem ser adicionadas após a janela de execução. Não mesclar este PR nesta sessão porque altera código de aplicação com deploy de produção.
+PR [#2856](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2856) aberto com a alteração mínima. A prova final das execuções remotas em `main` e a classificação dos workflows que continuarem em falha devem ser adicionadas após a janela de execução. Não mesclar este PR nesta sessão porque altera código de aplicação com deploy de produção.
+
+### Atualização remota às 05:35 UTC
+
+O run `E2E • Swatch QuickView` [#41166937051](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41166937051) finalizou em failure após o snapshot anterior: 14 testes falharam em Chromium e Firefox, com timeouts de `locator.click` (240 s), toolbar E108 ausente em `/novidades` e rows sem swatches no conjunto inicial; WebKit foi cancelado. Ainda não há reprodução local que comprove uma causa comum. O PR [#2856](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2856) tem o Gate Final e a integração Edge em andamento; o check Vercel preview falhou com `readyState=ERROR` embora o build apareça `READY`, sem causa detalhada em `inspect --logs`. Copilot Code Review está bloqueado por cota. Esses itens permanecem pendentes e estão detalhados em `PENDENCIAS.md` §P36.1. Nenhum status em fila/em andamento foi tratado como sucesso.
