@@ -826,20 +826,125 @@ O único required check (`Gate Final - Deploy Ready`) para `b92bcf876` está `qu
 
 ---
 
-## P36 — Inventário atualizado da main HEAD `22e8ddad0c` (2026-10-31T08:15Z)
+## P36 — Inventário atualizado da main HEAD `22e8ddad0c` (2026-10-31T08:47Z)
 
 **HEAD da main:** `22e8ddad0cc41a1bab002ac077ca31558c149dda`.
-**Método:** GitHub Actions MCP, runs da branch `main`, excluídos PRs; considerada somente a execução mais recente por workflow. As cinco falhas abaixo são as únicas conclusões `failure` no inventário consultado. Runs `cancelled` não foram classificados como falhas.
+**Método:** GitHub Actions MCP, inventário dos 119 workflows cadastrados; para cada workflow, consultada a execução mais recente da branch `main`, excluídos runs de PR. Dos 119 workflows, 98 tinham run de `main`: **21 últimas execuções tinham conclusão `failure`, 67 `success` e 10 outra conclusão/estado**. Runs cancelados, ignorados ou ainda sem conclusão não foram contados como falha. Alguns dos 21 runs são antigos e não foram reexecutados; a tabela registra a última evidência disponível, não afirma que um rerun recente falhou.
 
 ### Workflows cuja última execução na main falhou
 
 | Workflow | Última execução | Causa comprovada / bloqueio exato | Situação |
 |---|---|---|---|
-| E2E • Swatch QuickView (Lista + Tabela) | [#41166937051](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41166937051) | Testes em Chromium e Firefox falham em interações da toolbar/lista por ausência de linhas de swatches elegíveis; há timeouts de `locator.click` e erros E108 em `/novidades` e `/reposicao`. WebKit foi cancelado por encerramento do runner. O setup produz URLs, mas não semeia dados determinísticos; os logs não comprovam existência de `color_swatches`/variantes ativas elegíveis no ambiente. | **PENDENTE:** precisa de fixture/dataset E2E estável e reprovação da execução. Não escrever nem alterar dados do canônico para preparar teste. PR #2855 não concluiu validação verde. |
-| CI Security & Drift Checks | [#41166937034](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41166937034) | Um arquivo falha: `QuoteBuilderSummaryAlignment.fuzz.test.ts` continua procurando tokens em `QuoteBuilderSummaryColumn.tsx`, embora a implementação esteja em `QuoteBuilderSummaryItems.tsx` (E128). É a única falha local da suíte completa no baseline. | **Correção de teste proposta** em [PR #2857](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2857), mas PR ainda tem checks E2E/Replenishment vermelhos; não mesclado. |
-| Edge Integration Tests — All Functions | [#41166936960](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41166936960) | Sete falhas em `crm-db-bridge`; os logs registram respostas upstream HTTP 500 em consultas `companies`, seguidas de abertura do circuit breaker. O handler consultava o breaker antes da autenticação e devolvia 503 para chamadas anônimas. A causa dos HTTP 500 upstream não foi determinada. | [PR #2856](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2856) corrige apenas a ordem auth → breaker e tem alteração de aplicação. A integração upstream segue sem causa-raiz confirmada; status de preview Vercel falhou. Não mesclar/deployar enquanto checks e causa do 500 não forem resolvidos. |
-| Kit Coverage — Integration | [#41165671545](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41165671545) | A identidade anônima do teste não tem `SELECT` em `v_kit_component_complete` nem `product_kit_components`; o acesso autenticado existe. Não conceder `anon` nem executar DDL. | [PR #2858](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2858) autentica via `E2E_USER_*`, mas seu dispatch de validação [#41181400558](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41181400558) **falhou**: `SIGNED_IN` ocorreu; `KIT_FIXTURE_ID` estava vazio; descoberta dinâmica excedeu 60s antes dos asserts. O fallback pode fazer até 50 consultas sequenciais sem timeout individual; não foi possível determinar qual consulta ficou lenta. `signOut({scope:'local'})` também excedeu 15s por ainda aguardar endpoint remoto. **Ação do PO:** cadastrar variável `KIT_FIXTURE_ID` com ID válido de kit legível pelo usuário E2E e rerodar o workflow. Não adivinhar nem publicar IDs de produto. |
-| Nightly Full CI | [#41161391625](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41161391625) | Quatro grupos observados: (1) job `magazine-header` encerrou antes dos testes por ausência de `E2E_USER_EMAIL/PASSWORD` no ambiente daquele job; (2) três specs visuais de color-swatch usam `/catalogo`, rota inexistente; a rota vigente é `/produtos`, porém está protegida por autenticação e o teste roda em `chromium-public`; (3) shard 1 falhou em snapshots visuais ausentes e pré-condições de produto/dados; (4) shard 2 teve specs de mockup autenticados no projeto errado, seletor `div[role=list]` ambíguo e timeouts de snapshots/`boundingBox`. | Correção parcial em [PR #2859](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2859), branch `fix/nightly-ci-magazine-colorswatch-20261031`, HEAD `1ab0b27926e1ab7394e33ef3c2cb0087a26155e0`: credenciais restritas às suites, rota/projeto corrigidos e bug comprovado no estado visual do swatch de produto com uma única cor corrigido; o fallback agora considera `selectedColorFromStore`. O teste de regressão reproduziu `aria-checked=false` antes e passou depois (16/16 em `ProductCard.test.tsx`). Build, lint e typecheck passaram; suíte completa: 1.251 arquivos passaram, 130 ignorados; 25.905 testes passaram, 1.135 ignorados, 24 todo; a única falha continua sendo E128, igual ao baseline. A ausência inicial de cards no E2E continua intermitente e sem fixture/dados determinísticos. No último estado consultado, os checks remotos do SHA `1ab0b279` ainda estavam em execução; portanto, sem confirmação de correção remota e sem merge. O status externo Vercel falhou; `vercel inspect --logs` mostra deployment `Error`, build `.` com 0 ms, sem log de causa. Não houve alteração de banco, snapshot ou asserção. |
+| Copilot | [#41115245979](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41115245979) | Falha por limite de uso/créditos do Copilot (“additional usage limit”). | Bloqueio de billing/limite da conta; retomar após liberar cota. |
+| Regenerate Supabase Types | [#26378664155](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/26378664155) | Geração e gate estrutural passaram; step de commit/push/abertura de PR falhou. Logs retornam HTTP 410; causa técnica não verificável. | Run de maio/2026; reexecutar manualmente quando necessário e guardar o erro antes de corrigir. Sem regeneração ou escrita no banco nesta auditoria. |
+| Edge Integration Tests — All Functions | [#41166936960](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41166936960) | `crm-db-bridge`: sete falhas; upstream retornou HTTP 500 em consultas `companies`, seguido por 503/circuit breaker. Causa do 500 não comprovada. | PR #2856 trata autenticação antes do breaker, não explica o 500. Preview Vercel também falhou sem diagnóstico. Não mesclar/deployar. |
+| Supplier Comparison CI | [#39253399818](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39253399818) | A execução aparece como `push`, embora o YAML daquele SHA só declare `pull_request`; API não retorna jobs e logs dão 404. | Anomalia histórica sem causa verificável; não alterar workflow por conjectura. |
+| OptimizedImage E2E CI | [#39263929298](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39263929298) | `npm ci` foi interrompido por divergência entre `package.json` e lockfile. | Corrigir lockfile como parte da causa comum com workflows listados abaixo, em PR. |
+| Global Search Quality Gate | [#39263929104](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39263929104) | `npm ci` interrompido pela mesma divergência entre manifesto e lockfile. | Mesma pendência de sincronização; não contornar instalação. |
+| Kit Coverage — Integration | [#41165671545](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41165671545) | Papel `anon` não tem `SELECT` em `v_kit_component_complete`/`product_kit_components`; não conceder acesso anônimo. Dispatch autenticado [#41181400558](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41181400558) entrou, mas `KIT_FIXTURE_ID` estava vazio e descoberta dinâmica excedeu 60s. | PO precisa cadastrar `KIT_FIXTURE_ID` com fixture válida e legível pelo usuário E2E; rerodar. Não inferir nem gravar fixture no canônico. |
+| E2E • Swatch QuickView | [#41166937051](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41166937051) | Chromium/Firefox: ausência de linhas/swatches elegíveis, E108 e timeouts; WebKit foi cancelado. Sem dataset determinístico comprovado. | PR #2859 corrigiu rotas/auth, seleção de cor única e, no commit `478f52b25`, propagação do clique que navegava indevidamente do card ao produto. O teste reproduz a navegação antes e passa com a guarda; ProductCard 17/17, build/lint/typecheck passaram; suíte: 1.250 arquivos passaram, 1 falhou no mesmo E128 do baseline, 25.906 testes passaram, 1.135 ignorados, 24 TODO, sem regressão. Push/checks remotos ainda aguardam confirmação; Vercel segue `Error` sem log diagnóstico. Sem merge/deploy. |
+| Update Quote Visual Snapshots | [#39997674586](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39997674586) | Sete testes falharam com `[E108] Sem orçamento enviado no ambiente`. | Requer fixture aprovada de orçamento e revisão visual; não atualizar snapshots cegamente. |
+| E2E Discount Approval (04c*) | [#39263929177](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39263929177) | Jobs falharam na preparação E2E antes dos testes, pela incompatibilidade de manifesto/lockfile. | Corrigir junto à causa comum do `npm ci` em PR. |
+| E2E • ColorSwatch 2 linhas (Grid) | [#39263932330](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39263932330) | Job falhou durante setup/install, antes dos testes, por divergência de manifesto/lockfile. | Corrigir junto à causa comum do `npm ci` em PR. |
+| E2E · Dialogs visual PR check | [#39253396759](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39253396759) | Run `failure`, mas API não retorna jobs/steps e logs dão 404; causa não verificável. | Run histórico; reexecutar para obter evidência antes de editar testes/snapshots. |
+| E2E · Check Calendar snapshots | [#39253393953](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39253393953) | Run `failure`, sem job/step/logs disponíveis; causa desconhecida. | Run histórico; reexecutar e revisar artifact antes de qualquer baseline visual. |
+| PDF Visual Regression | [#39253404824](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39253404824) | Run `failure`, sem jobs/logs recuperáveis; causa desconhecida. | Run histórico; obter evidência por rerun. |
+| migration-dry-run | [#35506272165](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/35506272165) | `psql` não resolve o hostname de `PGHOST` (“Name or service not known”); falha de DNS/config antes da SQL. | Administrador deve corrigir secret/hostname do ambiente sem expor credenciais. Nenhuma migration foi executada. |
+| E2E Cart — Matrix (E79) | [#40140248814](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40140248814) | `loginViaUI` expira aguardando redirect e permanece em `/login`; passagem da checagem de presença de secrets não prova credenciais válidas. | Reproduzir e verificar resposta do Auth/conta E2E; fluxo de cart não foi validado. |
+| E2E Freight — Matrix (E80) | [#39141334040](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39141334040) | `auth.setup` falha com E21, sem redirect pós-login. | Causa de credenciais/Auth não comprovada; reproduzir com logs/trace e conta válida. |
+| E2E Stock — Matrix (E80) | [#39257701140](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39257701140) | Os jobs `npm ci` param em divergência entre manifesto e lockfile, incluindo Supabase JS, React/DOM, jsPDF e Lucide. | Corrigir lockfile comum, sem upgrade arbitrário de dependências. |
+| CI Security & Drift Checks | [#41166937034](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41166937034) | E128: o teste fuzz procura `leading-[1.125rem]` em `QuoteBuilderSummaryColumn.tsx`, mas os tokens atuais estão em `QuoteBuilderSummaryItems.tsx`. | PR #2857 corrige o caminho do teste; checks E2E/Replenishment do PR ainda não estão verdes. |
+| Nightly Full CI | [#41161391625](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41161391625) | Múltiplas causas: credenciais ausentes no job `magazine-header`; testes swatch apontavam para `/catalogo`/projeto público sem sessão; shard1 sem dados/snapshots esperados; shard2 tinha projeto de auth incompatível, seletor ambíguo e timeouts. | PR #2859 corrigiu rotas/auth, seleção de cor única e, no commit `478f52b25`, propagação do clique que navegava indevidamente do card ao produto. O teste reproduz a navegação antes e passa com a guarda; ProductCard 17/17, build/lint/typecheck passaram; suíte: 1.250 arquivos passaram, 1 falhou no mesmo E128 do baseline, 25.906 testes passaram, 1.135 ignorados, 24 TODO, sem regressão. Push/checks remotos ainda aguardam confirmação; Vercel segue `Error` sem log diagnóstico. Sem merge/deploy. |
+| E2E · Atualizar snapshots visuais (E155) | [#39999649279](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39999649279) | Cinco testes de snapshot falham; o resumo mostra artifacts expected/actual/diff do editor de item de orçamento, mas não prova a causa funcional. | Revisar artifact/fluxo antes de atualizar snapshot; não enfraquecer teste. |
+
+### Workflows com última execução verde (67)
+
+| Workflow | Execução mais recente |
+|---|---|
+| Branch Protection Sentinel | [#41166936857](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41166936857) |
+| CodeQL | [#41166936989](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41166936989) |
+| Cross-reference PR ↔ Issue | [#35782328989](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/35782328989) |
+| Deploy to Vercel (Manual Fallback) | [#33401820666](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/33401820666) |
+| Security Scan | [#41166936980](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41166936980) |
+| Quote Builder Delivery Quality | [#41166936912](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41166936912) |
+| Dependabot Updates | [#40598020716](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40598020716) |
+| Sync labels | [#39263929395](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/39263929395) |
+| Contract Tests | [#26371040312](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/26371040312) |
+| Required Checks Guard | [#41166936894](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41166936894) |
+| Deploy Gates | [#41166937031](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41166937031) |
+| Gitleaks — Full History Audit | [#41177897366](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41177897366) |
+| Lint untypedFrom | [#41134852417](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852417) |
+| E2E — Critical Flows & Error Boundaries | [#41166937009](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41166937009) |
+| E2E — Personalization Flow | [#41166937008](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41166937008) |
+| CI - Replenishment Module Quality Gate | [#41166936939](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41166936939) |
+| Static Health Checks | [#41166937024](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41166937024) |
+| Lovable Edit Tracker | [#41166936910](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41166936910) |
+| db-schema-drift-check | [#41034399085](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41034399085) |
+| Lovable Autoheal | [#41166936994](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41166936994) |
+| Supabase Linter Gate | [#41178755845](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41178755845) |
+| stock-rupture-fuzz | [#41167866024](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41167866024) |
+| Quote Number Hardening — Verify (canonical DB) | [#41176429901](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41176429901) |
+| E2E — Visual Regression (Preview button) | [#40445291216](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40445291216) |
+| schema-snapshot-export | [#41166937001](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41166937001) |
+| drafts-index-check | [#40157731842](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40157731842) |
+| UI · Visual & A11y | [#41166937023](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41166937023) |
+| E2E · Update Confirm Dialog snapshots | [#40097995504](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40097995504) |
+| E2E · Update Alert Dialog snapshots | [#40097995579](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40097995579) |
+| E2E · Update Dialog snapshots | [#40097257415](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40097257415) |
+| E2E · Update Quote Freight snapshots | [#36340583826](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/36340583826) |
+| E2E · Update Calendar snapshots | [#40612760275](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40612760275) |
+| E2E — Customization Collapse (LocationPanel) | [#40920388936](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40920388936) |
+| PDF Quality Gate | [#40893179820](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40893179820) |
+| E2E — PDF Dialog (watermark pixel-diff, authed) | [#41097615380](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41097615380) |
+| E2E — CRM Callback (approved → V4 → CRM) | [#41176752989](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41176752989) |
+| URL State — Unit & Fuzz | [#40612760361](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40612760361) |
+| Magazine Unit Tests | [#41166936955](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41166936955) |
+| Magazine typed queries — dry-run | [#41021163293](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41021163293) |
+| Gate 5 — Supabase Security Audit | [#40899425656](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40899425656) |
+| E2E · Update Magazine Ring snapshots | [#40097995491](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40097995491) |
+| Magazine Flakiness Guard | [#40282920770](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40282920770) |
+| Magazine Mutation Testing | [#40283544877](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40283544877) |
+| SSOT Supabase Guard | [#41166936890](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41166936890) |
+| log-login-attempt — Fuzz Stress Weekly | [#40282737828](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40282737828) |
+| Auth surface fuzz (weekly) | [#40274278067](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40274278067) |
+| Daily flows simulation | [#41176284520](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41176284520) |
+| TS Unused Locals Ratchet | [#41134852462](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852462) |
+| Uptime Monitor | [#41185072768](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41185072768) |
+| E2E — Magazine Header Layout | [#41166937014](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41166937014) |
+| capacity-growth-report | [#40315330614](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40315330614) |
+| ddl-out-of-band-detector | [#40293483232](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40293483232) |
+| pgss-slo-report | [#40311325724](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40311325724) |
+| wraparound-monitor-report | [#41173080087](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41173080087) |
+| Workflow Lint | [#41166937102](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41166937102) |
+| Template — Workflow Name Here | [#37309269264](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/37309269264) |
+| Ratchet Weekly — Baixar baselines | [#41004680104](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41004680104) |
+| CI Metrics Weekly (E66/E87) | [#40287364304](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40287364304) |
+| Policies Baseline | [#41166936946](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41166936946) |
+| Release Please | [#41166936879](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41166936879) |
+| No Prod Leak in Dev/Test Config | [#41166937021](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41166937021) |
+| Select Columns vs Types | [#41166937084](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41166937084) |
+| E2E Focused UI — Matrix (E78) | [#40257597305](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40257597305) |
+| Cache Prune | [#40287193908](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40287193908) |
+| DR Drill Reminder | [#40297095822](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40297095822) |
+| Python Package using Conda | [#40961676156](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40961676156) |
+| Mark stale issues and pull requests | [#41047015308](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41047015308) |
+
+### Workflows sem conclusão verde ou falha (10)
+
+| Workflow | Execução | Estado observado |
+|---|---|---|
+| Deploy Edge Functions | [#41048773110](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41048773110) | pending (sem conclusão) |
+| E2E (Playwright) | [#41166936976](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41166936976) | completed / cancelled |
+| Visual Baseline Tests — Nightly | [#41166937048](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41166937048) | completed / cancelled |
+| edge-functions-drift-check | [#41048782448](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41048782448) | completed / cancelled |
+| SECURITY DEFINER ACL — Multi-Env | [#41039602639](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41039602639) | pending (sem conclusão) |
+| E2E · restore_seller_cart RPC (multi-env) | [#41036458570](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41036458570) | pending (sem conclusão) |
+| Deployment Failure Alert | [#41166974563](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41166974563) | completed / skipped |
+| DB — Aplicação controlada de migration única (E15) | [#40894446881](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40894446881) | completed / cancelled |
+| Lovable Protected-File Audit (E196) | [#41166937049](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41166937049) | completed / skipped |
+| E2E · Update Quote Item Editor Sheet snapshots | [#40535938041](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40535938041) | completed / cancelled |
+
+Os runs pendentes de **Deploy Edge Functions**, **SECURITY DEFINER ACL** e **restore_seller_cart RPC** não alocaram job; portanto não comprovam deploy nem validação. Os runs cancelados/skipped também não contam como falhas conforme o critério da auditoria.
 
 ### PRs candidatos e bloqueios de integração
 
@@ -849,20 +954,22 @@ O único required check (`Gate Final - Deploy Ready`) para `b92bcf876` está `qu
 | [#2856](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2856) | `open`, `unstable`; preview Vercel falhou; causa do HTTP 500 upstream permanece desconhecida. | Não mesclar/deployar. |
 | [#2857](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2857) | `open`, `unstable`; teste isolado e build local passam, mas E2E Quotes/Playwright/Replenishment ainda falham. | Não mesclar até todos os checks exigidos/vermelhos serem resolvidos. |
 | [#2858](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2858) | `open`, `blocked`; dispatch [#41181400558](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41181400558) falhou em descoberta de fixture. | Não mesclar; primeiro definir fixture válida e provar os três asserts de integração. |
-| [#2859](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2859) | Aberto no SHA `1ab0b279`; Workflow Lint, Security Scan, PR Size Guard e alguns gates passaram; E2E, Deploy Gates e outros checks ainda estavam `in_progress` às 08:31Z. Status Vercel `Error`; inspect indica build 0 ms, sem logs de causa. | Não mesclar: aguardando checks completos e causa do preview Vercel. |
+| [#2859](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2859) | Aberto no SHA `478f52b25119e96a49d8d72cd71fd51f140b62a1`; commit já enviado. Build, lint, typecheck e suíte pós-commit passaram sem regressão ao baseline (falha E128 já existente). | Na consulta 08:57Z, checks remotos ainda tinham 33 `in_progress`, 4 `queued`, 9 `success`, 3 `skipped` e 1 `neutral`; sem `failure` concluída. Vercel Agent Review ficou `neutral` por billing desativado. Não mesclar até todos os checks obrigatórios terminarem verdes e esclarecer o preview. |
 | [#2860](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2860) | Documentação atualizada no SHA `e2941a3c`; Deploy Gates, Required Checks Guard, SSOT, edge drift e PR Size Guard passaram. Vercel status `failure`: deployment Error, etapa de build 0 ms e `--logs` sem diagnóstico; revisão Copilot falhou porque trial expirou/sem créditos. | Não mesclar enquanto Vercel e revisão/checks exigidos não estiverem verdes; nenhuma alteração de aplicação neste PR. |
 
 ### Restrições preservadas
 
 - Nenhuma escrita, DDL, migration, grant ou deploy foi executado no Supabase canônico `doufsxqlfjyuvxuezpln`.
 - Nenhum snapshot foi atualizado; nenhum teste/assert foi apagado, pulado ou enfraquecido.
-- Nenhum PR foi mesclado. O Gate Final required estava verde na main em [#41166937031](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41166937031); os cinco workflows acima não são o required check.
+- Nenhum PR foi mesclado. O Gate Final required estava verde na main em [#41166937031](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41166937031); o inventário encontrou 21 falhas não-required, algumas antigas, ainda sem rerun ou correção confirmada na main.
 
 ### Ações pendentes do PO
 
 1. Definir `KIT_FIXTURE_ID` (GitHub Actions → Settings → Secrets and variables → Actions → Variables) com fixture que seja legível pela conta E2E; depois reexecutar `Kit Coverage — Integration`.
 2. Não é necessária nova credencial para o PR #2858; o bloqueio observado foi a ausência de fixture e a demora da descoberta dinâmica.
-3. A causa HTTP 500 do CRM upstream não pode ser fechada sem diagnóstico dos logs/serviço de origem; a PR #2856 não elimina essa falha.
+3. Diagnosticar os HTTP 500 do CRM upstream antes de considerar Edge Integration resolvido; PR #2856 não elimina essa falha.
+4. Corrigir a causa comum de `npm ci` (manifesto/lockfile) em PR e verificar o install nos quatro workflows afetados.
+5. Rerodar os workflows históricos sem jobs/logs (Supplier Comparison, Dialogs, Calendar, PDF) e guardar o trecho da falha antes de propor mudanças.
 
 ## Atualização P36.1 — validações pós-commit e bloqueios remotos (2026-10-31T08:31Z)
 
@@ -870,4 +977,5 @@ O único required check (`Gate Final - Deploy Ready`) para `b92bcf876` está `qu
 - **Preview Vercel:** inspect feito no diretório raiz, ancorado em `.vercel/project.json` canônico. O deployment do PR #2859 e o preview documental #2860 estão `Error`; `Builds . [0ms]` e `inspect --logs` retorna apenas `status Error`, sem causa detalhada. Bloqueio é externo e precisa de diagnóstico no painel/logs do Vercel; nenhum deploy foi executado manualmente.
 - **PR documental #2860:** Deploy Gates, Required Checks Guard, SSOT guard, edge drift e PR Size Guard passaram no SHA `e2941a3c`; o check Vercel falha e a revisão Copilot falha com motivo literal “trial expired and no credits remaining”. Sem merge.
 - **Kit Coverage:** a lista read-only das variáveis de Actions ainda não contém `KIT_FIXTURE_ID`. PO precisa cadastrar um ID real de kit legível pela conta E2E; não inferir nem consultar/escrever dados para preencher esse valor.
-- **Main:** a `main` continua no SHA `22e8ddad0`; permanecem cinco últimas execuções com `failure` (tabela P36). Workflows antes verdes continuam verdes na execução mais recente observada; nenhum commit foi aplicado em `main`.
+- **Main:** no inventário individual dos 119 workflows, 98 tinham execução: 21 últimas conclusões `failure`, 67 `success` e 10 em outro estado/conclusão. A lista completa de falhas está na tabela P36. Workflows verdes permanecem verdes na consulta; nenhum commit foi aplicado em `main`.
+- **Pós-commit #2859 `478f52b25`:** a correção da navegação por clique em swatch foi reproduzida antes/depois; o teste de regressão passa, ProductCard 17/17, build/lint/typecheck passam. Suíte completa: 1.250 arquivos passaram, 1 falhou no E128 já presente no baseline; 25.906 testes passaram, 1.135 ignorados, 24 TODO. Sem regressão. Push normal concluído; na consulta 08:57Z, 33 checks estavam `in_progress`, 4 `queued`, 9 `success`, 3 `skipped`, 1 `neutral`, nenhum `failure` concluído. Vercel Agent Review foi neutral por billing desativado.
