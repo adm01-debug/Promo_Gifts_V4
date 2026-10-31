@@ -13,7 +13,7 @@
 | `npm run build` | ✅ EXIT 0     | Warnings: INEFFECTIVE_DYNAMIC_IMPORT (pré-existentes, não bloqueantes) |
 | `tsc --noEmit` | ✅ EXIT 0     | Zero erros TypeScript |
 | `npm run lint` | ⚠️ OOM (EXIT 0) | `check-eslint-baseline.mjs` sofre OOM mesmo com `NODE_OPTIONS=4096MB`. O script retorna exit 0 (não bloqueante). Problema **pré-existente** — não causado por esta sessão. |
-| `vitest run` | ⏳ Em execução    | Testes rodando em background; resultado atualizado em §5 |
+| `vitest run` | ✅ EXIT 0         | 24.982 testes passou / 0 falhas / 1135 skipped — duração 853s. Ver §5. |
 
 ---
 
