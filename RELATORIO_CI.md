@@ -18,7 +18,7 @@ O teste focado do componente passou 10/10; o hook de URL do PR #2850 passou 379/
 
 Não houve alteração no Supabase, em dados operacionais, em schema, em migrations ou em segredos. PR #2850 altera comportamento da aplicação e permanece sem merge enquanto houver checks pendentes e risco de disparar deploy de produção; PR #2851 contém apenas correção de teste e aguarda o Gate Final remoto.
 
-**Gerado:** 2026-10-29 · **Atualizado:** 2026-10-31T02:50 UTC
+**Gerado:** 2026-10-29 · **Atualizado:** 2026-10-31T03:53 UTC
 **HEAD da main observado:** `554ef41b44c9f318777d7e7b11189490a29a8c0a` (2026-10-30)
 **HEAD anterior:** `c09402816` (baseline local)
 **Sessão:** https://claude.ai/code/session_01RfQzo7S3K6o49UBUDoCtUe
@@ -281,12 +281,12 @@ Tabela de prova (Seção 8) + baseline local (Seções 1, 10) + comparação bas
 | Workflows NÃO-REQUIRED em falha | 8 (PO-BLOCKED) | 8 (PO-BLOCKED) | Sem regressão — mesmos bloqueios estruturais |
 
 
-## Atualização de checks remotos — 2026-10-31 03:40 UTC
+## Atualização de checks remotos — 2026-10-31 03:53 UTC
 
-A consulta atualizada confirma que nenhum PR desta rodada está pronto para merge. #2852 não tem falhas nos checks observados, mas tem sete pendentes. #2853 tem três falhas, três pendentes e três cancelados: o log do CI Replenishment registra screenshot diff e variação de 14 px na altura dos cards em tablet-768, acima da tolerância de 6 px; WebKit foi cancelado pelo runner; Copilot retornou HTTP 402 por cota. A causa anteriormente anotada como título de Novidades ausente foi corrigida após leitura do trecho de falha do job. #2850 mantém oito checks falhos e #2851 nove, incluindo Gate Final, Gate 0.5 e suites E2E; evidências e links em `PENDENCIAS.md`. Nenhum PR foi mesclado.
+A consulta atualizada confirma que nenhum PR desta rodada está pronto para merge. #2852 está sem falhas concluídas, mas tem seis checks enfileirados. #2853 tem três falhas, três pendentes e três cancelados: o log do CI Replenishment registra screenshot diff e variação de 14 px na altura dos cards em tablet-768, acima da tolerância de 6 px; o step WebKit foi cancelado pelo runner; Copilot retornou HTTP 402 por cota. #2850 mantém oito checks falhos e #2851 nove, incluindo Gate Final, Gate 0.5 e suites E2E; evidências e links em `PENDENCIAS.md`. Nenhum PR foi mesclado.
 
 Os cinco especialistas fizeram revisão independente do PR #2853: não identificaram mudança no Supabase, segredo ou asserção enfraquecida. O gap de correspondência exata do advisory para consumidores e faixas foi corrigido no próprio PR e coberto por testes negativos. A revisão não substitui checks remotos ainda pendentes.
 
-Na `main`, a ponta observada permanece SHA `554ef41b44c9f318777d7e7b11189490a29a8c0a`; os seis workflows em falha e os demais 35 em estado verde/esperado continuam reconciliados no `PENDENCIAS.md`. Nenhum novo erro local foi introduzido nesta etapa documental.
+Nova leitura dos 800 runs mais recentes da `main`: 45 workflows únicos, 7 últimas execuções em falha, 28 em success e 10 em estado esperado/não final. O novo item é `Nightly Full CI` [run #41161391625](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41161391625), bloqueado porque `E2E_USER_EMAIL` e `E2E_USER_PASSWORD` estão ausentes no job (`E21`, modo estrito). A causa e a ação do PO estão registradas em `PENDENCIAS.md`. A ponta da `main` permanece SHA `554ef41b44c9f318777d7e7b11189490a29a8c0a`; `Deploy Gates` segue em success. Nenhum novo erro local foi introduzido nesta etapa documental.
 
 Validação local desta atualização: `npm run build:verify` passou (typecheck, lint sem regressões e build). `npm test -- --reporter=dot` executou 1.381 arquivos: 1.250 passaram, 130 foram skipped e 1 falhou; 25.900 testes passaram, 1.135 skipped e 24 TODO. A única falha é a conhecida do baseline, `QuoteBuilderSummaryAlignment.fuzz.test.ts`, que ainda lê `QuoteBuilderSummaryColumn.tsx` enquanto os tokens estão em `QuoteBuilderSummaryItems.tsx`; correção proposta em #2851. Não foi introduzida por esta alteração documental.
