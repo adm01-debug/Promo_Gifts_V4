@@ -1,13 +1,19 @@
-TypeScript check — sessão session_012WyySbh2tj8vhRQLBf3mHo
-Data: 2026-10-27T22:25Z
-Main SHA: e0b569f18cdfc8c7bc63466e567597cf799aaae7
-Branch: claude/quirky-keller-owezvt (analise-prs/ only — source igual ao main)
+# TypeCheck baseline — main HEAD
 
-Comando: node_modules/.bin/tsc --noEmit
-Exit code: 0
+SHA analisado: 9541666bf62883b06117b03cae0368b2c7d55314 (início sessão)
+SHA local no momento do run: pós-merges analise-prs branch (main = 22e8ddad)
+Comando: npx tsc --noEmit
+Data: 2026-10-31
 
-Resultado: SEM ERROS TypeScript
+--- RESULTADO ---
+(sem saída — zero erros TypeScript)
 
-Nota: node_modules disponível nesta sessão (não precisou npm install).
-O branch claude/quirky-keller-owezvt difere do main apenas em analise-prs/ (docs).
-TypeScript não processa analise-prs/*.md, então o resultado é idêntico ao main.
+EXIT:0
+
+--- EVIDÊNCIA CI ---
+Gate 1 (Lint + TypeScript) no SHA 9541666bf62883b06117b03cae0368b2c7d55314:
+- Workflow run #41070173501 — conclusion: success
+- Step "Run npm run typecheck": success
+
+Gate 1 no PR #2853 (run #41161750548 job #124423194090):
+- Step "Run npm run typecheck": success (03:09:46Z → 03:10:55Z)

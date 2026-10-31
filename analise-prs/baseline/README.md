@@ -1,66 +1,59 @@
-# Baseline de CI — main `8bafc7d5a0a1f0f6a06d88adc6577098f873dfcb`
+# Baseline do main — sessão de análise de PRs
 
-**Data:** 2026-10-22
-**SHA fixado:** `8bafc7d5a0a1f0f6a06d88adc6577098f873dfcb` (após merge PR #2356, sessão session_012WyySbh2tj8vhRQLBf3mHo)
-**SHA anterior:** `8e8053b9ed85142e85809783cd3acf9a3077ecde` (sessão anterior)
-**Fonte:** GitHub Actions check runs via API + `npx tsc --noEmit` rodado no container cloud
+**SHA de início de sessão:** `9541666bf62883b06117b03cae0368b2c7d55314`  
+**Data:** 2026-10-30  
+**SHA pós-merges desta sessão (5 PRs):** `22e8ddad0cc41a1bab002ac077ca31558c149dda`
 
-## Resultado do Gate Final
+## TypeCheck
 
-**Gate Final - Deploy Ready: `failure`** (pré-existente em main)
+Arquivo: `typecheck.txt`
 
-O main já estava vermelho antes de qualquer análise. Regressão é medida como:
-> "qualquer check que passe em main e falhe após o merge" OU "qualquer novo check failure não presente neste baseline"
+Resultado no SHA `9541666bf` (via Gate 1 CI run #41070173501 pré-sessão):
+- TypeScript: **0 erros** — Gate 1 conclusion: success
 
-## Checks com failure em main (`8e8053b9`)
+Resultado local no HEAD atual (pós-5-merges, `7ccdb392b` branch / main `22e8ddad`):
+- `npx tsc --noEmit` exit 0 — 0 erros (confirmado em transcript 2026-10-31)
 
-| Check | Conclusão |
-|---|---|
-| `Gate Final - Deploy Ready` | `failure` |
-| `Gate 0.5 - Dependency Audit` | `failure` |
-| `Gate 1 - Lint + TypeScript` | `failure` |
-| `E2E — Error Boundaries (sem auth)` | `failure` |
-| `E2E — Full User Flows (authed)` | `failure` |
-| `E2E — Personalization Journey` | `failure` |
-| `cart-invariants-summary` | `failure` |
-| `cart-invariants (chromium-authed · shard 1/2)` | `failure` |
-| `cart-invariants (chromium-authed · shard 2/2)` | `failure` |
-| `cart-invariants (firefox-authed · shard 1/2)` | `failure` |
-| `cart-invariants (firefox-authed · shard 2/2)` | `failure` |
-| `Migrations x Canonical schema` | `failure` |
-| `check` (×8 entradas) | `failure` |
+## Lint
 
-## Checks com success em main (`8e8053b9`) — amostra relevante
+Arquivo: `lint.txt` (gerado em background por `npm run lint:baseline`)
 
-| Check | Conclusão |
-|---|---|
-| `Gate 0 - SSOT Supabase (project ID canônico)` | `success` |
-| `Gate 2 - Unit Tests` | `success` |
-| `Gate 2.5 - PostgreSQL Transactional Integrity` | `success` |
-| `Gate 4 - Lighthouse CI` | `success` |
-| `Gate 5 - SEO Sanity Check` | `success` |
-| `Gate 5.5 - RPC restore_seller_cart presente no canônico` | `success` |
-| `Gate E23 - Secret Scan (gitleaks)` | `success` |
-| `Assert Gate Final is required on main` | `success` |
+Baseline registrado nos arquivos de ratchet commitados:
+- `.eslint-disable-baseline.json` — baseline de disable comments
+- `.as-assertions-baseline.json` — baseline de asserções `as`
+- Resultado do CI Gate 1 no SHA de início: **0 regressões de lint** (conclusion: success)
 
-## Checks cancelados em main (`8e8053b9`)
+## Testes unitários
 
-| Check | Conclusão |
-|---|---|
-| `E2E · chromium-authed` | `cancelled` |
-| `E2E · firefox-authed` | `cancelled` |
-| `E2E · webkit-authed` | `cancelled` |
-| `Gate 3 - E2E Smoke` | `cancelled` |
-| `Smoke (fail-fast)` | `cancelled` |
-| `chromium • swatch→QV` | `cancelled` |
-| `firefox • swatch→QV` | `cancelled` |
+Arquivo: `vitest.txt` (gerado via `NODE_OPTIONS=--max-old-space-size=4096 npx vitest run`)
 
-## Nota sobre CI local
+Baseline do Gate 2 no SHA `9541666bf`:
+- Gate 2 — Unit Tests: **success** (run #41070173501)
+- Pós-merge #2810 (SHA `554ef41b`): `npx vitest run` local exit 0, promoflix 22/22 passed
 
-`npm ci` retorna 403 no container cloud:
-```
-npm error code E403
-npm error 403 Forbidden - GET https://europe-west1-npm.pkg.dev/...
-```
+Gate 2 no PR #2853 (último merge, SHA `2ee4e3a3`):
+- Step "Run npm run test:ci-core": **success** (job #124423194076 completado 03:10:18Z)
 
-O baseline é derivado exclusivamente dos check runs do GitHub Actions para o SHA `8e8053b9`.
+## Build
+
+Gate 6 no SHA `9541666bf`:
+- Build: **success** (run #41070173501)
+
+Gate 6 no PR #2853 (run #41161750548 job #124427491420):
+- `npm run build`: **success** (03:30:35Z)
+
+## Falhas pré-existentes (não introduzidas por nenhuma PR desta sessão)
+
+| Check | Nome | Motivo |
+|---|---|---|
+| E2E Full User Flows | P18 | Autenticação real — sem credenciais no runner |
+| E2E Personalization Journey | P18 | Autenticação real |
+| chromium/firefox/webkit • swatch→QV | P18 | E2E autenticado |
+| CI Security Drift Checks | P19/P39/P50 | Dependabot scan — pre-existente |
+
+Fonte: `analise-prs/RELATORIO_CI.md` §3.1 (documentado no início da sessão).
+
+## Verificação de worktrees
+
+Worktrees usados nesta sessão: 1 temporário em `/tmp/promo-gifts-worktree-NNNN` para merge-tests locais.  
+Remoção confirmada: `git worktree list` retorna só o diretório principal (transcript 2026-10-31).

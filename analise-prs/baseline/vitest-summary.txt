@@ -1,0 +1,24 @@
+# Vitest baseline — npm run test:ci-core
+# SHA: 9541666bf62883b06117b03cae0368b2c7d55314 (início sessão)
+# Data: 2026-10-31T04:18 UTC
+# Comando: NODE_OPTIONS='--max-old-space-size=4096' npm run test:ci-core
+
+RESULTADO (capturado em transcript 2026-10-31):
+
+ Test Files  41 passed (41)
+      Tests  957 passed (957)
+   Start at  01:18:05
+   Duration  34.59s
+
+EXIT:0
+
+EVIDÊNCIA CI:
+- Gate 2 (Unit Tests) SHA 9541666bf (run #41070173501): success
+- Gate 2 PR #2810 (SHA 554ef41b) job #124355046790: success
+- Gate 2 PR #2853 (run #41161750548 job #124423194076): success (03:10:18Z)
+
+FALHAS PRÉ-EXISTENTES (por nome):
+- E2E Full User Flows (P18): autenticação real — runner sem credenciais
+- E2E Personalization Journey (P18): autenticação real
+- CI Security Drift Checks (P39/P50): Dependabot scan
+(nenhuma falha de teste unitário pré-existente)
