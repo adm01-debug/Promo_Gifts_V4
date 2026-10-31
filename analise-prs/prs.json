@@ -467,7 +467,8 @@
     "gate_final": "SUCCESS",
     "veredicto": "MERGEADA",
     "motivo": "feat(e128): split PromoFlixPlayer 1512→699 linhas + usePromoFlixPlayer hook. Gate Final job 124355046790 success 2026-10-30T22:53:31Z",
-    "sha_merge": "554ef41b44c9f318777d7e7b11189490a29a8c0a"
+    "sha_merge": "554ef41b44c9f318777d7e7b11189490a29a8c0a",
+    "gate_final_job": "124355046790"
   },
   {
     "number": 2813,
@@ -597,8 +598,11 @@
     ],
     "merge_test": "DECISAO_HUMANA",
     "gate_final": "UNKNOWN",
-    "veredicto": "NAO_MERGEAR",
-    "motivo": "REGRA#8 — .github/workflows/branch-protection-sentinel.yml"
+    "veredicto": "MERGEADA_PELO_PO",
+    "motivo": "PO mergeou pessoalmente via GitHub UI — PR #2826 branch protection-sentinel",
+    "sha_merge": "126062c1b",
+    "merged_by": "adm01-debug",
+    "merged_at": "2026-10-30T17:18:06Z"
   },
   {
     "number": 2827,
@@ -689,7 +693,8 @@
     "merge_test": "LIMPO",
     "gate_final": "SUCCESS",
     "veredicto": "MERGEADA",
-    "motivo": "fix(plan): fix parser plan-status 200 — distingue step-id de evidência. Gate Final success pré-merge. Mergeada SHA 6bd5ce61 2026-10-30"
+    "motivo": "fix(plan): fix parser plan-status 200 — distingue step-id de evidência. Gate Final success pré-merge. Mergeada SHA 6bd5ce61 2026-10-30",
+    "gate_final_job": "124354384615"
   },
   {
     "number": 2839,
@@ -727,7 +732,8 @@
     "merge_test": "LIMPO",
     "gate_final": "docs_only_bypass",
     "veredicto": "MERGEADA",
-    "motivo": "docs-only — Gate 0 success + docs_only_bypass. Mergeada SHA a24ee07b 2026-10-30"
+    "motivo": "docs-only — Gate 0 success + docs_only_bypass. Mergeada SHA a24ee07b 2026-10-30",
+    "gate_final_job": "124350219814"
   },
   {
     "number": 2845,
@@ -744,6 +750,7 @@
     "merge_test": "LIMPO",
     "gate_final": "docs_only_bypass",
     "veredicto": "MERGEADA",
-    "motivo": "docs-only — Gate 0 success + docs_only_bypass. Mergeada SHA 637fe57e 2026-10-30"
+    "motivo": "docs-only — Gate 0 success + docs_only_bypass. Mergeada SHA 637fe57e 2026-10-30",
+    "gate_final_job": "124354220749"
   }
 ]
