@@ -134,7 +134,7 @@ test.describe('ProductCard — swatches travados em 2 linhas no grid', () => {
         await first.focus();
         await assertSwatchInsideGroup(group, first, `card ${i} focus`);
 
-        await first.click({ force: true });
+        await first.click();
         await expect(first).toHaveAttribute('aria-checked', 'true');
         await assertSwatchInsideGroup(group, first, `card ${i} selected`);
       }
