@@ -3,7 +3,7 @@
 **Data:** 2026-10-30 (atualizado 2026-10-31 — 7 PRs novas #2846–#2852 adicionadas)  
 **SHA main início:** `9541666bf62883b06117b03cae0368b2c7d55314`  
 **SHA main fim:** `554ef41b44c9f318777d7e7b11189490a29a8c0a`  
-**Total PRs abertas analisadas:** 26 / 26
+**Total PRs abertas analisadas:** 27 / 27
 
 ---
 
@@ -147,14 +147,16 @@ Nenhuma dessas PRs pode ser mergeada automaticamente. Requerem revisão humana.
 | CI_FALHOU | 3 | #2822, #2739, #2848 |
 | AGUARDANDO_GATE_FINAL | 2 | #2851, #2852 |
 | JA_IMPLEMENTADA | 1 | #2758 |
-| **TOTAL** | **26** | |
+| DRAFT | 1 | #2834 |
+| **TOTAL** | **27** | |
 
 ---
 
-## RE-VALIDAÇÃO — PRs #2846–#2852 (2026-10-31, nesta sessão)
+## RE-VALIDAÇÃO — PRs #2834, #2846–#2852 (2026-10-31, nesta sessão)
 
 | PR | Título resumido | Veredito | Razão |
 |---|---|---|---|
+| #2834 | docs(ci): vitest sample baseline 261030 | DRAFT | PR em rascunho; branch behind main com rebaseable:false — aguardar conversão |
 | #2846 | fix(e2e): normaliza query padrão URL | DECISAO_HUMANA | Body proíbe merge automático; altera `useListUrlState.ts` (comportamento de app) |
 | #2847 | ci(deploy): gate Supabase security | NAO_MERGEAR | REGRA #8 — modifica `deploy-gates.yml` + `supabase-security-gate.yml` |
 | #2848 | docs(governance): REGRA #9 | CI_FALHOU | Gate Final run #41154752023 = completed/failure (6 annotations) |
