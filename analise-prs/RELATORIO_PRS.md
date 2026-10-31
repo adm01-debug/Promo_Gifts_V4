@@ -121,9 +121,9 @@ Nenhuma das 4 PRs mergeadas modificou migrations ou edge functions. Evidência p
 PRs que tocam `.github/workflows/` ou `scripts/` de governança:
 - **#2839** (Codex — DECISAO_HUMANA): `deploy-gates.yml`, `CLAUDE.md`, `AGENTS.md`
 - **#2826** (MERGEADA_PO 2026-10-30): `branch-protection-sentinel.yml` — aprovada pelo PO
-- **#2824** (NAO_MERGEAR): `replenishment-quality.yml`
-- **#2823** (NAO_MERGEAR): `supabase/migrations/` DDL
-- **#2821** (NAO_MERGEAR): `uptime-monitor.yml`
+- **#2824** (DECISAO_HUMANA): `replenishment-quality.yml`
+- **#2823** (DECISAO_HUMANA): `supabase/migrations/` DDL
+- **#2821** (DECISAO_HUMANA): `uptime-monitor.yml`
 - **#2731** (NAO_MERGEAR): múltiplos workflows
 
 Nenhuma dessas PRs pode ser mergeada automaticamente. Requerem revisão humana.
@@ -151,7 +151,7 @@ PRs que explicitamente pedem revisão humana antes do merge:
 - **#2849** (DECISAO_HUMANA): `fix(security): remove exceção ampla do gitleaks em scripts` — modifica `.gitleaks.toml` (escopo de scanning de segredos)
 
 ### Cluster 7 — PRs de governança (REGRA #8 — workflows)
-- **#2847** (NAO_MERGEAR): `fix(ci-gates): endurece validação de credenciais e policies` — modifica `deploy-gates.yml` + `supabase-security-gate.yml`
+- **#2847** (NAO_MERGEAR): `ci(deploy): adiciona gate Supabase security` — modifica `deploy-gates.yml` + `supabase-security-gate.yml`
 
 ---
 
@@ -161,8 +161,8 @@ PRs que explicitamente pedem revisão humana antes do merge:
 |---|---|---|
 | MERGEADA (automação) | 5 | #2844, #2845, #2836, #2810, #2853 |
 | MERGEADA (PO) | 1 | #2826 |
-| NAO_MERGEAR | 13 | #2825, #2824, #2823, #2821, #2847, #2848, #2827, #2831, #2799, #2744, #2731, #2701, #2839 |
-| DECISAO_HUMANA | 3 | #2846, #2849, #2850 |
+| NAO_MERGEAR | 8 | #2825, #2847, #2848, #2831, #2799, #2744, #2731, #2701 |
+| DECISAO_HUMANA | 8 | #2839, #2821, #2823, #2824, #2827, #2846, #2849, #2850 |
 | CI_FALHOU | 4 | #2822, #2739, #2851, #2852 |
 | JA_IMPLEMENTADA | 1 | #2758 |
 | DRAFT | 1 | #2834 |
@@ -268,13 +268,13 @@ npx vitest run "PromoFlix"  →  Test Files 1 passed (1) | Tests 22 passed (22) 
 | #2744 | SUCCESS (DRAFT) | nenhum | = baseline | NAO_MERGEAR (DRAFT) |
 | #2758 | N/A (0 mudanças) | — | — | JA_IMPLEMENTADA |
 | #2799 | SUCCESS | nenhum | = baseline | NAO_MERGEAR (bot WAITING_CI >48h) |
-| #2821 | SUCCESS | nenhum | 0 erros | NAO_MERGEAR (REGRA #8 workflow) |
+| #2821 | SUCCESS | nenhum | 0 erros | DECISAO_HUMANA (REGRA #8 workflow — requer aprovação PO) |
 | #2822 | SUCCESS | nenhum | = baseline | CI_FALHOU Gate 1.3 (baseline stale) |
-| #2823 | CONFLICT | `PENDENCIAS.md` | N/A | NAO_MERGEAR (REGRA #8 DDL) |
-| #2824 | CONFLICT | múltiplos | N/A | NAO_MERGEAR (REGRA #8 workflow) |
+| #2823 | CONFLICT | `PENDENCIAS.md` | N/A | DECISAO_HUMANA (REGRA #8 DDL — requer aprovação PO) |
+| #2824 | CONFLICT | múltiplos | N/A | DECISAO_HUMANA (REGRA #8 workflow — requer aprovação PO) |
 | #2825 | CONFLICT | `RELATORIO_CI.md`, `prs.json` | N/A | NAO_MERGEAR (CI_FALHOU Gate 1.3) |
 | #2826 | N/A (já mergeada pelo PO) | — | — | MERGEADA pelo PO 2026-10-30 |
-| #2827 | CONFLICT | `PENDENCIAS.md`, `RELATORIO_CI.md` | N/A | NAO_MERGEAR (body proibitivo + codex) |
+| #2827 | CONFLICT | `PENDENCIAS.md`, `RELATORIO_CI.md` | N/A | DECISAO_HUMANA (body proibitivo + codex REGRA#10) |
 | #2831 | SUCCESS (DRAFT) | nenhum | = baseline | NAO_MERGEAR (DRAFT) |
 | #2839 | SUCCESS | nenhum | = baseline | DECISAO_HUMANA (REGRA #8+#10) |
 
@@ -311,13 +311,13 @@ npx vitest run "PromoFlix"  →  Test Files 1 passed (1) | Tests 22 passed (22) 
 | #2744 | integra/vps-edge | CONFLICT | N/A | Histórico desconectado | NAO_MERGEAR confirmado |
 | #2758 | fix/a11y-focus-visible-ring | N/A (0 files) | N/A | — | JA_IMPLEMENTADA |
 | #2799 | release-please branch | SUCCESS ff | 1 (=base) | — | WAITING_CI confirmado |
-| #2821 | claude/fix-sync-uptime-http-status | SUCCESS | 1 (=base) | — | NAO_MERGEAR (REGRA #8) |
+| #2821 | claude/fix-sync-uptime-http-status | SUCCESS | 1 (=base) | — | DECISAO_HUMANA (REGRA #8 — requer aprovação PO) |
 | #2822 | claude/fix-sync-types-idempotency | SUCCESS | 1 (=base) | — | CI_FALHOU Gate 1.3 |
-| #2823 | claude/fix-sync-reconcile-migrations | CONFLICT | N/A | PENDENCIAS.md | NAO_MERGEAR (REGRA #8) |
-| #2824 | claude/fix-sync-e2e-vite-port-isolation | CONFLICT | N/A | RELATORIO_CI.md | NAO_MERGEAR (REGRA #8) |
+| #2823 | claude/fix-sync-reconcile-migrations | CONFLICT | N/A | PENDENCIAS.md | DECISAO_HUMANA (REGRA #8 DDL — requer aprovação PO) |
+| #2824 | claude/fix-sync-e2e-vite-port-isolation | CONFLICT | N/A | RELATORIO_CI.md | DECISAO_HUMANA (REGRA #8 — requer aprovação PO) |
 | #2825 | claude/fix-sync-graphify-version | CONFLICT | N/A | RELATORIO_CI.md, analise-prs/prs.json | CI_FALHOU |
 | #2826 | claude/fix-sync-sentinel-e2e-pdf | N/A (já mergeada pelo PO) | N/A | — | MERGEADA_PO |
-| #2827 | codex/ci-audit-latest-20261030 | CONFLICT | N/A | PENDENCIAS.md, RELATORIO_CI.md | NAO_MERGEAR (body instrui não mergear) |
+| #2827 | codex/ci-audit-latest-20261030 | CONFLICT | N/A | PENDENCIAS.md, RELATORIO_CI.md | DECISAO_HUMANA (body instrui não mergear + codex REGRA#10) |
 | #2831 | claude/eloquent-ramanujan-0yt2fo | CONFLICT | N/A | Histórico desconectado | NAO_MERGEAR (DRAFT) |
 | #2839 | codex/e23-required-secrets-20261030 | SUCCESS ff | 1 (=base) | — | DECISAO_HUMANA (REGRA #8+#10) |
 
@@ -379,38 +379,41 @@ Os itens abaixo foram analisados com base em evidências indiretas (body da PR, 
 
 | Métrica | Valor |
 |---|---|
-| PRs abertas inventariadas | **27** |
-| PRs analisadas (4 perguntas + merge-test) | **27** |
-| PRs com dossiê em `analise-prs/dossies/` | **27** |
+| PRs abertas inventariadas | **28** |
+| PRs analisadas (4 perguntas + merge-test) | **28** |
+| PRs com dossiê em `analise-prs/dossies/` | **28** |
 
 ### Contagem por veredito
 
 | Veredito | Qtde | PRs |
 |---|---|---|
-| MERGEADA (automação) | 4 | #2844, #2845, #2836, #2810 |
+| MERGEADA (automação) | 5 | #2844, #2845, #2836, #2810, #2853 |
 | MERGEADA (PO) | 1 | #2826 |
 | JA_IMPLEMENTADA | 1 | #2758 |
-| DECISAO_HUMANA | 4 | #2839, #2846, #2849, #2850 |
-| CI_FALHOU | 5 | #2739, #2822, #2848, #2851, #2852 |
-| NAO_MERGEAR | 11 | #2701, #2731, #2744, #2799, #2821, #2823, #2824, #2825, #2827, #2831, #2847 |
+| DECISAO_HUMANA | 8 | #2839, #2821, #2823, #2824, #2827, #2846, #2849, #2850 |
+| CI_FALHOU | 4 | #2739, #2822, #2851, #2852 |
+| NAO_MERGEAR | 8 | #2701, #2731, #2744, #2799, #2825, #2831, #2847, #2848 |
 | DRAFT | 1 | #2834 |
-| **TOTAL** | **27** | |
+| **TOTAL** | **28** | |
 
 ### PRs mergeadas com SHA e Gate Final
 
 | PR | Título | SHA merge | Gate Final | Data |
 |---|---|---|---|---|
-| #2844 | fix(hooks): correção useProductSearch | `a24ee07b` | ✅ job 124350219814 | 2026-10-30T22:50:04Z |
-| #2845 | fix(catalog): ajuste filtros | `637fe57e` | ✅ job 124354220749 | 2026-10-30T22:53:23Z |
-| #2836 | fix(cart): correção estado | `6bd5ce61` | ✅ job 124354384615 | 2026-10-30T22:53:26Z |
-| #2810 | feat: PromoFlixPlayer refactor | `554ef41b` | ✅ job 124355046790 | 2026-10-30T22:53:31Z |
+| #2844 | docs(analise-prs): RELATORIO_CI | `a24ee07b` | ✅ job 124350219814 | 2026-10-30T22:50:04Z |
+| #2845 | docs(auditoria): revalida portão P200 | `637fe57e` | ✅ job 124354220749 | 2026-10-30T22:53:23Z |
+| #2836 | fix(plan): separa alegações de evidências | `6bd5ce61` | ✅ job 124354384615 | 2026-10-30T22:53:26Z |
+| #2810 | feat(e128): split PromoFlixPlayer | `554ef41b` | ✅ job 124355046790 | 2026-10-30T22:53:31Z |
+| #2853 | fix(ci): ESLint como devDependency | `22e8ddad` | ✅ run #41161750548 job #124432489067 | 2026-10-31T04:02:34Z |
 
-**Produção pós-merge** (MCP `execute_sql` → `doufsxqlfjyuvxuezpln` 2026-10-31T02:16:15Z):
-`total_migrations=2552, latest_migration=20261027160000, active_cron_jobs=134` — idêntico ao baseline, zero migrations novas.
+**CI pós-merge #2853:** Deploy Gates run #41166937031 em fila (queued, conclusion null) — runner indisponível. Pre-merge Gate Final (run #41161750548) foi ✅ success. Todos os 16 gates passaram no SHA `22e8ddad` antes do merge.
+
+**Produção pós-merge** (MCP `execute_sql` → `doufsxqlfjyuvxuezpln` re-verificado 2026-10-31T04:30Z):
+`total_migrations=2552, latest_migration=20261027160000, active_cron_jobs=134` — idêntico ao baseline, zero migrations novas após os 5 merges.
 
 ### Nenhuma outra escrita no GitHub
 
-Operações realizadas: apenas os 4 merges acima via `mcp__github__merge_pull_request`.
+Operações realizadas: apenas os 5 merges acima via `mcp__github__merge_pull_request`.
 Não foram criados/editados PRs, labels, branches, comentários ou configurações.
 
 ### Worktrees removidos
