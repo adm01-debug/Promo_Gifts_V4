@@ -114,13 +114,42 @@ export function useListUrlState<K extends string>(
     [updateParam, stableKeys, searchKey],
   );
 
+  // Canonicaliza deep-links que incluem explicitamente valores default.
+  // Valores default não alteram o estado renderizado, mas mantê-los na query
+  // string contradiz o contrato do hook e cria URLs redundantes após reload.
+  // Preserva todos os parâmetros que não pertencem a este hook.
+  useEffect(() => {
+    const currentParams = searchParamsRef.current;
+    const hasExplicitDefault = keyList.some(
+      (key) => currentParams.has(key) && currentParams.get(key) === stableKeys[key],
+    );
+    if (!hasExplicitDefault) return;
+
+    setSearchParams(
+      (prev) => {
+        const next = new URLSearchParams(prev);
+        for (const key of keyList) {
+          if (next.has(key) && next.get(key) === stableKeys[key]) next.delete(key);
+        }
+        return next;
+      },
+      { replace: true },
+    );
+  }, [keyList, setSearchParams, stableKeys]);
+
   // Sincroniza busca debounced → URL. Idempotente: só navega se a URL ainda
   // não reflete o valor (evita replaceState redundante no mount e corta o loop).
   useEffect(() => {
     if (!searchKey) return;
     const defaultValue = keysRef.current[searchKey];
     const target = !debouncedSearch || debouncedSearch === defaultValue ? null : debouncedSearch;
-    if (searchParamsRef.current.get(searchKey) === target) return;
+    const currentValue = searchParamsRef.current.get(searchKey);
+    if (
+      currentValue === target ||
+      (target === null && currentValue === defaultValue)
+    ) {
+      return;
+    }
     updateParamRef.current(searchKey, debouncedSearch, defaultValue);
   }, [debouncedSearch, searchKey]);
 

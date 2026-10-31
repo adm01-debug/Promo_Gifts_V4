@@ -203,11 +203,9 @@ describe('EDGE — caracteres especiais / URI encoding', () => {
 });
 
 describe('EDGE — deep-link com todos os defaults explícitos', () => {
-  it('URL com valores default é lida corretamente e clearAll é no-op efetivo', async () => {
-    // Nota: quem colocou defaults na URL foi um agente externo; o hook não
-    // "normaliza" ao montar. Mas clearAll deve limpar tudo mesmo assim.
+  it('remove defaults redundantes na montagem e preserva parâmetros não gerenciados', async () => {
     const { wrapper, getSearch } = mkWrapper(
-      '/x?status=all&deadline=all&sort=recent&q=',
+      '/x?status=all&deadline=all&sort=recent&q=&page=3',
     );
     const { result } = renderHook(
       () => useListUrlState({ keys: KEYS, searchKey: 'q', debounceMs: 30 }),
@@ -218,13 +216,18 @@ describe('EDGE — deep-link com todos os defaults explícitos', () => {
     expect(result.current.values.sort).toBe('recent');
     expect(result.current.values.q).toBe('');
 
-    act(() => result.current.clearAll());
     await waitFor(() => {
       const p = new URLSearchParams(getSearch());
       expect(p.has('status')).toBe(false);
       expect(p.has('deadline')).toBe(false);
       expect(p.has('sort')).toBe(false);
       expect(p.has('q')).toBe(false);
+      expect(p.get('page')).toBe('3');
+    });
+
+    act(() => result.current.clearAll());
+    await waitFor(() => {
+      expect(getSearch()).toBe('?page=3');
     });
   });
 });
