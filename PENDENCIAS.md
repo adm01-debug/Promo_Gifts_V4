@@ -854,3 +854,17 @@ O único required check (`Gate Final - Deploy Ready`) para `b92bcf876` está `qu
 `in_progress`: Quote Builder Delivery, Supabase Linter Gate.
 `success` já confirmado: Policies Baseline, SSOT Supabase Guard, Security Scan, UI Visual & A11y, No Prod Leak, Static Health Checks, Release Please, Lovable Edit Tracker, Select Columns vs Types.
 | 5 | Branch Protection Sentinel | Avaliar tolerância ou configurar Lovable para usar formato de commit com `(#NNN)` |
+
+
+## Snapshot dos PRs desta rodada — 2026-10-31 03:04 UTC
+
+Este snapshot substitui os estados remotos anteriores registrados para os PRs #2850–#2853. Os seis workflows em falha na última execução da `main` continuam documentados na seção de revalidação acima.
+
+| PR | Head | Estado atual dos checks | Próximo passo seguro |
+|---|---|---|---|
+| [#2850](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2850) | `81414f5` | Gate Final falhou; falharam Gate 0.5 (`#41156665314`), E2E Full User Flows (`#41156665250`), audit (`#41156665115`), Swatch nos três browsers (`#41156665134`) e Copilot (`#41156674372`). | Corrige URL state, mas altera aplicação. Manter aberto; não mesclar enquanto checks estiverem vermelhos e enquanto o merge puder disparar deploy de produção. |
+| [#2851](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2851) | `4b9fbf5` | Gate Final falhou (`#41157182500`); Gate 0.5 falhou; E2E `undo` e `view-no-presentation-mode` falharam (`#41157182470`), Swatch nos três browsers (`#41157182424`), auditoria de paridade Novidades × Reposição (`#41157182409`) e Copilot (`#41157192466`). Os logs mostram dois testes de paridade falhando por ausência de `page-title-novidades`; o fluxo de undo chamou callback após expiração e um snapshot dark/mobile divergiu. | A correção local do teste de alinhamento passou sem reduzir asserções. Investigar as falhas independentes; sem merge até todos os checks obrigatórios ficarem verdes. |
+| [#2852](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2852) | `cb2a4ad` | 0 checks em falha; 6 aguardando (`Gate 0`, detecção docs-only, Copilot, Secrets Inventory, Ghost Check Guard e PR Size Check). | Aguardar a conclusão dos checks; sem merge enquanto houver estado pendente. |
+| [#2853](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2853) | `2ee4e3a` | 3 checks falharam: CI Replenishment (`#41161750496`), em que `page-title-novidades` não apareceu e o teste excedeu 120 s; WebKit (`#41161750481`) encerrou com `The operation was canceled` (job opcional com `continue-on-error`); Copilot (`#41161759086`) falhou por cota. 27 checks aguardavam, incluindo Gate 0.5 e Gate Final. | A correção local de audit segue sem validação remota completa. O gate de reposição depende de uma rota de Novidades com estado/dados E2E válidos; não alterar banco nem enfraquecer asserts. Aguardar os gates. |
+
+Os PRs permanecem abertos. Não houve merge, rerun para mascarar falhas, alteração de workflow, banco, dados ou segredos.

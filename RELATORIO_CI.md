@@ -279,3 +279,12 @@ Tabela de prova (Seção 8) + baseline local (Seções 1, 10) + comparação bas
 | test:ci-core | ✅ 957 testes | ✅ 957 testes | Sem regressão |
 | Gate Final | ✅ success | ✅ success | Sem regressão |
 | Workflows NÃO-REQUIRED em falha | 8 (PO-BLOCKED) | 8 (PO-BLOCKED) | Sem regressão — mesmos bloqueios estruturais |
+
+
+## Atualização de checks remotos — 2026-10-31 03:04 UTC
+
+A leitura dos heads atuais confirma que nenhum PR desta rodada está pronto para merge. #2852 não tem falhas remotas, mas mantém seis checks pendentes; #2853 mantém 27 pendentes e falhas no CI Replenishment (título de Novidades ausente/timeout), Copilot e WebKit (`The operation was canceled`); #2850 e #2851 mantêm Gate Final vermelho, além de falhas E2E e de audit detalhadas em `PENDENCIAS.md`. A falha WebKit está em job opcional com `continue-on-error` já existente no workflow; não foi alterada.
+
+Os cinco especialistas fizeram revisão independente do PR #2853: não identificaram mudança no Supabase, segredo ou asserção enfraquecida. O gap de correspondência exata do advisory para consumidores e faixas foi corrigido no próprio PR e coberto por testes negativos. A revisão não substitui checks remotos ainda pendentes.
+
+Na `main`, a ponta observada permanece SHA `554ef41b44c9f318777d7e7b11189490a29a8c0a`; os seis workflows em falha e os demais 35 em estado verde/esperado continuam reconciliados no PENDENCIAS.md. Nenhum novo erro local foi introduzido nesta etapa documental.
