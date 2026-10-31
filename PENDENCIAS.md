@@ -1,6 +1,8 @@
 # PENDÊNCIAS CI — Promo Gifts V4
-**Atualizado em:** 2026-10-30
+**Atualizado em:** 2026-10-31
 **Branch de correção:** `claude_04/beautiful-gates-bvocz5` (PR #2597 — **MERGEADO** ✅)
+
+> Revalidação posterior de PRs, workflows e pendências transversais: [docs/estado/REVALIDACAO_PLANO_2026-10-31.md](docs/estado/REVALIDACAO_PLANO_2026-10-31.md). Os registros abaixo são snapshots datados; não substituem a revalidação mais recente.
 
 ## Atualização P27 — inventário da ponta atual da `main` (2026-10-30T12:23Z)
 
