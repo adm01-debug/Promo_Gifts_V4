@@ -757,5 +757,147 @@
     "gate_final_job": "124354220749",
     "gate_final_run": "41134527629",
     "gate_final_completed": "2026-10-30T22:53:23Z"
+  },
+  {
+    "number": 2834,
+    "title": "docs(ci): evidência vitest sample — baseline 11 arquivos/137 testes dfec2236c",
+    "author": "adm01-debug",
+    "draft": true,
+    "base": "main",
+    "head_sha": "b4ea8e30",
+    "state": "open",
+    "branch": "claude/fix-relatorio-baseline-vitest-261030-1745",
+    "created_at": "2026-10-30",
+    "files_protegidos": [
+      "docs/ci/BASELINE_VITEST_SAMPLE_261030.md"
+    ],
+    "merge_test": "CONFLICT (branch behind main, rebaseable:false)",
+    "gate_final": "N/A (DRAFT)",
+    "veredicto": "DRAFT",
+    "motivo": "PR em rascunho, branch behind main e rebaseable:false — aguardar conversão não-draft"
+  },
+  {
+    "number": 2846,
+    "title": "fix(e2e): normaliza query padrão na URL",
+    "author": "adm01-debug",
+    "draft": false,
+    "base": "main",
+    "head_sha": "",
+    "state": "open",
+    "branch": "fix/p200-e2e-normalize-default-query-url",
+    "created_at": "2026-10-31",
+    "files_protegidos": [
+      "src/hooks/common/useListUrlState.ts"
+    ],
+    "merge_test": "SUCCESS",
+    "gate_final": "queued",
+    "veredicto": "DECISAO_HUMANA",
+    "motivo": "body proibe merge automatico + altera comportamento aplicacao useListUrlState + E2E falhou"
+  },
+  {
+    "number": 2847,
+    "title": "ci(deploy): adiciona gate Supabase security + restringe permissions",
+    "author": "adm01-debug",
+    "draft": false,
+    "base": "main",
+    "head_sha": "",
+    "state": "open",
+    "branch": "claude/p200-supabase-security-gate-261031",
+    "created_at": "2026-10-31",
+    "files_protegidos": [
+      ".github/workflows/deploy-gates.yml",
+      ".github/workflows/supabase-security-gate.yml"
+    ],
+    "merge_test": "SUCCESS",
+    "gate_final": "queued",
+    "veredicto": "NAO_MERGEAR",
+    "motivo": "REGRA#8 — .github/workflows (2 workflows protegidos) sem aprovação PO"
+  },
+  {
+    "number": 2848,
+    "title": "docs(governance): exige PR para mudanças de governança",
+    "author": "adm01-debug",
+    "draft": false,
+    "base": "main",
+    "head_sha": "",
+    "state": "open",
+    "branch": "claude/p200-enforce-pr-for-governance-261031",
+    "created_at": "2026-10-31",
+    "files_protegidos": [
+      "CLAUDE.md",
+      "AGENTS.md"
+    ],
+    "merge_test": "SUCCESS",
+    "gate_final": "failure (run #41154752023)",
+    "veredicto": "CI_FALHOU",
+    "motivo": "Gate Final completed/failure run #41154752023 — 6 annotations"
+  },
+  {
+    "number": 2849,
+    "title": "fix(security): remove exceção ampla do gitleaks em scripts",
+    "author": "adm01-debug",
+    "draft": false,
+    "base": "main",
+    "head_sha": "",
+    "state": "open",
+    "branch": "claude/p200-gitleaks-scripts-261031",
+    "created_at": "2026-10-31",
+    "files_protegidos": [
+      ".gitleaks.toml"
+    ],
+    "merge_test": "SUCCESS",
+    "gate_final": "queued",
+    "veredicto": "DECISAO_HUMANA",
+    "motivo": "REGRA#9 — .gitleaks.toml é arquivo protegido + Gate Final queued"
+  },
+  {
+    "number": 2850,
+    "title": "fix/p200-e2e-default-query",
+    "author": "adm01-debug",
+    "draft": false,
+    "base": "main",
+    "head_sha": "",
+    "state": "open",
+    "branch": "fix/p200-e2e-default-query",
+    "created_at": "2026-10-31",
+    "files_protegidos": [
+      "src/hooks/common/useListUrlState.ts"
+    ],
+    "merge_test": "SUCCESS",
+    "gate_final": "queued",
+    "veredicto": "DECISAO_HUMANA",
+    "motivo": "body proibe merge automatico + altera comportamento aplicacao useListUrlState"
+  },
+  {
+    "number": 2851,
+    "title": "test(quotes): corrige origem do teste de alinhamento",
+    "author": "adm01-debug",
+    "draft": false,
+    "base": "main",
+    "head_sha": "4b9fbf59f7d38d484e2d5b130e495acd819af09a",
+    "state": "open",
+    "branch": "fix/p200-quote-summary-fuzz-source-20261031",
+    "created_at": "2026-10-31",
+    "files_protegidos": [],
+    "merge_test": "SUCCESS (vitest 22/22 — merge-test local)",
+    "gate_final": "failure (run #41157182500, job 124417568951) — Gate 0.5 Dependency Audit",
+    "veredicto": "CI_FALHOU",
+    "motivo": "Gate 0.5 Dependency Audit falhou — CVE em dependência (npm audit --audit-level high)"
+  },
+  {
+    "number": 2852,
+    "title": "docs(ci): atualiza relatório e pendências da ponta main",
+    "author": "adm01-debug",
+    "draft": false,
+    "base": "main",
+    "head_sha": "c2d0fbd1924d77e79870150d0adc2f7c76fbccf2",
+    "state": "open",
+    "branch": "claude/p200-pendencias-atualiza-261031",
+    "created_at": "2026-10-31",
+    "files_protegidos": [],
+    "merge_test": "MERGE_OK",
+    "gate_final": "failure — Gate 0.5 Dependency Audit conclusion=failure",
+    "veredicto": "CI_FALHOU",
+    "motivo": "Gate 0.5 Dependency Audit falhou (mesmo CVE de #2851) — docs-only E14 bypass não cobre Gate 0.5"
   }
 ]
