@@ -2,7 +2,7 @@
  * Render tests for ProductCard (584 lines)
  */
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { screen } from "@testing-library/react";
+import { fireEvent, screen } from "@testing-library/react";
 import { renderWithProviders } from "../render-helpers";
 import React from "react";
 
@@ -110,6 +110,23 @@ const mockProductWithColors = {
     { name: "Rosa Pink", hex: "#E91E8C", group: "Rosa", groupSlug: "rosa", variationSlug: "rosa-pink", image: "rosa.jpg", images: [] },
     { name: "Azul Royal", hex: "#1E40AF", group: "Azul", groupSlug: "azul", variationSlug: "azul-royal", image: "azul.jpg", images: [] },
     { name: "Verde Limão", hex: "#22C55E", group: "Verde", groupSlug: "verde", variationSlug: "verde-limao", image: "verde.jpg", images: [] },
+  ],
+};
+
+const mockProductWithSingleColor = {
+  ...mockProduct,
+  id: "p-single-color",
+  name: "Caneca Bambu",
+  colors: [
+    {
+      name: "BAMBU",
+      hex: "#BFA77A",
+      group: "Bambu",
+      groupSlug: "bambu",
+      variationSlug: "bambu",
+      image: "bambu.jpg",
+      images: [],
+    },
   ],
 };
 
@@ -224,6 +241,18 @@ describe("ProductCard", () => {
     expect(pinkSwatch).toHaveAttribute("aria-checked", "true");
     const blueSwatch = screen.getByLabelText("Opção de cor: Azul Royal");
     expect(blueSwatch).toHaveAttribute("aria-checked", "false");
+  });
+
+  it("marca o swatch como selecionado após clique quando o produto tem uma única cor", async () => {
+    const { ProductCard } = await import("@/components/products/ProductCard");
+    renderWithProviders(<ProductCard product={mockProductWithSingleColor as any} />);
+
+    const bambooSwatch = screen.getByLabelText("Opção de cor: BAMBU");
+    expect(bambooSwatch).toHaveAttribute("aria-checked", "false");
+
+    fireEvent.click(bambooSwatch);
+
+    expect(bambooSwatch).toHaveAttribute("aria-checked", "true");
   });
 
   it("renders product without colors gracefully", async () => {
