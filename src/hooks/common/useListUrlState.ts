@@ -106,6 +106,12 @@ export function useListUrlState<K extends string>(
   const updateParamRef = useRef(updateParam);
   updateParamRef.current = updateParam;
 
+  // `setSearchParams` também muda de identidade a cada navegação. O efeito de
+  // normalização inicial precisa usar a versão atual sem transformar essa
+  // identidade em gatilho de navegação.
+  const setSearchParamsRef = useRef(setSearchParams);
+  setSearchParamsRef.current = setSearchParams;
+
   const setValue = useCallback(
     (key: K, value: string) => {
       updateParam(key, value, stableKeys[key]);
@@ -120,9 +126,40 @@ export function useListUrlState<K extends string>(
     if (!searchKey) return;
     const defaultValue = keysRef.current[searchKey];
     const target = !debouncedSearch || debouncedSearch === defaultValue ? null : debouncedSearch;
-    if (searchParamsRef.current.get(searchKey) === target) return;
+    const current = searchParamsRef.current.get(searchKey);
+    if (current === target) return;
+    // Um parâmetro textual explícito com seu default será removido pelo
+    // normalizador abaixo; não dispare uma segunda navegação concorrente.
+    if (!target && current === defaultValue) return;
     updateParamRef.current(searchKey, debouncedSearch, defaultValue);
   }, [debouncedSearch, searchKey]);
+
+  // Normaliza valores default explícitos ao abrir um deep-link, além de
+  // removê-los quando o usuário altera os controles. O sync debounced acima
+  // reconhece os defaults textuais para evitar navegações concorrentes.
+  useEffect(() => {
+    const hasExplicitDefaults = keyList.some((key) => {
+      const value = searchParamsRef.current.get(key);
+      return value !== null && (!value || value === keysRef.current[key]);
+    });
+    if (!hasExplicitDefaults) return;
+
+    setSearchParamsRef.current(
+      (prev) => {
+        const next = new URLSearchParams(prev);
+        let changed = false;
+        for (const key of keyList) {
+          const value = next.get(key);
+          if (value !== null && (!value || value === keysRef.current[key])) {
+            next.delete(key);
+            changed = true;
+          }
+        }
+        return changed ? next : prev;
+      },
+      { replace: true },
+    );
+  }, [keyList, locationKey]);
 
   // Resync quando a navegação foi por HISTÓRICO (POP: botão voltar/avançar
   // do navegador) — nunca para PUSH/REPLACE (navegações desta própria
