@@ -111,7 +111,7 @@ Nenhuma das 4 PRs mergeadas modificou migrations ou edge functions (confirmado p
 ### Cluster 1 — Workflows e governança de CI (REGRA #8)
 PRs que tocam `.github/workflows/` ou `scripts/` de governança:
 - **#2839** (Codex — DECISAO_HUMANA): `deploy-gates.yml`, `CLAUDE.md`, `AGENTS.md`
-- **#2826** (NAO_MERGEAR): `branch-protection-sentinel.yml`
+- **#2826** (MERGEADA_PO 2026-10-30): `branch-protection-sentinel.yml` — aprovada pelo PO
 - **#2824** (NAO_MERGEAR): `replenishment-quality.yml`
 - **#2823** (NAO_MERGEAR): `supabase/migrations/` DDL
 - **#2821** (NAO_MERGEAR): `uptime-monitor.yml`
