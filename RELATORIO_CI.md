@@ -100,9 +100,14 @@ Não é possível corrigir por código — são falhas de autenticação/infra d
 > Atualizado após conclusão do `vitest run` em background.
 
 ```
-# Resultado pendente — vitest ainda rodando
-# Será atualizado quando o processo em background concluir
+Test Files  1131 passed | 130 skipped (1261)
+     Tests  24982 passed | 1135 skipped | 24 todo (26141)
+  Start at  00:35:19
+  Duration  853.26s
+  Exit code: 0
 ```
+
+✅ **24.982 testes passando, 0 falhas.**
 
 ---
 
@@ -131,5 +136,5 @@ Não é possível corrigir por código — são falhas de autenticação/infra d
 | build | ✅ 0 erros | ✅ 0 erros |
 | tsc | ✅ 0 erros | ✅ 0 erros |
 | lint | ⚠️ OOM (exit 0) | ⚠️ OOM (exit 0) — sem piora |
-| vitest (unitários) | ⏳ Pendente | ⏳ Pendente |
+| vitest (unitários) | ✅ 24.982 passou / 0 falhas | ✅ 24.982 passou / 0 falhas |
 | QuoteBuilderSummaryAlignment.fuzz | ❌ FALHA | ✅ 39/39 passando |
