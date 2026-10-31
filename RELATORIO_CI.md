@@ -1,5 +1,15 @@
 # RELATORIO_CI.md — Auditoria de Workflows CI/CD
 
+## Revalidação remota após merge do PR #2853 — 2026-10-31 04:07 UTC
+
+O PR [#2853](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2853) foi mesclado na `main` às 04:03 UTC (`22e8ddad0cc41a1bab002ac077ca31558c149dda`). A nova bateria ainda não terminou: no snapshot remoto, 30 workflows estavam queued/em execução, 3 concluídos com sucesso e nenhum novo workflow concluído com falha. A última falha concluída de **Kit Coverage — Integration** continua sendo [#41165671545](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41165671545), bloqueada por permissão `anon` na view `v_kit_component_complete`; **Nightly Full CI** continua com [#41161391625](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41161391625), bloqueada pelos secrets de teste E21 ausentes. A causa e a ação segura estão em `PENDENCIAS.md`.
+
+PRs #2850 e #2851 continuam abertos com verificações falhando. PR #2852 está aberto, sem falhas observadas, mas com 7 checks pendentes. Não houve merge desses PRs. Esta atualização é um snapshot intermediário; a validação de sucesso da bateria pós-merge permanece pendente.
+
+### Revalidação local do branch documental — 2026-10-31 04:15 UTC
+
+`npm run build:verify` passou: TypeScript, lint baseline (0 erros/0 warnings, sem regressão) e build Vite/Gates de produção. A suíte completa `npm test -- --reporter=dot` terminou com exit 1 e reproduziu a única falha conhecida, `QuoteBuilderSummaryAlignment.fuzz.test.ts:31`, que ainda procura tokens de JSX em `QuoteBuilderSummaryColumn.tsx`; o JSX foi extraído para `QuoteBuilderSummaryItems.tsx`. Resultado: 1.250 arquivos aprovados, 1 falhou, 130 skipped; 25.900 testes aprovados, 1.135 skipped e 24 TODO. Isso coincide com o baseline documentado; não foi removido nem enfraquecido teste algum. O fix está no PR #2851, mas ainda sem merge e com checks remotos falhando.
+
 ## Atualização de execução — 2026-10-31 02:50 UTC / 2026-10-30 BRT
 
 ### Baseline e revalidação local
