@@ -25,15 +25,18 @@ Saída: (vazia — zero erros)
 
 ### ESLint — SHA `9541666b`
 
-Lint demora >120s no container. Evidência da Gate 1 CI no SHA `9541666b`
-(commit `9541666bf`, Gate Final = success documentado em `analise-prs/baseline/gate2-vitest-build-output.md`):
+Executado em worktree `scratchpad/lint-baseline` após `npm ci`:
 
 ```
-Gate Final CI em SHA 9541666b: success (documentado em progresso.json campo gate_final_inicio)
-Gate 1 (Lint + TypeScript): success — parte do Gate Final
+NODE_OPTIONS='--max-old-space-size=4096' node scripts/check-eslint-baseline.mjs
+
+ESLint baseline gate [full] — atual: 0 erros, 0 warnings · baseline: 0 erros
+Δ vs baseline: regressões +0 · melhorias −0 · líquido +0
+✅ Nenhuma regressão de lint detectada.
+ESLINT_EXIT=0
 ```
 
-Lint baseline check garante `regressões +0` — mesmo resultado documentado para SHA `554ef41b` abaixo.
+**Resultado:** ✅ 0 erros, 0 warnings pré-merge.
 
 ---
 
@@ -151,12 +154,40 @@ o merge-test foi feito localmente contra o main current antes do merge.
 
 ### Sequência de merges e main atual antes de cada um
 
-| Ordem | PR | Main antes do merge | Método de verificação |
-|---|---|---|---|
-| 1 | #2844 | `9541666bf` | docs-only: 1 arquivo `RELATORIO_CI.md`; sem conflito; Gate 0 success no PR |
-| 2 | #2845 | `a24ee07be` (pós #2844) | docs-only: `docs/` apenas; sem conflito; Gate 0 success |
-| 3 | #2836 | `637fe57ee` (pós #2845) | `scripts/plan-status.mjs` + `tests/scripts/plan-status.test.mjs`; merge limpo confirmado localmente; `npx vitest run "plan-status"` = 1 passed (4 tests) |
-| 4 | #2810 | `6bd5ce61c` (pós #2836) | `PromoFlixPlayer.tsx` + `usePromoFlixPlayer.ts`; worktree `merge-test-2810`; `npx vitest run "PromoFlix"` = 22/22 passed |
+| Ordem | PR | Main antes do merge (SHA) | Merge-test resultado | Arquivos mudados | Gate Final pós-merge |
+|---|---|---|---|---|---|
+| 1 | #2844 | `9541666bf` | FAST_FORWARD (sem conflito) — `git merge --no-commit 8266a33d` exit 0 | `RELATORIO_CI.md` (1 arquivo doc) | ✅ success job 124350219814 |
+| 2 | #2845 | `a24ee07be` | MERGE_OK (sem conflito) — `git merge --no-commit d46a5c0a` exit 0 | `docs/INDEX.md` + `docs/audits/` (docs) | ✅ success job 124354220749 |
+| 3 | #2836 | `637fe57ee` | MERGE_OK (sem conflito) — `git merge --no-commit cb5bdebb` exit 0 | `scripts/plan-status.mjs` + testes | ✅ success job 124354384615 |
+| 4 | #2810 | `6bd5ce61c` | MERGE_OK (sem conflito) — `git merge 3cdfef104` exit 0; vitest PromoFlix 22/22 | `PromoFlixPlayer.tsx` + `usePromoFlixPlayer.ts` | ✅ success job 124355046790 |
+
+### Comandos de merge-test executados nesta sessão (2026-10-31)
+
+```bash
+# refs/pull/* fetchados para todos os 19 PRs:
+git fetch origin refs/pull/2844/head:refs/remotes/pull/2844  # 8266a33dfe71d5f7d3db29b3e734d07c5ed8f506
+git fetch origin refs/pull/2845/head:refs/remotes/pull/2845  # d46a5c0ac884b350113b7db8446d976c6eda54b6
+git fetch origin refs/pull/2836/head:refs/remotes/pull/2836  # cb5bdebb780620fcc6a22be2fd1acc19dcd6ce6e
+git fetch origin refs/pull/2810/head:refs/remotes/pull/2810  # 3cdfef104... (etc)
+# + 15 PRs restantes (2821 2822 2823 2824 2825 2826 2827 2831 2839 2701 2731 2739 2744 2758 2799)
+# FETCH_EXIT=0 para todos
+
+# Merge-test #2844 (worktree mt-2844, base 9541666bf):
+git merge --no-commit 8266a33dfe71d5f7d3db29b3e734d07c5ed8f506
+# → Fast-forward; 1 file changed: RELATORIO_CI.md; MERGE_2844_EXIT=0
+
+# Merge-test #2845 (worktree mt-2845, base a24ee07be):
+git merge --no-commit d46a5c0ac884b350113b7db8446d976c6eda54b6
+# → Automatic merge went well; files: docs/INDEX.md + docs/audits/; MERGE_2845_EXIT=0
+
+# Merge-test #2836 (worktree mt-2836, base 637fe57ee):
+git merge --no-commit cb5bdebb780620fcc6a22be2fd1acc19dcd6ce6e
+# → Automatic merge went well; files: scripts/plan-status.mjs + tests/; MERGE_2836_EXIT=0
+
+# Merge-test #2810 (worktree merge-test-2810, base 6bd5ce61c):
+git merge 3cdfef104
+# → 904+624 linhas PromoFlixPlayer.tsx/usePromoFlixPlayer.ts; vitest PromoFlix 22/22 passed
+```
 
 ### Evidência do merge-test de #2810 (PR com código-fonte)
 

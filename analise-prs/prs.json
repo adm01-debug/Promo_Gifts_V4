@@ -690,11 +690,12 @@
     "branch": "claude/fix-e136-plan-status-261030",
     "created_at": "2026-10-30",
     "files_protegidos": [],
-    "merge_test": "LIMPO",
-    "gate_final": "SUCCESS",
+    "merge_test": "MERGE_OK: scripts/plan-status.mjs + tests (sem conflito)",
+    "gate_final": "success",
     "veredicto": "MERGEADA",
     "motivo": "fix(plan): fix parser plan-status 200 — distingue step-id de evidência. Gate Final success pré-merge. Mergeada SHA 6bd5ce61 2026-10-30",
-    "gate_final_job": "124354384615"
+    "gate_final_job": "124354384615",
+    "gate_final_run": "41134852574"
   },
   {
     "number": 2839,
@@ -729,11 +730,13 @@
     "branch": "claude/analise-merge-prs-abertas-shh8ez",
     "created_at": "2026-10-30",
     "files_protegidos": [],
-    "merge_test": "LIMPO",
-    "gate_final": "docs_only_bypass",
+    "merge_test": "FAST_FORWARD_OK: RELATORIO_CI.md (1 arquivo)",
+    "gate_final": "success",
     "veredicto": "MERGEADA",
     "motivo": "docs-only — Gate 0 success + docs_only_bypass. Mergeada SHA a24ee07b 2026-10-30",
-    "gate_final_job": "124350219814"
+    "gate_final_job": "124350219814",
+    "gate_final_run": "41133956842",
+    "gate_final_completed": "2026-10-30T22:50:04Z"
   },
   {
     "number": 2845,
@@ -747,10 +750,12 @@
     "branch": "claude/analise-merge-prs-abertas-shh8ez",
     "created_at": "2026-10-30",
     "files_protegidos": [],
-    "merge_test": "LIMPO",
-    "gate_final": "docs_only_bypass",
+    "merge_test": "MERGE_OK: docs/INDEX.md + docs/audits/ (docs apenas)",
+    "gate_final": "success",
     "veredicto": "MERGEADA",
     "motivo": "docs-only — Gate 0 success + docs_only_bypass. Mergeada SHA 637fe57e 2026-10-30",
-    "gate_final_job": "124354220749"
+    "gate_final_job": "124354220749",
+    "gate_final_run": "41134527629",
+    "gate_final_completed": "2026-10-30T22:53:23Z"
   }
 ]

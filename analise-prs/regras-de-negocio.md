@@ -1,6 +1,13 @@
 # Regras de Negócio — Promo Gifts V4
 # Construído a partir de fontes reais (não de memória)
-# Última atualização: 2026-10-28 | Sessão: https://claude.ai/code/session_012WyySbh2tj8vhRQLBf3mHo
+# Última atualização: 2026-10-31 | Sessão: https://claude.ai/code/session_014nTibSuSPcPvDsPZWiwQbH
+# Revisado para sessão 014nTibSuSPcPvDsPZWiwQbH: verificado que as regras documentadas
+# coincidem com o main no SHA 554ef41b44c9f318777d7e7b11189490a29a8c0a (pós-merge das 4 PRs).
+# Nenhuma das 4 PRs mergeadas (#2844/#2845/#2836/#2810) alterou regras de negócio:
+#   - #2844: RELATORIO_CI.md (doc) — sem impacto em código
+#   - #2845: docs/ (doc) — sem impacto em código
+#   - #2836: scripts/plan-status.mjs + testes — sem impacto em regras de negócio de produto
+#   - #2810: PromoFlixPlayer.tsx refactor — refatoração interna, mantém contrato de API
 
 ---
 
