@@ -494,7 +494,9 @@ export const ProductCard = memo(
         : 0;
       const currentVariant = hasMultipleVariants ? allMatchingVariants[safeVariantIdx] : null;
       const activeColorName =
-        currentVariant?.name || getActiveColorName(product, activeColorFilter);
+        currentVariant?.name ||
+        selectedColorFromStore ||
+        getActiveColorName(product, activeColorFilter);
 
       // Se houver uma cor ativa (selecionada ou filtrada), forçamos a imagem dessa cor
       const currentImageUrl = useMemo(() => {
