@@ -14,7 +14,8 @@
  *   2. View NÃO regride em nenhum campo crítico (% por campo ≥ base)
  *   3. Cobertura média da view ≥ 70%
  */
-import { describe, it, expect, beforeAll } from 'vitest';
+import { describe, it, expect, beforeAll, afterAll } from 'vitest';
+import { supabase } from '@/integrations/supabase/client';
 import { dbInvoke } from '@/lib/db/postgrest';
 import { computeKitCoverage, compareCoverage } from './kit-coverage';
 
@@ -32,6 +33,19 @@ describe.skipIf(!INTEGRATION_ENABLED)(
     let kitId: string;
 
     beforeAll(async () => {
+      const email = process.env.E2E_USER_EMAIL?.trim();
+      const password = process.env.E2E_USER_PASSWORD;
+      if (!email || !password) {
+        throw new Error(
+          'Credenciais E2E ausentes. Defina E2E_USER_EMAIL e E2E_USER_PASSWORD para autenticar o teste.',
+        );
+      }
+
+      const { error: authError } = await supabase.auth.signInWithPassword({ email, password });
+      if (authError) {
+        throw new Error(`Falha na autenticação do usuário E2E: ${authError.message}`);
+      }
+
       const pinned = process.env.KIT_FIXTURE_ID?.trim();
       if (pinned) {
         // Valida formato UUID v4 para falhar rápido se a var estiver corrompida
@@ -90,6 +104,10 @@ describe.skipIf(!INTEGRATION_ENABLED)(
       }
       throw new Error('Nenhum kit com componentes encontrado. Defina KIT_FIXTURE_ID.');
     }, 60_000);
+
+    afterAll(async () => {
+      await supabase.auth.signOut({ scope: 'local' });
+    });
 
     it('view e base retornam linhas para o mesmo kit', async () => {
       const [viewRes, baseRes] = await Promise.all([
