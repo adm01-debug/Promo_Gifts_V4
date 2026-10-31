@@ -281,3 +281,32 @@ npx vitest run "PromoFlix"  →  Test Files 1 passed (1) | Tests 22 passed (22) 
 | #2839 | codex/e23-required-secrets-20261030 | SUCCESS ff | 1 (=base) | — | DECISAO_HUMANA (REGRA #8+#10) |
 
 **Evidência completa por PR:** `analise-prs/dossies/PR-XXXX.md` → seção "MERGE-TEST LOCAL (2026-10-31)"
+
+---
+
+## RE-VALIDAÇÃO CONTRA MAIN ATUAL (2026-10-31T01:58:38Z — nesta sessão)
+
+**Main atual:** `554ef41b44c9f318777d7e7b11189490a29a8c0a`  
+**Método:** worktree `revalidation` em `554ef41b`; `git merge --no-commit --no-ff <PR_SHA>` para cada PR.  
+**refs/pull/* fetched:** todos os 19 PRs — FETCH_EXIT=0
+
+| PR | SHA da branch | Resultado merge contra 554ef41b | Arquivos com conflito |
+|---|---|---|---|
+| #2701 | `c5e6937b` | **UNRELATED HISTORY** (fatal: refusing to merge unrelated histories) | N/A |
+| #2731 | `6db2040f` | **UNRELATED HISTORY** | N/A |
+| #2739 | `b19c6099` | **MERGE_OK** — exit 0 | src/components/mockup/* (5 arquivos) |
+| #2744 | `2f793689` | **UNRELATED HISTORY** | N/A |
+| #2758 | `6a000b4e` | **MERGE_OK** — 0 arquivos novos (já implementada) | — |
+| #2799 | `75e8c6ba` | **MERGE_OK** — fast-forward | .release-please-manifest.json, CHANGELOG.md, package.json |
+| #2821 | `f6ea303c` | **MERGE_OK** — exit 0 | .github/workflows/uptime-monitor.yml, PENDENCIAS.md, scripts/uptime-probe.sh |
+| #2822 | `5c813a8e` | **MERGE_OK** — exit 0 | .migration-refs-baseline.json, src/integrations/supabase/types.ts |
+| #2823 | `39cc57b5` | **CONFLICT** | PENDENCIAS.md |
+| #2824 | `85311e8b` | **CONFLICT** | RELATORIO_CI.md |
+| #2825 | `ac83cc97` | **CONFLICT** | RELATORIO_CI.md, analise-prs/prs.json |
+| #2826 | `e49436ff` | **MERGE_OK** — 0 arquivos (já mergeada) | — |
+| #2827 | `bf5c546d` | **CONFLICT** | PENDENCIAS.md, RELATORIO_CI.md |
+| #2831 | `8a742310` | **UNRELATED HISTORY** | N/A |
+| #2839 | `3fc3806e` | **MERGE_OK** — exit 0 | .github/workflows/* (5 arquivos) |
+
+**Resultado:** vereditos confirmados. Nenhum PR mudou de categoria em relação à análise anterior.
+Unrelated history = branch com histórico desconectado do main → impossível mergear (pior que conflito).

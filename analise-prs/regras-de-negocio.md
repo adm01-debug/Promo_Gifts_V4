@@ -1,13 +1,29 @@
 # Regras de Negócio — Promo Gifts V4
 # Construído a partir de fontes reais (não de memória)
 # Última atualização: 2026-10-31 | Sessão: https://claude.ai/code/session_014nTibSuSPcPvDsPZWiwQbH
-# Revisado para sessão 014nTibSuSPcPvDsPZWiwQbH: verificado que as regras documentadas
-# coincidem com o main no SHA 554ef41b44c9f318777d7e7b11189490a29a8c0a (pós-merge das 4 PRs).
+#
+# RE-DERIVAÇÃO 2026-10-31 — verificação linha a linha contra SHA 554ef41b:
+#
+# Regra 1 (SSOT): src/integrations/supabase/client.ts:24
+#   → CURRENT_PROJECT_ID = "doufsxqlfjyuvxuezpln" ✓ (grep confirmado nesta sessão)
+#
+# Regra 2 (campos Product): src/types/product-catalog.ts:30-36
+#   → shortDescription:30, price:31, sale_price:32, category_id:35, category_name:36 ✓
+#
+# Regra 3 (DDL/migration): CLAUDE.md REGRA #8 + docs/db/POLITICA_DDL.md
+#   → supabase/migrations/ última migração: 20261027234500 ✓ (ls confirmado)
+#
+# Regra 4 (PromoFlixPlayer API): src/components/products/gallery/PromoFlixPlayer.tsx
+#   → arquivo existe, refatorado pela PR #2810, contrato de props mantido ✓
+#
+# Regra 5 (SINGU READ-ONLY): src/integrations/supabase/client.ts:22
+#   → comentário "pqpdolkaeqlyzpdpbizo (Lovable Cloud vazio)" ✓ [LEGACY_INFORMATIVO]
+#
 # Nenhuma das 4 PRs mergeadas (#2844/#2845/#2836/#2810) alterou regras de negócio:
-#   - #2844: RELATORIO_CI.md (doc) — sem impacto em código
-#   - #2845: docs/ (doc) — sem impacto em código
-#   - #2836: scripts/plan-status.mjs + testes — sem impacto em regras de negócio de produto
-#   - #2810: PromoFlixPlayer.tsx refactor — refatoração interna, mantém contrato de API
+#   - #2844: RELATORIO_CI.md (doc apenas)
+#   - #2845: docs/INDEX.md + docs/audits/ (docs apenas)
+#   - #2836: scripts/plan-status.mjs + testes (scripts apenas, sem alteração de produto)
+#   - #2810: PromoFlixPlayer.tsx refactor — mantém contrato de API (refatoração interna)
 
 ---
 
