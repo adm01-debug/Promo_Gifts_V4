@@ -107,9 +107,8 @@ export default function MockupGenerator() {
 
   const technique = useTechniqueHandlers({
     hasLogo: mg.hasLogo,
-    // Cast: useMockupGenerator narrows to Technique|TechniqueWithLimits; useTechniqueHandlers
-    // expects MockupTechnique (less restrictive due to [key: string]: unknown). Both are compatible
-    // structurally, but TS can't widen a Dispatch<SetStateAction<T>> to a (t: U) => void without help.
+    // Cast: Technique|TechniqueWithLimits (hook) e MockupTechnique (handlers) são compatíveis
+    // estruturalmente, mas o TS não alarga Dispatch<SetStateAction<T>> para (t: U) => void.
     selectedTechnique: mg.selectedTechnique as MockupTechnique | null,
     setSelectedTechnique: mg.setSelectedTechnique as (t: MockupTechnique | null) => void,
     setGeneratedMockup: mg.setGeneratedMockup,
@@ -353,12 +352,13 @@ export default function MockupGenerator() {
                   onLogoUpload={mg.handleAreaLogoUpload}
                   onLogoRemove={() => {
                     mg.logoColorAnalysis.clearAnalysis();
-                    if (mg.activeArea) {
-                      mg.updateActiveArea({ logoPreview: null, logoFile: null });
-                    }
+                    if (mg.activeArea) mg.updateActiveArea({ logoPreview: null, logoFile: null });
                     mg.setGeneratedMockup(null);
                   }}
                   productLocations={mg.productLocations}
+                  areaErrors={mg.areaErrors}
+                  retryingAreaIds={mg.retryingAreaIds}
+                  onRetryArea={mg.retryArea}
                   logoColorAnalysis={mg.logoColorAnalysis}
                   artAttachments={mg.artAttachments}
                   onArtAttachmentsChange={mg.setArtAttachments}
@@ -534,7 +534,7 @@ export default function MockupGenerator() {
                       <div className="grid grid-cols-2 gap-2">
                         {mg.generatedBatchMockups.map((batch, idx) => (
                           <div
-                            key={idx}
+                            key={batch.areaId ?? idx}
                             className="overflow-hidden rounded-lg border border-border/30 bg-card"
                           >
                             <img
