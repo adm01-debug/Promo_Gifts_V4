@@ -261,3 +261,41 @@ Tabela de prova (Seção 8) + baseline local (Seções 1, 10) + comparação bas
 | test:ci-core | ✅ 957 testes | ✅ 957 testes | Sem regressão |
 | Gate Final | ✅ success | ✅ success | Sem regressão |
 | Workflows NÃO-REQUIRED em falha | 8 (PO-BLOCKED) | 8 (PO-BLOCKED) | Sem regressão — mesmos bloqueios estruturais |
+
+## 14. Sessão P36 — Correção URL-state e inventário da main (2026-10-30T23:20Z)
+
+### Inventário remoto da main
+
+Consulta pelo MCP GitHub às 119 definições de workflow, filtrada por `branch=main`, encontrou 98 com run e 21 sem execução: 22 últimas execuções concluídas em `failure`, 65 em `success`, cinco `cancelled`, três `pending`, uma `in_progress` e duas `skipped`. Os 22 failures e seus links, causas ou limites de evidência estão registrados em `PENDENCIAS.md §P32`. Entre os workflows verdes na ponta estavam Deploy Gates [#41134852574](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852574), E2E — Personalization Flow [#41134852480](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852480), E2E — Critical Flows [#41134852668](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852668), Quote Builder Delivery [#41134852447](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852447), CI Replenishment [#41134852537](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852537), Supabase Linter Gate [#41134852587](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852587), CodeQL [#41134852598](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852598), Gitleaks [#41134852499](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852499) e Uptime Monitor [#41142298925](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41142298925).
+
+### Diagnóstico e correção reproduzida localmente
+
+- Baseline limpo `main@554ef41b`: `npm ci` e `npm run build:verify` passaram; a suíte completa tinha uma falha no teste de alinhamento, que procurava `leading-[1.125rem]` em `QuoteBuilderSummaryColumn.tsx` após o JSX ser extraído para `QuoteBuilderSummaryItems.tsx`.
+- Commit `07adb0675 test(quotes): atualiza fonte do teste de alinhamento`: apontou a asserção ao componente que contém o JSX.
+- Commit `c9f02f970 fix(listas): normaliza filtros padrão na URL`: normalizou defaults nos deep-links; a revisão independente identificou também o caso POP com busca já vazia, coberto pela revisão subsequente.
+- Os logs Playwright mostram duas falhas de `/carrinhos` e `/orcamentos` em que `status=all` persistiu e uma expectativa textual desatualizada (`Próximos 3 dias` versus o rótulo atual `Próximos (3 dias)`). A versão atual do branch normaliza defaults no deep-link/POP, preserva filtros ativos e parâmetros externos, e alinha a expectativa textual ao rótulo existente sem relaxar a asserção.
+
+### Baseline × final local
+
+| Verificação | Baseline limpo `554ef41b` | Após os dois commits | Resultado |
+|---|---:|---:|---|
+| `npm ci` | ✅ | ✅ | Sem regressão |
+| `npm run build:verify` (TypeScript, lint baseline, build e guards) | ✅ | ✅ | Sem regressão |
+| Suíte Vitest completa | 1.250 arquivos passaram; 1 falha no teste de alinhamento de quotes; 25.900 testes passaram | 1.251 arquivos passaram; 25.913 testes passaram; 130 arquivos/1.135 testes skipped; 24 TODO | Falha de baseline corrigida; testes passando não diminuíram |
+| Testes focados URL-state | A suíte unitária/fuzz não reproduzia a navegação POP de volta a defaults vazios | 381/381 testes unitários/fuzz passaram após incluir deep-link, filtros ativos, params externos e POP com busca vazia | Correção funcional validada localmente |
+
+### Estado remoto e limite de publicação
+
+- A última execução E2E da `main` continua sendo [#41134852533](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852533), `failure`; essa execução antecede a correção funcional e a atualização da expectativa textual.
+- Não há `E2E_USER_EMAIL`, `E2E_USER_PASSWORD` ou `E2E_BASE_URL` no ambiente local, portanto não foi possível reproduzir os testes autenticados Playwright localmente. A validação remota exige a execução da PR.
+- A alteração de `useListUrlState` muda comportamento da aplicação. A PR será aberta e deixada sem merge para não disparar o deploy de produção sem revisão/aceite do PO.
+- Nenhuma migration, DDL, escrita de dados, deploy ou consulta de escrita no Supabase foi realizada.
+- As causas históricas com logs expirados, auth E2E, setup/lockfile e dados de teste estão discriminadas em `PENDENCIAS.md §P32`; falhas cuja evidência não está mais disponível não foram rotuladas como corrigidas.
+
+### Complemento de CI remoto da PR #2846 (2026-10-31T00:20Z)
+
+- O job `e2e-gates` passou em [#41147611088](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41147611088), incluindo o passo dedicado `Run /carrinhos & /orcamentos URL-state E2E`. Esta é a confirmação remota direta da correção funcional.
+- O workflow amplo `E2E (Playwright)` ainda estava `in_progress`, com oito shards em execução; esse estado não foi contado como sucesso nem falha.
+- Checks paralelos da PR tiveram resultados próprios: `E2E Quotes — Matrix` [#41147611028](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41147611028) falhou em dois specs fora do diff; `CI - Replenishment Module Quality Gate` [#41147610965](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41147610965) falhou na paridade visual de `/novidades` e `/reposicao`; `E2E • Swatch QuickView` [#41147610984](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41147610984) teve o runner WebKit cancelado e os outros navegadores estavam em andamento.
+- O status externo Vercel da PR falhou no deployment `dpl_9CwYXvh4mXWu7ENPLAMrDkvjK7W4`, mas a inspeção disponível não forneceu o log que identificaria a causa; o bloqueio está registrado em `PENDENCIAS.md §P32` para consulta no projeto Vercel canônico. A revisão Copilot reportou HTTP 402 por cota adicional esgotada.
+- A PR permanece aberta e sem merge: checks auxiliares ainda pendentes/falhos, e a alteração funcional poderia disparar deploy de produção. Nenhuma migration, DDL, escrita no Supabase ou deploy de produção foi feita.
