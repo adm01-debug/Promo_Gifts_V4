@@ -186,21 +186,25 @@ jobs:
         include:
           - suite: pdf-dialog
             spec: 'e2e/flows/pdf-dialog.spec.ts'
+            project: chromium-public
           - suite: color-swatch
             spec: >-
               e2e/catalog/color-swatch-selected-no-clip.spec.ts
               e2e/catalog/color-swatch-two-lines-grid.spec.ts
               e2e/catalog/color-swatch-wrap-visual.spec.ts
+            project: chromium-authed
           - suite: magazine-header
             spec: >-
               e2e/flows/magazine-header-align.spec.ts
               e2e/flows/magazine-header-responsive.spec.ts
+            project: chromium-public
           - suite: dialogs
             spec: >-
               e2e/ui/dialog-visual.spec.ts
               e2e/ui/confirm-dialog-visual.spec.ts
               e2e/ui/alert-dialog-visual.spec.ts
               e2e/ui/undo-toast-visual.spec.ts
+            project: chromium-public
     env:
       CI: 'true'
       FORCE_COLOR: '0'
@@ -231,7 +235,7 @@ jobs:
       - name: Run E2E Visual · ${{ matrix.suite }}
         run: |
           npx playwright test ${{ matrix.spec }} \
-            --project=chromium-public \
+            --project=${{ matrix.project }} \
             --reporter=line,html
       - name: Upload report + artifacts
         if: always()

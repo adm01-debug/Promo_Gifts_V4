@@ -70,7 +70,7 @@ test.describe('ProductCard — swatches travados em 2 linhas no grid', () => {
       page,
     }, testInfo) => {
       await page.setViewportSize({ width: vp.width, height: vp.height });
-      await gotoAndSettle(page, '/catalogo');
+      await gotoAndSettle(page, '/produtos');
       await settleCatalog(page);
 
       const cards = page.locator('[data-testid="product-card"]:has([role="radiogroup"])');
