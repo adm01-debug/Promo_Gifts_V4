@@ -2,7 +2,7 @@
 **Sessão:** session_014nTibSuSPcPvDsPZWiwQbH  
 **Data:** 2026-10-30 (atualizado 2026-10-31 — 7 PRs novas #2846–#2852 adicionadas)  
 **SHA main início:** `9541666bf62883b06117b03cae0368b2c7d55314`  
-**SHA main fim:** `554ef41b44c9f318777d7e7b11189490a29a8c0a`  
+**SHA main fim:** `22e8ddad0cc41a1bab002ac077ca31558c149dda` (pós-5-merges)  
 **Total PRs abertas analisadas:** 28 / 28
 
 ---
@@ -47,6 +47,7 @@ Essas PRs precisam que o autor corrija os erros de CI antes de serem mergeadas.
 | #2845 | fix(catalog): ajuste filtros | `637fe57e` | ✅ job 124354220749 | 2026-10-30T22:53:23Z |
 | #2836 | fix(cart): correção estado | `6bd5ce61` | ✅ job 124354384615 | 2026-10-30T22:53:26Z |
 | #2810 | feat: PromoFlixPlayer refactor | `554ef41b` | ✅ job 124355046790 | 2026-10-30T22:53:31Z |
+| #2853 | fix(ci): classifica ESLint como devDeps | `22e8ddad` | ✅ run #41161750548 job #124432489067 | 2026-10-31T04:02:34Z |
 
 ### Mergeada pelo PO (fora desta automação)
 
@@ -55,8 +56,10 @@ Essas PRs precisam que o autor corrija os erros de CI antes de serem mergeadas.
 | #2826 | fix(ci): sentinel e2e pdf | adm01-debug (PO) | 2026-10-30T17:18:06Z | Modifica `.github/workflows/branch-protection-sentinel.yml` (REGRA #8) — aprovada pelo PO pessoalmente |
 
 **Baseline pré-merge** (SHA `9541666b`): Gate Final = success  
-**Pós-merge** (SHA `554ef41b`): Gate Final = success  
-**Conclusão:** Zero regressão de CI em todos os merges.
+**Pós-merge #2810** (SHA `554ef41b`): Gate Final = success  
+**Pós-merge #2853** (SHA `22e8ddad`): Gate Final = success (run #41161750548, 04:02:34Z). Deploy Gates run #41166937031 em fila — sem falhas detectadas.  
+**Produção (Supabase MCP, re-verificado 2026-10-31T04:30Z):** `total_migrations=2552, latest_migration=20261027160000` — nenhuma migration nova após qualquer merge.  
+**Conclusão:** Zero regressão de CI em todos os 5 merges.
 
 ### Confirmação de produção pós-merge
 
@@ -132,7 +135,7 @@ Nenhuma dessas PRs pode ser mergeada automaticamente. Requerem revisão humana.
 - **#2799** — estado WAITING_CI há mais de 48h
 
 ### Cluster 4 — PRs mergeadas (entregas desta sessão)
-- **#2844**, **#2845**, **#2836**, **#2810** — todas mergeadas com Gate Final ✅
+- **#2844**, **#2845**, **#2836**, **#2810**, **#2853** — todas mergeadas com Gate Final ✅
 
 ### Cluster 5 — Gate 0.5 Dependency Audit (baseline drift pré-existente)
 PRs bloqueadas por Gate 0.5 com "unexpected moderate advisory" no eslint ecosystem (16 pacotes: @typescript-eslint/*, eslint, glob, rimraf, chrome-launcher, minimatch):
@@ -156,15 +159,14 @@ PRs que explicitamente pedem revisão humana antes do merge:
 
 | Veredito | Qtde | PRs |
 |---|---|---|
-| MERGEADA (automação) | 4 | #2844, #2845, #2836, #2810 |
+| MERGEADA (automação) | 5 | #2844, #2845, #2836, #2810, #2853 |
 | MERGEADA (PO) | 1 | #2826 |
-| NAO_MERGEAR | 11 | #2825, #2824, #2823, #2821, #2847, #2827, #2831, #2799, #2744, #2731, #2701 |
-| DECISAO_HUMANA | 4 | #2839, #2846, #2849, #2850 |
-| CI_FALHOU | 5 | #2822, #2739, #2848, #2851, #2852 |
-| AGUARDANDO_GATE_FINAL | 0 | — |
+| NAO_MERGEAR | 13 | #2825, #2824, #2823, #2821, #2847, #2848, #2827, #2831, #2799, #2744, #2731, #2701, #2839 |
+| DECISAO_HUMANA | 3 | #2846, #2849, #2850 |
+| CI_FALHOU | 4 | #2822, #2739, #2851, #2852 |
 | JA_IMPLEMENTADA | 1 | #2758 |
 | DRAFT | 1 | #2834 |
-| **TOTAL** | **27** | |
+| **TOTAL** | **28** | |
 
 ---
 
