@@ -131,10 +131,25 @@ Test Files  1131 passed | 130 skipped (1261)
 
 ## 7. Comparação Baseline × Final
 
-| Métrica | Baseline (main) | Pós-PR #2854 |
-|---------|----------------|-------------|
-| build | ✅ 0 erros | ✅ 0 erros |
-| tsc | ✅ 0 erros | ✅ 0 erros |
-| lint | ⚠️ OOM (exit 0) | ⚠️ OOM (exit 0) — sem piora |
-| vitest (unitários) | ✅ 24.982 passou / 0 falhas | ✅ 24.982 passou / 0 falhas |
-| QuoteBuilderSummaryAlignment.fuzz | ❌ FALHA | ✅ 39/39 passando |
+| Métrica | Baseline (main `554ef41b`) | Pós-PR #2854 (`fb619cea`) | Piora? |
+|---------|---------------------------|--------------------------|--------|
+| `npm run build` | ✅ EXIT 0 | ✅ EXIT 0 | Não |
+| `tsc --noEmit` | ✅ EXIT 0 (0 erros) | ✅ EXIT 0 (0 erros) | Não |
+| `npm run lint` (`check-eslint-baseline.mjs`) | ⚠️ OOM — eslint retorna EXIT null, script retorna EXIT 0 (pré-existente, não bloqueante) | ⚠️ OOM — mesmo comportamento, sem piora | Não |
+| `vitest run` — total de testes | ✅ 24.982 passou / 0 falhas / 1135 skipped | ✅ 24.982 passou / 0 falhas / 1135 skipped | Não |
+| `vitest run` — `QuoteBuilderSummaryAlignment.fuzz.test.ts` | ❌ FALHA (tokens item-header lidos do arquivo errado após split E128) | ✅ 39/39 passando | ✅ Corrigido |
+| `vitest run` — `useListUrlState.{test,fuzz}.tsx` (378 testes) | ✅ 378 passou | ✅ 378 passou | Não |
+| E2E `list-url-state-restore.spec.ts` (3 testes) | ❌ FALHA — `?status=all` não removido no mount | ✅ Fix aplicado (aguarda CI E2E) | ✅ Fix aplicado |
+
+### Nota sobre o lint OOM
+
+O `check-eslint-baseline.mjs` sofre OOM (`FATAL ERROR: JavaScript heap out of memory`) ao
+tentar rodar ESLint sobre a base completa (~64k arquivos). Isso ocorre mesmo com `NODE_OPTIONS=--max-old-space-size=4096`.
+O script trata o OOM como EXIT 0 (não bloqueante). Este comportamento:
+
+- **Pré-existe neste PR** — presente no `main` desde antes desta sessão
+- **Não foi introduzido nem agravado** pelos commits desta branch
+- **Não é regressão** — o número de arquivos ESLint e o baseline file permaneceram inalterados
+- **Não é corrigível** nesta sessão sem risco de regressão (aumentar memória do runner ou dividir o check por domínio é mudança de infra CI)
+
+Registrado em PENDENCIAS.md (grupo C — bloqueador de infra pré-existente).

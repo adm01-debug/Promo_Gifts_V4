@@ -174,6 +174,37 @@ mas falham ao tentar autenticar ou acessar dados no Supabase.
 
 ---
 
+## P8 — Lint OOM: `check-eslint-baseline.mjs` esgota memória do runner
+
+**Classificação:** Bloqueador de infra — pré-existente (não introduzido por esta sessão)
+
+**Comportamento observado:**
+```
+FATAL ERROR: JavaScript heap out of memory
+❌ eslint falhou com status null
+LINT_EXIT: 0
+```
+
+`check-eslint-baseline.mjs` roda ESLint na base completa (~64k arquivos). O processo Node
+sofre OOM mesmo com `NODE_OPTIONS=--max-old-space-size=4096`. O script captura o crash e
+retorna EXIT 0 (não bloqueante), mas a verificação de baseline ESLint não é realizada.
+
+**Por que não é corrigível nesta sessão:**
+- Aumentar memória do runner é mudança de infra CI (`.github/workflows/`) que requer PR separado
+- Dividir o check por domínio (ex.: `--filter src/pages/quotes/**`) exigiria refatorar `check-eslint-baseline.mjs`
+- Risco de regressão: qualquer mudança no script afeta o Gate 1 (bloqueante)
+
+**Impacto:**
+- Não bloqueia o Gate 1 (o script trata OOM como EXIT 0)
+- Não há regressão introduzida por esta branch (baseline file inalterado)
+- Verificação de baseline ESLint não está funcionando desde antes desta sessão
+
+**O que o PO precisa fazer:**
+- Abrir issue para investigar divisão do check por domínio ou aumento de `--max-old-space-size`
+- Ou adicionar `--max-old-space-size=8192` no step de lint do CI (testando localmente primeiro)
+
+---
+
 ## Resumo de Ações Requeridas do PO
 
 | # | Ação | Workflows impactados |
@@ -184,3 +215,4 @@ mas falham ao tentar autenticar ou acessar dados no Supabase.
 | 4 | Verificar issue #2841 + edge function/Vercel deploy | P5 |
 | 5 | Verificar GitHub Copilot API no repositório | P6 |
 | 6 | Branch Protection Sentinel: próximos commits serão convencionais | P1 |
+| 7 | Investigar lint OOM: aumentar `--max-old-space-size` ou dividir check por domínio | P8 |
