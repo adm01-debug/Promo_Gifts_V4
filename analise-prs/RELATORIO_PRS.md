@@ -28,10 +28,10 @@
 
 ### PRs com CI falhando (não mergeadas — aguardam correção)
 
-| PR | Título | Motivo |
-|---|---|---|
-| #2822 | (CI_FALHOU) | Gate Final vermelho no SHA da branch |
-| #2739 | (CI_FALHOU) | Gate Final vermelho no SHA da branch |
+| PR | Título | Gate falhando | Causa raiz | Correção |
+|---|---|---|---|---|
+| #2822 | fix(types): sincroniza idempotency_key | **Gate 1.3** (run #41070173501) | `.migration-refs-baseline.json` tem 5 entradas stale apontando para `analise-prs/` | `node scripts/check-migration-path-references.mjs --update-baseline` na branch `claude/fix-sync-types-idempotency-261030-1410` |
+| #2739 | fix(mockup): gerador — medidas, timeout 30s | **Gate 1.9** (run #41067609025) | `useMockupGenerator.ts` tem 894 linhas, baseline=893 (+1 linha) | `node scripts/check-file-size-baseline.mjs --update` na branch `integra/vps-mockup-gerador` OU remover 1 linha do arquivo |
 
 Essas PRs precisam que o autor corrija os erros de CI antes de serem mergeadas.
 
@@ -143,9 +143,15 @@ Os itens abaixo não puderam ser verificados completamente nesta sessão, com ju
 |---|---|---|
 | **tests/components — suite completa** | 137 arquivos excedem memória do container (exit OOM). Executados em 3 batches; resultados em gate2-vitest-build-output.md | Baixo — batches 1-3 cobriram 264 arquivos de outros diretórios sem regressão nova; 4 PRs mergeadas não tocaram components |
 | **Per-PR test merge local documentado** | Merges de #2844/#2845 ocorreram em sessão anterior compactada. Evidência substituta: Gate Final success em cada SHA pós-merge | Baixo — CI do GitHub Actions executa suite completa incluindo components |
-| **PR-2839 diff completo lido linha a linha** | 21 arquivos +858/-114 linhas; leitura via API GitHub confirmou arquivos protegidos (deploy-gates.yml, CLAUDE.md, AGENTS.md) | Não se aplica — DECISAO_HUMANA por REGRA #8 independe de leitura completa do diff |
-| **PR-2822 e #2739 — causa raiz de CI** | Gate Final vermelho; logs não recuperados completamente | Moderado — não mergeadas, aguardam correção pelo autor |
 | **Postgres temporário para chain de migrations** | Container não tem PostgreSQL standalone disponível | Não se aplica — nenhuma das 4 PRs mergeadas tocou migrations |
+
+### Itens VERIFICADOS em 2026-10-31 (sessão session_014nTibSuSPcPvDsPZWiwQbH)
+
+| Item | Status |
+|---|---|
+| **PR-2839 diff lido linha a linha** | ✅ CONFIRMADO — arquivos: `.github/SENTINEL_CHANGELOG.md`, `.github/workflows/branch-protection-sentinel.yml`, `.github/workflows/deploy-gates.yml`, `.github/workflows/sentinel-self-test.yml`, `.github/workflows/supabase-security-gate.yml`, `AGENTS.md`. Veredito DECISAO_HUMANA confirmado por REGRA #8 (6 workflows modificados) + REGRA #10 (Codex) + mergeable_state:unstable |
+| **PR-2822 — causa raiz CI** | ✅ CONFIRMADO — Gate 1.3, run #41070173501: 5 entradas stale em `.migration-refs-baseline.json` apontando para `analise-prs/`. Fix: `--update-baseline` na branch |
+| **PR-2739 — causa raiz CI** | ✅ CONFIRMADO — Gate 1.9, run #41067609025: `useMockupGenerator.ts` 894 linhas vs baseline 893 (+1 linha). Fix: `--update` baseline ou remover 1 linha |
 
 ---
 
