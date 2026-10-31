@@ -68,11 +68,19 @@ mas NÃO havia efeito de sync-on-mount para remover params com valor = default q
 2. `e2e/carrinhos/list-url-state-restore.spec.ts:60` — valores default não poluem a URL após hidratação
 3. `e2e/orcamentos/list-url-state-restore.spec.ts:42` — valores default são removidos da URL após hidratação
 
-**Fix aplicado:** `src/hooks/common/useListUrlState.ts` — adicionado `useEffect` de mount
+**Fix 1 (fb619cea):** `src/hooks/common/useListUrlState.ts` — adicionado `useEffect` de mount
 que itera sobre `keyList` e remove params cujo valor = default via `setSearchParams`.
-Commitado em `fix/alignment-fuzz-test-e128-split` (ver PR #2854).
 
-**Status:** ✅ Fix de código aplicado e commitado. Aguarda CI verde no PR.
+**Fix 2 (7c553377):** Race condition no search-sync — `q=''` (string vazia no URL) ≠ `null`
+(target), fazendo o search-sync chamar `updateParam` cujo `prev` funcional recebia a URL
+**original** (antes do cleanup), restaurando `status=all&sort=newest`. Fix: normalizar
+`rawUrl` → `null` quando vazio ou igual ao default; o early-return `effectiveUrl === target`
+(null === null) evita a sobrescrita. Confirmado pelos bots Codex (P2) e Qodo (Medium)
+nos comentários do PR.
+
+Commitados em `fix/alignment-fuzz-test-e128-split` (ver PR #2854).
+
+**Status:** ✅ Ambos os fixes aplicados e commitados. Aguarda CI verde no PR.
 
 ---
 
