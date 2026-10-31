@@ -163,6 +163,7 @@ test.describe("Cotações · coluna Expiração — regressão de layout", () =>
       expect(iNum, `quote_number presente em ${label}`).toBeGreaterThan(iExp);
     };
 
+    await expect(page.getByTestId("quotes-col-header-status")).toBeVisible({ timeout: 10_000 });
     await expectOrder("primeiro acesso");
 
     await page.reload();
