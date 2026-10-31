@@ -2,7 +2,7 @@
 # Construído a partir de fontes reais (não de memória)
 # Última atualização: 2026-10-31 | Sessão: https://claude.ai/code/session_014nTibSuSPcPvDsPZWiwQbH
 #
-# RE-DERIVAÇÃO 2026-10-31 — verificação linha a linha contra SHA 554ef41b:
+# RE-DERIVAÇÃO 2026-10-31 (atualizada) — verificação linha a linha contra main atual:
 #
 # Regra 1 (SSOT): src/integrations/supabase/client.ts:24
 #   → CURRENT_PROJECT_ID = "doufsxqlfjyuvxuezpln" ✓ (grep confirmado nesta sessão)
@@ -57,21 +57,26 @@ export interface Product {
 
 ---
 
-## 3. Status de Orçamentos (Fonte: `src/types/quote.ts:10-25`)
+## 3. Status de Orçamentos (Fonte: `src/types/quote.ts:10-21`, re-derivado 2026-10-31)
 
 ```typescript
-// src/types/quote.ts:10
+// src/types/quote.ts:10 — VERIFICADO grep nesta sessão
 export const QUOTE_STATUSES = [
-  'approved',   // aprovado pelo cliente
-  'draft',      // rascunho em edição
-  'rejected',   // recusado pelo cliente
-  'sent',       // enviado aguardando resposta
-];
+  'approved',        // aprovado pelo cliente
+  'cancelled',       // cancelado
+  'converted',       // convertido em pedido
+  'draft',           // rascunho em edição
+  'expired',         // expirado
+  'pending',         // pendente
+  'pending_approval',// aguardando aprovação interna
+  'rejected',        // recusado pelo cliente
+  'sent',            // enviado aguardando resposta
+  'viewed',          // visualizado pelo cliente
+] as const;
 export type QuoteStatus = z.infer<typeof quoteStatusSchema>;  // linha 25
-export type ClientResponse = 'approved' | 'changes_requested' | 'rejected';  // linha 32
 ```
 
-**Regra:** `draft` não pode aparecer em listagens públicas de clientes. Gate 1.5 verifica.
+**DIFERENÇA vs. versão anterior:** QUOTE_STATUSES tem 10 valores (não 4). Adicionados: cancelled, converted, expired, pending, pending_approval, viewed. Gate 1.5 verifica que `draft` não aparece em listagens públicas.
 
 ---
 

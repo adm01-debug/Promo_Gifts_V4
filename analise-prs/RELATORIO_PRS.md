@@ -1,9 +1,9 @@
 # RELATÓRIO DE PRs ABERTAS — Promo Gifts V4
 **Sessão:** session_014nTibSuSPcPvDsPZWiwQbH  
-**Data:** 2026-10-30 (atualizado 2026-10-31 — merge-tests completos)  
+**Data:** 2026-10-30 (atualizado 2026-10-31 — 7 PRs novas #2846–#2852 adicionadas)  
 **SHA main início:** `9541666bf62883b06117b03cae0368b2c7d55314`  
 **SHA main fim:** `554ef41b44c9f318777d7e7b11189490a29a8c0a`  
-**Total PRs abertas analisadas:** 19 / 19
+**Total PRs abertas analisadas:** 26 / 26
 
 ---
 
@@ -142,11 +142,26 @@ Nenhuma dessas PRs pode ser mergeada automaticamente. Requerem revisão humana.
 |---|---|---|
 | MERGEADA (automação) | 4 | #2844, #2845, #2836, #2810 |
 | MERGEADA (PO) | 1 | #2826 |
-| NAO_MERGEAR | 10 | #2825, #2824, #2823, #2821, #2827, #2831, #2799, #2744, #2731, #2701 |
-| DECISAO_HUMANA | 1 | #2839 |
-| CI_FALHOU | 2 | #2822, #2739 |
+| NAO_MERGEAR | 11 | #2825, #2824, #2823, #2821, #2847, #2827, #2831, #2799, #2744, #2731, #2701 |
+| DECISAO_HUMANA | 4 | #2839, #2846, #2849, #2850 |
+| CI_FALHOU | 3 | #2822, #2739, #2848 |
+| AGUARDANDO_GATE_FINAL | 2 | #2851, #2852 |
 | JA_IMPLEMENTADA | 1 | #2758 |
-| **TOTAL** | **19** | |
+| **TOTAL** | **26** | |
+
+---
+
+## RE-VALIDAÇÃO — PRs #2846–#2852 (2026-10-31, nesta sessão)
+
+| PR | Título resumido | Veredito | Razão |
+|---|---|---|---|
+| #2846 | fix(e2e): normaliza query padrão URL | DECISAO_HUMANA | Body proíbe merge automático; altera `useListUrlState.ts` (comportamento de app) |
+| #2847 | ci(deploy): gate Supabase security | NAO_MERGEAR | REGRA #8 — modifica `deploy-gates.yml` + `supabase-security-gate.yml` |
+| #2848 | docs(governance): REGRA #9 | CI_FALHOU | Gate Final run #41154752023 = completed/failure (6 annotations) |
+| #2849 | fix(security): gitleaks scripts | DECISAO_HUMANA | `.gitleaks.toml` = arquivo protegido (REGRA #9); Gate Final queued |
+| #2850 | fix/p200-e2e-default-query | DECISAO_HUMANA | Body proíbe merge automático; altera `useListUrlState.ts` (comportamento de app) |
+| #2851 | test(quotes): fuzz source path | AGUARDANDO_GATE_FINAL | test-only +2/-2; Gate Final em andamento (Gate 1 in_progress, Gate 3 queued) |
+| #2852 | docs(ci): PENDENCIAS + RELATORIO | AGUARDANDO_GATE_FINAL | docs-only +48/-3; Gate Final em andamento (bypass ativado, demais queued) |
 
 ---
 

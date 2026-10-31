@@ -54,3 +54,10 @@ pr_number,titulo,autor_tipo,draft,veredicto,valida,regressao,no_main,regra_negoc
 2839,fix(ci): endurece gates Supabase e governança,adm01-debug,nao,DECISAO_HUMANA,SIM,INDETERMINADO,NAO,SIM,.github/workflows/deploy-gates.yml|CLAUDE.md|AGENTS.md,REGRA#8+REGRA#10+mergeable_state:unstable — revisão humana obrigatória
 2844,docs(analise-prs): RELATORIO_CI pós-merge + baseline,adm01-debug,nao,MERGEADA,SIM,NAO,NAO,SIM,,Mergeada SHA a24ee07b docs-only bypass 2026-10-30
 2845,docs(auditoria): revalida portão inicial do P200,adm01-debug,nao,MERGEADA,SIM,NAO,NAO,SIM,,Mergeada SHA 637fe57e docs-only bypass 2026-10-30
+2846,fix(e2e): normaliza query padrão na URL,adm01-debug,nao,DECISAO_HUMANA,SIM,INDETERMINADO,NAO,SIM,src/hooks/common/useListUrlState.ts,body proibe merge automatico + altera comportamento aplicacao
+2847,ci(deploy): adiciona gate Supabase security + restringe permissions,adm01-debug,nao,NAO_MERGEAR,SIM,NAO,NAO,SIM,.github/workflows/deploy-gates.yml|.github/workflows/supabase-security-gate.yml,REGRA#8 — .github/workflows (2 workflows protegidos)
+2848,docs(governance): exige PR para mudanças de governança,adm01-debug,nao,CI_FALHOU,SIM,NAO,NAO,SIM,CLAUDE.md|AGENTS.md,Gate Final completed/failure run #41154752023 — 6 annotations
+2849,fix(security): remove exceção ampla do gitleaks em scripts,adm01-debug,nao,DECISAO_HUMANA,SIM,INDETERMINADO,NAO,SIM,.gitleaks.toml,REGRA#9 — arquivo protegido + Gate Final queued
+2850,fix/p200-e2e-default-query,adm01-debug,nao,DECISAO_HUMANA,SIM,INDETERMINADO,NAO,SIM,src/hooks/common/useListUrlState.ts,body proibe merge automatico + altera comportamento aplicacao
+2851,test(quotes): corrige origem do teste de alinhamento,adm01-debug,nao,AGUARDANDO_GATE_FINAL,SIM,NAO,NAO,SIM,src/components/quotes/__tests__/QuoteBuilderSummaryAlignment.fuzz.test.ts,test-only +2/-2 — Gate Final em andamento
+2852,docs(ci): atualiza relatório e pendências da ponta main,adm01-debug,nao,AGUARDANDO_GATE_FINAL,SIM,NAO,NAO,SIM,PENDENCIAS.md|RELATORIO_CI.md,docs-only +48/-3 — Gate Final em andamento (docs bypass)
