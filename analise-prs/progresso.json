@@ -31,7 +31,7 @@
     {"numero": 2849, "veredito": "DECISAO_HUMANA", "razao": "REGRA#9 — .gitleaks.toml e arquivo protegido + Gate Final queued"},
     {"numero": 2850, "veredito": "DECISAO_HUMANA", "razao": "body proibe merge automatico + altera comportamento aplicacao useListUrlState"},
     {"numero": 2851, "veredito": "CI_FALHOU", "razao": "Gate Final completed/failure (run #41157182500 job #124417568951 — Gate 0.5 Dependency Audit falhou)"},
-    {"numero": 2852, "veredito": "AGUARDANDO_GATE_FINAL", "razao": "docs-only +48/-3 — Gate Final em andamento (docs bypass ativado, demais queued)"},
+    {"numero": 2852, "veredito": "CI_FALHOU", "razao": "Gate 0.5 Dependency Audit falhou (mesmo CVE de #2851) — docs-only pr mas Gate 0.5 não é bypassado pelo E14"},
     {"numero": 2834, "veredito": "DRAFT", "razao": "PR em rascunho, branch behind main e rebaseable:false — aguardar conversão não-draft"}
   ],
   "prs_mergeadas": [2844, 2845, 2836, 2810],
@@ -44,9 +44,9 @@
     "MERGEADA_PELO_PO": 1,
     "DECISAO_HUMANA": 4,
     "JA_IMPLEMENTADA": 1,
-    "CI_FALHOU": 4,
+    "CI_FALHOU": 5,
     "NAO_MERGEAR": 11,
-    "AGUARDANDO_GATE_FINAL": 1,
+    "AGUARDANDO_GATE_FINAL": 0,
     "DRAFT": 1
   },
   "ci_pos_merge": {

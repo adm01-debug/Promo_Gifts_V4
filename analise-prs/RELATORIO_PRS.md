@@ -144,8 +144,8 @@ Nenhuma dessas PRs pode ser mergeada automaticamente. Requerem revisão humana.
 | MERGEADA (PO) | 1 | #2826 |
 | NAO_MERGEAR | 11 | #2825, #2824, #2823, #2821, #2847, #2827, #2831, #2799, #2744, #2731, #2701 |
 | DECISAO_HUMANA | 4 | #2839, #2846, #2849, #2850 |
-| CI_FALHOU | 4 | #2822, #2739, #2848, #2851 |
-| AGUARDANDO_GATE_FINAL | 1 | #2852 |
+| CI_FALHOU | 5 | #2822, #2739, #2848, #2851, #2852 |
+| AGUARDANDO_GATE_FINAL | 0 | — |
 | JA_IMPLEMENTADA | 1 | #2758 |
 | DRAFT | 1 | #2834 |
 | **TOTAL** | **27** | |
@@ -163,7 +163,7 @@ Nenhuma dessas PRs pode ser mergeada automaticamente. Requerem revisão humana.
 | #2849 | fix(security): gitleaks scripts | DECISAO_HUMANA | `.gitleaks.toml` = arquivo protegido (REGRA #9); Gate Final queued |
 | #2850 | fix/p200-e2e-default-query | DECISAO_HUMANA | Body proíbe merge automático; altera `useListUrlState.ts` (comportamento de app) |
 | #2851 | test(quotes): fuzz source path | CI_FALHOU | Gate Final completed/failure (run #41157182500) — Gate 0.5 Dependency Audit falhou |
-| #2852 | docs(ci): PENDENCIAS + RELATORIO | AGUARDANDO_GATE_FINAL | docs-only +48/-3; Gate Final em andamento (bypass ativado, demais queued) |
+| #2852 | docs(ci): PENDENCIAS + RELATORIO | CI_FALHOU | Gate 0.5 Dependency Audit falhou (mesmo CVE de #2851) — docs bypass E14 não cobre Gate 0.5 |
 
 ---
 
@@ -333,3 +333,72 @@ npx vitest run "PromoFlix"  →  Test Files 1 passed (1) | Tests 22 passed (22) 
 
 **Resultado:** vereditos confirmados. Nenhum PR mudou de categoria em relação à análise anterior.
 Unrelated history = branch com histórico desconectado do main → impossível mergear (pior que conflito).
+
+---
+
+## META CUMPRIDA — Sessão session_014nTibSuSPcPvDsPZWiwQbH
+
+**Data:** 2026-10-31 | **Executado por:** Claude Code (automação)
+
+### Total de PRs abertas = Total analisado
+
+| Métrica | Valor |
+|---|---|
+| PRs abertas inventariadas | **27** |
+| PRs analisadas (4 perguntas + merge-test) | **27** |
+| PRs com dossiê em `analise-prs/dossies/` | **27** |
+
+### Contagem por veredito
+
+| Veredito | Qtde | PRs |
+|---|---|---|
+| MERGEADA (automação) | 4 | #2844, #2845, #2836, #2810 |
+| MERGEADA (PO) | 1 | #2826 |
+| JA_IMPLEMENTADA | 1 | #2758 |
+| DECISAO_HUMANA | 4 | #2839, #2846, #2849, #2850 |
+| CI_FALHOU | 5 | #2739, #2822, #2848, #2851, #2852 |
+| NAO_MERGEAR | 11 | #2701, #2731, #2744, #2799, #2821, #2823, #2824, #2825, #2827, #2831, #2847 |
+| DRAFT | 1 | #2834 |
+| **TOTAL** | **27** | |
+
+### PRs mergeadas com SHA e Gate Final
+
+| PR | Título | SHA merge | Gate Final | Data |
+|---|---|---|---|---|
+| #2844 | fix(hooks): correção useProductSearch | `a24ee07b` | ✅ job 124350219814 | 2026-10-30T22:50:04Z |
+| #2845 | fix(catalog): ajuste filtros | `637fe57e` | ✅ job 124354220749 | 2026-10-30T22:53:23Z |
+| #2836 | fix(cart): correção estado | `6bd5ce61` | ✅ job 124354384615 | 2026-10-30T22:53:26Z |
+| #2810 | feat: PromoFlixPlayer refactor | `554ef41b` | ✅ job 124355046790 | 2026-10-30T22:53:31Z |
+
+**Produção pós-merge** (MCP `execute_sql` → `doufsxqlfjyuvxuezpln` 2026-10-31T02:16:15Z):
+`total_migrations=2552, latest_migration=20261027160000, active_cron_jobs=134` — idêntico ao baseline, zero migrations novas.
+
+### Nenhuma outra escrita no GitHub
+
+Operações realizadas: apenas os 4 merges acima via `mcp__github__merge_pull_request`.
+Não foram criados/editados PRs, labels, branches, comentários ou configurações.
+
+### Worktrees removidos
+
+Um único worktree ativo: `/home/user/Promo_Gifts_V4` (working directory principal).
+Todos os worktrees temporários criados durante a sessão foram removidos.
+
+### Arquivos de entrega
+
+| Arquivo | Descrição |
+|---|---|
+| `analise-prs/RELATORIO_PRS.md` | Este relatório |
+| `analise-prs/progresso.json` | SSOT — 27 PRs, vereditos finais |
+| `analise-prs/prs.json` | 42 entradas com campos completos |
+| `analise-prs/prs.csv` | Exportação tabular completa |
+| `analise-prs/regras-de-negocio.md` | 11 seções re-derivadas de fontes reais |
+| `analise-prs/dossies/PR-*.md` | Dossiê individual por PR (27 arquivos desta sessão + histórico) |
+| `analise-prs/baseline/baseline-session-014nTibSuSPcPvDsPZWiwQbH.md` | Baseline completo pré/pós-merge |
+
+### Itens que requerem ação humana (não automatizáveis)
+
+1. **PR #2839** — `codex/e23-required-secrets-20261030` — revisar e mergear via GitHub UI (REGRA #8+#10)
+2. **PR #2822** — executar `node scripts/check-migration-path-references.mjs --update-baseline` na branch para corrigir Gate 1.3
+3. **PR #2739** — remover 1 linha em `useMockupGenerator.ts` ou executar `node scripts/check-file-size-baseline.mjs --update`
+4. **PRs #2846, #2849, #2850** — decisão do PO sobre comportamento de aplicação/segurança
+5. **PRs #2851, #2852** — bloqueadas por CVE em dependência (`npm audit --audit-level high`) — corrigir `package.json` no main
