@@ -261,3 +261,49 @@ Tabela de prova (Seção 8) + baseline local (Seções 1, 10) + comparação bas
 | test:ci-core | ✅ 957 testes | ✅ 957 testes | Sem regressão |
 | Gate Final | ✅ success | ✅ success | Sem regressão |
 | Workflows NÃO-REQUIRED em falha | 8 (PO-BLOCKED) | 8 (PO-BLOCKED) | Sem regressão — mesmos bloqueios estruturais |
+
+---
+
+## 14. Sessão P36 — Inventário CI em `main` `22e8ddad0c` (2026-10-31T07:45Z)
+
+**Repositório:** `adm01-debug/Promo_Gifts_V4`
+
+**HEAD da main observado:** `22e8ddad0cc41a1bab002ac077ca31558c149dda`
+
+**Fonte:** GitHub MCP Forever; runs de `main`, PRs excluídos, uma execução mais recente por workflow. O inventário retornou cinco workflows com última conclusão `failure`. Cancelamentos não contam como falha.
+
+### Baseline local antes das correções candidatas
+
+| Comando | Resultado no SHA `22e8ddad` |
+|---|---|
+| `npm ci` | ✅ exit 0; 1.167 pacotes instalados; auditoria reportou 29 vulnerabilidades (17 moderate, 12 high), sem alteração durante a sessão |
+| `npm run build:verify` | ✅ exit 0; typecheck, lint baseline (0 erros/0 avisos, Δ 0), guards e build Vite passaram; avisos conhecidos `INEFFECTIVE_DYNAMIC_IMPORT` |
+| `npm test` | ❌ uma suíte falhou: `QuoteBuilderSummaryAlignment.fuzz.test.ts`; 1.250 arquivos passaram, 130 ignorados; 25.904 testes passaram, 1.135 ignorados, 24 todo. O teste ainda espera `leading-[1.125rem]` em `QuoteBuilderSummaryColumn.tsx`, embora o código tenha migrado para `QuoteBuilderSummaryItems.tsx` (E128) |
+
+### Workflows em falha na main — evidência e situação
+
+| Workflow | Último run da main | Evidência / causa | Situação até este relatório |
+|---|---|---|---|
+| E2E • Swatch QuickView (Lista + Tabela) | [#41166937051](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41166937051) | Chromium/Firefox: linhas de swatches/toolbar indisponíveis, erro E108 e timeouts de clique; WebKit cancelado. A execução anterior também falhou. Não há fixture determinística comprovada. | Pendente: fixture/dados de teste necessários; PR #2855 ainda instável. |
+| CI Security & Drift Checks | [#41166937034](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41166937034) | Única falha de teste é o contrato fuzz E128 lendo arquivo antigo. | PR #2857 corrige o caminho do teste, mas sua matriz E2E/Replenishment continua vermelha; não mesclado. |
+| Edge Integration Tests — All Functions | [#41166936960](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41166936960) | Sete testes falharam no `crm-db-bridge`; logs correlacionam HTTP 500 de `companies` com breaker aberto e 503 em chamadas anônimas. Causa upstream dos 500 não identificada. | PR #2856 corrige autenticação antes do breaker, mas não resolve upstream 500; preview Vercel falhou, sem merge/deploy. |
+| Kit Coverage — Integration | [#41165671545](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41165671545) | Identidade anon não tem SELECT na view/tabela; autenticada tem. | PR #2858 usa credenciais E2E; dispatch de validação [#41181400558](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41181400558) confirmou `SIGNED_IN`, mas `KIT_FIXTURE_ID` vazio e descoberta dinâmica ultrapassou 60s. Os três asserts foram ignorados após falha no setup. Necessário configurar fixture legível e reexecutar. |
+| Nightly Full CI | [#41161391625](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41161391625) | Falhas agrupadas: secrets E2E não injetados no job `magazine-header`; specs swatch usam rota `/catalogo` inexistente e `/produtos` exige autenticação, mas o job usa `chromium-public`; shard 1 sem snapshots/dados esperados; shard 2 tem projeto de autenticação incompatível, seletor ambíguo e timeouts. | Correção parcial em [PR #2859](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2859), HEAD `c6bb654ae`: secrets E2E scoped por suite/step e rota/projeto autenticado corrigidos. Pós-emenda: build, lint, typecheck e actionlint passaram; suíte completa teve 1.250 arquivos/25.904 testes passando e a mesma única falha E128 já presente no parent. Checks remotos ainda em andamento. Sem snapshots atualizados ou testes enfraquecidos. |
+
+### Workflows verdes na ponta atual da main
+
+Confirmados verdes no SHA `22e8ddad`: Deploy Gates/Gate Final [#41166937031](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41166937031), Branch Protection Sentinel [#41166936857](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41166936857), Required Checks Guard [#41166936894](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41166936894), Workflow Lint [#41166937102](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41166937102), Security Scan [#41166936980](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41166936980), CodeQL [#41166936989](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41166936989), E2E Critical Flows [#41166937009](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41166937009), E2E Personalization [#41166937008](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41166937008), Replenishment [#41166936939](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41166936939), Magazine Header [#41166937014](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41166937014), UI Visual & A11y [#41166937023](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41166937023), Policies Baseline [#41166936946](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41166936946), SSOT guard [#41166936890](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41166936890) e Select Columns vs Types [#41166937084](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41166937084). `E2E (Playwright)` e `Visual Baseline Tests — Nightly` estavam `cancelled`, não `failure`.
+
+### Comparação baseline × estado final desta sessão
+
+| Dimensão | Baseline local `22e8ddad` | Final desta sessão (sem merge em main) |
+|---|---|---|
+| Install/build/typecheck/lint | ✅ | ✅ em commits candidatos verificados; lint baseline permanece 0 erros/avisos, Δ 0 |
+| Suíte completa | 25.904 pass; uma suíte falha pelo defeito E128 pré-existente | 25.914 pass na branch de correção E128; mesma única falha no baseline de outras branches candidatas. Nenhuma asserção foi removida ou relaxada. |
+| Required check Gate Final | ✅ [#41166937031](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41166937031) | ✅ na main; PRs não foram mesclados |
+| Workflows com última falha na main | 5 | 5 continuam pendentes; correções em PR/branches não mescladas |
+| Workflows antes verdes | Ver lista acima | Permanecem verdes no SHA mais recente observado; nenhum merge alterou `main` |
+
+**Decisão de release:** nenhum PR foi mesclado. #2855/#2856 mudam código da aplicação e os checks não estão verdes, portanto merge poderia disparar deploy em produção. #2857/#2858 também têm validação vermelha/incompleta. Não houve escrita/DDL/migration/grant/deploy no Supabase canônico e nenhum secret foi lido ou registrado.
+
+**Próximo passo:** cadastrar `KIT_FIXTURE_ID` como variável de Actions apontando para um kit válido e legível pela conta E2E, então rerodar o workflow. Concluir a PR da rota color-swatch e reparar as causas restantes do Nightly/Swatch; investigar a resposta HTTP 500 upstream do CRM antes de considerar Edge Integration resolvido.

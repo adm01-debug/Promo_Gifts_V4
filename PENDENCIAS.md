@@ -823,3 +823,42 @@ O único required check (`Gate Final - Deploy Ready`) para `b92bcf876` está `qu
 `in_progress`: Quote Builder Delivery, Supabase Linter Gate.
 `success` já confirmado: Policies Baseline, SSOT Supabase Guard, Security Scan, UI Visual & A11y, No Prod Leak, Static Health Checks, Release Please, Lovable Edit Tracker, Select Columns vs Types.
 | 5 | Branch Protection Sentinel | Avaliar tolerância ou configurar Lovable para usar formato de commit com `(#NNN)` |
+
+---
+
+## P36 — Inventário atualizado da main HEAD `22e8ddad0c` (2026-10-31T07:45Z)
+
+**HEAD da main:** `22e8ddad0cc41a1bab002ac077ca31558c149dda`.
+**Método:** GitHub Actions MCP, runs da branch `main`, excluídos PRs; considerada somente a execução mais recente por workflow. As cinco falhas abaixo são as únicas conclusões `failure` no inventário consultado. Runs `cancelled` não foram classificados como falhas.
+
+### Workflows cuja última execução na main falhou
+
+| Workflow | Última execução | Causa comprovada / bloqueio exato | Situação |
+|---|---|---|---|
+| E2E • Swatch QuickView (Lista + Tabela) | [#41166937051](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41166937051) | Testes em Chromium e Firefox falham em interações da toolbar/lista por ausência de linhas de swatches elegíveis; há timeouts de `locator.click` e erros E108 em `/novidades` e `/reposicao`. WebKit foi cancelado por encerramento do runner. O setup produz URLs, mas não semeia dados determinísticos; os logs não comprovam existência de `color_swatches`/variantes ativas elegíveis no ambiente. | **PENDENTE:** precisa de fixture/dataset E2E estável e reprovação da execução. Não escrever nem alterar dados do canônico para preparar teste. PR #2855 não concluiu validação verde. |
+| CI Security & Drift Checks | [#41166937034](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41166937034) | Um arquivo falha: `QuoteBuilderSummaryAlignment.fuzz.test.ts` continua procurando tokens em `QuoteBuilderSummaryColumn.tsx`, embora a implementação esteja em `QuoteBuilderSummaryItems.tsx` (E128). É a única falha local da suíte completa no baseline. | **Correção de teste proposta** em [PR #2857](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2857), mas PR ainda tem checks E2E/Replenishment vermelhos; não mesclado. |
+| Edge Integration Tests — All Functions | [#41166936960](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41166936960) | Sete falhas em `crm-db-bridge`; os logs registram respostas upstream HTTP 500 em consultas `companies`, seguidas de abertura do circuit breaker. O handler consultava o breaker antes da autenticação e devolvia 503 para chamadas anônimas. A causa dos HTTP 500 upstream não foi determinada. | [PR #2856](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2856) corrige apenas a ordem auth → breaker e tem alteração de aplicação. A integração upstream segue sem causa-raiz confirmada; status de preview Vercel falhou. Não mesclar/deployar enquanto checks e causa do 500 não forem resolvidos. |
+| Kit Coverage — Integration | [#41165671545](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41165671545) | A identidade anônima do teste não tem `SELECT` em `v_kit_component_complete` nem `product_kit_components`; o acesso autenticado existe. Não conceder `anon` nem executar DDL. | [PR #2858](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2858) autentica via `E2E_USER_*`, mas seu dispatch de validação [#41181400558](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41181400558) **falhou**: `SIGNED_IN` ocorreu; `KIT_FIXTURE_ID` estava vazio; descoberta dinâmica excedeu 60s antes dos asserts. O fallback pode fazer até 50 consultas sequenciais sem timeout individual; não foi possível determinar qual consulta ficou lenta. `signOut({scope:'local'})` também excedeu 15s por ainda aguardar endpoint remoto. **Ação do PO:** cadastrar variável `KIT_FIXTURE_ID` com ID válido de kit legível pelo usuário E2E e rerodar o workflow. Não adivinhar nem publicar IDs de produto. |
+| Nightly Full CI | [#41161391625](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41161391625) | Quatro grupos observados: (1) job `magazine-header` encerrou antes dos testes por ausência de `E2E_USER_EMAIL/PASSWORD` no ambiente daquele job; (2) três specs visuais de color-swatch usam `/catalogo`, rota inexistente; a rota vigente é `/produtos`, porém está protegida por autenticação e o teste roda em `chromium-public`; (3) shard 1 falhou em snapshots visuais ausentes e pré-condições de produto/dados; (4) shard 2 teve specs de mockup autenticados no projeto errado, seletor `div[role=list]` ambíguo e timeouts de snapshots/`boundingBox`. | Correção parcial em [PR #2859](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2859), branch `fix/nightly-ci-magazine-colorswatch-20261031`, HEAD `c6bb654ae7b57fbeb3726ce481c4a9ad5ca27d16`: injeta credentials E2E no step apenas para `magazine-header`/`color-swatch`, corrige rota e usa projeto autenticado no swatch. Build/lint/typecheck e actionlint pós-emenda passaram; suíte completa: 1.250 arquivos passaram, 130 ignorados; 25.904 testes passaram, 1.135 ignorados, 24 todo. Única falha `QuoteBuilderSummaryAlignment.fuzz.test.ts`, reproduzida também no parent (E128, pré-existente). Workflows de PR ainda em execução; E2E local não valida catálogo por exigir sessão/dados/fixture ausentes. O primeiro push falhou por OOM no hook lint a 2 GB; push normal subsequente passou com heap 6 GB e lint baseline sem erros/avisos. Sem snapshots atualizados nem testes removidos. As causas dos problemas de dados/snapshot e do seletor do shard 2 ainda precisam de correção e reprodução. |
+
+### PRs candidatos e bloqueios de integração
+
+| PR | Estado verificado | Decisão |
+|---|---|---|
+| [#2855](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2855) | `open`, merge state `unstable`; alterações em código da aplicação; E2E Quotes/Personalization/Replenishment vermelhos e demais execuções não concluídas na consulta. | Não mesclar: checks não verdes e merge pode disparar deploy de produção. |
+| [#2856](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2856) | `open`, `unstable`; preview Vercel falhou; causa do HTTP 500 upstream permanece desconhecida. | Não mesclar/deployar. |
+| [#2857](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2857) | `open`, `unstable`; teste isolado e build local passam, mas E2E Quotes/Playwright/Replenishment ainda falham. | Não mesclar até todos os checks exigidos/vermelhos serem resolvidos. |
+| [#2858](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2858) | `open`, `blocked`; dispatch [#41181400558](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41181400558) falhou em descoberta de fixture. | Não mesclar; primeiro definir fixture válida e provar os três asserts de integração. |
+| [#2859](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2859) | Aberto, checks remotos parcialmente em execução; Workflow Lint e checks de referência/policy concluídos verdes; E2E, Visual Baseline, Deploy Gates e outros ainda em execução na consulta. | Não mesclar enquanto a suíte não estiver verde e os bloqueios remanescentes do Nightly não forem classificados. |
+
+### Restrições preservadas
+
+- Nenhuma escrita, DDL, migration, grant ou deploy foi executado no Supabase canônico `doufsxqlfjyuvxuezpln`.
+- Nenhum snapshot foi atualizado; nenhum teste/assert foi apagado, pulado ou enfraquecido.
+- Nenhum PR foi mesclado. O Gate Final required estava verde na main em [#41166937031](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41166937031); os cinco workflows acima não são o required check.
+
+### Ações pendentes do PO
+
+1. Definir `KIT_FIXTURE_ID` (GitHub Actions → Settings → Secrets and variables → Actions → Variables) com fixture que seja legível pela conta E2E; depois reexecutar `Kit Coverage — Integration`.
+2. Não é necessária nova credencial para o PR #2858; o bloqueio observado foi a ausência de fixture e a demora da descoberta dinâmica.
+3. A causa HTTP 500 do CRM upstream não pode ser fechada sem diagnóstico dos logs/serviço de origem; a PR #2856 não elimina essa falha.
