@@ -291,3 +291,11 @@ Consulta pelo MCP GitHub às 119 definições de workflow, filtrada por `branch=
 - A alteração de `useListUrlState` muda comportamento da aplicação. A PR será aberta e deixada sem merge para não disparar o deploy de produção sem revisão/aceite do PO.
 - Nenhuma migration, DDL, escrita de dados, deploy ou consulta de escrita no Supabase foi realizada.
 - As causas históricas com logs expirados, auth E2E, setup/lockfile e dados de teste estão discriminadas em `PENDENCIAS.md §P32`; falhas cuja evidência não está mais disponível não foram rotuladas como corrigidas.
+
+### Complemento de CI remoto da PR #2846 (2026-10-31T00:20Z)
+
+- O job `e2e-gates` passou em [#41147611088](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41147611088), incluindo o passo dedicado `Run /carrinhos & /orcamentos URL-state E2E`. Esta é a confirmação remota direta da correção funcional.
+- O workflow amplo `E2E (Playwright)` ainda estava `in_progress`, com oito shards em execução; esse estado não foi contado como sucesso nem falha.
+- Checks paralelos da PR tiveram resultados próprios: `E2E Quotes — Matrix` [#41147611028](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41147611028) falhou em dois specs fora do diff; `CI - Replenishment Module Quality Gate` [#41147610965](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41147610965) falhou na paridade visual de `/novidades` e `/reposicao`; `E2E • Swatch QuickView` [#41147610984](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41147610984) teve o runner WebKit cancelado e os outros navegadores estavam em andamento.
+- O status externo Vercel da PR falhou no deployment `dpl_9CwYXvh4mXWu7ENPLAMrDkvjK7W4`, mas a inspeção disponível não forneceu o log que identificaria a causa; o bloqueio está registrado em `PENDENCIAS.md §P32` para consulta no projeto Vercel canônico. A revisão Copilot reportou HTTP 402 por cota adicional esgotada.
+- A PR permanece aberta e sem merge: checks auxiliares ainda pendentes/falhos, e a alteração funcional poderia disparar deploy de produção. Nenhuma migration, DDL, escrita no Supabase ou deploy de produção foi feita.
