@@ -899,5 +899,34 @@
     "gate_final": "failure — Gate 0.5 Dependency Audit conclusion=failure",
     "veredicto": "CI_FALHOU",
     "motivo": "Gate 0.5 Dependency Audit falhou (mesmos 16 pacotes de #2851) — baseline drift eslint/glob/rimraf/chrome-launcher — docs-only E14 bypass não cobre Gate 0.5 — falha pré-existente no repo"
+  },
+  {
+    "numero": 2853,
+    "titulo": "fix(ci): classifica ESLint como dependência de desenvolvimento",
+    "autor": "adm01-debug",
+    "draft": false,
+    "base": "main",
+    "branch": "fix/p200-eslint-dev-dependencies-20261031",
+    "head_sha": "2ee4e3a3cca4ae2f295772173e09c5e2b93f94c1",
+    "mergeable": true,
+    "mergeable_state": "blocked",
+    "arquivos_alterados": [
+      "package.json",
+      "package-lock.json",
+      "scripts/check-dependency-audit.mjs",
+      "tests/scripts/check-dependency-audit.test.mjs"
+    ],
+    "toca_workflows": false,
+    "toca_migrations": false,
+    "toca_edge_functions": false,
+    "veredito": "CI_FALHOU",
+    "motivo": "Gate Final não executou (total_count:0 em SHA 2ee4e3a3) — body pede aguardar CI remoto",
+    "q1_valida": true,
+    "q2_regressao": "Baixo risco — sem código de aplicação; move ESLint para devDeps; 20/20 audit tests local",
+    "q3_ja_implementada": false,
+    "q4_regra_negocio": true,
+    "merge_test": "NAO_VERIFICADO — branch não fetchada nesta sessão",
+    "gate_final_sha": "nao_executou",
+    "gate_final_status": "nao_executou"
   }
 ]

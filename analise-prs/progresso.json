@@ -4,7 +4,7 @@
   "branch_trabalho": "claude/analise-merge-prs-abertas-shh8ez",
   "main_head_inicio": "9541666bf62883b06117b03cae0368b2c7d55314",
   "gate_final_inicio": "success",
-  "total_prs": 27,
+  "total_prs": 28,
   "prs_analisadas": [
     {"numero": 2845, "veredito": "MERGEAR", "status": "MERGEADA", "sha_merge": "637fe57eee3e00d012da3c1da843b088c2e695a7"},
     {"numero": 2844, "veredito": "MERGEAR", "status": "MERGEADA", "sha_merge": "a24ee07be166d35dd2d0e8c20f7547290e0d4348"},
@@ -32,7 +32,8 @@
     {"numero": 2850, "veredito": "DECISAO_HUMANA", "razao": "body proibe merge automatico + altera comportamento aplicacao useListUrlState"},
     {"numero": 2851, "veredito": "CI_FALHOU", "razao": "Gate Final completed/failure (run #41157182500 job #124417568951 — Gate 0.5 Dependency Audit falhou)"},
     {"numero": 2852, "veredito": "CI_FALHOU", "razao": "Gate 0.5 Dependency Audit falhou (mesmo CVE de #2851) — docs-only pr mas Gate 0.5 não é bypassado pelo E14"},
-    {"numero": 2834, "veredito": "DRAFT", "razao": "PR em rascunho, branch behind main e rebaseable:false — aguardar conversão não-draft"}
+    {"numero": 2834, "veredito": "DRAFT", "razao": "PR em rascunho, branch behind main e rebaseable:false — aguardar conversão não-draft"},
+    {"numero": 2853, "veredito": "CI_FALHOU", "razao": "Gate Final não executou (total_count:0) em SHA 2ee4e3a3 — body pede aguardar CI remoto"}
   ],
   "prs_mergeadas": [2844, 2845, 2836, 2810],
   "prs_mergeadas_pelo_po": [2826],
@@ -44,7 +45,7 @@
     "MERGEADA_PELO_PO": 1,
     "DECISAO_HUMANA": 4,
     "JA_IMPLEMENTADA": 1,
-    "CI_FALHOU": 5,
+    "CI_FALHOU": 6,
     "NAO_MERGEAR": 11,
     "AGUARDANDO_GATE_FINAL": 0,
     "DRAFT": 1
