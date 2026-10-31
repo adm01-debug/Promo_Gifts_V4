@@ -381,3 +381,17 @@ Confirmados verdes no SHA `22e8ddad`: Deploy Gates/Gate Final [#41166937031](htt
 **Validação pós-commit documental `681aa3ac9` (11:37Z):** `npm run build:verify` passou (typecheck, lint com 0 erros/avisos, build e guards). A suíte completa terminou com exit 1, igual ao baseline: 1.250 arquivos passaram, 1 falhou (E128 em `QuoteBuilderSummaryAlignment.fuzz.test.ts`), 130 ignorados; 25.904 testes passaram, 1.135 ignorados e 24 TODO. Nenhuma regressão nova foi identificada. A suíte verificou a árvore após `681aa3ac9`; esta atualização apenas registra a evidência já obtida.
 
 **Estado das PRs:** #2860 está aberto, com falha de quota do Copilot; #2864 está aberto, com Gate Final/E2E em execução e falha de quota Copilot; #2855/#2857/#2859 permanecem abertos com checks falhos. Nenhum merge ou deploy foi feito. O banco canônico não foi alterado; nenhuma SQL/DDL/migration/edge function foi executada.
+
+## 16. Sessão P36.8 — ponta atual da `main`, diagnóstico de UI e PRs (2026-10-31T12:04Z)
+
+**Validação local pós-commit documental `13103f4a9`:** `npm run build:verify` passou: typecheck, lint baseline em 0 erros/avisos, Vite e guards. A suíte completa teve 1.250 arquivos aprovados, a mesma falha preexistente E128, 130 ignorados; 25.904 testes aprovados, 1.135 ignorados e 24 TODO. Resultado igual ao baseline, sem nova regressão.
+
+**Inventário remoto:** consultadas individualmente as 119 definições na `main`, SHA `42839b3ce8da3d047c82f515f9a990d4851ef7b9`: 30 últimas conclusões `failure`, 60 `success`, 20 sem run e 9 canceladas/ignoradas/pendentes. A tabela workflow | status | causa provável, com run e ação segura, está em [PENDENCIAS.md §P36.8](PENDENCIAS.md#atualização-p368--nova-ponta-de-main-causas-de-ui-e-validação-das-prs-2026-10-31t1204z). Runs de PR não foram contados como execução da `main`.
+
+**Diagnóstico confirmado:** Workflow Lint falhou pelo `.github/workflows/main.yml` vazio; o PR #2867 remove esse arquivo e actionlint local passa. Critical Flows falhou porque dois casos da sidebar permaneceram em `/login` até 75 s, apesar de Auth/perfil responderem 200. Swatch QuickView falhou por ausência de dados `color_swatches` nas rotas exercitadas e pelo gate de mínimo de testes. Deploy Gates e CI Security receberam HTTP 544 de `pg-meta` após três retries e marcaram a consulta como `inconclusive`, o que não comprova drift de policies/schema. Uptime Monitor registrou curl exit 22 no probe `health-check`, sem corpo/status HTTP retido.
+
+**PRs:** #2860 segue aberto e atrás da `main`; Gate 1.13 e Gate 2.5 falharam por HTTP 544 do `pg-meta`, Gate 5.5 foi cancelado após espera, e o Gate Final falhou em consequência; Copilot Reviewer falhou por cota. #2867 segue aberto: Gate 3, Gate 5.5, Gate 2.5 e Gate 2 passaram; Gate 1 ainda estava em execução e Copilot Reviewer falhou por cota. Nenhum PR foi mesclado.
+
+**Artifacts:** pelo GitHub MCP foram removidos artifacts autenticados `13039374227`, `13041158177` e `13041915637`, por risco de credencial em texto/capturas. Nenhum valor foi copiado ou salvo. A senha E2E precisa ser rotacionada e `E2E_USER_PASSWORD` atualizado pelo responsável; é necessária mitigação permanente na retenção de capturas/contextos. Nenhum dado/schema do Supabase foi alterado.
+
+**Escopo:** nenhuma escrita/DDL/migration/deploy no Supabase, nenhuma mudança de aplicação, snapshots ou assertions e nenhum merge. Nenhum resultado é declarado verde sem conclusão explícita.
