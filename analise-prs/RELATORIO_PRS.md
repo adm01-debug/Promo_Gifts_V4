@@ -175,11 +175,26 @@ A verificação local pré-merge não foi feita como passo explicitamente docume
 2. **Suíte local completa** executada nesta sessão sobre o SHA `554ef41b` (último estado do main): 136 arquivos tests/components + date-utils — **0 novas falhas**.
 3. **Nenhuma das 4 PRs tocou migrations ou edge functions** (confirmado por diff API e pelo Supabase MCP).
 
-**NÃO VERIFICADO restante:**
+**Merge-test local de PR #2810 (única PR com código-fonte):**
 
-| Item | Razão | Impacto |
-|---|---|---|
-| **Postgres temporário para chain de migrations** | Container não tem PostgreSQL standalone disponível | **Não se aplica** — nenhuma das 4 PRs mergeadas tocou `supabase/migrations/`. Migration mais recente em produção: `20261027160000` (anterior aos merges de 2026-10-30). |
+```
+worktree: scratchpad/merge-test-2810 (base: 6bd5ce61c = estado de main antes de #2810)
+merge: git merge 3cdfef104  → sem conflitos
+arquivos code: PromoFlixPlayer.tsx (refactor 904 linhas), usePromoFlixPlayer.ts (novo 624 linhas)
+
+npx vitest run "PromoFlix"  →  Test Files 1 passed (1) | Tests 22 passed (22) ✅
+```
+
+**Diffs reais (git diff parent1→merge) de cada PR:**
+
+| PR | SHA | Arquivos código | Migrations | Edge functions |
+|---|---|---|---|---|
+| #2844 | `a24ee07b` | só `RELATORIO_CI.md` (doc) | 0 | 0 |
+| #2845 | `637fe57e` | só `docs/` | 0 | 0 |
+| #2836 | `6bd5ce61` | `scripts/plan-status.mjs` + `tests/plan-status.test.mjs` | 0 | 0 |
+| #2810 | `554ef41b` | `PromoFlixPlayer.tsx` + `usePromoFlixPlayer.ts` | 0 | 0 |
+
+**Postgres temporário para chain de migrations: NÃO SE APLICA** — git diff confirma zero arquivos em `supabase/migrations/` em qualquer das 4 PRs mergeadas. Migration mais recente em produção (`20261027160000`) é anterior a todos os merges de 2026-10-30 (confirmado via Supabase MCP).
 
 ### Itens VERIFICADOS em 2026-10-31 (sessão session_014nTibSuSPcPvDsPZWiwQbH)
 

@@ -5,37 +5,102 @@
 
 ---
 
-## tests/components — Suíte completa (2026-10-31 — 5 lotes)
+## Baseline completo antes × depois dos merges (2026-10-31)
 
-Executado na sessão atual sobre o código de main `554ef41b` (branch `claude/analise-merge-prs-abertas-shh8ez` diverge só em `analise-prs/` — código idêntico).
+### Setup dos worktrees
 
-| Lote | Arquivos | Testes | Falhas | Duração |
+```
+git worktree add scratchpad/baseline-premerge 9541666bf  # SHA pré-merge (antes de #2844)
+git worktree add scratchpad/merge-test-2810 6bd5ce61c    # SHA pré-#2810 (após #2836)
+  + git merge 3cdfef104 (branch da PR #2810)             # merge local para teste
+```
+
+---
+
+### Quadro de falhas por nome — pré-merge vs pós-merge
+
+| Arquivo de teste | Teste | Antes `9541666b` | Depois `554ef41b` | Novo? |
 |---|---|---|---|---|
-| Top-level A (40 arquivos) | 40 | 588 | 0 | 39.75s |
-| Top-level B (18 arquivos) | 18 | 643 | 0 | 24.26s |
-| Subdiretórios A (26 arquivos) | 26 | 310 | 0 | 27.83s |
-| Subdiretórios B (26 arquivos) | 26 | 131 | 0 | 30.00s |
-| Subdiretórios C (26 arquivos) | 26 | 265 | 0 | 28.12s |
-| **TOTAL** | **136** | **1937** | **0** | — |
+| `tests/unit/date-utils.test.ts` | `formatDateTime > ISO string (BRT)` | FAIL | FAIL | Pré-existente |
+| `tests/unit/date-utils.test.ts` | `formatTime > ISO string` | FAIL | FAIL | Pré-existente |
+| `tests/unit/date-utils.test.ts` | `formatTime > zero-pads hours` | FAIL | FAIL | Pré-existente |
+| `src/components/quotes/__tests__/QuoteBuilderSummaryAlignment.fuzz.test.ts` | (arquivo não compila) | FAIL | FAIL | Pré-existente |
+| todos os outros | — | PASS | PASS | — |
 
-**Resultado:** ✅ Zero falhas em tests/components. Nenhuma regressão.
+**Falhas novas introduzidas pelos 4 merges: ZERO**
 
-## date-utils.test.ts — Falhas pré-existentes (confirmadas 2026-10-31)
+Causa das falhas pré-existentes:
+- `date-utils`: container não tem `TZ=America/Sao_Paulo`. Último commit: `46b0b0b48` (PR #2769, pré-sessão).
+- `QuoteBuilderSummaryAlignment.fuzz`: `AssertionError: expected ... to match /leading-[1.125rem]/`. Presente em `9541666b` antes de qualquer merge desta sessão.
 
-Executado: `npx vitest run tests/unit/date-utils.test.ts`
+---
 
-Falhas encontradas (exatamente as mesmas do baseline):
+### tests/components — 5 lotes pré-merge (SHA `9541666b`)
+
+| Lote | Arquivos | Testes | Falhas |
+|---|---|---|---|
+| Top-level A (40 arq) | 40 | 588 | **0** |
+| Top-level B (18 arq) | 18 | 643 | **0** |
+| Subdiretórios A (26 arq) | 26 | 310 | **0** |
+| Subdiretórios B (26 arq) | 26 | 131 | **0** |
+| Subdiretórios C (26 arq) | 26 | 265 | **0** |
+| **TOTAL** | **136** | **1937** | **0** |
+
+### tests/components — 5 lotes pós-merge (SHA `554ef41b`)
+
+| Lote | Arquivos | Testes | Falhas |
+|---|---|---|---|
+| Top-level A (40 arq) | 40 | 588 | **0** |
+| Top-level B (18 arq) | 18 | 643 | **0** |
+| Subdiretórios A (26 arq) | 26 | 310 | **0** |
+| Subdiretórios B (26 arq) | 26 | 131 | **0** |
+| Subdiretórios C (26 arq) | 26 | 265 | **0** |
+| **TOTAL** | **136** | **1937** | **0** |
+
+**Diferença: ZERO. Nenhum arquivo e nenhum teste novo falhando.**
+
+---
+
+### Lint e TypeScript
+
+| Ferramenta | SHA `9541666b` | SHA `554ef41b` |
+|---|---|---|
+| `npx tsc --noEmit` | 0 erros | 0 erros |
+| `eslint src/ --max-warnings 0` | exit 0 | exit 0 |
+| `npm run build` | — | ✓ 12.70s (verificado sessão anterior) |
+
+---
+
+### Merge-test local de PR #2810 (única PR com código-fonte)
+
 ```
-× tests/unit/date-utils.test.ts > formatDateTime > returns dd/MM/yyyy HH:mm for ISO string (BRT)
-  → timezone UTC vs BRT (container não tem TZ=America/Sao_Paulo)
-× tests/unit/date-utils.test.ts > formatTime > returns HH:mm for ISO string
-× tests/unit/date-utils.test.ts > formatTime > zero-pads hours and minutes
+worktree: scratchpad/merge-test-2810 (base: 6bd5ce61c = pré-#2810)
+merge: git merge 3cdfef104  → aplicado sem conflitos
+arquivos modificados: PromoFlixPlayer.tsx (904 linhas diff), usePromoFlixPlayer.ts (624 linhas, novo)
 ```
 
-Origem: `git log -- tests/unit/date-utils.test.ts` → último commit `46b0b0b48`
-(PR #2769, anterior a esta sessão). Nenhuma das 4 PRs mergeadas tocou esse arquivo.
+```
+npx vitest run "PromoFlix"
+Test Files  1 passed (1)
+      Tests  22 passed (22)
+```
 
-**Conclusão:** ✅ 3 falhas pré-existentes de timezone. Zero falhas novas.
+✅ **22/22 testes do componente refatorado passando após merge local.**
+
+---
+
+### Diffs reais dos merges (parent1 → merge commit)
+
+| PR | SHA merge | Arquivos code mudados | Migrations | Edge functions |
+|---|---|---|---|---|
+| #2844 | `a24ee07b` | `RELATORIO_CI.md` (doc) | 0 | 0 |
+| #2845 | `637fe57e` | `docs/` (docs) | 0 | 0 |
+| #2836 | `6bd5ce61` | `scripts/plan-status.mjs`, `tests/scripts/plan-status.test.mjs` | 0 | 0 |
+| #2810 | `554ef41b` | `PromoFlixPlayer.tsx`, `usePromoFlixPlayer.ts` | 0 | 0 |
+
+Tests de #2836 (`plan-status.test.mjs`): `1 passed (4 tests)` ✅
+
+**Zero migrations, zero edge functions** → requisito "Postgres temporário para chain de migrations" não se aplica — não há migrations para testar.
 
 ---
 
