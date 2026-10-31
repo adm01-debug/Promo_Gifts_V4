@@ -1,7 +1,25 @@
 # RELATORIO_CI.md — Auditoria de Workflows CI/CD
 
-**Gerado:** 2026-10-29 · **Atualizado:** 2026-10-30T17:00 UTC
-**HEAD da main:** `7e56ae49dde173e04f66ed4523eb8eb59653821a` (docs-only, 2026-10-30)
+## Atualização de execução — 2026-10-31 01:50 UTC / 2026-10-30 BRT
+
+### Baseline e revalidação local
+
+O baseline foi executado sobre `main` `554ef41b44c9f318777d7e7b11189490a29a8c0a`, antes das alterações desta rodada. A falha unitária conhecida apontava para um arquivo-fonte anterior à extração do componente. Após a correção do URL state no PR #2850 e a correção do caminho do teste no PR #2851, a validação final local ficou assim:
+
+| Verificação | Baseline | Resultado após correções | Evidência |
+|---|---|---|---|
+| `npm ci` | ✅ | ✅ | Instalação limpa no checkout de auditoria. |
+| TypeScript | ✅ | ✅ | Incluído no `npm run build:verify`; nenhum erro de tipo. |
+| Lint | ✅ | ✅ | Incluído no `npm run build:verify`; 0 erros, 0 warnings e nenhuma regressão contra o baseline. |
+| Build | ✅ | ✅ | `npm run build:verify` concluído, incluindo build Vite e verificações de produção. |
+| Suíte Vitest completa | ⚠️ 1 arquivo falhou por caminho obsoleto do teste (1.250 arquivos passaram, 1 falhou, 130 ignorados; 25.900 testes passaram, 1.135 ignorados e 24 TODO) | ✅ 1.251 arquivos passaram, 130 ignorados; 25.910 testes passaram, 1.135 ignorados e 24 TODO | Execução após o commit `4b9fbf59f`, no branch do PR [#2851](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2851). |
+
+O teste focado do componente passou 10/10; o hook de URL do PR #2850 passou 379/379 testes focados (incluindo fuzz). Os checks remotos dos PRs #2847–#2851 ainda estavam enfileirados ou em execução no momento da consulta; portanto, validação local verde não equivale a aprovação do GitHub. O inventário das falhas de `main`, causas, links e ações está em [PENDENCIAS.md](PENDENCIAS.md). Na `main` observada, `Deploy Gates`, CodeQL, E2E Critical Flows, E2E Personalization e `CI - Replenishment Module Quality Gate` estavam verdes; quatro workflows permaneciam em falha: Branch Protection Sentinel histórico, E2E Playwright, CI Security & Drift Checks e Swatch QuickView.
+
+Não houve alteração no Supabase, em dados operacionais, em schema, em migrations ou em segredos. PR #2850 altera comportamento da aplicação e permanece sem merge enquanto houver checks pendentes e risco de disparar deploy de produção; PR #2851 contém apenas correção de teste e aguarda o Gate Final remoto.
+
+**Gerado:** 2026-10-29 · **Atualizado:** 2026-10-31T01:50 UTC
+**HEAD da main observado:** `554ef41b44c9f318777d7e7b11189490a29a8c0a` (2026-10-30)
 **HEAD anterior:** `c09402816` (baseline local)
 **Sessão:** https://claude.ai/code/session_01RfQzo7S3K6o49UBUDoCtUe
 

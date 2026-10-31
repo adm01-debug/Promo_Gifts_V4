@@ -1,6 +1,29 @@
 # PENDÊNCIAS CI — Promo Gifts V4
-**Atualizado em:** 2026-10-30
+**Atualizado em:** 2026-10-30 (BRT; consulta até 2026-10-31 01:50 UTC)
 **Branch de correção:** `claude_04/beautiful-gates-bvocz5` (PR #2597 — **MERGEADO** ✅)
+
+## Revalidação da ponta da `main` — 2026-10-31 UTC / 2026-10-30 BRT
+
+Inventário read-only dos 100 runs mais recentes consultados da `main`, cujo HEAD observado é `554ef41b44c9f318777d7e7b11189490a29a8c0a`. Apenas a última execução de cada workflow conta. Quatro workflows estavam em `failure`; `Deploy Gates` estava em `success`. Os demais workflows com conclusão conhecida estavam em `success` ou em estado esperado (`skipped`/`cancelled`).
+
+| Workflow | Último status na `main` | Evidência | Causa / encaminhamento |
+|---|---|---|---|
+| Branch Protection Sentinel | `failure` | [Run #41134852421](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852421) | O intervalo do push contém 23 SHAs históricos sem os padrões aceitos pelo sentinel (`PUSH_BEFORE=6bd5ce61`, `PUSH_AFTER=554ef41b`). Não reescrever o histórico nem fazer force-push; não é check required. Registrar como violação histórica e preservar o sentinel para novos commits. |
+| E2E (Playwright) | `failure` | [Run #41134852533](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852533) | URLs com parâmetros padrão explícitos (`status=all`, `deadline=all`, `sort=recent`, `q=`) não eram normalizadas na carga inicial. Correção de comportamento está no PR [#2850](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2850), aberta e sem merge; exige checks verdes. Como altera a aplicação e pode disparar deploy de produção, permanece sem merge conforme o processo ativo. |
+| CI Security & Drift Checks | `failure` | [Run #41134852492](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852492) | O teste `QuoteBuilderSummaryAlignment.fuzz.test.ts` procurava o JSX em `QuoteBuilderSummaryColumn.tsx`, mas o componente foi extraído para `QuoteBuilderSummaryItems.tsx`. Corrigido sem reduzir assertions no PR [#2851](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2851); teste focado 10/10 e suíte completa local passou. Aguardar os checks remotos, atualmente ainda enfileirados. |
+| E2E • Swatch QuickView (Lista + Tabela) | `failure` | [Run #41134852559](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852559) | A fixture das primeiras 20 linhas não contém produto com swatches e a rota satélite `/novidades` não tem dados: logs indicam “nenhuma row com swatches dentre primeiras 20” e `[E108] Toolbar de layout ausente em /novidades`. Precisa de fixture E2E estável, versionada e aprovada. Não criar/alterar dados no banco nem enfraquecer o teste. |
+
+### PRs abertos desta rodada
+
+| PR | Situação observada | Bloqueio / próximo passo |
+|---|---|---|
+| [#2847](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2847) | `Deploy Gates` enfileirado ([run #41154240602](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41154240602)); `CI - Replenishment Module Quality Gate` falhou ([run #41154240611](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41154240611)). | Obter conclusão do Gate Final e diagnosticar a falha do gate de reposição antes de qualquer merge. Copilot Code Review falhou por indisponibilidade/cota do serviço e não constitui evidência de falha do código. |
+| [#2848](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2848) | `Deploy Gates` enfileirado ([run #41154752023](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41154752023)). | Aguardar Gate Final. Copilot Code Review falhou por indisponibilidade/cota externa. |
+| [#2849](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2849) | `Deploy Gates` enfileirado ([run #41155689252](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41155689252)); `CI - Replenishment Module Quality Gate` falhou ([run #41155689263](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41155689263)). | Aguardar Gate Final e diagnosticar a falha de reposição antes de merge. |
+| [#2850](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2850) | Gate Final enfileirado ([run #41156665314](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41156665314)); outros workflows ainda em execução/enfileirados na consulta. | Sem merge até todos os checks requeridos passarem; por alterar comportamento da aplicação, não mesclar se isso disparar deploy de produção. |
+| [#2851](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2851) | PR de teste-only criado; workflows recém-enfileirados ([Gate Final #41157182500](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41157182500)). | Aguardar checks remotos e a conclusão do Gate Final. Não mesclar enquanto houver checks pendentes ou vermelhos. |
+
+Nenhum dado, schema, migration ou segredo foi alterado no Supabase nesta rodada.
 
 ## Atualização P27 — inventário da ponta atual da `main` (2026-10-30T12:23Z)
 
