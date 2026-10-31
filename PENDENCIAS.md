@@ -825,3 +825,9 @@ O único required check (`Gate Final - Deploy Ready`) para `b92bcf876` está `qu
 `in_progress`: Quote Builder Delivery, Supabase Linter Gate.
 `success` já confirmado: Policies Baseline, SSOT Supabase Guard, Security Scan, UI Visual & A11y, No Prod Leak, Static Health Checks, Release Please, Lovable Edit Tracker, Select Columns vs Types.
 | 5 | Branch Protection Sentinel | Avaliar tolerância ou configurar Lovable para usar formato de commit com `(#NNN)` |
+
+## P32 — PR documental #2868: cota do Copilot (2026-10-31)
+
+| Workflow/check | Execução | Erro confirmado | Ação necessária | Required? |
+|---|---|---|---|---|
+| Copilot Pull Request Reviewer no PR [#2868](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2868) | [#41202146614](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41202146614) | HTTP 402, `errorType: quota`: `You've reached your additional usage limit for your plan`. Não chegou a produzir revisão do PR. | PO/admin: aguardar renovação ou regularizar a cota/billing do Copilot; depois solicitar novo check. Não alterar código, não ignorar o check manualmente e não confundir essa falha externa com aprovação/reprovação de conteúdo. | Não — Gate Final passou. |
