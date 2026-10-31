@@ -136,11 +136,19 @@ export function useListUrlState<K extends string>(
 
   // Sincroniza busca debounced → URL. Idempotente: só navega se a URL ainda
   // não reflete o valor (evita replaceState redundante no mount e corta o loop).
+  // `q=` (string vazia) e ausência do param (`null`) são equivalentes —
+  // ambos representam "sem busca ativa". Sem essa normalização, o efeito de
+  // sync-on-mount (acima) que remove `q=` via setSearchParams(value, replace)
+  // pode ser sobrescrito quando este efeito faz setSearchParams(prev => …)
+  // com `prev = URL original`, restaurando os params que o cleanup acabou de
+  // remover (ex.: `status=all&sort=newest` ao carregar `?status=all&sort=newest&q=`).
   useEffect(() => {
     if (!searchKey) return;
     const defaultValue = keysRef.current[searchKey];
     const target = !debouncedSearch || debouncedSearch === defaultValue ? null : debouncedSearch;
-    if (searchParamsRef.current.get(searchKey) === target) return;
+    const rawUrl = searchParamsRef.current.get(searchKey);
+    const effectiveUrl = !rawUrl || rawUrl === defaultValue ? null : rawUrl;
+    if (effectiveUrl === target) return;
     updateParamRef.current(searchKey, debouncedSearch, defaultValue);
   }, [debouncedSearch, searchKey]);
 
