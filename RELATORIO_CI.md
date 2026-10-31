@@ -281,12 +281,12 @@ Tabela de prova (Seção 8) + baseline local (Seções 1, 10) + comparação bas
 | Workflows NÃO-REQUIRED em falha | 8 (PO-BLOCKED) | 8 (PO-BLOCKED) | Sem regressão — mesmos bloqueios estruturais |
 
 
-## Atualização de checks remotos — 2026-10-31 03:20 UTC
+## Atualização de checks remotos — 2026-10-31 03:40 UTC
 
-A leitura dos heads atuais confirma que nenhum PR desta rodada está pronto para merge. #2852 tem falha externa Copilot HTTP 402 e quatro checks pendentes. #2853 tem três falhas (CI Replenishment: título de Novidades ausente/timeout; WebKit: runner cancelado; Copilot: HTTP 402) e dez checks pendentes. #2850 tem oito checks falhos e #2851 nove, incluindo Gate Final, Gate 0.5 e suites E2E; detalhes e links estão em `PENDENCIAS.md`. O job WebKit é opcional e já tinha `continue-on-error` no workflow; não foi alterado. Nenhum PR foi mesclado.
+A consulta atualizada confirma que nenhum PR desta rodada está pronto para merge. #2852 não tem falhas nos checks observados, mas tem sete pendentes. #2853 tem três falhas, três pendentes e três cancelados: o log do CI Replenishment registra screenshot diff e variação de 14 px na altura dos cards em tablet-768, acima da tolerância de 6 px; WebKit foi cancelado pelo runner; Copilot retornou HTTP 402 por cota. A causa anteriormente anotada como título de Novidades ausente foi corrigida após leitura do trecho de falha do job. #2850 mantém oito checks falhos e #2851 nove, incluindo Gate Final, Gate 0.5 e suites E2E; evidências e links em `PENDENCIAS.md`. Nenhum PR foi mesclado.
 
 Os cinco especialistas fizeram revisão independente do PR #2853: não identificaram mudança no Supabase, segredo ou asserção enfraquecida. O gap de correspondência exata do advisory para consumidores e faixas foi corrigido no próprio PR e coberto por testes negativos. A revisão não substitui checks remotos ainda pendentes.
 
-Na `main`, a ponta observada permanece SHA `554ef41b44c9f318777d7e7b11189490a29a8c0a`; os seis workflows em falha e os demais 35 em estado verde/esperado continuam reconciliados no PENDENCIAS.md. Nenhum novo erro local foi introduzido nesta etapa documental.
+Na `main`, a ponta observada permanece SHA `554ef41b44c9f318777d7e7b11189490a29a8c0a`; os seis workflows em falha e os demais 35 em estado verde/esperado continuam reconciliados no `PENDENCIAS.md`. Nenhum novo erro local foi introduzido nesta etapa documental.
 
 Validação local desta atualização: `npm run build:verify` passou (typecheck, lint sem regressões e build). `npm test -- --reporter=dot` executou 1.381 arquivos: 1.250 passaram, 130 foram skipped e 1 falhou; 25.900 testes passaram, 1.135 skipped e 24 TODO. A única falha é a conhecida do baseline, `QuoteBuilderSummaryAlignment.fuzz.test.ts`, que ainda lê `QuoteBuilderSummaryColumn.tsx` enquanto os tokens estão em `QuoteBuilderSummaryItems.tsx`; correção proposta em #2851. Não foi introduzida por esta alteração documental.
