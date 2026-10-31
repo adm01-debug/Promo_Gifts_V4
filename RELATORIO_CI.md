@@ -33,7 +33,7 @@
 |---|----------|----------------|-----|------------|----------------|
 | 1 | CI Security & Drift Checks | 41134852492 | [link](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852492) | Fuzz test lendo arquivo errado pós-split E128 | ✅ Fix commitado |
 | 2 | Branch Protection Sentinel | 41134852421 | [link](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852421) | 23 commits sem padrão convencional já em main | 📋 PENDENCIAS.md P1 |
-| 3 | E2E (Playwright) | 41134852533 | [link](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852533) | Bug `useListUrlState` — sem sync-on-mount para remover defaults da URL | ✅ Fix commitado |
+| 3 | E2E (Playwright) | 41134852533 | [link](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852533) | Bug `useListUrlState` — sync-on-mount + race condition no search-sync (q='' ≠ null) | ✅ 2 fixes commitados (fb619cea + 7c553377) |
 | 4 | E2E • Swatch QuickView | 41134852559 | [link](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41134852559) | webkit: runner shutdown; chromium/firefox: timeout (artefatos 5-8GB) | 📋 PENDENCIAS.md P3 |
 | 5 | Nightly Full CI | 41161391625 | [link](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41161391625) | E2E Visual regression + Playwright shards (infra runner) | 📋 PENDENCIAS.md P4 |
 
@@ -132,7 +132,8 @@ Não é possível corrigir por código — são falhas de autenticação/infra d
 | Ação | Status |
 |------|--------|
 | Fix de `QuoteBuilderSummaryAlignment.fuzz.test.ts` (split E128) | ✅ commitado |
-| Fix de `useListUrlState.ts` — sync-on-mount para remover defaults da URL | ✅ commitado |
+| Fix de `useListUrlState.ts` — sync-on-mount para remover defaults da URL (fb619cea) | ✅ commitado |
+| Fix de `useListUrlState.ts` — race condition no search-sync: `q=''` tratado como `null` (7c553377) | ✅ commitado (Codex/Qodo P2) |
 | PENDENCIAS.md criado com bloqueadores registrados e diagnósticos verificados | ✅ |
 | Baseline local documentado (§1, §5) | ✅ |
 | Inventário de workflows verdes (§2c) | ✅ 23 verdes |
