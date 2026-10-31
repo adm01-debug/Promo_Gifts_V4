@@ -823,3 +823,41 @@ O único required check (`Gate Final - Deploy Ready`) para `b92bcf876` está `qu
 `in_progress`: Quote Builder Delivery, Supabase Linter Gate.
 `success` já confirmado: Policies Baseline, SSOT Supabase Guard, Security Scan, UI Visual & A11y, No Prod Leak, Static Health Checks, Release Please, Lovable Edit Tracker, Select Columns vs Types.
 | 5 | Branch Protection Sentinel | Avaliar tolerância ou configurar Lovable para usar formato de commit com `(#NNN)` |
+## P36 — CI Edge CRM, inventário e bloqueios (2026-10-31)
+
+**Base auditada:** `main` em `22e8ddad0cc41a1bab002ac077ca31558c149dda`.
+**Correção em preparação:** branch `fix/crm-db-bridge-auth-before-breaker-20261031`.
+
+### Último estado remoto observado (2026-10-31 05:05 UTC)
+
+Falhas cuja última execução concluída em `main` está em `failure`:
+
+| Workflow | Última execução relevante | Causa comprovada | Estado / ação |
+|---|---|---|---|
+| Edge Integration Tests — All Functions | [#41166936960](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41166936960) | Sete casos de `crm-db-bridge` receberam 503. Logs de 2026-10-31 04:29–04:35 UTC mostram consultas a `companies` em HTTP 500, abertura do circuit breaker após cinco falhas e respostas 503 enquanto aberto. O código também consultava o breaker antes de autenticar, mascarando o 401 de chamadas anônimas. | Correção local em PR: autenticar antes do breaker. **Ainda pendente:** causa do HTTP 500 de `companies` não foi determinada; revisar a execução de integração após revisão e janela de deploy aprovada. Não alterar banco nem fazer deploy por esta sessão. |
+| CI Security & Drift Checks | [#41166937034](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41166937034) | `QuoteBuilderSummaryAlignment.fuzz.test.ts` espera `leading-[1.125rem]` em `QuoteBuilderSummaryColumn.tsx`, embora o JSX correspondente tenha sido extraído para `QuoteBuilderSummaryItems.tsx`. | Falha já identificada e associada aos PRs #2854/#2855; confirmar qual PR contém a correção e aguardar checks, sem enfraquecer a asserção. |
+| Kit Coverage — Integration | [#41165671545](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41165671545) | O teste com chave publicável anônima recebe negação ao consultar `v_kit_component_complete` / `product_kit_components`. | Corrigir a identidade/fixture de teste para usuário autenticado autorizado. **Não** conceder acesso anônimo no banco. |
+| Nightly Full CI | [#41161391625](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41161391625) | Execução agregou falhas independentes: credenciais E2E ausentes para Magazine Header, timeout em shard de color swatches, ambiguidade de seletor, snapshot ausente e timeout em `boundingBox`. | Separar por causa e reproduzir; não tratar como uma única falha nem atualizar snapshots sem justificar. |
+
+Outras últimas execuções concluídas verificadas como verdes: Branch Protection Sentinel [#41166936857](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41166936857), Quote Builder Delivery Quality [#41166936912](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41166936912), E2E Personalization [#41166937008](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41166937008), E2E Critical Flows [#41166937009](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41166937009), CI Replenishment [#41166936939](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41166936939), Workflow Lint [#41166937102](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41166937102), CodeQL [#41166936989](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41166936989), Security Scan [#41166936980](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41166936980), SSOT Guard [#41166936890](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41166936890), Policies Baseline [#41166936946](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41166936946), Static Health Checks [#41166937024](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41166937024), Required Checks Guard [#41166936894](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41166936894), Supabase Linter Gate [#41166937146](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41166937146), schema snapshot export [#41166937001](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41166937001), Select Columns vs Types [#41166937084](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41166937084), Gitleaks [#41166936944](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41166936944) e Release Please [#41166936879](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41166936879).
+
+Ainda não concluídos nesse snapshot: Deploy Gates `queued` (#41166937031), Swatch QuickView `in_progress` (#41166937051), Magazine Header `queued` (#41166937014), Uptime Monitor `queued` (#41171193020). E2E Playwright foi cancelado (#41166936976), não contado como falha concluída.
+
+### Baseline desta correção
+
+- `npm ci`: sucesso; o npm reportou 29 vulnerabilidades preexistentes (17 moderate, 12 high), sem atualização automática.
+- `npm run build:verify`: sucesso (typecheck, lint baseline e build).
+- `npm test -- --reporter=dot`: 1.250 arquivos passaram; 1 falhou com uma falha preexistente em `QuoteBuilderSummaryAlignment.fuzz.test.ts` (25.904 testes passaram, 1.135 ignorados, 24 TODO).
+- `deno check supabase/functions/crm-db-bridge/index.ts`: bloqueado pela resolução local de `npm:@supabase/supabase-js@2.49.4`; não classificado como falha de tipo do código.
+- `tests/security/crm-db-bridge-auth-before-breaker.test.ts`: passou antes do commit; também está incluído na suíte completa pós-commit, que passou este teste.
+- Pós-commit `04ba024e4`: `npm run build:verify` passou; typecheck, lint (0 erros/0 warnings e nenhuma regressão) e build passaram.
+- Pós-commit `04ba024e4`: suíte completa concluiu em 301,06 s — 1.251 arquivos passaram, 1 falhou (a falha pré-existente do Quote Builder), 130 skipped; 25.905 testes passaram, 1.135 skipped, 24 TODO.
+
+**Bloqueio de release:** a correção altera código de aplicação e o merge pode acionar deploy de produção. Manter o PR aberto para revisão; não mesclar nem deployar sem seguir a aprovação/fluxo de release do PO. O erro upstream de `companies` permanece sem causa determinada. A correção melhora a ordem das respostas de autenticação; não resolve por si só a indisponibilidade do CRM, portanto a integração live ainda precisa ser reexecutada após o upstream ser diagnosticado.
+
+### Atualização P36.1 — execuções finalizadas e estado do PR (2026-10-31 05:35 UTC)
+
+- `E2E • Swatch QuickView` terminou em falha na execução [#41166937051](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41166937051), depois do snapshot inicial. Chromium e Firefox reportaram 14 testes falhos; os logs incluem `locator.click` expirando em 240 s, `[E108] Toolbar de layout ausente em /novidades` e ausência de rows com swatches entre os primeiros 20 produtos. WebKit foi cancelado. O erro exato varia por caso; causa comum (dado ausente, seletor ou estado de UI) ainda precisa de reprodução. Não reduzir o mínimo de testes nem o escopo do spec.
+- PR [#2856](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2856), commit `e4b9e7d59e21c252814abb1b7de7cdc4fae2b866`: no instante do registro, as execuções de Gate Final, Edge Integration, CodeQL, Contratos, Security e outros estavam `queued`/`in_progress`; `Running Copilot Code Review` falhou por cota/billing (run #41173016923), e Devin Review apenas informou que não executou por falta de créditos. Não contar verificações pendentes como verdes.
+- O check externo Vercel do PR reportou failure para preview [dpl_7cU6S9eQ8EggHZzWHFJWquyGpZy5](https://vercel.com/juca1/promo-gifts-v4/7cU6S9eQ8EggHZzWHFJWquyGpZy5). `vercel inspect --json` no raiz canônico confirmou `target=preview`, `readyState=ERROR`, enquanto o objeto de build estava `READY`; `vercel inspect --logs` não forneceu causa detalhada. Registrar como bloqueio externo sem diagnóstico, não atribuir ao código sem evidência.
+- Nenhum workflow desta correção foi mesclado. Não houve deploy de produção nem escrita no Supabase.
