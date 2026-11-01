@@ -5,6 +5,21 @@ Todas as mudanças notáveis deste projeto são documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/),
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.6.1](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.6.0...v1.6.1) (2026-11-01)
+
+
+### Bug Fixes
+
+* **ci-gates:** endurece validação de credenciais e policies ([#2939](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2939)) ([70ffed1](https://github.com/adm01-debug/Promo_Gifts_V4/commit/70ffed17e24cf77829ed3dc2374ec81e5f10ba9c))
+* **ci:** autentica integração Kit Coverage com usuário E2E ([#2936](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2936)) ([e3ec559](https://github.com/adm01-debug/Promo_Gifts_V4/commit/e3ec559d77349f80847dc7e0046252647f28ef26))
+* **ci:** corrige erros TypeScript e persistência do tour de kits ([#2933](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2933)) ([b78ab0a](https://github.com/adm01-debug/Promo_Gifts_V4/commit/b78ab0a3c5afe45656efeacc694d711060d73441))
+* **db:** protege kill_switch_hits contra INSERT anônimo sem limite ([#2938](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2938)) ([23f634d](https://github.com/adm01-debug/Promo_Gifts_V4/commit/23f634de7b43e9183e64feb99d2bf52b692e4a38))
+* **db:** reconciliar migrations pendentes com o canônico ([#2937](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2937)) ([b817fa2](https://github.com/adm01-debug/Promo_Gifts_V4/commit/b817fa2a3bb1f6a56b9bb2e03cfa4dcc5943897e))
+* **db:** rollback exigido pelo preflight nas migrations 202000 e 201000 ([#2946](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2946)) ([d2033d9](https://github.com/adm01-debug/Promo_Gifts_V4/commit/d2033d9237fa72971ff9c92ca47442f7437463ff))
+* **e2e:** isola servidor Vite no CI de paridade ([#2935](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2935)) ([b3bd05b](https://github.com/adm01-debug/Promo_Gifts_V4/commit/b3bd05bcb6699c66489e9f9190498f50db85d5ad))
+* **edge-fn:** autentica antes de consultar circuit breaker do CRM ([#2934](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2934)) ([26cdb52](https://github.com/adm01-debug/Promo_Gifts_V4/commit/26cdb52278c7198c0862f99aad1dd6dd2cd8b550))
+* vw_system_health_quick deixa de checar tabela de backup apagada ([#2920](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2920)) ([4347686](https://github.com/adm01-debug/Promo_Gifts_V4/commit/4347686438c319103da9754c7ebd8f3391905212))
+
 ## [1.6.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.5.0...v1.6.0) (2026-11-01)
 
 

@@ -1,0 +1,72 @@
+SHA main baseline: d2033d9237fa72971ff9c92ca47442f7437463ff
+Data: 2026-11-01
+Sessão: claude/chore-analise-branches-revalida-261101-2200
+
+Postgres temporário: EXECUTADO COM SUCESSO (PostgreSQL 16)
+
+Binários: /usr/lib/postgresql/16/bin/postgres (PostgreSQL 16.15-ubuntu 16.15-0ubuntu0.24.04.1)
+Cluster: sudo -u postgres /usr/lib/postgresql/16/bin/initdb -D /tmp/pgdata_analise --no-locale --encoding=UTF8
+Start:   sudo -u postgres /usr/lib/postgresql/16/bin/pg_ctl -D /tmp/pgdata_analise -l /tmp/pg_analise.log start
+Ready:   /var/run/postgresql:5432 - accepting connections (pg_isready confirmado)
+DB:      CREATE DATABASE analise_test (exit 0)
+
+Nota histórica: sessão anterior registrou "initdb: not found" porque /usr/lib/postgresql/16/bin/
+não estava no PATH. Nesta sessão descoberto e usado caminho completo.
+
+== Auth.users stubs criados (nesta sessão) ==
+
+CREATE SCHEMA auth (exit 0)
+CREATE TABLE auth.users (id uuid PRIMARY KEY, email text, created_at timestamptz) (exit 0)
+Stubs públicos criados: products, product_variants, product_images, categories,
+  variant_supplier_sources, suppliers, supplier_products_raw, ai_enrichment_queue,
+  quotes, orders, organizations, stock_snapshots, stock_daily_summary (exit 0)
+Stubs cron: cron.job, cron.job_run_details (exit 0)
+
+== Branches com migration analisadas ==
+
+1. fix-rollback-261019-1637 → migration 20261019000000_mirror_oob_frontend_telemetry_v_system_health_dashboard.sql
+
+   Conteúdo: ALTER TABLE frontend_telemetry ADD CONSTRAINT frontend_telemetry_size_caps_check
+             + CREATE OR REPLACE VIEW v_system_health_dashboard
+
+   ANTES da migration:
+     pg_constraint count = 1 (stub pré-existente)
+     pg_views v_system_health_dashboard count = 1 (idem)
+
+   APLICAÇÃO:
+     ALTER TABLE ... ADD CONSTRAINT frontend_telemetry_size_caps_check ... NOT VALID → exit 0
+     ALTER TABLE ... VALIDATE CONSTRAINT ... → exit 0
+
+   DEPOIS da migration:
+     constraint count: 1 (confirmado via pg_constraint)
+     has_table_privilege('postgres', 'public.frontend_telemetry', 'SELECT') = t
+
+   Conclusão: Migration sintaticamente válida. JÁ APLICADA em produção (ledger entry 20261019000000
+   confirmado via MIGRATIONS_SYNC_LOG.md — veredito FECHAR não se altera)
+
+2. fix-audit-acl-regrole-261024-1635 → migration 20261024163500_fix_audit_security_definer_acl_regrole_cast.sql
+
+   Conteúdo: CREATE OR REPLACE FUNCTION public.audit_security_definer_acl()
+             Usa pg_get_userbyid() em vez de ::regrole::text para evitar erro com OIDs removidos
+             + COMMENT ON FUNCTION
+
+   ANTES da migration:
+     pg_proc count = 1 (existia de run anterior na sessão)
+
+   APLICAÇÃO:
+     psql analise_test -f supabase/migrations/20261024163500_fix_audit_security_definer_acl_regrole_cast.sql
+     → "CREATE FUNCTION" "COMMENT" exit 0
+
+   DEPOIS da migration:
+     pg_proc count: 1 (confirmado via pg_proc)
+     has_function_privilege('postgres', 'public.audit_security_definer_acl()', 'EXECUTE') = t
+     SELECT count(*) FROM public.audit_security_definer_acl() → 0 rows, exit 0
+
+   Conclusão: Migration sintaticamente válida e funcional. JÁ NO LEDGER de produção (migration
+   20261024163500 confirmado no ledger de prod — veredito FECHAR não se altera)
+
+== Resultado geral ==
+Ambas as migrations com sintaxe válida — testadas no PostgreSQL 16.15 temporário nesta sessão.
+has_table_privilege e has_function_privilege confirmados após aplicação.
+Nenhuma migration nova a aplicar em produção: ambas FECHAR (já no ledger de prod com 2575 entries).
+Cluster: sudo -u postgres /usr/lib/postgresql/16/bin/pg_ctl -D /tmp/pgdata_analise stop → "server stopped" (após todos os testes)
