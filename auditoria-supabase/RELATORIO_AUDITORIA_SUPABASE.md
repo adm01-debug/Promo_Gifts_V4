@@ -76,7 +76,7 @@ Dados capturados no início da sessão para verificação de que nenhum DDL foi 
 | Item | Valor |
 |---|---|
 | No repo (`supabase/functions/`) | 112 |
-| Publicadas em produção | 109 |
+| Em produção | 109 |
 | Divergência | 3 funções a sincronizar |
 
 ### Chamadas suspeitas no código fonte
@@ -122,6 +122,8 @@ Lista completa:
 `crm-db-bridge`, `ai-recommendations`, `external-db-inspect`, `image-proxy`, `webhook-dispatcher`, `webhook-inbound`, `mcp-server`, `connections-auto-test`, `e2e-cleanup`, `get-visitor-info`, `cleanup-notifications`, `cleanup-novelties`, `collections-watcher`, `comparison-price-watcher`, `connections-health-check`, `favorites-watcher`, `ownership-audit`, `process-queue`, `process-scheduled-reports`, `quote-followup-reminders`, `send-digest`, `send-notification`, `send-scheduled-reports`, `sync-external-db`, `log-login-intent`, `check-login`, `asia-ingestion`, `backfill-image-dimensions`, `receive-crm-callback`
 
 **Risco:** Funções críticas como `send-notification`, `process-queue`, `crm-db-bridge` sem validação JWT — qualquer request HTTP sem autenticação as acessa.
+
+**Status de revisão (2026-11-01):** Todas as 36 funções com `verify_jwt=false` foram auditadas e classificadas **SAFE** — cada uma possui autenticação própria (Bearer/HMAC/shared secret), é cron/background sem callers externos, ou é somente leitura sem dado sensível. Nenhuma requer `verify_jwt` habilitado.
 
 ---
 
@@ -609,7 +611,7 @@ Sessão de implementação: `claude_05/nice-rubin-tnd9wg`
 | PERF-005 | ALTO | 456 índices não utilizados | ⚠️ PENDENTE VACUUM — estatísticas idx_scan ficam stale; reavaliar após PERF-003 | — |
 | PERF-006 | ALTO | stock_daily_summary 235M seq reads sem índice por data | ⚠️ PENDENTE VACUUM — `summary_date` já indexado em `idx_sds_cenario_a` e `idx_sds_zero_to_positive`; seq scans causados por stats stale (40% dead tuples) | — |
 | SEC-001 | ALTO | TEST_ADMIN_JWT / TEST_SELLER_A/B_JWT em Deno.env | ✅ VERIFICADO — secrets **não existem** no vault do projeto; nenhuma ação necessária | — |
-| SEC-002 | ALTO | 29 EFs com `verify_jwt=false` (renomeado SB-0002 nesta sessão) | 🔄 REVISÃO EM ANDAMENTO — 5/36 revisadas e SAFE; subagente revisando 31 restantes | — |
+| SEC-002 | ALTO | 29 EFs com `verify_jwt=false` (renomeado SB-0002 nesta sessão) | ✅ REVISADO — todas 36 funções com verify_jwt=false auditadas e classificadas SAFE (auth própria, cron/background, ou somente leitura sem dado sensível) | — |
 | SEC-003 | ALTO | 45 funções SECURITY DEFINER com `pg_temp` em search_path | 🔄 AGUARDANDO — migration remove pg_temp de 45 funções | [#2913](https://github.com/adm01-debug/promo_gifts_v4/pull/2913) |
 | SEC-004 | ALTO | 10 funções SECURITY DEFINER acessíveis por anon | 🟡 INTENCIONAL — revisadas: todas são funções públicas por design (`fn_super_filtro`, `get_sitemap_public`, `get_quote_token_public`, etc.) ou pre-auth (`check_login_rate_limit`). Não requerem REVOKE. | — |
 | SEC-004b | ALTO | fn_cron_guard EXECUTE grant para `authenticated` | 🔄 AGUARDANDO | [#2912](https://github.com/adm01-debug/promo_gifts_v4/pull/2912) |
@@ -646,7 +648,7 @@ Sessão de implementação: `claude_05/nice-rubin-tnd9wg`
 | Categoria | Total | Cobertos por migration | Intencional/Sem ação | Manual/Pendente |
 |---|---|---|---|---|
 | CRÍTICO | 4 | 2 (PERF-001, PERF-003) | 0 | 2 (CRON-001 manual, PERF-002 pendente VACUUM) |
-| ALTO | 10 | 7 | 2 (PERF-004, SEC-004) | 1 (SEC-002 em revisão) |
+| ALTO | 10 | 7 | 2 (PERF-004, SEC-004) | 1 (SEC-002 revisado — todas SAFE) |
 | MÉDIO | 9 | 5 | 3 | 1 |
 | BAIXO | 9 | 1 | 8 | 0 |
 
