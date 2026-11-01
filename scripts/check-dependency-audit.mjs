@@ -273,9 +273,12 @@ function isAllowedMinimatchChainPackage(packageName, vulnerability) {
   }
 
   // Effects check: accept any known-good array for this package (E206 — updated 2026-11-01)
+  // Explicitly require effects to be an Array — null/undefined is not the same as [] and must
+  // not match the reviewed empty-effects alternative (Qodo HIGH fix, 2026-11-01).
   const effectsAllowed = REVIEWED_MINIMATCH_EFFECTS_ALLOWED.get(packageName);
   if (effectsAllowed) {
-    const actualEffects = vulnerability.effects ?? [];
+    if (!Array.isArray(vulnerability.effects)) return false;
+    const actualEffects = vulnerability.effects;
     return effectsAllowed.some(
       (alt) =>
         actualEffects.length === alt.length &&
