@@ -390,6 +390,7 @@ export function KitBuilderHeader({
                 catalogItems={aiCatalogItems}
                 catalogBoxes={aiCatalogBoxes}
                 onApply={onAIApply}
+                hasExistingContent={hasContent}
               />
             </div>
           </div>
