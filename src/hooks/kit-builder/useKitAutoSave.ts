@@ -26,6 +26,8 @@ interface AutoSaveResult {
   autoSavedKitId: string | null;
   /** A visible, sanitized state — failed automatic saves must not be log-only. */
   autoSaveError: string | null;
+  /** True when the last save failed with a PostgreSQL 40001 serialization conflict. */
+  isConflictError: boolean;
   /** Replays the most recent snapshot with the same optimistic revision rules. */
   retryLastSave: () => Promise<void>;
   /** Cancels a debounced save before the explicit save action takes ownership. */
@@ -48,6 +50,7 @@ export function useKitAutoSave(
   const [isSaving, setIsSaving] = useState(false);
   const [autoSavedKitId, setAutoSavedKitId] = useState<string | null>(currentKitId || null);
   const [autoSaveError, setAutoSaveError] = useState<string | null>(null);
+  const [isConflictError, setIsConflictError] = useState(false);
   const timerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const snapshotRef = useRef<string>('');
   const isFirstRender = useRef(true);
@@ -162,10 +165,17 @@ export function useKitAutoSave(
       } else {
         setLastSavedAt(new Date());
         setAutoSaveError(null);
+        setIsConflictError(false);
       }
     } catch (err) {
+      const isConflict = (err as { code?: string })?.code === '40001';
       logger.warn('[auto-save] Failed:', err);
-      setAutoSaveError('O rascunho ainda não foi salvo. Tente novamente antes de sair.');
+      setIsConflictError(isConflict);
+      setAutoSaveError(
+        isConflict
+          ? 'Outro dispositivo editou este kit ao mesmo tempo. Recarregue a página para obter a versão mais recente.'
+          : 'O rascunho ainda não foi salvo. Tente novamente antes de sair.',
+      );
     } finally {
       saveInFlightRef.current = false;
       setIsSaving(false);
@@ -207,6 +217,7 @@ export function useKitAutoSave(
     setAutoSavedKitId(kitId);
     setLastSavedAt(new Date());
     setAutoSaveError(null);
+    setIsConflictError(false);
   }, []);
 
   // Snapshot effect: agenda o timer quando o estado muda de forma relevante
@@ -295,6 +306,7 @@ export function useKitAutoSave(
     isSaving,
     autoSavedKitId,
     autoSaveError,
+    isConflictError,
     retryLastSave,
     cancelPendingSave,
     acknowledgeManualSave,
