@@ -47,6 +47,8 @@ jobs:
       VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || 'https://doufsxqlfjyuvxuezpln.supabase.co' }}  # E53: fallback
       VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_tjH5qAbZ0e5HTTd872NijQ_s9m6JvYU' }}  # E53: fallback
       E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
+      E2E_BASE_URL: http://127.0.0.1:8081
+      E2E_FORCE_START_SERVER: '1'
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       # E53: use setup-node (project standard) instead of setup-bun
