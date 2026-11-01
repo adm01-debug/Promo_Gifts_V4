@@ -207,6 +207,7 @@ export function useKitBuilderPageState() {
     restoreKitSnapshot,
     applyAIComposition,
     setKitType,
+    setKitOrigin,
     loadKit,
     startNewFlow,
   } = useKitBuilder({ initialFlow });
@@ -441,8 +442,8 @@ export function useKitBuilderPageState() {
   );
 
   const startFlow = useCallback(
-    (flow: 'box-first' | 'items-first') => {
-      startNewFlow(flow);
+    (flow: 'box-first' | 'items-first', origin?: import('@/lib/kit-builder/types').KitOrigin) => {
+      startNewFlow(flow, origin);
       setQuoteClient({});
       setAIBriefing(undefined);
       setIsLanding(false);
@@ -532,6 +533,7 @@ export function useKitBuilderPageState() {
       handleAddToQuote,
       applyAISuggestion,
       startFlow,
+      setKitOrigin,
     },
     meta: {
       isSaving,

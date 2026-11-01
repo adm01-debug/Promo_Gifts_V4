@@ -30,7 +30,7 @@ import {
 import { useKitTemplates } from '@/hooks/kit-builder';
 
 interface KitMakerLandingProps {
-  onStart: (flow: 'box-first' | 'items-first') => void;
+  onStart: (flow: 'box-first' | 'items-first', origin?: import('@/lib/kit-builder/types').KitOrigin) => void;
   occasion: Occasion | null;
   onOccasionChange: (occasion: Occasion | null) => void;
   aiCatalogItems: KitItem[];
@@ -306,7 +306,7 @@ export function KitMakerLanding({
               ))}
             </ul>
             <Button
-              onClick={() => onStart('items-first')}
+              onClick={() => onStart('items-first', 'manual')}
               size="lg"
               className="mt-auto min-w-[212px]"
             >
@@ -349,7 +349,7 @@ export function KitMakerLanding({
             </ul>
             <Button
               variant="outline"
-              onClick={() => onStart('box-first')}
+              onClick={() => onStart('box-first', 'manual')}
               size="lg"
               className="mt-auto min-w-[212px]"
             >
