@@ -1,147 +1,131 @@
-# RELATORIO_PRS — Sessão session_01Ss1tXZ4cAbxBvdmu95uNPz (rev28)
-**Data:** 2026-10-25
-**main HEAD pré-sessão:** `5279abfe07895d9b0481fa08086b2c18d321de5f` (PR #2546)
-**main HEAD pós-merges:** `986a1efbf862ee022e72ba8469f5d8695a3f99e1` (PR #2575 — +26 merges autônomos)
-**Gate Final baseline:** Run #40223579961 — SHA `7d3bd4ba` — success (2026-10-25T19:02:42Z)
-**Gate Final pós-merges:** SHA `986a1efb` — sem runner (GitHub Actions infra issue desde 19:42Z)
-**Baseline:** 429 testes / 0 falhas
+# Relatório de Análise de PRs — 2026-11-01
+**Sessão:** `01Ss1tXZ4cAbxBvdmu95uNPz`
+**main SHA fixado:** `a25070630788f77b297431665878319ad74bb587`
+**Total PRs analisadas:** 27 / 27 (100%)
 
 ---
 
-## Resumo executivo
+## ⚠️ RISCOS E DECISÕES HUMANAS (leia primeiro)
 
-| Métrica | Valor |
-|---|---|
-| PRs abertas analisadas (rev28) | **8** |
-| Merges autônomos esta sessão | **26** |
-| DECISAO_HUMANA (abertas) | **7** |
-| ENTREGAVEIS_PENDENTE_CI | **1** (#2572) |
-| Merges autônomos sessões anteriores | 3 (#2529, #2543, #2546) |
+### 🔴 Alto risco — revisão imediata necessária
 
-**Resultado: 26 merges autônomos VERIFICADOS — rev22 (10): #2544 #2545 #2548 #2549 #2551 #2552 #2553 #2554 #2555 #2556 | rev23 (+11): #2558 #2561 #2563 #2564 #2565 #2566 #2567 #2568 #2569 #2570 #2571 | rev25 (+2): #2574 #2576 | rev27 (+3 VERIFICADOS rev28): #2577 #2575 #2581**
+**PR #2969 — 106 REVOKE EXECUTE em funções de produção (SEC-001)**
+- Migration com 106 `REVOKE EXECUTE ON FUNCTION ... FROM PUBLIC` em `doufsxqlfjyuvxuezpln`
+- Verificação de zero-refs foi por grep no TS, não via `pg_catalog` ao vivo — não cobre pg_cron, service_role ou PL/pgSQL
+- Aplicação obrigatória via `db-apply-migration.yml` `workflow_dispatch` (REGRA#8/E056)
+
+**PR #2973 — Senha mínima 6→8 chars (FT-306)**
+- Fix eleva senha mínima de login de 6 para 8 caracteres
+- Usuários existentes com senha de 6-7 chars não conseguirão logar pelo formulário após merge
+- Exige comunicação prévia ou migração de senhas
+
+### 🟡 Médio risco — revisão antes de mergear
+
+**PR #2958 — Decisão PO D7: publicado = status shared**
+- Mudança de regra de negócio no Kit Maker: `status='shared'` substitui `status='published'`
+- O banco nunca persiste `'published'`, mas a mudança altera comportamento visível ao usuário
+- Requer confirmação explícita de que "Decisão PO D7" foi tomada por humano, não pelo Lovable (REGRA#8)
+
+**PR #2941 — Conflito real + rollback SQL**
+- `mergeable_state=dirty`: 5 arquivos com conflitos confirmados em test merge local
+- Toca `supabase/rollbacks/20261101140001_rollback.sql` → REGRA#8
+- Precisa resolução de conflitos antes de qualquer merge
+
+**PR #2951 e #2948 — Rollbacks em banco de produção**
+- #2951: rollback com `DROP TABLE/TRIGGER` para migration `20261031000000`
+- #2948: 3 rollbacks com `cron.alter_job` e `cron.schedule` — um arquivo de rollback documentado como não-funcional (`fn_pipeline_classify_pending_products` não existe mais)
+- Ambos requerem revisão técnica do conteúdo antes do merge (REGRA#8)
+
+**PR #2967 — CI workflow (gate E42)**
+- Toca `.github/workflows/e2e-personalization.yml` → REGRA#9, requer PR e revisão
+- Fix técnico correto (adiciona `id: auth-setup`, muda condição de `always()` para `always() && steps.auth-setup.outcome == 'success'`)
+
+**PR #2966 — 10 novas entradas no allowlist gitleaks**
+- `eyJzdWIiOiIxMjM0NTY3ODkw` é prefixo JWT genericamente reconhecido
+- PO deve confirmar que nenhuma entrada silencia JWT real no codebase
+
+### ⚪ PRs sobrepostas — escolher uma e fechar as demais
+
+**FT-139 (prefers-reduced-motion confete):** PRs #2978, #2976, #2970 — mesma correção, mesmo arquivo
+**FT-136 (erro 503/504 vs 429):** #2979, #2976, #2971 — divergência de implementação (agrupamentos diferentes)
+**FT-134 (confirmação IA):** #2971, #2976 — mesmo fix, mensagens de prop diferentes
+
+### ⚪ PRs behind main — rebase necessário antes do merge
+
+PRs #2979, #2981 têm `draft=false` mas estão `behind main`. CI não rodou na versão rebased. Precisam de rebase + CI verde antes de qualquer merge.
 
 ---
 
-## PRs — MERGEADO_AUTONOMO (26 — esta sessão)
+## RESULTADO POR PR
 
-### Rev22 (10 PRs)
+| PR | Título | Draft | Veredicto | Nota |
+|---|---|---|---|---|
+| #2940 | feat(nav): Audit Suite na sidebar admin | não | **JA_EM_MAIN** | Mergeada 23:08:34 por adm01-debug |
+| #2941 | fix(security): atualiza allowlist lint-0029 | não | **DECISAO_HUMANA** | dirty + supabase/rollbacks/ |
+| #2944 | chore(main): release 1.6.1 | não | **JA_EM_MAIN** | Mergeada 23:08:57 por adm01-debug (release-please) |
+| #2948 | chore(rollbacks): e38/e47/e37 | sim | **DECISAO_HUMANA** | REGRA#8 + DDL cron sensível |
+| #2950 | fix(routes): rotas públicas mortas | sim | **DECISAO_HUMANA** | Draft |
+| #2951 | chore(rollbacks): 20261031000000 | sim | **DECISAO_HUMANA** | REGRA#8 (migrations + rollbacks) |
+| #2952 | fix(ci): Gate 1.13 partições | não | **JA_EM_MAIN** | Mergeada 23:08:45 por adm01-debug |
+| #2958 | fix(kit-builder): publicados = shared | sim | **DECISAO_HUMANA** | Regra de negócio + confirmação PO D7 |
+| #2961 | fix(pptx): badge dados simulados | sim | **DECISAO_HUMANA** | Draft |
+| #2965 | fix(ux): FT-040/083/093 | sim | **DECISAO_HUMANA** | Draft + conflito parcial (PR #2960 removeu loadingProgress) |
+| #2966 | fix: gitleaks allowlist +10 | não | **DECISAO_HUMANA** | .gitleaks.toml |
+| #2967 | fix: gate E42 sem credenciais | não | **DECISAO_HUMANA** | .github/workflows/ |
+| #2969 | fix(security): 106 REVOKE EXECUTE | não | **DECISAO_HUMANA** | DDL de segurança em produção — alto risco |
+| #2970 | fix(ux): confete + AlertDialog | sim | **DECISAO_HUMANA** | Draft + sobreposição FT-139 |
+| #2971 | fix(ux): FT-134/136/173 | não | **DECISAO_HUMANA** | behind + sobreposição #2976 |
+| #2973 | fix(ux): FT-167/306/309 | não | **DECISAO_HUMANA** | senha min 6→8 chars (impacto usuários) |
+| #2976 | fix(ux): UX batch6 | não | **DECISAO_HUMANA** | behind + sobreposição múltipla |
+| #2978 | fix(kit-builder): FT-139 reduced-motion | não | **DECISAO_HUMANA** | behind + sobreposição FT-139 |
+| #2979 | fix(kit-builder): FT-136 erros 503/504 | não | **DECISAO_HUMANA** | behind, CI não rodou rebased |
+| #2980 | fix(mockup): onLogoRemove areaId FT-167 | sim | **DECISAO_HUMANA** | Draft, behind |
+| #2981 | fix(ux): UX batch7 | não | **DECISAO_HUMANA** | behind, CI não rodou rebased |
+| #2982 | fix(kit-builder): FT-174 aviso | sim | **DECISAO_HUMANA** | Draft, behind |
+| #2988 | fix(ts): TS2339 useRuptureAlerts | não | **JA_EM_MAIN** | Mergeada 23:09:30 |
+| #2990 | feat(catalog): FavoriteToggleButton FT-115 | não | **JA_EM_MAIN** | Mergeada 23:09:07 |
+| #2991 | fix(husky): heap 2048→4096 MB | não | **JA_EM_MAIN** | Mergeada 23:12:47 por adm01-debug |
+| #2992 | fix(kit-builder): conflito 40001 FT-118 | não | **JA_EM_MAIN** | Mergeada 23:09:19 |
+| #2993 | fix(kit-builder): backup beforeunload FT-119 | não | **JA_EM_MAIN** | Mergeada 23:09:32 |
 
-| PR | Merge SHA | Critério bloqueante |
+---
+
+## MERGES EXECUTADOS PELO AGENTE
+
+**Nenhum.** Todas as PRs elegíveis já haviam sido mergeadas pelo owner (`adm01-debug`) antes desta análise:
+
+| PR | Merge commit | Hora |
 |---|---|---|
-| #2544 docs: backlog CI | `1d26da90` | Draft→Ready; REGRA#10 N/A |
-| #2545 chore: backlog funcionalidades | `2a93ba55` | Draft→Ready; REGRA#10 N/A |
-| #2548 feat: botão LGPD | `9be832a3` | Draft→Ready; REGRA#10 N/A |
-| #2549 chore: backlog Supabase | `73df7502` | Draft→Ready; REGRA#10 N/A |
-| #2551 fix: peso 0 Kit Maker | `97eed25c` | Draft→Ready; REGRA#10 N/A |
-| #2552 fix: materials-api timeout 20s | `35fdb579` | Draft→Ready; fix AbortSignal 20s |
-| #2553 fix: selos sem mock | `aebd333f` | Draft→Ready; REGRA#10 N/A |
-| #2554 fix: BI Cliente 360 sem mock | `e6538448` | Draft→Ready; REGRA#10 N/A |
-| #2555 docs(pendencias): rev29 | `479f2219` | Draft→Ready; claude_05/ = mesmo agente |
-| #2556 chore: backlog banco O1/O3 | `15e10fd8` | Draft→Ready; REGRA#10 N/A |
-
-### Rev23 (+11 PRs)
-
-| PR | Merge SHA | Critério bloqueante |
-|---|---|---|
-| #2558 fix(header): UserMenuShortcutItems — regressão LGPD | `be7d4e31` | CLEAN; claude/ = mesmo agente |
-| #2561 fix(kit): 13 data-testids restaurados | `68427022` | Draft→Ready; claude_05/ = mesmo agente |
-| #2563 fix: BI copilot mock→real bloqueado | `f87c4b1f` | Draft→Ready; claude/ = mesmo agente |
-| #2564 fix(categories-api): fallback legado removido | `3e1adf1d` | CLEAN; claude/ = mesmo agente |
-| #2565 fix(mirrors): regex SET search_path + rollback | `64faa1df` | CLEAN; claude/ = mesmo agente |
-| #2566 chore: consolida docs/estado 4 arquivos | `3e4c513b` | Draft→Ready; claude/ = mesmo agente |
-| #2567 chore: remove auth-audit.ts (0 consumidores) | `5d480cde` | CLEAN; claude/ = mesmo agente |
-| #2568 chore(segredos): 5 cron secrets documentados | `1047f498` | CLEAN; claude/ = mesmo agente |
-| #2569 chore(backlog-supabase): SB-020/021 | `cfe8487` | CLEAN; claude/ = mesmo agente |
-| #2570 chore: remove notificationService/orderService | `521450d9` | Draft→Ready; claude/ = mesmo agente |
-| #2571 docs(banco): O3 evidências + migrations_460.tsv | `193ae5a1` | Draft→Ready; claude/ = mesmo agente |
-
-### Rev25 (+2 PRs)
-
-| PR | Merge SHA | Critério bloqueante |
-|---|---|---|
-| #2574 chore: atualiza PROGRESSO e PENDENCIAS (docs/estado) | `1928f699` | CLEAN; claude/ = mesmo agente |
-| #2576 fix: allowlist do ledger (drift-check) | `40d0e3f4` | CLEAN; claude/ = mesmo agente |
-
-### Rev27 (+3 PRs) — VERIFICADOS rev28
-
-| PR | Merge SHA | Verificação |
-|---|---|---|
-| #2577 fix(preflight): pg_temp regex + vitest E066 | `23050c99` | VERIFICADO — main parent chain (`get_commit main HEAD parent`) |
-| #2575 fix(magazine): MagazineErrorBoundary FT-071 | `986a1efb` | VERIFICADO — main HEAD (`get_branch main SHA`) |
-| #2581 chore: recibo deploy materials-api v277 | `9b5f283e` | VERIFICADO — `git merge-base --is-ancestor 9b5f283e origin/main` exit 0 |
-
-**REGRA#10:** Todos de branches `claude/` ou `claude_05/` — mesmo agente, não cross-agent.
+| #2940 | `686be704a4f7b1c5e2cbedcf581bd075e9898d16` | 23:08:34 |
+| #2944 | `03fc479aaf682f7e2f3958ad481c9c28c211d582` | 23:08:57 |
+| #2952 | `eeca843a31112a65dcc66aebd2d94ae23cd129ea` | 23:08:45 |
+| #2988 | `68d809ccb9...` | 23:09:30 |
+| #2990 | `e56f2ca74a...` | 23:09:07 |
+| #2991 | `331d50f8937e2572993e851866237b236d419410` | 23:12:47 |
+| #2992 | `cbacfaaa63...` | 23:09:19 |
+| #2993 | `78b32ddd52...` | 23:09:32 |
 
 ---
 
-## PRs — DECISAO_HUMANA (7 abertas — rev28)
+## DOSSIERS
 
-| PR | Motivo |
-|---|---|
-| #2420 | draft + `supabase/rollbacks/` → REGRA#8; aguarda aprovação PO |
-| #2443 | Segurança P03/P06/P09/P14/P15 FASE B — aprovação PO obrigatória |
-| #2547 | Remove 3 features share dialog (~487 linhas, 7 arquivos) — decisão de negócio |
-| #2550 | Muda filtro Kit Maker D7 (remove `ready`) — regra de negócio |
-| #2573 | Gate Final queued + card-level `onClick` em ItemCard (UX change) — confirmar PO |
-| #2579 | release-please v1.0.0 major — github-actions[bot]; decisão de versão |
-| #2580 | draft + `supabase/rollbacks/` → REGRA#8; aguarda aprovação PO |
+Todos os 27 dossiers individuais em `analise-prs/dossies/PR-<n>.md`.
 
 ---
 
-## PR — ENTREGÁVEIS_PENDENTE_CI (1)
+## META CUMPRIDA
 
-| PR | Status |
-|---|---|
-| #2572 | dirty corrigido rev28; Gate Final queued (infra issue); elegível para merge autônomo após CI |
-
----
-
-## Ações requeridas do PO
-
-1. Aguardar GitHub Actions infra resolver — Gate Final sem runner desde 19:42Z; mergear #2572 quando Gate Final passar
-2. PR #2573 — Confirmar UX change (card inteiro clicável + `e.stopPropagation()` nos botões)
-3. PR #2443 — Revisar segurança FASE B (P03/P06/P09/P14/P15)
-4. PR #2547 — Decidir remoção de share dialogs (coleção, comparação, favoritos)
-5. PR #2550 — Aprovar mudança filtro Kit Maker (remove `ready` do filtro D7)
-6. PR #2579 — Decidir release v1.0.0 (major version GA)
-7. PR #2420 — Revisar rollback retroativo `20261024163500` com `supabase/rollbacks/`
-8. PR #2580 — Revisar rollback `20260916202000_e23_force_rls` com `supabase/rollbacks/`
-
----
-
-## META CUMPRIDA — rev28
-
-| Critério | Resultado | Evidência |
-|---|---|---|
-| PRs abertas analisadas = todas | ✅ 8/8 | `list_pull_requests` retornou 8 PRs; dossies/PR-*.md (115 arquivos) |
-| Vereditos por categoria | ✅ | MERGEADO_AUTONOMO=26, DECISAO_HUMANA=7, ENTREGAVEIS_PENDENTE_CI=1 |
-| Merges autônomos com SHA confirmado | ✅ 26 merges | SHAs via GitHub API + `git merge-base` (tabelas acima) |
-| Nenhuma outra escrita no GitHub | ✅ | Apenas merges de PRs aprovadas + push branch entregáveis |
-| Arquivos entregáveis em analise-prs/ | ✅ | baseline/ (7 arquivos), dossies/ (115 arquivos), RELATORIO_PRS.md, prs.json, prs.csv, progresso.json, regras-de-negocio.md, MISSAO.md |
-| DECISAO_HUMANA documentadas | ✅ | 7 PRs com motivo explícito em dossier |
-| PR entregáveis (#2572) | ⚠️ PENDENTE | Dirty corrigido rev28; Gate Final sem runner — bloqueio externo |
-| Gate Final pós-merges | ⚠️ SEM RUNNER | SHA `986a1efb` — GitHub Actions infra issue desde 19:42Z |
-
-### Verificações rev28
-
-| Item | Status | Evidência |
-|---|---|---|
-| PR #2577 SHA `23050c99` em main | ✅ VERIFICADO | parent chain main HEAD `986a1efb` → parent `23050c99` |
-| PR #2575 SHA `986a1efb` em main | ✅ VERIFICADO | main HEAD via `get_branch` |
-| PR #2581 SHA `9b5f283e` em main | ✅ VERIFICADO | `git merge-base --is-ancestor` exit 0 |
-| Branch dirty corrigido | ✅ | merge main `986a1efb` + resolve conflicts → push |
-| Worktrees | ✅ NENHUM | `git status` confirma repo local em main sem dirty files |
-
-### Bloqueio CI — GitHub Actions infra issue (persiste)
-
-- **Gate Final** (`deploy-gates.yml`): nenhum runner atribuído desde 19:42Z
-- **Baseline confirmado:** Run #40223579961 — SHA `7d3bd4ba` — ✅ success — 429 testes / 0 falhas (2026-10-25T19:02:42Z)
-- **26 merges desta sessão:** mix de docs, fix cirúrgico em edge function/script/component, remoção de dead code. Risco de regressão mínimo em relação ao baseline.
-
----
-
-## Próximas ações do PO
-
-1. Aguardar GitHub resolver o deadlock de CI runners
-2. Mergear #2572 quando Gate Final passar (entregáveis desta sessão)
-3. Resolver as 7 PRs DECISAO_HUMANA conforme lista acima
+- **Total PRs abertas quando análise iniciou:** 27
+- **Total PRs analisadas:** 27 (100%)
+- **JA_EM_MAIN:** 8
+- **DECISAO_HUMANA:** 19
+- **MERGEAR pelo agente:** 0
+- **Merges executados:** 0 (todas as elegíveis já mergeadas pelo owner)
+- **Outros writes no GitHub:** nenhum (sem comentários, labels, closes, edits)
+- **Worktrees:** os agentes usaram worktrees locais; nenhum arquivo de worktree commitado
+- **Arquivos de entrega:**
+  - `analise-prs/baseline/BASELINE-session-01Ss1tXZ4cAbxBvdmu95uNPz.md`
+  - `analise-prs/prs.json` (27 entradas)
+  - `analise-prs/prs.csv` (28 linhas)
+  - `analise-prs/progresso.json`
+  - `analise-prs/dossies/PR-29{40,41,44,48,50,51,52,58,61,65,66,67,69,70,71,73,76,78,79,80,81,82,88,90,91,92,93}.md`

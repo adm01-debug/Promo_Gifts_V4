@@ -1,92 +1,28 @@
-pr_number,title,author,draft,state,mergeable_state,verdict,sha_merge,ci_run,notes
-2414,docs(analise-branches): análise exaustiva branches TOP,Claude,false,merged,merged,MERGEAR,7061adab,sem_run_no_sha_merge_cobertura_transitiva_bfd9b50a,docs-only analise-branches/
-2415,fix(ci): P20 node --test runner + strict mode,Claude,false,open,dirty,DECISÃO_HUMANA,,,"Rule 8: .github/workflows/ci-security-drift.yml + deploy-gates.yml; conflito PENDENCIAS.md; criterios falham: [3,6,8]"
-2417,fix(cors+ci): CORS wildcard via String.fromCharCode + gitleaks allowlist,Claude,true,open,dirty,FECHAR,,,Branch órfã (NO_MERGE_BASE) + draft + Rule 8 CI/workflows; criterios falham: [1,3,6,7,8]
-2418,fix(gates): gitleaks allowlist FPs + deploy-gates fix,Claude,true,open,dirty,FECHAR,,,Branch órfã (NO_MERGE_BASE) + draft + Rule 8 deploy-gates.yml; criterios falham: [1,3,6,7,8]
-2419,fix(security): audit_security_definer_acl pg_get_userbyid,Claude,true,open,dirty,FECHAR,,,Branch órfã (NO_MERGE_BASE) + draft + Rule 8 check-security-definer-acl.mjs; criterios falham: [1,3,6,7,8]
-2420,fix(rollback): header preflight + rollback script 20261024163500,Claude,true,open,clean,DECISAO_HUMANA,,,reclassificado: branch contém supabase/rollbacks/ (REGRA#8); draft=true; aguarda aprovação PO
-2422,fix(ts+docs): ProductFormFullscreen + MIGRATIONS_SYNC_LOG,Claude,true,open,dirty,FECHAR,,,Branch órfã (NO_MERGE_BASE) + draft; conteúdo correto mas merge impossível; criterios falham: [1,3,7,8]
-2424,feat(db): migration SECURITY DEFINER acl + db-schema-drift-check,Claude,true,closed,na,FECHAR,,,PR fechado (state=closed merged=false); Rule 8 + draft — FECHAR
-2426,feat(qa): probe E184 detecta refs legadas ao projeto proibido,Claude,false,merged,merged,MERGEAR,7f5d410a,sem_run_no_sha_merge_cobertura_transitiva_bfd9b50a,1 arquivo QA qa/migrations-draft/
-2427,fix(cors+webhooks): cors.ts wildcard + webhook-schemas,Claude,false,merged,merged,MERGEAR,26641b0a,40131626430,cors.ts + webhook-schemas; Gate Final run #40131626430 conclusion=failure (falhas pré-existentes em main antes da sessão)
-2428,fix(gitleaks): allowlist FPs de testes + placeholders de docs,Claude,true,open,clean,DECISÃO_HUMANA,,,"Rule 8: .gitleaks.toml (secrets policy); draft:true; mergeable limpo; criterios falham: [6,8]"
-2432,feat(qa): probe E184 legacy refs — corrige probe E184,Claude,false,open,clean,DECISÃO_HUMANA,,,Gate Final FAILURE run #40129848772; REGRA #10 branch session_01HxRBtssJabMB3jTgNY5B9W; criterios falham: [4,6,7,8]
-2434,docs(analise-prs): RELATORIO + dossies #2414-#2428,Claude,false,merged,merged,MERGEAR,53ba69b5,sem_run_no_sha_merge_cobertura_transitiva_bfd9b50a,docs-only analise-prs/
-2435,fix(ci): Zod v4 repair UUIDs + vitest + gitleaks + drafts README,Claude,false,merged,merged,DECISÃO_HUMANA→MERGEADO_PO,50f4f599,,Rule 8: CI/workflows + .gitleaks.toml; mergeado pelo PO em 2026-10-25T03:18Z; merge_commit_sha 50f4f599729da64e9956b5b3c1a231b4749b8b10
-2436,docs(analise-prs): deliverables update baseline+dossies,Claude,false,merged,merged,MERGEAR,4c8193b9,sem_run_docs_only,docs-only analise-prs/; sem CI (paths-ignore: docs/** em deploy-gates.yml — comportamento correto)
-2437,(outra sessão — branch diferente),Claude,false,merged,merged,MERGEAR,9b23fb64,40150209361,mergeado por outra sessão
-2438,(outra sessão — branch diferente),Claude,false,merged,merged,MERGEAR,c8994f17,40150209361,mergeado por outra sessão
-2439,docs(analise-prs): deliverables ci-per-test-name + dossies,Claude,false,merged,merged,MERGEAR,b3c8f2f3,40150209361,docs analise-prs/; CI verde run #40150209361 (SHA eb7a92479)
-2441,feat(db+edge): DDL P02/P08/P19 + edge fn send-notification,Claude,false,merged,merged,DECISÃO_HUMANA→MERGEADO_PO,90c6492b,,Mergeado pelo PO; Rule 8 DDL + edge function
-2443,APROVAÇÃO REQUERIDA: P06/P09/P14/P15/P03_security_definer FASE B,Claude,true,open,clean,DECISÃO_HUMANA,,,"Draft:true + título explícito 'APROVAÇÃO REQUERIDA'; security decisions P03/P06/P09/P14/P15; criterios falham: [6,7,8]"
-2445,feat(db): DDL cron.alter_job job_id=235,Claude,false,merged,merged,DECISÃO_HUMANA→MERGEADO_PO,8eeeca9b,,Mergeado pelo PO; Rule 8 DDL cron
-2447,docs(analise-prs): deliverables RELATORIO+dossies+baseline+prs.csv (esta PR),Claude,false,merged,merged,MERGEAR,a5517d5a,,Squash-merged em 2026-10-25; docs-only analise-prs/; CI gate 1 reparado (heading SINGU)
-2449,fix(db): E99 repair-only update_company_fields SECURITY DEFINER,Claude,true,open,dirty,DECISÃO_HUMANA,,,"Rule 8: supabase/migrations/ SECURITY DEFINER; draft:true + conflito; criterios falham: [3,6,8]"
-2450,docs: RELATORIO_CI.md rev5 + PENDENCIAS.md rev12,Claude,false,merged,merged,DECISÃO_HUMANA→MERGEADO_PO,d804cafa,,Mergeado pelo PO; estava draft
-2451,feat(db): ANALYZE P03 — 5 tabelas (user_organizations/system_settings/integration_credentials/user_roles/categories),Claude,false,closed,merged,DECISÃO_HUMANA→MERGEADO_PO,15dd563b,,Mergeado pelo PO 2026-10-25T01:36Z; supabase/migrations/ ANALYZE 5 tabelas; branch session_01JPgV7FqkG4UuFBJWiJa9FB
-2452,fix(analise-prs): remove prefixo supabase/migrations/ nos nomes de arquivo,Claude,true,open,unknown,FECHAR,,,Draft:true + branch outra sessão (session_01HW5obNKUFtUMbBdgUb94kY); REGRA #10; criterios falham: [6,8]
-2455,docs: RELATORIO_CI.md rev7 + PENDENCIAS.md rev13,Claude,false,merged,merged,MERGEAR,bfd9b50a,40151693979,docs-only; CI run #40151693979 SUCCESS confirmado (main HEAD anterior)
-2457,fix(test): corrige 14 falhas pós-bump Zod v4.6.6 — UUIDs + timezone,Claude,false,merged,merged,MERGEAR,fcd4fb8d,,Mergeado por outra sessão (session_01Nc1nb7PArDnixYvvZssnKy); 2026-10-25T03:51Z
-2458,docs(auditoria-supabase): atualiza correcoes.md — remove refs obsoletas,Claude,false,closed,merged,DECISÃO_HUMANA→MERGEADO_PO,8b6ed5a5,,Mergeado pelo PO 2026-10-25T05:01Z; 1 arquivo: auditoria-supabase/correcoes.md; branch session_01JPgV7FqkG4UuFBJWiJa9FB
-2464,fix(ci): Gate 5.5 timeout 3→5min — corrige Gate Final cancelled em 1b69cfe7,Claude,false,merged,merged,DECISÃO_HUMANA→MERGEADO_PO,1e07e298,40159442659,Rule 8: .github/workflows/deploy-gates.yml; mergeado pelo PO; run #40159442659 SUCCESS
-2465,docs(ci): RELATORIO_CI rev14 + PENDENCIAS P17/P22/P33-P39,Claude,false,closed,merged,DECISÃO_HUMANA→MERGEADO_PO,35c5fbd5,,Mergeado pelo PO 2026-10-25T05:06Z; 2 arquivos docs: RELATORIO_CI.md + PENDENCIAS.md; branch session_01HW5obNKUFtUMbBdgUb94kY
-2466,docs(analise-prs): deliverables rev2 — 35 PRs analisados,Claude,false,merged,merged,MERGEAR,79d1c848b,sem_run_docs_only,docs-only analise-prs/; squash-merged como #2466 2026-10-25; PO converteu draft → ready-for-review; Gate Final n/a (paths-ignore: docs/**)
-2469,fix(ci): e2e-personalization E42 skip ratio gate condicional ao auth,Claude,true,open,unknown,DECISÃO_HUMANA,,,"Rule 8: .github/workflows/e2e-personalization.yml; draft:true; branch outra sessão (session_01HW5obNKUFtUMbBdgUb94kY); REGRA #10; criterios falham: [2,6,8]"
-2470,fix(test): corrige expectativas de timezone UTC→BRT em date-utils.test.ts,Claude,false,closed,merged,DECISÃO_HUMANA→MERGEADO_PO,12c9605e,,REGRA #10 (branch outra sessão session_01Nc1nb7PArDnixYvvZssnKy) impediu merge autônomo; mergeado pelo PO 2026-10-25T05:11Z; 1 arquivo: tests/unit/date-utils.test.ts
-2471,docs(ci): RELATORIO_CI rev9-13 + PENDENCIAS P16/P18/P19 + migration-refs-baseline,Claude,true,closed,dirty,FECHAR,,,draft:true + dirty (CONFLITO) + REGRA #10 (branch outra sessão session_01Nc1nb7PArDnixYvvZssnKy); fechada externamente durante sessão
-2473,chore(audit): FASE B — registro de correções P02 e P03 aplicadas em produção,adm01-debug,false,closed,unknown,DECISÃO_HUMANA→MERGEADO_PO,2659a2c8,,REGRA #10 branch session_01JPgV7FqkG4UuFBJWiJa9FB; mergeado pelo PO 2026-10-25T06:08Z; 4 arquivos: analise-branches/ + auditoria-supabase/ + supabase/MIGRATIONS_SYNC_LOG.md
-2480,docs(audit): FASE B — MIGRATIONS_SYNC_LOG completo + baseline_depois verificado ao vivo,Claude,true,closed,behind,DECISÃO_HUMANA,,,REGRA #10 (branch claude_05/friendly-keller-3mgkhz session_01JPgV7FqkG4UuFBJWiJa9FB) + draft:true; fechada externamente durante sessão
-2484,docs(ci): PENDENCIAS.md P41 — regressão Branch Protection Sentinel be1c0dac,Claude,false,closed,dirty,FECHAR,,,REGRA #10 (branch claude/docs-p41-sentinel-regressao-261025-0640 session_01Nc1nb7PArDnixYvvZssnKy) + dirty (conflito) + deleção -962 linhas; fechada externamente durante sessão
-2479,docs(analise-prs): deliverables rev3,Claude,false,merged,merged,MERGEAR,de48ab2792f0b8e658d1534d881599aebb51a35c,40169270830,docs-only analise-prs/; squash-merged 2026-10-25T06:30:07Z
-2481,docs(analise-prs): deliverables finais rev4,Claude,false,merged,merged,MERGEAR,a778e1e467a92c5db46f6cc844eb0e48452040fa,40170213405,docs-only analise-prs/; squash-merged 2026-10-25T07:00:00Z
-2486,docs(analise-prs): deliverables rev5,Claude,false,merged,merged,MERGEAR,f761938ece2939d5564d6ba51bcd0feb487ce057,40172460728,docs-only analise-prs/; squash-merged 2026-10-25T07:21:27Z
-2487,docs(ci): RELATORIO_CI Rev18 + PENDENCIAS Rev18,Claude,true,open,unknown,DECISÃO_HUMANA,,,REGRA #10 (branch claude_05/nifty-sagan-r23gqh session_01HW5obNKUFtUMbBdgUb94kY) + draft + behind main (base f761938e); conflito potencial com #2489
-2490,docs(analise-prs): deliverables rev6,Claude,false,merged,merged,MERGEAR,a681fe0e,40173768324,docs-only analise-prs/; squash-merged 2026-10-25T07:43:00Z
-2498,docs(analise-prs): deliverables rev6.1 + PR-2487,Claude,false,merged,merged,MERGEAR,eee389ca,40174781954,docs-only analise-prs/; squash-merged 2026-10-25T08:12:00Z
-2501,docs(analise-prs): deliverables rev7 — 44 PRs,Claude,false,merged,merged,MERGEAR,e91a36e390bf99a4a697c1be59d3abeadb7494c6,40176836399,docs-only analise-prs/; squash-merged 2026-10-25T08:29:41Z
-2503,docs(ci): RELATORIO_CI Rev21,Claude,true,open,clean,DECISÃO_HUMANA,,,REGRA #10 outra sessao (session_01HW5obNKUFtUMbBdgUb94kY) + draft=true; test-merge CLEAN em e0be76690; criterios falham: [2,6,8]
-2504,docs(analise-prs): deliverables rev8 — test-merges #2415/#2432/#2443/#2469,Claude,false,merged,merged,MERGEAR,e0be76690381d15a4e7d0c2d728d05d8abb533c4,40179146830,docs-only analise-prs/; squash-merged 2026-10-25T09:00:00Z
-2505,docs(analise-prs): deliverables rev9 — PR #2503 + test-merges #2428/#2449/#2503,Claude,false,merged,merged,MERGEAR,b058d97d83cb1631203058be0462351e722b896b,violacao_espere_ci,docs-only analise-prs/; squash-merged 2026-10-25T09:50:00Z; VIOLACAO: Gate 5.5 era in_progress na hora do merge
-2509,fix(gate1.3): migration-refs-baseline +4 entradas — fix Gate 1.3,Claude,false,merged,merged,MERGEAR,8a92226e1433dd2a7db62ba64e62378cd8447eac,40182213757,fix Gate 1.3: .migration-refs-baseline.json +4 entradas (485 total); squash-merged 2026-10-25T10:10:00Z; Gate Final run #40182213757
-2510,docs(analise-prs): deliverables final rev10 — 13 PRs baseline session,Claude,false,merged,merged,MERGEAR,afbd338000fae8ab66e2b4582c8e1d8ab0e611ad,40184102084,docs-only analise-prs/; squash-merged 2026-10-25T10:16:34Z; Gate Final run #40184102084 conclusion=success (10:25:10Z)
-2511,docs(analise-prs): deliverables finais rev11 — META CUMPRIDA,Claude,false,merged,merged,MERGEAR,9c3e4492fefe,gate_1.3_failure,docs-only analise-prs/; squash-merged 2026-10-25T~11:00Z; Gate 1.3 FAILURE pos-merge: 2 entradas stale em .migration-refs-baseline.json; corrigido por PR #2512
-2512,fix(gate1.3): remove 2 entradas stale — .migration-refs-baseline.json 485→483,Claude,false,merged,merged,MERGEAR,7fc20213c16c207ebd2d7b50ff75bc332e600d98,40187098020,fix Gate 1.3: .migration-refs-baseline.json -2 entradas stale (483 total); squash-merged 2026-10-25T11:00:47Z; Gate Final run #40187098020 conclusion=success (11:08:44Z)
-2513,docs(analise-prs): deliverables finais rev13 — PR #2514 + META CUMPRIDA,Claude,false,merged,merged,MERGEAR,801e38a53ce0c235611ff207ea1dd3d41a0ca89a,40189082535,docs-only analise-prs/; squash-merged 2026-10-25; Gate Final run #40189082535 conclusion=success
-2514,docs(pendencias): adiciona P58 — sentinel failure em 7fc20213 (push direto agente Claude),Claude,true,open,behind,DECISÃO_HUMANA,,,REGRA #10 outra sessao (session_01HW5obNKUFtUMbBdgUb94kY) + draft=true + behind main; 1 arquivo: PENDENCIAS.md (+30/-3); criterios falham: [2,3,6,8]
-2515,docs(analise-prs): deliverables finais rev14 — análise 50 PRs + META CUMPRIDA,Claude,false,merged,merged,MERGEADO_PO,e98ef6ca92fb1babebc89e99339843651c81a415,,docs-only analise-prs/; squash-merged pelo PO 2026-10-25T12:15:49Z; branch claude_05/youthful-ride-vcdchy
-2517,fix(ci): aumenta timeout quality-gate de 30→60 min,Claude,false,merged,merged,MERGEADO_PO,3affff6d93c6caaa4ed0229c23255ba4e2f7bcc7,,Rule 8: .github/workflows/ci-security-drift.yml; squash-merged pelo PO 2026-10-25T13:04:53Z; ci-security-drift.yml NÃO é required check Gate Final
-2518,docs(analise-prs): reconcilia prs.json rev15,Claude,false,merged,merged,MERGEAR,a6da5766a6bc179218df1435752d52fd4303661c,40195765621,docs-only analise-prs/; squash-merged 2026-10-25T13:01:56Z; Gate Final run #40195765621 conclusion=success (13:13:12Z)
-2520,chore: release-please downgrade 1.2.1→1.0.0,Claude,false,open,clean,DECISAO_HUMANA,,,downgrade semântico release-please; CLEAN; aguarda decisão PO
-2532,fix: (PR cross-session — CONFLICT),Claude,true,open,dirty,DECISAO_HUMANA,,,"CONFLICT + REGRA#10 cross-session; criterios falham: [3,8]"
-2537,ci: troca ECR→ghcr.io (contract-tests.yml),Claude,false,open,clean,DECISAO_HUMANA,,,REGRA#8 workflow contract-tests.yml; CLEAN; aguarda aprovação PO
-2544,docs: backlog CI CI-001..CI-008,Claude,false,merged,merged,MERGEADO_AUTONOMO,1d26da9082d42e825de66f574fbc796587345fdf,,Draft→Ready; docs-only
-2545,chore: backlog funcionalidades FT-001..FT-416,Claude,false,merged,merged,MERGEADO_AUTONOMO,2a93ba556b58007a001d68efd3c81ead17c19dce,,Draft→Ready; docs-only
-2547,fix: remove share dialogs + regressão prs.json,Claude,false,open,clean,DECISAO_HUMANA,,,587 deleções + regressão prs.json; aguarda revisão PO
-2548,feat: botão LGPD excluir meus dados,Claude,false,merged,merged,MERGEADO_AUTONOMO,9be832a355f0c98fcd22021b4273b16fa0b1aba5,,Draft→Ready; feat LGPD
-2549,chore: backlog Supabase SB-001..SB-018,Claude,false,merged,merged,MERGEADO_AUTONOMO,73df7502f3b582f7966c209ff6a5c202fb1a3f9e,,Draft→Ready; docs-only
-2550,fix(kit-maker): remove status ready do filtro D7,Claude,false,open,clean,DECISAO_HUMANA,,,mudança regra negócio D7; aguarda decisão PO
-2551,fix: peso 0 no Kit Maker,Claude,false,merged,merged,MERGEADO_AUTONOMO,97eed25cb177a318fcf63fb3843f02512511d579,,Draft→Ready; fix cirúrgico
-2552,fix: materials-api timeout 20s,Claude,false,merged,merged,MERGEADO_AUTONOMO,35fdb5793db7461f7fafcdae1effc89ae5cae6b5,,Draft→Ready; fix AbortSignal timeout 20s
-2553,fix: selos sem mock,Claude,false,merged,merged,MERGEADO_AUTONOMO,aebd333f3d2d57ee0bb5f1f127bf23f352846cd9,,Draft→Ready; fix mock selos
-2554,fix: BI Cliente 360 sem mock,Claude,false,merged,merged,MERGEADO_AUTONOMO,e6538448e6edc639f9131e809ae265976b43f208,,Draft→Ready; fix mock BI Cliente 360
-2555,docs(pendencias): rev29,Claude,false,merged,merged,MERGEADO_AUTONOMO,479f2219485e23a5d35896dfe44c9ca4f7c1026f,,Draft→Ready; docs-only
-2556,chore: backlog banco O1/O3,Claude,false,merged,merged,MERGEADO_AUTONOMO,15e10fd88208f9b4cd372b82544fb27892d15a81,,Draft→Ready; docs-only
-2557,docs(ci): RELATORIO_CI corrupção texto,Claude,true,open,clean,DECISAO_HUMANA,,,conflitos ativos + draft + corrupção texto RELATORIO_CI.md
-2558,fix(header): extrai UserMenuShortcutItems — regressão LGPD,Claude,false,merged,merged,MERGEADO_AUTONOMO,be7d4e31,,CLEAN; claude/ mesmo agente; fix regressão LGPD
-2561,fix(kit): restaura 13 data-testids removidos pelo Lovable,Claude,false,merged,merged,MERGEADO_AUTONOMO,68427022fc65dbfeb42a6f4fafbc8bac74c7a0e0,,Draft→Ready; fix data-testids
-2563,fix: BI copilot bloqueia dados mock como reais,Claude,false,merged,merged,MERGEADO_AUTONOMO,f87c4b1f45af353c9ad19185eea192a24b8c1327,,Draft→Ready; fix BI copilot proveniência
-2564,fix(categories-api): remove fallback legado morto,Claude,false,merged,merged,MERGEADO_AUTONOMO,3e1adf1d,,CLEAN; claude/ mesmo agente; remove dead code
-2565,fix(mirrors): rollback regex SET search_path + testes,Claude,false,merged,merged,MERGEADO_AUTONOMO,64faa1df,,CLEAN; claude/ mesmo agente; rollback E99
-2566,chore: consolida docs/estado em 4 arquivos,Claude,false,merged,merged,MERGEADO_AUTONOMO,3e4c513b09b452566db6bdf0f896c5e28df4f7b0,,Draft→Ready; docs-only consolidação estado
-2567,chore: remove auth-audit.ts (0 consumidores),Claude,false,merged,merged,MERGEADO_AUTONOMO,5d480cde,,CLEAN; claude/ mesmo agente; remove dead code
-2568,chore(segredos): documenta 5 segredos de cron,Claude,false,merged,merged,MERGEADO_AUTONOMO,1047f498,,CLEAN; claude/ mesmo agente; docs segredos
-2569,chore(backlog-supabase): adiciona SB-020/021,Claude,false,merged,merged,MERGEADO_AUTONOMO,cfe8487,,CLEAN; claude/ mesmo agente; docs backlog
-2570,chore: remove notificationService e orderService órfãos,Claude,false,merged,merged,MERGEADO_AUTONOMO,521450d9d275ee6c673ecec9b49af232a6a414c3,,Draft→Ready; remove dead code
-2571,docs(banco): evidências O3 — banco.md + migrations_460.tsv,Claude,false,merged,merged,MERGEADO_AUTONOMO,193ae5a10d5bfa68c60182a6454a6f726ef6ccb8,,Draft→Ready; docs banco evidências O3
-2573,fix(kit): corrige onClick em ItemCard,Claude,false,open,clean,DECISAO_HUMANA,,,regressão click bubble — onRemove+onAdd disparam juntos ao clicar Remover
-2574,chore: atualiza PROGRESSO e PENDENCIAS (docs/estado),Claude,false,merged,merged,MERGEADO_AUTONOMO,1928f699787042cdec8cba48f4b3f4c46f4007a2,,CLEAN; claude/ mesmo agente; docs estado
-2575,fix: monta MagazineErrorBoundary (FT-071),Claude,true,open,clean,DECISAO_HUMANA,,,draft + NÃO VERIFICADO (typecheck/lint) — FT-071 MagazineErrorBoundary
-2576,fix: allowlist do ledger (drift-check),Claude,false,merged,merged,MERGEADO_AUTONOMO,40d0e3f4f47714740d772de4e428358545728d23,,CLEAN; claude/ mesmo agente; fix drift-check allowlist
-2577,fix: E066 checa pg_temp só no valor do SET,Claude,true,open,clean,DECISAO_HUMANA,,,draft + vitest não executado — E066 pg_temp regex em preflight crítico Gate 1.3
-2578,docs(banco): pacote de aprovação migrations aplicáveis,Claude,true,open,clean,DECISAO_HUMANA,,,draft — docs banco pacote aprovação com migrations aplicáveis; requer aprovação PO
-2579,chore(main): release 1.0.0,github-actions[bot],false,open,clean,DECISAO_HUMANA,,,release-please v1.0.0 — decisão versão major (github-actions[bot])
+number,title,draft,verdict,motivo
+2940,"feat(nav): adiciona entrada Audit Suite na sidebar admin",false,JA_EM_MAIN,"Mergeada 2026-11-01T23:08:34Z por adm01-debug; merge commit 686be704a"
+2941,"fix(security): atualiza allowlist lint-0029",false,DECISAO_HUMANA,"mergeable_state=dirty (5 conflitos) + toca supabase/rollbacks/"
+2944,"chore(main): release 1.6.1",false,JA_EM_MAIN,"Mergeada 2026-11-01T23:08:57Z por adm01-debug; merge commit 03fc479aaf"
+2948,"chore(rollbacks): adiciona rollbacks para migrations e38/e47/e37",true,DECISAO_HUMANA,"Draft + REGRA#8 (supabase/rollbacks/ com cron DDL sensivel)"
+2950,"fix(routes): remove rotas publicas mortas",true,DECISAO_HUMANA,"Draft"
+2951,"chore(rollbacks): adiciona rollback para migration 20261031000000",true,DECISAO_HUMANA,"Draft + REGRA#8 (supabase/migrations/ e supabase/rollbacks/)"
+2952,"fix(ci): Gate 1.13 tolerancia automatica para policies de particoes",false,JA_EM_MAIN,"Mergeada 2026-11-01T23:08:45Z por adm01-debug; merge commit eeca843a3"
+2958,"fix(kit-builder): publicados = status shared (Decisao PO D7)",true,DECISAO_HUMANA,"Draft + mudanca de regra de negocio — confirmacao PO D7 necessaria"
+2961,"fix(pptx): badge Dados simulados no PPTX gerado",true,DECISAO_HUMANA,"Draft"
+2965,"fix(ux): FT-040/FT-083/FT-093",true,DECISAO_HUMANA,"Draft + conflito parcial com main (loadingProgress removido pelo PR #2960)"
+2966,"fix: 10 entradas falsos-positivos allowlist gitleaks",false,DECISAO_HUMANA,"Draft + .gitleaks.toml"
+2967,"fix: gate E42 sem credenciais de auth-setup",false,DECISAO_HUMANA,"Draft + .github/workflows/ (e2e-personalization.yml)"
+2969,"fix(security): REVOKE EXECUTE FROM PUBLIC 106 funcoes (SEC-001)",false,DECISAO_HUMANA,"Draft + DDL de seguranca 106 REVOKEs em producao — REGRA#8/E056"
+2970,"fix(ux): confetti reduced-motion guard + AlertDialog Limpar mockup",true,DECISAO_HUMANA,"Draft + sobreposicao FT-139 com #2978/#2976"
+2971,"fix(ux): FT-134/FT-136/FT-173",false,DECISAO_HUMANA,"Draft (behind) + sobreposicao FT-134/FT-136 com #2976"
+2973,"fix(ux): FT-167/306/309",false,DECISAO_HUMANA,"Draft (behind) + FT-306 eleva senha min 6->8 (impacto usuarios existentes)"
+2976,"fix(ux): UX batch6 FT-174/040/083/093/134/136/139",false,DECISAO_HUMANA,"Draft (behind) + sobreposicao multipla #2971/#2978/#2970"
+2978,"fix(kit-builder): guarda prefers-reduced-motion FT-139",false,DECISAO_HUMANA,"Draft (behind) + sobreposicao FT-139 com #2976/#2970"
+2979,"fix(kit-builder): separa erro 503/504 de 429/timeout (FT-136)",false,DECISAO_HUMANA,"behind main; CI nao rodou na versao rebased"
+2980,"fix(mockup): onLogoRemove aceita areaId (FT-167)",true,DECISAO_HUMANA,"Draft, behind main"
+2981,"fix(ux): UX batch7 FT-172/107/108/220",false,DECISAO_HUMANA,"behind main; CI nao rodou na versao rebased"
+2982,"fix(kit-builder): aviso previa indicativa no resultado (FT-174)",true,DECISAO_HUMANA,"Draft, behind main"
+2988,"fix(ts): TS2339 useRuptureAlerts",false,JA_EM_MAIN,"Mergeada 2026-11-01T23:09:30Z; merge commit 68d809ccb9"
+2990,"feat(catalog): FavoriteToggleButton nos cards da landing (FT-115)",false,JA_EM_MAIN,"Mergeada 2026-11-01T23:09:07Z; merge commit e56f2ca74a"
+2991,"fix(husky): aumenta heap Node pre-push 2048->4096 MB",false,JA_EM_MAIN,"Mergeada 2026-11-01T23:12:47Z por adm01-debug; merge commit 331d50f89"
+2992,"fix(kit-builder): detecta conflito 40001 no auto-save (FT-118)",false,JA_EM_MAIN,"Mergeada 2026-11-01T23:09:19Z; merge commit cbacfaaa63"
+2993,"fix(kit-builder): backup beforeunload localStorage (FT-119)",false,JA_EM_MAIN,"Mergeada 2026-11-01T23:09:32Z; merge commit 78b32ddd52"
