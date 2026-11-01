@@ -11,6 +11,7 @@ const db = supabase as unknown as ReturnType<typeof createClient>;
 import { use2FA } from '@/hooks/auth';
 import { useAllowedIPs } from '@/hooks/admin';
 
+
 import { logger } from '@/lib/logger';
 export interface SecurityMetrics {
   score: number;
@@ -77,6 +78,20 @@ export function useSecurityData(
   // BUG-HEAD-GUARD FIX (2026-06-23): HEAD em user_known_devices sem guard.
   const { rolesLoaded } = useAuth();
 
+  // Refs para is2FAEnabled e allowedIPs: loadSecurityData lê o valor mais
+  // recente sem depender deles — evita recargas extras quando esses valores
+  // mudam (is2FAEnabled resolve após fetch assíncrono, allowedIPs após fetch
+  // de IPs), que causavam sobreposição de ciclos e spinner que nunca some.
+  const is2FAEnabledRef = useRef(is2FAEnabled);
+  useEffect(() => {
+    is2FAEnabledRef.current = is2FAEnabled;
+  }, [is2FAEnabled]);
+
+  const allowedIPsRef = useRef(allowedIPs);
+  useEffect(() => {
+    allowedIPsRef.current = allowedIPs;
+  }, [allowedIPs]);
+
   const loadSecurityData = useCallback(async () => {
     if (!effectiveUserId || !rolesLoaded) return;
     if (mountedRef.current) setIsLoading(true);
@@ -111,16 +126,19 @@ export function useSecurityData(
       const failedAttempts = attempts?.filter((a) => !a.success).length || 0;
       const unreadAlerts = typedNotifs?.filter((n) => !n.is_read).length || 0;
 
+      const currentIs2FA = is2FAEnabledRef.current;
+      const currentAllowedIPs = allowedIPsRef.current;
+
       let score = 40;
-      if (is2FAEnabled) score += 30;
-      if (allowedIPs.length > 0) score += 20;
+      if (currentIs2FA) score += 30;
+      if (currentAllowedIPs.length > 0) score += 20;
       if (devicesCount && devicesCount > 0) score += 10;
       if (failedAttempts > 5) score -= 10;
 
       setMetrics({
         score: Math.min(100, Math.max(0, score)),
-        mfaEnabled: is2FAEnabled,
-        ipRestrictionsActive: allowedIPs.length > 0,
+        mfaEnabled: currentIs2FA,
+        ipRestrictionsActive: currentAllowedIPs.length > 0,
         knownDevicesCount: devicesCount || 0,
         recentLoginAttempts: attempts?.length || 0,
         failedLoginAttempts: failedAttempts,
@@ -132,7 +150,7 @@ export function useSecurityData(
     } finally {
       if (mountedRef.current) setIsLoading(false);
     }
-  }, [effectiveUserId, rolesLoaded, is2FAEnabled, allowedIPs]); // BUG-HEAD-GUARD
+  }, [effectiveUserId, rolesLoaded]); // is2FAEnabled e allowedIPs via refs
 
   useEffect(() => {
     mountedRef.current = true;

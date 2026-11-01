@@ -14,7 +14,7 @@ import { describe, it, expect } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
-const SRC = readFileSync(resolve(__dirname, '../QuoteBuilderSummaryColumn.tsx'), 'utf8');
+const SRC = readFileSync(resolve(__dirname, '../QuoteBuilderSummaryItems.tsx'), 'utf8');
 
 // --- Extração dos tokens reais do source (SSOT) ---------------------------
 const REM_PX = 16; // base Tailwind

@@ -260,6 +260,7 @@
     "get_industry_seasonality",
     "get_industry_top_products",
     "get_platform_failure_metrics",
+    "get_profile_and_roles",
     "get_promo_sales_90d_by_product",
     "get_promo_sales_ranking",
     "get_supplier_reliability_history",

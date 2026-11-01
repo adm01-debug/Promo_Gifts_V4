@@ -1,5 +1,22 @@
 # Sentinel Changelog
 
+## v2.1.1 — 2026-10-29 — Regra 7.5: SHA allowlist histórica (P-CI-H)
+
+**Contexto:** Push direto em main entre `14b6d5fc` e `c3b41286` (por TIPROMO)
+incluiu 6 commits com padrões não cobertos pelo sentinel (docs(ci), docs(auditoria),
+docs(audit), fix(ci), merge: e Merge branch). Run 40965131389 concluiu failure.
+
+**Fix:** adicionada Regra 7.5 que lê `.github/SENTINEL_SHA_ALLOWLIST.txt`.
+Script aceita SHA como 4º argumento opcional. Workflow passa `$SHA` ao script.
+Os 6 SHAs históricos foram registrados no allowlist com aprovação do PO.
+
+**Retrocompatibilidade:** testes em `sentinel-self-test.yml` usam 3 args — 4º arg
+é opcional; quando ausente, Regra 7.5 é pulada sem impacto.
+
+**SHAs isentos:** 153630ff, 03680382, 4e83d972, e2518bbd, c55c6781, 9d9dd2a7
+
+
+
 > **Por que este arquivo existe:** o `Branch Protection Sentinel` é um guard-rail
 > ativo. Mudar suas regras sem registro é uma forma fácil de degradar a segurança
 > sem ninguém perceber. Cada mudança aqui é uma decisão registrada para sobreviver
