@@ -1111,8 +1111,9 @@ function PersonalizationSummaryPanel({ targets }: { targets: PersonalizationTarg
                   {target.personalization.techniqueName || 'Sem técnica'}
                   {dimensions ? ` · ${dimensions}` : ''}
                 </p>
-                {/* FT-108: custo adicional por unidade */}
-                {typeof target.personalization.estimatedPrice === 'number' &&
+                {/* FT-108: custo adicional por unidade — só quando o preço está atualizado para a qty atual */}
+                {configured &&
+                  typeof target.personalization.estimatedPrice === 'number' &&
                   target.personalization.estimatedPrice > 0 && (
                     <p className="truncate text-xs text-muted-foreground">
                       + R${' '}
