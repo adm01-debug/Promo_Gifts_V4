@@ -1,10 +1,31 @@
 # RELATORIO_CI.md — Auditoria de Workflows CI/CD
 
-**Gerado:** 2026-10-29 · **Atualizado:** 2026-11-01T00:00 UTC
+**Gerado:** 2026-10-29 · **Atualizado:** 2026-11-01T14:00 UTC
 **HEAD da main auditada:** `5ae127ea` (PR #2871 — fix(db): cria tabela stock_notes, 2026-10-31)
 **HEAD anterior (baseline):** `7e56ae49` (PR #2818, docs-only, 2026-10-30)
 **PR ativo:** #2846 (`fix/e2e-url-state-defaults-20261030`) — inclui fix Gate 1.12 para `stock_notes`
 **Sessão:** https://claude.ai/code/session_01T5KXrgFRFRHrCX5jRcTCUz
+
+---
+
+## 6. Estado do PR #2846 — Gate Final (2026-11-01T14:00 UTC)
+
+| SHA | Commit | Deploy Gates | migrations-sync-log-gate | Observação |
+|---|---|---|---|---|
+| `0bbd70b5` | fix(ci): corrige Gate 1.13.3 (recibo repair-only) | `pending` (run [41313600062](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41313600062)) | `queued` (run [41313600117](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41313600117)) | CI em fila — push completado 2026-11-01T13:55 UTC |
+| `9422d0ac` | docs(ci): Branch Protection Sentinel — evidência jobs | push em andamento | — | push via pre-push hook lint baseline |
+
+**Falhas não-required no SHA anterior `f73265f3` (pré-existentes):**
+| Check | Run ID | Causa |
+|---|---|---|
+| `webkit • swatch→QV` | [124864727335](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41312199719/job/124864727335) | WebKit runner crash — pré-existente (P28 item 5) |
+| `Recibo de migration` | [124864728124](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41312199825/job/124864728124) | Recibo "pendente" — **corrigido em `0bbd70b5`** |
+| `E2E · undo` | [124860882524](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41310025109/job/124860882524) | Pré-existente — não-required |
+| `E2E · view-no-presentation-mode` | [124860882643](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41310025109/job/124860882643) | Pré-existente — não-required |
+| `merge-reports` | [124863735140](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41311031030/job/124863735140) | Pré-existente — não-required |
+| Vercel | dpl_HnnZvUQ9P9JZACGuMPUh5siTr8MF | Deploy failure — não é required check do Gate Final |
+
+> **Check-in de segurança:** agendado para 2026-11-01T14:51 UTC (trig_01TPn4wYnh7fgdEmWEK5ihH2)
 
 ---
 
@@ -54,7 +75,7 @@ A única **regressão nova** introduzida por PR #2871 é o item 1 (Deploy Gates 
 | `npm run build` | ✅ EXIT=0 | Build Vite em 13.04s; warnings INEFFECTIVE_DYNAMIC_IMPORT pré-existentes; chunk-cycles OK |
 | `npx tsc --noEmit` | ✅ EXIT=0 | Zero erros TypeScript |
 | `npm run lint:baseline` | ✅ EXIT=0 | ESLint baseline gate [full] — atual: 0 erros, 0 warnings · baseline: 0 erros; Nenhuma regressão detectada |
-| `npx vitest run` | ⏳ em execução | Executando em background — resultado será registrado ao completar |
+| `npx vitest run` | ⚠️ interrompido | Tarefa interrompida antes de completar (timeout de contexto); resultado não disponível — execução local não concluída |
 
 > **Sem regressão introduzida:** tsc ✅ + build ✅ + lint ✅ confirmam zero erro TypeScript, bundling ou lint. Build em 13.04s (vs 16.28s no baseline anterior — melhoria). Lint executável com `NODE_OPTIONS="--max-old-space-size=6144"`.
 
