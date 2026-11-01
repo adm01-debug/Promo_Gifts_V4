@@ -1,10 +1,10 @@
 # RELATORIO_CI.md — Auditoria de Workflows CI/CD
 
-**Gerado:** 2026-10-29 · **Atualizado:** 2026-11-01T22:10 UTC
-**HEAD da main auditada:** `d2033d92` (PR #2946 — fix(db): rollback migrations 202000/201000, 2026-11-01T21:51)
+**Gerado:** 2026-10-29 · **Atualizado:** 2026-11-01T22:25 UTC
+**HEAD da main auditada:** `4c6541b6` (docs(auditoria): validação exaustiva final, 2026-11-01T22:06)
 **HEAD anterior (baseline):** `5ae127ea` (PR #2871 — fix(db): cria tabela stock_notes, 2026-10-31)
-**PR ativo:** #2846 (`fix/e2e-url-state-defaults-20261030`) — HEAD atual `82e59ccf` (merge main@de5345dc)
-**PR #2941:** fix(security): allowlist lint-0029 (remove mcp_kv_get stale, adiciona perf002) — aguardando CI
+**Branch de fix:** `fix/e2e-url-state-defaults-20261030` — HEAD atual `b51c252d` (merge main@4c6541b6)
+**PR #2941:** fix(security): allowlist lint-0029 — CI em execução (SHA `b51c252d`)
 **Sessão:** https://claude.ai/code/session_01T5KXrgFRFRHrCX5jRcTCUz
 
 ---
@@ -59,6 +59,55 @@
 | BLOQUEADO PO (aprovação exigida) | Policies Baseline | Drift RLS policies — exige dispatch com seed=true após validação PO |
 
 > **Deploy Gates (required check):** última conclusão **failure** em `c2432c52`. Runs em fila para SHAs mais recentes onde Gate 1.12 foi corrigido. CI congestionado no momento do relatório — aguardando execução dos runs queued.
+
+---
+
+## 17. BASELINE FRESCO PÓS-ALTERAÇÕES — Sessão 2 (2026-11-01T22:25 UTC)
+
+> **Branch:** `fix/e2e-url-state-defaults-20261030` HEAD `b51c252d` (merge main@`4c6541b6`)
+> **Alterações desta sessão:** merge de main, atualização RELATORIO_CI.md §16, atualização PENDENCIAS.md P35.
+
+### 17.1 Verificações locais pós-alteração
+
+| Verificação | Resultado | Detalhe |
+|---|---|---|
+| `npm ci` | ✅ EXIT=0 | Dependências instaladas; sem erros audit críticos |
+| `npm run build` | ✅ EXIT=0 | Vite build em 10.58s; zero erros |
+| `npx tsc --noEmit` | ✅ EXIT=0 | Zero erros TypeScript |
+| `NODE_OPTIONS=--max-old-space-size=4096 npm run lint:baseline` | ✅ EXIT=0 | 0 erros, 0 warnings · Δ regressões: +0 |
+| `npx vitest run` | ⏳ em execução | Background task `bqrsrdpuf` — resultado pendente |
+
+### 17.2 Comparação baseline × pós-alteração
+
+| Métrica | Baseline (§16.1 — 2026-11-01T14:17) | Pós-alteração (17.1) | Delta |
+|---|---|---|---|
+| Build Vite | ✅ 11.01s | ✅ 10.58s | ✅ sem regressão |
+| TypeScript errors | 0 | 0 | ✅ 0 |
+| ESLint erros/warnings | 0/0 | 0/0 | ✅ 0 |
+| Vitest passed | 540 (43 suites) | ⏳ aguardando | — |
+
+### 17.3 Status CI na main@`4c6541b6` (2026-11-01T22:25 UTC)
+
+> Todos os runs mais recentes na main têm `conclusion=None` (ainda em execução — runners congestionados).
+> Os runs foram disparados em 22:06 UTC para SHA `4c6541b6`.
+
+| Workflow | Run ID | Status atual | SHA |
+|---|---|---|---|
+| Deploy Gates | [41355438242](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41355438242) | ⏳ queued | `4c6541b6` |
+| CI Security & Drift Checks | [41355438292](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41355438292) | ⏳ queued | `4c6541b6` |
+| Supabase Linter Gate | [41355438057](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41355438057) | ⏳ queued | `4c6541b6` |
+| E2E (Playwright) | [41355438298](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41355438298) | ⏳ queued | `4c6541b6` |
+| E2E — Critical Flows | [41355438221](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41355438221) | ⏳ queued | `4c6541b6` |
+| Policies Baseline | [41355438140](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41355438140) | ⏳ queued | `4c6541b6` |
+| Quote Builder Delivery QG | [41355438137](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41355438137) | ⏳ queued | `4c6541b6` |
+| E2E • Swatch QuickView | [41355438250](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41355438250) | ⏳ queued | `4c6541b6` |
+| Gate 5 — Supabase Security Audit | [41354148114](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41354148114) | ⏳ queued | `d2033d92` |
+| CI - Replenishment Module QG | [41354148353](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41354148353) | ⏳ queued | `d2033d92` |
+| DB — Aplicação migration E15 | [41354162277](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41354162277) | ⏳ queued | `d2033d92` |
+| schema-snapshot-export | [41354148168](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41354148168) | ⏳ queued | `d2033d92` |
+| Uptime Monitor | [41355321066](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41355321066) | ⏳ queued | `d2033d92` |
+
+> Nota: `Magazine typed queries` e `TS Unused Locals Ratchet` e `E2E • ColorSwatch` não aparecem nas 100 runs mais recentes na main — workflows que disparam em condições específicas de paths ou não foram triggados recentemente.
 
 ---
 
