@@ -13,6 +13,8 @@
  *   4) A sidebar consome APENAS o `weightVolume` recebido — nunca agrega
  *      dados de outros carrinhos.
  *   5) O botão "Gerenciar Carrinho" foi removido em definitivo.
+ *   6) Atalhos de template: "Salvar como Template" (carrinho com itens) e
+ *      "Usar Template (N)" (quando há templates salvos) vivem na sidebar.
  */
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
@@ -153,6 +155,32 @@ describe('CartSidebar — render smoke pós-repaginação', () => {
     renderSidebar({ weightVolume: { weightKg: 0, volumeM3: 0, volumeCm3: 0 } });
     expect(screen.queryByText(/Peso/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/Volume/i)).not.toBeInTheDocument();
+  });
+});
+
+describe('CartSidebar — atalhos de template', () => {
+  it('mostra "Salvar como Template" quando o carrinho tem itens, mesmo sem peso/volume', () => {
+    renderSidebar({ weightVolume: null });
+    expect(screen.getByTestId('cart-sidebar-templates')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Salvar como Template/i })).toBeInTheDocument();
+    expect(screen.queryByTestId('cart-sidebar-hero')).not.toBeInTheDocument();
+  });
+
+  it('mostra "Usar Template (N)" quando há templates salvos e oculta quando não há', () => {
+    renderSidebar({
+      templates: [{ id: 't1', name: 'Kit Onboarding', items: [] }],
+    });
+    expect(screen.getByRole('button', { name: /Usar Template \(1\)/i })).toBeInTheDocument();
+  });
+
+  it('não mostra "Usar Template" sem templates salvos', () => {
+    renderSidebar({ templates: [] });
+    expect(screen.queryByRole('button', { name: /Usar Template/i })).not.toBeInTheDocument();
+  });
+
+  it('carrinho vazio sem templates e sem peso/volume não renderiza nada', () => {
+    const { container } = renderSidebar({ cart: makeCart({ items: [] }), templates: [] });
+    expect(container).toBeEmptyDOMElement();
   });
 });
 
