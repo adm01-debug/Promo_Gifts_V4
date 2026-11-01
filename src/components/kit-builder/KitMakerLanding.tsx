@@ -221,7 +221,7 @@ export function KitMakerLanding({
   const handleUseTemplate = async (template: (typeof featuredKits)[number]) => {
     const created = await cloneTemplate(template);
     if (created && typeof created === 'object' && 'id' in created) {
-      navigate(`/montar-kit?kit=${(created as { id: string }).id}`);
+      navigate(`/montar-kit?kit=${(created as { id: string }).id}&origin=template`);
     }
   };
 
