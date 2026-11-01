@@ -54,6 +54,10 @@ const QUICK_ACTIONS: QuickAction[] = [
   { id: 'tips', label: 'Dicas gerais', icon: Lightbulb, action: () => {} },
 ];
 
+// R4: mensagem honesta exibida em qualquer caminho (handleSend e handleQuickAction)
+const ASSISTANT_UNAVAILABLE_MSG =
+  'O assistente de IA para mockup está em desenvolvimento. Em breve você poderá receber sugestões automáticas de posicionamento e técnica. Por enquanto, use as ações rápidas abaixo para orientações gerais.';
+
 const INITIAL_MESSAGES: Message[] = [
   {
     id: 'welcome',
@@ -66,8 +70,8 @@ const INITIAL_MESSAGES: Message[] = [
 ];
 
 export function AIMockupAssistant({
-  productName,
-  techniqueName,
+  productName: _productName,
+  techniqueName: _techniqueName,
   className,
 }: AIMockupAssistantProps) {
   const [isOpen, setIsOpen] = useState(false);
@@ -83,71 +87,42 @@ export function AIMockupAssistant({
     };
   }, []);
 
-  const handleSend = () => {
-    if (!input.trim() || isLoading) return;
-
+  const postHonestReply = (userContent: string) => {
     const userMessage: Message = {
       id: Date.now().toString(),
       role: 'user',
-      content: input,
+      content: userContent,
       timestamp: new Date(),
     };
-
     setMessages((prev) => [...prev, userMessage]);
-    setInput('');
     setIsLoading(true);
 
-    // R4: assistente de IA real ainda não implementado — exibe mensagem honesta em vez de resposta simulada aleatória
     if (timerRef.current) clearTimeout(timerRef.current);
     timerRef.current = setTimeout(() => {
       timerRef.current = null;
-
-      const assistantMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        role: 'assistant',
-        content:
-          'O assistente de IA para mockup está em desenvolvimento. Em breve você poderá receber sugestões automáticas de posicionamento e técnica. Por enquanto, use as ações rápidas abaixo para orientações gerais.',
-        timestamp: new Date(),
-      };
-
-      setMessages((prev) => [...prev, assistantMessage]);
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: (Date.now() + 1).toString(),
+          role: 'assistant',
+          content: ASSISTANT_UNAVAILABLE_MSG,
+          timestamp: new Date(),
+        },
+      ]);
       setIsLoading(false);
     }, 500);
   };
 
+  const handleSend = () => {
+    if (!input.trim() || isLoading) return;
+    const text = input;
+    setInput('');
+    postHonestReply(text);
+  };
+
   const handleQuickAction = (action: QuickAction) => {
     if (isLoading) return;
-
-    const userMessage: Message = {
-      id: Date.now().toString(),
-      role: 'user',
-      content: action.label,
-      timestamp: new Date(),
-    };
-
-    setMessages((prev) => [...prev, userMessage]);
-    setIsLoading(true);
-
-    const actionResponses: Record<string, string> = {
-      position: `Para ${productName || 'este produto'}, a posição ideal é centralizada no terço superior, a cerca de 8cm da gola/borda superior.`,
-      size: 'O tamanho ideal para máxima visibilidade e legibilidade é entre 10-15cm de largura. Para logos detalhados, prefira tamanhos maiores.',
-      color: `Com a técnica ${techniqueName || 'selecionada'}, sugiro usar no máximo 3-4 cores sólidas para melhor definição e custo otimizado.`,
-      tips: '3 dicas rápidas: 1) Sempre peça aprovação visual antes de produzir, 2) Considere como a peça será usada, 3) Teste o contraste logo/produto.',
-    };
-
-    if (timerRef.current) clearTimeout(timerRef.current);
-    timerRef.current = setTimeout(() => {
-      timerRef.current = null;
-      const assistantMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        role: 'assistant',
-        content: actionResponses[action.id] || 'Posso ajudar com mais alguma coisa?',
-        timestamp: new Date(),
-      };
-
-      setMessages((prev) => [...prev, assistantMessage]);
-      setIsLoading(false);
-    }, 1000);
+    postHonestReply(action.label);
   };
 
   if (!isOpen) {
@@ -199,7 +174,7 @@ export function AIMockupAssistant({
         </div>
         <div className="min-w-0 flex-1">
           <h3 className="font-display text-sm font-semibold">Matheus — Expert em Layouts</h3>
-          {!isMinimized && <p className="truncate text-xs text-muted-foreground">Powered by AI</p>}
+          {!isMinimized && <p className="truncate text-xs text-muted-foreground">Em desenvolvimento</p>}
         </div>
         <Badge variant="secondary" className="text-[10px]">
           Beta
