@@ -30,8 +30,8 @@ Ver: `docs/ci/evidence vitest baseline 11 arquivos/137 testes dfec2236c` (commit
 
 | SHA | Run ID | Status | Verificado em |
 |---|---|---|---|
-| 5b5cef36c (pré-merge) | 41360675335 | run em SHA errado (era `e56f2ca74`) | 2026-11-01T23:10Z |
-| 78b32ddd5 (pós-merge rev88) | **41360711486** | queued (conclusion=null) | 2026-11-01T23:15Z |
+| 5b5cef36c (pré-merge) | 41360675335 | run em SHA errado (era `e56f2ca74`) — NÃO é o gate desta branch | 2026-11-01T23:10Z |
+| 78b32ddd5 (pós-merge rev88) | **41360711486** | queued (conclusion=null) — gate correto para este SHA | 2026-11-01T23:15Z |
 | ec06a45724 (main atual) | — | commits externos adicionados pós-merge | 2026-11-02T00:00Z |
 
 **Nota:** Run 41360711486 confirmado no SHA `78b32ddd52df18efb34452295a778ade7ad1eafb` (deploy-gates.yml). Status queued ao término da sessão. TSC=0 confirmado em `5b5cef36c` (pre-merge). Gate 2 CI baseline autoridade: SUCCESS run 41019605919 SHA `dfec2236c`.
