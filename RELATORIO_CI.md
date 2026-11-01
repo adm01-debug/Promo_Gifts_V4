@@ -1,6 +1,6 @@
 # RELATORIO_CI.md — Auditoria de Workflows CI/CD
 
-**Gerado:** 2026-10-29 · **Atualizado:** 2026-11-01T14:20 UTC
+**Gerado:** 2026-10-29 · **Atualizado:** 2026-11-01T14:28 UTC
 **HEAD da main auditada:** `5ae127ea` (PR #2871 — fix(db): cria tabela stock_notes, 2026-10-31)
 **HEAD anterior (baseline):** `7e56ae49` (PR #2818, docs-only, 2026-10-30)
 **PR ativo:** #2846 (`fix/e2e-url-state-defaults-20261030`) — inclui fix Gate 1.12 para `stock_notes`
@@ -8,14 +8,35 @@
 
 ---
 
-## 6. Estado do PR #2846 — Gate Final (2026-11-01T14:20 UTC)
+## 6. Estado do PR #2846 — Gate Final (2026-11-01T14:28 UTC)
+
+### SHAs do branch `fix/e2e-url-state-defaults-20261030`
 
 | SHA | Commit | Deploy Gates | migrations-sync-log-gate | vitest local | Observação |
 |---|---|---|---|---|---|
-| `1348a44a` | fix(ci): corrige contradição recibo (Copilot LOW) | em fila | em fila | ✅ 540/543 | push em andamento |
-| `65119d68` | docs(ci): atualiza §1 vitest + §6 | em execução | em execução | ✅ 540/543 | CI running — queued jobs |
-| `0bbd70b5` | fix(ci): corrige Gate 1.13.3 (recibo repair-only) | `pending` ([run 41313600062](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41313600062)) | `queued` | ✅ 540/543 | CI disparado após push |
-| `9422d0ac` | docs(ci): Branch Protection Sentinel evidência | `completed` | — | ✅ 540/543 | push completado |
+| `889f3e3a` ← HEAD | docs(ci): atualiza §1 vitest (540/543) + §6 | `pending` ([run 41316231539](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41316231539)) | `queued` | ✅ 540/543 | CI aguardando runner (14:26 UTC) |
+| `1348a44a` | fix(ci): corrige contradição recibo (Copilot LOW) | cancelado (push posterior) | — | ✅ 540/543 | concurrency cancel |
+| `65119d68` | docs(ci): atualiza §1 vitest + §6 | cancelado (push posterior) | ✅ **success** ([run 41314375394](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41314375394)) | ✅ 540/543 | migrations-sync-log-gate confirmado |
+| `0bbd70b5` | fix(ci): corrige Gate 1.13.3 (recibo repair-only) | cancelado (push posterior — concurrency) | — | ✅ 540/543 | cancelado por push de 9422d0ac |
+| `9422d0ac` | docs(ci): Branch Protection Sentinel evidência | concluído | — | ✅ 540/543 | — |
+| `f73265f3` | docs(ci): classifica itens P28 como externos | ❌ failure ([run 41312199906](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41312199906)) | ❌ failure (recibo "pendente") | ✅ 540/543 | **SHA anterior ao fix** |
+
+> **Nota:** O Gate Final do SHA `f73265f3` falhou no Gate 1.13.3 (`migrations-sync-log-gate`) — recibo da migration `20261031000000` marcado como "pendente". Corrigido em `0bbd70b5`. O run de `0bbd70b5` foi cancelado por concurrency (push subsequente). O run do HEAD `889f3e3a` está `pending` — aguardando runner GitHub Actions.
+
+### Checks confirmados no SHA `65119d68`
+| Check | Resultado |
+|---|---|
+| `migrations-sync-log-gate` | ✅ success ([41314375394](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41314375394)) |
+| `Gate 5 — Supabase Security Audit` | ✅ success ([41314375450](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41314375450)) |
+| `Quote Builder Delivery Quality` | ✅ success ([41314375398](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41314375398)) |
+| `SSOT Supabase Guard` | ✅ success ([41314375458](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41314375458)) |
+| `PR Size Guard (E185)` | ✅ success ([41314375404](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41314375404)) |
+| `URL State — Unit & Fuzz` | ✅ success ([41314375495](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41314375495)) |
+| `copilot-pull-request-reviewer` | ❌ failure (não-required) |
+
+### Checagem de segurança agendada
+- Run 41316231539 (Deploy Gates HEAD): aguardando runner
+- Check-in automático: **2026-11-01T15:14 UTC** (`trig_01CgM5V4Xv66fN3jFvVTwZpN`)
 
 **Falhas não-required no SHA anterior `f73265f3` (pré-existentes):**
 | Check | Run ID | Causa |
