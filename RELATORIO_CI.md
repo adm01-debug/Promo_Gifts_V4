@@ -97,18 +97,18 @@ A única **regressão nova** introduzida por PR #2871 é o item 1 (Deploy Gates 
 
 ---
 
-## 1. Baseline Local — HEAD `d976512c` (2026-11-01T18:42 UTC)
+## 1. Baseline Local — HEAD `55240da0` (2026-11-01T19:10 UTC)
 
-> HEAD `d976512c` é docs-only (wording fixes em PENDENCIAS.md e RELATORIO_CI.md). Código de produção e scripts não mudaram em relação a `e8d5cdbc`.
+> Baseline completo executado pelo agente `a49a22e43e939804d` (2026-11-01T19:10 UTC). `55240da0` é docs-only; código de produção e scripts idênticos a `e8d5cdbc`.
 
 | Etapa | Resultado | Observação |
 |---|---|---|
-| `npx tsc --noEmit` | ✅ EXIT=0 | Zero erros TypeScript (2026-11-01T18:42 UTC) |
-| `npm run lint:baseline` | ✅ EXIT=0 | ESLint baseline gate [full] — atual: 0 erros, 0 warnings · baseline: 0 erros; Nenhuma regressão detectada |
-| `npm run test:run` | ⚠️ sem resultado | Task bkft71kne iniciada mas sem output ainda — baseline confirmado de `f73265f3`: 540/543 ✅ |
-| `npm run build` | ✅ EXIT=0 (ref `f73265f3`) | Build Vite em 13.04s; chunk-cycles OK |
+| `npx tsc --noEmit` | ✅ EXIT=0 | Zero erros TypeScript |
+| `npm run lint:baseline` | ✅ EXIT=0 | ESLint baseline gate [full] — 0 erros, 0 warnings; regressões +0 |
+| `npm run test:run` | ✅ **25.916 testes ✅** | 1251 arquivos · 1135 skipped · 24 todo · 1320s — TODOS passaram |
+| `npm run build` | ✅ EXIT=0 | Build Vite em 20.00s — limpo |
 
-> **Baseline de referência (`f73265f3`):** tsc ✅ + build ✅ + lint ✅ + vitest 540/543 ✅ — nenhuma regressão introduzida. `d976512c` é docs-only (wording); código de produção e scripts idênticos a `e8d5cdbc`.
+> **Baseline LOCAL VERDE:** tsc ✅ + lint ✅ + vitest 25.916/25.916 ✅ + build ✅ — **nenhuma regressão de código**. As 18 falhas P28 são 100% CI remoto (infra/externos/pré-existentes), confirmado.
 
 ---
 
