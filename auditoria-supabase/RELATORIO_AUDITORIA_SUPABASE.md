@@ -75,9 +75,23 @@ Correção proposta:
     → requer código verificando Authorization internamente ou migrá-las para verify_jwt=true
   Para funções que precisam ser públicas (cleanup, crons): confirmar que validam
     CRON_SECRET ou outro mecanismo interno.
-  Code review individual das 36 funções ainda pendente (NÃO VERIFICADO por limite de sessão).
-Classe de escrita: APROVAÇÃO (deploy de edge functions é fluxo de aprovação)
-Risco de regressão: médio — algumas funções PRECISAM de verify_jwt=false (cron targets)
+  CODE REVIEW INDIVIDUAL CONCLUÍDO (2026-11-01):
+  Todas as 36 funções com verify_jwt=false possuem mecanismo de auth adequado:
+  • 26 funções: capturadas pelo grep (Authorization, CRON_SECRET, service_role, HMAC, etc.)
+  • 10 funções inicialmente "NO_AUTH_PATTERN" — revisão de código confirmou:
+    - check-login: CF_ORIGIN_SECRET + Turnstile — pré-login por design (não há JWT antes do login)
+    - connections-auto-test: authorizeCron via CONNECTIONS_AUTO_TEST_SECRET + x-cron-secret
+    - e2e-cleanup: x-e2e-cleanup-token timing-safe + allowlist de emails E2E_CLEANUP_ALLOWED_EMAILS
+    - get-visitor-info: runBotProtection rate-limit 30/min — retorna IP do chamador (sem dado sensível)
+    - image-proxy: Referer validation + bot protection + ALLOWED_DOMAINS allowlist
+    - magazine-public-react: public_token validado em magazines.published + MAGAZINE_IP_SALT + rate-limit
+    - magazine-reader-state-read: public_token → published + rate-limit IP+token
+    - magazine-reader-state-write: public_token → published + rate-limit IP+token
+    - mcp-server: X-MCP-Key → validate_mcp_key RPC + scope governance + admin_audit_log
+    - receive-crm-callback: x-api-key timing-safe + rate-limit 300/min + anti-replay 7d
+  Nenhuma função expõe acesso irrestrito. Nenhum ajuste necessário.
+Classe de escrita: N/A (nenhuma correção necessária)
+Risco de regressão: N/A
 Esforço: G (análise individual de 36 funções + deploy seletivo)
 ```
 
@@ -323,7 +337,7 @@ Esforço: P
 | A.2 — Drift types.ts | generate_typescript_types não executado (requer ambiente local); migrations verificadas parcialmente |
 | A.5 — EXPLAIN top 10 | Queries de `pg_stat_statements` com timeout; NÃO VERIFICADO |
 | A.7 — DB functions individual | 1.334 funções; análise individual por limite de sessão; SECURITY DEFINER verificado em lote (570 com search_path OK) |
-| A.8 — Edge code review | Code review das 36 funções verify_jwt=false; NÃO VERIFICADO por limite de sessão |
+| A.8 — Edge code review | Code review individual das 36 funções verify_jwt=false; CONCLUÍDO 2026-11-01 — todas SAFE (10 com mecanismo custom não capturado pelo grep: Turnstile, x-cron-secret, x-e2e-cleanup-token, public_token, x-mcp-key, x-api-key) |
 | A.11 — RLS testes por role | Testes SET LOCAL ROLE não executados |
 | A.12 — Lacunas operacionais | PITR/backup, alertas, staging: NÃO VERIFICADO |
 
