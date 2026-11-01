@@ -5,6 +5,28 @@ Todas as mudanças notáveis deste projeto são documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/),
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.6.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.5.0...v1.6.0) (2026-11-01)
+
+
+### Features
+
+* **admin:** wira rota /admin/audit-suite para AuditReport [FT-059] ([#2902](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2902)) ([cbbabc2](https://github.com/adm01-debug/Promo_Gifts_V4/commit/cbbabc2f37792d2a7e5e39f513d655b0106fbadf))
+* religa salvar/usar template de carrinho no CartSidebar ([#2884](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2884)) ([f99f36a](https://github.com/adm01-debug/Promo_Gifts_V4/commit/f99f36ae169864cbe48e12a846c37cb30794f45e))
+
+
+### Bug Fixes
+
+* **ci:** corrige autenticação e rota nos testes visuais noturnos ([#2859](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2859)) ([1440eba](https://github.com/adm01-debug/Promo_Gifts_V4/commit/1440ebafdab33a3773e2c2d99cb9fa2c4b8e00d3))
+* **ci:** registra status HTTP no monitor de uptime ([#2821](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2821)) ([fc602ec](https://github.com/adm01-debug/Promo_Gifts_V4/commit/fc602ec23ba0f1a3859f709878339c7213d99bb8))
+* **ci:** shellcheck SC2010/SC2086 em db-apply-migration e update-snapshots ([#2898](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2898)) ([28cee3d](https://github.com/adm01-debug/Promo_Gifts_V4/commit/28cee3d48c792f6c7c191cb6073daaa0947a1f92))
+* **deps:** override minimatch para ^11.0.1 — resolve Dependabot [#84](https://github.com/adm01-debug/Promo_Gifts_V4/issues/84) ([#2925](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2925)) ([350fca9](https://github.com/adm01-debug/Promo_Gifts_V4/commit/350fca9c6dc4b0dd8d767f029cd934c6f2363c6c))
+* limita p_limit a 100 em fn_global_search (endpoint público anon) ([#2916](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2916)) ([bdb659c](https://github.com/adm01-debug/Promo_Gifts_V4/commit/bdb659c499478e0e770784d7867524c7f75589ce))
+* **mockup:** gerador — medidas, timeout 30 s, lote parcial, editor de logo (entregas VPS) ([#2739](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2739)) ([294cee8](https://github.com/adm01-debug/Promo_Gifts_V4/commit/294cee83893d4954f70f7986e098adf91caf9612))
+* **perf:** PERF-005 — drop 64 índices unused (idx_scan=0, ~200MB) ([#2930](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2930)) ([5ebece5](https://github.com/adm01-debug/Promo_Gifts_V4/commit/5ebece52afb26f8ccdc8d34fa6ccd3c8ad92f5f1))
+* remove função de DDL e revoga EXECUTE de authenticated em função de limpeza de sessões ([#2922](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2922)) ([0b3c724](https://github.com/adm01-debug/Promo_Gifts_V4/commit/0b3c7242779b6809b0ef096087928f39e6ee0938))
+* SB-0003 restaurar acesso a mv_stock_rupture_alert via RPC com guarda de papel ([#2893](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2893)) ([bd54e88](https://github.com/adm01-debug/Promo_Gifts_V4/commit/bd54e8842677f59b90cb88ea365b23594d68ce23))
+* **types:** sincroniza idempotency_key de notificações ([#2822](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2822)) ([4f91aa0](https://github.com/adm01-debug/Promo_Gifts_V4/commit/4f91aa08e4707eb055f5f3a5e403614bbb9df3e4))
+
 ## [1.5.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.4.1...v1.5.0) (2026-11-01)
 
 
