@@ -7,7 +7,7 @@ RETURNS trigger LANGUAGE plpgsql AS $$
 BEGIN NEW.updated_at = now(); RETURN NEW; END;
 $$;
 
-CREATE TABLE IF NOT EXISTS public.stock_notes (
+CREATE TABLE IF NOT EXISTS public.stock_notes ( -- soft-delete-exempt: stock_notes é tabela de notas de estoque operada com hard-delete pela aplicação (useStockNotes.ts)
   id          uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   variant_id  uuid NOT NULL REFERENCES public.product_variants(id) ON DELETE CASCADE,
   supplier_id uuid REFERENCES public.suppliers(id) ON DELETE SET NULL,
