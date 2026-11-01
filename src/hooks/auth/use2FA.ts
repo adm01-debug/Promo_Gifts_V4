@@ -92,9 +92,15 @@ export function use2FA(targetUserId?: string) {
       }
 
       try {
-        const backupCodes = Array.from({ length: 8 }, () =>
-          Math.random().toString(36).substring(2, 10).toUpperCase(),
-        );
+        // R10: usar crypto.getRandomValues em vez de Math.random() para backup codes seguros
+        const backupCodes = Array.from({ length: 8 }, () => {
+          const buf = new Uint8Array(5);
+          crypto.getRandomValues(buf);
+          return Array.from(buf, (b) => b.toString(16).padStart(2, '0'))
+            .join('')
+            .substring(0, 8)
+            .toUpperCase();
+        });
 
         const { error } = await untypedFrom('user_2fa_settings').upsert({
           user_id: effectiveUserId,

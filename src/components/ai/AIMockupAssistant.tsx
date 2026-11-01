@@ -97,27 +97,22 @@ export function AIMockupAssistant({
     setInput('');
     setIsLoading(true);
 
-    // Simulate AI response — cancel any previously pending timer first
+    // R4: assistente de IA real ainda não implementado — exibe mensagem honesta em vez de resposta simulada aleatória
     if (timerRef.current) clearTimeout(timerRef.current);
     timerRef.current = setTimeout(() => {
       timerRef.current = null;
-      const responses = [
-        `Para ${productName || 'este produto'}, recomendo posicionar a logo no centro superior, deixando margem de 2cm das bordas.`,
-        `A técnica ${techniqueName || 'escolhida'} funciona melhor com logos simplificados. Considere reduzir o número de cores para melhores resultados.`,
-        'Para máxima visibilidade, mantenha o tamanho do logo entre 8-12cm de largura. Logos muito pequenos perdem impacto.',
-        'Dica: Posicione a logo levemente acima do centro geométrico - isso cria melhor equilíbrio visual em produtos vestíveis.',
-      ];
 
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
-        content: responses[Math.floor(Math.random() * responses.length)],
+        content:
+          'O assistente de IA para mockup está em desenvolvimento. Em breve você poderá receber sugestões automáticas de posicionamento e técnica. Por enquanto, use as ações rápidas abaixo para orientações gerais.',
         timestamp: new Date(),
       };
 
       setMessages((prev) => [...prev, assistantMessage]);
       setIsLoading(false);
-    }, 1500);
+    }, 500);
   };
 
   const handleQuickAction = (action: QuickAction) => {
