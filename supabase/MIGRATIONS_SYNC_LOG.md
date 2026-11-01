@@ -1670,3 +1670,9 @@ Após VACUUM ANALYZE executado pelos jobs temporários `vacuum-snapshots-now` e
 | `20261101140005_sb0009_drop_backup_table.sql` | Supersedida por cron (tabela dropada em 2026-11-01 19:29 UTC) |
 | `20261101143000_sb0007_ai_usage_quotas_select_isolation.sql` | INVÁLIDA — tabela não tem coluna user_id; política existente correta |
 | `20261101150004_auth001_cleanup_expired_sessions.sql` | Supersedida por cron periódico (20261101192817) |
+
+### Fix vw_system_health_quick — 2026-11-01
+
+| version | arquivo | status |
+|---|---|---|
+| `20261101201000` | fix_health_view_backup_check | pendente — aplicar via `db-apply-migration.yml` após aprovação do dono (regra 8: DDL em produção). Remove a tabela apagada `_backup_stock_daily_summary_20260618` da checagem `backup_tables_rls_locked`. |
