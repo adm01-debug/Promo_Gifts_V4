@@ -196,6 +196,12 @@ export function useKitBuilderQuote() {
         ? `${kitMetadataNote} — Obs.: ${kitState.notes.trim()}`
         : kitMetadataNote;
 
+      if (!client.client_name?.trim()) {
+        toast.warning(
+          'Orçamento salvo sem cliente definido. Edite o orçamento para associar um cliente.',
+        );
+      }
+
       const boxRef = kitState.box;
       const itemsRef = kitState.items;
       const personRef = kitState.personalization;
