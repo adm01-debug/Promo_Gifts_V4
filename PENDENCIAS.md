@@ -36,33 +36,39 @@ Consulta somente leitura em `pg_catalog` no projeto canônico `doufsxqlfjyuvxuez
 
 > Revalidação posterior de PRs, workflows e pendências transversais: [docs/estado/REVALIDACAO_PLANO_2026-10-31.md](docs/estado/REVALIDACAO_PLANO_2026-10-31.md). Os registros abaixo são snapshots datados; não substituem a revalidação mais recente.
 
-## Inventário P30 — estado em 2026-11-01T21:10Z (branch f56e4382)
+## Inventário P30 — estado em 2026-11-01T21:35Z (branch c6f7241b)
 
-**SHA atual do branch:** `f56e4382` (push 2026-11-01T20:52Z)
-**main HEAD:** `2c33f827` (inclui PRs #2922–#2926)
-**Gate Final PR #2846:** aguardando novo run para f56e4382 (run antigo 41347814529 para 7dffde4f cancelado)
+**SHA atual do branch:** `c6f7241b` (push 2026-11-01T21:32Z → PR [#2941](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2941))
+**main HEAD:** `58b4eeaf` (PR #2932 de outra sessão, 2026-11-01T21:23Z)
+**Gate Final PR #2941:** CI em andamento — run esperado para SHA c6f7241b
 
-### db-apply-migration failure (run 41339365690)
+### Fix principal desta sessão (commit c6f7241b)
 
-Workflow `db-apply-migration.yml` (`workflow_dispatch` para versão `20261101140001`) falhou com:
+**CI Security & Drift Checks** falhava com `check-lint-0029-drift.mjs`: `perf002_drop_unused_snapshot_indexes` não estava na allowlist; `mcp_kv_get` estava stale (REVOKE E18 já aplicado).
 
-| Causa | Detalhe |
+| Mudança | Detalhe |
 |---|---|
-| Rollback file ausente | `20261101140001_rollback.sql` não existia → preflight E058 bloqueou |
-| Versão já no ledger | Migration `20261101140001` já estava aplicada em `doufsxqlfjyuvxuezpln` |
-| DROP sem IF EXISTS | `ALTER PUBLICATION supabase_realtime DROP TABLE auth.users` detectado pelo preflight |
+| Removida `mcp_kv_get` da allowlist | Migration E18 (`20260917060000_e18_revoke_authenticated_mcp_kv_get.sql`) já revogou EXECUTE; função só tem `service_role`/`postgres` |
+| Adicionada `perf002_drop_unused_snapshot_indexes()` | Criada em PR #2930 (PERF-005); EXECUTE para `authenticated` — REVOKE pendente via migration |
+| `ALLOWLISTS_MEMORY.md` atualizado | Nova entrada `perf002_drop_unused_snapshot_indexes`, data 2026-11-01 |
+| Crosscheck local | `✅ 102 entrada(s) documentadas` — todos os shortnames em ALLOWLISTS_MEMORY.md |
 
-**Fix aplicado:** `35971ec4` — criado `supabase/rollbacks/20261101140001_rollback.sql` (commit no branch)
-**Ação restante:** se a migration precisar ser reaplicada, usar `mode: repair-only` via REGRA E99 (não reexecutar via workflow_dispatch — versão já está no ledger)
-
-### Correções desta sessão (integradas em f56e4382)
+### Correções anteriores desta sessão (integradas em commits antecessores)
 
 | Item | Ação |
 |---|---|
-| `perf002_drop_unused_snapshot_indexes()` removida da lint-0029-allowlist | Função dropada pela migration 20261101202000 (PR #2922); allowlist tinha 103 entradas, agora 102 |
-| `ALLOWLISTS_MEMORY.md` atualizado | cleanup_expired_auth_sessions: EXECUTE revogado em 2026-11-01 (PR #2922); perf002 removida |
-| Merge de main@2c33f827 integrado | Conflitos resolvidos: policies-baseline (versão main), RELATORIO_CI.md (versão HEAD §15), stock_notes migration (versão main) |
-| Rollback 20261101140001 criado | `supabase/rollbacks/20261101140001_rollback.sql` |
+| `perf002_drop_unused_snapshot_indexes()` adicionada à allowlist (commit 085dd48e) | PR #2930 criou função SECURITY DEFINER; adicionada à allowlist + ALLOWLISTS_MEMORY.md |
+| `cleanup_expired_auth_sessions` na allowlist | Adicionada em 085dd48e junto de perf002 |
+| Rollback 20261101140001 criado | `supabase/rollbacks/20261101140001_rollback.sql` (commit 35971ec4) |
+| Merge de main integrado | Conflitos resolvidos em 89d386c8, f56e4382 |
+
+### Itens pendentes após c6f7241b
+
+| Item | Status |
+|---|---|
+| REVOKE EXECUTE de `perf002_drop_unused_snapshot_indexes()` para `authenticated` | Pendente — migration espelho via `db-apply-migration.yml` |
+| Policies Baseline — dispatch `seed=true` enviado | Pendente — workflow queued; pode necessitar de PR de merge |
+| Gate Final PR #2941 | Aguardando CI |
 
 ---
 
