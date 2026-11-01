@@ -127,16 +127,7 @@ function MagicUpProgress({ step }: { step: number }) {
 
 // ─── Main Component ──────────────────────────────────────────────────
 
-export default function MagicUp() {
-  // FT-220: guarda pela feature flag magic_up
-  if (!isFeatureEnabled('magic_up')) {
-    return (
-      <div className="mx-auto w-full max-w-[1920px] px-3 py-12 text-center">
-        <p className="text-muted-foreground">Esta funcionalidade não está disponível.</p>
-      </div>
-    );
-  }
-
+function MagicUpContent() {
   const m = useMagicUpState();
 
   return (
@@ -165,4 +156,17 @@ export default function MagicUp() {
       </div>
     </>
   );
+}
+
+export default function MagicUp() {
+  // FT-220: guarda pela feature flag magic_up — early return antes de qualquer hook
+  if (!isFeatureEnabled('magic_up')) {
+    return (
+      <div className="mx-auto w-full max-w-[1920px] px-3 py-12 text-center">
+        <p className="text-muted-foreground">Esta funcionalidade não está disponível.</p>
+      </div>
+    );
+  }
+
+  return <MagicUpContent />;
 }
