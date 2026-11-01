@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect, useRef, useCallback } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
@@ -35,46 +35,6 @@ import { ProductCardSkeleton } from '@/components/loading/ModernSkeletons';
 type ViewMode = 'grid' | 'list' | 'table';
 type SortMode = 'name' | 'newest' | 'price-asc' | 'price-desc' | 'stock';
 
-function useLoadingProgress(isLoading: boolean): number {
-  const [progress, setProgress] = useState(0);
-  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  useEffect(() => {
-    const clearAll = () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-        intervalRef.current = null;
-      }
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-        timeoutRef.current = null;
-      }
-    };
-
-    if (isLoading) {
-      clearAll();
-      setProgress(0);
-      intervalRef.current = setInterval(() => {
-        setProgress((prev) => {
-          if (prev >= 90) {
-            if (intervalRef.current) clearInterval(intervalRef.current);
-            return prev;
-          }
-          return prev + Math.random() * 12 + 3;
-        });
-      }, 300);
-    } else {
-      clearAll();
-      setProgress(100);
-      timeoutRef.current = setTimeout(() => setProgress(0), 800);
-    }
-
-    return clearAll;
-  }, [isLoading]);
-
-  return progress;
-}
 
 export function ReplenishmentProductGrid() {
   const navigate = useNavigate();
@@ -89,7 +49,6 @@ export function ReplenishmentProductGrid() {
 
   const { data: replenishments, isLoading, isFetching, error } = useReplenishmentsWithDetails();
   const products = useMemo(() => replenishments ?? [], [replenishments]);
-  const loadingProgress = useLoadingProgress(isLoading);
 
   const { suppliers, categories } = useMemo(() => {
     const supMap = new Map<string, { id: string; name: string; count: number }>();
@@ -260,21 +219,14 @@ export function ReplenishmentProductGrid() {
         <div className="space-y-4" role="status" aria-label="Carregando produtos">
           <div className="mb-2 flex items-center gap-3">
             <div className="h-5 w-5 animate-spin rounded-full border-2 border-primary border-t-transparent" />
-            <span className="text-sm text-muted-foreground">
-              Carregando {Math.round(loadingProgress)}% dos produtos…
-            </span>
+            <span className="text-sm text-muted-foreground">Carregando produtos…</span>
           </div>
           <div
             className="mb-4 h-1.5 w-64 overflow-hidden rounded-full bg-muted/50"
             role="progressbar"
-            aria-valuenow={Math.round(loadingProgress)}
-            aria-valuemin={0}
-            aria-valuemax={100}
+            aria-label="Carregando"
           >
-            <div
-              className="h-full rounded-full bg-gradient-to-r from-primary/60 to-primary transition-all duration-300"
-              style={{ width: `${loadingProgress}%` }}
-            />
+            <div className="h-full w-2/5 animate-pulse rounded-full bg-gradient-to-r from-primary/60 to-primary" />
           </div>
           <div
             className={cn(
@@ -396,7 +348,6 @@ export function ReplenishmentProductGrid() {
         totalCount={products.length}
         filteredCount={filteredProducts.length}
         isLoading={isLoading}
-        loadingProgress={loadingProgress}
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
         selectedSupplier={selectedSupplier}
