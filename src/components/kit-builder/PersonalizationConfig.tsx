@@ -1076,15 +1076,26 @@ function PersonalizationSummaryPanel({ targets }: { targets: PersonalizationTarg
             target.personalization.enabled &&
             Boolean(target.personalization.techniqueId) &&
             Number.isFinite(target.personalization.estimatedPrice) &&
+            (target.personalization.estimatedPrice ?? 0) > 0 &&
             Number.isFinite(target.personalization.totalPrice) &&
             target.personalization.pricedQuantity === target.quantity;
+          // FT-107: estado inválido — técnica selecionada mas preço retornou 0 ou negativo
+          const invalid =
+            target.personalization.enabled &&
+            Boolean(target.personalization.techniqueId) &&
+            typeof target.personalization.pricedQuantity === 'number' &&
+            target.personalization.pricedQuantity === target.quantity &&
+            typeof target.personalization.estimatedPrice === 'number' &&
+            target.personalization.estimatedPrice <= 0;
           const status = !target.personalization.enabled
             ? 'Sem personalização'
             : !target.personalization.techniqueId
               ? 'Pendente'
-              : configured
-                ? 'Concluído'
-                : 'Em edição';
+              : invalid
+                ? 'Inválido'
+                : configured
+                  ? 'Concluído'
+                  : 'Em edição';
           const dimensions =
             target.personalization.width && target.personalization.height
               ? `${target.personalization.width} × ${target.personalization.height} cm`
@@ -1100,6 +1111,18 @@ function PersonalizationSummaryPanel({ targets }: { targets: PersonalizationTarg
                   {target.personalization.techniqueName || 'Sem técnica'}
                   {dimensions ? ` · ${dimensions}` : ''}
                 </p>
+                {/* FT-108: custo adicional por unidade */}
+                {typeof target.personalization.estimatedPrice === 'number' &&
+                  target.personalization.estimatedPrice > 0 && (
+                    <p className="truncate text-xs text-muted-foreground">
+                      + R${' '}
+                      {target.personalization.estimatedPrice.toLocaleString('pt-BR', {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                      })}{' '}
+                      / unidade
+                    </p>
+                  )}
               </div>
               <Badge
                 variant={
@@ -1107,7 +1130,9 @@ function PersonalizationSummaryPanel({ targets }: { targets: PersonalizationTarg
                     ? 'default'
                     : status === 'Sem personalização'
                       ? 'outline'
-                      : 'secondary'
+                      : status === 'Inválido'
+                        ? 'destructive'
+                        : 'secondary'
                 }
                 className={cn(
                   'shrink-0 text-[10px]',
