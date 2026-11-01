@@ -63,7 +63,16 @@ if [ ! -x "$TSC_BIN" ]; then
   echo "ERRO: $TSC_BIN não encontrado — rode 'npm ci' antes do ratchet."
   exit 1
 fi
-count=$("$TSC_BIN" -p tsconfig.app.json --noUnusedLocals --noEmit 2>&1 | grep -c "error TS" || true)
+_tsc_tmp=$(mktemp)
+"$TSC_BIN" -p tsconfig.app.json --noUnusedLocals --noEmit > "$_tsc_tmp" 2>&1 || true
+count=$(grep -c "error TS" "$_tsc_tmp" || true)
+# Print errors so CI logs show the exact location
+if [ "$count" -gt 0 ]; then
+  echo "--- TSC noUnusedLocals errors ---" >&2
+  cat "$_tsc_tmp" >&2
+  echo "--- end TSC errors ---" >&2
+fi
+rm -f "$_tsc_tmp"
 
 if [ "$1" = "--update" ]; then
   # Guarda de regressão: se a baseline em main for menor, recusar o aumento
