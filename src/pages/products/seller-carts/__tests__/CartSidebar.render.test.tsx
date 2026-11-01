@@ -4,8 +4,7 @@
  * Após a repaginação, o subtotal/SKUs/Qtd. total saíram da sidebar
  * e passaram a viver no header da página. A sidebar mantém
  * EXCLUSIVAMENTE o card hero de peso/volume.
- * O CTA "Gerar Orçamento" foi movido para CartHeaderActions (ver
- * CartHeaderActions.render.test.tsx para o contrato do CTA).
+ * O CTA "Gerar Orçamento" vive no CartActionsMenu do header da página.
  *
  * Estes testes garantem:
  *   1) Render mínimo (hero card com peso/volume quando presentes)
@@ -90,12 +89,12 @@ function renderSidebar(props: Partial<SidebarProps> = {}) {
 }
 
 describe('CartSidebar — render smoke pós-repaginação', () => {
-  it('monta card hero com data-loaded=true quando há peso/volume (CTA vive no CartHeaderActions)', () => {
+  it('monta card hero com data-loaded=true quando há peso/volume (CTA vive no CartActionsMenu)', () => {
     renderSidebar({ weightVolume: { weightKg: 2.5, volumeM3: 0.012, volumeCm3: 12000 } });
     const hero = screen.getByTestId('cart-sidebar-hero');
     expect(hero).toBeInTheDocument();
     expect(hero).toHaveAttribute('data-loaded', 'true');
-    // CTA foi movido para CartHeaderActions — não deve aparecer na sidebar.
+    // CTA vive no CartActionsMenu — não deve aparecer na sidebar.
     expect(screen.queryByTestId('cart-checkout-cta')).not.toBeInTheDocument();
   });
 
@@ -220,7 +219,7 @@ describe('CartSidebar — isolamento do carrinho ativo (sem agregação)', () =>
     // Peso trocou para o do cartB e o do cartA sumiu.
     expect(screen.getByText(/3\.7kg/)).toBeInTheDocument();
     expect(screen.queryByText(/1\.0kg/)).not.toBeInTheDocument();
-    // O CTA foi movido para CartHeaderActions; isolamento do CTA
-    // é coberto em CartHeaderActions.render.test.tsx.
+    // O CTA vive no CartActionsMenu; o isolamento do CTA
+    // não pertence a esta sidebar.
   });
 });
