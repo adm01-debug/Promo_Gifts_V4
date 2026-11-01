@@ -128,6 +128,135 @@ const ALLOWED_AJV_JSDOM_CHAIN_PACKAGES = new Set([
   'undici',    // transitive: jsdom → undici; moderate; vitest jsdom test environment
 ]);
 
+// minimatch — GHSA-g3hv-75wg-m249 (DoS via globparts amplification), advisory
+// published 2026-10-31. npm has no compatible fix for the installed minimatch
+// 3.x/10.x chain; its suggested fix downgrades eslint-plugin-unused-imports to
+// 1.1.3 (semver-major). The affected packages below are the exact ESLint
+// toolchain graph from npm audit; package.json classifies the toolchain as
+// devDependencies, so it is excluded from the production install/audit. Keep
+// this exception exact by package, directness and `via` graph; any new package,
+// advisory, severity or dependency path must fail closed. Revisit by
+// RISK_REVIEW_DEADLINE. (E206 — 2026-10-31)
+export const REVIEWED_MINIMATCH_VIA = new Map([
+  ['@eslint-community/eslint-utils', ['eslint']],
+  ['@eslint/config-array', ['minimatch']],
+  ['@eslint/eslintrc', ['minimatch']],
+  ['@typescript-eslint/eslint-plugin', ['@typescript-eslint/parser', '@typescript-eslint/type-utils', '@typescript-eslint/utils', 'eslint']],
+  ['@typescript-eslint/parser', ['@typescript-eslint/typescript-estree', 'eslint']],
+  ['@typescript-eslint/type-utils', ['@typescript-eslint/typescript-estree', '@typescript-eslint/utils', 'eslint']],
+  ['@typescript-eslint/typescript-estree', ['minimatch']],
+  ['@typescript-eslint/utils', ['@eslint-community/eslint-utils', '@typescript-eslint/typescript-estree', 'eslint']],
+  ['chrome-launcher', ['rimraf']],
+  ['eslint', ['@eslint-community/eslint-utils', '@eslint/config-array', '@eslint/eslintrc', 'minimatch']],
+  ['eslint-plugin-jsx-a11y', ['minimatch']],
+  ['eslint-plugin-react', ['minimatch']],
+  ['eslint-plugin-unused-imports', ['@typescript-eslint/eslint-plugin', 'eslint']],
+  ['glob', ['minimatch']],
+  ['minimatch', null],
+  ['rimraf', ['glob']],
+]);
+
+// Effects are part of the reviewed reachability graph too. A new consumer can
+// make an otherwise dev-only advisory affect a production path, so the gate
+// must fail if npm reports any additional dependent package.
+export const REVIEWED_MINIMATCH_EFFECTS = new Map([
+  ['@eslint-community/eslint-utils', ['@typescript-eslint/utils', 'eslint']],
+  ['@eslint/config-array', ['eslint']],
+  ['@eslint/eslintrc', ['eslint']],
+  ['@typescript-eslint/eslint-plugin', ['eslint-plugin-unused-imports']],
+  ['@typescript-eslint/parser', ['@typescript-eslint/eslint-plugin']],
+  ['@typescript-eslint/type-utils', ['@typescript-eslint/eslint-plugin']],
+  ['@typescript-eslint/typescript-estree', ['@typescript-eslint/parser', '@typescript-eslint/type-utils', '@typescript-eslint/utils']],
+  ['@typescript-eslint/utils', ['@typescript-eslint/eslint-plugin', '@typescript-eslint/type-utils']],
+  ['chrome-launcher', ['@lhci/cli']],
+  ['eslint', ['@eslint-community/eslint-utils', '@typescript-eslint/eslint-plugin', '@typescript-eslint/parser', '@typescript-eslint/type-utils', '@typescript-eslint/utils', 'eslint-plugin-unused-imports']],
+  ['eslint-plugin-jsx-a11y', []],
+  ['eslint-plugin-react', []],
+  ['eslint-plugin-unused-imports', []],
+  ['glob', ['rimraf']],
+  ['minimatch', ['@eslint/config-array', '@eslint/eslintrc', '@typescript-eslint/typescript-estree', 'eslint', 'eslint-plugin-jsx-a11y', 'eslint-plugin-react', 'glob']],
+  ['rimraf', ['chrome-launcher']],
+]);
+
+export const REVIEWED_MINIMATCH_RANGES = new Map([
+  ['@eslint-community/eslint-utils', '*'],
+  ['@eslint/config-array', '*'],
+  ['@eslint/eslintrc', '0.0.1 || >=0.1.1'],
+  ['@typescript-eslint/eslint-plugin', '*'],
+  ['@typescript-eslint/parser', '*'],
+  ['@typescript-eslint/type-utils', '>=5.9.2-alpha.0'],
+  ['@typescript-eslint/typescript-estree', '>=6.16.0'],
+  ['@typescript-eslint/utils', '*'],
+  ['chrome-launcher', '0.3.1 - 0.13.4'],
+  ['eslint', '0.7.1 - 2.0.0-rc.1 || >=4.1.0'],
+  ['eslint-plugin-jsx-a11y', '>=6.5.0'],
+  ['eslint-plugin-react', '>=7.23.0'],
+  ['eslint-plugin-unused-imports', '0.0.3 - 1.0.1 || >=1.1.4'],
+  ['glob', '3.0.0 - 13.0.6'],
+  ['minimatch', '<11.0.1'],
+  ['rimraf', '2.3.0 - 3.0.2 || >=4.2.0'],
+]);
+
+const REVIEWED_MINIMATCH_DIRECT_PACKAGES = new Set([
+  '@typescript-eslint/eslint-plugin',
+  '@typescript-eslint/parser',
+  'eslint',
+  'eslint-plugin-jsx-a11y',
+  'eslint-plugin-react',
+  'eslint-plugin-unused-imports',
+]);
+const MINIMATCH_ADVISORY_URL = 'https://github.com/advisories/GHSA-g3hv-75wg-m249';
+
+function isAllowedMinimatchChainPackage(packageName, vulnerability) {
+  if (
+    !REVIEWED_MINIMATCH_VIA.has(packageName) ||
+    vulnerability.severity !== 'moderate' ||
+    vulnerability.range !== REVIEWED_MINIMATCH_RANGES.get(packageName)
+  ) {
+    return false;
+  }
+  if (vulnerability.isDirect !== REVIEWED_MINIMATCH_DIRECT_PACKAGES.has(packageName)) {
+    return false;
+  }
+
+  const via = vulnerability.via ?? [];
+  if (packageName === 'minimatch') {
+    const advisory = via[0];
+    const fix = vulnerability.fixAvailable;
+    const expectedEffects = REVIEWED_MINIMATCH_EFFECTS.get(packageName);
+    return (
+      vulnerability.range === '<11.0.1' &&
+      Array.isArray(expectedEffects) &&
+      Array.isArray(vulnerability.effects) &&
+      vulnerability.effects.length === expectedEffects.length &&
+      vulnerability.effects.every((entry, index) => entry === expectedEffects[index]) &&
+      via.length === 1 &&
+      typeof advisory === 'object' &&
+      advisory?.source === 1244012 &&
+      advisory?.name === 'minimatch' &&
+      advisory?.dependency === 'minimatch' &&
+      advisory?.severity === 'moderate' &&
+      advisory?.range === '<11.0.1' &&
+      advisory?.url === MINIMATCH_ADVISORY_URL &&
+      fix?.name === 'eslint-plugin-unused-imports' &&
+      fix?.version === '1.1.3' &&
+      fix?.isSemVerMajor === true
+    );
+  }
+
+  const expectedVia = REVIEWED_MINIMATCH_VIA.get(packageName);
+  const expectedEffects = REVIEWED_MINIMATCH_EFFECTS.get(packageName);
+  return (
+    Array.isArray(expectedVia) &&
+    via.length === expectedVia.length &&
+    via.every((entry, index) => entry === expectedVia[index]) &&
+    Array.isArray(expectedEffects) &&
+    Array.isArray(vulnerability.effects) &&
+    vulnerability.effects.length === expectedEffects.length &&
+    vulnerability.effects.every((entry, index) => entry === expectedEffects[index])
+  );
+}
+
 // Únicos advisories aceitos dentro da cadeia build-time. Qualquer
 // advisory NOVO em um desses pacotes (objeto em `via` com URL fora do
 // conjunto) volta a bloquear o gate — a aceitação é por advisory,
@@ -166,6 +295,7 @@ const ALL_KNOWN_ACCEPTED_PACKAGES = new Set([
   ...ALLOWED_BRACES_CHAIN_TRANSITIVE,
   ...ALLOWED_ZOD_CHAIN_PACKAGES,
   ...ALLOWED_AJV_JSDOM_CHAIN_PACKAGES,
+  ...REVIEWED_MINIMATCH_VIA.keys(),
 ]);
 
 function isAllowedVitestPackage(packageName, vulnerability) {
@@ -340,6 +470,10 @@ export function evaluateAuditReport(report, now = new Date()) {
       continue;
     }
     if (isAllowedAjvJsdomPackage(packageName, vulnerability)) {
+      accepted.push(packageName);
+      continue;
+    }
+    if (isAllowedMinimatchChainPackage(packageName, vulnerability)) {
       accepted.push(packageName);
       continue;
     }

@@ -517,6 +517,8 @@ jobs:
     name: Gate E23 - Verifica secrets E2E
     needs: [ssot-gate]
     uses: ./.github/workflows/_secrets-check.yml
+    with:
+      fail_if_missing: true  # E007: falhar se credenciais E2E ausentes
     secrets: inherit
 
   e2e-smoke:

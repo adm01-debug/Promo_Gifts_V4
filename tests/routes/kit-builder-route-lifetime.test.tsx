@@ -1,5 +1,5 @@
-import { act, fireEvent, render, screen } from '@testing-library/react';
-import { Link, MemoryRouter, Routes } from 'react-router-dom';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { Link, MemoryRouter, Routes, useLocation } from 'react-router-dom';
 import { describe, expect, it, vi } from 'vitest';
 
 const auth = vi.hoisted(() => ({ userId: 'user-A', listeners: new Set<() => void>() }));
@@ -31,6 +31,11 @@ vi.mock('@/routes/lazy-pages', async (importOriginal) => {
 });
 
 import { toolsRoutes } from '@/routes/tools-routes';
+
+function LocationProbe() {
+  const location = useLocation();
+  return <output data-testid="current-location">{location.pathname + location.search + location.hash}</output>;
+}
 
 describe('Kit Maker route lifecycle', () => {
   it('não reaproveita autosave/histórico ao navegar entre kit, landing e outro kit', () => {
@@ -64,5 +69,20 @@ describe('Kit Maker route lifecycle', () => {
       auth.listeners.forEach((listener) => listener());
     });
     expect(screen.getByTestId('editor-instance')).toHaveTextContent('2');
+  });
+
+  it('preserva query string e hash ao redirecionar a rota legada /kit-builder', async () => {
+    render(
+      <MemoryRouter initialEntries={['/kit-builder?kit=kit-123&product=product-456#personalizacao']}>
+        <LocationProbe />
+        <Routes>{toolsRoutes}</Routes>
+      </MemoryRouter>,
+    );
+
+    await waitFor(() => {
+      expect(screen.getByTestId('current-location')).toHaveTextContent(
+        '/montar-kit?kit=kit-123&product=product-456#personalizacao',
+      );
+    });
   });
 });

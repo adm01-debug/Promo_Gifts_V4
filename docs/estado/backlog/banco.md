@@ -20,6 +20,8 @@ Observação: o gate E40 "Ledger parity" reportou 1097/645 no run 40175855974; a
 
 ## Itens
 
+> **Idade deste snapshot:** a medição acima é de 2026-10-25 e não deve ser usada como contagem atual. Em 2026-10-31, a revalidação do repositório confirmou que PR #2443 foi mergeado, #2714 foi fechado sem merge e #2730 foi mergeado. Isso corrige os estados dos PRs, mas não resolve automaticamente as diferenças de schema/ledger. Ver [revalidação de 31/10](../REVALIDACAO_PLANO_2026-10-31.md).
+
 | ID | Descrição | Camada | Sev. | Esforço | Depende de | Ação / estado |
 |---|---|---|---|---|---|---|
 | DB-001 | 302 migrations do repo nunca registradas em prod | sql | Alta | G | DB-003 | Subdividido abaixo |
@@ -45,7 +47,7 @@ Observação: o gate E40 "Ledger parity" reportou 1097/645 no run 40175855974; a
 | DB-P10 | P10 REVOKE `fn_cron_guard` | Aplicado (`20261022100001`) |
 | DB-P12 | P12 run-script auth | Coberto por P01 |
 | DB-P19 | P19 redistribuição de crons | Aplicado (`20261022193000`, `20261024180003`) |
-| DB-P06/P09/P14/P15/P03s | views invoker, reconciliação do ledger, initplan RLS, anon SELECT, search_path | PR #2443 aberta, **aguardando PO**; P09 se sobrepõe a DB-001/002 |
+| DB-P06/P09/P14/P15/P03s | views invoker, reconciliação do ledger, initplan RLS, anon SELECT, search_path | PR #2443 foi mergeado em 2026-10-26; revisar conteúdo mergeado e confirmar por evidência quais itens foram aplicados. P09 se sobrepõe a DB-001/002. O merge não é prova de execução no banco. |
 | DB-P04/P05/P07/P11/P13/P16/P17/P18 e P01_rls_restrictive | storage policies, índices duplicados, recibos with_check, view materializada, audit exceptions, pg_net, guard, wrapper RLS | Sem registro de aplicação em `correcoes.md` → classificar (aplicar/descartar) na próxima etapa |
 
 ## Os 17 inconclusivos (leitura em produção, 2026-10-25)
