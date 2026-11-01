@@ -52,6 +52,20 @@ function tierLabel(tier: string): string {
   return '—';
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function addMockBadge(slide: any): void {
+  slide.addText('Dados simulados', {
+    x: 10.5,
+    y: 0.7,
+    w: 2.5,
+    h: 0.3,
+    fontSize: 9,
+    color: C.warn,
+    italic: true,
+    align: 'right',
+  });
+}
+
 export async function generateBIPptx({
   clientName,
   ramoAtividade,
@@ -190,6 +204,7 @@ export async function generateBIPptx({
   // ====================== SLIDE 2 — KPIs ======================
   const s2 = pptx.addSlide();
   s2.background = { color: C.bgLight };
+  if (bi.isMock || vs.isMock) addMockBadge(s2);
   s2.addText('Visão 360° do cliente', {
     x: 0.5,
     y: 0.4,
@@ -351,6 +366,7 @@ export async function generateBIPptx({
   // ====================== SLIDE 3 — AFINIDADE & TENDÊNCIAS ======================
   const s3 = pptx.addSlide();
   s3.background = { color: C.bgLight };
+  if (affinity?.isMock || trends?.isMock) addMockBadge(s3);
   s3.addText('O que vender agora', {
     x: 0.5,
     y: 0.4,
@@ -507,6 +523,7 @@ export async function generateBIPptx({
   // ====================== SLIDE 4 — SAZONALIDADE ======================
   const s4 = pptx.addSlide();
   s4.background = { color: C.bgLight };
+  if (seasonality.isMock) addMockBadge(s4);
   s4.addText('Quando abordar', {
     x: 0.5,
     y: 0.4,
@@ -666,6 +683,7 @@ export async function generateBIPptx({
   // ====================== SLIDE 5 — PRÓXIMA AÇÃO ======================
   const s5 = pptx.addSlide();
   s5.background = { color: C.bg };
+  if (bi.isMock || vs.isMock || seasonality.isMock) addMockBadge(s5);
   s5.addShape('rect', { x: 0, y: 0, w: 13.33, h: 0.5, fill: { color: C.accent } });
 
   s5.addText('PRÓXIMA AÇÃO', {
