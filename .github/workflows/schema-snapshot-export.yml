@@ -22,6 +22,7 @@ name: schema-snapshot-export
 # 2026-09-27: paths filter em PR e push — 12min de snapshot só quando schema muda.
 # 2026-10-02: E84 — no-op guard em schedule + branch fixa bot/schema-snapshot.
 # Schedule semanal mantém varredura incondicional (segunda 06:36 UTC).
+# 2026-11-01: fix export job skipped quando drift-gate cancela com force_rotate.
 # =============================================================================
 
 on:
@@ -86,10 +87,15 @@ jobs:
     timeout-minutes: 30  # supabase db dump --linked > 388 tabelas leva >10min (run #40480567522 cancelado)
     # E27: SUPABASE_ACCESS_TOKEN não deve chegar a PRs de forks.
     # drift-gate: skipped em PR/push; em schedule/dispatch tem de passar, salvo force_rotate.
+    # force_rotate=true: drift-gate termina com conclusion=cancelled (reusable workflow),
+    # o que propagaria cancelled() para este job bloqueando !cancelled(). Fix: a primeira
+    # cláusula permite o job quando force_rotate está ativo; a terceira aceita 'cancelled'
+    # como resultado válido do drift-gate nesse cenário.
     if: >-
-      !cancelled() &&
+      (inputs.force_rotate == true || !cancelled()) &&
       (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) &&
       (needs.drift-gate.result == 'success' || needs.drift-gate.result == 'skipped' ||
+       needs.drift-gate.result == 'cancelled' ||
        (github.event_name == 'workflow_dispatch' && inputs.force_rotate))
     env:
       # Dump ao vivo (supabase db dump --linked) só em schedule/dispatch. Em PR e
