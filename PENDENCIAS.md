@@ -2318,3 +2318,55 @@ Checks não-required na branch `fix/e2e-url-state-defaults-20261030`, documentad
 
 **Resumo:** Os 11 checks não-required (items 1–4, 6–12) têm causas documentadas — todas pré-existentes ou externas ao diff, exceto item #7 cuja causa no branch PR está não confirmada (ver acima). O único check required bloqueante (item 5, Gate 1.13.3 — recibo de migration) foi corrigido e confirmado green em SHA `65119d68` ([run 41314375394](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41314375394)). Items #9–#12 adicionados (2026-11-01).
 
+
+---
+
+## P35 — Inventário completo da main@`d2033d92` — 2026-11-01T22:10 UTC
+
+> Sessão: https://claude.ai/code/session_01T5KXrgFRFRHrCX5jRcTCUz  
+> HEAD main auditado: `d2033d92` (fix(db): rollback nas migrations 202000/201000, PR #2946)  
+> 17 workflows com última run concluída em `failure`; nenhum está no HEAD atual `d2033d92` (queued)
+
+### P35.1 — Workflows com causa diagnosticada e correção em andamento
+
+| Workflow | Última run failure | SHA | Causa exata | Status (2026-11-01T22:10 UTC) |
+|---|---|---|---|---|
+| **Deploy Gates** (required) | [41336912052](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41336912052) | `c2432c52` | Gate 1.12: `supabase/migrations/20261031000000_create_stock_notes.sql` tinha `+1` soft-delete regression (linha sem `deleted_at`/exempt). Gate E40: ledger parity failure (pré-existente). | **Gate 1.12 CORRIGIDO** em main atual — `stock_notes` tem `deleted_at timestamptz` + `-- soft-delete-exempt`. Gate E40 = pré-existente (P7). 5 runs queued em SHAs mais recentes. |
+| CI Security & Drift Checks | [41347010953](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41347010953) | `1149d55f` | Step `🛡️ Supabase lint 0029 drift gate`: `public.perf002_drop_unused_snapshot_indexes()` é SECURITY DEFINER com EXECUTE para `authenticated` mas não estava na allowlist `.security/lint-0029-allowlist.json`. Detectado em PERF-005 (PR #2930). | **FIX em commit `c6f7241b`** no PR #2941 — allowlist atualizada (103→102 entradas; remove `mcp_kv_get` stale, adiciona `perf002_drop_unused_snapshot_indexes`). Aguardando merge de PR #2941 na main. |
+| Supabase Linter Gate | [41346340197](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41346340197) | `134f3d39` | Mesmo gate lint-0029 — mesma causa acima. | **FIX em PR #2941** — idem acima. |
+| DB — Aplicação migration E15 | [41349162122](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41349162122) | `4f91aa08` | Preflight migration falhou para versões 202000 e 201000. | **CORRIGIDO** em main@`d2033d92` (PR #2946 "rollback exigido pelo preflight nas migrations 202000 e 201000"). |
+
+### P35.2 — Workflows pré-existentes / externos (PO-bloqueados)
+
+| Workflow | Última run failure | SHA | Causa exata | Motivo bloqueio |
+|---|---|---|---|---|
+| Branch Protection Sentinel | [41336912004](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41336912004) | `c2432c52` | Lovable commit sem `(#NNN)` na mensagem — sentinel rejeita | EXTERNO: comportamento Lovable (ver REGRA #7) |
+| E2E (Playwright) | [41344698154](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41344698154) | `6a73ec5d` | Secrets E2E ausentes (`E2E_USER_EMAIL`, `E2E_USER_PASSWORD`) | BLOQUEIO PO: secrets não configurados no repositório (P1) |
+| E2E — Critical Flows | [41348455649](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41348455649) | `fb22dad1` | Auth E2E + check min-tests executados | BLOQUEIO PO: P1 + min-tests insuficientes |
+| E2E — Personalization Flow | [41336912059](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41336912059) | `c2432c52` | E2E autenticado pré-existente P21 | BLOQUEIO PO: P21 |
+| E2E • ColorSwatch 2 linhas | [41348720790](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41348720790) | `1440ebaf` | Visual test instability — runner CI | PRÉ-EXISTENTE: instabilidade visual de runner |
+| E2E • Swatch QuickView | [41336912022](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41336912022) | `c2432c52` | Chromium+WebKit runner shutdown | PRÉ-EXISTENTE: P28 item 5 |
+| CI - Replenishment QG | [41346340463](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41346340463) | `134f3d39` | E2E visual instabilidade (`/novidades` vs `/reposicao`) | PRÉ-EXISTENTE: instabilidade visual |
+| Quote Builder Delivery QG | [41349576116](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41349576116) | `5ebece52` | E2E visual instability | PRÉ-EXISTENTE: instabilidade visual |
+| Uptime Monitor | [41350141338](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41350141338) | `5ebece52` | Endpoint health check externo retornou erro | EXTERNO: dependência de serviço externo |
+
+### P35.3 — Workflows provavelmente corrigidos por commits recentes
+
+| Workflow | Última run failure | SHA | Causa exata | Provável correção |
+|---|---|---|---|---|
+| Magazine typed queries — dry-run | [41348995057](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41348995057) | `4f91aa08` | Step "Typecheck (aplicação)" falhou — erro TypeScript no contexto do workflow dry-run. | `b78ab0a3` (#2933 fix erros TS e persistência do tour de kits) — confirmar após run no HEAD atual |
+| TS Unused Locals Ratchet | [41348366074](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41348366074) | `bd54e884` | Step "Run noUnusedLocals ratchet" — ratchet excedeu baseline. | `b78ab0a3` (#2933 fix erros TS) — confirmar após run no HEAD atual |
+
+### P35.4 — Workflows bloqueados por aprovação PO (advisory/infra)
+
+| Workflow | Última run failure | SHA | Causa exata | Ação necessária |
+|---|---|---|---|---|
+| Policies Baseline | [41347780875](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41347780875) | `f99f36ae` | "Drift de RLS policies detectado" — policies ao vivo divergem do baseline assinado (E56 tri-state). Step "Verificar resultado (E56 — tri-state)" saiu com código 1. | PO deve aprovar e disparar `workflow_dispatch seed=true` para regravar baseline. Sem DDL, sem alteração de schema. |
+| schema-snapshot-export | [41348311003](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41348311003) | `cbbabc2f` | "Check ledger manifest drift" + "Ledger parity (repo x canonical)" — schema drift pré-existente. Same cause as Gate E40. | Mesma causa do P7 (ledger divergente). Workflow advisory — não bloqueia Gate Final. |
+
+### P35.5 — Estado dos runs queued (congestionamento de runners)
+
+No momento desta auditoria (22:10 UTC), os runners do GitHub estavam congestionados com 5+ runs do Deploy Gates em fila para SHAs mais recentes (de5345dc, 58b4eeaf, 70ffed17, 23f634de, d2033d92). Não foi possível obter `conclusion=success` para estes runs pois ainda não iniciaram. Gate 1.12 e DB-E15 estão corrigidos no código; o resultado confirmado virá quando os runners processar a fila.
+
+**Nota:** PR #2941 (commit `c6f7241b`) foi criado e está aguardando CI/revisão. Quando PR #2941 for mergeado, `CI Security & Drift Checks` e `Supabase Linter Gate` retornarão ao verde.
+

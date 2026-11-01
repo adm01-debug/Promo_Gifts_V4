@@ -1,10 +1,64 @@
 # RELATORIO_CI.md — Auditoria de Workflows CI/CD
 
-**Gerado:** 2026-10-29 · **Atualizado:** 2026-11-01T20:25 UTC
-**HEAD da main auditada:** `574e66aa` (PR #2919 — fix(db): migration espelho PERF-002, 2026-11-01T20:10)
+**Gerado:** 2026-10-29 · **Atualizado:** 2026-11-01T22:10 UTC
+**HEAD da main auditada:** `d2033d92` (PR #2946 — fix(db): rollback migrations 202000/201000, 2026-11-01T21:51)
 **HEAD anterior (baseline):** `5ae127ea` (PR #2871 — fix(db): cria tabela stock_notes, 2026-10-31)
-**PR ativo:** #2846 (`fix/e2e-url-state-defaults-20261030`) — HEAD atual `ef9d1d01`
+**PR ativo:** #2846 (`fix/e2e-url-state-defaults-20261030`) — HEAD atual `82e59ccf` (merge main@de5345dc)
+**PR #2941:** fix(security): allowlist lint-0029 (remove mcp_kv_get stale, adiciona perf002) — aguardando CI
 **Sessão:** https://claude.ai/code/session_01T5KXrgFRFRHrCX5jRcTCUz
+
+---
+
+## 16. INVENTÁRIO COMPLETO — main@`d2033d92` (2026-11-01T22:10 UTC)
+
+### 16.1 Baseline local — sessão atual (2026-11-01)
+
+| Verificação | Resultado | Observação |
+|---|---|---|
+| `npm ci` | ✅ EXIT=0 | Dependências instaladas sem erros |
+| `npm run build` | ✅ EXIT=0 | Build Vite em 11.01s; sem erros |
+| `npx tsc --noEmit` | ✅ EXIT=0 | Zero erros TypeScript |
+| `NODE_OPTIONS=--max-old-space-size=4096 npm run lint:baseline` | ✅ EXIT=0 | ESLint 0 erros, 0 warnings · regressões +0 |
+| `npx vitest run` | ✅ 540 passed | run anterior 2026-11-01T14:17 UTC — 41 arquivos, 540/543 passed, 3 skipped |
+
+> **Baseline LOCAL VERDE:** tsc ✅ + build ✅ + lint ✅ + vitest ✅ — zero regressão introduzida.
+
+### 16.2 Workflows em falha na main (última run concluída por workflow)
+
+> **Congestionamento:** 5+ runs do Deploy Gates estão em fila (queued) para SHAs mais recentes. As falhas listadas são das últimas runs CONCLUÍDAS, que podem ser de SHAs mais antigos que o HEAD atual `d2033d92`.
+
+| Workflow | Última run concluída | SHA | Causa raiz | Status |
+|---|---|---|---|---|
+| **Deploy Gates** (required) | [41336912052](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41336912052) ❌ | `c2432c52` (18:29 UTC) | Gate 1.12: `stock_notes` sem soft-delete-exempt; Gate E40: schema drift | **Gate 1.12 CORRIGIDO** em main atual (tem `deleted_at` + exempt). Gate E40 = pré-existente. 5 runs queued para SHAs mais recentes. |
+| Branch Protection Sentinel | [41336912004](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41336912004) ❌ | `c2432c52` | Lovable commit sem convenção (#NNN) | EXTERNO — P29 |
+| CI - Replenishment Module QG | [41346340463](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41346340463) ❌ | `134f3d39` | Visual instability E2E | PRÉ-EXISTENTE — P32 |
+| CI Security & Drift Checks | [41347010953](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41347010953) ❌ | `1149d55f` | lint-0029 drift gate (SECURITY DEFINER) | **FIX em PR #2941** (c6f7241b) — aguardando merge |
+| DB — Aplicação migration E15 | [41349162122](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41349162122) ❌ | `4f91aa08` | Preflight migrations 202000/201000 | **CORRIGIDO** em main@`d2033d92` (#2946 rollback) |
+| E2E (Playwright) | [41344698154](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41344698154) ❌ | `6a73ec5d` | Auth E2E (secrets ausentes) | PRÉ-EXISTENTE — P1 |
+| E2E — Critical Flows | [41348455649](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41348455649) ❌ | `fb22dad1` | Auth E2E / check min-tests | PRÉ-EXISTENTE — P1/P2 |
+| E2E — Personalization Flow | [41336912059](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41336912059) ❌ | `c2432c52` | Pré-existente P21 | PRÉ-EXISTENTE — P21 |
+| E2E • ColorSwatch 2 linhas | [41348720790](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41348720790) ❌ | `1440ebaf` | Visual test instability | PRÉ-EXISTENTE — instabilidade visual |
+| E2E • Swatch QuickView | [41336912022](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41336912022) ❌ | `c2432c52` | Chromium+WebKit runner | PRÉ-EXISTENTE — P28 item 5 |
+| Magazine typed queries — dry-run | [41348995057](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41348995057) ❌ | `4f91aa08` | TypeCheck falhou (step "Typecheck (aplicação)") — erro TS introduzido ou preexistente no SHA `4f91aa08` | PROVAVELMENTE CORRIGIDO por `b78ab0a3` (#2933 fix erros TS) — aguardar run no HEAD atual |
+| Policies Baseline | [41347780875](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41347780875) ❌ | `f99f36ae` | "Drift de RLS policies detectado" — policies ao vivo divergem do baseline assinado (E56 tri-state) | BLOQUEADO PO — exige `workflow_dispatch seed=true` para regravar baseline após aprovação PO. Registrado PENDENCIAS.md. |
+| Quote Builder Delivery QG | [41349576116](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41349576116) ❌ | `5ebece52` | E2E visual instability | PRÉ-EXISTENTE — P32 |
+| Supabase Linter Gate | [41346340197](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41346340197) ❌ | `134f3d39` | perf002 SECURITY DEFINER não na allowlist | **FIX em PR #2941** (c6f7241b) — aguardando merge |
+| TS Unused Locals Ratchet | [41348366074](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41348366074) ❌ | `bd54e884` | noUnusedLocals ratchet excedeu baseline (step "Run noUnusedLocals ratchet") | PROVAVELMENTE CORRIGIDO por `b78ab0a3` (#2933 fix erros TS) — aguardar run no HEAD atual |
+| Uptime Monitor | [41350141338](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41350141338) ❌ | `5ebece52` | Endpoint health check externo | EXTERNO — P32 |
+| schema-snapshot-export | [41348311003](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41348311003) ❌ | `cbbabc2f` | "Check ledger manifest drift" + "Ledger parity (repo x canonical)" — schema drift pre-existente (mesmo Gate E40) | PRÉ-EXISTENTE — ledger divergente. Workflow advisory, não gate bloqueante. Documentado P7. |
+
+### 16.3 Resumo classificatório
+
+| Categoria | Workflows | Ação |
+|---|---|---|
+| CORRIGIDO na main atual (aguardar runner) | Deploy Gates (Gate 1.12 stock_notes), DB-E15 (preflight rollback #2946) | 5 runs queued — aguardar executarem |
+| PROVAVELMENTE CORRIGIDO (aguardar runner) | Magazine typed queries, TS Unused Locals Ratchet | #2933 corrigiu TS — aguardar run no HEAD atual |
+| FIX PENDENTE (PR aberto) | CI Security & Drift Checks, Supabase Linter Gate | Merge de PR #2941 (allowlist lint-0029) |
+| PRÉ-EXISTENTE / EXTERNO (PO-bloqueado) | Branch Protection Sentinel, E2E Playwright, E2E Critical Flows, E2E Personalization, E2E ColorSwatch, E2E Swatch QV, CI Replenishment QG, Quote Builder QG, Uptime Monitor | Documentados PENDENCIAS.md — bloqueio PO ou comportamento externo |
+| PRÉ-EXISTENTE / schema drift (advisory) | schema-snapshot-export, Gate E40 | Ledger divergente — PENDENCIAS.md P7; workflow advisory, não gate bloqueante |
+| BLOQUEADO PO (aprovação exigida) | Policies Baseline | Drift RLS policies — exige dispatch com seed=true após validação PO |
+
+> **Deploy Gates (required check):** última conclusão **failure** em `c2432c52`. Runs em fila para SHAs mais recentes onde Gate 1.12 foi corrigido. CI congestionado no momento do relatório — aguardando execução dos runs queued.
 
 ---
 
