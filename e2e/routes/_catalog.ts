@@ -49,9 +49,7 @@ export const PUBLIC_ROUTES: RouteEntry[] = [
   { path: `/approve/${SAMPLE_TOKEN}`, area: "public", feature: "quote-public-approval" },
   { path: `/proposta/${SAMPLE_TOKEN}`, area: "public", feature: "quote-public-proposal" },
   { path: `/kit/${SAMPLE_TOKEN}`, area: "public", feature: "kit-public" },
-  { path: `/colecao-publica/${SAMPLE_TOKEN}`, area: "public", feature: "collection-public" },
-  { path: `/comparar-publica/${SAMPLE_TOKEN}`, area: "public", feature: "comparison-public" },
-  { path: `/dossie/${SAMPLE_TOKEN}`, area: "public", feature: "dossier-public" },
+{ path: `/dossie/${SAMPLE_TOKEN}`, area: "public", feature: "dossier-public" },
 ];
 
 /* ============================================================
