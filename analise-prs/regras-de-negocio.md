@@ -1,141 +1,74 @@
-# Regras de Negócio — Promo Gifts V4
-# Construído a partir de fontes reais (não de memória)
-# Última atualização: 2026-10-28 | Sessão: https://claude.ai/code/session_012WyySbh2tj8vhRQLBf3mHo
+# Regras de Negócio — Promo Brindes V4
 
----
+**Fontes:** CLAUDE.md, src/types/, src/hooks/, docs/, supabase/migrations/, testes de integração
 
-## 1. SSOT Supabase (Fonte: `src/integrations/supabase/client.ts:24`, `CLAUDE.md REGRA #1`)
+## Navegação e filtros de lista (useListUrlState)
 
-- Projeto canônico de produção: `doufsxqlfjyuvxuezpln` (Gold/Medallion)
-- `CURRENT_PROJECT_ID = "doufsxqlfjyuvxuezpln"` — campo imutável em `src/integrations/supabase/client.ts:24`
-- `pqpdolkaeqlyzpdpbizo` = SINGU (ambiente externo, READ-ONLY, nunca escrever)
-- Guarda no Gate 0 CI: `scripts/validate-supabase-config.mjs`
-- Risco histórico: commit de Lovable reverte silenciosamente — incidente 401 em 2026-06-11
+- Filtros padrão da URL devem ser canonicalizados ao navegar (POP, deep-link): parâmetros com valor default são removidos da URL.
+- Parâmetros externos (UTM, page) NÃO são removidos.
+- A busca textual (searchKey) é tratada como parâmetro gerenciado.
+- Fontes: `src/hooks/common/useListUrlState.ts`, `e2e/carrinhos/list-url-state-restore.spec.ts`
 
----
+## Sidebar admin (navegação)
 
-## 2. Tipo `Product` — Campos Críticos (Fonte: `src/types/product-catalog.ts:25-42`, `CLAUDE.md REGRA #2`)
+- Itens com `devOnly: true` são visíveis apenas para usuários em modo dev/admin.
+- Itens com `adminOnly: true` são visíveis apenas para admins.
+- Grupos de "Insights" são visíveis para todos os autenticados.
+- Fonte: `src/components/layout/SidebarReorganized.tsx:531-537`
 
-```typescript
-// src/types/product-catalog.ts:25 — interface Product
-export interface Product {
-  id: string;
-  name: string;
-  shortDescription: string;   // linha 30 — obrigatório (REGRA #2)
-  price: number;               // linha 31 — obrigatório (REGRA #2)
-  sale_price?: number;         // linha 32 — opcional (REGRA #2)
-  category_id?: string | null; // linha 35 — (REGRA #2)
-  category_name?: string | null; // linha 36 — (REGRA #2)
-  // ... demais campos opcionais
-}
-```
+## Allowlist de funções SECURITY DEFINER (lint-0029)
 
-**Invariante:** estes 5 campos nunca podem ser removidos. Gate 1.1 verifica no CI.
+- Toda função PostgreSQL com `SECURITY DEFINER` deve estar registrada em `.security/lint-0029-allowlist.json`.
+- Funções removidas do banco devem ser removidas da allowlist (stale entries geram falso-positivo no lint).
+- `mcp_kv_get`: REVOKE aplicado via migration `20260917060000_e18_revoke_authenticated_mcp_kv_get.sql` — entrada stale removida em PR #2941.
+- `is_supervisor_or_above`, `log_rls_denial`: não existem como SECURITY DEFINER no banco — remoção correta.
+- Fonte: `.security/lint-0029-allowlist.json`, `docs/security/ALLOWLISTS_MEMORY.md`
 
----
+## Barra de progresso (fake progress bar)
 
-## 3. Status de Orçamentos (Fonte: `src/types/quote.ts:10-25`)
+- Componentes de progresso NÃO devem usar `Math.random()` para calcular incrementos.
+- Substituir por progresso baseado em estado real ou seeded/determinístico.
+- Fonte: PR #2960 `src/components/novidades/` e `src/components/reposicao/`
 
-```typescript
-// src/types/quote.ts:10
-export const QUOTE_STATUSES = [
-  'approved',   // aprovado pelo cliente
-  'draft',      // rascunho em edição
-  'rejected',   // recusado pelo cliente
-  'sent',       // enviado aguardando resposta
-];
-export type QuoteStatus = z.infer<typeof quoteStatusSchema>;  // linha 25
-export type ClientResponse = 'approved' | 'changes_requested' | 'rejected';  // linha 32
-```
+## Rotas públicas (deep-links)
 
-**Regra:** `draft` não pode aparecer em listagens públicas de clientes. Gate 1.5 verifica.
+- Rotas `/colecao`, `/comparar`, `/lista-publica` estão sem implementação e devem ser removidas do router.
+- Fonte: PR #2985, PR #2950 `src/App.tsx`
 
----
+## Rollback files (supabase/rollbacks/)
 
-## 4. RLS — Políticas de Segurança (Fonte: `supabase/migrations/`, `docs/04_EXPLICACAO_DAS_POLICIES.md`)
+- `supabase/rollbacks/` é diretório de **referência apenas** — arquivos `.sql` NÃO são executados automaticamente.
+- Rollback NÃO equivale a DDL aplicada — não requer regra E056.
+- Fonte: PR #2947, PR #2948, PR #2951 diffs; REGRA #8 CLAUDE.md
 
-- **Leitura pública de produtos:** só itens ativos (`supabase/migrations/20260615231459_product_images_schema_documentation.sql`)
-- **Escrita de products:** restrita a org owner/admin
-- **recently_viewed_products:** users só podem atualizar os próprios registros (`supabase/migrations/20261018000042_e042_fix_policies_public_lote1.sql:224-225`)
-- **Regra crítica RLS:** tabelas com RLS habilitada e zero policies = deny-all silencioso → Gate 1.13.1 bloqueia
-- **Anon-insert rate guard:** 7 tabelas com INSERT anônimo possuem trigger de rate guard → Gate 1.13.2
+## Gate 1.13 — Policies de partições mensais
 
----
+- Tabelas particionadas por mês geram policies duplicadas do pai nas partições.
+- O gate deve tolerar policies de partição semanticamente idênticas à tabela mãe.
+- Normalizar nome da partição para `<__PARTITION__>` antes de comparar.
+- Bloqueador E043 (policies anon/open) ainda se aplica nas partições.
+- Fonte: PR #2952 `scripts/check-policies-baseline.mjs`
 
-## 5. DDL e Migrations (Fonte: `CLAUDE.md REGRA #8`, `docs/db/POLITICA_DDL.md`)
+## Rate guards (kill_switch_hits)
 
-- **Único caminho autorizado** para migration em prod: workflow `.github/workflows/db-apply-migration.yml`
-- **`execute_sql` via MCP** = proibido para DDL em sessão de agente (E056)
-- **`supabase db push`** = proibido (REGRA #1 §7)
-- **Migrations em PR** que tocam `supabase/migrations/` → AGUARDA PO (sem exceção)
-- Ledger de reconciliação: `supabase/MIGRATIONS_SYNC_LOG.md`
-- Baseline do drift-check: `supabase/baseline/*.sql` — NUNCA copiar para `migrations/`
+- `kill_switch_hits` tem trigger `trg_anon_rate_guard` para limitar inserções anônimas.
+- Migration `20261029160339_add_kill_switch_hits_anon_rate_guard.sql` aplicou este trigger.
+- Rollback disponível em `supabase/rollbacks/20261029160339_rollback.sql`.
+- Fonte: PR #2947
 
----
+## Release management
 
-## 6. CI / Gate Final (Fonte: `CLAUDE.md CI — ESTRUTURA DE GATES`, `.github/workflows/deploy-gates.yml`)
+- Release automatizado via release-please bot.
+- NÃO mergear PRs de release manualmente.
+- Fonte: PR #2944
 
-- **Único required check em `main`:** "Gate Final - Deploy Ready" em `deploy-gates.yml`
-- Gate Final = agregador de todos os gates em sequência
-- Gate 0: SSOT Supabase (validate-supabase-config.mjs)
-- Gate 1: Lint + TypeScript (0 erros é baseline — `62af0798`)
-- Gate 2: Testes unitários (baseline: 2 falhas em `calendar.redesign.test.tsx` — `day_selected`, `day_outside`)
-- Gate 3: E2E Smoke (Playwright chromium)
-- **Regressão** = nova falha além do baseline. Corrigir causa raiz, nunca burlar.
-- `paths-ignore: docs/**` — PRs que tocam só `docs/` não disparam CI
+## Produto (Product type) — campos obrigatórios
 
----
+- `price: number`, `sale_price?: number`, `shortDescription: string`, `category_id?: string`, `category_name?: string`.
+- Fonte: REGRA #2 CLAUDE.md, `src/types/product-catalog.ts`
 
-## 7. Vercel (Fonte: `CLAUDE.md REGRA #11`, `.vercel/project.json`)
+## SSOT Supabase
 
-- Projeto canônico: `prj_9UfugNYCuboH2R0XB04Jv8PpjDpZ` (team `juca1`)
-- `.vercel/project.json` está versionado — NUNCA deletar
-- Proibido `vercel link` fora do raiz do repositório (incidente 2026-09-15)
-
----
-
-## 8. Tipos derivados do banco (Fonte: `src/integrations/supabase/types.ts`, `CLAUDE.md REGRA #4`)
-
-- **Tabelas obrigatórias em types.ts:**
-  - `personalization_techniques`, `products`, `product_variants`, `suppliers`
-  - `supplier_products_raw`, `magazines`, `magazine_items`, `magazine_templates`
-- Gate 1.2: drift estrutural — nenhuma tabela pode desaparecer sem entrada em `docs/TYPES_INVENTORY_REMOVAL_ALLOWLIST.json`
-- Script de verificação: `npm run check:types-inventory-drift`
-
----
-
-## 9. Agentes e Cross-Agent Merge (Fonte: `CLAUDE.md REGRA #10`, E189)
-
-- 6 agentes escrevem no repo: Claude, Codex, Devin, Lovable, github-actions, cline
-- Prefixos de branch: `claude/*`, `codex/*`, `devin/*` etc.
-- **Cross-agent merge sem PR** = proibido (Gate 1.18)
-- Sentinel: `scripts/sentinel-check.sh` recusa merge commit entre prefixos de agentes diferentes
-
----
-
-## 10. Arquivos Protegidos (Fonte: `CLAUDE.md — ARQUIVOS PROTEGIDOS`)
-
-| Arquivo | Regra |
-|---|---|
-| `src/integrations/supabase/client.ts` | REGRA #1 — SSOT |
-| `scripts/validate-supabase-config.mjs` | Gate 0 guard |
-| `.env.example` | Referência canônica de vars |
-| `.lovableignore` | Proteção contra Lovable |
-| `.github/CODEOWNERS` | Revisão obrigatória |
-| `scripts/sentinel-check.sh` | Branch Protection Sentinel |
-| `.github/workflows/deploy-gates.yml` | Gate Final pipeline |
-| `.vercel/project.json` | Vercel canônico (REGRA #11) |
-| `docs/SCHEMA_REFERENCE.md` | pg_catalog do BD canônico |
-
----
-
-## 11. Contrato de Calendário (Fonte: `src/components/ui/__tests__/calendar.redesign.test.tsx`)
-
-- Baseline de 2 falhas em main (`62af0798`): `day_selected` e `day_outside`
-- Causa: migração react-day-picker v8→v10 (commit `8b0b6068`) sem atualizar seletores DOM
-- DOM v10: `aria-selected` vai para `<td>`, não para `<button>`; botões de dia são filhos de `td[role="gridcell"]`
-- PR #2681 corrige: atualiza seletores nos 3 arquivos de teste afetados
-
----
-
-*Fontes verificadas em 2026-10-28 contra código em `62af0798` (main HEAD do baseline)*
+- Projeto canônico de produção: `doufsxqlfjyuvxuezpln`.
+- Qualquer referência ao projeto legado [LEGACY_INFORMATIVO] em código executável deve ser substituída pelo canônico.
+- Fonte: REGRA #1 CLAUDE.md, `src/integrations/supabase/client.ts`
