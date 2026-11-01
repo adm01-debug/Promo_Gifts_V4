@@ -1,7 +1,7 @@
 {
   "version": 1,
   "pending_seed": false,
-  "generated_at": "2026-10-30T03:43:55.000Z",
+  "generated_at": "2026-11-01T04:32:15.513Z",
   "project_ref": "doufsxqlfjyuvxuezpln",
   "schemas_checked": [
     "public",
@@ -13,7 +13,7 @@
     "prod_audit",
     "supplier_stricker"
   ],
-  "sha256": "7ea06d275b54e1966407d2cee269e4c66467777fa7dbc52ef14af2321c25b51c",
+  "sha256": "44d2c960eae63ab86e2611932598084e66e1bb385e983a51bf08ce037b693cea",
   "policies": [
     {
       "schemaname": "cf_recon",
@@ -3588,6 +3588,26 @@
     {
       "schemaname": "public",
       "tablename": "magazine_public_view_events_2027_01",
+      "policyname": "view_events_service_all",
+      "permissive": "PERMISSIVE",
+      "roles": "{service_role}",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "magazine_public_view_events_2027_02",
+      "policyname": "view_events_read",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "SELECT",
+      "qual": "(has_role(( SELECT auth.uid() AS uid), 'admin'::app_role) OR (EXISTS ( SELECT 1\n   FROM magazines m\n  WHERE ((m.id = magazine_public_view_events_2027_02.magazine_id) AND (m.owner_id = ( SELECT auth.uid() AS uid))))))",
+      "with_check": ""
+    },
+    {
+      "schemaname": "public",
+      "tablename": "magazine_public_view_events_2027_02",
       "policyname": "view_events_service_all",
       "permissive": "PERMISSIVE",
       "roles": "{service_role}",
@@ -8318,6 +8338,26 @@
     {
       "schemaname": "public",
       "tablename": "supplier_products_raw_history_p2027_01",
+      "policyname": "hist_select_admin",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "SELECT",
+      "qual": "is_admin_or_above(( SELECT auth.uid() AS uid))",
+      "with_check": ""
+    },
+    {
+      "schemaname": "public",
+      "tablename": "supplier_products_raw_history_p2027_02",
+      "policyname": "hist_all_service",
+      "permissive": "PERMISSIVE",
+      "roles": "{service_role}",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "supplier_products_raw_history_p2027_02",
       "policyname": "hist_select_admin",
       "permissive": "PERMISSIVE",
       "roles": "{authenticated}",

@@ -12,8 +12,7 @@
  *  - Peso/Volume só aparecem quando explicitamente presentes no prop atual.
  *  - Durante o loading (weightVolume nulo) a sidebar fica oculta.
  *
- * Nota: o CTA "Gerar Orçamento" foi movido para CartHeaderActions.
- * O isolamento do CTA é coberto em CartHeaderActions.render.test.tsx.
+ * Nota: o CTA "Gerar Orçamento" vive no CartActionsMenu do header da página.
  */
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';

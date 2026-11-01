@@ -18,20 +18,20 @@
       "ref": "supabase/migrations-snapshot/SCHEMA_DRIFT.sql"
     },
     {
-      "file": "CONTRIBUTING.md",
-      "ref": "supabase/migrations/README.md"
+      "file": "analise-branches/dossies/devin-probe-e184-legacy-refs.md",
+      "ref": "qa/migrations-draft/probe_e184_legacy_refs.sql"
     },
     {
-      "file": "analise-prs/RELATORIO_PRS.md",
-      "ref": "supabase/migrations/20261029160339_add_kill_switch_hits_anon_rate_guard.sql"
+      "file": "analise-branches/RELATORIO_BRANCHES.md",
+      "ref": "qa/migrations-draft/probe_e184_legacy_refs.sql"
     },
     {
-      "file": "analise-prs/dossies/PR-2688.md",
-      "ref": "supabase/migrations/20261027120000"
+      "file": "analise-prs/dossies/PR-2426.md",
+      "ref": "qa/migrations-draft/probe_e184_legacy_refs.sql"
     },
     {
-      "file": "analise-prs/dossies/PR-2714.md",
-      "ref": "supabase/migrations/20261027195959_supplier_stricker_rls_deny_all.sql"
+      "file": "analise-prs/dossies/PR-2432.md",
+      "ref": "qa/migrations-draft/probe_e184_legacy_refs.sql"
     },
     {
       "file": "analise-prs/dossies/PR-2731.md",
@@ -1888,6 +1888,10 @@
     {
       "file": "docs/sessoes/2026-05-09-09h57-onda-1-completa-handoff.md",
       "ref": "supabase/migrations/README.md"
+    },
+    {
+      "file": "inventario/branches.json",
+      "ref": "qa/migrations-draft/probe_e184_legacy_refs.sql"
     },
     {
       "file": "inventario/branches.json",
