@@ -289,7 +289,20 @@ function isPublicOpenPolicy(p) {
 // pai e as partições, então a comparação usa partições irmãs como referência.
 // Políticas que DIFEREM da irmã continuam sendo reportadas como drift — a
 // tolerância não enfraquece a detecção.
+//
+// Normalização de referências self (E206-b): PostgreSQL emite referências
+// explícitas ao nome da partição dentro de qual/with_check (ex:
+// "magazine_public_view_events_2027_02.magazine_id"). Para que a comparação
+// entre irmãs de meses diferentes seja semântica e não lexical, substituímos
+// o nome da partição pelo placeholder "<__PARTITION__>" antes de comparar.
 const PARTITION_DATE_RE = /_p?\d{4}_\d{2}$/;
+
+function normalizePartitionSelfRefs(text, tablename) {
+  if (!text || !tablename) return text;
+  // Substitui ocorrências exatas do nome da partição (seguido de "." ou espaço)
+  // pelo placeholder canônico, para comparação semântica entre irmãs.
+  return text.replaceAll(tablename, '<__PARTITION__>');
+}
 
 function isPartitionPolicyMatchingParent(p, baselineByKey) {
   const m = PARTITION_DATE_RE.exec(p.tablename);
@@ -299,6 +312,8 @@ function isPartitionPolicyMatchingParent(p, baselineByKey) {
   // Ex: "public.magazine_public_view_events_" — NÃO casa com o pai
   // "public.magazine_public_view_events.policyname" (ponto vs underscore).
   const siblingPrefix = `${p.schemaname}.${baseTableName}_`;
+  const pQual = normalizePartitionSelfRefs(p.qual, p.tablename);
+  const pWithCheck = normalizePartitionSelfRefs(p.with_check, p.tablename);
   for (const [key, sibling] of baselineByKey) {
     if (!key.startsWith(siblingPrefix)) continue;
     if (sibling.policyname !== p.policyname) continue;
@@ -306,8 +321,8 @@ function isPartitionPolicyMatchingParent(p, baselineByKey) {
       sibling.cmd === p.cmd &&
       sibling.permissive === p.permissive &&
       sibling.roles === p.roles &&
-      sibling.qual === p.qual &&
-      sibling.with_check === p.with_check
+      normalizePartitionSelfRefs(sibling.qual, sibling.tablename) === pQual &&
+      normalizePartitionSelfRefs(sibling.with_check, sibling.tablename) === pWithCheck
     ) return true;
   }
   return false;
