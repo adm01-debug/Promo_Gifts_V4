@@ -129,8 +129,22 @@ export function StockDashboard() {
   // salvo em localStorage na primeira visita. `useListUrlState` mantém o
   // padrão das demais listagens (/orcamentos, /carrinhos) — status/sort/busca
   // via query string.
-  const initialTab: StockTabValue = reliabilityFlag ? readActiveTabPref() : 'overview';
-  const stockUrlKeys = useMemo(() => ({ tab: initialTab }), [initialTab]);
+  //
+  // stockTabDefault distingue dois cenários:
+  // 1. URL já tem ?tab → usa 'overview' (app default estável) para que a
+  //    normalização mantenha qualquer valor diferente de 'overview' (ex:
+  //    'reliability') intacto — preservando URLs compartilháveis.
+  // 2. URL não tem ?tab → usa a preferência localStorage como valor inicial,
+  //    sem envolver a normalização (não há parâmetro para remover).
+  const [stockTabDefault] = useState<StockTabValue>(() => {
+    if (!reliabilityFlag) return 'overview';
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      if (params.has('tab')) return 'overview';
+    }
+    return readActiveTabPref();
+  });
+  const stockUrlKeys = useMemo(() => ({ tab: stockTabDefault }), [stockTabDefault]);
   const { values: stockUrlValues, setValue: setStockUrlValue } = useListUrlState({
     keys: stockUrlKeys,
   });
