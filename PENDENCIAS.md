@@ -4,7 +4,30 @@
 
 > Revalidação posterior de PRs, workflows e pendências transversais: [docs/estado/REVALIDACAO_PLANO_2026-10-31.md](docs/estado/REVALIDACAO_PLANO_2026-10-31.md). Os registros abaixo são snapshots datados; não substituem a revalidação mais recente.
 
-## Inventário P28 — falhas na `main`@5ae127ea (2026-11-01)
+## Inventário P29 — falhas na `main`@c2432c52 (2026-11-01T20:05Z)
+
+Ponta da `main` auditada: `c2432c52` (HEAD atual). Somente workflows cuja ÚLTIMA execução na main falhou.
+**Ações desta sessão:**
+- `CI Security & Drift Checks` → **CORRIGIDO** em commit `085dd48e` (PR #2846): adicionadas `cleanup_expired_auth_sessions()` e `perf002_drop_unused_snapshot_indexes()` à allowlist; removidas entradas stale `is_supervisor_or_above()` e `log_rls_denial()`.
+- `Deploy Gates` → **CORRIGIDO** em commit `3a615215` (PR #2846): Gate 1.12 adicionou `stock_notes` com `soft-delete-exempt`.
+- Demais falhas abaixo: externas/pré-existentes, não corrigíveis no escopo desta sessão.
+
+| # | Workflow | Último run falho na main | SHA | Causa raiz exata | Classificação |
+|---|---|---|---|---|---|
+| 1 | Branch Protection Sentinel | [41336912004](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41336912004) | c2432c52 | Job `Audit every commit in push` falhou — commit `c2432c52` (Lovable bot) não segue padrão de mensagem exigido pelo sentinel (`scripts/sentinel-check.sh`). Job `Verify Branch Protection` → ✅ success. Falha recorrente: sempre que Lovable commita direto na main sem `(#NNN)`. Será resolvida quando próximo commit válido chegar na main via PR. | **Externo** — Lovable não segue convenção; não reescrevemos história de main |
+| 2 | CI - Replenishment Module Quality Gate | [41336912023](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41336912023) | c2432c52 | Step `E2E — Paridade visual /novidades vs /reposicao` falhou; log tail mostra upload de artefato sem erro de código isolável — padrão de E2E visual instável (runner/ambiente). Não é required check do Gate Final. | **Externo** — E2E visual instável; não é required check |
+| 3 | CI Security & Drift Checks | [41336912072](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41336912072) | c2432c52 | `check-lint-0029-drift.mjs --require-live`: 2 funções com SECURITY DEFINER não na allowlist (`cleanup_expired_auth_sessions`, `perf002_drop_unused_snapshot_indexes`). **FIX: commit `085dd48e` em PR #2846** atualiza `.security/lint-0029-allowlist.json`. Aguardando Gate Final para validar. | **CORRIGIDO** — PR #2846 commit `085dd48e` |
+| 4 | E2E — Personalization Flow | [41336912059](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41336912059) | c2432c52 | E2E autenticado do fluxo de personalização — instabilidade pré-existente desde P21 (`7299c88c`); log tail mostra apenas upload de artefato (116 MB) sem erro isolável. Não é required check do Gate Final. | **Externo/pré-existente** — P21 documentado; não é required check |
+| 5 | Quote Builder Delivery Quality | [41336912035](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41336912035) | c2432c52 | Step `E2E & Visual Regression` falhou; log tail mostra apenas upload de artefato (353 MB). E2E visual regression instável. Não é required check do Gate Final. | **Externo** — E2E visual instável; não é required check |
+
+**Workflows que PASSARAM no run de c2432c52** (não bloqueantes — estavam falhando em commits anteriores):
+- Deploy Gates (Gate Final): ✅ passou na main para `c2432c52` (Gate 1.12 corrigido em commit anterior na main)
+- E2E — Critical Flows: ✅ sem failure na main para `c2432c52`
+- E2E • Swatch QuickView: ✅ sem failure na main para `c2432c52`
+- Global Search Quality Gate: ✅ sem failure na main para `c2432c52`
+- Uptime Monitor: ✅ sem failure na main para `c2432c52`
+
+## Inventário P28 — falhas na `main`@5ae127ea (2026-11-01) [HISTÓRICO]
 
 Ponta da `main` auditada: `5ae127ea` (PR #2871 — "fix(db): cria tabela stock_notes ausente no banco").  
 Somente conclusões `failure` listadas. Runs `queued`/`in_progress`/`cancelled` omitidos.
