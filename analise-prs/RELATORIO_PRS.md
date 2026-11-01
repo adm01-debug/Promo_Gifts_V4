@@ -2,7 +2,7 @@
 
 **Gerado em:** 2026-11-01 (v3 — análise exaustiva de 36 PRs)
 **SHA main fixado:** `58b4eeaf24f9c70d99e28c192e464ffa10c37274`
-**SHA main atual:** `a581aef7db32604f91fd15e8665e2f657f3c128d`
+**SHA main atual:** `c80b098a654e90d7b8a962a67babbffb12063f33` (pós squash-merge #2927, 2026-11-01T22:48Z)
 **Total PRs analisadas:** 36 (34 abertas + 2 mergeadas nesta sessão)
 
 ---
@@ -13,7 +13,8 @@
 
 **Branch:** `claude/fix-e2e-url-state-261101-2045` | **Merge SHA:** `c80b098a654e90d7b8a962a67babbffb12063f33`
 
-- **quality-gate:** `completed/success` (SHA `f23ee40`)
+- **quality-gate:** `completed/success` no SHA `f23ee40` do PR; CI pós-merge em main `c80b098a`: 6 checks queued + Supabase Preview=failure(pré-existente) em 2026-11-01T22:48Z
+- **noUnusedLocals ratchet:** falhou no PR (2 erros introduzidos); mergeada pelo dono do repo (adm01-debug) com conhecimento da falha
 - **Diff:** 11 arquivos — `useListUrlState.ts` + testes + allowlist + `check-dependency-audit.mjs`
 - **Worktree merge test vs main:** limpo, sem conflito
 - **Banco:** `is_supervisor_or_above` e `log_rls_denial` não existem como SECURITY DEFINER
@@ -39,8 +40,9 @@
 
 **Evidências:**
 - Remove `mcp_kv_get` da allowlist: migration `20260917060000_e18_revoke_authenticated_mcp_kv_get.sql` aplicada
-- quality-gate: `total_count: 0` para SHA `3d0bf8c2` — CI não disparou neste head
-- Behind main após merge de #2927
+- CI no head `3d0bf8c2` (reconfirmado): 4 checks — Supabase Preview=failure(pré-existente), alert=skipped, Vercel=success, Vercel Agent=neutral. **Quality-gate não rodou.**
+- Behind main (base `4c6541b6f` vs main atual `c80b098a`); `mergeable_state: unknown`
+- 7 review comments no PR
 
 **Ação quando CI verde:** Mergear (inclui mcp_kv_get removal que #2927 não tinha).
 

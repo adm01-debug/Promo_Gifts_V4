@@ -1,6 +1,6 @@
 {
   "sha_main_fixado": "58b4eeaf24f9c70d99e28c192e464ffa10c37274",
-  "sha_main_atual": "a581aef7db32604f91fd15e8665e2f657f3c128d",
+  "sha_main_atual": "c80b098a654e90d7b8a962a67babbffb12063f33",
   "data_analise": "2026-11-01",
   "total_prs_analisadas": 36,
   "total_abertas_no_momento": 34,
@@ -32,7 +32,8 @@
     "diff_completo_2952": "LIDO — scripts/check-policies-baseline.mjs +73/-2; Gate 1.13 partition tolerance",
     "ci_2927_quality_gate": "completed/success (SHA f23ee40) — MERGEADA",
     "ci_2949_docs_bypass": "E14 paths-ignore docs/** — docs-only PR, sem CI necessário — MERGEADA",
-    "ci_2941_head_3d0bf8c2": "total_count: 0 — sem quality-gate rodando no head atual",
+    "ci_2941_head_3d0bf8c2": "total_count: 4 — Supabase Preview=failure(pré-existente), alert=skipped, Vercel=success, Vercel Agent=neutral; sem quality-gate",
+    "ci_main_c80b098a_pos_merge_2927": "10 checks: Supabase Preview=failure(pré-existente: Remote migration versions), alert=skipped, lovable-audit=skipped, seed/regen=skipped; Gate0/noUnusedLocals/DriftPolicies/Cruza/useListUrlState/DetectarMudancas=queued — CI rodando em 2026-11-01T22:48Z",
     "ci_2947_head_c8c61c8b": "total_count: 0 — sem quality-gate rodando",
     "ci_2952_head_25c67241": "total_count: 0 — sem quality-gate rodando",
     "ci_2960_head_53cf1298": "quality-gate: queued (in_progress) + mergeable_state: blocked (unresolved review)",
