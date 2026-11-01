@@ -1,4 +1,4 @@
-# Pendências de CI — Sessão 2026-11-01
+# Pendências de CI — Sessão 2026-11-01 (rev 2)
 
 Workflows com última execução em `main` = **failure** que requerem ação do PO ou investigação adicional.  
 Atualizado por: sessão `https://claude.ai/code/session_01Gd4dBfqdiob6wbwpb5cQLj`
