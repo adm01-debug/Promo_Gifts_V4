@@ -167,3 +167,4 @@ Atualizado por: sessão `https://claude.ai/code/session_01Gd4dBfqdiob6wbwpb5cQLj
 - `auth-health | 000 | 28` (28 falhas — sem resposta HTTP)
 **Causa:** instabilidade do projeto Supabase `doufsxqlfjyuvxuezpln` — auth/v1/health inacessível  
 **Bloqueio:** infra Supabase — requer investigação no painel Supabase ou contato com suporte
+
