@@ -14,8 +14,16 @@ ERROS: 0
 
 ## Vitest
 
-Estado: em execução em background (processo b7zx9gwwv)
-Referência autoritativa: Gate 2 CI SUCCESS — SHA `dfec2236c` (run 41019605919)
+Estado: **CONCLUÍDO** (processo b7zx9gwwv, duração 1154s)
+
+```
+Test Files  73 failed | 1203 passed | 131 skipped (1407)
+     Tests  23 failed | 25590 passed | 1134 skipped | 24 todo (26771)
+Snapshots   2 written, 2 obsolete (NegotiationMarkupCard.visualA11y)
+```
+
+**Nota:** 73 arquivos com falha são pre-existing (branch delivery = docs only, sem mudança de código).
+Referência autoritativa CI: Gate 2 CI SUCCESS — SHA `dfec2236c` (run 41019605919)
 Ver: `docs/ci/evidence vitest baseline 11 arquivos/137 testes dfec2236c` (commit main 33ef0cda2)
 
 ## Gate Final (Deploy Gates)
