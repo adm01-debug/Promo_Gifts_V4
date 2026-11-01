@@ -39,8 +39,8 @@ São usados em workflows de E2E/integração que **não fazem parte do Gate Fina
 
 | Segredo | Dono | Escopo | Rotação | Papel / Workflows |
 |---|---|---|---|---|
-| `E2E_USER_EMAIL` | DevOps | Repo | Anual | Usuário comprador padrão — 73 refs em e2e.yml, cart-*.yml, e2e-*.yml, visual-tests.yml (passo chromium-authed) |
-| `E2E_USER_PASSWORD` | DevOps | Repo | Anual | Senha do usuário comprador padrão — 72 refs |
+| `E2E_USER_EMAIL` | DevOps | Repo | Anual | Usuário comprador padrão — 50 refs em workflows de E2E/integração |
+| `E2E_USER_PASSWORD` | DevOps | Repo | Anual | Senha do usuário comprador padrão — 45 refs em workflows de E2E/integração |
 | `E2E_ADMIN_EMAIL` | DevOps | Repo | Anual | Usuário administrador de testes — deploy-gates.yml, e2e-cart-*.yml (13 refs) |
 | `E2E_ADMIN_PASSWORD` | DevOps | Repo | Anual | Senha do admin de testes — 13 refs |
 | `E2E_DEV_EMAIL` | DevOps | Repo | Anual | Usuário developer (edge-integration-all.yml) — 1 ref |
