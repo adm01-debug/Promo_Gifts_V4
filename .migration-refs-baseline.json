@@ -38,6 +38,14 @@
       "ref": "supabase/migrations/20261029160339_add_kill_switch_hits_anon_rate_guard.sql"
     },
     {
+      "file": "analise-prs/prs.json",
+      "ref": "supabase/migrations/20261027120000"
+    },
+    {
+      "file": "analise-prs/prs.json",
+      "ref": "supabase/migrations/20261029160339_add_kill_switch_hits_anon_rate_guard.sql"
+    },
+    {
       "file": "docs/AUDIT_FRONTEND_DATABASE.md",
       "ref": "supabase/migrations/20251228_audit_trail.sql"
     },
