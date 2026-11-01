@@ -13,6 +13,16 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
@@ -71,6 +81,8 @@ interface KitAIPromptDialogProps {
     composition: KitAIComposition,
     requestedQuantity?: number,
   ) => void;
+  /** When true, shows a confirmation dialog before replacing existing kit content. */
+  hasExistingContent?: boolean;
 }
 
 const AUDIENCES = ['Colaboradores', 'Clientes', 'Evento', 'Clientes VIP'];
@@ -109,8 +121,11 @@ export function mapKitAiErrorMessage(
   if (status === 402) {
     return 'Créditos de IA esgotados. Fale com o financeiro para renovar.';
   }
-  if (status === 429 || status === 503 || status === 504 || errorKind === 'timeout') {
-    return 'Muitas tentativas em pouco tempo. Tente novamente em 1 minuto.';
+  if (status === 429) {
+    return 'Limite de requisições atingido. Aguarde 1 minuto e tente novamente.';
+  }
+  if (status === 503 || status === 504 || errorKind === 'timeout') {
+    return 'O serviço de IA está temporariamente indisponível. Tente novamente em alguns minutos.';
   }
   return 'Erro ao gerar sugestão. Tente novamente.';
 }
@@ -152,8 +167,10 @@ export function KitAIPromptDialog({
   catalogItems = [],
   catalogBoxes = [],
   onApply,
+  hasExistingContent = false,
 }: KitAIPromptDialogProps) {
   const [open, setOpen] = useState(false);
+  const [confirmReplaceOpen, setConfirmReplaceOpen] = useState(false);
   const [prompt, setPrompt] = useState('');
   const [audience, setAudience] = useState('');
   const [budget, setBudget] = useState('');
@@ -246,7 +263,7 @@ export function KitAIPromptDialog({
     }
   };
 
-  const handleApply = () => {
+  const commitApply = () => {
     if (!suggestion || !activeAlternative) return;
     const requestedQuantity = Number.parseInt(quantity, 10);
     onApply(
@@ -259,6 +276,15 @@ export function KitAIPromptDialog({
     setOpen(false);
     clearForm();
     toast.success('Composição aplicada — revise variantes, estoque e valores antes de continuar.');
+  };
+
+  const handleApply = () => {
+    if (!suggestion || !activeAlternative) return;
+    if (hasExistingContent) {
+      setConfirmReplaceOpen(true);
+      return;
+    }
+    commitApply();
   };
 
   const handleOpenChange = (nextOpen: boolean) => {
@@ -276,6 +302,7 @@ export function KitAIPromptDialog({
   };
 
   return (
+    <>
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
         <Button variant="outline" size="sm" className="gap-1.5">
@@ -531,6 +558,22 @@ export function KitAIPromptDialog({
         </div>
       </DialogContent>
     </Dialog>
+    <AlertDialog open={confirmReplaceOpen} onOpenChange={setConfirmReplaceOpen}>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Substituir conteúdo do kit?</AlertDialogTitle>
+          <AlertDialogDescription>
+            A sugestão da IA substituirá os produtos e a caixa já adicionados ao kit. Esta ação
+            não pode ser desfeita.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancelar</AlertDialogCancel>
+          <AlertDialogAction onClick={commitApply}>Substituir</AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+    </>
   );
 }
 

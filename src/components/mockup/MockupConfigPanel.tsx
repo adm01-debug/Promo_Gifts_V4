@@ -366,6 +366,7 @@ export function MockupConfigPanel({
                     isAnalyzing={logoColorAnalysis.isAnalyzing}
                     error={logoColorAnalysis.error}
                     onPantoneChange={logoColorAnalysis.updatePantone}
+                    maxColors={selectedTechnique?.maxColors ?? undefined}
                   />
                 </MobileCollapsibleSection>
               )}
