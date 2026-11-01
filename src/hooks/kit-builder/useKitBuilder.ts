@@ -167,10 +167,10 @@ export function useKitBuilder({ initialFlow = 'box-first' }: UseKitBuilderOption
       ({ config, quantity }) =>
         config?.enabled &&
         (!Number.isFinite(config.estimatedPrice) ||
-          (config.estimatedPrice ?? -1) < 0 ||
+          (config.estimatedPrice ?? -1) <= 0 ||
           config.pricedQuantity !== quantity ||
           !Number.isFinite(config.totalPrice) ||
-          (config.totalPrice ?? -1) < 0),
+          (config.totalPrice ?? -1) <= 0),
     );
     if (personalizationWithoutPrice) {
       validationErrors.push(
