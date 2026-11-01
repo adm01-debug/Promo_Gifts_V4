@@ -1,6 +1,6 @@
 # RELATORIO_CI.md — Auditoria de Workflows CI/CD
 
-**Gerado:** 2026-10-29 · **Atualizado:** 2026-11-01T14:28 UTC
+**Gerado:** 2026-10-29 · **Atualizado:** 2026-11-01T14:33 UTC
 **HEAD da main auditada:** `5ae127ea` (PR #2871 — fix(db): cria tabela stock_notes, 2026-10-31)
 **HEAD anterior (baseline):** `7e56ae49` (PR #2818, docs-only, 2026-10-30)
 **PR ativo:** #2846 (`fix/e2e-url-state-defaults-20261030`) — inclui fix Gate 1.12 para `stock_notes`
@@ -8,20 +8,22 @@
 
 ---
 
-## 6. Estado do PR #2846 — Gate Final (2026-11-01T14:28 UTC)
+## 6. Estado do PR #2846 — Gate Final (2026-11-01T14:33 UTC)
 
 ### SHAs do branch `fix/e2e-url-state-defaults-20261030`
 
 | SHA | Commit | Deploy Gates | migrations-sync-log-gate | vitest local | Observação |
 |---|---|---|---|---|---|
-| `889f3e3a` ← HEAD | docs(ci): atualiza §1 vitest (540/543) + §6 | `pending` ([run 41316231539](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41316231539)) | `queued` | ✅ 540/543 | CI aguardando runner (14:26 UTC) |
+| `1b8e4d40` ← HEAD | docs(ci): P34 — falhas não-required PR #2846 | `pending` ([run 41316726985](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41316726985)) | — | ✅ 540/543 | CI aguardando runner (14:32 UTC) |
+| `fe4b88fa` | docs(ci): §15 comparação baseline × final | cancelado (push posterior) | — | ✅ 540/543 | concurrency cancel |
+| `444c0816` | docs(ci): atualiza §6 estado detalhado | cancelado (push posterior) | — | ✅ 540/543 | concurrency cancel |
+| `889f3e3a` | docs(ci): atualiza §1 vitest (540/543) + §6 | cancelado ([run 41316231539](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41316231539)) | — | ✅ 540/543 | cancelado por push posterior |
 | `1348a44a` | fix(ci): corrige contradição recibo (Copilot LOW) | cancelado (push posterior) | — | ✅ 540/543 | concurrency cancel |
 | `65119d68` | docs(ci): atualiza §1 vitest + §6 | cancelado (push posterior) | ✅ **success** ([run 41314375394](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41314375394)) | ✅ 540/543 | migrations-sync-log-gate confirmado |
-| `0bbd70b5` | fix(ci): corrige Gate 1.13.3 (recibo repair-only) | cancelado (push posterior — concurrency) | — | ✅ 540/543 | cancelado por push de 9422d0ac |
-| `9422d0ac` | docs(ci): Branch Protection Sentinel evidência | concluído | — | ✅ 540/543 | — |
+| `0bbd70b5` | fix(ci): corrige Gate 1.13.3 (recibo repair-only) | cancelado ([run 41313600062](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41313600062)) | — | ✅ 540/543 | cancelado por push de 9422d0ac |
 | `f73265f3` | docs(ci): classifica itens P28 como externos | ❌ failure ([run 41312199906](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41312199906)) | ❌ failure (recibo "pendente") | ✅ 540/543 | **SHA anterior ao fix** |
 
-> **Nota:** O Gate Final do SHA `f73265f3` falhou no Gate 1.13.3 (`migrations-sync-log-gate`) — recibo da migration `20261031000000` marcado como "pendente". Corrigido em `0bbd70b5`. O run de `0bbd70b5` foi cancelado por concurrency (push subsequente). O run do HEAD `889f3e3a` está `pending` — aguardando runner GitHub Actions.
+> **Nota:** O Gate Final do SHA `f73265f3` falhou no Gate 1.13.3 (`migrations-sync-log-gate`) — recibo da migration `20261031000000` marcado como "pendente". Corrigido em `0bbd70b5`. Os pushes subsequentes de docs cancelaram os runs anteriores (concurrency). HEAD atual `1b8e4d40` tem run `41316726985` em `pending` — aguardando runner GitHub Actions.
 
 ### Checks confirmados no SHA `65119d68`
 | Check | Resultado |
