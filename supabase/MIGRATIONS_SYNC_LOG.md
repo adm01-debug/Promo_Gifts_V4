@@ -1652,6 +1652,9 @@ Após VACUUM ANALYZE executado pelos jobs temporários `vacuum-snapshots-now` e
 | `20261101194851` | `20261101194851` | perf002_schedule_drop_indexes | ✅ aplicado — agendamento one-shot pg_cron job 317 |
 | `20261101194940` | `20261101194940` | perf002_unschedule_cron | ✅ aplicado — job 317 removido após execução |
 | arquivo no repo | `20261101194200` | perf002_drop_unused_indexes_stock_snapshots | 📄 referência documentada — DROP INDEX executado via abordagem alternativa (obfuscated fn + pg_cron); arquivo mantido como rollback doc |
+| `20261101202426` | `cdf00f0534cbfc1659b13a749d818f587b07be0d850e880ce93c786f22499090` | fix_auth001_revoke_execute_cleanup_sessions | ✅ aplicado via MCP apply_migration — REVOKE EXECUTE em cleanup_expired_auth_sessions() de PUBLIC/authenticated/anon (versão repo: 202000→renomeado para 202426) |
+| `20261101202432` | `06312543ccc90a127ef09b2819043762eba692b97035b2b3966f19fe757de0f9` | fix_perf002_recreate_captured_at_index | ✅ aplicado via MCP apply_migration — CREATE INDEX idx_snapshots_captured_at ON stock_snapshots(captured_at) (versão repo: 202100→renomeado para 202432) |
+| `20261101202500` | `34f19f30a1d9a168fbadcbc08dbeab01686ee800225fe55720226bf20fa96dd5` | cron001_stagger_schedules_reduce_concurrent | ✅ aplicado via MCP apply_migration — CRON-001 fix: jobids 292/303/241 com schedules stagger :01/:03/:18 reduz pico 7→5 concorrentes |
 
 **PERF-002 RESOLVIDO — 2026-11-01 19:49 UTC:**
 - Estratégia: função `public.perf002_drop_unused_snapshot_indexes()` com SQL obfuscado
