@@ -949,3 +949,46 @@ Sessão de implementação: `claude_05/nice-rubin-tnd9wg`
 | ALTO | 11 | 9 (PERF-005, PERF-006, SEC-001, SEC-002, SEC-003, SEC-004b, AUTH-001, REAL-001, ST-001) | 2 (PERF-004, SEC-004) | 0 | 0 |
 | MÉDIO | 9 | 5 (INT-001, REAL-002, ST-002, ST-003, SB-0005) | 3 (SEC-005, SEC-006, INT-002) | 0 | 1 (SB-0007 — premissa incorreta) |
 | BAIXO | 3 | 1 (SB-0009 dropada 19:29 UTC) | 2 (SEC-007, INT-003) | 0 | 0 |
+
+---
+
+## VERIFICAÇÃO END-TO-END (2026-11-01 — sessão claude/fix-post-review-bugs-261101-2015)
+
+Queries executadas via MCP `execute_sql` em produção (`doufsxqlfjyuvxuezpln`):
+
+| Check | SQL evidence | Resultado |
+|---|---|---|
+| auth001_cron existe | `cron.job WHERE jobname='cleanup-expired-auth-sessions'` | **1** ✅ |
+| auth001_grants revogados | `routine_privileges WHERE routine_name='cleanup_expired_auth_sessions' AND grantee IN (PUBLIC/anon/authenticated)` | **0** ✅ |
+| sec003_pgtmp zero | `pg_proc WHERE prosecdef AND proconfig LIKE '%pg_temp%'` | **0** ✅ |
+| sec004b fn_cron_guard grant authenticated | `routine_privileges WHERE routine_name='fn_cron_guard' AND grantee='authenticated'` | **0** ✅ |
+| real001 auth.users in realtime | `pg_publication_tables WHERE pubname='supabase_realtime' AND schemaname='auth' AND tablename='users'` | **0** ✅ |
+| st001 art-files owner filter | `pg_policies storage art_files_auth_% WITH auth.uid()/owner` | **2** ✅ |
+| st003 recibos WITH CHECK | `pg_policies recibos% cmd=UPDATE AND with_check IS NOT NULL` | **1** ✅ |
+| sb0009 backup table gone | `pg_class WHERE relname='_backup_stock_daily_summary_20260618'` | **0** ✅ |
+| perf001 spr indexes | `pg_indexes WHERE tablename='supplier_products_raw' AND indexname LIKE 'idx_spr_%'` | **13** ✅ |
+| perf002b captured_at recriado | `pg_indexes WHERE tablename='stock_snapshots' AND indexname='idx_snapshots_captured_at'` | **1** ✅ |
+| perf002 dead indexes gone | `pg_stat_user_indexes WHERE relname='stock_snapshots' AND idx_scan=0 AND indexrelname IN (7 dropped)` | **0** ✅ |
+| perf003 vacuum cron | `cron.job WHERE jobname LIKE 'vacuum-%'` | **6** ✅ |
+| perf006 daily idx | `pg_indexes WHERE tablename='stock_daily_summary' AND indexname='idx_daily_product_date'` | **1** ✅ |
+| int001 kit FK indexes | `pg_indexes WHERE indexname IN (idx_kit_quote_requests_user_id, idx_kit_save_requests_user_id)` | **2** ✅ |
+| cron292 schedule | `cron.job WHERE jobid=292` | **1 \*/4 \* \* \*** ✅ |
+| cron303 schedule | `cron.job WHERE jobid=303` | **3 \*/6 \* \* \*** ✅ |
+| cron241 schedule | `cron.job WHERE jobid=241` | **18 \* \* \* \*** ✅ |
+| cron max_running_jobs | `pg_settings WHERE name='cron.max_running_jobs'` | **32** ⚙️ (Dashboard only) |
+| mig_202426 no ledger | `supabase_migrations.schema_migrations WHERE version='20261101202426'` | **1** ✅ |
+| mig_202432 no ledger | `supabase_migrations.schema_migrations WHERE version='20261101202432'` | **1** ✅ |
+| mig_202500 no ledger | `supabase_migrations.schema_migrations WHERE version='20261101202500'` | **1** ✅ |
+| rls 100% | `pg_tables WHERE schemaname='public' AND NOT rowsecurity` | **0** ✅ |
+
+### Dependabot alerts (GitHub — não Supabase)
+
+| Alert | CVE | Severity | Status |
+|---|---|---|---|
+| #84 minimatch@10.2.6 | CVE-2026-118764 | MEDIUM | ✅ **PR #2925 mergeada 2026-11-01T20:41Z** — override `^11.0.1` em `package.json`; minimatch@11.0.3 instalado; alert auto-dismissed |
+| #69 extract-zip@2.0.1 | CVE-2026-19693 | HIGH | **Sem patch disponível** — `first_patched_version: null`; escopo dev/transitive; reachability disabled; aguarda patch upstream de `@puppeteer/browsers` |
+| #68 extract-zip@2.0.1 | CVE-2026-56876 | HIGH | **Sem patch disponível** — `first_patched_version: null`; escopo dev/transitive; reachability disabled; aguarda patch upstream de `@puppeteer/browsers` |
+
+### schema-snapshot-export
+
+Runs #2700 (queued) e #2706 (pending) cancelados em 2026-11-01T20:5x UTC. Novo dispatch disparado em 2026-11-01T21:xx UTC no HEAD atual (`cbbabc2`, pós-merge PR #2925). Aguardando conclusão dos runners do CI.
