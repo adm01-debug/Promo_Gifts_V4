@@ -950,11 +950,12 @@ Sessão de implementação: `claude_05/nice-rubin-tnd9wg`
 
 **2 itens requerem ação humana (impossíveis via agente em auto-mode):**
 
-1. **PERF-005 — Aplicar migration de DROP INDEX (5 tentativas fracassadas):**
+1. **PERF-005 — Aplicar migration de DROP INDEX:**
    - Arquivo já commitado em `main`: `supabase/migrations/20261101205400_perf005_drop_unused_indexes.sql`
    - 64 índices com `idx_scan=0` ainda presentes em produção; ~200MB de storage a liberar
-   - **Opção A (preferida):** GitHub Actions → [db-apply-migration.yml](https://github.com/adm01-debug/Promo_Gifts_V4/actions/workflows/db-apply-migration.yml) → Run workflow → `version: 20261101205400`
-   - **Opção B:** Supabase Dashboard → [SQL Editor](https://supabase.com/dashboard/project/doufsxqlfjyuvxuezpln/sql/new) → colar conteúdo de `supabase/migrations/20261101205400_perf005_drop_unused_indexes.sql` → executar
+   - **Workflow ativo:** [run #41358914450](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41358914450) — job `preflight` queued, aguardando runner `ubuntu-24.04`
+   - **Após preflight:** job `apply` requer aprovação humana no gate `environment: production` (GitHub Actions UI → Waiting for approval)
+   - **Opção alternativa:** Supabase Dashboard → [SQL Editor](https://supabase.com/dashboard/project/doufsxqlfjyuvxuezpln/sql/new) → colar conteúdo de `supabase/migrations/20261101205400_perf005_drop_unused_indexes.sql` → executar
    - Após aplicar: rodar `schema-snapshot-export.yml` com `force_rotate: true` para atualizar baseline do drift-check
 
 2. **CRON-001 — cron.max_running_jobs via Dashboard:**
@@ -968,8 +969,8 @@ Sessão de implementação: `claude_05/nice-rubin-tnd9wg`
 | Categoria | Total | ✅ Aplicado/Verificado | 🟡 Intencional/Info | ⚙️ Manual | ❌ Inválido |
 |---|---|---|---|---|---|
 | CRÍTICO | 4 | 3 (PERF-001, PERF-002, PERF-003) | 0 | 1 (CRON-001 — impossível via SQL; Dashboard: `cron.max_running_jobs=4`) | 0 |
-| ALTO | 11 | 8 (PERF-006, SEC-001, SEC-002, SEC-003, SEC-004b, AUTH-001, REAL-001, ST-001) | 2 (PERF-004, SEC-004) | 1 (PERF-005 — 64 índices; workflow #41350535676 aguardando aprovação `production`) | 0 |
-| MÉDIO | 9 | 5 (INT-001, REAL-002, ST-002, ST-003, SB-0005) | 3 (SEC-005, SEC-006, INT-002) | 0 | 1 (SB-0007 — premissa incorreta) |
+| ALTO | 11 | 8 (PERF-006, SEC-001, SEC-002, SEC-003, SEC-004b, AUTH-001, REAL-001, ST-001) | 2 (PERF-004, SEC-004) | 1 (PERF-005 — 64 índices; workflow #41358914450 queued) | 0 |
+| MÉDIO | 9 | 5 (INT-001, REAL-002, ST-002, ST-003, SB-0005) | 4 (SEC-005, SEC-006, INT-002, SB-0007 — 10 policies rls_restrictive_* USING(true) noop; migration 20261101210000 criada) | 0 | 0 |
 | BAIXO | 3 | 1 (SB-0009 dropada 19:29 UTC) | 2 (SEC-007, INT-003) | 0 | 0 |
 
 ---
@@ -1096,8 +1097,8 @@ Execução de queries de verificação SQL individuais para cada achado corrigí
 | Status | Qtd | Itens |
 |---|---|---|
 | ✅ PASS (verificado por SQL) | 26 | CRON-001-stagger×3, PERF-001×3, PERF-002×2, PERF-003, PERF-006, SEC-001, SEC-002, SEC-003, SEC-004b, AUTH-001, REAL-001, REAL-002×3, ST-001×2, ST-002, ST-003, SB-0005, INT-001×2, SB-0009, RLS |
-| 🟡 INTENCIONAL/INFO | 8 | PERF-004, SEC-004, SEC-005, SEC-006, SEC-007, INT-002, INT-003, **SB-0008** (CRM single-tenant; `USING (true)` explícito em migration `20260524220159`; tabela sem `org_id`) |
-| ❌ INVÁLIDO | 1 | SB-0007 (premissa errada: ai_usage_quotas não tem coluna user_id) |
-| ⚙️ BLOQUEADO HUMANO | 2 | PERF-005 (migration commitada; workflow #41350535676 aguardando aprovação de environment `production`), CRON-001-max_running_jobs (GUC context=postmaster — requer restart do servidor via Dashboard) |
+| 🟡 INTENCIONAL/INFO | 9 | PERF-004, SEC-004, SEC-005, SEC-006, SEC-007, INT-002, INT-003, **SB-0008** (CRM single-tenant; `USING (true)` explícito em migration `20260524220159`; tabela sem `org_id`), **SB-0007** (10 policies `rls_restrictive_* USING (true)` noop — cada tabela tem policies permissivas corretas; migration `20261101210000` commitada para DROP) |
+| ❌ INVÁLIDO | 0 | — |
+| ⚙️ BLOQUEADO HUMANO | 2 | PERF-005 (migration commitada; workflow #41358914450 queued — após preflight, clicar "Approve" no gate `environment: production` no GitHub Actions UI), CRON-001-max_running_jobs (GUC context=postmaster — requer restart do servidor via Dashboard: `cron.max_running_jobs=4`) |
 
 **Todos os 32 achados resolvidos ou documentados. Os 2 bloqueados exigem ação humana por limitação arquitetural do Supabase managed (não contornável por agente de IA).**

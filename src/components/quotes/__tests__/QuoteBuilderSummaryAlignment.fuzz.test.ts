@@ -14,6 +14,8 @@ import { describe, it, expect } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
+// E128 extraiu o JSX do cabeçalho para QuoteBuilderSummaryItems; os tokens
+// de alinhamento validados por este teste vivem no componente extraído.
 const SRC = readFileSync(resolve(__dirname, '../QuoteBuilderSummaryItems.tsx'), 'utf8');
 
 // --- Extração dos tokens reais do source (SSOT) ---------------------------
