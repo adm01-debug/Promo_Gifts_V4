@@ -15,6 +15,7 @@
  *   3. Cobertura média da view ≥ 70%
  */
 import { describe, it, expect, beforeAll } from 'vitest';
+import { supabase } from '@/integrations/supabase/client';
 import { dbInvoke } from '@/lib/db/postgrest';
 import { computeKitCoverage, compareCoverage } from './kit-coverage';
 
@@ -32,6 +33,27 @@ describe.skipIf(!INTEGRATION_ENABLED)(
     let kitId: string;
 
     beforeAll(async () => {
+      const email = process.env.E2E_USER_EMAIL?.trim();
+      const password = process.env.E2E_USER_PASSWORD;
+      if (!email || !password) {
+        throw new Error(
+          'Credenciais E2E ausentes: configure E2E_USER_EMAIL e E2E_USER_PASSWORD nos secrets do GitHub Actions.',
+        );
+      }
+
+      // dbInvoke usa o cliente Supabase compartilhado; autenticar antes das
+      // consultas faz a bridge enviar o JWT do usuário (role authenticated),
+      // sem conceder leitura pública ao role anon.
+      const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+      if (authError || !authData.session) {
+        throw new Error(
+          'Não foi possível autenticar o usuário E2E no Supabase; confira os secrets e o usuário de teste.',
+        );
+      }
+
       const pinned = process.env.KIT_FIXTURE_ID?.trim();
       if (pinned) {
         // Valida formato UUID v4 para falhar rápido se a var estiver corrompida
