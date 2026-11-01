@@ -1,9 +1,9 @@
 # RELATORIO_CI.md — Auditoria de Workflows CI/CD
 
-**Gerado:** 2026-10-29 · **Atualizado:** 2026-11-01T19:38 UTC
-**HEAD da main auditada:** `5ae127ea` (PR #2871 — fix(db): cria tabela stock_notes, 2026-10-31)
-**HEAD anterior (baseline):** `7e56ae49` (PR #2818, docs-only, 2026-10-30)
-**PR ativo:** #2846 (`fix/e2e-url-state-defaults-20261030`) — HEAD atual `38ce54b0`
+**Gerado:** 2026-10-29 · **Atualizado:** 2026-11-01T20:05 UTC
+**HEAD da main auditada:** `c2432c527889` (fix(db): PERF-003 cron semanal VACUUM ANALYZE stock_snapshots, 2026-11-01T18:29)
+**HEAD anterior (baseline):** `5ae127ea` (PR #2871 — fix(db): cria tabela stock_notes, 2026-10-31)
+**PR ativo:** #2846 (`fix/e2e-url-state-defaults-20261030`) — HEAD atual `84d0cc84`
 **Sessão:** https://claude.ai/code/session_01T5KXrgFRFRHrCX5jRcTCUz
 
 ---
@@ -165,7 +165,7 @@ A única **regressão nova** introduzida por PR #2871 é o item 1 (Deploy Gates 
 | `npm run test:run` | ✅ **25.916 testes ✅** | 1251 arquivos · 1135 skipped · 24 todo · 1320s — TODOS passaram |
 | `npm run build` | ✅ EXIT=0 | Build Vite em 20.00s — limpo |
 
-> **Baseline LOCAL VERDE:** tsc ✅ + lint ✅ + vitest 25.916/25.916 ✅ + build ✅ — **nenhuma regressão de código**. As 18 falhas P28 são 100% CI remoto (infra/externos/pré-existentes), confirmado.
+> **Baseline LOCAL VERDE:** tsc ✅ + lint ✅ + vitest 25.916/25.916 ✅ + build ✅ — **nenhuma regressão de código**. O baseline local confirma ausência de regressão de código. Cada uma das 18 falhas P28 tem diagnóstico específico por run documentado em PENDENCIAS.md (ver tabelas §15.1 e §P28); cada item descreve a causa raiz do run citado.
 
 ---
 
