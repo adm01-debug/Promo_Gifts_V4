@@ -1,10 +1,10 @@
 # RELATORIO_CI.md — Auditoria de Workflows CI/CD
 
-**Gerado:** 2026-10-29 · **Atualizado:** 2026-11-01T22:25 UTC
+**Gerado:** 2026-10-29 · **Atualizado:** 2026-11-01T22:38 UTC
 **HEAD da main auditada:** `4c6541b6` (docs(auditoria): validação exaustiva final, 2026-11-01T22:06)
 **HEAD anterior (baseline):** `5ae127ea` (PR #2871 — fix(db): cria tabela stock_notes, 2026-10-31)
-**Branch de fix:** `fix/e2e-url-state-defaults-20261030` — HEAD atual `b51c252d` (merge main@4c6541b6)
-**PR #2941:** fix(security): allowlist lint-0029 — CI em execução (SHA `b51c252d`)
+**Branch de fix:** `fix/e2e-url-state-defaults-20261030` — HEAD atual `e94b22e5` (docs: corrige metadata perf002)
+**PR #2941:** fix(security): allowlist lint-0029 + Finding #1 Qodo HIGH — CI aguardando fila (SHA `e94b22e5`)
 **Sessão:** https://claude.ai/code/session_01T5KXrgFRFRHrCX5jRcTCUz
 
 ---
@@ -108,6 +108,53 @@
 | Uptime Monitor | [41355321066](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41355321066) | ⏳ queued | `d2033d92` |
 
 > Nota: `Magazine typed queries` e `TS Unused Locals Ratchet` e `E2E • ColorSwatch` não aparecem nas 100 runs mais recentes na main — workflows que disparam em condições específicas de paths ou não foram triggados recentemente.
+
+---
+
+## 18. BASELINE PÓS-CORREÇÕES — Sessão 3 (2026-11-01T22:38 UTC)
+
+> **Branch:** `fix/e2e-url-state-defaults-20261030` HEAD `e94b22e5` (2 commits novos: Finding #1 Qodo HIGH + docs metadata)
+> **Alterações desta sessão (Sessão 3):**
+> - `scripts/check-dependency-audit.mjs` — adicionada verificação de `fixAvailable` para pacotes não-minimatch
+> - `tests/scripts/check-dependency-audit.test.mjs` — 2 testes negativos novos (23 testes totais, todos passando)
+> - `.security/lint-0029-allowlist.json` — metadata perf002 corrigido (PERF-002, migration 20261101194657, 7 índices)
+> - `docs/security/ALLOWLISTS_MEMORY.md` — REVOKE de cleanup_expired_auth_sessions corrigido para "pendente"; metadata perf002 corrigido
+
+### 18.1 Verificações locais pós-correções (2026-11-01T22:35 UTC)
+
+| Verificação | Resultado | Detalhe |
+|---|---|---|
+| `npm ci` | ✅ EXIT=0 | Reutilizado de §17.1 — dependências sem alteração |
+| `npm run build` | ✅ EXIT=0 | Build Vite 10.58s; zero erros |
+| `npx tsc --noEmit` | ✅ EXIT=0 | Zero erros TypeScript |
+| `NODE_OPTIONS=--max-old-space-size=4096 npm run lint:baseline` | ✅ EXIT=0 | 0 erros, 0 warnings · Δ regressões: +0 |
+| `npx vitest run tests/scripts/check-dependency-audit.test.mjs` | ✅ 23 passed | 2 testes novos + 21 anteriores — todos passando |
+| `npx vitest run tests/scripts/` | ✅ 566 passed (44 suites) | 3 skipped — zero falhas |
+
+### 18.2 Comparação baseline × pós-correções
+
+| Métrica | Baseline (§16.1 — 2026-11-01T14:17) | Pós-correção (§18.1) | Delta |
+|---|---|---|---|
+| Build Vite | ✅ 11.01s | ✅ 10.58s | ✅ sem regressão |
+| TypeScript errors | 0 | 0 | ✅ 0 |
+| ESLint erros/warnings | 0/0 | 0/0 | ✅ 0 |
+| Vitest scripts/ testes | N/A | 566 passed (44 suites) | ✅ sem regressão |
+| Vitest check-dependency-audit | 21 testes | 23 testes (+2 novos) | ✅ melhoria |
+
+### 18.3 Estado do PR #2941 — HEAD `e94b22e5` (2026-11-01T22:38 UTC)
+
+| Check | Status | Conclusão |
+|---|---|---|
+| Gate Final - Deploy Ready | ⏳ queued | aguardando runner |
+| CI Security & Drift Checks | ⏳ queued | aguardando runner |
+| Supabase Linter Gate | ⏳ queued | aguardando runner |
+| Supabase Preview | ✅ completed | failure (pré-existente: `categories.level` — view `analytics.categories_tree_visual`, não causado pelo diff) |
+| Vercel Preview Comments | ✅ completed | success |
+| Vercel Agent Review | ✅ completed | neutral |
+| alert | ✅ completed | skipped |
+| Demais (26 checks) | ⏳ queued | aguardando runner |
+
+> CI em fila — congestionamento de runners. Prova de conclusão=success será adicionada ao §18.4 quando os checks completarem.
 
 ---
 
