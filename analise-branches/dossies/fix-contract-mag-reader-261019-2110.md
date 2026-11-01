@@ -23,9 +23,9 @@ src/hooks/intelligence/useCommercialIntelligence.helpers.ts
 ```
 
 **Diff completo lido (nesta sessão):**
-- `capacity-growth-report.yml`: branch tem `cron: '47 7 * * 1' # E89` vs main tem `'16 9 * * 1' # E177` — branch é MAIS ANTIGA (E89 anterior a E177).
-- `pgss-slo-report.yml`: branch tem `cron: '51 10 * * 1' # E89` vs main tem `'31 10 * * 1' # E177` — idem.
-- `wraparound-monitor-report.yml`: branch tem `cron: '20 7 * * *' # E89` vs main tem `'15 6 * * *' # E177` — idem.
+- `capacity-growth-report.yml`: branch tem `cron: '47 7 * * 1' # E89` vs main tem `'12 11 * * 1' # E177` — branch é MAIS ANTIGA (E89 anterior a E177).
+- `pgss-slo-report.yml`: branch tem `cron: '51 10 * * 1' # E89` vs main tem `'52 10 * * 1' # E177` — idem.
+- `wraparound-monitor-report.yml`: branch tem `cron: '20 7 * * *' # E89` vs main tem `'30 5 * * *' # E177` — idem.
 - `useClientOrdersHistory.ts` / `useClientTopProducts.ts` / `useCommercialIntelligence.helpers.ts`: branch adiciona comentário `// rls-allow:` inline nos `.from('orders')` — comentários já em main (conteúdo absorvido).
 
 ---
