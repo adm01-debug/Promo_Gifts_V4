@@ -48,6 +48,9 @@ vi.mock('@/hooks/products', () => ({
 
 vi.mock('@/hooks/products/useCategoryIcons', () => ({
   useCategoryIcons: () => ({ data: [] }),
+}));
+
+vi.mock('@/hooks/products/getCategoryIcon', () => ({
   getCategoryIcon: () => '📦',
 }));
 

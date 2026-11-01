@@ -10,6 +10,10 @@ const mockNavigate = vi.fn();
 // Mock do hook useCategoryIcons
 vi.mock('@/hooks/products/useCategoryIcons', () => ({
   useCategoryIcons: () => ({ data: [] }),
+}));
+
+// Mock de getCategoryIcon (movido para módulo dedicado)
+vi.mock('@/hooks/products/getCategoryIcon', () => ({
   getCategoryIcon: (name: string) => {
     if (name.includes('Squeeze')) return '💧';
     return '📦';
