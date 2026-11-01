@@ -2282,3 +2282,141 @@ Checks não-required na branch `fix/e2e-url-state-defaults-20261030`, documentad
 
 **Resumo:** Os 11 checks não-required (items 1–4, 6–12) têm causas documentadas — todas pré-existentes ou externas ao diff, exceto item #7 cuja causa no branch PR está não confirmada (ver acima). O único check required bloqueante (item 5, Gate 1.13.3 — recibo de migration) foi corrigido e confirmado green em SHA `65119d68` ([run 41314375394](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41314375394)). Items #9–#12 adicionados (2026-11-01).
 
+
+---
+
+## P35 — Sessão de correção de workflows (2026-11-01) — itens 9-16
+
+### Contexto
+Sessão iniciada para corrigir todos os workflows em falha em `https://github.com/adm01-debug/Promo_Gifts_V4/actions?query=is%3Afailure`. Esta seção documenta os itens 9–16 identificados e o estado de cada um.
+
+### Item 9 — TS Unused Locals Ratchet (`noUnusedLocals ratchet`)
+
+| Campo | Valor |
+|---|---|
+| Workflow | `noUnusedLocals ratchet` (job dentro de `deploy-gates.yml` ou CI Security & Drift Checks) |
+| Causa raiz | `tsc -p tsconfig.app.json --noUnusedLocals --noEmit` retorna 2×TS2339 em `src/hooks/stock/useRuptureAlerts.ts:73`. O cast `await expr as Promise<{data,error}>` era parseado como `(await expr) as Promise<{...}>`, que não expõe `data`/`error`. |
+| Correção | Mover parêntese: `(await (supabase as any).rpc(...).limit(MAX_ROWS)) as { data: ... }` — 2 linhas. PR #2998 branch `claude/fix-ts-unused-rupture-20261101-2300`. |
+| Estado | PR #2998 aberto — CI rodando (33 check runs queued em 2026-11-01T23:14Z). Aguardando "Gate Final - Deploy Ready" verde para merge. |
+| Bloqueio | Nenhum do lado do código — aguardar CI do PR #2998. |
+| Required? | Sim (Gate 1, tsc-unused-ratchet) |
+
+### Item 10 — TS2339 em `useRuptureAlerts.ts` (`CI Security & Drift Checks`)
+
+| Campo | Valor |
+|---|---|
+| Causa raiz | Mesma causa do item 9: 2×TS2339 por `data` e `error` não existirem em `Promise<{...}>`. |
+| Correção | Mesma do item 9 — PR #2998. |
+| Estado | Idem item 9. |
+| Required? | Sim (Gate 1) |
+
+### Item 11 — Policies Baseline Gate (`Gate 1.13` — RLS policies baseline)
+
+| Campo | Valor |
+|---|---|
+| Workflow | `deploy-gates.yml` step Gate 1.13 — `check-rls-policies-baseline.mjs` |
+| Causa raiz | Gate compara políticas RLS do banco canônico `doufsxqlfjyuvxuezpln` contra baseline commitado. Requer `SUPABASE_ACCESS_TOKEN` válido em ambiente CI + aprovação PO (REGRA #8 — auditoria via pg_catalog, não PostgREST). |
+| Bloqueio | `SUPABASE_ACCESS_TOKEN` precisa estar configurado como GitHub secret (verificar em Settings → Secrets → Actions do repo). Se já configurado mas gate falha: comparar `docs/rls-policies-baseline.json` com estado real do banco via pg_catalog. |
+| Ação necessária | PO: verificar se secret `SUPABASE_ACCESS_TOKEN` existe no repo; se não, criar via Supabase Dashboard → Settings → API → Service Role Key e cadastrar em GitHub → Settings → Secrets. |
+| Required? | Sim (Gate 1.13) |
+
+### Item 12 — E2E timeout de DB (`database-integrity`)
+
+| Campo | Valor |
+|---|---|
+| Workflow | `database-integrity` (Gate 2.5) |
+| Causa raiz | Job `database-integrity` falha intermitentemente com timeout de conexão ao Supabase canônico. Instabilidade de infra Supabase (latência de rede CI → Supabase), não falha de código. |
+| Evidência | Logs mostram `connection timeout` ou similar; schema e dados não foram alterados. |
+| Bloqueio | Instabilidade de infra; não requer alteração de código. PO pode verificar status do projeto Supabase em `https://status.supabase.com`. |
+| Required? | Sim (Gate 2.5) — falhas intermitentes podem passar na próxima execução. |
+
+### Item 13 — E2E login timeout (`E2E — Full User Flows (authed)`)
+
+| Campo | Valor |
+|---|---|
+| Workflow | `E2E — Full User Flows (authed)` e outros workflows E2E autenticados |
+| Causa raiz | `storageState.json` termina sem token `sb-*-auth-token` após 75s em `/login`. Pode ser: (a) credenciais `E2E_USER_EMAIL`/`E2E_USER_PASSWORD` inválidas/expiradas, (b) instabilidade do Supabase Auth, (c) rate limiting da API auth. |
+| Bloqueio | PO: verificar se os secrets `E2E_USER_EMAIL` e `E2E_USER_PASSWORD` no repo têm credenciais válidas e não expiradas. Testar login manual com as credenciais configuradas. |
+| Required? | Depende do workflow específico. "E2E — Full User Flows (authed)" não é required check do Gate Final pelos dados atuais. |
+
+### Item 14 — E2E Swatch QuickView (`webkit • swatch→QV`)
+
+| Campo | Valor |
+|---|---|
+| Workflow | `E2E • Swatch QuickView (Lista + Tabela)` — shards chromium, firefox, webkit |
+| Causa raiz | `[E108] Sem produtos com color_swatches em /reposicao` — fixture insuficiente em CI; 66.7% dos testes skipados (máximo: 50%). Falha pré-existente, não introduzida por PR atual. |
+| Bloqueio | Requer análise manual dos artefatos Playwright (~209 MB por execução). Fixture de produtos com color_swatches V2 precisa ser ampliada para cobrir rotas satélite em CI. |
+| Required? | Não — não faz parte do Gate Final (`deploy-gates.yml`). |
+| Ação | Investigar fixtures de teste; não alterar timeout nem skipar testes. |
+
+### Item 15 — Quote Builder (`E2E - Quote Builder Delivery` / `Update Quote Visual Snapshots`)
+
+| Campo | Valor |
+|---|---|
+| Workflow | `E2E - Quote Builder Delivery`, `Update Quote Visual Snapshots` |
+| Causa raiz confirmada | `[E108] Sem orçamento enviado no ambiente` ao preparar cenários; `toBeHidden()` falha no FAB. Fixture ausente para orçamento no ambiente CI. |
+| Bloqueio | Requer análise manual de artefatos Playwright (~894 MB). Fixture de orçamento enviado precisa ser criada para ambiente CI. |
+| Required? | Não — workflows separados de `deploy-gates.yml`. |
+
+### Item 16 — Uptime Monitor (`uptime-monitor.yml`)
+
+| Campo | Valor |
+|---|---|
+| Workflow | `uptime-monitor.yml` (schedule, a cada 30 min) |
+| Causa raiz | Edge function `uptime-check` desatualizada em produção vs código no repo (drift detectado pelo job "Compare GitHub × Canonical"). Deploy de edge function requer `workflow_dispatch` em `deploy-edge-functions.yml` (REGRA #8 — não pode ser feito via MCP direto). |
+| Bloqueio | PO: disparar `workflow_dispatch` em `.github/workflows/deploy-edge-functions.yml` com `function_name: uptime-check` para sincronizar a edge function. |
+| Required? | Não — workflow de monitoramento externo, não faz parte de `deploy-gates.yml`. |
+
+
+### Item 17 — E2E ColorSwatch Grid (`E2E • ColorSwatch Grid`)
+
+| Campo | Valor |
+|---|---|
+| Workflow | `E2E • ColorSwatch Grid` |
+| Última run (main) | [41348720790](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41348720790) — `conclusion=failure` |
+| Causa raiz | Log tail retornou apenas upload de artefato (203 MB) sem mensagem de erro explícita (`[LOG NÃO CONCLUSIVO]`). O run completou com `failure`, indicando falha em pelo menos um teste E2E. Causa exata requer análise do artefato Playwright (~203 MB). |
+| Bloqueio | Análise manual do artefato de 203 MB. Possível causa: fixture de color_swatches insuficiente em CI (idêntica ao item 14 — E2E Swatch QuickView); ou componente `ColorSwatchGrid` com bug de renderização não coberto pelo item 14. |
+| Ação necessária | Dev: baixar artefato da run 41348720790 e inspecionar `test-results/`; identificar teste falhante; criar fixture ou corrigir componente. |
+| Required? | Não — não faz parte do Gate Final (`deploy-gates.yml`). |
+
+### Item 18 — E2E Personalization Flow (`E2E — Personalization Flow`)
+
+| Campo | Valor |
+|---|---|
+| Workflow | `E2E — Personalization Flow` |
+| Última run (main) | [41354148312](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41354148312) — `conclusion=failure` |
+| Causa raiz | Log tail retornou apenas upload de artefato (157 MB) sem mensagem de erro explícita (`[LOG NÃO CONCLUSIVO]`). Run completou com `failure`. Possível causa: fixture de produto com opções de personalização ausente em CI, ou dependência de credenciais E2E (mesma causa do item 13). |
+| Bloqueio | Análise manual do artefato de 157 MB. Se a causa for credenciais E2E, o item 13 (PO) desbloqueia automaticamente. Se for fixture, requer criação de fixture específica de personalização. |
+| Ação necessária | PO: verificar primeiro se corrigir credenciais E2E (item 13) resolve este item. Se não, Dev: baixar artefato da run 41354148312 e inspecionar `test-results/`. |
+| Required? | Não — não faz parte do Gate Final (`deploy-gates.yml`). |
+
+### Item 19 — Edge Integration Tests (`Edge Integration Tests`)
+
+| Campo | Valor |
+|---|---|
+| Workflow | `Edge Integration Tests` |
+| Causa raiz | 1 dos 110 arquivos de teste falhou; 894/898 testes passaram. Log tail (`[LOG NÃO CONCLUSIVO]`) — o arquivo/teste específico não aparece no tail do log. |
+| Bloqueio | Análise do log completo do job para identificar qual dos 110 arquivos falhou. Possível causa: edge function desatualizada em produção (mesma causa do item 16 — drift entre GitHub e canônico). |
+| Ação necessária | PO: disparar `workflow_dispatch` em `deploy-edge-functions.yml` (sem `function_name` para redeployar todas) após verificar que PR #2998 está mergeado. Se ainda falhar, Dev: inspecionar log completo do job para identificar o arquivo/teste. |
+| Required? | Não — não faz parte do Gate Final (`deploy-gates.yml`). |
+
+---
+
+### Sumário executivo dos itens 9-19
+
+| Item | Título | Estado | Quem desbloqueia |
+|---|---|---|---|
+| 9 | TS Unused Locals Ratchet | PR #2998 aguardando CI | Automático (CI verde → merge) |
+| 10 | TS2339 useRuptureAlerts | PR #2998 aguardando CI | Automático (CI verde → merge) |
+| 11 | Policies Baseline Gate | Bloqueado: secret `SUPABASE_ACCESS_TOKEN` | **PO** |
+| 12 | E2E DB timeout | Instabilidade de infra Supabase | **PO** (verificar status.supabase.com) |
+| 13 | E2E login timeout | Verificar credentials `E2E_USER_*` | **PO** |
+| 14 | E2E Swatch QuickView | Fixture insuficiente; análise manual de 209 MB artifact | Dev + PO |
+| 15 | Quote Builder E2E | Fixture de orçamento ausente em CI; 894 MB artifact | Dev + PO |
+| 16 | Uptime Monitor edge fn | Deploy edge function `uptime-check` via workflow_dispatch | **PO** |
+| 17 | E2E ColorSwatch Grid | Log não conclusivo; artifact 203 MB a analisar | Dev + PO |
+| 18 | E2E Personalization Flow | Log não conclusivo; artifact 157 MB; verificar se item 13 resolve | **PO** (E2E creds primeiro) |
+| 19 | Edge Integration Tests | 1/110 arquivos falhou; log não conclusivo | **PO** (redeployar edge fns) + Dev |
+
+**Nota sobre Gate Final:** Os itens 9–10 (PR #2998) são required checks. Os itens 11–19 envolvem bloqueios de infra, secrets, PO ou análise manual de artefatos grandes — nenhum pode ser corrigido apenas por alteração de código nesta sessão sem aprovação explícita do PO.
+
