@@ -372,6 +372,13 @@ const navGroups: NavGroup[] = [
         devOnly: true,
         tooltip: 'Gerencie as imagens do catálogo para uma vitrine sempre rápida e bonita.',
       },
+      {
+        icon: ShieldCheck,
+        label: 'Audit Suite',
+        href: '/admin/audit-suite',
+        devOnly: true,
+        tooltip: 'Visualize relatórios de auditoria e rastreamento de ações no sistema.',
+      },
     ],
   },
 ];
@@ -524,7 +531,7 @@ export const SidebarReorganized = React.memo(
       () =>
         enrichedNavGroups
           .filter((g) => {
-            // Se o grupo for de Insights, ele é visível para todos os usuários autenticados
+            // Se ogropo for de Insights, ele é visível para todos os usuários autenticados
             if (g.id === 'intelligence') return true;
             return (!g.adminOnly || isAdmin) && (!g.devOnly || isDev);
           })
@@ -558,7 +565,7 @@ export const SidebarReorganized = React.memo(
             transitionTimingFunction: 'cubic-bezier(0.23,1,0.32,1)',
           }}
           className={cn(
-            'theme-transitioning fixed left-0 top-0 z-50 h-full border-r border-sidebar-border/20 bg-sidebar/80 backdrop-blur-3xl transition-all duration-500',
+            'theme-transitioning fixed left-0 top-0 z-50 h-full border-r border-sidebar-border/20 bg-sidebar/80 backdrop-blur-3xl transition-all duration-500!',
             isCollapsed ? 'overflow-visible' : 'overflow-hidden',
             'lg:sticky lg:top-0 lg:z-40 lg:h-[100dvh] lg:max-h-[100dvh]',
             isOpen
