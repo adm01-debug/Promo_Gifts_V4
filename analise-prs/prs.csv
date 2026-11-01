@@ -14,7 +14,7 @@ number,title,state,verdict,blocked_reason,sha_merge,merged_by
 2596,"chore(deps): bump postcss-selector-parser from 6.1.4 to 6.1.5",closed,MERGEADO_SESSAO_EXTERNA,,54e8904585ad474030feea88526d9c66b7404aa4,session_externa
 2597,"fix(ci): corrige 4 workflows CI falhando",closed,MERGEADO_SESSAO_EXTERNA,,6ef07df8c4980ab776bb087d4ebd79804b1d476c,session_01Knr9enFAok62bHihBK1UUP
 2599,"fix(privacy): substitui supabase.functions.invoke por invokeEdge em AnonymizeAccountDialog",closed,MERGEADA_SESSAO_EXTERNA,,2ca5ef04e6e0968dace09ffcbd70710aad166ba0,session_externa
-2600,"docs(analise-prs): addendum deliverables — branch de entrega desta sessao",open,DRAFT_NOMERGE,"DELIVERY BRANCH — NEVER MERGE",,
+2600,"docs(analise-prs): addendum deliverables — branch de entrega desta sessao",closed,FECHADA_EXTERNA,"PR #2600 fechada externamente em 2026-10-28 (nao mergeada)",,
 2602,"fix(e2e): corrige falhas E2E mobile tooltips e personalization specs",closed,MERGEADO_SESSAO_EXTERNA,,,session_01Knr9enFAok62bHihBK1UUP
 2603,"fix(crons): 4 migrations + RLS stricker",closed,MERGEADA_SESSAO_EXTERNA,,df18546dfd76d1bea7ea5873257b668d128d8df3,session_externa
 2604,"fix(ci): continue-on-error psql steps snapshot",closed,MERGEADA_SESSAO_EXTERNA,,c5edf577e9660da32cdd497357f97117bda95cb1,session_externa
@@ -27,7 +27,7 @@ number,title,state,verdict,blocked_reason,sha_merge,merged_by
 2622,"fix(rollbacks): rollbacks para 9 migrations 20261027 + manifest fix",open,BLOQUEADA,"supabase/rollbacks/ — REGRA#8: exige aprovacao do PO",,
 2625,"fix(edge-functions): health-check timeout + xbz-image-uploader manifest",closed,MERGEADO_SESSAO_EXTERNA,,83c81d5859bef375af76a918e7ab01ce20a7944a,session_01Knr9enFAok62bHihBK1UUP
 2627,"fix(rollbacks): rollbacks 2 migrations 20261027 (233000 + 234500)",closed,MERGEADO_AUTONOMO,,16108a1ce67449118e1b2bb80ca60d902bc474d6,session_011d8gKLZg8BWivR8aQBwxGF
-2628,"fix(e2e): adiciona secao simulator em selectors.ts",closed,MERGEADO_AUTONOMO,,02e503365552d8d161e96917277170fff0af92dc,session_011d8gKLZg8BWivR8aQBwxGF
+2628,"fix(e2e): adiciona secao simulator em selectors.ts",closed,MERGEADO_AUTONOMO,,02e503365552d8d161e96917277190ff0af92dc,session_011d8gKLZg8BWivR8aQBwxGF
 2631,"chore: atualiza PENDENCIAS e RELATORIO_CI — bloqueio deploy confirmado",open,DRAFT_NOMERGE,"PR em estado DRAFT",,
 2636,"fix(tests): mock AutoTestJobStatusCard em AdminStructuralComparison",closed,MERGEADO_AUTONOMO,,b5cfee9b24017fbf53a0035e86d8820d07bad74e,session_011d8gKLZg8BWivR8aQBwxGF
 2637,"docs: recibo de aplicacao — 20261027120000 (E15)",closed,MERGEADO_AUTONOMO,,78d083f1696186faf0e25f3aa950c05843928e25,session_011d8gKLZg8BWivR8aQBwxGF
@@ -43,4 +43,38 @@ number,title,state,verdict,blocked_reason,sha_merge,merged_by
 2655,"fix(tests): xbz-image-uploader descriptor with pendingDeploy=true",closed,MERGEADA_SESSAO_EXTERNA,,a0560fdc62744c6bf4ba182914cc76dec06aecb1,session_01Knr9enFAok62bHihBK1UUP
 2656,"fix(ci): adiciona qs ao allowlist do gate de dependencias (GHSA-6pq8-jhm2-2vcw)",closed,MERGEADA_SESSAO_EXTERNA,,ac0fe4760792a9d0526d6ea6f014ca2a58da8ddb,session_01Knr9enFAok62bHihBK1UUP
 2658,"fix(test): tolera timeout de waitFor nos integration tests de reposicao",closed,MERGEADA_SESSAO_EXTERNA,,2fafe8edfaa246221a4b427d5728512ba9ff199e,session_01Knr9enFAok62bHihBK1UUP
-2660,"fix(e2e): aguarda spinner de auth do ProtectedRoute antes de interagir com conteúdo protegido",closed,MERGEADA_SESSAO_EXTERNA,,e0b569f18cdfc8c7bc63466e567597cf799aaae7,session_01Knr9enFAok62bHihBK1UUP
+2660,"fix(e2e): aguarda spinner de auth do ProtectedRoute antes de interagir com conteudo protegido",closed,MERGEADA_SESSAO_EXTERNA,,e0b569f18cdfc8c7bc63466e567597cf799aaae7,session_01Knr9enFAok62bHihBK1UUP
+2940,"feat(nav): adiciona entrada Audit Suite na sidebar admin",closed,MERGEADA_AUTONOMA,"rev88 — zero conflitos merge-tree","686be704a4f7b1c5e2cbedcf581bd075e9898d16",session_011d8gKLZg8BWivR8aQBwxGF
+2941,"fix(security): atualiza allowlist lint-0029 + check-dependency-audit",open,BLOQUEADA,"REGRA#8 (supabase/rollbacks/) + CONFLITO (mergeable:dirty)",,
+2942,"docs(ci): RELATORIO_CI.md v4 — baseline local",open,DRAFT_NOMERGE,"PR em estado DRAFT",,
+2944,"chore(main): release 1.6.1",closed,MERGEADA_AUTONOMA,"rev88 — release-please automation (package.json+CHANGELOG)","03fc479aaf682f7e2f3958ad481c9c28c211d582",session_011d8gKLZg8BWivR8aQBwxGF
+2947,"fix: adiciona rollback da migration 20261029160339 (kill_switch_hits)",open,BLOQUEADA,"REGRA#8 (supabase/rollbacks/) — exige aprovacao do PO",,
+2948,"chore(migrations): rollback files para e38/e47/e37",open,DRAFT_NOMERGE,"DRAFT + REGRA#8 (supabase/rollbacks/)",,
+2950,"fix(routes): remove rotas publicas mortas lista/colecao/comparar",open,DRAFT_NOMERGE,"PR em estado DRAFT",,
+2951,"fix: adiciona -- Rollback: header e arquivo rollback da migration stock_notes",open,DRAFT_NOMERGE,"DRAFT + REGRA#8 (supabase/migrations/ + supabase/rollbacks/)",,
+2952,"fix(ci): Gate 1.13 — tolerancia automatica para policies de particoes mensais (E206)",closed,MERGEADA_AUTONOMA,"rev88 — CI script fix, zero conflitos","eeca843a31112a65dcc66aebd2d94ae23cd129ea",session_011d8gKLZg8BWivR8aQBwxGF
+2954,"fix(ci): documenta perf002 em lint-0029 e artefatos de rollback",open,DRAFT_NOMERGE,"DRAFT + REGRA#8 (supabase/migrations/) + CONFLITO (mergeable:dirty)",,
+2956,"docs(analise-prs): analise de 4 PRs — branch claude_05/",open,DRAFT_NOMERGE,"DRAFT — delivery de outra sessao (claude_05)",,
+2958,"feat(kit-maker): stat e filtro Publicados mapeiam status shared",open,DRAFT_NOMERGE,"PR em estado DRAFT",,
+2960,"fix(novidades/reposicao): remove fake progress bar — Math.random por indeterminate",closed,MERGEADA_AUTONOMA,"rev88 — zero conflitos (+18/-134)","a25070630788f77b297431665878319ad74bb587",session_011d8gKLZg8BWivR8aQBwxGF
+2961,"fix(bi): badge Dados simulados nos slides 2-5 do PPTX",open,DRAFT_NOMERGE,"PR em estado DRAFT",,
+2963,"fix(selos): remove getMockSupplierTrust dead code (FT-002)",closed,MERGEADA_AUTONOMA,"rev88 — zero conflitos (+0/-17 SocialProof.tsx)","20b6646dd702df2316f6c959eca1c8d32ebf2ce2",session_011d8gKLZg8BWivR8aQBwxGF
+2965,"fix(front): FT-040/FT-083/FT-093 — progresso determinístico",open,DRAFT_NOMERGE,"PR em estado DRAFT",,
+2966,"fix: adiciona 10 entradas de falsos-positivos ao allowlist gitleaks",open,DRAFT_NOMERGE,"PR em estado DRAFT",,
+2967,"fix: gate E42 nao executa check-min-tests quando auth-setup falha",open,DRAFT_NOMERGE,"DRAFT + REGRA#8 (.github/workflows/e2e-personalization.yml)",,
+2969,"fix(security): REVOKE EXECUTE FROM PUBLIC em 106 funcoes trigger",open,DRAFT_NOMERGE,"DRAFT + REGRA#8 (supabase/migrations/ + supabase/rollbacks/)",,
+2970,"fix(ux): confetti reduced-motion guard + AlertDialog no Limpeza",open,DRAFT_NOMERGE,"PR em estado DRAFT",,
+2971,"fix(ux): FT-134/FT-136/FT-173 — confirmacao IA erros distintos",open,DRAFT_NOMERGE,"PR em estado DRAFT",,
+2973,"fix(ux): FT-167/306/309 — onLogoRemove senha min 8 CNPJ",open,DRAFT_NOMERGE,"PR em estado DRAFT",,
+2974,"fix(bi): seededRandom em generateMockMarketData (FT-033)",closed,MERGEADA_AUTONOMA,"rev88 — zero conflitos (+9/-3 MarketIntelligenceChart.tsx)","280c3760b0b456886251b1cec4309581a5dfebe7",session_011d8gKLZg8BWivR8aQBwxGF
+2976,"fix(ux): FT-174/040/083/093/134/136/139 — UX batch6",open,DRAFT_NOMERGE,"PR em estado DRAFT",,
+2978,"fix(kit-builder): guarda prefers-reduced-motion antes do confetti",open,DRAFT_NOMERGE,"PR em estado DRAFT",,
+2979,"fix(kit-builder): separa mensagem de erro 503/504 de 429/timeout",open,DRAFT_NOMERGE,"PR em estado DRAFT",,
+2980,"fix(mockup): onLogoRemove aceita areaId e limpa analise da area",open,DRAFT_NOMERGE,"PR em estado DRAFT",,
+2981,"fix(ux): FT-172/107/108/220 — UX batch7",open,DRAFT_NOMERGE,"PR em estado DRAFT",,
+2982,"fix(mockup): aviso de previa indicativa no resultado (FT-174)",open,DRAFT_NOMERGE,"PR em estado DRAFT",,
+2985,"fix(e2e): remove rotas publicas mortas colecao/comparar/lista-publica",closed,MERGEADA_AUTONOMA,"rev88 — zero conflitos (+1/-43 e2e+rbac)","7ae070f5dc4b3148ef32a17e4c47acd39e212506",session_011d8gKLZg8BWivR8aQBwxGF
+2986,"chore(admin): remove referencias stale do external-db-bridge (FT-243)",closed,MERGEADA_AUTONOMA,"rev88 — zero conflitos (+4/-4 DataSourceDebugTab.tsx)","de521f8442238b1d46146a3ffca21497f97a081d",session_011d8gKLZg8BWivR8aQBwxGF
+2988,"fix(stock): TS2339 em useRuptureAlerts — precedencia do cast as/await",open,DRAFT_NOMERGE,"PR em estado DRAFT",,
+2989,"docs(estado): adiciona arquivos de backlog O1/O3/O4/O5",closed,FECHADA_EXTERNA,"Fechada sem merge em 2026-11-01T23:03:35Z — backlog ja em main",,
+2990,"feat(kit-builder): integra FavoriteToggleButton nos cards da landing",open,DRAFT_NOMERGE,"PR em estado DRAFT",,
