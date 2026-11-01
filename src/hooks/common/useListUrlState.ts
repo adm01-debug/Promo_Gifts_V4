@@ -64,6 +64,8 @@ export function useListUrlState<K extends string>(
   keysRef.current = keys;
   const searchParamsRef = useRef(searchParams);
   searchParamsRef.current = searchParams;
+  const setSearchParamsRef = useRef(setSearchParams);
+  setSearchParamsRef.current = setSearchParams;
 
   // Estado local do input textual (digitação fluida antes do debounce).
   const initialSearch = searchKey ? (searchParams.get(searchKey) ?? keys[searchKey]) : '';
@@ -106,6 +108,26 @@ export function useListUrlState<K extends string>(
   const updateParamRef = useRef(updateParam);
   updateParamRef.current = updateParam;
 
+  // Canonicaliza deep-links e navegações de histórico que chegam com filtros
+  // explícitos no valor default, inclusive a busca textual. Uma única escrita
+  // remove todos os defaults gerenciados; o efeito de debounce abaixo ignora
+  // uma busca já vazia/default e deixa essa normalização cuidar dela.
+  useEffect(() => {
+    const params = new URLSearchParams(searchParamsRef.current);
+    const defaults = keysRef.current;
+    let changed = false;
+    for (const [key, defaultValue] of Object.entries(defaults)) {
+      if (params.has(key) && (!params.get(key) || params.get(key) === defaultValue)) {
+        params.delete(key);
+        changed = true;
+      }
+    }
+    if (!changed) return;
+    setSearchParamsRef.current(params, { replace: true });
+    // Reexecuta apenas em navegação real ou mudança do mapa de defaults.
+    // Os setters do React Router mudam de identidade a cada navegação.
+  }, [locationKey, keysSignature, searchKey]);
+
   const setValue = useCallback(
     (key: K, value: string) => {
       updateParam(key, value, stableKeys[key]);
@@ -120,7 +142,9 @@ export function useListUrlState<K extends string>(
     if (!searchKey) return;
     const defaultValue = keysRef.current[searchKey];
     const target = !debouncedSearch || debouncedSearch === defaultValue ? null : debouncedSearch;
-    if (searchParamsRef.current.get(searchKey) === target) return;
+    const current = searchParamsRef.current.get(searchKey);
+    if (target === null && (!current || current === defaultValue)) return;
+    if (current === target) return;
     updateParamRef.current(searchKey, debouncedSearch, defaultValue);
   }, [debouncedSearch, searchKey]);
 

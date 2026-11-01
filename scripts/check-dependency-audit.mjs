@@ -197,6 +197,21 @@ export const REVIEWED_MINIMATCH_RANGES = new Map([
   ['rimraf', '2.3.0 - 3.0.2 || >=4.2.0'],
 ]);
 
+// The npm advisory DB occasionally returns revised range/effects for these packages —
+// both representations are the same GHSA-g3hv-75wg-m249 (minimatch) advisory. Any
+// value outside these known sets still fails closed. (E206 — updated 2026-11-01)
+const REVIEWED_MINIMATCH_RANGES_ALLOWED = new Map([
+  // Advisory revised: either >=5.9.2-alpha.0 or >=5.62.1-alpha.0 depending on server
+  ['@typescript-eslint/type-utils', new Set(['>=5.9.2-alpha.0', '>=5.62.1-alpha.0'])],
+]);
+// npm audit can report [] or the full downstream array for @typescript-eslint/utils effects
+const REVIEWED_MINIMATCH_EFFECTS_ALLOWED = new Map([
+  ['@typescript-eslint/utils', [
+    ['@typescript-eslint/eslint-plugin', '@typescript-eslint/type-utils'],
+    [],
+  ]],
+]);
+
 const REVIEWED_MINIMATCH_DIRECT_PACKAGES = new Set([
   '@typescript-eslint/eslint-plugin',
   '@typescript-eslint/parser',
@@ -208,13 +223,17 @@ const REVIEWED_MINIMATCH_DIRECT_PACKAGES = new Set([
 const MINIMATCH_ADVISORY_URL = 'https://github.com/advisories/GHSA-g3hv-75wg-m249';
 
 function isAllowedMinimatchChainPackage(packageName, vulnerability) {
-  if (
-    !REVIEWED_MINIMATCH_VIA.has(packageName) ||
-    vulnerability.severity !== 'moderate' ||
-    vulnerability.range !== REVIEWED_MINIMATCH_RANGES.get(packageName)
-  ) {
+  if (!REVIEWED_MINIMATCH_VIA.has(packageName) || vulnerability.severity !== 'moderate') {
     return false;
   }
+
+  // Range check: accept any known-good value for this package (E206 — updated 2026-11-01)
+  const rangeAllowed = REVIEWED_MINIMATCH_RANGES_ALLOWED.get(packageName);
+  const expectedRange = REVIEWED_MINIMATCH_RANGES.get(packageName);
+  if (rangeAllowed ? !rangeAllowed.has(vulnerability.range) : vulnerability.range !== expectedRange) {
+    return false;
+  }
+
   if (vulnerability.isDirect !== REVIEWED_MINIMATCH_DIRECT_PACKAGES.has(packageName)) {
     return false;
   }
@@ -245,11 +264,29 @@ function isAllowedMinimatchChainPackage(packageName, vulnerability) {
   }
 
   const expectedVia = REVIEWED_MINIMATCH_VIA.get(packageName);
+  if (
+    !Array.isArray(expectedVia) ||
+    via.length !== expectedVia.length ||
+    !via.every((entry, index) => entry === expectedVia[index])
+  ) {
+    return false;
+  }
+
+  // Effects check: accept any known-good array for this package (E206 — updated 2026-11-01)
+  // Explicitly require effects to be an Array — null/undefined is not the same as [] and must
+  // not match the reviewed empty-effects alternative (Qodo HIGH fix, 2026-11-01).
+  const effectsAllowed = REVIEWED_MINIMATCH_EFFECTS_ALLOWED.get(packageName);
+  if (effectsAllowed) {
+    if (!Array.isArray(vulnerability.effects)) return false;
+    const actualEffects = vulnerability.effects;
+    return effectsAllowed.some(
+      (alt) =>
+        actualEffects.length === alt.length &&
+        actualEffects.every((entry, index) => entry === alt[index]),
+    );
+  }
   const expectedEffects = REVIEWED_MINIMATCH_EFFECTS.get(packageName);
   return (
-    Array.isArray(expectedVia) &&
-    via.length === expectedVia.length &&
-    via.every((entry, index) => entry === expectedVia[index]) &&
     Array.isArray(expectedEffects) &&
     Array.isArray(vulnerability.effects) &&
     vulnerability.effects.length === expectedEffects.length &&
