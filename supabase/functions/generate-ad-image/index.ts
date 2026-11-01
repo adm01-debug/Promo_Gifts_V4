@@ -1,9 +1,17 @@
-import { getCorsHeaders, handleCorsPreflightIfNeeded } from '../_shared/cors.ts';
+import { getCorsHeaders } from '../_shared/cors.ts';
 import { authenticateRequest, authErrorResponse } from '../_shared/auth.ts';
 import { callAiWithTracking, QuotaExceededError } from '../_shared/ai-usage.ts';
-import { z } from "../_shared/contracts/_zod.ts";
+import { z } from "../_shared/zod-validate.ts";
 import { runBotProtection } from '../_shared/bot-protection.ts';
 import { resolveAiApiKey } from "../_shared/ai-credentials.ts";
+import {
+  markUserData,
+  reduceBrandKit,
+  reduceCampaignBrief,
+  USER_DATA_RULE,
+  USER_TEXT_LIMITS,
+  wrapUserData,
+} from "./sanitize.ts";
 
 // BUG-MAGICUP-ADPROMPT-1 FIX (2026-08-17): campos abaixo eram `.optional()` sem
 // `.nullable()` — o cliente (useMagicUpGeneration.ts) sempre envia `null`
@@ -48,6 +56,62 @@ const BodySchema = z.object({
 }).refine(data => data.logoBase64 || data.logoUrl, {
   message: "Either logoBase64 or logoUrl must be provided",
 });
+
+// ─── Logo inline: teto de tamanho + formatos aceitos (F pergunta 7) ───────────
+// O cliente manda o logo como data URL base64 dentro do corpo. Sem teto, um logo
+// gigante fica na memória do isolate e é reenviado inteiro ao provedor (custo por
+// imagem); sem whitelist, qualquer tipo declarado no data URL passava — inclusive
+// formatos que não servem como logo (SVG, GIF). Mesmo padrão do generate-mockup: o
+// tamanho é medido ANTES de decodificar, pela aritmética do próprio base64, então o
+// payload grande nunca vira bytes na memória.
+const LOGO_MAX_BYTES = 10 * 1024 * 1024; // 10 MB decodificados
+// `image/jpg` é o apelido não-canônico que alguns clientes mandam para JPEG —
+// mesmo formato do `image/jpeg`, então os dois entram na whitelist.
+const LOGO_ALLOWED_MIME_TYPES: readonly string[] = [
+  "image/png",
+  "image/jpeg",
+  "image/jpg",
+  "image/webp",
+];
+const LOGO_DATA_URL_RE = /^data:([^;,]+)[^,]*,/i;
+
+/** Tamanho decodificado de um payload base64, sem materializar os bytes. */
+function decodedBase64Bytes(payload: string): number {
+  const padding = payload.endsWith("==") ? 2 : payload.endsWith("=") ? 1 : 0;
+  return Math.max(0, Math.floor((payload.length * 3) / 4) - padding);
+}
+
+/**
+ * Guarda do `logoBase64`: devolve `null` quando o logo pode seguir para o provedor e,
+ * caso contrário, o status + código + mensagem da recusa (413 acima de 10 MB, 415
+ * formato fora de PNG/JPG/WebP). Exportada para o teste direto (`index.logo.test.ts`),
+ * porque o handler em si só é alcançável com requisição autenticada.
+ */
+export function rejectLogoBase64(
+  logoBase64: string | undefined,
+): { status: 413 | 415; code: "logo_too_large" | "logo_type_not_allowed"; message: string } | null {
+  if (!logoBase64) return null;
+
+  const raw = logoBase64.trim();
+  const match = LOGO_DATA_URL_RE.exec(raw);
+  if (!match || !LOGO_ALLOWED_MIME_TYPES.includes(match[1].toLowerCase())) {
+    return {
+      status: 415,
+      code: "logo_type_not_allowed",
+      message: "Formato de logo não suportado. Envie o logo em PNG, JPG ou WebP.",
+    };
+  }
+
+  if (decodedBase64Bytes(raw.slice(match[0].length)) > LOGO_MAX_BYTES) {
+    return {
+      status: 413,
+      code: "logo_too_large",
+      message: "Logo muito grande: o limite é 10 MB.",
+    };
+  }
+
+  return null;
+}
 
 Deno.serve(async (req) => {
   const corsHeaders = getCorsHeaders(req);
@@ -98,6 +162,17 @@ Deno.serve(async (req) => {
       aspectRatio, qualityMode, compositionMode, creativeMode, negativePrompt,
       brandKit, refinementInstruction, batchVariant, imageModel,
     } = parsed.data;
+
+    // F pergunta 7: recusa logo grande/em formato não suportado ANTES de montar o
+    // prompt e chamar o provedor — memória do isolate e custo por imagem.
+    const logoRejection = rejectLogoBase64(logoBase64);
+    if (logoRejection) {
+      console.log(`[ad-image] logo recusado: ${logoRejection.code}`);
+      return new Response(
+        JSON.stringify({ error: logoRejection.code, message: logoRejection.message }),
+        { status: logoRejection.status, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
 
     const logoImageSrc = logoBase64 || logoUrl!;
 
@@ -156,21 +231,39 @@ LOGO APPLICATION: ${productHint.logoTip}`
       ? `\nBRAND COLORS: The client brand uses ${brandColorName || brandColorHex} (${brandColorHex}). Subtly incorporate this color in the scene elements (props, background accents, clothing details) for brand harmony.`
       : '';
 
-    const brandKitInstruction = brandKit
-      ? `\nBRAND KIT:\n- Primary color: ${brandKit.primaryColor || brandColorHex || 'not provided'}\n- Secondary color: ${brandKit.secondaryColor || 'not provided'}\n- Tone of voice: ${brandKit.toneOfVoice || 'premium consultative'}\n- Visual style: ${brandKit.visualStyle || 'clean corporate'}\n- Required words/concepts: ${(brandKit.requiredWords || []).join(', ') || 'none'}\n- Forbidden words/concepts: ${(brandKit.forbiddenWords || []).join(', ') || 'none'}\n- Internal notes: ${brandKit.notes || 'none'}`
+    const safeBrandKit = reduceBrandKit(brandKit);
+    const brandKitBody = brandKit
+      ? [
+          `- Primary color: ${safeBrandKit.primaryColor || brandColorHex || 'not provided'}`,
+          `- Secondary color: ${safeBrandKit.secondaryColor || 'not provided'}`,
+          `- Tone of voice: ${safeBrandKit.toneOfVoice || 'premium consultative'}`,
+          `- Visual style: ${safeBrandKit.visualStyle || 'clean corporate'}`,
+          `- Required words/concepts: ${(safeBrandKit.requiredWords || []).join(', ') || 'none'}`,
+          `- Forbidden words/concepts: ${(safeBrandKit.forbiddenWords || []).join(', ') || 'none'}`,
+          `- Internal notes: ${safeBrandKit.notes || 'none'}`,
+        ].join('\n')
+      : '';
+    const brandKitInstruction = brandKitBody
+      ? `\nBRAND KIT:\n${markUserData(brandKitBody, USER_TEXT_LIMITS.brandKitBlock)}`
       : '\nBRAND KIT: Use the provided logo and keep a consistent, professional B2B brand expression.';
 
-    const refinementBlock = refinementInstruction
-      ? `\nREFINEMENT INSTRUCTION: ${refinementInstruction}`
-      : '\nREFINEMENT INSTRUCTION: none';
+    const refinementText = wrapUserData(refinementInstruction, USER_TEXT_LIMITS.refinementInstruction);
+    const refinementBlock = `\nREFINEMENT INSTRUCTION: ${refinementText || 'none'}`;
 
+    // BATCH VARIANT também é JSON cru vindo do cliente: mesma classe de defeito
+    // do campaignBrief, então entra entre os delimitadores (e com limite).
     const batchBlock = batchVariant
-      ? `\nBATCH VARIANT: ${JSON.stringify(batchVariant)}`
+      ? `\nBATCH VARIANT: ${wrapUserData(JSON.stringify(batchVariant), USER_TEXT_LIMITS.batchVariantBlock)}`
+      : '';
+
+    const safeCampaignBrief = reduceCampaignBrief(campaignBrief);
+    const campaignBriefText = Object.keys(safeCampaignBrief).length > 0
+      ? markUserData(JSON.stringify(safeCampaignBrief), USER_TEXT_LIMITS.campaignBriefBlock)
       : '';
 
     const strategyInstruction = `
 CAMPAIGN BRIEF:
-${campaignBrief ? JSON.stringify(campaignBrief, null, 2) : 'general B2B promotional sales campaign'}
+${campaignBriefText || 'general B2B promotional sales campaign'}
 ${brandKitInstruction}
 PRODUCT DIRECTION:
 Product must stay faithful to the reference image, color, material, and personalization area.
@@ -183,10 +276,12 @@ ${refinementBlock}${batchBlock}`;
 
     const prompt = `Create a HIGH-QUALITY commercial advertising photograph for a promotional product company.
 
+${USER_DATA_RULE}
+
 PRODUCT: ${productName}${productColor ? ` in ${productColor} color` : ''}
 CUSTOMIZATION: The product has the company logo applied via ${techniqueName || 'printing'} on the ${locationName || 'front'}.
 ${materialInstruction}
-SCENE: ${scenePrompt}
+SCENE: ${wrapUserData(scenePrompt, USER_TEXT_LIMITS.scenePrompt)}
 ${brandColorInstruction}
 ${strategyInstruction}
 
