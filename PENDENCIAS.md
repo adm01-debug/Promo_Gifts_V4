@@ -1,10 +1,51 @@
 # PENDÊNCIAS CI — Promo Gifts V4
-**Atualizado em:** 2026-10-31
-**Branch de correção:** `claude_04/beautiful-gates-bvocz5` (PR #2597 — **MERGEADO** ✅)
+**Atualizado em:** 2026-11-01
+**Branch de correção ativo:** `fix/e2e-url-state-defaults-20261030` (PR #2846)
 
 > Revalidação posterior de PRs, workflows e pendências transversais: [docs/estado/REVALIDACAO_PLANO_2026-10-31.md](docs/estado/REVALIDACAO_PLANO_2026-10-31.md). Os registros abaixo são snapshots datados; não substituem a revalidação mais recente.
 
-## Atualização P27 — inventário da ponta atual da `main` (2026-10-30T12:23Z)
+## Inventário P28 — falhas na `main`@5ae127ea (2026-11-01)
+
+Ponta da `main` auditada: `5ae127ea` (PR #2871 — "fix(db): cria tabela stock_notes ausente no banco").  
+Somente conclusões `failure` listadas. Runs `queued`/`in_progress`/`cancelled` omitidos.
+
+| # | Workflow | Run ID | SHA | Causa raiz | Bloqueio externo? |
+|---|---|---|---|---|---|
+| 1 | Deploy Gates (Gate Final) | [41304184400](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41304184400) | 5ae127ea | Gate 1.12 — `stock_notes` sem `deleted_at` nem `soft-delete-exempt` | **Fix em PR #2846** (`fix/e2e-url-state-defaults-20261030`) |
+| 2 | CI Security & Drift Checks | [41304184120](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41304184120) | 5ae127ea | fuzz test E128 (`QuoteBuilderSummaryItems`) + URL state — a investigar | Pendente diagnóstico detalhado |
+| 3 | Branch Protection Sentinel | [41234042042](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41234042042) | pré-5ae127ea | Lovable push direto em `main` sem `(#NNN)` no título do commit | **Externo** — Lovable não segue convenção; recorrente |
+| 4 | E2E — Critical Flows & Error Boundaries | [41273739218](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41273739218) | pré-5ae127ea | Auth E2E falha — `SUPABASE_SERVICE_ROLE_KEY` ausente nos secrets do CI | **Externo** — secrets não configurados pelo PO (ver P2 abaixo) |
+| 5 | E2E • Swatch QuickView | [41273739179](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41273739179) | pré-5ae127ea | < mínimo de testes executados — secrets `E2E_USER_*` ausentes | **Externo** — secrets não configurados pelo PO (ver P1 abaixo) |
+| 6 | Kit Coverage — Integration | [41270374589](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41270374589) | pré-5ae127ea | A investigar — diagnóstico pendente | Pendente diagnóstico detalhado |
+| 7 | Nightly Full CI | [41266491771](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41266491771) | pré-5ae127ea | A investigar — diagnóstico pendente | Pendente diagnóstico detalhado |
+| 8 | Policies Baseline | [41272479237](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41272479237) | pré-5ae127ea | A investigar — diagnóstico pendente | Pendente diagnóstico detalhado |
+| 9 | Release Please | [41304184265](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41304184265) | 5ae127ea | HTTP 402 — cota esgotada no plano atual do GitHub Marketplace | **Externo** — cobrança/billing; sem ação de código possível |
+| 10 | Uptime Monitor | [41273576750](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41273576750) | pré-5ae127ea | Infra externa / edge function desatualizada (drift confirmado) | **Externo** — edge function divergente; deploy via workflow autorizado necessário |
+| 11 | edge-functions-drift-check | [41292189329](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41292189329) | pré-5ae127ea | Funções em drift entre GitHub e Supabase canônico | **Externo** — reconciliar via `.github/workflows/deploy-edge-functions.yml` |
+
+### Detalhamento das pendências externas (bloqueios fora do alcance de código)
+
+**Release Please (item 9):**
+- Causa: HTTP 402 — cota do GitHub Marketplace esgotada para release-please-action
+- Ação necessária do PO: verificar plano em https://github.com/marketplace e renovar/atualizar cobrança
+- Sem ação de código possível; não é regressão do codebase
+
+**Uptime Monitor (item 10):**
+- Causa: edge function divergente entre o que está no git e o que está em produção no Supabase `doufsxqlfjyuvxuezpln`
+- Ação necessária: dispatch manual de `.github/workflows/deploy-edge-functions.yml` com a função em drift
+- Bloqueio por REGRA #8 corolário: deploy só via workflow; sem deploy direto por MCP
+
+**edge-functions-drift-check (item 11):**
+- Causa: mesma do item 10 — funções em produção divergem do código no git
+- Ação necessária: deploy via `.github/workflows/deploy-edge-functions.yml` para cada função em drift
+- Este workflow também falhará enquanto o drift existir
+
+**Deploy Gates (item 1) — fix em andamento:**
+- Fix: commit `3a615215` em `fix/e2e-url-state-defaults-20261030` adiciona `-- soft-delete-exempt` na migration
+- Após merge do PR #2846, o próximo run de Deploy Gates na main deve passar o Gate 1.12
+- Merge do PR #2846 na main: aguardando Gate Final do PR (run em andamento)
+
+## Atualização P27 — inventário da ponta anterior da `main` (2026-10-30T12:23Z)
 
 Inventário por workflow na `main`, com base nos runs mais recentes consultados. Somente conclusões `failure` contam como falha; execuções `queued`, `pending`, `in_progress`, `cancelled` ou `skipped` ficam separadas. A ponta atual é `7e56ae49dde173e04f66ed4523eb8eb59653821a` (PR #2818, docs-only).
 

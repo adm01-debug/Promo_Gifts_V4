@@ -1,9 +1,48 @@
 # RELATORIO_CI.md — Auditoria de Workflows CI/CD
 
-**Gerado:** 2026-10-29 · **Atualizado:** 2026-10-30T17:00 UTC
-**HEAD da main:** `7e56ae49dde173e04f66ed4523eb8eb59653821a` (docs-only, 2026-10-30)
-**HEAD anterior:** `c09402816` (baseline local)
-**Sessão:** https://claude.ai/code/session_01RfQzo7S3K6o49UBUDoCtUe
+**Gerado:** 2026-10-29 · **Atualizado:** 2026-11-01T00:00 UTC
+**HEAD da main auditada:** `5ae127ea` (PR #2871 — fix(db): cria tabela stock_notes, 2026-10-31)
+**HEAD anterior (baseline):** `7e56ae49` (PR #2818, docs-only, 2026-10-30)
+**PR ativo:** #2846 (`fix/e2e-url-state-defaults-20261030`) — inclui fix Gate 1.12 para `stock_notes`
+**Sessão:** https://claude.ai/code/session_01T5KXrgFRFRHrCX5jRcTCUz
+
+---
+
+## 4. Comparação baseline × final — main@7e56ae49 → main@5ae127ea
+
+| Mudança | Baseline `7e56ae49` | Após PR #2871 (`5ae127ea`) |
+|---|---|---|
+| Deploy Gates (Gate Final) | ✅ success | ❌ failure — Gate 1.12 stock_notes |
+| CI Security & Drift Checks | ❌ failure (pré-existente) | ❌ failure (mesma causa) |
+| Release Please | ✅ success (7299c88c) | ❌ failure — HTTP 402 billing |
+| edge-functions-drift-check | ❌ failure (pré-existente) | ❌ failure (mesma causa) |
+| Branch Protection Sentinel | pré-existente | ❌ failure — Lovable push sem (#NNN) |
+| E2E — Critical Flows | ❌ failure (pré-existente) | ❌ failure (mesma causa — auth secrets) |
+| E2E • Swatch QuickView | ❌ failure (pré-existente) | ❌ failure (mesma causa — auth secrets) |
+
+**Regressão introduzida pelo PR #2871:** Deploy Gates passou a falhar por Gate 1.12.  
+**Fix:** PR #2846 (`fix/e2e-url-state-defaults-20261030`) commit `3a615215` adiciona `-- soft-delete-exempt` na migration.
+
+---
+
+## 5. Inventário de falhas — main@5ae127ea (2026-11-01)
+
+| Workflow | Run ID | Conclusão | Bloqueio | Registro |
+|---|---|---|---|---|
+| Deploy Gates (Gate Final) | [41304184400](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41304184400) | ❌ failure | Gate 1.12 — `stock_notes` sem soft-delete-exempt | **Fix em PR #2846** |
+| CI Security & Drift Checks | [41304184120](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41304184120) | ❌ failure | fuzz test E128 + URL state — pré-existente | PENDENCIAS.md §P28 item 2 |
+| Branch Protection Sentinel | [41234042042](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41234042042) | ❌ failure | Lovable push sem (#NNN) — externo/recorrente | PENDENCIAS.md §P28 item 3 |
+| E2E — Critical Flows & Error Boundaries | [41273739218](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41273739218) | ❌ failure | Auth E2E — secrets ausentes — externo | PENDENCIAS.md §P2 |
+| E2E • Swatch QuickView | [41273739179](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41273739179) | ❌ failure | < mínimo tests — secrets ausentes — externo | PENDENCIAS.md §P1 |
+| Kit Coverage — Integration | [41270374589](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41270374589) | ❌ failure | A investigar — pré-existente | PENDENCIAS.md §P28 item 6 |
+| Nightly Full CI | [41266491771](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41266491771) | ❌ failure | A investigar — pré-existente | PENDENCIAS.md §P28 item 7 |
+| Policies Baseline | [41272479237](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41272479237) | ❌ failure | A investigar — pré-existente | PENDENCIAS.md §P28 item 8 |
+| Release Please | [41304184265](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41304184265) | ❌ failure | HTTP 402 billing — externo | PENDENCIAS.md §P28 item 9 |
+| Uptime Monitor | [41273576750](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41273576750) | ❌ failure | Edge function drift — externo | PENDENCIAS.md §P28 item 10 |
+| edge-functions-drift-check | [41292189329](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41292189329) | ❌ failure | Funções em drift — externo | PENDENCIAS.md §P28 item 11 |
+
+**Nota:** "Externo" = causa fora do codebase (secrets não configurados, billing, infra). "Pré-existente" = falha presente antes do PR #2871 (sem regressão nova).  
+A única **regressão nova** introduzida por PR #2871 é o item 1 (Deploy Gates / Gate 1.12), corrigida pelo PR #2846.
 
 ---
 
