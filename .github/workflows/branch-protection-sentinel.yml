@@ -151,7 +151,7 @@ jobs:
             FULL_MSG=$(git log -1 --pretty=%B "$SHA")
             AUTHOR=$(git log -1 --pretty=%an "$SHA")
 
-            if RESULT=$(bash scripts/sentinel-check.sh "$SUBJECT" "$FULL_MSG" "$AUTHOR" 2>&1); then
+            if RESULT=$(bash scripts/sentinel-check.sh "$SUBJECT" "$FULL_MSG" "$AUTHOR" "$SHA" 2>&1); then
               # Escapar pipe e quebra-linha para a tabela do Summary
               SAFE_SUBJECT=$(echo "$SUBJECT" | tr '|' '/' | head -c 60)
               echo "| \`${SHA:0:7}\` $SAFE_SUBJECT | $AUTHOR | ✅ | $RESULT |" >> "$GITHUB_STEP_SUMMARY"

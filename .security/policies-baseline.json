@@ -1,7 +1,7 @@
 {
   "version": 1,
   "pending_seed": false,
-  "generated_at": "2026-10-30T03:43:55.000Z",
+  "generated_at": "2026-11-01T20:15:52.246Z",
   "project_ref": "doufsxqlfjyuvxuezpln",
   "schemas_checked": [
     "public",
@@ -13,7 +13,7 @@
     "prod_audit",
     "supplier_stricker"
   ],
-  "sha256": "7ea06d275b54e1966407d2cee269e4c66467777fa7dbc52ef14af2321c25b51c",
+  "sha256": "b15bcf6f38fdfe304bdc14b64a5cc676b4bb8782d8286905d48a9e6e878b99f1",
   "policies": [
     {
       "schemaname": "cf_recon",
@@ -104,16 +104,6 @@
       "cmd": "ALL",
       "qual": "is_admin_or_above(( SELECT ( SELECT auth.uid() AS uid) AS uid))",
       "with_check": "is_admin_or_above(( SELECT ( SELECT auth.uid() AS uid) AS uid))"
-    },
-    {
-      "schemaname": "public",
-      "tablename": "_backup_stock_daily_summary_20260618",
-      "policyname": "backup_stock_service_only",
-      "permissive": "PERMISSIVE",
-      "roles": "{service_role}",
-      "cmd": "ALL",
-      "qual": "true",
-      "with_check": "true"
     },
     {
       "schemaname": "public",
@@ -362,7 +352,7 @@
       "permissive": "PERMISSIVE",
       "roles": "{authenticated}",
       "cmd": "DELETE",
-      "qual": "(is_dev() OR has_role(auth.uid(), 'admin'::app_role))",
+      "qual": "(is_dev() OR has_role(( SELECT auth.uid() AS uid), 'admin'::app_role))",
       "with_check": ""
     },
     {
@@ -373,7 +363,7 @@
       "roles": "{authenticated}",
       "cmd": "INSERT",
       "qual": "",
-      "with_check": "(is_dev() OR has_role(auth.uid(), 'admin'::app_role))"
+      "with_check": "(is_dev() OR has_role(( SELECT auth.uid() AS uid), 'admin'::app_role))"
     },
     {
       "schemaname": "public",
@@ -382,8 +372,8 @@
       "permissive": "PERMISSIVE",
       "roles": "{authenticated}",
       "cmd": "UPDATE",
-      "qual": "(is_dev() OR has_role(auth.uid(), 'admin'::app_role))",
-      "with_check": ""
+      "qual": "(is_dev() OR has_role(( SELECT auth.uid() AS uid), 'admin'::app_role))",
+      "with_check": "(is_dev() OR has_role(( SELECT auth.uid() AS uid), 'admin'::app_role))"
     },
     {
       "schemaname": "public",
@@ -392,7 +382,7 @@
       "permissive": "PERMISSIVE",
       "roles": "{authenticated}",
       "cmd": "SELECT",
-      "qual": "(auth.uid() IS NOT NULL)",
+      "qual": "(( SELECT auth.uid() AS uid) IS NOT NULL)",
       "with_check": ""
     },
     {
@@ -482,7 +472,7 @@
       "permissive": "PERMISSIVE",
       "roles": "{authenticated}",
       "cmd": "DELETE",
-      "qual": "(user_id = auth.uid())",
+      "qual": "(user_id = ( SELECT auth.uid() AS uid))",
       "with_check": ""
     },
     {
@@ -493,7 +483,7 @@
       "roles": "{authenticated}",
       "cmd": "INSERT",
       "qual": "",
-      "with_check": "(user_id = auth.uid())"
+      "with_check": "(user_id = ( SELECT auth.uid() AS uid))"
     },
     {
       "schemaname": "public",
@@ -502,8 +492,8 @@
       "permissive": "PERMISSIVE",
       "roles": "{authenticated}",
       "cmd": "UPDATE",
-      "qual": "(user_id = auth.uid())",
-      "with_check": ""
+      "qual": "(user_id = ( SELECT auth.uid() AS uid))",
+      "with_check": "(user_id = ( SELECT auth.uid() AS uid))"
     },
     {
       "schemaname": "public",
@@ -512,7 +502,7 @@
       "permissive": "PERMISSIVE",
       "roles": "{authenticated}",
       "cmd": "SELECT",
-      "qual": "(user_id = auth.uid())",
+      "qual": "(user_id = ( SELECT auth.uid() AS uid))",
       "with_check": ""
     },
     {
@@ -3588,6 +3578,26 @@
     {
       "schemaname": "public",
       "tablename": "magazine_public_view_events_2027_01",
+      "policyname": "view_events_service_all",
+      "permissive": "PERMISSIVE",
+      "roles": "{service_role}",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "magazine_public_view_events_2027_02",
+      "policyname": "view_events_read",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "SELECT",
+      "qual": "(has_role(( SELECT auth.uid() AS uid), 'admin'::app_role) OR (EXISTS ( SELECT 1\n   FROM magazines m\n  WHERE ((m.id = magazine_public_view_events_2027_02.magazine_id) AND (m.owner_id = ( SELECT auth.uid() AS uid))))))",
+      "with_check": ""
+    },
+    {
+      "schemaname": "public",
+      "tablename": "magazine_public_view_events_2027_02",
       "policyname": "view_events_service_all",
       "permissive": "PERMISSIVE",
       "roles": "{service_role}",
@@ -8318,6 +8328,26 @@
     {
       "schemaname": "public",
       "tablename": "supplier_products_raw_history_p2027_01",
+      "policyname": "hist_select_admin",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "SELECT",
+      "qual": "is_admin_or_above(( SELECT auth.uid() AS uid))",
+      "with_check": ""
+    },
+    {
+      "schemaname": "public",
+      "tablename": "supplier_products_raw_history_p2027_02",
+      "policyname": "hist_all_service",
+      "permissive": "PERMISSIVE",
+      "roles": "{service_role}",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "supplier_products_raw_history_p2027_02",
       "policyname": "hist_select_admin",
       "permissive": "PERMISSIVE",
       "roles": "{authenticated}",

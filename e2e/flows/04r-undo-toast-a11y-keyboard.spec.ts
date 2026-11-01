@@ -11,13 +11,15 @@
  *      comprovando que é focável (não `tabindex=-1`, não `aria-hidden`).
  *   C. `Enter` no botão focado dispara o `onUndo` exatamente 1 vez.
  *   D. `Espaço` no botão focado dispara o `onUndo` exatamente 1 vez.
- *   E. Após expirar, o wrapper fecha o toast sem chamar `onUndo`; o estado
- *      disabled do botão após expiração é coberto pelo teste de unidade de
- *      `UndoToastContent`.
+ *   E. Clique em "Desfazer" APÓS a expiração do contador (`data-expired="true"`)
+ *      NÃO chama `onUndo` (guarda dupla: HTMLButtonElement `disabled` +
+ *      guard `undone` no wrapper).
  *   F. Após clique, o toast é dispensado e não sobra `[data-sonner-toast]`
  *      contendo texto de "Desfazer".
  */
 import { test, expect } from "../fixtures/test-base";
+import { dismissOnboardingTour } from "../helpers/auth";
+import { installMockAuth, isMockAuthEnabled } from "../helpers/mock-auth";
 import { gotoAndSettle } from "../helpers/nav";
 
 test.use({ trace: "retain-on-failure", screenshot: "only-on-failure" });
@@ -28,7 +30,7 @@ const UNDO_BTN = '[data-testid="undo-toast-button"]';
 /**
  * Instala um contador global `window.__undoCallCount` e dispara o toast
  * via `window.__showUndoToast`. Retorna imediatamente após o toast estar
- * no DOM. Usa duração longa (8s) exceto no cenário de expiração (500ms).
+ * no DOM. Usa duração longa (8s) exceto no cenário de expiração (mínimo de 1s).
  */
 async function showUndoToastInBrowser(
   page: import("@playwright/test").Page,
@@ -70,13 +72,13 @@ async function getUndoCount(page: import("@playwright/test").Page) {
 
 test.describe("Toast Desfazer — acessibilidade + teclado", () => {
   test.beforeEach(async ({ page }) => {
-    // O harness DEV importa o componente e disponibiliza o disparador global,
-    // sem autenticação, dados do banco ou overlays de onboarding.
-    await gotoAndSettle(page, "/__test/undo-toast?interactive=1");
-    await expect(page.getByTestId("harness-ready")).toHaveAttribute(
-      "data-harness-mode",
-      "interactive",
-    );
+    if (isMockAuthEnabled()) await installMockAuth(page);
+    // Qualquer rota autenticada serve; a home carrega os providers e o
+    // `<Toaster />`. Não precisamos de dados de orçamento.
+    await gotoAndSettle(page, "/orcamentos");
+    // O tour de onboarding (overlay full-screen) intercepta cliques e prende o
+    // foco; sem dispensá-lo, Tab/clique nunca chegam ao toast.
+    await dismissOnboardingTour(page);
   });
 
   test("A. aria-label começa com 'Desfazer ação' e cita segundos restantes/totais", async ({
@@ -145,20 +147,54 @@ test.describe("Toast Desfazer — acessibilidade + teclado", () => {
     await expect(page.locator(UNDO_TOAST)).toHaveCount(0, { timeout: 3_000 });
   });
 
-  test("E. expiração fecha o toast sem chamar onUndo ou gerar toasts duplicados", async ({
+  test("E. clique após expiração (1s) NÃO chama onUndo e não gera toasts duplicados", async ({
     page,
   }) => {
-    // UndoToastContent limita a duração mínima a 1.000 ms. Use esse mínimo
-    // real e espere o dismiss do wrapper, em vez de clicar 700 ms após pedir
-    // 500 ms (cenário que ainda encontra o botão habilitado).
+    // 1s é a duração mínima aplicada pelo componente (`Math.max(1000, duration)`).
+    // Aguarda o estado expirar ou o dismiss remover o botão, sem depender de
+    // um sleep menor que a duração efetiva.
     await showUndoToastInBrowser(page, 1000);
-    await expect(page.locator(UNDO_TOAST)).toHaveCount(0, { timeout: 5_000 });
+    await page.waitForFunction(
+      (selector) => {
+        const button = document.querySelector<HTMLButtonElement>(selector);
+        return !button || button.dataset.expired === "true";
+      },
+      UNDO_BTN,
+      { timeout: 3_000 },
+    );
 
-    // O timeout apenas dispensa o toast; nunca executa a restauração.
+    // Aguarda expiração (state remainingMs <= 0). O toast é dismissed logo
+    // em seguida — pode não haver janela para clique normal. Tentamos
+    // vias diretas via DOM caso o toast já tenha sumido.
+
+    // Tentativa 1: click normal se o botão existir
+    const btnCount = await page.locator(UNDO_BTN).count();
+    if (btnCount > 0) {
+      await page
+        .locator(UNDO_BTN)
+        .click({ force: true, timeout: 1_000 })
+        .catch(() => {
+          /* disabled → click rejeitado, esperado */
+        });
+    }
+
+    // Tentativa 2: dispatch DOM em qualquer resíduo
+    await page.evaluate((sel) => {
+      document.querySelectorAll(sel).forEach((el) => {
+        try {
+          (el as HTMLButtonElement).click();
+        } catch {
+          /* ok */
+        }
+      });
+    }, UNDO_BTN);
+
+    // onUndo NUNCA foi chamado
     const count = await getUndoCount(page);
     expect(count).toBe(0);
 
-    // Nenhum toast "Ação desfeita!" pode aparecer no fluxo de expiração.
+    // Nenhum toast "Ação desfeita!" pode ter aparecido (fluxo de sucesso
+    // do wrapper). Reassert estável por 500ms.
     await expect
       .poll(async () => {
         return page
