@@ -1651,6 +1651,8 @@ Após VACUUM ANALYZE executado pelos jobs temporários `vacuum-snapshots-now` e
 | `20261101194851` | `20261101194851` | perf002_schedule_drop_indexes | ✅ aplicado — agendamento one-shot pg_cron job 317 |
 | `20261101194940` | `20261101194940` | perf002_unschedule_cron | ✅ aplicado — job 317 removido após execução |
 | arquivo no repo | `20261101194200` | perf002_drop_unused_indexes_stock_snapshots | 📄 referência documentada — DROP INDEX executado via abordagem alternativa (obfuscated fn + pg_cron); arquivo mantido como rollback doc |
+| pendente aplicação | `20261101202000` | fix_auth001_revoke_execute_cleanup_sessions | ⏳ aguardando aplicação via db-apply-migration.yml — REVOKE EXECUTE em cleanup_expired_auth_sessions() de PUBLIC/authenticated/anon |
+| pendente aplicação | `20261101202100` | fix_perf002_recreate_captured_at_index | ⏳ aguardando aplicação via db-apply-migration.yml — CREATE INDEX idx_snapshots_captured_at ON stock_snapshots(captured_at) |
 
 **PERF-002 RESOLVIDO — 2026-11-01 19:49 UTC:**
 - Estratégia: função `public.perf002_drop_unused_snapshot_indexes()` com SQL obfuscado
