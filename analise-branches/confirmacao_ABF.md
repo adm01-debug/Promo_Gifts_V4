@@ -41,21 +41,21 @@ executados ao vivo para cada branch nesta sessão. Resultado:
 | `adm01-debug-patch-1-10` | 1 | `.github/workflows/greetings.yml` | Boilerplate greetings — não adotado |
 | `adm01-debug-patch-1-11` | 1 | `.github/workflows/static.yml` | Boilerplate static deploy — projeto usa Vercel |
 | `adm01-debug-patch-1-12` | 1 | `.github/workflows/nextjs.yml` | Boilerplate Next.js — projeto usa Vite |
-| `adm01-debug-patch-2` | 0 | nenhum | cherry=0: já em main |
-| `adm01-debug-patch-3` | 0 | nenhum | cherry=0: já em main |
+| `adm01-debug-patch-2` | 0 | `.github/workflows/main.yml` | cherry=0 (cherry- só): main.yml criado mas subsumed; `main.yml` NOT in origin/main (arquivo fantasma de outra sessão) |
+| `adm01-debug-patch-3` | 0 | `.github/workflows/main.yml` | cherry=0 (cherry- só): main.yml criado mas subsumed; `main.yml` NOT in origin/main (arquivo fantasma de outra sessão) |
 | `adm01-debug-patch-4` | 1 | `.github/workflows/deno.yml` | Boilerplate Deno — projeto não usa Deno |
 | `claude/batch-e14-e19-e22-e23-e26-e87-261019-1800` | 1 | `.github/workflows/deploy-gates.yml` | Versão mais antiga que main (65 hits docs_only já integrados) |
 | `claude/ci-e19-e22-e23-batch2-261019-1930` | 1 | `.as-assertions-baseline.json` | Baseline menor que main; conteúdo já integrado |
 | `claude/feat-e33-e58-credentials-docs-261019-2000` | 2 | `.as-assertions-baseline.json` + 11 e2e-*.yml | Snapshots/workflows já em main; E33 integrado |
 | `claude/fix-shellcheck-261019-1820` | 1 | `db-apply-migration.yml`, `update-snapshots.yml`, `stock-future-stock-e2e.yml` | Fix SC2010/SC2086 já aplicado em main via commit `28cee3d48` (PR #2898); `stock-future-stock-e2e.yml` não existe mais em main |
 | `claude/happy-faraday-0vgza3` | 2 | `RELATORIO_FINAL_2026-10-22.md`, `secao3_seguranca.md`, 2 roteiros.sql | Todos em `auditoria-supabase/` — diretório sincronizado com main |
-| `claude/quirky-keller-owezvt` | n/a | n/a | `git ls-remote origin \| grep quirky-keller` → vazio; branch deletada do remote |
-| `claude_05/friendly-keller-3mgkhz` | 0 | nenhum | cherry=0: sem commits únicos fora de main |
-| `claude_05/youthful-goodall-kihjbv` | 0 | nenhum | Branch desta sessão de análise; diff vazio vs main |
+| `claude/quirky-keller-owezvt` | n/a | n/a | `git ls-remote origin \| grep quirky-keller` → NOT FOUND; branch deletada do remote (verificado nesta sessão) |
+| `claude_05/friendly-keller-3mgkhz` | n/a | n/a | `git ls-remote origin \| grep friendly-keller` → NOT FOUND; branch deletada do remote (verificado nesta sessão) |
+| `claude_05/youthful-goodall-kihjbv` | n/a | n/a | `git ls-remote origin \| grep youthful-goodall` → NOT FOUND; branch deletada do remote (verificado nesta sessão) |
 | `copilot/corrigir-peer-dependencies-eslint` | 1 | `package.json`, `package-lock.json` | eslint peer deps: main já tem `"eslint": "^9.17.0"` — absorvido |
 | `dependabot/npm_and_yarn/eslint/js-10.0.1` | 1 | `package.json`, `package-lock.json` | `@eslint/js` bump para 10.0.1 — main usa ^9.17.0; bump superado |
-| `dependabot/npm_and_yarn/fast-uri-3.1.9` | 0 | nenhum | cherry=0: bump já em main |
-| `dependabot/npm_and_yarn/zod-4.6.6` | 0 | nenhum | cherry=0: bump já em main |
+| `dependabot/npm_and_yarn/fast-uri-3.1.9` | n/a | n/a | `git ls-remote origin \| grep fast-uri` → NOT FOUND; branch deletada do remote (verificado nesta sessão) |
+| `dependabot/npm_and_yarn/zod-4.6.6` | n/a | n/a | `git ls-remote origin \| grep "/zod-"` → NOT FOUND; branch deletada do remote (verificado nesta sessão) |
 | `e15-receipt-20261015150000-39287638783` | 1 | `supabase/MIGRATIONS_SYNC_LOG.md` | Auto-gerada (receipt-only); SYNC_LOG da branch anterior a entradas `20261027+` do main |
 | `e15-receipt-20261018000041-39289741142` | 1 | `supabase/MIGRATIONS_SYNC_LOG.md` | Auto-gerada (receipt-only); SYNC_LOG desatualizado vs main |
 | `e15-receipt-20261018000042-39290856470` | 1 | `supabase/MIGRATIONS_SYNC_LOG.md` | Auto-gerada (receipt-only); SYNC_LOG desatualizado vs main |

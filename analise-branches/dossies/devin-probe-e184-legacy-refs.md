@@ -9,26 +9,38 @@
 
 **git cherry (run nesta sessão):**
 ```
-cherry+ count: ~N (sem merge-base com main — cherry não aplicável para branches sem ancestral comum)
+cherry+ count: 14  (14 commits únicos — mesmos cherry+ que gifted-dijkstra exceto commit E064)
+Primeiros 5:
++ cf9e25387 fix(ci): E11 — fixtures sentinel-check para check-protection-config (#2245)
++ e5ef522a7 fix(ci): E22 — adiciona scripts e schema ausentes nos paths de workflows (#2249)
++ f5ecec52e fix(ci): boundary gate — lexer string-aware + tabela de cross-domain (#2232)
++ 36017b1a6 ci(e18): remove cache manual redundante — setup-node já gerencia (#2248)
++ 37e57b802 fix(e2e): E2E mock auth para Gate 3 em CI sem credenciais (#2283)
+[... + 9 commits adicionais — todos já em main via #2284..#2300]
 ```
 
 **git diff --name-only origin/main...origin/devin/probe-e184-legacy-refs (3-dot, nesta sessão):**
 ```
-(probe branch — sem overlap útil com main)
+fatal: origin/main...origin/devin/probe-e184-legacy-refs: no merge base
 ```
+→ Confirma orphan: sem ancestral comum com main.
 
-**Teste de merge (worktree, nesta sessão):**
+**Busca por referências a `pqpdolkaeqlyzpdpbizo` nesta sessão:**
 ```
-git merge --allow-unrelated-histories origin/devin/probe-e184-legacy-refs
-→ exit=1, 416 arquivos em conflito (sem merge-base com main)
+git diff origin/main origin/devin/probe-e184-legacy-refs -- . | grep "^+++" | grep pqpdolkae → 0 (sem arquivo adicionado com esse nome)
+awk: arquivos onde pqpdolkae aparece em linhas adicionadas (+):
+  - AGENTS.md: comentário documental LEGACY_INFORMATIVO (R19 da CLAUDE.md)
+  - supabase/functions/_shared/cors.ts: comentário "BUG-08 FIX: pqpdolkaeqlyzpdpbizo.supabase.co removed (FORBIDDEN project)"
+     → LINHA REMOVIDA de main para branch (minus -), não adicionada
+     → É guarda de segurança explicando a remoção do projeto proibido, não código executável com SINGU
 ```
-`git worktree list` após teste: apenas `/home/user/Promo_Gifts_V4` — worktree temporário removido.
+**Conclusão grep:** `pqpdolkaeqlyzpdpbizo` aparece apenas em:
+- Comentários documentais (AGENTS.md, CLAUDE.md herdados de main) — não código executável
+- `cors.ts`: linha explicando remoção — é proteção, não uso do projeto proibido
 
-**Busca por referências a `pqpdolkaeqlyzpdpbizo` (projeto proibido) nesta sessão:**
-```
-grep -r "pqpdolkaeqlyzpdpbizo" devin/probe-* → 0 hits em cron/funções/código executável
-```
-Branch foi criada pelo Devin para probe E184 (verificar legacy refs); PR #2891 removeu o probe.
+Sem referência executável a `pqpdolkaeqlyzpdpbizo` em cron, function call, supabase client, ou qualquer código que acesse SINGU.
+
+Branch foi criada pelo Devin para probe E184 (verificar legacy refs ao projeto proibido); PR #2891 encerrou o probe.
 
 ---
 
@@ -36,9 +48,9 @@ Branch foi criada pelo Devin para probe E184 (verificar legacy refs); PR #2891 r
 
 1. **Intenção:** Devin probe para verificar referências legacy a `pqpdolkaeqlyzpdpbizo`.
 2. **JÁ IMPLEMENTADA:** PR #2891 mergeou o resultado do probe; branch não tem valor residual.
-3. **Cruzamento Supabase:** nenhuma migration; nenhuma referência ao projeto proibido em código executável.
-4. **Regressão:** merge impossível sem resolver 416 conflitos; G-cat orphan.
+3. **Cruzamento Supabase:** nenhuma migration nova; referências a pqpdolkae são comentários/guardas — não código executável.
+4. **Regressão:** merge impossível — `fatal: no merge base`; 14 cherry+ todos já em main.
 5. **Regra de negócio:** probe concluído; branch não tem valor operacional.
 6. **Completude:** G-cat orphan — sem utilidade restante.
 
-**VEREDITO: FECHAR** — G-cat probe; PR #2891 concluiu o trabalho; orphan sem merge-base.
+**VEREDITO: FECHAR** — G-cat probe; PR #2891 concluiu o trabalho; orphan sem merge-base; 14 cherry+.

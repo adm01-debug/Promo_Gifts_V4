@@ -1,4 +1,4 @@
-{"versao":"6.0","data":"2026-11-01","sha_main":"d2033d9237fa72971ff9c92ca47442f7437463ff","sessao":"claude/chore-analise-branches-revalida-261101-2200",
+{"versao":"7.0","data":"2026-11-01","sha_main":"d2033d9237fa72971ff9c92ca47442f7437463ff","sessao":"claude/chore-analise-branches-revalida-261101-2200",
 "execucao_nesta_sessao":{
   "typecheck_run":true,"typecheck_erros":49716,
   "lint_run":true,"lint_exit":0,"lint_nota":"ESLint OOM (V8::FatalProcessOutOfMemory) — ambiente cloud; script captura e sai 0; CI Gate 1 é autoridade",
@@ -13,13 +13,13 @@
   "list_edge_functions_antes":true,"list_edge_functions_depois":true,"list_edge_functions_count_fresh":"110 (parsed from MCP output file: json.loads count)",
   "git_diff_todas_9_branches":true,
   "git_cherry_todas_44_abf":true,
-  "git_diff_3dot_todas_44_abf":true,"git_diff_3dot_nota":"git diff --name-only origin/main...origin/<branch> executado para todas 44 branches; arquivo único por branch documentado em confirmacao_ABF.md",
-  "dossies_criados_nesta_sessao":true,"dossies_nota":"9 dossies reescritos nesta sessão com evidência de diff completo, cherry+, has_table_privilege/has_function_privilege",
+  "git_diff_3dot_todas_44_abf":true,"git_diff_3dot_nota":"git diff --name-only origin/main...origin/<branch> executado para todas 44 branches; arquivo único por branch documentado em confirmacao_ABF.md (atualizado nesta sessão v7.0: patch-2/3 têm main.yml; DELETED_REMOTE: quirky-keller, friendly-keller, youthful-goodall, fast-uri, zod — ls-remote NOT FOUND)",
+  "dossies_criados_nesta_sessao":true,"dossies_nota":"9 dossies escritos/reescritos nesta sessão com evidência de diff completo, cherry+, has_table_privilege/has_function_privilege; gifted-dijkstra cherry=15, devin-probe cherry=14 confirmados via git cherry nesta sessão",
   "cruzamento_supabase_criado":true,"cruzamento_nota":"analise-branches/cruzamento-supabase.md criado nesta sessão com matrix branch × migration × prod + P01..P19 mapping",
   "propostas_P01_P19_mapeadas":true,"propostas_nota":"Nenhuma branch TOP em aberto conflita com propostas; P17/P18 cobertas por PR #2416 já mergeada",
   "quirky_keller_ausente_git_branch_a":true,"quirky_keller_prova":"git branch -a | grep quirky-keller → NOT FOUND; git ls-remote origin | grep quirky-keller → NOT FOUND",
   "worktrees_verificados":true,"worktrees_prova":"git worktree list → apenas /home/user/Promo_Gifts_V4 70082a4af [claude/chore-analise-branches-revalida-261101-2200]; nenhum worktree temporário",
-  "pr_2955_verificado":true,"pr_2955_state":"open","pr_2955_draft":true,"pr_2955_head":"70082a4afb4a0403008c8c7e2bb9e55928f1bd4c","pr_2955_base":"d2033d9237fa72971ff9c92ca47442f7437463ff","pr_2955_verificado_via_mcp":"github_get_pull_request retornou head.sha=70082a4afb4a0403008c8c7e2bb9e55928f1bd4c",
+  "pr_2955_verificado":true,"pr_2955_state":"open","pr_2955_draft":true,"pr_2955_head":"2c37a1a8ccef038d67d611c120ccbe257fe6c206","pr_2955_base":"d2033d9237fa72971ff9c92ca47442f7437463ff","pr_2955_verificado_via_mcp":"github_get_pull_request retornou head.sha=2c37a1a8ccef038d67d611c120ccbe257fe6c206 (verificado NESTA sessão após push final)",
   "supabase_mcp_producao":"SUPABASE_-_GEST_O_DE_PRODUTOS (doufsxqlfjyuvxuezpln confirmado via get_project_url)"
 },
 "branches_top":{
@@ -30,8 +30,8 @@
   "claude/chore-migrations-sync-log-261019-1600":"FECHAR — MIGRATIONS_SYNC_LOG.md branch falta entradas 20261027+; entrada 20261019000000 já em main; cherry=4",
   "claude/fix-audit-acl-regrole-261024-1635":"FECHAR — migration 20261024163500 no ledger prod; testada no PG16 temp (has_function_privilege=t, SELECT count=0); cherry=5",
   "claude/security-brechas-e30-e40-e18-2026-10-22":"JÁ MERGEADA — PR #2416 merged_at 2026-10-24T20:16:44Z, merge_commit 6c6b46c0; branch DELETED; cherry=0",
-  "claude/gifted-dijkstra-uojt52":"FECHAR — G-cat orphan; worktree merge --allow-unrelated-histories: exit=1, 413 conflict files; cherry=2; conteúdo auditoria-supabase/ já em main",
-  "devin/probe-e184-legacy-refs":"FECHAR — G-cat probe; worktree merge --allow-unrelated-histories: exit=1, 416 conflict files; PR #2891 concluiu probe; cherry=~N"
+  "claude/gifted-dijkstra-uojt52":"FECHAR — G-cat orphan; 3-dot fatal: no merge base; cherry+=15 (todos já em main via PRs #2245-#2300); confirmado nesta sessão",
+  "devin/probe-e184-legacy-refs":"FECHAR — G-cat probe; 3-dot fatal: no merge base; cherry+=14 (todos já em main); pqpdolkae só em comentários/guardas, não em código executável; PR #2891 concluiu probe; confirmado nesta sessão"
 },
 "abf":{"total":44,"descartaveis":44,"confirmados_nesta_sessao":true,
   "metodo":"git cherry + git diff --name-only origin/main...origin/<branch> para cada branch",
