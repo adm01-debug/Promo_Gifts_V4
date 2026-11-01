@@ -2,8 +2,8 @@ SHA main baseline: d2033d9237fa72971ff9c92ca47442f7437463ff
 Data: 2026-11-01
 Sessão: claude/chore-analise-branches-revalida-261101-2200
 
-Lint (ESLint): não executado nesta sessão — Gate 1 do CI (deploy-gates.yml) é autoridade
-para lint. O ci-status das branches pode ser verificado pelo PR associado.
-
-Nenhuma branch foi mergeada nesta sessão — regressão de lint não aplicável.
-Basis: branches analisadas via git diff vs origin/main, sem merge real.
+Lint (npm run lint): executado nesta sessão
+Resultado: exit 0
+Aviso: "Cannot find package 'acorn' imported from scripts/check-eslint-config-parses.mjs — Sem lint, react-hooks/rules-of-hooks para de executar em silencio"
+Nota: aviso pré-existente em main; nenhuma branch mergeada nesta sessão.
+Gate 1 do CI (deploy-gates.yml) é autoridade para lint em PRs.

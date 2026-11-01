@@ -1,15 +1,9 @@
 SHA main baseline: d2033d9237fa72971ff9c92ca47442f7437463ff
 Data: 2026-11-01
 Sessão: claude/chore-analise-branches-revalida-261101-2200
-Erros TS totais (npm run typecheck): 49833
-Gerado via: npm run typecheck 2>&1 | grep "error TS" (executado nesta sessão)
 
-Amostra dos últimos erros (arquivo com maior concentração):
-  src/utils/undoToast.tsx(227,9): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
-  src/utils/undoToast.tsx(235,9): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
-  src/utils/undoToast.tsx(236,7): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
-  src/utils/undoToast.tsx(237,5): error TS7026: JSX element implicitly has type 'any' because no interface 'JSX.IntrinsicElements' exists.
-  src/utils/undoToast.tsx(298,17): error TS2339: Property 'env' does not exist on type 'ImportMeta'.
+Erros TS totais (npm run typecheck 2>&1 | grep "error TS" | wc -l): 49716
+Executado nesta sessão — nenhuma branch mergeada antes do run.
 
-Nota: 49833 erros são pré-existentes em main — nenhuma branch analisada introduz erro novo
-(nenhuma branch foi mergeada nesta sessão). Regressão se mede contra este baseline.
+Nota: 49716 erros são pré-existentes em main — nenhuma branch analisada foi mergeada.
+Regressão se mede contra este baseline: qualquer merge que aumente este número é bloqueante.
