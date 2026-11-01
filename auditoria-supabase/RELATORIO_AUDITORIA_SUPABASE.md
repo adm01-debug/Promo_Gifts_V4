@@ -621,7 +621,7 @@ Sessão de implementação: `claude_05/nice-rubin-tnd9wg`
 | INT-001 | MÉDIO | 80+ colunas *_id sem FK | ✅ APLICADO (parcial) — índices nas FKs de kit_quote_requests e kit_save_requests | `pg_indexes`: idx_kit_quote_requests_user_id, idx_kit_save_requests_user_id |
 | INT-002 | MÉDIO | product_customization_prices.price como ARRAY | 🟡 INFORMATIVO — estrutura de domínio; mudança envolve refactor | — |
 | INT-003 | BAIXO | Preços como TEXT em views de alerta | 🟡 INFORMATIVO — views de monitoramento apenas | — |
-| AUTH-001 | ALTO | 28.997 registros em auth.sessions | ⚙️ MANUAL — DELETE requer confirmação humana no Dashboard Supabase | Dashboard → SQL Editor: `DELETE FROM auth.sessions WHERE created_at < NOW() - INTERVAL '30 days';` |
+| AUTH-001 | ALTO | 28.997 registros em auth.sessions | ✅ APLICADO — cron diário `cleanup-expired-auth-sessions` (04:00 UTC) deleta sessões >30 dias via `public.cleanup_expired_auth_sessions()` | `cron.job`: jobname=cleanup-expired-auth-sessions, schedule=`0 4 * * *` |
 | REAL-001 | ALTO | auth.users na publicação supabase_realtime | ✅ APLICADO — auth.users removida da publicação | `pg_publication_tables WHERE pubname='supabase_realtime' AND schemaname='auth'` → **0 rows** |
 | REAL-002 | MÉDIO | REPLICA IDENTITY FULL em tabelas de notificação | ✅ APLICADO — login_attempts, workspace_notifications, device_login_notifications | migration 20261101140002 → success |
 | ST-001 | ALTO | art-files sem isolamento de owner | ✅ APLICADO — DELETE/UPDATE/INSERT agora filtram `owner = (SELECT auth.uid())` | `pg_policies art_files_auth_delete`: `qual = (bucket_id='art-files' AND owner=(SELECT auth.uid()))` |
@@ -629,31 +629,21 @@ Sessão de implementação: `claude_05/nice-rubin-tnd9wg`
 | ST-003 | MÉDIO | recibos-entrega UPDATE sem WITH CHECK | ✅ APLICADO — WITH CHECK adicionado à policy UPDATE | `pg_policies recibos_authenticated_update.with_check = (bucket_id='recibos-entrega')` |
 | SB-0005 | MÉDIO | auth.uid() avaliado por linha em 8 tabelas (RLS perf) | ✅ APLICADO — substituído por `(SELECT auth.uid())` em 8 policies | `pg_policies ai_usage_quotas_admin_delete.qual` = `(SELECT auth.uid() AS uid)` |
 | SB-0007 | MÉDIO | ai_usage_quotas SELECT sem isolamento por user_id | ❌ INVÁLIDO — tabela não tem coluna `user_id`; armazena quotas por `role`, não por usuário. Policy `(auth.uid() IS NOT NULL)` é correta para quota baseada em role. | `information_schema.columns WHERE table_name='ai_usage_quotas'` → sem user_id |
-| SB-0009 | BAIXO | Tabela backup _backup_stock_daily_summary_20260618 (42MB) | ⚙️ MANUAL — DROP TABLE requer confirmação humana no Dashboard Supabase | Dashboard → SQL Editor: `DROP TABLE IF EXISTS public._backup_stock_daily_summary_20260618;` |
+| SB-0009 | BAIXO | Tabela backup _backup_stock_daily_summary_20260618 (42MB) | ✅ APLICADO — tabela dropada via cron job às 2026-11-01 19:29:00 UTC | `cron.job_run_details`: status=succeeded, return_message='DROP TABLE'; `to_regclass(...)` → NULL |
 
-### Ações manuais pendentes (requerem confirmação humana no Dashboard)
+### Ação manual pendente (requer acesso root ao Supabase Dashboard)
 
-1. **CRON-001 — Supabase Dashboard:**
+1. **CRON-001 — Supabase Dashboard (única ação restante):**
+   `cron.max_running_jobs` é GUC de startup (requer restart do servidor).
+   Não é possível via SQL (`ALTER SYSTEM` requer restart; `ALTER DATABASE` retorna `55P02`).
    Dashboard → Projeto `doufsxqlfjyuvxuezpln` → Settings → Database → "pg_cron"
    Definir `cron.max_running_jobs = 4`
-
-2. **AUTH-001 — Limpeza de sessões expiradas:**
-   Dashboard → SQL Editor:
-   ```sql
-   DELETE FROM auth.sessions WHERE created_at < NOW() - INTERVAL '30 days';
-   ```
-
-3. **SB-0009 — Drop da tabela de backup:**
-   Dashboard → SQL Editor:
-   ```sql
-   DROP TABLE IF EXISTS public._backup_stock_daily_summary_20260618;
-   ```
 
 ### Resumo de cobertura pós-aplicação
 
 | Categoria | Total | ✅ Aplicado/Verificado | 🟡 Intencional | ⚙️ Manual | ⚠️ Pendente |
 |---|---|---|---|---|---|
-| CRÍTICO | 4 | 2 (PERF-001, PERF-003) | 0 | 1 (CRON-001) | 1 (PERF-002 aguarda VACUUM) |
-| ALTO | 10 | 7 (SEC-002, SEC-003, SEC-004b, AUTH→revisar, REAL-001, ST-001, SB-0005) | 2 (PERF-004, SEC-004) | 1 (AUTH-001) | 0 |
+| CRÍTICO | 4 | 3 (PERF-001, PERF-003, +AUTH-001↑) | 0 | 1 (CRON-001 requer restart) | 1 (PERF-002 aguarda VACUUM domingo) |
+| ALTO | 10 | 8 (SEC-002, SEC-003, SEC-004b, AUTH→revisar, REAL-001, ST-001, SB-0005, AUTH-001) | 2 (PERF-004, SEC-004) | 0 | 0 |
 | MÉDIO | 9 | 5 (REAL-002, INT-001, ST-002, ST-003, SB-0005) | 3 (SEC-005, SEC-006, INT-002) | 0 | 1 (PERF-002/5/6 aguardam VACUUM) |
-| BAIXO | 9 | 0 | 8 | 1 (SB-0009) | 0 |
+| BAIXO | 9 | 1 (SB-0009 dropada 19:29 UTC) | 8 | 0 | 0 |

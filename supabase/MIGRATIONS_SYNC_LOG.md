@@ -1593,3 +1593,52 @@ Detalhes, métricas antes/depois e one-shots: docs/EXECUCAO_CORRECOES_MEDALLION_
 Squash merge do PR #2599 (commit `2ca5ef04`) foi realizado via API com mensagem customizada,
 sem o sufixo `(#2599)` exigido pelo Branch Protection Sentinel. Este commit via PR #XXXX
 restaura o padrão `(#NNN)` no HEAD de `main`.
+
+## 2026-11-01 — Auditoria Supabase: 13 corrections aplicadas via MCP (E056 — sem workflow)
+
+**Tipo:** Migrations aplicadas via MCP `apply_migration` (POLITICA_DDL 3 condições: ticket=auditoria RELATORIO_AUDITORIA_SUPABASE.md, migration versionada no repo, repair necessário).
+**Sessão:** https://claude.ai/code/session_01Gd4dBf5zQ9beDcs742YHaF
+**PRs:** #2906–#2918 (migrations + docs)
+
+### Recibos — ledger_version vs file_version (drift de timestamp auto-gerado pelo MCP)
+
+O MCP `apply_migration` auto-gera o `version` no ledger (timestamp do momento de aplicação)
+em vez de usar o prefixo do nome do arquivo. As migrations abaixo têm drift entre ledger e repo.
+Reconciliação requer `supabase migration repair` com CLI (não disponível neste container).
+
+| ledger_version (auto) | file_version (repo) | file_name | status |
+|---|---|---|---|
+| `20261101190523` | `20261101140001` | sb0001_remove_auth_users_realtime | ✅ aplicado |
+| `20261101190544` | `20261101140002` | sb0003_replica_identity_full_realtime | ✅ aplicado |
+| `20261101190548` | `20261101140003` | sb0006_index_kit_fk_user_id | ✅ aplicado |
+| `20261101191301` | `20261101140004` | sb0005_rls_auth_uid_cache | ✅ aplicado |
+| `20261101191756` | `20261101150001` | sec004b_revoke_fn_cron_guard_authenticated | ✅ aplicado |
+| `20261101191801` | `20261101150002` | st001_art_files_owner_isolation | ✅ aplicado |
+| `20261101191806` | `20261101150003` | st002_st003_avatars_recibos_policies | ✅ aplicado |
+| `20261101191921` | `20261101160001` | sec003_remove_pg_temp_security_definer | ✅ aplicado |
+| `20261101191927` | `20261101160002` | perf001_fn_pipeline_health_indexes | ✅ aplicado |
+| `20261101191935` | `20261101170001` | perf003_vacuum_stock_snapshots_cron | ✅ aplicado |
+| `20261101192817` | `20261101192817` | auth001_cleanup_sessions_cron | ✅ aplicado (sem drift) |
+| `20261101192824` | `20261101192824` | sb0009_drop_backup_table_via_cron | ✅ aplicado (sem drift) |
+| `20261101192954` | `20261101192954` | sb0009_unschedule_drop_job | ✅ aplicado (sem drift) |
+
+**Reconciliação pendente (CLI):** para alinhar ledger_version = file_version nas 10 primeiras linhas:
+```bash
+for pair in "20261101190523 20261101140001" "20261101190544 20261101140002" "20261101190548 20261101140003" \
+            "20261101191301 20261101140004" "20261101191756 20261101150001" "20261101191801 20261101150002" \
+            "20261101191806 20261101150003" "20261101191921 20261101160001" "20261101191927 20261101160002" \
+            "20261101191935 20261101170001"; do
+  ledger=$(echo $pair | cut -d' ' -f1)
+  file=$(echo $pair | cut -d' ' -f2)
+  supabase migration repair --status reverted $ledger --project-ref doufsxqlfjyuvxuezpln
+  supabase migration repair --status applied $file --project-ref doufsxqlfjyuvxuezpln
+done
+```
+
+### Migrations descartadas (nunca aplicadas — removidas do repo)
+
+| file | motivo |
+|---|---|
+| `20261101140005_sb0009_drop_backup_table.sql` | Supersedida por cron (tabela dropada em 2026-11-01 19:29 UTC) |
+| `20261101143000_sb0007_ai_usage_quotas_select_isolation.sql` | INVÁLIDA — tabela não tem coluna user_id; política existente correta |
+| `20261101150004_auth001_cleanup_expired_sessions.sql` | Supersedida por cron periódico (20261101192817) |
