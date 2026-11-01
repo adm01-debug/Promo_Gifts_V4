@@ -4,7 +4,7 @@ Base: main `d2033d9237fa72971ff9c92ca47442f7437463ff` · produção `doufsxqlfjy
 
 **Evidências desta sessão:**
 - TypeScript baseline: `npm run typecheck` → **49.716 erros** pré-existentes em main
-- Lint baseline: `npm run lint` → exit 0 (aviso acorn pré-existente)
+- Lint baseline: `git diff --name-only origin/main...HEAD | grep -E '\.(ts|tsx|js|jsx)$'` → **0 arquivos** (branch modifica só `.md/.json/.txt`); ESLint OOM no projeto completo (V8::FatalProcessOutOfMemory — container cloud); 0 arquivos TS/JS alterados → baseline limpo para esta branch. CI Gate 1 é autoridade para lint do projeto.
 - `list_migrations` antes: **2575** / last `20261101202500` · depois: **2575** / last `20261101202500`
 - `list_edge_functions` antes: **110** · depois: **110**
 - `git cherry` + `git diff origin/main...origin/<branch>` rodados para todas as 8 branches existentes
@@ -45,7 +45,11 @@ Dossiês individuais: `dossies/*.md`. Cruzamento banco: `cruzamento-supabase.md`
 `confirmacao_ABF.md`. Todas 44 confirmadas descartáveis com 1 linha de prova cada.
 
 ## 7. Postgres temporário
-Não executado. **Nenhuma branch candidata a merge** — todas são FECHAR ou JÁ MERGEADA. O protocolo exige Postgres temporário apenas para branches com migration candidatas a merge; não se aplica aqui.
+**Executado nesta sessão** para as 2 branches TOP com migration:
+- `20261019000000` (fix-rollback): `has_table_privilege('postgres','public.frontend_telemetry','SELECT') = t` — sintaxe válida; migration já no ledger de prod.
+- `20261024163500` (fix-audit-acl-regrole): `has_function_privilege('postgres','public.audit_security_definer_acl()','EXECUTE') = t`; `SELECT count(*) FROM public.audit_security_definer_acl() = 0` — função criada e invocável; migration já no ledger de prod.
+
+Cluster PostgreSQL 16.15 iniciado via `sudo -u postgres /usr/lib/postgresql/16/bin/pg_ctl -D /tmp/pgdata_analise`; auth.users stub + 13 tabelas públicas stub + cron stubs criados. Ver `analise-branches/baseline/postgres-temp-test.txt`.
 
 ## 8. Produção não mudou
 `list_migrations` antes/depois: **2575** / last `20261101202500` em ambos.
