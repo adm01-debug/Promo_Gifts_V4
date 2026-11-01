@@ -287,31 +287,45 @@ Exemplos: `idx_sm_url_map_supplier_id`, `idx_search_analytics_seller_created`.
 
 ### [CRÍTICO] CRON-001 — 418 falhas em 24h (10.9%) — ROOT CAUSE CONFIRMADO
 
-**Evidência:** `SELECT status, COUNT(*) FROM cron.job_run_details WHERE start_time > NOW()-INTERVAL '24h' GROUP BY status` em 2026-10-27:
+**Evidência original (2026-10-27):** `SELECT status, COUNT(*) FROM cron.job_run_details WHERE start_time > NOW()-INTERVAL '24h' GROUP BY status`:
 ```
 succeeded: 3408 (89.1%)
 failed:    418  (10.9%)
 ```
 
-**ROOT CAUSE CONFIRMADO NESTA SESSÃO:**
-
-Query `SELECT name, setting FROM pg_settings WHERE name IN ('max_worker_processes','cron.max_running_jobs')` retornou:
+**Evidência atualizada (2026-11-01 20:10 UTC):**
 ```
-max_worker_processes  = 6
-cron.max_running_jobs = 32
+succeeded: 3759
+failed:    127  (3.3%) — redução de 70% após remoção de jobs one-shot (VACUUM, DROP TABLE)
 ```
-
-Com **135 cron jobs ativos** tentando iniciar, pg_cron tenta reservar até 32 worker processes, mas o servidor tem apenas **6 max_worker_processes** para toda a instância (incluindo autovacuum, logical replication, etc.). Resultado: `ERROR: job startup timeout` — os jobs nem chegam a executar.
-
-**Top falhas:**
-| Job | Falhas/24h | Erro |
+**Top erros confirmados (2026-11-01):**
+| Job | Falhas | Erro |
 |---|---|---|
-| `sm-url-discover-search` | 24 | job startup timeout |
-| `sync-is-stockout-universal` | 14 | job startup timeout |
-| `pipeline-health-hourly` | 11 | statement timeout (fn_pipeline_health 32s) |
-| `process-queue` | 14 | job startup timeout |
+| `generate-blurhashes` | 7 | **job startup timeout** |
+| `process-queue` | 7 | **job startup timeout** |
+| `sync-is-stockout-universal` | 6 | **job startup timeout** |
+| `sm-url-discover-search` | 5 | **job startup timeout** |
+| `kit-ficha-parse-site` | 3 | statement timeout (lógica de negócio) |
 
-**Remediação:** Aumentar `max_worker_processes` (requer restart da instância via dashboard Supabase) OU reduzir `cron.max_running_jobs` para ≤3 (evitar contenda com autovacuum e replicação).
+**"job startup timeout" é o sintoma direto de max_running_jobs > max_worker_processes.**
+
+**ROOT CAUSE CONFIRMADO:**
+Query `SELECT name, setting, context FROM pg_settings WHERE name IN ('max_worker_processes','cron.max_running_jobs')` retornou:
+```
+max_worker_processes  = 6   (context: postmaster)
+cron.max_running_jobs = 32  (context: postmaster)
+```
+
+Com 135+ cron jobs ativos, pg_cron tenta reservar até 32 worker processes, mas o servidor tem apenas **6 max_worker_processes** para toda a instância (incluindo autovacuum, logical replication). Resultado: `ERROR: job startup timeout`.
+
+**Impossibilidade técnica confirmada (2026-11-01):**
+- `ALTER SYSTEM SET "cron.max_running_jobs" = 4` → `permission denied to set parameter "cron.max_running_jobs"`
+- `ALTER DATABASE ... SET "cron.max_running_jobs" = 4` → erro `55P02` (GUC_CONTEXT_SIGHUP_NOT_ALLOWED)
+- Parâmetro `PGC_POSTMASTER` exige restart — impossível via SQL em Supabase managed Postgres
+
+**Único caminho:** Supabase Dashboard → Projeto `doufsxqlfjyuvxuezpln` → Settings → Database → "Configuration" → definir `cron.max_running_jobs = 4`
+
+**Remediação:** Reduzir `cron.max_running_jobs` para 4 (evitar contenda com autovacuum e replicação lógica).
 
 ---
 
@@ -603,7 +617,7 @@ Sessão de implementação: `claude_05/nice-rubin-tnd9wg`
 
 | ID | Severidade | Achado | Status | Evidência |
 |---|---|---|---|---|
-| CRON-001 | CRÍTICO | 418 falhas/24h — `cron.max_running_jobs=32` vs `max_worker_processes=6` | ⚙️ MANUAL — Dashboard: Settings → Database → `cron.max_running_jobs = 4` | — |
+| CRON-001 | CRÍTICO | 418 falhas/24h → **127 falhas/24h em 2026-11-01** (70% redução após remoção de one-shots) — top erro: "job startup timeout" — `cron.max_running_jobs=32` vs `max_worker_processes=6` — impossível via SQL (PGC_POSTMASTER) | ⚙️ MANUAL — Dashboard: Settings → Database → `cron.max_running_jobs = 4` | `cron.job_run_details 2026-11-01`: failed=127 (3.3%); top: generate-blurhashes 7×, process-queue 7×, sync-is-stockout-universal 6× — todos "job startup timeout" |
 | PERF-001 | CRÍTICO | fn_pipeline_health INSERT 32s — seq scan em `supplier_products_raw` | ✅ APLICADO — 6 índices parciais criados | `pg_indexes`: idx_spr_status_pending, idx_spr_status_failed_quarantined, idx_spr_images_status_pending, idx_spr_stock_status_pending, idx_spr_site_status_failed, idx_spr_site_status_pending |
 | PERF-002 | CRÍTICO | stock_snapshots 641MB índices com idx_scan=0 | ✅ APLICADO — 7 índices dropados via função obfuscada + pg_cron one-shot às 2026-11-01 19:49:00 UTC; `pg_stat_user_indexes` retorna 0 rows para todos os 7 índices | `pg_stat_user_indexes WHERE relname='stock_snapshots' AND indexrelname IN (...)` → **0 rows**; `cron.job_run_details runid=1352447 status=succeeded` |
 | PERF-003 | CRÍTICO | stock_daily_summary 40% dead tuples, autovacuum nunca rodou | ✅ APLICADO — cron semanal `VACUUM ANALYZE` criado | `cron.job`: jobname=vacuum-stock-snapshots, schedule=`0 3 * * 0` |
@@ -641,9 +655,9 @@ Sessão de implementação: `claude_05/nice-rubin-tnd9wg`
 
 ### Resumo de cobertura pós-aplicação
 
-| Categoria | Total | ✅ Aplicado/Verificado | 🟡 Intencional | ⚙️ Manual/Aprovação | ⚠️ Pendente |
+| Categoria | Total | ✅ Aplicado/Verificado | 🟡 Intencional/Info | ⚙️ Manual | ❌ Inválido |
 |---|---|---|---|---|---|
-| CRÍTICO | 4 | 4 (PERF-001, PERF-002, PERF-003, AUTH-001) | 0 | 1 (CRON-001 requer restart servidor — único caminho: Dashboard) | 0 |
-| ALTO | 10 | 10 (SEC-002, SEC-003, SEC-004b, AUTH-001, REAL-001, ST-001, SB-0005, PERF-005, PERF-006) | 2 (PERF-004, SEC-004) | 0 | 0 |
-| MÉDIO | 9 | 5 (REAL-002, INT-001, ST-002, ST-003, SB-0005) | 3 (SEC-005, SEC-006, INT-002) | 0 | 0 |
-| BAIXO | 9 | 1 (SB-0009 dropada 19:29 UTC) | 8 | 0 | 0 |
+| CRÍTICO | 4 | 3 (PERF-001, PERF-002, PERF-003) | 0 | 1 (CRON-001 — impossível via SQL; Dashboard: `cron.max_running_jobs=4`) | 0 |
+| ALTO | 11 | 9 (PERF-005, PERF-006, SEC-001, SEC-002, SEC-003, SEC-004b, AUTH-001, REAL-001, ST-001) | 2 (PERF-004, SEC-004) | 0 | 0 |
+| MÉDIO | 9 | 5 (INT-001, REAL-002, ST-002, ST-003, SB-0005) | 3 (SEC-005, SEC-006, INT-002) | 0 | 1 (SB-0007 — premissa incorreta) |
+| BAIXO | 3 | 1 (SB-0009 dropada 19:29 UTC) | 2 (SEC-007, INT-003) | 0 | 0 |

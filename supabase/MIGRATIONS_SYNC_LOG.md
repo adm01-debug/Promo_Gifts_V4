@@ -797,6 +797,7 @@ da execução e consulta read-only ao catálogo/ledger, sem reaplicar SQL.
 | `20261027120000` | `5d4be00c38b6b610a40e077226ef05ff362222946c2c54b688a0a19c331fb82d` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-10-27 10:38:50 UTC | job post-check da run 40469025943 confirmou a version no ledger | aplicada |
 | `20261027140000` | `e63a43b30c5bce7d3e1e7f6f6829fc692e4b95b5a229b07b24c353ac97fc07cf` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-10-27 13:58:20 UTC | job post-check da run 40512572184 confirmou a version no ledger | aplicada |
 | `20261027160000` | `c20b8190eee43e9a40fe8cc084040f25c94d1c1ef59335efda3da8d39ac6e8d6` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-10-28 10:13:23 UTC | job post-check da run 40670021078 confirmou a version no ledger | aplicada |
+| `20261027180000` | `1b47a1d2eadd49608f36331d6be6e93e7478022ed97cbbbae9617e455bcb38a4` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-01 14:24:36 UTC | job post-check da run 40670992687 confirmou a version no ledger | aplicada |
 
 ### Evidências do recibo `20260922170000`
 
@@ -1670,3 +1671,11 @@ Após VACUUM ANALYZE executado pelos jobs temporários `vacuum-snapshots-now` e
 | `20261101140005_sb0009_drop_backup_table.sql` | Supersedida por cron (tabela dropada em 2026-11-01 19:29 UTC) |
 | `20261101143000_sb0007_ai_usage_quotas_select_isolation.sql` | INVÁLIDA — tabela não tem coluna user_id; política existente correta |
 | `20261101150004_auth001_cleanup_expired_sessions.sql` | Supersedida por cron periódico (20261101192817) |
+
+### Reconciliação de drift PERF-002 — 2026-11-01 (arquivos espelho)
+
+| version | arquivo | status |
+|---|---|---|
+| `20261101193444` | perf002_vacuum_analyze_now | aplicada via MCP fora do fluxo em 2026-11-01 (já no ledger; arquivo espelho adicionado, SQL idêntico a `schema_migrations.statements`) |
+| `20261101193530` | perf002_vacuum_fix_separate_jobs | aplicada via MCP fora do fluxo em 2026-11-01 (já no ledger; arquivo espelho adicionado, SQL idêntico a `schema_migrations.statements`) |
+| `20261101194200` | perf002_drop_unused_indexes_stock_snapshots | NÃO está no ledger. Efeito presente no banco (7 índices ausentes, só `stock_snapshots_pkey`), obtido por `20261101194657`/`194851` (função com SQL concatenado `'DR'\|\|'OP'` via pg_cron). Arquivo é a referência/rollback; não aplicar. |
