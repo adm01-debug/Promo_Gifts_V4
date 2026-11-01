@@ -334,6 +334,53 @@ describe('dependency audit policy', () => {
     expect(result.violations).toContain('@eslint/config-array: unexpected moderate advisory');
   });
 
+  it('rejects @typescript-eslint/utils entry whose effects field is missing (null-coercion regression)', () => {
+    // Regression for Qodo HIGH finding (2026-11-01): vulnerability.effects ?? [] coerced null/undefined
+    // to [] before comparison, so an npm audit entry that omits effects entirely would match the
+    // reviewed empty-effects alternative and pass through the gate without verification.
+    // The fix requires Array.isArray(effects) — a missing field must not match any reviewed array.
+    const vulnerabilities = Object.fromEntries(
+      [...REVIEWED_MINIMATCH_VIA].map(([name, via]) => [
+        name,
+        {
+          severity: 'moderate',
+          isDirect: [
+            '@typescript-eslint/eslint-plugin',
+            '@typescript-eslint/parser',
+            'eslint',
+            'eslint-plugin-jsx-a11y',
+            'eslint-plugin-react',
+            'eslint-plugin-unused-imports',
+          ].includes(name),
+          range: REVIEWED_MINIMATCH_RANGES.get(name),
+          effects: REVIEWED_MINIMATCH_EFFECTS.get(name),
+          via:
+            name === 'minimatch'
+              ? [
+                  {
+                    source: 1244012,
+                    name: 'minimatch',
+                    dependency: 'minimatch',
+                    severity: 'moderate',
+                    range: '<11.0.1',
+                    url: 'https://github.com/advisories/GHSA-g3hv-75wg-m249',
+                  },
+                ]
+              : via,
+          fixAvailable:
+            name === 'minimatch'
+              ? { name: 'eslint-plugin-unused-imports', version: '1.1.3', isSemVerMajor: true }
+              : true,
+        },
+      ]),
+    );
+    // Remove effects entirely from @typescript-eslint/utils (simulates omitted field from npm audit)
+    delete vulnerabilities['@typescript-eslint/utils'].effects;
+    const result = evaluateAuditReport({ vulnerabilities }, new Date('2026-10-31T12:00:00Z'));
+    expect(result.passed).toBe(false);
+    expect(result.violations).toContain('@typescript-eslint/utils: unexpected moderate advisory');
+  });
+
   it('passes without an exception when the audit is clean', () => {
     expect(evaluateAuditReport({ vulnerabilities: {} })).toEqual({
       passed: true,
