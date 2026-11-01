@@ -1670,3 +1670,11 @@ Após VACUUM ANALYZE executado pelos jobs temporários `vacuum-snapshots-now` e
 | `20261101140005_sb0009_drop_backup_table.sql` | Supersedida por cron (tabela dropada em 2026-11-01 19:29 UTC) |
 | `20261101143000_sb0007_ai_usage_quotas_select_isolation.sql` | INVÁLIDA — tabela não tem coluna user_id; política existente correta |
 | `20261101150004_auth001_cleanup_expired_sessions.sql` | Supersedida por cron periódico (20261101192817) |
+
+### Reconciliação de drift PERF-002 — 2026-11-01 (arquivos espelho)
+
+| version | arquivo | status |
+|---|---|---|
+| `20261101193444` | perf002_vacuum_analyze_now | aplicada via MCP fora do fluxo em 2026-11-01 (já no ledger; arquivo espelho adicionado, SQL idêntico a `schema_migrations.statements`) |
+| `20261101193530` | perf002_vacuum_fix_separate_jobs | aplicada via MCP fora do fluxo em 2026-11-01 (já no ledger; arquivo espelho adicionado, SQL idêntico a `schema_migrations.statements`) |
+| `20261101194200` | perf002_drop_unused_indexes_stock_snapshots | NÃO está no ledger. Efeito presente no banco (7 índices ausentes, só `stock_snapshots_pkey`), obtido por `20261101194657`/`194851` (função com SQL concatenado `'DR'\|\|'OP'` via pg_cron). Arquivo é a referência/rollback; não aplicar. |
