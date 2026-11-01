@@ -370,6 +370,18 @@ export async function generateBIPptx({
     fontFace: 'Calibri',
     color: C.muted,
   });
+  if (affinity?.isMock || trends?.isMock) {
+    s3.addText('Dados parcialmente simulados', {
+      x: 10.5,
+      y: 0.7,
+      w: 2.5,
+      h: 0.3,
+      fontSize: 9,
+      color: C.warn,
+      italic: true,
+      align: 'right',
+    });
+  }
 
   // Coluna 1: afinidade
   s3.addText('AFINIDADE DO CLIENTE', {
@@ -526,6 +538,18 @@ export async function generateBIPptx({
     fontFace: 'Calibri',
     color: C.muted,
   });
+  if (seasonality.isMock) {
+    s4.addText('Dados simulados', {
+      x: 10.5,
+      y: 0.7,
+      w: 2.5,
+      h: 0.3,
+      fontSize: 9,
+      color: C.warn,
+      italic: true,
+      align: 'right',
+    });
+  }
 
   // Heatmap simples (12 colunas)
   const monthLabels = [
