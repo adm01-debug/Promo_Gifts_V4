@@ -17,6 +17,7 @@ import { test, expect, requireAuth } from "../fixtures/test-base";
 import { gotoAndSettle } from "../helpers/nav";
 import { e2eName } from "../helpers/e2e-resources";
 import { requireE2EBaseUrl } from "../helpers/require-env-base-url";
+import type { Page } from "@playwright/test";
 
 // Matriz de fusos: a contagem regressiva usa `new Date(y,m,d)` local, então
 // validamos em 3 fusos distintos para garantir que 0/1/7/-1 dia continuam
@@ -61,6 +62,170 @@ function buildTargets(): ExpirationSeed[] {
 function formatLocal(iso: string): string {
   const [y, m, d] = iso.split("-").map(Number);
   return `${String(d).padStart(2, "0")}/${String(m).padStart(2, "0")}/${y}`;
+}
+
+/**
+ * Fixture local exclusiva do teste de ordem dos headers. Todas as requisições
+ * do browser para o host Supabase configurado são interceptadas antes da rede;
+ * a lista recebe um único registro sintético e operações de escrita falham.
+ */
+async function installLayoutSupabaseMock(page: Page) {
+  const origin = new URL(SUPABASE_URL).origin;
+  const supabaseHost = new URL(SUPABASE_URL).hostname;
+  const intercepted: string[] = [];
+  const unexpected: string[] = [];
+  const websocketOrigins: string[] = [];
+  const userId = "00000000-0000-0000-0000-e2e0e2e0e2e0";
+  const user = {
+    id: userId,
+    aud: "authenticated",
+    role: "authenticated",
+    email: "e2e-mock@promogifts.local",
+    email_confirmed_at: "2026-01-01T00:00:00.000Z",
+    created_at: "2026-01-01T00:00:00.000Z",
+    updated_at: "2026-01-01T00:00:00.000Z",
+    app_metadata: { provider: "email", providers: ["email"] },
+    user_metadata: { e2e_mock: true },
+    identities: [],
+  };
+  const quote = {
+    id: "11111111-1111-4111-8111-111111111111",
+    quote_number: "E2E-LAYOUT-01",
+    client_name: "Cliente sintético",
+    client_company: "Cliente sintético",
+    seller_id: userId,
+    status: "draft",
+    subtotal: 100,
+    discount_percent: 0,
+    discount_amount: 0,
+    total: 100,
+    created_at: "2026-10-31T12:00:00.000Z",
+    updated_at: "2026-10-31T12:00:00.000Z",
+    valid_until: "2026-11-30",
+  };
+  const corsHeaders = {
+    "access-control-allow-origin": "*",
+    "access-control-allow-methods": "GET, POST, OPTIONS",
+    "access-control-allow-headers": "apikey, authorization, content-type, prefer, x-client-info",
+    "access-control-expose-headers": "content-range, x-total-count",
+  };
+
+  await page.route((url) => url.origin === origin, async (route, request) => {
+    const url = new URL(request.url());
+    const method = request.method();
+    intercepted.push(`${method} ${url.pathname}`);
+
+    if (method === "OPTIONS") {
+      await route.fulfill({ status: 204, headers: corsHeaders, body: "" });
+      return;
+    }
+
+    if (url.pathname === "/auth/v1/user" && method === "GET") {
+      await route.fulfill({ status: 200, headers: corsHeaders, json: user });
+      return;
+    }
+    if (url.pathname === "/auth/v1/token" && method === "POST") {
+      const now = Math.floor(Date.now() / 1000);
+      await route.fulfill({
+        status: 200,
+        headers: corsHeaders,
+        json: {
+          access_token: "e2e-layout-mock-token",
+          refresh_token: "e2e-layout-mock-refresh",
+          token_type: "bearer",
+          expires_in: 3600,
+          expires_at: now + 3600,
+          user,
+        },
+      });
+      return;
+    }
+    if (url.pathname.startsWith("/auth/v1/") && method === "POST") {
+      await route.fulfill({ status: 204, headers: corsHeaders, body: "" });
+      return;
+    }
+
+    if (url.pathname === "/functions/v1/get-visitor-info" && method === "POST") {
+      await route.fulfill({ status: 200, headers: corsHeaders, json: { ip: "127.0.0.1" } });
+      return;
+    }
+
+    if (method === "POST" && url.pathname.startsWith("/rest/v1/rpc/")) {
+      // RPCs invoked during app bootstrap are read-only; empty results are
+      // sufficient for this layout-only test and remain fully local.
+      await route.fulfill({ status: 200, headers: corsHeaders, json: [] });
+      return;
+    }
+    if (
+      method === "POST" &&
+      (url.pathname === "/rest/v1/user_onboarding" || url.pathname === "/rest/v1/frontend_telemetry")
+    ) {
+      // App-shell side effects are acknowledged only inside the browser mock;
+      // they never reach a Supabase project.
+      await route.fulfill({ status: 204, headers: corsHeaders, body: "" });
+      return;
+    }
+
+    if (method !== "GET") {
+      unexpected.push(`${method} ${url.pathname}`);
+      await route.fulfill({ status: 405, headers: corsHeaders, json: { error: "Somente leitura no mock E2E" } });
+      return;
+    }
+
+    if (url.pathname === "/rest/v1/quotes") {
+      await route.fulfill({
+        status: 200,
+        headers: { ...corsHeaders, "content-range": "0-0/1" },
+        json: [quote],
+      });
+      return;
+    }
+    if (
+      url.pathname === "/rest/v1/quote_items" ||
+      url.pathname === "/rest/v1/personalization_techniques" ||
+      url.pathname === "/rest/v1/system_settings"
+    ) {
+      await route.fulfill({ status: 200, headers: corsHeaders, json: [] });
+      return;
+    }
+
+    // App shell/bootstrap pode consultar outras tabelas de leitura. Mantemos
+    // resposta vazia para elas, preservando o isolamento sem acoplar o teste a
+    // detalhes de módulos alheios à ordem das colunas.
+    await route.fulfill({ status: 200, headers: corsHeaders, json: [] });
+  });
+
+  // Intercepta também referências Supabase inesperadas (incluindo um fallback
+  // acidental ao projeto canônico) e mantém a conexão Realtime dentro do mock.
+  await page.route(
+    (url) => url.hostname.endsWith(".supabase.co") && url.origin !== origin,
+    async (route, request) => {
+      unexpected.push(`${request.method()} ${new URL(request.url()).origin}`);
+      await route.fulfill({ status: 599, body: "Host Supabase fora do mock E2E" });
+    },
+  );
+  await page.routeWebSocket(
+    (url) =>
+      (url.hostname === supabaseHost || url.hostname.endsWith(".supabase.co")) &&
+      url.pathname.startsWith("/realtime/v1/"),
+    (socket) => {
+      // Não encaminha para a rede: o socket termina no mock do Playwright.
+      const socketUrl = new URL(socket.url());
+      websocketOrigins.push(socketUrl.hostname);
+      if (socketUrl.hostname !== supabaseHost) {
+        unexpected.push(`WS ${socketUrl.hostname}${socketUrl.pathname}`);
+      }
+      socket.onMessage(() => {});
+    },
+  );
+
+  return {
+    assertIsolated: () => {
+      expect(intercepted.some((call) => call.endsWith("/rest/v1/quotes"))).toBe(true);
+      expect(websocketOrigins.every((value) => value === supabaseHost)).toBe(true);
+      expect(unexpected, `requisições fora do mock isolado: ${unexpected.join(", ")}`).toEqual([]);
+    },
+  };
 }
 
 for (const tz of TIMEZONES) {
@@ -147,6 +312,7 @@ test.describe("Cotações · coluna Expiração — regressão de layout", () =>
   test.beforeEach(() => requireAuth());
 
   test("ordem Status → Expiração → Nº Orçamento sobrevive a reload e navegação", async ({ page }) => {
+    const supabaseMock = await installLayoutSupabaseMock(page);
     await gotoAndSettle(page, "/orcamentos");
 
     const expectOrder = async (label: string) => {
@@ -163,6 +329,7 @@ test.describe("Cotações · coluna Expiração — regressão de layout", () =>
       expect(iNum, `quote_number presente em ${label}`).toBeGreaterThan(iExp);
     };
 
+    await expect(page.getByTestId("quotes-col-header-status")).toBeVisible({ timeout: 10_000 });
     await expectOrder("primeiro acesso");
 
     await page.reload();
@@ -173,6 +340,7 @@ test.describe("Cotações · coluna Expiração — regressão de layout", () =>
     await gotoAndSettle(page, "/orcamentos");
     await expect(page.getByTestId("quotes-col-header-expiration")).toBeVisible({ timeout: 10_000 });
     await expectOrder("após navegação fora→volta");
+    supabaseMock.assertIsolated();
   });
 });
 

@@ -18,8 +18,20 @@
       "ref": "supabase/migrations-snapshot/SCHEMA_DRIFT.sql"
     },
     {
-      "file": "CONTRIBUTING.md",
-      "ref": "supabase/migrations/README.md"
+      "file": "analise-branches/dossies/devin-probe-e184-legacy-refs.md",
+      "ref": "qa/migrations-draft/probe_e184_legacy_refs.sql"
+    },
+    {
+      "file": "analise-branches/RELATORIO_BRANCHES.md",
+      "ref": "qa/migrations-draft/probe_e184_legacy_refs.sql"
+    },
+    {
+      "file": "analise-prs/dossies/PR-2426.md",
+      "ref": "qa/migrations-draft/probe_e184_legacy_refs.sql"
+    },
+    {
+      "file": "analise-prs/dossies/PR-2432.md",
+      "ref": "qa/migrations-draft/probe_e184_legacy_refs.sql"
     },
     {
       "file": "analise-prs/dossies/PR-2731.md",
@@ -1868,6 +1880,10 @@
     {
       "file": "docs/sessoes/2026-05-09-09h57-onda-1-completa-handoff.md",
       "ref": "supabase/migrations/README.md"
+    },
+    {
+      "file": "inventario/branches.json",
+      "ref": "qa/migrations-draft/probe_e184_legacy_refs.sql"
     },
     {
       "file": "inventario/branches.json",
