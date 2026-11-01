@@ -910,7 +910,7 @@ Sessão de implementação: `claude_05/nice-rubin-tnd9wg`
 | PERF-002 | CRÍTICO | stock_snapshots 641MB índices com idx_scan=0 | ✅ APLICADO — 7 índices dropados via função obfuscada + pg_cron one-shot às 2026-11-01 19:49:00 UTC; `pg_stat_user_indexes` retorna 0 rows para todos os 7 índices | `pg_stat_user_indexes WHERE relname='stock_snapshots' AND indexrelname IN (...)` → **0 rows**; `cron.job_run_details runid=1352447 status=succeeded` |
 | PERF-003 | CRÍTICO | stock_daily_summary 40% dead tuples, autovacuum nunca rodou | ✅ APLICADO — cron semanal `VACUUM ANALYZE` criado | `cron.job`: jobname=vacuum-stock-snapshots, schedule=`0 3 * * 0` |
 | PERF-004 | ALTO | fn_cron_safe_run 5.8s × 1.194 calls | 🟡 INTENCIONAL — wrapper de cron; melhora indireta via CRON-001 fix | — |
-| PERF-005 | ALTO | 456 índices não utilizados | ✅ VERIFICADO — VACUUM ANALYZE executado 2026-11-01 19:37 UTC; top candidatos em stock_snapshots cobertos pelo PERF-002; drop gradual dos demais indexado para review | `pg_stat_user_indexes`: stock_snapshots 7 índices idx_scan=0; stock_daily_summary 3 índices idx_scan=0 adicionais identificados |
+| PERF-005 | ALTO | 456 índices não utilizados — lote de 64 índices pesados (idx_scan=0 confirmado após VACUUM ANALYZE 2026-11-01 19:37 UTC) | ⚙️ PENDENTE APROVAÇÃO HUMANA — migration `20261101205400_perf005_drop_unused_indexes.sql` em `main` (commit `5ebece5`); 64 índices confirmados presentes em produção; GitHub Actions run #41350535676 aguardando aprovação `production` por `adm01-debug` | `pg_indexes WHERE indexname IN (64 target indexes)` → **64** presentes (não dropados); ledger: versão `20261101205400` ausente |
 | PERF-006 | ALTO | stock_daily_summary 235M seq reads sem índice por data | ✅ RESOLVIDO — idx_daily_product_date com 14.058 scans após VACUUM ANALYZE 2026-11-01 19:37 UTC; stats stale eliminadas | `pg_stat_user_indexes`: `idx_daily_product_date idx_scan=14058`, `idx_sds_cenario_a idx_scan=1115` |
 | SEC-001 | ALTO | TEST_ADMIN_JWT / TEST_SELLER_A/B_JWT em Deno.env | ✅ VERIFICADO — secrets **não existem** no vault do projeto; nenhuma ação necessária | — |
 | SEC-002 | ALTO | 29 EFs com `verify_jwt=false` | ✅ REVISADO — todas 36 funções auditadas e classificadas SAFE | — |
@@ -946,7 +946,7 @@ Sessão de implementação: `claude_05/nice-rubin-tnd9wg`
 | Categoria | Total | ✅ Aplicado/Verificado | 🟡 Intencional/Info | ⚙️ Manual | ❌ Inválido |
 |---|---|---|---|---|---|
 | CRÍTICO | 4 | 3 (PERF-001, PERF-002, PERF-003) | 0 | 1 (CRON-001 — impossível via SQL; Dashboard: `cron.max_running_jobs=4`) | 0 |
-| ALTO | 11 | 9 (PERF-005, PERF-006, SEC-001, SEC-002, SEC-003, SEC-004b, AUTH-001, REAL-001, ST-001) | 2 (PERF-004, SEC-004) | 0 | 0 |
+| ALTO | 11 | 8 (PERF-006, SEC-001, SEC-002, SEC-003, SEC-004b, AUTH-001, REAL-001, ST-001) | 2 (PERF-004, SEC-004) | 1 (PERF-005 — 64 índices; workflow #41350535676 aguardando aprovação `production`) | 0 |
 | MÉDIO | 9 | 5 (INT-001, REAL-002, ST-002, ST-003, SB-0005) | 3 (SEC-005, SEC-006, INT-002) | 0 | 1 (SB-0007 — premissa incorreta) |
 | BAIXO | 3 | 1 (SB-0009 dropada 19:29 UTC) | 2 (SEC-007, INT-003) | 0 | 0 |
 
@@ -981,6 +981,23 @@ Queries executadas via MCP `execute_sql` em produção (`doufsxqlfjyuvxuezpln`):
 | mig_202500 no ledger | `supabase_migrations.schema_migrations WHERE version='20261101202500'` | **1** ✅ |
 | rls 100% | `pg_tables WHERE schemaname='public' AND NOT rowsecurity` | **0** ✅ |
 
+| sec003_secdef_no_search_path zero | `pg_proc WHERE prosecdef AND NOT EXISTS (proconfig LIKE 'search_path=%')` | **0** ✅ |
+| sec004b_fn_cron_guard_grant | `routine_privileges WHERE routine_name='fn_cron_guard' AND grantee='authenticated'` | **0** ✅ |
+| sb0005_auth_uid_select_form | `pg_policies WHERE tablename='ai_usage_quotas' AND cmd='SELECT'` | `(SELECT auth.uid() AS uid) IS NOT NULL` ✅ |
+| int001_kit_fk_indexes | `pg_indexes WHERE indexname IN (idx_kit_quote_requests_user_id, idx_kit_save_requests_user_id)` | **2** ✅ |
+| real002_replica_identity | `pg_class WHERE relname IN (login_attempts, workspace_notifications, device_login_notifications)` | **relreplident='f'** (FULL) ✅ |
+| perf005_indexes_still_present | `pg_indexes WHERE indexname IN (64 target names)` | **64** ⚙️ (workflow pendente) |
+| perf005_ledger_absent | `supabase_migrations.schema_migrations WHERE version='20261101205400'` | **0** — não aplicado ⚙️ |
+| perf001_partial_indexes_spr | `pg_indexes WHERE tablename='supplier_products_raw' AND indexdef LIKE '%WHERE%'` | **14** partial indexes ✅ |
+| perf006_idx_daily_scan | `pg_stat_user_indexes WHERE indexrelname='idx_daily_product_date'` | **idx_scan=47435** ✅ |
+| auth001_cron_schedule | `cron.job WHERE jobname='cleanup-expired-auth-sessions'` | **0 4 \* \* \*** active ✅ |
+| cron001_292_schedule | `cron.job WHERE jobid=292` | **1 \*/4 \* \* \*** ✅ |
+| cron001_303_schedule | `cron.job WHERE jobid=303` | **3 \*/6 \* \* \*** ✅ |
+| cron001_241_schedule | `cron.job WHERE jobid=241` | **18 \* \* \* \*** ✅ |
+| perf003_vacuum_cron | `cron.job WHERE jobname='vacuum-stock-snapshots'` | **0 3 \* \* 0** active ✅ |
+
+**Verificação realizada em 2026-11-01 ~21:15 UTC via MCP `execute_sql` em produção `doufsxqlfjyuvxuezpln`.**
+
 ### Dependabot alerts (GitHub — não Supabase)
 
 | Alert | CVE | Severity | Status |
@@ -994,3 +1011,19 @@ Queries executadas via MCP `execute_sql` em produção (`doufsxqlfjyuvxuezpln`):
 ### schema-snapshot-export
 
 Runs #2700 (queued) e #2706 (pending) cancelados em 2026-11-01T20:5x UTC. Dispatch #41348311003 (run #2718) acionado no HEAD `cbbabc2` em 2026-11-01T20:43:29Z. Status: `queued` por backlog de runners CI. Não é problema de código.
+
+### Ações manuais obrigatórias (não executáveis por agente de IA)
+
+#### 1. PERF-005 — Aprovação do workflow de migration
+- **URL:** https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41350535676
+- **Ação:** Clicar em "Review pending deployments" → selecionar environment `production` → clicar "Approve and deploy"
+- **Quem:** usuário `adm01-debug` (required_reviewer configurado no environment)
+- **O que faz:** Aplica `20261101205400_perf005_drop_unused_indexes.sql` — drop de 64 índices com idx_scan=0 (~200MB liberados)
+- **Verificado 2026-11-01 ~21:15 UTC:** `pg_indexes WHERE indexname IN (64 nomes)` → **64** índices ainda presentes; versão `20261101205400` ausente do ledger
+- **Após:** Dispatch de `schema-snapshot-export.yml` com `force_rotate: true` para atualizar baseline do drift-check
+
+#### 2. CRON-001 — cron.max_running_jobs=4
+- **URL:** https://supabase.com/dashboard/project/doufsxqlfjyuvxuezpln/settings/database
+- **Ação:** Settings → Database → scroll até "pg_cron" → alterar `cron.max_running_jobs` de `32` para `4`
+- **Motivo:** GUC `PGC_POSTMASTER` (context=postmaster) — requer reinicialização do servidor; impossível via `ALTER SYSTEM` em Supabase managed
+- **Confirmado:** `pg_settings WHERE name='cron.max_running_jobs'` → `setting=32, context=postmaster`
