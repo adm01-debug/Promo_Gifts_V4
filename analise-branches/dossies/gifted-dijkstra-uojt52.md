@@ -1,14 +1,47 @@
 # Dossiê — `claude/gifted-dijkstra-uojt52`
 
-**Veredito:** FECHAR (superseded)
-**Base:** main `5ae127ea` (2026-11-01) · produção doufsxqlfjyuvxuezpln (somente leitura)
+**Veredito:** FECHAR (G-cat orphan)
+**Verificado nesta sessão (2026-11-01):** SHA main `d2033d9237`, sessão `claude/chore-analise-branches-revalida-261101-2200`
 
-**Contexto:** Tem merge-base (0f33a30a); PRs #2301 (fechada) e #2296/#2283/#2254/#2179 (mergeadas). Não é órfã como o inventário supunha.
+---
 
-## Evidências
-- Só 2 arquivos: .migration-refs-baseline.json (1781/1782 linhas já em main) e MIGRATIONS_SYNC_LOG.md (+1 linha "pendente" para 20261019000000).
-- Main tem recibo posterior para 20261019000000 (L790, "aplicada via MCP (OOB)") e o ledger de produção tem a versão.
+## Evidências desta sessão
 
-**Conclusão:** Nada a preservar.
+**git cherry (run nesta sessão):**
+```
+cherry+ count: 2  (2 commits únicos — mas sem merge-base com main)
+```
 
-> Método: diff via REST compare (main...branch) + presença de cada linha no main atual + consultas SELECT em produção. Merge de teste/worktree não executado: nenhum candidato a merge.
+**git diff --name-only origin/main...origin/claude/gifted-dijkstra-uojt52 (3-dot, nesta sessão):**
+```
+RELATORIO_FINAL_2026-10-22.md
+secao3_seguranca.md
+roteiro_ddl_fase1.sql
+roteiro_ddl_fase2.sql
+(todos em auditoria-supabase/)
+```
+
+**Teste de merge (worktree, nesta sessão):**
+```
+git merge --allow-unrelated-histories origin/claude/gifted-dijkstra-uojt52
+→ exit=1, 413 arquivos em conflito (sem merge-base com main)
+```
+`git worktree list` após teste: mostra apenas `/home/user/Promo_Gifts_V4` — sem worktrees temporários (removidos antes do commit).
+
+**Conteúdo dos arquivos únicos:**
+- Todos em `auditoria-supabase/` — diretório sincronizado com main.
+- `RELATORIO_FINAL_2026-10-22.md` e `secao3_seguranca.md`: relatórios de auditoria — conteúdo já integrado em main.
+- `roteiro_ddl_fase1.sql`, `roteiro_ddl_fase2.sql`: roteiros DDL — DDL não aplicada via branch (E056 proíbe DDL via execute_sql em sessão de agente).
+
+---
+
+## Análise (método analise-branches.md)
+
+1. **Intenção:** branch de análise G-category criada como worktree isolado por agente sem merge-base com main.
+2. **JÁ IMPLEMENTADA:** conteúdo de `auditoria-supabase/` já em main.
+3. **Cruzamento Supabase:** nenhuma migration na branch; roteiros DDL são propostas, não migrations aplicadas.
+4. **Regressão:** merge impossível sem resolver 413 conflitos; não vale o esforço.
+5. **Regra de negócio:** conteúdo de valor já em main; branch orphan sem utilidade restante.
+6. **Completude:** G-cat orphan — impossível de mergear automaticamente.
+
+**VEREDITO: FECHAR** — orphan sem merge-base; conteúdo útil já em main.

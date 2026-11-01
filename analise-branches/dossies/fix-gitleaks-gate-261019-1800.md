@@ -1,16 +1,39 @@
 # Dossiê — `claude/fix-gitleaks-gate-261019-1800`
 
-**Veredito:** FECHAR (superseded; mergear = regressão)
-**Base:** main `5ae127ea` (2026-11-01) · produção doufsxqlfjyuvxuezpln (somente leitura)
+**Veredito:** FECHAR (regressão)
+**Verificado nesta sessão (2026-11-01):** SHA main `d2033d9237`, sessão `claude/chore-analise-branches-revalida-261101-2200`
 
-**Contexto:** PRs #2418 e #2306 fechadas sem merge.
+---
 
-## Evidências
-- deploy-gates.yml: main já instala o binário gitleaks (L799-805, Gate E23).
-- .gitleaks.toml: main já tem paths docs/, audit/, tests/, dist/ e regexes específicos; só 2/34 linhas da branch coincidem.
-- Branch adiciona regexes genéricos no allowlist (`SERVICE_ROLE_KEY`, `YOUR_JWT_TOKEN`, `\.placeholder`, `abc123def456`): qualquer linha contendo esses textos fica isenta do scan — afrouxa o gate sem prova de falso positivo.
-- Branch troca `grep "...: '\*'"` por `grep "...: '*'"` em deploy-gates.yml (muda o padrão do check CORS).
+## Evidências desta sessão
 
-**Conclusão:** REGRESSÃO de segurança se mergeada.
+**git cherry (run nesta sessão):**
+```
+cherry+ count: 4  (4 commits únicos nesta branch vs main)
+```
 
-> Método: diff via REST compare (main...branch) + presença de cada linha no main atual + consultas SELECT em produção. Merge de teste/worktree não executado: nenhum candidato a merge.
+**git diff --name-only origin/main...origin/claude/fix-gitleaks-gate-261019-1800 (3-dot, nesta sessão):**
+```
+.gitleaks.toml
+```
+
+**Diff completo lido (nesta sessão):**
+- Branch: 67 linhas em `.gitleaks.toml`
+- Main: 102 linhas em `.gitleaks.toml`
+- Branch **remove** 35 linhas vs main: inclui regexes de segurança e entradas de exclusão de `tests/.*`
+- Branch adiciona `paths = ['''dist/''', '''audit/''', '''docs/''']` que excluem diretórios adicionais do scan
+- Branch remove `# Variante com typo (d4872 vs d872)` e outras entradas de falso-positivo documentadas
+- Branch tem comentários em PT-BR com acentuação vs main tem versão sem acentuação (indicando branch mais nova esteticamente, mas mais permissiva em scan)
+
+---
+
+## Análise (método analise-branches.md)
+
+1. **Intenção:** refinar `.gitleaks.toml` para reduzir falsos-positivos.
+2. **JÁ IMPLEMENTADA:** main tem versão mais completa com mais regras de segurança.
+3. **Cruzamento Supabase:** nenhuma migration.
+4. **Regressão:** **SIM** — branch remove 35 linhas de `.gitleaks.toml` incluindo regexes de segurança presentes em main; aplicar afrouxaria o scan de secrets.
+5. **Regra de negócio:** segurança comprometida se aplicado; main está mais restritivo (correto).
+6. **Completude:** branch é subconjunto regressivo do main.
+
+**VEREDITO: FECHAR** — branch remove regras de segurança do `.gitleaks.toml` vs main.
