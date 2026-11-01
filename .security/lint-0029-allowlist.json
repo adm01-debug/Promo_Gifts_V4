@@ -360,10 +360,6 @@
       "reason": "RPC Magazine v2: auth.uid obrigatório, owner/admin, revista draft, lock + CAS e whitelist/validação null-safe de metadados; anon/PUBLIC revogados."
     },
     {
-      "fn": "public.mcp_kv_get(p_secret text, p_key text)",
-      "reason": "ACHADO CRÍTICO E18 (2026-09-17): única guarda é comparação de string contra literal fixo embutido em prosrc, legível por qualquer role com USAGE em pg_catalog (padrão para authenticated) — reduz a autorização a praticamente nada; bypassa RLS deny-all de public.mcp_kv via SECURITY DEFINER. Funções irmãs (mcp_kv_set, mcp_kv_try_lock) não têm esse grant. REVOKE de authenticated preparado e pendente de aprovação — ver docs/E18_MCP_KV_GET_ACHADO_CRITICO_2026-09-17.md e supabase/migrations/20260917060000_e18_revoke_authenticated_mcp_kv_get.sql."
-    },
-    {
       "fn": "public.org_has_any_members(_org_id uuid)",
       "reason": "E18 (2026-09-17): retorna só um boolean de existência (organização tem algum membro?), sem auth.uid() necessário e sem PII exposta."
     },
