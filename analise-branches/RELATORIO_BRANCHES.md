@@ -67,6 +67,20 @@ Cluster PostgreSQL 16.15 iniciado via `sudo -u postgres /usr/lib/postgresql/16/b
 Projeto confirmado: `doufsxqlfjyuvxuezpln` (MCP `SUPABASE_-_GEST_O_DE_PRODUTOS`, URL `https://doufsxqlfjyuvxuezpln.supabase.co`).
 Nenhuma DDL, deploy ou apply_migration executada nesta sessão.
 
+## 8.1. Worktrees — prova (META item 6)
+
+`git worktree list` executado nesta sessão (2026-11-01):
+```
+/home/user/Promo_Gifts_V4  93df1cb5a [main]
+```
+**Uma única entrada** — o checkout principal. Nenhum worktree adicional foi criado nem existe. Zero worktrees temporários a remover.
+
+Sessão anterior (`claude/chore-analise-branches-revalida-261101-2200`) verificado também:
+```
+/home/user/Promo_Gifts_V4  70082a4af [claude/chore-analise-branches-revalida-261101-2200]
+```
+(registrado em `progresso.json` v8.0: `"worktrees_verificados":true,"worktrees_prova":"git worktree list → apenas /home/user/Promo_Gifts_V4 70082a4af [claude/...]; nenhum worktree temporário"`)
+
 ## 9. AGUARDANDO APROVAÇÃO — por que está vazia (evidência corrigida)
 
 O protocolo `analise-branches.md` determina: branch com migration/policy/grant/function/edge → PR pronta, testada em Postgres temporário, sem mergear, em lista AGUARDANDO APROVAÇÃO.
