@@ -415,13 +415,12 @@ export function useSellerCartsPage() {
         });
         return;
       }
-      // Trava na página (sobrevive à remontagem da sidebar): lotes sobrepostos duplicariam quantidades.
+      // Trava na página + silent/sequencial: sem lotes sobrepostos, um único toast no fim.
       if (applyingTemplateRef.current) {
         toast.info('Aguarde: um template ainda está sendo aplicado');
         return;
       }
       applyingTemplateRef.current = true;
-      // silent + sequencial: um único toast no fim, contando as falhas (→ false).
       let failed = 0;
       try {
         for (const item of items) {
