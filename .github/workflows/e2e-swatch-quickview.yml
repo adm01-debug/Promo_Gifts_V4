@@ -57,6 +57,10 @@ jobs:
         with:
           browsers: 'chromium,${{ matrix.browser }}'
           start-vite: 'false'
+          require-auth: 'true'
+        env:
+          E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
+          E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
       - name: Run swatch→QuickView suite (V1 + V2 + focus/QV)
         # O reporter json do playwright.config.ts já tem `outputFile` explícito
         # (playwright-report/results.json). Quando `outputFile` existe, o Playwright
