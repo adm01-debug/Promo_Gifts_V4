@@ -1117,7 +1117,7 @@ function PersonalizationSummaryPanel({ targets }: { targets: PersonalizationTarg
                   target.personalization.estimatedPrice > 0 && (
                     <p className="truncate text-xs text-muted-foreground">
                       + R${' '}
-                      {target.personalization.estimatedPrice.toLocaleString('pt-BR', {
+                      {(target.personalization.totalPrice! / target.quantity).toLocaleString('pt-BR', {
                         minimumFractionDigits: 2,
                         maximumFractionDigits: 2,
                       })}{' '}
