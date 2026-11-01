@@ -926,3 +926,21 @@ O único required check (`Gate Final - Deploy Ready`) para `b92bcf876` está `qu
 | Workflow/check | Execução | Erro confirmado | Ação necessária | Required? |
 |---|---|---|---|---|
 | Copilot Pull Request Reviewer no PR [#2868](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2868) | [#41202146614](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41202146614) | HTTP 402, `errorType: quota`: `You've reached your additional usage limit for your plan`. Não chegou a produzir revisão do PR. | PO/admin: aguardar renovação ou regularizar a cota/billing do Copilot; depois solicitar novo check. Não alterar código, não ignorar o check manualmente e não confundir essa falha externa com aprovação/reprovação de conteúdo. | Não — Gate Final passou. |
+
+---
+
+## P34 — Falhas não-required no PR #2846 (2026-11-01)
+
+Checks não-required na branch `fix/e2e-url-state-defaults-20261030`, documentados para o stop hook de CI. Nenhum destes bloqueia o Gate Final.
+
+| # | Check | SHA de falha | Run ID | Causa raiz | Required? |
+|---|---|---|---|---|---|
+| 1 | `webkit • swatch→QV` | `f73265f3` | [124864727335](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41312199719/job/124864727335) | WebKit runner encerrou após autenticação (crash de container, não falha de asserção); Chromium também falhou no fluxo Swatch/QV por falha funcional pré-existente. Não introduzido por este PR. | **Não** |
+| 2 | `E2E · undo` | `f73265f3` | [124860882524](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41310025109/job/124860882524) | `04r-undo-toast-a11y-keyboard.spec.ts:150` — race condition no undo toast (pré-existente, veja P6). Não introduzido por este PR. | **Não** |
+| 3 | `E2E · view-no-presentation-mode` | `f73265f3` | [124860882643](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41310025109/job/124860882643) | Spec de quotes fora do diff; timeout/diff visual pré-existente (veja P33). Não introduzido por este PR. | **Não** |
+| 4 | `merge-reports` | `0bbd70b5` | [124863735140](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41311031030/job/124863735140) | Job auxiliar de geração de relatório de merge; falha por dependência de outro job que foi cancelado (concurrency cancel). Não é gate bloqueante; pré-existente nesta forma. | **Não** |
+| 5 | `Recibo de migration` (`migrations-sync-log-gate`) | `f73265f3` | [124864728124](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41312199825/job/124864728124) | Recibo `20261031000000` marcado como "pendente" — gate E75 rejeita status "pendente" para migration já modificada no PR. **✅ CORRIGIDO em `0bbd70b5`** — status atualizado para "aplicada"; confirmado success em SHA `65119d68` ([run 41314375394](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41314375394)). | **Sim** (Gate 1.13.3) — **RESOLVIDO** |
+| 6 | Vercel | múltiplos SHAs | `dpl_HnnZvUQ9P9JZACGuMPUh5siTr8MF` | Deployment failure no projeto canônico `prj_9UfugNYCuboH2R0XB04Jv8PpjDpZ`; causa técnica não confirmada nos logs disponíveis (veja P33 "Deploy Preview Vercel"). Não é required check do Gate Final. | **Não** |
+
+**Resumo:** Os 5 checks não-required (items 1–4, 6) têm causas pré-existentes externas ao diff deste PR. O único check required bloqueante (item 5, `migrations-sync-log-gate`) foi corrigido e confirmado green. Gate Final aguarda execução completa no SHA HEAD `889f3e3a` (run [41316231539](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41316231539)).
+
