@@ -136,3 +136,5 @@ export function AuditReport() {
     </div>
   );
 }
+
+export default AuditReport;

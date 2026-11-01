@@ -47,3 +47,15 @@ Na revalidação local adicional de 2026-10-29, no SHA `159467243a2041b93af03aff
 - Os três arquivos Graphify (`.graphifyignore`, `graphify-out/GRAPH_REPORT.md`, `graphify-out/manifest.json`) continuam modificados sem commit no checkout; não foram publicados. A alteração é grande e gerada, por isso requer revisão e commit próprio, fora do PR do painel.
 - Nenhuma migration, DDL, grant, dado operacional ou schema foi alterado no Supabase canônico nesta auditoria.
 - Pós-commit documental, em checkout de auditoria baseado na `main` `c3445087`: `npm run build:verify` passou; `npm test -- --reporter=dot` passou com 1.210 arquivos e 25.656 testes aprovados, 131 arquivos e 1.134 testes skipped, 24 TODO. Isso valida o branch documental e não substitui os checks E2E/preview do PR #2721.
+
+## Revalidação de referências — 2026-10-31
+
+Consulta à API do GitHub confirmou os seguintes estados, que substituem apenas a classificação dos PRs abaixo — não a evidência de banco registrada nos snapshots anteriores:
+
+| Referência antiga | Estado atual confirmado | Correção necessária no acompanhamento |
+|---|---|---|
+| PR #2443 listado como aberto/aguardando PO | Merged em 2026-10-26 | Retirar da lista de PRs abertas. Verificar separadamente quais mudanças foram incorporadas e se houve aplicação; o merge, por si só, não comprova alteração no banco. |
+| PR #2714 listado como aberto/bloqueado | Fechado sem merge | O drift continua sem certificação. A classificação dos dados de 29/10 precisa ser refeita na main atual; não reabrir/aplicar automaticamente. |
+| PR #2730 não refletido no snapshot | Merged em 2026-10-29 | Atualizar o estado do contrato `repair-only`; isso não prova paridade integral do ledger/schema. |
+
+Consulte [REVALIDACAO_PLANO_2026-10-31.md](./REVALIDACAO_PLANO_2026-10-31.md) para os runs, discrepâncias de recibos, E049 e próximos passos. Nenhuma alteração no Supabase foi feita nesta revalidação.

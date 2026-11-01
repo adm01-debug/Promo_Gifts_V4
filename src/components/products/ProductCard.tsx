@@ -486,15 +486,14 @@ export const ProductCard = memo(
         }
       };
 
-      // Multi-variant carousel — `allMatchingVariants` é derivado acima
-      // (TDZ FIX: precisa estar antes do primeiro useEffect que o consome).
+      // Multi-variant carousel: allMatchingVariants precede o primeiro useEffect (TDZ).
       const hasMultipleVariants = allMatchingVariants.length > 1;
       const safeVariantIdx = hasMultipleVariants
         ? Math.min(activeVariantIdx, allMatchingVariants.length - 1)
         : 0;
       const currentVariant = hasMultipleVariants ? allMatchingVariants[safeVariantIdx] : null;
-      const activeColorName =
-        currentVariant?.name || getActiveColorName(product, activeColorFilter);
+      const fallbackColor = () => getActiveColorName(product, activeColorFilter);
+      const activeColorName = currentVariant?.name || selectedColorFromStore || fallbackColor();
 
       // Se houver uma cor ativa (selecionada ou filtrada), forçamos a imagem dessa cor
       const currentImageUrl = useMemo(() => {
@@ -615,7 +614,8 @@ export const ProductCard = memo(
               actionBusyRef.current ||
               variantPickerOpen ||
               collectionModalOpen ||
-              quickViewOpen
+              quickViewOpen ||
+              (e.target instanceof Element && e.target.closest('[role="radiogroup"]'))
             ) {
               e.stopPropagation();
               return;
