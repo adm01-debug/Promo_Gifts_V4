@@ -173,6 +173,15 @@ describe('CartSidebar — atalhos de template', () => {
     expect(screen.getByRole('button', { name: /Usar Template \(1\)/i })).toBeInTheDocument();
   });
 
+  it('carrinho vazio com templates salvos ainda oferece "Usar Template" (e não "Salvar")', () => {
+    renderSidebar({
+      cart: makeCart({ items: [] }),
+      templates: [{ id: 't1', name: 'Kit Onboarding', items: [] }],
+    });
+    expect(screen.getByRole('button', { name: /Usar Template \(1\)/i })).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /Salvar como Template/i })).not.toBeInTheDocument();
+  });
+
   it('não mostra "Usar Template" sem templates salvos', () => {
     renderSidebar({ templates: [] });
     expect(screen.queryByRole('button', { name: /Usar Template/i })).not.toBeInTheDocument();

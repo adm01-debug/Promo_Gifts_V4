@@ -30,7 +30,7 @@ interface CartSidebarProps {
   onExportCSV: (cart: SellerCart) => void;
   onExportPDF: (cart: SellerCart) => void;
   onSaveTemplate: (name: string, description: string) => void;
-  onLoadTemplate: (items: CartTemplateItem[]) => void;
+  onLoadTemplate: (items: CartTemplateItem[]) => Promise<void> | void;
   onDeleteTemplate: UseMutationResult<void, Error, string>;
   onClear: () => void;
   onNavigate: (path: string) => void;
@@ -100,6 +100,7 @@ export function CartSidebar({
           }))}
           onLoad={onLoadTemplate}
           onDelete={(id) => onDeleteTemplate.mutate(id)}
+          deleting={onDeleteTemplate.isPending}
         />
       </Card>
     </div>
