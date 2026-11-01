@@ -27,7 +27,19 @@ Nenhuma. A lista AGUARDANDO APROVAÇÃO de 24/10 (3 PRs) está vazia: tudo já f
 Detalhes e linhas de prova: `dossies/*.md`. Cruzamento com banco: `cruzamento-supabase.md`.
 
 ## 5. DRIFT
-Nenhum migration das branches fora de produção. Único drift: documental (item 1 do topo).
+**Branches analisadas × produção:** nenhuma das 9 branches top tem migration fora do ledger de prod.
+
+**Main × produção (drift real):** main tem 6 migrations não aplicadas em prod (last prod = `20261027160000`):
+- `20261027200000_supplier_stricker_rls_deny_all.sql`
+- `20261027220000_deactivate_xbz_image_uploader_cron.sql`
+- `20261027230000_cleanup_get_edge_function_secret_allowlist.sql`
+- `20261027233000_add_xbz_image_uploader_secret_to_allowlist.sql`
+- `20261027234500_reactivate_xbz_image_uploader_cron.sql`
+- `20261031000000_create_stock_notes.sql` (stock_notes ausente no banco — PR #2871)
+
+Aplicar via `db-apply-migration.yml` em ordem, uma por vez. Essas migrations são do escopo do main, não das branches analisadas.
+
+Drift documental (branches): item 1 do topo (10 recibos E15 em SYNC_LOG).
 
 ## 6. F/A/B (44)
 `confirmacao_ABF.md`. 30 descartáveis sem ressalva, 10 recibos E15 (achado) e 3 ressalvas (shellcheck, happy-faraday, gh-pages). E33 já aplicado em main.
