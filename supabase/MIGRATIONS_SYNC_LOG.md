@@ -1588,6 +1588,23 @@ Detalhes, métricas antes/depois e one-shots: docs/EXECUCAO_CORRECOES_MEDALLION_
 
 **Próximo passo obrigatório:** após merge desta PR, disparar `schema-snapshot-export.yml` com `force_rotate: true` para regenerar baseline (REGRA #8 corolário).
 
+## 2026-10-31 — Recibo de migration: create_stock_notes (PR #2871 / PR #2846)
+
+**Tipo:** Migration nova — tabela `stock_notes` adicionada ao banco (ausente).
+**Origem:** PR #2871 (Lovable bot — `5ae127ea fix(db): cria tabela stock_notes ausente no banco`), merged em main.
+**Modificação:** PR #2846 adicionou `-- soft-delete-exempt` no CREATE TABLE (Gate 1.12).
+
+| versão | sha256 arquivo | md5 statements | executor | método | data UTC | pós-check |
+|---|---|---|---|---|---|---|
+| `20261031000000` | `92dcc8ed708bc59308b6b52f18d57952e07d6868845ba552c2b8fac7d46c94f4` | `—` (não aplicado via E15) | PR #2871 Lovable / PR #2846 fix soft-delete-exempt | E15 (pendente) | pendente — aguarda dispatch `db-apply-migration.yml` pelo PO | pendente |
+
+**Nota:** A migration cria a tabela `stock_notes` (comentários inline por variante de produto).
+A aplicação formal em `doufsxqlfjyuvxuezpln` aguarda dispatch de `db-apply-migration.yml`
+pelo PO (conforme REGRA #8 corolário — caminho único E15). Hash SHA-256 calculado do arquivo
+local `supabase/migrations/20261031000000_create_stock_notes.sql` (versão com `-- soft-delete-exempt`).
+
+---
+
 ## Nota de governança — 2026-10-27
 
 Squash merge do PR #2599 (commit `2ca5ef04`) foi realizado via API com mensagem customizada,
