@@ -32,6 +32,7 @@ export function useCategoryIcons() {
   });
 }
 
+
 /**
  * Mapeamento palavra-chave → nome do ícone Lucide.
  *
