@@ -137,7 +137,7 @@ export function NoveltyProductGrid() {
         setLoadingProgress((prev) => {
           if (prev >= 99) return 99;
           if (prev >= 85) return prev + 0.3;
-          return prev + Math.random() * 12 + 3;
+          return prev + 10;
         });
       }, 300);
     } else {

@@ -56,7 +56,7 @@ interface FeaturedProduct {
 const BENEFITS = [
   {
     title: 'Validação inteligente',
-    description: 'Compatibilidade, ocupação e peso são verificados durante a montagem.',
+    description: 'Compatibilidade e ocupação são verificados. Peso é validado quando o cadastro da caixa incluir carga máxima.',
     Icon: PackageCheck,
   },
   {

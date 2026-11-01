@@ -61,7 +61,7 @@ function useLoadingProgress(isLoading: boolean): number {
             if (intervalRef.current) clearInterval(intervalRef.current);
             return prev;
           }
-          return prev + Math.random() * 12 + 3;
+          return prev + 10;
         });
       }, 300);
     } else {
