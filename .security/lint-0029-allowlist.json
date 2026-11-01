@@ -372,6 +372,10 @@
       "reason": "E18 (2026-09-17): retorna só um boolean de existência (organização tem algum membro?), sem auth.uid() necessário e sem PII exposta."
     },
     {
+      "fn": "public.perf002_drop_unused_snapshot_indexes()",
+      "reason": "PERF-002 (2026-11-01): SECURITY DEFINER necessário para executar DROP INDEX via pg_cron background worker (fora de transação). Função de uso único — indexes já dropados; será removida pela migration 20261101202000_drop_revoke_agent_created_functions.sql pendente de apply."
+    },
+    {
       "fn": "public.record_dev_route_telemetry(_event_type text, _blocked_path text, _user_role text, _duration_ms integer)",
       "reason": "E099 (2026-10-21): telemetria de rota de desenvolvimento — SECURITY DEFINER para gravar métricas em tabela de telemetria sem RLS; chamado por middleware de rota, não por usuário final direto."
     },
