@@ -1622,7 +1622,10 @@ Reconciliação requer `supabase migration repair` com CLI (não disponível nes
 | `20261101192824` | `20261101192824` | sb0009_drop_backup_table_via_cron | ✅ aplicado (sem drift) |
 | `20261101192954` | `20261101192954` | sb0009_unschedule_drop_job | ✅ aplicado (sem drift) |
 
-**Reconciliação pendente (CLI):** para alinhar ledger_version = file_version nas 10 primeiras linhas:
+**Reconciliação concluída via UPDATE direto em `supabase_migrations.schema_migrations`** (DML, não DDL — permitido por E056).
+Verificação: `SELECT version FROM supabase_migrations.schema_migrations WHERE name LIKE '20261101%' ORDER BY version` → 10 rows com versões alinhadas.
+
+**Roteiro CLI alternativo (documentação):** para reconciliar via CLI quando disponível:
 ```bash
 for pair in "20261101190523 20261101140001" "20261101190544 20261101140002" "20261101190548 20261101140003" \
             "20261101191301 20261101140004" "20261101191756 20261101150001" "20261101191801 20261101150002" \
@@ -1634,6 +1637,23 @@ for pair in "20261101190523 20261101140001" "20261101190544 20261101140002" "202
   supabase migration repair --status applied $file --project-ref doufsxqlfjyuvxuezpln
 done
 ```
+
+### Migrations adicionais 2026-11-01 (PERF-002/003 — VACUUM e índices)
+
+Após VACUUM ANALYZE executado pelos jobs temporários `vacuum-snapshots-now` e
+`vacuum-daily-summary-now` (status=succeeded às 19:36-37 UTC), novas migrations:
+
+| ledger_version | file_version | file_name | status |
+|---|---|---|---|
+| `20261101194100` | `20261101194100` | perf003_unschedule_temp_vacuum_jobs | ✅ aplicado (sem drift — drift corrigido via UPDATE DML) |
+| — | `20261101194200` | perf002_drop_unused_indexes_stock_snapshots | ⚠️ APROVAÇÃO PENDENTE — 7 DROP INDEX bloqueados por auto-cancel do MCP; aplicar via `db-apply-migration.yml workflow_dispatch version=20261101194200` |
+
+**PERF-002 evidência pós-VACUUM:** `pg_stat_user_indexes` após VACUUM ANALYZE 2026-11-01 19:37 UTC:
+7 índices em `stock_snapshots` com `idx_scan=0` confirmados como genuinamente não usados:
+`idx_ss_supplier_id`, `idx_stock_snapshots_captured_at_br_date`, `idx_stock_snapshots_supplier_branch_id`,
+`idx_snapshots_vss_captured`, `idx_snapshots_product_captured`, `idx_snapshots_captured_at`, `idx_ss_variant_id`.
+
+**PERF-006 resolvido:** `idx_daily_product_date` com `idx_scan=14.058` após stats frescas — planner voltou a usar índice.
 
 ### Migrations descartadas (nunca aplicadas — removidas do repo)
 

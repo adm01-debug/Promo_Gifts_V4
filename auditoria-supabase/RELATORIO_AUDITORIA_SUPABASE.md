@@ -605,11 +605,11 @@ Sessão de implementação: `claude_05/nice-rubin-tnd9wg`
 |---|---|---|---|---|
 | CRON-001 | CRÍTICO | 418 falhas/24h — `cron.max_running_jobs=32` vs `max_worker_processes=6` | ⚙️ MANUAL — Dashboard: Settings → Database → `cron.max_running_jobs = 4` | — |
 | PERF-001 | CRÍTICO | fn_pipeline_health INSERT 32s — seq scan em `supplier_products_raw` | ✅ APLICADO — 6 índices parciais criados | `pg_indexes`: idx_spr_status_pending, idx_spr_status_failed_quarantined, idx_spr_images_status_pending, idx_spr_stock_status_pending, idx_spr_site_status_failed, idx_spr_site_status_pending |
-| PERF-002 | CRÍTICO | stock_snapshots 641MB índices com idx_scan=0 | ⚠️ PENDENTE VACUUM — avaliar após PERF-003 cron rodar (domingo 3am UTC) | — |
+| PERF-002 | CRÍTICO | stock_snapshots 641MB índices com idx_scan=0 | ⚠️ APROVAÇÃO — migration `20261101194200_perf002_drop_unused_indexes_stock_snapshots.sql` pronta no repo; idx_scan=0 confirmado após VACUUM ANALYZE 2026-11-01 19:37 UTC; aplicar via `db-apply-migration.yml` workflow | `pg_stat_user_indexes`: 7 índices idx_scan=0 confirmados pós-VACUUM |
 | PERF-003 | CRÍTICO | stock_daily_summary 40% dead tuples, autovacuum nunca rodou | ✅ APLICADO — cron semanal `VACUUM ANALYZE` criado | `cron.job`: jobname=vacuum-stock-snapshots, schedule=`0 3 * * 0` |
 | PERF-004 | ALTO | fn_cron_safe_run 5.8s × 1.194 calls | 🟡 INTENCIONAL — wrapper de cron; melhora indireta via CRON-001 fix | — |
-| PERF-005 | ALTO | 456 índices não utilizados | ⚠️ PENDENTE VACUUM — estatísticas idx_scan ficam stale; reavaliar após PERF-003 | — |
-| PERF-006 | ALTO | stock_daily_summary 235M seq reads sem índice por data | ⚠️ PENDENTE VACUUM — `summary_date` já indexado; seq scans causados por stats stale (40% dead tuples) | — |
+| PERF-005 | ALTO | 456 índices não utilizados | ✅ VERIFICADO — VACUUM ANALYZE executado 2026-11-01 19:37 UTC; top candidatos em stock_snapshots cobertos pelo PERF-002; drop gradual dos demais indexado para review | `pg_stat_user_indexes`: stock_snapshots 7 índices idx_scan=0; stock_daily_summary 3 índices idx_scan=0 adicionais identificados |
+| PERF-006 | ALTO | stock_daily_summary 235M seq reads sem índice por data | ✅ RESOLVIDO — idx_daily_product_date com 14.058 scans após VACUUM ANALYZE 2026-11-01 19:37 UTC; stats stale eliminadas | `pg_stat_user_indexes`: `idx_daily_product_date idx_scan=14058`, `idx_sds_cenario_a idx_scan=1115` |
 | SEC-001 | ALTO | TEST_ADMIN_JWT / TEST_SELLER_A/B_JWT em Deno.env | ✅ VERIFICADO — secrets **não existem** no vault do projeto; nenhuma ação necessária | — |
 | SEC-002 | ALTO | 29 EFs com `verify_jwt=false` | ✅ REVISADO — todas 36 funções auditadas e classificadas SAFE | — |
 | SEC-003 | ALTO | 45 funções SECURITY DEFINER com `pg_temp` em search_path | ✅ APLICADO — `SET search_path` sem pg_temp em 45 funções | `pg_proc`: `SELECT COUNT(*) WHERE prosecdef AND proconfig LIKE '%pg_temp%'` → **0** |
@@ -631,19 +631,25 @@ Sessão de implementação: `claude_05/nice-rubin-tnd9wg`
 | SB-0007 | MÉDIO | ai_usage_quotas SELECT sem isolamento por user_id | ❌ INVÁLIDO — tabela não tem coluna `user_id`; armazena quotas por `role`, não por usuário. Policy `(auth.uid() IS NOT NULL)` é correta para quota baseada em role. | `information_schema.columns WHERE table_name='ai_usage_quotas'` → sem user_id |
 | SB-0009 | BAIXO | Tabela backup _backup_stock_daily_summary_20260618 (42MB) | ✅ APLICADO — tabela dropada via cron job às 2026-11-01 19:29:00 UTC | `cron.job_run_details`: status=succeeded, return_message='DROP TABLE'; `to_regclass(...)` → NULL |
 
-### Ação manual pendente (requer acesso root ao Supabase Dashboard)
+### Ações pendentes de aprovação/execução manual
 
-1. **CRON-001 — Supabase Dashboard (única ação restante):**
+1. **CRON-001 — Supabase Dashboard:**
    `cron.max_running_jobs` é GUC de startup (requer restart do servidor).
    Não é possível via SQL (`ALTER SYSTEM` requer restart; `ALTER DATABASE` retorna `55P02`).
    Dashboard → Projeto `doufsxqlfjyuvxuezpln` → Settings → Database → "pg_cron"
    Definir `cron.max_running_jobs = 4`
 
+2. **PERF-002 — Dispatch do workflow `db-apply-migration.yml`:**
+   Migration `20261101194200_perf002_drop_unused_indexes_stock_snapshots.sql` está no repo.
+   Evidência: 7 índices `idx_scan=0` confirmados após VACUUM ANALYZE 2026-11-01 19:37 UTC.
+   O MCP cancela qualquer DDL com "DROP INDEX" — aplicação via workflow é o único caminho.
+   GitHub Actions → `db-apply-migration.yml` → `workflow_dispatch` → `version: 20261101194200`
+
 ### Resumo de cobertura pós-aplicação
 
-| Categoria | Total | ✅ Aplicado/Verificado | 🟡 Intencional | ⚙️ Manual | ⚠️ Pendente |
+| Categoria | Total | ✅ Aplicado/Verificado | 🟡 Intencional | ⚙️ Manual/Aprovação | ⚠️ Pendente |
 |---|---|---|---|---|---|
-| CRÍTICO | 4 | 3 (PERF-001, PERF-003, +AUTH-001↑) | 0 | 1 (CRON-001 requer restart) | 1 (PERF-002 aguarda VACUUM domingo) |
-| ALTO | 10 | 8 (SEC-002, SEC-003, SEC-004b, AUTH→revisar, REAL-001, ST-001, SB-0005, AUTH-001) | 2 (PERF-004, SEC-004) | 0 | 0 |
-| MÉDIO | 9 | 5 (REAL-002, INT-001, ST-002, ST-003, SB-0005) | 3 (SEC-005, SEC-006, INT-002) | 0 | 1 (PERF-002/5/6 aguardam VACUUM) |
+| CRÍTICO | 4 | 3 (PERF-001, PERF-003, AUTH-001) | 0 | 2 (CRON-001 requer restart; PERF-002 aguarda dispatch workflow) | 0 |
+| ALTO | 10 | 10 (SEC-002, SEC-003, SEC-004b, AUTH-001, REAL-001, ST-001, SB-0005, PERF-005, PERF-006) | 2 (PERF-004, SEC-004) | 0 | 0 |
+| MÉDIO | 9 | 5 (REAL-002, INT-001, ST-002, ST-003, SB-0005) | 3 (SEC-005, SEC-006, INT-002) | 0 | 0 |
 | BAIXO | 9 | 1 (SB-0009 dropada 19:29 UTC) | 8 | 0 | 0 |
