@@ -1,10 +1,10 @@
 # RELATORIO_CI.md — Auditoria de Workflows CI/CD
 
-**Gerado:** 2026-10-29 · **Atualizado:** 2026-11-01T22:38 UTC
+**Gerado:** 2026-10-29 · **Atualizado:** 2026-11-01T23:20 UTC
 **HEAD da main auditada:** `4c6541b6` (docs(auditoria): validação exaustiva final, 2026-11-01T22:06)
 **HEAD anterior (baseline):** `5ae127ea` (PR #2871 — fix(db): cria tabela stock_notes, 2026-10-31)
-**Branch de fix:** `fix/e2e-url-state-defaults-20261030` — HEAD atual `e94b22e5` (docs: corrige metadata perf002)
-**PR #2941:** fix(security): allowlist lint-0029 + Finding #1 Qodo HIGH — CI aguardando fila (SHA `e94b22e5`)
+**Branch de fix:** `fix/e2e-url-state-defaults-20261030` — HEAD atual `29db0c1a` (fix(stock-dashboard): preserva URLs compartilháveis)
+**PR #2941:** fix(security): allowlist lint-0029 + Finding #1 Qodo HIGH + fix StockDashboard URLs — runs obsoletos cancelados; re-triggando Gate Final (SHA `29db0c1a`)
 **Sessão:** https://claude.ai/code/session_01T5KXrgFRFRHrCX5jRcTCUz
 
 ---
@@ -166,20 +166,32 @@
 | Vitest scripts/ testes | N/A | 566 passed (44 suites) | ✅ sem regressão |
 | Vitest check-dependency-audit | 21 testes | 23 testes (+2 novos) | ✅ melhoria |
 
-### 18.3 Estado do PR #2941 — HEAD `e94b22e5` (2026-11-01T22:38 UTC)
+### 18.3 Estado do PR #2941 — HEAD `e94b22e5` → `29db0c1a` (2026-11-01T22:38–23:20 UTC)
 
 | Check | Status | Conclusão |
 |---|---|---|
-| Gate Final - Deploy Ready | ⏳ queued | aguardando runner |
-| CI Security & Drift Checks | ⏳ queued | aguardando runner |
-| Supabase Linter Gate | ⏳ queued | aguardando runner |
-| Supabase Preview | ✅ completed | failure (pré-existente: `categories.level` — view `analytics.categories_tree_visual`, não causado pelo diff) |
-| Vercel Preview Comments | ✅ completed | success |
-| Vercel Agent Review | ✅ completed | neutral |
-| alert | ✅ completed | skipped |
-| Demais (26 checks) | ⏳ queued | aguardando runner |
+| Gate Final - Deploy Ready | ⏳ re-triggando | runs obsoletos `41357795074`+`41355011573` cancelados em 23:20Z; novo run esperado para `29db0c1a` |
+| CI Security & Drift Checks | ⏳ aguardando | congestionamento de runners |
+| Supabase Linter Gate | ⏳ aguardando | congestionamento de runners |
+| Supabase Preview | ❌ failure | pré-existente: `column categories.level does not exist` em `analytics.categories_tree_visual` — não é required check |
+| Vercel | ❌ failure | deploy preview falhou em `29db0c1a`; não é required check (`Gate Final - Deploy Ready` é o único required) |
+| Vercel Preview Comments | ✅ completed | success (0 unresolved) |
+| Vercel Agent Review | ✅ completed | neutral (billing não habilitado) |
+| Codex Review | ✅ completed | `has_any_findings: false` — sem findings em `29db0c1a` |
+| Deployment Failure Alert | ✅ completed | skipped |
 
-> CI em fila — congestionamento de runners. Prova de conclusão=success será adicionada ao §18.4 quando os checks completarem.
+> **Commits desta sessão no PR (além de `e94b22e5`):**
+> - `3d0bf8c2` — docs(ci): §17.3 SHA mismatch corrigido + baseline vitest 1057 testes
+> - `29db0c1a` — fix(stock-dashboard): preserva URLs compartilháveis quando default vem do localStorage
+
+### 18.4 Prova de conclusão — Gate Final `29db0c1a`
+
+> Seção a ser preenchida quando `deploy-gates.yml` completar para SHA `29db0c1a`.
+> Runs obsoletos cancelados em 23:20Z UTC; deploy-gates re-triggado via commit `docs(ci): §18.4`.
+
+| Workflow | Run ID | SHA | Conclusão |
+|---|---|---|---|
+| Gate Final - Deploy Ready | ⏳ pendente | `29db0c1a` | aguardando |
 
 ---
 
