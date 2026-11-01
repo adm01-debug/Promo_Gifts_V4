@@ -389,6 +389,7 @@ export function KitBuilderHeader({
               <KitAIPromptDialog
                 catalogItems={aiCatalogItems}
                 catalogBoxes={aiCatalogBoxes}
+                hasExistingItems={hasContent}
                 onApply={onAIApply}
               />
             </div>

@@ -364,7 +364,11 @@ export function useKitBuilderPageState() {
 
   // Effects (Confetti, Title, etc.)
   useEffect(() => {
-    if (kitState.isValid && kitState.items.length > 0) {
+    if (
+      kitState.isValid &&
+      kitState.items.length > 0 &&
+      !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    ) {
       confetti({
         particleCount: 60,
         spread: 70,

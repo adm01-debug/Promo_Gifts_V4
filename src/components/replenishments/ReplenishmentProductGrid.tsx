@@ -61,7 +61,7 @@ function useLoadingProgress(isLoading: boolean): number {
             if (intervalRef.current) clearInterval(intervalRef.current);
             return prev;
           }
-          return prev + Math.random() * 12 + 3;
+          return prev + 8;
         });
       }, 300);
     } else {
@@ -261,7 +261,7 @@ export function ReplenishmentProductGrid() {
           <div className="mb-2 flex items-center gap-3">
             <div className="h-5 w-5 animate-spin rounded-full border-2 border-primary border-t-transparent" />
             <span className="text-sm text-muted-foreground">
-              Carregando {Math.round(loadingProgress)}% dos produtos…
+              Carregando produtos…
             </span>
           </div>
           <div

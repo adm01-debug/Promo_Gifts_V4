@@ -137,7 +137,7 @@ export function NoveltyProductGrid() {
         setLoadingProgress((prev) => {
           if (prev >= 99) return 99;
           if (prev >= 85) return prev + 0.3;
-          return prev + Math.random() * 12 + 3;
+          return prev + 8;
         });
       }, 300);
     } else {
@@ -397,7 +397,7 @@ export function NoveltyProductGrid() {
           <div className="flex items-center gap-3">
             <div className="h-5 w-5 animate-spin rounded-full border-2 border-primary border-t-transparent" />
             <span className="text-sm text-muted-foreground">
-              Carregando {Math.round(loadingProgress)}% dos produtos...
+              Carregando produtos...
             </span>
           </div>
           <div className="mb-6 h-1.5 w-64 overflow-hidden rounded-full bg-muted/50">
@@ -661,8 +661,8 @@ export function NoveltyProductGrid() {
                       transition={{ duration: 0.4, ease: 'easeOut' }}
                     />
                   </span>
-                  <span className="text-[11px] tabular-nums text-muted-foreground/60">
-                    {Math.round(loadingProgress)}%
+                  <span className="text-[11px] text-muted-foreground/60">
+                    carregando
                   </span>
                 </motion.span>
               )}

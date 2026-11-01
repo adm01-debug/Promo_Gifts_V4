@@ -66,6 +66,8 @@ const suggestionSchema = z
 interface KitAIPromptDialogProps {
   catalogItems?: KitItem[];
   catalogBoxes?: KitBox[];
+  /** FT-134: true when the kit already has items — triggers replace warning */
+  hasExistingItems?: boolean;
   onApply: (
     suggestion: Suggestion,
     composition: KitAIComposition,
@@ -109,8 +111,14 @@ export function mapKitAiErrorMessage(
   if (status === 402) {
     return 'Créditos de IA esgotados. Fale com o financeiro para renovar.';
   }
-  if (status === 429 || status === 503 || status === 504 || errorKind === 'timeout') {
-    return 'Muitas tentativas em pouco tempo. Tente novamente em 1 minuto.';
+  if (status === 429) {
+    return 'Muitas tentativas em pouco tempo. Aguarde 1 minuto e tente de novo.';
+  }
+  if (status === 503) {
+    return 'Serviço de IA temporariamente indisponível. Tente novamente em instantes.';
+  }
+  if (status === 504 || errorKind === 'timeout') {
+    return 'Tempo de resposta excedido. Verifique a conexão e tente novamente.';
   }
   return 'Erro ao gerar sugestão. Tente novamente.';
 }
@@ -151,6 +159,7 @@ function buildStructuredPrompt({
 export function KitAIPromptDialog({
   catalogItems = [],
   catalogBoxes = [],
+  hasExistingItems = false,
   onApply,
 }: KitAIPromptDialogProps) {
   const [open, setOpen] = useState(false);
@@ -505,8 +514,13 @@ export function KitAIPromptDialog({
                       <p className="mb-3 text-xs text-muted-foreground">
                         Estoque e preço comercial serão novamente validados antes do orçamento.
                       </p>
+                      {hasExistingItems && (
+                        <p className="mb-2 text-xs font-medium text-warning">
+                          ⚠ Isso substituirá a composição atual do kit.
+                        </p>
+                      )}
                       <Button onClick={handleApply} className="w-full">
-                        Usar esta composição
+                        {hasExistingItems ? 'Substituir e usar esta composição' : 'Usar esta composição'}
                       </Button>
                     </div>
                   </>
