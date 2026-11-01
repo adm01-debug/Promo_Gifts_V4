@@ -1,9 +1,9 @@
 # RELATORIO_CI.md — Auditoria de Workflows CI/CD
 
-**Gerado:** 2026-10-29 · **Atualizado:** 2026-11-01T19:20 UTC
+**Gerado:** 2026-10-29 · **Atualizado:** 2026-11-01T19:38 UTC
 **HEAD da main auditada:** `5ae127ea` (PR #2871 — fix(db): cria tabela stock_notes, 2026-10-31)
 **HEAD anterior (baseline):** `7e56ae49` (PR #2818, docs-only, 2026-10-30)
-**PR ativo:** #2846 (`fix/e2e-url-state-defaults-20261030`) — HEAD atual `211288306155e6bc`
+**PR ativo:** #2846 (`fix/e2e-url-state-defaults-20261030`) — HEAD atual `38ce54b0`
 **Sessão:** https://claude.ai/code/session_01T5KXrgFRFRHrCX5jRcTCUz
 
 ---
@@ -52,9 +52,16 @@
 | Gate Final (main) | ❌ failure (stock_notes) | ⏳ queued [41340823816](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41340823816) | Fix em PR |
 | Workflows antes verdes | ✅ mantidos | ✅ mantidos | **0 regressão** |
 
-### 15.3 Pendência restante
+### 15.3 Pendência restante — atualizado 2026-11-01T19:38 UTC
 
-O único item não-documental pendente é a **conclusão do Gate Final** para o PR #2846 (run [41340823816](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41340823816), queued desde 19:15Z por congestionamento de runners GitHub). O fix (stock_notes `-- soft-delete-exempt`) está no commit `3a615215` e validado localmente (25.916 testes ✅). A condição de parada estará 100% satisfeita quando o Gate Final completar com `conclusion=success`.
+**Fix adicional aplicado (2026-11-01T19:38 UTC):** commit `38ce54b0` corrige Gate 1.13 (policies-baseline drift).
+
+O CI para SHA `d976512c` (commit anterior) falhou no **Gate 1 — static-gates** por drift de 8 políticas RLS:
+- `ai_usage_quotas` (4 políticas) e `art_file_attachments` (4 políticas)
+- Causa: PostgreSQL normalizou `auth.uid()` → `( SELECT auth.uid() AS uid)` internamente
+- Fix: `.security/policies-baseline.json` atualizado com a nova representação (commitado `38ce54b0`, pushado)
+
+Pendência ativa: aguardar Gate Final para `38ce54b0` completar com `conclusion=success`. CI em fila (congestionamento de runners). Verificação programada às 19:50 UTC.
 
 ---
 
