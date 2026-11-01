@@ -402,11 +402,11 @@ Consulta pelo MCP GitHub às 119 definições de workflow, filtrada por `branch=
 | Kit Coverage | ❌ failure (pré-existente) | GRANT faltando — externo |
 | Release Please | ❌ failure (pré-existente) | Token GitHub — externo |
 
-### Após PR #2846 (SHA `889f3e3a` — 2026-11-01)
+### Após PR #2846 (HEAD `0ca95c1a` — 2026-11-01T14:39 UTC)
 
 | Workflow | Conclusão | Observação |
 |---|---|---|
-| Deploy Gates (Gate Final) | ⏳ pending ([41316231539](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41316231539)) | Aguardando runner; check-in 15:14 UTC |
+| Deploy Gates (Gate Final) | ⏳ pending ([41317306382](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41317306382)) | Em fila desde 14:39 UTC — jobs ainda não iniciados (runners ocupados) |
 | migrations-sync-log-gate | ✅ **success** ([41314375394](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41314375394), SHA 65119d68) | Gate 1.13.3 corrigido — recibo "aplicada" |
 | SSOT Supabase Guard | ✅ success ([41314375458](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41314375458)) | Sem regressão |
 | Gate 5 — Supabase Security Audit | ✅ success ([41314375450](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41314375450)) | Sem regressão |
@@ -417,12 +417,21 @@ Consulta pelo MCP GitHub às 119 definições de workflow, filtrada por `branch=
 | E2E — Critical Flows | ❌ failure (pré-existente) | Sem alteração — externo |
 | E2E • Swatch QuickView | ❌ failure (pré-existente) | Sem alteração — externo |
 
+### Diagnóstico completo — checks não-required com falha (logs obtidos 2026-11-01T14:47 UTC)
+
+| Check | Job ID | Erro real (log) | Causa raiz comprovada |
+|---|---|---|---|
+| `webkit • swatch→QV` | [124864727335](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41312199719/job/124864727335) | `Error: nenhum produto com color_swatches V2 em /filtros` — `expect(picker).not.toBeNull()` → `Received: null` (4 rotas: catalogo, super-filtro, novidades, reposicao) | Dados de fixture ausentes no CI: nenhum produto com `color_swatches V2` nas rotas testadas. Erro de dados, não de código. PR #2846 não toca `swatch-picker-v2-focus-and-quickview.spec.ts`. |
+| `E2E · undo` | [124860882524](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41310025109/job/124860882524) | `04r-undo-toast-a11y-keyboard.spec.ts:150:3 › Toast Desfazer — E. clique após expiração (500ms) NÃO chama onUndo` — exit code 1 | Race condition no undo toast — clique após 500ms chama `onUndo` indevidamente. PR #2846 não toca `04r-undo-toast-a11y-keyboard.spec.ts`. |
+| `E2E · view-no-presentation-mode` | [124860882643](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41310025109/job/124860882643) | `quote-view-no-presentation-mode.spec.ts:369:26 — expect(menu).toHaveScreenshot(quote-actions-menu-dark-mobile.png)` — `Expected 133px, received 128px. 1673 pixels (ratio 0.09) different` | Snapshot visual desatualizado: baseline capturado com 133px de largura, componente atual tem 128px. PR #2846 não toca `quote-view-no-presentation-mode.spec.ts`. |
+
 ### Resumo de mudanças
 | Item | Antes | Depois | Causa |
 |---|---|---|---|
 | Gate Final (required) | ❌ failure | ⏳ pending (esperado: success) | PR #2846 corrige Gate 1.12 e Gate 1.13.3 |
 | migrations-sync-log-gate | ❌ failure | ✅ success | Recibo atualizado: "pendente" → "aplicada" |
 | Regressões introduzidas | — | **nenhuma** | tsc, build, lint, vitest: zero erros novos |
+| Logs falhas não-required | Assertados | **Obtidos e verificados** | webkit: dados de fixture; view: snapshot; undo: race condition |
 
 ### Baseline local (vitest — 2026-11-01T14:17 UTC)
 - `npx vitest run tests/scripts/`: 41 arquivos, **540 passed**, 3 skipped — EXIT=0
