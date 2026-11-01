@@ -34,6 +34,7 @@
     "ci_2949_docs_bypass": "E14 paths-ignore docs/** — docs-only PR, sem CI necessário — MERGEADA",
     "ci_2941_head_3d0bf8c2": "total_count: 4 — Supabase Preview=failure(pré-existente), alert=skipped, Vercel=success, Vercel Agent=neutral; sem quality-gate",
     "ci_main_c80b098a_pos_merge_2927": "10 checks: Supabase Preview=failure(pré-existente: Remote migration versions), alert=skipped, lovable-audit=skipped, seed/regen=skipped; Gate0/noUnusedLocals/DriftPolicies/Cruza/useListUrlState/DetectarMudancas=queued — CI rodando em 2026-11-01T22:48Z",
+    "vercel_prod_pos_merge_2927": "deploy c80b098a superado por commits subsequentes; último READY=0ad30ce26c (fix(rls): SB-0007); conteúdo #2927 em produção; deploy atual=5b5cef36c em ERROR",
     "ci_2947_head_c8c61c8b": "total_count: 0 — sem quality-gate rodando",
     "ci_2952_head_25c67241": "total_count: 0 — sem quality-gate rodando",
     "ci_2960_head_53cf1298": "quality-gate: queued (in_progress) + mergeable_state: blocked (unresolved review)",

@@ -26,41 +26,28 @@
 
 ## Barra de progresso (fake progress bar)
 
-- Componentes de progresso NÃO devem usar `Math.random()` para calcular incrementos — isso torna o progresso não-determinístico e dificulta testes.
-- Substituir por progresso baseado em estado real (callback, polling de status) ou seeded/determinístico.
+- Componentes de progresso NÃO devem usar `Math.random()` para calcular incrementos.
+- Substituir por progresso baseado em estado real ou seeded/determinístico.
 - Fonte: PR #2960 `src/components/novidades/` e `src/components/reposicao/`
 
 ## Rotas públicas (deep-links)
 
-- Rotas `/colecao`, `/comparar`, `/lista-publica` estão sem implementação e devem ser removidas do router para evitar 404s silenciosos em produção.
-- Fonte: PR #2985, PR #2950 `src/App.tsx`, `e2e/`
+- Rotas `/colecao`, `/comparar`, `/lista-publica` estão sem implementação e devem ser removidas do router.
+- Fonte: PR #2985, PR #2950 `src/App.tsx`
 
 ## Rollback files (supabase/rollbacks/)
 
-- `supabase/rollbacks/` é diretório de **referência apenas** — arquivos `.sql` ali NÃO são executados automaticamente.
-- Toda migration de produção pode ter um rollback correspondente como documentação de reversão manual.
+- `supabase/rollbacks/` é diretório de **referência apenas** — arquivos `.sql` NÃO são executados automaticamente.
 - Rollback NÃO equivale a DDL aplicada — não requer regra E056.
 - Fonte: PR #2947, PR #2948, PR #2951 diffs; REGRA #8 CLAUDE.md
 
 ## Gate 1.13 — Policies de partições mensais
 
-- Tabelas particionadas por mês (`_p2024_01`, `_p2024_02`, …) geram policies duplicadas do pai nas partições.
-- O gate deve tolerar policies de partição que são semanticamente idênticas à policy da tabela mãe.
+- Tabelas particionadas por mês geram policies duplicadas do pai nas partições.
+- O gate deve tolerar policies de partição semanticamente idênticas à tabela mãe.
 - Normalizar nome da partição para `<__PARTITION__>` antes de comparar.
-- Bloqueador E043 (policies anon/open) ainda se aplica nas partições — tolerância é restrita a policies idênticas.
+- Bloqueador E043 (policies anon/open) ainda se aplica nas partições.
 - Fonte: PR #2952 `scripts/check-policies-baseline.mjs`
-
-## Modos dev/admin (kit-maker, publicados)
-
-- Status `shared` no kit-maker corresponde a "Publicado" na UI.
-- Filtros de listagem devem mapear status internos para labels de UI corretamente.
-- Fonte: PR #2958
-
-## Funções trigger/internas (REVOKE anon)
-
-- 106 funções internas do PostgreSQL (triggers, utility functions) com EXECUTE PUBLIC devem ter esse GRANT revogado.
-- Funções usadas por triggers não precisam de EXECUTE pelo role `anon` ou `authenticated`.
-- Fonte: PR #2969
 
 ## Rate guards (kill_switch_hits)
 
@@ -71,17 +58,17 @@
 
 ## Release management
 
-- Release automatizado via release-please bot (PR `release-please--branches--main--...`).
-- NÃO mergear PRs de release manualmente — o bot gerencia o ciclo.
+- Release automatizado via release-please bot.
+- NÃO mergear PRs de release manualmente.
 - Fonte: PR #2944
 
 ## Produto (Product type) — campos obrigatórios
 
-- `price: number` (preço original), `sale_price?: number` (preço de venda), `shortDescription: string`, `category_id?: string`, `category_name?: string`.
+- `price: number`, `sale_price?: number`, `shortDescription: string`, `category_id?: string`, `category_name?: string`.
 - Fonte: REGRA #2 CLAUDE.md, `src/types/product-catalog.ts`
 
 ## SSOT Supabase
 
 - Projeto canônico de produção: `doufsxqlfjyuvxuezpln`.
-- Qualquer referência ao projeto legado `pqpdolkaeqlyzpdpbizo` [LEGACY_INFORMATIVO] em código executável deve ser substituída pelo canônico.
+- Qualquer referência ao projeto legado [LEGACY_INFORMATIVO] em código executável deve ser substituída pelo canônico.
 - Fonte: REGRA #1 CLAUDE.md, `src/integrations/supabase/client.ts`
