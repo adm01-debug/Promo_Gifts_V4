@@ -409,7 +409,7 @@
     },
     {
       "fn": "public.perf002_drop_unused_snapshot_indexes()",
-      "reason": "PERF-005 (PR #2930, 2026-11-01): helper de migração que dropa 64 índices unused via SECURITY DEFINER (requer permissão DDL). EXECUTE concedido a authenticated — REVOKE pendente via migration. Risco: qualquer usuário autenticado pode chamar e dropar os índices; mitigado pelo fato de os índices já terem sido dropados na migração original. Ver docs/plans/PERF005_DROP_INDEXES_2026-11-01.md."
+      "reason": "PERF-002 (migration 20261101194657, 2026-11-01): helper de migração que dropa 7 índices unused de stock_snapshots via SECURITY DEFINER (requer permissão DDL). EXECUTE concedido a authenticated — REVOKE pendente via migration espelho 20261101202000 (aguarda aprovação PO para aplicar via db-apply-migration.yml, REGRA E056). Risco residual: qualquer usuário autenticado pode invocar; mitigado pelo fato de os índices já terem sido dropados pela migração original (idempotente via DROP IF EXISTS)."
     }
   ]
 }
