@@ -1,6 +1,10 @@
 import { useMemo } from 'react';
 import { useCategoryIcons, type CategoryIcon } from '@/hooks/products/useCategoryIcons';
-import type { QuickSuggestion } from './useGlobalSearch';
+
+export interface QuickSuggestion {
+  label: string;
+  icon: string;
+}
 
 const MAX_QUICK_SUGGESTIONS = 6;
 
@@ -14,7 +18,7 @@ export function buildQuickSuggestions(rows: CategoryIcon[] | undefined): QuickSu
   return [...names]
     .sort((a, b) => a.localeCompare(b, 'pt-BR'))
     .slice(0, MAX_QUICK_SUGGESTIONS)
-    .map((label) => ({ label, icon: '🏷️' }));
+    .map((label) => ({ label, icon: '🏯️' }));
 }
 
 export function useQuickSuggestions(): QuickSuggestion[] {
