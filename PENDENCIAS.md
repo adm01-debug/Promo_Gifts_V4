@@ -52,7 +52,31 @@ Consulta somente leitura em `pg_catalog` no projeto canônico `doufsxqlfjyuvxuez
 
 | Check | Estado | Motivo |
 |---|---|---|
-| **Gate Final - Deploy Ready** | ⏳ aguardando run para `27a0a140` | Merge commit pushado — novo deploy-gates run em fila. SHA `1d5b52e8` era docs-only (RELATORIO_CI.md), E14 bypass ativo. Commit `27a0a140` inclui `scripts/check-dependency-audit.mjs` (código) → E14 bypass NÃO ativo → deploy-gates executará todos os gates. |
+| **Gate Final - Deploy Ready** | ⏳ queued — sem runner | Run [41363088530](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41363088530) para SHA `37e77749` criado às 2026-11-01T23:38:25Z. Status: `queued` — nenhum runner disponível (27 check-runs da branch igualmente em fila, congestionamento GitHub Actions). Run NÃO está em failure — está aguardando alocação. Não pode ser re-executado enquanto ativo. E14 bypass NÃO ativo (merge `27a0a140` inclui `scripts/check-dependency-audit.mjs`). **Validação local passando:** npm build, tsc, lint:baseline, vitest — todos exit=0. |
+
+## P37 — Failures em outras branches Claude (2026-11-02T00:10Z)
+
+> Sessão: https://claude.ai/code/session_01T5KXrgFRFRHrCX5jRcTCUz  
+> Fonte: `actions?query=is:failure` → 10 runs em failure no repositório.  
+> **NENHUM afeta a branch `fix/e2e-url-state-defaults-20261030` ou PR #2941.**  
+> Todos são de outras sessões Claude em branches paralelas. Não são required checks de nenhum PR ativo desta sessão.
+
+| Run ID | Workflow | Branch/SHA | Causa raiz | Nossa responsabilidade? |
+|---|---|---|---|---|
+| [41355628936](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41355628936) | CI - Replenishment Module Quality Gate | `d9ec2dd83f` (`claude/fix-ft-multi-261101-2330`) | Falha no gate de qualidade do módulo de reposição — outra sessão Claude | **Não** — outra sessão |
+| [41355422195](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41355422195) | TS Unused Locals Ratchet | `3033d17d29` (`claude/fix-ft004-ft033-pptx-mock-labels-261101-2212`) | Ratchet de TypeScript unused locals aumentou — outra sessão | **Não** |
+| [41355422404](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41355422404) | CI - Replenishment Module Quality Gate | `3033d17d29` (idem) | Idem acima | **Não** |
+| [41355422295](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41355422295) | E2E — Personalization Flow | `3033d17d29` (idem) | E2E failures em branch de outra sessão | **Não** |
+| [41355422392](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41355422392) | E2E • Swatch QuickView (Lista + Tabela) | `3033d17d29` (idem) | E2E failures em branch de outra sessão | **Não** |
+| [41355328218](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41355328218) | TS Unused Locals Ratchet | `3783a2f3dd` (`claude/fix-pptx-mock-badges-261101-2315`) | Ratchet TS — outra sessão | **Não** |
+| [41355103589](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41355103589) | TS Unused Locals Ratchet | `8d64b80ec1` (`claude/fix-kit-maker-publicados-261101-2202`) | Ratchet TS — outra sessão | **Não** |
+| [41354864052](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41354864052) | db-schema-drift-check | `cd56964fa0` (branch não identificada localmente) | Schema drift check — outra sessão | **Não** |
+| [41354863966](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41354863966) | migrations-sync-log-gate | `cd56964fa0` (idem) | Migration sync gate — outra sessão | **Não** |
+| [41354864018](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41354864018) | CI - Replenishment Module Quality Gate | `cd56964fa0` (idem) | Replenishment gate — outra sessão | **Não** |
+
+**Conclusão:** Todos os 10 runs em failure são de outras sessões Claude trabalhando em branches paralelas. A branch `fix/e2e-url-state-defaults-20261030` não tem runs em `failure` — apenas o Gate Final em `queued` (documentado em P36.2) e o `Supabase Preview` não-required (documentado em P36.1).
+
+---
 
 ### P36.3 — Bloqueios aguardando aprovação PO (sem alteração possível por agente)
 

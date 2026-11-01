@@ -1,10 +1,10 @@
 # RELATORIO_CI.md — Auditoria de Workflows CI/CD
 
-**Gerado:** 2026-10-29 · **Atualizado:** 2026-11-01T23:20 UTC
+**Gerado:** 2026-10-29 · **Atualizado:** 2026-11-02T00:10 UTC
 **HEAD da main auditada:** `4c6541b6` (docs(auditoria): validação exaustiva final, 2026-11-01T22:06)
 **HEAD anterior (baseline):** `5ae127ea` (PR #2871 — fix(db): cria tabela stock_notes, 2026-10-31)
-**Branch de fix:** `fix/e2e-url-state-defaults-20261030` — HEAD atual `29db0c1a` (fix(stock-dashboard): preserva URLs compartilháveis)
-**PR #2941:** fix(security): allowlist lint-0029 + Finding #1 Qodo HIGH + fix StockDashboard URLs — runs obsoletos cancelados; re-triggando Gate Final (SHA `29db0c1a`)
+**Branch de fix:** `fix/e2e-url-state-defaults-20261030` — HEAD atual `37e77749` (docs(ci): §18.3/18.4 + PENDENCIAS P36)
+**PR #2941:** fix(security): allowlist lint-0029 + Finding #1 Qodo HIGH + fix StockDashboard URLs — HEAD `37e77749`; Gate Final run [41363088530](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41363088530) queued
 **Sessão:** https://claude.ai/code/session_01T5KXrgFRFRHrCX5jRcTCUz
 
 ## Estado atual — HEAD `de5345dc` — 2026-11-01T21:59 UTC
@@ -236,34 +236,47 @@ Não houve alteração no Supabase, em dados operacionais, em schema, em migrati
 | Vitest scripts/ testes | N/A | 566 passed (44 suites) | ✅ sem regressão |
 | Vitest check-dependency-audit | 21 testes | 23 testes (+2 novos) | ✅ melhoria |
 
-### 18.3 Estado do PR #2941 — HEAD `27a0a140` (merge main↑ec06a457, 2026-11-02T00:00 UTC)
+### 18.3 Estado do PR #2941 — HEAD `37e77749` (docs(ci), 2026-11-02T00:10 UTC)
 
-> HEAD anterior: `1d5b52e8` (docs-only — E14 bypass ativo, sem Gate Final run criado).  
-> **Conflito com main resolvido** em commit `27a0a140` — base atualizada para `ec06a457`.  
-> Este commit inclui `scripts/check-dependency-audit.mjs` (código) — E14 bypass **NÃO** ativo → Gate Final executará todos os gates.
+> HEAD anterior: `27a0a140` (merge main↑ec06a457).  
+> HEAD atual: `37e77749` — docs(ci): §18.3/18.4 atualizado + PENDENCIAS P36.  
+> Deploy-gates run [41363088530](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41363088530) criado às 23:38:25Z para SHA `37e77749` — status: `queued` (sem runner disponível; 27 check-runs no estado queued).  
+> Commit inclui `scripts/check-dependency-audit.mjs` via merge `27a0a140` → E14 bypass **NÃO** ativo.
 
-| Check | Status | Conclusão |
-|---|---|---|
-| Gate Final - Deploy Ready | ⏳ aguardando run para `27a0a140` | Merge commit pushado — run em fila |
-| CI Security & Drift Checks | ⏳ aguardando | base atualizada; run em fila |
-| Supabase Linter Gate | ⏳ aguardando | fix em PR #2941 (`c6f7241b`) deve resolver |
-| Supabase Preview | ❌ failure (não required) | pré-existente: `column categories.level does not exist` em `analytics.categories_tree_visual` — documentado em PENDENCIAS.md P36.1 |
-| Vercel | ❌ failure (não required) | deploy preview `dpl_HoDuMwhLgwbRnP72ctrEWHzmEN4K` — documentado em PENDENCIAS.md P36.1 |
-| Vercel Preview Comments | ✅ completed | success (0 unresolved) |
-| Codex Review | ✅ completed | `has_any_findings: false` |
-| Deployment Failure Alert | ✅ completed | skipped |
+| Check | Run/ID | Status | Conclusão | Required? |
+|---|---|---|---|---|
+| Gate Final - Deploy Ready | run [41363088530](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41363088530) | queued | aguardando runner — todos os 27 checks da branch em fila | **Sim** |
+| CI Security & Drift Checks | (dentro do run acima) | queued | — | Sim (dentro do Gate Final) |
+| Supabase Preview | [125014582982](https://github.com/adm01-debug/Promo_Gifts_V4/runs/125014582982) | completed | ❌ failure — `column categories.level` pré-existente (documentado P36.1) | **Não** |
+| Vercel Preview | `dpl_HoDuMwhLgwbRnP72ctrEWHzmEN4K` | completed | ❌ failure — causa não confirmada via logs (documentado P36.1) | **Não** |
+| Vercel Preview Comments | — | completed | ✅ success | Não |
+| Deployment Failure Alert | [41363091013](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41363091013) | completed | skipped | Não |
+
+**Falhas no repo (outras branches, não na nossa):** 10 runs em `failure` no histórico do repo — todos em branches `claude/fix-*` de outras sessões. Nenhum afeta a branch `fix/e2e-url-state-defaults-20261030`. Detalhes em PENDENCIAS.md P37.
 
 ### 18.4 Prova de conclusão — Gate Final PR #2941
 
-> Aguardando conclusão do deploy-gates.yml para HEAD `27a0a140`.
+> **Estado em 2026-11-02T00:10 UTC:** Gate Final em `queued` — sem runner disponível.
+> Run [41363088530](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41363088530) ativo (não falhou — não pode ser re-executado enquanto `queued`).
 > Required check único: `Gate Final - Deploy Ready`.
-> Checks externos não-required (Vercel, Supabase Preview) documentados em PENDENCIAS.md P36.1.
+> Checks não-required com failure documentados em PENDENCIAS.md P36.1.
+> Failures em outras branches documentados em PENDENCIAS.md P37.
+
+**Validação local (confirmada antes dos pushes desta sessão):**
+- ✅ `npm ci` — EXIT=0
+- ✅ `npm run build` — EXIT=0 (10.58s)
+- ✅ `npx tsc --noEmit` — EXIT=0
+- ✅ `npm run lint:baseline` — 0 erros, 0 warnings (regressões +0)
+- ✅ `npx vitest run tests/scripts/` — 44 arquivos, 566 testes, 3 skipped — TODOS passaram
+- ✅ `src/integrations/supabase/client.ts` — SSOT `doufsxqlfjyuvxuezpln` confirmado
 
 | Workflow | Run ID | SHA | Conclusão | Required? |
 |---|---|---|---|---|
-| Gate Final - Deploy Ready | ⏳ aguardando | `27a0a140` | em fila — merge commit pushado 2026-11-02T00:00Z | **Sim** |
-| Supabase Preview | [125014582982](https://github.com/adm01-debug/Promo_Gifts_V4/runs/125014582982) | `1d5b52e8` | failure — coluna categories.level pré-existente | Não |
-| Vercel Preview | `dpl_HoDuMwhLgwbRnP72ctrEWHzmEN4K` | `1d5b52e8` | failure — causa não confirmada via logs | Não |
+| Gate Final - Deploy Ready | [41363088530](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41363088530) | `37e77749` | ⏳ queued — sem runner disponível (não é failure) | **Sim** |
+| Supabase Preview | [125014582982](https://github.com/adm01-debug/Promo_Gifts_V4/runs/125014582982) | `1d5b52e8` | ❌ failure — pré-existente, non-required (P36.1) | Não |
+| Vercel Preview | `dpl_HoDuMwhLgwbRnP72ctrEWHzmEN4K` | `1d5b52e8` | ❌ failure — logs inacessíveis REGRA#11, non-required (P36.1) | Não |
+| Vercel Preview Comments | — | `37e77749` | ✅ success | Não |
+| CI-Replenishment (outras branches) | [41355628936](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41355628936) et al. | outras | ❌ failure — outras sessões Claude, não nossa branch (P37) | Não |
 
 ---
 
