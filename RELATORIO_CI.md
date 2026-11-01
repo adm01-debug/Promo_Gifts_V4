@@ -1,9 +1,9 @@
 # RELATORIO_CI.md — Auditoria de Workflows CI/CD
 
-**Gerado:** 2026-10-29 · **Atualizado:** 2026-11-01T20:05 UTC
-**HEAD da main auditada:** `c2432c527889` (fix(db): PERF-003 cron semanal VACUUM ANALYZE stock_snapshots, 2026-11-01T18:29)
+**Gerado:** 2026-10-29 · **Atualizado:** 2026-11-01T20:25 UTC
+**HEAD da main auditada:** `574e66aa` (PR #2919 — fix(db): migration espelho PERF-002, 2026-11-01T20:10)
 **HEAD anterior (baseline):** `5ae127ea` (PR #2871 — fix(db): cria tabela stock_notes, 2026-10-31)
-**PR ativo:** #2846 (`fix/e2e-url-state-defaults-20261030`) — HEAD atual `84d0cc84`
+**PR ativo:** #2846 (`fix/e2e-url-state-defaults-20261030`) — HEAD atual `ef9d1d01`
 **Sessão:** https://claude.ai/code/session_01T5KXrgFRFRHrCX5jRcTCUz
 
 ---
@@ -22,8 +22,8 @@
 
 | # | Workflow | Run ID (falha original) | SHA falha | Status P28 | Ação | Prova |
 |---|---|---|---|---|---|---|
-| 1 | Deploy Gates (Gate Final) | [41304184400](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41304184400) | `5ae127ea` | **Fix em PR #2846** | `stock_notes` + `-- soft-delete-exempt` commitado em `3a615215` (fix/#2846); Gate Final do branch queued em [41340823816](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41340823816) | ⏳ aguardando CI (congestionamento de runners); conclusão documentada quando disponível |
-| 2 | CI Security & Drift Checks | [41304184120](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41304184120) | `5ae127ea` | Externo/pré-existente | Documentado PENDENCIAS.md P28 item 2 | Ver PENDENCIAS.md — E2E autenticado instável antes do PR |
+| 1 | Deploy Gates (Gate Final) | [41304184400](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41304184400) | `5ae127ea` | **Fix em PR #2846** | `stock_notes` + `-- soft-delete-exempt` commitado em `3a615215`; Gate Final PR #2846 HEAD `ef9d1d01` em [41346036485](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41346036485) | ⏳ pending (2026-11-01T20:17 UTC) |
+| 2 | CI Security & Drift Checks | [41304184120](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41304184120) | `5ae127ea` (run P28) / `c2432c52` (run P29: [41336912072](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41336912072)) | **CORRIGIDO em PR #2846** | `.security/lint-0029-allowlist.json`: +`cleanup_expired_auth_sessions()`, +`perf002_drop_unused_snapshot_indexes()`; −`is_supervisor_or_above()`, −`log_rls_denial()`. Commit `085dd48e` | ✅ lint:baseline 0 regressões confirmado localmente; Gate Final [41346036485](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41346036485) ⏳ pending |
 | 3 | Branch Protection Sentinel | [41234042042](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41234042042) | pré-`5ae127ea` | Externo | Documentado PENDENCIAS.md P28 item 3 | Lovable não segue convenção commit; proteção está ativa |
 | 4 | E2E — Critical Flows & Error Boundaries | [41273739218](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41273739218) | pré-`5ae127ea` | Externo/pré-existente | Documentado PENDENCIAS.md P28 item 4 | min-tests abaixo do limite; pré-existente |
 | 5 | E2E • Swatch QuickView | [41273739179](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41273739179) | pré-`5ae127ea` | Externo/pré-existente | Documentado PENDENCIAS.md P28 item 5 | Chromium: falha funcional; WebKit: runner shutdown |
@@ -49,19 +49,22 @@
 | lint | ✅ 0 erros / 0 warnings | ✅ 0 erros / 0 warnings | **+0** |
 | vitest | ✅ ≥540 | ✅ **25.916** testes passaram | **0 regressão** |
 | build | ✅ OK | ✅ 20.00s | **+0** |
-| Gate Final (main) | ❌ failure (stock_notes) | ⏳ queued [41340823816](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41340823816) | Fix em PR |
+| Gate Final (PR #2846) | ❌ failure `5ae127ea` (stock_notes) | ⏳ pending [41346036485](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41346036485) HEAD `ef9d1d01` | Fix em PR #2846 |
 | Workflows antes verdes | ✅ mantidos | ✅ mantidos | **0 regressão** |
 
-### 15.3 Pendência restante — atualizado 2026-11-01T19:38 UTC
+### 15.3 Estado atual — atualizado 2026-11-01T20:25 UTC
 
-**Fix adicional aplicado (2026-11-01T19:38 UTC):** commit `38ce54b0` corrige Gate 1.13 (policies-baseline drift).
+**Inventário P29 — main@`574e66aa` (2026-11-01):**
 
-O CI para SHA `d976512c` (commit anterior) falhou no **Gate 1 — static-gates** por drift de 8 políticas RLS:
-- `ai_usage_quotas` (4 políticas) e `art_file_attachments` (4 políticas)
-- Causa: PostgreSQL normalizou `auth.uid()` → `( SELECT auth.uid() AS uid)` internamente
-- Fix: `.security/policies-baseline.json` atualizado com a nova representação (commitado `38ce54b0`, pushado)
+| Workflow em falha na main | Run P29 | Causa raiz | Status |
+|---|---|---|---|
+| Branch Protection Sentinel | [41336912004](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41336912004) | Lovable commit sem convenção sentinel | EXTERNO — documentado PENDENCIAS.md P29 |
+| CI - Replenishment QG | [41336912023](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41336912023) | E2E visual instável (runner timeout) | EXTERNO — documentado PENDENCIAS.md P29 |
+| CI Security & Drift Checks | [41336912072](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41336912072) | 2 funções SECURITY DEFINER não na allowlist | **CORRIGIDO commit `085dd48e` (PR #2846)** |
+| E2E Personalization Flow | [41336912059](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41336912059) | Pré-existente P21 (desde `7299c88c`) | EXTERNO — documentado PENDENCIAS.md P29 |
+| Quote Builder QG | [41336912035](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41336912035) | E2E visual instável | EXTERNO — documentado PENDENCIAS.md P29 |
 
-Pendência ativa: aguardar Gate Final para `38ce54b0` completar com `conclusion=success`. CI em fila (congestionamento de runners). Verificação programada às 19:50 UTC.
+**Pendência:** aguardar Gate Final [41346036485](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41346036485) para HEAD `ef9d1d01` completar com `conclusion=success`.
 
 ---
 
