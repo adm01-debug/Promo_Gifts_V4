@@ -524,4 +524,3 @@ Consulta pelo MCP GitHub às 119 definições de workflow, filtrada por `branch=
 - Build: ✅ `npm run build` EXIT=0 (13.04s)
 - TypeScript: ✅ `npx tsc --noEmit` EXIT=0
 - Lint: ✅ `npm run lint:baseline` — 0 erros, 0 warnings, nenhuma regressão
-

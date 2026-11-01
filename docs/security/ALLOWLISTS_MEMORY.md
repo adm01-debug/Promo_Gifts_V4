@@ -173,8 +173,7 @@ exige atualizar este inventário no mesmo PR.
 - `public.fn_detect_recurring_errors_last_hour(_min_occurrences integer)` — E099 (2026-10-21): monitoramento de erros recorrentes; SECURITY DEFINER para leitura de logs de sistema sem RLS. GAP PENDENTE: retorna telemetria cross-user a qualquer `authenticated` via grant PUBLIC; migration de REVOKE pending (REGRA E056).
 - `public.log_access_denied(_blocked_path text, _required_role text, _user_role text, _reason text)` — E099 (2026-10-21): logger de acesso negado; SECURITY DEFINER para gravar em tabela de auditoria sem RLS do chamador.
 - `public.record_dev_route_telemetry(_event_type text, _blocked_path text, _user_role text, _duration_ms integer)` — E099 (2026-10-21): telemetria de rota de desenvolvimento; SECURITY DEFINER para gravar métricas sem RLS; chamado por middleware, não por usuário final direto.
-- `public.cleanup_expired_auth_sessions()` — E056 (2026-10-30): rotina de manutenção (cron) — SECURITY DEFINER necessário para deletar sessões expiradas em auth.sessions sem RLS; executado por cron/service_role sem parâmetros do chamador; sem exposição de PII a `authenticated`.
-- `public.perf002_drop_unused_snapshot_indexes()` — E056 (2026-10-30): rotina de manutenção de performance (série perf) — SECURITY DEFINER necessário para dropar índices em tabelas de snapshot sem RLS; executado por cron/service_role, sem parâmetros do chamador.
+- `public.cleanup_expired_auth_sessions()` — E056 (2026-10-30): rotina de manutenção (cron) — SECURITY DEFINER necessário para deletar sessões expiradas em auth.sessions sem RLS; executado por cron/service_role sem parâmetros do chamador; sem exposição de PII a `authenticated`. EXECUTE revogado de PUBLIC/anon/authenticated em 2026-11-01 (migration 20261101202000).
 
 ### Allowlist `secdef-anon` — snapshot literal do `pg_catalog`
 

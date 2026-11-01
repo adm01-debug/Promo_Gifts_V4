@@ -1,7 +1,7 @@
 {
   "version": 1,
   "pending_seed": false,
-  "generated_at": "2026-11-01T19:33:31.000Z",
+  "generated_at": "2026-11-01T20:15:52.246Z",
   "project_ref": "doufsxqlfjyuvxuezpln",
   "schemas_checked": [
     "public",
@@ -13,7 +13,7 @@
     "prod_audit",
     "supplier_stricker"
   ],
-  "sha256": "901fad072e647407838fdd61b9f8b7889693af4bb1054804e3a613c4eab1604c",
+  "sha256": "b15bcf6f38fdfe304bdc14b64a5cc676b4bb8782d8286905d48a9e6e878b99f1",
   "policies": [
     {
       "schemaname": "cf_recon",
@@ -104,16 +104,6 @@
       "cmd": "ALL",
       "qual": "is_admin_or_above(( SELECT ( SELECT auth.uid() AS uid) AS uid))",
       "with_check": "is_admin_or_above(( SELECT ( SELECT auth.uid() AS uid) AS uid))"
-    },
-    {
-      "schemaname": "public",
-      "tablename": "_backup_stock_daily_summary_20260618",
-      "policyname": "backup_stock_service_only",
-      "permissive": "PERMISSIVE",
-      "roles": "{service_role}",
-      "cmd": "ALL",
-      "qual": "true",
-      "with_check": "true"
     },
     {
       "schemaname": "public",
