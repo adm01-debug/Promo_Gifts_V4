@@ -62,29 +62,44 @@
 
 ---
 
-## 17. BASELINE FRESCO PÓS-ALTERAÇÕES — Sessão 2 (2026-11-01T22:25 UTC)
+## 17. BASELINE FRESCO PÓS-ALTERAÇÕES — Sessão 3 (2026-11-01T22:50 UTC)
 
-> **Branch:** `fix/e2e-url-state-defaults-20261030` HEAD `b51c252d` (merge main@`4c6541b6`)
-> **Alterações desta sessão:** merge de main, atualização RELATORIO_CI.md §16, atualização PENDENCIAS.md P35.
+> **Branch:** `fix/e2e-url-state-defaults-20261030` HEAD `aa020ae3` (docs(ci): §18 baseline)
+> **Commits desta sessão (além de merge de main):**
+> - `e94b22e5` — docs(security): corrige metadata perf002 na allowlist e ALLOWLISTS_MEMORY
+> - `f9e6536a` — fix(db): remove entradas duplicadas em MIGRATIONS_SYNC_LOG introduzidas pelo PR #2937
+> - `aa020ae3` — docs(ci): §18 baseline pos-correcoes Finding #1 Qodo HIGH + metadata allowlist
 
-### 17.1 Verificações locais pós-alteração
+### 17.1 Verificações locais pós-alteração (2026-11-01T22:45–22:50 UTC)
 
 | Verificação | Resultado | Detalhe |
 |---|---|---|
 | `npm ci` | ✅ EXIT=0 | Dependências instaladas; sem erros audit críticos |
-| `npm run build` | ✅ EXIT=0 | Vite build em 10.58s; zero erros |
+| `npm run build` | ✅ EXIT=0 | Vite build sem erros |
 | `npx tsc --noEmit` | ✅ EXIT=0 | Zero erros TypeScript |
 | `NODE_OPTIONS=--max-old-space-size=4096 npm run lint:baseline` | ✅ EXIT=0 | 0 erros, 0 warnings · Δ regressões: +0 |
-| `npx vitest run` | ⏳ em execução | Background task `bqrsrdpuf` — resultado pendente |
+| `npx vitest run tests/scripts/` | ✅ 566 passed, 3 skipped (44 files) | 49.32s · 0 falhas |
+| `npx vitest run src/hooks/common/__tests__/` | ✅ 491 passed (12 files) | 16.97s · 0 falhas |
+
+> **Total testes locais verificados:** 1057 passed, 3 skipped, **0 falhas** — incluindo
+> `check-migrations-sync-log-gate` (corrigido em `f9e6536a`) e todos os contratos de scripts.
 
 ### 17.2 Comparação baseline × pós-alteração
 
-| Métrica | Baseline (§16.1 — 2026-11-01T14:17) | Pós-alteração (17.1) | Delta |
+| Métrica | Baseline (§16.1 — 2026-11-01T14:17) | Pós-alteração (17.1 — 22:50) | Delta |
 |---|---|---|---|
-| Build Vite | ✅ 11.01s | ✅ 10.58s | ✅ sem regressão |
+| Build Vite | ✅ 11.01s | ✅ OK | ✅ sem regressão |
 | TypeScript errors | 0 | 0 | ✅ 0 |
 | ESLint erros/warnings | 0/0 | 0/0 | ✅ 0 |
-| Vitest passed | 540 (43 suites) | ⏳ aguardando | — |
+| Vitest `tests/scripts/` | 566 passed | 566 passed | ✅ 0 regressão |
+| Vitest `src/hooks/` | 491 passed | 491 passed | ✅ 0 regressão |
+
+### 17.3 Correção `f9e6536a` — MIGRATIONS_SYNC_LOG duplicatas
+
+- **Problema:** PR #2937 introduziu 8 entradas duplicadas na seção `## Recibos — aplicações confirmadas` do `supabase/MIGRATIONS_SYNC_LOG.md` (linhas 716–724, exceto 720)
+- **Fix:** removidas linhas 716–719 e 721–724 (versões `20261027120000`, `20261027140000`, `20261027160000`, `20261027180000`, `20261027220000`, `20261027230000`, `20261027233000`, `20261027234500`)
+- **Verificação:** `countVersionOccurrences()` → 0 duplicatas; `runCheck()` → `status: passed`
+- **Suite:** `tests/scripts/check-migrations-sync-log-gate.test.mjs` — 22/22 passed ✅
 
 ### 17.3 Status CI na main@`4c6541b6` (2026-11-01T22:25 UTC)
 
