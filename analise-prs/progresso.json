@@ -1,53 +1,49 @@
 {
   "sha_main_fixado": "58b4eeaf24f9c70d99e28c192e464ffa10c37274",
-  "sha_main_atual": "4c6541b6f5fab4205600472bc086c2f603a69312",
+  "sha_main_atual": "c80b098a654e90d7b8a962a67babbffb12063f33",
   "data_analise": "2026-11-01",
-  "total_prs_abertas": 4,
-  "total_analisadas": 4,
+  "total_prs_analisadas": 36,
+  "total_abertas_no_momento": 34,
+  "total_mergeadas_nesta_sessao": 2,
   "vereditos": {
-    "AGUARDANDO_CI": 2,
-    "NÃO_MERGEAR_DRAFT": 2,
-    "MERGEAR": 0,
-    "DECISÃO_HUMANA": 0,
-    "FECHAR": 0
+    "MERGEADA": 2,
+    "NÃO_MERGEAR_DRAFT": 25,
+    "NÃO_MERGEAR_BUG": 1,
+    "AGUARDANDO_CI": 3,
+    "DECISÃO_HUMANA": 1,
+    "BOT_MANAGED": 1,
+    "BRANCH_TRABALHO": 1,
+    "NÃO_MERGEAR_STALE_AGUARDANDO": 1,
+    "AGUARDANDO_CI_BLOCKED": 1
   },
-  "mergeadas": [],
+  "mergeadas": [
+    {"pr": 2927, "merge_sha": "c80b098a654e90d7b8a962a67babbffb12063f33", "method": "squash", "data": "2026-11-01"},
+    {"pr": 2949, "merge_sha": "a16b116a893910299b45f3c358a7615bf7150daf", "method": "squash", "data": "2026-11-01"}
+  ],
   "verificacoes_completadas": {
     "banco_is_supervisor_or_above": "não existe como SECURITY DEFINER (pg_proc retornou 0 linhas)",
     "banco_log_rls_denial": "não existe como SECURITY DEFINER (pg_proc retornou 0 linhas)",
-    "worktree_merge_2927": "CLEAN — 11 arquivos, sem conflito, sem workflows/migrations vs main atual",
-    "worktree_merge_2941": "CLEAN — 13 arquivos, sem conflito, sem workflows/migrations vs main atual",
+    "diff_completo_2927": "LIDO — 11 arquivos, 392+/34-, useListUrlState+check-dep-audit+allowlist+testes",
+    "diff_completo_2941": "LIDO — 13 arquivos, 866+/302-, mesmo escopo de #2927 + mcp_kv_get + rollback SQL + docs",
+    "diff_completo_2940": "LIDO — 2 arquivos, SidebarReorganized.tsx + restricted-routes.ts; BUG: typo '// Se ogropo'",
+    "diff_completo_2947": "LIDO — 1 arquivo novo: supabase/rollbacks/20261029160339_rollback.sql (4 linhas, não aplicado)",
+    "diff_completo_2952": "LIDO — scripts/check-policies-baseline.mjs +73/-2; Gate 1.13 partition tolerance",
+    "ci_2927_quality_gate": "completed/success (SHA f23ee40) — MERGEADA",
+    "ci_2949_docs_bypass": "E14 paths-ignore docs/** — docs-only PR, sem CI necessário — MERGEADA",
+    "ci_2941_head_3d0bf8c2": "4 checks: Supabase Preview=failure(pré-existente), alert=skipped, Vercel=success; sem quality-gate",
+    "ci_2947_head_c8c61c8b": "total_count: 0 — sem quality-gate rodando",
+    "ci_2952_head_25c67241": "total_count: 0 — sem quality-gate rodando",
+    "ci_2960_head_53cf1298": "quality-gate: queued + mergeable_state: blocked (unresolved review)",
     "build_npm_run_build": "✅ built in 16.22s",
     "vitest_baseline": "3 arquivos falhando pré-existentes, 26042 passaram",
-    "eslint_baseline": "crash OOM no container (SIGABRT)"
+    "eslint_baseline": "crash OOM no container (SIGABRT) — pré-existente, pre-push hook falhou por isso"
   },
-  "prs": {
-    "2927": {
-      "status": "analisada",
-      "veredito": "AGUARDANDO CI",
-      "head_sha": "f23ee40",
-      "ci_gate_final": "in_progress",
-      "merge_test": "CLEAN",
-      "dossie": "dossies/PR-2927.md"
-    },
-    "2940": {
-      "status": "analisada",
-      "veredito": "NÃO MERGEAR (DRAFT)",
-      "dossie": "dossies/PR-2940.md"
-    },
-    "2941": {
-      "status": "analisada",
-      "veredito": "AGUARDANDO CI",
-      "head_sha": "80ffa42",
-      "ci_gate_final": "CANCELADO (não rodou)",
-      "merge_test": "CLEAN",
-      "preferida": true,
-      "dossie": "dossies/PR-2941.md"
-    },
-    "2942": {
-      "status": "analisada",
-      "veredito": "NÃO MERGEAR (DRAFT)",
-      "dossie": "dossies/PR-2942.md"
-    }
+  "prs_nao_mergeadas_pendentes": {
+    "2941": {"status": "AGUARDANDO CI", "motivo": "Conteúdo único (remove mcp_kv_get); sem quality-gate no head 3d0bf8c2"},
+    "2944": {"status": "BOT-MANAGED", "motivo": "release-please; label autorelease:pending"},
+    "2947": {"status": "AGUARDANDO CI", "motivo": "Rollback SQL file only; sem CI; behind main"},
+    "2952": {"status": "DECISÃO HUMANA", "motivo": "REGRA #9: scripts/check-* exige revisão PO; sem CI no head 25c67241"},
+    "2960": {"status": "AGUARDANDO CI / BLOCKED", "motivo": "quality-gate queued; mergeable_state: blocked (unresolved review comment)"},
+    "2940": {"status": "NÃO MERGEAR", "motivo": "Typo bug: '// Se ogropo' em SidebarReorganized.tsx"}
   }
 }
