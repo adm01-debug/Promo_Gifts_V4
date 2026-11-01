@@ -15,15 +15,11 @@ CREATE TABLE IF NOT EXISTS public.stock_notes (
   note        text NOT NULL,
   is_pinned   boolean NOT NULL DEFAULT false,
   created_at  timestamptz NOT NULL DEFAULT now(),
-  updated_at  timestamptz NOT NULL DEFAULT now(),
-  deleted_at  timestamptz DEFAULT NULL
+  updated_at  timestamptz NOT NULL DEFAULT now()
 );
 
 -- Índice para busca por variante (query principal do hook)
 CREATE INDEX IF NOT EXISTS stock_notes_variant_idx ON public.stock_notes(variant_id);
-
--- Índice parcial padrão de soft-delete (linhas ativas)
-CREATE INDEX IF NOT EXISTS stock_notes_active_idx ON public.stock_notes(variant_id) WHERE deleted_at IS NULL;
 
 -- Updated_at automático
 CREATE OR REPLACE TRIGGER set_stock_notes_updated_at

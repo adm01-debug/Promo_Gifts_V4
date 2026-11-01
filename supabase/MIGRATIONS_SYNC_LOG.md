@@ -722,7 +722,7 @@ f6def33d0c79c66aab118335ed95d9e3a9b40536cca5cd397bacc54e7858ae96
 | `20261027230000` | `2d6a57f537d962a89ff44e80244f94ad0baff9292cfcd8bd65a295978107ff26` | `—` | claude-code (PR #2646) | E15 | 2026-10-27 UTC (previsto) | a aplicar via db-apply-migration.yml após merge do PR #2646 (arquivo revisado no PR #2646) |
 | `20261027233000` | `bd5d0bc3262f9b34b6108c42c7ec186f8f9066d97dbd881a6276a2bb97d87885` | `—` | claude-code (PR #2603) | E15 | 2026-10-27 UTC (previsto) | pendente — a ser aplicado via db-apply-migration.yml após merge do PR #2603 |
 | `20261027234500` | `272850e119d8798e7aac9242e4b774309f22a8227e7b6bbac4a086ab945f6cec` | `—` | claude-code (PR #2603) | E15 | 2026-10-27 UTC (previsto) | pendente — a ser aplicado via db-apply-migration.yml após merge do PR #2603 |
-| `20261101140000` | `5c60b2dffecf749976a8cf40256c337e40047daeefce9bd925ea1eaf6c6d65a8` | `—` | claude-code (stock_notes com deleted_at, Gate 1.12; substitui 20261031000000, nunca aplicada) | E15 | 2026-11-01 UTC (previsto) | pendente — a ser aplicado via db-apply-migration.yml após merge (tabela stock_notes ainda inexistente em produção) |
+| `20261101140000` | `1563d9d42f112e8d9009dddf6cac82fd3fec178a8386479733b64e5980b96839` | `—` | claude-code (stock_notes com deleted_at, Gate 1.12; substitui 20261031000000, nunca aplicada) | E15 | 2026-11-01 UTC (previsto) | pendente — a ser aplicado via db-apply-migration.yml após merge (tabela stock_notes ainda inexistente em produção) |
 
 
 </details>
