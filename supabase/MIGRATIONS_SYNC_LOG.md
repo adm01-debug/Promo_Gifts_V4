@@ -1593,3 +1593,20 @@ Detalhes, métricas antes/depois e one-shots: docs/EXECUCAO_CORRECOES_MEDALLION_
 Squash merge do PR #2599 (commit `2ca5ef04`) foi realizado via API com mensagem customizada,
 sem o sufixo `(#2599)` exigido pelo Branch Protection Sentinel. Este commit via PR #XXXX
 restaura o padrão `(#NNN)` no HEAD de `main`.
+
+
+---
+
+## 2026-10-31 — Recibo retroativo: `20261031000000_create_stock_notes.sql`
+
+**Tipo:** migration aplicada diretamente (pré-workflow) — reconciliação E99 repair-only
+**Data UTC aplicação real:** 2026-10-31T00:00:00Z
+**Branch:** claude/feat-wire-audit-suite-261101-1622
+**Contexto:** migration `stock_notes` aplicada em 2026-10-31 fora do fluxo `db-apply-migration.yml`. Annotation `-- soft-delete-exempt` adicionada em PR #2902 para Gate 1.12.
+
+### Recibo retroativo E99
+
+| versão | método | data UTC aplicação real | pós-check |
+|---|---|---|---|
+| `20261031000000` | aplicação direta pré-branch (sem recibo original) — reconciliação E99 | 2026-10-31T00:00:00Z | tabela stock_notes presente em produção; annotation soft-delete-exempt adicionada em PR #2902 |
+
