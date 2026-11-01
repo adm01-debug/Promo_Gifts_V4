@@ -1596,7 +1596,7 @@ Detalhes, métricas antes/depois e one-shots: docs/EXECUCAO_CORRECOES_MEDALLION_
 
 | versão | sha256 arquivo | md5 statements | executor | método | data UTC | pós-check |
 |---|---|---|---|---|---|---|
-| `20261031000000` | `92dcc8ed708bc59308b6b52f18d57952e07d6868845ba552c2b8fac7d46c94f4` | `—` (não aplicado via E15) | PR #2871 Lovable / PR #2846 fix soft-delete-exempt | E15 (pendente) | pendente — aguarda dispatch `db-apply-migration.yml` pelo PO | pendente |
+| `20261031000000` | `92dcc8ed708bc59308b6b52f18d57952e07d6868845ba552c2b8fac7d46c94f4` | fora do fluxo E15 | PR #2871 Lovable (gpt-engineer-app[bot]) | fora do fluxo — E57 repair-only | aplicada fora do fluxo E15 via Lovable/PR #2871 em 2026-10-31; reconciliação repair-only necessária (dispatch `db-apply-migration.yml` desnecessário — já no banco) | aplicada |
 
 **Nota:** A migration cria a tabela `stock_notes` (comentários inline por variante de produto).
 A aplicação formal em `doufsxqlfjyuvxuezpln` aguarda dispatch de `db-apply-migration.yml`

@@ -34,9 +34,9 @@
 | Branch Protection Sentinel | [41234042042](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41234042042) | ❌ failure | Lovable push sem (#NNN) — externo/recorrente | PENDENCIAS.md §P28 item 3 |
 | E2E — Critical Flows & Error Boundaries | [41273739218](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41273739218) | ❌ failure | Check min tests executed — 1 teste, 9 ignorados (auth passou) — causa pendente | PENDENCIAS.md §P28 item 4 |
 | E2E • Swatch QuickView | [41273739179](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41273739179) | ❌ failure | Chromium: Swatch/QV falhou; WebKit: runner shutdown após auth | PENDENCIAS.md §P28 item 5 |
-| Kit Coverage — Integration | [41270374589](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41270374589) | ❌ failure | A investigar — pré-existente | PENDENCIAS.md §P28 item 6 |
-| Nightly Full CI | [41266491771](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41266491771) | ❌ failure | A investigar — pré-existente | PENDENCIAS.md §P28 item 7 |
-| Policies Baseline | [41272479237](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41272479237) | ❌ failure | A investigar — pré-existente | PENDENCIAS.md §P28 item 8 |
+| Kit Coverage — Integration | [41270374589](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41270374589) | ❌ failure | `permission denied for table product_kit_components` e `permission denied for view v_kit_component_complete` — grants de RLS não configurados no projeto `doufsxqlfjyuvxuezpln` (REGRA E056 impede DDL via execute_sql) | PENDENCIAS.md §P28 item 6 |
+| Nightly Full CI | [41266491771](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41266491771) | ❌ failure | 4 jobs falhos: E2E shard1+2 (log sem spec names — apenas bytes de upload), E2E Visual magazine-header (5 specs em `magazine-header-align.spec.ts` + `magazine-header-responsive.spec.ts`), E2E Visual color-swatch (3 specs em `color-swatch-selected-no-clip.spec.ts`, `color-swatch-two-lines-grid.spec.ts`, `color-swatch-wrap-visual.spec.ts`) — pré-existentes | PENDENCIAS.md §P28 item 7 |
+| Policies Baseline | [41272479237](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41272479237) | ❌ failure | 4 políticas `_2027_02` faltantes no baseline (`magazine_public_view_events_2027_02`, `supplier_products_raw_history_p2027_02` e 2 análogas) — **já corrigido por PR #2881** (commit `6ddd339e`) | PENDENCIAS.md §P28 item 8 |
 | Release Please | [41304184265](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41304184265) | ❌ failure | `Resource not accessible by integration` — autorização do token GitHub | PENDENCIAS.md §P28 item 9 |
 | Uptime Monitor | [41273576750](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41273576750) | ❌ failure | Falha HTTP na probe `health-check` (curl exit 22); demais probes passaram — causa pendente | PENDENCIAS.md §P28 item 10 |
 | edge-functions-drift-check | [41292189329](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41292189329) | ❌ failure | Funções em drift — externo | PENDENCIAS.md §P28 item 11 |
@@ -46,17 +46,17 @@ A única **regressão nova** introduzida por PR #2871 é o item 1 (Deploy Gates 
 
 ---
 
-## 1. Baseline Local — HEAD `c09402816` (2026-10-30)
+## 1. Baseline Local — HEAD `f73265f3` (2026-11-01)
 
 | Etapa | Resultado | Observação |
 |---|---|---|
 | `npm ci` | ✅ EXIT=0 | Dependências instaladas sem erros; 2 high CVEs pré-existentes (Dependabot) |
-| `npm run build` | ✅ EXIT=0 | Build Vite em 16.28s; warnings INEFFECTIVE_DYNAMIC_IMPORT pré-existentes; chunk-cycles OK |
+| `npm run build` | ✅ EXIT=0 | Build Vite em 13.04s; warnings INEFFECTIVE_DYNAMIC_IMPORT pré-existentes; chunk-cycles OK |
 | `npx tsc --noEmit` | ✅ EXIT=0 | Zero erros TypeScript |
-| `npm run lint:baseline` | ⚠️ OOM — não executável | Heap out of memory no container (Node limite ~2GB); falha pré-existente do ambiente, não de código |
-| `npx vitest run` | ✅ 3 falhas pré-existentes | 3 failed \| 25880 passed \| 1135 skipped — exit 0; 1121s; mesmas 3 falhas de SHAs anteriores |
+| `npm run lint:baseline` | ✅ EXIT=0 | ESLint baseline gate [full] — atual: 0 erros, 0 warnings · baseline: 0 erros; Nenhuma regressão detectada |
+| `npx vitest run` | ⏳ em execução | Executando em background — resultado será registrado ao completar |
 
-> **Sem regressão introduzida:** tsc ✅ + build ✅ confirmam zero erro TypeScript ou de bundling. vitest e lint não executáveis localmente por limitação de recurso do container — CI remoto é a fonte de verdade.
+> **Sem regressão introduzida:** tsc ✅ + build ✅ + lint ✅ confirmam zero erro TypeScript, bundling ou lint. Build em 13.04s (vs 16.28s no baseline anterior — melhoria). Lint executável com `NODE_OPTIONS="--max-old-space-size=6144"`.
 
 ---
 
