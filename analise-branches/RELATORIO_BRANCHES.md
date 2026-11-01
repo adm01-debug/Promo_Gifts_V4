@@ -49,7 +49,16 @@ Dossiês individuais: `dossies/*.md`. Cruzamento banco: `cruzamento-supabase.md`
 ## 5. DRIFT
 **Branches × produção:** nenhuma branch tem migration fora do ledger de prod.
 
-**Main × produção:** prod tem 2575 migrations, last=`20261101202500`. As 7 migrations pendentes do relatório anterior (20261027-20261031) foram aplicadas em prod — confirmado pela contagem live desta sessão (era 2552 na sessão anterior, agora 2575 = +23 aplicadas).
+**Main × produção:** prod tem 2577 migrations (confirmado §8). +2 migrations aplicadas via `db-apply-migration.yml` por `adm01-debug` durante o período da análise:
+
+| version | arquivo em main? | conteúdo | ação |
+|---|---|---|---|
+| `20261101223908` | **NÃO** — DRIFT | CRON-001 `cron.alter_job` jobs 292, 303, 241 (stagger adicional) | DRIFT-VERSIONAR — arquivo espelho criado nesta sessão |
+| `20261101232022` | **NÃO** — DRIFT | CRON-001 `cron.alter_job` jobs 276, 224, 114, 243 (idêntico a `20261101220000`) | DRIFT-VERSIONAR — arquivo espelho criado nesta sessão |
+
+**Conteúdo verificado via** `SELECT statements FROM supabase_migrations.schema_migrations WHERE version IN (...)` — ambos contêm só `cron.alter_job` (idempotente, sem risco de dado).
+
+**Arquivos espelho criados:** `supabase/migrations/20261101223908_cron001_stagger_additional_jobs.sql` e `supabase/migrations/20261101232022_cron001_stagger_schedules_reapply.sql` — PR aberto para aprovação do PO (REGRA #9: mudança em `supabase/migrations/` exige PR).
 
 ## 6. F/A/B (44)
 `confirmacao_ABF.md`. Todas 44 confirmadas descartáveis com 1 linha de prova cada.
