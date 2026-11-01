@@ -324,6 +324,12 @@ export const MockupResultCard = memo(
                 </Button>
               )}
             </div>
+
+            {/* Disclaimer */}
+            <p className="text-center text-xs text-muted-foreground/70">
+              Prévia indicativa. A composição, as cores e as dimensões serão validadas antes da
+              produção.
+            </p>
           </CardContent>
 
           {/* Fullscreen Lightbox */}
