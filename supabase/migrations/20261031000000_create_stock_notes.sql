@@ -7,6 +7,7 @@ RETURNS trigger LANGUAGE plpgsql AS $$
 BEGIN NEW.updated_at = now(); RETURN NEW; END;
 $$;
 
+-- soft-delete-exempt: notas de usuário — hard-delete intencional por policy (stock_notes_delete_own)
 CREATE TABLE IF NOT EXISTS public.stock_notes (
   id          uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   variant_id  uuid NOT NULL REFERENCES public.product_variants(id) ON DELETE CASCADE,
