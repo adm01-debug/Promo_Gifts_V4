@@ -1,0 +1,3 @@
+-- Rollback for 20261005124501_audit_triggers_critical_tables.sql
+-- This migration has no automated rollback. Manual steps required.
+-- Review the migration and implement rollback steps before applying to production.

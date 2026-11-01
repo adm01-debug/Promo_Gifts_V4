@@ -1,0 +1,3 @@
+-- Rollback for 20261101194657_perf002_fn_drop_indexes_obfuscated.sql
+-- This migration has no automated rollback. Manual steps required.
+-- Review the migration and implement rollback steps before applying to production.

@@ -1,0 +1,3 @@
+-- Rollback for 20260917160000_e33_ops_wraparound_monitor.sql
+-- This migration has no automated rollback. Manual steps required.
+-- Review the migration and implement rollback steps before applying to production.

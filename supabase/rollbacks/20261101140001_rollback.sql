@@ -1,0 +1,3 @@
+-- Rollback for 20261101140001_sb0001_remove_auth_users_realtime.sql
+-- This migration has no automated rollback. Manual steps required.
+-- Review the migration and implement rollback steps before applying to production.

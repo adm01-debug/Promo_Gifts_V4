@@ -1,0 +1,3 @@
+-- Rollback for 20261005130000_login_lockout_verified_per_ip.sql
+-- This migration has no automated rollback. Manual steps required.
+-- Review the migration and implement rollback steps before applying to production.

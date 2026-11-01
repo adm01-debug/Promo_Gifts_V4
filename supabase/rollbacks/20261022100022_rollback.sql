@@ -1,0 +1,3 @@
+-- Rollback for 20261022100022_fix_cron_sync_is_stockout_universal.sql
+-- This migration has no automated rollback. Manual steps required.
+-- Review the migration and implement rollback steps before applying to production.

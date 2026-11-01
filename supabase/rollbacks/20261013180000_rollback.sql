@@ -1,0 +1,3 @@
+-- Rollback for 20261013180000_incidente_2026_10_13_drop_trigger_redundante_sync_primary_image_url.sql
+-- This migration has no automated rollback. Manual steps required.
+-- Review the migration and implement rollback steps before applying to production.

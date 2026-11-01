@@ -1,0 +1,3 @@
+-- Rollback for 20260917070000_e38_unschedule_dead_cron_jobs.sql
+-- This migration has no automated rollback. Manual steps required.
+-- Review the migration and implement rollback steps before applying to production.

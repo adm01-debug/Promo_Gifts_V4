@@ -1,0 +1,3 @@
+-- Rollback for 20261015140000_backfill_primary_image_url_regra_completa.sql
+-- This migration has no automated rollback. Manual steps required.
+-- Review the migration and implement rollback steps before applying to production.

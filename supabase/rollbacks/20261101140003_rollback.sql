@@ -1,0 +1,3 @@
+-- Rollback for 20261101140003_sb0006_index_kit_fk_user_id.sql
+-- This migration has no automated rollback. Manual steps required.
+-- Review the migration and implement rollback steps before applying to production.

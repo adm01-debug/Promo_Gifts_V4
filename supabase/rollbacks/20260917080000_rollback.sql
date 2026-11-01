@@ -1,0 +1,3 @@
+-- Rollback for 20260917080000_e35_fix_reposicao_backfill_perf.sql
+-- This migration has no automated rollback. Manual steps required.
+-- Review the migration and implement rollback steps before applying to production.

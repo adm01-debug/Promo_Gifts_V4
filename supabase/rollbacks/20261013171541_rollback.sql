@@ -1,0 +1,3 @@
+-- Rollback for 20261013171541_agente2_test_ping.sql
+-- This migration has no automated rollback. Manual steps required.
+-- Review the migration and implement rollback steps before applying to production.

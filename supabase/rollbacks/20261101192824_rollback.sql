@@ -1,0 +1,3 @@
+-- Rollback for 20261101192824_sb0009_drop_backup_table_via_cron.sql
+-- This migration has no automated rollback. Manual steps required.
+-- Review the migration and implement rollback steps before applying to production.

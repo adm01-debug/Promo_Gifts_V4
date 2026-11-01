@@ -1,0 +1,3 @@
+-- Rollback for 20261101150002_st001_art_files_owner_isolation.sql
+-- This migration has no automated rollback. Manual steps required.
+-- Review the migration and implement rollback steps before applying to production.

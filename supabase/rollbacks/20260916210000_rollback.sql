@@ -1,0 +1,3 @@
+-- Rollback for 20260916210000_backfill_catalog_stats_price_range_top_colors_materials_20260916155725.sql
+-- This migration has no automated rollback. Manual steps required.
+-- Review the migration and implement rollback steps before applying to production.

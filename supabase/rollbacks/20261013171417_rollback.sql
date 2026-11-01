@@ -1,0 +1,3 @@
+-- Rollback for 20261013171417_incidente_2026_10_13_backfill_queue_reaper_idempotente.sql
+-- This migration has no automated rollback. Manual steps required.
+-- Review the migration and implement rollback steps before applying to production.

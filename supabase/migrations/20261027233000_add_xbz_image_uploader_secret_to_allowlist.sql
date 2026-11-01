@@ -1,3 +1,4 @@
+-- Rollback: See supabase/rollbacks/20261027233000_rollback.sql
 -- Migration: 20261027233000_add_xbz_image_uploader_secret_to_allowlist.sql
 -- CONTEXTO: Adiciona XBZ_IMAGE_UPLOADER_CRON_SECRET ao allowlist de get_edge_function_secret.
 -- PRÉ-REQUISITO: Secret XBZ_IMAGE_UPLOADER_CRON_SECRET deve estar no vault antes de aplicar.

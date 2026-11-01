@@ -1,0 +1,3 @@
+-- Rollback for 20260928213000_backfill_products_main_category_id.sql
+-- This migration has no automated rollback. Manual steps required.
+-- Review the migration and implement rollback steps before applying to production.

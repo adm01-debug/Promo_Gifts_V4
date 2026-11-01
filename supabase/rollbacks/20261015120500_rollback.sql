@@ -1,0 +1,3 @@
+-- Rollback for 20261015120500_fase3_system_settings_policies.sql
+-- This migration has no automated rollback. Manual steps required.
+-- Review the migration and implement rollback steps before applying to production.

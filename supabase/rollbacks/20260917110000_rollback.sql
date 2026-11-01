@@ -1,0 +1,3 @@
+-- Rollback for 20260917110000_e45_fix_products_comment.sql
+-- This migration has no automated rollback. Manual steps required.
+-- Review the migration and implement rollback steps before applying to production.

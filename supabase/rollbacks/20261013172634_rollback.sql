@@ -1,0 +1,3 @@
+-- Rollback for 20261013172634_agente2_fase6_workmem_and_index.sql
+-- This migration has no automated rollback. Manual steps required.
+-- Review the migration and implement rollback steps before applying to production.

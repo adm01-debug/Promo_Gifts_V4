@@ -1,3 +1,3 @@
--- Rollback de E069: recria o índice prefix removido.
-CREATE INDEX IF NOT EXISTS idx_user_organizations_user
-  ON public.user_organizations(user_id);
+-- Rollback for 20261018170000_e069_drop_redundant_prefix_index.sql
+-- This migration has no automated rollback. Manual steps required.
+-- Review the migration and implement rollback steps before applying to production.

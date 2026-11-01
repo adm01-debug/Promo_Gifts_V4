@@ -1,3 +1,4 @@
+-- Rollback: See supabase/rollbacks/20261013172634_rollback.sql
 -- Espelho do ledger (reconciliação B2, 2026-10-15)
 -- version=20261013172634 name=agente2_fase6_workmem_and_index
 -- Aplicada em doufsxqlfjyuvxuezpln em 2026-10-13 via MCP apply_migration (Agente 2, incidente 2026-10-13).

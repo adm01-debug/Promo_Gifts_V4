@@ -1,0 +1,3 @@
+-- Rollback for 20261008230000_restringir_anon_mockup_approval_links.sql
+-- This migration has no automated rollback. Manual steps required.
+-- Review the migration and implement rollback steps before applying to production.

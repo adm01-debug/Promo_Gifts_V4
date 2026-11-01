@@ -1,0 +1,3 @@
+-- Rollback for 20261013171010_incidente20261013_fase9_deteccao_erros_recorrentes.sql
+-- This migration has no automated rollback. Manual steps required.
+-- Review the migration and implement rollback steps before applying to production.

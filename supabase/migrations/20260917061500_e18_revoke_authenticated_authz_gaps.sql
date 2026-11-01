@@ -1,3 +1,4 @@
+-- Rollback: See supabase/rollbacks/20260917061500_rollback.sql
 -- E18 — 4 achados secundários isolados durante a revisão das 94 SECDEF
 -- executáveis por authenticated: grants a authenticated sem necessidade,
 -- cada um com um gap de autorização real no corpo da função (não é higiene

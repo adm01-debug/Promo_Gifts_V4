@@ -1,3 +1,4 @@
+-- Rollback: See supabase/rollbacks/20261031000000_rollback.sql
 -- Migration: cria tabela stock_notes (comentários inline por variante)
 -- Onda 2 / Melhoria 12 — tabela referenciada em useStockNotes.ts mas ausente no banco
 

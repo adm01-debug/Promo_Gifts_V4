@@ -1,0 +1,3 @@
+-- Rollback for 20261031000000_create_stock_notes.sql
+-- This migration has no automated rollback. Manual steps required.
+-- Review the migration and implement rollback steps before applying to production.

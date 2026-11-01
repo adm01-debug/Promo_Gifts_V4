@@ -1,4 +1,3 @@
--- Rollback de E070: remove os cron jobs de purga dos ledgers.
-SELECT cron.unschedule('purge-kit-save-requests');
-SELECT cron.unschedule('purge-kit-quote-requests');
-SELECT cron.unschedule('purge-magazine-duplicate-requests');
+-- Rollback for 20261018170100_e070_purge_idempotency_ledgers.sql
+-- This migration has no automated rollback. Manual steps required.
+-- Review the migration and implement rollback steps before applying to production.

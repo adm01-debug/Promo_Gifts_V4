@@ -1,0 +1,3 @@
+-- Rollback for 20260917061500_e18_revoke_authenticated_authz_gaps.sql
+-- This migration has no automated rollback. Manual steps required.
+-- Review the migration and implement rollback steps before applying to production.

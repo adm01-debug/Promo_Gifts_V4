@@ -1,0 +1,3 @@
+-- Rollback for 20261101193444_perf002_vacuum_analyze_now.sql
+-- This migration has no automated rollback. Manual steps required.
+-- Review the migration and implement rollback steps before applying to production.

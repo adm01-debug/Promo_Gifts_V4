@@ -1,3 +1,4 @@
+-- Rollback: See supabase/rollbacks/20260916181609_rollback.sql
 -- Arquivo-espelho para a entrada de ledger não-canônica
 -- `20260623_fix_google_provider_secret_name`.
 -- Origem: E09 do plano DBA — docs/E09_LEDGER_IDS_INVALIDOS_2026-09-16.md, achado #4.

@@ -1,0 +1,3 @@
+-- Rollback for 20261022100011_perf_drop_unused_indexes.sql
+-- This migration has no automated rollback. Manual steps required.
+-- Review the migration and implement rollback steps before applying to production.

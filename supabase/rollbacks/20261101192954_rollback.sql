@@ -1,0 +1,3 @@
+-- Rollback for 20261101192954_sb0009_unschedule_drop_job.sql
+-- This migration has no automated rollback. Manual steps required.
+-- Review the migration and implement rollback steps before applying to production.

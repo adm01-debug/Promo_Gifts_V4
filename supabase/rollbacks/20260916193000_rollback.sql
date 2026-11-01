@@ -1,0 +1,3 @@
+-- Rollback for 20260916193000_e25_supplier_history_partition_automation.sql
+-- This migration has no automated rollback. Manual steps required.
+-- Review the migration and implement rollback steps before applying to production.

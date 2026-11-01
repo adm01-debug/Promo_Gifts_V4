@@ -1,3 +1,4 @@
+-- Rollback: See supabase/rollbacks/20260917060000_rollback.sql
 -- E18 — Achado crítico isolado durante a revisão das 94 SECDEF executáveis
 -- por authenticated: public.mcp_kv_get(p_secret text, p_key text).
 -- Plano: docs/plans/PLANO_DBA_CORRECOES_MELHORIAS_50_ETAPAS_2026-09-16.md (E18)

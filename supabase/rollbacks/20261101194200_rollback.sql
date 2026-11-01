@@ -1,0 +1,3 @@
+-- Rollback for 20261101194200_perf002_drop_unused_indexes_stock_snapshots.sql
+-- This migration has no automated rollback. Manual steps required.
+-- Review the migration and implement rollback steps before applying to production.

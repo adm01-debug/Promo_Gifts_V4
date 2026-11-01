@@ -1,3 +1,4 @@
+-- Rollback: See supabase/rollbacks/20260916200000_rollback.sql
 -- E17 — Revisar as 11 SECDEF executáveis por anon: achado acionável #1
 -- Plano: docs/plans/PLANO_DBA_CORRECOES_MELHORIAS_50_ETAPAS_2026-09-16.md (linhas 439-447)
 --

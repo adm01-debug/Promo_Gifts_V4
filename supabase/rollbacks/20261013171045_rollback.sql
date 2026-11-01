@@ -1,0 +1,3 @@
+-- Rollback for 20261013171045_fase0_fase8_contencao_seguranca.sql
+-- This migration has no automated rollback. Manual steps required.
+-- Review the migration and implement rollback steps before applying to production.

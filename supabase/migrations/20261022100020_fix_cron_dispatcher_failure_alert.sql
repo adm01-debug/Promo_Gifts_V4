@@ -1,3 +1,4 @@
+-- Rollback: See supabase/rollbacks/20261022100020_rollback.sql
 -- Migration: 20261022100020_fix_cron_dispatcher_failure_alert.sql
 -- Propósito: Redistribui 'dispatcher-failure-alert' para minuto :03 para evitar
 --   colisão de startup com 'hash-product-images' e 'sync-is-stockout-universal'

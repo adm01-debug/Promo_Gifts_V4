@@ -1,0 +1,3 @@
+-- Rollback for 20261029160339_add_kill_switch_hits_anon_rate_guard.sql
+-- This migration has no automated rollback. Manual steps required.
+-- Review the migration and implement rollback steps before applying to production.

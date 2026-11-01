@@ -1,3 +1,4 @@
+-- Rollback: See supabase/rollbacks/20260916201000_rollback.sql
 -- E19 — Decidir as 2 tabelas com RLS sem policy
 -- Plano: docs/plans/PLANO_DBA_CORRECOES_MELHORIAS_50_ETAPAS_2026-09-16.md (linhas 458-464)
 -- Achado espelhado em docs/SCHEMA_REFERENCE.md §3 P5.

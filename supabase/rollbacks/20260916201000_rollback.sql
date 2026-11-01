@@ -1,0 +1,3 @@
+-- Rollback for 20260916201000_e19_comment_rls_deny_intentional.sql
+-- This migration has no automated rollback. Manual steps required.
+-- Review the migration and implement rollback steps before applying to production.

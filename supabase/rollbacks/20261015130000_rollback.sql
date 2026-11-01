@@ -1,0 +1,3 @@
+-- Rollback for 20261015130000_remove_test_agente2_probe.sql
+-- This migration has no automated rollback. Manual steps required.
+-- Review the migration and implement rollback steps before applying to production.

@@ -1,0 +1,3 @@
+-- Rollback for 20261015120000_reconcilia_oob_incidente_2026_10_13.sql
+-- This migration has no automated rollback. Manual steps required.
+-- Review the migration and implement rollback steps before applying to production.

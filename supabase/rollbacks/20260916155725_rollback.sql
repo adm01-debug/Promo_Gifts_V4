@@ -1,0 +1,3 @@
+-- Rollback for 20260916155725_out_of_band_audit_e12.sql
+-- This migration has no automated rollback. Manual steps required.
+-- Review the migration and implement rollback steps before applying to production.

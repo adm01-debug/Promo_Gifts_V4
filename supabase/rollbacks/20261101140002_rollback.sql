@@ -1,0 +1,3 @@
+-- Rollback for 20261101140002_sb0003_replica_identity_full_realtime.sql
+-- This migration has no automated rollback. Manual steps required.
+-- Review the migration and implement rollback steps before applying to production.

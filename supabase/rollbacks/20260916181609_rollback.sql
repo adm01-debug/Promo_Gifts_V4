@@ -1,0 +1,3 @@
+-- Rollback for 20260916181609_backfill_fix_google_provider_secret_name_20260623.sql
+-- This migration has no automated rollback. Manual steps required.
+-- Review the migration and implement rollback steps before applying to production.

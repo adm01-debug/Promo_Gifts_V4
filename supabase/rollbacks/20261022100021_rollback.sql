@@ -1,0 +1,3 @@
+-- Rollback for 20261022100021_fix_cron_hash_product_images.sql
+-- This migration has no automated rollback. Manual steps required.
+-- Review the migration and implement rollback steps before applying to production.

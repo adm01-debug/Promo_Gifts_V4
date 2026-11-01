@@ -1,0 +1,3 @@
+-- Rollback for 20261101202432_fix_perf002_recreate_captured_at_index.sql
+-- This migration has no automated rollback. Manual steps required.
+-- Review the migration and implement rollback steps before applying to production.

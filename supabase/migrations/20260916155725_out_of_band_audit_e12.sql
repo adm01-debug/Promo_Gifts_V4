@@ -1,3 +1,4 @@
+-- Rollback: See supabase/rollbacks/20260916155725_rollback.sql
 -- STUB: migration aplicada out-of-band em 2026-09-16 via MCP/dashboard (sem arquivo local).
 -- Versão: 20260916155725 (registrada em supabase_migrations.schema_migrations)
 --

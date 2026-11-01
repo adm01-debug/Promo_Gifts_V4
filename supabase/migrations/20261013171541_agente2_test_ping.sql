@@ -1,3 +1,4 @@
+-- Rollback: See supabase/rollbacks/20261013171541_rollback.sql
 -- Espelho do ledger (reconciliação B2, 2026-10-15)
 -- version=20261013171541 name=agente2_test_ping
 -- Aplicada em doufsxqlfjyuvxuezpln em 2026-10-13 via MCP apply_migration (Agente 2, incidente

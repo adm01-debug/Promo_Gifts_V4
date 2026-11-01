@@ -1,0 +1,3 @@
+-- Rollback for 20261022100020_fix_cron_dispatcher_failure_alert.sql
+-- This migration has no automated rollback. Manual steps required.
+-- Review the migration and implement rollback steps before applying to production.

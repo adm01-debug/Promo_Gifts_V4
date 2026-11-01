@@ -1,0 +1,3 @@
+-- Rollback for 20261013170913_incidente20261013_fase5_permissoes_auditoria.sql
+-- This migration has no automated rollback. Manual steps required.
+-- Review the migration and implement rollback steps before applying to production.

@@ -1,0 +1,3 @@
+-- Rollback for 20260923114500_quote_rpc_lineage_atomicity.sql
+-- This migration has no automated rollback. Manual steps required.
+-- Review the migration and implement rollback steps before applying to production.

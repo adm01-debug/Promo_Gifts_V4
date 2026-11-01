@@ -1,0 +1,3 @@
+-- Rollback for 20260920120000_fix_handle_new_user_missing_profiles_user_id.sql
+-- This migration has no automated rollback. Manual steps required.
+-- Review the migration and implement rollback steps before applying to production.

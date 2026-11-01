@@ -1,0 +1,3 @@
+-- Rollback for 20260922170000_signup_identity_safe_default.sql
+-- This migration has no automated rollback. Manual steps required.
+-- Review the migration and implement rollback steps before applying to production.

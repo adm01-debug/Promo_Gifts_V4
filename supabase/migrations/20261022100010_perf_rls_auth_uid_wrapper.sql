@@ -1,3 +1,4 @@
+-- Rollback: See supabase/rollbacks/20261022100010_rollback.sql
 -- ADV-PERF-001: Wrap auth.uid() calls in (SELECT ...) to avoid per-row evaluation
 -- Impact: 447 policies affected total; this batch covers 50 (ordered by tablename, policyname)
 -- Estimated improvement: 10-40% on authenticated reads on tables with many rows

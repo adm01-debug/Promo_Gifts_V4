@@ -1,3 +1,4 @@
+-- Rollback: See supabase/rollbacks/20261013171953_rollback.sql
 -- Espelho do ledger (reconciliação B2, 2026-10-15)
 -- version=20261013171953 name=agente2_fase3_rls_alter_policies
 -- Aplicada em doufsxqlfjyuvxuezpln em 2026-10-13 via MCP apply_migration (Agente 2, incidente 2026-10-13).

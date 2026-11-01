@@ -1,0 +1,3 @@
+-- Rollback for 20261101170001_perf003_vacuum_stock_snapshots_cron.sql
+-- This migration has no automated rollback. Manual steps required.
+-- Review the migration and implement rollback steps before applying to production.

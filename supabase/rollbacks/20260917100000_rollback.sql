@@ -1,0 +1,3 @@
+-- Rollback for 20260917100000_e37_split_genuine_multistatement_cron.sql
+-- This migration has no automated rollback. Manual steps required.
+-- Review the migration and implement rollback steps before applying to production.

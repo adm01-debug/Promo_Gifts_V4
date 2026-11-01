@@ -1,3 +1,4 @@
+-- Rollback: See supabase/rollbacks/20261013171421_rollback.sql
 -- Agente 3 (Integridade de Dados/Storage) — incidente 2026-10-13
 -- APLICADA EM PRODUÇÃO via MCP (doufsxqlfjyuvxuezpln) em 2026-10-13.
 --

@@ -1,0 +1,3 @@
+-- Rollback for 20261005124503_discount_approval_expected_version.sql
+-- This migration has no automated rollback. Manual steps required.
+-- Review the migration and implement rollback steps before applying to production.

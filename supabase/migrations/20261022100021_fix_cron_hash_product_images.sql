@@ -1,3 +1,4 @@
+-- Rollback: See supabase/rollbacks/20261022100021_rollback.sql
 -- Migration: 20261022100021_fix_cron_hash_product_images.sql
 -- Propósito: Redistribui 'hash-product-images' para minuto :04 para evitar
 --   colisão de startup com 'dispatcher-failure-alert' e 'sync-is-stockout-universal'

@@ -1,0 +1,3 @@
+-- Rollback for 20260916200000_e17_revoke_public_fn_super_filtro.sql
+-- This migration has no automated rollback. Manual steps required.
+-- Review the migration and implement rollback steps before applying to production.

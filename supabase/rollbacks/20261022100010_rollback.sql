@@ -1,0 +1,3 @@
+-- Rollback for 20261022100010_perf_rls_auth_uid_wrapper.sql
+-- This migration has no automated rollback. Manual steps required.
+-- Review the migration and implement rollback steps before applying to production.

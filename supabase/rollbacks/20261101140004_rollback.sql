@@ -1,0 +1,3 @@
+-- Rollback for 20261101140004_sb0005_rls_auth_uid_cache.sql
+-- This migration has no automated rollback. Manual steps required.
+-- Review the migration and implement rollback steps before applying to production.

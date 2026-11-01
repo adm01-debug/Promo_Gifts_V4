@@ -1,0 +1,3 @@
+-- Rollback for 20261101193530_perf002_vacuum_fix_separate_jobs.sql
+-- This migration has no automated rollback. Manual steps required.
+-- Review the migration and implement rollback steps before applying to production.

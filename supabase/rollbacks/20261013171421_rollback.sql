@@ -1,0 +1,3 @@
+-- Rollback for 20261013171421_incidente_2026_10_13_autovacuum_tuning_tabelas_quentes.sql
+-- This migration has no automated rollback. Manual steps required.
+-- Review the migration and implement rollback steps before applying to production.

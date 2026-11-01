@@ -1,3 +1,4 @@
+-- Rollback: See supabase/rollbacks/20261013170913_rollback.sql
 -- Espelho do ledger (reconciliação B2, 2026-10-15)
 -- version=20261013170913 name=incidente20261013_fase5_permissoes_auditoria
 -- Aplicada em doufsxqlfjyuvxuezpln em 2026-10-13 via MCP apply_migration (Agente 5, incidente 2026-10-13).

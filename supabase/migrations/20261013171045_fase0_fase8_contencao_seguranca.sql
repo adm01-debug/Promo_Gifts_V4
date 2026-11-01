@@ -1,3 +1,4 @@
+-- Rollback: See supabase/rollbacks/20261013171045_rollback.sql
 -- Espelho do ledger (reconciliação B2, 2026-10-15)
 -- version=20261013171045 name=fase0_fase8_contencao_seguranca
 -- Aplicada em doufsxqlfjyuvxuezpln em 2026-10-13 via MCP apply_migration (Agente 1, incidente 2026-10-13).

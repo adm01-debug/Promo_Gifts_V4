@@ -1,0 +1,3 @@
+-- Rollback for 20260917090000_e47_fix_schema_drift_cron_split.sql
+-- This migration has no automated rollback. Manual steps required.
+-- Review the migration and implement rollback steps before applying to production.

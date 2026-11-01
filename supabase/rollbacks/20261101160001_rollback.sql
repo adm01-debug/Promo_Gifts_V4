@@ -1,0 +1,3 @@
+-- Rollback for 20261101160001_sec003_remove_pg_temp_security_definer.sql
+-- This migration has no automated rollback. Manual steps required.
+-- Review the migration and implement rollback steps before applying to production.

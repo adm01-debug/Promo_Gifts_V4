@@ -1,0 +1,3 @@
+-- Rollback for 20260928212000_fix_products_padronizacao_backlink.sql
+-- This migration has no automated rollback. Manual steps required.
+-- Review the migration and implement rollback steps before applying to production.

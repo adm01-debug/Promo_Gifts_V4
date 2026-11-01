@@ -1,3 +1,4 @@
+-- Rollback: See supabase/rollbacks/20261022100022_rollback.sql
 -- Migration: 20261022100022_fix_cron_sync_is_stockout_universal.sql
 -- Propósito: Reduz frequência de 'sync-is-stockout-universal' de cada 5 min para
 --   cada 10 min para aliviar contention de slots no pg_cron.

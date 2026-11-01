@@ -1,0 +1,3 @@
+-- Rollback for 20261101194851_perf002_schedule_drop_indexes.sql
+-- This migration has no automated rollback. Manual steps required.
+-- Review the migration and implement rollback steps before applying to production.

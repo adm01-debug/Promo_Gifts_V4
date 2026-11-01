@@ -1,0 +1,3 @@
+-- Rollback for 20261101160002_perf001_fn_pipeline_health_indexes.sql
+-- This migration has no automated rollback. Manual steps required.
+-- Review the migration and implement rollback steps before applying to production.

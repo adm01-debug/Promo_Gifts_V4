@@ -1,0 +1,3 @@
+-- Rollback for 20260916211500_e30_ops_table_size_history.sql
+-- This migration has no automated rollback. Manual steps required.
+-- Review the migration and implement rollback steps before applying to production.

@@ -1,0 +1,3 @@
+-- Rollback for 20261101150000_fix_sb0003_fn_get_rupture_alerts.sql
+-- This migration has no automated rollback. Manual steps required.
+-- Review the migration and implement rollback steps before applying to production.

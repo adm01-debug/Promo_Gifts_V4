@@ -1,3 +1,4 @@
+-- Rollback: See supabase/rollbacks/20260916193000_rollback.sql
 -- E25 — Automação de partições de public.supplier_products_raw_history
 -- Plano: docs/plans/PLANO_DBA_CORRECOES_MELHORIAS_50_ETAPAS_2026-09-16.md (linhas 520-531)
 -- Prazo duro citado no plano: 2026-12-15 (última partição mensal viva hoje é p2026_12).

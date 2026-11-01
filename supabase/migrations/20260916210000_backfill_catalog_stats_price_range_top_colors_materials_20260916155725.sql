@@ -1,3 +1,4 @@
+-- Rollback: See supabase/rollbacks/20260916210000_rollback.sql
 -- Regularização retroativa de DDL out-of-band (docs/db/POLITICA_DDL.md).
 --
 -- Origem: aplicada diretamente via MCP/dashboard em 2026-09-16 15:57:25 UTC,

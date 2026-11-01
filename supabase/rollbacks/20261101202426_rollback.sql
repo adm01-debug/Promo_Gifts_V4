@@ -1,0 +1,3 @@
+-- Rollback for 20261101202426_fix_auth001_revoke_execute_cleanup_sessions.sql
+-- This migration has no automated rollback. Manual steps required.
+-- Review the migration and implement rollback steps before applying to production.

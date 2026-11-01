@@ -1,3 +1,4 @@
+-- Rollback: See supabase/rollbacks/20261013171010_rollback.sql
 -- Espelho do ledger (reconciliação B2, 2026-10-15)
 -- version=20261013171010 name=incidente20261013_fase9_deteccao_erros_recorrentes
 -- Aplicada em doufsxqlfjyuvxuezpln em 2026-10-13 via MCP apply_migration (incidente 2026-10-13).

@@ -1,3 +1,4 @@
+-- Rollback: See supabase/rollbacks/20261027195959_rollback.sql
 -- Migration: 20261027195959_supplier_stricker_rls_deny_all.sql
 -- CONTEXTO: schema supplier_stricker contém tabelas com grants já concedidos,
 -- mas sem RLS. A falta atual de USAGE no schema não é uma barreira permanente.

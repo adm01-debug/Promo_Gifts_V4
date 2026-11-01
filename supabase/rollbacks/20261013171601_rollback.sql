@@ -1,0 +1,3 @@
+-- Rollback for 20261013171601_agente2_fase3_00_index_only.sql
+-- This migration has no automated rollback. Manual steps required.
+-- Review the migration and implement rollback steps before applying to production.

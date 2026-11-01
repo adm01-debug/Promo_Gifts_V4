@@ -1,3 +1,4 @@
+-- Rollback: See supabase/rollbacks/20261022100011_rollback.sql
 -- PERF-002: Drop unused indexes (idx_scan = 0, excluding PKs and unique constraints)
 -- Total unused indexes across all tables: 1008
 -- This migration drops the 20 largest by pg_relation_size, saving approximately 840 MB of storage

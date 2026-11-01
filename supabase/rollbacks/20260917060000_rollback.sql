@@ -1,0 +1,3 @@
+-- Rollback for 20260917060000_e18_revoke_authenticated_mcp_kv_get.sql
+-- This migration has no automated rollback. Manual steps required.
+-- Review the migration and implement rollback steps before applying to production.

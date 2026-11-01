@@ -1,0 +1,3 @@
+-- Rollback for 20261101192817_auth001_cleanup_sessions_cron.sql
+-- This migration has no automated rollback. Manual steps required.
+-- Review the migration and implement rollback steps before applying to production.

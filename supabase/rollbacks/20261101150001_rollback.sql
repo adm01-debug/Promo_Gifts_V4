@@ -1,0 +1,3 @@
+-- Rollback for 20261101150001_sec004b_revoke_fn_cron_guard_authenticated.sql
+-- This migration has no automated rollback. Manual steps required.
+-- Review the migration and implement rollback steps before applying to production.

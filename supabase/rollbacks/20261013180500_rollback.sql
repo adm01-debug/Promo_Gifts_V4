@@ -1,0 +1,3 @@
+-- Rollback for 20261013180500_incidente_2026_10_13_drop_tabelas_backup_vencidas.sql
+-- This migration has no automated rollback. Manual steps required.
+-- Review the migration and implement rollback steps before applying to production.

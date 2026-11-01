@@ -1,0 +1,3 @@
+-- Rollback for 20261101202500_cron001_stagger_schedules_reduce_concurrent.sql
+-- This migration has no automated rollback. Manual steps required.
+-- Review the migration and implement rollback steps before applying to production.

@@ -1,0 +1,3 @@
+-- Rollback for 20261101150003_st002_st003_avatars_recibos_policies.sql
+-- This migration has no automated rollback. Manual steps required.
+-- Review the migration and implement rollback steps before applying to production.
