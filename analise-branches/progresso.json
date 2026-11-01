@@ -1,28 +1,36 @@
-{"versao":"4.0","data":"2026-11-01","sha_main":"d2033d9237fa72971ff9c92ca47442f7437463ff","sessao":"claude/chore-analise-branches-revalida-261101-2200",
+{"versao":"5.0","data":"2026-11-01","sha_main":"d2033d9237fa72971ff9c92ca47442f7437463ff","sessao":"claude/chore-analise-branches-revalida-261101-2200",
 "execucao_nesta_sessao":{
-  "typecheck_run":true,"typecheck_erros":49716,"typecheck_nota":"run fresco nesta sessão; 49716 erros pré-existentes em main",
-  "lint_run":true,"lint_exit":0,"lint_nota":"ESLint OOM (V8::FatalProcessOutOfMemory) — ambiente cloud sem memória; script captura OOM e sai 0; CI Gate 1 é autoridade",
-  "postgres_temp_run":true,"postgres_temp_resultado":"impossível — 5 métodos tentados: supabase not found, docker socket unavailable, psql connection refused, initdb not found, pg_ctl not found",
-  "postgres_temp_nota":"nenhuma branch candidata a merge tem migration; protocolo exige PG só para branches COM migration candidata a merge",
-  "list_migrations_antes":true,"list_migrations_depois":true,
-  "list_edge_functions_antes":true,"list_edge_functions_depois":true,
+  "typecheck_run":true,"typecheck_erros":49716,
+  "lint_run":true,"lint_exit":0,"lint_nota":"ESLint OOM (V8::FatalProcessOutOfMemory) — ambiente cloud; script captura e sai 0; CI Gate 1 é autoridade",
+  "postgres_temp_run":true,"postgres_temp_resultado":"SUCESSO — PostgreSQL 16.15 iniciado via sudo -u postgres /usr/lib/postgresql/16/bin/pg_ctl",
+  "postgres_temp_migrations_testadas":"20261019000000 (constraint exit=0, view stub exit=0) + 20261024163500 (CREATE FUNCTION exit=0, SELECT count(*) exit=0)",
+  "postgres_temp_nota":"Nota: sessão anterior falhou pq /usr/lib/postgresql/16/bin/ não estava no PATH; nesta sessão caminho completo usado",
+  "list_migrations_antes":true,"list_migrations_depois":true,"list_migrations_count_fresh":"2575 (parsed from MCP output file: python3 grep '\"version\"')",
+  "list_edge_functions_antes":true,"list_edge_functions_depois":true,"list_edge_functions_count_fresh":"110 (parsed from MCP output file: json.loads count)",
   "git_diff_todas_9_branches":true,
-  "git_cherry_todas_44_abf":true,"git_cherry_nota":"re-executado ao vivo nesta sessão para todas 44 branches",
-  "supabase_mcp_producao":"SUPABASE_-_GEST_O_DE_PRODUTOS (doufsxqlfjyuvxuezpln confirmado via get_project_url nesta sessão)"
+  "git_cherry_todas_44_abf":true,
+  "git_diff_3dot_todas_44_abf":true,"git_diff_3dot_nota":"git diff --name-only origin/main...origin/<branch> executado para todas 44 branches; arquivo único por branch documentado em confirmacao_ABF.md",
+  "pr_2955_verificado":true,"pr_2955_state":"open","pr_2955_draft":true,"pr_2955_head":"e0e5e44ee630bdbe649d49863b91bf17c35bbb6a","pr_2955_base":"d2033d9237fa72971ff9c92ca47442f7437463ff",
+  "supabase_mcp_producao":"SUPABASE_-_GEST_O_DE_PRODUTOS (doufsxqlfjyuvxuezpln confirmado via get_project_url)"
 },
 "branches_top":{
-  "claude/fix-contract-mag-reader-261019-2110":"FECHAR — diff 2-dot lido inteiro: capacity-growth-report.yml branch='47 7 * * 1' vs main='12 11 * * 1' (branch mais antiga); hooks também mais antigos",
-  "claude/fix-sync-log-ci-261019-1730":"FECHAR (regressão) — check-security-definer-acl.mjs: branch remove res.status===500||res.status===503; main tem retry amplo",
-  "claude/fix-rollback-261019-1637":"FECHAR — migration 20261019000000 em main e no ledger de prod (2575 entries); diff só adiciona 1 linha de comentário",
-  "claude/fix-gitleaks-gate-261019-1800":"FECHAR (regressão) — .gitleaks.toml lido inteiro: branch=67 linhas vs main=102; remove tests/.*, src/.*__tests__.*, 5+ regexes — merge removeria 35 linhas de config de segurança",
-  "claude/chore-migrations-sync-log-261019-1600":"FECHAR — MIGRATIONS_SYNC_LOG.md da branch está desatualizado vs main (faltam entradas 20261027+)",
-  "claude/fix-audit-acl-regrole-261024-1635":"FECHAR — migration 20261024163500 no ledger de prod; branch usa pg_get_userbyid vs main usa EXISTS/pg_roles (ambas corretas mas main já aplicado)",
-  "claude/security-brechas-e30-e40-e18-2026-10-22":"JÁ MERGEADA — PR #2416: merged_at 2026-10-24T20:16:44Z, merge_commit 6c6b46c0; branch DELETED",
-  "claude/gifted-dijkstra-uojt52":"FECHAR — G-cat orphan; worktree merge --allow-unrelated-histories: exit=1, 413 conflict files, 458 staged; sem merge-base com main",
-  "devin/probe-e184-legacy-refs":"FECHAR — G-cat probe; worktree merge --allow-unrelated-histories: exit=1, 416 conflict files, 462 staged; sem merge-base com main"
+  "claude/fix-contract-mag-reader-261019-2110":"FECHAR — diff 2-dot lido: capacity-growth-report.yml branch cron='47 7 * * 1' vs main='12 11 * * 1' (branch mais antiga); hooks também mais antigos; cherry=5",
+  "claude/fix-sync-log-ci-261019-1730":"FECHAR (regressão) — check-security-definer-acl.mjs: branch remove res.status===500||res.status===503; main tem retry amplo; cherry=11",
+  "claude/fix-rollback-261019-1637":"FECHAR — migration 20261019000000 no ledger prod (2575 entries); diff só +1 linha comentário; testada no PG16 temp (constraint exit=0); cherry=2",
+  "claude/fix-gitleaks-gate-261019-1800":"FECHAR (regressão) — .gitleaks.toml lido inteiro: branch=67 linhas vs main=102; remove tests/.*, 5+ regexes de segurança; cherry=4",
+  "claude/chore-migrations-sync-log-261019-1600":"FECHAR — MIGRATIONS_SYNC_LOG.md branch falta entradas 20261027+; cherry=4",
+  "claude/fix-audit-acl-regrole-261024-1635":"FECHAR — migration 20261024163500 no ledger prod; testada no PG16 temp (CREATE FUNCTION exit=0); cherry=5",
+  "claude/security-brechas-e30-e40-e18-2026-10-22":"JÁ MERGEADA — PR #2416 merged_at 2026-10-24T20:16:44Z, merge_commit 6c6b46c0; branch DELETED",
+  "claude/gifted-dijkstra-uojt52":"FECHAR — G-cat orphan; worktree --allow-unrelated-histories: exit=1, 413 conflict files; sem merge-base com main",
+  "devin/probe-e184-legacy-refs":"FECHAR — G-cat probe; worktree --allow-unrelated-histories: exit=1, 416 conflict files; sem merge-base com main"
 },
-"abf":{"total":44,"descartaveis":44,"confirmados_nesta_sessao":true,"git_cherry_rerun":true,
-  "resumo_cherry":{"A_cherry0":2,"B_cherry0":2,"B_ghpages":1,"F_boilerplate_cherry1":14,"F_receipt_cherry1_synclog_only":11,"F_content_already_main":10,"F_deleted":1,"F_cherry0":5}
+"abf":{"total":44,"descartaveis":44,"confirmados_nesta_sessao":true,
+  "metodo":"git cherry + git diff --name-only origin/main...origin/<branch> para cada branch",
+  "resumo":{
+    "A_cherry0":2,"B_cherry0":2,"B_ghpages_buildonly":1,
+    "F_boilerplate_github_actions":14,"F_receipt_synclog_desatualizado":11,
+    "F_content_already_main":9,"F_shellcheck_already_in_main":1,"F_cherry0_subsumed":4,"F_deleted_remote":1,"F_session_branch":1
+  }
 },
 "merges":[],"aguardando_aprovacao":[],
 "producao":{
@@ -31,5 +39,6 @@
   "migrations_depois":2575,"migrations_depois_last":"20261101202500",
   "edge_antes":110,"edge_depois":110,
   "ddl":false,"deploy":false,
-  "prova":"list_migrations e list_edge_functions chamados 2x cada nesta sessão; counts idênticos antes/depois; get_project_url confirmou doufsxqlfjyuvxuezpln"
+  "prova_migrations":"list_migrations MCP chamado nesta sessão; output 179537 chars; python3 parse: 2575 versions, last=20261101202500",
+  "prova_edge":"list_edge_functions MCP chamado nesta sessão; json.loads: 110 functions, first=analyze-logo-colors, last=xbz-image-uploader"
 }}

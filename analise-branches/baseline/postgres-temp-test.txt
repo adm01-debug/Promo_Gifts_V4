@@ -2,21 +2,53 @@ SHA main baseline: d2033d9237fa72971ff9c92ca47442f7437463ff
 Data: 2026-11-01
 Sessão: claude/chore-analise-branches-revalida-261101-2200
 
-Postgres temporário: TENTADO, impossível neste ambiente
+Postgres temporário: EXECUTADO COM SUCESSO (PostgreSQL 16)
 
-Tentativas registradas (nesta sessão):
-  1. supabase start → "supabase: not found" (CLI não instalado)
-  2. docker run postgres:16-alpine → "dial unix /var/run/docker.sock: connect: no such file or directory" (Docker daemon não está disponível no container cloud)
-  3. psql -h localhost → "connection refused" (nenhum servidor PG local)
-  4. initdb → "command not found"
-  5. pg_ctl → "command not found"
+Binários: /usr/lib/postgresql/16/bin/postgres (PostgreSQL 16.15-ubuntu 16.15-0ubuntu0.24.04.1)
+Cluster: sudo -u postgres /usr/lib/postgresql/16/bin/initdb -D /tmp/pgdata_analise --no-locale --encoding=UTF8
+Start:   sudo -u postgres /usr/lib/postgresql/16/bin/pg_ctl -D /tmp/pgdata_analise -l /tmp/pg_analise.log start
+Ready:   /var/run/postgresql:5432 - accepting connections (pg_isready confirmado)
+DB:      CREATE DATABASE analise_test (exit 0)
 
-Branches com migration analisadas nesta sessão:
-  - fix-rollback-261019-1637: migration 20261019000000 já em main e no ledger prod (2575 entries)
-    diff vs main = +1 linha de comentário; sintaxe trivialmente válida (comentário SQL)
-  - fix-audit-acl-regrole-261024-1635: migration 20261024163500 já em main e no ledger prod
-    diff vs main: pg_get_userbyid(a.grantee) IS NOT NULL vs EXISTS/pg_roles — ambas são
-    sintaxe PostgreSQL válida; main já aplicado em prod; branch FECHAR
+Nota histórica: sessão anterior registrou "initdb: not found" porque /usr/lib/postgresql/16/bin/
+não estava no PATH. Nesta sessão descoberto e usado caminho completo.
 
-Conclusão: impossível testar Postgres temporário neste ambiente cloud.
-Ambas as migrations são FECHAR (não candidatas a merge); nenhuma migration nova a aplicar.
+== Branches com migration analisadas ==
+
+1. fix-rollback-261019-1637 → migration 20261019000000_mirror_oob_frontend_telemetry_v_system_health_dashboard.sql
+
+   Conteúdo: ALTER TABLE frontend_telemetry ADD CONSTRAINT frontend_telemetry_size_caps_check
+             + CREATE OR REPLACE VIEW v_system_health_dashboard
+
+   Teste constraint (com stub de frontend_telemetry):
+     CREATE TABLE frontend_telemetry (id bigserial, event_type text, name text, url text, user_agent text, session_id text, metadata jsonb)
+     ALTER TABLE ... ADD CONSTRAINT frontend_telemetry_size_caps_check ... not valid → exit 0
+     ALTER TABLE ... validate constraint ... → exit 0
+   Resultado: SINTAXE VÁLIDA, constraint aplicada com sucesso
+
+   Teste view: CREATE OR REPLACE VIEW v_system_health_dashboard → stub exit 0
+     View real falha apenas por tabelas de produção inexistentes no temp DB
+     (products, product_variants, quotes, orders, etc. — esperado; migration é espelho de OOB)
+
+   Conclusão: Migration sintaticamente válida. JÁ APLICADA em produção (ledger entry 20261019000000
+   confirmado via MIGRATIONS_SYNC_LOG.md — veredito FECHAR não se altera)
+
+2. fix-audit-acl-regrole-261024-1635 → migration 20261024163500_fix_audit_security_definer_acl_regrole_cast.sql
+
+   Conteúdo: CREATE OR REPLACE FUNCTION public.audit_security_definer_acl()
+             Usa pg_get_userbyid() em vez de ::regrole::text para evitar erro com OIDs removidos
+             + COMMENT ON FUNCTION
+
+   Teste (pg_catalog disponível em qualquer instância PG):
+     psql analise_test -f /tmp/migration_20261024163500.sql → "CREATE FUNCTION" "COMMENT" exit 0
+     SELECT count(*) FROM public.audit_security_definer_acl() → 0 rows, exit 0
+
+   Resultado: SINTAXE VÁLIDA, função criada e invocada com sucesso
+
+   Conclusão: Migration sintaticamente válida e funcional. JÁ NO LEDGER de produção (migration
+   20261024163500 confirmado no ledger de prod — veredito FECHAR não se altera)
+
+== Resultado geral ==
+Ambas as migrations com sintaxe válida — testadas no PostgreSQL 16.15 temporário nesta sessão.
+Nenhuma migration nova a aplicar em produção: ambas FECHAR (já no ledger de prod com 2575 entries).
+Cluster removido após teste: pg_ctl stop → "server stopped"
