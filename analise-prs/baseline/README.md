@@ -14,7 +14,15 @@
 
 ## Falhas pré-existentes no main (vitest)
 
-O vitest finalizou com 3 test files falhando e 5 testes com erro (output capturado via `tail -15`; as stacks apontam para `@testing-library/dom/wait-for.js` — provável timeout em componente assíncrono). Essas falhas **existem no main antes de qualquer PR** e devem ser tratadas como ruído de baseline, não como regressão introduzida pelas PRs analisadas.
+3 arquivos / 5 testes falhando no main antes de qualquer PR:
+
+| Arquivo | Testes falhando |
+|---|---|
+| `tests/scripts/check-migrations-sync-log-gate.test.mjs` | lê o log real e confirma que versão E48 tem recibo |
+| `tests/unit/date-utils.test.ts` | formatDateTime BRT, formatTime ISO, formatTime zero-pad (3 testes) |
+| `src/hooks/stock/__tests__/useRuptureAlerts.test.tsx` | dedupe por variant_id mantendo menor cobertura |
+
+Causas prováveis: timezone BRT no container CI, migration E48 não aplicada no ambiente de teste, lógica de dedupe divergindo de snapshot. **Nenhuma dessas falhas foi introduzida pelas PRs analisadas.**
 
 ## Nota
 
