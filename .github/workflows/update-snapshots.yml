@@ -107,8 +107,8 @@ jobs:
           INPUT_SPEC: ${{ github.event.inputs.spec }}
           INPUT_PROJECT: ${{ github.event.inputs.project }}
         run: |
-          # shellcheck disable=SC2086
-          npx playwright test $INPUT_SPEC \
+          read -ra SPECS <<< "$INPUT_SPEC"
+          npx playwright test "${SPECS[@]}" \
             --project="$INPUT_PROJECT" \
             --update-snapshots \
             --reporter=list

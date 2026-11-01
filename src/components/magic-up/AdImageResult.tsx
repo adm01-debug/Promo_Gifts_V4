@@ -177,26 +177,26 @@ export function AdImageResult({
           <div className="grid max-h-[500px] grid-cols-2 gap-2 overflow-y-auto">
             {history.map((item) => (
               <div
-                role="button"
-                tabIndex={0}
                 key={item.id}
-                className="group relative cursor-pointer overflow-hidden rounded-lg border text-left transition-all hover:ring-2 hover:ring-primary/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                onClick={() => onSelectHistory?.(item)}
-                onKeyDown={(event) => {
-                  if (event.key === 'Enter' || event.key === ' ') {
-                    event.preventDefault();
-                    onSelectHistory?.(item);
-                  }
-                }}
-                aria-label={`Selecionar histórico ${item.product_name}`}
+                className="group relative overflow-hidden rounded-lg border transition-all focus-within:ring-2 focus-within:ring-ring hover:ring-2 hover:ring-primary/30"
               >
-                <img
-                  src={item.generated_image_url}
-                  alt={item.product_name}
-                  className="aspect-square w-full object-cover"
-                  loading="lazy"
-                />
-                <div className="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-black/60 to-transparent p-2 opacity-0 transition-opacity group-hover:opacity-100">
+                {/* Abrir o item é um <button> nativo: nada interativo vive dentro dele
+                    (favoritar/excluir são irmãos na camada de ações), então não há
+                    interativo aninhado para leitores de tela (axe nested-interactive). */}
+                <button
+                  type="button"
+                  className="block w-full cursor-pointer text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                  onClick={() => onSelectHistory?.(item)}
+                  aria-label={`Selecionar histórico ${item.product_name}`}
+                >
+                  <img
+                    src={item.generated_image_url}
+                    alt={item.product_name}
+                    className="aspect-square w-full object-cover"
+                    loading="lazy"
+                  />
+                </button>
+                <div className="pointer-events-none absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-black/60 to-transparent p-2 opacity-0 transition-opacity group-focus-within:opacity-100 group-hover:opacity-100">
                   <p className="truncate text-[10px] font-medium text-primary-foreground">
                     {item.product_name}
                   </p>
@@ -222,14 +222,11 @@ export function AdImageResult({
                         aria-label={
                           item.is_favorite ? 'Remover favorito do histórico' : 'Favoritar histórico'
                         }
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          onToggleHistoryFavorite(item.id, item.is_favorite);
-                        }}
-                        onKeyDown={(e) => e.stopPropagation()}
-                        className="rounded bg-white/20 p-1 hover:bg-white/30"
+                        onClick={() => onToggleHistoryFavorite(item.id, item.is_favorite)}
+                        className="pointer-events-auto rounded bg-white/20 p-1 hover:bg-white/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                       >
                         <Heart
+                          aria-hidden="true"
                           className={cn(
                             'h-3 w-3',
                             item.is_favorite
@@ -243,21 +240,20 @@ export function AdImageResult({
                       <button
                         type="button"
                         aria-label="Excluir histórico"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          onDeleteHistory(item.id);
-                        }}
-                        onKeyDown={(e) => e.stopPropagation()}
-                        className="rounded bg-white/20 p-1 hover:bg-destructive/50"
+                        onClick={() => onDeleteHistory(item.id)}
+                        className="pointer-events-auto rounded bg-white/20 p-1 hover:bg-destructive/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                       >
-                        <Trash2 className="h-3 w-3 text-primary-foreground" />
+                        <Trash2 aria-hidden="true" className="h-3 w-3 text-primary-foreground" />
                       </button>
                     )}
                   </div>
                 </div>
                 {item.is_favorite && (
                   <div className="absolute right-1 top-1">
-                    <Heart className="h-3.5 w-3.5 fill-red-400 text-destructive drop-shadow" />
+                    <Heart
+                      aria-hidden="true"
+                      className="h-3.5 w-3.5 fill-red-400 text-destructive drop-shadow"
+                    />
                   </div>
                 )}
               </div>

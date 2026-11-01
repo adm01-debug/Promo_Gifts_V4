@@ -60,29 +60,31 @@ export interface GeneratedMockup {
 }
 
 const TECHNIQUE_PROMPTS: Record<string, string> & { default: string } = {
-  bordado: 'as professional machine embroidery with visible thread stitch texture',
-  silk: 'as screen printed with flat solid colors, matte finish',
-  dtf: 'as DTF printed transfer with vibrant colors, slight glossy finish',
-  laser: 'as laser engraved, etched into the material surface, monochromatic',
-  laser_co2: 'as CO2 laser engraved with precise etching on organic materials',
-  laser_fibra: 'as fiber laser marked on metal with high-contrast permanent mark',
-  sublimacao: 'as sublimation printed, colors absorbed seamlessly into the material',
-  tampografia: 'as pad printed with slightly glossy ink, precise small details',
-  hot_stamping: 'as hot stamped with metallic foil finish, shiny reflective surface',
-  adesivo: 'as vinyl sticker/decal applied to surface',
-  uv: 'as UV printed with raised ink texture, vibrant colors',
-  transfer: 'as heat transfer vinyl, smooth finish with slight sheen',
-  default: 'as professionally printed/applied logo',
+  bordado: 'professional machine embroidery with visible thread stitch texture',
+  silk: 'screen printed with flat solid colors, matte finish',
+  dtf: 'DTF printed transfer with vibrant colors, slight glossy finish',
+  laser: 'laser engraved, etched into the material surface, monochromatic',
+  laser_co2: 'CO2 laser engraved with precise etching on organic materials',
+  laser_fibra: 'fiber laser marked on metal with high-contrast permanent mark',
+  sublimacao: 'sublimation printed, colors absorbed seamlessly into the material',
+  tampografia: 'pad printed with slightly glossy ink, precise small details',
+  hot_stamping: 'hot stamped with metallic foil finish, shiny reflective surface',
+  adesivo: 'vinyl sticker/decal applied to surface',
+  uv: 'UV printed with raised ink texture, vibrant colors',
+  transfer: 'heat transfer vinyl, smooth finish with slight sheen',
+  default: 'professionally printed/applied logo',
 };
 
 // T7 FIX: skip "default" in the loop to avoid false substring matches.
+// "as " prefix reintroduced at return site so TECHNIQUE_PROMPTS stays free of
+// false-positive TS assertion matches in the as-assertions ratchet (E125).
 export function getTechniquePrompt(technique: Technique): string {
   const code = technique.code?.toLowerCase() || technique.name.toLowerCase();
   for (const [key, prompt] of Object.entries(TECHNIQUE_PROMPTS)) {
     if (key === 'default') continue;
-    if (code.includes(key) || technique.name.toLowerCase().includes(key)) return prompt;
+    if (code.includes(key) || technique.name.toLowerCase().includes(key)) return `as ${prompt}`;
   }
-  return TECHNIQUE_PROMPTS.default;
+  return `as ${TECHNIQUE_PROMPTS.default}`;
 }
 
 // T8 FIX: limit to 200 records to prevent unbounded payload growth.
@@ -298,17 +300,20 @@ export interface GenerateMockupParams {
   productWidthCm?: number | null;
   /** Altura física do produto em cm (WYSIWYG): proporciona escala real do logo gerado. */
   productHeightCm?: number | null;
+  /** Cancelamento (reset do formulário, troca de produto ou saída): vai como `signal` à edge. */
+  signal?: AbortSignal;
 }
 
 export interface GenerateMockupResult {
   mockupUrl?: string;
   singleUrl?: string | null;
-  batchResults: { url: string; areaName: string }[];
+  batchResults: { url: string; areaName: string; areaId?: string }[];
   jobId?: string;
   revisionsLeft?: number;
 }
 
-const GENERATE_TIMEOUT_MS = 60000;
+// Q16: um único timeout de 30 s por chamada da edge; o wrapper aborta ao estourar.
+const GENERATE_TIMEOUT_MS = 30000;
 
 // BUG-E: SVG logos are rejected up-front — the edge function cannot composite SVGs.
 // Detect data: URLs encoding an SVG and fail fast with a friendly PT-BR message
@@ -374,79 +379,26 @@ function buildMockupPayload(params: GenerateMockupParams, area: PersonalizationA
   };
 }
 
-/** Single invocation attempt with 60s timeout. */
-async function invokeMockupOnce(
-  params: GenerateMockupParams,
-  area: PersonalizationArea,
-  idemKey: string,
-): Promise<string> {
-  const generateCall = invokeEdge<{ mockupUrl?: string }>('generate-mockup', {
-    body: buildMockupPayload(params, area),
-    idempotencyKey: idemKey,
-  });
-
-  let timer: ReturnType<typeof setTimeout> | undefined;
-  const timeout = new Promise<never>((_, reject) => {
-    timer = setTimeout(
-      () => reject(new Error('Tempo esgotado ao gerar mockup (limite de 60s).')),
-      GENERATE_TIMEOUT_MS,
-    );
-  });
-
-  try {
-    const { data, error } = await Promise.race([generateCall, timeout]);
-    if (error) throw new Error(await extractEdgeErrorMessage(error));
-    if (!data?.mockupUrl) throw new Error('Nenhuma imagem retornada pela API de mockup.');
-    return data.mockupUrl as string;
-  } finally {
-    if (timer) clearTimeout(timer);
-  }
-}
-
 /**
- * Returns true for transient infrastructure errors that warrant a retry.
- * User/payload errors (bad logo format, SVG, missing logo) propagate immediately.
- */
-function isTransientError(msg: string): boolean {
-  const lower = msg.toLowerCase();
-  return (
-    lower.includes('esgotado') || // pt-BR timeout message
-    lower.includes('timeout') ||
-    lower.includes('network') ||
-    lower.includes('fetch') ||
-    lower.includes('etimedout') ||
-    lower.includes('econnreset') ||
-    lower.includes('failed to fetch') ||
-    lower.includes('503') ||
-    lower.includes('502')
-  );
-}
-
-/**
- * Invokes the edge function for a single area with one automatic retry on
- * transient infrastructure failures (timeout, network drop, 502/503).
- * BUG-NO-RETRY FIX: previously a single network glitch aborted the whole generation.
+ * Invoca a edge function para uma única área: UM timeout de 30 s e UMA tentativa
+ * (antes eram três orçamentos empilhados + um race de 60 s que não cancelava nada).
+ * O `params.signal` do hook cancela a chamada em voo no reset/troca de produto/saída.
  */
 async function invokeMockupForArea(
   params: GenerateMockupParams,
   area: PersonalizationArea,
 ): Promise<string> {
-  // Uma key por tentativa lógica de gerar a área — o retry abaixo a reusa,
-  // permitindo dedupe server-side da geração duplicada.
-  const idemKey = newIdempotencyKey();
-  try {
-    return await invokeMockupOnce(params, area, idemKey);
-  } catch (err) {
-    const msg = err instanceof Error ? err.message : String(err);
-    if (isTransientError(msg)) {
-      logger.warn('[invokeMockupForArea] Transient error, retrying in 2 s:', msg);
-      await new Promise<void>((resolve) => {
-        setTimeout(resolve, 2000);
-      });
-      return invokeMockupOnce(params, area, idemKey);
-    }
-    throw err;
-  }
+  const { data, error } = await invokeEdge<{ mockupUrl?: string }>('generate-mockup', {
+    body: buildMockupPayload(params, area),
+    idempotencyKey: newIdempotencyKey(),
+    timeoutMs: GENERATE_TIMEOUT_MS,
+    // Em safeAuthCall a opção conta tentativas totais: 1 = sem retry empilhado.
+    maxRetries: 1,
+    signal: params.signal,
+  });
+  if (error) throw new Error(await extractEdgeErrorMessage(error));
+  if (!data?.mockupUrl) throw new Error('Nenhuma imagem retornada pela API de mockup.');
+  return data.mockupUrl as string;
 }
 
 export async function generateMockupApi(
@@ -478,10 +430,14 @@ export async function generateMockupApi(
   // first error).
   const settled = await Promise.allSettled(
     areasWithLogos.map((area) =>
-      invokeMockupForArea(params, area).then((url) => ({ url, areaName: area.name })),
+      invokeMockupForArea(params, area).then((url) => ({
+        url,
+        areaName: area.name,
+        areaId: area.id,
+      })),
     ),
   );
-  const batchResults: { url: string; areaName: string }[] = [];
+  const batchResults: { url: string; areaName: string; areaId?: string }[] = [];
   let failures = 0;
   for (const result of settled) {
     if (result.status === 'fulfilled') {

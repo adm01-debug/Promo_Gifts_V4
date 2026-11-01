@@ -1,0 +1,19 @@
+# Baseline de testes — main SHA 6b48bebcb2ff5ff922298523f4678383d392ae46
+# Gerado em: 2026-10-29 — sessão session_01RfQzo8Ean3zudG2sEN79b6
+# Comando: npx vitest run tests/unit/ tests/scripts/
+# Duração: 44.97s
+
+RESULTADO: 67 arquivos de teste | 1835 testes | 3 FALHAS PRÉ-EXISTENTES
+
+## Falhas pré-existentes (TZ UTC vs BRT — não introduzidas por esta sessão)
+
+FAIL tests/unit/date-utils.test.ts > formatDateTime > returns dd/MM/yyyy HH:mm for ISO string (BRT)
+  Esperado: "12/06/2024 12:45" | Recebido: "12/06/2024 15:45"
+
+FAIL tests/unit/date-utils.test.ts > formatTime > returns HH:mm for ISO string
+  Esperado: "10:05" | Recebido: "13:05"
+
+FAIL tests/unit/date-utils.test.ts > formatTime > zero-pads hours and minutes
+  Esperado: "02:05" | Recebido: "05:05"
+
+## Todos os demais testes: 1832 PASSOU

@@ -156,7 +156,12 @@ async function runProbes(): Promise<Snapshot> {
       results[checker.name] = await checker.check();
     }),
   );
-  const statuses = Object.values(results).map((r) => r.status);
+  // external_db is an advisory checker: its failure degrades the service but
+  // does not take it fully down. Cap its contribution at "degraded" so an
+  // intermittent external connection does not produce a 503.
+  const statuses = Object.entries(results).map(([name, r]) =>
+    name === "external_db" && r.status === "unhealthy" ? "degraded" : r.status,
+  );
   let status: HealthStatus = "healthy";
   if (statuses.some((s) => s === "unhealthy")) status = "unhealthy";
   else if (statuses.some((s) => s === "degraded")) status = "degraded";

@@ -251,7 +251,7 @@ export const COLOR_TOKEN_CLASSES: Record<string, ColorClasses> = {
   },
 };
 
-const NEUTRAL_CLASSES: ColorClasses = COLOR_TOKEN_CLASSES.neutral;
+const NEUTRAL_CLASSES: ColorClasses = COLOR_TOKEN_CLASSES.neutral!;
 
 export function colorClasses(token: string | null | undefined): ColorClasses {
   if (!token) return NEUTRAL_CLASSES;

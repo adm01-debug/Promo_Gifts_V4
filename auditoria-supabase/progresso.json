@@ -1,36 +1,34 @@
 {
+  "ultima_atualizacao": "2026-11-01",
   "projeto": "doufsxqlfjyuvxuezpln",
-  "sessao": "session_01VXkRxX4vkrqFTfH53NAEBx",
-  "data": "2026-10-27",
+  "fase": "A_concluida_B_pendente",
   "secoes": [
-    {"id": "A.0", "titulo": "Baseline inventário", "status": "CONCLUÍDO", "nota": "inventario/baseline_antes.json (265KB) captura estado antes da auditoria; baseline_depois.json confirma imutabilidade"},
-    {"id": "A.1", "titulo": "Inventário completo", "status": "CONCLUÍDO", "nota": "inventario/secao1_inventario.md — tabelas, funções, índices, extensions, enum, views", "arquivo": "inventario/secao1_inventario.md"},
-    {"id": "A.2", "titulo": "Drift repo↔produção", "status": "CONCLUÍDO", "achados": 3, "arquivo": "secao2_drift.md"},
-    {"id": "A.3", "titulo": "Segurança (RLS, secrets)", "status": "CONCLUÍDO", "achados": 4, "evidencias": ["SELECT pg_tables WHERE rowsecurity=false → vazio", "Advisor security_definer_view ERROR: 8 views", "has_function_privilege anon: 10 funções SECURITY DEFINER"]},
-    {"id": "A.4", "titulo": "Integridade estrutural", "status": "CONCLUÍDO", "achados": 3, "arquivo": "secao4_integridade.md"},
-    {"id": "A.5", "titulo": "Performance", "status": "CONCLUÍDO", "achados": 8, "arquivo": "secao5_performance.md"},
-    {"id": "A.6", "titulo": "Cron jobs", "status": "CONCLUÍDO", "achados": 5, "arquivo": "secao6_crons.md", "evidencias": ["cron.job_run_details: 20+ falhas job startup timeout 2026-10-22", "jobid=235 image-dimensions-backfill sem header auth", "jobid=243 hash-product-images com anon_key em vez de cron-secret", "stock_daily_summary 909MB n_live_tup=0"]},
-    {"id": "A.7", "titulo": "DB functions", "status": "CONCLUÍDO", "achados": 4, "arquivo": "secao7_db_functions.md"},
-    {"id": "A.8", "titulo": "Edge functions", "status": "CONCLUÍDO", "achados": 7, "arquivo": "inventario/edge_functions.md"},
-    {"id": "A.9", "titulo": "Auth/Storage/Realtime", "status": "CONCLUÍDO", "achados": 8, "arquivo": "secao9_auth_storage_realtime.md"},
-    {"id": "A.10", "titulo": "Logs 7d", "status": "CONCLUÍDO", "achados": 4, "arquivo": "secao10_logs.md"},
-    {"id": "A.11", "titulo": "RLS na prática", "status": "CONCLUÍDO", "achados": 1, "evidencias": ["BEGIN; SET ROLE anon; SELECT COUNT(*) FROM products → 7835; ROLLBACK", "BEGIN; SET ROLE anon; SELECT COUNT(*) FROM suppliers → 42501 permission denied; ROLLBACK", "BEGIN; SET ROLE anon; SELECT COUNT(*) FROM magazines → 42501 permission denied; ROLLBACK", "BEGIN; SET ROLE anon; SELECT COUNT(*) FROM workspace_notifications → 42501 permission denied; ROLLBACK"]},
-    {"id": "A.12", "titulo": "Lacunas operacionais", "status": "CONCLUÍDO", "achados": 7, "arquivo": "secao12_lacunas.md"}
+    {"id": "A.0", "nome": "Baseline", "status": "concluída", "motivo": "baseline_antes.json gerado"},
+    {"id": "A.1", "nome": "Inventário", "status": "concluída", "motivo": "inventario/*.md gerados"},
+    {"id": "A.2", "nome": "Drift repo × produção", "status": "parcial", "motivo": "types.ts drift não executado (generation requer execução local); migrations verificadas pelo MCP"},
+    {"id": "A.3", "nome": "Segurança", "status": "concluída", "motivo": "achados SB-0001 SB-0002 SB-0007 SB-0008 documentados"},
+    {"id": "A.4", "nome": "Integridade estrutural", "status": "concluída", "motivo": "SB-0003 SB-0006 SB-0009 documentados"},
+    {"id": "A.5", "nome": "Performance", "status": "parcial", "motivo": "SB-0004 SB-0005 documentados; EXPLAIN nos top 10 NÃO VERIFICADO (timeout)"},
+    {"id": "A.6", "nome": "Crons", "status": "concluída", "motivo": "76 crons analisados, 7 inativos documentados"},
+    {"id": "A.7", "nome": "DB functions e triggers", "status": "parcial", "motivo": "570 SECURITY DEFINER verificados (search_path ok); análise individual de 1334 NÃO VERIFICADO por limite"},
+    {"id": "A.8", "nome": "Edge functions", "status": "parcial", "motivo": "110 listadas; code review individual das 36 verify_jwt=false NÃO VERIFICADO por limite de sessão"},
+    {"id": "A.9", "nome": "Auth, Storage, Realtime", "status": "concluída", "motivo": "auth.users × profiles ok; buckets analisados; realtime achados críticos documentados"},
+    {"id": "A.10", "nome": "Logs 7d", "status": "parcial", "motivo": "logs 24h analisados; janela 7d não disponível pelo MCP (limite 24h)"},
+    {"id": "A.11", "nome": "RLS na prática", "status": "parcial", "motivo": "contagens SELECT: todas 399 tabelas com RLS; testes por role NÃO VERIFICADO"},
+    {"id": "A.12", "nome": "Lacunas operacionais", "status": "NÃO VERIFICADO", "motivo": "PITR/backup status não consultado; alertas não verificados"},
+    {"id": "A.13", "nome": "Funcionalidades pendentes/parciais", "status": "parcial", "motivo": "7 crons inativos identificados; drift code×banco parcial"}
   ],
-  "contagem_severidade": {
-    "CRITICO": 3,
-    "ALTO": 8,
-    "MEDIO": 12,
-    "BAIXO": 9
-  },
-  "relatorio": "RELATORIO_AUDITORIA_SUPABASE.md",
-  "sem_escrita_em_producao": true,
-  "prova_imutabilidade": {
-    "baseline_antes": "inventario/baseline_antes.json (sha256 calculado antes das consultas)",
-    "baseline_depois": "inventario/baseline_depois.json — re-run 2026-10-27 confirma imutabilidade (base_tables=398, views=193, funcoes=1334, cron_jobs=142, rls_policies=960, migrations=2551)",
-    "explain_top_queries": "inventario/explain_top_queries.md — EXPLAIN sem ANALYZE das 3 queries mais lentas (2026-10-27)",
-    "rls_matrix": "testes/rls_matrix_tenant_ab.md — 13/13 PASS (Postgres local temporário, 2026-10-22)",
-    "pii_grep": "grep -r 'eyJ|sk_|pk_|_key.*:[^a-zA-Z]' auditoria-supabase/ — zero valores reais; apenas nomes de variáveis",
-    "queries_executadas": "somente SELECT, EXPLAIN (sem ANALYZE), BEGIN/SET ROLE/ROLLBACK, get_advisors, list_migrations, list_edge_functions — nenhum DDL/DML"
-  }
+  "achados": [
+    {"id": "SB-0001", "severidade": "CRÍTICO", "tipo": "SEGURANÇA", "status": "aguardando_aprovacao"},
+    {"id": "SB-0002", "severidade": "ALTO", "tipo": "SEGURANÇA", "status": "aguardando_aprovacao"},
+    {"id": "SB-0003", "severidade": "MÉDIO", "tipo": "INTEGRIDADE", "status": "aguardando_aprovacao"},
+    {"id": "SB-0004", "severidade": "MÉDIO", "tipo": "PERFORMANCE", "status": "aguardando_aprovacao"},
+    {"id": "SB-0005", "severidade": "MÉDIO", "tipo": "PERFORMANCE", "status": "aguardando_aprovacao"},
+    {"id": "SB-0006", "severidade": "MÉDIO", "tipo": "INTEGRIDADE", "status": "aguardando_aprovacao"},
+    {"id": "SB-0007", "severidade": "MÉDIO", "tipo": "SEGURANÇA", "status": "aguardando_aprovacao"},
+    {"id": "SB-0008", "severidade": "MÉDIO", "tipo": "SEGURANÇA", "status": "aguardando_aprovacao"},
+    {"id": "SB-0009", "severidade": "BAIXO", "tipo": "INTEGRIDADE", "status": "aguardando_aprovacao"},
+    {"id": "SB-0010", "severidade": "INFO", "tipo": "LACUNA", "status": "informativo"},
+    {"id": "SB-0011", "severidade": "MÉDIO", "tipo": "SEGURANÇA", "status": "monitorar"}
+  ]
 }
