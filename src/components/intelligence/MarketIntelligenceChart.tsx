@@ -50,11 +50,17 @@ interface Props {
   productId?: string | null;
 }
 
+// Seeded pseudo-random — deterministic so mock chart is stable across renders
+function seededRandom(seed: number): number {
+  const x = Math.sin(seed + 1) * 10000;
+  return x - Math.floor(x);
+}
+
 // ---------- Mock data generator ----------
 function generateMockMarketData(days: number) {
   const daily: MacroMarketPoint[] = [];
   const now = new Date();
-  let stock = 3200 + Math.floor(Math.random() * 800);
+  let stock = 3200 + Math.floor(seededRandom(days) * 800);
 
   for (let i = days - 1; i >= 0; i--) {
     const d = new Date(now);
@@ -64,8 +70,8 @@ function generateMockMarketData(days: number) {
     const dayOfWeek = d.getDay();
     const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
     const baseDepleted = isWeekend ? 15 : 45;
-    const depleted = Math.max(0, Math.round(baseDepleted + (Math.random() - 0.4) * 30));
-    const restocked = Math.random() > 0.85 ? Math.round(200 + Math.random() * 400) : 0;
+    const depleted = Math.max(0, Math.round(baseDepleted + (seededRandom(i * 3 + 1) - 0.4) * 30));
+    const restocked = seededRandom(i * 3 + 2) > 0.85 ? Math.round(200 + seededRandom(i * 3 + 3) * 400) : 0;
 
     stock = Math.max(100, stock - depleted + restocked);
 
