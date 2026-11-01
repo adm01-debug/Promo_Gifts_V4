@@ -359,7 +359,7 @@ export default function SimulationPage() {
             <CardContent className="flex h-[400px] items-center justify-center border-t">
               <div className="text-center text-muted-foreground">
                 <BarChart3 className="mx-auto mb-4 h-12 w-12 opacity-20" />
-                <p>Percentis calculados sobre as latências medidas na última simulação.</p>
+                <p>Percentis de latência calculados na última simulação.</p>
                 <div className="mt-4 flex justify-center gap-8">
                   <div className="text-center">
                     <p className="text-xs font-bold uppercase text-muted-foreground">p50</p>
