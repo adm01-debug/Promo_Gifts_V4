@@ -986,9 +986,11 @@ Queries executadas via MCP `execute_sql` em produção (`doufsxqlfjyuvxuezpln`):
 | Alert | CVE | Severity | Status |
 |---|---|---|---|
 | #84 minimatch@10.2.6 | CVE-2026-118764 | MEDIUM | ✅ **PR #2925 mergeada 2026-11-01T20:41Z** — override `^11.0.1` em `package.json`; minimatch@11.0.3 instalado; alert auto-dismissed |
-| #69 extract-zip@2.0.1 | CVE-2026-19693 | HIGH | **Sem patch disponível** — `first_patched_version: null`; escopo dev/transitive; reachability disabled; aguarda patch upstream de `@puppeteer/browsers` |
-| #68 extract-zip@2.0.1 | CVE-2026-56876 | HIGH | **Sem patch disponível** — `first_patched_version: null`; escopo dev/transitive; reachability disabled; aguarda patch upstream de `@puppeteer/browsers` |
+| #69 extract-zip@2.0.1 | CVE-2026-19693 | HIGH | ✅ **Dismissed `tolerable_risk` 2026-11-01T20:46:12Z** — `first_patched_version: null`; escopo dev/transitive; reachability disabled |
+| #68 extract-zip@2.0.1 | CVE-2026-56876 | HIGH | ✅ **Dismissed `tolerable_risk` 2026-11-01T20:46:11Z** — `first_patched_version: null`; escopo dev/transitive; reachability disabled |
+
+**0 open Dependabot alerts** confirmado via `list_dependabot_alerts(state: open)` → `[]`
 
 ### schema-snapshot-export
 
-Runs #2700 (queued) e #2706 (pending) cancelados em 2026-11-01T20:5x UTC. Novo dispatch disparado em 2026-11-01T21:xx UTC no HEAD atual (`cbbabc2`, pós-merge PR #2925). Aguardando conclusão dos runners do CI.
+Runs #2700 (queued) e #2706 (pending) cancelados em 2026-11-01T20:5x UTC. Dispatch #41348311003 (run #2718) acionado no HEAD `cbbabc2` em 2026-11-01T20:43:29Z. Status: `queued` por backlog de runners CI. Não é problema de código.
