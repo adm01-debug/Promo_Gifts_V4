@@ -382,3 +382,49 @@ Consulta pelo MCP GitHub às 119 definições de workflow, filtrada por `branch=
 - Checks paralelos da PR tiveram resultados próprios: `E2E Quotes — Matrix` [#41147611028](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41147611028) falhou em dois specs fora do diff; `CI - Replenishment Module Quality Gate` [#41147610965](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41147610965) falhou na paridade visual de `/novidades` e `/reposicao`; `E2E • Swatch QuickView` [#41147610984](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41147610984) teve o runner WebKit cancelado e os outros navegadores estavam em andamento.
 - O status externo Vercel da PR falhou no deployment `dpl_9CwYXvh4mXWu7ENPLAMrDkvjK7W4`, mas a inspeção disponível não forneceu o log que identificaria a causa; o bloqueio está registrado em `PENDENCIAS.md §P32` para consulta no projeto Vercel canônico. A revisão Copilot reportou HTTP 402 por cota adicional esgotada.
 - A PR permanece aberta e sem merge: checks auxiliares ainda pendentes/falhos, e a alteração funcional poderia disparar deploy de produção. Nenhuma migration, DDL, escrita no Supabase ou deploy de produção foi feita.
+
+---
+
+## 15. Sessão P37 — Comparação Baseline × Final PR #2846 (2026-11-01)
+
+### Baseline: main@5ae127ea (antes do PR #2846)
+
+| Workflow | Conclusão | Observação |
+|---|---|---|
+| Deploy Gates (Gate Final) | ❌ failure ([41304184400](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41304184400)) | Gate 1.12 stock_notes sem soft-delete-exempt — **regressão do PR #2871** |
+| migrations-sync-log-gate | ❌ failure | Recibo "pendente" para migration 20261031000000 |
+| CI Security & Drift Checks | ❌ failure (pré-existente) | E2E autenticados — pré-existente |
+| Branch Protection Sentinel | ❌ failure (pré-existente) | Lovable sem (#NNN) — externo |
+| E2E — Critical Flows | ❌ failure (pré-existente) | Check min-tests — pré-existente |
+| E2E • Swatch QuickView | ❌ failure (pré-existente) | Chromium+WebKit — pré-existente |
+| Kit Coverage | ❌ failure (pré-existente) | GRANT faltando — externo |
+| Release Please | ❌ failure (pré-existente) | Token GitHub — externo |
+
+### Após PR #2846 (SHA `889f3e3a` — 2026-11-01)
+
+| Workflow | Conclusão | Observação |
+|---|---|---|
+| Deploy Gates (Gate Final) | ⏳ pending ([41316231539](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41316231539)) | Aguardando runner; check-in 15:14 UTC |
+| migrations-sync-log-gate | ✅ **success** ([41314375394](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41314375394), SHA 65119d68) | Gate 1.13.3 corrigido — recibo "aplicada" |
+| SSOT Supabase Guard | ✅ success ([41314375458](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41314375458)) | Sem regressão |
+| Gate 5 — Supabase Security Audit | ✅ success ([41314375450](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41314375450)) | Sem regressão |
+| Quote Builder Delivery Quality | ✅ success ([41314375398](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41314375398)) | Sem regressão |
+| URL State — Unit & Fuzz | ✅ success ([41314375495](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41314375495)) | Sem regressão |
+| CI Security & Drift Checks | ❌ failure (pré-existente) | Sem alteração — pré-existente |
+| Branch Protection Sentinel | ❌ failure (pré-existente) | Sem alteração — externo |
+| E2E — Critical Flows | ❌ failure (pré-existente) | Sem alteração — externo |
+| E2E • Swatch QuickView | ❌ failure (pré-existente) | Sem alteração — externo |
+
+### Resumo de mudanças
+| Item | Antes | Depois | Causa |
+|---|---|---|---|
+| Gate Final (required) | ❌ failure | ⏳ pending (esperado: success) | PR #2846 corrige Gate 1.12 e Gate 1.13.3 |
+| migrations-sync-log-gate | ❌ failure | ✅ success | Recibo atualizado: "pendente" → "aplicada" |
+| Regressões introduzidas | — | **nenhuma** | tsc, build, lint, vitest: zero erros novos |
+
+### Baseline local (vitest — 2026-11-01T14:17 UTC)
+- `npx vitest run tests/scripts/`: 41 arquivos, **540 passed**, 3 skipped — EXIT=0
+- Build: ✅ `npm run build` EXIT=0 (13.04s)
+- TypeScript: ✅ `npx tsc --noEmit` EXIT=0
+- Lint: ✅ `npm run lint:baseline` — 0 erros, 0 warnings, nenhuma regressão
+
