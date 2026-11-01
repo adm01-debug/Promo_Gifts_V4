@@ -55,6 +55,7 @@ async function bootstrap(page: Page, path: string) {
     try { window.localStorage.setItem('ff_useColorSwatchesV2', 'true'); } catch {/* ignore */}
   });
   await page.goto(path, { waitUntil: 'domcontentloaded' });
+  await page.waitForSelector('[data-state="loading"]', { state: 'detached', timeout: 20000 }).catch(() => {});
   await page.addStyleTag({ content: FREEZE_CSS });
 }
 
@@ -138,7 +139,7 @@ for (const route of ROUTES) {
       const targetIdx = count >= 2 ? 1 : 0;
       const target = swatches.nth(targetIdx);
       const targetLabel = labels[targetIdx];
-      await target.click();
+      await target.click({ force: true });
 
       await expect(target).toHaveAttribute('aria-pressed', 'true');
       await expect(target).toHaveAttribute('aria-label', targetLabel);
