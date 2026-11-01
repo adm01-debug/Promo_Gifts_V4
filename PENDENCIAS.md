@@ -71,7 +71,6 @@ Consulta somente leitura em `pg_catalog` no projeto canônico `doufsxqlfjyuvxuez
 | Gate Final PR #2941 | Aguardando CI |
 
 ---
-
 ## Inventário P29 — falhas na `main`@c2432c52 (2026-11-01T20:05Z)
 
 Ponta da `main` auditada: `c2432c52` (HEAD atual). Somente workflows cuja ÚLTIMA execução na main falhou.

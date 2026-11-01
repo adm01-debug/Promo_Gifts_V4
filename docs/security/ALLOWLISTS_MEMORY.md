@@ -174,6 +174,8 @@ exige atualizar este inventário no mesmo PR.
 - `public.log_access_denied(_blocked_path text, _required_role text, _user_role text, _reason text)` — E099 (2026-10-21): logger de acesso negado; SECURITY DEFINER para gravar em tabela de auditoria sem RLS do chamador.
 - `public.record_dev_route_telemetry(_event_type text, _blocked_path text, _user_role text, _duration_ms integer)` — E099 (2026-10-21): telemetria de rota de desenvolvimento; SECURITY DEFINER para gravar métricas sem RLS; chamado por middleware, não por usuário final direto.
 - `public.cleanup_expired_auth_sessions()` — E056 (2026-10-30): rotina de manutenção (cron) — SECURITY DEFINER necessário para deletar sessões expiradas em auth.sessions sem RLS; executado por cron/service_role sem parâmetros do chamador; sem exposição de PII a `authenticated`. EXECUTE revogado de PUBLIC/anon/authenticated **pendente** — migration 20261101202000 preparada mas não aplicada; aguarda aprovação PO para executar via db-apply-migration.yml (REGRA E056).
+- `public.cleanup_expired_auth_sessions()` — E056 (2026-10-30): rotina de manutenção (cron) — SECURITY DEFINER necessário para deletar sessões expiradas em auth.sessions sem RLS; executado por cron/service_role sem parâmetros do chamador; sem exposição de PII a `authenticated`.
+- `public.perf002_drop_unused_snapshot_indexes()` — E056 (2026-10-30): rotina de manutenção de performance (série perf) — SECURITY DEFINER necessário para dropar índices em tabelas de snapshot sem RLS; executado por cron/service_role, sem parâmetros do chamador.
 
 ### Allowlist `secdef-anon` — snapshot literal do `pg_catalog`
 
