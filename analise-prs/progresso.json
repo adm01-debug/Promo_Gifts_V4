@@ -40,7 +40,7 @@
     "ci_2960_head_53cf1298": "quality-gate: queued (in_progress) + mergeable_state: blocked (unresolved review)",
     "build_npm_run_build": "✅ built in 16.22s",
     "vitest_baseline": "3 arquivos falhando pré-existentes, 26042 passaram",
-    "eslint_baseline": "crash OOM no container (SIGABRT)"
+    "eslint_baseline": "crash OOM no container (SIGABRT) — pré-existente, pre-push hook falhou por isso"
   },
   "prs_nao_mergeadas_pendentes": {
     "2941": {"status": "AGUARDANDO CI", "motivo": "Conteúdo único (remove mcp_kv_get); sem CI no head 3d0bf8c2; behind main após merge #2927"},

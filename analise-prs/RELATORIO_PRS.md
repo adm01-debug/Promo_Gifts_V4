@@ -9,7 +9,7 @@
 
 ## ✅ MERGEADAS NESTA SESSÃO
 
-### PR #2927 — fix(listas): normaliza filtros padrão após navegação POP
+## 🚫 DECISÃO HUMANA
 
 **Branch:** `claude/fix-e2e-url-state-261101-2045` | **Merge SHA:** `c80b098a654e90d7b8a962a67babbffb12063f33`
 
@@ -200,8 +200,6 @@ Todas marcadas como Draft pelo autor. Listadas para completude:
 ---
 
 ## Verificações de banco
-
-**Projeto:** `doufsxqlfjyuvxuezpln` (SUPABASE - GESTÃO DE PRODUTOS)
 
 ```sql
 SELECT proname, prosecdef FROM pg_proc
