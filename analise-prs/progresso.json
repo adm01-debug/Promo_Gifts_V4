@@ -1,24 +1,26 @@
 {
   "sha_main_fixado": "58b4eeaf24f9c70d99e28c192e464ffa10c37274",
-  "sha_main_atual": "c80b098a654e90d7b8a962a67babbffb12063f33",
+  "sha_main_atual": "387afee45d9001af8eba7d34cc3f81cbd5cdac37",
   "data_analise": "2026-11-01",
   "total_prs_analisadas": 36,
   "total_abertas_no_momento": 34,
-  "total_mergeadas_nesta_sessao": 2,
+  "total_mergeadas_nesta_sessao": 3,
+  "total_mergeadas_pelo_owner": 1,
   "vereditos": {
-    "MERGEADA": 2,
-    "NÃO_MERGEAR_DRAFT": 25,
-    "NÃO_MERGEAR_BUG": 1,
-    "AGUARDANDO_CI": 3,
-    "DECISÃO_HUMANA": 1,
-    "BOT_MANAGED": 1,
+    "MERGEADA": 4,
+    "NÃO_MERGEAR_DRAFT": 26,
     "BRANCH_TRABALHO": 1,
-    "NÃO_MERGEAR_STALE_AGUARDANDO": 1,
-    "AGUARDANDO_CI_BLOCKED": 1
+    "NÃO_MERGEAR_BUG": 1,
+    "NÃO_MERGEAR_CONFLITO": 1,
+    "AGUARDANDO_CI_BLOCKED": 1,
+    "DECISÃO_HUMANA": 1,
+    "BOT_MANAGED": 1
   },
   "mergeadas": [
-    {"pr": 2927, "merge_sha": "c80b098a654e90d7b8a962a67babbffb12063f33", "method": "squash", "data": "2026-11-01"},
-    {"pr": 2949, "merge_sha": "a16b116a893910299b45f3c358a7615bf7150daf", "method": "squash", "data": "2026-11-01"}
+    {"pr": 2927, "merge_sha": "c80b098a654e90d7b8a962a67babbffb12063f33", "method": "squash", "data": "2026-11-01T22:48Z"},
+    {"pr": 2949, "merge_sha": "a16b116a893910299b45f3c358a7615bf7150daf", "method": "squash", "data": "2026-11-01"},
+    {"pr": 2983, "merge_sha": "387afee45d9001af8eba7d34cc3f81cbd5cdac37", "method": "squash", "data": "2026-11-01T22:50:46Z", "merged_by": "adm01-debug"},
+    {"pr": 2947, "merge_sha": "e3e8e051cb459572ce6eb72553b7c58958f206e7", "method": "squash", "data": "2026-11-01T23:06:32Z", "merged_by": "adm01-debug", "nota": "mergeada pelo owner fora desta sessão"}
   ],
   "verificacoes_completadas": {
     "banco_is_supervisor_or_above": "não existe como SECURITY DEFINER (pg_proc retornou 0 linhas)",
@@ -32,7 +34,10 @@
     "diff_completo_2952": "LIDO — scripts/check-policies-baseline.mjs +73/-2; Gate 1.13 partition tolerance",
     "ci_2927_quality_gate": "completed/success (SHA f23ee40) — MERGEADA",
     "ci_2949_docs_bypass": "E14 paths-ignore docs/** — docs-only PR, sem CI necessário — MERGEADA",
-    "ci_2941_head_3d0bf8c2": "total_count: 4 — Supabase Preview=failure(pré-existente), alert=skipped, Vercel=success, Vercel Agent=neutral; sem quality-gate",
+    "diff_completo_2960": "LIDO — 4 arquivos, remove fake progress bar (Math.random+setInterval), add animate-pulse",
+    "diff_completo_2983": "LIDO — auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md +6/-5; atualiza run ID PERF-005",
+    "ci_2983_merged_by_owner": "Merged pelo owner (adm01-debug) 2min após criação; docs-adjacent, sem gate bloqueante",
+    "ci_2941_head_3d0bf8c2": "total_count: 4 — Supabase Preview=failure(pré-existente), alert=skipped, Vercel=success, Vercel Agent=neutral; sem quality-gate; mergeable: false (dirty pós merge #2927)",
     "ci_main_c80b098a_pos_merge_2927": "10 checks: Supabase Preview=failure(pré-existente: Remote migration versions), alert=skipped, lovable-audit=skipped, seed/regen=skipped; Gate0/noUnusedLocals/DriftPolicies/Cruza/useListUrlState/DetectarMudancas=queued — CI rodando em 2026-11-01T22:48Z",
     "vercel_prod_pos_merge_2927": "deploy c80b098a superado por commits subsequentes; último READY=0ad30ce26c (fix(rls): SB-0007); conteúdo #2927 em produção; deploy atual=5b5cef36c em ERROR",
     "ci_2947_head_c8c61c8b": "total_count: 0 — sem quality-gate rodando",
@@ -40,12 +45,12 @@
     "ci_2960_head_53cf1298": "quality-gate: queued (in_progress) + mergeable_state: blocked (unresolved review)",
     "build_npm_run_build": "✅ built in 16.22s",
     "vitest_baseline": "3 arquivos falhando pré-existentes, 26042 passaram",
-    "eslint_baseline": "crash OOM no container (SIGABRT) — pré-existente, pre-push hook falhou por isso"
+    "eslint_baseline": "crash OOM no container (SIGABRT) — pré-existente, pre-push hook falhou por isso",
+    "ci_2947_mergeada_pelo_owner": "adm01-debug mergeou PR #2947 às 2026-11-01T23:06:32Z; rollback file apenas (supabase/rollbacks/), sem DDL aplicada em produção; sem quality-gate antes do merge"
   },
   "prs_nao_mergeadas_pendentes": {
-    "2941": {"status": "AGUARDANDO CI", "motivo": "Conteúdo único (remove mcp_kv_get); sem CI no head 3d0bf8c2; behind main após merge #2927"},
+    "2941": {"status": "NÃO MERGEAR", "motivo": "CONFLITO: dirty após merge de #2927 (mesmos arquivos core); autor precisa fazer rebase"},
     "2944": {"status": "BOT-MANAGED", "motivo": "release-please; label autorelease:pending"},
-    "2947": {"status": "AGUARDANDO CI", "motivo": "Rollback SQL file only; sem CI; behind main"},
     "2952": {"status": "DECISÃO HUMANA", "motivo": "REGRA #9: scripts/check-* exige revisão PO; sem CI no head 25c67241"},
     "2960": {"status": "AGUARDANDO CI / BLOCKED", "motivo": "quality-gate queued; mergeable_state: blocked (unresolved review comment)"},
     "2940": {"status": "NÃO MERGEAR", "motivo": "Typo bug: '// Se ogropo' em SidebarReorganized.tsx"}
