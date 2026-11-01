@@ -1,7 +1,7 @@
 {
   "version": 1,
   "pending_seed": false,
-  "generated_at": "2026-11-01T04:32:15.513Z",
+  "generated_at": "2026-11-01T19:33:31.000Z",
   "project_ref": "doufsxqlfjyuvxuezpln",
   "schemas_checked": [
     "public",
@@ -13,7 +13,7 @@
     "prod_audit",
     "supplier_stricker"
   ],
-  "sha256": "44d2c960eae63ab86e2611932598084e66e1bb385e983a51bf08ce037b693cea",
+  "sha256": "901fad072e647407838fdd61b9f8b7889693af4bb1054804e3a613c4eab1604c",
   "policies": [
     {
       "schemaname": "cf_recon",
@@ -362,7 +362,7 @@
       "permissive": "PERMISSIVE",
       "roles": "{authenticated}",
       "cmd": "DELETE",
-      "qual": "(is_dev() OR has_role(auth.uid(), 'admin'::app_role))",
+      "qual": "(is_dev() OR has_role(( SELECT auth.uid() AS uid), 'admin'::app_role))",
       "with_check": ""
     },
     {
@@ -373,7 +373,7 @@
       "roles": "{authenticated}",
       "cmd": "INSERT",
       "qual": "",
-      "with_check": "(is_dev() OR has_role(auth.uid(), 'admin'::app_role))"
+      "with_check": "(is_dev() OR has_role(( SELECT auth.uid() AS uid), 'admin'::app_role))"
     },
     {
       "schemaname": "public",
@@ -382,8 +382,8 @@
       "permissive": "PERMISSIVE",
       "roles": "{authenticated}",
       "cmd": "UPDATE",
-      "qual": "(is_dev() OR has_role(auth.uid(), 'admin'::app_role))",
-      "with_check": ""
+      "qual": "(is_dev() OR has_role(( SELECT auth.uid() AS uid), 'admin'::app_role))",
+      "with_check": "(is_dev() OR has_role(( SELECT auth.uid() AS uid), 'admin'::app_role))"
     },
     {
       "schemaname": "public",
@@ -392,7 +392,7 @@
       "permissive": "PERMISSIVE",
       "roles": "{authenticated}",
       "cmd": "SELECT",
-      "qual": "(auth.uid() IS NOT NULL)",
+      "qual": "(( SELECT auth.uid() AS uid) IS NOT NULL)",
       "with_check": ""
     },
     {
@@ -482,7 +482,7 @@
       "permissive": "PERMISSIVE",
       "roles": "{authenticated}",
       "cmd": "DELETE",
-      "qual": "(user_id = auth.uid())",
+      "qual": "(user_id = ( SELECT auth.uid() AS uid))",
       "with_check": ""
     },
     {
@@ -493,7 +493,7 @@
       "roles": "{authenticated}",
       "cmd": "INSERT",
       "qual": "",
-      "with_check": "(user_id = auth.uid())"
+      "with_check": "(user_id = ( SELECT auth.uid() AS uid))"
     },
     {
       "schemaname": "public",
@@ -502,8 +502,8 @@
       "permissive": "PERMISSIVE",
       "roles": "{authenticated}",
       "cmd": "UPDATE",
-      "qual": "(user_id = auth.uid())",
-      "with_check": ""
+      "qual": "(user_id = ( SELECT auth.uid() AS uid))",
+      "with_check": "(user_id = ( SELECT auth.uid() AS uid))"
     },
     {
       "schemaname": "public",
@@ -512,7 +512,7 @@
       "permissive": "PERMISSIVE",
       "roles": "{authenticated}",
       "cmd": "SELECT",
-      "qual": "(user_id = auth.uid())",
+      "qual": "(user_id = ( SELECT auth.uid() AS uid))",
       "with_check": ""
     },
     {
