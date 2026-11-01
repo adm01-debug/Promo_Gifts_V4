@@ -281,6 +281,38 @@ function isPublicOpenPolicy(p) {
   return hasPublicOrAnon && isPermissive && hasOpenQual;
 }
 
+// E206: partições mensais (sufixo _YYYY_MM ou _pYYYY_MM) herdam policies do
+// pai automaticamente. Uma policy nova numa partição é tolerada se uma
+// partição IRMÃ (mesmo prefixo de tabela, outro mês) no baseline tiver a
+// mesma policy com atributos idênticos (cmd, permissive, roles, qual,
+// with_check). O PostgreSQL reescreve USING de forma diferente entre a tabela
+// pai e as partições, então a comparação usa partições irmãs como referência.
+// Políticas que DIFEREM da irmã continuam sendo reportadas como drift — a
+// tolerância não enfraquece a detecção.
+const PARTITION_DATE_RE = /_p?\d{4}_\d{2}$/;
+
+function isPartitionPolicyMatchingParent(p, baselineByKey) {
+  const m = PARTITION_DATE_RE.exec(p.tablename);
+  if (!m) return false;
+  const baseTableName = p.tablename.slice(0, m.index);
+  // Prefixo para encontrar partições irmãs: "schema.baseTableName_"
+  // Ex: "public.magazine_public_view_events_" — NÃO casa com o pai
+  // "public.magazine_public_view_events.policyname" (ponto vs underscore).
+  const siblingPrefix = `${p.schemaname}.${baseTableName}_`;
+  for (const [key, sibling] of baselineByKey) {
+    if (!key.startsWith(siblingPrefix)) continue;
+    if (sibling.policyname !== p.policyname) continue;
+    if (
+      sibling.cmd === p.cmd &&
+      sibling.permissive === p.permissive &&
+      sibling.roles === p.roles &&
+      sibling.qual === p.qual &&
+      sibling.with_check === p.with_check
+    ) return true;
+  }
+  return false;
+}
+
 // E048: chave de tolerância que inclui cmd quando disponível nas migrations.
 // E048: casar cmd + qual + chave; fallback para backward compat.
 // Ordem: mais específico (cmd+qual) → cmd apenas → sem cmd (legado).
@@ -421,12 +453,22 @@ async function main() {
   // E043: policies novas públicas/abertas são recusadas — EXCETO as que têm DROP
   // pendente em plannedKeys (policy pré-existente sendo fase-out, não uma nova
   // adição), para não bloquear o PR que as remove (Codex P1 2026-10-18).
+  // E206: partição mensal com policy idêntica ao pai no baseline também tolerada.
   const e043Violations = addedAll.filter(
-    (p) => isPublicOpenPolicy(p) && !isAddedPlanned(p, plannedKeys),
+    (p) =>
+      isPublicOpenPolicy(p) &&
+      !isAddedPlanned(p, plannedKeys) &&
+      !isPartitionPolicyMatchingParent(p, baselineByKey),
   );
   const addedNonE043 = addedAll.filter((p) => !isPublicOpenPolicy(p));
   // E048: verifica cmd além do nome na chave de tolerância (fallback para chave legada sem cmd).
-  const added = addedNonE043.filter((p) => !isAddedPlanned(p, plannedKeys));
+  // E206: partições mensais com policy idêntica ao pai no baseline são toleradas automaticamente.
+  const added = addedNonE043.filter(
+    (p) => !isAddedPlanned(p, plannedKeys) && !isPartitionPolicyMatchingParent(p, baselineByKey),
+  );
+  const partitionAutoTolerated = addedNonE043.filter(
+    (p) => !isAddedPlanned(p, plannedKeys) && isPartitionPolicyMatchingParent(p, baselineByKey),
+  );
   const plannedAdded = addedNonE043.filter((p) => isAddedPlanned(p, plannedKeys));
   // Policies ausentes no live que uma migration pendente cria/remove —
   // mudança planejada (PR com migration + baseline atualizada), não drift.
@@ -455,6 +497,13 @@ async function main() {
       `ℹ️  ${plannedAll.length} diff(s) tolerado(s) — policy(ies) ` +
         `criada(s)/alterada(s)/removida(s) por migration ainda não aplicada:\n` +
         plannedAll.map((p) => `   - ${policyKey(p)}`).join('\n') +
+        '\n',
+    );
+  }
+  if (partitionAutoTolerated.length) {
+    process.stderr.write(
+      `ℹ️  ${partitionAutoTolerated.length} policy(ies) de partição mensal tolerada(s) automaticamente (E206):\n` +
+        partitionAutoTolerated.map((p) => `   - ${policyKey(p)}`).join('\n') +
         '\n',
     );
   }
