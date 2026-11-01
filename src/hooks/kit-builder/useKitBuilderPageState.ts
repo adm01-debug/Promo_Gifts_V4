@@ -147,6 +147,7 @@ export function useKitBuilderPageState() {
   const [searchParams] = useSearchParams();
   const kitIdParam = searchParams.get('kit');
   const productIdParam = searchParams.get('product');
+  const originParam = searchParams.get('origin');
   // A direct product entry has already made the first semantic choice, so it
   // must land in the items-first journey instead of showing an empty box step.
   const initialFlow =
@@ -207,6 +208,7 @@ export function useKitBuilderPageState() {
     restoreKitSnapshot,
     applyAIComposition,
     setKitType,
+    setKitOrigin,
     loadKit,
     startNewFlow,
   } = useKitBuilder({ initialFlow });
@@ -331,8 +333,11 @@ export function useKitBuilderPageState() {
     setAIBriefing(snapshot.aiBriefing);
     setCurrentKitId(row.id);
     setCurrentRevision(row.revision);
+    if (originParam === 'manual' || originParam === 'template' || originParam === 'ai') {
+      setKitOrigin(originParam);
+    }
     setIsHydrating(false);
-  }, [isLoadingKits, kitIdParam, loadKit, savedKits]);
+  }, [isLoadingKits, kitIdParam, loadKit, originParam, savedKits, setKitOrigin]);
 
   // Load Logic (Simplified for the pattern example)
   useEffect(() => {
@@ -441,8 +446,8 @@ export function useKitBuilderPageState() {
   );
 
   const startFlow = useCallback(
-    (flow: 'box-first' | 'items-first') => {
-      startNewFlow(flow);
+    (flow: 'box-first' | 'items-first', origin?: import('@/lib/kit-builder/types').KitOrigin) => {
+      startNewFlow(flow, origin);
       setQuoteClient({});
       setAIBriefing(undefined);
       setIsLanding(false);
@@ -532,6 +537,7 @@ export function useKitBuilderPageState() {
       handleAddToQuote,
       applyAISuggestion,
       startFlow,
+      setKitOrigin,
     },
     meta: {
       isSaving,
