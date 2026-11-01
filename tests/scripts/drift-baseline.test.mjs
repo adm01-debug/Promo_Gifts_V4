@@ -527,6 +527,23 @@ describe('export-schema-snapshot — credenciais presentes e CLI ausente', () =>
 });
 
 describe('sanitizeBaselineForReplay — round-trip do dump', () => {
+  it('popula materialized views vazias no shadow sem alterar a definição nem texto fora da cláusula', () => {
+    const sql = [
+      'CREATE MATERIALIZED VIEW "analytics"."mv_a" AS',
+      '  SELECT 1 AS id',
+      '  WITH NO DATA;',
+      'CREATE VIEW "public"."v_a" AS SELECT \'WITH NO DATA;\' AS note;',
+      'CREATE FUNCTION "public"."f_a"() RETURNS text LANGUAGE sql AS $fn$',
+      "  SELECT 'WITH NO DATA;'",
+      '$fn$;',
+    ].join('\n');
+    const out = sanitizeBaselineForReplay(sql);
+    expect(out.rewrites.materializedViewPopulation).toBe(1);
+    expect(out.sql).toContain('  SELECT 1 AS id\n  ;');
+    expect(out.sql).toContain("CREATE VIEW \"public\".\"v_a\" AS SELECT 'WITH NO DATA;' AS note;");
+    expect(out.sql).toContain("SELECT 'WITH NO DATA;'");
+  });
+
   it('passa o ARRAY de varchar por `::character varying[]` antes do cast para text[]', () => {
     const sql = `CREATE TABLE "public"."t" (
     "kind" character varying,
