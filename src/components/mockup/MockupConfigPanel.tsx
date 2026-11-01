@@ -8,6 +8,17 @@
 import { Loader2, Paintbrush, RefreshCw, Info, ChevronDown, Wand2 } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 import { Label } from '@/components/ui/label';
 import {
   Select,
@@ -372,14 +383,31 @@ export function MockupConfigPanel({
 
             {/* Reset Button */}
             <div className="flex gap-2 pt-4">
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button variant="outline" onClick={onReset} aria-label="Limpar formulário">
-                    <RefreshCw className="h-4 w-4" aria-hidden="true" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>Limpar formulário</TooltipContent>
-              </Tooltip>
+              <AlertDialog>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <AlertDialogTrigger asChild>
+                      <Button variant="outline" aria-label="Limpar formulário">
+                        <RefreshCw className="h-4 w-4" aria-hidden="true" />
+                      </Button>
+                    </AlertDialogTrigger>
+                  </TooltipTrigger>
+                  <TooltipContent>Limpar formulário</TooltipContent>
+                </Tooltip>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Limpar configuração do mockup?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      Isso removerá o produto, técnica, áreas e logos selecionados. Esta ação não
+                      pode ser desfeita.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                    <AlertDialogAction onClick={onReset}>Limpar</AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
             </div>
           </>
         )}
