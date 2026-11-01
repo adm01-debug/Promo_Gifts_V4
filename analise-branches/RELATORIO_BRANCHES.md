@@ -3,7 +3,7 @@
 Base: main `5ae127eade34db1662a92103db9e6bb3c345df03` · produção doufsxqlfjyuvxuezpln (somente leitura). **Substitui o relatório de 2026-10-24**, cujas conclusões ("3 migrations pendentes", "brechas ativas") estão desatualizadas.
 
 ## 1. Decisões humanas (topo)
-1. **Recibos E15 no SYNC_LOG**: 10 migrations estão no ledger de produção mas `supabase/MIGRATIONS_SYNC_LOG.md` do main ainda diz "pendente — não aplicada". Correção docs-only pronta em `/mnt/project-files/estado/sync_log_recibos_e15.patch` (10 linhas). Não vira PR por esta sessão porque a escrita só pode ir pelo MCP FOREVER, que exige o arquivo inteiro (267 KB). Autorize o push por git (ou outra rota) e eu abro a PR.
+1. **Recibos E15 no SYNC_LOG**: 10 migrations estão no ledger de produção mas `supabase/MIGRATIONS_SYNC_LOG.md` do main ainda diz "pendente — não aplicada". Correção docs-only aplicada em PR #2888 (`claude/docs-sync-log-recibos-e15-261101-1415`).
 2. Ressalvas opcionais: 2 correções shellcheck (db-apply-migration.yml L190 e update-snapshots.yml L110) — workflows, proibido para esta sessão. **E33 já aplicado em main** (grep E2E_USER nos 8 arquivos e2e-update-*-snapshots.yml = 0 linhas); sem PR necessário.
 
 ## 2. Mergeadas nesta sessão
@@ -29,7 +29,8 @@ Detalhes e linhas de prova: `dossies/*.md`. Cruzamento com banco: `cruzamento-su
 ## 5. DRIFT
 **Branches analisadas × produção:** nenhuma das 9 branches top tem migration fora do ledger de prod.
 
-**Main × produção (drift real):** main tem 6 migrations não aplicadas em prod (last prod = `20261027160000`):
+**Main × produção (drift real):** main tem 7 migrations não aplicadas em prod (last prod = `20261027160000`):
+- `20261027180000_reactivate_generate_blurhashes_safe_schedule.sql`
 - `20261027200000_supplier_stricker_rls_deny_all.sql`
 - `20261027220000_deactivate_xbz_image_uploader_cron.sql`
 - `20261027230000_cleanup_get_edge_function_secret_allowlist.sql`
@@ -42,7 +43,7 @@ Aplicar via `db-apply-migration.yml` em ordem, uma por vez. Essas migrations sã
 Drift documental (branches): item 1 do topo (10 recibos E15 em SYNC_LOG).
 
 ## 6. F/A/B (44)
-`confirmacao_ABF.md`. 30 descartáveis sem ressalva, 10 recibos E15 (achado) e 3 ressalvas (shellcheck, happy-faraday, gh-pages). E33 já aplicado em main.
+`confirmacao_ABF.md`. 30 descartáveis sem ressalva, 10 recibos E15 (achado), 3 ressalvas (shellcheck, happy-faraday, gh-pages) e 1 recibo duplicado (20261019000000, já em main). E33 já aplicado em main.
 
 ## 7. NÃO VERIFICADO
 - Merge de teste em worktree, typecheck/lint/testes e Postgres temporário: não executados — não há candidato a merge; registrado em baseline/README_2026-11-01.md.
