@@ -23,6 +23,9 @@ type ValidateMcpKeyRow = {
 
 const SOURCE = "mcp-server";
 
+// UUID sentinel para origem sem usuário autenticado (mesma convenção de fn_audit_row_change).
+const SENTINEL_USER_ID = "00000000-0000-0000-0000-000000000000";
+
 const supabase = createClient(
   Deno.env.get("SUPABASE_URL")!,
   Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
@@ -88,7 +91,7 @@ async function audit(
     const startedAt = ctx?.startedAt ?? finishedAt;
     const duration = ctx ? Date.now() - ctx.startedMs : 0;
     await supabase.from("admin_audit_log").insert({
-      user_id: null,
+      user_id: SENTINEL_USER_ID,
       action,
       resource_type: "mcp_api_key",
       resource_id: ctx?.keyId ?? null,
