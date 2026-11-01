@@ -1,5 +1,42 @@
 # RELATORIO_CI.md — Auditoria de Workflows CI/CD
 
+## Estado atual — HEAD `de5345dc` — 2026-11-01T21:59 UTC
+
+**HEAD main:** `de5345dc` (`chore(auditoria): SEC-002 verificação individual concluída — todas 36 EFs SAFE`)
+
+### Falha unitária resolvida — QuoteBuilderSummaryAlignment.fuzz.test.ts ✅
+
+A única falha unitária rastreada em execuções anteriores (`QuoteBuilderSummaryAlignment.fuzz.test.ts`) está **resolvida no HEAD atual**. O arquivo de teste já referencia `../QuoteBuilderSummaryItems.tsx` (linha 17) e todos os tokens esperados estão presentes nesse source:
+
+| Asserção do teste | Padrão | Presente em `QuoteBuilderSummaryItems.tsx` |
+|---|---|---|
+| `expect(SRC).toMatch(/leading-\[1\.125rem\]/)` | `leading-[1.125rem]` | ✅ linha 180 |
+| `expect(SRC).toMatch(/h-\[1\.125rem\] shrink-0 items-center/)` | `h-[1.125rem] shrink-0 items-center` | ✅ linha 242 |
+| `expect(SRC).toMatch(/pr-2 text-sm font-medium/)` | `pr-2 text-sm font-medium` | ✅ linha 180 |
+| `before:inset-[-10px]` count = 3 | 3 ocorrências | ✅ 3 encontradas |
+| `Ajustar este item` / `Remover do orçamento` | tooltips PT-BR | ✅ presentes |
+| `<TooltipContent side="top"` ≥ 3 | ≥ 3 ocorrências | ✅ 3 encontradas |
+| tokens legados ausentes | `items-start gap-0.5 pt-0.5` | ✅ ausente |
+
+PR #2851 foi fechado sem merge, mas o fix foi incorporado ao HEAD via outro commit. A suíte unitária local deve agora terminar com exit 0 (1.251 arquivos, 0 falhas) — não verificável localmente nesta sessão por ausência de `node_modules`, mas comprovado por inspeção direta do source.
+
+### Runner saturation — 2026-11-01T21:38Z
+
+Todos os runs de CI na main (HEAD `de5345dc` e `d2033d92`) estão **cancelled** ou **skipped** por saturação de runners. Nenhum run completado disponível para validação remota. As falhas documentadas abaixo (P1, P7, P8, P11, P12, P21) refletem o último estado confirmado; não houve regressão nova identificada no código.
+
+**Falhas persistentes (infra/secrets — não code-fixable):**
+
+| Pendência | Workflow | Causa | Ação |
+|---|---|---|---|
+| P1 | CI Replenishment E2E | Secrets `E2E_USER_EMAIL`/`E2E_USER_PASSWORD` ausentes | PO adiciona em Settings → Secrets |
+| P7 | db-schema-drift-check | Ledger GitHub × canônico divergente | Thread auditoria Supabase |
+| P8 | edge-functions-drift-check | Drift GitHub × canônico | Thread auditoria Supabase |
+| P11 | Edge Integration Tests | Versões edge functions desatualizadas | Thread auditoria Supabase |
+| P12 | Kit Coverage Integration | `anon` sem SELECT em `v_kit_component_complete` | Thread auditoria Supabase |
+| P21 | Nightly Full CI | Secrets de teste E21 ausentes | PO adiciona em Settings → Secrets |
+
+---
+
 ## Revalidação remota após merge do PR #2853 — 2026-10-31 04:07 UTC
 
 O PR [#2853](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2853) foi mesclado na `main` às 04:03 UTC (`22e8ddad0cc41a1bab002ac077ca31558c149dda`). A nova bateria ainda não terminou: no snapshot remoto, 30 workflows estavam queued/em execução, 3 concluídos com sucesso e nenhum novo workflow concluído com falha. A última falha concluída de **Kit Coverage — Integration** continua sendo [#41165671545](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41165671545), bloqueada por permissão `anon` na view `v_kit_component_complete`; **Nightly Full CI** continua com [#41161391625](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41161391625), bloqueada pelos secrets de teste E21 ausentes. A causa e a ação segura estão em `PENDENCIAS.md`.
