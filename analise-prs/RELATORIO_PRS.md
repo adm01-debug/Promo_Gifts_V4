@@ -45,11 +45,12 @@ Ação: autores marcam como "Ready for review" quando o código estiver completo
 
 ---
 
-## META CUMPRIDA ✅
+## META CUMPRIDA ✅ (rev89)
 
 | Critério | Status |
 |---|---|
-| Total de PRs abertos analisados | ✅ 79 PRs — 100% com diff lido, merge test e 4 perguntas |
+| Total de PRs abertos analisados | ✅ 32 PRs abertas em 2026-11-01T23:48Z — 100% com diff lido, merge test e 4 perguntas |
+| PRs históricas (todas as sessões) | ✅ 92 PRs total catalogadas |
 | Baseline main (typecheck) | ✅ TSC EXIT 0 em `5b5cef36c` (pre-merge) |
 | Baseline main (vitest) | ✅ Gate 2 CI SUCCESS — SHA `dfec2236c` (run 41019605919) |
 | `regras-de-negocio.md` | ✅ Commitada anteriormente em main |
@@ -66,14 +67,27 @@ Ação: autores marcam como "Ready for review" quando o código estiver completo
 | Veredito | Quantidade | PRs |
 |---|---|---|
 | **MERGEADA_AUTONOMA** (rev88 — esta sessão) | **8** | #2940, #2944, #2952, #2960, #2963, #2974, #2985, #2986 |
+| **MERGEADA_AUTONOMA** (rev89 — esta sessão) | **2** | #2999, #3010 |
 | MERGEADA_AUTONOMA (sessões anteriores) | 11 | #2594, #2610, #2615, #2616, #2620, #2627, #2628, #2636, #2637, #2650, #2652 |
-| MERGEADA_SESSAO_EXTERNA | 27 | #2582–#2590, #2596–#2604, #2621, #2625, #2647–#2649, #2654–#2660 e outros |
+| MERGEADA_SESSAO_EXTERNA | 30 | #2582–#2590, #2596–#2604, #2621, #2625, #2647–#2649, #2654–#2660, #2580, #2988, #2990 e outros |
 | MERGEADA_PO | 3 | #2588, #2646, #2947 |
+| JA_IMPLEMENTADA_MAIN | 1 | #2996 (tree SHA idêntico ao main) |
 | BLOQUEADA | 7 | #2420, #2572, #2579, #2605, #2622, #2653, #2941 |
-| DRAFT_NOMERGE | 25 | #2580, #2631, #2942, #2948–#2951, #2954–#2958, #2961, #2965–#2967, #2969–#2973, #2976–#2982, #2988, #2990 |
+| DRAFT_NOMERGE | 32 | #2631, #2942, #2948–#2951, #2954–#2958, #2961, #2965–#2967, #2969–#2973, #2976–#2982, #2998, #3001, #3003, #3004, #3006, #3009, #3012, #3014, #3015, #3016 |
 | SUPERSEDED | 1 | #2645 |
 | FECHADA_EXTERNA | 2 | #2600, #2989 |
-| **TOTAL** | **79** | |
+| **TOTAL** | **97** | |
+
+---
+
+## PRs Mergeadas nesta Sessão (rev89 — adicionais)
+
+| PR | Título | SHA squash | Mergeada em |
+|---|---|---|---|
+| [#2999](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2999) | feat(kit-builder): FT-113 — campo origin no KitState (frontend-only) | `83cb43936c` | 2026-11-01T23:49Z |
+| [#3010](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3010) | fix(security): remove entrada stale mcp_kv_get da allowlist lint-0029 | `95689d5b9d` | 2026-11-01T23:49Z |
+
+**main HEAD pós-merges rev89:** `95689d5b9dde131fd8428b7c928dfb5f25a0bd82`
 
 ---
 

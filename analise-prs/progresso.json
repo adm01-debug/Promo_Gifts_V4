@@ -1,11 +1,12 @@
 {
   "session_id": "session_011d8gKLZg8BWivR8aQBwxGF",
-  "revision": "rev88",
+  "revision": "rev89",
   "date": "2026-11-01",
   "status": "SESSAO_COMPLETA",
   "main_head_entrada": "5b5cef36c12e49d310bc89b45d51138a3d6f1069",
-  "main_head_final": "78b32ddd52df18efb34452295a778ade7ad1eafb",
-  "main_head_atual": "ec06a45724e7b907315d7b454cea63a7a38fdc91",
+  "main_head_final": "95689d5b9dde131fd8428b7c928dfb5f25a0bd82",
+  "main_head_rev88": "78b32ddd52df18efb34452295a778ade7ad1eafb",
+  "main_head_atual": "95689d5b9dde131fd8428b7c928dfb5f25a0bd82",
   "gate_final_atual": {
     "sha": "78b32ddd52df18efb34452295a778ade7ad1eafb",
     "run_id": "41360711486",
@@ -21,10 +22,10 @@
     "vitest": "Gate 2 CI SUCCESS — SHA dfec2236c (run 41019605919) — autoritativo",
     "nota": "main avancou adicionalmente para 35847b708e78 (commit externo pos nossos merges)"
   },
-  "prs_analisados_esta_sessao": 34,
-  "prs_analisados_total": 79,
-  "open_prs_count_verificado": 33,
-  "open_prs_verificado_em": "2026-11-01T23:15:00Z",
+  "prs_analisados_esta_sessao": 47,
+  "prs_analisados_total": 92,
+  "open_prs_count_verificado": 32,
+  "open_prs_verificado_em": "2026-11-01T23:48:00Z",
   "verdicts": {
     "MERGEADA_AUTONOMA_REV88": [
       "2940",
@@ -35,6 +36,10 @@
       "2974",
       "2985",
       "2986"
+    ],
+    "MERGEADA_AUTONOMA_REV89": [
+      "2999",
+      "3010"
     ],
     "MERGEADA_AUTONOMA_ANTERIORES": [
       "2594",
@@ -121,12 +126,25 @@
       "2979",
       "2980",
       "2981",
-      "2982"
+      "2982",
+      "2998",
+      "3001",
+      "3003",
+      "3004",
+      "3006",
+      "3009",
+      "3012",
+      "3014",
+      "3015",
+      "3016"
     ],
     "SUPERSEDED": [
       "2645"
     ],
-    "DRAFT_NOMERGE_count": 22,
+    "JA_IMPLEMENTADA_MAIN": [
+      "2996"
+    ],
+    "DRAFT_NOMERGE_count": 32,
     "MERGEADA_SESSAO_EXTERNA_count": 30
   },
   "bloqueio_razoes": {
@@ -178,6 +196,18 @@
       "sha": "de521f8442238b1d46146a3ffca21497f97a081d",
       "titulo": "chore(admin): remove referencias stale do external-db-bridge",
       "mergeado_em": "2026-11-01T23:12Z"
+    }
+  },
+  "merges_autonomos_rev89": {
+    "2999": {
+      "sha": "83cb43936c6850311edf9a7eee6c7c4d5321a0ed",
+      "titulo": "feat(kit-builder): FT-113 — campo origin no KitState (frontend-only)",
+      "mergeado_em": "2026-11-01T23:49Z"
+    },
+    "3010": {
+      "sha": "95689d5b9dde131fd8428b7c928dfb5f25a0bd82",
+      "titulo": "fix(security): remove entrada stale mcp_kv_get da allowlist lint-0029",
+      "mergeado_em": "2026-11-01T23:49Z"
     }
   },
   "baseline": {
