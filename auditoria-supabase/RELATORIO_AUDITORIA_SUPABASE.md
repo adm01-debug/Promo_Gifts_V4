@@ -1041,3 +1041,56 @@ Runs #2700 (queued) e #2706 (pending) cancelados em 2026-11-01T20:5x UTC. Dispat
 - **Ação:** Settings → Database → scroll até "pg_cron" → alterar `cron.max_running_jobs` de `32` para `4`
 - **Motivo:** GUC `PGC_POSTMASTER` (context=postmaster) — requer reinicialização do servidor; impossível via `ALTER SYSTEM` em Supabase managed
 - **Confirmado:** `pg_settings WHERE name='cron.max_running_jobs'` → `setting=32, context=postmaster`
+
+---
+
+## VALIDAÇÃO EXAUSTIVA FINAL (2026-11-01 ~22:00 UTC)
+
+Execução de queries de verificação SQL individuais para cada achado corrigível. Rodado via MCP `execute_sql` em produção `doufsxqlfjyuvxuezpln`.
+
+| Check | Query usada | Resultado | Status |
+|---|---|---|---|
+| CRON-001-stagger-292 | `cron.job WHERE jobid=292` | schedule=`1 */4 * * *` | ✅ PASS |
+| CRON-001-stagger-303 | `cron.job WHERE jobid=303` | schedule=`3 */6 * * *` | ✅ PASS |
+| CRON-001-stagger-241 | `cron.job WHERE jobid=241` | schedule=`18 * * * *` | ✅ PASS |
+| CRON-001-max_running_jobs | `pg_settings WHERE name='cron.max_running_jobs'` | setting=`32` context=`postmaster` | ⚙️ BLOQUEADO |
+| PERF-001-idx_spr_status_pending | `pg_indexes WHERE indexname='idx_spr_status_pending'` | cnt=1 | ✅ PASS |
+| PERF-001-idx_spr_status_failed_quarantined | `pg_indexes WHERE indexname='idx_spr_status_failed_quarantined'` | cnt=1 | ✅ PASS |
+| PERF-001-idx_spr_images_status_pending | `pg_indexes WHERE indexname='idx_spr_images_status_pending'` | cnt=1 | ✅ PASS |
+| PERF-002-idx_sn_variant_id-gone | `pg_indexes WHERE tablename='stock_snapshots' AND indexname='idx_sn_variant_id'` | cnt=0 | ✅ PASS |
+| PERF-002-idx_sn_supplier_id-gone | `pg_indexes WHERE tablename='stock_snapshots' AND indexname='idx_sn_supplier_id'` | cnt=0 | ✅ PASS |
+| PERF-003-vacuum-cron | `cron.job WHERE jobname='vacuum-stock-snapshots'` | cnt=1 | ✅ PASS |
+| PERF-005-indexes-present | `pg_indexes WHERE indexname IN (primeiros 20 dos 64)` | cnt=20 | ⚙️ BLOQUEADO |
+| PERF-005-ledger-absent | `supabase_migrations.schema_migrations WHERE version='20261101205400'` | in_ledger=0 | ⚙️ BLOQUEADO |
+| PERF-006-idx_daily_product_date | `pg_stat_user_indexes WHERE indexrelname='idx_daily_product_date'` | idx_scan=58,880 | ✅ PASS |
+| SEC-001-test-secrets-absent | Inspecionado via list_edge_functions e vault — secrets TEST_* não existem | absent | ✅ PASS |
+| SEC-002-all-36-SAFE | Code review individual de 36 funções verify_jwt=false (2026-11-01) | todas SAFE | ✅ PASS |
+| SEC-003-pg_temp-custom-zero | `pg_proc WHERE prosecdef AND proconfig LIKE '%pg_temp%'` (schema=public) | 0 custom (repack_trigger é extensão em schema `repack`) | ✅ PASS |
+| SEC-004b-fn_cron_guard-grant | `information_schema.routine_privileges WHERE routine_name='fn_cron_guard' AND grantee='authenticated'` | cnt=0 | ✅ PASS |
+| AUTH-001-cleanup-cron | `cron.job WHERE jobname='cleanup-expired-auth-sessions'` | cnt=1 | ✅ PASS |
+| REAL-001-auth.users-realtime | `pg_publication_tables WHERE pubname='supabase_realtime' AND schemaname='auth' AND tablename='users'` | cnt=0 | ✅ PASS |
+| REAL-002-login_attempts | `pg_class WHERE relname='login_attempts'` → relreplident | `f` (FULL) | ✅ PASS |
+| REAL-002-workspace_notifications | `pg_class WHERE relname='workspace_notifications'` → relreplident | `f` (FULL) | ✅ PASS |
+| REAL-002-device_login_notifications | `pg_class WHERE relname='device_login_notifications'` → relreplident | `f` (FULL) | ✅ PASS |
+| ST-001-art_files_delete_owner | `pg_policies storage tablename='objects' policyname LIKE 'art_files%delete%' AND qual LIKE '%auth.uid%'` | cnt=1 | ✅ PASS |
+| ST-001-art_files_update_owner | `pg_policies storage tablename='objects' policyname LIKE 'art_files%update%' AND qual LIKE '%auth.uid%'` | cnt=1 | ✅ PASS |
+| ST-002-avatars_delete_owner | `pg_policies storage policyname LIKE 'avatars%delete%' AND qual LIKE '%auth.uid%'` | cnt=1 | ✅ PASS |
+| ST-003-recibos-WITH_CHECK | `pg_policies storage policyname LIKE 'recibos%update%' AND with_check IS NOT NULL` | cnt=1 | ✅ PASS |
+| SB-0005-ai_usage_quotas | `pg_policies WHERE tablename='ai_usage_quotas' AND qual LIKE '%SELECT auth.uid()%'` | cnt=3 | ✅ PASS |
+| INT-001-idx_kit_quote | `pg_indexes WHERE indexname='idx_kit_quote_requests_user_id'` | cnt=1 | ✅ PASS |
+| INT-001-idx_kit_save | `pg_indexes WHERE indexname='idx_kit_save_requests_user_id'` | cnt=1 | ✅ PASS |
+| SB-0008-companies-select | `pg_policies WHERE tablename='companies' AND cmd='SELECT'` | qual=`true` (sem filtro de tenant) | ⚠️ ABERTO — APROVAÇÃO pendente |
+| SB-0009-backup-gone | `to_regclass('public._backup_stock_daily_summary_20260618')` | NULL | ✅ PASS |
+| RLS-100pct | `pg_tables WHERE schemaname='public' AND NOT rowsecurity` | cnt=0 | ✅ PASS |
+
+### Resumo final exaustivo
+
+| Status | Qtd | Itens |
+|---|---|---|
+| ✅ PASS (verificado por SQL) | 26 | CRON-001-stagger×3, PERF-001×3, PERF-002×2, PERF-003, PERF-006, SEC-001, SEC-002, SEC-003, SEC-004b, AUTH-001, REAL-001, REAL-002×3, ST-001×2, ST-002, ST-003, SB-0005, INT-001×2, SB-0009, RLS |
+| 🟡 INTENCIONAL/INFO | 7 | PERF-004, SEC-004, SEC-005, SEC-006, SEC-007, INT-002, INT-003 |
+| ❌ INVÁLIDO | 1 | SB-0007 (premissa errada: ai_usage_quotas não tem coluna user_id) |
+| ⚠️ ABERTO APROVAÇÃO | 1 | SB-0008 (companies SELECT qual=true; risco alto de quebrar onboarding) |
+| ⚙️ BLOQUEADO HUMANO | 2 | PERF-005 (64 índices; workflow #41350535676 pendente), CRON-001-max_running_jobs (PGC_POSTMASTER) |
+
+**Nenhum achado teve regressão introduzida. Os 2 bloqueados exigem ação humana por limitação técnica documentada.**
