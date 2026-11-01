@@ -61,11 +61,23 @@ Dossiês individuais: `dossies/*.md`. Cruzamento banco: `cruzamento-supabase.md`
 
 Cluster PostgreSQL 16.15 iniciado via `sudo -u postgres /usr/lib/postgresql/16/bin/pg_ctl -D /tmp/pgdata_analise`; auth.users stub + 13 tabelas públicas stub + cron stubs criados. Ver `analise-branches/baseline/postgres-temp-test.txt`.
 
-## 8. Produção não mudou
-`list_migrations` antes/depois: **2575** / last `20261101202500` em ambos.
-`list_edge_functions` antes/depois: **110** em ambos.
-Projeto confirmado: `doufsxqlfjyuvxuezpln` (MCP `SUPABASE_-_GEST_O_DE_PRODUTOS`, URL `https://doufsxqlfjyuvxuezpln.supabase.co`).
-Nenhuma DDL, deploy ou apply_migration executada nesta sessão.
+## 8. Estado de produção — verificação final
+
+**Baseline (início da análise, sessão 2026-11-01):** `list_migrations` = **2575** / last `20261101202500` · `list_edge_functions` = **110**.
+
+**Verificação final (2026-11-01T23:30 UTC):** `list_migrations` = **2577** / last `20261101232022` · `list_edge_functions` = **110**.
+
+**Δ migrations: +2** — duas novas migrations aplicadas via `db-apply-migration.yml` durante o período da análise (não por este agente):
+- `20261101223908` — aplicada ~22:39 UTC
+- `20261101232022` — aplicada ~23:20 UTC
+
+Runs de `db-apply-migration.yml` observados no período: `41361738671` (cancelled), `41361764962` (cancelled), `41362075099` (pending) — todos disparados por `adm01-debug`, não pelo agente desta análise.
+
+**Edge functions:** 110 → 110 (inalterado).
+
+**Ações desta análise em produção:** ZERO. Nenhum `apply_migration`, DDL, deploy ou DML executado pelo agente em `doufsxqlfjyuvxuezpln`.
+
+**Contagem correta de versões** (método: `re.findall(r'\"version\":\"([^\"]+)\"')` — inclui versões não-numéricas como `20260623_bugalert1`): 2577 total, das quais 3 têm sufixo textual e 2574 são puramente numéricas.
 
 ## 8.1. Worktrees — prova (META item 6)
 
