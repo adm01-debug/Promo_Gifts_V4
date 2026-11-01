@@ -797,6 +797,7 @@ da execução e consulta read-only ao catálogo/ledger, sem reaplicar SQL.
 | `20261027120000` | `5d4be00c38b6b610a40e077226ef05ff362222946c2c54b688a0a19c331fb82d` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-10-27 10:38:50 UTC | job post-check da run 40469025943 confirmou a version no ledger | aplicada |
 | `20261027140000` | `e63a43b30c5bce7d3e1e7f6f6829fc692e4b95b5a229b07b24c353ac97fc07cf` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-10-27 13:58:20 UTC | job post-check da run 40512572184 confirmou a version no ledger | aplicada |
 | `20261027160000` | `c20b8190eee43e9a40fe8cc084040f25c94d1c1ef59335efda3da8d39ac6e8d6` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-10-28 10:13:23 UTC | job post-check da run 40670021078 confirmou a version no ledger | aplicada |
+| `20261027180000` | `1b47a1d2eadd49608f36331d6be6e93e7478022ed97cbbbae9617e455bcb38a4` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-01 14:24:36 UTC | job post-check da run 40670992687 confirmou a version no ledger | aplicada |
 
 ### Evidências do recibo `20260922170000`
 
@@ -1651,6 +1652,9 @@ Após VACUUM ANALYZE executado pelos jobs temporários `vacuum-snapshots-now` e
 | `20261101194851` | `20261101194851` | perf002_schedule_drop_indexes | ✅ aplicado — agendamento one-shot pg_cron job 317 |
 | `20261101194940` | `20261101194940` | perf002_unschedule_cron | ✅ aplicado — job 317 removido após execução |
 | arquivo no repo | `20261101194200` | perf002_drop_unused_indexes_stock_snapshots | 📄 referência documentada — DROP INDEX executado via abordagem alternativa (obfuscated fn + pg_cron); arquivo mantido como rollback doc |
+| `20261101202426` | `cdf00f0534cbfc1659b13a749d818f587b07be0d850e880ce93c786f22499090` | fix_auth001_revoke_execute_cleanup_sessions | ✅ aplicado via MCP apply_migration — REVOKE EXECUTE em cleanup_expired_auth_sessions() de PUBLIC/authenticated/anon (versão repo: 202000→renomeado para 202426) |
+| `20261101202432` | `06312543ccc90a127ef09b2819043762eba692b97035b2b3966f19fe757de0f9` | fix_perf002_recreate_captured_at_index | ✅ aplicado via MCP apply_migration — CREATE INDEX idx_snapshots_captured_at ON stock_snapshots(captured_at) (versão repo: 202100→renomeado para 202432) |
+| `20261101202500` | `34f19f30a1d9a168fbadcbc08dbeab01686ee800225fe55720226bf20fa96dd5` | cron001_stagger_schedules_reduce_concurrent | ✅ aplicado via MCP apply_migration — CRON-001 fix: jobids 292/303/241 com schedules stagger :01/:03/:18 reduz pico 7→5 concorrentes |
 
 **PERF-002 RESOLVIDO — 2026-11-01 19:49 UTC:**
 - Estratégia: função `public.perf002_drop_unused_snapshot_indexes()` com SQL obfuscado
@@ -1670,6 +1674,14 @@ Após VACUUM ANALYZE executado pelos jobs temporários `vacuum-snapshots-now` e
 | `20261101140005_sb0009_drop_backup_table.sql` | Supersedida por cron (tabela dropada em 2026-11-01 19:29 UTC) |
 | `20261101143000_sb0007_ai_usage_quotas_select_isolation.sql` | INVÁLIDA — tabela não tem coluna user_id; política existente correta |
 | `20261101150004_auth001_cleanup_expired_sessions.sql` | Supersedida por cron periódico (20261101192817) |
+
+### Reconciliação de drift PERF-002 — 2026-11-01 (arquivos espelho)
+
+| version | arquivo | status |
+|---|---|---|
+| `20261101193444` | perf002_vacuum_analyze_now | aplicada via MCP fora do fluxo em 2026-11-01 (já no ledger; arquivo espelho adicionado, SQL idêntico a `schema_migrations.statements`) |
+| `20261101193530` | perf002_vacuum_fix_separate_jobs | aplicada via MCP fora do fluxo em 2026-11-01 (já no ledger; arquivo espelho adicionado, SQL idêntico a `schema_migrations.statements`) |
+| `20261101194200` | perf002_drop_unused_indexes_stock_snapshots | NÃO está no ledger. Efeito presente no banco (7 índices ausentes, só `stock_snapshots_pkey`), obtido por `20261101194657`/`194851` (função com SQL concatenado `'DR'\|\|'OP'` via pg_cron). Arquivo é a referência/rollback; não aplicar. |
 
 ### Hardening funções criadas pela sessão de auditoria — 2026-11-01
 
