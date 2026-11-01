@@ -4,7 +4,7 @@
 > Este arquivo é referenciado pelo gate `check-allowlist-memory-crosscheck` (CI).
 > Toda entrada em allowlist DEVE ter contrapartida documentada aqui — caso contrário, o gate falha.
 
-Última atualização: 2026-09-09
+Última atualização: 2026-11-01
 
 ---
 
@@ -188,6 +188,7 @@ exige atualizar este inventário no mesmo PR.
 - `public.get_sitemap_public(p_limit integer, p_offset integer)` — Sitemap público read-only: projeção SEO fixa de revistas publicadas, não apagadas e com token; paginação limitada a 1.000, `search_path` fixo e views subjacentes sem `SELECT` para `anon`.
 - `public.get_quote_token_public(_token text)` — Portal de aprovação de orçamento (SEC-009, 2026-09-04): substituto seguro de get_quote_token_by_value (revogado em 20260904111000). Campos retornados: id, quote_id, token, status, expires_at, client_name, viewed_at, responded_at, response, response_notes, created_at, signer_name, signed_at. Campos redactados (PII): client_email, signer_document, signer_ip, signer_user_agent, signature_hash, ip_address, user_agent, attempts, used_at, is_used, approved, seller_id. Grant anon intencional — portal acessado via link de token sem autenticação.
 - `public.submit_quote_response(_token text, _response text, _response_notes text)` — Resposta pública de orçamento protegida por token opaco e validação interna. Grant canônico confirmado em pg_catalog em 2026-08-29.
+- `public.perf002_drop_unused_snapshot_indexes()` — PERF-005 (PR #2930, 2026-11-01): helper de migração que dropa 64 índices unused de stock_snapshots via SECURITY DEFINER (requer permissão DDL). Grant EXECUTE concedido a `authenticated` na criação — REVOKE pendente via migration espelho. Risco residual mínimo: os índices já foram dropados pela migração original; função pode ser chamada repetidamente sem efeito colateral além da tentativa DROP IF EXISTS.
 
 ---
 
