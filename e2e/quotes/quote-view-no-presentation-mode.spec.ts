@@ -171,7 +171,7 @@ for (const theme of ['light', 'dark'] as const) {
     await page.addInitScript(() => {
       (window as unknown as { __deleteQuoteCalls: string[] }).__deleteQuoteCalls = [];
       (window as unknown as { __deleteQuoteSpy: (id: string) => Promise<void> }).__deleteQuoteSpy =
-        () => new Promise((resolve) => setTimeout(resolve, 400));
+        () => new Promise((resolve) => setTimeout(resolve, 1500));
     });
     await page.setViewportSize({ width: 375, height: 667 });
     await openHarness(page, theme);
@@ -184,12 +184,16 @@ for (const theme of ['light', 'dark'] as const) {
     const confirm = page.getByTestId('quote-delete-confirm');
     const cancel = page.getByTestId('quote-delete-cancel');
 
-    // Dois cliques quase simultâneos.
-    await Promise.all([confirm.click(), confirm.click().catch(() => {})]);
+    // Dois cliques quase simultâneos. Observa o loading antes de aguardar a
+    // segunda tentativa, que pode ficar sem alvo após o redirecionamento.
+    const firstClick = confirm.click();
+    const secondClick = confirm.click({ timeout: 500 }).catch(() => {});
 
-    // Botões devem ficar desabilitados durante o loading.
+    // Botões devem ficar desabilitados durante o loading, antes da navegação.
     await expect(confirm).toBeDisabled();
     await expect(cancel).toBeDisabled();
+
+    await Promise.all([firstClick, secondClick]);
 
     // Aguarda conclusão e valida chamada única (sem duplicidade).
     await expect.poll(() => readDeleteCalls(page), { timeout: 3000 }).toEqual([expectedId]);
