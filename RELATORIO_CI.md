@@ -1,9 +1,9 @@
 # RELATORIO_CI.md — Auditoria de Workflows CI/CD
 
-**Gerado:** 2026-10-29 · **Atualizado:** 2026-11-01T18:51 UTC
+**Gerado:** 2026-10-29 · **Atualizado:** 2026-11-01T19:05 UTC
 **HEAD da main auditada:** `5ae127ea` (PR #2871 — fix(db): cria tabela stock_notes, 2026-10-31)
 **HEAD anterior (baseline):** `7e56ae49` (PR #2818, docs-only, 2026-10-30)
-**PR ativo:** #2846 (`fix/e2e-url-state-defaults-20261030`) — HEAD atual `d976512c`
+**PR ativo:** #2846 (`fix/e2e-url-state-defaults-20261030`) — HEAD atual `45c3c1bf`
 **Sessão:** https://claude.ai/code/session_01T5KXrgFRFRHrCX5jRcTCUz
 
 ---
@@ -14,7 +14,9 @@
 
 | SHA | Commit | Deploy Gates | Gate 1.13.3 (recibos) | vitest local | Observação |
 |---|---|---|---|---|---|
-| `d976512c` ← HEAD | docs(pendencias): corrige wording swatch LOW (Qodo) em PENDENCIAS e RELATORIO_CI | _queued — [41337329428](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41337329428) (congestionamento runners desde 18:34 UTC)_ | — | ✅ 21/21 (audit) | tsc ✅ lint ✅; falhas não-required: `webkit•swatch→QV` (runner shutdown, P28 item 5), `Migrations x Canonical schema` (drift pré-existente 1109/649, P28 item 12) |
+| `45c3c1bf` ← HEAD | docs(pendencias): adiciona P28 item 18 — Vercel deploy preview dff40a26 | _queued — CI congestionado 19:05 UTC_ | — | ✅ 21/21 (audit, ref `d976512c`) | docs-only; Vercel dpl_4MQPrNqFiqrkaf39LKCivGwASEK4 ❌ (não required, P28 item 18) |
+| `dff40a26` | docs(pendencias): adiciona itens P28 13-17 | _queued — CI congestionado_ | — | ✅ 21/21 (audit) | docs-only; cancelado por push 45c3c1bf (concurrency) |
+| `d976512c` | docs(pendencias): corrige wording swatch LOW (Qodo) em PENDENCIAS e RELATORIO_CI | cancelado ([41337329428](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41337329428) — concurrency) | — | ✅ 21/21 (audit) | SSOT Gate 41337329546 ✅ 3/3; falhas não-required: `webkit•swatch→QV` (P28 item 5), `Migrations x Canonical` (P28 item 12) |
 | `e8d5cdbc` | fix(ci): corrige coerção null (Qodo HIGH) + fix docs Qodo medium | cancelado (push posterior) | — | ✅ 21/21 (audit) | concurrency cancel |
 | `ef47a84f` | fix(ci): aceita variações de advisory npm minimatch (E206) | cancelado (push posterior) | — | ✅ 21/21 (audit) | concurrency cancel |
 | `1b8e4d40` | docs(ci): P34 — falhas não-required PR #2846 | cancelado ([run 41316726985](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41316726985)) | — | ✅ 540/543 | cancelado por push de `ef47a84f` |
