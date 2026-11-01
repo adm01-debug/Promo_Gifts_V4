@@ -1,5 +1,6 @@
 -- Migration: cria tabela stock_notes (comentários inline por variante)
 -- Onda 2 / Melhoria 12 — tabela referenciada em useStockNotes.ts mas ausente no banco
+-- Rollback: supabase/rollbacks/20261031000000_rollback.sql
 
 -- handle_updated_at não existe no banco; criando aqui antes do trigger
 CREATE OR REPLACE FUNCTION public.handle_updated_at()
