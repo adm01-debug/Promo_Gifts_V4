@@ -4,7 +4,7 @@ Base: main `5ae127eade34db1662a92103db9e6bb3c345df03` · produção doufsxqlfjyu
 
 ## 1. Decisões humanas (topo)
 1. **Recibos E15 no SYNC_LOG**: 10 migrations estão no ledger de produção mas `supabase/MIGRATIONS_SYNC_LOG.md` do main ainda diz "pendente — não aplicada". Correção docs-only pronta em `/mnt/project-files/estado/sync_log_recibos_e15.patch` (10 linhas). Não vira PR por esta sessão porque a escrita só pode ir pelo MCP FOREVER, que exige o arquivo inteiro (267 KB). Autorize o push por git (ou outra rota) e eu abro a PR.
-2. Ressalvas opcionais (workflows, proibidos para esta sessão): E33 (remover E2E_USER_* de 8 workflows) e 2 correções shellcheck.
+2. Ressalvas opcionais: 2 correções shellcheck (db-apply-migration.yml L190 e update-snapshots.yml L110) — workflows, proibido para esta sessão. **E33 já aplicado em main** (grep E2E_USER nos 8 arquivos e2e-update-*-snapshots.yml = 0 linhas); sem PR necessário.
 
 ## 2. Mergeadas nesta sessão
 Nenhuma (nenhum candidato válido).
@@ -30,7 +30,7 @@ Detalhes e linhas de prova: `dossies/*.md`. Cruzamento com banco: `cruzamento-su
 Nenhum migration das branches fora de produção. Único drift: documental (item 1 do topo).
 
 ## 6. F/A/B (44)
-`confirmacao_ABF.md`. 30 descartáveis sem ressalva, 10 recibos E15 (achado) e 4 ressalvas (E33, shellcheck, happy-faraday, gh-pages).
+`confirmacao_ABF.md`. 30 descartáveis sem ressalva, 10 recibos E15 (achado) e 3 ressalvas (shellcheck, happy-faraday, gh-pages). E33 já aplicado em main.
 
 ## 7. NÃO VERIFICADO
 - Merge de teste em worktree, typecheck/lint/testes e Postgres temporário: não executados — não há candidato a merge; registrado em baseline/README_2026-11-01.md.
