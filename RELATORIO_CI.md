@@ -1,6 +1,6 @@
 # RELATORIO_CI.md — Auditoria de Workflows CI/CD
 
-**Gerado:** 2026-10-29 · **Atualizado:** 2026-11-01T14:00 UTC
+**Gerado:** 2026-10-29 · **Atualizado:** 2026-11-01T14:20 UTC
 **HEAD da main auditada:** `5ae127ea` (PR #2871 — fix(db): cria tabela stock_notes, 2026-10-31)
 **HEAD anterior (baseline):** `7e56ae49` (PR #2818, docs-only, 2026-10-30)
 **PR ativo:** #2846 (`fix/e2e-url-state-defaults-20261030`) — inclui fix Gate 1.12 para `stock_notes`
@@ -8,12 +8,14 @@
 
 ---
 
-## 6. Estado do PR #2846 — Gate Final (2026-11-01T14:00 UTC)
+## 6. Estado do PR #2846 — Gate Final (2026-11-01T14:20 UTC)
 
-| SHA | Commit | Deploy Gates | migrations-sync-log-gate | Observação |
-|---|---|---|---|---|
-| `0bbd70b5` | fix(ci): corrige Gate 1.13.3 (recibo repair-only) | `pending` (run [41313600062](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41313600062)) | `queued` (run [41313600117](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41313600117)) | CI em fila — push completado 2026-11-01T13:55 UTC |
-| `9422d0ac` | docs(ci): Branch Protection Sentinel — evidência jobs | push em andamento | — | push via pre-push hook lint baseline |
+| SHA | Commit | Deploy Gates | migrations-sync-log-gate | vitest local | Observação |
+|---|---|---|---|---|---|
+| `1348a44a` | fix(ci): corrige contradição recibo (Copilot LOW) | em fila | em fila | ✅ 540/543 | push em andamento |
+| `65119d68` | docs(ci): atualiza §1 vitest + §6 | em execução | em execução | ✅ 540/543 | CI running — queued jobs |
+| `0bbd70b5` | fix(ci): corrige Gate 1.13.3 (recibo repair-only) | `pending` ([run 41313600062](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41313600062)) | `queued` | ✅ 540/543 | CI disparado após push |
+| `9422d0ac` | docs(ci): Branch Protection Sentinel evidência | `completed` | — | ✅ 540/543 | push completado |
 
 **Falhas não-required no SHA anterior `f73265f3` (pré-existentes):**
 | Check | Run ID | Causa |
@@ -75,7 +77,7 @@ A única **regressão nova** introduzida por PR #2871 é o item 1 (Deploy Gates 
 | `npm run build` | ✅ EXIT=0 | Build Vite em 13.04s; warnings INEFFECTIVE_DYNAMIC_IMPORT pré-existentes; chunk-cycles OK |
 | `npx tsc --noEmit` | ✅ EXIT=0 | Zero erros TypeScript |
 | `npm run lint:baseline` | ✅ EXIT=0 | ESLint baseline gate [full] — atual: 0 erros, 0 warnings · baseline: 0 erros; Nenhuma regressão detectada |
-| `npx vitest run` | ⚠️ interrompido | Tarefa interrompida antes de completar (timeout de contexto); resultado não disponível — execução local não concluída |
+| `npx vitest run` | ✅ EXIT=0 | 41 test files passed, 540 passed, 3 skipped — duração 28.52s (2026-11-01T14:17 UTC) |
 
 > **Sem regressão introduzida:** tsc ✅ + build ✅ + lint ✅ confirmam zero erro TypeScript, bundling ou lint. Build em 13.04s (vs 16.28s no baseline anterior — melhoria). Lint executável com `NODE_OPTIONS="--max-old-space-size=6144"`.
 
