@@ -53,7 +53,6 @@ _Atualizado em 2026-10-24T22:50:27.817Z · 11 rascunho(s)._
 | `2026-07-13_secdef_revoke_webhook_locks_ROLLBACK.sql` | cria Antes | canônico | — | — |
 | `2026-07-23_get_edge_invoke_summary.sql` | Onda 20.3 — RPC read-only agregando métricas de invoke edge. | canônico | — | — |
 | `2026-09-09_magazine_rpc_only_contract.sql` | contrair o rollout Magazine v2 para mutações exclusivamente via RPC | canônico | alto se aplicado antes do cliente v2 est | — |
-| `probe_e184_legacy_refs.sql` | Alvo: DDL agnóstica | ? | — | — |
 <!-- END:DRAFT-INDEX -->
 
 ## Regras
