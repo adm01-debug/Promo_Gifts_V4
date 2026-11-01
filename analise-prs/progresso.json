@@ -1,20 +1,53 @@
 {
   "sha_main_fixado": "58b4eeaf24f9c70d99e28c192e464ffa10c37274",
+  "sha_main_atual": "4c6541b6f5fab4205600472bc086c2f603a69312",
   "data_analise": "2026-11-01",
   "total_prs_abertas": 4,
   "total_analisadas": 4,
   "vereditos": {
-    "MERGEAR": 0,
-    "DECISÃO_HUMANA": 2,
+    "AGUARDANDO_CI": 2,
     "NÃO_MERGEAR_DRAFT": 2,
-    "MERGEAR_APÓS_AJUSTES": 0,
+    "MERGEAR": 0,
+    "DECISÃO_HUMANA": 0,
     "FECHAR": 0
   },
   "mergeadas": [],
+  "verificacoes_completadas": {
+    "banco_is_supervisor_or_above": "não existe como SECURITY DEFINER (pg_proc retornou 0 linhas)",
+    "banco_log_rls_denial": "não existe como SECURITY DEFINER (pg_proc retornou 0 linhas)",
+    "worktree_merge_2927": "CLEAN — 11 arquivos, sem conflito, sem workflows/migrations vs main atual",
+    "worktree_merge_2941": "CLEAN — 13 arquivos, sem conflito, sem workflows/migrations vs main atual",
+    "build_npm_run_build": "✅ built in 16.22s",
+    "vitest_baseline": "3 arquivos falhando pré-existentes, 26042 passaram",
+    "eslint_baseline": "crash OOM no container (SIGABRT)"
+  },
   "prs": {
-    "2927": {"status": "analisada", "veredito": "DECISÃO HUMANA", "dossie": "dossies/PR-2927.md"},
-    "2940": {"status": "analisada", "veredito": "NÃO MERGEAR (DRAFT)", "dossie": "dossies/PR-2940.md"},
-    "2941": {"status": "analisada", "veredito": "DECISÃO HUMANA", "dossie": "dossies/PR-2941.md"},
-    "2942": {"status": "analisada", "veredito": "NÃO MERGEAR (DRAFT)", "dossie": "dossies/PR-2942.md"}
+    "2927": {
+      "status": "analisada",
+      "veredito": "AGUARDANDO CI",
+      "head_sha": "f23ee40",
+      "ci_gate_final": "in_progress",
+      "merge_test": "CLEAN",
+      "dossie": "dossies/PR-2927.md"
+    },
+    "2940": {
+      "status": "analisada",
+      "veredito": "NÃO MERGEAR (DRAFT)",
+      "dossie": "dossies/PR-2940.md"
+    },
+    "2941": {
+      "status": "analisada",
+      "veredito": "AGUARDANDO CI",
+      "head_sha": "80ffa42",
+      "ci_gate_final": "CANCELADO (não rodou)",
+      "merge_test": "CLEAN",
+      "preferida": true,
+      "dossie": "dossies/PR-2941.md"
+    },
+    "2942": {
+      "status": "analisada",
+      "veredito": "NÃO MERGEAR (DRAFT)",
+      "dossie": "dossies/PR-2942.md"
+    }
   }
 }

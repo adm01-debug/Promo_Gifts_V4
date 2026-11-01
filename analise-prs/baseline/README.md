@@ -9,6 +9,8 @@
 | `npx tsc --noEmit` | ✅ exit 0 | Saída vazia (sem erros) |
 | `npx vitest run` | ⚠️ 5 falhas pré-existentes | 3 arquivos / 5 testes falhos; 26042 passaram; 1135 skipped |
 | `npm install` | ✅ | Concluído sem erros |
+| `npm run build` | ✅ `built in 16.22s` | Sem erros; warnings sobre dynamic imports são pré-existentes |
+| ESLint | ⚠️ crash (OOM) | Processo abortado (SIGABRT) no container; exit 0 via script wrap |
 
 ## Falhas pré-existentes no main (vitest)
 

@@ -1,34 +1,47 @@
 # Relatório de Análise de PRs
 
-**Gerado em:** 2026-11-01
-**SHA main:** `58b4eeaf24f9c70d99e28c192e464ffa10c37274`
+**Gerado em:** 2026-11-01 (v2 — atualizado com verificações de banco, worktree e CI)
+**SHA main fixado:** `58b4eeaf24f9c70d99e28c192e464ffa10c37274`
+**SHA main atual:** `4c6541b6f5fab4205600472bc086c2f603a69312` (force-updated durante análise)
 **Total PRs abertas:** 4 | **Total analisadas:** 4
 
 ---
 
-## ⚠️ DECISÕES HUMANAS NECESSÁRIAS
+## ⏳ AGUARDANDO CI
 
-### PR #2927 — fix(listas): normaliza filtros padrão após navegação POP
+### PR #2941 — fix(security): atualiza allowlist lint-0029 ⭐ PREFERIDA
 
-**Bloqueio:** Diff real vs main inclui mudanças em `.github/workflows/` (8 arquivos) e 30 migrations SQL.
+**Branch:** `fix/e2e-url-state-defaults-20261030` | **HEAD:** `80ffa42`
 
-**Por que importa:** As mudanças de workflow podem alterar gates de CI. As migrations incluem múltiplas operações de CRON, REVOKE, e DDL que precisam de validação do PO antes de irem a produção.
+**Status:** Merge limpo, banco OK, sem bloqueadores — CI foi CANCELADO e não completou Gate Final.
 
-**Ação recomendada:** O PO deve revisar os diffs de `.github/workflows/` e as migrations antes de decidir mergear. Se decidir mergear, PRs #2927 e #2941 conflitarão — escolher UMA.
+**Evidências:**
+- Worktree merge test vs main `4c6541b6f`: ✅ limpo, 13 arquivos, sem conflito
+- Banco `doufsxqlfjyuvxuezpln`: `is_supervisor_or_above` e `log_rls_denial` retornam 0 linhas como SECURITY DEFINER — remoção da allowlist correta
+- Diff vs main atual: sem `.github/workflows/` e sem `supabase/migrations/` (main absorveu via force-update)
+- CI (SHA `80ffa42`): `Vercel Preview` success; `Supabase Preview` failure (erro pré-existente `column categories.level does not exist`); Gate Final: CANCELADO (não rodou)
 
-**Nota sobreposição:** PR#2927 e PR#2941 contêm a mesma feature base (useListUrlState POP fix). PR#2941 é ligeiramente mais completa (inclui remoção de `mcp_kv_get` da allowlist). Se uma for mergeada, a outra fica stale.
+**O que ainda falta:** Gate Final verde. CI foi cancelado nesta branch — não validou qualidade gates.
+
+**Ação quando CI verde:** Mergear esta (squash, apagar branch). #2927 fica stale.
 
 ---
 
-### PR #2941 — fix(security): atualiza allowlist lint-0029
+### PR #2927 — fix(listas): normaliza filtros padrão após navegação POP
 
-**Bloqueio:** Diff real vs main inclui mudanças em `.github/workflows/` (4 arquivos) e 28 migrations SQL.
+**Branch:** `claude/fix-e2e-url-state-261101-2045` | **HEAD:** `f23ee40`
 
-**Por que importa:** Mesmo raciocínio de PR#2927. Adicionalmente, o título não reflete o escopo real — há mudanças de código em `useListUrlState.ts`, scripts, e testes unitários.
+**Status:** Merge limpo, banco OK, sem bloqueadores — CI ainda in_progress.
 
-**Verificação pendente:** As funções `is_supervisor_or_above` e `log_rls_denial` foram removidas da allowlist, mas o diff não inclui migration de REVOKE correspondente. Antes do merge, confirmar no banco se essas funções ainda existem com SECURITY DEFINER.
+**Evidências:**
+- Worktree merge test vs main `4c6541b6f`: ✅ limpo, 11 arquivos, sem conflito
+- Banco: mesmo resultado de #2941 — funções não existem como SECURITY DEFINER
+- Diff vs main atual: sem workflows, sem migrations (idem #2941)
+- CI (SHA `f23ee40`): 41 checks `in_progress`, 1 `failure` (Supabase Preview pré-existente), Gate Final in_progress
 
-**Ação recomendada:** Verificar no banco (`SELECT proname FROM pg_proc WHERE proname IN ('is_supervisor_or_above', 'log_rls_denial') AND prosecdef = true`). Depois revisar diffs de workflow e migrations.
+**O que ainda falta:** Gate Final completar e ficar verde.
+
+**Ação:** Se #2941 mergear primeiro → esta fica stale. Se #2941 não mergear → merge esta quando CI verde.
 
 ---
 
@@ -54,11 +67,10 @@
 
 | Veredito | Quantidade | PRs |
 |---|---|---|
-| MERGEAR | 0 | — |
-| DECISÃO HUMANA | 2 | #2927, #2941 |
+| AGUARDANDO CI | 2 | #2927, #2941 |
 | NÃO MERGEAR (DRAFT) | 2 | #2940, #2942 |
-| MERGEAR APÓS AJUSTES | 0 | — |
-| FECHAR | 0 | — |
+| MERGEADAS | 0 | — |
+| DECISÃO HUMANA | 0 | — |
 | **TOTAL** | **4** | **4** |
 
 ---
@@ -67,9 +79,8 @@
 
 ### Cluster A — URL State Normalization (sobreposição)
 - PR #2927 e PR #2941 contêm a mesma feature base (useListUrlState POP fix).
-- Origem comum: branch `fix/e2e-url-state-defaults-20261030` (PR#2941) é mais antiga; PR#2927 derivou dela.
-- PR#2941 é preferível se o PO decidir mergear uma (inclui remoção correta de `mcp_kv_get`).
-- **Conflito garantido** se as duas forem mergeadas sem rebase entre si.
+- **PR#2941 é preferível** (inclui remoção de `mcp_kv_get` + rollback SQL).
+- Merge de uma torna a outra stale — não mergear as duas.
 
 ### Cluster B — Documentação isolada
 - PR #2942 (docs only, draft). Sem impacto no código.
@@ -81,22 +92,57 @@
 
 ## 🔍 Baseline main
 
-**SHA:** `58b4eeaf24f9c70d99e28c192e464ffa10c37274`
-- `tsc --noEmit`: ✅ exit 0 (evidência: sem output de erros)
-- `npm install`: ✅ concluído
-- `vitest run`: ⏳ aguardando resultado em background
+**SHA fixado:** `58b4eeaf24f9c70d99e28c192e464ffa10c37274`
+**SHA atual:** `4c6541b6f5fab4205600472bc086c2f603a69312` (main foi force-updated durante análise)
+
+| Check | Resultado | Evidência |
+|---|---|---|
+| `tsc --noEmit` | ✅ exit 0 | sem output de erros |
+| `npm install` | ✅ | concluído |
+| `npm run build` | ✅ `built in 16.22s` | sem erros de build |
+| `vitest run` | ⚠️ 3 arquivos falhando | 5 testes falhos; 26042 passaram — **pré-existentes** |
+| ESLint | ⚠️ crash OOM | SIGABRT no container; `npx eslint` abortou |
 
 ---
 
-## NÃO VERIFICADO
+## Verificações de banco
 
-- CI status das PRs #2927 e #2941 via API (check runs não foram lidos para economizar tokens; o estado "mergeable_state" retornou null na API de listagem).
-- Resultado completo do `vitest run` no main (processo em background).
-- Verificação ao vivo no banco Supabase de `is_supervisor_or_above` e `log_rls_denial` (SELECT pg_proc — projeto doufsxqlfjyuvxuezpln não mapeado nos MCPs Supabase disponíveis nesta sessão).
+**Projeto:** `doufsxqlfjyuvxuezpln` (SUPABASE - GESTÃO DE PRODUTOS)
+
+```sql
+SELECT proname, prosecdef FROM pg_proc
+WHERE proname IN ('is_supervisor_or_above', 'log_rls_denial') AND prosecdef = true;
+-- Resultado: [] (0 linhas)
+```
+
+`is_supervisor_or_above` e `log_rls_denial` **não existem** como SECURITY DEFINER no banco de produção. Remoção das duas entradas da allowlist em #2941/#2927 é **correta**.
 
 ---
 
-## Arquivos entregues
+## Verificações de merge (worktree)
+
+| PR | Branch HEAD | Conflito | Arquivos tocados |
+|---|---|---|---|
+| #2927 | `f23ee40` | ✅ Nenhum | 11 (sem workflows/migrations) |
+| #2941 | `80ffa42` | ✅ Nenhum | 13 (sem workflows/migrations) |
+
+---
+
+## Bloqueadores originais — status final
+
+| Bloqueador | PR | Status original | Status atual |
+|---|---|---|---|
+| B1: 8 workflows no diff | #2927 | DECISÃO HUMANA | ✅ RESOLVIDO (main absorveu) |
+| B2: 30 migrations no diff | #2927 | DECISÃO HUMANA | ✅ RESOLVIDO (main absorveu) |
+| B1: 4 workflows no diff | #2941 | DECISÃO HUMANA | ✅ RESOLVIDO |
+| B2: 28 migrations no diff | #2941 | DECISÃO HUMANA | ✅ RESOLVIDO |
+| B4: is_supervisor_or_above no banco | #2941 | PENDENTE | ✅ RESOLVIDO (não existe como SECDEF) |
+| CI Gate Final | #2927 | — | ⏳ in_progress |
+| CI Gate Final | #2941 | — | ⏳ CANCELADO (precisa rodar) |
+
+---
+
+## 📁 Arquivos entregues
 
 | Arquivo | Conteúdo |
 |---|---|
