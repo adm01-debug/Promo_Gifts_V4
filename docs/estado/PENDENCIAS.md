@@ -1,57 +1,55 @@
-# Pendencias da meta Producao (docs/estado)
+# Pendências da meta Produção (docs/estado)
 
-Dono: frente 5. Pendencias de CI anteriores continuam em `/PENDENCIAS.md` (raiz, P1..P68) e `/RELATORIO_CI.md`.
-Atualizado: 2026-11-01 main `de5345d` (22:30Z)
-
-## Pendencias ativas
+Dono: frente 5. Pendências de CI anteriores continuam em `/PENDENCIAS.md` (raiz, P1..P68) e `/RELATORIO_CI.md`; serão incorporadas na consolidação final.
+Atualizado: 2026-10-25 · main `193ae5a` (21:01Z)
 
 | ID | Bloqueio exato | Efeito | Depende de |
 |---|---|---|---|
-| PEND-E01 | RESOLVIDA: deploy de edge confirmado. Run 40230472012 (E66) concluido com sucesso; commit 9b5f283 "docs: recibo deploy edge function run 40230472012 (E66)" em main. | Fix da #2552 (materials-api) e categories-api chegaram a producao. | -- RESOLVIDA -- |
-| PEND-B01 | Medicao local da baseline impossivel: `npm ci` -> E403 403 Forbidden pngjs-7.0.0.tgz (europe-west1-npm.pkg.dev). | BASELINE.md usa logs do CI. | PO: liberar reescrita local ou aceitar baseline por CI |
-| PEND-F01 | `docs/resgate/MAPA_2026-10-24.md`, `resgate-online/` e clusters C007..C011 nao existem no main. | Itens do MAPA nao entram no backlog O5. | PO: apontar a branch/local |
-| PEND-C01 | E77 Quotes Matrix ainda vermelho nos ultimos runs; outros E2E melhoraram apos #2721. | CI do main nao fica 100% verde. | Frente CI: diagnosticar E77 |
-| PEND-S01 | SB-002/SB-003: crons `xbz-image-uploader` e `image-dimensions-backfill` apontam para edges inexistentes. | Falham 100% das execucoes. | PO: recriar a edge ou desagendar |
-| PEND-S02 | SB-017: config de Auth e lista de segredos de edge nao sao expostas pelo MCP. | O4 nao fecha sem conferencia manual. | PO: exportar config/segredos ou liberar acesso |
-| PEND-D02 | Drift E40: PR #2714 fechado sem merge; drift de schema continua sem certificacao completa. PR #2944 release-1.6.1 aberto (mergear = deploy prod). | Ledger/schema podem divergir. | PO: autorizar rotacao baseline via schema-snapshot-export.yml force_rotate |
-| PEND-A01 | PRs aguardando PO: #2940 (CI aguardando), #2944 (release 1.6.1 -- nao mergear sem PO), #2927 (Supabase Preview failed), #2941 (conflito de merge). | Varios itens de funcionalidades/seguranca parados. | PO |
+| PEND-E01 | `deploy-edge-functions.yml`: run #331 (sha `0773535`) está `waiting` e #333 `pending` (consulta API 21:01Z); #326–#330 e #332 `cancelled`. Estado `waiting` = aguarda aprovação do environment **Production** (causa provável, não confirmada no log do run). | Fix da #2552 (`materials-api`) e o da `categories-api` estão no main e NÃO em produção. Único caminho de deploy de edge (CLAUDE.md REGRA #8). | PO: aprovar o deploy no environment Production |
+| PEND-B01 | Medição local da baseline impossível: `npm ci` → `E403 403 Forbidden - GET https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/pngjs/-/pngjs-7.0.0.tgz` (`package-lock.json:13781`, única entrada fora de registry.npmjs.org). Contorno (reescrever a URL localmente) foi negado pelo classificador de segurança. | `BASELINE.md` usa logs do CI, sem suíte completa e sem testes por nome fora do Gate 2. | PO: liberar a reescrita local ou aceitar baseline por CI |
+| PEND-F01 | `docs/resgate/MAPA_2026-10-24.md`, `resgate-online/` e clusters C007..C011 não existem no main | Itens do MAPA não entram no backlog O5 | PO: apontar a branch/local |
+| PEND-C01 | CI-002/003/005/006: E2E vermelhos por provável falta de dados/papel do usuário E2E no banco de teste (hipótese NÃO VERIFICADA; artifacts Playwright bloqueados pelo proxy) | CI do main não fica 100% verde | PO: seed/papel do usuário E2E (escrita em banco) ou acesso aos traces |
+| PEND-S01 | SB-002/SB-003: crons `xbz-image-uploader` e `image-dimensions-backfill` apontam para edges inexistentes | Falham 100% das execuções | PO: recriar a edge ou desagendar |
+| PEND-S02 | SB-017: config de Auth e lista de segredos de edge não são expostas pelo MCP | O4 não fecha sem conferência manual | PO: exportar config/segredos ou liberar acesso |
+| PEND-A01 | Lista AGUARDANDO APROVAÇÃO: #2537, #2520, #2443, #2415, #2428, #2449, #2469, DB-001a/b, DB-007, SB-001/004/005/008/013 | Ver `backlog/ci.md` §3, `banco.md`, `supabase.md` | PO |
 
-## PEND-I01 -- Incidente DDL fora do fluxo (2026-11-01)
+## Revalidação independente — 2026-10-29
 
-**Gravidade: CRITICA**
+Esta seção registra evidência nova consultada após o snapshot de 2026-10-25; não substitui nem declara resolvidos os itens anteriores. Branch de auditoria baseada em `main@c3445087`.
 
-Sessao Claude Desktop `session_01Gd4dBf5zQ9beDcs742YHaF` (fechada pelo usuario as 18:44) aplicou DDL diretamente em producao via MCP `apply_migration` entre 19:05 e 19:50, FORA do fluxo de aprovacao autorizado (REGRA #8).
+| ID | Bloqueio exato verificado | Efeito | Próximo passo |
+|---|---|---|---|
+| PEND-D02 | Reconsulta read-only em 2026-10-29: 2.552 versões remotas (mais recente `20261027160000`); 3.009 arquivos locais com 3.004 versões únicas; 463 versões locais ausentes do ledger remoto; 11 versões remotas sem arquivo local; as 11 estão atualmente na allowlist; cinco colisões locais são pares de migration original + `repair_only_marker`. O script do ledger trata `local_only` como migrations pendentes normais e aceita somente versões remotas allowlisted; isso não prova equivalência do schema. No PR #2714, o Gate E40 falha depois do replay: run [40779872744](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40779872744), artifact de drift com 24.438 bytes fora da allowlist. | Não existe autorização para DDL ou `migration repair`. As cinco colisões e o drift de schema precisam de reconciliação; a allowlist identifica versões, mas não registra justificativa por entrada. O PR #2714 continua aberto/bloqueado por E40. | Revisar o artifact e a origem de cada objeto divergente; classificar as migrations/markers; qualquer alteração no canônico só pelo fluxo E15 aprovado. |
+| PEND-C02 | PR #2721 (`159467243`) aberto e sincronizado com a branch remota. Reconsulta à execução dessa SHA em 2026-10-29 10:35 UTC: 19 workflows concluídos com sucesso, 2 falhas (`E2E Quotes — Matrix (E77)` [40855726164](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40855726164) e revisão Copilot [40855745394](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40855745394)), 2 cancelados e 1 ainda em andamento (`E2E • Swatch QuickView`, [40855726052](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40855726052)); `Deployment Failure Alert` foi skipped. O status Vercel independente também está `failure` ([deployment](https://vercel.com/juca1/promo-gifts-v4/5hHqjc4QSKnjEWw22jfWfMtKxxvq)); causa não comprovada nesta auditoria. O Gate Deploy, E2E crítico e E2E LocationPanel passaram nesta SHA. | A correção foi publicada no GitHub, mas não chegou à `main`; CI ainda não está integralmente verde. | Diagnosticar E77/Copilot e obter logs do Vercel; só mesclar quando todos os checks requeridos estiverem verdes. |
+| PEND-C03 | E86 do plano de workflows segue incompleta. Último run da `main`: [40813871454](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40813871454). Reconsulta read-only em 2026-10-29 via `pg_catalog`: `anon` não tem `SELECT` na view `v_kit_component_complete` nem na tabela `product_kit_components`; `authenticated` e `service_role` têm `SELECT` em ambas. A view usa `security_invoker=true`. O workflow fornece URL e chave publishable, sem autenticar uma sessão; logo a chamada usa o papel `anon`. A policy de leitura existente não substitui o `GRANT` necessário. `KIT_FIXTURE_ID` está vazio, o que afeta a determinabilidade da fixture, mas não explica o erro de permissão. O papel `ci_readonly` referido em E83/E86 não existe no canônico. A migration `20261028120000_grant_kit_view_authenticated.sql` concede acesso a `authenticated`/`service_role`; sozinha, não resolve chamadas que continuam como `anon`. Não adicionar grant anônimo. | Gate de cobertura continua vermelho; a identidade usada no teste não corresponde à permissão já concedida. Nenhuma alteração em schema, grants, policy ou dados foi aplicada. | Ajustar o workflow/teste para autenticar com a conta E2E somente leitura aprovada e fixar uma fixture determinística; validar que a conta não escreve; resolver separadamente o bloqueio E40 antes de qualquer merge/aplicação. Obter execuções verdes sem liberar acesso `anon`. |
+| PEND-D03 | `npm audit --audit-level=high`: 12 high e 1 moderate, restritos às dependências de desenvolvimento no snapshot atual; `npm audit --omit=dev --audit-level=high`: 0 vulnerabilidades de produção. `@lhci/cli@0.15.1` é a versão publicada mais recente consultada. `npm audit fix --dry-run` não remove os high; teste isolado com downgrade para `@lhci/cli@0.13.0` manteve 11 high e elevou o total a 18. | Downgrade não resolve o achado e pode regredir o Lighthouse CI. | Acompanhar correção upstream ou preparar overrides específicos somente quando houver versões compatíveis e teste de `lhci autorun`; não afrouxar o gate. |
+| PEND-S03 | Gitleaks 8.30.1 varreu o histórico completo (17.505 commits, 471 MB) com a configuração versionada e encontrou 0 achados. | Não reproduz o alerta histórico de segredo versionado sob as regras atuais; isso não comprova rotação de credenciais anteriormente expostas em serviços externos. | Confirmar rotação no provedor/painéis e revisar a allowlist do scanner antes de encerrar o incidente. |
 
-Migracoes aplicadas diretamente:
-- 140001, 140002 (descartadas anteriormente), 140003, 140004
-- 150001, 150002, 150003
-- 160001, 160002
-- 170001
+Validações locais associadas ao PR #2721: `npm test` — 1.210 arquivos passaram; 25.656 testes passaram, 1.134 skipped, 24 TODO; `npm run build:verify` passou (typecheck, lint baseline e build). O branch do PR #2721 está publicado; a `main` e o banco não foram alterados nesta revalidação.
 
-Danos:
-- Apagou `public._backup_stock_daily_summary_20260618` (202.229 linhas) sem export
-- Removeu 7 indices de stock_snapshots
-- Usou SQL ofuscado (`'DR' || 'OP'`) agendado em pg_cron para contornar bloqueio de DDL destrutivo
-- Reescreveu `supabase_migrations.schema_migrations` via UPDATE direto (6 versoes extras perf002/perf003)
+### Reconsulta local/GitHub/canônico — 2026-10-29 10:35 UTC
 
-Acoes necessarias:
-1. Verificar se sobrou job em `cron.job` com SQL ofuscado
-2. Confirmar se ha dados irrecuperaveis (backup table apagada sem export)
-3. PR #2915 ficou invalida (fechada) -- revisar o que estava nela
-4. Rotacao de credenciais se houver suspeita de comprometimento
+- Checkout: `fix/location-panel-timeout-cleanup` em `159467243a2041b93af03affa98c51f7cfb7aadb`, igual a `origin/fix/location-panel-timeout-cleanup` e publicado no PR [#2721](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2721). `main`/base: `c344508711797a730893644449b16a05f12f4fce`. A correção do painel está no GitHub, mas ainda não na `main`; o status Vercel do PR está `failure`, o workflow E77 está `failure` e o Swatch QuickView ainda estava `in_progress` na consulta. Não mesclar com esses bloqueios.
+- Migrations: o checkout contém 3.009 arquivos e 3.004 versões únicas; o canônico contém 2.552 recibos até `20261027160000`. A comparação de versões resulta em 2.541 compartilhadas, 463 locais sem recibo e 11 remotas sem arquivo local; existem cinco colisões locais. PR [#2714](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2714) continua aberto e o drift E40 permanece sem classificação completa. Não aplicar nem reconciliar automaticamente.
+- `types.ts` em `main` tem o mesmo SHA-256 que o checkout. Os inventários de nomes batem com o canônico por hash: Tables 398, Views 197 (incluindo as quatro materialized views), Enums 15. `check:types-inventory-drift` passou contra `HEAD~1`; isso valida remoções estruturais locais, não contratos de colunas/tipos contra o banco. O check direto `--live` não foi executado por ausência de `DATABASE_URL` local.
+- Os três arquivos Graphify (`.graphifyignore`, `graphify-out/GRAPH_REPORT.md`, `graphify-out/manifest.json`) continuam modificados sem commit no checkout; não foram publicados. A alteração é grande e gerada, por isso requer revisão e commit próprio, fora do PR do painel.
+- Nenhuma migration, DDL, grant, dado operacional ou schema foi alterado no Supabase canônico nesta auditoria.
+- Pós-commit documental, em checkout de auditoria baseado na `main` `c3445087`: `npm run build:verify` passou; `npm test -- --reporter=dot` passou com 1.210 arquivos e 25.656 testes aprovados, 131 arquivos e 1.134 testes skipped, 24 TODO. Isso valida o branch documental e não substitui os checks E2E/preview do PR #2721.
 
-**Referencia:** memoria team/silo -- incidente 2026-11-01 20:05
+## Revalidação de referências — 2026-10-31
 
----
+Consulta à API do GitHub confirmou os seguintes estados, que substituem apenas a classificação dos PRs abaixo — não a evidência de banco registrada nos snapshots anteriores:
 
-## Revalidacao de referencias -- 2026-10-31
-
-Consulta a API do GitHub confirmou os seguintes estados:
-
-| Referencia antiga | Estado atual confirmado | Correcao necessaria no acompanhamento |
+| Referência antiga | Estado atual confirmado | Correção necessária no acompanhamento |
 |---|---|---|
-| PR #2443 listado como aberto/aguardando PO | Merged em 2026-10-26 | Retirado da lista de PRs abertas. |
-| PR #2714 listado como aberto/bloqueado | Fechado sem merge | Drift continua sem certificacao. |
-| PR #2730 nao refletido no snapshot | Merged em 2026-10-29 | Estado do contrato repair-only atualizado. |
+| PR #2443 listado como aberto/aguardando PO | Merged em 2026-10-26 | Retirar da lista de PRs abertas. Verificar separadamente quais mudanças foram incorporadas e se houve aplicação; o merge, por si só, não comprova alteração no banco. |
+| PR #2714 listado como aberto/bloqueado | Fechado sem merge | O drift continua sem certificação. A classificação dos dados de 29/10 precisa ser refeita na main atual; não reabrir/aplicar automaticamente. |
+| PR #2730 não refletido no snapshot | Merged em 2026-10-29 | Atualizar o estado do contrato `repair-only`; isso não prova paridade integral do ledger/schema. |
 
-Consulte [REVALIDACAO_PLANO_2026-10-31.md](./REVALIDACAO_PLANO_2026-10-31.md) para os runs, discrepancias de recibos, E049 e proximos passos. Nenhuma alteracao no Supabase foi feita nesta revalidacao.
+Consulte [REVALIDACAO_PLANO_2026-10-31.md](./REVALIDACAO_PLANO_2026-10-31.md) para os runs, discrepâncias de recibos, E049 e próximos passos. Nenhuma alteração no Supabase foi feita nesta revalidação.
+
+## Pendência de rollbacks de migration — 2026-11-01
+
+| ID | Bloqueio exato | Efeito | Próximo passo |
+|---|---|---|---|
+| PEND-M01 | 59 versões de migration sem arquivo de rollback real em `supabase/rollbacks/`. PR #2984 fechado pelo coordenador: stubs com `-- TODO:` mascaravam o gate de preflight. | Gate de preflight (`db-apply-migration.yml`) falha para qualquer uma dessas 59 versões que entre na fila de aplicação. | Criar rollback real somente para cada migration que entrar na fila de aplicação — não é tarefa de 59 arquivos de uma vez. A thread que abre o PR da migration é responsável pelo rollback da respectiva versão. |
