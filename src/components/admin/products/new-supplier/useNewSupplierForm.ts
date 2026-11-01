@@ -422,9 +422,14 @@ export function useNewSupplierForm(onCreated: (id: string) => void) {
         phone1 = assertPersistablePhoneBr(foneFixo1.trim() || contacts[0]?.phone?.trim() || null);
         phone2 = assertPersistablePhoneBr(foneFixo2.trim() || null);
       } catch (err) {
-        const msg = err instanceof Error ? err.message : 'Dado inválido';
-        if (/cnpj/i.test(msg)) setCnpjError(msg);
-        toast.error(msg);
+        const hay = cnpjErrorHaystack(err);
+        if (/cnpj/i.test(hay)) {
+          const mapped = mapCnpjError(err);
+          setCnpjError(mapped.message);
+          toast.error(mapped.message);
+        } else {
+          toast.error(err instanceof Error ? err.message : 'Dado inválido');
+        }
         setSaving(false);
         return;
       }
