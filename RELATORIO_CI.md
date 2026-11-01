@@ -101,6 +101,16 @@
 | Policies Baseline | [41355438140](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41355438140) | ⏳ queued | `4c6541b6` |
 | Quote Builder Delivery QG | [41355438137](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41355438137) | ⏳ queued | `4c6541b6` |
 | E2E • Swatch QuickView | [41355438250](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41355438250) | ⏳ queued | `4c6541b6` |
+
+> **Nota:** os 5 workflows abaixo têm SHA `d2033d92` — são do commit anterior à main atual
+> (`4c6541b6`). Estes workflows disparam por schedule/dispatch (não por push), por isso seu
+> último run ainda aponta para o commit anterior. Listados separadamente para não confundir com
+> validação do HEAD `4c6541b6`.
+
+**Runs de `d2033d92` (commit anterior — não são validação de `4c6541b6`):**
+
+| Workflow | Run ID | Status | SHA |
+|---|---|---|---|
 | Gate 5 — Supabase Security Audit | [41354148114](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41354148114) | ⏳ queued | `d2033d92` |
 | CI - Replenishment Module QG | [41354148353](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41354148353) | ⏳ queued | `d2033d92` |
 | DB — Aplicação migration E15 | [41354162277](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41354162277) | ⏳ queued | `d2033d92` |
