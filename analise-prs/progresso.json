@@ -1,26 +1,30 @@
 {
   "sha_main_fixado": "58b4eeaf24f9c70d99e28c192e464ffa10c37274",
-  "sha_main_atual": "387afee45d9001af8eba7d34cc3f81cbd5cdac37",
+  "sha_main_atual": "10d1a49935e4d07fb14087c9e3c46435f3ea82df",
   "data_analise": "2026-11-01",
-  "total_prs_analisadas": 36,
-  "total_abertas_no_momento": 34,
+  "total_prs_analisadas": 45,
+  "total_abertas_no_momento": 27,
   "total_mergeadas_nesta_sessao": 3,
-  "total_mergeadas_pelo_owner": 1,
+  "total_mergeadas_pelo_owner": 5,
+  "total_fechadas_sem_merge": 1,
   "vereditos": {
-    "MERGEADA": 4,
-    "NÃO_MERGEAR_DRAFT": 26,
-    "BRANCH_TRABALHO": 1,
-    "NÃO_MERGEAR_BUG": 1,
+    "MERGEADA_ESTA_SESSAO": 3,
+    "MERGEADA_PELO_OWNER": 5,
+    "FECHADA_SEM_MERGE": 1,
+    "NÃO_MERGEAR_DRAFT": 27,
     "NÃO_MERGEAR_CONFLITO": 1,
-    "AGUARDANDO_CI_BLOCKED": 1,
-    "DECISÃO_HUMANA": 1,
-    "BOT_MANAGED": 1
+    "NÃO_MERGEAR_DIFF_VAZIO": 1,
+    "AGUARDANDO_CI": 3
   },
   "mergeadas": [
     {"pr": 2927, "merge_sha": "c80b098a654e90d7b8a962a67babbffb12063f33", "method": "squash", "data": "2026-11-01T22:48Z"},
     {"pr": 2949, "merge_sha": "a16b116a893910299b45f3c358a7615bf7150daf", "method": "squash", "data": "2026-11-01"},
     {"pr": 2983, "merge_sha": "387afee45d9001af8eba7d34cc3f81cbd5cdac37", "method": "squash", "data": "2026-11-01T22:50:46Z", "merged_by": "adm01-debug"},
-    {"pr": 2947, "merge_sha": "e3e8e051cb459572ce6eb72553b7c58958f206e7", "method": "squash", "data": "2026-11-01T23:06:32Z", "merged_by": "adm01-debug", "nota": "mergeada pelo owner fora desta sessão"}
+    {"pr": 2947, "merge_sha": "e3e8e051cb459572ce6eb72553b7c58958f206e7", "method": "squash", "data": "2026-11-01T23:06:32Z", "merged_by": "adm01-debug", "nota": "mergeada pelo owner fora desta sessão"},
+    {"pr": 2940, "merge_sha": "686be704a4f7b1c5e2cbedcf581bd075e9898d16", "method": "squash", "data": "2026-11-01T23:08:34Z", "merged_by": "adm01-debug", "nota": "era NÃO MERGEAR (BUG) — owner mergeou mesmo com typo"},
+    {"pr": 2944, "merge_sha": "03fc479aaf682f7e2f3958ad481c9c28c211d582", "method": "squash", "data": "2026-11-01T23:08:57Z", "merged_by": "adm01-debug", "nota": "release 1.6.1 — era BOT_MANAGED"},
+    {"pr": 2952, "merge_sha": "eeca843a31112a65dcc66aebd2d94ae23cd129ea", "method": "squash", "data": "2026-11-01T23:08:45Z", "merged_by": "adm01-debug", "nota": "era DECISÃO HUMANA — owner aprovou e mergeou (Gate 1.13 partições)"},
+    {"pr": 2960, "merge_sha": "a25070630788f77b297431665878319ad74bb587", "method": "squash", "data": "2026-11-01T23:08:14Z", "merged_by": "adm01-debug", "nota": "era AGUARDANDO CI/BLOCKED — owner mergeou (fake progress bar)"}
   ],
   "verificacoes_completadas": {
     "banco_is_supervisor_or_above": "não existe como SECURITY DEFINER (pg_proc retornou 0 linhas)",
@@ -50,9 +54,9 @@
   },
   "prs_nao_mergeadas_pendentes": {
     "2941": {"status": "NÃO MERGEAR", "motivo": "CONFLITO: dirty após merge de #2927 (mesmos arquivos core); autor precisa fazer rebase"},
-    "2944": {"status": "BOT-MANAGED", "motivo": "release-please; label autorelease:pending"},
-    "2952": {"status": "DECISÃO HUMANA", "motivo": "REGRA #9: scripts/check-* exige revisão PO; sem CI no head 25c67241"},
-    "2960": {"status": "AGUARDANDO CI / BLOCKED", "motivo": "quality-gate queued; mergeable_state: blocked (unresolved review comment)"},
-    "2940": {"status": "NÃO MERGEAR", "motivo": "Typo bug: '// Se ogropo' em SidebarReorganized.tsx"}
+    "2996": {"status": "NÃO MERGEAR", "motivo": "DIFF VAZIO: 0 changed_files — fix já em main (branch: fix/ts-await-as-precedence-rupture-alerts)"},
+    "2999": {"status": "AGUARDANDO CI", "motivo": "quality-gate rodando; mergeable_state: behind — rebase necessário antes do merge"},
+    "2979": {"status": "AGUARDANDO CI", "motivo": "28 checks; Supabase Preview=failure(pre-existente: column categories.level); mergeable_state: behind"},
+    "2981": {"status": "AGUARDANDO CI", "motivo": "29 checks queued; mergeable_state: behind — convertido de DRAFT"}
   }
 }

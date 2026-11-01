@@ -1,9 +1,9 @@
 # Relatório de Análise de PRs
 
-**Gerado em:** 2026-11-01 (v4 — análise exaustiva de 36 PRs)
+**Gerado em:** 2026-11-01 (v5 — análise exaustiva de 45 PRs)
 **SHA main fixado:** `58b4eeaf24f9c70d99e28c192e464ffa10c37274`
-**SHA main atual:** `387afee45d9001af8eba7d34cc3f81cbd5cdac37` (pós squash-merge #2983, 2026-11-01T22:50Z)
-**Total PRs analisadas:** 36 (34 abertas + 3 mergeadas nesta sessão)
+**SHA main atual:** `10d1a49935e4d07fb14087c9e3c46435f3ea82df`
+**Total PRs analisadas:** 45 (3 mergeadas sessão + 5 mergeadas owner + 3 aguardando CI + 1 conflito + 1 diff-vazio + 1 fechada + 30 draft + 1 branch-trabalho)
 
 ---
 
@@ -35,52 +35,70 @@
 - **Diff:** `auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md` +6/-5
 - **Método:** squash-merge, 2026-11-01T22:50:46Z
 
+---
+
+## ✅ MERGEADAS PELO OWNER (5)
+
 ### PR #2947 — fix: adiciona rollback da migration 20261029160339 (kill_switch_hits)
 
 **Branch:** `claude/fix-rollback-killswitch-261101-1855` | **Merge SHA:** `e3e8e051cb459572ce6eb72553b7c58958f206e7`
 
 - **CI:** sem quality-gate antes do merge (rollback file apenas)
-- **Diff:** 1 arquivo novo `supabase/rollbacks/20261029160339_rollback.sql` (4 linhas) — `DROP TRIGGER IF EXISTS trg_anon_rate_guard ON public.kill_switch_hits`
+- **Diff:** 1 arquivo novo `supabase/rollbacks/20261029160339_rollback.sql` (4 linhas)
 - **Método:** squash-merge pelo owner (adm01-debug), 2026-11-01T23:06:32Z
-
----
-
-## ⏳ AGUARDANDO CI / BLOCKED (1)
 
 ### PR #2960 — fix(novidades/reposicao): remove fake progress bar
 
-**Branch:** `claude/fix-progress-bars-261101-2159` | **HEAD:** `53cf1298`
+**Branch:** `claude/fix-progress-bars-261101-2159` | **Merge SHA:** `a25070630788f77b297431665878319ad74bb587`
 
-**Status:** quality-gate `queued` + `mergeable_state: blocked` (1 review comment não resolvido).
-
-- Diff: 4 arquivos — remove `Math.random()` + `setInterval` progress state; add `animate-pulse`
-- Arquivos: `NoveltyProductGrid.tsx`, `ReplenishmentProductGrid.tsx`, `ReplenishmentToolbar.tsx`, testes
-
-**Ação:** Aguardar CI completar E resolução do review comment pelo autor.
-
----
-
-## 🚫 DECISÃO HUMANA (1)
+- **Diff:** 4 arquivos — remove `Math.random()` + `setInterval` progress state; add `animate-pulse`
+- **Owner mergeou apesar de:** `mergeable_state: blocked` (unresolved review comment) + quality-gate queued
+- **Método:** squash-merge pelo owner (adm01-debug), 2026-11-01T23:08:14Z
 
 ### PR #2952 — fix(ci): Gate 1.13 — tolerância automática para policies de partições mensais
 
-**Branch:** `claude/fix-policies-partition-auto-tolerate-261101-2220` | **HEAD:** `25c67241`
+**Branch:** `claude/fix-policies-partition-auto-tolerate-261101-2220` | **Merge SHA:** `eeca843a31112a65dcc66aebd2d94ae23cd129ea`
 
-**Motivo:** REGRA #9 — `scripts/check-*` exige revisão do PO antes do merge. Diff toca `scripts/check-policies-baseline.mjs` (+73/-2). quality-gate: `total_count: 0`. 8 review comments no PR.
-
-**O que faz:** Adiciona `normalizePartitionSelfRefs()` para tolerar policies de partições mensais idênticas à tabela mãe. Fix para E043 gate falso-positivo.
-
-**Quando mergear:** Após aprovação do PO + quality-gate verde.
-
----
-
-## ⚙️ BOT-MANAGED (1)
+- **Diff:** `scripts/check-policies-baseline.mjs` +73/-2 — `normalizePartitionSelfRefs()`
+- **Era:** DECISÃO HUMANA (REGRA #9: scripts/check-*); owner aprovou e mergeou (Gate 1.13 partições)
+- **Método:** squash-merge pelo owner (adm01-debug), 2026-11-01T23:08:45Z
 
 ### PR #2944 — chore(main): release 1.6.1
 
-**Branch:** `release-please--branches--main--components--gifts-store` | **HEAD:** `786d68a7`
+**Branch:** `release-please--branches--main--components--gifts-store` | **Merge SHA:** `03fc479aaf682f7e2f3958ad481c9c28c211d582`
 
-**Motivo:** Gerenciada pelo release-please bot. Label `autorelease: pending`. NÃO mergear manualmente.
+- **Era:** BOT-MANAGED (release-please, label `autorelease:pending`)
+- **Método:** squash-merge pelo owner (adm01-debug), 2026-11-01T23:08:57Z
+
+### PR #2940 — feat(nav): adiciona entrada Audit Suite na sidebar admin
+
+**Branch:** `claude/feat-audit-suite-nav-261101-2200` | **Merge SHA:** `686be704a4f7b1c5e2cbedcf581bd075e9898d16`
+
+- **Bug presente no diff:** typo `// Se ogropo` em `SidebarReorganized.tsx` (~linha 290)
+- **Owner mergeou apesar de:** bug ativo + 2 review comments não resolvidos
+- **Método:** squash-merge pelo owner (adm01-debug), 2026-11-01T23:08:34Z
+
+---
+
+## ⏳ AGUARDANDO CI (3)
+
+### PR #2999 — feat(kit-builder): FT-113 — campo origin no KitState (frontend)
+
+**Branch:** `claude/feat-ft113-kit-origin-field-20261101-2315` | **HEAD:** `9423c224`
+
+**Status:** quality-gate rodando; `mergeable_state: behind` — precisa rebase antes do merge.
+
+### PR #2981 — fix(ux): FT-172/107/108/220 — UX batch7
+
+**Branch:** `claude/fix-ft-ux-batch7-261101-0100` | **HEAD:** `c0ec485d`
+
+**Status:** 29 checks queued; `mergeable_state: behind`. Convertido de DRAFT.
+
+### PR #2979 — fix(kit-builder): separa mensagem de erro 503/504 de 429/timeout
+
+**Branch:** `claude/fix-ft136-provider-error-messages-261101-2234` | **HEAD:** `e6697a92`
+
+**Status:** 28 checks; Supabase Preview=failure (pré-existente: column categories.level); `mergeable_state: behind`. Convertido de DRAFT.
 
 ---
 
@@ -92,39 +110,50 @@
 
 **Status:** `mergeable: false`, `mergeable_state: "dirty"` — conflito após merge de #2927.
 
-**Evidências:**
 - Toca os mesmos arquivos core de #2927 (`useListUrlState.ts`, allowlist, `check-dependency-audit.mjs`)
-- Conteúdo único vs #2927: remoção de `mcp_kv_get` da allowlist (migration `20260917060000_e18_revoke_authenticated_mcp_kv_get.sql` aplicada)
-- CI head `3d0bf8c2`: 4 checks — Supabase Preview=failure(pré-existente), Vercel=success. Sem quality-gate.
+- Conteúdo único: remoção de `mcp_kv_get` da allowlist (migration aplicada)
+- CI head `3d0bf8c2`: 4 checks — Supabase Preview=failure(pré-existente), Vercel=success
 
-**Ação necessária pelo autor:** rebase da branch em `main` atualizado. Após rebase + Gate Final verde → pode mergear.
-
----
-
-## 🐛 NÃO MERGEAR — BUG (1)
-
-### PR #2940 — feat(nav): adiciona entrada Audit Suite na sidebar admin
-
-**Branch:** `claude/feat-audit-suite-nav-261101-2200` | **HEAD:** `838ebc23`
-
-**Bug encontrado no diff:** Linha `// Se ogropo` (typo — deveria ser `// Se o grupo`) em `src/components/layout/SidebarReorganized.tsx:linha ~290`. `mergeable_state: blocked` (2 review comments não resolvidos).
-
-**Quando mergear:** Após correção do typo + resolução dos review comments pelo autor.
+**Ação necessária pelo autor:** rebase da branch em `main` atualizado.
 
 ---
 
-## 🚫 NÃO MERGEADAS (DRAFT) — 27 PRs
+## 🚫 NÃO MERGEAR — DIFF VAZIO (1)
+
+### PR #2996 — fix(ts): corrige precedência de await...as em useRuptureAlerts
+
+**Branch:** `fix/ts-await-as-precedence-rupture-alerts` | **HEAD:** `c83eb9a6`
+
+**Status:** 0 `changed_files` — fix já está em main. PR pode ser fechada pelo autor.
+
+---
+
+## 🚫 FECHADA SEM MERGE (1)
+
+### PR #3005 — docs(analise): §3 AGUARDANDO APROVAÇÃO + §12 inventário + §13 status
+
+**Branch:** `claude/chore-analise-evidencia-261101-2330` | **HEAD:** `717316c1`
+
+**Fechada em:** 2026-11-01T23:21:57Z pelo owner (adm01-debug), sem merge. Docs-only.
+
+---
+
+## 🚫 NÃO MERGEADAS (DRAFT) — 30 PRs
 
 Todas marcadas como Draft pelo autor. Listadas para completude:
 
 | # | Título | Branch |
 |---|---|---|
+| #3009 | fix(e2e): corrige E108 em rotas satélite + auth setup explícito | `claude/fix-swatch-qv-e108-20261101-2315` |
+| #3006 | docs(pendencias): registra itens 9-16 sessão 2026-11-01 (P35) | `claude/docs-pendencias-p35-20261101-2315` |
+| #3004 | docs(analise-prs): rev88 — 79 PRs analisados; 8 merges rev88 | `claude_04/optimistic-bohr-qplx94` |
+| #3003 | fix(security): FASE B P06+P15 — security_invoker views + revoke | `claude/fix-p06-p15-security-20261101-1000` |
+| #3001 | fix(ci): Gate E40 — +15 versões remote_only ao allowlist | `claude/fix-gate-e40-allowlist-261101-2310` |
+| #2998 | fix(hooks): corrige TS2339 em useRuptureAlerts.ts | `claude/fix-ts-unused-rupture-20261101-2300` |
 | #2986 | chore(admin): remove referências stale do external-db-bridge (FT-243) | `claude/fix-ft243-stale-bridge-refs-261101-2355` |
 | #2985 | fix(e2e): remove rotas públicas mortas colecao/comparar/lista-publica | `claude/fix-dead-public-links-261101-2100` |
 | #2982 | fix(mockup): aviso de prévia indicativa no resultado (FT-174) | `claude/fix-ft174-previa-indicativa-mockup-261101-2350` |
-| #2981 | fix(ux): FT-172/107/108/220 — UX batch7 | `claude/fix-ft-ux-batch7-261101-0100` |
 | #2980 | fix(mockup): onLogoRemove aceita areaId e limpa análise da área | `claude/fix-ft167-logo-remove-area-id-261101-2234` |
-| #2979 | fix(kit-builder): separa mensagem de erro 503/504 de 429/timeout | `claude/fix-ft136-provider-error-messages-261101-2234` |
 | #2978 | fix(kit-builder): guarda prefers-reduced-motion antes do confete | `claude/fix-ft139-confetti-reduced-motion-261101-2234` |
 | #2976 | fix(ux): FT-174/040/083/093/134/136/139 — UX batch6 | `claude/fix-ft-ux-batch6-261101-2230` |
 | #2975 | chore: remove .tmp acidentalmente versionado (FT-061) | `claude/chore-delete-tmp-file-261101-2350` |
@@ -153,14 +182,15 @@ Todas marcadas como Draft pelo autor. Listadas para completude:
 
 | Veredito | Quantidade | PRs |
 |---|---|---|
-| MERGEADAS | 4 | #2927, #2949, #2983, #2947 |
-| AGUARDANDO CI / BLOCKED | 1 | #2960 |
-| DECISÃO HUMANA | 1 | #2952 |
-| BOT-MANAGED | 1 | #2944 |
+| MERGEADAS (esta sessão) | 3 | #2927, #2949, #2983 |
+| MERGEADAS (pelo owner) | 5 | #2940, #2944, #2947, #2952, #2960 |
+| AGUARDANDO CI | 3 | #2999, #2981, #2979 |
 | NÃO MERGEAR (CONFLITO) | 1 | #2941 |
-| NÃO MERGEAR (BUG) | 1 | #2940 |
-| NÃO MERGEAR (DRAFT) | 27 | #2986–#2948, #2956 |
-| **TOTAL** | **36** | — |
+| NÃO MERGEAR (DIFF VAZIO) | 1 | #2996 |
+| FECHADA SEM MERGE | 1 | #3005 |
+| NÃO MERGEAR (DRAFT) | 30 | #2948–#3009 (exceto listados acima) |
+| BRANCH TRABALHO | 1 | #2956 |
+| **TOTAL** | **45** | — |
 
 ---
 
@@ -168,18 +198,19 @@ Todas marcadas como Draft pelo autor. Listadas para completude:
 
 ### Cluster A — URL State / Security Allowlist (sobreposição)
 - PR #2927 ✅ **MERGEADA** (useListUrlState POP fix + check-dep-audit + allowlist)
-- PR #2941 🐛 **CONFLITO** (mesmos arquivos + remoção `mcp_kv_get` não coberta por #2927 — autor precisa rebase)
+- PR #2941 🐛 **CONFLITO** (mesmos arquivos + remoção `mcp_kv_get` — autor precisa rebase)
 
 ### Cluster B — Rollback files
-- PR #2947 ✅ MERGEADA — kill_switch_hits rollback (pelo owner)
+- PR #2947 ✅ **MERGEADA** (pelo owner) — kill_switch_hits rollback
 - PR #2948 DRAFT — e38/e47/e37 rollbacks
 - PR #2951 DRAFT — stock-notes rollback
 
-### Cluster C — UX Batches (drafts)
-- #2965, #2970, #2971, #2973, #2976, #2978, #2979, #2980, #2981, #2982
+### Cluster C — UX Batches
+- #2965, #2970, #2971, #2973, #2976, #2978, #2980, #2982 DRAFT
+- #2979, #2981 ⏳ AGUARDANDO CI (convertidos de DRAFT)
 
 ### Cluster D — CI/Gates
-- #2952 DECISÃO HUMANA — Gate 1.13 partition tolerance
+- #2952 ✅ **MERGEADA** (pelo owner) — Gate 1.13 partition tolerance
 - #2967 DRAFT — Gate E42
 
 ### Cluster E — Documentação
@@ -192,7 +223,7 @@ Todas marcadas como Draft pelo autor. Listadas para completude:
 ## 🔍 Baseline main
 
 **SHA fixado:** `58b4eeaf24f9c70d99e28c192e464ffa10c37274`
-**SHA atual:** `387afee45d9001af8eba7d34cc3f81cbd5cdac37`
+**SHA atual:** `10d1a49935e4d07fb14087c9e3c46435f3ea82df`
 
 | Check | Resultado | Evidência |
 |---|---|---|
@@ -218,14 +249,14 @@ WHERE proname IN ('is_supervisor_or_above', 'log_rls_denial') AND prosecdef = tr
 
 | Arquivo | Conteúdo |
 |---|---|
-| `analise-prs/prs.json` | Inventário JSON de todas as 36 PRs com vereditos |
-| `analise-prs/RELATORIO_PRS.md` | Este relatório (v4) |
+| `analise-prs/prs.json` | Inventário JSON de todas as 45 PRs com vereditos |
+| `analise-prs/RELATORIO_PRS.md` | Este relatório (v5) |
 | `analise-prs/progresso.json` | Estado da análise |
 | `analise-prs/dossies/PR-2927.md` | Dossie detalhado — MERGEADA |
-| `analise-prs/dossies/PR-2940.md` | Dossie detalhado — NÃO MERGEAR (BUG) |
+| `analise-prs/dossies/PR-2940.md` | Dossie detalhado — MERGEADA (pelo owner, com bug) |
 | `analise-prs/dossies/PR-2941.md` | Dossie detalhado — NÃO MERGEAR (CONFLITO) |
-| `analise-prs/dossies/PR-2944.md` | Dossie detalhado — BOT-MANAGED |
+| `analise-prs/dossies/PR-2944.md` | Dossie detalhado — MERGEADA (pelo owner) |
 | `analise-prs/dossies/PR-2947.md` | Dossie detalhado — MERGEADA (pelo owner) |
-| `analise-prs/dossies/PR-2952.md` | Dossie detalhado — DECISÃO HUMANA |
-| `analise-prs/dossies/PR-2960.md` | Dossie detalhado — AGUARDANDO CI / BLOCKED |
+| `analise-prs/dossies/PR-2952.md` | Dossie detalhado — DECISÃO HUMANA → MERGEADA |
+| `analise-prs/dossies/PR-2960.md` | Dossie detalhado — MERGEADA (pelo owner) |
 | `analise-prs/dossies/PR-2983.md` | Dossie detalhado — MERGEADA |
