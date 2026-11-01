@@ -28,6 +28,10 @@
       "reason": "E050 (2026-10-18): migrado de supabase-linter-baseline.json (2026-07-13). Revisão individual pendente — SECURITY DEFINER precisa de audit antes de decidir REVOKE EXECUTE."
     },
     {
+      "fn": "public.cleanup_expired_auth_sessions()",
+      "reason": "Rotina de manutenção (cron) — SECURITY DEFINER necessário para deletar sessões expiradas em auth.sessions sem RLS; sem parâmetros do chamador, sem PII exposta ao authenticated."
+    },
+    {
       "fn": "public.confirm_notifications_dispatched(p_ids uuid[])",
       "reason": "ACHADO E18 (2026-09-17): UPDATE workspace_notifications SET is_read=true WHERE id=ANY(p_ids), sem nenhuma checagem de auth.uid()/ownership — IDOR, qualquer authenticated marca notificação de outro usuário como lida. Único consumidor real (process-queue) já roda como service_role. REVOKE de authenticated preparado e pendente de aprovação — ver docs/E18_ACHADOS_SECUNDARIOS_AUTHENTICATED_2026-09-17.md e supabase/migrations/20260917061500_e18_revoke_authenticated_authz_gaps.sql."
     },
@@ -268,16 +272,8 @@
       "reason": "E18 (2026-09-17): checagem de membership escopada a auth.uid() internamente."
     },
     {
-      "fn": "public.is_supervisor_or_above()",
-      "reason": "E050 (2026-10-18): migrado de supabase-linter-baseline.json (2026-07-13). Revisão individual pendente — SECURITY DEFINER precisa de audit antes de decidir REVOKE EXECUTE."
-    },
-    {
       "fn": "public.log_access_denied(_blocked_path text, _required_role text, _user_role text, _reason text)",
       "reason": "E099 (2026-10-21): logger de acesso negado — SECURITY DEFINER para gravar em tabela de auditoria sem RLS do chamador; parâmetros text de entrada do sistema, não de usuário final."
-    },
-    {
-      "fn": "public.log_rls_denial()",
-      "reason": "E050 (2026-10-18): migrado de supabase-linter-baseline.json (2026-07-13). Revisão individual pendente — SECURITY DEFINER precisa de audit antes de decidir REVOKE EXECUTE."
     },
     {
       "fn": "public.log_user_logout()",
@@ -370,6 +366,10 @@
     {
       "fn": "public.org_has_any_members(_org_id uuid)",
       "reason": "E18 (2026-09-17): retorna só um boolean de existência (organização tem algum membro?), sem auth.uid() necessário e sem PII exposta."
+    },
+    {
+      "fn": "public.perf002_drop_unused_snapshot_indexes()",
+      "reason": "Rotina de manutenção de performance (série perf) — SECURITY DEFINER necessário para dropar índices em tabelas de snapshot sem RLS; executado por cron/service_role, sem parâmetros do chamador."
     },
     {
       "fn": "public.record_dev_route_telemetry(_event_type text, _blocked_path text, _user_role text, _duration_ms integer)",
