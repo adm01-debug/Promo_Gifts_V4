@@ -12,31 +12,31 @@ Somente conclusões `failure` listadas. Runs `queued`/`in_progress`/`cancelled` 
 | # | Workflow | Run ID | SHA | Causa raiz | Bloqueio externo? |
 |---|---|---|---|---|---|
 | 1 | Deploy Gates (Gate Final) | [41304184400](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41304184400) | 5ae127ea | Gate 1.12 — `stock_notes` sem `deleted_at` nem `soft-delete-exempt` | **Fix em PR #2846** (`fix/e2e-url-state-defaults-20261030`) |
-| 2 | CI Security & Drift Checks | [41304184120](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41304184120) | 5ae127ea | fuzz test E128 (`QuoteBuilderSummaryItems`) + URL state — a investigar | Pendente diagnóstico detalhado |
+| 2 | CI Security & Drift Checks | [41304184120](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41304184120) | 5ae127ea | E2E autenticados — 6 testes falhos em `catalog.spec.ts` e `kit-builder.spec.ts` — causa interna pendente diagnóstico | Pendente diagnóstico detalhado |
 | 3 | Branch Protection Sentinel | [41234042042](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41234042042) | pré-5ae127ea | Lovable push direto em `main` sem `(#NNN)` no título do commit | **Externo** — Lovable não segue convenção; recorrente |
-| 4 | E2E — Critical Flows & Error Boundaries | [41273739218](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41273739218) | pré-5ae127ea | Auth E2E falha — `SUPABASE_SERVICE_ROLE_KEY` ausente nos secrets do CI | **Externo** — secrets não configurados pelo PO (ver P2 abaixo) |
-| 5 | E2E • Swatch QuickView | [41273739179](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41273739179) | pré-5ae127ea | < mínimo de testes executados — secrets `E2E_USER_*` ausentes | **Externo** — secrets não configurados pelo PO (ver P1 abaixo) |
+| 4 | E2E — Critical Flows & Error Boundaries | [41273739218](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41273739218) | pré-5ae127ea | Check min tests executed — 1 teste executado, 9 ignorados (abaixo do mínimo de 10); auth passou | Pendente diagnóstico — investigar skips |
+| 5 | E2E • Swatch QuickView | [41273739179](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41273739179) | pré-5ae127ea | Chromium: suíte Swatch/QuickView falhou; WebKit: runner shutdown após autenticação (não falta de secrets) | Pendente diagnóstico — separar falha de suite do shutdown de runner |
 | 6 | Kit Coverage — Integration | [41270374589](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41270374589) | pré-5ae127ea | A investigar — diagnóstico pendente | Pendente diagnóstico detalhado |
 | 7 | Nightly Full CI | [41266491771](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41266491771) | pré-5ae127ea | A investigar — diagnóstico pendente | Pendente diagnóstico detalhado |
 | 8 | Policies Baseline | [41272479237](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41272479237) | pré-5ae127ea | A investigar — diagnóstico pendente | Pendente diagnóstico detalhado |
-| 9 | Release Please | [41304184265](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41304184265) | 5ae127ea | HTTP 402 — cota esgotada no plano atual do GitHub Marketplace | **Externo** — cobrança/billing; sem ação de código possível |
-| 10 | Uptime Monitor | [41273576750](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41273576750) | pré-5ae127ea | Infra externa / edge function desatualizada (drift confirmado) | **Externo** — edge function divergente; deploy via workflow autorizado necessário |
+| 9 | Release Please | [41304184265](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41304184265) | 5ae127ea | `Resource not accessible by integration` — erro de autorização do token GitHub ao criar release | **Externo** — revisar permissões do token no workflow release-please |
+| 10 | Uptime Monitor | [41273576750](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41273576750) | pré-5ae127ea | Falha HTTP na probe `health-check` (curl exit 22); demais probes passaram — causa do drift **não estabelecida**, pendente investigação | **Externo** — investigar causa raiz antes de indicar redeploy |
 | 11 | edge-functions-drift-check | [41292189329](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41292189329) | pré-5ae127ea | Funções em drift entre GitHub e Supabase canônico | **Externo** — reconciliar via `.github/workflows/deploy-edge-functions.yml` |
 
 ### Detalhamento das pendências externas (bloqueios fora do alcance de código)
 
 **Release Please (item 9):**
-- Causa: HTTP 402 — cota do GitHub Marketplace esgotada para release-please-action
-- Ação necessária do PO: verificar plano em https://github.com/marketplace e renovar/atualizar cobrança
+- Causa: `Resource not accessible by integration` ao criar release — erro de autorização, não billing HTTP 402
+- Ação necessária do PO: revisar permissões do token GitHub Actions no workflow `release-please.yml` (scope `contents: write` ou PAT com permissão de release)
 - Sem ação de código possível; não é regressão do codebase
 
 **Uptime Monitor (item 10):**
-- Causa: edge function divergente entre o que está no git e o que está em produção no Supabase `doufsxqlfjyuvxuezpln`
-- Ação necessária: dispatch manual de `.github/workflows/deploy-edge-functions.yml` com a função em drift
-- Bloqueio por REGRA #8 corolário: deploy só via workflow; sem deploy direto por MCP
+- Causa observada: falha na probe `health-check` (curl exit 22); demais probes passaram. A hipótese de edge function drift **não foi confirmada** nos logs — não inferir redeploy como solução
+- Ação necessária: investigar a causa raiz da falha HTTP na probe `health-check` antes de indicar deploy
+- Se drift for confirmado após investigação: deploy via `.github/workflows/deploy-edge-functions.yml`
 
 **edge-functions-drift-check (item 11):**
-- Causa: mesma do item 10 — funções em produção divergem do código no git
+- Causa: funções em produção divergem do código no git (drift detectado pelo job "Compare GitHub × Canonical")
 - Ação necessária: deploy via `.github/workflows/deploy-edge-functions.yml` para cada função em drift
 - Este workflow também falhará enquanto o drift existir
 
