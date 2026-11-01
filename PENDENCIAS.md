@@ -2367,7 +2367,42 @@ Sessão iniciada para corrigir todos os workflows em falha em `https://github.co
 | Bloqueio | PO: disparar `workflow_dispatch` em `.github/workflows/deploy-edge-functions.yml` com `function_name: uptime-check` para sincronizar a edge function. |
 | Required? | Não — workflow de monitoramento externo, não faz parte de `deploy-gates.yml`. |
 
-### Sumário executivo dos itens 9-16
+
+### Item 17 — E2E ColorSwatch Grid (`E2E • ColorSwatch Grid`)
+
+| Campo | Valor |
+|---|---|
+| Workflow | `E2E • ColorSwatch Grid` |
+| Última run (main) | [41348720790](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41348720790) — `conclusion=failure` |
+| Causa raiz | Log tail retornou apenas upload de artefato (203 MB) sem mensagem de erro explícita (`[LOG NÃO CONCLUSIVO]`). O run completou com `failure`, indicando falha em pelo menos um teste E2E. Causa exata requer análise do artefato Playwright (~203 MB). |
+| Bloqueio | Análise manual do artefato de 203 MB. Possível causa: fixture de color_swatches insuficiente em CI (idêntica ao item 14 — E2E Swatch QuickView); ou componente `ColorSwatchGrid` com bug de renderização não coberto pelo item 14. |
+| Ação necessária | Dev: baixar artefato da run 41348720790 e inspecionar `test-results/`; identificar teste falhante; criar fixture ou corrigir componente. |
+| Required? | Não — não faz parte do Gate Final (`deploy-gates.yml`). |
+
+### Item 18 — E2E Personalization Flow (`E2E — Personalization Flow`)
+
+| Campo | Valor |
+|---|---|
+| Workflow | `E2E — Personalization Flow` |
+| Última run (main) | [41354148312](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41354148312) — `conclusion=failure` |
+| Causa raiz | Log tail retornou apenas upload de artefato (157 MB) sem mensagem de erro explícita (`[LOG NÃO CONCLUSIVO]`). Run completou com `failure`. Possível causa: fixture de produto com opções de personalização ausente em CI, ou dependência de credenciais E2E (mesma causa do item 13). |
+| Bloqueio | Análise manual do artefato de 157 MB. Se a causa for credenciais E2E, o item 13 (PO) desbloqueia automaticamente. Se for fixture, requer criação de fixture específica de personalização. |
+| Ação necessária | PO: verificar primeiro se corrigir credenciais E2E (item 13) resolve este item. Se não, Dev: baixar artefato da run 41354148312 e inspecionar `test-results/`. |
+| Required? | Não — não faz parte do Gate Final (`deploy-gates.yml`). |
+
+### Item 19 — Edge Integration Tests (`Edge Integration Tests`)
+
+| Campo | Valor |
+|---|---|
+| Workflow | `Edge Integration Tests` |
+| Causa raiz | 1 dos 110 arquivos de teste falhou; 894/898 testes passaram. Log tail (`[LOG NÃO CONCLUSIVO]`) — o arquivo/teste específico não aparece no tail do log. |
+| Bloqueio | Análise do log completo do job para identificar qual dos 110 arquivos falhou. Possível causa: edge function desatualizada em produção (mesma causa do item 16 — drift entre GitHub e canônico). |
+| Ação necessária | PO: disparar `workflow_dispatch` em `deploy-edge-functions.yml` (sem `function_name` para redeployar todas) após verificar que PR #2998 está mergeado. Se ainda falhar, Dev: inspecionar log completo do job para identificar o arquivo/teste. |
+| Required? | Não — não faz parte do Gate Final (`deploy-gates.yml`). |
+
+---
+
+### Sumário executivo dos itens 9-19
 
 | Item | Título | Estado | Quem desbloqueia |
 |---|---|---|---|
@@ -2379,6 +2414,9 @@ Sessão iniciada para corrigir todos os workflows em falha em `https://github.co
 | 14 | E2E Swatch QuickView | Fixture insuficiente; análise manual de 209 MB artifact | Dev + PO |
 | 15 | Quote Builder E2E | Fixture de orçamento ausente em CI; 894 MB artifact | Dev + PO |
 | 16 | Uptime Monitor edge fn | Deploy edge function `uptime-check` via workflow_dispatch | **PO** |
+| 17 | E2E ColorSwatch Grid | Log não conclusivo; artifact 203 MB a analisar | Dev + PO |
+| 18 | E2E Personalization Flow | Log não conclusivo; artifact 157 MB; verificar se item 13 resolve | **PO** (E2E creds primeiro) |
+| 19 | Edge Integration Tests | 1/110 arquivos falhou; log não conclusivo | **PO** (redeployar edge fns) + Dev |
 
-**Nota sobre Gate Final:** Os itens 9–10 (PR #2998) são required checks. Os itens 11–16 envolvem bloqueios de infra, secrets, PO ou análise manual de artefatos grandes — nenhum pode ser corrigido apenas por alteração de código nesta sessão sem aprovação explícita do PO.
+**Nota sobre Gate Final:** Os itens 9–10 (PR #2998) são required checks. Os itens 11–19 envolvem bloqueios de infra, secrets, PO ou análise manual de artefatos grandes — nenhum pode ser corrigido apenas por alteração de código nesta sessão sem aprovação explícita do PO.
 
