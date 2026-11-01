@@ -54,9 +54,19 @@ const QUICK_ACTIONS: QuickAction[] = [
   { id: 'tips', label: 'Dicas gerais', icon: Lightbulb, action: () => {} },
 ];
 
-// R4: mensagem honesta exibida em qualquer caminho (handleSend e handleQuickAction)
+// Dicas estáticas por ação rápida — evita loop de "use as ações rápidas"
+const QUICK_ACTION_TIPS: Record<string, string> = {
+  position:
+    'Posicione a logo no centro-alto ou centro do produto para máxima visibilidade. Evite bordas e costuras. Em produtos cilíndricos, centralize horizontalmente.',
+  size: 'O tamanho ideal da logo é entre 30–40% da área de impressão. Em brindes pequenos (≤10 cm), prefira versão simplificada da marca sem tagline.',
+  color:
+    'Para boa legibilidade, a cor da logo deve ter contraste ≥4.5:1 sobre o fundo do produto. Em superfícies coloridas, prefira branco ou preto sólido.',
+  tips: 'Peça ao fornecedor a área de impressão em mm antes de criar a arte. Entregue sempre em vetor (AI/EPS/SVG) e confirme se a técnica aceita degradê ou só cor plana.',
+};
+
+// R4: exibida apenas quando o usuário digita texto livre (não é uma ação rápida conhecida)
 const ASSISTANT_UNAVAILABLE_MSG =
-  'O assistente de IA para mockup está em desenvolvimento. Em breve você poderá receber sugestões automáticas de posicionamento e técnica. Por enquanto, use as ações rápidas abaixo para orientações gerais.';
+  'O assistente de IA para mockup está em desenvolvimento. Em breve você poderá receber sugestões automáticas de posicionamento e técnica.';
 
 const INITIAL_MESSAGES: Message[] = [
   {
@@ -122,7 +132,27 @@ export function AIMockupAssistant({
 
   const handleQuickAction = (action: QuickAction) => {
     if (isLoading) return;
-    postHonestReply(action.label);
+    const tip = QUICK_ACTION_TIPS[action.id];
+    if (!tip) {
+      postHonestReply(action.label);
+      return;
+    }
+    // Resposta estática imediata — sem simular loading para ações conhecidas
+    setMessages((prev) => [
+      ...prev,
+      {
+        id: Date.now().toString(),
+        role: 'user',
+        content: action.label,
+        timestamp: new Date(),
+      },
+      {
+        id: (Date.now() + 1).toString(),
+        role: 'assistant',
+        content: tip,
+        timestamp: new Date(),
+      },
+    ]);
   };
 
   if (!isOpen) {
