@@ -27,7 +27,7 @@ export const loginSchema = z.object({
     .min(1, 'Email é obrigatório')
     .email('Email inválido')
     .transform((val) => val.toLowerCase()),
-  password: z.string().min(6, 'Senha deve ter pelo menos 6 caracteres'),
+  password: z.string().min(8, 'Senha deve ter pelo menos 8 caracteres'),
 });
 
 export const signupSchema = z

@@ -350,9 +350,13 @@ export default function MockupGenerator() {
                   onAreasChange={mg.setPersonalizationAreas}
                   onActiveAreaChange={mg.setActiveAreaId}
                   onLogoUpload={mg.handleAreaLogoUpload}
-                  onLogoRemove={() => {
+                  onLogoRemove={(areaId) => {
                     mg.logoColorAnalysis.clearAnalysis();
-                    if (mg.activeArea) mg.updateActiveArea({ logoPreview: null, logoFile: null });
+                    mg.setPersonalizationAreas((prev) =>
+                      prev.map((a) =>
+                        a.id === areaId ? { ...a, logoPreview: null, logoFile: null } : a,
+                      ),
+                    );
                     mg.setGeneratedMockup(null);
                   }}
                   productLocations={mg.productLocations}
