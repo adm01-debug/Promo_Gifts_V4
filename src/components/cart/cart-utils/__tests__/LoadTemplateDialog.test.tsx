@@ -47,4 +47,20 @@ describe('LoadTemplateDialog', () => {
     expect(onDelete).toHaveBeenCalledTimes(1);
     expect(onDelete).toHaveBeenCalledWith('t1');
   });
+
+  it('excluir o último template fecha o estado: ao voltar a ter templates o dialog não reabre', async () => {
+    const onDelete = vi.fn();
+    const { rerender } = render(
+      <LoadTemplateDialog templates={templates} onLoad={vi.fn()} onDelete={onDelete} />,
+    );
+    const user = await openDialog();
+    await user.click(screen.getByRole('button', { name: /Excluir template Kit Onboarding/i }));
+    await user.click(screen.getByRole('button', { name: /Confirmar exclusão/i }));
+
+    rerender(<LoadTemplateDialog templates={[]} onLoad={vi.fn()} onDelete={onDelete} />);
+    rerender(<LoadTemplateDialog templates={templates} onLoad={vi.fn()} onDelete={onDelete} />);
+
+    expect(screen.queryByText('Templates Salvos')).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Usar Template \(1\)/i })).toBeInTheDocument();
+  });
 });

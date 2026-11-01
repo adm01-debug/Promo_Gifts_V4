@@ -285,6 +285,9 @@ export function LoadTemplateDialog({
                         onClick={() => {
                           onDelete(t.id);
                           setConfirmDeleteId(null);
+                          // Último template: o dialog some (retorna null); fecha o estado
+                          // para não reabrir sozinho quando um novo template for salvo.
+                          if (templates.length === 1) setOpen(false);
                         }}
                       >
                         Confirmar exclusão
