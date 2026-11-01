@@ -468,12 +468,12 @@ async function main() {
   // E043: policies novas públicas/abertas são recusadas — EXCETO as que têm DROP
   // pendente em plannedKeys (policy pré-existente sendo fase-out, não uma nova
   // adição), para não bloquear o PR que as remove (Codex P1 2026-10-18).
-  // E206: partição mensal com policy idêntica ao pai no baseline também tolerada.
+  // E206: a tolerância automática de partições NÃO se aplica aqui — policies
+  // abertas (anon/public, qual=true) devem ser revisadas mesmo em meses novos.
   const e043Violations = addedAll.filter(
     (p) =>
       isPublicOpenPolicy(p) &&
-      !isAddedPlanned(p, plannedKeys) &&
-      !isPartitionPolicyMatchingParent(p, baselineByKey),
+      !isAddedPlanned(p, plannedKeys),
   );
   const addedNonE043 = addedAll.filter((p) => !isPublicOpenPolicy(p));
   // E048: verifica cmd além do nome na chave de tolerância (fallback para chave legada sem cmd).
