@@ -19,6 +19,7 @@ import {
 } from '@/lib/kit-builder/persistence';
 
 const AUTO_SAVE_DELAY_MS = 5000;
+const LS_BACKUP_KEY_PREFIX = 'kit-builder-unload-backup';
 
 interface AutoSaveResult {
   lastSavedAt: Date | null;
@@ -32,6 +33,8 @@ interface AutoSaveResult {
   cancelPendingSave: () => void;
   /** Supersedes any failed automatic operation after a successful explicit save. */
   acknowledgeManualSave: (kitId: string, revision: number) => void;
+  /** Reads and clears the localStorage backup written on beforeunload, if any. */
+  consumeUnloadBackup: () => { kitId: string | null; snapshot: string; savedAt: number } | null;
 }
 
 export function useKitAutoSave(
@@ -277,6 +280,33 @@ export function useKitAutoSave(
     };
   }, []);
 
+  // beforeunload backup: persists unsaved snapshot to localStorage so it can
+  // be recovered after an accidental tab close or navigation.
+  useEffect(() => {
+    if (!enabled) return;
+    const handleBeforeUnload = () => {
+      if (!snapshotRef.current || !user?.id) return;
+      // Only write backup when there is a pending unsaved edit (timer still
+      // scheduled or save in-flight) to avoid overwriting a clean saved state.
+      if (!timerRef.current && !saveInFlightRef.current && !saveQueuedRef.current) return;
+      try {
+        const key = `${LS_BACKUP_KEY_PREFIX}-${user.id}`;
+        localStorage.setItem(
+          key,
+          JSON.stringify({
+            kitId: autoSavedKitIdRef.current,
+            snapshot: snapshotRef.current,
+            savedAt: Date.now(),
+          }),
+        );
+      } catch {
+        // localStorage may be unavailable in private browsing — fail silently.
+      }
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [enabled, user?.id]);
+
   // Update autoSavedKitId when currentKitId changes externally
   useEffect(() => {
     if (currentKitId) {
@@ -290,6 +320,19 @@ export function useKitAutoSave(
     revisionRef.current = currentRevision;
   }, [currentRevision]);
 
+  const consumeUnloadBackup = useCallback(() => {
+    if (!user?.id) return null;
+    try {
+      const key = `${LS_BACKUP_KEY_PREFIX}-${user.id}`;
+      const raw = localStorage.getItem(key);
+      if (!raw) return null;
+      localStorage.removeItem(key);
+      return JSON.parse(raw) as { kitId: string | null; snapshot: string; savedAt: number };
+    } catch {
+      return null;
+    }
+  }, [user?.id]);
+
   return {
     lastSavedAt,
     isSaving,
@@ -298,5 +341,6 @@ export function useKitAutoSave(
     retryLastSave,
     cancelPendingSave,
     acknowledgeManualSave,
+    consumeUnloadBackup,
   };
 }
