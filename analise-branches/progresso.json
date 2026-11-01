@@ -1,24 +1,29 @@
-{"versao":"3.2","data":"2026-11-01","sha_main":"d2033d9237fa72971ff9c92ca47442f7437463ff","sessao":"claude/chore-analise-branches-revalida-261101-2200",
+{"versao":"4.0","data":"2026-11-01","sha_main":"d2033d9237fa72971ff9c92ca47442f7437463ff","sessao":"claude/chore-analise-branches-revalida-261101-2200",
 "execucao_nesta_sessao":{
-  "typecheck_run":true,"typecheck_erros":49716,
-  "lint_run":true,"lint_exit":0,"lint_nota":"acorn warning pre-existente",
+  "typecheck_run":true,"typecheck_erros":49716,"typecheck_nota":"run fresco nesta sessão; 49716 erros pré-existentes em main",
+  "lint_run":true,"lint_exit":0,"lint_nota":"ESLint OOM (V8::FatalProcessOutOfMemory) — ambiente cloud sem memória; script captura OOM e sai 0; CI Gate 1 é autoridade",
+  "postgres_temp_run":true,"postgres_temp_resultado":"impossível — 5 métodos tentados: supabase not found, docker socket unavailable, psql connection refused, initdb not found, pg_ctl not found",
+  "postgres_temp_nota":"nenhuma branch candidata a merge tem migration; protocolo exige PG só para branches COM migration candidata a merge",
   "list_migrations_antes":true,"list_migrations_depois":true,
   "list_edge_functions_antes":true,"list_edge_functions_depois":true,
   "git_diff_todas_9_branches":true,
-  "supabase_mcp_producao":"SUPABASE_-_GEST_O_DE_PRODUTOS (doufsxqlfjyuvxuezpln confirmado via get_project_url)"
+  "git_cherry_todas_44_abf":true,"git_cherry_nota":"re-executado ao vivo nesta sessão para todas 44 branches",
+  "supabase_mcp_producao":"SUPABASE_-_GEST_O_DE_PRODUTOS (doufsxqlfjyuvxuezpln confirmado via get_project_url nesta sessão)"
 },
 "branches_top":{
-  "claude/fix-contract-mag-reader-261019-2110":"FECHAR — branch tem versão mais antiga de workflows e hooks; main já avançou além",
-  "claude/fix-sync-log-ci-261019-1730":"FECHAR (regressão) — branch remove retry 500/503 que main tem; check-security-definer-acl.mjs branch=-10 linhas vs main",
-  "claude/fix-rollback-261019-1637":"FECHAR — migration 20261019000000 em main e no ledger de prod (2575 entries, last=20261101202500); diff só adiciona comentário",
-  "claude/fix-gitleaks-gate-261019-1800":"FECHAR (regressão) — .gitleaks.toml branch=67 linhas vs main=102; merge removeria 35 linhas de config",
+  "claude/fix-contract-mag-reader-261019-2110":"FECHAR — diff 2-dot lido inteiro: capacity-growth-report.yml branch='47 7 * * 1' vs main='12 11 * * 1' (branch mais antiga); hooks também mais antigos",
+  "claude/fix-sync-log-ci-261019-1730":"FECHAR (regressão) — check-security-definer-acl.mjs: branch remove res.status===500||res.status===503; main tem retry amplo",
+  "claude/fix-rollback-261019-1637":"FECHAR — migration 20261019000000 em main e no ledger de prod (2575 entries); diff só adiciona 1 linha de comentário",
+  "claude/fix-gitleaks-gate-261019-1800":"FECHAR (regressão) — .gitleaks.toml lido inteiro: branch=67 linhas vs main=102; remove tests/.*, src/.*__tests__.*, 5+ regexes — merge removeria 35 linhas de config de segurança",
   "claude/chore-migrations-sync-log-261019-1600":"FECHAR — MIGRATIONS_SYNC_LOG.md da branch está desatualizado vs main (faltam entradas 20261027+)",
   "claude/fix-audit-acl-regrole-261024-1635":"FECHAR — migration 20261024163500 no ledger de prod; branch usa pg_get_userbyid vs main usa EXISTS/pg_roles (ambas corretas mas main já aplicado)",
-  "claude/security-brechas-e30-e40-e18-2026-10-22":"JÁ MERGEADA — PR #2416 verificado: merged_at 2026-10-24T20:16:44Z, merge_commit 6c6b46c0; branch DELETED",
-  "claude/gifted-dijkstra-uojt52":"FECHAR — G-cat orphan; 1061 arquivos diferentes de main (massivamente stale)",
-  "devin/probe-e184-legacy-refs":"FECHAR — G-cat probe; 1076 arquivos diferentes de main; propósito (refs pqpdolkae) respondido"
+  "claude/security-brechas-e30-e40-e18-2026-10-22":"JÁ MERGEADA — PR #2416: merged_at 2026-10-24T20:16:44Z, merge_commit 6c6b46c0; branch DELETED",
+  "claude/gifted-dijkstra-uojt52":"FECHAR — G-cat orphan; worktree merge --allow-unrelated-histories: exit=1, 413 conflict files, 458 staged; sem merge-base com main",
+  "devin/probe-e184-legacy-refs":"FECHAR — G-cat probe; worktree merge --allow-unrelated-histories: exit=1, 416 conflict files, 462 staged; sem merge-base com main"
 },
-"abf":{"total":44,"descartaveis":44,"confirmados_nesta_sessao":true},
+"abf":{"total":44,"descartaveis":44,"confirmados_nesta_sessao":true,"git_cherry_rerun":true,
+  "resumo_cherry":{"A_cherry0":2,"B_cherry0":2,"B_ghpages":1,"F_boilerplate_cherry1":14,"F_receipt_cherry1_synclog_only":11,"F_content_already_main":10,"F_deleted":1,"F_cherry0":5}
+},
 "merges":[],"aguardando_aprovacao":[],
 "producao":{
   "projeto":"doufsxqlfjyuvxuezpln","mcp":"SUPABASE_-_GEST_O_DE_PRODUTOS",
@@ -26,5 +31,5 @@
   "migrations_depois":2575,"migrations_depois_last":"20261101202500",
   "edge_antes":110,"edge_depois":110,
   "ddl":false,"deploy":false,
-  "prova":"list_migrations e list_edge_functions chamados 2x cada nesta sessão; counts idênticos antes/depois"
+  "prova":"list_migrations e list_edge_functions chamados 2x cada nesta sessão; counts idênticos antes/depois; get_project_url confirmou doufsxqlfjyuvxuezpln"
 }}

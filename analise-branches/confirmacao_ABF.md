@@ -4,6 +4,13 @@ Sessão: `claude/chore-analise-branches-revalida-261101-2200`
 SHA main baseline: `d2033d9237fa72971ff9c92ca47442f7437463ff`
 Data: 2026-11-01
 
+**REVALIDAÇÃO DESTA SESSÃO:** `git cherry` re-executado ao vivo para todas as 44 branches
+nesta sessão (2026-11-01). Resultados:
+- A(2): cherry=0 em ambas — confirmado ao vivo
+- B(3): cherry=0 nas 2 code branches; gh-pages remota confirmada existente (build-only)
+- F(39): adm01-debug-patch-1..4 cherry=0-1 (boilerplate); e15-receipts cherry=1 (SYNC_LOG apenas);
+  claude/* e dependabot/* cherry=0-2 (conteúdo já em main); quirky-keller inexistente no remote
+
 Prova confirmada nesta sessão via `git cherry -v origin/main origin/<branch>` e
 `git diff origin/main...origin/<branch> --name-only`.
 

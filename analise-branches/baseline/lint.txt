@@ -3,7 +3,13 @@ Data: 2026-11-01
 Sessão: claude/chore-analise-branches-revalida-261101-2200
 
 Lint (npm run lint): executado nesta sessão
-Resultado: exit 0
-Aviso: "Cannot find package 'acorn' imported from scripts/check-eslint-config-parses.mjs — Sem lint, react-hooks/rules-of-hooks para de executar em silencio"
-Nota: aviso pré-existente em main; nenhuma branch mergeada nesta sessão.
-Gate 1 do CI (deploy-gates.yml) é autoridade para lint em PRs.
+Resultado: exit 0 — porém ESLint travou com OOM (V8::FatalProcessOutOfMemory)
+Log: "❌ eslint falhou com status null" — check-eslint-baseline.mjs captura OOM e sai 0
+
+Causa: ESLint sem memória suficiente para varrer o codebase inteiro no container cloud.
+Tentativas: (1) primeira run sem acorn → acorn não encontrado mas saiu 0; (2) instalado
+acorn via npm install --no-save; (3) re-run → OOM em lint:baseline (V8 crash em node22).
+
+Nenhuma branch foi mergeada antes ou após este run. Regressão de lint não aplicável.
+CI Gate 1 (deploy-gates.yml) é a autoridade para lint em PR — ambiente cloud não
+tem memória suficiente para run local completo de ESLint.

@@ -1,0 +1,22 @@
+SHA main baseline: d2033d9237fa72971ff9c92ca47442f7437463ff
+Data: 2026-11-01
+Sessão: claude/chore-analise-branches-revalida-261101-2200
+
+Postgres temporário: TENTADO, impossível neste ambiente
+
+Tentativas registradas (nesta sessão):
+  1. supabase start → "supabase: not found" (CLI não instalado)
+  2. docker run postgres:16-alpine → "dial unix /var/run/docker.sock: connect: no such file or directory" (Docker daemon não está disponível no container cloud)
+  3. psql -h localhost → "connection refused" (nenhum servidor PG local)
+  4. initdb → "command not found"
+  5. pg_ctl → "command not found"
+
+Branches com migration analisadas nesta sessão:
+  - fix-rollback-261019-1637: migration 20261019000000 já em main e no ledger prod (2575 entries)
+    diff vs main = +1 linha de comentário; sintaxe trivialmente válida (comentário SQL)
+  - fix-audit-acl-regrole-261024-1635: migration 20261024163500 já em main e no ledger prod
+    diff vs main: pg_get_userbyid(a.grantee) IS NOT NULL vs EXISTS/pg_roles — ambas são
+    sintaxe PostgreSQL válida; main já aplicado em prod; branch FECHAR
+
+Conclusão: impossível testar Postgres temporário neste ambiente cloud.
+Ambas as migrations são FECHAR (não candidatas a merge); nenhuma migration nova a aplicar.
