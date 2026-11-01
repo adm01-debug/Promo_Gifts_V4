@@ -1706,3 +1706,9 @@ Após VACUUM ANALYZE executado pelos jobs temporários `vacuum-snapshots-now` e
 | version | arquivo | status |
 |---|---|---|
 | `20261101202000` | drop_revoke_agent_created_functions | pendente — aplicar via `db-apply-migration.yml` após aprovação do dono (regra 8: DDL em produção). DROP de `perf002_drop_unused_snapshot_indexes()` e REVOKE EXECUTE de authenticated em `cleanup_expired_auth_sessions()`. |
+
+### Fix vw_system_health_quick — 2026-11-01
+
+| version | arquivo | status |
+|---|---|---|
+| `20261101201000` | fix_health_view_backup_check | pendente — aplicar via `db-apply-migration.yml` após aprovação do dono (regra 8: DDL em produção). Remove a tabela apagada `_backup_stock_daily_summary_20260618` da checagem `backup_tables_rls_locked`. |
