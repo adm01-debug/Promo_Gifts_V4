@@ -8,17 +8,16 @@ export interface QuickSuggestion {
 
 const MAX_QUICK_SUGGESTIONS = 6;
 
-/** Atalhos da busca: categorias ativas do catálogo, em ordem alfabética, sem repetição. */
 export function buildQuickSuggestions(rows: CategoryIcon[] | undefined): QuickSuggestion[] {
-  const names = new Set<string>();
+  const seen = new Map<string, string>(); // category_name -> icon
   for (const row of rows ?? []) {
     const name = row.category_name?.trim();
-    if (name) names.add(name);
+    if (name && !seen.has(name)) seen.set(name, row.icon ?? "🏷️");
   }
-  return [...names]
-    .sort((a, b) => a.localeCompare(b, 'pt-BR'))
+  return [...seen.entries()]
+    .sort(([a], [b]) => a.localeCompare(b, 'pt-BR'))
     .slice(0, MAX_QUICK_SUGGESTIONS)
-    .map((label) => ({ label, icon: '🏯️' }));
+    .map(([label, icon]) => ({ label, icon }));
 }
 
 export function useQuickSuggestions(): QuickSuggestion[] {
