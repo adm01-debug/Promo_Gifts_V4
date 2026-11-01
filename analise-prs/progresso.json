@@ -1,6 +1,6 @@
 {
   "sha_main_fixado": "58b4eeaf24f9c70d99e28c192e464ffa10c37274",
-  "sha_main_atual": "4c6541b6f5fab4205600472bc086c2f603a69312",
+  "sha_main_atual": "a581aef7db32604f91fd15e8665e2f657f3c128d",
   "data_analise": "2026-11-01",
   "total_prs_abertas": 4,
   "total_analisadas": 4,
@@ -15,8 +15,10 @@
   "verificacoes_completadas": {
     "banco_is_supervisor_or_above": "não existe como SECURITY DEFINER (pg_proc retornou 0 linhas)",
     "banco_log_rls_denial": "não existe como SECURITY DEFINER (pg_proc retornou 0 linhas)",
-    "worktree_merge_2927": "CLEAN — 11 arquivos, sem conflito, sem workflows/migrations vs main atual",
-    "worktree_merge_2941": "CLEAN — 13 arquivos, sem conflito, sem workflows/migrations vs main atual",
+    "worktree_merge_2927_vs_a581aef": "CLEAN — 11 arquivos, sem conflito, sem workflows/migrations vs main atual",
+    "worktree_merge_2941_vs_a581aef": "CLEAN — 13 arquivos, sem conflito, sem workflows/migrations vs main atual",
+    "diff_completo_2927": "LIDO — 11 arquivos, 392+/34-, useListUrlState+check-dep-audit+allowlist+testes",
+    "diff_completo_2941": "LIDO — 13 arquivos, 866+/302-, mesmo escopo de #2927 + mcp_kv_get + rollback SQL + docs",
     "build_npm_run_build": "✅ built in 16.22s",
     "vitest_baseline": "3 arquivos falhando pré-existentes, 26042 passaram",
     "eslint_baseline": "crash OOM no container (SIGABRT)"
@@ -25,9 +27,10 @@
     "2927": {
       "status": "analisada",
       "veredito": "AGUARDANDO CI",
-      "head_sha": "f23ee40",
-      "ci_gate_final": "in_progress",
-      "merge_test": "CLEAN",
+      "head_sha": "f23ee4005e01efdc15e74e49db124e005f58fe49",
+      "ci_gate_final": "in_progress (quality-gate in_progress, 30 queued)",
+      "merge_test": "CLEAN vs a581aef7d",
+      "diff_lido": true,
       "dossie": "dossies/PR-2927.md"
     },
     "2940": {
@@ -38,9 +41,11 @@
     "2941": {
       "status": "analisada",
       "veredito": "AGUARDANDO CI",
-      "head_sha": "80ffa42",
-      "ci_gate_final": "CANCELADO (não rodou)",
-      "merge_test": "CLEAN",
+      "head_sha": "e94b22e5a49e3e6b522f2b7f13a762359a080b70",
+      "head_sha_anterior": "80ffa4224b5a4d4d6f7e58a8a3b6b4a3a8b4b4a3",
+      "ci_gate_final": "in_progress (quality-gate queued, CI disparou para novo head)",
+      "merge_test": "CLEAN vs a581aef7d",
+      "diff_lido": true,
       "preferida": true,
       "dossie": "dossies/PR-2941.md"
     },
