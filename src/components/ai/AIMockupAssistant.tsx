@@ -54,6 +54,20 @@ const QUICK_ACTIONS: QuickAction[] = [
   { id: 'tips', label: 'Dicas gerais', icon: Lightbulb, action: () => {} },
 ];
 
+// Dicas estáticas por ação rápida — evita loop de "use as ações rápidas"
+const QUICK_ACTION_TIPS: Record<string, string> = {
+  position:
+    'Posicione a logo no centro-alto ou centro do produto para máxima visibilidade. Evite bordas e costuras. Em produtos cilíndricos, centralize horizontalmente.',
+  size: 'O tamanho ideal da logo é entre 30–40% da área de impressão. Em brindes pequenos (≤10 cm), prefira versão simplificada da marca sem tagline.',
+  color:
+    'Para boa legibilidade, a cor da logo deve ter contraste ≥4.5:1 sobre o fundo do produto. Em superfícies coloridas, prefira branco ou preto sólido.',
+  tips: 'Peça ao fornecedor a área de impressão em mm antes de criar a arte. Entregue sempre em vetor (AI/EPS/SVG) e confirme se a técnica aceita degradê ou só cor plana.',
+};
+
+// R4: exibida apenas quando o usuário digita texto livre (não é uma ação rápida conhecida)
+const ASSISTANT_UNAVAILABLE_MSG =
+  'O assistente de IA para mockup está em desenvolvimento. Em breve você poderá receber sugestões automáticas de posicionamento e técnica.';
+
 const INITIAL_MESSAGES: Message[] = [
   {
     id: 'welcome',
@@ -66,8 +80,8 @@ const INITIAL_MESSAGES: Message[] = [
 ];
 
 export function AIMockupAssistant({
-  productName,
-  techniqueName,
+  productName: _productName,
+  techniqueName: _techniqueName,
   className,
 }: AIMockupAssistantProps) {
   const [isOpen, setIsOpen] = useState(false);
@@ -83,76 +97,62 @@ export function AIMockupAssistant({
     };
   }, []);
 
-  const handleSend = () => {
-    if (!input.trim() || isLoading) return;
-
+  const postHonestReply = (userContent: string) => {
     const userMessage: Message = {
       id: Date.now().toString(),
       role: 'user',
-      content: input,
+      content: userContent,
       timestamp: new Date(),
     };
-
     setMessages((prev) => [...prev, userMessage]);
-    setInput('');
     setIsLoading(true);
 
-    // Simulate AI response — cancel any previously pending timer first
     if (timerRef.current) clearTimeout(timerRef.current);
     timerRef.current = setTimeout(() => {
       timerRef.current = null;
-      const responses = [
-        `Para ${productName || 'este produto'}, recomendo posicionar a logo no centro superior, deixando margem de 2cm das bordas.`,
-        `A técnica ${techniqueName || 'escolhida'} funciona melhor com logos simplificados. Considere reduzir o número de cores para melhores resultados.`,
-        'Para máxima visibilidade, mantenha o tamanho do logo entre 8-12cm de largura. Logos muito pequenos perdem impacto.',
-        'Dica: Posicione a logo levemente acima do centro geométrico - isso cria melhor equilíbrio visual em produtos vestíveis.',
-      ];
-
-      const assistantMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        role: 'assistant',
-        content: responses[Math.floor(Math.random() * responses.length)],
-        timestamp: new Date(),
-      };
-
-      setMessages((prev) => [...prev, assistantMessage]);
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: (Date.now() + 1).toString(),
+          role: 'assistant',
+          content: ASSISTANT_UNAVAILABLE_MSG,
+          timestamp: new Date(),
+        },
+      ]);
       setIsLoading(false);
-    }, 1500);
+    }, 500);
+  };
+
+  const handleSend = () => {
+    if (!input.trim() || isLoading) return;
+    const text = input;
+    setInput('');
+    postHonestReply(text);
   };
 
   const handleQuickAction = (action: QuickAction) => {
     if (isLoading) return;
-
-    const userMessage: Message = {
-      id: Date.now().toString(),
-      role: 'user',
-      content: action.label,
-      timestamp: new Date(),
-    };
-
-    setMessages((prev) => [...prev, userMessage]);
-    setIsLoading(true);
-
-    const actionResponses: Record<string, string> = {
-      position: `Para ${productName || 'este produto'}, a posição ideal é centralizada no terço superior, a cerca de 8cm da gola/borda superior.`,
-      size: 'O tamanho ideal para máxima visibilidade e legibilidade é entre 10-15cm de largura. Para logos detalhados, prefira tamanhos maiores.',
-      color: `Com a técnica ${techniqueName || 'selecionada'}, sugiro usar no máximo 3-4 cores sólidas para melhor definição e custo otimizado.`,
-      tips: '3 dicas rápidas: 1) Sempre peça aprovação visual antes de produzir, 2) Considere como a peça será usada, 3) Teste o contraste logo/produto.',
-    };
-
-    if (timerRef.current) clearTimeout(timerRef.current);
-    timerRef.current = setTimeout(() => {
-      timerRef.current = null;
-      const assistantMessage: Message = {
+    const tip = QUICK_ACTION_TIPS[action.id];
+    if (!tip) {
+      postHonestReply(action.label);
+      return;
+    }
+    // Resposta estática imediata — sem simular loading para ações conhecidas
+    setMessages((prev) => [
+      ...prev,
+      {
+        id: Date.now().toString(),
+        role: 'user',
+        content: action.label,
+        timestamp: new Date(),
+      },
+      {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
-        content: actionResponses[action.id] || 'Posso ajudar com mais alguma coisa?',
+        content: tip,
         timestamp: new Date(),
-      };
-
-      setMessages((prev) => [...prev, assistantMessage]);
-      setIsLoading(false);
-    }, 1000);
+      },
+    ]);
   };
 
   if (!isOpen) {
@@ -204,7 +204,7 @@ export function AIMockupAssistant({
         </div>
         <div className="min-w-0 flex-1">
           <h3 className="font-display text-sm font-semibold">Matheus — Expert em Layouts</h3>
-          {!isMinimized && <p className="truncate text-xs text-muted-foreground">Powered by AI</p>}
+          {!isMinimized && <p className="truncate text-xs text-muted-foreground">Em desenvolvimento</p>}
         </div>
         <Badge variant="secondary" className="text-[10px]">
           Beta
