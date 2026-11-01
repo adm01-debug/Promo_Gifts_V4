@@ -406,6 +406,7 @@ export function useSellerCartsPage() {
     [activeCart, saveTemplate],
   );
 
+  const applyingTemplateRef = useRef(false);
   const handleLoadTemplate = useCallback(
     async (items: CartTemplateItem[]) => {
       if (items.length === 0) {
@@ -414,12 +415,21 @@ export function useSellerCartsPage() {
         });
         return;
       }
-      // silent + sequencial e aguardado: um único toast no fim, só depois de
-      // todas as gravações terminarem, contando as que falharam (→ false).
+      // Trava na página (sobrevive à remontagem da sidebar): lotes sobrepostos duplicariam quantidades.
+      if (applyingTemplateRef.current) {
+        toast.info('Aguarde: um template ainda está sendo aplicado');
+        return;
+      }
+      applyingTemplateRef.current = true;
+      // silent + sequencial: um único toast no fim, contando as falhas (→ false).
       let failed = 0;
-      for (const item of items) {
-        const ok = await addToActiveCart({ ...item }, undefined, { silent: true });
-        if (!ok) failed += 1;
+      try {
+        for (const item of items) {
+          const ok = await addToActiveCart({ ...item }, undefined, { silent: true });
+          if (!ok) failed += 1;
+        }
+      } finally {
+        applyingTemplateRef.current = false;
       }
       if (!failed) toast.success('Template aplicado ao carrinho');
       else if (failed === items.length) toast.error('Não foi possível aplicar o template');

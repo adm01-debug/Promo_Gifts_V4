@@ -229,7 +229,7 @@ export function LoadTemplateDialog({
   const handleApply = async (items: CartTemplateItem[]) => {
     if (applying) return;
     setApplying(true);
-    setOpen(false);
+    handleOpenChange(false);
     try {
       await onLoad(items);
     } finally {
@@ -287,7 +287,7 @@ export function LoadTemplateDialog({
                           setConfirmDeleteId(null);
                           // Último template: o dialog some (retorna null); fecha o estado
                           // para não reabrir sozinho quando um novo template for salvo.
-                          if (templates.length === 1) setOpen(false);
+                          if (templates.length === 1) handleOpenChange(false);
                         }}
                       >
                         Confirmar exclusão
