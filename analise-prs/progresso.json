@@ -23,7 +23,7 @@
   },
   "prs_analisados_esta_sessao": 34,
   "prs_analisados_total": 79,
-  "open_prs_count_verificado": 36,
+  "open_prs_count_verificado": 33,
   "open_prs_verificado_em": "2026-11-01T23:15:00Z",
   "verdicts": {
     "MERGEADA_AUTONOMA_REV88": [
@@ -85,17 +85,19 @@
       "2600",
       "2989"
     ],
+    "MERGEADA_PO": [
+      "2588",
+      "2646",
+      "2947"
+    ],
     "BLOQUEADA": [
       "2420",
       "2572",
       "2579",
-      "2588",
       "2605",
       "2622",
-      "2646",
       "2653",
-      "2941",
-      "2947"
+      "2941"
     ],
     "DRAFT_NOMERGE": [
       "2631",
@@ -131,13 +133,10 @@
     "2420": "REGRA#8: rollbacks/ DDL de producao — exige aprovacao PO",
     "2572": "Dirty: supersedado por revisoes posteriores",
     "2579": "Downgrade versao 1.2.1->1.0.0 sem justificativa; potencial regressao",
-    "2588": "Breaking changes API react-day-picker 8->10; requer migracao de uso",
     "2605": "Dirty conflitos vs main; 100% supersedada por PRs ja mergeados",
     "2622": "REGRA#8: rollbacks/ DDL de producao — exige aprovacao do PO",
-    "2646": "REGRA#8: supabase/migrations/ — exige aprovacao do PO",
     "2653": "CONFLICT + REGRA#10 (branch outra sessao claude/quirky-keller-owezvt)",
-    "2941": "REGRA#8 (supabase/rollbacks/) + CONFLITO (mergeable:dirty)",
-    "2947": "REGRA#8 (supabase/rollbacks/) — exige aprovacao do PO"
+    "2941": "REGRA#8 (supabase/rollbacks/) + CONFLITO (mergeable:dirty)"
   },
   "merges_autonomos_rev88": {
     "2940": {

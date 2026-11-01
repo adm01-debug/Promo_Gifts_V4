@@ -13,17 +13,18 @@
 |---|---|---|
 | [#2420](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2420) | DDL de produção (`supabase/rollbacks/`) — potencial perda de dados ou regressão de schema | PO aprova ou recusa merge com DDL |
 | [#2622](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2622) | DDL de produção (`supabase/rollbacks/`) | PO aprova ou recusa |
-| [#2646](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2646) | Migration de banco (`supabase/migrations/`) | PO aprova ou recusa |
 | [#2941](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2941) | DDL de rollback + conflito dirty | PO aprova após resolver conflito |
-| [#2947](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2947) | DDL de rollback | PO aprova ou recusa |
+
+> **#2646** e **#2947** já foram mergeadas pelo PO (ver seção "PRs Mergeadas pelo PO").
 
 ### Riscos técnicos que exigem decisão de arquitetura
 
 | PR | Risco | Decisão necessária |
 |---|---|---|
 | [#2579](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2579) | Downgrade versão 1.2.1→1.0.0 — pode regredir funcionalidades | Dev/PO confirma intencionalidade |
-| [#2588](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2588) | react-day-picker 8→10 breaking API — requer migração de todos os usos | Dev confirma migração completa |
 | [#2653](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2653) | Branch de outra sessão (REGRA#10) + conflito dirty | Branch owner (outra sessão) resolve conflito e reabre PR própria |
+
+> **#2588** já foi mergeada pelo PO em 2026-10-27 (react-day-picker 8→10).
 
 ### Bloqueios definitivos (sem ação pendente do PO)
 
@@ -67,7 +68,8 @@ Ação: autores marcam como "Ready for review" quando o código estiver completo
 | **MERGEADA_AUTONOMA** (rev88 — esta sessão) | **8** | #2940, #2944, #2952, #2960, #2963, #2974, #2985, #2986 |
 | MERGEADA_AUTONOMA (sessões anteriores) | 11 | #2594, #2610, #2615, #2616, #2620, #2627, #2628, #2636, #2637, #2650, #2652 |
 | MERGEADA_SESSAO_EXTERNA | 27 | #2582–#2590, #2596–#2604, #2621, #2625, #2647–#2649, #2654–#2660 e outros |
-| BLOQUEADA | 10 | #2420, #2572, #2579, #2588, #2605, #2622, #2646, #2653, #2941, #2947 |
+| MERGEADA_PO | 3 | #2588, #2646, #2947 |
+| BLOQUEADA | 7 | #2420, #2572, #2579, #2605, #2622, #2653, #2941 |
 | DRAFT_NOMERGE | 25 | #2580, #2631, #2942, #2948–#2951, #2954–#2958, #2961, #2965–#2967, #2969–#2973, #2976–#2982, #2988, #2990 |
 | SUPERSEDED | 1 | #2645 |
 | FECHADA_EXTERNA | 2 | #2600, #2989 |
@@ -103,20 +105,27 @@ Ação: autores marcam como "Ready for review" quando o código estiver completo
 
 ---
 
-## PRs Bloqueadas (10)
+## PRs Mergeadas pelo PO (3)
+
+| PR | Motivo / Data |
+|---|---|
+| [#2588](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2588) | MERGEADA_PO — react-day-picker 8→10 — PO mergeou em 2026-10-27 |
+| [#2646](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2646) | MERGEADA_PO — migration header fix — PO mergeou em 2026-10-28 |
+| [#2947](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2947) | MERGEADA_PO — rollback kill_switch_hits — PO mergeou em 2026-11-01 |
+
+---
+
+## PRs Bloqueadas (7)
 
 | PR | Motivo |
 |---|---|
 | [#2420](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2420) | REGRA#8: rollbacks/ DDL produção — exige aprovação PO |
 | [#2572](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2572) | Dirty + superseded por revisões posteriores |
 | [#2579](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2579) | Downgrade 1.2.1→1.0.0 — regressão sem justificativa |
-| [#2588](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2588) | react-day-picker 8→10 breaking API — requer migração |
 | [#2605](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2605) | Dirty + superseded por PRs já mergeados |
 | [#2622](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2622) | REGRA#8: rollbacks/ DDL produção — exige aprovação PO |
-| [#2646](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2646) | REGRA#8: supabase/migrations/ — exige aprovação PO |
 | [#2653](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2653) | CONFLICT + REGRA#10 (branch outra sessão) |
 | [#2941](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2941) | REGRA#8 (rollbacks/) + conflito (dirty) |
-| [#2947](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2947) | REGRA#8: rollbacks/ — exige aprovação PO |
 
 ---
 
