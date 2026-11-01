@@ -1,17 +1,28 @@
 # PROGRESSO por onda
 
-Atualizado: 2026-10-25 · main `193ae5a` (21:01Z)
+Atualizado: 2026-11-01 main `de5345d` (22:30Z)
 
-| Onda | Estado | Feito (PR/SHA) | Em andamento | Bloqueado | Próximo |
+| Onda | Estado | Feito (PR/SHA) | Em andamento | Bloqueado | Proximo |
 |---|---|---|---|---|---|
-| O1 Baseline e inventário | Quase fechada | backlog por camada em `docs/estado/backlog/{ci,banco,supabase,funcionalidades}.md`; este PR consolida | — | Medição local da baseline (PEND-B01); `MAPA_2026-10-24.md`/`resgate-online/` ausentes (PEND-F01) | Aprovação do PO |
-| O2 Estabilizar | Em andamento | CI-001 resolvido (#2524, d74b33f); SB-006 `materials-api` timeout (#2552, 35fdb57); SB-012 fallback `categories-api` removido (3e1adf1); preflight E99 `SET search_path TO` (64faa1d) | E2E vermelhos (CI-002/003/005/006) | Deploy de edge: run #331 em `waiting` (aprovação do environment Production, PEND-E01); #2552 e `categories-api` ainda não estão em produção | Diagnóstico do workflow de deploy (frente CI) |
-| O3 Banco | Em andamento | P01, P02, P03a, P08, P10, P19 aplicados (ver `banco.md`) | Prova em PG temporário dos 460 itens | DDL/ledger em produção aguarda PO (DB-001a/b, DB-007, #2443) | Lotes por segurança/grants |
-| O4 Supabase funcional | Em andamento | Inventário verificado (109=109 edges) | Deploy das edges após aprovação; re-medir 5xx 7d | SB-001/002/003/013 (cron/segredo/decisão PO), SB-017 não verificável por MCP | Re-medir logs 7d |
-| O5 Funcionalidades | Em andamento | 416 itens FT mapeados; feitos hoje: LGPD anonimização (#2548, 9be832a), `weight_g=0` (#2551, 97eed25), mock de selos/supplier trust (#2553, aebd333), mock de BI (#2554, e653844; f87c4b1), 13 data-testids do kit-builder (6842702), header (be7d4e3), `auth-audit.ts` morto (5d480cd), serviços órfãos (521450d) | Fila de execução (10 temas); #2547 links públicos (frente de funcionalidades) | Decisões de PO listadas em `funcionalidades.md` | Ordem 1 (links públicos mortos) |
-| O6 Validação final | Não iniciada | — | — | Depende de O2–O5 | Smoke test + checklist de prontidão |
+| O1 Baseline e inventario | Quase fechada | backlogs ci/banco/supabase/funcionalidades commitados; consolidacao #2566 | -- | PEND-B01 npm ci E403; PEND-F01 MAPA ausente | Aprovacao do PO |
+| O2 Estabilizar | Quase fechada | E2E fixes #2721 merged 2026-10-29; edge deploy E66 run 40230472012 confirmado (commit 9b5f283); CI Gate Final verde em de5345d | -- | PEND-C01 E77 Quotes ainda vermelho | -- |
+| O3 Banco | Quase fechada | SB-0001..SB-0009 (#2730 merged 2026-10-29); PERF-001/003/005; reconciliacao ledger #2937 merged 2026-10-31 | -- | PEND-D02 drift E40 em acompanhamento; PR #2944 release-1.6.1 aguarda PO para mergear (deploy prod) | -- |
+| O4 Supabase funcional | Quase fechada | Fase A concluida #2905 merged 2026-10-31; 109 edges inventariadas | -- | PEND-S01 crons SB-002/003 apontam para edges inexistentes; PEND-S02 SB-017 Auth config | -- |
+| O5 Funcionalidades | Em andamento | FT-059 kit-builder #2902 merged; cart template #2884 merged; audit suite nav #2940 (CI aguardando verificacao) | #2940 feat audit suite nav | #2927 fix url state (Supabase Preview failed); #2941 security allowlist (conflito) | Monitorar #2940 |
+| O6 Validacao final | Em andamento | BACKLOG_PRODUCAO.md como index; BASELINE.md com Gate Final sha 59a7a607 | Smoke test producao; checklist de prontidao | Aguarda O2-O5 fecharem | Smoke test fluxos criticos |
 
-Regra: cada linha só vira "Feito" com SHA/PR e evidência. Este arquivo é atualizado a cada merge relevante.
+Regra: cada linha so vira "Feito" com SHA/PR e evidencia. Este arquivo e atualizado a cada merge relevante.
 
-## Mergeado hoje (2026-10-25) no main
-Backlogs: #2544 (CI), #2545 (funcionalidades), #2549 (Supabase), #2556 (banco, 15e10fd; evidências em 193ae5a), #2566 (consolidação, 3e4c513). Segredos de cron documentados em `SEGREDOS.md` (1047f49); SB-020/021 no backlog Supabase (cfe8487).
+## Mergeado em 2026-10-26 ate 2026-11-01
+
+- 2026-10-26: #2443 DB reconciliacao (via PR merged confirmado em revalidacao 2026-10-31)
+- 2026-10-29: #2721 fix location-panel-timeout-cleanup (E2E fixes)
+- 2026-10-29: #2730 banco SB-0001..SB-0009 repair-only ledger
+- 2026-10-31: #2937 reconciliacao ledger repair-only E99
+- 2026-10-31: #2905 Supabase Fase A
+- 2026-10-31: releases 1.5.0 e 1.6.0 (release-please)
+- 2026-11-01: multiplos merges frente CI/banco/Supabase (de5345d = HEAD main)
+
+## Incidentes registrados
+
+- PEND-I01 (2026-11-01): sessao Claude Desktop aplicou DDL diretamente em producao via MCP fora do fluxo autorizado. Ver PENDENCIAS.md secao PEND-I01.
