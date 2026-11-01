@@ -5,6 +5,45 @@
 
 ---
 
+## Riscos e Decisões Pendentes
+
+### Decisões que exigem aprovação do PO (REGRA#8)
+
+| PR | Risco | Decisão necessária |
+|---|---|---|
+| [#2420](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2420) | DDL de produção (`supabase/rollbacks/`) — potencial perda de dados ou regressão de schema | PO aprova ou recusa merge com DDL |
+| [#2622](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2622) | DDL de produção (`supabase/rollbacks/`) | PO aprova ou recusa |
+| [#2646](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2646) | Migration de banco (`supabase/migrations/`) | PO aprova ou recusa |
+| [#2941](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2941) | DDL de rollback + conflito dirty | PO aprova após resolver conflito |
+| [#2947](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2947) | DDL de rollback | PO aprova ou recusa |
+
+### Riscos técnicos que exigem decisão de arquitetura
+
+| PR | Risco | Decisão necessária |
+|---|---|---|
+| [#2579](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2579) | Downgrade versão 1.2.1→1.0.0 — pode regredir funcionalidades | Dev/PO confirma intencionalidade |
+| [#2588](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2588) | react-day-picker 8→10 breaking API — requer migração de todos os usos | Dev confirma migração completa |
+| [#2653](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2653) | Branch de outra sessão (REGRA#10) + conflito dirty | Branch owner (outra sessão) resolve conflito e reabre PR própria |
+
+### Bloqueios definitivos (sem ação pendente do PO)
+
+| PR | Razão | Ação |
+|---|---|---|
+| [#2572](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2572) | Dirty + superseded por revisões posteriores | Fechar |
+| [#2605](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2605) | Superseded por PRs já mergeados | Fechar |
+| [#2645](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2645) | SUPERSEDED | Fechar |
+
+### 25 PRs DRAFT — aguardando autor marcar como Ready
+
+Todas em estado DRAFT — critério de merge exige PR pronto para revisão.  
+Ação: autores marcam como "Ready for review" quando o código estiver completo.
+
+### Bloqueio de produção (permanente nesta sessão)
+
+**ERR_PROXY_TUNNEL**: Supabase MCP (`mcp__SUPABASE_-_GEST_O_DE_PRODUTOS__*`) bloqueado por proxy durante toda a sessão. Verificação de produção pós-merge **impossível** nesta sessão. A produção deve ser verificada manualmente ou em sessão futura com acesso ao Supabase.
+
+---
+
 ## META CUMPRIDA ✅
 
 | Critério | Status |
@@ -57,7 +96,8 @@
 
 | SHA | Run ID | Status |
 |---|---|---|
-| `78b32ddd5` (pós-merge, rev88) | 41360675335 | em execução (disparado 2026-11-01T23:10Z) |
+| `78b32ddd5` (pós-merge, rev88) | **41360711486** | queued (conclusion=null, verificado 2026-11-01T23:15Z) |
+| `ec06a45724` (main atual) | — | commits externos adicionados pós-merge rev88 |
 
 **Referência autoritativa CI:** TSC=0 em `5b5cef36c` | Gate 2 SUCCESS em `dfec2236c` (run 41019605919)
 

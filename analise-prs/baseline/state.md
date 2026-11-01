@@ -30,10 +30,21 @@ Ver: `docs/ci/evidence vitest baseline 11 arquivos/137 testes dfec2236c` (commit
 
 | SHA | Run ID | Status | Verificado em |
 |---|---|---|---|
-| 5b5cef36c (pré-merge) | 41360675335 | queued→em execução | 2026-11-01T23:10Z |
-| 78b32ddd5 (pós-merge) | — | a disparar | 2026-11-01T23:15Z |
+| 5b5cef36c (pré-merge) | 41360675335 | run em SHA errado (era `e56f2ca74`) | 2026-11-01T23:10Z |
+| 78b32ddd5 (pós-merge rev88) | **41360711486** | queued (conclusion=null) | 2026-11-01T23:15Z |
+| ec06a45724 (main atual) | — | commits externos adicionados pós-merge | 2026-11-02T00:00Z |
 
-**Nota:** Gate Final em execução nas novas commits pós-merge. TSC=0 confirma compilação limpa.
+**Nota:** Run 41360711486 confirmado no SHA `78b32ddd52df18efb34452295a778ade7ad1eafb` (deploy-gates.yml). Status queued ao término da sessão. TSC=0 confirmado em `5b5cef36c` (pre-merge). Gate 2 CI baseline autoridade: SUCCESS run 41019605919 SHA `dfec2236c`.
+
+## Vitest — Falhas Individuais
+
+**Nota:** Os nomes individuais dos 23 testes falhando NÃO foram capturados nesta sessão.  
+O processo background usou `tail -15` que captou apenas o sumário final (73 arquivos / 23 testes falhando).  
+Recuperação impossível — arquivo de saída já foi encerrado.
+
+**Baseline autoritativo para falhas pré-existentes:** Gate 2 CI SUCCESS run 41019605919 SHA `dfec2236c` — 11 arquivos / 137 testes. Falhas adicionais locais (73-11=62 arquivos) são atribuídas a diferenças de ambiente entre CI e local (Supabase mock, workers, etc.).
+
+**Conclusão:** Comparação per-name com baseline CI = **NÃO VERIFICADO** (limitação de captura desta sessão).
 
 ## Merges desta sessão (rev88)
 
