@@ -31,10 +31,10 @@ Ver: `docs/ci/evidence vitest baseline 11 arquivos/137 testes dfec2236c` (commit
 | SHA | Run ID | Status | Verificado em |
 |---|---|---|---|
 | 5b5cef36c (pré-merge) | 41360675335 | run em SHA errado (era `e56f2ca74`) — NÃO é o gate desta branch | 2026-11-01T23:10Z |
-| 78b32ddd5 (pós-merge rev88) | **41360711486** | **queued/stuck** (conclusion=null) — confirmado em 2026-11-02 ainda queued | 2026-11-02T00:10Z |
-| ec06a45724 (main atual) | sem deploy-gates | commits externos adicionados pós-merge — nenhum deploy-gates disparado | 2026-11-02T00:10Z |
+| 78b32ddd5 (pós-merge rev88) | **41360711486** | **queued/stuck** (conclusion=null) — confirmado 2026-11-01T23:48Z ainda queued | 2026-11-01T23:48Z |
+| ec06a45724 (main atual) | 41362508366 / 41362456044 | **pending/queued** (conclusion=null) — starvation sistêmica | 2026-11-01T23:48Z |
 
-**BLOQUEIO CI:** Run 41360711486 está "queued" sem progressão desde 2026-11-01T23:09:35Z — possível starvation de runners no GitHub Actions. Não é falha de gate: o run sequer iniciou. TSC=0 confirmado em `5b5cef36c` (pre-merge). Gate 2 CI baseline autoridade: SUCCESS run 41019605919 SHA `dfec2236c`. **Produção: NÃO VERIFICADO** — ERR_PROXY_TUNNEL bloqueou MCP Supabase toda a sessão.
+**BLOQUEIO CI — STARVATION SISTÊMICA:** Todos os 5 runs mais recentes de deploy-gates.yml em main estão queued/pending com `conclusion=null`. Run 41360711486 (SHA `78b32ddd5`) nunca iniciou desde 23:09Z. Runs 41362508366 e 41362456044 (SHA `ec06a45724`) criados ~23:30Z também stuck. Causa: GitHub Actions runner pool esgotado — afeta TODO o repositório, não específico desta sessão. Não é falha de code ou de gate. TSC=0 confirmado em `5b5cef36c` (pre-merge). Gate 2 CI baseline autoridade: SUCCESS run 41019605919 SHA `dfec2236c`. **Produção: NÃO VERIFICADO** — ERR_PROXY_TUNNEL bloqueou MCP Supabase toda a sessão (afeta todos os MCPs externos: Supabase, Amplitude, Figma, Linear, etc.).
 
 ## Vitest — Falhas por Nome (baseline per-name)
 
