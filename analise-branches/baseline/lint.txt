@@ -1,6 +1,9 @@
-# Baseline ESLint — main@652a7f14
-# Data: 2026-10-24
-# Observação: npx eslint falha com erro de ESM loader no ambiente cloud (não é regressão da branch)
-# STATUS: lint não executável neste ambiente; gate de CI (Gate 1) é a fonte autoritativa
-LINT_EXECUTAVEL=false
-GATE_1_CI=autoridade
+SHA main baseline: d2033d9237fa72971ff9c92ca47442f7437463ff
+Data: 2026-11-01
+Sessão: claude/chore-analise-branches-revalida-261101-2200
+
+Lint (ESLint): não executado nesta sessão — Gate 1 do CI (deploy-gates.yml) é autoridade
+para lint. O ci-status das branches pode ser verificado pelo PR associado.
+
+Nenhuma branch foi mergeada nesta sessão — regressão de lint não aplicável.
+Basis: branches analisadas via git diff vs origin/main, sem merge real.

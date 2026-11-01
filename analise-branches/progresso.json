@@ -1,13 +1,13 @@
-{"versao":"3.0","data":"2026-11-01","sha_main":"5ae127eade34db1662a92103db9e6bb3c345df03","branches_top":{
+{"versao":"3.1","data":"2026-11-01","sha_main":"d2033d9237fa72971ff9c92ca47442f7437463ff","sessao":"claude/chore-analise-branches-revalida-261101-2200","branches_top":{
 "claude/fix-contract-mag-reader-261019-2110":"FECHAR (superseded)",
 "claude/fix-sync-log-ci-261019-1730":"FECHAR (mergear = regressão)",
 "claude/fix-rollback-261019-1637":"FECHAR (superseded)",
 "claude/fix-gitleaks-gate-261019-1800":"FECHAR (mergear = regressão)",
 "claude/chore-migrations-sync-log-261019-1600":"FECHAR (superseded)",
 "claude/fix-audit-acl-regrole-261024-1635":"FECHAR / DRIFT resolvido",
-"claude/security-brechas-e30-e40-e18-2026-10-22":"JÁ MERGEADA (PR #2416)",
-"claude/gifted-dijkstra-uojt52":"FECHAR (superseded)",
-"devin/probe-e184-legacy-refs":"FECHAR (probe respondido)"},
-"abf":{"total":44,"descartaveis":30,"achado_recibos_e15":10,"ressalvas":4},
+"claude/security-brechas-e30-e40-e18-2026-10-22":"JÁ MERGEADA (PR #2416, 2026-10-24T20:16:44Z, merge_commit 6c6b46c0)",
+"claude/gifted-dijkstra-uojt52":"FECHAR (superseded — orphan G-cat)",
+"devin/probe-e184-legacy-refs":"FECHAR (probe respondido — 0 refs pqpdolkae)"},
+"abf":{"total":44,"descartaveis":44,"confirmados_nesta_sessao":true},
 "merges":[],"aguardando_aprovacao":[],
-"producao":{"migrations_antes":"2552 f7e12e7e259a39a6","migrations_depois":"2552 f7e12e7e259a39a6","edge_antes":"110 5266aafeed41b327","edge_depois":"110 5266aafeed41b327","ddl":false,"deploy":false}}
+"producao":{"migrations_antes":"2552 f7e12e7e259a39a6","migrations_depois":"2552 f7e12e7e259a39a6","edge_antes":"110 5266aafeed41b327","edge_depois":"110 5266aafeed41b327","ddl":false,"deploy":false,"nota":"MCP GEST_O_DE_CLIENTES não é doufsxqlfjyuvxuezpln; estado de prod confirmado por ausência de chamadas DDL/deploy nesta sessão e por git: nenhum merge, push ou workflow dispatch executado contra prod"}}

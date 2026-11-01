@@ -1,6 +1,6 @@
 # Relatório de Branches — revalidado em 2026-11-01
 
-Base: main `5ae127eade34db1662a92103db9e6bb3c345df03` · produção doufsxqlfjyuvxuezpln (somente leitura). **Substitui o relatório de 2026-10-24**, cujas conclusões ("3 migrations pendentes", "brechas ativas") estão desatualizadas.
+Base: main `d2033d9237fa72971ff9c92ca47442f7437463ff` · produção doufsxqlfjyuvxuezpln (somente leitura). **Substitui o relatório de 2026-10-24**, cujas conclusões ("3 migrations pendentes", "brechas ativas") estão desatualizadas.
 
 ## 1. Decisões humanas (topo)
 1. **Recibos E15 no SYNC_LOG**: 10 migrations estão no ledger de produção mas `supabase/MIGRATIONS_SYNC_LOG.md` do main ainda diz "pendente — não aplicada". Correção docs-only aplicada em PR #2888 (`claude/docs-sync-log-recibos-e15-261101-1415`).
