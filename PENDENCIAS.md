@@ -1,8 +1,38 @@
 # PENDÊNCIAS CI — Promo Gifts V4
-**Atualizado em:** 2026-11-01
-**Branch de correção ativo:** `fix/e2e-url-state-defaults-20261030` (PR #2846)
+**Atualizado em:** 2026-11-01T21:10Z
+**Branch de correção ativo:** `fix/e2e-url-state-defaults-20261030` (PR #2846) HEAD `f56e4382`
 
 > Revalidação posterior de PRs, workflows e pendências transversais: [docs/estado/REVALIDACAO_PLANO_2026-10-31.md](docs/estado/REVALIDACAO_PLANO_2026-10-31.md). Os registros abaixo são snapshots datados; não substituem a revalidação mais recente.
+
+## Inventário P30 — estado em 2026-11-01T21:10Z (branch f56e4382)
+
+**SHA atual do branch:** `f56e4382` (push 2026-11-01T20:52Z)
+**main HEAD:** `2c33f827` (inclui PRs #2922–#2926)
+**Gate Final PR #2846:** aguardando novo run para f56e4382 (run antigo 41347814529 para 7dffde4f cancelado)
+
+### db-apply-migration failure (run 41339365690)
+
+Workflow `db-apply-migration.yml` (`workflow_dispatch` para versão `20261101140001`) falhou com:
+
+| Causa | Detalhe |
+|---|---|
+| Rollback file ausente | `20261101140001_rollback.sql` não existia → preflight E058 bloqueou |
+| Versão já no ledger | Migration `20261101140001` já estava aplicada em `doufsxqlfjyuvxuezpln` |
+| DROP sem IF EXISTS | `ALTER PUBLICATION supabase_realtime DROP TABLE auth.users` detectado pelo preflight |
+
+**Fix aplicado:** `35971ec4` — criado `supabase/rollbacks/20261101140001_rollback.sql` (commit no branch)
+**Ação restante:** se a migration precisar ser reaplicada, usar `mode: repair-only` via REGRA E99 (não reexecutar via workflow_dispatch — versão já está no ledger)
+
+### Correções desta sessão (integradas em f56e4382)
+
+| Item | Ação |
+|---|---|
+| `perf002_drop_unused_snapshot_indexes()` removida da lint-0029-allowlist | Função dropada pela migration 20261101202000 (PR #2922); allowlist tinha 103 entradas, agora 102 |
+| `ALLOWLISTS_MEMORY.md` atualizado | cleanup_expired_auth_sessions: EXECUTE revogado em 2026-11-01 (PR #2922); perf002 removida |
+| Merge de main@2c33f827 integrado | Conflitos resolvidos: policies-baseline (versão main), RELATORIO_CI.md (versão HEAD §15), stock_notes migration (versão main) |
+| Rollback 20261101140001 criado | `supabase/rollbacks/20261101140001_rollback.sql` |
+
+---
 
 ## Inventário P29 — falhas na `main`@c2432c52 (2026-11-01T20:05Z)
 
