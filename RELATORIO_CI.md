@@ -12,9 +12,11 @@
 
 ### SHAs do branch `fix/e2e-url-state-defaults-20261030`
 
-| SHA | Commit | Deploy Gates | migrations-sync-log-gate | vitest local | Observação |
+| SHA | Commit | Deploy Gates | Gate 1.13.3 (recibos) | vitest local | Observação |
 |---|---|---|---|---|---|
-| `1b8e4d40` ← HEAD | docs(ci): P34 — falhas não-required PR #2846 | `pending` ([run 41316726985](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41316726985)) | — | ✅ 540/543 | CI aguardando runner (14:32 UTC) |
+| `e8d5cdbc` ← HEAD | fix(ci): corrige coerção null (Qodo HIGH) + fix docs Qodo medium | _aguardando Gate Final_ | — | ✅ 21/21 (audit) | Gate Final pendente |
+| `ef47a84f` | fix(ci): aceita variações de advisory npm minimatch (E206) | cancelado (push posterior) | — | ✅ 21/21 (audit) | concurrency cancel |
+| `1b8e4d40` | docs(ci): P34 — falhas não-required PR #2846 | cancelado ([run 41316726985](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41316726985)) | — | ✅ 540/543 | cancelado por push de `ef47a84f` |
 | `fe4b88fa` | docs(ci): §15 comparação baseline × final | cancelado (push posterior) | — | ✅ 540/543 | concurrency cancel |
 | `444c0816` | docs(ci): atualiza §6 estado detalhado | cancelado (push posterior) | — | ✅ 540/543 | concurrency cancel |
 | `889f3e3a` | docs(ci): atualiza §1 vitest (540/543) + §6 | cancelado ([run 41316231539](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41316231539)) | — | ✅ 540/543 | cancelado por push posterior |
@@ -23,7 +25,7 @@
 | `0bbd70b5` | fix(ci): corrige Gate 1.13.3 (recibo repair-only) | cancelado ([run 41313600062](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41313600062)) | — | ✅ 540/543 | cancelado por push de 9422d0ac |
 | `f73265f3` | docs(ci): classifica itens P28 como externos | ❌ failure ([run 41312199906](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41312199906)) | ❌ failure (recibo "pendente") | ✅ 540/543 | **SHA anterior ao fix** |
 
-> **Nota:** O Gate Final do SHA `f73265f3` falhou no Gate 1.13.3 (`migrations-sync-log-gate`) — recibo da migration `20261031000000` marcado como "pendente". Corrigido em `0bbd70b5`. Os pushes subsequentes de docs cancelaram os runs anteriores (concurrency). HEAD atual `1b8e4d40` tem run `41316726985` em `pending` — aguardando runner GitHub Actions.
+> **Nota:** O Gate Final do SHA `f73265f3` falhou porque o step **Gate 1.13.3** ("Migration receipts (E055)") dentro de `deploy-gates.yml` detectou o recibo da migration `20261031000000` como "pendente". Gate 1.13.3 é um **step interno** ao Gate Final — distinto do workflow advisory separado `migrations-sync-log-gate.yml`. A coluna "Gate 1.13.3 (recibos)" rastreia o resultado desse workflow advisory como evidência corroborante do estado do recibo, mas não é o que bloqueia o Gate Final diretamente. Corrigido em `0bbd70b5` (status atualizado para "aplicada"). HEAD atual `e8d5cdbc` tem Gate Final `41335591279` em execução.
 
 ### Checks confirmados no SHA `65119d68`
 | Check | Resultado |
