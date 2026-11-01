@@ -1599,9 +1599,10 @@ Detalhes, métricas antes/depois e one-shots: docs/EXECUCAO_CORRECOES_MEDALLION_
 | `20261031000000` | `92dcc8ed708bc59308b6b52f18d57952e07d6868845ba552c2b8fac7d46c94f4` | fora do fluxo E15 | PR #2871 Lovable (gpt-engineer-app[bot]) | fora do fluxo — E57 repair-only | aplicada fora do fluxo E15 via Lovable/PR #2871 em 2026-10-31; reconciliação repair-only necessária (dispatch `db-apply-migration.yml` desnecessário — já no banco) | aplicada |
 
 **Nota:** A migration cria a tabela `stock_notes` (comentários inline por variante de produto).
-A aplicação formal em `doufsxqlfjyuvxuezpln` aguarda dispatch de `db-apply-migration.yml`
-pelo PO (conforme REGRA #8 corolário — caminho único E15). Hash SHA-256 calculado do arquivo
-local `supabase/migrations/20261031000000_create_stock_notes.sql` (versão com `-- soft-delete-exempt`).
+Status: **aplicada** em `doufsxqlfjyuvxuezpln` via PR #2871 Lovable em 2026-10-31 (fora do fluxo E15);
+dispatch de `db-apply-migration.yml` desnecessário — tabela já existe no banco canônico.
+Hash SHA-256 calculado do arquivo local `supabase/migrations/20261031000000_create_stock_notes.sql` (versão com `-- soft-delete-exempt`).
+Recibo de reconciliação repair-only (E99): PR #2846.
 
 ---
 
