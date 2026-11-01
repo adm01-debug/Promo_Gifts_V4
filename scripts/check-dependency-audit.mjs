@@ -272,6 +272,21 @@ function isAllowedMinimatchChainPackage(packageName, vulnerability) {
     return false;
   }
 
+  // fixAvailable check (Qodo HIGH fix, 2026-11-01): a compatible fix (isSemVerMajor: false)
+  // or a new object fix means this advisory is patchable and must no longer be allowlisted.
+  // Accept only fixAvailable === true (semver-major lock-in, no compatible upgrade) or the
+  // exact same semver-major object reported by npm for the root cause (eslint-plugin-unused-imports
+  // 1.1.3 — isSemVerMajor: true). Any other object (isSemVerMajor: false, or a different package)
+  // means a real fix landed and the caller must upgrade.
+  const fix = vulnerability.fixAvailable;
+  const isKnownSemVerMajorFix =
+    typeof fix === 'object' &&
+    fix !== null &&
+    fix.name === 'eslint-plugin-unused-imports' &&
+    fix.version === '1.1.3' &&
+    fix.isSemVerMajor === true;
+  if (fix !== true && !isKnownSemVerMajorFix) return false;
+
   // Effects check: accept any known-good array for this package (E206 — updated 2026-11-01)
   // Explicitly require effects to be an Array — null/undefined is not the same as [] and must
   // not match the reviewed empty-effects alternative (Qodo HIGH fix, 2026-11-01).
