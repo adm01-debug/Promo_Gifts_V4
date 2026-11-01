@@ -31,10 +31,37 @@ Consulta somente leitura em `pg_catalog` no projeto canônico `doufsxqlfjyuvxuez
 
 **Próxima ação segura:** preparar uma migration versionada e um gate de leitura ao vivo, adicionar testes com estados de trigger presente/ausente e submeter por PR. Aplicar no canônico somente pelo workflow `.github/workflows/db-apply-migration.yml`, após o preflight confirmar a versão e a reconciliação do ledger; não executar DDL por MCP/dashboard nem `supabase db push`. Até lá, P200-E049 permanece aberto e a cobertura de `kill_switch_hits` não deve ser declarada como corrigida.
 # PENDÊNCIAS CI — Promo Gifts V4
-**Atualizado em:** 2026-11-01T21:10Z
-**Branch de correção ativo:** `fix/e2e-url-state-defaults-20261030` (PR #2846) HEAD `f56e4382`
+**Atualizado em:** 2026-11-02T00:00Z
+**Branch de correção ativo:** `fix/e2e-url-state-defaults-20261030` (PR #2941) HEAD `27a0a140` (merge main↑ec06a457)
 
 > Revalidação posterior de PRs, workflows e pendências transversais: [docs/estado/REVALIDACAO_PLANO_2026-10-31.md](docs/estado/REVALIDACAO_PLANO_2026-10-31.md). Os registros abaixo são snapshots datados; não substituem a revalidação mais recente.
+
+## P36 — Bloqueios externos PR #2941 (2026-11-02T00:00Z)
+
+> Sessão: https://claude.ai/code/session_01T5KXrgFRFRHrCX5jRcTCUz  
+> Branch HEAD após merge: `27a0a140` — base main atualizada para `ec06a457`
+
+### P36.1 — Checks externos com failure (não são required checks do Gate Final)
+
+| Check | Estado | Run/Deploy ID | Causa exata | Required? | Ação |
+|---|---|---|---|---|---|
+| **Vercel Preview** | ❌ failure | `dpl_HoDuMwhLgwbRnP72ctrEWHzmEN4K` (SHA `1d5b52e8`) | Falha de build/deploy no projeto Vercel `prj_9UfugNYCuboH2R0XB04Jv8PpjDpZ`. Logs de build não acessíveis via Vercel CLI (REGRA #11 — CLI fora do raiz proibido; sem credenciais Vercel no ambiente). Causa técnica não confirmada: pode ser build timeout, env var ausente ou erro de bundling. | **Não** — "Gate Final - Deploy Ready" é o único required check | Merge de main (ec06a457) pode resolver; novo run gerado pelo merge commit `27a0a140`. PO pode inspecionar logs via dashboard Vercel → projeto `prj_9UfugNYCuboH2R0XB04Jv8PpjDpZ`. |
+| **Supabase Preview** | ❌ failure | check-run [125014582982](https://github.com/adm01-debug/Promo_Gifts_V4/runs/125014582982) (SHA `1d5b52e8`) | `ERROR: column categories.level does not exist (SQLSTATE 42703)` em `CREATE MATERIALIZED VIEW analytics.categories_tree_visual`. Schema divergence pré-existente no branch preview Supabase: a coluna `categories.level` não existe no projeto preview mas é referenciada pela view. **PR #2941 não toca schema de categories.** Divergência pre-existente confirmada em múltiplos SHAs anteriores. | **Não** — not a required check | Falha pré-existente e externa ao diff. Sem ação necessária no código deste PR. PO pode corrigir via migration no projeto preview OU desativar o branch preview do Supabase para este PR. |
+
+### P36.2 — Estado do required check (Gate Final)
+
+| Check | Estado | Motivo |
+|---|---|---|
+| **Gate Final - Deploy Ready** | ⏳ aguardando run para `27a0a140` | Merge commit pushado — novo deploy-gates run em fila. SHA `1d5b52e8` era docs-only (RELATORIO_CI.md), E14 bypass ativo. Commit `27a0a140` inclui `scripts/check-dependency-audit.mjs` (código) → E14 bypass NÃO ativo → deploy-gates executará todos os gates. |
+
+### P36.3 — Bloqueios aguardando aprovação PO (sem alteração possível por agente)
+
+| Item | Migration | Status | Risco |
+|---|---|---|---|
+| REVOKE EXECUTE `perf002_drop_unused_snapshot_indexes` de `authenticated` | `20261101202000_drop_revoke_agent_created_functions.sql` | Preparada, não aplicada — aguarda `db-apply-migration.yml` com aprovação PO | RISCO RESIDUAL: função SECURITY DEFINER acessível por `authenticated`. Ver `.security/lint-0029-allowlist.json`. |
+| REVOKE EXECUTE `cleanup_expired_auth_sessions` de `authenticated` | `20261101202000_drop_revoke_agent_created_functions.sql` | Idem acima — mesma migration | RISCO RESIDUAL: rotina cron acessível por `authenticated`. |
+
+---
 
 ## Inventário P30 — estado em 2026-11-01T21:35Z (branch c6f7241b)
 

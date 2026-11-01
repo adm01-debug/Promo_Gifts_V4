@@ -236,32 +236,34 @@ Não houve alteração no Supabase, em dados operacionais, em schema, em migrati
 | Vitest scripts/ testes | N/A | 566 passed (44 suites) | ✅ sem regressão |
 | Vitest check-dependency-audit | 21 testes | 23 testes (+2 novos) | ✅ melhoria |
 
-### 18.3 Estado do PR #2941 — HEAD `e94b22e5` → `29db0c1a` (2026-11-01T22:38–23:20 UTC)
+### 18.3 Estado do PR #2941 — HEAD `27a0a140` (merge main↑ec06a457, 2026-11-02T00:00 UTC)
+
+> HEAD anterior: `1d5b52e8` (docs-only — E14 bypass ativo, sem Gate Final run criado).  
+> **Conflito com main resolvido** em commit `27a0a140` — base atualizada para `ec06a457`.  
+> Este commit inclui `scripts/check-dependency-audit.mjs` (código) — E14 bypass **NÃO** ativo → Gate Final executará todos os gates.
 
 | Check | Status | Conclusão |
 |---|---|---|
-| Gate Final - Deploy Ready | ⏳ re-triggando | runs obsoletos `41357795074`+`41355011573` cancelados em 23:20Z; novo run esperado para `29db0c1a` |
-| CI Security & Drift Checks | ⏳ aguardando | congestionamento de runners |
-| Supabase Linter Gate | ⏳ aguardando | congestionamento de runners |
-| Supabase Preview | ❌ failure | pré-existente: `column categories.level does not exist` em `analytics.categories_tree_visual` — não é required check |
-| Vercel | ❌ failure | deploy preview falhou em `29db0c1a`; não é required check (`Gate Final - Deploy Ready` é o único required) |
+| Gate Final - Deploy Ready | ⏳ aguardando run para `27a0a140` | Merge commit pushado — run em fila |
+| CI Security & Drift Checks | ⏳ aguardando | base atualizada; run em fila |
+| Supabase Linter Gate | ⏳ aguardando | fix em PR #2941 (`c6f7241b`) deve resolver |
+| Supabase Preview | ❌ failure (não required) | pré-existente: `column categories.level does not exist` em `analytics.categories_tree_visual` — documentado em PENDENCIAS.md P36.1 |
+| Vercel | ❌ failure (não required) | deploy preview `dpl_HoDuMwhLgwbRnP72ctrEWHzmEN4K` — documentado em PENDENCIAS.md P36.1 |
 | Vercel Preview Comments | ✅ completed | success (0 unresolved) |
-| Vercel Agent Review | ✅ completed | neutral (billing não habilitado) |
-| Codex Review | ✅ completed | `has_any_findings: false` — sem findings em `29db0c1a` |
+| Codex Review | ✅ completed | `has_any_findings: false` |
 | Deployment Failure Alert | ✅ completed | skipped |
 
-> **Commits desta sessão no PR (além de `e94b22e5`):**
-> - `3d0bf8c2` — docs(ci): §17.3 SHA mismatch corrigido + baseline vitest 1057 testes
-> - `29db0c1a` — fix(stock-dashboard): preserva URLs compartilháveis quando default vem do localStorage
+### 18.4 Prova de conclusão — Gate Final PR #2941
 
-### 18.4 Prova de conclusão — Gate Final `29db0c1a`
+> Aguardando conclusão do deploy-gates.yml para HEAD `27a0a140`.
+> Required check único: `Gate Final - Deploy Ready`.
+> Checks externos não-required (Vercel, Supabase Preview) documentados em PENDENCIAS.md P36.1.
 
-> Seção a ser preenchida quando `deploy-gates.yml` completar para SHA `29db0c1a`.
-> Runs obsoletos cancelados em 23:20Z UTC; deploy-gates re-triggado via commit `docs(ci): §18.4`.
-
-| Workflow | Run ID | SHA | Conclusão |
-|---|---|---|---|
-| Gate Final - Deploy Ready | ⏳ pendente | `29db0c1a` | aguardando |
+| Workflow | Run ID | SHA | Conclusão | Required? |
+|---|---|---|---|---|
+| Gate Final - Deploy Ready | ⏳ aguardando | `27a0a140` | em fila — merge commit pushado 2026-11-02T00:00Z | **Sim** |
+| Supabase Preview | [125014582982](https://github.com/adm01-debug/Promo_Gifts_V4/runs/125014582982) | `1d5b52e8` | failure — coluna categories.level pré-existente | Não |
+| Vercel Preview | `dpl_HoDuMwhLgwbRnP72ctrEWHzmEN4K` | `1d5b52e8` | failure — causa não confirmada via logs | Não |
 
 ---
 
