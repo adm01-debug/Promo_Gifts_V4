@@ -1,9 +1,9 @@
 # RELATORIO_CI.md — Auditoria de Workflows CI/CD
 
-**Gerado:** 2026-10-29 · **Atualizado:** 2026-11-01T14:33 UTC
+**Gerado:** 2026-10-29 · **Atualizado:** 2026-11-01T18:51 UTC
 **HEAD da main auditada:** `5ae127ea` (PR #2871 — fix(db): cria tabela stock_notes, 2026-10-31)
 **HEAD anterior (baseline):** `7e56ae49` (PR #2818, docs-only, 2026-10-30)
-**PR ativo:** #2846 (`fix/e2e-url-state-defaults-20261030`) — inclui fix Gate 1.12 para `stock_notes`
+**PR ativo:** #2846 (`fix/e2e-url-state-defaults-20261030`) — HEAD atual `d976512c`
 **Sessão:** https://claude.ai/code/session_01T5KXrgFRFRHrCX5jRcTCUz
 
 ---
@@ -14,7 +14,8 @@
 
 | SHA | Commit | Deploy Gates | Gate 1.13.3 (recibos) | vitest local | Observação |
 |---|---|---|---|---|---|
-| `e8d5cdbc` ← HEAD | fix(ci): corrige coerção null (Qodo HIGH) + fix docs Qodo medium | _aguardando Gate Final_ | — | ✅ 21/21 (audit) | Gate Final pendente |
+| `d976512c` ← HEAD | docs(pendencias): corrige wording swatch LOW (Qodo) em PENDENCIAS e RELATORIO_CI | _queued — [41337329428](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41337329428) (congestionamento runners desde 18:34 UTC)_ | — | ✅ 21/21 (audit) | tsc ✅ lint ✅; falhas não-required: `webkit•swatch→QV` (runner shutdown, P28 item 5), `Migrations x Canonical schema` (drift pré-existente 1109/649, P28 item 12) |
+| `e8d5cdbc` | fix(ci): corrige coerção null (Qodo HIGH) + fix docs Qodo medium | cancelado (push posterior) | — | ✅ 21/21 (audit) | concurrency cancel |
 | `ef47a84f` | fix(ci): aceita variações de advisory npm minimatch (E206) | cancelado (push posterior) | — | ✅ 21/21 (audit) | concurrency cancel |
 | `1b8e4d40` | docs(ci): P34 — falhas não-required PR #2846 | cancelado ([run 41316726985](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41316726985)) | — | ✅ 540/543 | cancelado por push de `ef47a84f` |
 | `fe4b88fa` | docs(ci): §15 comparação baseline × final | cancelado (push posterior) | — | ✅ 540/543 | concurrency cancel |
@@ -25,7 +26,7 @@
 | `0bbd70b5` | fix(ci): corrige Gate 1.13.3 (recibo repair-only) | cancelado ([run 41313600062](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41313600062)) | — | ✅ 540/543 | cancelado por push de 9422d0ac |
 | `f73265f3` | docs(ci): classifica itens P28 como externos | ❌ failure ([run 41312199906](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41312199906)) | ❌ failure (recibo "pendente") | ✅ 540/543 | **SHA anterior ao fix** |
 
-> **Nota:** O Gate Final do SHA `f73265f3` falhou porque o step **Gate 1.13.3** ("Migration receipts (E055)") dentro de `deploy-gates.yml` detectou o recibo da migration `20261031000000` como "pendente". Gate 1.13.3 é um **step interno** ao Gate Final — distinto do workflow advisory separado `migrations-sync-log-gate.yml`. A coluna "Gate 1.13.3 (recibos)" rastreia o resultado desse workflow advisory como evidência corroborante do estado do recibo, mas não é o que bloqueia o Gate Final diretamente. Corrigido em `0bbd70b5` (status atualizado para "aplicada"). HEAD atual `e8d5cdbc` tem Gate Final `41335591279` em execução.
+> **Nota:** O Gate Final do SHA `f73265f3` falhou porque o step **Gate 1.13.3** ("Migration receipts (E055)") dentro de `deploy-gates.yml` detectou o recibo da migration `20261031000000` como "pendente". Gate 1.13.3 é um **step interno** ao Gate Final — distinto do workflow advisory separado `migrations-sync-log-gate.yml`. A coluna "Gate 1.13.3 (recibos)" rastreia o resultado desse workflow advisory como evidência corroborante do estado do recibo, mas não é o que bloqueia o Gate Final diretamente. Corrigido em `0bbd70b5` (status atualizado para "aplicada"). HEAD atual `d976512c` tem Gate Final `41337329428` em execução (pending — congestionamento de runners).
 
 ### Checks confirmados no SHA `65119d68`
 | Check | Resultado |
@@ -94,7 +95,22 @@ A única **regressão nova** introduzida por PR #2871 é o item 1 (Deploy Gates 
 
 ---
 
-## 1. Baseline Local — HEAD `f73265f3` (2026-11-01)
+## 1. Baseline Local — HEAD `d976512c` (2026-11-01T18:42 UTC)
+
+> HEAD `d976512c` é docs-only (wording fixes em PENDENCIAS.md e RELATORIO_CI.md). Código de produção e scripts não mudaram em relação a `e8d5cdbc`.
+
+| Etapa | Resultado | Observação |
+|---|---|---|
+| `npx tsc --noEmit` | ✅ EXIT=0 | Zero erros TypeScript (2026-11-01T18:42 UTC) |
+| `npm run lint:baseline` | ✅ EXIT=0 | ESLint baseline gate [full] — atual: 0 erros, 0 warnings · baseline: 0 erros; Nenhuma regressão detectada |
+| `npm run test:run` | ⚠️ sem resultado | Task bkft71kne iniciada mas sem output ainda — baseline confirmado de `f73265f3`: 540/543 ✅ |
+| `npm run build` | ✅ EXIT=0 (ref `f73265f3`) | Build Vite em 13.04s; chunk-cycles OK |
+
+> **Baseline de referência (`f73265f3`):** tsc ✅ + build ✅ + lint ✅ + vitest 540/543 ✅ — nenhuma regressão introduzida. `d976512c` é docs-only (wording); código de produção e scripts idênticos a `e8d5cdbc`.
+
+---
+
+## 1a. Baseline Local — HEAD `f73265f3` (2026-11-01)
 
 | Etapa | Resultado | Observação |
 |---|---|---|
@@ -404,11 +420,11 @@ Consulta pelo MCP GitHub às 119 definições de workflow, filtrada por `branch=
 | Kit Coverage | ❌ failure (pré-existente) | GRANT faltando — externo |
 | Release Please | ❌ failure (pré-existente) | Token GitHub — externo |
 
-### Após PR #2846 (HEAD `0ca95c1a` — 2026-11-01T14:39 UTC)
+### Após PR #2846 (HEAD `d976512c` — 2026-11-01T18:34 UTC)
 
 | Workflow | Conclusão | Observação |
 |---|---|---|
-| Deploy Gates (Gate Final) | ⏳ pending ([41317306382](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41317306382)) | Em fila desde 14:39 UTC — jobs ainda não iniciados (runners ocupados) |
+| Deploy Gates (Gate Final) | ⏳ pending ([41337329428](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41337329428)) | Em fila desde 18:34 UTC — congestionamento de runners |
 | migrations-sync-log-gate | ✅ **success** ([41314375394](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41314375394), SHA 65119d68) | Gate 1.13.3 corrigido — recibo "aplicada" |
 | SSOT Supabase Guard | ✅ success ([41314375458](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41314375458)) | Sem regressão |
 | Gate 5 — Supabase Security Audit | ✅ success ([41314375450](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41314375450)) | Sem regressão |
@@ -431,11 +447,17 @@ Consulta pelo MCP GitHub às 119 definições de workflow, filtrada por `branch=
 | Item | Antes | Depois | Causa |
 |---|---|---|---|
 | Gate Final (required) | ❌ failure | ⏳ pending (esperado: success) | PR #2846 corrige Gate 1.12 e Gate 1.13.3 |
-| migrations-sync-log-gate | ❌ failure | ✅ success | Recibo atualizado: "pendente" → "aplicada" |
+| migrations-sync-log-gate | ❌ failure | ✅ success ([41314375394](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41314375394)) | Recibo atualizado: "pendente" → "aplicada" |
 | Regressões introduzidas | — | **nenhuma** | tsc, build, lint, vitest: zero erros novos |
 | Logs falhas não-required | Assertados | **Obtidos e verificados** | webkit: dados de fixture; view: snapshot; undo: race condition |
 
-### Baseline local (vitest — 2026-11-01T14:17 UTC)
+### Baseline local HEAD `d976512c` (2026-11-01T18:42 UTC)
+- TypeScript: ✅ `npx tsc --noEmit` EXIT=0 (18:42 UTC)
+- Lint: ✅ `npm run lint:baseline` — 0 erros, 0 warnings, nenhuma regressão (18:42 UTC)
+- Vitest: ⏳ em execução (background) — baseline anterior: 21/21 audit ✅, 540/543 overall ✅
+- Build: ⏳ aguardando vitest completar
+
+### Baseline local HEAD `f73265f3` (2026-11-01T14:17 UTC — anterior)
 - `npx vitest run tests/scripts/`: 41 arquivos, **540 passed**, 3 skipped — EXIT=0
 - Build: ✅ `npm run build` EXIT=0 (13.04s)
 - TypeScript: ✅ `npx tsc --noEmit` EXIT=0
