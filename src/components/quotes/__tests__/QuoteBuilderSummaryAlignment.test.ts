@@ -10,7 +10,7 @@ import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
 const SRC = readFileSync(
-  resolve(__dirname, '../QuoteBuilderSummaryColumn.tsx'),
+  resolve(__dirname, '../QuoteBuilderSummaryItems.tsx'),
   'utf8',
 );
 

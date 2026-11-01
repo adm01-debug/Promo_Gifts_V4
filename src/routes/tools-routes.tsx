@@ -48,6 +48,11 @@ function KitBuilderRoute() {
   return <KitBuilderPage key={`${user?.id ?? 'anonymous'}:${location.key}`} />;
 }
 
+function KitBuilderLegacyRedirect() {
+  const { search, hash } = useLocation();
+  return <Navigate to={{ pathname: '/montar-kit', search, hash }} replace />;
+}
+
 /**
  * Tools routes — simulador, mockup, BI, magic-up, kit builder, dropbox,
  * advanced search and stock.
@@ -65,7 +70,7 @@ export const toolsRoutes = (
     <Route path="/estoque" element={<StockDashboardPage />} />
     <Route path="/busca-preco" element={<AdvancedPriceSearchPage />} />
     <Route path="/montar-kit" element={<KitBuilderRoute />} />
-    <Route path="/kit-builder" element={<Navigate to="/montar-kit" replace />} />
+    <Route path="/kit-builder" element={<KitBuilderLegacyRedirect />} />
     <Route path="/meus-kits" element={<MeusKitsPage />} />
     <Route path="/mockup" element={<Navigate to="/mockup-generator" replace />} />
     <Route path="/gerador-mockup" element={<Navigate to="/mockup-generator" replace />} />
@@ -82,7 +87,14 @@ export const toolsRoutes = (
     </Route>
     <Route path="/ferramentas/cobertura" element={<CoverageInsightsDashboardPage />} />
     <Route path="/raio-x" element={<VisualSearchPage />} />
-    <Route path="/magazine" element={<MagazineRoute><MagazineListPage /></MagazineRoute>} />
+    <Route
+      path="/magazine"
+      element={
+        <MagazineRoute>
+          <MagazineListPage />
+        </MagazineRoute>
+      }
+    />
     <Route
       path="/magazine/templates"
       element={
@@ -91,7 +103,14 @@ export const toolsRoutes = (
         </MagazineRoute>
       }
     />
-    <Route path="/magazine/:id" element={<MagazineRoute><MagazineEditorPage /></MagazineRoute>} />
+    <Route
+      path="/magazine/:id"
+      element={
+        <MagazineRoute>
+          <MagazineEditorPage />
+        </MagazineRoute>
+      }
+    />
     <Route
       path="/magazine/:id/print"
       element={
@@ -100,7 +119,14 @@ export const toolsRoutes = (
         </MagazineRoute>
       }
     />
-    <Route path="/magazine/print" element={<MagazineRoute><MagazinePrintPage /></MagazineRoute>} />
+    <Route
+      path="/magazine/print"
+      element={
+        <MagazineRoute>
+          <MagazinePrintPage />
+        </MagazineRoute>
+      }
+    />
     <Route path="/promoflix-playground" element={<PromoFlixPlayground />} />
   </>
 );
