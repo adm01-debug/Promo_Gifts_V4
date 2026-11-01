@@ -2282,3 +2282,63 @@ Checks não-required na branch `fix/e2e-url-state-defaults-20261030`, documentad
 
 **Resumo:** Os 11 checks não-required (items 1–4, 6–12) têm causas documentadas — todas pré-existentes ou externas ao diff, exceto item #7 cuja causa no branch PR está não confirmada (ver acima). O único check required bloqueante (item 5, Gate 1.13.3 — recibo de migration) foi corrigido e confirmado green em SHA `65119d68` ([run 41314375394](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41314375394)). Items #9–#12 adicionados (2026-11-01).
 
+
+---
+
+## P35 — TS Unused Locals Ratchet: 2 erros acima da baseline (2026-11-01)
+
+| Workflow/check | Execução | SHA | Erro confirmado | Required? |
+|---|---|---|---|---|
+| TS Unused Locals Ratchet | [#41351671546](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41351671546) | `e3ec559d` | `FALHA noUnusedLocals ratchet: 2 erros (baseline: 0)` — 2 variáveis/imports sem uso introduzidos acima da baseline em `e3ec559d`. O ratchet bloqueia aumento acima da baseline zero; não é required check do Gate Final. | **Não** |
+
+**Causa:** Variáveis ou imports declarados mas não utilizados foram introduzidos em SHA `e3ec559d` acima da baseline `noUnusedLocals=0`. Não bloqueia o Gate Final (`deploy-gates.yml`); CI verde em Gate Final pode coexistir com este workflow vermelho. Corrigível via remoção das variáveis/imports não utilizados no código introduzido em `e3ec559d`.
+
+---
+
+## P36 — E2E Cart — Matrix (E79): runner cancellation + timeout (2026-11-01)
+
+| Workflow/check | Execução | SHA | Erro confirmado | Required? |
+|---|---|---|---|---|
+| E2E Cart — Matrix (E79) | [#41347780959](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41347780959) | `f99f36ae` | Runner cancellation por saturação de infraestrutura GitHub + timeout de E2E. Não é falha de asserção de código. | **Não** |
+
+**Causa:** Saturação de runners GitHub Actions (~20:00Z 2026-11-01). O job foi cancelado antes ou durante execução por falta de runner disponível; não há evidência de falha em lógica de aplicação. Não é required check do Gate Final. Rerun em momento de menor carga pode confirmar se é instabilidade de infraestrutura.
+
+---
+
+## P37 — E2E • ColorSwatch 2 linhas (Grid): runner cleanup sem erro específico (2026-11-01)
+
+| Workflow/check | Execução | SHA | Erro confirmado | Required? |
+|---|---|---|---|---|
+| E2E • ColorSwatch 2 linhas (Grid) | [#41348720790](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41348720790) | `1440ebaf` | Log tail mostra apenas runner cleanup sem erro específico de asserção. Causa exata não verificável no log disponível. | **Não** |
+
+**Causa:** Cancelamento/cleanup de runner durante saturação de infraestrutura GitHub Actions (mesmo período de P36). Log não apresentou step de asserção falho — apenas finalização do runner. Não é required check do Gate Final. Rerun necessário para determinar se há falha real de código.
+
+---
+
+## P38 — Magazine typed queries — dry-run: Typecheck falhou (2026-11-01)
+
+| Workflow/check | Execução | SHA | Erro confirmado | Required? |
+|---|---|---|---|---|
+| Magazine typed queries — dry-run | [#41348995057](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41348995057) | `4f91aa08` | Step `Typecheck (aplicação)` falhou no run. Erros de TypeScript na aplicação relacionados a queries de magazine. | **Não** |
+
+**Causa:** Step `Typecheck (aplicação)` (TSC) falhou em SHA `4f91aa08`. Workflow `magazine-typed-queries.yml` é separado de `deploy-gates.yml` e não é required check do Gate Final. Pode ser relacionado a erros de tipo em queries/tipos de magazine introduzidos próximos a esse SHA; não confirmado se é regressão desta sessão ou pré-existente. Não bloqueia deploy.
+
+---
+
+## P39 — schema-snapshot-export: Weekly live drift check + Gate E40 (2026-11-01)
+
+| Workflow/check | Execução | SHA | Erro confirmado | Required? |
+|---|---|---|---|---|
+| schema-snapshot-export | [#41348311003](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41348311003) | `cbbabc2f` | "Weekly live drift check" (exit code 2) + "Drift gate/Ledger parity" falhou pela mesma causa do Gate E40: `blocking_remote_only_count=15`. | **Não** |
+
+**Causa:** Mesma causa raiz do Gate E40 — `check-supabase-migration-ledger.mjs` detecta 15 versões `blocking_remote_only` não allowlistadas. O PR [#3001](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3001) (`claude/fix-gate-e40-allowlist-261101-2310`) adiciona as 15 versões ao allowlist e resolverá este workflow após merge. `schema-snapshot-export.yml` é workflow separado e advisory, não faz parte de `deploy-gates.yml`.
+
+---
+
+## P40 — Policies Baseline: Drift de RLS policies detectado (2026-11-01)
+
+| Workflow/check | Execução | SHA | Erro confirmado | Required? |
+|---|---|---|---|---|
+| Policies Baseline | [#41347780875](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41347780875) | `f99f36ae` | `Drift de RLS policies detectado — veja o output do step acima`. Políticas RLS no banco diferem do baseline local. | **Não** |
+
+**Causa:** Workflow `policies-baseline.yml` compara policies RLS do banco canônico `doufsxqlfjyuvxuezpln` contra snapshot local. Divergência indica que uma ou mais policies foram criadas/alteradas/removidas no banco sem atualização do baseline local — padrão consistente com aplicações via MCP ou dashboard fora do fluxo de migration (CLAUDE.md REGRA #8). Não é required check do Gate Final; não bloqueia deploy. Requer investigação do que mudou nas políticas RLS e atualização do baseline ou criação de migration espelho.
