@@ -20,6 +20,7 @@ import { toast } from 'sonner';
 
 import { logger } from '@/lib/logger';
 import { invokeEdge, newIdempotencyKey } from '@/lib/edge/safeInvokeCall';
+import { formatLatencyMs, latencyPercentile } from '@/lib/latency-percentiles';
 interface SimulationDetail {
   fnName: string;
   status: number;
@@ -358,24 +359,24 @@ export default function SimulationPage() {
             <CardContent className="flex h-[400px] items-center justify-center border-t">
               <div className="text-center text-muted-foreground">
                 <BarChart3 className="mx-auto mb-4 h-12 w-12 opacity-20" />
-                <p>Métricas de latência p-series em desenvolvimento.</p>
+                <p>Percentis calculados sobre as latências medidas na última simulação.</p>
                 <div className="mt-4 flex justify-center gap-8">
                   <div className="text-center">
                     <p className="text-xs font-bold uppercase text-muted-foreground">p50</p>
                     <p className="text-xl font-bold">
-                      {report ? (Number(avgLatency) * 0.8).toFixed(0) : 0}ms
+                      {formatLatencyMs(latencyPercentile(report?.latencies, 50))}
                     </p>
                   </div>
                   <div className="text-center">
                     <p className="text-xs font-bold uppercase text-muted-foreground">p90</p>
                     <p className="text-xl font-bold">
-                      {report ? (Number(avgLatency) * 1.5).toFixed(0) : 0}ms
+                      {formatLatencyMs(latencyPercentile(report?.latencies, 90))}
                     </p>
                   </div>
                   <div className="text-center">
                     <p className="text-xs font-bold uppercase text-muted-foreground">p99</p>
                     <p className="text-xl font-bold text-indigo-600">
-                      {report ? (Number(avgLatency) * 2.8).toFixed(0) : 0}ms
+                      {formatLatencyMs(latencyPercentile(report?.latencies, 99))}
                     </p>
                   </div>
                 </div>
