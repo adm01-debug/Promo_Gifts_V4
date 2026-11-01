@@ -46,6 +46,92 @@ Não houve alteração no Supabase, em dados operacionais, em schema, em migrati
 | `npx vitest run` | ⚠️ 33 falhas pré-existentes | 9 files failed \| 1238 passed \| 130 skipped (1377 total); 33 tests failed \| 25.818 passed \| 1.135 skipped; duração 1.397s. **PRÉ-EXISTENTES — não introduzidas nesta sessão.** Evidências: (1) `git diff main HEAD --name-only` = apenas `PENDENCIAS.md` e `RELATORIO_CI.md` — zero arquivos de código ou teste alterados; (2) sessão anterior: ~25.659 passed → esta sessão: 25.818 passed (+159 testes passando, δ positivo); (3) arquivos de teste recentemente modificados (magic-up, mockup) testados individualmente: todos passam (150 + 41 testes = 191 PASS). |
 ## 1. Baseline Local — HEAD `c09402816` (2026-10-30)
 
+| Workflow | Último run na main | Conclusão | Observação |
+|---|---|---|---|
+| Deploy Gates (Gate Final) | [40741742537](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40741742537) | ✅ success | SHA `4562f376` |
+| Branch Protection Sentinel | [40741741700](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40741741700) | ✅ success | SHA `4562f376` |
+| E2E — Critical Flows | [40741741633](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40741741633) | ✅ success* | SHA `4562f376` — 90% skipped (requireAuth sem secrets) |
+| E2E — Personalization Flow | [40741742442](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40741742442) | ✅ success* | SHA `4562f376` — skipped (requireAuth) |
+| E2E • Swatch QuickView | [40741742801](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40741742801) | ⏳ pending | SHA `4562f376` — em execução no momento do relatório |
+| CI Replenishment Module E2E | [40735988559](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40735988559) | ❌ failure | SHA `9bb37c44` — 4 secrets E2E ausentes (P1) |
+| Edge Integration Tests — All | [40735988490](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40735988490) | ❌ failure | SHA `9bb37c44` — versões edge functions desatualizadas (P11) |
+| edge-functions-drift-check | [40740410933](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40740410933) | ❌ failure | SHA `c7bc0ba6` — drift GitHub × canônico (P8) |
+| db-schema-drift-check | [40708395880](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40708395880) | ❌ failure | workflow_dispatch SHA `2cee272b` — ledger divergente (P7) |
+| Kit Coverage — Integration | [40813871454](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40813871454) | ❌ failure | chave publishable sem sessão autenticada; chamada como `anon` sem SELECT na view/tabela. Usar identidade E2E aprovada e fixture determinística; não conceder leitura anon. |
+| E2E Quotes — Matrix (E77) | N/A | N/A | Workflow só roda em PR; 0 execuções na main |
+
+> `*` success via `requireAuth`: os testes verificam se as secrets E2E estão presentes; sem elas, o suite é skipped integralmente e o workflow retorna success. A causa raiz (secrets ausentes) está em P1.
+
+---
+
+## 6. Runs de referência — workflows verdes na main após as correções
+
+| Workflow | Run ID | SHA | Conclusão | Data |
+|---|---|---|---|---|
+| Deploy Gates (Gate Final) | [40667156516](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40667156516) | `8c81483` | ✅ success | 2026-10-28 |
+| Deploy Gates (Gate Final) | [40662579684](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40662579684) | `c73cb9b` | ✅ success | 2026-10-28 |
+| Deploy Gates (Gate Final) | [40739341785](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40739341785) | `c7bc0ba6` | ✅ success | 2026-10-28 |
+| Deploy Gates (Gate Final) | [40741742537](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40741742537) | `4562f376` | ✅ success | 2026-10-28 |
+| Branch Protection Sentinel | [40739341755](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40739341755) | `c7bc0ba6` | ✅ success | 2026-10-28 |
+| Branch Protection Sentinel | [40741741700](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40741741700) | `4562f376` | ✅ success | 2026-10-28 |
+| Deploy Gates (Gate Final) | [40750126659](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40750126659) | `d784edb6` | ✅ success | 2026-10-28 |
+
+**Gate Final verde em 5 runs consecutivos na main — condição de processo satisfeita.**
+
+---
+
+## 7. Workflows aguardando ação do PO
+
+Os itens abaixo estão documentados em `PENDENCIAS.md` com o motivo exato do bloqueio e a ação necessária:
+
+| Item | Workflow | Bloqueio | Ação necessária |
+|---|---|---|---|
+| P1 | CI Quotes — Module E2E | 4 secrets E2E ausentes no GitHub Actions | Adicionar `E2E_USER_EMAIL`, `E2E_USER_PASSWORD`, `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY`  |
+| P2, P9, P10 | E2E Critical Flows, Personalization, Swatch | Dependem de P1 | Resolvido automaticamente após P1 |
+| P6 | E2E Quotes — Matrix (E77) | Workflow não roda na main (somente PR); run original era em branch de PR (cancelled) | Investigar se falha persiste em novo PR |
+| P7 | db-schema-drift-check | `local_only=1108; remote_only=648` - ledger divergente | Reconciliar via `db-apply-migration.yml` ou `migration repair` com versão explícita |
+| P8 | edge-functions-drift-check | Drift GitHub × canônico (funções no repo divergem das deployadas) | Disparar `deploy-edge-functions.yml` (workflow_dispatch) e aprovar `environment: production` |
+| P11 | Edge Integration Tests — All | Versões deployadas desatualizadas (código no repo correto) | Disparar `deploy-edge-functions.yml` (workflow_dispatch) |
+| P12 | Kit Coverage — Integration | `permission denied` para `v_kit_component_complete` e `product_kit_components`; o workflow está como `anon`, enquanto o canônico já concede SELECT a `authenticated`/`service_role` | Autenticar o teste com uma identidade E2E somente-leitura aprovada e fixar a fixture. Sem grant a `anon`; PR #2701 segue bloqueado por drift/ledger e não corrige sozinho a identidade da chamada |
+| P13 | N/A (Vercel infra) | Projeto fantasma `prj_W1Zdi6BQWkAwQx5VJjpSNlZubeok` gerando builds duplicados | Deletar projeto fantasma no dashboard Vercel |
+
+## 8. Auditoria de sincronização local × GitHub × Supabase canônico — 2026-10-28
+
+- Checkout principal limpo em `c344508711797a730893644449b16a05f12f4fce`, igual a `origin/main`; o branch de auditoria #2695 está publicado, mas não mesclado (check `copilot-pull-request-reviewer` falhou).
+- Banco confirmado explicitamente pelo project ref `doufsxqlfjyuvxuezpln`. Ledger ao vivo contém `20261027120000`, `20261027140000` e `20261027160000`; há seis migrations posteriores no repositório sem recibo/aplicação comprovada. Detalhes e bloqueios estão em P14 de `PENDENCIAS.md`.
+- Comparação local baseline, antes da correção: `npm ci` success; `npm run build` success; `npm run lint:baseline` success (0 erros/0 warnings, sem regressão); `npm run typecheck` success; `npm test -- --reporter=dot`: 1.210 arquivos e 25.656 testes passaram, 131 arquivos/1.134 testes skipped e 24 todo.
+- `npm run check:types-inventory-drift -- --base HEAD~1 --json` passou sem remoção/alteração estrutural local. Checagem `--live` não foi executada localmente; a comparação canônica permanece evidenciada pelos checks GitHub.
+- `node scripts/check-migration-filename-contract.mjs`, `node scripts/validate-supabase-config.mjs` e `git diff --check` passaram.
+- A main ainda tem falha no run [40762904577](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40762904577): o teste E2E rejeita a string `500`, que também aparece no nome válido de produto “Caneca alumínio 500ml”. Isso é falso positivo do teste; não indica erro 500 da aplicação.
+- Nenhum dado operacional foi copiado ao GitHub. Nenhuma migration, DDL, `migration repair` ou deploy foi executado diretamente.
+
+## 9. Atualização pós-PR #2714 — 2026-10-28
+
+- Código de correção está no GitHub na branch `fix/reconcile-canonical-pending-migrations`, SHA `09ac38b8233c8116196f873fa802ae886ce3206f`; PR [#2714](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2714) permanece aberto. Checkout principal está limpo e alinhado à `origin/main` em `c344508711797a730893644449b16a05f12f4fce`; portanto essas correções ainda não estão na `main`.
+- A suíte local após o commit final passou: build, lint baseline (0 erros/0 warnings), typecheck e 25.658 testes; baseline: 25.656 testes. Gate E75 local e teste focado 22/22 passaram.
+- Gate Final attempt 2 no run [40770613073](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40770613073) falhou E40 e gerou artefato com DDL fora da allowlist. Porém, no head posterior `30b468863c104102a04c6394a3d612f72c0087bf`, o Deploy Gates [run 40773362267](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40773362267) concluiu `success`, incluindo E40 com `schema_drift.clean` vazio e replay de 25 migrations após o baseline. O CI Replenishment [run 40773361986](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40773361986) também concluiu `success`. Nenhuma DDL, allowlist ou ledger foi alterada por esta sessão para produzir os resultados; a falha anterior não se reproduziu e a variação deve ser investigada antes de reparar schema/ledger.
+- Outros checks do head `30b4688`: `db-schema-drift-check` [run 40773362043](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40773362043) foi cancelado; Copilot Code Review [run 40773373723](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40773373723) falhou por quota HTTP 402; o status Vercel reportou falha de deployment preview. PR #2714 continua aberto e não mesclado até os checks restantes ficarem verdes.
+- Nenhuma DDL, migration, repair, deploy ou cópia de dados operacionais foi feita no Supabase canônico. As seis migrations sem recibo continuam pendentes e sujeitas ao fluxo E15 após classificar o run Production desconhecido, resolver secrets/precondições e aprovar apenas versões identificadas.
+
+## 10. Validação posterior no head `3b52583f1` — 2026-10-28
+
+- `npm run build`, `npm run lint:baseline` e `npm run typecheck` passaram após os commits do branch. A primeira execução da suíte completa reportou 25.659 testes passando, 1.134 skipped, 24 todo e um erro de execução; a repetição silenciosa terminou com exit 0: 1.210 arquivos passaram, 131 skipped, 25.659 testes passaram, 1.134 skipped e 24 todo (259,82 s). Baseline anterior: 25.656 testes passando; sem queda de testes aprovados. O teste focal do sanitizador também passou 102/102.
+- Deploy Gates [run 40778345107](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40778345107): Gate 0, Gate 2, Gate 2.5, Gate 3 (E2E Smoke), Gate 4, Gate 5, E23, E40 file detection e checks auxiliares passaram. Gate E40 Schema Drift Check falhou com resíduo de 24.438 bytes (46 statements no artefato), então o Gate Final não está liberado. O sanitizador contabilizou 12 cláusulas `WITH NO DATA` removidas, mas a correção não limpou o diff; classificar as diferenças restantes antes de qualquer allowlist ou ação no banco.
+- O status Vercel do commit continua `failure` no preview. PR #2714 segue aberto; branch `fix/reconcile-canonical-pending-migrations` está publicado no SHA `3b52583f1`; `main` continua em `c344508711797a730893644449b16a05f12f4fce`. O ledger canônico permanece com 2.552 versões até `20261027160000`; as seis migrations posteriores não têm recibo. Nenhuma alteração foi aplicada ao Supabase.
+
+### Verificação posterior no head `e8219bb` (2026-10-28)
+
+- A nova execução [Deploy Gates #40774546193](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40774546193) terminou com falha em Gate E40. O artefato reportou 13.827 bytes fora da allowlist; conteúdos diferem dos artefatos da execução falha anterior (#40770613073, 24.438 bytes) e da execução verde intermediária (#40773362267, drift vazio). Não há mudança de schema, migration, allowlist ou ledger feita por esta sessão que explique a variação. Portanto o Gate Final verde intermediário não comprova estabilidade: a reconciliação continua bloqueada até uma execução reproduzível e a causa da variação ser identificada.
+- No head `e8219bb`, `db-schema-drift-check` [#40774546164](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40774546164) foi cancelado; Copilot [#40774559306](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40774559306) falhou por quota; o CI de reposição [#40774546123](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40774546123) ainda estava em execução na última consulta. PR #2714 não foi mesclado e a `main` continua sem as alterações da branch.
+- Atualização: no SHA `c5e5a964d98fb930df35ceae5b52bd27ffb1a6c7`, o Deploy Gates [run 40775602248](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40775602248) concluiu `failure`: apenas Gate E40 falhou (artefato `schema-reconciliation-evidence`, 58.049 bytes); os outros gates bloqueantes concluíram com sucesso. O ledger canônico foi relido e contém 2.552 versões, com as três aplicações recentes identificadas; as seis versões pendentes permanecem sem recibo. A execução estável exigida para liberar o PR ainda não foi obtida. Nenhuma gravação no banco foi realizada.
+- Investigação de E40: os 7 `CREATE MATERIALIZED VIEW` no artefato #40775602248 correspondem exatamente às queries do baseline após ignorar `WITH NO DATA`; as sete MVs estão `ispopulated=true` no canônico (`pg_catalog.pg_matviews`). O artefato é falso positivo da população do dump vazio, não evidência de diferença estrutural. Foi implementado no branch um ajuste restrito ao sanitizador do replay para remover essa cláusula apenas em MVs e preservando definições SQL; teste focado `tests/scripts/drift-baseline.test.mjs` passou (102/102). A correção ainda depende do E40 remoto para validação.
+## 8. Revalidação da main e comparação de baseline — 2026-10-29
+
+### Inventário mais recente
+
+Consulta das últimas execuções por workflow na branch `main`, excluindo pull requests: 34 workflows, 27 `success`, 2 `skipped`, 2 `failure`, 2 `cancelled` e 1 `pending`. Cancelamentos e pendência não foram contabilizados como falha.
+
+| Workflow | Run | Resultado / diagnóstico |
 | Etapa | Resultado | Observação |
 |---|---|---|
 | `npm ci` | ✅ EXIT=0 | Dependências instaladas sem erros; 2 high CVEs pré-existentes (Dependabot) |

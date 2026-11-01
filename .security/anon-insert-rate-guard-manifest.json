@@ -1,12 +1,12 @@
 {
-  "_comment": "P200-E049 — 7 tabelas com INSERT anônimo real que requerem trigger de rate guard. verified_at=pendente indica que a verificação live ainda não foi executada.",
+  "_comment": "P200-E049 — contrato esperado do trigger de rate guard. O gate consulta pg_trigger ao vivo; este arquivo não é evidência de execução.",
   "tables": [
-    { "table": "analytics_events",        "trigger_name": "fn_anon_insert_rate_guard", "verified_at": "pendente" },
-    { "table": "catalog_analytics",       "trigger_name": "fn_anon_insert_rate_guard", "verified_at": "pendente" },
-    { "table": "product_views",           "trigger_name": "fn_anon_insert_rate_guard", "verified_at": "pendente" },
-    { "table": "search_analytics",        "trigger_name": "fn_anon_insert_rate_guard", "verified_at": "pendente" },
-    { "table": "frontend_telemetry",      "trigger_name": "fn_anon_insert_rate_guard", "verified_at": "pendente" },
-    { "table": "kill_switch_hits",        "trigger_name": "fn_anon_insert_rate_guard", "verified_at": "pendente" },
-    { "table": "password_reset_requests", "trigger_name": "fn_anon_insert_rate_guard", "verified_at": "pendente" }
+    { "schema_name": "public", "table_name": "analytics_events",        "trigger_name": "trg_anon_rate_guard", "function_name": "fn_anon_insert_rate_guard" },
+    { "schema_name": "public", "table_name": "catalog_analytics",       "trigger_name": "trg_anon_rate_guard", "function_name": "fn_anon_insert_rate_guard" },
+    { "schema_name": "public", "table_name": "product_views",           "trigger_name": "trg_anon_rate_guard", "function_name": "fn_anon_insert_rate_guard" },
+    { "schema_name": "public", "table_name": "search_analytics",        "trigger_name": "trg_anon_rate_guard", "function_name": "fn_anon_insert_rate_guard" },
+    { "schema_name": "public", "table_name": "frontend_telemetry",      "trigger_name": "trg_anon_rate_guard", "function_name": "fn_anon_insert_rate_guard" },
+    { "schema_name": "public", "table_name": "kill_switch_hits",        "trigger_name": "trg_anon_rate_guard", "function_name": "fn_anon_insert_rate_guard" },
+    { "schema_name": "public", "table_name": "password_reset_requests", "trigger_name": "trg_anon_rate_guard", "function_name": "fn_anon_insert_rate_guard" }
   ]
 }
