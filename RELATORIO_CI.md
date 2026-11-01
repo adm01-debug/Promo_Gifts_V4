@@ -472,11 +472,11 @@ Consulta pelo MCP GitHub às 119 definições de workflow, filtrada por `branch=
 | Kit Coverage | ❌ failure (pré-existente) | GRANT faltando — externo |
 | Release Please | ❌ failure (pré-existente) | Token GitHub — externo |
 
-### Após PR #2846 (HEAD `d976512c` — 2026-11-01T18:34 UTC)
+### Após PR #2846 (HEAD `c8174d31` — 2026-11-01T19:24 UTC)
 
 | Workflow | Conclusão | Observação |
 |---|---|---|
-| Deploy Gates (Gate Final) | ⏳ pending ([41337329428](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41337329428)) | Em fila desde 18:34 UTC — congestionamento de runners |
+| Deploy Gates (Gate Final) | ⏳ queued ([41341596308](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41341596308), check_run [124952596525](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41341596308/job/124952596525)) | Em fila desde 19:24 UTC — congestionamento de runners GitHub; único bloqueador pendente |
 | migrations-sync-log-gate | ✅ **success** ([41314375394](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41314375394), SHA 65119d68) | Gate 1.13.3 corrigido — recibo "aplicada" |
 | SSOT Supabase Guard | ✅ success ([41314375458](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41314375458)) | Sem regressão |
 | Gate 5 — Supabase Security Audit | ✅ success ([41314375450](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41314375450)) | Sem regressão |
@@ -498,16 +498,16 @@ Consulta pelo MCP GitHub às 119 definições de workflow, filtrada por `branch=
 ### Resumo de mudanças
 | Item | Antes | Depois | Causa |
 |---|---|---|---|
-| Gate Final (required) | ❌ failure | ⏳ pending (esperado: success) | PR #2846 corrige Gate 1.12 e Gate 1.13.3 |
+| Gate Final (required) | ❌ failure | ⏳ queued run [41341596308](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41341596308) (esperado: success) | PR #2846 corrige Gate 1.12 e Gate 1.13.3; CI congestionado |
 | migrations-sync-log-gate | ❌ failure | ✅ success ([41314375394](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41314375394)) | Recibo atualizado: "pendente" → "aplicada" |
 | Regressões introduzidas | — | **nenhuma** | tsc, build, lint, vitest: zero erros novos |
 | Logs falhas não-required | Assertados | **Obtidos e verificados** | webkit: dados de fixture; view: snapshot; undo: race condition |
 
-### Baseline local HEAD `d976512c` (2026-11-01T18:42 UTC)
-- TypeScript: ✅ `npx tsc --noEmit` EXIT=0 (18:42 UTC)
-- Lint: ✅ `npm run lint:baseline` — 0 erros, 0 warnings, nenhuma regressão (18:42 UTC)
-- Vitest: ⏳ em execução (background) — baseline anterior: 21/21 audit ✅, 540/543 overall ✅
-- Build: ⏳ aguardando vitest completar
+### Baseline local HEAD `c8174d31` (2026-11-01T19:10 UTC — agente a49a22e43e939804d)
+- TypeScript: ✅ `npx tsc --noEmit` EXIT=0
+- Lint: ✅ `npm run lint:baseline` — 0 erros, 0 warnings; regressões +0
+- Vitest: ✅ **25.916 testes** (1251 arquivos, 1135 skipped, 24 todo) — TODOS passaram
+- Build: ✅ `npm run build` EXIT=0 (20.00s)
 
 ### Baseline local HEAD `f73265f3` (2026-11-01T14:17 UTC — anterior)
 - `npx vitest run tests/scripts/`: 41 arquivos, **540 passed**, 3 skipped — EXIT=0
