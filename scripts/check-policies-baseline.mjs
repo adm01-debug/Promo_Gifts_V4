@@ -316,6 +316,13 @@ function isPartitionPolicyMatchingParent(p, baselineByKey) {
   const pWithCheck = normalizePartitionSelfRefs(p.with_check, p.tablename);
   for (const [key, sibling] of baselineByKey) {
     if (!key.startsWith(siblingPrefix)) continue;
+    // E206-c: exige que a candidata irmã também seja uma partição mensal com
+    // exatamente o mesmo baseTableName — evita falso match contra tabelas com
+    // prefixo comum mas sem sufixo de data (ex: supplier_products_raw_history
+    // não é irmã de supplier_products_raw_2027_03).
+    const siblingDateMatch = PARTITION_DATE_RE.exec(sibling.tablename);
+    if (!siblingDateMatch) continue;
+    if (sibling.tablename.slice(0, siblingDateMatch.index) !== baseTableName) continue;
     if (sibling.policyname !== p.policyname) continue;
     if (
       sibling.cmd === p.cmd &&
