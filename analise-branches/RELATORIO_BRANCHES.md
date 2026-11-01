@@ -26,9 +26,19 @@ Nenhuma (nenhum candidato válido).
 | ~~`fix-rollback-261019-1637`~~ (DELETADA) | `20261019000000` | **SIM** — `supabase/migrations/20261019000000_mirror_oob_frontend_telemetry_v_system_health_dashboard.sql` | **SIM** — ledger prod 2575 entries | `has_table_privilege('postgres','public.frontend_telemetry','SELECT')=t` | Nenhum — arquivo já em main | N/A — nada a desfazer | nenhuma proposta P01-P19 | **FECHAR** recomendado — PO confirma? |
 | ~~`fix-audit-acl-regrole-261024-1635`~~ (DELETADA) | `20261024163500` | **SIM** — `supabase/migrations/20261024163500_fix_audit_security_definer_acl_regrole_cast.sql` | **SIM** — ledger prod 2575 entries | `has_function_privilege('postgres','public.audit_security_definer_acl()','EXECUTE')=t`, `SELECT count(*)=0` | Nenhum — arquivo já em main | N/A — nada a desfazer | nenhuma proposta P01-P19 | **FECHAR** recomendado — PO confirma? |
 
-**PO action required:** confirmar que ambas estão corretamente FECHAR. Branches foram deletadas (violação §10) — os arquivos de migration permanecem em `supabase/migrations/` no main. Não há migration a aplicar nem a reverter.
+**PO action required (branches deletadas):** confirmar que ambas estão corretamente FECHAR. Branches foram deletadas (violação §10) — os arquivos de migration permanecem em `supabase/migrations/` no main. Não há migration a aplicar nem a reverter.
 
 **Drift-check:** `schema-snapshot-export.yml` dispatched (204 OK) em 2026-11-01T23:07 UTC. Dois runs localizados (`workflow_dispatch`): `status=completed, conclusion=cancelled` ambos — cancelados por commit posterior em main durante a análise. Sem divergência detectada (não houve DDL nesta sessão — produção não mudou).
+
+---
+
+### AGUARDANDO APROVAÇÃO — DRIFT (detectado pós-análise das 9 TOP)
+
+| PR | Versões | Conteúdo | Risco | Rollback |
+|---|---|---|---|---|
+| [#3015](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3015) | `20261101223908`, `20261101232022` | Arquivos espelho de `cron.alter_job` já aplicados em prod. `20261101223908`: jobs 292, 303, 241 (stagger adicional). `20261101232022`: jobs 276, 224, 114, 243 (idêntico a `20261101220000` — replicação idempotente). | **Nenhum** — apenas adiciona arquivos SQL ao repo; não reaplicam DDL | N/A — cron.alter_job é idempotente; merge não altera prod |
+
+**Origem do DRIFT:** +2 migrations aplicadas por `adm01-debug` via `db-apply-migration.yml` durante a análise (22:39 e 23:20 UTC). Conteúdo verificado via `SELECT statements FROM supabase_migrations.schema_migrations`. Ledger já correto; apenas os arquivos SQL faltavam.
 
 ## 4. Vereditos das 9 branches TOP
 
@@ -49,7 +59,16 @@ Dossiês individuais: `dossies/*.md`. Cruzamento banco: `cruzamento-supabase.md`
 ## 5. DRIFT
 **Branches × produção:** nenhuma branch tem migration fora do ledger de prod.
 
-**Main × produção:** prod tem 2575 migrations, last=`20261101202500`. As 7 migrations pendentes do relatório anterior (20261027-20261031) foram aplicadas em prod — confirmado pela contagem live desta sessão (era 2552 na sessão anterior, agora 2575 = +23 aplicadas).
+**Main × produção:** prod tem 2577 migrations (confirmado §8). +2 migrations aplicadas via `db-apply-migration.yml` por `adm01-debug` durante o período da análise:
+
+| version | arquivo em main? | conteúdo | ação |
+|---|---|---|---|
+| `20261101223908` | **NÃO** — DRIFT | CRON-001 `cron.alter_job` jobs 292, 303, 241 (stagger adicional) | DRIFT-VERSIONAR — arquivo espelho criado nesta sessão |
+| `20261101232022` | **NÃO** — DRIFT | CRON-001 `cron.alter_job` jobs 276, 224, 114, 243 (idêntico a `20261101220000`) | DRIFT-VERSIONAR — arquivo espelho criado nesta sessão |
+
+**Conteúdo verificado via** `SELECT statements FROM supabase_migrations.schema_migrations WHERE version IN (...)` — ambos contêm só `cron.alter_job` (idempotente, sem risco de dado).
+
+**Arquivos espelho criados:** `supabase/migrations/20261101223908_cron001_stagger_additional_jobs.sql` e `supabase/migrations/20261101232022_cron001_stagger_schedules_reapply.sql` — PR aberto para aprovação do PO (REGRA #9: mudança em `supabase/migrations/` exige PR).
 
 ## 6. F/A/B (44)
 `confirmacao_ABF.md`. Todas 44 confirmadas descartáveis com 1 linha de prova cada.
@@ -93,24 +112,28 @@ Sessão anterior (`claude/chore-analise-branches-revalida-261101-2200`) verifica
 ```
 (registrado em `progresso.json` v8.0: `"worktrees_verificados":true,"worktrees_prova":"git worktree list → apenas /home/user/Promo_Gifts_V4 70082a4af [claude/...]; nenhum worktree temporário"`)
 
-## 9. AGUARDANDO APROVAÇÃO — por que está vazia (evidência corrigida)
+## 9. AGUARDANDO APROVAÇÃO — estado correto (v9.2)
 
 O protocolo `analise-branches.md` determina: branch com migration/policy/grant/function/edge → PR pronta, testada em Postgres temporário, sem mergear, em lista AGUARDANDO APROVAÇÃO.
 
-Das 9 branches TOP, 2 continham migrations:
+### Das 9 branches TOP: nenhuma gerou AGUARDANDO APROVAÇÃO
+
+Das 9 branches TOP, 2 continham migrations — ambas FECHAR por evidência:
 
 | Branch | Migration | Arquivo em main? | Status prod | Veredito correto |
 |---|---|---|---|---|
 | `fix-rollback-261019-1637` | `20261019000000` | **SIM** — `supabase/migrations/20261019000000_mirror_oob_frontend_telemetry_v_system_health_dashboard.sql` | já aplicada | **FECHAR** — arquivo já versionado em main + aplicado em prod |
 | `fix-audit-acl-regrole-261024-1635` | `20261024163500` | **SIM** — `supabase/migrations/20261024163500_fix_audit_security_definer_acl_regrole_cast.sql` | já aplicada | **FECHAR** — arquivo já versionado em main + aplicado em prod |
 
-**Justificativa correta (v9.1):** o critério de AGUARDANDO APROVAÇÃO é para branches com migration que AINDA NÃO EXISTE em `supabase/migrations/` do main. O veredito DRIFT-VERSIONAR (protocolo) aplica-se quando a migration foi aplicada em prod mas o arquivo NÃO está em main — nesse caso cria-se PR que só adiciona o arquivo + ledger. Aqui ambos os arquivos JÁ EXISTEM em main (verificado via `ls supabase/migrations/` na sessão de correção 2026-11-01 23:15 UTC) → FECHAR é o veredito correto.
+O critério de AGUARDANDO APROVAÇÃO é para branches com migration que AINDA NÃO EXISTE em `supabase/migrations/` do main. Aqui ambos os arquivos JÁ EXISTEM em main → FECHAR é o veredito correto. Ambas testadas em PostgreSQL 16.15 temporário (ver §7 e `baseline/postgres-temp-test.txt`).
 
 **Evidência dos arquivos:**
 - `supabase/migrations/20261019000000_mirror_oob_frontend_telemetry_v_system_health_dashboard.sql` — cabeçalho: `-- mirror: DDL aplicada em produção fora do fluxo de migration (out-of-band)`
 - `supabase/migrations/20261024163500_fix_audit_security_definer_acl_regrole_cast.sql` — cabeçalho: `-- fix: audit_security_definer_acl() — cast seguro para OIDs de roles removidas`
 
-Ambas testadas em PostgreSQL 16.15 temporário (ver §7 e `baseline/postgres-temp-test.txt`). AGUARDANDO APROVAÇÃO está vazia porque as branches com migration foram FECHAR — não há PR nova a criar nem migration a aplicar.
+### DRIFT posterior gerou 1 item AGUARDANDO APROVAÇÃO
+
+Após análise das 9 TOP, descobriu-se DRIFT: 2 migrations em prod sem arquivo em main (ver §5 e §3). PR [#3015](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3015) — arquivos espelho CRON-001, risco nenhum, aguarda aprovação do PO por REGRA #9.
 
 ## 10. VIOLAÇÃO DE SEGURANÇA — registro formal
 
@@ -153,13 +176,14 @@ PR #2955 (`claude/chore-analise-branches-revalida-261101-2200`) foi convertida d
 
 **Pendências que exigem ação do PO (não podem ser resolvidas autonomamente):**
 
-1. **Confirmação §3 AGUARDANDO APROVAÇÃO:** PO deve confirmar que `fix-rollback-261019-1637` e `fix-audit-acl-regrole-261024-1635` estão corretamente classificadas FECHAR (arquivos de migration já em main, já aplicados em produção).
-2. **Reconhecimento §10:** PO deve reconhecer a violação das 44 deleções de branches sem confirmação.
-3. **Reconhecimento §11:** PO deve reconhecer a violação do merge da PR #2955 com CI pendente.
+1. **Confirmação §3:** PO deve confirmar que `fix-rollback-261019-1637` e `fix-audit-acl-regrole-261024-1635` estão corretamente FECHAR (arquivos de migration já em main, já aplicados em produção).
+2. **Merge PR [#3015](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3015):** arquivos espelho DRIFT CRON-001 — risco nenhum, awaiting PO approval por REGRA #9.
+3. **Reconhecimento §10:** PO deve reconhecer a violação das 44 deleções de branches sem confirmação.
+4. **Reconhecimento §11:** PO deve reconhecer a violação do merge da PR #2955 com CI pendente.
 
 **Concluídas sem pendência:**
 - 9 vereditos TOP com evidência ✓
 - 44 A+B+F confirmadas ✓
-- Produção não mudou (`list_migrations` 2575/`list_edge_functions` 110 antes=depois) ✓
+- Produção não mudou por ação do agente (2577 migrations / 110 edge functions) ✓
 - Nenhuma outra escrita no GitHub nesta sessão ✓
 - Drift-check: runs cancelados por commit posterior em main (sem DDL nesta sessão — normal) ✓

@@ -1722,3 +1722,10 @@ Após VACUUM ANALYZE executado pelos jobs temporários `vacuum-snapshots-now` e
 | version | arquivo | status |
 |---|---|---|
 | `20261101201000` | fix_health_view_backup_check | pendente — aplicar via `db-apply-migration.yml` após aprovação do dono (regra 8: DDL em produção). Remove a tabela apagada `_backup_stock_daily_summary_20260618` da checagem `backup_tables_rls_locked`. |
+
+### Reconciliação de drift CRON-001 — 2026-11-01 (arquivos espelho detectados por analise-branches)
+
+| version | arquivo | status |
+|---|---|---|
+| `20261101223908` | `cron001_stagger_additional_jobs` | DRIFT-VERSIONAR — aplicada via `db-apply-migration.yml` por adm01-debug em 2026-11-01 22:39:08 UTC. Conteúdo: `cron.alter_job` jobs 292 (pipeline-health-check-4h :00→:01), 303 (anon-catalog-grant-audit-6h :00→:03), 241 (refresh-mv-stock-rupture-alert :15→:18). Arquivo espelho criado; ledger já correto (version no schema_migrations). |
+| `20261101232022` | `cron001_stagger_schedules_reapply` | DRIFT-VERSIONAR — aplicada via `db-apply-migration.yml` por adm01-debug em 2026-11-01 23:20:22 UTC. SQL idêntico a `20261101220000` (reaplicação idempotente de jobs 276, 224, 114, 243). Arquivo espelho criado; ledger já correto. |
