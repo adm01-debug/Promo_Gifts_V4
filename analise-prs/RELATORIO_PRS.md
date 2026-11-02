@@ -1,6 +1,6 @@
 # Relatório de PRs — Promo Gifts V4
 
-**Sessão:** `session_011d8gKLZg8BWivR8aQBwxGF` | **Revisão:** rev91 | **Data:** 2026-11-02  
+**Sessão:** `session_011d8gKLZg8BWivR8aQBwxGF` | **Revisão:** rev92 | **Data:** 2026-11-02  
 **Fork:** f0ceb220 | **Branch de entrega:** `claude_04/optimistic-bohr-qplx94`
 
 ---
@@ -47,6 +47,31 @@ Ação: autores marcam como "Ready for review" quando o código estiver completo
 ### Bloqueio de produção (permanente nesta sessão)
 
 **ERR_PROXY_TUNNEL**: Supabase MCP (`mcp__SUPABASE_-_GEST_O_DE_PRODUTOS__*`) bloqueado por proxy durante toda a sessão. Verificação de produção pós-merge **impossível** nesta sessão. A produção deve ser verificada manualmente ou em sessão futura com acesso ao Supabase.
+
+---
+
+## Atualizações rev92
+
+### Correções
+
+| Item | Antes (rev91) | Depois (rev92) |
+|---|---|---|
+| Vitest per-name baseline | `useRuptureAlerts.test.tsx` e `check-migrations-sync-log-gate.test.mjs` listados como FAILING | Ambos **PASSAM** em main `0a8a17f922` — run local confirmado |
+| PR-3004 diff | Afirmava "Nenhum arquivo fora de `analise-prs/`" | **1 arquivo code**: `src/.../NegotiationMarkupCard.visualA11y.test.tsx.snap` (snapshot update, zero runtime) |
+| PR-3004 diff passagens | "múltiplas passagens" sem detalhe | **7 passagens** documentadas: 0–1400, 1400–3080, 3080–5178, 5178–6376, 6376–7176, 7176–7975, 7975–8765 |
+| main HEAD atual | `95689d5b9dde` (rev89) | `0a8a17f922` (release 1.7.0) |
+| Merge tests BLOQUEADA | Parcial | Completo: PR-2420/2572/2579/2605/2653 = CONFLICT; PR-2622 = CLEAN |
+
+### Único teste vitest falhando localmente em main `0a8a17f922`
+
+```
+tests/unit/date-utils.test.ts
+  × formatDateTime > converts UTC to BRT
+  × formatTime > converts UTC to BRT
+  × formatTime > zero-pads hours and minutes
+```
+Causa provável: timezone do runner local (América/São_Paulo) vs CI UTC.
+Autoridade canônica: Gate 2 CI SUCCESS — todos verdes em `dfec2236c`.
 
 ---
 
@@ -191,7 +216,8 @@ Todas em estado DRAFT — critério de merge exige PR pronto para revisão.
 | Componente | Status | Referência |
 |---|---|---|
 | TypeScript | EXIT 0 (0 erros) | SHA `5b5cef36c` (pre-merge main) |
-| Vitest | 137 testes / 11 arquivos | Gate 2 CI SUCCESS run 41019605919 SHA `dfec2236c` |
+| Vitest (CI) | Gate 2 CI SUCCESS | run 41019605919 SHA `dfec2236c` — todos os testes verdes |
+| Vitest local (`0a8a17f922`) | 1 arquivo falha: `date-utils.test.ts` (3 testes BRT/zero-pad) | `useRuptureAlerts` e `check-migrations-sync-log-gate` PASSAM (rev92 correction) |
 | Lint | Gate 1 SUCCESS | run_id 40447563368 |
 
 ---

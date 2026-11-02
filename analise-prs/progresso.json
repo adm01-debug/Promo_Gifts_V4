@@ -1,12 +1,12 @@
 {
   "session_id": "session_011d8gKLZg8BWivR8aQBwxGF",
-  "revision": "rev91",
+  "revision": "rev92",
   "date": "2026-11-02",
   "status": "SESSAO_COMPLETA",
   "main_head_entrada": "5b5cef36c12e49d310bc89b45d51138a3d6f1069",
   "main_head_final": "91d4bee21631de745b5908155ccab5a82548a4fe",
   "main_head_rev88": "78b32ddd52df18efb34452295a778ade7ad1eafb",
-  "main_head_atual": "95689d5b9dde131fd8428b7c928dfb5f25a0bd82",
+  "main_head_atual": "0a8a17f92212",
   "gate_final_atual": {
     "sha": "78b32ddd52df18efb34452295a778ade7ad1eafb",
     "run_id": "41360711486",
@@ -232,5 +232,5 @@
     "vitest": "Gate 2 CI — SUCCESS em dfec2236c (run 41019605919) — autoritativo",
     "typecheck": "EXIT 0 em 5b5cef36c (pre-merge main)"
   },
-  "nota": "rev91 (fork f0ceb220, sessao session_011d8gKLZg8BWivR8aQBwxGF): Dossiers de PR-3012/PR-3014/PR-2996/PR-3004 atualizados com diff 100% lido. PR-3012: 794 linhas — conflict markers + 19 falhas em 6 grupos. PR-3014: 2205 linhas — claude_05 branch, prs.json confirma PR-2996 diff vazio. PR-2996: evidencia convergente (tree-SHA + prs.json claude_05). PR-3004: 8765 linhas — all analise-prs/. Baseline state.md atualizado com failing test names: check-migrations-sync-log-gate.test.mjs, useRuptureAlerts.test.tsx, date-utils.test.ts. Autoridade Gate 2: SUCCESS run 41019605919 SHA dfec2236c. Gate Final: QUEUED starvation permanente. Producao NAO VERIFICADO ERR_PROXY_TUNNEL permanente. 101 PRs total. 29 abertos remanescentes."
+  "nota": "rev92 (fork f0ceb220, sessao session_011d8gKLZg8BWivR8aQBwxGF): CORRECAO vitest per-name baseline: check-migrations-sync-log-gate.test.mjs e useRuptureAlerts.test.tsx ambos PASSAM em main 0a8a17f922 — apenas date-utils.test.ts falha (3 testes: formatDateTime BRT, formatTime BRT, zero-pad). PR-3004 diff 100% lido em 7 passagens (8765 linhas): 1 arquivo code encontrado (NegotiationMarkupCard snapshot, zero runtime impact). Merge tests vs 0a8a17f922: PR-2420 CONFLICT, PR-2572 CONFLICT, PR-2579 CONFLICT, PR-2605 CONFLICT, PR-2622 CLEAN, PR-2653 CONFLICT (added in both). Autoridade Gate 2: SUCCESS run 41019605919 SHA dfec2236c. Gate Final: QUEUED starvation permanente. Producao NAO VERIFICADO ERR_PROXY_TUNNEL permanente. 101 PRs total. 29 abertos remanescentes."
 }

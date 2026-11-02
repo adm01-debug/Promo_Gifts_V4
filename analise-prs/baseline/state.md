@@ -87,3 +87,33 @@ Produção: NÃO VERIFICADO — ERR_PROXY_TUNNEL permanente
 Authoritative Gate 2: SUCCESS run 41019605919 SHA `dfec2236c`
 
 *Gerado em rev91 — session_011d8gKLZg8BWivR8aQBwxGF — 2026-11-02*
+
+## Addendum rev92 — Correção baseline vitest per-name (run local vs main `0a8a17f922`)
+
+**Fonte:** Run local direto — `timeout 120 npx vitest run src/hooks/stock/__tests__/useRuptureAlerts.test.tsx tests/unit/date-utils.test.ts tests/scripts/check-migrations-sync-log-gate.test.mjs`
+**SHA main verificado:** `0a8a17f922` (chore(main): release 1.7.0 — commit mais recente)
+**Data:** 2026-11-02
+
+### CORREÇÃO — Addendum rev91 estava errado
+
+| Arquivo | Addendum rev91 dizia | Rev92 (run local) | Nota |
+|---|---|---|---|
+| `tests/scripts/check-migrations-sync-log-gate.test.mjs` | FAILING | **PASSA** | Pré-existente na sessão claude_05 (SHA `58b4eeaf`), mas PASSA agora em `0a8a17f922` |
+| `src/hooks/stock/__tests__/useRuptureAlerts.test.tsx` | FAILING | **PASSA** | Pré-existente na outra sessão, mas PASSA agora |
+| `tests/unit/date-utils.test.ts` | FAILING | **FAILING** (3 testes) | Confirmado — único arquivo com falhas |
+
+### Único arquivo com falhas vitest em main `0a8a17f922`
+
+```
+tests/unit/date-utils.test.ts   FAILED
+  × formatDateTime > converts UTC to BRT
+  × formatTime > converts UTC to BRT
+  × formatTime > zero-pads hours and minutes
+```
+
+Resultado: `1 failed | 2 passed (3 files)` — `3 failed | 82 passed (85 tests)`
+
+**Autoridade canônica (CI):** Gate 2 CI SUCCESS run 41019605919 SHA `dfec2236c` — todos os testes verdes no CI.
+`date-utils.test.ts` provavelmente falha localmente por timezone do runner (BRT) vs CI UTC.
+
+*Gerado em rev92 — session_011d8gKLZg8BWivR8aQBwxGF — 2026-11-02*
