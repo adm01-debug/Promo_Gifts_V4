@@ -10,7 +10,7 @@
  * Uso: node scripts/check-product-type-duplicates.mjs
  */
 import { execSync } from 'node:child_process';
-import { existsSync, readFileSync, writeFileSync } from 'node:fs';
+import { readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 const ROOT = process.cwd();
@@ -18,8 +18,10 @@ const BASELINE_PATH = join(ROOT, '.product-interface-baseline.json');
 const UPDATE = process.argv.includes('--update');
 
 let baseline = { count: null };
-if (existsSync(BASELINE_PATH)) {
+try {
   baseline = JSON.parse(readFileSync(BASELINE_PATH, 'utf8'));
+} catch (e) {
+  if (e.code !== 'ENOENT') throw e;
 }
 
 // Contar ocorrências

@@ -47,9 +47,9 @@
  */
 
 import { execSync } from 'node:child_process';
-import { readFileSync, writeFileSync, existsSync, readdirSync, unlinkSync, mkdirSync, statSync } from 'node:fs';
+import { readFileSync, writeFileSync, existsSync, readdirSync, unlinkSync, mkdirSync, statSync, openSync, fstatSync, closeSync } from 'node:fs';
 import { join, basename, dirname, resolve } from 'node:path';
-import { tmpdir } from 'node:os';
+import { homedir } from 'node:os';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = process.cwd();
@@ -443,7 +443,7 @@ function openPullRequest({ slug, timestamp, targetName, draftFile, base, draftPr
 // Reduz N chamadas ao Supabase quando promovo vários drafts em sequência.
 // Chave = SHA das migrations aplicadas + schema, então invalida sozinho
 // quando você aplica algo novo.
-const DIFF_CACHE_DIR = join(tmpdir(), 'promo-gifts', 'supabase-db-diff-cache');
+const DIFF_CACHE_DIR = join(homedir(), '.promo-gifts', 'supabase-db-diff-cache');
 
 function computeDiffCacheKey() {
   const migrations = existsSync(MIG_DIR)
@@ -459,10 +459,18 @@ function readDiffCache(ttlSeconds) {
   try {
     const key = computeDiffCacheKey();
     const p = join(DIFF_CACHE_DIR, key);
-    const st = statSync(p);
-    const ageSec = (Date.now() - st.mtimeMs) / 1000;
-    if (ageSec > ttlSeconds) return { stale: true, ageSec, path: p };
-    return { stale: false, ageSec, path: p, out: readFileSync(p, 'utf8') };
+    const fd = openSync(p, 'r');
+    try {
+      const st = fstatSync(fd);
+      const ageSec = (Date.now() - st.mtimeMs) / 1000;
+      if (ageSec > ttlSeconds) { closeSync(fd); return { stale: true, ageSec, path: p }; }
+      const out = readFileSync(fd, 'utf8');
+      closeSync(fd);
+      return { stale: false, ageSec, path: p, out };
+    } catch (inner) {
+      try { closeSync(fd); } catch {}
+      throw inner;
+    }
   } catch { return null; }
 }
 
@@ -574,7 +582,7 @@ function buildPrBody({ slug, timestamp, targetName, draftFile, keepDraft, hasVal
     `- **Timestamp UTC:** \`${timestamp}\``,
     `- **Destino:** \`supabase/migrations/${targetName}\``,
     `- **Rascunho de origem:** \`qa/migrations-draft/${draftFile}\`${keepDraft ? ' _(mantido)_' : ' _(removido)_'}`,
-    `- **`.VALIDATION.md`:** ${hasValidation ? '✅ presente' : '⚠️ ausente (promovido com `--skip-validation`)'}`,
+    `- **\`.VALIDATION.md\`:** ${hasValidation ? '✅ presente' : '⚠️ ausente (promovido com `--skip-validation`)'}`,
     ``,
     `### Validações executadas pelo \`draft:promote\``,
     `- ✅ Alvo canônico declarado (\`doufsxqlfjyuvxuezpln\` ou DDL agnóstica)`,

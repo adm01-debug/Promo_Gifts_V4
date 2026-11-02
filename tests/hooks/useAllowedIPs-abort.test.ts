@@ -33,7 +33,9 @@ describe('useAllowedIPs — BUG-22: AbortController em fetchCurrentIP', () => {
 
     // Fetch padrão: retorna IP válido para ipify, ignora outras URLs (auth etc.)
     vi.stubGlobal('fetch', vi.fn().mockImplementation((url: string, opts?: RequestInit) => {
-      if (String(url).includes('ipify.org')) {
+      let isIpify = false;
+      try { isIpify = /(^|\.)ipify\.org$/.test(new URL(String(url)).hostname); } catch {}
+      if (isIpify) {
         return Promise.resolve({
           json: () => Promise.resolve({ ip: '9.9.9.9' }),
         });
@@ -57,7 +59,9 @@ describe('useAllowedIPs — BUG-22: AbortController em fetchCurrentIP', () => {
   it('aborta o fetch de IP externo ao desmontar', async () => {
     // Override apenas para ipify: fetch que nunca resolve + captura signal
     vi.mocked(global.fetch).mockImplementation((url: string, opts?: RequestInit) => {
-      if (String(url).includes('ipify.org')) {
+      let isIpify = false;
+      try { isIpify = /(^|\.)ipify\.org$/.test(new URL(String(url)).hostname); } catch {}
+      if (isIpify) {
         const signal = opts?.signal as AbortSignal | undefined;
         if (signal) signal.addEventListener('abort', abortSpy);
         return new Promise(() => {}); // nunca resolve — testa abort
@@ -91,7 +95,9 @@ describe('useAllowedIPs — BUG-22: AbortController em fetchCurrentIP', () => {
 
     // ipify rejeita com AbortError; outras URLs respondem normalmente
     vi.mocked(global.fetch).mockImplementation((url: string, _opts?: RequestInit) => {
-      if (String(url).includes('ipify.org')) {
+      let isIpify = false;
+      try { isIpify = /(^|\.)ipify\.org$/.test(new URL(String(url)).hostname); } catch {}
+      if (isIpify) {
         return Promise.reject(Object.assign(new Error('aborted'), { name: 'AbortError' }));
       }
       return Promise.resolve({
@@ -118,7 +124,9 @@ describe('useAllowedIPs — BUG-22: AbortController em fetchCurrentIP', () => {
 
   it('define currentIP quando fetch resolve normalmente', async () => {
     vi.mocked(global.fetch).mockImplementation((url: string, _opts?: RequestInit) => {
-      if (String(url).includes('ipify.org')) {
+      let isIpify = false;
+      try { isIpify = /(^|\.)ipify\.org$/.test(new URL(String(url)).hostname); } catch {}
+      if (isIpify) {
         return Promise.resolve({
           json: () => Promise.resolve({ ip: '203.0.113.1' }),
         } as Response);
