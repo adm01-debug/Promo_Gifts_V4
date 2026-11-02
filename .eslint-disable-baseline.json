@@ -1,7 +1,12 @@
 {
-  "generatedAt": "2026-11-02T19:06:02.512Z",
+  "generatedAt": "2026-11-02T19:13:19.043Z",
   "description": "Baseline de supressões inline do ESLint em src/ (excluindo testes). Falha em qualquer AUMENTO. Meta: reduzir continuamente.",
   "productionEslintDisableCount": 173,
+  "meta": {
+    "target": 80,
+    "deadline": "2027-03-31",
+    "note": "E129 — ratchet descendente de eslint-disable. Baseline inicial: 177. Reduzb ~50% em 6 meses eliminando supressões desnecessárias."
+  },
   "counts": {
     "src/components/access/DevAccessDeniedPage.tsx": 1,
     "src/components/admin/connections/SeverityFilterContext.tsx": 1,
