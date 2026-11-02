@@ -433,6 +433,14 @@
       "occurrences": 1,
       "stage": 101,
       "reason": "Tabela ainda não criada em produção; edge function xbz-image-uploader é stub (not_implemented) aguardando migration de criação da tabela."
+    },
+    {
+      "kind": "rpc",
+      "name": "fn_get_rupture_alerts",
+      "file": "src/hooks/stock/useRuptureAlerts.ts",
+      "occurrences": 1,
+      "stage": 102,
+      "reason": "RPC ausente no banco canonico (confirmado via pg_catalog em 2026-11-02, zero linhas em pg_proc) com consumidor ativo (useRuptureAlerts.ts, feature flag useEmaRupture); investigar equivalente ou criar via migration antes de remover esta excecao."
     }
   ],
   "dynamic_baseline": [
