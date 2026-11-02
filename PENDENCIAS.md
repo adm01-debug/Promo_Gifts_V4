@@ -2384,3 +2384,78 @@ changed: 8 policies em ai_usage_quotas + art_file_attachments
 **Classificação:** Infra transitória — auto-recuperável via novo push.
 
 ---
+
+## P40 — GitHub Actions: política bloqueia actions externas (Release Please, Security Scan, Gitleaks) — 2026-11-02
+
+**Workflows afetados:** Release Please · Security Scan · Gitleaks — Full History Audit
+**HEAD da main afetado:** `df94410cbbcbe7d80928a279de91214d88b0d4bb`
+
+| Workflow | Última execução com falha | Run ID | Erro exato |
+|---|---|---|---|
+| Release Please | [41368799853](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41368799853) | job 125040101807 | `The action googleapis/release-please-action@45996ed1f6d02564a971a2fa1b5860e934307cf7 is not allowed in adm01-debug/Promo_Gifts_V4 because all actions must be from a repository owned by adm01-debug or created by GitHub.` |
+| Security Scan | [41368799724](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41368799724) | job 125041529341 | `The action gitleaks/gitleaks-action@e0c47f4f8be36e29cdc102c57e68cb5cbf0e8d1e is not allowed in adm01-debug/Promo_Gifts_V4 because all actions must be from a repository owned by adm01-debug or created by GitHub.` |
+| Gitleaks — Full History Audit | [41366179053](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41366179053) | job 125027313697 | `The action gitleaks/gitleaks-action@e0c47f4f8be36e29cdc102c57e68cb5cbf0e8d1e is not allowed in adm01-debug/Promo_Gifts_V4 because all actions must be from a repository owned by adm01-debug or created by GitHub.` |
+
+**Causa raiz:** GitHub Actions settings do repositório (`Settings → Actions → General → Actions permissions`) está configurado para `Allow adm01-debug and select non-adm01-debug, actions and reusable workflows` — mas `googleapis/release-please-action` e `gitleaks/gitleaks-action` não estão na lista de ações permitidas.
+
+**O que precisa ser feito (requer PO):** Ir em `https://github.com/adm01-debug/Promo_Gifts_V4/settings/actions` e adicionar `gitleaks/gitleaks-action` e `googleapis/release-please-action` à lista de ações permitidas. Ou alterar para `Allow all actions and reusable workflows` (menor segurança). Ou substituir as actions por equivalentes na org `adm01-debug`.
+
+**Não é corrigível por mudança de código** — a política é configuração de infraestrutura GitHub, não código do repositório.
+
+**Classificação:** Bloqueio de política/infra — requer PO.
+
+---
+
+## P41 — Uptime Monitor: falha de probe `df94410c` (2026-11-02T00:15)
+
+**Workflow:** Uptime Monitor
+**Execução com falha:** [41366208498](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41366208498)
+**HEAD:** `8b84f38f51d3a335f9c7c95ee63678540180be34`
+
+**Causa:** Step "Probe site + edge function" falhou. Probes verificadas: `https://www.promogifts.com.br/`, `https://doufsxqlfjyuvxuezpln.supabase.co/functions/v1/health-check`, `functions/v1/check-login`, `auth/v1/health`. Issue #3024 criada automaticamente ("Uptime: falha de disponibilidade detectada").
+
+**Classificação:** Infra externa — site ou edge function indisponível. Já documentado em P-UPTIME. Recorrente.
+
+---
+
+## P42 — E2E Personalization Flow: falha no run 41368063630 (2026-11-02)
+
+**Workflow:** E2E — Personalization Flow
+**Execução com falha:** [41368063630](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41368063630)
+**HEAD:** `5a35a743aef90f60303c16173f05cedb373e4670`
+
+**Causa:** Step "Run Personalization E2E Tests" falhou. Log tail não expõe erro específico (apenas cleanup/artifact upload). Falha pré-existente documentada desde P21 (`7299c88c`, 2026-10-xx). Não é required check do Gate Final (Deploy Gates).
+
+**Classificação:** Infra/fixture E2E — pré-existente (P21). Não é bloqueante para deploy.
+
+---
+
+## P43 — SSOT Supabase Guard: `analise-branches/.../devin-probe-e184-legacy-refs.md:28` sem marcador legacy (2026-11-02)
+
+**Workflow:** SSOT Supabase Guard
+**Execução com falha:** [41368799775](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41368799775)
+**HEAD da main:** `df94410cbbcbe7d80928a279de91214d88b0d4bb`
+
+**Causa:** `guard-canonical-project` (fase 3/3 DOCS) encontrou `1 menção(ões) ao ID legado sem marcador de legado`:
+- `analise-branches/dossies/devin-probe-e184-legacy-refs.md:28` — linha `**Busca por referências a 'pqpdolkaeqlyzpdpbizo' nesta sessão:**` sem `[LEGACY_INFORMATIVO]` ou marcador equivalente.
+
+**Status:** ✅ **CORRIGIDO em PR #3023** — `fix/ci-workflows` (branch remoto HEAD `169363697`) já contém a linha corrigida: `**Busca por referências ao projeto legado 'pqpdolkaeqlyzpdpbizo' [LEGACY_INFORMATIVO] nesta sessão:**`. Resolução automática no merge do PR.
+
+---
+
+## P44 — CI Security & Drift Checks: lint errors kit-builder (2026-11-02)
+
+**Workflow:** CI Security & Drift Checks
+**Execução com falha:** [41368063748](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41368063748)
+**HEAD da main afetado:** `5a35a743aef90f60303c16173f05cedb373e4670`
+
+**Causa:** 3 erros de lint no job `quality-gate`:
+1. `src/hooks/kit-builder/useKitBuilderPageState.ts:449:50` — `import() type annotations are forbidden @typescript-eslint/consistent-type-imports`
+2. `src/lib/kit-builder/types.ts:174:25` — `Union type KitOrigin constituents must be sorted @typescript-eslint/sort-type-constituents` (valor em main: `'manual' | 'template' | 'ai'` — não ordenado)
+
+**Status:** ✅ **CORRIGIDO em PR #3023** — `fix/ci-workflows` (branch remoto HEAD `169363697`) já contém:
+- `types.ts:174`: `export type KitOrigin = 'ai' | 'manual' | 'template';` (ordenado corretamente)
+- `useKitBuilderPageState.ts:449`: `origin?: KitOrigin` (sem `import()` annotation)
+Resolução automática no merge do PR.
+
+---
