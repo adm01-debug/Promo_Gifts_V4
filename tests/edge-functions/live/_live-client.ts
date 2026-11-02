@@ -68,8 +68,14 @@ const TIMEOUT_MS = Number(readEnv("EDGE_LIVE_TIMEOUT_MS")) || 15_000;
 const RETRY_STATUSES = new Set([502, 503, 504]);
 const RETRY_COUNT = Number(readEnv("EDGE_LIVE_RETRIES")) || 3;
 const RETRY_DELAY_MS = Number(readEnv("EDGE_LIVE_RETRY_DELAY_MS")) || 800;
-/** Deadline do signInWithPassword em getJwt() — ver nota no MAX_RETRY_BUDGET_MS. */
-const JWT_TIMEOUT_MS = Number(readEnv("EDGE_LIVE_JWT_TIMEOUT_MS")) || 10_000;
+/**
+ * Deadline do signInWithPassword em getJwt() — ver nota no MAX_RETRY_BUDGET_MS.
+ * 30s, não 10s: observado em CI real (runs 41539775319 e 41539114390,
+ * 2026-11-02) auth/v1/token respondendo em até 26116ms — 10s disparava
+ * JwtTimeoutError em arquivos diferentes a cada rerun (persistente, não
+ * flaky), derrubando o job por causa do próprio timeout, não por bug.
+ */
+const JWT_TIMEOUT_MS = Number(readEnv("EDGE_LIVE_JWT_TIMEOUT_MS")) || 30_000;
 
 /**
  * Pior caso de wall-clock de callEdge(): JWT_TIMEOUT_MS (getJwt() é aguardado
