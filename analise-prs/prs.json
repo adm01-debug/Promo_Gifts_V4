@@ -439,13 +439,13 @@
     "MERGEADA_PO": 3,
     "FECHADA_EXTERNA": 7,
     "FECHADA_EXTERNA_REV93": 9,
-    "BLOQUEADA": 1,
-    "DRAFT_NOMERGE": 26,
+    "BLOQUEADA": 2,
+    "DRAFT_NOMERGE": 28,
     "SUPERSEDED": 1,
     "JA_IMPLEMENTADA_MAIN": 1
   },
   "revision": "rev93",
-  "open_prs_count": 27,
+  "open_prs_count": 30,
   "main_head_atual": "df94410cbbcbe7d80928a279de91214d88b0d4bb",
   "pr_3019": {
     "number": 3019,
@@ -463,5 +463,21 @@
     "verdict": "MERGEADA_AUTONOMA_REV93",
     "sha_merge": "df94410cbbcbe7d80928a279de91214d88b0d4bb",
     "merged_at": "2026-11-02T02:00Z"
+  },
+  "pr_3022": {
+    "number": 3022,
+    "title": "docs(ci): RELATORIO_CI.md inventário 23 falhas + fix LEGACY refs",
+    "state": "open",
+    "draft": true,
+    "verdict": "DRAFT_NOMERGE",
+    "blocked_reason": "DRAFT + REGRA#10 (branch claude/fix-relatorio-ci-261102-0030 — outra sessão)"
+  },
+  "pr_3023": {
+    "number": 3023,
+    "title": "docs(ci): P38 inventário 21 workflows em falha + fix useListUrlState + e2e",
+    "state": "open",
+    "draft": false,
+    "verdict": "BLOQUEADA",
+    "blocked_reason": ".github/workflows/e2e-swatch-quickview.yml — REGRA#8 exige aprovação PO; merge_test: CLEAN"
   }
 }

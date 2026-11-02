@@ -32,12 +32,13 @@
     "vitest": "Gate 2 CI SUCCESS — SHA dfec2236c (run 41019605919) — autoritativo",
     "nota": "main avancou adicionalmente para 35847b708e78 (commit externo pos nossos merges)"
   },
-  "prs_analisados_esta_sessao": 58,
-  "prs_analisados_total": 103,
+  "prs_analisados_esta_sessao": 60,
+  "prs_analisados_total": 105,
   "open_prs_count_verificado": 29,
   "open_prs_verificado_em": "2026-11-02T00:00:00Z",
-  "open_prs_apos_rev93": 27,
-  "open_prs_apos_rev93_verificado_em": "2026-11-02T02:00:00Z",
+  "open_prs_apos_rev93": 30,
+  "open_prs_apos_rev93_verificado_em": "2026-11-02T02:30:00Z",
+  "open_prs_nota_rev93": "30 = 26 DRAFTs + 2 BLOQUEADAs (#2941 REGRA8, #3023 workflow) + 1 JA_IMPLEMENTADA_MAIN (#2996) + 1 DRAFT_NOMERGE (#3019) — #3021 mergeado desta sessao",
   "verdicts": {
     "MERGEADA_AUTONOMA_REV88": [
       "2940",
@@ -159,7 +160,11 @@
       "3014",
       "3015",
       "3016",
-      "3019"
+      "3019",
+      "3022"
+    ],
+    "BLOQUEADA_REV93": [
+      "3023"
     ],
     "SUPERSEDED": [
       "2645"
@@ -167,10 +172,12 @@
     "JA_IMPLEMENTADA_MAIN": [
       "2996"
     ],
-    "DRAFT_NOMERGE_count": 26,
+    "DRAFT_NOMERGE_count": 28,
     "MERGEADA_SESSAO_EXTERNA_count": 30,
     "MERGEADA_AUTONOMA_REV93_count": 1,
-    "FECHADA_EXTERNA_REV93_count": 9
+    "FECHADA_EXTERNA_REV93_count": 9,
+    "BLOQUEADA_count": 2,
+    "JA_IMPLEMENTADA_MAIN_count": 1
   },
   "bloqueio_razoes": {
     "2420": "FECHADA_EXTERNA: REGRA#8: rollbacks/ DDL de producao — fechada externamente",
@@ -181,6 +188,7 @@
     "2645": "FECHADA_EXTERNA: Superseded",
     "2653": "FECHADA_EXTERNA: CONFLICT + REGRA#10",
     "2941": "BLOQUEADA: REGRA#8 (supabase/rollbacks/) + CONFLITO (mergeable:dirty)",
+    "3023": "BLOQUEADA: .github/workflows/e2e-swatch-quickview.yml — REGRA#8 exige aprovacao PO",
     "3017": "FECHADA_EXTERNA: BLOQUEADA_PO gate CI segurança",
     "3018": "FECHADA_EXTERNA: branch de outra sessão com branch protection blocked"
   },
@@ -261,5 +269,5 @@
     "vitest": "Gate 2 CI — SUCCESS em dfec2236c (run 41019605919) — autoritativo",
     "typecheck": "EXIT 0 em 5b5cef36c (pre-merge main)"
   },
-  "nota": "rev93 (fork f0ceb220, sessao session_011d8gKLZg8BWivR8aQBwxGF): PR-3021 mergeado (fix(security): CodeQL HIGH — crypto.randomInt, URL validation, hash param guard, anonymize ilike). SHA squash: df94410cbbcbe7d80928a279de91214d88b0d4bb. Merge test CLEAN vs main 5a35a743ae. PR-3019 DRAFT_NOMERGE (claude_05 session, REGRA#10). 9 PRs anteriormente BLOQUEADAS agora FECHADAS externamente: 2420/2572/2579/2605/2622/2645/2653/3017/3018. BLOQUEADA restante: apenas 2941 (REGRA#8 rollbacks). 26 DRAFTs (incluindo 3019). Producao verificada rev92: zero erros, zero 5xx (doufsxqlfjyuvxuezpln). Gate Final: QUEUED starvation sistemica. Autoridade Gate 2: SUCCESS run 41019605919 SHA dfec2236c. 103 PRs total. 27 abertos remanescentes."
+  "nota": "rev93 (fork f0ceb220, sessao session_011d8gKLZg8BWivR8aQBwxGF): PR-3021 mergeado (fix(security) CodeQL HIGH). SHA squash: df94410cbbcbe7d80928a279de91214d88b0d4bb. Novas PRs descobertas: #3022 (DRAFT_NOMERGE REGRA#10) e #3023 (BLOQUEADA .github/workflows REGRA#8 — contém fix util em useListUrlState.ts). 9 PRs anteriormente BLOQUEADAS agora FECHADAS externamente: 2420/2572/2579/2605/2622/2645/2653/3017/3018. BLOQUEADAs remanescentes: 2941 (rollbacks REGRA#8) e 3023 (.github/workflows REGRA#8). 28 DRAFTs (27 + #3022). Producao verificada rev92: zero erros, zero 5xx (doufsxqlfjyuvxuezpln). Gate Final: QUEUED starvation sistemica — afeta todo repo. Autoridade Gate 2: SUCCESS run 41019605919 SHA dfec2236c. 105 PRs total. 30 abertos remanescentes."
 }

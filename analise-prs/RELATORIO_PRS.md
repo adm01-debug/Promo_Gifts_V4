@@ -1,7 +1,9 @@
 # Relatório de PRs — Promo Gifts V4
 
-**Sessão:** `session_011d8gKLZg8BWivR8aQBwxGF` | **Revisão:** rev92 | **Data:** 2026-11-02  
-**Fork:** f0ceb220 | **Branch de entrega:** `claude_04/optimistic-bohr-qplx94`
+**Sessão:** `session_011d8gKLZg8BWivR8aQBwxGF` | **Revisão:** rev93 | **Data:** 2026-11-02  
+**Fork:** f0ceb220 | **Branch de entrega:** `claude_04/optimistic-bohr-qplx94`  
+**main HEAD final:** `df94410cbbcbe7d80928a279de91214d88b0d4bb` (após 13 merges autônomos)  
+**PRs abertas ao encerrar:** 30 (26 DRAFTs + 2 BLOQUEADAs + 1 JA_IMPLEMENTADA_MAIN + 1 DRAFT_NOMERGE/REGRA#10)
 
 ---
 
@@ -11,14 +13,13 @@
 
 | PR | Risco | Decisão necessária |
 |---|---|---|
-| [#2420](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2420) | DDL de produção (`supabase/rollbacks/`) — potencial perda de dados ou regressão de schema | PO aprova ou recusa merge com DDL |
-| [#2622](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2622) | DDL de produção (`supabase/rollbacks/`) | PO aprova ou recusa |
-| [#2941](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2941) | DDL de rollback + conflito dirty | PO aprova após resolver conflito |
+| [#2941](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2941) | DDL de rollback (`supabase/rollbacks/`) + conflito dirty — única BLOQUEADA restante | PO aprova após resolver conflito, rebase em main |
 | [#3003](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3003) | `supabase/migrations/` (DRAFT) — FASE B P06+P15 security_invoker + revoke anon | PO aprova após PR ser promovida de DRAFT |
 | [#3015](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3015) | `supabase/migrations/` (DRAFT) — espelhos CRON-001 drift reconciliation | PO aprova após PR ser promovida de DRAFT |
 | [#3016](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3016) | `.github/workflows/` (DRAFT) — fix schema-snapshot-export force_rotate | PO aprova após PR ser promovida de DRAFT |
-| [#3017](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3017) | Ativa gate de segurança CI que bloqueia PRs futuras se RLS policies mudam — revisar lista antes do merge | PO revisa lista de policies e aprova |
-| [#3018](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3018) | mergeable_state=blocked (CI não passou); branch de outra sessão (REGRA#10) | Deixar para o dono da branch resolver CI |
+| [#3023](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3023) | `.github/workflows/e2e-swatch-quickview.yml` (READY) — adiciona validação SSOT no E2E; útil mas exige aprovação PO | PO revisa step de validação e aprova merge |
+
+> **Fechadas externamente (rev93):** #2420, #2572, #2579, #2605, #2622, #2645, #2653, #3017, #3018 — não requerem mais decisão.
 
 > **#2646** e **#2947** já foram mergeadas pelo PO (ver seção "PRs Mergeadas pelo PO").
 

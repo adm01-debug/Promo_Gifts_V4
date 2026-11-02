@@ -78,3 +78,8 @@ number,title,state,verdict,blocked_reason,sha_merge,merged_by
 2988,"fix(stock): TS2339 em useRuptureAlerts — precedencia do cast as/await",open,DRAFT_NOMERGE,"PR em estado DRAFT",,
 2989,"docs(estado): adiciona arquivos de backlog O1/O3/O4/O5",closed,FECHADA_EXTERNA,"Fechada sem merge em 2026-11-01T23:03:35Z — backlog ja em main",,
 2990,"feat(kit-builder): integra FavoriteToggleButton nos cards da landing",open,DRAFT_NOMERGE,"PR em estado DRAFT",,
+2996,"fix(ts): corrige precedência de await...as em useRuptureAlerts",open,JA_IMPLEMENTADA_MAIN,"diff vazio — tree SHA identico ao main 78b32ddd5",,
+3019,"chore(analise-prs): relatório completo de 27 PRs abertas + fix heap pre-push",open,DRAFT_NOMERGE,"DRAFT + REGRA#10 (branch claude_05/youthful-ride-vcdchy)",,
+3021,"fix(security): CodeQL HIGH — crypto.randomInt URL validation hash param guard anonymize ilike",closed,MERGEADA_AUTONOMA_REV93,"merge clean vs main 5a35a743ae","df94410cbbcbe7d80928a279de91214d88b0d4bb",session_011d8gKLZg8BWivR8aQBwxGF
+3022,"docs(ci): RELATORIO_CI.md inventário 23 falhas + fix LEGACY refs",open,DRAFT_NOMERGE,"DRAFT + REGRA#10 (branch claude/fix-relatorio-ci-261102-0030)",,
+3023,"docs(ci): P38 inventário 21 workflows em falha + fix useListUrlState + e2e",open,BLOQUEADA,".github/workflows/ — REGRA#8 exige aprovacao PO",,

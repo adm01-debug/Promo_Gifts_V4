@@ -1,7 +1,8 @@
-# regras-de-negocio.md — rev70
+# regras-de-negocio.md — rev93
 **Sessão:** session_011d8gKLZg8BWivR8aQBwxGF
-**Data:** 2026-10-27
-**main HEAD:** 5d049ef118f3eb84843da44bd8d2efc70ee56ca1
+**Data:** 2026-11-02
+**main HEAD (rev93):** df94410cbbcbe7d80928a279de91214d88b0d4bb
+**main HEAD (rev70):** 5d049ef118f3eb84843da44bd8d2efc70ee56ca1
 **Supabase projeto canônico:** doufsxqlfjyuvxuezpln (SSOT — REGRA#1)
 **Supabase URL verificada via MCP:** https://doufsxqlfjyuvxuezpln.supabase.co (confirmado)
 
