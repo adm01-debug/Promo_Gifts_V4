@@ -43,11 +43,22 @@ function countErrors() {
 const current = countErrors();
 
 if (UPDATE) {
+  let prevMeta;
+  try {
+    prevMeta = existsSync(BASELINE_PATH)
+      ? JSON.parse(readFileSync(BASELINE_PATH, 'utf8'))?.meta
+      : undefined;
+  } catch {
+    // Baseline corrompido (JSON inválido) — segue sem meta em vez de travar
+    // o --update, que é o próprio caminho de reparo (QODO c466935b).
+    prevMeta = undefined;
+  }
   const next = {
     generatedAt: new Date().toISOString(),
     description:
       'Baseline de erros do tsc com --noUncheckedIndexedAccess. Falha se a contagem crescer (ratchet descendente).',
     errorCount: current,
+    ...(prevMeta ? { meta: prevMeta } : {}),
   };
   writeFileSync(BASELINE_PATH, `${JSON.stringify(next, null, 2)}\n`);
   console.log(`✅ .indexed-access-baseline.json atualizado — ${current} erros.`);
