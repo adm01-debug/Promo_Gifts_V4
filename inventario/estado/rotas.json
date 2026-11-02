@@ -1,0 +1,951 @@
+{
+ "gerado_em": "2026-11-02T13:46:42.340Z",
+ "total": 135,
+ "rotas": [
+  {
+   "path": "/debug/images",
+   "componente": "OptimizedImageDemo",
+   "guardas": [],
+   "arquivo": "src/routes/AppRoutes.tsx",
+   "linha": 132
+  },
+  {
+   "path": "/__visual/preview-button",
+   "componente": "PreviewButtonHarness",
+   "guardas": [],
+   "arquivo": "src/routes/AppRoutes.tsx",
+   "linha": 136
+  },
+  {
+   "path": "/__visual/quote-view-order",
+   "componente": "QuoteViewOrderHarness",
+   "guardas": [],
+   "arquivo": "src/routes/AppRoutes.tsx",
+   "linha": 139
+  },
+  {
+   "path": "/__visual/quote-items-list-mobile",
+   "componente": "QuoteItemsListMobileHarness",
+   "guardas": [],
+   "arquivo": "src/routes/AppRoutes.tsx",
+   "linha": 142
+  },
+  {
+   "path": "/__visual/quote-item-editor-sheet",
+   "componente": "QuoteItemEditorSheetHarness",
+   "guardas": [],
+   "arquivo": "src/routes/AppRoutes.tsx",
+   "linha": 148
+  },
+  {
+   "path": "/__visual/quote-add-product-button",
+   "componente": "QuoteAddProductButtonHarness",
+   "guardas": [],
+   "arquivo": "src/routes/AppRoutes.tsx",
+   "linha": 154
+  },
+  {
+   "path": "/__visual/calendar",
+   "componente": "CalendarHarness",
+   "guardas": [],
+   "arquivo": "src/routes/AppRoutes.tsx",
+   "linha": 159
+  },
+  {
+   "path": "/__visual/date-picker-field",
+   "componente": "DatePickerFieldHarness",
+   "guardas": [],
+   "arquivo": "src/routes/AppRoutes.tsx",
+   "linha": 161
+  },
+  {
+   "path": "/__visual/negotiation-markup-card",
+   "componente": "NegotiationMarkupCardHarness",
+   "guardas": [],
+   "arquivo": "src/routes/AppRoutes.tsx",
+   "linha": 164
+  },
+  {
+   "path": "/__visual/quote-freight-block",
+   "componente": "QuoteFreightBlockHarness",
+   "guardas": [],
+   "arquivo": "src/routes/AppRoutes.tsx",
+   "linha": 170
+  },
+  {
+   "path": "/tendencias",
+   "componente": "TrendsPage",
+   "guardas": [],
+   "arquivo": "src/routes/admin-routes.tsx",
+   "linha": 64
+  },
+  {
+   "path": "/admin",
+   "componente": "Navigate",
+   "guardas": [],
+   "arquivo": "src/routes/admin-routes.tsx",
+   "linha": 66
+  },
+  {
+   "path": "/admin/usuarios",
+   "componente": "AdminUsuariosPage",
+   "guardas": [],
+   "arquivo": "src/routes/admin-routes.tsx",
+   "linha": 67
+  },
+  {
+   "path": "/admin/usuarios/promover",
+   "componente": "AdminPromoverUsuarioPage",
+   "guardas": [],
+   "arquivo": "src/routes/admin-routes.tsx",
+   "linha": 68
+  },
+  {
+   "path": "/admin/limites-desconto",
+   "componente": "SellerDiscountLimitsAdminPage",
+   "guardas": [],
+   "arquivo": "src/routes/admin-routes.tsx",
+   "linha": 69
+  },
+  {
+   "path": "/admin/rls-denials",
+   "componente": "RlsDenialsAdminPage",
+   "guardas": [],
+   "arquivo": "src/routes/admin-routes.tsx",
+   "linha": 70
+  },
+  {
+   "path": "/admin/auditoria-propriedade",
+   "componente": "OwnershipAuditAdminPage",
+   "guardas": [],
+   "arquivo": "src/routes/admin-routes.tsx",
+   "linha": 71
+  },
+  {
+   "path": "/admin/cadastros",
+   "componente": "AdminCadastrosPage",
+   "guardas": [],
+   "arquivo": "src/routes/admin-routes.tsx",
+   "linha": 72
+  },
+  {
+   "path": "/admin/cadastros/produto/:id",
+   "componente": "AdminProductFormPage",
+   "guardas": [],
+   "arquivo": "src/routes/admin-routes.tsx",
+   "linha": 73
+  },
+  {
+   "path": "/admin/permissoes",
+   "componente": "PermissionsPage",
+   "guardas": [],
+   "arquivo": "src/routes/admin-routes.tsx",
+   "linha": 74
+  },
+  {
+   "path": "/admin/roles",
+   "componente": "RolesPage",
+   "guardas": [],
+   "arquivo": "src/routes/admin-routes.tsx",
+   "linha": 75
+  },
+  {
+   "path": "/admin/role-permissoes",
+   "componente": "RolePermissionsPage",
+   "guardas": [],
+   "arquivo": "src/routes/admin-routes.tsx",
+   "linha": 76
+  },
+  {
+   "path": "/admin/video-variantes",
+   "componente": "AdminVideoVariantsPage",
+   "guardas": [],
+   "arquivo": "src/routes/admin-routes.tsx",
+   "linha": 77
+  },
+  {
+   "path": "/admin/kit-templates",
+   "componente": "KitTemplatesAdminPage",
+   "guardas": [],
+   "arquivo": "src/routes/admin-routes.tsx",
+   "linha": 78
+  },
+  {
+   "path": "/admin/kit-templates/metricas",
+   "componente": "KitTemplatesMetricsPage",
+   "guardas": [],
+   "arquivo": "src/routes/admin-routes.tsx",
+   "linha": 79
+  },
+  {
+   "path": "/admin/aprovacoes-desconto",
+   "componente": "Navigate",
+   "guardas": [],
+   "arquivo": "src/routes/admin-routes.tsx",
+   "linha": 80
+  },
+  {
+   "path": "/admin/aprovacoes-desconto/:id",
+   "componente": "DiscountRequestDetailPage",
+   "guardas": [],
+   "arquivo": "src/routes/admin-routes.tsx",
+   "linha": 84
+  },
+  {
+   "path": "/admin/performance",
+   "componente": "DeprecatedRoute",
+   "guardas": [],
+   "arquivo": "src/routes/admin-routes.tsx",
+   "linha": 86
+  },
+  {
+   "path": "/admin/performance-comercial",
+   "componente": "DeprecatedRoute",
+   "guardas": [],
+   "arquivo": "src/routes/admin-routes.tsx",
+   "linha": 95
+  },
+  {
+   "path": "/admin/comissoes",
+   "componente": "DeprecatedRoute",
+   "guardas": [],
+   "arquivo": "src/routes/admin-routes.tsx",
+   "linha": 104
+  },
+  {
+   "path": "/admin/seguranca",
+   "componente": "AdminSegurancaPage",
+   "guardas": [],
+   "arquivo": "src/routes/admin-routes.tsx",
+   "linha": 117
+  },
+  {
+   "path": "/admin/seguranca-acesso",
+   "componente": "AdminSegurancaAcessoPage",
+   "guardas": [],
+   "arquivo": "src/routes/admin-routes.tsx",
+   "linha": 118
+  },
+  {
+   "path": "/admin/seguranca/chaves",
+   "componente": "AdminSegurancaChavesPage",
+   "guardas": [],
+   "arquivo": "src/routes/admin-routes.tsx",
+   "linha": 119
+  },
+  {
+   "path": "/admin/seguranca/exemplos-challenge",
+   "componente": "DevChallengeExamplesPage",
+   "guardas": [],
+   "arquivo": "src/routes/admin-routes.tsx",
+   "linha": 120
+  },
+  {
+   "path": "/admin/seguranca/migracao-papeis",
+   "componente": "AdminMigracaoPapeisPage",
+   "guardas": [],
+   "arquivo": "src/routes/admin-routes.tsx",
+   "linha": 121
+  },
+  {
+   "path": "/admin/prompts-ia",
+   "componente": "AdminPromptsIAPage",
+   "guardas": [],
+   "arquivo": "src/routes/admin-routes.tsx",
+   "linha": 122
+  },
+  {
+   "path": "/admin/validade-precos",
+   "componente": "PriceFreshnessSettingsPage",
+   "guardas": [],
+   "arquivo": "src/routes/admin-routes.tsx",
+   "linha": 123
+  },
+  {
+   "path": "/admin/badges-inteligencia",
+   "componente": "IntelligenceBadgeSettingsPage",
+   "guardas": [],
+   "arquivo": "src/routes/admin-routes.tsx",
+   "linha": 124
+  },
+  {
+   "path": "/admin/telemetria",
+   "componente": "AdminTelemetriaPage",
+   "guardas": [],
+   "arquivo": "src/routes/admin-routes.tsx",
+   "linha": 125
+  },
+  {
+   "path": "/admin/ema-health",
+   "componente": "EmaHealthPage",
+   "guardas": [],
+   "arquivo": "src/routes/admin-routes.tsx",
+   "linha": 126
+  },
+  {
+   "path": "/admin/v4-callbacks",
+   "componente": "AdminV4CallbacksPage",
+   "guardas": [],
+   "arquivo": "src/routes/admin-routes.tsx",
+   "linha": 127
+  },
+  {
+   "path": "/admin/design-tokens",
+   "componente": "AdminDesignTokensPage",
+   "guardas": [],
+   "arquivo": "src/routes/admin-routes.tsx",
+   "linha": 129
+  },
+  {
+   "path": "/admin/client-performance",
+   "componente": "AdminClientPerformancePage",
+   "guardas": [],
+   "arquivo": "src/routes/admin-routes.tsx",
+   "linha": 130
+  },
+  {
+   "path": "/admin/rate-limit",
+   "componente": "RateLimitDashboard",
+   "guardas": [],
+   "arquivo": "src/routes/admin-routes.tsx",
+   "linha": 131
+  },
+  {
+   "path": "/admin/workflows",
+   "componente": "AdminWorkflowsPage",
+   "guardas": [],
+   "arquivo": "src/routes/admin-routes.tsx",
+   "linha": 132
+  },
+  {
+   "path": "/admin/login-attempts",
+   "componente": "AdminLoginAttemptsPage",
+   "guardas": [],
+   "arquivo": "src/routes/admin-routes.tsx",
+   "linha": 133
+  },
+  {
+   "path": "/admin/sessoes",
+   "componente": "AdminSessionsPage",
+   "guardas": [],
+   "arquivo": "src/routes/admin-routes.tsx",
+   "linha": 134
+  },
+  {
+   "path": "/admin/external-db",
+   "componente": "AdminExternalDbPage",
+   "guardas": [],
+   "arquivo": "src/routes/admin-routes.tsx",
+   "linha": 135
+  },
+  {
+   "path": "/admin/consumo-ia",
+   "componente": "AdminAiUsagePage",
+   "guardas": [],
+   "arquivo": "src/routes/admin-routes.tsx",
+   "linha": 136
+  },
+  {
+   "path": "/admin/conexoes",
+   "componente": "AdminConexoesPage",
+   "guardas": [],
+   "arquivo": "src/routes/admin-routes.tsx",
+   "linha": 137
+  },
+  {
+   "path": "/admin/conexoes/status",
+   "componente": "AdminConexoesStatusPage",
+   "guardas": [],
+   "arquivo": "src/routes/admin-routes.tsx",
+   "linha": 138
+  },
+  {
+   "path": "/admin/status",
+   "componente": "SystemStatusPage",
+   "guardas": [],
+   "arquivo": "src/routes/admin-routes.tsx",
+   "linha": 139
+  },
+  {
+   "path": "/external-db-test",
+   "componente": "ExternalDatabaseTest",
+   "guardas": [],
+   "arquivo": "src/routes/admin-routes.tsx",
+   "linha": 140
+  },
+  {
+   "path": "/admin/rbac-rotas",
+   "componente": "AdminRbacRoutesPage",
+   "guardas": [],
+   "arquivo": "src/routes/admin-routes.tsx",
+   "linha": 141
+  },
+  {
+   "path": "/admin/storage-test",
+   "componente": "StorageTestPage",
+   "guardas": [],
+   "arquivo": "src/routes/admin-routes.tsx",
+   "linha": 142
+  },
+  {
+   "path": "/admin/qa",
+   "componente": "QAPage",
+   "guardas": [],
+   "arquivo": "src/routes/admin-routes.tsx",
+   "linha": 143
+  },
+  {
+   "path": "/admin/qa/sidebar",
+   "componente": "SidebarQAPage",
+   "guardas": [],
+   "arquivo": "src/routes/admin-routes.tsx",
+   "linha": 144
+  },
+  {
+   "path": "/admin/audit-suite",
+   "componente": "AuditSuitePage",
+   "guardas": [],
+   "arquivo": "src/routes/admin-routes.tsx",
+   "linha": 145
+  },
+  {
+   "path": "/admin/observabilidade",
+   "componente": "ObservabilityDashboardPage",
+   "guardas": [],
+   "arquivo": "src/routes/admin-routes.tsx",
+   "linha": 146
+  },
+  {
+   "path": "/admin/cloudflare-images",
+   "componente": "AdminCloudflareImagesPage",
+   "guardas": [],
+   "arquivo": "src/routes/admin-routes.tsx",
+   "linha": 147
+  },
+  {
+   "path": "/",
+   "componente": "Index",
+   "guardas": [],
+   "arquivo": "src/routes/client-routes.tsx",
+   "linha": 22
+  },
+  {
+   "path": "/dashboard",
+   "componente": "CustomizableDashboard",
+   "guardas": [],
+   "arquivo": "src/routes/client-routes.tsx",
+   "linha": 23
+  },
+  {
+   "path": "/admin/temas",
+   "componente": "AdminTemasPage",
+   "guardas": [],
+   "arquivo": "src/routes/client-routes.tsx",
+   "linha": 26
+  },
+  {
+   "path": "/configuracoes",
+   "componente": "Navigate",
+   "guardas": [],
+   "arquivo": "src/routes/client-routes.tsx",
+   "linha": 29
+  },
+  {
+   "path": "/admin/personalizacao",
+   "componente": "Navigate",
+   "guardas": [],
+   "arquivo": "src/routes/client-routes.tsx",
+   "linha": 30
+  },
+  {
+   "path": "/cadastro-produtos",
+   "componente": "Navigate",
+   "guardas": [],
+   "arquivo": "src/routes/client-routes.tsx",
+   "linha": 31
+  },
+  {
+   "path": "/cadastro-gravacao",
+   "componente": "Navigate",
+   "guardas": [],
+   "arquivo": "src/routes/client-routes.tsx",
+   "linha": 32
+  },
+  {
+   "path": "/comissoes",
+   "componente": "DeprecatedRoute",
+   "guardas": [],
+   "arquivo": "src/routes/client-routes.tsx",
+   "linha": 33
+  },
+  {
+   "path": "/clientes",
+   "componente": "ClientsPage",
+   "guardas": [],
+   "arquivo": "src/routes/client-routes.tsx",
+   "linha": 44
+  },
+  {
+   "path": "/clientes/:id",
+   "componente": "ClientDetailPage",
+   "guardas": [],
+   "arquivo": "src/routes/client-routes.tsx",
+   "linha": 45
+  },
+  {
+   "path": "/perfil",
+   "componente": "Navigate",
+   "guardas": [],
+   "arquivo": "src/routes/client-routes.tsx",
+   "linha": 48
+  },
+  {
+   "path": "*",
+   "componente": "NotFound",
+   "guardas": [],
+   "arquivo": "src/routes/client-routes.tsx",
+   "linha": 62
+  },
+  {
+   "path": "/produtos",
+   "componente": "FiltersPage",
+   "guardas": [],
+   "arquivo": "src/routes/product-routes.tsx",
+   "linha": 24
+  },
+  {
+   "path": "/produto",
+   "componente": "Navigate",
+   "guardas": [],
+   "arquivo": "src/routes/product-routes.tsx",
+   "linha": 25
+  },
+  {
+   "path": "/produto/:id",
+   "componente": "ValidProductIdRoute",
+   "guardas": [],
+   "arquivo": "src/routes/product-routes.tsx",
+   "linha": 26
+  },
+  {
+   "path": "/filtros",
+   "componente": "FiltersPage",
+   "guardas": [],
+   "arquivo": "src/routes/product-routes.tsx",
+   "linha": 34
+  },
+  {
+   "path": "/novidades",
+   "componente": "NoveltiesPage",
+   "guardas": [],
+   "arquivo": "src/routes/product-routes.tsx",
+   "linha": 35
+  },
+  {
+   "path": "/reposicao",
+   "componente": "ReplenishmentsPage",
+   "guardas": [],
+   "arquivo": "src/routes/product-routes.tsx",
+   "linha": 36
+  },
+  {
+   "path": "/favoritos",
+   "componente": "FavoritesPage",
+   "guardas": [],
+   "arquivo": "src/routes/product-routes.tsx",
+   "linha": 37
+  },
+  {
+   "path": "/carrinhos",
+   "componente": "CartsListPage",
+   "guardas": [],
+   "arquivo": "src/routes/product-routes.tsx",
+   "linha": 38
+  },
+  {
+   "path": "/carrinhos/:cartId",
+   "componente": "SellerCartsPage",
+   "guardas": [],
+   "arquivo": "src/routes/product-routes.tsx",
+   "linha": 39
+  },
+  {
+   "path": "/comparar",
+   "componente": "ComparePage",
+   "guardas": [],
+   "arquivo": "src/routes/product-routes.tsx",
+   "linha": 40
+  },
+  {
+   "path": "/colecoes",
+   "componente": "CollectionsPage",
+   "guardas": [],
+   "arquivo": "src/routes/product-routes.tsx",
+   "linha": 41
+  },
+  {
+   "path": "/colecoes/:id",
+   "componente": "CollectionDetailPage",
+   "guardas": [],
+   "arquivo": "src/routes/product-routes.tsx",
+   "linha": 42
+  },
+  {
+   "path": "/auth",
+   "componente": "Auth",
+   "guardas": [],
+   "arquivo": "src/routes/public-routes.tsx",
+   "linha": 47
+  },
+  {
+   "path": "/login",
+   "componente": "Auth",
+   "guardas": [],
+   "arquivo": "src/routes/public-routes.tsx",
+   "linha": 49
+  },
+  {
+   "path": "/reset-password",
+   "componente": "ResetPassword",
+   "guardas": [],
+   "arquivo": "src/routes/public-routes.tsx",
+   "linha": 50
+  },
+  {
+   "path": "/forgot-password-confirmation",
+   "componente": "ForgotPasswordConfirmation",
+   "guardas": [],
+   "arquivo": "src/routes/public-routes.tsx",
+   "linha": 51
+  },
+  {
+   "path": "/auth/callback",
+   "componente": "SSOCallbackPage",
+   "guardas": [],
+   "arquivo": "src/routes/public-routes.tsx",
+   "linha": 52
+  },
+  {
+   "path": "/unauthorized",
+   "componente": "Unauthorized",
+   "guardas": [],
+   "arquivo": "src/routes/public-routes.tsx",
+   "linha": 53
+  },
+  {
+   "path": "/termos",
+   "componente": "TermsPage",
+   "guardas": [],
+   "arquivo": "src/routes/public-routes.tsx",
+   "linha": 54
+  },
+  {
+   "path": "/privacidade",
+   "componente": "PrivacyPage",
+   "guardas": [],
+   "arquivo": "src/routes/public-routes.tsx",
+   "linha": 55
+  },
+  {
+   "path": "/revista-publica/:token",
+   "componente": "PublicMagazineView",
+   "guardas": [],
+   "arquivo": "src/routes/public-routes.tsx",
+   "linha": 56
+  },
+  {
+   "path": "/__test/color-swatches",
+   "componente": "ColorSwatchesHarness",
+   "guardas": [],
+   "arquivo": "src/routes/public-routes.tsx",
+   "linha": 58
+  },
+  {
+   "path": "/__test/confirm-dialog",
+   "componente": "ConfirmDialogHarness",
+   "guardas": [],
+   "arquivo": "src/routes/public-routes.tsx",
+   "linha": 61
+  },
+  {
+   "path": "/__test/alert-dialog",
+   "componente": "AlertDialogHarness",
+   "guardas": [],
+   "arquivo": "src/routes/public-routes.tsx",
+   "linha": 63
+  },
+  {
+   "path": "/__test/dialog",
+   "componente": "DialogHarness",
+   "guardas": [],
+   "arquivo": "src/routes/public-routes.tsx",
+   "linha": 64
+  },
+  {
+   "path": "/__test/undo-toast",
+   "componente": "UndoToastHarness",
+   "guardas": [],
+   "arquivo": "src/routes/public-routes.tsx",
+   "linha": 65
+  },
+  {
+   "path": "/__test/cnpj-form",
+   "componente": "CnpjFormHarness",
+   "guardas": [],
+   "arquivo": "src/routes/public-routes.tsx",
+   "linha": 66
+  },
+  {
+   "path": "/__test/magazine-ring",
+   "componente": "MagazineRingHarness",
+   "guardas": [],
+   "arquivo": "src/routes/public-routes.tsx",
+   "linha": 68
+  },
+  {
+   "path": "/__test/tab-skip",
+   "componente": "TabSkipHarness",
+   "guardas": [],
+   "arquivo": "src/routes/public-routes.tsx",
+   "linha": 70
+  },
+  {
+   "path": "/orcamentos",
+   "componente": "QuotesListPage",
+   "guardas": [],
+   "arquivo": "src/routes/quote-routes.tsx",
+   "linha": 22
+  },
+  {
+   "path": "/orcamentos/dashboard",
+   "componente": "QuotesDashboardPage",
+   "guardas": [],
+   "arquivo": "src/routes/quote-routes.tsx",
+   "linha": 23
+  },
+  {
+   "path": "/orcamentos/lista",
+   "componente": "QuotesListPage",
+   "guardas": [],
+   "arquivo": "src/routes/quote-routes.tsx",
+   "linha": 24
+  },
+  {
+   "path": "/orcamentos/kanban",
+   "componente": "QuotesKanbanPage",
+   "guardas": [],
+   "arquivo": "src/routes/quote-routes.tsx",
+   "linha": 25
+  },
+  {
+   "path": "/orcamentos/templates",
+   "componente": "Navigate",
+   "guardas": [],
+   "arquivo": "src/routes/quote-routes.tsx",
+   "linha": 26
+  },
+  {
+   "path": "/orcamentos/novo",
+   "componente": "QuoteBuilderPage",
+   "guardas": [],
+   "arquivo": "src/routes/quote-routes.tsx",
+   "linha": 29
+  },
+  {
+   "path": "/orcamentos/:id/editar",
+   "componente": "ValidQuoteIdRoute",
+   "guardas": [],
+   "arquivo": "src/routes/quote-routes.tsx",
+   "linha": 30
+  },
+  {
+   "path": "/orcamentos/:id",
+   "componente": "ValidQuoteIdRoute",
+   "guardas": [],
+   "arquivo": "src/routes/quote-routes.tsx",
+   "linha": 38
+  },
+  {
+   "path": "/simulador",
+   "componente": "SimuladorWizard",
+   "guardas": [],
+   "arquivo": "src/routes/tools-routes.tsx",
+   "linha": 68
+  },
+  {
+   "path": "/simulador-precos",
+   "componente": "PriceSimulatorPage",
+   "guardas": [],
+   "arquivo": "src/routes/tools-routes.tsx",
+   "linha": 69
+  },
+  {
+   "path": "/estoque",
+   "componente": "StockDashboardPage",
+   "guardas": [],
+   "arquivo": "src/routes/tools-routes.tsx",
+   "linha": 70
+  },
+  {
+   "path": "/busca-preco",
+   "componente": "AdvancedPriceSearchPage",
+   "guardas": [],
+   "arquivo": "src/routes/tools-routes.tsx",
+   "linha": 71
+  },
+  {
+   "path": "/montar-kit",
+   "componente": "KitBuilderRoute",
+   "guardas": [],
+   "arquivo": "src/routes/tools-routes.tsx",
+   "linha": 72
+  },
+  {
+   "path": "/kit-builder",
+   "componente": "KitBuilderLegacyRedirect",
+   "guardas": [],
+   "arquivo": "src/routes/tools-routes.tsx",
+   "linha": 73
+  },
+  {
+   "path": "/meus-kits",
+   "componente": "MeusKitsPage",
+   "guardas": [],
+   "arquivo": "src/routes/tools-routes.tsx",
+   "linha": 74
+  },
+  {
+   "path": "/mockup",
+   "componente": "Navigate",
+   "guardas": [],
+   "arquivo": "src/routes/tools-routes.tsx",
+   "linha": 75
+  },
+  {
+   "path": "/gerador-mockup",
+   "componente": "Navigate",
+   "guardas": [],
+   "arquivo": "src/routes/tools-routes.tsx",
+   "linha": 76
+  },
+  {
+   "path": "/mockup-generator",
+   "componente": "MockupGenerator",
+   "guardas": [],
+   "arquivo": "src/routes/tools-routes.tsx",
+   "linha": 77
+  },
+  {
+   "path": "/mockups/historico",
+   "componente": "MockupHistoryPage",
+   "guardas": [],
+   "arquivo": "src/routes/tools-routes.tsx",
+   "linha": 78
+  },
+  {
+   "path": "/magic-up",
+   "componente": "MagicUp",
+   "guardas": [],
+   "arquivo": "src/routes/tools-routes.tsx",
+   "linha": 79
+  },
+  {
+   "path": "/inteligencia-comercial",
+   "componente": "CommercialIntelligencePage",
+   "guardas": [],
+   "arquivo": "src/routes/tools-routes.tsx",
+   "linha": 80
+  },
+  {
+   "path": "/ferramentas/bi",
+   "componente": "BusinessIntelligencePage",
+   "guardas": [],
+   "arquivo": "src/routes/tools-routes.tsx",
+   "linha": 81
+  },
+  {
+   "path": "/ferramentas/bi/comparar",
+   "componente": "ClientComparatorPage",
+   "guardas": [],
+   "arquivo": "src/routes/tools-routes.tsx",
+   "linha": 82
+  },
+  {
+   "path": "/match",
+   "componente": "ProductMatchPage",
+   "guardas": [],
+   "arquivo": "src/routes/tools-routes.tsx",
+   "linha": 83
+  },
+  {
+   "path": "/dropbox",
+   "componente": "DropboxBrowserPage",
+   "guardas": [],
+   "arquivo": "src/routes/tools-routes.tsx",
+   "linha": 84
+  },
+  {
+   "path": "/simulacao",
+   "componente": "SimulationPage",
+   "guardas": [],
+   "arquivo": "src/routes/tools-routes.tsx",
+   "linha": 86
+  },
+  {
+   "path": "/ferramentas/cobertura",
+   "componente": "CoverageInsightsDashboardPage",
+   "guardas": [],
+   "arquivo": "src/routes/tools-routes.tsx",
+   "linha": 88
+  },
+  {
+   "path": "/raio-x",
+   "componente": "VisualSearchPage",
+   "guardas": [],
+   "arquivo": "src/routes/tools-routes.tsx",
+   "linha": 89
+  },
+  {
+   "path": "/magazine",
+   "componente": "MagazineRoute",
+   "guardas": [],
+   "arquivo": "src/routes/tools-routes.tsx",
+   "linha": 90
+  },
+  {
+   "path": "/magazine/templates",
+   "componente": "MagazineRoute",
+   "guardas": [],
+   "arquivo": "src/routes/tools-routes.tsx",
+   "linha": 98
+  },
+  {
+   "path": "/magazine/:id",
+   "componente": "MagazineRoute",
+   "guardas": [],
+   "arquivo": "src/routes/tools-routes.tsx",
+   "linha": 106
+  },
+  {
+   "path": "/magazine/:id/print",
+   "componente": "MagazineRoute",
+   "guardas": [],
+   "arquivo": "src/routes/tools-routes.tsx",
+   "linha": 114
+  },
+  {
+   "path": "/magazine/print",
+   "componente": "MagazineRoute",
+   "guardas": [],
+   "arquivo": "src/routes/tools-routes.tsx",
+   "linha": 122
+  },
+  {
+   "path": "/promoflix-playground",
+   "componente": "PromoFlixPlayground",
+   "guardas": [],
+   "arquivo": "src/routes/tools-routes.tsx",
+   "linha": 130
+  }
+ ]
+}
