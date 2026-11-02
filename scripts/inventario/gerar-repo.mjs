@@ -2,9 +2,10 @@
 // Inventario gerado do lado do repositorio (sem acesso ao banco). Mesmo formato do Zapp_Web_V2.
 //  - edge functions: linhas, segredos lidos (Deno.env.get) e quem as invoca (src, migrations, outras edges, e2e, CI)
 //  - rotas: cada <Route path=...> de src/routes/*.tsx com o componente e o arquivo
-//  - tabelas: para cada nome recebido em stdin (uma por linha), quantos .from('tabela') ha em src/ e supabase/functions/
-// Uso: node scripts/inventario/gerar-repo.mjs            -> escreve inventario/estado/edges.json e rotas.json
-//      node scripts/inventario/gerar-repo.mjs < tabelas.txt -> tambem escreve inventario/estado/tabelas-uso.json
+//  - tabelas: para cada tabela de public em inventario/estado/banco.json (gerado por gerar-banco.mjs),
+//    quantos .from('tabela') ha em src/ e supabase/functions/, e a lista final de tabelas orfas
+// Uso: node scripts/inventario/gerar-repo.mjs -> escreve edges.json e rotas.json; se banco.json existir, tambem tabelas-uso.json
+//      Tudo de uma vez: node scripts/inventario/gerar-banco.mjs && node scripts/inventario/gerar-repo.mjs
 import { readdirSync, readFileSync, existsSync, writeFileSync, mkdirSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { join } from 'node:path';
@@ -72,8 +73,10 @@ for (const arq of readdirSync(RDIR).filter((n) => n.endsWith('.tsx') && !n.inclu
 writeFileSync(join(OUT, 'rotas.json'), JSON.stringify({ gerado_em: new Date().toISOString(), total: rotas.length, rotas }, null, 1) + '\n');
 console.log(`rotas: ${rotas.length}`);
 
-if (!process.stdin.isTTY) {
-  const nomes = readFileSync(0, 'utf8').split(/\s+/).filter(Boolean);
+const BANCO = join(OUT, 'banco.json');
+if (existsSync(BANCO)) {
+  const banco = JSON.parse(readFileSync(BANCO, 'utf8'));
+  const nomes = banco.tabelas.filter((t) => t.nome.startsWith('public.') && !t.particao).map((t) => t.nome.slice(7));
   const uso = {};
   for (const t of nomes) {
     const q = esc(t);
@@ -84,6 +87,8 @@ if (!process.stdin.isTTY) {
     };
   }
   const semFrom = Object.entries(uso).filter(([, v]) => v.from_src + v.from_edges === 0).map(([k]) => k);
-  writeFileSync(join(OUT, 'tabelas-uso.json'), JSON.stringify({ gerado_em: new Date().toISOString(), total: nomes.length, sem_from_em_src_nem_edges: semFrom, tabelas: uso }) + '\n');
-  console.log(`tabelas: ${nomes.length} | sem .from() em src nem edges: ${semFrom.length}`);
+  // Orfa = 0 linhas + nenhuma funcao/view/mview cita (banco.json) + nenhum .from() no codigo.
+  const orfas = (banco.candidatas_orfas ?? []).filter((t) => semFrom.includes(t));
+  writeFileSync(join(OUT, 'tabelas-uso.json'), JSON.stringify({ gerado_em: new Date().toISOString(), total: nomes.length, sem_from_em_src_nem_edges: semFrom, tabelas_orfas: orfas, tabelas: uso }, null, 1) + '\n');
+  console.log(`tabelas: ${nomes.length} | sem .from() em src nem edges: ${semFrom.length} | orfas: ${orfas.length}`);
 }

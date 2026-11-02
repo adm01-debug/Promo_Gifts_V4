@@ -1,6 +1,6 @@
 {
- "fonte": "execute_sql somente leitura em pg_catalog/cron via MCP SUPABASE - GESTAO DE PRODUTOS (doufsxqlfjyuvxuezpln); edge functions via list_edge_functions",
- "gerado_em": "2026-11-02T13:45:45.41799+00:00",
+ "fonte": "Management API /database/query/read-only + /functions do projeto doufsxqlfjyuvxuezpln (scripts/inventario/gerar-banco.mjs)",
+ "gerado_em": "2026-11-02T14:00:43.066Z",
  "versao_pg": "17.6",
  "tamanho_mb": 5814,
  "extensoes": [
@@ -1106,11 +1106,11 @@
   },
   {
    "nome": "public.edge_rate_limits",
-   "linhas_est": 0,
+   "linhas_est": 28,
    "rls": true,
    "policies": 1,
    "triggers": 0,
-   "kb": 216,
+   "kb": 232,
    "particionada": false,
    "particao": false
   },
@@ -1250,7 +1250,7 @@
    "rls": true,
    "policies": 2,
    "triggers": 1,
-   "kb": 69568,
+   "kb": 69576,
    "particionada": false,
    "particao": false
   },
@@ -1560,7 +1560,7 @@
    "rls": true,
    "policies": 1,
    "triggers": 0,
-   "kb": 29528,
+   "kb": 29552,
    "particionada": false,
    "particao": false
   },
@@ -13085,7 +13085,7 @@
    "agenda": "*/10 * * * *",
    "ativo": true,
    "comando": "SELECT net.http_post( url := public.get_edge_functions_base_url() || '/functions/v1/generate-blurhashes', headers := jsonb_build_object( 'Content-Type', 'application/json', 'Authorization', 'Bearer ' || public.get_edge_anon_key(), 'x-cron-secret', public.get_edge_function_secret('GENERATE_BLURHASHES_CRON_SECRET') ), body := '{\"trigger\":\"cron\"}'::jsonb, timeout_milliseconds := 55000 )",
-   "ok_48h": 113,
+   "ok_48h": 115,
    "falhas_48h": 25,
    "ultimo_erro": "job startup timeout"
   },
@@ -13765,7 +13765,7 @@
    "agenda": "16,46 * * * *",
    "ativo": true,
    "comando": "SELECT public.fn_cron_safe_run(63::bigint, 'SELECT public.fn_sm_site_tick(3, 15, 7, false);', 580000, 'sm-site-scrape');",
-   "ok_48h": 85,
+   "ok_48h": 86,
    "falhas_48h": 10,
    "ultimo_erro": "job startup timeout"
   },
@@ -14079,6 +14079,58 @@
    "falhas_48h": 4,
    "ultimo_erro": "job startup timeout"
   }
+ ],
+ "candidatas_orfas": [
+  "ai_usage_events",
+  "art_file_attachments",
+  "attribute_equivalences",
+  "cart_templates",
+  "collection_item_reactions",
+  "companies",
+  "comparison_reactions",
+  "component_media",
+  "conversation_delivery_status",
+  "device_login_notifications",
+  "file_scan_logs",
+  "generated_mockups",
+  "magazine_public_reactions",
+  "magazine_templates",
+  "magic_up_comments",
+  "magic_up_public_shares",
+  "mockup_prompt_configs",
+  "notification_preferences",
+  "order_item_personalizations",
+  "personalization_simulations",
+  "product_component_location_techniques",
+  "product_component_locations",
+  "product_components",
+  "product_group_components",
+  "product_group_location_techniques",
+  "product_group_locations",
+  "product_group_members",
+  "product_groups",
+  "product_price_freshness_overrides",
+  "product_search_logs",
+  "product_sync_logs",
+  "product_target_audiences",
+  "push_subscriptions",
+  "quote_templates",
+  "sales_goals",
+  "saved_filters",
+  "scheduled_reports",
+  "search_queries",
+  "secret_rotation_log",
+  "simulator_wizard_drafts",
+  "user_2fa_settings",
+  "user_allowed_ips",
+  "user_favorites",
+  "user_filter_presets",
+  "user_ip_allowlist",
+  "user_known_devices",
+  "user_notification_preferences",
+  "user_preferences",
+  "video_variant_links",
+  "visual_search_feedback"
  ],
  "edge_functions_publicadas": [
   {
@@ -14855,33 +14907,5 @@
  "edge_functions_diff": {
   "publicadas_sem_codigo_no_repo": [],
   "no_repo_sem_deploy": []
- },
- "tabelas_orfas": {
-  "criterio": "public, 0 linhas estimadas, nenhuma função SQL/view/mview cita, nenhum .from() em src/ nem supabase/functions/",
-  "lista": [
-   "attribute_equivalences",
-   "collection_item_reactions",
-   "comparison_reactions",
-   "conversation_delivery_status",
-   "magazine_templates",
-   "magic_up_comments",
-   "magic_up_public_shares",
-   "notification_preferences",
-   "order_item_personalizations",
-   "personalization_simulations",
-   "product_component_location_techniques",
-   "product_group_components",
-   "product_group_location_techniques",
-   "product_group_locations",
-   "product_search_logs",
-   "product_target_audiences",
-   "push_subscriptions",
-   "sales_goals",
-   "search_queries",
-   "user_allowed_ips",
-   "user_favorites",
-   "user_filter_presets",
-   "user_ip_allowlist"
-  ]
  }
 }
