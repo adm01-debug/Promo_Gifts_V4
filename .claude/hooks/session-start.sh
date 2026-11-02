@@ -28,6 +28,9 @@ LOG=graphify-out/.session-start.log
 MARCA=graphify-out/.session-built-state
 exec >>"$LOG" 2>&1
 echo "== $(date -u +%FT%TZ) session-start (graphify $GRAPHIFY_VERSION)"
+# Uma sessão por vez: a segunda espera a primeira e, se o grafo ficou pronto, pula na checagem abaixo.
+exec 9>graphify-out/.session-start.lock
+flock 9
 
 # Estado = HEAD + CONTEÚDO das mudanças não commitadas fora de graphify-out/ (diff dos rastreados + hash dos novos).
 estado() {
