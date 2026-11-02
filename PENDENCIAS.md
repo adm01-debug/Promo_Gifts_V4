@@ -191,17 +191,133 @@ retorna EXIT 0 (não bloqueante), mas a verificação de baseline ESLint não é
 
 ---
 
+## P9 — schema-snapshot-export: arquivo de manifesto do ledger ausente
+
+**Workflow:** schema-snapshot-export
+**Última execução com falha:** [run/41348311003](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41348311003)
+**Data:** 2026-11-01 | **HEAD afetado:** `cbbabc2f3`
+
+**Erro exato:**
+```
+[ledger-manifest-drift] inconclusive: Arquivo baseline não encontrado:
+docs/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json — checagem inconclusa
+Process completed with exit code 2.
+```
+Segundo job ("Drift gate"): `Ledger parity (repo x canonical)` também falhou.
+
+**Causa raiz:** O arquivo `docs/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json` não existe no repo. O workflow `schema-snapshot-export` precisa dele para comparar ledger. O arquivo deve ser gerado pelo próprio workflow via `schema-snapshot-export.yml` com `workflow_dispatch`.
+
+**Por que não é corrigível nesta sessão:**
+- Requer `SUPABASE_ACCESS_TOKEN` + `SUPABASE_DB_PASSWORD` para conectar ao banco canônico
+- O arquivo de manifesto é gerado pelo workflow e precisa de dispatch manual (REGRA #8 corolário)
+- Não é possível criar o arquivo sem acesso live ao banco `doufsxqlfjyuvxuezpln`
+
+**O que o PO precisa fazer:**
+- Disparar `schema-snapshot-export.yml` via `workflow_dispatch` (botão "Run workflow" em GitHub Actions)
+- Verificar que o job "Drift gate" passou ANTES de girar o baseline
+- O manifesto será commitado automaticamente pelo workflow
+
+**Classificação:** Bloqueador de infra — exige credenciais e dispatch manual
+
+---
+
+## P10 — Policies Baseline: drift de RLS detectado (+0/-1/~8)
+
+**Workflow:** Policies Baseline
+**Última execução com falha:** [run/41347780875](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41347780875)
+**Data:** 2026-11-01 | **HEAD afetado:** `f99f36ae1`
+
+**Erro exato:**
+```
+[policies-baseline] failed: drift de policies: e043=0 +0 / -1 / ~8
+removed: ["public._backup_stock_daily_summary_20260618.backup_stock_service_only"]
+changed: [
+  "public.ai_usage_quotas.ai_usage_quotas_admin_delete",
+  "public.ai_usage_quotas.ai_usage_quotas_admin_insert",
+  "public.ai_usage_quotas.ai_usage_quotas_admin_update",
+  "public.ai_usage_quotas.ai_usage_quotas_read_authenticated",
+  "public.art_file_attachments.Users delete own art files",
+  "public.art_file_attachments.Users insert own art files",
+  "public.art_file_attachments.Users update own art files",
+  "public.art_file_attachments.Users view own art files"
+]
+```
+
+**Causa raiz:** Políticas RLS foram modificadas diretamente no banco (`doufsxqlfjyuvxuezpln`) fora do fluxo de migrations — drift clássico de DDL out-of-band (REGRA #8). O arquivo `.security/policies-baseline.json` não reflete o estado atual do banco.
+
+**Por que não é corrigível nesta sessão:**
+- Regenerar o baseline exige `SUPABASE_ACCESS_TOKEN` + `SUPABASE_PROJECT_REF` na Management API
+- `node scripts/check-policies-baseline.mjs --update-baseline` não pode ser executado sem credenciais no runner local
+- O drift deve ser revisado antes de aceitar: policy `_backup_stock_daily_summary_20260618` parece ser de backup — remoção provavelmente intencional. As 8 políticas alteradas precisam de revisão do PO.
+
+**O que o PO precisa fazer:**
+1. Revisar se as 8 mudanças em `ai_usage_quotas` e `art_file_attachments` são intencionais
+2. Se intencionais: criar migration espelho documentando a mudança + disparar CI para regenerar baseline
+3. Se não intencionais: reverter via migration e investigar quem alterou
+4. Criar as migrations espelho correspondentes (REGRA #8 corolário — DDL out-of-band)
+
+**Classificação:** Bloqueador de governança — exige revisão do PO + credenciais para regenerar baseline
+
+---
+
+## P11 — Branch Protection Sentinel: commit `5b5cef36` sem padrão aceito (2026-11-01)
+
+**Workflow:** Branch Protection Sentinel
+**Execução com falha:** [run/41359937302](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41359937302)
+**Data:** 2026-11-02T00:25 | **HEAD afetado:** `5b5cef36`
+
+**Erro exato:**
+```
+1 commit(s) em push para main sem padrão aceito: 5b5cef3
+PUSH_BEFORE: 0ad30ce26c39b8298095d6fbdab25668960d6179
+PUSH_AFTER:  5b5cef36c12e49d310bc89b45d51138a3d6f1069
+```
+
+**Commit infrator:** `5b5cef36 chore(analise): revalidação exaustiva 9 branches TOP + 44 A/B/F (2026-11-01)`
+
+**Causa raiz:** Commit `chore(analise)` foi pushado diretamente em `main` sem PR. O sentinel auditou o push e detectou que o commit não corresponde a nenhum padrão aceito (PR merge, Lovable, release-please, fix/docs/ci/chore com hash de PR).
+
+**Por que não é corrigível retroativamente:**
+- Commit já está em `main` como parte do histórico
+- Force push em `main` proibido sem aprovação explícita do PO (REGRA #9)
+- Esta é a segunda ocorrência do tipo (P1 documenta 23 commits similares em 2026-10-30)
+
+**O que o PO precisa fazer:**
+- Aceitar o run como failure histórico (o sentinel voltará a passar no próximo push convencional)
+- Considerar revisão do `scripts/sentinel-check.sh` para aceitar `chore(analise)` como padrão válido, OU
+- Garantir que commits de análise futuros vão via PR (conforme REGRA #9)
+
+**Classificação:** Violação de governança — não corrigível retroativamente
+
+---
+
+## P12 — Edge Integration Tests: HTTP 408 timeout em materials-api (infra instável)
+
+**Workflow:** Edge Integration Tests — All Functions
+**Última execução com falha:** [run/41351706586](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41351706586)
+**Data:** 2026-11-01 | **HEAD afetado:** `23f634de`
+
+**Causa raiz:** Edge function `materials-api` retornou HTTP 408 no happy-path do teste de integração. Falha de infraestrutura — timeout na edge function do Supabase, não erro de código.
+
+**Classificação:** Infra/edge function instável — auto-recuperável. Reexecutar o workflow se necessário.
+
+---
+
 ## Resumo de Ações Requeridas do PO
 
-> **Atualizado 2026-10-31:** P5, P6, P7 marcados como resolvidos (auto-resolução). Pendências ativas: P1, P2 (aguarda merge PR #2854), P3, P4, P8.
+> **Atualizado 2026-11-02:** Novos workflows diagnosticados: P9 (schema-snapshot-export), P10 (Policies Baseline), P11 (Branch Protection Sentinel novo), P12 (Edge Integration Tests). PR de `fix/ci-workflows` em preparação.
 
 | # | Ação | Workflows impactados | Status |
 |---|------|---------------------|--------|
-| 1 | Merge PR #2854 após Gate Final ✅ → rerun E2E Playwright em main | P2 | 🔄 Aguardando CI |
-| 2 | Reexecutar Swatch QuickView + investigar artefatos gigantes | P3 | 📋 Aberto |
-| 3 | Atualizar baselines visuais se UI mudou intencionalmente | P4 | 📋 Aberto |
-| 4 | Branch Protection Sentinel: próximos commits serão convencionais | P1 | 📋 Não corrigível retroativamente |
-| 5 | Investigar lint OOM: aumentar `--max-old-space-size` ou dividir check por domínio | P8 | 📋 Pré-existente |
-| ~~6~~ | ~~Verificar issue #2841 + edge function/Vercel~~ | ~~P5~~ | ✅ Auto-resolvido |
-| ~~7~~ | ~~Verificar GitHub Copilot API~~ | ~~P6~~ | ✅ Auto-resolvido |
+| 1 | Dispatch `schema-snapshot-export.yml` → gera manifesto e rotaciona baseline | P9 | 📋 Exige dispatch manual |
+| 2 | Revisar drift RLS (+0/-1/~8) + regenerar policies-baseline.json com credenciais | P10 | 📋 Exige revisão + credenciais |
+| 3 | Aceitar failure histórico do sentinel em `5b5cef36` (ou ajustar padrão aceito) | P11 | 📋 Não corrigível retroativamente |
+| 4 | Reexecutar Edge Integration Tests se necessário | P12 | 📋 Infra/auto-recuperável |
+| 5 | Branch Protection Sentinel: próximos commits serão convencionais | P1 | 📋 Histórico |
+| 6 | Rerun E2E Playwright em main após merge de fix/ci-workflows | P2 | 🔄 Aguarda PR |
+| 7 | Reexecutar Swatch QuickView + investigar artefatos gigantes | P3 | 📋 Aberto |
+| 8 | Atualizar baselines visuais se UI mudou intencionalmente | P4 | 📋 Aberto |
+| 9 | Investigar lint OOM: aumentar `--max-old-space-size` ou dividir check por domínio | P8 | 📋 Pré-existente |
+| ~~10~~ | ~~Verificar issue #2841 + edge function/Vercel~~ | ~~P5~~ | ✅ Auto-resolvido |
+| ~~11~~ | ~~Verificar GitHub Copilot API~~ | ~~P6~~ | ✅ Auto-resolvido |
 | ~~8~~ | ~~Renovar secrets E2E~~ | ~~P7~~ | ✅ Auto-resolvido |

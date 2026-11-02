@@ -261,3 +261,54 @@ Tabela de prova (Seção 8) + baseline local (Seções 1, 10) + comparação bas
 | test:ci-core | ✅ 957 testes | ✅ 957 testes | Sem regressão |
 | Gate Final | ✅ success | ✅ success | Sem regressão |
 | Workflows NÃO-REQUIRED em falha | 8 (PO-BLOCKED) | 8 (PO-BLOCKED) | Sem regressão — mesmos bloqueios estruturais |
+
+---
+
+## 20. INVENTÁRIO COMPLETO — Workflows em Falha (2026-11-02, sessão fix/ci-workflows)
+
+> Inventário exaustivo dos 18 workflows identificados com failure em https://github.com/adm01-debug/Promo_Gifts_V4/actions?query=is%3Afailure
+> HEAD de referência da main ao início: `8b84f38f5` → atual `0a8a17f92` (release 1.7.0)
+> Branch de trabalho: `fix/ci-workflows` (5 commits à frente da main)
+
+| # | Workflow | Run | SHA | Causa Raiz | Status |
+|---|---|---|---|---|---|
+| 1 | Supabase Linter Gate | [#41357789400](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41357789400) | `a581aef7` | `perf002_drop_unused_snapshot_indexes()` ausente da allowlist lint-0029 + 3 stale entries | ✅ CORRIGIDO (já mergeado em main) |
+| 2 | CI - Replenishment Module QG | [#41354148353](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41354148353) | `d2033d92` | TS2339 em `useRuptureAlerts.ts` (2 erros — precedência cast `as`/`await`) | ✅ CORRIGIDO em `68d809ccb` |
+| 3 | CI Security & Drift Checks | [#41354148157](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41354148157) | `d2033d92` | Mesma TS2339 `useRuptureAlerts.ts` | ✅ CORRIGIDO em `68d809ccb` |
+| 4 | TS Unused Locals Ratchet | [#41351671546](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41351671546) | `e3ec559d` | 2 unused locals (baseline: 0) | ✅ CORRIGIDO (exit 0 local verificado) |
+| 5 | Edge Integration Tests | [#41351706586](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41351706586) | `23f634de` | `materials-api` → HTTP 408 timeout no happy-path | ⛔ INFRA — ver PENDENCIAS §P12 |
+| 6 | E2E (Playwright) | [#41350753730](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41350753730) | `43476864` | E2E live — URL-state + auth | ⛔ INFRA — fix em `fix/ci-workflows` |
+| 7 | Uptime Monitor | [#41350141338](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41350141338) | `5ebece52` | Health check externo — probe failure transitório | ⛔ INFRA — auto-recuperável |
+| 8 | Gate 5 — Supabase Security | [#41349576149](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41349576149) | `5ebece52` | Live DB check com credenciais | ⛔ INFRA |
+| 9 | Quote Builder QG | [#41349576116](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41349576116) | `5ebece52` | Falha transitória/infra (E2E ou auth) | ⛔ INFRA provável |
+| 10 | DB — Migration E15 | [#41349162122](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41349162122) | `4f91aa08` | Faltava `-- Rollback:` + `supabase/rollbacks/` | ✅ CORRIGIDO em `d2033d923` |
+| 11 | Magazine typed queries | [#41348995057](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41348995057) | `4f91aa08` | Typecheck falhou — TS2339 em `useRuptureAlerts.ts` (mesmo SHA pré-fix) | ✅ CORRIGIDO em `68d809ccb` (mesmo fix do #2/#3) |
+| 12 | E2E ColorSwatch Grid | [#41348720790](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41348720790) | `1440ebaf` | E2E live — Playwright | ⛔ INFRA |
+| 13 | E2E Critical Flows | [#41348455649](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41348455649) | `fb22dad1` | E2E live — Playwright | ⛔ INFRA |
+| 14 | schema-snapshot-export | [#41348311003](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41348311003) | `cbbabc2f` | `MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json` ausente + ledger parity falhou | ⛔ INFRA/DADOS — ver PENDENCIAS §P9 |
+| 15 | Policies Baseline | [#41347780875](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41347780875) | `f99f36ae` | Drift RLS: +0/-1/~8 (`_backup_stock*` removida + 8 alteradas) | ⛔ GOVERNA — ver PENDENCIAS §P10 |
+| 16 | E2E Cart — Matrix | [#41347780959](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41347780959) | `f99f36ae` | E2E live — Playwright | ⛔ INFRA |
+| 17 | E2E Swatch QuickView | [#41347760648](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41347760648) | `36e69d6b` | E2E live — Playwright | ⛔ INFRA |
+| 18 | E2E Magazine Header | [#41347760746](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41347760746) | `36e69d6b` | E2E live — Playwright | ⛔ INFRA |
+| 19 | Branch Protection Sentinel (novo) | [#41359937302](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41359937302) | `5b5cef36` | Commit `chore(analise)` pushado direto em main sem PR | ⛔ GOVERNA — ver PENDENCIAS §P11 |
+
+### Resumo por categoria
+
+| Categoria | Count | Workflows |
+|---|---|---|
+| ✅ CORRIGIDO (código) | 5 | Supabase Linter, Replenishment QG, Security & Drift, TS Unused Ratchet, DB Migration E15 + Magazine typed queries (mesmo fix TS2339) |
+| ⛔ INFRA (E2E/probe) | 11 | Edge Integration Tests, E2E Playwright, Uptime Monitor, Gate 5, Quote Builder QG, ColorSwatch Grid, Critical Flows, Cart Matrix, Swatch QuickView, Magazine Header |
+| ⛔ GOVERNA | 2 | Policies Baseline (drift RLS), Branch Protection Sentinel (push direto) |
+| ⛔ INFRA/DADOS | 1 | schema-snapshot-export (manifesto ausente) |
+
+### Baseline pós-fix (HEAD atual `a240c1f96` em `fix/ci-workflows`)
+
+Verificado localmente antes da abertura do PR:
+| Comando | Resultado |
+|---|---|
+| `npm ci` | ✅ EXIT=0 |
+| `npm run build` | ✅ EXIT=0 (13.11s, sem erros TS) |
+| `node scripts/check-tsc-baseline.mjs` | ✅ EXIT=0 (0 erros TypeScript) |
+| `npm run lint:baseline` | ✅ EXIT=0 (0 erros, 0 warnings) |
+| `sh scripts/tsc-unused-ratchet.sh` | ✅ EXIT=0 (0 unused locals) |
+
