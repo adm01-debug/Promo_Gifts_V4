@@ -293,8 +293,8 @@ jobs:
             };
             [ .[] | (defaults + .) | select(
                 ($ev == "schedule")
-                or ($ev == "workflow_dispatch" and ($suite == "" or $suite == "all" or .suite == $suite))
-                or (($ev == "pull_request" or $ev == "push") and (.schedule_only | not) and (($changed | index(.group)) != null))
+                or ($ev == "workflow_dispatch" and (.suite == $suite or (($suite == "" or $suite == "all") and (.schedule_only | not))))
+                or (($ev == "pull_request" or $ev == "push") and (.schedule_only | not) and (.group as $g | $changed | index($g) != null))
               ) ]
             | {include: .}' /tmp/suites.json)
           COUNT=$(echo "$MATRIX" | jq '.include | length')
@@ -425,6 +425,7 @@ jobs:
           path: |
             playwright-report
             test-results
+            !test-results/**/trace.zip
             e2e/.evidence
             qa/reports/watermark-threshold-recalibration.*
           if-no-files-found: ignore
