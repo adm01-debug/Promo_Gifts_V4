@@ -1,0 +1,449 @@
+name: E2E Modules — Matrix
+
+# =============================================================================
+# Matriz ÚNICA dos E2E "fatiados" por módulo (gestão de workflows 2026-11-02, Fase 2/C2).
+# Substitui 16 workflows que repetiam o mesmo esqueleto (checkout → e2e-setup →
+# npx playwright test <specs> --project=<p> → upload) com variações de trigger:
+#   e2e-cart.yml, e2e-check-calendar-snapshots.yml, e2e-color-swatch-grid.yml,
+#   e2e-dialogs-pr-check.yml, e2e-discount-approval.yml, e2e-flows.yml, e2e-focused.yml,
+#   e2e-freight.yml, e2e-magazine-header.yml, e2e-pdf-dialog.yml, e2e-personalization.yml,
+#   e2e-quotes.yml, e2e-stock.yml, e2e-swatch-quickview.yml, e2e-visual-preview-button.yml,
+#   optimized-image-e2e.yml
+# e absorve a parte Playwright de delivery-quality.yml, global-search-gate.yml e
+# replenishment-quality.yml (a parte vitest continua lá).
+#
+# Como funciona:
+#   • A tabela SUITES (job `changes`) tem UMA linha por comando original, intacto
+#     (specs, project, flags, reporter, pré/pós-passos, timeout).
+#   • Em PR e push, `dorny/paths-filter` marca os grupos afetados e só as suites
+#     desses grupos entram na matriz (nada de job "skipped" por suite).
+#   • schedule (segunda 02:00 UTC, herdado de e2e-focused) roda tudo, inclusive as
+#     suites `schedule_only` (firefox/webkit do swatch-quickview).
+#   • workflow_dispatch aceita `suite` (nome exato) ou vazio/`all`.
+#   • Auth: `auth: mock_pr` = mock em PR (E82) e credenciais reais em push/dispatch;
+#     `auth: real` = sempre credenciais reais (pula com aviso se os secrets faltarem);
+#     `auth: none` = projeto público.
+# =============================================================================
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'src/**'
+      - 'e2e/**'
+      - 'public/**'
+      - 'package*.json'
+      - '.nvmrc'
+      - 'playwright.config.*'
+      - 'vite.config.*'
+      - 'tailwind.config.ts'
+      - 'scripts/e2e-mock-auth-setup.mjs'
+      - 'scripts/check-visual-preview-suite.mjs'
+      - '.github/actions/e2e-setup/**'
+      - '.github/workflows/e2e-modules.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'src/**'
+      - 'e2e/**'
+      - 'public/**'
+      - 'package*.json'
+      - '.nvmrc'
+      - 'playwright.config.*'
+      - 'vite.config.*'
+      - 'tailwind.config.ts'
+      - 'scripts/e2e-mock-auth-setup.mjs'
+      - '.github/actions/e2e-setup/**'
+      - '.github/workflows/e2e-modules.yml'
+  schedule:
+    - cron: '0 2 * * 1'  # E89 — segunda 02:00 UTC (herdado de e2e-focused.yml)
+  workflow_dispatch:
+    inputs:
+      suite:
+        description: 'Suite a executar (nome exato da tabela SUITES; vazio ou "all" = todas)'
+        required: false
+        default: ''
+        type: string
+
+# R1 — permissões mínimas
+permissions:
+  contents: read
+
+# R2 — PRs cancelam runs anteriores; push/schedule/dispatch não
+concurrency:
+  group: e2e-modules-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  secrets_check:
+    uses: ./.github/workflows/_secrets-check.yml
+    secrets: inherit
+    with:
+      fail_if_missing: false
+
+  changes:
+    name: Selecionar suites afetadas
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    outputs:
+      matrix: ${{ steps.build.outputs.matrix }}
+      count: ${{ steps.build.outputs.count }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false  # E32
+
+      - name: Detectar grupos afetados
+        id: f
+        if: github.event_name == 'pull_request' || github.event_name == 'push'
+        uses: dorny/paths-filter@ceb8a2b8f2d89434be7ff52d3de7ec3738c5cc9d # v4.0.3
+        with:
+          # Um filtro por grupo = união dos `paths:` que cada workflow antigo declarava.
+          filters: |
+            cart:
+              - 'src/components/cart/**'
+              - 'src/contexts/SellerCartContext.tsx'
+              - 'src/hooks/products/useSellerCarts.ts'
+              - 'e2e/ui/cart-*.spec.ts'
+              - 'e2e/flows/13*.spec.ts'
+              - 'e2e/carrinhos/**'
+              - 'e2e/helpers/cart-*.ts'
+            freight:
+              - 'src/components/freight/**'
+              - 'src/pages/**freight**'
+              - 'src/hooks/**freight**'
+              - 'e2e/flows/freight-*.spec.ts'
+              - 'e2e/visual/quote-freight-block.spec.ts'
+            stock:
+              - 'src/components/inventory/**'
+              - 'src/hooks/useFutureStockPreference.ts'
+              - 'src/hooks/__tests__/useFutureStockPreference*'
+              - 'e2e/admin/stock-*.spec.ts'
+              - 'e2e/routes/app/stock-*.spec.ts'
+            quotes:
+              - 'e2e/**'
+              - 'src/components/**'
+            focused:
+              - 'e2e/**'
+              - 'src/components/**'
+              - 'src/utils/**'
+              - 'src/pages/**'
+            personalization:
+              - 'src/**'
+              - 'e2e/**'
+              - 'public/**'
+              - 'package*.json'
+              - 'playwright.config.*'
+              - 'vite.config.*'
+            magazine-header:
+              - 'src/pages/magazine/**'
+              - 'e2e/flows/magazine-header*.spec.ts'
+              - 'playwright.config.ts'
+              - 'scripts/e2e-mock-auth-setup.mjs'
+              - 'package.json'
+              - 'package-lock.json'
+            color-swatch:
+              - 'src/components/products/ProductCard.tsx'
+              - 'src/components/products/ProductColorSwatches.tsx'
+              - 'src/components/shared/ColorSwatch.tsx'
+              - 'src/index.css'
+              - 'e2e/catalog/color-swatch-*.spec.ts'
+            pdf-dialog:
+              - 'e2e/flows/pdf-dialog.spec.ts'
+              - 'src/components/pdf/**'
+              - 'src/components/quotes/PdfGenerationDialog*'
+            dialogs:
+              - 'e2e/ui/alert-dialog-visual.spec.ts'
+              - 'e2e/ui/confirm-dialog-visual.spec.ts'
+              - 'e2e/ui/dialog-visual.spec.ts'
+              - 'e2e/ui/undo-toast-visual.spec.ts'
+              - 'src/pages/dev/*Harness.tsx'
+              - 'src/components/ui/alert-dialog.tsx'
+              - 'src/components/ui/dialog.tsx'
+              - 'src/components/common/ConfirmDialog.tsx'
+              - 'src/utils/undoToast.tsx'
+              - 'package.json'
+              - 'playwright.config.ts'
+            calendar:
+              - 'src/components/ui/calendar.tsx'
+              - 'src/pages/__visual/CalendarHarness.tsx'
+              - 'e2e/ui/calendar-visual.spec.ts'
+              - 'e2e/ui/calendar-visual.spec.ts-snapshots/**'
+            preview-button:
+              - 'src/pages/__visual/**'
+              - 'src/pages/quotes/QuoteViewPage.tsx'
+              - 'src/routes/AppRoutes.tsx'
+              - 'tailwind.config.ts'
+              - 'src/index.css'
+              - 'e2e/visual/**'
+              - 'scripts/check-visual-preview-suite.mjs'
+            discount:
+              - 'e2e/flows/04c*.spec.ts'
+              - 'e2e/helpers/discount-approval-*.ts'
+              - 'e2e/helpers/setup-discount-admin.ts'
+              - 'e2e/helpers/discount-notification-seed.ts'
+              - 'e2e/helpers/pagination-asserts.ts'
+              - 'src/components/admin/DiscountApproval*'
+              - 'src/pages/admin/DiscountRequestDetailPage.tsx'
+            flows:
+              - 'src/**'
+              - 'e2e/**'
+              - 'public/**'
+              - 'package*.json'
+              - 'playwright.config.*'
+              - 'vite.config.*'
+            optimized-image:
+              - 'src/components/ui/OptimizedImage.tsx'
+              - 'src/pages/tools/OptimizedImageDemo.tsx'
+              - 'src/routes/AppRoutes.tsx'
+              - 'e2e/optimized-image-*.spec.ts'
+            swatch-quickview:
+              - 'src/**'
+              - 'e2e/**'
+              - 'public/**'
+              - 'package*.json'
+              - 'playwright.config.*'
+              - 'vite.config.*'
+            global-search:
+              - 'src/components/search/**'
+              - 'e2e/flows/global-search-comprehensive.spec.ts'
+            delivery:
+              - 'src/**'
+              - 'tests/**'
+              - 'e2e/**'
+              - 'package*.json'
+              - 'vite.config.*'
+            replenishment:
+              - 'src/**'
+              - 'supabase/**'
+              - 'tests/**'
+              - 'e2e/**'
+              - 'package.json'
+
+      - name: Montar matriz
+        id: build
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          CHANGED_GROUPS: ${{ steps.f.outputs.changes || '[]' }}
+          SUITE_INPUT: ${{ inputs.suite }}
+        run: |
+          set -euo pipefail
+          # Tabela SUITES — uma linha por comando original (ver cabeçalho).
+          # Campos: suite, group, project (1..N separados por espaço), spec, extra (flags),
+          # reporter, browsers (p/ e2e-setup), vite (sobe Vite antes), auth (none|real|mock_pr),
+          # build (npm run build antes), pre/post (bash), min (check-min-tests), timeout (min),
+          # base_url, force_server, coe (continue-on-error), retry_last_failed, schedule_only.
+          cat > /tmp/suites.json <<'JSON'
+          [
+            {"suite":"cart-delete-popover","group":"cart","project":"chromium-authed","spec":"e2e/ui/cart-delete-header-popover.spec.ts e2e/ui/cart-delete-header-popover-exhaustive.spec.ts","auth":"mock_pr","timeout":20},
+            {"suite":"carts-undo-rpc","group":"cart","project":"chromium-authed","spec":"e2e/flows/13b-carts-undo-rpc-atomic.spec.ts","auth":"mock_pr","timeout":20},
+            {"suite":"cart-handoff","group":"cart","project":"chromium-authed","spec":"e2e/carrinhos/cart-to-quote-handoff.spec.ts e2e/carrinhos/cart-to-quote-handoff-persistence.spec.ts e2e/carrinhos/quote-handoff-url-params.spec.ts e2e/carrinhos/sidebar-no-legacy-labels.spec.ts","auth":"mock_pr","timeout":20},
+            {"suite":"freight-complete-flow","group":"freight","project":"chromium-authed","spec":"e2e/flows/freight-quest-complete-flow.spec.ts","auth":"real","timeout":20},
+            {"suite":"quote-freight-block","group":"freight","project":"chromium-public","spec":"e2e/visual/quote-freight-block.spec.ts","auth":"none","timeout":20},
+            {"suite":"stock-future-stock","group":"stock","project":"chromium-authed","spec":"e2e/admin/stock-future-stock*.spec.ts","auth":"real","timeout":20},
+            {"suite":"stock-dashboard","group":"stock","project":"chromium-authed","spec":"e2e/admin/stock-dashboard-empty.spec.ts e2e/admin/stock-dashboard-layout.spec.ts e2e/admin/stock-dashboard-visual.spec.ts e2e/admin/stock-health-badges.spec.ts e2e/routes/app/stock-dashboard.spec.ts e2e/routes/app/stock-table-sticky.spec.ts","auth":"real","timeout":20},
+            {"suite":"stock-filter","group":"stock","project":"chromium-authed","spec":"e2e/admin/stock-search-button.spec.ts e2e/admin/stock-search-race-and-keyboard.spec.ts e2e/routes/app/stock-filter-switching.spec.ts","auth":"real","timeout":20},
+            {"suite":"stock-rupture-horizon","group":"stock","project":"chromium-authed","spec":"e2e/routes/app/stock-rupture-horizon*.spec.ts","auth":"real","timeout":20},
+            {"suite":"quotes-responsive","group":"quotes","project":"chromium-public","spec":"e2e/routes/quotes/quote-list-responsive.spec.ts e2e/quotes/quote-items-table-header-radius.spec.ts","extra":"--update-snapshots=missing","auth":"mock_pr","timeout":20},
+            {"suite":"quotes-tooltips","group":"quotes","project":"chromium-public","spec":"e2e/flows/04m-quotes-status-tooltip*.spec.ts","extra":"--update-snapshots=missing","auth":"mock_pr","timeout":20},
+            {"suite":"quotes-undo","group":"quotes","project":"chromium-authed","spec":"e2e/flows/04o-*.spec.ts e2e/flows/04p-*.spec.ts e2e/flows/04q-*.spec.ts e2e/flows/04r-*.spec.ts e2e/flows/04s-*.spec.ts","extra":"--update-snapshots=missing","auth":"mock_pr","timeout":20},
+            {"suite":"quotes-conditions","group":"quotes","project":"chromium-public","spec":"e2e/ui/quote-conditions-visual.spec.ts","extra":"--update-snapshots=missing","auth":"mock_pr","timeout":20},
+            {"suite":"quotes-item-editor-sheet","group":"quotes","project":"chromium-public","spec":"e2e/quotes/quote-item-editor-sheet-header.spec.ts e2e/quotes/quote-add-product-button.spec.ts","extra":"--update-snapshots=missing","auth":"mock_pr","timeout":20},
+            {"suite":"quotes-items-table-header","group":"quotes","project":"chromium-public","spec":"e2e/quotes/quote-items-table-header-radius.spec.ts e2e/quotes/quote-items-inner-scroll.spec.ts","extra":"--update-snapshots=missing","auth":"mock_pr","timeout":20},
+            {"suite":"quotes-row-menu-width","group":"quotes","project":"chromium-public","spec":"e2e/quotes/quote-row-menu-width.spec.ts e2e/quotes/quote-row-menu-width-zoom.spec.ts","extra":"--update-snapshots=missing","auth":"mock_pr","timeout":20},
+            {"suite":"quotes-view-no-presentation-mode","group":"quotes","project":"chromium-public","spec":"e2e/quotes/quote-view-no-presentation-mode.spec.ts e2e/quotes/quote-view-mainlayout-overflow.spec.ts e2e/quotes/quote-view-overflow-regression.spec.ts","extra":"--update-snapshots=missing","auth":"mock_pr","timeout":20},
+            {"suite":"quotes-view-sticky","group":"quotes","project":"chromium-public","spec":"e2e/quotes/quote-view-sticky-sidebar.spec.ts e2e/quotes/quote-view-sticky-visual.spec.ts","extra":"--update-snapshots=missing","auth":"mock_pr","timeout":20},
+            {"suite":"quotes-summary-collapse-all","group":"quotes","project":"chromium-public","spec":"e2e/quotes/quote-summary-collapse-all.spec.ts","extra":"--update-snapshots=missing","auth":"mock_pr","timeout":20},
+            {"suite":"quotes-summary-sticky-header","group":"quotes","project":"chromium-public","spec":"e2e/quotes/quote-summary-sticky-header.spec.ts e2e/quotes/quote-summary-sticky-header-visual.spec.ts e2e/quotes/quote-summary-action-buttons.spec.ts e2e/quotes/quote-summary-action-buttons-states.spec.ts","extra":"--update-snapshots=missing","auth":"mock_pr","timeout":20},
+            {"suite":"cnpj","group":"focused","project":"chromium-public","spec":"e2e/ui/cnpj-*.spec.ts","auth":"none","timeout":20},
+            {"suite":"pdf-print","group":"focused","project":"chromium-public","spec":"e2e/flows/pdf-print-cross-browser.spec.ts","auth":"none","timeout":20},
+            {"suite":"thumb-quickview","group":"focused","project":"chromium-public","spec":"e2e/flows/03b-product-thumb-quickview.spec.ts e2e/flows/03b-thumb-quickview.smoke.spec.ts","auth":"none","timeout":20},
+            {"suite":"personalization","group":"personalization","project":"chromium-authed","spec":"e2e/flows/90-personalization-pdp-flow.spec.ts e2e/flows/91-personalization-variant-flow.spec.ts e2e/flows/92-personalization-auth-redirect.spec.ts","reporter":"github,list,html,json","vite":true,"auth":"real","min":1,"timeout":20},
+            {"suite":"magazine-header","group":"magazine-header","project":"chromium-authed","spec":"e2e/flows/magazine-header-align.spec.ts e2e/flows/magazine-header-responsive.spec.ts","reporter":"github,list,html,json","vite":true,"auth":"real","timeout":20},
+            {"suite":"color-swatch","group":"color-swatch","project":"chromium-authed","spec":"e2e/catalog/color-swatch-two-lines-grid.spec.ts e2e/catalog/color-swatch-selected-no-clip.spec.ts","auth":"real","timeout":20},
+            {"suite":"pdf-dialog","group":"pdf-dialog","project":"chromium-authed","spec":"e2e/flows/pdf-dialog.spec.ts","extra":"--retries=0","auth":"real","pre":"sudo apt-get update && sudo apt-get install -y poppler-utils","post":"mkdir -p qa/reports; node scripts/recalibrate-watermark-thresholds.mjs --samples test-results --out qa/reports/watermark-threshold-recalibration.md --json qa/reports/watermark-threshold-recalibration.json || echo \"::warning::recalibração informacional falhou\"; if [ -f qa/reports/watermark-threshold-recalibration.json ]; then node -e \"const p=JSON.parse(require('fs').readFileSync('qa/reports/watermark-threshold-recalibration.json','utf8'));const bad=Object.entries(p.suggestions).filter(([,v])=>Math.abs(v.delta)>p.divergenceAlert);if(bad.length){console.error('Drift de threshold acima do limite:',bad.map(([k])=>k).join(', '));process.exit(1)}console.log('Drift dentro do limite.')\"; else echo '::warning::JSON de recalibração ausente — baselines não gerados ainda.'; fi","timeout":25},
+            {"suite":"dialogs","group":"dialogs","project":"chromium-public","spec":"e2e/ui/confirm-dialog-visual.spec.ts e2e/ui/alert-dialog-visual.spec.ts e2e/ui/dialog-visual.spec.ts e2e/ui/undo-toast-visual.spec.ts","reporter":"list,html,json","vite":true,"auth":"none","timeout":25},
+            {"suite":"calendar","group":"calendar","project":"chromium-public","spec":"e2e/ui/calendar-visual.spec.ts","reporter":"list,html","vite":true,"auth":"none","timeout":20},
+            {"suite":"preview-button","group":"preview-button","project":"chromium-public","spec":"e2e/visual/preview-button.spec.ts","extra":"--update-snapshots=missing","reporter":"github,list,html","vite":true,"auth":"none","pre":"node scripts/check-visual-preview-suite.mjs","timeout":15},
+            {"suite":"discount-approval","group":"discount","project":"chromium-authed","spec":"e2e/flows/04c","extra":"--retries=0","reporter":"html,list,github","auth":"real","build":true,"retry_last_failed":true,"timeout":30},
+            {"suite":"discount-badge-live","group":"discount","project":"chromium-authed","spec":"e2e/flows/04ck","extra":"--repeat-each=3 --retries=0","reporter":"html,list,github","auth":"real","build":true,"timeout":25},
+            {"suite":"error-boundaries","group":"flows","project":"chromium-public","spec":"e2e/flows/28-error-boundaries.spec.ts","reporter":"github,list,html,json","vite":true,"auth":"none","min":7,"timeout":20},
+            {"suite":"full-flows","group":"flows","project":"chromium-authed","spec":"e2e/flows/25-quote-full-flow.spec.ts e2e/flows/30-quote-wizard-validations.spec.ts e2e/flows/26-catalog-to-kit-flow.spec.ts e2e/flows/27-admin-critical-routes.spec.ts e2e/flows/sidebar-tooltips.spec.ts","reporter":"github,list,html,json","vite":true,"auth":"real","timeout":30},
+            {"suite":"sidebar-tooltips-mobile","group":"flows","project":"mobile-chrome","spec":"e2e/flows/sidebar-tooltips.spec.ts","reporter":"github,list,html,json","vite":true,"auth":"real","timeout":20},
+            {"suite":"mobile-routes","group":"flows","project":"mobile-chrome","spec":"e2e/flows/29-mobile-critical-routes.spec.ts","reporter":"github,list,html,json","vite":true,"auth":"none","timeout":20},
+            {"suite":"optimized-image","group":"optimized-image","project":"chromium-public","spec":"optimized-image-detection.spec.ts optimized-image-visual.spec.ts","auth":"none","timeout":15},
+            {"suite":"swatch-quickview-chromium","group":"swatch-quickview","project":"chromium-authed","spec":"e2e/catalog/swatch-quickview-list-table.spec.ts e2e/catalog/swatch-quickview-v2-list-table.spec.ts e2e/catalog/swatch-picker-v2-focus-and-quickview.spec.ts","reporter":"list,html,json","auth":"real","min":10,"timeout":60},
+            {"suite":"swatch-quickview-firefox","group":"swatch-quickview","project":"firefox-authed","spec":"e2e/catalog/swatch-quickview-list-table.spec.ts e2e/catalog/swatch-quickview-v2-list-table.spec.ts e2e/catalog/swatch-picker-v2-focus-and-quickview.spec.ts","reporter":"list,html,json","browsers":"chromium,firefox","auth":"real","min":10,"timeout":60,"schedule_only":true},
+            {"suite":"swatch-quickview-webkit","group":"swatch-quickview","project":"webkit-authed","spec":"e2e/catalog/swatch-quickview-list-table.spec.ts e2e/catalog/swatch-quickview-v2-list-table.spec.ts e2e/catalog/swatch-picker-v2-focus-and-quickview.spec.ts","reporter":"list,html,json","browsers":"chromium,webkit","auth":"real","min":10,"timeout":60,"coe":true,"schedule_only":true},
+            {"suite":"global-search-xbrowser","group":"global-search","project":"chromium-authed firefox-authed webkit-authed","spec":"e2e/flows/global-search-comprehensive.spec.ts","browsers":"chromium,firefox,webkit","auth":"real","post":"node e2e/scripts/detect-flaky.mjs","timeout":30},
+            {"suite":"delivery","group":"delivery","project":"chromium-authed","spec":"e2e/quote-builder-delivery.spec.ts","extra":"--retries=2","auth":"real","timeout":20},
+            {"suite":"replenishment-stress","group":"replenishment","project":"chromium-authed","spec":"e2e/replenishment-stress.spec.ts","auth":"real","base_url":"http://127.0.0.1:8081","force_server":true,"timeout":30},
+            {"suite":"card-parity","group":"replenishment","project":"chromium-authed","spec":"e2e/catalog/novidades-reposicao-card-parity.spec.ts","auth":"real","base_url":"http://127.0.0.1:8081","force_server":true,"timeout":30}
+          ]
+          JSON
+          MATRIX=$(jq -c --arg ev "$EVENT_NAME" --argjson changed "$CHANGED_GROUPS" --arg suite "$SUITE_INPUT" '
+            def defaults: {
+              extra: "", reporter: "line,html", browsers: "chromium", vite: false, auth: "none",
+              build: false, pre: "", post: "", min: "", timeout: 20, base_url: "http://localhost:8080",
+              force_server: false, coe: false, retry_last_failed: false, schedule_only: false
+            };
+            [ .[] | (defaults + .) | select(
+                ($ev == "schedule")
+                or ($ev == "workflow_dispatch" and ($suite == "" or $suite == "all" or .suite == $suite))
+                or (($ev == "pull_request" or $ev == "push") and (.schedule_only | not) and (($changed | index(.group)) != null))
+              ) ]
+            | {include: .}' /tmp/suites.json)
+          COUNT=$(echo "$MATRIX" | jq '.include | length')
+          echo "matrix=$MATRIX" >> "$GITHUB_OUTPUT"
+          echo "count=$COUNT" >> "$GITHUB_OUTPUT"
+          echo "Evento: $EVENT_NAME · grupos afetados: $CHANGED_GROUPS · suites selecionadas: $COUNT"
+          echo "$MATRIX" | jq -r '.include[] | "  - \(.suite) [\(.group)] → \(.project)"'
+
+  e2e:
+    name: E2E · ${{ matrix.suite }}
+    needs: [secrets_check, changes]
+    if: >-
+      always() && needs.changes.result == 'success' && needs.changes.outputs.count != '0'
+      && (needs.secrets_check.result == 'success' || needs.secrets_check.result == 'skipped')
+    runs-on: ubuntu-24.04
+    # R3 — timeout por suite (tabela SUITES; classe E2E ≤ 60)
+    timeout-minutes: ${{ matrix.timeout }}
+    continue-on-error: ${{ matrix.coe }}
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.changes.outputs.matrix) }}
+    env:
+      CI: 'true'
+      FORCE_COLOR: '0'
+      VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || 'https://doufsxqlfjyuvxuezpln.supabase.co' }}
+      VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_tjH5qAbZ0e5HTTd872NijQ_s9m6JvYU' }}
+      E2E_BASE_URL: ${{ matrix.base_url }}
+      E2E_FORCE_START_SERVER: ${{ matrix.force_server && '1' || '' }}
+      # E82 — mock só em PR e só nas suites marcadas mock_pr
+      E2E_MOCK_AUTH: ${{ (matrix.auth == 'mock_pr' && github.event_name == 'pull_request') && '1' || '0' }}
+      USE_MOCK_AUTH: ${{ (matrix.auth == 'mock_pr' && github.event_name == 'pull_request') && 'true' || 'false' }}
+      NEEDS_REAL_AUTH: ${{ (matrix.auth == 'real' || (matrix.auth == 'mock_pr' && github.event_name != 'pull_request')) && 'true' || 'false' }}
+    steps:
+      - name: Pular suite autenticada sem credenciais
+        if: env.NEEDS_REAL_AUTH == 'true' && needs.secrets_check.outputs.has_e2e != 'true'
+        run: |
+          echo "::warning::Suite ${{ matrix.suite }} precisa de E2E_USER_EMAIL/E2E_USER_PASSWORD e os secrets não estão disponíveis — pulada."
+          echo "SKIP_SUITE=1" >> "$GITHUB_ENV"
+
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        if: env.SKIP_SUITE != '1'
+        with:
+          persist-credentials: false  # E32
+
+      - name: Setup E2E
+        if: env.SKIP_SUITE != '1'
+        uses: ./.github/actions/e2e-setup
+        with:
+          browsers: ${{ matrix.browsers }}
+          start-vite: ${{ matrix.vite }}
+          require-auth: ${{ env.NEEDS_REAL_AUTH }}
+          mock-auth: ${{ env.USE_MOCK_AUTH }}
+        env:
+          E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
+          E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
+          E2E_ADMIN_EMAIL: ${{ secrets.E2E_ADMIN_EMAIL }}
+          E2E_ADMIN_PASSWORD: ${{ secrets.E2E_ADMIN_PASSWORD }}
+
+      - name: Pré-passo da suite
+        if: env.SKIP_SUITE != '1' && matrix.pre != ''
+        env:
+          PRE_CMD: ${{ matrix.pre }}
+        run: bash -euo pipefail -c "$PRE_CMD"
+
+      - name: Build app
+        if: env.SKIP_SUITE != '1' && matrix.build
+        run: npm run build
+
+      - name: Run E2E · ${{ matrix.suite }}
+        id: run
+        if: env.SKIP_SUITE != '1'
+        continue-on-error: ${{ matrix.retry_last_failed }}
+        env:
+          E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
+          E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
+          E2E_ADMIN_EMAIL: ${{ secrets.E2E_ADMIN_EMAIL }}
+          E2E_ADMIN_PASSWORD: ${{ secrets.E2E_ADMIN_PASSWORD }}
+          SPECS: ${{ matrix.spec }}
+          PROJECTS: ${{ matrix.project }}
+          EXTRA: ${{ matrix.extra }}
+          REPORTER: ${{ matrix.reporter }}
+          MIN_TESTS: ${{ matrix.min }}
+        run: |
+          set -euo pipefail
+          read -ra SPEC_LIST <<< "$SPECS"
+          PROJECT_ARGS=()
+          for p in $PROJECTS; do PROJECT_ARGS+=("--project=$p"); done
+          read -ra EXTRA_ARGS <<< "$EXTRA"
+          # check-min-tests lê playwright-report/results.json → garante o reporter json quando há `min`
+          if [ -n "$MIN_TESTS" ] && [[ ",$REPORTER," != *",json,"* ]]; then REPORTER="$REPORTER,json"; fi
+          npx playwright test "${SPEC_LIST[@]}" "${PROJECT_ARGS[@]}" "${EXTRA_ARGS[@]}" --reporter="$REPORTER"
+
+      - name: Retentativa única (--last-failed)
+        id: retry
+        if: env.SKIP_SUITE != '1' && matrix.retry_last_failed && steps.run.outcome == 'failure'
+        env:
+          E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
+          E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
+          E2E_ADMIN_EMAIL: ${{ secrets.E2E_ADMIN_EMAIL }}
+          E2E_ADMIN_PASSWORD: ${{ secrets.E2E_ADMIN_PASSWORD }}
+          PROJECTS: ${{ matrix.project }}
+          REPORTER: ${{ matrix.reporter }}
+        run: |
+          set -euo pipefail
+          PROJECT_ARGS=()
+          for p in $PROJECTS; do PROJECT_ARGS+=("--project=$p"); done
+          npx playwright test --last-failed "${PROJECT_ARGS[@]}" --retries=0 --reporter="$REPORTER"
+
+      - name: Pós-passo da suite
+        if: always() && env.SKIP_SUITE != '1' && matrix.post != ''
+        env:
+          POST_CMD: ${{ matrix.post }}
+        run: bash -euo pipefail -c "$POST_CMD"
+
+      - name: Check min tests executed  # E42
+        if: always() && env.SKIP_SUITE != '1' && matrix.min != ''
+        uses: ./.github/actions/check-min-tests
+        with:
+          results-json: 'playwright-report/results.json'
+          min: ${{ matrix.min }}
+
+      # R6 — retention-days: 14
+      - name: Upload report + artifacts
+        if: always() && env.SKIP_SUITE != '1'
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: e2e-${{ matrix.suite }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            playwright-report
+            test-results
+            e2e/.evidence
+            qa/reports/watermark-threshold-recalibration.*
+          if-no-files-found: ignore
+          retention-days: 14
+
+  result:
+    name: E2E Modules — resultado
+    needs: [changes, e2e]
+    if: always()
+    runs-on: ubuntu-24.04
+    timeout-minutes: 2
+    steps:
+      - name: Consolidar
+        env:
+          E2E_RESULT: ${{ needs.e2e.result }}
+          COUNT: ${{ needs.changes.outputs.count }}
+        run: |
+          echo "suites selecionadas: $COUNT · resultado da matriz: $E2E_RESULT"
+          if [ "$E2E_RESULT" = "failure" ]; then
+            echo "::error::Pelo menos uma suite E2E falhou — veja os jobs 'E2E · <suite>'."
+            exit 1
+          fi
