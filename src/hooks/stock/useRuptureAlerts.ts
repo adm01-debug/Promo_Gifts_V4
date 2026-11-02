@@ -69,14 +69,16 @@ export function useRuptureAlerts(): UseRuptureAlertsResult {
     gcTime: 15 * 60_000,
     retry: 1,
     queryFn: async (): Promise<RuptureAlertRow[]> => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const { data, error } = await ((supabase as any)
+      const { data, error } = await (supabase
         .rpc('fn_get_rupture_alerts')
         .eq('is_preferred', true)
         .neq('nivel_alerta', 'OK')
         .order('prioridade', { ascending: true })
         .order('score_composto', { ascending: false })
-        .limit(MAX_ROWS) as Promise<{ data: RuptureAlertRow[] | null; error: Error | null }>);
+        .limit(MAX_ROWS) as unknown as Promise<{
+        data: RuptureAlertRow[] | null;
+        error: Error | null;
+      }>);
       if (error) throw error;
       return data ?? [];
     },
