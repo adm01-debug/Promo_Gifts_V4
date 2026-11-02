@@ -352,3 +352,40 @@ Todos os workflows corrigíveis nesta sessão foram corrigidos e validados com s
 O único bloqueador do Gate Final é Gate E40 Schema Drift (Ledger parity P7 — `local_only=1140; remote_only=673`)
 que é **pré-existente e requer intervenção do DBA/PO** para reconciliar o ledger de migrations.
 Documentado em PENDENCIAS.md P7. Nenhuma regressão introduzida.
+
+---
+
+## 11. Inventário de workflows falhando em main — ÚLTIMA execução por workflow (2026-11-02)
+
+**HEAD de main analisado:** commit `df94410cbbcbe7d80928a279de91214d88b0d4bb`
+*(fix(security): CodeQL HIGH — crypto.randomInt, URL validation… mergeado via PR #3021)*
+
+### Tabela completa — todas as falhas detectadas
+
+| # | Workflow | Run ID (link) | Conclusão | Job que falhou | Step falho | Causa raiz | Item PENDENCIAS.md | Resolvido por |
+|---|---|---|---|---|---|---|---|---|
+| 1 | Deploy Gates | [41369672722](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41369672722) | `failure` | Gate 1 — Lint + TypeScript | step 6: `lint:baseline` | Lint regression em `df94410cb` (Gate 1 falha) + Gate 4/6 em cascata | — | ✅ **PR #3028** corrige: Gate 1 ✅ e Gate 6 ✅ no run `41405442459` |
+| 2 | CI Security & Drift Checks | [41397001699](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41397001699) | `failure` | quality-gate | step 5: `Lint check` | Mesma lint regression de #1 | — | ✅ **PR #3028** corrige (lint passa) |
+| 3 | Nightly Full CI | [41379357529](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41379357529) | `failure` | Lint, Typecheck & Coverage | step 8: `Lint` | Mesma lint regression de #1 | — | ✅ **PR #3028** corrige (lint passa) |
+| 4 | E2E Focused UI — Matrix | [41375525391](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41375525391) | `failure` | E2E Focused · thumb-quickview | step 5: `Run E2E Focused · thumb-quickview` | Produto `color_swatches V2` ausente / secrets CI | P51 | ⛔ PO — dados/secrets E2E |
+| 5 | Kit Coverage — Integration | [41384748861](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41384748861) | `failure` | kit-coverage-integration | step 6: `Run kit-coverage integration test` | `permission denied` em `product_kit_components` / `v_kit_component_complete` | P20-C | ⛔ PO — GRANT via migration |
+| 6 | Uptime Monitor | [41407081384](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41407081384) | `failure` | check | step 3: `Probe site + edge function` | Edge function `health-check` desatualizada / probe retorna não-2xx | P41 | ⛔ PO — deploy de edge function aprovado |
+| 7 | Gitleaks — Full History Audit | [41402465560](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41402465560) | `startup_failure` | — (0 jobs) | — | Policy GitHub Actions bloqueia `gitleaks/gitleaks-action` | P40 | ⛔ PO — actions settings |
+| 8 | Security Scan | [41401520430](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41401520430) | `startup_failure` | — (0 jobs) | — | Policy GitHub Actions bloqueia action externa (`gitleaks/gitleaks-action`) | P40 | ⛔ PO — actions settings |
+| 9 | log-login-attempt — Fuzz Stress Weekly | [41400975268](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41400975268) | `startup_failure` | — (0 jobs) | — | Policy GitHub Actions bloqueia action externa usada pelo workflow | P40 | ⛔ PO — actions settings |
+| 10 | schema-snapshot-export | [41402247488](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41402247488) | `startup_failure` | — (0 jobs) | — | Policy GitHub Actions bloqueia action externa (`denoland/setup-deno`) | P40/P35/P46 | ⛔ PO — actions settings + manifesto ledger |
+| 11 | edge-functions-drift-check | [41369525429](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41369525429) | `failure` | Compare GitHub × Canonical | step 1: `Set up job` (startup_failure equiv.) | Policy GitHub Actions bloqueia action externa usada no setup | P40 | ⛔ PO — actions settings |
+
+### Resumo por categoria
+
+| Categoria | Workflows afetados | Resolução |
+|---|---|---|
+| **Lint regression em main** (corrigida pelo PR) | Deploy Gates · CI Security & Drift · Nightly Full CI | ✅ PR #3028 (`claude/laughing-cori-o9w35e`) |
+| **Policy GitHub Actions (P40)** | Gitleaks · Security Scan · log-login-attempt Fuzz · schema-snapshot-export · edge-functions-drift-check | ⛔ PO: `Settings → Actions → General` |
+| **E2E / dados ausentes** | E2E Focused (thumb-quickview) · Kit Coverage · Uptime Monitor | ⛔ PO: dados/secrets/deploy |
+
+### Classificação das 11 falhas
+
+- **3 falhas corrigidas pelo PR #3028:** #1 (Deploy Gates), #2 (CI Security & Drift), #3 (Nightly Full CI)
+- **5 falhas por policy de actions (P40) — bloqueio PO:** #7, #8, #9, #10, #11
+- **3 falhas por dados/infra externos — bloqueio PO:** #4 (P51), #5 (P20-C), #6 (P41)
