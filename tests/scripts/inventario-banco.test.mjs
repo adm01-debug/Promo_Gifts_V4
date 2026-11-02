@@ -223,4 +223,38 @@ describe('banco.sql', () => {
       expect(chamada, `return_message vazando como valor bruto em: ${chamada.slice(0, 120)}...`).not.toMatch(/\.return_message\b/);
     }
   });
+
+  // chamadasJsonbBuildObject + a checagem textual acima so pegam return_message citado DIRETO
+  // dentro do jsonb_build_object. Esta checagem rastreia um hop a mais: para cada coluna
+  // referenciada como valor (ex.: pj.falhas_7d), acha a definicao dessa coluna em QUALQUER CTE
+  // anterior (busca por "AS <coluna>") e garante que o texto que a define nao cite return_message
+  // fora de uma comparacao booleana (LIKE/=/IS/~) — ou seja, nenhuma coluna pode ser um
+  // passthrough bruto de return_message "lavado" por um alias de CTE antes de chegar ao JSON final.
+  it('nenhuma coluna referenciada em jsonb_build_object e um passthrough bruto de return_message vindo de uma CTE anterior', () => {
+    const chamadas = chamadasJsonbBuildObject(sql);
+    const colunasReferenciadas = new Set();
+    for (const chamada of chamadas) {
+      for (const m of chamada.matchAll(/\b[a-z_][a-z0-9_]*\.([a-z_][a-z0-9_]*)\b/g)) {
+        colunasReferenciadas.add(m[1]);
+      }
+    }
+    expect(colunasReferenciadas.size).toBeGreaterThan(0);
+
+    const EM_COMPARACAO = /return_message\s*(?:LIKE|=|IS|~|!~|<>)/i;
+    for (const coluna of colunasReferenciadas) {
+      const defRe = new RegExp(`AS\\s+${coluna}\\b`, 'g');
+      let m;
+      while ((m = defRe.exec(sql))) {
+        // janela: do ultimo separador top-level (',' ou newline de SELECT) ate o "AS <coluna>".
+        const inicioJanela = Math.max(sql.lastIndexOf(',', m.index), sql.lastIndexOf('SELECT', m.index));
+        const definicao = sql.slice(Math.max(inicioJanela, 0), m.index + m[0].length);
+        if (/return_message/i.test(definicao)) {
+          expect(
+            EM_COMPARACAO.test(definicao),
+            `coluna "${coluna}" parece derivar de return_message bruto (nao esta numa comparacao LIKE/=/IS): ${definicao.trim().slice(0, 160)}...`,
+          ).toBe(true);
+        }
+      }
+    }
+  });
 });
