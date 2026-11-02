@@ -118,19 +118,17 @@ Deno.serve(async (req: Request) => {
     //    `%`→`\%`, `_`→`\_`, para os curingas casarem literalmente;
     // 2) PostgREST — o parser de valores entre aspas consome um nível de
     //    barra antes de repassar ao Postgres, então TODA `\` resultante
-    //    do nível 1 é dobrada novamente, chegando `\\`/`\%`/`\_` ao
-    //    ILIKE. `"` não pode ser escapada dentro de um valor entre
-    //    aspas no PostgREST, então é trocada por `%` — o ilike casa
-    //    qualquer char naquela posição e o superconjunto fica um pouco
-    //    maior, sem perder a linha com a aspa literal. A seleção é
-    //    refiltrada em JS com comparação exata case-insensitive antes de
+    //    do nível 1 já chegou dobrada. `"` não pode ser escapada dentro
+    //    de um valor entre aspas no PostgREST, então é trocada por `%` —
+    //    o ilike casa qualquer char naquela posição e o superconjunto fica
+    //    um pouco maior, sem perder a linha com a aspa literal. A seleção
+    //    é refiltrada em JS com comparação exata case-insensitive antes de
     //    deletar só os ids confirmados.
     const ilikeEscaped = (email ?? "")
       .replace(/\\/g, "\\\\")
       .replace(/%/g, "\\%")
-      .replace(/_/g, "\\_");
+      .replace(/_/g, "\\_ ");
     const emailFilter = ilikeEscaped
-      .replace(/\\/g, "\\\\")
       .replace(/"/g, "%");
     const emailClause = emailFilter ? `,email.ilike."${emailFilter}"` : "";
     const emailLc = (email ?? "").toLowerCase();

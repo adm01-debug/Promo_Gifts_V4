@@ -117,7 +117,8 @@ export default function SSOCallbackPage() {
     // #error=... (js/user-controlled-bypass, CodeQL E96).
     const hash = window.location.hash.startsWith('#') ? window.location.hash.slice(1) : '';
     const hashParams = new URLSearchParams(hash);
-    const hashError = !searchParams.has('code') ? hashParams.get('error') : null;
+    const rawHashError = !searchParams.has('code') ? hashParams.get('error') : null;
+    const hashError = rawHashError && /^[a-z_][a-z0-9_]{0,63}$/.test(rawHashError) ? rawHashError : null;
     if (hashError) {
       const desc = hashParams.get('error_description');
       const detail = explainOAuthError({ error: hashError, description: desc });
