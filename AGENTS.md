@@ -164,6 +164,7 @@ retorna 403 em write; `git push` e `gh` só funcionam quando o repo é fonte aut
 | Precisa de | Leia |
 |---|---|
 | **Qual banco, qual MCP, migrations, Lovable, Vercel, gates de CI, arquivos protegidos** | **`CLAUDE.md`** |
+| **Estado real hoje: tabelas, RLS, cron e falhas, edge functions publicadas, rotas → tela → hooks → dados, tabelas órfãs** | **`inventario/estado/`** — gerado por `scripts/inventario/` (ver o README de lá); confira `gerado_em` antes de confiar |
 | Retrato do schema do banco (tabelas, policies, cron, triggers) | `docs/SCHEMA_REFERENCE.md` (data da medição no topo — confira antes de confiar) |
 | Política de DDL e caminho de migration | `docs/db/POLITICA_DDL.md`, `supabase/MIGRATIONS_SYNC_LOG.md` |
 | Regras de workflow do GitHub Actions | `docs/ci/PADRAO_WORKFLOW.md` |

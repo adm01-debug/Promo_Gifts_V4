@@ -20,6 +20,10 @@
 - **Vercel:** projeto `prj_9UfugNYCuboH2R0XB04Jv8PpjDpZ` (team `juca1`), ancorado em `.vercel/project.json`
   (ver REGRA #11).
 
+- **Estado real gerado (fonte de consulta):** `inventario/estado/` — banco (tabelas, RLS, cron, edges publicadas),
+  edge functions do repo, rotas → tela → hooks → dados e tabelas órfãs. Refazer:
+  `SUPABASE_ACCESS_TOKEN=... node scripts/inventario/gerar-banco.mjs && node scripts/inventario/gerar-repo.mjs`.
+
 ### Projetos Supabase e MCPs (conferido 2026-11-02 com `get_project_url`)
 
 | MCP | Projeto | Papel |
