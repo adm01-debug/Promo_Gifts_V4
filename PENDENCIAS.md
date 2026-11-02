@@ -2404,7 +2404,11 @@ changed: 8 policies em ai_usage_quotas + art_file_attachments
 
 **Causa raiz:** GitHub Actions settings do repositório (`Settings → Actions → General → Actions permissions`) está configurado para `Allow adm01-debug and select non-adm01-debug, actions and reusable workflows` — mas `googleapis/release-please-action` e `gitleaks/gitleaks-action` não estão na lista de ações permitidas.
 
-**O que precisa ser feito (requer PO):** Ir em `https://github.com/adm01-debug/Promo_Gifts_V4/settings/actions` e adicionar `gitleaks/gitleaks-action` e `googleapis/release-please-action` à lista de ações permitidas. Ou alterar para `Allow all actions and reusable workflows` (menor segurança). Ou substituir as actions por equivalentes na org `adm01-debug`.
+**O que precisa ser feito (requer PO):** Ir em `https://github.com/adm01-debug/Promo_Gifts_V4/settings/actions` e adicionar **apenas** as seguintes actions à lista de ações permitidas (manter política restrita — NÃO escolher "Allow all actions"):
+- `gitleaks/gitleaks-action@e0c47f4f8be36e29cdc102c57e68cb5cbf0e8d1e`
+- `googleapis/release-please-action@45996ed1f6d02564a971a2fa1b5860e934307cf7`
+
+Alternativa: substituir as actions por equivalentes mantidos na org `adm01-debug` (maior controle).
 
 **Não é corrigível por mudança de código** — a política é configuração de infraestrutura GitHub, não código do repositório.
 
@@ -2873,9 +2877,9 @@ FAIL  tests/integration/kit-coverage.integration.test.ts
 **Run:** [41368799721](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41368799721) (sha `df94410cb`)
 **Conclusão:** `failure`
 
-**Causa raiz:** Commit Lovable com mensagem "Changes" não segue o padrão de commits convencionais (`feat:`, `fix:`, `chore:`, etc.) exigido pelo sentinel.
+**Causa raiz:** O sentinel avalia 7 padrões (squash merge `(#NNN)`, merge commit PR, bots oficiais, família Lovable, release, allowlist estreita, bypass de emergência) — NÃO apenas conventional commits. O commit `df94410` (mensagem genérica "Changes") não satisfez nenhum deles porque: (a) a mensagem não termina em `(#NNN)` nem segue padrão de merge/PR; (b) a regra 4 "família Lovable" verifica a identidade do committer git (`gpt-engineer-*[bot]`), mas o commit `df94410` foi assinado com o email do usuário humano, não com o email do bot — portanto a regra 4 não disparou. Referência: log do job 125041786752, step "Audit every commit in push".
 
-**Ação necessária:** Lovable / PO: configurar o Lovable para gerar mensagens de commit no padrão convencional, OU atualizar o sentinel para aceitar padrão Lovable.
+**Ação necessária (Lovable/PO):** Opções: (1) Configurar Lovable para commitar via PR — squash merge (`(#NNN)`) satisfaz a regra 1 automaticamente. (2) Verificar por que o email do committer em `df94410` não corresponde ao padrão `gpt-engineer-*[bot]` e ajustar a regra 4 do sentinel. (3) Usar bypass de emergência: adicionar `[skip-sentinel: Lovable UI update]` na mensagem do commit ao reescrever/revertir.
 
 ---
 
@@ -2887,9 +2891,9 @@ FAIL  tests/integration/kit-coverage.integration.test.ts
 **Run:** [41416885115](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41416885115)
 **Conclusão:** `failure`
 
-**Causa raiz:** Relacionado a P53 — o commit Lovable `df94410cb` introduziu ESLint errors em main que causam falha no build do ratchet semanal.
+**Causa raiz:** O `npm run build` executa como prefixo `node scripts/guard-canonical-project.mjs` (fase 3/3 DOCS), que falhou ao encontrar `analise-branches/dossies/devin-probe-e184-legacy-refs.md:28` mencionando `pqpdolkaeqlyzpdpbizo` sem marcador `[LEGACY_INFORMATIVO]`. **NÃO é causado pelo ESLint/P53** — `npm run build` não invoca ESLint. Mesma raiz de P43 (arquivo existia antes do `df94410cb`). Evidência: job 125182809977 step "Build Vite" falhou em 0s com `[DOCS] 1 menção(ões) ao ID legado sem marcador` antes de qualquer chamada ao ESLint.
 
-**Ação necessária:** Lovable/PO corrigir os 3 ESLint errors no código do kit-builder (P53).
+**Ação necessária:** Correção já presente no PR #3028/PR #3023 — linha 28 de `analise-branches/dossies/devin-probe-e184-legacy-refs.md` contém `[LEGACY_INFORMATIVO]`. Merge do PR #3028 resolve a causa raiz.
 
 ---
 
@@ -2900,9 +2904,13 @@ FAIL  tests/integration/kit-coverage.integration.test.ts
 **Run:** [41368799754](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41368799754) (sha `df94410cb`)
 **Conclusão:** `failure`
 
-**Causa raiz:** Jobs cancelados por timeout ou concorrência com o Gate Final que falhou em Gate 1 (P53). Pré-existente: mesma natureza dos cancelamentos da Nightly Full CI (P60 e P53 cascadeiam para cancelar jobs dependentes).
+**Causa raiz (dois mecanismos independentes — sem relação com Gate Final ou P53):**
+1. **`rupture-horizon`** (job 125047456934): 4 testes falharam imediatamente com `[loginAs] E21 — modo estrito: E2E_ADMIN_EMAIL/PASSWORD ausentes em CI` (`helpers/auth.ts:215`) — segredos de E2E autenticado não configurados nos segredos do repositório. Mesma raiz de P49/P52.
+2. **`dashboard`, `filter`, `future-stock`** (jobs 125047456663/669/744): cancelados após atingir timeout de 20min configurado no workflow — os testes `chromium-authed` iniciam mas ficam bloqueados sem credenciais de autenticação. O mecanismo de cancelamento é o `timeout-minutes: 20` do próprio job, não concorrência com Gate Final.
 
-**Ação necessária:** Lovable/PO corrigir P53 (ESLint errors) que causa o cascade de cancelamentos.
+O workflow E2E Stock Matrix é independente do deploy-gates.yml — não há cascade de P53.
+
+**Ação necessária:** Configurar segredos `E2E_ADMIN_EMAIL` e `E2E_ADMIN_PASSWORD` no repositório (Settings → Secrets), ou criar um `SKIP_AUTHED_TESTS` flag para CI sem credenciais.
 
 ---
 ## P64 — Vercel build failure: deploy falha no PR #3028 (2026-11-02)

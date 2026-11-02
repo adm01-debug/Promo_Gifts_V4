@@ -642,7 +642,7 @@ Auth surface fuzz ([41393041456](https://github.com/adm01-debug/Promo_Gifts_V4/a
 | Categoria | Qtd | Ação |
 |---|---|---|
 | Corrigidos e validados com success no PR #3028 | 11 | ✅ Merge do PR #3028 aplica os fixes |
-| Bloqueados por policy de actions (P40) | 5+ | ❌ PO: Settings → Actions → General → Allow all actions |
+| Bloqueados por policy de actions (P40) | 5+ | ❌ PO: Settings → Actions → General → adicionar `gitleaks/gitleaks-action` e `googleapis/release-please-action` à allowlist (NÃO escolher "Allow all actions") |
 | Bloqueados por ESLint errors Lovable (P53) | 3 | ❌ Lovable/PO: corrigir 3 erros no kit-builder |
 | Bloqueados por Gate E40 ledger drift (P7) | 1 | ❌ DBA/PO: reconciliação de ledger |
 | Bloqueados por E2E pré-existentes (P49-P63) | 10+ | ❌ Lovable/PO: fixtures, selectors, baselines |
@@ -675,16 +675,16 @@ Auth surface fuzz ([41393041456](https://github.com/adm01-debug/Promo_Gifts_V4/a
 | 5 | Security Scan | [41368799724](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41368799724) | startup_failure: action terceiro bloqueada (P40) | P40 | ❌ Requer PO |
 | 6 | Edge Integration Tests — All Functions | [41368799780](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41368799780) | startup_failure: action terceiro bloqueada (P38/P40) | P38, P40 | ❌ Requer PO |
 | 7 | SSOT Supabase Guard | [41368799775](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41368799775) | guard-canonical-project: LEGACY_INFORMATIVO ausente (P60) | P60 | Fix presente em PR #3028; merge bloqueado por P7 |
-| 8 | Branch Protection Sentinel | [41368799721](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41368799721) | Commit Lovable não segue conventional commits (P61) | P61 | ❌ Requer Lovable/PO |
+| 8 | Branch Protection Sentinel | [41368799721](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41368799721) | Commit `df94410` não satisfaz nenhuma das 7 regras sentinel — regra 4 (Lovable family) não disparou por mismatch de identidade git do committer (P61) | P61 | ❌ Requer Lovable/PO |
 | 9 | CI Security & Drift Checks | [41397001699](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41397001699) | ESLint errors kit-builder — cascade P53 (P44) | P44, P53 | ❌ Requer Lovable/PO |
 | 10 | E2E — Critical Flows & Error Boundaries | [41368799786](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41368799786) | E2E autenticado — pré-existente (P52) | P49, P52 | ❌ Requer Lovable/PO |
 | 11 | E2E • Swatch QuickView | [41368799830](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41368799830) | Swatch picker V2 — pré-existente (P59) | P51, P59 | ❌ Requer Lovable/PO |
 | 12 | E2E — Personalization Flow | [41368799901](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41368799901) | E2E autenticado — pré-existente (P50) | P42, P50 | ❌ Requer Lovable/PO |
-| 13 | E2E Stock — Matrix (E80) | [41368799754](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41368799754) | Jobs cancelados — cascade P53 (P63) | P63 | ❌ Requer Lovable/PO |
+| 13 | E2E Stock — Matrix (E80) | [41368799754](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41368799754) | rupture-horizon: E2E_ADMIN credentials ausentes (E21); dashboard/filter/future-stock: timeout 20min — sem cascade de P53 (P63) | P63 | ❌ Requer PO: configurar secrets E2E |
 | 14 | E2E Focused UI — Matrix (E78) | [41375525391](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41375525391) | swatch→QV — pré-existente (P51/P59) | P51, P59 | ❌ Requer Lovable/PO |
 | 15 | Kit Coverage — Integration | [41384748861](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41384748861) | Test timeout BD externo (P54) + cascade P53 | P53, P54 | ❌ Requer PO/DBA |
 | 16 | Nightly Full CI | [41379357529](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41379357529) | P53 + E2E pré-existentes (P51/P52) | P51, P52, P53, P60 | ❌ Requer Lovable/PO |
-| 17 | Ratchet Weekly — Baixar baselines | [41416885115](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41416885115) | Vite build falha cascade P53 (P62) | P62 | ❌ Requer Lovable/PO |
+| 17 | Ratchet Weekly — Baixar baselines | [41416885115](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41416885115) | guard-canonical-project.mjs fase 3: LEGACY_INFORMATIVO ausente em devin-probe — independente de P53 (P62) | P62 | ✅ Fix no PR #3028 (merge resolve) |
 | 18 | Uptime Monitor | [41421634955](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41421634955) | Probe infra externa (P41/P55) | P41, P55 | ❌ Requer PO/infra |
 
 ### Correções confirmadas no PR #3028 (branch `claude/laughing-cori-o9w35e`)
@@ -720,7 +720,7 @@ Auth surface fuzz ([41393041456](https://github.com/adm01-debug/Promo_Gifts_V4/a
 |---|---|---|
 | P7 — Gate E40 ledger (1.140 local × 673 remote) | DBA/PO | Deploy Gates (bloqueia merge do PR #3028) |
 | P40 — Actions policy (startup_failure) | PO: Settings → Actions → General | Gitleaks, Release Please, Security Scan, Edge Integration Tests |
-| P53 — ESLint errors Lovable `df94410cb` | Lovable/PO | CI Security, SSOT Guard, Kit Coverage, Nightly Full CI, Ratchet Weekly, E2E Stock, Branch Sentinel |
+| P53 — ESLint errors Lovable `df94410cb` | Lovable/PO | CI Security, SSOT Guard, Kit Coverage, Nightly Full CI, Branch Sentinel |
 | P49-P63 — E2E pré-existentes | Lovable/PO | E2E Critical Flows, E2E Swatch, E2E Personalization, E2E Focused UI, E2E Stock |
 | P41/P55 — Uptime Monitor | PO/infra | Uptime Monitor |
 
