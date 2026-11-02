@@ -1,15 +1,34 @@
 {
   "session": "01Ss1tXZ4cAbxBvdmu95uNPz",
-  "data": "2026-11-01",
-  "main_sha": "a25070630788f77b297431665878319ad74bb587",
-  "total_prs": 27,
-  "analisados": 27,
+  "data": "2026-11-02",
+  "main_sha_inicial": "a25070630788f77b297431665878319ad74bb587",
+  "main_sha_final": "0a8a17f92212e3375529bcbc901981829b432d72",
+  "total_prs": 40,
+  "analisados": 40,
   "verditos": {
-    "JA_EM_MAIN": [2940, 2944, 2952, 2988, 2990, 2991, 2992, 2993],
-    "DECISAO_HUMANA": [2941, 2948, 2950, 2951, 2958, 2961, 2965, 2966, 2967, 2969, 2970, 2971, 2973, 2976, 2978, 2979, 2980, 2981, 2982],
-    "MERGEAR": [],
-    "NAO_MERGEAVEL": []
+    "JA_EM_MAIN": [2940, 2944, 2952, 2979, 2981, 2988, 2990, 2991, 2992, 2993, 2996],
+    "NAO_MERGEAVEL": [2950, 2965, 2970, 2971],
+    "DECISAO_HUMANA": [2941, 2948, 2951, 2958, 2961, 2966, 2967, 2969, 2973, 2976, 2978, 2980, 2982, 2998, 3001, 3003, 3004, 3006, 3012, 3014, 3015, 3016, 3017],
+    "MERGEADA_PO": [3018],
+    "MERGEADA_AGENTE": [3020]
   },
-  "mergeadas_por_agente": [],
+  "mergeadas_por_agente": [3020],
+  "mergeadas_por_po_nesta_sessao": [3018],
+  "detalhes_merges": {
+    "3018": {
+      "titulo": "docs(analise-branches): relatório rev88 + baseline",
+      "merge_commit": "8b84f38f51d3a335f9c7c95ee63678540180be34",
+      "hora": "2026-11-02T00:15:33Z",
+      "tipo": "merge",
+      "mergeado_por": "adm01-debug"
+    },
+    "3020": {
+      "titulo": "chore(main): release 1.7.0",
+      "merge_commit": "0a8a17f92212e3375529bcbc901981829b432d72",
+      "hora": "2026-11-02",
+      "tipo": "squash",
+      "mergeado_por": "agente"
+    }
+  },
   "status": "completo"
 }
