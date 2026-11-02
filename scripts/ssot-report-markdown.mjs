@@ -47,10 +47,11 @@ const esc = (s) =>
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
     .replace(/\|/g, '\\|')
     .replace(/\r?\n/g, ' ');
 const fence = (s, lang = '') =>
-  '```' + lang + '\n' + String(s ?? '').replace(/```/g, '`\u200b``') + '\n```';
+  '```' + lang + '\n' + String(s ?? '').replace(/```/g, '`​``') + '\n```';
 const badge = (ok) => (ok ? '🟢 PASS' : '🔴 FAIL');
 
 // Heurística: conta linhas do stderr que "parecem erro" para dar sinal ao revisor.

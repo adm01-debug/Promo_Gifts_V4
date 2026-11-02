@@ -104,6 +104,7 @@ jobs:
       # CHECK 3: smoke test da RPC get_profile_and_roles
       # ─────────────────────────────────────────────────
       - name: 🩺 RPC get_profile_and_roles smoke test
+        if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
         run: node scripts/check-rpc-get-profile-and-roles.mjs --require-live
         env:
           SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
@@ -113,6 +114,7 @@ jobs:
       # CHECK 4: verifica que anon NÃO tem EXECUTE na RPC
       # ─────────────────────────────────────────────────
       - name: 🚫 Verify anon cannot execute RPC
+        if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
         run: node scripts/check-rpc-permissions.mjs --require-live
         env:
           SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}

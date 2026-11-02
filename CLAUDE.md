@@ -1,6 +1,6 @@
 # CLAUDE.md — Instruções para Claude Code (sessões automáticas)
 # Lido pelo Claude Code ao iniciar cada sessão neste repositório.
-# Última atualização: 2026-10-29 — E056 aplica a proibição de DDL via execute_sql a todos os agentes; AGENTS.md espelhado.
+# Última atualização: 2026-10-31 — E056 proíbe DDL via execute_sql a todos os agentes; REGRA #9 exige PR para governança.
 # 2026-10-15: baseline do drift-check + comandos que apagam o ledger (REGRA #8). 2026-10-14: E88/E89/E91/E92.
 
 ## CONTEXTO DO PROJETO
@@ -343,35 +343,34 @@ PR #1899).
 
 ---
 
-## REGRA #9 — SESSÃO QUE GERA COMMIT DE GOVERNANÇA TERMINA COM `git push`
+## REGRA #9 — MUDANÇAS DE GOVERNANÇA EXIGEM PR
 
-**Por quê:** em 2026-09-17, uma auditoria encontrou 29+ commits que existiam
-só localmente havia múltiplas sessões — incluindo os dois workflows mais
-importantes do plano DBA (`db-apply-migration.yml`/E15, o único caminho
-autorizado para aplicar migration; `ddl-out-of-band-detector.yml`/E12).
-Enquanto não enviados, essas proteções **não existiam** do ponto de vista de
-quem revisa no GitHub — mesmo efeito prático de nunca terem sido construídas.
-A causa foi processual, não técnica: nenhuma sessão anterior deu `git push`
-ao terminar. Ver `docs/plans/PLANO_ENGENHARIA_SENIOR_50_ETAPAS_2026-09-17.md`
+**Por quê:** em 2026-09-17, uma auditoria encontrou 29+ commits de governança
+que existiam só localmente havia múltiplas sessões. Mesmo após um `git push`,
+proteções sem PR não passavam por revisão e podiam permanecer invisíveis para
+quem precisava validar segurança e CI. Ver `docs/plans/PLANO_ENGENHARIA_SENIOR_50_ETAPAS_2026-09-17.md`
 §1 (achado #1) e `docs/POSMORTEM_COMMITS_LOCAIS_2026-09-17.md`.
 
 ### SEMPRE faça:
-- Se a sessão criar 1+ commit relevante para segurança, CI/CD ou governança
-  (workflows, gates, migrations, scripts `check:*`) → `git push` ao final da
-  sessão e **abrir PR** — nunca deixar orphan branch.
-- Arquivos de governança críticos (`.github/**`, `CODEOWNERS`, `supabase/migrations/**`,
-  `scripts/check-*`, `.gitleaks.toml`) exigem PR aberto (não apenas push). A revisão
-  humana é parte do processo — commit de governança sem PR aberto = proteção invisível.
-- Se o branch já tiver PR aberto → nada extra a fazer, o push já o atualiza.
+- Toda mudança em `.github/**`, `CODEOWNERS`, `supabase/migrations/**`,
+  `scripts/check-*` ou `.gitleaks.toml` exige PR, inclusive quando o autor
+  também é CODEOWNER. A revisão é parte obrigatória da proteção.
+- Mudanças relevantes de segurança, CI/CD ou governança fora dessa lista também
+  devem ser publicadas em branch e revisadas por PR antes de integrar.
+- Se o branch já tiver PR aberto, envie os novos commits para essa branch e
+  mantenha o PR atualizado; não deixe trabalho de governança sem revisão.
+- Push direto em `main` só é permitido para reverter um incidente em curso;
+  registre o postmortem no mesmo dia e abra PR para reconciliar a correção.
 
 ### NUNCA faça:
-- Terminar uma sessão de governança/segurança com commits só no disco local,
-  assumindo que "a próxima sessão empurra".
+- Integrar mudanças de governança por push direto em `main`, exceto a reversão
+  urgente descrita acima.
+- Encerrar trabalho de governança apenas com commits locais ou branch publicada
+  sem PR, assumindo que outra sessão concluirá a revisão.
 - Fazer `git push --force` em branch compartilhado sem confirmação explícita
-  do humano (isso continua exigindo aprovação — REGRA #9 pede push normal,
-  não força bruta).
-- Fazer push de arquivos de governança sem abrir PR — push solitário deixa
-  proteções reais ocultas da revisão (incidente 2026-09-17: 29 commits locais).
+  do humano.
+- Fazer push de arquivos de governança sem abrir PR; a publicação isolada não
+  substitui a revisão exigida.
 
 ---
 
@@ -441,7 +440,7 @@ sequência; se qualquer um falhar, o deploy é bloqueado.
 | Gate 1.16 | Quotes list invariants — integridade da listagem de orçamentos | step | sim |
 | Gate 1.17 | CODEOWNERS coverage de gate files (E72) | step | sim |
 | Gate 1.18 | Ledger de conflitos semânticos (E188) — PRs de agentes diferentes bloqueados sem aprovação | step | sim |
-| Gate E23 | Secrets check — sem referências a segredos não declarados em `SEGREDOS.md` | job | sim |
+| Gate E23 | Sinalizador `has_e2e` — informa se Gate 3 pode executar testes autenticados | job | não (Gate 3 falhará se for pulado em push ou PR confiável) |
 | Gate 2 | Testes unitários (`vitest`) — job `unit-tests` | job | sim |
 | Gate 2.5 | Integridade transacional PostgreSQL — job `database-integrity` | job | sim |
 | Gate 3 | E2E Smoke (Playwright, chromium) — job `e2e-smoke` | job | sim |

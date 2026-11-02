@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
-import { mkdirSync, writeFileSync, rmSync, existsSync } from 'fs';
+import { mkdirSync, mkdtempSync, writeFileSync, rmSync, existsSync } from 'fs';
 import { execFileSync } from 'child_process';
 import { join } from 'path';
 import { tmpdir } from 'os';
@@ -17,7 +17,7 @@ import { tmpdir } from 'os';
 
 const LEGACY = 'pqpdolkaeqlyzpdpbizo';
 const CANON = 'doufsxqlfjyuvxuezpln';
-const SANDBOX = join(tmpdir(), 'ssot-fuzz-' + Date.now());
+const SANDBOX = mkdtempSync(join(tmpdir(), 'ssot-fuzz-'));
 const SCRIPT = join(process.cwd(), 'scripts/guard-canonical-project.mjs');
 
 function run(cwd: string) {

@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import path from 'node:path';
 import { readFileSync, writeFileSync } from 'node:fs';
+import { pathToFileURL } from 'node:url';
 import ts from 'typescript';
 
 const REPO_ROOT = process.cwd();
@@ -66,7 +67,8 @@ function graphNodeIndex(graph) {
     const key = `${source}\0${node.label}`;
     if (!byFileAndLabel.has(key)) byFileAndLabel.set(key, []);
     byFileAndLabel.get(key).push(node);
-    if (node.label === path.posix.basename(source) && !fileNodeBySource.has(source)) {
+    if (node.label === path.posix.basename(source) && node.id === graphFileId(source) &&
+        node.source_location === 'L1' && !fileNodeBySource.has(source)) {
       fileNodeBySource.set(source, node);
     }
   }
@@ -100,27 +102,6 @@ function declarationNode(graph, indexes, declaration, name, root) {
   return node;
 }
 
-function fileNode(graph, indexes, sourceFile, root) {
-  const source = normalizePath(sourceFile.fileName, root);
-  const existing = indexes.fileNodeBySource.get(source);
-  if (existing) return existing;
-  const id = graphFileId(source);
-  const collision = indexes.byId.get(id);
-  if (collision) return collision;
-  const node = {
-    id,
-    label: path.posix.basename(source),
-    _origin: 'typescript-compiler-api',
-    file_type: 'code',
-    source_file: source,
-    source_location: 'L1',
-  };
-  graph.nodes.push(node);
-  indexes.byId.set(id, node);
-  indexes.fileNodeBySource.set(source, node);
-  return node;
-}
-
 export function enrichGraphWithTypeReferences(graph, program, { root = REPO_ROOT } = {}) {
   if (!Array.isArray(graph?.nodes) || !Array.isArray(graph?.links)) {
     throw new TypeError('Graphify JSON inválido: esperado nodes e links.');
@@ -129,7 +110,8 @@ export function enrichGraphWithTypeReferences(graph, program, { root = REPO_ROOT
   const indexes = graphNodeIndex(graph);
   const edgeByPair = new Map();
   let skippedExternal = 0;
-  let skippedUnmapped = 0;
+  let skippedUnmappedSources = 0;
+  let skippedUnmappedTargets = 0;
   const rootResolved = path.resolve(root);
 
   for (const sourceFile of program.getSourceFiles()) {
@@ -138,7 +120,13 @@ export function enrichGraphWithTypeReferences(graph, program, { root = REPO_ROOT
     const sourceRelative = path.relative(rootResolved, sourceAbsolute);
     if (sourceRelative.startsWith('..') || path.isAbsolute(sourceRelative)) continue;
     if (!/\.(?:ts|tsx|mts|cts)$/i.test(sourceRelative)) continue;
-    const fromNode = fileNode(graph, indexes, sourceFile, rootResolved);
+    if (sourceRelative.split(path.sep).includes('node_modules')) continue;
+    const source = normalizePath(sourceRelative);
+    const fromNode = indexes.fileNodeBySource.get(source);
+    if (!fromNode) {
+      if (referenceLocations(sourceFile).length > 0) skippedUnmappedSources += 1;
+      continue;
+    }
     for (const reference of referenceLocations(sourceFile)) {
       const symbol = typeSymbolAt(checker, reference);
       if (!symbol) continue;
@@ -153,7 +141,7 @@ export function enrichGraphWithTypeReferences(graph, program, { root = REPO_ROOT
         }
         const targetName = declaration.name.text;
         const targetNode = declarationNode(graph, indexes, declaration, targetName, rootResolved);
-        if (!targetNode) { skippedUnmapped += 1; continue; }
+        if (!targetNode) { skippedUnmappedTargets += 1; continue; }
         if (fromNode.id === targetNode.id) continue;
         const key = `${fromNode.id}\0${targetNode.id}`;
         const entry = edgeByPair.get(key) ?? { source: fromNode.id, target: targetNode.id, name: targetName, count: 0, line: 0 };
@@ -186,7 +174,7 @@ export function enrichGraphWithTypeReferences(graph, program, { root = REPO_ROOT
     existing.add(key);
     added += 1;
   }
-  return { candidates: edgeByPair.size, added, skippedExternal, skippedUnmapped };
+  return { candidates: edgeByPair.size, added, skippedExternal, skippedUnmappedSources, skippedUnmappedTargets };
 }
 
 function createProgram(configPath) {
@@ -197,12 +185,13 @@ function createProgram(configPath) {
   return ts.createProgram({ rootNames: parsed.fileNames, options: parsed.options });
 }
 
-if (import.meta.url === new URL(`file://${process.argv[1]}`).href) {
+if (process.argv[1] && import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href) {
   const graph = JSON.parse(readFileSync(GRAPH_PATH, 'utf8'));
   const program = createProgram(CONFIG_PATH);
   const result = enrichGraphWithTypeReferences(graph, program);
   writeFileSync(GRAPH_PATH, `${JSON.stringify(graph)}\n`);
   console.log(`[graphify-types] ${result.added} arestas references_type adicionadas; ` +
     `${result.candidates} pares encontrados; ${result.skippedExternal} referências externas ignoradas; ` +
-    `${result.skippedUnmapped} declarações sem nó mapeável.`);
+    `${result.skippedUnmappedSources} arquivos de origem sem nó no mapa; ` +
+    `${result.skippedUnmappedTargets} declarações internas sem nó mapeável.`);
 }

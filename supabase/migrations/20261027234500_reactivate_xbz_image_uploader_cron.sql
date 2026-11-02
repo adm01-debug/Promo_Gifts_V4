@@ -10,6 +10,22 @@ DECLARE
   _job_id bigint;
   _active boolean;
 BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM vault.decrypted_secrets
+    WHERE name = 'XBZ_IMAGE_UPLOADER_CRON_SECRET'
+  ) THEN
+    RAISE EXCEPTION 'Pré-condição falhou: XBZ_IMAGE_UPLOADER_CRON_SECRET não encontrado no vault';
+  END IF;
+
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_proc p
+    JOIN pg_namespace n ON n.oid = p.pronamespace
+    WHERE n.nspname = 'public' AND p.proname = 'get_edge_function_secret'
+      AND pg_get_functiondef(p.oid) ILIKE '%XBZ_IMAGE_UPLOADER_CRON_SECRET%'
+  ) THEN
+    RAISE EXCEPTION 'Pré-condição falhou: secret XBZ não está no allowlist de get_edge_function_secret';
+  END IF;
+
   SELECT jobid, active
     INTO _job_id, _active
     FROM cron.job

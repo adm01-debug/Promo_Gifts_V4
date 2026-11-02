@@ -170,9 +170,14 @@ export interface KitIdentity {
   isFavorite?: boolean;
 }
 
+/** How the kit was initiated in this session. Not persisted to DB yet. */
+export type KitOrigin = 'ai' | 'manual' | 'template';
+
 export interface KitState {
   name: string;
   kitType: KitType;
+  /** Session-only: how the kit was started. Undefined for loaded drafts. */
+  origin?: KitOrigin;
   box: KitBox | null;
   items: KitItem[];
   personalization: KitPersonalization;

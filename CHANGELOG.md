@@ -5,6 +5,133 @@ Todas as mudanças notáveis deste projeto são documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/),
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.7.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.6.1...v1.7.0) (2026-11-02)
+
+
+### Features
+
+* **kit-builder:** FT-113 — campo origin no KitState (frontend-only) ([83cb439](https://github.com/adm01-debug/Promo_Gifts_V4/commit/83cb43936c6850311edf9a7eee6c7c4d5321a0ed))
+* **kit-builder:** FT-115 — FavoriteToggleButton em kit templates e cards AI ([e56f2ca](https://github.com/adm01-debug/Promo_Gifts_V4/commit/e56f2ca74aaa0fd590687acd2392b70ab594eb71))
+* **kit-builder:** FT-118 — detecção de conflito 40001 no auto-save ([cbacfaa](https://github.com/adm01-debug/Promo_Gifts_V4/commit/cbacfaaa63eefb6374e2b96e4967f13983681f49))
+* **kit-builder:** FT-119 — backup beforeunload em localStorage ([78b32dd](https://github.com/adm01-debug/Promo_Gifts_V4/commit/78b32ddd52df18efb34452295a778ade7ad1eafb))
+
+
+### Bug Fixes
+
+* **cron:** escalonar schedules para eliminar job startup timeout — CRON-001 ([58242ce](https://github.com/adm01-debug/Promo_Gifts_V4/commit/58242ce1bb12e544fc39039e12adec92b34368e9))
+* **dx:** aumenta heap do Node no pre-push de 2048 para 4096 MB ([#2991](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2991)) ([331d50f](https://github.com/adm01-debug/Promo_Gifts_V4/commit/331d50f8937e2572993e851866237b236d419410))
+* **e2e:** corrige falhas no swatch-picker-v2 — auth loading + overlay click + E108 satélite ([6965ec1](https://github.com/adm01-debug/Promo_Gifts_V4/commit/6965ec158fb5e53bf2e59dba92cd652efa6e0442))
+* **kit-builder:** separa mensagem de erro 503/504 de 429/timeout (FT-136) ([#2979](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2979)) ([3bf5820](https://github.com/adm01-debug/Promo_Gifts_V4/commit/3bf5820259f56d1c3118bb2380c4ad1a745ee377))
+* **security:** remove entrada stale mcp_kv_get da allowlist lint-0029 ([95689d5](https://github.com/adm01-debug/Promo_Gifts_V4/commit/95689d5b9dde131fd8428b7c928dfb5f25a0bd82))
+* **stock:** TS2339 em useRuptureAlerts — precedência do cast as/await (SB-0003) ([68d809c](https://github.com/adm01-debug/Promo_Gifts_V4/commit/68d809ccb9ef617549655709b9ee3c0f76346466))
+* **ux:** FT-172/107/108/220 — UX batch7 ([#2981](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2981)) ([91d4bee](https://github.com/adm01-debug/Promo_Gifts_V4/commit/91d4bee21631de745b5908155ccab5a82548a4fe))
+
+## [1.6.1](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.6.0...v1.6.1) (2026-11-01)
+
+
+### Bug Fixes
+
+* **ci-gates:** endurece validação de credenciais e policies ([#2939](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2939)) ([70ffed1](https://github.com/adm01-debug/Promo_Gifts_V4/commit/70ffed17e24cf77829ed3dc2374ec81e5f10ba9c))
+* **ci:** autentica integração Kit Coverage com usuário E2E ([#2936](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2936)) ([e3ec559](https://github.com/adm01-debug/Promo_Gifts_V4/commit/e3ec559d77349f80847dc7e0046252647f28ef26))
+* **ci:** corrige erros TypeScript e persistência do tour de kits ([#2933](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2933)) ([b78ab0a](https://github.com/adm01-debug/Promo_Gifts_V4/commit/b78ab0a3c5afe45656efeacc694d711060d73441))
+* **db:** protege kill_switch_hits contra INSERT anônimo sem limite ([#2938](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2938)) ([23f634d](https://github.com/adm01-debug/Promo_Gifts_V4/commit/23f634de7b43e9183e64feb99d2bf52b692e4a38))
+* **db:** reconciliar migrations pendentes com o canônico ([#2937](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2937)) ([b817fa2](https://github.com/adm01-debug/Promo_Gifts_V4/commit/b817fa2a3bb1f6a56b9bb2e03cfa4dcc5943897e))
+* **db:** rollback exigido pelo preflight nas migrations 202000 e 201000 ([#2946](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2946)) ([d2033d9](https://github.com/adm01-debug/Promo_Gifts_V4/commit/d2033d9237fa72971ff9c92ca47442f7437463ff))
+* **e2e:** isola servidor Vite no CI de paridade ([#2935](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2935)) ([b3bd05b](https://github.com/adm01-debug/Promo_Gifts_V4/commit/b3bd05bcb6699c66489e9f9190498f50db85d5ad))
+* **edge-fn:** autentica antes de consultar circuit breaker do CRM ([#2934](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2934)) ([26cdb52](https://github.com/adm01-debug/Promo_Gifts_V4/commit/26cdb52278c7198c0862f99aad1dd6dd2cd8b550))
+* vw_system_health_quick deixa de checar tabela de backup apagada ([#2920](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2920)) ([4347686](https://github.com/adm01-debug/Promo_Gifts_V4/commit/4347686438c319103da9754c7ebd8f3391905212))
+
+## [1.6.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.5.0...v1.6.0) (2026-11-01)
+
+
+### Features
+
+* **admin:** wira rota /admin/audit-suite para AuditReport [FT-059] ([#2902](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2902)) ([cbbabc2](https://github.com/adm01-debug/Promo_Gifts_V4/commit/cbbabc2f37792d2a7e5e39f513d655b0106fbadf))
+* religa salvar/usar template de carrinho no CartSidebar ([#2884](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2884)) ([f99f36a](https://github.com/adm01-debug/Promo_Gifts_V4/commit/f99f36ae169864cbe48e12a846c37cb30794f45e))
+
+
+### Bug Fixes
+
+* **ci:** corrige autenticação e rota nos testes visuais noturnos ([#2859](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2859)) ([1440eba](https://github.com/adm01-debug/Promo_Gifts_V4/commit/1440ebafdab33a3773e2c2d99cb9fa2c4b8e00d3))
+* **ci:** registra status HTTP no monitor de uptime ([#2821](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2821)) ([fc602ec](https://github.com/adm01-debug/Promo_Gifts_V4/commit/fc602ec23ba0f1a3859f709878339c7213d99bb8))
+* **ci:** shellcheck SC2010/SC2086 em db-apply-migration e update-snapshots ([#2898](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2898)) ([28cee3d](https://github.com/adm01-debug/Promo_Gifts_V4/commit/28cee3d48c792f6c7c191cb6073daaa0947a1f92))
+* **deps:** override minimatch para ^11.0.1 — resolve Dependabot [#84](https://github.com/adm01-debug/Promo_Gifts_V4/issues/84) ([#2925](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2925)) ([350fca9](https://github.com/adm01-debug/Promo_Gifts_V4/commit/350fca9c6dc4b0dd8d767f029cd934c6f2363c6c))
+* limita p_limit a 100 em fn_global_search (endpoint público anon) ([#2916](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2916)) ([bdb659c](https://github.com/adm01-debug/Promo_Gifts_V4/commit/bdb659c499478e0e770784d7867524c7f75589ce))
+* **mockup:** gerador — medidas, timeout 30 s, lote parcial, editor de logo (entregas VPS) ([#2739](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2739)) ([294cee8](https://github.com/adm01-debug/Promo_Gifts_V4/commit/294cee83893d4954f70f7986e098adf91caf9612))
+* **perf:** PERF-005 — drop 64 índices unused (idx_scan=0, ~200MB) ([#2930](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2930)) ([5ebece5](https://github.com/adm01-debug/Promo_Gifts_V4/commit/5ebece52afb26f8ccdc8d34fa6ccd3c8ad92f5f1))
+* remove função de DDL e revoga EXECUTE de authenticated em função de limpeza de sessões ([#2922](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2922)) ([0b3c724](https://github.com/adm01-debug/Promo_Gifts_V4/commit/0b3c7242779b6809b0ef096087928f39e6ee0938))
+* SB-0003 restaurar acesso a mv_stock_rupture_alert via RPC com guarda de papel ([#2893](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2893)) ([bd54e88](https://github.com/adm01-debug/Promo_Gifts_V4/commit/bd54e8842677f59b90cb88ea365b23594d68ce23))
+* **types:** sincroniza idempotency_key de notificações ([#2822](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2822)) ([4f91aa0](https://github.com/adm01-debug/Promo_Gifts_V4/commit/4f91aa08e4707eb055f5f3a5e403614bbb9df3e4))
+
+## [1.5.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.4.1...v1.5.0) (2026-11-01)
+
+
+### Features
+
+* atalhos de categoria na busca global (FT-064) ([#2890](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2890)) ([db02e93](https://github.com/adm01-debug/Promo_Gifts_V4/commit/db02e9332053796f960d25291077c00a94b83a90))
+
+
+### Bug Fixes
+
+* add deleted_at + stock_notes_active_idx to stock_notes (Gate 1.12) ([#2904](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2904)) ([ab053d9](https://github.com/adm01-debug/Promo_Gifts_V4/commit/ab053d95b6a7b9e422a7f66ac41881cecc6e4c19))
+* **ai:** remove respostas mock falsas e usa crypto seguro para backup codes ([#2894](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2894)) ([8d1b966](https://github.com/adm01-debug/Promo_Gifts_V4/commit/8d1b966cc9e97443a52d17fde76c90e528af610d))
+* atualiza baseline de policies com partições 2027_02 ([#2881](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2881)) ([6ddd339](https://github.com/adm01-debug/Promo_Gifts_V4/commit/6ddd339eb8e5bb2215aca3e3c5a43cb5a003d002))
+* **ci:** E007 — Gate E23 falha quando credenciais E2E ausentes ([#2875](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2875)) ([bbf69b3](https://github.com/adm01-debug/Promo_Gifts_V4/commit/bbf69b31cdb35cf4caff174b82e248bfdd9c4b3b))
+* **db:** cria tabela stock_notes ausente no banco ([#2871](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2871)) ([5ae127e](https://github.com/adm01-debug/Promo_Gifts_V4/commit/5ae127eade34db1662a92103db9e6bb3c345df03))
+* **db:** PERF-003 cron semanal VACUUM ANALYZE stock_snapshots ([c2432c5](https://github.com/adm01-debug/Promo_Gifts_V4/commit/c2432c527889bce8b07e4c72cdc29487bde98247))
+* **kit:** preserva search e hash no KitBuilderLegacyRedirect (FT-121) ([0efdc5f](https://github.com/adm01-debug/Promo_Gifts_V4/commit/0efdc5fde2eedd4554b8510d97a822a95f3cb382))
+* **realtime:** REPLICA IDENTITY FULL em tabelas de notificações (SB-0003) ([aa26352](https://github.com/adm01-debug/Promo_Gifts_V4/commit/aa263529874b3bdd70aefe69ca29e059ad505e2a))
+* **rls:** SB-0007 ai_usage_quotas SELECT isolation por user_id ([0918311](https://github.com/adm01-debug/Promo_Gifts_V4/commit/09183110d769010a509f35a529709754199d67f2))
+* **SB-0004:** UUID sentinel audit ([#2896](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2896)) ([134f3d3](https://github.com/adm01-debug/Promo_Gifts_V4/commit/134f3d394a93997b6cad6e838eb1bd9f9168c7e2))
+* SEC-004b ST-001 ST-002 ST-003 AUTH-001 — segurança storage e auth ([3716d84](https://github.com/adm01-debug/Promo_Gifts_V4/commit/3716d8458c5b743cd70f7cef988341267a36bdd1))
+* **security:** remove auth.users da publication supabase_realtime (SB-0001) ([b21a8b5](https://github.com/adm01-debug/Promo_Gifts_V4/commit/b21a8b52130e20a66440e5bf828c1cfc845ef017))
+* **security:** remove exceção overly broad scripts/.* do gitleaks ([3f336c4](https://github.com/adm01-debug/Promo_Gifts_V4/commit/3f336c4f61ee0ed648a04bd12a28761d2c6a16bf))
+* **security:** SEC-003 remove pg_temp de 45 funções SECURITY DEFINER ([07abd25](https://github.com/adm01-debug/Promo_Gifts_V4/commit/07abd259beb192c7a0802735892d5509bb57ed10))
+* **simulation:** percentis de latência reais (FT-068) ([#2892](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2892)) ([54f9d98](https://github.com/adm01-debug/Promo_Gifts_V4/commit/54f9d985d173cfa6fa8749d0f7eab9623e397435))
+
+
+### Performance Improvements
+
+* **db:** índices FK user_id em kit_quote_requests e kit_save_requests (SB-0006) ([9fb0722](https://github.com/adm01-debug/Promo_Gifts_V4/commit/9fb0722d11eaaa14be48135570adccf218c4bf58))
+* **db:** PERF-001 índices parciais para fn_pipeline_health ([658a5b8](https://github.com/adm01-debug/Promo_Gifts_V4/commit/658a5b85fc6a98ff96846b6fdfd23c9febbe8f01))
+* **rls:** cache auth.uid() via (SELECT auth.uid()) em 8 policies (SB-0005) ([2e1f3f2](https://github.com/adm01-debug/Promo_Gifts_V4/commit/2e1f3f248e068b8a082e63d774a2709eb5f178e1))
+
+## [1.4.1](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.4.0...v1.4.1) (2026-10-31)
+
+
+### Bug Fixes
+
+* **ci:** remove workflow vazio que quebra actionlint ([d4e19a6](https://github.com/adm01-debug/Promo_Gifts_V4/commit/d4e19a64990e2d232f42c7b856462271538a8f7a))
+
+## [1.4.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.3.2...v1.4.0) (2026-10-31)
+
+
+### Features
+
+* **e128:** split PromoFlixPlayer.tsx 1512→699 linhas — extrai hook usePromoFlixPlayer ([05f8d37](https://github.com/adm01-debug/Promo_Gifts_V4/commit/05f8d37e807933fe188e7564da0d547a6937d2cd))
+* **e128:** split PromoFlixPlayer.tsx 1512→699 linhas + usePromoFlixPlayer hook ([554ef41](https://github.com/adm01-debug/Promo_Gifts_V4/commit/554ef41b44c9f318777d7e7b11189490a29a8c0a))
+* **e128:** split PromoFlixPlayer.tsx 1512→699 linhas + usePromoFlixPlayer hook ([#2810](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2810)) ([554ef41](https://github.com/adm01-debug/Promo_Gifts_V4/commit/554ef41b44c9f318777d7e7b11189490a29a8c0a))
+* **E128:** split SupplierFormDialog.tsx em sub-componentes por aba ([a7c02ac](https://github.com/adm01-debug/Promo_Gifts_V4/commit/a7c02ac15934d75c623b8f5792313b471c320258))
+
+
+### Bug Fixes
+
+* adiciona usePromoFlixPlayer.ts ao baseline de as-assertions (Gate 1.9) ([577adcb](https://github.com/adm01-debug/Promo_Gifts_V4/commit/577adcb426cc36dc6bc3dadcb94d3711aadb7379))
+* **baseline:** corrige contagem de linhas de usePromoFlixPlayer.ts 624→625 ([3cdfef1](https://github.com/adm01-debug/Promo_Gifts_V4/commit/3cdfef104a4645ba455965e3b46af26bcc7f7eca))
+* **ci:** adiciona usePromoFlixPlayer.ts ao eslint-disable baseline ([b99aed4](https://github.com/adm01-debug/Promo_Gifts_V4/commit/b99aed439322e0ca52c5d918d90374fdde6997c0))
+* **ci:** adiciona usePromoFlixPlayer.ts ao file-size-baseline ([557bce2](https://github.com/adm01-debug/Promo_Gifts_V4/commit/557bce24bc29d9af1d0496cbd2c4329e95d622ee))
+* **ci:** classifica ESLint como dependência de desenvolvimento ([#2853](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2853)) ([22e8dda](https://github.com/adm01-debug/Promo_Gifts_V4/commit/22e8ddad0cc41a1bab002ac077ca31558c149dda))
+* **lint:** corrige dot-notation em badges-manager/types.ts ([#2806](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2806)) ([6dbc938](https://github.com/adm01-debug/Promo_Gifts_V4/commit/6dbc9387fedbd1118613eb07eb2315bfc1e722ea))
+* **plan:** separa alegações de evidências verificadas ([6bd5ce6](https://github.com/adm01-debug/Promo_Gifts_V4/commit/6bd5ce61c3fe5a81b3a74d763ac05851c1129f80))
+* **plan:** separa alegações de evidências verificadas ([71db806](https://github.com/adm01-debug/Promo_Gifts_V4/commit/71db806a89642b21f350e047052106a1dc704065))
+* **plan:** separa alegações de evidências verificadas ([#2836](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2836)) ([6bd5ce6](https://github.com/adm01-debug/Promo_Gifts_V4/commit/6bd5ce61c3fe5a81b3a74d763ac05851c1129f80))
+* **promoflix:** remove unused buffered var + anchor cloudflare regex ([f2ebce5](https://github.com/adm01-debug/Promo_Gifts_V4/commit/f2ebce5c1d6d175d10cd88551e8f6ca81dc4cbc7))
+* resolve conflito .file-size-baseline.json após merge PR [#2813](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2813) ([f3bb7da](https://github.com/adm01-debug/Promo_Gifts_V4/commit/f3bb7da6a837c6d8aa99260ef32d6efa70632040))
+* resolve conflito .file-size-baseline.json com main pós-2813 ([cd2b2b7](https://github.com/adm01-debug/Promo_Gifts_V4/commit/cd2b2b78d20bd1267ee722f7347ce364239191da))
+* **spotlight:** timer cleanup e134 — clearTimeout no useEffect ([ff61eec](https://github.com/adm01-debug/Promo_Gifts_V4/commit/ff61eec48743c82f7cd5bec70255062157de578c))
+* **sync:** sentinel e2e pdf — graphify SKILL.md + migration-refs-baseline + scripts ([126062c](https://github.com/adm01-debug/Promo_Gifts_V4/commit/126062c1b919c1e84b70cacf96ab3fdda7494211))
+* **ts:** E130 — noUncheckedIndexedAccess: drain indexed-access ratchet 889→867 (-22 erros) ([5edddfb](https://github.com/adm01-debug/Promo_Gifts_V4/commit/5edddfb14ee4e33008e735f3f3710e902a9b45cb))
+
 ## [1.3.2](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.3.1...v1.3.2) (2026-10-30)
 
 

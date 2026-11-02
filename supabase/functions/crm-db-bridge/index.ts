@@ -689,10 +689,6 @@ Deno.serve((req) => {
   if (wasCold) coldRequestCount++;
   console.log(`[crm-db-bridge] [req_id=${requestId}] request_start method=${req.method} was_cold=${wasCold}`);
 
-  if (!breaker.canRequest()) {
-    return circuitOpenResponse(new CircuitOpenError("crm-db"), corsHeaders);
-  }
-
   try {
     // ── AUTH PRIMEIRO ────────────────────────────────────────────────────────────────────────────────
     // Bot-protection roda DEPOIS do auth para usar userId como chave de rate limit,
@@ -704,6 +700,12 @@ Deno.serve((req) => {
     // ───────────────────────────────────────────────────────────────────────────────────────────────────────
     const auth = await authenticateRequest(req);
     if (auth.error) return auth.error;
+
+    // Uma indisponibilidade do CRM não deve mascarar a resposta de auth nem
+    // fazer chamadas anônimas receberem 503 antes do 401 esperado.
+    if (!breaker.canRequest()) {
+      return circuitOpenResponse(new CircuitOpenError("crm-db"), corsHeaders);
+    }
 
     // Hardening 4.6: Diagnosticos sensiveis exigem autenticacao
     if (diagOp === "diag") return jsonResponse(buildDiagSnapshot());
