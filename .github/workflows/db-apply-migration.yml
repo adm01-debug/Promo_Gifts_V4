@@ -274,7 +274,11 @@ jobs:
           mkdir -p /tmp/supabase-install
           wget -qO /tmp/supabase-install/supabase.tar.gz "https://github.com/supabase/cli/releases/download/v2.101.0/supabase_linux_amd64.tar.gz"
           tar -C /tmp/supabase-install -xzf /tmp/supabase-install/supabase.tar.gz
-          sudo mv /tmp/supabase-install/supabase /usr/local/bin/supabase
+          # Instala o binário principal e o companion supabase-go se presente no archive
+          sudo install -m 0755 /tmp/supabase-install/supabase /usr/local/bin/supabase
+          if [ -f /tmp/supabase-install/supabase-go ]; then
+            sudo install -m 0755 /tmp/supabase-install/supabase-go /usr/local/bin/supabase-go
+          fi
           supabase --version
 
       - name: migration repair --status applied
