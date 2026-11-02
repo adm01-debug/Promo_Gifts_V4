@@ -268,9 +268,12 @@ jobs:
           fi
 
       - name: Setup Supabase CLI
-        uses: supabase/setup-cli@45a513f8c64c0bc8e0e3dfe572b5c95be85f6359 # v2
-        with:
-          version: 2.101.0
+        run: |
+          set -euo pipefail
+          wget -qO supabase.tar.gz "https://github.com/supabase/cli/releases/download/v2.101.0/supabase_linux_amd64.tar.gz"
+          tar -xzf supabase.tar.gz
+          chmod +x supabase
+          sudo mv supabase /usr/local/bin/supabase
 
       - name: migration repair --status applied
         run: |
