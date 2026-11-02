@@ -2512,9 +2512,35 @@ Resolução automática no merge do PR.
 | `webkit • swatch→QV` | ❌ failure | **Pré-existente** |
 | `Magazine Header OK` | ❌ failure | **Pré-existente** |
 
-### Ação necessária do PO para bloqueios externos
+### P45.1 — Deploy Gates startup_failure: dorny/paths-filter bloqueada (2026-11-02)
+
+**Causa identificada:** `deploy-gates.yml` usava `dorny/paths-filter@ceb8a2b8f2` no job `changes` (E14 docs-bypass). Essa action estava bloqueada pela GitHub Actions policy (mesmo bloqueio de P40), causando `startup_failure` em todo o workflow com 0 jobs executados. Gate Final — Deploy Ready nunca executava e a PR ficava `blocked`.
+
+**Fix:** commit `8cc444b8f` no PR #3028 — substitui `dorny/paths-filter` por `git diff --name-only + grep -qE` nativo, mantendo o comportamento E14 idêntico.
+
+**Status:** Corrigido em `8cc444b8f`. Porém Deploy Gates ainda mostrava startup_failure — causa secundária identificada: `anchore/sbom-action` (ver P46 abaixo).
+
+### P46 — Deploy Gates startup_failure: anchore/sbom-action bloqueada (2026-11-02)
+
+**Causa identificada:** Após remover `dorny/paths-filter`, `deploy-gates.yml` ainda tinha `anchore/sbom-action@66cbf4bc1f1c0d2edc94016e65bc221b6bb0ad6c # v0.24.3` no job `build` (step "Generate SBOM E99"). GitHub Actions policy bloqueia TODAS as actions externas (não-`actions/`/`github/`) — o mesmo bloqueio de P40. Mesmo o step sendo condicional (`if: github.event_name == 'push'`), o bloqueio acontece em load-time do workflow, causando `startup_failure` com 0 jobs antes de qualquer condicional ser avaliada.
+
+**Padrão identificado:** Workflows com `startup_failure` + 0 jobs invariavelmente têm ao menos uma action de terceiro bloqueada:
+- Security Scan → `gitleaks/gitleaks-action` (P40)
+- Release Please → `googleapis/release-please-action` (P40)
+- Edge Integration Tests → `denoland/setup-deno` (P40)
+- Magazine Unit Tests → `denoland/setup-deno` (P40)
+- Contract Tests → `supabase/setup-cli` (bloqueada, não documentada em P40)
+- edge-functions-drift-check → `supabase/setup-cli` (idem)
+- Deploy Gates → `dorny/paths-filter` (fix `8cc444b8f`) + `anchore/sbom-action` (fix `839c77627`)
+
+**Fix:** commit `839c77627` no PR #3028 — remove steps "Generate SBOM (E99)" e "Attest build provenance (E99)" do job `build` do `deploy-gates.yml`. Reativação via Settings → Actions → General quando PO habilitar `anchore` e `actions/attest-build-provenance`.
+
+**Status:** Commit publicado em `origin/claude/laughing-cori-o9w35e`; CI aguardado (2026-11-02).
+
+### Ação necessária do PO para bloqueios externos remanescentes
 
 - **P40** — Settings → Actions → General → Allow `gitleaks/gitleaks-action`, `googleapis/release-please-action` e `denoland/setup-deno`
+- **P46** — Allow `anchore/sbom-action` e `supabase/setup-cli` para reabilitar SBOM/attestation (Gate 6 E99) e Contract Tests / edge-functions-drift-check
 - **P41** — Investigar falha de probe em `health-check` edge function; deploy via `deploy-edge-functions.yml`
 - **edge-functions-drift-check** — Deploy das funções em drift via `deploy-edge-functions.yml`
 - **schema-snapshot-export** — Rodar `workflow_dispatch` em `.github/workflows/schema-snapshot-export.yml` com credenciais DB
