@@ -2529,13 +2529,17 @@ Resolução automática no merge do PR.
 - Release Please → `googleapis/release-please-action` (P40)
 - Edge Integration Tests → `denoland/setup-deno` (P40)
 - Magazine Unit Tests → `denoland/setup-deno` (P40)
-- Contract Tests → `supabase/setup-cli` (bloqueada, não documentada em P40)
-- edge-functions-drift-check → `supabase/setup-cli` (idem)
+- Contract Tests → `supabase/setup-cli` → fix `604245aee` (substituída por wget nativo)
+- edge-functions-drift-check → `supabase/setup-cli` → fix `604245aee` (substituída por wget nativo)
+- db-schema-drift-check (reusable workflow transitivo) → `supabase/setup-cli` → fix `558a83e9a` (substituída por wget nativo)
+- schema-snapshot-export (2 ocorrências) → `supabase/setup-cli` → fix `3dcdc1a7b` (ambas substituídas por wget nativo)
 - Deploy Gates → `dorny/paths-filter` (fix `8cc444b8f`) + `anchore/sbom-action` (fix `839c77627`)
 
-**Fix:** commit `839c77627` no PR #3028 — remove steps "Generate SBOM (E99)" e "Attest build provenance (E99)" do job `build` do `deploy-gates.yml`. Reativação via Settings → Actions → General quando PO habilitar `anchore` e `actions/attest-build-provenance`.
+**Fix de `deploy-gates.yml`:** commit `839c77627` no PR #3028 — remove steps "Generate SBOM (E99)" e "Attest build provenance (E99)" do job `build`. Reativação via Settings → Actions → General quando PO habilitar `anchore` e `actions/attest-build-provenance`.
 
-**Status:** Commit publicado em `origin/claude/laughing-cori-o9w35e`; CI aguardado (2026-11-02).
+**Fix de `supabase/setup-cli`:** commits `558a83e9a`, `604245aee`, `3dcdc1a7b` — substituem `uses: supabase/setup-cli@...` por instalação nativa via `wget` do GitHub releases em 4 workflows.
+
+**Status:** Todos os fixes pushados para `origin/claude/laughing-cori-o9w35e` (PR #3028). Deploy Gates para `604245aee` está em `pending` (não `startup_failure`). Resultado final aguardado.
 
 ### Ação necessária do PO para bloqueios externos remanescentes
 
