@@ -2620,3 +2620,42 @@ Resolução automática no merge do PR.
 **Conclusão:** o PR #3028 corrigiu TODOS os bloqueios de P46 (startup_failure por actions externas nos workflows de CI). As falhas remanescentes no Gate Final (P40 e Gate E40) são pré-existentes, independentes do PR, documentadas com erro exato, e requerem ação do PO/DBA — não são regressionadas introduzidas por este PR.
 
 ---
+
+## P48 — Gate 1.13.2 (E049): trigger `trg_anon_rate_guard` ausente em `kill_switch_hits` (2026-11-02)
+
+**Detectado em:** Deploy Gates run [41402296461](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41402296461), commit `80f477ef5`, PR [#3028](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3028)
+**Job:** Gate 1 — Lint + TypeScript (job `125136939645`)
+**Step:** 21 — `Gate 1.13.2 — Anon-insert rate guard manifest (E049)` — ❌ `failure`
+
+**Erro exato:**
+```
+[anon-insert-rate-guard] failed: rate guard ausente ou desabilitado em kill_switch_hits
+result={
+  "check":"anon-insert-rate-guard",
+  "status":"failed",
+  "summary":"rate guard ausente ou desabilitado em kill_switch_hits",
+  "source":"management-api",
+  "missing":[{
+    "schema_name":"public",
+    "table_name":"kill_switch_hits",
+    "trigger_name":"trg_anon_rate_guard",
+    "function_name":"fn_anon_insert_rate_guard"
+  }],
+  "planned":[]
+}
+```
+
+**Causa raiz:** A migration `20261029160339_add_kill_switch_hits_anon_rate_guard.sql` existe em `main` (mergeada via PR #2981) mas o trigger `trg_anon_rate_guard` está ausente no banco de produção `doufsxqlfjyuvxuezpln` — drift de infraestrutura. O gate `check-anon-insert-rate-guard.mjs --gate --require-live` consulta `pg_catalog` ao vivo e detectou a ausência.
+
+**Contexto:** Commit `80f477ef5` alterou APENAS `src/hooks/stock/useRuptureAlerts.ts` (substituição de `supabase.rpc` por `untypedRpc`). Não foi introduzida nenhuma mudança de banco. A ausência do trigger é pré-existente.
+
+**Ação de mitigação para o PR (gate de PR):** Criada migration de repair `20261102063000_repair_kill_switch_hits_anon_rate_guard.sql` neste PR. A gate aceita ausência live quando uma migration NOVA no PR cria o trigger — o gate passará no próximo run.
+
+**Ação necessária para o banco (pós-merge):**
+- PO/DBA: aplicar migration `20261102063000` via `.github/workflows/db-apply-migration.yml` (`workflow_dispatch(version=20261102063000)`)
+- Proibido aplicar via `execute_sql` (REGRA E056)
+- Após aplicação, Gate 1.13.2 passará também em runs de `main`
+
+**REGRA E056 observada:** nenhum DDL foi aplicado via `execute_sql` nesta sessão.
+
+---
