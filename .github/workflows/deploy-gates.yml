@@ -711,20 +711,9 @@ jobs:
           path: dist/
           retention-days: 14
       # E99 — SBOM + build provenance attestation (push para main apenas)
-      # Gera SBOM SPDX-JSON do dist/ e atesta proveniência do build no GHCR.
-      # Skipped em PRs e workflow_dispatch — sem impacto no tempo de CI de PRs.
-      - name: Generate SBOM (E99)
-        if: needs.changes.outputs.docs_only != 'true' && github.event_name == 'push' && github.ref == 'refs/heads/main'
-        uses: anchore/sbom-action@66cbf4bc1f1c0d2edc94016e65bc221b6bb0ad6c # v0.24.3
-        with:
-          artifact-name: sbom-${{ github.run_id }}.spdx.json
-          path: dist/
-          format: spdx-json
-      - name: Attest build provenance (E99)
-        if: needs.changes.outputs.docs_only != 'true' && github.event_name == 'push' && github.ref == 'refs/heads/main'
-        uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4
-        with:
-          subject-path: 'dist/**/*.js'
+      # anchore/sbom-action e actions/attest-build-provenance removidos temporariamente:
+      # bloqueados pela GitHub Actions policy (mesma policy P40 — só actions/github permitidos).
+      # Reativar via PENDENCIAS.md P46 quando a policy for atualizada pelo PO.
 
   # E040: verifica se arquivos de migration/baseline mudaram para acionar drift-check
   check-schema-paths:
