@@ -35,47 +35,6 @@ import { ProductCardSkeleton } from '@/components/loading/ModernSkeletons';
 type ViewMode = 'grid' | 'list' | 'table';
 type SortMode = 'name' | 'newest' | 'price-asc' | 'price-desc' | 'stock';
 
-function useLoadingProgress(isLoading: boolean): number {
-  const [progress, setProgress] = useState(0);
-  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  useEffect(() => {
-    const clearAll = () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-        intervalRef.current = null;
-      }
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-        timeoutRef.current = null;
-      }
-    };
-
-    if (isLoading) {
-      clearAll();
-      setProgress(0);
-      intervalRef.current = setInterval(() => {
-        setProgress((prev) => {
-          if (prev >= 90) {
-            if (intervalRef.current) clearInterval(intervalRef.current);
-            return prev;
-          }
-          return prev + 8;
-        });
-      }, 300);
-    } else {
-      clearAll();
-      setProgress(100);
-      timeoutRef.current = setTimeout(() => setProgress(0), 800);
-    }
-
-    return clearAll;
-  }, [isLoading]);
-
-  return progress;
-}
-
 export function ReplenishmentProductGrid() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();

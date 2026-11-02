@@ -128,27 +128,6 @@ export function NoveltyProductGrid() {
     };
   }, []);
 
-  useEffect(() => {
-    if (isFetching) {
-      setLoadingProgress(0);
-      progressRef.current = setInterval(() => {
-        setLoadingProgress((prev) => {
-          if (prev >= 99) return 99;
-          if (prev >= 85) return prev + 0.3;
-          return prev + 8;
-        });
-      }, 300);
-    } else {
-      if (progressRef.current) clearInterval(progressRef.current);
-      setLoadingProgress(100);
-      const t = setTimeout(() => setLoadingProgress(0), 800);
-      return () => clearTimeout(t);
-    }
-    return () => {
-      if (progressRef.current) clearInterval(progressRef.current);
-    };
-  }, [isFetching]);
-
   // ISSUE-24 / ISSUE-46 FIX: atalho `/` foca o input visível — desktop ou mobile.
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
@@ -646,17 +625,7 @@ export function NoveltyProductGrid() {
                   exit={{ opacity: 0 }}
                   className="ml-1 inline-flex items-center"
                 >
-                  <span className="inline-block h-1 w-[53px] overflow-hidden rounded-full bg-muted/50 align-middle">
-                    <motion.span
-                      className="block h-full rounded-full bg-primary/60"
-                      initial={{ width: 0 }}
-                      animate={{ width: `${loadingProgress}%` }}
-                      transition={{ duration: 0.4, ease: 'easeOut' }}
-                    />
-                  </span>
-                  <span className="text-[11px] text-muted-foreground/60">
-                    carregando
-                  </span>
+                  <Loader2 className="h-3 w-3 animate-spin text-muted-foreground/60" aria-label="Atualizando" />
                 </motion.span>
               )}
             </AnimatePresence>
