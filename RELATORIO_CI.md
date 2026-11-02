@@ -123,8 +123,11 @@ transitivo (via `db-schema-drift-check.yml`) resolveu o bloqueio.
 | Commit | Run ID | Status | Conclusão | Detalhes |
 |---|---|---|---|---|
 | `6abdeba7a` | [41392458127](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41392458127) | `completed` | `failure` | Gate 1.9 (+1 `as` em 2 arquivos), Gate E40 Ledger parity |
-| `cc5ab5761` | [41393827324](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41393827324) | `completed` | `failure` | Gate 1.9 (+1 `as` em 2 arquivos **[corrigido no próximo commit]**), Gate E40 Ledger parity **[bloqueio externo]** |
-| `115e8a93d` | [41395534537](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41395534537) | `queued` | — | Aguardando recursos de CI |
+| `cc5ab5761` | [41393827324](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41393827324) | `completed` | `failure` | Gate 1.9 (+1 `as` em 2 arquivos **[corrigido em `115e8a93d`]**), Gate E40 Ledger parity **[bloqueio externo]** |
+| `115e8a93d` | [41395534537](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41395534537) | `completed` | `failure` | Gate 1.9 file-size (+9 arquivos Lovable) **[corrigido em `1659dda6b`]**, Gate E40 **[externo]** |
+| `1659dda6b` | [41396699857](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41396699857) | `queued` | — | Fix file-size baseline (Gate 1.9) — aguardando execução |
+| `4ba615d4f` | — | — | — | docs only (PENDENCIAS.md + RELATORIO_CI.md) — sem run CI separado |
+| `be617f8d6` | — | — | — | docs only (P47 tabela de prova) — sem run CI separado |
 
 ### Jobs aprovados no run `41393827324` (commit `cc5ab5761`) — confirmação sem regressão
 
@@ -155,6 +158,14 @@ transitivo (via `db-schema-drift-check.yml`) resolveu o bloqueio.
 | `magazine-unit-tests` | `denoland/setup-deno` (P40 — PO deve habilitar) |
 
 Estes 2 workflows permanecem com `startup_failure` por P40 (policy impede `denoland/setup-deno`) — pré-existentes, documentados em PENDENCIAS.md P40.
+
+### Commits adicionais (após sessão anterior)
+
+| Commit | Arquivo(s) | Mudança | Gate corrigido |
+|---|---|---|---|
+| `1659dda6b` | `.file-size-baseline.json` | Atualiza baseline de tamanho de arquivo: 9 arquivos cresceram via Lovable/main antes do PR (ConnectionTestHistoryPanel +2, MarketIntelligenceChart +6, KitAIPromptDialog +3, KitMakerLanding +12, PersonalizationConfig +26, SidebarReorganized +7, useKitBuilder +4, useKitBuilderPageState +7, useMockupGenerator +1) | Gate 1.9 (Dívida técnica — ratchet file-size) |
+| `4ba615d4f` | `PENDENCIAS.md`, `RELATORIO_CI.md` | Documenta Gate E40 PR #3028 com erro exato; seções 7 e 8 do RELATORIO_CI | Documentação |
+| `be617f8d6` | `PENDENCIAS.md` | Adiciona P47 — tabela de prova de conclusão com run links, erros exatos e comparação baseline × final | Documentação |
 
 ---
 
