@@ -11,7 +11,7 @@
 | `npm run lint` (ESLint) | ✅ exit 0 — 0 erros, 0 warnings (sem regressão vs baseline) |
 | `npm run build` (Vite) | ✅ exit 0 — 18.61s |
 | TypeScript (`tsc --noEmit`) | ✅ exit 0 |
-| Vitest (`npm test`) | ⏳ em execução |
+| Vitest (`npm test`) | ✅ success — Gate 2 passou no run [41405442459](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41405442459) (commit `1d93c3d51`) |
 
 ---
 
@@ -433,11 +433,11 @@ Auth surface fuzz ([41393041456](https://github.com/adm01-debug/Promo_Gifts_V4/a
 | Unit — Zod schemas | ✅ success | — | — |
 | useListUrlState (unit + fuzz) | ✅ success | — | — |
 | Migrations x Canonical schema | ❌ failure (pré-existente) | Requer DBA/PO | P7 |
-| Gate E40 - Schema Drift Check | ⏳ in_progress/queued | — | P7 |
-| Gate Final - Deploy Ready | ⏳ in_progress/queued | Falhará em Gate E40 (P7) | P7 |
-| webkit • swatch→QV | ⏳ in_progress | Pré-existente E2E visual | P49 |
-| E2E · view-no-presentation-mode | ⏳ in_progress | Pré-existente E2E | P50 |
-| audit (E2E visual parity /novidades vs /reposicao) | ⏳ in_progress | Pré-existente E2E visual | P57 |
+| Gate E40 - Schema Drift Check | ❌ failure — `local_only=1140; remote_only=673` | Confirmado no run `41405442459` | P7 |
+| Gate Final - Deploy Ready | ❌ failure — único bloqueador Gate E40 | Confirmado no run `41405442459` | P7 |
+| E2E Focused UI — Matrix (E78) / webkit • swatch→QV | ✅ **success** — resolvido em `18079fe8` | Run [41412381437](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41412381437) | P51 ✅ |
+| E2E · view-no-presentation-mode | ❌ pré-existente (não confirmado resolvido) | Ver PENDENCIAS.md | P52 |
+| audit (E2E visual parity /novidades vs /reposicao) | ❌ pré-existente (não confirmado resolvido) | Ver PENDENCIAS.md | P49/P57 |
 
 ### Baseline × Final (sem regressão confirmada)
 
@@ -467,10 +467,52 @@ Auth surface fuzz ([41393041456](https://github.com/adm01-debug/Promo_Gifts_V4/a
 | P40 | GitHub Actions policy | Actions terceiras bloqueadas pela org | PO: Settings → Actions → General |
 | P46 | Múltiplos workflows (startup_failure) | Depende do merge PR #3028 | PO: merge PR #3028 |
 | P48 | Aplicar migration `20261102063000` (kill switch rate guard) | Único caminho E15 desbloqueado após fix `ca32b695d` | PO: `workflow_dispatch` em `db-apply-migration.yml` |
-| P49 | webkit • swatch→QV | E2E visual pré-existente | Lovable/time produto |
-| P50 | E2E · view-no-presentation-mode | E2E pré-existente | Lovable/time produto |
+| P49 | audit (replenishment-stress E2E) | 2 testes falhando por timeout/410 Gone | PO/DBA |
+| P50 | E2E — Personalization Journey | E2E autenticado instável | Lovable/time produto |
+| P51 | webkit • swatch→QV / E2E Focused UI Matrix | ✅ **RESOLVIDO** — run `41412381437` em `18079fe8` | — |
+| P52 | E2E · view-no-presentation-mode | E2E snapshot visual pré-existente | Lovable/time produto |
 | P53 | CI Security & Drift + Nightly Full CI | 3 ESLint errors Lovable kit-builder em main | Lovable/PO |
 | P54 | Kit Coverage — Integration | Test timeout BD externo | PO/DBA |
 | P55 | Uptime Monitor | Probe infra externa | PO |
 | P57 | CI - Replenishment Quality Gate (audit) | E2E visual parity pré-existente | Lovable/time produto |
+
+---
+
+## Seção 13 — Estado final validado em `18079fe8` (2026-11-02, HEAD atual)
+
+**Commit HEAD:** `18079fe89` — `docs(ci): seção 12 — prova de conclusão com baseline×final e tabela de status`
+
+### Workflows confirmados para `18079fe8`
+
+| Workflow | Run | Conclusão | Observação |
+|---|---|---|---|
+| E2E Focused UI — Matrix (E78) | [41412381437](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41412381437) | ✅ success | **P51 RESOLVIDO** — webkit•swatch→QV passou |
+| E2E — Personalization Flow | [41412381128](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41412381128) | ✅ success | Fluxo de personalização passou |
+| Quote Builder Delivery Quality | [41412381041](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41412381041) | ✅ success | — |
+| E2E · Dialogs visual PR check | [41412381103](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41412381103) | ✅ success | — |
+| CodeQL | [41412380983](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41412380983) | ✅ success | — |
+| Gate 5 — Supabase Security Audit | [41412386628](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41412386628) | ❌ startup_failure | P40 — PO deve habilitar action |
+| Magazine Unit Tests | [41412385303](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41412385303) | ❌ startup_failure | P40 — PO deve habilitar action |
+| Security Scan | [41412384163](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41412384163) | ❌ startup_failure | P40 — PO deve habilitar action |
+| Edge Integration Tests | [41412383047](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41412383047) | ❌ startup_failure | P40 — PO deve habilitar action |
+
+**Gate Final - Deploy Ready:** baseado no run `41405442459` (commit `1d93c3d51`) — ❌ failure (único bloqueador: Gate E40 Ledger parity P7, pré-existente, requer DBA/PO).
+
+### Baseline local — confirmado nesta sessão
+
+| Checagem | Resultado |
+|---|---|
+| `npm ci` | ✅ exit 0 |
+| `npm run build` (Vite) | ✅ exit 0 — 15.11s |
+| `npm run lint:baseline` | ✅ exit 0 — 0 erros, 0 warnings |
+| `tsc --noEmit` | ✅ exit 0 — 0 erros |
+| Vitest (`npm test`) | ✅ success — Gate 2 passou no run [41405442459](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41405442459) |
+
+### Conclusão final
+
+- Todos os workflows corrigíveis nesta sessão foram corrigidos e validados
+- P51 (`webkit • swatch→QV`) confirmado RESOLVIDO em `18079fe8`
+- Único bloqueador do Gate Final: **Gate E40 Ledger parity (P7)** — `local_only=1140; remote_only=673` — pré-existente, requer DBA/PO
+- P40 (4 workflows com startup_failure por policy de actions): bloqueado PO
+- P49, P52, P53–P57: documentados em PENDENCIAS.md, fora do escopo de código desta sessão
 
