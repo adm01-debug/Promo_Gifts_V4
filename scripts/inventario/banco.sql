@@ -12,6 +12,15 @@
 -- Ordem de toda lista e explicita para o diff ser estavel.
 
 WITH
+proprios AS (  -- schemas do projeto fora de public: todos, menos os de sistema/Supabase/extensao (inclui
+               -- archive, cf_recon, supplier_stricker, ... automaticamente, sem lista fixa para esquecer)
+  SELECT n.oid, n.nspname FROM pg_namespace n
+   WHERE n.nspname NOT LIKE 'pg\_%'
+     AND n.nspname NOT IN ('public', 'information_schema', 'auth', 'storage', 'realtime', '_realtime',
+                           'supabase_functions', 'supabase_migrations', 'extensions', 'graphql',
+                           'graphql_public', 'vault', 'net', 'cron', 'pgsodium', 'pgsodium_masks',
+                           'pgbouncer', 'repack')
+),
 -- Linhas: count(*) exato quando a estimativa do planner fica abaixo de 200 mil; acima disso, a
 -- estimativa. reltuples = -1 (nunca analisada) tambem conta exato.
 base AS (
@@ -31,12 +40,12 @@ tabelas AS (
               ELSE b.reltuples::bigint END AS linhas
     FROM base b
 ),
-corpos AS (  -- tudo no banco que pode citar uma tabela: funcoes e views/mviews de public, analytics, internal
+corpos AS (  -- tudo no banco que pode citar uma tabela: funcoes e views/mviews de public e dos schemas proprios
   SELECT p.prosrc AS txt FROM pg_proc p JOIN pg_namespace n ON n.oid = p.pronamespace
-   WHERE n.nspname = 'public' AND p.prokind IN ('f', 'p')
+   WHERE (n.nspname = 'public' OR n.nspname IN (SELECT nspname FROM proprios)) AND p.prokind IN ('f', 'p')
   UNION ALL
   SELECT pg_get_viewdef(c.oid) FROM pg_class c JOIN pg_namespace n ON n.oid = c.relnamespace
-   WHERE n.nspname IN ('public', 'analytics', 'internal') AND c.relkind IN ('v', 'm')
+   WHERE (n.nspname = 'public' OR n.nspname IN (SELECT nspname FROM proprios)) AND c.relkind IN ('v', 'm')
 ),
 policies AS (
   SELECT tablename AS nome, count(*)::int AS n FROM pg_policies WHERE schemaname = 'public' GROUP BY 1
@@ -72,7 +81,7 @@ outros AS (  -- schemas proprios do projeto fora de public (ingestao, auditoria,
          greatest(c.reltuples, 0)::bigint AS linhas_estimadas
     FROM pg_class c JOIN pg_namespace n ON n.oid = c.relnamespace
    WHERE c.relkind IN ('r', 'p')
-     AND n.nspname IN ('cf_recon', 'supplier_stricker', 'prod_audit', 'classification_audit', 'pgmq')
+     AND n.nspname IN (SELECT nspname FROM proprios)
 )
 SELECT jsonb_build_object(
   'format_version', 1,
@@ -123,10 +132,10 @@ SELECT jsonb_build_object(
   'objetos', jsonb_build_object(
     'views', (SELECT coalesce(jsonb_agg(n.nspname || '.' || c.relname ORDER BY 1), '[]'::jsonb)
                 FROM pg_class c JOIN pg_namespace n ON n.oid = c.relnamespace
-               WHERE c.relkind = 'v' AND n.nspname IN ('public', 'analytics', 'internal', 'cf_recon', 'supplier_stricker', 'prod_audit', 'classification_audit')),
+               WHERE c.relkind = 'v' AND (n.nspname = 'public' OR n.nspname IN (SELECT nspname FROM proprios))),
     'mviews', (SELECT coalesce(jsonb_agg(n.nspname || '.' || c.relname ORDER BY 1), '[]'::jsonb)
                  FROM pg_class c JOIN pg_namespace n ON n.oid = c.relnamespace
-                WHERE c.relkind = 'm' AND n.nspname IN ('public', 'analytics', 'internal')),
+                WHERE c.relkind = 'm' AND (n.nspname = 'public' OR n.nspname IN (SELECT nspname FROM proprios))),
     'funcoes_security_definer', (SELECT coalesce(jsonb_agg(DISTINCT p.proname ORDER BY p.proname), '[]'::jsonb)
                 FROM pg_proc p JOIN pg_namespace n ON n.oid = p.pronamespace
                WHERE n.nspname = 'public' AND p.prosecdef)

@@ -55,9 +55,9 @@ describe('extrairRotas', () => {
     expect(por['/admin/seguranca'].guardas).toEqual(['ProtectedRoute', 'AdminRoute', 'DevRoute']);
   });
 
-  it('wrapper no element vira guarda e a tela e o componente de dentro', () => {
+  it('wrapper no element: a tela e o componente de dentro; error boundary nao conta como guarda', () => {
     expect(por['/magazine/:id'].componente).toBe('MagazineEditorPage');
-    expect(por['/magazine/:id'].guardas).toEqual(['ProtectedRoute', 'MagazineRoute']);
+    expect(por['/magazine/:id'].guardas).toEqual(['ProtectedRoute']); // MagazineRoute e so error boundary
     expect(por['/admin/usuarios'].grupo).toBe('adminRoutes');
   });
 

@@ -1,5 +1,5 @@
 {
- "gerado_em": "2026-11-02T14:47:24.203Z",
+ "gerado_em": "2026-11-02T16:19:27.182Z",
  "total": 135,
  "total_producao": 118,
  "sem_tela_resolvida": [],
@@ -7031,8 +7031,7 @@
    "componente": "MagazineListPage",
    "grupo": "toolsRoutes",
    "guardas": [
-    "ProtectedRoute",
-    "MagazineRoute"
+    "ProtectedRoute"
    ],
    "somente_dev": false,
    "linha": 90,
@@ -7092,8 +7091,7 @@
    "componente": "MagazineTemplatesGalleryPage",
    "grupo": "toolsRoutes",
    "guardas": [
-    "ProtectedRoute",
-    "MagazineRoute"
+    "ProtectedRoute"
    ],
    "somente_dev": false,
    "linha": 98,
@@ -7145,8 +7143,7 @@
    "componente": "MagazineEditorPage",
    "grupo": "toolsRoutes",
    "guardas": [
-    "ProtectedRoute",
-    "MagazineRoute"
+    "ProtectedRoute"
    ],
    "somente_dev": false,
    "linha": 106,
@@ -7200,8 +7197,7 @@
    "componente": "MagazinePrintPage",
    "grupo": "toolsRoutes",
    "guardas": [
-    "ProtectedRoute",
-    "MagazineRoute"
+    "ProtectedRoute"
    ],
    "somente_dev": false,
    "linha": 114,
@@ -7240,8 +7236,7 @@
    "componente": "MagazinePrintPage",
    "grupo": "toolsRoutes",
    "guardas": [
-    "ProtectedRoute",
-    "MagazineRoute"
+    "ProtectedRoute"
    ],
    "somente_dev": false,
    "linha": 122,

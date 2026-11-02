@@ -158,7 +158,12 @@ function dadosAlcancaveis(inicio) {
 
 // atributos: qualquer coisa menos > ou {, ou um bloco {..}; alternativas disjuntas (sem backtracking exponencial)
 const RE_ROUTE = /<Route\b((?:[^>{]|\{[^}]*\})*?)(\/?)>|<\/Route>/gs;
-const ehGuarda = (n) => /(Route|Guard)$/.test(n);
+// Embrulho = componente que envolve a tela (pulado ao escolher qual e a tela). Guarda = embrulho que
+// controla acesso. MagazineRoute so poe um error boundary em volta da revista (tools-routes.tsx): e
+// embrulho, nao guarda de acesso.
+const NAO_GUARDAS = new Set(['MagazineRoute']);
+const ehEmbrulho = (n) => /(Route|Guard)$/.test(n);
+const ehGuarda = (n) => ehEmbrulho(n) && !NAO_GUARDAS.has(n);
 
 /** Guardas herdadas por grupo: AppRoutes.tsx monta {xRoutes} dentro de <Route element={<Guarda/>}>. */
 export function guardasDosGrupos(appCode) {
@@ -186,7 +191,7 @@ export function extrairRotas(code, { arquivo = 'AppRoutes.tsx', guardasDoGrupo =
     const autoFecha = m[2] === '/';
     // element={<Wrapper><Tela/></Wrapper>}: a tela e o primeiro componente que nao termina em Route/Guard
     const nomesEl = [...(attrs.match(/element=\{([^}]*)\}/)?.[1] ?? '').matchAll(/<\s*([A-Z][\w.]*)/g)].map((x) => x[1]);
-    const el = nomesEl.find((n) => !ehGuarda(n)) ?? nomesEl[0] ?? null;
+    const el = nomesEl.find((n) => !ehEmbrulho(n)) ?? nomesEl[0] ?? null;
     const path = attrs.match(/\bpath=["'{`]+([^"'`}]+)/)?.[1];
     const guardasProprias = nomesEl.filter((n) => n !== el && ehGuarda(n));
     if (!autoFecha) pilha.push(el && ehGuarda(el) ? el : null);

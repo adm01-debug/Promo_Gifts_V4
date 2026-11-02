@@ -135,6 +135,12 @@ describe('banco.sql', () => {
     expect(sql).not.toMatch(/\b(INSERT|UPDATE|DELETE|TRUNCATE|DROP|ALTER|CREATE|GRANT|REVOKE)\b/i);
   });
 
+  it('schemas proprios vem do catalogo, sem lista fixa (um schema novo como archive entra sozinho)', () => {
+    expect(sql).toMatch(/proprios AS \(/);
+    expect(sql).not.toMatch(/'cf_recon'|'supplier_stricker'|'prod_audit'/);
+    expect((sql.match(/IN \(SELECT nspname FROM proprios\)/g) || []).length).toBeGreaterThanOrEqual(4);
+  });
+
   it('de cron.job sai so o nome das funcoes/edges chamadas, nunca o command nem return_message', () => {
     expect(sql).not.toMatch(/'command'|'comando'|'ultimo_erro'/);
     expect(sql).toMatch(/regexp_matches\(j\.command/);
