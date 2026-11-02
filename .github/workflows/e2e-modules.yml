@@ -89,6 +89,12 @@ jobs:
     name: Selecionar suites afetadas
     runs-on: ubuntu-24.04
     timeout-minutes: 5
+    # dorny/paths-filter em pull_request consulta a lista de arquivos via API —
+    # exige pull-requests: read (achado Codex P1, PR #3058). Job-level permissions
+    # substitui o top-level p/ este job, então contents: read é repetido aqui.
+    permissions:
+      contents: read
+      pull-requests: read
     outputs:
       matrix: ${{ steps.build.outputs.matrix }}
       count: ${{ steps.build.outputs.count }}
@@ -379,13 +385,35 @@ jobs:
           MIN_TESTS: ${{ matrix.min }}
         run: |
           set -euo pipefail
-          read -ra SPEC_LIST <<< "$SPECS"
+          # Expande glob em cada token de SPECS (ex.: "stock-future-stock*.spec.ts").
+          # Os workflows originais interpolavam ${{ matrix.spec }} direto no run: —
+          # bash expandia o glob por estar fora de variável. read -ra sozinho NÃO
+          # expande glob (só faz split por IFS), perdendo arquivos silenciosamente
+          # (achado Codex P1, PR #3058: 2 testes em 1 arquivo em vez de 68 em 3).
+          IFS=' ' read -ra RAW_SPECS <<< "$SPECS"
+          SPEC_LIST=()
+          shopt -s nullglob
+          for pat in "${RAW_SPECS[@]}"; do
+            # shellcheck disable=SC2206 # intencional: expandir glob/pathname (ver comentário acima)
+            matches=( $pat )
+            if [ ${#matches[@]} -gt 0 ]; then
+              SPEC_LIST+=("${matches[@]}")
+            else
+              SPEC_LIST+=("$pat")
+            fi
+          done
+          shopt -u nullglob
           PROJECT_ARGS=()
           for p in $PROJECTS; do PROJECT_ARGS+=("--project=$p"); done
           read -ra EXTRA_ARGS <<< "$EXTRA"
           # check-min-tests lê playwright-report/results.json → garante o reporter json quando há `min`
           if [ -n "$MIN_TESTS" ] && [[ ",$REPORTER," != *",json,"* ]]; then REPORTER="$REPORTER,json"; fi
-          npx playwright test "${SPEC_LIST[@]}" "${PROJECT_ARGS[@]}" "${EXTRA_ARGS[@]}" --reporter="$REPORTER"
+          # --reporter= na CLI substitui o array `reporter:` do playwright.config.ts
+          # por inteiro (perde o outputFile configurado lá) — sem isso o reporter
+          # json escreve no stdout e check-min-tests não acha o arquivo (achado
+          # Codex P1, PR #3058).
+          PLAYWRIGHT_JSON_OUTPUT_FILE=playwright-report/results.json \
+            npx playwright test "${SPEC_LIST[@]}" "${PROJECT_ARGS[@]}" "${EXTRA_ARGS[@]}" --reporter="$REPORTER"
 
       - name: Retentativa única (--last-failed)
         id: retry
@@ -441,10 +469,19 @@ jobs:
       - name: Consolidar
         env:
           E2E_RESULT: ${{ needs.e2e.result }}
+          CHANGES_RESULT: ${{ needs.changes.result }}
           COUNT: ${{ needs.changes.outputs.count }}
         run: |
-          echo "suites selecionadas: $COUNT · resultado da matriz: $E2E_RESULT"
+          echo "seleção de suites: $CHANGES_RESULT · suites selecionadas: $COUNT · resultado da matriz: $E2E_RESULT"
+          # Se `changes` falhar, `e2e` fica 'skipped' (condição do job) e o check
+          # antigo só olhava "== failure" — ficava verde com 0 suites rodadas,
+          # escondendo exatamente a falha de permissão do achado P1 acima
+          # (achado Codex P2, PR #3058).
+          if [ "$CHANGES_RESULT" != "success" ]; then
+            echo "::error::Job 'changes' (seleção de suites) não teve sucesso ($CHANGES_RESULT) — nenhuma suite foi executada."
+            exit 1
+          fi
           if [ "$E2E_RESULT" = "failure" ]; then
-            echo "::error::Pelo menos uma suite E2E falhou — veja os jobs 'E2E · <suite>'."
+            echo "::error::Pelo menos uma suite E2E falhou — veja os jobs 'E2E Modules · <suite>'."
             exit 1
           fi
