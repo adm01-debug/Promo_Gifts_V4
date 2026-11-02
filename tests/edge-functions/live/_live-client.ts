@@ -69,6 +69,18 @@ const RETRY_STATUSES = new Set([502, 503, 504]);
 const RETRY_COUNT = Number(readEnv("EDGE_LIVE_RETRIES")) || 3;
 const RETRY_DELAY_MS = Number(readEnv("EDGE_LIVE_RETRY_DELAY_MS")) || 800;
 
+/**
+ * Pior caso de wall-clock de callEdge(): (RETRY_COUNT+1) tentativas, cada uma
+ * podendo levar até TIMEOUT_MS (cold start real, não é só rede), mais o backoff
+ * linear entre tentativas (RETRY_DELAY_MS * (RETRY_COUNT*(RETRY_COUNT+1))/2).
+ * Exportado para _live-suite.ts derivar o timeout do `it()` daqui — timeout do
+ * teste menor que isso cancela a chamada antes do próprio retry terminar
+ * (causa real do timeout de 30s em intelligence-substitute-applied/magic-up-score,
+ * 2026-11-02: 4 tentativas de 15s cada já somam 60s, sem contar o backoff).
+ */
+export const MAX_RETRY_BUDGET_MS =
+  (RETRY_COUNT + 1) * TIMEOUT_MS + RETRY_DELAY_MS * ((RETRY_COUNT * (RETRY_COUNT + 1)) / 2);
+
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 export type EdgeRole = "anon" | "authenticated" | "supervisor" | "dev";
