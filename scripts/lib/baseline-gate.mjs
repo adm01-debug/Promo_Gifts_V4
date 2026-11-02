@@ -79,9 +79,14 @@ export function runBaselineGate({ baselineFile, label, description, totalKey, fi
   const totalCurrent = Object.values(currentCounts).reduce((a, b) => a + b, 0);
 
   if (UPDATE) {
-    const prevMeta = existsSync(BASELINE_PATH)
-      ? JSON.parse(readFileSync(BASELINE_PATH, 'utf8')).meta
-      : undefined;
+    let prevMeta;
+    try {
+      prevMeta = existsSync(BASELINE_PATH)
+        ? JSON.parse(readFileSync(BASELINE_PATH, 'utf8'))?.meta
+        : undefined;
+    } catch {
+      prevMeta = undefined; // baseline corrompido — nao travar o --update (QODO c466935b)
+    }
     const next = {
       generatedAt: new Date().toISOString(),
       description,
