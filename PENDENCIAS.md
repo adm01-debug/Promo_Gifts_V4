@@ -2350,3 +2350,30 @@ changed: 8 policies em ai_usage_quotas + art_file_attachments
 **Classificação:** Infra/edge function instável — auto-recuperável. Reexecutar o workflow se necessário.
 
 ---
+
+## P39 — startup_failure em 8 workflows do PR #3023 (2026-11-02)
+
+**Commit afetado:** `c87864727` (HEAD de fix/ci-workflows ao abrir o PR)
+**Execuções com falha:** Todos os runs criados em 2026-11-02T01:14:06–01:14:11Z
+
+| Workflow | Run ID | Status |
+|---|---|---|
+| Deploy Gates | 41371399596 | startup_failure |
+| Contract Tests | 41371401638 | startup_failure |
+| Magazine Unit Tests | 41371400521 | startup_failure |
+| Security Scan | 41371398636 | startup_failure |
+| edge-functions-drift-check | 41371396594 | startup_failure |
+| Edge Integration Tests | 41371397590 | startup_failure |
+| schema-snapshot-export | 41371395594 | startup_failure |
+| Workflow Lint | 41371394113 | queued (nunca iniciou) |
+| CodeQL | 41371394116 | queued (nunca iniciou) |
+
+**Diagnóstico:** `startup_failure` com 0 jobs e `created_at == updated_at` (duração < 1s) em todos os runs simultâneos. Não há erro de código — os runners nunca iniciaram. `rerun_workflow` via API retornou 403 (`This workflow run cannot be retried`).
+
+**Causa raiz:** Falha de infraestrutura GitHub Actions em 01:14 UTC (2026-11-02).
+
+**Resolução:** Novo push na branch dispara CI fresh. Este commit documenta o incidente e re-dispara todos os workflows.
+
+**Classificação:** Infra transitória — auto-recuperável via novo push.
+
+---
