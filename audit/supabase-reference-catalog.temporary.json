@@ -440,7 +440,7 @@
       "file": "src/hooks/stock/useRuptureAlerts.ts",
       "occurrences": 1,
       "stage": 102,
-      "reason": "RPC ausente no banco canonico (confirmado via pg_catalog em 2026-11-02, zero linhas em pg_proc) com consumidor ativo (useRuptureAlerts.ts, feature flag useEmaRupture); investigar equivalente ou criar via migration antes de remover esta excecao."
+      "reason": "RPC ausente no canonico (confirmado via pg_catalog em 2026-11-02, zero linhas em pg_proc; tambem ausente de supabase_migrations.schema_migrations). Existe migration pronta no repo (supabase/migrations/20261101150000_fix_sb0003_fn_get_rupture_alerts.sql, incidente SB-0003) que cria a funcao, mas nunca foi aplicada em producao via db-apply-migration.yml. Consumidor ativo: useRuptureAlerts.ts, feature flag useEmaRupture. Remover esta excecao e registrar o RPC como confirmado so depois do PO rodar essa migration no canonico."
     }
   ],
   "dynamic_baseline": [
