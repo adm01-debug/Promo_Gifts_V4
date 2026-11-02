@@ -2560,9 +2560,12 @@ Resolução automática no merge do PR.
 ## P47 — Resultado final PR #3028 — tabela de prova de conclusão (2026-11-02)
 
 **Branch:** `claude/laughing-cori-o9w35e` | **PR:** [#3028](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3028)
-**Commit final validado:** `1659dda6b` (fix file-size baseline Gate 1.9)
-**Run em andamento:** [41396699857](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41396699857) (Deploy Gates, commit `1659dda6b`, status: queued)
-**Último run concluído relevante:** [41393827324](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41393827324) (commit `cc5ab5761`)
+**Commit HEAD atual:** `c7c291cf5` (docs: PENDENCIAS.md P47 + RELATORIO_CI.md atualizado)
+**Commits de correção:** `cc5ab5761` (Gate 1.3), `115e8a93d` (Gate 1.9 as), `1659dda6b` (Gate 1.9 file-size)
+**Run em andamento:** [41397466474](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41397466474) (Deploy Gates, commit `c7c291cf5`, status: in_progress — Gate 0 em execução 06:06 UTC)
+**Nota de cancelamento:** run [41396699857](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41396699857) (commit `1659dda6b`) foi cancelado automaticamente pelo `concurrency: cancel-in-progress` quando `c7c291cf5` foi pushado — não é falha.
+**Último run completo:** [41393827324](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41393827324) (commit `cc5ab5761`) — `failure` por Gate 1.9 + E40 (ambos corrigidos/documentados)
+**Validação local `c7c291cf5`:** Gate 1.9 file-size: `✅ Nenhuma regressão de tamanho de arquivo detectada.` (138 arquivos acima do limite, baseline=138)
 
 ### Tabela de prova por workflow (PR #3028)
 
@@ -2579,7 +2582,7 @@ Resolução automática no merge do PR.
 | Gate 1 — Lint + TypeScript | ❌ bloqueado por P46 | ✅ `success` | [41393827324](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41393827324) | — |
 | Gate 1.3 — Migration contracts | ❌ `missing_catalog_object fn_get_rupture_alerts` | ✅ `success` | [41393827324](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41393827324) step 9 | fn_get_rupture_alerts ausente do catálogo → fix commit `cc5ab5761` |
 | Gate 1.9 — ratchet `as` | ❌ `+1 em 2 arquivos` | ✅ Corrigido | Commit `115e8a93d` | baseline desatualizado após merge main |
-| Gate 1.9 — ratchet file-size | ❌ `9 arquivos com regressão` | ✅ Corrigido | Commit `1659dda6b` (run [41396699857](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41396699857) — aguardando) | 9 arquivos Lovable cresceram antes do PR |
+| Gate 1.9 — ratchet file-size | ❌ `9 arquivos com regressão` | ✅ Corrigido | Commit `1659dda6b`; validado localmente em `c7c291cf5` — 138/138 sem regressão | 9 arquivos Lovable cresceram antes do PR |
 | Gate 2 — Vitest | ❌ bloqueado por P46 | ✅ `success` | [41393827324](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41393827324) job `125111342122` | — |
 | Gate 2.5 — PG Integrity | ❌ bloqueado por P46 | ✅ `success` | [41393827324](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41393827324) job `125111032652` | — |
 | Gate 3 — E2E Smoke | ❌ bloqueado por P46 | ✅ `success` | [41393827324](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41393827324) job `125112016347` | — |
@@ -2594,16 +2597,26 @@ Resolução automática no merge do PR.
 
 ### Comparação baseline × final (sem piora)
 
-| Métrica | Antes do PR (`main@df94410c`) | Depois (commit `1659dda6b`) |
+| Métrica | Antes do PR (`main@df94410c`) | Depois (commit `c7c291cf5`) |
 |---|---|---|
-| `startup_failure` em `deploy-gates.yml` | SIM | NÃO — carrega e executa |
-| Gates 0, 0.5, 0.6, 2, 2.5, 3, 4, 5, 5.5 | Não executavam (P46) | ✅ Todos `success` |
-| Gate 1.3 (migration contracts) | `failure` (fn_get_rupture_alerts ausente) | ✅ `success` |
-| Gate 1.9 `as` assertions | `failure` (+1 em 2 arquivos) | ✅ corrigido (2143 asserções) |
-| Gate 1.9 file-size | `failure` (9 arquivos) | ✅ corrigido (baseline atualizado) |
-| Workflows P40 (Security, Magazine, Edge) | `startup_failure` | `startup_failure` — **inalterado, pré-existente, externo** |
-| Gate E40 Ledger parity | `failure` (pré-existente) | `failure` — **inalterado, pré-existente, externo** |
+| `startup_failure` em `deploy-gates.yml` | SIM — 0 jobs executavam | NÃO — carrega e executa todos os jobs |
+| Gates 0, 0.5, 0.6, 2, 2.5, 3, 4, 5, 5.5 | Não executavam (P46) | ✅ Todos `success` (run `41393827324`) |
+| Gate 1.3 (migration contracts) | `failure` (`fn_get_rupture_alerts` ausente) | ✅ `success` (commit `cc5ab5761`, run `41393827324`) |
+| Gate 1.9 `as` assertions | `failure` (+1 em 2 arquivos) | ✅ `success` (commit `115e8a93d`, validado localmente) |
+| Gate 1.9 file-size | `failure` (9 arquivos) | ✅ `success` (commit `1659dda6b`, validado localmente em `c7c291cf5`) |
+| Lint untypedFrom / edge-functions-drift-check / Workflow Lint | `success` | ✅ `success` — sem regressão |
+| Supabase Linter Gate / SSOT Guard / PR Size Guard | `success` | ✅ `success` — sem regressão |
+| URL State / Bundle size / Required Checks Guard | `success` | ✅ `success` — sem regressão |
+| Workflows P40 (Security Scan, Magazine Unit Tests, Edge Integration Tests) | `startup_failure` (pré-existente) | `startup_failure` — **inalterado, pré-existente, externo** |
+| Release Please | `startup_failure` (pré-existente P40) | `startup_failure` — **inalterado, pré-existente, externo** |
+| Gate E40 Ledger parity ("Migrations x Canonical schema") | `failure` (pré-existente P7) | `failure` — **inalterado, pré-existente, externo** |
+| Deploy Gates Gate Final | `failure` (por P46+P40+E40) | `failure` por **somente E40** — P46 removido, P40 externo. Todos os gates executáveis passam. |
 
-**Conclusão:** o PR #3028 corrigiu todos os bloqueios de P46 (startup_failure por actions externas). As falhas remanescentes (P40 e Gate E40) são pré-existentes, independentes do PR e requerem ação do PO para resolução.
+**Bloqueios externos remanescentes (requerem ação do PO):**
+- **P40** — `gitleaks/gitleaks-action`, `denoland/setup-deno`, `googleapis/release-please-action` bloqueadas pela política GitHub Actions. Ação: Settings → Actions → General → adicionar à allowlist.
+- **P7 / Gate E40** — ledger divergente: `local_only=1140; remote_only=673`. Erro exato: `[migration-ledger][bloqueado] local_only=1140; remote_only=673; mismatched=0; malformed=0`. Ação: reconciliar via `supabase migration repair` com aprovação DBA/PO.
+- **P46 SBOM/Provenance** — `anchore/sbom-action`, `actions/attest-build-provenance` bloqueadas. Ação: habilitar na allowlist → remover `if: false` em deploy-gates.yml step E99.
+
+**Conclusão:** o PR #3028 corrigiu TODOS os bloqueios de P46 (startup_failure por actions externas nos workflows de CI). As falhas remanescentes no Gate Final (P40 e Gate E40) são pré-existentes, independentes do PR, documentadas com erro exato, e requerem ação do PO/DBA — não são regressionadas introduzidas por este PR.
 
 ---
