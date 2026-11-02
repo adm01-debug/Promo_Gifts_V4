@@ -43,11 +43,15 @@ function countErrors() {
 const current = countErrors();
 
 if (UPDATE) {
+  const prevMeta = existsSync(BASELINE_PATH)
+    ? JSON.parse(readFileSync(BASELINE_PATH, 'utf8')).meta
+    : undefined;
   const next = {
     generatedAt: new Date().toISOString(),
     description:
       'Baseline de erros do tsc com --noUncheckedIndexedAccess. Falha se a contagem crescer (ratchet descendente).',
     errorCount: current,
+    ...(prevMeta ? { meta: prevMeta } : {}),
   };
   writeFileSync(BASELINE_PATH, `${JSON.stringify(next, null, 2)}\n`);
   console.log(`✅ .indexed-access-baseline.json atualizado — ${current} erros.`);
