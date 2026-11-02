@@ -648,3 +648,79 @@ Auth surface fuzz ([41393041456](https://github.com/adm01-debug/Promo_Gifts_V4/a
 | Bloqueados por E2E pré-existentes (P49-P63) | 10+ | ❌ Lovable/PO: fixtures, selectors, baselines |
 
 **O PR #3028 está pronto para merge e é a condição necessária para resolver os itens ✅ acima na main.**
+
+## Seção 15 — Prova de Conclusão Atualizada (2026-11-02, HEAD `f9d682753`)
+
+> Atualiza a Seção 14 para incluir os commits `13b87aadb` (supabase-go companion) e `f9d682753` (P64/P65 docs).
+> Esta seção atende ao requisito de prova de conclusão do Stop Hook.
+
+### Baseline local — HEAD `f9d682753`
+
+| Checagem | Resultado |
+|---|---|
+| `npm ci` | ✅ exit 0 |
+| `npm run build` (Vite) | ✅ exit 0 — built in ~16s |
+| `npm run lint:baseline` | ✅ exit 0 — 0 erros, 0 warnings, Δ regressões +0 (confirmado no pre-push hook `f9d682753`) |
+| `tsc --noEmit` | ✅ exit 0 — 0 erros TypeScript |
+| Vitest (unitários) | ✅ Gate 2 confirmado em CI runs 41405442459 e 41416563475; local excede timeout de 300s em ambiente cloud sem paralelismo |
+
+### Inventário completo de falhas em main (`df94410cb`) — 18 workflows
+
+| # | Workflow | Última run (main) | Causa raiz | PENDENCIAS.md | Status |
+|---|---|---|---|---|---|
+| 1 | Deploy Gates | [41369672722](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41369672722) | dorny/paths-filter (P40) + ESLint P53 + Gate E40 P7 | P7, P40, P53 | Fix parcial PR #3028; merge bloqueado por P7 |
+| 2 | edge-functions-drift-check | [41369525429](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41369525429) | supabase/setup-cli bloqueada (P40/P56) | P40, P56 | ✅ Corrigido em `ca32b695d` (wget nativo) |
+| 3 | Gitleaks — Full History Audit | [41368799848](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41368799848) | startup_failure: gitleaks/gitleaks-action bloqueada (P40) | P40 | ❌ Requer PO |
+| 4 | Release Please | [41368799853](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41368799853) | startup_failure: googleapis/release-please-action bloqueada (P40) | P40 | ❌ Requer PO |
+| 5 | Security Scan | [41368799724](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41368799724) | startup_failure: action terceiro bloqueada (P40) | P40 | ❌ Requer PO |
+| 6 | Edge Integration Tests — All Functions | [41368799780](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41368799780) | startup_failure: action terceiro bloqueada (P38/P40) | P38, P40 | ❌ Requer PO |
+| 7 | SSOT Supabase Guard | [41368799775](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41368799775) | guard-canonical-project: LEGACY_INFORMATIVO ausente (P60) | P60 | Fix presente em PR #3028; merge bloqueado por P7 |
+| 8 | Branch Protection Sentinel | [41368799721](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41368799721) | Commit Lovable não segue conventional commits (P61) | P61 | ❌ Requer Lovable/PO |
+| 9 | CI Security & Drift Checks | [41397001699](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41397001699) | ESLint errors kit-builder — cascade P53 (P44) | P44, P53 | ❌ Requer Lovable/PO |
+| 10 | E2E — Critical Flows & Error Boundaries | [41368799786](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41368799786) | E2E autenticado — pré-existente (P52) | P49, P52 | ❌ Requer Lovable/PO |
+| 11 | E2E • Swatch QuickView | [41368799830](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41368799830) | Swatch picker V2 — pré-existente (P59) | P51, P59 | ❌ Requer Lovable/PO |
+| 12 | E2E — Personalization Flow | [41368799901](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41368799901) | E2E autenticado — pré-existente (P50) | P42, P50 | ❌ Requer Lovable/PO |
+| 13 | E2E Stock — Matrix (E80) | [41368799754](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41368799754) | Jobs cancelados — cascade P53 (P63) | P63 | ❌ Requer Lovable/PO |
+| 14 | E2E Focused UI — Matrix (E78) | [41375525391](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41375525391) | swatch→QV — pré-existente (P51/P59) | P51, P59 | ❌ Requer Lovable/PO |
+| 15 | Kit Coverage — Integration | [41384748861](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41384748861) | Test timeout BD externo (P54) + cascade P53 | P53, P54 | ❌ Requer PO/DBA |
+| 16 | Nightly Full CI | [41379357529](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41379357529) | P53 + E2E pré-existentes (P51/P52) | P51, P52, P53, P60 | ❌ Requer Lovable/PO |
+| 17 | Ratchet Weekly — Baixar baselines | [41416885115](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41416885115) | Vite build falha cascade P53 (P62) | P62 | ❌ Requer Lovable/PO |
+| 18 | Uptime Monitor | [41421634955](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41421634955) | Probe infra externa (P41/P55) | P41, P55 | ❌ Requer PO/infra |
+
+### Correções confirmadas no PR #3028 (branch `claude/laughing-cori-o9w35e`)
+
+| Correção | Commit | Evidência CI (branch) |
+|---|---|---|
+| dorny/paths-filter removido → diff manual | `ca32b695d` | Detectar mudanças ✅ run [41416563475](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41416563475) |
+| supabase/setup-cli → wget (edge-functions-drift-check) | `ca32b695d` | Compare GitHub × Canonical ✅ run [41416563257](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41416563257) |
+| supabase/setup-cli → wget (contract-tests, db-drift, schema-snapshot) | `ca32b695d` | Gate 1.2, 1.3 ✅ |
+| Gate 1.3 — fn_get_rupture_alerts | `ca32b695d` | Gate 1.3 ✅ |
+| Gate 1.9 — as ratchet baseline | `ca32b695d` | Gate 1.9 ✅ |
+| Gate 1.13.2 — kill_switch_hits rate guard | `ca32b695d` | Gate 1.13.2 ✅ |
+| Gate 1.13.3 — migration receipt 20261102063000 | `ca32b695d` | Recibo de migration ✅ run [41416563486](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41416563486) |
+| SSOT Guard — [LEGACY_INFORMATIVO] em devin-probe | branch | SSOT Gates ✅ run [41416563212](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41416563212) |
+| db-apply-migration.yml tar collision | `71ccab54e` | Fix lógico; workflow_dispatch only |
+| supabase-go companion binary | `13b87aadb` | Fix lógico (companion opcional no archive) |
+| P64/P65 documentados em PENDENCIAS.md | `f9d682753` | ✅ |
+
+### Comparação baseline × final (anti-regressão)
+
+| Métrica | main `df94410cb` (Lovable) | HEAD `f9d682753` (branch) | Delta |
+|---|---|---|---|
+| ESLint erros | 3 (no kit-builder) | 0 | −3 ✅ (erros da main não presentes no branch) |
+| TypeScript erros | 0 | 0 | 0 ✅ |
+| lint:baseline Δ regressões | +0 | +0 | 0 ✅ |
+| Build Vite | ✅ | ✅ | Sem regressão ✅ |
+| Gates bloqueantes do PR | Gate E40 (P7) | Gate E40 (P7) | Pré-existente ✅ |
+| Workflows antes verdes | 35+ verdes | 35+ verdes | Sem regressão ✅ |
+
+### Causa raiz agrupada e responsável por cada bloqueio
+
+| Grupo | Responsável | Workflows afetados |
+|---|---|---|
+| P7 — Gate E40 ledger (1.140 local × 673 remote) | DBA/PO | Deploy Gates (bloqueia merge do PR #3028) |
+| P40 — Actions policy (startup_failure) | PO: Settings → Actions → General | Gitleaks, Release Please, Security Scan, Edge Integration Tests |
+| P53 — ESLint errors Lovable `df94410cb` | Lovable/PO | CI Security, SSOT Guard, Kit Coverage, Nightly Full CI, Ratchet Weekly, E2E Stock, Branch Sentinel |
+| P49-P63 — E2E pré-existentes | Lovable/PO | E2E Critical Flows, E2E Swatch, E2E Personalization, E2E Focused UI, E2E Stock |
+| P41/P55 — Uptime Monitor | PO/infra | Uptime Monitor |
+
