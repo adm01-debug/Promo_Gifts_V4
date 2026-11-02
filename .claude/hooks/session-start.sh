@@ -89,6 +89,7 @@ else
   echo "node_modules/typescript ausente — sem enriquecimento TS (rode npm install e a próxima sessão completa)"
 fi
 
-cp -p graphify-out/manifest.json "$MANIFEST_SESSAO"
+# cópia sem -p: data nova, depois de todas as etapas que reescrevem o graph.json
+cp graphify-out/manifest.json "$MANIFEST_SESSAO"
 echo "$ESTADO" > "$MARCA"
 echo "grafo pronto no estado $ESTADO ($(git rev-parse --short HEAD))"
