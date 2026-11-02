@@ -22,7 +22,9 @@
 
 - **Estado real gerado (fonte de consulta):** `inventario/estado/` — banco (tabelas, RLS, cron, edges publicadas),
   edge functions do repo, rotas → tela → hooks → dados e tabelas órfãs. Refazer:
-  `SUPABASE_ACCESS_TOKEN=... node scripts/inventario/gerar-banco.mjs && node scripts/inventario/gerar-repo.mjs`.
+  `SUPABASE_ACCESS_TOKEN=... node scripts/inventario/gerar-banco.mjs && node scripts/inventario/gerar-rotas.mjs && node scripts/inventario/gerar-repo.mjs`.
+  **Ainda não existe no `main`** (PR #3039, aguardando merge) — não assuma que o diretório ou os scripts já
+  estão presentes antes de confirmar.
 
 ### Projetos Supabase e MCPs (conferido 2026-11-02 com `get_project_url`)
 
@@ -157,7 +159,9 @@ não enxerga trigger, policy, cron nem GRANT, e confunde view com tabela.
 
 ### DDL fora do fluxo (MCP `execute_sql`/`apply_migration`, dashboard)
 - `execute_sql` serve para leitura (SELECT, EXPLAIN, `pg_catalog`). Mudança de estrutura — incluindo
-  criar/alterar/dropar `cron.job` — nasce como migration na PR.
+  criar/alterar/dropar `cron.job` — nasce como migration na PR. **Sem exceção, mesmo com pedido explícito
+  do dono ou em emergência** — o incidente de 2026-10-13 (8 `cron.alter_job` + `variant_stocks_select_org`
+  aplicados via MCP) é exatamente o que essa regra existe para impedir.
 - DDL aplicada fora do workflow não entra no ledger (`supabase_migrations.schema_migrations`) e o schema
   real diverge em silêncio (casos: `catalog_e24_zapp_catalog_stats`, 2026-09-12;
   `audit_r3_revoke_anon_mv_product_compositions`, 2026-09-05; 8 `cron.alter_job` + `variant_stocks_select_org`,
