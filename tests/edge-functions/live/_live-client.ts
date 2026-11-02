@@ -68,18 +68,24 @@ const TIMEOUT_MS = Number(readEnv("EDGE_LIVE_TIMEOUT_MS")) || 15_000;
 const RETRY_STATUSES = new Set([502, 503, 504]);
 const RETRY_COUNT = Number(readEnv("EDGE_LIVE_RETRIES")) || 3;
 const RETRY_DELAY_MS = Number(readEnv("EDGE_LIVE_RETRY_DELAY_MS")) || 800;
+/** Deadline do signInWithPassword em getJwt() — ver nota no MAX_RETRY_BUDGET_MS. */
+const JWT_TIMEOUT_MS = Number(readEnv("EDGE_LIVE_JWT_TIMEOUT_MS")) || 10_000;
 
 /**
- * Pior caso de wall-clock de callEdge(): (RETRY_COUNT+1) tentativas, cada uma
- * podendo levar até TIMEOUT_MS (cold start real, não é só rede), mais o backoff
- * linear entre tentativas (RETRY_DELAY_MS * (RETRY_COUNT*(RETRY_COUNT+1))/2).
+ * Pior caso de wall-clock de callEdge(): JWT_TIMEOUT_MS (getJwt() é aguardado
+ * ANTES do loop de retry, para roles != anon — achado do Qodo na PR #3057)
+ * + (RETRY_COUNT+1) tentativas, cada uma podendo levar até TIMEOUT_MS (cold
+ * start real, não é só rede), mais o backoff linear entre tentativas
+ * (RETRY_DELAY_MS * (RETRY_COUNT*(RETRY_COUNT+1))/2).
  * Exportado para _live-suite.ts derivar o timeout do `it()` daqui — timeout do
  * teste menor que isso cancela a chamada antes do próprio retry terminar
  * (causa real do timeout de 30s em intelligence-substitute-applied/magic-up-score,
  * 2026-11-02: 4 tentativas de 15s cada já somam 60s, sem contar o backoff).
  */
 export const MAX_RETRY_BUDGET_MS =
-  (RETRY_COUNT + 1) * TIMEOUT_MS + RETRY_DELAY_MS * ((RETRY_COUNT * (RETRY_COUNT + 1)) / 2);
+  JWT_TIMEOUT_MS +
+  (RETRY_COUNT + 1) * TIMEOUT_MS +
+  RETRY_DELAY_MS * ((RETRY_COUNT * (RETRY_COUNT + 1)) / 2);
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
@@ -208,10 +214,15 @@ export async function getJwt(role: EdgeRole): Promise<string | null> {
     const client = createClient(SUPABASE_URL, ANON_KEY, {
       auth: { persistSession: false, autoRefreshToken: false },
     });
-    const { data, error } = await client.auth.signInWithPassword({
-      email: creds.email,
-      password: creds.password,
-    });
+    // Timeout explícito — sem ele, signInWithPassword() pode ficar pendurado
+    // sem limite e o budget de MAX_RETRY_BUDGET_MS fica sem sentido (achado
+    // do Qodo na PR #3057: a espera do JWT acontece ANTES do retry loop).
+    const { data, error } = await Promise.race([
+      client.auth.signInWithPassword({ email: creds.email, password: creds.password }),
+      new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error("getJwt: signInWithPassword timeout")), JWT_TIMEOUT_MS),
+      ),
+    ]);
     const token = error ? null : (data.session?.access_token ?? null);
     jwtCache.set(role, token);
     return token;
