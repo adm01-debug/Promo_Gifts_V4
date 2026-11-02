@@ -2659,3 +2659,64 @@ result={
 **REGRA E056 observada:** nenhum DDL foi aplicado via `execute_sql` nesta sessão.
 
 ---
+
+## P49 — `audit` (replenishment-stress E2E): 2 testes falhando em `replenishment-stress.spec.ts` (2026-11-02)
+
+**Detectado em:** Deploy Gates run [41404277162](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41404277162), PR [#3028](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3028), commit `1f3a1734e`
+**Job:** `audit` (job `125142779071`, run `41404277138`)
+
+**Erro exato:**
+```
+2 failed
+  [chromium-authed] › e2e/replenishment-stress.spec.ts:10:3 › Reposição Module - Stress & Load Testing › Deve carregar grid de reposição com milhares de registros simulados e paginação estável
+  [chromium-authed] › e2e/replenishment-stress.spec.ts:151:3 › Reposição Module - Stress & Load Testing › Resiliência sob 410 Gone (External DB Bridge)
+1 passed (4.6m)
+Process completed with exit code 1.
+```
+
+**Pré-existente confirmado:** Mesmo check falha em `main` no commit base `df94410cbbcbe7d80928a279de91214d88b0d4bb` (run `41368799687`, job `125044583212`, `conclusion: failure`). O PR #3028 não alterou nenhum arquivo em `e2e/replenishment-stress.spec.ts` nem em código do módulo de Reposição.
+
+**Causa raiz:** Testes de stress E2E do módulo de Reposição dependem de dados/conectividade do BD de produção e falham por timeout/410 Gone em ambiente de CI. Não relacionado a este PR.
+
+**Ação necessária:** PO/DBA investigar o módulo de Reposição e corrigir a falha de infraestrutura (BD, serviço externo ou ambiente de CI) que causa o 410 Gone e o timeout de carregamento.
+
+---
+
+## P50 — `E2E — Personalization Journey`: falha na jornada de personalização (2026-11-02)
+
+**Detectado em:** Deploy Gates run [41404277162](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41404277162), PR [#3028](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3028), commit `1f3a1734e`
+**Job:** `E2E — Personalization Journey` (job `125142666369`, run `41404277186`)
+
+**Pré-existente confirmado:** Mesmo check falha em `main` no commit base `df94410cbbcbe7d80928a279de91214d88b0d4bb` (job `125045591142`, run `41368799901`, `conclusion: failure`, `annotations_count: 10`). O PR #3028 não alterou código de personalização.
+
+**Causa raiz:** Jornada E2E de personalização falha no BD de produção/CI — mesmas credenciais/produto ausente que causam P10 (`swatch→QV`). Não relacionado a este PR.
+
+**Ação necessária:** PO investigar produto/variante de personalização ausente no BD de staging/CI — mesma causa raiz de P10.
+
+---
+
+## P51 — `E2E Focused · thumb-quickview`: falha em thumb-quickview (2026-11-02)
+
+**Detectado em:** Deploy Gates run [41404277162](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41404277162), PR [#3028](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3028), commit `1f3a1734e`
+**Job:** `E2E Focused · thumb-quickview` (job `125142697745`, run `41404277155`)
+
+**Pré-existente confirmado:** Mesmo check falha em `main` no commit base `df94410cbbcbe7d80928a279de91214d88b0d4bb` (job `125059994742`, run `41375525391`, `conclusion: failure`). O PR #3028 não alterou código de quickview.
+
+**Causa raiz:** Relacionado a P10 (`swatch→QV`) — mesmo produto `color_swatches V2` ausente ou secrets E2E não configurados para o fluxo de thumb→quickview. Não relacionado a este PR.
+
+**Ação necessária:** Mesma ação de P10 — PO configurar produto/variante e secrets E2E para o fluxo de thumb-quickview.
+
+---
+
+## P52 — `E2E · view-no-presentation-mode`: falha no modo sem apresentação (2026-11-02)
+
+**Detectado em:** Deploy Gates run [41404277162](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41404277162), PR [#3028](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3028), commit `1f3a1734e`
+**Job:** `E2E · view-no-presentation-mode` (job `125142665821`, run `41404276957`)
+
+**Status em main:** Check não encontrado em `main` para o commit base `df94410cb` (possível nome diferente em runs anteriores ou adicionado recentemente). Artifact `e2e-quotes-view-no-presentation-mode.zip` uploadado no run do PR.
+
+**Causa raiz:** E2E do módulo de cotações (quotes) em modo sem apresentação — pode depender de dados/secrets de CI não configurados. Não relacionado às mudanças deste PR (hook `useRuptureAlerts` e migration repair de `kill_switch_hits`).
+
+**Ação necessária:** PO verificar se o teste era verde antes do último commit de Lovable em `main` e se os secrets/dados de CI para o módulo de quotes estão configurados. Registrado como bloqueio externo pendente de investigação.
+
+---
