@@ -138,7 +138,7 @@ function KitBuilderLegacyRedirect() {
 });
 
 describe('segredosViaResolver', () => {
-  it('resolveCredential literal, resolveCredentials com array literal e com constante do arquivo', () => {
+  it('resolveCredential/getCredential literal, resolveCredentials com array e constante; ignora comentario', () => {
     const code = `
 const CRM_CRED_NAMES = [
   "EXTERNAL_CRM_URL",
@@ -148,9 +148,12 @@ const { value } = await resolveCredential('LOVABLE_API_KEY');
 const a = await resolveCredentials(['BITRIX24_TOKEN', "OUTRO_TOKEN"]);
 const b = await resolveCredentials([...CRM_CRED_NAMES]);
 const c = resolveCredential(nomeDinamico);
+const d = await getCredential('EXTERNAL_PROMOBRIND_URL');
+// resolveCredential('HF_ACCESS_TOKEN') em comentario nao conta
+/* getCredential('NAO_CONTA') */
 `;
     expect([...segredosViaResolver(code)].sort()).toEqual([
-      'BITRIX24_TOKEN', 'EXTERNAL_CRM_ANON_KEY', 'EXTERNAL_CRM_URL', 'LOVABLE_API_KEY', 'OUTRO_TOKEN',
+      'BITRIX24_TOKEN', 'EXTERNAL_CRM_ANON_KEY', 'EXTERNAL_CRM_URL', 'EXTERNAL_PROMOBRIND_URL', 'LOVABLE_API_KEY', 'OUTRO_TOKEN',
     ]);
   });
 });

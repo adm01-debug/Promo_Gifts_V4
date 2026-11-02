@@ -90,12 +90,13 @@ export function edgesChamadasNoCodigo(bruto) {
   return nomes;
 }
 
-// Nomes passados ao resolvedor de credenciais (_shared/credentials.ts), que le o env com esse nome:
-// resolveCredential('X'), resolveCredentials(['A', 'B']) e resolveCredentials([...LISTA]) com LISTA no mesmo arquivo.
-export function segredosViaResolver(code) {
+// Nomes passados ao resolvedor de credenciais (_shared/credentials.ts), que le o env com esse nome (comentarios ignorados):
+// resolveCredential('X') / getCredential('X'), resolveCredentials(['A', 'B']) e resolveCredentials([...LISTA]) com LISTA no mesmo arquivo.
+export function segredosViaResolver(bruto) {
+  const code = semComentarios(bruto);
   const nomes = new Set();
   const literais = (txt) => [...txt.matchAll(/['"`]([A-Z][A-Z0-9_]+)['"`]/g)].map((m) => m[1]);
-  for (const m of code.matchAll(/\bresolveCredential\s*\(\s*['"`]([A-Z][A-Z0-9_]+)['"`]/g)) nomes.add(m[1]);
+  for (const m of code.matchAll(/\b(?:resolveCredential|getCredential)\s*\(\s*['"`]([A-Z][A-Z0-9_]+)['"`]/g)) nomes.add(m[1]);
   for (const m of code.matchAll(/\bresolveCredentials\s*\(\s*(\[[^\]]*\]|[A-Za-z_$][\w$]*)/g)) {
     for (const n of literais(m[1])) nomes.add(n);
     for (const ref of m[1].matchAll(/(?:\.\.\.)?\b([A-Za-z_$][\w$]*)\b/g)) {
