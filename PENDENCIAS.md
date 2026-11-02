@@ -294,8 +294,8 @@ Esta divergência é independente do fix de P4 (guard pg_cron nas migrations `20
 **Ação necessária do PO:**
 1. Investigar a extensão da divergência: baixar artefato `schema-reconciliation-evidence` do run [40708395880](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40708395880/artifacts/12824214915) (arquivos `/tmp/migration-ledger.json` e `/tmp/migration-ledger-summary.json`)
 2. Decidir estratégia de reconciliação: criar migrations espelho para o `remote_only=648` ou limpar o `local_only=1108` do ledger
-3. Após reconciliação: disparar `schema-snapshot-export.yml` com `force_rotate: true` para girar o baseline
-4. Reconfirmar com `workflow_dispatch` em `db-schema-drift-check`
+3. Confirmar que o `db-schema-drift-check` passa verde com a reconciliação feita (via `workflow_dispatch` nesse workflow)
+4. **Somente após** o drift-check estar verde: disparar `schema-snapshot-export.yml` **sem** `force_rotate` para o export normal. Usar `force_rotate: true` apenas na situação de `repair-only` documentada em CLAUDE.md (migration fora de ordem de versão) e revisar o diff do baseline gerado no PR do bot antes do merge. **Atenção:** `force_rotate` bypassa o drift gate mesmo que drift persista — nunca usar enquanto objetos DDL fora de migration não forem reconciliados.
 
 **Nota:** Per REGRA #8 corolário e E056, Claude **não pode** executar DDL ou `migration repair` em sessão de agente para reconciliar o ledger. Requer ação do PO.
 
@@ -767,8 +767,8 @@ Esta divergência é independente do fix de P4 (guard pg_cron nas migrations `20
 **Ação necessária do PO:**
 1. Investigar a extensão da divergência: baixar artefato `schema-reconciliation-evidence` do run [40708395880](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40708395880/artifacts/12824214915) (arquivos `/tmp/migration-ledger.json` e `/tmp/migration-ledger-summary.json`)
 2. Decidir estratégia de reconciliação: criar migrations espelho para o `remote_only=648` ou limpar o `local_only=1108` do ledger
-3. Após reconciliação: disparar `schema-snapshot-export.yml` com `force_rotate: true` para girar o baseline
-4. Reconfirmar com `workflow_dispatch` em `db-schema-drift-check`
+3. Confirmar que o `db-schema-drift-check` passa verde com a reconciliação feita (via `workflow_dispatch` nesse workflow)
+4. **Somente após** o drift-check estar verde: disparar `schema-snapshot-export.yml` **sem** `force_rotate` para o export normal. Usar `force_rotate: true` apenas na situação de `repair-only` documentada em CLAUDE.md (migration fora de ordem de versão) e revisar o diff do baseline gerado no PR do bot antes do merge. **Atenção:** `force_rotate` bypassa o drift gate mesmo que drift persista — nunca usar enquanto objetos DDL fora de migration não forem reconciliados.
 
 **Nota:** Per REGRA #8 corolário e E056, Claude **não pode** executar DDL ou `migration repair` em sessão de agente para reconciliar o ledger. Requer ação do PO.
 
@@ -2282,3 +2282,180 @@ Checks não-required na branch `fix/e2e-url-state-defaults-20261030`, documentad
 
 **Resumo:** Os 11 checks não-required (items 1–4, 6–12) têm causas documentadas — todas pré-existentes ou externas ao diff, exceto item #7 cuja causa no branch PR está não confirmada (ver acima). O único check required bloqueante (item 5, Gate 1.13.3 — recibo de migration) foi corrigido e confirmado green em SHA `65119d68` ([run 41314375394](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41314375394)). Items #9–#12 adicionados (2026-11-01).
 
+
+---
+
+## P35 — schema-snapshot-export: arquivo de manifesto do ledger ausente (2026-11-02)
+
+**Workflow:** schema-snapshot-export
+**Última execução com falha:** [run/41348311003](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41348311003)
+**Data:** 2026-11-01 | **HEAD afetado:** `cbbabc2f3`
+
+**Erro exato:**
+```
+[ledger-manifest-drift] inconclusive: Arquivo baseline não encontrado:
+docs/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json — checagem inconclusa
+Process completed with exit code 2.
+```
+Segundo job ("Drift gate"): `Ledger parity (repo x canonical)` também falhou.
+
+**Causa raiz:** O arquivo `docs/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json` não existe no repo. O workflow `schema-snapshot-export` precisa dele para comparar ledger.
+
+**O que o PO precisa fazer:**
+1. **NÃO** disparar `schema-snapshot-export.yml` diretamente — esse workflow lê o manifesto mas não o gera; reexecutá-lo sem o manifesto repete a falha.
+2. Localizar o último backup de `docs/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json` no histórico git (`git log --all -- docs/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json`) e restaurá-lo via PR.
+3. Após o PR com o manifesto restaurado ser mergeado em `main`, verificar se o drift gate passa. Se passar, o `schema-snapshot-export` pode ser disparado normalmente.
+
+**Classificação:** Bloqueador de infra — exige restauração manual do manifesto + PR de governança
+
+---
+
+## P36 — Policies Baseline: drift de RLS detectado (+0/-1/~8) (2026-11-02)
+
+**Workflow:** Policies Baseline
+**Última execução com falha:** [run/41347780875](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41347780875)
+**Data:** 2026-11-01 | **HEAD afetado:** `f99f36ae1`
+
+**Erro:**
+```
+[policies-baseline] failed: drift de policies: e043=0 +0 / -1 / ~8
+removed: ["public._backup_stock_daily_summary_20260618.backup_stock_service_only"]
+changed: 8 policies em ai_usage_quotas + art_file_attachments
+```
+
+**O que o PO precisa fazer:**
+1. Revisar se as 8 mudanças em `ai_usage_quotas` e `art_file_attachments` são intencionais
+2. Se intencionais:
+   a. Criar migration espelho documentando as mudanças de policy
+   b. Disparar `Policies Baseline` via `workflow_dispatch` com input `seed=true` — isso gera uma PR com o baseline atualizado
+   c. Revisar e mergear a PR gerada pelo workflow antes de verificar se o drift foi zerado
+   d. **Atenção:** um CI run comum não regenera o baseline; apenas o dispatch com `seed=true` faz isso
+3. Se não intencionais: reverter via migration e investigar
+
+**Classificação:** Bloqueador de governança — exige revisão do PO + dispatch `seed=true` + merge da PR gerada
+
+---
+
+## P37 — Branch Protection Sentinel: commit `5b5cef36` sem padrão aceito (2026-11-01)
+
+**Workflow:** Branch Protection Sentinel
+**Execução com falha:** [run/41359937302](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41359937302)
+
+**Commit infrator:** `5b5cef36 chore(analise): revalidação exaustiva 9 branches TOP + 44 A/B/F (2026-11-01)` — pushado diretamente em `main` sem PR.
+
+**Classificação:** Violação de governança — não corrigível retroativamente. Sentinel voltará a passar no próximo push convencional.
+
+---
+
+## P38 — Edge Integration Tests: HTTP 408 timeout em materials-api (2026-11-02)
+
+**Workflow:** Edge Integration Tests — All Functions
+**Última execução com falha:** [run/41351706586](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41351706586)
+
+**Causa raiz:** Edge function `materials-api` retornou HTTP 408. Falha de infraestrutura (timeout na edge function do Supabase), não erro de código.
+
+**Classificação:** Infra/edge function instável — auto-recuperável. Reexecutar o workflow se necessário.
+
+---
+
+## P39 — startup_failure em 8 workflows do PR #3023 (2026-11-02)
+
+**Commit afetado:** `c87864727` (HEAD de fix/ci-workflows ao abrir o PR)
+**Execuções com falha:** Todos os runs criados em 2026-11-02T01:14:06–01:14:11Z
+
+| Workflow | Run ID | Status |
+|---|---|---|
+| Deploy Gates | 41371399596 | startup_failure |
+| Contract Tests | 41371401638 | startup_failure |
+| Magazine Unit Tests | 41371400521 | startup_failure |
+| Security Scan | 41371398636 | startup_failure |
+| edge-functions-drift-check | 41371396594 | startup_failure |
+| Edge Integration Tests | 41371397590 | startup_failure |
+| schema-snapshot-export | 41371395594 | startup_failure |
+| Workflow Lint | 41371394113 | queued (nunca iniciou) |
+| CodeQL | 41371394116 | queued (nunca iniciou) |
+
+**Diagnóstico:** `startup_failure` com 0 jobs e `created_at == updated_at` (duração < 1s) em todos os runs simultâneos. Não há erro de código — os runners nunca iniciaram. `rerun_workflow` via API retornou 403 (`This workflow run cannot be retried`).
+
+**Causa raiz:** Falha de infraestrutura GitHub Actions em 01:14 UTC (2026-11-02).
+
+**Resolução:** Novo push na branch dispara CI fresh. Este commit documenta o incidente e re-dispara todos os workflows.
+
+**Classificação:** Infra transitória — auto-recuperável via novo push.
+
+---
+
+## P40 — GitHub Actions: política bloqueia actions externas (Release Please, Security Scan, Gitleaks) — 2026-11-02
+
+**Workflows afetados:** Release Please · Security Scan · Gitleaks — Full History Audit
+**HEAD da main afetado:** `df94410cbbcbe7d80928a279de91214d88b0d4bb`
+
+| Workflow | Última execução com falha | Run ID | Erro exato |
+|---|---|---|---|
+| Release Please | [41368799853](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41368799853) | job 125040101807 | `The action googleapis/release-please-action@45996ed1f6d02564a971a2fa1b5860e934307cf7 is not allowed in adm01-debug/Promo_Gifts_V4 because all actions must be from a repository owned by adm01-debug or created by GitHub.` |
+| Security Scan | [41368799724](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41368799724) | job 125041529341 | `The action gitleaks/gitleaks-action@e0c47f4f8be36e29cdc102c57e68cb5cbf0e8d1e is not allowed in adm01-debug/Promo_Gifts_V4 because all actions must be from a repository owned by adm01-debug or created by GitHub.` |
+| Gitleaks — Full History Audit | [41366179053](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41366179053) | job 125027313697 | `The action gitleaks/gitleaks-action@e0c47f4f8be36e29cdc102c57e68cb5cbf0e8d1e is not allowed in adm01-debug/Promo_Gifts_V4 because all actions must be from a repository owned by adm01-debug or created by GitHub.` |
+
+**Causa raiz:** GitHub Actions settings do repositório (`Settings → Actions → General → Actions permissions`) está configurado para `Allow adm01-debug and select non-adm01-debug, actions and reusable workflows` — mas `googleapis/release-please-action` e `gitleaks/gitleaks-action` não estão na lista de ações permitidas.
+
+**O que precisa ser feito (requer PO):** Ir em `https://github.com/adm01-debug/Promo_Gifts_V4/settings/actions` e adicionar `gitleaks/gitleaks-action` e `googleapis/release-please-action` à lista de ações permitidas. Ou alterar para `Allow all actions and reusable workflows` (menor segurança). Ou substituir as actions por equivalentes na org `adm01-debug`.
+
+**Não é corrigível por mudança de código** — a política é configuração de infraestrutura GitHub, não código do repositório.
+
+**Classificação:** Bloqueio de política/infra — requer PO.
+
+---
+
+## P41 — Uptime Monitor: falha de probe `df94410c` (2026-11-02T00:15)
+
+**Workflow:** Uptime Monitor
+**Execução com falha:** [41366208498](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41366208498)
+**HEAD:** `8b84f38f51d3a335f9c7c95ee63678540180be34`
+
+**Causa:** Step "Probe site + edge function" falhou. Probes verificadas: `https://www.promogifts.com.br/`, `https://doufsxqlfjyuvxuezpln.supabase.co/functions/v1/health-check`, `functions/v1/check-login`, `auth/v1/health`. Issue #3024 criada automaticamente ("Uptime: falha de disponibilidade detectada").
+
+**Classificação:** Infra externa — site ou edge function indisponível. Já documentado em P-UPTIME. Recorrente.
+
+---
+
+## P42 — E2E Personalization Flow: falha no run 41368063630 (2026-11-02)
+
+**Workflow:** E2E — Personalization Flow
+**Execução com falha:** [41368063630](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41368063630)
+**HEAD:** `5a35a743aef90f60303c16173f05cedb373e4670`
+
+**Causa:** Step "Run Personalization E2E Tests" falhou. Log tail não expõe erro específico (apenas cleanup/artifact upload). Falha pré-existente documentada desde P21 (`7299c88c`, 2026-10-xx). Não é required check do Gate Final (Deploy Gates).
+
+**Classificação:** Infra/fixture E2E — pré-existente (P21). Não é bloqueante para deploy.
+
+---
+
+## P43 — SSOT Supabase Guard: `analise-branches/.../devin-probe-e184-legacy-refs.md:28` sem marcador legacy (2026-11-02)
+
+**Workflow:** SSOT Supabase Guard
+**Execução com falha:** [41368799775](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41368799775)
+**HEAD da main:** `df94410cbbcbe7d80928a279de91214d88b0d4bb`
+
+**Causa:** `guard-canonical-project` (fase 3/3 DOCS) encontrou `1 menção(ões) ao ID legado sem marcador de legado`:
+- `analise-branches/dossies/devin-probe-e184-legacy-refs.md:28` — linha `**Busca por referências a 'pqpdolkaeqlyzpdpbizo' nesta sessão:**` sem `[LEGACY_INFORMATIVO]` ou marcador equivalente.
+
+**Status:** ✅ **CORRIGIDO em PR #3023** — `fix/ci-workflows` (branch remoto HEAD `169363697`) já contém a linha corrigida: `**Busca por referências ao projeto legado 'pqpdolkaeqlyzpdpbizo' [LEGACY_INFORMATIVO] nesta sessão:**`. Resolução automática no merge do PR.
+
+---
+
+## P44 — CI Security & Drift Checks: lint errors kit-builder (2026-11-02)
+
+**Workflow:** CI Security & Drift Checks
+**Execução com falha:** [41368063748](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41368063748)
+**HEAD da main afetado:** `5a35a743aef90f60303c16173f05cedb373e4670`
+
+**Causa:** 3 erros de lint no job `quality-gate`:
+1. `src/hooks/kit-builder/useKitBuilderPageState.ts:449:50` — `import() type annotations are forbidden @typescript-eslint/consistent-type-imports`
+2. `src/lib/kit-builder/types.ts:174:25` — `Union type KitOrigin constituents must be sorted @typescript-eslint/sort-type-constituents` (valor em main: `'manual' | 'template' | 'ai'` — não ordenado)
+
+**Status:** ✅ **CORRIGIDO em PR #3023** — `fix/ci-workflows` (branch remoto HEAD `169363697`) já contém:
+- `types.ts:174`: `export type KitOrigin = 'ai' | 'manual' | 'template';` (ordenado corretamente)
+- `useKitBuilderPageState.ts:449`: `origin?: KitOrigin` (sem `import()` annotation)
+Resolução automática no merge do PR.
+
+---

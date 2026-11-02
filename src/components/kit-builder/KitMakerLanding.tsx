@@ -27,10 +27,11 @@ import {
   type KitBox,
   type KitItem,
 } from '@/lib/kit-builder';
+import type { KitOrigin } from '@/lib/kit-builder/types';
 import { useKitTemplates } from '@/hooks/kit-builder';
 
 interface KitMakerLandingProps {
-  onStart: (flow: 'box-first' | 'items-first', origin?: import('@/lib/kit-builder/types').KitOrigin) => void;
+  onStart: (flow: 'box-first' | 'items-first', origin?: KitOrigin) => void;
   occasion: Occasion | null;
   onOccasionChange: (occasion: Occasion | null) => void;
   aiCatalogItems: KitItem[];

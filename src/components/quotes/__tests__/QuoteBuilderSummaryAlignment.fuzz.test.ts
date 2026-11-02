@@ -29,7 +29,7 @@ const TOUCH_INSET_PX = 10; // before:inset-[-10px]
 const TOUCH_TARGET_MIN = 32; // WCAG 2.5.5 AAA
 const NAME_PR_PX = 4; // pr-1
 
-// Sanity: garante que os tokens continuam batendo com o JSX
+// Sanity: garante que os tokens continuam batendo com o JSX de itens (pós-split E128)
 expect(SRC).toMatch(/leading-\[1\.125rem\]/);
 expect(SRC).toMatch(/h-\[1\.125rem\] shrink-0 items-center/);
 expect(SRC).toMatch(/pr-2 text-sm font-medium/);
@@ -140,11 +140,13 @@ describe('QuoteBuilderSummaryColumn — fuzz de alinhamento (centenas de simula�
   });
 
   it('mantém exatamente 3 botões com hitbox expandida (Editar, Excluir, Colapsar)', () => {
+    // E128: hitboxes de item-action estão em QuoteBuilderSummaryItems.tsx pós-split
     const hitboxes = SRC.match(/before:inset-\[-10px\]/g);
     expect(hitboxes?.length).toBe(3);
   });
 
   it('mantém exatamente 3 tooltips comerciais PT-BR', () => {
+    // E128: tooltips de item-action estão em QuoteBuilderSummaryItems.tsx pós-split
     expect(SRC).toMatch(/Ajustar este item/);
     expect(SRC).toMatch(/Remover do orçamento/);
     // 3ª tooltip (toggle) tem texto dinâmico — valida presença do TooltipContent restante
