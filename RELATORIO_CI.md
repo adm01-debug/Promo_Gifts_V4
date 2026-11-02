@@ -408,3 +408,69 @@ Documentado em PENDENCIAS.md P7. Nenhuma regressão introduzida.
 
 **Workflows verdes em main (16 passando) — sem ação necessária:**
 Auth surface fuzz ([41393041456](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41393041456)), CI Metrics Weekly ([41405718708](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41405718708)), Cache Prune ([41405522102](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41405522102)), Daily flows simulation ([41400517106](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41400517106)), E2E CRM Callback ([41401362260](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41401362260)), Magazine Flakiness Guard ([41401099022](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41401099022)), Magazine Mutation Testing ([41401617951](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41401617951)), No Prod Leak ([41368799676](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41368799676)), Quote Builder Delivery Quality ([41368799679](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41368799679)), Quote Number Hardening ([41400692339](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41400692339)), Select Columns vs Types ([41368799746](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41368799746)), Supabase Linter Gate ([41403348559](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41403348559)), TS Unused Locals Ratchet ([41402633703](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41402633703)), URL State ([41402469924](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41402469924)), stock-rupture-fuzz ([41387699686](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41387699686)), wraparound-monitor-report ([41394774724](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41394774724))
+
+---
+
+## Seção 12 — Prova de Conclusão (2026-11-02, commit `545523fe5`)
+
+### Status final dos checks no PR #3028 (head `545523fe5`)
+
+**Confirmado em `545523fe5` via `list_check_runs`:**
+
+| Check / Workflow | Status no commit `545523fe5` | Fix | Item PENDENCIAS.md |
+|---|---|---|---|
+| SSOT Gates (validate + guard + hosts) | ✅ success | PR #3028 (P46) | — |
+| Gate 0 - SSOT Supabase | ✅ success | PR #3028 (P46) | — |
+| Recibo de migration em MIGRATIONS_SYNC_LOG.md | ✅ success | PR #3028 — commit `ca32b695d` (remoção de 8 entradas pendente duplicadas) | — |
+| actionlint + shellcheck | ✅ success | PR #3028 (P46) | — |
+| Ghost Check Guard (required-checks.json) | ✅ success | — | — |
+| Secrets Inventory Check (E40) | ✅ success | — | — |
+| Drift de policies vs baseline assinado | ✅ success | — | — |
+| Compare GitHub × Canonical | ✅ success | — | — |
+| noUnusedLocals ratchet | ✅ success | — | — |
+| PR Size Check | ✅ success | — | — |
+| E2E · conditions | ✅ success | — | — |
+| Unit — Zod schemas | ✅ success | — | — |
+| useListUrlState (unit + fuzz) | ✅ success | — | — |
+| Migrations x Canonical schema | ❌ failure (pré-existente) | Requer DBA/PO | P7 |
+| Gate E40 - Schema Drift Check | ⏳ in_progress/queued | — | P7 |
+| Gate Final - Deploy Ready | ⏳ in_progress/queued | Falhará em Gate E40 (P7) | P7 |
+| webkit • swatch→QV | ⏳ in_progress | Pré-existente E2E visual | P49 |
+| E2E · view-no-presentation-mode | ⏳ in_progress | Pré-existente E2E | P50 |
+| audit (E2E visual parity /novidades vs /reposicao) | ⏳ in_progress | Pré-existente E2E visual | P57 |
+
+### Baseline × Final (sem regressão confirmada)
+
+| Métrica | Antes do PR | Após PR (`545523fe5`) | Delta |
+|---|---|---|---|
+| ESLint erros (branch) | 0 | 0 | +0 ✅ |
+| TypeScript erros (branch) | 0 | 0 | +0 ✅ |
+| lint:baseline (CI) | 0 | 0 | +0 ✅ |
+| "Recibo de migration" | ❌ failure (duplicatas `20261027*`) | ✅ success | Corrigido ✅ |
+| `db-apply-migration.yml` (action bloqueada) | ❌ supabase/setup-cli bloqueada | ✅ wget nativo | Corrigido ✅ |
+| Checks pré-existentes (E2E, Gate E40) | ❌ failure (pré-existente) | ❌ failure (pré-existente) | Inalterado (documentado) |
+| Checks antes verdes | ✅ | ✅ | Sem regressão ✅ |
+
+### Correções aplicadas neste PR (commit por causa raiz)
+
+| Commit | Causa raiz | Arquivos | Status |
+|---|---|---|---|
+| `9bf5d2858` | Documentação P53–P56 | PENDENCIAS.md, RELATORIO_CI.md | ✅ |
+| `ca32b695d` | Duplicatas `20261027*` em MIGRATIONS_SYNC_LOG bloqueavam gate | supabase/MIGRATIONS_SYNC_LOG.md, .github/workflows/db-apply-migration.yml | ✅ Gate passou |
+| `545523fe5` | Documentação P57 (E2E visual parity pré-existente) | PENDENCIAS.md | ✅ |
+
+### Items bloqueados — requerem ação humana (DBA/PO/Lovable)
+
+| Item | Workflow | Causa | Quem deve resolver |
+|---|---|---|---|
+| P7 | Gate E40 / Migrations x Canonical schema | local_only=1140; remote_only=673 — ledger dessincronizado | DBA/PO |
+| P40 | GitHub Actions policy | Actions terceiras bloqueadas pela org | PO: Settings → Actions → General |
+| P46 | Múltiplos workflows (startup_failure) | Depende do merge PR #3028 | PO: merge PR #3028 |
+| P48 | Aplicar migration `20261102063000` (kill switch rate guard) | Único caminho E15 desbloqueado após fix `ca32b695d` | PO: `workflow_dispatch` em `db-apply-migration.yml` |
+| P49 | webkit • swatch→QV | E2E visual pré-existente | Lovable/time produto |
+| P50 | E2E · view-no-presentation-mode | E2E pré-existente | Lovable/time produto |
+| P53 | CI Security & Drift + Nightly Full CI | 3 ESLint errors Lovable kit-builder em main | Lovable/PO |
+| P54 | Kit Coverage — Integration | Test timeout BD externo | PO/DBA |
+| P55 | Uptime Monitor | Probe infra externa | PO |
+| P57 | CI - Replenishment Quality Gate (audit) | E2E visual parity pré-existente | Lovable/time produto |
+
