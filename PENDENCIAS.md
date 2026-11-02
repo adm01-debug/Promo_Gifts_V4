@@ -294,8 +294,8 @@ Esta divergência é independente do fix de P4 (guard pg_cron nas migrations `20
 **Ação necessária do PO:**
 1. Investigar a extensão da divergência: baixar artefato `schema-reconciliation-evidence` do run [40708395880](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40708395880/artifacts/12824214915) (arquivos `/tmp/migration-ledger.json` e `/tmp/migration-ledger-summary.json`)
 2. Decidir estratégia de reconciliação: criar migrations espelho para o `remote_only=648` ou limpar o `local_only=1108` do ledger
-3. Após reconciliação: disparar `schema-snapshot-export.yml` com `force_rotate: true` para girar o baseline
-4. Reconfirmar com `workflow_dispatch` em `db-schema-drift-check`
+3. Confirmar que o `db-schema-drift-check` passa verde com a reconciliação feita (via `workflow_dispatch` nesse workflow)
+4. **Somente após** o drift-check estar verde: disparar `schema-snapshot-export.yml` **sem** `force_rotate` para o export normal. Usar `force_rotate: true` apenas na situação de `repair-only` documentada em CLAUDE.md (migration fora de ordem de versão) e revisar o diff do baseline gerado no PR do bot antes do merge. **Atenção:** `force_rotate` bypassa o drift gate mesmo que drift persista — nunca usar enquanto objetos DDL fora de migration não forem reconciliados.
 
 **Nota:** Per REGRA #8 corolário e E056, Claude **não pode** executar DDL ou `migration repair` em sessão de agente para reconciliar o ledger. Requer ação do PO.
 
@@ -767,8 +767,8 @@ Esta divergência é independente do fix de P4 (guard pg_cron nas migrations `20
 **Ação necessária do PO:**
 1. Investigar a extensão da divergência: baixar artefato `schema-reconciliation-evidence` do run [40708395880](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40708395880/artifacts/12824214915) (arquivos `/tmp/migration-ledger.json` e `/tmp/migration-ledger-summary.json`)
 2. Decidir estratégia de reconciliação: criar migrations espelho para o `remote_only=648` ou limpar o `local_only=1108` do ledger
-3. Após reconciliação: disparar `schema-snapshot-export.yml` com `force_rotate: true` para girar o baseline
-4. Reconfirmar com `workflow_dispatch` em `db-schema-drift-check`
+3. Confirmar que o `db-schema-drift-check` passa verde com a reconciliação feita (via `workflow_dispatch` nesse workflow)
+4. **Somente após** o drift-check estar verde: disparar `schema-snapshot-export.yml` **sem** `force_rotate` para o export normal. Usar `force_rotate: true` apenas na situação de `repair-only` documentada em CLAUDE.md (migration fora de ordem de versão) e revisar o diff do baseline gerado no PR do bot antes do merge. **Atenção:** `force_rotate` bypassa o drift gate mesmo que drift persista — nunca usar enquanto objetos DDL fora de migration não forem reconciliados.
 
 **Nota:** Per REGRA #8 corolário e E056, Claude **não pode** executar DDL ou `migration repair` em sessão de agente para reconciliar o ledger. Requer ação do PO.
 

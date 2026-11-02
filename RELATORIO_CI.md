@@ -682,7 +682,7 @@ As falhas anteriores de E2E (Playwright), CI Security & Drift e Swatch QuickView
 PRs #2854 e #2855 têm checks pendentes; #2852 também permanece aberto com seis checks pendentes. Nenhum foi mesclado. A documentação local foi atualizada com as causas e encaminhamentos em `PENDENCIAS.md`; `git diff --check` passou. `npm run build:verify` concluiu typecheck, lint baseline sem regressões e build/gates de produção. A suíte completa (`npm test -- --reporter=dot`) executou 1.381 arquivos: 1.250 aprovados, 130 ignorados, 1 falha; 25.900 testes aprovados, 1.135 ignorados e 24 TODO. A única falha foi a conhecida `QuoteBuilderSummaryAlignment.fuzz.test.ts:31` (token JSX procurado no arquivo anterior à extração), sem nova falha atribuída a esta alteração documental. Esta etapa não alterou código de aplicação, testes, secrets, schema ou dados operacionais.
 ## 20. INVENTÁRIO COMPLETO — Workflows em Falha (2026-11-02, sessão fix/ci-workflows)
 
-> Inventário exaustivo dos 18 workflows identificados com failure em https://github.com/adm01-debug/Promo_Gifts_V4/actions?query=is%3Afailure
+> Inventário exaustivo dos 19 workflows identificados com failure em https://github.com/adm01-debug/Promo_Gifts_V4/actions?query=is%3Afailure
 > HEAD de referência da main ao início: `8b84f38f5` → atual `0a8a17f92` (release 1.7.0)
 > Branch de trabalho: `fix/ci-workflows` (5 commits à frente da main)
 
@@ -712,8 +712,8 @@ PRs #2854 e #2855 têm checks pendentes; #2852 também permanece aberto com seis
 
 | Categoria | Count | Workflows |
 |---|---|---|
-| ✅ CORRIGIDO (código) | 5 | Supabase Linter, Replenishment QG, Security & Drift, TS Unused Ratchet, DB Migration E15 + Magazine typed queries (mesmo fix TS2339) |
-| ⛔ INFRA (E2E/probe) | 11 | Edge Integration Tests, E2E Playwright, Uptime Monitor, Gate 5, Quote Builder QG, ColorSwatch Grid, Critical Flows, Cart Matrix, Swatch QuickView, Magazine Header |
+| ✅ CORRIGIDO (código) | 6 | Supabase Linter (#1), Replenishment QG (#2), Security & Drift (#3), TS Unused Ratchet (#4), DB Migration E15 (#10), Magazine typed queries (#11) |
+| ⛔ INFRA (E2E/probe) | 10 | Edge Integration Tests (#5), E2E Playwright (#6), Uptime Monitor (#7), Gate 5 (#8), Quote Builder QG (#9), ColorSwatch Grid (#12), Critical Flows (#13), Cart Matrix (#16), Swatch QuickView (#17), Magazine Header (#18) |
 | ⛔ GOVERNA | 2 | Policies Baseline (drift RLS), Branch Protection Sentinel (push direto) |
 | ⛔ INFRA/DADOS | 1 | schema-snapshot-export (manifesto ausente) |
 
