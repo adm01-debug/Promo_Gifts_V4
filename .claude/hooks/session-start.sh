@@ -73,6 +73,13 @@ restaurar() {
 }
 trap restaurar EXIT
 
+# O manifest versionado volta ao commit no fim, mas o graph.json local continua: a próxima atualização
+# incremental precisa do manifest que acompanha ESTE graph.json, senão não percebe arquivo apagado.
+MANIFEST_SESSAO=graphify-out/.session-manifest.json
+if [ -f "$MANIFEST_SESSAO" ] && [ -f graphify-out/graph.json ] && ! [ graphify-out/graph.json -nt "$MANIFEST_SESSAO" ]; then
+  cp -p "$MANIFEST_SESSAO" graphify-out/manifest.json
+fi
+
 PYTHONHASHSEED=0 graphify update .
 if [ -d node_modules/typescript ]; then
   node scripts/graphify/enrich-typescript-references.mjs
@@ -82,5 +89,6 @@ else
   echo "node_modules/typescript ausente — sem enriquecimento TS (rode npm install e a próxima sessão completa)"
 fi
 
+cp -p graphify-out/manifest.json "$MANIFEST_SESSAO"
 echo "$ESTADO" > "$MARCA"
 echo "grafo pronto no estado $ESTADO ($(git rev-parse --short HEAD))"
