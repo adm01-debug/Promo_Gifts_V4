@@ -148,7 +148,9 @@ function createNetworkLog(page: Page) {
   const done: string[] = [];
   const label = (url: string, method: string): string | null => {
     const m = /\/(auth\/v1|functions\/v1|rest\/v1)\/([^?]*)/.exec(url);
-    return m ? `${method} ${m[1]}/${m[2]}` : url.includes("api.ipify.org") ? `${method} ipify` : null;
+    if (m) return `${method} ${m[1]}/${m[2]}`;
+    try { if (new URL(url).hostname === 'api.ipify.org') return `${method} ipify`; } catch {}
+    return null;
   };
   const onRequest = (req: Request) => {
     const l = label(req.url(), req.method());

@@ -20,6 +20,7 @@
  */
 import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
+import { randomInt } from 'node:crypto';
 
 const FUNCTIONS_DIR = 'supabase/functions';
 const SECRET = 'LOVABLE_API_KEY';
@@ -110,12 +111,12 @@ for (const dbValue of [...DEGENERATE, ...VALID]) {
 }
 
 // Fuzz adicional com strings aleatórias
-const rnd = (n) => Array.from({ length: n }, () => String.fromCharCode(32 + Math.floor(Math.random() * 95))).join('');
+const rnd = (n) => Array.from({ length: n }, () => String.fromCharCode(32 + randomInt(95))).join('');
 for (let i = 0; i < 300; i++) {
   simCount++;
-  const dbValue = Math.random() < 0.4 ? '   '.repeat(Math.floor(Math.random() * 4)) : rnd(Math.floor(Math.random() * 40));
-  const envValue = Math.random() < 0.5 ? undefined : rnd(Math.floor(Math.random() * 40));
-  const r = simulateHandler({ dbValue, envValue, resolverThrows: Math.random() < 0.3 });
+  const dbValue = randomInt(100) < 40 ? '   '.repeat(randomInt(4)) : rnd(randomInt(40));
+  const envValue = randomInt(100) < 50 ? undefined : rnd(randomInt(40));
+  const r = simulateHandler({ dbValue, envValue, resolverThrows: randomInt(100) < 30 });
   if (![200, 503].includes(r.status)) fail(`status inesperado ${r.status}`);
   else if (r.status === 200 && !r.apiKey) fail('200 sem chave');
   else ok();
@@ -144,7 +145,7 @@ for (const fn of dirs) {
     fail(`${fn}: lê ${SECRET} sem o SSOT (ai-credentials.ts ou resolveCredential)`);
   } else ok();
 
-  if (new RegExp(`Deno\\.env\\.get\\(['"]${SECRET}['"]\\)`).test(src) && !usesSsot) {
+  if (new RegExp(`Deno\\.env\\.get\\(['"\`]${SECRET}['"\`]\\)`).test(src) && !usesSsot) {
     fail(`${fn}: leitura direta de Deno.env.get('${SECRET}') — use o SSOT`);
   } else ok();
 
