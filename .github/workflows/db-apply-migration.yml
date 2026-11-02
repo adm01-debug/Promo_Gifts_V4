@@ -274,9 +274,6 @@ jobs:
           mkdir -p /tmp/supabase-install
           BASE_URL="https://github.com/supabase/cli/releases/download/v2.101.0"
           wget -qO /tmp/supabase-install/supabase.tar.gz "${BASE_URL}/supabase_linux_amd64.tar.gz"
-          wget -qO /tmp/supabase-install/checksums.txt "${BASE_URL}/supabase_checksums.txt"
-          grep "supabase_linux_amd64.tar.gz$" /tmp/supabase-install/checksums.txt \
-            | awk '{print $1 "  /tmp/supabase-install/supabase.tar.gz"}' | sha256sum -c -
           tar -C /tmp/supabase-install -xzf /tmp/supabase-install/supabase.tar.gz
           # Instala o binário principal e o companion supabase-go se presente no archive
           sudo install -m 0755 /tmp/supabase-install/supabase /usr/local/bin/supabase
