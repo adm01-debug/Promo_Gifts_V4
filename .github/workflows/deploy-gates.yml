@@ -76,36 +76,22 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - uses: dorny/paths-filter@ceb8a2b8f2d89434be7ff52d3de7ec3738c5cc9d # v4.0.3
-        id: filter
-        if: github.event_name == 'pull_request'
-        with:
-          filters: |
-            code:
-              - 'src/**'
-              - 'scripts/**'
-              - 'supabase/**'
-              - 'tests/**'
-              - 'e2e/**'
-              - 'playwright/**'
-              - '.github/workflows/**'
-              - '.github/actions/**'
-              - 'package.json'
-              - 'package-lock.json'
-              - 'tsconfig*.json'
-              - 'vite.config.*'
-              - 'playwright.config.*'
-              - '.nvmrc'
-              - 'eslint.config*'
-      - name: Determinar docs_only
+      - name: Detectar mudanças (docs-only bypass E14)
         id: result
         run: |
-          CODE_CHANGED="${{ steps.filter.outputs.code }}"
-          if [[ "${{ github.event_name }}" == "pull_request" && "$CODE_CHANGED" == "false" ]]; then
+          if [[ "${{ github.event_name }}" != "pull_request" ]]; then
+            echo "docs_only=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          BASE_SHA="${{ github.event.pull_request.base.sha }}"
+          HEAD_SHA="${{ github.event.pull_request.head.sha }}"
+          CHANGED=$(git diff --name-only "$BASE_SHA" "$HEAD_SHA" 2>/dev/null || git diff --name-only origin/main HEAD)
+          CODE_PATTERN='^(src/|scripts/|supabase/|tests/|e2e/|playwright/|\.github/workflows/|\.github/actions/|package\.json$|package-lock\.json$|tsconfig|vite\.config|playwright\.config|\.nvmrc$|eslint\.config)'
+          if echo "$CHANGED" | grep -qE "$CODE_PATTERN"; then
+            echo "docs_only=false" >> "$GITHUB_OUTPUT"
+          else
             echo "docs_only=true" >> "$GITHUB_OUTPUT"
             echo "::notice::E14 — docs-only PR detectado; gates de código bypassados (success)"
-          else
-            echo "docs_only=false" >> "$GITHUB_OUTPUT"
           fi
 
   # ============================================================
