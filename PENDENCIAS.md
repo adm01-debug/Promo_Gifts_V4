@@ -2936,3 +2936,67 @@ O workflow E2E Stock Matrix é independente do deploy-gates.yml — não há cas
 **Ação necessária:** Corrigir as falhas E2E pré-existentes (relacionadas a P49/P53) para que os artefatos sejam gerados corretamente.
 
 ---
+
+---
+
+## Sessão 2026-11-02 — Inventário baseline `df94410c` (Lovable "Changes")
+
+**Referência completa:** `RELATORIO_CI.md`  
+**PR de correção:** [#3028](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3028)  
+**Branch:** `claude/laughing-cori-o9w35e`
+
+### Workflows corrigidos pelo PR #3028
+
+| Workflow | Causa | Commit fix |
+|---|---|---|
+| Deploy Gates | `dorny/paths-filter` bloqueada (P45.1) + 3 ESLint errors (P53) | `8cc444b8f` + `e124a2c8e` |
+| CI Security & Drift Checks | 3 ESLint errors (P53) — `df94410c` Lovable | `e124a2c8e` |
+| Nightly Full CI | 3 ESLint errors (P53) | `e124a2c8e` |
+| SSOT Supabase Guard | P43 — doc sem marker `[LEGACY_INFORMATIVO]` | Commit no PR #3028 |
+| Ratchet Weekly | P43 — idem | Commit no PR #3028 |
+| Branch Protection Sentinel | Push direto em main por Lovable — resolve após merge via PR | Auto on merge |
+
+### P40 — GitHub Actions policy bloqueia 5 workflows (requer PO)
+
+**Workflows afetados (última run em `df94410c`):**
+
+| Workflow | Run | Action bloqueada |
+|---|---|---|
+| Gitleaks — Full History Audit | [41368799848](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41368799848) | `gitleaks/gitleaks-action` |
+| Release Please | [41368799853](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41368799853) | `google-github-actions/release-please-action` |
+| Security Scan | [41368799724](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41368799724) | `anchore/scan-action` |
+| Edge Integration Tests | [41368799780](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41368799780) | `denoland/setup-deno` |
+| Magazine Unit Tests | [41366967695](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41366967695) | `denoland/setup-deno` |
+
+**Ação necessária:** PO deve adicionar essas actions à allowlist de políticas do GitHub Actions da organização `adm01-debug`.  
+**Impacto:** Não são required checks do Gate Final — não bloqueiam merge, mas ficam em falha permanente.
+
+### P_EDGE_DRIFT — edge-functions-drift-check (requer deploy via workflow autorizado)
+
+**Run:** [41369525429](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41369525429)  
+**Causa:** Edge functions no repo divergem das versions deployadas no canônico. Functions foram deployadas via MCP diretamente sem commit correspondente.  
+**Ação:** Reconciliar via `.github/workflows/deploy-edge-functions.yml` (único caminho autorizado — REGRA #8 corolário).
+
+### P_TIMEOUT — Kit Coverage — Integration (timeout DB 30s)
+
+**Run:** [41384748861](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41384748861)  
+**Causa:** Timeout de 30s em `kit-coverage.integration.test.ts:140/175` — consulta ao banco demora mais que o limite.  
+**Ação:** Investigar query lenta ou aumentar timeout do teste. Requer análise DBA.
+
+### Pré-existentes (E2E failures anteriores ao PR)
+
+| Workflow | Run | Pendência |
+|---|---|---|
+| E2E Focused UI (E78) | [41375525391](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41375525391) | P28 — thumb-quickview fixture |
+| E2E Critical Flows | [41368799786](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41368799786) | Pré-existente |
+| E2E Swatch QuickView | [41368799830](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41368799830) | P28 |
+| E2E Personalization | [41368799901](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41368799901) | P21 |
+| E2E Stock Matrix (E80) | [41368799754](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41368799754) | Pré-existente |
+| CI — Replenishment QG | [41368799687](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41368799687) | Pré-existente |
+| E2E Magazine Header | [41366967704](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41366967704) | Pré-existente |
+
+### Regressão introduzida e revertida nesta sessão
+
+**SHA256 verification (commit `8206ff39f`, revertido em `7d20c4002`):**  
+Adição de verificação SHA256 via `supabase_checksums.txt` em 3 workflows quebrou o step "Install Supabase CLI" com `wget exit code 8` (HTTP error). Revertido no mesmo PR antes do merge.
+
