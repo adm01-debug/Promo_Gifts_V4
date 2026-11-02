@@ -2330,7 +2330,7 @@ changed: 8 policies em ai_usage_quotas + art_file_attachments
 1. Revisar se as 8 mudanças em `ai_usage_quotas` e `art_file_attachments` são intencionais
 2. Se intencionais:
    a. Criar migration espelho documentando as mudanças de policy (arquivo `.sql` em `supabase/migrations/`)
-   b. Registrar a migration no ledger via `supabase migration repair --status applied <version>` (com versão explícita, via `.github/workflows/db-apply-migration.yml`) — **não pular este passo** para evitar divergência entre schema real e ledger (E99 corolário / REGRA #8)
+   b. Registrar a migration no ledger via `supabase migration repair --status applied <version>` (com versão explícita, via `.github/workflows/db-apply-migration.yml` com **`mode=repair-only`** — obrigatório quando o DDL já está aplicado em produção, pois o modo padrão `apply` re-executa o SQL e pode duplicar a alteração) — **não pular este passo** para evitar divergência entre schema real e ledger (E99 corolário / REGRA #8)
    c. Disparar `Policies Baseline` via `workflow_dispatch` com input `seed=true` — isso gera uma PR com o baseline atualizado
    d. Revisar e mergear a PR gerada pelo workflow antes de verificar se o drift foi zerado
    e. **Atenção:** um CI run comum não regenera o baseline; apenas o dispatch com `seed=true` faz isso
@@ -2584,7 +2584,7 @@ Resolução automática no merge do PR.
 | Gate 1 — Lint + TypeScript | ❌ bloqueado por P46 | ✅ `success` | [41393827324](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41393827324) | — |
 | Gate 1.3 — Migration contracts | ❌ `missing_catalog_object fn_get_rupture_alerts` | ✅ `success` | [41393827324](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41393827324) step 9 | fn_get_rupture_alerts ausente do catálogo → fix commit `cc5ab5761` |
 | Gate 1.9 — ratchet `as` | ❌ `+1 em 2 arquivos` | ✅ Corrigido — validado por CI | Commit `115e8a93d`; gate `as` passou em run [41393827324](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41393827324) (job `static-gates`, step completo) | baseline desatualizado após merge main |
-| Gate 1.9 — ratchet file-size | ❌ `9 arquivos com regressão` | ✅ Corrigido — **validação local** (CI run em andamento) | Commit `1659dda6b`; `npm run check:file-size` local em `c7c291cf5` retornou `Nenhuma regressão` (138 arquivos, baseline=138); CI run completo para commits `5305f36bf`+ aguarda conclusão | 9 arquivos Lovable cresceram antes do PR |
+| Gate 1.9 — ratchet file-size | ❌ `9 arquivos com regressão` | ✅ Corrigido — **validação local** (CI run em andamento) | Commit `1659dda6b`; `npm run check:file-size-baseline` local em `c7c291cf5` retornou `Nenhuma regressão` (138 arquivos, baseline=138); CI run completo para commits `5305f36bf`+ aguarda conclusão | 9 arquivos Lovable cresceram antes do PR |
 | Gate 2 — Vitest | ❌ bloqueado por P46 | ✅ `success` | [41393827324](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41393827324) job `125111342122` | — |
 | Gate 2.5 — PG Integrity | ❌ bloqueado por P46 | ✅ `success` | [41393827324](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41393827324) job `125111032652` | — |
 | Gate 3 — E2E Smoke | ❌ bloqueado por P46 | ✅ `success` | [41393827324](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41393827324) job `125112016347` | — |

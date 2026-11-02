@@ -80,28 +80,22 @@
 
 ## GATE FINAL DO PR #3028 — STATUS ATUAL
 
-**Run:** [41429225335](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41429225335)  
-**Commit HEAD:** `8206ff39f` (aguardando `7d20c4002` reacionar o CI)
+### Run anterior: [41429225335](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41429225335) (commit `8206ff39f`) — FALHOU
+**Causa:** Gate E40 Install Supabase CLI falhou com wget exit 8 (SHA256 verification)
 
-| Gate | Job ID | Status |
+### Run atual: [41431078225](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41431078225) (commit `a374f485f`) — EM PROGRESSO
+
+**Correção confirmada:** "Install Supabase CLI" agora passa (SHA256 revertido em `7d20c4002`).  
+Job [125229515588](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41431077985/job/125229515588) "Migrations x Canonical schema" executou → confirma que Install CLI passou.
+
+| Gate | Status | Observação |
 |---|---|---|
-| Gate 0 - SSOT | 125223320619 | ✅ success |
-| Gate 0.5 - Dep Audit | 125223458363 | ✅ success |
-| Gate 0.6 - Dep Review | 125223458090 | ✅ success |
-| Gate 1 - Lint+TS | 125223458284 | ⏳ in_progress (step 23/43) |
-| Gate 2 - Unit Tests | 125223458213 | ✅ success |
-| Gate 2.5 - PG Integrity | 125223458380 | ✅ success |
-| Gate 3 - E2E Smoke | 125223797473 | ✅ success |
-| Gate 4 - Lighthouse | 125223458240 | ✅ success |
-| Gate 5 - SEO | 125223458379 | ✅ success |
-| Gate 5.5 - RPC | 125223458441 | ✅ success |
-| Gate E23 - Secret Scan | 125223458383 | ✅ success |
-| Gate E40 - Detect changes | 125223458308 | ✅ success |
-| **Gate E40 - Schema Drift** | 125223921825 | ❌ failure — Install Supabase CLI (wget exit 8) |
-| Gate Final | — | ⏳ aguardando Gate 1 + rerun após fix |
+| Gate 0 - SSOT | ✅ success | run 41431077903 |
+| Gate E40 - Install Supabase CLI | ✅ success | SHA256 revertido — **CONFIRMADO** |
+| Gate E40 - Migrations x Canonical schema | ❌ failure — P7 | `local_only=1140; remote_only=673` — bloqueio DBA/PO |
+| Gate Final | ❌ failure | Bloqueado por P7 (DBA/PO) |
 
-**Próximo run** (commit `7d20c4002`): reverte SHA256 → deve corrigir Gate E40 Schema Drift Install.  
-**Gate E40 ledger mismatch** (P7): se o Install passar, o step "Ledger parity" ainda pode reportar falha por `local_only=1140; remote_only=673` — bloqueio DBA/PO.
+**Bloqueio restante (P7):** Reconciliação manual do ledger pelo DBA — `supabase migration repair --status applied <version>` via `db-apply-migration.yml` com `mode=repair-only`. Sem esta ação, Gate Final sempre falha.
 
 ---
 
