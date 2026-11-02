@@ -83,6 +83,7 @@ const out = join(dir, 'report.json');
 const res = spawnSync(process.execPath, [ESLINT_BIN, 'src', '--format', 'json', '-o', out], {
   stdio: ['ignore', 'inherit', 'inherit'],
   shell: false,
+  env: { ...process.env, NODE_OPTIONS: '--max-old-space-size=4096' },
 });
 if (res.status !== 0 && res.status !== 1) {
   console.error(`❌ eslint falhou com status ${res.status}`);

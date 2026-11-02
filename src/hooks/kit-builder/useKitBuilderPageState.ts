@@ -26,6 +26,7 @@ import {
   type KitBuilderFlow,
   type KitType,
 } from '@/lib/kit-builder';
+import type { KitOrigin } from '@/lib/kit-builder/types';
 import { logger } from '@/lib/logger';
 import { OCCASIONS, type Occasion } from '@/components/kit-builder/KitOccasionSelector';
 
@@ -446,7 +447,7 @@ export function useKitBuilderPageState() {
   );
 
   const startFlow = useCallback(
-    (flow: 'box-first' | 'items-first', origin?: import('@/lib/kit-builder/types').KitOrigin) => {
+    (flow: 'box-first' | 'items-first', origin?: KitOrigin) => {
       startNewFlow(flow, origin);
       setQuoteClient({});
       setAIBriefing(undefined);
