@@ -96,7 +96,8 @@ export function contarUsoNoCodigo(raiz, nomes) {
     for (const arquivo of listarArquivos(path.join(raiz, pasta))) {
       // testes nao contam como uso: .test./.spec./__tests__ (vitest) e *_test.ts / tests/ (Deno)
       if (/(\.test\.|\.spec\.|__tests__|_test\.[jt]sx?$|\/tests\/)/.test(arquivo)) continue;
-      const texto = fs.readFileSync(arquivo, 'utf8');
+      // comentario com .from('x') antigo nao e uso
+      const texto = fs.readFileSync(arquivo, 'utf8').replace(/\/\*[\s\S]*?\*\//g, '').replace(/^\s*\/\/.*$/gm, '');
       for (const m of texto.matchAll(ACESSO_TABELA)) {
         const nome = m[1] ?? m[2];
         if (uso[nome]) uso[nome][chave] += 1;

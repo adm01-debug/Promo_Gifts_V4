@@ -26,7 +26,7 @@ Testes das funções puras: `npx vitest run tests/scripts/inventario-banco.test.
 
 - **`alertas`** é o que um agente precisa saber antes de mexer: `tabela_sem_rls`, `tabela_sem_rls_fora_de_public`,
   `cron_falhando` (taxa ≥ 5 % em 7 dias, só jobs ativos), `cron_parado` (hora com mais da metade das execuções
-  falhando), `historico_cron_sem_limpeza` (> 50 mil linhas com mais de 7 dias), `edge_publicada_sem_codigo_no_repo`,
+  falhando por `job startup timeout`, isto é, sem worker do pg_cron — erro da própria função não conta), `historico_cron_sem_limpeza` (> 50 mil linhas com mais de 7 dias), `edge_publicada_sem_codigo_no_repo`,
   `edge_no_repo_sem_deploy`. Os limiares estão em `LIMIARES` no script.
 - **`tabelas_orfas`**: 0 linhas (contagem exata) + não citada em função/view do banco + nenhum acesso no código
   (`.from`, `untypedFrom`, `goldFrom`, `{ table: }`). Candidata a limpeza, não prova de que pode apagar (pode ser
@@ -43,18 +43,18 @@ Testes das funções puras: `npx vitest run tests/scripts/inventario-banco.test.
   que está morta.
 - `rotas[].dados` é o que a tela **alcança** por import (até 4 níveis), não o que ela chama em toda renderização.
 
-## Achados da geração de 2026-11-02 (medido_em 14:15 UTC)
+## Achados da geração de 2026-11-02 (medido_em 14:36 UTC)
 
 - **Banco:** 398 tabelas em `public`, todas com RLS, 961 policies, 1.336 funções (572 `SECURITY DEFINER`),
   197 views, 144 cron jobs (137 ativos), 2.577 registros no ledger de migrations.
 - **Alertas:** 24 tabelas sem RLS fora de `public` (`supplier_stricker.*`, `prod_audit.*`, `classification_audit.*`,
   `pgmq.meta`); **93 cron jobs ativos com ≥ 5 % de falha em 7 dias** (quase tudo `job startup timeout`: pg_cron sem
-  worker livre no instante do disparo); 1 hora com o cron parado.
+  worker livre no instante do disparo); 1 hora com o cron parado (2026-10-31 15h: 108 de 156 execuções sem worker livre).
 - **Histórico do cron:** 70 mil linhas (43 mil com mais de 7 dias, abaixo do limiar de alerta), mais antiga em
   2026-10-18.
 - **Tabelas órfãs:** 16 (lista em `banco.json` → `tabelas_orfas`).
 - **Edge functions:** 110 no repo = 110 publicadas; 36 com `verify_jwt = false`; 16 chamadas por cron;
-  24 sem chamador conhecido.
+  25 sem chamador conhecido.
 - **Front:** 135 rotas (118 de produção, 17 harness), 124 com tela resolvida (o resto é `<Navigate>`), 93 alcançam
   dados. Guardas das rotas de produção: `ProtectedRoute` em todas menos 11 públicas; `AdminRoute` em 19, `DevRoute`
   em 31, `MagazineRoute` em 5.

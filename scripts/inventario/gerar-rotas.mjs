@@ -54,7 +54,13 @@ function importsDe(code, deArquivo) {
 }
 /** Nomes de edge functions chamadas no codigo: functions.invoke / invokeEdge* / callEdge* (com generico em
  * varias linhas, nome em constante ou condicional) e URLs /functions/v1/<nome> ou `${...FUNCTIONS_URL}/<nome>`. */
-export function edgesChamadasNoCodigo(code) {
+/** Tira comentarios de bloco e linhas inteiras de comentario (// no inicio da linha). Nao mexe em strings com URL. */
+export function semComentarios(code) {
+  return code.replace(/\/\*[\s\S]*?\*\//g, '').replace(/^\s*\/\/.*$/gm, '');
+}
+
+export function edgesChamadasNoCodigo(bruto) {
+  const code = semComentarios(bruto);
   const nomes = new Set();
   const consts = Object.fromEntries([...code.matchAll(/\bconst\s+([A-Za-z_$][\w$]*)\s*=\s*['"`]([a-z0-9][a-z0-9-]*)['"`]/g)].map((m) => [m[1], m[2]]));
   for (const m of code.matchAll(/functions\/v1\/([a-z0-9][a-z0-9-]*)/g)) nomes.add(m[1]);
@@ -82,7 +88,8 @@ export function edgesChamadasNoCodigo(code) {
   return nomes;
 }
 
-export function dadosDe(code) {
+export function dadosDe(bruto) {
+  const code = semComentarios(bruto);
   const pegar = (re) => [...new Set([...code.matchAll(re)].map((m) => m[1] ?? m[2]).filter(Boolean))].sort();
   return {
     tabelas: pegar(ACESSO_TABELA),
@@ -97,7 +104,8 @@ const juntar = (lista) => {
   return Object.fromEntries(Object.entries(r).map(([k, v]) => [k, [...v].sort()]));
 };
 const PROFUNDIDADE = 4;
-const IGNORAR = /^src\/(components\/ui|integrations|contexts)\/|\.(test|spec)\.[tj]sx?$|_test\.[tj]sx?$|__tests__/;
+// integrations/ entra (helpers com RPC); so o types.ts gerado fica de fora (enorme e sem chamadas)
+const IGNORAR = /^src\/(components\/ui|contexts)\/|^src\/integrations\/supabase\/types\.ts$|\.(test|spec)\.[tj]sx?$|_test\.[tj]sx?$|__tests__/;
 const cacheArq = new Map();
 function infoArq(arq) {
   if (!cacheArq.has(arq)) {

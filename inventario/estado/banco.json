@@ -55,7 +55,7 @@
         "expire-supplier-promises (14.3% em 7d)",
         "fantasmas-deactivate-guard (10.2% em 7d)",
         "fix_price_verified_drift_daily (14.3% em 7d)",
-        "generate-blurhashes (17.7% em 7d)",
+        "generate-blurhashes (17.5% em 7d)",
         "hash-product-images (8.4% em 7d)",
         "kit-component-auto-approve (6.9% em 7d)",
         "kit-component-auto-promote (6% em 7d)",
@@ -102,7 +102,7 @@
         "sm-category-collect (6% em 7d)",
         "sm-category-enqueue (7.9% em 7d)",
         "sm-session-check (28.6% em 7d)",
-        "sm-site-scrape (10.6% em 7d)",
+        "sm-site-scrape (10.5% em 7d)",
         "sm-site-scrape-auth (7.4% em 7d)",
         "sm-stock-guard (7.3% em 7d)",
         "sm-url-discover-collect (6.5% em 7d)",
@@ -142,9 +142,9 @@
     },
     "historico": {
       "bytes": 84066304,
-      "linhas": 70204,
+      "linhas": 70263,
       "mais_antigo": "2026-10-18T04:00:00Z",
-      "mais_de_7_dias": 43309
+      "mais_de_7_dias": 43362
     },
     "horas_paradas_7d": [
       {
@@ -298,7 +298,7 @@
         "duracao_max_s_7d": 20,
         "edges": [],
         "execucoes_24h": 96,
-        "execucoes_7d": 667,
+        "execucoes_7d": 668,
         "falhas_24h": 8,
         "falhas_7d": 52,
         "nome": "anon-insert-rate-purge",
@@ -412,7 +412,7 @@
         "duracao_max_s_7d": 68,
         "edges": [],
         "execucoes_24h": 96,
-        "execucoes_7d": 667,
+        "execucoes_7d": 668,
         "falhas_24h": 9,
         "falhas_7d": 54,
         "nome": "backfill-queue-reap-stuck",
@@ -1001,14 +1001,14 @@
         "edges": [
           "generate-blurhashes"
         ],
-        "execucoes_24h": 141,
-        "execucoes_7d": 141,
+        "execucoes_24h": 142,
+        "execucoes_7d": 143,
         "falhas_24h": 25,
         "falhas_7d": 25,
         "nome": "generate-blurhashes",
         "startup_timeout_7d": 25,
         "statement_timeout_7d": 0,
-        "taxa_falha_7d_pct": 17.7,
+        "taxa_falha_7d_pct": 17.5,
         "ultima_falha": "2026-11-02T11:10:00Z"
       },
       {
@@ -1174,7 +1174,7 @@
         "edges": [],
         "execucoes_24h": 24,
         "execucoes_7d": 168,
-        "falhas_24h": 13,
+        "falhas_24h": 12,
         "falhas_7d": 46,
         "nome": "kit-ficha-parse-site",
         "startup_timeout_7d": 16,
@@ -2018,8 +2018,8 @@
         ],
         "duracao_max_s_7d": 136,
         "edges": [],
-        "execucoes_24h": 23,
-        "execucoes_7d": 166,
+        "execucoes_24h": 24,
+        "execucoes_7d": 167,
         "falhas_24h": 3,
         "falhas_7d": 18,
         "nome": "refresh-mv-stock-rupture-alert",
@@ -2259,14 +2259,14 @@
         ],
         "duracao_max_s_7d": 118,
         "edges": [],
-        "execucoes_24h": 47,
-        "execucoes_7d": 331,
+        "execucoes_24h": 48,
+        "execucoes_7d": 332,
         "falhas_24h": 8,
         "falhas_7d": 35,
         "nome": "sm-site-scrape",
         "startup_timeout_7d": 35,
         "statement_timeout_7d": 0,
-        "taxa_falha_7d_pct": 10.6,
+        "taxa_falha_7d_pct": 10.5,
         "ultima_falha": "2026-11-02T10:16:00Z"
       },
       {
@@ -3532,7 +3532,7 @@
   },
   "fonte": "scripts/inventario/banco.sql + acesso a tabelas em src/ e supabase/functions/ + edge functions publicadas (scripts/inventario/gerar-banco.mjs)",
   "format_version": 1,
-  "medido_em": "2026-11-02T14:15:16Z",
+  "medido_em": "2026-11-02T14:36:08Z",
   "objetos": {
     "funcoes_security_definer": [
       "admin_active_sessions",
@@ -4766,7 +4766,7 @@
       "rls_forcado": false,
       "triggers": 0,
       "uso_no_codigo": {
-        "edges": 16,
+        "edges": 15,
         "src": 8
       }
     },
@@ -4960,7 +4960,7 @@
     {
       "bytes": 147456,
       "citada_no_banco": true,
-      "linhas": 25,
+      "linhas": 24,
       "linhas_exatas": true,
       "nome": "anon_insert_rate",
       "particao": false,
@@ -5215,7 +5215,7 @@
     {
       "bytes": 77643776,
       "citada_no_banco": true,
-      "linhas": 81568,
+      "linhas": 81578,
       "linhas_exatas": true,
       "nome": "bot_detection_log",
       "particao": false,
@@ -6167,7 +6167,7 @@
     {
       "bytes": 237568,
       "citada_no_banco": true,
-      "linhas": 35,
+      "linhas": 37,
       "linhas_exatas": true,
       "nome": "edge_rate_limits",
       "particao": false,
@@ -6405,7 +6405,7 @@
     {
       "bytes": 71262208,
       "citada_no_banco": true,
-      "linhas": 103521,
+      "linhas": 103524,
       "linhas_exatas": true,
       "nome": "frontend_telemetry",
       "particao": false,
@@ -6932,7 +6932,7 @@
     {
       "bytes": 30302208,
       "citada_no_banco": true,
-      "linhas": 30233,
+      "linhas": 30238,
       "linhas_exatas": true,
       "nome": "login_attempts",
       "particao": false,
@@ -7181,7 +7181,7 @@
       "triggers": 2,
       "uso_no_codigo": {
         "edges": 2,
-        "src": 1
+        "src": 0
       }
     },
     {
@@ -8258,7 +8258,7 @@
     {
       "bytes": 6766592,
       "citada_no_banco": true,
-      "linhas": 3875,
+      "linhas": 3876,
       "linhas_exatas": true,
       "nome": "pipeline_run_log",
       "particao": false,
@@ -9407,8 +9407,8 @@
       "rls_forcado": false,
       "triggers": 11,
       "uso_no_codigo": {
-        "edges": 40,
-        "src": 42
+        "edges": 39,
+        "src": 38
       }
     },
     {
@@ -9816,7 +9816,7 @@
       "triggers": 5,
       "uso_no_codigo": {
         "edges": 14,
-        "src": 12
+        "src": 11
       }
     },
     {
@@ -10649,7 +10649,7 @@
       "triggers": 0,
       "uso_no_codigo": {
         "edges": 1,
-        "src": 5
+        "src": 4
       }
     },
     {

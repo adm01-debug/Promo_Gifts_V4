@@ -61,9 +61,9 @@ por_job AS (
          round(max(extract(epoch FROM e.end_time - e.start_time)) FILTER (WHERE e.status = 'succeeded'))::int AS duracao_max_s_7d
     FROM execucoes e GROUP BY e.jobid
 ),
-por_hora AS (
+por_hora AS (  -- falha por falta de worker do pg_cron (job startup timeout) = o agendador nao conseguiu rodar
   SELECT date_trunc('hour', e.start_time) AS hora, count(*)::int AS execucoes,
-         count(*) FILTER (WHERE e.status = 'failed')::int AS falhas
+         count(*) FILTER (WHERE e.status = 'failed' AND e.return_message LIKE 'job startup timeout%')::int AS falhas
     FROM execucoes e GROUP BY 1
 ),
 outros AS (  -- schemas proprios do projeto fora de public (ingestao, auditoria, filas)
@@ -157,7 +157,8 @@ SELECT jsonb_build_object(
              ) ORDER BY j.jobname), '[]'::jsonb)
         FROM cron.job j LEFT JOIN por_job pj ON pj.jobid = j.jobid
     ),
-    -- Hora com mais da metade das execucoes falhando: o cron ficou parado naquela hora.
+    -- Hora com mais da metade das execucoes falhando por 'job startup timeout': o cron ficou parado naquela hora
+    -- (erro da propria funcao nao conta: o agendador estava rodando).
     'horas_paradas_7d', (
       SELECT coalesce(jsonb_agg(jsonb_build_object(
                'hora', to_char(h.hora AT TIME ZONE 'UTC', 'YYYY-MM-DD"T"HH24":00Z"'),

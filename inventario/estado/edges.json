@@ -1,5 +1,5 @@
 {
- "gerado_em": "2026-11-02T14:33:43.003Z",
+ "gerado_em": "2026-11-02T14:36:49.346Z",
  "total": 110,
  "sem_chamador": [
   "asia-ingestion",
@@ -11,6 +11,7 @@
   "health-check",
   "load-test",
   "magazine-public-react",
+  "mcp-keys-issue",
   "mcp-keys-rotate",
   "mcp-query",
   "migrate-helper",
@@ -545,7 +546,7 @@
     "SUPABASE_URL"
    ],
    "chamada_em": {
-    "src": 4,
+    "src": 3,
     "migrations": 0,
     "outras_edges": 0,
     "cron": [],
@@ -697,7 +698,7 @@
    "linhas": 40,
    "segredos_lidos": [],
    "chamada_em": {
-    "src": 6,
+    "src": 1,
     "migrations": 4,
     "outras_edges": 1,
     "cron": [],
@@ -980,7 +981,7 @@
    "chamada_em": {
     "src": 1,
     "migrations": 0,
-    "outras_edges": 1,
+    "outras_edges": 0,
     "cron": [],
     "e2e": 0,
     "ci_config": 1
@@ -1074,7 +1075,7 @@
     "SUPABASE_URL"
    ],
    "chamada_em": {
-    "src": 4,
+    "src": 3,
     "migrations": 0,
     "outras_edges": 0,
     "cron": [],
@@ -1254,14 +1255,14 @@
     "SUPABASE_URL"
    ],
    "chamada_em": {
-    "src": 2,
+    "src": 0,
     "migrations": 0,
     "outras_edges": 0,
     "cron": [],
     "e2e": 0,
     "ci_config": 0
    },
-   "sem_chamador": false
+   "sem_chamador": true
   },
   "mcp-keys-revoke": {
    "linhas": 224,

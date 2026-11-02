@@ -101,3 +101,15 @@ describe('edgesChamadasNoCodigo', () => {
     ]);
   });
 });
+
+describe('comentarios nao contam como chamada', () => {
+  it('chamada removida que ficou so em comentario nao e chamador nem dado', () => {
+    const code = `
+      // FIX: supabase.functions.invoke('external-db-bridge') removido
+      /* antes: supabase.from('tabela_antiga') */
+      const url = 'https://exemplo.com/functions/v1/edge-real';
+    `;
+    expect([...edgesChamadasNoCodigo(code)]).toEqual(['edge-real']);
+    expect(dadosDe(code).tabelas).toEqual([]);
+  });
+});
