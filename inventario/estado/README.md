@@ -8,7 +8,7 @@ Mesmo formato de `inventario/estado/` do Zapp_Web_V2. O resto de `inventario/` (
 |---|---|---|
 | `banco.json` | `scripts/inventario/gerar-banco.mjs` (somente leitura: Management API `/database/query/read-only` + `/functions`, token `SUPABASE_ACCESS_TOKEN`) | tabelas (linhas estimadas, RLS, policies, triggers, tamanho), views, mviews, funções SQL, cron jobs com execuções/falhas das últimas 48 h, edge functions publicadas e diferença repo × produção, candidatas a órfãs |
 | `edges.json` | `scripts/inventario/gerar-repo.mjs` | as edge functions do repo: linhas, segredos lidos (`Deno.env.get`) e quem invoca cada uma (src, migrations, outras edges, e2e, CI; `_shared/` e README não contam) |
-| `rotas.json` | `scripts/inventario/gerar-repo.mjs` | as rotas de `src/routes/*.tsx`: path, componente, guardas, arquivo:linha |
+| `rotas.json` | `scripts/inventario/gerar-repo.mjs` | cada rota de `src/routes/*.tsx`: path, componente, **tela** (arquivo), grupo, **guardas** (inclui as herdadas do `AppRoutes.tsx`, ex.: `ProtectedRoute`), **hooks** do projeto que a tela importa e **dados** alcançáveis (tabelas, buckets de storage, RPCs e edge functions) seguindo imports locais até 4 níveis |
 | `tabelas-uso.json` | `scripts/inventario/gerar-repo.mjs` (lê a lista de tabelas de `banco.json`) | para cada tabela de `public`, quantos `.from('tabela')` há em `src/` e em `supabase/functions/`, se está em `types.ts`, e a lista final `tabelas_orfas` |
 
 **Atualizar tudo** (a ordem importa: o segundo usa o `banco.json`):
@@ -52,5 +52,7 @@ Parte delas é chamada por cron (`net.http_post` em `banco.json` → `cron`), po
 Lista em `edges.json` → `sem_chamador_no_repo`.
 
 **Front:** 135 rotas em `src/routes/` (`admin-routes.tsx` 50, `tools-routes.tsx` 26, `public-routes.tsx` 17,
-`client-routes.tsx` 12, `product-routes.tsx` 12, `AppRoutes.tsx` 10, `quote-routes.tsx` 8). Rotas `/__visual/*` e
-`/debug/*` são harness de teste.
+`client-routes.tsx` 12, `product-routes.tsx` 12, `AppRoutes.tsx` 10, `quote-routes.tsx` 8). 124 com tela resolvida;
+as 11 restantes são `<Navigate>` (redirect). 98 alcançam dados (tabela, bucket, RPC ou edge). Guardas: 28 rotas
+públicas; o resto passa por `ProtectedRoute` (+ `AdminRoute` em 19, + `DevRoute` em 31, + `MagazineRoute` em 5).
+Rotas `/__visual/*`, `/__test/*` e `/debug/*` são harness de teste.
