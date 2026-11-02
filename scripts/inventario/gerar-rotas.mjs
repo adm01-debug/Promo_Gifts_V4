@@ -98,7 +98,7 @@ export function segredosViaResolver(bruto) {
   const nomes = new Set();
   const literais = (txt) => [...txt.matchAll(/['"`]([A-Z][A-Z0-9_]+)['"`]/g)].map((m) => m[1]);
   const porConstLocal = (ident) => {
-    const def = code.match(new RegExp(`\\bconst\\s+${ident}\\b[^=]*=\\s*['"\`]([A-Z][A-Z0-9_]+)['"\`]`));
+    const def = code.match(new RegExp(`\\b(?:const|let|var)\\s+${ident}\\b[^=]*=\\s*['"\`]([A-Z][A-Z0-9_]+)['"\`]`));
     return def ? def[1] : null;
   };
   for (const m of code.matchAll(/\b(?:resolveCredential|getCredential)\s*\(\s*(['"`][A-Z][A-Z0-9_]+['"`]|[A-Za-z_$][\w$]*)/g)) {
@@ -112,7 +112,7 @@ export function segredosViaResolver(bruto) {
   for (const m of code.matchAll(/\bresolveCredentials\s*\(\s*(\[[^\]]*\]|[A-Za-z_$][\w$]*)/g)) {
     for (const n of literais(m[1])) nomes.add(n);
     for (const ref of m[1].matchAll(/(?:\.\.\.)?\b([A-Za-z_$][\w$]*)\b/g)) {
-      const def = code.match(new RegExp(`\\bconst\\s+${ref[1]}\\b[^=]*=\\s*(\\[[^\\]]*\\])`));
+      const def = code.match(new RegExp(`\\b(?:const|let|var)\\s+${ref[1]}\\b[^=]*=\\s*(\\[[^\\]]*\\])`));
       if (def) for (const n of literais(def[1])) nomes.add(n);
     }
   }

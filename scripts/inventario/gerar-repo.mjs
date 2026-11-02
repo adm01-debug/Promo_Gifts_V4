@@ -74,7 +74,7 @@ function segredosDaEdge(arqInicial) {
       if (lit) nomes.add(lit[1]);
       else {
         // constante local (ex.: AI_CREDENTIAL_NAME em _shared/ai-credentials.ts) em vez de string literal
-        const def = code.match(new RegExp(`\\bconst\\s+${m[1]}\\b[^=]*=\\s*['"]([A-Z0-9_]+)['"]`));
+        const def = code.match(new RegExp(`\\b(?:const|let|var)\\s+${m[1]}\\b[^=]*=\\s*['"]([A-Z0-9_]+)['"]`));
         if (def) nomes.add(def[1]);
       }
     }

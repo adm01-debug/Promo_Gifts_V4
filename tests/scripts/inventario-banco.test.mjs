@@ -230,7 +230,7 @@ describe('banco.sql', () => {
   // anterior (busca por "AS <coluna>") e garante que o texto que a define nao cite return_message
   // fora de uma comparacao booleana (LIKE/=/IS/~) — ou seja, nenhuma coluna pode ser um
   // passthrough bruto de return_message "lavado" por um alias de CTE antes de chegar ao JSON final.
-  it('nenhuma coluna referenciada em jsonb_build_object e um passthrough bruto de return_message vindo de uma CTE anterior', () => {
+  it('nenhuma coluna referenciada em jsonb_build_object e um passthrough bruto de return_message vindo de uma CTE anterior (qualquer numero de hops)', () => {
     const chamadas = chamadasJsonbBuildObject(sql);
     const colunasReferenciadas = new Set();
     for (const chamada of chamadas) {
@@ -241,20 +241,34 @@ describe('banco.sql', () => {
     expect(colunasReferenciadas.size).toBeGreaterThan(0);
 
     const EM_COMPARACAO = /return_message\s*(?:LIKE|=|IS|~|!~|<>)/i;
-    for (const coluna of colunasReferenciadas) {
+    // Rastreia a cadeia de alias por quantos hops de CTE existirem: se a definicao de uma coluna
+    // referencia outra coluna (<alias2>.<col2>) em vez de um literal/agregado terminal, segue a
+    // cadeia recursivamente ate achar return_message bruto ou esgotar as definicoes. `visitados`
+    // evita loop infinito se duas colunas se referenciarem em ciclo.
+    function derivaDeReturnMessageBruto(coluna, visitados) {
+      if (visitados.has(coluna)) return false;
+      visitados.add(coluna);
       const defRe = new RegExp(`AS\\s+${coluna}\\b`, 'g');
       let m;
       while ((m = defRe.exec(sql))) {
-        // janela: do ultimo separador top-level (',' ou newline de SELECT) ate o "AS <coluna>".
         const inicioJanela = Math.max(sql.lastIndexOf(',', m.index), sql.lastIndexOf('SELECT', m.index));
         const definicao = sql.slice(Math.max(inicioJanela, 0), m.index + m[0].length);
-        if (/return_message/i.test(definicao)) {
-          expect(
-            EM_COMPARACAO.test(definicao),
-            `coluna "${coluna}" parece derivar de return_message bruto (nao esta numa comparacao LIKE/=/IS): ${definicao.trim().slice(0, 160)}...`,
-          ).toBe(true);
+        if (/return_message/i.test(definicao) && !EM_COMPARACAO.test(definicao)) return true;
+        // lado direito da definicao (sem o "AS <coluna>" final): se referencia outra coluna
+        // (em vez de so um literal/agregado), segue a cadeia um hop a mais.
+        const ladoDireito = definicao.slice(0, definicao.length - m[0].length);
+        for (const ref of ladoDireito.matchAll(/\b[a-z_][a-z0-9_]*\.([a-z_][a-z0-9_]*)\b/g)) {
+          if (derivaDeReturnMessageBruto(ref[1], visitados)) return true;
         }
       }
+      return false;
+    }
+
+    for (const coluna of colunasReferenciadas) {
+      expect(
+        derivaDeReturnMessageBruto(coluna, new Set()),
+        `coluna "${coluna}" parece derivar (direta ou via cadeia de CTEs) de return_message bruto`,
+      ).toBe(false);
     }
   });
 });
