@@ -198,6 +198,14 @@ const ROLE_CREDS: Record<Exclude<EdgeRole, "anon">, { email?: string; password?:
 
 const jwtCache = new Map<EdgeRole, string | null>();
 
+/** Marca especificamente o timeout do sign-in — nunca cacheado como "sem credencial". */
+class JwtTimeoutError extends Error {
+  constructor() {
+    super("getJwt: signInWithPassword timeout");
+    this.name = "JwtTimeoutError";
+  }
+}
+
 /** Retorna o access_token do role (ou null se não há credencial / falha de login). */
 export async function getJwt(role: EdgeRole): Promise<string | null> {
   if (role === "anon") return null;
@@ -219,14 +227,19 @@ export async function getJwt(role: EdgeRole): Promise<string | null> {
     // do Qodo na PR #3057: a espera do JWT acontece ANTES do retry loop).
     const { data, error } = await Promise.race([
       client.auth.signInWithPassword({ email: creds.email, password: creds.password }),
-      new Promise<never>((_, reject) =>
-        setTimeout(() => reject(new Error("getJwt: signInWithPassword timeout")), JWT_TIMEOUT_MS),
-      ),
+      new Promise<never>((_, reject) => setTimeout(() => reject(new JwtTimeoutError()), JWT_TIMEOUT_MS)),
     ]);
     const token = error ? null : (data.session?.access_token ?? null);
     jwtCache.set(role, token);
     return token;
-  } catch {
+  } catch (err) {
+    // Timeout ≠ credencial ausente/inválida (achado Qodo na PR #3057): cachear
+    // null aqui faria um login lento-mas-válido virar "sem credencial" PARA
+    // SEMPRE (cache por role), degradando testes autenticados pra anon/skip
+    // silenciosamente — justo o cenário que esses testes deveriam cobrir.
+    // Deixa propagar: o teste falha alto (erro real), em vez de passar verde
+    // sem ter exercitado o caminho autenticado.
+    if (err instanceof JwtTimeoutError) throw err;
     jwtCache.set(role, null);
     return null;
   }
