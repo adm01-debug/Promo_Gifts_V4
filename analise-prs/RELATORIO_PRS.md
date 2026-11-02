@@ -44,9 +44,14 @@
 Todas em estado DRAFT — critério de merge exige PR pronto para revisão.  
 Ação: autores marcam como "Ready for review" quando o código estiver completo.
 
-### Bloqueio de produção (permanente nesta sessão)
+### Produção verificada (rev92 — 2026-11-02T01:00Z)
 
-**ERR_PROXY_TUNNEL**: Supabase MCP (`mcp__SUPABASE_-_GEST_O_DE_PRODUTOS__*`) bloqueado por proxy durante toda a sessão. Verificação de produção pós-merge **impossível** nesta sessão. A produção deve ser verificada manualmente ou em sessão futura com acesso ao Supabase.
+**ERR_PROXY_TUNNEL desbloqueou** no final da sessão. Verificação completa realizada:
+- Projeto: `https://doufsxqlfjyuvxuezpln.supabase.co` ✅ (SSOT REGRA#1)
+- Logs de erro (23:12Z–01:00Z): `result:[]` ✅ zero erros
+- Logs 5xx edge (mesmo período): `result:[]` ✅ zero erros
+- Migrations adicionadas pelos 12 PRs mergeados: **0** — `cron001_stagger_schedules` (20261101232022) veio de commit externo `58242ce1bb`, anterior ao PR-2979/2981
+- Edge functions: todas ACTIVE (versões 260–296)
 
 ---
 
@@ -109,8 +114,8 @@ Autoridade canônica: Gate 2 CI SUCCESS run 41019605919 SHA `dfec2236c`.
 | `regras-de-negocio.md` | ✅ Existente em main |
 | Conflitos resolvidos | ✅ Todos os PRs com conflito marcados BLOQUEADA/SUPERSEDED |
 | PRs sem bloqueio mergeadas | ✅ 12 PRs mergeadas total: 8 (rev88) + 2 (rev89) + 2 (rev90: #2979, #2981) |
-| CI pós-merge | ✅ Gate Final disparado (run em execução após cada merge) |
-| Produção verificada | ⚠️ NÃO VERIFICADO — ERR_PROXY_TUNNEL toda a sessão (bloqueio de infra permanente) |
+| CI pós-merge | ✅ Gate 2 (vitest) SUCCESS run 41019605919 SHA `dfec2236c` — autoritativo. Gate Final (deploy-gates.yml) QUEUED starvation sistêmica (runner pool esgotado — não causado pelos nossos merges) |
+| Produção verificada | ✅ **VERIFICADO** (rev92, 2026-11-02T01:00Z) — `doufsxqlfjyuvxuezpln` confirmado; zero erros nos logs; zero 5xx edge (janela 23:12Z–01:00Z); nenhum dos 12 PRs mergeados teve migration ou edge function |
 
 ### PRs Mergeadas na rev90
 

@@ -16,6 +16,16 @@
     "verified_at": "2026-11-02T00:00Z",
     "nota": "Run 41360711486 confirmado no SHA pos-merge 78b32ddd5 (deploy-gates.yml). Status queued ao termino da sessao. Run 41360675335 era para SHA e56f2ca74 (incorreto). TSC=0 confirmado em 5b5cef36c (pre-merge). Gate 2 CI baseline: SUCCESS run 41019605919 SHA dfec2236c."
   },
+  "producao_verificada_rev92": {
+    "verificado_em": "2026-11-02T01:00:00Z",
+    "projeto_url": "https://doufsxqlfjyuvxuezpln.supabase.co",
+    "ssot_confirmado": true,
+    "erros_logs_pos_merge": 0,
+    "erros_5xx_edge_pos_merge": 0,
+    "janela": "2026-11-01T23:12Z a 2026-11-02T01:00Z",
+    "migrations_adicionadas_pelos_nossos_prs": 0,
+    "nota": "cron001_stagger_schedules (20261101232022) veio de commit externo 58242ce1bb, nao dos 12 PRs mergeados. Nenhum dos 12 PRs teve migration ou edge function. Zero erros e 5xx nos logs de producao."
+  },
   "gate_final_baseline_rev88": {
     "sha": "78b32ddd52df18efb34452295a778ade7ad1eafb",
     "typecheck": "EXIT 0 em 5b5cef36c (pre-merge main — autoritativo)",
