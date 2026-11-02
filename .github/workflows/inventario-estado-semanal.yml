@@ -65,11 +65,25 @@ jobs:
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add inventario/estado
-          # Só gerado_em mudou? Não vale PR.
-          if git diff --staged -U0 | grep -E '^[+-][^+-]' | grep -vqE '"gerado_em"'; then
-            :
-          else
-            echo "Inventário sem mudança de conteúdo — nenhum PR a abrir."
+          # Compara o conteúdo dos JSON sem os carimbos de data (gerado_em, medido_em): só timestamp novo não vira PR.
+          # Lê o diff inteiro (sem grep -q), então pipefail/SIGPIPE não muda a decisão.
+          MUDOU=$(node -e '
+            const { execFileSync } = require("node:child_process");
+            const fs = require("node:fs");
+            const sem = (o) => JSON.stringify(o, (k, v) => (k === "gerado_em" || k === "medido_em" ? undefined : v));
+            const arqs = execFileSync("git", ["diff", "--staged", "--name-only", "--", "inventario/estado"], { encoding: "utf8" }).split("\n").filter(Boolean);
+            let mudou = false;
+            for (const a of arqs) {
+              if (!a.endsWith(".json")) { mudou = true; continue; }
+              let antes = null;
+              try { antes = JSON.parse(execFileSync("git", ["show", `HEAD:${a}`], { encoding: "utf8", maxBuffer: 64 << 20 })); } catch { mudou = true; continue; }
+              const depois = fs.existsSync(a) ? JSON.parse(fs.readFileSync(a, "utf8")) : null;
+              if (depois === null || sem(antes) !== sem(depois)) mudou = true;
+            }
+            process.stdout.write(mudou ? "sim" : "nao");
+          ')
+          if [ "$MUDOU" != "sim" ]; then
+            echo "Inventário sem mudança de conteúdo (só carimbo de data) — nenhum PR a abrir."
             exit 0
           fi
           WEEK=$(date -u +%Y-W%V)
@@ -100,4 +114,4 @@ jobs:
         with:
           name: inventario-estado-${{ github.run_id }}
           path: inventario/estado/
-          retention-days: 14
+          retention-days: 30  # R6/E88: relatório semanal
