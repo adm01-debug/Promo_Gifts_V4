@@ -40,7 +40,8 @@ function listarCodigo(dir, acc = []) {
     if (e.name === 'node_modules' || e.name.startsWith('.')) continue;
     const p = join(dir, e.name);
     if (e.isDirectory()) listarCodigo(p, acc);
-    else if (/\.(ts|tsx|js|jsx|mjs)$/.test(e.name) && !/(\.test\.|\.spec\.)/.test(e.name) && !p.includes('__tests__')) acc.push(p);
+    // testes nao sao chamadores: .test./.spec./__tests__ (vitest) e *_test.ts / tests/ (Deno)
+    else if (/\.(ts|tsx|js|jsx|mjs)$/.test(e.name) && !/(\.test\.|\.spec\.|_test\.[jt]sx?$)/.test(e.name) && !p.includes('__tests__') && !p.includes('/tests/')) acc.push(p);
   }
   return acc;
 }
@@ -69,7 +70,8 @@ function segredosDaEdge(arqInicial) {
     vistos.add(arq);
     const code = readFileSync(arq, 'utf8');
     for (const m of code.matchAll(/Deno\.env\.get\(\s*['"]([A-Z0-9_]+)['"]/g)) nomes.add(m[1]);
-    for (const m of code.matchAll(/from\s+['"](\.{1,2}\/[^'"]+)['"]/g)) fila.push(join(arq, '..', m[1]));
+    // imports estaticos e dinamicos locais (import('./x.ts') carrega modulos que tambem leem segredos)
+    for (const m of code.matchAll(/(?:from\s+|\bimport\(\s*)['"`](\.{1,2}\/[^'"`]+)['"`]/g)) fila.push(join(arq, '..', m[1]));
   }
   return [...nomes].sort();
 }

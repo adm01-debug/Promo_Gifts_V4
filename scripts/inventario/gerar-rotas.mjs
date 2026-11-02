@@ -97,7 +97,7 @@ const juntar = (lista) => {
   return Object.fromEntries(Object.entries(r).map(([k, v]) => [k, [...v].sort()]));
 };
 const PROFUNDIDADE = 4;
-const IGNORAR = /^src\/(components\/ui|integrations|contexts)\/|\.(test|spec)\.[tj]sx?$|__tests__/;
+const IGNORAR = /^src\/(components\/ui|integrations|contexts)\/|\.(test|spec)\.[tj]sx?$|_test\.[tj]sx?$|__tests__/;
 const cacheArq = new Map();
 function infoArq(arq) {
   if (!cacheArq.has(arq)) {

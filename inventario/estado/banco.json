@@ -4766,7 +4766,7 @@
       "rls_forcado": false,
       "triggers": 0,
       "uso_no_codigo": {
-        "edges": 17,
+        "edges": 16,
         "src": 8
       }
     },
@@ -6534,7 +6534,7 @@
       "rls_forcado": false,
       "triggers": 1,
       "uso_no_codigo": {
-        "edges": 3,
+        "edges": 1,
         "src": 4
       }
     },
@@ -6551,7 +6551,7 @@
       "rls_forcado": false,
       "triggers": 0,
       "uso_no_codigo": {
-        "edges": 3,
+        "edges": 2,
         "src": 1
       }
     },
@@ -9101,7 +9101,7 @@
       "rls_forcado": false,
       "triggers": 43,
       "uso_no_codigo": {
-        "edges": 23,
+        "edges": 22,
         "src": 37
       }
     },
@@ -9815,7 +9815,7 @@
       "rls_forcado": false,
       "triggers": 5,
       "uso_no_codigo": {
-        "edges": 21,
+        "edges": 14,
         "src": 12
       }
     },
@@ -11260,7 +11260,7 @@
       "rls_forcado": false,
       "triggers": 0,
       "uso_no_codigo": {
-        "edges": 3,
+        "edges": 1,
         "src": 0
       }
     },
@@ -11277,7 +11277,7 @@
       "rls_forcado": false,
       "triggers": 1,
       "uso_no_codigo": {
-        "edges": 16,
+        "edges": 14,
         "src": 15
       }
     },

@@ -1,5 +1,5 @@
 {
- "gerado_em": "2026-11-02T14:25:45.192Z",
+ "gerado_em": "2026-11-02T14:33:43.003Z",
  "total": 110,
  "sem_chamador": [
   "asia-ingestion",
@@ -8,6 +8,8 @@
   "cors-audit",
   "crm-callback-alerts",
   "e2e-cleanup",
+  "health-check",
+  "load-test",
   "magazine-public-react",
   "mcp-keys-rotate",
   "mcp-query",
@@ -51,6 +53,11 @@
    "segredos_lidos": [
     "AI_ROUTER_DISABLE",
     "CSRF_SECRET",
+    "EXTERNAL_PROMOBRIND_SERVICE_ROLE_KEY",
+    "EXTERNAL_PROMOBRIND_URL",
+    "EXTERNAL_SUPABASE_SERVICE_KEY",
+    "EXTERNAL_SUPABASE_SERVICE_ROLE_KEY",
+    "EXTERNAL_SUPABASE_URL",
     "LOG_CREDENTIAL_RESOLUTION",
     "LOVABLE_API_KEY",
     "SUPABASE_ANON_KEY",
@@ -665,6 +672,11 @@
     "ALLOW_HTTP_FETCH",
     "ANON_KEY",
     "CSRF_SECRET",
+    "EXTERNAL_PROMOBRIND_SERVICE_ROLE_KEY",
+    "EXTERNAL_PROMOBRIND_URL",
+    "EXTERNAL_SUPABASE_SERVICE_KEY",
+    "EXTERNAL_SUPABASE_SERVICE_ROLE_KEY",
+    "EXTERNAL_SUPABASE_URL",
     "LOG_CREDENTIAL_RESOLUTION",
     "LOVABLE_API_KEY",
     "SUPABASE_ANON_KEY",
@@ -687,7 +699,7 @@
    "chamada_em": {
     "src": 6,
     "migrations": 4,
-    "outras_edges": 2,
+    "outras_edges": 1,
     "cron": [],
     "e2e": 32,
     "ci_config": 0
@@ -772,6 +784,11 @@
    "segredos_lidos": [
     "AI_ROUTER_DISABLE",
     "CSRF_SECRET",
+    "EXTERNAL_PROMOBRIND_SERVICE_ROLE_KEY",
+    "EXTERNAL_PROMOBRIND_URL",
+    "EXTERNAL_SUPABASE_SERVICE_KEY",
+    "EXTERNAL_SUPABASE_SERVICE_ROLE_KEY",
+    "EXTERNAL_SUPABASE_URL",
     "LOG_CREDENTIAL_RESOLUTION",
     "LOVABLE_API_KEY",
     "SUPABASE_ANON_KEY",
@@ -793,6 +810,11 @@
    "segredos_lidos": [
     "AI_ROUTER_DISABLE",
     "CSRF_SECRET",
+    "EXTERNAL_PROMOBRIND_SERVICE_ROLE_KEY",
+    "EXTERNAL_PROMOBRIND_URL",
+    "EXTERNAL_SUPABASE_SERVICE_KEY",
+    "EXTERNAL_SUPABASE_SERVICE_ROLE_KEY",
+    "EXTERNAL_SUPABASE_URL",
     "LOG_CREDENTIAL_RESOLUTION",
     "LOVABLE_API_KEY",
     "SUPABASE_ANON_KEY",
@@ -852,6 +874,11 @@
    "segredos_lidos": [
     "AI_ROUTER_DISABLE",
     "CSRF_SECRET",
+    "EXTERNAL_PROMOBRIND_SERVICE_ROLE_KEY",
+    "EXTERNAL_PROMOBRIND_URL",
+    "EXTERNAL_SUPABASE_SERVICE_KEY",
+    "EXTERNAL_SUPABASE_SERVICE_ROLE_KEY",
+    "EXTERNAL_SUPABASE_URL",
     "LOG_CREDENTIAL_RESOLUTION",
     "LOVABLE_API_KEY",
     "SUPABASE_ANON_KEY",
@@ -933,12 +960,12 @@
    "chamada_em": {
     "src": 0,
     "migrations": 0,
-    "outras_edges": 1,
+    "outras_edges": 0,
     "cron": [],
     "e2e": 1,
     "ci_config": 4
    },
-   "sem_chamador": false
+   "sem_chamador": true
   },
   "image-proxy": {
    "linhas": 186,
@@ -982,6 +1009,11 @@
    "segredos_lidos": [
     "AI_ROUTER_DISABLE",
     "ALLOW_HTTP_FETCH",
+    "EXTERNAL_PROMOBRIND_SERVICE_ROLE_KEY",
+    "EXTERNAL_PROMOBRIND_URL",
+    "EXTERNAL_SUPABASE_SERVICE_KEY",
+    "EXTERNAL_SUPABASE_SERVICE_ROLE_KEY",
+    "EXTERNAL_SUPABASE_URL",
     "LOG_CREDENTIAL_RESOLUTION",
     "LOVABLE_API_KEY",
     "SUPABASE_ANON_KEY",
@@ -1028,12 +1060,12 @@
    "chamada_em": {
     "src": 0,
     "migrations": 0,
-    "outras_edges": 1,
+    "outras_edges": 0,
     "cron": [],
     "e2e": 0,
     "ci_config": 0
    },
-   "sem_chamador": false
+   "sem_chamador": true
   },
   "log-login-attempt": {
    "linhas": 311,
@@ -1138,6 +1170,11 @@
    "segredos_lidos": [
     "AI_ROUTER_DISABLE",
     "CSRF_SECRET",
+    "EXTERNAL_PROMOBRIND_SERVICE_ROLE_KEY",
+    "EXTERNAL_PROMOBRIND_URL",
+    "EXTERNAL_SUPABASE_SERVICE_KEY",
+    "EXTERNAL_SUPABASE_SERVICE_ROLE_KEY",
+    "EXTERNAL_SUPABASE_URL",
     "LOG_CREDENTIAL_RESOLUTION",
     "LOVABLE_API_KEY",
     "SUPABASE_ANON_KEY",
@@ -1620,6 +1657,11 @@
    "segredos_lidos": [
     "AI_ROUTER_DISABLE",
     "CSRF_SECRET",
+    "EXTERNAL_PROMOBRIND_SERVICE_ROLE_KEY",
+    "EXTERNAL_PROMOBRIND_URL",
+    "EXTERNAL_SUPABASE_SERVICE_KEY",
+    "EXTERNAL_SUPABASE_SERVICE_ROLE_KEY",
+    "EXTERNAL_SUPABASE_URL",
     "LOG_CREDENTIAL_RESOLUTION",
     "SUPABASE_ANON_KEY",
     "SUPABASE_SERVICE_ROLE_KEY",
@@ -1951,6 +1993,11 @@
    "segredos_lidos": [
     "AI_ROUTER_DISABLE",
     "CSRF_SECRET",
+    "EXTERNAL_PROMOBRIND_SERVICE_ROLE_KEY",
+    "EXTERNAL_PROMOBRIND_URL",
+    "EXTERNAL_SUPABASE_SERVICE_KEY",
+    "EXTERNAL_SUPABASE_SERVICE_ROLE_KEY",
+    "EXTERNAL_SUPABASE_URL",
     "LOG_CREDENTIAL_RESOLUTION",
     "SUPABASE_ANON_KEY",
     "SUPABASE_SERVICE_ROLE_KEY",
@@ -1971,6 +2018,11 @@
    "segredos_lidos": [
     "AI_ROUTER_DISABLE",
     "CSRF_SECRET",
+    "EXTERNAL_PROMOBRIND_SERVICE_ROLE_KEY",
+    "EXTERNAL_PROMOBRIND_URL",
+    "EXTERNAL_SUPABASE_SERVICE_KEY",
+    "EXTERNAL_SUPABASE_SERVICE_ROLE_KEY",
+    "EXTERNAL_SUPABASE_URL",
     "LOG_CREDENTIAL_RESOLUTION",
     "LOVABLE_API_KEY",
     "SUPABASE_ANON_KEY",
@@ -2017,7 +2069,7 @@
    "chamada_em": {
     "src": 1,
     "migrations": 0,
-    "outras_edges": 2,
+    "outras_edges": 1,
     "cron": [],
     "e2e": 1,
     "ci_config": 1
@@ -2029,6 +2081,11 @@
    "segredos_lidos": [
     "AI_ROUTER_DISABLE",
     "ALLOW_HTTP_FETCH",
+    "EXTERNAL_PROMOBRIND_SERVICE_ROLE_KEY",
+    "EXTERNAL_PROMOBRIND_URL",
+    "EXTERNAL_SUPABASE_SERVICE_KEY",
+    "EXTERNAL_SUPABASE_SERVICE_ROLE_KEY",
+    "EXTERNAL_SUPABASE_URL",
     "LOG_CREDENTIAL_RESOLUTION",
     "SUPABASE_ANON_KEY",
     "SUPABASE_SERVICE_ROLE_KEY",
