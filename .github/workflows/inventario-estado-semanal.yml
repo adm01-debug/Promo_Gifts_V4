@@ -76,7 +76,7 @@ jobs:
             for (const a of arqs) {
               if (!a.endsWith(".json")) { mudou = true; continue; }
               let antes = null;
-              try { antes = JSON.parse(execFileSync("git", ["show", `HEAD:${a}`], { encoding: "utf8", maxBuffer: 64 << 20 })); } catch { mudou = true; continue; }
+              try { antes = JSON.parse(execFileSync("git", ["show", "HEAD:" + a], { encoding: "utf8", maxBuffer: 64 << 20 })); } catch { mudou = true; continue; }
               const depois = fs.existsSync(a) ? JSON.parse(fs.readFileSync(a, "utf8")) : null;
               if (depois === null || sem(antes) !== sem(depois)) mudou = true;
             }
