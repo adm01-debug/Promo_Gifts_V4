@@ -7,7 +7,7 @@
 import { readdirSync, readFileSync, existsSync, writeFileSync, mkdirSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { join } from 'node:path';
-import { edgesChamadasNoCodigo } from './gerar-rotas.mjs';
+import { edgesChamadasNoCodigo, segredosViaResolver } from './gerar-rotas.mjs';
 
 const RAIZ = new URL('../../', import.meta.url).pathname;
 const FDIR = join(RAIZ, 'supabase/functions');
@@ -70,6 +70,7 @@ function segredosDaEdge(arqInicial) {
     vistos.add(arq);
     const code = readFileSync(arq, 'utf8');
     for (const m of code.matchAll(/Deno\.env\.get\(\s*['"]([A-Z0-9_]+)['"]/g)) nomes.add(m[1]);
+    for (const n of segredosViaResolver(code)) nomes.add(n);
     // imports estaticos e dinamicos locais (import('./x.ts') carrega modulos que tambem leem segredos)
     for (const m of code.matchAll(/(?:from\s+|\bimport\(\s*)['"`](\.{1,2}\/[^'"`]+)['"`]/g)) fila.push(join(arq, '..', m[1]));
   }

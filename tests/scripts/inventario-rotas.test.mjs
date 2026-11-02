@@ -2,7 +2,7 @@
 // proprias, de wrapper e herdadas do AppRoutes.tsx; marca harness de dev; acha dados por acesso a tabela.
 import { describe, expect, it } from 'vitest';
 
-import { componentesDoLocal, dadosDe, edgesChamadasNoCodigo, extrairRotas, guardasDosGrupos } from '../../scripts/inventario/gerar-rotas.mjs';
+import { componentesDoLocal, dadosDe, edgesChamadasNoCodigo, extrairRotas, guardasDosGrupos, segredosViaResolver } from '../../scripts/inventario/gerar-rotas.mjs';
 
 const APP = `
 export function AppRoutes() {
@@ -134,5 +134,23 @@ function KitBuilderLegacyRedirect() {
     expect(componentesDoLocal(code, 'KitBuilderRoute')).toEqual(['KitBuilderPage']);
     expect(componentesDoLocal(code, 'KitBuilderLegacyRedirect')).toEqual(['Navigate']);
     expect(componentesDoLocal(code, 'NaoExiste')).toEqual([]);
+  });
+});
+
+describe('segredosViaResolver', () => {
+  it('resolveCredential literal, resolveCredentials com array literal e com constante do arquivo', () => {
+    const code = `
+const CRM_CRED_NAMES = [
+  "EXTERNAL_CRM_URL",
+  "EXTERNAL_CRM_ANON_KEY",
+] as const;
+const { value } = await resolveCredential('LOVABLE_API_KEY');
+const a = await resolveCredentials(['BITRIX24_TOKEN', "OUTRO_TOKEN"]);
+const b = await resolveCredentials([...CRM_CRED_NAMES]);
+const c = resolveCredential(nomeDinamico);
+`;
+    expect([...segredosViaResolver(code)].sort()).toEqual([
+      'BITRIX24_TOKEN', 'EXTERNAL_CRM_ANON_KEY', 'EXTERNAL_CRM_URL', 'LOVABLE_API_KEY', 'OUTRO_TOKEN',
+    ]);
   });
 });
