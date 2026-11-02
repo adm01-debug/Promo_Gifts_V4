@@ -61,3 +61,29 @@ Falhas pré-existentes por nome estão documentadas em `failing-tests-by-name.md
 | #2940 | feat(nav): Audit Suite na sidebar admin | `686be704a4` | 2026-11-01T23:12Z |
 | #2952 | fix(ci): Gate 1.13 partições mensais E206 | `eeca843a31` | 2026-11-01T23:12Z |
 | #2944 | chore(main): release 1.6.1 | `03fc479aaf` | 2026-11-01T23:13Z |
+
+## Addendum rev91 — Falhas adicionais por nome (descobertas via PR-3014 diff)
+
+**Fonte:** `analise-prs/prs.json` e `state.md` da sessão `claude_05/serene-clarke-1o02ey` (PR-3014)
+**SHA referência da outra sessão:** `58b4eeaf24f9` — falhas pré-existentes documentadas
+
+### Falhas vitest pré-existentes no main (por nome de teste)
+
+| Arquivo | Teste(s) | Nota |
+|---|---|---|
+| `tests/scripts/check-migrations-sync-log-gate.test.mjs` | checks de recibo de migration E48 | pré-existente em `58b4eeaf`, migration E48 receipt ausente |
+| `src/hooks/stock/__tests__/useRuptureAlerts.test.tsx` | "dedupe by variant_id" | pré-existente — deduplication logic |
+| `tests/unit/date-utils.test.ts` | "formatDateTime BRT", "formatTime ISO", "formatTime zero-pad" | 3 testes — formato de data/hora |
+
+**Total outras sessões:** 26042 passando em `58b4eeaf` (fonte: claude_05 state.md)
+
+### main HEAD rev91 (atual)
+
+SHA: `91d4bee21631de745b5908155ccab5a82548a4fe`
+Merges rev90: #2979 (`3bf5820259f5`), #2981 (`91d4bee21631`)
+main_head_rev89: `95689d5b9dde131fd8428b7c928dfb5f25a0bd82`
+Gate Final: QUEUED/STARVATION — systemic (run 41360711486 desde 2026-11-01T23:09Z, never started)
+Produção: NÃO VERIFICADO — ERR_PROXY_TUNNEL permanente
+Authoritative Gate 2: SUCCESS run 41019605919 SHA `dfec2236c`
+
+*Gerado em rev91 — session_011d8gKLZg8BWivR8aQBwxGF — 2026-11-02*

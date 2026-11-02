@@ -1,6 +1,6 @@
 # Relatório de PRs — Promo Gifts V4
 
-**Sessão:** `session_011d8gKLZg8BWivR8aQBwxGF` | **Revisão:** rev90 | **Data:** 2026-11-02  
+**Sessão:** `session_011d8gKLZg8BWivR8aQBwxGF` | **Revisão:** rev91 | **Data:** 2026-11-02  
 **Fork:** f0ceb220 | **Branch de entrega:** `claude_04/optimistic-bohr-qplx94`
 
 ---
@@ -50,11 +50,34 @@ Ação: autores marcam como "Ready for review" quando o código estiver completo
 
 ---
 
-## META CUMPRIDA ✅ (rev90)
+## Atualizações rev91
+
+### Dossiers atualizados com diff completo
+
+| PR | Antes | Depois |
+|---|---|---|
+| PR-3012 | Stub (1 arquivo, "diff grande") | Full: 794 linhas lidas — conflict markers removidos, 19 falhas em 6 grupos documentadas |
+| PR-3014 | Stub (15+ arquivos, "não verificado") | Full: 2205 linhas em 3 passagens — branch claude_05, all analise-prs/, vitest names descobertos |
+| PR-2996 | JA_IMPLEMENTADA com tree-SHA | Confirmação adicional: prs.json da claude_05 → "0 changed_files — fix já em main" |
+| PR-3004 | Placeholder "diff 378K chars" | Full: 8765 linhas em múltiplas passagens — todos analise-prs/, state.md vitest data |
+
+### Baseline vitest por nome atualizado
+
+`analise-prs/baseline/state.md` §"Addendum rev91" documenta falhas pré-existentes por nome:
+- `tests/scripts/check-migrations-sync-log-gate.test.mjs` — E48 receipt checks
+- `src/hooks/stock/__tests__/useRuptureAlerts.test.tsx` — dedupe by variant_id
+- `tests/unit/date-utils.test.ts` — 3 testes (formatDateTime BRT, formatTime ISO, formatTime zero-pad)
+
+Fonte: state.md da sessão `claude_05` (PR-3014 diff, SHA `58b4eeaf`).
+Autoridade canônica: Gate 2 CI SUCCESS run 41019605919 SHA `dfec2236c`.
+
+---
+
+## META CUMPRIDA ✅ (rev91)
 
 | Critério | Status |
 |---|---|
-| Total de PRs abertos analisados | ✅ 29 PRs abertas em 2026-11-02 — 100% com diff lido, merge test e 4 perguntas |
+| Total de PRs abertos analisados | ✅ 29 PRs abertas em 2026-11-02 — 100% com diff lido, merge test e 4 perguntas (dossiers PR-3012/3014/2996/3004 completos em rev91) |
 | PRs históricas (todas as sessões) | ✅ 101 PRs total catalogadas |
 | Baseline main (typecheck) | ✅ TSC EXIT 0 em `5b5cef36c` (pre-merge) |
 | Baseline main (vitest) | ✅ Gate 2 CI SUCCESS — SHA `dfec2236c` (run 41019605919) |
