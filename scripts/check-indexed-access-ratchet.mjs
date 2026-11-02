@@ -43,9 +43,16 @@ function countErrors() {
 const current = countErrors();
 
 if (UPDATE) {
-  const prevMeta = existsSync(BASELINE_PATH)
-    ? JSON.parse(readFileSync(BASELINE_PATH, 'utf8')).meta
-    : undefined;
+  let prevMeta;
+  try {
+    prevMeta = existsSync(BASELINE_PATH)
+      ? JSON.parse(readFileSync(BASELINE_PATH, 'utf8'))?.meta
+      : undefined;
+  } catch {
+    // Baseline corrompido (JSON inválido) — segue sem meta em vez de travar
+    // o --update, que é o próprio caminho de reparo (QODO c466935b).
+    prevMeta = undefined;
+  }
   const next = {
     generatedAt: new Date().toISOString(),
     description:
