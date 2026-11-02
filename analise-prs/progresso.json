@@ -1,10 +1,10 @@
 {
   "session_id": "session_011d8gKLZg8BWivR8aQBwxGF",
-  "revision": "rev89",
-  "date": "2026-11-01",
+  "revision": "rev90",
+  "date": "2026-11-02",
   "status": "SESSAO_COMPLETA",
   "main_head_entrada": "5b5cef36c12e49d310bc89b45d51138a3d6f1069",
-  "main_head_final": "95689d5b9dde131fd8428b7c928dfb5f25a0bd82",
+  "main_head_final": "91d4bee21631de745b5908155ccab5a82548a4fe",
   "main_head_rev88": "78b32ddd52df18efb34452295a778ade7ad1eafb",
   "main_head_atual": "95689d5b9dde131fd8428b7c928dfb5f25a0bd82",
   "gate_final_atual": {
@@ -22,10 +22,10 @@
     "vitest": "Gate 2 CI SUCCESS — SHA dfec2236c (run 41019605919) — autoritativo",
     "nota": "main avancou adicionalmente para 35847b708e78 (commit externo pos nossos merges)"
   },
-  "prs_analisados_esta_sessao": 47,
-  "prs_analisados_total": 92,
-  "open_prs_count_verificado": 32,
-  "open_prs_verificado_em": "2026-11-01T23:48:00Z",
+  "prs_analisados_esta_sessao": 56,
+  "prs_analisados_total": 101,
+  "open_prs_count_verificado": 29,
+  "open_prs_verificado_em": "2026-11-02T00:00:00Z",
   "verdicts": {
     "MERGEADA_AUTONOMA_REV88": [
       "2940",
@@ -40,6 +40,10 @@
     "MERGEADA_AUTONOMA_REV89": [
       "2999",
       "3010"
+    ],
+    "MERGEADA_AUTONOMA_REV90": [
+      "2979",
+      "2981"
     ],
     "MERGEADA_AUTONOMA_ANTERIORES": [
       "2594",
@@ -88,7 +92,12 @@
     ],
     "FECHADA_EXTERNA": [
       "2600",
-      "2989"
+      "2989",
+      "2631",
+      "2942",
+      "2954",
+      "2956",
+      "3009"
     ],
     "MERGEADA_PO": [
       "2588",
@@ -102,16 +111,14 @@
       "2605",
       "2622",
       "2653",
-      "2941"
+      "2941",
+      "3017",
+      "3018"
     ],
     "DRAFT_NOMERGE": [
-      "2631",
-      "2942",
       "2948",
       "2950",
       "2951",
-      "2954",
-      "2956",
       "2958",
       "2961",
       "2965",
@@ -123,16 +130,13 @@
       "2973",
       "2976",
       "2978",
-      "2979",
       "2980",
-      "2981",
       "2982",
       "2998",
       "3001",
       "3003",
       "3004",
       "3006",
-      "3009",
       "3012",
       "3014",
       "3015",
@@ -144,7 +148,7 @@
     "JA_IMPLEMENTADA_MAIN": [
       "2996"
     ],
-    "DRAFT_NOMERGE_count": 32,
+    "DRAFT_NOMERGE_count": 25,
     "MERGEADA_SESSAO_EXTERNA_count": 30
   },
   "bloqueio_razoes": {
@@ -154,7 +158,9 @@
     "2605": "Dirty conflitos vs main; 100% supersedada por PRs ja mergeados",
     "2622": "REGRA#8: rollbacks/ DDL de producao — exige aprovacao do PO",
     "2653": "CONFLICT + REGRA#10 (branch outra sessao claude/quirky-keller-owezvt)",
-    "2941": "REGRA#8 (supabase/rollbacks/) + CONFLITO (mergeable:dirty)"
+    "2941": "REGRA#8 (supabase/rollbacks/) + CONFLITO (mergeable:dirty)",
+    "3017": "BLOQUEADA_PO: ativa gate CI de segurança que afeta todos PRs futuros — exige revisão da lista de policies pelo PO (github-actions[bot] criou, adm01-debug solicitado como reviewer)",
+    "3018": "BLOQUEADA: mergeable_state=blocked (branch protection); branch de outra sessão (session_01HxRBtssJabMB3jTgNY5B9W) — REGRA#10 read-only"
   },
   "merges_autonomos_rev88": {
     "2940": {
@@ -198,6 +204,18 @@
       "mergeado_em": "2026-11-01T23:12Z"
     }
   },
+  "merges_autonomos_rev90": {
+    "2979": {
+      "sha": "3bf5820259f56d1c3118bb2380c4ad1a745ee377",
+      "titulo": "fix(kit-builder): separa mensagens de erro 429/timeout vs 503/504 (FT-KAI-001)",
+      "mergeado_em": "2026-11-02T00:00Z"
+    },
+    "2981": {
+      "sha": "91d4bee21631de745b5908155ccab5a82548a4fe",
+      "titulo": "fix(ux): FT-172/107/108/220 — UX batch7",
+      "mergeado_em": "2026-11-02T00:00Z"
+    }
+  },
   "merges_autonomos_rev89": {
     "2999": {
       "sha": "83cb43936c6850311edf9a7eee6c7c4d5321a0ed",
@@ -214,5 +232,5 @@
     "vitest": "Gate 2 CI — SUCCESS em dfec2236c (run 41019605919) — autoritativo",
     "typecheck": "EXIT 0 em 5b5cef36c (pre-merge main)"
   },
-  "nota": "rev88 (fork f0ceb220): 34 novos PRs analisados (#2940-#2990). 8 merges autonomos nesta rodada. main HEAD pos-merges: 78b32ddd5 — Gate Final em execucao (run 41360675335). TSC=0 confirmado. 79 PRs total analisados (36 abertos). BLOQUEIOS REMANESCENTES: 2420/2622/2646/2947 (REGRA#8 DDL/rollbacks — exige PO), 2572/2605 (DIRTY+superseded), 2579 (downgrade regressivo), 2588 (breaking API), 2645 (SUPERSEDED), 2641/2947 (REGRA#8), 2653 (CONFLICT+REGRA#10). 25 DRAFTs — nao mergeavel por criterio. Producao NAO VERIFICADO (ERR_PROXY_TUNNEL toda a sessao). META CUMPRIDA: todos os 34 novos PRs analisados com 4-question method; 8 merges executados; todos os blockage-free PRs merged."
+  "nota": "rev90 (fork f0ceb220, sessao session_011d8gKLZg8BWivR8aQBwxGF): 2 merges autonomos (#2979, #2981 — promovidos de DRAFT). Analisados 9 novos PRs (#2979, #2981, #2996, #2998, #3001, #3003-#3006, #3012, #3014-#3018). Novos bloqueados: #3017 (BLOQUEADA_PO gate seguranca), #3018 (BLOQUEADA blocked branch protection). Fechados externamente: #2631, #2942, #2954, #2956, #3009. main HEAD pos-merges: 91d4bee2163. Gate Final CI: QUEUED (starvation GitHub Actions — bloqueador permanente). Producao NAO VERIFICADO (ERR_PROXY_TUNNEL permanente). 101 PRs total analisados. 29 PRs abertos remanescentes (9 BLOQUEADA/JA_IMPL, 25 DRAFT_NOMERGE). Dossiers completos para todos os PRs analisados nesta sessao."
 }

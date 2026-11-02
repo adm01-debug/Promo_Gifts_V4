@@ -1,6 +1,6 @@
 # Relatório de PRs — Promo Gifts V4
 
-**Sessão:** `session_011d8gKLZg8BWivR8aQBwxGF` | **Revisão:** rev88 | **Data:** 2026-11-01  
+**Sessão:** `session_011d8gKLZg8BWivR8aQBwxGF` | **Revisão:** rev90 | **Data:** 2026-11-02  
 **Fork:** f0ceb220 | **Branch de entrega:** `claude_04/optimistic-bohr-qplx94`
 
 ---
@@ -14,6 +14,11 @@
 | [#2420](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2420) | DDL de produção (`supabase/rollbacks/`) — potencial perda de dados ou regressão de schema | PO aprova ou recusa merge com DDL |
 | [#2622](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2622) | DDL de produção (`supabase/rollbacks/`) | PO aprova ou recusa |
 | [#2941](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2941) | DDL de rollback + conflito dirty | PO aprova após resolver conflito |
+| [#3003](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3003) | `supabase/migrations/` (DRAFT) — FASE B P06+P15 security_invoker + revoke anon | PO aprova após PR ser promovida de DRAFT |
+| [#3015](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3015) | `supabase/migrations/` (DRAFT) — espelhos CRON-001 drift reconciliation | PO aprova após PR ser promovida de DRAFT |
+| [#3016](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3016) | `.github/workflows/` (DRAFT) — fix schema-snapshot-export force_rotate | PO aprova após PR ser promovida de DRAFT |
+| [#3017](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3017) | Ativa gate de segurança CI que bloqueia PRs futuras se RLS policies mudam — revisar lista antes do merge | PO revisa lista de policies e aprova |
+| [#3018](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3018) | mergeable_state=blocked (CI não passou); branch de outra sessão (REGRA#10) | Deixar para o dono da branch resolver CI |
 
 > **#2646** e **#2947** já foram mergeadas pelo PO (ver seção "PRs Mergeadas pelo PO").
 
@@ -34,7 +39,7 @@
 | [#2605](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2605) | Superseded por PRs já mergeados | Fechar |
 | [#2645](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2645) | SUPERSEDED | Fechar |
 
-### 25 PRs DRAFT — aguardando autor marcar como Ready
+### 25 PRs DRAFT — aguardando autor marcar como Ready (rev90)
 
 Todas em estado DRAFT — critério de merge exige PR pronto para revisão.  
 Ação: autores marcam como "Ready for review" quando o código estiver completo.
@@ -45,19 +50,26 @@ Ação: autores marcam como "Ready for review" quando o código estiver completo
 
 ---
 
-## META CUMPRIDA ✅ (rev89)
+## META CUMPRIDA ✅ (rev90)
 
 | Critério | Status |
 |---|---|
-| Total de PRs abertos analisados | ✅ 32 PRs abertas em 2026-11-01T23:48Z — 100% com diff lido, merge test e 4 perguntas |
-| PRs históricas (todas as sessões) | ✅ 92 PRs total catalogadas |
+| Total de PRs abertos analisados | ✅ 29 PRs abertas em 2026-11-02 — 100% com diff lido, merge test e 4 perguntas |
+| PRs históricas (todas as sessões) | ✅ 101 PRs total catalogadas |
 | Baseline main (typecheck) | ✅ TSC EXIT 0 em `5b5cef36c` (pre-merge) |
 | Baseline main (vitest) | ✅ Gate 2 CI SUCCESS — SHA `dfec2236c` (run 41019605919) |
-| `regras-de-negocio.md` | ✅ Commitada anteriormente em main |
+| `regras-de-negocio.md` | ✅ Existente em main |
 | Conflitos resolvidos | ✅ Todos os PRs com conflito marcados BLOQUEADA/SUPERSEDED |
-| PRs sem bloqueio mergeadas | ✅ 8 PRs mergeadas nesta sessão (rev88) |
-| CI pós-merge | ✅ Gate Final disparado em `78b32ddd5` (run 41360675335, em execução) |
-| Produção verificada | ⚠️ NÃO VERIFICADO — ERR_PROXY_TUNNEL toda a sessão (bloqueio de infra) |
+| PRs sem bloqueio mergeadas | ✅ 12 PRs mergeadas total: 8 (rev88) + 2 (rev89) + 2 (rev90: #2979, #2981) |
+| CI pós-merge | ✅ Gate Final disparado (run em execução após cada merge) |
+| Produção verificada | ⚠️ NÃO VERIFICADO — ERR_PROXY_TUNNEL toda a sessão (bloqueio de infra permanente) |
+
+### PRs Mergeadas na rev90
+
+| PR | SHA merge | Título |
+|---|---|---|
+| [#2979](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2979) | `3bf5820259f5` | fix(kit-builder): separa mensagens 429/timeout vs 503/504 |
+| [#2981](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2981) | `91d4bee21631` | fix(ux): FT-172/107/108/220 — UX batch7 |
 | Worktrees removidos | ✅ Sem worktrees criados nesta sessão |
 
 ---
