@@ -1,5 +1,5 @@
 {
- "gerado_em": "2026-11-02T14:20:50.887Z",
+ "gerado_em": "2026-11-02T14:25:40.305Z",
  "total": 135,
  "total_producao": 118,
  "sem_tela_resolvida": [],
@@ -29,22 +29,14 @@
    "guardas": [],
    "somente_dev": true,
    "linha": 136,
-   "tela": "src/routes/AppRoutes.tsx",
+   "tela": "src/pages/__visual/PreviewButtonHarness.tsx",
    "hooks": [],
    "dados": {
-    "tabelas": [
-     "frontend_telemetry",
-     "workspace_notifications"
-    ],
+    "tabelas": [],
     "buckets": [],
-    "rpcs": [
-     "log_access_denied",
-     "record_dev_route_telemetry"
-    ],
-    "edges": [
-     "crm-db-bridge"
-    ],
-    "arquivos_lidos": 47
+    "rpcs": [],
+    "edges": [],
+    "arquivos_lidos": 1
    },
    "arquivo": "src/routes/AppRoutes.tsx"
   },
@@ -55,22 +47,14 @@
    "guardas": [],
    "somente_dev": true,
    "linha": 139,
-   "tela": "src/routes/AppRoutes.tsx",
+   "tela": "src/pages/__visual/QuoteViewOrderHarness.tsx",
    "hooks": [],
    "dados": {
-    "tabelas": [
-     "frontend_telemetry",
-     "workspace_notifications"
-    ],
+    "tabelas": [],
     "buckets": [],
-    "rpcs": [
-     "log_access_denied",
-     "record_dev_route_telemetry"
-    ],
-    "edges": [
-     "crm-db-bridge"
-    ],
-    "arquivos_lidos": 47
+    "rpcs": [],
+    "edges": [],
+    "arquivos_lidos": 13
    },
    "arquivo": "src/routes/AppRoutes.tsx"
   },
@@ -81,22 +65,14 @@
    "guardas": [],
    "somente_dev": true,
    "linha": 142,
-   "tela": "src/routes/AppRoutes.tsx",
+   "tela": "src/pages/__visual/QuoteItemsListMobileHarness.tsx",
    "hooks": [],
    "dados": {
-    "tabelas": [
-     "frontend_telemetry",
-     "workspace_notifications"
-    ],
+    "tabelas": [],
     "buckets": [],
-    "rpcs": [
-     "log_access_denied",
-     "record_dev_route_telemetry"
-    ],
-    "edges": [
-     "crm-db-bridge"
-    ],
-    "arquivos_lidos": 47
+    "rpcs": [],
+    "edges": [],
+    "arquivos_lidos": 9
    },
    "arquivo": "src/routes/AppRoutes.tsx"
   },
@@ -107,22 +83,28 @@
    "guardas": [],
    "somente_dev": true,
    "linha": 148,
-   "tela": "src/routes/AppRoutes.tsx",
+   "tela": "src/pages/__visual/QuoteItemEditorSheetHarness.tsx",
    "hooks": [],
    "dados": {
     "tabelas": [
-     "frontend_telemetry",
-     "workspace_notifications"
+     "admin_audit_log",
+     "discount_approval_requests",
+     "product_component_locations",
+     "product_components",
+     "profiles",
+     "quote_history",
+     "quote_items",
+     "quotes",
+     "seller_discount_limits"
     ],
     "buckets": [],
     "rpcs": [
-     "log_access_denied",
-     "record_dev_route_telemetry"
+     "request_discount_approval_transactional"
     ],
     "edges": [
-     "crm-db-bridge"
+     "quote-sync"
     ],
-    "arquivos_lidos": 47
+    "arquivos_lidos": 49
    },
    "arquivo": "src/routes/AppRoutes.tsx"
   },
@@ -133,22 +115,67 @@
    "guardas": [],
    "somente_dev": true,
    "linha": 154,
-   "tela": "src/routes/AppRoutes.tsx",
+   "tela": "src/pages/__visual/QuoteAddProductButtonHarness.tsx",
    "hooks": [],
    "dados": {
     "tabelas": [
-     "frontend_telemetry",
-     "workspace_notifications"
+     "X",
+     "admin_settings",
+     "cart_templates",
+     "catalog_analytics",
+     "categories",
+     "categories_tree_visual",
+     "category_icons",
+     "color_groups",
+     "color_nuances",
+     "color_variations",
+     "my_table",
+     "order_items",
+     "orders",
+     "product_group_members",
+     "product_images",
+     "product_kit_components",
+     "product_materials",
+     "product_price_freshness_overrides",
+     "product_relationships",
+     "product_variants",
+     "product_videos",
+     "product_views",
+     "products",
+     "profiles",
+     "quote_items",
+     "search_analytics",
+     "seller_cart_items",
+     "seller_carts",
+     "supplier_branches",
+     "suppliers",
+     "system_kill_switches",
+     "v_catalog_stats",
+     "v_kit_component_complete",
+     "variant_supplier_sources",
+     "video_variant_links"
     ],
     "buckets": [],
     "rpcs": [
-     "log_access_denied",
-     "record_dev_route_telemetry"
+     "fn_batch_update_cart_item_sort_order",
+     "fn_get_similar_products",
+     "fn_my_rpc",
+     "fn_super_filtro_product_ids",
+     "get_catalog_bestseller_page",
+     "get_promo_sales_90d_by_product",
+     "get_promo_sales_ranking",
+     "restore_seller_cart"
     ],
     "edges": [
-     "crm-db-bridge"
+     "categories-api",
+     "crm-db-bridge",
+     "external-db-bridge",
+     "generate-product-seo",
+     "log-login-attempt",
+     "materials-api",
+     "mcp-keys-issue"
     ],
-    "arquivos_lidos": 47
+    "arquivos_lidos": 217
    },
    "arquivo": "src/routes/AppRoutes.tsx"
   },
@@ -159,22 +186,14 @@
    "guardas": [],
    "somente_dev": true,
    "linha": 159,
-   "tela": "src/routes/AppRoutes.tsx",
+   "tela": "src/pages/__visual/CalendarHarness.tsx",
    "hooks": [],
    "dados": {
-    "tabelas": [
-     "frontend_telemetry",
-     "workspace_notifications"
-    ],
+    "tabelas": [],
     "buckets": [],
-    "rpcs": [
-     "log_access_denied",
-     "record_dev_route_telemetry"
-    ],
-    "edges": [
-     "crm-db-bridge"
-    ],
-    "arquivos_lidos": 47
+    "rpcs": [],
+    "edges": [],
+    "arquivos_lidos": 1
    },
    "arquivo": "src/routes/AppRoutes.tsx"
   },
@@ -185,22 +204,14 @@
    "guardas": [],
    "somente_dev": true,
    "linha": 161,
-   "tela": "src/routes/AppRoutes.tsx",
+   "tela": "src/pages/__visual/DatePickerFieldHarness.tsx",
    "hooks": [],
    "dados": {
-    "tabelas": [
-     "frontend_telemetry",
-     "workspace_notifications"
-    ],
+    "tabelas": [],
     "buckets": [],
-    "rpcs": [
-     "log_access_denied",
-     "record_dev_route_telemetry"
-    ],
-    "edges": [
-     "crm-db-bridge"
-    ],
-    "arquivos_lidos": 47
+    "rpcs": [],
+    "edges": [],
+    "arquivos_lidos": 1
    },
    "arquivo": "src/routes/AppRoutes.tsx"
   },
@@ -211,22 +222,14 @@
    "guardas": [],
    "somente_dev": true,
    "linha": 164,
-   "tela": "src/routes/AppRoutes.tsx",
+   "tela": "src/pages/__visual/NegotiationMarkupCardHarness.tsx",
    "hooks": [],
    "dados": {
-    "tabelas": [
-     "frontend_telemetry",
-     "workspace_notifications"
-    ],
+    "tabelas": [],
     "buckets": [],
-    "rpcs": [
-     "log_access_denied",
-     "record_dev_route_telemetry"
-    ],
-    "edges": [
-     "crm-db-bridge"
-    ],
-    "arquivos_lidos": 47
+    "rpcs": [],
+    "edges": [],
+    "arquivos_lidos": 4
    },
    "arquivo": "src/routes/AppRoutes.tsx"
   },
@@ -237,22 +240,14 @@
    "guardas": [],
    "somente_dev": true,
    "linha": 170,
-   "tela": "src/routes/AppRoutes.tsx",
+   "tela": "src/pages/__visual/QuoteFreightBlockHarness.tsx",
    "hooks": [],
    "dados": {
-    "tabelas": [
-     "frontend_telemetry",
-     "workspace_notifications"
-    ],
+    "tabelas": [],
     "buckets": [],
-    "rpcs": [
-     "log_access_denied",
-     "record_dev_route_telemetry"
-    ],
-    "edges": [
-     "crm-db-bridge"
-    ],
-    "arquivos_lidos": 47
+    "rpcs": [],
+    "edges": [],
+    "arquivos_lidos": 2
    },
    "arquivo": "src/routes/AppRoutes.tsx"
   },
@@ -316,9 +311,12 @@
      "orders",
      "product_group_members",
      "product_images",
+     "product_kit_components",
+     "product_materials",
      "product_price_freshness_overrides",
      "product_relationships",
      "product_variants",
+     "product_videos",
      "product_views",
      "products",
      "profiles",
@@ -337,6 +335,7 @@
      "system_settings",
      "user_onboarding",
      "v_catalog_stats",
+     "v_kit_component_complete",
      "variant_supplier_sources",
      "video_variant_links",
      "workspace_notifications"
@@ -361,12 +360,13 @@
      "external-db-bridge",
      "external-db-inspect",
      "generate-ad-image",
+     "generate-product-seo",
      "log-login-attempt",
      "magic-up-score",
      "send-transactional-email",
      "trends-insights"
     ],
-    "arquivos_lidos": 249
+    "arquivos_lidos": 254
    },
    "arquivo": "src/routes/admin-routes.tsx"
   },
@@ -623,11 +623,69 @@
    "tela": "src/pages/admin/AdminCadastrosPage.tsx",
    "hooks": [],
    "dados": {
-    "tabelas": [],
-    "buckets": [],
-    "rpcs": [],
-    "edges": [],
-    "arquivos_lidos": 10
+    "tabelas": [
+     "X",
+     "admin_settings",
+     "audit_log",
+     "categories",
+     "color_groups",
+     "color_variations",
+     "customization_price_tables",
+     "geo_allowed_countries",
+     "kit_templates",
+     "my_table",
+     "personalization_simulations",
+     "personalization_techniques",
+     "print_area_techniques",
+     "product_badge_definitions",
+     "product_component_location_techniques",
+     "product_component_locations",
+     "product_components",
+     "product_group_components",
+     "product_group_location_techniques",
+     "product_group_locations",
+     "product_group_members",
+     "product_groups",
+     "product_images",
+     "product_kit_components",
+     "product_materials",
+     "product_variants",
+     "product_videos",
+     "products",
+     "profiles",
+     "role_migration_batches",
+     "role_migration_items",
+     "security_settings",
+     "suppliers",
+     "system_kill_switches",
+     "tabela_preco_gravacao_oficial",
+     "tabela_preco_gravacao_oficial_faixa",
+     "tecnica_gravacao",
+     "tecnicas_gravacao",
+     "user_ip_allowlist",
+     "user_known_devices",
+     "v_kit_component_complete"
+    ],
+    "buckets": [
+     "supplier-logos"
+    ],
+    "rpcs": [
+     "execute_role_migration_batch",
+     "fn_my_rpc"
+    ],
+    "edges": [
+     "analyze-logo-colors",
+     "cnpj-lookup",
+     "crm-db-bridge",
+     "detect-new-device",
+     "external-db-bridge",
+     "get-visitor-info",
+     "log-login-attempt",
+     "mcp-keys-issue",
+     "secrets-manager",
+     "validate-access"
+    ],
+    "arquivos_lidos": 150
    },
    "arquivo": "src/routes/admin-routes.tsx"
   },
@@ -653,52 +711,88 @@
      "X",
      "admin_settings",
      "audit_log",
+     "cart_templates",
+     "catalog_analytics",
      "categories",
+     "categories_tree_visual",
+     "category_icons",
      "color_groups",
+     "color_nuances",
      "color_variations",
+     "component_media",
      "custom_kits",
      "customization_price_tables",
      "geo_allowed_countries",
      "kill_switch_hits",
+     "kit_component_print_areas",
      "kit_templates",
      "my_table",
+     "order_items",
+     "orders",
+     "print_area_techniques",
+     "product_group_members",
      "product_images",
      "product_kit_components",
      "product_materials",
+     "product_price_freshness_overrides",
+     "product_relationships",
+     "product_tags",
      "product_variants",
      "product_videos",
+     "product_views",
      "products",
+     "profiles",
+     "quote_items",
      "role_migration_batches",
      "role_migration_items",
+     "search_analytics",
      "security_settings",
+     "seller_cart_items",
+     "seller_carts",
+     "supplier_branches",
      "suppliers",
      "system_kill_switches",
      "system_settings",
      "tabela_preco_gravacao_oficial",
+     "tags",
      "tecnica_gravacao",
      "user_ip_allowlist",
      "user_known_devices",
-     "v_kit_component_complete"
+     "v_catalog_stats",
+     "v_kit_component_complete",
+     "v_products_public",
+     "variant_supplier_sources",
+     "video_variant_links"
     ],
     "buckets": [],
     "rpcs": [
      "execute_role_migration_batch",
+     "fn_batch_update_cart_item_sort_order",
+     "fn_get_similar_products",
      "fn_my_rpc",
      "fn_should_apply_kill_switch",
+     "fn_super_filtro_product_ids",
+     "get_catalog_bestseller_page",
+     "get_promo_sales_90d_by_product",
+     "get_promo_sales_ranking",
      "increment_kit_template_usage",
+     "restore_seller_cart",
      "set_custom_kit_pinned"
     ],
     "edges": [
+     "categories-api",
      "crm-db-bridge",
      "detect-new-device",
      "external-db-bridge",
+     "generate-product-seo",
      "get-visitor-info",
      "log-login-attempt",
+     "materials-api",
      "mcp-keys-issue",
      "secrets-manager",
      "validate-access"
     ],
-    "arquivos_lidos": 67
+    "arquivos_lidos": 317
    },
    "arquivo": "src/routes/admin-routes.tsx"
   },
@@ -723,6 +817,7 @@
     "tabelas": [
      "X",
      "device_login_notifications",
+     "frontend_telemetry",
      "login_attempts",
      "my_table",
      "notifications",
@@ -741,7 +836,7 @@
      "crm-db-bridge",
      "mcp-keys-issue"
     ],
-    "arquivos_lidos": 35
+    "arquivos_lidos": 36
    },
    "arquivo": "src/routes/admin-routes.tsx"
   },
@@ -766,6 +861,7 @@
     "tabelas": [
      "X",
      "device_login_notifications",
+     "frontend_telemetry",
      "login_attempts",
      "my_table",
      "notifications",
@@ -784,7 +880,7 @@
      "crm-db-bridge",
      "mcp-keys-issue"
     ],
-    "arquivos_lidos": 35
+    "arquivos_lidos": 36
    },
    "arquivo": "src/routes/admin-routes.tsx"
   },
@@ -809,6 +905,7 @@
     "tabelas": [
      "X",
      "device_login_notifications",
+     "frontend_telemetry",
      "login_attempts",
      "my_table",
      "notifications",
@@ -828,7 +925,7 @@
      "crm-db-bridge",
      "mcp-keys-issue"
     ],
-    "arquivos_lidos": 35
+    "arquivos_lidos": 36
    },
    "arquivo": "src/routes/admin-routes.tsx"
   },
@@ -935,13 +1032,14 @@
      "external-db-bridge",
      "external-db-inspect",
      "generate-ad-image",
+     "generate-product-seo",
      "log-login-attempt",
      "magic-up-score",
      "materials-api",
      "mcp-keys-issue",
      "send-transactional-email"
     ],
-    "arquivos_lidos": 258
+    "arquivos_lidos": 264
    },
    "arquivo": "src/routes/admin-routes.tsx"
   },
@@ -1209,7 +1307,7 @@
      "validate-access",
      "verify-2fa-token"
     ],
-    "arquivos_lidos": 74
+    "arquivos_lidos": 75
    },
    "arquivo": "src/routes/admin-routes.tsx"
   },
@@ -1236,6 +1334,7 @@
      "admin_audit_log",
      "bot_detection_log",
      "device_login_notifications",
+     "frontend_telemetry",
      "hardening_health_snapshots",
      "ip_access_control",
      "login_attempts",
@@ -1261,7 +1360,7 @@
      "force-global-logout",
      "log-login-attempt"
     ],
-    "arquivos_lidos": 48
+    "arquivos_lidos": 49
    },
    "arquivo": "src/routes/admin-routes.tsx"
   },
@@ -1538,13 +1637,14 @@
      "external-db-bridge",
      "external-db-inspect",
      "generate-ad-image",
+     "generate-product-seo",
      "log-login-attempt",
      "magic-up-score",
      "materials-api",
      "mcp-keys-issue",
      "send-transactional-email"
     ],
-    "arquivos_lidos": 260
+    "arquivos_lidos": 266
    },
    "arquivo": "src/routes/admin-routes.tsx"
   },
@@ -1602,12 +1702,24 @@
    "dados": {
     "tabelas": [
      "frontend_telemetry",
-     "query_telemetry"
+     "optimization_queue",
+     "query_telemetry",
+     "some_table"
     ],
     "buckets": [],
-    "rpcs": [],
-    "edges": [],
-    "arquivos_lidos": 20
+    "rpcs": [
+     "check_telemetry_regression",
+     "claim_next_optimization",
+     "complete_optimization",
+     "enqueue_optimization",
+     "get_app_health_summary",
+     "lookup_request_id",
+     "reset_optimization_queue"
+    ],
+    "edges": [
+     "crm-db-bridge"
+    ],
+    "arquivos_lidos": 50
    },
    "arquivo": "src/routes/admin-routes.tsx"
   },
@@ -1747,6 +1859,7 @@
     "tabelas": [
      "X",
      "device_login_notifications",
+     "frontend_telemetry",
      "login_attempts",
      "my_table",
      "notifications",
@@ -1764,7 +1877,7 @@
      "crm-db-bridge",
      "mcp-keys-issue"
     ],
-    "arquivos_lidos": 33
+    "arquivos_lidos": 34
    },
    "arquivo": "src/routes/admin-routes.tsx"
   },
@@ -1974,6 +2087,7 @@
     ],
     "edges": [
      "ai-recommendations",
+     "analyze-logo-colors",
      "categories-api",
      "commemorative-dates",
      "connection-tester",
@@ -1984,13 +2098,14 @@
      "external-db-bridge",
      "external-db-inspect",
      "generate-ad-image",
+     "generate-product-seo",
      "log-login-attempt",
      "magic-up-score",
      "mcp-keys-issue",
      "send-transactional-email",
      "voice-agent"
     ],
-    "arquivos_lidos": 272
+    "arquivos_lidos": 280
    },
    "arquivo": "src/routes/admin-routes.tsx"
   },
@@ -2096,13 +2211,14 @@
      "external-db-bridge",
      "external-db-inspect",
      "generate-ad-image",
+     "generate-product-seo",
      "log-login-attempt",
      "magic-up-score",
      "mcp-keys-issue",
      "send-transactional-email",
      "voice-agent"
     ],
-    "arquivos_lidos": 244
+    "arquivos_lidos": 251
    },
    "arquivo": "src/routes/admin-routes.tsx"
   },
@@ -2239,7 +2355,7 @@
      "webhook-dispatcher",
      "webhook-inbound"
     ],
-    "arquivos_lidos": 311
+    "arquivos_lidos": 314
    },
    "arquivo": "src/routes/admin-routes.tsx"
   },
@@ -2407,13 +2523,14 @@
      "external-db-bridge",
      "external-db-inspect",
      "generate-ad-image",
+     "generate-product-seo",
      "log-login-attempt",
      "magic-up-score",
      "mcp-keys-issue",
      "send-transactional-email",
      "voice-agent"
     ],
-    "arquivos_lidos": 239
+    "arquivos_lidos": 246
    },
    "arquivo": "src/routes/admin-routes.tsx"
   },
@@ -2464,6 +2581,7 @@
     "tabelas": [
      "X",
      "device_login_notifications",
+     "frontend_telemetry",
      "login_attempts",
      "my_table",
      "notifications",
@@ -2483,7 +2601,7 @@
      "mcp-keys-issue",
      "sync-external-db"
     ],
-    "arquivos_lidos": 37
+    "arquivos_lidos": 38
    },
    "arquivo": "src/routes/admin-routes.tsx"
   },
@@ -2771,6 +2889,7 @@
      "external-db-bridge",
      "external-db-inspect",
      "generate-ad-image",
+     "generate-product-seo",
      "image-proxy",
      "log-login-attempt",
      "magic-up-score",
@@ -2780,7 +2899,7 @@
      "send-transactional-email",
      "visual-search"
     ],
-    "arquivos_lidos": 394
+    "arquivos_lidos": 398
    },
    "arquivo": "src/routes/client-routes.tsx"
   },
@@ -2845,9 +2964,12 @@
      "product_components",
      "product_group_members",
      "product_images",
+     "product_kit_components",
+     "product_materials",
      "product_price_freshness_overrides",
      "product_relationships",
      "product_variants",
+     "product_videos",
      "product_views",
      "products",
      "profiles",
@@ -2867,6 +2989,7 @@
      "system_kill_switches",
      "t",
      "v_catalog_stats",
+     "v_kit_component_complete",
      "variant_supplier_sources",
      "video_variant_links",
      "voice_command_logs"
@@ -2897,6 +3020,7 @@
      "external-db-bridge",
      "external-db-inspect",
      "generate-ad-image",
+     "generate-product-seo",
      "log-login-attempt",
      "magic-up-score",
      "mcp-keys-issue",
@@ -2904,7 +3028,7 @@
      "send-transactional-email",
      "voice-agent"
     ],
-    "arquivos_lidos": 278
+    "arquivos_lidos": 283
    },
    "arquivo": "src/routes/client-routes.tsx"
   },
@@ -3077,6 +3201,7 @@
      "expert_conversations",
      "expert_messages",
      "external_connections",
+     "frontend_telemetry",
      "magic_up_brand_kits",
      "magic_up_generations",
      "mv_product_intelligence",
@@ -3086,9 +3211,12 @@
      "orders",
      "product_group_members",
      "product_images",
+     "product_kit_components",
+     "product_materials",
      "product_price_freshness_overrides",
      "product_relationships",
      "product_variants",
+     "product_videos",
      "product_views",
      "products",
      "produto_ramo_atividade",
@@ -3105,6 +3233,7 @@
      "suppliers",
      "system_kill_switches",
      "v_catalog_stats",
+     "v_kit_component_complete",
      "variant_supplier_sources",
      "video_variant_links"
     ],
@@ -3127,12 +3256,14 @@
      "external-db-bridge",
      "external-db-inspect",
      "generate-ad-image",
+     "generate-product-seo",
+     "image-proxy",
      "log-login-attempt",
      "magic-up-score",
      "mcp-keys-issue",
      "send-transactional-email"
     ],
-    "arquivos_lidos": 223
+    "arquivos_lidos": 231
    },
    "arquivo": "src/routes/client-routes.tsx"
   },
@@ -3362,6 +3493,7 @@
      "external-db-bridge",
      "external-db-inspect",
      "generate-ad-image",
+     "generate-product-seo",
      "image-proxy",
      "log-login-attempt",
      "magic-up-score",
@@ -3372,7 +3504,7 @@
      "visual-search",
      "voice-agent"
     ],
-    "arquivos_lidos": 405
+    "arquivos_lidos": 409
    },
    "arquivo": "src/routes/product-routes.tsx"
   },
@@ -3462,6 +3594,7 @@
      "favorite_items",
      "favorite_items_trash",
      "favorite_lists",
+     "frontend_telemetry",
      "kill_switch_hits",
      "login_attempts",
      "magic_up_brand_kits",
@@ -3474,6 +3607,7 @@
      "notifications",
      "order_items",
      "orders",
+     "price_history",
      "product_components",
      "product_group_members",
      "product_images",
@@ -3538,6 +3672,7 @@
      "external-db-bridge",
      "external-db-inspect",
      "generate-ad-image",
+     "generate-product-seo",
      "image-proxy",
      "log-login-attempt",
      "magic-up-score",
@@ -3546,7 +3681,7 @@
      "send-transactional-email",
      "voice-agent"
     ],
-    "arquivos_lidos": 372
+    "arquivos_lidos": 391
    },
    "arquivo": "src/routes/product-routes.tsx"
   },
@@ -3694,6 +3829,7 @@
      "external-db-bridge",
      "external-db-inspect",
      "generate-ad-image",
+     "generate-product-seo",
      "image-proxy",
      "log-login-attempt",
      "magic-up-score",
@@ -3704,7 +3840,7 @@
      "visual-search",
      "voice-agent"
     ],
-    "arquivos_lidos": 405
+    "arquivos_lidos": 409
    },
    "arquivo": "src/routes/product-routes.tsx"
   },
@@ -3736,6 +3872,7 @@
      "color_nuances",
      "color_variations",
      "device_login_notifications",
+     "frontend_telemetry",
      "login_attempts",
      "my_table",
      "notifications",
@@ -3783,12 +3920,13 @@
      "categories-api",
      "crm-db-bridge",
      "external-db-bridge",
+     "generate-product-seo",
      "image-proxy",
      "log-login-attempt",
      "materials-api",
      "mcp-keys-issue"
     ],
-    "arquivos_lidos": 308
+    "arquivos_lidos": 311
    },
    "arquivo": "src/routes/product-routes.tsx"
   },
@@ -3870,12 +4008,13 @@
      "categories-api",
      "crm-db-bridge",
      "external-db-bridge",
+     "generate-product-seo",
      "image-proxy",
      "log-login-attempt",
      "materials-api",
      "mcp-keys-issue"
     ],
-    "arquivos_lidos": 321
+    "arquivos_lidos": 323
    },
    "arquivo": "src/routes/product-routes.tsx"
   },
@@ -3967,9 +4106,12 @@
      "orders",
      "product_group_members",
      "product_images",
+     "product_kit_components",
+     "product_materials",
      "product_price_freshness_overrides",
      "product_relationships",
      "product_variants",
+     "product_videos",
      "product_views",
      "products",
      "profiles",
@@ -3986,6 +4128,7 @@
      "system_kill_switches",
      "user_onboarding",
      "v_catalog_stats",
+     "v_kit_component_complete",
      "variant_supplier_sources",
      "video_variant_links",
      "workspace_notifications"
@@ -4015,13 +4158,14 @@
      "external-db-bridge",
      "external-db-inspect",
      "generate-ad-image",
+     "generate-product-seo",
      "image-proxy",
      "log-login-attempt",
      "magic-up-score",
      "mcp-keys-issue",
      "send-transactional-email"
     ],
-    "arquivos_lidos": 323
+    "arquivos_lidos": 329
    },
    "arquivo": "src/routes/product-routes.tsx"
   },
@@ -4136,13 +4280,14 @@
      "external-db-bridge",
      "external-db-inspect",
      "generate-ad-image",
+     "generate-product-seo",
      "log-login-attempt",
      "magic-up-score",
      "materials-api",
      "mcp-keys-issue",
      "send-transactional-email"
     ],
-    "arquivos_lidos": 279
+    "arquivos_lidos": 281
    },
    "arquivo": "src/routes/product-routes.tsx"
   },
@@ -4262,13 +4407,14 @@
      "external-db-bridge",
      "external-db-inspect",
      "generate-ad-image",
+     "generate-product-seo",
      "log-login-attempt",
      "magic-up-score",
      "materials-api",
      "mcp-keys-issue",
      "send-transactional-email"
     ],
-    "arquivos_lidos": 287
+    "arquivos_lidos": 288
    },
    "arquivo": "src/routes/product-routes.tsx"
   },
@@ -4360,14 +4506,16 @@
     ],
     "edges": [
      "categories-api",
+     "comparison-ai-advisor",
      "crm-db-bridge",
      "external-db-bridge",
+     "generate-product-seo",
      "image-proxy",
      "log-login-attempt",
      "materials-api",
      "mcp-keys-issue"
     ],
-    "arquivos_lidos": 244
+    "arquivos_lidos": 246
    },
    "arquivo": "src/routes/product-routes.tsx"
   },
@@ -4457,13 +4605,14 @@
      "connection-tester",
      "crm-db-bridge",
      "external-db-bridge",
+     "generate-product-seo",
      "image-proxy",
      "log-login-attempt",
      "materials-api",
      "mcp-keys-issue",
      "send-transactional-email"
     ],
-    "arquivos_lidos": 244
+    "arquivos_lidos": 247
    },
    "arquivo": "src/routes/product-routes.tsx"
   },
@@ -4595,6 +4744,7 @@
      "external-db-bridge",
      "external-db-inspect",
      "generate-ad-image",
+     "generate-product-seo",
      "image-proxy",
      "log-login-attempt",
      "magic-up-score",
@@ -4602,7 +4752,7 @@
      "mcp-keys-issue",
      "voice-agent"
     ],
-    "arquivos_lidos": 348
+    "arquivos_lidos": 350
    },
    "arquivo": "src/routes/product-routes.tsx"
   },
@@ -4780,11 +4930,15 @@
     "tabelas": [
      "X",
      "my_table",
-     "user_known_devices"
+     "profiles",
+     "user_known_devices",
+     "user_roles"
     ],
     "buckets": [],
     "rpcs": [
-     "fn_my_rpc"
+     "fn_my_rpc",
+     "get_profile_and_roles",
+     "log_user_logout"
     ],
     "edges": [
      "crm-db-bridge",
@@ -4794,7 +4948,7 @@
      "mcp-keys-issue",
      "validate-access"
     ],
-    "arquivos_lidos": 25
+    "arquivos_lidos": 26
    },
    "arquivo": "src/routes/public-routes.tsx"
   },
@@ -4910,14 +5064,14 @@
    "guardas": [],
    "somente_dev": true,
    "linha": 58,
-   "tela": "src/routes/public-routes.tsx",
+   "tela": "src/pages/dev/ColorSwatchesHarness.tsx",
    "hooks": [],
    "dados": {
     "tabelas": [],
     "buckets": [],
     "rpcs": [],
     "edges": [],
-    "arquivos_lidos": 10
+    "arquivos_lidos": 4
    },
    "arquivo": "src/routes/public-routes.tsx"
   },
@@ -4928,14 +5082,14 @@
    "guardas": [],
    "somente_dev": true,
    "linha": 61,
-   "tela": "src/routes/public-routes.tsx",
+   "tela": "src/pages/dev/ConfirmDialogHarness.tsx",
    "hooks": [],
    "dados": {
     "tabelas": [],
     "buckets": [],
     "rpcs": [],
     "edges": [],
-    "arquivos_lidos": 10
+    "arquivos_lidos": 1
    },
    "arquivo": "src/routes/public-routes.tsx"
   },
@@ -4946,14 +5100,14 @@
    "guardas": [],
    "somente_dev": true,
    "linha": 63,
-   "tela": "src/routes/public-routes.tsx",
+   "tela": "src/pages/dev/AlertDialogHarness.tsx",
    "hooks": [],
    "dados": {
     "tabelas": [],
     "buckets": [],
     "rpcs": [],
     "edges": [],
-    "arquivos_lidos": 10
+    "arquivos_lidos": 1
    },
    "arquivo": "src/routes/public-routes.tsx"
   },
@@ -4964,14 +5118,14 @@
    "guardas": [],
    "somente_dev": true,
    "linha": 64,
-   "tela": "src/routes/public-routes.tsx",
+   "tela": "src/pages/dev/DialogHarness.tsx",
    "hooks": [],
    "dados": {
     "tabelas": [],
     "buckets": [],
     "rpcs": [],
     "edges": [],
-    "arquivos_lidos": 10
+    "arquivos_lidos": 1
    },
    "arquivo": "src/routes/public-routes.tsx"
   },
@@ -4982,14 +5136,14 @@
    "guardas": [],
    "somente_dev": true,
    "linha": 65,
-   "tela": "src/routes/public-routes.tsx",
+   "tela": "src/pages/dev/UndoToastHarness.tsx",
    "hooks": [],
    "dados": {
     "tabelas": [],
     "buckets": [],
     "rpcs": [],
     "edges": [],
-    "arquivos_lidos": 10
+    "arquivos_lidos": 3
    },
    "arquivo": "src/routes/public-routes.tsx"
   },
@@ -5000,14 +5154,14 @@
    "guardas": [],
    "somente_dev": true,
    "linha": 66,
-   "tela": "src/routes/public-routes.tsx",
+   "tela": "src/pages/dev/CnpjFormHarness.tsx",
    "hooks": [],
    "dados": {
     "tabelas": [],
     "buckets": [],
     "rpcs": [],
     "edges": [],
-    "arquivos_lidos": 10
+    "arquivos_lidos": 3
    },
    "arquivo": "src/routes/public-routes.tsx"
   },
@@ -5018,14 +5172,14 @@
    "guardas": [],
    "somente_dev": true,
    "linha": 68,
-   "tela": "src/routes/public-routes.tsx",
+   "tela": "src/pages/dev/MagazineRingHarness.tsx",
    "hooks": [],
    "dados": {
     "tabelas": [],
     "buckets": [],
     "rpcs": [],
     "edges": [],
-    "arquivos_lidos": 10
+    "arquivos_lidos": 2
    },
    "arquivo": "src/routes/public-routes.tsx"
   },
@@ -5036,14 +5190,14 @@
    "guardas": [],
    "somente_dev": true,
    "linha": 70,
-   "tela": "src/routes/public-routes.tsx",
+   "tela": "src/pages/dev/TabSkipHarness.tsx",
    "hooks": [],
    "dados": {
     "tabelas": [],
     "buckets": [],
     "rpcs": [],
     "edges": [],
-    "arquivos_lidos": 10
+    "arquivos_lidos": 2
    },
    "arquivo": "src/routes/public-routes.tsx"
   },
@@ -5084,7 +5238,9 @@
      "system_kill_switches",
      "t"
     ],
-    "buckets": [],
+    "buckets": [
+     "art-files"
+    ],
     "rpcs": [
      "log_rls_denial",
      "request_discount_approval_transactional",
@@ -5096,9 +5252,11 @@
      "log-login-attempt",
      "mcp-keys-issue",
      "quote-sync",
-     "send-transactional-email"
+     "quote-sync-promo-champions",
+     "send-transactional-email",
+     "sync-quote-bitrix"
     ],
-    "arquivos_lidos": 198
+    "arquivos_lidos": 262
    },
    "arquivo": "src/routes/quote-routes.tsx"
   },
@@ -5190,7 +5348,9 @@
      "system_kill_switches",
      "t"
     ],
-    "buckets": [],
+    "buckets": [
+     "art-files"
+    ],
     "rpcs": [
      "log_rls_denial",
      "request_discount_approval_transactional",
@@ -5202,9 +5362,11 @@
      "log-login-attempt",
      "mcp-keys-issue",
      "quote-sync",
-     "send-transactional-email"
+     "quote-sync-promo-champions",
+     "send-transactional-email",
+     "sync-quote-bitrix"
     ],
-    "arquivos_lidos": 198
+    "arquivos_lidos": 262
    },
    "arquivo": "src/routes/quote-routes.tsx"
   },
@@ -5280,12 +5442,13 @@
      "connection-tester",
      "crm-db-bridge",
      "external-db-bridge",
+     "generate-product-seo",
      "log-login-attempt",
      "mcp-keys-issue",
      "quote-sync",
      "send-transactional-email"
     ],
-    "arquivos_lidos": 198
+    "arquivos_lidos": 200
    },
    "arquivo": "src/routes/quote-routes.tsx"
   },
@@ -5422,6 +5585,7 @@
      "external-db-bridge",
      "external-db-inspect",
      "generate-ad-image",
+     "generate-product-seo",
      "log-login-attempt",
      "magic-up-score",
      "materials-api",
@@ -5429,7 +5593,7 @@
      "quote-sync",
      "send-transactional-email"
     ],
-    "arquivos_lidos": 316
+    "arquivos_lidos": 319
    },
    "arquivo": "src/routes/quote-routes.tsx"
   },
@@ -5547,6 +5711,7 @@
      "external-db-bridge",
      "external-db-inspect",
      "generate-ad-image",
+     "generate-product-seo",
      "log-login-attempt",
      "magic-up-score",
      "materials-api",
@@ -5554,7 +5719,7 @@
      "quote-sync",
      "send-transactional-email"
     ],
-    "arquivos_lidos": 316
+    "arquivos_lidos": 319
    },
    "arquivo": "src/routes/quote-routes.tsx"
   },
@@ -5641,13 +5806,15 @@
      "connection-tester",
      "crm-db-bridge",
      "external-db-bridge",
+     "generate-product-seo",
      "log-login-attempt",
      "mcp-keys-issue",
      "quote-sync",
+     "quote-sync-promo-champions",
      "send-transactional-email",
      "sync-quote-bitrix"
     ],
-    "arquivos_lidos": 234
+    "arquivos_lidos": 238
    },
    "arquivo": "src/routes/quote-routes.tsx"
   },
@@ -5687,9 +5854,10 @@
     "buckets": [],
     "rpcs": [],
     "edges": [
+     "analyze-logo-colors",
      "external-db-bridge"
     ],
-    "arquivos_lidos": 74
+    "arquivos_lidos": 76
    },
    "arquivo": "src/routes/tools-routes.tsx"
   },
@@ -5714,6 +5882,7 @@
      "print_area_techniques",
      "product_variants",
      "profiles",
+     "system_kill_switches",
      "tabela_preco_gravacao_oficial",
      "tabela_preco_gravacao_oficial_faixa",
      "tecnicas_gravacao"
@@ -5723,10 +5892,12 @@
      "fn_my_rpc"
     ],
     "edges": [
+     "analyze-logo-colors",
+     "crm-db-bridge",
      "external-db-bridge",
      "log-login-attempt"
     ],
-    "arquivos_lidos": 86
+    "arquivos_lidos": 90
    },
    "arquivo": "src/routes/tools-routes.tsx"
   },
@@ -5756,6 +5927,7 @@
      "device_login_notifications",
      "frontend_telemetry",
      "login_attempts",
+     "mv_supplier_reliability",
      "my_table",
      "notifications",
      "order_items",
@@ -5777,6 +5949,7 @@
      "seller_carts",
      "supplier_branches",
      "suppliers",
+     "system_kill_switches",
      "system_settings",
      "user_onboarding",
      "v_catalog_stats",
@@ -5795,16 +5968,19 @@
      "get_catalog_bestseller_page",
      "get_promo_sales_90d_by_product",
      "get_promo_sales_ranking",
+     "get_supplier_reliability_history",
      "restore_seller_cart"
     ],
     "edges": [
      "categories-api",
+     "crm-db-bridge",
      "external-db-bridge",
+     "generate-product-seo",
      "log-login-attempt",
      "materials-api",
      "mcp-keys-issue"
     ],
-    "arquivos_lidos": 280
+    "arquivos_lidos": 309
    },
    "arquivo": "src/routes/tools-routes.tsx"
   },
@@ -5854,6 +6030,7 @@
      "my_table",
      "order_items",
      "orders",
+     "print_area_techniques",
      "product_group_members",
      "product_images",
      "product_kit_components",
@@ -5910,13 +6087,14 @@
      "external-db-bridge",
      "external-db-inspect",
      "generate-ad-image",
+     "generate-product-seo",
      "log-login-attempt",
      "magic-up-score",
      "materials-api",
      "mcp-keys-issue",
      "voice-agent"
     ],
-    "arquivos_lidos": 255
+    "arquivos_lidos": 259
    },
    "arquivo": "src/routes/tools-routes.tsx"
   },
@@ -5938,17 +6116,284 @@
    ],
    "dados": {
     "tabelas": [
+     "X",
+     "access_security_settings",
+     "admin_audit_log",
+     "admin_settings",
+     "ai_function_routing",
+     "ai_insights_cache",
+     "ai_models",
+     "ai_providers",
+     "ai_usage_events",
+     "ai_usage_logs",
+     "ai_usage_quotas",
+     "art_file_attachments",
+     "audit_log",
+     "bot_detection_log",
+     "cart_templates",
+     "catalog_analytics",
+     "categories",
+     "categories_tree_visual",
+     "category_icons",
+     "collection_items",
+     "collection_items_trash",
+     "collection_products",
+     "collections",
+     "color_groups",
+     "color_nuances",
+     "color_variations",
+     "companies",
+     "connection_test_history",
+     "crm_callback_events",
+     "custom_kits",
+     "customization_price_tables",
+     "device_login_notifications",
+     "discount_approval_audit",
+     "discount_approval_requests",
+     "expert_conversations",
+     "expert_messages",
+     "external_connections",
+     "external_connections_sync_log",
+     "favorite_items",
+     "favorite_items_trash",
+     "favorite_lists",
+     "file_scan_logs",
+     "frontend_telemetry",
+     "generated_mockups",
+     "geo_allowed_countries",
+     "hardening_health_snapshots",
+     "inbound_webhook_endpoints",
+     "inbound_webhook_events",
+     "integration_credentials",
+     "ip_access_control",
+     "kit_collaborators",
+     "kit_comments",
+     "kit_templates",
+     "kit_variants",
+     "login_attempts",
+     "magazine_items",
+     "magazines",
+     "magic_up_brand_kits",
+     "magic_up_generations",
+     "mcp_api_keys",
+     "mcp_key_auto_revocations",
+     "mockup_drafts",
+     "mockup_prompt_configs",
+     "mockup_prompt_history",
+     "mv_product_intelligence",
+     "mv_stock_velocity",
+     "my_table",
+     "notifications",
+     "optimization_queue",
+     "order_items",
+     "orders",
+     "outbound_webhooks",
+     "ownership_audit_reports",
+     "password_reset_requests",
+     "permissions",
+     "personalization_techniques",
+     "price_history",
+     "print_area_techniques",
+     "product_component_locations",
+     "product_components",
+     "product_group_members",
+     "product_images",
+     "product_kit_components",
+     "product_materials",
+     "product_price_freshness_overrides",
+     "product_relationships",
+     "product_variants",
+     "product_videos",
+     "product_views",
+     "products",
+     "produto_ramo_atividade",
+     "profiles",
+     "public_token_failures",
+     "query_telemetry",
+     "quote_history",
+     "quote_items",
+     "quotes",
+     "request_rate_limits",
+     "rls_denial_log",
+     "role_migration_batches",
+     "role_migration_items",
+     "role_permissions",
+     "roles",
+     "sales_goals",
+     "saved_filters",
+     "saved_trends_views",
+     "scheduled_reports",
+     "search_analytics",
+     "secret_rotation_log",
+     "security_settings",
+     "seller_cart_items",
+     "seller_carts",
+     "seller_discount_limits",
+     "simulator_wizard_drafts",
+     "some_table",
+     "stock_daily_summary",
+     "supplier_branches",
+     "suppliers",
+     "system_kill_switches",
+     "system_settings",
+     "tabela_preco_gravacao_oficial",
+     "tabela_preco_gravacao_oficial_faixa",
+     "tecnica_gravacao",
+     "user_2fa_settings",
+     "user_comparisons",
+     "user_ip_allowlist",
+     "user_known_devices",
+     "user_onboarding",
+     "user_preferences",
+     "user_roles",
+     "v_catalog_stats",
+     "v_kill_switch_hits_summary",
+     "v_kit_component_complete",
+     "v_pipeline_progress",
+     "v_smoke_tests_latest_run",
+     "v_smoke_tests_trend",
+     "variant_supplier_sources",
+     "video_variant_links",
+     "visual_search_feedback",
+     "vw_medallion_coverage",
+     "webhook_deliveries",
      "workspace_notifications"
     ],
-    "buckets": [],
+    "buckets": [
+     "art-files",
+     "avatars",
+     "mockup-art-files",
+     "mockup-assets"
+    ],
     "rpcs": [
+     "admin_active_sessions",
+     "check_ai_quota",
+     "check_hardening_status",
+     "check_telemetry_regression",
+     "claim_next_optimization",
+     "complete_optimization",
+     "enqueue_optimization",
+     "ensure_default_favorite_list",
+     "execute_role_migration_batch",
+     "fn_batch_update_cart_item_sort_order",
+     "fn_get_color_swatches_batch",
+     "fn_get_reposicao_variants_summary",
+     "fn_get_rupture_alerts",
+     "fn_get_similar_products",
+     "fn_my_rpc",
+     "fn_run_and_persist_smoke_tests",
+     "fn_super_filtro_product_ids",
+     "get_app_health_summary",
+     "get_auto_test_job_status",
+     "get_bundle_suggestions",
+     "get_catalog_bestseller_page",
+     "get_client_seasonality",
+     "get_client_top_products",
+     "get_collections_weekly_count",
+     "get_connection_failure_window_minutes",
+     "get_connections_auto_test_interval",
+     "get_favorite_list_counts",
+     "get_favorites_weekly_count",
+     "get_industry_benchmark_stats",
+     "get_industry_seasonality",
+     "get_industry_top_products",
+     "get_profile_and_roles",
+     "get_promo_sales_90d_by_product",
+     "get_promo_sales_ranking",
+     "get_top_collected_products",
+     "get_top_compared_products",
+     "get_top_favorited_products",
+     "get_user_recent_comparisons",
+     "increment_kit_template_usage",
      "log_access_denied",
-     "record_dev_route_telemetry"
+     "log_user_logout",
+     "lookup_request_id",
+     "magazine_add_items_v2",
+     "magazine_archive_v2",
+     "magazine_create_v2",
+     "magazine_duplicate_v2",
+     "magazine_publish_v2",
+     "magazine_reactivate_v2",
+     "magazine_remove_items_v2",
+     "magazine_reorder_items_v2",
+     "magazine_restore_v2",
+     "magazine_soft_delete_v2",
+     "magazine_unpublish_v2",
+     "magazine_update_item_v2",
+     "magazine_update_metadata_v2",
+     "record_dev_route_telemetry",
+     "request_discount_approval_transactional",
+     "reset_optimization_queue",
+     "restore_favorite_from_trash",
+     "restore_seller_cart",
+     "save_custom_kit_atomic",
+     "set_connection_failure_window_minutes",
+     "set_connections_auto_test_interval",
+     "set_custom_kit_pinned"
     ],
     "edges": [
-     "crm-db-bridge"
+     "ai-recommendations",
+     "audit-suite",
+     "bi-copilot",
+     "block-ip-temporarily",
+     "categories-api",
+     "check-login",
+     "commemorative-dates",
+     "comparison-ai-advisor",
+     "connection-tester",
+     "connections-hub-audit",
+     "crm-callback-reprocess",
+     "crm-db-bridge",
+     "detect-new-device",
+     "dropbox-list",
+     "ema-pipeline-health",
+     "expert-chat",
+     "external-db-bridge",
+     "external-db-inspect",
+     "force-global-logout",
+     "full-op-diagnostics",
+     "generate-ad-image",
+     "generate-ad-prompt",
+     "generate-mockup",
+     "generate-product-seo",
+     "get-visitor-info",
+     "github-credentials-test",
+     "image-proxy",
+     "intelligence-substitute-applied",
+     "kit-ai-builder",
+     "kit-identity-suggest",
+     "log-login-attempt",
+     "magazine-import-local",
+     "magazine-public-view",
+     "magic-up-score",
+     "manage-users",
+     "market-intelligence-insights",
+     "mcp-keys-issue",
+     "mcp-keys-revoke",
+     "mcp-keys-update",
+     "mcp-server",
+     "ownership-audit",
+     "ownership-repair",
+     "quote-sync",
+     "quote-sync-promo-champions",
+     "rls-audit",
+     "rls-integration-tests",
+     "rls-matrix-export",
+     "secrets-manager",
+     "secure-upload",
+     "send-transactional-email",
+     "simulation-orchestrator",
+     "step-up-verify",
+     "sync-external-db",
+     "sync-quote-bitrix",
+     "trends-insights",
+     "validate-access",
+     "verify-2fa-token",
+     "visual-search",
+     "webhook-dispatcher",
+     "webhook-inbound"
     ],
-    "arquivos_lidos": 25
+    "arquivos_lidos": 1490
    },
    "arquivo": "src/routes/tools-routes.tsx"
   },
@@ -5970,17 +6415,284 @@
    ],
    "dados": {
     "tabelas": [
+     "X",
+     "access_security_settings",
+     "admin_audit_log",
+     "admin_settings",
+     "ai_function_routing",
+     "ai_insights_cache",
+     "ai_models",
+     "ai_providers",
+     "ai_usage_events",
+     "ai_usage_logs",
+     "ai_usage_quotas",
+     "art_file_attachments",
+     "audit_log",
+     "bot_detection_log",
+     "cart_templates",
+     "catalog_analytics",
+     "categories",
+     "categories_tree_visual",
+     "category_icons",
+     "collection_items",
+     "collection_items_trash",
+     "collection_products",
+     "collections",
+     "color_groups",
+     "color_nuances",
+     "color_variations",
+     "companies",
+     "connection_test_history",
+     "crm_callback_events",
+     "custom_kits",
+     "customization_price_tables",
+     "device_login_notifications",
+     "discount_approval_audit",
+     "discount_approval_requests",
+     "expert_conversations",
+     "expert_messages",
+     "external_connections",
+     "external_connections_sync_log",
+     "favorite_items",
+     "favorite_items_trash",
+     "favorite_lists",
+     "file_scan_logs",
+     "frontend_telemetry",
+     "generated_mockups",
+     "geo_allowed_countries",
+     "hardening_health_snapshots",
+     "inbound_webhook_endpoints",
+     "inbound_webhook_events",
+     "integration_credentials",
+     "ip_access_control",
+     "kit_collaborators",
+     "kit_comments",
+     "kit_templates",
+     "kit_variants",
+     "login_attempts",
+     "magazine_items",
+     "magazines",
+     "magic_up_brand_kits",
+     "magic_up_generations",
+     "mcp_api_keys",
+     "mcp_key_auto_revocations",
+     "mockup_drafts",
+     "mockup_prompt_configs",
+     "mockup_prompt_history",
+     "mv_product_intelligence",
+     "mv_stock_velocity",
+     "my_table",
+     "notifications",
+     "optimization_queue",
+     "order_items",
+     "orders",
+     "outbound_webhooks",
+     "ownership_audit_reports",
+     "password_reset_requests",
+     "permissions",
+     "personalization_techniques",
+     "price_history",
+     "print_area_techniques",
+     "product_component_locations",
+     "product_components",
+     "product_group_members",
+     "product_images",
+     "product_kit_components",
+     "product_materials",
+     "product_price_freshness_overrides",
+     "product_relationships",
+     "product_variants",
+     "product_videos",
+     "product_views",
+     "products",
+     "produto_ramo_atividade",
+     "profiles",
+     "public_token_failures",
+     "query_telemetry",
+     "quote_history",
+     "quote_items",
+     "quotes",
+     "request_rate_limits",
+     "rls_denial_log",
+     "role_migration_batches",
+     "role_migration_items",
+     "role_permissions",
+     "roles",
+     "sales_goals",
+     "saved_filters",
+     "saved_trends_views",
+     "scheduled_reports",
+     "search_analytics",
+     "secret_rotation_log",
+     "security_settings",
+     "seller_cart_items",
+     "seller_carts",
+     "seller_discount_limits",
+     "simulator_wizard_drafts",
+     "some_table",
+     "stock_daily_summary",
+     "supplier_branches",
+     "suppliers",
+     "system_kill_switches",
+     "system_settings",
+     "tabela_preco_gravacao_oficial",
+     "tabela_preco_gravacao_oficial_faixa",
+     "tecnica_gravacao",
+     "user_2fa_settings",
+     "user_comparisons",
+     "user_ip_allowlist",
+     "user_known_devices",
+     "user_onboarding",
+     "user_preferences",
+     "user_roles",
+     "v_catalog_stats",
+     "v_kill_switch_hits_summary",
+     "v_kit_component_complete",
+     "v_pipeline_progress",
+     "v_smoke_tests_latest_run",
+     "v_smoke_tests_trend",
+     "variant_supplier_sources",
+     "video_variant_links",
+     "visual_search_feedback",
+     "vw_medallion_coverage",
+     "webhook_deliveries",
      "workspace_notifications"
     ],
-    "buckets": [],
+    "buckets": [
+     "art-files",
+     "avatars",
+     "mockup-art-files",
+     "mockup-assets"
+    ],
     "rpcs": [
+     "admin_active_sessions",
+     "check_ai_quota",
+     "check_hardening_status",
+     "check_telemetry_regression",
+     "claim_next_optimization",
+     "complete_optimization",
+     "enqueue_optimization",
+     "ensure_default_favorite_list",
+     "execute_role_migration_batch",
+     "fn_batch_update_cart_item_sort_order",
+     "fn_get_color_swatches_batch",
+     "fn_get_reposicao_variants_summary",
+     "fn_get_rupture_alerts",
+     "fn_get_similar_products",
+     "fn_my_rpc",
+     "fn_run_and_persist_smoke_tests",
+     "fn_super_filtro_product_ids",
+     "get_app_health_summary",
+     "get_auto_test_job_status",
+     "get_bundle_suggestions",
+     "get_catalog_bestseller_page",
+     "get_client_seasonality",
+     "get_client_top_products",
+     "get_collections_weekly_count",
+     "get_connection_failure_window_minutes",
+     "get_connections_auto_test_interval",
+     "get_favorite_list_counts",
+     "get_favorites_weekly_count",
+     "get_industry_benchmark_stats",
+     "get_industry_seasonality",
+     "get_industry_top_products",
+     "get_profile_and_roles",
+     "get_promo_sales_90d_by_product",
+     "get_promo_sales_ranking",
+     "get_top_collected_products",
+     "get_top_compared_products",
+     "get_top_favorited_products",
+     "get_user_recent_comparisons",
+     "increment_kit_template_usage",
      "log_access_denied",
-     "record_dev_route_telemetry"
+     "log_user_logout",
+     "lookup_request_id",
+     "magazine_add_items_v2",
+     "magazine_archive_v2",
+     "magazine_create_v2",
+     "magazine_duplicate_v2",
+     "magazine_publish_v2",
+     "magazine_reactivate_v2",
+     "magazine_remove_items_v2",
+     "magazine_reorder_items_v2",
+     "magazine_restore_v2",
+     "magazine_soft_delete_v2",
+     "magazine_unpublish_v2",
+     "magazine_update_item_v2",
+     "magazine_update_metadata_v2",
+     "record_dev_route_telemetry",
+     "request_discount_approval_transactional",
+     "reset_optimization_queue",
+     "restore_favorite_from_trash",
+     "restore_seller_cart",
+     "save_custom_kit_atomic",
+     "set_connection_failure_window_minutes",
+     "set_connections_auto_test_interval",
+     "set_custom_kit_pinned"
     ],
     "edges": [
-     "crm-db-bridge"
+     "ai-recommendations",
+     "audit-suite",
+     "bi-copilot",
+     "block-ip-temporarily",
+     "categories-api",
+     "check-login",
+     "commemorative-dates",
+     "comparison-ai-advisor",
+     "connection-tester",
+     "connections-hub-audit",
+     "crm-callback-reprocess",
+     "crm-db-bridge",
+     "detect-new-device",
+     "dropbox-list",
+     "ema-pipeline-health",
+     "expert-chat",
+     "external-db-bridge",
+     "external-db-inspect",
+     "force-global-logout",
+     "full-op-diagnostics",
+     "generate-ad-image",
+     "generate-ad-prompt",
+     "generate-mockup",
+     "generate-product-seo",
+     "get-visitor-info",
+     "github-credentials-test",
+     "image-proxy",
+     "intelligence-substitute-applied",
+     "kit-ai-builder",
+     "kit-identity-suggest",
+     "log-login-attempt",
+     "magazine-import-local",
+     "magazine-public-view",
+     "magic-up-score",
+     "manage-users",
+     "market-intelligence-insights",
+     "mcp-keys-issue",
+     "mcp-keys-revoke",
+     "mcp-keys-update",
+     "mcp-server",
+     "ownership-audit",
+     "ownership-repair",
+     "quote-sync",
+     "quote-sync-promo-champions",
+     "rls-audit",
+     "rls-integration-tests",
+     "rls-matrix-export",
+     "secrets-manager",
+     "secure-upload",
+     "send-transactional-email",
+     "simulation-orchestrator",
+     "step-up-verify",
+     "sync-external-db",
+     "sync-quote-bitrix",
+     "trends-insights",
+     "validate-access",
+     "verify-2fa-token",
+     "visual-search",
+     "webhook-dispatcher",
+     "webhook-inbound"
     ],
-    "arquivos_lidos": 25
+    "arquivos_lidos": 1490
    },
    "arquivo": "src/routes/tools-routes.tsx"
   },
@@ -6112,33 +6824,105 @@
    "dados": {
     "tabelas": [
      "X",
+     "admin_settings",
+     "ai_function_routing",
+     "ai_models",
+     "ai_providers",
+     "ai_usage_logs",
+     "ai_usage_quotas",
      "art_file_attachments",
+     "cart_templates",
+     "catalog_analytics",
+     "categories",
+     "categories_tree_visual",
+     "category_icons",
+     "color_groups",
+     "color_nuances",
+     "color_variations",
+     "companies",
      "customization_price_tables",
+     "expert_conversations",
+     "expert_messages",
+     "external_connections",
      "generated_mockups",
+     "magic_up_brand_kits",
+     "magic_up_generations",
      "mockup_drafts",
+     "mv_product_intelligence",
+     "mv_stock_velocity",
      "my_table",
+     "order_items",
+     "orders",
      "personalization_simulations",
      "personalization_techniques",
      "print_area_techniques",
+     "product_group_members",
+     "product_images",
+     "product_kit_components",
+     "product_materials",
+     "product_price_freshness_overrides",
+     "product_relationships",
+     "product_variants",
+     "product_videos",
+     "product_views",
+     "products",
+     "produto_ramo_atividade",
      "profiles",
+     "quote_items",
+     "quotes",
+     "sales_goals",
+     "scheduled_reports",
+     "search_analytics",
+     "seller_cart_items",
+     "seller_carts",
+     "stock_daily_summary",
+     "supplier_branches",
+     "suppliers",
+     "system_kill_switches",
      "tabela_preco_gravacao_oficial",
      "tabela_preco_gravacao_oficial_faixa",
-     "tecnicas_gravacao"
+     "tecnicas_gravacao",
+     "v_catalog_stats",
+     "v_kit_component_complete",
+     "variant_supplier_sources",
+     "video_variant_links"
     ],
     "buckets": [
      "mockup-art-files",
      "mockup-assets"
     ],
     "rpcs": [
-     "fn_my_rpc"
+     "check_ai_quota",
+     "fn_batch_update_cart_item_sort_order",
+     "fn_get_similar_products",
+     "fn_my_rpc",
+     "fn_super_filtro_product_ids",
+     "get_catalog_bestseller_page",
+     "get_promo_sales_90d_by_product",
+     "get_promo_sales_ranking",
+     "restore_seller_cart"
     ],
     "edges": [
+     "ai-recommendations",
+     "analyze-logo-colors",
+     "categories-api",
+     "commemorative-dates",
+     "connection-tester",
      "crm-db-bridge",
+     "dropbox-list",
+     "expert-chat",
      "external-db-bridge",
+     "external-db-inspect",
+     "generate-ad-image",
      "generate-mockup",
-     "log-login-attempt"
+     "generate-product-seo",
+     "log-login-attempt",
+     "magic-up-score",
+     "materials-api",
+     "mcp-keys-issue",
+     "send-transactional-email"
     ],
-    "arquivos_lidos": 177
+    "arquivos_lidos": 359
    },
    "arquivo": "src/routes/tools-routes.tsx"
   },
@@ -6181,6 +6965,7 @@
      "expert_conversations",
      "expert_messages",
      "external_connections",
+     "frontend_telemetry",
      "generated_mockups",
      "magic_up_brand_kits",
      "magic_up_generations",
@@ -6191,9 +6976,12 @@
      "orders",
      "product_group_members",
      "product_images",
+     "product_kit_components",
+     "product_materials",
      "product_price_freshness_overrides",
      "product_relationships",
      "product_variants",
+     "product_videos",
      "product_views",
      "products",
      "profiles",
@@ -6208,6 +6996,7 @@
      "supplier_branches",
      "suppliers",
      "v_catalog_stats",
+     "v_kit_component_complete",
      "variant_supplier_sources",
      "video_variant_links"
     ],
@@ -6233,11 +7022,12 @@
      "external-db-inspect",
      "generate-ad-image",
      "generate-mockup",
+     "generate-product-seo",
      "log-login-attempt",
      "magic-up-score",
      "send-transactional-email"
     ],
-    "arquivos_lidos": 208
+    "arquivos_lidos": 215
    },
    "arquivo": "src/routes/tools-routes.tsx"
   },
@@ -6337,13 +7127,14 @@
      "external-db-inspect",
      "generate-ad-image",
      "generate-ad-prompt",
+     "generate-product-seo",
      "log-login-attempt",
      "magic-up-score",
      "mcp-keys-issue",
      "send-transactional-email",
      "voice-agent"
     ],
-    "arquivos_lidos": 258
+    "arquivos_lidos": 265
    },
    "arquivo": "src/routes/tools-routes.tsx"
   },
@@ -6384,6 +7175,7 @@
      "color_groups",
      "color_nuances",
      "color_variations",
+     "customization_price_tables",
      "device_login_notifications",
      "expert_conversations",
      "expert_messages",
@@ -6401,6 +7193,7 @@
      "notifications",
      "order_items",
      "orders",
+     "print_area_techniques",
      "product_group_members",
      "product_images",
      "product_kit_components",
@@ -6427,6 +7220,7 @@
      "system_settings",
      "tabela_preco_gravacao_oficial",
      "tabela_preco_gravacao_oficial_faixa",
+     "tecnica_gravacao",
      "user_onboarding",
      "v_catalog_stats",
      "v_kit_component_complete",
@@ -6460,6 +7254,8 @@
      "external-db-bridge",
      "external-db-inspect",
      "generate-ad-image",
+     "generate-product-seo",
+     "intelligence-substitute-applied",
      "log-login-attempt",
      "magic-up-score",
      "market-intelligence-insights",
@@ -6468,7 +7264,7 @@
      "send-transactional-email",
      "voice-agent"
     ],
-    "arquivos_lidos": 325
+    "arquivos_lidos": 328
    },
    "arquivo": "src/routes/tools-routes.tsx"
   },
@@ -6509,6 +7305,7 @@
      "my_table",
      "order_items",
      "orders",
+     "products",
      "produto_ramo_atividade",
      "suppliers",
      "system_kill_switches",
@@ -6532,7 +7329,7 @@
      "mcp-keys-issue",
      "send-transactional-email"
     ],
-    "arquivos_lidos": 194
+    "arquivos_lidos": 195
    },
    "arquivo": "src/routes/tools-routes.tsx"
   },
@@ -6553,6 +7350,7 @@
      "companies",
      "order_items",
      "orders",
+     "products",
      "produto_ramo_atividade",
      "suppliers",
      "system_kill_switches"
@@ -6572,7 +7370,7 @@
      "mcp-keys-issue",
      "send-transactional-email"
     ],
-    "arquivos_lidos": 157
+    "arquivos_lidos": 159
    },
    "arquivo": "src/routes/tools-routes.tsx"
   },
@@ -6686,13 +7484,14 @@
      "external-db-bridge",
      "external-db-inspect",
      "generate-ad-image",
+     "generate-product-seo",
      "log-login-attempt",
      "magic-up-score",
      "materials-api",
      "mcp-keys-issue",
      "send-transactional-email"
     ],
-    "arquivos_lidos": 263
+    "arquivos_lidos": 270
    },
    "arquivo": "src/routes/tools-routes.tsx"
   },
@@ -6802,6 +7601,7 @@
      "external-db-bridge",
      "external-db-inspect",
      "generate-ad-image",
+     "generate-product-seo",
      "get-visitor-info",
      "log-login-attempt",
      "magic-up-score",
@@ -6811,7 +7611,7 @@
      "validate-access",
      "voice-agent"
     ],
-    "arquivos_lidos": 256
+    "arquivos_lidos": 263
    },
    "arquivo": "src/routes/tools-routes.tsx"
   },
@@ -6832,9 +7632,11 @@
     "buckets": [],
     "rpcs": [],
     "edges": [
+     "audit-suite",
      "crm-db-bridge",
      "log-login-attempt",
-     "mcp-keys-issue"
+     "mcp-keys-issue",
+     "simulation-orchestrator"
     ],
     "arquivos_lidos": 11
    },
@@ -6967,6 +7769,7 @@
      "external-db-bridge",
      "external-db-inspect",
      "generate-ad-image",
+     "generate-product-seo",
      "log-login-attempt",
      "magic-up-score",
      "materials-api",
@@ -6974,7 +7777,7 @@
      "send-transactional-email",
      "visual-search"
     ],
-    "arquivos_lidos": 259
+    "arquivos_lidos": 265
    },
    "arquivo": "src/routes/tools-routes.tsx"
   },
@@ -7007,6 +7810,7 @@
     "tabelas": [
      "X",
      "device_login_notifications",
+     "frontend_telemetry",
      "login_attempts",
      "magazine_items",
      "magazines",
@@ -7038,7 +7842,7 @@
      "magazine-import-local",
      "magazine-public-view"
     ],
-    "arquivos_lidos": 62
+    "arquivos_lidos": 63
    },
    "arquivo": "src/routes/tools-routes.tsx"
   },
@@ -7259,7 +8063,7 @@
     "edges": [
      "crm-db-bridge"
     ],
-    "arquivos_lidos": 40
+    "arquivos_lidos": 41
    },
    "arquivo": "src/routes/tools-routes.tsx"
   }

@@ -2,7 +2,7 @@
 // proprias, de wrapper e herdadas do AppRoutes.tsx; marca harness de dev; acha dados por acesso a tabela.
 import { describe, expect, it } from 'vitest';
 
-import { dadosDe, extrairRotas, guardasDosGrupos } from '../../scripts/inventario/gerar-rotas.mjs';
+import { dadosDe, edgesChamadasNoCodigo, extrairRotas, guardasDosGrupos } from '../../scripts/inventario/gerar-rotas.mjs';
 
 const APP = `
 export function AppRoutes() {
@@ -80,5 +80,24 @@ describe('dadosDe', () => {
     expect(d.buckets).toEqual(['avatars']);
     expect(d.rpcs).toEqual(['fn_total']);
     expect(d.edges).toEqual(['cnpj-lookup', 'rls-matrix-export', 'send-email']);
+  });
+});
+
+describe('edgesChamadasNoCodigo', () => {
+  it('generico em varias linhas, constante, condicional, FUNCTIONS_URL; ignora lista de nomes', () => {
+    const nomes = edgesChamadasNoCodigo(`
+      const FN = 'intelligence-substitute-applied';
+      await invokeEdge<{
+        ok: boolean;
+        itens: Array<{ id: string }>;
+      }>('commemorative-dates', { body: {} });
+      supabase.functions.invoke(FN);
+      supabase.functions.invoke(mode === 'audit' ? 'audit-suite' : 'simulation-orchestrator', {});
+      const READ = \`\${SUPABASE_FUNCTIONS_URL}/magazine-reader-state-read\`;
+      const LISTA = ['ai-recommendations', 'outra-edge'];
+    `);
+    expect([...nomes].sort()).toEqual([
+      'audit-suite', 'commemorative-dates', 'intelligence-substitute-applied', 'magazine-reader-state-read', 'simulation-orchestrator',
+    ]);
   });
 });

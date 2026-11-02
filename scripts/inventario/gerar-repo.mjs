@@ -7,6 +7,7 @@
 import { readdirSync, readFileSync, existsSync, writeFileSync, mkdirSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { join } from 'node:path';
+import { edgesChamadasNoCodigo } from './gerar-rotas.mjs';
 
 const RAIZ = new URL('../../', import.meta.url).pathname;
 const FDIR = join(RAIZ, 'supabase/functions');
@@ -45,32 +46,11 @@ function listarCodigo(dir, acc = []) {
 }
 function chamadasEdge(pastas) {
   const mapa = new Map();
-  const add = (nome, arq) => { if (!mapa.has(nome)) mapa.set(nome, new Set()); mapa.get(nome).add(arq.slice(RAIZ.length)); };
   for (const pasta of pastas) {
     for (const arq of listarCodigo(join(RAIZ, pasta))) {
-      const code = readFileSync(arq, 'utf8');
-      const consts = Object.fromEntries([...code.matchAll(/\bconst\s+([A-Za-z_$][\w$]*)\s*=\s*['"`]([a-z0-9][a-z0-9-]*)['"`]/g)].map((m) => [m[1], m[2]]));
-      for (const m of code.matchAll(/functions\/v1\/([a-z0-9][a-z0-9-]*)/g)) add(m[1], arq);
-      // URL montada com a base das functions: `${SUPABASE_FUNCTIONS_URL}/nome`
-      for (const m of code.matchAll(/FUNCTIONS(?:_BASE)?_URL\s*\}?\s*\/\s*([a-z0-9][a-z0-9-]*)/gi)) add(m[1], arq);
-      for (const m of code.matchAll(/(?:functions\s*\.\s*invoke|\binvokeEdge\w*|\bcallEdge\w*)\s*(?=[<(])/g)) {
-        let i = m.index + m[0].length;
-        if (code[i] === '<') { // pula o genérico contando < >, ignorando =>
-          let prof = 0;
-          for (; i < code.length && i < m.index + 4000; i++) {
-            if (code[i] === '<') prof++;
-            else if (code[i] === '>' && code[i - 1] !== '=') { prof--; if (prof === 0) { i++; break; } }
-          }
-        }
-        const arg = code.slice(i, i + 300).match(/^\s*\(\s*(?:['"`]([a-z0-9][a-z0-9-]*)['"`]|([A-Za-z_$][\w$]*))/);
-        if (!arg) continue;
-        const nome = arg[1] ?? consts[arg[2]];
-        if (nome) add(nome, arq);
-        // primeiro argumento condicional (cond ? 'a' : 'b'): todos os literais até a primeira vírgula/parêntese
-        if (!arg[1]) {
-          const ate = code.slice(i, i + 300).match(/^\s*\(([^,)]*)/)?.[1] ?? '';
-          for (const l of ate.matchAll(/['"`]([a-z0-9][a-z0-9-]*)['"`]/g)) add(l[1], arq);
-        }
+      for (const nome of edgesChamadasNoCodigo(readFileSync(arq, 'utf8'))) {
+        if (!mapa.has(nome)) mapa.set(nome, new Set());
+        mapa.get(nome).add(arq.slice(RAIZ.length));
       }
     }
   }

@@ -36,25 +36,59 @@ const rel = (p) => (p ? p.slice(RAIZ.length) : null);
 // componente -> arquivo: lazy-pages.ts (lazyWithRetry(() => import('...'))) e imports diretos nos arquivos de rota
 const telaArquivo = {};
 const lazy = lerSeExiste(join(RDIR, 'lazy-pages.ts')) ?? '';
-for (const m of lazy.matchAll(/export const (\w+)\s*=\s*lazyWithRetry\(\s*\(\)\s*=>\s*import\(\s*['"]([^'"]+)['"]/g)) {
-  telaArquivo[m[1]] = resolver(m[2], join(RDIR, 'lazy-pages.ts'));
+// const X = lazy*(() => import('...'))  — em lazy-pages.ts e nos proprios arquivos de rota (harness)
+// aceita prefixo condicional curto: const X = import.meta.env.DEV ? lazyWithRetry(() => import('...')) : null
+const RE_LAZY = /(?:export\s+)?const\s+(\w+)\s*=[^;]{0,120}?\w*[lL]azy\w*\(\s*\(\)\s*=>\s*import\(\s*['"`]([^'"`]+)['"`]/g;
+function lazysDe(code, deArquivo) {
+  return Object.fromEntries([...code.matchAll(RE_LAZY)].map((m) => [m[1], resolver(m[2], deArquivo)]).filter(([, f]) => f));
 }
+Object.assign(telaArquivo, lazysDe(lazy, join(RDIR, 'lazy-pages.ts')));
 function importsDe(code, deArquivo) {
   const out = {};
-  for (const m of code.matchAll(/import\s+(?:type\s+)?([\w$]+)?\s*,?\s*(?:\{([^}]*)\})?\s*from\s*['"]([^'"]+)['"]/g)) {
+  for (const m of code.matchAll(/import\s+(?:type\s+)?([\w$]+)?\s*,?\s*(?:\{([^}]*)\})?\s*from\s*['"`]([^'"`]+)['"`]/g)) {
     const alvo = resolver(m[3], deArquivo);
     if (m[1]) out[m[1]] = alvo;
     for (const nome of (m[2] ?? '').split(',').map((x) => x.trim().split(/\s+as\s+/).pop()).filter(Boolean)) out[nome] = alvo;
   }
   return out;
 }
+/** Nomes de edge functions chamadas no codigo: functions.invoke / invokeEdge* / callEdge* (com generico em
+ * varias linhas, nome em constante ou condicional) e URLs /functions/v1/<nome> ou `${...FUNCTIONS_URL}/<nome>`. */
+export function edgesChamadasNoCodigo(code) {
+  const nomes = new Set();
+  const consts = Object.fromEntries([...code.matchAll(/\bconst\s+([A-Za-z_$][\w$]*)\s*=\s*['"`]([a-z0-9][a-z0-9-]*)['"`]/g)].map((m) => [m[1], m[2]]));
+  for (const m of code.matchAll(/functions\/v1\/([a-z0-9][a-z0-9-]*)/g)) nomes.add(m[1]);
+  for (const m of code.matchAll(/FUNCTIONS(?:_BASE)?_URL\s*\}?\s*\/\s*([a-z0-9][a-z0-9-]*)/gi)) nomes.add(m[1]);
+  for (const m of code.matchAll(/(?:functions\s*\.\s*invoke|\binvokeEdge\w*|\bcallEdge\w*)\s*(?=[<(])/g)) {
+    let i = m.index + m[0].length;
+    if (code[i] === '<') { // pula o generico contando < >, ignorando =>
+      let prof = 0;
+      for (; i < code.length && i < m.index + 4000; i++) {
+        if (code[i] === '<') prof++;
+        else if (code[i] === '>' && code[i - 1] !== '=') { prof--; if (prof === 0) { i++; break; } }
+      }
+    }
+    const trecho = code.slice(i, i + 300);
+    const arg = trecho.match(/^\s*\(\s*(?:['"`]([a-z0-9][a-z0-9-]*)['"`]|([A-Za-z_$][\w$]*))/);
+    if (!arg) continue;
+    if (arg[1]) { nomes.add(arg[1]); continue; }
+    if (consts[arg[2]]) nomes.add(consts[arg[2]]);
+    // primeiro argumento condicional (cond ? 'a' : 'b'): literais ate a primeira virgula/parentese
+    // so os ramos (depois do ?), nao a condicao: mode === 'audit' ? 'audit-suite' : 'simulation-orchestrator'
+    const primeiro = trecho.match(/^\s*\(([^,)]*)/)?.[1] ?? '';
+    const ramos = primeiro.includes('?') ? primeiro.slice(primeiro.indexOf('?') + 1) : '';
+    for (const l of ramos.matchAll(/['"`]([a-z0-9][a-z0-9-]*)['"`]/g)) nomes.add(l[1]);
+  }
+  return nomes;
+}
+
 export function dadosDe(code) {
   const pegar = (re) => [...new Set([...code.matchAll(re)].map((m) => m[1] ?? m[2]).filter(Boolean))].sort();
   return {
     tabelas: pegar(ACESSO_TABELA),
     buckets: pegar(/storage\s*\.from\(\s*['"`]([\w.-]+)['"`]/g),
     rpcs: pegar(/\.rpc\(\s*['"`]([A-Za-z_][\w.]*)['"`]/g),
-    edges: pegar(/(?:functions\.invoke|invokeEdge\w*)(?:<[^>(]*>)?\(\s*['"`]([\w-]+)['"`]|functions\/v1\/([\w-]+)/g),
+    edges: [...edgesChamadasNoCodigo(code)].sort(),
   };
 }
 const juntar = (lista) => {
@@ -69,8 +103,9 @@ function infoArq(arq) {
   if (!cacheArq.has(arq)) {
     const code = readFileSync(arq, 'utf8');
     const locais = [...new Set(Object.values(importsDe(code, arq)).filter((f) => f && !IGNORAR.test(rel(f))))];
-    for (const m of code.matchAll(/export\s+(?:\*|\{[^}]*\})\s+from\s+['"]([^'"]+)['"]/g)) {
-      const f = resolver(m[1], arq);
+    // re-exports e imports dinamicos (abas/telas carregadas sob demanda) tambem sao arestas
+    for (const m of code.matchAll(/export\s+(?:\*|\{[^}]*\})\s+from\s+['"`]([^'"`]+)['"`]|\bimport\(\s*['"`]([^'"`]+)['"`]\s*\)/g)) {
+      const f = resolver(m[1] ?? m[2], arq);
       if (f && !IGNORAR.test(rel(f))) locais.push(f);
     }
     cacheArq.set(arq, { dados: dadosDe(code), locais: [...new Set(locais)] });
@@ -142,7 +177,7 @@ function main() {
   for (const arq of readdirSync(RDIR).filter((n) => n.endsWith('.tsx') && !n.includes('.test.')).sort()) {
     const caminho = join(RDIR, arq);
     const code = readFileSync(caminho, 'utf8');
-    Object.assign(telaArquivo, Object.fromEntries(Object.entries(importsDe(code, caminho)).filter(([k, v]) => v && !(k in telaArquivo))));
+    Object.assign(telaArquivo, Object.fromEntries(Object.entries({ ...importsDe(code, caminho), ...lazysDe(code, caminho) }).filter(([k, v]) => v && !(k in telaArquivo))));
     for (const r of extrairRotas(code, { arquivo: arq, guardasDoGrupo })) {
       const el = r.componente;
       // componente definido no proprio arquivo de rotas (function X / const X =) -> a tela e esse arquivo
