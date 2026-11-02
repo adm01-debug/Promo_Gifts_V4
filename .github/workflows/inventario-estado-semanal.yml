@@ -1,8 +1,8 @@
 name: Inventário do estado real (semanal)
 
-# Refaz inventario/estado/ (banco, edge functions, rotas, uso de tabelas) a partir do banco oficial
+# Refaz inventario/estado/ (banco.json, rotas.json, edges.json) a partir do banco oficial
 # (somente leitura, Management API) e do código, e abre PR se algo mudou.
-# Scripts: scripts/inventario/gerar-banco.mjs e scripts/inventario/gerar-repo.mjs.
+# Scripts: scripts/inventario/gerar-banco.mjs (+ banco.sql), gerar-rotas.mjs e gerar-repo.mjs.
 # Nunca faz push direto em main — entrega via PR em branch inventario/estado-YYYY-WNN.
 
 on:
@@ -45,7 +45,10 @@ jobs:
           SUPABASE_PROJECT_REF: doufsxqlfjyuvxuezpln
         run: node scripts/inventario/gerar-banco.mjs
 
-      - name: Inventário do repositório (edges, rotas, uso de tabelas)
+      - name: Inventário das rotas do front (rota → tela → hooks → dados)
+        run: node scripts/inventario/gerar-rotas.mjs
+
+      - name: Inventário das edge functions (usa as chamadas de cron do banco.json)
         run: node scripts/inventario/gerar-repo.mjs
 
       - name: Credencial de push sem token em disco (E32)
@@ -74,7 +77,7 @@ jobs:
           git checkout -b "$BRANCH"
           git commit -m "chore: inventário do estado real ${WEEK}
 
-          Gerado por inventario-estado-semanal.yml (gerar-banco.mjs + gerar-repo.mjs)."
+          Gerado por inventario-estado-semanal.yml (gerar-banco.mjs + gerar-rotas.mjs + gerar-repo.mjs)."
           # Branch exclusiva deste workflow (uma por semana): reexecução na mesma semana sobrescreve.
           git push -u origin "$BRANCH" --force
           EXISTING=$(gh pr list --head "$BRANCH" --state open --json number -q '.[0].number // empty')
