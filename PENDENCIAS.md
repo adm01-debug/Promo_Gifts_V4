@@ -2995,6 +2995,38 @@ O workflow E2E Stock Matrix é independente do deploy-gates.yml — não há cas
 | CI — Replenishment QG | [41368799687](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41368799687) | Pré-existente |
 | E2E Magazine Header | [41366967704](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41366967704) | Pré-existente |
 
+### P7 — Gate E40 Ledger parity (bloqueante — impede merge PR #3028)
+
+**Run:** Gate E40 job no Deploy Gates run [41432209048](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41432209048)  
+**Causa:** `local_only=1140; remote_only=673` — 673 migrations aplicadas no banco canônico `doufsxqlfjyuvxuezpln` não estão em `supabase/migrations/` do repo.  
+**Ação requerida:** DBA → `supabase migration repair --status applied <version>` via `.github/workflows/db-apply-migration.yml` com `mode=repair-only` (REGRA #8 corolário E99). Sem esta ação, o Gate E40 "Ledger parity" e o Gate Final sempre falham — o PR #3028 não pode ser mergeado.  
+**Não corrigível por código:** Requer reconciliação manual do ledger pelo DBA.
+
+### P_INFRA — Uptime Monitor (probe externa)
+
+**Run:** [41425999269](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41425999269)  
+**Causa:** Probe de infraestrutura externa falha — não relacionada ao código do repositório.  
+**Ação requerida:** Equipe de Infra verificar o endpoint monitorado.  
+**Não corrigível por código:** Dependência de serviço externo.
+
+### Atualização de IDs de run para runs verificados (2026-11-02)
+
+Os seguintes workflows tiveram runs mais recentes verificados nesta sessão:
+
+| Workflow | Run verificado | Conclusão |
+|---|---|---|
+| Gitleaks — Full History Audit | [41402465560](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41402465560) | startup_failure — P40 |
+| Security Scan | [41401520430](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41401520430) | startup_failure — P40 |
+| schema-snapshot-export | [41402247488](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41402247488) | startup_failure — P7+P35 |
+
+### Estado final do PR #3028 — Deploy Gates run `41432209048` (HEAD `6fde6fb62`)
+
+Todos os gates passam (Gates 0–6, E23, E40 Install) exceto:
+- **Gate E40 "Ledger parity"** → `failure` (P7 — requer DBA)
+- **Gate Final** → `failure` (bloqueado por P7)
+
+O step "Install Supabase CLI" está **CONFIRMADO** como ✅ success (fix `7d20c4002` validado).
+
 ### Regressão introduzida e revertida nesta sessão
 
 **SHA256 verification (commit `8206ff39f`, revertido em `7d20c4002`):**  
