@@ -786,7 +786,7 @@ jobs:
        github.event.pull_request.head.repo.full_name == github.repository)
     permissions:
       contents: read
-      packages: read
+      packages: read  # necessário para docker pull ghcr.io autenticado no drift-check (reusable workflow não pode elevar caller)
     uses: ./.github/workflows/db-schema-drift-check.yml
     secrets: inherit
 
