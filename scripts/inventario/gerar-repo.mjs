@@ -69,7 +69,15 @@ function segredosDaEdge(arqInicial) {
     if (vistos.has(arq) || !existsSync(arq)) continue;
     vistos.add(arq);
     const code = semComentarios(readFileSync(arq, 'utf8')); // exemplo em comentario nao e segredo lido
-    for (const m of code.matchAll(/Deno\.env\.get\(\s*['"]([A-Z0-9_]+)['"]/g)) nomes.add(m[1]);
+    for (const m of code.matchAll(/Deno\.env\.get\(\s*(['"][A-Z0-9_]+['"]|[A-Za-z_$][\w$]*)/g)) {
+      const lit = m[1].match(/^['"]([A-Z0-9_]+)['"]$/);
+      if (lit) nomes.add(lit[1]);
+      else {
+        // constante local (ex.: AI_CREDENTIAL_NAME em _shared/ai-credentials.ts) em vez de string literal
+        const def = code.match(new RegExp(`\\bconst\\s+${m[1]}\\b[^=]*=\\s*['"]([A-Z0-9_]+)['"]`));
+        if (def) nomes.add(def[1]);
+      }
+    }
     for (const n of segredosViaResolver(code)) nomes.add(n);
     // imports estaticos e dinamicos locais (import('./x.ts') carrega modulos que tambem leem segredos)
     for (const m of code.matchAll(/(?:from\s+|\bimport\(\s*)['"`](\.{1,2}\/[^'"`]+)['"`]/g)) fila.push(join(arq, '..', m[1]));

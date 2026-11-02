@@ -91,12 +91,24 @@ export function edgesChamadasNoCodigo(bruto) {
 }
 
 // Nomes passados ao resolvedor de credenciais (_shared/credentials.ts), que le o env com esse nome (comentarios ignorados):
-// resolveCredential('X') / getCredential('X'), resolveCredentials(['A', 'B']) e resolveCredentials([...LISTA]) com LISTA no mesmo arquivo.
+// resolveCredential('X') / getCredential('X') — literal ou constante local (ex.: AI_CREDENTIAL_NAME em
+// _shared/ai-credentials.ts) —, resolveCredentials(['A', 'B']) e resolveCredentials([...LISTA]) com LISTA no mesmo arquivo.
 export function segredosViaResolver(bruto) {
   const code = semComentarios(bruto);
   const nomes = new Set();
   const literais = (txt) => [...txt.matchAll(/['"`]([A-Z][A-Z0-9_]+)['"`]/g)].map((m) => m[1]);
-  for (const m of code.matchAll(/\b(?:resolveCredential|getCredential)\s*\(\s*['"`]([A-Z][A-Z0-9_]+)['"`]/g)) nomes.add(m[1]);
+  const porConstLocal = (ident) => {
+    const def = code.match(new RegExp(`\\bconst\\s+${ident}\\b[^=]*=\\s*['"\`]([A-Z][A-Z0-9_]+)['"\`]`));
+    return def ? def[1] : null;
+  };
+  for (const m of code.matchAll(/\b(?:resolveCredential|getCredential)\s*\(\s*(['"`][A-Z][A-Z0-9_]+['"`]|[A-Za-z_$][\w$]*)/g)) {
+    const lit = m[1].match(/^['"`]([A-Z][A-Z0-9_]+)['"`]$/);
+    if (lit) nomes.add(lit[1]);
+    else {
+      const n = porConstLocal(m[1]);
+      if (n) nomes.add(n);
+    }
+  }
   for (const m of code.matchAll(/\bresolveCredentials\s*\(\s*(\[[^\]]*\]|[A-Za-z_$][\w$]*)/g)) {
     for (const n of literais(m[1])) nomes.add(n);
     for (const ref of m[1].matchAll(/(?:\.\.\.)?\b([A-Za-z_$][\w$]*)\b/g)) {
