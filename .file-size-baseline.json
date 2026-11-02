@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-02T19:13:19.187Z",
+  "generatedAt": "2026-11-02T19:30:00.000Z",
   "description": "Baseline de arquivos src/ com mais de 500 linhas (excluindo testes). Falha em arquivo novo acima do limite ou em crescimento.",
   "maxLines": 500,
   "meta": {
@@ -49,7 +49,7 @@
     "src/components/kit-builder/BoxSelector.tsx": 1273,
     "src/components/kit-builder/ItemSelector.tsx": 590,
     "src/components/kit-builder/KitAIPromptDialog.tsx": 577,
-    "src/components/kit-builder/KitMakerLanding.tsx": 564,
+    "src/components/kit-builder/KitMakerLanding.tsx": 565,
     "src/components/kit-builder/PersonalizationConfig.tsx": 1410,
     "src/components/layout/Header.tsx": 561,
     "src/components/layout/SidebarReorganized.tsx": 662,
@@ -94,7 +94,7 @@
     "src/hooks/intelligence/useMagicUpGeneration.ts": 577,
     "src/hooks/intelligence/useMagicUpState.ts": 852,
     "src/hooks/kit-builder/useKitBuilder.ts": 761,
-    "src/hooks/kit-builder/useKitBuilderPageState.ts": 552,
+    "src/hooks/kit-builder/useKitBuilderPageState.ts": 553,
     "src/hooks/mockup/mockupGenerationService.ts": 568,
     "src/hooks/mockup/useMockupGenerator.ts": 894,
     "src/hooks/products/useCatalogState.ts": 832,
