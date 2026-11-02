@@ -504,7 +504,6 @@ Tabela de prova (Seção 8) + baseline local (Seções 1, 10) + comparação bas
 | Gate Final | ✅ success | ✅ success | Sem regressão |
 | Workflows NÃO-REQUIRED em falha | 8 (PO-BLOCKED) | 8 (PO-BLOCKED) | Sem regressão — mesmos bloqueios estruturais |
 
-<<<<<<< HEAD
 ---
 
 ## 14. Sessão P36 — Inventário CI em `main` `22e8ddad0c` (atualização 2026-10-31T09:42Z)
@@ -681,7 +680,6 @@ Snapshot substitutivo do inventário de 04:15 UTC, após o merge de #2853. A pon
 As falhas anteriores de E2E (Playwright), CI Security & Drift e Swatch QuickView foram substituídas por execuções novas ainda ativas no SHA `22e8ddad`: [E2E #41166936976](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41166936976), [CI Security #41166937034](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41166937034), [Swatch #41166937051](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41166937051). O required check [Deploy Gates #41166937031](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41166937031) continua `queued`. Entre os workflows concluídos com sucesso estão Branch Protection Sentinel, Workflow Lint, Required Checks Guard, Select Columns vs Types e Supabase Linter Gate.
 
 PRs #2854 e #2855 têm checks pendentes; #2852 também permanece aberto com seis checks pendentes. Nenhum foi mesclado. A documentação local foi atualizada com as causas e encaminhamentos em `PENDENCIAS.md`; `git diff --check` passou. `npm run build:verify` concluiu typecheck, lint baseline sem regressões e build/gates de produção. A suíte completa (`npm test -- --reporter=dot`) executou 1.381 arquivos: 1.250 aprovados, 130 ignorados, 1 falha; 25.900 testes aprovados, 1.135 ignorados e 24 TODO. A única falha foi a conhecida `QuoteBuilderSummaryAlignment.fuzz.test.ts:31` (token JSX procurado no arquivo anterior à extração), sem nova falha atribuída a esta alteração documental. Esta etapa não alterou código de aplicação, testes, secrets, schema ou dados operacionais.
->>>>>>> origin/docs/ci-p200-wave0-20261031
 ## 20. INVENTÁRIO COMPLETO — Workflows em Falha (2026-11-02, sessão fix/ci-workflows)
 
 > Inventário exaustivo dos 18 workflows identificados com failure em https://github.com/adm01-debug/Promo_Gifts_V4/actions?query=is%3Afailure
