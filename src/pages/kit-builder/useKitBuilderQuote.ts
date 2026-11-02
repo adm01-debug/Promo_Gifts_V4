@@ -103,7 +103,7 @@ function toPersonalizationPayload(
   const width = personalization.width ?? null;
   const height = personalization.height ?? null;
   const unitCost = personalization.estimatedPrice;
-  if (typeof unitCost !== 'number' || !Number.isFinite(unitCost) || unitCost < 0) {
+  if (typeof unitCost !== 'number' || !Number.isFinite(unitCost) || unitCost <= 0) {
     throw new Error('Preço de personalização indisponível para criação do orçamento');
   }
   const productionNotes = [

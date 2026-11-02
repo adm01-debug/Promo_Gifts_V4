@@ -5,6 +5,7 @@
  * Handles: Client, Product, Technique selection + Areas.
  */
 
+import { useState } from 'react';
 import { Loader2, Paintbrush, RefreshCw, Info, ChevronDown, Wand2 } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -25,6 +26,7 @@ import { MockupProductSelector, type MockupProductSelection } from './MockupProd
 import { MultiAreaManager, type PersonalizationArea } from './MultiAreaManager';
 import { ArtFileUpload, type ArtFileAttachment } from './ArtFileUpload';
 import { LogoColorAnalyzer } from './LogoColorAnalyzer';
+import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
 import type { DetectedColor } from '@/hooks/simulation';
 
 interface Technique {
@@ -121,8 +123,10 @@ export function MockupConfigPanel({
   userId,
 }: MockupConfigPanelProps) {
   const hasLogo = personalizationAreas.some((a) => a.logoPreview);
+  const [confirmClearOpen, setConfirmClearOpen] = useState(false);
 
   return (
+    <>
     <Card className="border-border/30">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
@@ -374,7 +378,7 @@ export function MockupConfigPanel({
             <div className="flex gap-2 pt-4">
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Button variant="outline" onClick={onReset} aria-label="Limpar formulário">
+                  <Button variant="outline" onClick={() => setConfirmClearOpen(true)} aria-label="Limpar formulário">
                     <RefreshCw className="h-4 w-4" aria-hidden="true" />
                   </Button>
                 </TooltipTrigger>
@@ -385,6 +389,19 @@ export function MockupConfigPanel({
         )}
       </CardContent>
     </Card>
+    {/* FT-172: Confirmação antes de limpar formulário */}
+    <ConfirmDialog
+      open={confirmClearOpen}
+      onOpenChange={setConfirmClearOpen}
+      variant="warning"
+      title="Limpar formulário?"
+      description="Todas as seleções (produto, técnica, cliente, áreas e arte) serão removidas."
+      confirmLabel="Limpar tudo"
+      cancelLabel="Cancelar"
+      onConfirm={onReset}
+      testId="mockup-config-panel-reset-confirm"
+    />
+    </>
   );
 }
 
