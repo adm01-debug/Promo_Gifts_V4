@@ -123,6 +123,11 @@ jobs:
         if: github.event_name == 'push'
         with:
           persist-credentials: false  # E32
+          # QODO: dorny/paths-filter em push compara contra github.event.before
+          # via git local — fetch-depth padrão (1) não tem o commit anterior e
+          # o fetch automático sem credencial podia falhar, parando o auto-update
+          # das 6 suítes em silêncio. fetch-depth:0 garante o histórico presente.
+          fetch-depth: 0
 
       - name: Detectar specs afetados (push)
         id: filter
