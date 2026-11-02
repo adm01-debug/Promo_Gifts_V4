@@ -12,8 +12,8 @@
  * continuam funcionando sobre o SETOF retornado.
  */
 import { useQuery } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
 import { isFeatureEnabled } from '@/lib/feature-flags';
+import { untypedRpc } from '@/lib/supabase-untyped';
 
 export type RuptureLevel = 'ALERTA' | 'ATENÇÃO' | 'CRÍTICO' | 'OK' | 'RUPTURA';
 export type ConfidenceLevel = 'ALTA' | 'BAIXA' | 'INSUFICIENTE' | 'MÉDIA';
@@ -69,16 +69,12 @@ export function useRuptureAlerts(): UseRuptureAlertsResult {
     gcTime: 15 * 60_000,
     retry: 1,
     queryFn: async (): Promise<RuptureAlertRow[]> => {
-      const { data, error } = await (supabase
-        .rpc('fn_get_rupture_alerts')
+      const { data, error } = (await untypedRpc('fn_get_rupture_alerts')
         .eq('is_preferred', true)
         .neq('nivel_alerta', 'OK')
         .order('prioridade', { ascending: true })
         .order('score_composto', { ascending: false })
-        .limit(MAX_ROWS) as unknown as Promise<{
-        data: RuptureAlertRow[] | null;
-        error: Error | null;
-      }>);
+        .limit(MAX_ROWS)) as unknown as { data: RuptureAlertRow[] | null; error: Error | null };
       if (error) throw error;
       return data ?? [];
     },
