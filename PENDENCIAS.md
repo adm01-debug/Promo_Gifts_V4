@@ -2801,3 +2801,19 @@ FAIL  tests/integration/kit-coverage.integration.test.ts
 **Ação necessária:** Merge do PR [#3028](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3028) em `main`.
 
 ---
+
+## P57 — CI - Replenishment Module Quality Gate: "audit" job — E2E visual parity falha (2026-11-02)
+
+**Workflow:** `CI - Replenishment Module Quality Gate`
+**Job:** `audit`
+**Step com falha:** `E2E — Paridade visual /novidades vs /reposicao`
+**Check run:** [125158528162](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41409334242/job/125158528162) (sha `9bf5d28`)
+**Conclusão:** `failure`
+
+**Causa raiz:** Falha na comparação visual E2E entre as páginas `/novidades` e `/reposicao`. O job é nomeado "audit" mas executa testes E2E de paridade visual com Playwright (não é Gate 0.5 npm audit). Pré-existente: os commits do PR #3028 não tocam nenhum arquivo de UI, componentes React, lógica de rotas nem configuração de páginas — a falha não é causada pelo PR.
+
+**Evidência de pre-existência:** Mesma natureza das falhas P49/P50 (`webkit • swatch→QV`, `E2E · view-no-presentation-mode`). O PR #3028 altera apenas: `supabase/MIGRATIONS_SYNC_LOG.md`, `.github/workflows/db-apply-migration.yml`, `PENDENCIAS.md`, `RELATORIO_CI.md`.
+
+**Ação necessária:** Time de produto / Lovable investigar regressão visual entre `/novidades` e `/reposicao`.
+
+---
