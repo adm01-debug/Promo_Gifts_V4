@@ -155,14 +155,15 @@ function dadosAlcancaveis(inicio) {
   return { ...juntar(coletados), arquivos_lidos: vistos.size };
 }
 
-const RE_ROUTE = /<Route\b([^>]*?(?:\{[^}]*\}[^>]*?)*)(\/?)>|<\/Route>/gs;
+// atributos: qualquer coisa menos > ou {, ou um bloco {..}; alternativas disjuntas (sem backtracking exponencial)
+const RE_ROUTE = /<Route\b((?:[^>{]|\{[^}]*\})*?)(\/?)>|<\/Route>/gs;
 const ehGuarda = (n) => /(Route|Guard)$/.test(n);
 
 /** Guardas herdadas por grupo: AppRoutes.tsx monta {xRoutes} dentro de <Route element={<Guarda/>}>. */
 export function guardasDosGrupos(appCode) {
   const guardas = {};
   const pilha = [];
-  for (const m of appCode.matchAll(/<Route\b([^>]*?(?:\{[^}]*\}[^>]*?)*)(\/?)>|<\/Route>|\{\s*(\w+Routes?)\s*\}/gs)) {
+  for (const m of appCode.matchAll(/<Route\b((?:[^>{]|\{[^}]*\})*?)(\/?)>|<\/Route>|\{\s*(\w+Routes?)\s*\}/gs)) {
     if (m[0] === '</Route>') { pilha.pop(); continue; }
     if (m[3]) { guardas[m[3]] = pilha.filter(Boolean); continue; }
     if (m[2] !== '/') {
