@@ -76,6 +76,9 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
+      - name: Fetch base commit para diff
+        if: github.event_name == 'pull_request'
+        run: git fetch --depth=1 origin ${{ github.event.pull_request.base.sha }}
       - name: Detectar mudanças (docs-only bypass E14)
         id: result
         run: |
@@ -84,8 +87,7 @@ jobs:
             exit 0
           fi
           BASE_SHA="${{ github.event.pull_request.base.sha }}"
-          HEAD_SHA="${{ github.event.pull_request.head.sha }}"
-          CHANGED=$(git diff --name-only "$BASE_SHA" "$HEAD_SHA" 2>/dev/null || git diff --name-only origin/main HEAD)
+          CHANGED=$(git diff --name-only "$BASE_SHA" HEAD)
           CODE_PATTERN='^(src/|scripts/|supabase/|tests/|e2e/|playwright/|\.github/workflows/|\.github/actions/|package\.json$|package-lock\.json$|tsconfig|vite\.config|playwright\.config|\.nvmrc$|eslint\.config)'
           if echo "$CHANGED" | grep -qE "$CODE_PATTERN"; then
             echo "docs_only=false" >> "$GITHUB_OUTPUT"

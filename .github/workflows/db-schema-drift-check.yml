@@ -141,8 +141,8 @@ jobs:
           VERSION="2.101.0"
           wget -q "https://github.com/supabase/cli/releases/download/v${VERSION}/supabase_linux_amd64.tar.gz" \
                -O /tmp/supabase.tar.gz
-          tar -xzf /tmp/supabase.tar.gz -C /usr/local/bin supabase
-          chmod +x /usr/local/bin/supabase
+          sudo tar -xzf /tmp/supabase.tar.gz -C /usr/local/bin supabase
+          sudo chmod +x /usr/local/bin/supabase
           supabase --version
 
       - name: Garante registry ghcr.io (E104 — revertido de ECR por data-limit)
