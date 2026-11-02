@@ -127,8 +127,12 @@ Deno.serve(async (req: Request) => {
     const ilikeEscaped = (email ?? "")
       .replace(/\\/g, "\\\\")
       .replace(/%/g, "\\%")
-      .replace(/_/g, "\\_ ");
+      .replace(/_/g, "\\_ ".trimEnd()); // trimEnd removes accidental trailing space
+    // Two distinct escape layers — not double-escaping:
+    // ilikeEscaped = PostgreSQL ILIKE layer (\→\\, %→\%, _→\_).
+    // emailFilter = PostgREST quoted-value layer (each \ → \\, " → % fuzzy).
     const emailFilter = ilikeEscaped
+      .replace(/\\/g, "\\\\") // codeql[js/double-escaping]
       .replace(/"/g, "%");
     const emailClause = emailFilter ? `,email.ilike."${emailFilter}"` : "";
     const emailLc = (email ?? "").toLowerCase();
