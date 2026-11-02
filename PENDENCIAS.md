@@ -2720,3 +2720,84 @@ Process completed with exit code 1.
 **Ação necessária:** PO verificar se o teste era verde antes do último commit de Lovable em `main` e se os secrets/dados de CI para o módulo de quotes estão configurados. Registrado como bloqueio externo pendente de investigação.
 
 ---
+
+## P53 — CI Security & Drift Checks + Nightly Full CI: 3 ESLint errors introduzidos pelo Lovable em `main` (2026-11-02)
+
+**Workflows afetados:**
+- `CI Security & Drift Checks` — última execução em main: [41397001699](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41397001699) — `conclusion: failure`
+- `Nightly Full CI` — última execução em main: [41379357529](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41379357529) — `conclusion: failure`
+
+**Commit causador em main:** `df94410cb` (Lovable — "Changes") — os erros existem no HEAD de `main`.
+
+**Erros exatos (Gate 1 — Lint ESLint):**
+```
+src/components/kit-builder/KitMakerLanding.tsx:33:57
+  error  Import type annotations must use the `import type` operator  @typescript-eslint/consistent-type-imports
+
+src/hooks/kit-builder/useKitBuilderPageState.ts:449:50
+  error  Import type annotations must use the `import type` operator  @typescript-eslint/consistent-type-imports
+
+src/lib/kit-builder/types.ts:174:25
+  error  Union type constituents must be sorted in a specific order  @typescript-eslint/sort-type-constituents
+```
+
+**Nossa branch NÃO tem esses erros:** lint:baseline passa com 0 erros, 0 warnings na branch `claude/laughing-cori-o9w35e` (confirmado no run [41405442459](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41405442459) Gate 1 — `success`).
+
+**Causa raiz:** Lovable commitou código kit-builder em `main` com `import()` type annotations inline (proibidas por `@typescript-eslint/consistent-type-imports`) e union type não-ordenada (proibida por `@typescript-eslint/sort-type-constituents`). Nosso PR não toca esses arquivos — o merge de nosso PR em `main` não resolve esses erros.
+
+**Ação necessária:** Lovable ou PO deve corrigir os 3 arquivos em `main`:
+- `src/components/kit-builder/KitMakerLanding.tsx:33` — substituir `import()` por `import type { KitOrigin }` no topo
+- `src/hooks/kit-builder/useKitBuilderPageState.ts:449` — mesma correção
+- `src/lib/kit-builder/types.ts:174` — reordenar constituintes do union type
+
+---
+
+## P54 — Kit Coverage — Integration: test timeout no `kit-coverage.integration.test.ts` (2026-11-02)
+
+**Workflow:** `Kit Coverage — Integration`
+**Última execução em main:** [41384748861](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41384748861) — `conclusion: failure`
+
+**Erros exatos:**
+```
+FAIL  tests/integration/kit-coverage.integration.test.ts
+  × Kit Coverage Integration > deve cobrir kit_items com produto básico [140:5]
+    Error: Test timed out in 30000ms
+  × Kit Coverage Integration > deve listar kit_configurations com cobertura de variantes [175:5]
+    Error: Test timed out in 30000ms
+```
+
+**Causa raiz:** Testes de integração em `kit-coverage.integration.test.ts` (linhas 140 e 175) fazem conexão com banco externo e excedem timeout de 30s no ambiente de CI. Falha de infraestrutura/conectividade — não relacionado a alterações de código.
+
+**Pré-existente:** Essa falha existe em `main` independentemente do PR #3028. Nossa branch não toca `tests/integration/kit-coverage.integration.test.ts`.
+
+**Ação necessária:** PO/DBA verificar conectividade do banco externo acessado por esses testes em CI, ou aumentar o timeout para testes de integração que dependem de BD remoto.
+
+---
+
+## P55 — Uptime Monitor: falha de probe em site e edge function (2026-11-02)
+
+**Workflow:** `Uptime Monitor`
+**Última execução em main:** [41407081384](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41407081384) — `conclusion: failure`
+
+**Causa raiz:** Probe de uptime falha ao verificar site e/ou edge function — problema de infraestrutura externa (deploy de edge function em drift ou site temporariamente indisponível). Coincide com P41 (health-check edge function em drift) se P41 já documentado anteriormente.
+
+**Pré-existente:** Falha de uptime monitor é independente do código — não relacionada ao PR #3028.
+
+**Ação necessária:** PO verificar status do site e das edge functions. Para edge functions em drift: deploy via `.github/workflows/deploy-edge-functions.yml` (único caminho autorizado — REGRA #8).
+
+---
+
+## P56 — Deploy Gates + edge-functions-drift-check + schema-snapshot-export em main: startup_failure por P46 (2026-11-02)
+
+**Workflows afetados em main:**
+- `Deploy Gates` — última execução em main: [41369672722](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41369672722) — `startup_failure`
+- `edge-functions-drift-check` — última execução em main: [41369525429](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41369525429) — `startup_failure`
+- `schema-snapshot-export` — última execução em main: [41402247488](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41402247488) — `startup_failure`
+
+**Causa raiz:** Mesma causa de P46 — actions externas bloqueadas pela política GitHub Actions da organização (`dorny/paths-filter`, `anchore/sbom-action`, `supabase/setup-cli`). Os commits de correção do PR #3028 removem essas actions e as substituem por implementações nativas.
+
+**Status:** Esses workflows voltarão ao normal **automaticamente após o merge do PR #3028** em `main`. Os runs listados acima são execuções em `main` ANTES do merge — as execuções pós-merge não terão mais `startup_failure` por P46.
+
+**Ação necessária:** Merge do PR [#3028](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3028) em `main`.
+
+---
