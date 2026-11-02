@@ -243,7 +243,10 @@ jobs:
         env:
           TARGET_BRANCH: ${{ matrix.branch || github.ref_name }}
         run: |
-          if [ "$TARGET_BRANCH" = "main" ]; then
+          # QODO/Codex: normaliza antes de comparar — "refs/heads/main" bypassava
+          # o guard que só comparava com o literal "main".
+          TARGET_BRANCH_NORM="${TARGET_BRANCH#refs/heads/}"
+          if [ "$TARGET_BRANCH_NORM" = "main" ]; then
             echo "::error::mode=push não é permitido em main — use mode=pr."
             exit 1
           fi
