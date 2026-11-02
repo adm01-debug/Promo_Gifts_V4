@@ -1,5 +1,5 @@
 {
- "gerado_em": "2026-11-02T14:36:49.346Z",
+ "gerado_em": "2026-11-02T14:42:13.800Z",
  "total": 110,
  "sem_chamador": [
   "asia-ingestion",
@@ -11,8 +11,6 @@
   "health-check",
   "load-test",
   "magazine-public-react",
-  "mcp-keys-issue",
-  "mcp-keys-rotate",
   "mcp-query",
   "migrate-helper",
   "product-visual-search",
@@ -1255,14 +1253,14 @@
     "SUPABASE_URL"
    ],
    "chamada_em": {
-    "src": 0,
+    "src": 2,
     "migrations": 0,
     "outras_edges": 0,
     "cron": [],
     "e2e": 0,
     "ci_config": 0
    },
-   "sem_chamador": true
+   "sem_chamador": false
   },
   "mcp-keys-revoke": {
    "linhas": 224,
@@ -1289,14 +1287,14 @@
     "SUPABASE_URL"
    ],
    "chamada_em": {
-    "src": 0,
+    "src": 2,
     "migrations": 0,
     "outras_edges": 0,
     "cron": [],
     "e2e": 0,
     "ci_config": 0
    },
-   "sem_chamador": true
+   "sem_chamador": false
   },
   "mcp-keys-update": {
    "linhas": 333,

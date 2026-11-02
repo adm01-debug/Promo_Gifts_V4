@@ -19,7 +19,7 @@ node scripts/inventario/gerar-rotas.mjs
 node scripts/inventario/gerar-repo.mjs
 ```
 
-Toda segunda o workflow `inventario-estado-semanal.yml` roda os três e abre PR se algo mudou.
+Ainda não há atualização automática: rode os três comandos acima depois de mudar banco, rotas ou edges. A rodada semanal (`inventario-estado-semanal.yml`) está proposta numa PR separada, aguardando aprovação do dono.
 Testes das funções puras: `npx vitest run tests/scripts/inventario-banco.test.mjs tests/scripts/inventario-rotas.test.mjs`.
 
 ## Como ler `banco.json`

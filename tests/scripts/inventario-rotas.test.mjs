@@ -2,7 +2,7 @@
 // proprias, de wrapper e herdadas do AppRoutes.tsx; marca harness de dev; acha dados por acesso a tabela.
 import { describe, expect, it } from 'vitest';
 
-import { dadosDe, edgesChamadasNoCodigo, extrairRotas, guardasDosGrupos } from '../../scripts/inventario/gerar-rotas.mjs';
+import { componentesDoLocal, dadosDe, edgesChamadasNoCodigo, extrairRotas, guardasDosGrupos } from '../../scripts/inventario/gerar-rotas.mjs';
 
 const APP = `
 export function AppRoutes() {
@@ -95,9 +95,14 @@ describe('edgesChamadasNoCodigo', () => {
       supabase.functions.invoke(mode === 'audit' ? 'audit-suite' : 'simulation-orchestrator', {});
       const READ = \`\${SUPABASE_FUNCTIONS_URL}/magazine-reader-state-read\`;
       const LISTA = ['ai-recommendations', 'outra-edge'];
+      await invokeFullScopeFunction({
+        functionName: 'mcp-keys-rotate',
+        body: { id },
+      });
     `);
     expect([...nomes].sort()).toEqual([
-      'audit-suite', 'commemorative-dates', 'intelligence-substitute-applied', 'magazine-reader-state-read', 'simulation-orchestrator',
+      'audit-suite', 'commemorative-dates', 'intelligence-substitute-applied', 'magazine-reader-state-read', 'mcp-keys-rotate',
+      'simulation-orchestrator',
     ]);
   });
 });
@@ -111,5 +116,23 @@ describe('comentarios nao contam como chamada', () => {
     `;
     expect([...edgesChamadasNoCodigo(code)]).toEqual(['edge-real']);
     expect(dadosDe(code).tabelas).toEqual([]);
+  });
+});
+
+describe('componentesDoLocal', () => {
+  it('wrapper local aponta para o que ele renderiza, nao para o arquivo de rotas', () => {
+    const code = `
+function KitBuilderRoute() {
+  const location = useLocation();
+  return <KitBuilderPage key={location.key} />;
+}
+
+function KitBuilderLegacyRedirect() {
+  return <Navigate to="/montar-kit" replace />;
+}
+`;
+    expect(componentesDoLocal(code, 'KitBuilderRoute')).toEqual(['KitBuilderPage']);
+    expect(componentesDoLocal(code, 'KitBuilderLegacyRedirect')).toEqual(['Navigate']);
+    expect(componentesDoLocal(code, 'NaoExiste')).toEqual([]);
   });
 });

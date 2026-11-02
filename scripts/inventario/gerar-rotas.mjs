@@ -65,6 +65,8 @@ export function edgesChamadasNoCodigo(bruto) {
   const consts = Object.fromEntries([...code.matchAll(/\bconst\s+([A-Za-z_$][\w$]*)\s*=\s*['"`]([a-z0-9][a-z0-9-]*)['"`]/g)].map((m) => [m[1], m[2]]));
   for (const m of code.matchAll(/functions\/v1\/([a-z0-9][a-z0-9-]*)/g)) nomes.add(m[1]);
   for (const m of code.matchAll(/FUNCTIONS(?:_BASE)?_URL\s*\}?\s*\/\s*([a-z0-9][a-z0-9-]*)/gi)) nomes.add(m[1]);
+  // helper com opcoes em objeto: invokeFullScopeFunction({ functionName: 'mcp-keys-rotate', ... })
+  for (const m of code.matchAll(/\bfunctionName\s*:\s*['"`]([a-z0-9][a-z0-9-]*)['"`]/g)) nomes.add(m[1]);
   for (const m of code.matchAll(/(?:functions\s*\.\s*invoke|\binvokeEdge\w*|\bcallEdge\w*)\s*(?=[<(])/g)) {
     let i = m.index + m[0].length;
     if (code[i] === '<') { // pula o generico contando < >, ignorando =>
@@ -179,18 +181,32 @@ export function extrairRotas(code, { arquivo = 'AppRoutes.tsx', guardasDoGrupo =
   return out;
 }
 
+/** Componentes JSX renderizados por um componente declarado no proprio arquivo (function X / const X =). */
+export function componentesDoLocal(code, nome) {
+  const ini = code.search(new RegExp(`(?:function|const)\\s+${nome}\\b`));
+  if (ini < 0) return [];
+  const resto = code.slice(ini);
+  const fim = resto.search(/\n\}/);
+  const corpo = fim < 0 ? resto : resto.slice(0, fim);
+  return [...new Set([...corpo.matchAll(/<\s*([A-Z][\w.]*)/g)].map((m) => m[1]))].filter((n) => n !== nome);
+}
+
 function main() {
   const guardasDoGrupo = guardasDosGrupos(lerSeExiste(join(RDIR, 'AppRoutes.tsx')) ?? '');
   const rotas = [];
+  const redirecionamentos = new Set();
   for (const arq of readdirSync(RDIR).filter((n) => n.endsWith('.tsx') && !n.includes('.test.')).sort()) {
     const caminho = join(RDIR, arq);
     const code = readFileSync(caminho, 'utf8');
     Object.assign(telaArquivo, Object.fromEntries(Object.entries({ ...importsDe(code, caminho), ...lazysDe(code, caminho) }).filter(([k, v]) => v && !(k in telaArquivo))));
     for (const r of extrairRotas(code, { arquivo: arq, guardasDoGrupo })) {
       const el = r.componente;
-      // componente definido no proprio arquivo de rotas (function X / const X =) -> a tela e esse arquivo
-      const local = el && new RegExp(`(?:function|const)\\s+${el}\\b`).test(code) ? caminho : null;
-      const tela = el ? telaArquivo[el] ?? local : null;
+      // componente definido no proprio arquivo de rotas (function X / const X =): a tela e o primeiro
+      // componente que ele renderiza e que resolve para arquivo (KitBuilderRoute -> KitBuilderPage).
+      // Se so renderiza <Navigate>, e redirecionamento: sem tela. Nunca usa o arquivo de rotas inteiro.
+      const renderiza = el && !(el in telaArquivo) ? componentesDoLocal(code, el) : [];
+      const tela = el ? telaArquivo[el] ?? renderiza.map((n) => telaArquivo[n]).find(Boolean) ?? null : null;
+      if (!tela && renderiza.length && renderiza.every((n) => n === 'Navigate')) redirecionamentos.add(r.path);
       const hooks = tela
         ? Object.entries(importsDe(readFileSync(tela, 'utf8'), tela)).filter(([n, f]) => f && /^use[A-Z]/.test(n)).map(([n, f]) => ({ hook: n, arquivo: rel(f) }))
         : [];
@@ -198,7 +214,7 @@ function main() {
       rotas.push({ ...r, tela: rel(tela), hooks, dados, arquivo: `src/routes/${arq}` });
     }
   }
-  const semTela = rotas.filter((r) => r.componente && !r.tela && !/^(Navigate|Deprecated)/.test(r.componente)).map((r) => `${r.path} -> ${r.componente}`);
+  const semTela = rotas.filter((r) => r.componente && !r.tela && !redirecionamentos.has(r.path) && !/^(Navigate|Deprecated)/.test(r.componente)).map((r) => `${r.path} -> ${r.componente}`);
   mkdirSync(OUT, { recursive: true });
   writeFileSync(join(OUT, 'rotas.json'), JSON.stringify({ gerado_em: new Date().toISOString(), total: rotas.length, total_producao: rotas.filter((r) => !r.somente_dev).length, sem_tela_resolvida: semTela, rotas }, null, 1) + '\n');
   console.log(`rotas: ${rotas.length} (${rotas.filter((r) => !r.somente_dev).length} de producao) | tela resolvida: ${rotas.filter((r) => r.tela).length} | sem tela resolvida: ${semTela.length}`);
