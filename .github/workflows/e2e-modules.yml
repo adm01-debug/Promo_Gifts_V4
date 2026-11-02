@@ -129,6 +129,11 @@ jobs:
               - 'src/hooks/**freight**'
               - 'e2e/flows/freight-*.spec.ts'
               - 'e2e/visual/quote-freight-block.spec.ts'
+              # QuoteFreightBlockHarness.tsx importa estes 3 — nenhum tem "freight"
+              # no nome, então não casavam nos filtros acima (achado Codex P2).
+              - 'src/pages/__visual/QuoteFreightBlockHarness.tsx'
+              - 'src/components/ui/select.tsx'
+              - 'src/components/ui/currency-input.tsx'
             stock:
               - 'src/components/inventory/**'
               - 'src/hooks/useFutureStockPreference.ts'
@@ -292,14 +297,14 @@ jobs:
             {"suite":"discount-approval","group":"discount","project":"chromium-authed","spec":"e2e/flows/04c","extra":"--retries=0","reporter":"html,list,github","auth":"real","build":true,"retry_last_failed":true,"timeout":30},
             {"suite":"discount-badge-live","group":"discount","project":"chromium-authed","spec":"e2e/flows/04ck","extra":"--repeat-each=3 --retries=0","reporter":"html,list,github","auth":"real","build":true,"timeout":25},
             {"suite":"error-boundaries","group":"flows","project":"chromium-public","spec":"e2e/flows/28-error-boundaries.spec.ts","reporter":"github,list,html,json","vite":true,"auth":"none","min":7,"timeout":20},
-            {"suite":"full-flows","group":"flows","project":"chromium-authed","spec":"e2e/flows/25-quote-full-flow.spec.ts e2e/flows/30-quote-wizard-validations.spec.ts e2e/flows/26-catalog-to-kit-flow.spec.ts e2e/flows/27-admin-critical-routes.spec.ts e2e/flows/sidebar-tooltips.spec.ts","reporter":"github,list,html,json","vite":true,"auth":"real","timeout":30},
+            {"suite":"full-flows","group":"flows","project":"chromium-authed","spec":"e2e/flows/25-quote-full-flow.spec.ts e2e/flows/30-quote-wizard-validations.spec.ts e2e/flows/26-catalog-to-kit-flow.spec.ts e2e/flows/27-admin-critical-routes.spec.ts e2e/flows/sidebar-tooltips.spec.ts","reporter":"github,list,html,json","vite":true,"auth":"real","min":10,"timeout":30},
             {"suite":"sidebar-tooltips-mobile","group":"flows","project":"mobile-chrome","spec":"e2e/flows/sidebar-tooltips.spec.ts","reporter":"github,list,html,json","vite":true,"auth":"real","timeout":20},
             {"suite":"mobile-routes","group":"flows","project":"mobile-chrome","spec":"e2e/flows/29-mobile-critical-routes.spec.ts","reporter":"github,list,html,json","vite":true,"auth":"none","timeout":20},
             {"suite":"optimized-image","group":"optimized-image","project":"chromium-public","spec":"optimized-image-detection.spec.ts optimized-image-visual.spec.ts","auth":"none","timeout":15},
             {"suite":"swatch-quickview-chromium","group":"swatch-quickview","project":"chromium-authed","spec":"e2e/catalog/swatch-quickview-list-table.spec.ts e2e/catalog/swatch-quickview-v2-list-table.spec.ts e2e/catalog/swatch-picker-v2-focus-and-quickview.spec.ts","reporter":"list,html,json","auth":"real","min":10,"timeout":60},
             {"suite":"swatch-quickview-firefox","group":"swatch-quickview","project":"firefox-authed","spec":"e2e/catalog/swatch-quickview-list-table.spec.ts e2e/catalog/swatch-quickview-v2-list-table.spec.ts e2e/catalog/swatch-picker-v2-focus-and-quickview.spec.ts","reporter":"list,html,json","browsers":"chromium,firefox","auth":"real","min":10,"timeout":60,"schedule_only":true},
             {"suite":"swatch-quickview-webkit","group":"swatch-quickview","project":"webkit-authed","spec":"e2e/catalog/swatch-quickview-list-table.spec.ts e2e/catalog/swatch-quickview-v2-list-table.spec.ts e2e/catalog/swatch-picker-v2-focus-and-quickview.spec.ts","reporter":"list,html,json","browsers":"chromium,webkit","auth":"real","min":10,"timeout":60,"coe":true,"schedule_only":true},
-            {"suite":"global-search-xbrowser","group":"global-search","project":"chromium-authed firefox-authed webkit-authed","spec":"e2e/flows/global-search-comprehensive.spec.ts","browsers":"chromium,firefox,webkit","auth":"real","post":"node e2e/scripts/detect-flaky.mjs","timeout":30},
+            {"suite":"global-search-xbrowser","group":"global-search","project":"chromium-authed firefox-authed webkit-authed","spec":"e2e/flows/global-search-comprehensive.spec.ts","browsers":"chromium,firefox,webkit","reporter":"line,html,json","auth":"real","post":"node e2e/scripts/detect-flaky.mjs","timeout":30},
             {"suite":"delivery","group":"delivery","project":"chromium-authed","spec":"e2e/quote-builder-delivery.spec.ts","extra":"--retries=2","auth":"real","timeout":20},
             {"suite":"replenishment-stress","group":"replenishment","project":"chromium-authed","spec":"e2e/replenishment-stress.spec.ts","auth":"real","base_url":"http://127.0.0.1:8081","force_server":true,"timeout":30},
             {"suite":"card-parity","group":"replenishment","project":"chromium-authed","spec":"e2e/catalog/novidades-reposicao-card-parity.spec.ts","auth":"real","base_url":"http://127.0.0.1:8081","force_server":true,"timeout":30}
