@@ -4,9 +4,11 @@
 # - Instala graphifyy na mesma versão do `npm run graphify:refresh` (package.json) e roda as mesmas etapas:
 #   update -> enriquecimento TypeScript -> recluster -> pós-processamento do relatório (as 3 últimas só se
 #   node_modules/typescript existir; sem ele fica o grafo do `graphify update .`).
-# - Pula se o grafo já foi gerado para o mesmo HEAD e o mesmo estado de arquivos não commitados.
+# - Pula se o grafo já foi gerado para o mesmo HEAD, o mesmo estado de arquivos não commitados e a mesma
+#   disponibilidade do TypeScript (instalar node_modules depois refaz o build completo).
 # - Não suja o git: cada saída versionada (GRAPH_REPORT.md, manifest.json) volta ao conteúdo de antes da
-#   execução — limpa volta ao commit, editada volta à edição — inclusive se o build falhar (trap EXIT).
+#   execução — limpa volta ao commit, editada volta à edição, apagada continua apagada — inclusive se o
+#   build falhar (trap EXIT).
 #   graphify-out/ é conteúdo gerado (scripts/check-generated-files-protected.mjs): não se edita à mão.
 # Log: graphify-out/.session-start.log
 set -euo pipefail
@@ -33,6 +35,8 @@ estado() {
     git rev-parse HEAD
     git diff HEAD --binary -- . ':(exclude)graphify-out'
     git ls-files -z --others --exclude-standard -- . ':(exclude)graphify-out' | xargs -0 -r sha256sum
+    # build sem TypeScript (node_modules ainda sem instalar) e build completo são estados diferentes
+    if [ -d node_modules/typescript ]; then echo ts=sim; else echo ts=nao; fi
   } | sha256sum | cut -d' ' -f1
 }
 ESTADO="$(estado)"
@@ -54,11 +58,13 @@ graphify --version
 BACKUP="$(mktemp -d)"
 VERSIONADOS=(graphify-out/GRAPH_REPORT.md graphify-out/manifest.json)
 for f in "${VERSIONADOS[@]}"; do
-  if [ -f "$f" ]; then cp -p "$f" "$BACKUP/$(basename "$f")"; fi
+  if [ -f "$f" ]; then cp -p "$f" "$BACKUP/$(basename "$f")"; else touch "$BACKUP/$(basename "$f").ausente"; fi
 done
 restaurar() {
   for f in "${VERSIONADOS[@]}"; do
     if [ -f "$BACKUP/$(basename "$f")" ]; then cp -p "$BACKUP/$(basename "$f")" "$f"; fi
+    # não existia antes (apagado na sessão): o build não ressuscita
+    if [ -f "$BACKUP/$(basename "$f").ausente" ]; then rm -f "$f"; fi
   done
   rm -rf "$BACKUP"
 }
