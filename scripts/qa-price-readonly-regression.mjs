@@ -19,7 +19,7 @@
  *     NÃO estão no repo (foram removidos para regeneração via workflow).
  *
  * Os itens dinâmicos (cálculos em runtime, persistência, integrações CRM/PDF,
- * regeneração visual) ficam para o workflow `update-quote-reset-snapshots.yml`
+ * regeneração visual) ficam para o workflow `update-snapshots.yml` (project=chromium-authed)
  * e specs Playwright correspondentes.
  *
  * Uso: `node scripts/qa-price-readonly-regression.mjs`
@@ -150,4 +150,4 @@ if (fails.length) {
 }
 console.log('✅ Todas as checagens estáticas passaram.');
 console.log('ℹ Para regenerar snapshots visuais, dispare o workflow:');
-console.log('  .github/workflows/update-quote-reset-snapshots.yml');
+console.log('  .github/workflows/update-snapshots.yml (spec=e2e/quotes/quote-*.spec.ts project=chromium-authed)');

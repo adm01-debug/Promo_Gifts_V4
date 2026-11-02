@@ -1,15 +1,29 @@
 name: E2E · Atualizar snapshots visuais (E155)
 
-# Substitui os 9 workflows individuais de update de baselines visuais:
-#   e2e-update-alert-dialog-snapshots.yml
-#   e2e-update-calendar-snapshots.yml
-#   e2e-update-confirm-dialog-snapshots.yml
-#   e2e-update-dialog-snapshots.yml
-#   e2e-update-magazine-ring-snapshots.yml
-#   e2e-update-quote-conditions-snapshots.yml
-#   e2e-update-quote-freight-snapshots.yml
-#   e2e-update-quote-no-pres-snapshots.yml
-#   update-quote-reset-snapshots.yml
+# Workflow ÚNICO de regeneração de baselines visuais (Playwright --update-snapshots).
+# Consolidação 2026-11-02 (Fase 1 da gestão de workflows): substitui os 12 updaters
+# individuais que existiam — um por spec —, cada um com uma variação do mesmo fluxo:
+#   e2e-update-alert-dialog-snapshots.yml        (push direto, chromium-public)
+#   e2e-update-calendar-snapshots.yml            (safe_mode + dev server, PR)
+#   e2e-update-confirm-dialog-snapshots.yml      (push direto)
+#   e2e-update-dialog-snapshots.yml              (push direto)
+#   e2e-update-editor-sheet-snapshots.yml        (chromium+firefox+webkit public, push)
+#   e2e-update-magazine-ring-snapshots.yml       (push direto)
+#   e2e-update-quote-conditions-snapshots.yml    (safe_mode + dev server, PR)
+#   e2e-update-quote-freight-snapshots.yml       (safe_mode, PR)
+#   e2e-update-quote-missing-fields-snapshots.yml (safe_mode + chromium-authed + checagem de auth state, PR)
+#   e2e-update-quote-no-pres-snapshots.yml       (safe_mode, PR)
+#   update-quote-reset-snapshots.yml             (4 specs chromium-authed, PR)
+#   (o próprio update-snapshots.yml anterior, sem safe_mode)
+#
+# Todas as variações viraram inputs:
+#   spec        — 1..N specs separados por espaço
+#   project     — chromium-public | chromium-authed | all-public (chromium+firefox+webkit)
+#   safe_mode   — dry-run primeiro; só regenera se a falha for diferença visual (diff/actual PNG)
+#   mode        — pr (branch nova + PR) | push (commit direto na branch alvo; nunca em main)
+#   dev_server  — sobe o Vite antes (specs que não funcionam com o webServer do Playwright)
+#
+# `git add` é restrito a `<spec>-snapshots/` de cada spec informado — nunca `e2e/` inteiro.
 
 on:
   workflow_dispatch:
@@ -17,19 +31,38 @@ on:
       spec:
         description: >
           Spec(s) a atualizar, separados por espaço
-          (ex: e2e/ui/alert-dialog-visual.spec.ts)
+          (ex: e2e/ui/alert-dialog-visual.spec.ts e2e/ui/dialog-visual.spec.ts)
         required: true
         type: string
       project:
-        description: "Playwright project"
+        description: "Playwright project (all-public = chromium+firefox+webkit public)"
         required: false
         default: chromium-public
         type: choice
         options:
           - chromium-public
           - chromium-authed
+          - all-public
+      safe_mode:
+        description: "Dry-run antes: só regenera se a falha for diferença visual"
+        required: false
+        default: true
+        type: boolean
+      mode:
+        description: "pr = branch nova + PR · push = commit direto na branch alvo (bloqueado em main)"
+        required: false
+        default: pr
+        type: choice
+        options:
+          - pr
+          - push
+      dev_server:
+        description: "Subir o Vite (npm run dev) antes dos testes"
+        required: false
+        default: false
+        type: boolean
       branch:
-        description: "Branch destino do commit (default: branch atual)"
+        description: "Branch destino (default: branch do dispatch)"
         required: false
         default: ""
         type: string
@@ -45,7 +78,7 @@ permissions:
 
 # R2 — dispatch-only nunca cancelado (E19)
 concurrency:
-  group: update-snapshots-${{ github.event.inputs.branch || github.ref_name }}
+  group: update-snapshots-${{ inputs.branch || github.ref_name }}
   cancel-in-progress: false
 
 defaults:
@@ -56,7 +89,7 @@ jobs:
   update:
     name: Regenerar baselines
     runs-on: ubuntu-24.04
-    timeout-minutes: 25
+    timeout-minutes: 30
     permissions:
       contents: write
       pull-requests: write
@@ -65,12 +98,24 @@ jobs:
       FORCE_COLOR: "0"
       VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || 'https://doufsxqlfjyuvxuezpln.supabase.co' }}
       VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_tjH5qAbZ0e5HTTd872NijQ_s9m6JvYU' }}
+      INPUT_SPEC: ${{ inputs.spec }}
+      INPUT_PROJECT: ${{ inputs.project }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false  # E32
-          ref: ${{ github.event.inputs.branch || github.ref }}
+          ref: ${{ inputs.branch || github.ref }}
           fetch-depth: 0
+
+      - name: Bloquear push direto em main
+        if: ${{ inputs.mode == 'push' }}
+        env:
+          TARGET_BRANCH: ${{ inputs.branch || github.ref_name }}
+        run: |
+          if [ "$TARGET_BRANCH" = "main" ]; then
+            echo "::error::mode=push não é permitido em main — use mode=pr."
+            exit 1
+          fi
 
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
@@ -94,44 +139,152 @@ jobs:
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ~/.cache/ms-playwright
-          key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
-          restore-keys: playwright-${{ runner.os }}-
+          key: playwright-${{ runner.os }}-${{ inputs.project }}-${{ hashFiles('package-lock.json') }}
+          restore-keys: playwright-${{ runner.os }}-${{ inputs.project }}-
 
-      - name: Install Playwright Chromium
-        run: npx playwright install --with-deps chromium
+      - name: Install Playwright browsers
+        run: |
+          if [ "$INPUT_PROJECT" = "all-public" ]; then
+            npm run e2e:install:all-browsers
+          else
+            npx playwright install --with-deps chromium
+          fi
 
-      - name: Regenerar snapshots
+      - name: Resolver projects e specs
+        id: resolve
+        run: |
+          read -ra SPECS <<< "$INPUT_SPEC"
+          for s in "${SPECS[@]}"; do
+            [ -f "$s" ] || { echo "::error::spec não encontrado: $s"; exit 1; }
+          done
+          if [ "$INPUT_PROJECT" = "all-public" ]; then
+            PROJECTS="--project=chromium-public --project=firefox-public --project=webkit-public"
+          else
+            PROJECTS="--project=$INPUT_PROJECT"
+          fi
+          echo "projects=$PROJECTS" >> "$GITHUB_OUTPUT"
+          echo "specs=${SPECS[*]}" >> "$GITHUB_OUTPUT"
+
+      - name: Subir Vite (dev_server)
+        if: ${{ inputs.dev_server }}
+        run: |
+          nohup npm run dev -- --port 8080 --strictPort > /tmp/vite.log 2>&1 &
+          for _ in $(seq 1 90); do
+            if curl -sf http://localhost:8080 >/dev/null; then exit 0; fi
+            sleep 1
+          done
+          tail -n 100 /tmp/vite.log >&2; exit 1
+
+      - name: Dry-run (safe mode)
+        if: ${{ inputs.safe_mode }}
+        id: dryrun
+        continue-on-error: true
         env:
           E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
           E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
-          INPUT_SPEC: ${{ github.event.inputs.spec }}
-          INPUT_PROJECT: ${{ github.event.inputs.project }}
+          PROJECTS: ${{ steps.resolve.outputs.projects }}
+          SPECS: ${{ steps.resolve.outputs.specs }}
         run: |
-          read -ra SPECS <<< "$INPUT_SPEC"
-          npx playwright test "${SPECS[@]}" \
-            --project="$INPUT_PROJECT" \
-            --update-snapshots \
-            --reporter=list
+          # shellcheck disable=SC2086 # expansão intencional em argumentos
+          PLAYWRIGHT_JSON_OUTPUT_NAME=playwright-report/results.json \
+          npx playwright test $SPECS $PROJECTS --reporter=list,json
+
+      - name: Classificar falha (visual vs real)
+        if: ${{ inputs.safe_mode && steps.dryrun.outcome == 'failure' }}
+        id: classify
+        run: |
+          if find test-results -type f \( -name "*-diff.png" -o -name "*-actual.png" \) 2>/dev/null | grep -q .; then
+            echo "kind=visual" >> "$GITHUB_OUTPUT"
+          else
+            echo "kind=real" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Abortar (falha não-visual)
+        if: ${{ inputs.safe_mode && steps.dryrun.outcome == 'failure' && steps.classify.outputs.kind == 'real' }}
+        run: |
+          echo "::error::Falha não é diferença visual — abortando rewrite de baselines. Corrija o erro real antes de atualizar snapshots."
+          exit 1
+
+      - name: Nada a atualizar (safe mode passou)
+        if: ${{ inputs.safe_mode && steps.dryrun.outcome == 'success' }}
+        run: |
+          echo "✅ Spec(s) já passam contra baselines atuais — nenhuma atualização necessária."
+
+      - name: Verificar auth state antes de regenerar baselines autenticados
+        if: ${{ inputs.project == 'chromium-authed' && (!inputs.safe_mode || (steps.dryrun.outcome == 'failure' && steps.classify.outputs.kind == 'visual')) }}
+        env:
+          E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
+        run: |
+          if [ -z "$E2E_USER_EMAIL" ]; then
+            echo "::error title=Auth credentials missing::E2E_USER_EMAIL não está configurado — regenerar baselines autenticados com estado de login vazio capturaria páginas não-autenticadas como baseline aprovado. Configure E2E_USER_EMAIL e E2E_USER_PASSWORD nos secrets do repositório."
+            exit 1
+          fi
+          STORAGE="e2e/.auth/storageState.json"
+          if [ -f "$STORAGE" ]; then
+            AUTH_VALID=$(node -pe "
+              const s = JSON.parse(require('fs').readFileSync('$STORAGE','utf8'));
+              const hasCookies = s.cookies && s.cookies.length > 0;
+              const hasSupabaseToken = (s.origins || []).some(function(o) {
+                return Object.keys(o.localStorage || {}).some(function(k) {
+                  return k.startsWith('sb-') && k.endsWith('-auth-token');
+                });
+              });
+              hasCookies || hasSupabaseToken ? 'valid' : 'empty'
+            " 2>/dev/null || echo "error")
+            if [ "$AUTH_VALID" != "valid" ]; then
+              echo "::error title=Empty auth state::storageState.json não contém cookies nem token Supabase em localStorage (sb-*-auth-token) — autenticação E2E produziu estado vazio. Regenerar baselines agora capturaria páginas não-autenticadas como baseline aprovado. Verifique E2E_USER_EMAIL e E2E_USER_PASSWORD."
+              exit 1
+            fi
+            echo "✅ Auth state válido — prosseguindo com regeneração."
+          else
+            echo "ℹ️  storageState ainda não existe (será criado pelo auth setup do Playwright na etapa seguinte)."
+          fi
+
+      - name: Regenerar snapshots
+        id: regen
+        if: ${{ !inputs.safe_mode || (steps.dryrun.outcome == 'failure' && steps.classify.outputs.kind == 'visual') }}
+        env:
+          E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
+          E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
+          PROJECTS: ${{ steps.resolve.outputs.projects }}
+          SPECS: ${{ steps.resolve.outputs.specs }}
+        run: |
+          # shellcheck disable=SC2086 # expansão intencional em argumentos
+          npx playwright test $SPECS $PROJECTS --update-snapshots --reporter=list
 
       - name: Credencial de push sem token em disco (E32)
+        if: ${{ steps.regen.outcome == 'success' }}
         run: |
           # persist-credentials:false nao grava token; o helper le GIT_PUSH_TOKEN so no passo de push.
           # shellcheck disable=SC2016 # aspas simples intencionais: $1 e GIT_PUSH_TOKEN expandem quando o git chama o helper
           git config --local credential.helper '!f() { test "$1" = get || exit 0; echo username=x-access-token; echo "password=${GIT_PUSH_TOKEN}"; }; f'
 
-      - name: Comitar baselines e abrir PR
+      - name: Comitar baselines (PR ou push)
+        if: ${{ steps.regen.outcome == 'success' }}
         env:
           GIT_PUSH_TOKEN: ${{ github.token }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          INPUT_COMMIT_MESSAGE: ${{ github.event.inputs.commit_message }}
-          TARGET_BRANCH: ${{ github.event.inputs.branch || github.ref_name }}
+          INPUT_COMMIT_MESSAGE: ${{ inputs.commit_message }}
+          INPUT_MODE: ${{ inputs.mode }}
+          TARGET_BRANCH: ${{ inputs.branch || github.ref_name }}
+          SPECS: ${{ steps.resolve.outputs.specs }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           HUSKY: "0"
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add e2e/ || true
+          read -ra SPEC_LIST <<< "$SPECS"
+          for s in "${SPEC_LIST[@]}"; do
+            git add -A "${s}-snapshots" 2>/dev/null || true  # ok: spec sem diretório de snapshots ainda
+          done
           if git diff --cached --quiet; then
             echo "Nenhuma baseline nova/alterada — nada para commitar."
+            exit 0
+          fi
+          if [ "$INPUT_MODE" = "push" ]; then
+            git commit -m "${INPUT_COMMIT_MESSAGE} [skip ci]"
+            git push origin "HEAD:${TARGET_BRANCH}"
+            echo "✅ Baselines commitadas direto em ${TARGET_BRANCH}."
             exit 0
           fi
           TS=$(date -u +%y%m%d-%H%M)
@@ -139,7 +292,7 @@ jobs:
           git checkout -b "${BRANCH}"
           git commit -m "${INPUT_COMMIT_MESSAGE}"
           git push origin "${BRANCH}"
-          BODY="Baselines PNG gerados automaticamente pelo workflow \`update-snapshots\`. Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          BODY="Baselines PNG gerados automaticamente pelo workflow \`update-snapshots\` (specs: ${SPECS}). Run: ${RUN_URL}"
           gh pr create \
             --base "${TARGET_BRANCH}" \
             --head "${BRANCH}" \

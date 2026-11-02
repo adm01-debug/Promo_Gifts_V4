@@ -23,16 +23,10 @@ name: Policies Baseline
 # Sem credenciais (ex.: PR de fork): o script degrada para static-pass.
 # =============================================================================
 
+# 2026-11-02 (gestão de workflows, Fase 1): triggers pull_request/push removidos —
+# o mesmo check roda em toda PR e push pelo Gate 1.13 do deploy-gates.yml
+# (scripts/check-policies-baseline.mjs). Aqui fica só a auditoria semanal + seed manual.
 on:
-  pull_request:
-    branches: [main]
-    paths:
-      - 'supabase/migrations/**'
-      - '.security/policies-baseline.json'
-      - 'scripts/check-policies-baseline.mjs'
-      - '.github/workflows/policies-baseline.yml'
-  push:
-    branches: [main]
   schedule:
     - cron: '30 10 * * 1' # semanal, segunda 10:30 UTC — E89: ≥20min after security-definer-acl-multi-env (10:09)
   workflow_dispatch:
