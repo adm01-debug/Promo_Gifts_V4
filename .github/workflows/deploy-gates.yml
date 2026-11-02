@@ -89,7 +89,7 @@ jobs:
           BASE_SHA="${{ github.event.pull_request.base.sha }}"
           CHANGED=$(git diff --name-only "$BASE_SHA" HEAD)
           CODE_PATTERN='^(src/|scripts/|supabase/|tests/|e2e/|playwright/|\.github/workflows/|\.github/actions/|package\.json$|package-lock\.json$|tsconfig|vite\.config|playwright\.config|\.nvmrc$|eslint\.config)'
-          if echo "$CHANGED" | grep -qE "$CODE_PATTERN"; then
+          if grep -qE "$CODE_PATTERN" <<< "$CHANGED"; then
             echo "docs_only=false" >> "$GITHUB_OUTPUT"
           else
             echo "docs_only=true" >> "$GITHUB_OUTPUT"

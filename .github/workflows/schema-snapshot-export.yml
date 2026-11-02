@@ -121,6 +121,9 @@ jobs:
           sudo tar -xzf /tmp/supabase.tar.gz -C /usr/local/bin
           supabase --version
 
+      - name: Garante registry ghcr.io
+        run: echo "SUPABASE_INTERNAL_IMAGE_REGISTRY=ghcr.io" >> "$GITHUB_ENV"
+
       # E84: no-op guard — schedule/dispatch sem credenciais é falha, não sucesso
       # silencioso (dispatch é o caminho para gerar baseline novo).
       - name: Guard — secrets obrigatórios no schedule/dispatch
