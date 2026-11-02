@@ -19,7 +19,7 @@ proprios AS (  -- schemas do projeto fora de public: todos, menos os de sistema/
      AND n.nspname NOT IN ('public', 'information_schema', 'auth', 'storage', 'realtime', '_realtime',
                            'supabase_functions', 'supabase_migrations', 'extensions', 'graphql',
                            'graphql_public', 'vault', 'net', 'cron', 'pgsodium', 'pgsodium_masks',
-                           'pgbouncer', 'repack')
+                           'pgbouncer', 'repack', 'pgmq')
 ),
 -- Linhas: count(*) exato quando a estimativa do planner fica abaixo de 200 mil; acima disso, a
 -- estimativa. reltuples = -1 (nunca analisada) tambem conta exato.

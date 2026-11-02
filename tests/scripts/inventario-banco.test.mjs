@@ -135,15 +135,92 @@ describe('banco.sql', () => {
     expect(sql).not.toMatch(/\b(INSERT|UPDATE|DELETE|TRUNCATE|DROP|ALTER|CREATE|GRANT|REVOKE)\b/i);
   });
 
+  // Trecho so da CTE "proprios" (do "proprios AS (" ao "),") — isola a clausula de exclusao de
+  // schema do resto do arquivo, pra nao confundir literal usado em outro lugar do SQL.
+  const proprios = sql.match(/proprios AS \([\s\S]*?\n\),/)?.[0];
+  // Schemas de sistema/extensao conhecidos (Postgres, Supabase e extensoes instaladas) — a UNICA
+  // lista fixa que pode legitimamente existir na clausula de exclusao. Qualquer coisa fora disso
+  // (schema de app) nao pode aparecer aqui, seja como literal direto ou disfarcado.
+  const SISTEMA_CONHECIDOS = new Set([
+    'public', 'information_schema', 'auth', 'storage', 'realtime', '_realtime',
+    'supabase_functions', 'supabase_migrations', 'extensions', 'graphql',
+    'graphql_public', 'vault', 'net', 'cron', 'pgsodium', 'pgsodium_masks',
+    'pgbouncer', 'repack', 'pgmq',
+  ]);
+  // Schemas de app reais que precisam vir do catalogo (pg_namespace), nunca de lista fixa no SQL.
+  const SCHEMAS_DE_APP = ['cf_recon', 'supplier_stricker', 'prod_audit', 'archive', 'analytics', 'api', 'internal', 'classification_audit'];
+
   it('schemas proprios vem do catalogo, sem lista fixa (um schema novo como archive entra sozinho)', () => {
     expect(sql).toMatch(/proprios AS \(/);
+    expect(proprios, 'CTE proprios nao encontrada no SQL').toBeTruthy();
     expect(sql).not.toMatch(/'cf_recon'|'supplier_stricker'|'prod_audit'/);
     expect((sql.match(/IN \(SELECT nspname FROM proprios\)/g) || []).length).toBeGreaterThanOrEqual(4);
   });
 
-  it('de cron.job sai so o nome das funcoes/edges chamadas, nunca o command nem return_message', () => {
+  it("a exclusao de schema nao usa concatenacao/funcao pra esconder um nome (ex.: ('cf_' || 'recon') escaparia de um regex simples de ausencia)", () => {
+    expect(proprios).not.toMatch(/\|\|/);
+    expect(proprios).not.toMatch(/\bconcat\s*\(/i);
+    const listaExclusao = proprios.match(/NOT IN \(([^)]*)\)/s)?.[1];
+    expect(listaExclusao, 'lista NOT IN nao encontrada na CTE proprios').toBeTruthy();
+    expect(listaExclusao).not.toMatch(/SELECT/i);
+  });
+
+  it('todo literal da exclusao de schema e um schema de sistema/extensao conhecido — nenhum schema de app na lista fixa', () => {
+    const listaExclusao = proprios.match(/NOT IN \(([^)]*)\)/s)[1];
+    const literais = [...listaExclusao.matchAll(/'([^']*)'/g)].map((m) => m[1]);
+    expect(literais.length).toBeGreaterThan(0);
+    for (const l of literais) {
+      expect(SISTEMA_CONHECIDOS.has(l), `literal inesperado na exclusao de schema: '${l}' (nao e schema de sistema/extensao conhecido)`).toBe(true);
+    }
+    for (const app of SCHEMAS_DE_APP) {
+      expect(literais, `schema de app '${app}' nao pode estar na lista fixa de exclusao`).not.toContain(app);
+    }
+  });
+
+  it('a clausula de exclusao, aplicada a uma lista de candidatos, deixa passar so schema de app — nunca so confere 3 strings ausentes', () => {
+    const listaExclusao = proprios.match(/NOT IN \(([^)]*)\)/s)[1];
+    const excluidos = new Set([...listaExclusao.matchAll(/'([^']*)'/g)].map((m) => m[1]));
+    const candidatos = ['public', 'auth', 'storage', 'pgmq', 'vault', 'pgsodium', ...SCHEMAS_DE_APP, 'nova_feature_2027'];
+    const passam = candidatos.filter((c) => !c.startsWith('pg_') && !excluidos.has(c));
+    expect(passam.sort()).toEqual([...SCHEMAS_DE_APP, 'nova_feature_2027'].sort());
+  });
+
+  // Chamadas jsonb_build_object com parenteses balanceados (ha chamadas aninhadas: subqueries
+  // dentro de valores) — nao basta um regex [^)]* que para no primeiro ) interno.
+  function chamadasJsonbBuildObject(texto) {
+    const chamadas = [];
+    const re = /jsonb_build_object\(/g;
+    let m;
+    while ((m = re.exec(texto))) {
+      let profundidade = 1;
+      let i = m.index + m[0].length;
+      for (; i < texto.length && profundidade > 0; i++) {
+        if (texto[i] === '(') profundidade++;
+        else if (texto[i] === ')') profundidade--;
+      }
+      chamadas.push(texto.slice(m.index, i));
+    }
+    return chamadas;
+  }
+
+  it('de cron.job sai so o nome das funcoes/edges chamadas, nunca o command nem return_message (chave fixa)', () => {
     expect(sql).not.toMatch(/'command'|'comando'|'ultimo_erro'/);
     expect(sql).toMatch(/regexp_matches\(j\.command/);
     expect(sql).not.toMatch(/jsonb_build_object\([^)]*return_message/);
+  });
+
+  it('j.command e return_message nunca sao valor de jsonb_build_object sob QUALQUER chave (so regexp_matches(j.command,...) para extrair nome, nunca o command bruto)', () => {
+    const chamadas = chamadasJsonbBuildObject(sql);
+    expect(chamadas.length).toBeGreaterThan(0);
+    for (const chamada of chamadas) {
+      // regexp_matches(j.command, ...) e a UNICA forma permitida de citar j.command dentro de um
+      // jsonb_build_object — e so extrai nomes via regex, nunca expoe o command inteiro. Qualquer
+      // outra ocorrencia de j.command (ex.: 'raw_cmd', j.command) e o comando bruto vazando.
+      const semExtracoesSeguras = chamada.replace(/regexp_matches\(\s*j\.command\s*,[^)]*\)/g, '');
+      expect(semExtracoesSeguras, `j.command vazando como valor bruto em: ${chamada.slice(0, 120)}...`).not.toMatch(/\bj\.command\b/);
+      // return_message (cru, pode ter URL/header do erro) nunca pode ser valor de jsonb_build_object,
+      // seja qual for a chave usada.
+      expect(chamada, `return_message vazando como valor bruto em: ${chamada.slice(0, 120)}...`).not.toMatch(/\.return_message\b/);
+    }
   });
 });
