@@ -284,6 +284,15 @@ agregador (`static-gates`, `drift-gates`, `security-gates` ou `build`; procure p
 | **workflow_dispatch** | `deploy-edge-functions.yml` | ÚNICO caminho para deploy de edge function |
 | **workflow_dispatch** | `schema-snapshot-export.yml` | Gira baseline do drift-check |
 
+### Actions de terceiros permitidas (Settings → Actions, conferido 2026-11-02)
+
+`allowed_actions: selected` — liberadas as do GitHub (`actions/*`, `github/*`) e só estas 8 de terceiros:
+`dorny/paths-filter`, `anchore/sbom-action`, `supabase/setup-cli`, `gitleaks/gitleaks-action`,
+`denoland/setup-deno`, `oven-sh/setup-bun`, `googleapis/release-please-action`,
+`crazy-max/ghaction-github-labeler`. Workflow que usar uma action de terceiro fora dessa lista **nem inicia**
+(`startup_failure`, sem log). Foi o que parou o Deploy Gates e 3 dos 5 checks required em 2026-11-02, quando
+a lista ficou vazia. Action nova de terceiro = incluir aqui e em Settings → Actions no mesmo PR.
+
 ### Regras de workflow (cobradas por `check-workflow-contracts --gate`, Gate 1.11)
 
 Texto completo em `docs/ci/PADRAO_WORKFLOW.md`. Resumo:
