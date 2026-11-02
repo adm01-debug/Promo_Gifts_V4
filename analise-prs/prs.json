@@ -431,14 +431,37 @@
   ],
   "summary": {
     "MERGEADA_AUTONOMA_REV88": 8,
+    "MERGEADA_AUTONOMA_REV89": 2,
+    "MERGEADA_AUTONOMA_REV90": 2,
+    "MERGEADA_AUTONOMA_REV93": 1,
     "MERGEADA_AUTONOMA_ANTERIORES": 11,
-    "MERGEADA_SESSAO_EXTERNA": 27,
-    "FECHADA_EXTERNA": 2,
-    "BLOQUEADA": 10,
-    "DRAFT_NOMERGE": 25,
-    "SUPERSEDED": 1
+    "MERGEADA_SESSAO_EXTERNA": 30,
+    "MERGEADA_PO": 3,
+    "FECHADA_EXTERNA": 7,
+    "FECHADA_EXTERNA_REV93": 9,
+    "BLOQUEADA": 1,
+    "DRAFT_NOMERGE": 26,
+    "SUPERSEDED": 1,
+    "JA_IMPLEMENTADA_MAIN": 1
   },
-  "revision": "rev88",
-  "open_prs_count": 36,
-  "main_head_atual": "ec06a45724e7b907315d7b454cea63a7a38fdc91"
+  "revision": "rev93",
+  "open_prs_count": 27,
+  "main_head_atual": "df94410cbbcbe7d80928a279de91214d88b0d4bb",
+  "pr_3019": {
+    "number": 3019,
+    "title": "chore(analise-prs): relatório completo de 27 PRs abertas + fix heap pre-push",
+    "state": "open",
+    "draft": true,
+    "verdict": "DRAFT_NOMERGE",
+    "blocked_reason": "DRAFT + REGRA#10 (branch outra sessão claude_05/youthful-ride-vcdchy)"
+  },
+  "pr_3021": {
+    "number": 3021,
+    "title": "fix(security): CodeQL HIGH — crypto.randomInt, URL validation, hash param guard, anonymize ilike",
+    "state": "merged",
+    "draft": false,
+    "verdict": "MERGEADA_AUTONOMA_REV93",
+    "sha_merge": "df94410cbbcbe7d80928a279de91214d88b0d4bb",
+    "merged_at": "2026-11-02T02:00Z"
+  }
 }
