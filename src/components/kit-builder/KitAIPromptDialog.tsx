@@ -66,6 +66,8 @@ const suggestionSchema = z
 interface KitAIPromptDialogProps {
   catalogItems?: KitItem[];
   catalogBoxes?: KitBox[];
+  /** FT-134: true when the kit already has items — triggers replace warning */
+  hasExistingItems?: boolean;
   onApply: (
     suggestion: Suggestion,
     composition: KitAIComposition,
@@ -154,6 +156,7 @@ function buildStructuredPrompt({
 export function KitAIPromptDialog({
   catalogItems = [],
   catalogBoxes = [],
+  hasExistingItems = false,
   onApply,
 }: KitAIPromptDialogProps) {
   const [open, setOpen] = useState(false);
@@ -508,8 +511,13 @@ export function KitAIPromptDialog({
                       <p className="mb-3 text-xs text-muted-foreground">
                         Estoque e preço comercial serão novamente validados antes do orçamento.
                       </p>
+                      {hasExistingItems && (
+                        <p className="mb-2 text-xs font-medium text-warning">
+                          ⚠ Isso substituirá a composição atual do kit.
+                        </p>
+                      )}
                       <Button onClick={handleApply} className="w-full">
-                        Usar esta composição
+                        {hasExistingItems ? 'Substituir e usar esta composição' : 'Usar esta composição'}
                       </Button>
                     </div>
                   </>

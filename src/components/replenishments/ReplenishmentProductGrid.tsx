@@ -35,7 +35,6 @@ import { ProductCardSkeleton } from '@/components/loading/ModernSkeletons';
 type ViewMode = 'grid' | 'list' | 'table';
 type SortMode = 'name' | 'newest' | 'price-asc' | 'price-desc' | 'stock';
 
-
 export function ReplenishmentProductGrid() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -219,7 +218,9 @@ export function ReplenishmentProductGrid() {
         <div className="space-y-4" role="status" aria-label="Carregando produtos">
           <div className="mb-2 flex items-center gap-3">
             <div className="h-5 w-5 animate-spin rounded-full border-2 border-primary border-t-transparent" />
-            <span className="text-sm text-muted-foreground">Carregando produtos…</span>
+            <span className="text-sm text-muted-foreground">
+              Carregando produtos…
+            </span>
           </div>
           <div
             className="mb-4 h-1.5 w-64 overflow-hidden rounded-full bg-muted/50"
