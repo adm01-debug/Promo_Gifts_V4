@@ -1,14 +1,17 @@
 {
- "gerado_em": "2026-11-02T14:08:23.456Z",
+ "gerado_em": "2026-11-02T14:20:50.887Z",
  "total": 135,
+ "total_producao": 118,
  "sem_tela_resolvida": [],
  "rotas": [
   {
    "path": "/debug/images",
    "componente": "OptimizedImageDemo",
-   "tela": "src/pages/tools/OptimizedImageDemo.tsx",
    "grupo": null,
    "guardas": [],
+   "somente_dev": false,
+   "linha": 132,
+   "tela": "src/pages/tools/OptimizedImageDemo.tsx",
    "hooks": [],
    "dados": {
     "tabelas": [],
@@ -17,15 +20,16 @@
     "edges": [],
     "arquivos_lidos": 2
    },
-   "arquivo": "src/routes/AppRoutes.tsx",
-   "linha": 132
+   "arquivo": "src/routes/AppRoutes.tsx"
   },
   {
    "path": "/__visual/preview-button",
    "componente": "PreviewButtonHarness",
-   "tela": "src/routes/AppRoutes.tsx",
    "grupo": null,
    "guardas": [],
+   "somente_dev": true,
+   "linha": 136,
+   "tela": "src/routes/AppRoutes.tsx",
    "hooks": [],
    "dados": {
     "tabelas": [
@@ -42,15 +46,16 @@
     ],
     "arquivos_lidos": 47
    },
-   "arquivo": "src/routes/AppRoutes.tsx",
-   "linha": 136
+   "arquivo": "src/routes/AppRoutes.tsx"
   },
   {
    "path": "/__visual/quote-view-order",
    "componente": "QuoteViewOrderHarness",
-   "tela": "src/routes/AppRoutes.tsx",
    "grupo": null,
    "guardas": [],
+   "somente_dev": true,
+   "linha": 139,
+   "tela": "src/routes/AppRoutes.tsx",
    "hooks": [],
    "dados": {
     "tabelas": [
@@ -67,15 +72,16 @@
     ],
     "arquivos_lidos": 47
    },
-   "arquivo": "src/routes/AppRoutes.tsx",
-   "linha": 139
+   "arquivo": "src/routes/AppRoutes.tsx"
   },
   {
    "path": "/__visual/quote-items-list-mobile",
    "componente": "QuoteItemsListMobileHarness",
-   "tela": "src/routes/AppRoutes.tsx",
    "grupo": null,
    "guardas": [],
+   "somente_dev": true,
+   "linha": 142,
+   "tela": "src/routes/AppRoutes.tsx",
    "hooks": [],
    "dados": {
     "tabelas": [
@@ -92,15 +98,16 @@
     ],
     "arquivos_lidos": 47
    },
-   "arquivo": "src/routes/AppRoutes.tsx",
-   "linha": 142
+   "arquivo": "src/routes/AppRoutes.tsx"
   },
   {
    "path": "/__visual/quote-item-editor-sheet",
    "componente": "QuoteItemEditorSheetHarness",
-   "tela": "src/routes/AppRoutes.tsx",
    "grupo": null,
    "guardas": [],
+   "somente_dev": true,
+   "linha": 148,
+   "tela": "src/routes/AppRoutes.tsx",
    "hooks": [],
    "dados": {
     "tabelas": [
@@ -117,15 +124,16 @@
     ],
     "arquivos_lidos": 47
    },
-   "arquivo": "src/routes/AppRoutes.tsx",
-   "linha": 148
+   "arquivo": "src/routes/AppRoutes.tsx"
   },
   {
    "path": "/__visual/quote-add-product-button",
    "componente": "QuoteAddProductButtonHarness",
-   "tela": "src/routes/AppRoutes.tsx",
    "grupo": null,
    "guardas": [],
+   "somente_dev": true,
+   "linha": 154,
+   "tela": "src/routes/AppRoutes.tsx",
    "hooks": [],
    "dados": {
     "tabelas": [
@@ -142,15 +150,16 @@
     ],
     "arquivos_lidos": 47
    },
-   "arquivo": "src/routes/AppRoutes.tsx",
-   "linha": 154
+   "arquivo": "src/routes/AppRoutes.tsx"
   },
   {
    "path": "/__visual/calendar",
    "componente": "CalendarHarness",
-   "tela": "src/routes/AppRoutes.tsx",
    "grupo": null,
    "guardas": [],
+   "somente_dev": true,
+   "linha": 159,
+   "tela": "src/routes/AppRoutes.tsx",
    "hooks": [],
    "dados": {
     "tabelas": [
@@ -167,15 +176,16 @@
     ],
     "arquivos_lidos": 47
    },
-   "arquivo": "src/routes/AppRoutes.tsx",
-   "linha": 159
+   "arquivo": "src/routes/AppRoutes.tsx"
   },
   {
    "path": "/__visual/date-picker-field",
    "componente": "DatePickerFieldHarness",
-   "tela": "src/routes/AppRoutes.tsx",
    "grupo": null,
    "guardas": [],
+   "somente_dev": true,
+   "linha": 161,
+   "tela": "src/routes/AppRoutes.tsx",
    "hooks": [],
    "dados": {
     "tabelas": [
@@ -192,15 +202,16 @@
     ],
     "arquivos_lidos": 47
    },
-   "arquivo": "src/routes/AppRoutes.tsx",
-   "linha": 161
+   "arquivo": "src/routes/AppRoutes.tsx"
   },
   {
    "path": "/__visual/negotiation-markup-card",
    "componente": "NegotiationMarkupCardHarness",
-   "tela": "src/routes/AppRoutes.tsx",
    "grupo": null,
    "guardas": [],
+   "somente_dev": true,
+   "linha": 164,
+   "tela": "src/routes/AppRoutes.tsx",
    "hooks": [],
    "dados": {
     "tabelas": [
@@ -217,15 +228,16 @@
     ],
     "arquivos_lidos": 47
    },
-   "arquivo": "src/routes/AppRoutes.tsx",
-   "linha": 164
+   "arquivo": "src/routes/AppRoutes.tsx"
   },
   {
    "path": "/__visual/quote-freight-block",
    "componente": "QuoteFreightBlockHarness",
-   "tela": "src/routes/AppRoutes.tsx",
    "grupo": null,
    "guardas": [],
+   "somente_dev": true,
+   "linha": 170,
+   "tela": "src/routes/AppRoutes.tsx",
    "hooks": [],
    "dados": {
     "tabelas": [
@@ -242,17 +254,18 @@
     ],
     "arquivos_lidos": 47
    },
-   "arquivo": "src/routes/AppRoutes.tsx",
-   "linha": 170
+   "arquivo": "src/routes/AppRoutes.tsx"
   },
   {
    "path": "/tendencias",
    "componente": "TrendsPage",
-   "tela": "src/pages/bi/TrendsPage.tsx",
    "grupo": "adminRoutes",
    "guardas": [
     "ProtectedRoute"
    ],
+   "somente_dev": false,
+   "linha": 64,
+   "tela": "src/pages/bi/TrendsPage.tsx",
    "hooks": [
     {
      "hook": "useUrlState",
@@ -273,6 +286,7 @@
    ],
    "dados": {
     "tabelas": [
+     "X",
      "ai_function_routing",
      "ai_models",
      "ai_providers",
@@ -280,30 +294,50 @@
      "ai_usage_quotas",
      "cart_templates",
      "catalog_analytics",
+     "categories",
+     "categories_tree_visual",
      "category_icons",
+     "color_groups",
+     "color_nuances",
+     "color_variations",
+     "device_login_notifications",
      "expert_conversations",
      "expert_messages",
      "external_connections",
      "frontend_telemetry",
+     "login_attempts",
      "magic_up_brand_kits",
      "magic_up_generations",
+     "mv_product_intelligence",
      "mv_stock_velocity",
+     "my_table",
+     "notifications",
      "order_items",
      "orders",
+     "product_group_members",
+     "product_images",
      "product_price_freshness_overrides",
+     "product_relationships",
      "product_variants",
      "product_views",
+     "products",
      "profiles",
      "quote_items",
      "quotes",
+     "sales_goals",
      "saved_trends_views",
      "scheduled_reports",
      "search_analytics",
      "seller_cart_items",
      "seller_carts",
+     "stock_daily_summary",
+     "supplier_branches",
+     "suppliers",
      "system_kill_switches",
      "system_settings",
      "user_onboarding",
+     "v_catalog_stats",
+     "variant_supplier_sources",
      "video_variant_links",
      "workspace_notifications"
     ],
@@ -318,26 +352,35 @@
      "get_promo_sales_ranking"
     ],
     "edges": [
+     "ai-recommendations",
+     "categories-api",
+     "commemorative-dates",
+     "connection-tester",
      "crm-db-bridge",
+     "dropbox-list",
      "external-db-bridge",
+     "external-db-inspect",
+     "generate-ad-image",
      "log-login-attempt",
+     "magic-up-score",
      "send-transactional-email",
      "trends-insights"
     ],
     "arquivos_lidos": 249
    },
-   "arquivo": "src/routes/admin-routes.tsx",
-   "linha": 64
+   "arquivo": "src/routes/admin-routes.tsx"
   },
   {
    "path": "/admin",
    "componente": "Navigate",
-   "tela": null,
    "grupo": "adminRoutes",
    "guardas": [
     "ProtectedRoute",
     "AdminRoute"
    ],
+   "somente_dev": false,
+   "linha": 66,
+   "tela": null,
    "hooks": [],
    "dados": {
     "tabelas": [],
@@ -346,18 +389,19 @@
     "edges": [],
     "arquivos_lidos": 0
    },
-   "arquivo": "src/routes/admin-routes.tsx",
-   "linha": 66
+   "arquivo": "src/routes/admin-routes.tsx"
   },
   {
    "path": "/admin/usuarios",
    "componente": "AdminUsuariosPage",
-   "tela": "src/pages/admin/AdminUsuariosPage.tsx",
    "grupo": "adminRoutes",
    "guardas": [
     "ProtectedRoute",
     "AdminRoute"
    ],
+   "somente_dev": false,
+   "linha": 67,
+   "tela": "src/pages/admin/AdminUsuariosPage.tsx",
    "hooks": [
     {
      "hook": "useAuth",
@@ -374,14 +418,21 @@
    ],
    "dados": {
     "tabelas": [
+     "X",
+     "access_security_settings",
      "admin_audit_log",
      "admin_settings",
+     "audit_log",
      "custom_kits",
      "discount_approval_requests",
      "frontend_telemetry",
+     "geo_allowed_countries",
+     "ip_access_control",
      "kit_templates",
      "login_attempts",
+     "my_table",
      "password_reset_requests",
+     "personalization_techniques",
      "product_component_locations",
      "product_components",
      "product_variants",
@@ -391,11 +442,16 @@
      "quote_item_personalizations",
      "quote_items",
      "quotes",
+     "rls_denial_log",
      "role_migration_batches",
      "role_migration_items",
      "role_permissions",
+     "security_settings",
      "seller_discount_limits",
      "t",
+     "user_2fa_settings",
+     "user_ip_allowlist",
+     "user_known_devices",
      "user_roles",
      "workspace_notifications"
     ],
@@ -414,28 +470,32 @@
     ],
     "edges": [
      "crm-db-bridge",
+     "detect-new-device",
+     "get-visitor-info",
      "log-login-attempt",
      "manage-users",
      "mcp-keys-issue",
      "quote-sync",
      "secrets-manager",
      "step-up-verify",
-     "validate-access"
+     "validate-access",
+     "verify-2fa-token"
     ],
     "arquivos_lidos": 179
    },
-   "arquivo": "src/routes/admin-routes.tsx",
-   "linha": 67
+   "arquivo": "src/routes/admin-routes.tsx"
   },
   {
    "path": "/admin/usuarios/promover",
    "componente": "AdminPromoverUsuarioPage",
-   "tela": "src/pages/admin/AdminPromoverUsuarioPage.tsx",
    "grupo": "adminRoutes",
    "guardas": [
     "ProtectedRoute",
     "AdminRoute"
    ],
+   "somente_dev": false,
+   "linha": 68,
+   "tela": "src/pages/admin/AdminPromoverUsuarioPage.tsx",
    "hooks": [
     {
      "hook": "useAuth",
@@ -462,18 +522,19 @@
     ],
     "arquivos_lidos": 16
    },
-   "arquivo": "src/routes/admin-routes.tsx",
-   "linha": 68
+   "arquivo": "src/routes/admin-routes.tsx"
   },
   {
    "path": "/admin/limites-desconto",
    "componente": "SellerDiscountLimitsAdminPage",
-   "tela": "src/pages/admin/SellerDiscountLimitsAdminPage.tsx",
    "grupo": "adminRoutes",
    "guardas": [
     "ProtectedRoute",
     "AdminRoute"
    ],
+   "somente_dev": false,
+   "linha": 69,
+   "tela": "src/pages/admin/SellerDiscountLimitsAdminPage.tsx",
    "hooks": [
     {
      "hook": "useAuth",
@@ -493,18 +554,19 @@
     ],
     "arquivos_lidos": 3
    },
-   "arquivo": "src/routes/admin-routes.tsx",
-   "linha": 69
+   "arquivo": "src/routes/admin-routes.tsx"
   },
   {
    "path": "/admin/rls-denials",
    "componente": "RlsDenialsAdminPage",
-   "tela": "src/pages/admin/RlsDenialsAdminPage.tsx",
    "grupo": "adminRoutes",
    "guardas": [
     "ProtectedRoute",
     "AdminRoute"
    ],
+   "somente_dev": false,
+   "linha": 70,
+   "tela": "src/pages/admin/RlsDenialsAdminPage.tsx",
    "hooks": [],
    "dados": {
     "tabelas": [
@@ -515,18 +577,19 @@
     "edges": [],
     "arquivos_lidos": 3
    },
-   "arquivo": "src/routes/admin-routes.tsx",
-   "linha": 70
+   "arquivo": "src/routes/admin-routes.tsx"
   },
   {
    "path": "/admin/auditoria-propriedade",
    "componente": "OwnershipAuditAdminPage",
-   "tela": "src/pages/admin/OwnershipAuditAdminPage.tsx",
    "grupo": "adminRoutes",
    "guardas": [
     "ProtectedRoute",
     "AdminRoute"
    ],
+   "somente_dev": false,
+   "linha": 71,
+   "tela": "src/pages/admin/OwnershipAuditAdminPage.tsx",
    "hooks": [],
    "dados": {
     "tabelas": [
@@ -538,22 +601,26 @@
      "crm-db-bridge",
      "log-login-attempt",
      "mcp-keys-issue",
-     "ownership-repair"
+     "ownership-audit",
+     "ownership-repair",
+     "rls-integration-tests",
+     "rls-matrix-export"
     ],
     "arquivos_lidos": 15
    },
-   "arquivo": "src/routes/admin-routes.tsx",
-   "linha": 71
+   "arquivo": "src/routes/admin-routes.tsx"
   },
   {
    "path": "/admin/cadastros",
    "componente": "AdminCadastrosPage",
-   "tela": "src/pages/admin/AdminCadastrosPage.tsx",
    "grupo": "adminRoutes",
    "guardas": [
     "ProtectedRoute",
     "AdminRoute"
    ],
+   "somente_dev": false,
+   "linha": 72,
+   "tela": "src/pages/admin/AdminCadastrosPage.tsx",
    "hooks": [],
    "dados": {
     "tabelas": [],
@@ -562,18 +629,19 @@
     "edges": [],
     "arquivos_lidos": 10
    },
-   "arquivo": "src/routes/admin-routes.tsx",
-   "linha": 72
+   "arquivo": "src/routes/admin-routes.tsx"
   },
   {
    "path": "/admin/cadastros/produto/:id",
    "componente": "AdminProductFormPage",
-   "tela": "src/pages/admin/AdminProductFormPage.tsx",
    "grupo": "adminRoutes",
    "guardas": [
     "ProtectedRoute",
     "AdminRoute"
    ],
+   "somente_dev": false,
+   "linha": 73,
+   "tela": "src/pages/admin/AdminProductFormPage.tsx",
    "hooks": [
     {
      "hook": "useAuditLog",
@@ -582,14 +650,35 @@
    ],
    "dados": {
     "tabelas": [
+     "X",
      "admin_settings",
+     "audit_log",
+     "categories",
+     "color_groups",
+     "color_variations",
      "custom_kits",
+     "customization_price_tables",
+     "geo_allowed_countries",
      "kill_switch_hits",
      "kit_templates",
+     "my_table",
+     "product_images",
+     "product_kit_components",
+     "product_materials",
+     "product_variants",
+     "product_videos",
+     "products",
      "role_migration_batches",
      "role_migration_items",
+     "security_settings",
+     "suppliers",
      "system_kill_switches",
-     "system_settings"
+     "system_settings",
+     "tabela_preco_gravacao_oficial",
+     "tecnica_gravacao",
+     "user_ip_allowlist",
+     "user_known_devices",
+     "v_kit_component_complete"
     ],
     "buckets": [],
     "rpcs": [
@@ -601,7 +690,9 @@
     ],
     "edges": [
      "crm-db-bridge",
+     "detect-new-device",
      "external-db-bridge",
+     "get-visitor-info",
      "log-login-attempt",
      "mcp-keys-issue",
      "secrets-manager",
@@ -609,18 +700,19 @@
     ],
     "arquivos_lidos": 67
    },
-   "arquivo": "src/routes/admin-routes.tsx",
-   "linha": 73
+   "arquivo": "src/routes/admin-routes.tsx"
   },
   {
    "path": "/admin/permissoes",
    "componente": "PermissionsPage",
-   "tela": "src/pages/admin/PermissionsPage.tsx",
    "grupo": "adminRoutes",
    "guardas": [
     "ProtectedRoute",
     "AdminRoute"
    ],
+   "somente_dev": false,
+   "linha": 74,
+   "tela": "src/pages/admin/PermissionsPage.tsx",
    "hooks": [
     {
      "hook": "useToast",
@@ -629,6 +721,11 @@
    ],
    "dados": {
     "tabelas": [
+     "X",
+     "device_login_notifications",
+     "login_attempts",
+     "my_table",
+     "notifications",
      "permissions",
      "system_kill_switches",
      "system_settings",
@@ -646,18 +743,19 @@
     ],
     "arquivos_lidos": 35
    },
-   "arquivo": "src/routes/admin-routes.tsx",
-   "linha": 74
+   "arquivo": "src/routes/admin-routes.tsx"
   },
   {
    "path": "/admin/roles",
    "componente": "RolesPage",
-   "tela": "src/pages/admin/RolesPage.tsx",
    "grupo": "adminRoutes",
    "guardas": [
     "ProtectedRoute",
     "AdminRoute"
    ],
+   "somente_dev": false,
+   "linha": 75,
+   "tela": "src/pages/admin/RolesPage.tsx",
    "hooks": [
     {
      "hook": "useToast",
@@ -666,6 +764,11 @@
    ],
    "dados": {
     "tabelas": [
+     "X",
+     "device_login_notifications",
+     "login_attempts",
+     "my_table",
+     "notifications",
      "roles",
      "system_kill_switches",
      "system_settings",
@@ -683,18 +786,19 @@
     ],
     "arquivos_lidos": 35
    },
-   "arquivo": "src/routes/admin-routes.tsx",
-   "linha": 75
+   "arquivo": "src/routes/admin-routes.tsx"
   },
   {
    "path": "/admin/role-permissoes",
    "componente": "RolePermissionsPage",
-   "tela": "src/pages/admin/RolePermissionsPage.tsx",
    "grupo": "adminRoutes",
    "guardas": [
     "ProtectedRoute",
     "AdminRoute"
    ],
+   "somente_dev": false,
+   "linha": 76,
+   "tela": "src/pages/admin/RolePermissionsPage.tsx",
    "hooks": [
     {
      "hook": "useToast",
@@ -703,6 +807,11 @@
    ],
    "dados": {
     "tabelas": [
+     "X",
+     "device_login_notifications",
+     "login_attempts",
+     "my_table",
+     "notifications",
      "permissions",
      "role_permissions",
      "system_kill_switches",
@@ -721,18 +830,19 @@
     ],
     "arquivos_lidos": 35
    },
-   "arquivo": "src/routes/admin-routes.tsx",
-   "linha": 76
+   "arquivo": "src/routes/admin-routes.tsx"
   },
   {
    "path": "/admin/video-variantes",
    "componente": "AdminVideoVariantsPage",
-   "tela": "src/pages/admin/AdminVideoVariantsPage.tsx",
    "grupo": "adminRoutes",
    "guardas": [
     "ProtectedRoute",
     "AdminRoute"
    ],
+   "somente_dev": false,
+   "linha": 77,
+   "tela": "src/pages/admin/AdminVideoVariantsPage.tsx",
    "hooks": [
     {
      "hook": "useVideoVariantLinks",
@@ -741,6 +851,7 @@
    ],
    "dados": {
     "tabelas": [
+     "X",
      "admin_settings",
      "ai_function_routing",
      "ai_models",
@@ -749,7 +860,13 @@
      "ai_usage_quotas",
      "cart_templates",
      "catalog_analytics",
+     "categories",
+     "categories_tree_visual",
      "category_icons",
+     "color_groups",
+     "color_nuances",
+     "color_variations",
+     "customization_price_tables",
      "expert_conversations",
      "expert_messages",
      "external_connections",
@@ -758,20 +875,38 @@
      "favorite_lists",
      "magic_up_brand_kits",
      "magic_up_generations",
+     "mv_product_intelligence",
      "mv_stock_velocity",
+     "my_table",
      "order_items",
      "orders",
+     "product_group_members",
+     "product_images",
+     "product_kit_components",
+     "product_materials",
      "product_price_freshness_overrides",
+     "product_relationships",
      "product_variants",
+     "product_videos",
      "product_views",
+     "products",
      "profiles",
      "quote_items",
      "quotes",
+     "sales_goals",
      "scheduled_reports",
      "search_analytics",
      "seller_cart_items",
      "seller_carts",
+     "stock_daily_summary",
+     "supplier_branches",
+     "suppliers",
      "system_kill_switches",
+     "tabela_preco_gravacao_oficial",
+     "tecnica_gravacao",
+     "v_catalog_stats",
+     "v_kit_component_complete",
+     "variant_supplier_sources",
      "video_variant_links"
     ],
     "buckets": [],
@@ -791,26 +926,36 @@
      "restore_seller_cart"
     ],
     "edges": [
+     "ai-recommendations",
+     "categories-api",
+     "commemorative-dates",
+     "connection-tester",
      "crm-db-bridge",
+     "dropbox-list",
      "external-db-bridge",
+     "external-db-inspect",
+     "generate-ad-image",
      "log-login-attempt",
+     "magic-up-score",
+     "materials-api",
      "mcp-keys-issue",
      "send-transactional-email"
     ],
     "arquivos_lidos": 258
    },
-   "arquivo": "src/routes/admin-routes.tsx",
-   "linha": 77
+   "arquivo": "src/routes/admin-routes.tsx"
   },
   {
    "path": "/admin/kit-templates",
    "componente": "KitTemplatesAdminPage",
-   "tela": "src/pages/admin/KitTemplatesAdminPage.tsx",
    "grupo": "adminRoutes",
    "guardas": [
     "ProtectedRoute",
     "AdminRoute"
    ],
+   "somente_dev": false,
+   "linha": 78,
+   "tela": "src/pages/admin/KitTemplatesAdminPage.tsx",
    "hooks": [
     {
      "hook": "useAdminKitTemplates",
@@ -819,16 +964,26 @@
    ],
    "dados": {
     "tabelas": [
+     "X",
      "admin_settings",
+     "audit_log",
      "custom_kits",
+     "geo_allowed_countries",
      "kit_collaborators",
      "kit_comments",
      "kit_quote_requests",
      "kit_templates",
      "kit_variants",
+     "my_table",
+     "print_area_techniques",
+     "product_variants",
+     "products",
      "profiles",
      "role_migration_batches",
-     "role_migration_items"
+     "role_migration_items",
+     "security_settings",
+     "user_ip_allowlist",
+     "user_known_devices"
     ],
     "buckets": [],
     "rpcs": [
@@ -841,6 +996,9 @@
     ],
     "edges": [
      "crm-db-bridge",
+     "detect-new-device",
+     "get-visitor-info",
+     "kit-identity-suggest",
      "log-login-attempt",
      "mcp-keys-issue",
      "secrets-manager",
@@ -848,18 +1006,19 @@
     ],
     "arquivos_lidos": 68
    },
-   "arquivo": "src/routes/admin-routes.tsx",
-   "linha": 78
+   "arquivo": "src/routes/admin-routes.tsx"
   },
   {
    "path": "/admin/kit-templates/metricas",
    "componente": "KitTemplatesMetricsPage",
-   "tela": "src/pages/admin/KitTemplatesMetricsPage.tsx",
    "grupo": "adminRoutes",
    "guardas": [
     "ProtectedRoute",
     "AdminRoute"
    ],
+   "somente_dev": false,
+   "linha": 79,
+   "tela": "src/pages/admin/KitTemplatesMetricsPage.tsx",
    "hooks": [],
    "dados": {
     "tabelas": [
@@ -873,18 +1032,19 @@
     "edges": [],
     "arquivos_lidos": 14
    },
-   "arquivo": "src/routes/admin-routes.tsx",
-   "linha": 79
+   "arquivo": "src/routes/admin-routes.tsx"
   },
   {
    "path": "/admin/aprovacoes-desconto",
    "componente": "Navigate",
-   "tela": null,
    "grupo": "adminRoutes",
    "guardas": [
     "ProtectedRoute",
     "AdminRoute"
    ],
+   "somente_dev": false,
+   "linha": 80,
+   "tela": null,
    "hooks": [],
    "dados": {
     "tabelas": [],
@@ -893,18 +1053,19 @@
     "edges": [],
     "arquivos_lidos": 0
    },
-   "arquivo": "src/routes/admin-routes.tsx",
-   "linha": 80
+   "arquivo": "src/routes/admin-routes.tsx"
   },
   {
    "path": "/admin/aprovacoes-desconto/:id",
    "componente": "DiscountRequestDetailPage",
-   "tela": "src/pages/admin/DiscountRequestDetailPage.tsx",
    "grupo": "adminRoutes",
    "guardas": [
     "ProtectedRoute",
     "AdminRoute"
    ],
+   "somente_dev": false,
+   "linha": 84,
+   "tela": "src/pages/admin/DiscountRequestDetailPage.tsx",
    "hooks": [
     {
      "hook": "useAuth",
@@ -924,18 +1085,19 @@
     ],
     "arquivos_lidos": 7
    },
-   "arquivo": "src/routes/admin-routes.tsx",
-   "linha": 84
+   "arquivo": "src/routes/admin-routes.tsx"
   },
   {
    "path": "/admin/performance",
    "componente": "DeprecatedRoute",
-   "tela": "src/components/layout/DeprecatedRoute.tsx",
    "grupo": "adminRoutes",
    "guardas": [
     "ProtectedRoute",
     "AdminRoute"
    ],
+   "somente_dev": false,
+   "linha": 86,
+   "tela": "src/components/layout/DeprecatedRoute.tsx",
    "hooks": [],
    "dados": {
     "tabelas": [],
@@ -944,18 +1106,19 @@
     "edges": [],
     "arquivos_lidos": 1
    },
-   "arquivo": "src/routes/admin-routes.tsx",
-   "linha": 86
+   "arquivo": "src/routes/admin-routes.tsx"
   },
   {
    "path": "/admin/performance-comercial",
    "componente": "DeprecatedRoute",
-   "tela": "src/components/layout/DeprecatedRoute.tsx",
    "grupo": "adminRoutes",
    "guardas": [
     "ProtectedRoute",
     "AdminRoute"
    ],
+   "somente_dev": false,
+   "linha": 95,
+   "tela": "src/components/layout/DeprecatedRoute.tsx",
    "hooks": [],
    "dados": {
     "tabelas": [],
@@ -964,18 +1127,19 @@
     "edges": [],
     "arquivos_lidos": 1
    },
-   "arquivo": "src/routes/admin-routes.tsx",
-   "linha": 95
+   "arquivo": "src/routes/admin-routes.tsx"
   },
   {
    "path": "/admin/comissoes",
    "componente": "DeprecatedRoute",
-   "tela": "src/components/layout/DeprecatedRoute.tsx",
    "grupo": "adminRoutes",
    "guardas": [
     "ProtectedRoute",
     "AdminRoute"
    ],
+   "somente_dev": false,
+   "linha": 104,
+   "tela": "src/components/layout/DeprecatedRoute.tsx",
    "hooks": [],
    "dados": {
     "tabelas": [],
@@ -984,31 +1148,43 @@
     "edges": [],
     "arquivos_lidos": 1
    },
-   "arquivo": "src/routes/admin-routes.tsx",
-   "linha": 104
+   "arquivo": "src/routes/admin-routes.tsx"
   },
   {
    "path": "/admin/seguranca",
    "componente": "AdminSegurancaPage",
-   "tela": "src/pages/admin/AdminSegurancaPage.tsx",
    "grupo": "adminRoutes",
    "guardas": [
     "ProtectedRoute",
     "DevRoute"
    ],
+   "somente_dev": false,
+   "linha": 117,
+   "tela": "src/pages/admin/AdminSegurancaPage.tsx",
    "hooks": [],
    "dados": {
     "tabelas": [
+     "X",
+     "access_security_settings",
      "admin_settings",
+     "audit_log",
+     "device_login_notifications",
      "file_scan_logs",
+     "geo_allowed_countries",
+     "ip_access_control",
      "kit_templates",
      "login_attempts",
+     "my_table",
      "notifications",
      "password_reset_requests",
      "profiles",
+     "rls_denial_log",
      "role_migration_batches",
      "role_migration_items",
      "role_permissions",
+     "security_settings",
+     "user_2fa_settings",
+     "user_ip_allowlist",
      "user_known_devices",
      "user_onboarding",
      "user_roles",
@@ -1023,27 +1199,31 @@
     ],
     "edges": [
      "crm-db-bridge",
+     "detect-new-device",
+     "get-visitor-info",
      "log-login-attempt",
      "mcp-keys-issue",
      "secrets-manager",
      "secure-upload",
      "step-up-verify",
-     "validate-access"
+     "validate-access",
+     "verify-2fa-token"
     ],
     "arquivos_lidos": 74
    },
-   "arquivo": "src/routes/admin-routes.tsx",
-   "linha": 117
+   "arquivo": "src/routes/admin-routes.tsx"
   },
   {
    "path": "/admin/seguranca-acesso",
    "componente": "AdminSegurancaAcessoPage",
-   "tela": "src/pages/admin/AdminSegurancaAcessoPage.tsx",
    "grupo": "adminRoutes",
    "guardas": [
     "ProtectedRoute",
     "DevRoute"
    ],
+   "somente_dev": false,
+   "linha": 118,
+   "tela": "src/pages/admin/AdminSegurancaAcessoPage.tsx",
    "hooks": [
     {
      "hook": "useToast",
@@ -1052,11 +1232,15 @@
    ],
    "dados": {
     "tabelas": [
+     "X",
      "admin_audit_log",
      "bot_detection_log",
+     "device_login_notifications",
      "hardening_health_snapshots",
      "ip_access_control",
      "login_attempts",
+     "my_table",
+     "notifications",
      "profiles",
      "public_token_failures",
      "request_rate_limits",
@@ -1079,18 +1263,19 @@
     ],
     "arquivos_lidos": 48
    },
-   "arquivo": "src/routes/admin-routes.tsx",
-   "linha": 118
+   "arquivo": "src/routes/admin-routes.tsx"
   },
   {
    "path": "/admin/seguranca/chaves",
    "componente": "AdminSegurancaChavesPage",
-   "tela": "src/pages/admin/AdminSegurancaChavesPage.tsx",
    "grupo": "adminRoutes",
    "guardas": [
     "ProtectedRoute",
     "DevRoute"
    ],
+   "somente_dev": false,
+   "linha": 119,
+   "tela": "src/pages/admin/AdminSegurancaChavesPage.tsx",
    "hooks": [],
    "dados": {
     "tabelas": [
@@ -1108,22 +1293,25 @@
      "full-op-diagnostics",
      "log-login-attempt",
      "mcp-keys-issue",
-     "mcp-keys-revoke"
+     "mcp-keys-revoke",
+     "mcp-keys-update",
+     "rls-audit"
     ],
     "arquivos_lidos": 42
    },
-   "arquivo": "src/routes/admin-routes.tsx",
-   "linha": 119
+   "arquivo": "src/routes/admin-routes.tsx"
   },
   {
    "path": "/admin/seguranca/exemplos-challenge",
    "componente": "DevChallengeExamplesPage",
-   "tela": "src/pages/admin/DevChallengeExamplesPage.tsx",
    "grupo": "adminRoutes",
    "guardas": [
     "ProtectedRoute",
     "DevRoute"
    ],
+   "somente_dev": false,
+   "linha": 120,
+   "tela": "src/pages/admin/DevChallengeExamplesPage.tsx",
    "hooks": [
     {
      "hook": "useDevChallenge",
@@ -1132,10 +1320,17 @@
    ],
    "dados": {
     "tabelas": [
+     "X",
+     "access_security_settings",
+     "geo_allowed_countries",
+     "ip_access_control",
      "login_attempts",
+     "my_table",
      "password_reset_requests",
      "profiles",
+     "rls_denial_log",
      "role_permissions",
+     "user_2fa_settings",
      "user_roles"
     ],
     "buckets": [],
@@ -1149,31 +1344,40 @@
      "log-login-attempt",
      "mcp-keys-issue",
      "mcp-keys-update",
-     "step-up-verify"
+     "step-up-verify",
+     "verify-2fa-token"
     ],
     "arquivos_lidos": 24
    },
-   "arquivo": "src/routes/admin-routes.tsx",
-   "linha": 120
+   "arquivo": "src/routes/admin-routes.tsx"
   },
   {
    "path": "/admin/seguranca/migracao-papeis",
    "componente": "AdminMigracaoPapeisPage",
-   "tela": "src/pages/admin/AdminMigracaoPapeisPage.tsx",
    "grupo": "adminRoutes",
    "guardas": [
     "ProtectedRoute",
     "DevRoute"
    ],
+   "somente_dev": false,
+   "linha": 121,
+   "tela": "src/pages/admin/AdminMigracaoPapeisPage.tsx",
    "hooks": [],
    "dados": {
     "tabelas": [
+     "X",
      "admin_settings",
+     "audit_log",
      "custom_kits",
+     "geo_allowed_countries",
      "kit_templates",
+     "my_table",
      "profiles",
      "role_migration_batches",
      "role_migration_items",
+     "security_settings",
+     "user_ip_allowlist",
+     "user_known_devices",
      "user_roles"
     ],
     "buckets": [],
@@ -1184,6 +1388,8 @@
     ],
     "edges": [
      "crm-db-bridge",
+     "detect-new-device",
+     "get-visitor-info",
      "log-login-attempt",
      "mcp-keys-issue",
      "secrets-manager",
@@ -1191,18 +1397,19 @@
     ],
     "arquivos_lidos": 31
    },
-   "arquivo": "src/routes/admin-routes.tsx",
-   "linha": 121
+   "arquivo": "src/routes/admin-routes.tsx"
   },
   {
    "path": "/admin/prompts-ia",
    "componente": "AdminPromptsIAPage",
-   "tela": "src/pages/admin/AdminPromptsIAPage.tsx",
    "grupo": "adminRoutes",
    "guardas": [
     "ProtectedRoute",
     "DevRoute"
    ],
+   "somente_dev": false,
+   "linha": 122,
+   "tela": "src/pages/admin/AdminPromptsIAPage.tsx",
    "hooks": [],
    "dados": {
     "tabelas": [
@@ -1217,18 +1424,19 @@
     ],
     "arquivos_lidos": 7
    },
-   "arquivo": "src/routes/admin-routes.tsx",
-   "linha": 122
+   "arquivo": "src/routes/admin-routes.tsx"
   },
   {
    "path": "/admin/validade-precos",
    "componente": "PriceFreshnessSettingsPage",
-   "tela": "src/pages/admin/PriceFreshnessSettings.tsx",
    "grupo": "adminRoutes",
    "guardas": [
     "ProtectedRoute",
     "DevRoute"
    ],
+   "somente_dev": false,
+   "linha": 123,
+   "tela": "src/pages/admin/PriceFreshnessSettings.tsx",
    "hooks": [
     {
      "hook": "useAllFreshnessOverrides",
@@ -1245,6 +1453,7 @@
    ],
    "dados": {
     "tabelas": [
+     "X",
      "admin_settings",
      "ai_function_routing",
      "ai_models",
@@ -1253,7 +1462,13 @@
      "ai_usage_quotas",
      "cart_templates",
      "catalog_analytics",
+     "categories",
+     "categories_tree_visual",
      "category_icons",
+     "color_groups",
+     "color_nuances",
+     "color_variations",
+     "customization_price_tables",
      "expert_conversations",
      "expert_messages",
      "external_connections",
@@ -1262,21 +1477,39 @@
      "favorite_lists",
      "magic_up_brand_kits",
      "magic_up_generations",
+     "mv_product_intelligence",
      "mv_stock_velocity",
+     "my_table",
      "order_items",
      "orders",
+     "product_group_members",
+     "product_images",
+     "product_kit_components",
+     "product_materials",
      "product_price_freshness_overrides",
+     "product_relationships",
      "product_variants",
+     "product_videos",
      "product_views",
+     "products",
      "profiles",
      "quote_items",
      "quotes",
+     "sales_goals",
      "scheduled_reports",
      "search_analytics",
      "seller_cart_items",
      "seller_carts",
+     "stock_daily_summary",
+     "supplier_branches",
+     "suppliers",
      "system_kill_switches",
      "system_settings",
+     "tabela_preco_gravacao_oficial",
+     "tecnica_gravacao",
+     "v_catalog_stats",
+     "v_kit_component_complete",
+     "variant_supplier_sources",
      "video_variant_links"
     ],
     "buckets": [],
@@ -1296,26 +1529,36 @@
      "restore_seller_cart"
     ],
     "edges": [
+     "ai-recommendations",
+     "categories-api",
+     "commemorative-dates",
+     "connection-tester",
      "crm-db-bridge",
+     "dropbox-list",
      "external-db-bridge",
+     "external-db-inspect",
+     "generate-ad-image",
      "log-login-attempt",
+     "magic-up-score",
+     "materials-api",
      "mcp-keys-issue",
      "send-transactional-email"
     ],
     "arquivos_lidos": 260
    },
-   "arquivo": "src/routes/admin-routes.tsx",
-   "linha": 123
+   "arquivo": "src/routes/admin-routes.tsx"
   },
   {
    "path": "/admin/badges-inteligencia",
    "componente": "IntelligenceBadgeSettingsPage",
-   "tela": "src/pages/admin/IntelligenceBadgeSettingsPage.tsx",
    "grupo": "adminRoutes",
    "guardas": [
     "ProtectedRoute",
     "DevRoute"
    ],
+   "somente_dev": false,
+   "linha": 124,
+   "tela": "src/pages/admin/IntelligenceBadgeSettingsPage.tsx",
    "hooks": [
     {
      "hook": "useIntelligenceBadgeSettings",
@@ -1333,18 +1576,19 @@
     ],
     "arquivos_lidos": 4
    },
-   "arquivo": "src/routes/admin-routes.tsx",
-   "linha": 124
+   "arquivo": "src/routes/admin-routes.tsx"
   },
   {
    "path": "/admin/telemetria",
    "componente": "AdminTelemetriaPage",
-   "tela": "src/pages/admin/AdminTelemetriaPage.tsx",
    "grupo": "adminRoutes",
    "guardas": [
     "ProtectedRoute",
     "DevRoute"
    ],
+   "somente_dev": false,
+   "linha": 125,
+   "tela": "src/pages/admin/AdminTelemetriaPage.tsx",
    "hooks": [
     {
      "hook": "useTelemetryData",
@@ -1365,18 +1609,19 @@
     "edges": [],
     "arquivos_lidos": 20
    },
-   "arquivo": "src/routes/admin-routes.tsx",
-   "linha": 125
+   "arquivo": "src/routes/admin-routes.tsx"
   },
   {
    "path": "/admin/ema-health",
    "componente": "EmaHealthPage",
-   "tela": "src/pages/admin/EmaHealthPage.tsx",
    "grupo": "adminRoutes",
    "guardas": [
     "ProtectedRoute",
     "DevRoute"
    ],
+   "somente_dev": false,
+   "linha": 126,
+   "tela": "src/pages/admin/EmaHealthPage.tsx",
    "hooks": [
     {
      "hook": "useEmaPipelineHealth",
@@ -1387,21 +1632,24 @@
     "tabelas": [],
     "buckets": [],
     "rpcs": [],
-    "edges": [],
+    "edges": [
+     "ema-pipeline-health"
+    ],
     "arquivos_lidos": 4
    },
-   "arquivo": "src/routes/admin-routes.tsx",
-   "linha": 126
+   "arquivo": "src/routes/admin-routes.tsx"
   },
   {
    "path": "/admin/v4-callbacks",
    "componente": "AdminV4CallbacksPage",
-   "tela": "src/pages/admin/AdminV4CallbacksPage.tsx",
    "grupo": "adminRoutes",
    "guardas": [
     "ProtectedRoute",
     "DevRoute"
    ],
+   "somente_dev": false,
+   "linha": 127,
+   "tela": "src/pages/admin/AdminV4CallbacksPage.tsx",
    "hooks": [
     {
      "hook": "useV4Callbacks",
@@ -1432,18 +1680,19 @@
     ],
     "arquivos_lidos": 4
    },
-   "arquivo": "src/routes/admin-routes.tsx",
-   "linha": 127
+   "arquivo": "src/routes/admin-routes.tsx"
   },
   {
    "path": "/admin/design-tokens",
    "componente": "AdminDesignTokensPage",
-   "tela": "src/pages/admin/AdminDesignTokensPage.tsx",
    "grupo": "adminRoutes",
    "guardas": [
     "ProtectedRoute",
     "DevRoute"
    ],
+   "somente_dev": false,
+   "linha": 129,
+   "tela": "src/pages/admin/AdminDesignTokensPage.tsx",
    "hooks": [],
    "dados": {
     "tabelas": [],
@@ -1452,18 +1701,19 @@
     "edges": [],
     "arquivos_lidos": 2
    },
-   "arquivo": "src/routes/admin-routes.tsx",
-   "linha": 129
+   "arquivo": "src/routes/admin-routes.tsx"
   },
   {
    "path": "/admin/client-performance",
    "componente": "AdminClientPerformancePage",
-   "tela": "src/pages/admin/AdminClientPerformancePage.tsx",
    "grupo": "adminRoutes",
    "guardas": [
     "ProtectedRoute",
     "DevRoute"
    ],
+   "somente_dev": false,
+   "linha": 130,
+   "tela": "src/pages/admin/AdminClientPerformancePage.tsx",
    "hooks": [],
    "dados": {
     "tabelas": [
@@ -1474,18 +1724,19 @@
     "edges": [],
     "arquivos_lidos": 6
    },
-   "arquivo": "src/routes/admin-routes.tsx",
-   "linha": 130
+   "arquivo": "src/routes/admin-routes.tsx"
   },
   {
    "path": "/admin/rate-limit",
    "componente": "RateLimitDashboard",
-   "tela": "src/pages/system/RateLimitDashboardPage.tsx",
    "grupo": "adminRoutes",
    "guardas": [
     "ProtectedRoute",
     "DevRoute"
    ],
+   "somente_dev": false,
+   "linha": 131,
+   "tela": "src/pages/system/RateLimitDashboardPage.tsx",
    "hooks": [
     {
      "hook": "useToast",
@@ -1494,7 +1745,11 @@
    ],
    "dados": {
     "tabelas": [
+     "X",
+     "device_login_notifications",
      "login_attempts",
+     "my_table",
+     "notifications",
      "system_kill_switches",
      "system_settings",
      "user_onboarding",
@@ -1511,18 +1766,19 @@
     ],
     "arquivos_lidos": 33
    },
-   "arquivo": "src/routes/admin-routes.tsx",
-   "linha": 131
+   "arquivo": "src/routes/admin-routes.tsx"
   },
   {
    "path": "/admin/workflows",
    "componente": "AdminWorkflowsPage",
-   "tela": "src/pages/admin/AdminWorkflowsPage.tsx",
    "grupo": "adminRoutes",
    "guardas": [
     "ProtectedRoute",
     "DevRoute"
    ],
+   "somente_dev": false,
+   "linha": 132,
+   "tela": "src/pages/admin/AdminWorkflowsPage.tsx",
    "hooks": [],
    "dados": {
     "tabelas": [],
@@ -1531,18 +1787,19 @@
     "edges": [],
     "arquivos_lidos": 7
    },
-   "arquivo": "src/routes/admin-routes.tsx",
-   "linha": 132
+   "arquivo": "src/routes/admin-routes.tsx"
   },
   {
    "path": "/admin/login-attempts",
    "componente": "AdminLoginAttemptsPage",
-   "tela": "src/pages/admin/AdminLoginAttemptsPage.tsx",
    "grupo": "adminRoutes",
    "guardas": [
     "ProtectedRoute",
     "DevRoute"
    ],
+   "somente_dev": false,
+   "linha": 133,
+   "tela": "src/pages/admin/AdminLoginAttemptsPage.tsx",
    "hooks": [
     {
      "hook": "useLoginAttempts",
@@ -1555,10 +1812,17 @@
    ],
    "dados": {
     "tabelas": [
+     "X",
+     "access_security_settings",
+     "geo_allowed_countries",
+     "ip_access_control",
      "login_attempts",
+     "my_table",
      "password_reset_requests",
      "profiles",
+     "rls_denial_log",
      "role_permissions",
+     "user_2fa_settings",
      "user_roles"
     ],
     "buckets": [],
@@ -1571,22 +1835,24 @@
      "crm-db-bridge",
      "log-login-attempt",
      "mcp-keys-issue",
-     "step-up-verify"
+     "step-up-verify",
+     "verify-2fa-token"
     ],
     "arquivos_lidos": 22
    },
-   "arquivo": "src/routes/admin-routes.tsx",
-   "linha": 133
+   "arquivo": "src/routes/admin-routes.tsx"
   },
   {
    "path": "/admin/sessoes",
    "componente": "AdminSessionsPage",
-   "tela": "src/pages/admin/AdminSessionsPage.tsx",
    "grupo": "adminRoutes",
    "guardas": [
     "ProtectedRoute",
     "DevRoute"
    ],
+   "somente_dev": false,
+   "linha": 134,
+   "tela": "src/pages/admin/AdminSessionsPage.tsx",
    "hooks": [
     {
      "hook": "useAdminSessions",
@@ -1609,22 +1875,24 @@
     ],
     "edges": [
      "crm-db-bridge",
-     "log-login-attempt"
+     "log-login-attempt",
+     "manage-users"
     ],
     "arquivos_lidos": 12
    },
-   "arquivo": "src/routes/admin-routes.tsx",
-   "linha": 134
+   "arquivo": "src/routes/admin-routes.tsx"
   },
   {
    "path": "/admin/external-db",
    "componente": "AdminExternalDbPage",
-   "tela": "src/pages/admin/AdminExternalDbPage.tsx",
    "grupo": "adminRoutes",
    "guardas": [
     "ProtectedRoute",
     "DevRoute"
    ],
+   "somente_dev": false,
+   "linha": 135,
+   "tela": "src/pages/admin/AdminExternalDbPage.tsx",
    "hooks": [
     {
      "hook": "useExternalDbInspect",
@@ -1633,6 +1901,7 @@
    ],
    "dados": {
     "tabelas": [
+     "X",
      "ai_function_routing",
      "ai_models",
      "ai_providers",
@@ -1640,7 +1909,13 @@
      "ai_usage_quotas",
      "cart_templates",
      "catalog_analytics",
+     "categories",
+     "categories_tree_visual",
      "category_icons",
+     "color_groups",
+     "color_nuances",
+     "color_variations",
+     "customization_price_tables",
      "expert_conversations",
      "expert_messages",
      "external_connections",
@@ -1649,22 +1924,41 @@
      "magic_up_campaigns",
      "magic_up_generations",
      "mockup_drafts",
+     "mv_product_intelligence",
      "mv_stock_velocity",
+     "my_table",
      "order_items",
      "orders",
+     "personalization_simulations",
+     "personalization_techniques",
+     "print_area_techniques",
+     "product_group_members",
+     "product_images",
      "product_price_freshness_overrides",
+     "product_relationships",
      "product_variants",
      "product_views",
+     "products",
      "profiles",
      "quote_items",
      "quotes",
+     "sales_goals",
      "scheduled_reports",
      "search_analytics",
      "seller_cart_items",
      "seller_carts",
      "some_table",
+     "stock_daily_summary",
+     "supplier_branches",
+     "suppliers",
      "system_kill_switches",
      "system_settings",
+     "tabela_preco_gravacao_oficial",
+     "tabela_preco_gravacao_oficial_faixa",
+     "tecnica_gravacao",
+     "tecnicas_gravacao",
+     "v_catalog_stats",
+     "variant_supplier_sources",
      "video_variant_links",
      "voice_command_logs"
     ],
@@ -1679,26 +1973,38 @@
      "get_promo_sales_ranking"
     ],
     "edges": [
+     "ai-recommendations",
+     "categories-api",
+     "commemorative-dates",
+     "connection-tester",
      "crm-db-bridge",
+     "dropbox-list",
+     "elevenlabs-scribe-token",
+     "elevenlabs-tts",
      "external-db-bridge",
+     "external-db-inspect",
+     "generate-ad-image",
      "log-login-attempt",
+     "magic-up-score",
      "mcp-keys-issue",
-     "send-transactional-email"
+     "send-transactional-email",
+     "voice-agent"
     ],
     "arquivos_lidos": 272
    },
-   "arquivo": "src/routes/admin-routes.tsx",
-   "linha": 135
+   "arquivo": "src/routes/admin-routes.tsx"
   },
   {
    "path": "/admin/consumo-ia",
    "componente": "AdminAiUsagePage",
-   "tela": "src/pages/admin/AdminAiUsagePage.tsx",
    "grupo": "adminRoutes",
    "guardas": [
     "ProtectedRoute",
     "DevRoute"
    ],
+   "somente_dev": false,
+   "linha": 136,
+   "tela": "src/pages/admin/AdminAiUsagePage.tsx",
    "hooks": [
     {
      "hook": "useAiUsageStats",
@@ -1711,6 +2017,7 @@
    ],
    "dados": {
     "tabelas": [
+     "X",
      "ai_function_routing",
      "ai_insights_cache",
      "ai_models",
@@ -1720,7 +2027,12 @@
      "ai_usage_quotas",
      "cart_templates",
      "catalog_analytics",
+     "categories",
+     "categories_tree_visual",
      "category_icons",
+     "color_groups",
+     "color_nuances",
+     "color_variations",
      "expert_conversations",
      "expert_messages",
      "external_connections",
@@ -1729,22 +2041,36 @@
      "magic_up_campaigns",
      "magic_up_generations",
      "mockup_drafts",
+     "mv_product_intelligence",
      "mv_stock_velocity",
+     "my_table",
      "order_items",
      "orders",
+     "product_group_members",
+     "product_images",
      "product_price_freshness_overrides",
+     "product_relationships",
      "product_variants",
      "product_views",
+     "products",
      "profiles",
      "quote_items",
      "quotes",
+     "sales_goals",
      "scheduled_reports",
      "search_analytics",
      "seller_cart_items",
      "seller_carts",
      "some_table",
+     "stock_daily_summary",
+     "supplier_branches",
+     "suppliers",
      "system_kill_switches",
      "system_settings",
+     "tabela_preco_gravacao_oficial",
+     "tabela_preco_gravacao_oficial_faixa",
+     "v_catalog_stats",
+     "variant_supplier_sources",
      "video_variant_links",
      "voice_command_logs"
     ],
@@ -1759,26 +2085,38 @@
      "get_promo_sales_ranking"
     ],
     "edges": [
+     "ai-recommendations",
+     "categories-api",
+     "commemorative-dates",
+     "connection-tester",
      "crm-db-bridge",
+     "dropbox-list",
+     "elevenlabs-scribe-token",
+     "elevenlabs-tts",
      "external-db-bridge",
+     "external-db-inspect",
+     "generate-ad-image",
      "log-login-attempt",
+     "magic-up-score",
      "mcp-keys-issue",
-     "send-transactional-email"
+     "send-transactional-email",
+     "voice-agent"
     ],
     "arquivos_lidos": 244
    },
-   "arquivo": "src/routes/admin-routes.tsx",
-   "linha": 136
+   "arquivo": "src/routes/admin-routes.tsx"
   },
   {
    "path": "/admin/conexoes",
    "componente": "AdminConexoesPage",
-   "tela": "src/pages/admin/AdminConexoesPage.tsx",
    "grupo": "adminRoutes",
    "guardas": [
     "ProtectedRoute",
     "DevRoute"
    ],
+   "somente_dev": false,
+   "linha": 137,
+   "tela": "src/pages/admin/AdminConexoesPage.tsx",
    "hooks": [
     {
      "hook": "useSecretsManager",
@@ -1807,38 +2145,53 @@
    ],
    "dados": {
     "tabelas": [
+     "X",
      "admin_settings",
      "ai_function_routing",
      "ai_models",
      "ai_providers",
      "ai_usage_logs",
      "ai_usage_quotas",
+     "audit_log",
+     "categories",
      "connection_test_history",
      "custom_kits",
      "expert_conversations",
      "expert_messages",
      "external_connections",
      "external_connections_sync_log",
+     "geo_allowed_countries",
      "inbound_webhook_endpoints",
      "inbound_webhook_events",
+     "integration_credentials",
      "kit_templates",
      "magic_up_brand_kits",
      "magic_up_campaigns",
      "magic_up_generations",
      "mcp_api_keys",
+     "mv_product_intelligence",
      "mv_stock_velocity",
+     "my_table",
      "order_items",
      "orders",
      "outbound_webhooks",
+     "product_images",
+     "product_variants",
      "products",
      "profiles",
      "quote_items",
      "quotes",
      "role_migration_batches",
      "role_migration_items",
+     "sales_goals",
      "scheduled_reports",
      "secret_rotation_log",
+     "security_settings",
+     "stock_daily_summary",
+     "suppliers",
      "system_kill_switches",
+     "user_ip_allowlist",
+     "user_known_devices",
      "voice_command_logs",
      "webhook_deliveries",
      "workspace_notifications"
@@ -1860,30 +2213,47 @@
      "set_custom_kit_pinned"
     ],
     "edges": [
+     "ai-recommendations",
+     "commemorative-dates",
+     "connection-tester",
+     "connections-hub-audit",
      "crm-db-bridge",
+     "detect-new-device",
+     "dropbox-list",
+     "elevenlabs-scribe-token",
+     "elevenlabs-tts",
      "external-db-bridge",
+     "external-db-inspect",
+     "generate-ad-image",
+     "get-visitor-info",
      "github-credentials-test",
      "log-login-attempt",
+     "magic-up-score",
      "mcp-keys-issue",
      "mcp-keys-revoke",
+     "mcp-server",
      "secrets-manager",
      "send-transactional-email",
-     "validate-access"
+     "validate-access",
+     "voice-agent",
+     "webhook-dispatcher",
+     "webhook-inbound"
     ],
     "arquivos_lidos": 311
    },
-   "arquivo": "src/routes/admin-routes.tsx",
-   "linha": 137
+   "arquivo": "src/routes/admin-routes.tsx"
   },
   {
    "path": "/admin/conexoes/status",
    "componente": "AdminConexoesStatusPage",
-   "tela": "src/pages/admin/AdminConexoesStatusPage.tsx",
    "grupo": "adminRoutes",
    "guardas": [
     "ProtectedRoute",
     "DevRoute"
    ],
+   "somente_dev": false,
+   "linha": 138,
+   "tela": "src/pages/admin/AdminConexoesStatusPage.tsx",
    "hooks": [],
    "dados": {
     "tabelas": [
@@ -1896,18 +2266,19 @@
     "edges": [],
     "arquivos_lidos": 4
    },
-   "arquivo": "src/routes/admin-routes.tsx",
-   "linha": 138
+   "arquivo": "src/routes/admin-routes.tsx"
   },
   {
    "path": "/admin/status",
    "componente": "SystemStatusPage",
-   "tela": "src/pages/system/SystemStatusPage.tsx",
    "grupo": "adminRoutes",
    "guardas": [
     "ProtectedRoute",
     "DevRoute"
    ],
+   "somente_dev": false,
+   "linha": 139,
+   "tela": "src/pages/system/SystemStatusPage.tsx",
    "hooks": [
     {
      "hook": "useAuth",
@@ -1922,7 +2293,9 @@
     "tabelas": [
      "login_attempts",
      "profiles",
-     "system_kill_switches"
+     "system_kill_switches",
+     "v_pipeline_progress",
+     "vw_medallion_coverage"
     ],
     "buckets": [],
     "rpcs": [],
@@ -1932,18 +2305,19 @@
     ],
     "arquivos_lidos": 18
    },
-   "arquivo": "src/routes/admin-routes.tsx",
-   "linha": 139
+   "arquivo": "src/routes/admin-routes.tsx"
   },
   {
    "path": "/external-db-test",
    "componente": "ExternalDatabaseTest",
-   "tela": "src/pages/system/ExternalDatabaseTest.tsx",
    "grupo": "adminRoutes",
    "guardas": [
     "ProtectedRoute",
     "DevRoute"
    ],
+   "somente_dev": false,
+   "linha": 140,
+   "tela": "src/pages/system/ExternalDatabaseTest.tsx",
    "hooks": [
     {
      "hook": "useExternalCompanies",
@@ -1956,6 +2330,7 @@
    ],
    "dados": {
     "tabelas": [
+     "X",
      "ai_function_routing",
      "ai_models",
      "ai_providers",
@@ -1963,7 +2338,12 @@
      "ai_usage_quotas",
      "cart_templates",
      "catalog_analytics",
+     "categories",
+     "categories_tree_visual",
      "category_icons",
+     "color_groups",
+     "color_nuances",
+     "color_variations",
      "expert_conversations",
      "expert_messages",
      "external_connections",
@@ -1972,22 +2352,36 @@
      "magic_up_campaigns",
      "magic_up_generations",
      "mockup_drafts",
+     "mv_product_intelligence",
      "mv_stock_velocity",
+     "my_table",
      "order_items",
      "orders",
+     "product_group_members",
+     "product_images",
      "product_price_freshness_overrides",
+     "product_relationships",
      "product_variants",
      "product_views",
+     "products",
      "profiles",
      "quote_items",
      "quotes",
+     "sales_goals",
      "scheduled_reports",
      "search_analytics",
      "seller_cart_items",
      "seller_carts",
      "some_table",
+     "stock_daily_summary",
+     "supplier_branches",
+     "suppliers",
      "system_kill_switches",
      "system_settings",
+     "tabela_preco_gravacao_oficial",
+     "tabela_preco_gravacao_oficial_faixa",
+     "v_catalog_stats",
+     "variant_supplier_sources",
      "video_variant_links",
      "voice_command_logs"
     ],
@@ -2002,26 +2396,38 @@
      "get_promo_sales_ranking"
     ],
     "edges": [
+     "ai-recommendations",
+     "categories-api",
+     "commemorative-dates",
+     "connection-tester",
      "crm-db-bridge",
+     "dropbox-list",
+     "elevenlabs-scribe-token",
+     "elevenlabs-tts",
      "external-db-bridge",
+     "external-db-inspect",
+     "generate-ad-image",
      "log-login-attempt",
+     "magic-up-score",
      "mcp-keys-issue",
-     "send-transactional-email"
+     "send-transactional-email",
+     "voice-agent"
     ],
     "arquivos_lidos": 239
    },
-   "arquivo": "src/routes/admin-routes.tsx",
-   "linha": 140
+   "arquivo": "src/routes/admin-routes.tsx"
   },
   {
    "path": "/admin/rbac-rotas",
    "componente": "AdminRbacRoutesPage",
-   "tela": "src/pages/admin/AdminRbacRoutesPage.tsx",
    "grupo": "adminRoutes",
    "guardas": [
     "ProtectedRoute",
     "DevRoute"
    ],
+   "somente_dev": false,
+   "linha": 141,
+   "tela": "src/pages/admin/AdminRbacRoutesPage.tsx",
    "hooks": [
     {
      "hook": "useAuth",
@@ -2035,18 +2441,19 @@
     "edges": [],
     "arquivos_lidos": 3
    },
-   "arquivo": "src/routes/admin-routes.tsx",
-   "linha": 141
+   "arquivo": "src/routes/admin-routes.tsx"
   },
   {
    "path": "/admin/storage-test",
    "componente": "StorageTestPage",
-   "tela": "src/pages/admin/StorageTestPage.tsx",
    "grupo": "adminRoutes",
    "guardas": [
     "ProtectedRoute",
     "DevRoute"
    ],
+   "somente_dev": false,
+   "linha": 142,
+   "tela": "src/pages/admin/StorageTestPage.tsx",
    "hooks": [
     {
      "hook": "useToast",
@@ -2055,6 +2462,11 @@
    ],
    "dados": {
     "tabelas": [
+     "X",
+     "device_login_notifications",
+     "login_attempts",
+     "my_table",
+     "notifications",
      "system_kill_switches",
      "system_settings",
      "user_onboarding",
@@ -2073,18 +2485,19 @@
     ],
     "arquivos_lidos": 37
    },
-   "arquivo": "src/routes/admin-routes.tsx",
-   "linha": 142
+   "arquivo": "src/routes/admin-routes.tsx"
   },
   {
    "path": "/admin/qa",
    "componente": "QAPage",
-   "tela": "src/pages/QAPage.tsx",
    "grupo": "adminRoutes",
    "guardas": [
     "ProtectedRoute",
     "DevRoute"
    ],
+   "somente_dev": false,
+   "linha": 143,
+   "tela": "src/pages/QAPage.tsx",
    "hooks": [
     {
      "hook": "useDevGate",
@@ -2093,11 +2506,18 @@
    ],
    "dados": {
     "tabelas": [
+     "X",
      "admin_settings",
+     "audit_log",
      "custom_kits",
+     "geo_allowed_countries",
      "kit_templates",
+     "my_table",
      "role_migration_batches",
-     "role_migration_items"
+     "role_migration_items",
+     "security_settings",
+     "user_ip_allowlist",
+     "user_known_devices"
     ],
     "buckets": [],
     "rpcs": [
@@ -2108,6 +2528,8 @@
     ],
     "edges": [
      "crm-db-bridge",
+     "detect-new-device",
+     "get-visitor-info",
      "log-login-attempt",
      "mcp-keys-issue",
      "secrets-manager",
@@ -2115,18 +2537,19 @@
     ],
     "arquivos_lidos": 34
    },
-   "arquivo": "src/routes/admin-routes.tsx",
-   "linha": 143
+   "arquivo": "src/routes/admin-routes.tsx"
   },
   {
    "path": "/admin/qa/sidebar",
    "componente": "SidebarQAPage",
-   "tela": "src/pages/SidebarQAPage.tsx",
    "grupo": "adminRoutes",
    "guardas": [
     "ProtectedRoute",
     "DevRoute"
    ],
+   "somente_dev": false,
+   "linha": 144,
+   "tela": "src/pages/SidebarQAPage.tsx",
    "hooks": [],
    "dados": {
     "tabelas": [],
@@ -2135,42 +2558,45 @@
     "edges": [],
     "arquivos_lidos": 3
    },
-   "arquivo": "src/routes/admin-routes.tsx",
-   "linha": 144
+   "arquivo": "src/routes/admin-routes.tsx"
   },
   {
    "path": "/admin/audit-suite",
    "componente": "AuditSuitePage",
-   "tela": "src/components/audit/AuditReport.tsx",
    "grupo": "adminRoutes",
    "guardas": [
     "ProtectedRoute",
     "DevRoute"
    ],
+   "somente_dev": false,
+   "linha": 145,
+   "tela": "src/components/audit/AuditReport.tsx",
    "hooks": [],
    "dados": {
     "tabelas": [],
     "buckets": [],
     "rpcs": [],
     "edges": [
+     "audit-suite",
      "crm-db-bridge",
      "log-login-attempt",
      "mcp-keys-issue"
     ],
     "arquivos_lidos": 10
    },
-   "arquivo": "src/routes/admin-routes.tsx",
-   "linha": 145
+   "arquivo": "src/routes/admin-routes.tsx"
   },
   {
    "path": "/admin/observabilidade",
    "componente": "ObservabilityDashboardPage",
-   "tela": "src/pages/admin/ObservabilityDashboard.tsx",
    "grupo": "adminRoutes",
    "guardas": [
     "ProtectedRoute",
     "DevRoute"
    ],
+   "somente_dev": false,
+   "linha": 146,
+   "tela": "src/pages/admin/ObservabilityDashboard.tsx",
    "hooks": [
     {
      "hook": "useKillSwitchObservability",
@@ -2182,7 +2608,14 @@
     }
    ],
    "dados": {
-    "tabelas": [],
+    "tabelas": [
+     "X",
+     "my_table",
+     "system_kill_switches",
+     "v_kill_switch_hits_summary",
+     "v_smoke_tests_latest_run",
+     "v_smoke_tests_trend"
+    ],
     "buckets": [],
     "rpcs": [
      "fn_my_rpc",
@@ -2191,39 +2624,47 @@
     "edges": [],
     "arquivos_lidos": 7
    },
-   "arquivo": "src/routes/admin-routes.tsx",
-   "linha": 146
+   "arquivo": "src/routes/admin-routes.tsx"
   },
   {
    "path": "/admin/cloudflare-images",
    "componente": "AdminCloudflareImagesPage",
-   "tela": "src/pages/admin/AdminCloudflareImagesPage.tsx",
    "grupo": "adminRoutes",
    "guardas": [
     "ProtectedRoute",
     "DevRoute"
    ],
+   "somente_dev": false,
+   "linha": 147,
+   "tela": "src/pages/admin/AdminCloudflareImagesPage.tsx",
    "hooks": [],
    "dados": {
-    "tabelas": [],
+    "tabelas": [
+     "X",
+     "my_table",
+     "product_images"
+    ],
     "buckets": [],
     "rpcs": [
      "fn_my_rpc"
     ],
-    "edges": [],
+    "edges": [
+     "image-proxy"
+    ],
     "arquivos_lidos": 6
    },
-   "arquivo": "src/routes/admin-routes.tsx",
-   "linha": 147
+   "arquivo": "src/routes/admin-routes.tsx"
   },
   {
    "path": "/",
    "componente": "Index",
-   "tela": "src/pages/Index.tsx",
    "grupo": "homeAndClientRoutes",
    "guardas": [
     "ProtectedRoute"
    ],
+   "somente_dev": false,
+   "linha": 22,
+   "tela": "src/pages/Index.tsx",
    "hooks": [
     {
      "hook": "useCatalogState",
@@ -2232,6 +2673,7 @@
    ],
    "dados": {
     "tabelas": [
+     "X",
      "admin_settings",
      "ai_function_routing",
      "ai_models",
@@ -2241,9 +2683,17 @@
      "art_file_attachments",
      "cart_templates",
      "catalog_analytics",
+     "categories",
+     "categories_tree_visual",
      "category_icons",
+     "collections",
+     "color_groups",
+     "color_nuances",
+     "color_variations",
+     "companies",
      "component_media",
      "custom_kits",
+     "device_login_notifications",
      "expert_conversations",
      "expert_messages",
      "external_connections",
@@ -2252,25 +2702,45 @@
      "favorite_lists",
      "frontend_telemetry",
      "generated_mockups",
+     "login_attempts",
      "magic_up_brand_kits",
      "magic_up_generations",
+     "mv_product_intelligence",
      "mv_stock_velocity",
+     "my_table",
+     "notifications",
      "order_items",
      "orders",
      "product_components",
+     "product_group_members",
+     "product_images",
+     "product_kit_components",
+     "product_materials",
      "product_price_freshness_overrides",
+     "product_relationships",
      "product_variants",
+     "product_videos",
      "product_views",
+     "products",
+     "produto_ramo_atividade",
      "profiles",
      "quote_items",
      "quotes",
+     "sales_goals",
      "scheduled_reports",
      "search_analytics",
      "seller_cart_items",
      "seller_carts",
+     "stock_daily_summary",
+     "supplier_branches",
+     "suppliers",
      "system_kill_switches",
      "system_settings",
      "user_onboarding",
+     "v_catalog_stats",
+     "v_kit_component_complete",
+     "v_super_filtro_options",
+     "variant_supplier_sources",
      "video_variant_links",
      "workspace_notifications"
     ],
@@ -2292,25 +2762,38 @@
      "search_records_rerank"
     ],
     "edges": [
+     "ai-recommendations",
+     "categories-api",
+     "commemorative-dates",
+     "connection-tester",
      "crm-db-bridge",
+     "dropbox-list",
      "external-db-bridge",
+     "external-db-inspect",
+     "generate-ad-image",
+     "image-proxy",
      "log-login-attempt",
+     "magic-up-score",
+     "materials-api",
      "mcp-keys-issue",
-     "send-transactional-email"
+     "semantic-search",
+     "send-transactional-email",
+     "visual-search"
     ],
     "arquivos_lidos": 394
    },
-   "arquivo": "src/routes/client-routes.tsx",
-   "linha": 22
+   "arquivo": "src/routes/client-routes.tsx"
   },
   {
    "path": "/dashboard",
    "componente": "CustomizableDashboard",
-   "tela": "src/pages/CustomizableDashboard.tsx",
    "grupo": "homeAndClientRoutes",
    "guardas": [
     "ProtectedRoute"
    ],
+   "somente_dev": false,
+   "linha": 23,
+   "tela": "src/pages/CustomizableDashboard.tsx",
    "hooks": [
     {
      "hook": "useAuth",
@@ -2327,6 +2810,7 @@
    ],
    "dados": {
     "tabelas": [
+     "X",
      "admin_audit_log",
      "ai_function_routing",
      "ai_models",
@@ -2335,7 +2819,12 @@
      "ai_usage_quotas",
      "cart_templates",
      "catalog_analytics",
+     "categories",
+     "categories_tree_visual",
      "category_icons",
+     "color_groups",
+     "color_nuances",
+     "color_variations",
      "custom_kits",
      "discount_approval_audit",
      "discount_approval_requests",
@@ -2346,12 +2835,18 @@
      "magic_up_brand_kits",
      "magic_up_campaigns",
      "magic_up_generations",
+     "mv_product_intelligence",
      "mv_stock_velocity",
+     "my_table",
      "order_items",
      "orders",
+     "personalization_techniques",
      "product_component_locations",
      "product_components",
+     "product_group_members",
+     "product_images",
      "product_price_freshness_overrides",
+     "product_relationships",
      "product_variants",
      "product_views",
      "products",
@@ -2360,13 +2855,19 @@
      "quote_item_personalizations",
      "quote_items",
      "quotes",
+     "sales_goals",
      "scheduled_reports",
      "search_analytics",
      "seller_cart_items",
      "seller_carts",
      "seller_discount_limits",
+     "stock_daily_summary",
+     "supplier_branches",
+     "suppliers",
      "system_kill_switches",
      "t",
+     "v_catalog_stats",
+     "variant_supplier_sources",
      "video_variant_links",
      "voice_command_logs"
     ],
@@ -2385,26 +2886,38 @@
      "save_custom_kit_atomic"
     ],
     "edges": [
+     "ai-recommendations",
+     "categories-api",
+     "commemorative-dates",
+     "connection-tester",
      "crm-db-bridge",
+     "dropbox-list",
+     "elevenlabs-scribe-token",
+     "elevenlabs-tts",
      "external-db-bridge",
+     "external-db-inspect",
+     "generate-ad-image",
      "log-login-attempt",
+     "magic-up-score",
      "mcp-keys-issue",
      "quote-sync",
-     "send-transactional-email"
+     "send-transactional-email",
+     "voice-agent"
     ],
     "arquivos_lidos": 278
    },
-   "arquivo": "src/routes/client-routes.tsx",
-   "linha": 23
+   "arquivo": "src/routes/client-routes.tsx"
   },
   {
    "path": "/admin/temas",
    "componente": "AdminTemasPage",
-   "tela": "src/pages/admin/AdminTemasPage.tsx",
    "grupo": "homeAndClientRoutes",
    "guardas": [
     "ProtectedRoute"
    ],
+   "somente_dev": false,
+   "linha": 26,
+   "tela": "src/pages/admin/AdminTemasPage.tsx",
    "hooks": [
     {
      "hook": "useTheme",
@@ -2418,17 +2931,18 @@
     "edges": [],
     "arquivos_lidos": 7
    },
-   "arquivo": "src/routes/client-routes.tsx",
-   "linha": 26
+   "arquivo": "src/routes/client-routes.tsx"
   },
   {
    "path": "/configuracoes",
    "componente": "Navigate",
-   "tela": null,
    "grupo": "homeAndClientRoutes",
    "guardas": [
     "ProtectedRoute"
    ],
+   "somente_dev": false,
+   "linha": 29,
+   "tela": null,
    "hooks": [],
    "dados": {
     "tabelas": [],
@@ -2437,17 +2951,18 @@
     "edges": [],
     "arquivos_lidos": 0
    },
-   "arquivo": "src/routes/client-routes.tsx",
-   "linha": 29
+   "arquivo": "src/routes/client-routes.tsx"
   },
   {
    "path": "/admin/personalizacao",
    "componente": "Navigate",
-   "tela": null,
    "grupo": "homeAndClientRoutes",
    "guardas": [
     "ProtectedRoute"
    ],
+   "somente_dev": false,
+   "linha": 30,
+   "tela": null,
    "hooks": [],
    "dados": {
     "tabelas": [],
@@ -2456,17 +2971,18 @@
     "edges": [],
     "arquivos_lidos": 0
    },
-   "arquivo": "src/routes/client-routes.tsx",
-   "linha": 30
+   "arquivo": "src/routes/client-routes.tsx"
   },
   {
    "path": "/cadastro-produtos",
    "componente": "Navigate",
-   "tela": null,
    "grupo": "homeAndClientRoutes",
    "guardas": [
     "ProtectedRoute"
    ],
+   "somente_dev": false,
+   "linha": 31,
+   "tela": null,
    "hooks": [],
    "dados": {
     "tabelas": [],
@@ -2475,17 +2991,18 @@
     "edges": [],
     "arquivos_lidos": 0
    },
-   "arquivo": "src/routes/client-routes.tsx",
-   "linha": 31
+   "arquivo": "src/routes/client-routes.tsx"
   },
   {
    "path": "/cadastro-gravacao",
    "componente": "Navigate",
-   "tela": null,
    "grupo": "homeAndClientRoutes",
    "guardas": [
     "ProtectedRoute"
    ],
+   "somente_dev": false,
+   "linha": 32,
+   "tela": null,
    "hooks": [],
    "dados": {
     "tabelas": [],
@@ -2494,17 +3011,18 @@
     "edges": [],
     "arquivos_lidos": 0
    },
-   "arquivo": "src/routes/client-routes.tsx",
-   "linha": 32
+   "arquivo": "src/routes/client-routes.tsx"
   },
   {
    "path": "/comissoes",
    "componente": "DeprecatedRoute",
-   "tela": "src/components/layout/DeprecatedRoute.tsx",
    "grupo": "homeAndClientRoutes",
    "guardas": [
     "ProtectedRoute"
    ],
+   "somente_dev": false,
+   "linha": 33,
+   "tela": "src/components/layout/DeprecatedRoute.tsx",
    "hooks": [],
    "dados": {
     "tabelas": [],
@@ -2513,17 +3031,18 @@
     "edges": [],
     "arquivos_lidos": 1
    },
-   "arquivo": "src/routes/client-routes.tsx",
-   "linha": 33
+   "arquivo": "src/routes/client-routes.tsx"
   },
   {
    "path": "/clientes",
    "componente": "ClientsPage",
-   "tela": "src/pages/clients/ClientsPage.tsx",
    "grupo": "homeAndClientRoutes",
    "guardas": [
     "ProtectedRoute"
    ],
+   "somente_dev": false,
+   "linha": 44,
+   "tela": "src/pages/clients/ClientsPage.tsx",
    "hooks": [
     {
      "hook": "useCrmCompanies",
@@ -2540,6 +3059,7 @@
    ],
    "dados": {
     "tabelas": [
+     "X",
      "ai_function_routing",
      "ai_models",
      "ai_providers",
@@ -2547,26 +3067,45 @@
      "ai_usage_quotas",
      "cart_templates",
      "catalog_analytics",
+     "categories",
+     "categories_tree_visual",
      "category_icons",
+     "color_groups",
+     "color_nuances",
+     "color_variations",
+     "companies",
      "expert_conversations",
      "expert_messages",
      "external_connections",
      "magic_up_brand_kits",
      "magic_up_generations",
+     "mv_product_intelligence",
      "mv_stock_velocity",
+     "my_table",
      "order_items",
      "orders",
+     "product_group_members",
+     "product_images",
      "product_price_freshness_overrides",
+     "product_relationships",
      "product_variants",
      "product_views",
+     "products",
+     "produto_ramo_atividade",
      "profiles",
      "quote_items",
      "quotes",
+     "sales_goals",
      "scheduled_reports",
      "search_analytics",
      "seller_cart_items",
      "seller_carts",
+     "stock_daily_summary",
+     "supplier_branches",
+     "suppliers",
      "system_kill_switches",
+     "v_catalog_stats",
+     "variant_supplier_sources",
      "video_variant_links"
     ],
     "buckets": [],
@@ -2579,25 +3118,34 @@
      "get_promo_sales_ranking"
     ],
     "edges": [
+     "ai-recommendations",
+     "categories-api",
+     "commemorative-dates",
+     "connection-tester",
      "crm-db-bridge",
+     "dropbox-list",
      "external-db-bridge",
+     "external-db-inspect",
+     "generate-ad-image",
      "log-login-attempt",
+     "magic-up-score",
      "mcp-keys-issue",
      "send-transactional-email"
     ],
     "arquivos_lidos": 223
    },
-   "arquivo": "src/routes/client-routes.tsx",
-   "linha": 44
+   "arquivo": "src/routes/client-routes.tsx"
   },
   {
    "path": "/clientes/:id",
    "componente": "ClientDetailPage",
-   "tela": "src/pages/clients/ClientDetailPage.tsx",
    "grupo": "homeAndClientRoutes",
    "guardas": [
     "ProtectedRoute"
    ],
+   "somente_dev": false,
+   "linha": 45,
+   "tela": "src/pages/clients/ClientDetailPage.tsx",
    "hooks": [
     {
      "hook": "useClientTopProducts",
@@ -2610,8 +3158,12 @@
    ],
    "dados": {
     "tabelas": [
+     "X",
+     "companies",
+     "my_table",
      "order_items",
      "orders",
+     "produto_ramo_atividade",
      "system_kill_switches"
     ],
     "buckets": [],
@@ -2620,22 +3172,24 @@
     ],
     "edges": [
      "crm-db-bridge",
+     "image-proxy",
      "log-login-attempt",
      "mcp-keys-issue"
     ],
     "arquivos_lidos": 32
    },
-   "arquivo": "src/routes/client-routes.tsx",
-   "linha": 45
+   "arquivo": "src/routes/client-routes.tsx"
   },
   {
    "path": "/perfil",
    "componente": "Navigate",
-   "tela": null,
    "grupo": "homeAndClientRoutes",
    "guardas": [
     "ProtectedRoute"
    ],
+   "somente_dev": false,
+   "linha": 48,
+   "tela": null,
    "hooks": [],
    "dados": {
     "tabelas": [],
@@ -2644,15 +3198,16 @@
     "edges": [],
     "arquivos_lidos": 0
    },
-   "arquivo": "src/routes/client-routes.tsx",
-   "linha": 48
+   "arquivo": "src/routes/client-routes.tsx"
   },
   {
    "path": "*",
    "componente": "NotFound",
-   "tela": "src/pages/NotFound.tsx",
    "grupo": "notFoundRoute",
    "guardas": [],
+   "somente_dev": false,
+   "linha": 62,
+   "tela": "src/pages/NotFound.tsx",
    "hooks": [],
    "dados": {
     "tabelas": [],
@@ -2661,17 +3216,18 @@
     "edges": [],
     "arquivos_lidos": 3
    },
-   "arquivo": "src/routes/client-routes.tsx",
-   "linha": 62
+   "arquivo": "src/routes/client-routes.tsx"
   },
   {
    "path": "/produtos",
    "componente": "FiltersPage",
-   "tela": "src/pages/products/FiltersPage.tsx",
    "grupo": "productRoutes",
    "guardas": [
     "ProtectedRoute"
    ],
+   "somente_dev": false,
+   "linha": 24,
+   "tela": "src/pages/products/FiltersPage.tsx",
    "hooks": [
     {
      "hook": "useSearchHistory",
@@ -2696,6 +3252,7 @@
    ],
    "dados": {
     "tabelas": [
+     "X",
      "admin_settings",
      "ai_function_routing",
      "ai_models",
@@ -2705,12 +3262,21 @@
      "art_file_attachments",
      "cart_templates",
      "catalog_analytics",
+     "categories",
+     "categories_tree_visual",
      "category_icons",
      "collection_items",
      "collection_items_trash",
+     "collection_products",
      "collections",
+     "color_groups",
+     "color_nuances",
+     "color_variations",
+     "companies",
      "component_media",
      "custom_kits",
+     "customization_price_tables",
+     "device_login_notifications",
      "expert_conversations",
      "expert_messages",
      "external_connections",
@@ -2719,27 +3285,49 @@
      "favorite_lists",
      "frontend_telemetry",
      "generated_mockups",
+     "login_attempts",
      "magic_up_brand_kits",
      "magic_up_campaigns",
      "magic_up_generations",
+     "mv_product_intelligence",
      "mv_stock_velocity",
+     "my_table",
+     "notifications",
      "order_items",
      "orders",
      "product_components",
+     "product_group_members",
+     "product_images",
+     "product_kit_components",
+     "product_materials",
      "product_price_freshness_overrides",
+     "product_relationships",
      "product_variants",
+     "product_videos",
      "product_views",
+     "products",
+     "produto_ramo_atividade",
      "profiles",
      "quote_items",
      "quotes",
+     "sales_goals",
      "saved_filters",
      "scheduled_reports",
      "search_analytics",
      "seller_cart_items",
      "seller_carts",
+     "stock_daily_summary",
+     "supplier_branches",
+     "suppliers",
      "system_kill_switches",
      "system_settings",
+     "tabela_preco_gravacao_oficial",
+     "tecnica_gravacao",
      "user_onboarding",
+     "v_catalog_stats",
+     "v_kit_component_complete",
+     "v_super_filtro_options",
+     "variant_supplier_sources",
      "video_variant_links",
      "voice_command_logs",
      "workspace_notifications"
@@ -2763,25 +3351,41 @@
      "search_records_rerank"
     ],
     "edges": [
+     "ai-recommendations",
+     "categories-api",
+     "commemorative-dates",
+     "connection-tester",
      "crm-db-bridge",
+     "dropbox-list",
+     "elevenlabs-scribe-token",
+     "elevenlabs-tts",
      "external-db-bridge",
+     "external-db-inspect",
+     "generate-ad-image",
+     "image-proxy",
      "log-login-attempt",
+     "magic-up-score",
+     "materials-api",
      "mcp-keys-issue",
-     "send-transactional-email"
+     "semantic-search",
+     "send-transactional-email",
+     "visual-search",
+     "voice-agent"
     ],
     "arquivos_lidos": 405
    },
-   "arquivo": "src/routes/product-routes.tsx",
-   "linha": 24
+   "arquivo": "src/routes/product-routes.tsx"
   },
   {
    "path": "/produto",
    "componente": "Navigate",
-   "tela": null,
    "grupo": "productRoutes",
    "guardas": [
     "ProtectedRoute"
    ],
+   "somente_dev": false,
+   "linha": 25,
+   "tela": null,
    "hooks": [],
    "dados": {
     "tabelas": [],
@@ -2790,18 +3394,19 @@
     "edges": [],
     "arquivos_lidos": 0
    },
-   "arquivo": "src/routes/product-routes.tsx",
-   "linha": 25
+   "arquivo": "src/routes/product-routes.tsx"
   },
   {
    "path": "/produto/:id",
    "componente": "ProductDetail",
-   "tela": "src/pages/products/ProductDetail.tsx",
    "grupo": "productRoutes",
    "guardas": [
     "ProtectedRoute",
     "ValidProductIdRoute"
    ],
+   "somente_dev": false,
+   "linha": 26,
+   "tela": "src/pages/products/ProductDetail.tsx",
    "hooks": [
     {
      "hook": "useProduct",
@@ -2834,6 +3439,7 @@
    ],
    "dados": {
     "tabelas": [
+     "X",
      "admin_settings",
      "ai_function_routing",
      "ai_models",
@@ -2842,7 +3448,14 @@
      "ai_usage_quotas",
      "cart_templates",
      "catalog_analytics",
+     "categories",
+     "categories_tree_visual",
      "category_icons",
+     "color_groups",
+     "color_nuances",
+     "color_variations",
+     "customization_price_tables",
+     "device_login_notifications",
      "expert_conversations",
      "expert_messages",
      "external_connections",
@@ -2850,30 +3463,49 @@
      "favorite_items_trash",
      "favorite_lists",
      "kill_switch_hits",
+     "login_attempts",
      "magic_up_brand_kits",
      "magic_up_campaigns",
      "magic_up_generations",
      "mockup_drafts",
+     "mv_product_intelligence",
      "mv_stock_velocity",
+     "my_table",
+     "notifications",
      "order_items",
      "orders",
      "product_components",
      "product_group_members",
+     "product_images",
+     "product_kit_components",
+     "product_materials",
      "product_price_freshness_overrides",
+     "product_relationships",
      "product_variants",
+     "product_videos",
      "product_views",
      "products",
      "profiles",
      "quote_items",
      "quotes",
+     "sales_goals",
      "scheduled_reports",
      "search_analytics",
      "seller_cart_items",
      "seller_carts",
      "some_table",
+     "stock_daily_summary",
+     "supplier_branches",
+     "suppliers",
      "system_kill_switches",
      "system_settings",
+     "tabela_preco_gravacao_oficial",
+     "tabela_preco_gravacao_oficial_faixa",
+     "tecnica_gravacao",
      "user_onboarding",
+     "v_catalog_stats",
+     "v_kit_component_complete",
+     "variant_supplier_sources",
      "video_variant_links",
      "voice_command_logs",
      "workspace_notifications"
@@ -2895,25 +3527,39 @@
      "restore_seller_cart"
     ],
     "edges": [
+     "ai-recommendations",
+     "categories-api",
+     "commemorative-dates",
+     "connection-tester",
      "crm-db-bridge",
+     "dropbox-list",
+     "elevenlabs-scribe-token",
+     "elevenlabs-tts",
      "external-db-bridge",
+     "external-db-inspect",
+     "generate-ad-image",
+     "image-proxy",
      "log-login-attempt",
+     "magic-up-score",
+     "materials-api",
      "mcp-keys-issue",
-     "send-transactional-email"
+     "send-transactional-email",
+     "voice-agent"
     ],
     "arquivos_lidos": 372
    },
-   "arquivo": "src/routes/product-routes.tsx",
-   "linha": 26
+   "arquivo": "src/routes/product-routes.tsx"
   },
   {
    "path": "/filtros",
    "componente": "FiltersPage",
-   "tela": "src/pages/products/FiltersPage.tsx",
    "grupo": "productRoutes",
    "guardas": [
     "ProtectedRoute"
    ],
+   "somente_dev": false,
+   "linha": 34,
+   "tela": "src/pages/products/FiltersPage.tsx",
    "hooks": [
     {
      "hook": "useSearchHistory",
@@ -2938,6 +3584,7 @@
    ],
    "dados": {
     "tabelas": [
+     "X",
      "admin_settings",
      "ai_function_routing",
      "ai_models",
@@ -2947,12 +3594,21 @@
      "art_file_attachments",
      "cart_templates",
      "catalog_analytics",
+     "categories",
+     "categories_tree_visual",
      "category_icons",
      "collection_items",
      "collection_items_trash",
+     "collection_products",
      "collections",
+     "color_groups",
+     "color_nuances",
+     "color_variations",
+     "companies",
      "component_media",
      "custom_kits",
+     "customization_price_tables",
+     "device_login_notifications",
      "expert_conversations",
      "expert_messages",
      "external_connections",
@@ -2961,27 +3617,49 @@
      "favorite_lists",
      "frontend_telemetry",
      "generated_mockups",
+     "login_attempts",
      "magic_up_brand_kits",
      "magic_up_campaigns",
      "magic_up_generations",
+     "mv_product_intelligence",
      "mv_stock_velocity",
+     "my_table",
+     "notifications",
      "order_items",
      "orders",
      "product_components",
+     "product_group_members",
+     "product_images",
+     "product_kit_components",
+     "product_materials",
      "product_price_freshness_overrides",
+     "product_relationships",
      "product_variants",
+     "product_videos",
      "product_views",
+     "products",
+     "produto_ramo_atividade",
      "profiles",
      "quote_items",
      "quotes",
+     "sales_goals",
      "saved_filters",
      "scheduled_reports",
      "search_analytics",
      "seller_cart_items",
      "seller_carts",
+     "stock_daily_summary",
+     "supplier_branches",
+     "suppliers",
      "system_kill_switches",
      "system_settings",
+     "tabela_preco_gravacao_oficial",
+     "tecnica_gravacao",
      "user_onboarding",
+     "v_catalog_stats",
+     "v_kit_component_complete",
+     "v_super_filtro_options",
+     "variant_supplier_sources",
      "video_variant_links",
      "voice_command_logs",
      "workspace_notifications"
@@ -3005,48 +3683,87 @@
      "search_records_rerank"
     ],
     "edges": [
+     "ai-recommendations",
+     "categories-api",
+     "commemorative-dates",
+     "connection-tester",
      "crm-db-bridge",
+     "dropbox-list",
+     "elevenlabs-scribe-token",
+     "elevenlabs-tts",
      "external-db-bridge",
+     "external-db-inspect",
+     "generate-ad-image",
+     "image-proxy",
      "log-login-attempt",
+     "magic-up-score",
+     "materials-api",
      "mcp-keys-issue",
-     "send-transactional-email"
+     "semantic-search",
+     "send-transactional-email",
+     "visual-search",
+     "voice-agent"
     ],
     "arquivos_lidos": 405
    },
-   "arquivo": "src/routes/product-routes.tsx",
-   "linha": 34
+   "arquivo": "src/routes/product-routes.tsx"
   },
   {
    "path": "/novidades",
    "componente": "NoveltiesPage",
-   "tela": "src/pages/products/NoveltiesPage.tsx",
    "grupo": "productRoutes",
    "guardas": [
     "ProtectedRoute"
    ],
+   "somente_dev": false,
+   "linha": 35,
+   "tela": "src/pages/products/NoveltiesPage.tsx",
    "hooks": [],
    "dados": {
     "tabelas": [
+     "X",
      "admin_settings",
      "cart_templates",
      "catalog_analytics",
+     "categories",
+     "categories_tree_visual",
      "category_icons",
      "collection_items",
      "collection_items_trash",
+     "collection_products",
      "collections",
+     "color_groups",
+     "color_nuances",
+     "color_variations",
+     "device_login_notifications",
+     "login_attempts",
+     "my_table",
+     "notifications",
      "order_items",
      "orders",
+     "product_group_members",
+     "product_images",
+     "product_kit_components",
+     "product_materials",
      "product_price_freshness_overrides",
+     "product_relationships",
      "product_variants",
+     "product_videos",
      "product_views",
+     "products",
      "profiles",
      "quote_items",
      "search_analytics",
      "seller_cart_items",
      "seller_carts",
+     "supplier_branches",
+     "suppliers",
      "system_kill_switches",
      "system_settings",
      "user_onboarding",
+     "v_catalog_stats",
+     "v_kit_component_complete",
+     "variant_supplier_sources",
      "video_variant_links",
      "workspace_notifications"
     ],
@@ -3063,47 +3780,76 @@
      "restore_seller_cart"
     ],
     "edges": [
+     "categories-api",
+     "crm-db-bridge",
      "external-db-bridge",
+     "image-proxy",
      "log-login-attempt",
+     "materials-api",
      "mcp-keys-issue"
     ],
     "arquivos_lidos": 308
    },
-   "arquivo": "src/routes/product-routes.tsx",
-   "linha": 35
+   "arquivo": "src/routes/product-routes.tsx"
   },
   {
    "path": "/reposicao",
    "componente": "ReplenishmentsPage",
-   "tela": "src/pages/products/ReplenishmentsPage.tsx",
    "grupo": "productRoutes",
    "guardas": [
     "ProtectedRoute"
    ],
+   "somente_dev": false,
+   "linha": 36,
+   "tela": "src/pages/products/ReplenishmentsPage.tsx",
    "hooks": [],
    "dados": {
     "tabelas": [
+     "X",
      "admin_settings",
      "cart_templates",
      "catalog_analytics",
+     "categories",
+     "categories_tree_visual",
      "category_icons",
      "collection_items",
      "collection_items_trash",
+     "collection_products",
      "collections",
+     "color_groups",
+     "color_nuances",
+     "color_variations",
+     "device_login_notifications",
      "frontend_telemetry",
+     "login_attempts",
+     "my_table",
+     "notifications",
      "order_items",
      "orders",
+     "product_group_members",
+     "product_images",
+     "product_kit_components",
+     "product_materials",
      "product_price_freshness_overrides",
+     "product_relationships",
      "product_variants",
+     "product_videos",
      "product_views",
+     "products",
      "profiles",
      "quote_items",
      "search_analytics",
      "seller_cart_items",
      "seller_carts",
+     "stock_daily_summary",
+     "supplier_branches",
+     "suppliers",
      "system_kill_switches",
      "system_settings",
      "user_onboarding",
+     "v_catalog_stats",
+     "v_kit_component_complete",
+     "variant_supplier_sources",
      "video_variant_links",
      "workspace_notifications"
     ],
@@ -3121,24 +3867,28 @@
      "restore_seller_cart"
     ],
     "edges": [
+     "categories-api",
      "crm-db-bridge",
      "external-db-bridge",
+     "image-proxy",
      "log-login-attempt",
+     "materials-api",
      "mcp-keys-issue"
     ],
     "arquivos_lidos": 321
    },
-   "arquivo": "src/routes/product-routes.tsx",
-   "linha": 36
+   "arquivo": "src/routes/product-routes.tsx"
   },
   {
    "path": "/favoritos",
    "componente": "FavoritesPage",
-   "tela": "src/pages/products/FavoritesPage.tsx",
    "grupo": "productRoutes",
    "guardas": [
     "ProtectedRoute"
    ],
+   "somente_dev": false,
+   "linha": 37,
+   "tela": "src/pages/products/FavoritesPage.tsx",
    "hooks": [
     {
      "hook": "useFavoritesStore",
@@ -3179,6 +3929,7 @@
    ],
    "dados": {
     "tabelas": [
+     "X",
      "admin_settings",
      "ai_function_routing",
      "ai_models",
@@ -3187,10 +3938,17 @@
      "ai_usage_quotas",
      "cart_templates",
      "catalog_analytics",
+     "categories",
+     "categories_tree_visual",
      "category_icons",
      "collection_items",
      "collection_items_trash",
+     "collection_products",
      "collections",
+     "color_groups",
+     "color_nuances",
+     "color_variations",
+     "device_login_notifications",
      "expert_conversations",
      "expert_messages",
      "external_connections",
@@ -3198,23 +3956,37 @@
      "favorite_items_trash",
      "favorite_lists",
      "frontend_telemetry",
+     "login_attempts",
      "magic_up_brand_kits",
      "magic_up_generations",
+     "mv_product_intelligence",
      "mv_stock_velocity",
+     "my_table",
+     "notifications",
      "order_items",
      "orders",
+     "product_group_members",
+     "product_images",
      "product_price_freshness_overrides",
+     "product_relationships",
      "product_variants",
      "product_views",
+     "products",
      "profiles",
      "quote_items",
      "quotes",
+     "sales_goals",
      "scheduled_reports",
      "search_analytics",
      "seller_cart_items",
      "seller_carts",
+     "stock_daily_summary",
+     "supplier_branches",
+     "suppliers",
      "system_kill_switches",
      "user_onboarding",
+     "v_catalog_stats",
+     "variant_supplier_sources",
      "video_variant_links",
      "workspace_notifications"
     ],
@@ -3234,25 +4006,35 @@
      "restore_favorite_from_trash"
     ],
     "edges": [
+     "ai-recommendations",
+     "categories-api",
+     "commemorative-dates",
+     "connection-tester",
      "crm-db-bridge",
+     "dropbox-list",
      "external-db-bridge",
+     "external-db-inspect",
+     "generate-ad-image",
+     "image-proxy",
      "log-login-attempt",
+     "magic-up-score",
      "mcp-keys-issue",
      "send-transactional-email"
     ],
     "arquivos_lidos": 323
    },
-   "arquivo": "src/routes/product-routes.tsx",
-   "linha": 37
+   "arquivo": "src/routes/product-routes.tsx"
   },
   {
    "path": "/carrinhos",
    "componente": "CartsListPage",
-   "tela": "src/pages/products/CartsListPage.tsx",
    "grupo": "productRoutes",
    "guardas": [
     "ProtectedRoute"
    ],
+   "somente_dev": false,
+   "linha": 38,
+   "tela": "src/pages/products/CartsListPage.tsx",
    "hooks": [
     {
      "hook": "useSellerCartContext",
@@ -3269,6 +4051,7 @@
    ],
    "dados": {
     "tabelas": [
+     "X",
      "admin_settings",
      "ai_function_routing",
      "ai_models",
@@ -3277,7 +4060,14 @@
      "ai_usage_quotas",
      "cart_templates",
      "catalog_analytics",
+     "categories",
+     "categories_tree_visual",
      "category_icons",
+     "color_groups",
+     "color_nuances",
+     "color_variations",
+     "companies",
+     "customization_price_tables",
      "expert_conversations",
      "expert_messages",
      "external_connections",
@@ -3286,20 +4076,38 @@
      "favorite_lists",
      "magic_up_brand_kits",
      "magic_up_generations",
+     "mv_product_intelligence",
      "mv_stock_velocity",
+     "my_table",
      "order_items",
      "orders",
+     "product_group_members",
+     "product_images",
+     "product_kit_components",
+     "product_materials",
      "product_price_freshness_overrides",
+     "product_relationships",
      "product_variants",
+     "product_videos",
      "product_views",
+     "products",
      "profiles",
      "quote_items",
      "quotes",
+     "sales_goals",
      "scheduled_reports",
      "search_analytics",
      "seller_cart_items",
      "seller_carts",
+     "stock_daily_summary",
+     "supplier_branches",
+     "suppliers",
      "system_kill_switches",
+     "tabela_preco_gravacao_oficial",
+     "tecnica_gravacao",
+     "v_catalog_stats",
+     "v_kit_component_complete",
+     "variant_supplier_sources",
      "video_variant_links"
     ],
     "buckets": [],
@@ -3319,25 +4127,35 @@
      "restore_seller_cart"
     ],
     "edges": [
+     "ai-recommendations",
+     "categories-api",
+     "commemorative-dates",
+     "connection-tester",
      "crm-db-bridge",
+     "dropbox-list",
      "external-db-bridge",
+     "external-db-inspect",
+     "generate-ad-image",
      "log-login-attempt",
+     "magic-up-score",
+     "materials-api",
      "mcp-keys-issue",
      "send-transactional-email"
     ],
     "arquivos_lidos": 279
    },
-   "arquivo": "src/routes/product-routes.tsx",
-   "linha": 38
+   "arquivo": "src/routes/product-routes.tsx"
   },
   {
    "path": "/carrinhos/:cartId",
    "componente": "SellerCartsPage",
-   "tela": "src/pages/products/SellerCartsPage.tsx",
    "grupo": "productRoutes",
    "guardas": [
     "ProtectedRoute"
    ],
+   "somente_dev": false,
+   "linha": 39,
+   "tela": "src/pages/products/SellerCartsPage.tsx",
    "hooks": [
     {
      "hook": "useAuth",
@@ -3358,6 +4176,7 @@
    ],
    "dados": {
     "tabelas": [
+     "X",
      "admin_settings",
      "ai_function_routing",
      "ai_models",
@@ -3366,7 +4185,14 @@
      "ai_usage_quotas",
      "cart_templates",
      "catalog_analytics",
+     "categories",
+     "categories_tree_visual",
      "category_icons",
+     "color_groups",
+     "color_nuances",
+     "color_variations",
+     "companies",
+     "customization_price_tables",
      "expert_conversations",
      "expert_messages",
      "external_connections",
@@ -3376,21 +4202,38 @@
      "frontend_telemetry",
      "magic_up_brand_kits",
      "magic_up_generations",
+     "mv_product_intelligence",
      "mv_stock_velocity",
+     "my_table",
      "order_items",
      "orders",
+     "product_group_members",
+     "product_images",
+     "product_kit_components",
+     "product_materials",
      "product_price_freshness_overrides",
+     "product_relationships",
      "product_variants",
+     "product_videos",
      "product_views",
      "products",
      "profiles",
      "quote_items",
      "quotes",
+     "sales_goals",
      "scheduled_reports",
      "search_analytics",
      "seller_cart_items",
      "seller_carts",
+     "stock_daily_summary",
+     "supplier_branches",
+     "suppliers",
      "system_kill_switches",
+     "tabela_preco_gravacao_oficial",
+     "tecnica_gravacao",
+     "v_catalog_stats",
+     "v_kit_component_complete",
+     "variant_supplier_sources",
      "video_variant_links"
     ],
     "buckets": [],
@@ -3410,25 +4253,35 @@
      "restore_seller_cart"
     ],
     "edges": [
+     "ai-recommendations",
+     "categories-api",
+     "commemorative-dates",
+     "connection-tester",
      "crm-db-bridge",
+     "dropbox-list",
      "external-db-bridge",
+     "external-db-inspect",
+     "generate-ad-image",
      "log-login-attempt",
+     "magic-up-score",
+     "materials-api",
      "mcp-keys-issue",
      "send-transactional-email"
     ],
     "arquivos_lidos": 287
    },
-   "arquivo": "src/routes/product-routes.tsx",
-   "linha": 39
+   "arquivo": "src/routes/product-routes.tsx"
   },
   {
    "path": "/comparar",
    "componente": "ComparePage",
-   "tela": "src/pages/products/ComparePage.tsx",
    "grupo": "productRoutes",
    "guardas": [
     "ProtectedRoute"
    ],
+   "somente_dev": false,
+   "linha": 40,
+   "tela": "src/pages/products/ComparePage.tsx",
    "hooks": [
     {
      "hook": "useListUrlState",
@@ -3453,24 +4306,43 @@
    ],
    "dados": {
     "tabelas": [
+     "X",
      "admin_settings",
      "cart_templates",
      "catalog_analytics",
+     "categories",
+     "categories_tree_visual",
      "category_icons",
+     "color_groups",
+     "color_nuances",
+     "color_variations",
+     "my_table",
      "order_items",
      "orders",
      "price_history",
+     "product_group_members",
+     "product_images",
+     "product_kit_components",
+     "product_materials",
      "product_price_freshness_overrides",
+     "product_relationships",
      "product_variants",
+     "product_videos",
      "product_views",
+     "products",
      "profiles",
      "quote_items",
      "search_analytics",
      "seller_cart_items",
      "seller_carts",
+     "supplier_branches",
+     "suppliers",
      "system_kill_switches",
      "user_comparisons",
      "user_preferences",
+     "v_catalog_stats",
+     "v_kit_component_complete",
+     "variant_supplier_sources",
      "video_variant_links"
     ],
     "buckets": [],
@@ -3487,24 +4359,28 @@
      "restore_seller_cart"
     ],
     "edges": [
+     "categories-api",
      "crm-db-bridge",
      "external-db-bridge",
+     "image-proxy",
      "log-login-attempt",
+     "materials-api",
      "mcp-keys-issue"
     ],
     "arquivos_lidos": 244
    },
-   "arquivo": "src/routes/product-routes.tsx",
-   "linha": 40
+   "arquivo": "src/routes/product-routes.tsx"
   },
   {
    "path": "/colecoes",
    "componente": "CollectionsPage",
-   "tela": "src/pages/collections/CollectionsPage.tsx",
    "grupo": "productRoutes",
    "guardas": [
     "ProtectedRoute"
    ],
+   "somente_dev": false,
+   "linha": 41,
+   "tela": "src/pages/collections/CollectionsPage.tsx",
    "hooks": [
     {
      "hook": "useCollectionsGlobalShortcuts",
@@ -3517,27 +4393,47 @@
    ],
    "dados": {
     "tabelas": [
+     "X",
      "admin_settings",
      "cart_templates",
      "catalog_analytics",
+     "categories",
+     "categories_tree_visual",
      "category_icons",
      "collection_items",
      "collection_items_trash",
+     "collection_products",
      "collections",
+     "color_groups",
+     "color_nuances",
+     "color_variations",
      "favorite_items",
      "favorite_items_trash",
      "favorite_lists",
+     "my_table",
      "order_items",
      "orders",
+     "product_group_members",
+     "product_images",
+     "product_kit_components",
+     "product_materials",
      "product_price_freshness_overrides",
+     "product_relationships",
      "product_variants",
+     "product_videos",
      "product_views",
+     "products",
      "profiles",
      "quote_items",
      "search_analytics",
      "seller_cart_items",
      "seller_carts",
+     "supplier_branches",
+     "suppliers",
      "system_kill_switches",
+     "v_catalog_stats",
+     "v_kit_component_complete",
+     "variant_supplier_sources",
      "video_variant_links"
     ],
     "buckets": [],
@@ -3557,25 +4453,30 @@
      "restore_seller_cart"
     ],
     "edges": [
+     "categories-api",
+     "connection-tester",
      "crm-db-bridge",
      "external-db-bridge",
+     "image-proxy",
      "log-login-attempt",
+     "materials-api",
      "mcp-keys-issue",
      "send-transactional-email"
     ],
     "arquivos_lidos": 244
    },
-   "arquivo": "src/routes/product-routes.tsx",
-   "linha": 41
+   "arquivo": "src/routes/product-routes.tsx"
   },
   {
    "path": "/colecoes/:id",
    "componente": "CollectionDetailPage",
-   "tela": "src/pages/collections/CollectionDetailPage.tsx",
    "grupo": "productRoutes",
    "guardas": [
     "ProtectedRoute"
    ],
+   "somente_dev": false,
+   "linha": 42,
+   "tela": "src/pages/collections/CollectionDetailPage.tsx",
    "hooks": [
     {
      "hook": "useCollectionsContext",
@@ -3604,6 +4505,7 @@
    ],
    "dados": {
     "tabelas": [
+     "X",
      "admin_settings",
      "ai_function_routing",
      "ai_models",
@@ -3612,32 +4514,57 @@
      "ai_usage_quotas",
      "cart_templates",
      "catalog_analytics",
+     "categories",
+     "categories_tree_visual",
      "category_icons",
      "collection_items",
      "collection_items_trash",
+     "collection_products",
      "collections",
+     "color_groups",
+     "color_nuances",
+     "color_variations",
+     "device_login_notifications",
      "expert_conversations",
      "expert_messages",
      "external_connections",
      "frontend_telemetry",
+     "login_attempts",
      "magic_up_brand_kits",
      "magic_up_campaigns",
      "magic_up_generations",
+     "mv_product_intelligence",
      "mv_stock_velocity",
+     "my_table",
+     "notifications",
      "order_items",
      "orders",
+     "product_group_members",
+     "product_images",
+     "product_kit_components",
+     "product_materials",
      "product_price_freshness_overrides",
+     "product_relationships",
      "product_variants",
+     "product_videos",
      "product_views",
+     "products",
      "profiles",
      "quote_items",
      "quotes",
+     "sales_goals",
      "scheduled_reports",
      "search_analytics",
      "seller_cart_items",
      "seller_carts",
+     "stock_daily_summary",
+     "supplier_branches",
+     "suppliers",
      "system_kill_switches",
      "user_onboarding",
+     "v_catalog_stats",
+     "v_kit_component_complete",
+     "variant_supplier_sources",
      "video_variant_links",
      "voice_command_logs",
      "workspace_notifications"
@@ -3657,22 +4584,36 @@
      "restore_seller_cart"
     ],
     "edges": [
+     "ai-recommendations",
+     "categories-api",
+     "commemorative-dates",
+     "connection-tester",
      "crm-db-bridge",
+     "dropbox-list",
+     "elevenlabs-scribe-token",
+     "elevenlabs-tts",
      "external-db-bridge",
+     "external-db-inspect",
+     "generate-ad-image",
+     "image-proxy",
      "log-login-attempt",
-     "mcp-keys-issue"
+     "magic-up-score",
+     "materials-api",
+     "mcp-keys-issue",
+     "voice-agent"
     ],
     "arquivos_lidos": 348
    },
-   "arquivo": "src/routes/product-routes.tsx",
-   "linha": 42
+   "arquivo": "src/routes/product-routes.tsx"
   },
   {
    "path": "/auth",
    "componente": "Auth",
-   "tela": "src/pages/auth/Auth.tsx",
    "grupo": "publicRoutes",
    "guardas": [],
+   "somente_dev": false,
+   "linha": 47,
+   "tela": "src/pages/auth/Auth.tsx",
    "hooks": [
     {
      "hook": "useToast",
@@ -3703,22 +4644,25 @@
      "log_user_logout"
     ],
     "edges": [
+     "check-login",
      "crm-db-bridge",
+     "get-visitor-info",
      "log-login-attempt",
      "mcp-keys-issue",
      "validate-access"
     ],
     "arquivos_lidos": 44
    },
-   "arquivo": "src/routes/public-routes.tsx",
-   "linha": 47
+   "arquivo": "src/routes/public-routes.tsx"
   },
   {
    "path": "/login",
    "componente": "Auth",
-   "tela": "src/pages/auth/Auth.tsx",
    "grupo": "publicRoutes",
    "guardas": [],
+   "somente_dev": false,
+   "linha": 49,
+   "tela": "src/pages/auth/Auth.tsx",
    "hooks": [
     {
      "hook": "useToast",
@@ -3749,22 +4693,25 @@
      "log_user_logout"
     ],
     "edges": [
+     "check-login",
      "crm-db-bridge",
+     "get-visitor-info",
      "log-login-attempt",
      "mcp-keys-issue",
      "validate-access"
     ],
     "arquivos_lidos": 44
    },
-   "arquivo": "src/routes/public-routes.tsx",
-   "linha": 49
+   "arquivo": "src/routes/public-routes.tsx"
   },
   {
    "path": "/reset-password",
    "componente": "ResetPassword",
-   "tela": "src/pages/auth/ResetPassword.tsx",
    "grupo": "publicRoutes",
    "guardas": [],
+   "somente_dev": false,
+   "linha": 50,
+   "tela": "src/pages/auth/ResetPassword.tsx",
    "hooks": [
     {
      "hook": "useToast",
@@ -3787,15 +4734,16 @@
     ],
     "arquivos_lidos": 20
    },
-   "arquivo": "src/routes/public-routes.tsx",
-   "linha": 50
+   "arquivo": "src/routes/public-routes.tsx"
   },
   {
    "path": "/forgot-password-confirmation",
    "componente": "ForgotPasswordConfirmation",
-   "tela": "src/pages/auth/ForgotPasswordConfirmation.tsx",
    "grupo": "publicRoutes",
    "guardas": [],
+   "somente_dev": false,
+   "linha": 51,
+   "tela": "src/pages/auth/ForgotPasswordConfirmation.tsx",
    "hooks": [],
    "dados": {
     "tabelas": [],
@@ -3804,15 +4752,16 @@
     "edges": [],
     "arquivos_lidos": 6
    },
-   "arquivo": "src/routes/public-routes.tsx",
-   "linha": 51
+   "arquivo": "src/routes/public-routes.tsx"
   },
   {
    "path": "/auth/callback",
    "componente": "SSOCallbackPage",
-   "tela": "src/pages/auth/SSOCallbackPage.tsx",
    "grupo": "publicRoutes",
    "guardas": [],
+   "somente_dev": false,
+   "linha": 52,
+   "tela": "src/pages/auth/SSOCallbackPage.tsx",
    "hooks": [
     {
      "hook": "useAuth",
@@ -3828,28 +4777,35 @@
     }
    ],
    "dados": {
-    "tabelas": [],
+    "tabelas": [
+     "X",
+     "my_table",
+     "user_known_devices"
+    ],
     "buckets": [],
     "rpcs": [
      "fn_my_rpc"
     ],
     "edges": [
      "crm-db-bridge",
+     "detect-new-device",
+     "get-visitor-info",
      "log-login-attempt",
      "mcp-keys-issue",
      "validate-access"
     ],
     "arquivos_lidos": 25
    },
-   "arquivo": "src/routes/public-routes.tsx",
-   "linha": 52
+   "arquivo": "src/routes/public-routes.tsx"
   },
   {
    "path": "/unauthorized",
    "componente": "Unauthorized",
-   "tela": "src/components/access/UnauthorizedPage.tsx",
    "grupo": "publicRoutes",
    "guardas": [],
+   "somente_dev": false,
+   "linha": 53,
+   "tela": "src/components/access/UnauthorizedPage.tsx",
    "hooks": [],
    "dados": {
     "tabelas": [],
@@ -3858,15 +4814,16 @@
     "edges": [],
     "arquivos_lidos": 2
    },
-   "arquivo": "src/routes/public-routes.tsx",
-   "linha": 53
+   "arquivo": "src/routes/public-routes.tsx"
   },
   {
    "path": "/termos",
    "componente": "TermsPage",
-   "tela": "src/pages/auth/TermsPage.tsx",
    "grupo": "publicRoutes",
    "guardas": [],
+   "somente_dev": false,
+   "linha": 54,
+   "tela": "src/pages/auth/TermsPage.tsx",
    "hooks": [],
    "dados": {
     "tabelas": [],
@@ -3875,15 +4832,16 @@
     "edges": [],
     "arquivos_lidos": 6
    },
-   "arquivo": "src/routes/public-routes.tsx",
-   "linha": 54
+   "arquivo": "src/routes/public-routes.tsx"
   },
   {
    "path": "/privacidade",
    "componente": "PrivacyPage",
-   "tela": "src/pages/auth/PrivacyPage.tsx",
    "grupo": "publicRoutes",
    "guardas": [],
+   "somente_dev": false,
+   "linha": 55,
+   "tela": "src/pages/auth/PrivacyPage.tsx",
    "hooks": [],
    "dados": {
     "tabelas": [],
@@ -3892,15 +4850,16 @@
     "edges": [],
     "arquivos_lidos": 6
    },
-   "arquivo": "src/routes/public-routes.tsx",
-   "linha": 55
+   "arquivo": "src/routes/public-routes.tsx"
   },
   {
    "path": "/revista-publica/:token",
    "componente": "PublicMagazineView",
-   "tela": "src/pages/magazine/PublicMagazineView.tsx",
    "grupo": "publicRoutes",
    "guardas": [],
+   "somente_dev": false,
+   "linha": 56,
+   "tela": "src/pages/magazine/PublicMagazineView.tsx",
    "hooks": [
     {
      "hook": "useMagazineBookmarks",
@@ -3937,19 +4896,21 @@
      "magazine_update_metadata_v2"
     ],
     "edges": [
-     "crm-db-bridge"
+     "crm-db-bridge",
+     "magazine-public-view"
     ],
     "arquivos_lidos": 35
    },
-   "arquivo": "src/routes/public-routes.tsx",
-   "linha": 56
+   "arquivo": "src/routes/public-routes.tsx"
   },
   {
    "path": "/__test/color-swatches",
    "componente": "ColorSwatchesHarness",
-   "tela": "src/routes/public-routes.tsx",
    "grupo": "publicRoutes",
    "guardas": [],
+   "somente_dev": true,
+   "linha": 58,
+   "tela": "src/routes/public-routes.tsx",
    "hooks": [],
    "dados": {
     "tabelas": [],
@@ -3958,15 +4919,16 @@
     "edges": [],
     "arquivos_lidos": 10
    },
-   "arquivo": "src/routes/public-routes.tsx",
-   "linha": 58
+   "arquivo": "src/routes/public-routes.tsx"
   },
   {
    "path": "/__test/confirm-dialog",
    "componente": "ConfirmDialogHarness",
-   "tela": "src/routes/public-routes.tsx",
    "grupo": "publicRoutes",
    "guardas": [],
+   "somente_dev": true,
+   "linha": 61,
+   "tela": "src/routes/public-routes.tsx",
    "hooks": [],
    "dados": {
     "tabelas": [],
@@ -3975,15 +4937,16 @@
     "edges": [],
     "arquivos_lidos": 10
    },
-   "arquivo": "src/routes/public-routes.tsx",
-   "linha": 61
+   "arquivo": "src/routes/public-routes.tsx"
   },
   {
    "path": "/__test/alert-dialog",
    "componente": "AlertDialogHarness",
-   "tela": "src/routes/public-routes.tsx",
    "grupo": "publicRoutes",
    "guardas": [],
+   "somente_dev": true,
+   "linha": 63,
+   "tela": "src/routes/public-routes.tsx",
    "hooks": [],
    "dados": {
     "tabelas": [],
@@ -3992,15 +4955,16 @@
     "edges": [],
     "arquivos_lidos": 10
    },
-   "arquivo": "src/routes/public-routes.tsx",
-   "linha": 63
+   "arquivo": "src/routes/public-routes.tsx"
   },
   {
    "path": "/__test/dialog",
    "componente": "DialogHarness",
-   "tela": "src/routes/public-routes.tsx",
    "grupo": "publicRoutes",
    "guardas": [],
+   "somente_dev": true,
+   "linha": 64,
+   "tela": "src/routes/public-routes.tsx",
    "hooks": [],
    "dados": {
     "tabelas": [],
@@ -4009,15 +4973,16 @@
     "edges": [],
     "arquivos_lidos": 10
    },
-   "arquivo": "src/routes/public-routes.tsx",
-   "linha": 64
+   "arquivo": "src/routes/public-routes.tsx"
   },
   {
    "path": "/__test/undo-toast",
    "componente": "UndoToastHarness",
-   "tela": "src/routes/public-routes.tsx",
    "grupo": "publicRoutes",
    "guardas": [],
+   "somente_dev": true,
+   "linha": 65,
+   "tela": "src/routes/public-routes.tsx",
    "hooks": [],
    "dados": {
     "tabelas": [],
@@ -4026,15 +4991,16 @@
     "edges": [],
     "arquivos_lidos": 10
    },
-   "arquivo": "src/routes/public-routes.tsx",
-   "linha": 65
+   "arquivo": "src/routes/public-routes.tsx"
   },
   {
    "path": "/__test/cnpj-form",
    "componente": "CnpjFormHarness",
-   "tela": "src/routes/public-routes.tsx",
    "grupo": "publicRoutes",
    "guardas": [],
+   "somente_dev": true,
+   "linha": 66,
+   "tela": "src/routes/public-routes.tsx",
    "hooks": [],
    "dados": {
     "tabelas": [],
@@ -4043,15 +5009,16 @@
     "edges": [],
     "arquivos_lidos": 10
    },
-   "arquivo": "src/routes/public-routes.tsx",
-   "linha": 66
+   "arquivo": "src/routes/public-routes.tsx"
   },
   {
    "path": "/__test/magazine-ring",
    "componente": "MagazineRingHarness",
-   "tela": "src/routes/public-routes.tsx",
    "grupo": "publicRoutes",
    "guardas": [],
+   "somente_dev": true,
+   "linha": 68,
+   "tela": "src/routes/public-routes.tsx",
    "hooks": [],
    "dados": {
     "tabelas": [],
@@ -4060,15 +5027,16 @@
     "edges": [],
     "arquivos_lidos": 10
    },
-   "arquivo": "src/routes/public-routes.tsx",
-   "linha": 68
+   "arquivo": "src/routes/public-routes.tsx"
   },
   {
    "path": "/__test/tab-skip",
    "componente": "TabSkipHarness",
-   "tela": "src/routes/public-routes.tsx",
    "grupo": "publicRoutes",
    "guardas": [],
+   "somente_dev": true,
+   "linha": 70,
+   "tela": "src/routes/public-routes.tsx",
    "hooks": [],
    "dados": {
     "tabelas": [],
@@ -4077,17 +5045,18 @@
     "edges": [],
     "arquivos_lidos": 10
    },
-   "arquivo": "src/routes/public-routes.tsx",
-   "linha": 70
+   "arquivo": "src/routes/public-routes.tsx"
   },
   {
    "path": "/orcamentos",
    "componente": "QuotesListPage",
-   "tela": "src/pages/quotes/QuotesListPage.tsx",
    "grupo": "quoteRoutes",
    "guardas": [
     "ProtectedRoute"
    ],
+   "somente_dev": false,
+   "linha": 22,
+   "tela": "src/pages/quotes/QuotesListPage.tsx",
    "hooks": [
     {
      "hook": "useQuotesListPage",
@@ -4097,8 +5066,10 @@
    "dados": {
     "tabelas": [
      "admin_audit_log",
+     "categories",
      "discount_approval_requests",
      "frontend_telemetry",
+     "personalization_techniques",
      "product_component_locations",
      "product_components",
      "product_variants",
@@ -4109,6 +5080,7 @@
      "quote_items",
      "quotes",
      "seller_discount_limits",
+     "suppliers",
      "system_kill_switches",
      "t"
     ],
@@ -4119,6 +5091,7 @@
      "respond_discount_approval_transactional"
     ],
     "edges": [
+     "connection-tester",
      "crm-db-bridge",
      "log-login-attempt",
      "mcp-keys-issue",
@@ -4127,17 +5100,18 @@
     ],
     "arquivos_lidos": 198
    },
-   "arquivo": "src/routes/quote-routes.tsx",
-   "linha": 22
+   "arquivo": "src/routes/quote-routes.tsx"
   },
   {
    "path": "/orcamentos/dashboard",
    "componente": "QuotesDashboardPage",
-   "tela": "src/pages/quotes/QuotesDashboardPage.tsx",
    "grupo": "quoteRoutes",
    "guardas": [
     "ProtectedRoute"
    ],
+   "somente_dev": false,
+   "linha": 23,
+   "tela": "src/pages/quotes/QuotesDashboardPage.tsx",
    "hooks": [
     {
      "hook": "useQuotesDashboard",
@@ -4149,6 +5123,7 @@
      "admin_audit_log",
      "discount_approval_requests",
      "frontend_telemetry",
+     "personalization_techniques",
      "product_component_locations",
      "product_components",
      "product_variants",
@@ -4176,17 +5151,18 @@
     ],
     "arquivos_lidos": 134
    },
-   "arquivo": "src/routes/quote-routes.tsx",
-   "linha": 23
+   "arquivo": "src/routes/quote-routes.tsx"
   },
   {
    "path": "/orcamentos/lista",
    "componente": "QuotesListPage",
-   "tela": "src/pages/quotes/QuotesListPage.tsx",
    "grupo": "quoteRoutes",
    "guardas": [
     "ProtectedRoute"
    ],
+   "somente_dev": false,
+   "linha": 24,
+   "tela": "src/pages/quotes/QuotesListPage.tsx",
    "hooks": [
     {
      "hook": "useQuotesListPage",
@@ -4196,8 +5172,10 @@
    "dados": {
     "tabelas": [
      "admin_audit_log",
+     "categories",
      "discount_approval_requests",
      "frontend_telemetry",
+     "personalization_techniques",
      "product_component_locations",
      "product_components",
      "product_variants",
@@ -4208,6 +5186,7 @@
      "quote_items",
      "quotes",
      "seller_discount_limits",
+     "suppliers",
      "system_kill_switches",
      "t"
     ],
@@ -4218,6 +5197,7 @@
      "respond_discount_approval_transactional"
     ],
     "edges": [
+     "connection-tester",
      "crm-db-bridge",
      "log-login-attempt",
      "mcp-keys-issue",
@@ -4226,17 +5206,18 @@
     ],
     "arquivos_lidos": 198
    },
-   "arquivo": "src/routes/quote-routes.tsx",
-   "linha": 24
+   "arquivo": "src/routes/quote-routes.tsx"
   },
   {
    "path": "/orcamentos/kanban",
    "componente": "QuotesKanbanPage",
-   "tela": "src/pages/quotes/QuotesKanbanPage.tsx",
    "grupo": "quoteRoutes",
    "guardas": [
     "ProtectedRoute"
    ],
+   "somente_dev": false,
+   "linha": 25,
+   "tela": "src/pages/quotes/QuotesKanbanPage.tsx",
    "hooks": [
     {
      "hook": "useQuotes",
@@ -4248,14 +5229,23 @@
      "admin_audit_log",
      "cart_templates",
      "catalog_analytics",
+     "categories",
+     "categories_tree_visual",
      "category_icons",
+     "color_groups",
+     "color_nuances",
+     "color_variations",
      "discount_approval_requests",
      "frontend_telemetry",
      "order_items",
      "orders",
+     "personalization_techniques",
      "product_component_locations",
      "product_components",
+     "product_group_members",
+     "product_images",
      "product_price_freshness_overrides",
+     "product_relationships",
      "product_variants",
      "product_views",
      "products",
@@ -4268,8 +5258,12 @@
      "seller_cart_items",
      "seller_carts",
      "seller_discount_limits",
+     "supplier_branches",
+     "suppliers",
      "system_kill_switches",
      "t",
+     "v_catalog_stats",
+     "variant_supplier_sources",
      "video_variant_links"
     ],
     "buckets": [],
@@ -4282,6 +5276,8 @@
      "respond_discount_approval_transactional"
     ],
     "edges": [
+     "categories-api",
+     "connection-tester",
      "crm-db-bridge",
      "external-db-bridge",
      "log-login-attempt",
@@ -4291,17 +5287,18 @@
     ],
     "arquivos_lidos": 198
    },
-   "arquivo": "src/routes/quote-routes.tsx",
-   "linha": 25
+   "arquivo": "src/routes/quote-routes.tsx"
   },
   {
    "path": "/orcamentos/templates",
    "componente": "Navigate",
-   "tela": null,
    "grupo": "quoteRoutes",
    "guardas": [
     "ProtectedRoute"
    ],
+   "somente_dev": false,
+   "linha": 26,
+   "tela": null,
    "hooks": [],
    "dados": {
     "tabelas": [],
@@ -4310,17 +5307,18 @@
     "edges": [],
     "arquivos_lidos": 0
    },
-   "arquivo": "src/routes/quote-routes.tsx",
-   "linha": 26
+   "arquivo": "src/routes/quote-routes.tsx"
   },
   {
    "path": "/orcamentos/novo",
    "componente": "QuoteBuilderPage",
-   "tela": "src/pages/quotes/QuoteBuilderPage.tsx",
    "grupo": "quoteRoutes",
    "guardas": [
     "ProtectedRoute"
    ],
+   "somente_dev": false,
+   "linha": 29,
+   "tela": "src/pages/quotes/QuoteBuilderPage.tsx",
    "hooks": [
     {
      "hook": "useQuoteBuilderState",
@@ -4337,6 +5335,7 @@
    ],
    "dados": {
     "tabelas": [
+     "X",
      "admin_audit_log",
      "admin_settings",
      "ai_function_routing",
@@ -4346,7 +5345,12 @@
      "ai_usage_quotas",
      "cart_templates",
      "catalog_analytics",
+     "categories",
+     "categories_tree_visual",
      "category_icons",
+     "color_groups",
+     "color_nuances",
+     "color_variations",
      "discount_approval_requests",
      "expert_conversations",
      "expert_messages",
@@ -4354,13 +5358,22 @@
      "frontend_telemetry",
      "magic_up_brand_kits",
      "magic_up_generations",
+     "mv_product_intelligence",
      "mv_stock_velocity",
+     "my_table",
      "order_items",
      "orders",
+     "personalization_techniques",
      "product_component_locations",
      "product_components",
+     "product_group_members",
+     "product_images",
+     "product_kit_components",
+     "product_materials",
      "product_price_freshness_overrides",
+     "product_relationships",
      "product_variants",
+     "product_videos",
      "product_views",
      "products",
      "profiles",
@@ -4368,13 +5381,20 @@
      "quote_item_personalizations",
      "quote_items",
      "quotes",
+     "sales_goals",
      "scheduled_reports",
      "search_analytics",
      "seller_cart_items",
      "seller_carts",
      "seller_discount_limits",
+     "stock_daily_summary",
+     "supplier_branches",
+     "suppliers",
      "system_kill_switches",
      "t",
+     "v_catalog_stats",
+     "v_kit_component_complete",
+     "variant_supplier_sources",
      "video_variant_links"
     ],
     "buckets": [],
@@ -4393,27 +5413,37 @@
      "restore_seller_cart"
     ],
     "edges": [
+     "ai-recommendations",
+     "categories-api",
+     "commemorative-dates",
+     "connection-tester",
      "crm-db-bridge",
+     "dropbox-list",
      "external-db-bridge",
+     "external-db-inspect",
+     "generate-ad-image",
      "log-login-attempt",
+     "magic-up-score",
+     "materials-api",
      "mcp-keys-issue",
      "quote-sync",
      "send-transactional-email"
     ],
     "arquivos_lidos": 316
    },
-   "arquivo": "src/routes/quote-routes.tsx",
-   "linha": 29
+   "arquivo": "src/routes/quote-routes.tsx"
   },
   {
    "path": "/orcamentos/:id/editar",
    "componente": "QuoteBuilderPage",
-   "tela": "src/pages/quotes/QuoteBuilderPage.tsx",
    "grupo": "quoteRoutes",
    "guardas": [
     "ProtectedRoute",
     "ValidQuoteIdRoute"
    ],
+   "somente_dev": false,
+   "linha": 30,
+   "tela": "src/pages/quotes/QuoteBuilderPage.tsx",
    "hooks": [
     {
      "hook": "useQuoteBuilderState",
@@ -4430,6 +5460,7 @@
    ],
    "dados": {
     "tabelas": [
+     "X",
      "admin_audit_log",
      "admin_settings",
      "ai_function_routing",
@@ -4439,7 +5470,12 @@
      "ai_usage_quotas",
      "cart_templates",
      "catalog_analytics",
+     "categories",
+     "categories_tree_visual",
      "category_icons",
+     "color_groups",
+     "color_nuances",
+     "color_variations",
      "discount_approval_requests",
      "expert_conversations",
      "expert_messages",
@@ -4447,13 +5483,22 @@
      "frontend_telemetry",
      "magic_up_brand_kits",
      "magic_up_generations",
+     "mv_product_intelligence",
      "mv_stock_velocity",
+     "my_table",
      "order_items",
      "orders",
+     "personalization_techniques",
      "product_component_locations",
      "product_components",
+     "product_group_members",
+     "product_images",
+     "product_kit_components",
+     "product_materials",
      "product_price_freshness_overrides",
+     "product_relationships",
      "product_variants",
+     "product_videos",
      "product_views",
      "products",
      "profiles",
@@ -4461,13 +5506,20 @@
      "quote_item_personalizations",
      "quote_items",
      "quotes",
+     "sales_goals",
      "scheduled_reports",
      "search_analytics",
      "seller_cart_items",
      "seller_carts",
      "seller_discount_limits",
+     "stock_daily_summary",
+     "supplier_branches",
+     "suppliers",
      "system_kill_switches",
      "t",
+     "v_catalog_stats",
+     "v_kit_component_complete",
+     "variant_supplier_sources",
      "video_variant_links"
     ],
     "buckets": [],
@@ -4486,27 +5538,37 @@
      "restore_seller_cart"
     ],
     "edges": [
+     "ai-recommendations",
+     "categories-api",
+     "commemorative-dates",
+     "connection-tester",
      "crm-db-bridge",
+     "dropbox-list",
      "external-db-bridge",
+     "external-db-inspect",
+     "generate-ad-image",
      "log-login-attempt",
+     "magic-up-score",
+     "materials-api",
      "mcp-keys-issue",
      "quote-sync",
      "send-transactional-email"
     ],
     "arquivos_lidos": 316
    },
-   "arquivo": "src/routes/quote-routes.tsx",
-   "linha": 30
+   "arquivo": "src/routes/quote-routes.tsx"
   },
   {
    "path": "/orcamentos/:id",
    "componente": "QuoteViewPage",
-   "tela": "src/pages/quotes/QuoteViewPage.tsx",
    "grupo": "quoteRoutes",
    "guardas": [
     "ProtectedRoute",
     "ValidQuoteIdRoute"
    ],
+   "somente_dev": false,
+   "linha": 38,
+   "tela": "src/pages/quotes/QuoteViewPage.tsx",
    "hooks": [
     {
      "hook": "useDiscountApproval",
@@ -4526,14 +5588,23 @@
      "admin_audit_log",
      "cart_templates",
      "catalog_analytics",
+     "categories",
+     "categories_tree_visual",
      "category_icons",
+     "color_groups",
+     "color_nuances",
+     "color_variations",
      "discount_approval_requests",
      "frontend_telemetry",
      "order_items",
      "orders",
+     "personalization_techniques",
      "product_component_locations",
      "product_components",
+     "product_group_members",
+     "product_images",
      "product_price_freshness_overrides",
+     "product_relationships",
      "product_variants",
      "product_views",
      "products",
@@ -4546,8 +5617,12 @@
      "seller_cart_items",
      "seller_carts",
      "seller_discount_limits",
+     "supplier_branches",
+     "suppliers",
      "system_kill_switches",
      "t",
+     "v_catalog_stats",
+     "variant_supplier_sources",
      "video_variant_links"
     ],
     "buckets": [
@@ -4562,26 +5637,30 @@
      "respond_discount_approval_transactional"
     ],
     "edges": [
+     "categories-api",
+     "connection-tester",
      "crm-db-bridge",
      "external-db-bridge",
      "log-login-attempt",
      "mcp-keys-issue",
      "quote-sync",
-     "send-transactional-email"
+     "send-transactional-email",
+     "sync-quote-bitrix"
     ],
     "arquivos_lidos": 234
    },
-   "arquivo": "src/routes/quote-routes.tsx",
-   "linha": 38
+   "arquivo": "src/routes/quote-routes.tsx"
   },
   {
    "path": "/simulador",
    "componente": "SimuladorWizard",
-   "tela": "src/pages/tools/SimuladorWizard.tsx",
    "grupo": "toolsRoutes",
    "guardas": [
     "ProtectedRoute"
    ],
+   "somente_dev": false,
+   "linha": 68,
+   "tela": "src/pages/tools/SimuladorWizard.tsx",
    "hooks": [
     {
      "hook": "useSimulatorWizard",
@@ -4594,9 +5673,16 @@
    ],
    "dados": {
     "tabelas": [
+     "customization_price_tables",
      "frontend_telemetry",
+     "personalization_simulations",
+     "personalization_techniques",
+     "print_area_techniques",
      "profiles",
-     "simulator_wizard_drafts"
+     "simulator_wizard_drafts",
+     "tabela_preco_gravacao_oficial",
+     "tabela_preco_gravacao_oficial_faixa",
+     "tecnicas_gravacao"
     ],
     "buckets": [],
     "rpcs": [],
@@ -4605,21 +5691,32 @@
     ],
     "arquivos_lidos": 74
    },
-   "arquivo": "src/routes/tools-routes.tsx",
-   "linha": 68
+   "arquivo": "src/routes/tools-routes.tsx"
   },
   {
    "path": "/simulador-precos",
    "componente": "PriceSimulatorPage",
-   "tela": "src/pages/tools/PriceSimulatorPage.tsx",
    "grupo": "toolsRoutes",
    "guardas": [
     "ProtectedRoute"
    ],
+   "somente_dev": false,
+   "linha": 69,
+   "tela": "src/pages/tools/PriceSimulatorPage.tsx",
    "hooks": [],
    "dados": {
     "tabelas": [
-     "profiles"
+     "X",
+     "customization_price_tables",
+     "my_table",
+     "personalization_simulations",
+     "personalization_techniques",
+     "print_area_techniques",
+     "product_variants",
+     "profiles",
+     "tabela_preco_gravacao_oficial",
+     "tabela_preco_gravacao_oficial_faixa",
+     "tecnicas_gravacao"
     ],
     "buckets": [],
     "rpcs": [
@@ -4631,37 +5728,60 @@
     ],
     "arquivos_lidos": 86
    },
-   "arquivo": "src/routes/tools-routes.tsx",
-   "linha": 69
+   "arquivo": "src/routes/tools-routes.tsx"
   },
   {
    "path": "/estoque",
    "componente": "StockDashboardPage",
-   "tela": "src/pages/admin/StockDashboardPage.tsx",
    "grupo": "toolsRoutes",
    "guardas": [
     "ProtectedRoute"
    ],
+   "somente_dev": false,
+   "linha": 70,
+   "tela": "src/pages/admin/StockDashboardPage.tsx",
    "hooks": [],
    "dados": {
     "tabelas": [
+     "X",
      "admin_settings",
      "cart_templates",
      "catalog_analytics",
+     "categories",
+     "categories_tree_visual",
      "category_icons",
+     "color_groups",
+     "color_nuances",
+     "color_variations",
+     "device_login_notifications",
      "frontend_telemetry",
+     "login_attempts",
+     "my_table",
+     "notifications",
      "order_items",
      "orders",
+     "product_group_members",
+     "product_images",
+     "product_kit_components",
+     "product_materials",
      "product_price_freshness_overrides",
+     "product_relationships",
      "product_variants",
+     "product_videos",
      "product_views",
+     "products",
      "profiles",
      "quote_items",
      "search_analytics",
      "seller_cart_items",
      "seller_carts",
+     "supplier_branches",
+     "suppliers",
      "system_settings",
      "user_onboarding",
+     "v_catalog_stats",
+     "v_kit_component_complete",
+     "variant_supplier_sources",
      "video_variant_links",
      "workspace_notifications"
     ],
@@ -4678,23 +5798,26 @@
      "restore_seller_cart"
     ],
     "edges": [
+     "categories-api",
      "external-db-bridge",
      "log-login-attempt",
+     "materials-api",
      "mcp-keys-issue"
     ],
     "arquivos_lidos": 280
    },
-   "arquivo": "src/routes/tools-routes.tsx",
-   "linha": 70
+   "arquivo": "src/routes/tools-routes.tsx"
   },
   {
    "path": "/busca-preco",
    "componente": "AdvancedPriceSearchPage",
-   "tela": "src/pages/tools/AdvancedPriceSearchPage.tsx",
    "grupo": "toolsRoutes",
    "guardas": [
     "ProtectedRoute"
    ],
+   "somente_dev": false,
+   "linha": 71,
+   "tela": "src/pages/tools/AdvancedPriceSearchPage.tsx",
    "hooks": [
     {
      "hook": "useAdvancedPriceSearch",
@@ -4703,6 +5826,7 @@
    ],
    "dados": {
     "tabelas": [
+     "X",
      "admin_settings",
      "ai_function_routing",
      "ai_models",
@@ -4711,7 +5835,13 @@
      "ai_usage_quotas",
      "cart_templates",
      "catalog_analytics",
+     "categories",
+     "categories_tree_visual",
      "category_icons",
+     "color_groups",
+     "color_nuances",
+     "color_variations",
+     "customization_price_tables",
      "expert_conversations",
      "expert_messages",
      "external_connections",
@@ -4719,21 +5849,39 @@
      "magic_up_brand_kits",
      "magic_up_campaigns",
      "magic_up_generations",
+     "mv_product_intelligence",
      "mv_stock_velocity",
+     "my_table",
      "order_items",
      "orders",
+     "product_group_members",
+     "product_images",
+     "product_kit_components",
+     "product_materials",
      "product_price_freshness_overrides",
+     "product_relationships",
      "product_variants",
+     "product_videos",
      "product_views",
+     "products",
      "profiles",
      "quote_items",
      "quotes",
+     "sales_goals",
      "scheduled_reports",
      "search_analytics",
      "seller_cart_items",
      "seller_carts",
+     "stock_daily_summary",
+     "supplier_branches",
+     "suppliers",
      "system_kill_switches",
      "system_settings",
+     "tabela_preco_gravacao_oficial",
+     "tecnica_gravacao",
+     "v_catalog_stats",
+     "v_kit_component_complete",
+     "variant_supplier_sources",
      "video_variant_links",
      "voice_command_logs"
     ],
@@ -4751,24 +5899,37 @@
      "restore_seller_cart"
     ],
     "edges": [
+     "ai-recommendations",
+     "categories-api",
+     "commemorative-dates",
+     "connection-tester",
      "crm-db-bridge",
+     "dropbox-list",
+     "elevenlabs-scribe-token",
+     "elevenlabs-tts",
      "external-db-bridge",
+     "external-db-inspect",
+     "generate-ad-image",
      "log-login-attempt",
-     "mcp-keys-issue"
+     "magic-up-score",
+     "materials-api",
+     "mcp-keys-issue",
+     "voice-agent"
     ],
     "arquivos_lidos": 255
    },
-   "arquivo": "src/routes/tools-routes.tsx",
-   "linha": 71
+   "arquivo": "src/routes/tools-routes.tsx"
   },
   {
    "path": "/montar-kit",
    "componente": "KitBuilderRoute",
-   "tela": "src/routes/tools-routes.tsx",
    "grupo": "toolsRoutes",
    "guardas": [
     "ProtectedRoute"
    ],
+   "somente_dev": false,
+   "linha": 72,
+   "tela": "src/routes/tools-routes.tsx",
    "hooks": [
     {
      "hook": "useAuth",
@@ -4789,17 +5950,18 @@
     ],
     "arquivos_lidos": 25
    },
-   "arquivo": "src/routes/tools-routes.tsx",
-   "linha": 72
+   "arquivo": "src/routes/tools-routes.tsx"
   },
   {
    "path": "/kit-builder",
    "componente": "KitBuilderLegacyRedirect",
-   "tela": "src/routes/tools-routes.tsx",
    "grupo": "toolsRoutes",
    "guardas": [
     "ProtectedRoute"
    ],
+   "somente_dev": false,
+   "linha": 73,
+   "tela": "src/routes/tools-routes.tsx",
    "hooks": [
     {
      "hook": "useAuth",
@@ -4820,17 +5982,18 @@
     ],
     "arquivos_lidos": 25
    },
-   "arquivo": "src/routes/tools-routes.tsx",
-   "linha": 73
+   "arquivo": "src/routes/tools-routes.tsx"
   },
   {
    "path": "/meus-kits",
    "componente": "MeusKitsPage",
-   "tela": "src/pages/kit-builder/KitLibraryPage.tsx",
    "grupo": "toolsRoutes",
    "guardas": [
     "ProtectedRoute"
    ],
+   "somente_dev": false,
+   "linha": 74,
+   "tela": "src/pages/kit-builder/KitLibraryPage.tsx",
    "hooks": [
     {
      "hook": "useAuth",
@@ -4847,12 +6010,17 @@
    ],
    "dados": {
     "tabelas": [
+     "X",
      "custom_kits",
      "kit_collaborators",
      "kit_comments",
      "kit_quote_requests",
      "kit_templates",
      "kit_variants",
+     "my_table",
+     "print_area_techniques",
+     "product_variants",
+     "products",
      "profiles"
     ],
     "buckets": [],
@@ -4865,22 +6033,24 @@
     ],
     "edges": [
      "crm-db-bridge",
+     "kit-identity-suggest",
      "log-login-attempt",
      "mcp-keys-issue"
     ],
     "arquivos_lidos": 58
    },
-   "arquivo": "src/routes/tools-routes.tsx",
-   "linha": 74
+   "arquivo": "src/routes/tools-routes.tsx"
   },
   {
    "path": "/mockup",
    "componente": "Navigate",
-   "tela": null,
    "grupo": "toolsRoutes",
    "guardas": [
     "ProtectedRoute"
    ],
+   "somente_dev": false,
+   "linha": 75,
+   "tela": null,
    "hooks": [],
    "dados": {
     "tabelas": [],
@@ -4889,17 +6059,18 @@
     "edges": [],
     "arquivos_lidos": 0
    },
-   "arquivo": "src/routes/tools-routes.tsx",
-   "linha": 75
+   "arquivo": "src/routes/tools-routes.tsx"
   },
   {
    "path": "/gerador-mockup",
    "componente": "Navigate",
-   "tela": null,
    "grupo": "toolsRoutes",
    "guardas": [
     "ProtectedRoute"
    ],
+   "somente_dev": false,
+   "linha": 76,
+   "tela": null,
    "hooks": [],
    "dados": {
     "tabelas": [],
@@ -4908,17 +6079,18 @@
     "edges": [],
     "arquivos_lidos": 0
    },
-   "arquivo": "src/routes/tools-routes.tsx",
-   "linha": 76
+   "arquivo": "src/routes/tools-routes.tsx"
   },
   {
    "path": "/mockup-generator",
    "componente": "MockupGenerator",
-   "tela": "src/pages/mockups/MockupGenerator.tsx",
    "grupo": "toolsRoutes",
    "guardas": [
     "ProtectedRoute"
    ],
+   "somente_dev": false,
+   "linha": 77,
+   "tela": "src/pages/mockups/MockupGenerator.tsx",
    "hooks": [
     {
      "hook": "useKeyboardShortcuts",
@@ -4939,10 +6111,19 @@
    ],
    "dados": {
     "tabelas": [
+     "X",
      "art_file_attachments",
+     "customization_price_tables",
      "generated_mockups",
      "mockup_drafts",
-     "profiles"
+     "my_table",
+     "personalization_simulations",
+     "personalization_techniques",
+     "print_area_techniques",
+     "profiles",
+     "tabela_preco_gravacao_oficial",
+     "tabela_preco_gravacao_oficial_faixa",
+     "tecnicas_gravacao"
     ],
     "buckets": [
      "mockup-art-files",
@@ -4954,21 +6135,23 @@
     "edges": [
      "crm-db-bridge",
      "external-db-bridge",
+     "generate-mockup",
      "log-login-attempt"
     ],
     "arquivos_lidos": 177
    },
-   "arquivo": "src/routes/tools-routes.tsx",
-   "linha": 77
+   "arquivo": "src/routes/tools-routes.tsx"
   },
   {
    "path": "/mockups/historico",
    "componente": "MockupHistoryPage",
-   "tela": "src/pages/mockups/MockupHistoryPage.tsx",
    "grupo": "toolsRoutes",
    "guardas": [
     "ProtectedRoute"
    ],
+   "somente_dev": false,
+   "linha": 78,
+   "tela": "src/pages/mockups/MockupHistoryPage.tsx",
    "hooks": [
     {
      "hook": "useAuth",
@@ -4981,6 +6164,7 @@
    ],
    "dados": {
     "tabelas": [
+     "X",
      "ai_function_routing",
      "ai_models",
      "ai_providers",
@@ -4988,26 +6172,43 @@
      "ai_usage_quotas",
      "cart_templates",
      "catalog_analytics",
+     "categories",
+     "categories_tree_visual",
      "category_icons",
+     "color_groups",
+     "color_nuances",
+     "color_variations",
      "expert_conversations",
      "expert_messages",
      "external_connections",
      "generated_mockups",
      "magic_up_brand_kits",
      "magic_up_generations",
+     "mv_product_intelligence",
      "mv_stock_velocity",
+     "my_table",
      "order_items",
      "orders",
+     "product_group_members",
+     "product_images",
      "product_price_freshness_overrides",
+     "product_relationships",
      "product_variants",
      "product_views",
+     "products",
      "profiles",
      "quote_items",
      "quotes",
+     "sales_goals",
      "scheduled_reports",
      "search_analytics",
      "seller_cart_items",
      "seller_carts",
+     "stock_daily_summary",
+     "supplier_branches",
+     "suppliers",
+     "v_catalog_stats",
+     "variant_supplier_sources",
      "video_variant_links"
     ],
     "buckets": [
@@ -5022,24 +6223,34 @@
      "get_promo_sales_ranking"
     ],
     "edges": [
+     "ai-recommendations",
+     "categories-api",
+     "commemorative-dates",
+     "connection-tester",
      "crm-db-bridge",
+     "dropbox-list",
      "external-db-bridge",
+     "external-db-inspect",
+     "generate-ad-image",
+     "generate-mockup",
      "log-login-attempt",
+     "magic-up-score",
      "send-transactional-email"
     ],
     "arquivos_lidos": 208
    },
-   "arquivo": "src/routes/tools-routes.tsx",
-   "linha": 78
+   "arquivo": "src/routes/tools-routes.tsx"
   },
   {
    "path": "/magic-up",
    "componente": "MagicUp",
-   "tela": "src/pages/tools/MagicUp.tsx",
    "grupo": "toolsRoutes",
    "guardas": [
     "ProtectedRoute"
    ],
+   "somente_dev": false,
+   "linha": 79,
+   "tela": "src/pages/tools/MagicUp.tsx",
    "hooks": [
     {
      "hook": "useMagicUpState",
@@ -5048,6 +6259,7 @@
    ],
    "dados": {
     "tabelas": [
+     "X",
      "ai_function_routing",
      "ai_models",
      "ai_providers",
@@ -5055,7 +6267,12 @@
      "ai_usage_quotas",
      "cart_templates",
      "catalog_analytics",
+     "categories",
+     "categories_tree_visual",
      "category_icons",
+     "color_groups",
+     "color_nuances",
+     "color_variations",
      "expert_conversations",
      "expert_messages",
      "external_connections",
@@ -5064,22 +6281,36 @@
      "magic_up_campaigns",
      "magic_up_generations",
      "mockup_drafts",
+     "mv_product_intelligence",
      "mv_stock_velocity",
+     "my_table",
      "order_items",
      "orders",
+     "product_group_members",
+     "product_images",
      "product_price_freshness_overrides",
+     "product_relationships",
      "product_variants",
      "product_views",
+     "products",
      "profiles",
      "quote_items",
      "quotes",
+     "sales_goals",
      "scheduled_reports",
      "search_analytics",
      "seller_cart_items",
      "seller_carts",
      "some_table",
+     "stock_daily_summary",
+     "supplier_branches",
+     "suppliers",
      "system_kill_switches",
      "system_settings",
+     "tabela_preco_gravacao_oficial",
+     "tabela_preco_gravacao_oficial_faixa",
+     "v_catalog_stats",
+     "variant_supplier_sources",
      "video_variant_links",
      "voice_command_logs"
     ],
@@ -5094,25 +6325,38 @@
      "get_promo_sales_ranking"
     ],
     "edges": [
+     "ai-recommendations",
+     "categories-api",
+     "commemorative-dates",
+     "connection-tester",
      "crm-db-bridge",
+     "dropbox-list",
+     "elevenlabs-scribe-token",
+     "elevenlabs-tts",
      "external-db-bridge",
+     "external-db-inspect",
+     "generate-ad-image",
+     "generate-ad-prompt",
      "log-login-attempt",
+     "magic-up-score",
      "mcp-keys-issue",
-     "send-transactional-email"
+     "send-transactional-email",
+     "voice-agent"
     ],
     "arquivos_lidos": 258
    },
-   "arquivo": "src/routes/tools-routes.tsx",
-   "linha": 79
+   "arquivo": "src/routes/tools-routes.tsx"
   },
   {
    "path": "/inteligencia-comercial",
    "componente": "CommercialIntelligencePage",
-   "tela": "src/pages/bi/CommercialIntelligencePage.tsx",
    "grupo": "toolsRoutes",
    "guardas": [
     "ProtectedRoute"
    ],
+   "somente_dev": false,
+   "linha": 80,
+   "tela": "src/pages/bi/CommercialIntelligencePage.tsx",
    "hooks": [
     {
      "hook": "useDebouncedFilters",
@@ -5125,6 +6369,7 @@
    ],
    "dados": {
     "tabelas": [
+     "X",
      "admin_settings",
      "ai_function_routing",
      "ai_models",
@@ -5133,33 +6378,59 @@
      "ai_usage_quotas",
      "cart_templates",
      "catalog_analytics",
+     "categories",
+     "categories_tree_visual",
      "category_icons",
+     "color_groups",
+     "color_nuances",
+     "color_variations",
+     "device_login_notifications",
      "expert_conversations",
      "expert_messages",
      "external_connections",
      "frontend_telemetry",
      "kill_switch_hits",
+     "login_attempts",
      "magic_up_brand_kits",
      "magic_up_campaigns",
      "magic_up_generations",
      "mockup_drafts",
+     "mv_product_intelligence",
      "mv_stock_velocity",
+     "my_table",
+     "notifications",
      "order_items",
      "orders",
+     "product_group_members",
+     "product_images",
+     "product_kit_components",
+     "product_materials",
      "product_price_freshness_overrides",
+     "product_relationships",
      "product_variants",
+     "product_videos",
      "product_views",
+     "products",
      "profiles",
      "quote_items",
      "quotes",
+     "sales_goals",
      "scheduled_reports",
      "search_analytics",
      "seller_cart_items",
      "seller_carts",
      "some_table",
+     "stock_daily_summary",
+     "supplier_branches",
+     "suppliers",
      "system_kill_switches",
      "system_settings",
+     "tabela_preco_gravacao_oficial",
+     "tabela_preco_gravacao_oficial_faixa",
      "user_onboarding",
+     "v_catalog_stats",
+     "v_kit_component_complete",
+     "variant_supplier_sources",
      "video_variant_links",
      "voice_command_logs",
      "workspace_notifications"
@@ -5178,26 +6449,39 @@
      "restore_seller_cart"
     ],
     "edges": [
+     "ai-recommendations",
+     "categories-api",
+     "commemorative-dates",
+     "connection-tester",
      "crm-db-bridge",
+     "dropbox-list",
+     "elevenlabs-scribe-token",
+     "elevenlabs-tts",
      "external-db-bridge",
+     "external-db-inspect",
+     "generate-ad-image",
      "log-login-attempt",
+     "magic-up-score",
      "market-intelligence-insights",
+     "materials-api",
      "mcp-keys-issue",
-     "send-transactional-email"
+     "send-transactional-email",
+     "voice-agent"
     ],
     "arquivos_lidos": 325
    },
-   "arquivo": "src/routes/tools-routes.tsx",
-   "linha": 80
+   "arquivo": "src/routes/tools-routes.tsx"
   },
   {
    "path": "/ferramentas/bi",
    "componente": "BusinessIntelligencePage",
-   "tela": "src/pages/bi/BusinessIntelligencePage.tsx",
    "grupo": "toolsRoutes",
    "guardas": [
     "ProtectedRoute"
    ],
+   "somente_dev": false,
+   "linha": 81,
+   "tela": "src/pages/bi/BusinessIntelligencePage.tsx",
    "hooks": [
     {
      "hook": "useBICategoryFocus",
@@ -5218,9 +6502,15 @@
    ],
    "dados": {
     "tabelas": [
+     "X",
+     "categories",
+     "companies",
      "frontend_telemetry",
+     "my_table",
      "order_items",
      "orders",
+     "produto_ramo_atividade",
+     "suppliers",
      "system_kill_switches",
      "workspace_notifications"
     ],
@@ -5236,6 +6526,7 @@
     ],
     "edges": [
      "bi-copilot",
+     "connection-tester",
      "crm-db-bridge",
      "log-login-attempt",
      "mcp-keys-issue",
@@ -5243,22 +6534,27 @@
     ],
     "arquivos_lidos": 194
    },
-   "arquivo": "src/routes/tools-routes.tsx",
-   "linha": 81
+   "arquivo": "src/routes/tools-routes.tsx"
   },
   {
    "path": "/ferramentas/bi/comparar",
    "componente": "ClientComparatorPage",
-   "tela": "src/pages/clients/ClientComparatorPage.tsx",
    "grupo": "toolsRoutes",
    "guardas": [
     "ProtectedRoute"
    ],
+   "somente_dev": false,
+   "linha": 82,
+   "tela": "src/pages/clients/ClientComparatorPage.tsx",
    "hooks": [],
    "dados": {
     "tabelas": [
+     "categories",
+     "companies",
      "order_items",
      "orders",
+     "produto_ramo_atividade",
+     "suppliers",
      "system_kill_switches"
     ],
     "buckets": [],
@@ -5270,23 +6566,26 @@
      "get_industry_top_products"
     ],
     "edges": [
+     "connection-tester",
+     "crm-db-bridge",
      "log-login-attempt",
      "mcp-keys-issue",
      "send-transactional-email"
     ],
     "arquivos_lidos": 157
    },
-   "arquivo": "src/routes/tools-routes.tsx",
-   "linha": 82
+   "arquivo": "src/routes/tools-routes.tsx"
   },
   {
    "path": "/match",
    "componente": "ProductMatchPage",
-   "tela": "src/pages/products/ProductMatchPage.tsx",
    "grupo": "toolsRoutes",
    "guardas": [
     "ProtectedRoute"
    ],
+   "somente_dev": false,
+   "linha": 83,
+   "tela": "src/pages/products/ProductMatchPage.tsx",
    "hooks": [
     {
      "hook": "useProductMatch",
@@ -5303,6 +6602,7 @@
    ],
    "dados": {
     "tabelas": [
+     "X",
      "admin_settings",
      "ai_function_routing",
      "ai_models",
@@ -5311,7 +6611,13 @@
      "ai_usage_quotas",
      "cart_templates",
      "catalog_analytics",
+     "categories",
+     "categories_tree_visual",
      "category_icons",
+     "color_groups",
+     "color_nuances",
+     "color_variations",
+     "customization_price_tables",
      "expert_conversations",
      "expert_messages",
      "external_connections",
@@ -5320,20 +6626,38 @@
      "favorite_lists",
      "magic_up_brand_kits",
      "magic_up_generations",
+     "mv_product_intelligence",
      "mv_stock_velocity",
+     "my_table",
      "order_items",
      "orders",
+     "product_group_members",
+     "product_images",
+     "product_kit_components",
+     "product_materials",
      "product_price_freshness_overrides",
+     "product_relationships",
      "product_variants",
+     "product_videos",
      "product_views",
+     "products",
      "profiles",
      "quote_items",
      "quotes",
+     "sales_goals",
      "scheduled_reports",
      "search_analytics",
      "seller_cart_items",
      "seller_carts",
+     "stock_daily_summary",
+     "supplier_branches",
+     "suppliers",
      "system_kill_switches",
+     "tabela_preco_gravacao_oficial",
+     "tecnica_gravacao",
+     "v_catalog_stats",
+     "v_kit_component_complete",
+     "variant_supplier_sources",
      "video_variant_links"
     ],
     "buckets": [],
@@ -5353,25 +6677,35 @@
      "restore_seller_cart"
     ],
     "edges": [
+     "ai-recommendations",
+     "categories-api",
+     "commemorative-dates",
+     "connection-tester",
      "crm-db-bridge",
+     "dropbox-list",
      "external-db-bridge",
+     "external-db-inspect",
+     "generate-ad-image",
      "log-login-attempt",
+     "magic-up-score",
+     "materials-api",
      "mcp-keys-issue",
      "send-transactional-email"
     ],
     "arquivos_lidos": 263
    },
-   "arquivo": "src/routes/tools-routes.tsx",
-   "linha": 83
+   "arquivo": "src/routes/tools-routes.tsx"
   },
   {
    "path": "/dropbox",
    "componente": "DropboxBrowserPage",
-   "tela": "src/pages/tools/DropboxBrowserPage.tsx",
    "grupo": "toolsRoutes",
    "guardas": [
     "ProtectedRoute"
    ],
+   "somente_dev": false,
+   "linha": 84,
+   "tela": "src/pages/tools/DropboxBrowserPage.tsx",
    "hooks": [
     {
      "hook": "useDropboxFiles",
@@ -5380,42 +6714,67 @@
    ],
    "dados": {
     "tabelas": [
+     "X",
      "admin_settings",
      "ai_function_routing",
      "ai_models",
      "ai_providers",
      "ai_usage_logs",
      "ai_usage_quotas",
+     "audit_log",
      "cart_templates",
      "catalog_analytics",
+     "categories",
+     "categories_tree_visual",
      "category_icons",
+     "color_groups",
+     "color_nuances",
+     "color_variations",
      "expert_conversations",
      "expert_messages",
      "external_connections",
+     "geo_allowed_countries",
      "kill_switch_hits",
      "kit_templates",
      "magic_up_brand_kits",
      "magic_up_campaigns",
      "magic_up_generations",
      "mockup_drafts",
+     "mv_product_intelligence",
      "mv_stock_velocity",
+     "my_table",
      "order_items",
      "orders",
+     "product_group_members",
+     "product_images",
      "product_price_freshness_overrides",
+     "product_relationships",
      "product_variants",
      "product_views",
+     "products",
      "profiles",
      "quote_items",
      "quotes",
      "role_migration_batches",
      "role_migration_items",
+     "sales_goals",
      "scheduled_reports",
      "search_analytics",
+     "security_settings",
      "seller_cart_items",
      "seller_carts",
      "some_table",
+     "stock_daily_summary",
+     "supplier_branches",
+     "suppliers",
      "system_kill_switches",
      "system_settings",
+     "tabela_preco_gravacao_oficial",
+     "tabela_preco_gravacao_oficial_faixa",
+     "user_ip_allowlist",
+     "user_known_devices",
+     "v_catalog_stats",
+     "variant_supplier_sources",
      "video_variant_links",
      "voice_command_logs"
     ],
@@ -5431,28 +6790,42 @@
      "get_promo_sales_ranking"
     ],
     "edges": [
+     "ai-recommendations",
+     "categories-api",
+     "commemorative-dates",
+     "connection-tester",
      "crm-db-bridge",
+     "detect-new-device",
+     "dropbox-list",
+     "elevenlabs-scribe-token",
+     "elevenlabs-tts",
      "external-db-bridge",
+     "external-db-inspect",
+     "generate-ad-image",
+     "get-visitor-info",
      "log-login-attempt",
+     "magic-up-score",
      "mcp-keys-issue",
      "secrets-manager",
      "send-transactional-email",
-     "validate-access"
+     "validate-access",
+     "voice-agent"
     ],
     "arquivos_lidos": 256
    },
-   "arquivo": "src/routes/tools-routes.tsx",
-   "linha": 84
+   "arquivo": "src/routes/tools-routes.tsx"
   },
   {
    "path": "/simulacao",
    "componente": "SimulationPage",
-   "tela": "src/pages/Simulation.tsx",
    "grupo": "toolsRoutes",
    "guardas": [
     "ProtectedRoute",
     "DevRoute"
    ],
+   "somente_dev": false,
+   "linha": 86,
+   "tela": "src/pages/Simulation.tsx",
    "hooks": [],
    "dados": {
     "tabelas": [],
@@ -5465,17 +6838,18 @@
     ],
     "arquivos_lidos": 11
    },
-   "arquivo": "src/routes/tools-routes.tsx",
-   "linha": 86
+   "arquivo": "src/routes/tools-routes.tsx"
   },
   {
    "path": "/ferramentas/cobertura",
    "componente": "CoverageInsightsDashboardPage",
-   "tela": "src/pages/tools/CoverageInsightsDashboardPage.tsx",
    "grupo": "toolsRoutes",
    "guardas": [
     "ProtectedRoute"
    ],
+   "somente_dev": false,
+   "linha": 88,
+   "tela": "src/pages/tools/CoverageInsightsDashboardPage.tsx",
    "hooks": [],
    "dados": {
     "tabelas": [],
@@ -5484,17 +6858,18 @@
     "edges": [],
     "arquivos_lidos": 1
    },
-   "arquivo": "src/routes/tools-routes.tsx",
-   "linha": 88
+   "arquivo": "src/routes/tools-routes.tsx"
   },
   {
    "path": "/raio-x",
    "componente": "VisualSearchPage",
-   "tela": "src/pages/tools/VisualSearchPage.tsx",
    "grupo": "toolsRoutes",
    "guardas": [
     "ProtectedRoute"
    ],
+   "somente_dev": false,
+   "linha": 89,
+   "tela": "src/pages/tools/VisualSearchPage.tsx",
    "hooks": [
     {
      "hook": "useExternalCategoriesQuery",
@@ -5507,6 +6882,7 @@
    ],
    "dados": {
     "tabelas": [
+     "X",
      "admin_settings",
      "ai_function_routing",
      "ai_models",
@@ -5515,7 +6891,13 @@
      "ai_usage_quotas",
      "cart_templates",
      "catalog_analytics",
+     "categories",
+     "categories_tree_visual",
      "category_icons",
+     "color_groups",
+     "color_nuances",
+     "color_variations",
+     "customization_price_tables",
      "expert_conversations",
      "expert_messages",
      "external_connections",
@@ -5524,20 +6906,38 @@
      "favorite_lists",
      "magic_up_brand_kits",
      "magic_up_generations",
+     "mv_product_intelligence",
      "mv_stock_velocity",
+     "my_table",
      "order_items",
      "orders",
+     "product_group_members",
+     "product_images",
+     "product_kit_components",
+     "product_materials",
      "product_price_freshness_overrides",
+     "product_relationships",
      "product_variants",
+     "product_videos",
      "product_views",
+     "products",
      "profiles",
      "quote_items",
      "quotes",
+     "sales_goals",
      "scheduled_reports",
      "search_analytics",
      "seller_cart_items",
      "seller_carts",
+     "stock_daily_summary",
+     "supplier_branches",
+     "suppliers",
      "system_kill_switches",
+     "tabela_preco_gravacao_oficial",
+     "tecnica_gravacao",
+     "v_catalog_stats",
+     "v_kit_component_complete",
+     "variant_supplier_sources",
      "video_variant_links",
      "visual_search_feedback"
     ],
@@ -5558,26 +6958,37 @@
      "restore_seller_cart"
     ],
     "edges": [
+     "ai-recommendations",
+     "categories-api",
+     "commemorative-dates",
+     "connection-tester",
      "crm-db-bridge",
+     "dropbox-list",
      "external-db-bridge",
+     "external-db-inspect",
+     "generate-ad-image",
      "log-login-attempt",
+     "magic-up-score",
+     "materials-api",
      "mcp-keys-issue",
-     "send-transactional-email"
+     "send-transactional-email",
+     "visual-search"
     ],
     "arquivos_lidos": 259
    },
-   "arquivo": "src/routes/tools-routes.tsx",
-   "linha": 89
+   "arquivo": "src/routes/tools-routes.tsx"
   },
   {
    "path": "/magazine",
    "componente": "MagazineListPage",
-   "tela": "src/pages/magazine/MagazineListPage.tsx",
    "grupo": "toolsRoutes",
    "guardas": [
     "ProtectedRoute",
     "MagazineRoute"
    ],
+   "somente_dev": false,
+   "linha": 90,
+   "tela": "src/pages/magazine/MagazineListPage.tsx",
    "hooks": [
     {
      "hook": "useAuth",
@@ -5594,8 +7005,13 @@
    ],
    "dados": {
     "tabelas": [
+     "X",
+     "device_login_notifications",
+     "login_attempts",
      "magazine_items",
      "magazines",
+     "my_table",
+     "notifications",
      "system_settings",
      "user_onboarding",
      "workspace_notifications"
@@ -5618,22 +7034,25 @@
      "magazine_update_metadata_v2"
     ],
     "edges": [
-     "crm-db-bridge"
+     "crm-db-bridge",
+     "magazine-import-local",
+     "magazine-public-view"
     ],
     "arquivos_lidos": 62
    },
-   "arquivo": "src/routes/tools-routes.tsx",
-   "linha": 90
+   "arquivo": "src/routes/tools-routes.tsx"
   },
   {
    "path": "/magazine/templates",
    "componente": "MagazineTemplatesGalleryPage",
-   "tela": "src/pages/magazine/templates-gallery/MagazineTemplatesGalleryPage.tsx",
    "grupo": "toolsRoutes",
    "guardas": [
     "ProtectedRoute",
     "MagazineRoute"
    ],
+   "somente_dev": false,
+   "linha": 98,
+   "tela": "src/pages/magazine/templates-gallery/MagazineTemplatesGalleryPage.tsx",
    "hooks": [
     {
      "hook": "useAuth",
@@ -5670,22 +7089,24 @@
      "magazine_update_metadata_v2"
     ],
     "edges": [
-     "crm-db-bridge"
+     "crm-db-bridge",
+     "magazine-public-view"
     ],
     "arquivos_lidos": 39
    },
-   "arquivo": "src/routes/tools-routes.tsx",
-   "linha": 98
+   "arquivo": "src/routes/tools-routes.tsx"
   },
   {
    "path": "/magazine/:id",
    "componente": "MagazineEditorPage",
-   "tela": "src/pages/magazine/MagazineEditorPage.tsx",
    "grupo": "toolsRoutes",
    "guardas": [
     "ProtectedRoute",
     "MagazineRoute"
    ],
+   "somente_dev": false,
+   "linha": 106,
+   "tela": "src/pages/magazine/MagazineEditorPage.tsx",
    "hooks": [
     {
      "hook": "useMagazineEditor",
@@ -5724,22 +7145,24 @@
     ],
     "edges": [
      "crm-db-bridge",
-     "log-login-attempt"
+     "log-login-attempt",
+     "magazine-public-view"
     ],
     "arquivos_lidos": 77
    },
-   "arquivo": "src/routes/tools-routes.tsx",
-   "linha": 106
+   "arquivo": "src/routes/tools-routes.tsx"
   },
   {
    "path": "/magazine/:id/print",
    "componente": "MagazinePrintPage",
-   "tela": "src/pages/magazine/MagazinePrintPage.tsx",
    "grupo": "toolsRoutes",
    "guardas": [
     "ProtectedRoute",
     "MagazineRoute"
    ],
+   "somente_dev": false,
+   "linha": 114,
+   "tela": "src/pages/magazine/MagazinePrintPage.tsx",
    "hooks": [],
    "dados": {
     "tabelas": [
@@ -5763,22 +7186,24 @@
      "magazine_update_metadata_v2"
     ],
     "edges": [
-     "crm-db-bridge"
+     "crm-db-bridge",
+     "magazine-public-view"
     ],
     "arquivos_lidos": 29
    },
-   "arquivo": "src/routes/tools-routes.tsx",
-   "linha": 114
+   "arquivo": "src/routes/tools-routes.tsx"
   },
   {
    "path": "/magazine/print",
    "componente": "MagazinePrintPage",
-   "tela": "src/pages/magazine/MagazinePrintPage.tsx",
    "grupo": "toolsRoutes",
    "guardas": [
     "ProtectedRoute",
     "MagazineRoute"
    ],
+   "somente_dev": false,
+   "linha": 122,
+   "tela": "src/pages/magazine/MagazinePrintPage.tsx",
    "hooks": [],
    "dados": {
     "tabelas": [
@@ -5802,35 +7227,41 @@
      "magazine_update_metadata_v2"
     ],
     "edges": [
-     "crm-db-bridge"
+     "crm-db-bridge",
+     "magazine-public-view"
     ],
     "arquivos_lidos": 29
    },
-   "arquivo": "src/routes/tools-routes.tsx",
-   "linha": 122
+   "arquivo": "src/routes/tools-routes.tsx"
   },
   {
    "path": "/promoflix-playground",
    "componente": "PromoFlixPlayground",
-   "tela": "src/pages/PromoFlixPlayground.tsx",
    "grupo": "toolsRoutes",
    "guardas": [
     "ProtectedRoute"
    ],
+   "somente_dev": false,
+   "linha": 130,
+   "tela": "src/pages/PromoFlixPlayground.tsx",
    "hooks": [],
    "dados": {
     "tabelas": [
+     "device_login_notifications",
+     "login_attempts",
+     "notifications",
      "system_kill_switches",
      "user_onboarding",
      "workspace_notifications"
     ],
     "buckets": [],
     "rpcs": [],
-    "edges": [],
+    "edges": [
+     "crm-db-bridge"
+    ],
     "arquivos_lidos": 40
    },
-   "arquivo": "src/routes/tools-routes.tsx",
-   "linha": 130
+   "arquivo": "src/routes/tools-routes.tsx"
   }
  ]
 }

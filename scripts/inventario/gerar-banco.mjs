@@ -1,109 +1,220 @@
 #!/usr/bin/env node
-// Inventario gerado do lado do banco (somente leitura) -> inventario/estado/banco.json
-//  - tabelas (linhas estimadas, RLS, policies, triggers, tamanho), views, mviews, funcoes SQL
-//  - cron jobs com execucoes e falhas das ultimas 48 h
-//  - edge functions publicadas x pastas em supabase/functions
-//  - candidatas a orfas: tabelas de public com 0 linhas que nenhuma funcao/view/mview cita
-//    (gerar-repo.mjs cruza com os .from() do codigo e grava a lista final em tabelas-uso.json)
-// Uso: SUPABASE_ACCESS_TOKEN=... node scripts/inventario/gerar-banco.mjs
-//      (SUPABASE_PROJECT_REF padrao: doufsxqlfjyuvxuezpln). Usa o endpoint read-only da Management API.
-// Teste offline: INVENTARIO_OFFLINE_DIR=<pasta com sql.json e functions.json> node scripts/inventario/gerar-banco.mjs
-import { readdirSync, existsSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs';
-import { join } from 'node:path';
-import { querySupabaseReadOnly } from '../supabase-read-only-query.mjs';
+/**
+ * Inventario do banco oficial -> inventario/estado/banco.json (fonte de consulta dos agentes).
+ * Mesmo padrao do scripts/inventario/gerar-banco.mjs do Zapp_Web_V2 (format_version 1).
+ *
+ * Tudo sai de comando: o SQL de leitura `scripts/inventario/banco.sql` + o uso de cada tabela no
+ * codigo (src/ e supabase/functions/) + as edge functions publicadas. Nada escrito a mao.
+ *
+ * Dois jeitos de rodar:
+ *   1) Com credencial viva (CI / maquina com acesso), somente leitura pela Management API:
+ *        SUPABASE_ACCESS_TOKEN=... node scripts/inventario/gerar-banco.mjs
+ *      (endpoint /database/query/read-only + /functions do projeto doufsxqlfjyuvxuezpln)
+ *   2) Sessao de agente sem token: rodar banco.sql no MCP oficial (SUPABASE - GESTAO DE PRODUTOS,
+ *      execute_sql) e list_edge_functions, salvar as respostas e
+ *        node scripts/inventario/gerar-banco.mjs --entrada <resposta-sql> [--functions <resposta-functions>]
+ *      Aceita a resposta crua do MCP, {"rows":[{"inventario":{...}}]}, a linha do psql ou o objeto direto.
+ *
+ * Exit: 0 = gravado; 2 = entrada invalida, credencial ausente ou consulta falhou (nada gravado).
+ */
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 
-const RAIZ = new URL('../../', import.meta.url).pathname;
-const OUT = join(RAIZ, 'inventario/estado');
-const REF = process.env.SUPABASE_PROJECT_REF || 'doufsxqlfjyuvxuezpln';
-process.env.SUPABASE_PROJECT_REF = REF;
-const OFFLINE = process.env.INVENTARIO_OFFLINE_DIR;
-mkdirSync(OUT, { recursive: true });
+const RAIZ = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
+const SQL_PATH = path.join(RAIZ, 'scripts/inventario/banco.sql');
+const SAIDA = path.join(RAIZ, 'inventario/estado/banco.json');
+const PROJETO = 'doufsxqlfjyuvxuezpln';
+const PASTAS_CODIGO = ['src', 'supabase/functions'];
+const EXTENSOES = /\.(ts|tsx|js|jsx|mjs)$/;
 
-const SCHEMAS = ['public', 'cf_recon', 'supplier_stricker', 'prod_audit', 'classification_audit', 'analytics', 'internal', 'pgmq', 'repack'];
-const SQL = `with sch as (select unnest(array[${SCHEMAS.map((s) => `'${s}'`).join(',')}]) s)
-select json_build_object(
- 'versao_pg', current_setting('server_version'),
- 'tamanho_mb', pg_database_size(current_database())/1024/1024,
- 'extensoes', (select json_agg(extname order by extname) from pg_extension),
- 'tabelas', (select json_agg(json_build_object('nome', n.nspname||'.'||c.relname, 'linhas_est', c.reltuples::bigint, 'rls', c.relrowsecurity,
-     'policies', (select count(*) from pg_policy p where p.polrelid=c.oid),
-     'triggers', (select count(*) from pg_trigger tg where tg.tgrelid=c.oid and not tg.tgisinternal),
-     'kb', pg_total_relation_size(c.oid)/1024, 'particionada', c.relkind='p', 'particao', c.relispartition) order by n.nspname, c.relname)
-   from pg_class c join pg_namespace n on n.oid=c.relnamespace where c.relkind in ('r','p') and n.nspname in (select s from sch)),
- 'views', (select json_agg(n.nspname||'.'||c.relname order by 1) from pg_class c join pg_namespace n on n.oid=c.relnamespace where c.relkind='v' and n.nspname in (select s from sch)),
- 'mviews', (select json_agg(n.nspname||'.'||c.relname order by 1) from pg_class c join pg_namespace n on n.oid=c.relnamespace where c.relkind='m' and n.nspname in (select s from sch)),
- 'funcoes', (select json_agg(json_build_object('nome', n.nspname||'.'||p.proname, 'args', pg_get_function_identity_arguments(p.oid), 'security_definer', p.prosecdef, 'tipo', p.prokind) order by n.nspname, p.proname)
-   from pg_proc p join pg_namespace n on n.oid=p.pronamespace where n.nspname in (select s from sch) and n.nspname not in ('repack','pgmq')),
- 'cron', (select json_agg(json_build_object('id', j.jobid, 'nome', j.jobname, 'agenda', j.schedule, 'ativo', j.active, 'comando', regexp_replace(j.command,'\\s+',' ','g'),
-     'ok_48h', coalesce(r.ok,0), 'falhas_48h', coalesce(r.fail,0), 'ultimo_erro', r.err) order by j.jobname)
-   from cron.job j left join (select jobid, count(*) filter (where status='succeeded') ok, count(*) filter (where status='failed') fail,
-     (array_agg(left(return_message,160) order by start_time desc) filter (where status='failed'))[1] err
-     from cron.job_run_details where start_time > now()-interval '48 hours' group by jobid) r on r.jobid=j.jobid),
- 'candidatas_orfas', (select json_agg(c.relname order by c.relname) from pg_class c join pg_namespace n on n.oid=c.relnamespace
-   where n.nspname='public' and c.relkind in ('r','p') and not c.relispartition and c.reltuples <= 0
-     and not exists (select 1 from pg_proc p join pg_namespace pn on pn.oid=p.pronamespace where pn.nspname='public' and p.prosrc ~ ('\\m'||c.relname||'\\M'))
-     and not exists (select 1 from pg_views v where v.schemaname in ('public','analytics','internal') and v.definition ~ ('\\m'||c.relname||'\\M'))
-     and not exists (select 1 from pg_matviews m where m.definition ~ ('\\m'||c.relname||'\\M')))
-) as j`;
-
-function falhar(msg) {
-  console.error(`gerar-banco: ${msg}`);
-  process.exit(1);
-}
-
-async function lerBanco() {
-  if (OFFLINE) return JSON.parse(readFileSync(join(OFFLINE, 'sql.json'), 'utf8'));
-  const r = await querySupabaseReadOnly(SQL);
-  if (r.kind === 'missing-config') falhar('defina SUPABASE_ACCESS_TOKEN (token da Management API, uso somente leitura).');
-  if (r.kind !== 'live') falhar(`consulta falhou: ${JSON.stringify(r)}`);
-  return r.rows[0].j;
-}
-
-async function lerFunctions() {
-  if (OFFLINE) return JSON.parse(readFileSync(join(OFFLINE, 'functions.json'), 'utf8'));
-  const res = await fetch(`https://api.supabase.com/v1/projects/${encodeURIComponent(REF)}/functions`, {
-    headers: { Authorization: `Bearer ${process.env.SUPABASE_ACCESS_TOKEN}` },
-  });
-  if (!res.ok) falhar(`lista de edge functions falhou: HTTP ${res.status}`);
-  return res.json();
-}
-
-const banco = await lerBanco();
-const publicadas = (await lerFunctions())
-  .map((f) => ({
-    slug: f.slug,
-    versao: f.version,
-    status: f.status,
-    verify_jwt: f.verify_jwt,
-    atualizada_em: new Date(f.updated_at).toISOString().slice(0, 16) + 'Z',
-  }))
-  .sort((a, b) => a.slug.localeCompare(b.slug));
-
-const FDIR = join(RAIZ, 'supabase/functions');
-const noRepo = readdirSync(FDIR, { withFileTypes: true })
-  .filter((d) => d.isDirectory() && !d.name.startsWith('_') && existsSync(join(FDIR, d.name, 'index.ts')))
-  .map((d) => d.name);
-const slugs = new Set(publicadas.map((f) => f.slug));
-
-// Comandos de cron leem segredos via get_edge_function_secret(); se um dia vier valor literal, nao versionar.
-const bruto = JSON.stringify(banco);
-if (/Bearer\s+[A-Za-z0-9._-]{20,}|eyJ[A-Za-z0-9_-]{20,}\.[A-Za-z0-9_-]+\.|sb_secret_/.test(bruto)) {
-  falhar('a saida do banco contem algo com cara de credencial; nada foi gravado. Revise os comandos de cron.');
-}
-
-const saida = {
-  fonte: `Management API /database/query/read-only + /functions do projeto ${REF} (scripts/inventario/gerar-banco.mjs)`,
-  gerado_em: new Date().toISOString(),
-  ...banco,
-  edge_functions_publicadas: publicadas,
-  edge_functions_diff: {
-    publicadas_sem_codigo_no_repo: [...slugs].filter((s) => !noRepo.includes(s)).sort(),
-    no_repo_sem_deploy: noRepo.filter((s) => !slugs.has(s)).sort(),
-  },
+// Limiares dos alertas: o que um agente precisa saber antes de mexer no sistema.
+export const LIMIARES = {
+  taxaFalhaCronPct: 5,
+  historicoCronMaisDe7Dias: 50000,
 };
-writeFileSync(join(OUT, 'banco.json'), JSON.stringify(saida, null, 1) + '\n');
-const falhas = (banco.cron ?? []).reduce((n, c) => n + c.falhas_48h, 0);
-console.log(
-  `banco: ${banco.tabelas?.length ?? 0} tabelas | ${banco.views?.length ?? 0} views | ${banco.funcoes?.length ?? 0} funcoes | ` +
-    `${banco.cron?.length ?? 0} cron (${falhas} falhas/48h) | ${publicadas.length} edges publicadas`,
-);
+
+// Acesso a tabela no codigo do Promo: .from('t') (fora storage), untypedFrom/goldFrom('t') e { table: 't' } (dbInvoke).
+const ACESSO_TABELA = /(?<!storage\s*)(?:\.from|\buntypedFrom|\bgoldFrom)(?:<[^>(]*>)?\(\s*['"`]([A-Za-z0-9_]+)['"`]|\btable:\s*['"`]([A-Za-z0-9_]+)['"`]/g;
+
+/** Tira o JSON de dentro da resposta crua do MCP (texto com o array de linhas embrulhado). */
+function desembrulhar(texto) {
+  const t = texto.trim();
+  try {
+    const obj = JSON.parse(t);
+    if (obj && typeof obj.result === 'string') return desembrulhar(obj.result);
+    return obj;
+  } catch {
+    const ini = t.indexOf('[{');
+    const fim = t.lastIndexOf('}]');
+    if (ini === -1 || fim === -1) throw new Error('resposta sem JSON reconhecivel');
+    return JSON.parse(t.slice(ini, fim + 2));
+  }
+}
+
+/** Extrai o objeto do inventario da resposta da Management API, do psql ou do MCP. */
+export function extrairInventario(bruto) {
+  let dado = typeof bruto === 'string' ? desembrulhar(bruto) : bruto;
+  if (Array.isArray(dado)) dado = dado[0];
+  if (dado && Array.isArray(dado.rows)) dado = dado.rows[0];
+  if (dado && dado.inventario) dado = dado.inventario;
+  if (typeof dado === 'string') dado = JSON.parse(dado);
+  const faltando = ['format_version', 'medido_em', 'resumo', 'tabelas', 'cron']
+    .filter((chave) => !(dado && chave in dado));
+  if (faltando.length) throw new Error(`entrada sem as chaves: ${faltando.join(', ')}`);
+  if (dado.format_version !== 1) throw new Error(`format_version ${dado.format_version} desconhecido (esperado 1)`);
+  if (!Array.isArray(dado.tabelas) || dado.tabelas.length === 0) throw new Error('entrada sem tabelas');
+  return dado;
+}
+
+/** Normaliza a lista de edge functions publicadas (Management API, MCP ou array direto). */
+export function extrairFunctions(bruto) {
+  let dado = typeof bruto === 'string' ? desembrulhar(bruto) : bruto;
+  if (dado && Array.isArray(dado.functions)) dado = dado.functions;
+  if (!Array.isArray(dado)) throw new Error('lista de edge functions invalida');
+  return dado
+    .map((f) => ({ slug: f.slug, status: f.status, verify_jwt: f.verify_jwt, versao: f.version }))
+    .sort((a, b) => a.slug.localeCompare(b.slug));
+}
+
+function listarArquivos(dir, acc = []) {
+  if (!fs.existsSync(dir)) return acc;
+  for (const entrada of fs.readdirSync(dir, { withFileTypes: true })) {
+    if (entrada.name === 'node_modules' || entrada.name.startsWith('.')) continue;
+    const p = path.join(dir, entrada.name);
+    if (entrada.isDirectory()) listarArquivos(p, acc);
+    else if (EXTENSOES.test(entrada.name)) acc.push(p);
+  }
+  return acc;
+}
+
+/** Quantos acessos a cada tabela existem em src/ e em supabase/functions/ (testes excluidos). */
+export function contarUsoNoCodigo(raiz, nomes) {
+  const uso = Object.fromEntries(nomes.map((n) => [n, { src: 0, edges: 0 }]));
+  for (const pasta of PASTAS_CODIGO) {
+    const chave = pasta === 'src' ? 'src' : 'edges';
+    for (const arquivo of listarArquivos(path.join(raiz, pasta))) {
+      if (/(\.test\.|\.spec\.|__tests__)/.test(arquivo)) continue;
+      const texto = fs.readFileSync(arquivo, 'utf8');
+      for (const m of texto.matchAll(ACESSO_TABELA)) {
+        const nome = m[1] ?? m[2];
+        if (uso[nome]) uso[nome][chave] += 1;
+      }
+    }
+  }
+  return uso;
+}
+
+/** Edge functions com index.ts no repositorio. */
+export function edgesNoRepo(raiz) {
+  const dir = path.join(raiz, 'supabase/functions');
+  if (!fs.existsSync(dir)) return [];
+  return fs.readdirSync(dir, { withFileTypes: true })
+    .filter((d) => d.isDirectory() && !d.name.startsWith('_') && fs.existsSync(path.join(dir, d.name, 'index.ts')))
+    .map((d) => d.name).sort();
+}
+
+/** Ordena chaves recursivamente: o diff entre execucoes fica so no que mudou. */
+function ordenar(valor) {
+  if (Array.isArray(valor)) return valor.map(ordenar);
+  if (valor && typeof valor === 'object') {
+    return Object.fromEntries(Object.keys(valor).sort().map((k) => [k, ordenar(valor[k])]));
+  }
+  return valor;
+}
+
+/** Junta banco + codigo (+ edges publicadas) e calcula orfas e alertas. Funcao pura (testada em tests/scripts/). */
+export function montarInventario(dado, uso, publicadas = null, noRepo = []) {
+  const tabelas = dado.tabelas.map((t) => ({ ...t, uso_no_codigo: uso[t.nome] ?? { src: 0, edges: 0 } }));
+  const orfas = tabelas
+    .filter((t) => !t.particao && t.linhas === 0 && !t.citada_no_banco && t.uso_no_codigo.src + t.uso_no_codigo.edges === 0)
+    .map((t) => t.nome);
+
+  const alertas = [];
+  const semRls = tabelas.filter((t) => !t.rls).map((t) => t.nome);
+  if (semRls.length) alertas.push({ tipo: 'tabela_sem_rls', detalhe: semRls });
+  const semRlsFora = (dado.outros_schemas ?? []).filter((t) => !t.rls).map((t) => t.nome);
+  if (semRlsFora.length) alertas.push({ tipo: 'tabela_sem_rls_fora_de_public', detalhe: semRlsFora });
+  const cronRuim = dado.cron.jobs
+    .filter((j) => j.ativo && j.taxa_falha_7d_pct >= LIMIARES.taxaFalhaCronPct)
+    .map((j) => `${j.nome} (${j.taxa_falha_7d_pct}% em 7d)`);
+  if (cronRuim.length) alertas.push({ tipo: 'cron_falhando', detalhe: cronRuim });
+  if (dado.cron.horas_paradas_7d.length) {
+    alertas.push({ tipo: 'cron_parado', detalhe: dado.cron.horas_paradas_7d.map((h) => h.hora) });
+  }
+  if (dado.cron.historico.mais_de_7_dias > LIMIARES.historicoCronMaisDe7Dias) {
+    alertas.push({ tipo: 'historico_cron_sem_limpeza', detalhe: [`${dado.cron.historico.mais_de_7_dias} linhas com mais de 7 dias`] });
+  }
+
+  let edgeFunctions = null;
+  if (publicadas) {
+    const slugs = new Set(publicadas.map((f) => f.slug));
+    const semCodigo = [...slugs].filter((s) => !noRepo.includes(s)).sort();
+    const semDeploy = noRepo.filter((s) => !slugs.has(s));
+    edgeFunctions = {
+      publicadas,
+      publicadas_sem_codigo_no_repo: semCodigo,
+      no_repo_sem_deploy: semDeploy,
+    };
+    if (semCodigo.length) alertas.push({ tipo: 'edge_publicada_sem_codigo_no_repo', detalhe: semCodigo });
+    if (semDeploy.length) alertas.push({ tipo: 'edge_no_repo_sem_deploy', detalhe: semDeploy });
+  }
+
+  return ordenar({
+    ...dado,
+    fonte: 'scripts/inventario/banco.sql + acesso a tabelas em src/ e supabase/functions/ + edge functions publicadas (scripts/inventario/gerar-banco.mjs)',
+    tabelas,
+    tabelas_orfas: {
+      criterio: '0 linhas (count exato) + nao citada em funcao/view do banco + nenhum acesso (.from/untypedFrom/goldFrom/table:) em src/ ou supabase/functions/',
+      lista: orfas,
+    },
+    edge_functions: edgeFunctions,
+    alertas,
+  });
+}
+
+async function lerDaApi() {
+  const token = process.env.SUPABASE_ACCESS_TOKEN?.trim();
+  if (!token) throw new Error('sem --entrada e sem SUPABASE_ACCESS_TOKEN: nada para ler (veja o cabecalho do script).');
+  const ref = encodeURIComponent(process.env.SUPABASE_PROJECT_REF || PROJETO);
+  const headers = { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' };
+  const sql = await fetch(`https://api.supabase.com/v1/projects/${ref}/database/query/read-only`, {
+    method: 'POST', headers, body: JSON.stringify({ query: fs.readFileSync(SQL_PATH, 'utf8') }),
+  });
+  // Corpo de erro pode ecoar o SQL ou detalhes de conexao: so o status sai no log.
+  if (!sql.ok) throw new Error(`consulta read-only falhou (HTTP ${sql.status}).`);
+  const fns = await fetch(`https://api.supabase.com/v1/projects/${ref}/functions`, { headers });
+  if (!fns.ok) throw new Error(`lista de edge functions falhou (HTTP ${fns.status}).`);
+  return { bruto: await sql.json(), functions: await fns.json() };
+}
+
+async function main(argv) {
+  const arg = (nome) => { const i = argv.indexOf(nome); return i === -1 ? null : (argv[i + 1] ?? ''); };
+  const entrada = arg('--entrada');
+  let bruto;
+  let functions = null;
+  if (entrada !== null) {
+    if (!entrada) throw new Error('--entrada exige o caminho do arquivo com a resposta do banco.sql');
+    bruto = fs.readFileSync(entrada, 'utf8');
+    const fArq = arg('--functions');
+    if (fArq) functions = fs.readFileSync(fArq, 'utf8');
+  } else {
+    ({ bruto, functions } = await lerDaApi());
+  }
+  const dado = extrairInventario(bruto);
+  const uso = contarUsoNoCodigo(RAIZ, dado.tabelas.map((t) => t.nome));
+  const publicadas = functions ? extrairFunctions(functions) : null;
+  const inventario = montarInventario(dado, uso, publicadas, edgesNoRepo(RAIZ));
+  fs.mkdirSync(path.dirname(SAIDA), { recursive: true });
+  fs.writeFileSync(SAIDA, JSON.stringify(inventario, null, 2) + '\n');
+  console.log(`banco.json: ${inventario.tabelas.length} tabelas, ${inventario.cron.jobs.length} cron jobs, `
+    + `${inventario.tabelas_orfas.lista.length} orfas, ${inventario.alertas.length} alertas`
+    + `${publicadas ? `, ${publicadas.length} edges publicadas` : ''} (medido_em ${inventario.medido_em}).`);
+}
+
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  main(process.argv.slice(2)).catch((error) => {
+    console.error(`ERRO: ${error.message}`);
+    process.exit(2);
+  });
+}

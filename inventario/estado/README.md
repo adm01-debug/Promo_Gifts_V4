@@ -1,58 +1,60 @@
 # Estado real do projeto — inventário gerado
 
-Pasta de **dados gerados**, não de relatórios escritos à mão. Cada arquivo diz como foi produzido.
-Mesmo formato de `inventario/estado/` do Zapp_Web_V2. O resto de `inventario/` (análise de branches)
-é histórico.
+Pasta de **dados gerados por script**, não de relatórios escritos à mão. É a fonte de consulta dos
+agentes para "o que existe hoje" no banco e no código. Se um número aqui divergir do que você mediu,
+regere o arquivo (comandos abaixo) em vez de corrigir à mão. Mesmo formato do `inventario/estado/` do
+Zapp_Web_V2. O resto de `inventario/` (análise de branches) é histórico.
 
-| Arquivo | Gerado por | O que tem |
+| Arquivo | Como gerar | O que tem |
 |---|---|---|
-| `banco.json` | `scripts/inventario/gerar-banco.mjs` (somente leitura: Management API `/database/query/read-only` + `/functions`, token `SUPABASE_ACCESS_TOKEN`) | tabelas (linhas estimadas, RLS, policies, triggers, tamanho), views, mviews, funções SQL, cron jobs com execuções/falhas das últimas 48 h, edge functions publicadas e diferença repo × produção, candidatas a órfãs |
-| `edges.json` | `scripts/inventario/gerar-repo.mjs` | as edge functions do repo: linhas, segredos lidos (`Deno.env.get`) e quem invoca cada uma (src, migrations, outras edges, e2e, CI; `_shared/` e README não contam) |
-| `rotas.json` | `scripts/inventario/gerar-repo.mjs` | cada rota de `src/routes/*.tsx`: path, componente, **tela** (arquivo), grupo, **guardas** (inclui as herdadas do `AppRoutes.tsx`, ex.: `ProtectedRoute`), **hooks** do projeto que a tela importa e **dados** alcançáveis (tabelas, buckets de storage, RPCs e edge functions) seguindo imports locais até 4 níveis |
-| `tabelas-uso.json` | `scripts/inventario/gerar-repo.mjs` (lê a lista de tabelas de `banco.json`) | para cada tabela de `public`, quantos `.from('tabela')` há em `src/` e em `supabase/functions/`, se está em `types.ts`, e a lista final `tabelas_orfas` |
+| `banco.json` | `SUPABASE_ACCESS_TOKEN=... node scripts/inventario/gerar-banco.mjs` **ou**, sem token, rodar `scripts/inventario/banco.sql` no MCP oficial (`SUPABASE - GESTÃO DE PRODUTOS`, `execute_sql`) e `list_edge_functions`, salvar as respostas e `node scripts/inventario/gerar-banco.mjs --entrada <resposta-sql> --functions <resposta-functions>` | banco oficial, só leitura: cada tabela de `public` (RLS, policies, triggers, linhas exatas abaixo de 200 mil, tamanho, se é citada em função/view e `uso_no_codigo` em `src/` e `supabase/functions/`), tabelas de outros schemas, views, mviews, funções `SECURITY DEFINER`, cada cron job (agenda, funções e edges chamadas, falhas e taxa em 24 h/7 d, timeouts, duração máxima), horas em que o cron ficou parado, tamanho do histórico do cron, edge functions publicadas × repo, `tabelas_orfas` e `alertas` |
+| `rotas.json` | `node scripts/inventario/gerar-rotas.mjs` | cada rota de `src/routes/*.tsx`: path, componente, **tela** (arquivo), grupo, **guardas** (próprias, de wrapper e herdadas do `AppRoutes.tsx`, ex.: `ProtectedRoute`), `somente_dev` (harness), **hooks** do projeto que a tela importa e **dados** alcançáveis (tabelas, buckets, RPCs e edges) seguindo imports locais até 4 níveis |
+| `edges.json` | `node scripts/inventario/gerar-repo.mjs` (depois do `gerar-banco.mjs`) | as edge functions do repo: linhas, segredos lidos (`Deno.env.get` no `index.ts` e nos módulos que ele importa, inclusive `_shared/`) e quem invoca cada uma (src, migrations, outras edges, **cron**, e2e, CI) |
 
-**Atualizar tudo** (a ordem importa: o segundo usa o `banco.json`):
+**Atualizar tudo** (a ordem importa: `gerar-repo.mjs` lê as chamadas de cron do `banco.json`):
 
 ```bash
 SUPABASE_ACCESS_TOKEN=... node scripts/inventario/gerar-banco.mjs
+node scripts/inventario/gerar-rotas.mjs
 node scripts/inventario/gerar-repo.mjs
 ```
 
-Sem o token, `gerar-banco.mjs` sai com erro e não grava nada. Se a saída do banco tiver algo com cara de
-credencial (`Bearer <token>`, JWT, `sb_secret_`), ele também para sem gravar. Não edite os JSON à mão.
-Cada arquivo traz `gerado_em`; confira a data antes de confiar.
+Toda segunda o workflow `inventario-estado-semanal.yml` roda os três e abre PR se algo mudou.
+Testes das funções puras: `npx vitest run tests/scripts/inventario-banco.test.mjs tests/scripts/inventario-rotas.test.mjs`.
 
-## Achados da geração de 2026-11-02
+## Como ler `banco.json`
 
-**Banco:** PG 17.6, 5,8 GB. 428 tabelas (398 em `public`), 209 views, 12 mviews, 1.351 funções
-(573 `SECURITY DEFINER`), 18 extensões. Maior volume: `stock_daily_summary` (~2,8 M linhas, 967 MB),
-`stock_snapshots` (777 MB) e `supplier_products_raw_history` (partições mensais, ~2 GB somadas).
+- **`alertas`** é o que um agente precisa saber antes de mexer: `tabela_sem_rls`, `tabela_sem_rls_fora_de_public`,
+  `cron_falhando` (taxa ≥ 5 % em 7 dias, só jobs ativos), `cron_parado` (hora com mais da metade das execuções
+  falhando), `historico_cron_sem_limpeza` (> 50 mil linhas com mais de 7 dias), `edge_publicada_sem_codigo_no_repo`,
+  `edge_no_repo_sem_deploy`. Os limiares estão em `LIMIARES` no script.
+- **`tabelas_orfas`**: 0 linhas (contagem exata) + não citada em função/view do banco + nenhum acesso no código
+  (`.from`, `untypedFrom`, `goldFrom`, `{ table: }`). Candidata a limpeza, não prova de que pode apagar (pode ser
+  usada por sistema externo ou por RPC com nome montado em tempo de execução).
+- **`linhas`** é `count(*)` exato quando a tabela tem menos de 200 mil linhas (`linhas_exatas: true`); acima disso,
+  a estimativa do planner.
+- Nada de segredo sai do banco: de `cron.job` só o nome das funções e das edges chamadas (nunca o comando, que tem
+  URL e cabeçalho), e de `cron.job_run_details` só contagens. O teste barra escrita e esses campos no SQL.
 
-**RLS:** em `public`, todas as tabelas têm RLS e nenhuma está com RLS ligada e zero policies.
-Sem RLS: 24 tabelas fora de `public` — `supplier_stricker.*` (17, quase todas vazias), `prod_audit.*` (5),
-`classification_audit.category_suggestions` e `pgmq.meta`.
+## Como ler `edges.json` e `rotas.json`
 
-**Tabelas órfãs (23):** 0 linhas, nenhuma função SQL, view ou mview cita, nenhum `.from()` em `src/` nem
-em `supabase/functions/`. Lista em `tabelas-uso.json` → `tabelas_orfas` (ex.: `product_group_*`,
-`user_ip_allowlist`, `user_allowed_ips`, `push_subscriptions`, `sales_goals`, `magic_up_comments`).
+- `sem_chamador`: nenhuma chamada em `src/`, migrations, outras edges nem cron. Inclui webhooks chamados de fora
+  (`receive-crm-callback`, `product-webhook`) e edges de teste (`test-*`, `e2e-cleanup`) — conferir antes de concluir
+  que está morta.
+- `rotas[].dados` é o que a tela **alcança** por import (até 4 níveis), não o que ela chama em toda renderização.
 
-**Tabelas de backup/arquivo em `public` (14):** `_archive_*_20260626`, `_bkp_*_202606xx`,
-`backup_produto_ramo_atividade_20260625`, `*_log_2026062x`, `_qa_pct_results`.
+## Achados da geração de 2026-11-02 (medido_em 14:15 UTC)
 
-**Cron:** 144 jobs, 7 inativos (`dispatcher-log-sync`, `image-dimensions-backfill`, `monitor-connections`,
-`pipeline-classify-categories`, `process-webhook-outbox`, `refresh-analytics-mv-product-intelligence`,
-`refresh-analytics-mv-stock-velocity`). Nas últimas 48 h: 7.122 execuções OK e 679 falhas em 78 jobs. Em 72
-desses jobs, o último erro é `job startup timeout` (pg_cron sem worker livre no instante do disparo). Nenhum
-job falhou 100% das vezes.
-
-**Edge functions:** 110 no repo = 110 publicadas, mesmos nomes (nenhuma só de um lado). 36 publicadas com
-`verify_jwt = false`. 26 sem chamador no repo (src, migrations, outras edges; `_shared/` e README não contam).
-Parte delas é chamada por cron (`net.http_post` em `banco.json` → `cron`), por exemplo `cleanup-notifications`,
-`cleanup-novelties`, `send-digest` e `send-scheduled-reports`. As `test-*` e `e2e-cleanup` são de teste.
-Lista em `edges.json` → `sem_chamador_no_repo`.
-
-**Front:** 135 rotas em `src/routes/` (`admin-routes.tsx` 50, `tools-routes.tsx` 26, `public-routes.tsx` 17,
-`client-routes.tsx` 12, `product-routes.tsx` 12, `AppRoutes.tsx` 10, `quote-routes.tsx` 8). 124 com tela resolvida;
-as 11 restantes são `<Navigate>` (redirect). 98 alcançam dados (tabela, bucket, RPC ou edge). Guardas: 28 rotas
-públicas; o resto passa por `ProtectedRoute` (+ `AdminRoute` em 19, + `DevRoute` em 31, + `MagazineRoute` em 5).
-Rotas `/__visual/*`, `/__test/*` e `/debug/*` são harness de teste.
+- **Banco:** 398 tabelas em `public`, todas com RLS, 961 policies, 1.336 funções (572 `SECURITY DEFINER`),
+  197 views, 144 cron jobs (137 ativos), 2.577 registros no ledger de migrations.
+- **Alertas:** 24 tabelas sem RLS fora de `public` (`supplier_stricker.*`, `prod_audit.*`, `classification_audit.*`,
+  `pgmq.meta`); **93 cron jobs ativos com ≥ 5 % de falha em 7 dias** (quase tudo `job startup timeout`: pg_cron sem
+  worker livre no instante do disparo); 1 hora com o cron parado.
+- **Histórico do cron:** 70 mil linhas (43 mil com mais de 7 dias, abaixo do limiar de alerta), mais antiga em
+  2026-10-18.
+- **Tabelas órfãs:** 16 (lista em `banco.json` → `tabelas_orfas`).
+- **Edge functions:** 110 no repo = 110 publicadas; 36 com `verify_jwt = false`; 16 chamadas por cron;
+  22 sem chamador conhecido.
+- **Front:** 135 rotas (118 de produção, 17 harness), 124 com tela resolvida (o resto é `<Navigate>`), 99 alcançam
+  dados. Guardas das rotas de produção: `ProtectedRoute` em todas menos 11 públicas; `AdminRoute` em 19, `DevRoute`
+  em 31, `MagazineRoute` em 5.

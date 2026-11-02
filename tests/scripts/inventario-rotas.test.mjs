@@ -1,0 +1,84 @@
+// Contrato de scripts/inventario/gerar-rotas.mjs: extrai rotas de src/routes/*.tsx com guardas
+// proprias, de wrapper e herdadas do AppRoutes.tsx; marca harness de dev; acha dados por acesso a tabela.
+import { describe, expect, it } from 'vitest';
+
+import { dadosDe, extrairRotas, guardasDosGrupos } from '../../scripts/inventario/gerar-rotas.mjs';
+
+const APP = `
+export function AppRoutes() {
+  return (
+    <Routes>
+      {publicRoutes}
+      {Harness && <Route path="/__visual/x" element={<Harness />} />}
+      <Route element={<ProtectedRoute />}>
+        <Route element={<ProtectedAppLayout />}>
+          {adminRoutes}
+          {quoteRoutes}
+        </Route>
+      </Route>
+      {notFoundRoute}
+    </Routes>
+  );
+}`;
+
+const ADMIN = `
+export const adminRoutes = (
+  <>
+    <Route path="/tendencias" element={<TrendsPage />} />
+    <Route element={<AdminRoute />}>
+      <Route path="/admin/usuarios" element={<AdminUsuariosPage />} />
+      <Route element={<DevRoute />}>
+        <Route path="/admin/seguranca" element={<SegurancaPage />} />
+      </Route>
+    </Route>
+    <Route path="/magazine/:id" element={<MagazineRoute><MagazineEditorPage /></MagazineRoute>} />
+  </>
+);`;
+
+describe('guardasDosGrupos', () => {
+  it('grupos montados dentro de <ProtectedRoute/> herdam a guarda; layout nao conta', () => {
+    const g = guardasDosGrupos(APP);
+    expect(g.adminRoutes).toEqual(['ProtectedRoute']);
+    expect(g.quoteRoutes).toEqual(['ProtectedRoute']);
+    expect(g.publicRoutes).toEqual([]);
+    expect(g.notFoundRoute).toEqual([]);
+  });
+});
+
+describe('extrairRotas', () => {
+  const rotas = extrairRotas(ADMIN, { arquivo: 'admin-routes.tsx', guardasDoGrupo: guardasDosGrupos(APP) });
+  const por = Object.fromEntries(rotas.map((r) => [r.path, r]));
+
+  it('guardas herdadas + aninhadas', () => {
+    expect(por['/tendencias'].guardas).toEqual(['ProtectedRoute']);
+    expect(por['/admin/usuarios'].guardas).toEqual(['ProtectedRoute', 'AdminRoute']);
+    expect(por['/admin/seguranca'].guardas).toEqual(['ProtectedRoute', 'AdminRoute', 'DevRoute']);
+  });
+
+  it('wrapper no element vira guarda e a tela e o componente de dentro', () => {
+    expect(por['/magazine/:id'].componente).toBe('MagazineEditorPage');
+    expect(por['/magazine/:id'].guardas).toEqual(['ProtectedRoute', 'MagazineRoute']);
+    expect(por['/admin/usuarios'].grupo).toBe('adminRoutes');
+  });
+
+  it('harness condicional (X && <Route/>) e /__* saem como somente_dev', () => {
+    const app = extrairRotas(APP, { arquivo: 'AppRoutes.tsx' });
+    expect(app).toHaveLength(1);
+    expect(app[0]).toMatchObject({ path: '/__visual/x', componente: 'Harness', somente_dev: true });
+    expect(por['/tendencias'].somente_dev).toBe(false);
+  });
+});
+
+describe('dadosDe', () => {
+  it('tabelas (incl. wrappers), buckets, RPCs e edges (SDK, helper com generico e URL)', () => {
+    const d = dadosDe(`
+      supabase.from('quotes'); untypedFrom<X>('quote_items'); dbInvoke({ table: 'products' });
+      supabase.storage.from('avatars'); supabase.rpc('fn_total');
+      supabase.functions.invoke('send-email'); invokeEdge('cnpj-lookup'); fetch(\`\${base}/functions/v1/rls-matrix-export\`);
+    `);
+    expect(d.tabelas).toEqual(['products', 'quote_items', 'quotes']);
+    expect(d.buckets).toEqual(['avatars']);
+    expect(d.rpcs).toEqual(['fn_total']);
+    expect(d.edges).toEqual(['cnpj-lookup', 'rls-matrix-export', 'send-email']);
+  });
+});
