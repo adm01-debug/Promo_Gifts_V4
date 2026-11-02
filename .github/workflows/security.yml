@@ -27,8 +27,29 @@ defaults:
     shell: bash
 
 jobs:
-  # Job `gitleaks` removido 2026-11-02 — duplicava o required check
-  # "Gate E23 - Secret Scan (gitleaks)" do deploy-gates.yml (mesma action, mesmo escopo).
+  # Job `gitleaks` RESTAURADO 2026-11-02 (achado Codex P1 na review de gestão de
+  # workflows): não é duplicata do Gate E23 do deploy-gates.yml. Este job usa
+  # gitleaks-action, que varre o RANGE DE COMMITS da PR (detecta segredo
+  # adicionado e removido em commits diferentes da mesma PR); o Gate E23 usa
+  # `--no-git` (varre só o estado final da árvore), que não vê esse caso.
+  gitleaks:
+    name: Gitleaks — Secret Scan
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false  # E32
+          fetch-depth: 0
+
+      - name: Run Gitleaks
+        uses: gitleaks/gitleaks-action@e0c47f4f8be36e29cdc102c57e68cb5cbf0e8d1e # v3.0.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # GITLEAKS_LICENSE: necessário apenas para organizações
+          # Para usuário pessoal, não precisa de licença
+
   headers-mirror:
     name: CSP mirror — public/_headers == vercel.json
     runs-on: ubuntu-24.04

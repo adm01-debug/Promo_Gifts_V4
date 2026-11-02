@@ -356,8 +356,8 @@ jobs:
               const s = JSON.parse(require('fs').readFileSync('$STORAGE','utf8'));
               const hasCookies = s.cookies && s.cookies.length > 0;
               const hasSupabaseToken = (s.origins || []).some(function(o) {
-                return Object.keys(o.localStorage || {}).some(function(k) {
-                  return k.startsWith('sb-') && k.endsWith('-auth-token');
+                return (o.localStorage || []).some(function(e) {
+                  return e.name && e.name.startsWith('sb-') && e.name.endsWith('-auth-token');
                 });
               });
               hasCookies || hasSupabaseToken ? 'valid' : 'empty'
@@ -418,8 +418,8 @@ jobs:
             echo "✅ Baselines commitadas direto em ${TARGET_BRANCH}."
             exit 0
           fi
-          TS=$(date -u +%y%m%d-%H%M)
-          BRANCH="chore/e2e-snapshots-${TS}"
+          TS=$(date -u +%y%m%d-%H%M%S)
+          BRANCH="chore/e2e-snapshots-${{ matrix.suite }}-${TS}"
           git checkout -b "${BRANCH}"
           git commit -m "${INPUT_COMMIT_MESSAGE}"
           git push origin "${BRANCH}"
