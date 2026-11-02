@@ -12,17 +12,16 @@ import type { ReactNode } from 'react';
 import { setFeatureFlag } from '@/lib/feature-flags';
 
 const limitMock = vi.fn();
-// Cadeia espelha o hook: from().select().eq().neq().order().order().limit()
-// (o .neq('nivel_alerta','OK') + 2º .order() foram adicionados no fix de 2026-06-22).
+// Cadeia espelha o hook: untypedRpc().eq().neq().order().order().limit()
+// (sem .select() — RPC retorna SETOF, filtros PostgREST aplicam diretamente).
 const orderInnerMock = vi.fn(() => ({ limit: limitMock }));
 const orderOuterMock = vi.fn(() => ({ order: orderInnerMock }));
 const neqMock = vi.fn(() => ({ order: orderOuterMock }));
 const eqMock = vi.fn(() => ({ neq: neqMock }));
-const selectMock = vi.fn(() => ({ eq: eqMock }));
-const fromMock = vi.fn(() => ({ select: selectMock }));
+const untypedRpcMock = vi.fn(() => ({ eq: eqMock }));
 
-vi.mock('@/integrations/supabase/client', () => ({
-  supabase: { from: (...a: unknown[]) => fromMock(...a) },
+vi.mock('@/lib/supabase-untyped', () => ({
+  untypedRpc: (...a: unknown[]) => untypedRpcMock(...a),
 }));
 
 // import depois do mock
@@ -44,7 +43,7 @@ describe('useRuptureAlerts', () => {
     const qc = new QueryClient({ defaultOptions: { queries: { retry: false } } });
     const { result } = renderHook(() => useRuptureAlerts(), { wrapper: wrap(qc) });
     expect(result.current.alerts).toEqual([]);
-    expect(fromMock).not.toHaveBeenCalled();
+    expect(untypedRpcMock).not.toHaveBeenCalled();
   });
 
   it('dedupe por variant_id mantendo a menor cobertura (cenário 2 preferidos)', async () => {
