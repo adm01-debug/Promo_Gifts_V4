@@ -2905,3 +2905,27 @@ FAIL  tests/integration/kit-coverage.integration.test.ts
 **Ação necessária:** Lovable/PO corrigir P53 (ESLint errors) que causa o cascade de cancelamentos.
 
 ---
+## P64 — Vercel build failure: deploy falha no PR #3028 (2026-11-02)
+
+**Contexto:** Vercel CI mostra falha de deploy no PR #3028 (branch `claude/laughing-cori-o9w35e`).
+**Conclusão:** `failure` (deploy Vercel, não é gate GitHub Actions)
+
+**Causa raiz:** Pré-existente neste branch. O Vercel tenta deployar para preview automaticamente a cada push, mas a causa exata não está acessível via `vercel inspect --logs` (retorna apenas `status: Error`). Não é check requerido pelo Gate Final do CI.
+
+**Impacto:** Não bloqueia merge (Vercel preview não é required check em `main`). O build de produção Vercel é disparado via workflow de deploy, não diretamente pelo PR.
+
+**Ação necessária:** PO verificar o log do deploy Vercel no dashboard para identificar a causa. Provável cascade do P53 (ESLint errors em main que Vercel também executa no build preview).
+
+---
+
+## P65 — merge-reports: job falha por ausência de playwright-report/feature-summary.md (2026-11-02)
+
+**Workflow:** `deploy-gates.yml`, job `merge-reports`
+**Run:** [41419672401](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41419672401), job [125196331938](https://github.com/adm01-debug/Promo_Gifts_V4/actions/actions/runs/41419672401/jobs/125196331938)
+**Conclusão:** `failure`
+
+**Causa raiz:** Cascade de E2E pré-existentes. O job `merge-reports` depende de artefatos gerados pelos jobs E2E (`playwright-report/feature-summary.md`). Como os jobs E2E falharam/foram cancelados antes de gerar esses artefatos, o `upload-artifact` retorna "No files were found with the provided path". Pré-existente — não introduzido pelo PR.
+
+**Ação necessária:** Corrigir as falhas E2E pré-existentes (relacionadas a P49/P53) para que os artefatos sejam gerados corretamente.
+
+---
