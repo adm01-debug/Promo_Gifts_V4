@@ -2848,3 +2848,60 @@ FAIL  tests/integration/kit-coverage.integration.test.ts
 **Ação necessária:** Lovable / time de produto verificar se existem produtos com `color_swatches V2` em produção e se o seletor está correto.
 
 ---
+
+## P60 — SSOT Supabase Guard: guard-canonical-project falha em main por commit Lovable df94410cb (2026-11-02)
+
+**Workflow:** `SSOT Supabase Guard`
+**Job:** `SSOT Gates (validate + guard + hosts)`
+**Step com falha:** `Gate 1 — guard-canonical-project (runtime + critical + docs)`
+**Run:** [41368799775](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41368799775) (sha `df94410cb` — HEAD da main)
+**Conclusão:** `failure`
+
+**Causa raiz:** O arquivo `analise-branches/dossies/devin-probe-e184-legacy-refs.md:28` menciona o ID legado `pqpdolkaeqlyzpdpbizo` sem o marcador `[LEGACY_INFORMATIVO]` na versão atual da main (`df94410cb`). O commit Lovable removeu ou não incluiu o marcador.
+
+**Nota:** O branch `claude/laughing-cori-o9w35e` (PR #3028) já possui o marcador correto na linha 28. O merge do PR #3028 deve restaurar a proteção.
+
+**Ação necessária:** PO: mergear PR #3028 ou abrir PR separado corrigindo a linha.
+
+---
+
+## P61 — Branch Protection Sentinel: commit Lovable "Changes" não segue padrão conventional commits (2026-11-02)
+
+**Workflow:** `Branch Protection Sentinel`
+**Job:** `Verify push to main matches accepted patterns`
+**Step com falha:** `Audit every commit in push`
+**Run:** [41368799721](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41368799721) (sha `df94410cb`)
+**Conclusão:** `failure`
+
+**Causa raiz:** Commit Lovable com mensagem "Changes" não segue o padrão de commits convencionais (`feat:`, `fix:`, `chore:`, etc.) exigido pelo sentinel.
+
+**Ação necessária:** Lovable / PO: configurar o Lovable para gerar mensagens de commit no padrão convencional, OU atualizar o sentinel para aceitar padrão Lovable.
+
+---
+
+## P62 — Ratchet Weekly — Baixar baselines: Vite build falha em main (2026-11-02)
+
+**Workflow:** `Ratchet Weekly — Baixar baselines`
+**Job:** `Baixar baselines se houve melhora`
+**Step com falha:** `Build Vite (necessário para bundle check)`
+**Run:** [41416885115](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41416885115)
+**Conclusão:** `failure`
+
+**Causa raiz:** Relacionado a P53 — o commit Lovable `df94410cb` introduziu ESLint errors em main que causam falha no build do ratchet semanal.
+
+**Ação necessária:** Lovable/PO corrigir os 3 ESLint errors no código do kit-builder (P53).
+
+---
+
+## P63 — E2E Stock — Matrix (E80): jobs cancelados por timeout (2026-11-02)
+
+**Workflow:** `E2E Stock — Matrix (E80)`
+**Jobs:** `E2E Stock · dashboard`, `E2E Stock · filter`, `E2E Stock · future-stock` (cancelados), `E2E Stock · rupture-horizon` (failure)
+**Run:** [41368799754](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41368799754) (sha `df94410cb`)
+**Conclusão:** `failure`
+
+**Causa raiz:** Jobs cancelados por timeout ou concorrência com o Gate Final que falhou em Gate 1 (P53). Pré-existente: mesma natureza dos cancelamentos da Nightly Full CI (P60 e P53 cascadeiam para cancelar jobs dependentes).
+
+**Ação necessária:** Lovable/PO corrigir P53 (ESLint errors) que causa o cascade de cancelamentos.
+
+---
