@@ -73,12 +73,12 @@ describe('dadosDe', () => {
   it('tabelas (incl. wrappers), buckets, RPCs e edges (SDK, helper com generico e URL)', () => {
     const d = dadosDe(`
       supabase.from('quotes'); untypedFrom<X>('quote_items'); dbInvoke({ table: 'products' });
-      supabase.storage.from('avatars'); supabase.rpc('fn_total');
+      supabase.storage.from('avatars'); supabase.rpc('fn_total'); untypedRpc('fn_listing', {}); untypedRpc<Stats>('fn_stats');
       supabase.functions.invoke('send-email'); invokeEdge('cnpj-lookup'); fetch(\`\${base}/functions/v1/rls-matrix-export\`);
     `);
     expect(d.tabelas).toEqual(['products', 'quote_items', 'quotes']);
     expect(d.buckets).toEqual(['avatars']);
-    expect(d.rpcs).toEqual(['fn_total']);
+    expect(d.rpcs).toEqual(['fn_listing', 'fn_stats', 'fn_total']);
     expect(d.edges).toEqual(['cnpj-lookup', 'rls-matrix-export', 'send-email']);
   });
 });

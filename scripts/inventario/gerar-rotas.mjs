@@ -96,7 +96,8 @@ export function dadosDe(bruto) {
   return {
     tabelas: pegar(ACESSO_TABELA),
     buckets: pegar(/storage\s*\.from\(\s*['"`]([\w.-]+)['"`]/g),
-    rpcs: pegar(/\.rpc\(\s*['"`]([A-Za-z_][\w.]*)['"`]/g),
+    // .rpc('fn') e o helper untypedRpc('fn') / untypedRpc<T>('fn') (src/lib/supabase-untyped.ts)
+    rpcs: pegar(/(?:\.rpc|\buntypedRpc)\s*(?:<[^()]*?>)?\(\s*['"`]([A-Za-z_][\w.]*)['"`]/g),
     edges: [...edgesChamadasNoCodigo(code)].sort(),
   };
 }
