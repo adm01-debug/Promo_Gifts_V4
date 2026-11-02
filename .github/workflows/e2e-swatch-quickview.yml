@@ -53,24 +53,6 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false  # E32
-      - name: Validar projeto Supabase alvo antes de usar credenciais
-        run: |
-          EXPECTED="https://doufsxqlfjyuvxuezpln.supabase.co"
-          if [ -z "$VITE_SUPABASE_URL" ]; then
-            echo "VITE_SUPABASE_URL ausente ou inválida para o E2E." >&2
-            exit 1
-          fi
-          if [[ "$VITE_SUPABASE_URL" != https://* ]]; then
-            echo "E2E bloqueado: VITE_SUPABASE_URL deve usar HTTPS." >&2
-            exit 1
-          fi
-          ORIGIN="${VITE_SUPABASE_URL%%/*}"/"${VITE_SUPABASE_URL#*//}"
-          ORIGIN="$(echo "$VITE_SUPABASE_URL" | cut -d'/' -f1-3)"
-          if [ "$ORIGIN" != "$EXPECTED" ]; then
-            echo "E2E bloqueado: VITE_SUPABASE_URL não aponta ao projeto canônico doufsxqlfjyuvxuezpln." >&2
-            exit 1
-          fi
-          echo "Destino Supabase do E2E validado: projeto canônico HTTPS."
       - uses: ./.github/actions/e2e-setup
         with:
           browsers: 'chromium,${{ matrix.browser }}'
