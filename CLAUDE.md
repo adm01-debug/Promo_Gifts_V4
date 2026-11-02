@@ -15,8 +15,8 @@
 - **Repo:** `adm01-debug/Promo_Gifts_V4` — Promo Brindes, catálogo B2B de brindes corporativos.
 - **Stack:** React + TypeScript + Vite + Supabase (PG17). Dados em camadas Medallion Bronze → Silver → Gold.
 - **Lovable** (`gpt-engineer-app[bot]`) commita direto em `main` (ver REGRA #7).
-- **CI:** GitHub Actions com quality gates numerados; o único check required em `main` é
-  "Gate Final - Deploy Ready" (ver seção CI).
+- **CI:** GitHub Actions com quality gates numerados; os checks required em `main` estão em
+  `.github/required-checks.json` (ver seção CI).
 - **Vercel:** projeto `prj_9UfugNYCuboH2R0XB04Jv8PpjDpZ` (team `juca1`), ancorado em `.vercel/project.json`
   (ver REGRA #11).
 
@@ -219,10 +219,11 @@ não enxerga trigger, policy, cron nem GRANT, e confunde view com tabela.
 
 ### Gates obrigatórios (required checks em `main`)
 
-O único check required no branch protection de `main` é **"Gate Final - Deploy Ready"**
-(`.github/workflows/deploy-gates.yml`). Esse job agrega todos os gates abaixo; se qualquer um falhar, o
-deploy é bloqueado. `.github/required-checks.json` é a lista oficial — PR que altere um `name:` de job em
-`deploy-gates.yml` atualiza esse arquivo junto, senão o Branch Protection Sentinel alerta.
+Checks required no branch protection de `main` — lista oficial em `.github/required-checks.json` (hoje 5):
+**"Gate Final - Deploy Ready"** (`deploy-gates.yml`, agrega todos os gates abaixo), "Compare GitHub × Canonical"
+(`edge-functions-drift-check.yml`), "Analyze (javascript-typescript)" (`codeql.yml`), "Gate E23 - Secret Scan
+(gitleaks)" (`deploy-gates.yml`) e "Assert Gate Final is required on main". PR que altere um `name:` de job
+desses workflows atualiza o JSON junto, senão o Branch Protection Sentinel alerta.
 
 Tipo `job` = job independente no Actions (procure pelo `name:` do job); `step` = passo dentro de um job
 agregador (`static-gates`, `drift-gates`, `security-gates` ou `build`; procure pelo `- name:` do step).

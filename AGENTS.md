@@ -184,8 +184,9 @@ acessíveis por MCP e só um é o banco deste app.
   via PR; `scripts/sentinel-check.sh` recusa merge direto entre branches de agentes diferentes.
 - O hook `commit-msg` (commitlint) recusa mensagem fora de `tipo(escopo opcional): descrição` — tipos
   aceitos em `CLAUDE.md`, REGRA #6.
-- "CI verde" (regra 7 do Fluxo Git) = check required **"Gate Final - Deploy Ready"**
-  (`.github/workflows/deploy-gates.yml`).
+- "CI verde" (regra 7 do Fluxo Git) = todos os checks required de `main` concluídos com sucesso. A lista oficial
+  é `.github/required-checks.json` (hoje: "Gate Final - Deploy Ready", "Compare GitHub × Canonical",
+  "Analyze (javascript-typescript)", "Gate E23 - Secret Scan (gitleaks)", "Assert Gate Final is required on main").
 
 ### Grafo de código (graphify)
 
