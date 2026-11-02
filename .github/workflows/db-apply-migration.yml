@@ -270,10 +270,12 @@ jobs:
       - name: Setup Supabase CLI
         run: |
           set -euo pipefail
-          wget -qO supabase.tar.gz "https://github.com/supabase/cli/releases/download/v2.101.0/supabase_linux_amd64.tar.gz"
-          tar -xzf supabase.tar.gz
-          chmod +x supabase
-          sudo mv supabase /usr/local/bin/supabase
+          # Extrai em /tmp para evitar colisão com o diretório supabase/ do checkout
+          mkdir -p /tmp/supabase-install
+          wget -qO /tmp/supabase-install/supabase.tar.gz "https://github.com/supabase/cli/releases/download/v2.101.0/supabase_linux_amd64.tar.gz"
+          tar -C /tmp/supabase-install -xzf /tmp/supabase-install/supabase.tar.gz
+          sudo mv /tmp/supabase-install/supabase /usr/local/bin/supabase
+          supabase --version
 
       - name: migration repair --status applied
         run: |

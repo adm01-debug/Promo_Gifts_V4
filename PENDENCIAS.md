@@ -2817,3 +2817,34 @@ FAIL  tests/integration/kit-coverage.integration.test.ts
 **Ação necessária:** Time de produto / Lovable investigar regressão visual entre `/novidades` e `/reposicao`.
 
 ---
+
+## P58 — E2E Smoke — Magazine Header (authed): falha em cabeçalho de magazine (2026-11-02)
+
+**Workflow:** `E2E Smoke`
+**Job:** `e2e-smoke`
+**Testes com falha:** `E2E — Magazine Header (authed)` e `Magazine Header OK`
+**Commit detectado:** `ca32b695d` (run 41399671427)
+**Conclusão:** `failure`
+
+**Causa raiz:** Testes autenticados de cabeçalho do magazine (`magazine-header-align.spec.ts`, `magazine-header-responsive.spec.ts`). Pré-existente: mesmo padrão observado no Nightly Full CI run 40808174535 (2026-10-29) — 14 falhas nos testes responsivos do cabeçalho do Magazine documentadas em histórico anterior.
+
+**Evidência de pre-existência:** Falhas idênticas em `magazine-header` documentadas no Nightly Full CI da sessão anterior (linha ~75 desta seção). O PR #3028 não toca componentes React de magazine, rotas, nem fixtures de autenticação.
+
+**Ação necessária:** Lovable / time de produto investigar regressão de testes de layout/responsividade do cabeçalho de magazine com testes autenticados.
+
+---
+
+## P59 — chromium • swatch→QV e webkit • swatch→QV: confirmados pré-existentes em 18079fe8 (2026-11-02)
+
+**Workflow:** `E2E Focused UI — Matrix (E78)` shard `color-swatch`
+**Jobs:** `chromium • swatch→QV` (job 125168273930) e `webkit • swatch→QV` (job 125168273528)
+**Commit detectado:** `18079fe89` (run 41412380935)
+**Conclusão:** `failure`
+
+**Causa raiz:** Os testes de swatch picker V2 (focus + quickview) falham por "nenhum produto com color_swatches V2" na rota testada — selector ou fixture ausente em produção. Pré-existente: documentado desde run 40808174535 (2026-10-29) e em P51 desta seção.
+
+**Nota:** A Seção 13 do RELATORIO_CI.md afirmava incorretamente que "P51 confirmado RESOLVIDO" com base no sucesso do workflow pai (`E2E Focused UI — Matrix (E78)`). A notificação posterior confirmou que os jobs individuais `chromium • swatch→QV` e `webkit • swatch→QV` FALHARAM no run 41412380935. P51 **não está resolvido**.
+
+**Ação necessária:** Lovable / time de produto verificar se existem produtos com `color_swatches V2` em produção e se o seletor está correto.
+
+---

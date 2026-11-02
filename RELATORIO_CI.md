@@ -435,7 +435,8 @@ Auth surface fuzz ([41393041456](https://github.com/adm01-debug/Promo_Gifts_V4/a
 | Migrations x Canonical schema | ❌ failure (pré-existente) | Requer DBA/PO | P7 |
 | Gate E40 - Schema Drift Check | ❌ failure — `local_only=1140; remote_only=673` | Confirmado no run `41405442459` | P7 |
 | Gate Final - Deploy Ready | ❌ failure — único bloqueador Gate E40 | Confirmado no run `41405442459` | P7 |
-| E2E Focused UI — Matrix (E78) / webkit • swatch→QV | ✅ **success** — resolvido em `18079fe8` | Run [41412381437](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41412381437) | P51 ✅ |
+| E2E Focused UI — Matrix (E78) / webkit • swatch→QV | ❌ failure — job 125168273528 falhou em run 41412380935 | Workflow pai passa mas job individual falha | P51/P59 |
+| E2E Focused UI — Matrix (E78) / chromium • swatch→QV | ❌ failure — job 125168273930 falhou em run 41412380935 | Pré-existente | P51/P59 |
 | E2E · view-no-presentation-mode | ❌ pré-existente (não confirmado resolvido) | Ver PENDENCIAS.md | P52 |
 | audit (E2E visual parity /novidades vs /reposicao) | ❌ pré-existente (não confirmado resolvido) | Ver PENDENCIAS.md | P49/P57 |
 
@@ -458,6 +459,7 @@ Auth surface fuzz ([41393041456](https://github.com/adm01-debug/Promo_Gifts_V4/a
 | `9bf5d2858` | Documentação P53–P56 | PENDENCIAS.md, RELATORIO_CI.md | ✅ |
 | `ca32b695d` | Duplicatas `20261027*` em MIGRATIONS_SYNC_LOG bloqueavam gate | supabase/MIGRATIONS_SYNC_LOG.md, .github/workflows/db-apply-migration.yml | ✅ Gate passou |
 | `545523fe5` | Documentação P57 (E2E visual parity pré-existente) | PENDENCIAS.md | ✅ |
+| HEAD (sessão atual) | **RED CIRCLE — tar collision em `db-apply-migration.yml`**: `tar -xzf supabase.tar.gz` colide com `supabase/` do checkout; fix: extrai em `/tmp/supabase-install/` | `.github/workflows/db-apply-migration.yml` | ✅ Corrigido |
 
 ### Items bloqueados — requerem ação humana (DBA/PO/Lovable)
 
@@ -469,12 +471,14 @@ Auth surface fuzz ([41393041456](https://github.com/adm01-debug/Promo_Gifts_V4/a
 | P48 | Aplicar migration `20261102063000` (kill switch rate guard) | Único caminho E15 desbloqueado após fix `ca32b695d` | PO: `workflow_dispatch` em `db-apply-migration.yml` |
 | P49 | audit (replenishment-stress E2E) | 2 testes falhando por timeout/410 Gone | PO/DBA |
 | P50 | E2E — Personalization Journey | E2E autenticado instável | Lovable/time produto |
-| P51 | webkit • swatch→QV / E2E Focused UI Matrix | ✅ **RESOLVIDO** — run `41412381437` em `18079fe8` | — |
+| P51/P59 | webkit • swatch→QV + chromium • swatch→QV | ❌ pré-existente — job 125168273528 e 125168273930 FALHARAM em run 41412380935 para `18079fe8`. Nota: o workflow pai `E2E Focused UI — Matrix (E78)` (run 41412381437) aparece como success mas os jobs de shard falharam | Lovable/PO |
 | P52 | E2E · view-no-presentation-mode | E2E snapshot visual pré-existente | Lovable/time produto |
 | P53 | CI Security & Drift + Nightly Full CI | 3 ESLint errors Lovable kit-builder em main | Lovable/PO |
 | P54 | Kit Coverage — Integration | Test timeout BD externo | PO/DBA |
 | P55 | Uptime Monitor | Probe infra externa | PO |
 | P57 | CI - Replenishment Quality Gate (audit) | E2E visual parity pré-existente | Lovable/time produto |
+| P58 | E2E Smoke — Magazine Header (authed) | Testes autenticados de layout de magazine — pré-existente | Lovable/time produto |
+| P59 | chromium • swatch→QV + webkit • swatch→QV | E2E swatch picker V2 — selector/fixture ausente em produção — pré-existente | Lovable/time produto |
 
 ---
 
@@ -486,7 +490,7 @@ Auth surface fuzz ([41393041456](https://github.com/adm01-debug/Promo_Gifts_V4/a
 
 | Workflow | Run | Conclusão | Observação |
 |---|---|---|---|
-| E2E Focused UI — Matrix (E78) | [41412381437](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41412381437) | ✅ success | **P51 RESOLVIDO** — webkit•swatch→QV passou |
+| E2E Focused UI — Matrix (E78) — workflow | [41412381437](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41412381437) | ✅ success (workflow) / ❌ failure (jobs individuais) | **P51 NÃO RESOLVIDO** — jobs `webkit • swatch→QV` (125168273528) e `chromium • swatch→QV` (125168273930) FALHARAM em run 41412380935. Ver P59. |
 | E2E — Personalization Flow | [41412381128](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41412381128) | ✅ success | Fluxo de personalização passou |
 | Quote Builder Delivery Quality | [41412381041](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41412381041) | ✅ success | — |
 | E2E · Dialogs visual PR check | [41412381103](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41412381103) | ✅ success | — |
@@ -511,8 +515,9 @@ Auth surface fuzz ([41393041456](https://github.com/adm01-debug/Promo_Gifts_V4/a
 ### Conclusão final
 
 - Todos os workflows corrigíveis nesta sessão foram corrigidos e validados
-- P51 (`webkit • swatch→QV`) confirmado RESOLVIDO em `18079fe8`
+- **P51/P59 NÃO RESOLVIDOS** — `webkit • swatch→QV` (job 125168273528) e `chromium • swatch→QV` (job 125168273930) FALHARAM em run 41412380935 para `18079fe8`. Nota corretiva: afirmação anterior "P51 RESOLVIDO" estava **incorreta** — baseada no success do workflow pai, não nos jobs individuais.
+- **Fix aplicado (RED CIRCLE Codex/Qodo):** `db-apply-migration.yml` corrigido — tar extraía em diretório de checkout (colisão com `supabase/`); agora extrai em `/tmp/supabase-install/`. Fix no commit HEAD da sessão atual.
 - Único bloqueador do Gate Final: **Gate E40 Ledger parity (P7)** — `local_only=1140; remote_only=673` — pré-existente, requer DBA/PO
 - P40 (4 workflows com startup_failure por policy de actions): bloqueado PO
-- P49, P52, P53–P57: documentados em PENDENCIAS.md, fora do escopo de código desta sessão
+- P49, P50, P52, P53–P59: documentados em PENDENCIAS.md, fora do escopo de código desta sessão
 
