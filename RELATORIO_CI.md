@@ -692,7 +692,7 @@ PRs #2854 e #2855 têm checks pendentes; #2852 também permanece aberto com seis
 | 2 | CI - Replenishment Module QG | [#41354148353](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41354148353) | `d2033d92` | TS2339 em `useRuptureAlerts.ts` (2 erros — precedência cast `as`/`await`) | ✅ CORRIGIDO em `68d809ccb` |
 | 3 | CI Security & Drift Checks | [#41354148157](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41354148157) | `d2033d92` | Mesma TS2339 `useRuptureAlerts.ts` | ✅ CORRIGIDO em `68d809ccb` |
 | 4 | TS Unused Locals Ratchet | [#41351671546](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41351671546) | `e3ec559d` | 2 unused locals (baseline: 0) | ✅ CORRIGIDO (exit 0 local verificado) |
-| 5 | Edge Integration Tests | [#41351706586](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41351706586) | `23f634de` | `materials-api` → HTTP 408 timeout no happy-path | ⛔ INFRA — ver PENDENCIAS §P12 |
+| 5 | Edge Integration Tests | [#41351706586](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41351706586) | `23f634de` | `materials-api` → HTTP 408 timeout no happy-path | ⛔ INFRA — ver PENDENCIAS §P38 |
 | 6 | E2E (Playwright) | [#41350753730](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41350753730) | `43476864` | E2E live — URL-state + auth | ⛔ INFRA — fix em `fix/ci-workflows` |
 | 7 | Uptime Monitor | [#41350141338](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41350141338) | `5ebece52` | Health check externo — probe failure transitório | ⛔ INFRA — auto-recuperável |
 | 8 | Gate 5 — Supabase Security | [#41349576149](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41349576149) | `5ebece52` | Live DB check com credenciais | ⛔ INFRA |
@@ -701,12 +701,12 @@ PRs #2854 e #2855 têm checks pendentes; #2852 também permanece aberto com seis
 | 11 | Magazine typed queries | [#41348995057](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41348995057) | `4f91aa08` | Typecheck falhou — TS2339 em `useRuptureAlerts.ts` (mesmo SHA pré-fix) | ✅ CORRIGIDO em `68d809ccb` (mesmo fix do #2/#3) |
 | 12 | E2E ColorSwatch Grid | [#41348720790](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41348720790) | `1440ebaf` | E2E live — Playwright | ⛔ INFRA |
 | 13 | E2E Critical Flows | [#41348455649](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41348455649) | `fb22dad1` | E2E live — Playwright | ⛔ INFRA |
-| 14 | schema-snapshot-export | [#41348311003](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41348311003) | `cbbabc2f` | `MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json` ausente + ledger parity falhou | ⛔ INFRA/DADOS — ver PENDENCIAS §P9 |
-| 15 | Policies Baseline | [#41347780875](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41347780875) | `f99f36ae` | Drift RLS: +0/-1/~8 (`_backup_stock*` removida + 8 alteradas) | ⛔ GOVERNA — ver PENDENCIAS §P10 |
+| 14 | schema-snapshot-export | [#41348311003](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41348311003) | `cbbabc2f` | `MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json` ausente + ledger parity falhou | ⛔ INFRA/DADOS — ver PENDENCIAS §P35 |
+| 15 | Policies Baseline | [#41347780875](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41347780875) | `f99f36ae` | Drift RLS: +0/-1/~8 (`_backup_stock*` removida + 8 alteradas) | ⛔ GOVERNA — ver PENDENCIAS §P36 |
 | 16 | E2E Cart — Matrix | [#41347780959](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41347780959) | `f99f36ae` | E2E live — Playwright | ⛔ INFRA |
 | 17 | E2E Swatch QuickView | [#41347760648](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41347760648) | `36e69d6b` | E2E live — Playwright | ⛔ INFRA |
 | 18 | E2E Magazine Header | [#41347760746](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41347760746) | `36e69d6b` | E2E live — Playwright | ⛔ INFRA |
-| 19 | Branch Protection Sentinel (novo) | [#41359937302](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41359937302) | `5b5cef36` | Commit `chore(analise)` pushado direto em main sem PR | ⛔ GOVERNA — ver PENDENCIAS §P11 |
+| 19 | Branch Protection Sentinel (novo) | [#41359937302](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41359937302) | `5b5cef36` | Commit `chore(analise)` pushado direto em main sem PR | ⛔ GOVERNA — ver PENDENCIAS §P37 |
 
 ### Resumo por categoria
 

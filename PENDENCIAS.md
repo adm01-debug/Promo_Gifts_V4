@@ -2301,9 +2301,12 @@ Segundo job ("Drift gate"): `Ledger parity (repo x canonical)` também falhou.
 
 **Causa raiz:** O arquivo `docs/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json` não existe no repo. O workflow `schema-snapshot-export` precisa dele para comparar ledger.
 
-**O que o PO precisa fazer:** Disparar `schema-snapshot-export.yml` via `workflow_dispatch` (GitHub Actions). O manifesto será commitado automaticamente pelo workflow.
+**O que o PO precisa fazer:**
+1. **NÃO** disparar `schema-snapshot-export.yml` diretamente — esse workflow lê o manifesto mas não o gera; reexecutá-lo sem o manifesto repete a falha.
+2. Localizar o último backup de `docs/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json` no histórico git (`git log --all -- docs/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json`) e restaurá-lo via PR.
+3. Após o PR com o manifesto restaurado ser mergeado em `main`, verificar se o drift gate passa. Se passar, o `schema-snapshot-export` pode ser disparado normalmente.
 
-**Classificação:** Bloqueador de infra — exige credenciais e dispatch manual
+**Classificação:** Bloqueador de infra — exige restauração manual do manifesto + PR de governança
 
 ---
 
@@ -2322,10 +2325,14 @@ changed: 8 policies em ai_usage_quotas + art_file_attachments
 
 **O que o PO precisa fazer:**
 1. Revisar se as 8 mudanças em `ai_usage_quotas` e `art_file_attachments` são intencionais
-2. Se intencionais: criar migration espelho + disparar CI para regenerar baseline
+2. Se intencionais:
+   a. Criar migration espelho documentando as mudanças de policy
+   b. Disparar `Policies Baseline` via `workflow_dispatch` com input `seed=true` — isso gera uma PR com o baseline atualizado
+   c. Revisar e mergear a PR gerada pelo workflow antes de verificar se o drift foi zerado
+   d. **Atenção:** um CI run comum não regenera o baseline; apenas o dispatch com `seed=true` faz isso
 3. Se não intencionais: reverter via migration e investigar
 
-**Classificação:** Bloqueador de governança — exige revisão do PO + credenciais para regenerar baseline
+**Classificação:** Bloqueador de governança — exige revisão do PO + dispatch `seed=true` + merge da PR gerada
 
 ---
 

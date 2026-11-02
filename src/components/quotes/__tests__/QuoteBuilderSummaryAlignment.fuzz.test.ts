@@ -30,9 +30,9 @@ const TOUCH_TARGET_MIN = 32; // WCAG 2.5.5 AAA
 const NAME_PR_PX = 4; // pr-1
 
 // Sanity: garante que os tokens continuam batendo com o JSX de itens (pós-split E128)
-expect(SRC_ITEMS).toMatch(/leading-\[1\.125rem\]/);
-expect(SRC_ITEMS).toMatch(/h-\[1\.125rem\] shrink-0 items-center/);
-expect(SRC_ITEMS).toMatch(/pr-2 text-sm font-medium/);
+expect(SRC).toMatch(/leading-\[1\.125rem\]/);
+expect(SRC).toMatch(/h-\[1\.125rem\] shrink-0 items-center/);
+expect(SRC).toMatch(/pr-2 text-sm font-medium/);
 
 // --- Helpers --------------------------------------------------------------
 const VIEWPORTS = [375, 414, 640, 768, 1024, 1280, 1440, 1920] as const;
@@ -141,16 +141,16 @@ describe('QuoteBuilderSummaryColumn — fuzz de alinhamento (centenas de simula�
 
   it('mantém exatamente 3 botões com hitbox expandida (Editar, Excluir, Colapsar)', () => {
     // E128: hitboxes de item-action estão em QuoteBuilderSummaryItems.tsx pós-split
-    const hitboxes = SRC_ITEMS.match(/before:inset-\[-10px\]/g);
+    const hitboxes = SRC.match(/before:inset-\[-10px\]/g);
     expect(hitboxes?.length).toBe(3);
   });
 
   it('mantém exatamente 3 tooltips comerciais PT-BR', () => {
     // E128: tooltips de item-action estão em QuoteBuilderSummaryItems.tsx pós-split
-    expect(SRC_ITEMS).toMatch(/Ajustar este item/);
-    expect(SRC_ITEMS).toMatch(/Remover do orçamento/);
+    expect(SRC).toMatch(/Ajustar este item/);
+    expect(SRC).toMatch(/Remover do orçamento/);
     // 3ª tooltip (toggle) tem texto dinâmico — valida presença do TooltipContent restante
-    const tooltipContents = SRC_ITEMS.match(/<TooltipContent side="top"/g);
+    const tooltipContents = SRC.match(/<TooltipContent side="top"/g);
     expect(tooltipContents?.length).toBeGreaterThanOrEqual(3);
   });
 });

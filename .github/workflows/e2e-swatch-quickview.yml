@@ -53,6 +53,27 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false  # E32
+      - name: Validar projeto Supabase alvo antes de usar credenciais
+        run: |
+          node --input-type=module <<'NODE'
+          const expectedOrigin = 'https://doufsxqlfjyuvxuezpln.supabase.co';
+          let parsed;
+          try {
+            parsed = new URL(process.env.VITE_SUPABASE_URL);
+          } catch {
+            console.error('VITE_SUPABASE_URL ausente ou inválida para o E2E.');
+            process.exit(1);
+          }
+          if (parsed.protocol !== 'https:') {
+            console.error('E2E bloqueado: VITE_SUPABASE_URL deve usar HTTPS.');
+            process.exit(1);
+          }
+          if (parsed.origin !== expectedOrigin) {
+            console.error('E2E bloqueado: VITE_SUPABASE_URL não aponta ao projeto canônico doufsxqlfjyuvxuezpln.');
+            process.exit(1);
+          }
+          console.log('Destino Supabase do E2E validado: projeto canônico HTTPS.');
+          NODE
       - uses: ./.github/actions/e2e-setup
         with:
           browsers: 'chromium,${{ matrix.browser }}'
@@ -61,23 +82,6 @@ jobs:
         env:
           E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
           E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
-      - name: Validar projeto Supabase alvo sem exibir credenciais
-        run: |
-          node --input-type=module <<'NODE'
-          const expectedHost = 'doufsxqlfjyuvxuezpln.supabase.co';
-          let actualHost;
-          try {
-            actualHost = new URL(process.env.VITE_SUPABASE_URL).hostname;
-          } catch {
-            console.error('VITE_SUPABASE_URL ausente ou inválida para o E2E.');
-            process.exit(1);
-          }
-          if (actualHost !== expectedHost) {
-            console.error('E2E bloqueado: VITE_SUPABASE_URL não aponta ao projeto canônico doufsxqlfjyuvxuezpln.');
-            process.exit(1);
-          }
-          console.log('Destino Supabase do E2E validado: projeto canônico.');
-          NODE
       - name: Run swatch→QuickView suite (V1 + V2 + focus/QV)
         # O reporter json do playwright.config.ts já tem `outputFile` explícito
         # (playwright-report/results.json). Quando `outputFile` existe, o Playwright
