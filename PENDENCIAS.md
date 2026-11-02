@@ -292,7 +292,7 @@ Clique em "Re-run all jobs".
 Esta divergência é independente do fix de P4 (guard pg_cron nas migrations `20261027120000`/`20261027140000`). O fix de P4 corrigiu o replay do Gate E40 dentro do `deploy-gates.yml`, mas o `db-schema-drift-check` compara o ledger em si — e o ledger está dessincronizado por DDL fora do fluxo de migration (REGRA #8 corolário).
 
 **Ação necessária do PO:**
-1. Investigar a extensão da divergência: baixar artefato `schema-reconciliation-evidence` do run [40708395880](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40708395880/artifacts/12824214915) (arquivos `/tmp/migration-ledger.json` e `/tmp/migration-ledger-summary.json`)
+1. Investigar a extensão da divergência: baixar artefato `schema-reconciliation-evidence` do run [40708395880](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40708395880/artifacts/12824214915) (o zip contém `migration-ledger.json` e `migration-ledger-summary.json` — nomes internos ao artefato, não caminhos locais do usuário)
 2. Decidir estratégia de reconciliação: criar migrations espelho para o `remote_only=648` ou limpar o `local_only=1108` do ledger
 3. Confirmar que o `db-schema-drift-check` passa verde com a reconciliação feita (via `workflow_dispatch` nesse workflow)
 4. **Somente após** o drift-check estar verde: disparar `schema-snapshot-export.yml` **sem** `force_rotate` para o export normal. Usar `force_rotate: true` apenas na situação de `repair-only` documentada em CLAUDE.md (migration fora de ordem de versão) e revisar o diff do baseline gerado no PR do bot antes do merge. **Atenção:** `force_rotate` bypassa o drift gate mesmo que drift persista — nunca usar enquanto objetos DDL fora de migration não forem reconciliados.
@@ -771,7 +771,7 @@ Clique em "Re-run all jobs".
 Esta divergência é independente do fix de P4 (guard pg_cron nas migrations `20261027120000`/`20261027140000`). O fix de P4 corrigiu o replay do Gate E40 dentro do `deploy-gates.yml`, mas o `db-schema-drift-check` compara o ledger em si — e o ledger está dessincronizado por DDL fora do fluxo de migration (REGRA #8 corolário).
 
 **Ação necessária do PO:**
-1. Investigar a extensão da divergência: baixar artefato `schema-reconciliation-evidence` do run [40708395880](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40708395880/artifacts/12824214915) (arquivos `/tmp/migration-ledger.json` e `/tmp/migration-ledger-summary.json`)
+1. Investigar a extensão da divergência: baixar artefato `schema-reconciliation-evidence` do run [40708395880](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/40708395880/artifacts/12824214915) (o zip contém `migration-ledger.json` e `migration-ledger-summary.json` — nomes internos ao artefato, não caminhos locais do usuário)
 2. Decidir estratégia de reconciliação: criar migrations espelho para o `remote_only=648` ou limpar o `local_only=1108` do ledger
 3. Confirmar que o `db-schema-drift-check` passa verde com a reconciliação feita (via `workflow_dispatch` nesse workflow)
 4. **Somente após** o drift-check estar verde: disparar `schema-snapshot-export.yml` **sem** `force_rotate` para o export normal. Usar `force_rotate: true` apenas na situação de `repair-only` documentada em CLAUDE.md (migration fora de ordem de versão) e revisar o diff do baseline gerado no PR do bot antes do merge. **Atenção:** `force_rotate` bypassa o drift gate mesmo que drift persista — nunca usar enquanto objetos DDL fora de migration não forem reconciliados.
@@ -2305,14 +2305,11 @@ Process completed with exit code 2.
 ```
 Segundo job ("Drift gate"): `Ledger parity (repo x canonical)` também falhou.
 
-**Causa raiz:** O arquivo `docs/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json` não existe no repo. O workflow `schema-snapshot-export` precisa dele para comparar ledger.
+**Causa raiz:** O arquivo `docs/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json` não existia em `main` na época da falha. O workflow `schema-snapshot-export` precisa dele para comparar ledger.
 
-**O que o PO precisa fazer:**
-1. **NÃO** disparar `schema-snapshot-export.yml` diretamente — esse workflow lê o manifesto mas não o gera; reexecutá-lo sem o manifesto repete a falha.
-2. Localizar o último backup de `docs/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json` no histórico git (`git log --all -- docs/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json`) e restaurá-lo via PR.
-3. Após o PR com o manifesto restaurado ser mergeado em `main`, verificar se o drift gate passa. Se passar, o `schema-snapshot-export` pode ser disparado normalmente.
+**Status:** ✅ **Resolvido no PR #3028** — o arquivo `docs/MANIFESTO_LEDGER_CANONICO_SANITIZADO_2026-09-16.json` foi restaurado no branch `claude/laughing-cori-o9w35e` e será integrado a `main` após o merge do PR #3028. Após o merge, o `schema-snapshot-export` pode ser disparado via `workflow_dispatch` para confirmar que o drift gate passa.
 
-**Classificação:** Bloqueador de infra — exige restauração manual do manifesto + PR de governança
+**Classificação:** ✅ Resolvido no PR #3028 — pendente apenas do merge
 
 ---
 
@@ -2332,10 +2329,11 @@ changed: 8 policies em ai_usage_quotas + art_file_attachments
 **O que o PO precisa fazer:**
 1. Revisar se as 8 mudanças em `ai_usage_quotas` e `art_file_attachments` são intencionais
 2. Se intencionais:
-   a. Criar migration espelho documentando as mudanças de policy
-   b. Disparar `Policies Baseline` via `workflow_dispatch` com input `seed=true` — isso gera uma PR com o baseline atualizado
-   c. Revisar e mergear a PR gerada pelo workflow antes de verificar se o drift foi zerado
-   d. **Atenção:** um CI run comum não regenera o baseline; apenas o dispatch com `seed=true` faz isso
+   a. Criar migration espelho documentando as mudanças de policy (arquivo `.sql` em `supabase/migrations/`)
+   b. Registrar a migration no ledger via `supabase migration repair --status applied <version>` (com versão explícita, via `.github/workflows/db-apply-migration.yml`) — **não pular este passo** para evitar divergência entre schema real e ledger (E99 corolário / REGRA #8)
+   c. Disparar `Policies Baseline` via `workflow_dispatch` com input `seed=true` — isso gera uma PR com o baseline atualizado
+   d. Revisar e mergear a PR gerada pelo workflow antes de verificar se o drift foi zerado
+   e. **Atenção:** um CI run comum não regenera o baseline; apenas o dispatch com `seed=true` faz isso
 3. Se não intencionais: reverter via migration e investigar
 
 **Classificação:** Bloqueador de governança — exige revisão do PO + dispatch `seed=true` + merge da PR gerada
@@ -2585,8 +2583,8 @@ Resolução automática no merge do PR.
 | Gate 0.6 — Dep Review | ❌ bloqueado por P46 | ✅ `success` | [41393827324](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41393827324) job `125111032655` | — |
 | Gate 1 — Lint + TypeScript | ❌ bloqueado por P46 | ✅ `success` | [41393827324](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41393827324) | — |
 | Gate 1.3 — Migration contracts | ❌ `missing_catalog_object fn_get_rupture_alerts` | ✅ `success` | [41393827324](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41393827324) step 9 | fn_get_rupture_alerts ausente do catálogo → fix commit `cc5ab5761` |
-| Gate 1.9 — ratchet `as` | ❌ `+1 em 2 arquivos` | ✅ Corrigido | Commit `115e8a93d` | baseline desatualizado após merge main |
-| Gate 1.9 — ratchet file-size | ❌ `9 arquivos com regressão` | ✅ Corrigido | Commit `1659dda6b`; validado localmente em `c7c291cf5` — 138/138 sem regressão | 9 arquivos Lovable cresceram antes do PR |
+| Gate 1.9 — ratchet `as` | ❌ `+1 em 2 arquivos` | ✅ Corrigido — validado por CI | Commit `115e8a93d`; gate `as` passou em run [41393827324](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41393827324) (job `static-gates`, step completo) | baseline desatualizado após merge main |
+| Gate 1.9 — ratchet file-size | ❌ `9 arquivos com regressão` | ✅ Corrigido — **validação local** (CI run em andamento) | Commit `1659dda6b`; `npm run check:file-size` local em `c7c291cf5` retornou `Nenhuma regressão` (138 arquivos, baseline=138); CI run completo para commits `5305f36bf`+ aguarda conclusão | 9 arquivos Lovable cresceram antes do PR |
 | Gate 2 — Vitest | ❌ bloqueado por P46 | ✅ `success` | [41393827324](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41393827324) job `125111342122` | — |
 | Gate 2.5 — PG Integrity | ❌ bloqueado por P46 | ✅ `success` | [41393827324](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41393827324) job `125111032652` | — |
 | Gate 3 — E2E Smoke | ❌ bloqueado por P46 | ✅ `success` | [41393827324](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41393827324) job `125112016347` | — |
@@ -2657,6 +2655,7 @@ result={
 
 **Ação necessária para o banco (pós-merge):**
 - PO/DBA: aplicar migration `20261102063000` via `.github/workflows/db-apply-migration.yml` (`workflow_dispatch(version=20261102063000)`)
+- ✅ **`db-apply-migration.yml` corrigido neste PR** (commit `71ccab54e`): substituída `supabase/setup-cli@v2` (bloqueada pela Actions policy) por download direto via `wget`; o workflow pode ser disparado após o merge.
 - Proibido aplicar via `execute_sql` (REGRA E056)
 - Após aplicação, Gate 1.13.2 passará também em runs de `main`
 

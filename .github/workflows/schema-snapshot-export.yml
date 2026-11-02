@@ -116,8 +116,11 @@ jobs:
           set -euo pipefail
           # supabase/setup-cli@v2 bloqueada pela GitHub Actions policy (P46).
           VERSION="2.101.0"
-          wget -q "https://github.com/supabase/cli/releases/download/v${VERSION}/supabase_linux_amd64.tar.gz" \
-               -O /tmp/supabase.tar.gz
+          BASE_URL="https://github.com/supabase/cli/releases/download/v${VERSION}"
+          wget -q "${BASE_URL}/supabase_linux_amd64.tar.gz" -O /tmp/supabase.tar.gz
+          wget -q "${BASE_URL}/supabase_checksums.txt" -O /tmp/supabase_checksums.txt
+          grep "supabase_linux_amd64.tar.gz$" /tmp/supabase_checksums.txt \
+            | awk '{print $1 "  /tmp/supabase.tar.gz"}' | sha256sum -c -
           sudo tar -xzf /tmp/supabase.tar.gz -C /usr/local/bin
           supabase --version
 
@@ -447,8 +450,11 @@ jobs:
           set -euo pipefail
           # supabase/setup-cli@v2 bloqueada pela GitHub Actions policy (P46).
           VERSION="2.101.0"
-          wget -q "https://github.com/supabase/cli/releases/download/v${VERSION}/supabase_linux_amd64.tar.gz" \
-               -O /tmp/supabase.tar.gz
+          BASE_URL="https://github.com/supabase/cli/releases/download/v${VERSION}"
+          wget -q "${BASE_URL}/supabase_linux_amd64.tar.gz" -O /tmp/supabase.tar.gz
+          wget -q "${BASE_URL}/supabase_checksums.txt" -O /tmp/supabase_checksums.txt
+          grep "supabase_linux_amd64.tar.gz$" /tmp/supabase_checksums.txt \
+            | awk '{print $1 "  /tmp/supabase.tar.gz"}' | sha256sum -c -
           sudo tar -xzf /tmp/supabase.tar.gz -C /usr/local/bin
           supabase --version
       - name: Check ledger manifest drift
