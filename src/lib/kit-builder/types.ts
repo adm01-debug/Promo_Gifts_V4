@@ -171,7 +171,7 @@ export interface KitIdentity {
 }
 
 /** How the kit was initiated in this session. Not persisted to DB yet. */
-export type KitOrigin = 'manual' | 'template' | 'ai';
+export type KitOrigin = 'ai' | 'manual' | 'template';
 
 export interface KitState {
   name: string;
