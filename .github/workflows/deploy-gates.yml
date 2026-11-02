@@ -76,36 +76,24 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - uses: dorny/paths-filter@ceb8a2b8f2d89434be7ff52d3de7ec3738c5cc9d # v4.0.3
-        id: filter
+      - name: Fetch base commit para diff
         if: github.event_name == 'pull_request'
-        with:
-          filters: |
-            code:
-              - 'src/**'
-              - 'scripts/**'
-              - 'supabase/**'
-              - 'tests/**'
-              - 'e2e/**'
-              - 'playwright/**'
-              - '.github/workflows/**'
-              - '.github/actions/**'
-              - 'package.json'
-              - 'package-lock.json'
-              - 'tsconfig*.json'
-              - 'vite.config.*'
-              - 'playwright.config.*'
-              - '.nvmrc'
-              - 'eslint.config*'
-      - name: Determinar docs_only
+        run: git fetch --depth=1 origin ${{ github.event.pull_request.base.sha }}
+      - name: Detectar mudanças (docs-only bypass E14)
         id: result
         run: |
-          CODE_CHANGED="${{ steps.filter.outputs.code }}"
-          if [[ "${{ github.event_name }}" == "pull_request" && "$CODE_CHANGED" == "false" ]]; then
+          if [[ "${{ github.event_name }}" != "pull_request" ]]; then
+            echo "docs_only=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          BASE_SHA="${{ github.event.pull_request.base.sha }}"
+          CHANGED=$(git diff --name-only "$BASE_SHA" HEAD)
+          CODE_PATTERN='^(src/|scripts/|supabase/|tests/|e2e/|playwright/|\.github/workflows/|\.github/actions/|package\.json$|package-lock\.json$|tsconfig|vite\.config|playwright\.config|\.nvmrc$|eslint\.config)'
+          if echo "$CHANGED" | grep -qE "$CODE_PATTERN"; then
+            echo "docs_only=false" >> "$GITHUB_OUTPUT"
+          else
             echo "docs_only=true" >> "$GITHUB_OUTPUT"
             echo "::notice::E14 — docs-only PR detectado; gates de código bypassados (success)"
-          else
-            echo "docs_only=false" >> "$GITHUB_OUTPUT"
           fi
 
   # ============================================================
@@ -725,20 +713,9 @@ jobs:
           path: dist/
           retention-days: 14
       # E99 — SBOM + build provenance attestation (push para main apenas)
-      # Gera SBOM SPDX-JSON do dist/ e atesta proveniência do build no GHCR.
-      # Skipped em PRs e workflow_dispatch — sem impacto no tempo de CI de PRs.
-      - name: Generate SBOM (E99)
-        if: needs.changes.outputs.docs_only != 'true' && github.event_name == 'push' && github.ref == 'refs/heads/main'
-        uses: anchore/sbom-action@66cbf4bc1f1c0d2edc94016e65bc221b6bb0ad6c # v0.24.3
-        with:
-          artifact-name: sbom-${{ github.run_id }}.spdx.json
-          path: dist/
-          format: spdx-json
-      - name: Attest build provenance (E99)
-        if: needs.changes.outputs.docs_only != 'true' && github.event_name == 'push' && github.ref == 'refs/heads/main'
-        uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4
-        with:
-          subject-path: 'dist/**/*.js'
+      # anchore/sbom-action e actions/attest-build-provenance removidos temporariamente:
+      # bloqueados pela GitHub Actions policy (mesma policy P40 — só actions/github permitidos).
+      # Reativar via PENDENCIAS.md P46 quando a policy for atualizada pelo PO.
 
   # E040: verifica se arquivos de migration/baseline mudaram para acionar drift-check
   check-schema-paths:

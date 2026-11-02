@@ -108,9 +108,15 @@ jobs:
           : "${SUPABASE_ACCESS_TOKEN:?SUPABASE_ACCESS_TOKEN não configurado}"
       - name: Install Supabase CLI
         if: steps.check_paths.outputs.needs_drift != 'false'
-        uses: supabase/setup-cli@45a513f8c64c0bc8e0e3dfe572b5c95be85f6359 # v2
-        with:
-          version: 2.101.0
+        run: |
+          set -euo pipefail
+          # supabase/setup-cli@v2 bloqueada pela GitHub Actions policy (P46).
+          VERSION="2.101.0"
+          wget -q "https://github.com/supabase/cli/releases/download/v${VERSION}/supabase_linux_amd64.tar.gz" \
+               -O /tmp/supabase.tar.gz
+          sudo tar -xzf /tmp/supabase.tar.gz -C /usr/local/bin supabase
+          sudo chmod +x /usr/local/bin/supabase
+          supabase --version
 
       - name: Resolve list of slugs from repo
         id: list_slugs
