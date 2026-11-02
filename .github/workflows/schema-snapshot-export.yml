@@ -112,9 +112,15 @@ jobs:
           node-version-file: .nvmrc
 
       - name: Install Supabase CLI
-        uses: supabase/setup-cli@45a513f8c64c0bc8e0e3dfe572b5c95be85f6359 # v2
-        with:
-          version: 2.101.0
+        run: |
+          set -euo pipefail
+          # supabase/setup-cli@v2 bloqueada pela GitHub Actions policy (P46).
+          VERSION="2.101.0"
+          wget -q "https://github.com/supabase/cli/releases/download/v${VERSION}/supabase_linux_amd64.tar.gz" \
+               -O /tmp/supabase.tar.gz
+          tar -xzf /tmp/supabase.tar.gz -C /usr/local/bin supabase
+          chmod +x /usr/local/bin/supabase
+          supabase --version
 
       # E84: no-op guard — schedule/dispatch sem credenciais é falha, não sucesso
       # silencioso (dispatch é o caminho para gerar baseline novo).
@@ -435,9 +441,15 @@ jobs:
         with:
           node-version-file: .nvmrc
       - name: Install Supabase CLI
-        uses: supabase/setup-cli@45a513f8c64c0bc8e0e3dfe572b5c95be85f6359 # v2
-        with:
-          version: 2.101.0
+        run: |
+          set -euo pipefail
+          # supabase/setup-cli@v2 bloqueada pela GitHub Actions policy (P46).
+          VERSION="2.101.0"
+          wget -q "https://github.com/supabase/cli/releases/download/v${VERSION}/supabase_linux_amd64.tar.gz" \
+               -O /tmp/supabase.tar.gz
+          tar -xzf /tmp/supabase.tar.gz -C /usr/local/bin supabase
+          chmod +x /usr/local/bin/supabase
+          supabase --version
       - name: Check ledger manifest drift
         # E56: removed continue-on-error — drift check must fail loudly
         run: node scripts/check-ledger-manifest-drift.mjs
