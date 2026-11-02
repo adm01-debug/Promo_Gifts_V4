@@ -18,11 +18,15 @@
       "ref": "supabase/migrations-snapshot/SCHEMA_DRIFT.sql"
     },
     {
-      "file": "analise-branches/dossies/devin-probe-e184-legacy-refs.md",
-      "ref": "qa/migrations-draft/probe_e184_legacy_refs.sql"
+      "file": "CONTRIBUTING.md",
+      "ref": "supabase/migrations/README.md"
     },
     {
       "file": "analise-branches/RELATORIO_BRANCHES.md",
+      "ref": "qa/migrations-draft/probe_e184_legacy_refs.sql"
+    },
+    {
+      "file": "analise-branches/dossies/devin-probe-e184-legacy-refs.md",
       "ref": "qa/migrations-draft/probe_e184_legacy_refs.sql"
     },
     {
@@ -32,6 +36,10 @@
     {
       "file": "analise-prs/dossies/PR-2432.md",
       "ref": "qa/migrations-draft/probe_e184_legacy_refs.sql"
+    },
+    {
+      "file": "analise-prs/dossies/PR-2714.md",
+      "ref": "supabase/migrations/20261027200000_supplier_stricker_rls_deny_all.sql"
     },
     {
       "file": "analise-prs/dossies/PR-2731.md",
