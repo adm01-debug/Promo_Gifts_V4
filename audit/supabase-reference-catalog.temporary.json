@@ -360,7 +360,7 @@
       "file": "src/hooks/stock/useStockNotes.ts",
       "occurrences": 3,
       "stage": 51,
-      "reason": "Feature sem tabela e sem decisão do PO; não criar schema por suposição."
+      "reason": "Tabela ausente no canonico (confirmado via pg_catalog em 2026-11-02, zero linhas em pg_class; tambem ausente de supabase_migrations.schema_migrations). Existe migration pronta no repo (supabase/migrations/20261031000000_create_stock_notes.sql, criada apos a captura deste catalogo em 2026-09-12) que cria a tabela com RLS e trigger, mas nunca foi aplicada. useStockNotes.ts nao tem nenhum importador em src/ hoje (hook orfao) — nao quebra producao, mas aplicar a migration sem decisao do PO sobre a feature repetiria o problema. Remover esta excecao so apos o PO decidir: aplicar a migration + ligar a UI, ou remover o hook morto."
     },
     {
       "kind": "relation",
