@@ -35,7 +35,7 @@
 - `CURRENT_PROJECT_ID = 'doufsxqlfjyuvxuezpln'` em `src/integrations/supabase/client.ts` é verificado pelo
   Gate 0 (`node scripts/validate-supabase-config.mjs`). Se o Gate 0 falhar, o deploy é bloqueado.
 - As funções que validam o ID canônico e rejeitam `pqpdolkaeqlyzpdpbizo` são a guarda do Gate 0 — não são
-  código morto. `pqpdolkaeqlyzpdpbizo` em código executável deve ser trocado por `doufsxqlfjyuvxuezpln`.
+  código morto. `pqpdolkaeqlyzpdpbizo` (projeto legado — não use) em código executável deve ser trocado por `doufsxqlfjyuvxuezpln`.
 - Em conflito de merge em `client.ts`, a versão final mantém `CURRENT_PROJECT_ID = 'doufsxqlfjyuvxuezpln'`
   e a guarda; confira com `grep doufsxqlfjyuvxuezpln src/integrations/supabase/client.ts`.
 - O Lovable já reverteu este arquivo silenciosamente (incidente 401 em produção, 2026-06-11).
