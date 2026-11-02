@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect, useRef, useCallback } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
@@ -89,7 +89,6 @@ export function ReplenishmentProductGrid() {
 
   const { data: replenishments, isLoading, isFetching, error } = useReplenishmentsWithDetails();
   const products = useMemo(() => replenishments ?? [], [replenishments]);
-  const loadingProgress = useLoadingProgress(isLoading);
 
   const { suppliers, categories } = useMemo(() => {
     const supMap = new Map<string, { id: string; name: string; count: number }>();
@@ -267,14 +266,9 @@ export function ReplenishmentProductGrid() {
           <div
             className="mb-4 h-1.5 w-64 overflow-hidden rounded-full bg-muted/50"
             role="progressbar"
-            aria-valuenow={Math.round(loadingProgress)}
-            aria-valuemin={0}
-            aria-valuemax={100}
+            aria-label="Carregando"
           >
-            <div
-              className="h-full rounded-full bg-gradient-to-r from-primary/60 to-primary transition-all duration-300"
-              style={{ width: `${loadingProgress}%` }}
-            />
+            <div className="h-full w-2/5 animate-pulse rounded-full bg-gradient-to-r from-primary/60 to-primary" />
           </div>
           <div
             className={cn(
@@ -396,7 +390,6 @@ export function ReplenishmentProductGrid() {
         totalCount={products.length}
         filteredCount={filteredProducts.length}
         isLoading={isLoading}
-        loadingProgress={loadingProgress}
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
         selectedSupplier={selectedSupplier}

@@ -97,8 +97,6 @@ export function NoveltyProductGrid() {
   const { data: novelties, isPending: isLoading, isFetching, error } = useNoveltiesWithDetails({ enabled: isReadyToFetch });
   const products = useMemo(() => novelties || [], [novelties]);
 
-  const [loadingProgress, setLoadingProgress] = useState(0);
-  const progressRef = useRef<ReturnType<typeof setInterval> | null>(null);
   // ISSUE-24 FIX: ref para focar o input de busca via atalho `/`
   const searchInputRef = useRef<HTMLInputElement>(null);
   // ISSUE-46 FIX: ref para o input mobile (sm:hidden) — foca o visível conforme viewport
@@ -233,7 +231,7 @@ export function NoveltyProductGrid() {
         s
           .toLowerCase()
           .normalize('NFD')
-          .replace(/[\u0300-\u036f]/g, '');
+          .replace(/[̀-ͯ]/g, '');
       const q = norm(searchQuery.trim());
       filtered = filtered.filter(
         (p) =>
@@ -401,12 +399,7 @@ export function NoveltyProductGrid() {
             </span>
           </div>
           <div className="mb-6 h-1.5 w-64 overflow-hidden rounded-full bg-muted/50">
-            <motion.div
-              className="h-full rounded-full bg-gradient-to-r from-primary/60 to-primary"
-              initial={{ width: 0 }}
-              animate={{ width: `${loadingProgress}%` }}
-              transition={{ duration: 0.4, ease: 'easeOut' }}
-            />
+            <div className="h-full w-2/5 animate-pulse rounded-full bg-gradient-to-r from-primary/60 to-primary" />
           </div>
           <div
             data-testid="novelty-loading-grid"
@@ -646,12 +639,12 @@ export function NoveltyProductGrid() {
               )}
             </Badge>
             <AnimatePresence>
-              {isFetching && loadingProgress > 0 && loadingProgress < 100 && (
+              {isFetching && products.length > 0 && (
                 <motion.span
-                  initial={{ opacity: 0, width: 0 }}
-                  animate={{ opacity: 1, width: 48 }}
-                  exit={{ opacity: 0, width: 0 }}
-                  className="ml-1 inline-flex items-center gap-1"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="ml-1 inline-flex items-center"
                 >
                   <span className="inline-block h-1 w-[53px] overflow-hidden rounded-full bg-muted/50 align-middle">
                     <motion.span
