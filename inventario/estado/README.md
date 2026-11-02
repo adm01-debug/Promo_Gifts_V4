@@ -20,7 +20,7 @@ node scripts/inventario/gerar-repo.mjs
 ```
 
 Ainda não há atualização automática: rode os três comandos acima depois de mudar banco, rotas ou edges. A rodada semanal (`inventario-estado-semanal.yml`) está proposta numa PR separada, aguardando aprovação do dono.
-Testes das funções puras: `npx vitest run tests/scripts/inventario-banco.test.mjs tests/scripts/inventario-rotas.test.mjs`.
+Testes das funções puras: `npx vitest run tests/scripts/inventario-banco.test.mjs tests/scripts/inventario-rotas.test.mjs tests/scripts/inventario-repo.test.mjs`.
 
 ## Como ler `banco.json`
 
@@ -35,6 +35,8 @@ Testes das funções puras: `npx vitest run tests/scripts/inventario-banco.test.
   a estimativa do planner.
 - Nada de segredo sai do banco: de `cron.job` só o nome das funções e das edges chamadas (nunca o comando, que tem
   URL e cabeçalho), e de `cron.job_run_details` só contagens. O teste barra escrita e esses campos no SQL.
+- `pgmq` (extensão Supabase Queues) está na lista de exclusão de schemas de sistema da CTE `proprios` —
+  `pgmq.meta` e as demais tabelas internas da fila nunca entram em `outros_schemas`/alertas.
 
 ## Como ler `edges.json` e `rotas.json`
 
@@ -43,18 +45,18 @@ Testes das funções puras: `npx vitest run tests/scripts/inventario-banco.test.
   que está morta.
 - `rotas[].dados` é o que a tela **alcança** por import (até 4 níveis), não o que ela chama em toda renderização.
 
-## Achados da geração de 2026-11-02 (medido_em 14:36 UTC)
+## Achados da geração de 2026-11-02 (medido_em 14:36 UTC; alertas de RLS/sem_chamador revisados após o fix do pgmq)
 
 - **Banco:** 398 tabelas em `public`, todas com RLS, 961 policies, 1.336 funções (572 `SECURITY DEFINER`),
   197 views, 144 cron jobs (137 ativos), 2.577 registros no ledger de migrations.
-- **Alertas:** 24 tabelas sem RLS fora de `public` (`supplier_stricker.*`, `prod_audit.*`, `classification_audit.*`,
-  `pgmq.meta`); **93 cron jobs ativos com ≥ 5 % de falha em 7 dias** (quase tudo `job startup timeout`: pg_cron sem
+- **Alertas:** 23 tabelas sem RLS fora de `public` (`supplier_stricker.*`, `prod_audit.*`, `classification_audit.*`;
+  `pgmq.meta` não entra mais nessa lista — `pgmq` passou a excluído de `proprios`); **93 cron jobs ativos com ≥ 5 % de falha em 7 dias** (quase tudo `job startup timeout`: pg_cron sem
   worker livre no instante do disparo); 1 hora com o cron parado (2026-10-31 15h: 108 de 156 execuções sem worker livre).
 - **Histórico do cron:** 70 mil linhas (43 mil com mais de 7 dias, abaixo do limiar de alerta), mais antiga em
   2026-10-18.
 - **Tabelas órfãs:** 16 (lista em `banco.json` → `tabelas_orfas`).
 - **Edge functions:** 110 no repo = 110 publicadas; 36 com `verify_jwt = false`; 16 chamadas por cron;
-  25 sem chamador conhecido.
+  23 sem chamador conhecido (lista completa em `edges.json` → `sem_chamador`).
 - **Front:** 135 rotas (118 de produção, 17 harness), 124 com tela resolvida (o resto é `<Navigate>`), 93 alcançam
   dados. Guardas das rotas de produção: `ProtectedRoute` em todas menos 11 públicas; `AdminRoute` em 19, `DevRoute`
   em 31, `MagazineRoute` em 5.
