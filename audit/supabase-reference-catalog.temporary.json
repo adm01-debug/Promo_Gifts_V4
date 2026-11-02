@@ -232,6 +232,7 @@
     "fn_get_replenishment_stats",
     "fn_get_reposicao_listing",
     "fn_get_reposicao_variants_summary",
+    "fn_get_rupture_alerts",
     "fn_get_similar_products",
     "fn_get_stock_notification_counts",
     "fn_get_stockout_alerts",
