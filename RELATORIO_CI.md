@@ -103,7 +103,7 @@ transitivo (via `db-schema-drift-check.yml`) resolveu o bloqueio.
 
 ---
 
-*Atualização pendente: resultado de vitest e conclusão do Gate Final após push de `3dcdc1a7b`.*
+*Seção 10 abaixo contém o estado final validado desta sessão.*
 
 ---
 
@@ -275,3 +275,80 @@ Estes 2 workflows permanecem com `startup_failure` por P40 (policy impede `denol
 | P40 startup_failure | pré-existente | pré-existente — inalterado |
 
 **Conclusão:** o commit `80f477ef5` eliminou os 3 erros TS2345 da Gate 1 (fix confirmado pelo step 5 typecheck → success). Uma nova falha pré-existente foi revelada em Gate 1.13.2 (P48 — trigger ausente no BD, não relacionado ao código alterado). Migration de repair criada no mesmo commit para satisfazer o gate de PR. Nenhuma regressão introduzida.
+
+---
+
+## 10. Estado final validado — run `41405442459` (commit `1d93c3d51`, 2026-11-02)
+
+**Commit:** `1d93c3d51` — `docs(ci): adiciona recibo Gate 1.13.3 para migration 20261102063000 repair kill_switch_hits`
+**Run Deploy Gates:** [41405442459](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41405442459) — `completed` / `conclusion: failure`
+**Único bloqueador:** Gate E40 Schema Drift — Ledger parity (P7, pré-existente DBA/PO)
+
+### Tabela de prova por gate/job (run `41405442459`)
+
+| Job / Gate | Job ID | Conclusão | Detalhe |
+|---|---|---|---|
+| Detectar mudanças (docs-only bypass E14) | `125146289553` | ✅ success | — |
+| Gate 0 — SSOT Supabase | `125146289397` | ✅ success | — |
+| Gate 0.5 — Dependency Audit | `125146459329` | ✅ success | — |
+| Gate 0.6 — Dependency Review | `125146459355` | ✅ success | — |
+| Gate E23 — Secret Scan (gitleaks) | `125146459362` | ✅ success | — |
+| Gate E23 — Verifica secrets E2E | `125146459488` | ✅ success | — |
+| Gate 2 — Unit Tests (vitest) | `125146459306` | ✅ success | — |
+| Gate 2.5 — PostgreSQL Transactional Integrity | `125146459412` | ✅ success | — |
+| Gate 5 — SEO Sanity Check | `125146459463` | ✅ success | — |
+| Gate E40 — Detect schema file changes | `125146459521` | ✅ success | — |
+| Gate 5.5 — RPC restore_seller_cart | `125146459568` | ✅ success | — |
+| Gate 4 — Lighthouse CI | `125146459500` | ✅ success | — |
+| Gate 3 — E2E Smoke | `125146492250` | ✅ success | Step 7 "Run Playwright smoke tests" → success |
+| **Gate 1 — Lint + TypeScript (todos os steps)** | `125146459304` | ✅ **success** | Todos os 43 steps passaram — incluindo Gate 1.13.2 e Gate 1.13.3 |
+| Gate 6 — Build | `125147739274` | ✅ **success** | Build passou — NÃO skipped (era skipped no run anterior) |
+| **Gate E40 — Schema Drift Check** | `125146658582` | ❌ **failure** | Step 8 "Ledger parity" — P7 pré-existente (`local_only=1140; remote_only=673`) |
+| Gate Final — Deploy Ready | `125148007498` | ❌ failure | Agregação: único bloqueador é Gate E40 |
+
+### Detalhe do Gate 1 — steps críticos confirmados ✅
+
+| Step | Nome | Conclusão |
+|---|---|---|
+| 5 | `Run npm run typecheck` | ✅ success |
+| 6 | `Run npm run lint:baseline` | ✅ success |
+| 7 | Gate 1.1 — Product type fields | ✅ success |
+| 8 | Gate 1.2 — Types inventory drift | ✅ success |
+| 9 | Gate 1.3 — Migration contracts | ✅ success |
+| 14 | Gate 1.9 — Dívida técnica (ratchets) | ✅ success |
+| 20 | Gate 1.13.1 — RLS sem policy (E045) | ✅ success |
+| **21** | **Gate 1.13.2 — Anon-insert rate guard (E049)** | ✅ **success** — `trg_anon_rate_guard` em `kill_switch_hits` aceito via migration repair no PR |
+| **22** | **Gate 1.13.3 — Migration receipts (E055)** | ✅ **success** — recibo `20261102063000` em MIGRATIONS_SYNC_LOG.md reconhecido |
+| 23–43 | Gates 1.10–1.18 | ✅ success (todos) |
+
+### Comparação baseline × final desta sessão (sem piora vs run anterior `41402296461`)
+
+| Métrica | Run anterior (`41402296461`, commit `80f477ef5`) | Run final (`41405442459`, commit `1d93c3d51`) |
+|---|---|---|
+| Gate 1.13.2 — Anon-insert rate guard | ❌ failure | ✅ **success** — corrigido |
+| Gate 1.13.3 — Migration receipts | ⏭️ skipped (falhou em step anterior) | ✅ **success** — corrigido |
+| Gate 6 — Build | ⏭️ skipped (dependência Gate Final) | ✅ **success** — build passou |
+| Gate 1 (todos os steps) | ❌ failure (Gate 1.13.2) | ✅ **success** |
+| Gates 0, 0.5, 0.6, 2, 2.5, 3, 4, 5, 5.5 | ✅ success | ✅ success (sem regressão) |
+| Gate E40 Ledger parity | ❌ failure (P7) | ❌ failure (P7) — inalterado, pré-existente |
+| P40 startup_failure | pré-existente | pré-existente — inalterado |
+
+### Falhas E2E nos outros workflows — documentadas em PENDENCIAS.md
+
+| Workflow | Run | Conclusão | Pendência |
+|---|---|---|---|
+| `audit` (replenishment-stress) | N/A neste run | pré-existente (confirmado em main `df94410cb`) | P49 — PO/DBA |
+| `E2E — Personalization Journey` | N/A neste run | pré-existente (confirmado em main) | P50 — PO |
+| `E2E Focused · thumb-quickview` | N/A neste run | pré-existente (confirmado em main) | P51 — PO |
+| `E2E · view-no-presentation-mode` | N/A neste run | investigação pendente | P52 — PO |
+| Security Scan (`gitleaks`) | `41405444032` | startup_failure | P40 — PO |
+| Magazine Unit Tests | `41405445485` | startup_failure | P40 — PO |
+| Edge Integration Tests | `41405448150` | startup_failure | P40 — PO |
+| Gate 5 — Supabase Security Audit | `41405446855` | startup_failure | P46 — PO |
+
+### Conclusão desta sessão
+
+Todos os workflows corrigíveis nesta sessão foram corrigidos e validados com success.
+O único bloqueador do Gate Final é Gate E40 Schema Drift (Ledger parity P7 — `local_only=1140; remote_only=673`)
+que é **pré-existente e requer intervenção do DBA/PO** para reconciliar o ledger de migrations.
+Documentado em PENDENCIAS.md P7. Nenhuma regressão introduzida.
