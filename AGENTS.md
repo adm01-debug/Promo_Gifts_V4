@@ -164,7 +164,7 @@ retorna 403 em write; `git push` e `gh` só funcionam quando o repo é fonte aut
 | Precisa de | Leia |
 |---|---|
 | **Qual banco, qual MCP, migrations, Lovable, Vercel, gates de CI, arquivos protegidos** | **`CLAUDE.md`** |
-| **Estado real hoje: tabelas, RLS, cron e falhas, edge functions publicadas, rotas → tela → hooks → dados, tabelas órfãs** | **`inventario/estado/`** — gerado por `scripts/inventario/` (ver o README de lá); confira `gerado_em` antes de confiar |
+| **Estado real hoje: tabelas, RLS, cron e falhas, edge functions publicadas, rotas → tela → hooks → dados, tabelas órfãs** | **`inventario/estado/`** — gerado por `scripts/inventario/` (ver o README de lá); confira `gerado_em` antes de confiar. **Ainda não existe no `main`** (PR #3039, aguardando merge) |
 | Retrato do schema do banco (tabelas, policies, cron, triggers) | `docs/SCHEMA_REFERENCE.md` (data da medição no topo — confira antes de confiar) |
 | Política de DDL e caminho de migration | `docs/db/POLITICA_DDL.md`, `supabase/MIGRATIONS_SYNC_LOG.md` |
 | Regras de workflow do GitHub Actions | `docs/ci/PADRAO_WORKFLOW.md` |
@@ -187,6 +187,11 @@ acessíveis por MCP e só um é o banco deste app.
 - "CI verde" (regra 7 do Fluxo Git) = todos os checks required de `main` concluídos com sucesso. A lista oficial
   é `.github/required-checks.json` (hoje: "Gate Final - Deploy Ready", "Compare GitHub × Canonical",
   "Analyze (javascript-typescript)", "Gate E23 - Secret Scan (gitleaks)", "Assert Gate Final is required on main").
+- **Mudança de governança exige PR, mesmo de CODEOWNER.** Qualquer alteração em `.github/**`,
+  `.github/CODEOWNERS`, `supabase/migrations/**`, `scripts/check-*` ou `.gitleaks.toml` nasce em branch e PR —
+  nunca push direto em `main`, nem para o dono da conta. Motivo: incidente de 2026-09-17 (29+ commits de
+  governança só locais, nunca propagados por push). `scripts/sentinel-check.sh` é defesa em profundidade, não
+  substitui esta regra.
 
 ### Grafo de código (graphify)
 
