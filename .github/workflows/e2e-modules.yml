@@ -32,6 +32,8 @@ on:
       - 'src/**'
       - 'e2e/**'
       - 'public/**'
+      - 'tests/**'
+      - 'supabase/**'
       - 'package*.json'
       - '.nvmrc'
       - 'playwright.config.*'
@@ -47,12 +49,15 @@ on:
       - 'src/**'
       - 'e2e/**'
       - 'public/**'
+      - 'tests/**'
+      - 'supabase/**'
       - 'package*.json'
       - '.nvmrc'
       - 'playwright.config.*'
       - 'vite.config.*'
       - 'tailwind.config.ts'
       - 'scripts/e2e-mock-auth-setup.mjs'
+      - 'scripts/check-visual-preview-suite.mjs'
       - '.github/actions/e2e-setup/**'
       - '.github/workflows/e2e-modules.yml'
   schedule:
@@ -229,6 +234,15 @@ jobs:
               - 'tests/**'
               - 'e2e/**'
               - 'package.json'
+            # Arquivos compartilhados por TODAS as suites (versão do Node, action
+            # de setup, o próprio workflow) — nenhum grupo acima os cobre, então
+            # sem este grupo a mudança dispara o workflow (top-level paths:) mas
+            # seleciona 0 suites e passa verde sem validar nada (achado Qodo
+            # Medium, PR #3058). Tratado como "rodar tudo" no step seguinte.
+            shared-infra:
+              - '.nvmrc'
+              - '.github/actions/e2e-setup/**'
+              - '.github/workflows/e2e-modules.yml'
 
       - name: Montar matriz
         id: build
@@ -300,7 +314,10 @@ jobs:
             [ .[] | (defaults + .) | select(
                 ($ev == "schedule")
                 or ($ev == "workflow_dispatch" and (.suite == $suite or (($suite == "" or $suite == "all") and (.schedule_only | not))))
-                or (($ev == "pull_request" or $ev == "push") and (.schedule_only | not) and (.group as $g | $changed | index($g) != null))
+                or (($ev == "pull_request" or $ev == "push") and (.schedule_only | not) and (
+                  ($changed | index("shared-infra") != null)
+                  or (.group as $g | $changed | index($g) != null)
+                ))
               ) ]
             | {include: .}' /tmp/suites.json)
           COUNT=$(echo "$MATRIX" | jq '.include | length')
