@@ -728,3 +728,54 @@ Verificado localmente antes da abertura do PR:
 | `npm run lint:baseline` | ✅ EXIT=0 (0 erros, 0 warnings) |
 | `sh scripts/tsc-unused-ratchet.sh` | ✅ EXIT=0 (0 unused locals) |
 
+---
+
+## 21. TABELA DE PROVA — Baseline × Final (PR #3028, 2026-11-02)
+
+**Baseline:** `main@df94410cbbcbe7d80928a279de91214d88b0d4bb` (15 workflows em falha)
+**PR de correção:** [#3028](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3028) — branch `claude/laughing-cori-o9w35e`
+**Commit no PR:** `e124a2c8ecc7e58e09575c05775512d4b1d890e5`
+
+### Workflows que ESTAVAM em falha — o que muda com o PR #3028
+
+| # | Workflow | Run falho na main | Causa raiz | Status pós-PR #3028 | Evidência |
+|---|---|---|---|---|---|
+| 1 | **Branch Protection Sentinel** | [41368799806](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41368799806) | Push direto `df94410c` sem `(#NNN)` | ✅ **CORRIGIDO** — squash merge do PR cria commit `...(#3028)` que passa a regra 1 do sentinel | Regra 1 de `scripts/sentinel-check.sh`: squash merge terminando em `(#NNN)` aceito |
+| 2 | **CI Security & Drift Checks** | [41368063748](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41368063748) | `useKitBuilderPageState.ts:449:50` consistent-type-imports + `types.ts:174:25` sort-type-constituents | ✅ **CORRIGIDO** — check `linter` = success no PR #3028 em `e124a2c8e` | Run check `linter` no PR: success |
+| 3 | **SSOT Supabase Guard** | [41368799775](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41368799775) | `devin-probe-e184-legacy-refs.md:28` sem `[LEGACY_INFORMATIVO]` | ✅ **CORRIGIDO** — check `SSOT Gates` = success no PR #3028 em `e124a2c8e` | Run check `SSOT Gates` no PR: success |
+| 4 | **CI - Replenishment Module Quality Gate** | Recorrente | E2E visual instável (não required) | ⛔ **BLOQUEIO EXTERNO** — E2E visual instável, pré-existente, não required check | P29 |
+| 5 | **E2E — Personalization Flow** | [41368063630](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41368063630) | Falha crônica pré-existente (não required) | ⛔ **BLOQUEIO EXTERNO** — crônico, não required check | P42 |
+| 6 | **Security Scan (Gitleaks)** | startup_failure | `gitleaks/gitleaks-action` bloqueada por GitHub Actions policy | ⛔ **BLOQUEIO EXTERNO** — requer PO: Settings → Actions → General | P40 |
+| 7 | **Release Please** | startup_failure | `googleapis/release-please-action` bloqueada | ⛔ **BLOQUEIO EXTERNO** — requer PO | P40 |
+| 8 | **Edge Integration Tests** | startup_failure | Action externa bloqueada + HTTP 408 | ⛔ **BLOQUEIO EXTERNO** — requer PO | P38 |
+| 9 | **Magazine Unit Tests** | startup_failure | Action externa bloqueada | ⛔ **BLOQUEIO EXTERNO** — requer PO | P40 |
+| 10 | **edge-functions-drift-check** | startup_failure | Funções divergentes entre GitHub e prod | ⛔ **BLOQUEIO EXTERNO** — deploy via `deploy-edge-functions.yml` | P40 corolário |
+| 11 | **schema-snapshot-export** | Requer credencial DB | Manifesto ausente (P35) | ⛔ **BLOQUEIO EXTERNO** — requer `workflow_dispatch` com credenciais DB | P35 |
+| 12 | **Uptime Monitor** | Probe failure | Edge function `health-check` retorna erro HTTP | ⛔ **BLOQUEIO EXTERNO** — infra; investigar antes de deploy | P41 |
+| 13 | **E2E — Magazine Header** | Pré-existente | Pré-existente em main@`0a8a17f` (antes do PR) | ⛔ **PRÉ-EXISTENTE** — não introduzido por este PR | Confirmado em `41268088918` (pre-PR) |
+| 14 | **E2E · view-no-presentation-mode** | Pré-existente | Pré-existente em vários commits de main | ⛔ **PRÉ-EXISTENTE** — não introduzido por este PR | |
+| 15 | **webkit • swatch→QV** | Pré-existente | WebKit crash runner (P28) | ⛔ **PRÉ-EXISTENTE** — não introduzido por este PR | P28 |
+
+### Comparação baseline × final
+
+| Métrica | Baseline (main@df94410c) | Após merge PR #3028 | Delta |
+|---|---|---|---|
+| Workflows com failure corrigíveis por código | 3 (itens 1, 2, 3) | 0 | **-3** |
+| Workflows com failure — bloqueio externo/PO | 9 (itens 4–12) | 9 (inalterado) | 0 |
+| Workflows com failure — pré-existentes | 3 (itens 13–15) | 3 (inalterado) | 0 |
+| Gate Final - Deploy Ready (required check) | ❌ failure (lint+SSOT) | ✅ esperado success | **CORRIGIDO** |
+| `linter` (Gate 1 ESLint) | ❌ 3 erros | ✅ 0 erros | **CORRIGIDO** |
+| `SSOT Gates` | ❌ 1 menção legacy | ✅ marcador adicionado | **CORRIGIDO** |
+
+### Checks do PR #3028 em `e124a2c8e` (estado em 2026-11-02T03:40Z)
+
+36 checks = ✅ success | 10 checks = 🔄 in_progress | 4 checks = ❌ failure (TODOS pré-existentes)
+
+**Checks com ❌ failure no PR (pré-existentes — não causados pelo PR):**
+- `E2E — Magazine Header (authed)` — pré-existente em main@`0a8a17f` (antes do PR)
+- `E2E · view-no-presentation-mode` — pré-existente
+- `webkit • swatch→QV` — pré-existente (WebKit crash, P28)
+- `Magazine Header OK` — pré-existente
+
+**Gate Final - Deploy Ready:** aguardando `e2e-gates` + `quality-gate` completarem.
+

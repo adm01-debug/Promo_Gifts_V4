@@ -2459,3 +2459,64 @@ changed: 8 policies em ai_usage_quotas + art_file_attachments
 Resolução automática no merge do PR.
 
 ---
+
+## P45 — Inventário completo `main@df94410c` × PR #3028 (2026-11-02)
+
+**HEAD da main auditada:** `df94410cbbcbe7d80928a279de91214d88b0d4bb`
+**Branch de correção:** `claude/laughing-cori-o9w35e`
+**PR aberto:** [#3028](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3028)
+**Commit no PR:** `e124a2c8ecc7e58e09575c05775512d4b1d890e5`
+**Atualizado em:** 2026-11-02
+
+### Workflows em falha na main@df94410c — baseline
+
+| # | Workflow | Run ID (main) | Causa raiz exata | Corrigível pelo PR? |
+|---|---|---|---|---|
+| 1 | Branch Protection Sentinel | [41368799806](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41368799806) | `df94410c` foi push direto sem squash `(#NNN)` — sentinel falha na auditoria de commit. Corrigido automaticamente quando PR #3028 for merged por squash criando commit terminado em `(#3028)`. | ✅ **Sim — merge squash do PR #3028** |
+| 2 | CI Security & Drift Checks | [41368063748](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41368063748) | 3 erros de lint: `useKitBuilderPageState.ts:449:50` consistent-type-imports + `types.ts:174:25` sort-type-constituents. (P44) | ✅ **Sim — commit `e124a2c8e`** |
+| 3 | SSOT Supabase Guard | [41368799775](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41368799775) | `devin-probe-e184-legacy-refs.md:28` sem `[LEGACY_INFORMATIVO]`. (P43) | ✅ **Sim — commit `e124a2c8e`** |
+| 4 | CI - Replenishment Module Quality Gate | Recorrente em main | E2E visual instável; não é required check do Gate Final. (P29) | ⛔ **Não — externo** |
+| 5 | E2E — Personalization Flow | [41368063630](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41368063630) | Falha crônica pré-existente. (P42) | ⛔ **Não — externo** |
+| 6 | Security Scan / Gitleaks | startup_failure | `gitleaks/gitleaks-action` bloqueada por GitHub Actions policy. (P40) | ⛔ **Não — requer PO em Settings → Actions** |
+| 7 | Release Please | startup_failure | `googleapis/release-please-action` bloqueada pela mesma policy. (P40) | ⛔ **Não — requer PO** |
+| 8 | Edge Integration Tests | startup_failure | `denoland/setup-deno` + action externa bloqueada pela policy. (P38) | ⛔ **Não — requer PO** |
+| 9 | Magazine Unit Tests | startup_failure | Action externa bloqueada. | ⛔ **Não — requer PO** |
+| 10 | edge-functions-drift-check | startup_failure / drift | Funções em produção divergem do git. | ⛔ **Não — deploy via `deploy-edge-functions.yml`** |
+| 11 | schema-snapshot-export | Requer permissão DB | Manifesto do ledger ausente (P35). | ⛔ **Não — requer credenciais DB + PO** |
+| 12 | Uptime Monitor | Falha de probe | Probe `health-check` retorna erro HTTP. (P41) | ⛔ **Não — infra** |
+| 13 | E2E — Magazine Header | Pré-existente | Falha antes do PR (run em main@`0a8a17f`). | ⛔ **Não — pré-existente** |
+| 14 | E2E · view-no-presentation-mode | Pré-existente | Pré-existente em múltiplos commits de main. | ⛔ **Não — pré-existente** |
+| 15 | webkit • swatch→QV | Pré-existente | WebKit crash runner pré-existente (P28). | ⛔ **Não — pré-existente** |
+
+### Status do CI no PR #3028 em `e124a2c8e` (2026-11-02T03:40Z)
+
+| Check | Conclusão | Observação |
+|---|---|---|
+| `linter` (Gate 1 ESLint) | ✅ success | P44 corrigido |
+| `SSOT Gates (validate + guard + hosts)` | ✅ success | P43 corrigido |
+| `actionlint + shellcheck` | ✅ success | |
+| `useListUrlState (unit + fuzz) & useQuotesListPage URL state` | ✅ success | |
+| `noUnusedLocals ratchet` | ✅ success | |
+| `Secrets Inventory Check (E40)` | ✅ success | |
+| `CodeQL (Analyze javascript-typescript)` | ✅ success | |
+| `Ghost Check Guard`, `Assert Gate Final is required on main` | ✅ success | |
+| `cross-reference`, `Check select() columns vs types.ts` | ✅ success | |
+| `Check no prod leak` | ✅ success | |
+| `e2e-gates` | 🔄 in_progress | Aguardando E2E shards |
+| `quality-gate` | 🔄 in_progress | Aguardando |
+| `visual-baseline (1,2)`, `visual-baseline (2,2)` | 🔄 in_progress | |
+| `audit` | 🔄 in_progress | |
+| `Gate Final - Deploy Ready` | 🔄 aguardando | Depende de `e2e-gates` + `quality-gate` |
+| `E2E — Magazine Header (authed)` | ❌ failure | **Pré-existente** — falha em main antes do PR |
+| `E2E · view-no-presentation-mode` | ❌ failure | **Pré-existente** |
+| `webkit • swatch→QV` | ❌ failure | **Pré-existente** |
+| `Magazine Header OK` | ❌ failure | **Pré-existente** |
+
+### Ação necessária do PO para bloqueios externos
+
+- **P40** — Settings → Actions → General → Allow `gitleaks/gitleaks-action`, `googleapis/release-please-action` e `denoland/setup-deno`
+- **P41** — Investigar falha de probe em `health-check` edge function; deploy via `deploy-edge-functions.yml`
+- **edge-functions-drift-check** — Deploy das funções em drift via `deploy-edge-functions.yml`
+- **schema-snapshot-export** — Rodar `workflow_dispatch` em `.github/workflows/schema-snapshot-export.yml` com credenciais DB
+
+---
