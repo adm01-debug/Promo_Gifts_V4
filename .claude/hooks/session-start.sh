@@ -1,10 +1,13 @@
 #!/bin/bash
 # Monta o grafo do código (graphify) nas sessões do Claude Code na nuvem, em segundo plano.
 # - Só roda quando CLAUDE_CODE_REMOTE=true.
-# - Instala graphifyy na mesma versão do `npm run graphify:refresh` (package.json).
-# - Pula se graphify-out/graph.json já foi gerado no commit atual.
-# - Não suja o git: GRAPH_REPORT.md/manifest.json versionados voltam ao estado anterior;
-#   o commit do grafo local fica em graphify-out/.session-built-commit (ignorado pelo .gitignore).
+# - Instala graphifyy na mesma versão do `npm run graphify:refresh` (package.json) e roda as mesmas etapas:
+#   update -> enriquecimento TypeScript -> recluster -> pós-processamento do relatório (as 3 últimas só se
+#   node_modules/typescript existir; sem ele fica o grafo do `graphify update .`).
+# - Pula se o grafo já foi gerado para o mesmo HEAD e o mesmo estado de arquivos não commitados.
+# - Não suja o git: cada saída versionada (GRAPH_REPORT.md, manifest.json) volta ao conteúdo de antes da
+#   execução — limpa volta ao commit, editada volta à edição — inclusive se o build falhar (trap EXIT).
+#   graphify-out/ é conteúdo gerado (scripts/check-generated-files-protected.mjs): não se edita à mão.
 # Log: graphify-out/.session-start.log
 set -euo pipefail
 
@@ -20,13 +23,21 @@ GRAPHIFY_VERSION="0.9.91"
 export PATH="$HOME/.local/bin:$PATH"
 mkdir -p graphify-out
 LOG=graphify-out/.session-start.log
-MARCA=graphify-out/.session-built-commit
+MARCA=graphify-out/.session-built-state
 exec >>"$LOG" 2>&1
 echo "== $(date -u +%FT%TZ) session-start (graphify $GRAPHIFY_VERSION)"
 
-HEAD_SHA="$(git rev-parse HEAD)"
-if [ -f graphify-out/graph.json ] && [ "$(cat "$MARCA" 2>/dev/null)" = "$HEAD_SHA" ]; then
-  echo "grafo já está no commit $HEAD_SHA — nada a fazer"
+# Estado = HEAD + CONTEÚDO das mudanças não commitadas fora de graphify-out/ (diff dos rastreados + hash dos novos).
+estado() {
+  {
+    git rev-parse HEAD
+    git diff HEAD --binary -- . ':(exclude)graphify-out'
+    git ls-files -z --others --exclude-standard -- . ':(exclude)graphify-out' | xargs -0 -r sha256sum
+  } | sha256sum | cut -d' ' -f1
+}
+ESTADO="$(estado)"
+if [ -f graphify-out/graph.json ] && [ "$(cat "$MARCA" 2>/dev/null)" = "$ESTADO" ]; then
+  echo "grafo já está no estado atual ($ESTADO) — nada a fazer"
   exit 0
 fi
 
@@ -39,16 +50,28 @@ if ! graphify --version 2>/dev/null | grep -qx "graphify $GRAPHIFY_VERSION"; the
 fi
 graphify --version
 
-VERSIONADOS="graphify-out/GRAPH_REPORT.md graphify-out/manifest.json"
-LIMPOS=0
-# shellcheck disable=SC2086
-git diff --quiet -- $VERSIONADOS && LIMPOS=1
+# Guarda o conteúdo de cada saída versionada antes do build e devolve no fim (sucesso ou falha).
+BACKUP="$(mktemp -d)"
+VERSIONADOS=(graphify-out/GRAPH_REPORT.md graphify-out/manifest.json)
+for f in "${VERSIONADOS[@]}"; do
+  if [ -f "$f" ]; then cp -p "$f" "$BACKUP/$(basename "$f")"; fi
+done
+restaurar() {
+  for f in "${VERSIONADOS[@]}"; do
+    if [ -f "$BACKUP/$(basename "$f")" ]; then cp -p "$BACKUP/$(basename "$f")" "$f"; fi
+  done
+  rm -rf "$BACKUP"
+}
+trap restaurar EXIT
 
 PYTHONHASHSEED=0 graphify update .
-
-if [ "$LIMPOS" = 1 ]; then
-  # shellcheck disable=SC2086
-  git checkout -- $VERSIONADOS
+if [ -d node_modules/typescript ]; then
+  node scripts/graphify/enrich-typescript-references.mjs
+  graphify cluster-only . --graph graphify-out/graph.json --no-viz
+  node scripts/graphify/postprocess-report.mjs
+else
+  echo "node_modules/typescript ausente — sem enriquecimento TS (rode npm install e a próxima sessão completa)"
 fi
-echo "$HEAD_SHA" > "$MARCA"
-echo "grafo pronto no commit $HEAD_SHA"
+
+echo "$ESTADO" > "$MARCA"
+echo "grafo pronto no estado $ESTADO ($(git rev-parse --short HEAD))"
