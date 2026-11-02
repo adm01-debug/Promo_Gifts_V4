@@ -55,6 +55,6 @@ Testes das funções puras: `npx vitest run tests/scripts/inventario-banco.test.
 - **Tabelas órfãs:** 16 (lista em `banco.json` → `tabelas_orfas`).
 - **Edge functions:** 110 no repo = 110 publicadas; 36 com `verify_jwt = false`; 16 chamadas por cron;
   22 sem chamador conhecido.
-- **Front:** 135 rotas (118 de produção, 17 harness), 124 com tela resolvida (o resto é `<Navigate>`), 99 alcançam
+- **Front:** 135 rotas (118 de produção, 17 harness), 124 com tela resolvida (o resto é `<Navigate>`), 93 alcançam
   dados. Guardas das rotas de produção: `ProtectedRoute` em todas menos 11 públicas; `AdminRoute` em 19, `DevRoute`
   em 31, `MagazineRoute` em 5.
