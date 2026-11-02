@@ -301,6 +301,12 @@ Esta divergência é independente do fix de P4 (guard pg_cron nas migrations `20
 
 **Nota — diferença P7 (`local_only=1108`) vs P12 (`local_only=1109`):** P12 rodou no branch do PR #2701 que adiciona a migration `20261028120000_grant_kit_view_authenticated.sql` ao repo (+1 sobre os 1108 da main). Os dois valores são corretos em seus respectivos contextos: 1108 é o estado atual da main; 1109 é o estado do branch do PR #2701.
 
+**Nota — PR #3028 (branch `claude/laughing-cori-o9w35e`, 2026-11-02):** O Gate E40 falhou no run [41393827324](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41393827324) (commit `cc5ab5761`) com erro exato:
+```
+[migration-ledger][bloqueado] local_only=1140; remote_only=673; mismatched=0; malformed=0
+```
+Esta falha é pré-existente e independente das correções do PR #3028 (que corrigiu bloqueios P46 de startup_failure). Os valores `local_only=1140` e `remote_only=673` refletem migrations adicionadas ao branch desde a medição anterior. A falha do Gate E40 **não é causada** pelo PR #3028 e **não pode ser corrigida** por este PR — requer reconciliação do ledger pelo PO conforme ação necessária acima.
+
 ---
 
 ## P8 — edge-functions-drift-check (drift entre GitHub e canônico)
