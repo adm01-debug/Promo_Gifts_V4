@@ -381,6 +381,94 @@ describe('dependency audit policy', () => {
     expect(result.violations).toContain('@typescript-eslint/utils: unexpected moderate advisory');
   });
 
+  it('rejects a transitive chain package whose fixAvailable changed to a compatible fix (Qodo HIGH fix)', () => {
+    // If fixAvailable changes from true to an object with isSemVerMajor: false, a real upgrade
+    // path exists and the gate must reject — no longer acceptable to leave unpatched.
+    const vulnerabilities = Object.fromEntries(
+      [...REVIEWED_MINIMATCH_VIA].map(([name, via]) => [
+        name,
+        {
+          severity: 'moderate',
+          isDirect: [
+            '@typescript-eslint/eslint-plugin',
+            '@typescript-eslint/parser',
+            'eslint',
+            'eslint-plugin-jsx-a11y',
+            'eslint-plugin-react',
+            'eslint-plugin-unused-imports',
+          ].includes(name),
+          range: REVIEWED_MINIMATCH_RANGES.get(name),
+          effects: REVIEWED_MINIMATCH_EFFECTS.get(name),
+          via:
+            name === 'minimatch'
+              ? [
+                  {
+                    source: 1244012,
+                    name: 'minimatch',
+                    dependency: 'minimatch',
+                    severity: 'moderate',
+                    range: '<11.0.1',
+                    url: 'https://github.com/advisories/GHSA-g3hv-75wg-m249',
+                  },
+                ]
+              : via,
+          fixAvailable:
+            name === 'minimatch'
+              ? { name: 'eslint-plugin-unused-imports', version: '1.1.3', isSemVerMajor: true }
+              : true,
+        },
+      ]),
+    );
+    // Simulate a compatible fix landing for eslint (isSemVerMajor: false = upgrade available)
+    vulnerabilities['eslint'].fixAvailable = { name: 'eslint', version: '9.99.0', isSemVerMajor: false };
+    const result = evaluateAuditReport({ vulnerabilities }, new Date('2026-10-31T12:00:00Z'));
+    expect(result.passed).toBe(false);
+    expect(result.violations).toContain('eslint: unexpected moderate advisory');
+  });
+
+  it('rejects a transitive chain package whose fixAvailable is false (no longer expected state)', () => {
+    const vulnerabilities = Object.fromEntries(
+      [...REVIEWED_MINIMATCH_VIA].map(([name, via]) => [
+        name,
+        {
+          severity: 'moderate',
+          isDirect: [
+            '@typescript-eslint/eslint-plugin',
+            '@typescript-eslint/parser',
+            'eslint',
+            'eslint-plugin-jsx-a11y',
+            'eslint-plugin-react',
+            'eslint-plugin-unused-imports',
+          ].includes(name),
+          range: REVIEWED_MINIMATCH_RANGES.get(name),
+          effects: REVIEWED_MINIMATCH_EFFECTS.get(name),
+          via:
+            name === 'minimatch'
+              ? [
+                  {
+                    source: 1244012,
+                    name: 'minimatch',
+                    dependency: 'minimatch',
+                    severity: 'moderate',
+                    range: '<11.0.1',
+                    url: 'https://github.com/advisories/GHSA-g3hv-75wg-m249',
+                  },
+                ]
+              : via,
+          fixAvailable:
+            name === 'minimatch'
+              ? { name: 'eslint-plugin-unused-imports', version: '1.1.3', isSemVerMajor: true }
+              : true,
+        },
+      ]),
+    );
+    // fixAvailable: false would be an unexpected state change (e.g. advisory retracted)
+    vulnerabilities['@eslint/config-array'].fixAvailable = false;
+    const result = evaluateAuditReport({ vulnerabilities }, new Date('2026-10-31T12:00:00Z'));
+    expect(result.passed).toBe(false);
+    expect(result.violations).toContain('@eslint/config-array: unexpected moderate advisory');
+  });
+
   it('passes without an exception when the audit is clean', () => {
     expect(evaluateAuditReport({ vulnerabilities: {} })).toEqual({
       passed: true,

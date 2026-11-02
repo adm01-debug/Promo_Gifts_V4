@@ -25,7 +25,7 @@ fatal: origin/main...origin/devin/probe-e184-legacy-refs: no merge base
 ```
 → Confirma orphan: sem ancestral comum com main.
 
-**Busca por referências a `pqpdolkaeqlyzpdpbizo` nesta sessão:**
+**Busca por referências a `pqpdolkaeqlyzpdpbizo` nesta sessão:** [LEGACY_INFORMATIVO]
 ```
 git diff origin/main origin/devin/probe-e184-legacy-refs -- . | grep "^+++" | grep pqpdolkae → 0 (sem arquivo adicionado com esse nome)
 awk: arquivos onde pqpdolkae aparece em linhas adicionadas (+):

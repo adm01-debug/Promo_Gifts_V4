@@ -410,6 +410,10 @@
     {
       "fn": "public.zapp_catalog_stats()",
       "reason": "Achado E07 (já rastreado): EXECUTE concedido a authenticated sem necessidade (migration de correção nunca chegou a rodar — divergência ledger/schema documentada em E12/POLITICA_DDL). REVOKE preparado no Pacote de Aprovação #1, aguardando aprovação do PO."
+    },
+    {
+      "fn": "public.perf002_drop_unused_snapshot_indexes()",
+      "reason": "PERF-002 (migration 20261101194657, 2026-11-01): helper de migração que dropa 7 índices unused de stock_snapshots via SECURITY DEFINER (requer permissão DDL). EXECUTE concedido a authenticated — REVOKE pendente via migration espelho 20261101202000 (aguarda aprovação PO para aplicar via db-apply-migration.yml, REGRA E056). RISCO RESIDUAL ATIVO: qualquer usuário autenticado pode invocar a função enquanto a migration 20261101202000 não for aplicada; a função não verifica caller-role e pode dropar idx_snapshots_captured_at se esse índice for recriado. Não use idempotência como mitigação de segurança. Expira quando migration 20261101202000 for aplicada e esta entrada for removida."
     }
   ]
 }

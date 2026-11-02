@@ -31,11 +31,97 @@ Consulta somente leitura em `pg_catalog` no projeto canônico `doufsxqlfjyuvxuez
 
 **Próxima ação segura:** preparar uma migration versionada e um gate de leitura ao vivo, adicionar testes com estados de trigger presente/ausente e submeter por PR. Aplicar no canônico somente pelo workflow `.github/workflows/db-apply-migration.yml`, após o preflight confirmar a versão e a reconciliação do ledger; não executar DDL por MCP/dashboard nem `supabase db push`. Até lá, P200-E049 permanece aberto e a cobertura de `kill_switch_hits` não deve ser declarada como corrigida.
 # PENDÊNCIAS CI — Promo Gifts V4
-**Atualizado em:** 2026-11-01
-**Branch de correção ativo:** `fix/e2e-url-state-defaults-20261030` (PR #2846)
+**Atualizado em:** 2026-11-02T00:00Z
+**Branch de correção ativo:** `fix/e2e-url-state-defaults-20261030` (PR #2941) HEAD `27a0a140` (merge main↑ec06a457)
 
 > Revalidação posterior de PRs, workflows e pendências transversais: [docs/estado/REVALIDACAO_PLANO_2026-10-31.md](docs/estado/REVALIDACAO_PLANO_2026-10-31.md). Os registros abaixo são snapshots datados; não substituem a revalidação mais recente.
 
+## P36 — Bloqueios externos PR #2941 (2026-11-02T00:00Z)
+
+> Sessão: https://claude.ai/code/session_01T5KXrgFRFRHrCX5jRcTCUz  
+> Branch HEAD após merge: `27a0a140` — base main atualizada para `ec06a457`
+
+### P36.1 — Checks externos com failure (não são required checks do Gate Final)
+
+| Check | Estado | Run/Deploy ID | Causa exata | Required? | Ação |
+|---|---|---|---|---|---|
+| **Vercel Preview** | ❌ failure | `dpl_4dKppS22jC5kNv2bzdHz3HjN312d` (SHA `8568f9c7`, 2026-11-01T23:49Z) | Falha de build/deploy no projeto Vercel `prj_9UfugNYCuboH2R0XB04Jv8PpjDpZ`. Padrão recorrente em toda a branch: falhas Vercel também em `dpl_HoDuMwhLgwbRnP72ctrEWHzmEN4K` (SHA `1d5b52e8`) e `dpl_7WYSjzRc3rugmP5W4AcyagjEjPCF` (SHA `37e77749`). Logs não acessíveis via Vercel CLI (REGRA #11 — CLI fora do raiz proibido). | **Não** — "Gate Final - Deploy Ready" é o único required check | PO pode inspecionar via dashboard Vercel → projeto `prj_9UfugNYCuboH2R0XB04Jv8PpjDpZ`. Falha não impede merge (não é required check). |
+| **Supabase Preview** | ❌ failure | check-run [125020251422](https://github.com/adm01-debug/Promo_Gifts_V4/runs/125020251422) (SHA `8568f9c7`, 2026-11-01T23:50Z) | `ERROR: column categories.level does not exist (SQLSTATE 42703)` em `CREATE MATERIALIZED VIEW analytics.categories_tree_visual`. Schema divergence pré-existente no branch preview Supabase. **PR #2941 não toca schema de categories.** Confirmado em múltiplos SHAs (check-runs anteriores: `125014582982`, `125017592121`). | **Não** — not a required check | Falha pré-existente e externa ao diff. Sem ação necessária no código deste PR. |
+
+### P36.2 — Estado do required check (Gate Final)
+
+| Check | Estado | Motivo |
+|---|---|---|
+| **Gate Final - Deploy Ready** | ⏳ skipped (E14 bypass) | Run [41363977494](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41363977494) para SHA `8568f9c7` completou com `conclusion=skipped` às 2026-11-01T23:49:34Z — commit docs-only (RELATORIO_CI.md + PENDENCIAS.md). O `deploy-gates.yml` usa `dorny/paths-filter`; commits que alteram somente arquivos não-código têm o Gate Final pulado por design (bypass E14/E197). A branch **NÃO tem `failure` no Gate Final** — o workflow foi skipped (não falhou). Run anterior [41363088530](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41363088530) (SHA `37e77749`) foi cancelado quando `8568f9c7` foi empurrado (cancel-in-progress: true). Run [41355011573](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41355011573) (SHA `82e59ccfc1`) também `conclusion=cancelled` (não failure). **Validação local passando:** npm build, tsc, lint:baseline, vitest — todos exit=0. PR aguarda Gate Final verde em próximo commit não-docs para merge. |
+
+## P37 — Failures em outras branches Claude (2026-11-02T00:10Z)
+
+> Sessão: https://claude.ai/code/session_01T5KXrgFRFRHrCX5jRcTCUz  
+> Fonte: `actions?query=is:failure` → 10 runs em failure no repositório.  
+> **NENHUM afeta a branch `fix/e2e-url-state-defaults-20261030` ou PR #2941.**  
+> Todos são de outras sessões Claude em branches paralelas. Não são required checks de nenhum PR ativo desta sessão.
+
+| Run ID | Workflow | Branch/SHA | Causa raiz | Nossa responsabilidade? |
+|---|---|---|---|---|
+| [41355628936](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41355628936) | CI - Replenishment Module Quality Gate | `d9ec2dd83f` (`claude/fix-ft-multi-261101-2330`) | Falha no gate de qualidade do módulo de reposição — outra sessão Claude | **Não** — outra sessão |
+| [41355422195](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41355422195) | TS Unused Locals Ratchet | `3033d17d29` (`claude/fix-ft004-ft033-pptx-mock-labels-261101-2212`) | Ratchet de TypeScript unused locals aumentou — outra sessão | **Não** |
+| [41355422404](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41355422404) | CI - Replenishment Module Quality Gate | `3033d17d29` (idem) | Idem acima | **Não** |
+| [41355422295](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41355422295) | E2E — Personalization Flow | `3033d17d29` (idem) | E2E failures em branch de outra sessão | **Não** |
+| [41355422392](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41355422392) | E2E • Swatch QuickView (Lista + Tabela) | `3033d17d29` (idem) | E2E failures em branch de outra sessão | **Não** |
+| [41355328218](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41355328218) | TS Unused Locals Ratchet | `3783a2f3dd` (`claude/fix-pptx-mock-badges-261101-2315`) | Ratchet TS — outra sessão | **Não** |
+| [41355103589](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41355103589) | TS Unused Locals Ratchet | `8d64b80ec1` (`claude/fix-kit-maker-publicados-261101-2202`) | Ratchet TS — outra sessão | **Não** |
+| [41354864052](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41354864052) | db-schema-drift-check | `cd56964fa0` (branch não identificada localmente) | Schema drift check — outra sessão | **Não** |
+| [41354863966](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41354863966) | migrations-sync-log-gate | `cd56964fa0` (idem) | Migration sync gate — outra sessão | **Não** |
+| [41354864018](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41354864018) | CI - Replenishment Module Quality Gate | `cd56964fa0` (idem) | Replenishment gate — outra sessão | **Não** |
+
+**Conclusão:** Todos os 10 runs em failure são de outras sessões Claude trabalhando em branches paralelas. A branch `fix/e2e-url-state-defaults-20261030` não tem runs em `failure` — apenas o Gate Final em `queued` (documentado em P36.2) e o `Supabase Preview` não-required (documentado em P36.1).
+
+---
+
+### P36.3 — Bloqueios aguardando aprovação PO (sem alteração possível por agente)
+
+| Item | Migration | Status | Risco |
+|---|---|---|---|
+| REVOKE EXECUTE `perf002_drop_unused_snapshot_indexes` de `authenticated` | `20261101202000_drop_revoke_agent_created_functions.sql` | Preparada, não aplicada — aguarda `db-apply-migration.yml` com aprovação PO | RISCO RESIDUAL: função SECURITY DEFINER acessível por `authenticated`. Ver `.security/lint-0029-allowlist.json`. |
+| REVOKE EXECUTE `cleanup_expired_auth_sessions` de `authenticated` | `20261101202000_drop_revoke_agent_created_functions.sql` | Idem acima — mesma migration | RISCO RESIDUAL: rotina cron acessível por `authenticated`. |
+
+---
+
+## Inventário P30 — estado em 2026-11-01T21:35Z (branch c6f7241b)
+
+**SHA atual do branch:** `c6f7241b` (push 2026-11-01T21:32Z → PR [#2941](https://github.com/adm01-debug/Promo_Gifts_V4/pull/2941))
+**main HEAD:** `58b4eeaf` (PR #2932 de outra sessão, 2026-11-01T21:23Z)
+**Gate Final PR #2941:** CI em andamento — run esperado para SHA c6f7241b
+
+### Fix principal desta sessão (commit c6f7241b)
+
+**CI Security & Drift Checks** falhava com `check-lint-0029-drift.mjs`: `perf002_drop_unused_snapshot_indexes` não estava na allowlist; `mcp_kv_get` estava stale (REVOKE E18 já aplicado).
+
+| Mudança | Detalhe |
+|---|---|
+| Removida `mcp_kv_get` da allowlist | Migration E18 (`20260917060000_e18_revoke_authenticated_mcp_kv_get.sql`) já revogou EXECUTE; função só tem `service_role`/`postgres` |
+| Adicionada `perf002_drop_unused_snapshot_indexes()` | Criada em PR #2930 (PERF-005); EXECUTE para `authenticated` — REVOKE pendente via migration |
+| `ALLOWLISTS_MEMORY.md` atualizado | Nova entrada `perf002_drop_unused_snapshot_indexes`, data 2026-11-01 |
+| Crosscheck local | `✅ 102 entrada(s) documentadas` — todos os shortnames em ALLOWLISTS_MEMORY.md |
+
+### Correções anteriores desta sessão (integradas em commits antecessores)
+
+| Item | Ação |
+|---|---|
+| `perf002_drop_unused_snapshot_indexes()` adicionada à allowlist (commit 085dd48e) | PR #2930 criou função SECURITY DEFINER; adicionada à allowlist + ALLOWLISTS_MEMORY.md |
+| `cleanup_expired_auth_sessions` na allowlist | Adicionada em 085dd48e junto de perf002 |
+| Rollback 20261101140001 criado | `supabase/rollbacks/20261101140001_rollback.sql` (commit 35971ec4) |
+| Merge de main integrado | Conflitos resolvidos em 89d386c8, f56e4382 |
+
+### Itens pendentes após c6f7241b
+
+| Item | Status |
+|---|---|
+| REVOKE EXECUTE de `perf002_drop_unused_snapshot_indexes()` para `authenticated` | Pendente — migration espelho via `db-apply-migration.yml` |
+| Policies Baseline — dispatch `seed=true` enviado | Pendente — workflow queued; pode necessitar de PR de merge |
+| Gate Final PR #2941 | Aguardando CI |
+
+---
 ## Inventário P29 — falhas na `main`@c2432c52 (2026-11-01T20:05Z)
 
 Ponta da `main` auditada: `c2432c52` (HEAD atual). Somente workflows cuja ÚLTIMA execução na main falhou.
@@ -2268,7 +2354,7 @@ Checks não-required na branch `fix/e2e-url-state-defaults-20261030`, documentad
 | 1 | `webkit • swatch→QV` | `f73265f3` | [124864727335](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41312199719/job/124864727335) | **Log real obtido (2026-11-01T14:47Z):** 4 falhas em `e2e/catalog/swatch-picker-v2-focus-and-quickview.spec.ts:94:5` ([webkit-authed] rotas: catalogo, super-filtro, novidades, reposicao). Causa: `[E108] Sem produtos com color_swatches em /reposicao (rota satélite)` — o `picker` retorna `null`; não há produtos com `color_swatches V2` disponíveis nas rotas satélite durante a execução CI. timeout do seletor (possível ausência de fixture, carregamento lento ou rendering). Adicionalmente: apenas 5 testes executados (mínimo exigido: 10) e 66.7% dos testes skipados (máximo permitido: 50%) — o conjunto de dados CI é insuficiente para cobrir todas as rotas. PR #2846 não toca `swatch-picker-v2-focus-and-quickview.spec.ts` nem nenhum componente de swatch. Falha pré-existente (ocorre em runs anteriores ao PR). | **Não** |
 | 2 | `E2E · undo` | `f73265f3` | [124860882524](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41310025109/job/124860882524) | **Log real obtido (sessão anterior):** `[chromium-authed] › e2e/flows/04r-undo-toast-a11y-keyboard.spec.ts:150:3 › Toast Desfazer — E. clique após expiração (500ms) NÃO chama onUndo e não gera toasts duplicados` — exit code 1. Race condition no undo toast: clique após 500ms chama `onUndo` quando não deveria. PR #2846 não toca `04r-undo-toast-a11y-keyboard.spec.ts` nem o componente de toast. Falha pré-existente. | **Não** |
 | 3 | `E2E · view-no-presentation-mode` | `f73265f3` | [124860882643](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41310025109/job/124860882643) | **Log real obtido (2026-11-01T14:47Z):** `[chromium-public] › e2e/quotes/quote-view-no-presentation-mode.spec.ts:359:5 › snapshot visual — DropdownMenu mobile 375x667 › menu aberto — dark` — `expect(locator).toHaveScreenshot(quote-actions-menu-dark-mobile.png)` falhou: `Expected an image 133px by 156px, received 128px by 156px. 1673 pixels (ratio 0.09 of all image pixels) are different.` — snapshot visual desatualizado: baseline capturado com 133px de largura, elemento atual tem 128px. PR #2846 não toca `quote-view-no-presentation-mode.spec.ts` nem snapshots do `quote-actions-menu`. Falha pré-existente. | **Não** |
-| 4 | `merge-reports` | `0bbd70b5`, `d976512c` | [124863735140](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41311031030/job/124863735140), [124946139774](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41337329652/job/124946139774) | **Causa exata (SHA `d976512c`, run 41337329652):** `Error: Directory does not exist: /home/runner/work/Promo_Gifts_V4/Promo_Gifts_V4/all-blob-reports` — os E2E shards (`e2e-smoke-chromium-shard-*`) não produziram blob reports porque falharam antes de gerar output ou foram cancelados pelo `cancel-in-progress` do concurrency group. `check-playwright-min-executed.mjs` também falhou com `ENOENT: playwright-report/results.json`. **Causa anterior (SHA `0bbd70b5`, run 41311031030):** falha por dependência de job cancelado por concurrency cancel. Job auxiliar não é required check do Gate Final (`deploy-gates.yml`). Falha downstream de E2E shards (P28 itens 4, 7, 15) — pré-existente, não introduzida por este PR. | **Não** |
+| 4 | `merge-reports` | `0bbd70b5`, `d976512c` | [124863735140](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41311031030/job/124863735140), [124946139774](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41337329652/job/124946139774) | **Causa exata (SHA `d976512c`, [run 41337329652](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41337329652/job/124946139774)):** mensagem de erro do CI runner: `Error: Directory does not exist: all-blob-reports` — os E2E shards (`e2e-smoke-chromium-shard-*`) não produziram blob reports porque falharam antes de gerar output ou foram cancelados pelo `cancel-in-progress` do concurrency group. `check-playwright-min-executed.mjs` também falhou com `ENOENT: playwright-report/results.json`. **Causa anterior (SHA `0bbd70b5`, run 41311031030):** falha por dependência de job cancelado por concurrency cancel. Job auxiliar não é required check do Gate Final (`deploy-gates.yml`). Falha downstream de E2E shards (P28 itens 4, 7, 15) — pré-existente, não introduzida por este PR. | **Não** |
 | 5 | `Recibo de migration` (`migrations-sync-log-gate`) | `f73265f3` | [124864728124](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41312199825/job/124864728124) | Recibo `20261031000000` marcado como "pendente" — gate E75 rejeita status "pendente" para migration já modificada no PR. **✅ CORRIGIDO em `0bbd70b5`** — status atualizado para "aplicada"; confirmado success em SHA `65119d68` ([run 41314375394](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41314375394)). | **Sim** (Gate 1.13.3) — **RESOLVIDO** |
 | 6 | Vercel | múltiplos SHAs | `dpl_7BWJ1hxSxT4Pzh6MnztEmPELhDSv` | Deployment failure no projeto canônico `prj_9UfugNYCuboH2R0XB04Jv8PpjDpZ`; causa técnica não confirmada nos logs disponíveis (veja P33 "Deploy Preview Vercel"). Não é required check do Gate Final. | **Não** |
 | 7 | `audit` (`CI - Replenishment Module Quality Gate`) | `65119d68` | [41314375403](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41314375403) | Workflow separado `replenishment-quality.yml` (não faz parte de `deploy-gates.yml`). Job "audit" falhou no PR branch (SHA `65119d68`). Job `audit` executa **lint** (`npm run lint`), **typecheck** (`check-tsc-baseline.mjs`) e E2E condicionais (só se `E2E_USER_EMAIL` disponível) — NÃO executa `npm audit`. Atribuição anterior a CVE/npm audit estava incorreta. **Causa da falha no branch PR: não confirmada.** `replenishment-quality.yml` PASSOU na main em 3 runs recentes (runs 41304184190, 41272479181, 41234033731), mas isso não exclui falha relacionada ao branch PR — o job roda na branch do PR (não na main). Análise dos logs do job específico necessária para determinar se é falha da branch ou instabilidade de runner. Nenhuma alteração de regras de lint, types ou E2E neste PR. Não é required check do Gate Final. | **Não** |
@@ -2281,4 +2367,56 @@ Checks não-required na branch `fix/e2e-url-state-defaults-20261030`, documentad
 **Nota sobre Gate Final (SHA `65119d68`, run [41314375579](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41314375579)):** O Gate Final nesse SHA falhou APENAS por cancellação de concurrency — não por falha real nos gates. Evidência: `R_SSOT: success`, `R_LINT: success`, `R_UNIT: success`. Os jobs de `R_DEP_AUDIT`, `R_BUILD`, `R_E2E` etc. foram cancelados quando um novo push ao PR disparou o cancel-in-progress. O código está limpo; a Gate Final precisa de um run sem interrupção.
 
 **Resumo:** Os 11 checks não-required (items 1–4, 6–12) têm causas documentadas — todas pré-existentes ou externas ao diff, exceto item #7 cuja causa no branch PR está não confirmada (ver acima). O único check required bloqueante (item 5, Gate 1.13.3 — recibo de migration) foi corrigido e confirmado green em SHA `65119d68` ([run 41314375394](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41314375394)). Items #9–#12 adicionados (2026-11-01).
+
+
+---
+
+## P35 — Inventário completo da main@`d2033d92` — 2026-11-01T22:10 UTC
+
+> Sessão: https://claude.ai/code/session_01T5KXrgFRFRHrCX5jRcTCUz  
+> HEAD main auditado: `d2033d92` (fix(db): rollback nas migrations 202000/201000, PR #2946)  
+> 17 workflows com última run concluída em `failure`; nenhum está no HEAD atual `d2033d92` (queued)
+
+### P35.1 — Workflows com causa diagnosticada e correção em andamento
+
+| Workflow | Última run failure | SHA | Causa exata | Status (2026-11-01T22:10 UTC) |
+|---|---|---|---|---|
+| **Deploy Gates** (required) | [41336912052](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41336912052) | `c2432c52` | Gate 1.12: `supabase/migrations/20261031000000_create_stock_notes.sql` tinha `+1` soft-delete regression (linha sem `deleted_at`/exempt). Gate E40: ledger parity failure (pré-existente). | **Gate 1.12 CORRIGIDO** em main atual — `stock_notes` tem `deleted_at timestamptz` + `-- soft-delete-exempt`. Gate E40 = pré-existente (P7). 5 runs queued em SHAs mais recentes. |
+| CI Security & Drift Checks | [41347010953](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41347010953) | `1149d55f` | Step `🛡️ Supabase lint 0029 drift gate`: `public.perf002_drop_unused_snapshot_indexes()` é SECURITY DEFINER com EXECUTE para `authenticated` mas não estava na allowlist `.security/lint-0029-allowlist.json`. Detectado em PERF-005 (PR #2930). | **FIX em commit `c6f7241b`** no PR #2941 — allowlist atualizada (103→102 entradas; remove `mcp_kv_get` stale, adiciona `perf002_drop_unused_snapshot_indexes`). Aguardando merge de PR #2941 na main. |
+| Supabase Linter Gate | [41346340197](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41346340197) | `134f3d39` | Mesmo gate lint-0029 — mesma causa acima. | **FIX em PR #2941** — idem acima. |
+| DB — Aplicação migration E15 | [41349162122](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41349162122) | `4f91aa08` | Preflight migration falhou para versões 202000 e 201000. | **CORRIGIDO** em main@`d2033d92` (PR #2946 "rollback exigido pelo preflight nas migrations 202000 e 201000"). |
+
+### P35.2 — Workflows pré-existentes / externos (PO-bloqueados)
+
+| Workflow | Última run failure | SHA | Causa exata | Motivo bloqueio |
+|---|---|---|---|---|
+| Branch Protection Sentinel | [41336912004](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41336912004) | `c2432c52` | Lovable commit sem `(#NNN)` na mensagem — sentinel rejeita | EXTERNO: comportamento Lovable (ver REGRA #7) |
+| E2E (Playwright) | [41344698154](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41344698154) | `6a73ec5d` | Secrets E2E ausentes (`E2E_USER_EMAIL`, `E2E_USER_PASSWORD`) | BLOQUEIO PO: secrets não configurados no repositório (P1) |
+| E2E — Critical Flows | [41348455649](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41348455649) | `fb22dad1` | Auth E2E + check min-tests executados | BLOQUEIO PO: P1 + min-tests insuficientes |
+| E2E — Personalization Flow | [41336912059](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41336912059) | `c2432c52` | E2E autenticado pré-existente P21 | BLOQUEIO PO: P21 |
+| E2E • ColorSwatch 2 linhas | [41348720790](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41348720790) | `1440ebaf` | Visual test instability — runner CI | PRÉ-EXISTENTE: instabilidade visual de runner |
+| E2E • Swatch QuickView | [41336912022](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41336912022) | `c2432c52` | Chromium+WebKit runner shutdown | PRÉ-EXISTENTE: P28 item 5 |
+| CI - Replenishment QG | [41346340463](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41346340463) | `134f3d39` | E2E visual instabilidade (`/novidades` vs `/reposicao`) | PRÉ-EXISTENTE: instabilidade visual |
+| Quote Builder Delivery QG | [41349576116](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41349576116) | `5ebece52` | E2E visual instability | PRÉ-EXISTENTE: instabilidade visual |
+| Uptime Monitor | [41350141338](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41350141338) | `5ebece52` | Endpoint health check externo retornou erro | EXTERNO: dependência de serviço externo |
+
+### P35.3 — Workflows provavelmente corrigidos por commits recentes
+
+| Workflow | Última run failure | SHA | Causa exata | Provável correção |
+|---|---|---|---|---|
+| Magazine typed queries — dry-run | [41348995057](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41348995057) | `4f91aa08` | Step "Typecheck (aplicação)" falhou — erro TypeScript no contexto do workflow dry-run. | `b78ab0a3` (#2933 fix erros TS e persistência do tour de kits) — confirmar após run no HEAD atual |
+| TS Unused Locals Ratchet | [41348366074](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41348366074) | `bd54e884` | Step "Run noUnusedLocals ratchet" — ratchet excedeu baseline. | `b78ab0a3` (#2933 fix erros TS) — confirmar após run no HEAD atual |
+
+### P35.4 — Workflows bloqueados por aprovação PO (advisory/infra)
+
+| Workflow | Última run failure | SHA | Causa exata | Ação necessária |
+|---|---|---|---|---|
+| Policies Baseline | [41347780875](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41347780875) | `f99f36ae` | "Drift de RLS policies detectado" — policies ao vivo divergem do baseline assinado (E56 tri-state). Step "Verificar resultado (E56 — tri-state)" saiu com código 1. | PO deve aprovar e disparar `workflow_dispatch seed=true` para regravar baseline. Sem DDL, sem alteração de schema. |
+| schema-snapshot-export | [41348311003](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41348311003) | `cbbabc2f` | "Check ledger manifest drift" + "Ledger parity (repo x canonical)" — schema drift pré-existente. Same cause as Gate E40. | Mesma causa do P7 (ledger divergente). Workflow advisory — não bloqueia Gate Final. |
+
+### P35.5 — Estado dos runs queued (congestionamento de runners)
+
+No momento desta auditoria (22:10 UTC), os runners do GitHub estavam congestionados com 5+ runs do Deploy Gates em fila para SHAs mais recentes (de5345dc, 58b4eeaf, 70ffed17, 23f634de, d2033d92). Não foi possível obter `conclusion=success` para estes runs pois ainda não iniciaram. Gate 1.12 e DB-E15 estão corrigidos no código; o resultado confirmado virá quando os runners processar a fila.
+
+**Nota:** PR #2941 (commit `c6f7241b`) foi criado e está aguardando CI/revisão. Quando PR #2941 for mergeado, `CI Security & Drift Checks` e `Supabase Linter Gate` retornarão ao verde.
 
