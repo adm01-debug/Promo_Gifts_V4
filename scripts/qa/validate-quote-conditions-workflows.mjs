@@ -12,7 +12,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = resolve(__dirname, '..', '..');
 
 const PR = resolve(root, '.github/workflows/e2e-quote-conditions-pr-check.yml');
-const UP = resolve(root, '.github/workflows/e2e-update-quote-conditions-snapshots.yml');
+const UP = resolve(root, '.github/workflows/update-snapshots.yml'); // consolidado 2026-11-02
 
 const errors = [];
 const ok = [];

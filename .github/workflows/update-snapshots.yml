@@ -1,35 +1,93 @@
 name: E2E · Atualizar snapshots visuais (E155)
 
-# Substitui os 9 workflows individuais de update de baselines visuais:
-#   e2e-update-alert-dialog-snapshots.yml
-#   e2e-update-calendar-snapshots.yml
-#   e2e-update-confirm-dialog-snapshots.yml
-#   e2e-update-dialog-snapshots.yml
-#   e2e-update-magazine-ring-snapshots.yml
-#   e2e-update-quote-conditions-snapshots.yml
-#   e2e-update-quote-freight-snapshots.yml
-#   e2e-update-quote-no-pres-snapshots.yml
-#   update-quote-reset-snapshots.yml
+# Workflow ÚNICO de regeneração de baselines visuais (Playwright --update-snapshots).
+# Consolidação 2026-11-02 (Fase 1 da gestão de workflows): substitui os 12 updaters
+# individuais que existiam — um por spec —, cada um com uma variação do mesmo fluxo:
+#   e2e-update-alert-dialog-snapshots.yml        (push direto, chromium-public)
+#   e2e-update-calendar-snapshots.yml            (safe_mode + dev server, PR)
+#   e2e-update-confirm-dialog-snapshots.yml      (push direto)
+#   e2e-update-dialog-snapshots.yml              (push direto)
+#   e2e-update-editor-sheet-snapshots.yml        (chromium+firefox+webkit public, push)
+#   e2e-update-magazine-ring-snapshots.yml       (push direto)
+#   e2e-update-quote-conditions-snapshots.yml    (safe_mode + dev server, PR)
+#   e2e-update-quote-freight-snapshots.yml       (safe_mode, PR)
+#   e2e-update-quote-missing-fields-snapshots.yml (safe_mode + chromium-authed + checagem de auth state, PR)
+#   e2e-update-quote-no-pres-snapshots.yml       (safe_mode, PR)
+#   update-quote-reset-snapshots.yml             (4 specs chromium-authed, PR)
+#   (o próprio update-snapshots.yml anterior, sem safe_mode)
+#
+# Todas as variações viraram inputs:
+#   spec        — 1..N specs separados por espaço
+#   project     — chromium-public | chromium-authed | all-public (chromium+firefox+webkit)
+#   safe_mode   — dry-run primeiro; só regenera se a falha for diferença visual (diff/actual PNG)
+#   mode        — pr (branch nova + PR) | push (commit direto na branch alvo; nunca em main)
+#   dev_server  — sobe o Vite antes (specs que não funcionam com o webServer do Playwright)
+#
+# `git add` é restrito a `<spec>-snapshots/` de cada spec informado — nunca `e2e/` inteiro.
+#
+# RESTAURADO 2026-11-02 (achado do revisor exaustivo pós-Fase-1): 6 dos 12 workflows
+# originais tinham `push:` automático (alert-dialog, confirm-dialog, dialog,
+# magazine-ring, editor-sheet, calendar) que regenerava a baseline sozinho quando o
+# spec/harness mudava em `main`. A fusão inicial perdeu esse auto-trigger. Restaurado
+# via job `prep` (dorny/paths-filter, 6 grupos) → matrix no job `update`; diferente do
+# original (que fazia push direto em alguns casos), aqui sempre abre PR (mode=pr,
+# safe_mode=true) — mais seguro, consistente com o guard "Bloquear push direto em main".
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - 'e2e/ui/alert-dialog-visual.spec.ts'
+      - 'src/pages/dev/AlertDialogHarness.tsx'
+      - 'e2e/ui/confirm-dialog-visual.spec.ts'
+      - 'src/pages/dev/ConfirmDialogHarness.tsx'
+      - 'e2e/ui/dialog-visual.spec.ts'
+      - 'src/pages/dev/DialogHarness.tsx'
+      - 'e2e/ui/magazine-ring-visual.spec.ts'
+      - 'src/pages/dev/MagazineRingHarness.tsx'
+      - 'e2e/quotes/quote-item-editor-sheet-header.spec.ts'
+      - 'src/pages/__visual/QuoteItemEditorSheetHarness.tsx'
+      - 'src/components/ui/calendar.tsx'
+      - 'src/pages/__visual/CalendarHarness.tsx'
+      - 'e2e/ui/calendar-visual.spec.ts'
+      - '.github/workflows/update-snapshots.yml'
   workflow_dispatch:
     inputs:
       spec:
         description: >
           Spec(s) a atualizar, separados por espaço
-          (ex: e2e/ui/alert-dialog-visual.spec.ts)
+          (ex: e2e/ui/alert-dialog-visual.spec.ts e2e/ui/dialog-visual.spec.ts)
         required: true
         type: string
       project:
-        description: "Playwright project"
+        description: "Playwright project (all-public = chromium+firefox+webkit public)"
         required: false
         default: chromium-public
         type: choice
         options:
           - chromium-public
           - chromium-authed
+          - all-public
+      safe_mode:
+        description: "Dry-run antes: só regenera se a falha for diferença visual"
+        required: false
+        default: true
+        type: boolean
+      mode:
+        description: "pr = branch nova + PR · push = commit direto na branch alvo (bloqueado em main)"
+        required: false
+        default: pr
+        type: choice
+        options:
+          - pr
+          - push
+      dev_server:
+        description: "Subir o Vite (npm run dev) antes dos testes"
+        required: false
+        default: false
+        type: boolean
       branch:
-        description: "Branch destino do commit (default: branch atual)"
+        description: "Branch destino (default: branch do dispatch)"
         required: false
         default: ""
         type: string
@@ -45,7 +103,7 @@ permissions:
 
 # R2 — dispatch-only nunca cancelado (E19)
 concurrency:
-  group: update-snapshots-${{ github.event.inputs.branch || github.ref_name }}
+  group: update-snapshots-${{ inputs.branch || github.ref_name }}
   cancel-in-progress: false
 
 defaults:
@@ -53,10 +111,121 @@ defaults:
     shell: bash
 
 jobs:
-  update:
-    name: Regenerar baselines
+  prep:
+    name: Preparar matriz (dispatch=1 item · push=N specs afetados)
     runs-on: ubuntu-24.04
-    timeout-minutes: 25
+    timeout-minutes: 3
+    outputs:
+      matrix: ${{ steps.build.outputs.matrix }}
+      count: ${{ steps.build.outputs.count }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        if: github.event_name == 'push'
+        with:
+          persist-credentials: false  # E32
+          # QODO: dorny/paths-filter em push compara contra github.event.before
+          # via git local — fetch-depth padrão (1) não tem o commit anterior e
+          # o fetch automático sem credencial podia falhar, parando o auto-update
+          # das 6 suítes em silêncio. fetch-depth:0 garante o histórico presente.
+          fetch-depth: 0
+
+      - name: Detectar specs afetados (push)
+        id: filter
+        if: github.event_name == 'push'
+        uses: dorny/paths-filter@ceb8a2b8f2d89434be7ff52d3de7ec3738c5cc9d # v4.0.3
+        with:
+          filters: |
+            alert-dialog:
+              - 'e2e/ui/alert-dialog-visual.spec.ts'
+              - 'src/pages/dev/AlertDialogHarness.tsx'
+            confirm-dialog:
+              - 'e2e/ui/confirm-dialog-visual.spec.ts'
+              - 'src/pages/dev/ConfirmDialogHarness.tsx'
+            dialog:
+              - 'e2e/ui/dialog-visual.spec.ts'
+              - 'src/pages/dev/DialogHarness.tsx'
+            magazine-ring:
+              - 'e2e/ui/magazine-ring-visual.spec.ts'
+              - 'src/pages/dev/MagazineRingHarness.tsx'
+            editor-sheet:
+              - 'e2e/quotes/quote-item-editor-sheet-header.spec.ts'
+              - 'src/pages/__visual/QuoteItemEditorSheetHarness.tsx'
+            calendar:
+              - 'src/components/ui/calendar.tsx'
+              - 'src/pages/__visual/CalendarHarness.tsx'
+              - 'e2e/ui/calendar-visual.spec.ts'
+
+      - name: Montar matriz
+        id: build
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          CHANGED: ${{ steps.filter.outputs.changes || '[]' }}
+          IN_SPEC: ${{ inputs.spec }}
+          IN_PROJECT: ${{ inputs.project }}
+          IN_SAFE_MODE: ${{ inputs.safe_mode }}
+          IN_MODE: ${{ inputs.mode }}
+          IN_DEV_SERVER: ${{ inputs.dev_server }}
+          IN_BRANCH: ${{ inputs.branch }}
+          IN_COMMIT_MESSAGE: ${{ inputs.commit_message }}
+        run: |
+          set -euo pipefail
+          node -e '
+            const ev = process.env.EVENT_NAME;
+            let include;
+            if (ev === "workflow_dispatch") {
+              include = [{
+                suite: "dispatch",
+                spec: process.env.IN_SPEC,
+                project: process.env.IN_PROJECT,
+                safe_mode: process.env.IN_SAFE_MODE === "true",
+                mode: process.env.IN_MODE,
+                dev_server: process.env.IN_DEV_SERVER === "true",
+                branch: process.env.IN_BRANCH || "",
+                commit_message: process.env.IN_COMMIT_MESSAGE,
+              }];
+            } else {
+              // push — um item por grupo afetado, sempre mode=pr/safe_mode=true (mais
+              // seguro que o push direto que os workflows originais faziam).
+              const changed = JSON.parse(process.env.CHANGED || "[]");
+              const table = {
+                "alert-dialog":   { spec: "e2e/ui/alert-dialog-visual.spec.ts", project: "chromium-public" },
+                "confirm-dialog": { spec: "e2e/ui/confirm-dialog-visual.spec.ts", project: "chromium-public" },
+                "dialog":         { spec: "e2e/ui/dialog-visual.spec.ts", project: "chromium-public" },
+                "magazine-ring":  { spec: "e2e/ui/magazine-ring-visual.spec.ts", project: "chromium-public" },
+                "editor-sheet":   { spec: "e2e/quotes/quote-item-editor-sheet-header.spec.ts", project: "all-public" },
+                "calendar":       { spec: "e2e/ui/calendar-visual.spec.ts", project: "chromium-public", dev_server: true },
+              };
+              include = changed.filter((name) => table[name]).map((name) => {
+                const t = table[name];
+                return {
+                  suite: name,
+                  spec: t.spec,
+                  project: t.project,
+                  safe_mode: true,
+                  mode: "pr",
+                  dev_server: !!t.dev_server,
+                  branch: "",
+                  commit_message: "chore(e2e): update visual snapshots (" + name + ")",
+                };
+              });
+            }
+            const fs = require("fs");
+            fs.appendFileSync(process.env.GITHUB_OUTPUT, "matrix=" + JSON.stringify(include) + "\n");
+            fs.appendFileSync(process.env.GITHUB_OUTPUT, "count=" + include.length + "\n");
+            console.log("Evento:", ev, "- itens na matriz:", include.length);
+            console.log(JSON.stringify(include, null, 2));
+          '
+
+  update:
+    name: Regenerar baselines · ${{ matrix.suite }}
+    needs: [prep]
+    if: needs.prep.outputs.count != '0'
+    strategy:
+      fail-fast: false
+      matrix:
+        include: ${{ fromJSON(needs.prep.outputs.matrix) }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
     permissions:
       contents: write
       pull-requests: write
@@ -65,12 +234,27 @@ jobs:
       FORCE_COLOR: "0"
       VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || 'https://doufsxqlfjyuvxuezpln.supabase.co' }}
       VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_tjH5qAbZ0e5HTTd872NijQ_s9m6JvYU' }}
+      INPUT_SPEC: ${{ matrix.spec }}
+      INPUT_PROJECT: ${{ matrix.project }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false  # E32
-          ref: ${{ github.event.inputs.branch || github.ref }}
+          ref: ${{ matrix.branch || github.ref }}
           fetch-depth: 0
+
+      - name: Bloquear push direto em main
+        if: ${{ matrix.mode == 'push' }}
+        env:
+          TARGET_BRANCH: ${{ matrix.branch || github.ref_name }}
+        run: |
+          # QODO/Codex: normaliza antes de comparar — "refs/heads/main" bypassava
+          # o guard que só comparava com o literal "main".
+          TARGET_BRANCH_NORM="${TARGET_BRANCH#refs/heads/}"
+          if [ "$TARGET_BRANCH_NORM" = "main" ]; then
+            echo "::error::mode=push não é permitido em main — use mode=pr."
+            exit 1
+          fi
 
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
@@ -94,52 +278,160 @@ jobs:
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ~/.cache/ms-playwright
-          key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
-          restore-keys: playwright-${{ runner.os }}-
+          key: playwright-${{ runner.os }}-${{ matrix.project }}-${{ hashFiles('package-lock.json') }}
+          restore-keys: playwright-${{ runner.os }}-${{ matrix.project }}-
 
-      - name: Install Playwright Chromium
-        run: npx playwright install --with-deps chromium
+      - name: Install Playwright browsers
+        run: |
+          if [ "$INPUT_PROJECT" = "all-public" ]; then
+            npm run e2e:install:all-browsers
+          else
+            npx playwright install --with-deps chromium
+          fi
 
-      - name: Regenerar snapshots
+      - name: Resolver projects e specs
+        id: resolve
+        run: |
+          read -ra SPECS <<< "$INPUT_SPEC"
+          for s in "${SPECS[@]}"; do
+            [ -f "$s" ] || { echo "::error::spec não encontrado: $s"; exit 1; }
+          done
+          if [ "$INPUT_PROJECT" = "all-public" ]; then
+            PROJECTS="--project=chromium-public --project=firefox-public --project=webkit-public"
+          else
+            PROJECTS="--project=$INPUT_PROJECT"
+          fi
+          echo "projects=$PROJECTS" >> "$GITHUB_OUTPUT"
+          echo "specs=${SPECS[*]}" >> "$GITHUB_OUTPUT"
+
+      - name: Subir Vite (dev_server)
+        if: ${{ matrix.dev_server }}
+        run: |
+          nohup npm run dev -- --port 8080 --strictPort > /tmp/vite.log 2>&1 &
+          for _ in $(seq 1 90); do
+            if curl -sf http://localhost:8080 >/dev/null; then exit 0; fi
+            sleep 1
+          done
+          tail -n 100 /tmp/vite.log >&2; exit 1
+
+      - name: Dry-run (safe mode)
+        if: ${{ matrix.safe_mode }}
+        id: dryrun
+        continue-on-error: true
         env:
           E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
           E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
-          INPUT_SPEC: ${{ github.event.inputs.spec }}
-          INPUT_PROJECT: ${{ github.event.inputs.project }}
+          PROJECTS: ${{ steps.resolve.outputs.projects }}
+          SPECS: ${{ steps.resolve.outputs.specs }}
         run: |
-          read -ra SPECS <<< "$INPUT_SPEC"
-          npx playwright test "${SPECS[@]}" \
-            --project="$INPUT_PROJECT" \
-            --update-snapshots \
-            --reporter=list
+          # shellcheck disable=SC2086 # expansão intencional em argumentos
+          PLAYWRIGHT_JSON_OUTPUT_NAME=playwright-report/results.json \
+          npx playwright test $SPECS $PROJECTS --reporter=list,json
+
+      - name: Classificar falha (visual vs real)
+        if: ${{ matrix.safe_mode && steps.dryrun.outcome == 'failure' }}
+        id: classify
+        run: |
+          if find test-results -type f \( -name "*-diff.png" -o -name "*-actual.png" \) 2>/dev/null | grep -q .; then
+            echo "kind=visual" >> "$GITHUB_OUTPUT"
+          else
+            echo "kind=real" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Abortar (falha não-visual)
+        if: ${{ matrix.safe_mode && steps.dryrun.outcome == 'failure' && steps.classify.outputs.kind == 'real' }}
+        run: |
+          echo "::error::Falha não é diferença visual — abortando rewrite de baselines. Corrija o erro real antes de atualizar snapshots."
+          exit 1
+
+      - name: Nada a atualizar (safe mode passou)
+        if: ${{ matrix.safe_mode && steps.dryrun.outcome == 'success' }}
+        run: |
+          echo "✅ Spec(s) já passam contra baselines atuais — nenhuma atualização necessária."
+
+      - name: Verificar auth state antes de regenerar baselines autenticados
+        if: ${{ matrix.project == 'chromium-authed' && (!matrix.safe_mode || (steps.dryrun.outcome == 'failure' && steps.classify.outputs.kind == 'visual')) }}
+        env:
+          E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
+        run: |
+          if [ -z "$E2E_USER_EMAIL" ]; then
+            echo "::error title=Auth credentials missing::E2E_USER_EMAIL não está configurado — regenerar baselines autenticados com estado de login vazio capturaria páginas não-autenticadas como baseline aprovado. Configure E2E_USER_EMAIL e E2E_USER_PASSWORD nos secrets do repositório."
+            exit 1
+          fi
+          STORAGE="e2e/.auth/storageState.json"
+          if [ -f "$STORAGE" ]; then
+            AUTH_VALID=$(node -pe "
+              const s = JSON.parse(require('fs').readFileSync('$STORAGE','utf8'));
+              const hasCookies = s.cookies && s.cookies.length > 0;
+              const hasSupabaseToken = (s.origins || []).some(function(o) {
+                return (o.localStorage || []).some(function(e) {
+                  return e.name && e.name.startsWith('sb-') && e.name.endsWith('-auth-token');
+                });
+              });
+              hasCookies || hasSupabaseToken ? 'valid' : 'empty'
+            " 2>/dev/null || echo "error")
+            if [ "$AUTH_VALID" != "valid" ]; then
+              echo "::error title=Empty auth state::storageState.json não contém cookies nem token Supabase em localStorage (sb-*-auth-token) — autenticação E2E produziu estado vazio. Regenerar baselines agora capturaria páginas não-autenticadas como baseline aprovado. Verifique E2E_USER_EMAIL e E2E_USER_PASSWORD."
+              exit 1
+            fi
+            echo "✅ Auth state válido — prosseguindo com regeneração."
+          else
+            echo "ℹ️  storageState ainda não existe (será criado pelo auth setup do Playwright na etapa seguinte)."
+          fi
+
+      - name: Regenerar snapshots
+        id: regen
+        if: ${{ !matrix.safe_mode || (steps.dryrun.outcome == 'failure' && steps.classify.outputs.kind == 'visual') }}
+        env:
+          E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
+          E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
+          PROJECTS: ${{ steps.resolve.outputs.projects }}
+          SPECS: ${{ steps.resolve.outputs.specs }}
+        run: |
+          # shellcheck disable=SC2086 # expansão intencional em argumentos
+          npx playwright test $SPECS $PROJECTS --update-snapshots --reporter=list
 
       - name: Credencial de push sem token em disco (E32)
+        if: ${{ steps.regen.outcome == 'success' }}
         run: |
           # persist-credentials:false nao grava token; o helper le GIT_PUSH_TOKEN so no passo de push.
           # shellcheck disable=SC2016 # aspas simples intencionais: $1 e GIT_PUSH_TOKEN expandem quando o git chama o helper
           git config --local credential.helper '!f() { test "$1" = get || exit 0; echo username=x-access-token; echo "password=${GIT_PUSH_TOKEN}"; }; f'
 
-      - name: Comitar baselines e abrir PR
+      - name: Comitar baselines (PR ou push)
+        if: ${{ steps.regen.outcome == 'success' }}
         env:
           GIT_PUSH_TOKEN: ${{ github.token }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          INPUT_COMMIT_MESSAGE: ${{ github.event.inputs.commit_message }}
-          TARGET_BRANCH: ${{ github.event.inputs.branch || github.ref_name }}
+          INPUT_COMMIT_MESSAGE: ${{ matrix.commit_message }}
+          INPUT_MODE: ${{ matrix.mode }}
+          TARGET_BRANCH: ${{ matrix.branch || github.ref_name }}
+          SPECS: ${{ steps.resolve.outputs.specs }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           HUSKY: "0"
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add e2e/ || true
+          read -ra SPEC_LIST <<< "$SPECS"
+          for s in "${SPEC_LIST[@]}"; do
+            git add -A "${s}-snapshots" 2>/dev/null || true  # ok: spec sem diretório de snapshots ainda
+          done
           if git diff --cached --quiet; then
             echo "Nenhuma baseline nova/alterada — nada para commitar."
             exit 0
           fi
-          TS=$(date -u +%y%m%d-%H%M)
-          BRANCH="chore/e2e-snapshots-${TS}"
+          if [ "$INPUT_MODE" = "push" ]; then
+            git commit -m "${INPUT_COMMIT_MESSAGE} [skip ci]"
+            git push origin "HEAD:${TARGET_BRANCH}"
+            echo "✅ Baselines commitadas direto em ${TARGET_BRANCH}."
+            exit 0
+          fi
+          TS=$(date -u +%y%m%d-%H%M%S)
+          BRANCH="chore/e2e-snapshots-${{ matrix.suite }}-${TS}"
           git checkout -b "${BRANCH}"
           git commit -m "${INPUT_COMMIT_MESSAGE}"
           git push origin "${BRANCH}"
-          BODY="Baselines PNG gerados automaticamente pelo workflow \`update-snapshots\`. Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          BODY="Baselines PNG gerados automaticamente pelo workflow \`update-snapshots\` (specs: ${SPECS}). Run: ${RUN_URL}"
           gh pr create \
             --base "${TARGET_BRANCH}" \
             --head "${BRANCH}" \
@@ -150,7 +442,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
-          name: visual-diffs-${{ github.run_id }}
+          name: visual-diffs-${{ matrix.suite }}-${{ github.run_id }}
           path: |
             test-results/**/*-diff.png
             test-results/**/*-actual.png

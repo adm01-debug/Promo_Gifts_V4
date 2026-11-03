@@ -23,6 +23,10 @@ name: Policies Baseline
 # Sem credenciais (ex.: PR de fork): o script degrada para static-pass.
 # =============================================================================
 
+# RESTAURADO 2026-11-02 (achado Qodo na review de gestão de workflows): o filtro
+# docs_only do deploy-gates.yml (job `changes`) não inclui `.security/**` — uma PR
+# que só toca `.security/policies-baseline.json` seria classificada docs-only e o
+# Gate 1.13 (deploy-gates.yml) nunca rodaria. Mantém o trigger próprio para esse caso.
 on:
   pull_request:
     branches: [main]
