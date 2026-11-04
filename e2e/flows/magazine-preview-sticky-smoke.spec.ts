@@ -42,6 +42,14 @@ test.describe("@smoke Magazine Editor — preview sticky/aligned", () => {
     // sem esperar o idle o container do aside fica curto (ainda hidratando) e
     // o elemento sai do viewport antes de scrollY=520.
     await waitForRouteIdle(page);
+    // Aguarda o título do editor hidratar: quando magazine-title-input fica
+    // visível, os dados PostgREST chegaram e o aside expandiu para sua altura
+    // final, garantindo que position:sticky funcione em scrollY=520.
+    // (top=-12 no CI sem este wait = container terminava 12px antes do checkpoint)
+    await page
+      .locator('[data-testid="magazine-title-input"]')
+      .first()
+      .waitFor({ state: "visible", timeout: 15_000 });
 
     const hero = page.getByTestId("magazine-editor-hero-row");
     const mainCol = page.getByTestId("magazine-editor-main-col");
