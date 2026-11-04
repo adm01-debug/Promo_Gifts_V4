@@ -47,6 +47,8 @@ test.describe("@smoke Magazine Editor — preview sticky/aligned", () => {
     // top=-12 sem wait → top=-4 com waitFor(visible) → container ainda curto;
     // esta condição verifica aside.bottom(doc) > 520 + stickyCard.height + 20px,
     // garantindo que o container não termina antes do checkpoint de scroll.
+    // Assinatura Playwright: waitForFunction(fn, arg?, options?) — undefined como
+    // 2º arg (a função não recebe argumento); timeout vai no 3º arg (options).
     await page.waitForFunction(
       () => {
         const titleInput = document.querySelector('[data-testid="magazine-title-input"]');
@@ -66,6 +68,7 @@ test.describe("@smoke Magazine Editor — preview sticky/aligned", () => {
         const asideBottomDoc = aside.getBoundingClientRect().bottom + window.scrollY;
         return asideBottomDoc > 520 + stickyHeight + 20;
       },
+      undefined,
       { timeout: 20_000 },
     );
 
