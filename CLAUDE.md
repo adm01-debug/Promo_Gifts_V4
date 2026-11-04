@@ -23,8 +23,14 @@
 - **Estado real gerado (fonte de consulta):** `inventario/estado/` — banco (tabelas, RLS, cron, edges publicadas),
   edge functions do repo, rotas → tela → hooks → dados e tabelas órfãs. Refazer:
   `SUPABASE_ACCESS_TOKEN=... node scripts/inventario/gerar-banco.mjs && node scripts/inventario/gerar-rotas.mjs && node scripts/inventario/gerar-repo.mjs`.
-  **Ainda não existe no `main`** (PR #3039, aguardando merge) — não assuma que o diretório ou os scripts já
-  estão presentes antes de confirmar.
+  Atualização automática semanal proposta na PR #3042 (aguardando o dono); até lá, regere à mão.
+- **Contexto vivo para agentes (a cada 10 min):** branch gerada `contexto` → comece por
+  `docs/contexto/00-INDEX.md` (`git fetch origin contexto && git show origin/contexto:docs/contexto/00-INDEX.md`
+  ou MCP `get_file(ref=contexto)`). Três fontes, cada uma dona dos seus fatos: `supabase/` (banco oficial ao vivo,
+  sessão read-only — `scripts/supabase_snapshot/`), `codigo/` (rotas, módulos, hooks, edges, grafo, testes,
+  alertas — `scripts/ai-context/gerar.mjs`), `regras/` (RLS por operação, estados, validações, fórmulas,
+  lacunas — `scripts/regras_negocio/`). Workflow `contexto.yml`; não editar nem abrir PR da branch. Regras que só
+  o negócio conhece: `docs/contexto/regras/manual/` (na `main`). Mesmo pacote do Zapp_Web_V2.
 
 ### Projetos Supabase e MCPs (conferido 2026-11-02 com `get_project_url`)
 
@@ -284,6 +290,7 @@ agregador (`static-gates`, `drift-gates`, `security-gates` ou `build`; procure p
 | **schedule (semanal)** | `codeql.yml` | Scan completo seg 09:33 UTC |
 | **schedule (semanal)** | `ddl-out-of-band-detector.yml` | Drift do ledger |
 | **schedule (30 min)** | `uptime-monitor.yml` | Health check externo |
+| **schedule (10 min) + push: main** | `contexto.yml` | Contexto vivo para agentes na branch `contexto` (código, banco read-only, regras) |
 | **workflow_dispatch** | `db-apply-migration.yml` | ÚNICO caminho para migration em prod |
 | **workflow_dispatch** | `deploy-edge-functions.yml` | ÚNICO caminho para deploy de edge function |
 | **workflow_dispatch** | `schema-snapshot-export.yml` | Gira baseline do drift-check |
