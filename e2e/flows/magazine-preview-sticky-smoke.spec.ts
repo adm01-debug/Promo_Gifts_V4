@@ -57,24 +57,25 @@ test.describe("@smoke Magazine Editor — preview sticky/aligned", () => {
 
     // 2. Scroll para fora do hero e verifica sticky
     // O elemento sticky é o painel interno do PreviewSidebar (top-2 = 8px).
-    await page.evaluate(() => window.scrollTo({ top: 800, behavior: "instant" as ScrollBehavior }));
+    await page.evaluate(() => window.scrollTo({ top: 400, behavior: "instant" as ScrollBehavior }));
     // Sem timeout próprio o waitForFunction herdava os 120s do teste (run 38759053646:
-    // "Test timeout of 120000ms exceeded" aqui). Mesmo critério (scrollY >= 688), mas
-    // falha em 5s dizendo se a página sequer tem altura para rolar 800px.
-    // Threshold reduzido de 700→688: o runner de CI renderiza scrollHeight=1595 com
-    // innerHeight=900, logo rolagem máxima=695px; 700 jamais seria atingível.
+    // "Test timeout of 120000ms exceeded" aqui). Mesmo critério (scrollY >= 300), mas
+    // falha em 5s dizendo se a página sequer tem altura para rolar 400px.
+    // Threshold reduzido de 688→300: com auth real a página tem mais conteúdo;
+    // em scrollY=695 o container sticky já acabou e stickyCardTop=-292 (quebraria).
+    // Rolar só 400px fica bem dentro do container sticky em qualquer modo de auth.
     await expect
       .poll(() => page.evaluate(() => window.scrollY), {
         timeout: 5_000,
         message: await page.evaluate(
           () =>
-            `página não rolou até 688px: scrollHeight=${document.documentElement.scrollHeight}, ` +
+            `página não rolou até 300px: scrollHeight=${document.documentElement.scrollHeight}, ` +
             `innerHeight=${window.innerHeight} (rolagem máxima=${
               document.documentElement.scrollHeight - window.innerHeight
             }px)`,
         ),
       })
-      .toBeGreaterThanOrEqual(688);
+      .toBeGreaterThanOrEqual(300);
 
     const heroTop1 = await hero.evaluate((el) => el.getBoundingClientRect().top);
     const stickyCardTop = await page
@@ -87,7 +88,7 @@ test.describe("@smoke Magazine Editor — preview sticky/aligned", () => {
     // Preview deve estar pinned próximo do topo (top-2 ≈ 8px, tolerância 8px)
     expect(
       stickyCardTop,
-      `preview não ficou sticky (top=${stickyCardTop}, scrollY=800)`,
+      `preview não ficou sticky (top=${stickyCardTop}, scrollY=400)`,
     ).toBeLessThan(24);
     expect(stickyCardTop).toBeGreaterThanOrEqual(0);
   });

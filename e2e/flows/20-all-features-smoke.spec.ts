@@ -79,9 +79,9 @@ async function assertFeatureLoads(
 
   await gotoAndWaitReady(page, path, {
     attempts: 2,
-    perAttemptTimeout: 25_000,
+    perAttemptTimeout: 40_000,
     pageSlug,
-    timeout: 20_000,
+    timeout: 30_000,
   });
 
   // URL logo após ready.

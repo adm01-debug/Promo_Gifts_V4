@@ -7,8 +7,9 @@
  *   3. Preenche título com prefixo `e2eName(...)` para o cleanup escopado
  *      não deixar lixo no BD Gold.
  *   4. Adiciona 1 produto (step "Produtos").
- *   5. Concede permissão de clipboard, vai à etapa "Layout & Gerar" e clica em "Publicar".
- *   6. Valida:
+ *   5. Vai à etapa "Layout & Gerar" e clica em "Publicar".
+ *   6. Concede permissão de clipboard APÓS navegação confirmada.
+ *   7. Valida:
  *      - Toast de sucesso "Revista publicada com sucesso."
  *      - Clipboard contém uma URL no formato /revista-publica/<32 hex>
  *      - Aberta em uma nova aba pública, a URL renderiza sem redirecionar
@@ -43,13 +44,6 @@ test.describe("@smoke Magazine — fluxo autenticado de publicação", () => {
   test("publica revista e copia URL pública gerada", async ({ page, context }) => {
     await loginAs(page);
 
-    // Clipboard exige permissão explícita no Chromium.
-    await context.grantPermissions(["clipboard-read", "clipboard-write"], {
-      origin: page.url().startsWith("http")
-        ? new URL(page.url()).origin
-        : "http://localhost:8080",
-    });
-
     // 1) Vai para /magazine e cria uma revista nova.
     // Registra o waitForResponse ANTES de navegar: auth hidrata de forma
     // assíncrona e o useEffect([user?.id]) só dispara a request depois que
@@ -66,6 +60,14 @@ test.describe("@smoke Magazine — fluxo autenticado de publicação", () => {
     await dismissOnboardingTour(page);
     // Garante que a lista carregou do BD (auth hidrou) antes de clicar em Criar.
     await waitMagazinesReady.catch(() => {});
+
+    // Clipboard exige permissão explícita no Chromium. Feito APÓS navegação
+    // confirmada em /magazine — chamar grantPermissions antes de navegar
+    // causava URL="" na assertiva seguinte (page.url() ainda era a rota anterior
+    // quando grantPermissions interceptava o contexto).
+    await context.grantPermissions(["clipboard-read", "clipboard-write"], {
+      origin: new URL(page.url()).origin,
+    });
 
     const createBtn = page.locator('[data-testid="magazine-create-btn"]').first();
     await createBtn.waitFor({ state: "visible", timeout: 10_000 });
@@ -147,22 +149,15 @@ test.describe("@smoke Magazine — fluxo autenticado de publicação", () => {
       timeout: 10_000,
     });
 
-    // Captura response do UPDATE para provar que a trigger devolveu public_token.
+    // Captura response do RPC magazine_publish_v2 (POST /rest/v1/rpc/magazine_publish_v2).
+    // magazineService.publish usa rpc() — não PATCH direto na tabela magazines.
+    // O token público é gerado pelo trigger tg_magazines_on_publish no banco e
+    // confirmado pelo hydrate (GET magazines) posterior ao RPC.
     const magazineUpdates: Array<{ status: number; token: string | null }> = [];
     page.on("response", async (res) => {
       const url = res.url();
-      if (!url.includes("/rest/v1/magazines")) return;
-      if (res.request().method() !== "PATCH") return;
-      try {
-        const body = await res.json();
-        const row = Array.isArray(body) ? body[0] : body;
-        magazineUpdates.push({
-          status: res.status(),
-          token: (row && (row.public_token as string | null)) ?? null,
-        });
-      } catch {
-        magazineUpdates.push({ status: res.status(), token: null });
-      }
+      if (!url.includes("/rest/v1/rpc/magazine_publish_v2")) return;
+      magazineUpdates.push({ status: res.status(), token: null });
     });
 
     await publishBtn.click();
@@ -184,12 +179,12 @@ test.describe("@smoke Magazine — fluxo autenticado de publicação", () => {
     const token = match?.[1];
     expect(token, "token público não extraído da URL copiada").toBeTruthy();
 
-    // 7) Prova que o token veio do BD (trigger) OU do fallback client-side —
-    //    ambos são aceitos, mas registramos qual foi para debug de regressão.
+    // 7) Prova que o RPC foi chamado com sucesso (trigger gerou token confirmado
+    //    via toast + clipboard acima). Registra a chamada para debug de regressão.
     const anyPublishedRow = magazineUpdates.find((r) => r.status >= 200 && r.status < 300);
     expect(
       anyPublishedRow,
-      `nenhum UPDATE bem-sucedido observado. Trace: ${JSON.stringify(magazineUpdates)}`,
+      `nenhuma chamada bem-sucedida a magazine_publish_v2 observada. Trace: ${JSON.stringify(magazineUpdates)}`,
     ).toBeTruthy();
 
     // 8) Abre a URL pública em nova aba e valida ausência de auth.
