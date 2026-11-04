@@ -7,8 +7,9 @@
  *   3. Preenche título com prefixo `e2eName(...)` para o cleanup escopado
  *      não deixar lixo no BD Gold.
  *   4. Adiciona 1 produto (step "Produtos").
- *   5. Concede permissão de clipboard, vai à etapa "Layout & Gerar" e clica em "Publicar".
- *   6. Valida:
+ *   5. Vai à etapa "Layout & Gerar" e clica em "Publicar".
+ *   6. Concede permissão de clipboard APÓS navegação confirmada.
+ *   7. Valida:
  *      - Toast de sucesso "Revista publicada com sucesso."
  *      - Clipboard contém uma URL no formato /revista-publica/<32 hex>
  *      - Aberta em uma nova aba pública, a URL renderiza sem redirecionar
@@ -43,13 +44,6 @@ test.describe("@smoke Magazine — fluxo autenticado de publicação", () => {
   test("publica revista e copia URL pública gerada", async ({ page, context }) => {
     await loginAs(page);
 
-    // Clipboard exige permissão explícita no Chromium.
-    await context.grantPermissions(["clipboard-read", "clipboard-write"], {
-      origin: page.url().startsWith("http")
-        ? new URL(page.url()).origin
-        : "http://localhost:8080",
-    });
-
     // 1) Vai para /magazine e cria uma revista nova.
     // Registra o waitForResponse ANTES de navegar: auth hidrata de forma
     // assíncrona e o useEffect([user?.id]) só dispara a request depois que
@@ -66,6 +60,14 @@ test.describe("@smoke Magazine — fluxo autenticado de publicação", () => {
     await dismissOnboardingTour(page);
     // Garante que a lista carregou do BD (auth hidrou) antes de clicar em Criar.
     await waitMagazinesReady.catch(() => {});
+
+    // Clipboard exige permissão explícita no Chromium. Feito APÓS navegação
+    // confirmada em /magazine — chamar grantPermissions antes de navegar
+    // causava URL="" na assertiva seguinte (page.url() ainda era a rota anterior
+    // quando grantPermissions interceptava o contexto).
+    await context.grantPermissions(["clipboard-read", "clipboard-write"], {
+      origin: new URL(page.url()).origin,
+    });
 
     const createBtn = page.locator('[data-testid="magazine-create-btn"]').first();
     await createBtn.waitFor({ state: "visible", timeout: 10_000 });
