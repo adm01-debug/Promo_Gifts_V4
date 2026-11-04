@@ -16,7 +16,7 @@ import { expect } from "@playwright/test";
 
 import { test } from "../fixtures/test-base";
 import { loginAs } from "../helpers/auth";
-import { gotoAndSettle } from "../helpers/nav";
+import { gotoAndSettle, waitForRouteIdle } from "../helpers/nav";
 
 const XL_VIEWPORT = { width: 1440, height: 900 };
 
@@ -38,6 +38,10 @@ test.describe("@smoke Magazine Editor — preview sticky/aligned", () => {
     // Clicar no centro do <article> cai em área morta (título/metadados).
     await firstCard.getByRole("link").first().click();
     await expect(page).toHaveURL(/\/magazine\/(?!templates)[^/]+$/);
+    // Com auth real o editor carrega dados via PostgREST de forma assíncrona;
+    // sem esperar o idle o container do aside fica curto (ainda hidratando) e
+    // o elemento sai do viewport antes de scrollY=520.
+    await waitForRouteIdle(page);
 
     const hero = page.getByTestId("magazine-editor-hero-row");
     const mainCol = page.getByTestId("magazine-editor-main-col");
