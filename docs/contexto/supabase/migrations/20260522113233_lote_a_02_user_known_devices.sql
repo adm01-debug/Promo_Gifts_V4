@@ -1,0 +1,40 @@
+-- ============================================================================
+-- LOTE A · MIGRATION 2/6 · user_known_devices
+-- Origem: Lovable Cloud (pqpdolkaeqlyzpdpbizo)
+-- Propósito: registro de devices conhecidos do usuário (edge detect-new-device)
+-- ============================================================================
+
+CREATE TABLE public.user_known_devices (
+  id           uuid        NOT NULL DEFAULT gen_random_uuid(),
+  user_id      uuid        NOT NULL,
+  fingerprint  text        NOT NULL,
+  device_name  text        NULL,
+  last_seen_at timestamptz NOT NULL DEFAULT now(),
+  created_at   timestamptz NOT NULL DEFAULT now(),
+  CONSTRAINT user_known_devices_pkey PRIMARY KEY (id),
+  CONSTRAINT user_known_devices_user_id_fkey
+    FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE
+);
+
+CREATE INDEX idx_user_known_devices_fingerprint
+  ON public.user_known_devices USING btree (fingerprint);
+
+CREATE INDEX idx_user_known_devices_user_id
+  ON public.user_known_devices USING btree (user_id);
+
+ALTER TABLE public.user_known_devices ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Users can manage their own devices"
+  ON public.user_known_devices
+  FOR ALL
+  TO public
+  USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can view their own devices"
+  ON public.user_known_devices
+  FOR SELECT
+  TO public
+  USING (auth.uid() = user_id);
+
+COMMENT ON TABLE public.user_known_devices IS
+  'Migrado do Lovable em 2026-05-22 (Lote A). Devices reconhecidos (detect-new-device).';

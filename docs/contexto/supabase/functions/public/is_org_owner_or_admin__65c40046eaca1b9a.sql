@@ -1,0 +1,14 @@
+CREATE OR REPLACE FUNCTION public.is_org_owner_or_admin(org_id uuid)
+ RETURNS boolean
+ LANGUAGE sql
+ STABLE SECURITY DEFINER
+ SET search_path TO 'public'
+AS $function$
+  select exists (
+    select 1
+    from public.user_organizations uo
+    where uo.user_id = auth.uid()
+      and uo.organization_id = org_id
+      and uo.role in ('owner','admin')
+  );
+$function$

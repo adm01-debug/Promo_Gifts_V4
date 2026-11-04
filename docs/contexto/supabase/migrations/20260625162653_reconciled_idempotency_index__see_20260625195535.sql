@@ -1,0 +1,1 @@
+-- RECONCILED via migration 20260625195535 (2026-06-25). uniq_dar_quote_pending (UNIQUE quote_id WHERE status=pending) ja aplicado. NAO RE-APLICAR.

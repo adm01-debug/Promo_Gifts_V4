@@ -1,0 +1,26 @@
+-- Wave 3.5.1: Quick wins para alinhar oficial com Lovable
+-- frontend_telemetry: numeric → double precision (alinhar com Lovable, melhor perf telemetria)
+ALTER TABLE public.frontend_telemetry 
+  ALTER COLUMN duration_ms TYPE double precision USING duration_ms::double precision;
+
+-- ip_access_control: adicionar updated_at (que existe no Lovable)
+ALTER TABLE public.ip_access_control 
+  ADD COLUMN IF NOT EXISTS updated_at timestamp with time zone DEFAULT now();
+
+-- Trigger para auto-atualizar updated_at on row update
+CREATE OR REPLACE FUNCTION public.tg_ip_access_control_set_updated_at()
+RETURNS trigger
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = pg_catalog, public
+AS $$
+BEGIN
+  NEW.updated_at = now();
+  RETURN NEW;
+END;
+$$;
+
+DROP TRIGGER IF EXISTS set_updated_at ON public.ip_access_control;
+CREATE TRIGGER set_updated_at
+  BEFORE UPDATE ON public.ip_access_control
+  FOR EACH ROW EXECUTE FUNCTION public.tg_ip_access_control_set_updated_at();

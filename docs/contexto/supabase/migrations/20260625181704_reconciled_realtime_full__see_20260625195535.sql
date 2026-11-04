@@ -1,0 +1,1 @@
+-- RECONCILED via migration 20260625195535 (2026-06-25). REPLICA IDENTITY FULL + publication supabase_realtime ja aplicados. NAO RE-APLICAR.

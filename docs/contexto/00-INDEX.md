@@ -1,6 +1,6 @@
 # CONTEXTO PARA AGENTES DE IA — ÍNDICE ÚNICO
 
-> Gerado automaticamente por indice.py · 2026-11-04 12:14 UTC · HEAD `385af81ad2` · Não edite à mão.
+> Gerado automaticamente por indice.py · 2026-11-04 12:22 UTC · HEAD `385af81ad2` · Não edite à mão.
 
 Um sistema, três fontes de verdade, três produtores independentes. **Leia este arquivo e vá direto à fonte certa.** Cada fato tem um dono: se duas fontes discordarem, vale o dono.
 
@@ -9,8 +9,8 @@ Um sistema, três fontes de verdade, três produtores independentes. **Leia este
 | Preciso de… | Fonte (dona do fato) | Onde ler | Estado |
 |---|---|---|---|
 | Regras que não podem ser quebradas: RLS por operação, estados e transições, validações, fórmulas, prazos, erros de negócio, testes como especificação, inconsistências código×schema (NÃO VERIFICADO) e regras humanas (`manual/`) | **regras de negócio** | `docs/contexto/regras/07-REGRAS-DE-NEGOCIO.md` | ok · 4 min atrás |
-| Tabelas, colunas, RLS/políticas, funções, triggers, cron, storage, lints — **como está em produção agora** | **banco real** | `docs/contexto/supabase/` (ainda não existe — o produtor não rodou) | ainda não gerado |
-| Rotas, telas, módulos, hooks, edge functions, grafo de dependências, testes, scripts, convenções | **código** | `docs/contexto/codigo/INDEX.md` | ok · 2 min atrás |
+| Tabelas, colunas, RLS/políticas, funções, triggers, cron, storage, lints — **como está em produção agora** | **banco real** | `docs/contexto/supabase/README.md` | ok · 0 min atrás |
+| Rotas, telas, módulos, hooks, edge functions, grafo de dependências, testes, scripts, convenções | **código** | `docs/contexto/codigo/INDEX.md` | ok · 3 min atrás |
 
 ## Ordem de leitura antes de qualquer tarefa ou planejamento
 
@@ -25,6 +25,92 @@ Um sistema, três fontes de verdade, três produtores independentes. **Leia este
 - Pode fazer isso? Qual estado vem depois? Qual o limite? → **regras de negócio** (inclui `manual/`, escrito por humanos, prioridade máxima).
 - Item listado como **NÃO VERIFICADO** ou **inconsistência** em qualquer fonte: confirme na fonte dona antes de assumir.
 - Nada aqui é editado à mão. Para registrar uma regra que só o negócio sabe, escreva em `manual/` da fonte de regras.
+
+<details><summary>Arquivos de <b>banco real</b> (`docs/contexto/supabase/`)</summary>
+
+- `docs/contexto/supabase/CHANGELOG.md`
+- `docs/contexto/supabase/README.md`
+- `docs/contexto/supabase/auth.md`
+- `docs/contexto/supabase/cron-runs.md`
+- `docs/contexto/supabase/cron.md`
+- `docs/contexto/supabase/edge-functions.md`
+- `docs/contexto/supabase/errors.md`
+- `docs/contexto/supabase/extensions.md`
+- `docs/contexto/supabase/foreign-servers.md`
+- `docs/contexto/supabase/functions.md`
+- `docs/contexto/supabase/grants.md`
+- `docs/contexto/supabase/indexes.md`
+- `docs/contexto/supabase/lints.md`
+- `docs/contexto/supabase/manifest.json`
+- `docs/contexto/supabase/migrations.md`
+- `docs/contexto/supabase/policies.md`
+- `docs/contexto/supabase/project-config.md`
+- `docs/contexto/supabase/queues.md`
+- `docs/contexto/supabase/realtime.md`
+- `docs/contexto/supabase/relationships.md`
+- `docs/contexto/supabase/roles.md`
+- `docs/contexto/supabase/schemas.md`
+- `docs/contexto/supabase/sequences.md`
+- `docs/contexto/supabase/snapshot.json`
+- `docs/contexto/supabase/stats.json`
+- `docs/contexto/supabase/stats.md`
+- `docs/contexto/supabase/storage.md`
+- `docs/contexto/supabase/tables.md`
+- `docs/contexto/supabase/tables/_supabase_internal_triggers.md`
+- `docs/contexto/supabase/tables/cf_recon/action_log.md`
+- `docs/contexto/supabase/tables/cf_recon/cf_ghost_check_queue.md`
+- `docs/contexto/supabase/tables/cf_recon/cf_image.md`
+- `docs/contexto/supabase/tables/cf_recon/crawl_run.md`
+- `docs/contexto/supabase/tables/cf_recon/metric_snapshot.md`
+- `docs/contexto/supabase/tables/cf_recon/remediation.md`
+- `docs/contexto/supabase/tables/classification_audit/category_suggestions.md`
+- `docs/contexto/supabase/tables/prod_audit/category_keywords.md`
+- `docs/contexto/supabase/tables/prod_audit/category_suggestions.md`
+- `docs/contexto/supabase/tables/prod_audit/classification_rules.md`
+- `docs/contexto/supabase/tables/prod_audit/product_features.md`
+- `docs/contexto/supabase/tables/prod_audit/test_results.md`
+- `docs/contexto/supabase/tables/public/access_blocked_log.md`
+- `docs/contexto/supabase/tables/public/access_security_settings.md`
+- `docs/contexto/supabase/tables/public/admin_audit_log.md`
+- `docs/contexto/supabase/tables/public/admin_settings.md`
+- `docs/contexto/supabase/tables/public/ai_enrichment_queue.md`
+- `docs/contexto/supabase/tables/public/ai_function_routing.md`
+- `docs/contexto/supabase/tables/public/ai_models.md`
+- `docs/contexto/supabase/tables/public/ai_providers.md`
+- `docs/contexto/supabase/tables/public/ai_routing_decisions.md`
+- `docs/contexto/supabase/tables/public/ai_usage_events.md`
+- `docs/contexto/supabase/tables/public/ai_usage_logs.md`
+- `docs/contexto/supabase/tables/public/ai_usage_quotas.md`
+- `docs/contexto/supabase/tables/public/analytics_events.md`
+- `docs/contexto/supabase/tables/public/anon_catalog_grant_audit_log.md`
+- `docs/contexto/supabase/tables/public/anon_insert_rate.md`
+- `docs/contexto/supabase/tables/public/archive_product_ai_20260626.md`
+- `docs/contexto/supabase/tables/public/archive_product_seo_20260626.md`
+- `docs/contexto/supabase/tables/public/archive_supplier_price_tiers_20260626.md`
+- `docs/contexto/supabase/tables/public/art_file_attachments.md`
+- `docs/contexto/supabase/tables/public/asia_image_import_queue.md`
+- `docs/contexto/supabase/tables/public/asia_upload_mapping.md`
+- `docs/contexto/supabase/tables/public/attribute_definitions.md`
+- `docs/contexto/supabase/tables/public/attribute_equivalences.md`
+- `docs/contexto/supabase/tables/public/attribute_groups.md`
+- `docs/contexto/supabase/tables/public/audit_log.md`
+- `docs/contexto/supabase/tables/public/audit_log_gravacao.md`
+- `docs/contexto/supabase/tables/public/auto_tag_rules.md`
+- `docs/contexto/supabase/tables/public/b2b_collection_products.md`
+- `docs/contexto/supabase/tables/public/b2b_collections.md`
+- `docs/contexto/supabase/tables/public/backup_produto_ramo_atividade_20260625.md`
+- `docs/contexto/supabase/tables/public/binding_colors.md`
+- `docs/contexto/supabase/tables/public/binding_types.md`
+- `docs/contexto/supabase/tables/public/bkp_kcvs_pre_normalize_20260624.md`
+- `docs/contexto/supabase/tables/public/bkp_kit_color_from_name_20260624.md`
+- `docs/contexto/supabase/tables/public/bkp_kit_dims_20260619.md`
+- `docs/contexto/supabase/tables/public/bkp_kit_packing_type_20260624.md`
+- `docs/contexto/supabase/tables/public/bkp_kit_pkg_material_20260624.md`
+- `docs/contexto/supabase/tables/public/bkp_orphan_active_variants_20260619.md`
+- `docs/contexto/supabase/tables/public/bot_detection_log.md`
+- … +381
+
+</details>
 
 <details><summary>Arquivos de <b>código</b> (`docs/contexto/codigo/`)</summary>
 

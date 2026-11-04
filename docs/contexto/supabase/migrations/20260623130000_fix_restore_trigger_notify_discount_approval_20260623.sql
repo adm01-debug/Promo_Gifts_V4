@@ -1,0 +1,1 @@
+DROP TRIGGER IF EXISTS trg_notify_discount_approval ON public.discount_approval_requests; CREATE TRIGGER trg_notify_discount_approval AFTER INSERT OR UPDATE ON public.discount_approval_requests FOR EACH ROW EXECUTE FUNCTION public.notify_discount_approval_request();

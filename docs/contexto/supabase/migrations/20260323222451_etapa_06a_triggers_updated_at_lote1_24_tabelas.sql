@@ -1,0 +1,25 @@
+-- ETAPA 6A: Adicionar trigger set_updated_at nas 24 primeiras tabelas
+CREATE TRIGGER set_updated_at_trigger BEFORE UPDATE ON public.api_usage FOR EACH ROW EXECUTE FUNCTION set_updated_at();
+CREATE TRIGGER set_updated_at_trigger BEFORE UPDATE ON public.auto_tag_rules FOR EACH ROW EXECUTE FUNCTION set_updated_at();
+CREATE TRIGGER set_updated_at_trigger BEFORE UPDATE ON public.category_attributes FOR EACH ROW EXECUTE FUNCTION set_updated_at();
+CREATE TRIGGER set_updated_at_trigger BEFORE UPDATE ON public.category_colors FOR EACH ROW EXECUTE FUNCTION set_updated_at();
+CREATE TRIGGER set_updated_at_trigger BEFORE UPDATE ON public.category_variation_types FOR EACH ROW EXECUTE FUNCTION set_updated_at();
+CREATE TRIGGER set_updated_at_trigger BEFORE UPDATE ON public.color_equivalences FOR EACH ROW EXECUTE FUNCTION set_updated_at();
+CREATE TRIGGER set_updated_at_trigger BEFORE UPDATE ON public.color_groups FOR EACH ROW EXECUTE FUNCTION set_updated_at();
+CREATE TRIGGER set_updated_at_trigger BEFORE UPDATE ON public.color_nuances FOR EACH ROW EXECUTE FUNCTION set_updated_at();
+CREATE TRIGGER set_updated_at_trigger BEFORE UPDATE ON public.color_variations FOR EACH ROW EXECUTE FUNCTION set_updated_at();
+CREATE TRIGGER set_updated_at_trigger BEFORE UPDATE ON public.commemorative_dates FOR EACH ROW EXECUTE FUNCTION set_updated_at();
+CREATE TRIGGER set_updated_at_trigger BEFORE UPDATE ON public.custom_kits FOR EACH ROW EXECUTE FUNCTION set_updated_at();
+CREATE TRIGGER set_updated_at_trigger BEFORE UPDATE ON public.kit_component_print_areas FOR EACH ROW EXECUTE FUNCTION set_updated_at();
+CREATE TRIGGER set_updated_at_trigger BEFORE UPDATE ON public.markup_configurations FOR EACH ROW EXECUTE FUNCTION set_updated_at();
+CREATE TRIGGER set_updated_at_trigger BEFORE UPDATE ON public.media_assets FOR EACH ROW EXECUTE FUNCTION set_updated_at();
+CREATE TRIGGER set_updated_at_trigger BEFORE UPDATE ON public.ncm_codes FOR EACH ROW EXECUTE FUNCTION set_updated_at();
+CREATE TRIGGER set_updated_at_trigger BEFORE UPDATE ON public.notification_templates FOR EACH ROW EXECUTE FUNCTION set_updated_at();
+CREATE TRIGGER set_updated_at_trigger BEFORE UPDATE ON public.packaging_types FOR EACH ROW EXECUTE FUNCTION set_updated_at();
+CREATE TRIGGER set_updated_at_trigger BEFORE UPDATE ON public.packagings FOR EACH ROW EXECUTE FUNCTION set_updated_at();
+CREATE TRIGGER set_updated_at_trigger BEFORE UPDATE ON public.print_area_techniques FOR EACH ROW EXECUTE FUNCTION set_updated_at();
+CREATE TRIGGER set_updated_at_trigger BEFORE UPDATE ON public.product_included_packagings FOR EACH ROW EXECUTE FUNCTION set_updated_at();
+CREATE TRIGGER set_updated_at_trigger BEFORE UPDATE ON public.product_packaging_compatibility FOR EACH ROW EXECUTE FUNCTION set_updated_at();
+CREATE TRIGGER set_updated_at_trigger BEFORE UPDATE ON public.product_packagings FOR EACH ROW EXECUTE FUNCTION set_updated_at();
+CREATE TRIGGER set_updated_at_trigger BEFORE UPDATE ON public.product_properties FOR EACH ROW EXECUTE FUNCTION set_updated_at();
+CREATE TRIGGER set_updated_at_trigger BEFORE UPDATE ON public.product_target_audiences FOR EACH ROW EXECUTE FUNCTION set_updated_at();

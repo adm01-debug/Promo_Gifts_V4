@@ -1,0 +1,32 @@
+# Lints de segurança e performance
+
+Verificações objetivas feitas no catálogo. Um agente deve ler isto antes de propor mudanças em RLS, functions ou índices.
+
+| severidade | código | objeto | detalhe |
+|---|---|---|---|
+| ALTA | view_security_definer | public.v_kit_component_media_public | View em public sem security_invoker: executa como owner e ignora RLS das tabelas base. |
+| ALTA | view_security_definer | public.v_product_compositions_public | View em public sem security_invoker: executa como owner e ignora RLS das tabelas base. |
+| ALTA | view_security_definer | public.v_product_properties_public | View em public sem security_invoker: executa como owner e ignora RLS das tabelas base. |
+| ALTA | view_security_definer | public.v_product_tags_public | View em public sem security_invoker: executa como owner e ignora RLS das tabelas base. |
+| ALTA | view_security_definer | public.v_products_public | View em public sem security_invoker: executa como owner e ignora RLS das tabelas base. |
+| ALTA | view_security_definer | public.v_suppliers_public | View em public sem security_invoker: executa como owner e ignora RLS das tabelas base. |
+| ALTA | view_security_definer | public.v_system_health_dashboard | View em public sem security_invoker: executa como owner e ignora RLS das tabelas base. |
+| ALTA | view_security_definer | public.v_tabela_preco_gravacao_oficial_public | View em public sem security_invoker: executa como owner e ignora RLS das tabelas base. |
+| ALTA | view_security_definer | public.v_variant_sale_prices_public | View em public sem security_invoker: executa como owner e ignora RLS das tabelas base. |
+| BAIXA | extension_in_public | pg_repack | Extensão instalada no schema public (recomendado: schema extensions). |
+| BAIXA | extension_in_public | pgstattuple | Extensão instalada no schema public (recomendado: schema extensions). |
+| BAIXA | fk_without_index | public.stock_snapshots.stock_snapshots_product_id_fkey | FK sem índice nas colunas ['product_id']: joins e DELETE/UPDATE na tabela pai ficam lentos. |
+| BAIXA | fk_without_index | public.stock_snapshots.stock_snapshots_supplier_branch_id_fkey | FK sem índice nas colunas ['supplier_branch_id']: joins e DELETE/UPDATE na tabela pai ficam lentos. |
+| BAIXA | fk_without_index | public.stock_snapshots.stock_snapshots_supplier_id_fkey | FK sem índice nas colunas ['supplier_id']: joins e DELETE/UPDATE na tabela pai ficam lentos. |
+| BAIXA | fk_without_index | public.stock_snapshots.stock_snapshots_variant_id_fkey | FK sem índice nas colunas ['variant_id']: joins e DELETE/UPDATE na tabela pai ficam lentos. |
+| BAIXA | fk_without_index | public.stock_snapshots.stock_snapshots_variant_supplier_source_id_fkey | FK sem índice nas colunas ['variant_supplier_source_id']: joins e DELETE/UPDATE na tabela pai ficam lentos. |
+| BAIXA | policy_auth_fn_not_wrapped | storage.objects.Users can upload their own mockup assets | Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect. |
+| INFO | rpc_anon_executable | public.check_login_rate_limit(_email text, _ip text) | SECURITY DEFINER chamável via RPC por anon (sem login): roda com privilégios do owner. Confirme que é intencional (Supabase dá EXECUTE a anon por padrão; revogue se não for API pública). |
+| INFO | rpc_anon_executable | public.fn_global_search(p_term text, p_limit integer, p_types text[]) | SECURITY DEFINER chamável via RPC por anon (sem login): roda com privilégios do owner. Confirme que é intencional (Supabase dá EXECUTE a anon por padrão; revogue se não for API pública). |
+| INFO | rpc_anon_executable | public.fn_product_active_for_rls(p_id uuid) | SECURITY DEFINER chamável via RPC por anon (sem login): roda com privilégios do owner. Confirme que é intencional (Supabase dá EXECUTE a anon por padrão; revogue se não for API pública). |
+| INFO | rpc_anon_executable | public.fn_super_filtro(p_search_term text, p_category_slug text, p_category_id uuid, p_brands text[], p_only_in_stock boolean, p_min_price numeric, p_max_price numeric, p_target_audiences text[], p_is_kit boolean, p_is_textil boolean, p_is_thermal boolean, p_has_gift_box boolean, p_material_groups text[], p_technique_groups text[], p_color_groups text[], p_date_slugs text[], p_endomarketing boolean, p_limit integer, p_offset integer, p_sort text) | SECURITY DEFINER chamável via RPC por anon (sem login): roda com privilégios do owner. Confirme que é intencional (Supabase dá EXECUTE a anon por padrão; revogue se não for API pública). |
+| INFO | rpc_anon_executable | public.fn_super_filtro_facets(p_search_term text, p_category_slug text, p_category_id uuid, p_brands text[], p_only_in_stock boolean, p_min_price numeric, p_max_price numeric, p_target_audiences text[], p_is_kit boolean, p_is_textil boolean, p_is_thermal boolean, p_has_gift_box boolean, p_material_groups text[], p_technique_groups text[], p_color_groups text[], p_date_slugs text[], p_endomarketing boolean) | SECURITY DEFINER chamável via RPC por anon (sem login): roda com privilégios do owner. Confirme que é intencional (Supabase dá EXECUTE a anon por padrão; revogue se não for API pública). |
+| INFO | rpc_anon_executable | public.fn_super_filtro_price_range(p_brands text[], p_category_slug text, p_target_audiences text[], p_is_textil boolean, p_is_thermal boolean, p_only_in_stock boolean) | SECURITY DEFINER chamável via RPC por anon (sem login): roda com privilégios do owner. Confirme que é intencional (Supabase dá EXECUTE a anon por padrão; revogue se não for API pública). |
+| INFO | rpc_anon_executable | public.get_catalog_bestseller_page(p_sort text, p_limit integer, p_offset integer) | SECURITY DEFINER chamável via RPC por anon (sem login): roda com privilégios do owner. Confirme que é intencional (Supabase dá EXECUTE a anon por padrão; revogue se não for API pública). |
+| INFO | rpc_anon_executable | public.get_quote_token_public(_token text) | SECURITY DEFINER chamável via RPC por anon (sem login): roda com privilégios do owner. Confirme que é intencional (Supabase dá EXECUTE a anon por padrão; revogue se não for API pública). |
+| INFO | rpc_anon_executable | public.submit_quote_response(_token text, _response text, _response_notes text) | SECURITY DEFINER chamável via RPC por anon (sem login): roda com privilégios do owner. Confirme que é intencional (Supabase dá EXECUTE a anon por padrão; revogue se não for API pública). |

@@ -586,8 +586,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 37754 nós · 66113 arestas · 2124 comunidades · grafo do commit `385af81a`
-- comunidades maiores: ref_lib (726), ref_components (624), ref_integrations (364), gotoAndSettle (333), ref_hooks (317), react-router-dom (302), scripts (289), react (275), @tanstack/react-query (265), @playwright/test (260), ref_types (254), ref_utils (251)
+- 37743 nós · 66103 arestas · 2125 comunidades · grafo do commit `385af81a`
+- comunidades maiores: ref_components (630), ref_integrations (550), ref_lib (496), ref_hooks (335), @testing-library/react (323), ref_node_fs (314), react-router-dom (313), scripts (289), cors.ts (265), nav.ts (259), ref_utils (256), react (251)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), json (?), loginAs() (e2e/helpers/auth.ts), excluded_sql() (scripts/supabase_snapshot/snapshot.py), maskUrl() (scripts/check-result-contract.mjs), .collect() (scripts/supabase_snapshot/test_snapshot.py), resolveItemImage() (src/pages/magazine/components/templates/shared.ts), makeMockCart() (e2e/helpers/cart-mock.ts)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 

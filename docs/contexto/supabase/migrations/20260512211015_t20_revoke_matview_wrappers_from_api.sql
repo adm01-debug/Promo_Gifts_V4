@@ -1,0 +1,14 @@
+REVOKE ALL ON public.categories_tree_visual     FROM anon, authenticated;
+REVOKE ALL ON public.mv_material_group_stats    FROM anon, authenticated;
+REVOKE ALL ON public.mv_media_health            FROM anon, authenticated;
+REVOKE ALL ON public.mv_product_cards           FROM anon, authenticated;
+REVOKE ALL ON public.mv_product_compositions    FROM anon, authenticated;
+REVOKE ALL ON public.mv_product_intelligence    FROM anon, authenticated;
+REVOKE ALL ON public.mv_stock_velocity          FROM anon, authenticated;
+REVOKE ALL ON analytics.categories_tree_visual     FROM anon, authenticated;
+REVOKE ALL ON analytics.mv_material_group_stats    FROM anon, authenticated;
+REVOKE ALL ON analytics.mv_media_health            FROM anon, authenticated;
+REVOKE ALL ON analytics.mv_product_cards           FROM anon, authenticated;
+REVOKE ALL ON analytics.mv_product_compositions    FROM anon, authenticated;
+REVOKE ALL ON analytics.mv_product_intelligence    FROM anon, authenticated;
+REVOKE ALL ON analytics.mv_stock_velocity          FROM anon, authenticated;

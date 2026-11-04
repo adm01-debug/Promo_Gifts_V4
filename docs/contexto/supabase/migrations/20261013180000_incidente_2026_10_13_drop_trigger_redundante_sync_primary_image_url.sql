@@ -1,0 +1,97 @@
+-- Agente 3 (Integridade de Dados/Storage) — incidente 2026-10-13
+-- Rollback: recriar função + ACL + trigger com o bloco "ROLLBACK" no fim deste arquivo
+--   (definição capturada via pg_get_functiondef em 2026-10-15, md5 6a803aa0e63df2d52a592f2c68241d84).
+--
+-- Revisão 2026-10-15 (B2): a redundância foi reconferida em pg_trigger. Ambos são AFTER ROW e
+-- este dispara primeiro (ordem alfabética). Todo INSERT/DELETE e todo UPDATE que MUDA url_cdn,
+-- is_active ou is_primary também dispara trg_sync_product_images(_update), que recalcula
+-- primary_image_url com a regra completa. Única diferença: UPDATE que lista essas colunas sem
+-- mudar o valor (o WHEN do _update não dispara). Nesse caso só este trigger rodava e podia gravar
+-- uma URL fora da regra completa (ex.: imagem box/pouch). Removê-lo elimina essa inconsistência.
+--
+-- *** PENDENTE DE APLICAÇÃO ***
+-- Esta migration foi escrita, validada e testada (ver evidência em
+-- docs/incidente-2026-10-13/AGENTE3_INTEGRIDADE_STORAGE.md), mas NÃO foi
+-- aplicada em produção: as 3 tentativas via MCP apply_migration/execute_sql
+-- nesta sessão retornaram {"status":"cancelled"} — o gate de confirmação de
+-- statement destrutivo exige uma aprovação interativa que esta sessão não
+-- tem como satisfazer. Precisa ser aplicada por alguém com acesso
+-- interativo ao MCP/dashboard (ou via o workflow
+-- .github/workflows/db-apply-migration.yml, o caminho autorizado pela
+-- REGRA #8/E15 do CLAUDE.md), confirmando o prompt de "destructive statement".
+--
+-- Evidência/justificativa:
+-- trg_sync_primary_image_url (AFTER INSERT OR UPDATE OF is_primary,
+-- is_active, url_cdn em product_images) escreve products.primary_image_url,
+-- mas é SEMPRE seguido, no mesmo evento, por trg_sync_product_images
+-- (INSERT/DELETE) ou trg_sync_product_images_update (UPDATE), que chamam
+-- fn_sync_product_images_to_products() e recalculam primary_image_url com
+-- regras mais completas (excluindo image_type box/pouch/location/area/
+-- component). A ordem de disparo de triggers no Postgres é alfabética por
+-- nome dentro do mesmo evento/timing; "trg_sync_primary_image_url" <
+-- "trg_sync_product_images" e < "trg_sync_product_images_update"
+-- alfabeticamente ('i' < 'o' em "primary" vs "product"), logo
+-- trg_sync_primary_image_url SEMPRE dispara primeiro e sua escrita é SEMPRE
+-- sobrescrita no mesmo statement. Confirmado via pg_trigger que
+-- fn_sync_primary_image_url só é referenciada por este único trigger
+-- (nenhum outro trigger ou chamada direta usa essa função). Remoção segura:
+-- elimina um UPDATE redundante em products por linha afetada, sem mudar o
+-- resultado final (que já é sempre determinado pela função mais completa).
+
+-- Falha rápido (1s) se o lock não vier, em vez de enfileirar leitores atrás do AccessExclusiveLock
+-- em product_images (tabela quente; anon tem statement_timeout de 3s). SET LOCAL vale só para esta
+-- transação (psql -1); o pooler ignora lock_timeout via PGOPTIONS (run 38730252412, 2026-10-15).
+SET LOCAL lock_timeout = '1s'
+
+DROP TRIGGER IF EXISTS trg_sync_primary_image_url ON public.product_images
+
+DROP FUNCTION IF EXISTS public.fn_sync_primary_image_url()
+
+-- ROLLBACK (não executar junto com a migration):
+-- CREATE OR REPLACE FUNCTION public.fn_sync_primary_image_url()
+--  RETURNS trigger
+--  LANGUAGE plpgsql
+--  SECURITY DEFINER
+--  SET search_path TO 'public'
+-- AS $function$
+-- BEGIN
+--   -- Caso 1: imagem passou a is_primary=true → setar no produto
+--   IF NEW.is_primary = true AND NEW.is_active = true THEN
+--     UPDATE products
+--     SET primary_image_url = NEW.url_cdn,
+--         updated_at        = NOW()
+--     WHERE id = NEW.product_id
+--       AND is_active = true
+--       AND (primary_image_url IS NULL OR primary_image_url != NEW.url_cdn);
+--   END IF;
+--
+--   -- Caso 2: imagem era primary e foi desativada → limpar se não há outra primary
+--   IF (OLD.is_primary = true OR OLD.is_active = true)
+--     AND (NEW.is_primary = false OR NEW.is_active = false) THEN
+--     -- Verifica se ainda existe outra primary ativa
+--     IF NOT EXISTS (
+--       SELECT 1 FROM product_images
+--       WHERE product_id = NEW.product_id
+--         AND is_primary  = true
+--         AND is_active   = true
+--         AND id         != NEW.id
+--     ) THEN
+--       UPDATE products
+--       SET primary_image_url = (
+--             SELECT url_cdn FROM product_images
+--             WHERE product_id = NEW.product_id AND is_active = true
+--             ORDER BY is_primary DESC, display_order ASC, id ASC
+--             LIMIT 1
+--           ),
+--           updated_at = NOW()
+--       WHERE id = NEW.product_id;
+--     END IF;
+--   END IF;
+--
+--   RETURN NEW;
+-- END;
+-- $function$;
+-- REVOKE ALL ON FUNCTION public.fn_sync_primary_image_url() FROM PUBLIC, anon, authenticated;
+-- GRANT EXECUTE ON FUNCTION public.fn_sync_primary_image_url() TO service_role;
+-- CREATE TRIGGER trg_sync_primary_image_url AFTER INSERT OR UPDATE OF is_primary, is_active, url_cdn
+--   ON public.product_images FOR EACH ROW EXECUTE FUNCTION fn_sync_primary_image_url();

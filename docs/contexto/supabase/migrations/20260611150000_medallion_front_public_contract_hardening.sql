@@ -1,0 +1,26 @@
+-- ============================================================================
+-- 20260611150000_medallion_front_public_contract_hardening.sql
+-- ----------------------------------------------------------------------------
+-- Consolida (idempotente) as correcoes M1-M6 aplicadas AO VIVO em
+-- doufsxqlfjyuvxuezpln em 2026-06-11 (MCP execute_sql), durante a integracao
+-- front-end <-> arquitetura Medallion (Bronze / Prata / Ouro).
+--
+-- Esta versao TAMBEM foi registrada em supabase_migrations.schema_migrations
+-- com este exato conteudo (paridade DB == repo), portanto `db push` nao tenta
+-- reaplicar. O arquivo e seguro para replay: guards to_regclass + no-op quando
+-- ja aplicado.
+--
+--  M1  v_products_public               + filtro is_active = true (fecha vazamento de 19 inativos/fantasmas)
+--  M2  v_variant_sale_prices_public    reescrita SECURITY DEFINER nas tabelas-base (anon: 42501 -> 18.359 rows)
+--  M3  v_products_min_price            agrega PRECO DE VENDA (antes expunha CUSTO como min_price e quebrava p/ anon)
+--  M4  v_print_area_techniques_public  DEFINER + is_active (anon: 0 -> 21.319 rows)
+--  M5  P0  mcp_sessions                fecha leitura/escrita anon (vazava cookie de sessao do portal So Marcas)
+--  M6  Bronze/Silver/staging           REVOKE escrita de anon (defense-in-depth; RLS ja bloqueava)
+--
+-- Validacao: suite T01-T18 como role anon = 18/18 OK + E2E PostgREST com a
+-- publishable key de producao. Detalhes: docs/INTEGRACAO_MEDALLION_FRONT.md
+-- ============================================================================
+
+-- M1..M6: ver arquivo homonimo em supabase/migrations/ (mesma versao/nome).
+-- Efeitos ja aplicados ao vivo em 2026-06-11 via MCP execute_sql; este registro
+-- existe para paridade de versao com o repo (CLI nao reaplica).
