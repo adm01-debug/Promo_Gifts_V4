@@ -49,6 +49,8 @@ test.describe("@smoke Magazine Editor — preview sticky/aligned", () => {
     // garantindo que o container não termina antes do checkpoint de scroll.
     // Assinatura Playwright: waitForFunction(fn, arg?, options?) — undefined como
     // 2º arg (a função não recebe argumento); timeout vai no 3º arg (options).
+    // Timeout 45s: com auth real (sem E2E_MOCK_AUTH) o editor pode levar >20s
+    // para hidratar em CI (PostgREST cold start + hidratação do user).
     await page.waitForFunction(
       () => {
         const titleInput = document.querySelector('[data-testid="magazine-title-input"]');
@@ -69,7 +71,7 @@ test.describe("@smoke Magazine Editor — preview sticky/aligned", () => {
         return asideBottomDoc > 520 + stickyHeight + 20;
       },
       undefined,
-      { timeout: 20_000 },
+      { timeout: 45_000 },
     );
 
     const hero = page.getByTestId("magazine-editor-hero-row");
