@@ -1,0 +1,3066 @@
+{
+ "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
+ "format_version": 2,
+ "git": {
+  "commit": "385af81ad204acada06c6593b4c978e60dca170b",
+  "branch": "main",
+  "data_commit": "2026-11-04T09:09:20-03:00",
+  "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
+  "ultimos_commits": [
+   {
+    "sha": "385af81",
+    "data": "2026-11-04",
+    "assunto": "feat(ci): inventário vivo para agentes de IA a cada 10 min (pacote de scripts autônomos do Zapp) (#3059)"
+   },
+   {
+    "sha": "b80917f",
+    "data": "2026-11-03",
+    "assunto": "chore(ci): gestão de workflows fase 1 — 106 → 92 (12 updaters em 1, 3 obsoletos, 3 duplicados ajustados) (#3055)"
+   },
+   {
+    "sha": "14fb66a",
+    "data": "2026-11-02",
+    "assunto": "fix(tests): deriva timeout da suíte live do budget real de retry (#3057)"
+   },
+   {
+    "sha": "e6183da",
+    "data": "2026-11-02",
+    "assunto": "fix(ci): check-indexed-access-ratchet.mjs — preserva meta no --update (#3056)"
+   },
+   {
+    "sha": "2294b0b",
+    "data": "2026-11-02",
+    "assunto": "docs(migrations-log): recibo E15 — aplicação de 20261029160339 (#3054)"
+   },
+   {
+    "sha": "09d7cdd",
+    "data": "2026-11-02",
+    "assunto": "feat: inventário gerado do estado real — scripts refazem banco, edges, rotas e tabelas (#3039)"
+   },
+   {
+    "sha": "0febd3f",
+    "data": "2026-11-02",
+    "assunto": "fix(ci): preserva meta (target/deadline) na regeneração dos 4 baselines de ratchet (#3052)"
+   },
+   {
+    "sha": "8bc5078",
+    "data": "2026-11-02",
+    "assunto": "docs(ci): P38 — inventário completo 21 workflows em falha na main@0a8a17f92 (#3023)"
+   },
+   {
+    "sha": "3197e4f",
+    "data": "2026-11-02",
+    "assunto": "chore(ci): bump baseline de tamanho — 2 arquivos +1 linha pelo import type de #3023 (#3053)"
+   },
+   {
+    "sha": "e6e738e",
+    "data": "2026-11-02",
+    "assunto": "chore(ci): sincroniza 4 baselines de ratchet (as any, as Tipo, eslint-disable, file-size) (#3051)"
+   },
+   {
+    "sha": "44bc10b",
+    "data": "2026-11-02",
+    "assunto": "fix(ci): aponta migration pronta e não aplicada na exceção stock_notes (#3050)"
+   },
+   {
+    "sha": "a697b04",
+    "data": "2026-11-02",
+    "assunto": "chore(ci): registra exceção para RPC fn_get_rupture_alerts ausente no canônico (#3048)"
+   },
+   {
+    "sha": "31f575f",
+    "data": "2026-11-02",
+    "assunto": "chore(ci): remove 5 entradas obsoletas da baseline do Gate 1.3 (#3047)"
+   },
+   {
+    "sha": "82ceaa6",
+    "data": "2026-11-02",
+    "assunto": "docs: restaura 2 regras perdidas no split e corrige referencia pendente ao inventario (#3046)"
+   },
+   {
+    "sha": "22204c8",
+    "data": "2026-11-02",
+    "assunto": "fix(ci): registra na baseline referencias ja existentes de CONTRIBUTING.md e PR-2714.md (#3045)"
+   },
+   {
+    "sha": "96f17f4",
+    "data": "2026-11-02",
+    "assunto": "feat: hook de início de sessão monta o grafo do código nas sessões da nuvem (#3041)"
+   },
+   {
+    "sha": "8d97d18",
+    "data": "2026-11-02",
+    "assunto": "chore: CLAUDE.md só técnico, AGENTS.md só regras do dono (#3038)"
+   },
+   {
+    "sha": "cc7ef5e",
+    "data": "2026-11-02",
+    "assunto": "fix(ts): corrige precedência de 'await...as' em useRuptureAlerts (#2996)"
+   },
+   {
+    "sha": "df94410",
+    "data": "2026-11-01",
+    "assunto": "fix(security): CodeQL HIGH — crypto.randomInt, URL validation, hash param guard, anonymize ilike (PR-3021)"
+   },
+   {
+    "sha": "5a35a74",
+    "data": "2026-11-01",
+    "assunto": "chore(security): atualiza timestamp baseline de políticas 2026-11-01"
+   },
+   {
+    "sha": "0a8a17f",
+    "data": "2026-11-01",
+    "assunto": "chore(main): release 1.7.0 (#3020)"
+   },
+   {
+    "sha": "8b84f38",
+    "data": "2026-11-01",
+    "assunto": "docs(analise): §3/§5/§8/§9/§13 — corrige inconsistências RELATORIO AGUARDANDO APROVAÇÃO (v10)"
+   },
+   {
+    "sha": "91d4bee",
+    "data": "2026-11-01",
+    "assunto": "fix(ux): FT-172/107/108/220 — UX batch7 (#2981)"
+   },
+   {
+    "sha": "3bf5820",
+    "data": "2026-11-01",
+    "assunto": "fix(kit-builder): separa mensagem de erro 503/504 de 429/timeout (FT-136) (#2979)"
+   },
+   {
+    "sha": "6965ec1",
+    "data": "2026-11-01",
+    "assunto": "fix(e2e): corrige falhas no swatch-picker-v2 — auth loading + overlay click + E108 satélite"
+   }
+  ],
+  "arquivos_mudados_7d": 678,
+  "pastas_mais_mudadas_30d": [
+   {
+    "pasta": "src/components/admin",
+    "mudancas": 314
+   },
+   {
+    "pasta": "src/components/products",
+    "mudancas": 165
+   },
+   {
+    "pasta": "tests/edge-functions/live",
+    "mudancas": 119
+   },
+   {
+    "pasta": "src/hooks/products",
+    "mudancas": 111
+   },
+   {
+    "pasta": "src/components/mockup",
+    "mudancas": 99
+   },
+   {
+    "pasta": "src/components/quotes",
+    "mudancas": 96
+   },
+   {
+    "pasta": "src/pages/magazine",
+    "mudancas": 93
+   },
+   {
+    "pasta": "src/components/ui",
+    "mudancas": 81
+   },
+   {
+    "pasta": "src/components/inventory",
+    "mudancas": 80
+   },
+   {
+    "pasta": "supabase/functions/_shared",
+    "mudancas": 72
+   },
+   {
+    "pasta": "RELATORIO_CI.md",
+    "mudancas": 67
+   },
+   {
+    "pasta": "PENDENCIAS.md",
+    "mudancas": 63
+   },
+   {
+    "pasta": "src/components/kit-builder",
+    "mudancas": 63
+   },
+   {
+    "pasta": "src/pages/products",
+    "mudancas": 61
+   },
+   {
+    "pasta": "src/pages/admin",
+    "mudancas": 60
+   }
+  ],
+  "arquivos_mais_mudados_90d": [
+   {
+    "arquivo": "RELATORIO_CI.md",
+    "mudancas": 67
+   },
+   {
+    "arquivo": "PENDENCIAS.md",
+    "mudancas": 63
+   },
+   {
+    "arquivo": "package.json",
+    "mudancas": 27
+   },
+   {
+    "arquivo": "package-lock.json",
+    "mudancas": 23
+   },
+   {
+    "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
+    "mudancas": 21
+   },
+   {
+    "arquivo": "analise-prs/RELATORIO_PRS.md",
+    "mudancas": 16
+   },
+   {
+    "arquivo": "auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md",
+    "mudancas": 14
+   },
+   {
+    "arquivo": "CHANGELOG.md",
+    "mudancas": 13
+   },
+   {
+    "arquivo": "analise-prs/progresso.json",
+    "mudancas": 12
+   },
+   {
+    "arquivo": "analise-prs/prs.csv",
+    "mudancas": 12
+   },
+   {
+    "arquivo": "analise-prs/prs.json",
+    "mudancas": 12
+   },
+   {
+    "arquivo": "docs/plans/PLANO_MELHORIAS_CORRECOES_200_ETAPAS_2026-10-18.md",
+    "mudancas": 11
+   },
+   {
+    "arquivo": "analise-branches/RELATORIO_BRANCHES.md",
+    "mudancas": 9
+   },
+   {
+    "arquivo": ".github/workflows/deploy-gates.yml",
+    "mudancas": 7
+   },
+   {
+    "arquivo": "AGENTS.md",
+    "mudancas": 7
+   },
+   {
+    "arquivo": "CLAUDE.md",
+    "mudancas": 7
+   },
+   {
+    "arquivo": "analise-prs/baseline/lint.txt",
+    "mudancas": 6
+   },
+   {
+    "arquivo": "analise-prs/baseline/typecheck.txt",
+    "mudancas": 6
+   },
+   {
+    "arquivo": "audit/supabase-reference-catalog.temporary.json",
+    "mudancas": 6
+   },
+   {
+    "arquivo": ".github/workflows/ratchet-weekly.yml",
+    "mudancas": 5
+   },
+   {
+    "arquivo": "analise-prs/regras-de-negocio.md",
+    "mudancas": 5
+   },
+   {
+    "arquivo": "docs/estado/PENDENCIAS.md",
+    "mudancas": 5
+   },
+   {
+    "arquivo": "e2e/flows/92-personalization-auth-redirect.spec.ts",
+    "mudancas": 5
+   },
+   {
+    "arquivo": "scripts/migration-ledger-remote-only-allowlist.json",
+    "mudancas": 5
+   },
+   {
+    "arquivo": "tests/config/playwright-config-smoke.test.ts",
+    "mudancas": 5
+   }
+  ],
+  "autores_30d": [
+   {
+    "autor": "adm01-debug",
+    "commits": 360
+   },
+   {
+    "autor": "Joaquim Ataides",
+    "commits": 43
+   },
+   {
+    "autor": "github-actions[bot]",
+    "commits": 23
+   },
+   {
+    "autor": "dependabot[bot]",
+    "commits": 12
+   },
+   {
+    "autor": "Claude",
+    "commits": 8
+   }
+  ]
+ },
+ "contagens": {
+  "arquivos_total": 9164,
+  "arquivos_codigo": 4612,
+  "linhas_codigo": 883206,
+  "rotas": 138,
+  "rotas_http_backend": 13,
+  "vistas_por_id": 0,
+  "itens_menu": 69,
+  "modulos": 158,
+  "componentes": 1122,
+  "hooks": 414,
+  "edge_functions": 111,
+  "tabelas": 534,
+  "migrations": 3041,
+  "cron_jobs": 120,
+  "testes": 2184,
+  "workflows": 93,
+  "scripts": 254,
+  "docs_md": 892
+ },
+ "por_pasta": {
+  "api/health.ts": {
+   "arquivos": 1,
+   "linhas": 58
+  },
+  "api/ready.ts": {
+   "arquivos": 1,
+   "linhas": 152
+  },
+  "api/sitemap.ts": {
+   "arquivos": 1,
+   "linhas": 215
+  },
+  "cloudflare-workers/og-meta-bot.js": {
+   "arquivos": 1,
+   "linhas": 35
+  },
+  "commitlint.config.js": {
+   "arquivos": 1,
+   "linhas": 63
+  },
+  "docs/promo-champions": {
+   "arquivos": 1,
+   "linhas": 263
+  },
+  "e2e/actions-order.spec.ts": {
+   "arquivos": 1,
+   "linhas": 160
+  },
+  "e2e/admin": {
+   "arquivos": 14,
+   "linhas": 1209
+  },
+  "e2e/admin-conexoes-credentials-active-products.spec.ts": {
+   "arquivos": 1,
+   "linhas": 179
+  },
+  "e2e/admin-conexoes-module.spec.ts": {
+   "arquivos": 1,
+   "linhas": 598
+  },
+  "e2e/admin-conexoes-zone-collapse.spec.ts": {
+   "arquivos": 1,
+   "linhas": 185
+  },
+  "e2e/agente-permissions.spec.ts": {
+   "arquivos": 1,
+   "linhas": 76
+  },
+  "e2e/auth": {
+   "arquivos": 1,
+   "linhas": 180
+  },
+  "e2e/auth-debug-removal.spec.ts": {
+   "arquivos": 1,
+   "linhas": 94
+  },
+  "e2e/auth-guard-redirect.spec.ts": {
+   "arquivos": 1,
+   "linhas": 35
+  },
+  "e2e/auth-legal-pages.spec.ts": {
+   "arquivos": 1,
+   "linhas": 65
+  },
+  "e2e/auth-session-recovery.spec.ts": {
+   "arquivos": 1,
+   "linhas": 128
+  },
+  "e2e/auth-stability.spec.ts": {
+   "arquivos": 1,
+   "linhas": 92
+  },
+  "e2e/auth.spec.ts": {
+   "arquivos": 1,
+   "linhas": 77
+  },
+  "e2e/business-flows.spec.ts": {
+   "arquivos": 1,
+   "linhas": 47
+  },
+  "e2e/carrinhos": {
+   "arquivos": 43,
+   "linhas": 5268
+  },
+  "e2e/carts-module.spec.ts": {
+   "arquivos": 1,
+   "linhas": 281
+  },
+  "e2e/catalog": {
+   "arquivos": 32,
+   "linhas": 4139
+  },
+  "e2e/catalog-exhaustive-validation.spec.ts": {
+   "arquivos": 1,
+   "linhas": 138
+  },
+  "e2e/catalog-regression.spec.ts": {
+   "arquivos": 1,
+   "linhas": 84
+  },
+  "e2e/catalog-resilience.spec.ts": {
+   "arquivos": 1,
+   "linhas": 185
+  },
+  "e2e/catalog-scroll-stress.spec.ts": {
+   "arquivos": 1,
+   "linhas": 111
+  },
+  "e2e/catalog-scroll.spec.ts": {
+   "arquivos": 1,
+   "linhas": 101
+  },
+  "e2e/catalog-selection-fix.spec.ts": {
+   "arquivos": 1,
+   "linhas": 53
+  },
+  "e2e/catalog-toolbar-duplication.spec.ts": {
+   "arquivos": 1,
+   "linhas": 71
+  },
+  "e2e/catalog.spec.ts": {
+   "arquivos": 1,
+   "linhas": 150
+  },
+  "e2e/chaos-validation.spec.ts": {
+   "arquivos": 1,
+   "linhas": 154
+  },
+  "e2e/colecoes-exaustivo.spec.ts": {
+   "arquivos": 1,
+   "linhas": 169
+  },
+  "e2e/collections-module.spec.ts": {
+   "arquivos": 1,
+   "linhas": 346
+  },
+  "e2e/color-preservation.spec.ts": {
+   "arquivos": 1,
+   "linhas": 59
+  },
+  "e2e/color-swatch-selection.spec.ts": {
+   "arquivos": 1,
+   "linhas": 117
+  },
+  "e2e/color-swatch-sweep.spec.ts": {
+   "arquivos": 1,
+   "linhas": 213
+  },
+  "e2e/color-variations.spec.ts": {
+   "arquivos": 1,
+   "linhas": 125
+  },
+  "e2e/company-search-history.spec.ts": {
+   "arquivos": 1,
+   "linhas": 164
+  },
+  "e2e/compare": {
+   "arquivos": 1,
+   "linhas": 67
+  },
+  "e2e/compare-module.spec.ts": {
+   "arquivos": 1,
+   "linhas": 347
+  },
+  "e2e/comprehensive-flow.spec.ts": {
+   "arquivos": 1,
+   "linhas": 171
+  },
+  "e2e/customization": {
+   "arquivos": 2,
+   "linhas": 255
+  },
+  "e2e/dashboard-modules.spec.ts": {
+   "arquivos": 1,
+   "linhas": 330
+  },
+  "e2e/deep-linking.spec.ts": {
+   "arquivos": 1,
+   "linhas": 71
+  },
+  "e2e/discount-approval.spec.ts": {
+   "arquivos": 1,
+   "linhas": 38
+  },
+  "e2e/editor-permissions.spec.ts": {
+   "arquivos": 1,
+   "linhas": 208
+  },
+  "e2e/estoque-exaustivo.spec.ts": {
+   "arquivos": 1,
+   "linhas": 259
+  },
+  "e2e/favorites-module.spec.ts": {
+   "arquivos": 1,
+   "linhas": 344
+  },
+  "e2e/fixtures": {
+   "arquivos": 10,
+   "linhas": 1333
+  },
+  "e2e/flows": {
+   "arquivos": 183,
+   "linhas": 25168
+  },
+  "e2e/future-stock.spec.ts": {
+   "arquivos": 1,
+   "linhas": 177
+  },
+  "e2e/global-setup.ts": {
+   "arquivos": 1,
+   "linhas": 20
+  },
+  "e2e/global-teardown.ts": {
+   "arquivos": 1,
+   "linhas": 20
+  },
+  "e2e/helpers": {
+   "arquivos": 32,
+   "linhas": 4444
+  },
+  "e2e/initial-load.spec.ts": {
+   "arquivos": 1,
+   "linhas": 48
+  },
+  "e2e/kit-builder.spec.ts": {
+   "arquivos": 1,
+   "linhas": 103
+  },
+  "e2e/login.spec.ts": {
+   "arquivos": 1,
+   "linhas": 72
+  },
+  "e2e/magazine": {
+   "arquivos": 4,
+   "linhas": 794
+  },
+  "e2e/main-flow-exhaustive.spec.ts": {
+   "arquivos": 1,
+   "linhas": 110
+  },
+  "e2e/market-intelligence-scenarios.spec.ts": {
+   "arquivos": 1,
+   "linhas": 91
+  },
+  "e2e/market-intelligence-tooltips.spec.ts": {
+   "arquivos": 1,
+   "linhas": 78
+  },
+  "e2e/matrix-automated.spec.ts": {
+   "arquivos": 1,
+   "linhas": 145
+  },
+  "e2e/mobile-responsiveness.spec.ts": {
+   "arquivos": 1,
+   "linhas": 122
+  },
+  "e2e/mockup-generate.spec.ts": {
+   "arquivos": 1,
+   "linhas": 21
+  },
+  "e2e/navigation.spec.ts": {
+   "arquivos": 1,
+   "linhas": 19
+  },
+  "e2e/notifications.spec.ts": {
+   "arquivos": 1,
+   "linhas": 40
+  },
+  "e2e/novidades-exaustivo.spec.ts": {
+   "arquivos": 1,
+   "linhas": 115
+  },
+  "e2e/novidades-gaps.spec.ts": {
+   "arquivos": 1,
+   "linhas": 122
+  },
+  "e2e/optimized-image-detection.spec.ts": {
+   "arquivos": 1,
+   "linhas": 105
+  },
+  "e2e/optimized-image-visual.spec.ts": {
+   "arquivos": 1,
+   "linhas": 67
+  },
+  "e2e/orcamentos": {
+   "arquivos": 1,
+   "linhas": 78
+  },
+  "e2e/packaging-filter.spec.ts": {
+   "arquivos": 1,
+   "linhas": 58
+  },
+  "e2e/price-freshness.spec.ts": {
+   "arquivos": 1,
+   "linhas": 146
+  },
+  "e2e/product-card-click.spec.ts": {
+   "arquivos": 1,
+   "linhas": 96
+  },
+  "e2e/product-card-colors-sync.spec.ts": {
+   "arquivos": 1,
+   "linhas": 187
+  },
+  "e2e/product-card-colors.spec.ts": {
+   "arquivos": 1,
+   "linhas": 229
+  },
+  "e2e/product-card-layout.spec.ts": {
+   "arquivos": 1,
+   "linhas": 35
+  },
+  "e2e/product-card-visual-regression.spec.ts": {
+   "arquivos": 1,
+   "linhas": 178
+  },
+  "e2e/product-color-isolation.spec.ts": {
+   "arquivos": 1,
+   "linhas": 94
+  },
+  "e2e/product-colors-advanced.spec.ts": {
+   "arquivos": 1,
+   "linhas": 93
+  },
+  "e2e/product-colors-full.spec.ts": {
+   "arquivos": 1,
+   "linhas": 179
+  },
+  "e2e/product-colors.spec.ts": {
+   "arquivos": 1,
+   "linhas": 25
+  },
+  "e2e/product-detail-exhaustive.spec.ts": {
+   "arquivos": 1,
+   "linhas": 134
+  },
+  "e2e/product-detail-price-size.spec.ts": {
+   "arquivos": 1,
+   "linhas": 82
+  },
+  "e2e/product-grid-colors-hydration.spec.ts": {
+   "arquivos": 1,
+   "linhas": 140
+  },
+  "e2e/product-quick-actions.spec.ts": {
+   "arquivos": 1,
+   "linhas": 56
+  },
+  "e2e/products-module.spec.ts": {
+   "arquivos": 1,
+   "linhas": 583
+  },
+  "e2e/products-postgrest-load.spec.ts": {
+   "arquivos": 1,
+   "linhas": 30
+  },
+  "e2e/promoflix-player.spec.ts": {
+   "arquivos": 1,
+   "linhas": 128
+  },
+  "e2e/protected-routes.spec.ts": {
+   "arquivos": 1,
+   "linhas": 47
+  },
+  "e2e/quote-autosave-calculations.spec.ts": {
+   "arquivos": 1,
+   "linhas": 54
+  },
+  "e2e/quote-builder-delivery.spec.ts": {
+   "arquivos": 1,
+   "linhas": 99
+  },
+  "e2e/quote-builder-layout.spec.ts": {
+   "arquivos": 1,
+   "linhas": 84
+  },
+  "e2e/quote-builder-navigation.spec.ts": {
+   "arquivos": 1,
+   "linhas": 37
+  },
+  "e2e/quote-builder-personalization-ux.spec.ts": {
+   "arquivos": 1,
+   "linhas": 233
+  },
+  "e2e/quote-builder-shipping-validation.spec.ts": {
+   "arquivos": 1,
+   "linhas": 160
+  },
+  "e2e/quote-builder-shipping.spec.ts": {
+   "arquivos": 1,
+   "linhas": 76
+  },
+  "e2e/quote-builder-wizard.spec.ts": {
+   "arquivos": 1,
+   "linhas": 137
+  },
+  "e2e/quote-comprehensive-elite.spec.ts": {
+   "arquivos": 1,
+   "linhas": 163
+  },
+  "e2e/quote-create.spec.ts": {
+   "arquivos": 1,
+   "linhas": 41
+  },
+  "e2e/quote-creation-module.spec.ts": {
+   "arquivos": 1,
+   "linhas": 143
+  },
+  "e2e/quote-personalization-auto-expand.spec.ts": {
+   "arquivos": 1,
+   "linhas": 47
+  },
+  "e2e/quotes": {
+   "arquivos": 60,
+   "linhas": 6898
+  },
+  "e2e/raio-x.spec.ts": {
+   "arquivos": 1,
+   "linhas": 79
+  },
+  "e2e/rbac-crud-uploads.spec.ts": {
+   "arquivos": 1,
+   "linhas": 64
+  },
+  "e2e/rbac-navigation.spec.ts": {
+   "arquivos": 1,
+   "linhas": 131
+  },
+  "e2e/regression-matrix.spec.ts": {
+   "arquivos": 1,
+   "linhas": 144
+  },
+  "e2e/regression-visual.spec.ts": {
+   "arquivos": 1,
+   "linhas": 99
+  },
+  "e2e/replenishment": {
+   "arquivos": 1,
+   "linhas": 70
+  },
+  "e2e/replenishment-stress.spec.ts": {
+   "arquivos": 1,
+   "linhas": 169
+  },
+  "e2e/replenishment-swatches.spec.ts": {
+   "arquivos": 1,
+   "linhas": 115
+  },
+  "e2e/reports-bi-module.spec.ts": {
+   "arquivos": 1,
+   "linhas": 480
+  },
+  "e2e/reposicao-exaustivo.spec.ts": {
+   "arquivos": 1,
+   "linhas": 171
+  },
+  "e2e/routes": {
+   "arquivos": 89,
+   "linhas": 4750
+  },
+  "e2e/scripts": {
+   "arquivos": 3,
+   "linhas": 325
+  },
+  "e2e/sidebar-logo.spec.ts": {
+   "arquivos": 1,
+   "linhas": 52
+  },
+  "e2e/smoke.spec.ts": {
+   "arquivos": 1,
+   "linhas": 75
+  },
+  "e2e/sort-regression.spec.ts": {
+   "arquivos": 1,
+   "linhas": 102
+  },
+  "e2e/spa-rewrite.spec.ts": {
+   "arquivos": 1,
+   "linhas": 87
+  },
+  "e2e/stock-410-resilience.spec.ts": {
+   "arquivos": 1,
+   "linhas": 34
+  },
+  "e2e/stock-module.spec.ts": {
+   "arquivos": 1,
+   "linhas": 321
+  },
+  "e2e/super-filtro-exaustivo.spec.ts": {
+   "arquivos": 1,
+   "linhas": 166
+  },
+  "e2e/teleport-comprehensive.spec.ts": {
+   "arquivos": 1,
+   "linhas": 165
+  },
+  "e2e/theme-flicker.spec.ts": {
+   "arquivos": 1,
+   "linhas": 40
+  },
+  "e2e/theme-validation.spec.ts": {
+   "arquivos": 1,
+   "linhas": 139
+  },
+  "e2e/tools-module.spec.ts": {
+   "arquivos": 1,
+   "linhas": 565
+  },
+  "e2e/tooltips-a11y.spec.ts": {
+   "arquivos": 1,
+   "linhas": 96
+  },
+  "e2e/tooltips.spec.ts": {
+   "arquivos": 1,
+   "linhas": 95
+  },
+  "e2e/ui": {
+   "arquivos": 26,
+   "linhas": 3333
+  },
+  "e2e/ui-navigation-rbac.spec.ts": {
+   "arquivos": 1,
+   "linhas": 59
+  },
+  "e2e/undo-toast.spec.ts": {
+   "arquivos": 1,
+   "linhas": 164
+  },
+  "e2e/virtual-scroll.spec.ts": {
+   "arquivos": 1,
+   "linhas": 38
+  },
+  "e2e/visual": {
+   "arquivos": 5,
+   "linhas": 541
+  },
+  "e2e/visual-regression.spec.ts": {
+   "arquivos": 1,
+   "linhas": 127
+  },
+  "e2e/visual-search-module.spec.ts": {
+   "arquivos": 1,
+   "linhas": 351
+  },
+  "eslint.config.js": {
+   "arquivos": 1,
+   "linhas": 1660
+  },
+  "playwright.config.ts": {
+   "arquivos": 1,
+   "linhas": 172
+  },
+  "postcss.config.js": {
+   "arquivos": 1,
+   "linhas": 7
+  },
+  "public/sw.js": {
+   "arquivos": 1,
+   "linhas": 619
+  },
+  "scripts/__tests__": {
+   "arquivos": 7,
+   "linhas": 1051
+  },
+  "scripts/ai-context": {
+   "arquivos": 3,
+   "linhas": 1458
+  },
+  "scripts/append-edge-deploy-receipt.mjs": {
+   "arquivos": 1,
+   "linhas": 119
+  },
+  "scripts/append-migration-receipt.mjs": {
+   "arquivos": 1,
+   "linhas": 164
+  },
+  "scripts/audit-credentials.mjs": {
+   "arquivos": 1,
+   "linhas": 277
+  },
+  "scripts/audit-db-frontend-coverage.mjs": {
+   "arquivos": 1,
+   "linhas": 486
+  },
+  "scripts/audit-debug.ts": {
+   "arquivos": 1,
+   "linhas": 72
+  },
+  "scripts/build-cors-snapshot.mjs": {
+   "arquivos": 1,
+   "linhas": 133
+  },
+  "scripts/build-drafts-pr-comment.mjs": {
+   "arquivos": 1,
+   "linhas": 109
+  },
+  "scripts/build-local-migrations-manifest.mjs": {
+   "arquivos": 1,
+   "linhas": 95
+  },
+  "scripts/build-migration-ledger-manifest.mjs": {
+   "arquivos": 1,
+   "linhas": 141
+  },
+  "scripts/build-visual-diff-report.mjs": {
+   "arquivos": 1,
+   "linhas": 152
+  },
+  "scripts/bundle-size-report.mjs": {
+   "arquivos": 1,
+   "linhas": 172
+  },
+  "scripts/capacity-growth-projection.mjs": {
+   "arquivos": 1,
+   "linhas": 203
+  },
+  "scripts/check-allowlist-memory-crosscheck.mjs": {
+   "arquivos": 1,
+   "linhas": 112
+  },
+  "scripts/check-anon-insert-rate-guard.mjs": {
+   "arquivos": 1,
+   "linhas": 251
+  },
+  "scripts/check-anon-write-grants.mjs": {
+   "arquivos": 1,
+   "linhas": 157
+  },
+  "scripts/check-any-type-baseline.mjs": {
+   "arquivos": 1,
+   "linhas": 133
+  },
+  "scripts/check-as-assertions-baseline.mjs": {
+   "arquivos": 1,
+   "linhas": 51
+  },
+  "scripts/check-as-unknown-baseline.mjs": {
+   "arquivos": 1,
+   "linhas": 44
+  },
+  "scripts/check-aschild-nesting.mjs": {
+   "arquivos": 1,
+   "linhas": 109
+  },
+  "scripts/check-auth-direct-calls.mjs": {
+   "arquivos": 1,
+   "linhas": 70
+  },
+  "scripts/check-boundary-baseline.mjs": {
+   "arquivos": 1,
+   "linhas": 458
+  },
+  "scripts/check-build-log.mjs": {
+   "arquivos": 1,
+   "linhas": 70
+  },
+  "scripts/check-build-warnings.mjs": {
+   "arquivos": 1,
+   "linhas": 98
+  },
+  "scripts/check-bundle-size.mjs": {
+   "arquivos": 1,
+   "linhas": 343
+  },
+  "scripts/check-chunk-cycles.mjs": {
+   "arquivos": 1,
+   "linhas": 99
+  },
+  "scripts/check-clickable-drift.mjs": {
+   "arquivos": 1,
+   "linhas": 98
+  },
+  "scripts/check-client-structured-logging.mjs": {
+   "arquivos": 1,
+   "linhas": 118
+  },
+  "scripts/check-cloud-status-coverage.mjs": {
+   "arquivos": 1,
+   "linhas": 102
+  },
+  "scripts/check-cnpj-render.mjs": {
+   "arquivos": 1,
+   "linhas": 166
+  },
+  "scripts/check-codeowners-coverage.mjs": {
+   "arquivos": 1,
+   "linhas": 124
+  },
+  "scripts/check-conflict-ledger.mjs": {
+   "arquivos": 1,
+   "linhas": 98
+  },
+  "scripts/check-console-baseline.mjs": {
+   "arquivos": 1,
+   "linhas": 64
+  },
+  "scripts/check-contract-coverage.mjs": {
+   "arquivos": 1,
+   "linhas": 100
+  },
+  "scripts/check-critical-coverage.mjs": {
+   "arquivos": 1,
+   "linhas": 202
+  },
+  "scripts/check-critical-modules-coverage.mjs": {
+   "arquivos": 1,
+   "linhas": 5
+  },
+  "scripts/check-critical-path-coverage.mjs": {
+   "arquivos": 1,
+   "linhas": 100
+  },
+  "scripts/check-cron-drift.mjs": {
+   "arquivos": 1,
+   "linhas": 93
+  },
+  "scripts/check-ddl-out-of-band.mjs": {
+   "arquivos": 1,
+   "linhas": 437
+  },
+  "scripts/check-dependency-audit.mjs": {
+   "arquivos": 1,
+   "linhas": 591
+  },
+  "scripts/check-doc-refs.mjs": {
+   "arquivos": 1,
+   "linhas": 177
+  },
+  "scripts/check-docs-supabase-hosts.mjs": {
+   "arquivos": 1,
+   "linhas": 166
+  },
+  "scripts/check-draft-canonical-target.mjs": {
+   "arquivos": 1,
+   "linhas": 194
+  },
+  "scripts/check-edge-authorization.mjs": {
+   "arquivos": 1,
+   "linhas": 207
+  },
+  "scripts/check-edge-cors-headers.mjs": {
+   "arquivos": 1,
+   "linhas": 186
+  },
+  "scripts/check-edge-integration-coverage.mjs": {
+   "arquivos": 1,
+   "linhas": 96
+  },
+  "scripts/check-edge-live-coverage.mjs": {
+   "arquivos": 1,
+   "linhas": 54
+  },
+  "scripts/check-edge-request-id-propagation.mjs": {
+   "arquivos": 1,
+   "linhas": 192
+  },
+  "scripts/check-edge-structured-logging.mjs": {
+   "arquivos": 1,
+   "linhas": 133
+  },
+  "scripts/check-edge-verify-jwt-allowlist.mjs": {
+   "arquivos": 1,
+   "linhas": 312
+  },
+  "scripts/check-edge-zod-ratchet.mjs": {
+   "arquivos": 1,
+   "linhas": 155
+  },
+  "scripts/check-env.mjs": {
+   "arquivos": 1,
+   "linhas": 3
+  },
+  "scripts/check-eslint-baseline.mjs": {
+   "arquivos": 1,
+   "linhas": 352
+  },
+  "scripts/check-eslint-config-current.mjs": {
+   "arquivos": 1,
+   "linhas": 106
+  },
+  "scripts/check-eslint-config-parses.mjs": {
+   "arquivos": 1,
+   "linhas": 125
+  },
+  "scripts/check-eslint-disable-baseline.mjs": {
+   "arquivos": 1,
+   "linhas": 46
+  },
+  "scripts/check-event-triggers-drift.mjs": {
+   "arquivos": 1,
+   "linhas": 93
+  },
+  "scripts/check-fab-accessibility.mjs": {
+   "arquivos": 1,
+   "linhas": 51
+  },
+  "scripts/check-file-size-baseline.mjs": {
+   "arquivos": 1,
+   "linhas": 103
+  },
+  "scripts/check-gates-table.mjs": {
+   "arquivos": 1,
+   "linhas": 49
+  },
+  "scripts/check-generated-files-protected.mjs": {
+   "arquivos": 1,
+   "linhas": 89
+  },
+  "scripts/check-headers-mirror.mjs": {
+   "arquivos": 1,
+   "linhas": 77
+  },
+  "scripts/check-iframe-sandbox.mjs": {
+   "arquivos": 1,
+   "linhas": 122
+  },
+  "scripts/check-indexed-access-ratchet.mjs": {
+   "arquivos": 1,
+   "linhas": 89
+  },
+  "scripts/check-invoke-direct-calls.mjs": {
+   "arquivos": 1,
+   "linhas": 266
+  },
+  "scripts/check-ledger-manifest-drift.mjs": {
+   "arquivos": 1,
+   "linhas": 218
+  },
+  "scripts/check-ledger-statements-gate.mjs": {
+   "arquivos": 1,
+   "linhas": 403
+  },
+  "scripts/check-lint-0011-drift.mjs": {
+   "arquivos": 1,
+   "linhas": 209
+  },
+  "scripts/check-lint-0029-drift.mjs": {
+   "arquivos": 1,
+   "linhas": 196
+  },
+  "scripts/check-lockfile-sync.mjs": {
+   "arquivos": 1,
+   "linhas": 100
+  },
+  "scripts/check-log-login-attempt-contract.mjs": {
+   "arquivos": 1,
+   "linhas": 40
+  },
+  "scripts/check-migration-filename-contract.mjs": {
+   "arquivos": 1,
+   "linhas": 455
+  },
+  "scripts/check-migration-path-references.mjs": {
+   "arquivos": 1,
+   "linhas": 196
+  },
+  "scripts/check-migration-receipts.mjs": {
+   "arquivos": 1,
+   "linhas": 211
+  },
+  "scripts/check-migrations-sync-log-gate.mjs": {
+   "arquivos": 1,
+   "linhas": 408
+  },
+  "scripts/check-min-tests-executed.mjs": {
+   "arquivos": 1,
+   "linhas": 46
+  },
+  "scripts/check-mojibake.mjs": {
+   "arquivos": 1,
+   "linhas": 79
+  },
+  "scripts/check-no-bypass-literals.mjs": {
+   "arquivos": 1,
+   "linhas": 164
+  },
+  "scripts/check-no-db-push.mjs": {
+   "arquivos": 1,
+   "linhas": 188
+  },
+  "scripts/check-no-followup-frontend.mjs": {
+   "arquivos": 1,
+   "linhas": 67
+  },
+  "scripts/check-no-inline-cors.mjs": {
+   "arquivos": 1,
+   "linhas": 49
+  },
+  "scripts/check-no-prod-leak.mjs": {
+   "arquivos": 1,
+   "linhas": 100
+  },
+  "scripts/check-no-quote-comments.mjs": {
+   "arquivos": 1,
+   "linhas": 102
+  },
+  "scripts/check-no-salvar-alteracoes-draft.mjs": {
+   "arquivos": 1,
+   "linhas": 68
+  },
+  "scripts/check-no-template-thumbnail.mjs": {
+   "arquivos": 1,
+   "linhas": 72
+  },
+  "scripts/check-orphan-labels.mjs": {
+   "arquivos": 1,
+   "linhas": 192
+  },
+  "scripts/check-outline-none.mjs": {
+   "arquivos": 1,
+   "linhas": 149
+  },
+  "scripts/check-overflow-x-clip.mjs": {
+   "arquivos": 1,
+   "linhas": 59
+  },
+  "scripts/check-package-duplicate-scripts.mjs": {
+   "arquivos": 1,
+   "linhas": 124
+  },
+  "scripts/check-playwright-min-executed.mjs": {
+   "arquivos": 1,
+   "linhas": 109
+  },
+  "scripts/check-policies-baseline.mjs": {
+   "arquivos": 1,
+   "linhas": 600
+  },
+  "scripts/check-pptx-image-parser-exposure.mjs": {
+   "arquivos": 1,
+   "linhas": 102
+  },
+  "scripts/check-price-freshness-coverage.mjs": {
+   "arquivos": 1,
+   "linhas": 136
+  },
+  "scripts/check-product-type-duplicates.mjs": {
+   "arquivos": 1,
+   "linhas": 65
+  },
+  "scripts/check-product-type-fields.mjs": {
+   "arquivos": 1,
+   "linhas": 181
+  },
+  "scripts/check-production-harnesses.mjs": {
+   "arquivos": 1,
+   "linhas": 78
+  },
+  "scripts/check-public-views-drift.mjs": {
+   "arquivos": 1,
+   "linhas": 310
+  },
+  "scripts/check-quote-rpc-canonical-readiness.mjs": {
+   "arquivos": 1,
+   "linhas": 193
+  },
+  "scripts/check-removed-phrases.mjs": {
+   "arquivos": 1,
+   "linhas": 45
+  },
+  "scripts/check-required-checks.mjs": {
+   "arquivos": 1,
+   "linhas": 155
+  },
+  "scripts/check-restore-seller-cart-rpc.mjs": {
+   "arquivos": 1,
+   "linhas": 208
+  },
+  "scripts/check-result-contract.mjs": {
+   "arquivos": 1,
+   "linhas": 87
+  },
+  "scripts/check-rls-no-policy-drift.mjs": {
+   "arquivos": 1,
+   "linhas": 260
+  },
+  "scripts/check-route-error-element.mjs": {
+   "arquivos": 1,
+   "linhas": 168
+  },
+  "scripts/check-route-ref-usage.mjs": {
+   "arquivos": 1,
+   "linhas": 272
+  },
+  "scripts/check-rpc-get-profile-and-roles.mjs": {
+   "arquivos": 1,
+   "linhas": 289
+  },
+  "scripts/check-rpc-permissions.mjs": {
+   "arquivos": 1,
+   "linhas": 112
+  },
+  "scripts/check-runtime-contract.mjs": {
+   "arquivos": 1,
+   "linhas": 115
+  },
+  "scripts/check-schema-reference-drift.mjs": {
+   "arquivos": 1,
+   "linhas": 111
+  },
+  "scripts/check-secdef-anon-drift.mjs": {
+   "arquivos": 1,
+   "linhas": 205
+  },
+  "scripts/check-secrets-inventory.mjs": {
+   "arquivos": 1,
+   "linhas": 341
+  },
+  "scripts/check-security-definer-acl.mjs": {
+   "arquivos": 1,
+   "linhas": 259
+  },
+  "scripts/check-security-definer-audit.mjs": {
+   "arquivos": 1,
+   "linhas": 146
+  },
+  "scripts/check-security-definer-hardening.mjs": {
+   "arquivos": 1,
+   "linhas": 108
+  },
+  "scripts/check-select-columns.mjs": {
+   "arquivos": 1,
+   "linhas": 161
+  },
+  "scripts/check-seller-scope.mjs": {
+   "arquivos": 1,
+   "linhas": 146
+  },
+  "scripts/check-smoke-tags.mjs": {
+   "arquivos": 1,
+   "linhas": 176
+  },
+  "scripts/check-soft-delete-policy.mjs": {
+   "arquivos": 1,
+   "linhas": 81
+  },
+  "scripts/check-summary-color-tokens.mjs": {
+   "arquivos": 1,
+   "linhas": 107
+  },
+  "scripts/check-supabase-linter.mjs": {
+   "arquivos": 1,
+   "linhas": 198
+  },
+  "scripts/check-supabase-migration-ledger.mjs": {
+   "arquivos": 1,
+   "linhas": 214
+  },
+  "scripts/check-supabase-reference-catalog.mjs": {
+   "arquivos": 1,
+   "linhas": 572
+  },
+  "scripts/check-timer-cleanup.mjs": {
+   "arquivos": 1,
+   "linhas": 239
+  },
+  "scripts/check-toast-leaks.mjs": {
+   "arquivos": 1,
+   "linhas": 136
+  },
+  "scripts/check-todo-baseline.mjs": {
+   "arquivos": 1,
+   "linhas": 26
+  },
+  "scripts/check-tsc-baseline.mjs": {
+   "arquivos": 1,
+   "linhas": 122
+  },
+  "scripts/check-tsc-tests-baseline.mjs": {
+   "arquivos": 1,
+   "linhas": 74
+  },
+  "scripts/check-types-inventory-drift.mjs": {
+   "arquivos": 1,
+   "linhas": 509
+  },
+  "scripts/check-visual-baselines.mjs": {
+   "arquivos": 1,
+   "linhas": 111
+  },
+  "scripts/check-visual-preview-suite.mjs": {
+   "arquivos": 1,
+   "linhas": 53
+  },
+  "scripts/check-visual-tests-specs.mjs": {
+   "arquivos": 1,
+   "linhas": 41
+  },
+  "scripts/check-workflow-contracts.mjs": {
+   "arquivos": 1,
+   "linhas": 838
+  },
+  "scripts/ci-cron-table.mjs": {
+   "arquivos": 1,
+   "linhas": 234
+  },
+  "scripts/ci-metrics.mjs": {
+   "arquivos": 1,
+   "linhas": 270
+  },
+  "scripts/ci-performance-gate.ts": {
+   "arquivos": 1,
+   "linhas": 66
+  },
+  "scripts/classify-unledgered-migrations.mjs": {
+   "arquivos": 1,
+   "linhas": 125
+  },
+  "scripts/collect-coverage-ci.mjs": {
+   "arquivos": 1,
+   "linhas": 132
+  },
+  "scripts/consolidate-console-snapshot.mjs": {
+   "arquivos": 1,
+   "linhas": 82
+  },
+  "scripts/contract-testing.mjs": {
+   "arquivos": 1,
+   "linhas": 393
+  },
+  "scripts/drift-baseline.mjs": {
+   "arquivos": 1,
+   "linhas": 1138
+  },
+  "scripts/dry-run-migration-draft.mjs": {
+   "arquivos": 1,
+   "linhas": 337
+  },
+  "scripts/e2e-check-stock-seed.mjs": {
+   "arquivos": 1,
+   "linhas": 95
+  },
+  "scripts/e2e-feature-summary.mjs": {
+   "arquivos": 1,
+   "linhas": 374
+  },
+  "scripts/e2e-mock-auth-setup.mjs": {
+   "arquivos": 1,
+   "linhas": 115
+  },
+  "scripts/e2e-smoke-coverage-doc.mjs": {
+   "arquivos": 1,
+   "linhas": 194
+  },
+  "scripts/e2e-smoke-summary.mjs": {
+   "arquivos": 1,
+   "linhas": 404
+  },
+  "scripts/eslint-baseline-generate.mjs": {
+   "arquivos": 1,
+   "linhas": 79
+  },
+  "scripts/eslint-baseline-scope-add.mjs": {
+   "arquivos": 1,
+   "linhas": 114
+  },
+  "scripts/export-schema-snapshot.mjs": {
+   "arquivos": 1,
+   "linhas": 310
+  },
+  "scripts/extract-types-inventory.mjs": {
+   "arquivos": 1,
+   "linhas": 278
+  },
+  "scripts/fix-edge-cors-allowlist.mjs": {
+   "arquivos": 1,
+   "linhas": 60
+  },
+  "scripts/fix_migrations_idempotent.py": {
+   "arquivos": 1,
+   "linhas": 569
+  },
+  "scripts/freight-quest-load-test.mjs": {
+   "arquivos": 1,
+   "linhas": 374
+  },
+  "scripts/fuzz-edge-uploads.mjs": {
+   "arquivos": 1,
+   "linhas": 446
+  },
+  "scripts/fuzz-testing.mjs": {
+   "arquivos": 1,
+   "linhas": 556
+  },
+  "scripts/gen-edge-live-tests.mjs": {
+   "arquivos": 1,
+   "linhas": 70
+  },
+  "scripts/gen-edges-readme.mjs": {
+   "arquivos": 1,
+   "linhas": 180
+  },
+  "scripts/gen-internal-schema.mjs": {
+   "arquivos": 1,
+   "linhas": 78
+  },
+  "scripts/gen-migrations-readme.mjs": {
+   "arquivos": 1,
+   "linhas": 162
+  },
+  "scripts/generate-audit-report.mjs": {
+   "arquivos": 1,
+   "linhas": 58
+  },
+  "scripts/generate-coverage-report.mjs": {
+   "arquivos": 1,
+   "linhas": 356
+  },
+  "scripts/generate-theme-report.mjs": {
+   "arquivos": 1,
+   "linhas": 90
+  },
+  "scripts/graphify": {
+   "arquivos": 4,
+   "linhas": 485
+  },
+  "scripts/guard-canonical-project.mjs": {
+   "arquivos": 1,
+   "linhas": 366
+  },
+  "scripts/inspect-quote-number-strategy.mjs": {
+   "arquivos": 1,
+   "linhas": 111
+  },
+  "scripts/inventario": {
+   "arquivos": 3,
+   "linhas": 604
+  },
+  "scripts/kit-ai-enrichment.js": {
+   "arquivos": 1,
+   "linhas": 40
+  },
+  "scripts/kit-enrichment": {
+   "arquivos": 2,
+   "linhas": 381
+  },
+  "scripts/lib": {
+   "arquivos": 1,
+   "linhas": 146
+  },
+  "scripts/list-migration-drafts.mjs": {
+   "arquivos": 1,
+   "linhas": 118
+  },
+  "scripts/list-users.ts": {
+   "arquivos": 1,
+   "linhas": 24
+  },
+  "scripts/magazine-flakiness-report.mjs": {
+   "arquivos": 1,
+   "linhas": 282
+  },
+  "scripts/map-drafts-to-migrations.mjs": {
+   "arquivos": 1,
+   "linhas": 274
+  },
+  "scripts/massive-load-test.mjs": {
+   "arquivos": 1,
+   "linhas": 237
+  },
+  "scripts/migrate-edge-cors-allowlist.mjs": {
+   "arquivos": 1,
+   "linhas": 156
+  },
+  "scripts/mutation-test-magazine.mjs": {
+   "arquivos": 1,
+   "linhas": 362
+  },
+  "scripts/observability-check.mjs": {
+   "arquivos": 1,
+   "linhas": 253
+  },
+  "scripts/pgss-slo-check.mjs": {
+   "arquivos": 1,
+   "linhas": 187
+  },
+  "scripts/plan-status.mjs": {
+   "arquivos": 1,
+   "linhas": 173
+  },
+  "scripts/preflight-migration-apply.mjs": {
+   "arquivos": 1,
+   "linhas": 434
+  },
+  "scripts/promote-draft-migration.mjs": {
+   "arquivos": 1,
+   "linhas": 620
+  },
+  "scripts/publish-ssot-schema.mjs": {
+   "arquivos": 1,
+   "linhas": 209
+  },
+  "scripts/qa": {
+   "arquivos": 17,
+   "linhas": 2025
+  },
+  "scripts/qa-price-readonly-regression.mjs": {
+   "arquivos": 1,
+   "linhas": 154
+  },
+  "scripts/recalibrate-watermark-thresholds.mjs": {
+   "arquivos": 1,
+   "linhas": 271
+  },
+  "scripts/regras_negocio": {
+   "arquivos": 3,
+   "linhas": 2539
+  },
+  "scripts/replenishment-ci": {
+   "arquivos": 1,
+   "linhas": 54
+  },
+  "scripts/round-quality-report.mjs": {
+   "arquivos": 1,
+   "linhas": 258
+  },
+  "scripts/route-test-matrix.mjs": {
+   "arquivos": 1,
+   "linhas": 23
+  },
+  "scripts/run-e2e-quotes-undo.mjs": {
+   "arquivos": 1,
+   "linhas": 149
+  },
+  "scripts/run-smoke-filtered.mjs": {
+   "arquivos": 1,
+   "linhas": 60
+  },
+  "scripts/seo-sanity-check.mjs": {
+   "arquivos": 1,
+   "linhas": 84
+  },
+  "scripts/simulate-ai-key-scenarios.mjs": {
+   "arquivos": 1,
+   "linhas": 166
+  },
+  "scripts/simulate-bi-partial-degradation.mjs": {
+   "arquivos": 1,
+   "linhas": 83
+  },
+  "scripts/simulate-daily-flows.mjs": {
+   "arquivos": 1,
+   "linhas": 382
+  },
+  "scripts/simulate-degradation-sink.mjs": {
+   "arquivos": 1,
+   "linhas": 153
+  },
+  "scripts/simulate-degradation-telemetry.mjs": {
+   "arquivos": 1,
+   "linhas": 288
+  },
+  "scripts/simulate-quote-rpc-proposals.mjs": {
+   "arquivos": 1,
+   "linhas": 582
+  },
+  "scripts/simulate-signup-migration.mjs": {
+   "arquivos": 1,
+   "linhas": 245
+  },
+  "scripts/smoke-tests.mjs": {
+   "arquivos": 1,
+   "linhas": 208
+  },
+  "scripts/ssot-report-annotations.mjs": {
+   "arquivos": 1,
+   "linhas": 127
+  },
+  "scripts/ssot-report-bump.mjs": {
+   "arquivos": 1,
+   "linhas": 145
+  },
+  "scripts/ssot-report-markdown.mjs": {
+   "arquivos": 1,
+   "linhas": 189
+  },
+  "scripts/ssot-report-summary.mjs": {
+   "arquivos": 1,
+   "linhas": 121
+  },
+  "scripts/ssot-report.mjs": {
+   "arquivos": 1,
+   "linhas": 87
+  },
+  "scripts/stress-burst.mjs": {
+   "arquivos": 1,
+   "linhas": 221
+  },
+  "scripts/stress-quote-number-concurrent.mjs": {
+   "arquivos": 1,
+   "linhas": 158
+  },
+  "scripts/supabase-read-only-query.mjs": {
+   "arquivos": 1,
+   "linhas": 108
+  },
+  "scripts/supabase_snapshot": {
+   "arquivos": 2,
+   "linhas": 2545
+  },
+  "scripts/test-critical-coverage.mjs": {
+   "arquivos": 1,
+   "linhas": 92
+  },
+  "scripts/test-failures-report.mjs": {
+   "arquivos": 1,
+   "linhas": 91
+  },
+  "scripts/test-magazine-coverage.mjs": {
+   "arquivos": 1,
+   "linhas": 40
+  },
+  "scripts/triage-edge-typecheck.mjs": {
+   "arquivos": 1,
+   "linhas": 324
+  },
+  "scripts/tsc-baseline-generate.mjs": {
+   "arquivos": 1,
+   "linhas": 68
+  },
+  "scripts/typecheck-edge-functions.mjs": {
+   "arquivos": 1,
+   "linhas": 137
+  },
+  "scripts/update-any-type-baseline.mjs": {
+   "arquivos": 1,
+   "linhas": 91
+  },
+  "scripts/validate-cart-undo.mjs": {
+   "arquivos": 1,
+   "linhas": 108
+  },
+  "scripts/validate-cnpj-error-mapper.mjs": {
+   "arquivos": 1,
+   "linhas": 164
+  },
+  "scripts/validate-cnpj-property-based.mjs": {
+   "arquivos": 1,
+   "linhas": 101
+  },
+  "scripts/validate-lovable-sync-target.mjs": {
+   "arquivos": 1,
+   "linhas": 161
+  },
+  "scripts/validate-migration-target.mjs": {
+   "arquivos": 1,
+   "linhas": 81
+  },
+  "scripts/validate-quote-summary-undo.mjs": {
+   "arquivos": 1,
+   "linhas": 155
+  },
+  "scripts/validate-quotes-list.mjs": {
+   "arquivos": 1,
+   "linhas": 124
+  },
+  "scripts/validate-ssot-report.mjs": {
+   "arquivos": 1,
+   "linhas": 284
+  },
+  "scripts/validate-supabase-config.mjs": {
+   "arquivos": 1,
+   "linhas": 176
+  },
+  "scripts/verify-build-integrity.mjs": {
+   "arquivos": 1,
+   "linhas": 32
+  },
+  "scripts/verify-external.ts": {
+   "arquivos": 1,
+   "linhas": 47
+  },
+  "scripts/verify-quote-number-hardening.mjs": {
+   "arquivos": 1,
+   "linhas": 240
+  },
+  "scripts/verify-roboflow-setup.js": {
+   "arquivos": 1,
+   "linhas": 253
+  },
+  "scripts/wraparound-monitor-check.mjs": {
+   "arquivos": 1,
+   "linhas": 190
+  },
+  "src/App.router-contract.test.tsx": {
+   "arquivos": 1,
+   "linhas": 88
+  },
+  "src/App.tsx": {
+   "arquivos": 1,
+   "linhas": 130
+  },
+  "src/components": {
+   "arquivos": 1332,
+   "linhas": 268632
+  },
+  "src/config": {
+   "arquivos": 1,
+   "linhas": 30
+  },
+  "src/constants": {
+   "arquivos": 1,
+   "linhas": 52
+  },
+  "src/contexts": {
+   "arquivos": 20,
+   "linhas": 5359
+  },
+  "src/data": {
+   "arquivos": 3,
+   "linhas": 1758
+  },
+  "src/deploy-version.ts": {
+   "arquivos": 1,
+   "linhas": 7
+  },
+  "src/hooks": {
+   "arquivos": 447,
+   "linhas": 83733
+  },
+  "src/integrations": {
+   "arquivos": 11,
+   "linhas": 66203
+  },
+  "src/lib": {
+   "arquivos": 327,
+   "linhas": 50560
+  },
+  "src/logic": {
+   "arquivos": 4,
+   "linhas": 807
+  },
+  "src/main.tsx": {
+   "arquivos": 1,
+   "linhas": 63
+  },
+  "src/pages": {
+   "arquivos": 345,
+   "linhas": 81474
+  },
+  "src/routes": {
+   "arquivos": 14,
+   "linhas": 1253
+  },
+  "src/services": {
+   "arquivos": 27,
+   "linhas": 5351
+  },
+  "src/stores": {
+   "arquivos": 10,
+   "linhas": 1056
+  },
+  "src/test": {
+   "arquivos": 3,
+   "linhas": 366
+  },
+  "src/tests": {
+   "arquivos": 33,
+   "linhas": 5019
+  },
+  "src/types": {
+   "arquivos": 26,
+   "linhas": 4426
+  },
+  "src/utils": {
+   "arquivos": 56,
+   "linhas": 8171
+  },
+  "supabase/functions": {
+   "arquivos": 251,
+   "linhas": 45902
+  },
+  "tailwind.config.ts": {
+   "arquivos": 1,
+   "linhas": 351
+  },
+  "test-hooks-safety.mjs": {
+   "arquivos": 1,
+   "linhas": 410
+  },
+  "test-magazine-fix.mjs": {
+   "arquivos": 1,
+   "linhas": 331
+  },
+  "tests/StockFilterToolbar.field-order.test.tsx": {
+   "arquivos": 1,
+   "linhas": 46
+  },
+  "tests/StockFilterToolbar.reset-isSearching.test.tsx": {
+   "arquivos": 1,
+   "linhas": 91
+  },
+  "tests/StockFilterToolbar.rupture-badge.test.tsx": {
+   "arquivos": 1,
+   "linhas": 120
+  },
+  "tests/StockFilterToolbar.test.tsx": {
+   "arquivos": 1,
+   "linhas": 129
+  },
+  "tests/StockStatCard.test.tsx": {
+   "arquivos": 1,
+   "linhas": 143
+  },
+  "tests/__deprecated__": {
+   "arquivos": 12,
+   "linhas": 1681
+  },
+  "tests/__mocks__": {
+   "arquivos": 2,
+   "linhas": 159
+  },
+  "tests/_helpers": {
+   "arquivos": 3,
+   "linhas": 168
+  },
+  "tests/a11y": {
+   "arquivos": 3,
+   "linhas": 157
+  },
+  "tests/admin": {
+   "arquivos": 14,
+   "linhas": 2648
+  },
+  "tests/ai-usage.test.ts": {
+   "arquivos": 1,
+   "linhas": 191
+  },
+  "tests/api": {
+   "arquivos": 2,
+   "linhas": 367
+  },
+  "tests/audit": {
+   "arquivos": 1,
+   "linhas": 155
+  },
+  "tests/color-navigation.test.ts": {
+   "arquivos": 1,
+   "linhas": 348
+  },
+  "tests/compare": {
+   "arquivos": 1,
+   "linhas": 141
+  },
+  "tests/components": {
+   "arquivos": 145,
+   "linhas": 32335
+  },
+  "tests/config": {
+   "arquivos": 4,
+   "linhas": 245
+  },
+  "tests/contexts": {
+   "arquivos": 2,
+   "linhas": 387
+  },
+  "tests/contracts": {
+   "arquivos": 17,
+   "linhas": 4768
+  },
+  "tests/e2e": {
+   "arquivos": 8,
+   "linhas": 560
+  },
+  "tests/e2e-customization": {
+   "arquivos": 1,
+   "linhas": 165
+  },
+  "tests/edge-functions": {
+   "arquivos": 167,
+   "linhas": 12487
+  },
+  "tests/fixtures": {
+   "arquivos": 3,
+   "linhas": 262
+  },
+  "tests/functions": {
+   "arquivos": 1,
+   "linhas": 169
+  },
+  "tests/fuzz": {
+   "arquivos": 2,
+   "linhas": 584
+  },
+  "tests/helpers": {
+   "arquivos": 2,
+   "linhas": 325
+  },
+  "tests/hooks": {
+   "arquivos": 123,
+   "linhas": 16747
+  },
+  "tests/integration": {
+   "arquivos": 11,
+   "linhas": 2949
+  },
+  "tests/integrations": {
+   "arquivos": 1,
+   "linhas": 15
+  },
+  "tests/lib": {
+   "arquivos": 60,
+   "linhas": 8224
+  },
+  "tests/magazine": {
+   "arquivos": 18,
+   "linhas": 3232
+  },
+  "tests/mocks": {
+   "arquivos": 1,
+   "linhas": 40
+  },
+  "tests/navigation-tooltips.spec.ts": {
+   "arquivos": 1,
+   "linhas": 32
+  },
+  "tests/p0": {
+   "arquivos": 6,
+   "linhas": 580
+  },
+  "tests/pages": {
+   "arquivos": 13,
+   "linhas": 2541
+  },
+  "tests/product-form-improvements.test.ts": {
+   "arquivos": 1,
+   "linhas": 1054
+  },
+  "tests/regression": {
+   "arquivos": 2,
+   "linhas": 793
+  },
+  "tests/replenishment": {
+   "arquivos": 2,
+   "linhas": 105
+  },
+  "tests/rls": {
+   "arquivos": 7,
+   "linhas": 1267
+  },
+  "tests/routes": {
+   "arquivos": 1,
+   "linhas": 89
+  },
+  "tests/scripts": {
+   "arquivos": 50,
+   "linhas": 8372
+  },
+  "tests/search": {
+   "arquivos": 1,
+   "linhas": 54
+  },
+  "tests/security": {
+   "arquivos": 21,
+   "linhas": 2089
+  },
+  "tests/setup-ref-warning-capture.ts": {
+   "arquivos": 1,
+   "linhas": 140
+  },
+  "tests/setup-strict-side-effects.ts": {
+   "arquivos": 1,
+   "linhas": 73
+  },
+  "tests/setup.ts": {
+   "arquivos": 1,
+   "linhas": 159
+  },
+  "tests/simulation": {
+   "arquivos": 1,
+   "linhas": 47
+  },
+  "tests/snapshots": {
+   "arquivos": 1,
+   "linhas": 37
+  },
+  "tests/ssot": {
+   "arquivos": 8,
+   "linhas": 1016
+  },
+  "tests/ssr": {
+   "arquivos": 1,
+   "linhas": 78
+  },
+  "tests/stock-module.test.tsx": {
+   "arquivos": 1,
+   "linhas": 606
+  },
+  "tests/stock-performance.test.ts": {
+   "arquivos": 1,
+   "linhas": 736
+  },
+  "tests/stock-types.test.ts": {
+   "arquivos": 1,
+   "linhas": 175
+  },
+  "tests/stores": {
+   "arquivos": 2,
+   "linhas": 178
+  },
+  "tests/supplierReliability.aggregate.test.ts": {
+   "arquivos": 1,
+   "linhas": 118
+  },
+  "tests/supplierReliability.extract.test.ts": {
+   "arquivos": 1,
+   "linhas": 181
+  },
+  "tests/supplierReliability.fuzz.test.ts": {
+   "arquivos": 1,
+   "linhas": 171
+  },
+  "tests/supplierReliability.matching.test.ts": {
+   "arquivos": 1,
+   "linhas": 159
+  },
+  "tests/supplierReliability.score.test.ts": {
+   "arquivos": 1,
+   "linhas": 101
+  },
+  "tests/sw": {
+   "arquivos": 2,
+   "linhas": 686
+  },
+  "tests/test-utils.tsx": {
+   "arquivos": 1,
+   "linhas": 42
+  },
+  "tests/types": {
+   "arquivos": 1,
+   "linhas": 160
+  },
+  "tests/unit": {
+   "arquivos": 31,
+   "linhas": 5482
+  },
+  "tests/utils": {
+   "arquivos": 21,
+   "linhas": 3900
+  },
+  "tests/validation": {
+   "arquivos": 1,
+   "linhas": 86
+  },
+  "tests/workflows": {
+   "arquivos": 1,
+   "linhas": 116
+  },
+  "vite.config.ts": {
+   "arquivos": 1,
+   "linhas": 224
+  },
+  "vitest.config.ts": {
+   "arquivos": 1,
+   "linhas": 164
+  }
+ },
+ "maiores_arquivos": [
+  {
+   "arquivo": "src/integrations/supabase/types.ts",
+   "linhas": 64863
+  },
+  {
+   "arquivo": "scripts/regras_negocio/generate.py",
+   "linhas": 2138
+  },
+  {
+   "arquivo": "scripts/supabase_snapshot/snapshot.py",
+   "linhas": 1723
+  },
+  {
+   "arquivo": "eslint.config.js",
+   "linhas": 1660
+  },
+  {
+   "arquivo": "supabase/functions/expert-chat/index.ts",
+   "linhas": 1469
+  },
+  {
+   "arquivo": "src/components/kit-builder/PersonalizationConfig.tsx",
+   "linhas": 1410
+  },
+  {
+   "arquivo": "src/pages/tools/VisualSearchPage.tsx",
+   "linhas": 1274
+  },
+  {
+   "arquivo": "src/components/kit-builder/BoxSelector.tsx",
+   "linhas": 1273
+  },
+  {
+   "arquivo": "src/pages/products/SellerCartsPage.tsx",
+   "linhas": 1196
+  },
+  {
+   "arquivo": "scripts/drift-baseline.mjs",
+   "linhas": 1138
+  },
+  {
+   "arquivo": "src/components/products/ProductCard.tsx",
+   "linhas": 1129
+  },
+  {
+   "arquivo": "src/lib/theme-presets.ts",
+   "linhas": 1107
+  },
+  {
+   "arquivo": "src/pages/products/CartsListPage.tsx",
+   "linhas": 1037
+  },
+  {
+   "arquivo": "src/hooks/quotes/useQuoteBuilderState.ts",
+   "linhas": 1016
+  },
+  {
+   "arquivo": "src/components/cart/CartHeaderButton.tsx",
+   "linhas": 1011
+  },
+  {
+   "arquivo": "src/lib/bi/pptxGenerator.ts",
+   "linhas": 952
+  },
+  {
+   "arquivo": "src/data/mock-match-products.ts",
+   "linhas": 940
+  },
+  {
+   "arquivo": "src/components/products/ProductListItem.tsx",
+   "linhas": 939
+  },
+  {
+   "arquivo": "src/pages/filters/useFiltersPageState.ts",
+   "linhas": 934
+  },
+  {
+   "arquivo": "src/components/search/useGlobalSearch.ts",
+   "linhas": 930
+  },
+  {
+   "arquivo": "scripts/ai-context/gerar.mjs",
+   "linhas": 924
+  },
+  {
+   "arquivo": "src/pages/products/FavoritesPage.tsx",
+   "linhas": 895
+  },
+  {
+   "arquivo": "src/hooks/mockup/useMockupGenerator.ts",
+   "linhas": 894
+  },
+  {
+   "arquivo": "src/pages/auth/Auth.tsx",
+   "linhas": 893
+  },
+  {
+   "arquivo": "src/components/compare/SupplierComparisonModal.tsx",
+   "linhas": 867
+  }
+ ],
+ "qualidade": {
+  "any": 568,
+  "console_log": 1224,
+  "ts_ignore": 0,
+  "eslint_disable": 6,
+  "todos": 76,
+  "arquivos_acima_500_linhas": 164
+ },
+ "todos": [
+  {
+   "arquivo": "e2e/flows/20-all-features-smoke.spec.ts",
+   "linha": 299,
+   "tipo": "FIXME",
+   "texto": "provisório para desbloquear o gate."
+  },
+  {
+   "arquivo": "e2e/flows/20-all-features-smoke.spec.ts",
+   "linha": 303,
+   "tipo": "FIXME",
+   "texto": ".md):"
+  },
+  {
+   "arquivo": "e2e/flows/23-rocket-animation-snapshot.spec.ts",
+   "linha": 18,
+   "tipo": "FIXME",
+   "texto": ".md"
+  },
+  {
+   "arquivo": "e2e/flows/24-visual-regression-stars.spec.ts",
+   "linha": 17,
+   "tipo": "FIXME",
+   "texto": ".md"
+  },
+  {
+   "arquivo": "e2e/flows/99-auth-ui-baseline.spec.ts",
+   "linha": 8,
+   "tipo": "TODO",
+   "texto": "(visual-baseline): testes desabilitados temporariamente porque nenhuma"
+  },
+  {
+   "arquivo": "e2e/flows/pdf-dialog.spec.ts",
+   "linha": 668,
+   "tipo": "TODO",
+   "texto": "conteúdo visível exceto o watermark (que fica por cima devido ao"
+  },
+  {
+   "arquivo": "e2e/flows/sidebar-tooltips.spec.ts",
+   "linha": 4,
+   "tipo": "TODO",
+   "texto": "item visível da sidebar com `data-tooltip-label`"
+  },
+  {
+   "arquivo": "e2e/helpers/e2e-resources.ts",
+   "linha": 4,
+   "tipo": "TODO",
+   "texto": "orçamento, coleção, lista de favoritos, kit ou cart"
+  },
+  {
+   "arquivo": "e2e/scripts/__tests__/generate-fixtures.test.ts",
+   "linha": 13,
+   "tipo": "TODO",
+   "texto": "(test-debt): 4 testes falham — console spy nao captura output."
+  },
+  {
+   "arquivo": "e2e/undo-toast.spec.ts",
+   "linha": 138,
+   "tipo": "TODO",
+   "texto": "seed)', () => {"
+  },
+  {
+   "arquivo": "e2e/undo-toast.spec.ts",
+   "linha": 142,
+   "tipo": "TODO",
+   "texto": "seed via supabase --insert de uma notificação não lida do usuário e2e,"
+  },
+  {
+   "arquivo": "e2e/undo-toast.spec.ts",
+   "linha": 151,
+   "tipo": "TODO",
+   "texto": "seed coleção com 1 produto, remover, validar toast,"
+  },
+  {
+   "arquivo": "e2e/undo-toast.spec.ts",
+   "linha": 159,
+   "tipo": "TODO",
+   "texto": "seed lista de favoritos, excluir, validar toast,"
+  },
+  {
+   "arquivo": "eslint.config.js",
+   "linha": 754,
+   "tipo": "FIXME",
+   "texto": "', 'HACK', 'XXX'] }],"
+  },
+  {
+   "arquivo": "scripts/ai-context/gerar.mjs",
+   "linha": 188,
+   "tipo": "TODO",
+   "texto": "|FIXME|HACK|XXX)\\b[:\\s-]*([^\\n]{0,100})/.exec(line); if (m) todos.push({ linha: ln, tipo: m[1], text"
+  },
+  {
+   "arquivo": "scripts/ai-context/gerar.mjs",
+   "linha": 222,
+   "tipo": "TODO",
+   "texto": "|FIXME|HACK|XXX)\\b[:\\s-]*([^\\n]{0,100})/.exec(l); return m ? { linha: i + 1, tipo: m[1], texto: m[2]"
+  },
+  {
+   "arquivo": "scripts/check-allowlist-memory-crosscheck.mjs",
+   "linha": 8,
+   "tipo": "TODO",
+   "texto": "\"."
+  },
+  {
+   "arquivo": "scripts/check-allowlist-memory-crosscheck.mjs",
+   "linha": 87,
+   "tipo": "TODO",
+   "texto": "\\b/i.test(reason)) {"
+  },
+  {
+   "arquivo": "scripts/check-allowlist-memory-crosscheck.mjs",
+   "linha": 88,
+   "tipo": "TODO",
+   "texto": "— documentar antes de merge`);"
+  },
+  {
+   "arquivo": "scripts/check-edge-zod-ratchet.mjs",
+   "linha": 14,
+   "tipo": "TODO",
+   "texto": "/as/file-size: o débito não"
+  },
+  {
+   "arquivo": "scripts/check-lint-0011-drift.mjs",
+   "linha": 142,
+   "tipo": "TODO",
+   "texto": "documentar motivo antes de aprovar PR' });"
+  },
+  {
+   "arquivo": "scripts/check-lint-0029-drift.mjs",
+   "linha": 137,
+   "tipo": "TODO",
+   "texto": "documentar motivo antes de aprovar PR' });"
+  },
+  {
+   "arquivo": "scripts/check-rls-no-policy-drift.mjs",
+   "linha": 23,
+   "tipo": "TODO",
+   "texto": "\"). Não precisa de BD."
+  },
+  {
+   "arquivo": "scripts/check-rls-no-policy-drift.mjs",
+   "linha": 123,
+   "tipo": "TODO",
+   "texto": "|PENDENTE|FALTA|PLACEHOLDER/i.test(entry.reason)) {"
+  },
+  {
+   "arquivo": "scripts/check-rls-no-policy-drift.mjs",
+   "linha": 124,
+   "tipo": "TODO",
+   "texto": "'/'PENDENTE')`);"
+  },
+  {
+   "arquivo": "scripts/check-rls-no-policy-drift.mjs",
+   "linha": 195,
+   "tipo": "TODO",
+   "texto": "documentar se é deny-all intencional ou RLS esquecida (verificar secdef_fn/cron_job)',"
+  },
+  {
+   "arquivo": "scripts/check-rls-no-policy-drift.mjs",
+   "linha": 243,
+   "tipo": "TODO",
+   "texto": "\"), secdef_fn e/ou cron_job que escrevem na tabela.\\n' +"
+  },
+  {
+   "arquivo": "scripts/check-secdef-anon-drift.mjs",
+   "linha": 143,
+   "tipo": "TODO",
+   "texto": "documentar motivo antes de aprovar PR (endpoint público?)' });"
+  },
+  {
+   "arquivo": "scripts/check-soft-delete-policy.mjs",
+   "linha": 48,
+   "tipo": "TODO",
+   "texto": "statement CREATE TABLE (até o próximo ';'), independente de"
+  },
+  {
+   "arquivo": "scripts/check-todo-baseline.mjs",
+   "linha": 3,
+   "tipo": "TODO",
+   "texto": "/FIXME/HACK em src/ (produção)."
+  },
+  {
+   "arquivo": "scripts/check-todo-baseline.mjs",
+   "linha": 13,
+   "tipo": "TODO",
+   "texto": "/FIXME/HACK baseline gate',"
+  },
+  {
+   "arquivo": "scripts/check-todo-baseline.mjs",
+   "linha": 15,
+   "tipo": "TODO",
+   "texto": "/FIXME/HACK em src/ (excluindo testes). Falha apenas em REGRESSÃO (contagem cresce).',"
+  },
+  {
+   "arquivo": "scripts/check-todo-baseline.mjs",
+   "linha": 19,
+   "tipo": "TODO",
+   "texto": "` em linha-comentário também é débito —"
+  },
+  {
+   "arquivo": "scripts/check-todo-baseline.mjs",
+   "linha": 22,
+   "tipo": "TODO",
+   "texto": "|FIXME|HACK)\\b/gi, {"
+  },
+  {
+   "arquivo": "scripts/drift-baseline.mjs",
+   "linha": 488,
+   "tipo": "TODO",
+   "texto": "objeto (ex.: `.*`, `^create table`, `public`)."
+  },
+  {
+   "arquivo": "scripts/gen-internal-schema.mjs",
+   "linha": 6,
+   "tipo": "TODO",
+   "texto": "histórico do repo: antes deste"
+  },
+  {
+   "arquivo": "scripts/lib/baseline-gate.mjs",
+   "linha": 48,
+   "tipo": "TODO",
+   "texto": "/FIXME/HACK) a linha-comentário"
+  },
+  {
+   "arquivo": "scripts/lib/baseline-gate.mjs",
+   "linha": 49,
+   "tipo": "TODO",
+   "texto": "` novo não pode ser de graça."
+  },
+  {
+   "arquivo": "scripts/lib/baseline-gate.mjs",
+   "linha": 67,
+   "tipo": "TODO",
+   "texto": "/FIXME/HACK baseline gate')"
+  },
+  {
+   "arquivo": "scripts/simulate-degradation-sink.mjs",
+   "linha": 6,
+   "tipo": "TODO",
+   "texto": "evento `intelligence_block_degraded` e decide se ele vira"
+  },
+  {
+   "arquivo": "src/components/cart/__tests__/cartCompanyCnpjMaskContract.test.ts",
+   "linha": 15,
+   "tipo": "XXX",
+   "texto": ".XXX/XXXX-XX`."
+  },
+  {
+   "arquivo": "src/components/layout/sidebar/__tests__/SidebarFocusVisible.test.ts",
+   "linha": 28,
+   "tipo": "TODO",
+   "texto": "elemento interativo do sidebar de"
+  },
+  {
+   "arquivo": "src/components/ui/ColorSwatchPicker.tsx",
+   "linha": 12,
+   "tipo": "TODO",
+   "texto": "o resto do sistema (ProductColorSwatches) usa o token SSOT"
+  },
+  {
+   "arquivo": "src/components/ui/ColorSwatchPicker.tsx",
+   "linha": 24,
+   "tipo": "TODO",
+   "texto": "o sistema, edite os tokens em"
+  },
+  {
+   "arquivo": "src/contexts/AuthContext.tsx",
+   "linha": 255,
+   "tipo": "TODO",
+   "texto": "carregamento lento. attachSessionRevalidation() + recoverSession"
+  },
+  {
+   "arquivo": "src/hooks/__tests__/useCatalogState.unit.test.tsx",
+   "linha": 101,
+   "tipo": "TODO",
+   "texto": "hook cresceu demais — cascata de imports (Supabase + ProductsContext +"
+  },
+  {
+   "arquivo": "src/hooks/common/__tests__/useListUrlState.test.tsx",
+   "linha": 216,
+   "tipo": "TODO",
+   "texto": "render, inclusive"
+  },
+  {
+   "arquivo": "src/hooks/products/useProductsLightweight.ts",
+   "linha": 170,
+   "tipo": "TODO",
+   "texto": "produto da grade, neutralizando o re-rank/substring client-side por"
+  },
+  {
+   "arquivo": "src/lib/sensitive-masking.ts",
+   "linha": 8,
+   "tipo": "TODO",
+   "texto": "valor mascarado é renderizado como `••••XXXX`"
+  },
+  {
+   "arquivo": "src/lib/telemetry/longTaskWatchdog.ts",
+   "linha": 36,
+   "tipo": "TODO",
+   "texto": "ou PARTE do bloqueio. */"
+  },
+  {
+   "arquivo": "src/services/__tests__/magazinePublish.fuzz.test.ts",
+   "linha": 9,
+   "tipo": "TODO",
+   "texto": "cenário deve preservar:"
+  },
+  {
+   "arquivo": "supabase/functions/log-login-attempt/index.ts",
+   "linha": 110,
+   "tipo": "TODO",
+   "texto": "request voltava a bater no DB quebrado (breaker inútil pós-cooldown)."
+  },
+  {
+   "arquivo": "supabase/functions/xbz-image-uploader/index.ts",
+   "linha": 11,
+   "tipo": "TODO",
+   "texto": "implementar a lógica de upload (ver complete_xbz_image_import em public schema)"
+  },
+  {
+   "arquivo": "supabase/functions/xbz-image-uploader/index.ts",
+   "linha": 50,
+   "tipo": "TODO",
+   "texto": "implementar upload para Cloudflare Images + chamada a complete_xbz_image_import"
+  },
+  {
+   "arquivo": "tests/admin/skeleton-snapshots.test.tsx",
+   "linha": 91,
+   "tipo": "XXX",
+   "texto": "\")"
+  },
+  {
+   "arquivo": "tests/admin/skeleton-snapshots.test.tsx",
+   "linha": 92,
+   "tipo": "XXX",
+   "texto": "\"')"
+  },
+  {
+   "arquivo": "tests/admin/skeleton-snapshots.test.tsx",
+   "linha": 93,
+   "tipo": "XXX",
+   "texto": "\"')"
+  },
+  {
+   "arquivo": "tests/admin/skeleton-snapshots.test.tsx",
+   "linha": 94,
+   "tipo": "XXX",
+   "texto": "\"')"
+  },
+  {
+   "arquivo": "tests/functions/aiRecommendationsJsonParsing.test.ts",
+   "linha": 54,
+   "tipo": "TODO",
+   "texto": "(test-debt): 1 testes falham — output do AI mudou (tech vs Cliente de tecnologia)."
+  },
+  {
+   "arquivo": "tests/lib/date-utils-extended.test.ts",
+   "linha": 14,
+   "tipo": "TODO",
+   "texto": "(test-debt): 1 testes falham — date format mudou."
+  },
+  {
+   "arquivo": "tests/lib/personalization/adapters/price-response.adapter.test.ts",
+   "linha": 160,
+   "tipo": "TODO",
+   "texto": "ativar quando defaults explícitos para markup ausente forem"
+  },
+  {
+   "arquivo": "tests/p0/edge-functions-failing.test.ts",
+   "linha": 34,
+   "tipo": "TODO",
+   "texto": "(P0): validar o shape após o fix de catch unknown."
+  },
+  {
+   "arquivo": "tests/p0/edge-functions-failing.test.ts",
+   "linha": 58,
+   "tipo": "TODO",
+   "texto": "(P0): garantir que a função não vaza stack trace e devolve JSON estável."
+  },
+  {
+   "arquivo": "tests/p0/edge-functions-failing.test.ts",
+   "linha": 80,
+   "tipo": "TODO",
+   "texto": "(P0): após o fix de typing 19 erros, validar headers de retry."
+  },
+  {
+   "arquivo": "tests/p0/external-integrations.test.ts",
+   "linha": 23,
+   "tipo": "TODO",
+   "texto": "(P0): hook useProducts deve mostrar banner \"modo degradado\"."
+  },
+  {
+   "arquivo": "tests/p0/external-integrations.test.ts",
+   "linha": 29,
+   "tipo": "TODO",
+   "texto": "(P0): UI deve renderizar selo \"Atualizado há Xd\" do mem://features/price-freshness-indicator."
+  },
+  {
+   "arquivo": "tests/p0/external-integrations.test.ts",
+   "linha": 37,
+   "tipo": "TODO",
+   "texto": "(P0): VideoPlayer deve esconder player e exibir hero image."
+  },
+  {
+   "arquivo": "tests/p0/rls-data-integrity.test.ts",
+   "linha": 88,
+   "tipo": "TODO",
+   "texto": "(P0): exige seed + execução real — vive em tests/rls/ quando habilitado."
+  },
+  {
+   "arquivo": "tests/p0/rls-data-integrity.test.ts",
+   "linha": 93,
+   "tipo": "TODO",
+   "texto": "(P0): exige seed + execução real — vive em tests/rls/ quando habilitado."
+  },
+  {
+   "arquivo": "tests/p0/webhooks-resilience.test.ts",
+   "linha": 38,
+   "tipo": "TODO",
+   "texto": "(P0): implementar/validar política de retry com jitter."
+  },
+  {
+   "arquivo": "tests/p0/webhooks-resilience.test.ts",
+   "linha": 57,
+   "tipo": "TODO",
+   "texto": "(P0): validar AbortController + persistência em retry_queue."
+  },
+  {
+   "arquivo": "tests/pages/AdminLoginAttemptsPage.test.tsx",
+   "linha": 54,
+   "tipo": "TODO",
+   "texto": "(test-debt): 7 testes falham — AuthProvider wrapper missing."
+  },
+  {
+   "arquivo": "tests/pages/AdminTelemetriaPage.test.tsx",
+   "linha": 200,
+   "tipo": "TODO",
+   "texto": "dois botões 'Atualizar' renderizando agora — UI mudou, refinar selector com role+name */, async () ="
+  },
+  {
+   "arquivo": "tests/ssr/useDevGate.ssr.test.tsx",
+   "linha": 18,
+   "tipo": "TODO",
+   "texto": "(useDevGate-ssr): 1 dos 3 testes falha — useDevGate retorna isAllowed=false"
+  },
+  {
+   "arquivo": "tests/utils/tailwindRings.interaction.test.tsx",
+   "linha": 506,
+   "tipo": "TODO",
+   "texto": "o fluxo Tab não \"gasta\" o ring de nenhum elemento"
+  },
+  {
+   "arquivo": "scripts/regras_negocio/generate.py",
+   "linha": 570,
+   "tipo": "TODO",
+   "texto": "\", \"http\", \"import\")) and \"://\" not in c:"
+  }
+ ],
+ "alertas": {
+  "rotas_sem_arquivo": [
+   "/kit-builder",
+   "/montar-kit"
+  ],
+  "componentes_ambiguos": [],
+  "menu_sem_destino": [
+   "Ação -> #fab",
+   "AI Router -> ai-router",
+   "Bem-vindo ao Promo Brindes! -> welcome",
+   "Busca Inteligente -> search",
+   "Carrinho -> __open_cart__",
+   "Central de Notificações -> notifications",
+   "Chat com Especialista IA -> expert-chat",
+   "Conexões -> connections",
+   "Conteúdo -> content",
+   "CRM de Clientes -> clients",
+   "Design -> design",
+   "Flow -> __open_expert__",
+   "Identidade -> identity",
+   "Layout & Gerar -> layout",
+   "Operação -> operation",
+   "Produtos -> products",
+   "Pronto para vender! -> complete",
+   "Saúde -> health"
+  ],
+  "edges_orfas": [
+   "analyze-logo-colors",
+   "anonymize-user",
+   "audit-suite",
+   "bi-copilot",
+   "bitrix-sync",
+   "block-ip-temporarily",
+   "bulk-random-passwords",
+   "categories-api",
+   "cnpj-lookup",
+   "commemorative-dates",
+   "comparison-ai-advisor",
+   "connection-tester",
+   "connections-hub-audit",
+   "cors-audit",
+   "detect-new-device",
+   "dropbox-list",
+   "elevenlabs-scribe-token",
+   "ema-pipeline-health",
+   "force-global-logout",
+   "full-op-diagnostics",
+   "generate-ad-image",
+   "generate-ad-prompt",
+   "generate-mockup",
+   "generate-product-seo",
+   "github-credentials-test",
+   "health-check",
+   "intelligence-substitute-applied",
+   "kit-ai-builder",
+   "kit-identity-suggest",
+   "load-test",
+   "magic-up-score",
+   "market-intelligence-insights",
+   "mcp-keys-issue",
+   "mcp-keys-revoke",
+   "mcp-keys-rotate",
+   "mcp-query",
+   "migrate-helper",
+   "ownership-repair",
+   "product-visual-search",
+   "product-webhook",
+   "quote-sync",
+   "quote-sync-promo-champions",
+   "rate-limit-check",
+   "rls-audit",
+   "rls-integration-tests",
+   "secure-upload",
+   "semantic-search",
+   "simulation-orchestrator",
+   "step-up-verify",
+   "sync-quote-bitrix",
+   "test-cart-concurrency",
+   "test-cart-limit",
+   "test-cart-rls",
+   "test-contract-orchestrator",
+   "test-inventory-orchestrator",
+   "tests",
+   "trends-insights",
+   "validate-access",
+   "verify-2fa-token",
+   "verify-email",
+   "visual-search",
+   "word-magic"
+  ],
+  "edges_chamadas_sem_pasta": [
+   "receive-quote-sync"
+  ],
+  "tabelas_sem_rls": [
+   "_backup_quotes_orgid_null_20260614",
+   "_bkp_asia_raw_pre_fix_referencia",
+   "binding_colors",
+   "binding_types",
+   "color_analysis_staging",
+   "cover_finishes",
+   "cover_materials",
+   "cover_types",
+   "import_staging_images",
+   "notebook_features",
+   "paper_colors",
+   "paper_formats",
+   "paper_rulings",
+   "paper_weights",
+   "product_customization_prices",
+   "product_notebook_features",
+   "product_notebook_specs",
+   "product_packaging",
+   "product_print_positions",
+   "product_specifications",
+   "scraper_images_staging",
+   "sm_images_staging",
+   "supplier_products_raw_history_default",
+   "user_organizations",
+   "webhook_delivery_locks",
+   "xbz_gallery_staging"
+  ],
+  "tabelas_usadas_sem_definicao": [
+   "ai_models",
+   "avatars",
+   "categories_tree_visual",
+   "contacts",
+   "customers",
+   "mv_material_group_stats",
+   "sync_logs",
+   "v_commemorative_dates_with_colors",
+   "xbz_image_import_staging"
+  ],
+  "tabelas_com_drift_migration_vs_types": [],
+  "rpcs_sem_definicao": [
+   "fn_get_color_swatches_batch",
+   "fn_get_reposicao_variants_summary",
+   "fn_rupture_health_check",
+   "fn_rupture_quick_stats",
+   "send_digest_notification"
+  ],
+  "componentes_orfaos": [
+   "src/components/admin/connections/ConnectionErrorDetailsDialog.tsx",
+   "src/components/admin/connections/ErrorDetailsDialog.tsx",
+   "src/components/admin/DiscountApprovalQueue.tsx",
+   "src/components/admin/ProductPersonalizationManager.tsx",
+   "src/components/admin/products/CategorySelect.tsx",
+   "src/components/admin/SellerDiscountLimitsPanel.tsx",
+   "src/components/auth/SupabaseConnectionDebug.tsx",
+   "src/components/bi/ExportDossierButton.tsx",
+   "src/components/cart/BundleSuggestionCard.tsx",
+   "src/components/cart/CartTabsRich.tsx",
+   "src/components/common/BulkActionsBar.tsx",
+   "src/components/common/GlassElements.tsx",
+   "src/components/common/ImageWithFallback.tsx",
+   "src/components/common/LoadingOverlay.tsx",
+   "src/components/common/StatusTimeline.tsx",
+   "src/components/common/UrgencyBadge.tsx",
+   "src/components/compare/ComparisonShortcutsCheatsheet.tsx",
+   "src/components/compare/FocusModeToggle.tsx",
+   "src/components/compare/HistoricalPriceOverlay.tsx",
+   "src/components/compare/ImageZoomCell.tsx",
+   "src/components/compare/SortableColumnWrapper.tsx",
+   "src/components/dev/DevOnlyBridgeOverlay.tsx",
+   "src/components/expert/ExpertChatButton.tsx",
+   "src/components/favorites/QuickListPicker.tsx",
+   "src/components/filters/FilterSection.tsx",
+   "src/components/goals/SalesGoalsCard.tsx",
+   "src/components/intelligence/SegmentAnalysis.tsx",
+   "src/components/intelligence/TopClients.tsx",
+   "src/components/inventory/HealthScoreInfoDialog.tsx",
+   "src/components/inventory/risk/RupturePanelEma.tsx",
+   "src/components/inventory/risk/WhatIfPanel.tsx",
+   "src/components/inventory/StockCategoryTreeSelect.tsx",
+   "src/components/inventory/StockHeroRiskBanner.tsx",
+   "src/components/inventory/VariantStockRowActions.tsx",
+   "src/components/kit-builder/IdentitySuggestionButton.tsx",
+   "src/components/kit-builder/KitCollaborationPanel.tsx",
+   "src/components/kit-builder/KitComparisonDialog.tsx",
+   "src/components/kit-builder/KitHealthCard.tsx",
+   "src/components/kit-builder/KitTemplates.tsx",
+   "src/components/kit-builder/KitVariantsManager.tsx",
+   "src/components/kit-builder/SimilarKitsWidget.tsx",
+   "src/components/layout/PageHeader.tsx",
+   "src/components/LoadingScreen.tsx",
+   "src/components/mockup/TemplatePreview.tsx",
+   "src/components/novelties/NoveltiesSection.tsx",
+   "src/components/personalization/ThemeCustomization.tsx",
+   "src/components/products/KitVisualComposition.tsx",
+   "src/components/products/PriceFreshnessThresholdEditor.tsx",
+   "src/components/products/PriceHistoryChart.tsx",
+   "src/components/products/ProductHoverPreview.tsx",
+   "src/components/products/ProductIntelligence.tsx",
+   "src/components/products/ProductSectionNav.tsx",
+   "src/components/products/ProductVariations.tsx",
+   "src/components/products/quick-view/QuickViewGallery.tsx",
+   "src/components/products/RecentlyViewedBar.tsx",
+   "src/components/products/ZoomableGallery.tsx",
+   "src/components/quotes/ItemsListEditor.tsx",
+   "src/components/quotes/MarginInsightBadge.tsx",
+   "src/components/quotes/QuoteApprovalCard.tsx",
+   "src/components/quotes/QuoteBuilderNavigation.tsx",
+   "src/components/quotes/QuoteCard.tsx",
+   "src/components/quotes/QuoteFilters.tsx",
+   "src/components/quotes/QuoteSignaturePad.tsx",
+   "src/components/quotes/QuoteValidityBanner.tsx",
+   "src/components/search/GlobalSearch.tsx",
+   "src/components/search/voice/VoiceOverlaySections.tsx",
+   "src/components/security/SecuritySettings.tsx",
+   "src/components/simulator/MockupPreview.tsx",
+   "src/components/simulator/NicheRecommendationBadge.tsx",
+   "src/components/simulator/SimulationPriceSourceBadge.tsx",
+   "src/components/simulator/StockAlert.tsx",
+   "src/components/simulator/TechniqueCard.tsx",
+   "src/components/ui/carousel.tsx",
+   "src/components/ui/DataCard.tsx",
+   "src/components/ui/form.tsx",
+   "src/components/ui/LabeledField.tsx",
+   "src/components/ui/LoadingButton.tsx",
+   "src/components/ui/LoadingState.tsx",
+   "src/components/ui/sidebar.tsx",
+   "src/components/ui/StatusBadge.tsx"
+  ],
+  "componentes_com_nome_duplicado": [
+   "BreadcrumbItem",
+   "BulkAction",
+   "CartItemSkeleton",
+   "CategoryIcon",
+   "CompareCartsDialog",
+   "ConfirmDialog",
+   "DashboardSkeleton",
+   "EMPTY_FILTERS",
+   "FadeInView",
+   "FilterSection",
+   "GroupSeparator",
+   "HighlightMatch",
+   "HoverCard",
+   "LoadingButton",
+   "LoadingOverlay",
+   "MiniStatCard",
+   "MobileSummarySheet",
+   "ProductDetailSkeleton",
+   "ProductEngravingSection",
+   "ProductGridSkeleton",
+   "ProductLoaderAndColorSelector",
+   "ProductPersonalizationManager",
+   "ProductSelector",
+   "RankBadge",
+   "SkipToContent",
+   "StatCard",
+   "StockBadge",
+   "TechniqueCard",
+   "TechniqueSelector",
+   "UnsavedChangesDialog"
+  ],
+  "scripts_orfaos": [
+   "scripts/test-magazine-sql-contracts.sh",
+   "scripts/test-wave1-forward-only-migrations.sh"
+  ],
+  "env_usadas_nao_declaradas": [
+   "CI",
+   "DEV",
+   "E2E_USER_EMAIL",
+   "E2E_USER_PASSWORD",
+   "FUTURE_STOCK_FUZZ_RUNS",
+   "FUTURE_STOCK_FUZZ_SEED",
+   "GITHUB_STEP_SUMMARY",
+   "KIT_FIXTURE_ID",
+   "MODE",
+   "NODE_ENV",
+   "PROD",
+   "RUN_INTEGRATION_TESTS",
+   "UPDATE_PDF_COLOR_ALLOWLIST",
+   "VITE_AUTH_DEBUG",
+   "VITE_ENABLE_NAV_METRICS",
+   "VITE_GOTRUE_CAPTCHA",
+   "VITE_GRAVACAO_API_KEY",
+   "VITE_NAV_METRICS_SAMPLE_RATE",
+   "VITE_PUBLIC_URL",
+   "VITE_SHOW_DEV_INFRA_MESSAGES",
+   "VITE_SUPABASE_PUBLISHABLE_KEY",
+   "VITE_TURNSTILE_SITE_KEY",
+   "VITE_USE_CANVAS_STARFIELD",
+   "VITE_VERCEL_GIT_COMMIT_SHA"
+  ],
+  "ciclos_de_import": 18,
+  "possiveis_segredos_no_codigo": [
+   "scripts/ai-context/cenarios.mjs:102",
+   "src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9",
+   "src/integrations/supabase/client.ts:27",
+   "tests/unit/sensitive-masking.test.ts:93",
+   "tests/unit/sensitive-masking.test.ts:108",
+   "tests/unit/sensitive-masking.test.ts:133",
+   "tests/unit/sensitive-masking.test.ts:158"
+  ]
+ },
+ "erros_do_gerador": []
+}

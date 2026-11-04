@@ -1,0 +1,574 @@
+{
+ "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
+ "format_version": 2,
+ "nos": 2428,
+ "arestas": 9682,
+ "hubs": [
+  {
+   "arquivo": "src/lib/utils.ts",
+   "importado_por": 627
+  },
+  {
+   "arquivo": "src/components/ui/button.tsx",
+   "importado_por": 551
+  },
+  {
+   "arquivo": "src/components/ui/badge.tsx",
+   "importado_por": 433
+  },
+  {
+   "arquivo": "src/integrations/supabase/client.ts",
+   "importado_por": 338
+  },
+  {
+   "arquivo": "src/components/ui/card.tsx",
+   "importado_por": 301
+  },
+  {
+   "arquivo": "src/lib/logger.ts",
+   "importado_por": 284
+  },
+  {
+   "arquivo": "src/components/ui/tooltip.tsx",
+   "importado_por": 266
+  },
+  {
+   "arquivo": "src/components/ui/input.tsx",
+   "importado_por": 228
+  },
+  {
+   "arquivo": "src/contexts/AuthContext.tsx",
+   "importado_por": 178
+  },
+  {
+   "arquivo": "src/components/ui/skeleton.tsx",
+   "importado_por": 163
+  },
+  {
+   "arquivo": "src/hooks/products/index.ts",
+   "importado_por": 136
+  },
+  {
+   "arquivo": "src/components/ui/label.tsx",
+   "importado_por": 130
+  },
+  {
+   "arquivo": "src/components/ui/select.tsx",
+   "importado_por": 130
+  },
+  {
+   "arquivo": "src/components/ui/dialog.tsx",
+   "importado_por": 124
+  },
+  {
+   "arquivo": "supabase/functions/_shared/cors.ts",
+   "importado_por": 108
+  },
+  {
+   "arquivo": "src/components/seo/PageSEO.tsx",
+   "importado_por": 91
+  },
+  {
+   "arquivo": "src/lib/db/postgrest.ts",
+   "importado_por": 91
+  },
+  {
+   "arquivo": "src/components/ui/scroll-area.tsx",
+   "importado_por": 84
+  },
+  {
+   "arquivo": "src/lib/kit-builder/index.ts",
+   "importado_por": 82
+  },
+  {
+   "arquivo": "src/types/product-catalog.ts",
+   "importado_por": 80
+  },
+  {
+   "arquivo": "src/hooks/intelligence/index.ts",
+   "importado_por": 74
+  },
+  {
+   "arquivo": "src/lib/edge/safeInvokeCall.ts",
+   "importado_por": 70
+  },
+  {
+   "arquivo": "src/types/magazine.ts",
+   "importado_por": 61
+  },
+  {
+   "arquivo": "src/types/stock.ts",
+   "importado_por": 61
+  },
+  {
+   "arquivo": "src/components/ui/switch.tsx",
+   "importado_por": 55
+  },
+  {
+   "arquivo": "src/components/ui/textarea.tsx",
+   "importado_por": 55
+  },
+  {
+   "arquivo": "src/lib/security/sanitize-error.ts",
+   "importado_por": 53
+  },
+  {
+   "arquivo": "src/utils/image-utils.ts",
+   "importado_por": 52
+  },
+  {
+   "arquivo": "src/lib/supabase-untyped.ts",
+   "importado_por": 50
+  },
+  {
+   "arquivo": "src/hooks/admin/index.ts",
+   "importado_por": 48
+  },
+  {
+   "arquivo": "src/integrations/supabase/types.ts",
+   "importado_por": 48
+  },
+  {
+   "arquivo": "src/components/ui/popover.tsx",
+   "importado_por": 47
+  },
+  {
+   "arquivo": "src/components/ui/table.tsx",
+   "importado_por": 47
+  },
+  {
+   "arquivo": "src/hooks/quotes/index.ts",
+   "importado_por": 45
+  },
+  {
+   "arquivo": "src/components/ui/tabs.tsx",
+   "importado_por": 42
+  },
+  {
+   "arquivo": "src/lib/format.ts",
+   "importado_por": 42
+  },
+  {
+   "arquivo": "supabase/functions/_shared/credentials.ts",
+   "importado_por": 42
+  },
+  {
+   "arquivo": "supabase/functions/_shared/request-id.ts",
+   "importado_por": 42
+  },
+  {
+   "arquivo": "src/components/ui/ConfirmDialog.tsx",
+   "importado_por": 40
+  },
+  {
+   "arquivo": "src/hooks/ui/index.ts",
+   "importado_por": 39
+  }
+ ],
+ "ciclos": {
+  "total": 18,
+  "maiores": [
+   {
+    "tamanho": 54,
+    "arquivos": [
+     "src/components/catalog/useCatalogSelection.ts",
+     "src/components/filters/ColorGroupFilter.tsx",
+     "src/components/filters/CommemorativeDateFilter.tsx",
+     "src/components/filters/ExternalCategoryFilter.tsx",
+     "src/components/filters/FilterPanel.tsx",
+     "src/components/filters/InlineColorGroupFilter.tsx",
+     "src/components/filters/filter-panel/useFilterPanelState.ts",
+     "src/components/mockup/MockupClientSelector.tsx",
+     "src/components/mockup/MockupColorSelector.tsx",
+     "src/components/mockup/MockupConfigPanel.tsx",
+     "src/components/mockup/MockupPhotoPicker.tsx",
+     "src/components/mockup/MockupProductSelector.tsx"
+    ]
+   },
+   {
+    "tamanho": 16,
+    "arquivos": [
+     "src/components/simulator/ScenarioComparison.tsx",
+     "src/hooks/simulation/index.ts",
+     "src/hooks/simulation/simulationPriceFetcher.ts",
+     "src/hooks/simulation/useExternalSimulator.ts",
+     "src/hooks/simulation/useGravacaoPriceV2.ts",
+     "src/hooks/simulation/useGravacaoV2.ts",
+     "src/hooks/simulation/usePrintAreas.ts",
+     "src/hooks/simulation/useSimulation.ts",
+     "src/hooks/simulation/useTecnicasUnificadas.ts",
+     "src/hooks/tecnicas/index.ts",
+     "src/hooks/tecnicas/useTecnicasList.ts",
+     "src/lib/external-db/index.ts"
+    ]
+   },
+   {
+    "tamanho": 13,
+    "arquivos": [
+     "src/pages/magazine/components/templates/TemplateRegistry.ts",
+     "src/pages/magazine/components/templates/catalog/GiftSetShowcaseTemplate.tsx",
+     "src/pages/magazine/components/templates/catalog/Grid2x3Template.tsx",
+     "src/pages/magazine/components/templates/catalog/Grid3x3Template.tsx",
+     "src/pages/magazine/components/templates/catalog/ListTemplate.tsx",
+     "src/pages/magazine/components/templates/corporate/CorporateExecutiveTemplate.tsx",
+     "src/pages/magazine/components/templates/corporate/CorporateHeroTemplate.tsx",
+     "src/pages/magazine/components/templates/corporate/CorporateSplitTemplate.tsx",
+     "src/pages/magazine/components/templates/editorial/EditorialManifestoTemplate.tsx",
+     "src/pages/magazine/components/templates/editorial/HeroGridTemplate.tsx",
+     "src/pages/magazine/components/templates/editorial/MagazineTemplate.tsx",
+     "src/pages/magazine/components/templates/editorial/MonoTemplate.tsx"
+    ]
+   },
+   {
+    "tamanho": 5,
+    "arquivos": [
+     "src/contexts/AuthContext.tsx",
+     "src/hooks/auth/useProfileRoles.ts",
+     "src/lib/auth/auth-utils.ts",
+     "src/lib/security/safeToast.ts",
+     "src/lib/system/dev-gate/DevInfraGate.ts"
+    ]
+   },
+   {
+    "tamanho": 5,
+    "arquivos": [
+     "src/hooks/quotes/index.ts",
+     "src/hooks/quotes/useQuoteBuilderState.helpers.ts",
+     "src/hooks/quotes/useQuoteBuilderState.ts",
+     "src/hooks/quotes/useQuoteFunnel.ts",
+     "src/hooks/quotes/useQuoteItems.ts"
+    ]
+   },
+   {
+    "tamanho": 4,
+    "arquivos": [
+     "src/components/cart/CartUtilComponents.tsx",
+     "src/components/cart/cart-utils/CartDialogs.tsx",
+     "src/components/cart/cart-utils/CartExport.ts",
+     "src/components/cart/cart-utils/CartMobileSheet.tsx"
+    ]
+   },
+   {
+    "tamanho": 3,
+    "arquivos": [
+     "src/components/workflows/WorkflowCanvas.tsx",
+     "src/components/workflows/WorkflowEditDialog.tsx",
+     "src/components/workflows/WorkflowStepCard.tsx"
+    ]
+   },
+   {
+    "tamanho": 3,
+    "arquivos": [
+     "src/contexts/OnboardingContext.tsx",
+     "src/hooks/ui/index.ts",
+     "src/hooks/ui/useGlobalShortcuts.ts"
+    ]
+   },
+   {
+    "tamanho": 3,
+    "arquivos": [
+     "src/lib/intelligence/degradation.ts",
+     "src/lib/intelligence/degradationRegistry.ts",
+     "src/lib/intelligence/degradationSink.ts"
+    ]
+   },
+   {
+    "tamanho": 3,
+    "arquivos": [
+     "supabase/functions/_shared/ai-router/index.ts",
+     "supabase/functions/_shared/ai-router/openai-bridge.ts",
+     "supabase/functions/_shared/ai-usage.ts"
+    ]
+   },
+   {
+    "tamanho": 2,
+    "arquivos": [
+     "src/components/mockup/AreaCard.tsx",
+     "src/components/mockup/MultiAreaManager.tsx"
+    ]
+   },
+   {
+    "tamanho": 2,
+    "arquivos": [
+     "src/components/pdf/ProposalHtmlTemplate.tsx",
+     "src/components/pdf/ProposalSections.tsx"
+    ]
+   },
+   {
+    "tamanho": 2,
+    "arquivos": [
+     "src/components/quotes/CompanyContactSelector.tsx",
+     "src/components/quotes/company-contact/ContactSelector.tsx"
+    ]
+   },
+   {
+    "tamanho": 2,
+    "arquivos": [
+     "src/components/search/searchCache.ts",
+     "src/components/search/useGlobalSearch.ts"
+    ]
+   },
+   {
+    "tamanho": 2,
+    "arquivos": [
+     "src/hooks/crm/index.ts",
+     "src/hooks/crm/useRamoAtividadeFilter.ts"
+    ]
+   }
+  ]
+ },
+ "orfaos": [
+  "cloudflare-workers/og-meta-bot.js",
+  "docs/promo-champions/receive-quote-sync.ts",
+  "public/sw.js",
+  "src/components/LoadingScreen.tsx",
+  "src/components/admin/DiscountApprovalQueue.tsx",
+  "src/components/admin/ProductPersonalizationManager.tsx",
+  "src/components/admin/SellerDiscountLimitsPanel.tsx",
+  "src/components/admin/connections/ConnectionErrorDetailsDialog.tsx",
+  "src/components/admin/connections/ErrorDetailsDialog.tsx",
+  "src/components/admin/products/CategorySelect.tsx",
+  "src/components/admin/products/kit-components/index.ts",
+  "src/components/audit/index.ts",
+  "src/components/auth/SupabaseConnectionDebug.tsx",
+  "src/components/bi/ExportDossierButton.tsx",
+  "src/components/cart/BundleSuggestionCard.tsx",
+  "src/components/cart/CartTabsRich.tsx",
+  "src/components/categories/index.ts",
+  "src/components/common/BulkActionsBar.tsx",
+  "src/components/common/GlassElements.tsx",
+  "src/components/common/ImageWithFallback.tsx",
+  "src/components/common/LoadingOverlay.tsx",
+  "src/components/common/StatusTimeline.tsx",
+  "src/components/common/UrgencyBadge.tsx",
+  "src/components/compare/ComparisonShortcutsCheatsheet.tsx",
+  "src/components/compare/FocusModeToggle.tsx",
+  "src/components/compare/HistoricalPriceOverlay.tsx",
+  "src/components/compare/ImageZoomCell.tsx",
+  "src/components/compare/SortableColumnWrapper.tsx",
+  "src/components/dashboard/index.ts",
+  "src/components/dev/DevOnlyBridgeOverlay.tsx",
+  "src/components/effects/index.ts",
+  "src/components/expert/ExpertChatButton.tsx",
+  "src/components/favorites/QuickListPicker.tsx",
+  "src/components/filters/FilterSection.tsx",
+  "src/components/filters/index.ts",
+  "src/components/goals/SalesGoalsCard.tsx",
+  "src/components/intelligence/SegmentAnalysis.tsx",
+  "src/components/intelligence/TopClients.tsx",
+  "src/components/inventory/HealthScoreInfoDialog.tsx",
+  "src/components/inventory/StockCategoryTreeSelect.tsx",
+  "src/components/inventory/StockHeroRiskBanner.tsx",
+  "src/components/inventory/VariantStockRowActions.tsx",
+  "src/components/inventory/risk/RupturePanelEma.tsx",
+  "src/components/inventory/risk/WhatIfPanel.tsx",
+  "src/components/kit-builder/IdentitySuggestionButton.tsx",
+  "src/components/kit-builder/KitCollaborationPanel.tsx",
+  "src/components/kit-builder/KitComparisonDialog.tsx",
+  "src/components/kit-builder/KitHealthCard.tsx",
+  "src/components/kit-builder/KitTemplates.tsx",
+  "src/components/kit-builder/KitVariantsManager.tsx",
+  "src/components/kit-builder/SimilarKitsWidget.tsx",
+  "src/components/layout/PageHeader.tsx",
+  "src/components/layout/index.ts",
+  "src/components/loading/index.ts",
+  "src/components/mobile/index.ts",
+  "src/components/mockup/TemplatePreview.tsx",
+  "src/components/novelties/NoveltiesSection.tsx",
+  "src/components/onboarding/index.ts",
+  "src/components/personalization/ThemeCustomization.tsx",
+  "src/components/personalization/index.ts",
+  "src/components/pricing/index.ts",
+  "src/components/products/KitVisualComposition.tsx",
+  "src/components/products/PriceFreshnessThresholdEditor.tsx",
+  "src/components/products/PriceHistoryChart.tsx",
+  "src/components/products/ProductHoverPreview.tsx",
+  "src/components/products/ProductIntelligence.tsx",
+  "src/components/products/ProductSectionNav.tsx",
+  "src/components/products/ProductVariations.tsx",
+  "src/components/products/RecentlyViewedBar.tsx",
+  "src/components/products/ZoomableGallery.tsx",
+  "src/components/products/customization/index.ts",
+  "src/components/products/index.ts",
+  "src/components/products/quick-view/QuickViewGallery.tsx",
+  "src/components/quotes/ItemsListEditor.tsx",
+  "src/components/quotes/MarginInsightBadge.tsx",
+  "src/components/quotes/QuoteApprovalCard.tsx",
+  "src/components/quotes/QuoteBuilderNavigation.tsx",
+  "src/components/quotes/QuoteCard.tsx",
+  "src/components/quotes/QuoteFilters.tsx",
+  "src/components/quotes/QuoteSignaturePad.tsx",
+  "src/components/quotes/QuoteValidityBanner.tsx",
+  "src/components/ramo-atividade/index.ts",
+  "src/components/search/GlobalSearch.tsx",
+  "src/components/search/voice/VoiceOverlaySections.tsx",
+  "src/components/security/SecuritySettings.tsx",
+  "src/components/simulator/MockupPreview.tsx",
+  "src/components/simulator/NicheRecommendationBadge.tsx",
+  "src/components/simulator/SimulationPriceSourceBadge.tsx",
+  "src/components/simulator/StockAlert.tsx",
+  "src/components/simulator/TechniqueCard.tsx",
+  "src/components/ui/DataCard.tsx",
+  "src/components/ui/LabeledField.tsx",
+  "src/components/ui/LoadingButton.tsx",
+  "src/components/ui/LoadingState.tsx",
+  "src/components/ui/StatusBadge.tsx",
+  "src/components/ui/carousel.tsx",
+  "src/components/ui/form.tsx",
+  "src/components/ui/sidebar.tsx",
+  "src/deploy-version.ts",
+  "src/hooks/auth/useAuthHydrationMetrics.ts",
+  "src/hooks/bi/index.ts",
+  "src/hooks/common/useIdleEffect.ts",
+  "src/hooks/common/useIntersectionObserver.ts",
+  "src/hooks/dev/index.ts",
+  "src/hooks/gravacao/index.ts",
+  "src/hooks/products/novelty-core.ts",
+  "src/hooks/quotes/useQuoteTemplates.ts",
+  "src/hooks/simulator/index.ts",
+  "src/hooks/stock/useSavedStockViews.ts",
+  "src/hooks/stock/useStockNotes.ts",
+  "src/hooks/voice/index.ts",
+  "src/integrations/lovable/index.ts",
+  "src/integrations/supabase/rpc-overrides.ts",
+  "src/lib/auth/apply-seller-scope.ts",
+  "src/lib/auth/safeMfaCall.ts",
+  "src/lib/auth/token-audit.ts",
+  "src/lib/design-policy.ts",
+  "src/lib/external-db/rpc-native.ts",
+  "src/lib/navigation/filter-dev-only-items.ts",
+  "src/lib/payments/order-payment-simulator.ts",
+  "src/lib/pdf/whitelabel-comparison.ts",
+  "src/lib/print-area-grouping.ts",
+  "src/lib/supabase/rest-client.ts",
+  "src/lib/supabase/rls-validator.ts",
+  "src/lib/system/dev-infra-messages.ts",
+  "src/lib/telemetry/bridgeAlertThresholds.ts",
+  "src/lib/telemetry/longTaskWatchdog.ts",
+  "src/lib/theme-presets-css-vars-patch.ts",
+  "src/services/quoteItemsReorder.ts",
+  "src/utils/security-audit.ts",
+  "supabase/functions/ai-recommendations/kill_switch_contract_test.ts",
+  "supabase/functions/bitrix-sync/handler_characterization_test.ts",
+  "supabase/functions/cnpj-lookup/contract_test.ts",
+  "supabase/functions/collections-watcher/notification-insert.contract_test.ts",
+  "supabase/functions/e2e-cleanup/handler_characterization_test.ts",
+  "supabase/functions/favorites-watcher/notification-insert.contract_test.ts",
+  "supabase/functions/log-login-attempt/index_test.ts",
+  "supabase/functions/mcp-keys-revoke/set_config_contract_test.ts",
+  "supabase/functions/migrate-helper/source_contract_test.ts",
+  "supabase/functions/product-webhook/contract_test.ts",
+  "supabase/functions/product-webhook/idempotency_test.ts",
+  "supabase/functions/simulation-orchestrator/handler_characterization_test.ts",
+  "supabase/functions/simulation-orchestrator/outcomes_test.ts",
+  "supabase/functions/visual-search/integration_test.ts",
+  "supabase/functions/visual-search/observability_contract_test.ts",
+  "supabase/functions/webhook-inbound/handler_characterization_test.ts",
+  "supabase/functions/webhook-inbound/integration_test.ts",
+  "test-hooks-safety.mjs",
+  "test-magazine-fix.mjs"
+ ],
+ "modulos_mais_acoplados": [
+  {
+   "modulo": "lib",
+   "depende_de": 20,
+   "importado_por": 103
+  },
+  {
+   "modulo": "contexts",
+   "depende_de": 17,
+   "importado_por": 58
+  },
+  {
+   "modulo": "components/ui",
+   "depende_de": 7,
+   "importado_por": 67
+  },
+  {
+   "modulo": "integrations/supabase",
+   "depende_de": 3,
+   "importado_por": 69
+  },
+  {
+   "modulo": "hooks/products",
+   "depende_de": 29,
+   "importado_por": 37
+  },
+  {
+   "modulo": "types",
+   "depende_de": 4,
+   "importado_por": 50
+  },
+  {
+   "modulo": "components/products",
+   "depende_de": 31,
+   "importado_por": 17
+  },
+  {
+   "modulo": "utils",
+   "depende_de": 10,
+   "importado_por": 37
+  },
+  {
+   "modulo": "hooks/intelligence",
+   "depende_de": 19,
+   "importado_por": 25
+  },
+  {
+   "modulo": "pages/products",
+   "depende_de": 38,
+   "importado_por": 5
+  },
+  {
+   "modulo": "components/layout",
+   "depende_de": 33,
+   "importado_por": 6
+  },
+  {
+   "modulo": "components/admin",
+   "depende_de": 31,
+   "importado_por": 7
+  },
+  {
+   "modulo": "hooks/common",
+   "depende_de": 12,
+   "importado_por": 22
+  },
+  {
+   "modulo": "hooks/ui",
+   "depende_de": 8,
+   "importado_por": 26
+  },
+  {
+   "modulo": "pages/admin",
+   "depende_de": 31,
+   "importado_por": 3
+  },
+  {
+   "modulo": "lib/edge",
+   "depende_de": 3,
+   "importado_por": 30
+  },
+  {
+   "modulo": "lib/security",
+   "depende_de": 5,
+   "importado_por": 28
+  },
+  {
+   "modulo": "components/common",
+   "depende_de": 12,
+   "importado_por": 17
+  },
+  {
+   "modulo": "lib/telemetry",
+   "depende_de": 2,
+   "importado_por": 27
+  },
+  {
+   "modulo": "components/quotes",
+   "depende_de": 22,
+   "importado_por": 5
+  }
+ ],
+ "arestas_em": "docs/contexto/codigo/grafo-arestas.json"
+}

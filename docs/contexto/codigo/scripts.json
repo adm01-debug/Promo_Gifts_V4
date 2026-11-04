@@ -1,0 +1,3103 @@
+{
+ "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
+ "format_version": 2,
+ "total": 254,
+ "scripts": [
+  {
+   "arquivo": "scripts/ai-context/cenarios.mjs",
+   "descricao": "Simulação de cenários do gerador: monta centenas de repositórios sintéticos (variantes de SQL, rotas, menus, edges, workflows, monorepo, Python, arquivos corrompidos, fuzz) e confere:",
+   "linhas": 173,
+   "env": [
+    "A",
+    "K",
+    "NODE_ENV",
+    "SCRIPT_ONLY",
+    "SRK",
+    "SUPABASE_URL",
+    "VITE_A",
+    "VITE_C",
+    "VITE_FEATURE_X",
+    "X"
+   ],
+   "npm_scripts": [
+    "check:ai-key-contract"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/ai-context/gerar.mjs",
+   "descricao": "Gera o contexto de projeto para agentes de IA (padrão: inventario/ia/*). Zero dependências. Node >= 18. Genérico: funciona em qualquer repositório.",
+   "linhas": 924,
+   "env": [
+    "AI_CONTEXT_DIR",
+    "AI_CONTEXT_PUBLICACAO",
+    "AI_CONTEXT_ROOT"
+   ],
+   "npm_scripts": [],
+   "workflows": [
+    "contexto.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/append-edge-deploy-receipt.mjs",
+   "descricao": "* append-edge-deploy-receipt.mjs",
+   "linhas": 119,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [
+    "deploy-edge-functions.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/append-migration-receipt.mjs",
+   "descricao": "* append-migration-receipt.mjs",
+   "linhas": 164,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [
+    "db-apply-migration.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/audit-credentials.mjs",
+   "descricao": "* audit-credentials.mjs",
+   "linhas": 277,
+   "env": [
+    "USER_CREDENTIAL"
+   ],
+   "npm_scripts": [
+    "audit:credentials",
+    "audit:credentials:all",
+    "audit:credentials:update-baseline"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/audit-db-frontend-coverage.mjs",
+   "descricao": "* Auditoria DB ↔ Frontend (coluna a coluna)",
+   "linhas": 486,
+   "env": [],
+   "npm_scripts": [
+    "audit:db-frontend"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/audit-debug.ts",
+   "descricao": "* Audit Técnico do Sistema - Junho 2026",
+   "linhas": 72,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/audit-technical-rls.sql",
+   "descricao": null,
+   "linhas": 181,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/build-cors-snapshot.mjs",
+   "descricao": "* Generate a static CORS snapshot for every edge function.",
+   "linhas": 133,
+   "env": [],
+   "npm_scripts": [
+    "build:cors-snapshot"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/build-drafts-pr-comment.mjs",
+   "descricao": "* build-drafts-pr-comment.mjs",
+   "linhas": 109,
+   "env": [],
+   "npm_scripts": [
+    "drafts:pr-comment"
+   ],
+   "workflows": [
+    "drafts-index-check.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/build-local-migrations-manifest.mjs",
+   "descricao": "* build-local-migrations-manifest.mjs",
+   "linhas": 95,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/build-migration-ledger-manifest.mjs",
+   "descricao": null,
+   "linhas": 141,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/build-visual-diff-report.mjs",
+   "descricao": "* Gera um relatório HTML estático com Expected × Actual × Diff lado a lado",
+   "linhas": 152,
+   "env": [],
+   "npm_scripts": [
+    "e2e:visual-diff-report"
+   ],
+   "workflows": [
+    "e2e-customization-collapse.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/bundle-size-report.mjs",
+   "descricao": "* bundle-size-report — Gera resumo em markdown do impacto de bundle do PR",
+   "linhas": 172,
+   "env": [
+    "GITHUB_STEP_SUMMARY"
+   ],
+   "npm_scripts": [],
+   "workflows": [
+    "bundle-size-report.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/capacity-growth-projection.mjs",
+   "descricao": "* capacity-growth-projection.mjs",
+   "linhas": 203,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [
+    "capacity-growth-report.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-403-sweep.sql",
+   "descricao": null,
+   "linhas": 64,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-allowlist-memory-crosscheck.mjs",
+   "descricao": "* Gate: cross-check das allowlists de segurança contra a documentação canônica.",
+   "linhas": 112,
+   "env": [],
+   "npm_scripts": [
+    "check:allowlist-memory"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-anon-insert-rate-guard.mjs",
+   "descricao": "* P200-E049 — valida que as tabelas com INSERT anônimo estejam protegidas",
+   "linhas": 251,
+   "env": [],
+   "npm_scripts": [
+    "check:anon-rate-guard"
+   ],
+   "workflows": [
+    "deploy-gates.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-anon-write-grants.mjs",
+   "descricao": "* check-anon-write-grants.mjs",
+   "linhas": 157,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [
+    "supabase-security-gate.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-any-type-baseline.mjs",
+   "descricao": "* Gate de CI: conta ocorrências de `as any` / `: any` em código de produção",
+   "linhas": 133,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-as-assertions-baseline.mjs",
+   "descricao": "* Gate de CI: ratchet de asserções `as <Tipo>` em src/ (produção).",
+   "linhas": 51,
+   "env": [],
+   "npm_scripts": [
+    "check:as-assertions-baseline",
+    "check:as-assertions-baseline:update"
+   ],
+   "workflows": [
+    "deploy-gates.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-as-unknown-baseline.mjs",
+   "descricao": "* Gate de CI: ratchet descendente de `as unknown as` em src/ (produção).",
+   "linhas": 44,
+   "env": [],
+   "npm_scripts": [
+    "check:as-unknown-baseline",
+    "check:as-unknown-baseline:update"
+   ],
+   "workflows": [
+    "deploy-gates.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-aschild-nesting.mjs",
+   "descricao": "* Detector estático: aninhamento `<XTrigger asChild>` diretamente dentro de",
+   "linhas": 109,
+   "env": [],
+   "npm_scripts": [
+    "check:aschild-nesting"
+   ],
+   "workflows": [
+    "deploy-gates.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-auth-direct-calls.mjs",
+   "descricao": "* check-auth-direct-calls.mjs — Onda 10",
+   "linhas": 70,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [
+    "auth-fuzz-weekly.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-boundary-baseline.mjs",
+   "descricao": "Gate: nenhuma importação NOVA cruzando domínios de src/pages/<domínio>. Um arquivo em pages/<A>/ não pode importar de pages/<B>/ (B≠A) — código",
+   "linhas": 458,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [
+    "deploy-gates.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-build-log.mjs",
+   "descricao": "* check-build-log.mjs",
+   "linhas": 70,
+   "env": [],
+   "npm_scripts": [
+    "ci:build:warnings"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-build-warnings.mjs",
+   "descricao": null,
+   "linhas": 98,
+   "env": [],
+   "npm_scripts": [
+    "ci:build"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-bundle-size.mjs",
+   "descricao": "* Gate de CI: verifica tamanho dos chunks JS produzidos pelo `vite build`.",
+   "linhas": 343,
+   "env": [
+    "GITHUB_BASE_SHA",
+    "GITHUB_EVENT_NAME",
+    "GITHUB_LABELS"
+   ],
+   "npm_scripts": [
+    "check:bundle-size",
+    "check:bundle-size:update",
+    "check:bundle-size:ratchet"
+   ],
+   "workflows": [
+    "deploy-gates.yml",
+    "ratchet-weekly.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-chunk-cycles.mjs",
+   "descricao": null,
+   "linhas": 99,
+   "env": [],
+   "npm_scripts": [
+    "build",
+    "check:chunk-cycles"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-clickable-drift.mjs",
+   "descricao": "* Gate: proíbe NOVOS elementos não-nativos com `role=\"button\"` inline em src/.",
+   "linhas": 98,
+   "env": [],
+   "npm_scripts": [
+    "check:clickable"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-client-structured-logging.mjs",
+   "descricao": "* check-client-structured-logging.mjs",
+   "linhas": 118,
+   "env": [],
+   "npm_scripts": [
+    "check:client-structured-logging"
+   ],
+   "workflows": [
+    "deploy-gates.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-cloud-status-coverage.mjs",
+   "descricao": "* Coverage gate dedicado ao CloudStatusBanner e hooks relacionados.",
+   "linhas": 102,
+   "env": [
+    "COVERAGE_TOLERANCE_PP"
+   ],
+   "npm_scripts": [
+    "test:cloud-status-coverage"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-cnpj-render.mjs",
+   "descricao": "* B1 — Gate estático de render de CNPJ.",
+   "linhas": 166,
+   "env": [],
+   "npm_scripts": [
+    "check:cnpj-render"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-codeowners-coverage.mjs",
+   "descricao": "* check-codeowners-coverage.mjs",
+   "linhas": 124,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [
+    "deploy-gates.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-conflict-ledger.mjs",
+   "descricao": "* check-conflict-ledger.mjs — E188 (P200)",
+   "linhas": 98,
+   "env": [
+    "GITHUB_BASE_REF",
+    "GITHUB_HEAD_REF"
+   ],
+   "npm_scripts": [],
+   "workflows": [
+    "deploy-gates.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-console-baseline.mjs",
+   "descricao": "Gate: zero console.* fora do logger central em arquivos NOVOS de src/. Arquivos no .console-baseline.json não podem aumentar a contagem (ratchet).",
+   "linhas": 64,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [
+    "deploy-gates.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-contract-coverage.mjs",
+   "descricao": "* CI gate: ensure every body-accepting Edge Function under",
+   "linhas": 100,
+   "env": [],
+   "npm_scripts": [
+    "check:contract-coverage"
+   ],
+   "workflows": [
+    "deploy-gates.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-critical-coverage.mjs",
+   "descricao": "* Coverage gate canônico para os 3 módulos críticos de jornada:",
+   "linhas": 202,
+   "env": [
+    "COVERAGE_TOLERANCE_PP",
+    "CRITICAL_COVERAGE_SUMMARY_PATH"
+   ],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-critical-modules-coverage.mjs",
+   "descricao": null,
+   "linhas": 5,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-critical-path-coverage.mjs",
+   "descricao": "* scripts/check-critical-path-coverage.mjs",
+   "linhas": 100,
+   "env": [
+    "COVERAGE_JSON_PATH"
+   ],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-cron-drift.mjs",
+   "descricao": "* check-cron-drift — E037",
+   "linhas": 93,
+   "env": [
+    "DATABASE_URL",
+    "SUPABASE_DB_PASSWORD",
+    "SUPABASE_PROJECT_REF"
+   ],
+   "npm_scripts": [],
+   "workflows": [
+    "db-schema-drift-check.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-ddl-out-of-band.mjs",
+   "descricao": "* check-ddl-out-of-band.mjs",
+   "linhas": 437,
+   "env": [
+    "SUPABASE_ACCESS_TOKEN",
+    "SUPABASE_PROJECT_REF"
+   ],
+   "npm_scripts": [
+    "check:ddl-out-of-band"
+   ],
+   "workflows": [
+    "ddl-out-of-band-detector.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-dependency-audit.mjs",
+   "descricao": "npm updated source IDs and advisory ranges for these CVEs (2026-09-26): GHSA-5p2g: source 1138809 → 1239765, range >=1.2.0 <=2.0.2",
+   "linhas": 591,
+   "env": [],
+   "npm_scripts": [
+    "check:dependency-audit"
+   ],
+   "workflows": [
+    "deploy-gates.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-doc-refs.mjs",
+   "descricao": "* check-doc-refs — Valida referências `path/arquivo.ext:linha` em documentos",
+   "linhas": 177,
+   "env": [],
+   "npm_scripts": [
+    "check:doc-refs"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-docs-supabase-hosts.mjs",
+   "descricao": "* Verificação automática de hosts/links Supabase em arquivos .md.",
+   "linhas": 166,
+   "env": [],
+   "npm_scripts": [
+    "ssot:hosts"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-draft-canonical-target.mjs",
+   "descricao": "* check-draft-canonical-target.mjs",
+   "linhas": 194,
+   "env": [
+    "PGHOST"
+   ],
+   "npm_scripts": [
+    "drafts:target:check"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-edge-authorization.mjs",
+   "descricao": "* check-edge-authorization",
+   "linhas": 207,
+   "env": [
+    "GITHUB_ACTIONS"
+   ],
+   "npm_scripts": [],
+   "workflows": [
+    "deploy-gates.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-edge-cors-headers.mjs",
+   "descricao": "* CORS Headers Gate — Edge Functions",
+   "linhas": 186,
+   "env": [],
+   "npm_scripts": [
+    "check:edge-cors"
+   ],
+   "workflows": [
+    "magazine-unit-tests.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-edge-integration-coverage.mjs",
+   "descricao": "* scripts/check-edge-integration-coverage.mjs",
+   "linhas": 96,
+   "env": [
+    "EDGE_COVERAGE_THRESHOLD"
+   ],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-edge-live-coverage.mjs",
+   "descricao": "* scripts/check-edge-live-coverage.mjs",
+   "linhas": 54,
+   "env": [],
+   "npm_scripts": [
+    "check:edge-live-coverage"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-edge-request-id-propagation.mjs",
+   "descricao": "* check-edge-request-id-propagation.mjs",
+   "linhas": 192,
+   "env": [
+    "LIST_ONLY"
+   ],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-edge-structured-logging.mjs",
+   "descricao": "* check-edge-structured-logging.mjs",
+   "linhas": 133,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-edge-verify-jwt-allowlist.mjs",
+   "descricao": "* check-edge-verify-jwt-allowlist.mjs",
+   "linhas": 312,
+   "env": [
+    "SUPABASE_ACCESS_TOKEN",
+    "SUPABASE_PROJECT_REF"
+   ],
+   "npm_scripts": [],
+   "workflows": [
+    "edge-functions-drift-check.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-edge-zod-ratchet.mjs",
+   "descricao": "* check-edge-zod-ratchet.mjs",
+   "linhas": 155,
+   "env": [],
+   "npm_scripts": [
+    "check:edge-zod-ratchet",
+    "check:edge-zod-ratchet:update"
+   ],
+   "workflows": [
+    "deploy-gates.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-env.mjs",
+   "descricao": null,
+   "linhas": 3,
+   "env": [
+    "SUPABASE_ANON_KEY",
+    "SUPABASE_URL"
+   ],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-eslint-baseline.mjs",
+   "descricao": "* Política:",
+   "linhas": 352,
+   "env": [],
+   "npm_scripts": [
+    "lint:baseline",
+    "lint:baseline:incremental"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-eslint-config-current.mjs",
+   "descricao": "───────────────────────────────────────────────────────────────────── T-FIX-5 follow-up: detecta arquivos `*.proposed.*` órfãos no ROOT do",
+   "linhas": 106,
+   "env": [],
+   "npm_scripts": [
+    "check:proposed-configs"
+   ],
+   "workflows": [
+    "deploy-gates.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-eslint-config-parses.mjs",
+   "descricao": "* POR QUE ISSO EXISTE",
+   "linhas": 125,
+   "env": [],
+   "npm_scripts": [
+    "lint:config"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-eslint-disable-baseline.mjs",
+   "descricao": "* Conta todas as formas de supressão inline do ESLint:",
+   "linhas": 46,
+   "env": [],
+   "npm_scripts": [
+    "check:eslint-disable-baseline",
+    "check:eslint-disable-baseline:update"
+   ],
+   "workflows": [
+    "deploy-gates.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-event-triggers-drift.mjs",
+   "descricao": "* check-event-triggers-drift — E036",
+   "linhas": 93,
+   "env": [
+    "DATABASE_URL",
+    "SUPABASE_DB_PASSWORD",
+    "SUPABASE_PROJECT_REF"
+   ],
+   "npm_scripts": [],
+   "workflows": [
+    "db-schema-drift-check.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-fab-accessibility.mjs",
+   "descricao": "* Gate estático de acessibilidade do FAB \"Novo Orçamento\".",
+   "linhas": 51,
+   "env": [],
+   "npm_scripts": [
+    "check:fab-a11y"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-file-size-baseline.mjs",
+   "descricao": "* Gate de CI: ratchet de tamanho de arquivo em src/ (produção).",
+   "linhas": 103,
+   "env": [],
+   "npm_scripts": [
+    "check:file-size-baseline",
+    "check:file-size-baseline:update"
+   ],
+   "workflows": [
+    "deploy-gates.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-gates-table.mjs",
+   "descricao": "E191: valida que todo step \"Gate X.Y\" em deploy-gates.yml está documentado em CLAUDE.md. Uso: node scripts/check-gates-table.mjs [--gate]",
+   "linhas": 49,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-generated-files-protected.mjs",
+   "descricao": "* E196 — Gate: arquivos gerados não podem ter >20% de linhas removidas sem label.",
+   "linhas": 89,
+   "env": [
+    "GITHUB_BASE_SHA"
+   ],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-headers-mirror.mjs",
+   "descricao": "* check-headers-mirror.mjs",
+   "linhas": 77,
+   "env": [],
+   "npm_scripts": [
+    "check:headers-mirror"
+   ],
+   "workflows": [
+    "security.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-iframe-sandbox.mjs",
+   "descricao": "* check-iframe-sandbox",
+   "linhas": 122,
+   "env": [],
+   "npm_scripts": [
+    "check:iframe-sandbox"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-indexed-access-ratchet.mjs",
+   "descricao": "* Ratchet advisory: noUncheckedIndexedAccess.",
+   "linhas": 89,
+   "env": [],
+   "npm_scripts": [
+    "check:indexed-access-ratchet",
+    "check:indexed-access-ratchet:update"
+   ],
+   "workflows": [
+    "deploy-gates.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-invoke-direct-calls.mjs",
+   "descricao": "* check-invoke-direct-calls — Onda 18 gate.",
+   "linhas": 266,
+   "env": [
+    "STRICT_BASELINE",
+    "UPDATE_BASELINE"
+   ],
+   "npm_scripts": [],
+   "workflows": [
+    "ci-security-drift.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-ledger-manifest-drift.mjs",
+   "descricao": "* check-ledger-manifest-drift.mjs",
+   "linhas": 218,
+   "env": [],
+   "npm_scripts": [
+    "check:ledger-manifest-drift"
+   ],
+   "workflows": [
+    "schema-snapshot-export.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-ledger-statements-gate.mjs",
+   "descricao": "* check-ledger-statements-gate.mjs",
+   "linhas": 403,
+   "env": [],
+   "npm_scripts": [
+    "ledger:verify-statements"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-lint-0011-drift.mjs",
+   "descricao": "* check-lint-0011-drift.mjs",
+   "linhas": 209,
+   "env": [],
+   "npm_scripts": [
+    "check:lint-0011"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-lint-0029-drift.mjs",
+   "descricao": "* check-lint-0029-drift.mjs",
+   "linhas": 196,
+   "env": [],
+   "npm_scripts": [
+    "check:lint-0029"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-lockfile-sync.mjs",
+   "descricao": "* Guard: `package.json` e `package-lock.json` estao em sincronia?",
+   "linhas": 100,
+   "env": [],
+   "npm_scripts": [
+    "lint:lockfile"
+   ],
+   "workflows": [
+    "nightly-full.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-log-login-attempt-contract.mjs",
+   "descricao": "* Gate: log-login-attempt DEVE manter o contrato \"nunca-5xx\".",
+   "linhas": 40,
+   "env": [],
+   "npm_scripts": [
+    "check:log-login-contract"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-migration-filename-contract.mjs",
+   "descricao": "* Protege apenas o corte forward-only de migrations novas.",
+   "linhas": 455,
+   "env": [],
+   "npm_scripts": [
+    "check:migration-filename-contract"
+   ],
+   "workflows": [
+    "deploy-gates.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-migration-path-references.mjs",
+   "descricao": "* check-migration-path-references.mjs",
+   "linhas": 196,
+   "env": [],
+   "npm_scripts": [
+    "check:migration-refs"
+   ],
+   "workflows": [
+    "deploy-gates.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-migration-receipts.mjs",
+   "descricao": "* check-migration-receipts.mjs (P200-E055)",
+   "linhas": 211,
+   "env": [],
+   "npm_scripts": [
+    "check:migration-receipts"
+   ],
+   "workflows": [
+    "deploy-gates.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-migrations-sync-log-gate.mjs",
+   "descricao": "* check-migrations-sync-log-gate.mjs",
+   "linhas": 408,
+   "env": [],
+   "npm_scripts": [
+    "check:migrations-sync-log-gate"
+   ],
+   "workflows": [
+    "migrations-sync-log-gate.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-min-tests-executed.mjs",
+   "descricao": "* E23/E109 — Gate: minimo de testes executados.",
+   "linhas": 46,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-mojibake.mjs",
+   "descricao": "* check-mojibake.mjs",
+   "linhas": 79,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-no-bypass-literals.mjs",
+   "descricao": "* Gate de CI: bloqueia qualquer reintrodução de chaves de bypass hardcoded",
+   "linhas": 164,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-no-db-push.mjs",
+   "descricao": "* Bloqueia commits que reintroduzem `supabase db push` como instrução operacional.",
+   "linhas": 188,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-no-followup-frontend.mjs",
+   "descricao": "* check-no-followup-frontend.mjs",
+   "linhas": 67,
+   "env": [],
+   "npm_scripts": [
+    "check:no-followup-frontend"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-no-inline-cors.mjs",
+   "descricao": "* Inline CORS gate — bans hand-rolled `Access-Control-Allow-Headers` string",
+   "linhas": 49,
+   "env": [],
+   "npm_scripts": [
+    "check:no-inline-cors"
+   ],
+   "workflows": [
+    "deploy-gates.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-no-prod-leak.mjs",
+   "descricao": "* check-no-prod-leak.mjs",
+   "linhas": 100,
+   "env": [],
+   "npm_scripts": [
+    "check:no-prod-leak"
+   ],
+   "workflows": [
+    "check-no-prod-leak.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-no-quote-comments.mjs",
+   "descricao": "* Gate: garante que `QuoteCommentsSection`, `useQuoteComments` e queries em",
+   "linhas": 102,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [
+    "ci-security-drift.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-no-salvar-alteracoes-draft.mjs",
+   "descricao": "* Gate: previne regressão de label \"Salvar Alterações\" em componentes/fluxos",
+   "linhas": 68,
+   "env": [],
+   "npm_scripts": [
+    "check:no-salvar-alteracoes-draft"
+   ],
+   "workflows": [
+    "deploy-gates.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-no-template-thumbnail.mjs",
+   "descricao": "* CI gate: proíbe reintrodução do componente `TemplateThumbnail`.",
+   "linhas": 72,
+   "env": [],
+   "npm_scripts": [
+    "check:no-template-thumbnail"
+   ],
+   "workflows": [
+    "magazine-unit-tests.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-orphan-labels.mjs",
+   "descricao": "* A11y gate — Labels sem htmlFor (orphan labels).",
+   "linhas": 192,
+   "env": [
+    "UPDATE_BASELINE"
+   ],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-outline-none.mjs",
+   "descricao": "* A11y gate — WCAG 2.4.7 (Focus Visible).",
+   "linhas": 149,
+   "env": [
+    "UPDATE_BASELINE"
+   ],
+   "npm_scripts": [
+    "check:outline-none",
+    "check:outline-none:update-baseline"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-overflow-x-clip.mjs",
+   "descricao": "* Static gate: rejeita `overflow-x-hidden` no MainLayout e em estilos globais",
+   "linhas": 59,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [
+    "deploy-gates.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-package-duplicate-scripts.mjs",
+   "descricao": null,
+   "linhas": 124,
+   "env": [],
+   "npm_scripts": [
+    "check:package-duplicate-scripts"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-playwright-min-executed.mjs",
+   "descricao": "* E42 — Valida que pelo menos N testes Playwright foram executados.",
+   "linhas": 109,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-policies-baseline.mjs",
+   "descricao": "* check-policies-baseline.mjs",
+   "linhas": 600,
+   "env": [
+    "SUPABASE_PROJECT_REF"
+   ],
+   "npm_scripts": [
+    "check:policies-baseline",
+    "check:policies-baseline:update"
+   ],
+   "workflows": [
+    "deploy-gates.yml",
+    "policies-baseline.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-pptx-image-parser-exposure.mjs",
+   "descricao": null,
+   "linhas": 102,
+   "env": [],
+   "npm_scripts": [
+    "build",
+    "check:pptx-image-parser-exposure"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-price-freshness-coverage.mjs",
+   "descricao": "* Coverage gate dedicado aos arquivos de \"price freshness\".",
+   "linhas": 136,
+   "env": [
+    "COVERAGE_TOLERANCE_PP"
+   ],
+   "npm_scripts": [
+    "test:price-freshness"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-product-type-duplicates.mjs",
+   "descricao": "* Gate E119: ratchet de definições locais de `interface Product`.",
+   "linhas": 65,
+   "env": [],
+   "npm_scripts": [
+    "check:product-type-duplicates",
+    "check:product-type-duplicates:update"
+   ],
+   "workflows": [
+    "deploy-gates.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-product-type-fields.mjs",
+   "descricao": "* check-product-type-fields.mjs",
+   "linhas": 181,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [
+    "deploy-gates.yml",
+    "prod-health.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-production-harnesses.mjs",
+   "descricao": null,
+   "linhas": 78,
+   "env": [],
+   "npm_scripts": [
+    "build",
+    "check:production-harnesses"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-public-views-drift.mjs",
+   "descricao": "* check-public-views-drift.mjs",
+   "linhas": 310,
+   "env": [],
+   "npm_scripts": [
+    "check:public-views-drift"
+   ],
+   "workflows": [
+    "deploy-gates.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-quote-rpc-canonical-readiness.mjs",
+   "descricao": "* Bloqueia a promocao do consumidor transacional de orcamentos enquanto o",
+   "linhas": 193,
+   "env": [
+    "SUPABASE_PROJECT_REF"
+   ],
+   "npm_scripts": [
+    "check:quote-rpc:canonical"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-removed-phrases.mjs",
+   "descricao": "* Gate: garante que frases banidas NÃO reapareçam no código.",
+   "linhas": 45,
+   "env": [],
+   "npm_scripts": [
+    "check:removed-phrases"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-required-checks.mjs",
+   "descricao": "* check-required-checks — E71 (2026-10-15)",
+   "linhas": 155,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [
+    "required-checks-guard.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-restore-seller-cart-rpc.mjs",
+   "descricao": "* Deploy gate: confirma que a RPC `restore_seller_cart` está presente",
+   "linhas": 208,
+   "env": [
+    "CANONICAL_SUPABASE_ANON_KEY",
+    "CANONICAL_SUPABASE_URL",
+    "RPC_NAME",
+    "STRICT",
+    "SUPABASE_ANON_KEY",
+    "SUPABASE_SERVICE_ROLE_KEY",
+    "SUPABASE_URL"
+   ],
+   "npm_scripts": [
+    "check:restore-seller-cart-rpc"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-result-contract.mjs",
+   "descricao": null,
+   "linhas": 87,
+   "env": [
+    "GITHUB_STEP_SUMMARY"
+   ],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-rls-no-policy-drift.mjs",
+   "descricao": "* check-rls-no-policy-drift.mjs  (P200-E045)",
+   "linhas": 260,
+   "env": [],
+   "npm_scripts": [
+    "check:rls-no-policy",
+    "check:rls-no-policy:update"
+   ],
+   "workflows": [
+    "deploy-gates.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-route-error-element.mjs",
+   "descricao": "* check-route-error-element.mjs",
+   "linhas": 168,
+   "env": [],
+   "npm_scripts": [
+    "check:route-error-element"
+   ],
+   "workflows": [
+    "deploy-gates.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-route-ref-usage.mjs",
+   "descricao": "* Detector estático: uso indevido de `ref` / `forwardRef` em componentes",
+   "linhas": 272,
+   "env": [
+    "ROUTE_REF_ROOT"
+   ],
+   "npm_scripts": [
+    "check:route-ref-usage"
+   ],
+   "workflows": [
+    "deploy-gates.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-rpc-get-profile-and-roles.mjs",
+   "descricao": "* Gate 5 — verifica que get_profile_and_roles existe e não aparece no audit",
+   "linhas": 289,
+   "env": [
+    "CHECK_RETRY_DELAY_MS",
+    "SUPABASE_SERVICE_KEY",
+    "SUPABASE_URL"
+   ],
+   "npm_scripts": [],
+   "workflows": [
+    "supabase-security-gate.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-rpc-permissions.mjs",
+   "descricao": "* Gate 5 — confirma a postura de EXECUTE da RPC get_profile_and_roles.",
+   "linhas": 112,
+   "env": [
+    "SUPABASE_SERVICE_KEY",
+    "SUPABASE_URL"
+   ],
+   "npm_scripts": [],
+   "workflows": [
+    "supabase-security-gate.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-runtime-contract.mjs",
+   "descricao": "* Verifica o contrato local de runtime sem exigir uma versão exata do Node",
+   "linhas": 115,
+   "env": [
+    "npm_config_user_agent"
+   ],
+   "npm_scripts": [
+    "check:runtime"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-schema-reference-drift.mjs",
+   "descricao": null,
+   "linhas": 111,
+   "env": [],
+   "npm_scripts": [
+    "check:schema-reference-drift"
+   ],
+   "workflows": [
+    "deploy-gates.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-secdef-anon-drift.mjs",
+   "descricao": "* check-secdef-anon-drift.mjs",
+   "linhas": 205,
+   "env": [],
+   "npm_scripts": [
+    "check:secdef-anon"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-secrets-inventory.mjs",
+   "descricao": "* check-secrets-inventory.mjs — E40/E98",
+   "linhas": 341,
+   "env": [],
+   "npm_scripts": [
+    "check:secrets-inventory"
+   ],
+   "workflows": [
+    "deploy-gates.yml",
+    "required-checks-guard.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-security-definer-acl.mjs",
+   "descricao": "* check-security-definer-acl",
+   "linhas": 259,
+   "env": [
+    "GITHUB_ACTIONS",
+    "SUPABASE_ANON_KEY",
+    "SUPABASE_SERVICE_ROLE_KEY",
+    "SUPABASE_URL",
+    "VITE_SUPABASE_PUBLISHABLE_KEY",
+    "VITE_SUPABASE_URL"
+   ],
+   "npm_scripts": [
+    "check:security-definer-acl"
+   ],
+   "workflows": [
+    "magazine-unit-tests.yml",
+    "migration-dry-run.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-security-definer-audit.mjs",
+   "descricao": "* check-security-definer-audit.mjs",
+   "linhas": 146,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [
+    "supabase-security-gate.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-security-definer-hardening.mjs",
+   "descricao": "* Bloqueia migrations que adicionam funções SECURITY DEFINER novas",
+   "linhas": 108,
+   "env": [
+    "GITHUB_BASE_REF"
+   ],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-select-columns.mjs",
+   "descricao": "* check-select-columns.mjs",
+   "linhas": 161,
+   "env": [],
+   "npm_scripts": [
+    "check:select-columns"
+   ],
+   "workflows": [
+    "check-select-columns.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-seller-scope.mjs",
+   "descricao": "* check-seller-scope.mjs",
+   "linhas": 146,
+   "env": [],
+   "npm_scripts": [
+    "check:seller-scope"
+   ],
+   "workflows": [
+    "deploy-gates.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-smoke-tags.mjs",
+   "descricao": "* check-smoke-tags — Garante que todo `test(...)` em",
+   "linhas": 176,
+   "env": [
+    "CI"
+   ],
+   "npm_scripts": [
+    "e2e:smoke-tags-check"
+   ],
+   "workflows": [
+    "deploy-gates.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-soft-delete-policy.mjs",
+   "descricao": "* Gate: política soft-delete (auditoria 20-dim 2026-10-02, item processo).",
+   "linhas": 81,
+   "env": [],
+   "npm_scripts": [
+    "check:soft-delete-policy",
+    "check:soft-delete-policy:update"
+   ],
+   "workflows": [
+    "deploy-gates.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-summary-color-tokens.mjs",
+   "descricao": "* Gate: bloqueia substituição acidental dos tokens `success` por",
+   "linhas": 107,
+   "env": [
+    "SUMMARY_GATE_FILES"
+   ],
+   "npm_scripts": [
+    "check:summary-color-tokens"
+   ],
+   "workflows": [
+    "deploy-gates.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-supabase-linter.mjs",
+   "descricao": "* Gate de CI: usa os Security Advisors da Management API e os gates de",
+   "linhas": 198,
+   "env": [
+    "SUPABASE_ACCESS_TOKEN",
+    "SUPABASE_PROJECT_REF",
+    "UPDATE_BASELINE"
+   ],
+   "npm_scripts": [],
+   "workflows": [
+    "supabase-linter-gate.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-supabase-migration-ledger.mjs",
+   "descricao": "* Compara o ledger de migrations devolvido pelo Supabase CLI com a árvore",
+   "linhas": 214,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [
+    "db-schema-drift-check.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-supabase-reference-catalog.mjs",
+   "descricao": "* check-supabase-reference-catalog.mjs",
+   "linhas": 572,
+   "env": [],
+   "npm_scripts": [
+    "check:supabase-reference-catalog"
+   ],
+   "workflows": [
+    "deploy-gates.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-timer-cleanup.mjs",
+   "descricao": "* check-timer-cleanup.mjs — E134",
+   "linhas": 239,
+   "env": [],
+   "npm_scripts": [
+    "check:timer-cleanup"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-toast-leaks.mjs",
+   "descricao": "* check-toast-leaks — gate estático contra vazamento de texto técnico em toasts.",
+   "linhas": 136,
+   "env": [
+    "UPDATE_BASELINE"
+   ],
+   "npm_scripts": [
+    "check:toast-leaks"
+   ],
+   "workflows": [
+    "deploy-gates.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-todo-baseline.mjs",
+   "descricao": "* Gate de CI: ratchet de marcadores TODO/FIXME/HACK em src/ (produção).",
+   "linhas": 26,
+   "env": [],
+   "npm_scripts": [
+    "check:todo-baseline",
+    "check:todo-baseline:update"
+   ],
+   "workflows": [
+    "deploy-gates.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-tsc-baseline.mjs",
+   "descricao": "* Gate de CI: roda tsc e compara com .tsc-baseline.json.",
+   "linhas": 122,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [
+    "ci-security-drift.yml",
+    "replenishment-quality.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-tsc-tests-baseline.mjs",
+   "descricao": "* e compara o total de erros com .tsc-tests-baseline.json.",
+   "linhas": 74,
+   "env": [],
+   "npm_scripts": [
+    "typecheck:tests",
+    "typecheck:tests:baseline:update"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-types-inventory-drift.mjs",
+   "descricao": "* check-types-inventory-drift.mjs",
+   "linhas": 509,
+   "env": [
+    "DATABASE_URL"
+   ],
+   "npm_scripts": [
+    "check:types-inventory-drift"
+   ],
+   "workflows": [
+    "deploy-gates.yml",
+    "regenerate-supabase-types.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-visual-baselines.mjs",
+   "descricao": "* Guard E44 — Toda spec rodada em workflow visual \"estrito\" (sem",
+   "linhas": 111,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [
+    "deploy-gates.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-visual-preview-suite.mjs",
+   "descricao": "* Guarda de presença: garante que a suíte de regressão visual do",
+   "linhas": 53,
+   "env": [],
+   "npm_scripts": [
+    "check:visual-preview-suite"
+   ],
+   "workflows": [
+    "e2e-visual-preview-button.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-visual-tests-specs.mjs",
+   "descricao": "* Gate de pré-execução do workflow `visual-tests.yml`.",
+   "linhas": 41,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [
+    "visual-tests.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/check-workflow-contracts.mjs",
+   "descricao": "* check-workflow-contracts — E11 + E76 (PLANO_WORKFLOWS_CI_V2_100_ETAPAS_2026-10-14)",
+   "linhas": 838,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [
+    "deploy-gates.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/ci-cron-table.mjs",
+   "descricao": "* E89: ci-cron-table.mjs",
+   "linhas": 234,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [
+    "deploy-gates.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/ci-metrics.mjs",
+   "descricao": "* E93 — Coleta métricas de CI da última semana via GitHub REST API",
+   "linhas": 270,
+   "env": [
+    "GH_TOKEN",
+    "GITHUB_REPOSITORY",
+    "GITHUB_TOKEN"
+   ],
+   "npm_scripts": [],
+   "workflows": [
+    "ci-metrics-weekly.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/ci-performance-gate.ts",
+   "descricao": null,
+   "linhas": 66,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/classify-unledgered-migrations.mjs",
+   "descricao": "* classify-unledgered-migrations.mjs",
+   "linhas": 125,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/collect-coverage-ci.mjs",
+   "descricao": null,
+   "linhas": 132,
+   "env": [
+    "npm_package_name"
+   ],
+   "npm_scripts": [
+    "coverage:ci:collect",
+    "coverage:ci:report"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/consolidate-console-snapshot.mjs",
+   "descricao": "* Consolida snapshots por-worker (`coverage/console-snapshot.<id>.json`)",
+   "linhas": 82,
+   "env": [],
+   "npm_scripts": [
+    "test:strict-ref"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/contract-testing.mjs",
+   "descricao": "* scripts/contract-testing.mjs",
+   "linhas": 393,
+   "env": [
+    "CONTRACT_CRITICAL_CONCURRENCY",
+    "CONTRACT_CRITICAL_ROUNDS",
+    "CONTRACT_TEST_TIMEOUT_MS",
+    "CONTRACT_TEST_UPSTREAM_RETRIES",
+    "CONTRACT_TEST_UPSTREAM_RETRY_DELAY_MS",
+    "N8N_PRODUCT_WEBHOOK_SECRET",
+    "SUPABASE_ANON_KEY",
+    "SUPABASE_SERVICE_ROLE_KEY",
+    "SUPABASE_URL",
+    "WEBHOOK_DISPATCHER_SECRET"
+   ],
+   "npm_scripts": [
+    "test:contract"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/drift-baseline.mjs",
+   "descricao": "* drift-baseline.mjs — baseline do schema de produção para o drift-check.",
+   "linhas": 1138,
+   "env": [
+    "SUPABASE_PROJECT_REF"
+   ],
+   "npm_scripts": [],
+   "workflows": [
+    "db-schema-drift-check.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/dry-run-migration-draft.mjs",
+   "descricao": "* dry-run-migration-draft.mjs",
+   "linhas": 337,
+   "env": [
+    "PGHOST"
+   ],
+   "npm_scripts": [
+    "draft:dry-run"
+   ],
+   "workflows": [
+    "migration-dry-run.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/e2e-check-stock-seed.mjs",
+   "descricao": "* e2e-check-stock-seed.mjs",
+   "linhas": 95,
+   "env": [
+    "VITE_SUPABASE_ANON_KEY",
+    "VITE_SUPABASE_PUBLISHABLE_KEY",
+    "VITE_SUPABASE_URL"
+   ],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/e2e-feature-summary.mjs",
+   "descricao": "* e2e-feature-summary — Agrupa resultados Playwright por FEATURE.",
+   "linhas": 374,
+   "env": [
+    "E2E_RESULTS_JSON",
+    "E2E_SUMMARY_TOP"
+   ],
+   "npm_scripts": [
+    "test:e2e:smoke:report",
+    "test:e2e:regression:report",
+    "e2e:summary"
+   ],
+   "workflows": [
+    "e2e.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/e2e-mock-auth-setup.mjs",
+   "descricao": "* Gera um `e2e/.auth/storageState.json` SINTÉTICO para rodar specs E2E",
+   "linhas": 115,
+   "env": [
+    "E2E_BASE_URL"
+   ],
+   "npm_scripts": [
+    "e2e:mock-auth-setup"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/e2e-smoke-coverage-doc.mjs",
+   "descricao": "* Gera docs/E2E_SMOKE_COVERAGE.md a partir de:",
+   "linhas": 194,
+   "env": [
+    "GITHUB_STEP_SUMMARY"
+   ],
+   "npm_scripts": [
+    "e2e:smoke-coverage-doc",
+    "e2e:smoke-coverage-check"
+   ],
+   "workflows": [
+    "deploy-gates.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/e2e-smoke-summary.mjs",
+   "descricao": "* e2e-smoke-summary — Resumo dedicado da suíte SMOKE por funcionalidade.",
+   "linhas": 404,
+   "env": [
+    "CI",
+    "E2E_RESULTS_JSON",
+    "E2E_SMOKE_PROJECT",
+    "GITHUB_ACTIONS"
+   ],
+   "npm_scripts": [
+    "test:e2e:smoke:report",
+    "e2e:smoke-summary"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/eslint-baseline-generate.mjs",
+   "descricao": "* Gera o baseline do ESLint (apenas ERROS, severity=2) agregando",
+   "linhas": 79,
+   "env": [],
+   "npm_scripts": [
+    "lint:baseline:update"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/eslint-baseline-scope-add.mjs",
+   "descricao": "* Uso:",
+   "linhas": 114,
+   "env": [],
+   "npm_scripts": [
+    "lint:baseline:scope"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/export-schema-snapshot.mjs",
+   "descricao": "* export-schema-snapshot.mjs",
+   "linhas": 310,
+   "env": [
+    "PATH",
+    "SUPABASE_ACCESS_TOKEN",
+    "SUPABASE_DB_PASSWORD",
+    "SUPABASE_PROJECT_REF"
+   ],
+   "npm_scripts": [
+    "schema:snapshot"
+   ],
+   "workflows": [
+    "schema-snapshot-export.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/extract-types-inventory.mjs",
+   "descricao": "* extract-types-inventory.mjs",
+   "linhas": 278,
+   "env": [],
+   "npm_scripts": [
+    "check:types-inventory"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/faxina-rollback-tier1.sql",
+   "descricao": null,
+   "linhas": 30,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/faxina-rollback.sql",
+   "descricao": null,
+   "linhas": 53,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/fix-edge-cors-allowlist.mjs",
+   "descricao": "* fix-edge-cors-allowlist",
+   "linhas": 60,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/fix_migrations_idempotent.py",
+   "descricao": null,
+   "linhas": 569,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/freight-quest-load-test.mjs",
+   "descricao": "* scripts/freight-quest-load-test.mjs",
+   "linhas": 374,
+   "env": [
+    "ALLOW_PROD_LOAD",
+    "DRY_RUN",
+    "LOAD_OUTPUT_FILE",
+    "LOAD_TIMEOUT_MS",
+    "SLA_ERROR_RATE_MAX",
+    "SLA_MIN_THROUGHPUT",
+    "SLA_P95_MAX_MS",
+    "SLA_P99_MAX_MS",
+    "SUPABASE_SERVICE_ROLE_KEY",
+    "SUPABASE_TEST_BYPASS_TOKEN",
+    "SUPABASE_URL",
+    "VITE_SUPABASE_URL"
+   ],
+   "npm_scripts": [
+    "test:freight:load"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/fuzz-edge-uploads.mjs",
+   "descricao": "* scripts/fuzz-edge-uploads.mjs",
+   "linhas": 446,
+   "env": [
+    "ALLOW_PROD_LOAD",
+    "DRY_RUN",
+    "SUPABASE_SERVICE_ROLE_KEY",
+    "SUPABASE_TEST_BYPASS_TOKEN",
+    "SUPABASE_URL",
+    "VITE_SUPABASE_URL"
+   ],
+   "npm_scripts": [
+    "test:fuzz:uploads",
+    "test:fuzz:all"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/fuzz-testing.mjs",
+   "descricao": "* scripts/fuzz-testing.mjs",
+   "linhas": 556,
+   "env": [
+    "ALLOW_PROD_LOAD",
+    "DRY_RUN",
+    "FUZZ_CONCURRENCY",
+    "FUZZ_FUNCTION_CONCURRENCY",
+    "FUZZ_MAX_COMBINATIONS",
+    "SUPABASE_SERVICE_ROLE_KEY",
+    "SUPABASE_TEST_BYPASS_TOKEN",
+    "SUPABASE_URL",
+    "VITE_SUPABASE_URL"
+   ],
+   "npm_scripts": [
+    "test:fuzz",
+    "test:fuzz:all",
+    "test:fuzz:full",
+    "test:fuzz:dry"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/gen-edge-live-tests.mjs",
+   "descricao": "* scripts/gen-edge-live-tests.mjs",
+   "linhas": 70,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/gen-edges-readme.mjs",
+   "descricao": "* Gera supabase/functions/README.md com catálogo das edge functions.",
+   "linhas": 180,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/gen-internal-schema.mjs",
+   "descricao": "* gen-internal-schema.mjs",
+   "linhas": 78,
+   "env": [
+    "DATABASE_URL"
+   ],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/gen-migrations-readme.mjs",
+   "descricao": "Categorize por tipo de prefixo Distribuição mensal (yyyymm → count)",
+   "linhas": 162,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/generate-audit-report.mjs",
+   "descricao": null,
+   "linhas": 58,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [
+    "nightly-full.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/generate-coverage-report.mjs",
+   "descricao": "* scripts/generate-coverage-report.mjs",
+   "linhas": 356,
+   "env": [],
+   "npm_scripts": [
+    "coverage:report",
+    "coverage:report:check"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/generate-theme-report.mjs",
+   "descricao": "JSON gerado pelo afterAll do e2e/theme-validation.spec.ts. Path coordenado com o spec — ver decisão em PR #227.",
+   "linhas": 90,
+   "env": [],
+   "npm_scripts": [
+    "test:theme-validation"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/graphify/build-sql-graph.py",
+   "descricao": "Build a Graphify map from repository SQL files in an isolated output directory.\"\"\"",
+   "linhas": 102,
+   "env": [],
+   "npm_scripts": [
+    "graphify:sql"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/graphify/enrich-typescript-references.mjs",
+   "descricao": null,
+   "linhas": 198,
+   "env": [],
+   "npm_scripts": [
+    "graphify:enrich-types"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/graphify/graph-metrics.mjs",
+   "descricao": null,
+   "linhas": 171,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/graphify/postprocess-report.mjs",
+   "descricao": null,
+   "linhas": 14,
+   "env": [],
+   "npm_scripts": [
+    "graphify:postprocess-report"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/guard-canonical-project.mjs",
+   "descricao": "fix_version: guard-scope-runtime+docs+configs-2026-07-15 Fases:",
+   "linhas": 366,
+   "env": [],
+   "npm_scripts": [
+    "build",
+    "ssot:guard"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/inspect-quote-number-strategy.mjs",
+   "descricao": "* inspect-quote-number-strategy",
+   "linhas": 111,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/inventario/banco.sql",
+   "descricao": null,
+   "linhas": 185,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/inventario/gerar-banco.mjs",
+   "descricao": "* Inventario do banco oficial -> inventario/estado/banco.json (fonte de consulta dos agentes).",
+   "linhas": 223,
+   "env": [
+    "SUPABASE_ACCESS_TOKEN",
+    "SUPABASE_PROJECT_REF"
+   ],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/inventario/gerar-repo.mjs",
+   "descricao": "Inventario das edge functions do repositorio -> inventario/estado/edges.json. Mesmo formato do Zapp_Web_V2.  - linhas, segredos lidos (Deno.env.get no index.ts e nos modulos locais/_shared que ele imp",
+   "linhas": 121,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/inventario/gerar-rotas.mjs",
+   "descricao": "* Inventario das rotas do front -> inventario/estado/rotas.json (fonte de consulta dos agentes).",
+   "linhas": 260,
+   "env": [
+    "DEV"
+   ],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/kit-ai-enrichment.js",
+   "descricao": "Kit AI Enrichment Pipeline SUPABASE_URL=... SUPABASE_SERVICE_KEY=... BATCH_SIZE=50 DRY_RUN=true node kit-ai-enrichment.js",
+   "linhas": 40,
+   "env": [
+    "BATCH_SIZE",
+    "DRY_RUN",
+    "SUPABASE_SERVICE_KEY",
+    "SUPABASE_URL"
+   ],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/kit-enrichment/asia-dims-batch.py",
+   "descricao": "Asia Import - Batch extraction de dimensões dos kits via API MCP Worker\"\"\" TYPE_MAP: mapeamento de slug de propriedade para component_type_code",
+   "linhas": 210,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/kit-enrichment/xbz-dims-batch.py",
+   "descricao": null,
+   "linhas": 171,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/lib/baseline-gate.mjs",
+   "descricao": "* Lib compartilhada dos gates de baseline/ratchet (auditoria 20-dim 2026-10-02).",
+   "linhas": 146,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/lint-untyped-from.sh",
+   "descricao": "Lint: cruza nomes de tabela chamados via untypedFrom(\"...\") contra o schema gerado em src/integrations/supabase/types.ts. Falha se houver",
+   "linhas": 129,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [
+    "lint-untyped-from.yml",
+    "regenerate-supabase-types.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/list-migration-drafts.mjs",
+   "descricao": "* list-migration-drafts.mjs",
+   "linhas": 118,
+   "env": [],
+   "npm_scripts": [
+    "drafts:list",
+    "drafts:check"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/list-users.ts",
+   "descricao": null,
+   "linhas": 24,
+   "env": [
+    "SUPABASE_SERVICE_ROLE_KEY",
+    "SUPABASE_URL"
+   ],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/magazine-flakiness-report.mjs",
+   "descricao": "* Magazine Flakiness Report",
+   "linhas": 282,
+   "env": [
+    "GITHUB_STEP_SUMMARY"
+   ],
+   "npm_scripts": [
+    "test:magazine:flakiness",
+    "test:magazine:flakiness:strict"
+   ],
+   "workflows": [
+    "magazine-flakiness.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/map-drafts-to-migrations.mjs",
+   "descricao": "* map-drafts-to-migrations.mjs",
+   "linhas": 274,
+   "env": [
+    "PGHOST"
+   ],
+   "npm_scripts": [
+    "drafts:status",
+    "drafts:status:check"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/massive-load-test.mjs",
+   "descricao": null,
+   "linhas": 237,
+   "env": [
+    "ALLOW_PROD_LOAD",
+    "DRY_RUN",
+    "LOAD_TOTAL_REQUESTS",
+    "SUPABASE_SERVICE_ROLE_KEY",
+    "SUPABASE_TEST_BYPASS_TOKEN",
+    "SUPABASE_URL",
+    "VITE_SUPABASE_URL"
+   ],
+   "npm_scripts": [
+    "test:stress"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/migrate-edge-cors-allowlist.mjs",
+   "descricao": "* migrate-edge-cors-allowlist",
+   "linhas": 156,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/mutation-test-magazine.mjs",
+   "descricao": "* Mutation Testing — Magazine rings",
+   "linhas": 362,
+   "env": [
+    "GITHUB_STEP_SUMMARY"
+   ],
+   "npm_scripts": [
+    "test:magazine:mutation"
+   ],
+   "workflows": [
+    "magazine-mutation.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/observability-check.mjs",
+   "descricao": "* observability-check.mjs — Valida que o stack de observabilidade está operacional.",
+   "linhas": 253,
+   "env": [
+    "SUPABASE_SERVICE_ROLE_KEY",
+    "SUPABASE_URL",
+    "VITE_SENTRY_DSN",
+    "VITE_SUPABASE_URL"
+   ],
+   "npm_scripts": [
+    "check:observability"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/pgss-slo-check.mjs",
+   "descricao": "* pgss-slo-check.mjs",
+   "linhas": 187,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [
+    "pgss-slo-report.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/plan-status.mjs",
+   "descricao": "* plan-status.mjs — E010",
+   "linhas": 173,
+   "env": [],
+   "npm_scripts": [
+    "plan:status"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/preflight-migration-apply.mjs",
+   "descricao": "* preflight-migration-apply.mjs",
+   "linhas": 434,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [
+    "db-apply-migration.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/promote-draft-migration.mjs",
+   "descricao": "* promote-draft-migration.mjs",
+   "linhas": 620,
+   "env": [],
+   "npm_scripts": [
+    "draft:promote"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/publish-ssot-schema.mjs",
+   "descricao": "* publish-ssot-schema.mjs — Espelha schemas/ssot-report.schema.json para public/",
+   "linhas": 209,
+   "env": [],
+   "npm_scripts": [
+    "ssot:schema:publish",
+    "ssot:schema:check"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/qa-price-readonly-regression.mjs",
+   "descricao": "* QA — Regressão automatizada do \"preço read-only\" em itens de orçamento.",
+   "linhas": 154,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/recalibrate-watermark-thresholds.mjs",
+   "descricao": "* Recalibra os thresholds de pixel-diff do watermark do PDF a partir de",
+   "linhas": 271,
+   "env": [],
+   "npm_scripts": [
+    "recalibrate:watermark"
+   ],
+   "workflows": [
+    "e2e-pdf-dialog.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/regras_negocio/generate.py",
+   "descricao": null,
+   "linhas": 2138,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [
+    "contexto.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/regras_negocio/indice.py",
+   "descricao": null,
+   "linhas": 237,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [
+    "contexto.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/replenishment-ci/metrics-dashboard.mjs",
+   "descricao": "* Script para gerar dashboard de métricas do CI para o módulo de Reposição.",
+   "linhas": 54,
+   "env": [],
+   "npm_scripts": [
+    "test:replenishment:dashboard"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/round-quality-report.mjs",
+   "descricao": "* Round Quality Report",
+   "linhas": 258,
+   "env": [],
+   "npm_scripts": [
+    "qa:round",
+    "qa:round:fast"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/route-test-matrix.mjs",
+   "descricao": null,
+   "linhas": 23,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/run-ci.sh",
+   "descricao": null,
+   "linhas": 30,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/run-e2e-quotes-undo.mjs",
+   "descricao": "* Roda a suíte E2E de \"Desfazer\" nos orçamentos (04o + 04p + 04q).",
+   "linhas": 149,
+   "env": [
+    "E2E_MOCK_AUTH",
+    "E2E_PASS",
+    "E2E_PROJECT",
+    "E2E_USER",
+    "E2E_USER_EMAIL",
+    "E2E_USER_PASSWORD",
+    "TEST_PASS",
+    "TEST_USER"
+   ],
+   "npm_scripts": [
+    "test:e2e:quotes-undo",
+    "test:e2e:quotes-undo:mock",
+    "test:e2e:quotes-undo:headed",
+    "test:e2e:quotes-undo:ui"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/run-smoke-filtered.mjs",
+   "descricao": "* run-smoke-filtered — wrapper opcional do `test:e2e:smoke` com filtro por tag/título.",
+   "linhas": 60,
+   "env": [],
+   "npm_scripts": [
+    "test:e2e:smoke"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/sentinel-check.sh",
+   "descricao": "============================================================================ sentinel-check.sh — Coração do Branch Protection Sentinel",
+   "linhas": 182,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [
+    "branch-protection-sentinel.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/sentinel-validate-history.sh",
+   "descricao": "============================================================================ sentinel-validate-history.sh — auditoria retroativa",
+   "linhas": 65,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/seo-sanity-check.mjs",
+   "descricao": "* SEO Sanity Check",
+   "linhas": 84,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [
+    "deploy-gates.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-ai-key-scenarios.mjs",
+   "descricao": "* simulate-ai-key-scenarios.mjs",
+   "linhas": 166,
+   "env": [],
+   "npm_scripts": [
+    "check:ai-key-contract"
+   ],
+   "workflows": [
+    "magazine-unit-tests.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-bi-partial-degradation.mjs",
+   "descricao": "* Simulação determinística de degradação parcial do painel /inteligencia-comercial.",
+   "linhas": 83,
+   "env": [],
+   "npm_scripts": [
+    "simulate:bi-degradation"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-daily-flows.mjs",
+   "descricao": "* scripts/simulate-daily-flows.mjs",
+   "linhas": 382,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [
+    "daily-flows-simulation.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-degradation-sink.mjs",
+   "descricao": "* Simulação determinística do sink cross-sessão de degradações",
+   "linhas": 153,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-degradation-telemetry.mjs",
+   "descricao": "* Simulação exaustiva do pipeline de degradação → telemetria.",
+   "linhas": 288,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-quote-rpc-proposals.mjs",
+   "descricao": "* Offline PostgreSQL 17 fixture. NEVER connects to or applies SQL to Supabase. Container has no network, published ports or host data mounts. Only its tmpfs is removed.",
+   "linhas": 582,
+   "env": [],
+   "npm_scripts": [
+    "test:quote-rpc:postgres"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/simulate-signup-migration.mjs",
+   "descricao": "* Isolated diagnostic, never applies SQL to Supabase. No published port or host data volume. Reads the eight functions in the signup/profile/role/discount-limit trigger chain.",
+   "linhas": 245,
+   "env": [
+    "SUPABASE_PROJECT_REF"
+   ],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/smoke-tests.mjs",
+   "descricao": "* Smoke tests rápidos para o pipeline de CI.",
+   "linhas": 208,
+   "env": [
+    "SMOKE_BASE_URL",
+    "SMOKE_FAIL_ON_DEGRADED",
+    "SMOKE_HEALTH_FN_URL",
+    "SMOKE_TIMEOUT_MS"
+   ],
+   "npm_scripts": [
+    "smoke"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/ssot-report-annotations.mjs",
+   "descricao": "* ssot-report-annotations.mjs",
+   "linhas": 127,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [
+    "ssot-supabase.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/ssot-report-bump.mjs",
+   "descricao": "* ssot-report-bump.mjs — Bump versionado do contrato ssot-report.json.",
+   "linhas": 145,
+   "env": [],
+   "npm_scripts": [
+    "ssot:report:bump"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/ssot-report-markdown.mjs",
+   "descricao": "* ssot-report-markdown.mjs — Converte ssot-report.json em Markdown para revisão de PR.",
+   "linhas": 189,
+   "env": [],
+   "npm_scripts": [
+    "ssot:report:markdown"
+   ],
+   "workflows": [
+    "ssot-supabase.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/ssot-report-summary.mjs",
+   "descricao": "* ssot-report-summary.mjs",
+   "linhas": 121,
+   "env": [
+    "GITHUB_STEP_SUMMARY"
+   ],
+   "npm_scripts": [],
+   "workflows": [
+    "ssot-supabase.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/ssot-report.mjs",
+   "descricao": "* ssot-report.mjs — Relatório unificado dos gates SSOT.",
+   "linhas": 87,
+   "env": [],
+   "npm_scripts": [
+    "ssot:report",
+    "ssot:report:json",
+    "ssot:report:validate"
+   ],
+   "workflows": [
+    "ssot-supabase.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/stress-burst.mjs",
+   "descricao": "* scripts/stress-burst.mjs",
+   "linhas": 221,
+   "env": [
+    "ALLOW_PROD_LOAD",
+    "BURST_CONCURRENCY",
+    "BURST_DURATION_SECONDS",
+    "DRY_RUN",
+    "SUPABASE_SERVICE_ROLE_KEY",
+    "SUPABASE_TEST_BYPASS_TOKEN",
+    "SUPABASE_URL",
+    "VITE_SUPABASE_URL"
+   ],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/stress-quote-number-concurrent.mjs",
+   "descricao": "* stress-quote-number-concurrent",
+   "linhas": 158,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/supabase-read-only-query.mjs",
+   "descricao": "* Executa uma consulta SQL somente leitura no projeto Supabase.",
+   "linhas": 108,
+   "env": [
+    "SUPABASE_ACCESS_TOKEN",
+    "SUPABASE_PROJECT_REF",
+    "SUPABASE_SERVICE_ROLE_KEY",
+    "VITE_SUPABASE_URL"
+   ],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/supabase_snapshot/snapshot.py",
+   "descricao": "Somente leitura no banco (sessão read-only, statement_timeout, lock_timeout). Nunca grava linhas de tabelas, valores de segredos, chaves, senhas ou DSN.",
+   "linhas": 1723,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [
+    "contexto.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/test-approved-plan-database.sh",
+   "descricao": null,
+   "linhas": 103,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/test-critical-coverage.mjs",
+   "descricao": "* Produtor standalone da cobertura crítica.",
+   "linhas": 92,
+   "env": [
+    "TZ"
+   ],
+   "npm_scripts": [
+    "check:critical-coverage"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/test-failures-report.mjs",
+   "descricao": "* Lê um log do vitest (passado por argv[2] ou stdin) e gera um Markdown",
+   "linhas": 91,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/test-magazine-coverage.mjs",
+   "descricao": null,
+   "linhas": 40,
+   "env": [],
+   "npm_scripts": [
+    "test:magazine:coverage"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/test-magazine-hardening-v2.sh",
+   "descricao": "E47: use grep -rE (available on all runners) instead of rg to prevent silent pass on missing binary",
+   "linhas": 246,
+   "env": [],
+   "npm_scripts": [
+    "test:magazine:sql"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/test-magazine-sql-contracts.sh",
+   "descricao": null,
+   "linhas": 33,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": true
+  },
+  {
+   "arquivo": "scripts/test-wave1-forward-only-migrations.sh",
+   "descricao": null,
+   "linhas": 29,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": true
+  },
+  {
+   "arquivo": "scripts/triage-edge-typecheck.mjs",
+   "descricao": "* Triage isolado de `deno check` por Edge Function.",
+   "linhas": 324,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/tsc-baseline-generate.mjs",
+   "descricao": "* Gera/atualiza .tsc-baseline.json com o snapshot dos erros TypeScript atuais.",
+   "linhas": 68,
+   "env": [],
+   "npm_scripts": [
+    "typecheck:baseline:update"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/tsc-unused-ratchet.sh",
+   "descricao": "scripts/tsc-unused-ratchet.sh Ratchet para noUnusedLocals: falha se a contagem de erros crescer além da baseline.",
+   "linhas": 105,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [
+    "deploy-gates.yml",
+    "ratchet-weekly.yml",
+    "ts-unused-ratchet.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/typecheck-edge-functions.mjs",
+   "descricao": "* Typecheck all Supabase Edge Functions using `deno check`.",
+   "linhas": 137,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/update-any-type-baseline.mjs",
+   "descricao": "* Regenera .any-type-baseline.json com a contagem atual de `as any` / `: any`",
+   "linhas": 91,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/update-baseline.sh",
+   "descricao": "Script para atualizar os baselines visuais após aprovação manual Executa o Playwright com a flag --update-snapshots",
+   "linhas": 11,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/uptime-probe.sh",
+   "descricao": null,
+   "linhas": 55,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [
+    "uptime-monitor.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/validate-cart-undo.mjs",
+   "descricao": "* Fuzz 500x + race 50 do snapshot de handleRemoveWithUndo.",
+   "linhas": 108,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/validate-cnpj-error-mapper.mjs",
+   "descricao": "* Fuzzer standalone (Node) do SSOT `mapCnpjError`.",
+   "linhas": 164,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/validate-cnpj-property-based.mjs",
+   "descricao": "* Fuzzer standalone (Node, sem Vitest) para SSOT do CNPJ.",
+   "linhas": 101,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/validate-lovable-sync-target.mjs",
+   "descricao": "* Valida que o bot de sync da Lovable está direcionando PRs para `main`",
+   "linhas": 161,
+   "env": [
+    "GH_TOKEN",
+    "GITHUB_TOKEN",
+    "LOVABLE_BOT_LOGIN",
+    "OWNER",
+    "REPO"
+   ],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/validate-migration-target.mjs",
+   "descricao": "Shared pooler hosts do not identify a project; the user suffix must do so.",
+   "linhas": 81,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [
+    "db-apply-migration.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/validate-quote-summary-undo.mjs",
+   "descricao": "* Fuzz do UNDO no Resumo do Novo Orçamento.",
+   "linhas": 155,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/validate-quotes-list.mjs",
+   "descricao": "* Validação automatizada da lista de Orçamentos (QuotesConfigurableList).",
+   "linhas": 124,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [
+    "deploy-gates.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/validate-ssot-report.mjs",
+   "descricao": "* validate-ssot-report.mjs — Valida ssot-report.json contra",
+   "linhas": 284,
+   "env": [],
+   "npm_scripts": [
+    "ssot:report:validate"
+   ],
+   "workflows": [
+    "ssot-supabase.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/validate-supabase-config.mjs",
+   "descricao": "SSOT: projeto Gold/Medallion de produ\\u00E7\\u00E3o (doufsxqlfjyuvxuezpln). pqpdolkaeqlyzpdpbizo \\u00E9 o projeto Lovable Cloud sem cat\\u00E1logo \\u2014 proibido em produ\\u00E7\\u00E3o.",
+   "linhas": 176,
+   "env": [],
+   "npm_scripts": [
+    "build",
+    "ssot:validate"
+   ],
+   "workflows": [
+    "deploy-gates.yml",
+    "prod-health.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/verify-build-integrity.mjs",
+   "descricao": "* verify-build-integrity.mjs",
+   "linhas": 32,
+   "env": [],
+   "npm_scripts": [
+    "ci:verify"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/verify-external.ts",
+   "descricao": null,
+   "linhas": 47,
+   "env": [
+    "EXTERNAL_SUPABASE_SERVICE_ROLE_KEY",
+    "EXTERNAL_SUPABASE_URL"
+   ],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/verify-quote-number-hardening.mjs",
+   "descricao": "* verify-quote-number-hardening",
+   "linhas": 240,
+   "env": [
+    "SUPABASE_ACCESS_TOKEN",
+    "SUPABASE_PROJECT_REF"
+   ],
+   "npm_scripts": [],
+   "workflows": [
+    "quote-number-hardening-verify.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/verify-roboflow-setup.js",
+   "descricao": "* scripts/verify-roboflow-setup.js",
+   "linhas": 253,
+   "env": [
+    "SUPABASE_SERVICE_ROLE_KEY",
+    "SUPABASE_URL"
+   ],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/visual-preview-local.sh",
+   "descricao": "Rodar a suíte visual do botão Preview localmente antes de abrir PR. Uso:",
+   "linhas": 56,
+   "env": [],
+   "npm_scripts": [
+    "visual:preview",
+    "visual:preview:update",
+    "visual:preview:all"
+   ],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/wraparound-monitor-check.mjs",
+   "descricao": "* wraparound-monitor-check.mjs",
+   "linhas": 190,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [
+    "wraparound-monitor-report.yml"
+   ],
+   "orfao": false
+  }
+ ]
+}
