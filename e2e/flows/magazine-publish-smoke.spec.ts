@@ -9,7 +9,7 @@
  *   4. Adiciona 1 produto (step "Produtos").
  *   5. Concede permissão de clipboard, vai à etapa "Layout & Gerar" e clica em "Publicar".
  *   6. Valida:
- *      - Toast de sucesso "Revista publicada. Link copiado…"
+ *      - Toast de sucesso "Revista publicada com sucesso."
  *      - Clipboard contém uma URL no formato /revista-publica/<32 hex>
  *      - Aberta em uma nova aba pública, a URL renderiza sem redirecionar
  *        para /login e sem enviar header Authorization à edge
@@ -168,10 +168,13 @@ test.describe("@smoke Magazine — fluxo autenticado de publicação", () => {
     await publishBtn.click();
 
     // 5) Valida toast de sucesso.
-    const successToast = page.getByText(/Revista publicada\..*Link copiado/i);
+    // O hook useMagazinePublish emite: toast.success('Revista publicada com sucesso.',
+    // { description: `Link copiado: ${url}` }). Title e description ficam em elementos
+    // separados no Sonner — o locator usa apenas o título para evitar fragmentação.
+    const successToast = page.getByText(/Revista publicada com sucesso/i);
     await expect(
       successToast,
-      "toast 'Revista publicada — Link copiado' não apareceu",
+      "toast 'Revista publicada com sucesso.' não apareceu",
     ).toBeVisible({ timeout: 15_000 });
 
     // 6) Valida clipboard.
