@@ -81,9 +81,11 @@ test.describe("@smoke Magazine — fluxo autenticado de publicação", () => {
     await waitForRouteIdle(page);
 
     // 2) Preenche o título com prefixo E2E (cleanup escopado).
+    // Timeout aumentado: editor demora >10s para hidratar após navegação com
+    // auth real (PostgREST carrega dados da revista + bridge do catálogo).
     const title = e2eName("magazine-publish");
     const titleInput = page.locator('[data-testid="magazine-title-input"]').first();
-    await titleInput.waitFor({ state: "visible", timeout: 10_000 });
+    await titleInput.waitFor({ state: "visible", timeout: 20_000 });
     await titleInput.fill(title);
     // Blur para disparar o autosave do editor.
     await titleInput.blur();

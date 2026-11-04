@@ -385,6 +385,7 @@ test.describe("@smoke RLS guard (gate de CI)", () => {
   // 94 · RLS: tabelas sensíveis NUNCA devolvem dados de outros usuários
   // através do REST de Supabase. Smoke negativo P0.
   test("94 · RLS bloqueia leitura de tabelas sensíveis para o usuário comum", async ({ page }) => {
+    test.setTimeout(240_000); // loginAs real + 3 fetches em CI: >120s com auth autêntica
     const url = process.env.VITE_SUPABASE_URL;
     const anon = process.env.VITE_SUPABASE_PUBLISHABLE_KEY;
     test.skip(
