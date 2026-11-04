@@ -207,7 +207,7 @@
 
 ### Etapa 45 — Verificar SSOT do banco (Gate 0)
 - Arquivo: `src/integrations/supabase/client.ts`
-- Ação: `grep doufsxqlfjyuvxuezpln src/integrations/supabase/client.ts` → deve retornar exatamente 1 resultado. `grep pqpdolkaeqlyzpdpbizo src/integrations/supabase/client.ts` → deve retornar 0.
+- Ação: `grep doufsxqlfjyuvxuezpln src/integrations/supabase/client.ts` → deve retornar exatamente 1 resultado. `grep pqpdolkaeqlyzpdpbizo src/integrations/supabase/client.ts` → deve retornar 0. _(pqpdolkaeqlyzpdpbizo = projeto legado — não use)_
 
 ### Etapa 46 — Verificar .lovableignore contra arquivos protegidos
 - Arquivo: `.lovableignore`
