@@ -164,7 +164,8 @@ retorna 403 em write; `git push` e `gh` só funcionam quando o repo é fonte aut
 | Precisa de | Leia |
 |---|---|
 | **Qual banco, qual MCP, migrations, Lovable, Vercel, gates de CI, arquivos protegidos** | **`CLAUDE.md`** |
-| **Estado real hoje: tabelas, RLS, cron e falhas, edge functions publicadas, rotas → tela → hooks → dados, tabelas órfãs** | **`inventario/estado/`** — gerado por `scripts/inventario/` (ver o README de lá); confira `gerado_em` antes de confiar. **Ainda não existe no `main`** (PR #3039, aguardando merge) |
+| **Estado real hoje: tabelas, RLS, cron e falhas, edge functions publicadas, rotas → tela → hooks → dados, tabelas órfãs** | **`inventario/estado/`** — gerado por `scripts/inventario/` (ver o README de lá); confira `gerado_em` antes de confiar |
+| **Contexto gerado para agentes — antes de qualquer tarefa ou planejamento:** banco real ao vivo (tabelas, RLS, functions, cron, lints), código (rotas, módulos, hooks, edges, grafo, alertas) e regras de negócio (estados, validações, fórmulas, lacunas) | **`docs/contexto/00-INDEX.md` na branch `contexto`** (`git show origin/contexto:docs/contexto/00-INDEX.md`): diz qual fonte é dona de cada fato. Regerado a cada 10 min pelo `contexto.yml` — não editar; regras humanas em `docs/contexto/regras/manual/` (main) |
 | Retrato do schema do banco (tabelas, policies, cron, triggers) | `docs/SCHEMA_REFERENCE.md` (data da medição no topo — confira antes de confiar) |
 | Política de DDL e caminho de migration | `docs/db/POLITICA_DDL.md`, `supabase/MIGRATIONS_SYNC_LOG.md` |
 | Regras de workflow do GitHub Actions | `docs/ci/PADRAO_WORKFLOW.md` |
