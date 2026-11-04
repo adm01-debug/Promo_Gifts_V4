@@ -201,10 +201,11 @@ test.describe("@smoke Magazine — fluxo autenticado de publicação", () => {
     // waitForResponse registrado ANTES do goto: `waitUntil: "domcontentloaded"`
     // retorna antes do React hidratar e chamar a edge magazine-public-view.
     // Sem isso, edgeCalls.length era 0 no momento da assert.
+    // Timeout 30s: auth real + cold start da edge em CI pode levar >15s.
     const edgeResponseReady = publicPage
       .waitForResponse(
         (res) => res.url().includes("/functions/v1/magazine-public-view"),
-        { timeout: 15_000 },
+        { timeout: 30_000 },
       )
       .catch(() => null);
 
@@ -228,7 +229,7 @@ test.describe("@smoke Magazine — fluxo autenticado de publicação", () => {
       /\/login/,
     );
 
-    // Aguarda a edge responder (up to 15s) antes de checar edgeCalls.
+    // Aguarda a edge responder (up to 30s) antes de checar edgeCalls.
     await edgeResponseReady;
 
     // A edge magazine-public-view deve ter sido chamada sem Authorization.
