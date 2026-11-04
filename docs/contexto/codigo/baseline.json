@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "385af81ad204acada06c6593b4c978e60dca170b",
+  "commit": "482c272190c896f2752244dd9b5245363997c93a",
   "branch": "main",
-  "data_commit": "2026-11-04T09:09:20-03:00",
+  "data_commit": "2026-11-04T09:52:45-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "482c272",
+    "data": "2026-11-04",
+    "assunto": "docs: análise 500 commits — plano 200 etapas, regras de negócio e fix Gate 1.14"
+   },
    {
     "sha": "385af81",
     "data": "2026-11-04",
@@ -126,14 +131,9 @@
     "sha": "3bf5820",
     "data": "2026-11-01",
     "assunto": "fix(kit-builder): separa mensagem de erro 503/504 de 429/timeout (FT-136) (#2979)"
-   },
-   {
-    "sha": "6965ec1",
-    "data": "2026-11-01",
-    "assunto": "fix(e2e): corrige falhas no swatch-picker-v2 — auth loading + overlay click + E108 satélite"
    }
   ],
-  "arquivos_mudados_7d": 678,
+  "arquivos_mudados_7d": 681,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -177,7 +177,7 @@
    },
    {
     "pasta": "RELATORIO_CI.md",
-    "mudancas": 67
+    "mudancas": 66
    },
    {
     "pasta": "PENDENCIAS.md",
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "RELATORIO_CI.md",
-    "mudancas": 67
+    "mudancas": 66
    },
    {
     "arquivo": "PENDENCIAS.md",
@@ -322,7 +322,7 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 9164,
+  "arquivos_total": 9167,
   "arquivos_codigo": 4612,
   "linhas_codigo": 883206,
   "rotas": 138,
@@ -339,7 +339,7 @@
   "testes": 2184,
   "workflows": 93,
   "scripts": 254,
-  "docs_md": 892
+  "docs_md": 895
  },
  "por_pasta": {
   "api/health.ts": {

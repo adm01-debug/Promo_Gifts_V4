@@ -1,6 +1,6 @@
 # 11 · GLOSSÁRIO, DADOS DE REFERÊNCIA E LACUNAS
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `385af81ad2` · branch `main` · 2026-11-04 12:18 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `482c272190` · branch `main` · 2026-11-04 12:54 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Glossário do domínio (entidades do sistema)
@@ -650,7 +650,6 @@
 
 ## Lacunas — o que este contexto NÃO consegue responder (perguntas para o dono do negócio)
 
-- Nenhuma regra manual em `manual/`: prazos, limites, exceções comerciais, quem aprova o quê — só o negócio sabe.
 - `optimization_queue.guardrail_status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
 - `quotes.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
 - `magazines.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.
@@ -713,4 +712,4 @@
 
 ## Regras manuais presentes
 
-_nenhuma — copie `manual/TEMPLATE-regras-de-negocio.md`_
+- `manual/regras.md`

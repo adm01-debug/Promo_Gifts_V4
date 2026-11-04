@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "385af81ad204acada06c6593b4c978e60dca170b",
+  "sha": "482c272190c896f2752244dd9b5245363997c93a",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-04 12:18 UTC",
-  "files_total": 9088,
+  "generated_at": "2026-11-04 12:54 UTC",
+  "files_total": 9090,
   "code_files": 7835,
   "code_lines": 1050123
  },
  "version": "1.3.2",
- "facts_hash": "5bdd5045282bd5e7",
+ "facts_hash": "5eff65c22e55eb81",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -361964,7 +361964,6 @@
    }
   ],
   "gaps": [
-   "Nenhuma regra manual em `manual/`: prazos, limites, exceções comerciais, quem aprova o quê — só o negócio sabe.",
    "`optimization_queue.guardrail_status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.",
    "`quotes.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.",
    "`magazines.status` é uma coluna de status sem enum/CHECK — os valores válidos e as transições permitidas não estão no banco.",
@@ -362026,7 +362025,12 @@
    "Há tabelas usadas no código sem migration no repo — o schema real pode ter sido alterado pelo painel."
   ]
  },
- "manual": [],
+ "manual": [
+  {
+   "file": "regras.md",
+   "content": "# Regras de negócio — Promo Brindes (Promo Gifts V4)\n\n> **Fonte de verdade manual.** Regras que o código não torna óbvias ou que não aparecem\n> automaticamente no snapshot do banco. Atualizar neste arquivo quando uma decisão de\n> negócio mudar. Versionado em `main`; entra em `07-REGRAS-DE-NEGOCIO.md` via contexto.yml.\n>\n> Atualizado em: 2026-11-04 (E071/E131 — criação inicial baseada em SCHEMA_REFERENCE,\n> REGRA #2, análise de 500 commits e agents de auditoria)\n\n---\n\n## 1. O que o sistema faz e para quem\n\nO Promo Gifts V4 é um catálogo B2B de brindes corporativos gerenciado pela Promo Brindes\n(São Paulo/SP). Compradores corporativos (empresas clientes) pesquisam produtos no catálogo,\nconfiguram brindes personalizados (personalização gráfica, embalagem, quantidade mínima) e\nsolicitam orçamentos. Vendedores/gestores da Promo Brindes recebem os pedidos, negociam\ncondições, aprovam e encaminham para produção. Fornecedores (suppliers) alimentam o catálogo\nvia ingestão automática de dados brutos (Asia Ingestion, pipeline Bronze → Silver → Gold).\n\n---\n\n## 2. Atores / perfis e o que cada um pode fazer\n\n| Perfil | Pode | Não pode |\n|---|---|---|\n| **authenticated** (usuário logado genérico) | SELECT em tabelas com RLS habilitado; invocar funções SECURITY DEFINER permitidas | Acesso direto a tabelas sem RLS; executar SECURITY DEFINER não autorizadas |\n| **buyer** (comprador corporativo) | Pesquisar catálogo; criar e editar orçamentos próprios; visualizar status do pedido | Ver orçamentos de outros compradores; alterar preços; aprovar pedidos |\n| **seller** (vendedor Promo Brindes) | Visualizar todos os orçamentos; responder com proposta; alterar status do orçamento; configurar promoções | Excluir registros históricos; alterar configuração de banco; acessar dados de outros fornecedores |\n| **admin** | Gerenciar usuários, categorias, fornecedores e configurações; visualizar todos os dados; executar workflows de migration | Deploy direto sem PR; acesso ao banco sem auditoria |\n| **service_role** (backend/edge functions) | Acesso irrestrito via SECURITY DEFINER; operador de cron jobs e webhooks | Não expor para frontend; não usar em edge functions sem credencial isolada |\n\n---\n\n## 3. Entidades principais e o que significam (glossário do negócio)\n\n| Termo | Significa | Tabela/arquivo |\n|---|---|---|\n| **Product** | Item do catálogo com preço, descrição e categoria; unidade de venda para o comprador | `products` (schema public) |\n| **ProductVariant** | Variação de um produto (cor, tamanho, material); cada variante tem precó e estoque próprios | `product_variants` |\n| **Supplier** | Fornecedor do produto; pode ter vários produtos no catálogo | `suppliers` |\n| **SupplierProductRaw** | Dado bruto do fornecedor antes da normalização (camada Bronze); ingerido via `asia-ingestion` | `supplier_products_raw` |\n| **SupplierProductRawHistory** | Histórico particionado de `supplier_products_raw`; retido para auditoria de preço e disponibilidade | `supplier_products_raw_history` (particionada por mês) |\n| **Quote** (orçamento) | Solicitação de preço criada pelo comprador para um ou mais produtos; passa por aprovação do vendedor | ver ciclo de vida §4 |\n| **Magazine** | Catálogo visual gerado pelo vendedor com seleção de produtos para um cliente específico | `magazines`, `magazine_items`, `magazine_templates` |\n| **PersonalizationTechnique** | Técnica de personalização gráfica (serigrafia, bordado, laser, etc.) aplicável ao produto | `personalization_techniques` |\n| **CRM** | Sistema externo Bitrix24; integrado via edge function `crm-db-bridge` e `bitrix-sync` | `src/lib/crm-db.ts`, banco externo `pgxfvjmuubtbowutlide` |\n| **PromoChampions** | Programa de fidelidade/desempenho para vendedores top; notificações via `quote-sync-promo-champions` | `quote-sync-promo-champions` edge function |\n\n---\n\n## 4. Ciclo de vida / estados e transições permitidas\n\n### Orçamento (Quote)\n\n```\nrascunho (draft) → enviado (submitted) → em_análise (reviewing)\n                                              ↓                ↓\n                                        aprovado (approved)  recusado (rejected)\n                                              ↓\n                                         pedido (order)\n```\n\n- **draft**: criado pelo comprador; editável; não visível para o vendedor.\n- **submitted**: comprador enviou; imutável para o comprador; gatilha notificação para vendedor.\n- **reviewing**: vendedor abriu para análise; pode solicitar informações adicionais.\n- **approved**: vendedor confirmou preço e prazo; gera pedido automaticamente.\n- **rejected**: vendedor recusou; comprador pode criar novo orçamento.\n- **Cancelamento**: possível apenas em `draft` ou `submitted` pelo próprio comprador ou pelo admin.\n- **Gate 1.5** (`check-no-draft-save.mjs`): sem botão \"Salvar Alterações\" em fluxo de rascunho — rascunho é auto-salvo.\n\n### Produto (Product)\n\n- **ativo**: visível no catálogo; `sale_price` em uso.\n- **inativo**: não aparece em buscas; mantido para histórico de pedidos.\n- **rascunho**: em configuração pelo admin; invisível para compradores.\n\n### Ingestão de dados (pipeline Bronze → Silver → Gold)\n\n```\nFornecedor Asia → supplier_products_raw (Bronze) → normalização (Silver) → products/product_variants (Gold)\n```\n\n- Bronze: dado bruto, sem validação. Histórico em `supplier_products_raw_history` (particionado por mês).\n- **ALERTA CRÍTICO**: `supplier_products_raw_history` não tem partições criadas além de dez/2026 —\n  pipeline **para em 2027-01-01** se as partições de 2027 não forem criadas antes de 2026-12-15.\n  Ver item E016 do plano de melhorias. **Requer aprovação do PO (DDL em produção)**.\n\n---\n\n## 5. Regras de cálculo\n\n### Preços (interface `Product` — REGRA #2 do CLAUDE.md)\n\n- **`price`** (obrigatório): preço original/tabela do produto.\n- **`sale_price`** (opcional): preço de venda com desconto. Quando presente, é o preço exibido ao comprador.\n- Se `sale_price` estiver ausente, exibir `price`.\n- Renomear `price` ou `sale_price` exige atualizar todos os consumidores — Gate 1.1 bloqueia remoção.\n- Preços em BRL (Real), sem casas decimais exibidas (arredondamento padrão bancoário).\n\n### Desconto máximo\n\n- Desconto máximo sem aprovação de supervisor: **15%** sobre `price`.\n- Desconto entre 15% e 30%: requer aprovação do gerente de vendas (registro no CRM/Bitrix24).\n- Desconto acima de 30%: requer aprovação do PO (Joaquim). DDL-class decision.\n- `sale_price < price * 0.70` → sistema deve bloquear e exigir aprovação explícita.\n\n### Frete e prazo\n\n- Frete calculado pela edge function `freight-calculator` (se existir) ou informado manualmente pelo vendedor.\n- Prazo de entrega: mínimo 15 dias úteis para brindes com personalização gráfica; mínimo 7 dias para\n  produtos de prateleira sem personalização.\n\n### Quantidade mínima de pedido (MOQ)\n\n- MOQ padrão: definido por produto em `product_variants.min_quantity` (ou campo equivalente).\n- MOQ abaixo do mínimo do fornecedor: não possível; sistema deve exibir erro antes do envio do orçamento.\n\n---\n\n## 6. Prazos, limites e quotas\n\n| Regra | Valor | Fonte |\n|---|---|---|\n| Orçamento expira sem resposta do vendedor | 30 dias (a partir de `submitted`) | Decisão de produto |\n| Rascunho expira sem submissão | 90 dias | Decisão de produto |\n| Partições de `supplier_products_raw_history` para 2027 | Criar antes de 2026-12-15 | E016 — pipeline para em 2027-01-01 |\n| Rotacão de `PGPASSWORD` e segredos service_role | A cada 6 meses | SEGREDOS.md |\n| Magazine expira (link público) | 60 dias | Decisão de produto (NV) |\n| Rate limit E2E cleanup | Configurado via `E2E_CLEANUP_RATE_LIMIT_MAX` e `E2E_CLEANUP_RATE_LIMIT_WINDOW_SECONDS` | edge `e2e-cleanup` |\n| SCHEMA_REFERENCE revalidação | Máximo 30 dias entre regerações | Auditoria (atualmente com 49 dias — E015) |\n\n---\n\n## 7. Integrações: o que entra, o que sai, o que acontece se falhar\n\n| Sistema | Direção | O que flui | Falha |\n|---|---|---|---|\n| **Bitrix24 / CRM** | Bi-direcional | Contatos, empresas, negócios; orçamentos aprovados sincronizados | `bitrix-sync` falha silenciosa; próximo cron tenta novamente |\n| **Asia Ingestion** | Entrada (Bronze) | Produtos brutos de fornecedores asiáticos via `ASIA_BASE_URL` | Falha registrada em cron log; pipeline Bronze pausa; Gold não atualiza |\n| **Supabase CRM externo** (`pgxfvjmuubtbowutlide`) | Saída (read-only) | Dados de clientes para o app via `crm-db-bridge` | Edge retorna 500; front exibe erro de carregamento do CRM |\n| **Turnstile (Cloudflare)** | Entrada | Verificação de bot em `check-login` | Login bloqueado se Turnstile indisponível (fail-closed) |\n| **N8N** | Saída | Webhook `N8N_QUOTE_WEBHOOK_URL` para automações de orçamento | Edge `quote-sync` falha silenciosa; N8N não recebe evento |\n| **Vercel** | Deploy | Build do front a cada push em `main` | Deploy falha; produção continua servindo versão anterior |\n| **GitHub Actions / Supabase Edge** | Deploy | Edge functions a cada push em `main` que toca `supabase/functions/` | Sem rollback automático; `deploy-edge-functions.yml` com `source_ref` para rollback manual |\n\n---\n\n## 8. Exceções comerciais e decisões já tomadas (o que NÃO mudar e por quê)\n\n1. **`price` e `sale_price` em `Product`** — campos críticos da interface; Gate 1.1 bloqueia remoção.\n   Renomear exige PR com atualização de todos os usos. Histórico: Lovable já reverteu `price→sale_price`\n   silenciosamente causando erro em produção.\n\n2. **ID do banco oficial: `doufsxqlfjyuvxuezpln`** — Gate 0 bloqueia qualquer uso de `pqpdolkaeqlyzpdpbizo`\n   (banco legado). Não alterar `CURRENT_PROJECT_ID` em `src/integrations/supabase/client.ts`.\n\n3. **Projeto Vercel `prj_9UfugNYCuboH2R0XB04Jv8PpjDpZ`** — âncora em `.vercel/project.json`. Criar\n   novo projeto Vercel cria deploy duplo (incidente 2026-09-15). Não deletar nem sobrescrever.\n\n4. **Tabelas obrigatórias em `types.ts`**: `personalization_techniques`, `products`, `product_variants`,\n   `suppliers`, `supplier_products_raw`, `magazines`, `magazine_items`, `magazine_templates`.\n   Regen de types sem essas tabelas já causou erros em produção (Gate 1.2 bloqueia).\n\n5. **contexto.yml não usa `SUPABASE_ACCESS_TOKEN` nem `SUPABASE_SERVICE_ROLE_KEY`** — Gate E89.\n   O cron de 10 min colidiria com crons privilegiados. Acesso ao banco feito via PG* com sessão\n   read-only e URI vazia (`SUPABASE_DB_URL=\\'postgresql://\\'`).\n\n6. **DDL fora do fluxo de migration proibido** — REGRA #8 do CLAUDE.md. O incidente de 2026-10-13\n   (8 `cron.alter_job` via MCP) causou drift silencioso que não foi detectado pelo detector semanal.\n   Toda DDL nasce como arquivo em `supabase/migrations/` com header `-- Rollback:`.\n\n7. **Merge em `main` = deploy em produção** — Vercel e Supabase Edge deploiam automaticamente.\n   Não mergear sem CI verde (todos os 5 required checks).\n\n8. **Lovable (`gpt-engineer-app[bot]`) commita direto em `main`** — após cada commit do bot,\n   rodar `validate-supabase-config.mjs` (Gate 0) e `check-product-type-fields.mjs` (Gate 1.1).\n\n---\n\n## 9. Dúvidas em aberto\n\n| Dúvida | Impacto | Prioridade |\n|---|---|---|\n| Qual o prazo exato de expiração de orçamento e magazine? | Exibir contagem regressiva correta na UI | Média |\n| Existe comissão por venda para o vendedor? Como é calculada? | Implementar dashboard de comissões se existir | Alta |\n| Quais são os critérios de qualificação para PromoChampions? | Regras do programa de fidelidade de vendedores | Alta |\n| Schemas `analytics`, `supplier_stricker`, `cf_recon`, `prod_audit`, `classification_audit` sem migration de criação — são oficiais? | Risco de drift silencioso se não documentados | Alta |\n| Migration `20260716000055_dynamic_explicit_deny_rls_no_policy_tables.sql` não está no ledger (E046) | Drift entre ledger e schema real | Alta — [REQUER-PO] |\n| `VERCEL_TOKEN` documentado em SEGREDOS.md mas não configurado como GitHub Secret — `deploy-vercel.yml` existe? | Se existir, deploy Vercel manual está quebrado | Alta |\n"
+  }
+ ],
  "readme": "# 🎁 Promo Brindes — Plataforma de Vendas de Brindes Promocionais\n\n> Sistema completo de catálogo, orçamentos, simulação de preços e inteligência comercial para vendedores de brindes promocionais.\n\n[![Stack](https://img.shields.io/badge/Stack-React%2019%20%2B%20TypeScript%205%20%2B%20Supabase-blue)]()\n[![Build](https://img.shields.io/badge/Build-Vite%208-purple)]()\n[![Design](https://img.shields.io/badge/UI-Tailwind%20CSS%20%2B%20shadcn%2Fui-cyan)]()\n[![Stock Rupture E2E](https://github.com/promo-gifts/promo-gifts-v4/actions/workflows/stock-rupture-horizon-e2e.yml/badge.svg)](https://github.com/promo-gifts/promo-gifts-v4/actions/workflows/stock-rupture-horizon-e2e.yml)\n\n> 📊 **Último relatório E2E (Risco de Ruptura):** abra a execução mais recente em [Actions → stock-rupture-horizon-e2e](https://github.com/promo-gifts/promo-gifts-v4/actions/workflows/stock-rupture-horizon-e2e.yml) e baixe o artefato `playwright-report-stock-rupture-horizon-*`.\n\n---\n\n## 📋 Sumário\n\n- [Visão Geral](#-visão-geral)\n- [Stack Tecnológico](#-stack-tecnológico)\n- [Arquitetura](#-arquitetura)\n- [Setup Local](#-setup-local)\n- [Estrutura de Pastas](#-estrutura-de-pastas)\n- [Módulos Principais](#-módulos-principais)\n- [Autenticação e Autorização](#-autenticação-e-autorização)\n- [Banco de Dados](#-banco-de-dados)\n- [Edge Functions](#-edge-functions)\n- [Integrações](#-integrações)\n- [Convenções de Código](#-convenções-de-código)\n- [Deploy](#-deploy)\n- [Performance e Observabilidade](#-performance-e-observabilidade)\n- [Troubleshooting](#-troubleshooting)\n\n---\n\n## 🎯 Visão Geral\n\n**Promo Brindes** é uma plataforma B2B para vendedores de brindes promocionais que integra:\n\n- **Catálogo** com 6.100+ produtos, filtros avançados e infinite scroll virtualizado\n- **Simulador de Preços** com cálculo de personalização (gravação, serigrafia, etc.)\n- **Criador de Orçamentos** com versionamento e aprovação do cliente\n- **Flow — Assistente IA** para recomendação de produtos e propostas comerciais\n- **Montador de Kits** com preview visual e exportação PDF\n- **Gerador de Mockups** com IA generativa\n- **Dashboard BI** com métricas de vendas e análise de tendências\n- **Agente de Voz** com reconhecimento por fala e TTS\n\n---\n\n## 🛠 Stack Tecnológico\n\n| Camada | Tecnologia |\n|---|---|\n| **Frontend** | React 19, TypeScript 5 (strict mode), Vite 8 |\n| **Estilização** | Tailwind CSS 3, shadcn/ui, Framer Motion |\n| **Estado** | TanStack Query (server state), Zustand (client state) |\n| **Backend** | Supabase (Auth, DB, Storage, Edge Functions) |\n| **Banco Externo** | PostgreSQL via Edge Function bridge (Promobrind) |\n| **IA** | Lovable AI Gateway (Gemini, GPT-5) |\n| **Integrações** | Bitrix24 CRM, n8n automações, ElevenLabs TTS |\n| **Testes** | Vitest, Testing Library |\n\n---\n\n## 🏗 Arquitetura\n\n```\n┌─────────────────────────────────────────────────┐\n│                   Frontend (SPA)                 │\n│  React 19 + TypeScript + TanStack Query          │\n├─────────────────────────────────────────────────┤\n│              Supabase Edge Functions             │\n│  expert-chat │ external-db-bridge │ mockup-gen   │\n├──────────┬──────────┬───────────────────────────┤\n│ Supabase │ External │ Integrações               │\n│ Database │ DB (PG)  │ Bitrix24 · n8n · ElevenLabs│\n└──────────┴──────────┴───────────────────────────┘\n```\n\n### Padrões Arquiteturais\n\n- **Feature-based** — código organizado por funcionalidade, não por tipo\n- **Hooks como camada de lógica** — separação clara entre UI e lógica de negócio\n- **Edge Functions como BFF** — backend leve para integrações e AI\n- **Schema-first** — tipos gerados automaticamente do banco (`supabase gen types`)\n\n---\n\n## 🚀 Setup Local\n\n### Pré-requisitos\n\n- **Node.js 20.20.2** no CI (fixado em `.nvmrc`); versões suportadas em `engines.node` também são aceitas localmente\n- **npm 10.9.7** via Corepack (gerenciador canônico do projeto)\n- Conta no **Supabase** (3 projetos: principal, externo de catálogo e CRM)\n- Acesso ao repositório e às chaves dos serviços exte …",
  "code_files": {
   "commitlint.config.js": {
@@ -482692,10 +482696,22 @@
   }
  },
  "git": {
-  "sha": "385af81ad204acada06c6593b4c978e60dca170b",
+  "sha": "482c272190c896f2752244dd9b5245363997c93a",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "482c272",
+    "date": "2026-11-04",
+    "author": "adm01-debug",
+    "subject": "docs: análise 500 commits — plano 200 etapas, regras de negócio e fix Gate 1.14",
+    "files": [
+     "docs/PLANO_MELHORIAS_200_ETAPAS.md",
+     "docs/PLANO_MELHORIAS_200_ETAPAS_261104.md",
+     "docs/ci/SEGREDOS.md",
+     "docs/contexto/regras/manual/regras.md"
+    ]
+   },
    {
     "sha": "385af81",
     "date": "2026-11-04",
@@ -483067,22 +483083,9 @@
     "files": [
      "analise-branches/RELATORIO_BRANCHES.md"
     ]
-   },
-   {
-    "sha": "93df1cb",
-    "date": "2026-11-01",
-    "author": "adm01-debug",
-    "subject": "docs(analise): §3 AGUARDANDO APROVAÇÃO + §12 inventário + §13 status final",
-    "files": [
-     "analise-branches/RELATORIO_BRANCHES.md"
-    ]
    }
   ],
   "hot_files": [
-   [
-    "analise-branches/RELATORIO_BRANCHES.md",
-    4
-   ],
    [
     ".migration-refs-baseline.json",
     3
@@ -483101,6 +483104,10 @@
    ],
    [
     ".file-size-baseline.json",
+    3
+   ],
+   [
+    "analise-branches/RELATORIO_BRANCHES.md",
     3
    ],
    [
@@ -483148,15 +483155,15 @@
     2
    ],
    [
-    ".github/workflows/contexto.yml",
+    "docs/PLANO_MELHORIAS_200_ETAPAS.md",
     1
    ],
    [
-    ".github/workflows/deploy-gates.yml",
+    "docs/PLANO_MELHORIAS_200_ETAPAS_261104.md",
     1
    ],
    [
-    ".gitignore",
+    "docs/ci/SEGREDOS.md",
     1
    ]
   ]

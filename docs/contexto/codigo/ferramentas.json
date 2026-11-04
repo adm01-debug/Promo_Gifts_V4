@@ -5,7 +5,7 @@
   "linguagens": [
    "TypeScript (4305)",
    "SQL (3224)",
-   "Markdown (892)",
+   "Markdown (895)",
    "JavaScript (303)",
    "YAML (106)",
    "JSON (91)",
@@ -3960,6 +3960,16 @@
    "linhas": 150
   },
   {
+   "arquivo": "docs/PLANO_MELHORIAS_200_ETAPAS.md",
+   "titulo": "PLANO DE MELHORIAS E CORREÇÕES — 200 ETAPAS",
+   "linhas": 904
+  },
+  {
+   "arquivo": "docs/PLANO_MELHORIAS_200_ETAPAS_261104.md",
+   "titulo": "PLANO DE MELHORIAS E CORREÇÕES — Promo Gifts V4",
+   "linhas": 858
+  },
+  {
    "arquivo": "docs/PLANO_MOCKUP_50_ETAPAS_2026-10-08.md",
    "titulo": "Plano Mockup — 50 etapas (correções e melhorias)",
    "linhas": 81
@@ -4326,6 +4336,10 @@
    "arquivos_md": 3
   },
   {
+   "pasta": "docs/contexto",
+   "arquivos_md": 3
+  },
+  {
    "pasta": "docs/design",
    "arquivos_md": 3
   },
@@ -4347,10 +4361,6 @@
   },
   {
    "pasta": "docs/INCIDENTS",
-   "arquivos_md": 2
-  },
-  {
-   "pasta": "docs/contexto",
    "arquivos_md": 2
   },
   {
