@@ -42,14 +42,32 @@ test.describe("@smoke Magazine Editor — preview sticky/aligned", () => {
     // sem esperar o idle o container do aside fica curto (ainda hidratando) e
     // o elemento sai do viewport antes de scrollY=520.
     await waitForRouteIdle(page);
-    // Aguarda o título do editor hidratar: quando magazine-title-input fica
-    // visível, os dados PostgREST chegaram e o aside expandiu para sua altura
-    // final, garantindo que position:sticky funcione em scrollY=520.
-    // (top=-12 no CI sem este wait = container terminava 12px antes do checkpoint)
-    await page
-      .locator('[data-testid="magazine-title-input"]')
-      .first()
-      .waitFor({ state: "visible", timeout: 15_000 });
+    // Aguarda (1) dados PostgREST hidratados (title-input visível) e (2) aside
+    // alto o suficiente para position:sticky funcionar em scrollY=520.
+    // top=-12 sem wait → top=-4 com waitFor(visible) → container ainda curto;
+    // esta condição verifica aside.bottom(doc) > 520 + stickyCard.height + 20px,
+    // garantindo que o container não termina antes do checkpoint de scroll.
+    await page.waitForFunction(
+      () => {
+        const titleInput = document.querySelector('[data-testid="magazine-title-input"]');
+        if (!titleInput || !(titleInput as HTMLElement).offsetParent) return false;
+        const aside = document.querySelector('[data-testid="magazine-preview-aside"]');
+        if (!aside) return false;
+        let stickyEl: Element | null = null;
+        for (const el of Array.from(aside.querySelectorAll<Element>("*"))) {
+          if (getComputedStyle(el).position === "sticky") {
+            stickyEl = el;
+            break;
+          }
+        }
+        if (!stickyEl || (stickyEl as HTMLElement).getBoundingClientRect().height === 0)
+          return false;
+        const stickyHeight = (stickyEl as HTMLElement).getBoundingClientRect().height;
+        const asideBottomDoc = aside.getBoundingClientRect().bottom + window.scrollY;
+        return asideBottomDoc > 520 + stickyHeight + 20;
+      },
+      { timeout: 20_000 },
+    );
 
     const hero = page.getByTestId("magazine-editor-hero-row");
     const mainCol = page.getByTestId("magazine-editor-main-col");
