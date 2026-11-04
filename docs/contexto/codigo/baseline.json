@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "943892ebeccc07a83d8c50fef276d2eb4dd9d9f5",
+  "commit": "070e9d481da9fa88b409b4e529e378ad2aea5ecb",
   "branch": "main",
-  "data_commit": "2026-11-04T10:47:42-03:00",
+  "data_commit": "2026-11-04T10:47:58-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "070e9d4",
+    "data": "2026-11-04",
+    "assunto": "feat: cria partições p2027_03–p2027_12 de supplier_products_raw_history"
+   },
    {
     "sha": "943892e",
     "data": "2026-11-04",
@@ -126,14 +131,9 @@
     "sha": "5a35a74",
     "data": "2026-11-01",
     "assunto": "chore(security): atualiza timestamp baseline de políticas 2026-11-01"
-   },
-   {
-    "sha": "0a8a17f",
-    "data": "2026-11-01",
-    "assunto": "chore(main): release 1.7.0 (#3020)"
    }
   ],
-  "arquivos_mudados_7d": 681,
+  "arquivos_mudados_7d": 683,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -177,7 +177,7 @@
    },
    {
     "pasta": "RELATORIO_CI.md",
-    "mudancas": 64
+    "mudancas": 63
    },
    {
     "pasta": "src/components/kit-builder",
@@ -185,7 +185,7 @@
    },
    {
     "pasta": "PENDENCIAS.md",
-    "mudancas": 62
+    "mudancas": 61
    },
    {
     "pasta": "src/pages/products",
@@ -199,11 +199,11 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "RELATORIO_CI.md",
-    "mudancas": 64
+    "mudancas": 63
    },
    {
     "arquivo": "PENDENCIAS.md",
-    "mudancas": 62
+    "mudancas": 61
    },
    {
     "arquivo": "package.json",
@@ -322,7 +322,7 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 9167,
+  "arquivos_total": 9169,
   "arquivos_codigo": 4612,
   "linhas_codigo": 883206,
   "rotas": 138,
@@ -333,8 +333,8 @@
   "componentes": 1122,
   "hooks": 414,
   "edge_functions": 111,
-  "tabelas": 534,
-  "migrations": 3041,
+  "tabelas": 544,
+  "migrations": 3042,
   "cron_jobs": 120,
   "testes": 2184,
   "workflows": 93,
@@ -2884,6 +2884,16 @@
    "scraper_images_staging",
    "sm_images_staging",
    "supplier_products_raw_history_default",
+   "supplier_products_raw_history_p2027_03",
+   "supplier_products_raw_history_p2027_04",
+   "supplier_products_raw_history_p2027_05",
+   "supplier_products_raw_history_p2027_06",
+   "supplier_products_raw_history_p2027_07",
+   "supplier_products_raw_history_p2027_08",
+   "supplier_products_raw_history_p2027_09",
+   "supplier_products_raw_history_p2027_10",
+   "supplier_products_raw_history_p2027_11",
+   "supplier_products_raw_history_p2027_12",
    "user_organizations",
    "webhook_delivery_locks",
    "xbz_gallery_staging"

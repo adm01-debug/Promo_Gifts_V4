@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "feat: cria partições p2027_03–p2027_12 de supplier_products_raw_history",
    "chore: adiciona rollback files para migrations 20261101201000 e 20261101202000",
    "fix: corrigir refs de migration em doc para desbloquear Gate 1.3",
    "fix(docs): corrigir marcadores legado em planos — guard-canonical-project (#3062)",
-   "docs: análise 500 commits — plano 200 etapas, regras de negócio e fix Gate 1.14",
-   "feat(ci): inventário vivo para agentes de IA a cada 10 min (pacote de scripts autônomos do Zapp) (#3059)"
+   "docs: análise 500 commits — plano 200 etapas, regras de negócio e fix Gate 1.14"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",
