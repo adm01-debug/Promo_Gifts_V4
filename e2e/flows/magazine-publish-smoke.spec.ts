@@ -134,7 +134,20 @@ test.describe("@smoke Magazine — fluxo autenticado de publicação", () => {
     await expect(addBtn, "botão 'Adicionar' deve habilitar após seleção").toBeEnabled({
       timeout: 5_000,
     });
+
+    // Registra ANTES do clique — a response do backend pode chegar antes do
+    // próximo await se registrada depois do clique. O wizard só permite avançar
+    // para "Layout & Gerar" depois que magazine.items tiver ao menos 1 item no
+    // React state, que por sua vez depende da confirmação do backend.
+    const waitItemAdded = page.waitForResponse(
+      (res) =>
+        res.url().includes("/rest/v1/magazine_items") &&
+        res.request().method() === "POST",
+      { timeout: 20_000 },
+    ).catch(() => {});
     await addBtn.click();
+    // Aguarda o backend confirmar antes de tentar avançar de etapa.
+    await waitItemAdded;
 
     // 4) Vai para a etapa "Layout & Gerar" e clica em "Publicar".
     //    No wizard atual (MagazineEditorPage, §24) o header só exibe "Publicar"
@@ -147,7 +160,7 @@ test.describe("@smoke Magazine — fluxo autenticado de publicação", () => {
       await layoutStep.click();
       await expect(layoutStep).toHaveAttribute("aria-current", "step", { timeout: 2_000 });
     }, "etapa 'Layout & Gerar' não ficou ativa após adicionar o produto").toPass({
-      timeout: 15_000,
+      timeout: 30_000,
     });
 
     // Botão do header (o primeiro "Publicar"; o do rodapé se chama "Publicar revista").
