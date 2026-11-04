@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "482c272190c896f2752244dd9b5245363997c93a",
+  "sha": "943892ebeccc07a83d8c50fef276d2eb4dd9d9f5",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-04 12:54 UTC",
+  "generated_at": "2026-11-04 13:49 UTC",
   "files_total": 9090,
   "code_files": 7835,
-  "code_lines": 1050123
+  "code_lines": 1050209
  },
  "version": "1.3.2",
- "facts_hash": "5eff65c22e55eb81",
+ "facts_hash": "2c71f99ec8b7fdc9",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -87720,7 +87720,7 @@
    },
    "vw_system_health_quick": {
     "body": "SELECT 'generated_columns_product_variants'::text AS check_name, CASE WHEN (( SELECT count(*) AS count FROM information_schema.columns WHERE (((columns.table_schema)::name = 'public'::name) AND ((columns.table_name)::name = 'product_variants'::name) AND ((columns.column_name)::name = ANY (ARRAY['next_entry_date'::name, 'next_entry_quantity'::name])) AND ((columns.is_generated)::text = 'ALWAYS'::text))) = 2) THEN '✅ PASS'::text ELSE '❌ FAIL'::text END AS result UNION ALL SELECT 'rpc_get_promo_sales_90d_by_product'::text AS check_name, CASE WHEN (EXISTS ( SELECT 1 FROM (pg_proc p JOIN pg_namespa …",
-    "src": "supabase/migrations/20261101201000_fix_health_view_backup_check.sql"
+    "src": "supabase/rollbacks/20261101201000_rollback.sql"
    },
    "vw_thermal_products": {
     "body": "SELECT \"p\".\"id\", \"p\".\"sku\", \"p\".\"supplier_reference\", \"p\".\"name\", \"p\".\"is_thermal\", \"string_agg\"(DISTINCT \"pd\".\"name_pt\", ', '::\"text\" ORDER BY \"pd\".\"name_pt\") AS \"thermal_properties\", \"array_agg\"(DISTINCT \"pd\".\"code\" ORDER BY \"pd\".\"code\") AS \"thermal_codes\" FROM ((\"public\".\"products\" \"p\" JOIN \"public\".\"product_properties\" \"pp\" ON ((\"p\".\"id\" = \"pp\".\"product_id\"))) JOIN \"public\".\"property_definitions\" \"pd\" ON ((\"pp\".\"property_code\" = \"pd\".\"code\"))) WHERE (\"pd\".\"is_thermal_indicator\" = true) GROUP BY \"p\".\"id\", \"p\".\"sku\", \"p\".\"supplier_reference\", \"p\".\"name\", \"p\".\"is_thermal\"",
@@ -126336,6 +126336,22 @@
     "privs": "execute",
     "object": "cleanup_expired_auth_sessions",
     "objkind": "function",
+    "roles": "PUBLIC",
+    "src": "supabase/rollbacks/20261101202000_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "cleanup_expired_auth_sessions",
+    "objkind": "function",
+    "roles": "anon",
+    "src": "supabase/rollbacks/20261101202000_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "cleanup_expired_auth_sessions",
+    "objkind": "function",
     "roles": "authenticated",
     "src": "supabase/rollbacks/20261101202000_rollback.sql"
    },
@@ -140183,7 +140199,7 @@
   {
    "module": "supabase/rollbacks",
    "files": 44,
-   "lines": 1229,
+   "lines": 1315,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -309684,7 +309700,7 @@
    },
    "vw_system_health_quick": {
     "body": "SELECT 'generated_columns_product_variants'::text AS check_name, CASE WHEN (( SELECT count(*) AS count FROM information_schema.columns WHERE (((columns.table_schema)::name = 'public'::name) AND ((columns.table_name)::name = 'product_variants'::name) AND ((columns.column_name)::name = ANY (ARRAY['next_entry_date'::name, 'next_entry_quantity'::name])) AND ((columns.is_generated)::text = 'ALWAYS'::text))) = 2) THEN '✅ PASS'::text ELSE '❌ FAIL'::text END AS result UNION ALL SELECT 'rpc_get_promo_sales_90d_by_product'::text AS check_name, CASE WHEN (EXISTS ( SELECT 1 FROM (pg_proc p JOIN pg_namespa …",
-    "src": "supabase/migrations/20261101201000_fix_health_view_backup_check.sql"
+    "src": "supabase/rollbacks/20261101201000_rollback.sql"
    },
    "vw_thermal_products": {
     "body": "SELECT \"p\".\"id\", \"p\".\"sku\", \"p\".\"supplier_reference\", \"p\".\"name\", \"p\".\"is_thermal\", \"string_agg\"(DISTINCT \"pd\".\"name_pt\", ', '::\"text\" ORDER BY \"pd\".\"name_pt\") AS \"thermal_properties\", \"array_agg\"(DISTINCT \"pd\".\"code\" ORDER BY \"pd\".\"code\") AS \"thermal_codes\" FROM ((\"public\".\"products\" \"p\" JOIN \"public\".\"product_properties\" \"pp\" ON ((\"p\".\"id\" = \"pp\".\"product_id\"))) JOIN \"public\".\"property_definitions\" \"pd\" ON ((\"pp\".\"property_code\" = \"pd\".\"code\"))) WHERE (\"pd\".\"is_thermal_indicator\" = true) GROUP BY \"p\".\"id\", \"p\".\"sku\", \"p\".\"supplier_reference\", \"p\".\"name\", \"p\".\"is_thermal\"",
@@ -355191,6 +355207,22 @@
     "objkind": "function",
     "roles": "service_role",
     "src": "supabase/rollbacks/20261027233000_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "cleanup_expired_auth_sessions",
+    "objkind": "function",
+    "roles": "PUBLIC",
+    "src": "supabase/rollbacks/20261101202000_rollback.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "cleanup_expired_auth_sessions",
+    "objkind": "function",
+    "roles": "anon",
+    "src": "supabase/rollbacks/20261101202000_rollback.sql"
    },
    {
     "kind": "grant",
@@ -464040,11 +464072,11 @@
   },
   "supabase/rollbacks/20261101201000_rollback.sql": {
    "path": "supabase/rollbacks/20261101201000_rollback.sql",
-   "lines": 7
+   "lines": 90
   },
   "supabase/rollbacks/20261101202000_rollback.sql": {
    "path": "supabase/rollbacks/20261101202000_rollback.sql",
-   "lines": 6
+   "lines": 9
   },
   "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql": {
    "path": "supabase/rollbacks/rollback_20261025002500_analyze_tables_p03.sql",
@@ -482696,10 +482728,39 @@
   }
  },
  "git": {
-  "sha": "482c272190c896f2752244dd9b5245363997c93a",
+  "sha": "943892ebeccc07a83d8c50fef276d2eb4dd9d9f5",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "943892e",
+    "date": "2026-11-04",
+    "author": "adm01-debug",
+    "subject": "chore: adiciona rollback files para migrations 20261101201000 e 20261101202000",
+    "files": [
+     "supabase/rollbacks/20261101201000_rollback.sql",
+     "supabase/rollbacks/20261101202000_rollback.sql"
+    ]
+   },
+   {
+    "sha": "5e010a1",
+    "date": "2026-11-04",
+    "author": "adm01-debug",
+    "subject": "fix: corrigir refs de migration em doc para desbloquear Gate 1.3",
+    "files": [
+     "docs/PLANO_MELHORIAS_200_ETAPAS_261104.md"
+    ]
+   },
+   {
+    "sha": "724592a",
+    "date": "2026-11-04",
+    "author": "adm01-debug",
+    "subject": "fix(docs): corrigir marcadores legado em planos — guard-canonical-project (#3062)",
+    "files": [
+     "docs/PLANO_MELHORIAS_200_ETAPAS.md",
+     "docs/PLANO_MELHORIAS_200_ETAPAS_261104.md"
+    ]
+   },
    {
     "sha": "482c272",
     "date": "2026-11-04",
@@ -483051,41 +483112,13 @@
     "files": [
      ".security/lint-0029-allowlist.json"
     ]
-   },
-   {
-    "sha": "83cb439",
-    "date": "2026-11-01",
-    "author": "adm01-debug",
-    "subject": "feat(kit-builder): FT-113 — campo origin no KitState (frontend-only)",
-    "files": [
-     "src/components/kit-builder/KitBuilderHeader.tsx",
-     "src/components/kit-builder/KitMakerLanding.tsx",
-     "src/hooks/kit-builder/useKitBuilder.ts",
-     "src/hooks/kit-builder/useKitBuilderPageState.ts",
-     "src/lib/kit-builder/types.ts",
-     "src/pages/kit-builder/KitBuilderPage.tsx"
-    ]
-   },
-   {
-    "sha": "ec06a45",
-    "date": "2026-11-01",
-    "author": "adm01-debug",
-    "subject": "docs(analise): §8 estado real de produção — 2577 migrations (não 2575)",
-    "files": [
-     "analise-branches/RELATORIO_BRANCHES.md"
-    ]
-   },
-   {
-    "sha": "93eac00",
-    "date": "2026-11-01",
-    "author": "adm01-debug",
-    "subject": "docs(analise): §8.1 prova worktrees — META item 6",
-    "files": [
-     "analise-branches/RELATORIO_BRANCHES.md"
-    ]
    }
   ],
   "hot_files": [
+   [
+    "docs/PLANO_MELHORIAS_200_ETAPAS_261104.md",
+    3
+   ],
    [
     ".migration-refs-baseline.json",
     3
@@ -483107,8 +483140,8 @@
     3
    ],
    [
-    "analise-branches/RELATORIO_BRANCHES.md",
-    3
+    "docs/PLANO_MELHORIAS_200_ETAPAS.md",
+    2
    ],
    [
     "scripts/check-file-size-baseline.mjs",
@@ -483135,35 +483168,31 @@
     2
    ],
    [
-    "src/components/kit-builder/KitMakerLanding.tsx",
-    2
-   ],
-   [
-    "src/hooks/kit-builder/useKitBuilderPageState.ts",
-    2
-   ],
-   [
-    "src/lib/kit-builder/types.ts",
-    2
-   ],
-   [
     "audit/supabase-reference-catalog.temporary.json",
     2
    ],
    [
-    "src/hooks/kit-builder/useKitBuilder.ts",
-    2
-   ],
-   [
-    "docs/PLANO_MELHORIAS_200_ETAPAS.md",
+    "supabase/rollbacks/20261101201000_rollback.sql",
     1
    ],
    [
-    "docs/PLANO_MELHORIAS_200_ETAPAS_261104.md",
+    "supabase/rollbacks/20261101202000_rollback.sql",
     1
    ],
    [
     "docs/ci/SEGREDOS.md",
+    1
+   ],
+   [
+    "docs/contexto/regras/manual/regras.md",
+    1
+   ],
+   [
+    ".github/workflows/contexto.yml",
+    1
+   ],
+   [
+    ".github/workflows/deploy-gates.yml",
     1
    ]
   ]

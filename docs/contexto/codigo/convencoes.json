@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "chore: adiciona rollback files para migrations 20261101201000 e 20261101202000",
+   "fix: corrigir refs de migration em doc para desbloquear Gate 1.3",
+   "fix(docs): corrigir marcadores legado em planos — guard-canonical-project (#3062)",
    "docs: análise 500 commits — plano 200 etapas, regras de negócio e fix Gate 1.14",
-   "feat(ci): inventário vivo para agentes de IA a cada 10 min (pacote de scripts autônomos do Zapp) (#3059)",
-   "chore(ci): gestão de workflows fase 1 — 106 → 92 (12 updaters em 1, 3 obsoletos, 3 duplicados ajustados) (#3055)",
-   "fix(tests): deriva timeout da suíte live do budget real de retry (#3057)",
-   "fix(ci): check-indexed-access-ratchet.mjs — preserva meta no --update (#3056)"
+   "feat(ci): inventário vivo para agentes de IA a cada 10 min (pacote de scripts autônomos do Zapp) (#3059)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

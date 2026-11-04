@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `482c272190c896f2752244dd9b5245363997c93a` (2026-11-04T09:52:45-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `943892ebeccc07a83d8c50fef276d2eb4dd9d9f5` (2026-11-04T10:47:42-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -586,23 +586,23 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 38182 nós · 66540 arestas · 2173 comunidades · grafo do commit `482c2721`
+- 38182 nós · 66540 arestas · 2173 comunidades · grafo do commit `943892eb`
 - comunidades maiores: ref_lib (681), ref_components (614), ref_integrations (548), react-router-dom (332), ref_hooks (324), scripts (289), gotoAndSettle (266), ref_node_fs (258), react (256), ref_types (246), cors.ts (242), test-base.ts (231)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), json (?), loginAs() (e2e/helpers/auth.ts), excluded_sql() (scripts/supabase_snapshot/snapshot.py), maskUrl() (scripts/check-result-contract.mjs), .collect() (scripts/supabase_snapshot/test_snapshot.py), resolveItemImage() (src/pages/magazine/components/templates/shared.ts), makeMockCart() (e2e/helpers/cart-mock.ts)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- RELATORIO_CI.md (66)
-- PENDENCIAS.md (63)
+- RELATORIO_CI.md (64)
+- PENDENCIAS.md (62)
 - package.json (27)
 - package-lock.json (23)
 - supabase/MIGRATIONS_SYNC_LOG.md (21)
 - analise-prs/RELATORIO_PRS.md (16)
 - auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md (14)
 - CHANGELOG.md (13)
-- analise-prs/progresso.json (12)
-- analise-prs/prs.csv (12)
-- analise-prs/prs.json (12)
+- analise-prs/progresso.json (11)
+- analise-prs/prs.csv (11)
+- analise-prs/prs.json (11)
 - docs/plans/PLANO_MELHORIAS_CORRECOES_200_ETAPAS_2026-10-18.md (11)
 - analise-branches/RELATORIO_BRANCHES.md (9)
 - .github/workflows/deploy-gates.yml (7)
@@ -1159,6 +1159,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.7.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.6.1...v1.7.0) (2026-11-02)
 
 ## Últimos commits
+- 2026-11-04 `943892e` chore: adiciona rollback files para migrations 20261101201000 e 20261101202000
+- 2026-11-04 `5e010a1` fix: corrigir refs de migration em doc para desbloquear Gate 1.3
+- 2026-11-04 `724592a` fix(docs): corrigir marcadores legado em planos — guard-canonical-project (#3062)
 - 2026-11-04 `482c272` docs: análise 500 commits — plano 200 etapas, regras de negócio e fix Gate 1.14
 - 2026-11-04 `385af81` feat(ci): inventário vivo para agentes de IA a cada 10 min (pacote de scripts autônomos do Zapp) (#3059)
 - 2026-11-03 `b80917f` chore(ci): gestão de workflows fase 1 — 106 → 92 (12 updaters em 1, 3 obsoletos, 3 duplicados ajustados) (#3055)
@@ -1171,9 +1174,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-02 `3197e4f` chore(ci): bump baseline de tamanho — 2 arquivos +1 linha pelo import type de #3023 (#3053)
 - 2026-11-02 `e6e738e` chore(ci): sincroniza 4 baselines de ratchet (as any, as Tipo, eslint-disable, file-size) (#3051)
 - 2026-11-02 `44bc10b` fix(ci): aponta migration pronta e não aplicada na exceção stock_notes (#3050)
-- 2026-11-02 `a697b04` chore(ci): registra exceção para RPC fn_get_rupture_alerts ausente no canônico (#3048)
-- 2026-11-02 `31f575f` chore(ci): remove 5 entradas obsoletas da baseline do Gate 1.3 (#3047)
-- 2026-11-02 `82ceaa6` docs: restaura 2 regras perdidas no split e corrige referencia pendente ao inventario (#3046)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`
