@@ -190,6 +190,17 @@ test.describe("@smoke Magazine — fluxo autenticado de publicação", () => {
     // 8) Abre a URL pública em nova aba e valida ausência de auth.
     const publicPage = await context.newPage();
     const edgeCalls: Array<{ status: number; hasAuth: boolean }> = [];
+
+    // waitForResponse registrado ANTES do goto: `waitUntil: "domcontentloaded"`
+    // retorna antes do React hidratar e chamar a edge magazine-public-view.
+    // Sem isso, edgeCalls.length era 0 no momento da assert.
+    const edgeResponseReady = publicPage
+      .waitForResponse(
+        (res) => res.url().includes("/functions/v1/magazine-public-view"),
+        { timeout: 15_000 },
+      )
+      .catch(() => null);
+
     publicPage.on("request", (req) => {
       if (req.url().includes("/functions/v1/magazine-public-view")) {
         edgeCalls.push({
@@ -209,6 +220,9 @@ test.describe("@smoke Magazine — fluxo autenticado de publicação", () => {
     await expect(publicPage, "URL pública NÃO deve redirecionar para /login").not.toHaveURL(
       /\/login/,
     );
+
+    // Aguarda a edge responder (up to 15s) antes de checar edgeCalls.
+    await edgeResponseReady;
 
     // A edge magazine-public-view deve ter sido chamada sem Authorization.
     expect(

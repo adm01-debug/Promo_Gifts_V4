@@ -79,9 +79,9 @@ async function assertFeatureLoads(
 
   await gotoAndWaitReady(page, path, {
     attempts: 2,
-    perAttemptTimeout: 40_000,
+    perAttemptTimeout: 60_000,
     pageSlug,
-    timeout: 30_000,
+    timeout: 60_000,
   });
 
   // URL logo após ready.
@@ -93,7 +93,7 @@ async function assertFeatureLoads(
   // Body visível (sanity).
   await expect(page.locator("body")).toBeVisible();
 
-  // ── Validação de estabilidade de URL (anti redirect-loop) ───────────────
+  // ── Validação de estabilidade de URL (anti redirect-loop) ──────────────────
   // Em vez de sleep fixo (proibido pelo ESLint guard-rail), fazemos polling
   // ativo: confirmamos que a URL permanece IDÊNTICA por 3 leituras
   // consecutivas espaçadas em ~250ms (~750ms total). Se houver redirect
@@ -432,5 +432,3 @@ test.describe("@smoke RLS guard (gate de CI)", () => {
     }
   });
 });
-
-

@@ -78,10 +78,20 @@ test.describe("@smoke Magazine Editor — preview sticky/aligned", () => {
       .toBeGreaterThanOrEqual(300);
 
     const heroTop1 = await hero.evaluate((el) => el.getBoundingClientRect().top);
+    // Seleciona o elemento sticky real dentro do aside (pode estar aninhado).
+    // `aside > *` selecionava o primeiro filho direto (wrapper não-sticky),
+    // resultando em top negativo após scroll.
     const stickyCardTop = await page
-      .locator('[data-testid="magazine-preview-aside"] > *')
-      .first()
-      .evaluate((el) => el.getBoundingClientRect().top);
+      .locator('[data-testid="magazine-preview-aside"]')
+      .evaluate((aside) => {
+        const all = aside.querySelectorAll<Element>("*");
+        for (const el of Array.from(all)) {
+          if (getComputedStyle(el).position === "sticky") {
+            return el.getBoundingClientRect().top;
+          }
+        }
+        return aside.firstElementChild?.getBoundingClientRect().top ?? -1_000;
+      });
 
     // Hero deve ter saído (rolou para cima → top << 0)
     expect(heroTop1, "hero não rolou").toBeLessThan(-100);
