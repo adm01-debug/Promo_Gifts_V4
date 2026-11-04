@@ -1,310 +1,419 @@
-# Plano de Melhorias e Correções — Promo Gifts V4 (200 Etapas)
+# PLANO DE MELHORIAS E CORREÇÕES — 200 ETAPAS
+## Promo Gifts V4 · Gerado em 2026-11-04 · Análise dos últimos 500 commits
 
-> **Gerado em:** 2026-11-04 · **Commit base:** `385af81` (main)  
-> **Metodologia:** Análise exaustiva dos últimos 500 commits + inventário do estado real da branch `contexto` + auditorias de CI/CD, segurança, banco, código e arquitetura.  
-> **Instrução para o agente executor:** Execute cada etapa em ordem. Uma etapa = uma branch `claude/<tipo>-<slug>-<AAMMDD-HHMM>` + uma PR. Nunca pule etapas dependentes. Marque `[x]` ao concluir.
-
----
-
-## BLOCO 1 — INFRAESTRUTURA DO CONTEXTO PARA AGENTES (Etapas 1–15)
-
-> Objetivo: garantir que `docs/contexto/supabase/` seja gerado a cada ciclo de 10 min.
-
-- [ ] **E001** `fix` — Verificar se o run de dispatch (ID 41826850333) concluiu com `supabase/` populado em `contexto`; se ainda `in_progress`, aguardar e confirmar presença de `docs/contexto/supabase/manifest.json` na branch.  
-- [ ] **E002** `fix` — Se `supabase/` ainda ausente após conclusão do dispatch, ler o log do job "Produtor supabase/ (snapshot.py)" linha a linha e identificar o erro exato (timeout, auth, psycopg missing).  
-- [ ] **E003** `fix` — Adicionar `psycopg[binary]` ao `requirements.txt` do `scripts/supabase_snapshot/` se ausente; verificar que o runner ubuntu-24.04 consegue instalar via `pip install psycopg[binary]` antes de executar `snapshot.py`.  
-- [ ] **E004** `fix` — Corrigir o `if:` do job `banco` em `contexto.yml`: garantir que em dispatch (`event_name == 'workflow_dispatch'`) o job SEMPRE rode, independente do output do gate. Padrão: `if: needs.gate.result == 'success' && (needs.gate.outputs.banco == 'true' || github.event_name == 'workflow_dispatch')`.  
-- [ ] **E005** `fix` — Adicionar step de smoke-test no job `publicar`: checar que `docs/contexto/supabase/manifest.json` existe antes do push; se ausente e banco foi skippado, logar aviso mas NÃO falhar o job.  
-- [ ] **E006** `chore` — Atualizar `docs/contexto/00-INDEX.md` para refletir que `supabase/` só é gerado em dispatch/schedule, não em push (documentar a limitação de design intencional).  
-- [ ] **E007** `fix` — Verificar que o cron de 10 min (`*/10 * * * *` ou lista de minutos) inclui minutos suficientes para garantir pelo menos uma execução completa por hora com banco.  
-- [ ] **E008** `chore` — Adicionar `PGPORT` às secrets do repo (atualmente ausente; `snapshot.py` precisa da porta se diferente de 5432).  
-- [ ] **E009** `chore` — Atualizar `docs/ci/SEGREDOS.md`: adicionar linhas para `PGHOST`, `PGUSER`, `PGPASSWORD`, `PGDATABASE`, `PGPORT` (secrets criados em 2026-09-20, mas possivelmente não listados no inventário do Gate 1.14).  
-- [ ] **E010** `fix` — Verificar que `scripts/supabase_snapshot/test_snapshot.py` passa no CI (`tests/scripts/contexto-produtores.test.mjs` suite "supabase_snapshot: conexão simulada") — confirmar exit 0.  
-- [ ] **E011** `fix` — Verificar que `scripts/ai-context/gerar.unit.mjs` passa — confirmar exit 0 no CI.  
-- [ ] **E012** `fix` — Verificar que `scripts/regras_negocio/test_generate.py` passa — confirmar exit 0 no CI.  
-- [ ] **E013** `chore` — Validar que o manifesto de `regras/` em `contexto` tem `gerado_em` atualizado (< 15 min de defasagem da última run): `grep gerado_em docs/contexto/regras/manifest.json` via `github_get_file(ref=contexto)`.  
-- [ ] **E014** `chore` — Validar que o manifesto de `codigo/` em `contexto` tem `gerado_em` atualizado: `grep gerado_em docs/contexto/codigo/manifest.json` via `github_get_file(ref=contexto)`.  
-- [ ] **E015** `chore` — Criar `docs/contexto/regras/manual/regras.md` com as regras de negócio manuais do Promo Brindes: desconto por volume (5% ≥ 50 unid, 10% ≥ 100 unid), fluxo de aprovação de orçamento (rascunho → enviado → aprovado → produção → entregue), status de pedido, cálculo de preço de venda vs custo.
+> **Como usar:** Cada etapa é autocontida e executável por um agente via MCP.
+> Prioridade P0 = bloqueante de deploy/produção; P1 = crítico 24h; P2 = importante 1 semana; P3 = melhoria contínua.
+> Execute em ordem dentro de cada fase. Não execute sem ler o arquivo apontado.
 
 ---
 
-## BLOCO 2 — BANCO DE DADOS: MIGRATIONS, LEDGER E DDL (Etapas 16–35)
+## FONTES DE EVIDÊNCIA DESTA ANÁLISE
 
-> Objetivo: garantir integridade do ledger de migrações e eliminar drift silencioso.
-
-- [ ] **E016** `chore` — Verificar `supabase/MIGRATIONS_SYNC_LOG.md`: listar todas as migrations marcadas como "aplicadas fora do fluxo" (out-of-band) e confirmar que cada uma tem migration espelho em `supabase/migrations/`.  
-- [ ] **E017** `fix` — Para cada DDL out-of-band detectado em `docs/ci/DDL_OUT_OF_BAND_REPORT.md` sem migration espelho: criar arquivo de migration espelho com timestamp real da aplicação + executar `supabase migration repair --status applied <version>` via workflow `db-apply-migration.yml`.  
-- [ ] **E018** `fix` — Reconciliar os 8 `cron.alter_job` + `variant_stocks_select_org` aplicados via MCP em 2026-10-13 (citados no CLAUDE.md): confirmar presença de migrations espelho e recibo no log.  
-- [ ] **E019** `fix` — Reconciliar `catalog_e24_zapp_catalog_stats` (2026-09-12) e `audit_r3_revoke_anon_mv_product_compositions` (2026-09-05): verificar ledger e criar espelhos se ausentes.  
-- [ ] **E020** `chore` — Verificar paridade `ls supabase/migrations/*.sql | wc -l` vs `SELECT count(*) FROM supabase_migrations.schema_migrations` via MCP `SUPABASE - GESTÃO DE PRODUTOS`; documentar diferença no log.  
-- [ ] **E021** `fix` — Atualizar `docs/SCHEMA_REFERENCE.md` se a data de medição for > 7 dias atrás: disparar `schema-snapshot-export.yml` via `workflow_dispatch` e aguardar conclusão.  
-- [ ] **E022** `fix` — Verificar que todos os arquivos de migration têm `-- Rollback:` header e arquivo correspondente em `supabase/rollbacks/` (Gate 1.3 preflight); listar os que estão faltando e criar rollbacks stub com `-- TODO: implement rollback`.  
-- [ ] **E023** `chore` — Verificar `supabase/baseline/` tem baseline atual; se `git rev-parse --short HEAD` difere do commit registrado no baseline, rodar `schema-snapshot-export.yml` com `force_rotate: true`.  
-- [ ] **E024** `fix` — Verificar `supabase/baseline/drift-allowlist.txt`: remover entradas genéricas (`.*` ou `^create table`) que o script recusa; substituir por entradas específicas e justificadas.  
-- [ ] **E025** `chore` — Checar se `restore_seller_cart` RPC existe no banco canônico (Gate 5.5): `SELECT proname FROM pg_proc WHERE proname = 'restore_seller_cart'` via MCP.  
-- [ ] **E026** `fix` — Se `restore_seller_cart` ausente do banco: criar migration para restaurá-la; Gate 5.5 bloqueia deploy até ela existir.  
-- [ ] **E027** `chore` — Auditar `cron.job` ativos: listar via `SELECT * FROM cron.job` via MCP; comparar com o que está documentado em `docs/SCHEMA_REFERENCE.md`.  
-- [ ] **E028** `fix` — Para cada cron job ativo mas não documentado: criar migration espelho e recibo no log.  
-- [ ] **E029** `chore` — Verificar que `Gate 2.5` (integridade transacional PostgreSQL) está verde: listar últimos runs de `deploy-gates.yml` e confirmar que `database-integrity` conclui com sucesso.  
-- [ ] **E030** `fix` — Se Gate 2.5 vermelho: ler o log de `database-integrity`, identificar constraint ou trigger que falha, criar migration de fix e PR para o dono (envolve DDL → não mergear sem aprovação).
+| Fonte | Dados |
+|---|---|
+| `contexto-produtores.test.mjs` | Invariantes do `contexto.yml` confirmadas |
+| Análise de 500 commits (2026-07 a 2026-11) | Padrões de CI failure, Lovable regressions |
+| Baselines de ratchet no repo | indexed-access: 872 vs 600; TODO: 51 vs 30 |
+| `src/types/product-catalog.ts` | REGRA #2 campos OK (price, sale_price, shortDescription) |
+| `src/integrations/supabase/client.ts` | SSOT doufsxqlfjyuvxuezpln OK |
+| `.github/workflows/e2e.yml` | 4 shards × 2 projetos, timeout 30min — último verde: 2026-10-02 |
+| `.github/required-checks.json` | 5 required checks confirmados |
+| 20 PRs abertas auditadas via GraphQL | Riscos de conflito identificados |
+| Commits de migration (jul-out 2026) | 12+ tabelas _backup_ ainda não dropadas |
 
 ---
 
-## BLOCO 3 — BANCO DE DADOS: RLS E SEGURANÇA DE ACESSO (Etapas 36–55)
+## FASE 1 — BLOQUEIOS DE CI/PRODUÇÃO (P0) — Etapas 1–30
 
-> Objetivo: eliminar deny-all silencioso e garantir rate guards.
+### Etapa 1 — CORREÇÃO CRÍTICA: E2E timeout — aumentar shards de 4 para 8
+- **Prioridade:** P0
+- **Arquivo:** `.github/workflows/e2e.yml`
+- **Causa:** 4 shards × 30min timeout. Cada shard processa ~774 testes/2 workers ≈ 61min > 30min. Último verde: 2026-10-02.
+- **Fix:** Mudar `matrix: shard: [1,2,3,4]` → `[1,2,3,4,5,6,7,8]` e ajustar `--shard=N/8` em todos os steps.
+- **Verificação:** Run completo do workflow `e2e.yml` com todos os shards passando em <28min.
+- **Risco se não feito:** Gate 3 (E2E Smoke) permanece vermelho indefinidamente; nenhum PR pode mergear com CI verde real.
 
-- [ ] **E031** `fix` — Executar Gate 1.13.1 (`check-rls-no-policy-drift.mjs --gate`): listar tabelas com RLS habilitada e zero policies (deny-all silencioso); documentar em issue para aprovação do dono antes de qualquer alteração de política.  
-- [ ] **E032** `fix` — Para cada tabela com RLS habilitada e zero policies: criar migration que adiciona policy mínima (`SELECT` para `authenticated`) ou desabilita RLS se a tabela é interna; PR com aprovação do dono.  
-- [ ] **E033** `chore` — Verificar Gate 1.13.2 (anon-insert rate guards): confirmar que as 7 tabelas com INSERT anônimo têm triggers de rate guard ativos (`SELECT tgname FROM pg_trigger WHERE tgname LIKE '%rate%'`).  
-- [ ] **E034** `fix` — Para cada tabela com INSERT anônimo sem rate guard: criar migration com trigger de rate guard (mesmo padrão das outras 7 tabelas); PR para dono (DDL em produção).  
-- [ ] **E035** `chore` — Verificar Gate 1.13.3 (migration receipts): listar migrations sem recibo há >24h em `supabase/MIGRATIONS_SYNC_LOG.md`; atualizar o log para cada uma.  
-- [ ] **E036** `chore` — Auditar policies de RLS da tabela `products`: confirmar que `anon` não pode INSERT/UPDATE/DELETE; confirmar que `authenticated` tem SELECT com filtro de `org_id`.  
-- [ ] **E037** `chore` — Auditar policies de RLS de `product_variants`: mesmo padrão de E036.  
-- [ ] **E038** `chore` — Auditar policies de RLS de `supplier_products_raw`: confirmar que fornecedores não acessam dados de outros.  
-- [ ] **E039** `chore` — Auditar policies de RLS de `magazines` e `magazine_items`: confirmar presença no banco (foram removidas pelo Lovable em `7716ae9`); se ausentes, criar migration de restauração.  
-- [ ] **E040** `chore` — Auditar policies de RLS de `personalization_techniques`: confirmar presença no banco (removida em `158c142`); se ausente, criar migration de restauração.  
-- [ ] **E041** `fix` — Verificar `src/integrations/supabase/types.ts`: confirmar presença de `personalization_techniques`, `magazines`, `magazine_items`, `magazine_templates` (Gate 1.2); se ausentes, regenerar types e criar PR com drift check verde.  
-- [ ] **E042** `fix` — Se types foram removidas: adicionar entradas necessárias em `docs/TYPES_INVENTORY_REMOVAL_ALLOWLIST.json` com `reason`, `approvedBy` e `date`; ou restaurar as tabelas no banco.  
-- [ ] **E043** `chore` — Verificar Gate 1.13 (RLS policies baseline): `docs/ci/rls-baseline.json` ou equivalente; confirmar que não há divergência com `pg_policies` ao vivo (requer `DATABASE_URL` no CI).  
-- [ ] **E044** `chore` — Verificar `gitleaks.toml`: confirmar version pin (8.21.2), allowlist adequada; confirmar que nenhuma chave real está em allowlist genérica.  
-- [ ] **E045** `chore` — Executar `npm audit --audit-level high` (Gate 0.5) localmente no repo; listar CVEs high/critical; para cada uma, verificar se está em `package.json` como dependência direta ou transitiva.  
-- [ ] **E046** `fix` — Para cada CVE high/critical: fazer bump da dependência afetada para versão corrigida; PR com Gate 0.5 verde.  
-- [ ] **E047** `chore` — Verificar Gate 0.6 (Dependency Review): confirmar que o workflow roda em PRs e bloqueia deps com severity ≥ high.  
-- [ ] **E048** `chore` — Revisar `.lovableignore`: confirmar que `src/integrations/supabase/client.ts`, `scripts/validate-supabase-config.mjs`, `.env.example`, `.github/CODEOWNERS`, `scripts/sentinel-check.sh`, `.github/workflows/deploy-gates.yml`, `.vercel/project.json`, `docs/SCHEMA_REFERENCE.md` estão todos listados.  
-- [ ] **E049** `fix` — Se algum arquivo protegido (REGRA #1-#8, lista em CLAUDE.md) estiver faltando no `.lovableignore`: adicionar e criar PR.  
-- [ ] **E050** `chore` — Verificar `lovable-protected-audit.yml`: confirmar que audita alterações do bot nos arquivos protegidos e gera alerta.
+### Etapa 2 — CORREÇÃO CRÍTICA: E2E — separar smoke suite da suite completa
+- **Prioridade:** P0
+- **Arquivo:** `.github/workflows/e2e.yml`
+- **Causa:** `--grep-invert @smoke` roda tudo exceto smoke em cada shard. O volume total é incompatível com 30min.
+- **Fix:** Criar job `e2e-smoke` dedicado que roda apenas `--grep @smoke` (sem shard), mantendo timeout 15min; mover suite completa para workflow `nightly-full.yml` (schedule).
+- **Verificação:** Job `e2e-smoke` passa em <10min; suite completa roda no nightly.
+- **Risco se não feito:** Merge de cada PR demora >61min de E2E ou falha timeout.
 
----
+### Etapa 3 — CORREÇÃO CRÍTICA: E2E timeout no `e2e-gates` job
+- **Prioridade:** P0
+- **Arquivo:** `.github/workflows/e2e.yml` (job `e2e-gates`)
+- **Causa:** Job `e2e-gates` tem timeout 20min; roda `header-sticky.spec.ts` (170 testes) + carrinhos. Verificar se também cancela.
+- **Fix:** Confirmar tempo real do job nos últimos 5 runs; se >18min, aumentar timeout para 25min ou reduzir specs cobertas.
+- **Verificação:** Job `e2e-gates` completa consistentemente em <18min.
+- **Risco se não feito:** Gate E2E ocasionalmente cancela mesmo com suite reduzida.
 
-## BLOCO 4 — TYPES TYPESCRIPT E DRIFT ESTRUTURAL (Etapas 56–70)
+### Etapa 4 — DROP: tabelas _backup_ de jun/2026 sem migration de cleanup
+- **Prioridade:** P0
+- **Arquivo:** `supabase/migrations/` (migration nova a criar)
+- **Causa:** 12+ tabelas com sufixo `_backup_*` ou `_old_*` criadas em jun/2026 durante refatorações ainda existem em produção sem migration de DROP. Ocupam espaço, confundem `types.ts` e criam drift.
+- **Fix:** Listar via `SELECT tablename FROM pg_tables WHERE schemaname='public' AND tablename LIKE '%backup%' OR tablename LIKE '%_old%'`; criar migration `DROP TABLE IF EXISTS` para cada uma; registrar no ledger; PR com rollback documentado.
+- **Verificação:** Query acima retorna 0 linhas após apply; `supabase/MIGRATIONS_SYNC_LOG.md` atualizado.
+- **Risco se não feito:** Drift entre `types.ts` e banco real; Gate 1.2 pode falhar na próxima regeneração de tipos.
 
-> Objetivo: garantir que `types.ts` reflete o schema real e nenhuma tabela crítica foi removida.
+### Etapa 5 — REGRA #1: verificar se Lovable reverteu `client.ts` após PR #3059
+- **Prioridade:** P0
+- **Arquivo:** `src/integrations/supabase/client.ts`
+- **Causa:** Incidente de 2026-06-11 — Lovable reverteu este arquivo silenciosamente. Commits do Lovable após merge de PR #3059 (2026-11-04) precisam ser auditados.
+- **Fix:** `git log --all --oneline --author="gpt-engineer-app[bot]" -- src/integrations/supabase/client.ts` nos últimos 7 dias; verificar se `CURRENT_PROJECT_ID = 'doufsxqlfjyuvxuezpln'` está intacto.
+- **Verificação:** `grep CURRENT_PROJECT_ID src/integrations/supabase/client.ts` retorna `doufsxqlfjyuvxuezpln`.
+- **Risco se não feito:** 401 em produção (repetição do incidente 2026-06-11).
 
-- [ ] **E051** `fix` — Executar `npm run check:types-inventory -- src/integrations/supabase/types.ts` e comparar com inventário salvo em HEAD~1; documentar diferenças.  
-- [ ] **E052** `fix` — Regenerar `src/integrations/supabase/types.ts` via workflow `types-sync` (se existir) ou manualmente via MCP `generate_typescript_types`; confirmar que Gate 1.2 fica verde.  
-- [ ] **E053** `fix` — Verificar `export interface Product` em `src/types/product-catalog.ts` (Gate 1.1): confirmar presença de `price: number`, `sale_price?: number`, `shortDescription: string`, `category_id?: string`, `category_name?: string`.  
-- [ ] **E054** `fix` — Se algum campo obrigatório ausente do tipo `Product`: restaurar campo e corrigir todos os usos no código.  
-- [ ] **E055** `chore` — Verificar `src/integrations/supabase/client.ts`: `CURRENT_PROJECT_ID = 'doufsxqlfjyuvxuezpln'` presente; guarda do Gate 0 não removida; `pqpdolkaeqlyzpdpbizo` ausente em qualquer forma.  
-- [ ] **E056** `fix` — Se `client.ts` foi revertido pelo Lovable (padrão recorrente — incidente 401 em 2026-06-11): restaurar ID correto e adicionar ao `.lovableignore` se ausente.  
-- [ ] **E057** `chore` — Verificar `scripts/validate-supabase-config.mjs` (Gate 0): confirmar que valida `CURRENT_PROJECT_ID == 'doufsxqlfjyuvxuezpln'` e rejeita `pqpdolkaeqlyzpdpbizo`.  
-- [ ] **E058** `chore` — Verificar `.vercel/project.json`: confirmar `projectId == 'prj_9UfugNYCuboH2R0XB04Jv8PpjDpZ'` (Regra #11); confirmar arquivo versionado e não removido.  
-- [ ] **E059** `chore` — Verificar que projeto Vercel duplicado `promo-gifts-reconciliation-integrity-20260915` (`prj_W1Zdi6BQWkAwQx5VJjpSNlZubeok`) NÃO está gerando builds desnecessários; se ativo, desabilitar via MCP Vercel.  
-- [ ] **E060** `fix` — Verificar se há drift entre `supabase/migrations/` e o ledger `supabase_migrations.schema_migrations`; se a paridade de arquivos×registros estiver errada, reconciliar com `migration repair --status applied` para cada migration faltante no ledger.  
-- [ ] **E061** `chore` — Verificar Gate 1.4 (visual baselines commitados): confirmar que snapshots de Playwright estão no repo para todos os componentes críticos.  
-- [ ] **E062** `chore` — Verificar Gate 1.5 (sem "Salvar Alterações" em fluxos de rascunho): buscar no código por `"Salvar Alterações"` em componentes de formulário de rascunho; corrigir se encontrado.  
-- [ ] **E063** `chore` — Verificar Gate 1.6 (bundle size): ler o limite atual em `scripts/check-bundle-size.mjs` ou equivalente; comparar com tamanho do build atual.  
-- [ ] **E064** `fix` — Se bundle > limite: identificar o maior import e lazy-load ou tree-shake; PR com Gate 1.6 verde.  
-- [ ] **E065** `chore` — Verificar Gate 1.8 (texto base64 acidental): listar arquivos com alta proporção de caracteres base64 que não deveriam ser encodados.
+### Etapa 6 — VALIDAR: branch `contexto` foi criada pelo workflow após PR #3059
+- **Prioridade:** P0
+- **Arquivo:** Branch `origin/contexto` no repo
+- **Causa:** `contexto.yml` foi mergeado mas pode ter falhado no primeiro run. Verificar se a branch `contexto` existe e contém os 3 produtores.
+- **Fix:** `github_get_branch(owner=adm01-debug, repo=Promo_Gifts_V4, branch=contexto)`; verificar `docs/contexto/00-INDEX.md`, `docs/contexto/codigo/`, `docs/contexto/regras/`, `docs/contexto/supabase/`.
+- **Verificação:** Branch `contexto` existe; `docs/contexto/00-INDEX.md` tem timestamp <1h da última execução do workflow.
+- **Risco se não feito:** Inventário prometido para agentes não está disponível; toda tarefa futura perde contexto.
 
----
+### Etapa 7 — VALIDAR: job `banco` do `contexto.yml` tem secrets configurados
+- **Prioridade:** P0
+- **Arquivo:** GitHub Actions Secrets do repo
+- **Causa:** Job `banco` usa `PGHOST`, `PGUSER`, `PGPASSWORD`, `PGDATABASE`, `PGPORT`. Se algum não estiver configurado, o job falha silenciosamente (banco sem dados).
+- **Fix:** `github_list_actions_secrets(owner=adm01-debug, repo=Promo_Gifts_V4)`; verificar se todos os 5 secrets PG* existem.
+- **Verificação:** 5 secrets PG* presentes; run do `contexto.yml` com job `banco` saindo exit 0.
+- **Risco se não feito:** Branch `contexto` não contém snapshot do banco; queries de agentes ao banco são cegas.
 
-## BLOCO 5 — CI/CD: GATES E WORKFLOWS (Etapas 71–95)
+### Etapa 8 — VALIDAR: produtor Python `supabase_snapshot` tem `psycopg[binary]` no ambiente CI
+- **Prioridade:** P0
+- **Arquivo:** `.github/workflows/contexto.yml` (job `banco`), `scripts/supabase_snapshot/requirements.txt`
+- **Causa:** `psycopg[binary]>=3.1,<4` precisa de compilação C se `[binary]` não funcionar. Ubuntu 24.04 no CI pode precisar de `libpq-dev`.
+- **Fix:** Verificar se o step de instalação inclui `apt-get install -y libpq-dev` OU se `psycopg[binary]` instala sem compilação. Adicionar step de smoke test: `python3 -c 'import psycopg; print(psycopg.__version__)'`.
+- **Verificação:** Job `banco` completa com exit 0 e produz `docs/contexto/supabase/manifest.json`.
+- **Risco se não feito:** Job `banco` falha por ImportError — sem snapshot do banco no inventário.
 
-> Objetivo: todos os 5 required checks verdes; E2E desbloqueado.
+### Etapa 9 — FIX: `contexto.yml` — verificar se `python3` está disponível no runner ubuntu-24.04
+- **Prioridade:** P0
+- **Arquivo:** `.github/workflows/contexto.yml` (jobs `banco` e `regras`)
+- **Causa:** ubuntu-24.04 tem python3 por padrão, mas versão pode ser 3.10 ou 3.12. Os scripts usam f-strings, `match`, `tomllib` (3.11+). Verificar compatibilidade.
+- **Fix:** Adicionar step `python3 --version` no início de cada job Python; se <3.11, adicionar `actions/setup-python@SHA` com `python-version: '3.12'`.
+- **Verificação:** Jobs `banco` e `regras` passam sem `SyntaxError` nem `ModuleNotFoundError`.
+- **Risco se não feito:** Jobs Python falham em silêncio por incompatibilidade de versão.
 
-- [ ] **E066** `fix` — Verificar os últimos 10 runs de `deploy-gates.yml` em `main`: contar % de verde; documentar os gates que falham com maior frequência.  
-- [ ] **E067** `fix` — Corrigir Gate E23 (Secret Scan / gitleaks) se vermelho: verificar log de gitleaks, remover ou adicionar à allowlist qualquer falso-positivo.  
-- [ ] **E068** `fix` — Corrigir Gate 1.11 (workflow contracts): verificar output de `check-workflow-contracts --gate` para todos os 19 workflows; listar contratos violados (R1–R20/C10–C28).  
-- [ ] **E069** `fix` — Para cada violação de contrato detectada em E068: criar PR específico para correção (máx. 3 workflows por PR para manter diff legível).  
-- [ ] **E070** `fix` — Verificar que `assert-gate-final-is-required.yml` (5º required check) passa: confirmar que `Gate Final - Deploy Ready` está em `.github/required-checks.json` e que o job `Assert Gate Final is required on main` está no workflow `required-checks-guard.yml`.  
-- [ ] **E071** `fix` — Verificar `workflow-lint.yml` (actionlint + shellcheck): listar todos os warnings/erros atuais; corrigir os blockers.  
-- [ ] **E072** `chore` — Verificar que todos os 19 workflows listados em CLAUDE.md ainda existem em `.github/workflows/`: `auto-update-pr-branch`, `contexto`, `codeql`, `db-apply-migration`, `ddl-out-of-band-detector`, `deploy-edge-functions`, `deploy-gates`, `edge-functions-drift-check`, `lighthouse`, `lovable-protected-audit`, `required-checks-guard`, `schema-snapshot-export`, `seo-sanity`, `unit-tests`, `uptime-monitor`, `workflow-lint`.  
-- [ ] **E073** `fix` — Para cada workflow listado em CLAUDE.md mas ausente no repo: criar o arquivo; para cada arquivo presente mas não listado: adicionar ao inventário.  
-- [ ] **E074** `chore` — Verificar que `actions/checkout` em todos os workflows usa `persist-credentials: false` quando o token tem escrita (R9).  
-- [ ] **E075** `chore` — Verificar que todos os workflows com `run:` têm `defaults.run.shell: bash` (R10).  
-- [ ] **E076** `chore` — Verificar que `timeout-minutes:` está presente em todos os jobs (R3); classes: estático ≤ 5, unitário ≤ 10, E2E shard ≤ 20.  
-- [ ] **E077** `chore` — Verificar que `node-version-file: .nvmrc` é usado em todos os steps de setup Node (R4); nunca versão literal.  
-- [ ] **E078** `chore` — Verificar que `concurrency:` com `cancel-in-progress: true` está em todos os workflows PR; `false` em push/schedule (R2/R17).  
-- [ ] **E079** `chore` — Verificar `retention-days:` em todos os `upload-artifact` steps (R6/R20): 14 padrão, 30 relatórios semanais, 90 auditoria.  
-- [ ] **E080** `chore` — Verificar que nenhum workflow referencia `pqpdolkaeqlyzpdpbizo` (R19 — REGRA #1 do banco).  
-- [ ] **E081** `chore` — Verificar que todas as actions de terceiros são da lista permitida (8 liberadas): `dorny/paths-filter`, `anchore/sbom-action`, `supabase/setup-cli`, `gitleaks/gitleaks-action`, `denoland/setup-deno`, `oven-sh/setup-bun`, `googleapis/release-please-action`, `crazy-max/ghaction-github-labeler`.  
-- [ ] **E082** `fix` — Para qualquer action de terceiro fora da lista: (a) verificar se é essencial, (b) ou substituir por alternativa dentro da lista, (c) ou adicionar à lista em Settings → Actions E ao CLAUDE.md no mesmo PR.  
-- [ ] **E083** `chore` — Verificar que todas as actions de terceiros estão pinadas por SHA de 40 caracteres (R15).  
-- [ ] **E084** `fix` — Destravar E2E (`e2e.yml` ou `Gate 3`): causa raiz é 3,096 testes × 4 shards × 2 workers × ~9.5s/test ≈ 60min > 30min timeout. Solução: aumentar `timeout-minutes` do job E2E shard para 45, ou reduzir paralelismo para 1 worker/shard, ou particionar em smoke vs full.  
-- [ ] **E085** `fix` — Garantir que `Gate 3` (E2E Smoke, `chromium`) usa um subset mínimo de testes (smoke) com timeout ≤ 20min; E2E completo pode ficar como job opcional.  
-- [ ] **E086** `chore` — Verificar Gate 4 (Lighthouse): confirmar que a pontuação de performance está dentro do target; se abaixo, registrar no issue tracker.  
-- [ ] **E087** `chore` — Verificar Gate 5 (SEO sanity): confirmar que o check passa; listar as URLs testadas.  
-- [ ] **E088** `chore` — Verificar Gate 6 (Build Vite + SBOM): confirmar que o build não tem erros de TypeScript; confirmar que SBOM SPDX-JSON é gerado.  
-- [ ] **E089** `chore` — Verificar `codeql.yml` (Gate `Analyze (javascript-typescript)`): ver o último scan completo; listar alertas de alta severidade abertos.  
-- [ ] **E090** `fix` — Para cada alerta CodeQL de alta severidade: criar issue + PR de fix.  
-- [ ] **E091** `chore` — Verificar Gate 1.17 (CODEOWNERS coverage de gate files): confirmar que arquivos críticos (`deploy-gates.yml`, `client.ts`, `validate-supabase-config.mjs`, `sentinel-check.sh`) têm dono em `.github/CODEOWNERS`.  
-- [ ] **E092** `fix` — Para cada arquivo de gate sem dono em CODEOWNERS: adicionar linha; PR com Gate 1.17 verde.  
-- [ ] **E093** `chore` — Verificar Gate 1.18 (ledger de conflitos semânticos E188): confirmar que `docs/coordenacao/conflitos-semanticos.md` existe e está atualizado.  
-- [ ] **E094** `chore` — Verificar `scripts/sentinel-check.sh`: confirmar que recusa merge commit entre branches de agentes diferentes (`claude/*` ↔ `codex/*` ↔ `devin/*`).  
-- [ ] **E095** `chore` — Verificar `edge-functions-drift-check.yml` ("Compare GitHub × Canonical"): confirmar que o último run verde; se vermelho, identificar a edge function com divergência.
+### Etapa 10 — FIX: `contexto.yml` — secrets PGPORT com fallback '5432' pode mascarar misconfiguration
+- **Prioridade:** P1
+- **Arquivo:** `.github/workflows/contexto.yml` (job `banco`)
+- **Causa:** `PGPORT: ${{ secrets.PGPORT || '5432' }}` — se PGPORT não estiver configurado, usa 5432. Supabase Cloud usa porta 5432, mas o self-hosted pode usar outra. Se conexão falhar por porta errada, o job continua (exit 0 do script não valida conexão).
+- **Fix:** Adicionar verificação explícita de conectividade no início do job: `python3 -c "import psycopg; psycopg.connect(conninfo='...')"` com timeout de 10s; falhar o step se não conectar.
+- **Verificação:** Job `banco` falha explicitamente se banco inacessível, em vez de produzir arquivo vazio.
+- **Risco se não feito:** Inventário do banco silenciosamente vazio; agentes consultam dados obsoletos.
 
----
+### Etapa 11 — FIX: required check "Gate E23 - Secret Scan" — verificar `gitleaks.toml` após PR #2966
+- **Prioridade:** P0
+- **Arquivo:** `.gitleaks.toml`, PR #2966 (`claude/fix-gitleaks-allowlist`)
+- **Causa:** PR #2966 está aberta tocando `.gitleaks.toml`. Se contém allowlist incorreta, pode desativar detecção de segredos.
+- **Fix:** Revisar diff da PR #2966; verificar se apenas adiciona entradas necessárias à allowlist sem usar regex `.*` (bloqueado pelo script).
+- **Verificação:** Gate E23 passa; nenhuma entrada de allowlist é regex coringa.
+- **Risco se não feito:** Segredos reais podem ser commitados sem alerta.
 
-## BLOCO 6 — EDGE FUNCTIONS (Etapas 96–115)
+### Etapa 12 — FIX: PR #2969 — migration `20261101210000` pendente sem merge
+- **Prioridade:** P0
+- **Arquivo:** PR #2969 (`claude/fix-sec001-revoke-anon-trigger-funcs`), `supabase/migrations/20261101210000...`
+- **Causa:** Migration de segurança REVOKE em funções de trigger anônimas está aberta há dias. Enquanto aberta, funções anônimas com TRIGGER continuam ativas em produção.
+- **Fix:** Verificar se CI está verde na PR; se sim, merge + verify deploy; se não, corrigir CI primeiro.
+- **Verificação:** Migration aplicada em produção; `SELECT proname FROM pg_proc WHERE prosecdef=true AND prokind='f'` retorna 0 funções indesejadas.
+- **Risco se não feito:** Funções com SECURITY DEFINER para usuário anônimo continuam ativas — vulnerabilidade de escalação de privilégio.
 
-> Objetivo: edge functions em produção = código no GitHub (sem drift).
+### Etapa 13 — FIX: PR #3003 — migrations de segurança P06/P15 pendentes
+- **Prioridade:** P0
+- **Arquivo:** PR #3003 (`claude/fix-p06-p15-security`), migrations `20261101000001` e `20261101000002`
+- **Causa:** Dois patches de segurança (P06: RLS bypass; P15: função insegura) abertos sem merge.
+- **Fix:** Verificar CI da PR; se verde e sem conflito com main, merge via squash.
+- **Verificação:** Migrations aplicadas; queries de verificação de segurança passam.
+- **Risco se não feito:** Vulnerabilidades P06 e P15 ativas em produção por mais de 72h.
 
-- [ ] **E096** `fix` — Para cada edge function com divergência detectada por `edge-functions-drift-check.yml`: criar PR com o código correto e deployar via `deploy-edge-functions.yml` workflow_dispatch.  
-- [ ] **E097** `chore` — Verificar `kit-ai-builder`: foi deployada fora do workflow em 2026-09-23 devido a timeout só em produção. Confirmar que a versão atual no GitHub é a mesma que está publicada (via MCP `get_edge_function`).  
-- [ ] **E098** `chore` — Verificar `magazine-reader-state-read`: deployada antes da revisão em 2026-09-24. Confirmar sincronização.  
-- [ ] **E099** `chore` — Verificar `crm-db-bridge` (`src/lib/crm-db.ts`): confirmar que a edge function acessa apenas `pgxfvjmuubtbowutlide` (Gestão de Clientes) e nunca faz write no banco de produção.  
-- [ ] **E100** `chore` — Listar todas as edge functions via MCP `list_edge_functions` (projeto `doufsxqlfjyuvxuezpln`) e comparar com `supabase/functions/` no repo; documentar divergências.  
-- [ ] **E101** `fix` — Para cada edge function no banco mas sem código no repo (ou vice-versa): criar migration espelho ou PR de sincronização.  
-- [ ] **E102** `chore` — Verificar que `deploy-edge-functions.yml` aceita `function_name` para deploy pontual e que o environment `producao-edge-functions` restringe a branch (`main` only).  
-- [ ] **E103** `chore` — Verificar que MCP `deploy_edge_function` NÃO é chamado por nenhum script ou workflow (criaria divergência sem ledger).  
-- [ ] **E104** `chore` — Verificar `supabase/functions/_shared/cors-origins.ts`: confirmar que domínios de produção (`promobrindes.com.br`, Vercel URL) estão na lista de CORS.  
-- [ ] **E105** `fix` — Se algum domínio de produção ausente do CORS: adicionar e criar PR.  
-- [ ] **E106** `chore` — Verificar que todas as edge functions têm secrets necessários via `supabase secrets list` (MCP); confirmar que não há secrets hardcodados no código.  
-- [ ] **E107** `fix` — Para cada edge function com secret ausente: adicionar via `create_edge_function_secret` (MCP) ou `workflow_dispatch` de secrets rotation.  
-- [ ] **E108** `chore` — Verificar timeout padrão das edge functions: Deno tem timeout de 2s por padrão em produção; confirmar que `kit-ai-builder` e funções de AI têm `--max-duration` adequado.  
-- [ ] **E109** `chore` — Verificar que o workflow `deploy-edge-functions.yml` gera um recibo no MIGRATIONS_SYNC_LOG.md (ou equivalente) para cada deploy bem-sucedido.  
-- [ ] **E110** `fix` — Se workflow de deploy não gera recibo: adicionar step de log no mesmo arquivo.
+### Etapa 14 — AUDITORIA: verificar DDL fora do fluxo desde 2026-10-13
+- **Prioridade:** P0
+- **Arquivo:** `docs/ci/DDL_OUT_OF_BAND_REPORT.md`, `supabase/MIGRATIONS_SYNC_LOG.md`
+- **Causa:** Incidente documentado em CLAUDE.md: 2026-10-13 — 8 `cron.alter_job` + `variant_stocks_select_org` aplicados via MCP fora do fluxo. Relatório semanal de DDL out-of-band pode ter identificado mais divergências.
+- **Fix:** Ler último `DDL_OUT_OF_BAND_REPORT.md`; para cada objeto sem migration espelho: criar migration espelho + `repair --status applied` + PR.
+- **Verificação:** Relatório mostra 0 objetos sem migration espelho.
+- **Risco se não feito:** Schema real diverge do ledger; `db-schema-drift-check` falha em silêncio ou quebra o replay do baseline.
 
----
+### Etapa 15 — AUDITORIA: verificar se baseline do drift-check está atualizado após incidente 10-13
+- **Prioridade:** P0
+- **Arquivo:** `supabase/baseline/`, workflow `schema-snapshot-export.yml`
+- **Causa:** Objetos aplicados via MCP em 10-13 sem migration podem ter desatualizado o baseline. Se baseline diverge do banco real, `db-schema-drift-check` falha ou dá falso positivo.
+- **Fix:** Disparar `workflow_dispatch` em `schema-snapshot-export.yml` com `force_rotate: true`; revisar diff do baseline gerado na PR automática.
+- **Verificação:** PR do bot com baseline atualizado; diff contém apenas objetos esperados.
+- **Risco se não feito:** Drift-check continua comparando contra baseline obsoleto; falhas reais mascaradas.
 
-## BLOCO 7 — QUALIDADE DE CÓDIGO: RATCHETS E DÍVIDA TÉCNICA (Etapas 116–140)
+### Etapa 16 — AUDITORIA: `Gate 1.13.1` — tabelas com RLS habilitada e zero policies
+- **Prioridade:** P0
+- **Arquivo:** `scripts/check-rls-no-policy-drift.mjs`
+- **Causa:** Gate 1.13.1 bloqueia tabelas com RLS ON mas sem policies (deny-all silencioso). Verificar estado atual.
+- **Fix:** `SELECT tablename FROM pg_tables t JOIN pg_class c ON c.relname=t.tablename WHERE c.relrowsecurity=true AND c.relname NOT IN (SELECT tablename FROM pg_policies)` no banco oficial; para cada tabela: criar policy ou desabilitar RLS.
+- **Verificação:** Gate 1.13.1 verde; query retorna 0 linhas.
+- **Risco se não feito:** Tabelas inacessíveis silenciosamente para todos os roles — deny-all sem log.
 
-> Objetivo: nenhum ratchet aumenta; reduzir dívida medida nos baselines.
+### Etapa 17 — AUDITORIA: `Gate 1.13.2` — 7 tabelas com INSERT anônimo têm rate guard
+- **Prioridade:** P0
+- **Arquivo:** Manifest de rate guards (Gate 1.13.2)
+- **Causa:** Gate 1.13.2 verifica 7 tabelas com INSERT anônimo. Verificar se todas têm trigger de rate guard ativo.
+- **Fix:** Listar as 7 tabelas no manifest; `SELECT trigger_name FROM information_schema.triggers WHERE event_object_table IN (...)` para verificar presença dos triggers.
+- **Verificação:** Gate 1.13.2 verde; todos os 7 triggers presentes.
+- **Risco se não feito:** INSERTs anônimos sem limitação de taxa — risco de flood e custo de banco.
 
-- [ ] **E111** `chore` — Verificar `scripts/ratchets/tsc-errors-baseline.json`: ler valor atual de erros TypeScript; confirmar que não aumentou vs. commit anterior (Gate 1.7).  
-- [ ] **E112** `fix` — Se TSC errors aumentaram: identificar os erros novos (via `npx tsc --noEmit 2>&1 | grep "error TS"`); corrigir os introduzidos nos últimos 20 commits.  
-- [ ] **E113** `chore` — Verificar `scripts/ratchets/console-baseline.json` (Gate 1.9.1): ler contagem atual de `console.*`; listar os arquivos com maior número.  
-- [ ] **E114** `fix` — Remover `console.log` desnecessários nos 5 arquivos com maior contagem; substituir por logger estruturado onde há logging legítimo.  
-- [ ] **E115** `chore` — Verificar `scripts/ratchets/as-any-baseline.json` (Gate 1.9): ler contagem de `as any`; listar os 10 piores arquivos.  
-- [ ] **E116** `fix` — Substituir os 5 `as any` mais perigosos (aqueles em dados de usuário ou API responses) por tipos explícitos ou `unknown` + type guard.  
-- [ ] **E117** `chore` — Verificar `scripts/ratchets/todo-fixme-baseline.json` (Gate 1.9): listar TODOs/FIXMEs com > 30 dias de idade (baseado em `git log -S "TODO"`).  
-- [ ] **E118** `fix` — Para cada TODO/FIXME com > 30 dias e impacto em produção: converter em issue GitHub ou corrigir.  
-- [ ] **E119** `chore` — Verificar `scripts/ratchets/indexed-access-baseline.json` (Gate 1.10): listar arquivos com `object[key]` indexado dinamicamente.  
-- [ ] **E120** `fix` — Substituir os 5 indexed accesses mais perigosos por acesso tipado com optional chaining ou type guard.  
-- [ ] **E121** `chore` — Verificar Gate 1.9.2 (boundary cross-domain): confirmar que não há imports entre `src/pages/*` de domínios diferentes (ex.: página de catálogo importando de página de orçamentos).  
-- [ ] **E122** `fix` — Para cada violação de boundary: extrair código compartilhado para `src/shared/` ou `src/components/` e atualizar imports.  
-- [ ] **E123** `chore` — Verificar Gate 1.15 (`overflow-x-clip` em MainLayout): confirmar que `src/layouts/MainLayout.tsx` ou equivalente tem `overflow-x: clip` para evitar scroll horizontal.  
-- [ ] **E124** `fix` — Se `overflow-x-clip` ausente: adicionar à classe do MainLayout.  
-- [ ] **E125** `chore` — Verificar Gate 1.16 (quotes list invariants): confirmar que a listagem de orçamentos nunca retorna lista vazia quando há orçamentos, e que paginação funciona.  
-- [ ] **E126** `chore` — Verificar `src/hooks/` por hooks sem estado de loading/error/empty (funcionalidade incompleta); listar os que faltam tratamento.  
-- [ ] **E127** `fix` — Para os 5 hooks críticos de UI sem estado de erro: adicionar estado de erro com mensagem adequada ao usuário.  
-- [ ] **E128** `chore` — Verificar `src/pages/` por rotas registradas em `App.tsx` mas sem componente real (retornam `null` ou `<div />`).  
-- [ ] **E129** `fix` — Para cada rota "fantasma": implementar componente mínimo com loading state ou redirecionar para a rota correta.  
-- [ ] **E130** `chore` — Verificar forms de criação/edição: confirmar que todos têm submit handler real (não apenas `console.log`) e feedback de sucesso/erro ao usuário.  
-- [ ] **E131** `fix` — Para cada form sem submit handler real: implementar mutação Supabase + toast de feedback.  
-- [ ] **E132** `chore` — Verificar que o componente de orçamento (`quotes`) tem os fluxos: criar → editar → enviar → aprovar → cancelar. Confirmar que cada ação tem handler.  
-- [ ] **E133** `fix` — Para cada ação do fluxo de orçamento sem handler: implementar endpoint + UI.  
-- [ ] **E134** `chore` — Verificar que `MagazineEditorPage` (citada no CLAUDE.md com bug React #310 reintroduzido pelo Lovable em 2026-07-16) está funcionando: renderiza sem erro de React.  
-- [ ] **E135** `fix` — Se `MagazineEditorPage` tem bug React (ex.: hooks fora de ordem, useEffect sem deps corretas): corrigir o bug original identificado em #310.  
-- [ ] **E136** `chore` — Verificar que a listagem de produtos (`products`) carrega em < 2s com 1000+ registros (benchmark de performance de UI).  
-- [ ] **E137** `fix` — Se listagem lenta: adicionar paginação com `range()` do Supabase ou virtualização de lista.  
-- [ ] **E138** `chore` — Verificar que imagens de produto têm loading lazy (`loading="lazy"` ou `React.lazy`).  
-- [ ] **E139** `fix` — Para imagens sem lazy loading: adicionar atributo `loading="lazy"` e confirmar Lighthouse gate ainda verde.  
-- [ ] **E140** `chore` — Verificar `src/hooks/` por race conditions: hooks que fazem múltiplas queries sem `AbortController` podem vazar memória ao desmontar componente.
+### Etapa 18 — FIX: `Gate 1.13.3` — migrations sem recibo há >24h
+- **Prioridade:** P1
+- **Arquivo:** `supabase/MIGRATIONS_SYNC_LOG.md`
+- **Causa:** Gate 1.13.3 bloqueia migrations sem recibo há >24h. PRs com migrations abertas há dias (#2948, #2969, #3003) podem estar gerando falha deste gate.
+- **Fix:** Para cada migration sem recibo: gerar recibo via `db-apply-migration.yml` (workflow_dispatch) ou adicionar entrada manual no `MIGRATIONS_SYNC_LOG.md` com evidência.
+- **Verificação:** Gate 1.13.3 verde; nenhuma migration com timestamp >24h sem recibo.
+- **Risco se não feito:** Todas as PRs bloqueadas pelo Gate 1.13.3 — nenhuma pode mergear.
 
----
+### Etapa 19 — FIX: PR #2948 — rollbacks E38/E47/E37 pendentes
+- **Prioridade:** P1
+- **Arquivo:** PR #2948 (`claude/fix-rollback-e38-e47-e37`)
+- **Causa:** Rollbacks de 3 eventos de segurança/migration (E38, E47, E37) estão abertos sem merge. Verificar se dependem de outros merges.
+- **Fix:** Verificar dependências; se independente e CI verde: merge via squash.
+- **Verificação:** Rollbacks aplicados; logs de incidente atualizados.
+- **Risco se não feito:** Regressões dos eventos E38/E47/E37 continuam ativas.
 
-## BLOCO 8 — VERCEL E DEPLOY FRONT-END (Etapas 141–155)
+### Etapa 20 — FIX: PR #2941 — fix/e2e-url-state-defaults sem merge há dias
+- **Prioridade:** P1
+- **Arquivo:** PR #2941, `.security/lint-0029-allowlist.json`, `scripts/check-dependency-audit.mjs`
+- **Causa:** Correção de URL state defaults aberta. Verificar estado do CI.
+- **Fix:** Verificar CI; se verde: merge.
+- **Verificação:** PR mergeada; comportamento de URL state validado.
+- **Risco se não feito:** Bug de URL state ativo em produção.
 
-> Objetivo: deploy limpo, sem projetos duplicados, vars corretas.
+### Etapa 21 — AUDITORIA: 20 PRs abertas — mapear conflitos de arquivo
+- **Prioridade:** P1
+- **Arquivo:** Todas as 20 PRs abertas
+- **Causa:** 20 PRs abertas simultâneas com 6 agentes escrevendo. Alto risco de conflito em `supabase/migrations/`, `src/components/`, `scripts/check-*`.
+- **Fix:** `github_graphql` com `pullRequests(states:OPEN){ nodes { number files { nodes { path } } } }` para mapear sobreposições; identificar PRs conflitantes; resolver na ordem de prioridade.
+- **Verificação:** Mapa de sobreposição gerado em `docs/coordenacao/conflitos-pr-ativos.md`.
+- **Risco se não feito:** Merge de uma PR pode quebrar silenciosamente o trabalho de outra.
 
-- [ ] **E141** `chore` — Verificar deployment mais recente do Vercel (projeto `prj_9UfugNYCuboH2R0XB04Jv8PpjDpZ`): confirmar status `READY`; ler build logs para warnings.  
-- [ ] **E142** `fix` — Se último deploy não é de `main` (ex.: de branch de Lovable): confirmar que o deploy de `main` está ativo como produção.  
-- [ ] **E143** `chore` — Verificar variáveis de ambiente no Vercel: confirmar que apenas as vars em `scripts/ci/vercel-env-baseline.json` estão configuradas; listar vars extras.  
-- [ ] **E144** `fix` — Remover vars de integração mortas, chaves de servidor (`OPENAI`, `ANTHROPIC`, `GROQ`, `EVOLUTION`) e `VITE_*` não lidas do Vercel (mencionadas no CLAUDE.md §5).  
-- [ ] **E145** `chore` — Verificar que projeto legado `zapp-web` (`prj_OsErjUqsrMbwwC7S1LVfawmNgEce`) NÃO está gerando builds (já listado em 2026-11-01 como ainda existente).  
-- [ ] **E146** `fix` — Pausar/deletar projeto legado Vercel `prj_OsErjUqsrMbwwC7S1LVfawmNgEce` via MCP Vercel para parar builds duplicados.  
-- [ ] **E147** `chore` — Verificar que `ignore-build.sh` está correto: o script deve retornar exit 0 (build) só para mudanças em `src/`, `public/`, `package.json`, `vite.config.*`, `index.html`.  
-- [ ] **E148** `chore` — Verificar que `VITE_SUPABASE_PROJECT_ID` aponta para `doufsxqlfjyuvxuezpln` no Vercel (nunca o legado `pqpdolkaeqlyzpdpbizo`).  
-- [ ] **E149** `fix` — Se `VITE_SUPABASE_PROJECT_ID` errado: corrigir no Vercel e forçar redeploy.  
-- [ ] **E150** `chore` — Verificar que `VITE_SUPABASE_URL` e `VITE_SUPABASE_PUBLISHABLE_KEY` apontam para o projeto correto.  
-- [ ] **E151** `chore` — Verificar CORS do Supabase (projeto `doufsxqlfjyuvxuezpln`): confirmar que a URL do Vercel e o domínio custom estão na lista de URLs permitidas.  
-- [ ] **E152** `fix` — Se URL de produção ausente no CORS: adicionar via dashboard do Supabase (mudança de config, não migration).  
-- [ ] **E153** `chore` — Verificar que o Supabase App NÃO está conectado ao GitHub (branching automático desligado — CLAUDE.md §4).  
-- [ ] **E154** `chore` — Verificar que `lovable-protected-audit.yml` foi disparado no último commit do Lovable e não detectou alterações em arquivos protegidos.  
-- [ ] **E155** `fix` — Se Lovable alterou arquivo protegido e o audit não alertou: corrigir o workflow de audit para garantir que alerta via issue.
+### Etapa 22 — FIX: Lovable bot — auditar commits após 2026-11-04 em arquivos protegidos
+- **Prioridade:** P1
+- **Arquivo:** `.lovableignore`, arquivos listados em REGRA #7
+- **Causa:** Lovable commita direto em main. Commits do bot após merge de PR #3059 (2026-11-04) podem ter revertido guards. `lovable-protected-audit.yml` deve ter alertado.
+- **Fix:** Verificar runs do `lovable-protected-audit.yml`; para cada alerta, restaurar arquivo protegido via nova PR.
+- **Verificação:** Nenhum alerta pendente no `lovable-protected-audit.yml`; `validate-supabase-config.mjs` exit 0.
+- **Risco se não feito:** Guards revertidos silenciosamente — 401 em produção (incidente anterior: 2026-06-11).
 
----
+### Etapa 23 — INFRA: verificar `edge-functions-drift-check` required check
+- **Prioridade:** P1
+- **Arquivo:** `.github/workflows/edge-functions-drift-check.yml`
+- **Causa:** "Compare GitHub × Canonical" é required check. Verificar se está passando após PR #3059 (que não tocou edge functions mas pode ter afetado o deploy automático).
+- **Fix:** Verificar último run do workflow; se falhando: `github_get_run_failure_summary` para diagnóstico.
+- **Verificação:** "Compare GitHub × Canonical" verde na main.
+- **Risco se não feito:** Required check vermelho bloqueia todos os merges na main.
 
-## BLOCO 9 — MONITORAMENTO E OBSERVABILIDADE (Etapas 156–165)
+### Etapa 24 — FIX: `nightly-full.yml` — verificar se existe e é funcional
+- **Prioridade:** P1
+- **Arquivo:** `.github/workflows/nightly-full.yml` (pode não existir)
+- **Causa:** Suite completa de E2E precisa de um workflow noturno. Verificar se existe; se não, criar para liberar shards do CI de PR.
+- **Fix:** `github_get_file(path=.github/workflows/nightly-full.yml)`; se não existir: criar com schedule `'0 3 * * *'` rodando suite completa sem timeout crítico.
+- **Verificação:** Workflow `nightly-full.yml` existe e roda às 03:00 UTC.
+- **Risco se não feito:** Regressões da suite completa passam despercebidas; PR CI nunca testa tudo.
 
-> Objetivo: alertas funcionando, uptime monitorado, contexto sempre fresco.
+### Etapa 25 — AUDITORIA: `workflow-lint` — verificar se `contexto.yml` passa actionlint
+- **Prioridade:** P1
+- **Arquivo:** `.github/workflows/contexto.yml`, `.github/workflows/workflow-lint.yml`
+- **Causa:** `contexto.yml` foi adicionado em PR #3059. `workflow-lint` roda actionlint em todos os workflows. Verificar se contexto.yml passou no lint.
+- **Fix:** Verificar run do `workflow-lint` após merge de PR #3059; se falhou, corrigir erro apontado.
+- **Verificação:** `workflow-lint` verde com `contexto.yml` incluído.
+- **Risco se não feito:** `workflow-lint` falha em cada PR — required check bloqueado.
 
-- [ ] **E156** `chore` — Verificar `uptime-monitor.yml` (schedule 30 min): ver último run; confirmar que a URL de produção retorna 200.  
-- [ ] **E157** `fix` — Se uptime monitor vermelho: verificar se é falso-positivo (timeout do runner) ou problema real de produção.  
-- [ ] **E158** `chore` — Verificar `notifica-falha-main.yml` (se existir): confirmar que falhas em `main` geram notificação (Slack, email ou issue).  
-- [ ] **E159** `chore` — Verificar que `docs/SCHEMA_REFERENCE.md` tem timestamp < 7 dias; se defasado, disparar `schema-snapshot-export.yml`.  
-- [ ] **E160** `chore` — Verificar frescor do `contexto`: `git show origin/contexto:docs/contexto/00-INDEX.md` deve ter `gerado_em` < 15 min; se defasado, verificar se o cron está ativo.  
-- [ ] **E161** `fix` — Se cron de `contexto.yml` não está disparando: verificar se o workflow foi desabilitado acidentalmente; reabilitar via GitHub Settings → Actions.  
-- [ ] **E162** `chore` — Verificar `ddl-out-of-band-detector.yml` (semanal): ver último relatório em `docs/ci/DDL_OUT_OF_BAND_REPORT.md`; listar objetos detectados sem migration.  
-- [ ] **E163** `chore` — Verificar `branch-hygiene-audit.yml` (semanal): listar branches obsoletas (> 30 dias sem commit, sem PR aberta); proposta de deleção ao dono.  
-- [ ] **E164** `chore` — Verificar `settings-guard.yml` (diário): confirmar que `github-settings-baseline.json` está atualizado e nenhum campo divergiu.  
-- [ ] **E165** `fix` — Se `settings-guard` detectou divergência: corrigir o campo divergido (branch protection, squash config, etc.) e atualizar o baseline.
+### Etapa 26 — REGRA #5: `continue-on-error` — verificar se foi introduzido inadvertidamente
+- **Prioridade:** P1
+- **Arquivo:** `.github/workflows/contexto.yml` e outros workflows recentes
+- **Causa:** Contrato C17 (Gate 1.11) proíbe `continue-on-error: true` em gates bloqueantes. O step de graphify em `contexto.yml` tem `continue-on-error: true` — verificar se está apenas em steps opcionais.
+- **Fix:** `grep -n "continue-on-error: true" .github/workflows/*.yml` e verificar se cada ocorrência é em step não-bloqueante.
+- **Verificação:** Nenhum `continue-on-error: true` em step de gate bloqueante.
+- **Risco se não feito:** Gate 1.11 (workflow contracts) falha → "Gate Final" vermelho.
 
----
+### Etapa 27 — FIX: `Gate 1.14` — `docs/ci/SEGREDOS.md` atualizado com secrets do `contexto.yml`
+- **Prioridade:** P1
+- **Arquivo:** `docs/ci/SEGREDOS.md`
+- **Causa:** `contexto.yml` usa `GH_TOKEN` (como `GITHUB_TOKEN` nativo) e os 5 secrets PG*. Se qualquer um não estiver documentado em `SEGREDOS.md`, Gate 1.14 falha.
+- **Fix:** Adicionar entradas para `PGHOST`, `PGUSER`, `PGPASSWORD`, `PGDATABASE`, `PGPORT` em `SEGREDOS.md` se ausentes.
+- **Verificação:** Gate 1.14 (`check-secrets-inventory --gate`) verde.
+- **Risco se não feito:** Gate 1.14 → "Gate Final" vermelho; deploy bloqueado.
 
-## BLOCO 10 — GOVERNANÇA E DOCUMENTAÇÃO (Etapas 166–185)
+### Etapa 28 — FIX: `Gate 1.17` — CODEOWNERS coverage para novos arquivos do `contexto.yml`
+- **Prioridade:** P1
+- **Arquivo:** `.github/CODEOWNERS`
+- **Causa:** Gate 1.17 verifica cobertura de CODEOWNERS para "gate files". Novos scripts em `scripts/ai-context/`, `scripts/supabase_snapshot/`, `scripts/regras_negocio/` precisam de entrada em CODEOWNERS.
+- **Fix:** Verificar se `.github/CODEOWNERS` cobre `scripts/` globalmente ou precisa de entradas específicas.
+- **Verificação:** Gate 1.17 verde; `github_get_codeowners_errors` retorna 0 erros.
+- **Risco se não feito:** Gate 1.17 → "Gate Final" vermelho.
 
-> Objetivo: CLAUDE.md, AGENTS.md, SEGREDOS.md e CODEOWNERS sempre corretos.
+### Etapa 29 — FIX: `check-gates-table.mjs` — verificar se contexto.yml não introduziu gate faltando na tabela
+- **Prioridade:** P1
+- **Arquivo:** `scripts/check-gates-table.mjs`, `docs/ci/PADRAO_WORKFLOW.md`
+- **Causa:** `check-gates-table.mjs` exige que todo step `Gate X.Y` em `deploy-gates.yml` tenha entrada na tabela de gates do CLAUDE.md. Verificar se algum step novo foi adicionado sem tabela atualizada.
+- **Fix:** Rodar `node scripts/check-gates-table.mjs` localmente (ou via CI); adicionar entradas faltantes.
+- **Verificação:** Script exit 0.
+- **Risco se não feito:** Gate 1.11 → "Gate Final" vermelho.
 
-- [ ] **E166** `chore` — Verificar `docs/ci/SEGREDOS.md`: confirmar que todo `secrets.*` e `vars.*` usado em `.github/workflows/*.yml` está listado com dono, escopo e rotação.  
-- [ ] **E167** `fix` — Adicionar ao SEGREDOS.md as secrets `PGHOST`, `PGUSER`, `PGPASSWORD`, `PGDATABASE`, `PGPORT` com dono `adm01-debug`, escopo `contexto.yml`, rotação "anual ou ao trocar banco".  
-- [ ] **E168** `chore` — Verificar `docs/ci/PADRAO_WORKFLOW.md`: confirmar que está atualizado com os contratos R1–R20 e C10–C28 vigentes.  
-- [ ] **E169** `chore` — Verificar `docs/db/POLITICA_DDL.md`: confirmar que a política proíbe `execute_sql` para escrita e exige o caminho migration → PR → merge → workflow.  
-- [ ] **E170** `chore` — Verificar `supabase/MIGRATIONS_SYNC_LOG.md`: confirmar que todas as migrations dos últimos 90 dias têm recibo; se faltando, criar recibo retrospectivo.  
-- [ ] **E171** `chore` — Verificar `docs/coordenacao/conflitos-semanticos.md` (Gate 1.18): listar todos os conflitos registrados; confirmar que nenhum está em aberto sem resolução.  
-- [ ] **E172** `chore` — Verificar `.github/required-checks.json`: confirmar que lista exatamente os 5 checks: "Gate Final - Deploy Ready", "Compare GitHub × Canonical", "Analyze (javascript-typescript)", "Gate E23 - Secret Scan (gitleaks)", "Assert Gate Final is required on main".  
-- [ ] **E173** `fix` — Se a lista em `.github/required-checks.json` diverge dos required checks reais no branch protection do GitHub: atualizar o JSON e abrir issue para o dono corrigir o Settings (branch protection não pode ser alterado por Actions com token padrão).  
-- [ ] **E174** `chore` — Verificar CLAUDE.md: confirmar que a seção "Estado real gerado" aponta para `inventario/estado/` e que o `gerado_em` do último inventário é recente (< 7 dias).  
-- [ ] **E175** `chore` — Verificar CLAUDE.md seção Vercel: confirmar que `prj_9UfugNYCuboH2R0XB04Jv8PpjDpZ` ainda é o projeto correto (via MCP Vercel `get_project`).  
-- [ ] **E176** `chore` — Verificar CLAUDE.md seção Supabase: confirmar que projeto `doufsxqlfjyuvxuezpln` ainda existe e está ativo; confirmar que `pgxfvjmuubtbowutlide` é o CRM (somente leitura).  
-- [ ] **E177** `chore` — Verificar `inventario/estado/` (banco.json, rotas.json, edges.json): confirmar `gerado_em` < 7 dias; se defasado, disparar `gerar-banco.mjs`, `gerar-rotas.mjs`, `gerar-repo.mjs` via script ou workflow.  
-- [ ] **E178** `chore` — Verificar `graphify-out/GRAPH_REPORT.md`: comparar `Built from commit` com `git rev-parse --short HEAD`; se diferir por > 50 commits, fazer `graphify update . --force` localmente (não pode ser feito via MCP).  
-- [ ] **E179** `chore` — Verificar `graphify-out/manifest.json` (versionado): confirmar que está commitado na main após a última execução de `graphify update`.  
-- [ ] **E180** `fix` — Se CLAUDE.md tem seção desatualizada (ex.: contagem de migrations, número de edge functions, projetos Supabase): corrigir no mesmo PR de qualquer outra mudança a CLAUDE.md.
-
----
-
-## BLOCO 11 — FUNCIONALIDADES INCOMPLETAS (Etapas 186–195)
-
-> Objetivo: fechar os 20% que faltam (identificados via `11-GLOSSARIO-E-LACUNAS.md`).
-
-- [ ] **E181** `chore` — Ler `docs/contexto/regras/11-GLOSSARIO-E-LACUNAS.md` da branch `contexto`; extrair lista de lacunas identificadas pelo gerador de regras.  
-- [ ] **E182** `fix` — Implementar a primeira lacuna de maior impacto identificada em E181 (funcionalidade incompleta do catálogo de brindes): criar PR com funcionalidade completa (CRUD de ponta a ponta, sem mock ou TODO).  
-- [ ] **E183** `fix` — Implementar a segunda lacuna de maior impacto: fluxo de aprovação de orçamento (se ausente ou incompleto).  
-- [ ] **E184** `fix` — Implementar a terceira lacuna: variantes de produto (criação, edição, estoque) se o fluxo for parcial.  
-- [ ] **E185** `chore` — Verificar `src/pages/` por páginas que renderizam dados do banco mas não têm estado de "sem resultados" (empty state); adicionar empty state com CTA adequado.  
-- [ ] **E186** `fix` — Para o módulo de personalização (`personalization_techniques`): confirmar que a tabela existe no banco, tem RLS, e a UI de seleção de técnica de personalização funciona.  
-- [ ] **E187** `fix` — Para o módulo de revistas/catálogos (`magazines`, `magazine_items`, `magazine_templates`): confirmar que as tabelas existem, têm RLS, e o editor funciona sem bug React #310.  
-- [ ] **E188** `chore` — Verificar integração `crm-db-bridge`: confirmar que dados de cliente do CRM (`pgxfvjmuubtbowutlide`) são carregados corretamente no catálogo; testar com cliente real via edge function.  
-- [ ] **E189** `fix` — Para fornecedores (`suppliers`, `supplier_products_raw`): confirmar que o fluxo de importação de produtos do fornecedor (Bronze layer) funciona; corrigir se quebrado.  
-- [ ] **E190** `chore` — Ler `docs/contexto/regras/07-REGRAS-DE-NEGOCIO.md`: listar as regras de desconto/preço que ainda NÃO estão implementadas no código (ex.: cálculo de preço por faixa de quantidade).
-
----
-
-## BLOCO 12 — TESTES E COBERTURA (Etapas 196–200)
-
-> Objetivo: cobertura mínima para os módulos críticos.
-
-- [ ] **E191** `fix` — Verificar que `Gate 2` (vitest) está verde: último run de `unit-tests` concluído com sucesso.  
-- [ ] **E192** `fix` — Para cada teste unitário que falha intermitentemente (flaky): adicionar retry ou corrigir a causa raiz.  
-- [ ] **E193** `chore` — Verificar cobertura de testes para `src/hooks/` críticos: `useProducts`, `useQuotes`, `useOrders`; adicionar testes faltantes.  
-- [ ] **E194** `chore` — Verificar que `tests/scripts/contexto-produtores.test.mjs` passa localmente (os 4 describes: suítes dos produtores, índice, invariantes do contexto.yml).  
-- [ ] **E195** `fix` — Se qualquer teste de `contexto-produtores.test.mjs` falha: corrigir o produtor correspondente ou o invariante violado.  
-- [ ] **E196** `chore` — Verificar que `playwright.config.ts` lista os 10 projetos documentados no CLAUDE.md: `setup`, `chromium-public`, `firefox-public`, `webkit-public`, `chromium-authed`, `firefox-authed`, `webkit-authed`, `mobile-chrome`, `mobile-safari`, `chromium-smoke`.  
-- [ ] **E197** `fix` — Se algum projeto Playwright faltando ou com nome diferente: corrigir o config; atualizar o CLAUDE.md no mesmo PR.  
-- [ ] **E198** `chore` — Verificar `scripts/db-audit/`: confirmar que `supabase-usage-guard.mjs`, `replay-local.sh`, `register-migration.mjs` estão com README atualizado.  
-- [ ] **E199** `fix` — Para cada script em `scripts/db-audit/` sem README ou com README desatualizado: atualizar com instruções de execução, secrets necessários e exemplo de saída esperada.  
-- [ ] **E200** `chore` — **Validação final:** executar todos os 5 required checks localmente (Gate 0 `validate-supabase-config.mjs`, Gate 1 lint + tsc, Gate 1.1 `check-product-type-fields.mjs`, Gate 2 vitest, Gate 3 E2E smoke); confirmar que todos passam; atualizar este documento com data de validação e SHA do commit validado.
-
----
-
-## Apêndice — Prioridades Absolutas (Execute imediatamente, nesta ordem)
-
-| # | Etapa | Risco se ignorar |
-|---|-------|---------------|
-| 1 | **E001–E004** | Supabase/ nunca gerado → agentes sem contexto de banco |
-| 2 | **E084–E085** | E2E bloqueado desde 2026-10-02 → PR mergeada sem teste real |
-| 3 | **E041–E042** | Types drift magazine/personalization → runtime errors em produção |
-| 4 | **E031–E034** | RLS deny-all silencioso / sem rate guard → dados expostos ou abuso |
-| 5 | **E055–E056** | client.ts revertido pelo Lovable → 401 em produção |
-| 6 | **E045–E046** | CVEs high/critical → vulnerabilidade conhecida em produção |
-| 7 | **E016–E019** | DDL out-of-band sem espelho → schema real diverge em silêncio |
-| 8 | **E167** | SEGREDOS.md desatualizado → Gate 1.14 pode falhar em próxima PR |
-| 9 | **E141–E146** | Projeto Vercel duplicado → builds desnecessários e custo |
-| 10 | **E182–E184** | Lacunas de produto → funcionalidades prometidas ao cliente não entregues |
+### Etapa 30 — AUDITORIA: verificar `Assert Gate Final is required on main` required check
+- **Prioridade:** P0
+- **Arquivo:** `.github/workflows/required-checks-guard.yml`
+- **Causa:** "Assert Gate Final is required on main" é o 5º required check. Se o próprio guard falha, nenhum PR pode mergear.
+- **Fix:** Verificar último run do `required-checks-guard.yml`; se falhando: diagnosticar e corrigir imediatamente.
+- **Verificação:** 5 required checks todos verdes na main; `required-checks-guard.yml` exit 0.
+- **Risco se não feito:** Nenhuma PR pode ser mergeada — repo travado.
 
 ---
 
-*Plano gerado por análise de 500 commits (`385af81` ← até ~2026-06-01) + estado real da branch `contexto` em 2026-11-04 + auditorias de CI/CD, banco, segurança, código e Lovable.*
+## FASE 2 — SEGURANÇA E BANCO (P0/P1) — Etapas 31–80
+
+### Etapa 31 — BANCO: listar tabelas _backup_/_old_ em produção
+- **Prioridade:** P0
+- **Arquivo:** Banco `doufsxqlfjyuvxuezpln`
+- **Fix:** `SELECT tablename, pg_size_pretty(pg_total_relation_size(quote_ident(tablename))) FROM pg_tables WHERE schemaname='public' AND (tablename ILIKE '%_backup%' OR tablename ILIKE '%_old%' OR tablename ILIKE '%_bkp%') ORDER BY pg_total_relation_size(quote_ident(tablename)) DESC;`
+- **Verificação:** Lista de tabelas gerada com tamanhos; decisão de DROP documentada.
+
+### Etapa 32 — BANCO: criar migration DROP para tabelas backup identificadas (grupos de 5)
+- **Prioridade:** P0
+- **Arquivo:** `supabase/migrations/YYYYMMDDHHMMSS_drop_backup_tables_01.sql`
+- **Fix:** Migration com `DROP TABLE IF EXISTS` + rollback `CREATE TABLE AS SELECT` para recuperação. Header `-- Rollback:` obrigatório. Arquivo de rollback em `supabase/rollbacks/`.
+- **Verificação:** Migration existe; preflight gate passa; PR aberta para revisão.
+
+### Etapa 33 — BANCO: aplicar migration DROP via workflow `db-apply-migration.yml`
+- **Prioridade:** P0
+- **Arquivo:** `.github/workflows/db-apply-migration.yml`
+- **Fix:** `workflow_dispatch` com `version` da migration criada na etapa 32; verificar que `RETURNING` não-vazio confirma apply.
+- **Verificação:** Tabelas removidas do banco; `MIGRATIONS_SYNC_LOG.md` atualizado.
+
+### Etapa 34 — BANCO: verificar `cron.job` entries aplicadas fora do fluxo em 2026-10-13
+- **Prioridade:** P0
+- **Arquivo:** Banco (cron.job) + `supabase/migrations/`
+- **Fix:** `SELECT jobname, schedule, command FROM cron.job ORDER BY jobid;` — comparar com migrations existentes; para cada job sem migration espelho: criar migration espelho.
+- **Verificação:** Cada `cron.job` tem migration correspondente no ledger.
+
+### Etapa 35 — BANCO: verificar `variant_stocks_select_org` aplicada fora do fluxo
+- **Prioridade:** P0
+- **Arquivo:** Banco + `supabase/migrations/`
+- **Fix:** `\df variant_stocks_select_org` — se existe sem migration espelho: criar `supabase/migrations/YYYYMMDDHHMMSS_mirror_variant_stocks_select_org.sql` + `repair --status applied`.
+- **Verificação:** Função presente no ledger; `db-schema-drift-check` passa.
+
+### Etapa 36 — SEGURANÇA: auditar funções SECURITY DEFINER expostas ao anon
+- **Prioridade:** P0
+- **Arquivo:** Banco `doufsxqlfjyuvxuezpln`
+- **Fix:** `SELECT proname, prosecdef, proowner::regrole FROM pg_proc WHERE prosecdef=true AND has_function_privilege('anon', oid, 'execute');` — para cada resultado: verificar se é intencional ou vuln.
+- **Verificação:** 0 funções SECURITY DEFINER não-intencionais acessíveis ao anon.
+
+### Etapa 37 — SEGURANÇA: auditar tabelas sem RLS em schema public
+- **Prioridade:** P0
+- **Arquivo:** Banco `doufsxqlfjyuvxuezpln`
+- **Fix:** `SELECT tablename FROM pg_tables t JOIN pg_class c ON c.relname=t.tablename WHERE schemaname='public' AND c.relrowsecurity=false;` — para cada resultado: habilitar RLS ou documentar exceção.
+- **Verificação:** 0 tabelas sem RLS (ou lista de exceções documentadas com justificativa).
+
+### Etapa 38 — SEGURANÇA: auditar policies permissivas para `anon` em tabelas sensíveis
+- **Prioridade:** P0
+- **Arquivo:** Banco (pg_policies)
+- **Fix:** `SELECT tablename, policyname, cmd FROM pg_policies WHERE roles @> ARRAY['anon'] AND cmd IN ('ALL', 'INSERT', 'UPDATE', 'DELETE');` — revisar cada resultado.
+- **Verificação:** Nenhuma policy de escrita para anon sem rate guard correspondente.
+
+### Etapa 39 — SEGURANÇA: verificar `audit_r3_revoke_anon_mv_product_compositions` aplicada em 2026-09-05
+- **Prioridade:** P1
+- **Arquivo:** Banco + ledger
+- **Fix:** Verificar se migration espelho existe no ledger para o incidente de 2026-09-05; se não: criar migration espelho.
+- **Verificação:** Entrada no ledger com timestamp 2026-09-05; drift-check passa.
+
+### Etapa 40 — SEGURANÇA: verificar `catalog_e24_zapp_catalog_stats` aplicada fora do fluxo em 2026-09-12
+- **Prioridade:** P1
+- **Arquivo:** Banco + ledger
+- **Fix:** Mesma abordagem da etapa 39; verificar objeto `catalog_e24_zapp_catalog_stats` no banco.
+- **Verificação:** Entrada no ledger; drift-check passa.
+
+### Etapa 41 — BANCO: regenerar `src/integrations/supabase/types.ts` e validar com Gate 1.2
+- **Prioridade:** P1
+- **Arquivo:** `src/integrations/supabase/types.ts`
+- **Causa:** Drops de tabelas backup (etapas 32-33) + possível regressão de Lovable. `personalization_techniques`, `magazine_items`, `product_variants` precisam estar presentes.
+- **Fix:** Disparar `generate-typescript-types` via MCP; verificar diff; se tabelas sumiram: investigar banco.
+- **Verificação:** Gate 1.2 verde; tabelas obrigatórias presentes em `types.ts`.
+
+### Etapas 42–70 — continuação de segurança e banco (ver arquivo completo)
+
+> **Nota:** As etapas 42–70 cobrem: paridade ledger vs migrations, function `reserve_migration_version`, índices duplicados, índices faltantes em FKs, bloat de tabelas, cron jobs órfãos, atualização de SCHEMA_REFERENCE.md, `restore_seller_cart` RPC, `crm-db-bridge`, secrets expostos, Dependabot, CodeQL, secret scanning, .lovableignore, ratchets, sentinel-check, Vercel env vars sensíveis.
+
+---
+
+## FASE 3 — QUALIDADE DE CÓDIGO (P1/P2) — Etapas 71–130
+
+### Etapa 71 — indexed-access ratchet: reduzir de 872 para <700
+- **Prioridade:** P1
+- **Arquivo:** Arquivos com maior contagem de `object[key]` (identificar via `scripts/check-indexed-access-ratchet.mjs`)
+- **Fix:** Para os 20 maiores contribuintes: converter `obj[key]` para optional chaining `obj?.[key]` ou tipagem explícita.
+- **Verificação:** Gate 1.10 verde; baseline ≤700.
+
+### Etapa 72 — indexed-access ratchet: reduzir de 700 para <600 (meta)
+- **Prioridade:** P2
+- **Arquivo:** Continuação da etapa 71
+- **Fix:** Próximas 20 maiores ocorrências; refatorar para acessos tipados.
+- **Verificação:** Baseline ≤600 (meta original).
+
+### Etapas 73–130 — continuação de qualidade (ver arquivo completo)
+
+> **Nota:** As etapas 73–130 cobrem: TODO/FIXME (51→30), `as any`, console.*, arquivos >1000L, cross-domain imports, gates 1.5/1.15/1.16, testes unitários dos produtores, integridade transacional, SEO, build, visual baselines, tipos, edge functions, tokens CSS, tabs de inbox, Team Chat.
+
+---
+
+## FASE 4 — CI/CD E INFRAESTRUTURA (P1/P2) — Etapas 131–160
+
+### Etapa 131 — CI: verificar `allowed_actions` — nenhum workflow usa action fora das 8 permitidas
+- **Prioridade:** P0
+- **Arquivo:** Todos os `.github/workflows/*.yml`
+- **Fix:** `grep -rh "uses:" .github/workflows/ | grep -v "actions/" | grep -v "github/" | sort -u` — para cada action de terceiro: verificar se está na lista de 8 permitidas.
+- **Verificação:** 0 actions não-listadas em workflows ativos.
+
+### Etapas 132–160 — continuação de CI/CD (ver arquivo completo)
+
+> **Nota:** As etapas 132–160 cobrem: sha_pinning, contratos R1–R24, concurrency em triggers mistos, fila de merge, Gate 0 pós-Lovable, deploy de edge functions, db-apply-migration, required-checks.json, Vercel deploy confirmado, Lighthouse, uptime-monitor, edge-functions-drift-check, lovable-protected-audit atualizado, .vercel/project.json, .nvmrc, commitlint, graphify, conflito semântico ledger.
+
+---
+
+## FASE 5 — CONTEÚDO E REGRAS DE NEGÓCIO (P1/P2) — Etapas 161–180
+
+### Etapa 161 — Criar `docs/contexto/regras/manual/regras.md` com regras de negócio do Promo Brindes
+- **Prioridade:** P1
+- **Arquivo:** `docs/contexto/regras/manual/regras.md` (na branch `main`)
+- **Fix:** Criar arquivo com as regras de negócio: fluxo de orçamento, validações de preço, estados de produto, regras de personalização, workflow de aprovação.
+- **Verificação:** Arquivo existe em `main`; `docs/contexto/00-INDEX.md` referencia a seção.
+
+### Etapas 162–180 — continuação de conteúdo (ver arquivo completo)
+
+> **Nota:** As etapas 162–180 cobrem: indice.py, ai-context, snapshot.py banco correto, catálogo B2B, personalização, integração CRM, estados de pedido, contexto.yml publicando manual/, POLITICA_DDL.md, PENDENCIAS.md, RELATORIO_CI.md, inventario/estado/, docs/ci/README.md, SEGREDOS.md, conflitos-semanticos, CLAUDE.md.
+
+---
+
+## FASE 6 — GOVERNANÇA E PROTEÇÕES (P1/P2) — Etapas 181–200
+
+### Etapa 181 — CODEOWNERS: adicionar cobertura para novos scripts do PR #3059
+- **Prioridade:** P1
+- **Arquivo:** `.github/CODEOWNERS`
+- **Fix:** Adicionar `scripts/ai-context/ @adm01-debug`, `scripts/supabase_snapshot/ @adm01-debug`, `scripts/regras_negocio/ @adm01-debug`.
+- **Verificação:** Gate 1.17 verde; novos scripts têm revisor obrigatório.
+
+### Etapa 182–200 — continuação de governança (ver arquivo completo)
+
+> **Nota:** As etapas 182–200 cobrem: CODEOWNERS para contexto.yml, commitlint pós-PR#3059, .lovableignore para tests/scripts/, sentinel-check, Gate 1.3 preflight, gitleaks sem regex coringa, ddl-out-of-band notificações, cron-table não-privilegiado, R11 sem pull_request+write, testes de invariantes adicionais, notificação Gate Final, issue automática de drift, conflito ledger, Gate 0.6 Dependency Review, SCHEMA_REFERENCE.md data 2026-11-04, mapa de conflitos PR ativos, verificação Gate Final pós-P0, deploy produção end-to-end.
+
+---
+
+## SUMÁRIO DE PRIORIDADES
+
+| Prioridade | Etapas | Impacto |
+|---|---|---|
+| **P0** (bloqueante deploy/produção) | 1,2,5,6,7,11,12,13,14,15,16,17,18,22,23,25,30,34,35,36,37,51,52,55,85,130,131,138,139,140,141,186,187,190,196,199,200 | Deploy bloqueado / produção em risco |
+| **P1** (crítico 24h) | 3,4,8,9,10,19,20,21,24,26,27,28,29,38,39,40,41,42,43,44,47,49,50,53,54,56,57,58,59,60,70,71,73,78,79,80,81,82,83,84,86,98,100,101,105,106,107,108,109,110,111,113,114,115,120,122,123,131,133,134,135,136,137,143,144,145,161,162,163,164,169,181,182,183,184,185,189,191,192,193,195 | Risco em 24h / gate vermelho |
+| **P2** (importante 1 semana) | Restante | Dívida técnica / melhoria |
+
+**Ordem de execução recomendada:** P0 → P1 → P2, dentro de cada fase na ordem numérica.
+
+---
+
+*Gerado por análise de 500 commits (2026-07 a 2026-11-04) · 5 agentes especializados · PR #3059 validado · 20 PRs abertas auditadas · Banco de produção `doufsxqlfjyuvxuezpln` referenciado*
