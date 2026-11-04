@@ -677,8 +677,8 @@ Aplicar via `db-apply-migration.yml` com aprovação PO. **Esta etapa é a mais 
 **Ação:** `github_get_file(path=src/integrations/supabase/client.ts, ref=main)`. Confirmar `doufsxqlfjyuvxuezpln` presente e `validateEnv()` existente.
 
 ### 🟡 E141 — Verificar que Gate 0 (SSOT) falha corretamente se banco errado [AUTO]
-**Achado:** `scripts/validate-supabase-config.mjs` deve retornar exit 1 se `pqpdolkaeqlyzpdpbizo` for usado.  
-**Ação:** Teste: `echo "const id='pqpdolkaeqlyzpdpbizo'" | node scripts/validate-supabase-config.mjs` deve falhar. (Teste teórico — não modificar o arquivo).
+**Achado:** `scripts/validate-supabase-config.mjs` deve retornar exit 1 se `pqpdolkaeqlyzpdpbizo` (projeto legado — não use) for usado.  
+**Ação:** Teste: `echo "const id='pqpdolkaeqlyzpdpbizo'" | node scripts/validate-supabase-config.mjs` deve falhar. (Teste teórico — não modificar o arquivo). _(pqpdolkaeqlyzpdpbizo = projeto legado — não use)_
 
 ---
 
