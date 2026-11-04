@@ -165,6 +165,9 @@ jobs:
         with:
           fail-on-severity: high
           allow-licenses: MIT, Apache-2.0, ISC, BSD-2-Clause, BSD-3-Clause, 0BSD, CC0-1.0, Unlicense, CC-BY-4.0, Python-2.0
+          # psycopg (LGPL-3.0): driver Postgres do coletor scripts/supabase_snapshot/, roda só no runner do
+          # contexto.yml — não entra no bundle nem é distribuído. Exceção por pacote; a lista acima não muda.
+          allow-dependencies-licenses: pkg:pypi/psycopg
 
   lint-typecheck:
     name: Gate 1 - Lint + TypeScript
