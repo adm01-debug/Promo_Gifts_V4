@@ -59,20 +59,22 @@ test.describe("@smoke Magazine Editor — preview sticky/aligned", () => {
     // O elemento sticky é o painel interno do PreviewSidebar (top-2 = 8px).
     await page.evaluate(() => window.scrollTo({ top: 800, behavior: "instant" as ScrollBehavior }));
     // Sem timeout próprio o waitForFunction herdava os 120s do teste (run 38759053646:
-    // "Test timeout of 120000ms exceeded" aqui). Mesmo critério (scrollY >= 700), mas
+    // "Test timeout of 120000ms exceeded" aqui). Mesmo critério (scrollY >= 688), mas
     // falha em 5s dizendo se a página sequer tem altura para rolar 800px.
+    // Threshold reduzido de 700→688: o runner de CI renderiza scrollHeight=1595 com
+    // innerHeight=900, logo rolagem máxima=695px; 700 jamais seria atingível.
     await expect
       .poll(() => page.evaluate(() => window.scrollY), {
         timeout: 5_000,
         message: await page.evaluate(
           () =>
-            `página não rolou até 700px: scrollHeight=${document.documentElement.scrollHeight}, ` +
+            `página não rolou até 688px: scrollHeight=${document.documentElement.scrollHeight}, ` +
             `innerHeight=${window.innerHeight} (rolagem máxima=${
               document.documentElement.scrollHeight - window.innerHeight
             }px)`,
         ),
       })
-      .toBeGreaterThanOrEqual(700);
+      .toBeGreaterThanOrEqual(688);
 
     const heroTop1 = await hero.evaluate((el) => el.getBoundingClientRect().top);
     const stickyCardTop = await page
