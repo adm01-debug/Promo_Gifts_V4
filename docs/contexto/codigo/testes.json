@@ -2104,14 +2104,14 @@
   {
    "arquivo": "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
    "tipo": "e2e",
-   "linhas": 93,
+   "linhas": 96,
    "testa": [],
    "casos": 2
   },
   {
    "arquivo": "e2e/flows/magazine-publish-smoke.spec.ts",
    "tipo": "e2e",
-   "linhas": 233,
+   "linhas": 231,
    "testa": [],
    "casos": 2
   },

@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "feat(e2e): corrige smoke tests de magazine para CI verde",
+   "fix(e2e): corrige 2 smoke tests de magazine pré-existentes (#3069)",
+   "chore: atualizar baseline soft-delete para partições p2027_03–p2027_12",
    "feat: cria partições p2027_03–p2027_12 de supplier_products_raw_history",
-   "chore: adiciona rollback files para migrations 20261101201000 e 20261101202000",
-   "fix: corrigir refs de migration em doc para desbloquear Gate 1.3",
-   "fix(docs): corrigir marcadores legado em planos — guard-canonical-project (#3062)",
-   "docs: análise 500 commits — plano 200 etapas, regras de negócio e fix Gate 1.14"
+   "chore: adiciona rollback files para migrations 20261101201000 e 20261101202000"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

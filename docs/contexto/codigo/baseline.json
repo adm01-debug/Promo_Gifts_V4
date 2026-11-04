@@ -2,11 +2,26 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "070e9d481da9fa88b409b4e529e378ad2aea5ecb",
+  "commit": "2c5dafc323e094b59dd973b646944d9b8d715a07",
   "branch": "main",
-  "data_commit": "2026-11-04T10:47:58-03:00",
+  "data_commit": "2026-11-04T14:22:20-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "2c5dafc",
+    "data": "2026-11-04",
+    "assunto": "feat(e2e): corrige smoke tests de magazine para CI verde"
+   },
+   {
+    "sha": "07dc24e",
+    "data": "2026-11-04",
+    "assunto": "fix(e2e): corrige 2 smoke tests de magazine pré-existentes (#3069)"
+   },
+   {
+    "sha": "50d099c",
+    "data": "2026-11-04",
+    "assunto": "chore: atualizar baseline soft-delete para partições p2027_03–p2027_12"
+   },
    {
     "sha": "070e9d4",
     "data": "2026-11-04",
@@ -116,24 +131,9 @@
     "sha": "8d97d18",
     "data": "2026-11-02",
     "assunto": "chore: CLAUDE.md só técnico, AGENTS.md só regras do dono (#3038)"
-   },
-   {
-    "sha": "cc7ef5e",
-    "data": "2026-11-02",
-    "assunto": "fix(ts): corrige precedência de 'await...as' em useRuptureAlerts (#2996)"
-   },
-   {
-    "sha": "df94410",
-    "data": "2026-11-01",
-    "assunto": "fix(security): CodeQL HIGH — crypto.randomInt, URL validation, hash param guard, anonymize ilike (PR-3021)"
-   },
-   {
-    "sha": "5a35a74",
-    "data": "2026-11-01",
-    "assunto": "chore(security): atualiza timestamp baseline de políticas 2026-11-01"
    }
   ],
-  "arquivos_mudados_7d": 683,
+  "arquivos_mudados_7d": 681,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -176,15 +176,11 @@
     "mudancas": 72
    },
    {
-    "pasta": "RELATORIO_CI.md",
-    "mudancas": 63
-   },
-   {
     "pasta": "src/components/kit-builder",
     "mudancas": 63
    },
    {
-    "pasta": "PENDENCIAS.md",
+    "pasta": "RELATORIO_CI.md",
     "mudancas": 61
    },
    {
@@ -194,16 +190,20 @@
    {
     "pasta": "src/pages/admin",
     "mudancas": 60
+   },
+   {
+    "pasta": "PENDENCIAS.md",
+    "mudancas": 59
    }
   ],
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "RELATORIO_CI.md",
-    "mudancas": 63
+    "mudancas": 61
    },
    {
     "arquivo": "PENDENCIAS.md",
-    "mudancas": 61
+    "mudancas": 59
    },
    {
     "arquivo": "package.json",
@@ -324,7 +324,7 @@
  "contagens": {
   "arquivos_total": 9169,
   "arquivos_codigo": 4612,
-  "linhas_codigo": 883206,
+  "linhas_codigo": 883207,
   "rotas": 138,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -544,7 +544,7 @@
   },
   "e2e/flows": {
    "arquivos": 183,
-   "linhas": 25168
+   "linhas": 25169
   },
   "e2e/future-stock.spec.ts": {
    "arquivos": 1,

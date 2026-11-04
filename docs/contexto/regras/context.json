@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "070e9d481da9fa88b409b4e529e378ad2aea5ecb",
+  "sha": "2c5dafc323e094b59dd973b646944d9b8d715a07",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-04 13:52 UTC",
+  "generated_at": "2026-11-04 19:43 UTC",
   "files_total": 9092,
   "code_files": 7837,
-  "code_lines": 1050271
+  "code_lines": 1050272
  },
  "version": "1.3.2",
- "facts_hash": "2f58e20d7b2d0158",
+ "facts_hash": "02187b06b787a7d3",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -137859,7 +137859,7 @@
   {
    "module": "e2e",
    "files": 620,
-   "lines": 74274,
+   "lines": 74275,
    "tables": [
     "discount_approval_requests",
     "quote_items"
@@ -369193,7 +369193,7 @@
     ".waitFor({ state: \"visible\", timeout: 8_000 })",
     ".waitForURL(/\\/login/, { timeout: 15_000 })",
     ".waitForURL(/\\/login/, { timeout: 8_000 })",
-    "timeout: 20_000,",
+    "timeout: 30_000,",
     "timeout: 8_000,",
     "{ timeout: 3_000, intervalMs: 250, message: `aguardando URL estabilizar em ${path}` },"
    ],
@@ -370306,7 +370306,7 @@
   },
   "e2e/flows/magazine-preview-sticky-smoke.spec.ts": {
    "path": "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
-   "lines": 93,
+   "lines": 96,
    "is_test": true,
    "rule_comments": [
     "Hero deve ter saído (rolou para cima → top << 0)",
@@ -370322,11 +370322,12 @@
   },
   "e2e/flows/magazine-publish-smoke.spec.ts": {
    "path": "e2e/flows/magazine-publish-smoke.spec.ts",
-   "lines": 233,
+   "lines": 231,
    "is_test": true,
    "rule_comments": [
-    "5. Concede permissão de clipboard, vai à etapa \"Layout & Gerar\" e clica em \"Publicar\".",
-    "Clipboard exige permissão explícita no Chromium.",
+    "6. Concede permissão de clipboard APÓS navegação confirmada.",
+    "Clipboard exige permissão explícita no Chromium. Feito APÓS navegação",
+    "separados no Sonner — o locator usa apenas o título para evitar fragmentação.",
     "A edge magazine-public-view deve ter sido chamada sem Authorization."
    ],
    "temporal": [
@@ -482739,10 +482740,40 @@
   }
  },
  "git": {
-  "sha": "070e9d481da9fa88b409b4e529e378ad2aea5ecb",
+  "sha": "2c5dafc323e094b59dd973b646944d9b8d715a07",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "2c5dafc",
+    "date": "2026-11-04",
+    "author": "adm01-debug",
+    "subject": "feat(e2e): corrige smoke tests de magazine para CI verde",
+    "files": [
+     "e2e/flows/20-all-features-smoke.spec.ts",
+     "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
+     "e2e/flows/magazine-publish-smoke.spec.ts"
+    ]
+   },
+   {
+    "sha": "07dc24e",
+    "date": "2026-11-04",
+    "author": "adm01-debug",
+    "subject": "fix(e2e): corrige 2 smoke tests de magazine pré-existentes (#3069)",
+    "files": [
+     "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
+     "e2e/flows/magazine-publish-smoke.spec.ts"
+    ]
+   },
+   {
+    "sha": "50d099c",
+    "date": "2026-11-04",
+    "author": "adm01-debug",
+    "subject": "chore: atualizar baseline soft-delete para partições p2027_03–p2027_12",
+    "files": [
+     ".soft-delete-baseline.json"
+    ]
+   },
    {
     "sha": "070e9d4",
     "date": "2026-11-04",
@@ -483091,39 +483122,6 @@
     "files": [
      "analise-branches/RELATORIO_BRANCHES.md"
     ]
-   },
-   {
-    "sha": "91d4bee",
-    "date": "2026-11-01",
-    "author": "adm01-debug",
-    "subject": "fix(ux): FT-172/107/108/220 — UX batch7 (#2981)",
-    "files": [
-     "src/components/kit-builder/PersonalizationConfig.tsx",
-     "src/components/mockup/MockupConfigPanel.tsx",
-     "src/hooks/kit-builder/useKitBuilder.ts",
-     "src/pages/kit-builder/useKitBuilderQuote.ts",
-     "src/pages/tools/MagicUp.tsx"
-    ]
-   },
-   {
-    "sha": "3bf5820",
-    "date": "2026-11-01",
-    "author": "adm01-debug",
-    "subject": "fix(kit-builder): separa mensagem de erro 503/504 de 429/timeout (FT-136) (#2979)",
-    "files": [
-     "src/components/kit-builder/KitAIPromptDialog.tsx",
-     "tests/components/kit-builder/KitAIPromptDialog.test.tsx"
-    ]
-   },
-   {
-    "sha": "6965ec1",
-    "date": "2026-11-01",
-    "author": "adm01-debug",
-    "subject": "fix(e2e): corrige falhas no swatch-picker-v2 — auth loading + overlay click + E108 satélite",
-    "files": [
-     ".github/workflows/e2e-swatch-quickview.yml",
-     "e2e/catalog/swatch-picker-v2-focus-and-quickview.spec.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -483150,6 +483148,14 @@
    [
     ".file-size-baseline.json",
     3
+   ],
+   [
+    "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
+    2
+   ],
+   [
+    "e2e/flows/magazine-publish-smoke.spec.ts",
+    2
    ],
    [
     "docs/PLANO_MELHORIAS_200_ETAPAS.md",
@@ -483184,27 +483190,19 @@
     2
    ],
    [
+    "e2e/flows/20-all-features-smoke.spec.ts",
+    1
+   ],
+   [
+    ".soft-delete-baseline.json",
+    1
+   ],
+   [
     "supabase/migrations/20261104100000_partitions_supplier_products_raw_history_2027.sql",
     1
    ],
    [
     "supabase/rollbacks/20261104100000_rollback.sql",
-    1
-   ],
-   [
-    "supabase/rollbacks/20261101201000_rollback.sql",
-    1
-   ],
-   [
-    "supabase/rollbacks/20261101202000_rollback.sql",
-    1
-   ],
-   [
-    "docs/ci/SEGREDOS.md",
-    1
-   ],
-   [
-    "docs/contexto/regras/manual/regras.md",
     1
    ]
   ]
