@@ -57,13 +57,14 @@ test.describe("@smoke Magazine Editor — preview sticky/aligned", () => {
 
     // 2. Scroll para fora do hero e verifica sticky
     // O elemento sticky é o painel interno do PreviewSidebar (top-2 = 8px).
-    await page.evaluate(() => window.scrollTo({ top: 600, behavior: "instant" as ScrollBehavior }));
+    // Com auth real a página tem mais conteúdo; sticky dispara em scrollY≥500 (medido
+    // em CI). Rolar para 520px (20px além do ponto de ativação, 80px antes do fim
+    // observado do container em ~600px) garante que a checagem cai dentro da janela
+    // ativa do sticky: o elemento deve estar pinned com 0 ≤ top < 24.
+    await page.evaluate(() => window.scrollTo({ top: 520, behavior: "instant" as ScrollBehavior }));
     // Sem timeout próprio o waitForFunction herdava os 120s do teste (run 38759053646:
     // "Test timeout of 120000ms exceeded" aqui). Mesmo critério (scrollY >= 500), mas
-    // falha em 5s dizendo se a página sequer tem altura para rolar 600px.
-    // 600px: em scrollY=400 o elemento tinha top=108 (sticky ainda não disparou —
-    // dispara quando top chega a 8px, i.e. scrollY≥500). 600px garante margem
-    // dentro do container sticky mesmo com auth real (página mais longa que com mock).
+    // falha em 5s dizendo se a página sequer tem altura para rolar 520px.
     await expect
       .poll(() => page.evaluate(() => window.scrollY), {
         timeout: 5_000,
@@ -95,14 +96,18 @@ test.describe("@smoke Magazine Editor — preview sticky/aligned", () => {
 
     // Hero deve ter saído (rolou para cima → top << 0)
     expect(heroTop1, "hero não rolou").toBeLessThan(-100);
-    // Preview deve ter atingido estado sticky (top-2 ≈ 8px, tolerância 8px).
-    // top < 24 comprova que o sticky ativou (passou pelo ponto de pinning ≈ 8px).
-    // Não verificamos top >= 0 porque o container pode ser curto: após o container
-    // terminar, o elemento acompanha o scroll e pode sair do viewport — isso é
-    // comportamento CSS correto, não falha de sticky.
+    // Preview deve estar pinned: 0 ≤ top < 24.
+    // top ≥ 0 garante que o elemento está visível e sticky está ativo (elemento
+    // não saiu do viewport pelo fim do container). top < 24 garante que está
+    // próximo ao ponto de pinning (top-2 ≈ 8px, tolerância 16px).
+    // O fallback -1_000 (sem elemento sticky nem filho) é < 0 e falha corretamente.
     expect(
       stickyCardTop,
-      `preview não ficou sticky (top=${stickyCardTop}, scrollY=600)`,
+      `preview não ficou sticky (top=${stickyCardTop}, scrollY=520)`,
+    ).toBeGreaterThanOrEqual(0);
+    expect(
+      stickyCardTop,
+      `preview está sticky mas acima do ponto de pinning (top=${stickyCardTop}, scrollY=520)`,
     ).toBeLessThan(24);
   });
 });
