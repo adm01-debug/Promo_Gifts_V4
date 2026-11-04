@@ -30,9 +30,12 @@ test.describe("@smoke Magazine — Gold DB smoke", () => {
     // Registra o waitForResponse ANTES de navegar para não perder a request
     // disparada pelo useEffect([user?.id]) logo após auth hidratar — esse evento
     // chega depois que gotoAndSettle resolve (page settled, sem skeleton visível).
+    // Timeout generoso (60s) porque com auth real (sem E2E_MOCK_AUTH) o
+    // gotoAndSettle pode levar >15s em CI; um timeout curto dispara antes de
+    // ser aguardado → Playwright registra unhandled rejection → page.url()="".
     const waitMagazines = page.waitForResponse(
       (res) => res.url().includes("/rest/v1/magazines"),
-      { timeout: 15_000 },
+      { timeout: 60_000 },
     );
 
     // Captura response da edge magazine-reader-state (get/set) e da consulta

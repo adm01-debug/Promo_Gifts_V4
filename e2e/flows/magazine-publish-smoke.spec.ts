@@ -49,9 +49,12 @@ test.describe("@smoke Magazine — fluxo autenticado de publicação", () => {
     // assíncrona e o useEffect([user?.id]) só dispara a request depois que
     // gotoAndSettle já resolveu. Sem isso, handleCreate tem guarda
     // `if (!user) return` e o clique em Criar é um no-op silencioso.
+    // Timeout generoso (60s): com auth real (sem E2E_MOCK_AUTH) gotoAndSettle
+    // pode levar >15s em CI; timeout curto dispara antes de ser aguardado →
+    // Playwright registra unhandled rejection → aborta o teste → page.url()="".
     const waitMagazinesReady = page.waitForResponse(
       (res) => res.url().includes("/rest/v1/magazines"),
-      { timeout: 15_000 },
+      { timeout: 60_000 },
     );
     await gotoAndSettle(page, "/magazine");
     await expect(page).toHaveURL(/\/magazine(\/|$)/);
