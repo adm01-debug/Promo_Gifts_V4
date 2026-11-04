@@ -1,5 +1,8 @@
--- Rollback: 20261101202000_drop_revoke_agent_created_functions.sql
--- (2) Devolve EXECUTE a authenticated na função de limpeza de sessões (não recomendado: permite a qualquer usuário logado apagar sessões > 30 dias).
+-- Rollback da migration 20261101202000_drop_revoke_agent_created_functions.sql
+-- Restaura GRANT EXECUTE em cleanup_expired_auth_sessions para PUBLIC, anon e authenticated.
+-- Nota: perf002_drop_unused_snapshot_indexes() nao e recriada -- era funcao DDL de uso unico,
+-- ja aplicada antes de ser dropada. Recriar seria noop e nao ha script original disponivel.
+
+GRANT EXECUTE ON FUNCTION public.cleanup_expired_auth_sessions() TO PUBLIC;
+GRANT EXECUTE ON FUNCTION public.cleanup_expired_auth_sessions() TO anon;
 GRANT EXECUTE ON FUNCTION public.cleanup_expired_auth_sessions() TO authenticated;
--- (1) perf002_drop_unused_snapshot_indexes() NÃO deve ser recriada: era de uso único (DDL por SQL concatenado) e os 7 índices já foram removidos.
---     Se for indispensável, o corpo está em 20261101194657_perf002_fn_drop_indexes_obfuscated.sql; recriar sem GRANT para authenticated.
