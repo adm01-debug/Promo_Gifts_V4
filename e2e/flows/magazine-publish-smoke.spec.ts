@@ -139,11 +139,11 @@ test.describe("@smoke Magazine — fluxo autenticado de publicação", () => {
     // próximo await se registrada depois do clique. O wizard só permite avançar
     // para "Layout & Gerar" depois que magazine.items tiver ao menos 1 item no
     // React state, que por sua vez depende da confirmação do backend.
+    // magazineService.addProducts usa rpc('magazine_add_items_v2') →
+    // POST /rest/v1/rpc/magazine_add_items_v2 (não POST /rest/v1/magazine_items).
     const waitItemAdded = page.waitForResponse(
-      (res) =>
-        res.url().includes("/rest/v1/magazine_items") &&
-        res.request().method() === "POST",
-      { timeout: 20_000 },
+      (res) => res.url().includes("/rest/v1/rpc/magazine_add_items_v2"),
+      { timeout: 30_000 },
     ).catch(() => {});
     await addBtn.click();
     // Aguarda o backend confirmar antes de tentar avançar de etapa.
