@@ -131,7 +131,7 @@ Aplicar via `db-apply-migration.yml` com aprovação PO. **Esta etapa é a mais 
 
 ### 🔴 E020 — Resolver E046: migration 20260716000055 fora do ledger [REQUER-PO]
 **Achado:** `supabase/migrations/20260716000055_dynamic_explicit_deny_rls_no_policy_tables.sql` existe no repo mas NÃO está no ledger (`supabase_migrations.schema_migrations`). Decisão [REQUER-PO] pendente há >3 meses.  
-**Ação PO decide:** (a) Aplicar via `db-apply-migration.yml` com `mode: repair-only` se o DDL já estiver no banco; (b) Arquivar em `supabase/migrations/_superseded/` se nunca deverá ser aplicada.  
+**Ação PO decide:** (a) Aplicar via `db-apply-migration.yml` com `mode: repair-only` se o DDL já estiver no banco; (b) Arquivar na subpasta `_superseded/` (dentro de `supabase/migrations/`) se nunca deverá ser aplicada.  
 **Impacto:** Gate 1.3 pode falhar intermitentemente por inconsistência no ledger.
 
 ### 🟠 E021 — Regenerar SCHEMA_REFERENCE.md [AUTO]
@@ -145,7 +145,7 @@ Aplicar via `db-apply-migration.yml` com aprovação PO. **Esta etapa é a mais 
 
 ### 🟠 E023 — Criar migration espelho para PERF-002 drift reconciliado [AUTO]
 **Achado:** `perf002_drop_unused_snapshot_indexes` foi aplicado via MCP (fora do fluxo) em 2026-11-01 mas o espelho de migration não está no ledger.  
-**Ação:** Criar `supabase/migrations/20261101XXXXXX_perf002_drop_unused_snapshot_indexes_mirror.sql` com `-- Rollback: (index já foi dropado — rebuild com CREATE INDEX)` + INSERT no ledger via `db-apply-migration.yml` com `mode: repair-only`.
+**Ação:** Criar em `supabase/migrations/` o arquivo `20261101XXXXXX_perf002_drop_unused_snapshot_indexes_mirror.sql` (XXXXXX = timestamp real) com `-- Rollback: (index já foi dropado — rebuild com CREATE INDEX)` + INSERT no ledger via `db-apply-migration.yml` com `mode: repair-only`.
 
 ### 🟡 E024 — Adicionar partições supplier_products_raw_history 2028 após E016 [AUTO]
 **Achado:** Mesmo problema da E016 se repetirá em 2028. Padrão: criar 2 anos de antecedência.  
