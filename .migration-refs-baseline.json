@@ -1898,6 +1898,30 @@
       "ref": "qa/migrations-draft/2026-07-15_magazine_public_token_trigger.sql"
     },
     {
+      "file": "scripts/ai-context/cenarios.mjs",
+      "ref": "supabase/migrations/001.sql"
+    },
+    {
+      "file": "scripts/ai-context/cenarios.mjs",
+      "ref": "supabase/migrations/1.sql"
+    },
+    {
+      "file": "scripts/ai-context/gerar.unit.mjs",
+      "ref": "supabase/migrations/_foreign/singu/001_foreign.sql"
+    },
+    {
+      "file": "scripts/ai-context/gerar.unit.mjs",
+      "ref": "supabase/migrations/_superseded/000_old.sql"
+    },
+    {
+      "file": "scripts/ai-context/gerar.unit.mjs",
+      "ref": "supabase/migrations/001_init.sql"
+    },
+    {
+      "file": "scripts/ai-context/gerar.unit.mjs",
+      "ref": "supabase/migrations/002_evolve.sql"
+    },
+    {
       "file": "scripts/build-drafts-pr-comment.mjs",
       "ref": "qa/migrations-draft/PR_COMMENT.md"
     },
