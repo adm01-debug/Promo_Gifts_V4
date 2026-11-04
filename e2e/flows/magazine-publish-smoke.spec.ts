@@ -149,22 +149,15 @@ test.describe("@smoke Magazine — fluxo autenticado de publicação", () => {
       timeout: 10_000,
     });
 
-    // Captura response do UPDATE para provar que a trigger devolveu public_token.
+    // Captura response do RPC magazine_publish_v2 (POST /rest/v1/rpc/magazine_publish_v2).
+    // magazineService.publish usa rpc() — não PATCH direto na tabela magazines.
+    // O token público é gerado pelo trigger tg_magazines_on_publish no banco e
+    // confirmado pelo hydrate (GET magazines) posterior ao RPC.
     const magazineUpdates: Array<{ status: number; token: string | null }> = [];
     page.on("response", async (res) => {
       const url = res.url();
-      if (!url.includes("/rest/v1/magazines")) return;
-      if (res.request().method() !== "PATCH") return;
-      try {
-        const body = await res.json();
-        const row = Array.isArray(body) ? body[0] : body;
-        magazineUpdates.push({
-          status: res.status(),
-          token: (row && (row.public_token as string | null)) ?? null,
-        });
-      } catch {
-        magazineUpdates.push({ status: res.status(), token: null });
-      }
+      if (!url.includes("/rest/v1/rpc/magazine_publish_v2")) return;
+      magazineUpdates.push({ status: res.status(), token: null });
     });
 
     await publishBtn.click();
@@ -186,12 +179,12 @@ test.describe("@smoke Magazine — fluxo autenticado de publicação", () => {
     const token = match?.[1];
     expect(token, "token público não extraído da URL copiada").toBeTruthy();
 
-    // 7) Prova que o token veio do BD (trigger) OU do fallback client-side —
-    //    ambos são aceitos, mas registramos qual foi para debug de regressão.
+    // 7) Prova que o RPC foi chamado com sucesso (trigger gerou token confirmado
+    //    via toast + clipboard acima). Registra a chamada para debug de regressão.
     const anyPublishedRow = magazineUpdates.find((r) => r.status >= 200 && r.status < 300);
     expect(
       anyPublishedRow,
-      `nenhum UPDATE bem-sucedido observado. Trace: ${JSON.stringify(magazineUpdates)}`,
+      `nenhuma chamada bem-sucedida a magazine_publish_v2 observada. Trace: ${JSON.stringify(magazineUpdates)}`,
     ).toBeTruthy();
 
     // 8) Abre a URL pública em nova aba e valida ausência de auth.
