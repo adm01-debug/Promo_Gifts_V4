@@ -50,7 +50,7 @@ test.describe("@smoke Magazine — fluxo autenticado de publicação", () => {
     // o PostgREST demore mais que o timeout no cold start do CI.
     const waitMagazinesReady = page.waitForResponse(
       (res) => res.url().includes("/rest/v1/magazines"),
-      { timeout: 120_000 },
+      { timeout: 60_000 },
     ).catch(() => {});
     await gotoAndSettle(page, "/magazine");
     await expect(page).toHaveURL(/\/magazine(\/|$)/);
