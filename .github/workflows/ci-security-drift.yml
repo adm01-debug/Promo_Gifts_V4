@@ -116,6 +116,9 @@ jobs:
 
 
 
+      - name: Install ripgrep
+        run: sudo apt-get install -y ripgrep
+
       - name: Run Unit & Integration Tests
         run: npm run test:quality
 
