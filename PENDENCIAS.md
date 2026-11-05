@@ -99,12 +99,12 @@ local_only=1141; remote_only=674
 
 ---
 
-## 10. E2E — Personalization Flow ✅ RESOLVIDO (flakiness de infra)
+## 10. E2E — Personalization Flow ❌ RE-FALHA (SHA `2bc37120`) — ver item #18
 
 **Workflow:** `e2e-personalization-flow.yml`  
-**Run ID confirmador:** [42081794045](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42081794045) (2026-11-05, SHA `f240b5c`) — `conclusion: success`  
-**Causa original:** Flakiness de autenticação CI em testes `chromium-authed` — intermitente, não regressão de código.  
-**Resolução:** Passou sem alteração de código no SHA f240b5c. Resolvido automaticamente.
+**Run ID confirmador (SHA f240b5c):** [42081794045](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42081794045) — `conclusion: success`  
+**Re-falha (SHA 2bc37120):** [42097626111](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42097626111) — `conclusion: failure`  
+**Causa original:** Flakiness de autenticação CI — passava em f240b5c, voltou a falhar em 2bc37120. Ver item #18 para o registro completo da re-falha.
 
 ---
 
@@ -134,12 +134,12 @@ local_only=1141; remote_only=674
 
 ---
 
-## 11. E2E — Critical Flows & Error Boundaries ✅ RESOLVIDO (flakiness de infra)
+## 11. E2E — Critical Flows & Error Boundaries ❌ RE-FALHA (SHA `2bc37120`) — ver item #15
 
 **Workflow:** `e2e-flows.yml`  
-**Run ID confirmador:** [42081793979](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42081793979) (2026-11-05, SHA `f240b5c`) — `conclusion: success`  
-**Causa original:** Flakiness de autenticação CI em testes `chromium-authed` (`validate-access` intermitentemente lento) — não regressão de código.  
-**Resolução:** Passou sem alteração de código no SHA f240b5c. Resolvido automaticamente.
+**Run ID confirmador (SHA f240b5c):** [42081793979](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42081793979) — `conclusion: success`  
+**Re-falha (SHA 2bc37120):** [42097626080](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42097626080) — `conclusion: failure`  
+**Causa:** Flakiness de autenticação CI — passava em f240b5c, voltou a falhar em 2bc37120. Ver item #15 para o registro completo.
 
 ---
 
@@ -190,3 +190,90 @@ Arquivo: e2e/flows/20-all-features-smoke.spec.ts:216
 **Causa:** Flakiness de autenticação CI — `page-title-produtos` não ficou visível antes do timeout de 60s. Mesmo padrão dos itens #10 e #11 (ambos resolvidos sem alteração de código). PR #3083 (SHA idêntico, commits docs-only) passou Gate 3 sem problema no mesmo dia (run [42099224405](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42099224405)).  
 **Required check:** SIM — "Gate Final - Deploy Ready" depende do Gate 3. Este run específico (`2bc37120`) falhou; o Gate Final falhou neste SHA.  
 **Resolução:** Flakiness transitória confirmada. Run [42099463406](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42099463406) em `bc342a24` (SHA seguinte, 2026-11-05 20:10:44Z) → **`conclusion: success`**. Todos os required checks em `bc342a24` ✅.
+
+---
+
+## 15. E2E — Critical Flows & Error Boundaries ❌ (SHA `2bc37120` — flakiness chromium-authed)
+
+**Workflow:** `e2e-flows.yml`  
+**Run ID:** [42097626080](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42097626080) (2026-11-05, SHA `2bc37120`) — `conclusion: failure`  
+**Required check:** NÃO — advisory.  
+**Job falhado:** `E2E — Full User Flows (authed)` — Step 5: "Run Quote Full Flow E2E"  
+**Erros exatos:**
+```
+3 failed:
+  [chromium-authed] e2e/flows/30-quote-wizard-validations.spec.ts:12 — deve exibir lista de erros de validação quando o formulário está incompleto
+  [chromium-authed] e2e/flows/30-quote-wizard-validations.spec.ts:29 — deve exibir tooltip informativo no prazo de entrega
+  [chromium-authed] e2e/flows/30-quote-wizard-validations.spec.ts:43 — deve validar valor do frete quando modalidade é FOB Pré-negociado
+1 flaky:
+  [setup] e2e/fixtures/auth.setup.ts:18 — authenticate
+```
+**Causa:** Flakiness de autenticação CI — `auth.setup.ts` marcado como `flaky`; os 3 testes falharam porque a sessão autenticada não estava pronta. Mesmo padrão dos itens #10, #11, #13. Este é o re-falha do item #11 (que passava em SHA `f240b5c`).  
+**Por que não corrijo:** Requer credenciais E2E (`chromium-authed`) para reproduzir. Sem acesso aos secrets `E2E_USER_EMAIL` / `E2E_USER_PASSWORD`.  
+**Próxima verificação:** Runs em SHA `4ebe5a83` (main pós-merge #3084, 2026-11-05 20:46Z) ainda `pending` — devem re-confirmar ou resolver a flakiness.
+
+---
+
+## 16. Quote Builder Delivery Quality ❌ (SHA `2bc37120` — flakiness chromium-authed)
+
+**Workflow:** `quote-builder-delivery-quality.yml`  
+**Run ID:** [42097626084](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42097626084) (2026-11-05, SHA `2bc37120`) — `conclusion: failure`  
+**Required check:** NÃO — advisory.  
+**Job falhado:** `quality-gate` — Step 5: "🌍 E2E & Visual Regression"  
+**Erros exatos:**
+```
+1 failed:
+  [chromium-authed] e2e/quote-builder-delivery.spec.ts:14 — should show and hide delivery tooltip on hover
+1 flaky:
+  [chromium-authed] e2e/quote-builder-delivery.spec.ts:46 — should hide tooltip on Escape key
+```
+**Causa:** Falha em teste de tooltip no builder de orçamentos (`chromium-authed`). Requer secret `E2E_USER_EMAIL`. O teste de tooltip-hover falhou + tooltip-escape foi `flaky` — padrão de estado de autenticação intermediário causando comportamento instável de UI.  
+**Por que não corrijo:** Requer credenciais E2E para reproduzir e confirmar se é flakiness ou regressão de UI. Sem `E2E_USER_EMAIL`.  
+**O que o dono precisa fazer:**
+1. Verificar se o componente de tooltip no `QuoteBuilderPage` teve mudança recente
+2. Reproduzir localmente com `npx playwright test e2e/quote-builder-delivery.spec.ts --project=chromium-authed`
+3. Se flakiness: adicionar `page.waitForLoadState('networkidle')` antes do hover
+
+---
+
+## 17. E2E (Playwright) ❌ (SHA `2bc37120` — header-sticky fail-fast por flakiness de auth)
+
+**Workflow:** `e2e.yml`  
+**Run ID:** [42097626344](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42097626344) (2026-11-05, SHA `2bc37120`) — `conclusion: failure`  
+**Required check:** NÃO — advisory.  
+**Job falhado:** `e2e-gates` — Step 5: "🛑 Fail-fast se header sticky falhou"  
+**Erros exatos:**
+```
+2 failed:
+  [chromium-authed] e2e/flows/22-header-sticky.spec.ts:139 — header permanece fixo ao rolar em /
+  [chromium-authed] e2e/flows/22-header-sticky.spec.ts:139 — header permanece fixo ao rolar em /dashboard
+168 did not run  (fail-fast disparou)
+1 passed (1.6m)
+1 error was not a part of any test (auth setup error)
+Erro: [waitForTestIdVisible] testid="app-header" não ficou visível em 30000ms
+```
+**Causa:** `1 error was not a part of any test` = auth setup falhou antes dos testes; `app-header` não carregou porque a sessão autenticada não estava pronta (timeout 30s). O fail-fast do workflow bloqueou 168 testes que sequer iniciaram. Mesmo padrão de `waitForTestIdVisible` timeout dos itens #10, #11, #13, #14. Não é regressão de layout em `MainLayout.tsx` — é estado de autenticação intermediário.  
+**Por que não corrijo:** Requer credenciais E2E para reproduzir. O fail-fast amplificou o impacto, mas a causa raiz é auth flakiness.  
+**O que o dono precisa fazer:**
+1. Verificar se `e2e/flows/22-header-sticky.spec.ts` tem dependency em `auth.setup.ts` e adicionar retry
+2. Monitorar se próximas runs em `4ebe5a83` passam sem alteração de código
+3. Se falhar novamente: investigar `auth.setup.ts` — adicionar `waitForLoadState('networkidle')` antes das asserções
+
+---
+
+## 18. E2E — Personalization Flow ❌ (SHA `2bc37120` — re-falha após #10)
+
+**Workflow:** `e2e-personalization-flow.yml`  
+**Run ID:** [42097626111](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42097626111) (2026-11-05, SHA `2bc37120`) — `conclusion: failure`  
+**Required check:** NÃO — advisory.  
+**Job falhado:** `E2E — Personalization Journey` — Step 5: "Run Personalization E2E Tests"  
+**Erros exatos:**
+```
+2 failed:
+  [chromium-authed] e2e/flows/90-personalization-pdp-flow.spec.ts:10 — deve navegar da PDP para o simulador com produto carregado
+  [chromium-authed] e2e/flows/91-personalization-variant-flow.spec.ts:10 — deve navegar de um produto diferente para o simulador com SKU correto
+Erro: locator(Sel.product.cardName).innerText() — timeout na seleção do card de produto
+```
+**Causa:** Timeout ao tentar obter `innerText()` do `cardName` — estado de autenticação intermediário causou a página de produtos não carregar completamente. Mesmo padrão do item #10 (que passou em SHA `f240b5c` mas re-falhou em `2bc37120`). Flakiness de auth `chromium-authed` intermitente.  
+**Por que não corrijo:** Requer credenciais E2E (`E2E_USER_EMAIL`). Sem acesso aos secrets necessários.  
+**Próxima verificação:** Runs em SHA `4ebe5a83` (main pós-merge #3084) ainda `pending` — devem re-confirmar ou resolver a flakiness como ocorreu em `f240b5c`.
