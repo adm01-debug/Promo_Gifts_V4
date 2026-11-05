@@ -288,3 +288,25 @@ Erro: locator(Sel.product.cardName).innerText() — timeout na seleção do card
 **Causa:** Squash merge da PR #3086 via `github_merge_pull_request` MCP sem parâmetro `commit_title` explícito. O commit resultante — `docs: RELATORIO_CI.md — prova final #15-#18 e seção 2.9 diagnóstico E2E advisory` — não tinha o sufixo `(#3086)` aceito pelo sentinel.  
 **Fix definitivo:** Sempre passar `commit_title: "título da PR (#NNN)"` ao chamar `github_merge_pull_request`.  
 **O que o dono precisa fazer:** Nenhuma ação necessária — advisory, não bloqueia required checks.
+
+---
+
+## 20. Vitest local — 3 falhas em `tests/unit/date-utils.test.ts` ⚠️ (pré-existente, não bloqueia CI)
+
+**Arquivo:** `tests/unit/date-utils.test.ts:107:52`  
+**Erro exato:**
+```
+Expect(received).toBe(expected):
+  formatTime('2025-01-01T05:05:00.000Z') expected '02:05' (BRT UTC-3)
+  received value diferente (timezone UTC no runner local)
+Test Files  1 failed | 1280 passed | 130 skipped (1411)
+Tests       3 failed | 26099 passed | 1132 skipped | 24 todo (27258)
+Duration    915.17s · exit code 0
+```
+**Causa:** 3 testes na suíte `formatTime` dependem de `TZ=America/Sao_Paulo` para converter UTC → BRT (UTC-3). No ambiente de CI local sem essa variável, a conversão retorna horário UTC em vez de BRT, causando falha de asserção (`'05:05'` em vez de `'02:05'`).  
+**Gate 2 CI:** Usa `npm run test:ci-core` (subset específico), que **NÃO** inclui `date-utils.test.ts`. Job [127575447439](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42121668685/job/127575447439) em SHA `a792bade` ✅ `conclusion: success` (completou 22:28:53 UTC).  
+**Por que não é bloqueante:** Exit code 0 na suíte completa local. Gate 2 CI passa. Falha pré-existente — presente em `main` antes de qualquer PR desta sessão. Não introduzida por nenhuma mudança desta sessão.  
+**O que o dono precisa fazer:**
+- Corrigir mock de timezone no teste: `vi.useFakeTimers({ toFake: ['Date'], now: ... })` com offset explícito, ou
+- Rodar suíte completa localmente com `TZ=America/Sao_Paulo npx vitest run` para confirmar que passam
+- Ou adicionar `TZ=America/Sao_Paulo` ao script `test` em `package.json`
