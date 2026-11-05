@@ -33,11 +33,11 @@ test.describe("@smoke Magazine — Gold DB smoke", () => {
     // chega depois que gotoAndSettle resolve (page settled, sem skeleton visível).
     // .catch() encadeado imediatamente: evita rejeição não tratada caso o
     // PostgREST demore mais que o timeout no cold start do CI (mesma causa do
-    // incidente em magazine-publish-smoke.spec.ts). Timeout 120s para acomodar
-    // cold start prolongado no CI.
+    // incidente em magazine-publish-smoke.spec.ts). Timeout 60s para acomodar
+    // cold start no CI sem estourar o budget de 20 min do job.
     const waitMagazines = page.waitForResponse(
       (res) => res.url().includes("/rest/v1/magazines"),
-      { timeout: 120_000 },
+      { timeout: 60_000 },
     ).catch(() => {});
 
     // Captura response da edge magazine-reader-state (get/set) e da consulta

@@ -52,7 +52,7 @@ test.describe("@smoke Magazine Editor — preview sticky/aligned", () => {
     // garantindo que o container não termina antes do checkpoint de scroll.
     // Assinatura Playwright: waitForFunction(fn, arg?, options?) — undefined como
     // 2º arg (a função não recebe argumento); timeout vai no 3º arg (options).
-    // Se PostgREST cold start > 180s, pula graciosamente (skip de infraestrutura)
+    // Se PostgREST cold start > 60s, pula graciosamente (skip de infraestrutura)
     // em vez de FAIL — padrão consistente com skip de "sem revistas" acima.
     let editorPronto = false;
     try {
@@ -76,13 +76,13 @@ test.describe("@smoke Magazine Editor — preview sticky/aligned", () => {
           return asideBottomDoc > 520 + stickyHeight + 20;
         },
         undefined,
-        { timeout: 180_000 },
+        { timeout: 60_000 },
       );
       editorPronto = true;
     } catch {
       editorPronto = false;
     }
-    test.skip(!editorPronto, "PostgREST cold start > 180s — editor não hidratou; skip de infraestrutura");
+    test.skip(!editorPronto, "PostgREST cold start > 60s — editor não hidratou; skip de infraestrutura");
 
     const hero = page.getByTestId("magazine-editor-hero-row");
     const mainCol = page.getByTestId("magazine-editor-main-col");
