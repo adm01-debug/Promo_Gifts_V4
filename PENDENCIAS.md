@@ -67,7 +67,7 @@ local_only=1141; remote_only=674
 **Workflow:** `replenishment-quality.yml`  
 **Run ID:** 41876981487 (2026-11-04)  
 **Erros:**
-- `cards têm mesmas dimensões e imagem 1:1 nos dois módulos` (FAIL)
+- `cards tëm mesmas dimensões e imagem 1:1 nos dois módulos` (FAIL)
 - `rodapé (preço/estoque) está alinhado ao bottom em ambos os módulos` (FAIL)
 - 2 testes flaky adicionais
 
@@ -76,11 +76,11 @@ local_only=1141; remote_only=674
 
 ---
 
-## 6. E2E • Swatch QuickView (Lista + Tabela) ❌ (a investigar)
+## 6. E2E ·Swatch QuickView (Lista + Tabela) ❌ (a investigar)
 
 **Workflow:** `e2e-swatch-quickview.yml`  
 **Run ID:** 41876981212 (2026-11-04)  
-**Erro:** Falha nos 3 browsers (chromium, firefox, webkit) no "Run swatch→QuickView suite"  
+**Erro:** Falha nos 3 browsers (chromium, firefox, webkit) no "Run swatcb→QuickView suite"  
 **Causa:** Detalhe do erro não disponível (upload do artifact dominou o log).  
 **Status:** Requer acesso aos artifacts do CI para diagnóstico. Não foi possível investigar sem credenciais E2E.
 
@@ -114,7 +114,7 @@ local_only=1141; remote_only=674
 
 ---
 
-## 9. E2E · view-no-presentation-mode ❌ (a investigar — snapshot visual)
+## 9. E2E ·View-no-presentation-mode ❌ (a investigar — snapshot visual)
 
 **Workflow:** `E2E Quotes — Matrix (E77)`  
 **Run ID:** 42044024144 (2026-11-05, PR #3074)  
@@ -136,4 +136,35 @@ local_only=1141; remote_only=674
 **PR corretiva:** [#3075](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3075) — mergeada (squash `ce36e22`)  
 **Run validador (main push `5e5e4a6f`):** 42073412218 — `conclusion: success`, Gate 3 success  
 **Correção:** timeouts 180s/120s/120s → 60s/60s/60s nos 3 specs de magazine  
-**Regressão pós-merge (flakiness infra):** run 42075420875 (attempt 1) — `validate-access` edge function PENDENTE 120s → auth.setup timeout. Não causado pelo código; rerun (attempt 2) em andamento.
+**Run confirmatório (attempt 2, `3d514f5`):** 42075420875 — `conclusion: success`, Gate Final success (attempt 1 falhou por flakiness de infra no `validate-access`; não causado pelo código).
+
+---
+
+## 11. E2E — Critical Flows & Error Boundaries ❌ (requer credenciais E2E)
+
+**Workflow:** `e2e-flows.yml`  
+**Run ID:** 42075420614 (2026-11-05, SHA `3d514f5`)  
+**Job falhando:** "E2E — Full User Flows (authed)"  
+**Step falhando:** "Run Sidebar Tooltips E2E — desktop (chromium-authed)"  
+**Causa:** Teste `chromium-authed` falha por problema de autenticação no CI — esta causa-raiz do item #10 (`validate-access` edge function intermitentemente PENDENTE, auth.setup.ts não completa em tempo). Não é regressão de código; é flakiness de infra de auth do CI.  
+**Por que não corrijo:** Sem acesso a credenciais E2E nem ambiente autenticado para reproduzir e diagnosticar o spec exato. Correção definitiva depende de estabilidade do `validate-access` (item #2).  
+**O que o dono precisa fazer:** Após resolver item #2 (deploy das edge functions via workflow), reexecutar `e2e-flows.yml` para verificar se o `validate-access` responde de forma estável.
+
+---
+
+## 12. Uptime Monitor ❌ (requer diagnóstico de infra)
+
+**Workflow:** `uptime-monitor.yml`  
+**Run ID:** 41956566769 (2026-11-05T02:38:51Z, SHA `2c5dafc`, trigger: `schedule`)  
+**Step falhando:** "Probe site + edge function"  
+**URLs sondadas:**
+- `SITE_URL`: `https://www.promogifts.com.br/`
+- `FN_URL`: `https://doufsxqlfjyuvxuezpln.supabase.co/functions/v1/health-check`
+- `LOGIN_FN_URL`: `https://doufsxqlfjyuvxuezpln.supabase.co/functions/v1/check-login`
+- `AUTH_HEALTH_URL`!: `https://doufsxqlfjyuvxuezpln.supabase.co/auth/v1/health`
+
+**Causa:** A sonda de produção falhou — o workflow criou/atualizou a issue #3071 automaticamente. A edge function `health-check` ou `check-login` pode estar retornando erro por infra ou por estar desatualizada (ver item #2 — 36 edge functions com divergência). Pode ser intermitência de infra ou down real.  
+**Por que não corrijo:** A edge function `health-check` é do banco de produção; deploy ou fix sem `workflow_dispatch` viola REGRA #8. Flakiness de schedule pode ser falso-positivo.  
+**O que o dono precisa fazer:**
+1. Verificar issue #3071 no repo para ver o histórico de falhas recentes
+2. Após resolver item #2 (deploy das edge functions), verificar se `health-check` passa na próxima execução agendada
