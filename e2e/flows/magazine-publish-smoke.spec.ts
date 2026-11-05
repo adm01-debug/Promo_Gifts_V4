@@ -46,14 +46,16 @@ test.describe("@smoke Magazine — fluxo autenticado de publicação", () => {
     await loginAs(page);
 
     // 1) Vai para /magazine e cria uma revista nova.
+    // .catch() encadeado imediatamente para evitar rejeição não tratada caso
+    // o PostgREST demore mais que o timeout no cold start do CI.
     const waitMagazinesReady = page.waitForResponse(
       (res) => res.url().includes("/rest/v1/magazines"),
-      { timeout: 60_000 },
-    );
+      { timeout: 120_000 },
+    ).catch(() => {});
     await gotoAndSettle(page, "/magazine");
     await expect(page).toHaveURL(/\/magazine(\/|$)/);
     await dismissOnboardingTour(page);
-    await waitMagazinesReady.catch(() => {});
+    await waitMagazinesReady;
 
     await context.grantPermissions(["clipboard-read", "clipboard-write"], {
       origin: new URL(page.url()).origin,
