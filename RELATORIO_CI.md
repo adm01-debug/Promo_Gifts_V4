@@ -15,10 +15,10 @@
 | CI - Replenishment Module Quality Gate | ❌ failure | [42073411924](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42073411924) | 2026-11-05 |
 | CI Security & Drift Checks | ⏳ in_progress | [42075420864](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42075420864) | 2026-11-05 |
 | CodeQL | ✅ success | [42075420609](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42075420609) | 2026-11-05 |
-| Deploy Gates | ⏳ in_progress (attempt 2 — Gate 3 rodando) | [42075420875](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42075420875) | 2026-11-05 |
+| Deploy Gates | ✅ RESOLVIDO — run 42075420875 attempt 2 conclusion: success | [42075420875](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42075420875) | 2026-11-05 |
 | Deployment Failure Alert | ⏭ skipped | [42075508164](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42075508164) | 2026-11-05 |
 | E2E (Playwright) | ⏳ in_progress | [42075420654](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42075420654) | 2026-11-05 |
-| E2E — Critical Flows & Error Boundaries | ⏳ in_progress | [42075420614](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42075420614) | 2026-11-05 |
+| E2E — Critical Flows & Error Boundaries | ⛔ PENDENCIAS #11 — chromium-authed falha validate-access | [42075420614](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42075420614) | 2026-11-05 |
 | E2E — Personalization Flow | ❌ failure | [42075420851](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42075420851) | 2026-11-05 |
 | E2E • Swatch QuickView (Lista + Tabela) | ⏳ pending | [42075420741](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42075420741) | 2026-11-05 |
 | E2E · restore_seller_cart RPC (multi-env) | ⏳ pending | [42076818167](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42076818167) | 2026-11-05 |
@@ -39,12 +39,13 @@
 | Static Health Checks | ✅ success | [42075420858](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42075420858) | 2026-11-05 |
 | Supabase Linter Gate | ✅ success | [42075420470](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42075420470) | 2026-11-05 |
 | UI · Visual & A11y | ✅ success | [42075420752](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42075420752) | 2026-11-05 |
+| Uptime Monitor | ⛔ PENDENCIAS #12 — sonda prod falhou, issue #3071 | [41956566769](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41956566769) | 2026-11-05 |
 | db-schema-drift-check | ❌ failure | [42075701349](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42075701349) | 2026-11-05 |
 | edge-functions-drift-check | ❌ failure | [41873587900](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41873587900) | 2026-11-04 |
 
 > Workflows não listados nas últimas 50 execuções (sem nova execução desde SHA anterior): `Kit Coverage — Integration` (último run 2026-11-05), `Nightly Full CI` (último run 2026-11-05), `edge-functions-drift-check` (último run 2026-11-04), `E2E · Swatch QuickView` (pending na fila).
 
-**Required checks (`.github/required-checks.json`):** Gate Final - Deploy Ready ⏳ in_progress | Compare GitHub × Canonical ❌ | Analyze (javascript-typescript) ✅ | Gate E23 - Secret Scan (gitleaks) ✅ | Assert Gate Final is required on main ✅
+**Required checks (`.github/required-checks.json`):** Gate Final - Deploy Ready ✅ RESOLVIDO (attempt 2) | Compare GitHub × Canonical ❌ | Analyze (javascript-typescript) ✅ | Gate E23 - Secret Scan (gitleaks) ✅ | Assert Gate Final is required on main ✅
 
 ---
 
@@ -323,12 +324,14 @@ Workflows que estavam verdes: mantidos verdes (CodeQL ✅, Gitleaks ✅, Securit
 | Gate 3 flakiness (try/catch + cache) | PR [#3074](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3074) | ✅ mergeada — success run [42057520999](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42057520999) |
 | Gate 3 job cancelled (timeout acúmulo) | PR [#3075](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3075) | ✅ mergeada — success run [42073412218](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42073412218) (main push `5e5e4a6f`) |
 | Branch Protection Sentinel | PENDENCIAS.md #4 — advisory | ✅ **RESOLVIDO** — run [42075420395](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42075420395) success |
-| Deploy Gates (Gate 3 flakiness infra `validate-access`) | rerun (attempt 2) | ⏳ in_progress — run [42075420875](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42075420875) attempt 2, Gate 3 rodando |
+| Deploy Gates (Gate 3 flakiness infra `validate-access`) | rerun (attempt 2) | ✅ **RESOLVIDO** — run [42075420875](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42075420875) attempt 2 `conclusion: success` |
 | edge-functions-drift-check (required) | PENDENCIAS.md #2 | ⛔ requer `workflow_dispatch` pelo dono |
 | db-schema-drift-check | PENDENCIAS.md #1 | ⛔ REGRA #8 — requer dono |
 | Kit Coverage — Integration | PENDENCIAS.md #3 | ⛔ dados null no banco |
 | CI - Replenishment Module QG | PENDENCIAS.md #5 | ⛔ requer creds E2E |
 | E2E • Swatch QuickView | PENDENCIAS.md #6 | ⛔ requer creds E2E |
 | Nightly Full CI | PENDENCIAS.md #7 | ⛔ derivado #5/#6 |
-| E2E — Personalization Flow | PENDENCIAS.md #10 (NOVO) | ⛔ 3 testes `chromium-authed` falhando — requer creds E2E |
+| E2E — Personalization Flow | PENDENCIAS.md #10 | ⛔ 3 testes `chromium-authed` falhando — requer creds E2E |
 | E2E · view-no-presentation-mode | PENDENCIAS.md #9 | ⛔ snapshot visual — requer dono |
+| E2E — Critical Flows & Error Boundaries | PENDENCIAS.md #11 (NOVO) | ⛔ run [42075420614](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42075420614) — `chromium-authed` sidebar tooltips falha por flakiness `validate-access` |
+| Uptime Monitor | PENDENCIAS.md #12 (NOVO) | ⛔ run [41956566769](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41956566769) — sonda prod falhou, issue #3071 — requer diagnóstico `health-check` edge function |
