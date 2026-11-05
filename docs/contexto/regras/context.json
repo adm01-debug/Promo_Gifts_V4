@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "2c5dafc323e094b59dd973b646944d9b8d715a07",
+  "sha": "7486a584d55357f1d58c10dacc541f44a83c1eb9",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-04 19:43 UTC",
+  "generated_at": "2026-11-05 12:49 UTC",
   "files_total": 9092,
   "code_files": 7837,
-  "code_lines": 1050272
+  "code_lines": 1050271
  },
  "version": "1.3.2",
- "facts_hash": "02187b06b787a7d3",
+ "facts_hash": "2f58e20d7b2d0158",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -137859,7 +137859,7 @@
   {
    "module": "e2e",
    "files": 620,
-   "lines": 74275,
+   "lines": 74274,
    "tables": [
     "discount_approval_requests",
     "quote_items"
@@ -364594,7 +364594,7 @@
   },
   "e2e/smoke.spec.ts": {
    "path": "e2e/smoke.spec.ts",
-   "lines": 75,
+   "lines": 76,
    "is_test": true,
    "env": [
     "E2E_ADMIN_EMAIL",
@@ -369170,7 +369170,7 @@
   },
   "e2e/flows/20-all-features-smoke.spec.ts": {
    "path": "e2e/flows/20-all-features-smoke.spec.ts",
-   "lines": 437,
+   "lines": 387,
    "is_test": true,
    "env": [
     "CI",
@@ -369183,7 +369183,7 @@
     "trailing slash, mantém apenas o path. Permite redirects intencionais",
     "* Asserções básicas que TODA tela autenticada deve atender.",
     "* Validação de estabilidade de URL/histórico (anti redirect-loop):",
-    "── Validação de estabilidade de URL (anti redirect-loop) ───────────────",
+    "── Validação de estabilidade de URL (anti redirect-loop) ──────────────────",
     "Path final deve bater com o solicitado (ignorando trailing slash, query",
     "de smoke (cada rota deve resolver pra si mesma com mocks default).",
     "&limit=50`, {"
@@ -369193,7 +369193,7 @@
     ".waitFor({ state: \"visible\", timeout: 8_000 })",
     ".waitForURL(/\\/login/, { timeout: 15_000 })",
     ".waitForURL(/\\/login/, { timeout: 8_000 })",
-    "timeout: 30_000,",
+    "timeout: 150_000,",
     "timeout: 8_000,",
     "{ timeout: 3_000, intervalMs: 250, message: `aguardando URL estabilizar em ${path}` },"
    ],
@@ -370306,14 +370306,16 @@
   },
   "e2e/flows/magazine-preview-sticky-smoke.spec.ts": {
    "path": "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
-   "lines": 96,
+   "lines": 150,
    "is_test": true,
    "rule_comments": [
+    "ativa do sticky: o elemento deve estar pinned com 0 ≤ top < 24.",
     "Hero deve ter saído (rolou para cima → top << 0)",
-    "Preview deve estar pinned próximo do topo (top-2 ≈ 8px, tolerância 8px)"
+    "Preview deve estar pinned: 0 ≤ top < 24."
    ],
    "temporal": [
-    "timeout: 5_000,"
+    "timeout: 5_000,",
+    "{ timeout: 240_000 },"
    ],
    "tests": [
     "@smoke Magazine Editor — preview sticky/aligned",
@@ -370322,29 +370324,29 @@
   },
   "e2e/flows/magazine-publish-smoke.spec.ts": {
    "path": "e2e/flows/magazine-publish-smoke.spec.ts",
-   "lines": 231,
+   "lines": 217,
    "is_test": true,
    "rule_comments": [
     "6. Concede permissão de clipboard APÓS navegação confirmada.",
-    "Clipboard exige permissão explícita no Chromium. Feito APÓS navegação",
-    "separados no Sonner — o locator usa apenas o título para evitar fragmentação.",
-    "A edge magazine-public-view deve ter sido chamada sem Authorization."
+    "O ProductsStep exibe role=\"status\">Produtos na revista apenas quando"
    ],
    "temporal": [
     ").toBeVisible({ timeout: 15_000 });",
     "await createBtn.waitFor({ state: \"visible\", timeout: 10_000 });",
-    "await expect(layoutStep).toHaveAttribute(\"aria-current\", \"step\", { timeout: 2_000 });",
-    "await page.waitForURL(/\\/magazine\\/[a-f0-9-]{6,}/i, { timeout: 15_000 });",
+    "await layoutStep.waitFor({ state: \"visible\", timeout: 10_000 });",
+    "await page.getByText(\"Produtos na revista\").waitFor({ state: \"visible\", timeout: 20_000 });",
+    "await page.waitForURL(/\\/magazine\\/[a-f0-9-]{6,}/i, { timeout: 60_000 });",
     "await productSearch.waitFor({ state: \"visible\", timeout: 15_000 });",
     "await productsStep.waitFor({ state: \"visible\", timeout: 10_000 });",
-    "await titleInput.waitFor({ state: \"visible\", timeout: 10_000 });",
+    "await publishBtn.waitFor({ state: \"visible\", timeout: 30_000 });",
+    "await titleInput.waitFor({ state: \"visible\", timeout: 20_000 });",
     "catalogEmpty.waitFor({ state: \"visible\", timeout: 60_000 }),",
     "catalogError.waitFor({ state: \"visible\", timeout: 60_000 }),",
     "firstProductBtn.waitFor({ state: \"visible\", timeout: 60_000 }),",
     "timeout: 10_000,",
-    "timeout: 15_000,",
     "timeout: 5_000,",
-    "{ timeout: 15_000 },"
+    "{ timeout: 120_000 },",
+    "{ timeout: 60_000 },"
    ],
    "tests": [
     "@smoke Magazine — fluxo autenticado de publicação",
@@ -370353,7 +370355,7 @@
   },
   "e2e/flows/magazine-smoke.spec.ts": {
    "path": "e2e/flows/magazine-smoke.spec.ts",
-   "lines": 116,
+   "lines": 121,
    "is_test": true,
    "env": [
     "MAGAZINE_PUBLIC_TOKEN"
@@ -370362,7 +370364,7 @@
     "Não deve redirecionar para /login"
    ],
    "temporal": [
-    "{ timeout: 15_000 },"
+    "{ timeout: 120_000 },"
    ],
    "tests": [
     "@smoke Magazine — Gold DB smoke",
@@ -371013,7 +371015,7 @@
   },
   "e2e/helpers/auth.ts": {
    "path": "e2e/helpers/auth.ts",
-   "lines": 284,
+   "lines": 287,
    "exports": [
     "interface LoginCreds",
     "type Role",
@@ -482740,10 +482742,25 @@
   }
  },
  "git": {
-  "sha": "2c5dafc323e094b59dd973b646944d9b8d715a07",
+  "sha": "7486a584d55357f1d58c10dacc541f44a83c1eb9",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "7486a58",
+    "date": "2026-11-05",
+    "author": "adm01-debug",
+    "subject": "fix(e2e): aumentar timeouts para auth real em CI (smoke + magazine + all-features) (#3072)",
+    "files": [
+     ".github/workflows/deploy-gates.yml",
+     "e2e/flows/20-all-features-smoke.spec.ts",
+     "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
+     "e2e/flows/magazine-publish-smoke.spec.ts",
+     "e2e/flows/magazine-smoke.spec.ts",
+     "e2e/helpers/auth.ts",
+     "e2e/smoke.spec.ts"
+    ]
+   },
    {
     "sha": "2c5dafc",
     "date": "2026-11-04",
@@ -483113,18 +483130,17 @@
      "package-lock.json",
      "package.json"
     ]
-   },
-   {
-    "sha": "8b84f38",
-    "date": "2026-11-01",
-    "author": "adm01-debug",
-    "subject": "docs(analise): §3/§5/§8/§9/§13 — corrige inconsistências RELATORIO AGUARDANDO APROVAÇÃO (v10)",
-    "files": [
-     "analise-branches/RELATORIO_BRANCHES.md"
-    ]
    }
   ],
   "hot_files": [
+   [
+    "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
+    3
+   ],
+   [
+    "e2e/flows/magazine-publish-smoke.spec.ts",
+    3
+   ],
    [
     "docs/PLANO_MELHORIAS_200_ETAPAS_261104.md",
     3
@@ -483150,11 +483166,15 @@
     3
    ],
    [
-    "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
+    ".github/workflows/deploy-gates.yml",
     2
    ],
    [
-    "e2e/flows/magazine-publish-smoke.spec.ts",
+    "e2e/flows/20-all-features-smoke.spec.ts",
+    2
+   ],
+   [
+    "e2e/helpers/auth.ts",
     2
    ],
    [
@@ -483190,19 +483210,7 @@
     2
    ],
    [
-    "e2e/flows/20-all-features-smoke.spec.ts",
-    1
-   ],
-   [
-    ".soft-delete-baseline.json",
-    1
-   ],
-   [
-    "supabase/migrations/20261104100000_partitions_supplier_products_raw_history_2027.sql",
-    1
-   ],
-   [
-    "supabase/rollbacks/20261104100000_rollback.sql",
+    "e2e/flows/magazine-smoke.spec.ts",
     1
    ]
   ]

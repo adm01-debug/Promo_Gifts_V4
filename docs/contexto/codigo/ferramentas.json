@@ -1093,7 +1093,9 @@
     "secret-scan",
     "deploy-ready"
    ],
-   "permissoes": [],
+   "permissoes": [
+    "contents: read"
+   ],
    "scripts_usados": [
     "scripts/check-anon-insert-rate-guard.mjs",
     "scripts/check-as-assertions-baseline.mjs",

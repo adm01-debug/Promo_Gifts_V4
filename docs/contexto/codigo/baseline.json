@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "2c5dafc323e094b59dd973b646944d9b8d715a07",
+  "commit": "7486a584d55357f1d58c10dacc541f44a83c1eb9",
   "branch": "main",
-  "data_commit": "2026-11-04T14:22:20-03:00",
+  "data_commit": "2026-11-05T09:48:35-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "7486a58",
+    "data": "2026-11-05",
+    "assunto": "fix(e2e): aumentar timeouts para auth real em CI (smoke + magazine + all-features) (#3072)"
+   },
    {
     "sha": "2c5dafc",
     "data": "2026-11-04",
@@ -126,14 +131,9 @@
     "sha": "96f17f4",
     "data": "2026-11-02",
     "assunto": "feat: hook de início de sessão monta o grafo do código nas sessões da nuvem (#3041)"
-   },
-   {
-    "sha": "8d97d18",
-    "data": "2026-11-02",
-    "assunto": "chore: CLAUDE.md só técnico, AGENTS.md só regras do dono (#3038)"
    }
   ],
-  "arquivos_mudados_7d": 681,
+  "arquivos_mudados_7d": 682,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -180,12 +180,12 @@
     "mudancas": 63
    },
    {
-    "pasta": "RELATORIO_CI.md",
+    "pasta": "src/pages/products",
     "mudancas": 61
    },
    {
-    "pasta": "src/pages/products",
-    "mudancas": 61
+    "pasta": "RELATORIO_CI.md",
+    "mudancas": 60
    },
    {
     "pasta": "src/pages/admin",
@@ -193,17 +193,17 @@
    },
    {
     "pasta": "PENDENCIAS.md",
-    "mudancas": 59
+    "mudancas": 58
    }
   ],
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "RELATORIO_CI.md",
-    "mudancas": 61
+    "mudancas": 60
    },
    {
     "arquivo": "PENDENCIAS.md",
-    "mudancas": 59
+    "mudancas": 58
    },
    {
     "arquivo": "package.json",
@@ -251,7 +251,7 @@
    },
    {
     "arquivo": ".github/workflows/deploy-gates.yml",
-    "mudancas": 7
+    "mudancas": 8
    },
    {
     "arquivo": "AGENTS.md",
@@ -324,7 +324,7 @@
  "contagens": {
   "arquivos_total": 9169,
   "arquivos_codigo": 4612,
-  "linhas_codigo": 883207,
+  "linhas_codigo": 883206,
   "rotas": 138,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -544,7 +544,7 @@
   },
   "e2e/flows": {
    "arquivos": 183,
-   "linhas": 25169
+   "linhas": 25164
   },
   "e2e/future-stock.spec.ts": {
    "arquivos": 1,
@@ -560,7 +560,7 @@
   },
   "e2e/helpers": {
    "arquivos": 32,
-   "linhas": 4444
+   "linhas": 4447
   },
   "e2e/initial-load.spec.ts": {
    "arquivos": 1,
@@ -812,7 +812,7 @@
   },
   "e2e/smoke.spec.ts": {
    "arquivos": 1,
-   "linhas": 75
+   "linhas": 76
   },
   "e2e/sort-regression.spec.ts": {
    "arquivos": 1,
@@ -2306,22 +2306,10 @@
   "console_log": 1224,
   "ts_ignore": 0,
   "eslint_disable": 6,
-  "todos": 76,
+  "todos": 74,
   "arquivos_acima_500_linhas": 164
  },
  "todos": [
-  {
-   "arquivo": "e2e/flows/20-all-features-smoke.spec.ts",
-   "linha": 299,
-   "tipo": "FIXME",
-   "texto": "provisório para desbloquear o gate."
-  },
-  {
-   "arquivo": "e2e/flows/20-all-features-smoke.spec.ts",
-   "linha": 303,
-   "tipo": "FIXME",
-   "texto": ".md):"
-  },
   {
    "arquivo": "e2e/flows/23-rocket-animation-snapshot.spec.ts",
    "linha": 18,

@@ -1696,7 +1696,7 @@
   {
    "arquivo": "e2e/flows/20-all-features-smoke.spec.ts",
    "tipo": "e2e",
-   "linhas": 437,
+   "linhas": 387,
    "testa": [],
    "casos": 15
   },
@@ -2104,21 +2104,21 @@
   {
    "arquivo": "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
    "tipo": "e2e",
-   "linhas": 96,
+   "linhas": 150,
    "testa": [],
    "casos": 2
   },
   {
    "arquivo": "e2e/flows/magazine-publish-smoke.spec.ts",
    "tipo": "e2e",
-   "linhas": 231,
+   "linhas": 217,
    "testa": [],
    "casos": 2
   },
   {
    "arquivo": "e2e/flows/magazine-smoke.spec.ts",
    "tipo": "e2e",
-   "linhas": 116,
+   "linhas": 121,
    "testa": [],
    "casos": 3
   },
@@ -2356,7 +2356,7 @@
   {
    "arquivo": "e2e/helpers/auth.ts",
    "tipo": "e2e",
-   "linhas": 284,
+   "linhas": 287,
    "testa": [],
    "casos": 3
   },
@@ -4065,7 +4065,7 @@
   {
    "arquivo": "e2e/smoke.spec.ts",
    "tipo": "e2e",
-   "linhas": 75,
+   "linhas": 76,
    "testa": [],
    "casos": 4
   },

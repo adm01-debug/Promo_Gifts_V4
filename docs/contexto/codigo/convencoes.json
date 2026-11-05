@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix(e2e): aumentar timeouts para auth real em CI (smoke + magazine + all-features) (#3072)",
    "feat(e2e): corrige smoke tests de magazine para CI verde",
    "fix(e2e): corrige 2 smoke tests de magazine pré-existentes (#3069)",
    "chore: atualizar baseline soft-delete para partições p2027_03–p2027_12",
-   "feat: cria partições p2027_03–p2027_12 de supplier_products_raw_history",
-   "chore: adiciona rollback files para migrations 20261101201000 e 20261101202000"
+   "feat: cria partições p2027_03–p2027_12 de supplier_products_raw_history"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

@@ -1,17 +1,17 @@
-# Graph Report - Promo_Gifts_V4  (2026-11-04)
+# Graph Report - Promo_Gifts_V4  (2026-11-05)
 
 ## Corpus Check
-- 5624 files · ~5,098,702 words
+- 5624 files · ~5,098,388 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 56 file(s) not represented in the graph (top: (none) 27, .css 10, .toml 6)
 
 ## Summary
-- 38182 nodes · 66540 edges · 2173 communities (2023 shown, 150 thin omitted)
+- 38182 nodes · 66541 edges · 2173 communities (2023 shown, 150 thin omitted)
 - Extraction: 95% EXTRACTED · 5% INFERRED · 0% AMBIGUOUS · INFERRED: 3631 edges (avg confidence: 0.94)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `2c5dafc3`
+- Built from commit: `7486a584`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 

@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `2c5dafc323e094b59dd973b646944d9b8d715a07` (2026-11-04T14:22:20-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `7486a584d55357f1d58c10dacc541f44a83c1eb9` (2026-11-05T09:48:35-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 9169 |
 | arquivos_codigo | 4612 |
-| linhas_codigo | 883207 |
+| linhas_codigo | 883206 |
 | rotas | 138 |
 | rotas_http_backend | 13 |
 | vistas_por_id | 0 |
@@ -586,14 +586,14 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 38182 nós · 66540 arestas · 2173 comunidades · grafo do commit `2c5dafc3`
+- 38182 nós · 66541 arestas · 2173 comunidades · grafo do commit `7486a584`
 - comunidades maiores: ref_lib (681), ref_components (614), ref_integrations (548), react-router-dom (332), ref_hooks (324), scripts (289), gotoAndSettle (266), ref_node_fs (258), react (256), ref_types (246), cors.ts (242), test-base.ts (231)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), json (?), loginAs() (e2e/helpers/auth.ts), excluded_sql() (scripts/supabase_snapshot/snapshot.py), maskUrl() (scripts/check-result-contract.mjs), .collect() (scripts/supabase_snapshot/test_snapshot.py), resolveItemImage() (src/pages/magazine/components/templates/shared.ts), makeMockCart() (e2e/helpers/cart-mock.ts)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- RELATORIO_CI.md (61)
-- PENDENCIAS.md (59)
+- RELATORIO_CI.md (60)
+- PENDENCIAS.md (58)
 - package.json (27)
 - package-lock.json (23)
 - supabase/MIGRATIONS_SYNC_LOG.md (21)
@@ -605,7 +605,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - analise-prs/prs.json (11)
 - docs/plans/PLANO_MELHORIAS_CORRECOES_200_ETAPAS_2026-10-18.md (11)
 - analise-branches/RELATORIO_BRANCHES.md (9)
-- .github/workflows/deploy-gates.yml (7)
+- .github/workflows/deploy-gates.yml (8)
 - AGENTS.md (7)
 
 ## Workflows
@@ -1159,6 +1159,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.7.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.6.1...v1.7.0) (2026-11-02)
 
 ## Últimos commits
+- 2026-11-05 `7486a58` fix(e2e): aumentar timeouts para auth real em CI (smoke + magazine + all-features) (#3072)
 - 2026-11-04 `2c5dafc` feat(e2e): corrige smoke tests de magazine para CI verde
 - 2026-11-04 `07dc24e` fix(e2e): corrige 2 smoke tests de magazine pré-existentes (#3069)
 - 2026-11-04 `50d099c` chore: atualizar baseline soft-delete para partições p2027_03–p2027_12
@@ -1173,7 +1174,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-02 `e6183da` fix(ci): check-indexed-access-ratchet.mjs — preserva meta no --update (#3056)
 - 2026-11-02 `2294b0b` docs(migrations-log): recibo E15 — aplicação de 20261029160339 (#3054)
 - 2026-11-02 `09d7cdd` feat: inventário gerado do estado real — scripts refazem banco, edges, rotas e tabelas (#3039)
-- 2026-11-02 `0febd3f` fix(ci): preserva meta (target/deadline) na regeneração dos 4 baselines de ratchet (#3052)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`
