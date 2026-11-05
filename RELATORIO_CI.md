@@ -300,4 +300,13 @@ Workflows que estavam verdes: mantidos verdes (CodeQL ✅, Gitleaks ✅, Securit
 
 **Run Deploy Gates (PR #3074):** [42057520999](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42057520999) — ✅ **conclusion=success** (Gate Final confirmado — todos os 15 jobs ✅/⏭)
 
-**Run Deploy Gates (push → main, commit `2292176f`):** [42059666400](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42059666400) — 🔄 in_progress em 2026-11-05T15:54:09Z (aguardando conclusão)
+**Run Deploy Gates (push → main, commit `2292176f`):** [42059666400](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42059666400) — ❌ **conclusion=cancelled** (Gate 3 job cancelado por `timeout-minutes: 20` às 16:15:34Z)
+
+**Causa do cancelled:** 3 specs de magazine aguardavam cold start do PostgREST (180s + 120s + 120s = 7 min extras) — job total estimado 19 min, cancelado aos 20 min.
+
+**Fix aplicado (commit `1e2e9d1`, branch `claude/tender-brown-hzw0ij`):** timeouts reduzidos para 60s nos 3 specs:
+- `magazine-preview-sticky-smoke.spec.ts`: 180s → 60s
+- `magazine-smoke.spec.ts`: 120s → 60s  
+- `magazine-publish-smoke.spec.ts`: 120s → 60s
+
+Estimativa pós-fix: job ~15 min (margem 5 min antes do limite de 20 min).
