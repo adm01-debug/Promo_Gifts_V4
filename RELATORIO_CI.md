@@ -2,8 +2,8 @@
 
 **Gerado em:** 2026-11-05  
 **Responsável:** Claude Code (sessão https://claude.ai/code/session_01RfQzo9tqgD6XgLTYZQZhcv)  
-**HEAD da main:** `5e497761` — `docs: PENDENCIAS.md — item #20 vitest date-utils falhas locais (pré-existente) (#3090)`  
-**Atualizado em:** 2026-11-05 22:40 UTC (esta sessão)
+**HEAD da main:** `823822b0` — `docs: RELATORIO_CI.md — SHAs a792bade + 5e497761 + vitest #20 + prova final (#3091)`  
+**Atualizado em:** 2026-11-05 23:10 UTC (esta sessão)
 
 ---
 
@@ -432,8 +432,9 @@ Executado diretamente na main local (`/home/user/Promo_Gifts_V4`, SHA `d49e289e`
 | `npm run build` | ✅ OK — built in 11.88s | Saída local: `✓ built in 11.88s` — 0 erros |
 | `npm run lint:baseline` | ✅ 0 erros, 0 warnings — Δ+0 | Task `bpri1604f` exit 0 — `ESLint baseline gate [full] — atual: 0 erros, 0 warnings · baseline: 0 erros` |
 | Testes unitários (Gate 2 CI) | ✅ Gate 2 success (CI) | Gate 2 job [127563930043](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42118334232/job/127563930043) `conclusion: success` em d49e289e |
+| Vitest suíte completa (local) | ⚠️ 3 falhas pré-existentes (exit 0) | Task `bmcbgrbp8` — 1 failed (1411 Test Files) / 3 failed (27258 Tests); falhas em `tests/unit/date-utils.test.ts:107:52` (timezone BRT); PENDENCIAS.md #20 |
 
-> Vitest local ainda em background ao publicar este relatório; resultado autoritativo: Gate 2 CI ✅ no mesmo SHA.
+> Vitest suíte completa executada (task `bmcbgrbp8`): 1 failed (1411 Test Files) / 3 failed (27258 Tests) — falhas pré-existentes em `tests/unit/date-utils.test.ts:107:52` (timezone `TZ=America/Sao_Paulo` não definida localmente). Gate 2 CI ✅ usa subset `test:ci-core` que passa. PENDENCIAS.md #20.
 
 **Workflows bloqueados por dependência externa (sem código a corrigir):**
 
@@ -534,6 +535,7 @@ Workflows antes verdes: mantidos verdes — CodeQL ✅ run [42118333282](https:/
 | docs: RELATORIO_CI.md prova final SHA `210ce9a9` + PENDENCIAS #19 RESOLVIDO | PR [#3087](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3087) — squash `210ce9a9` | ✅ mergeada — Deploy Gates run [42114108262](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42114108262) `conclusion: success` — 21:46:05Z |
 | docs: RELATORIO_CI.md — baseline e inventário SHA d49e289e | PR [#3089](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3089) — squash `a792bade` | ✅ mergeada — Gate Final run [42121668685](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42121668685) `conclusion: success` (22:36:41Z) |
 | docs: PENDENCIAS.md — item #20 vitest date-utils (pré-existente) | PR [#3090](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3090) — squash `5e497761` | ✅ mergeada — docs-only; required checks: a792bade ✅ |
+| docs: RELATORIO_CI.md — SHAs a792bade + 5e497761 + vitest #20 + prova final | PR [#3091](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3091) — squash `823822b0` | ✅ mergeada — Deploy Gates run [42125946413](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42125946413) `conclusion: success` (23:08:18Z) |
 
 ---
 
@@ -559,14 +561,14 @@ Workflows antes verdes: mantidos verdes — CodeQL ✅ run [42118333282](https:/
 
 | Vitest local — `tests/unit/date-utils.test.ts` | local only (não é workflow) | ❌ Não | ⚠️ 3 falhas pré-existentes (exit 0) | #20 | ⛔ Gate 2 CI ✅ job [127575447439](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42121668685/job/127575447439) em `a792bade`; falha pré-existente, timezone BRT |
 
-**Required checks estado final (SHA `a792bade` — última run Gate Final — 2026-11-05 22:36 UTC):**
+**Required checks estado final (SHA `823822b0` — última run Gate Final — 2026-11-05 23:08 UTC):**
 
-> SHA `5e497761` (HEAD atual, 22:39 UTC) é docs-only (PENDENCIAS.md item #20); não disparou novo run do Gate Final. Required checks confirmados em `a792bade`.
+> SHA `823822b0` (HEAD atual) disparou Deploy Gates run [42125946413](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42125946413) em main — `conclusion: success` (23:08:20Z).
 
 | Check | Estado |
 |---|---|
-| Gate Final - Deploy Ready | ✅ **success** — run [42121668685](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42121668685) job [127579682414](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42121668685/job/127579682414) (22:36:41Z) |
-| Compare GitHub × Canonical | ✅ success — edge-functions-drift-check verde no PR #3089 |
-| Analyze (javascript-typescript) | ✅ success — CodeQL run [42121668715](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42121668715) (22:33:52Z) |
-| Gate E23 - Secret Scan (gitleaks) | ✅ success — job [127575447786](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42121668685/job/127575447786) (22:28:14Z) |
-| Assert Gate Final is required on main | ✅ success — job [127575324149](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42121668685/job/127575324149) (22:27:46Z) |
+| Gate Final - Deploy Ready | ✅ **success** — run [42125946413](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42125946413) job [127594429321](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42125946413/job/127594429321) (23:08:18Z) |
+| Compare GitHub × Canonical | ✅ success — edge-functions-drift-check verde (SHA `a792bade` confirmado no PR #3089; `823822b0` é docs-only) |
+| Analyze (javascript-typescript) | ✅ success — CodeQL run [42121668715](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42121668715) (22:33:52Z) em `a792bade`; `823822b0` docs-only |
+| Gate E23 - Secret Scan (gitleaks) | ✅ success — job [127590186666](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42125946413/job/127590186666) (22:59:28Z) |
+| Assert Gate Final is required on main | ✅ success — required-checks-guard.yml, SHA `a792bade` job [127575324149](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42121668685/job/127575324149) |
