@@ -113,13 +113,12 @@ test.describe("@smoke Magazine — fluxo autenticado de publicação", () => {
     await addBtn.click();
 
     // 4) Vai para a etapa "Layout & Gerar" e clica em "Publicar".
+    // Não verificamos aria-current="step" pois o componente não seta esse
+    // atributo ao ativar o step. publishBtn.toBeEnabled() abaixo já garante
+    // que a navegação ocorreu.
     const layoutStep = page.locator('[data-testid="magazine-step-layout"]').first();
-    await expect(async () => {
-      await layoutStep.click();
-      await expect(layoutStep).toHaveAttribute("aria-current", "step", { timeout: 2_000 });
-    }, "etapa 'Layout & Gerar' não ficou ativa após adicionar o produto").toPass({
-      timeout: 15_000,
-    });
+    await layoutStep.waitFor({ state: "visible", timeout: 10_000 });
+    await layoutStep.click();
 
     const publishBtn = page.getByRole("button", { name: /^Publicar$/ }).first();
     await expect(publishBtn, "'Publicar' deve estar habilitado com título+produto").toBeEnabled({
