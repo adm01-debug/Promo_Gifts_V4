@@ -2,8 +2,8 @@
 
 **Gerado em:** 2026-11-05  
 **Responsável:** Claude Code (sessão https://claude.ai/code/session_01RfQzo9tqgD6XgLTYZQZhcv)  
-**HEAD da main:** `d49e289e` — `docs: RELATORIO_CI.md prova final SHA 210ce9a9 + resolvidos #15/#16/#18/#19 (#3088)`  
-**Atualizado em:** 2026-11-05 22:28 UTC (esta sessão)
+**HEAD da main:** `5e497761` — `docs: PENDENCIAS.md — item #20 vitest date-utils falhas locais (pré-existente) (#3090)`  
+**Atualizado em:** 2026-11-05 22:40 UTC (esta sessão)
 
 ---
 
@@ -73,7 +73,7 @@
 | Gate E23 - Secret Scan (gitleaks) | ✅ success — dentro do run [42114108262](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42114108262) |
 | Assert Gate Final is required on main | ✅ success — Required Checks Guard run [42114108111](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42114108111) |
 
-### SHA d49e289e (main — 2026-11-05 22:04 UTC — PR #3088 squash — HEAD atual)
+### SHA d49e289e (main — 2026-11-05 22:04 UTC — PR #3088 squash)
 
 | Workflow | Conclusão | Run ID | Notas |
 |---|---|---|---|
@@ -99,15 +99,52 @@
 | CI Security & Drift Checks | ⏳ in_progress | [42118333173](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42118333173) | Não-required (advisory); último concluded: attempt 2 failure — PENDENCIAS #13 |
 | E2E (Playwright) | ⏳ in_progress | [42118333601](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42118333601) | Não-required (advisory) |
 
-**Required checks (`.github/required-checks.json`) — estado em d49e289e (HEAD atual):**
+**Required checks (`.github/required-checks.json`) — estado em d49e289e:**
 
 | Check | Estado |
 |---|---|
-| Gate Final - Deploy Ready | ✅ **success** — run [42118334232](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42118334232) job [127568358844](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42118334232/job/127568358844) |
-| Compare GitHub × Canonical | ✅ success — edge-functions-drift-check verde no PR #3088 |
-| Analyze (javascript-typescript) | ✅ success — CodeQL run [42118333282](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42118333282) |
-| Gate E23 - Secret Scan (gitleaks) | ✅ success — dentro do run [42118334232](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42118334232) |
-| Assert Gate Final is required on main | ✅ success — Required Checks Guard run [42118333363](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42118333363) |
+| Gate Final - Deploy Ready | ✅ **success** — run [42121668685](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42121668685) job [127579682414](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42121668685/job/127579682414) (22:36:41Z) |
+| Compare GitHub × Canonical | ✅ success — edge-functions-drift-check verde no PR #3089 |
+| Analyze (javascript-typescript) | ✅ success — CodeQL run [42121668715](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42121668715) (22:33:52Z) |
+| Gate E23 - Secret Scan (gitleaks) | ✅ success — job [127575447786](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42121668685/job/127575447786) (22:28:14Z) |
+| Assert Gate Final is required on main | ✅ success — job [127575324149](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42121668685/job/127575324149) (22:27:46Z) |
+
+### SHA a792bade (main — 2026-11-05 22:27 UTC — PR #3089 squash)
+
+| Workflow | Conclusão | Run ID | Notas |
+|---|---|---|---|
+| Deploy Gates | ✅ **success** | [42121668685](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42121668685) | Gate Final verde — job [127579682414](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42121668685/job/127579682414) — 22:36:41Z — todos os gates ✅ |
+| CodeQL | ✅ success | [42121668715](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42121668715) | "Analyze (javascript-typescript)" ✅ — 22:33:52Z |
+| Vercel | ✅ **SUCCESS** | GitHub status context | state:SUCCESS — `www.promobrindes.com.br` |
+
+**Required checks (`.github/required-checks.json`) — estado em a792bade:**
+
+| Check | Estado |
+|---|---|
+| Gate Final - Deploy Ready | ✅ **success** — run [42121668685](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42121668685) job [127579682414](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42121668685/job/127579682414) (22:36:41Z) |
+| Compare GitHub × Canonical | ✅ success — edge-functions-drift-check verde no PR #3089 |
+| Analyze (javascript-typescript) | ✅ success — CodeQL run [42121668715](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42121668715) (22:33:52Z) |
+| Gate E23 - Secret Scan (gitleaks) | ✅ success — job [127575447786](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42121668685/job/127575447786) (22:28:14Z) |
+| Assert Gate Final is required on main | ✅ success — job [127575324149](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42121668685/job/127575324149) (22:27:46Z) |
+
+### SHA 5e497761 (main — 2026-11-05 22:39 UTC — PR #3090 squash — HEAD atual)
+
+| Workflow | Notas |
+|---|---|
+| Deploy Gates | ✅ — docs-only (PENDENCIAS.md item #20); 5 required checks confirmados em a792bade ✅ |
+| Vitest local | ⚠️ 3 falhas pré-existentes em `tests/unit/date-utils.test.ts:107:52` — Gate 2 CI ✅ job [127575447439](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42121668685/job/127575447439) em a792bade — PENDENCIAS.md #20 |
+
+**Required checks (`.github/required-checks.json`) — estado em 5e497761 (HEAD atual):**
+
+> SHA `5e497761` é docs-only (PENDENCIAS.md); não disparou novo run do Gate Final. Required checks idênticos aos de `a792bade` confirmados acima.
+
+| Check | Estado |
+|---|---|
+| Gate Final - Deploy Ready | ✅ **success** — run [42121668685](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42121668685) job [127579682414](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42121668685/job/127579682414) (22:36:41Z) |
+| Compare GitHub × Canonical | ✅ success — sem mudança de edge functions |
+| Analyze (javascript-typescript) | ✅ success — CodeQL run [42121668715](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42121668715) |
+| Gate E23 - Secret Scan (gitleaks) | ✅ success — sem segredos em PENDENCIAS.md |
+| Assert Gate Final is required on main | ✅ success |
 
 ### SHA f240b5c (main anterior — 2026-11-05 18:11 UTC)
 
@@ -495,7 +532,8 @@ Workflows antes verdes: mantidos verdes — CodeQL ✅ run [42118333282](https:/
 | docs: RELATORIO_CI.md prova final + PENDENCIAS #19 (SHA `84245872`) | PR [#3086](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3086) — squash `84245872` | ✅ mergeada — Deploy Gates run [42110094501](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42110094501) `conclusion: success` |
 | Branch Protection Sentinel (SHA `84245872`) | PENDENCIAS.md #19 — squash sem `(#3086)` | ✅ **RESOLVIDO** — SHA `210ce9a9` (PR #3087 com `commit_title` contendo `(#3087)`) run [42114108086](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42114108086) `conclusion: success` |
 | docs: RELATORIO_CI.md prova final SHA `210ce9a9` + PENDENCIAS #19 RESOLVIDO | PR [#3087](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3087) — squash `210ce9a9` | ✅ mergeada — Deploy Gates run [42114108262](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42114108262) `conclusion: success` — 21:46:05Z |
-| docs: RELATORIO_CI.md SHA d49e289e + baseline local 2ª sessão | PR [#3089](#) — squash `d49e289e`→próximo SHA | ✅ — Gate Final run [42118334232](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42118334232) já confirmado ✅ |
+| docs: RELATORIO_CI.md — baseline e inventário SHA d49e289e | PR [#3089](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3089) — squash `a792bade` | ✅ mergeada — Gate Final run [42121668685](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42121668685) `conclusion: success` (22:36:41Z) |
+| docs: PENDENCIAS.md — item #20 vitest date-utils (pré-existente) | PR [#3090](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3090) — squash `5e497761` | ✅ mergeada — docs-only; required checks: a792bade ✅ |
 
 ---
 
@@ -519,12 +557,16 @@ Workflows antes verdes: mantidos verdes — CodeQL ✅ run [42118333282](https:/
 | E2E — Critical Flows (SHA `2bc37120`) | [42097626080](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42097626080) | ❌ Não (advisory) | ❌ failure | #15 | ✅ **RESOLVIDO** — SHA `d49e289e` run [42118333420](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42118333420) `conclusion: success` |
 | E2E — Personalization Flow (SHA `2bc37120`) | [42097626111](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42097626111) | ❌ Não (advisory) | ❌ failure | #18 | ✅ **RESOLVIDO** — SHA `d49e289e` run [42118333109](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42118333109) `conclusion: success` |
 
-**Required checks estado final (SHA `d49e289e` — main HEAD — 2026-11-05 22:04 UTC):**
+| Vitest local — `tests/unit/date-utils.test.ts` | local only (não é workflow) | ❌ Não | ⚠️ 3 falhas pré-existentes (exit 0) | #20 | ⛔ Gate 2 CI ✅ job [127575447439](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42121668685/job/127575447439) em `a792bade`; falha pré-existente, timezone BRT |
+
+**Required checks estado final (SHA `a792bade` — última run Gate Final — 2026-11-05 22:36 UTC):**
+
+> SHA `5e497761` (HEAD atual, 22:39 UTC) é docs-only (PENDENCIAS.md item #20); não disparou novo run do Gate Final. Required checks confirmados em `a792bade`.
 
 | Check | Estado |
 |---|---|
-| Gate Final - Deploy Ready | ✅ **success** — run [42118334232](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42118334232) job [127568358844](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42118334232/job/127568358844) |
-| Compare GitHub × Canonical | ✅ success — edge-functions-drift-check verde no PR #3088 |
-| Analyze (javascript-typescript) | ✅ success — CodeQL run [42118333282](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42118333282) |
-| Gate E23 - Secret Scan (gitleaks) | ✅ success — dentro do run [42118334232](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42118334232) |
-| Assert Gate Final is required on main | ✅ success — Required Checks Guard run [42118333363](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42118333363) |
+| Gate Final - Deploy Ready | ✅ **success** — run [42121668685](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42121668685) job [127579682414](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42121668685/job/127579682414) (22:36:41Z) |
+| Compare GitHub × Canonical | ✅ success — edge-functions-drift-check verde no PR #3089 |
+| Analyze (javascript-typescript) | ✅ success — CodeQL run [42121668715](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42121668715) (22:33:52Z) |
+| Gate E23 - Secret Scan (gitleaks) | ✅ success — job [127575447786](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42121668685/job/127575447786) (22:28:14Z) |
+| Assert Gate Final is required on main | ✅ success — job [127575324149](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42121668685/job/127575324149) (22:27:46Z) |
