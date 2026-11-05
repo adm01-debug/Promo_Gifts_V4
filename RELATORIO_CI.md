@@ -166,3 +166,50 @@ Três causas independentes:
 | edge-functions-drift-check | 36 funções com drift (required check) | ⛔ Requer deploy | PENDENCIAS.md |
 
 **Required check bloqueante:** `Compare GitHub × Canonical` (edge-functions-drift-check) permanece vermelho — requer `workflow_dispatch` em `deploy-edge-functions.yml` pelo dono.
+
+---
+
+## 5. Baseline
+
+> Ambiente cloud sem credenciais de banco/E2E — builds locais não executados. Baseline a partir das últimas execuções de CI na main (`2c5dafc`).
+
+| Check | Baseline main `2c5dafc` |
+|---|---|
+| Gate Final - Deploy Ready | ✅ |
+| Compare GitHub × Canonical | ❌ (edge-functions-drift) |
+| Analyze (javascript-typescript) | ✅ |
+| Gate E23 - Secret Scan | ✅ |
+| Assert Gate Final is required | ✅ |
+| CI Security & Drift Checks | ❌ (ripgrep + 2 mocks) |
+| Kit Coverage — Integration | ❌ (dados null no banco) |
+| Nightly Full CI | ❌ (E2E) |
+| E2E • Swatch QuickView | ❌ (3 browsers) |
+| Replenishment Module QG | ❌ (card parity E2E) |
+| db-schema-drift-check | ❌ (ledger 1141/674) |
+
+## 6. Correções aplicadas (PR [#3073](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3073))
+
+**Commit `f8a5291` — fix(ci): ripgrep ausente + 2 mocks desatualizados**
+
+| Arquivo | Mudança |
+|---|---|
+| `.github/workflows/ci-security-drift.yml` | `apt-get install -y ripgrep` antes de `test:quality` |
+| `tests/components/kit-builder/KitMakerLanding.test.tsx` | asserts :173,:174,:248 incluem `'manual'` como 2º arg |
+| `src/hooks/stock/__tests__/useRuptureAlerts.test.tsx` | mock migrado de `fromMock/selectMock` para `rpcMock` |
+
+Evidências lidas diretamente: `useRuptureAlerts.ts:74` (`.rpc('fn_get_rupture_alerts')`), `KitMakerLanding.tsx:310,353` (`onStart('items-first', 'manual')`).
+
+## 7. Prova de Conclusão
+
+| Workflow com falha | Causa raiz | Correção | Estado |
+|---|---|---|---|
+| CI Security & Drift Checks | ripgrep + 2 mocks obsoletos | PR #3073 commit f8a5291 | ⏳ CI em andamento |
+| edge-functions-drift-check | 36 funções divergentes | PENDENCIAS.md #2 (requer deploy owner) | ⛔ bloqueado |
+| db-schema-drift-check | ledger local_only=1141/remote_only=674 | PENDENCIAS.md #1 (REGRA #8) | ⛔ bloqueado |
+| Kit Coverage — Integration | campos null no banco | PENDENCIAS.md #3 (dados) | ⛔ bloqueado |
+| Branch Protection Sentinel | commit sem `(#NNN)` | PENDENCIAS.md #4 (advisory) | ⛔ advisory |
+| CI - Replenishment Module QG | E2E card parity | PENDENCIAS.md #5 (creds E2E) | ⛔ bloqueado |
+| E2E • Swatch QuickView | 3 browsers falham | PENDENCIAS.md #6 (creds E2E) | ⛔ bloqueado |
+| Nightly Full CI | derivado E2E | PENDENCIAS.md #7 (derivado) | ⛔ bloqueado |
+
+Workflows que estavam verdes: mantidos verdes (CodeQL ✅, Gitleaks ✅, Security Scan ✅, SSOT ✅ confirmado na PR).
