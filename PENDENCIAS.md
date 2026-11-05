@@ -152,13 +152,13 @@ local_only=1141; remote_only=674
 
 ---
 
-## 13. CI Security & Drift Checks — step 28 E2E chromium-authed ❌ (a investigar — flakiness)
+## 13. CI Security & Drift Checks — step 28 E2E chromium-authed ❌ (flakiness persistente — CONFIRMADO)
 
 **Workflow:** `ci-security-drift.yml`  
 **Run ID (attempt 1):** [42086074688](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42086074688) (2026-11-05, SHA `7f254f7`) — `conclusion: failure`  
-**Run ID (attempt 2):** [42086074688/attempts/2](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42086074688/attempts/2) (2026-11-05, SHA `7f254f7`) — em andamento (iniciado 19:15Z)  
+**Run ID (attempt 2):** [42086074688/attempts/2](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42086074688/attempts/2) (2026-11-05, SHA `7f254f7`) — `conclusion: failure` **CONFIRMADO**  
 **Job:** `quality-gate` — Step 28: "Run E2E Critical Tests — specs autenticados"  
-**Erros (attempt 1):**
+**Erros (attempt 1 e 2):**
 ```
 e2e/catalog.spec.ts:20   — botão wizard-step-box disabled (cursor-not-allowed opacity-60), timeout 120s
 e2e/catalog.spec.ts:64   — mesmo padrão
@@ -166,10 +166,10 @@ e2e/catalog.spec.ts:121  — mesmo padrão
 e2e/kit-builder.spec.ts:47 — mesmo padrão
 e2e/kit-builder.spec.ts:85 — mesmo padrão
 ```
-**Causa:** Flakiness de autenticação CI em testes `chromium-authed` — botão desabilitado enquanto o estado de sessão não carregou completamente. Mesmo padrão dos itens #10 e #11 (ambos resolvidos sem alteração de código).  
+**Causa:** Flakiness de autenticação CI em testes `chromium-authed` — botão desabilitado enquanto o estado de sessão não carregou completamente. Mesmo padrão dos itens #10 e #11 (ambos resolvidos sem alteração de código). Attempt 2 também falhou — confirmado como flakiness persistente neste workflow específico.  
 **Required check:** NÃO — `ci-security-drift.yml` é advisory; não bloqueia merge em `main`.  
-**Por que não corrijo:** Requer credenciais E2E para reproduzir. Flakiness intermitente sem causa raiz em código identificada. Attempt 2 em andamento.  
-**O que o dono precisa fazer (se attempt 2 também falhar):**
+**Por que não corrijo:** Requer credenciais E2E para reproduzir. Flakiness intermitente sem causa raiz em código identificada. Ambos os attempts falharam — indica problema estrutural nos testes autenticados deste workflow específico.  
+**O que o dono precisa fazer:**
 1. Verificar `e2e/catalog.spec.ts` e `e2e/kit-builder.spec.ts` — adicionar retry ou aumentar timeout de autenticação
 2. Se reproduzível localmente com credenciais: investigar `wizard-step-box` disabled no estado de autenticação intermediário
-3. Se intermitente: marcar como RESOLVIDO (flakiness) igual aos itens #10 e #11
+3. Marcar como flakiness conhecida e monitorar se próximos runs passam sem alteração de código
