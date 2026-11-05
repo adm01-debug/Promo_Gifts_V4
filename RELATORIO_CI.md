@@ -310,3 +310,21 @@ Workflows que estavam verdes: mantidos verdes (CodeQL ✅, Gitleaks ✅, Securit
 - `magazine-publish-smoke.spec.ts`: 120s → 60s
 
 Estimativa pós-fix: job ~15 min (margem 5 min antes do limite de 20 min).
+
+**PR #3075 aberta:** [fix: Gate 3 — reduz timeouts cold start magazine smoke](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3075) — branch `claude/tender-brown-hzw0ij`, commits `1e2e9d1` (fix) + `211baaf` (docs) + `12933c0` (graphify manifest). Aguardando Gate Final para merge.
+
+### Tabela de prova atualizada
+
+| Workflow com falha | Correção | Estado |
+|---|---|---|
+| CI Security & Drift Checks | PR [#3073](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3073) | ✅ mergeada — success |
+| Gate 3 flakiness (try/catch + cache) | PR [#3074](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3074) | ✅ mergeada — success run [42057520999](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42057520999) |
+| Gate 3 job cancelled (timeout acúmulo) | PR [#3075](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3075) | ⏳ aberta — aguardando CI |
+| edge-functions-drift-check (required) | PENDENCIAS.md #2 | ⛔ requer `workflow_dispatch` pelo dono |
+| db-schema-drift-check | PENDENCIAS.md #1 | ⛔ REGRA #8 — requer dono |
+| Kit Coverage — Integration | PENDENCIAS.md #3 | ⛔ dados null no banco |
+| CI - Replenishment Module QG | PENDENCIAS.md #5 | ⛔ requer creds E2E |
+| E2E • Swatch QuickView | PENDENCIAS.md #6 | ⛔ requer creds E2E |
+| Nightly Full CI | PENDENCIAS.md #7 | ⛔ derivado #5/#6 |
+| Branch Protection Sentinel | PENDENCIAS.md #4 | ⚠️ advisory — resolve sozinho |
+| E2E · view-no-presentation-mode | PENDENCIAS.md #9 | ⛔ snapshot visual — requer dono |

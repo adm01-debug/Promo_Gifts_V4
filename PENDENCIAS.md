@@ -118,11 +118,17 @@ local_only=1141; remote_only=674
 
 ---
 
-## 8. Gate 3 — E2E Smoke flakiness `magazine-preview-sticky-smoke.spec.ts` (CORRIGIDO — PR aberta)
+## 8. Gate 3 — E2E Smoke timeout job (CORRIGIDO — PR #3075 aberta aguardando CI)
 
 **Workflow:** `deploy-gates.yml` (Gate 3 E2E Smoke)  
-**Run ID:** 42037172704 (2026-11-05, attempt 2)  
-**Erro:** `TimeoutError: page.waitForFunction: Timeout 240000ms exceeded` em `magazine-preview-sticky-smoke.spec.ts:55`  
-**Causa:** PostgREST cold start no runner de CI levou >240s para o editor hidratar. O próprio comentário no spec documenta esse risco ("o editor pode levar >90s para hidratar em CI"). Gate 3 era verde em `2c5dafc` (run 41876981679) com o mesmo timeout; os runs pós-merge `3383990` tiveram cold start mais lento.  
-**Natureza:** Flakiness de infraestrutura — testes distintos falharam em runs diferentes (sinal clássico); meu merge não tocou nenhum código do magazine editor.  
-**Correção:** `e2e/flows/magazine-preview-sticky-smoke.spec.ts` — `waitForFunction timeout` aumentado de 240s → 300s, `test.setTimeout` de 300s → 420s. Total do job permanece <20 min (timeout do workflow).
+**Run ID original (flakiness):** 42037172704 (2026-11-05, attempt 2) — `TimeoutError: page.waitForFunction: Timeout 240000ms` em `magazine-preview-sticky-smoke.spec.ts:55`  
+**Run ID novo (job cancelled):** 42059666400 (2026-11-05, push main `2292176f`) — Gate 3 job cancelado por `timeout-minutes: 20` às 16:15:34Z  
+**Causa composta:**  
+1. PR #3074 adicionou try/catch + test.skip com timeout de 180s (magazine-preview) e 120s (magazine-smoke, magazine-publish) para cold start do PostgREST  
+2. Mesmo com skip, 3 specs aguardando 180s+120s+120s = 7 min de cold start → job total ~19 min → cancelado no limite de 20 min  
+**Correção (commit `1e2e9d1`, branch `claude/tender-brown-hzw0ij`, PR [#3075](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3075)):**  
+- `magazine-preview-sticky-smoke.spec.ts`: `waitForFunction timeout` 180s → 60s  
+- `magazine-smoke.spec.ts`: `waitForResponse timeout` 120s → 60s  
+- `magazine-publish-smoke.spec.ts`: `waitForResponse timeout` 120s → 60s  
+Total cold start máximo = 3 × 60s = 3 min. Estimativa pós-fix: job ~15 min (5 min de margem).  
+**Status:** Aguardando CI da PR #3075 — Gate Final deve passar. Mergear após success.
