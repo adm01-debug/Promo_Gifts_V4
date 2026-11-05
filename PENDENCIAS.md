@@ -173,3 +173,20 @@ e2e/kit-builder.spec.ts:85 — mesmo padrão
 1. Verificar `e2e/catalog.spec.ts` e `e2e/kit-builder.spec.ts` — adicionar retry ou aumentar timeout de autenticação
 2. Se reproduzível localmente com credenciais: investigar `wizard-step-box` disabled no estado de autenticação intermediário
 3. Marcar como flakiness conhecida e monitorar se próximos runs passam sem alteração de código
+
+---
+
+## 14. Gate 3 E2E Smoke flakiness — SHA `2bc37120` ✅ RESOLVIDO (flakiness de infra — transitório)
+
+**Workflow:** `deploy-gates.yml` (Gate 3 — E2E Smoke)  
+**Run ID:** [42097626624](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42097626624) (2026-11-05, SHA `2bc37120`) — `conclusion: failure`  
+**Job:** `e2e-smoke` — Step 8: "Run Playwright smoke tests"  
+**Erro exato (ocorrência única):**
+```
+[waitForTestIdVisible] testid="page-title-produtos" não ficou visível (timeout 60s)
+Teste: 01 · Dashboard inicial — 1 failed, 13 passed, 5 skipped
+Arquivo: e2e/flows/20-all-features-smoke.spec.ts:216
+```
+**Causa:** Flakiness de autenticação CI — `page-title-produtos` não ficou visível antes do timeout de 60s. Mesmo padrão dos itens #10 e #11 (ambos resolvidos sem alteração de código). PR #3083 (SHA idêntico, commits docs-only) passou Gate 3 sem problema no mesmo dia (run [42099224405](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42099224405)).  
+**Required check:** SIM — "Gate Final - Deploy Ready" depende do Gate 3. Este run específico (`2bc37120`) falhou; o Gate Final falhou neste SHA.  
+**Resolução:** Flakiness transitória confirmada. Run [42099463406](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42099463406) em `bc342a24` (SHA seguinte, 2026-11-05 20:10:44Z) → **`conclusion: success`**. Todos os required checks em `bc342a24` ✅.
