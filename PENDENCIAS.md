@@ -277,3 +277,14 @@ Erro: locator(Sel.product.cardName).innerText() — timeout na seleção do card
 **Causa:** Timeout ao tentar obter `innerText()` do `cardName` — estado de autenticação intermediário causou a página de produtos não carregar completamente. Mesmo padrão do item #10 (que passou em SHA `f240b5c` mas re-falhou em `2bc37120`). Flakiness de auth `chromium-authed` intermitente.  
 **Por que não corrijo:** Requer credenciais E2E (`E2E_USER_EMAIL`). Sem acesso aos secrets necessários.  
 **Próxima verificação:** Runs em SHA `4ebe5a83` (main pós-merge #3084) ainda `pending` — devem re-confirmar ou resolver a flakiness como ocorreu em `f240b5c`.
+
+---
+
+## 19. Branch Protection Sentinel — squash sem `(#NNN)` ⚠️ (SHA `84245872` — advisory)
+
+**Workflow:** `branch-protection-sentinel.yml`  
+**Run ID:** [42110094646](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42110094646) (2026-11-05, SHA `84245872`) — `conclusion: failure`  
+**Required check:** NÃO — advisory.  
+**Causa:** Squash merge da PR #3086 via `github_merge_pull_request` MCP sem parâmetro `commit_title` explícito. O commit resultante — `docs: RELATORIO_CI.md — prova final #15-#18 e seção 2.9 diagnóstico E2E advisory` — não tinha o sufixo `(#3086)` aceito pelo sentinel.  
+**Fix definitivo:** Sempre passar `commit_title: "título da PR (#NNN)"` ao chamar `github_merge_pull_request`.  
+**O que o dono precisa fazer:** Nenhuma ação necessária — advisory, não bloqueia required checks.

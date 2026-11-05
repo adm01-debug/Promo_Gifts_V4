@@ -2,8 +2,8 @@
 
 **Gerado em:** 2026-11-05  
 **Responsável:** Claude Code (sessão https://claude.ai/code/session_01RfQzo9tqgD6XgLTYZQZhcv)  
-**HEAD da main:** `11b39ab0` — `docs: registra workflows E2E advisory em PENDENCIAS.md (#15–#18) (#3085)`  
-**Atualizado em:** 2026-11-05 21:00 UTC (esta sessão)
+**HEAD da main:** `84245872` — `docs: RELATORIO_CI.md — prova final #15-#18 e seção 2.9 diagnóstico E2E advisory`  
+**Atualizado em:** 2026-11-05 21:18 UTC (esta sessão)
 
 ---
 
@@ -37,7 +37,18 @@
 
 | Workflow | Conclusão | Run ID | Notas |
 |---|---|---|---|
-| Deploy Gates | ⏳ in_progress → esperado ✅ | [42097626624](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42097626624) | Iniciado 19:49:54Z — Gate 0 ✅, 0.5 ✅, 2 ✅, 2.5 ✅, E23 ✅, E40 ✅, 4 ✅, 5 ✅, 5.5 ✅ — Gate 1 (lint) e Gate 3 (E2E) em andamento |
+| Deploy Gates | ❌ **failure** (Gate 3 flakiness) | [42097626624](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42097626624) | `page-title-produtos` timeout 60s — PENDENCIAS #14 — infra flakiness transitória |
+
+### SHA 84245872 (main — 2026-11-05 21:09 UTC — PR #3086 squash)
+
+| Workflow | Conclusão | Run ID | Notas |
+|---|---|---|---|
+| Deploy Gates | ✅ **success** | [42110094501](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42110094501) | Gate Final verde — 21:18:13Z — todos os gates ✅ |
+| CodeQL | ✅ success | [42110094467](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42110094467) | "Analyze (javascript-typescript)" ✅ |
+| Branch Protection Sentinel | ❌ **failure** | [42110094646](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42110094646) | advisory — squash sem `(#3086)` — PENDENCIAS #19 |
+| Required Checks Guard | ✅ success | [42110094623](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42110094623) | — |
+| Supabase Linter Gate | ✅ success | [42110094416](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42110094416) | — |
+| Vercel | ✅ **READY** | dpl_98aZdiLU4k3q7UjXEPqnEDJ8K86m | `www.promobrindes.com.br` — produção online |
 
 ### SHA f240b5c (main anterior — 2026-11-05 18:11 UTC)
 
@@ -404,6 +415,8 @@ Workflows antes verdes: mantidos verdes — CodeQL ✅ (run 42081793529), Gitlea
 | E2E (Playwright) — header-sticky fail-fast por auth flakiness (SHA `2bc37120`) | PENDENCIAS.md #17 | ❌ advisory — `app-header` não visível 30s → 168 testes cancelados; run [42097626344](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42097626344) failure; re-run `11b39ab0` run [42107824688](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42107824688) pending |
 | E2E — Personalization Flow re-falha (SHA `2bc37120`) | PENDENCIAS.md #18 | ❌ advisory — `cardName.innerText()` timeout em `90/91-personalization-pdp-flow.spec.ts`; run [42097626111](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42097626111) failure; re-run `11b39ab0` run [42107824461](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42107824461) pending |
 | docs: PENDENCIAS.md itens #15–#18 registrados | PR [#3085](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3085) — squash `11b39ab0` | ✅ mergeada — Deploy Gates run [42107583063](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42107583063) `conclusion: success` |
+| docs: RELATORIO_CI.md prova final + PENDENCIAS #19 (SHA `84245872`) | PR [#3086](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3086) — squash `84245872` | ✅ mergeada — Deploy Gates run [42110094501](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42110094501) `conclusion: success` |
+| Branch Protection Sentinel (SHA `84245872`) | PENDENCIAS.md #19 — squash sem `(#3086)` | ⚠️ advisory — fix: usar `commit_title` com `(#NNN)` em todos os squash via MCP |
 
 ---
 
@@ -422,13 +435,14 @@ Workflows antes verdes: mantidos verdes — CodeQL ✅ (run 42081793529), Gitlea
 | E2E — Quotes Matrix (view-no-presentation-mode) | 42044024144 | ❌ Não | #9 | ⛔ Não — snapshot visual 5px, requer dono |
 | CI Security & Drift Checks | [42086074688](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42086074688) | ❌ Não (advisory) | #13 | ⛔ Não — flakiness chromium-authed, requer creds E2E |
 | Deploy Gates (SHA `2bc37120`) | [42097626624](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42097626624) | ✅ Sim (Gate Final) | #14 | ✅ RESOLVIDO — flakiness transitória; próxima execução `bc342a24` → `conclusion: success` |
+| Branch Protection Sentinel (SHA `84245872`) | [42110094646](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42110094646) | ❌ Não (advisory) | #19 | ⛔ Não — squash sem `(#NNN)` via MCP; fix: `commit_title` em `github_merge_pull_request` |
 
-**Required checks estado final (SHA `11b39ab0` — main atual):**
+**Required checks estado final (SHA `84245872` — main atual):**
 
 | Check | Estado |
 |---|---|
-| Gate Final - Deploy Ready | ✅ **success** (run [42099463406](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42099463406) — 20:10:44Z) |
+| Gate Final - Deploy Ready | ✅ **success** — run [42110094501](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42110094501) (21:18:13Z) |
 | Compare GitHub × Canonical | ✅ success (PR #3078 — edge-functions-drift-check) |
-| Analyze (javascript-typescript) | ✅ success (run 42081793529) |
-| Gate E23 - Secret Scan (gitleaks) | ✅ success (dentro do run [42099463406](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42099463406)) |
-| Assert Gate Final is required on main | ✅ success (run 42081792461) |
+| Analyze (javascript-typescript) | ✅ success — CodeQL run [42110094467](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42110094467) |
+| Gate E23 - Secret Scan (gitleaks) | ✅ success (dentro do run [42110094501](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42110094501)) |
+| Assert Gate Final is required on main | ✅ success — Required Checks Guard run [42110094623](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42110094623) |
