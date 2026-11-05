@@ -1572,8 +1572,8 @@
     "semantic_hash": ""
   },
   "e2e/flows/20-all-features-smoke.spec.ts": {
-    "mtime": 1793899954.5226521,
-    "seen": 1793900521.61366,
+    "mtime": 1793883203.4816566,
+    "seen": 1793883207.4417076,
     "ast_hash": "b0383bdd78c857f99469df10a8cd8caa",
     "semantic_hash": ""
   },
@@ -1920,20 +1920,20 @@
     "semantic_hash": ""
   },
   "e2e/flows/magazine-preview-sticky-smoke.spec.ts": {
-    "mtime": 1793899954.5226521,
-    "seen": 1793900521.614572,
+    "mtime": 1793895775.990404,
+    "seen": 1793896383.4120545,
     "ast_hash": "128dd15a709cdfe1f88551dccbd6b3a8",
     "semantic_hash": ""
   },
   "e2e/flows/magazine-publish-smoke.spec.ts": {
-    "mtime": 1793899954.5226521,
-    "seen": 1793900521.6145737,
+    "mtime": 1793895767.0064032,
+    "seen": 1793896383.4120567,
     "ast_hash": "f194099fec174a46836e96fe447324b3",
     "semantic_hash": ""
   },
   "e2e/flows/magazine-smoke.spec.ts": {
-    "mtime": 1793899954.5226521,
-    "seen": 1793900521.6145756,
+    "mtime": 1793895781.0024042,
+    "seen": 1793896383.4120588,
     "ast_hash": "c034914ef341af38077e6395c7109472",
     "semantic_hash": ""
   },
@@ -2130,8 +2130,8 @@
     "semantic_hash": ""
   },
   "e2e/helpers/auth.ts": {
-    "mtime": 1793899954.5226521,
-    "seen": 1793900521.6151688,
+    "mtime": 1793883203.4816566,
+    "seen": 1793883207.44438,
     "ast_hash": "d5866124a759586bc3ca6ebd06b36293",
     "semantic_hash": ""
   },
@@ -3582,8 +3582,8 @@
     "semantic_hash": ""
   },
   "e2e/smoke.spec.ts": {
-    "mtime": 1793899954.5226521,
-    "seen": 1793900521.6194766,
+    "mtime": 1793883203.4816566,
+    "seen": 1793883207.4515288,
     "ast_hash": "45c6db3789dd61a278ff09f0ac801e39",
     "semantic_hash": ""
   },
@@ -15528,8 +15528,8 @@
     "semantic_hash": ""
   },
   "src/hooks/stock/__tests__/useRuptureAlerts.test.tsx": {
-    "mtime": 1793899954.526652,
-    "seen": 1793900521.6600125,
+    "mtime": 1793883218.6856573,
+    "seen": 1793883305.4533014,
     "ast_hash": "7baa6dd37eb1e6790a4ade6fc89304aa",
     "semantic_hash": ""
   },
@@ -23052,8 +23052,8 @@
     "semantic_hash": ""
   },
   "tests/components/kit-builder/KitMakerLanding.test.tsx": {
-    "mtime": 1793899954.5306523,
-    "seen": 1793900521.6846552,
+    "mtime": 1793883210.1456568,
+    "seen": 1793883305.4834645,
     "ast_hash": "84250b931517d873dafc4491e3d2352d",
     "semantic_hash": ""
   },
@@ -27078,8 +27078,8 @@
     "semantic_hash": ""
   },
   ".github/workflows/deploy-gates.yml": {
-    "mtime": 1793899954.5226521,
-    "seen": 1793900521.6978173,
+    "mtime": 1793895152.6343668,
+    "seen": 1793895571.576103,
     "ast_hash": "72cac3737bce6b1525f7af833084dba1",
     "semantic_hash": ""
   },
@@ -29994,9 +29994,9 @@
     "semantic_hash": ""
   },
   "supabase/MIGRATIONS_SYNC_LOG.md": {
-    "mtime": 1793902916.6259632,
-    "seen": 1793903352.19077,
-    "ast_hash": "56e237f1ac3e6d9aad666a2c462cbe8c",
+    "mtime": 1793882849.8682868,
+    "seen": 1793882940.3633902,
+    "ast_hash": "ac7db3c7bdf56c2c001d112b1e5cb222",
     "semantic_hash": ""
   },
   "supabase/functions/README.md": {
@@ -31530,8 +31530,8 @@
     "semantic_hash": ""
   },
   ".github/workflows/ci-security-drift.yml": {
-    "mtime": 1793899954.5226521,
-    "seen": 1793900521.6976037,
+    "mtime": 1793883206.2296567,
+    "seen": 1793883207.5576074,
     "ast_hash": "a6d75742fc3100f873b7cad2c76bc9a1",
     "semantic_hash": ""
   },
@@ -31602,15 +31602,15 @@
     "semantic_hash": ""
   },
   "PENDENCIAS.md": {
-    "mtime": 1793903887.482886,
-    "seen": 1793904359.0011268,
-    "ast_hash": "4a3251459e0376962d734117cdb6dd99",
+    "mtime": 1793896508.2744474,
+    "seen": 1793897429.280723,
+    "ast_hash": "2b37d03e4696560f0ff52e4f09ba5025",
     "semantic_hash": ""
   },
   "RELATORIO_CI.md": {
-    "mtime": 1793903905.790887,
-    "seen": 1793904359.0011587,
-    "ast_hash": "43ee99983606dda3d195f0a897d40e51",
+    "mtime": 1793896519.838448,
+    "seen": 1793897429.2807603,
+    "ast_hash": "2cb06c78c0e02719cf5482b4f8b4dac2",
     "semantic_hash": ""
   },
   "analise-branches/RELATORIO_BRANCHES.md": {
