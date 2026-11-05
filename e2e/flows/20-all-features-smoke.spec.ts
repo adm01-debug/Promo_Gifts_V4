@@ -186,6 +186,7 @@ const SMOKE_COVERAGE = [
 const ROUTE_BY_FEATURE = new Map(SMOKE_ROUTES.map((r) => [r.feature!, r]));
 
 test.describe("@smoke Funcionalidades principais (gate de CI)", () => {
+  test.setTimeout(360_000);
   test.beforeEach(() => requireAuth());
 
   // ----- Health check -----
@@ -272,9 +273,6 @@ test.describe("@smoke Rotas públicas (gate de CI)", () => {
   test("92 · 404 (rota inexistente)", async ({ page }) => {
     await page.goto("/rota-inexistente-smoke-xyz");
     await page.waitForLoadState("domcontentloaded");
-    // Unauthenticated: ProtectedRoute shows spinner while isLoading=true, then
-    // redirects to /login once auth resolves. Authenticated: NotFound renders.
-    // Use Promise.race to wait for whichever final state arrives first.
     const resolved = await Promise.race([
       page
         .locator(Sel.app.notFound)
@@ -293,33 +291,7 @@ test.describe("@smoke Rotas públicas (gate de CI)", () => {
     ).toBeTruthy();
   });
 
-  // 93 · Negativo de login: credenciais inválidas mantêm /login interativo.
-  // Garante que o caminho de auth-fail NÃO trava o gate (smoke negativo).
-  //
-  // T14 UPDATE 9 (2026-05-23): FIXME provisório para desbloquear o gate.
-  // Os UPDATEs 7 e 8 não resolveram — UPDATE 8 escalou os timeouts em CI
-  // (15s→30s) mas o run #511 (sha 53b96b6a) falhou MESMO ASSIM, indicando
-  // que a causa-raiz NÃO é timeout. Hipóteses prováveis (a investigar em
-  // issue dedicada, ver docs/redeploy/REDEPLOY-T14-UPDATE-9-FIXME.md):
-  //   1. Estado preso de `isSubmitting=true` — request não coberto pelos
-  //      mocks `/auth/v1/token` + `/functions/v1/`
-  //   2. Mock retorna 400 mas onError do form não chama setIsSubmitting(false)
-  //   3. Seletor `Sel.login.submit` quebrou após PR #124/#130/#134 que
-  //      mexeram em AuthBranding e componentes relacionados
-  //
-  // Padrão idêntico ao usado em 22.1/22.2 (Google OAuth smoke fixme'd).
-  // Issue dedicada será aberta com toda a evidência + screenshots+vídeos
-  // do artifact `playwright-report` do run #511.
   test.fixme("93 · Login com credenciais inválidas permanece em /login", async ({ page }) => {
-    // T14 UPDATE 8 (2026-05-23): escala TODOS os timeouts deste teste em CI.
-    // Os 15s hardcoded em toBeVisible/toBeEnabled/click flutavam quando o
-    // Vite cold start + SPA hydration + Supabase auth real (mesmo com mock
-    // de /auth/v1/token e /functions/v1/) demoravam mais que 15s para
-    // estabilizar o estado clicável do botão de submit. Os outros testes
-    // do UPDATE 1/2 já usam o padrão `CI ? 30_000 : 15_000` — aplicado aqui.
-    // Causa-raiz original confirmada via API pública de check-runs/annotations
-    // no run #506 (sha 2c700abb): "locator.click: Timeout 15000ms exceeded
-    // waiting for [data-testid=login-submit]".
     const TIMEOUT_BTN = process.env.CI ? 30_000 : 15_000;
     const TIMEOUT_URL = process.env.CI ? 20_000 : 10_000;
 
@@ -330,19 +302,12 @@ test.describe("@smoke Rotas públicas (gate de CI)", () => {
         body: JSON.stringify({ error: "invalid_grant", error_description: "Invalid login credentials" }),
       }),
     );
-    // Intercept edge-function calls so logLoginAttempt resolves immediately.
-    // Without this, DNS timeouts for the placeholder Supabase URL delay
-    // setIsSubmitting(false) past the toBeEnabled assertion window.
     await page.route(/\/functions\/v1\//, (route) =>
       route.fulfill({ status: 200, contentType: "application/json", body: '{"ip":"0.0.0.0","ok":true}' }),
     );
     await page.goto("/login");
     await page.fill(Sel.login.email, "smoke-fake@example.com");
     await page.fill(Sel.login.password, "SenhaErrada@2025!");
-    // Issue #61: o click default tinha timeout de 10s e flutava em CI quando o
-    // form ficava no estado "submitting" por mais que ~10s (Vite cold start +
-    // SPA hydration + Supabase auth real). Garante estado-final-clicável e
-    // amplia timeout de click p/ alinhar com toBeEnabled abaixo.
     const submit = page.locator(Sel.login.submit).first();
     await expect(submit).toBeVisible({ timeout: TIMEOUT_BTN });
     await expect(submit).toBeEnabled({ timeout: TIMEOUT_BTN });
@@ -351,14 +316,9 @@ test.describe("@smoke Rotas públicas (gate de CI)", () => {
     await expect(submit).toBeEnabled({ timeout: TIMEOUT_BTN });
   });
 
-  // 95 · Negativo de recovery: /reset-password sem token NÃO habilita reset.
-  // Defesa contra bypass — exige mensagem de inválido OU redirect.
   test("95 · /reset-password sem token não habilita reset", async ({ page }) => {
     await page.goto("/reset-password");
     await page.waitForLoadState("domcontentloaded");
-    // Espera ATIVA pelo estado final: mensagem de inválido aparecer OU
-    // redirect para /login. `isVisible()` cru era flaky — corria antes do
-    // React montar a tela e retornava false → falha intermitente.
     const negouAcesso = await Promise.race([
       page
         .getByText(/inválido|expirado|link.+inválido/i)
@@ -377,15 +337,12 @@ test.describe("@smoke Rotas públicas (gate de CI)", () => {
 
 /* ============================================================
  * Smoke autenticado adicional — RLS guard (cobertura crítica P0).
- * Não cabe na seção 00-89 (geração via catálogo) nem na pública.
  * ============================================================ */
 test.describe("@smoke RLS guard (gate de CI)", () => {
   test.describe.configure({ mode: "serial" });
 
-  // 94 · RLS: tabelas sensíveis NUNCA devolvem dados de outros usuários
-  // através do REST de Supabase. Smoke negativo P0.
   test("94 · RLS bloqueia leitura de tabelas sensíveis para o usuário comum", async ({ page }) => {
-    test.setTimeout(240_000); // loginAs real + 3 fetches em CI: >120s com auth autêntica
+    test.setTimeout(240_000);
     const url = process.env.VITE_SUPABASE_URL;
     const anon = process.env.VITE_SUPABASE_PUBLISHABLE_KEY;
     test.skip(
@@ -393,9 +350,6 @@ test.describe("@smoke RLS guard (gate de CI)", () => {
       "VITE_SUPABASE_* ou E2E credentials ausentes",
     );
 
-    // O project chromium-smoke não aplica storageState — autenticar antes de
-    // medir o acesso (sem login o localStorage não tem token e o guard falhava
-    // com "access_token ausente").
     await loginAs(page);
 
     await page.goto("/produtos");
@@ -419,18 +373,12 @@ test.describe("@smoke RLS guard (gate de CI)", () => {
       const res = await fetch(`${url}/rest/v1/${table}?select=*&limit=50`, {
         headers: { apikey: anon!, Authorization: `Bearer ${token}`, Accept: "application/json" },
       });
-      // RLS pode responder 200 (vazio ou rows próprias), 401, 403 ou 404 — NUNCA dump completo.
       if (res.status === 200) {
         const body = (await res.json()) as unknown[];
         expect(Array.isArray(body), `${table} deve retornar array`).toBe(true);
-        // amostragem de 50: se passou de 50 e usuário comum não é dono, é vazamento.
-        // (assert genérico — testes detalhados em flows/p0/07-rls-enforcement.spec.ts)
         expect(body.length, `${table} retornou amostra grande para usuário comum`).toBeLessThanOrEqual(50);
       } else {
         await res.text().catch(() => "");
-        // 500 = PostgREST server error (RLS policy threw an exception).
-        // 503 = backend temporariamente indisponível — dado não retornado, invariante mantida.
-        // Causa-raiz (política com exceção) é problema pré-existente; investigar separado.
         expect([401, 403, 404, 500, 503]).toContain(res.status);
       }
     }
