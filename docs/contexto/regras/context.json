@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "3383990280baf28dfee13c721a8f80b3f0c5015a",
+  "sha": "2292176f3d725f0567ef70cd8ce859e845691c54",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-05 13:37 UTC",
+  "generated_at": "2026-11-05 15:55 UTC",
   "files_total": 9092,
   "code_files": 7837,
-  "code_lines": 1050270
+  "code_lines": 1050279
  },
  "version": "1.3.2",
- "facts_hash": "28ac8c71d2ecfcb2",
+ "facts_hash": "558a8a18162abd96",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -137859,7 +137859,7 @@
   {
    "module": "e2e",
    "files": 620,
-   "lines": 74274,
+   "lines": 74283,
    "tables": [
     "discount_approval_requests",
     "quote_items"
@@ -370306,7 +370306,7 @@
   },
   "e2e/flows/magazine-preview-sticky-smoke.spec.ts": {
    "path": "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
-   "lines": 150,
+   "lines": 159,
    "is_test": true,
    "rule_comments": [
     "ativa do sticky: o elemento deve estar pinned com 0 ≤ top < 24.",
@@ -370315,7 +370315,7 @@
    ],
    "temporal": [
     "timeout: 5_000,",
-    "{ timeout: 240_000 },"
+    "{ timeout: 180_000 },"
    ],
    "tests": [
     "@smoke Magazine Editor — preview sticky/aligned",
@@ -482742,10 +482742,22 @@
   }
  },
  "git": {
-  "sha": "3383990280baf28dfee13c721a8f80b3f0c5015a",
+  "sha": "2292176f3d725f0567ef70cd8ce859e845691c54",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "2292176",
+    "date": "2026-11-05",
+    "author": "adm01-debug",
+    "subject": "fix(e2e): corrige Gate 3 flakiness — Playwright cache + cold start skip + grep -F (#3074)",
+    "files": [
+     ".github/workflows/deploy-gates.yml",
+     "PENDENCIAS.md",
+     "RELATORIO_CI.md",
+     "e2e/flows/magazine-preview-sticky-smoke.spec.ts"
+    ]
+   },
    {
     "sha": "3383990",
     "date": "2026-11-05",
@@ -483122,20 +483134,23 @@
      "tests/hooks/useAllowedIPs-abort.test.ts",
      "tests/ssot/ssot-gates.fuzz.test.ts"
     ]
-   },
-   {
-    "sha": "5a35a74",
-    "date": "2026-11-01",
-    "author": "github-actions[bot]",
-    "subject": "chore(security): atualiza timestamp baseline de políticas 2026-11-01",
-    "files": [
-     ".security/policies-baseline.json"
-    ]
    }
   ],
   "hot_files": [
    [
     "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
+    4
+   ],
+   [
+    ".github/workflows/deploy-gates.yml",
+    3
+   ],
+   [
+    "PENDENCIAS.md",
+    3
+   ],
+   [
+    "RELATORIO_CI.md",
     3
    ],
    [
@@ -483164,18 +483179,6 @@
    ],
    [
     ".github/workflows/ci-security-drift.yml",
-    2
-   ],
-   [
-    "PENDENCIAS.md",
-    2
-   ],
-   [
-    "RELATORIO_CI.md",
-    2
-   ],
-   [
-    ".github/workflows/deploy-gates.yml",
     2
    ],
    [

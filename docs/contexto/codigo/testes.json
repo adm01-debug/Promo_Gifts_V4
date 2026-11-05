@@ -2104,9 +2104,9 @@
   {
    "arquivo": "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
    "tipo": "e2e",
-   "linhas": 150,
+   "linhas": 159,
    "testa": [],
-   "casos": 2
+   "casos": 3
   },
   {
    "arquivo": "e2e/flows/magazine-publish-smoke.spec.ts",

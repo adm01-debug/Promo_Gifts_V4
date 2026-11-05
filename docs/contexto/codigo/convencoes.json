@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix(e2e): corrige Gate 3 flakiness — Playwright cache + cold start skip + grep -F (#3074)",
    "fix(ci): ripgrep ausente + 2 mocks desatualizados",
    "fix(e2e): aumentar timeouts para auth real em CI (smoke + magazine + all-features) (#3072)",
    "feat(e2e): corrige smoke tests de magazine para CI verde",
-   "fix(e2e): corrige 2 smoke tests de magazine pré-existentes (#3069)",
-   "chore: atualizar baseline soft-delete para partições p2027_03–p2027_12"
+   "fix(e2e): corrige 2 smoke tests de magazine pré-existentes (#3069)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

@@ -1171,6 +1171,7 @@
    ],
    "actions": [
     "actions/attest-build-provenance",
+    "actions/cache",
     "actions/checkout",
     "actions/dependency-review-action",
     "actions/upload-artifact",
@@ -3494,7 +3495,7 @@
   {
    "arquivo": "PENDENCIAS.md",
    "titulo": "PENDÊNCIAS — CI Promo Gifts V4",
-   "linhas": 102
+   "linhas": 129
   },
   {
    "arquivo": "PERFORMANCE-ANALYSIS.md",
@@ -3509,7 +3510,7 @@
   {
    "arquivo": "RELATORIO_CI.md",
    "titulo": "Relatório CI — Promo Gifts V4",
-   "linhas": 227
+   "linhas": 245
   },
   {
    "arquivo": "RELATORIO_CI_P34.md",

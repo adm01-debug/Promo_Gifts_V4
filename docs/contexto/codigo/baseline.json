@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "3383990280baf28dfee13c721a8f80b3f0c5015a",
+  "commit": "2292176f3d725f0567ef70cd8ce859e845691c54",
   "branch": "main",
-  "data_commit": "2026-11-05T10:35:50-03:00",
+  "data_commit": "2026-11-05T12:54:05-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "2292176",
+    "data": "2026-11-05",
+    "assunto": "fix(e2e): corrige Gate 3 flakiness — Playwright cache + cold start skip + grep -F (#3074)"
+   },
    {
     "sha": "3383990",
     "data": "2026-11-05",
@@ -126,14 +131,9 @@
     "sha": "82ceaa6",
     "data": "2026-11-02",
     "assunto": "docs: restaura 2 regras perdidas no split e corrige referencia pendente ao inventario (#3046)"
-   },
-   {
-    "sha": "22204c8",
-    "data": "2026-11-02",
-    "assunto": "fix(ci): registra na baseline referencias ja existentes de CONTRIBUTING.md e PR-2714.md (#3045)"
    }
   ],
-  "arquivos_mudados_7d": 684,
+  "arquivos_mudados_7d": 675,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -180,30 +180,30 @@
     "mudancas": 63
    },
    {
+    "pasta": "RELATORIO_CI.md",
+    "mudancas": 61
+   },
+   {
     "pasta": "src/pages/products",
     "mudancas": 61
    },
    {
-    "pasta": "RELATORIO_CI.md",
+    "pasta": "PENDENCIAS.md",
     "mudancas": 60
    },
    {
     "pasta": "src/pages/admin",
     "mudancas": 60
-   },
-   {
-    "pasta": "PENDENCIAS.md",
-    "mudancas": 59
    }
   ],
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "RELATORIO_CI.md",
-    "mudancas": 60
+    "mudancas": 61
    },
    {
     "arquivo": "PENDENCIAS.md",
-    "mudancas": 59
+    "mudancas": 60
    },
    {
     "arquivo": "package.json",
@@ -246,12 +246,12 @@
     "mudancas": 11
    },
    {
-    "arquivo": "analise-branches/RELATORIO_BRANCHES.md",
+    "arquivo": ".github/workflows/deploy-gates.yml",
     "mudancas": 9
    },
    {
-    "arquivo": ".github/workflows/deploy-gates.yml",
-    "mudancas": 8
+    "arquivo": "analise-branches/RELATORIO_BRANCHES.md",
+    "mudancas": 9
    },
    {
     "arquivo": "AGENTS.md",
@@ -290,11 +290,11 @@
     "mudancas": 5
    },
    {
-    "arquivo": "scripts/migration-ledger-remote-only-allowlist.json",
+    "arquivo": "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
     "mudancas": 5
    },
    {
-    "arquivo": "tests/config/playwright-config-smoke.test.ts",
+    "arquivo": "scripts/migration-ledger-remote-only-allowlist.json",
     "mudancas": 5
    }
   ],
@@ -324,7 +324,7 @@
  "contagens": {
   "arquivos_total": 9169,
   "arquivos_codigo": 4612,
-  "linhas_codigo": 883205,
+  "linhas_codigo": 883214,
   "rotas": 138,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -544,7 +544,7 @@
   },
   "e2e/flows": {
    "arquivos": 183,
-   "linhas": 25164
+   "linhas": 25173
   },
   "e2e/future-stock.spec.ts": {
    "arquivos": 1,

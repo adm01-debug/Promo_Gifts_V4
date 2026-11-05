@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `3383990280baf28dfee13c721a8f80b3f0c5015a` (2026-11-05T10:35:50-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `2292176f3d725f0567ef70cd8ce859e845691c54` (2026-11-05T12:54:05-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 9169 |
 | arquivos_codigo | 4612 |
-| linhas_codigo | 883205 |
+| linhas_codigo | 883214 |
 | rotas | 138 |
 | rotas_http_backend | 13 |
 | vistas_por_id | 0 |
@@ -586,14 +586,14 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 37983 nós · 66320 arestas · 2095 comunidades · grafo do commit `33839902`
-- comunidades maiores: ref_lib (740), ref_components (674), ref_integrations (583), ref_hooks (333), react-router-dom (324), scripts (289), gotoAndSettle (278), ref_node_fs (253), react (247), @playwright/test (247), test-base.ts (240), sonner (228)
+- 37985 nós · 66322 arestas · 2126 comunidades · grafo do commit `2292176f`
+- comunidades maiores: ref_lib (705), lucide-react (466), ref_integrations (438), react (425), gotoAndSettle (353), ref_hooks (336), ref_node_fs (303), ref_components (296), scripts (289), ref_types (277), concludeCheck (269), @playwright/test (260)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), json (?), loginAs() (e2e/helpers/auth.ts), excluded_sql() (scripts/supabase_snapshot/snapshot.py), maskUrl() (scripts/check-result-contract.mjs), .collect() (scripts/supabase_snapshot/test_snapshot.py), resolveItemImage() (src/pages/magazine/components/templates/shared.ts), makeMockCart() (e2e/helpers/cart-mock.ts)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- RELATORIO_CI.md (60)
-- PENDENCIAS.md (59)
+- RELATORIO_CI.md (61)
+- PENDENCIAS.md (60)
 - package.json (27)
 - package-lock.json (23)
 - supabase/MIGRATIONS_SYNC_LOG.md (21)
@@ -604,8 +604,8 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - analise-prs/prs.csv (11)
 - analise-prs/prs.json (11)
 - docs/plans/PLANO_MELHORIAS_CORRECOES_200_ETAPAS_2026-10-18.md (11)
+- .github/workflows/deploy-gates.yml (9)
 - analise-branches/RELATORIO_BRANCHES.md (9)
-- .github/workflows/deploy-gates.yml (8)
 - AGENTS.md (7)
 
 ## Workflows
@@ -1003,10 +1003,10 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `CI_PROVA_P33.md` — CI_PROVA_P33.md — Prova Final de Conclusão CI (Sessão P33, 2026-10-30) (97 linhas)
 - `CLAUDE.md` — CLAUDE.md — Promo Gifts V4 (ficha técnica do repositório) (378 linhas)
 - `CONTRIBUTING.md` — Guia de Contribuição (299 linhas)
-- `PENDENCIAS.md` — PENDÊNCIAS — CI Promo Gifts V4 (102 linhas)
+- `PENDENCIAS.md` — PENDÊNCIAS — CI Promo Gifts V4 (129 linhas)
 - `PERFORMANCE-ANALYSIS.md` — 🔍 Relatório de Análise de Performance - MainLayout (195 linhas)
 - `README.md` — 🎁 Promo Brindes — Plataforma de Vendas de Brindes Promocionais (842 linhas)
-- `RELATORIO_CI.md` — Relatório CI — Promo Gifts V4 (227 linhas)
+- `RELATORIO_CI.md` — Relatório CI — Promo Gifts V4 (245 linhas)
 - `RELATORIO_CI_P34.md` — RELATORIO_CI_P34.md — Prova Final Sessão P34 (2026-10-30) (64 linhas)
 - `SECURITY.md` — Política de Segurança — Promo Gifts (89 linhas)
 - `STATUS.md` — 📡 Status do Projeto (19 linhas)
@@ -1159,6 +1159,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.7.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.6.1...v1.7.0) (2026-11-02)
 
 ## Últimos commits
+- 2026-11-05 `2292176` fix(e2e): corrige Gate 3 flakiness — Playwright cache + cold start skip + grep -F (#3074)
 - 2026-11-05 `3383990` fix(ci): ripgrep ausente + 2 mocks desatualizados
 - 2026-11-05 `7486a58` fix(e2e): aumentar timeouts para auth real em CI (smoke + magazine + all-features) (#3072)
 - 2026-11-04 `2c5dafc` feat(e2e): corrige smoke tests de magazine para CI verde
@@ -1173,7 +1174,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-03 `b80917f` chore(ci): gestão de workflows fase 1 — 106 → 92 (12 updaters em 1, 3 obsoletos, 3 duplicados ajustados) (#3055)
 - 2026-11-02 `14fb66a` fix(tests): deriva timeout da suíte live do budget real de retry (#3057)
 - 2026-11-02 `e6183da` fix(ci): check-indexed-access-ratchet.mjs — preserva meta no --update (#3056)
-- 2026-11-02 `2294b0b` docs(migrations-log): recibo E15 — aplicação de 20261029160339 (#3054)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`
