@@ -134,20 +134,7 @@ test.describe("@smoke Magazine — fluxo autenticado de publicação", () => {
     await expect(addBtn, "botão 'Adicionar' deve habilitar após seleção").toBeEnabled({
       timeout: 5_000,
     });
-
-    // Registra ANTES do clique — a response do backend pode chegar antes do
-    // próximo await se registrada depois do clique. O wizard só permite avançar
-    // para "Layout & Gerar" depois que magazine.items tiver ao menos 1 item no
-    // React state, que por sua vez depende da confirmação do backend.
-    // magazineService.addProducts usa rpc('magazine_add_items_v2') →
-    // POST /rest/v1/rpc/magazine_add_items_v2 (não POST /rest/v1/magazine_items).
-    const waitItemAdded = page.waitForResponse(
-      (res) => res.url().includes("/rest/v1/rpc/magazine_add_items_v2"),
-      { timeout: 30_000 },
-    ).catch(() => {});
     await addBtn.click();
-    // Aguarda o backend confirmar antes de tentar avançar de etapa.
-    await waitItemAdded;
 
     // 4) Vai para a etapa "Layout & Gerar" e clica em "Publicar".
     //    No wizard atual (MagazineEditorPage, §24) o header só exibe "Publicar"
@@ -160,7 +147,7 @@ test.describe("@smoke Magazine — fluxo autenticado de publicação", () => {
       await layoutStep.click();
       await expect(layoutStep).toHaveAttribute("aria-current", "step", { timeout: 2_000 });
     }, "etapa 'Layout & Gerar' não ficou ativa após adicionar o produto").toPass({
-      timeout: 30_000,
+      timeout: 15_000,
     });
 
     // Botão do header (o primeiro "Publicar"; o do rodapé se chama "Publicar revista").
@@ -214,11 +201,11 @@ test.describe("@smoke Magazine — fluxo autenticado de publicação", () => {
     // waitForResponse registrado ANTES do goto: `waitUntil: "domcontentloaded"`
     // retorna antes do React hidratar e chamar a edge magazine-public-view.
     // Sem isso, edgeCalls.length era 0 no momento da assert.
-    // Timeout 30s: auth real + cold start da edge em CI pode levar >15s.
+    // Timeout 60s: auth real + cold start da edge em CI pode levar >30s.
     const edgeResponseReady = publicPage
       .waitForResponse(
         (res) => res.url().includes("/functions/v1/magazine-public-view"),
-        { timeout: 30_000 },
+        { timeout: 60_000 },
       )
       .catch(() => null);
 
@@ -242,7 +229,7 @@ test.describe("@smoke Magazine — fluxo autenticado de publicação", () => {
       /\/login/,
     );
 
-    // Aguarda a edge responder (up to 30s) antes de checar edgeCalls.
+    // Aguarda a edge responder (up to 60s) antes de checar edgeCalls.
     await edgeResponseReady;
 
     // A edge magazine-public-view deve ter sido chamada sem Authorization.
