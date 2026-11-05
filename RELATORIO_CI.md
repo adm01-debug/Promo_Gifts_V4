@@ -2,8 +2,8 @@
 
 **Gerado em:** 2026-11-05  
 **Responsável:** Claude Code (sessão https://claude.ai/code/session_01RfQzo9tqgD6XgLTYZQZhcv)  
-**HEAD da main:** `2bc37120` — `chore(docs): RELATORIO_CI final — inventário completo SHAs + prova final (#3082)`  
-**Atualizado em:** 2026-11-05 20:30 UTC (esta sessão)
+**HEAD da main:** `11b39ab0` — `docs: registra workflows E2E advisory em PENDENCIAS.md (#15–#18) (#3085)`  
+**Atualizado em:** 2026-11-05 21:00 UTC (esta sessão)
 
 ---
 
@@ -145,6 +145,23 @@ Três causas independentes:
 - 1141 migrations no repo sem correspondência no banco; 674 no banco sem arquivo no repo
 - **Natureza:** Divergência massiva de ledger — REGRA #8 proíbe correção via MCP/automatizada
 - Status: **PENDENCIAS.md — requer `migration repair` autorizado pelo dono**
+
+
+### 2.9 E2E Advisory — 4 Workflows (flakiness chromium-authed, SHA `2bc37120`)
+
+Quatro workflows E2E falharam na execução de SHA `2bc37120` (merge PR #3082, 2026-11-05 19:49Z).
+Todos são **advisory** (ausentes em `.github/required-checks.json`). Causa raiz unificada: **`chromium-authed` flakiness** — a sessão autenticada não estava completamente carregada antes do início dos testes.
+
+**Evidência de causa raiz:**
+- Todos os erros envolvem `waitForTestIdVisible` timeout, `locator().innerText()` timeout ou `auth.setup.ts` marcado como `flaky`
+- Os erros ocorrem antes de qualquer asserção de lógica — são de estado de autenticação, não de código
+- O mesmo padrão foi observado e resolvido sem alteração de código nos itens #10, #11, #14
+
+**Reexecução na main:**
+- SHA `4ebe5a83` (PR #3084 squash): Quote Builder Delivery Quality → ✅ `success` (run [42106555648](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42106555648)) — confirma flakiness transitória para o item #16
+- SHA `11b39ab0` (PR #3085 squash): todos os 4 workflows em `in_progress`/`pending` ao término desta sessão
+
+**Corrigível via código:** Não, sem credenciais E2E (`E2E_USER_EMAIL`/`E2E_USER_PASSWORD`) para reproduzir e corrigir a flakiness de auth. Registrado em PENDENCIAS.md #15–#18 com motivo exato.
 
 ### 2.8 edge-functions-drift-check (REQUIRED CHECK — requer deploy)
 - **Causa:** 36 edge functions com divergência entre GitHub e banco canônico
@@ -379,9 +396,14 @@ Workflows antes verdes: mantidos verdes — CodeQL ✅ (run 42081793529), Gitlea
 | docs: RELATORIO_CI.md + PENDENCIAS.md atualizados | PR [#3079](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3079) — squash `3654bd17` | ✅ mergeada — Deploy Gates [42092335701](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42092335701) success |
 | docs: PENDENCIAS.md item #13 registrado | PR [#3080](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3080) — squash `7f5632bb` | ✅ mergeada — Deploy Gates [42093694920](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42093694920) ✅ success |
 | docs: RELATORIO_CI.md inventário SHAs final | PR [#3082](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3082) — squash `2bc37120` | ✅ mergeada — Deploy Gates [42097626624](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42097626624) ❌ `conclusion: failure` (Gate 3 flakiness `page-title-produtos` timeout — infra) |
-| docs: RELATORIO_CI.md + PENDENCIAS.md item #14 | PR [#3084](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3084) — squash a criar | ⏳ pendente |
+| docs: RELATORIO_CI.md + PENDENCIAS.md item #14 | PR [#3084](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3084) — squash `4ebe5a83` | ✅ mergeada — Deploy Gates success |
 | CI Security & Drift step 28 chromium-authed flakiness | PENDENCIAS.md #13 (advisory) | ❌ attempt 2 `conclusion: failure` **CONFIRMADO** — flakiness persistente, advisory, não bloqueia required checks |
 | Gate 3 E2E Smoke flakiness — SHA `2bc37120` | PENDENCIAS.md #14 (infra flakiness, transitório) | ✅ **RESOLVIDO** — flakiness transitória; run [42099463406](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42099463406) em `bc342a24` → `conclusion: success` (20:10:44Z) |
+| E2E — Critical Flows & Error Boundaries (chromium-authed flakiness, SHA `2bc37120`) | PENDENCIAS.md #15 | ❌ advisory — 3 falhas + 1 flaky em `30-quote-wizard-validations.spec.ts` (auth.setup flaky); run [42097626080](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42097626080) failure; re-run `11b39ab0` run [42107824656](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42107824656) in_progress |
+| Quote Builder Delivery Quality (tooltip hover flakiness, SHA `2bc37120`) | PENDENCIAS.md #16 | ✅ **RESOLVIDO** — flakiness transitória; run [42097626084](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42097626084) failure; re-run SHA `4ebe5a83` run [42106555648](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42106555648) → `conclusion: success` |
+| E2E (Playwright) — header-sticky fail-fast por auth flakiness (SHA `2bc37120`) | PENDENCIAS.md #17 | ❌ advisory — `app-header` não visível 30s → 168 testes cancelados; run [42097626344](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42097626344) failure; re-run `11b39ab0` run [42107824688](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42107824688) pending |
+| E2E — Personalization Flow re-falha (SHA `2bc37120`) | PENDENCIAS.md #18 | ❌ advisory — `cardName.innerText()` timeout em `90/91-personalization-pdp-flow.spec.ts`; run [42097626111](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42097626111) failure; re-run `11b39ab0` run [42107824461](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42107824461) pending |
+| docs: PENDENCIAS.md itens #15–#18 registrados | PR [#3085](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3085) — squash `11b39ab0` | ✅ mergeada — Deploy Gates run [42107583063](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42107583063) `conclusion: success` |
 
 ---
 
@@ -401,7 +423,7 @@ Workflows antes verdes: mantidos verdes — CodeQL ✅ (run 42081793529), Gitlea
 | CI Security & Drift Checks | [42086074688](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42086074688) | ❌ Não (advisory) | #13 | ⛔ Não — flakiness chromium-authed, requer creds E2E |
 | Deploy Gates (SHA `2bc37120`) | [42097626624](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42097626624) | ✅ Sim (Gate Final) | #14 | ✅ RESOLVIDO — flakiness transitória; próxima execução `bc342a24` → `conclusion: success` |
 
-**Required checks estado final (SHA `bc342a24`):**
+**Required checks estado final (SHA `11b39ab0` — main atual):**
 
 | Check | Estado |
 |---|---|
