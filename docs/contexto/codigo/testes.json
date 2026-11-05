@@ -8213,7 +8213,7 @@
   {
    "arquivo": "src/hooks/stock/__tests__/useRuptureAlerts.test.tsx",
    "tipo": "unit",
-   "linhas": 98,
+   "linhas": 97,
    "testa": [
     "src/hooks/stock/useRuptureAlerts.ts",
     "src/lib/feature-flags.ts"

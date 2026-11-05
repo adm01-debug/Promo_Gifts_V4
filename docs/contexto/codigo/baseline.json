@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "7486a584d55357f1d58c10dacc541f44a83c1eb9",
+  "commit": "3383990280baf28dfee13c721a8f80b3f0c5015a",
   "branch": "main",
-  "data_commit": "2026-11-05T09:48:35-03:00",
+  "data_commit": "2026-11-05T10:35:50-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "3383990",
+    "data": "2026-11-05",
+    "assunto": "fix(ci): ripgrep ausente + 2 mocks desatualizados"
+   },
    {
     "sha": "7486a58",
     "data": "2026-11-05",
@@ -126,14 +131,9 @@
     "sha": "22204c8",
     "data": "2026-11-02",
     "assunto": "fix(ci): registra na baseline referencias ja existentes de CONTRIBUTING.md e PR-2714.md (#3045)"
-   },
-   {
-    "sha": "96f17f4",
-    "data": "2026-11-02",
-    "assunto": "feat: hook de início de sessão monta o grafo do código nas sessões da nuvem (#3041)"
    }
   ],
-  "arquivos_mudados_7d": 682,
+  "arquivos_mudados_7d": 684,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -193,7 +193,7 @@
    },
    {
     "pasta": "PENDENCIAS.md",
-    "mudancas": 58
+    "mudancas": 59
    }
   ],
   "arquivos_mais_mudados_90d": [
@@ -203,7 +203,7 @@
    },
    {
     "arquivo": "PENDENCIAS.md",
-    "mudancas": 58
+    "mudancas": 59
    },
    {
     "arquivo": "package.json",
@@ -324,7 +324,7 @@
  "contagens": {
   "arquivos_total": 9169,
   "arquivos_codigo": 4612,
-  "linhas_codigo": 883206,
+  "linhas_codigo": 883205,
   "rotas": 138,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -1860,7 +1860,7 @@
   },
   "src/hooks": {
    "arquivos": 447,
-   "linhas": 83733
+   "linhas": 83732
   },
   "src/integrations": {
    "arquivos": 11,

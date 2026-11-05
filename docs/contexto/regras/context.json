@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "7486a584d55357f1d58c10dacc541f44a83c1eb9",
+  "sha": "3383990280baf28dfee13c721a8f80b3f0c5015a",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-05 12:49 UTC",
+  "generated_at": "2026-11-05 13:37 UTC",
   "files_total": 9092,
   "code_files": 7837,
-  "code_lines": 1050271
+  "code_lines": 1050270
  },
  "version": "1.3.2",
- "facts_hash": "2f58e20d7b2d0158",
+ "facts_hash": "28ac8c71d2ecfcb2",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -138669,7 +138669,7 @@
   {
    "module": "src/hooks",
    "files": 447,
-   "lines": 83733,
+   "lines": 83732,
    "tables": [
     "admin_audit_log",
     "admin_settings",
@@ -416634,10 +416634,10 @@
   },
   "src/hooks/stock/__tests__/useRuptureAlerts.test.tsx": {
    "path": "src/hooks/stock/__tests__/useRuptureAlerts.test.tsx",
-   "lines": 98,
+   "lines": 97,
    "is_test": true,
    "rule_comments": [
-    "Cadeia espelha o hook: from().select().eq().neq().order().order().limit()"
+    "Cadeia espelha o hook: rpc().eq().neq().order().order().limit()"
    ],
    "doc": "eslint-disable @typescript-eslint/require-await",
    "temporal": [
@@ -482742,10 +482742,23 @@
   }
  },
  "git": {
-  "sha": "7486a584d55357f1d58c10dacc541f44a83c1eb9",
+  "sha": "3383990280baf28dfee13c721a8f80b3f0c5015a",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "3383990",
+    "date": "2026-11-05",
+    "author": "adm01-debug",
+    "subject": "fix(ci): ripgrep ausente + 2 mocks desatualizados",
+    "files": [
+     ".github/workflows/ci-security-drift.yml",
+     "PENDENCIAS.md",
+     "RELATORIO_CI.md",
+     "src/hooks/stock/__tests__/useRuptureAlerts.test.tsx",
+     "tests/components/kit-builder/KitMakerLanding.test.tsx"
+    ]
+   },
    {
     "sha": "7486a58",
     "date": "2026-11-05",
@@ -483118,18 +483131,6 @@
     "files": [
      ".security/policies-baseline.json"
     ]
-   },
-   {
-    "sha": "0a8a17f",
-    "date": "2026-11-01",
-    "author": "github-actions[bot]",
-    "subject": "chore(main): release 1.7.0 (#3020)",
-    "files": [
-     ".release-please-manifest.json",
-     "CHANGELOG.md",
-     "package-lock.json",
-     "package.json"
-    ]
    }
   ],
   "hot_files": [
@@ -483158,12 +483159,20 @@
     3
    ],
    [
-    "package.json",
+    ".file-size-baseline.json",
     3
    ],
    [
-    ".file-size-baseline.json",
-    3
+    ".github/workflows/ci-security-drift.yml",
+    2
+   ],
+   [
+    "PENDENCIAS.md",
+    2
+   ],
+   [
+    "RELATORIO_CI.md",
+    2
    ],
    [
     ".github/workflows/deploy-gates.yml",
@@ -483179,6 +483188,10 @@
    ],
    [
     "docs/PLANO_MELHORIAS_200_ETAPAS.md",
+    2
+   ],
+   [
+    "package.json",
     2
    ],
    [
@@ -483200,18 +483213,6 @@
    [
     ".as-assertions-baseline.json",
     2
-   ],
-   [
-    ".eslint-disable-baseline.json",
-    2
-   ],
-   [
-    "audit/supabase-reference-catalog.temporary.json",
-    2
-   ],
-   [
-    "e2e/flows/magazine-smoke.spec.ts",
-    1
    ]
   ]
  }
