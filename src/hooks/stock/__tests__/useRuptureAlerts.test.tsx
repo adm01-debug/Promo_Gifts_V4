@@ -12,17 +12,16 @@ import type { ReactNode } from 'react';
 import { setFeatureFlag } from '@/lib/feature-flags';
 
 const limitMock = vi.fn();
-// Cadeia espelha o hook: from().select().eq().neq().order().order().limit()
-// (o .neq('nivel_alerta','OK') + 2º .order() foram adicionados no fix de 2026-06-22).
+// Cadeia espelha o hook: rpc().eq().neq().order().order().limit()
+// (trocado de .from().select() para .rpc() no fix SB-0003 de 2026-11-01)
 const orderInnerMock = vi.fn(() => ({ limit: limitMock }));
 const orderOuterMock = vi.fn(() => ({ order: orderInnerMock }));
 const neqMock = vi.fn(() => ({ order: orderOuterMock }));
 const eqMock = vi.fn(() => ({ neq: neqMock }));
-const selectMock = vi.fn(() => ({ eq: eqMock }));
-const fromMock = vi.fn(() => ({ select: selectMock }));
+const rpcMock = vi.fn(() => ({ eq: eqMock }));
 
 vi.mock('@/integrations/supabase/client', () => ({
-  supabase: { from: (...a: unknown[]) => fromMock(...a) },
+  supabase: { rpc: (...a: unknown[]) => rpcMock(...a) },
 }));
 
 // import depois do mock
@@ -44,7 +43,7 @@ describe('useRuptureAlerts', () => {
     const qc = new QueryClient({ defaultOptions: { queries: { retry: false } } });
     const { result } = renderHook(() => useRuptureAlerts(), { wrapper: wrap(qc) });
     expect(result.current.alerts).toEqual([]);
-    expect(fromMock).not.toHaveBeenCalled();
+    expect(rpcMock).not.toHaveBeenCalled();
   });
 
   it('dedupe por variant_id mantendo a menor cobertura (cenário 2 preferidos)', async () => {
