@@ -57,7 +57,10 @@ export async function loginViaUI(page: Page, creds: LoginCreds): Promise<boolean
   // login_attempts (sem linha de falha também — o login estava em voo, não
   // recusado). O orçamento abaixo cobre o pior caso documentado dessa cadeia
   // sem relaxar o assert: continuar em /login ainda reprova.
-  const timeout = creds.timeoutMs ?? (process.env.CI ? 75_000 : 20_000);
+  // v_products_public × 4 em paralelo durante "Iniciando Sistemas" pode levar
+  // ~60s adicionais após o token (run 41858297363), totalizando >100s — ampliado
+  // de 75s para 150s para cobrir esse pior caso observado em CI.
+  const timeout = creds.timeoutMs ?? (process.env.CI ? 150_000 : 20_000);
   const netLog = createNetworkLog(page);
 
   // CI bypass: TURNSTILE_SECRET_KEY está configurado na edge function de produção,

@@ -558,8 +558,6 @@ jobs:
           E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
           E2E_ADMIN_EMAIL: ${{ secrets.E2E_ADMIN_EMAIL }}
           E2E_ADMIN_PASSWORD: ${{ secrets.E2E_ADMIN_PASSWORD }}
-          # E015: mock auth ativo por padrão — evita falha E21 em CI com creds inválidas
-          E2E_MOCK_AUTH: '1'
         run: |
           set -euo pipefail
           if [ ! -d "e2e" ] && [ ! -d "tests/e2e" ] && [ ! -d "playwright" ]; then

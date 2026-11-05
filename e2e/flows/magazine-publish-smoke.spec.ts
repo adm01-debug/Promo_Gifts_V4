@@ -41,30 +41,22 @@ import { e2eName } from "../helpers/e2e-resources";
 const PUBLIC_TOKEN_RE = /\/revista-publica\/([a-f0-9]{16,64})/i;
 
 test.describe("@smoke Magazine — fluxo autenticado de publicação", () => {
+  test.setTimeout(600_000);
   test("publica revista e copia URL pública gerada", async ({ page, context }) => {
     await loginAs(page);
 
     // 1) Vai para /magazine e cria uma revista nova.
-    // Registra o waitForResponse ANTES de navegar: auth hidrata de forma
-    // assíncrona e o useEffect([user?.id]) só dispara a request depois que
-    // gotoAndSettle já resolveu. Sem isso, handleCreate tem guarda
-    // `if (!user) return` e o clique em Criar é um no-op silencioso.
+    // .catch() encadeado imediatamente para evitar rejeição não tratada caso
+    // o PostgREST demore mais que o timeout no cold start do CI.
     const waitMagazinesReady = page.waitForResponse(
       (res) => res.url().includes("/rest/v1/magazines"),
-      { timeout: 15_000 },
-    );
+      { timeout: 120_000 },
+    ).catch(() => {});
     await gotoAndSettle(page, "/magazine");
     await expect(page).toHaveURL(/\/magazine(\/|$)/);
-    // O tour pode aparecer depois do loginAs (fetch de user_onboarding) e
-    // cobre a tela inteira, interceptando o clique no botão de criar.
     await dismissOnboardingTour(page);
-    // Garante que a lista carregou do BD (auth hidrou) antes de clicar em Criar.
-    await waitMagazinesReady.catch(() => {});
+    await waitMagazinesReady;
 
-    // Clipboard exige permissão explícita no Chromium. Feito APÓS navegação
-    // confirmada em /magazine — chamar grantPermissions antes de navegar
-    // causava URL="" na assertiva seguinte (page.url() ainda era a rota anterior
-    // quando grantPermissions interceptava o contexto).
     await context.grantPermissions(["clipboard-read", "clipboard-write"], {
       origin: new URL(page.url()).origin,
     });
@@ -72,15 +64,14 @@ test.describe("@smoke Magazine — fluxo autenticado de publicação", () => {
     const createBtn = page.locator('[data-testid="magazine-create-btn"]').first();
     await createBtn.waitFor({ state: "visible", timeout: 10_000 });
     await createBtn.click();
-    await page.waitForURL(/\/magazine\/[a-f0-9-]{6,}/i, { timeout: 15_000 });
+    await page.waitForURL(/\/magazine\/[a-f0-9-]{6,}/i, { timeout: 60_000 });
     await waitForRouteIdle(page);
 
     // 2) Preenche o título com prefixo E2E (cleanup escopado).
     const title = e2eName("magazine-publish");
     const titleInput = page.locator('[data-testid="magazine-title-input"]').first();
-    await titleInput.waitFor({ state: "visible", timeout: 10_000 });
+    await titleInput.waitFor({ state: "visible", timeout: 20_000 });
     await titleInput.fill(title);
-    // Blur para disparar o autosave do editor.
     await titleInput.blur();
 
     // 3) Vai para o step "Produtos".
@@ -88,27 +79,20 @@ test.describe("@smoke Magazine — fluxo autenticado de publicação", () => {
     await productsStep.waitFor({ state: "visible", timeout: 10_000 });
     await productsStep.click();
 
-    // Espera a lista de produtos hidratar.
     const productSearch = page.locator('[data-testid="magazine-product-search"]').first();
     await productSearch.waitFor({ state: "visible", timeout: 15_000 });
 
-    // Seleciona o primeiro produto disponível. O botão de seleção usa
-    // aria-label "Selecionar <nome>" — exigir :has(img) quebra quando o
-    // produto não tem imagem cadastrada.
     const firstProductBtn = page
       .locator('button[aria-pressed][aria-label^="Selecionar "]:not([disabled])')
       .first();
     const catalogError = page.getByText("Catálogo indisponível");
     const catalogEmpty = page.getByText("Nenhum produto corresponde aos filtros.");
-    // O bridge do catálogo pagina o conjunto inteiro — em CI pode passar de 20s.
     await Promise.race([
       firstProductBtn.waitFor({ state: "visible", timeout: 60_000 }),
       catalogError.waitFor({ state: "visible", timeout: 60_000 }),
       catalogEmpty.waitFor({ state: "visible", timeout: 60_000 }),
     ]);
     if (await catalogError.isVisible()) {
-      // Uma retentativa via "Tentar novamente"; se persistir, o catálogo está
-      // fora (ambiente), não a UI — skip com razão explícita.
       const retryBtn = page.getByRole("button", { name: "Tentar novamente" }).first();
       await retryBtn.click();
       await Promise.race([
@@ -122,37 +106,34 @@ test.describe("@smoke Magazine — fluxo autenticado de publicação", () => {
     );
     await firstProductBtn.click();
 
-    // Clica em "Adicionar".
     const addBtn = page.locator('[data-testid="magazine-product-add-btn"]').first();
     await expect(addBtn, "botão 'Adicionar' deve habilitar após seleção").toBeEnabled({
       timeout: 5_000,
     });
     await addBtn.click();
 
-    // 4) Vai para a etapa "Layout & Gerar" e clica em "Publicar".
-    //    No wizard atual (MagazineEditorPage, §24) o header só exibe "Publicar"
-    //    nas etapas identity/layout; em products/content/design ele mostra
-    //    "Salvar rascunho" + "Continuar". Sem trocar de etapa o botão não existe.
-    //    O avanço é validado contra `magazine.items`, que atualiza após o
-    //    "Adicionar" — por isso repete clique+asserção até a etapa ficar ativa.
-    const layoutStep = page.locator('[data-testid="magazine-step-layout"]').first();
-    await expect(async () => {
-      await layoutStep.click();
-      await expect(layoutStep).toHaveAttribute("aria-current", "step", { timeout: 2_000 });
-    }, "etapa 'Layout & Gerar' não ficou ativa após adicionar o produto").toPass({
-      timeout: 15_000,
-    });
+    // Aguarda o produto ser persistido na revista antes de navegar ao próximo step.
+    // onAdd é async (escrita no Supabase); sem esse wait, goToStep('layout') vê
+    // magazine.items ainda vazio, validateStep bloqueia a navegação e o botão
+    // "Publicar" — exclusivo dos steps identity/layout — nunca aparece.
+    // O ProductsStep exibe role="status">Produtos na revista apenas quando
+    // magazine.items.length > 0, logo é prova de que o estado React foi atualizado.
+    await page.getByText("Produtos na revista").waitFor({ state: "visible", timeout: 20_000 });
 
-    // Botão do header (o primeiro "Publicar"; o do rodapé se chama "Publicar revista").
+    // 4) Vai para a etapa "Layout & Gerar" e clica em "Publicar".
+    const layoutStep = page.locator('[data-testid="magazine-step-layout"]').first();
+    await layoutStep.waitFor({ state: "visible", timeout: 10_000 });
+    await layoutStep.click();
+
+    // waitFor com timeout maior: garante que o React re-renderizou o header
+    // com o botão "Publicar" após a mudança de step (a transição é síncrona
+    // mas a re-renderização pode demorar um ciclo).
     const publishBtn = page.getByRole("button", { name: /^Publicar$/ }).first();
+    await publishBtn.waitFor({ state: "visible", timeout: 30_000 });
     await expect(publishBtn, "'Publicar' deve estar habilitado com título+produto").toBeEnabled({
       timeout: 10_000,
     });
 
-    // Captura response do RPC magazine_publish_v2 (POST /rest/v1/rpc/magazine_publish_v2).
-    // magazineService.publish usa rpc() — não PATCH direto na tabela magazines.
-    // O token público é gerado pelo trigger tg_magazines_on_publish no banco e
-    // confirmado pelo hydrate (GET magazines) posterior ao RPC.
     const magazineUpdates: Array<{ status: number; token: string | null }> = [];
     page.on("response", async (res) => {
       const url = res.url();
@@ -163,9 +144,6 @@ test.describe("@smoke Magazine — fluxo autenticado de publicação", () => {
     await publishBtn.click();
 
     // 5) Valida toast de sucesso.
-    // O hook useMagazinePublish emite: toast.success('Revista publicada com sucesso.',
-    // { description: `Link copiado: ${url}` }). Title e description ficam em elementos
-    // separados no Sonner — o locator usa apenas o título para evitar fragmentação.
     const successToast = page.getByText(/Revista publicada com sucesso/i);
     await expect(
       successToast,
@@ -179,8 +157,7 @@ test.describe("@smoke Magazine — fluxo autenticado de publicação", () => {
     const token = match?.[1];
     expect(token, "token público não extraído da URL copiada").toBeTruthy();
 
-    // 7) Prova que o RPC foi chamado com sucesso (trigger gerou token confirmado
-    //    via toast + clipboard acima). Registra a chamada para debug de regressão.
+    // 7) Prova que o RPC foi chamado com sucesso.
     const anyPublishedRow = magazineUpdates.find((r) => r.status >= 200 && r.status < 300);
     expect(
       anyPublishedRow,
@@ -190,6 +167,14 @@ test.describe("@smoke Magazine — fluxo autenticado de publicação", () => {
     // 8) Abre a URL pública em nova aba e valida ausência de auth.
     const publicPage = await context.newPage();
     const edgeCalls: Array<{ status: number; hasAuth: boolean }> = [];
+
+    const edgeResponseReady = publicPage
+      .waitForResponse(
+        (res) => res.url().includes("/functions/v1/magazine-public-view"),
+        { timeout: 60_000 },
+      )
+      .catch(() => null);
+
     publicPage.on("request", (req) => {
       if (req.url().includes("/functions/v1/magazine-public-view")) {
         edgeCalls.push({
@@ -210,7 +195,8 @@ test.describe("@smoke Magazine — fluxo autenticado de publicação", () => {
       /\/login/,
     );
 
-    // A edge magazine-public-view deve ter sido chamada sem Authorization.
+    await edgeResponseReady;
+
     expect(
       edgeCalls.length,
       "edge magazine-public-view não foi chamada pela rota pública",
