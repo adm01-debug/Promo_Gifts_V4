@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
-   "fix(migrations-log): remove 8 entradas duplicadas no MIGRATIONS_SYNC_LOG.md (#3078)",
-   "docs: atualiza PENDENCIAS.md e RELATORIO_CI.md pós-PR #3075 (#3077)",
-   "docs: RELATORIO_CI.md — PR #3075 mergeada, run 42073412218 success (#3076)",
-   "fix: Gate 3 — reduz timeouts cold start magazine smoke (#3075)",
-   "fix(e2e): corrige Gate 3 flakiness — Playwright cache + cold start skip + grep -F (#3074)"
+   "docs: RELATORIO_CI.md — prova final #15-#18 e seção 2.9 diagnóstico E2E advisory",
+   "docs: registra workflows E2E advisory em PENDENCIAS.md (#15–#18) (#3085)",
+   "chore(docs): RELATORIO_CI + PENDENCIAS item #14 RESOLVIDO — bc342a24 success",
+   "chore(docs): RELATORIO_CI + PENDENCIAS — SHA 2bc37120 + item #13 confirmed failure (#3083)",
+   "chore(docs): RELATORIO_CI final — inventário completo SHAs + prova final (#3082)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

@@ -2,11 +2,46 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "7f254f7499de7d014c50dea43b2909a1c1fab591",
+  "commit": "84245872c6eaf4034a3784e249de1224f39ffca0",
   "branch": "main",
-  "data_commit": "2026-11-05T15:37:45-03:00",
+  "data_commit": "2026-11-05T18:09:47-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "8424587",
+    "data": "2026-11-05",
+    "assunto": "docs: RELATORIO_CI.md — prova final #15-#18 e seção 2.9 diagnóstico E2E advisory"
+   },
+   {
+    "sha": "11b39ab",
+    "data": "2026-11-05",
+    "assunto": "docs: registra workflows E2E advisory em PENDENCIAS.md (#15–#18) (#3085)"
+   },
+   {
+    "sha": "4ebe5a8",
+    "data": "2026-11-05",
+    "assunto": "chore(docs): RELATORIO_CI + PENDENCIAS item #14 RESOLVIDO — bc342a24 success"
+   },
+   {
+    "sha": "bc342a2",
+    "data": "2026-11-05",
+    "assunto": "chore(docs): RELATORIO_CI + PENDENCIAS — SHA 2bc37120 + item #13 confirmed failure (#3083)"
+   },
+   {
+    "sha": "2bc3712",
+    "data": "2026-11-05",
+    "assunto": "chore(docs): RELATORIO_CI final — inventário completo SHAs + prova final (#3082)"
+   },
+   {
+    "sha": "7f5632b",
+    "data": "2026-11-05",
+    "assunto": "chore(docs): registra item #13 — CI Security & Drift step 28 E2E chromium-authed (#3080)"
+   },
+   {
+    "sha": "3654bd1",
+    "data": "2026-11-05",
+    "assunto": "chore(docs): atualiza RELATORIO_CI e PENDENCIAS após PR #3078 mergeada (#3079)"
+   },
    {
     "sha": "7f254f7",
     "data": "2026-11-05",
@@ -96,122 +131,87 @@
     "sha": "14fb66a",
     "data": "2026-11-02",
     "assunto": "fix(tests): deriva timeout da suíte live do budget real de retry (#3057)"
-   },
-   {
-    "sha": "e6183da",
-    "data": "2026-11-02",
-    "assunto": "fix(ci): check-indexed-access-ratchet.mjs — preserva meta no --update (#3056)"
-   },
-   {
-    "sha": "2294b0b",
-    "data": "2026-11-02",
-    "assunto": "docs(migrations-log): recibo E15 — aplicação de 20261029160339 (#3054)"
-   },
-   {
-    "sha": "09d7cdd",
-    "data": "2026-11-02",
-    "assunto": "feat: inventário gerado do estado real — scripts refazem banco, edges, rotas e tabelas (#3039)"
-   },
-   {
-    "sha": "0febd3f",
-    "data": "2026-11-02",
-    "assunto": "fix(ci): preserva meta (target/deadline) na regeneração dos 4 baselines de ratchet (#3052)"
-   },
-   {
-    "sha": "8bc5078",
-    "data": "2026-11-02",
-    "assunto": "docs(ci): P38 — inventário completo 21 workflows em falha na main@0a8a17f92 (#3023)"
-   },
-   {
-    "sha": "3197e4f",
-    "data": "2026-11-02",
-    "assunto": "chore(ci): bump baseline de tamanho — 2 arquivos +1 linha pelo import type de #3023 (#3053)"
-   },
-   {
-    "sha": "e6e738e",
-    "data": "2026-11-02",
-    "assunto": "chore(ci): sincroniza 4 baselines de ratchet (as any, as Tipo, eslint-disable, file-size) (#3051)"
    }
   ],
-  "arquivos_mudados_7d": 662,
+  "arquivos_mudados_7d": 573,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
-    "mudancas": 314
+    "mudancas": 610
    },
    {
     "pasta": "src/components/products",
-    "mudancas": 165
+    "mudancas": 314
    },
    {
     "pasta": "tests/edge-functions/live",
-    "mudancas": 119
+    "mudancas": 233
    },
    {
     "pasta": "src/hooks/products",
-    "mudancas": 111
-   },
-   {
-    "pasta": "src/components/mockup",
-    "mudancas": 99
-   },
-   {
-    "pasta": "src/components/quotes",
-    "mudancas": 96
+    "mudancas": 215
    },
    {
     "pasta": "src/pages/magazine",
-    "mudancas": 93
+    "mudancas": 185
    },
    {
-    "pasta": "src/components/ui",
-    "mudancas": 81
+    "pasta": "src/components/quotes",
+    "mudancas": 178
    },
    {
     "pasta": "src/components/inventory",
-    "mudancas": 80
+    "mudancas": 160
+   },
+   {
+    "pasta": "src/components/ui",
+    "mudancas": 154
+   },
+   {
+    "pasta": "src/components/mockup",
+    "mudancas": 145
    },
    {
     "pasta": "supabase/functions/_shared",
-    "mudancas": 72
-   },
-   {
-    "pasta": "src/components/kit-builder",
-    "mudancas": 63
-   },
-   {
-    "pasta": "PENDENCIAS.md",
-    "mudancas": 62
-   },
-   {
-    "pasta": "RELATORIO_CI.md",
-    "mudancas": 62
-   },
-   {
-    "pasta": "src/pages/products",
-    "mudancas": 61
+    "mudancas": 141
    },
    {
     "pasta": "src/pages/admin",
-    "mudancas": 60
+    "mudancas": 119
+   },
+   {
+    "pasta": "src/pages/products",
+    "mudancas": 111
+   },
+   {
+    "pasta": "src/components/kit-builder",
+    "mudancas": 110
+   },
+   {
+    "pasta": "src/pages/quotes",
+    "mudancas": 95
+   },
+   {
+    "pasta": "docs/arquivo/2026-09",
+    "mudancas": 86
    }
   ],
   "arquivos_mais_mudados_90d": [
    {
-    "arquivo": "PENDENCIAS.md",
-    "mudancas": 62
+    "arquivo": "RELATORIO_CI.md",
+    "mudancas": 67
    },
    {
-    "arquivo": "RELATORIO_CI.md",
-    "mudancas": 62
+    "arquivo": "PENDENCIAS.md",
+    "mudancas": 66
    },
    {
     "arquivo": "package.json",
-    "mudancas": 27
+    "mudancas": 28
    },
    {
     "arquivo": "package-lock.json",
-    "mudancas": 23
+    "mudancas": 24
    },
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
@@ -219,47 +219,59 @@
    },
    {
     "arquivo": "analise-prs/RELATORIO_PRS.md",
-    "mudancas": 16
+    "mudancas": 15
    },
    {
     "arquivo": "auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md",
-    "mudancas": 14
+    "mudancas": 15
    },
    {
     "arquivo": "CHANGELOG.md",
-    "mudancas": 13
-   },
-   {
-    "arquivo": "analise-prs/progresso.json",
-    "mudancas": 11
-   },
-   {
-    "arquivo": "analise-prs/prs.csv",
-    "mudancas": 11
-   },
-   {
-    "arquivo": "analise-prs/prs.json",
-    "mudancas": 11
+    "mudancas": 14
    },
    {
     "arquivo": "docs/plans/PLANO_MELHORIAS_CORRECOES_200_ETAPAS_2026-10-18.md",
-    "mudancas": 11
+    "mudancas": 12
    },
    {
     "arquivo": ".github/workflows/deploy-gates.yml",
-    "mudancas": 9
+    "mudancas": 10
    },
    {
     "arquivo": "analise-branches/RELATORIO_BRANCHES.md",
-    "mudancas": 9
+    "mudancas": 10
+   },
+   {
+    "arquivo": "analise-prs/progresso.json",
+    "mudancas": 10
+   },
+   {
+    "arquivo": "analise-prs/prs.csv",
+    "mudancas": 10
+   },
+   {
+    "arquivo": "analise-prs/prs.json",
+    "mudancas": 10
    },
    {
     "arquivo": "AGENTS.md",
-    "mudancas": 7
+    "mudancas": 8
    },
    {
     "arquivo": "CLAUDE.md",
+    "mudancas": 8
+   },
+   {
+    "arquivo": "audit/supabase-reference-catalog.temporary.json",
     "mudancas": 7
+   },
+   {
+    "arquivo": "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
+    "mudancas": 7
+   },
+   {
+    "arquivo": ".github/workflows/ratchet-weekly.yml",
+    "mudancas": 6
    },
    {
     "arquivo": "analise-prs/baseline/lint.txt",
@@ -270,38 +282,26 @@
     "mudancas": 6
    },
    {
-    "arquivo": "audit/supabase-reference-catalog.temporary.json",
-    "mudancas": 6
-   },
-   {
-    "arquivo": "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
-    "mudancas": 6
-   },
-   {
-    "arquivo": ".github/workflows/ratchet-weekly.yml",
-    "mudancas": 5
-   },
-   {
-    "arquivo": "analise-prs/regras-de-negocio.md",
-    "mudancas": 5
-   },
-   {
     "arquivo": "docs/estado/PENDENCIAS.md",
-    "mudancas": 5
-   },
-   {
-    "arquivo": "e2e/flows/92-personalization-auth-redirect.spec.ts",
-    "mudancas": 5
+    "mudancas": 6
    },
    {
     "arquivo": "e2e/flows/magazine-publish-smoke.spec.ts",
-    "mudancas": 5
+    "mudancas": 6
+   },
+   {
+    "arquivo": "scripts/migration-ledger-remote-only-allowlist.json",
+    "mudancas": 6
+   },
+   {
+    "arquivo": "tests/config/playwright-config-smoke.test.ts",
+    "mudancas": 6
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 360
+    "commits": 354
    },
    {
     "autor": "Joaquim Ataides",
