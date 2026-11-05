@@ -2,11 +2,31 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "2292176f3d725f0567ef70cd8ce859e845691c54",
+  "commit": "7f254f7499de7d014c50dea43b2909a1c1fab591",
   "branch": "main",
-  "data_commit": "2026-11-05T12:54:05-03:00",
+  "data_commit": "2026-11-05T15:37:45-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "7f254f7",
+    "data": "2026-11-05",
+    "assunto": "fix(migrations-log): remove 8 entradas duplicadas no MIGRATIONS_SYNC_LOG.md (#3078)"
+   },
+   {
+    "sha": "f240b5c",
+    "data": "2026-11-05",
+    "assunto": "docs: atualiza PENDENCIAS.md e RELATORIO_CI.md pós-PR #3075 (#3077)"
+   },
+   {
+    "sha": "3d514f5",
+    "data": "2026-11-05",
+    "assunto": "docs: RELATORIO_CI.md — PR #3075 mergeada, run 42073412218 success (#3076)"
+   },
+   {
+    "sha": "5e5e4a6",
+    "data": "2026-11-05",
+    "assunto": "fix: Gate 3 — reduz timeouts cold start magazine smoke (#3075)"
+   },
    {
     "sha": "2292176",
     "data": "2026-11-05",
@@ -111,29 +131,9 @@
     "sha": "e6e738e",
     "data": "2026-11-02",
     "assunto": "chore(ci): sincroniza 4 baselines de ratchet (as any, as Tipo, eslint-disable, file-size) (#3051)"
-   },
-   {
-    "sha": "44bc10b",
-    "data": "2026-11-02",
-    "assunto": "fix(ci): aponta migration pronta e não aplicada na exceção stock_notes (#3050)"
-   },
-   {
-    "sha": "a697b04",
-    "data": "2026-11-02",
-    "assunto": "chore(ci): registra exceção para RPC fn_get_rupture_alerts ausente no canônico (#3048)"
-   },
-   {
-    "sha": "31f575f",
-    "data": "2026-11-02",
-    "assunto": "chore(ci): remove 5 entradas obsoletas da baseline do Gate 1.3 (#3047)"
-   },
-   {
-    "sha": "82ceaa6",
-    "data": "2026-11-02",
-    "assunto": "docs: restaura 2 regras perdidas no split e corrige referencia pendente ao inventario (#3046)"
    }
   ],
-  "arquivos_mudados_7d": 675,
+  "arquivos_mudados_7d": 662,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -180,16 +180,16 @@
     "mudancas": 63
    },
    {
+    "pasta": "PENDENCIAS.md",
+    "mudancas": 62
+   },
+   {
     "pasta": "RELATORIO_CI.md",
-    "mudancas": 61
+    "mudancas": 62
    },
    {
     "pasta": "src/pages/products",
     "mudancas": 61
-   },
-   {
-    "pasta": "PENDENCIAS.md",
-    "mudancas": 60
    },
    {
     "pasta": "src/pages/admin",
@@ -198,12 +198,12 @@
   ],
   "arquivos_mais_mudados_90d": [
    {
-    "arquivo": "RELATORIO_CI.md",
-    "mudancas": 61
+    "arquivo": "PENDENCIAS.md",
+    "mudancas": 62
    },
    {
-    "arquivo": "PENDENCIAS.md",
-    "mudancas": 60
+    "arquivo": "RELATORIO_CI.md",
+    "mudancas": 62
    },
    {
     "arquivo": "package.json",
@@ -274,6 +274,10 @@
     "mudancas": 6
    },
    {
+    "arquivo": "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
+    "mudancas": 6
+   },
+   {
     "arquivo": ".github/workflows/ratchet-weekly.yml",
     "mudancas": 5
    },
@@ -290,11 +294,7 @@
     "mudancas": 5
    },
    {
-    "arquivo": "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
-    "mudancas": 5
-   },
-   {
-    "arquivo": "scripts/migration-ledger-remote-only-allowlist.json",
+    "arquivo": "e2e/flows/magazine-publish-smoke.spec.ts",
     "mudancas": 5
    }
   ],

@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "2292176f3d725f0567ef70cd8ce859e845691c54",
+  "sha": "7f254f7499de7d014c50dea43b2909a1c1fab591",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-05 15:55 UTC",
+  "generated_at": "2026-11-05 18:38 UTC",
   "files_total": 9092,
   "code_files": 7837,
   "code_lines": 1050279
@@ -370315,7 +370315,7 @@
    ],
    "temporal": [
     "timeout: 5_000,",
-    "{ timeout: 180_000 },"
+    "{ timeout: 60_000 },"
    ],
    "tests": [
     "@smoke Magazine Editor — preview sticky/aligned",
@@ -370345,7 +370345,6 @@
     "firstProductBtn.waitFor({ state: \"visible\", timeout: 60_000 }),",
     "timeout: 10_000,",
     "timeout: 5_000,",
-    "{ timeout: 120_000 },",
     "{ timeout: 60_000 },"
    ],
    "tests": [
@@ -370364,7 +370363,7 @@
     "Não deve redirecionar para /login"
    ],
    "temporal": [
-    "{ timeout: 120_000 },"
+    "{ timeout: 60_000 },"
    ],
    "tests": [
     "@smoke Magazine — Gold DB smoke",
@@ -482742,10 +482741,52 @@
   }
  },
  "git": {
-  "sha": "2292176f3d725f0567ef70cd8ce859e845691c54",
+  "sha": "7f254f7499de7d014c50dea43b2909a1c1fab591",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "7f254f7",
+    "date": "2026-11-05",
+    "author": "adm01-debug",
+    "subject": "fix(migrations-log): remove 8 entradas duplicadas no MIGRATIONS_SYNC_LOG.md (#3078)",
+    "files": [
+     "supabase/MIGRATIONS_SYNC_LOG.md"
+    ]
+   },
+   {
+    "sha": "f240b5c",
+    "date": "2026-11-05",
+    "author": "adm01-debug",
+    "subject": "docs: atualiza PENDENCIAS.md e RELATORIO_CI.md pós-PR #3075 (#3077)",
+    "files": [
+     "PENDENCIAS.md",
+     "RELATORIO_CI.md"
+    ]
+   },
+   {
+    "sha": "3d514f5",
+    "date": "2026-11-05",
+    "author": "adm01-debug",
+    "subject": "docs: RELATORIO_CI.md — PR #3075 mergeada, run 42073412218 success (#3076)",
+    "files": [
+     "RELATORIO_CI.md"
+    ]
+   },
+   {
+    "sha": "5e5e4a6",
+    "date": "2026-11-05",
+    "author": "adm01-debug",
+    "subject": "fix: Gate 3 — reduz timeouts cold start magazine smoke (#3075)",
+    "files": [
+     "PENDENCIAS.md",
+     "RELATORIO_CI.md",
+     "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
+     "e2e/flows/magazine-publish-smoke.spec.ts",
+     "e2e/flows/magazine-smoke.spec.ts",
+     "graphify-out/manifest.json"
+    ]
+   },
    {
     "sha": "2292176",
     "date": "2026-11-05",
@@ -483080,81 +483121,27 @@
     "files": [
      ".migration-refs-baseline.json"
     ]
-   },
-   {
-    "sha": "96f17f4",
-    "date": "2026-11-02",
-    "author": "adm01-debug",
-    "subject": "feat: hook de início de sessão monta o grafo do código nas sessões da nuvem (#3041)",
-    "files": [
-     ".claude/hooks/session-start.sh",
-     ".claude/settings.json"
-    ]
-   },
-   {
-    "sha": "8d97d18",
-    "date": "2026-11-02",
-    "author": "adm01-debug",
-    "subject": "chore: CLAUDE.md só técnico, AGENTS.md só regras do dono (#3038)",
-    "files": [
-     ".claude/CLAUDE.md",
-     ".hermes.md",
-     "AGENTS.md",
-     "CLAUDE.md"
-    ]
-   },
-   {
-    "sha": "cc7ef5e",
-    "date": "2026-11-02",
-    "author": "adm01-debug",
-    "subject": "fix(ts): corrige precedência de 'await...as' em useRuptureAlerts (#2996)",
-    "files": []
-   },
-   {
-    "sha": "df94410",
-    "date": "2026-11-01",
-    "author": "adm01-debug",
-    "subject": "fix(security): CodeQL HIGH — crypto.randomInt, URL validation, hash param guard, anonymize ilike (PR-3021)",
-    "files": [
-     "e2e/admin/stock-search-button.spec.ts",
-     "e2e/flows/p0/02-catalog-degraded.spec.ts",
-     "e2e/helpers/auth.ts",
-     "e2e/magazine/magazine-templates-gallery.spec.ts",
-     "scripts/check-bundle-size.mjs",
-     "scripts/check-product-type-duplicates.mjs",
-     "scripts/check-tsc-tests-baseline.mjs",
-     "scripts/promote-draft-migration.mjs",
-     "scripts/simulate-ai-key-scenarios.mjs",
-     "scripts/ssot-report-markdown.mjs",
-     "scripts/validate-quotes-list.mjs",
-     "src/components/pdf/proposal/__tests__/totalsBlocksEmitLocal.test.tsx",
-     "src/lib/auth/auth-debug.ts",
-     "src/pages/auth/SSOCallbackPage.tsx",
-     "supabase/functions/anonymize-user/index.ts",
-     "tests/hooks/useAllowedIPs-abort.test.ts",
-     "tests/ssot/ssot-gates.fuzz.test.ts"
-    ]
    }
   ],
   "hot_files": [
    [
+    "RELATORIO_CI.md",
+    6
+   ],
+   [
+    "PENDENCIAS.md",
+    5
+   ],
+   [
     "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
+    5
+   ],
+   [
+    "e2e/flows/magazine-publish-smoke.spec.ts",
     4
    ],
    [
     ".github/workflows/deploy-gates.yml",
-    3
-   ],
-   [
-    "PENDENCIAS.md",
-    3
-   ],
-   [
-    "RELATORIO_CI.md",
-    3
-   ],
-   [
-    "e2e/flows/magazine-publish-smoke.spec.ts",
     3
    ],
    [
@@ -483166,16 +483153,16 @@
     3
    ],
    [
-    "AGENTS.md",
-    3
-   ],
-   [
-    "CLAUDE.md",
-    3
-   ],
-   [
     ".file-size-baseline.json",
     3
+   ],
+   [
+    "supabase/MIGRATIONS_SYNC_LOG.md",
+    2
+   ],
+   [
+    "e2e/flows/magazine-smoke.spec.ts",
+    2
    ],
    [
     ".github/workflows/ci-security-drift.yml",
@@ -483186,11 +483173,15 @@
     2
    ],
    [
-    "e2e/helpers/auth.ts",
+    "docs/PLANO_MELHORIAS_200_ETAPAS.md",
     2
    ],
    [
-    "docs/PLANO_MELHORIAS_200_ETAPAS.md",
+    "AGENTS.md",
+    2
+   ],
+   [
+    "CLAUDE.md",
     2
    ],
    [
@@ -483211,10 +483202,6 @@
    ],
    [
     ".any-type-baseline.json",
-    2
-   ],
-   [
-    ".as-assertions-baseline.json",
     2
    ]
   ]
