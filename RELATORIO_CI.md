@@ -198,7 +198,7 @@ Três causas independentes:
 | Replenishment Module QG | ❌ (card parity E2E) |
 | db-schema-drift-check | ❌ (ledger 1141/674) |
 
-## 6. Correções aplicadas (PR [#3073](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3073))
+## 7. Correções aplicadas (PR [#3073](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3073))
 
 **Commit `f8a5291` — fix(ci): ripgrep ausente + 2 mocks desatualizados**
 
@@ -210,9 +210,9 @@ Três causas independentes:
 
 Evidências lidas diretamente: `useRuptureAlerts.ts:74` (`.rpc('fn_get_rupture_alerts')`), `KitMakerLanding.tsx:310,353` (`onStart('items-first', 'manual')`).
 
-## 7. Prova de Conclusão
+## 8. Prova de Conclusão
 
-### 7.1 Workflows com falha na main (baseline `2c5dafc`)
+### 8.1 Workflows com falha na main (baseline `2c5dafc`)
 
 | Workflow com falha | Causa raiz | Correção | Estado |
 |---|---|---|---|
@@ -227,7 +227,7 @@ Evidências lidas diretamente: `useRuptureAlerts.ts:74` (`.rpc('fn_get_rupture_a
 | Nightly Full CI | derivo de #5 e #6 | PENDENCIAS.md #7 | ⛔ resolve com #5 e #6 |
 | Branch Protection Sentinel | commit `2c5dafc` sem `(#NNN)` | PENDENCIAS.md #4 | ⚠️ advisory — resolve sozinho no próximo merge via PR |
 
-### 7.2 Gates do run [42057520999](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42057520999) — PR #3074
+### 8.2 Gates do run [42057520999](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42057520999) — PR #3074
 
 Evidências diretas da API (jobs listing `list_workflow_run_jobs`):
 
@@ -249,7 +249,7 @@ Evidências diretas da API (jobs listing `list_workflow_run_jobs`):
 | Gate E40 (Schema detect) | [127350086530](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42057520999/job/127350086530) | ✅ success | 15:42:20Z |
 | Gate E40 (Schema drift) | [127350396357](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42057520999/job/127350396357) | ⏭ skipped | (sem mudanças de schema) |
 
-### 7.3 Baseline local — 2026-11-05
+### 8.3 Baseline local — 2026-11-05
 
 Executado na branch `claude/fix-magazine-smoke-timeout-261105-1550` (commit `9c03326`):
 
@@ -262,6 +262,11 @@ Executado na branch `claude/fix-magazine-smoke-timeout-261105-1550` (commit `9c0
 | `npm run test:ci-core` | ✅ Gate 2 success (42 test files) | Job [127350086188](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42057520999/job/127350086188) step 5 (15:42:20Z → 15:42:44Z) |
 
 > E2E autenticados não executados localmente: requerem `E2E_USER_EMAIL`/`E2E_USER_PASSWORD` não disponíveis em cloud. Resultado autoritativo: Gate 3 em CI do PR #3074.
+
+**Workflows bloqueados por dependência externa (sem código a corrigir):**
+
+| Workflow | Causa | Referência | Estado |
+|---|---|---|---|
 | db-schema-drift-check | ledger local_only=1141/remote_only=674 | PENDENCIAS.md #1 (REGRA #8) | ⛔ bloqueado — requer `migration repair` |
 | Kit Coverage — Integration | campos null no banco | PENDENCIAS.md #3 (dados) | ⛔ bloqueado — requer dados ou revisão de threshold |
 | Branch Protection Sentinel | commit sem `(#NNN)` | PENDENCIAS.md #4 (advisory) | ⛔ advisory — resolve sozinho no próximo PR |
@@ -290,7 +295,7 @@ Workflows que estavam verdes: mantidos verdes (CodeQL ✅, Gitleaks ✅, Securit
 
 ---
 
-## 8. Correções adicionais — PR #3074 (commits `92af3c9` e `9c03326`)
+## 9. Correções adicionais — PR #3074 (commits `92af3c9` e `9c03326`)
 
 | Causa raiz | Arquivo | Fix | Commit |
 |---|---|---|---|
