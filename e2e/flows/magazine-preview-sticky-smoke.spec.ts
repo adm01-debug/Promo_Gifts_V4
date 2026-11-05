@@ -27,7 +27,7 @@ test.describe("@smoke Magazine Editor — preview sticky/aligned", () => {
   });
 
   test("preview alinha com hero e permanece sticky ao scrollar (xl+)", async ({ page }) => {
-    test.setTimeout(300_000);
+    test.setTimeout(420_000);
     await gotoAndSettle(page, "/magazine");
 
     // Encontra o primeiro card de revista. Se não houver, skip.
@@ -50,8 +50,9 @@ test.describe("@smoke Magazine Editor — preview sticky/aligned", () => {
     // garantindo que o container não termina antes do checkpoint de scroll.
     // Assinatura Playwright: waitForFunction(fn, arg?, options?) — undefined como
     // 2º arg (a função não recebe argumento); timeout vai no 3º arg (options).
-    // Timeout 240s: com auth real (sem E2E_MOCK_AUTH) o editor pode levar >90s
-    // para hidratar em CI (PostgREST cold start + hidratação do user).
+    // Timeout 300s: com auth real (sem E2E_MOCK_AUTH) o editor pode levar >90s
+    // para hidratar em CI (PostgREST cold start + hidratação do user). Aumentado
+    // de 240s após timeout no run 42037172704 (PostgREST demorou >240s).
     await page.waitForFunction(
       () => {
         const titleInput = document.querySelector('[data-testid="magazine-title-input"]');
@@ -72,7 +73,7 @@ test.describe("@smoke Magazine Editor — preview sticky/aligned", () => {
         return asideBottomDoc > 520 + stickyHeight + 20;
       },
       undefined,
-      { timeout: 240_000 },
+      { timeout: 300_000 },
     );
 
     const hero = page.getByTestId("magazine-editor-hero-row");

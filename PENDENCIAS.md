@@ -99,3 +99,14 @@ local_only=1141; remote_only=674
 
 **Causa:** Falhas de E2E — subconjunto das falhas identificadas em #5 e #6 acima.  
 **Status:** Será resolvido quando os itens #5 e #6 forem corrigidos.
+
+---
+
+## 8. Gate 3 — E2E Smoke flakiness `magazine-preview-sticky-smoke.spec.ts` (CORRIGIDO — PR aberta)
+
+**Workflow:** `deploy-gates.yml` (Gate 3 E2E Smoke)  
+**Run ID:** 42037172704 (2026-11-05, attempt 2)  
+**Erro:** `TimeoutError: page.waitForFunction: Timeout 240000ms exceeded` em `magazine-preview-sticky-smoke.spec.ts:55`  
+**Causa:** PostgREST cold start no runner de CI levou >240s para o editor hidratar. O próprio comentário no spec documenta esse risco ("o editor pode levar >90s para hidratar em CI"). Gate 3 era verde em `2c5dafc` (run 41876981679) com o mesmo timeout; os runs pós-merge `3383990` tiveram cold start mais lento.  
+**Natureza:** Flakiness de infraestrutura — testes distintos falharam em runs diferentes (sinal clássico); meu merge não tocou nenhum código do magazine editor.  
+**Correção:** `e2e/flows/magazine-preview-sticky-smoke.spec.ts` — `waitForFunction timeout` aumentado de 240s → 300s, `test.setTimeout` de 300s → 420s. Total do job permanece <20 min (timeout do workflow).
