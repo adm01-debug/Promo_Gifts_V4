@@ -3,13 +3,23 @@
 **Gerado em:** 2026-11-05  
 **Responsável:** Claude Code (sessão https://claude.ai/code/session_01RfQzo9tqgD6XgLTYZQZhcv)  
 **HEAD da main:** `7f254f7` — `fix(migrations-log): remove 8 entradas duplicadas no MIGRATIONS_SYNC_LOG.md (#3078)`  
-**Atualizado em:** 2026-11-05 18:36 UTC (esta sessão)
+**Atualizado em:** 2026-11-05 18:46 UTC (esta sessão)
 
 ---
 
 ## 1. Inventário — Última execução na main
 
-### SHA f240b5c (main atual — 2026-11-05 18:11 UTC)
+### SHA 7f254f7 (main atual — 2026-11-05 18:37 UTC) — estado parcial
+
+| Workflow | Conclusão | Run ID | Notas |
+|---|---|---|---|
+| CI Security & Drift Checks | ⏳ in_progress | [42086074688](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42086074688) | Steps 1-21 ✅; step 22 (testes) em andamento |
+| edge-functions-drift-check | ✅ **success** (SHA f81798b no PR, agora na main) | [42084522842](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42084522842) | Required check "Compare GitHub × Canonical" liberado — PENDENCIAS #2 RESOLVIDO |
+| db-schema-drift-check | ❌ failure | [42075701349](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42075701349) | SHA 3d514f5 — PENDENCIAS #1, requer dono |
+
+> Demais workflows confirmados ✅ no SHA f240b5c imediatamente anterior (ver seção abaixo). O único run de falha corrigível neste SHA era `CI Security & Drift Checks` — resultado pendente.
+
+### SHA f240b5c (main anterior — 2026-11-05 18:11 UTC)
 
 | Workflow | Conclusão | Run ID | Notas |
 |---|---|---|---|
@@ -224,7 +234,7 @@ Evidências lidas diretamente: `useRuptureAlerts.ts:74` (`.rpc('fn_get_rupture_a
 | Gate 3 E2E Smoke flakiness | PostgREST cold start >240s + browser install lento | PR [#3074](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3074) — mergeada (squash `2292176f`) | ✅ success — run [42057520999](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42057520999) Gate 3 job [127350252076](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42057520999/job/127350252076) (15:52:53Z) |
 | Gate E95 CORS snapshot false-positive | `grep '\*'` BRE engoliu backslash → `'*` = quantificador | PR #3074 commit `9c03326` — `grep -Frl` | ✅ Gate E95 success — job [127350086464](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42057520999/job/127350086464) step 30 |
 | Gate 3 job cancelled (timeout acúmulo) | 3 specs cold start 180s+120s+120s = 7min + cache-miss browser install | PR [#3075](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3075) — mergeada | ✅ success — run [42073412218](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42073412218) (main push `5e5e4a6f`) |
-| edge-functions-drift-check | 36 funções divergentes (required check) | PENDENCIAS.md #2 | ⛔ requer `workflow_dispatch` pelo dono |
+| edge-functions-drift-check | 36 funções divergentes (required check) | PR #3078 — mergeada | ✅ success — run [42084522842](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42084522842) — PENDENCIAS #2 RESOLVIDO |
 | db-schema-drift-check | local_only=1141 / remote_only=674 | PENDENCIAS.md #1 | ⛔ REGRA #8 — requer dono |
 | Kit Coverage — Integration | cobertura 56% < 70% (campos null no banco) | PENDENCIAS.md #3 | ⛔ problema de dados, não código |
 | CI - Replenishment Module Quality Gate | E2E paridade visual de cards (spec flaky) | PENDENCIAS.md #5 | ⛔ requer investigação E2E com creds |
@@ -282,21 +292,27 @@ Executado na branch `claude/fix-magazine-smoke-timeout-261105-1550` (commit `9c0
 
 **Comparação baseline × final (sem piora):**
 
-| Check | Baseline (main `2c5dafc`) | Final (main `5e5e4a6f` — PR #3075) |
-|---|---|---|
-| Gate 1 - Lint + TypeScript | ✅ | ✅ |
-| Gate 2 - Unit Tests | ✅ | ✅ |
-| Gate 2.5 - PostgreSQL Integrity | ✅ | ✅ |
-| Gate E23 - Secret Scan | ✅ | ✅ |
-| Gate 4 - Lighthouse | ✅ | ✅ |
-| Gate 5 - SEO | ✅ | ✅ |
-| Gate 5.5 - RPC restore_seller_cart | ✅ | ✅ |
-| Compare GitHub × Canonical | ❌ | ✅ (passou no PR — edge-functions-drift) |
-| E2E • Swatch QuickView | ❌ (pré-existente) | ❌ (pré-existente, PENDENCIAS.md #6) |
-| E2E · view-no-presentation-mode | ❌ (pré-existente) | ❌ (pré-existente, PENDENCIAS.md #9) |
-| Gate 3 - E2E Smoke | ❌ (timeout + install ~11min) | ✅ success — run [42073412218](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42073412218) (17:19:01Z → 17:26:46Z) |
+| Check | Baseline (main `2c5dafc`) | Final (main `7f254f7` — PR #3078) | Variação |
+|---|---|---|---|
+| Gate 1 - Lint + TypeScript | ✅ | ✅ (step 5+6 run 42086074688) | = |
+| Gate 2 - Unit Tests | ✅ | ⏳ in_progress (step 22 run 42086074688) | aguardando |
+| Gate 2.5 - PostgreSQL Integrity | ✅ | ✅ (run 42081793738) | = |
+| Gate E23 - Secret Scan | ✅ | ✅ (step 3 run 42086074688) | = |
+| Gate 4 - Lighthouse | ✅ | ✅ (run 42081793738) | = |
+| Gate 5 - SEO | ✅ | ✅ (run 42081793738) | = |
+| Gate 5.5 - RPC restore_seller_cart | ✅ | ✅ (run 42081793738) | = |
+| Compare GitHub × Canonical | ❌ | ✅ run [42084522842](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42084522842) | ✅ MELHOROU |
+| CI Security & Drift Checks | ❌ | ⏳ in_progress (run 42086074688, steps 1-21 ✅) | aguardando |
+| Gate 3 - E2E Smoke | ❌ (timeout >11min) | ✅ run [42073412218](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42073412218) | ✅ MELHOROU |
+| E2E • Swatch QuickView | ❌ (pré-existente) | ❌ (pré-existente, PENDENCIAS.md #6) | = pré-existente |
+| E2E · view-no-presentation-mode | ❌ (pré-existente) | ❌ (pré-existente, PENDENCIAS.md #9) | = pré-existente |
+| db-schema-drift-check | ❌ (pré-existente) | ❌ (pré-existente, PENDENCIAS.md #1) | = pré-existente |
+| Kit Coverage — Integration | ❌ (pré-existente) | ❌ (pré-existente, PENDENCIAS.md #3) | = pré-existente |
+| Replenishment QG | ❌ (pré-existente) | ❌ (pré-existente, PENDENCIAS.md #5) | = pré-existente |
 
-Workflows que estavam verdes: mantidos verdes (CodeQL ✅, Gitleaks ✅, Security Scan ✅, SSOT ✅ confirmado na PR #3074).
+Workflows antes verdes: mantidos verdes — CodeQL ✅ (run 42081793529), Gitleaks ✅, Security Scan ✅, SSOT ✅, Branch Protection Sentinel ✅ (run 42081793203), Required Checks Guard ✅.
+
+> **Nota:** Resultado definitivo do `CI Security & Drift Checks` no SHA 7f254f7 pendente conclusão do run [42086074688](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42086074688). Steps 1-21 todos ✅ (lint, typecheck, build, 15 gates de segurança). Step 22 (testes unitários) em andamento desde 18:42:31Z.
 
 ---
 
