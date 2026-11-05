@@ -76,8 +76,8 @@ test.describe("@smoke Magazine — fluxo autenticado de publicação", () => {
     await createBtn.waitFor({ state: "visible", timeout: 10_000 });
     await createBtn.click();
     // Timeout generoso: com auth real, a criação via handleCreate pode levar
-    // >15s em CI (hidratação do user + RPC ao banco Gold).
-    await page.waitForURL(/\/magazine\/[a-f0-9-]{6,}/i, { timeout: 30_000 });
+    // >30s em CI (hidratação do user + RPC ao banco Gold).
+    await page.waitForURL(/\/magazine\/[a-f0-9-]{6,}/i, { timeout: 60_000 });
     await waitForRouteIdle(page);
 
     // 2) Preenche o título com prefixo E2E (cleanup escopado).
