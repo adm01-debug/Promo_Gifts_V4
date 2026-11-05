@@ -408,7 +408,7 @@ jobs:
             fi
           done
           # _shared/ é o helper aprovado — excluir da busca de literal wildcard (E95)
-          literal=$(grep -rl "'Access-Control-Allow-Origin': '\*'" supabase/functions/ \
+          literal=$(grep -Frl "'Access-Control-Allow-Origin': '*'" supabase/functions/ \
                      --exclude-dir=_shared || true)
           if [ -n "$literal" ]; then
             echo "FAIL: literal 'Access-Control-Allow-Origin: *' em:"
@@ -543,7 +543,14 @@ jobs:
           persist-credentials: false  # E32
       - name: Setup Node CI
         uses: ./.github/actions/setup-node-ci
+      - name: Cache Playwright browsers
+        id: cache-playwright
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('package-lock.json') }}
       - name: Install Playwright browsers
+        if: steps.cache-playwright.outputs.cache-hit != 'true'
         run: npx playwright install --with-deps chromium
       # E16: checks de smoke migrados de e2e.yml (único dono de chromium-smoke).
       - name: Validar doc de auditoria do smoke (drift check)

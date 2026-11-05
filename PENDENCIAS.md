@@ -99,3 +99,30 @@ local_only=1141; remote_only=674
 
 **Causa:** Falhas de E2E — subconjunto das falhas identificadas em #5 e #6 acima.  
 **Status:** Será resolvido quando os itens #5 e #6 forem corrigidos.
+
+---
+
+## 9. E2E · view-no-presentation-mode ❌ (a investigar — snapshot visual)
+
+**Workflow:** `E2E Quotes — Matrix (E77)`  
+**Run ID:** 42044024144 (2026-11-05, PR #3074)  
+**Check:** `E2E · view-no-presentation-mode`  
+**Erro exato:** `Expected an image 133px by 156px, received 128px by 156px. 1673 pixels (ratio 0.09) are different` em `e2e/quotes/quote-view-no-presentation-mode.spec.ts:373`  
+**Snapshot:** `quote-actions-menu-dark-mobile-chromium-public-linux.png`  
+**Causa:** Regressão visual de 5px de largura no `quote-actions-menu` mobile dark. Não causada pelo PR #3074 (que só tocou `e2e/flows/magazine-preview-sticky-smoke.spec.ts` e `PENDENCIAS.md`). Provavelmente originada em commit anterior do Lovable ou em mudança de layout do componente.  
+**Por que não corrigo:** Requer atualização de snapshot visual com evidência de mudança intencional de UI. Sem credenciais E2E para reproduzir e regenerar localmente.  
+**O que o dono precisa fazer:**
+1. Confirmar se a mudança de 133→128px no menu é intencional (mudança de UI recente)
+2. Se intencional: `npx playwright test e2e/quotes/quote-view-no-presentation-mode.spec.ts --update-snapshots` em CI
+3. Se não intencional: investigar o commit que alterou a largura do `quote-actions-menu`
+
+---
+
+## 8. Gate 3 — E2E Smoke flakiness `magazine-preview-sticky-smoke.spec.ts` (CORRIGIDO — PR aberta)
+
+**Workflow:** `deploy-gates.yml` (Gate 3 E2E Smoke)  
+**Run ID:** 42037172704 (2026-11-05, attempt 2)  
+**Erro:** `TimeoutError: page.waitForFunction: Timeout 240000ms exceeded` em `magazine-preview-sticky-smoke.spec.ts:55`  
+**Causa:** PostgREST cold start no runner de CI levou >240s para o editor hidratar. O próprio comentário no spec documenta esse risco ("o editor pode levar >90s para hidratar em CI"). Gate 3 era verde em `2c5dafc` (run 41876981679) com o mesmo timeout; os runs pós-merge `3383990` tiveram cold start mais lento.  
+**Natureza:** Flakiness de infraestrutura — testes distintos falharam em runs diferentes (sinal clássico); meu merge não tocou nenhum código do magazine editor.  
+**Correção:** `e2e/flows/magazine-preview-sticky-smoke.spec.ts` — `waitForFunction timeout` aumentado de 240s → 300s, `test.setTimeout` de 300s → 420s. Total do job permanece <20 min (timeout do workflow).
