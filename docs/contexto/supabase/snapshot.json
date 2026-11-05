@@ -2,9 +2,7 @@
   "api": {
     "enabled": false
   },
-  "carried": [
-    "grants"
-  ],
+  "carried": [],
   "db": {
     "columns": [
       {
@@ -245830,11 +245828,6 @@
         {
           "publication": "supabase_realtime_messages_publication",
           "schema": "realtime",
-          "table": "messages_2026_11_01"
-        },
-        {
-          "publication": "supabase_realtime_messages_publication",
-          "schema": "realtime",
           "table": "messages_2026_11_02"
         },
         {
@@ -245861,6 +245854,11 @@
           "publication": "supabase_realtime_messages_publication",
           "schema": "realtime",
           "table": "messages_2026_11_07"
+        },
+        {
+          "publication": "supabase_realtime_messages_publication",
+          "schema": "realtime",
+          "table": "messages_2026_11_08"
         }
       ]
     },
@@ -261815,11 +261813,6 @@
     ],
     "webhooks": []
   },
-  "errors": [
-    {
-      "error": "canceling statement due to statement timeout",
-      "section": "grants"
-    }
-  ],
+  "errors": [],
   "format_version": 2
 }
