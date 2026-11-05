@@ -54,13 +54,11 @@ local_only=1141; remote_only=674
 
 ---
 
-## 4. Branch Protection Sentinel ❌ (advisory — não bloqueia required checks)
+## 4. Branch Protection Sentinel ✅ RESOLVIDO
 
 **Workflow:** `branch-protection-sentinel.yml`  
-**Run ID:** 41876981418 (2026-11-04)  
-**Erro exato:** Commit `2c5dafc` foi mergeado na main sem seguir padrão aceito (mensagem sem `(#NNN)` ou `Merge pull request #NNN`)  
-**Causa:** Advisory — o próximo merge via PR (com squash `(#NNN)`) resolverá naturalmente.  
-**Ação:** Nenhuma. Será verde após o próximo merge normal via PR.
+**Run ID corrigido:** 42075420395 (2026-11-05) — `conclusion: success`  
+**Causa original:** Commit `2c5dafc` mergeado sem `(#NNN)` — resolvido naturalmente com PR #3076 (squash com `(#3076)`).
 
 ---
 
@@ -102,6 +100,20 @@ local_only=1141; remote_only=674
 
 ---
 
+## 10. E2E — Personalization Flow ❌ (requer credenciais E2E)
+
+**Workflow:** `e2e-personalization-flow.yml`  
+**Run ID:** 42075420851 (2026-11-05, SHA `3d514f5`)  
+**Erro exato:** 3 testes `chromium-authed` falhando em `e2e/flows/90-personalization-pdp-flow.spec.ts`, `91-personalization-variant-flow.spec.ts`, `92-personalization-auth-redirect.spec.ts`  
+- `deve navegar da PDP para o simulador com produto carregado`  
+- `deve navegar de um produto diferente para o simulador com SKU correto`  
+- `fluxo completo: deep link real -> login -> PDP -> Personalização`  
+**Causa:** Testes `chromium-authed` dependem de autenticação funcional no CI. A auth falha intermitentemente quando `validate-access` não responde em tempo (mesma causa-raiz do item #8 attempt 1). Pode ser flakiness de infraestrutura ou regressão de comportamento de redirecionamento de auth.  
+**Por que não corrijo:** Sem acesso a credenciais E2E nem ambiente autenticado local para reproduzir e diagnosticar a causa exata.  
+**O que o dono precisa fazer:** Verificar se a falha é consistente ou intermitente. Se consistente, inspecionar `92-personalization-auth-redirect.spec.ts` para ver se a lógica de deep link mudou recentemente.
+
+---
+
 ## 9. E2E · view-no-presentation-mode ❌ (a investigar — snapshot visual)
 
 **Workflow:** `E2E Quotes — Matrix (E77)`  
@@ -118,17 +130,10 @@ local_only=1141; remote_only=674
 
 ---
 
-## 8. Gate 3 — E2E Smoke timeout job (CORRIGIDO — PR #3075 aberta aguardando CI)
+## 8. Gate 3 — E2E Smoke timeout job ✅ CORRIGIDO e MERGEADO
 
 **Workflow:** `deploy-gates.yml` (Gate 3 E2E Smoke)  
-**Run ID original (flakiness):** 42037172704 (2026-11-05, attempt 2) — `TimeoutError: page.waitForFunction: Timeout 240000ms` em `magazine-preview-sticky-smoke.spec.ts:55`  
-**Run ID novo (job cancelled):** 42059666400 (2026-11-05, push main `2292176f`) — Gate 3 job cancelado por `timeout-minutes: 20` às 16:15:34Z  
-**Causa composta:**  
-1. PR #3074 adicionou try/catch + test.skip com timeout de 180s (magazine-preview) e 120s (magazine-smoke, magazine-publish) para cold start do PostgREST  
-2. Mesmo com skip, 3 specs aguardando 180s+120s+120s = 7 min de cold start → job total ~19 min → cancelado no limite de 20 min  
-**Correção (commit `1e2e9d1`, branch `claude/tender-brown-hzw0ij`, PR [#3075](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3075)):**  
-- `magazine-preview-sticky-smoke.spec.ts`: `waitForFunction timeout` 180s → 60s  
-- `magazine-smoke.spec.ts`: `waitForResponse timeout` 120s → 60s  
-- `magazine-publish-smoke.spec.ts`: `waitForResponse timeout` 120s → 60s  
-Total cold start máximo = 3 × 60s = 3 min. Estimativa pós-fix: job ~15 min (5 min de margem).  
-**Status:** Aguardando CI da PR #3075 — Gate Final deve passar. Mergear após success.
+**PR corretiva:** [#3075](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3075) — mergeada (squash `ce36e22`)  
+**Run validador (main push `5e5e4a6f`):** 42073412218 — `conclusion: success`, Gate 3 success  
+**Correção:** timeouts 180s/120s/120s → 60s/60s/60s nos 3 specs de magazine  
+**Regressão pós-merge (flakiness infra):** run 42075420875 (attempt 1) — `validate-access` edge function PENDENTE 120s → auth.setup timeout. Não causado pelo código; rerun (attempt 2) em andamento.
