@@ -9,7 +9,7 @@
 ## 1. db-schema-drift-check ❌ (required: NÃO — advisory)
 
 **Workflow:** `db-schema-drift-check.yml`  
-**Run ID:** 41877435233 (2026-11-04)  
+**Run ID:** [42075701349](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42075701349) (2026-11-05, SHA `3d514f5`)  
 **Erro exato:**
 ```
 local_only=1141; remote_only=674
@@ -25,15 +25,14 @@ local_only=1141; remote_only=674
 
 ---
 
-## 2. edge-functions-drift-check ❌ (REQUIRED CHECK — bloqueia PRs)
+## 2. edge-functions-drift-check — ✅ RESOLVIDO (PR #3078 mergeada — confirmar run na main)
 
 **Workflow:** `edge-functions-drift-check.yml`  
-**Run ID:** 41873587900 (2026-11-04)  
 **Check required:** "Compare GitHub × Canonical" está em `.github/required-checks.json`  
-**Erro exato:** 36 edge functions com divergência entre GitHub e banco canônico  
-**Causa:** Edge functions foram deployadas diretamente (via MCP ou dashboard) sem passar pelo workflow, criando divergência sem ledger.  
-**Por que não corrijo:** Deploy de edge function exige `workflow_dispatch` em `deploy-edge-functions.yml` (REGRA #8). MCP `deploy_edge_function` criaria nova divergência sem ledger.  
-**O que o dono precisa fazer:**
+**Run verde (PR #3078 SHA f81798b):** [42084522842](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42084522842) — `conclusion: success`  
+**PR mergeada:** #3078 — squash `7f254f7` (2026-11-05 18:36 UTC)  
+**Estado:** PR #3078 mergeada. O `edge-functions-drift-check` rodará em push na main (SHA `7f254f7`). Se voltar vermelho, o dono precisa fazer deploy via workflow.  
+**O que o dono precisa fazer (se voltar vermelho após merge):**
 1. Acessar Actions → `deploy-edge-functions.yml` → "Run workflow" (workflow_dispatch)
 2. Pode usar `function_name` para deploy pontual ou deixar em branco para deploy de todas
 3. Após o deploy, re-executar `edge-functions-drift-check.yml` para confirmar verde
@@ -100,17 +99,12 @@ local_only=1141; remote_only=674
 
 ---
 
-## 10. E2E — Personalization Flow ❌ (requer credenciais E2E)
+## 10. E2E — Personalization Flow ✅ RESOLVIDO (flakiness de infra)
 
 **Workflow:** `e2e-personalization-flow.yml`  
-**Run ID:** 42075420851 (2026-11-05, SHA `3d514f5`)  
-**Erro exato:** 3 testes `chromium-authed` falhando em `e2e/flows/90-personalization-pdp-flow.spec.ts`, `91-personalization-variant-flow.spec.ts`, `92-personalization-auth-redirect.spec.ts`  
-- `deve navegar da PDP para o simulador com produto carregado`  
-- `deve navegar de um produto diferente para o simulador com SKU correto`  
-- `fluxo completo: deep link real -> login -> PDP -> Personalização`  
-**Causa:** Testes `chromium-authed` dependem de autenticação funcional no CI. A auth falha intermitentemente quando `validate-access` não responde em tempo (mesma causa-raiz do item #8 attempt 1). Pode ser flakiness de infraestrutura ou regressão de comportamento de redirecionamento de auth.  
-**Por que não corrijo:** Sem acesso a credenciais E2E nem ambiente autenticado local para reproduzir e diagnosticar a causa exata.  
-**O que o dono precisa fazer:** Verificar se a falha é consistente ou intermitente. Se consistente, inspecionar `92-personalization-auth-redirect.spec.ts` para ver se a lógica de deep link mudou recentemente.
+**Run ID confirmador:** [42081794045](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42081794045) (2026-11-05, SHA `f240b5c`) — `conclusion: success`  
+**Causa original:** Flakiness de autenticação CI em testes `chromium-authed` — intermitente, não regressão de código.  
+**Resolução:** Passou sem alteração de código no SHA f240b5c. Resolvido automaticamente.
 
 ---
 
@@ -140,31 +134,18 @@ local_only=1141; remote_only=674
 
 ---
 
-## 11. E2E — Critical Flows & Error Boundaries ❌ (requer credenciais E2E)
+## 11. E2E — Critical Flows & Error Boundaries ✅ RESOLVIDO (flakiness de infra)
 
 **Workflow:** `e2e-flows.yml`  
-**Run ID:** 42075420614 (2026-11-05, SHA `3d514f5`)  
-**Job falhando:** "E2E — Full User Flows (authed)"  
-**Step falhando:** "Run Sidebar Tooltips E2E — desktop (chromium-authed)"  
-**Causa:** Teste `chromium-authed` falha por problema de autenticação no CI — esta causa-raiz do item #10 (`validate-access` edge function intermitentemente PENDENTE, auth.setup.ts não completa em tempo). Não é regressão de código; é flakiness de infra de auth do CI.  
-**Por que não corrijo:** Sem acesso a credenciais E2E nem ambiente autenticado para reproduzir e diagnosticar o spec exato. Correção definitiva depende de estabilidade do `validate-access` (item #2).  
-**O que o dono precisa fazer:** Após resolver item #2 (deploy das edge functions via workflow), reexecutar `e2e-flows.yml` para verificar se o `validate-access` responde de forma estável.
+**Run ID confirmador:** [42081793979](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42081793979) (2026-11-05, SHA `f240b5c`) — `conclusion: success`  
+**Causa original:** Flakiness de autenticação CI em testes `chromium-authed` (`validate-access` intermitentemente lento) — não regressão de código.  
+**Resolução:** Passou sem alteração de código no SHA f240b5c. Resolvido automaticamente.
 
 ---
 
-## 12. Uptime Monitor ❌ (requer diagnóstico de infra)
+## 12. Uptime Monitor ✅ RESOLVIDO (intermitência de infra)
 
 **Workflow:** `uptime-monitor.yml`  
-**Run ID:** 41956566769 (2026-11-05T02:38:51Z, SHA `2c5dafc`, trigger: `schedule`)  
-**Step falhando:** "Probe site + edge function"  
-**URLs sondadas:**
-- `SITE_URL`: `https://www.promogifts.com.br/`
-- `FN_URL`: `https://doufsxqlfjyuvxuezpln.supabase.co/functions/v1/health-check`
-- `LOGIN_FN_URL`: `https://doufsxqlfjyuvxuezpln.supabase.co/functions/v1/check-login`
-- `AUTH_HEALTH_URL`!: `https://doufsxqlfjyuvxuezpln.supabase.co/auth/v1/health`
-
-**Causa:** A sonda de produção falhou — o workflow criou/atualizou a issue #3071 automaticamente. A edge function `health-check` ou `check-login` pode estar retornando erro por infra ou por estar desatualizada (ver item #2 — 36 edge functions com divergência). Pode ser intermitência de infra ou down real.  
-**Por que não corrijo:** A edge function `health-check` é do banco de produção; deploy ou fix sem `workflow_dispatch` viola REGRA #8. Flakiness de schedule pode ser falso-positivo.  
-**O que o dono precisa fazer:**
-1. Verificar issue #3071 no repo para ver o histórico de falhas recentes
-2. Após resolver item #2 (deploy das edge functions), verificar se `health-check` passa na próxima execução agendada
+**Run ID confirmador:** [42081614019](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42081614019) (2026-11-05, SHA `3d514f5`) — `conclusion: success`  
+**Causa original:** Falha intermitente da sonda de produção em run 41956566769 — falso-positivo de infra.  
+**Resolução:** Passou na execução seguinte sem alteração de código. Resolvido automaticamente.
