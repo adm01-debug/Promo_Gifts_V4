@@ -2,8 +2,8 @@
 
 **Gerado em:** 2026-11-05  
 **Responsável:** Claude Code (sessão https://claude.ai/code/session_01RfQzo9tqgD6XgLTYZQZhcv)  
-**HEAD da main:** `7f254f7` — `fix(migrations-log): remove 8 entradas duplicadas no MIGRATIONS_SYNC_LOG.md (#3078)`  
-**Atualizado em:** 2026-11-05 18:46 UTC (esta sessão)
+**HEAD da main:** `7f5632bb` — `chore(docs): registra item #13 — CI Security & Drift step 28 E2E chromium-authed (#3080)`  
+**Atualizado em:** 2026-11-05 20:10 UTC (esta sessão)
 
 ---
 
@@ -18,6 +18,20 @@
 | db-schema-drift-check | ❌ failure | [42075701349](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42075701349) | SHA 3d514f5 — PENDENCIAS #1, requer dono |
 
 > Demais workflows confirmados ✅ no SHA f240b5c imediatamente anterior (ver seção abaixo). O único run de falha corrigível neste SHA era `CI Security & Drift Checks` — resultado pendente.
+
+### SHA 3654bd17 (main — 2026-11-05 19:16 UTC — PR #3079 squash)
+
+| Workflow | Conclusão | Run ID | Notas |
+|---|---|---|---|
+| Deploy Gates | ✅ **success** | [42092335701](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42092335701) | Gate Final verde — PR #3079 docs |
+
+### SHA 7f5632bb (main — 2026-11-05 19:25 UTC — PR #3080 squash)
+
+| Workflow | Conclusão | Run ID | Notas |
+|---|---|---|---|
+| Deploy Gates | ✅ **success** | [42093694920](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42093694920) | Gate Final verde |
+| Branch Protection Sentinel | ✅ success | [42093694730](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42093694730) | — |
+| CI Security & Drift Checks | ⏳ pending | [42093694677](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42093694677) | Aguarda CI Security & Drift attempt 2 concluir |
 
 ### SHA f240b5c (main anterior — 2026-11-05 18:11 UTC)
 
@@ -302,7 +316,7 @@ Executado na branch `claude/fix-magazine-smoke-timeout-261105-1550` (commit `9c0
 | Gate 5 - SEO | ✅ | ✅ (run 42081793738) | = |
 | Gate 5.5 - RPC restore_seller_cart | ✅ | ✅ (run 42081793738) | = |
 | Compare GitHub × Canonical | ❌ | ✅ run [42084522842](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42084522842) | ✅ MELHOROU |
-| CI Security & Drift Checks | ❌ | ⏳ in_progress (run 42086074688, steps 1-21 ✅) | aguardando |
+| CI Security & Drift Checks | ❌ | ⏳ attempt 2 run [42086074688](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42086074688) in_progress (steps 1-21 ✅, step 22 unit tests desde 19:19Z) — advisory, PENDENCIAS.md #13 | aguardando |
 | Gate 3 - E2E Smoke | ❌ (timeout >11min) | ✅ run [42073412218](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42073412218) | ✅ MELHOROU |
 | E2E • Swatch QuickView | ❌ (pré-existente) | ❌ (pré-existente, PENDENCIAS.md #6) | = pré-existente |
 | E2E · view-no-presentation-mode | ❌ (pré-existente) | ❌ (pré-existente, PENDENCIAS.md #9) | = pré-existente |
@@ -312,7 +326,7 @@ Executado na branch `claude/fix-magazine-smoke-timeout-261105-1550` (commit `9c0
 
 Workflows antes verdes: mantidos verdes — CodeQL ✅ (run 42081793529), Gitleaks ✅, Security Scan ✅, SSOT ✅, Branch Protection Sentinel ✅ (run 42081793203), Required Checks Guard ✅.
 
-> **Nota:** Resultado definitivo do `CI Security & Drift Checks` no SHA 7f254f7 pendente conclusão do run [42086074688](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42086074688). Steps 1-21 todos ✅ (lint, typecheck, build, 15 gates de segurança). Step 22 (testes unitários) em andamento desde 18:42:31Z.
+> **Nota:** `CI Security & Drift Checks` é **advisory** (não-required). Attempt 2 do run [42086074688](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42086074688) em andamento desde 19:15:14Z — steps 1-21 todos ✅, step 22 (unit tests) em andamento. Registered em PENDENCIAS.md #13.
 
 ---
 
@@ -353,7 +367,11 @@ Workflows antes verdes: mantidos verdes — CodeQL ✅ (run 42081793529), Gitlea
 | CI - Replenishment Module QG | PENDENCIAS.md #5 | ⛔ requer creds E2E |
 | E2E • Swatch QuickView | PENDENCIAS.md #6 | ⛔ requer creds E2E |
 | Nightly Full CI | PENDENCIAS.md #7 | ⛔ derivado #5/#6 |
-| E2E — Personalization Flow | PENDENCIAS.md #10 | ⛔ 3 testes `chromium-authed` falhando — requer creds E2E |
-| E2E · view-no-presentation-mode | PENDENCIAS.md #9 | ⛔ snapshot visual — requer dono |
-| E2E — Critical Flows & Error Boundaries | PENDENCIAS.md #11 (NOVO) | ⛔ run [42075420614](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42075420614) — `chromium-authed` sidebar tooltips falha por flakiness `validate-access` |
-| Uptime Monitor | PENDENCIAS.md #12 (NOVO) | ⛔ run [41956566769](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41956566769) — sonda prod falhou, issue #3071 — requer diagnóstico `health-check` edge function |
+| E2E — Personalization Flow | PENDENCIAS.md #10 | ✅ **RESOLVIDO** — flakiness infra, passou em run [42081794045](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42081794045) (SHA f240b5c) |
+| E2E · view-no-presentation-mode | PENDENCIAS.md #9 | ⛔ snapshot visual 5px — requer dono |
+| E2E — Critical Flows & Error Boundaries | PENDENCIAS.md #11 | ✅ **RESOLVIDO** — flakiness infra, passou em run [42081793979](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42081793979) (SHA f240b5c) |
+| Uptime Monitor | PENDENCIAS.md #12 | ✅ **RESOLVIDO** — sonda intermitente, passou em run [42081614019](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42081614019) (SHA 3d514f5) |
+| Gate 1.13.3 — 8 duplicatas MIGRATIONS_SYNC_LOG.md | PR [#3078](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3078) — squash `7f254f7` | ✅ **RESOLVIDO** — Deploy Gates [42092335701](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42092335701) success |
+| docs: RELATORIO_CI.md + PENDENCIAS.md atualizados | PR [#3079](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3079) — squash `3654bd17` | ✅ mergeada — Deploy Gates [42092335701](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42092335701) success |
+| docs: PENDENCIAS.md item #13 registrado | PR [#3080](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3080) — squash `7f5632bb` | ✅ mergeada — Deploy Gates [42093694920](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42093694920) ✅ success |
+| CI Security & Drift step 28 chromium-authed flakiness | PENDENCIAS.md #13 (advisory) | ⚠️ attempt 2 run [42086074688](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42086074688) em andamento (steps 1-21 ✅) |
