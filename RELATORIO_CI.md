@@ -379,9 +379,9 @@ Workflows antes verdes: mantidos verdes — CodeQL ✅ (run 42081793529), Gitlea
 | docs: RELATORIO_CI.md + PENDENCIAS.md atualizados | PR [#3079](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3079) — squash `3654bd17` | ✅ mergeada — Deploy Gates [42092335701](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42092335701) success |
 | docs: PENDENCIAS.md item #13 registrado | PR [#3080](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3080) — squash `7f5632bb` | ✅ mergeada — Deploy Gates [42093694920](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42093694920) ✅ success |
 | docs: RELATORIO_CI.md inventário SHAs final | PR [#3082](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3082) — squash `2bc37120` | ✅ mergeada — Deploy Gates [42097626624](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42097626624) ❌ `conclusion: failure` (Gate 3 flakiness `page-title-produtos` timeout — infra) |
-| docs: RELATORIO_CI.md + PENDENCIAS.md item #14 | PR [#3084](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3084) — squash `bc342a24` | ✅ mergeada — Deploy Gates [42099463406](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42099463406) ⏳ in_progress |
+| docs: RELATORIO_CI.md + PENDENCIAS.md item #14 | PR [#3084](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3084) — squash a criar | ⏳ pendente |
 | CI Security & Drift step 28 chromium-authed flakiness | PENDENCIAS.md #13 (advisory) | ❌ attempt 2 `conclusion: failure` **CONFIRMADO** — flakiness persistente, advisory, não bloqueia required checks |
-| Gate 3 E2E Smoke flakiness — SHA `2bc37120` | PENDENCIAS.md #14 (infra flakiness, transitório) | ❌ run [42097626624](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42097626624) — `page-title-produtos` timeout 60s; PR #3083 idêntico passou (run [42099224405](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42099224405)); próxima execução `bc342a24` ⏳ in_progress |
+| Gate 3 E2E Smoke flakiness — SHA `2bc37120` | PENDENCIAS.md #14 (infra flakiness, transitório) | ✅ **RESOLVIDO** — flakiness transitória; run [42099463406](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42099463406) em `bc342a24` → `conclusion: success` (20:10:44Z) |
 
 ---
 
@@ -399,14 +399,14 @@ Workflows antes verdes: mantidos verdes — CodeQL ✅ (run 42081793529), Gitlea
 | Nightly Full CI | 42005666457 | ❌ Não | #7 | ⛔ Não — derivado de #5 e #6 |
 | E2E — Quotes Matrix (view-no-presentation-mode) | 42044024144 | ❌ Não | #9 | ⛔ Não — snapshot visual 5px, requer dono |
 | CI Security & Drift Checks | [42086074688](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42086074688) | ❌ Não (advisory) | #13 | ⛔ Não — flakiness chromium-authed, requer creds E2E |
-| Deploy Gates (SHA `2bc37120`) | [42097626624](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42097626624) | ✅ Sim (Gate Final) | #14 | ⛔ Não — infra flakiness transitória; próxima execução `bc342a24` ⏳ in_progress |
+| Deploy Gates (SHA `2bc37120`) | [42097626624](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42097626624) | ✅ Sim (Gate Final) | #14 | ✅ RESOLVIDO — flakiness transitória; próxima execução `bc342a24` → `conclusion: success` |
 
-**Required checks estado atual (SHA `bc342a24`):**
+**Required checks estado final (SHA `bc342a24`):**
 
 | Check | Estado |
 |---|---|
-| Gate Final - Deploy Ready | ⏳ in_progress (run [42099463406](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42099463406)) |
+| Gate Final - Deploy Ready | ✅ **success** (run [42099463406](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42099463406) — 20:10:44Z) |
 | Compare GitHub × Canonical | ✅ success (PR #3078 — edge-functions-drift-check) |
 | Analyze (javascript-typescript) | ✅ success (run 42081793529) |
-| Gate E23 - Secret Scan (gitleaks) | ✅ success (dentro do run [42099463406](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42099463406) — job concluído) |
+| Gate E23 - Secret Scan (gitleaks) | ✅ success (dentro do run [42099463406](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42099463406)) |
 | Assert Gate Final is required on main | ✅ success (run 42081792461) |
