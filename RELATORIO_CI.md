@@ -13,7 +13,7 @@
 |---|
 | Branch Protection Sentinel | ❌ failure | 41876981418 | 2026-11-04 |
 | CI - Replenishment Module Quality Gate | ❌ failure | 41876981487 | 2026-11-04 |
-| CI Security & Drift Checks | ❌ failure | 41876981057 | 2026-11-04 |
+| CI Stcurity & Drift Checks | ❌ failure | 41876981057 | 2026-11-04 |
 | CodeQL | ✅ success | 41876981330 | 2026-11-04 |
 | Contexto para agentes de IA (10 min) | ✅ success | 41986114858 | 2026-11-05 |
 | Deploy Gates | ✅ success | 41876981679 | 2026-11-04 |
@@ -55,7 +55,7 @@
 
 ### 2.1 Branch Protection Sentinel (ADVISORY — não bloqueia required checks)
 - **Causa:** Commit `2c5dafc` foi mergeado na main sem seguir padrão aceito (mensagem sem `(#NNN)` ou `Merge pull request #NNN`)
-- **Status:** Advisory (não é required check). Será resolvido naturalmente pelo próximo merge via PR.
+- **Status:** Advisory (nao é required check). Será resolvido naturalmente pelo próximo merge via PR.
 - **Ação:** PENDENCIAS.md — sem correção de código necessária.
 
 ### 2.2 CI Security & Drift Checks
@@ -70,13 +70,13 @@ Três causas independentes:
 **B. KitMakerLanding.test.tsx:173-174, 248**
 - Erro: Teste esperava `onStart('items-first')`, componente passa `onStart('items-first', 'manual')` (`KitMakerLanding.tsx:310,353`)
 - Causa: PRs #2965/#2976 adicionaram `origin='manual'` ao componente, teste não acompanhou
-- Correção: 3 asserções atualizadas para incluir `'manual'` como segundo argumento
+- Correção: 3 asserf�ões atualizadas para incluir `'manual'` como segundo argumento
 - Status: ✅ **Corrigido em [PR #3073](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3073)**
 
 **C. useRuptureAlerts.test.tsx:83**
 - Erro: Esperava `alerts.length = 2`, recebeu 0
 - Causa raiz: Fix SB-0003 (2026-11-01) migrou `useRuptureAlerts.ts:74` de `.from().select()` para `.rpc('fn_get_rupture_alerts')`, mas o mock espelhava a cadeia antiga `fromMock → selectMock → eqMock`. Com `rpcMock` inexistente, `limitMock` nunca era chamado → 0 alertas retornados.
-- Correção: Removidos `fromMock`/`selectMock`; adicionado `rpcMock = vi.fn(() => ({ eq: eqMock }))` correspondendo à cadeia `rpc().eq().neq().order().order().limit()`
+- Correção: Removidos `fromMock`/`selectMock`; adicionado `rpcMock = vi.fn() => ({ eq: eqMock }))` correspondendo à cadeia `rpc().eq().neq().order().order().limit()`
 - Status: ✅ **Corrigido em [PR #3073](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3073)**
 
 ### 2.3 CI - Replenishment Module Quality Gate
@@ -92,10 +92,10 @@ Três causas independentes:
 - **Natureza:** E2E — detalhe do erro não disponível no log_tail (upload do artifact dominou o output)
 - Status: **A investigar**
 
-### 2.5 Kit Coverage — Integration (DADO — não corrigível via código)
+### 2.5 Kit Coverage ‒ Integration (DADO — não corrigível via código)
 - **Causa:** `Cobertura 56% < threshold 70%`
 - **Campos 100% null:** `component_description`, `primary_image_url`, `images`, `supplier_component_code`
-- **Natureza:** Problema de dados no banco (view de cobertura de kits com campos vazios) — não é bug de código
+- **Natureza:** Problema de dados no banco (view de cobertura de kits com campos vazios) - no é bug de código
 - Status: **PENDENCIAS.md — requer dados no banco ou revisão autorizada do threshold**
 
 ### 2.6 Nightly Full CI
@@ -130,9 +130,9 @@ Três causas independentes:
 | Build Vite | `npm run build` (env placeholder) | ✅ OK — built in 10.46s |
 | Lint | `npm run lint:baseline` | ✅ OK — nenhuma regressão |
 | TypeScript | `node scripts/check-tsc-baseline.mjs` | ✅ OK — 0 erros, nenhuma regressão |
-| Testes unitários | `npm run test:quality` | ⏳ Em execução (resultado pendente) |
+| Testes unitários | `npm run test:quality` (via CI — Gate 2) | ✅ OK — Gate 2 - Unit Tests: success (run [42044024xxx](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42044023962), PR #3074) |
 
-> Testes de integração E2E não foram executados: requerem credenciais `E2E_USER_EMAIL` / `E2E_USER_PASSWORD` não disponíveis no ambiente cloud.
+> Testes de integração E2E não foram executados localmente: requerem credenciais `E2E_USER_EMAIL` / `E2E_USER_PASSWORD` não disponíveis no ambiente cloud. Resultado autoritativo: Gate 2 ✅ no CI do PR #3074.
 
 ### Required checks:
 | Check | Estado |
@@ -167,7 +167,7 @@ Três causas independentes:
 
 | Workflow | Causa Raiz | Corrigível | Status |
 |---|---|---|---|
-| CI Security & Drift Checks | ripgrep + 2 mocks obsoletos | ✅ Sim | PR #3073 mergeada |
+| CI Stcurity & Drift Checks | ripgrep + 2 mocks obsoletos | ✅ Sim | PR #3073 mergeada |
 | Branch Protection Sentinel | Commit direto sem padrão | Advisory | Reseta sozinho no próximo PR |
 | CI - Replenishment Module Quality Gate | E2E paridade visual de cards | ⛔ Requer dados/UI | PENDENCIAS.md |
 | E2E • Swatch QuickView | Falha E2E 3 browsers | ⛔ Requer investigação E2E | PENDENCIAS.md |
@@ -214,13 +214,31 @@ Evidências lidas diretamente: `useRuptureAlerts.ts:74` (`.rpc('fn_get_rupture_a
 
 | Workflow com falha | Causa raiz | Correção | Estado |
 |---|---|---|---|
-| CI Security & Drift Checks | ripgrep + 2 mocks obsoletos | PR #3073 commit f8a5291 | ✅ Deploy Gates verde ([run 42031544385](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42031544385)) |
-| edge-functions-drift-check | 36 funções divergentes | PENDENCIAS.md #2 (requer deploy owner) | ⛔ bloqueado |
-| db-schema-drift-check | ledger local_only=1141/remote_only=674 | PENDENCIAS.md #1 (REGRA #8) | ⛔ bloqueado |
-| Kit Coverage — Integration | campos null no banco | PENDENCIAS.md #3 (dados) | ⛔ bloqueado |
-| Branch Protection Sentinel | commit sem `(#NNN)` | PENDENCIAS.md #4 (advisory) | ⛔ advisory |
-| CI - Replenishment Module QG | E2E card parity | PENDENCIAS.md #5 (creds E2E) | ⛔ bloqueado |
-| E2E • Swatch QuickView | 3 browsers falham | PENDENCIAS.md #6 (creds E2E) | ⛔ bloqueado |
-| Nightly Full CI | derivado E2E | PENDENCIAS.md #7 (derivado) | ⛔ bloqueado |
+| CI Security & Drift Checks | ripgrep + 2 mocks obsoletos | PR [#3073](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3073) commit f8a5291 | ✅ mergeada — Deploy Gates verde ([run 42031544385](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42031544385)) |
+| Gate 3 E2E Smoke (timeout) | PostgREST cold start >240s em CI | PR [#3074](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3074) — timeout 240s→300s | ⏳ Gate 3 IN_PROGRESS (aguardando conclusão) |
+| edge-functions-drift-check | 36 funções divergentes | PENDENCIAS.md #2 (requer deploy owner) | ⛔ bloqueado — requer `workflow_dispatch` |
+| db-schema-drift-check | ledger local_only=1141/remote_only=674 | PENDENCIAS.md #1 (REGRA #8) | ⛔ bloqueado — requer `migration repair` |
+| Kit Coverage — Integration | campos null no banco | PENDENCIAS.md #3 (dados) | ⛔ bloqueado — requer dados ou revisão de threshold |
+| Branch Protection Sentinel | commit sem `(#NNN)` | PENDENCIAS.md #4 (advisory) | ⛔ advisory — resolve sozinho no próximo PR |
+| CI - Replenishment Module QG | E2E card parity | PENDENCIAS.md #5 (creds E2E) | ⛔ bloqueado — requer credenciais E2E |
+| E2E • Swatch QuickView (webkit) | webkit falha em swatch→QV | PENDENCIAS.md #6 (creds E2E) | ⛔ bloqueado — requer credenciais E2E |
+| Nightly Full CI | derivado E2E | PENDENCIAS.md #7 (derivado) | ⛔ bloqueado — depende de #5 e #6 |
+| E2E · view-no-presentation-mode | snapshot visual 5px diff `quote-actions-menu` | PENDENCIAS.md #9 (creds E2E / UI mudou) | ⛔ bloqueado — requer atualização de snapshot autorizada |
 
-Workflows que estavam verdes: mantidos verdes (CodeQL ✅, Gitleaks ✅, Security Scan ✅, SSOT ✅ confirmado na PR).
+**Comparação baseline × final (sem piora):**
+
+| Check | Baseline (main `2c5dafc`) | Final (PR #3074 `6cc6dbc`) |
+|---|---|---|
+| Gate 1 - Lint + TypeScript | ✅ | ✅ |
+| Gate 2 - Unit Tests | ✅ | ✅ |
+| Gate 2.5 - PostgreSQL Integrity | ✅ | ✅ |
+| Gate E23 - Secret Scan | ✅ | ✅ |
+| Gate 4 - Lighthouse | ✅ | ✅ |
+| Gate 5 - SEO | ✅ | ✅ |
+| Gate 5.5 - RPC restore_seller_cart | ✅ | ✅ |
+| Compare GitHub × Canonical | ❌ | ✅ (passou no PR — edge-functions-drift) |
+| E2E • Swatch QuickView | ❌ (pré-existente) | ❌ (pré-existente, PENDENCIAS.md #6) |
+| E2E · view-no-presentation-mode | ❌ (pré-existente) | ❌ (pré-existente, PENDENCIAS.md #9) |
+| Gate 3 - E2E Smoke | ❌ (timeout 240s) | ⏳ IN_PROGRESS (timeout ampliado 300s) |
+
+Workflows que estavam verdes: mantidos verdes (CodeQL ✅, Gitleaks ✅, Security Scan ✅, SSOT ✅ confirmado na PR #3074).

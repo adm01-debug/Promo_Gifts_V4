@@ -102,6 +102,22 @@ local_only=1141; remote_only=674
 
 ---
 
+## 9. E2E · view-no-presentation-mode ❌ (a investigar — snapshot visual)
+
+**Workflow:** `E2E Quotes — Matrix (E77)`  
+**Run ID:** 42044024144 (2026-11-05, PR #3074)  
+**Check:** `E2E · view-no-presentation-mode`  
+**Erro exato:** `Expected an image 133px by 156px, received 128px by 156px. 1673 pixels (ratio 0.09) are different` em `e2e/quotes/quote-view-no-presentation-mode.spec.ts:373`  
+**Snapshot:** `quote-actions-menu-dark-mobile-chromium-public-linux.png`  
+**Causa:** Regressão visual de 5px de largura no `quote-actions-menu` mobile dark. Não causada pelo PR #3074 (que só tocou `e2e/flows/magazine-preview-sticky-smoke.spec.ts` e `PENDENCIAS.md`). Provavelmente originada em commit anterior do Lovable ou em mudança de layout do componente.  
+**Por que não corrigo:** Requer atualização de snapshot visual com evidência de mudança intencional de UI. Sem credenciais E2E para reproduzir e regenerar localmente.  
+**O que o dono precisa fazer:**
+1. Confirmar se a mudança de 133→128px no menu é intencional (mudança de UI recente)
+2. Se intencional: `npx playwright test e2e/quotes/quote-view-no-presentation-mode.spec.ts --update-snapshots` em CI
+3. Se não intencional: investigar o commit que alterou a largura do `quote-actions-menu`
+
+---
+
 ## 8. Gate 3 — E2E Smoke flakiness `magazine-preview-sticky-smoke.spec.ts` (CORRIGIDO — PR aberta)
 
 **Workflow:** `deploy-gates.yml` (Gate 3 E2E Smoke)  
