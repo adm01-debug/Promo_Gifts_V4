@@ -9,7 +9,8 @@
 ## 1. Inventário — Última execução na main
 
 | Workflow | Conclusão | Run ID | Data |
-|---|---|---|---|
+|---|---|---|
+|---|
 | Branch Protection Sentinel | ❌ failure | 41876981418 | 2026-11-04 |
 | CI - Replenishment Module Quality Gate | ❌ failure | 41876981487 | 2026-11-04 |
 | CI Security & Drift Checks | ❌ failure | 41876981057 | 2026-11-04 |
@@ -121,7 +122,17 @@ Três causas independentes:
 
 ## 3. Baseline (antes de qualquer mudança)
 
-**Nota:** Builds locais não foram executados nesta sessão — o repositório está num contêiner cloud sem acesso às credenciais necessárias para testes de integração. O baseline é baseado no estado das execuções do CI.
+### Baseline local — executado na branch `claude/tender-brown-hzw0ij` (2026-11-05)
+
+| Verificação | Comando | Resultado |
+|---|---|---|
+| Instalação de dependências | `npm ci` | ✅ OK (sem erros de instalação) |
+| Build Vite | `npm run build` (env placeholder) | ✅ OK — built in 10.46s |
+| Lint | `npm run lint:baseline` | ✅ OK — nenhuma regressão |
+| TypeScript | `node scripts/check-tsc-baseline.mjs` | ✅ OK — 0 erros, nenhuma regressão |
+| Testes unitários | `npm run test:quality` | ⏳ Em execução (resultado pendente) |
+
+> Testes de integração E2E não foram executados: requerem credenciais `E2E_USER_EMAIL` / `E2E_USER_PASSWORD` não disponíveis no ambiente cloud.
 
 ### Required checks:
 | Check | Estado |
@@ -156,7 +167,7 @@ Três causas independentes:
 
 | Workflow | Causa Raiz | Corrigível | Status |
 |---|---|---|---|
-| CI Security & Drift Checks | ripgrep + 2 mocks obsoletos | ✅ Sim | PR #3073 aberta, CI rodando |
+| CI Security & Drift Checks | ripgrep + 2 mocks obsoletos | ✅ Sim | PR #3073 mergeada |
 | Branch Protection Sentinel | Commit direto sem padrão | Advisory | Reseta sozinho no próximo PR |
 | CI - Replenishment Module Quality Gate | E2E paridade visual de cards | ⛔ Requer dados/UI | PENDENCIAS.md |
 | E2E • Swatch QuickView | Falha E2E 3 browsers | ⛔ Requer investigação E2E | PENDENCIAS.md |
@@ -169,7 +180,7 @@ Três causas independentes:
 
 ---
 
-## 5. Baseline
+## 6. Baseline
 
 > Ambiente cloud sem credenciais de banco/E2E — builds locais não executados. Baseline a partir das últimas execuções de CI na main (`2c5dafc`).
 
@@ -203,7 +214,7 @@ Evidências lidas diretamente: `useRuptureAlerts.ts:74` (`.rpc('fn_get_rupture_a
 
 | Workflow com falha | Causa raiz | Correção | Estado |
 |---|---|---|---|
-| CI Security & Drift Checks | ripgrep + 2 mocks obsoletos | PR #3073 commit f8a5291 | ⏳ CI em andamento |
+| CI Security & Drift Checks | ripgrep + 2 mocks obsoletos | PR #3073 commit f8a5291 | ✅ Deploy Gates verde ([run 42031544385](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42031544385)) |
 | edge-functions-drift-check | 36 funções divergentes | PENDENCIAS.md #2 (requer deploy owner) | ⛔ bloqueado |
 | db-schema-drift-check | ledger local_only=1141/remote_only=674 | PENDENCIAS.md #1 (REGRA #8) | ⛔ bloqueado |
 | Kit Coverage — Integration | campos null no banco | PENDENCIAS.md #3 (dados) | ⛔ bloqueado |
