@@ -16,6 +16,11 @@ import { loginViaUI, dismissOnboardingTour } from '../helpers/auth';
 const STORAGE = path.resolve(__dirname, '../.auth/storageState.json');
 
 setup('authenticate', async ({ page }) => {
+  // loginViaUI espera redirect por até 150s em CI; o timeout global do Playwright
+  // é 120s. Sem este override, o Playwright mata o teste antes de loginViaUI
+  // lançar seu próprio erro, impedindo o guard E21 de degradar graciosamente.
+  setup.setTimeout(200_000);
+
   fs.mkdirSync(path.dirname(STORAGE), { recursive: true });
 
   // Mock mode must be self-contained. Previously the setup project always
