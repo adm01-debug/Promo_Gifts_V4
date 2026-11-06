@@ -1,6 +1,7 @@
 /**
  * Auth setup — roda UMA vez antes dos projects autenticados.
  * Usa o helper SSOT `loginViaUI` (e2e/helpers/auth.ts) — sem seletores duplicados.
+ * E21: timeout global elevado para 200s (loginViaUI tem 150s em CI).
  */
 import { test as setup } from '@playwright/test';
 import { execFileSync } from 'node:child_process';
