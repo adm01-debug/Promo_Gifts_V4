@@ -1714,3 +1714,9 @@ Após VACUUM ANALYZE executado pelos jobs temporários `vacuum-snapshots-now` e
 | version | arquivo | status |
 |---|---|---|
 | `20261101201000` | fix_health_view_backup_check | pendente — aplicar via `db-apply-migration.yml` após aprovação do dono (regra 8: DDL em produção). Remove a tabela apagada `_backup_stock_daily_summary_20260618` da checagem `backup_tables_rls_locked`. |
+
+## 2026-11-06 — Hardening de `public.handle_updated_at()`
+
+| version | arquivo | status |
+|---|---|---|
+| `20261106232045` | `fix_handle_updated_at_search_path` | pendente — fixa `search_path = public`; aplicar via `db-apply-migration.yml` após merge da PR |
