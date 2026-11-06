@@ -73,8 +73,7 @@ ALTER DEFAULT PRIVILEGES IN SCHEMA public REVOKE ALL ON FUNCTIONS FROM anon, aut
 `;
 
 // O baseline não carrega linhas do pg_cron (só schema), mas as migrations
-// 20261024180003 (job `auto-block-offenders`), 20261024190001 (jobid 235) e
-// 20261027180000 (`generate-blurhashes` inativo) exigem jobs já existentes. Em produção
+// 20261024180003 (job `auto-block-offenders`) e 20261024190001 (jobid 235) exigem jobs já existentes. Em produção
 // ele vem de 20260623171736; no shadow, que parte do baseline, nunca existe e o
 // replay aborta com "job auto-block-offenders não encontrado". Esta semente é
 // gravada como migration B+1 na pasta temporária (jobs são dado, não schema:
@@ -104,11 +103,6 @@ BEGIN
     END LOOP;
     PERFORM cron.unschedule(v_id);
     PERFORM cron.schedule('image-dimensions-backfill', '0 * * * *', 'SELECT 1');
-  END IF;
-  IF to_regclass('cron.job') IS NOT NULL
-     AND NOT EXISTS (SELECT 1 FROM cron.job WHERE jobname = 'generate-blurhashes') THEN
-    v_id := cron.schedule('generate-blurhashes', '1,3,5,7,9,11,13,15,17,19,21,23,25,27,29,31,33,35,37,39,41,43,45,47,49,51,53,55,57,59 * * * *', 'SELECT 1');
-    PERFORM cron.alter_job(job_id := v_id, active := false);
   END IF;
 END
 $seed$;
