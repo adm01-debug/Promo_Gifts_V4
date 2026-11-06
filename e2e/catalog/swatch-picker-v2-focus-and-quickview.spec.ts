@@ -72,6 +72,17 @@ async function firstPicker(page: Page): Promise<Locator | null> {
     .then(() => true)
     .catch(() => false);
   if (!ok) return null;
+  const productCard = first.locator('xpath=ancestor::*[@data-testid="product-card"][1]');
+  if ((await productCard.count()) > 0) {
+    const productId = await productCard.getAttribute('data-product-id');
+    if (productId) {
+      return page
+        .locator(`[data-testid="product-card"][data-product-id="${productId}"]`)
+        .locator('div.flex.flex-wrap')
+        .filter({ has: page.locator(V2_SWATCH) })
+        .first();
+    }
+  }
   return page
     .locator('div.flex.flex-wrap')
     .filter({ has: page.locator(V2_SWATCH) })
@@ -142,8 +153,9 @@ for (const route of ROUTES) {
       const targetLabel = labels[targetIdx];
       await target.click({ force: true });
 
-      await expect(target).toHaveAttribute('aria-pressed', 'true');
-      await expect(target).toHaveAttribute('aria-label', targetLabel);
+      const activeTarget = pickerEl.getByRole('button', { name: targetLabel, exact: true });
+      await expect(activeTarget).toHaveAttribute('aria-pressed', 'true');
+      await expect(activeTarget).toHaveAttribute('aria-label', targetLabel);
       await expect(dialog, 'clique na bolinha NÃO abre o QuickView').toHaveCount(0);
 
       // 1 e somente 1 swatch ativo no picker.
@@ -154,7 +166,7 @@ for (const route of ROUTES) {
 
       // Ring visível: box-shadow OU outline não-zero (cobre `ring-*` Tailwind
       // e `:focus-visible` do user-agent).
-      const hasRing = await target.evaluate((el) => {
+      const hasRing = await activeTarget.evaluate((el) => {
         const cs = getComputedStyle(el);
         const shadow = cs.boxShadow && cs.boxShadow !== 'none';
         const outline = cs.outlineStyle !== 'none' && parseFloat(cs.outlineWidth || '0') > 0;
