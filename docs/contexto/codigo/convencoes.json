@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
-   "docs: RELATORIO_CI.md — prova final #15-#18 e seção 2.9 diagnóstico E2E advisory",
-   "docs: registra workflows E2E advisory em PENDENCIAS.md (#15–#18) (#3085)",
-   "chore(docs): RELATORIO_CI + PENDENCIAS item #14 RESOLVIDO — bc342a24 success",
-   "chore(docs): RELATORIO_CI + PENDENCIAS — SHA 2bc37120 + item #13 confirmed failure (#3083)",
-   "chore(docs): RELATORIO_CI final — inventário completo SHAs + prova final (#3082)"
+   "chore(regras): adiciona nota de cold-start PostgREST no CI",
+   "docs: RELATORIO_CI.md — SHA 823822b0 + vitest PENDENCIAS #20 + run 42125946413",
+   "docs: RELATORIO_CI.md — SHAs a792bade + 5e497761 + vitest #20 + prova final (#3091)",
+   "docs: PENDENCIAS.md — item #20 vitest date-utils falhas locais (pré-existente) (#3090)",
+   "docs: RELATORIO_CI.md — baseline e inventário SHA d49e289e (#3089)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `84245872c6eaf4034a3784e249de1224f39ffca0` (2026-11-05T18:09:47-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `bcdefb4e59204e0c916d785c62e78fcde2ad9fe0` (2026-11-05T21:37:06-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -586,14 +586,14 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 38006 nós · 66346 arestas · 2076 comunidades · grafo do commit `84245872`
-- comunidades maiores: vitest (876), ref_components (638), ref_integrations (392), ref_lib (366), react-router-dom (324), gotoAndSettle (302), test-base.ts (299), scripts (289), ref_node_fs (284), react (274), @tanstack/react-query (267), SupabaseConnectionsTab.tsx (251)
+- 38014 nós · 66354 arestas · 2128 comunidades · grafo do commit `bcdefb4e`
+- comunidades maiores: ref_integrations (540), ref_components (513), lucide-react (478), ref_lib (469), gotoAndSettle (361), ref_hooks (335), ref_node_fs (300), scripts (289), @playwright/test (274), react-router-dom (269), react (258), concludeCheck (251)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), json (?), loginAs() (e2e/helpers/auth.ts), excluded_sql() (scripts/supabase_snapshot/snapshot.py), maskUrl() (scripts/check-result-contract.mjs), .collect() (scripts/supabase_snapshot/test_snapshot.py), resolveItemImage() (src/pages/magazine/components/templates/shared.ts), makeMockCart() (e2e/helpers/cart-mock.ts)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- RELATORIO_CI.md (67)
-- PENDENCIAS.md (66)
+- RELATORIO_CI.md (71)
+- PENDENCIAS.md (67)
 - package.json (28)
 - package-lock.json (24)
 - supabase/MIGRATIONS_SYNC_LOG.md (21)
@@ -1003,10 +1003,10 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - `CI_PROVA_P33.md` — CI_PROVA_P33.md — Prova Final de Conclusão CI (Sessão P33, 2026-10-30) (97 linhas)
 - `CLAUDE.md` — CLAUDE.md — Promo Gifts V4 (ficha técnica do repositório) (378 linhas)
 - `CONTRIBUTING.md` — Guia de Contribuição (299 linhas)
-- `PENDENCIAS.md` — PENDÊNCIAS — CI Promo Gifts V4 (280 linhas)
+- `PENDENCIAS.md` — PENDÊNCIAS — CI Promo Gifts V4 (313 linhas)
 - `PERFORMANCE-ANALYSIS.md` — 🔍 Relatório de Análise de Performance - MainLayout (195 linhas)
 - `README.md` — 🎁 Promo Brindes — Plataforma de Vendas de Brindes Promocionais (842 linhas)
-- `RELATORIO_CI.md` — Relatório CI — Promo Gifts V4 (435 linhas)
+- `RELATORIO_CI.md` — Relatório CI — Promo Gifts V4 (575 linhas)
 - `RELATORIO_CI_P34.md` — RELATORIO_CI_P34.md — Prova Final Sessão P34 (2026-10-30) (64 linhas)
 - `SECURITY.md` — Política de Segurança — Promo Gifts (89 linhas)
 - `STATUS.md` — 📡 Status do Projeto (19 linhas)
@@ -1159,6 +1159,13 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.7.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.6.1...v1.7.0) (2026-11-02)
 
 ## Últimos commits
+- 2026-11-05 `bcdefb4` chore(regras): adiciona nota de cold-start PostgREST no CI
+- 2026-11-05 `a064d6f` docs: RELATORIO_CI.md — SHA 823822b0 + vitest PENDENCIAS #20 + run 42125946413
+- 2026-11-05 `823822b` docs: RELATORIO_CI.md — SHAs a792bade + 5e497761 + vitest #20 + prova final (#3091)
+- 2026-11-05 `5e49776` docs: PENDENCIAS.md — item #20 vitest date-utils falhas locais (pré-existente) (#3090)
+- 2026-11-05 `a792bad` docs: RELATORIO_CI.md — baseline e inventário SHA d49e289e (#3089)
+- 2026-11-05 `d49e289` docs: RELATORIO_CI.md prova final SHA 210ce9a9 + resolvidos #15/#16/#18/#19 (#3088)
+- 2026-11-05 `210ce9a` docs: RELATORIO_CI.md HEAD 84245872 + PENDENCIAS.md item #19 sentinel advisory (#3087)
 - 2026-11-05 `8424587` docs: RELATORIO_CI.md — prova final #15-#18 e seção 2.9 diagnóstico E2E advisory
 - 2026-11-05 `11b39ab` docs: registra workflows E2E advisory em PENDENCIAS.md (#15–#18) (#3085)
 - 2026-11-05 `4ebe5a8` chore(docs): RELATORIO_CI + PENDENCIAS item #14 RESOLVIDO — bc342a24 success
@@ -1167,13 +1174,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-05 `7f5632b` chore(docs): registra item #13 — CI Security & Drift step 28 E2E chromium-authed (#3080)
 - 2026-11-05 `3654bd1` chore(docs): atualiza RELATORIO_CI e PENDENCIAS após PR #3078 mergeada (#3079)
 - 2026-11-05 `7f254f7` fix(migrations-log): remove 8 entradas duplicadas no MIGRATIONS_SYNC_LOG.md (#3078)
-- 2026-11-05 `f240b5c` docs: atualiza PENDENCIAS.md e RELATORIO_CI.md pós-PR #3075 (#3077)
-- 2026-11-05 `3d514f5` docs: RELATORIO_CI.md — PR #3075 mergeada, run 42073412218 success (#3076)
-- 2026-11-05 `5e5e4a6` fix: Gate 3 — reduz timeouts cold start magazine smoke (#3075)
-- 2026-11-05 `2292176` fix(e2e): corrige Gate 3 flakiness — Playwright cache + cold start skip + grep -F (#3074)
-- 2026-11-05 `3383990` fix(ci): ripgrep ausente + 2 mocks desatualizados
-- 2026-11-05 `7486a58` fix(e2e): aumentar timeouts para auth real em CI (smoke + magazine + all-features) (#3072)
-- 2026-11-04 `2c5dafc` feat(e2e): corrige smoke tests de magazine para CI verde
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

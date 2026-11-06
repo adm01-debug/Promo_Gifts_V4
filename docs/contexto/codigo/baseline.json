@@ -2,11 +2,46 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "84245872c6eaf4034a3784e249de1224f39ffca0",
+  "commit": "bcdefb4e59204e0c916d785c62e78fcde2ad9fe0",
   "branch": "main",
-  "data_commit": "2026-11-05T18:09:47-03:00",
+  "data_commit": "2026-11-05T21:37:06-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "bcdefb4",
+    "data": "2026-11-05",
+    "assunto": "chore(regras): adiciona nota de cold-start PostgREST no CI"
+   },
+   {
+    "sha": "a064d6f",
+    "data": "2026-11-05",
+    "assunto": "docs: RELATORIO_CI.md — SHA 823822b0 + vitest PENDENCIAS #20 + run 42125946413"
+   },
+   {
+    "sha": "823822b",
+    "data": "2026-11-05",
+    "assunto": "docs: RELATORIO_CI.md — SHAs a792bade + 5e497761 + vitest #20 + prova final (#3091)"
+   },
+   {
+    "sha": "5e49776",
+    "data": "2026-11-05",
+    "assunto": "docs: PENDENCIAS.md — item #20 vitest date-utils falhas locais (pré-existente) (#3090)"
+   },
+   {
+    "sha": "a792bad",
+    "data": "2026-11-05",
+    "assunto": "docs: RELATORIO_CI.md — baseline e inventário SHA d49e289e (#3089)"
+   },
+   {
+    "sha": "d49e289",
+    "data": "2026-11-05",
+    "assunto": "docs: RELATORIO_CI.md prova final SHA 210ce9a9 + resolvidos #15/#16/#18/#19 (#3088)"
+   },
+   {
+    "sha": "210ce9a",
+    "data": "2026-11-05",
+    "assunto": "docs: RELATORIO_CI.md HEAD 84245872 + PENDENCIAS.md item #19 sentinel advisory (#3087)"
+   },
    {
     "sha": "8424587",
     "data": "2026-11-05",
@@ -96,44 +131,9 @@
     "sha": "070e9d4",
     "data": "2026-11-04",
     "assunto": "feat: cria partições p2027_03–p2027_12 de supplier_products_raw_history"
-   },
-   {
-    "sha": "943892e",
-    "data": "2026-11-04",
-    "assunto": "chore: adiciona rollback files para migrations 20261101201000 e 20261101202000"
-   },
-   {
-    "sha": "5e010a1",
-    "data": "2026-11-04",
-    "assunto": "fix: corrigir refs de migration em doc para desbloquear Gate 1.3"
-   },
-   {
-    "sha": "724592a",
-    "data": "2026-11-04",
-    "assunto": "fix(docs): corrigir marcadores legado em planos — guard-canonical-project (#3062)"
-   },
-   {
-    "sha": "482c272",
-    "data": "2026-11-04",
-    "assunto": "docs: análise 500 commits — plano 200 etapas, regras de negócio e fix Gate 1.14"
-   },
-   {
-    "sha": "385af81",
-    "data": "2026-11-04",
-    "assunto": "feat(ci): inventário vivo para agentes de IA a cada 10 min (pacote de scripts autônomos do Zapp) (#3059)"
-   },
-   {
-    "sha": "b80917f",
-    "data": "2026-11-03",
-    "assunto": "chore(ci): gestão de workflows fase 1 — 106 → 92 (12 updaters em 1, 3 obsoletos, 3 duplicados ajustados) (#3055)"
-   },
-   {
-    "sha": "14fb66a",
-    "data": "2026-11-02",
-    "assunto": "fix(tests): deriva timeout da suíte live do budget real de retry (#3057)"
    }
   ],
-  "arquivos_mudados_7d": 573,
+  "arquivos_mudados_7d": 547,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -149,7 +149,7 @@
    },
    {
     "pasta": "src/hooks/products",
-    "mudancas": 215
+    "mudancas": 213
    },
    {
     "pasta": "src/pages/magazine",
@@ -199,11 +199,11 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "RELATORIO_CI.md",
-    "mudancas": 67
+    "mudancas": 71
    },
    {
     "arquivo": "PENDENCIAS.md",
-    "mudancas": 66
+    "mudancas": 67
    },
    {
     "arquivo": "package.json",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 354
+    "commits": 351
    },
    {
     "autor": "Joaquim Ataides",
@@ -312,11 +312,11 @@
     "commits": 23
    },
    {
-    "autor": "dependabot[bot]",
-    "commits": 12
+    "autor": "Claude",
+    "commits": 8
    },
    {
-    "autor": "Claude",
+    "autor": "dependabot[bot]",
     "commits": 8
    }
   ]
