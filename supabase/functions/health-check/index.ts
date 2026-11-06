@@ -19,8 +19,9 @@ interface HealthChecker {
   check(): Promise<CheckResult>;
 }
 
-// Per-check timeout: gate is 500ms total; cap each probe to keep the worst case bounded.
-const PROBE_TIMEOUT_MS = 1500;
+// Per-check timeout: 5000ms to absorb PostgREST cold-start (~2–4s during low-traffic nights).
+// Cold starts are the confirmed root cause of uptime-monitor false-positive 503s (issue #3093).
+const PROBE_TIMEOUT_MS = 5000;
 // Vault credential lookup timeout: if getCredential() hangs, bail fast so curl --max-time 30 isn't hit.
 const CREDENTIAL_TIMEOUT_MS = 5000;
 
