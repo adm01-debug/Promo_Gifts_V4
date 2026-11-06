@@ -16,6 +16,11 @@ import { loginViaUI, dismissOnboardingTour } from '../helpers/auth';
 const STORAGE = path.resolve(__dirname, '../.auth/storageState.json');
 
 setup('authenticate', async ({ page }) => {
+  // loginViaUI reserva até 150s em CI para a cadeia Auth + carregamento inicial.
+  // O timeout padrão de 120s matava o setup antes do helper concluir ou aplicar
+  // sua degradação controlada para indisponibilidade transitória do Supabase.
+  setup.setTimeout(process.env.CI ? 180_000 : 30_000);
+
   fs.mkdirSync(path.dirname(STORAGE), { recursive: true });
 
   // Mock mode must be self-contained. Previously the setup project always
