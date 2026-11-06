@@ -19,8 +19,9 @@ interface HealthChecker {
   check(): Promise<CheckResult>;
 }
 
-// Per-check timeout: gate is 500ms total; cap each probe to keep the worst case bounded.
-const PROBE_TIMEOUT_MS = 1500;
+// Per-check timeout: PostgREST can take up to ~3s on cold-start schema reload;
+// 4000ms gives it time without stalling the response past the cache TTL.
+const PROBE_TIMEOUT_MS = 4000;
 // Vault credential lookup timeout: if getCredential() hangs, bail fast so curl --max-time 30 isn't hit.
 const CREDENTIAL_TIMEOUT_MS = 5000;
 
@@ -191,7 +192,7 @@ Deno.serve(async (req) => {
   const corsHeaders = {
     ...buildPublicCorsHeaders(),
     "Content-Type": "application/json",
-    "X-Health-Version": "1.3.1",
+    "X-Health-Version": "1.3.2",
   };
 
   const start = Date.now();
