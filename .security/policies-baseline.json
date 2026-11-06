@@ -1,7 +1,7 @@
 {
   "version": 1,
   "pending_seed": false,
-  "generated_at": "2026-11-01T23:49:09.762Z",
+  "generated_at": "2026-11-06T23:08:19.322Z",
   "project_ref": "doufsxqlfjyuvxuezpln",
   "schemas_checked": [
     "public",
@@ -13,7 +13,7 @@
     "prod_audit",
     "supplier_stricker"
   ],
-  "sha256": "b15bcf6f38fdfe304bdc14b64a5cc676b4bb8782d8286905d48a9e6e878b99f1",
+  "sha256": "2614efab6c71a152644150b25a0895b47b37812a9474cb29faa1ab58eac88b11",
   "policies": [
     {
       "schemaname": "cf_recon",
@@ -7924,6 +7924,46 @@
       "cmd": "SELECT",
       "qual": "true",
       "with_check": ""
+    },
+    {
+      "schemaname": "public",
+      "tablename": "stock_notes",
+      "policyname": "stock_notes_delete_own",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "DELETE",
+      "qual": "(created_by = auth.uid())",
+      "with_check": ""
+    },
+    {
+      "schemaname": "public",
+      "tablename": "stock_notes",
+      "policyname": "stock_notes_insert_own",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "INSERT",
+      "qual": "",
+      "with_check": "(created_by = auth.uid())"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "stock_notes",
+      "policyname": "stock_notes_select_authenticated",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": ""
+    },
+    {
+      "schemaname": "public",
+      "tablename": "stock_notes",
+      "policyname": "stock_notes_update_own",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "UPDATE",
+      "qual": "(created_by = auth.uid())",
+      "with_check": "(created_by = auth.uid())"
     },
     {
       "schemaname": "public",
