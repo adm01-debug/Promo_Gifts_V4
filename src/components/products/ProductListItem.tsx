@@ -174,6 +174,7 @@ export const ProductListItem = memo(
       stock_quantity: product.stock ?? 0,
       color_swatches: productSwatchesData ?? undefined,
       has_colors: !!productSwatchesData?.length,
+      selected_color_name: selectedColorFromStore,
     });
     const useSwatchesV2 = swatchesV2Enabled && (productSwatchesData?.length ?? 0) > 0;
 

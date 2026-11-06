@@ -246,6 +246,7 @@ export const ProductCard = memo(
         stock_quantity: product.stock ?? 0,
         color_swatches: productSwatchesData,
         has_colors: !!productSwatchesData?.length,
+        selected_color_name: selectedColorFromStore ?? null,
       });
       const useSwatchesV2 = swatchesV2Enabled && (productSwatchesData?.length ?? 0) > 0;
 

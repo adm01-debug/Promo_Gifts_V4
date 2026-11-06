@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useEffect, useMemo } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
 export interface ColorSwatch {
@@ -19,6 +19,7 @@ export interface ProductWithSwatches {
   stock_quantity?: number;
   color_swatches?: ColorSwatch[];
   has_colors?: boolean;
+  selected_color_name?: string | null;
   [key: string]: unknown;
 }
 
@@ -36,6 +37,17 @@ export function useProductColorSwatch(product: ProductWithSwatches) {
     () => swatches.find((s) => s.variant_id === activeVariantId) ?? null,
     [swatches, activeVariantId],
   );
+
+  useEffect(() => {
+    if (product.selected_color_name === undefined) return;
+    const selectedName = product.selected_color_name?.trim().toLocaleLowerCase('pt-BR') ?? null;
+    const selectedId = selectedName
+      ? (swatches.find(
+          (swatch) => swatch.color_name.trim().toLocaleLowerCase('pt-BR') === selectedName,
+        )?.variant_id ?? null)
+      : null;
+    setActiveVariantId((current) => (current === selectedId ? current : selectedId));
+  }, [product.selected_color_name, swatches]);
 
   const displayImage = activeVariant?.image_url ?? product.primary_image_url ?? null;
   const displayStock = activeVariant?.stock_quantity ?? product.stock_quantity ?? 0;
