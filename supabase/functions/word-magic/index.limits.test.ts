@@ -64,7 +64,7 @@ const h = vi.hoisted(() => {
   };
 });
 
-vi.mock("https://esm.sh/@supabase/supabase-js@2.49.4", () => ({ createClient: () => h.client }));
+vi.mock("npm:@supabase/supabase-js@2.49.4", () => ({ createClient: () => h.client }));
 
 vi.mock("../_shared/auth.ts", () => ({
   authenticateRequest: async () => ({
