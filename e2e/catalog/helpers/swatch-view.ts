@@ -63,7 +63,11 @@ export async function switchCatalogView(page: Page, mode: CatalogView): Promise<
     timeout: DATA_TIMEOUT_MS,
   });
   const option = page.getByTestId(`view-mode-${mode}`);
-  if (!(await option.isVisible())) await trigger.click();
+  if (!(await option.isVisible())) {
+    await trigger.focus();
+    await expect(trigger).toBeFocused();
+    await trigger.press('Enter');
+  }
   await expect(option).toBeVisible({ timeout: 5_000 });
   await option.click();
   await expect(option).toHaveAttribute('aria-pressed', 'true');
