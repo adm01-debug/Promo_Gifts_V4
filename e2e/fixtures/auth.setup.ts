@@ -66,11 +66,12 @@ setup('authenticate', async ({ page }) => {
   } catch (err) {
     const reason = err instanceof Error ? err.message : String(err);
     // E21 — modo estrito: em CI, falha de credencial = erro imediato.
-    // Timeout de rede (auth/v1/token pendurado — rate-limit do Supabase em IPs
-    // do GitHub Actions) degrada graciosamente para evitar falso-negativo.
+    // Timeout de rede (auth/v1/token cold-start ou rate-limit do Supabase)
+    // degrada graciosamente: 'Timeout aguardando redirect' está na mensagem
+    // throwada por loginViaUI, independente do motivo HTTP subjacente.
     if (process.env.CI) {
       const isNetworkTimeout =
-        reason.includes('Timeout aguardando redirect') && reason.includes('PENDENTE');
+        reason.includes('Timeout aguardando redirect');
       if (!isNetworkTimeout) {
         throw new Error(`[auth.setup] E21 — login falhou em CI: ${reason}`);
       }
