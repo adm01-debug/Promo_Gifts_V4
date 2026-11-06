@@ -10,7 +10,7 @@
  *   npm run typecheck:tests:baseline:update
  */
 import { spawnSync } from 'node:child_process';
-import { existsSync, readFileSync, writeFileSync } from 'node:fs';
+import { readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 const ROOT = process.cwd();
@@ -18,16 +18,15 @@ const BASELINE_PATH = join(ROOT, '.tsc-tests-baseline.json');
 const TSC_BIN = join(ROOT, 'node_modules', 'typescript', 'bin', 'tsc');
 const UPDATE = process.argv.includes('--update');
 
-if (!existsSync(BASELINE_PATH) && !UPDATE) {
-  console.error(
-    '❌ .tsc-tests-baseline.json não encontrado. Gere com: npm run typecheck:tests:baseline:update',
-  );
-  process.exit(2);
-}
-
 let baseline = { totalErrors: 0 };
-if (existsSync(BASELINE_PATH)) {
+try {
   baseline = JSON.parse(readFileSync(BASELINE_PATH, 'utf8'));
+} catch (e) {
+  if (e.code !== 'ENOENT') throw e;
+  if (!UPDATE) {
+    console.error('❌ .tsc-tests-baseline.json não encontrado. Gere com: npm run typecheck:tests:baseline:update');
+    process.exit(2);
+  }
 }
 
 console.log('⏳ Rodando tsc -p tsconfig.eslint.json --noEmit ...');

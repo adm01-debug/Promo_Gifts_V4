@@ -42,7 +42,7 @@ for (const vp of VIEWPORTS) {
       }
 
       await expect(btn).toBeDisabled();
-      await expect(btn).toHaveAttribute('aria-label', /Aplicar busca/i);
+      await expect(btn).toHaveAttribute('aria-label', /^Aplicar busca/i);
       await expect(btn).toHaveAttribute('aria-busy', 'false');
 
       const input = page.getByPlaceholder(/Buscar no Estoque/i);

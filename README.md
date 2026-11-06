@@ -665,11 +665,12 @@ Ou via `gh` CLI:
 
 ```bash
 # Uso normal (safe)
-gh workflow run e2e-update-calendar-snapshots.yml --ref main
+gh workflow run update-snapshots.yml --ref main \
+  -f spec=e2e/ui/calendar-visual.spec.ts -f dev_server=true
 
 # Seed inicial ou refactor grande (force)
-gh workflow run e2e-update-calendar-snapshots.yml --ref main \
-  -f branch=main -f safe_mode=false
+gh workflow run update-snapshots.yml --ref main \
+  -f spec=e2e/ui/calendar-visual.spec.ts -f dev_server=true -f branch=main -f safe_mode=false
 
 gh run watch
 ```
@@ -733,8 +734,8 @@ npx playwright test e2e/quotes/quote-number-subtitle.spec.ts \
 
 ### Regenerar baselines via GitHub Actions
 
-Workflow manual: **`Update Quote Visual Snapshots`**
-(`.github/workflows/update-quote-reset-snapshots.yml`) — rode em
+Workflow manual: **`E2E · Atualizar snapshots visuais (E155)`**
+(`.github/workflows/update-snapshots.yml`, inputs `spec=<os 4 specs> project=chromium-authed`) — rode em
 `Actions → Run workflow`. Ele executa com `--update-snapshots`, commita os
 PNGs novos no branch escolhido e cobre tanto `quote-reset-stepper-layout`
 quanto `quote-number-subtitle`.

@@ -120,7 +120,7 @@ export default function KitBuilderPage() {
           aiCatalogBoxes={state.allAvailableBoxes}
           onOpenTutorial={() => openGuide('items')}
           onApplyAISuggestion={(suggestion, composition, requestedQuantity) => {
-            actions.startFlow('items-first');
+            actions.startFlow('items-first', 'ai');
             actions.applyAISuggestion(suggestion, composition, requestedQuantity);
           }}
         />

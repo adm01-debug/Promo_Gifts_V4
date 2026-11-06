@@ -7,15 +7,17 @@
  *   2. Type-check TypeScript (tsgo)
  *   3. Vitest — suite de expiração e suites correlatas
  *
- * Saída: relatório JSON em /tmp/quotes-list-validation-report.json + resumo no stdout.
+ * Saída: relatório JSON em <tmpdir>/quotes-list-validation-report.json + resumo no stdout.
  * Exit code: 0 quando tudo passa, 1 em qualquer falha.
  *
  * Uso: node scripts/validate-quotes-list.mjs
  */
 import fs from 'node:fs';
 import { execSync } from 'node:child_process';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 
-const REPORT_PATH = '/tmp/quotes-list-validation-report.json';
+const REPORT_PATH = join(tmpdir(), 'quotes-list-validation-report.json');
 const report = { startedAt: new Date().toISOString(), steps: [] };
 
 function step(name, fn) {

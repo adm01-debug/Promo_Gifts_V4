@@ -223,6 +223,16 @@ export function KitBuilderHeader({
                   <Sparkles className="h-2.5 w-2.5" /> Editando template do sistema
                 </Badge>
               )}
+              {kitState?.origin === 'template' && !templateId && (
+                <Badge variant="outline" className="h-5 gap-1 text-[10px]">
+                  <Sparkles className="h-2.5 w-2.5" /> A partir de template
+                </Badge>
+              )}
+              {kitState?.origin === 'ai' && (
+                <Badge variant="outline" className="h-5 gap-1 text-[10px]">
+                  <Sparkles className="h-2.5 w-2.5" /> Sugestão IA
+                </Badge>
+              )}
               {identity?.tag && (
                 <Badge variant="secondary" className="h-5 text-[10px]">
                   {identity.tag}

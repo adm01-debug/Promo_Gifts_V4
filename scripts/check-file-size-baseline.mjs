@@ -41,10 +41,19 @@ function collectOversized() {
 const current = collectOversized();
 
 if (UPDATE) {
+  let prevMeta;
+  try {
+    prevMeta = existsSync(BASELINE_PATH)
+      ? JSON.parse(readFileSync(BASELINE_PATH, 'utf8'))?.meta
+      : undefined;
+  } catch {
+    prevMeta = undefined; // baseline corrompido — nao travar o --update (QODO c466935b)
+  }
   const next = {
     generatedAt: new Date().toISOString(),
     description: `Baseline de arquivos src/ com mais de ${MAX_LINES} linhas (excluindo testes). Falha em arquivo novo acima do limite ou em crescimento.`,
     maxLines: MAX_LINES,
+    ...(prevMeta ? { meta: { ...prevMeta, currentCount: Object.keys(current).length } } : {}),
     files: current,
   };
   writeFileSync(BASELINE_PATH, `${JSON.stringify(next, null, 2)}\n`);

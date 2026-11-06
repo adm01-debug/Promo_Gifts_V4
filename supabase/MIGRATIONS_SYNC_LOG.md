@@ -713,19 +713,11 @@ f6def33d0c79c66aab118335ed95d9e3a9b40536cca5cd397bacc54e7858ae96
 | `20260922170000` | `266f0963a9e7b1d30e8594d7c6218747b6a79baf16aa272249e864f55a64b29b` | `badcb6626e975ee80bab7d562a6c12cc` | GitHub Actions, disparado por `adm01-debug` | E15 (run 35760867980) | 2026-09-22 18:34:03 UTC | recibo E15 abaixo; apply, repair e post-check aprovados — ver `## Recibos — E15` |
 | `20260923114500` | `18663b52473fa9fd0edb031495ebe1ed8fc8c0ea0c262631a3b3bf035d8d91b7` | `87c7eefd2929c273fbedd75e4d61c423` | GitHub Actions, disparado por `adm01-debug` | E15 (run 35857184284) | 2026-09-23 11:56:55 UTC | recibo E15 abaixo; post-check confirmou version no ledger — ver `## Recibos — E15` |
 | `20260417001408` | `d544558d96f6be7d1b4e2a6af7269d11ac516836f8ca134a06e682dae2d14a7c` | `n/d` | claude-code (sessão PR #2376) | retroactive-file-fix (arquivo modificado — não reaplicado em prod; adicionou guarda pg_has_role em ALTER TABLE realtime.messages para compatibilidade com Preview branches) | 2026-10-23 UTC | PR #2376 — arquivo corrigido; migration original já estava no ledger de prod; nenhuma DDL nova aplicada |
-| `20261027120000` | `5d4be00c38b6b610a40e077226ef05ff362222946c2c54b688a0a19c331fb82d` | `—` | claude-code (PR #2603) | E15 | 2026-10-27 UTC (previsto) | pendente — a ser aplicado via db-apply-migration.yml após merge do PR #2603 |
-| `20261027140000` | `e63a43b30c5bce7d3e1e7f6f6829fc692e4b95b5a229b07b24c353ac97fc07cf` | `—` | claude-code (PR #2603) | E15 | 2026-10-27 UTC (previsto) | pendente — a ser aplicado via db-apply-migration.yml após merge do PR #2603 |
-| `20261027160000` | `e8d26f0560611d1397b219f92b6dbd0fa37205e462d412c46682ec1381e1fa06` | `—` | claude-code (PR #2646) | E15 | 2026-10-27 UTC (previsto) | a aplicar via db-apply-migration.yml após merge do PR #2646 (arquivo revisado no PR #2646) |
 | `20261027180000` | `1b47a1d2eadd49608f36331d6be6e93e7478022ed97cbbbae9617e455bcb38a4` | `—` | claude-code (PR #2603/#2646) | E15 | 2026-10-27 UTC (previsto) | pendente — aplicar via db-apply-migration.yml; ledger canônico ainda não contém esta versão |
 | `20261027195959` | `dde8d773b9edfd095085c0a71df22c4f9d90cf0575cbbd7f9d6f53caed1040af` | `—` | claude-code (PR de correção de precondição) | E15 | 2026-10-27 UTC (previsto) | pendente — substitui a versão pendente 20261027200000 antes de aplicação; usa os 17 nomes reais de tabelas; validar no E15 |
-| `20261027220000` | `d2947144ecf3877fe590c2ca0982661d9c90e60d3bcab996ae3a8c3c2b1b782d` | `—` | claude-code (PR #2603/#2646) | E15 | 2026-10-27 UTC (previsto) | pendente — aplicar via db-apply-migration.yml para desativar cron XBZ sem secret no Vault |
-| `20261027230000` | `e74521f182e1a0da59ca962a824353a7bc19c5f19a7bd4704bbd492a23042e11` | `—` | claude-code (PR #2603/#2646) | E15 | 2026-10-27 UTC (previsto) | pendente — allowlist stale confirmada no canônico; aplicar via db-apply-migration.yml |
-| `20261027233000` | `d55fe52339240b24a32192b1363d0914ce54e97bfe57b7f2397f13f4e65e7b73` | `—` | claude-code (PR #2603/#2646) | E15 | 2026-10-27 UTC (previsto) | bloqueada — não aplicar até XBZ_IMAGE_UPLOADER_CRON_SECRET existir no Vault |
-| `20261027234500` | `b73793066e69362966b9edf32182c226fa141c62b4e7b5a2f2705eb1d8ffdd04` | `—` | claude-code (PR #2603/#2646) | E15 | 2026-10-27 UTC (previsto) | bloqueada — exige secret no Vault, allowlist e edge function implantada; cron permanece sem reativação |
 | `20261027120000` | `5d4be00c38b6b610a40e077226ef05ff362222946c2c54b688a0a19c331fb82d` | `—` | claude-code (PR #2603) | E15 (run 40469025943) | 2026-10-27 10:38:50 UTC | Post-check confirmou a versão no ledger. O hash aplicado permanece no recibo E15; o arquivo versionado foi posteriormente tornado replay-safe (commits 8c81483 e 9bb37c44f; SHA atual `76f011d27aef2a34e389a1a3a846ea8304e7d135e5c5da9ed3bc2251dafa7a26`). Não reaplicar. | aplicada; hash pós-aplicação documentado |
 | `20261027140000` | `e63a43b30c5bce7d3e1e7f6f6829fc692e4b95b5a229b07b24c353ac97fc07cf` | `—` | claude-code (PR #2603) | E15 (run 40512572184) | 2026-10-27 13:58:20 UTC | Post-check confirmou a versão no ledger. O hash aplicado permanece no recibo E15; o arquivo versionado foi posteriormente tornado replay-safe (commits 8c81483 e 9bb37c44f; SHA atual `fb095888f074b4cc77b938e82f317627bd5a982b32e8d929e2152d51adb53572`). Não reaplicar. | aplicada; hash pós-aplicação documentado |
 | `20261027160000` | `c20b8190eee43e9a40fe8cc084040f25c94d1c1ef59335efda3da8d39ac6e8d6` | `—` | claude-code (PR #2646) | E15 (run 40670021078) | 2026-10-28 10:13:23 UTC | Post-check confirmou a versão no ledger; o SHA do arquivo coincide com o recibo E15 abaixo. | aplicada |
-| `20261027180000` | `1b47a1d2eadd49608f36331d6be6e93e7478022ed97cbbbae9617e455bcb38a4` | `—` | claude-code (PR #2603) | E15 | 2026-10-27 UTC (previsto) | pendente — a ser aplicado via db-apply-migration.yml após merge do PR #2603 |
 | `20261027200000` | `9737df0d29ff332d5ae3d359c2d4c068c894ef861bbbd6e0a8b0e50caf710c5a` | `—` | claude-code (PR #2603) | E15 | 2026-10-27 UTC (previsto) | pendente — a ser aplicado via db-apply-migration.yml após merge do PR #2603 |
 | `20261027220000` | `fb16901b0c1edd37080aada4edd16de71cbb6e128dca12764cfc22947f6797af` | `—` | claude-code (PR #2646) | E15 | 2026-10-27 UTC (previsto) | a aplicar via db-apply-migration.yml após merge do PR #2646 (arquivo revisado no PR #2646) |
 | `20261027230000` | `2d6a57f537d962a89ff44e80244f94ad0baff9292cfcd8bd65a295978107ff26` | `—` | claude-code (PR #2646) | E15 | 2026-10-27 UTC (previsto) | a aplicar via db-apply-migration.yml após merge do PR #2646 (arquivo revisado no PR #2646) |
@@ -776,7 +768,7 @@ da execução e consulta read-only ao catálogo/ledger, sem reaplicar SQL.
 
 | versão | sha256 arquivo | md5 statements | executor | método | data UTC | pós-check | status |
 |---|---|---|---|---|---|---|---|
-| `20261029160339` | pendente | — | PR P200-E049 | E15 | pendente | criar `trg_anon_rate_guard` em `public.kill_switch_hits`; não aplicada | **pendente — não aplicada** |
+| `20261029160339` | `4848c21337223a88700efdb3ef9aa99688d65d5b072e108c88d204de1ba596ba` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-02 20:22:06 UTC | job post-check da run 41517810265 confirmou a version no ledger | aplicada |
 | `20260922170000` | `266f0963a9e7b1d30e8594d7c6218747b6a79baf16aa272249e864f55a64b29b` | `badcb6626e975ee80bab7d562a6c12cc` | GitHub Actions, disparado por `adm01-debug` | E15 | 2026-09-22 18:34:03 UTC (fim do passo psql) | [Run 35760867980, tentativa 1](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/35760867980/attempts/1): apply, repair e post-check aprovados; recoleta read-only em 22/09 19:27 UTC confirmou ledger, corpo e ACL | aplicada; recibo recuperado documentalmente pelo Codex, a pedido do PO |
 | `20260923114500` | `18663b52473fa9fd0edb031495ebe1ed8fc8c0ea0c262631a3b3bf035d8d91b7` | `87c7eefd2929c273fbedd75e4d61c423` | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug) | E15 | 2026-09-23 11:56:55 UTC | job post-check da run 35857184284 confirmou a version no ledger | aplicada |
 | `20260928212000` | `0ea5dfd928fca67e7553ca2d0ea9414b18efa90a3586588ba5f9870c2c283720` | — | — (aguardando `workflow_dispatch` E15 pelo PO) | E15 | — | pendente: preflight local OK; back-link `products.padronizacao_id` (522 linhas) + `fn_promote_padronizacao` passa a gravar o back-link | **pendente — não aplicada** |
@@ -1599,6 +1591,24 @@ Detalhes, métricas antes/depois e one-shots: docs/EXECUCAO_CORRECOES_MEDALLION_
 | `20261022203935` | `83558c38fda00255556c265c7ba669c85650a1508a7b2acdb99902fed3746575` | E99 repair-only (mirror) | 2026-10-22T20:39:35Z | em produção via SELECT pg_get_functiondef — auth.uid() guard confirmado |
 
 **Próximo passo obrigatório:** após merge desta PR, disparar `schema-snapshot-export.yml` com `force_rotate: true` para regenerar baseline (REGRA #8 corolário).
+
+## 2026-10-31 — Recibo de migration: create_stock_notes (PR #2871 / PR #2846)
+
+**Tipo:** Migration nova — tabela `stock_notes` adicionada ao banco (ausente).
+**Origem:** PR #2871 (Lovable bot — `5ae127ea fix(db): cria tabela stock_notes ausente no banco`), merged em main.
+**Modificação:** PR #2846 adicionou `-- soft-delete-exempt` no CREATE TABLE (Gate 1.12).
+
+| versão | sha256 arquivo | md5 statements | executor | método | data UTC | pós-check |
+|---|---|---|---|---|---|---|
+| `20261031000000` | `92dcc8ed708bc59308b6b52f18d57952e07d6868845ba552c2b8fac7d46c94f4` | fora do fluxo E15 | PR #2871 Lovable (gpt-engineer-app[bot]) | fora do fluxo — E57 repair-only | aplicada fora do fluxo E15 via Lovable/PR #2871 em 2026-10-31; reconciliação repair-only necessária (dispatch `db-apply-migration.yml` desnecessário — já no banco) | aplicada |
+
+**Nota:** A migration cria a tabela `stock_notes` (comentários inline por variante de produto).
+Status: **aplicada** em `doufsxqlfjyuvxuezpln` via PR #2871 Lovable em 2026-10-31 (fora do fluxo E15);
+dispatch de `db-apply-migration.yml` desnecessário — tabela já existe no banco canônico.
+Hash SHA-256 calculado do arquivo local `supabase/migrations/20261031000000_create_stock_notes.sql` (versão com `-- soft-delete-exempt`).
+Recibo de reconciliação repair-only (E99): PR #2846.
+
+---
 
 ## Nota de governança — 2026-10-27
 

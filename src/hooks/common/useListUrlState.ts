@@ -64,6 +64,8 @@ export function useListUrlState<K extends string>(
   keysRef.current = keys;
   const searchParamsRef = useRef(searchParams);
   searchParamsRef.current = searchParams;
+  const setSearchParamsRef = useRef(setSearchParams);
+  setSearchParamsRef.current = setSearchParams;
 
   // Estado local do input textual (digitação fluida antes do debounce).
   const initialSearch = searchKey ? (searchParams.get(searchKey) ?? keys[searchKey]) : '';
@@ -106,6 +108,26 @@ export function useListUrlState<K extends string>(
   const updateParamRef = useRef(updateParam);
   updateParamRef.current = updateParam;
 
+  // Canonicaliza deep-links e navegações de histórico que chegam com filtros
+  // explícitos no valor default, inclusive a busca textual. Uma única escrita
+  // remove todos os defaults gerenciados; o efeito de debounce abaixo ignora
+  // uma busca já vazia/default e deixa essa normalização cuidar dela.
+  useEffect(() => {
+    const params = new URLSearchParams(searchParamsRef.current);
+    const defaults = keysRef.current;
+    let changed = false;
+    for (const [key, defaultValue] of Object.entries(defaults)) {
+      if (params.has(key) && (!params.get(key) || params.get(key) === defaultValue)) {
+        params.delete(key);
+        changed = true;
+      }
+    }
+    if (!changed) return;
+    setSearchParamsRef.current(params, { replace: true });
+    // Reexecuta apenas em navegação real ou mudança do mapa de defaults.
+    // Os setters do React Router mudam de identidade a cada navegação.
+  }, [locationKey, keysSignature, searchKey]);
+
   const setValue = useCallback(
     (key: K, value: string) => {
       updateParam(key, value, stableKeys[key]);
@@ -114,13 +136,42 @@ export function useListUrlState<K extends string>(
     [updateParam, stableKeys, searchKey],
   );
 
+  // Sync-on-mount: remove da URL qualquer param com valor igual ao default
+  // (ex: /orcamentos?status=all → /orcamentos após hidratação).
+  // O contrato do hook garante que defaults não poluem deep-links; este efeito
+  // aplica a limpeza quando a página é carregada com tais params na URL.
+  // O efeito é idempotente: também pode reavaliar quando o Router recria
+  // setSearchParams após navegações; só escreve se ainda houver defaults na URL.
+  // Diagnóstico: E2E list-url-state-restore.spec.ts:49 — `status=all` não removido.
+  useEffect(() => {
+    const current = searchParamsRef.current;
+    const defaults = keysRef.current;
+    let dirty = false;
+    const next = new URLSearchParams(current);
+    for (const k of keyList) {
+      if (current.get(k) === defaults[k]) {
+        next.delete(k);
+        dirty = true;
+      }
+    }
+    if (dirty) setSearchParams(next, { replace: true });
+  }, [keyList, setSearchParams]);
+
   // Sincroniza busca debounced → URL. Idempotente: só navega se a URL ainda
   // não reflete o valor (evita replaceState redundante no mount e corta o loop).
+  // `q=` (string vazia) e ausência do param (`null`) são equivalentes —
+  // ambos representam "sem busca ativa". Sem essa normalização, o efeito de
+  // sync-on-mount (acima) que remove `q=` via setSearchParams(value, replace)
+  // pode ser sobrescrito quando este efeito faz setSearchParams(prev => …)
+  // com `prev = URL original`, restaurando os params que o cleanup acabou de
+  // remover (ex.: `status=all&sort=newest` ao carregar `?status=all&sort=newest&q=`).
   useEffect(() => {
     if (!searchKey) return;
     const defaultValue = keysRef.current[searchKey];
     const target = !debouncedSearch || debouncedSearch === defaultValue ? null : debouncedSearch;
-    if (searchParamsRef.current.get(searchKey) === target) return;
+    const current = searchParamsRef.current.get(searchKey);
+    if (target === null && (!current || current === defaultValue)) return;
+    if (current === target) return;
     updateParamRef.current(searchKey, debouncedSearch, defaultValue);
   }, [debouncedSearch, searchKey]);
 

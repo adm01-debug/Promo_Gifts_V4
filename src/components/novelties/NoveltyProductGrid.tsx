@@ -97,8 +97,6 @@ export function NoveltyProductGrid() {
   const { data: novelties, isPending: isLoading, isFetching, error } = useNoveltiesWithDetails({ enabled: isReadyToFetch });
   const products = useMemo(() => novelties || [], [novelties]);
 
-  const [loadingProgress, setLoadingProgress] = useState(0);
-  const progressRef = useRef<ReturnType<typeof setInterval> | null>(null);
   // ISSUE-24 FIX: ref para focar o input de busca via atalho `/`
   const searchInputRef = useRef<HTMLInputElement>(null);
   // ISSUE-46 FIX: ref para o input mobile (sm:hidden) — foca o visível conforme viewport
@@ -129,27 +127,6 @@ export function NoveltyProductGrid() {
       clearTimeout(t);
     };
   }, []);
-
-  useEffect(() => {
-    if (isFetching) {
-      setLoadingProgress(0);
-      progressRef.current = setInterval(() => {
-        setLoadingProgress((prev) => {
-          if (prev >= 99) return 99;
-          if (prev >= 85) return prev + 0.3;
-          return prev + Math.random() * 12 + 3;
-        });
-      }, 300);
-    } else {
-      if (progressRef.current) clearInterval(progressRef.current);
-      setLoadingProgress(100);
-      const t = setTimeout(() => setLoadingProgress(0), 800);
-      return () => clearTimeout(t);
-    }
-    return () => {
-      if (progressRef.current) clearInterval(progressRef.current);
-    };
-  }, [isFetching]);
 
   // ISSUE-24 / ISSUE-46 FIX: atalho `/` foca o input visível — desktop ou mobile.
   useEffect(() => {
@@ -233,7 +210,7 @@ export function NoveltyProductGrid() {
         s
           .toLowerCase()
           .normalize('NFD')
-          .replace(/[\u0300-\u036f]/g, '');
+          .replace(/[̀-ͯ]/g, '');
       const q = norm(searchQuery.trim());
       filtered = filtered.filter(
         (p) =>
@@ -396,17 +373,10 @@ export function NoveltyProductGrid() {
         <div className="space-y-4">
           <div className="flex items-center gap-3">
             <div className="h-5 w-5 animate-spin rounded-full border-2 border-primary border-t-transparent" />
-            <span className="text-sm text-muted-foreground">
-              Carregando {Math.round(loadingProgress)}% dos produtos...
-            </span>
+            <span className="text-sm text-muted-foreground">Carregando produtos...</span>
           </div>
           <div className="mb-6 h-1.5 w-64 overflow-hidden rounded-full bg-muted/50">
-            <motion.div
-              className="h-full rounded-full bg-gradient-to-r from-primary/60 to-primary"
-              initial={{ width: 0 }}
-              animate={{ width: `${loadingProgress}%` }}
-              transition={{ duration: 0.4, ease: 'easeOut' }}
-            />
+            <div className="h-full w-2/5 animate-pulse rounded-full bg-gradient-to-r from-primary/60 to-primary" />
           </div>
           <div
             data-testid="novelty-loading-grid"
@@ -646,24 +616,14 @@ export function NoveltyProductGrid() {
               )}
             </Badge>
             <AnimatePresence>
-              {isFetching && loadingProgress > 0 && loadingProgress < 100 && (
+              {isFetching && products.length > 0 && (
                 <motion.span
-                  initial={{ opacity: 0, width: 0 }}
-                  animate={{ opacity: 1, width: 48 }}
-                  exit={{ opacity: 0, width: 0 }}
-                  className="ml-1 inline-flex items-center gap-1"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="ml-1 inline-flex items-center"
                 >
-                  <span className="inline-block h-1 w-[53px] overflow-hidden rounded-full bg-muted/50 align-middle">
-                    <motion.span
-                      className="block h-full rounded-full bg-primary/60"
-                      initial={{ width: 0 }}
-                      animate={{ width: `${loadingProgress}%` }}
-                      transition={{ duration: 0.4, ease: 'easeOut' }}
-                    />
-                  </span>
-                  <span className="text-[11px] tabular-nums text-muted-foreground/60">
-                    {Math.round(loadingProgress)}%
-                  </span>
+                  <Loader2 className="h-3 w-3 animate-spin text-muted-foreground/60" aria-label="Atualizando" />
                 </motion.span>
               )}
             </AnimatePresence>

@@ -205,27 +205,10 @@ export const TrustBadgesRow = React.forwardRef<HTMLDivElement, { className?: str
   },
 );
 
-/**
- * Supplier trust data — will come from real DB in the future.
- * For now, uses deterministic mock based on product ID.
- */
 export interface SupplierTrustData {
   isVerified: boolean;
   deliveryDays: number | null;
   avgRating: number | null;
-}
-
-export function getMockSupplierTrust(productId: string): SupplierTrustData {
-  let hash = 0;
-  for (let i = 0; i < productId.length; i++) {
-    hash = ((hash << 5) - hash + productId.charCodeAt(i)) | 0;
-  }
-  const abs = Math.abs(hash);
-  return {
-    isVerified: abs % 10 < 7,
-    deliveryDays: abs % 5 === 0 ? null : (abs % 12) + 1,
-    avgRating: abs % 7 === 0 ? null : 3.2 + (abs % 18) / 10,
-  };
 }
 
 /** Product flags for badge display */

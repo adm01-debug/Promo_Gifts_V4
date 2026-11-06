@@ -165,6 +165,9 @@ jobs:
         with:
           fail-on-severity: high
           allow-licenses: MIT, Apache-2.0, ISC, BSD-2-Clause, BSD-3-Clause, 0BSD, CC0-1.0, Unlicense, CC-BY-4.0, Python-2.0
+          # psycopg (LGPL-3.0): driver Postgres do coletor scripts/supabase_snapshot/, roda só no runner do
+          # contexto.yml — não entra no bundle nem é distribuído. Exceção por pacote; a lista acima não muda.
+          allow-dependencies-licenses: pkg:pypi/psycopg
 
   lint-typecheck:
     name: Gate 1 - Lint + TypeScript
@@ -405,7 +408,7 @@ jobs:
             fi
           done
           # _shared/ é o helper aprovado — excluir da busca de literal wildcard (E95)
-          literal=$(grep -rl "'Access-Control-Allow-Origin': '\*'" supabase/functions/ \
+          literal=$(grep -Frl "'Access-Control-Allow-Origin': '*'" supabase/functions/ \
                      --exclude-dir=_shared || true)
           if [ -n "$literal" ]; then
             echo "FAIL: literal 'Access-Control-Allow-Origin: *' em:"
@@ -540,7 +543,14 @@ jobs:
           persist-credentials: false  # E32
       - name: Setup Node CI
         uses: ./.github/actions/setup-node-ci
+      - name: Cache Playwright browsers
+        id: cache-playwright
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('package-lock.json') }}
       - name: Install Playwright browsers
+        if: steps.cache-playwright.outputs.cache-hit != 'true'
         run: npx playwright install --with-deps chromium
       # E16: checks de smoke migrados de e2e.yml (único dono de chromium-smoke).
       - name: Validar doc de auditoria do smoke (drift check)
@@ -555,8 +565,6 @@ jobs:
           E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
           E2E_ADMIN_EMAIL: ${{ secrets.E2E_ADMIN_EMAIL }}
           E2E_ADMIN_PASSWORD: ${{ secrets.E2E_ADMIN_PASSWORD }}
-          # E015: mock auth ativo por padrão — evita falha E21 em CI com creds inválidas
-          E2E_MOCK_AUTH: '1'
         run: |
           set -euo pipefail
           if [ ! -d "e2e" ] && [ ! -d "tests/e2e" ] && [ ! -d "playwright" ]; then

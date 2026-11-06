@@ -567,6 +567,7 @@ Relatório semanal em `docs/ci/METRICAS_SEMANAIS.md` (gerado por `ci-metrics-wee
 
 | Horário UTC | Dia | Arquivo | Usa PAT |
 |---|---|---|---|
+| `a cada 10min (xx:03)` | diário | `contexto.yml` |  |
 | `a cada 30min` | diário | `uptime-monitor.yml` |  |
 | `a cada 6h (xx:15)` | diário | `quote-number-hardening-verify.yml` | ✓ PAT |
 | `02:00` | Seg | `e2e-focused.yml` |  |

@@ -7,7 +7,7 @@
 > Este arquivo é validado pelo script `scripts/check-secrets-inventory.mjs` (E40).
 > Rodar: `node scripts/check-secrets-inventory.mjs --gate` para verificar completude.
 
-Última atualização: 2026-10-14 (E40/E98 — inventário completo com 32 entradas)
+Última atualização: 2026-11-04 (E002/E136 — contexto.yml adicionado como consumidor PG*)
 
 ---
 
@@ -20,11 +20,11 @@
 | `SUPABASE_DB_PASSWORD` | DevOps/PO | Repo | 6 meses | `schema-snapshot-export.yml`, `db-schema-drift-check.yml`, `db-apply-migration.yml` |
 | `SUPABASE_ANON_KEY` | DevOps/PO | Repo | — | `cart-header-quality-gate.yml`, `ci-security-drift.yml`, `restore-seller-cart-rpc.yml` |
 | `SUPABASE_URL` | DevOps/PO | Repo | — | `cart-header-quality-gate.yml`, `ci-security-drift.yml`, `restore-seller-cart-rpc.yml` |
-| `PGHOST` | DevOps/PO | Repo | — | `db-apply-migration.yml`, `drafts-index-check.yml`, `migration-dry-run.yml` |
-| `PGUSER` | DevOps/PO | Repo | — | `db-apply-migration.yml`, `drafts-index-check.yml` |
-| `PGPASSWORD` | DevOps/PO | Repo | 6 meses | `db-apply-migration.yml`, `drafts-index-check.yml`, `migration-dry-run.yml` |
-| `PGDATABASE` | DevOps/PO | Repo | — | `db-apply-migration.yml`, `drafts-index-check.yml` |
-| `PGPORT` | DevOps/PO | Repo | — | `db-apply-migration.yml` (3 refs), `drafts-index-check.yml`, `migration-dry-run.yml` — fallback: `5432` se ausente |
+| `PGHOST` | DevOps/PO | Repo | — | `db-apply-migration.yml`, `drafts-index-check.yml`, `migration-dry-run.yml`, `contexto.yml` |
+| `PGUSER` | DevOps/PO | Repo | — | `db-apply-migration.yml`, `drafts-index-check.yml`, `contexto.yml` |
+| `PGPASSWORD` | DevOps/PO | Repo | 6 meses | `db-apply-migration.yml`, `drafts-index-check.yml`, `migration-dry-run.yml`, `contexto.yml` |
+| `PGDATABASE` | DevOps/PO | Repo | — | `db-apply-migration.yml`, `drafts-index-check.yml`, `contexto.yml` |
+| `PGPORT` | DevOps/PO | Repo | — | `db-apply-migration.yml` (3 refs), `drafts-index-check.yml`, `migration-dry-run.yml`, `contexto.yml` — fallback: `5432` se ausente |
 
 > **Nota `SUPABASE_ANON_KEY` vs `VITE_SUPABASE_PUBLISHABLE_KEY`:** dois nomes para o mesmo valor (chave anon/publishable de `doufsxqlfjyuvxuezpln`). Workflows mais antigos usam `SUPABASE_ANON_KEY`; novos usam `VITE_SUPABASE_PUBLISHABLE_KEY`. Ambos são de conhecimento público por design do Supabase — RLS é a camada de segurança real.
 >

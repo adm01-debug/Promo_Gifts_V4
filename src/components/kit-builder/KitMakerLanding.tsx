@@ -16,6 +16,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { KitAIPromptDialog } from '@/components/kit-builder/KitAIPromptDialog';
+import { FavoriteToggleButton } from '@/components/kit-builder/FavoriteToggleButton';
 import { KitOccasionSelector, type Occasion } from '@/components/kit-builder/KitOccasionSelector';
 import { dbInvoke } from '@/lib/db/postgrest';
 import {
@@ -26,10 +27,11 @@ import {
   type KitBox,
   type KitItem,
 } from '@/lib/kit-builder';
+import type { KitOrigin } from '@/lib/kit-builder/types';
 import { useKitTemplates } from '@/hooks/kit-builder';
 
 interface KitMakerLandingProps {
-  onStart: (flow: 'box-first' | 'items-first') => void;
+  onStart: (flow: 'box-first' | 'items-first', origin?: KitOrigin) => void;
   occasion: Occasion | null;
   onOccasionChange: (occasion: Occasion | null) => void;
   aiCatalogItems: KitItem[];
@@ -220,7 +222,7 @@ export function KitMakerLanding({
   const handleUseTemplate = async (template: (typeof featuredKits)[number]) => {
     const created = await cloneTemplate(template);
     if (created && typeof created === 'object' && 'id' in created) {
-      navigate(`/montar-kit?kit=${(created as { id: string }).id}`);
+      navigate(`/montar-kit?kit=${(created as { id: string }).id}&origin=template`);
     }
   };
 
@@ -305,7 +307,7 @@ export function KitMakerLanding({
               ))}
             </ul>
             <Button
-              onClick={() => onStart('items-first')}
+              onClick={() => onStart('items-first', 'manual')}
               size="lg"
               className="mt-auto min-w-[212px]"
             >
@@ -348,7 +350,7 @@ export function KitMakerLanding({
             </ul>
             <Button
               variant="outline"
-              onClick={() => onStart('box-first')}
+              onClick={() => onStart('box-first', 'manual')}
               size="lg"
               className="mt-auto min-w-[212px]"
             >
@@ -426,7 +428,7 @@ export function KitMakerLanding({
               const itemsCount = Array.isArray(kit.items_data) ? kit.items_data.length : 0;
               return (
                 <Card key={kit.id} className="group overflow-hidden border-border/60 bg-card">
-                  <div className="aspect-[16/9] overflow-hidden bg-muted/50">
+                  <div className="relative aspect-[16/9] overflow-hidden bg-muted/50">
                     {image ? (
                       <img
                         src={image}
@@ -439,6 +441,11 @@ export function KitMakerLanding({
                         <Boxes className="h-10 w-10 text-muted-foreground" />
                       </div>
                     )}
+                    <FavoriteToggleButton
+                      productId={kit.id}
+                      productName={kit.name}
+                      className="absolute right-2 top-2 bg-background/80 backdrop-blur-sm hover:bg-background"
+                    />
                   </div>
                   <CardContent className="space-y-3 p-4">
                     <div>
@@ -473,7 +480,7 @@ export function KitMakerLanding({
                   key={composition.id}
                   className="group overflow-hidden border-border/60 bg-card"
                 >
-                  <div className="aspect-[16/9] overflow-hidden bg-muted/50">
+                  <div className="relative aspect-[16/9] overflow-hidden bg-muted/50">
                     {image ? (
                       <img
                         src={image}
@@ -486,6 +493,11 @@ export function KitMakerLanding({
                         <Boxes className="h-10 w-10 text-muted-foreground" />
                       </div>
                     )}
+                    <FavoriteToggleButton
+                      productId={composition.id}
+                      productName={composition.name}
+                      className="absolute right-2 top-2 bg-background/80 backdrop-blur-sm hover:bg-background"
+                    />
                   </div>
                   <CardContent className="space-y-3 p-4">
                     <div>

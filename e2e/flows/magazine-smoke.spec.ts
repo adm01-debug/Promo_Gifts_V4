@@ -25,15 +25,20 @@ import { waitForTestIdVisible } from "../helpers/waits";
 
 test.describe("@smoke Magazine — Gold DB smoke", () => {
   test("lista /magazine carrega do BD Gold para usuário autenticado", async ({ page }) => {
+    test.setTimeout(600_000);
     await loginAs(page);
 
     // Registra o waitForResponse ANTES de navegar para não perder a request
     // disparada pelo useEffect([user?.id]) logo após auth hidratar — esse evento
     // chega depois que gotoAndSettle resolve (page settled, sem skeleton visível).
+    // .catch() encadeado imediatamente: evita rejeição não tratada caso o
+    // PostgREST demore mais que o timeout no cold start do CI (mesma causa do
+    // incidente em magazine-publish-smoke.spec.ts). Timeout 60s para acomodar
+    // cold start no CI sem estourar o budget de 20 min do job.
     const waitMagazines = page.waitForResponse(
       (res) => res.url().includes("/rest/v1/magazines"),
-      { timeout: 15_000 },
-    );
+      { timeout: 60_000 },
+    ).catch(() => {});
 
     // Captura response da edge magazine-reader-state (get/set) e da consulta
     // à tabela magazines para provar que a lista veio do BD (não localStorage).
@@ -51,7 +56,7 @@ test.describe("@smoke Magazine — Gold DB smoke", () => {
 
     await gotoAndSettle(page, "/magazine");
     // Aguarda auth hidratar e a request partir (capturada pelo listener acima).
-    await waitMagazines.catch(() => {});
+    await waitMagazines;
 
     // O h1 canônico da página (page-title-magazine — ver memory Page Title Testids).
     await waitForTestIdVisible(page, "page-title-magazine").catch(() => {

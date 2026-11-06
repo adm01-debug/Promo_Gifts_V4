@@ -57,7 +57,10 @@ export async function loginViaUI(page: Page, creds: LoginCreds): Promise<boolean
   // login_attempts (sem linha de falha também — o login estava em voo, não
   // recusado). O orçamento abaixo cobre o pior caso documentado dessa cadeia
   // sem relaxar o assert: continuar em /login ainda reprova.
-  const timeout = creds.timeoutMs ?? (process.env.CI ? 75_000 : 20_000);
+  // v_products_public × 4 em paralelo durante "Iniciando Sistemas" pode levar
+  // ~60s adicionais após o token (run 41858297363), totalizando >100s — ampliado
+  // de 75s para 150s para cobrir esse pior caso observado em CI.
+  const timeout = creds.timeoutMs ?? (process.env.CI ? 150_000 : 20_000);
   const netLog = createNetworkLog(page);
 
   // CI bypass: TURNSTILE_SECRET_KEY está configurado na edge function de produção,
@@ -148,7 +151,9 @@ function createNetworkLog(page: Page) {
   const done: string[] = [];
   const label = (url: string, method: string): string | null => {
     const m = /\/(auth\/v1|functions\/v1|rest\/v1)\/([^?]*)/.exec(url);
-    return m ? `${method} ${m[1]}/${m[2]}` : url.includes("api.ipify.org") ? `${method} ipify` : null;
+    if (m) return `${method} ${m[1]}/${m[2]}`;
+    try { if (new URL(url).hostname === 'api.ipify.org') return `${method} ipify`; } catch {}
+    return null;
   };
   const onRequest = (req: Request) => {
     const l = label(req.url(), req.method());

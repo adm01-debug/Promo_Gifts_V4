@@ -40,8 +40,8 @@ jobs:
       - name: Dependency vulnerability policy
         run: npm run check:dependency-audit
         
-      - name: Lint check
-        run: npm run lint:check
+      - name: Lint check (baseline — mesmo critério do Gate 1)
+        run: npm run lint:baseline
         
       - name: Type check (baseline — zero regressions vs .tsc-baseline.json)
         run: node scripts/check-tsc-baseline.mjs
@@ -115,6 +115,9 @@ jobs:
 
 
 
+
+      - name: Install ripgrep
+        run: sudo apt-get install -y ripgrep
 
       - name: Run Unit & Integration Tests
         run: npm run test:quality

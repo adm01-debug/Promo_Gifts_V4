@@ -91,3 +91,11 @@ bun.lockb
 # Ignorar apenas tokens de env gerados por `vercel pull` — nunca versionados.
 .vercel/.env*
 .vercel/*.env*
+
+# Contexto para agentes de IA: gerado pelo contexto.yml na branch `contexto` (nunca em main);
+# manual/ é texto humano e fica em main.
+docs/contexto/*
+!docs/contexto/regras/
+docs/contexto/regras/*
+!docs/contexto/regras/manual/
+__pycache__/

@@ -19,6 +19,7 @@ import {
 } from '@/lib/kit-builder/persistence';
 
 const AUTO_SAVE_DELAY_MS = 5000;
+const LS_BACKUP_KEY_PREFIX = 'kit-builder-unload-backup';
 
 interface AutoSaveResult {
   lastSavedAt: Date | null;
@@ -26,12 +27,16 @@ interface AutoSaveResult {
   autoSavedKitId: string | null;
   /** A visible, sanitized state — failed automatic saves must not be log-only. */
   autoSaveError: string | null;
+  /** True when the last save failed with a PostgreSQL 40001 serialization conflict. */
+  isConflictError: boolean;
   /** Replays the most recent snapshot with the same optimistic revision rules. */
   retryLastSave: () => Promise<void>;
   /** Cancels a debounced save before the explicit save action takes ownership. */
   cancelPendingSave: () => void;
   /** Supersedes any failed automatic operation after a successful explicit save. */
   acknowledgeManualSave: (kitId: string, revision: number) => void;
+  /** Reads and clears the localStorage backup written on beforeunload, if any. */
+  consumeUnloadBackup: () => { kitId: string | null; snapshot: string; savedAt: number } | null;
 }
 
 export function useKitAutoSave(
@@ -48,6 +53,7 @@ export function useKitAutoSave(
   const [isSaving, setIsSaving] = useState(false);
   const [autoSavedKitId, setAutoSavedKitId] = useState<string | null>(currentKitId || null);
   const [autoSaveError, setAutoSaveError] = useState<string | null>(null);
+  const [isConflictError, setIsConflictError] = useState(false);
   const timerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const snapshotRef = useRef<string>('');
   const isFirstRender = useRef(true);
@@ -162,10 +168,17 @@ export function useKitAutoSave(
       } else {
         setLastSavedAt(new Date());
         setAutoSaveError(null);
+        setIsConflictError(false);
       }
     } catch (err) {
+      const isConflict = (err as { code?: string })?.code === '40001';
       logger.warn('[auto-save] Failed:', err);
-      setAutoSaveError('O rascunho ainda não foi salvo. Tente novamente antes de sair.');
+      setIsConflictError(isConflict);
+      setAutoSaveError(
+        isConflict
+          ? 'Outro dispositivo editou este kit ao mesmo tempo. Recarregue a página para obter a versão mais recente.'
+          : 'O rascunho ainda não foi salvo. Tente novamente antes de sair.',
+      );
     } finally {
       saveInFlightRef.current = false;
       setIsSaving(false);
@@ -207,6 +220,7 @@ export function useKitAutoSave(
     setAutoSavedKitId(kitId);
     setLastSavedAt(new Date());
     setAutoSaveError(null);
+    setIsConflictError(false);
   }, []);
 
   // Snapshot effect: agenda o timer quando o estado muda de forma relevante
@@ -277,6 +291,33 @@ export function useKitAutoSave(
     };
   }, []);
 
+  // beforeunload backup: persists unsaved snapshot to localStorage so it can
+  // be recovered after an accidental tab close or navigation.
+  useEffect(() => {
+    if (!enabled) return;
+    const handleBeforeUnload = () => {
+      if (!snapshotRef.current || !user?.id) return;
+      // Only write backup when there is a pending unsaved edit (timer still
+      // scheduled or save in-flight) to avoid overwriting a clean saved state.
+      if (!timerRef.current && !saveInFlightRef.current && !saveQueuedRef.current) return;
+      try {
+        const key = `${LS_BACKUP_KEY_PREFIX}-${user.id}`;
+        localStorage.setItem(
+          key,
+          JSON.stringify({
+            kitId: autoSavedKitIdRef.current,
+            snapshot: snapshotRef.current,
+            savedAt: Date.now(),
+          }),
+        );
+      } catch {
+        // localStorage may be unavailable in private browsing — fail silently.
+      }
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [enabled, user?.id]);
+
   // Update autoSavedKitId when currentKitId changes externally
   useEffect(() => {
     if (currentKitId) {
@@ -290,13 +331,28 @@ export function useKitAutoSave(
     revisionRef.current = currentRevision;
   }, [currentRevision]);
 
+  const consumeUnloadBackup = useCallback(() => {
+    if (!user?.id) return null;
+    try {
+      const key = `${LS_BACKUP_KEY_PREFIX}-${user.id}`;
+      const raw = localStorage.getItem(key);
+      if (!raw) return null;
+      localStorage.removeItem(key);
+      return JSON.parse(raw) as { kitId: string | null; snapshot: string; savedAt: number };
+    } catch {
+      return null;
+    }
+  }, [user?.id]);
+
   return {
     lastSavedAt,
     isSaving,
     autoSavedKitId,
     autoSaveError,
+    isConflictError,
     retryLastSave,
     cancelPendingSave,
     acknowledgeManualSave,
+    consumeUnloadBackup,
   };
 }

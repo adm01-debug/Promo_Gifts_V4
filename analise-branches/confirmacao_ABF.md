@@ -1,50 +1,69 @@
-# Confirmação A+B+F (44 branches) — revalidada em 2026-11-01
+# Confirmação Branches Descartáveis (A + B + F) — 44 branches
 
-Base: main `5ae127e`. Prova por branch (REST compare + PRs + presença de linhas no main + ledger de produção). **Só 14 linhas exigem atenção: 10 recibos E15 (achado real) e 4 RESSALVAS.**
+Sessão: `claude/chore-analise-branches-revalida-261101-2200`
+SHA main baseline: `d2033d9237fa72971ff9c92ca47442f7437463ff`
+Data: 2026-11-01
 
-| Branch | Cat | Prova |
-|---|---|---|
-| `adm01-debug-patch-1` | F | Só adiciona template de workflow `webpack.yml` (ausente no main, 656 commits atrás); PR fechada sem merge — template genérico do GitHub, sem relação com o produto. |
-| `adm01-debug-patch-1-1` | F | Só adiciona template de workflow `deno.yml` (ausente no main, 656 commits atrás); PR fechada sem merge — template genérico do GitHub, sem relação com o produto. |
-| `adm01-debug-patch-1-10` | F | Só adiciona template de workflow `greetings.yml` (ausente no main, 656 commits atrás); PR fechada sem merge — template genérico do GitHub, sem relação com o produto. |
-| `adm01-debug-patch-1-11` | F | Só adiciona template de workflow `static.yml` (ausente no main, 656 commits atrás); PR fechada sem merge — template genérico do GitHub, sem relação com o produto. |
-| `adm01-debug-patch-1-12` | F | Só adiciona template de workflow `nextjs.yml` (ausente no main, 656 commits atrás); PR fechada sem merge — template genérico do GitHub, sem relação com o produto. |
-| `adm01-debug-patch-1-2` | F | Só adiciona template de workflow `jekyll-docker.yml` (ausente no main, 656 commits atrás); PR fechada sem merge — template genérico do GitHub, sem relação com o produto. |
-| `adm01-debug-patch-1-3` | F | Só adiciona template de workflow `npm-publish.yml` (ausente no main, 656 commits atrás); PR fechada sem merge — template genérico do GitHub, sem relação com o produto. |
-| `adm01-debug-patch-1-4` | F | Só adiciona template de workflow `npm-publish-github-packages.yml` (ausente no main, 656 commits atrás); PR fechada sem merge — template genérico do GitHub, sem relação com o produto. |
-| `adm01-debug-patch-1-5` | F | Só adiciona template de workflow `codacy.yml` (ausente no main, 656 commits atrás); PR fechada sem merge — template genérico do GitHub, sem relação com o produto. |
-| `adm01-debug-patch-1-6` | F | Só adiciona template de workflow `dependency-review.yml` (ausente no main, 656 commits atrás); PR fechada sem merge — template genérico do GitHub, sem relação com o produto. |
-| `adm01-debug-patch-1-7` | F | Só adiciona template de workflow `python-publish.yml` (ausente no main, 656 commits atrás); PR fechada sem merge — template genérico do GitHub, sem relação com o produto. |
-| `adm01-debug-patch-1-8` | F | Só adiciona template de workflow `node.js.yml` (ausente no main, 656 commits atrás); PR fechada sem merge — template genérico do GitHub, sem relação com o produto. |
-| `adm01-debug-patch-1-9` | F | Só adiciona template de workflow `manual.yml` (ausente no main, 656 commits atrás); PR fechada sem merge — template genérico do GitHub, sem relação com o produto. |
-| `adm01-debug-patch-2` | F | Só adiciona template de workflow `main.yml` (ausente no main, 656 commits atrás); PR fechada sem merge — template genérico do GitHub, sem relação com o produto. |
-| `adm01-debug-patch-3` | F | Só adiciona template de workflow `main.yml` (ausente no main, 656 commits atrás); PR fechada sem merge — template genérico do GitHub, sem relação com o produto. |
-| `adm01-debug-patch-4` | F | Só adiciona template de workflow `deno.yml` (ausente no main, 656 commits atrás); PR fechada sem merge — template genérico do GitHub, sem relação com o produto. |
-| `claude/batch-e14-e19-e22-e23-e26-e87-261019-1800` | F | PR #2312 fechada sem merge; mexe só em deploy-gates.yml (dorny/paths-filter já está no main: 1 ocorrência; 15/39 linhas coincidem; arquivo evoluiu 660 commits). |
-| `claude/ci-e19-e22-e23-batch2-261019-1930` | F | PR #2314 fechada; só sobe .as-assertions-baseline.json (2164) — main já está em 2146; mergear afrouxaria o baseline. |
-| `claude/feat-e33-e58-credentials-docs-261019-2000` | F | PR #2315 fechada. E33 já aplicado em main: grep E2E_USER nos 8 arquivos e2e-update-*-snapshots.yml retorna 0 linhas (verificado 2026-11-01). Shellcheck (2 arquivos) e gh-pages/happy-faraday: ressalvas menores. DESCARTAR. |
-| `claude/fix-husky-dialog-snapshots-261023` | B | 0 commits à frente (427 atrás); PR #2381 fechada — nada a preservar. |
-| `claude/fix-shellcheck-261019-1820` | F | RESSALVA: PR #2310 fechada; 2 correções de aspas (db-apply-migration.yml L190, update-snapshots.yml L110) ainda ausentes no main; workflows proibidos — baixo valor, decisão humana. |
-| `claude/happy-faraday-0vgza3` | F | RESSALVA: PR #2352 mergeada; 3 arquivos (RELATORIO_FINAL_2026-10-22.md, 2 roteiros SQL SELECT-only) não estão no main — snapshot histórico de 22/10 superado por RELATORIO_AUDITORIA_SUPABASE.md; resgate opcional. |
-| `claude/quirky-keller-owezvt` | F | Branch já deletada; PRs #2755 (mergeada 2026-10-30), #2675 e #2653 (fechadas) — conteúdo é docs de análise de PRs, já no main (analise-prs/). |
-| `claude_05/friendly-keller-3mgkhz` | F | Branch deletada; PR #2403 mergeada 2026-10-24T20:15Z. |
-| `claude_05/youthful-goodall-kihjbv` | F | Branch deletada; PR #2408 mergeada 2026-10-24T17:44Z (é o inventário em inventario/). |
-| `copilot/corrigir-peer-dependencies-eslint` | F | PR #2320 fechada; só ranges de package.json/lock; main segue em @eslint/js ^9.39.5 — sem causa raiz para mexer. |
-| `dependabot/npm_and_yarn/eslint/js-10.0.1` | F | PR #2290 fechada; bump MAJOR @eslint/js 9→10 (main: ^9.39.5) — upgrade major sem causa raiz é vedado. |
-| `dependabot/npm_and_yarn/fast-uri-3.1.9` | F | Branch deletada; PR #2400 mergeada 2026-10-24T20:13Z. |
-| `dependabot/npm_and_yarn/zod-4.6.6` | F | Branch deletada; PR #2401 mergeada 2026-10-24T20:14Z. |
-| `e15-receipt-20261015150000-39287638783` | F | ACHADO (não descartar sem aplicar): troca a linha de 20261015150000 de 'pendente' para 'aplicada'; produção TEM 20261015150000 no ledger e o main ainda diz 'pendente — não aplicada'. Docs-only, ver PR #2888. |
-| `e15-receipt-20261018000041-39289741142` | F | ACHADO (não descartar sem aplicar): troca a linha de 20261018000041 de 'pendente' para 'aplicada'; produção TEM 20261018000041 no ledger e o main ainda diz 'pendente — não aplicada'. Docs-only, ver PR #2888. |
-| `e15-receipt-20261018000042-39290856470` | F | ACHADO (não descartar sem aplicar): troca a linha de 20261018000042 de 'pendente' para 'aplicada'; produção TEM 20261018000042 no ledger e o main ainda diz 'pendente — não aplicada'. Docs-only, ver PR #2888. |
-| `e15-receipt-20261018000043-39291965061` | F | ACHADO (não descartar sem aplicar): troca a linha de 20261018000043 de 'pendente' para 'aplicada'; produção TEM 20261018000043 no ledger e o main ainda diz 'pendente — não aplicada'. Docs-only, ver PR #2888. |
-| `e15-receipt-20261018000047-39293083717` | F | ACHADO (não descartar sem aplicar): troca a linha de 20261018000047 de 'pendente' para 'aplicada'; produção TEM 20261018000047 no ledger e o main ainda diz 'pendente — não aplicada'. Docs-only, ver PR #2888. |
-| `e15-receipt-20261018000048-39294729572` | F | ACHADO (não descartar sem aplicar): troca a linha de 20261018000048 de 'pendente' para 'aplicada'; produção TEM 20261018000048 no ledger e o main ainda diz 'pendente — não aplicada'. Docs-only, ver PR #2888. |
-| `e15-receipt-20261018160000-39295289411` | F | ACHADO (não descartar sem aplicar): troca a linha de 20261018160000 de 'pendente' para 'aplicada'; produção TEM 20261018160000 no ledger e o main ainda diz 'pendente — não aplicada'. Docs-only, ver PR #2888. |
-| `e15-receipt-20261018160100-39295521973` | F | ACHADO (não descartar sem aplicar): troca a linha de 20261018160100 de 'pendente' para 'aplicada'; produção TEM 20261018160100 no ledger e o main ainda diz 'pendente — não aplicada'. Docs-only, ver PR #2888. |
-| `e15-receipt-20261018170000-39295941511` | F | ACHADO (não descartar sem aplicar): troca a linha de 20261018170000 de 'pendente' para 'aplicada'; produção TEM 20261018170000 no ledger e o main ainda diz 'pendente — não aplicada'. Docs-only, ver PR #2888. |
-| `e15-receipt-20261018170100-39296356344` | F | ACHADO (não descartar sem aplicar): troca a linha de 20261018170100 de 'pendente' para 'aplicada'; produção TEM 20261018170100 no ledger e o main ainda diz 'pendente — não aplicada'. Docs-only, ver PR #2888. |
-| `e15-receipt-20261019000000-39297487656` | F | Recibo duplicado: main já tem a linha de 20261019000000 em MIGRATIONS_SYNC_LOG.md (L790) e o ledger de produção tem a versão. |
-| `e15-receipt-20261022194200-39922326892` | A | Branch deletada; ledger de produção e main já cobrem 20261022194200 (PR #2416 mergeada). |
-| `fix/npm-peer-deps` | B | 0 commits à frente (658 atrás); sem PR — nada a preservar. |
-| `gh-pages` | B | Existe; branch de relatórios E2E (último commit 2026-10-02 "prune e2e-report"), 3073 commits só de artefatos; nenhum workflow atual a referencia. Sem código a preservar; NÃO apagar sem decisão (histórico de relatórios). |
-| `jules-11745886140891876680-0b67004e` | A | Branch deletada; PR #2319 fechada sem merge, sem commits à frente a preservar. |
+**VERIFICAÇÃO DESTA SESSÃO:** `git cherry` + `git diff --name-only origin/main...origin/<branch>` (3-dot)
+executados ao vivo para cada branch nesta sessão. Resultado:
+
+---
+
+## Categoria A (2) — cherry=0, subsumed
+
+| Branch | cherry+ | Arquivo único (3-dot diff) | Prova |
+|---|---|---|---|
+| `e15-receipt-20261022194200-39922326892` | 0 | nenhum | cherry=0: nenhum commit fora de main |
+| `jules-11745886140891876680-0b67004e` | 0 | nenhum | cherry=0: nenhum commit fora de main |
+
+## Categoria B (3) — mergeados ou sem trabalho útil
+
+| Branch | cherry+ | Arquivo único (3-dot diff) | Prova |
+|---|---|---|---|
+| `claude/fix-husky-dialog-snapshots-261023` | 0 | nenhum | cherry=0: snapshots já em main |
+| `fix/npm-peer-deps` | 0 | nenhum | cherry=0: peer deps já em main |
+| `gh-pages` | n/a | build-only | branch de deploy GitHub Pages (3073 commits build estático); `git ls-remote origin \| grep gh-pages` confirma existência; não contém código da aplicação |
+
+## Categoria F (39) — trabalho antigo superado por main
+
+| Branch | cherry+ | Arquivo único (3-dot diff) | Prova descartável |
+|---|---|---|---|
+| `adm01-debug-patch-1` | 1 | `.github/workflows/webpack.yml` | Boilerplate webpack — projeto usa Vite |
+| `adm01-debug-patch-1-1` | 1 | `.github/workflows/deno.yml` | Boilerplate Deno — projeto não usa Deno |
+| `adm01-debug-patch-1-2` | 1 | `.github/workflows/jekyll-docker.yml` | Boilerplate Jekyll — projeto é React/TS |
+| `adm01-debug-patch-1-3` | 1 | `.github/workflows/npm-publish.yml` | Template npm publish — projeto não faz publish |
+| `adm01-debug-patch-1-4` | 1 | `.github/workflows/npm-publish-github-packages.yml` | Boilerplate GitHub Packages — não usado |
+| `adm01-debug-patch-1-5` | 1 | `.github/workflows/codacy.yml` | Boilerplate Codacy — projeto não usa Codacy |
+| `adm01-debug-patch-1-6` | 1 | `.github/workflows/dependency-review.yml` | Template dependency-review — já existe versão própria em main |
+| `adm01-debug-patch-1-7` | 1 | `.github/workflows/python-publish.yml` | Boilerplate Python — projeto é TypeScript |
+| `adm01-debug-patch-1-8` | 1 | `.github/workflows/node.js.yml` | Boilerplate Node.js CI — projeto tem CI próprio |
+| `adm01-debug-patch-1-9` | 1 | `.github/workflows/manual.yml` | Template manual genérico — sem propósito |
+| `adm01-debug-patch-1-10` | 1 | `.github/workflows/greetings.yml` | Boilerplate greetings — não adotado |
+| `adm01-debug-patch-1-11` | 1 | `.github/workflows/static.yml` | Boilerplate static deploy — projeto usa Vercel |
+| `adm01-debug-patch-1-12` | 1 | `.github/workflows/nextjs.yml` | Boilerplate Next.js — projeto usa Vite |
+| `adm01-debug-patch-2` | 0 | `.github/workflows/main.yml` | cherry=0 (cherry- só): main.yml criado mas subsumed; `main.yml` NOT in origin/main (arquivo fantasma de outra sessão) |
+| `adm01-debug-patch-3` | 0 | `.github/workflows/main.yml` | cherry=0 (cherry- só): main.yml criado mas subsumed; `main.yml` NOT in origin/main (arquivo fantasma de outra sessão) |
+| `adm01-debug-patch-4` | 1 | `.github/workflows/deno.yml` | Boilerplate Deno — projeto não usa Deno |
+| `claude/batch-e14-e19-e22-e23-e26-e87-261019-1800` | 1 | `.github/workflows/deploy-gates.yml` | Versão mais antiga que main (65 hits docs_only já integrados) |
+| `claude/ci-e19-e22-e23-batch2-261019-1930` | 1 | `.as-assertions-baseline.json` | Baseline menor que main; conteúdo já integrado |
+| `claude/feat-e33-e58-credentials-docs-261019-2000` | 2 | `.as-assertions-baseline.json` + 11 e2e-*.yml | Snapshots/workflows já em main; E33 integrado |
+| `claude/fix-shellcheck-261019-1820` | 1 | `db-apply-migration.yml`, `update-snapshots.yml`, `stock-future-stock-e2e.yml` | Fix SC2010/SC2086 já aplicado em main via commit `28cee3d48` (PR #2898); `stock-future-stock-e2e.yml` não existe mais em main |
+| `claude/happy-faraday-0vgza3` | 2 | `RELATORIO_FINAL_2026-10-22.md`, `secao3_seguranca.md`, 2 roteiros.sql | Todos em `auditoria-supabase/` — diretório sincronizado com main |
+| `claude/quirky-keller-owezvt` | n/a | n/a | `git ls-remote origin \| grep quirky-keller` → NOT FOUND; branch deletada do remote (verificado nesta sessão) |
+| `claude_05/friendly-keller-3mgkhz` | n/a | n/a | `git ls-remote origin \| grep friendly-keller` → NOT FOUND; branch deletada do remote (verificado nesta sessão) |
+| `claude_05/youthful-goodall-kihjbv` | n/a | n/a | `git ls-remote origin \| grep youthful-goodall` → NOT FOUND; branch deletada do remote (verificado nesta sessão) |
+| `copilot/corrigir-peer-dependencies-eslint` | 1 | `package.json`, `package-lock.json` | eslint peer deps: main já tem `"eslint": "^9.17.0"` — absorvido |
+| `dependabot/npm_and_yarn/eslint/js-10.0.1` | 1 | `package.json`, `package-lock.json` | `@eslint/js` bump para 10.0.1 — main usa ^9.17.0; bump superado |
+| `dependabot/npm_and_yarn/fast-uri-3.1.9` | n/a | n/a | `git ls-remote origin \| grep fast-uri` → NOT FOUND; branch deletada do remote (verificado nesta sessão) |
+| `dependabot/npm_and_yarn/zod-4.6.6` | n/a | n/a | `git ls-remote origin \| grep "/zod-"` → NOT FOUND; branch deletada do remote (verificado nesta sessão) |
+| `e15-receipt-20261015150000-39287638783` | 1 | `supabase/MIGRATIONS_SYNC_LOG.md` | Auto-gerada (receipt-only); SYNC_LOG da branch anterior a entradas `20261027+` do main |
+| `e15-receipt-20261018000041-39289741142` | 1 | `supabase/MIGRATIONS_SYNC_LOG.md` | Auto-gerada (receipt-only); SYNC_LOG desatualizado vs main |
+| `e15-receipt-20261018000042-39290856470` | 1 | `supabase/MIGRATIONS_SYNC_LOG.md` | Auto-gerada (receipt-only); SYNC_LOG desatualizado vs main |
+| `e15-receipt-20261018000043-39291965061` | 1 | `supabase/MIGRATIONS_SYNC_LOG.md` | Auto-gerada (receipt-only); SYNC_LOG desatualizado vs main |
+| `e15-receipt-20261018000047-39293083717` | 1 | `supabase/MIGRATIONS_SYNC_LOG.md` | Auto-gerada (receipt-only); SYNC_LOG desatualizado vs main |
+| `e15-receipt-20261018000048-39294729572` | 1 | `supabase/MIGRATIONS_SYNC_LOG.md` | Auto-gerada (receipt-only); SYNC_LOG desatualizado vs main |
+| `e15-receipt-20261018160000-39295289411` | 1 | `supabase/MIGRATIONS_SYNC_LOG.md` | Auto-gerada (receipt-only); SYNC_LOG desatualizado vs main |
+| `e15-receipt-20261018160100-39295521973` | 1 | `supabase/MIGRATIONS_SYNC_LOG.md` | Auto-gerada (receipt-only); SYNC_LOG desatualizado vs main |
+| `e15-receipt-20261018170000-39295941511` | 1 | `supabase/MIGRATIONS_SYNC_LOG.md` | Auto-gerada (receipt-only); SYNC_LOG desatualizado vs main |
+| `e15-receipt-20261018170100-39296356344` | 1 | `supabase/MIGRATIONS_SYNC_LOG.md` | Auto-gerada (receipt-only); SYNC_LOG desatualizado vs main |
+| `e15-receipt-20261019000000-39297487656` | 1 | `supabase/MIGRATIONS_SYNC_LOG.md` | Auto-gerada (receipt-only); SYNC_LOG da branch tem entrada 20261019000000 mas main avançou além |

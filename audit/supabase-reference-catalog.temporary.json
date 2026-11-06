@@ -360,7 +360,7 @@
       "file": "src/hooks/stock/useStockNotes.ts",
       "occurrences": 3,
       "stage": 51,
-      "reason": "Feature sem tabela e sem decisão do PO; não criar schema por suposição."
+      "reason": "Tabela ausente no canonico (confirmado via pg_catalog em 2026-11-02, zero linhas em pg_class; tambem ausente de supabase_migrations.schema_migrations). Existe migration pronta no repo (supabase/migrations/20261031000000_create_stock_notes.sql, criada apos a captura deste catalogo em 2026-09-12) que cria a tabela com RLS e trigger, mas nunca foi aplicada. useStockNotes.ts nao tem nenhum importador em src/ hoje (hook orfao) — nao quebra producao, mas aplicar a migration sem decisao do PO sobre a feature repetiria o problema. Remover esta excecao so apos o PO decidir: aplicar a migration + ligar a UI, ou remover o hook morto."
     },
     {
       "kind": "relation",
@@ -433,6 +433,14 @@
       "occurrences": 1,
       "stage": 101,
       "reason": "Tabela ainda não criada em produção; edge function xbz-image-uploader é stub (not_implemented) aguardando migration de criação da tabela."
+    },
+    {
+      "kind": "rpc",
+      "name": "fn_get_rupture_alerts",
+      "file": "src/hooks/stock/useRuptureAlerts.ts",
+      "occurrences": 1,
+      "stage": 102,
+      "reason": "RPC ausente no canonico (confirmado via pg_catalog em 2026-11-02, zero linhas em pg_proc; tambem ausente de supabase_migrations.schema_migrations). Existe migration pronta no repo (supabase/migrations/20261101150000_fix_sb0003_fn_get_rupture_alerts.sql, incidente SB-0003) que cria a funcao, mas nunca foi aplicada em producao via db-apply-migration.yml. Consumidor ativo: useRuptureAlerts.ts, feature flag useEmaRupture. Remover esta excecao e registrar o RPC como confirmado so depois do PO rodar essa migration no canonico."
     }
   ],
   "dynamic_baseline": [

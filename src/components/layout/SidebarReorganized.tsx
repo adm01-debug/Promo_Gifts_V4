@@ -372,6 +372,13 @@ const navGroups: NavGroup[] = [
         devOnly: true,
         tooltip: 'Gerencie as imagens do catálogo para uma vitrine sempre rápida e bonita.',
       },
+      {
+        icon: ShieldCheck,
+        label: 'Audit Suite',
+        href: '/admin/audit-suite',
+        devOnly: true,
+        tooltip: 'Visualize relatórios de auditoria e rastreamento de ações no sistema.',
+      },
     ],
   },
 ];
@@ -524,7 +531,7 @@ export const SidebarReorganized = React.memo(
       () =>
         enrichedNavGroups
           .filter((g) => {
-            // Se o grupo for de Insights, ele é visível para todos os usuários autenticados
+            // Se ogropo for de Insights, ele é visível para todos os usuários autenticados
             if (g.id === 'intelligence') return true;
             return (!g.adminOnly || isAdmin) && (!g.devOnly || isDev);
           })
