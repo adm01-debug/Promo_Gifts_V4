@@ -949,7 +949,7 @@
   {
    "arquivo": "e2e/fixtures/auth.setup.ts",
    "tipo": "e2e",
-   "linhas": 89,
+   "linhas": 94,
    "testa": [],
    "casos": 0
   },

@@ -61991,6 +61991,123 @@
       },
       {
         "comment": null,
+        "default": "gen_random_uuid()",
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "id",
+        "nullable": false,
+        "position": 1,
+        "schema": "public",
+        "table": "stock_notes",
+        "type": "uuid"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "variant_id",
+        "nullable": false,
+        "position": 2,
+        "schema": "public",
+        "table": "stock_notes",
+        "type": "uuid"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "supplier_id",
+        "nullable": true,
+        "position": 3,
+        "schema": "public",
+        "table": "stock_notes",
+        "type": "uuid"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "created_by",
+        "nullable": false,
+        "position": 4,
+        "schema": "public",
+        "table": "stock_notes",
+        "type": "uuid"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "note",
+        "nullable": false,
+        "position": 5,
+        "schema": "public",
+        "table": "stock_notes",
+        "type": "text"
+      },
+      {
+        "comment": null,
+        "default": "false",
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "is_pinned",
+        "nullable": false,
+        "position": 6,
+        "schema": "public",
+        "table": "stock_notes",
+        "type": "boolean"
+      },
+      {
+        "comment": null,
+        "default": "now()",
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "created_at",
+        "nullable": false,
+        "position": 7,
+        "schema": "public",
+        "table": "stock_notes",
+        "type": "timestamp with time zone"
+      },
+      {
+        "comment": null,
+        "default": "now()",
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "updated_at",
+        "nullable": false,
+        "position": 8,
+        "schema": "public",
+        "table": "stock_notes",
+        "type": "timestamp with time zone"
+      },
+      {
+        "comment": null,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "is_enum": false,
+        "name": "deleted_at",
+        "nullable": true,
+        "position": 9,
+        "schema": "public",
+        "table": "stock_notes",
+        "type": "timestamp with time zone"
+      },
+      {
+        "comment": null,
         "default": null,
         "generated": null,
         "identity": "a",
@@ -130902,6 +131019,80 @@
       },
       {
         "columns": [
+          "created_by"
+        ],
+        "deferrable": false,
+        "definition": "FOREIGN KEY (created_by) REFERENCES auth.users(id) ON DELETE CASCADE",
+        "name": "stock_notes_created_by_fkey",
+        "on_delete": "CASCADE",
+        "on_update": "NO ACTION",
+        "ref_columns": [
+          "id"
+        ],
+        "ref_schema": "auth",
+        "ref_table": "users",
+        "schema": "public",
+        "table": "stock_notes",
+        "type": "FOREIGN KEY",
+        "validated": true
+      },
+      {
+        "columns": [
+          "id"
+        ],
+        "deferrable": false,
+        "definition": "PRIMARY KEY (id)",
+        "name": "stock_notes_pkey",
+        "on_delete": null,
+        "on_update": null,
+        "ref_columns": [],
+        "ref_schema": null,
+        "ref_table": null,
+        "schema": "public",
+        "table": "stock_notes",
+        "type": "PRIMARY KEY",
+        "validated": true
+      },
+      {
+        "columns": [
+          "supplier_id"
+        ],
+        "deferrable": false,
+        "definition": "FOREIGN KEY (supplier_id) REFERENCES suppliers(id) ON DELETE SET NULL",
+        "name": "stock_notes_supplier_id_fkey",
+        "on_delete": "SET NULL",
+        "on_update": "NO ACTION",
+        "ref_columns": [
+          "id"
+        ],
+        "ref_schema": "public",
+        "ref_table": "suppliers",
+        "schema": "public",
+        "table": "stock_notes",
+        "type": "FOREIGN KEY",
+        "validated": true
+      },
+      {
+        "columns": [
+          "variant_id"
+        ],
+        "deferrable": false,
+        "definition": "FOREIGN KEY (variant_id) REFERENCES product_variants(id) ON DELETE CASCADE",
+        "name": "stock_notes_variant_id_fkey",
+        "on_delete": "CASCADE",
+        "on_update": "NO ACTION",
+        "ref_columns": [
+          "id"
+        ],
+        "ref_schema": "public",
+        "ref_table": "product_variants",
+        "schema": "public",
+        "table": "stock_notes",
+        "type": "FOREIGN KEY",
+        "validated": true
+      },
+      {
+        "columns": [
           "id"
         ],
         "deferrable": false,
@@ -177535,6 +177726,41 @@
         "volatility": "volatile"
       },
       {
+        "args": "",
+        "callers": {
+          "code": [
+            {
+              "file": "supabase/migrations/20261031000000_create_stock_notes.sql",
+              "hits": 1
+            }
+          ],
+          "code_total_files": 1,
+          "cron": [],
+          "db": [],
+          "triggers": [
+            "public.stock_notes.set_stock_notes_updated_at"
+          ],
+          "views": []
+        },
+        "comment": null,
+        "config": null,
+        "definition": null,
+        "definition_sha": "5a00f076f7e05ee4",
+        "execute_api_roles": "anon, authenticated, service_role",
+        "execute_public": true,
+        "is_trigger_fn": true,
+        "kind": "function",
+        "language": "plpgsql",
+        "leakproof": false,
+        "name": "handle_updated_at",
+        "owner": "postgres",
+        "returns": "trigger",
+        "schema": "public",
+        "security_definer": false,
+        "strict": false,
+        "volatility": "volatile"
+      },
+      {
         "args": "_action step_up_action",
         "callers": {
           "code": [
@@ -196711,6 +196937,24 @@
           "grantee": "anon",
           "privileges": "REFERENCES, TRIGGER",
           "schema": "public",
+          "table": "stock_notes"
+        },
+        {
+          "grantee": "authenticated",
+          "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE",
+          "schema": "public",
+          "table": "stock_notes"
+        },
+        {
+          "grantee": "service_role",
+          "privileges": "DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE",
+          "schema": "public",
+          "table": "stock_notes"
+        },
+        {
+          "grantee": "anon",
+          "privileges": "REFERENCES, TRIGGER",
+          "schema": "public",
           "table": "stock_snapshots"
         },
         {
@@ -214397,6 +214641,48 @@
       },
       {
         "columns": [
+          "variant_id"
+        ],
+        "definition": "CREATE INDEX stock_notes_active_idx ON public.stock_notes USING btree (variant_id) WHERE (deleted_at IS NULL)",
+        "is_primary": false,
+        "is_unique": false,
+        "is_valid": true,
+        "method": "btree",
+        "name": "stock_notes_active_idx",
+        "predicate": "(deleted_at IS NULL)",
+        "schema": "public",
+        "table": "stock_notes"
+      },
+      {
+        "columns": [
+          "id"
+        ],
+        "definition": "CREATE UNIQUE INDEX stock_notes_pkey ON public.stock_notes USING btree (id)",
+        "is_primary": true,
+        "is_unique": true,
+        "is_valid": true,
+        "method": "btree",
+        "name": "stock_notes_pkey",
+        "predicate": null,
+        "schema": "public",
+        "table": "stock_notes"
+      },
+      {
+        "columns": [
+          "variant_id"
+        ],
+        "definition": "CREATE INDEX stock_notes_variant_idx ON public.stock_notes USING btree (variant_id)",
+        "is_primary": false,
+        "is_unique": false,
+        "is_valid": true,
+        "method": "btree",
+        "name": "stock_notes_variant_idx",
+        "predicate": null,
+        "schema": "public",
+        "table": "stock_notes"
+      },
+      {
+        "columns": [
           "captured_at"
         ],
         "definition": "CREATE INDEX idx_snapshots_captured_at ON public.stock_snapshots USING btree (captured_at)",
@@ -218404,6 +218690,18 @@
       },
       {
         "code": "fk_without_index",
+        "detail": "FK sem índice nas colunas ['created_by']: joins e DELETE/UPDATE na tabela pai ficam lentos.",
+        "object": "public.stock_notes.stock_notes_created_by_fkey",
+        "severity": "BAIXA"
+      },
+      {
+        "code": "fk_without_index",
+        "detail": "FK sem índice nas colunas ['supplier_id']: joins e DELETE/UPDATE na tabela pai ficam lentos.",
+        "object": "public.stock_notes.stock_notes_supplier_id_fkey",
+        "severity": "BAIXA"
+      },
+      {
+        "code": "fk_without_index",
         "detail": "FK sem índice nas colunas ['product_id']: joins e DELETE/UPDATE na tabela pai ficam lentos.",
         "object": "public.stock_snapshots.stock_snapshots_product_id_fkey",
         "severity": "BAIXA"
@@ -218430,6 +218728,24 @@
         "code": "fk_without_index",
         "detail": "FK sem índice nas colunas ['variant_supplier_source_id']: joins e DELETE/UPDATE na tabela pai ficam lentos.",
         "object": "public.stock_snapshots.stock_snapshots_variant_supplier_source_id_fkey",
+        "severity": "BAIXA"
+      },
+      {
+        "code": "policy_auth_fn_not_wrapped",
+        "detail": "Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect.",
+        "object": "public.stock_notes.stock_notes_delete_own",
+        "severity": "BAIXA"
+      },
+      {
+        "code": "policy_auth_fn_not_wrapped",
+        "detail": "Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect.",
+        "object": "public.stock_notes.stock_notes_insert_own",
+        "severity": "BAIXA"
+      },
+      {
+        "code": "policy_auth_fn_not_wrapped",
+        "detail": "Policy chama auth.uid()/jwt() sem `(select ...)`: é reavaliada por linha; envolva em subselect.",
+        "object": "public.stock_notes.stock_notes_update_own",
         "severity": "BAIXA"
       },
       {
@@ -233336,6 +233652,12 @@
         "version": "20261029160339"
       },
       {
+        "name": "create_stock_notes",
+        "statements": 1,
+        "statements_sha": "7b6f8f9b2133cb3e",
+        "version": "20261031000000"
+      },
+      {
         "name": "20261101140001_sb0001_remove_auth_users_realtime",
         "statements": 1,
         "statements_sha": "6609a8a04b8e7cbc",
@@ -243011,6 +243333,54 @@
         "with_check": null
       },
       {
+        "cmd": "DELETE",
+        "name": "stock_notes_delete_own",
+        "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "stock_notes",
+        "using": "(created_by = auth.uid())",
+        "with_check": null
+      },
+      {
+        "cmd": "INSERT",
+        "name": "stock_notes_insert_own",
+        "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "stock_notes",
+        "using": null,
+        "with_check": "(created_by = auth.uid())"
+      },
+      {
+        "cmd": "SELECT",
+        "name": "stock_notes_select_authenticated",
+        "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "stock_notes",
+        "using": "true",
+        "with_check": null
+      },
+      {
+        "cmd": "UPDATE",
+        "name": "stock_notes_update_own",
+        "permissive": "PERMISSIVE",
+        "roles": [
+          "authenticated"
+        ],
+        "schema": "public",
+        "table": "stock_notes",
+        "using": "(created_by = auth.uid())",
+        "with_check": "(created_by = auth.uid())"
+      },
+      {
         "cmd": "SELECT",
         "name": "auth_read_stock_snapshots",
         "permissive": "PERMISSIVE",
@@ -251707,6 +252077,21 @@
         "schema": "public"
       },
       {
+        "comment": null,
+        "from_extension": false,
+        "is_partition": false,
+        "kind": "table",
+        "name": "stock_notes",
+        "owner": "postgres",
+        "parent": null,
+        "partition_bound": null,
+        "partition_key": null,
+        "replica_identity": "default",
+        "rls_enabled": true,
+        "rls_forced": false,
+        "schema": "public"
+      },
+      {
         "comment": "Camada 1: Snapshots brutos de mudanças de estoque e preço dos fornecedores. Retenção: 14 dias. Capturado automaticamente via trigger em variant_supplier_sources.",
         "from_extension": false,
         "is_partition": false,
@@ -256888,6 +257273,17 @@
         "schema": "public",
         "status": "enabled",
         "table": "sm_site_url_map",
+        "timing": "BEFORE"
+      },
+      {
+        "definition": "CREATE TRIGGER set_stock_notes_updated_at BEFORE UPDATE ON stock_notes FOR EACH ROW EXECUTE FUNCTION handle_updated_at()",
+        "events": "UPDATE",
+        "function": "public.handle_updated_at",
+        "level": "ROW",
+        "name": "set_stock_notes_updated_at",
+        "schema": "public",
+        "status": "enabled",
+        "table": "stock_notes",
         "timing": "BEFORE"
       },
       {

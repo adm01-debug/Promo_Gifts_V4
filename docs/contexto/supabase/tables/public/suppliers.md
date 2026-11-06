@@ -90,6 +90,7 @@
 | public.produtos_padronizacao_variantes | produtos_padronizacao_variantes_supplier_id_fkey | supplier_id | NO ACTION |
 | public.sm_site_url_map | sm_site_url_map_supplier_id_fkey | supplier_id | CASCADE |
 | public.stock_daily_summary | stock_daily_summary_supplier_id_fkey | supplier_id | NO ACTION |
+| public.stock_notes | stock_notes_supplier_id_fkey | supplier_id | SET NULL |
 | public.stock_snapshots | stock_snapshots_supplier_id_fkey | supplier_id | NO ACTION |
 | public.supplier_attribute_definitions | supplier_attribute_definitions_supplier_id_fkey | supplier_id | NO ACTION |
 | public.supplier_branches | supplier_branches_supplier_id_fkey | supplier_id | CASCADE |

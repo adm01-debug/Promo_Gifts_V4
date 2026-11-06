@@ -2558,6 +2558,7 @@ SQL em `migrations/<versao>_<nome>.sql`. Mudanças feitas pelo Dashboard/SQL Edi
 | 20261027160000 | [deactivate_image_dimensions_backfill_cron](migrations/20261027160000_deactivate_image_dimensions_backfill_cron.sql) | 3 |
 | 20261027180000 | [reactivate_generate_blurhashes_safe_schedule](migrations/20261027180000_reactivate_generate_blurhashes_safe_schedule.sql) | 3 |
 | 20261029160339 | [add_kill_switch_hits_anon_rate_guard](migrations/20261029160339_add_kill_switch_hits_anon_rate_guard.sql) | 2 |
+| 20261031000000 | [create_stock_notes](migrations/20261031000000_create_stock_notes.sql) | 1 |
 | 20261101140001 | [20261101140001_sb0001_remove_auth_users_realtime](migrations/20261101140001_20261101140001_sb0001_remove_auth_users_realtime.sql) | 1 |
 | 20261101140002 | [20261101140002_sb0003_replica_identity_full_realtime](migrations/20261101140002_20261101140002_sb0003_replica_identity_full_realtime.sql) | 1 |
 | 20261101140003 | [20261101140003_sb0006_index_kit_fk_user_id](migrations/20261101140003_20261101140003_sb0006_index_kit_fk_user_id.sql) | 1 |

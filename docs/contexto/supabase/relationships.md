@@ -348,6 +348,9 @@
 | public.stock_daily_summary | supplier_id | public.suppliers | id | NO ACTION | NO ACTION |
 | public.stock_daily_summary | variant_id | public.product_variants | id | CASCADE | NO ACTION |
 | public.stock_daily_summary | variant_supplier_source_id | public.variant_supplier_sources | id | CASCADE | NO ACTION |
+| public.stock_notes | created_by | auth.users | id | CASCADE | NO ACTION |
+| public.stock_notes | supplier_id | public.suppliers | id | SET NULL | NO ACTION |
+| public.stock_notes | variant_id | public.product_variants | id | CASCADE | NO ACTION |
 | public.stock_snapshots | product_id | public.products | id | CASCADE | NO ACTION |
 | public.stock_snapshots | supplier_branch_id | public.supplier_branches | id | NO ACTION | NO ACTION |
 | public.stock_snapshots | supplier_id | public.suppliers | id | NO ACTION | NO ACTION |

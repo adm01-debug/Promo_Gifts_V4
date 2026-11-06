@@ -1034,6 +1034,9 @@ Uso e tamanho em `stats.md`.
 | public.stock_daily_summary | idx_stock_daily_summary_supplier_id | btree | supplier_id | não | sim |  |
 | public.stock_daily_summary | stock_daily_summary_pkey | btree | id | sim | sim |  |
 | public.stock_daily_summary | uq_stock_daily_vss_date | btree | variant_supplier_source_id, summary_date | sim | sim |  |
+| public.stock_notes | stock_notes_active_idx | btree | variant_id | não | sim | `(deleted_at IS NULL)` |
+| public.stock_notes | stock_notes_pkey | btree | id | sim | sim |  |
+| public.stock_notes | stock_notes_variant_idx | btree | variant_id | não | sim |  |
 | public.stock_snapshots | idx_snapshots_captured_at | btree | captured_at | não | sim |  |
 | public.stock_snapshots | stock_snapshots_pkey | btree | id | sim | sim |  |
 | public.supplier_attribute_definitions | idx_supplier_attribute_definitions_organization_id | btree | organization_id | não | sim |  |

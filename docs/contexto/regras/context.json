@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "bcdefb4e59204e0c916d785c62e78fcde2ad9fe0",
+  "sha": "e1705b3c58c753961df0b6ba032a576887aa4b28",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-06 00:38 UTC",
+  "generated_at": "2026-11-06 16:11 UTC",
   "files_total": 9092,
   "code_files": 7837,
-  "code_lines": 1050279
+  "code_lines": 1050284
  },
  "version": "1.3.2",
- "facts_hash": "4ace0e55003aec1e",
+ "facts_hash": "a7947f77b2b8dc4c",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -137859,7 +137859,7 @@
   {
    "module": "e2e",
    "files": 620,
-   "lines": 74283,
+   "lines": 74288,
    "tables": [
     "discount_approval_requests",
     "quote_items"
@@ -366664,7 +366664,7 @@
   },
   "e2e/fixtures/auth.setup.ts": {
    "path": "e2e/fixtures/auth.setup.ts",
-   "lines": 89,
+   "lines": 94,
    "env": [
     "CI",
     "E2E_MOCK_AUTH",
@@ -482741,10 +482741,19 @@
   }
  },
  "git": {
-  "sha": "bcdefb4e59204e0c916d785c62e78fcde2ad9fe0",
+  "sha": "e1705b3c58c753961df0b6ba032a576887aa4b28",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "e1705b3",
+    "date": "2026-11-06",
+    "author": "adm01-debug",
+    "subject": "fix(e2e): alinha timeout do setup de autenticação (#3102)",
+    "files": [
+     "e2e/fixtures/auth.setup.ts"
+    ]
+   },
    {
     "sha": "bcdefb4",
     "date": "2026-11-05",
@@ -483037,38 +483046,6 @@
      "docs/ci/SEGREDOS.md",
      "docs/contexto/regras/manual/regras.md"
     ]
-   },
-   {
-    "sha": "385af81",
-    "date": "2026-11-04",
-    "author": "adm01-debug",
-    "subject": "feat(ci): inventário vivo para agentes de IA a cada 10 min (pacote de scripts autônomos do Zapp) (#3059)",
-    "files": [
-     ".github/workflows/contexto.yml",
-     ".github/workflows/deploy-gates.yml",
-     ".gitignore",
-     ".migration-refs-baseline.json",
-     "AGENTS.md",
-     "CLAUDE.md",
-     "ai-context.config.json",
-     "docs/ci/PADRAO_WORKFLOW.md",
-     "docs/contexto/regras/manual/README.md",
-     "docs/contexto/regras/manual/TEMPLATE-regras-de-negocio.md",
-     "package.json",
-     "scripts/ai-context/README.md",
-     "scripts/ai-context/cenarios.mjs",
-     "scripts/ai-context/gerar.mjs",
-     "scripts/ai-context/gerar.unit.mjs",
-     "scripts/regras_negocio/README.md",
-     "scripts/regras_negocio/generate.py",
-     "scripts/regras_negocio/indice.py",
-     "scripts/regras_negocio/test_generate.py",
-     "scripts/supabase_snapshot/README.md",
-     "scripts/supabase_snapshot/requirements.txt",
-     "scripts/supabase_snapshot/snapshot.py",
-     "scripts/supabase_snapshot/test_snapshot.py",
-     "tests/scripts/contexto-produtores.test.mjs"
-    ]
    }
   ],
   "hot_files": [
@@ -483089,10 +483066,6 @@
     4
    ],
    [
-    ".github/workflows/deploy-gates.yml",
-    3
-   ],
-   [
     "docs/PLANO_MELHORIAS_200_ETAPAS_261104.md",
     3
    ],
@@ -483105,12 +483078,20 @@
     2
    ],
    [
+    ".github/workflows/deploy-gates.yml",
+    2
+   ],
+   [
     "e2e/flows/20-all-features-smoke.spec.ts",
     2
    ],
    [
     "docs/PLANO_MELHORIAS_200_ETAPAS.md",
     2
+   ],
+   [
+    "e2e/fixtures/auth.setup.ts",
+    1
    ],
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
@@ -483146,10 +483127,6 @@
    ],
    [
     "supabase/migrations/20261104100000_partitions_supplier_products_raw_history_2027.sql",
-    1
-   ],
-   [
-    "supabase/rollbacks/20261104100000_rollback.sql",
     1
    ]
   ]

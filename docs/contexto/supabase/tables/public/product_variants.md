@@ -92,6 +92,7 @@
 | public.produtos_padronizacao_variantes | produtos_padronizacao_variantes_variant_id_fkey | variant_id | SET NULL |
 | public.quote_items | quote_items_product_variant_id_fkey | product_variant_id | SET NULL |
 | public.stock_daily_summary | stock_daily_summary_variant_id_fkey | variant_id | CASCADE |
+| public.stock_notes | stock_notes_variant_id_fkey | variant_id | CASCADE |
 | public.stock_snapshots | stock_snapshots_variant_id_fkey | variant_id | CASCADE |
 | public.supplier_products_raw | supplier_products_raw_variant_id_fkey | variant_id | SET NULL |
 | public.variant_commemorative_dates | variant_commemorative_dates_variant_id_fkey | variant_id | CASCADE |

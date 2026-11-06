@@ -880,6 +880,9 @@ Roles da API: `anon` (sem login), `authenticated` (logado), `service_role` (bypa
 | public.stock_daily_summary | anon | REFERENCES, TRIGGER |
 | public.stock_daily_summary | authenticated | REFERENCES, SELECT, TRIGGER |
 | public.stock_daily_summary | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
+| public.stock_notes | anon | REFERENCES, TRIGGER |
+| public.stock_notes | authenticated | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, UPDATE |
+| public.stock_notes | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |
 | public.stock_snapshots | anon | REFERENCES, TRIGGER |
 | public.stock_snapshots | authenticated | REFERENCES, SELECT, TRIGGER |
 | public.stock_snapshots | service_role | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE |

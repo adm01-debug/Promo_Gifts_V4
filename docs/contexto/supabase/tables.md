@@ -340,6 +340,7 @@ Um arquivo por tabela em `tables/<schema>/<tabela>.md` (colunas, constraints, í
 | [public.step_up_challenges](tables/public/step_up_challenges.md) | table | sim | 4 | 14 | não |  |
 | [public.step_up_tokens](tables/public/step_up_tokens.md) | table | sim | 4 | 10 | não |  |
 | [public.stock_daily_summary](tables/public/stock_daily_summary.md) | table | sim | 1 | 23 | não | Camada 2: Resumo diário de movimentação de estoque e preço por variante/fornecedor. Retenção permanente. Gerado automaticamente por job noturno via pg_cron. |
+| [public.stock_notes](tables/public/stock_notes.md) | table | sim | 4 | 9 | não |  |
 | [public.stock_snapshots](tables/public/stock_snapshots.md) | table | sim | 1 | 20 | não | Camada 1: Snapshots brutos de mudanças de estoque e preço dos fornecedores. Retenção: 14 dias. Capturado automaticamente via trigger em variant_supplier_sources. |
 | [public.supplier_attribute_definitions](tables/public/supplier_attribute_definitions.md) | table | sim | 4 | 18 | não |  |
 | [public.supplier_branches](tables/public/supplier_branches.md) | table | sim | 4 | 25 | não | Filiais de fornecedores. Cada fornecedor pode faturar de UFs diferentes (ex: Spot MG/SP, Asia SC/SP). A UF da filial impacta diretamente o calculo de ICMS e CFOP. |
