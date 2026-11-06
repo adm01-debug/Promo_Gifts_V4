@@ -16,6 +16,11 @@ import { loginViaUI, dismissOnboardingTour } from '../helpers/auth';
 const STORAGE = path.resolve(__dirname, '../.auth/storageState.json');
 
 setup('authenticate', async ({ page }) => {
+  // Rate-limit do Supabase em IPs do GitHub Actions pode deixar o login
+  // pendurado por mais de 2 min. Aumenta para 5 min para o catch block de
+  // degradação graceful ter chance de rodar antes do Playwright matar o test.
+  setup.setTimeout(300_000);
+
   fs.mkdirSync(path.dirname(STORAGE), { recursive: true });
 
   // Mock mode must be self-contained. Previously the setup project always
