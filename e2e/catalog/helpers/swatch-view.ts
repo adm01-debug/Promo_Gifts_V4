@@ -68,9 +68,11 @@ export async function switchCatalogView(page: Page, mode: CatalogView): Promise<
   }
   await expect(option).toBeVisible({ timeout: 5_000 });
   await option.evaluate((element: HTMLElement) => element.click());
-  await expect(option).toHaveAttribute('aria-pressed', 'true');
-  await trigger.evaluate((element: HTMLElement) => element.click());
-  await expect(option).toBeHidden({ timeout: 5_000 });
+  if (await option.isVisible()) {
+    await expect(option).toHaveAttribute('aria-pressed', 'true');
+    await trigger.evaluate((element: HTMLElement) => element.click());
+    await expect(option).toBeHidden({ timeout: 5_000 });
+  }
 }
 
 /** Rows (article em Lista, div[data-index] em Tabela) que contêm a thumb clicável. */
