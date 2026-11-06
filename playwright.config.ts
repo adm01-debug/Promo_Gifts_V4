@@ -28,7 +28,10 @@ export default defineConfig({
   // coleta de TODA a suíte de forma intermitente. Projetos com testMatch próprio
   // (setup, chromium-smoke) continuam com o seu.
   testMatch: '**/*.spec.ts',
-  timeout: 120 * 1000,
+  // E21: loginViaUI tem timeout de 150s em CI; 200s cobre loginViaUI + overhead
+  // para qualquer teste ou beforeEach que chame loginAs, sem matar o test runner
+  // antes do guard E21 degradar graciosamente.
+  timeout: 200 * 1000,
   expect: {
     timeout: 15 * 1000,
   },
