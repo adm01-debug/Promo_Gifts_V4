@@ -5,7 +5,7 @@
 > negócio mudar. Versionado em `main`; entra em `07-REGRAS-DE-NEGOCIO.md` via contexto.yml.
 >
 > Atualizado em: 2026-11-04 (E071/E131 — criação inicial baseada em SCHEMA_REFERENCE,
-> REGRA #2, análise de 500 commits e agents de auditoria)
+> REGRA #2, análise de 500 commits e agents de auditoria; E2E PostgREST cold-start — 2026-11-05)
 
 ---
 
@@ -143,6 +143,7 @@ Fornecedor Asia → supplier_products_raw (Bronze) → normalização (Silver) �
 | **N8N** | Saída | Webhook `N8N_QUOTE_WEBHOOK_URL` para automações de orçamento | Edge `quote-sync` falha silenciosa; N8N não recebe evento |
 | **Vercel** | Deploy | Build do front a cada push em `main` | Deploy falha; produção continua servindo versão anterior |
 | **GitHub Actions / Supabase Edge** | Deploy | Edge functions a cada push em `main` que toca `supabase/functions/` | Sem rollback automático; `deploy-edge-functions.yml` com `source_ref` para rollback manual |
+| **PostgREST (Supabase)** | Interna | Consultas REST do front e dos testes E2E via PostgREST | Cold-start no CI ultrapassa 150s; testes E2E que chamam PostgREST devem usar `waitForFunction` com timeout ≥ 240s (PR #3072, 2026-11-05) |
 
 ---
 
