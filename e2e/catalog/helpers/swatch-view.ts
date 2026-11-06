@@ -73,7 +73,8 @@ export async function switchCatalogView(page: Page, mode: CatalogView): Promise<
   await expect(option).toBeFocused();
   await option.press('Enter');
   await expect(option).toHaveAttribute('aria-pressed', 'true');
-  await page.keyboard.press('Escape');
+  await trigger.focus();
+  await trigger.press('Enter');
   await expect(option).toBeHidden({ timeout: 5_000 });
 }
 
