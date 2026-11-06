@@ -22,7 +22,8 @@ const rewriteDenoUrlImports = (): Plugin => ({
     const next = code
       .replace(/(["'])https:\/\/esm\.sh\/zod@[^"']+\1/g, '"zod"')
       .replace(/(["'])https:\/\/deno\.land\/x\/zod@[^"']+\/mod\.ts\1/g, '"zod"')
-      .replace(/(["'])npm:zod@[^"']+\1/g, '"zod"');
+      .replace(/(["'])npm:zod@[^"']+\1/g, '"zod"')
+      .replace(/(["'])npm:@supabase\/supabase-js@[^"']+\1/g, '"@supabase/supabase-js"');
     return next === code ? null : { code: next, map: null };
   },
 });
