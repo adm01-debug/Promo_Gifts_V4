@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "e1705b3c58c753961df0b6ba032a576887aa4b28",
+  "sha": "1c0eb375c2ed7f4c16d0c51ca6ac17776e9a555f",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-06 16:11 UTC",
+  "generated_at": "2026-11-06 23:26 UTC",
   "files_total": 9092,
   "code_files": 7837,
   "code_lines": 1050284
@@ -482741,10 +482741,19 @@
   }
  },
  "git": {
-  "sha": "e1705b3c58c753961df0b6ba032a576887aa4b28",
+  "sha": "1c0eb375c2ed7f4c16d0c51ca6ac17776e9a555f",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "1c0eb37",
+    "date": "2026-11-06",
+    "author": "adm01-debug",
+    "subject": "chore(security): sincroniza baseline de policies RLS (#3110)",
+    "files": [
+     ".security/policies-baseline.json"
+    ]
+   },
    {
     "sha": "e1705b3",
     "date": "2026-11-06",
@@ -483034,18 +483043,6 @@
      "docs/PLANO_MELHORIAS_200_ETAPAS.md",
      "docs/PLANO_MELHORIAS_200_ETAPAS_261104.md"
     ]
-   },
-   {
-    "sha": "482c272",
-    "date": "2026-11-04",
-    "author": "adm01-debug",
-    "subject": "docs: análise 500 commits — plano 200 etapas, regras de negócio e fix Gate 1.14",
-    "files": [
-     "docs/PLANO_MELHORIAS_200_ETAPAS.md",
-     "docs/PLANO_MELHORIAS_200_ETAPAS_261104.md",
-     "docs/ci/SEGREDOS.md",
-     "docs/contexto/regras/manual/regras.md"
-    ]
    }
   ],
   "hot_files": [
@@ -483066,14 +483063,6 @@
     4
    ],
    [
-    "docs/PLANO_MELHORIAS_200_ETAPAS_261104.md",
-    3
-   ],
-   [
-    "docs/contexto/regras/manual/regras.md",
-    2
-   ],
-   [
     "e2e/flows/magazine-smoke.spec.ts",
     2
    ],
@@ -483086,11 +483075,19 @@
     2
    ],
    [
-    "docs/PLANO_MELHORIAS_200_ETAPAS.md",
+    "docs/PLANO_MELHORIAS_200_ETAPAS_261104.md",
     2
    ],
    [
+    ".security/policies-baseline.json",
+    1
+   ],
+   [
     "e2e/fixtures/auth.setup.ts",
+    1
+   ],
+   [
+    "docs/contexto/regras/manual/regras.md",
     1
    ],
    [

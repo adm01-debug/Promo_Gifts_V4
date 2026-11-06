@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "e1705b3c58c753961df0b6ba032a576887aa4b28",
+  "commit": "1c0eb375c2ed7f4c16d0c51ca6ac17776e9a555f",
   "branch": "main",
-  "data_commit": "2026-11-06T07:54:22-03:00",
+  "data_commit": "2026-11-06T20:19:38-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "1c0eb37",
+    "data": "2026-11-06",
+    "assunto": "chore(security): sincroniza baseline de policies RLS (#3110)"
+   },
    {
     "sha": "e1705b3",
     "data": "2026-11-06",
@@ -126,14 +131,9 @@
     "sha": "07dc24e",
     "data": "2026-11-04",
     "assunto": "fix(e2e): corrige 2 smoke tests de magazine pré-existentes (#3069)"
-   },
-   {
-    "sha": "50d099c",
-    "data": "2026-11-04",
-    "assunto": "chore: atualizar baseline soft-delete para partições p2027_03–p2027_12"
    }
   ],
-  "arquivos_mudados_7d": 421,
+  "arquivos_mudados_7d": 381,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -180,11 +180,11 @@
     "mudancas": 119
    },
    {
-    "pasta": "src/pages/products",
-    "mudancas": 111
+    "pasta": "src/components/kit-builder",
+    "mudancas": 110
    },
    {
-    "pasta": "src/components/kit-builder",
+    "pasta": "src/pages/products",
     "mudancas": 110
    },
    {
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 350
+    "commits": 349
    },
    {
     "autor": "Joaquim Ataides",
