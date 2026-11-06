@@ -72,9 +72,10 @@ async function firstPicker(page: Page): Promise<Locator | null> {
     .then(() => true)
     .catch(() => false);
   if (!ok) return null;
-  return first.locator(
-    'xpath=ancestor::div[contains(@class,"flex")][contains(@class,"flex-wrap")][1]'
-  );
+  return page
+    .locator('div.flex.flex-wrap')
+    .filter({ has: page.locator(V2_SWATCH) })
+    .first();
 }
 
 /** Thumbs que abrem o QuickView no grid de cada módulo (ProductCard / Novidades / Reposição). */

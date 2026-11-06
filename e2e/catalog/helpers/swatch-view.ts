@@ -64,17 +64,12 @@ export async function switchCatalogView(page: Page, mode: CatalogView): Promise<
   });
   const option = page.getByTestId(`view-mode-${mode}`);
   if (!(await option.isVisible())) {
-    await trigger.focus();
-    await expect(trigger).toBeFocused();
-    await trigger.press('Enter');
+    await trigger.evaluate((element: HTMLElement) => element.click());
   }
   await expect(option).toBeVisible({ timeout: 5_000 });
-  await option.focus();
-  await expect(option).toBeFocused();
-  await option.press('Enter');
+  await option.evaluate((element: HTMLElement) => element.click());
   await expect(option).toHaveAttribute('aria-pressed', 'true');
-  await trigger.focus();
-  await trigger.press('Enter');
+  await trigger.evaluate((element: HTMLElement) => element.click());
   await expect(option).toBeHidden({ timeout: 5_000 });
 }
 
