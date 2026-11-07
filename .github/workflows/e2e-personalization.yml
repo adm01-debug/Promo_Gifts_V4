@@ -3,12 +3,33 @@ name: E2E — Personalization Flow
 on:
   push:
     branches: [main]
+    paths:
+      - 'src/**'
+      - '!src/**/__tests__/**'
+      - '!src/**/*.test.*'
+      - '!src/**/*.spec.*'
+      - 'e2e/**'
+      - 'public/**'
+      - 'index.html'
+      - 'tailwind.config.*'
+      - 'postcss.config.*'
+      - 'package*.json'
+      - '.nvmrc'
+      - 'playwright.config.*'
+      - 'vite.config.*'
+      - '.github/workflows/e2e-personalization.yml'
   pull_request:
     branches: [main]
     paths:  # E14: evitar CI em PRs doc-only
       - 'src/**'
+      - '!src/**/__tests__/**'
+      - '!src/**/*.test.*'
+      - '!src/**/*.spec.*'
       - 'e2e/**'
       - 'public/**'
+      - 'index.html'
+      - 'tailwind.config.*'
+      - 'postcss.config.*'
       - 'package*.json'
       - '.nvmrc'
       - 'playwright.config.*'
@@ -67,6 +88,7 @@ jobs:
             e2e/flows/91-personalization-variant-flow.spec.ts \
             e2e/flows/92-personalization-auth-redirect.spec.ts \
             --project=chromium-authed \
+            --no-deps \
             --reporter=github,list,html,json
         env:
           E2E_BASE_URL: http://localhost:8080
