@@ -14,6 +14,7 @@ on:
       - '.nvmrc'
       - 'vite.config.*'
       - '.github/workflows/delivery-quality.yml'
+      - 'scripts/ci/e2e-relevance.mjs'
   pull_request:
     branches: [ main ]
     paths:  # E14: evitar CI em PRs doc-only
@@ -28,6 +29,7 @@ on:
       - '.nvmrc'
       - 'vite.config.*'
       - '.github/workflows/delivery-quality.yml'
+      - 'scripts/ci/e2e-relevance.mjs'
 
 permissions:
   contents: read
