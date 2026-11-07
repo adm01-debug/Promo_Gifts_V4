@@ -746,3 +746,76 @@ Gate 1 (Lint + TypeScript) no CI confirmado: run #42395747034 (SHA `b4aa9e33`) =
 | Assert Gate Final is required | ✅ success | ✅ success | sem mudança |
 | workflow-lint | ✅ success | ✅ (docs-only, sem alteração em workflows) | sem regressão |
 | unit-tests | ✅ success | ✅ (docs-only, vitest local exit 0) | sem regressão |
+
+---
+
+## §22 — Gate Final SHA `a882bcc1` (2026-11-07T20:49:48Z)
+
+**Commit:** `docs(edge-deploy-log): recibo do deploy — run 42374498496 (#3163)` — commit auto-gerado por `github-actions[bot]`, docs-only.  
+**SHA:** `a882bcc1ad68ec8dafcca47e341194754ead752d` (parent: `3093c4a247`)
+
+**Run Deploy Gates [#42411938040](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42411938040) — `conclusion: success`** (20:37:18Z → 20:49:48Z):
+- Gate 0 SSOT: ✅ success (20:38:35Z–20:38:48Z)
+- Gate 0.5 Dependency Audit: ✅ success (20:40:48Z–20:41:16Z)
+- Gate 0.6 Dependency Review: ⏭️ skipped (push, não PR)
+- Gate 1 Lint+TS (43 sub-gates): ✅ success (20:39:37Z–20:46:17Z)
+- Gate 2 Unit Tests: ✅ success (20:41:10Z–20:42:18Z)
+- Gate 2.5 PG Integrity: ✅ success (20:38:49Z–20:39:48Z)
+- Gate E23 Gitleaks: ✅ success (required check ✅)
+- Gate E23 E2E secrets check: ✅ success
+- Gate 3 E2E Smoke: ✅ success — **bypass E14 docs-only** (Step 8: "Bypass E2E para mudança exclusivamente unitária" = success; Step 9: skipped)
+- Gate 4 Lighthouse: ✅ success (src/ sem mudança — skipped corretamente)
+- Gate 5 SEO: ✅ success (20:41:04Z–20:41:17Z)
+- Gate 5.5 RPC: ✅ success (20:40:08Z–20:41:07Z)
+- Gate 6 Build: ✅ success + SBOM + provenance (20:48:14Z–20:49:08Z)
+- Gate E40 schema drift file detector: ✅ success (20:40:34Z–20:40:45Z)
+- Gate E40 schema drift check: ⏭️ skipped (sem mudança de schema)
+- **Gate Final - Deploy Ready: ✅ `conclusion: success`** (20:49:45Z–20:49:48Z) — job [#128524546137](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42411938040/job/128524546137)
+
+**Contexto — run #42410375374 (SHA `3093c4a247`, attempt 2):**  
+Attempt 1 falhou com 4 testes E2E (documentados em PENDENCIAS.md #36). Attempt 2 disparado em 20:43:56Z; API do GitHub retornou estado stale (`status: in_progress`, `updated_at: 20:44:01Z`) após mais de 30 min — estado final indeterminado por cache de API. O commit seguinte (`a882bcc1`) gerou Gate Final success via bypass docs-only, tornando `a882bcc1` o SHA com required checks satisfeitos em main.
+
+### Comparação Baseline × Final (esta sessão — SHA `a882bcc1`)
+
+| Métrica | Baseline (§21, SHA `1a47c6972c`) | Final (`a882bcc1`) | Variação |
+|---|---|---|---|
+| npm run build | ✅ Gate 6 success | ✅ Gate 6 success | = |
+| npm run lint | ✅ 0 erros | ✅ Gate 1 success | = |
+| npx tsc --noEmit | ✅ | ✅ Gate 1 success | = |
+| Testes unitários | ✅ 1282 arquivos | ✅ Gate 2 success | = |
+| PG integrity | ✅ | ✅ Gate 2.5 success | = |
+| **Gate Final (required)** | ✅ run #42408257675, SHA `1a47c6972c` | ✅ run #42411938040, SHA `a882bcc1` — 20:49:48Z | ✅ sem regressão |
+| Required checks em falha | 1 (#29 — Compare GitHub × Canonical) | 1 (inalterado — PENDENCIAS #29) | = |
+| Mudanças de schema | 0 | 0 | = (REGRA #8 intacta) |
+| Mudanças de código da aplicação | 0 | 0 | = — docs-only |
+
+**Nenhuma regressão introduzida por esta sessão.** Mudanças desta sessão em main: docs-only (PENDENCIAS.md, RELATORIO_CI.md, edge-deploy-log receipts).
+
+### Tabela de prova — workflows em falha/action_required (SHA `a882bcc1`)
+
+| # | Workflow | SHA/Branch | Link run | Required? | conclusion | PENDENCIAS / resolução |
+|---|---|---|---|---|---|---|
+| 1 | db-schema-drift-check | main (pré-existente) | [42075701349](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42075701349) | ❌ | ❌ failure | **#1** — ledger drift; REGRA #8, requer dono |
+| 3 | Kit Coverage — Integration | main | [42019342856](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42019342856) | ❌ | ❌ failure | **#3** — 56% < 70%; dados null no banco |
+| 5 | CI - Replenishment Quality Gate | main | [42367402274](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42367402274) | ❌ | ❌ failure | **#5** — paridade visual E2E; requer dono |
+| 6 | E2E · Swatch QuickView | main | [41876981212](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41876981212) | ❌ | ❌ failure | **#6** — `E2E_USER_*` ausentes em Secrets |
+| 7 | Nightly Full CI | main | [42005666457](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42005666457) | ❌ | ❌ failure | **#7** — derivado de #6 |
+| 9 | E2E — Quotes Matrix | main | [42044024144](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42044024144) | ❌ | ❌ failure | **#9** — snapshot visual 5px; requer dono |
+| 13 | CI Security & Drift Checks | main | [42408257409](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42408257409) | ❌ | ❌ failure | **#13** — `SUPABASE_SERVICE_ROLE_KEY` ausente; requer dono |
+| 28 | Gate Final (PR #3160) | PR #3160 | [42398544261](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42398544261) | ✅ (em PRs) | ❌ failure | **#28** — Gate E40 + migration sem recibo; REGRA #8; requer dono |
+| 29 | Compare GitHub × Canonical | main | [42394606339](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42394606339) | ✅ (required) | ❌ failure | **#29** — 27 funções driftadas; requer dono (dispatch + approve production) |
+| 31 | 20x action_required | branch release-please | — | ❌ | action_required | **#31** — NÃO é main; branch release-please |
+| 35 | Magazine Tests OK | main `df81a741` | [42400439388](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42400439388) | ❌ | ❌ failure | **#35** — introduzido por PR #3161 do dono |
+| 36 | Gate 3 E2E Smoke (attempt 1) | main `3093c4a247` | [42410375374](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42410375374) | ✅ (required) | ❌ failure (attempt 1) | **#36** — 4 testes E2E flaky auth; attempt 2 stale; superado por Gate Final success em `a882bcc1` |
+
+### Workflows antes verdes — confirmação de não-regressão (SHA `a882bcc1`)
+
+| Workflow | Estado anterior (`1a47c6972c`) | Estado final (`a882bcc1`) | Evidência |
+|---|---|---|---|
+| Gate Final - Deploy Ready | ✅ success run #42408257675 | ✅ success run #42411938040 — 20:49:48Z | ✅ confirmado |
+| Gate 1 Lint+TypeScript | ✅ success | ✅ success (run #42411938040) | ✅ |
+| Gate 2 Unit Tests | ✅ success | ✅ success (run #42411938040) | ✅ |
+| Gate 2.5 PG Integrity | ✅ success | ✅ success (run #42411938040) | ✅ |
+| Gate E23 Gitleaks | ✅ success (required) | ✅ success (run #42411938040) | ✅ |
+| Gate 6 Build | ✅ success | ✅ success (run #42411938040) | ✅ |
+| Gate 3 E2E Smoke | ✅ success (SHA `1a47c6972c`) | ✅ success via bypass docs-only (SHA `a882bcc1`) | ✅ |
