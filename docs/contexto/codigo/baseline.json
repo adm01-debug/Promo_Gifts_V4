@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "bd6773e96fd08538474dddbcacb3847ecc9f0ac8",
+  "commit": "12e873afb6703c4fc68c826aa57edb01257a8ed7",
   "branch": "main",
-  "data_commit": "2026-11-07T23:23:33Z",
+  "data_commit": "2026-11-07T20:34:48-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "12e873a",
+    "data": "2026-11-07",
+    "assunto": "docs(ci): RELATORIO §26 — baseline d2ce504a + PENDENCIAS #38 (#3183)"
+   },
    {
     "sha": "bd6773e",
     "data": "2026-11-07",
@@ -126,104 +131,99 @@
     "sha": "21e52c0",
     "data": "2026-11-07",
     "assunto": "test(auth): estabilizar callback SSO na suíte completa (#3133)"
-   },
-   {
-    "sha": "a23cb8e",
-    "data": "2026-11-07",
-    "assunto": "fix(ci): evitar paridade de reposição em diffs unitários (#3135)"
    }
   ],
   "arquivos_mudados_7d": 405,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
-    "mudancas": 610
+    "mudancas": 906
    },
    {
     "pasta": "src/components/products",
-    "mudancas": 311
+    "mudancas": 460
    },
    {
     "pasta": "tests/edge-functions/live",
-    "mudancas": 233
+    "mudancas": 348
    },
    {
     "pasta": "src/hooks/products",
-    "mudancas": 214
+    "mudancas": 318
    },
    {
     "pasta": "src/pages/magazine",
-    "mudancas": 186
+    "mudancas": 278
    },
    {
     "pasta": "src/components/quotes",
-    "mudancas": 177
+    "mudancas": 259
    },
    {
     "pasta": "src/components/inventory",
-    "mudancas": 160
+    "mudancas": 240
    },
    {
     "pasta": "src/components/ui",
-    "mudancas": 154
-   },
-   {
-    "pasta": "src/components/mockup",
-    "mudancas": 145
+    "mudancas": 227
    },
    {
     "pasta": "supabase/functions/_shared",
-    "mudancas": 140
+    "mudancas": 209
+   },
+   {
+    "pasta": "src/components/mockup",
+    "mudancas": 191
    },
    {
     "pasta": "src/pages/admin",
-    "mudancas": 119
+    "mudancas": 178
    },
    {
     "pasta": "src/pages/products",
-    "mudancas": 109
+    "mudancas": 159
    },
    {
     "pasta": "src/components/kit-builder",
-    "mudancas": 102
+    "mudancas": 149
    },
    {
     "pasta": "src/pages/quotes",
-    "mudancas": 96
+    "mudancas": 143
    },
    {
     "pasta": "docs/arquivo/2026-09",
-    "mudancas": 86
+    "mudancas": 129
    }
   ],
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "RELATORIO_CI.md",
-    "mudancas": 71
+    "mudancas": 73
    },
    {
     "arquivo": "PENDENCIAS.md",
-    "mudancas": 63
+    "mudancas": 65
    },
    {
     "arquivo": "package.json",
     "mudancas": 26
    },
    {
+    "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
+    "mudancas": 22
+   },
+   {
     "arquivo": "package-lock.json",
     "mudancas": 21
    },
    {
-    "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 21
-   },
-   {
     "arquivo": "auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md",
-    "mudancas": 15
+    "mudancas": 16
    },
    {
     "arquivo": "CHANGELOG.md",
-    "mudancas": 14
+    "mudancas": 15
    },
    {
     "arquivo": "analise-prs/RELATORIO_PRS.md",
@@ -231,30 +231,34 @@
    },
    {
     "arquivo": "docs/plans/PLANO_MELHORIAS_CORRECOES_200_ETAPAS_2026-10-18.md",
-    "mudancas": 12
+    "mudancas": 13
    },
    {
     "arquivo": ".github/workflows/deploy-gates.yml",
-    "mudancas": 11
+    "mudancas": 12
    },
    {
     "arquivo": "analise-branches/RELATORIO_BRANCHES.md",
+    "mudancas": 11
+   },
+   {
+    "arquivo": "e2e/flows/magazine-publish-smoke.spec.ts",
     "mudancas": 10
+   },
+   {
+    "arquivo": "AGENTS.md",
+    "mudancas": 9
+   },
+   {
+    "arquivo": "CLAUDE.md",
+    "mudancas": 9
    },
    {
     "arquivo": "analise-prs/prs.json",
     "mudancas": 9
    },
    {
-    "arquivo": "e2e/flows/magazine-publish-smoke.spec.ts",
-    "mudancas": 9
-   },
-   {
-    "arquivo": "AGENTS.md",
-    "mudancas": 8
-   },
-   {
-    "arquivo": "CLAUDE.md",
+    "arquivo": ".github/workflows/replenishment-quality.yml",
     "mudancas": 8
    },
    {
@@ -266,36 +270,32 @@
     "mudancas": 8
    },
    {
-    "arquivo": ".github/workflows/replenishment-quality.yml",
-    "mudancas": 7
-   },
-   {
     "arquivo": "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
-    "mudancas": 7
+    "mudancas": 8
    },
    {
     "arquivo": "analise-prs/baseline/lint.txt",
-    "mudancas": 6
-   },
-   {
-    "arquivo": "analise-prs/baseline/typecheck.txt",
-    "mudancas": 6
+    "mudancas": 7
    },
    {
     "arquivo": ".github/workflows/e2e-swatch-quickview.yml",
-    "mudancas": 5
+    "mudancas": 6
    },
    {
     "arquivo": ".github/workflows/ratchet-weekly.yml",
-    "mudancas": 5
+    "mudancas": 6
    },
    {
     "arquivo": ".github/workflows/schema-snapshot-export.yml",
-    "mudancas": 5
+    "mudancas": 6
    },
    {
     "arquivo": "analise-branches/dossies/devin-probe-e184-legacy-refs.md",
-    "mudancas": 5
+    "mudancas": 6
+   },
+   {
+    "arquivo": "analise-branches/dossies/fix-contract-mag-reader-261019-2110.md",
+    "mudancas": 6
    }
   ],
   "autores_30d": [
@@ -317,7 +317,7 @@
    },
    {
     "autor": "dependabot[bot]",
-    "commits": 6
+    "commits": 5
    }
   ]
  },
