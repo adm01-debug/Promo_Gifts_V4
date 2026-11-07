@@ -21,9 +21,21 @@ test.describe('OptimizedImage Visual Regression', () => {
   });
 
   test('should match initial loading state (blur-up)', async ({ page }) => {
-    const loadingImage = page.locator('div.relative.overflow-hidden').first();
+    // Fixa o estado de loading: segura a resposta da imagem para o snapshot ser
+    // deterministico (mesmo estado em CI sem rede e local com rede).
+    await page.route('**/picsum.photos/**', async (route) => {
+      await new Promise((r) => setTimeout(r, 15_000));
+      await route.continue();
+    });
 
-    // Pausa animações para snapshot estável
+    await gotoAndSettle(page, DEBUG_URL);
+    await expect(page.getByText('OptimizedImage Demo')).toBeVisible();
+
+    const loadingImage = page.locator('div.relative.overflow-hidden').first();
+    // Garante que estamos no estado de loading (spinner visivel, imagem ainda nao carregou)
+    await expect(loadingImage.locator('svg.lucide-loader-2')).toBeVisible({ timeout: 10_000 });
+
+    // Pausa animacoes para snapshot estavel
     await page.addStyleTag({
       content: `*, *::before, *::after { animation-play-state: paused !important; transition: none !important; }`,
     });
@@ -45,22 +57,45 @@ test.describe('OptimizedImage Visual Regression', () => {
   });
 
   test('should match error state', async ({ page }) => {
-    const errorToggle = page.getByLabel('Simular Erro');
-    if (await errorToggle.isVisible()) {
-      await errorToggle.check();
-      const errorCard = page.locator('div:has-text("Erro ao carregar")').first();
-      await expect(errorCard).toBeVisible({ timeout: 5000 });
-      await expect(errorCard).toHaveScreenshot('image-error-state.png');
-    } else {
-      // No toggle available and no spontaneous error — skip gracefully
-      expect(false, '[E108] Error state not reproducible without "Simular Erro" toggle').toBeTruthy();
-    }
+    // O demo expõe um Button (não um checkbox rotulado): OptimizedImageDemo.tsx:161-165
+    const errorToggle = page.getByRole('button', { name: 'Simular URL inválida' });
+    await expect(errorToggle).toBeVisible({ timeout: 5000 });
+    await errorToggle.click();
+
+    // `div:has-text(...)` casava com #root (ancestral mais externo), gerando
+    // screenshot da pagina inteira e altura instavel (1641 vs 1665 px).
+    // O fallback e o <div> imediatamente pai do <span>Erro ao carregar</span>.
+    const errorCard = page.getByText('Erro ao carregar').locator('..');
+    await expect(errorCard).toBeVisible({ timeout: 10000 });
+
+    await page.addStyleTag({
+      content: `*, *::before, *::after { animation-play-state: paused !important; transition: none !important; }`,
+    });
+
+    await expect(errorCard).toHaveScreenshot('image-error-state.png', {
+      maxDiffPixelRatio: 0.02,
+    });
   });
 
   test('should be responsive (mobile viewport)', async ({ page }) => {
+    // Mesmo determinismo do teste de loading: segura a resposta da imagem para
+    // o snapshot nao depender de rede (picsum responde diferente a cada run).
+    await page.route('**/picsum.photos/**', async (route) => {
+      await new Promise((r) => setTimeout(r, 15_000));
+      await route.continue();
+    });
+
     await page.setViewportSize({ width: 375, height: 667 });
+    await gotoAndSettle(page, DEBUG_URL);
+
     const imageContainer = page.locator('div.relative.overflow-hidden').first();
     await expect(imageContainer).toBeVisible();
+    await expect(imageContainer.locator('svg.lucide-loader-2')).toBeVisible({ timeout: 10_000 });
+
+    await page.addStyleTag({
+      content: `*, *::before, *::after { animation-play-state: paused !important; transition: none !important; }`,
+    });
+
     await expect(imageContainer).toHaveScreenshot('image-responsive-mobile.png');
   });
 });
