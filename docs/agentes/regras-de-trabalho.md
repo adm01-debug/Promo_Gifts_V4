@@ -125,6 +125,9 @@ retorna 403 em write; `git push` e `gh` só funcionam quando o repo é fonte aut
    Antes de cada push, confirme que o último commit da branch é seu; se não for, pare e avise.
 5. Commits curtos em PT-BR com prefixo (`fix:`, `feat:`, `chore:`, `infra:`), de preferência 1 commit atômico
    (`github_push_files` aceita `files` e `delete` no mesmo commit).
+   *Neste repo:* o hook `commit-msg` (commitlint, `commitlint.config.js:14-31`) exige `tipo(escopo opcional):
+   descrição` e **não aceita `infra:`** como tipo de commit — `infra` vale só como tipo de branch (regra 4);
+   para commit de infraestrutura use `ci:`, `build:` ou `chore:` (REGRA #6).
 6. PR sempre. Título = o que muda. Corpo = causa/por quê + o que foi verificado de verdade, com a
    evidência.
 7. **Mergeie sem aprovação** as PRs que você criou ou corrigiu e que já estão prontas: CI verde, sem

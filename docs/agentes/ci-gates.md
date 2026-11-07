@@ -6,11 +6,13 @@ Se algo aqui divergir da realidade, corrija ESTE arquivo no mesmo PR do fix.
 
 ## Gates obrigatórios (required checks em `main`)
 
-Checks required no branch protection de `main` — lista oficial em `.github/required-checks.json` (hoje 5):
+Lista oficial do que **deve** ser required em `.github/required-checks.json` (5 nomes):
 **"Gate Final - Deploy Ready"** (`deploy-gates.yml`, agrega todos os gates abaixo), "Compare GitHub × Canonical"
 (`edge-functions-drift-check.yml`), "Analyze (javascript-typescript)" (`codeql.yml`), "Gate E23 - Secret Scan
-(gitleaks)" (`deploy-gates.yml`) e "Assert Gate Final is required on main". PR que altere um `name:` de job
-desses workflows atualiza o JSON junto, senão o Branch Protection Sentinel alerta.
+(gitleaks)" (`deploy-gates.yml`) e "Assert Gate Final is required on main". Estado real conferido em 2026-11-07
+(`gh api …/branches/main/protection` e `…/rules/branches/main`): só **"Gate Final - Deploy Ready"** está
+required de fato — os outros 4 nomes existem como `name:` de job mas não são exigidos pela proteção. PR que
+altere um `name:` de job desses workflows atualiza o JSON junto, senão o Branch Protection Sentinel alerta.
 
 Tipo `job` = job independente no Actions (procure pelo `name:` do job); `step` = passo dentro de um job
 agregador (`static-gates`, `drift-gates`, `security-gates` ou `build`; procure pelo `- name:` do step).
@@ -58,7 +60,7 @@ agregador (`static-gates`, `drift-gates`, `security-gates` ou `build`; procure p
 
 | Trigger | Workflows principais | Propósito |
 |---|---|---|
-| **PR** | `deploy-gates.yml` (Gate Final) | Todos os gates obrigatórios — `paths-ignore: docs/**` (E197: PRs só-de-docs ignorados; `AGENTS.md`/`CLAUDE.md` na raiz continuam disparando) |
+| **PR** | `deploy-gates.yml` (Gate Final) | Todos os gates obrigatórios. Bypass docs-only (E14): o job "Detectar mudanças" (`deploy-gates.yml:71-107`, `dorny/paths-filter`) só marca a PR como código se tocar os paths do filtro `code:` (`src/**`, `scripts/**`, `supabase/**`, `tests/**`, `e2e/**`, `playwright/**`, `.github/workflows/**`, `.github/actions/**`, `package*.json`, `tsconfig*.json`, `vite.config.*`, `playwright.config.*`, `.nvmrc`, `eslint.config*`). `AGENTS.md`, `CLAUDE.md`, `docs/**` e qualquer outro `.md` **não** estão no filtro: PR só com eles é docs-only — os gates de código reportam `success` sem executar e o e2e-smoke é pulado |
 | **PR** | `workflow-lint.yml` | actionlint + shellcheck |
 | **PR** | `required-checks-guard.yml` | Checks fantasmas + divergência required-checks.json |
 | **push: main** | `deploy-gates.yml` + `codeql.yml` | Gate Final + scan de segurança |
