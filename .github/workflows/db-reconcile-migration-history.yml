@@ -184,6 +184,7 @@ jobs:
             --status="histórico-reconciliado"
       - name: Credencial de push sem token em disco
         run: |
+          # shellcheck disable=SC2016 # aspas simples intencionais: o git expande $1 e GIT_PUSH_TOKEN ao invocar o helper
           git config --local credential.helper '!f() { test "$1" = get || exit 0; echo username=x-access-token; echo "password=${GIT_PUSH_TOKEN}"; }; f'
       - name: Abre PR com recibo
         env:
