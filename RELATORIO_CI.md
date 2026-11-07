@@ -941,3 +941,101 @@ Workflow não disparou em `be7688da` (commit docs-only). Último run em main = c
 | Mudanças de código | 0 (docs-only §23) | 0 (docs-only §24) | = |
 
 **Nenhuma regressão introduzida.** Gate Final = success no SHA atual da main (`be7688da`).
+
+---
+
+## §25 — Prova Gate Final SHA `2a042dab` + atualização PENDENCIAS #26 #30 #37
+
+**Data:** 2026-11-07  
+**SHA main após merge PR #3180:** `2a042dab281c2233d676b91b7ca02b04b27a6138`  
+**Sessão:** https://claude.ai/code/session_01RfQzo7S3K6o49UBUDoCtUe
+
+### Alterações desta sessão em main
+
+**PR #3180** (mergeado em `2a042dab`): PENDENCIAS.md — atualização dos itens #26, #30 e #37 com causa raiz exata e bloqueio verificado:
+- **#26** `migrations-sync-log-gate` → migration `20261101150000` commitada no repo mas não registrada no ledger; bloqueio: REGRA #8 (apply via workflow + reconciliação do ledger)
+- **#30** `db-apply-migration` → `fn_get_rupture_alerts` com `SECURITY DEFINER` sem `SET search_path = pg_catalog, pg_temp`; bloqueio: REGRA #8 (merge PR #3179 + dispatch `db-apply-migration.yml`)
+- **#37** `uptime-monitor` → edge function `health-check` retorna HTTP 503; bloqueio: REGRA #8 (deploy via `deploy-edge-functions.yml` + approve production)
+
+### Baseline local (SHA `bfb2926d` — referência §23, inalterado)
+
+| Comando | Saída | Exit |
+|---|---|---|
+| `npm run build` | Vite build OK — `built in 18.86s` | ✅ 0 |
+| `npm run lint:baseline` | `0 erros, 0 warnings` | ✅ 0 |
+| `npx tsc --noEmit` | Sem erros TypeScript | ✅ 0 |
+| `vitest run` | `26114 passed \| 1132 skipped \| 24 todo` — **0 failed** | ✅ 0 |
+
+Baseline local não foi re-executado nesta sessão (sessão remota sem container local ativo); valores são os mesmos do §23 — código da aplicação não foi alterado.
+
+### Gate Final (SHA `2a042dab`)
+
+**Run Deploy Gates [#42420549725](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42420549725) — `conclusion: success`** em SHA `2a042dab281c2233d676b91b7ca02b04b27a6138` (completado 22:33:02Z):
+- Gate Final - Deploy Ready: ✅ `conclusion: success` — check run #128549561047
+- Required check "Gate E23 - Secret Scan (gitleaks)": ✅ success — check run #128547880392
+- Required check "Assert Gate Final is required on main": ✅ success — check run #128547822039
+- Required check "Analyze (javascript-typescript)" (CodeQL): ✅ success verificado em §23 (SHA `bfb2926d`); não postado em `2a042dab` às 22:36Z (CodeQL pode levar 30+ min após push — comportamento pré-existente)
+- Required check "Compare GitHub × Canonical": ❌ failure — PENDENCIAS #29 (pré-existente; não dispara em push/main — apenas via `deploy-edge-functions.yml` ou cron 09:06 UTC; requer dono)
+- Branch Protection Sentinel: ❌ failure run [#42420549709](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42420549709) — PENDENCIAS #19 (pré-existente; squash via API sem `(#3180)` suffix; advisory, não bloqueia deploy)
+- Uptime Monitor: ❌ failure run [#42421161650](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42421161650) — PENDENCIAS #37 (pré-existente; `health-check` HTTP 503; requer dono/REGRA #8)
+
+### Comparação SHA `be7688da` → `2a042dab`
+
+| Métrica | SHA `be7688da` | SHA `2a042dab` | Variação |
+|---|---|---|---|
+| npm run build | ✅ Gate 6 success | ✅ Gate 6 success (run #42420549725) | = |
+| npm run lint:baseline | ✅ 0 erros | ✅ Gate 1 success | = |
+| npx tsc --noEmit | ✅ | ✅ Gate 1 success | = |
+| vitest run | ✅ Gate 2 success | ✅ Gate 2 success | = |
+| Gate Final (required) | ✅ run #42418015737 (`be7688da`) | ✅ run #42420549725 (`2a042dab`) | ✅ sem regressão |
+| Required checks em falha | 1 (#29) | 1 (#29 — inalterado) | = |
+| Mudanças de código da aplicação | 0 (docs-only §24) | 0 (docs-only §25) | = |
+| Mudanças de schema | 0 | 0 | = (REGRA #8 intacta) |
+
+**Nenhuma regressão introduzida.** Gate Final = success no SHA atual da main (`2a042dab`).
+
+### Tabela de prova completa — todos os workflows em falha/action_required (SHA `2a042dab`)
+
+| # | Workflow / check | Âmbito | Link run | Required? | Conclusão | PENDENCIAS / resolução |
+|---|---|---|---|---|---|---|
+| 1 | `db-schema-drift-check` | main (pré-existente) | [#42075701349](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42075701349) | ❌ | ❌ failure | **#1** — drift `local_only=1141; remote_only=674`; REGRA #8, requer dono |
+| 2/#29 | `edge-functions-drift-check` / "Compare GitHub × Canonical" | main | [#42394606339](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42394606339) | ✅ required | ❌ failure | **#2/#29** — 27 funções driftadas; requer `deploy-edge-functions.yml` + approve production (dono) |
+| 3 | `kit-coverage-integration` | main | [#42019342856](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42019342856) | ❌ | ❌ failure | **#3** — cobertura 56% < 70%; dados null no banco; requer dono |
+| 5/#24 | `ci-replenishment-quality` | main | [#42367402274](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42367402274) | ❌ | ❌ failure | **#5/#24** — paridade visual E2E; requer dono |
+| 6 | `e2e-swatch-quickview` | main | [#42326885938](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42326885938) | ❌ | ❌ failure | **#6** — `E2E_USER_EMAIL`/`E2E_USER_PASSWORD` ausentes em Secrets; requer dono |
+| 7 | `nightly-full-ci` | main | [#42005666457](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42005666457) | ❌ | ❌ failure | **#7** — derivado de #6 |
+| 9 | `e2e-view-no-presentation-mode` | main | [#42044024144](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42044024144) | ❌ | ❌ failure | **#9** — snapshot visual 5px diff; requer dono |
+| 13 | `ci-security-drift` | main | [#42380435647](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42380435647) | ❌ | ❌ failure | **#13** — `SUPABASE_SERVICE_ROLE_KEY` ausente; requer dono |
+| 15 | `e2e-flows` | main | [#42097626080](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42097626080) | ❌ | ❌ failure | **#15** — `E2E_USER_*` ausentes; derivado de #6 |
+| 16 | `quote-builder-delivery-quality` | main | [#42097626084](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42097626084) | ❌ | ❌ failure | **#16** — `E2E_USER_*` ausentes; derivado de #6 |
+| 17 | `e2e.yml` | main | [#42097626344](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42097626344) | ❌ | ❌ failure | **#17** — `E2E_USER_*` ausentes; derivado de #6 |
+| 18 | `e2e-personalization-flow` | main | [#42097626111](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42097626111) | ❌ | ❌ failure | **#18** — `E2E_USER_*` ausentes; derivado de #6 |
+| 19 | `branch-protection-sentinel` | main `2a042dab` | [#42420549709](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42420549709) | ❌ advisory | ❌ failure | **#19** — squash sem `(#NNN)`; pré-existente em toda série; advisory |
+| 21/#37 | `uptime-monitor` | main `2a042dab` | [#42421161650](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42421161650) | ❌ | ❌ failure | **#21/#37** — `health-check` HTTP 503; requer `deploy-edge-functions.yml` (dono, REGRA #8) |
+| 22/#26/#30 | `db-apply-migration` / `migrations-sync-log-gate` | main | [#42380876893](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42380876893) | ❌ | ❌ failure | **#22/#26/#30** — `fn_get_rupture_alerts` SECURITY DEFINER sem pg_temp; rollback ausente; REGRA #8; PR #3179 open |
+| 27 | `db-schema-drift-check` (2ª entrada) | main | [#42075701349](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42075701349) | ❌ | ❌ failure | **#27** — mesmo drift de #1 (pré-existente) |
+| 28 | Gate Final (PR #3160) | PR #3160 | [#42398544261](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42398544261) | ✅ (PRs) | ❌ failure | **#28** — Gate E40 + migration sem recibo; REGRA #8; requer dono |
+| 31 | 20x `action_required` | branch release-please | — | ❌ | action_required | **#31** — NÃO é main; branch release-please |
+| 32 | Falhas de outros agentes | branches alheias | — | ❌ | ❌ failure | **#32** — branches de codex/devin; NÃO é main |
+| 33 | `uptime-monitor` transitório | main | [#42391882717](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42391882717) | ❌ | ❌ failure | **#33** — falha transitória; pré-existente |
+| 34 | Vercel bloqueado | PR #3160 | — | ❌ | ❌ failure | **#34** — PR em draft; aguarda merge do #3160 |
+| 35 | `magazine-tests-ok` | main `df81a741` | [#42400439388](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42400439388) | ❌ | ❌ failure | **#35** — introduzido por PR #3161 do dono; requer dono |
+| 36 | Gate 3 E2E Smoke | main (superado) | [#42420549725](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42420549725) | ✅ required | ✅ success | **#36** — superado por Gate Final success em `2a042dab` |
+
+### Workflows antes verdes — confirmação de não-regressão (SHA `2a042dab`)
+
+| Workflow | Estado anterior (`be7688da`) | Estado final (`2a042dab`) | Evidência |
+|---|---|---|---|
+| Gate Final - Deploy Ready | ✅ success run #42418015737 | ✅ success run #42420549725 | ✅ confirmado |
+| Gate 1 Lint+TypeScript | ✅ success | ✅ success (run #42420549725) | ✅ |
+| Gate 2 Unit Tests | ✅ success | ✅ success (run #42420549725) | ✅ |
+| Gate 2.5 PG Integrity | ✅ success | ✅ success (run #42420549725) | ✅ |
+| Gate E23 Gitleaks | ✅ success (required) | ✅ success (run #42420549725) | ✅ |
+| Gate 3 E2E Smoke | ✅ success | ✅ success (run #42420549725) | ✅ |
+| Gate 6 Build | ✅ success | ✅ success (run #42420549725) | ✅ |
+
+### Ações pendentes do dono (REGRA #8 — não executáveis sem aprovação)
+
+1. Adicionar `E2E_USER_EMAIL`, `E2E_USER_PASSWORD`, `SUPABASE_SERVICE_ROLE_KEY` em Secrets (fecha #6, #7, #13, #15, #16, #17, #18)
+2. Dispatch `deploy-edge-functions.yml` → approve environment `production` (fecha #2/#29 — required check — e #37 uptime-monitor)
+3. Dispatch `db-apply-migration.yml` com `version=20261101150000` após merge do PR #3179 (fecha #22/#26/#30)
