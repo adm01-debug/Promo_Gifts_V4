@@ -43,6 +43,9 @@ env:
   VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || 'https://doufsxqlfjyuvxuezpln.supabase.co' }}
   VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_tjH5qAbZ0e5HTTd872NijQ_s9m6JvYU' }}
   E2E_BASE_URL: http://localhost:8080
+  # Esta suíte valida UI/teclado/QuickView com fixture determinística; Auth e
+  # catálogo reais são cobertos pelos gates de integração dedicados.
+  E2E_MOCK_AUTH: "1"
 
 permissions:
   contents: read

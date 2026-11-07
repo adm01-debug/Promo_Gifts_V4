@@ -25,6 +25,7 @@
  */
 
 import { test, expect, type Page, type Locator } from '@playwright/test';
+import { installSwatchCatalogMocks } from '../helpers/swatch-catalog-mocks';
 
 const ROUTES = [
   { slug: 'catalogo',     path: '/produtos'  },
@@ -52,7 +53,12 @@ const FREEZE_CSS = `
 
 async function bootstrap(page: Page, path: string) {
   await page.addInitScript(() => {
-    try { window.localStorage.setItem('ff_useColorSwatchesV2', 'true'); } catch {/* ignore */}
+    try {
+      window.localStorage.setItem('ff_useColorSwatchesV2', 'true');
+      // Em 1280 px, 5 colunas deixam a barra flutuante de ações sobre os
+      // swatches. Três colunas reproduzem a preferência desktop utilizável.
+      window.localStorage.setItem('product-grid-columns', '3');
+    } catch {/* ignore */}
   });
   await page.goto(path, { waitUntil: 'domcontentloaded' });
   await page.waitForSelector('[data-state="loading"]', { state: 'detached', timeout: 20000 }).catch(() => {});
@@ -64,6 +70,10 @@ const REQUIRED_ROUTES = new Set<string>(['catalogo', 'super-filtro']);
 
 /** Tempo generoso: o backend do CI chega a levar 15–60 s por request sob carga. */
 const DATA_TIMEOUT_MS = 60_000;
+
+test.beforeEach(async ({ page }) => {
+  await installSwatchCatalogMocks(page);
+});
 
 async function firstPicker(page: Page): Promise<Locator | null> {
   const first = page.locator(V2_SWATCH).first();
@@ -139,7 +149,9 @@ for (const route of ROUTES) {
       const targetIdx = count >= 2 ? 1 : 0;
       const target = swatches.nth(targetIdx);
       const targetLabel = labels[targetIdx];
-      await target.click({ force: true });
+      // Não force o clique: durante a hidratação de cores o card pode remontar.
+      // O auto-wait do Playwright relocaliza o botão e garante evento real.
+      await target.click({ timeout: 15_000 });
 
       await expect(target).toHaveAttribute('aria-pressed', 'true');
       await expect(target).toHaveAttribute('aria-label', targetLabel);
