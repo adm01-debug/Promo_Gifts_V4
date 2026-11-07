@@ -768,8 +768,6 @@ da execução e consulta read-only ao catálogo/ledger, sem reaplicar SQL.
 
 | versão | sha256 arquivo | md5 statements | executor | método | data UTC | pós-check | status |
 |---|---|---|---|---|---|---|---|
-| `20260511235930` | `0c0037051fcb89fbdf1ae085aabcca170be4d6e428958b33a296eb83920e26fa` | — | Codex (PR #3120; aprovado por adm01-debug) | E15 | — | pendente: aplicar via db-apply-migration.yml após o merge; SQL idempotente espelha `categories.level` já existente no canônico | **pendente — não aplicada** |
-| `20260511235931` | `d0e5578f13895ebc190a1a81c4339e236c73b3e80d0a667168c6a5f73edb050e` | — | Codex (PR #3120; aprovado por adm01-debug) | E15 | — | pendente: aplicar via db-apply-migration.yml após o merge; SQL idempotente espelha `categories.display_order` já existente no canônico | **pendente — não aplicada** |
 | `20261029160339` | `4848c21337223a88700efdb3ef9aa99688d65d5b072e108c88d204de1ba596ba` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-02 20:22:06 UTC | job post-check da run 41517810265 confirmou a version no ledger | aplicada |
 | `20260922170000` | `266f0963a9e7b1d30e8594d7c6218747b6a79baf16aa272249e864f55a64b29b` | `badcb6626e975ee80bab7d562a6c12cc` | GitHub Actions, disparado por `adm01-debug` | E15 | 2026-09-22 18:34:03 UTC (fim do passo psql) | [Run 35760867980, tentativa 1](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/35760867980/attempts/1): apply, repair e post-check aprovados; recoleta read-only em 22/09 19:27 UTC confirmou ledger, corpo e ACL | aplicada; recibo recuperado documentalmente pelo Codex, a pedido do PO |
 | `20260923114500` | `18663b52473fa9fd0edb031495ebe1ed8fc8c0ea0c262631a3b3bf035d8d91b7` | `87c7eefd2929c273fbedd75e4d61c423` | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug) | E15 | 2026-09-23 11:56:55 UTC | job post-check da run 35857184284 confirmou a version no ledger | aplicada |
@@ -802,6 +800,7 @@ da execução e consulta read-only ao catálogo/ledger, sem reaplicar SQL.
 | `20261027140000` | `e63a43b30c5bce7d3e1e7f6f6829fc692e4b95b5a229b07b24c353ac97fc07cf` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-10-27 13:58:20 UTC | job post-check da run 40512572184 confirmou a version no ledger | aplicada |
 | `20261027160000` | `c20b8190eee43e9a40fe8cc084040f25c94d1c1ef59335efda3da8d39ac6e8d6` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-10-28 10:13:23 UTC | job post-check da run 40670021078 confirmou a version no ledger | aplicada |
 | `20261027180000` | `1b47a1d2eadd49608f36331d6be6e93e7478022ed97cbbbae9617e455bcb38a4` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-01 14:24:36 UTC | job post-check da run 40670992687 confirmou a version no ledger | aplicada |
+| `20261101201000` | `c7c34b95fd0a194b315a90ddf95d1823dff3ad1918b4dad64bbe9f0fececbf17` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por ti@promobrindes.com.br) | E15 | 2026-11-07 01:45:37 UTC | job post-check da run 41841468881 confirmou a version no ledger | aplicada |
 
 ### Evidências do recibo `20260922170000`
 
@@ -1716,3 +1715,9 @@ Após VACUUM ANALYZE executado pelos jobs temporários `vacuum-snapshots-now` e
 | version | arquivo | status |
 |---|---|---|
 | `20261101201000` | fix_health_view_backup_check | pendente — aplicar via `db-apply-migration.yml` após aprovação do dono (regra 8: DDL em produção). Remove a tabela apagada `_backup_stock_daily_summary_20260618` da checagem `backup_tables_rls_locked`. |
+
+## 2026-11-06 — Hardening de `public.handle_updated_at()`
+
+| version | arquivo | status |
+|---|---|---|
+| `20261106232045` | `fix_handle_updated_at_search_path` | pendente — fixa `search_path = public`; aplicar via `db-apply-migration.yml` após merge da PR |
