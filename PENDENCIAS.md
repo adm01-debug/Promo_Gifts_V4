@@ -604,3 +604,18 @@ SECURITY DEFINER sem "pg_temp" no SET search_path em função "public.fn_get_rup
 **É uma falha corrigível de código?** NÃO — é comportamento configurado do Vercel para PRs draft. Para obter preview deploy, basta converter a PR de draft para ready-for-review. Enquanto a PR estiver bloqueada pelos itens #28 e #29 (Gate E40 e 27 EFs driftadas), ela deve permanecer draft.  
 **Por que não corrijo:** Design intencional. A PR permanece draft até que os itens #28 e #29 sejam resolvidos pelo dono.  
 **O que o dono precisa fazer:** Nada neste momento. Quando items #28 e #29 forem resolvidos e a PR estiver pronta para merge, converter de draft para ready-for-review ativa o deploy preview.
+
+---
+
+## 35. Magazine Tests OK ❌ (SHA `df81a741` — PR #3161 do dono — NÃO required)
+
+**Workflow:** job "Magazine Tests OK" disparado no push de `df81a741` (merge da PR #3161)  
+**Run ID:** [42400439388](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42400439388) (2026-11-07T18:19Z, SHA `df81a741`)  
+**Job:** [#128487120986](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42400439388/job/128487120986) — `conclusion: failure`  
+**Causa:** PR #3161 mergeada pelo dono às 18:16Z ("fix(magazine): impedir colapso do título em lg") introduziu esta falha em `df81a741`. Nenhuma mudança desta sessão tocou os componentes de magazine; a branch `claude/fix-ci-workflows-261107-1540` só alterou SQL de migration, rollback e docs.  
+**Required check:** NÃO — "Magazine Tests OK" não consta em `.github/required-checks.json` (os 5 required checks são: Gate Final, Compare GitHub × Canonical, Analyze, Gate E23 Gitleaks, Assert Gate Final).  
+**Por que não corrijo:** Falha introduzida pelo dono em branch/PR que não é minha (`df81a741` = commit da PR #3161, não da minha branch). Corrigir exigiria nova branch `fix:` a partir do main atual — fora do escopo desta sessão e desta PR.  
+**O que o dono precisa fazer:**
+1. Verificar quais testes falharam no run [#42400439388](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42400439388) — rever a mudança de PR #3161 (CSS/layout do título de magazine em lg)
+2. Se for regressão introduzida por PR #3161: criar nova branch `fix:` a partir de main e corrigir o CSS/teste
+3. Se for falha pré-existente em main (anterior a PR #3161): registrar em PENDENCIAS para nova sessão
