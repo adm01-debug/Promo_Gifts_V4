@@ -469,7 +469,7 @@ Run de referência: Deploy Gates [42031544385](https://github.com/adm01-debug/Pr
 | 26 | Recibo de migration | claude/.../efae9c9c | failure | NÃO | Registrado PENDENCIAS #26 |
 | 27 | Migrations x Canonical schema | claude/.../efae9c9c | failure | NÃO | Registrado PENDENCIAS #27 |
 | 28 | Gate Final - Deploy Ready (PR #3160) | claude/.../efae9c9c | failure | SIM (em PRs) | Registrado PENDENCIAS #28 — Gate E40 |
-| 29 | Compare GitHub × Canonical | main/9739e654 | failure | SIM (main) | Deploy despachado [42394305679](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42394305679) — aguarda aprovação |
+| 29 | Compare GitHub × Canonical | main/9739e654 | failure (pré-existente) | SIM (main) | Deploy EF #42394305679 **cancelled** pelo dono; documentado PENDENCIAS #29 |
 | 30 | DB — migration única (prematura) | main/b5f7d2e | failure | NÃO | Registrado PENDENCIAS #30 |
 | 31 | 20x action_required | release-please branch | action_required | NÃO | Registrado PENDENCIAS #31 |
 | 32 | 3x E2E/quality | other-agent branches | failure | NÃO | Registrado PENDENCIAS #32 |
@@ -479,15 +479,15 @@ Run de referência: Deploy Gates [42031544385](https://github.com/adm01-debug/Pr
 
 | Required check | Status |
 |---|---|
-| Gate Final - Deploy Ready | ⏳ in_progress (Gate 3 E2E + Gate 6 Build) |
-| Compare GitHub × Canonical | ❌ failure — deploy despachado [42394305679](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42394305679), aguarda aprovação de ambiente `production` |
+| Gate Final - Deploy Ready | ✅ **success** — run [#42392250972](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42392250972) job [128469740968](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42392250972/job/128469740968) (17:16:29Z) |
+| Compare GitHub × Canonical | ❌ failure (pré-existente) — Deploy EF #42394305679 **cancelled** pelo dono; documentado PENDENCIAS #29 |
 | Analyze (javascript-typescript) | ✅ success |
 | Gate E23 - Secret Scan (gitleaks) | ✅ success |
 | Assert Gate Final is required on main | ✅ success |
 
 ### Anti-regressão final
 
-- Required checks em main (exceto `Compare GitHub × Canonical` pré-existente e Gate Final ainda rodando): ✅ verdes
-- Compare GitHub × Canonical: pré-existente; fix despachado — requer aprovação do dono (ambiente `production`)
+- **Gate Final - Deploy Ready (main):** ✅ success — run [#42392250972](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42392250972) (17:16:29Z) — 18 jobs: 17 success, 1 skipped (Gate E40 sem mudanças de schema)
+- **Compare GitHub × Canonical:** ❌ failure pré-existente; Deploy EF #42394305679 cancelled pelo dono; documentado PENDENCIAS #29
 - Gate Final em PRs: bloqueado por Gate E40 (REGRA #8) — documentado PENDENCIAS #28
-- Sem nova falha introduzida por esta sessão
+- Sem nova falha introduced por esta sessão
