@@ -53,6 +53,20 @@ describe('e2e-relevance', () => {
     expect(isE2ERuntimeFile('src/pages/__tests__/QuoteBuilderDeliveryTooltip.test.tsx')).toBe(true);
   });
 
+  it.each([
+    'supabase/functions/health-check/index.ts',
+    'supabase/migrations/20261107_example.sql',
+    'supabase/tests/database/rls.test.sql',
+    'supabase/config.toml',
+    'supabase/seed.sql',
+    'vercel.json',
+    'tsconfig.json',
+    'tsconfig.app.json',
+    'tsconfig.node.json',
+  ])('classifica backend e configuração compartilhada como runtime: %s', (file) => {
+    expect(isE2ERuntimeFile(file)).toBe(true);
+  });
+
   it.each([...callers, ...sharedInputs])('trata infraestrutura E2E como relevante: %s', (file) => {
     expect(isE2ERuntimeFile(file)).toBe(true);
   });

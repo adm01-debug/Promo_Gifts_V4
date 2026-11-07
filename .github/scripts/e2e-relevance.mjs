@@ -28,10 +28,27 @@ const sharedActionPrefixes = [
   '.github/actions/setup-node-ci/',
 ];
 
+const supabaseRuntimePrefixes = [
+  'supabase/functions/',
+  'supabase/migrations/',
+  'supabase/tests/',
+];
+
+const rootRuntimeInputs = new Set([
+  'package.json',
+  'package-lock.json',
+  '.nvmrc',
+  'index.html',
+  'vercel.json',
+  'supabase/config.toml',
+  'supabase/seed.sql',
+]);
+
 export function isE2ERuntimeFile(file) {
   if (file === deliveryUnit) return true;
   if (workflowInputs.has(file)) return true;
   if (sharedActionPrefixes.some((prefix) => file.startsWith(prefix))) return true;
+  if (supabaseRuntimePrefixes.some((prefix) => file.startsWith(prefix))) return true;
 
   const isSrcUnit =
     file.startsWith('src/') &&
@@ -43,7 +60,8 @@ export function isE2ERuntimeFile(file) {
     file.startsWith('e2e/') ||
     file.startsWith('tests/') ||
     file.startsWith('public/') ||
-    ['package.json', 'package-lock.json', '.nvmrc', 'index.html'].includes(file) ||
+    rootRuntimeInputs.has(file) ||
+    /^tsconfig(?:\.[^/]+)?\.json$/.test(file) ||
     /^(?:playwright|vite|tailwind|postcss)\.config\./.test(file)
   );
 }
