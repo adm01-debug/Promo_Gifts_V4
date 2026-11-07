@@ -6,12 +6,18 @@
  * - dialog "Como é calculado" mostra "0 / 0 = 100%"
  * - drawer abre e cada tab mostra empty state determinístico
  */
-import { test, expect } from '../fixtures/test-base';
+import { expect, requireAuth, test } from '../fixtures/test-base';
 import { loginAs } from '../helpers/auth';
 import { gotoAndSettle } from '../helpers/nav';
 
 test.describe('Estoque — estado vazio (sem registros)', () => {
-  test.beforeEach(async ({ page }) => {
+  test.beforeEach(async ({ page }, testInfo) => {
+    test.skip(
+      testInfo.project.name !== 'chromium-authed',
+      'A rota /estoque é protegida; o projeto público cobre apenas o redirect de autenticação.',
+    );
+    requireAuth();
+
     // Intercepta a edge que alimenta o dashboard ANTES do login + navegação.
     await page.route('**/functions/v1/external-db-bridge*', async (route) => {
       await route.fulfill({
@@ -36,7 +42,9 @@ test.describe('Estoque — estado vazio (sem registros)', () => {
     await page.getByTestId('health-score-info-trigger').click();
     const dialog = page.getByTestId('health-score-info-dialog');
     await expect(dialog).toBeVisible();
-    await expect(page.getByTestId('health-score-live-example')).toHaveText(/0\s*\/\s*0\s*=\s*100\s*%/);
+    await expect(page.getByTestId('health-score-live-example')).toHaveText(
+      /0\s*\/\s*0\s*=\s*100\s*%/,
+    );
   });
 
   test('drawer abre e tab "Crítico" exibe empty state', async ({ page }) => {

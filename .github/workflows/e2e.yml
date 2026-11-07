@@ -1,6 +1,6 @@
 name: E2E (Playwright)
 
-# E17: sharding 4×2 — job e2e-gates (pre-flight), e2e-shard (matrix), merge-reports.
+# E17: sharding 4×2 — job e2e-gates (pre-flight), núcleo transversal e merge-reports.
 # Job opcional: roda os specs públicos sempre; specs autenticados só se
 # E2E_USER_EMAIL/E2E_USER_PASSWORD estiverem configurados como secrets do repo.
 # Artefatos (relatório HTML, screenshots, vídeos, traces) são publicados.
@@ -44,8 +44,7 @@ permissions:
 
 concurrency:
   group: e2e-${{ github.ref }}
-  cancel-in-progress: ${{ github.event_name == 'pull_request' }}  # E19: PR cancela; push/dispatch não
-
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }} # E19: PR cancela; push/dispatch não
 
 defaults:
   run:
@@ -62,8 +61,8 @@ jobs:
     uses: ./.github/workflows/_secrets-check.yml
     secrets: inherit
 
-# ─── JOB 1: PRÉ-VÔOS (header-sticky + carrinhos URL-state) ──────────────────
-# Roda uma vez; se falhar, os shards não sobem (needs: e2e-gates).
+  # ─── JOB 1: PRÉ-VÔOS (header-sticky + carrinhos URL-state) ──────────────────
+  # Roda uma vez; se falhar, os shards não sobem (needs: e2e-gates).
   e2e-gates:
     needs: [e2e-relevance]
     runs-on: ubuntu-24.04
@@ -71,16 +70,16 @@ jobs:
     # G-H3: fork guard
     if: needs.e2e-relevance.outputs.relevant == 'true' && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
     env:
-      CI: "true"
-      FORCE_COLOR: "0"
-      PWTEST_FORBID_ONLY: "1"
+      CI: 'true'
+      FORCE_COLOR: '0'
+      PWTEST_FORBID_ONLY: '1'
       VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || 'https://doufsxqlfjyuvxuezpln.supabase.co' }}
       VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_tjH5qAbZ0e5HTTd872NijQ_s9m6JvYU' }}
       E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          persist-credentials: false  # E32
+          persist-credentials: false # E32
       - uses: ./.github/actions/e2e-setup
         with:
           browsers: 'chromium'
@@ -145,12 +144,12 @@ jobs:
           echo "::error title=Carrinhos URL-state regression::Specs de URL-state em /carrinhos ou /orcamentos falharam."
           exit 1
 
-# ─── JOB 2: SHARDS DE REGRESSÃO ──────────────────────────────────────────────
-# matriz shard:[1,2,3,4] × project:[chromium-public,chromium-authed]
-# chromium-authed só roda quando E2E_USER_EMAIL estiver configurado.
+  # ─── JOB 2: SHARDS DE REGRESSÃO ──────────────────────────────────────────────
+  # matriz shard:[1..4] × project:[chromium-public,chromium-authed]
+  # chromium-authed só roda quando E2E_USER_EMAIL estiver configurado.
   e2e-shard:
     runs-on: ubuntu-24.04
-    timeout-minutes: 30  # E24: E2E leg ≤ 30 min por shard
+    timeout-minutes: 30 # E24: E2E leg ≤ 30 min por shard
     needs: [e2e-gates, secrets-check]
     if: needs.e2e-gates.result == 'success'
     strategy:
@@ -162,15 +161,16 @@ jobs:
         # E013: inclui chromium-authed somente quando secrets E2E estão configurados
         project: ${{ fromJSON(needs.secrets-check.outputs.has_e2e == 'true' && '["chromium-public","chromium-authed"]' || '["chromium-public"]') }}
     env:
-      CI: "true"
-      FORCE_COLOR: "0"
-      PWTEST_FORBID_ONLY: "1"
+      CI: 'true'
+      FORCE_COLOR: '0'
+      PWTEST_FORBID_ONLY: '1'
+      E2E_GENERAL_REGRESSION: '1'
       VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || 'https://doufsxqlfjyuvxuezpln.supabase.co' }}
       VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_tjH5qAbZ0e5HTTd872NijQ_s9m6JvYU' }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          persist-credentials: false  # E32
+          persist-credentials: false # E32
       - uses: ./.github/actions/e2e-setup
         with:
           browsers: 'chromium'
@@ -190,7 +190,7 @@ jobs:
             --project=${{ matrix.project }} \
             --shard=${{ matrix.shard }}/4 \
             --grep-invert @smoke \
-            --reporter=blob,json
+            --reporter=blob,json,line
 
       # E012: valida mínimo de testes por shard (evita false-green com 0 testes)
       - name: Check min tests executed (shard ${{ matrix.shard }}, ${{ matrix.project }})
@@ -206,7 +206,7 @@ jobs:
         with:
           name: blob-report-${{ matrix.project }}-shard-${{ matrix.shard }}
           path: blob-report
-          retention-days: 1  # temporário — só para merge-reports; E88 tier padrão não se aplica
+          retention-days: 1 # temporário — só para merge-reports; E88 tier padrão não se aplica
 
       - name: Upload evidence artifacts (shard ${{ matrix.shard }}, ${{ matrix.project }})
         if: always()
@@ -215,23 +215,22 @@ jobs:
           name: e2e-evidence-${{ matrix.project }}-shard-${{ matrix.shard }}
           path: |
             e2e-artifacts/
-            test-results/
-            !test-results/**/trace.zip  # E26: trace contém dados de formulário
+            test-results/**/error-context.md
           retention-days: 14
 
-# ─── JOB 3: MERGE DE RELATÓRIOS ──────────────────────────────────────────────
-# Baixa todos os blob-report-* e gera um único HTML report + JSON + JUnit.
+  # ─── JOB 3: MERGE DE RELATÓRIOS ──────────────────────────────────────────────
+  # Baixa todos os blob-report-* e gera um único HTML report + JSON + JUnit.
   merge-reports:
     runs-on: ubuntu-24.04
-    timeout-minutes: 10  # E24: estático ≤ 10 min (merge/upload puro)
+    timeout-minutes: 10 # E24: estático ≤ 10 min (merge/upload puro)
     needs: [e2e-gates, e2e-shard]
-    if: always() && needs.e2e-shard.result != 'skipped'  # E011: roda quando shards rodaram, mesmo que falhem
+    if: always() && needs.e2e-shard.result != 'skipped' # E011: roda quando shards rodaram, mesmo que falhem
     env:
-      ARTIFACT_RETENTION_DAYS: "14"
+      ARTIFACT_RETENTION_DAYS: '14'
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          persist-credentials: false  # E32
+          persist-credentials: false # E32
       - name: Setup Node CI
         uses: ./.github/actions/setup-node-ci
 
@@ -253,7 +252,7 @@ jobs:
 
       - name: 📋 Generate feature summary
         if: always()
-        run: node scripts/e2e-feature-summary.mjs || true  # ok: resumo é best-effort; não deve bloquear upload de artefato
+        run: node scripts/e2e-feature-summary.mjs || true # ok: resumo é best-effort; não deve bloquear upload de artefato
 
       - name: 📤 Append feature summary to GitHub UI
         if: always()
@@ -266,7 +265,7 @@ jobs:
             } >> "$GITHUB_STEP_SUMMARY"
           fi
 
-      - name: Check min tests executed  # E42
+      - name: Check min tests executed # E42
         if: always()
         uses: ./.github/actions/check-min-tests
         with:
