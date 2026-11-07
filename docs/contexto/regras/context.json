@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "6522f77025e91e1885502e5269fe188b4a00e4d9",
+  "sha": "2a042dab281c2233d676b91b7ca02b04b27a6138",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-07 22:22 UTC",
+  "generated_at": "2026-11-07 22:40 UTC",
   "files_total": 9099,
   "code_files": 7844,
   "code_lines": 1051314
@@ -483022,10 +483022,19 @@
   }
  },
  "git": {
-  "sha": "6522f77025e91e1885502e5269fe188b4a00e4d9",
+  "sha": "2a042dab281c2233d676b91b7ca02b04b27a6138",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "2a042da",
+    "date": "2026-11-07",
+    "author": "adm01-debug",
+    "subject": "docs(ci): verificar erros exatos #26 #30 #37 — sessão 2026-11-07T22h",
+    "files": [
+     "PENDENCIAS.md"
+    ]
+   },
    {
     "sha": "6522f77",
     "date": "2026-11-07",
@@ -483325,16 +483334,6 @@
     "files": [
      ".github/workflows/schema-snapshot-export.yml"
     ]
-   },
-   {
-    "sha": "6f94e35",
-    "date": "2026-11-06",
-    "author": "adm01-debug",
-    "subject": "fix(ci): reconcile E40 ledger and forced rotation (#3113)",
-    "files": [
-     ".github/workflows/schema-snapshot-export.yml",
-     "scripts/migration-ledger-remote-only-allowlist.json"
-    ]
    }
   ],
   "hot_files": [
@@ -483344,7 +483343,7 @@
    ],
    [
     "PENDENCIAS.md",
-    4
+    5
    ],
    [
     ".github/workflows/replenishment-quality.yml",
@@ -483360,10 +483359,6 @@
    ],
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    2
-   ],
-   [
-    ".github/workflows/schema-snapshot-export.yml",
     2
    ],
    [
@@ -483416,6 +483411,10 @@
    ],
    [
     "e2e/fixtures/auth.setup.ts",
+    1
+   ],
+   [
+    "e2e/flows/20-all-features-smoke.spec.ts",
     1
    ]
   ]

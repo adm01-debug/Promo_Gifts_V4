@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "6522f77025e91e1885502e5269fe188b4a00e4d9",
+  "commit": "2a042dab281c2233d676b91b7ca02b04b27a6138",
   "branch": "main",
-  "data_commit": "2026-11-07T19:13:30-03:00",
+  "data_commit": "2026-11-07T19:25:28-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "2a042da",
+    "data": "2026-11-07",
+    "assunto": "docs(ci): verificar erros exatos #26 #30 #37 — sessão 2026-11-07T22h"
+   },
    {
     "sha": "6522f77",
     "data": "2026-11-07",
@@ -126,11 +131,6 @@
     "sha": "9429112",
     "data": "2026-11-07",
     "assunto": "fix(ci): reduzir pressão dos E2E no Supabase (#3130)"
-   },
-   {
-    "sha": "897cc4c",
-    "data": "2026-11-07",
-    "assunto": "fix(ci/catalog): estabilizar auditorias E2E e restaurar cores na lista (#3120)"
    }
   ],
   "arquivos_mudados_7d": 403,
@@ -203,7 +203,7 @@
    },
    {
     "arquivo": "PENDENCIAS.md",
-    "mudancas": 63
+    "mudancas": 64
    },
    {
     "arquivo": "package.json",
@@ -211,7 +211,7 @@
    },
    {
     "arquivo": "package-lock.json",
-    "mudancas": 24
+    "mudancas": 23
    },
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
@@ -274,16 +274,16 @@
     "mudancas": 7
    },
    {
-    "arquivo": ".github/workflows/e2e-swatch-quickview.yml",
-    "mudancas": 6
-   },
-   {
     "arquivo": "analise-prs/baseline/lint.txt",
     "mudancas": 6
    },
    {
     "arquivo": "analise-prs/baseline/typecheck.txt",
     "mudancas": 6
+   },
+   {
+    "arquivo": ".github/workflows/e2e-swatch-quickview.yml",
+    "mudancas": 5
    },
    {
     "arquivo": ".github/workflows/ratchet-weekly.yml",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 328
+    "commits": 329
    },
    {
     "autor": "Joaquim Ataides",
@@ -309,7 +309,7 @@
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 24
+    "commits": 22
    },
    {
     "autor": "Claude",
