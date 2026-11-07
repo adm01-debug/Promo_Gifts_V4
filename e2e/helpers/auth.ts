@@ -215,8 +215,10 @@ export async function loginAs(page: Page, role: Role = "user"): Promise<void> {
                    process.env.E2E_USER_PASSWORD;
 
   if (!email || !password) {
-    // E21 — modo estrito: em CI, credentials ausentes = falha imediata.
-    if (process.env.CI) {
+    // E21 — modo estrito: em CI (push/schedule), credentials ausentes = falha imediata.
+    // Em pull_request de fork, o GitHub retém secrets — degradar graciosamente.
+    const isForkPR = process.env.CI && process.env.GITHUB_EVENT_NAME === 'pull_request';
+    if (process.env.CI && !isForkPR) {
       throw new Error(
         `[loginAs] E21 — modo estrito: E2E_${role.toUpperCase()}_EMAIL/PASSWORD ausentes em CI.`,
       );
