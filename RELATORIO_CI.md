@@ -547,19 +547,19 @@ Zero mudanças de schema em toda a série de sessões desta task. REGRA #8/E056 
 
 | Required check | Status | Run / Evidência |
 |---|---|---|
-| Gate Final - Deploy Ready | ⏳ queued (criado 17:03Z) | run [#42394358194](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42394358194) — em fila às 17:35Z (runners ocupados) |
+| Gate Final - Deploy Ready | ✅ **success** | run [#42394358194](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42394358194) — completed 17:43Z (SHA `787f8438`) |
 | Gate Final - Deploy Ready (SHA `9739e654`, anterior) | ✅ **success** | run [#42392250972](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42392250972) (17:16:29Z) — 17 success + 1 skipped |
 | Compare GitHub × Canonical | ❌ failure (pré-existente) | run [#42394606339](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42394606339) (SHA `787f8438`) — 27 funções driftadas; PENDENCIAS #29 |
 | Analyze (javascript-typescript) | ✅ success | SHA `787f8438` — sem mudança de código nesta PR |
 | Gate E23 - Secret Scan (gitleaks) | ✅ success | SHA `787f8438` — sem segredos em diff |
 | Assert Gate Final is required on main | ✅ success | — |
 
-> **Sobre Gate Final queued:** O run #42394358194 (SHA `787f8438`) está em fila desde 17:03Z. O resultado esperado é success, pois: (a) o merge de PR #3154 foi só de código front-end (sem schema, sem migration), (b) o run anterior em SHA `9739e654` = success com 17 jobs, (c) nenhuma mudança que introduza nova falha required foi feita. Será confirmado quando o run completar.
+> **Gate Final confirmado:** Run #42394358194 (SHA `787f8438`) completou às 17:43Z com `conclusion=success`.
 
 ### Anti-regressão final (2026-11-07T17:35Z)
 
 - **Gate Final (SHA `9739e654`):** ✅ success — run [#42392250972](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42392250972) (17:16:29Z)
-- **Gate Final (SHA `787f8438`):** ⏳ queued — run [#42394358194](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42394358194)
+- **Gate Final (SHA `787f8438`):** ✅ success — run [#42394358194](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42394358194) (completed 17:43Z)
 - **Compare GitHub × Canonical:** ❌ failure pré-existente; deploy run #42394305679 cancelled pelo dono; 27 slugs documentados em PENDENCIAS #29 com passos exatos para o dono
 - **Gate Final em PR #3160:** ❌ bloqueado por Gate E40 (REGRA #8) — documentado PENDENCIAS #28
 - **Sem nova falha required introduzida** por esta sessão nos commits desta branch
