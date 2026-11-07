@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `d2ce504aee` · branch `main` · 2026-11-07 22:55 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `bd6773e96f` · branch `main` · 2026-11-07 23:25 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -6131,7 +6131,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `admin` | `supabase/migrations/20260909200000_magazine_hardening_v2.sql` |
 | `anon` | `tests/edge-functions/live/_live-client.ts` |
 
-## K. Testes como especificação (18422 testes em 1882 arquivos — nomes completos em `context.json`)
+## K. Testes como especificação (18426 testes em 1883 arquivos — nomes completos em `context.json`)
 
 | Arquivo | Testes | Exemplos do que o sistema DEVE fazer |
 |---|---|---|
@@ -6435,7 +6435,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
 | `tests/scripts/check-anon-write-grants.test.mjs` | 17 | loadAllowlist · devolve grants=[] quando o arquivo não existe · lê grants de um arquivo válido · tolera arquivo sem campo grants (array vazio) … |
 | `tests/ssot/ssot-report-schema.test.ts` | 17 | ssot-report.json — schema · schema JSON é parseável e draft-07 · aceita relatório válido · rejeita canonical inesperado … |
 | `tests/utils/price-freshness-coverage.test.ts` | 17 | getPriceFreshness — bordas de threshold · dia exatamente no meio do threshold ainda é  · um dia após o meio do threshold vira  · dia exatamente no threshold já é  … |
-| … +1582 linhas — lista completa em `context.json` | | |
+| … +1583 linhas — lista completa em `context.json` | | |
 
 ## L. Eventos de webhook tratados (contratos com sistemas externos)
 

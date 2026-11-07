@@ -971,7 +971,7 @@
   {
    "arquivo": "scripts/check-min-tests-executed.mjs",
    "descricao": "* E23/E109 — Gate: minimo de testes executados.",
-   "linhas": 46,
+   "linhas": 56,
    "env": [],
    "npm_scripts": [],
    "workflows": [],

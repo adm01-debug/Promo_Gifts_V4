@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "d2ce504aee3201f4a422ddeb914366675147b32c",
+  "sha": "bd6773e96fd08538474dddbcacb3847ecc9f0ac8",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-07 22:55 UTC",
-  "files_total": 9099,
-  "code_files": 7844,
-  "code_lines": 1051314
+  "generated_at": "2026-11-07 23:25 UTC",
+  "files_total": 9100,
+  "code_files": 7845,
+  "code_lines": 1051414
  },
  "version": "1.3.2",
- "facts_hash": "0e0fa5cbeffda78d",
+ "facts_hash": "5c5edbdd21ae48c4",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1176,7 +1176,7 @@
    ".sql": 3228,
    ".ts": 2621,
    ".tsx": 1687,
-   ".mjs": 299,
+   ".mjs": 300,
    ".py": 9,
    ".js": 7
   },
@@ -138094,7 +138094,7 @@
   {
    "module": "scripts",
    "files": 269,
-   "lines": 52903,
+   "lines": 52913,
    "tables": [
     "a",
     "contacts",
@@ -140362,8 +140362,8 @@
   },
   {
    "module": "tests",
-   "files": 815,
-   "lines": 124533,
+   "files": 816,
+   "lines": 124623,
    "tables": [
     "bot_detection_log",
     "companies",
@@ -266483,6 +266483,22 @@
     "name": "lê o log real e confirma que versão E48 tem recibo (smoke test de integração)"
    },
    {
+    "file": "tests/scripts/check-min-tests-executed.test.mjs",
+    "name": "check-min-tests-executed --min"
+   },
+   {
+    "file": "tests/scripts/check-min-tests-executed.test.mjs",
+    "name": "rejeita valor invalido %j antes de avaliar o relatorio"
+   },
+   {
+    "file": "tests/scripts/check-min-tests-executed.test.mjs",
+    "name": "aceita inteiro positivo %j"
+   },
+   {
+    "file": "tests/scripts/check-min-tests-executed.test.mjs",
+    "name": "mantem a falha funcional quando o relatorio nao atinge o minimo valido"
+   },
+   {
     "file": "tests/scripts/check-no-db-push.test.mjs",
     "name": "ALLOWLIST – new entry from PR"
    },
@@ -376120,7 +376136,7 @@
   },
   "scripts/check-min-tests-executed.mjs": {
    "path": "scripts/check-min-tests-executed.mjs",
-   "lines": 46,
+   "lines": 56,
    "rule_comments": [
     "* E23/E109 — Gate: minimo de testes executados.",
     "projeto; cada workflow deve passar --min explícito para seu contexto)"
@@ -479326,6 +479342,17 @@
     "lê o log real e confirma que versão E48 tem recibo (smoke test de integração)"
    ]
   },
+  "tests/scripts/check-min-tests-executed.test.mjs": {
+   "path": "tests/scripts/check-min-tests-executed.test.mjs",
+   "lines": 90,
+   "is_test": true,
+   "tests": [
+    "check-min-tests-executed --min",
+    "rejeita valor invalido %j antes de avaliar o relatorio",
+    "aceita inteiro positivo %j",
+    "mantem a falha funcional quando o relatorio nao atinge o minimo valido"
+   ]
+  },
   "tests/scripts/check-no-db-push.test.mjs": {
    "path": "tests/scripts/check-no-db-push.test.mjs",
    "lines": 185,
@@ -483022,10 +483049,20 @@
   }
  },
  "git": {
-  "sha": "d2ce504aee3201f4a422ddeb914366675147b32c",
+  "sha": "bd6773e96fd08538474dddbcacb3847ecc9f0ac8",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "bd6773e",
+    "date": "2026-11-07",
+    "author": "adm01-debug",
+    "subject": "fix(ci): impedir falso verde com mínimo de testes inválido (#3168)",
+    "files": [
+     "scripts/check-min-tests-executed.mjs",
+     "tests/scripts/check-min-tests-executed.test.mjs"
+    ]
+   },
    {
     "sha": "d2ce504",
     "date": "2026-11-07",
@@ -483325,15 +483362,6 @@
      "supabase/migrations/20261106232045_fix_handle_updated_at_search_path.sql",
      "supabase/rollbacks/20261106232045_rollback.sql"
     ]
-   },
-   {
-    "sha": "e87f36b",
-    "date": "2026-11-06",
-    "author": "adm01-debug",
-    "subject": "test(date-utils): elimina dependência de timezone (#3116)",
-    "files": [
-     "tests/unit/date-utils.test.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -483360,6 +483388,14 @@
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
     2
+   ],
+   [
+    "scripts/check-min-tests-executed.mjs",
+    1
+   ],
+   [
+    "tests/scripts/check-min-tests-executed.test.mjs",
+    1
    ],
    [
     "supabase/EDGE_FUNCTIONS_DEPLOY_LOG.md",
@@ -483407,14 +483443,6 @@
    ],
    [
     ".env.e2e.example",
-    1
-   ],
-   [
-    "e2e/fixtures/auth.setup.ts",
-    1
-   ],
-   [
-    "e2e/flows/20-all-features-smoke.spec.ts",
     1
    ]
   ]

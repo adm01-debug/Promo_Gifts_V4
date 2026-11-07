@@ -5,18 +5,18 @@
   "vitest",
   "playwright"
  ],
- "total": 2188,
+ "total": 2189,
  "por_tipo": {
   "contrato": 56,
   "e2e": 630,
   "pytest": 2,
   "qa": 17,
-  "unit": 1483
+  "unit": 1484
  },
  "onde_ficam": [
   {
    "padrao": "tests/",
-   "arquivos": 801
+   "arquivos": 802
   },
   {
    "padrao": "e2e/",
@@ -17289,6 +17289,13 @@
     "scripts/check-result-contract.mjs"
    ],
    "casos": 22
+  },
+  {
+   "arquivo": "tests/scripts/check-min-tests-executed.test.mjs",
+   "tipo": "unit",
+   "linhas": 90,
+   "testa": [],
+   "casos": 3
   },
   {
    "arquivo": "tests/scripts/check-no-db-push.test.mjs",

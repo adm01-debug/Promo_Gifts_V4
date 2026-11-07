@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "d2ce504aee3201f4a422ddeb914366675147b32c",
+  "commit": "bd6773e96fd08538474dddbcacb3847ecc9f0ac8",
   "branch": "main",
-  "data_commit": "2026-11-07T19:49:09-03:00",
+  "data_commit": "2026-11-07T23:23:33Z",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "bd6773e",
+    "data": "2026-11-07",
+    "assunto": "fix(ci): impedir falso verde com mínimo de testes inválido (#3168)"
+   },
    {
     "sha": "d2ce504",
     "data": "2026-11-07",
@@ -126,14 +131,9 @@
     "sha": "a23cb8e",
     "data": "2026-11-07",
     "assunto": "fix(ci): evitar paridade de reposição em diffs unitários (#3135)"
-   },
-   {
-    "sha": "ed1c7cc",
-    "data": "2026-11-07",
-    "assunto": "fix(health-check): tolera cold start do PostgREST (#3128)"
    }
   ],
-  "arquivos_mudados_7d": 403,
+  "arquivos_mudados_7d": 405,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -207,11 +207,11 @@
    },
    {
     "arquivo": "package.json",
-    "mudancas": 27
+    "mudancas": 26
    },
    {
     "arquivo": "package-lock.json",
-    "mudancas": 22
+    "mudancas": 21
    },
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
@@ -317,14 +317,14 @@
    },
    {
     "autor": "dependabot[bot]",
-    "commits": 7
+    "commits": 6
    }
   ]
  },
  "contagens": {
-  "arquivos_total": 9177,
-  "arquivos_codigo": 4617,
-  "linhas_codigo": 884238,
+  "arquivos_total": 9178,
+  "arquivos_codigo": 4618,
+  "linhas_codigo": 884338,
   "rotas": 138,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -336,7 +336,7 @@
   "tabelas": 544,
   "migrations": 3043,
   "cron_jobs": 120,
-  "testes": 2188,
+  "testes": 2189,
   "workflows": 94,
   "scripts": 255,
   "docs_md": 895
@@ -1212,7 +1212,7 @@
   },
   "scripts/check-min-tests-executed.mjs": {
    "arquivos": 1,
-   "linhas": 46
+   "linhas": 56
   },
   "scripts/check-mojibake.mjs": {
    "arquivos": 1,
@@ -2091,8 +2091,8 @@
    "linhas": 89
   },
   "tests/scripts": {
-   "arquivos": 52,
-   "linhas": 8543
+   "arquivos": 53,
+   "linhas": 8633
   },
   "tests/search": {
    "arquivos": 1,
