@@ -2111,7 +2111,7 @@
   {
    "arquivo": "e2e/flows/magazine-publish-smoke.spec.ts",
    "tipo": "e2e",
-   "linhas": 234,
+   "linhas": 218,
    "testa": [],
    "casos": 2
   },

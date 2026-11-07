@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "chore(docs): Gate 1.14 — adiciona SUPABASE_TEST_BYPASS_TOKEN ao SEGREDOS.md (#3164)",
    "fix(magazine): impedir colapso do título em lg (#3161)",
    "Merge pull request #3154 from adm01-debug/claude/fix-dashboard-title-loading-261107-0100",
    "fix(e2e): adiciona role seller ao helper de auth (#3145)",
-   "fix(ci): testar gates E2E no artefato de produção (#3142)",
-   "Merge branch 'main' into claude/fix-dashboard-title-loading-261107-0100"
+   "fix(ci): testar gates E2E no artefato de produção (#3142)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

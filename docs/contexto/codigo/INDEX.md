@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `df81a741a72bff72b3e7dee72508b53ff2a013b0` (2026-11-07T15:16:12-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `fa5da5d6bda61a6914bdb09310bc38f07b45db8e` (2026-11-07T16:20:05-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 9175 |
 | arquivos_codigo | 4615 |
-| linhas_codigo | 884000 |
+| linhas_codigo | 883984 |
 | rotas | 138 |
 | rotas_http_backend | 13 |
 | vistas_por_id | 0 |
@@ -586,14 +586,14 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 38043 nós · 66406 arestas · 2125 comunidades · grafo do commit `df81a741`
-- comunidades maiores: ref_components (688), ref_integrations (582), ref_lib (478), @testing-library/react (351), react-router-dom (345), ref_hooks (339), ref_types (332), test-base.ts (324), scripts (289), gotoAndSettle (280), react (277), ref_utils (245)
+- 38036 nós · 66398 arestas · 2159 comunidades · grafo do commit `fa5da5d6`
+- comunidades maiores: ref_integrations (596), ref_components (578), ref_lib (455), @testing-library/react (410), gotoAndSettle (343), ref_hooks (343), react-router-dom (333), scripts (289), @tanstack/react-query (280), @playwright/test (263), ref_types (259), ref_node_fs (249)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), json (?), loginAs() (e2e/helpers/auth.ts), excluded_sql() (scripts/supabase_snapshot/snapshot.py), maskUrl() (scripts/check-result-contract.mjs), .collect() (scripts/supabase_snapshot/test_snapshot.py), resolveItemImage() (src/pages/magazine/components/templates/shared.ts), makeMockCart() (e2e/helpers/cart-mock.ts)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
 
 ## Hotspots (arquivos mais alterados, 90 dias)
-- RELATORIO_CI.md (70)
-- PENDENCIAS.md (64)
+- RELATORIO_CI.md (69)
+- PENDENCIAS.md (63)
 - package.json (28)
 - package-lock.json (24)
 - supabase/MIGRATIONS_SYNC_LOG.md (22)
@@ -604,9 +604,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - .github/workflows/deploy-gates.yml (11)
 - analise-branches/RELATORIO_BRANCHES.md (10)
 - analise-prs/prs.json (9)
+- e2e/flows/magazine-publish-smoke.spec.ts (9)
 - AGENTS.md (8)
 - CLAUDE.md (8)
-- analise-prs/progresso.json (8)
 
 ## Workflows
 - `_e2e-relevance.yml` — Reusable — E2E Runtime Relevance (workflow_call)
@@ -1160,6 +1160,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.7.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.6.1...v1.7.0) (2026-11-02)
 
 ## Últimos commits
+- 2026-11-07 `fa5da5d` chore(docs): Gate 1.14 — adiciona SUPABASE_TEST_BYPASS_TOKEN ao SEGREDOS.md (#3164)
 - 2026-11-07 `df81a74` fix(magazine): impedir colapso do título em lg (#3161)
 - 2026-11-07 `787f843` Merge pull request #3154 from adm01-debug/claude/fix-dashboard-title-loading-261107-0100
 - 2026-11-07 `9739e65` fix(e2e): adiciona role seller ao helper de auth (#3145)
@@ -1174,7 +1175,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-07 `6065eb7` fix(ci): permitir leitura de PR no detector de reposição (#3139)
 - 2026-11-07 `21e52c0` test(auth): estabilizar callback SSO na suíte completa (#3133)
 - 2026-11-07 `a23cb8e` fix(ci): evitar paridade de reposição em diffs unitários (#3135)
-- 2026-11-07 `ed1c7cc` fix(health-check): tolera cold start do PostgREST (#3128)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`
