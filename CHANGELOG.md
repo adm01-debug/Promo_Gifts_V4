@@ -5,6 +5,51 @@ Todas as mudanças notáveis deste projeto são documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/),
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.8.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.7.0...v1.8.0) (2026-11-07)
+
+
+### Features
+
+* **ci:** inventário vivo para agentes de IA a cada 10 min (pacote de scripts autônomos do Zapp) ([#3059](https://github.com/adm01-debug/Promo_Gifts_V4/issues/3059)) ([385af81](https://github.com/adm01-debug/Promo_Gifts_V4/commit/385af81ad204acada06c6593b4c978e60dca170b))
+* cria partições p2027_03–p2027_12 de supplier_products_raw_history ([070e9d4](https://github.com/adm01-debug/Promo_Gifts_V4/commit/070e9d481da9fa88b409b4e529e378ad2aea5ecb))
+* **e2e:** corrige smoke tests de magazine para CI verde ([2c5dafc](https://github.com/adm01-debug/Promo_Gifts_V4/commit/2c5dafc323e094b59dd973b646944d9b8d715a07))
+* hook de início de sessão monta o grafo do código nas sessões da nuvem ([#3041](https://github.com/adm01-debug/Promo_Gifts_V4/issues/3041)) ([96f17f4](https://github.com/adm01-debug/Promo_Gifts_V4/commit/96f17f4df78c0fc9b681961e0dc00f1b426d2baf))
+* inventário gerado do estado real — scripts refazem banco, edges, rotas e tabelas ([#3039](https://github.com/adm01-debug/Promo_Gifts_V4/issues/3039)) ([09d7cdd](https://github.com/adm01-debug/Promo_Gifts_V4/commit/09d7cdd3f89b0db03e04362e698ad862ad5a34bb))
+
+
+### Bug Fixes
+
+* **catálogo:** buscar cores ao trocar filtros ou página ([#3140](https://github.com/adm01-debug/Promo_Gifts_V4/issues/3140)) ([0549ea3](https://github.com/adm01-debug/Promo_Gifts_V4/commit/0549ea39629b9ad4ab1c0a04bc87d1d6bd0965c5))
+* **ci/catalog:** estabilizar auditorias E2E e restaurar cores na lista ([#3120](https://github.com/adm01-debug/Promo_Gifts_V4/issues/3120)) ([897cc4c](https://github.com/adm01-debug/Promo_Gifts_V4/commit/897cc4c1026c483b5b23d7d6a80058d228c0a620))
+* **ci:** aponta migration pronta e não aplicada na exceção stock_notes ([#3050](https://github.com/adm01-debug/Promo_Gifts_V4/issues/3050)) ([44bc10b](https://github.com/adm01-debug/Promo_Gifts_V4/commit/44bc10baa89204d6c4ca091e2f460d854be99034))
+* **ci:** check-indexed-access-ratchet.mjs — preserva meta no --update ([#3056](https://github.com/adm01-debug/Promo_Gifts_V4/issues/3056)) ([e6183da](https://github.com/adm01-debug/Promo_Gifts_V4/commit/e6183da5f3ef011ecc5212dd0ec191556a1e03dc))
+* **ci:** evitar paridade de reposição em diffs unitários ([#3135](https://github.com/adm01-debug/Promo_Gifts_V4/issues/3135)) ([a23cb8e](https://github.com/adm01-debug/Promo_Gifts_V4/commit/a23cb8ed7b11fee786908b4ff13600720f0f0ac0))
+* **ci:** permitir leitura de PR no detector de reposição ([#3139](https://github.com/adm01-debug/Promo_Gifts_V4/issues/3139)) ([6065eb7](https://github.com/adm01-debug/Promo_Gifts_V4/commit/6065eb7adcef03f1c52f5b1738aef7dc8bd976e3))
+* **ci:** preserva meta (target/deadline) na regeneração dos 4 baselines de ratchet ([#3052](https://github.com/adm01-debug/Promo_Gifts_V4/issues/3052)) ([0febd3f](https://github.com/adm01-debug/Promo_Gifts_V4/commit/0febd3f957aba2d02e4b4140e4308ae48d1ea7d0))
+* **ci:** publish recovery snapshot atomically ([#3115](https://github.com/adm01-debug/Promo_Gifts_V4/issues/3115)) ([cf98610](https://github.com/adm01-debug/Promo_Gifts_V4/commit/cf98610c4feccc35fabe4b7e49af36b12c42bc2c))
+* **ci:** reconcile E40 ledger and forced rotation ([#3113](https://github.com/adm01-debug/Promo_Gifts_V4/issues/3113)) ([6f94e35](https://github.com/adm01-debug/Promo_Gifts_V4/commit/6f94e352017941362adc206d166d1dfaa8553a0b))
+* **ci:** reduzir pressão dos E2E no Supabase ([#3130](https://github.com/adm01-debug/Promo_Gifts_V4/issues/3130)) ([9429112](https://github.com/adm01-debug/Promo_Gifts_V4/commit/94291123bdcd2ea49c921602f4310dc6edc8e2a7))
+* **ci:** registra na baseline referencias ja existentes de CONTRIBUTING.md e PR-2714.md ([#3045](https://github.com/adm01-debug/Promo_Gifts_V4/issues/3045)) ([22204c8](https://github.com/adm01-debug/Promo_Gifts_V4/commit/22204c844382da6ed6d7a3b24bb09e76183c6dc5))
+* **ci:** ripgrep ausente + 2 mocks desatualizados ([3383990](https://github.com/adm01-debug/Promo_Gifts_V4/commit/3383990280baf28dfee13c721a8f80b3f0c5015a))
+* **ci:** testar gates E2E no artefato de produção ([#3142](https://github.com/adm01-debug/Promo_Gifts_V4/issues/3142)) ([3b2deef](https://github.com/adm01-debug/Promo_Gifts_V4/commit/3b2deef1d21e1d717c790d741423aa6ca94892b2))
+* corrigir refs de migration em doc para desbloquear Gate 1.3 ([5e010a1](https://github.com/adm01-debug/Promo_Gifts_V4/commit/5e010a15d1a28ea16d44f678fd109f8b0b195df8))
+* **db:** fixa search_path de handle_updated_at ([#3111](https://github.com/adm01-debug/Promo_Gifts_V4/issues/3111)) ([372dc82](https://github.com/adm01-debug/Promo_Gifts_V4/commit/372dc82772b71a4f9a91b39496e39ff0ed6b36aa))
+* **docs:** corrigir marcadores legado em planos — guard-canonical-project ([#3062](https://github.com/adm01-debug/Promo_Gifts_V4/issues/3062)) ([724592a](https://github.com/adm01-debug/Promo_Gifts_V4/commit/724592a2a54dd8ce2b9f3c7bd7a31a6ad6fea936))
+* **e2e:** adiciona role seller ao helper de auth ([#3145](https://github.com/adm01-debug/Promo_Gifts_V4/issues/3145)) ([9739e65](https://github.com/adm01-debug/Promo_Gifts_V4/commit/9739e654a5b8e1d37604d169ff9f67b93fdc612c))
+* **e2e:** alinha timeout do setup de autenticação ([#3102](https://github.com/adm01-debug/Promo_Gifts_V4/issues/3102)) ([e1705b3](https://github.com/adm01-debug/Promo_Gifts_V4/commit/e1705b3c58c753961df0b6ba032a576887aa4b28))
+* **e2e:** aumentar timeouts para auth real em CI (smoke + magazine + all-features) ([#3072](https://github.com/adm01-debug/Promo_Gifts_V4/issues/3072)) ([7486a58](https://github.com/adm01-debug/Promo_Gifts_V4/commit/7486a584d55357f1d58c10dacc541f44a83c1eb9))
+* **e2e:** corrige 2 smoke tests de magazine pré-existentes ([#3069](https://github.com/adm01-debug/Promo_Gifts_V4/issues/3069)) ([07dc24e](https://github.com/adm01-debug/Promo_Gifts_V4/commit/07dc24eb173be75398f18c59bce3d838bd817e70))
+* **e2e:** corrige Gate 3 flakiness — Playwright cache + cold start skip + grep -F ([#3074](https://github.com/adm01-debug/Promo_Gifts_V4/issues/3074)) ([2292176](https://github.com/adm01-debug/Promo_Gifts_V4/commit/2292176f3d725f0567ef70cd8ce859e845691c54))
+* Gate 3 — reduz timeouts cold start magazine smoke ([#3075](https://github.com/adm01-debug/Promo_Gifts_V4/issues/3075)) ([5e5e4a6](https://github.com/adm01-debug/Promo_Gifts_V4/commit/5e5e4a6f04ed8a8285b82999303001c2101048dc))
+* **health-check:** tolera cold start do PostgREST ([#3128](https://github.com/adm01-debug/Promo_Gifts_V4/issues/3128)) ([ed1c7cc](https://github.com/adm01-debug/Promo_Gifts_V4/commit/ed1c7ccf591aeb2e9a98f1db819b8417fb051f38))
+* **magazine:** impedir colapso do título em lg ([#3161](https://github.com/adm01-debug/Promo_Gifts_V4/issues/3161)) ([df81a74](https://github.com/adm01-debug/Promo_Gifts_V4/commit/df81a741a72bff72b3e7dee72508b53ff2a013b0))
+* **migrations-log:** remove 8 entradas duplicadas no MIGRATIONS_SYNC_LOG.md ([#3078](https://github.com/adm01-debug/Promo_Gifts_V4/issues/3078)) ([7f254f7](https://github.com/adm01-debug/Promo_Gifts_V4/commit/7f254f7499de7d014c50dea43b2909a1c1fab591))
+* renderiza titulo do dashboard de orcamentos em loading e erro ([096eb03](https://github.com/adm01-debug/Promo_Gifts_V4/commit/096eb03ee950efd25092d28b23100fa9f9102722))
+* renderiza título do dashboard de orçamentos em loading e erro ([787f843](https://github.com/adm01-debug/Promo_Gifts_V4/commit/787f8438dd9217c02e829c7be1032c8c2a657361))
+* **security:** CodeQL HIGH — crypto.randomInt, URL validation, hash param guard, anonymize ilike (PR-3021) ([df94410](https://github.com/adm01-debug/Promo_Gifts_V4/commit/df94410cbbcbe7d80928a279de91214d88b0d4bb))
+* **tests:** deriva timeout da suíte live do budget real de retry ([#3057](https://github.com/adm01-debug/Promo_Gifts_V4/issues/3057)) ([14fb66a](https://github.com/adm01-debug/Promo_Gifts_V4/commit/14fb66a64b4a0b4a5716421238414f683c0a6f27))
+* **ts:** corrige precedência de 'await...as' em useRuptureAlerts ([#2996](https://github.com/adm01-debug/Promo_Gifts_V4/issues/2996)) ([cc7ef5e](https://github.com/adm01-debug/Promo_Gifts_V4/commit/cc7ef5e23014b4a7e45dd9c51e9bc75351f56c85))
+
 ## [1.7.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.6.1...v1.7.0) (2026-11-02)
 
 
