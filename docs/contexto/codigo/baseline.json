@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "3c2ff9296dc226e3f0dee33bb60dcda3dbf5b298",
+  "commit": "3b2deef1d21e1d717c790d741423aa6ca94892b2",
   "branch": "main",
-  "data_commit": "2026-11-07T12:15:29-03:00",
+  "data_commit": "2026-11-07T13:11:11-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "3b2deef",
+    "data": "2026-11-07",
+    "assunto": "fix(ci): testar gates E2E no artefato de produção (#3142)"
+   },
    {
     "sha": "3c2ff92",
     "data": "2026-11-07",
@@ -126,14 +131,9 @@
     "sha": "d49e289",
     "data": "2026-11-05",
     "assunto": "docs: RELATORIO_CI.md prova final SHA 210ce9a9 + resolvidos #15/#16/#18/#19 (#3088)"
-   },
-   {
-    "sha": "210ce9a",
-    "data": "2026-11-05",
-    "assunto": "docs: RELATORIO_CI.md HEAD 84245872 + PENDENCIAS.md item #19 sentinel advisory (#3087)"
    }
   ],
-  "arquivos_mudados_7d": 401,
+  "arquivos_mudados_7d": 404,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -266,12 +266,16 @@
     "mudancas": 7
    },
    {
+    "arquivo": ".github/workflows/replenishment-quality.yml",
+    "mudancas": 7
+   },
+   {
     "arquivo": "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
     "mudancas": 7
    },
    {
-    "arquivo": ".github/workflows/replenishment-quality.yml",
-    "mudancas": 6
+    "arquivo": "e2e/flows/magazine-publish-smoke.spec.ts",
+    "mudancas": 7
    },
    {
     "arquivo": ".github/workflows/schema-snapshot-export.yml",
@@ -286,10 +290,6 @@
     "mudancas": 6
    },
    {
-    "arquivo": "e2e/flows/magazine-publish-smoke.spec.ts",
-    "mudancas": 6
-   },
-   {
     "arquivo": ".github/workflows/ci-security-drift.yml",
     "mudancas": 5
    },
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 332
+    "commits": 331
    },
    {
     "autor": "Joaquim Ataides",
@@ -322,9 +322,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 9174,
-  "arquivos_codigo": 4614,
-  "linhas_codigo": 883682,
+  "arquivos_total": 9175,
+  "arquivos_codigo": 4615,
+  "linhas_codigo": 883952,
   "rotas": 138,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -336,7 +336,7 @@
   "tabelas": 544,
   "migrations": 3043,
   "cron_jobs": 120,
-  "testes": 2185,
+  "testes": 2186,
   "workflows": 94,
   "scripts": 255,
   "docs_md": 895
@@ -436,7 +436,7 @@
   },
   "e2e/catalog": {
    "arquivos": 32,
-   "linhas": 4174
+   "linhas": 4334
   },
   "e2e/catalog-exhaustive-validation.spec.ts": {
    "arquivos": 1,
@@ -548,7 +548,7 @@
   },
   "e2e/flows": {
    "arquivos": 183,
-   "linhas": 25173
+   "linhas": 25189
   },
   "e2e/future-stock.spec.ts": {
    "arquivos": 1,
@@ -564,7 +564,7 @@
   },
   "e2e/helpers": {
    "arquivos": 33,
-   "linhas": 4673
+   "linhas": 4679
   },
   "e2e/initial-load.spec.ts": {
    "arquivos": 1,
@@ -896,7 +896,7 @@
   },
   "playwright.config.ts": {
    "arquivos": 1,
-   "linhas": 172
+   "linhas": 183
   },
   "postcss.config.js": {
    "arquivos": 1,
@@ -1995,8 +1995,8 @@
    "linhas": 32335
   },
   "tests/config": {
-   "arquivos": 4,
-   "linhas": 245
+   "arquivos": 5,
+   "linhas": 322
   },
   "tests/contexts": {
    "arquivos": 2,

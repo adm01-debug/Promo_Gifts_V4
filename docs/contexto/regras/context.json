@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "3c2ff9296dc226e3f0dee33bb60dcda3dbf5b298",
+  "sha": "3b2deef1d21e1d717c790d741423aa6ca94892b2",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-07 15:32 UTC",
-  "files_total": 9097,
-  "code_files": 7841,
-  "code_lines": 1050758
+  "generated_at": "2026-11-07 16:13 UTC",
+  "files_total": 9098,
+  "code_files": 7842,
+  "code_lines": 1051028
  },
  "version": "1.3.2",
- "facts_hash": "157cda48e5db0695",
+ "facts_hash": "6d8406bf98c76dd0",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -1174,7 +1174,7 @@
   "package_manager": "npm",
   "languages": {
    ".sql": 3228,
-   ".ts": 2620,
+   ".ts": 2621,
    ".tsx": 1687,
    ".mjs": 297,
    ".py": 9,
@@ -137714,7 +137714,7 @@
   {
    "module": "(raiz)",
    "files": 9,
-   "lines": 3382,
+   "lines": 3393,
    "tables": [],
    "exports": [
     "playwright.config.ts: defineConfig",
@@ -137881,7 +137881,7 @@
   {
    "module": "e2e",
    "files": 621,
-   "lines": 74609,
+   "lines": 74791,
    "tables": [
     "discount_approval_requests",
     "quote_items"
@@ -140362,8 +140362,8 @@
   },
   {
    "module": "tests",
-   "files": 812,
-   "lines": 124285,
+   "files": 813,
+   "lines": 124362,
    "tables": [
     "bot_detection_log",
     "companies",
@@ -143928,7 +143928,8 @@
     "e2e/helpers/auth.ts"
    ],
    "E2E_FORCE_START_SERVER": [
-    "playwright.config.ts"
+    "playwright.config.ts",
+    "tests/config/playwright-config-smoke.test.ts"
    ],
    "E2E_MANAGER_EMAIL": [
     "e2e/helpers/auth.ts"
@@ -143963,6 +143964,10 @@
     "scripts/e2e-smoke-summary.mjs"
    ],
    "E2E_REUSE_EXISTING_SERVER": [
+    "playwright.config.ts",
+    "tests/config/playwright-config-smoke.test.ts"
+   ],
+   "E2E_SERVER_MODE": [
     "playwright.config.ts",
     "tests/config/playwright-config-smoke.test.ts"
    ],
@@ -204811,6 +204816,10 @@
    },
    {
     "file": "e2e/catalog/novidades-reposicao-card-parity.spec.ts",
+    "name": "deep-link autenticado de Novidades conclui o boot"
+   },
+   {
+    "file": "e2e/catalog/novidades-reposicao-card-parity.spec.ts",
     "name": "cards têm mesmas dimensões e imagem 1:1 nos dois módulos"
    },
    {
@@ -249270,6 +249279,22 @@
     "name": "renders tooltip component"
    },
    {
+    "file": "tests/config/e2e-nav-helper-smoke.test.ts",
+    "name": "helpers E2E de navegação"
+   },
+   {
+    "file": "tests/config/e2e-nav-helper-smoke.test.ts",
+    "name": "encaminha os limites de gotoAndSettle como options do Playwright"
+   },
+   {
+    "file": "tests/config/e2e-nav-helper-smoke.test.ts",
+    "name": "encaminha o timeout customizado de waitForRouteIdle"
+   },
+   {
+    "file": "tests/config/e2e-nav-helper-smoke.test.ts",
+    "name": "encaminha o timeout customizado de settleAfterAction"
+   },
+   {
     "file": "tests/config/playwright-config-smoke.test.ts",
     "name": "Playwright server isolation contract"
    },
@@ -249280,6 +249305,10 @@
    {
     "file": "tests/config/playwright-config-smoke.test.ts",
     "name": "starts Vite when E2E_BASE_URL points to localhost"
+   },
+   {
+    "file": "tests/config/playwright-config-smoke.test.ts",
+    "name": "builds and serves the production preview when explicitly requested"
    },
    {
     "file": "tests/config/playwright-config-smoke.test.ts",
@@ -362137,7 +362166,7 @@
   },
   "playwright.config.ts": {
    "path": "playwright.config.ts",
-   "lines": 172,
+   "lines": 183,
    "exports": [
     "default defineConfig"
    ],
@@ -362145,7 +362174,8 @@
     "CI",
     "E2E_BASE_URL",
     "E2E_FORCE_START_SERVER",
-    "E2E_REUSE_EXISTING_SERVER"
+    "E2E_REUSE_EXISTING_SERVER",
+    "E2E_SERVER_MODE"
    ],
    "rule_comments": [
     "Apenas specs Playwright. Sem isto, o testMatch padrão também casa arquivos",
@@ -366340,8 +366370,11 @@
   },
   "e2e/catalog/novidades-reposicao-card-parity.spec.ts": {
    "path": "e2e/catalog/novidades-reposicao-card-parity.spec.ts",
-   "lines": 529,
+   "lines": 689,
    "is_test": true,
+   "errors": [
+    "[route-readiness] ${testId} ausente após ${timeout}ms: ${JSON.stringify(diagnostics)}"
+   ],
    "params": [
     {
      "name": "TOL_PX",
@@ -366359,10 +366392,13 @@
     "await expect(page.getByTestId('page-title-reposicao')).toBeVisible({ timeout: 30_000 });",
     "await expect(page.getByTestId(titleTid)).toBeVisible({ timeout: 30_000 });",
     "await expect(popoverTrigger).toBeVisible({ timeout: 5_000 });",
-    "await listBtn.waitFor({ state: 'visible', timeout: 5_000 });"
+    "await listBtn.waitFor({ state: 'visible', timeout: 5_000 });",
+    "await page.goto('/novidades', { waitUntil: 'domcontentloaded', timeout: 20_000 });",
+    "timeout = 45_000,"
    ],
    "tests": [
     "Paridade visual — cards Novidades vs Reposição",
+    "deep-link autenticado de Novidades conclui o boot",
     "cards têm mesmas dimensões e imagem 1:1 nos dois módulos",
     "rodapé (preço/estoque) está alinhado ao bottom em ambos os módulos",
     "screenshot diff por viewport (artefato)",
@@ -370370,28 +370406,30 @@
   },
   "e2e/flows/magazine-publish-smoke.spec.ts": {
    "path": "e2e/flows/magazine-publish-smoke.spec.ts",
-   "lines": 217,
+   "lines": 233,
    "is_test": true,
    "rule_comments": [
     "6. Concede permissão de clipboard APÓS navegação confirmada.",
     "O ProductsStep exibe role=\"status\">Produtos na revista apenas quando"
    ],
    "temporal": [
-    ").toBeVisible({ timeout: 15_000 });",
-    "await createBtn.waitFor({ state: \"visible\", timeout: 10_000 });",
-    "await layoutStep.waitFor({ state: \"visible\", timeout: 10_000 });",
-    "await page.getByText(\"Produtos na revista\").waitFor({ state: \"visible\", timeout: 20_000 });",
+    "await createBtn.waitFor({ state: 'visible', timeout: 10_000 });",
+    "await expect(page.getByText('Carregando revistas…')).toBeHidden({ timeout: 120_000 });",
+    "await layoutStep.waitFor({ state: 'visible', timeout: 10_000 });",
+    "await page.getByText('Produtos na revista').waitFor({ state: 'visible', timeout: 20_000 });",
     "await page.waitForURL(/\\/magazine\\/[a-f0-9-]{6,}/i, { timeout: 60_000 });",
-    "await productSearch.waitFor({ state: \"visible\", timeout: 15_000 });",
-    "await productsStep.waitFor({ state: \"visible\", timeout: 10_000 });",
-    "await publishBtn.waitFor({ state: \"visible\", timeout: 30_000 });",
-    "await titleInput.waitFor({ state: \"visible\", timeout: 20_000 });",
-    "catalogEmpty.waitFor({ state: \"visible\", timeout: 60_000 }),",
-    "catalogError.waitFor({ state: \"visible\", timeout: 60_000 }),",
-    "firstProductBtn.waitFor({ state: \"visible\", timeout: 60_000 }),",
+    "await productSearch.waitFor({ state: 'visible', timeout: 15_000 });",
+    "await productsStep.waitFor({ state: 'visible', timeout: 10_000 });",
+    "await publishBtn.waitFor({ state: 'visible', timeout: 30_000 });",
+    "await titleInput.waitFor({ state: 'visible', timeout: 20_000 });",
+    "catalogEmpty.waitFor({ state: 'visible', timeout: 60_000 }),",
+    "catalogError.waitFor({ state: 'visible', timeout: 60_000 }),",
+    "firstProductBtn.waitFor({ state: 'visible', timeout: 60_000 }),",
     "timeout: 10_000,",
+    "timeout: 15_000,",
     "timeout: 5_000,",
-    "{ timeout: 60_000 },"
+    "timeout: 60_000,",
+    "{ timeout: 120_000 },"
    ],
    "tests": [
     "@smoke Magazine — fluxo autenticado de publicação",
@@ -371539,7 +371577,7 @@
   },
   "e2e/helpers/nav.ts": {
    "path": "e2e/helpers/nav.ts",
-   "lines": 179,
+   "lines": 185,
    "exports": [
     "function waitForRouteIdle",
     "function expectOnRoute",
@@ -371557,7 +371595,7 @@
    ],
    "doc": "Navegação e esperas resilientes — anti-flake. Estratégia do gotoAndSettle: 1. goto domcontentloaded 2. networkidle curto (best-effort) 3. hidratação React (#root populado) 4. ausência de skeletons 5. body sem aria-busy 6. CSS kill-switch de animações (defensivo)",
    "temporal": [
-    "await page.waitForLoadState(\"networkidle\", { timeout: 5_000 }).catch(() => {",
+    "await page.waitForLoadState('networkidle', { timeout: 5_000 }).catch(() => {",
     "timeout = 10_000,",
     "{ timeout: 10_000 },",
     "{ timeout: 20_000 },",
@@ -469408,19 +469446,45 @@
     "renders tooltip component"
    ]
   },
+  "tests/config/e2e-nav-helper-smoke.test.ts": {
+   "path": "tests/config/e2e-nav-helper-smoke.test.ts",
+   "lines": 61,
+   "is_test": true,
+   "temporal": [
+    "await settleAfterAction(page, { timeout: 2_500 });",
+    "await waitForRouteIdle(page, { timeout: 7_000 });",
+    "expect(waitForFunctionCalls[0]?.[2]).toEqual({ timeout: 2_500 });",
+    "{ timeout: 10_000 },",
+    "{ timeout: 20_000 },",
+    "{ timeout: 3_000 },",
+    "{ timeout: 7_000 },"
+   ],
+   "tests": [
+    "helpers E2E de navegação",
+    "encaminha os limites de gotoAndSettle como options do Playwright",
+    "encaminha o timeout customizado de waitForRouteIdle",
+    "encaminha o timeout customizado de settleAfterAction"
+   ]
+  },
   "tests/config/playwright-config-smoke.test.ts": {
    "path": "tests/config/playwright-config-smoke.test.ts",
-   "lines": 78,
+   "lines": 94,
    "is_test": true,
    "env": [
     "CI",
     "E2E_BASE_URL",
-    "E2E_REUSE_EXISTING_SERVER"
+    "E2E_FORCE_START_SERVER",
+    "E2E_REUSE_EXISTING_SERVER",
+    "E2E_SERVER_MODE"
+   ],
+   "temporal": [
+    "timeout: 240_000,"
    ],
    "tests": [
     "Playwright server isolation contract",
     "starts a fresh default local Vite server",
     "starts Vite when E2E_BASE_URL points to localhost",
+    "builds and serves the production preview when explicitly requested",
     "reuses an existing local server in ephemeral CI",
     "allows explicit local reuse outside CI",
     "does not start a local server when a remote E2E_BASE_URL is provided"
@@ -482806,10 +482870,25 @@
   }
  },
  "git": {
-  "sha": "3c2ff9296dc226e3f0dee33bb60dcda3dbf5b298",
+  "sha": "3b2deef1d21e1d717c790d741423aa6ca94892b2",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "3b2deef",
+    "date": "2026-11-07",
+    "author": "adm01-debug",
+    "subject": "fix(ci): testar gates E2E no artefato de produção (#3142)",
+    "files": [
+     ".github/workflows/replenishment-quality.yml",
+     "e2e/catalog/novidades-reposicao-card-parity.spec.ts",
+     "e2e/flows/magazine-publish-smoke.spec.ts",
+     "e2e/helpers/nav.ts",
+     "playwright.config.ts",
+     "tests/config/e2e-nav-helper-smoke.test.ts",
+     "tests/config/playwright-config-smoke.test.ts"
+    ]
+   },
    {
     "sha": "3c2ff92",
     "date": "2026-11-07",
@@ -483096,21 +483175,12 @@
      "PENDENCIAS.md",
      "RELATORIO_CI.md"
     ]
-   },
-   {
-    "sha": "2bc3712",
-    "date": "2026-11-05",
-    "author": "adm01-debug",
-    "subject": "chore(docs): RELATORIO_CI final — inventário completo SHAs + prova final (#3082)",
-    "files": [
-     "RELATORIO_CI.md"
-    ]
    }
   ],
   "hot_files": [
    [
     "RELATORIO_CI.md",
-    12
+    11
    ],
    [
     "PENDENCIAS.md",
@@ -483118,7 +483188,7 @@
    ],
    [
     ".github/workflows/replenishment-quality.yml",
-    3
+    4
    ],
    [
     ".github/workflows/e2e-swatch-quickview.yml",
@@ -483131,6 +483201,30 @@
    [
     ".github/workflows/schema-snapshot-export.yml",
     2
+   ],
+   [
+    "e2e/catalog/novidades-reposicao-card-parity.spec.ts",
+    1
+   ],
+   [
+    "e2e/flows/magazine-publish-smoke.spec.ts",
+    1
+   ],
+   [
+    "e2e/helpers/nav.ts",
+    1
+   ],
+   [
+    "playwright.config.ts",
+    1
+   ],
+   [
+    "tests/config/e2e-nav-helper-smoke.test.ts",
+    1
+   ],
+   [
+    "tests/config/playwright-config-smoke.test.ts",
+    1
    ],
    [
     "src/hooks/products/__tests__/useProductsColorsBatch.aggregation.test.tsx",
@@ -483162,30 +483256,6 @@
    ],
    [
     ".github/workflows/delivery-quality.yml",
-    1
-   ],
-   [
-    ".github/workflows/deploy-gates.yml",
-    1
-   ],
-   [
-    ".github/workflows/e2e-flows.yml",
-    1
-   ],
-   [
-    ".github/workflows/e2e-focused.yml",
-    1
-   ],
-   [
-    ".github/workflows/e2e-personalization.yml",
-    1
-   ],
-   [
-    ".github/workflows/e2e.yml",
-    1
-   ],
-   [
-    ".github/workflows/visual-tests.yml",
     1
    ]
   ]

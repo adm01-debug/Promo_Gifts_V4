@@ -5,18 +5,18 @@
   "vitest",
   "playwright"
  ],
- "total": 2185,
+ "total": 2186,
  "por_tipo": {
   "contrato": 56,
   "e2e": 630,
   "pytest": 2,
   "qa": 17,
-  "unit": 1480
+  "unit": 1481
  },
  "onde_ficam": [
   {
    "padrao": "tests/",
-   "arquivos": 798
+   "arquivos": 799
   },
   {
    "padrao": "e2e/",
@@ -732,9 +732,9 @@
   {
    "arquivo": "e2e/catalog/novidades-reposicao-card-parity.spec.ts",
    "tipo": "e2e",
-   "linhas": 529,
+   "linhas": 689,
    "testa": [],
-   "casos": 20
+   "casos": 21
   },
   {
    "arquivo": "e2e/catalog/pagination-filters.spec.ts",
@@ -2111,7 +2111,7 @@
   {
    "arquivo": "e2e/flows/magazine-publish-smoke.spec.ts",
    "tipo": "e2e",
-   "linhas": 217,
+   "linhas": 233,
    "testa": [],
    "casos": 2
   },
@@ -2505,7 +2505,7 @@
   {
    "arquivo": "e2e/helpers/nav.ts",
    "tipo": "e2e",
-   "linhas": 179,
+   "linhas": 185,
    "testa": [],
    "casos": 6
   },
@@ -13369,13 +13369,20 @@
    "casos": 1
   },
   {
+   "arquivo": "tests/config/e2e-nav-helper-smoke.test.ts",
+   "tipo": "unit",
+   "linhas": 61,
+   "testa": [],
+   "casos": 3
+  },
+  {
    "arquivo": "tests/config/playwright-config-smoke.test.ts",
    "tipo": "unit",
-   "linhas": 78,
+   "linhas": 94,
    "testa": [
     "playwright.config.ts"
    ],
-   "casos": 5
+   "casos": 6
   },
   {
    "arquivo": "tests/config/vercel-headers-precedence.test.ts",
