@@ -900,3 +900,44 @@ Itens onde `conclusion=success` via fix de código: nenhum nesta sessão (todos 
 1. Adicionar `E2E_USER_EMAIL`, `E2E_USER_PASSWORD`, `SUPABASE_SERVICE_ROLE_KEY` em Secrets (fecha #6, #7, #13, #15, #16, #17, #18, #36)
 2. Dispatch `deploy-edge-functions.yml` → approve environment `production` (fecha #2/#29 — required check)
 3. Dispatch `db-apply-migration.yml` com `version=20261101150000` após merge do PR #3160 (fecha #22/#26/#28/#30)
+
+---
+
+## §24 — Prova Gate Final SHA `be7688da` + PR #3179
+
+**Data:** 2026-11-07 · **Sessão:** https://claude.ai/code/session_01RfQzo7S3K6o49UBUDoCtUe
+
+### Gate Final (SHA `be7688da` — main atual)
+
+**Run Deploy Gates [#42418015737](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42418015737) — `conclusion: success`** em SHA `be7688da2ab5508848747b10eaab99a31241467b`:
+- Gate Final - Deploy Ready: ✅ `conclusion: success`
+- Bypass E14 ativado (PR #3178 foi docs-only: RELATORIO_CI.md)
+- Required check "Compare GitHub × Canonical": ❌ failure — PENDENCIAS #29 (pré-existente, requer dono — inalterado)
+
+### PR #3179 — fix preflight `db-apply-migration`
+
+**Branch:** `claude/fix-ci-workflows-261107-2300`  
+**Link:** https://github.com/adm01-debug/Promo_Gifts_V4/pull/3179  
+**Estado:** open draft, CI em curso  
+**Fix aplicado:** `SET search_path = public, pg_catalog, pg_temp` + `supabase/rollbacks/20261101150000_rollback.sql` criado  
+**Bloqueio esperado em CI:** Gate 1.13.3 (migration `20261101150000` sem recibo por >24h) — mesmo bloqueio do PR #3160 (PENDENCIAS #28)  
+**Resolução:** dono precisa executar `db-apply-migration.yml` via `workflow_dispatch` com `version=20261101150000` (REGRA #8)
+
+### magazine-unit-tests — estado em main
+
+| Run ID | SHA | Conclusão |
+|---|---|---|
+| [#42400439388](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42400439388) | `df81a741` (main) | ❌ cancelled |
+| [#41826829495](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41826829495) | `385af81a` (main) | ✅ success |
+
+Workflow não disparou em `be7688da` (commit docs-only). Último run em main = cancelled em `df81a741`. PENDENCIAS #35 registrado.
+
+### Comparação SHA `bfb2926d` → `be7688da`
+
+| Métrica | SHA `bfb2926d` | SHA `be7688da` | Variação |
+|---|---|---|---|
+| Gate Final | ✅ run #42414106157 | ✅ run #42418015737 | ✅ sem regressão |
+| Required checks em falha | 1 (#29) | 1 (#29 — inalterado) | = |
+| Mudanças de código | 0 (docs-only §23) | 0 (docs-only §24) | = |
+
+**Nenhuma regressão introduzida.** Gate Final = success no SHA atual da main (`be7688da`).
