@@ -30,27 +30,39 @@ jobs:
         id: filter
         if: github.event_name == 'pull_request' || github.event_name == 'push'
         with:
+          list-files: json
           filters: |
-            runtime:
-              - 'src/**'
-              - '!src/**/__tests__/**'
-              - '!src/**/*.test.*'
-              - '!src/**/*.spec.*'
-              - 'src/pages/__tests__/QuoteBuilderDeliveryTooltip.test.tsx'
-              - 'e2e/**'
-              - 'tests/**'
-              - 'public/**'
-              - '.github/actions/e2e-setup/**'
-              - 'package.json'
-              - 'package-lock.json'
-              - 'playwright.config.*'
-              - 'vite.config.*'
-              - '.nvmrc'
+            all:
+              - '**'
       - name: Publicar decisão
         id: result
+        env:
+          CHANGED_FILES: ${{ steps.filter.outputs.all_files }}
         run: |
           if [[ "${{ github.event_name }}" == "pull_request" || "${{ github.event_name }}" == "push" ]]; then
-            echo "relevant=${{ steps.filter.outputs.runtime }}" >> "$GITHUB_OUTPUT"
+            node --input-type=module <<'NODE'
+            import { appendFileSync } from 'node:fs';
+
+            const files = JSON.parse(process.env.CHANGED_FILES || '[]');
+            const deliveryUnit = 'src/pages/__tests__/QuoteBuilderDeliveryTooltip.test.tsx';
+            const isSrcUnit = (file) =>
+              file.startsWith('src/') &&
+              (file.includes('/__tests__/') || /\.(?:test|spec)\.[^/]+$/.test(file));
+            const isRuntime = (file) => {
+              if (file === deliveryUnit) return true;
+              if (isSrcUnit(file)) return false;
+              return (
+                file.startsWith('src/') ||
+                file.startsWith('e2e/') ||
+                file.startsWith('tests/') ||
+                file.startsWith('public/') ||
+                file.startsWith('.github/actions/e2e-setup/') ||
+                ['package.json', 'package-lock.json', '.nvmrc'].includes(file) ||
+                /^(?:playwright|vite)\.config\./.test(file)
+              );
+            };
+            appendFileSync(process.env.GITHUB_OUTPUT, `relevant=${files.some(isRuntime)}\n`);
+            NODE
           else
             echo "relevant=true" >> "$GITHUB_OUTPUT"
           fi
