@@ -619,3 +619,22 @@ SECURITY DEFINER sem "pg_temp" no SET search_path em função "public.fn_get_rup
 1. Verificar quais testes falharam no run [#42400439388](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42400439388) — rever a mudança de PR #3161 (CSS/layout do título de magazine em lg)
 2. Se for regressão introduzida por PR #3161: criar nova branch `fix:` a partir de main e corrigir o CSS/teste
 3. Se for falha pré-existente em main (anterior a PR #3161): registrar em PENDENCIAS para nova sessão
+---
+
+## 36. Gate 3 E2E Smoke flakiness — SHA `3093c4a247` (attempt 1) ⚠️ (attempt 2 stale — superado por `a882bcc1`)
+
+**Workflow:** `deploy-gates.yml` (Gate 3 — E2E Smoke)  
+**Run ID (attempt 1):** [42410375374](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42410375374) (2026-11-07T20:17Z, SHA `3093c4a247`) — `conclusion: failure`  
+**Job:** `e2e-smoke` — Step 9: "Run Playwright smoke tests"  
+**Erros exatos (attempt 1):**
+1. `20-all-features-smoke.spec.ts:215:5 › 07 · Favoritos` — `testid="page-title-favoritos" não ficou visível em 149999ms`
+2. `20-all-features-smoke.spec.ts:344:3 › 94 · RLS bloqueia leitura de tabelas sensíveis` — `Test timeout of 240000ms exceeded`
+3. `magazine-publish-smoke.spec.ts:46:3 › publica revista e copia URL pública gerada` — URL resultou em `http://localhost:8080/auth` (sessão não propagada)
+4. `magazine-smoke.spec.ts:27:3 › lista /magazine carrega do BD Gold` — `nenhuma request para BD Gold observada — a página ainda pode estar em localStorage. Debug: []`
+
+**17 testes passaram** (incluindo Auth Critical Flow login ✅).  
+**Causa:** Flakiness de autenticação CI — mesmo padrão dos itens #10, #11, #14-#18. As únicas mudanças desta sessão em main foram docs-only (PENDENCIAS.md, RELATORIO_CI.md); SHA anterior `1a47c6972c` passou Gate Final com conclusion=success. Attempt 2 disparado em 20:43:56Z.  
+**Required check:** SIM — Gate Final depende do Gate 3.  
+**Status attempt 2:** API do GitHub retornou estado stale (`in_progress` por 30+ min após timeout de 20 min); resultado final indeterminado por cache de API.  
+**Superado:** Commit seguinte (`a882bcc1`, docs-only) obteve Gate Final success via bypass E14 — Gate 3 bypassed por mudança exclusivamente docs. Required checks satisfeitos em main no SHA `a882bcc1`.  
+**O que o dono precisa fazer:** Adicionar `SUPABASE_SERVICE_ROLE_KEY` em Secrets (causa root confirmada nos itens #13 e correlatos) para evitar recorrência em runs não-docs.
