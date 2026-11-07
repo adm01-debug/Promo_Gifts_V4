@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "be7688da2ab5508848747b10eaab99a31241467b",
+  "commit": "6522f77025e91e1885502e5269fe188b4a00e4d9",
   "branch": "main",
-  "data_commit": "2026-11-07T18:53:41-03:00",
+  "data_commit": "2026-11-07T19:13:30-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "6522f77",
+    "data": "2026-11-07",
+    "assunto": "docs(ci): RELATORIO §24 — Gate Final be7688da success + PR #3179"
+   },
    {
     "sha": "be7688d",
     "data": "2026-11-07",
@@ -126,11 +131,6 @@
     "sha": "897cc4c",
     "data": "2026-11-07",
     "assunto": "fix(ci/catalog): estabilizar auditorias E2E e restaurar cores na lista (#3120)"
-   },
-   {
-    "sha": "5b0dab1",
-    "data": "2026-11-06",
-    "assunto": "docs(db): registra aplicação da migration 20261101201000 (#3121)"
    }
   ],
   "arquivos_mudados_7d": 403,
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "RELATORIO_CI.md",
-    "mudancas": 69
+    "mudancas": 70
    },
    {
     "arquivo": "PENDENCIAS.md",
@@ -215,7 +215,7 @@
    },
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 22
+    "mudancas": 21
    },
    {
     "arquivo": "auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 329
+    "commits": 328
    },
    {
     "autor": "Joaquim Ataides",

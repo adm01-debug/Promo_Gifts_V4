@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "be7688da2ab5508848747b10eaab99a31241467b",
+  "sha": "6522f77025e91e1885502e5269fe188b4a00e4d9",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-07 21:55 UTC",
+  "generated_at": "2026-11-07 22:22 UTC",
   "files_total": 9099,
   "code_files": 7844,
   "code_lines": 1051314
@@ -483022,10 +483022,19 @@
   }
  },
  "git": {
-  "sha": "be7688da2ab5508848747b10eaab99a31241467b",
+  "sha": "6522f77025e91e1885502e5269fe188b4a00e4d9",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "6522f77",
+    "date": "2026-11-07",
+    "author": "adm01-debug",
+    "subject": "docs(ci): RELATORIO §24 — Gate Final be7688da success + PR #3179",
+    "files": [
+     "RELATORIO_CI.md"
+    ]
+   },
    {
     "sha": "be7688d",
     "date": "2026-11-07",
@@ -483326,21 +483335,12 @@
      ".github/workflows/schema-snapshot-export.yml",
      "scripts/migration-ledger-remote-only-allowlist.json"
     ]
-   },
-   {
-    "sha": "1c0eb37",
-    "date": "2026-11-06",
-    "author": "adm01-debug",
-    "subject": "chore(security): sincroniza baseline de policies RLS (#3110)",
-    "files": [
-     ".security/policies-baseline.json"
-    ]
    }
   ],
   "hot_files": [
    [
     "RELATORIO_CI.md",
-    7
+    8
    ],
    [
     "PENDENCIAS.md",

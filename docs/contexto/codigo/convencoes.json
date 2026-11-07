@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "docs(ci): RELATORIO §24 — Gate Final be7688da success + PR #3179",
    "docs(ci): RELATORIO §23 — baseline bfb2926d + tabela de prova completa 36 workflows (#3178)",
    "docs(ci): PENDENCIAS #36 + RELATORIO §22 — Gate Final a882bcc1 success (#3176)",
    "docs(edge-deploy-log): recibo do deploy — run 42374498496 (#3163)",
-   "fix(test): validar de verdade o corpus dos fuzzers (#3173)",
-   "docs: RELATORIO_CI.md §21 — Gate Final ✅ success na main 1a47c6972c"
+   "fix(test): validar de verdade o corpus dos fuzzers (#3173)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",
