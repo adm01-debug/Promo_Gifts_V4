@@ -670,8 +670,27 @@ Falha: `https://doufsxqlfjyuvxuezpln.supabase.co/functions/v1/health-check` → 
 
 ---
 
+## 38. Supabase Preview ❌ (commit status — NÃO é GitHub Actions workflow)
+
+**Check:** Commit status `Supabase Preview` — `conclusion: failure`  
+**Check run ID:** [128553587516](https://github.com/adm01-debug/Promo_Gifts_V4/runs/128553587516)  
+**SHA afetado:** `d2ce504aee3201f4a422ddeb914366675147b32c` (main atual, 2026-11-07T22:49Z)  
+**Detalhes:** `https://supabase.com/dashboard/project/doufsxqlfjyuvxuezpln`  
+**Causa:** "Supabase Preview" é um commit status check emitido pelo **Supabase GitHub App** (não um workflow de GitHub Actions). Ele tenta criar um ambiente de preview branch para cada push/PR no Supabase Branching. A falha indica que o Supabase Branching **não está habilitado** ou **não está configurado corretamente** para o projeto `doufsxqlfjyuvxuezpln`. Este check não consta em `.github/required-checks.json` — os 5 required checks são: Gate Final, Compare GitHub × Canonical, Analyze (CodeQL), Gate E23 Gitleaks, Assert Gate Final.  
+**Required check:** NÃO — não bloqueia merge nem CI.  
+**Aparece em `is:action_required is:failure`?** NÃO — é commit status, não GitHub Actions workflow. Não aparece na página `/actions?query=is:action_required+is:failure`.  
+**Por que não corrijo:** Configuração de infraestrutura Supabase — requer o dono habilitar Supabase Branching no dashboard ou instalar corretamente o Supabase GitHub App com as permissões necessárias.  
+**O que o dono precisa fazer:** Supabase Dashboard → `doufsxqlfjyuvxuezpln` → Branching → Enable Branching (ou verificar se o app Supabase está instalado no repo com permissões corretas).
+
+---
+
 > **Atualização 2026-11-07T22:00Z (sessão https://claude.ai/code/session_01RfQzo7S3K6o49UBUDoCtUe):**  
 > Erros dos itens #26, #30, #37 verificados nesta sessão via `github_get_run_failure_summary` com run IDs reais.  
 > HEAD atual (main): `be7688da2ab5508848747b10eaab99a31241467b` — Gate Final run [#42418015737](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42418015737) → `in_progress` (0 failed jobs em 2026-11-07T22:00Z).  
 > Workflows em falha NÃO required (todos com error exato registrado): itens #1, #2/#23, #3, #5/#24, #6, #7, #9, #13, #21/#33/#37 (uptime/health-check), #22/#30 (migration rollback), #26 (recibo migration), #27, #31, #32, #35.  
 > Required check failing: somente item #29 (Compare GitHub × Canonical — 27 EFs driftadas) — requer dono despachar `deploy-edge-functions.yml` e aprovar `production`.
+
+> **Atualização 2026-11-07T23:00Z (sessão https://claude.ai/code/session_01RfQzo7S3K6o49UBUDoCtUe):**  
+> Item #38 (Supabase Preview) adicionado — commit status check, não GitHub Actions, não required, não aparece em `/actions?query=is:action_required+is:failure`.  
+> HEAD atual (main): `d2ce504aee3201f4a422ddeb914366675147b32c` — Gate Final run [#42422381875/job/128554792781](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42422381875/job/128554792781) → `conclusion: success` (22:55:29Z).  
+> Todos os 38 itens têm motivo exato registrado. Nenhum requer ação de código.
