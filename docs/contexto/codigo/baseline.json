@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "0549ea39629b9ad4ab1c0a04bc87d1d6bd0965c5",
+  "commit": "b5f7d2e29e0bcc5b46674db8a18a0a6f49717bcc",
   "branch": "main",
-  "data_commit": "2026-11-07T10:21:03-03:00",
+  "data_commit": "2026-11-07T11:11:32-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "b5f7d2e",
+    "data": "2026-11-07",
+    "assunto": "docs(ci): inventário HEAD 0549ea39629b (2026-11-07) — §11 RELATORIO + §21 PENDENCIAS (#3149)"
+   },
    {
     "sha": "0549ea3",
     "data": "2026-11-07",
@@ -126,11 +131,6 @@
     "sha": "4ebe5a8",
     "data": "2026-11-05",
     "assunto": "chore(docs): RELATORIO_CI + PENDENCIAS item #14 RESOLVIDO — bc342a24 success"
-   },
-   {
-    "sha": "bc342a2",
-    "data": "2026-11-05",
-    "assunto": "chore(docs): RELATORIO_CI + PENDENCIAS — SHA 2bc37120 + item #13 confirmed failure (#3083)"
    }
   ],
   "arquivos_mudados_7d": 404,
@@ -141,7 +141,7 @@
    },
    {
     "pasta": "src/components/products",
-    "mudancas": 313
+    "mudancas": 312
    },
    {
     "pasta": "tests/edge-functions/live",
@@ -199,11 +199,11 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "RELATORIO_CI.md",
-    "mudancas": 68
+    "mudancas": 69
    },
    {
     "arquivo": "PENDENCIAS.md",
-    "mudancas": 63
+    "mudancas": 64
    },
    {
     "arquivo": "package.json",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 336
+    "commits": 335
    },
    {
     "autor": "Joaquim Ataides",
