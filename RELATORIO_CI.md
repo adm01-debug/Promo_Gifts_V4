@@ -282,3 +282,48 @@ Zero mudanças de schema em todas as sessões desta série. REGRA #8/E056 respei
 | Compare GitHub × Canonical | ✅ success — edge-functions-drift-check verde (SHA `823822b0` confirmado; `0549ea39629b` é fix de código, edge functions inalteradas) |
 | Analyze (javascript-typescript) | ✅ success — CodeQL em SHA anterior; `0549ea39629b` não muda infra de análise |
 | Gate E23 - Secret Scan (gitleaks) | ✅ success — sem segredos novos |
+
+---
+
+## 12. Baseline — Sessão 2026-11-07 (HEAD `b5f7d2e29e0b`)
+
+> **Sessão:** https://claude.ai/code/session_01RfQzo7S3K6o49UBUDoCtUe  
+> **HEAD da main:** `b5f7d2e29e0b` — `docs(ci): inventário HEAD 0549ea39629b (2026-11-07) — §11 RELATORIO + §21 PENDENCIAS (#3149)` (2026-11-07T14:11:32Z)  
+> **Objetivo:** verificar que todas as correções e melhorias desta série de sessões estão no repositório e banco de dados canônico.
+
+### Baseline local desta sessão
+
+| Check | Resultado |
+|---|---|
+| npm ci | ✅ EXIT=0 |
+| npm run build | ✅ EXIT=0 — 10.20s |
+| npx tsc --noEmit | ✅ EXIT=0 |
+| npm run lint:baseline | ⚠️ OOM — invariante do container remoto (pré-push hook; não é regressão) |
+| npm run test:ci-core | ✅ 957 testes / 41 arquivos — 29.15s |
+
+### Estado dos Gates Finais no HEAD `b5f7d2e29e0b`
+
+| Run | SHA | attempt | Status | Conclusão |
+|---|---|---|---|---|
+| [#42376559805](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42376559805) | `0549ea39629b` | 3 | queued (14:13:50Z) | ⏳ pendente |
+| [#42380435725](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42380435725) | `b5f7d2e29e0b` | 1 | queued (14:11:35Z) | ⏳ pendente |
+
+> Ambos em queue — fila do GitHub Actions. O Gate Final do merge deste §12 é a prova confirmadora.
+
+### Banco de dados canônico (`doufsxqlfjyuvxuezpln`)
+
+Zero mudanças de schema em toda a série de sessões desta task. REGRA #8/E056 intacta — nenhum DDL via `execute_sql`, nenhum `deploy_edge_function` via MCP direto.
+
+### Inventário is:failure — workflows não-required (HEAD `b5f7d2e29e0b`)
+
+| Workflow | Required? | Causa bloqueio | PENDENCIAS.md |
+|---|---|---|---|
+| db-schema-drift-check | ❌ | `local_only=1141; remote_only=674` — REGRA #8 | #1 |
+| Kit Coverage — Integration | ❌ | 56% < 70% — dados null no banco | #3 |
+| E2E · Swatch QuickView | ❌ | `E2E_USER_*` ausentes em Secrets | #6 |
+| Nightly Full CI | ❌ | derivado de #6 | #7 |
+| E2E — Quotes Matrix | ❌ | snapshot visual 5px — requer dono | #9 |
+| CI Security & Drift Checks | ❌ (advisory) | chromium-authed flakiness + `SUPABASE_SERVICE_ROLE_KEY` ausente | #13 |
+| Uptime Monitor | ❌ | sonda de produção intermitente | #21 |
+
+**Required check Gate Final:** confirmação via Gate Final do merge deste PR (#3150).
