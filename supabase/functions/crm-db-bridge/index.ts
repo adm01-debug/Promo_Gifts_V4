@@ -1,4 +1,4 @@
-import { getCorsHeaders, handleCorsPreflightIfNeeded } from '../_shared/cors.ts';
+import { getCorsHeaders } from '../_shared/cors.ts';
 import { createClient, SupabaseClient } from "https://esm.sh/@supabase/supabase-js@2.49.4";
 import { z } from "https://esm.sh/zod@3.23.8";
 import { runBotProtection } from '../_shared/bot-protection.ts';
@@ -8,6 +8,24 @@ import { AsyncLocalStorage } from "node:async_hooks";
 import { getOrCreateRequestId, REQUEST_ID_HEADER } from "../_shared/request-id.ts";
 import { resolveCredentials, warmupCredentials, buildCredentialsHealth } from "../_shared/credentials.ts";
 import { assertSwitchEnabled } from "../_shared/kill_switch.ts";
+import { readJwtAal } from "../_shared/authorize.ts";
+import {
+  addCompanyAddressFilterSelect,
+  buildSellerScopedSelect,
+  CRM_TABLES,
+  hasMutationTarget,
+  INTERNAL_ADDRESS_ALIAS,
+  isCrmTable,
+  isRestrictedWriteRole,
+  isSellerScopedRole,
+  isTransientCrmFailure,
+  mapPostgrestErrorStatus,
+  sellerScopeFilter,
+  splitCompanyAddressFilters,
+  stripInternalRelations,
+  validateQueryColumns,
+  type CrmTable,
+} from "./query-policy.ts";
 
 const breaker = getBreaker("crm-db");
 // redeploy marker: fix 429 - auth-first + rate-limit por userId + admin singleton (2026-05-26)
@@ -29,12 +47,19 @@ warmupCredentials(CRM_CRED_NAMES).catch((e) => {
   console.warn("[crm-db-bridge] warmupCredentials failed (non-fatal):", e);
 });
 
-const requestCtx = new AsyncLocalStorage<{ requestId: string }>();
+const requestCtx = new AsyncLocalStorage<{
+  requestId: string;
+  corsHeaders: Record<string, string>;
+}>();
 function currentRequestId(): string | undefined {
   return requestCtx.getStore()?.requestId;
 }
+function currentCorsHeaders(): Record<string, string> {
+  return requestCtx.getStore()?.corsHeaders ?? {};
+}
 
 let cachedCrmClient: SupabaseClient | null = null;
+let cachedCrmCredentialFingerprint: string | null = null;
 let crmWarmupPromise: Promise<void> | null = null;
 let crmWarmupCompleted = false;
 
@@ -74,7 +99,6 @@ function buildCrmClient(url: string, key: string): SupabaseClient {
 }
 
 export async function getCrmClient(): Promise<SupabaseClient | null> {
-  if (cachedCrmClient) return cachedCrmClient;
   // P1-05: bulk fetch (1 query DB) em vez de Promise.all([3x resolveCredential])
   // (3 queries paralelas). Em isolate aquecido por warmupCredentials, esses
   // 3 nomes saem do cache instantaneamente.
@@ -83,8 +107,21 @@ export async function getCrmClient(): Promise<SupabaseClient | null> {
   const serviceKey = creds["EXTERNAL_CRM_SERVICE_ROLE_KEY"]?.value;
   const anonKey = creds["EXTERNAL_CRM_ANON_KEY"]?.value;
   const key = serviceKey ?? anonKey;
-  if (!url || !key) return null;
+  if (!url || !key) {
+    cachedCrmClient = null;
+    cachedCrmCredentialFingerprint = null;
+    return null;
+  }
+  const fingerprintBytes = await crypto.subtle.digest(
+    "SHA-256",
+    new TextEncoder().encode(`${url}\u0000${key}`),
+  );
+  const fingerprint = Array.from(new Uint8Array(fingerprintBytes), (byte) =>
+    byte.toString(16).padStart(2, "0")
+  ).join("");
+  if (cachedCrmClient && cachedCrmCredentialFingerprint === fingerprint) return cachedCrmClient;
   cachedCrmClient = buildCrmClient(url, key);
+  cachedCrmCredentialFingerprint = fingerprint;
   return cachedCrmClient;
 }
 
@@ -127,15 +164,13 @@ function warmupCrmClient(): Promise<void> {
 // Warmup is intentionally fire-and-forget; the function records its own errors.
 void warmupCrmClient();
 
-let corsHeaders: Record<string, string> = {};
-
-function jsonResponse(body: unknown, status = 200): Response {
+function jsonResponse(body: unknown, status = 200, extraHeaders: Record<string, string> = {}): Response {
   const reqId = currentRequestId();
   let finalBody: unknown = body;
   if (reqId && body && typeof body === "object" && !Array.isArray(body)) {
     finalBody = { ...(body as Record<string, unknown>), request_id: reqId };
   }
-  const headers: Record<string, string> = { ...corsHeaders, "Content-Type": "application/json" };
+  const headers: Record<string, string> = { ...currentCorsHeaders(), ...extraHeaders, "Content-Type": "application/json" };
   if (reqId) headers[REQUEST_ID_HEADER] = reqId;
   return new Response(JSON.stringify(finalBody), { status, headers });
 }
@@ -186,26 +221,7 @@ function buildDiagSnapshot() {
   };
 }
 
-const ALLOWED_TABLES = [
-  "companies", "contacts", "company_addresses", "company_social_media",
-  "contact_emails", "contact_phones", "customers", "suppliers", "carriers",
-];
-
-// E084: colunas filtráveis por tabela — evita varredura cega de colunas não indexadas
-const FILTERABLE_COLUMNS: Record<string, Set<string>> = {
-  companies: new Set(["id", "name", "owner_id", "created_at", "updated_at", "type"]),
-  contacts: new Set(["id", "name", "owner_id", "company_id", "created_at", "updated_at"]),
-  company_addresses: new Set(["id", "company_id", "owner_id"]),
-  company_social_media: new Set(["id", "company_id", "owner_id"]),
-  contact_emails: new Set(["id", "contact_id", "owner_id", "email"]),
-  contact_phones: new Set(["id", "contact_id", "owner_id", "phone"]),
-  customers: new Set(["id", "name", "owner_id", "created_at", "updated_at"]),
-  suppliers: new Set(["id", "name", "owner_id", "created_at", "updated_at"]),
-  carriers: new Set(["id", "name", "owner_id"]),
-};
-
-// E082: regex para validar select/relations — não permite PostgREST embedding syntax
-const SELECT_SAFE_RE = /^[a-z_*][a-z0-9_,\s*]*$/i;
+const ALLOWED_TABLES: readonly string[] = CRM_TABLES;
 
 const VENDOR_WRITE_TABLES: string[] = [];
 const OPTIONAL_QUOTE_TABLES = new Set<string>();
@@ -329,7 +345,9 @@ interface BatchQuery {
 
 interface AuthResult {
   userId: string | null;
+  userEmail?: string | null;
   userRole: string;
+  aal?: string | null;
   error?: Response;
 }
 
@@ -370,53 +388,173 @@ async function authenticateRequest(req: Request): Promise<AuthResult> {
   if (!rolesData || rolesData.length === 0) {
     return { userId: null, userRole: "public", error: jsonResponse({ error: "Usuário sem perfil de acesso" }, 403) };
   }
-  const ROLE_ORDER = ["supervisor", "gerente", "vendedor"];
+  const ROLE_ORDER = ["dev", "admin", "supervisor", "manager", "coordenador", "vendedor", "agente"];
   const roles = rolesData.map((r: { role: string }) => r.role);
-  const userRole = ROLE_ORDER.find((r) => roles.includes(r)) ?? "vendedor";
+  const userRole = ROLE_ORDER.find((r) => roles.includes(r));
+  if (!userRole) {
+    return { userId: null, userRole: "public", error: jsonResponse({ error: "Perfil de acesso não reconhecido" }, 403) };
+  }
   console.log(`Authenticated CRM request role=${userRole}`);
-  return { userId: user.id, userRole };
+  const token = authHeader.slice(7).trim();
+  return { userId: user.id, userEmail: user.email, userRole, aal: readJwtAal(token) };
 }
 
 // E084: escapar metacaracteres de ILIKE para evitar varredura por prefixo/suffix
 function escapeLikePattern(term: string): string {
-  return term.replace(/[%_\\]/g, (c) => `\\${c}`);
+  return term.replace(/[%_*\\]/g, (c) => `\\${c}`);
 }
 
-function validateFilters(filters: Record<string, unknown>, table?: string): string | null {
-  if (!table) return null;
-  const allowed = FILTERABLE_COLUMNS[table];
-  if (!allowed) return null;
-  const bad = Object.keys(filters).find((k) => !allowed.has(k));
-  return bad ? `Coluna '${bad}' não é filtrável em '${table}'` : null;
-}
-
-function applyFilters(query: any, filters: Record<string, unknown>, table?: string): any {
+function applyFilters(query: any, filters: Record<string, unknown>, prefix?: string): any {
   for (const [key, value] of Object.entries(filters)) {
+    const column = prefix ? `${prefix}.${key}` : key;
     if (value === null) {
-      query = query.is(key, null);
+      query = query.is(column, null);
     } else if (typeof value === "object" && value !== null) {
       const f = value as Record<string, unknown>;
-      if ("in" in f) query = query.in(key, f.in as unknown[]);
+      if ("in" in f) query = query.in(column, f.in as unknown[]);
       // E084: escapar metacaracteres do ilike
-      if ("ilike" in f) query = query.ilike(key, `%${escapeLikePattern(String(f.ilike))}%`);
-      if ("eq" in f) query = query.eq(key, f.eq);
-      if ("neq" in f) query = query.neq(key, f.neq as string);
-      if ("gt" in f) query = query.gt(key, f.gt as string);
-      if ("gte" in f) query = query.gte(key, f.gte as string);
-      if ("lt" in f) query = query.lt(key, f.lt as string);
-      if ("lte" in f) query = query.lte(key, f.lte as string);
-      if ("not_null" in f) query = query.not(key, "is", null);
+      if ("ilike" in f) query = query.ilike(column, `%${escapeLikePattern(String(f.ilike))}%`);
+      if ("eq" in f) query = query.eq(column, f.eq);
+      if ("neq" in f) query = query.neq(column, f.neq as string);
+      if ("gt" in f) query = query.gt(column, f.gt as string);
+      if ("gte" in f) query = query.gte(column, f.gte as string);
+      if ("lt" in f) query = query.lt(column, f.lt as string);
+      if ("lte" in f) query = query.lte(column, f.lte as string);
+      if ("not_null" in f) query = query.not(column, "is", null);
     } else {
-      query = query.eq(key, value);
+      query = query.eq(column, value);
     }
   }
   return query;
 }
 
+function buildReadQuery(
+  crm: SupabaseClient,
+  table: CrmTable,
+  select: string | undefined,
+  filters: Record<string, unknown> | undefined,
+  sellerId?: number,
+  userRole?: string,
+): any {
+  const sellerScoped = isSellerScopedRole(userRole);
+  const companyFilters = table === "companies"
+    ? splitCompanyAddressFilters(filters)
+    : { direct: filters ?? {}, address: {} };
+  let selectFields = buildSellerScopedSelect(select, table, sellerScoped);
+  selectFields = addCompanyAddressFilterSelect(selectFields, companyFilters.address);
+
+  let query = crm.from(table).select(selectFields);
+  if (sellerScoped) query = query.eq(sellerScopeFilter(table).column, sellerId ?? -1);
+  query = applyFilters(query, companyFilters.direct);
+  query = applyFilters(query, companyFilters.address, INTERNAL_ADDRESS_ALIAS);
+  return query;
+}
+
+async function resolveCrmSellerId(
+  crm: SupabaseClient,
+  authUserId: string | null,
+  userEmail?: string | null,
+): Promise<{ sellerId?: number; error?: Response }> {
+  if (!authUserId) {
+    return { error: jsonResponse({ error: "Identidade canônica ausente" }, 403) };
+  }
+
+  const adminClient = getAuthAdminClient();
+  const { data: existingLink, error: linkError, status: linkStatus } = await adminClient
+    .from("crm_seller_identity_links")
+    .select("crm_seller_id")
+    .eq("auth_user_id", authUserId)
+    .maybeSingle();
+  if (linkError) {
+    return {
+      error: jsonResponse(
+        { error: "Falha ao consultar vínculo canônico do vendedor", code: linkError.code },
+        mapPostgrestErrorStatus(linkError, linkStatus),
+      ),
+    };
+  }
+
+  if (existingLink) {
+    const linkedSellerId = Number(existingLink.crm_seller_id);
+    if (!Number.isSafeInteger(linkedSellerId) || linkedSellerId <= 0) {
+      return { error: jsonResponse({ error: "Vínculo canônico de vendedor inválido" }, 409) };
+    }
+    const { data, error, status } = await crm
+      .from("users")
+      .select("id")
+      .eq("id", linkedSellerId)
+      .eq("is_active", true)
+      .eq("is_vendedor", true)
+      .limit(1);
+    if (error) {
+      return {
+        error: jsonResponse(
+          { error: "Falha ao validar vendedor vinculado no CRM", code: error.code },
+          mapPostgrestErrorStatus(error, status),
+        ),
+      };
+    }
+    if (!data || data.length !== 1) {
+      return { error: jsonResponse({ error: "Vínculo de vendedor inativo ou inexistente no CRM" }, 403) };
+    }
+    return { sellerId: linkedSellerId };
+  }
+
+  if (!userEmail) {
+    return { error: jsonResponse({ error: "Usuário sem e-mail para mapeamento no CRM" }, 403) };
+  }
+  const { data, error, status } = await crm
+    .from("users")
+    .select("id")
+    .eq("email", userEmail.trim().toLowerCase())
+    .eq("is_active", true)
+    .eq("is_vendedor", true)
+    .limit(2);
+  if (error) {
+    const mappedStatus = mapPostgrestErrorStatus(error, status);
+    return { error: jsonResponse({ error: "Falha ao mapear vendedor no CRM", code: error.code }, mappedStatus) };
+  }
+  if (!data || data.length === 0) {
+    return { error: jsonResponse({ error: "Vendedor não mapeado no CRM" }, 403) };
+  }
+  if (data.length > 1 || typeof data[0]?.id !== "number") {
+    return { error: jsonResponse({ error: "Mapeamento de vendedor ambíguo no CRM" }, 409) };
+  }
+  const sellerId = data[0].id;
+  const { error: insertLinkError, status: insertLinkStatus } = await adminClient
+    .from("crm_seller_identity_links")
+    .insert({
+      auth_user_id: authUserId,
+      crm_seller_id: sellerId,
+      link_source: "email_bootstrap",
+    });
+  if (insertLinkError) {
+    if (insertLinkError.code === "23505") {
+      const { data: racedLink } = await adminClient
+        .from("crm_seller_identity_links")
+        .select("crm_seller_id")
+        .eq("auth_user_id", authUserId)
+        .maybeSingle();
+      if (Number(racedLink?.crm_seller_id) === sellerId) return { sellerId };
+      return { error: jsonResponse({ error: "Vendedor do CRM já vinculado a outra identidade" }, 409) };
+    }
+    return {
+      error: jsonResponse(
+        { error: "Falha ao persistir vínculo canônico do vendedor", code: insertLinkError.code },
+        mapPostgrestErrorStatus(insertLinkError, insertLinkStatus),
+      ),
+    };
+  }
+  return { sellerId };
+}
+
 function applyOrdering(query: any, orderBy: CrmOrderBy | CrmOrderBy[]): any {
   const clauses = Array.isArray(orderBy) ? orderBy : [orderBy];
   return clauses.reduce((current, clause) => {
-    if (typeof clause === "string") return current.order(clause);
+    if (typeof clause === "string") {
+      const [column, direction] = clause.trim().split(/\s+/);
+      return current.order(column, { ascending: direction?.toLowerCase() !== "desc" });
+    }
     return current.order(clause.column, { ascending: clause.ascending ?? true });
   }, query);
 }
@@ -473,7 +611,12 @@ async function generateQuoteNumber(crm: SupabaseClient, data: Record<string, unk
   }
 }
 
-async function handleBatch(crm: SupabaseClient, queries: BatchQuery[]): Promise<Response> {
+async function handleBatch(
+  crm: SupabaseClient,
+  queries: BatchQuery[],
+  sellerId?: number,
+  userRole?: string,
+): Promise<Response> {
   if (!Array.isArray(queries) || queries.length === 0) {
     return jsonResponse({ error: 'Batch requires a non-empty "queries" array' }, 400);
   }
@@ -481,43 +624,67 @@ async function handleBatch(crm: SupabaseClient, queries: BatchQuery[]): Promise<
     return jsonResponse({ error: "Batch limited to 10 queries max" }, 400);
   }
 
+  for (const [index, query] of queries.entries()) {
+    if (!isCrmTable(query.table)) {
+      return jsonResponse({ error: `Table '${query.table}' not allowed`, query_index: index }, 400);
+    }
+    const validationError = validateQueryColumns(query, query.table);
+    if (validationError) return jsonResponse({ error: validationError, query_index: index }, 400);
+  }
+
   const batchStart = performance.now();
   const results = await Promise.all(
     queries.map(async (q, idx) => {
-      if (!q.table || !ALLOWED_TABLES.includes(q.table)) {
-        return { success: false, error: `Table '${q.table}' not allowed` };
-      }
+      const table = q.table as CrmTable;
       try {
         const queryStart = performance.now();
-        let query = crm.from(q.table).select(q.select || "*");
-        if (q.filters) query = applyFilters(query, q.filters, q.table);
+        let query = buildReadQuery(crm, table, q.select, q.filters, sellerId, userRole);
         // E084: escapar metacaracteres do ilike em batch
         if (q.search?.column && q.search?.term) query = query.ilike(q.search.column, `%${escapeLikePattern(q.search.term)}%`);
         if (q.orderBy) query = applyOrdering(query, q.orderBy);
-        if (q.limit) query = query.limit(q.limit);
-        if (q.offset) query = query.range(q.offset, q.offset + (q.limit || 50) - 1);
+        const effectiveLimit = q.limit ?? 500;
+        query = query.limit(effectiveLimit);
+        if (q.offset) query = query.range(q.offset, q.offset + effectiveLimit - 1);
 
-        const { data, error } = await query;
+        const { data, error, status } = await query;
         const duration = Math.round(performance.now() - queryStart);
 
         if (error) {
-          if (isOptionalQuoteTable(q.table) && isMissingTableError(error, q.table)) {
-            const warning = getOptionalTableMessage(q.table);
+          if (isOptionalQuoteTable(table) && isMissingTableError(error, table)) {
+            const warning = getOptionalTableMessage(table);
             return { success: true, unavailable: true, warning, data: { records: [], count: 0 } };
           }
-          console.error(`[batch] Query ${idx} (${q.table}) error: ${error.message}`);
-          return { success: false, error: error.message };
+          const mappedStatus = mapPostgrestErrorStatus(error, status);
+          console.error(`[batch] Query ${idx} (${table}) error: ${error.message}`);
+          return {
+            success: false, error: error.message, code: error.code, status: mappedStatus,
+            transient: isTransientCrmFailure(mappedStatus, error),
+          };
         }
-        console.log(`[batch] Query ${idx} (${q.table}) ${duration}ms, ${(data || []).length} records`);
-        return { success: true, data: { records: data || [], count: (data || []).length } };
+        const records = stripInternalRelations(data || []);
+        console.log(`[batch] Query ${idx} (${table}) ${duration}ms, ${records.length} records`);
+        return { success: true, data: { records, count: records.length } };
       } catch (err: unknown) {
-        return { success: false, error: err instanceof Error ? err.message : "Unknown error" };
+        return {
+          success: false, error: err instanceof Error ? err.message : "Unknown error",
+          status: 503, transient: true,
+        };
       }
     })
   );
 
   console.log(`[batch] Total: ${Math.round(performance.now() - batchStart)}ms for ${queries.length} queries`);
-  return jsonResponse({ success: true, results });
+  const failures = results.filter((result) => !result.success);
+  const allFailed = failures.length === results.length;
+  const hasTransientFailure = failures.some((result) => "transient" in result && result.transient);
+  const responseStatus = allFailed
+    ? (hasTransientFailure ? 503 : ((failures[0] as { status?: number }).status ?? 500))
+    : 200;
+  return jsonResponse(
+    { success: !allFailed, partial: failures.length > 0 && !allFailed, results },
+    responseStatus,
+    hasTransientFailure ? { "X-CRM-Transient-Failure": "1" } : {},
+  );
 }
 
 async function handleInsert(crm: SupabaseClient, body: CrmQuery): Promise<Response> {
@@ -526,7 +693,7 @@ async function handleInsert(crm: SupabaseClient, body: CrmQuery): Promise<Respon
 
   if (table === "quotes") await generateQuoteNumber(crm, data);
 
-  const { data: result, error } = await crm.from(table).insert(data as any).select(returning || "*");
+  const { data: result, error, status } = await crm.from(table).insert(data as any).select(returning || "*");
 
   if (!error) {
     const diag = inspectInsertResult(result);
@@ -548,7 +715,7 @@ async function handleInsert(crm: SupabaseClient, body: CrmQuery): Promise<Respon
   if (error) {
     if (isOptionalQuoteTable(table) && isMissingTableError(error, table)) return createOptionalWriteError(table);
     console.error("CRM insert error:", { code: error.code ?? "unknown", message: error.message });
-    return jsonResponse({ error: error.message }, 500);
+    return jsonResponse({ error: error.message, code: error.code }, mapPostgrestErrorStatus(error, status));
   }
   return jsonResponse({ data: result, count: result?.length || 0 });
 }
@@ -556,12 +723,15 @@ async function handleInsert(crm: SupabaseClient, body: CrmQuery): Promise<Respon
 async function handleUpdate(crm: SupabaseClient, body: CrmQuery): Promise<Response> {
   const { table, id, filters, data, returning } = body;
   if (!data) return jsonResponse({ error: "Update requires 'data' field" }, 400);
+  if (!hasMutationTarget(id, filters)) {
+    return jsonResponse({ error: "Update requires non-empty 'id' or 'filters' to prevent mass update" }, 400);
+  }
 
   let query = crm.from(table).update(data as any);
   if (id) { query = query.eq("id", id); }
-  else if (filters) { query = applyFilters(query, filters, table); }
+  else if (filters) { query = applyFilters(query, filters); }
 
-  const { data: result, error } = await query.select(returning || "*");
+  const { data: result, error, status } = await query.select(returning || "*");
   if (!error) {
     const diag = inspectInsertResult(result);
     logInsertResultIfAnomalous({ callSite: "handleUpdate", table, operation: "update", returning: returning || "*" }, diag);
@@ -569,59 +739,54 @@ async function handleUpdate(crm: SupabaseClient, body: CrmQuery): Promise<Respon
   if (error) {
     if (isOptionalQuoteTable(table) && isMissingTableError(error, table)) return createOptionalWriteError(table);
     console.error("CRM update error:", { code: error.code ?? "unknown", message: error.message });
-    return jsonResponse({ error: error.message }, 500);
+    return jsonResponse({ error: error.message, code: error.code }, mapPostgrestErrorStatus(error, status));
   }
   return jsonResponse({ data: result, count: result?.length || 0 });
 }
 
 async function handleDelete(crm: SupabaseClient, body: CrmQuery): Promise<Response> {
   const { table, id, filters } = body;
+  if (!hasMutationTarget(id, filters)) {
+    return jsonResponse({ error: "Delete requires non-empty 'id' or 'filters' to prevent mass deletion" }, 400);
+  }
   let query = crm.from(table).delete();
 
   if (id) { query = query.eq("id", id); }
-  else if (filters) { query = applyFilters(query, filters, table); }
-  else { return jsonResponse({ error: "Delete requires 'id' or 'filters' to prevent mass deletion" }, 400); }
+  else if (filters) { query = applyFilters(query, filters); }
 
-  const { error } = await query;
+  const { error, status } = await query;
   if (error) {
     if (isOptionalQuoteTable(table) && isMissingTableError(error, table)) return createOptionalWriteError(table);
     console.error("CRM delete error:", { code: error.code ?? "unknown", message: error.message });
-    return jsonResponse({ error: error.message }, 500);
+    return jsonResponse({ error: error.message, code: error.code }, mapPostgrestErrorStatus(error, status));
   }
   return jsonResponse({ data: null, success: true });
 }
 
-async function handleSelect(crm: SupabaseClient, body: CrmQuery, userId?: string, userRole?: string): Promise<Response> {
+async function handleSelect(crm: SupabaseClient, body: CrmQuery, sellerId?: number, userRole?: string): Promise<Response> {
   const { table, id, filters, select, orderBy, limit, offset, search, relations } = body;
-  // E082: validar select e relations contra regex sem PostgREST embedding
-  if (select && !SELECT_SAFE_RE.test(select)) {
-    return jsonResponse({ error: "Campo 'select' inválido (embedding não permitido)" }, 400);
-  }
   if (relations) {
     return jsonResponse({ error: "Campo 'relations' não permitido (embedding PostgREST desabilitado)" }, 400);
   }
+  if (!isCrmTable(table)) return jsonResponse({ error: `Table '${table}' is not allowed` }, 400);
+  const validationError = validateQueryColumns(body, table);
+  if (validationError) return jsonResponse({ error: validationError }, 400);
   const selectFields = select || "*";
 
   console.log(`[SELECT] table=${table}, select_fields=${selectFields.split(',').length}, filter_keys=${Object.keys(filters ?? {}).length}, limit=${limit ?? 'default'}`);
 
-  let query = crm.from(table).select(selectFields);
-  // E081: escopo de ownership — vendedor só vê seus próprios registros
-  const PII_TABLES = new Set(["companies", "contacts", "contact_emails", "contact_phones", "customers"]);
-  if (userRole === "vendedor" && userId && PII_TABLES.has(table)) {
-    query = query.eq("owner_id", userId);
-  }
+  let query = buildReadQuery(crm, table, select, filters, sellerId, userRole);
 
   if (id) {
-    const { data, error } = await query.eq("id", id).single();
+    const { data, error, status } = await query.eq("id", id).single();
     if (error) {
       console.error(`[SELECT] single error: code=${error.code}, message=${error.message}`);
       if (isOptionalQuoteTable(table) && isMissingTableError(error, table)) return createOptionalSelectFallback(table, true);
-      return jsonResponse({ error: error.message }, error.code === "PGRST116" ? 404 : 500);
+      return jsonResponse({ error: error.message, code: error.code }, mapPostgrestErrorStatus(error, status));
     }
-    return jsonResponse({ data, count: 1 });
+    return jsonResponse({ data: stripInternalRelations(data), count: 1 });
   }
 
-  if (filters) query = applyFilters(query, filters, table);
   // E084: escapar metacaracteres do ilike
   if (search) query = query.ilike(search.column, `%${escapeLikePattern(search.term)}%`);
   if (orderBy) query = applyOrdering(query, orderBy);
@@ -635,42 +800,47 @@ async function handleSelect(crm: SupabaseClient, body: CrmQuery, userId?: string
 
   if (error) {
     if (isOptionalQuoteTable(table) && isMissingTableError(error, table)) return createOptionalSelectFallback(table, false);
-    // Mapeia statement_timeout (57014) para 504 com mensagem amigável.
-    if (error.code === "57014" || /statement timeout/i.test(error.message ?? "")) {
+    const mappedStatus = mapPostgrestErrorStatus(error, status);
+    if (mappedStatus === 504) {
       console.warn(`[SELECT] statement_timeout em ${table} (limit=${effectiveLimit}). Reduza filtros ou paginação.`);
       return jsonResponse({
         error: "A consulta demorou demais. Refine os filtros ou reduza o limite.",
         code: "statement_timeout",
       }, 504);
     }
-    return jsonResponse({ error: error.message }, 500);
+    return jsonResponse({ error: error.message, code: error.code }, mappedStatus);
   }
-  return jsonResponse({ data: data || [], count });
+  return jsonResponse({ data: stripInternalRelations(data || []), count });
 }
 
-async function handleSearch(crm: SupabaseClient, body: CrmQuery): Promise<Response> {
-  const { table, search, select, orderBy, limit } = body;
+async function handleSearch(crm: SupabaseClient, body: CrmQuery, sellerId?: number, userRole?: string): Promise<Response> {
+  const { table, search, select, filters, orderBy, limit } = body;
   if (!search?.column || !search?.term) {
     return jsonResponse({ error: "Search requires 'column' and 'term'" }, 400);
   }
+  if (!isCrmTable(table)) return jsonResponse({ error: `Table '${table}' is not allowed` }, 400);
+  const validationError = validateQueryColumns(body, table);
+  if (validationError) return jsonResponse({ error: validationError }, 400);
 
   // E084: escapar metacaracteres do ilike em handleSearch
-  let query = crm.from(table).select(select || "*").ilike(search.column, `%${escapeLikePattern(search.term)}%`);
+  let query = buildReadQuery(crm, table, select, filters, sellerId, userRole)
+    .ilike(search.column, `%${escapeLikePattern(search.term)}%`);
   if (orderBy) query = applyOrdering(query, orderBy);
   query = query.limit(limit || 50);
 
-  const { data, error } = await query;
+  const { data, error, status } = await query;
   if (error) {
     if (isOptionalQuoteTable(table) && isMissingTableError(error, table)) return createOptionalSelectFallback(table, false);
-    return jsonResponse({ error: error.message }, 500);
+    return jsonResponse({ error: error.message, code: error.code }, mapPostgrestErrorStatus(error, status));
   }
-  return jsonResponse({ data: data || [], count: data?.length || 0 });
+  const records = stripInternalRelations(data || []);
+  return jsonResponse({ data: records, count: records.length });
 }
 
 Deno.serve((req) => {
   const requestId = getOrCreateRequestId(req);
-  return requestCtx.run({ requestId }, async () => {
-    corsHeaders = getCorsHeaders(req);
+  const corsHeaders = getCorsHeaders(req);
+  return requestCtx.run({ requestId, corsHeaders }, async () => {
     if (req.method === "OPTIONS") {
       return new Response(null, { headers: { ...corsHeaders, [REQUEST_ID_HEADER]: requestId } });
     }
@@ -701,13 +871,15 @@ Deno.serve((req) => {
     const auth = await authenticateRequest(req);
     if (auth.error) return auth.error;
 
-    // Uma indisponibilidade do CRM não deve mascarar a resposta de auth nem
-    // fazer chamadas anônimas receberem 503 antes do 401 esperado.
-    if (!breaker.canRequest()) {
-      return circuitOpenResponse(new CircuitOpenError("crm-db"), corsHeaders);
+    const canReadDiagnostics = ["dev", "admin", "supervisor", "manager", "coordenador"].includes(auth.userRole);
+    if (diagOp && !canReadDiagnostics) {
+      return jsonResponse({ error: "Permissao insuficiente para diagnosticos" }, 403);
+    }
+    if (diagOp === "creds_health" && auth.aal !== "aal2") {
+      return jsonResponse({ error: "aal2_required", message: "MFA assurance level 2 is required" }, 403);
     }
 
-    // Hardening 4.6: Diagnosticos sensiveis exigem autenticacao
+    // Hardening 4.6: Diagnosticos sensiveis exigem autenticacao e role elevada.
     if (diagOp === "diag") return jsonResponse(buildDiagSnapshot());
     if (diagOp === "creds_health") return jsonResponse(await buildCredsHealthSnapshot());
     if (diagOp === "breaker_status") {
@@ -777,23 +949,37 @@ Deno.serve((req) => {
       z.string().regex(/^[a-z_][a-z0-9_.]*(\s+(asc|desc))?$/i),
       z.object({ column: z.string().regex(COLUMN_RE), ascending: z.boolean().optional() }),
     ]);
-    const CrmRequestSchema = z.object({
-      operation: z.enum(["select", "search", "insert", "update", "delete", "batch"]),
-      table: z.string().trim().min(1).max(100).regex(/^[a-z_][a-z0-9_]*$/i).optional(),
-      id: z.string().uuid().optional(),
-      filters: z.record(z.unknown()).refine(
-        (f) => Object.keys(f).every((k) => COLUMN_RE.test(k)),
-        { message: "Filter keys must be valid column identifiers" },
-      ).optional(),
+    const CrmFiltersSchema = z.record(z.unknown()).refine(
+      (filters) => Object.keys(filters).length <= 20 && Object.keys(filters).every((key) => COLUMN_RE.test(key)),
+      { message: "Filters must have at most 20 valid column identifiers" },
+    );
+    const CrmSearchSchema = z.object({
+      column: z.string().regex(COLUMN_RE),
+      term: z.string().min(1).max(500),
+    });
+    const BatchQuerySchema = z.object({
+      table: z.string().trim().min(1).max(100).regex(/^[a-z_][a-z0-9_]*$/i),
+      filters: CrmFiltersSchema.optional(),
       select: z.string().max(2000).optional(),
       orderBy: z.union([CrmOrderBySchema, z.array(CrmOrderBySchema).min(1).max(3)]).optional(),
       limit: z.number().int().min(1).max(1000).optional(),
       offset: z.number().int().min(0).optional(),
-      search: z.object({ column: z.string().regex(COLUMN_RE), term: z.string().max(500) }).optional(),
+      search: CrmSearchSchema.optional(),
+    }).strict();
+    const CrmRequestSchema = z.object({
+      operation: z.enum(["select", "search", "insert", "update", "delete", "batch"]),
+      table: z.string().trim().min(1).max(100).regex(/^[a-z_][a-z0-9_]*$/i).optional(),
+      id: z.string().uuid().optional(),
+      filters: CrmFiltersSchema.optional(),
+      select: z.string().max(2000).optional(),
+      orderBy: z.union([CrmOrderBySchema, z.array(CrmOrderBySchema).min(1).max(3)]).optional(),
+      limit: z.number().int().min(1).max(1000).optional(),
+      offset: z.number().int().min(0).optional(),
+      search: CrmSearchSchema.optional(),
       relations: z.string().max(2000).optional(),
       data: z.union([z.record(z.unknown()), z.array(z.record(z.unknown()))]).optional(),
       returning: z.string().max(2000).optional(),
-      queries: z.array(z.record(z.unknown())).max(10).optional(),
+      queries: z.array(BatchQuerySchema).max(10).optional(),
     });
 
     const parsed = CrmRequestSchema.safeParse(rawBody);
@@ -804,32 +990,58 @@ Deno.serve((req) => {
     const body = parsed.data as CrmQuery;
     const { operation, table } = body;
 
-    if (["insert", "update", "delete"].includes(operation) && auth.userRole === "vendedor") {
+    const sellerScoped = isSellerScopedRole(auth.userRole);
+    const restrictedWriter = isRestrictedWriteRole(auth.userRole);
+    const mutatingOperation = ["insert", "update", "delete"].includes(operation);
+    if (mutatingOperation && restrictedWriter) {
       if (!VENDOR_WRITE_TABLES.includes(table)) {
         return jsonResponse({ error: "Permissao insuficiente para modificar esta tabela" }, 403);
       }
+    }
+    if (mutatingOperation && auth.aal !== "aal2") {
+      return jsonResponse({ error: "aal2_required", message: "MFA assurance level 2 is required" }, 403);
     }
 
     // E083: validar ALLOWED_TABLES ANTES do dispatch de batch (ponto único de decisão)
     if (operation !== "batch" && !ALLOWED_TABLES.includes(table)) {
       return jsonResponse({ error: `Table '${table}' is not allowed. Allowed: ${ALLOWED_TABLES.join(", ")}` }, 400);
     }
+    if (operation !== "batch" && isCrmTable(table)) {
+      const validationError = validateQueryColumns(body, table);
+      if (validationError) return jsonResponse({ error: validationError }, 400);
+    }
 
-    if (operation === "batch") {
-      return handleBatch(crm, body.queries || []);
+    // Somente uma operacao que efetivamente consultara o CRM pode consumir o
+    // probe HALF_OPEN. Auth, diagnosticos, rate-limit e validacao ficam antes.
+    if (!breaker.canRequest()) {
+      return circuitOpenResponse(new CircuitOpenError("crm-db"), corsHeaders);
+    }
+
+    let crmSellerId: number | undefined;
+    if (sellerScoped) {
+      const sellerMapping = await resolveCrmSellerId(crm, auth.userId, auth.userEmail);
+      if (sellerMapping.error) {
+        if (isTransientCrmFailure(sellerMapping.error.status)) breaker.recordFailure();
+        else breaker.recordSuccess();
+        return sellerMapping.error;
+      }
+      crmSellerId = sellerMapping.sellerId;
     }
 
     let response: Response;
     switch (operation) {
+      case "batch": response = await handleBatch(crm, body.queries || [], crmSellerId, auth.userRole); break;
       case "insert": response = await handleInsert(crm, body); break;
       case "update": response = await handleUpdate(crm, body); break;
       case "delete": response = await handleDelete(crm, body); break;
-      // E081: passar userId e userRole para owner scoping no handleSelect
-      case "select": response = await handleSelect(crm, body, auth.userId ?? undefined, auth.userRole); break;
-      case "search": response = await handleSearch(crm, body); break;
+      // E081: propagar vendedor CRM e role para owner scoping de SELECT/SEARCH.
+      case "select": response = await handleSelect(crm, body, crmSellerId, auth.userRole); break;
+      case "search": response = await handleSearch(crm, body, crmSellerId, auth.userRole); break;
       default: return jsonResponse({ error: `Operation '${operation}' not supported.` }, 400);
     }
-    if (response.status >= 500) breaker.recordFailure(); else breaker.recordSuccess();
+    const hasTransientBatchFailure = response.headers.get("X-CRM-Transient-Failure") === "1";
+    if (hasTransientBatchFailure || isTransientCrmFailure(response.status)) breaker.recordFailure();
+    else breaker.recordSuccess();
 
     const elapsed = Math.round(performance.now() - reqStartedAt);
     if (wasCold) {

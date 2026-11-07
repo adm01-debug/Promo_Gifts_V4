@@ -347,6 +347,14 @@
   },
   "exceptions": [
     {
+      "kind": "relation",
+      "name": "crm_seller_identity_links",
+      "file": "supabase/functions/crm-db-bridge/index.ts",
+      "occurrences": 3,
+      "stage": 103,
+      "reason": "Tabela canônica versionada na migration 20261107134429, ainda pendente do workflow E15. Remover esta exceção source-scoped e promover a relação ao catálogo somente após aplicação, verificação via pg_catalog e recaptura administrativa."
+    },
+    {
       "kind": "rpc",
       "name": "fn_ema_pipeline_health",
       "file": "src/hooks/stock/useEmaPipelineHealth.ts",

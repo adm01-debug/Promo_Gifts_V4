@@ -1721,3 +1721,9 @@ Após VACUUM ANALYZE executado pelos jobs temporários `vacuum-snapshots-now` e
 | version | arquivo | status |
 |---|---|---|
 | `20261106232045` | `fix_handle_updated_at_search_path` | pendente — fixa `search_path = public`; aplicar via `db-apply-migration.yml` após merge da PR |
+
+## 2026-11-07 — Identidade canônica de vendedor CRM
+
+| version | sha256 | arquivo | status |
+|---|---|---|---|
+| `20261107134429` | `c35bd1512cfb61af55cc132e1f43332789911483f581d7f7c08e432ed521642d` | `create_crm_seller_identity_links` | pendente — cria vínculo 1:1 privado `auth_user_id → crm_seller_id`; aplicar via `db-apply-migration.yml` após merge da PR, antes do deploy do `crm-db-bridge` |
