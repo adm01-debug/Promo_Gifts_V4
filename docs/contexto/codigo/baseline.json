@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "6f94e352017941362adc206d166d1dfaa8553a0b",
+  "commit": "cf98610c4feccc35fabe4b7e49af36b12c42bc2c",
   "branch": "main",
-  "data_commit": "2026-11-06T21:13:32-03:00",
+  "data_commit": "2026-11-06T21:38:37-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "cf98610",
+    "data": "2026-11-06",
+    "assunto": "fix(ci): publish recovery snapshot atomically (#3115)"
+   },
    {
     "sha": "6f94e35",
     "data": "2026-11-06",
@@ -126,11 +131,6 @@
     "sha": "7486a58",
     "data": "2026-11-05",
     "assunto": "fix(e2e): aumentar timeouts para auth real em CI (smoke + magazine + all-features) (#3072)"
-   },
-   {
-    "sha": "2c5dafc",
-    "data": "2026-11-04",
-    "assunto": "feat(e2e): corrige smoke tests de magazine para CI verde"
    }
   ],
   "arquivos_mudados_7d": 383,
@@ -215,7 +215,7 @@
    },
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 21
+    "mudancas": 20
    },
    {
     "arquivo": "auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md",
@@ -262,7 +262,7 @@
     "mudancas": 8
    },
    {
-    "arquivo": "audit/supabase-reference-catalog.temporary.json",
+    "arquivo": ".github/workflows/schema-snapshot-export.yml",
     "mudancas": 7
    },
    {
@@ -278,15 +278,15 @@
     "mudancas": 6
    },
    {
-    "arquivo": ".github/workflows/schema-snapshot-export.yml",
-    "mudancas": 6
-   },
-   {
     "arquivo": "analise-prs/baseline/lint.txt",
     "mudancas": 6
    },
    {
     "arquivo": "analise-prs/baseline/typecheck.txt",
+    "mudancas": 6
+   },
+   {
+    "arquivo": "audit/supabase-reference-catalog.temporary.json",
     "mudancas": 6
    },
    {
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 348
+    "commits": 347
    },
    {
     "autor": "Joaquim Ataides",

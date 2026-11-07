@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `6f94e352017941362adc206d166d1dfaa8553a0b` (2026-11-06T21:13:32-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `cf98610c4feccc35fabe4b7e49af36b12c42bc2c` (2026-11-06T21:38:37-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -586,7 +586,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - possiveis_segredos_no_codigo: 7 — ex.: scripts/ai-context/cenarios.mjs:102, src/components/admin/connections/__tests__/ConnectionSecurity.unit.test.tsx:9, src/integrations/supabase/client.ts:27
 
 ## Grafo de código (graphify)
-- 38014 nós · 66354 arestas · 2128 comunidades · grafo do commit `6f94e352`
+- 38014 nós · 66354 arestas · 2128 comunidades · grafo do commit `cf98610c`
 - comunidades maiores: ref_integrations (540), ref_components (513), lucide-react (478), ref_lib (469), gotoAndSettle (361), ref_hooks (335), ref_node_fs (300), scripts (289), @playwright/test (274), react-router-dom (269), react (258), concludeCheck (251)
 - símbolos mais chamados: gotoAndSettle() (e2e/helpers/nav.ts), re (?), q() (scripts/supabase_snapshot/snapshot.py), concludeCheck() (scripts/check-result-contract.mjs), querySupabaseReadOnly() (scripts/supabase-read-only-query.mjs), json (?), loginAs() (e2e/helpers/auth.ts), excluded_sql() (scripts/supabase_snapshot/snapshot.py), maskUrl() (scripts/check-result-contract.mjs), .collect() (scripts/supabase_snapshot/test_snapshot.py), resolveItemImage() (src/pages/magazine/components/templates/shared.ts), makeMockCart() (e2e/helpers/cart-mock.ts)
 - consulta local: `graphify query "<pergunta>"`, `graphify path "<A>" "<B>"`, `graphify explain "<X>"`
@@ -596,7 +596,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - PENDENCIAS.md (67)
 - package.json (28)
 - package-lock.json (24)
-- supabase/MIGRATIONS_SYNC_LOG.md (21)
+- supabase/MIGRATIONS_SYNC_LOG.md (20)
 - auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md (15)
 - CHANGELOG.md (14)
 - analise-prs/RELATORIO_PRS.md (14)
@@ -1159,6 +1159,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - CHANGELOG topo: [1.7.0](https://github.com/adm01-debug/Promo_Gifts_V4/compare/v1.6.1...v1.7.0) (2026-11-02)
 
 ## Últimos commits
+- 2026-11-06 `cf98610` fix(ci): publish recovery snapshot atomically (#3115)
 - 2026-11-06 `6f94e35` fix(ci): reconcile E40 ledger and forced rotation (#3113)
 - 2026-11-06 `1c0eb37` chore(security): sincroniza baseline de policies RLS (#3110)
 - 2026-11-06 `e1705b3` fix(e2e): alinha timeout do setup de autenticação (#3102)
@@ -1173,7 +1174,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-05 `11b39ab` docs: registra workflows E2E advisory em PENDENCIAS.md (#15–#18) (#3085)
 - 2026-11-05 `4ebe5a8` chore(docs): RELATORIO_CI + PENDENCIAS item #14 RESOLVIDO — bc342a24 success
 - 2026-11-05 `bc342a2` chore(docs): RELATORIO_CI + PENDENCIAS — SHA 2bc37120 + item #13 confirmed failure (#3083)
-- 2026-11-05 `2bc3712` chore(docs): RELATORIO_CI final — inventário completo SHAs + prova final (#3082)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`
