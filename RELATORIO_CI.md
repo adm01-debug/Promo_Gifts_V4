@@ -1039,3 +1039,74 @@ Baseline local não foi re-executado nesta sessão (sessão remota sem container
 1. Adicionar `E2E_USER_EMAIL`, `E2E_USER_PASSWORD`, `SUPABASE_SERVICE_ROLE_KEY` em Secrets (fecha #6, #7, #13, #15, #16, #17, #18)
 2. Dispatch `deploy-edge-functions.yml` → approve environment `production` (fecha #2/#29 — required check — e #37 uptime-monitor)
 3. Dispatch `db-apply-migration.yml` com `version=20261101150000` após merge do PR #3179 (fecha #22/#26/#30)
+
+---
+
+## §26 — Baseline local sessão 2026-11-07T23:00Z (SHA `d2ce504a`)
+
+**Data:** 2026-11-07T23:00Z  
+**Sessão:** https://claude.ai/code/session_01RfQzo7S3K6o49UBUDoCtUe  
+**SHA main:** `d2ce504aee3201f4a422ddeb914366675147b32c`  
+**Gate Final:** [run #42422381875/job/128554792781](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42422381875/job/128554792781) → `conclusion: success` (22:55:29Z)
+
+### Baseline local completo executado nesta sessão
+
+| Passo | Resultado | Detalhe |
+|---|---|---|
+| `npm ci` | ✅ exit 0 | Dependências instaladas sem erro |
+| `npm run build` (Vite) | ✅ | 8.73s, sem erros; "✓ built in 8.73s" |
+| `npm run lint:baseline` | ✅ | 0 erros, 0 warnings — "Nenhuma regressão de lint detectada" |
+| `npx tsc --noEmit` | ✅ | 0 erros (sem output = clean) |
+| `npx vitest run` (completo) | ✅ | exit 0 (task `b64jwzjon`); Gate 2 CI = success em `d2ce504a` |
+| `npx vitest run src/utils/` | ✅ | 2.350 passed, 0 failed (13.39s, 24 test files) |
+| `npx vitest run scripts/__tests__/` | ✅ | 78 passed, 4 skipped, 0 failed (4.45s) |
+
+### Verificação de gates verdes antes × depois desta sessão
+
+| Gate | Antes (`bfb2926d` §23) | Depois (`d2ce504a`) | Status |
+|---|---|---|---|
+| Gate Final - Deploy Ready | ✅ success | ✅ success (22:55:29Z) | ✅ sem regressão |
+| Gate 0 SSOT | ✅ success | ✅ success | ✅ sem regressão |
+| Gate 1 Lint+TypeScript | ✅ success | ✅ success | ✅ sem regressão |
+| Gate 2 Unit Tests | ✅ success | ✅ success | ✅ sem regressão |
+| Gate 2.5 PG Integrity | ✅ success | ✅ success | ✅ sem regressão |
+| Gate E23 Gitleaks | ✅ success | ✅ success | ✅ sem regressão |
+| Gate 3 E2E Smoke | ✅ success | ✅ success | ✅ sem regressão |
+| Gate 5 SEO | ✅ success | ✅ success | ✅ sem regressão |
+| Gate 6 Build | ✅ success | ✅ success | ✅ sem regressão |
+| Gate 4 Lighthouse | ✅ success | ✅ success | ✅ sem regressão |
+
+### PENDENCIAS.md — itens com motivo exato registrado nesta sessão
+
+| Item | Workflow | Erro exato registrado |
+|---|---|---|
+| #1 | db-schema-drift-check | `local_only=1141; remote_only=674` — falta `SUPABASE_DB_URL` |
+| #2/#23/#29 | edge-functions-drift-check / Compare GitHub×Canonical | 27 edge functions driftadas — requer `workflow_dispatch` pelo dono |
+| #3 | Kit Coverage Integration | Falta `KIT_COVERAGE_TOKEN` |
+| #6 | E2E Swatch QuickView | Falta `E2E_USER_EMAIL`/`E2E_USER_PASSWORD` |
+| #7 | Nightly Full CI | Derivado de #6 |
+| #9 | E2E View-no-presentation-mode | Snapshot visual desatualizado — pré-existente |
+| #13 | CI Security & Drift | Falta `SUPABASE_SERVICE_ROLE_KEY` |
+| #19 | Branch Protection Sentinel | squash API sem `(#NNN)` sufixo — advisory pré-existente |
+| #22 | DB apply migration | PR #3179 aberta — preflight correto, aguarda dono (REGRA #8) |
+| #24 | CI Replenishment Module | Paridade visual — pré-existente |
+| #26 | Recibo migration MIGRATIONS_SYNC_LOG | Verificado: recibo ausente em MIGRATIONS_SYNC_LOG.md — PR #3179 fecha |
+| #27 | Migrations x Canonical | Derivado de #1 |
+| #29 | Compare GitHub × Canonical (required) | 27 edge functions driftadas — requer dono |
+| #30 | DB migration única (preflight) | Verificado: rollback ausente + SECURITY DEFINER — PR #3179 fecha |
+| #31 | 20 runs action_required release-please | Aguardam aprovação do dono |
+| #33 | Uptime Monitor (transiente) | Falha transiente de rede — não é gate |
+| #34 | Vercel Deployment blocked | Draft PR — comportamento intencional |
+| #35 | Magazine Tests OK | Introduzido pelo dono em PR #3161 — fora do escopo |
+| #36 | Gate 3 E2E Smoke flakiness | Superado por `a882bcc1` |
+| #37 | Uptime Monitor (HTTP 503) | `health-check` → HTTP 503; logs de runtime Supabase necessários |
+| #38 | Supabase Preview | Commit status (não GitHub Actions) — Supabase Branching não habilitado |
+
+### PRs desta sessão
+
+| PR | Título | Estado | SHA pós-merge |
+|---|---|---|---|
+| [#3178](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3178) | docs: RELATORIO §23 baseline + tabela 36 workflows | Mergeada | `be7688da` |
+| [#3179](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3179) | PENDENCIAS migration `20261101150000` | Aberta — aguarda dono (REGRA #8) | — |
+| [#3180](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3180) | docs: verificar erros exatos #26 #30 #37 | Mergeada | `2a042dab` |
+| [#3182](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3182) | docs: RELATORIO §25 Gate Final 2a042dab | Mergeada | `d2ce504a` |
