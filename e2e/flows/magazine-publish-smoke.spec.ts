@@ -34,8 +34,12 @@
 import { expect, type Page, type Response } from '@playwright/test';
 
 import { test } from '../fixtures/test-base';
-import { loginAs, dismissOnboardingTour } from '../helpers/auth';
-import { shouldRetryBackendStatus } from '../helpers/http-status';
+import { dismissOnboardingTour, loginAs } from '../helpers/auth';
+import {
+  retryAfterDelayMs,
+  shouldRetryBackendStatus,
+  shouldRetryBrowserError,
+} from '../helpers/http-status';
 import { gotoAndSettle, waitForRouteIdle } from '../helpers/nav';
 import { e2eName } from '../helpers/e2e-resources';
 
@@ -48,18 +52,30 @@ function isMagazineListResponse(res: Response) {
 }
 
 async function openMagazineWhenBackendReady(page: Page): Promise<void> {
-  const statuses: number[] = [];
+  const trace: string[] = [];
 
   for (let attempt = 1; attempt <= MAGAZINE_LIST_ATTEMPTS; attempt += 1) {
     const waitMagazinesReady = page.waitForResponse(isMagazineListResponse, {
       timeout: 120_000,
     });
 
-    await gotoAndSettle(page, '/magazine');
+    let response: Response;
+    try {
+      [response] = await Promise.all([waitMagazinesReady, gotoAndSettle(page, '/magazine')]);
+    } catch (error) {
+      trace.push(error instanceof Error ? error.name : 'erro desconhecido');
+      if (!shouldRetryBrowserError(error, attempt, MAGAZINE_LIST_ATTEMPTS)) {
+        const detail = error instanceof Error ? error.message : String(error);
+        throw new Error(
+          `listagem de revistas falhou após ${attempt} tentativa(s); trace: ${trace.join(' -> ')}; ${detail}`,
+        );
+      }
+      continue;
+    }
+
     await expect(page).toHaveURL(/\/magazine(\/|$)/);
 
-    const response = await waitMagazinesReady;
-    statuses.push(response.status());
+    trace.push(String(response.status()));
 
     if (response.ok()) {
       await dismissOnboardingTour(page);
@@ -70,15 +86,19 @@ async function openMagazineWhenBackendReady(page: Page): Promise<void> {
     const canRetry = shouldRetryBackendStatus(response.status(), attempt, MAGAZINE_LIST_ATTEMPTS);
     if (!canRetry) {
       throw new Error(
-        `listagem de revistas falhou após ${attempt} tentativa(s); status: ${statuses.join(' -> ')}`,
+        `listagem de revistas falhou após ${attempt} tentativa(s); trace: ${trace.join(' -> ')}`,
       );
+    }
+
+    if (response.status() === 429) {
+      const delayMs = retryAfterDelayMs(response.headers()['retry-after']);
+      await new Promise<void>((resolve) => setTimeout(resolve, delayMs));
     }
   }
 }
 
 test.describe('@smoke Magazine — fluxo autenticado de publicação', () => {
   test.setTimeout(600_000);
-  test.describe.configure({ retries: 1 });
   test('publica revista e copia URL pública gerada', async ({ page, context }) => {
     await loginAs(page);
 
@@ -105,8 +125,7 @@ test.describe('@smoke Magazine — fluxo autenticado de publicação', () => {
       },
       { timeout: 120_000 },
     );
-    await createBtn.click();
-    const createResponse = await waitCreateResponse;
+    const [createResponse] = await Promise.all([waitCreateResponse, createBtn.click()]);
     expect(createResponse.ok(), `magazine_create_v2 respondeu ${createResponse.status()}`).toBe(
       true,
     );
@@ -165,8 +184,7 @@ test.describe('@smoke Magazine — fluxo autenticado de publicação', () => {
       },
       { timeout: 120_000 },
     );
-    await addBtn.click();
-    const addResponse = await waitAddResponse;
+    const [addResponse] = await Promise.all([waitAddResponse, addBtn.click()]);
     expect(addResponse.ok(), `magazine_add_items_v2 respondeu ${addResponse.status()}`).toBe(true);
 
     // Aguarda o produto ser persistido na revista antes de navegar ao próximo step.
