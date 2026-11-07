@@ -63,14 +63,9 @@ export async function switchCatalogView(page: Page, mode: CatalogView): Promise<
     timeout: DATA_TIMEOUT_MS,
   });
   const option = page.getByTestId(`view-mode-${mode}`);
-  if (!(await option.isVisible())) {
-    // O toolbar pode estar fora da área visível em viewports estreitos quando
-    // o menu lateral está aberto. O objetivo destes specs é validar o modo de
-    // catálogo, não a geometria do trigger (coberta em testes de alinhamento).
-    await trigger.evaluate((element: HTMLButtonElement) => element.click());
-  }
+  if (!(await option.isVisible())) await trigger.click();
   await expect(option).toBeVisible({ timeout: 5_000 });
-  await option.evaluate((element: HTMLButtonElement) => element.click());
+  await option.click();
   await expect(option).toHaveAttribute('aria-pressed', 'true');
   await page.keyboard.press('Escape');
   await expect(option).toBeHidden({ timeout: 5_000 });

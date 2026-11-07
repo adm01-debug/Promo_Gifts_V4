@@ -2,61 +2,14 @@ import { defineConfig, devices } from '@playwright/test';
 import path from 'path';
 
 const externalBaseUrl = process.env.E2E_BASE_URL?.trim();
-const isLocalBaseUrl =
-  !externalBaseUrl || /^https?:\/\/(?:localhost|127\.0\.0\.1)(?::|\/|$)/i.test(externalBaseUrl);
+const isLocalBaseUrl = !externalBaseUrl || /^https?:\/\/(?:localhost|127\.0\.0\.1)(?::|\/|$)/i.test(externalBaseUrl);
 const forceStartServer = process.env.E2E_FORCE_START_SERVER === '1';
-const reuseExistingServer =
-  !forceStartServer && (process.env.CI === 'true' || process.env.E2E_REUSE_EXISTING_SERVER === '1');
+const reuseExistingServer = !forceStartServer && (process.env.CI === 'true' || process.env.E2E_REUSE_EXISTING_SERVER === '1');
 const localBaseUrl = externalBaseUrl || 'http://localhost:8080';
 const localServerPort = forceStartServer && isLocalBaseUrl ? new URL(localBaseUrl).port : '';
-const localServerCommand =
-  forceStartServer && localServerPort
-    ? `npm run dev -- --port ${localServerPort} --strictPort`
-    : 'npm run dev';
-const isGeneralRegression = process.env.E2E_GENERAL_REGRESSION === '1';
-
-// Suítes funcionais de /estoque exigem sessão e já rodam no projeto autenticado
-// (além do workflow e2e-stock dedicado). Executá-las também nos projetos
-// públicos refaz login real por teste, duplica cobertura e esgota os shards.
-const authenticatedOnlySpecs = [
-  /[\\/]admin[\\/]stock-.*\.spec\.ts$/,
-  /[\\/]routes[\\/]app[\\/]stock-.*\.spec\.ts$/,
-  /[\\/]admin-conexoes-credentials-active-products\.spec\.ts$/,
-  /[\\/]admin-conexoes-zone-collapse\.spec\.ts$/,
-  /[\\/]agente-permissions\.spec\.ts$/,
-  /[\\/]business-flows\.spec\.ts$/,
-  /[\\/]carrinhos[\\/].*\.spec\.ts$/,
-  /[\\/]catalog[\\/]catalog-search-audit\.spec\.ts$/,
-  /[\\/]auth-stability\.spec\.ts$/,
-];
-
-// O workflow de estoque é o dono canônico destas suítes. Na regressão geral,
-// repeti-las consome logins reais e artefatos sem acrescentar cobertura; fora
-// dela (incluindo e2e-stock e visual-tests), continuam habilitadas normalmente.
-const generalRegressionDedicatedSpecs = isGeneralRegression
-  ? [/[\\/]admin[\\/]stock-.*\.spec\.ts$/, /[\\/]routes[\\/]app[\\/]stock-.*\.spec\.ts$/]
-  : [];
-
-// A suíte valida a tela pública de autenticação e não deve herdar storageState.
-const publicOnlySpecs = [/[\\/]auth-debug-removal\.spec\.ts$/];
-
-// O workflow geral valida apenas o núcleo transversal. Suítes visuais, de
-// carga e de domínio têm workflows próprios (stock, cart, quotes, catalog,
-// flows etc.) e continuam usando o catálogo completo quando esta flag não
-// está ativa. Isso evita executar a mesma suíte em contextos incompatíveis.
-const generalPublicSpecs = [
-  /[\\/]auth-debug-removal\.spec\.ts$/,
-  /[\\/]auth-guard-redirect\.spec\.ts$/,
-  /[\\/]auth-legal-pages\.spec\.ts$/,
-  /[\\/]auth\.spec\.ts$/,
-  /[\\/]login\.spec\.ts$/,
-  /[\\/]protected-routes\.spec\.ts$/,
-  /[\\/]routes[\\/]public[\\/]login\.spec\.ts$/,
-  /[\\/]routes[\\/]public[\\/]reset-password\.spec\.ts$/,
-  /[\\/]spa-rewrite\.spec\.ts$/,
-];
-
-const generalAuthedSpecs = [/[\\/]actions-order\.spec\.ts$/, /[\\/]sidebar-logo\.spec\.ts$/];
+const localServerCommand = forceStartServer && localServerPort
+  ? `npm run dev -- --port ${localServerPort} --strictPort`
+  : 'npm run dev';
 
 /**
  * Playwright Configuration
@@ -81,26 +34,19 @@ export default defineConfig({
   },
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
-  retries: isGeneralRegression ? 0 : process.env.CI ? 1 : 0,
+  retries: process.env.CI ? 1 : 0,
   // E21: CI usa 2 workers (mede flakiness em 3 runs nightly; specs que precisam
   // serialização — chromium-smoke — definem workers:1 no projeto). Localmente
   // Playwright determina o número ideal de workers automaticamente.
   workers: process.env.CI ? 2 : undefined,
   // E43: no CI, never auto-create a missing baseline (prevents flaky green on first missing snapshot)
   updateSnapshots: process.env.CI ? 'none' : 'missing',
-  reporter: [
-    ['html', { open: 'never' }],
-    ['list'],
-    ['github'],
-    ['json', { outputFile: 'playwright-report/results.json' }],
-  ],
+  reporter: [['html', { open: 'never' }], ['list'], ['github'], ['json', { outputFile: 'playwright-report/results.json' }]],
   use: {
     baseURL: externalBaseUrl || 'http://localhost:8080',
-    // O gate geral já publica logs + blob report e pode gerar centenas de
-    // falhas correlatas. Evidências multimídia permanecem nos gates dedicados.
-    trace: isGeneralRegression ? 'off' : 'retain-on-failure',
-    screenshot: isGeneralRegression ? 'off' : 'only-on-failure',
-    video: isGeneralRegression ? 'off' : 'retain-on-failure',
+    trace: 'retain-on-failure',
+    screenshot: 'only-on-failure',
+    video: 'retain-on-failure',
     headless: true,
   },
 
@@ -114,12 +60,11 @@ export default defineConfig({
     // 2. Projetos Públicos (sem storageState)
     {
       name: 'chromium-public',
-      testMatch: isGeneralRegression ? generalPublicSpecs : '**/*.spec.ts',
       use: {
         ...devices['Desktop Chrome'],
         viewport: { width: 1280, height: 720 },
       },
-      testIgnore: [/auth\.setup\.ts/, ...authenticatedOnlySpecs],
+      testIgnore: [/auth\.setup\.ts/],
     },
     {
       name: 'firefox-public',
@@ -127,7 +72,7 @@ export default defineConfig({
         ...devices['Desktop Firefox'],
         viewport: { width: 1280, height: 720 },
       },
-      testIgnore: [/auth\.setup\.ts/, ...authenticatedOnlySpecs],
+      testIgnore: [/auth\.setup\.ts/],
     },
     {
       name: 'webkit-public',
@@ -135,20 +80,19 @@ export default defineConfig({
         ...devices['Desktop Safari'],
         viewport: { width: 1280, height: 720 },
       },
-      testIgnore: [/auth\.setup\.ts/, ...authenticatedOnlySpecs],
+      testIgnore: [/auth\.setup\.ts/],
     },
 
     // 3. Projetos Autenticados (reaproveita login do setup)
     {
       name: 'chromium-authed',
-      testMatch: isGeneralRegression ? generalAuthedSpecs : '**/*.spec.ts',
       use: {
         ...devices['Desktop Chrome'],
         viewport: { width: 1280, height: 720 },
         storageState: path.resolve('e2e/.auth/storageState.json'),
       },
       dependencies: ['setup'],
-      testIgnore: [/auth\.setup\.ts/, ...generalRegressionDedicatedSpecs, ...publicOnlySpecs],
+      testIgnore: [/auth\.setup\.ts/],
     },
 
     {
@@ -208,7 +152,7 @@ export default defineConfig({
       testMatch: [/smoke\.spec\.ts/],
       grep: /@smoke/,
       retries: 0,
-      workers: 1, // E21: smoke serializado — storageState compartilhado + fail-fast determinístico
+      workers: 1,  // E21: smoke serializado — storageState compartilhado + fail-fast determinístico
     },
   ],
 

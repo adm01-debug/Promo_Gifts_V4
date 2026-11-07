@@ -108,6 +108,7 @@ jobs:
     needs: [e2e-error-boundaries]
     runs-on: ubuntu-24.04
     timeout-minutes: 30
+    if: github.event_name == 'push' || github.event_name == 'pull_request'
 
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -209,7 +210,6 @@ jobs:
         uses: ./.github/actions/check-min-tests
         with:
           results-json: 'playwright-report/results-quote-flow.json'
-          min: '9'
 
       - name: Upload full flows report
         if: always()

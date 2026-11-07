@@ -15,22 +15,22 @@
  * historyApi nativo, então este spec funciona como contrato de comportamento
  * (qualquer regressão em vercel.json também regressaria a UX no dev).
  */
-import { test, expect } from './fixtures/test-base';
+import { test, expect } from "./fixtures/test-base";
 
 const DEEP_ROUTES = [
-  '/admin/usuarios',
-  '/admin/conexoes',
-  '/admin/configuracoes',
-  '/admin/telemetria',
-  '/orcamentos',
-  '/orcamentos/novo',
-  '/produtos',
-  '/colecoes',
-  '/favoritos',
-  '/montar-kit',
+  "/admin/usuarios",
+  "/admin/conexoes",
+  "/admin/configuracoes",
+  "/admin/telemetria",
+  "/orcamentos",
+  "/orcamentos/novo",
+  "/produtos",
+  "/colecoes",
+  "/favoritos",
+  "/montar-kit",
 ];
 
-test.describe('SPA rewrite — deep routes serve index.html', () => {
+test.describe("SPA rewrite — deep routes serve index.html", () => {
   // Sem requerer auth: a validação aqui é do contrato HTTP/servidor (rewrite
   // entrega index.html para qualquer caminho), independente de sessão.
   // Rotas protegidas redirecionam para /login depois — mas isso é client-side
@@ -38,33 +38,33 @@ test.describe('SPA rewrite — deep routes serve index.html', () => {
 
   for (const route of DEEP_ROUTES) {
     test(`GET direto em ${route} monta a SPA (não 404)`, async ({ page }) => {
-      const response = await page.goto(route, { waitUntil: 'domcontentloaded' });
+      const response = await page.goto(route, { waitUntil: "domcontentloaded" });
       expect(response, `Resposta nula para ${route}`).not.toBeNull();
       expect(response!.status(), `Status HTTP para ${route}`).toBeLessThan(400);
 
       // O index.html sempre carrega #root — se o fallback historyApi (dev) ou
       // o rewrite (prod) estiver quebrado, o body trará HTML do 404 do servidor
       // e não terá esse elemento.
-      const root = page.locator('#root');
+      const root = page.locator("#root");
       await expect(root, `#root ausente em ${route} (fallback SPA quebrado)`).toBeVisible({
         timeout: 15_000,
       });
     });
   }
 
-  test('refresh em rota profunda preserva o caminho', async ({ page }) => {
-    const target = '/orcamentos/novo';
-    await page.goto(target, { waitUntil: 'domcontentloaded' });
-    await page.reload({ waitUntil: 'domcontentloaded' });
+  test("refresh em rota profunda preserva o caminho", async ({ page }) => {
+    const target = "/orcamentos/novo";
+    await page.goto(target, { waitUntil: "domcontentloaded" });
+    await page.reload({ waitUntil: "domcontentloaded" });
     // O Router declarativo só consegue restaurar o path se o rewrite/fallback
     // estiver entregando index.html para o caminho real.
     expect(new URL(page.url()).pathname).toBe(target);
-    await expect(page.locator('#root')).toBeVisible();
+    await expect(page.locator("#root")).toBeVisible();
   });
 
-  test('/assets/* não são interceptados pelo rewrite', async ({ page }) => {
+  test("/assets/* não são interceptados pelo rewrite", async ({ page }) => {
     // Carrega a home, captura o primeiro asset do <link rel="modulepreload"> ou <script>.
-    await page.goto('/', { waitUntil: 'domcontentloaded' });
+    await page.goto("/", { waitUntil: "domcontentloaded" });
     const assetHref = await page.evaluate(() => {
       const link = document.querySelector<HTMLLinkElement>(
         'link[rel="modulepreload"][href^="/assets/"], link[rel="stylesheet"][href^="/assets/"]',
@@ -73,13 +73,14 @@ test.describe('SPA rewrite — deep routes serve index.html', () => {
       return link?.href ?? script?.src ?? null;
     });
 
-    // Em Vite dev o entrypoint é /src/main.tsx; no preview/deploy ele vira
-    // /assets/*. Ambos precisam ser servidos como módulo, nunca como index.html.
-    const directAsset = assetHref ?? new URL('/src/main.tsx', page.url()).href;
+    if (!assetHref) {
+      expect(false, "[E108] Sem /assets/* — dev server inline (esperado em vite dev).").toBeTruthy();
+      return;
+    }
 
-    const res = await page.request.get(directAsset);
-    expect(res.status(), `Asset ${directAsset} deveria responder 200`).toBe(200);
-    const ct = res.headers()['content-type'] ?? '';
-    expect(ct).not.toContain('text/html'); // se virou index.html, é regressão do rewrite
+    const res = await page.request.get(assetHref);
+    expect(res.status(), `Asset ${assetHref} deveria responder 200`).toBe(200);
+    const ct = res.headers()["content-type"] ?? "";
+    expect(ct).not.toContain("text/html"); // se virou index.html, é regressão do rewrite
   });
 });
