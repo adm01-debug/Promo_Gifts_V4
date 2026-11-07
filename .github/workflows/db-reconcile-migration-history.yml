@@ -1,0 +1,207 @@
+name: DB — Reconciliar histórico remoto sem DDL
+
+# Remove apenas entradas remotas obsoletas de supabase_migrations.schema_migrations.
+# Nenhum SQL de negocio e executado. Cada versao precisa estar no manifest,
+# possuir evidencia local e passar por reviewer do environment production.
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Versão remota autorizada em migration-history-revert-manifest.json'
+        required: true
+        type: string
+      approved_by:
+        description: 'Revisor que aprovou a reconciliação (ex.: @usuario)'
+        required: true
+        type: string
+      ack_baseline_rotation:
+        description: 'Confirma rotação obrigatória do baseline após concluir todas as versões do manifest'
+        required: true
+        type: boolean
+
+concurrency:
+  group: db-reconcile-migration-history
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+env:
+  MIGRATION_VERSION: ${{ inputs.version }}
+  SUPABASE_PROJECT_REF: doufsxqlfjyuvxuezpln
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  preflight:
+    name: 1. Preflight read-only
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          ref: main
+
+      - name: Exige ack de rotação do baseline
+        env:
+          ACK_BASELINE_ROTATION: ${{ inputs.ack_baseline_rotation }}
+        run: |
+          set -euo pipefail
+          if [ "$ACK_BASELINE_ROTATION" != "true" ]; then
+            echo "::error::ack_baseline_rotation=true e obrigatório; ao final, execute schema-snapshot-export.yml com force_rotate=true."
+            exit 1
+          fi
+          echo "Rotação posterior do baseline confirmada."
+
+      - name: Valida approved_by
+        env:
+          APPROVED_BY: ${{ inputs.approved_by }}
+        run: |
+          set -euo pipefail
+          if [ -z "${APPROVED_BY// /}" ]; then
+            echo "::error::approved_by e obrigatório e não pode ser vazio."
+            exit 1
+          fi
+
+      - name: Confirma reviewer obrigatório no environment Production
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          reviewer_rules=$(gh api \
+            "repos/${{ github.repository }}/environments/production" \
+            --jq '[.protection_rules[]? | select(.type == "required_reviewers" and (.reviewers | length) > 0)] | length')
+          if [ "$reviewer_rules" -lt 1 ]; then
+            echo "::error::Environment production sem reviewer obrigatório."
+            exit 1
+          fi
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: '.nvmrc'
+
+      - name: Confirma versão presente e coberta pelo manifest
+        run: node scripts/preflight-migration-history-revert.mjs --version="$MIGRATION_VERSION" --require-live
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+
+  reconcile:
+    name: 2. Repair reverted (requer aprovação production)
+    needs: preflight
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    environment: production
+    permissions:
+      contents: read
+    outputs:
+      reconciled_at: ${{ steps.metadata.outputs.reconciled_at }}
+      manifest_sha256: ${{ steps.metadata.outputs.manifest_sha256 }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          ref: main
+
+      - name: Valida versão antes do shell
+        run: node scripts/preflight-migration-history-revert.mjs --version="$MIGRATION_VERSION"
+
+      - name: Registra metadados imutáveis
+        id: metadata
+        run: |
+          set -euo pipefail
+          echo "manifest_sha256=$(sha256sum scripts/migration-history-revert-manifest.json | cut -d' ' -f1)" >> "$GITHUB_OUTPUT"
+          echo "reconciled_at=$(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_OUTPUT"
+
+      - name: Setup Supabase CLI
+        uses: supabase/setup-cli@45a513f8c64c0bc8e0e3dfe572b5c95be85f6359 # v2
+        with:
+          version: 2.101.0
+
+      - name: migration repair --status reverted
+        run: |
+          set -euo pipefail
+          supabase link --project-ref "$SUPABASE_PROJECT_REF"
+          supabase migration repair --status reverted "$MIGRATION_VERSION" --linked
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_DB_PASSWORD: ${{ secrets.PGPASSWORD }}
+
+  post-check:
+    name: 3. Pós-check read-only
+    needs: reconcile
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          ref: main
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: '.nvmrc'
+      - name: Confirma versão ausente após repair reverted
+        run: node scripts/preflight-migration-history-revert.mjs --version="$MIGRATION_VERSION" --require-live --expect-reverted
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+
+  receipt:
+    name: 4. Recibo auditável
+    needs: [reconcile, post-check]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      pull-requests: write
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          ref: main
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: '.nvmrc'
+      - name: Monta recibo sem afirmar execução de DDL
+        env:
+          APPROVED_BY: ${{ inputs.approved_by }}
+        run: |
+          node scripts/append-migration-receipt.mjs \
+            --version="$MIGRATION_VERSION" \
+            --sha256="${{ needs.reconcile.outputs.manifest_sha256 }}" \
+            --executor="GitHub Actions (db-reconcile-migration-history.yml, disparado por ${{ github.actor }}, aprovado por $APPROVED_BY)" \
+            --metodo="repair-reverted" \
+            --data-utc="${{ needs.reconcile.outputs.reconciled_at }}" \
+            --pos-check="ledger read-only confirmou versão ausente; nenhum DDL executado" \
+            --status="histórico-reconciliado"
+      - name: Credencial de push sem token em disco
+        run: |
+          # shellcheck disable=SC2016 # aspas simples intencionais: o git expande $1 e GIT_PUSH_TOKEN ao invocar o helper
+          git config --local credential.helper '!f() { test "$1" = get || exit 0; echo username=x-access-token; echo "password=${GIT_PUSH_TOKEN}"; }; f'
+      - name: Abre PR com recibo
+        env:
+          GIT_PUSH_TOKEN: ${{ github.token }}
+          APPROVED_BY: ${{ inputs.approved_by }}
+          HUSKY: '0'
+        run: |
+          set -euo pipefail
+          BRANCH="db-history-receipt-${MIGRATION_VERSION}-${{ github.run_id }}"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$BRANCH"
+          git add supabase/MIGRATIONS_SYNC_LOG.md
+          git commit -m "docs(migrations-log): reconcilia histórico ${MIGRATION_VERSION}"
+          git push -u origin "$BRANCH"
+          gh pr create \
+            --base main \
+            --head "$BRANCH" \
+            --title "docs: recibo de reconciliação — ${MIGRATION_VERSION}" \
+            --body "Recibo automático do repair reverted de \`${MIGRATION_VERSION}\`. Nenhum DDL foi executado. O pós-check confirmou a ausência da versão no ledger; após concluir todo o manifest, rotacionar o baseline com \`force_rotate: true\`. Aprovado por $APPROVED_BY."
