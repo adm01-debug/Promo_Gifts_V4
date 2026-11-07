@@ -1722,3 +1722,9 @@ Após VACUUM ANALYZE executado pelos jobs temporários `vacuum-snapshots-now` e
 | version | arquivo | status |
 |---|---|---|
 | `20261106232045` | `fix_handle_updated_at_search_path` | aplicada via `db-apply-migration.yml`; recibo E15 da run `42325571775` registrado acima; `search_path=public` confirmado no canônico. |
+
+## 2026-11-07 — Reconstrução do bootstrap público
+
+| version | arquivo | status |
+|---|---|---|
+| `20260511235959` | `bootstrap_public_dependencies_for_application_schemas` | pendente de aplicação idempotente via `db-apply-migration.yml` após merge; adiciona ao ledger a reconstrução das 7 relações públicas e `categories.level` que já existem no canônico. Supabase Preview da #3144 reproduziu a ausência antes desta correção. |
