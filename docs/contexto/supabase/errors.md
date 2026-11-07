@@ -1,3 +1,5 @@
 # Erros da última coleta
 
-_nenhum_
+| seção | erro |
+|---|---|
+| grants | canceling statement due to statement timeout |
