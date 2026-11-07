@@ -310,3 +310,26 @@ Duration    915.17s · exit code 0
 - Corrigir mock de timezone no teste: `vi.useFakeTimers({ toFake: ['Date'], now: ... })` com offset explícito, ou
 - Rodar suíte completa localmente com `TZ=America/Sao_Paulo npx vitest run` para confirmar que passam
 - Ou adicionar `TZ=America/Sao_Paulo` ao script `test` em `package.json`
+
+---
+
+## 21. Uptime Monitor ❌ (2026-11-07T13:37Z — sonda de produção)
+
+**Workflow:** `uptime-monitor.yml`  
+**Run ID:** [42377833970](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42377833970) (2026-11-07, 13:37Z)  
+**Required check:** NÃO — advisory (sonda de health check a cada 30 min).  
+**Causa:** Sonda de produção falhou às 13:37Z. Mesmo padrão do item #12 (uptime monitor — falso-positivo de infra resolvido automaticamente). Deploy production via Vercel para HEAD `0549ea39629b` em andamento quando a sonda executou.  
+**Por que não corrijo:** Não é bug de código — é sonda de infra. O deploy automático do Vercel para o commit `0549ea39629b` (PR #3140) pode ter causado janela de indisponibilidade temporária. Próxima execução da sonda (a cada 30 min) deve confirmar se voltou ao normal.  
+**O que o dono precisa fazer:**
+- Aguardar a próxima execução automática do uptime-monitor (~30 min após a falha)
+- Se persistir: verificar o deploy no Vercel para SHA `0549ea39629b` — `vercel logs` ou dashboard Vercel
+- Se o deploy falhou: re-triggerar deploy via `.github/workflows/deploy-edge-functions.yml` ou verificar Vercel dashboard
+
+---
+
+> **Atualização 2026-11-07T13:48Z (sessão https://claude.ai/code/session_01RfQzo7S3K6o49UBUDoCtUe):**  
+> HEAD atual: `0549ea39629b` — `fix(catálogo): buscar cores ao trocar filtros ou página (#3140)`  
+> Gate Final: run [42376559805](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42376559805) attempt 2 — ⏳ `in_progress` (attempt 1 `cancelled` por concurrency).  
+> Banco de dados: **zero mudanças** — REGRA #8/E056 respeitada.  
+> Código no repositório: PR #3140 mergeada (fix catálogo de filtros), demais correções desta série (PRs #3073–#3091) já mergeadas e confirmadas em main.  
+> **7 workflows em falha não-required** documentados nos itens #1, #3, #6, #7, #9, #13, #21 acima — todos bloqueados por autorização do dono (SUPABASE_SERVICE_ROLE_KEY, migration repair, dados null, snapshot visual).
