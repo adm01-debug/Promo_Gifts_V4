@@ -1,8 +1,21 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "total": 254,
+ "total": 255,
  "scripts": [
+  {
+   "arquivo": ".github/scripts/e2e-relevance.mjs",
+   "descricao": null,
+   "linhas": 28,
+   "env": [
+    "CHANGED_FILES"
+   ],
+   "npm_scripts": [],
+   "workflows": [
+    "_e2e-relevance.yml"
+   ],
+   "orfao": false
+  },
   {
    "arquivo": "scripts/ai-context/cenarios.mjs",
    "descricao": "Simulação de cenários do gerador: monta centenas de repositórios sintéticos (variantes de SQL, rotas, menus, edges, workflows, monorepo, Python, arquivos corrompidos, fuzz) e confere:",

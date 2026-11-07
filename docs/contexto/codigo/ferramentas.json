@@ -6,8 +6,8 @@
    "TypeScript (4306)",
    "SQL (3228)",
    "Markdown (895)",
-   "JavaScript (303)",
-   "YAML (106)",
+   "JavaScript (304)",
+   "YAML (107)",
    "JSON (91)",
    "Shell (18)",
    "CSS (13)"
@@ -392,6 +392,31 @@
   "vitest.config.ts"
  ],
  "workflows": [
+  {
+   "arquivo": ".github/workflows/_e2e-relevance.yml",
+   "nome": "Reusable — E2E Runtime Relevance",
+   "gatilhos": [
+    "workflow_call"
+   ],
+   "crons": [],
+   "branches": [],
+   "jobs": [
+    "detect"
+   ],
+   "permissoes": [
+    "contents: read",
+    "pull-requests: read"
+   ],
+   "scripts_usados": [
+    ".github/scripts/e2e-relevance.mjs"
+   ],
+   "npm_scripts": [],
+   "secrets": [],
+   "actions": [
+    "actions/checkout",
+    "dorny/paths-filter"
+   ]
+  },
   {
    "arquivo": ".github/workflows/_secrets-check.yml",
    "nome": "_secrets-check (reusable)",
@@ -1012,10 +1037,12 @@
     "main"
    ],
    "jobs": [
+    "e2e-relevance",
     "quality-gate"
    ],
    "permissoes": [
-    "contents: read"
+    "contents: read",
+    "pull-requests: read"
    ],
    "scripts_usados": [],
    "npm_scripts": [],
@@ -1076,6 +1103,7 @@
    ],
    "jobs": [
     "changes",
+    "e2e-relevance",
     "ssot-gate",
     "dependency-audit",
     "dependency-review",
@@ -1094,7 +1122,8 @@
     "deploy-ready"
    ],
    "permissoes": [
-    "contents: read"
+    "contents: read",
+    "pull-requests: read"
    ],
    "scripts_usados": [
     "scripts/check-anon-insert-rate-guard.mjs",
@@ -1543,12 +1572,14 @@
     "main"
    ],
    "jobs": [
+    "e2e-relevance",
     "e2e-error-boundaries",
     "e2e-full-flows",
     "e2e-mobile"
    ],
    "permissoes": [
-    "contents: read"
+    "contents: read",
+    "pull-requests: read"
    ],
    "scripts_usados": [],
    "npm_scripts": [],
@@ -1578,13 +1609,15 @@
     "main"
    ],
    "jobs": [
+    "e2e-relevance",
     "secrets_check",
     "e2e_focused",
     "notify_failure",
     "notify_success"
    ],
    "permissoes": [
-    "contents: read"
+    "contents: read",
+    "pull-requests: read"
    ],
    "scripts_usados": [],
    "npm_scripts": [],
@@ -1712,10 +1745,12 @@
     "main"
    ],
    "jobs": [
+    "e2e-relevance",
     "personalization-tests"
    ],
    "permissoes": [
-    "contents: read"
+    "contents: read",
+    "pull-requests: read"
    ],
    "scripts_usados": [],
    "npm_scripts": [],
@@ -1805,10 +1840,12 @@
     "main"
    ],
    "jobs": [
+    "e2e-relevance",
     "swatch-quickview"
    ],
    "permissoes": [
-    "contents: read"
+    "contents: read",
+    "pull-requests: read"
    ],
    "scripts_usados": [],
    "npm_scripts": [],
@@ -1868,13 +1905,15 @@
     "main"
    ],
    "jobs": [
+    "e2e-relevance",
     "secrets-check",
     "e2e-gates",
     "e2e-shard",
     "merge-reports"
    ],
    "permissoes": [
-    "contents: read"
+    "contents: read",
+    "pull-requests: read"
    ],
    "scripts_usados": [
     "scripts/e2e-feature-summary.mjs"
@@ -3341,10 +3380,12 @@
     "main"
    ],
    "jobs": [
+    "e2e-relevance",
     "visual-baseline"
    ],
    "permissoes": [
-    "contents: read"
+    "contents: read",
+    "pull-requests: read"
    ],
    "scripts_usados": [
     "scripts/check-visual-tests-specs.mjs"

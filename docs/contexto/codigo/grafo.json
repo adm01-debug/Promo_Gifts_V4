@@ -1,7 +1,7 @@
 {
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
- "nos": 2428,
+ "nos": 2429,
  "arestas": 9683,
  "hubs": [
   {
@@ -318,6 +318,7 @@
   ]
  },
  "orfaos": [
+  ".github/scripts/e2e-relevance.mjs",
   "cloudflare-workers/og-meta-bot.js",
   "docs/promo-champions/receive-quote-sync.ts",
   "public/sw.js",

@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "897cc4c1026c483b5b23d7d6a80058d228c0a620",
+  "commit": "94291123bdcd2ea49c921602f4310dc6edc8e2a7",
   "branch": "main",
-  "data_commit": "2026-11-07T01:01:45-03:00",
+  "data_commit": "2026-11-07T08:05:16-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "9429112",
+    "data": "2026-11-07",
+    "assunto": "fix(ci): reduzir pressão dos E2E no Supabase (#3130)"
+   },
    {
     "sha": "897cc4c",
     "data": "2026-11-07",
@@ -126,14 +131,9 @@
     "sha": "f240b5c",
     "data": "2026-11-05",
     "assunto": "docs: atualiza PENDENCIAS.md e RELATORIO_CI.md pós-PR #3075 (#3077)"
-   },
-   {
-    "sha": "3d514f5",
-    "data": "2026-11-05",
-    "assunto": "docs: RELATORIO_CI.md — PR #3075 mergeada, run 42073412218 success (#3076)"
    }
   ],
-  "arquivos_mudados_7d": 392,
+  "arquivos_mudados_7d": 400,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -235,7 +235,7 @@
    },
    {
     "arquivo": ".github/workflows/deploy-gates.yml",
-    "mudancas": 10
+    "mudancas": 11
    },
    {
     "arquivo": "analise-branches/RELATORIO_BRANCHES.md",
@@ -262,6 +262,10 @@
     "mudancas": 8
    },
    {
+    "arquivo": ".github/workflows/e2e-swatch-quickview.yml",
+    "mudancas": 7
+   },
+   {
     "arquivo": ".github/workflows/schema-snapshot-export.yml",
     "mudancas": 7
    },
@@ -272,10 +276,6 @@
    {
     "arquivo": "scripts/migration-ledger-remote-only-allowlist.json",
     "mudancas": 7
-   },
-   {
-    "arquivo": ".github/workflows/e2e-swatch-quickview.yml",
-    "mudancas": 6
    },
    {
     "arquivo": ".github/workflows/ratchet-weekly.yml",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 342
+    "commits": 341
    },
    {
     "autor": "Joaquim Ataides",
@@ -322,9 +322,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 9172,
-  "arquivos_codigo": 4613,
-  "linhas_codigo": 883570,
+  "arquivos_total": 9174,
+  "arquivos_codigo": 4614,
+  "linhas_codigo": 883598,
   "rotas": 138,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -337,11 +337,15 @@
   "migrations": 3043,
   "cron_jobs": 120,
   "testes": 2185,
-  "workflows": 93,
-  "scripts": 254,
+  "workflows": 94,
+  "scripts": 255,
   "docs_md": 895
  },
  "por_pasta": {
+  ".github/scripts": {
+   "arquivos": 1,
+   "linhas": 28
+  },
   "api/health.ts": {
    "arquivos": 1,
    "linhas": 58

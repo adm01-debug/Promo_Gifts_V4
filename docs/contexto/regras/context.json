@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "897cc4c1026c483b5b23d7d6a80058d228c0a620",
+  "sha": "94291123bdcd2ea49c921602f4310dc6edc8e2a7",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-07 04:03 UTC",
-  "files_total": 9095,
-  "code_files": 7840,
-  "code_lines": 1050646
+  "generated_at": "2026-11-07 11:06 UTC",
+  "files_total": 9097,
+  "code_files": 7841,
+  "code_lines": 1050674
  },
  "version": "1.3.2",
- "facts_hash": "1690a77209afc305",
+ "facts_hash": "81a99fc196a6e280",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -402,6 +402,11 @@
    }
   ],
   "ci": [
+   {
+    "file": ".github/workflows/_e2e-relevance.yml",
+    "name": "Reusable — E2E Runtime Relevance",
+    "triggers": []
+   },
    {
     "file": ".github/workflows/_secrets-check.yml",
     "name": "_secrets-check (reusable)",
@@ -1171,7 +1176,7 @@
    ".sql": 3228,
    ".ts": 2620,
    ".tsx": 1687,
-   ".mjs": 296,
+   ".mjs": 297,
    ".py": 9,
    ".js": 7
   },
@@ -137755,6 +137760,21 @@
    ]
   },
   {
+   "module": ".github",
+   "files": 1,
+   "lines": 28,
+   "tables": [],
+   "exports": [
+    "e2e-relevance.mjs: isE2ERuntimeFile, hasE2ERuntimeChanges"
+   ],
+   "docs": [],
+   "deps": [],
+   "imports_modules": [],
+   "file_list": [
+    ".github/scripts/e2e-relevance.mjs"
+   ]
+  },
+  {
    "module": "api",
    "files": 3,
    "lines": 425,
@@ -143692,6 +143712,9 @@
    ],
    "CF_ORIGIN_SECRET": [
     "supabase/functions/check-login/index.ts"
+   ],
+   "CHANGED_FILES": [
+    ".github/scripts/e2e-relevance.mjs"
    ],
    "CHECK_RETRY_DELAY_MS": [
     "scripts/check-rpc-get-profile-and-roles.mjs"
@@ -362287,6 +362310,17 @@
     "Roda apenas via `node tests/scripts/check-file-size-baseline.test.mjs`."
    ]
   },
+  ".github/scripts/e2e-relevance.mjs": {
+   "path": ".github/scripts/e2e-relevance.mjs",
+   "lines": 28,
+   "exports": [
+    "function isE2ERuntimeFile",
+    "function hasE2ERuntimeChanges"
+   ],
+   "env": [
+    "CHANGED_FILES"
+   ]
+  },
   "api/health.ts": {
    "path": "api/health.ts",
    "lines": 58,
@@ -482767,10 +482801,28 @@
   }
  },
  "git": {
-  "sha": "897cc4c1026c483b5b23d7d6a80058d228c0a620",
+  "sha": "94291123bdcd2ea49c921602f4310dc6edc8e2a7",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "9429112",
+    "date": "2026-11-07",
+    "author": "adm01-debug",
+    "subject": "fix(ci): reduzir pressão dos E2E no Supabase (#3130)",
+    "files": [
+     ".github/scripts/e2e-relevance.mjs",
+     ".github/workflows/_e2e-relevance.yml",
+     ".github/workflows/delivery-quality.yml",
+     ".github/workflows/deploy-gates.yml",
+     ".github/workflows/e2e-flows.yml",
+     ".github/workflows/e2e-focused.yml",
+     ".github/workflows/e2e-personalization.yml",
+     ".github/workflows/e2e-swatch-quickview.yml",
+     ".github/workflows/e2e.yml",
+     ".github/workflows/visual-tests.yml"
+    ]
+   },
    {
     "sha": "897cc4c",
     "date": "2026-11-07",
@@ -483065,17 +483117,6 @@
      "e2e/helpers/auth.ts",
      "e2e/smoke.spec.ts"
     ]
-   },
-   {
-    "sha": "2c5dafc",
-    "date": "2026-11-04",
-    "author": "adm01-debug",
-    "subject": "feat(e2e): corrige smoke tests de magazine para CI verde",
-    "files": [
-     "e2e/flows/20-all-features-smoke.spec.ts",
-     "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
-     "e2e/flows/magazine-publish-smoke.spec.ts"
-    ]
    }
   ],
   "hot_files": [
@@ -483088,19 +483129,27 @@
     11
    ],
    [
-    "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
-    4
+    ".github/workflows/deploy-gates.yml",
+    3
    ],
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
     3
    ],
    [
-    "e2e/flows/magazine-publish-smoke.spec.ts",
+    "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
     3
    ],
    [
+    ".github/workflows/e2e-swatch-quickview.yml",
+    2
+   ],
+   [
     ".github/workflows/schema-snapshot-export.yml",
+    2
+   ],
+   [
+    "e2e/flows/magazine-publish-smoke.spec.ts",
     2
    ],
    [
@@ -483108,15 +483157,35 @@
     2
    ],
    [
-    ".github/workflows/deploy-gates.yml",
-    2
+    ".github/scripts/e2e-relevance.mjs",
+    1
    ],
    [
-    "e2e/flows/20-all-features-smoke.spec.ts",
-    2
+    ".github/workflows/_e2e-relevance.yml",
+    1
    ],
    [
-    ".github/workflows/e2e-swatch-quickview.yml",
+    ".github/workflows/delivery-quality.yml",
+    1
+   ],
+   [
+    ".github/workflows/e2e-flows.yml",
+    1
+   ],
+   [
+    ".github/workflows/e2e-focused.yml",
+    1
+   ],
+   [
+    ".github/workflows/e2e-personalization.yml",
+    1
+   ],
+   [
+    ".github/workflows/e2e.yml",
+    1
+   ],
+   [
+    ".github/workflows/visual-tests.yml",
     1
    ],
    [
@@ -483129,34 +483198,6 @@
    ],
    [
     "e2e/catalog/swatch-quickview-list-table.spec.ts",
-    1
-   ],
-   [
-    "e2e/catalog/swatch-quickview-v2-list-table.spec.ts",
-    1
-   ],
-   [
-    "e2e/helpers/swatch-catalog-mocks.ts",
-    1
-   ],
-   [
-    "e2e/quotes/quote-view-no-presentation-mode.spec.ts-snapshots/quote-actions-menu-dark-mobile-chromium-public-linux.png",
-    1
-   ],
-   [
-    "e2e/replenishment-stress.spec.ts",
-    1
-   ],
-   [
-    "src/components/products/ProductList.tsx",
-    1
-   ],
-   [
-    "supabase/migrations/20261106232045_fix_handle_updated_at_search_path.sql",
-    1
-   ],
-   [
-    "supabase/rollbacks/20261106232045_rollback.sql",
     1
    ]
   ]

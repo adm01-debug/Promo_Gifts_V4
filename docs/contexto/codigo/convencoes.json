@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix(ci): reduzir pressão dos E2E no Supabase (#3130)",
    "fix(ci/catalog): estabilizar auditorias E2E e restaurar cores na lista (#3120)",
    "docs(db): registra aplicação da migration 20261101201000 (#3121)",
    "fix(db): fixa search_path de handle_updated_at (#3111)",
-   "test(date-utils): elimina dependência de timezone (#3116)",
-   "fix(ci): publish recovery snapshot atomically (#3115)"
+   "test(date-utils): elimina dependência de timezone (#3116)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",
