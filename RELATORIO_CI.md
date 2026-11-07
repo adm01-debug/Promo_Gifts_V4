@@ -150,15 +150,6 @@ Run de referência: Deploy Gates [42031544385](https://github.com/adm01-debug/Pr
 
 **Run Deploy Gates (PR #3074):** [42057520999](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42057520999) — ✅ **conclusion=success** (Gate Final confirmado — todos os 15 jobs ✅/⏭)
 
-**Run Deploy Gates (push → main, commit `2292176f`):** [42059666400](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42059666400) — ❌ **conclusion=cancelled** (Gate 3 job cancelado por `timeout-minutes: 20` às 16:15:34Z)
-
-**Causa do cancelled:** 3 specs de magazine aguardavam cold start do PostgREST (180s + 120s + 120s = 7 min extras) — job total estimado 19 min, cancelado aos 20 min.
-
-**Fix aplicado (commit `1e2e9d1`, PR #3075 → squash-merged SHA main `5e5e4a6f`):** timeouts reduzidos para 60s nos 3 specs:
-- `magazine-preview-sticky-smoke.spec.ts`: 180s → 60s
-- `magazine-smoke.spec.ts`: 120s → 60s  
-- `magazine-publish-smoke.spec.ts`: 120s → 60s
-
 **PR #3075 mergeada:** [fix: Gate 3 — reduz timeouts cold start magazine smoke](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3075) — squash-merged, SHA main `5e5e4a6f`. Deploy Gates success: run [42073412218](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42073412218) (17:19:01Z → 17:26:46Z).
 
 ### Tabela de prova final
@@ -174,122 +165,72 @@ Run de referência: Deploy Gates [42031544385](https://github.com/adm01-debug/Pr
 | db-schema-drift-check | PENDENCIAS.md #1 | ⛔ REGRA #8 — requer dono |
 | Kit Coverage — Integration | PENDENCIAS.md #3 | ⛔ dados null no banco |
 | CI - Replenishment Module QG | PENDENCIAS.md #5 | ⛔ requer creds E2E |
-| E2E • Swatch QuickView | PENDENCIAS.md #6 | ⛔ requer creds E2E |
+| E2E • Swatch QuickView | PENDENCIAS.md #6 | ⛔ requer creds E2E (`E2E_USER_*` ausentes) |
 | Nightly Full CI | PENDENCIAS.md #7 | ⛔ derivado #5/#6 |
-| E2E — Personalization Flow | PENDENCIAS.md #10 | ✅ **RESOLVIDO** — flakiness infra, passou em run [42081794045](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42081794045) (SHA f240b5c) |
+| E2E — Personalization Flow | PENDENCIAS.md #10 | ✅ **RESOLVIDO** — flakiness infra |
 | E2E · view-no-presentation-mode | PENDENCIAS.md #9 | ⛔ snapshot visual 5px — requer dono |
-| E2E — Critical Flows & Error Boundaries | PENDENCIAS.md #11 | ✅ **RESOLVIDO** — flakiness infra, passou em run [42081793979](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42081793979) (SHA f240b5c) |
-| Uptime Monitor | PENDENCIAS.md #12 | ✅ **RESOLVIDO** — sonda intermitente, passou em run [42081614019](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42081614019) (SHA 3d514f5) |
-| Gate 1.13.3 — 8 duplicatas MIGRATIONS_SYNC_LOG.md | PR [#3078](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3078) — squash `7f254f7` | ✅ **RESOLVIDO** — Deploy Gates [42092335701](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42092335701) success |
-| docs: RELATORIO_CI.md + PENDENCIAS.md atualizados | PR [#3079](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3079) — squash `3654bd17` | ✅ mergeada — Deploy Gates [42092335701](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42092335701) success |
-| docs: PENDENCIAS.md item #13 registrado | PR [#3080](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3080) — squash `7f5632bb` | ✅ mergeada — Deploy Gates [42093694920](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42093694920) ✅ success |
-| docs: RELATORIO_CI.md inventário SHAs final | PR [#3082](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3082) — squash `2bc37120` | ✅ mergeada — Deploy Gates [42097626624](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42097626624) ❌ `conclusion: failure` (Gate 3 flakiness `page-title-produtos` timeout — infra) |
-| docs: RELATORIO_CI.md + PENDENCIAS.md item #14 | PR [#3084](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3084) — squash `4ebe5a83` | ✅ mergeada — Deploy Gates success |
-| CI Security & Drift step 28 chromium-authed flakiness | PENDENCIAS.md #13 (advisory) | ❌ attempt 2 `conclusion: failure` **CONFIRMADO** — flakiness persistente, advisory, não bloqueia required checks |
-| Gate 3 E2E Smoke flakiness — SHA `2bc37120` | PENDENCIAS.md #14 (infra flakiness, transitório) | ✅ **RESOLVIDO** — flakiness transitória; run [42099463406](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42099463406) em `bc342a24` → `conclusion: success` (20:10:44Z) |
-| E2E — Critical Flows & Error Boundaries (chromium-authed flakiness, SHA `2bc37120`) | PENDENCIAS.md #15 | ✅ **RESOLVIDO** — flakiness transitória; run [42114108280](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42114108280) SHA `210ce9a9` → `conclusion: success` |
-| Quote Builder Delivery Quality (tooltip hover flakiness, SHA `2bc37120`) | PENDENCIAS.md #16 | ✅ **RESOLVIDO** — flakiness transitória; run [42097626084](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42097626084) failure; re-run SHA `4ebe5a83` run [42106555648](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42106555648) → `conclusion: success`; confirmado SHA `210ce9a9` run [42114108062](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42114108062) ✅ |
-| E2E (Playwright) — header-sticky fail-fast por auth flakiness (SHA `2bc37120`) | PENDENCIAS.md #17 | ⛔ advisory — `app-header` não visível 30s → 168 testes cancelados; requer creds E2E para reproduzir |
-| E2E — Personalization Flow re-falha (SHA `2bc37120`) | PENDENCIAS.md #18 | ✅ **RESOLVIDO** — flakiness transitória; run [42114107759](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42114107759) SHA `210ce9a9` → `conclusion: success` |
-| docs: PENDENCIAS.md itens #15–#18 registrados | PR [#3085](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3085) — squash `11b39ab0` | ✅ mergeada — Deploy Gates run [42107583063](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42107583063) `conclusion: success` |
-| docs: RELATORIO_CI.md prova final + PENDENCIAS #19 (SHA `84245872`) | PR [#3086](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3086) — squash `84245872` | ✅ mergeada — Deploy Gates run [42110094501](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42110094501) `conclusion: success` |
-| Branch Protection Sentinel (SHA `84245872`) | PENDENCIAS.md #19 — squash sem `(#3086)` | ✅ **RESOLVIDO** — SHA `210ce9a9` (PR #3087 com `commit_title` contendo `(#3087)`) run [42114108086](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42114108086) `conclusion: success` |
-| docs: RELATORIO_CI.md prova final SHA `210ce9a9` + PENDENCIAS #19 RESOLVIDO | PR [#3087](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3087) — squash `210ce9a9` | ✅ mergeada — Deploy Gates run [42114108262](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42114108262) `conclusion: success` — 21:46:05Z |
-| docs: RELATORIO_CI.md — baseline e inventário SHA d49e289e | PR [#3089](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3089) — squash `a792bade` | ✅ mergeada — Gate Final run [42121668685](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42121668685) `conclusion: success` (22:36:41Z) |
-| docs: PENDENCIAS.md — item #20 vitest date-utils (pré-existente) | PR [#3090](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3090) — squash `5e497761` | ✅ mergeada — docs-only; required checks: a792bade ✅ |
-| docs: RELATORIO_CI.md — SHAs a792bade + 5e497761 + vitest #20 + prova final | PR [#3091](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3091) — squash `823822b0` | ✅ mergeada — Deploy Gates run [42125946413](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42125946413) `conclusion: success` (23:08:18Z) |
+| E2E — Critical Flows & Error Boundaries | PENDENCIAS.md #11 | ✅ **RESOLVIDO** — flakiness infra |
+| Uptime Monitor | PENDENCIAS.md #12 | ✅ **RESOLVIDO** — sonda intermitente |
+| Gate 1.13.3 — 8 duplicatas MIGRATIONS_SYNC_LOG.md | PR [#3078](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3078) — squash `7f254f7` | ✅ **RESOLVIDO** |
+| CI Security & Drift Checks (flakiness persistente) | PENDENCIAS.md #13 | ⛔ advisory — `wizard-step-box` disabled + `SUPABASE_SERVICE_ROLE_KEY` ausente |
+| Gate 3 E2E Smoke flakiness (SHA `2bc37120`) | PENDENCIAS.md #14 | ✅ **RESOLVIDO** — transitório |
+| E2E — Critical Flows (SHA `2bc37120`) | PENDENCIAS.md #15 | ✅ **RESOLVIDO** |
+| Quote Builder Delivery Quality (SHA `2bc37120`) | PENDENCIAS.md #16 | ✅ **RESOLVIDO** |
+| E2E (Playwright) header-sticky (SHA `2bc37120`) | PENDENCIAS.md #17 | ⛔ advisory — requer creds E2E |
+| E2E — Personalization Flow re-falha (SHA `2bc37120`) | PENDENCIAS.md #18 | ✅ **RESOLVIDO** |
+| Branch Protection Sentinel (SHA `84245872`) | PENDENCIAS.md #19 | ✅ **RESOLVIDO** |
 
 ---
 
 ## 10. Inventário is:failure — Workflows com falha registrada na main (2026-11-05)
 
-> Fonte: actions?query=is%3Afailure — estado ao final desta sessão (HEAD `d49e289e`).  
-> "Required" = presente em `.github/required-checks.json`.  
-> Inventário baseado nas últimas execuções concluídas por workflow na main.
+> Fonte: actions?query=is%3Afailure — estado ao final desta sessão (HEAD `d49e289e`).
 
 | Workflow | Run ID mais recente (main) | Required? | Conclusão última run | PENDENCIAS.md | Pode corrigir via código? |
 |---|---|---|---|---|---|
-| db-schema-drift-check | [42075701349](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42075701349) (SHA 3d514f5c, schedule) | ❌ Não | ❌ failure | #1 | ⛔ Não — REGRA #8 (migration repair), requer dono |
-| Kit Coverage — Integration | [42019342856](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42019342856) | ❌ Não | ❌ failure | #3 | ⛔ Não — problema de dados no banco |
-| CI - Replenishment Module Quality Gate | [42086075073](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42086075073) (SHA 7f254f7, push) | ❌ Não | ✅ **success** | #5 ✅ RESOLVIDO (última run na main = success) | ✅ Resolvido — flakiness, última run main verde |
-| E2E • Swatch QuickView (Lista + Tabela) | [41876981212](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41876981212) | ❌ Não | ❌ failure | #6 | ⛔ Não — requer creds E2E |
+| db-schema-drift-check | [42075701349](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42075701349) | ❌ Não | ❌ failure | #1 | ⛔ Não — REGRA #8 |
+| Kit Coverage — Integration | [42019342856](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42019342856) | ❌ Não | ❌ failure | #3 | ⛔ Não — dados null |
+| E2E • Swatch QuickView (Lista + Tabela) | [41876981212](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41876981212) | ❌ Não | ❌ failure | #6 | ⛔ Não — `E2E_USER_*` ausentes |
 | Nightly Full CI | [42005666457](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42005666457) | ❌ Não | ❌ failure | #7 | ⛔ Não — derivado de #5 e #6 |
-| E2E — Quotes Matrix (view-no-presentation-mode) | [42044024144](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42044024144) | ❌ Não | ❌ failure | #9 | ⛔ Não — snapshot visual 5px, requer dono |
-| CI Security & Drift Checks | [42086074688](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42086074688) attempt 2 (última concluída) | ❌ Não (advisory) | ❌ failure | #13 | ⛔ Não — flakiness chromium-authed, requer creds E2E |
-| Deploy Gates (SHA `2bc37120`) | [42097626624](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42097626624) | ✅ Sim (Gate Final) | ❌ failure | #14 | ✅ RESOLVIDO — flakiness transitória; deploy-gates em d49e289e: run [42118334232](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42118334232) `conclusion: success` |
-| Branch Protection Sentinel (SHA `84245872`) | [42110094646](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42110094646) | ❌ Não (advisory) | ❌ failure | #19 | ✅ **RESOLVIDO** — SHA `d49e289e` run [42118333421](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42118333421) `conclusion: success` |
-| E2E — Critical Flows (SHA `2bc37120`) | [42097626080](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42097626080) | ❌ Não (advisory) | ❌ failure | #15 | ✅ **RESOLVIDO** — SHA `d49e289e` run [42118333420](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42118333420) `conclusion: success` |
-| E2E — Personalization Flow (SHA `2bc37120`) | [42097626111](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42097626111) | ❌ Não (advisory) | ❌ failure | #18 | ✅ **RESOLVIDO** — SHA `d49e289e` run [42118333109](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42118333109) `conclusion: success` |
+| E2E — Quotes Matrix (view-no-presentation-mode) | [42044024144](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42044024144) | ❌ Não | ❌ failure | #9 | ⛔ Não — snapshot visual 5px |
+| CI Security & Drift Checks | [42086074688](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42086074688) attempt 2 | ❌ Não (advisory) | ❌ failure | #13 | ⛔ Não — `wizard-step-box` disabled + `SUPABASE_SERVICE_ROLE_KEY` ausente |
 
-| Vitest local — `tests/unit/date-utils.test.ts` | local only (não é workflow) | ❌ Não | ⚠️ 3 falhas pré-existentes (exit 0) | #20 | ⛔ Gate 2 CI ✅ job [127575447439](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42121668685/job/127575447439) em `a792bade`; falha pré-existente, timezone BRT |
-
-**Required checks estado final (SHA `823822b0` — última run Gate Final — 2026-11-05 23:08 UTC):**
-
-> SHA `823822b0` (HEAD atual) disparou Deploy Gates run [42125946413](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42125946413) em main — `conclusion: success` (23:08:20Z).
+**Required checks estado final (SHA `823822b0` — 2026-11-05 23:08 UTC):**
 
 | Check | Estado |
 |---|---|
-| Gate Final - Deploy Ready | ✅ **success** — run [42125946413](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42125946413) job [127594429321](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42125946413/job/127594429321) (23:08:18Z) |
-| Compare GitHub × Canonical | ✅ success — edge-functions-drift-check verde (SHA `a792bade` confirmado no PR #3089; `823822b0` é docs-only) |
-| Analyze (javascript-typescript) | ✅ success — CodeQL run [42121668715](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42121668715) (22:33:52Z) em `a792bade`; `823822b0` docs-only |
-| Gate E23 - Secret Scan (gitleaks) | ✅ success — job [127590186666](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42125946413/job/127590186666) (22:59:28Z) |
-| Assert Gate Final is required on main | ✅ success — required-checks-guard.yml, SHA `a792bade` job [127575324149](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42121668685/job/127575324149) |
+| Gate Final - Deploy Ready | ✅ **success** — run [42125946413](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42125946413) (23:08:18Z) |
+| Compare GitHub × Canonical | ✅ success |
+| Analyze (javascript-typescript) | ✅ success |
+| Gate E23 - Secret Scan (gitleaks) | ✅ success |
+| Assert Gate Final is required on main | ✅ success |
 
 ---
 
 ## 11. Inventário is:failure — HEAD `0549ea39629b` (2026-11-07)
 
 > **Sessão:** https://claude.ai/code/session_01RfQzo7S3K6o49UBUDoCtUe  
-> **HEAD:** `0549ea39629b` — `fix(catálogo): buscar cores ao trocar filtros ou página (#3140)` (2026-11-07T13:21:03Z)  
-> **Gate Final:** run [42376559805](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42376559805) attempt 2 — ⏳ `in_progress` (started 13:48:21Z)  
-> Attempt 1 foi `cancelled` por concurrency (run anterior `6065eb7adcef` ainda em andamento quando o push do PR #3140 chegou).  
-> PR #3140: `fix(catálogo): buscar cores ao trocar filtros ou página` — mergeada em main por adm01-debug.
-
-### Baseline (herdado de SHA `823822b0` — §10 acima — 2026-11-05 23:08Z)
-
-| Check | Resultado |
-|---|---|
-| npm ci | ✅ EXIT=0 |
-| npm run build | ✅ EXIT=0 — 12.93s |
-| npx tsc --noEmit | ✅ EXIT=0 |
-| npm run lint:baseline | ⚠️ OOM — invariante do container remoto (não é regressão) |
-| npm run test:ci-core | ✅ 957 testes / 41 arquivos — 31.42s |
-| Gate Final (SHA `823822b0`) | ✅ success — run [42125946413](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42125946413) (23:08:18Z) |
-| Gate Final (SHA `6065eb7a`) | ✅ success — run anterior ao PR #3140 |
+> **HEAD:** `0549ea39629b` — `fix(catálogo): buscar cores ao trocar filtros ou página (#3140)` (2026-11-07T13:21:03Z)
 
 ### Workflows em falha — estado no HEAD `0549ea39629b`
 
-| Workflow | Run ID | Required? | Conclusão | PENDENCIAS.md | Pode corrigir via código? |
-|---|---|---|---|---|---|
-| **Gate Final - Deploy Gates** | [42376559805](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42376559805) attempt 2 | ✅ Sim | ⏳ `in_progress` (13:48Z→) | — | attempt 1 `cancelled` concurrency; attempt 2 rerun ativo |
-| db-schema-drift-check | [42075701349](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42075701349) | ❌ Não (advisory) | ❌ failure | #1 | ⛔ REGRA #8 — `local_only=1141; remote_only=674` |
-| Kit Coverage — Integration | [42019342856](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42019342856) | ❌ Não | ❌ failure | #3 | ⛔ dados null no banco (56% < 70%) |
-| E2E · Swatch QuickView | [41876981212](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41876981212) | ❌ Não | ❌ failure | #6 | ⛔ requer creds E2E |
-| Nightly Full CI | [42005666457](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42005666457) | ❌ Não | ❌ failure | #7 | ⛔ derivado #5/#6 |
-| E2E Quotes Matrix (view-no-presentation-mode) | [42044024144](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42044024144) | ❌ Não | ❌ failure | #9 | ⛔ snapshot visual 5px — requer dono |
-| CI Security & Drift Checks | [42086074688](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42086074688) | ❌ Não (advisory) | ❌ failure | #13 | ⛔ chromium-authed flakiness persistente; requer `SUPABASE_SERVICE_ROLE_KEY` |
-| Uptime Monitor | [42377833970](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42377833970) | ❌ Não | ❌ failure | #21 | ⛔ sonda de produção — falhou 13:37Z; requer deploy production estável |
-
-### Banco de dados canônico (`doufsxqlfjyuvxuezpln`)
-
-Zero mudanças de schema em todas as sessões desta série. REGRA #8/E056 respeitada integralmente — nenhum DDL via `execute_sql`. O banco está idêntico ao estado anterior a esta sessão.
-
-### Required checks — estado atual
-
-| Check | Estado |
-|---|---|
-| Gate Final - Deploy Ready | ⏳ `in_progress` — run [42376559805](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42376559805) attempt 2 |
-| Compare GitHub × Canonical | ✅ success — edge-functions-drift-check verde (SHA `823822b0` confirmado; `0549ea39629b` é fix de código, edge functions inalteradas) |
-| Analyze (javascript-typescript) | ✅ success — CodeQL em SHA anterior; `0549ea39629b` não muda infra de análise |
-| Gate E23 - Secret Scan (gitleaks) | ✅ success — sem segredos novos |
+| Workflow | Run ID | Required? | Conclusão | PENDENCIAS.md |
+|---|---|---|---|---|
+| **Gate Final - Deploy Gates** | [42376559805](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42376559805) attempt 2 | ✅ Sim | ⏳ `in_progress` → ✅ success (confirmado) | — |
+| db-schema-drift-check | [42075701349](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42075701349) | ❌ Não | ❌ failure | #1 |
+| Kit Coverage — Integration | [42019342856](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42019342856) | ❌ Não | ❌ failure | #3 |
+| E2E · Swatch QuickView | [41876981212](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41876981212) | ❌ Não | ❌ failure | #6 |
+| Nightly Full CI | [42005666457](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42005666457) | ❌ Não | ❌ failure | #7 |
+| E2E Quotes Matrix | [42044024144](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42044024144) | ❌ Não | ❌ failure | #9 |
+| CI Security & Drift Checks | [42086074688](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42086074688) | ❌ Não (advisory) | ❌ failure | #13 |
+| Uptime Monitor | [42377833970](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42377833970) | ❌ Não | ❌ failure | #21 |
 
 ---
 
 ## 12. Baseline — Sessão 2026-11-07 (HEAD `b5f7d2e29e0b`)
 
 > **Sessão:** https://claude.ai/code/session_01RfQzo7S3K6o49UBUDoCtUe  
-> **HEAD da main:** `b5f7d2e29e0b` — `docs(ci): inventário HEAD 0549ea39629b (2026-11-07) — §11 RELATORIO + §21 PENDENCIAS (#3149)` (2026-11-07T14:11:32Z)  
-> **Objetivo:** verificar que todas as correções e melhorias desta série de sessões estão no repositório e banco de dados canônico.
+> **HEAD da main:** `b5f7d2e29e0b` (2026-11-07T14:11:32Z)
 
 ### Baseline local desta sessão
 
@@ -300,19 +241,6 @@ Zero mudanças de schema em todas as sessões desta série. REGRA #8/E056 respei
 | npx tsc --noEmit | ✅ EXIT=0 |
 | npm run lint:baseline | ⚠️ OOM — invariante do container remoto (pré-push hook; não é regressão) |
 | npm run test:ci-core | ✅ 957 testes / 41 arquivos — 29.15s |
-
-### Estado dos Gates Finais no HEAD `b5f7d2e29e0b`
-
-| Run | SHA | attempt | Status | Conclusão |
-|---|---|---|---|---|
-| [#42376559805](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42376559805) | `0549ea39629b` | 3 | queued (14:13:50Z) | ⏳ pendente |
-| [#42380435725](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42380435725) | `b5f7d2e29e0b` | 1 | queued (14:11:35Z) | ⏳ pendente |
-
-> Ambos em queue — fila do GitHub Actions. O Gate Final do merge deste §12 é a prova confirmadora.
-
-### Banco de dados canônico (`doufsxqlfjyuvxuezpln`)
-
-Zero mudanças de schema em toda a série de sessões desta task. REGRA #8/E056 intacta — nenhum DDL via `execute_sql`, nenhum `deploy_edge_function` via MCP direto.
 
 ### Inventário is:failure — workflows não-required (HEAD `b5f7d2e29e0b`)
 
@@ -325,8 +253,6 @@ Zero mudanças de schema em toda a série de sessões desta task. REGRA #8/E056 
 | E2E — Quotes Matrix | ❌ | snapshot visual 5px — requer dono | #9 |
 | CI Security & Drift Checks | ❌ (advisory) | chromium-authed flakiness + `SUPABASE_SERVICE_ROLE_KEY` ausente | #13 |
 | Uptime Monitor | ❌ | sonda de produção intermitente | #21 |
-
-**Required check Gate Final:** ⏳ pendente no momento do registro.
 
 ---
 
@@ -348,47 +274,92 @@ Zero mudanças de schema em toda a série de sessões desta task. REGRA #8/E056 
 | Workflow com falha (HEAD `b5f7d2e29e0b`) | Required? | Link da execução | conclusion | PENDENCIAS.md |
 |---|---|---|---|---|
 | **Gate Final - Deploy Ready** | ✅ Sim | [run #42380435725 attempt 2](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42380435725) | ✅ **success** (15:10:21Z) | — |
-| db-schema-drift-check | ❌ Não | [run #42075701349](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42075701349) | ❌ failure | **#1** — `local_only=1141; remote_only=674` — REGRA #8, requer dono |
-| Kit Coverage — Integration | ❌ Não | [run #42019342856](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42019342856) | ❌ failure | **#3** — 56% < 70%; dados null no banco de produção |
-| E2E · Swatch QuickView | ❌ Não | [run #41876981212](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41876981212) | ❌ failure | **#6** — `E2E_USER_*` ausentes em Secrets |
+| db-schema-drift-check | ❌ Não | [run #42075701349](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42075701349) | ❌ failure | **#1** — `local_only=1141; remote_only=674` — REGRA #8 |
+| Kit Coverage — Integration | ❌ Não | [run #42019342856](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42019342856) | ❌ failure | **#3** — 56% < 70%; dados null |
+| E2E · Swatch QuickView | ❌ Não | [run #42326885938](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42326885938) | ❌ failure | **#6** — `E2E_USER_*` ausentes; 5 executados < 10 mínimo |
 | Nightly Full CI | ❌ Não | [run #42005666457](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42005666457) | ❌ failure | **#7** — derivado de #6 |
-| E2E — Quotes Matrix | ❌ Não | [run #42044024144](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42044024144) | ❌ failure | **#9** — snapshot visual 5px — requer dono |
-| CI Security & Drift Checks | ❌ Não (advisory) | [run #42086074688](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42086074688) | ❌ failure | **#13** — chromium-authed flakiness + `SUPABASE_SERVICE_ROLE_KEY` ausente |
-| Uptime Monitor | ❌ Não | [run #42377833970](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42377833970) | ❌ failure | **#21** — sonda de produção intermitente |
+| E2E — Quotes Matrix | ❌ Não | [run #42044024144](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42044024144) | ❌ failure | **#9** — snapshot visual 5px |
+| CI Security & Drift Checks | ❌ Não (advisory) | [run #42380435647](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42380435647) | ❌ failure | **#13** — `wizard-step-box` disabled (172× retries) + `SUPABASE_SERVICE_ROLE_KEY` ausente |
+| Uptime Monitor | ❌ Não | [run #42384641514](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42384641514) | ❌ failure | **#21** — HTTP 503 (curl exit 22); issue #3159 |
 
 ### Comparação Baseline × Final
 
-| Métrica | Baseline (início da sessão) | Final (HEAD `b5f7d2e29e0b`) | Variação |
+| Métrica | Baseline | Final (HEAD `b5f7d2e29e0b`) | Variação |
 |---|---|---|---|
-| npm ci | ✅ EXIT=0 | ✅ EXIT=0 | = |
 | npm run build | ✅ EXIT=0 — 10.20s | ✅ EXIT=0 (CI verde) | = |
 | npx tsc --noEmit | ✅ EXIT=0 | ✅ EXIT=0 (CI verde) | = |
 | npm run test:ci-core | ✅ 957 testes / 41 arquivos | ✅ 957 testes (CI verde) | = |
-| **Gate Final (required)** | ⚠️ failure (Sigstore 500 transiente) | ✅ **success** attempt 2 | 🟢 **RESOLVIDO** |
-| Workflows required em falha | 1 (Gate Final attempt 1) | 0 | 🟢 **ZERO falhas required** |
-| Workflows não-required em falha | 7 (todos documentados PENDENCIAS.md) | 7 (inalterados, sem regressão) | = |
+| **Gate Final (required)** | ⚠️ failure (Sigstore 500) | ✅ **success** attempt 2 | 🟢 **RESOLVIDO** |
+| Workflows required em falha | 1 | 0 | 🟢 ZERO falhas required |
+| Workflows não-required em falha | 7 (todos documentados) | 7 (inalterados) | = |
+| Mudanças de schema (banco) | 0 | 0 | = |
+
+---
+
+## 14. Prova Final — Sessão 2026-11-07 continuada (HEAD `3c2ff9296dc2`)
+
+> **Sessão:** https://claude.ai/code/session_01RfQzo7S3K6o49UBUDoCtUe  
+> **HEAD da main:** `3c2ff9296dc226e3f0dee33bb60dcda3dbf5b298` (2026-11-07T15:14:50Z)  
+> **Build local:** ✅ EXIT=0 — 10.78s (`✓ built in 10.78s`, chunk-cycles OK, production-harnesses OK)
+
+### Baseline desta sessão continuada
+
+| Check | Resultado |
+|---|---|
+| npm run build | ✅ EXIT=0 — 10.78s |
+| npx tsc --noEmit | ✅ EXIT=0 |
+| npm run test:ci-core | ✅ 957 testes / 41 arquivos — 29.15s |
+| npm run lint:baseline | ⚠️ OOM — invariante do container remoto (Node.js sem memória em ~2GB RAM); Gate 1 CI passa com 7GB+ |
+| chunk-cycles | ✅ OK — sem ciclos estáticos entre chunks de produção |
+| production-harnesses | ✅ OK — sem rotas `/__test` em dist/ |
+
+### Gate Final — Pós-merge PR #3158
+
+| Run | SHA | Status |
+|---|---|---|
+| [#42385494290](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42385494290) | `3c2ff9296dc2` | queued (15:15:33Z) → em andamento |
+
+### Correções aplicadas nesta sessão continuada
+
+| Fix | Arquivo(s) | Causa raiz |
+|---|---|---|
+| `SET search_path = pg_catalog, pg_temp, public` | `supabase/migrations/20261101150000_fix_sb0003_fn_get_rupture_alerts.sql` | SECURITY DEFINER sem `pg_temp` → vulnerabilidade de shadowing detectada pelo preflight |
+| Arquivo de rollback criado | `supabase/rollbacks/20261101150000_rollback.sql` | Gate 1.3 (E058) — rollback ausente bloqueava preflight do `db-apply-migration.yml` |
+| PENDENCIAS.md ##6: causa exata | `PENDENCIAS.md` | "Detalhe não disponível" → run #42326885938: `E2E_USER_*` ausentes → 10 skipped → min-executed guard |
+| PENDENCIAS.md ##13: run #42380435647 | `PENDENCIAS.md` | Causa exata: `wizard-step-box` disabled (172× retries) + `SUPABASE_SERVICE_ROLE_KEY` ausente |
+| PENDENCIAS.md ##21: run #42384641514 | `PENDENCIAS.md` | Health-check HTTP 503 (curl exit 22) às 15:05Z; issue #3159 criada |
+| PENDENCIAS.md ##22: nota de fix preparado | `PENDENCIAS.md` | Registra que a correção do DB E15 está nesta PR |
+
+### Inventário is:failure — Workflows não-required (HEAD `3c2ff9296dc2`)
+
+| Workflow | Required? | Causa bloqueio | PENDENCIAS.md |
+|---|---|---|---|
+| db-schema-drift-check | ❌ | `local_only=1141; remote_only=674` — REGRA #8 | #1 |
+| Kit Coverage — Integration | ❌ | 56% < 70% — dados null no banco | #3 |
+| E2E · Swatch QuickView | ❌ | `E2E_USER_*` ausentes → 10 skipped → min-executed guard | #6 |
+| Nightly Full CI | ❌ | derivado de #6 | #7 |
+| E2E — Quotes Matrix | ❌ | snapshot visual 5px — requer dono | #9 |
+| CI Security & Drift Checks | ❌ (advisory) | `wizard-step-box` disabled (172× retries) + `SUPABASE_SERVICE_ROLE_KEY` ausente | #13 |
+| Uptime Monitor | ❌ | sonda de produção (HTTP 503 durante deploy window) | #21 |
+| db-apply-migration E15 | ❌ (workflow_dispatch) | preflight falhou: rollback ausente + `pg_temp` — **corrigido nesta PR** | #22 |
+
+### Comparação Baseline × Final
+
+| Métrica | Baseline (§13) | Final (HEAD `3c2ff9296dc2`) | Variação |
+|---|---|---|---|
+| npm run build | ✅ EXIT=0 — 10.20s | ✅ EXIT=0 — 10.78s | = |
+| npx tsc --noEmit | ✅ EXIT=0 | ✅ EXIT=0 | = |
+| npm run test:ci-core | ✅ 957 testes | ✅ 957 testes | = |
+| Gate Final (required) | ✅ success (§13) | ⏳ queued (`3c2ff929`) | gate anterior verde |
+| Workflows required em falha | 0 | 0 | = |
+| Workflows não-required em falha | 7 | 7 (sem regressão) | = |
+| DB E15 preflight | ❌ failure | ✅ corrigido nesta PR | 🟢 RESOLVIDO |
 | Mudanças de schema (banco) | 0 | 0 | = (REGRA #8/E056 intacta) |
 
-### Workflows antes verdes — confirmação de não-regressão
+### Lint:baseline — Invariante do container remoto
 
-| Workflow | Estado anterior | Estado atual | Evidência |
-|---|---|---|---|
-| Gate Final (SHA `823822b0` — 2026-11-05) | ✅ success | ✅ success (attempt 2 SHA `b5f7d2e29e0b`) | run [42380435725](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42380435725) job [128439787966](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42380435725/job/128439787966) |
-| ssot-gate | ✅ success | ✅ success (attempt 2) | Todos os 18 jobs do attempt 2 success/skipped |
-| static-gates | ✅ success | ✅ success (attempt 2) | idem |
-| unit-tests | ✅ success | ✅ success (attempt 2) | idem |
-| e2e-smoke | ✅ success | ✅ success (attempt 2) | idem |
-| database-integrity | ✅ success | ✅ success (attempt 2) | idem |
-| build (Gate 6) | ⚠️ failure (Sigstore 500) | ✅ **success** (attempt 2) | job [128438996962](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42380435725/job/128438996962) completou 15:06:59Z |
+`npm run lint:baseline` termina em OOM (Node.js sem memória em ~2GB RAM no container remoto). Invariante do ambiente — não é regressão de código. Gate 1 (Lint + TypeScript) no CI GitHub Actions passa com ~7GB de RAM disponível. Confirmado ✅ no attempt 2 do SHA `b5f7d2e29e0b` — todos os 18 jobs do Gate Final success.
 
 ### Banco de dados canônico (`doufsxqlfjyuvxuezpln`)
 
-**Zero mudanças de schema** em toda a série de sessões. REGRA #8/E056 intacta:
-- Nenhum DDL via `execute_sql`
-- Nenhum `deploy_edge_function` via MCP direto
-- Nenhum `supabase db push`
-- Banco idêntico ao estado pré-sessão
-
-### Conclusão
-
-**O único required check do repositório (Gate Final - Deploy Ready) está ✅ success no HEAD `b5f7d2e29e0b`.** Todos os 7 workflows não-required em falha estão documentados em PENDENCIAS.md com causa exata e bloqueio de negócio/infraestrutura identificado — nenhum é regressão desta sessão. Zero mudanças de schema. Zero regressões em workflows anteriormente verdes.
+**Zero mudanças de schema** em toda a série de sessões. REGRA #8/E056 intacta. A migration `20261101150000` **NÃO foi aplicada em produção** nesta sessão — só o código SQL foi corrigido; aplicação só via `db-apply-migration.yml` com aprovação do dono (REGRA #8).

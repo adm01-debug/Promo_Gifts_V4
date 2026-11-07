@@ -84,13 +84,22 @@ Resoluções possíveis:
 
 ---
 
-## 6. E2E ·Swatch QuickView (Lista + Tabela) ❌ (a investigar)
+## 6. E2E · Swatch QuickView (Lista + Tabela) ❌ (bloqueado — credenciais E2E ausentes)
 
 **Workflow:** `e2e-swatch-quickview.yml`  
-**Run ID:** 41876981212 (2026-11-04)  
-**Erro:** Falha nos 3 browsers (chromium, firefox, webkit) no "Run swatcb→QuickView suite"  
-**Causa:** Detalhe do erro não disponível (upload do artifact dominou o log).  
-**Status:** Requer acesso aos artifacts do CI para diagnóstico. Não foi possível investigar sem credenciais E2E.
+**Run ID mais recente:** [42326885938](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42326885938) (SHA `5b0dab1ae2bb`)  
+**Job falhado:** `Run swatch→QuickView suite` — guard `check-playwright-min-executed`  
+**Erro exato:**
+```
+5 testes executados, mínimo exigido 10; ratio de skipped 66.7% > 50%
+```
+**Causa:** `E2E_USER_EMAIL` e `E2E_USER_PASSWORD` ausentes em Secrets → `requireAuth()` pula 10 testes → guard falha (5 executados < 10 mínimo; 66.7% skipped > 50% threshold). Falha adicional: `swatch-picker-v2-focus-and-quickview.spec.ts:95:5` — 2 testes falharam.  
+**Required check:** NÃO — advisory.  
+**Por que não corrijo:** Requer adição dos secrets `E2E_USER_EMAIL` e `E2E_USER_PASSWORD` em Settings → Secrets — ação exclusiva do dono da conta.  
+**O que o dono precisa fazer:**
+1. Adicionar `E2E_USER_EMAIL` e `E2E_USER_PASSWORD` em Settings → Secrets and Variables → Actions
+2. Re-executar `e2e-swatch-quickview.yml` via rerun
+3. Se `swatch-picker-v2-focus-and-quickview.spec.ts:95:5` ainda falhar: investigar componente SwatchPicker v2
 
 ---
 
@@ -182,6 +191,8 @@ e2e/kit-builder.spec.ts:85 — mesmo padrão
 1. Verificar `e2e/catalog.spec.ts` e `e2e/kit-builder.spec.ts` — adicionar retry ou aumentar timeout de autenticação
 2. Se reproduzível localmente com credenciais: investigar `wizard-step-box` disabled no estado de autenticação intermediário
 3. Marcar como flakiness conhecida e monitorar se próximos runs passam sem alteração de código
+
+> **Atualização (run [#42380435647](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42380435647), SHA `b5f7d2e29e0b`, 2026-11-07T15:04Z):** Causa exata confirmada: (1) `wizard-step-box` disabled (`cursor-not-allowed opacity-60`) — 172× retries → timeout 120s nos steps `catalog.spec.ts` e `kit-builder.spec.ts`; (2) `SUPABASE_SERVICE_ROLE_KEY` ausente em Secrets — o componente `wizard-step-box` depende de edge function com service role; sem a secret, inicialização falha e o botão fica permanentemente disabled para o E2E.
 
 ---
 
@@ -316,17 +327,18 @@ Duration    915.17s · exit code 0
 
 ---
 
-## 21. Uptime Monitor ❌ (2026-11-07T13:37Z — sonda de produção)
+## 21. Uptime Monitor ❌ (2026-11-07T13:37Z e 15:05Z — sonda de produção)
 
 **Workflow:** `uptime-monitor.yml`  
-**Run ID:** [42377833970](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42377833970) (2026-11-07, 13:37Z)  
+**Run ID (13:37Z):** [42377833970](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42377833970) (2026-11-07, SHA `0549ea39629b`)  
+**Run ID (15:05Z):** [42384641514](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42384641514) (2026-11-07, SHA `57ada8486af4`)  
 **Required check:** NÃO — advisory (sonda de health check a cada 30 min).  
-**Causa:** Sonda de produção falhou às 13:37Z. Mesmo padrão do item #12 (uptime monitor — falso-positivo de infra resolvido automaticamente). Deploy production via Vercel para HEAD `0549ea39629b` em andamento quando a sonda executou.  
-**Por que não corrijo:** Não é bug de código — é sonda de infra. O deploy automático do Vercel para o commit `0549ea39629b` (PR #3140) pode ter causado janela de indisponibilidade temporária. Próxima execução da sonda (a cada 30 min) deve confirmar se voltou ao normal.  
+**Erro exato (run #42384641514):** `health-check: HTTP 503 (curl exit 22)`. Issue [#3159](https://github.com/adm01-debug/Promo_Gifts_V4/issues/3159) criada automaticamente pelo workflow.  
+**Causa:** Ambas as falhas coincidem com deploys da Vercel: 13:37Z durante deploy de `0549ea39629b` (PR #3140); 15:05Z durante deploy do merge do PR #3158 (SHA `3c2ff929`). Janelas de indisponibilidade temporária durante rollout.  
+**Por que não corrijo:** Não é bug de código — é sonda de infra. Falso-positivo durante janela de deploy.  
 **O que o dono precisa fazer:**
-- Aguardar a próxima execução automática do uptime-monitor (~30 min após a falha)
-- Se persistir: verificar o deploy no Vercel para SHA `0549ea39629b` — `vercel logs` ou dashboard Vercel
-- Se o deploy falhou: re-triggerar deploy via `.github/workflows/deploy-edge-functions.yml` ou verificar Vercel dashboard
+- Aguardar próximas execuções automáticas do uptime-monitor (~30 min após cada falha)
+- Se persistir fora de janela de deploy: verificar o dashboard Vercel para erros de runtime
 
 ---
 
@@ -349,6 +361,8 @@ Duration    915.17s · exit code 0
 1. Corrigir a migration `supabase/migrations/20261101150000_fix_sb0003_fn_get_rupture_alerts.sql` — adicionar `SET search_path = pg_catalog, pg_temp` na definição de `fn_get_rupture_alerts`
 2. Criar `supabase/rollbacks/20261101150000_rollback.sql` com os comandos de reversão
 3. Re-disparar o `db-apply-migration.yml` via `workflow_dispatch` com `version=20261101150000`
+
+> **Nota (2026-11-07T15:30Z — PR `claude/fix-ci-workflows-261107-1540`):** Fix preparado nesta sessão: (1) `SET search_path = pg_catalog, pg_temp, public` na migration `20261101150000_fix_sb0003_fn_get_rupture_alerts.sql`; (2) `supabase/rollbacks/20261101150000_rollback.sql` criado com `DROP FUNCTION IF EXISTS public.fn_get_rupture_alerts()`. Após merge da PR, re-disparar `db-apply-migration.yml` via `workflow_dispatch(version=20261101150000)`.
 
 ---
 
