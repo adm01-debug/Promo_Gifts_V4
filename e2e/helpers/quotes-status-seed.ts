@@ -137,32 +137,94 @@ export async function seedQuotesForStatusChips(
         Prefer: "return=representation",
       };
 
-      // Resolve a organização do próprio usuário autenticado. A RLS de `quotes`
-      // exige organization_id (NOT NULL) e valida user_is_org_member(). Fonte
-      // primária: user_organizations (o que a policy checa); fallback: profiles.
-      let organizationId = "";
-      try {
-        const uoResp = await fetch(
-          `${url}/rest/v1/user_organizations?user_id=eq.${sellerId}&select=organization_id&limit=1`,
-          { headers },
-        );
-        if (uoResp.ok) {
-          const uoRows = (await uoResp.json()) as Array<{ organization_id: string }>;
-          organizationId = uoRows[0]?.organization_id ?? "";
-        }
-        if (!organizationId) {
+      // Organização e tuples já existentes não dependem entre si: resolvê-los
+      // em paralelo evita multiplicar a latência do gateway. A versão anterior
+      // fazia até 14 GETs de existência em série por teste e podia consumir o
+      // timeout inteiro antes de chegar ao cenário de undo.
+      const resolveOrganizationId = async (): Promise<string> => {
+        try {
+          const uoResp = await fetch(
+            `${url}/rest/v1/user_organizations?user_id=eq.${sellerId}&select=organization_id&limit=1`,
+            { headers },
+          );
+          if (uoResp.ok) {
+            const uoRows = (await uoResp.json()) as Array<{ organization_id: string }>;
+            const organizationId = uoRows[0]?.organization_id ?? "";
+            if (organizationId) return organizationId;
+          }
+
           const profResp = await fetch(
             `${url}/rest/v1/profiles?id=eq.${sellerId}&select=organization_id&limit=1`,
             { headers },
           );
-          if (profResp.ok) {
-            const profRows = (await profResp.json()) as Array<{ organization_id: string | null }>;
-            organizationId = profRows[0]?.organization_id ?? "";
-          }
+          if (!profResp.ok) return "";
+          const profRows = (await profResp.json()) as Array<{
+            organization_id: string | null;
+          }>;
+          return profRows[0]?.organization_id ?? "";
+        } catch {
+          return "";
         }
-      } catch {
-        /* noop */
-      }
+      };
+
+      const loadExistingTuples = async () => {
+        const pageSize = 1_000;
+        const maxRows = 10_000;
+        const tupleKey = (row: {
+          status: string;
+          synced_to_bitrix: boolean;
+          discount_approval_status: string | null;
+        }) =>
+          JSON.stringify([
+            row.status,
+            row.synced_to_bitrix,
+            row.discount_approval_status,
+          ]);
+        const requiredKeys = new Set(
+          targets.filter((target) => !target.unseedable_reason).map(tupleKey),
+        );
+        const existingKeys = new Set<string>();
+        const q = new URLSearchParams({
+          select: "id,status,synced_to_bitrix,discount_approval_status",
+          client_name: "like.[E2E%",
+          limit: String(pageSize),
+          order: "id.asc",
+        });
+        const rows: Array<{
+          id: string;
+          status: string;
+          synced_to_bitrix: boolean;
+          discount_approval_status: string | null;
+        }> = [];
+        let cursor = "";
+
+        for (let scanned = 0; scanned < maxRows; scanned += pageSize) {
+          if (cursor) q.set("id", `gt.${cursor}`);
+          const response = await fetch(`${url}/rest/v1/quotes?${q}`, { headers });
+          if (!response.ok) {
+            const detail = await response.text().catch(() => "");
+            throw new Error(
+              `seed lookup falhou (${response.status}): ${detail.slice(0, 160)}`,
+            );
+          }
+
+          const pageRows = (await response.json()) as typeof rows;
+          rows.push(...pageRows);
+          for (const row of pageRows) existingKeys.add(tupleKey(row));
+          if ([...requiredKeys].every((key) => existingKeys.has(key))) return rows;
+          if (pageRows.length < pageSize) return rows;
+          cursor = pageRows.at(-1)!.id;
+        }
+
+        throw new Error(
+          `seed lookup atingiu o limite de ${maxRows} quotes E2E; execute o cleanup antes de continuar`,
+        );
+      };
+
+      const [organizationId, existingTuples] = await Promise.all([
+        resolveOrganizationId(),
+        loadExistingTuples(),
+      ]);
       if (!organizationId) {
         return {
           created: 0,
@@ -172,13 +234,12 @@ export async function seedQuotesForStatusChips(
         };
       }
 
-      let created = 0;
-      const names: string[] = [];
-      const perTarget: QuotesStatusSeedTargetResult[] = [];
+      const resultByBadge = new Map<BadgeKey, QuotesStatusSeedTargetResult>();
+      const missingTargets: typeof targets = [];
 
       for (const t of targets) {
         if (t.unseedable_reason) {
-          perTarget.push({
+          resultByBadge.set(t.badge_key, {
             badge_key: t.badge_key,
             seeded: false,
             reason: t.unseedable_reason,
@@ -187,76 +248,63 @@ export async function seedQuotesForStatusChips(
           continue;
         }
 
-        // Idempotência: existe quote E2E equivalente?
-        const q = new URLSearchParams({
-          select: "id",
-          status: `eq.${t.status}`,
-          synced_to_bitrix: `eq.${t.synced_to_bitrix}`,
-          client_name: "like.[E2E%",
-          limit: "1",
-        });
-        // Precisão de idempotência: alvos com DAR nulo precisam casar APENAS
-        // quotes com discount_approval_status NULL. Sem o `is.null`, alvos
-        // pending+synced (ex.: `synced`) casariam quotes pending+synced com DAR
-        // não-nulo (approved/rejected/expired) e seriam pulados por engano.
-        if (t.discount_approval_status !== null) {
-          q.set("discount_approval_status", `eq.${t.discount_approval_status}`);
+        const alreadyExists = existingTuples.some(
+          (row) =>
+            row.status === t.status &&
+            row.synced_to_bitrix === t.synced_to_bitrix &&
+            row.discount_approval_status === t.discount_approval_status,
+        );
+        if (alreadyExists) {
+          resultByBadge.set(t.badge_key, {
+            badge_key: t.badge_key,
+            seeded: true,
+            reason: "already-existed",
+            name: null,
+          });
         } else {
-          q.set("discount_approval_status", "is.null");
+          missingTargets.push(t);
         }
-        const existsResp = await fetch(`${url}/rest/v1/quotes?${q}`, { headers });
-        if (existsResp.ok) {
-          const rows = (await existsResp.json()) as Array<{ id: string }>;
-          if (rows.length > 0) {
-            perTarget.push({
-              badge_key: t.badge_key,
-              seeded: true,
-              reason: "already-existed",
-              name: null,
-            });
-            continue;
-          }
-        }
+      }
 
-        const body: Record<string, unknown> = {
+      if (missingTargets.length > 0) {
+        const bodies = missingTargets.map((t) => ({
           seller_id: sellerId,
           organization_id: organizationId,
           client_name: t.name,
           status: t.status,
           synced_to_bitrix: t.synced_to_bitrix,
+          discount_approval_status: t.discount_approval_status,
           total: 100,
           notes: "e2e-seed-chips-v2",
-        };
-        if (t.discount_approval_status !== null) {
-          body.discount_approval_status = t.discount_approval_status;
-        }
+        }));
 
         const insertResp = await fetch(`${url}/rest/v1/quotes`, {
           method: "POST",
           headers,
-          body: JSON.stringify(body),
+          body: JSON.stringify(bodies),
         });
         if (!insertResp.ok) {
           const errBody = await insertResp.text().catch(() => "");
-          perTarget.push({
-            badge_key: t.badge_key,
-            seeded: false,
-            reason: `insert-failed-${insertResp.status}: ${errBody.slice(0, 120)}`,
-            name: null,
-          });
-          continue;
+          throw new Error(
+            `seed insert em lote falhou (${insertResp.status}): ${errBody.slice(0, 160)}`,
+          );
+        } else {
+          for (const t of missingTargets) {
+            resultByBadge.set(t.badge_key, {
+              badge_key: t.badge_key,
+              seeded: true,
+              reason: "created",
+              name: t.name,
+            });
+          }
         }
-        created += 1;
-        names.push(t.name);
-        perTarget.push({
-          badge_key: t.badge_key,
-          seeded: true,
-          reason: "created",
-          name: t.name,
-        });
       }
 
-      return { created, skipped: null, names, perTarget };
+      const perTarget = targets.map((t) => resultByBadge.get(t.badge_key)!);
+      const names = perTarget
+        .filter((result) => result.reason === "created" && result.name)
+        .map((result) => result.name!);
+      return { created: names.length, skipped: null, names, perTarget };
     },
     { url: SUPABASE_URL, anonKey: SUPABASE_ANON_KEY, targets },
   );
