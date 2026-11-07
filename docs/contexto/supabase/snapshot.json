@@ -177743,9 +177743,11 @@
           "views": []
         },
         "comment": null,
-        "config": null,
+        "config": [
+          "search_path=public"
+        ],
         "definition": null,
-        "definition_sha": "5a00f076f7e05ee4",
+        "definition_sha": "ee4a6da6744faae3",
         "execute_api_roles": "anon, authenticated, service_role",
         "execute_public": true,
         "is_trigger_fn": true,
@@ -233812,6 +233814,12 @@
         "statements": 1,
         "statements_sha": "80cbe32cddde5073",
         "version": "20261101232022"
+      },
+      {
+        "name": "fix_handle_updated_at_search_path",
+        "statements": 1,
+        "statements_sha": "40cc98aa4d7a16b8",
+        "version": "20261106232045"
       }
     ],
     "policies": [
@@ -262221,11 +262229,6 @@
     ],
     "webhooks": []
   },
-  "errors": [
-    {
-      "error": "canceling statement due to statement timeout",
-      "section": "cron_runs"
-    }
-  ],
+  "errors": [],
   "format_version": 2
 }

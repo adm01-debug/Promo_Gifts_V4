@@ -2,6 +2,11 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-07 02:05 UTC
+
+- **functions** alterado (1): `public.handle_updated_at()`
+- **migrations** adicionado (1): `20261106232045_fix_handle_updated_at_search_path`
+
 ## 2026-11-07 01:53 UTC
 
 - **lints** adicionado (1): `view_security_definer:public.vw_system_health_quick`

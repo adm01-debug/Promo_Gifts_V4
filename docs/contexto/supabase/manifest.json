@@ -1,13 +1,8 @@
 {
   "carried": [],
   "entrada": "README.md",
-  "erros": [
-    {
-      "error": "canceling statement due to statement timeout",
-      "section": "cron_runs"
-    }
-  ],
-  "gerado_em": "2026-11-07T01:53:34Z",
+  "erros": [],
+  "gerado_em": "2026-11-07T02:05:24Z",
   "gerador": "scripts/supabase_snapshot/snapshot.py",
   "produtor": "supabase-snapshot"
 }
