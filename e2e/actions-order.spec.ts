@@ -1,4 +1,5 @@
-import { expect, requireAuth, test, type Locator, type Page } from './fixtures/test-base';
+import type { Locator, Page } from '@playwright/test';
+import { expect, requireAuth, test } from './fixtures/test-base';
 import { gotoAndSettle } from './helpers/nav';
 import { installSwatchCatalogMocks } from './helpers/swatch-catalog-mocks';
 import { switchCatalogView, viewRows, type RowView } from './catalog/helpers/swatch-view';

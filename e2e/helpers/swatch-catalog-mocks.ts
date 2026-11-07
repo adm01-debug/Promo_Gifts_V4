@@ -115,7 +115,7 @@ const PROFILE_AND_ROLES = {
 };
 
 function json(route: Route, body: unknown, count?: number) {
-  const headers =
+  const headers: Record<string, string> =
     count === undefined ? {} : { 'content-range': count === 0 ? '*/0' : `0-${count - 1}/${count}` };
   return route.fulfill({
     status: 200,

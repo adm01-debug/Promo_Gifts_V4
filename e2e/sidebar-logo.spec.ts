@@ -22,9 +22,10 @@ test.describe('Sidebar Logo Visual Regression', () => {
     const subText = brandHeader.getByText('Store System');
     await expect(subText).toBeVisible();
 
-    // Visual sanity check for sizes (rough bounds)
+    // AppLogo follows the V3 contract: the Gift glyph is exactly h-6/w-6.
     const iconBox = await logoIcon.boundingBox();
-    expect(iconBox?.width).toBeLessThan(20); // Delicate icon
+    expect(iconBox).not.toBeNull();
+    expect(iconBox?.width).toBe(24);
 
     const textBox = await logoText.boundingBox();
     expect(textBox?.height).toBeLessThan(25); // Delicate text
