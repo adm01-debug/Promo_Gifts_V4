@@ -139,7 +139,7 @@ Não precisam de entrada na tabela acima; estão no allowlist de `check-secrets-
 > São acessados em runtime via `Deno.env.get("NOME")` nas edge functions em `supabase/functions/`.
 > O script `check-secrets-inventory.mjs` verifica edge functions automaticamente (E194 — `--scan-edge`).
 >
-> Última atualização: 2026-10-19 (E194 — P200 Onda 19)
+> Última atualização: 2026-11-07 (E194 — 39 segredos de edge functions documentados)
 
 ### Auto-injetados pelo Supabase (sempre disponíveis)
 
@@ -158,3 +158,42 @@ Configurados via `supabase secrets set`; obrigatórios para as funções listada
 
 | Segredo | Tipo | Rotação | Funções consumidoras |
 |---|---|---|---|
+| `AI_ROUTER_DISABLE` | Flag de config | — | `_shared/ai-usage.ts` |
+| `ALLOW_HTTP_FETCH` | Flag de config | — | `_shared/external-fetch.ts` |
+| `ANON_KEY` | Supabase Key | Semestral | `_shared/kill_switch.ts` |
+| `ASIA_BASE_URL` | URL serviço | Sob demanda | `asia-ingestion/index.ts` |
+| `BITRIX24_WEBHOOK_URL` | URL webhook | Semestral | `bitrix-sync/index.ts` |
+| `CF_ORIGIN_SECRET` | Secret Cloudflare | Trimestral | `check-login/index.ts` |
+| `CRM_CALLBACK_API_KEY` | API Key CRM | Trimestral | `receive-crm-callback/index.test.ts` |
+| `CRM_SUPABASE_ANON_KEY` | Supabase Key (CRM) | Semestral | `crm-db-bridge/singleton-client.test.ts` |
+| `CRM_SUPABASE_SERVICE_KEY` | Supabase Key (CRM) | Semestral | `crm-db-bridge/singleton-client.test.ts` |
+| `CRM_SUPABASE_URL` | URL Supabase (CRM) | — | `crm-db-bridge/singleton-client.test.ts` |
+| `CSRF_SECRET` | Chave CSRF | Semestral | `_shared/security.ts` |
+| `E2E_CLEANUP_RATE_LIMIT_MAX` | Config rate limit | — | `e2e-cleanup/index.ts` |
+| `E2E_CLEANUP_RATE_LIMIT_WINDOW_SECONDS` | Config rate limit | — | `e2e-cleanup/index.ts` |
+| `ENVIRONMENT` | Flag de ambiente | — | `cnpj-lookup/index.ts` |
+| `EXTERNAL_PROMOBRIND_SERVICE_ROLE_KEY` | Supabase Key (ext) | Semestral | `_shared/ai-router/index.ts` |
+| `EXTERNAL_PROMOBRIND_URL` | URL Supabase (ext) | — | `_shared/ai-router/index.ts` |
+| `EXTERNAL_SUPABASE_SERVICE_KEY` | Supabase Key (ext) | Semestral | `_shared/ai-router/index.ts`, `commemorative-dates/index.ts` |
+| `EXTERNAL_SUPABASE_SERVICE_ROLE_KEY` | Supabase Key (ext) | Semestral | `_shared/ai-router/index.ts` |
+| `EXTERNAL_SUPABASE_URL` | URL Supabase (ext) | — | `_shared/ai-router/index.ts`, `commemorative-dates/index.ts` |
+| `IMAGE_PROXY_ALLOW_LOCALHOST` | Flag de config | — | `image-proxy/index.ts` |
+| `IMAGE_PROXY_MAX_BYTES` | Config tamanho | — | `image-proxy/index.ts` |
+| `LOG_CREDENTIAL_RESOLUTION` | Flag de log | — | `_shared/credentials.ts` |
+| `LOG_CRM_BRIDGE_VERBOSE` | Flag de log | — | `crm-db-bridge/index.ts` |
+| `LOVABLE_API_KEY` | API Key Lovable | Trimestral | `_shared/ai-credentials.ts`, `bi-copilot/index.ts` |
+| `MAGAZINE_IP_SALT` | Salt de hash | Anual | `magazine-public-react/index.ts` |
+| `N8N_QUOTE_WEBHOOK_URL` | URL webhook N8N | Semestral | `quote-sync/index.ts` |
+| `PRODUCT_WEBHOOK_ALLOWED_ORIGINS` | Config CORS | — | `product-webhook/index.ts` |
+| `PRODUCT_WEBHOOK_BATCH_SIZE` | Config batch | — | `product-webhook/index.ts` |
+| `PROMO_CHAMPIONS_WEBHOOK_SECRET` | Secret webhook | Trimestral | `quote-sync-promo-champions/index.test.ts` |
+| `SIMULATION_BYPASS_KEY` | Chave bypass | Trimestral | `cnpj-lookup/index.ts`, `tests/load-resilience.ts` |
+| `TEST_ADMIN_JWT` | JWT de teste | Sob demanda | `secrets-manager/list-contract.test.ts` |
+| `TEST_SELLER_A_JWT` | JWT de teste | Sob demanda | `tests/seller-carts-rls_test.ts` |
+| `TEST_SELLER_B_JWT` | JWT de teste | Sob demanda | `tests/seller-carts-rls_test.ts` |
+| `TEST_USER_EMAIL` | Credencial de teste | Sob demanda | `mcp-keys-issue/rls-isolation.test.ts` |
+| `TEST_USER_PASSWORD` | Credencial de teste | Sob demanda | `mcp-keys-issue/rls-isolation.test.ts` |
+| `TURNSTILE_SECRET_KEY` | Secret Turnstile (CF) | Trimestral | `check-login/index.ts` |
+| `VITE_SUPABASE_PUBLISHABLE_KEY` | Supabase Anon Key | Semestral | `crm-db-bridge/*.test.ts` |
+| `VITE_SUPABASE_URL` | URL Supabase | — | `crm-db-bridge/*.test.ts` |
+| `WEBHOOK_DISPATCHER_SECRET` | Secret dispatcher | Trimestral | `_shared/dispatcher-auth.ts` |
