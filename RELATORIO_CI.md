@@ -386,7 +386,6 @@ Run de referência: Deploy Gates [42031544385](https://github.com/adm01-debug/Pr
 | PENDENCIAS.md ##25 RESOLVIDO | `PENDENCIAS.md` | Gate 2.5 rerun attempt 2 = `conclusion: success` (15:59:37Z) |
 | PENDENCIAS.md ##26 novo | `PENDENCIAS.md` | Recibo de migration (NÃO required) — `version_not_registered` para `20261101150000` |
 | PENDENCIAS.md ##27 novo | `PENDENCIAS.md` | `Migrations x Canonical schema` re-falha pré-existente (item #1, NÃO required) |
-| PENDENCIAS.md ##28 novo | `PENDENCIAS.md` | Gate Final ❌ PR #3160 — Gate E40 Schema Drift bloqueia (pré-existente, REGRA #8) |
 
 ### Inventário is:failure — Workflows com falha em SHA `efae9c9c4` (PR CI)
 
