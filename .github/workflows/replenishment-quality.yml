@@ -33,6 +33,7 @@ concurrency:
 
 permissions:
   contents: read
+  pull-requests: read
 
 
 defaults:
@@ -40,7 +41,13 @@ defaults:
     shell: bash
 
 jobs:
+  # Unit-only diffs must not start the 18+ minute authenticated parity suite.
+  relevance:
+    uses: ./.github/workflows/_e2e-relevance.yml
+
   audit:
+    needs: relevance
+    if: needs.relevance.outputs.relevant == 'true'
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     env:
