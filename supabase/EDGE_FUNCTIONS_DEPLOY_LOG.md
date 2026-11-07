@@ -388,6 +388,7 @@ manualmente, no mesmo dia, com o método `emergência-MCP`.
 | 2026-10-28T19:38:31.236Z | `webhook-inbound` | 300 | `d784edb62a3dabc412aa3f0b39e9130f4b22103e` | 40750221254 | GitHub Actions (disparado por adm01-debug) | workflow_dispatch |
 | 2026-10-28T19:38:31.261Z | `word-magic` | 124 | `d784edb62a3dabc412aa3f0b39e9130f4b22103e` | 40750221254 | GitHub Actions (disparado por adm01-debug) | workflow_dispatch |
 | 2026-10-28T19:38:31.285Z | `xbz-image-uploader` | 1 | `d784edb62a3dabc412aa3f0b39e9130f4b22103e` | 40750221254 | GitHub Actions (disparado por adm01-debug) | workflow_dispatch |
+| 2026-11-07T11:17:41.930Z | `health-check` | 276 | `ed1c7ccf591aeb2e9a98f1db819b8417fb051f38` | 42367422517 | GitHub Actions (disparado por adm01-debug) | workflow_dispatch |
 
 ## Retro-registro (casos anteriores a este ledger, E67)
 
