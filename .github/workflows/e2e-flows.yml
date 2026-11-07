@@ -201,6 +201,7 @@ jobs:
         uses: ./.github/actions/check-min-tests
         with:
           results-json: 'playwright-report/results-quote-flow.json'
+          min: '9'
 
       - name: Upload full flows report
         if: always()
