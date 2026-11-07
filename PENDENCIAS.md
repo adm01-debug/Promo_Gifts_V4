@@ -444,3 +444,20 @@ Process completed with exit code 2.
 **Causa:** Pré-existente — divergência massiva entre `supabase/migrations/` e banco de produção (`schema_migrations`). Nenhuma mudança nesta PR afeta o ledger de migrations (só o SQL foi corrigido, sem aplicação em produção). Esta falha está presente desde antes de qualquer PR desta sessão (ver item #1, run #42075701349).  
 **Required check:** NÃO — advisory. Gate Final passa mesmo com esta falha (confirmado: SHA `3c2ff9296dc2` teve Gate Final success com mesma falha ativa).  
 **Por que não corrijo:** Mesmas restrições do item #1 — REGRA #8 proíbe `migration repair` sem autorização do dono.
+
+---
+
+## 28. Gate Final — Deploy Ready ❌ PR #3160 (Gate E40 Schema Drift bloqueia em PRs)
+
+**Workflow:** `deploy-gates.yml` (PR #3160)  
+**Run ID:** [42389264625](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42389264625) (2026-11-07T16:02Z–16:18Z, SHA `efae9c9c4`)  
+**Job falhado:** `Gate Final - Deploy Ready` — R_SCHEMA_DRIFT=failure  
+**Erro exato (Gate E40 — job #128455407909):**
+```
+Step 8 "Ledger parity (repo x canonical)": local_only=1141; remote_only=674
+```
+**Causa:** `deploy-gates.yml` chama `db-schema-drift-check.yml` como referenced_workflow. Quando o drift check falha, o script Gate Final recebe `R_SCHEMA_DRIFT=failure` e encerra com exit code 1 — Gate Final = failure. Este é o mesmo drift pré-existente do item #1 (`local_only=1141; remote_only=674`). Nenhuma mudança desta PR afeta o ledger de migrations.  
+**Required check:** SIM — "Gate Final - Deploy Ready" é required check em `main`.  
+**Por que não corrijo:** Mesmas restrições do item #1 — REGRA #8 proíbe `migration repair` sem autorização do dono. O drift de 1141×674 só é resolvido com `supabase migration repair --status applied <versão>` explícita para cada migration real, autorizada pelo dono.  
+**Impacto:** PR #3160 não pode ser mergeada enquanto o Gate Final estiver em failure. As correções desta PR (fix SECURITY DEFINER + rollback) ficam pendentes de merge até que o drift de migrations seja resolvido pelo dono.  
+**O que o dono precisa fazer:** Resolver o item #1 (reconciliação de migrations) para que o Gate E40 passe, o que fará o Gate Final passar e desbloqueará o merge da PR #3160.

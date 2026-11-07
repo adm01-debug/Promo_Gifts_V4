@@ -386,12 +386,13 @@ Run de referência: Deploy Gates [42031544385](https://github.com/adm01-debug/Pr
 | PENDENCIAS.md ##25 RESOLVIDO | `PENDENCIAS.md` | Gate 2.5 rerun attempt 2 = `conclusion: success` (15:59:37Z) |
 | PENDENCIAS.md ##26 novo | `PENDENCIAS.md` | Recibo de migration (NÃO required) — `version_not_registered` para `20261101150000` |
 | PENDENCIAS.md ##27 novo | `PENDENCIAS.md` | `Migrations x Canonical schema` re-falha pré-existente (item #1, NÃO required) |
+| PENDENCIAS.md ##28 novo | `PENDENCIAS.md` | Gate Final = ❌ failure (R_SCHEMA_DRIFT=failure via Gate E40) — pré-existente, causa raiz item #1 |
 
 ### Inventário is:failure — Workflows com falha em SHA `efae9c9c4` (PR CI)
 
 | Workflow | Run ID | Required? | Conclusão | PENDENCIAS.md | Pode corrigir? |
 |---|---|---|---|---|---|
-| **Gate Final - Deploy Ready** | [42389264625](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42389264625) | ✅ Sim | ⏳ pending (Smoke in_progress) | — | — |
+| **Gate Final - Deploy Ready** | [42389264625](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42389264625) | ✅ Sim | ❌ **failure** (R_SCHEMA_DRIFT=failure via Gate E40) | **#28** — Gate E40 Schema Drift bloqueia Gate Final em PRs; pré-existente (item #1) | ⛔ REGRA #8 |
 | Recibo de migration em MIGRATIONS_SYNC_LOG.md | [42389264565](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42389264565) | ❌ Não (workflow separado) | ❌ failure | **#26** — `version_not_registered` para `20261101150000`; recibo só após aplicação em produção | ⛔ REGRA #8 |
 | Migrations x Canonical schema (db-schema-drift-check) | check run SHA efae9c9c4 | ❌ Não (advisory) | ❌ failure | **#1/#27** — pré-existente; Gate Final passa com esta falha ativa | ⛔ REGRA #8 |
 | db-schema-drift-check | [42075701349](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42075701349) | ❌ Não | ❌ failure | **#1** | ⛔ REGRA #8 |
@@ -409,13 +410,15 @@ Run de referência: Deploy Gates [42031544385](https://github.com/adm01-debug/Pr
 | npm run build | ✅ EXIT=0 — 10.78s | ✅ EXIT=0 (CI verde) | = |
 | npx tsc --noEmit | ✅ EXIT=0 | ✅ EXIT=0 | = |
 | npm run test:ci-core | ✅ 957 testes | ✅ 957 testes | = |
-| **Gate Final (required)** | ✅ success (§14, attempt 2) | ⏳ pending (Smoke in_progress) | aguardando |
-| Workflows required em falha | 0 | 0 (pending, sem failure conhecido) | = |
+| **Gate Final (required)** | ✅ success (§14, attempt 2) | ❌ **failure** (Gate E40 Schema Drift R_SCHEMA_DRIFT=failure) | 🔴 bloqueado em PRs |
+| Workflows required em falha | 0 (em main) | 0 (em main SHA `3c2ff9296dc2`) | = |
+| Gate Final em PR | ✅ success (§14 main) | ❌ failure (PR #3160 — Gate E40 bloqueia) | bloqueador documentado |
 | Workflows não-required em falha | 7 (pré-existentes) | 9 (pré-existentes + #26 + #27 novos, todos NÃO required) | +2 novos registrados |
 | DB E15 preflight | ❌ failure (#22) | ✅ corrigido nesta PR | 🟢 RESOLVIDO |
 | Mudanças de schema (banco) | 0 | 0 | = |
 
 > **Nota:** Os 2 novos itens de failure (#26, #27) são NÃO required. Gate Final na main (SHA `3c2ff9296dc2`) passou com as mesmas falhas pré-existentes. Nenhum required check foi introduzido em falha por esta PR.
+> **Bloqueador (item #28):** Gate Final na PR #3160 = ❌ failure por Gate E40 Schema Drift (R_SCHEMA_DRIFT=failure) — pré-existente, causa raiz em item #1 (1141×674 ledger drift). Não corrigível sem autorização do dono (REGRA #8). PR #3160 permanece aberta aguardando resolução do item #1.
 
 ### Estado dos required checks em `main` (base, SHA `3c2ff9296dc2`) — confirmado antes desta PR
 
