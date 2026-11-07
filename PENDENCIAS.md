@@ -464,17 +464,69 @@ Step 8 "Ledger parity (repo x canonical)": local_only=1141; remote_only=674
 
 ---
 
-## 29. edge-functions-drift-check ❌ (2026-11-07T16:50Z — SHA `9739e654` main — workflow_dispatch manual)
+## 29. Compare GitHub × Canonical ❌ (required check — drift de edge functions em main)
 
 **Workflow:** `edge-functions-drift-check.yml`  
-**Run ID:** [42393271130](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42393271130) (2026-11-07T16:50Z, SHA `9739e654`, main após merge PR #3145)  
-**Trigger:** `workflow_dispatch` (manual — NÃO é o required check automático de push/PR)  
-**Job falhado:** `Compare GitHub × Canonical` — Step 17: "Fail if drift detected"  
+**Run ID:** [42393271130](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42393271130) (2026-11-07T16:58Z, SHA `9739e654` = HEAD atual de main)  
 **Erro exato:**
 ```
-Drift detectado entre GitHub e canônico. Veja sumário do job e artefato drift-report.csv.
+Drift detectado entre GitHub e canônico. conteúdo: 27 função(ões), missing: false, orphans: false.
 ```
-**Causa:** Drift pré-existente em 27 edge functions entre o repo GitHub e as deployadas em produção (`doufsxqlfjyuvxuezpln`). A run foi disparada manualmente na sessão anterior para investigação do item #23. Drift é o mesmo do item #23.  
-**Required check:** NÃO — `workflow_dispatch` não conta para branch protection. O required check "Compare GitHub × Canonical" é triggado por push/PR automático, não por dispatch manual. Gate Final na main SHA `9739e654` **não** é bloqueado por esta falha (Gate E40 = skipped para esta SHA pois nenhum arquivo de schema foi alterado).  
-**Status:** `Deploy Edge Functions` run [#42394305679](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42394305679) disparado pelo dono (2026-11-07T17:02Z) via workflow autorizado (REGRA #8 corolário) para corrigir o drift. Aguardando conclusão.  
-**Ação pós-conclusão:** Se `conclusion: success`: re-disparar `edge-functions-drift-check.yml` via `workflow_dispatch` para confirmar drift resolvido com run de success, eliminando esta falha da lista de actions.
+**Causa:** 27 edge functions no Supabase têm conteúdo diferente do repo no GitHub. Nenhuma função ausente ou órfã — apenas divergência de conteúdo. Esta falha estava presente antes desta sessão (também em SHA `3b2deef1`, run #128461358905).  
+**Required check:** SIM — "Compare GitHub × Canonical" é um dos 5 required checks em `main`.  
+**Ação tomada:** `deploy-edge-functions.yml` despachado via `workflow_dispatch` em 2026-11-07T17:02Z (run [42394305679](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42394305679)). Run anterior em `waiting` (42379524030, SHA `0549ea39`, desde 14:00) cancelado para evitar conflito.  
+**Por que ainda não resolvido:** O ambiente `production` em `deploy-edge-functions.yml` exige aprovação manual do dono antes do deploy executar. O run está em `pending`/`waiting`.  
+**O que o dono precisa fazer:** Aprovar o run [42394305679](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42394305679) no GitHub Actions → Environments → production para que o deploy execute e sincronize as 27 funções. Após o deploy, re-rodar `edge-functions-drift-check.yml` em main.
+
+---
+
+## 30. DB — Aplicação controlada de migration única ❌ (Preflight falhou em main antes do rollback existir)
+
+**Workflow:** `db-apply-migration.yml` (workflow_dispatch)  
+**Run ID:** [42380876893](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42380876893) (2026-11-07T14:20Z, SHA `b5f7d2e29e0b`)  
+**Job falhado:** `1. Preflight (read-only)` — Step: "Checa arquivo único, rollback documentado, ainda não no ledger"  
+**Erro exato:**
+```
+arquivo de rollback 20261101150000_rollback.sql não encontrado.
+SECURITY DEFINER sem "pg_temp" no SET search_path em função "public.fn_get_rupture_alerts"
+```
+**Causa:** Run foi despachado prematuramente antes de PR #3160 ser mergeada em main. Naquele SHA (`b5f7d2e`), o arquivo `supabase/rollbacks/20261101150000_rollback.sql` ainda não existia em main (está apenas na branch `claude/fix-ci-workflows-261107-1540`). O SQL também ainda não tinha o fix `SET search_path = pg_catalog, pg_temp, public`.  
+**Required check:** NÃO — workflow separado, não bloqueia PRs.  
+**Por que não corrijo:** Requer que PR #3160 seja mergeada em main primeiro (bloqueada pelo item #28 — Gate E40 / REGRA #8). Após merge, re-despachar `db-apply-migration.yml` com `version=20261101150000`.  
+**O que o dono precisa fazer:** (1) Resolver item #1 → (2) Merge PR #3160 → (3) Despachar `db-apply-migration.yml` via `workflow_dispatch(version=20261101150000)` com aprovação.
+
+---
+
+## 31. 20 runs `action_required` na branch `release-please--...` (aguardam aprovação do dono)
+
+**Branch:** `release-please--branches--main--components--gifts-store`  
+**SHA:** `40c6cb0f`  
+**Runs:** [42392401147](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42392401147) e outros 19 runs criados em 2026-11-07T16:39Z  
+**Workflows afetados:** E2E · Dialogs, Workflow Lint, Required Checks Guard, Security Scan, E2E Magazine Header, SSOT Supabase Guard, E2E Personalization, E2E (Playwright), Visual Baseline, Magazine Unit Tests, schema-snapshot-export, Quote Builder Delivery, CI Replenishment, Supabase Linter Gate, PR Size Guard, Edge Integration Tests, No Prod Leak, E2E Swatch QuickView, edge-functions-drift-check, Bundle size report  
+**Causa:** PRs de bots (Release Please) exigem aprovação manual do maintainer antes que workflows sejam executados na primeira vez — medida de segurança do GitHub para evitar execução de código não verificado.  
+**Required check:** NÃO — estes runs são em branch de PR de bot, não em `main`. Não bloqueiam nada em `main`.  
+**Por que não corrijo:** Apenas o dono pode aprovar workflows em PRs de bots no GitHub Settings → Actions → Approve workflows for first-time contributors.  
+**O que o dono precisa fazer:** No GitHub → PR da release-please → "Approve and run" nos workflows pendentes, OU fechar a PR se não for necessária agora.
+
+---
+
+## 32. Falhas em branches de outros agentes (fora do escopo desta sessão)
+
+**Runs:**
+- [42387226570](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42387226570) — `CI - Replenishment Module Quality Gate` failure na branch `claude/fix-sentinel-push-range-0611` (SHA `8d9bce62`, 2026-11-07T16:07Z)
+- [42387216301](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42387216301) — `E2E — Personalization Flow` failure na branch `claude/promo-brindes-audit-301lml` (SHA `b93194d5`, 2026-11-07T15:57Z)
+- [42386429387](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42386429387) — `OptimizedImage E2E CI` failure na branch `claude/fix-e2e-visual-grid-261106-1` (SHA `b5150cd3`, 2026-11-07T15:32Z)
+
+**Causa:** Branches criadas por outros agentes/sessões. Regra #2 do Fluxo Git (AGENTS.md): "Branch de outro agente/sessão é somente leitura".  
+**Required check:** NÃO — falhas em branches de PR não-mergeadas não afetam `main`.  
+**Por que não corrijo:** Fora do escopo — são branches de outros agentes (prefixo `claude/` mas sessão diferente). Cada agente é responsável pela sua branch.
+
+---
+
+## 33. Uptime Monitor ❌ (falha transiente — NÃO é CI gate)
+
+**Workflow:** `uptime-monitor.yml`  
+**Run ID:** [42391882717](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42391882717) (2026-11-07T16:34Z, branch main)  
+**Causa:** Monitor externo de uptime — executa a cada 30 min. Falhas pontuais são transientes (timeout de rede, indisponibilidade momentânea do Supabase ou Vercel). Não é um gate de CI nem bloqueia deploys.  
+**Required check:** NÃO.  
+**Por que não corrijo:** Falha transiente externa — sem ação de código necessária. Se persistir, indica instabilidade de infra, não bug de código.
