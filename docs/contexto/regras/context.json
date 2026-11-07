@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "372dc82772b71a4f9a91b39496e39ff0ed6b36aa",
+  "sha": "5b0dab1ae2bbae7596d5c65de954ea1cd6e8da16",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-07 01:45 UTC",
+  "generated_at": "2026-11-07 02:09 UTC",
   "files_total": 9094,
   "code_files": 7839,
   "code_lines": 1050298
@@ -482752,10 +482752,19 @@
   }
  },
  "git": {
-  "sha": "372dc82772b71a4f9a91b39496e39ff0ed6b36aa",
+  "sha": "5b0dab1ae2bbae7596d5c65de954ea1cd6e8da16",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "5b0dab1",
+    "date": "2026-11-06",
+    "author": "github-actions[bot]",
+    "subject": "docs(db): registra aplicação da migration 20261101201000 (#3121)",
+    "files": [
+     "supabase/MIGRATIONS_SYNC_LOG.md"
+    ]
+   },
    {
     "sha": "372dc82",
     "date": "2026-11-06",
@@ -483045,15 +483054,6 @@
      "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
      "e2e/flows/magazine-publish-smoke.spec.ts"
     ]
-   },
-   {
-    "sha": "50d099c",
-    "date": "2026-11-04",
-    "author": "adm01-debug",
-    "subject": "chore: atualizar baseline soft-delete para partições p2027_03–p2027_12",
-    "files": [
-     ".soft-delete-baseline.json"
-    ]
    }
   ],
   "hot_files": [
@@ -483075,7 +483075,7 @@
    ],
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
-    2
+    3
    ],
    [
     ".github/workflows/schema-snapshot-export.yml",

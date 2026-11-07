@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "372dc82772b71a4f9a91b39496e39ff0ed6b36aa",
+  "commit": "5b0dab1ae2bbae7596d5c65de954ea1cd6e8da16",
   "branch": "main",
-  "data_commit": "2026-11-06T22:43:05-03:00",
+  "data_commit": "2026-11-06T22:59:03-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "5b0dab1",
+    "data": "2026-11-06",
+    "assunto": "docs(db): registra aplicação da migration 20261101201000 (#3121)"
+   },
    {
     "sha": "372dc82",
     "data": "2026-11-06",
@@ -126,11 +131,6 @@
     "sha": "5e5e4a6",
     "data": "2026-11-05",
     "assunto": "fix: Gate 3 — reduz timeouts cold start magazine smoke (#3075)"
-   },
-   {
-    "sha": "2292176",
-    "data": "2026-11-05",
-    "assunto": "fix(e2e): corrige Gate 3 flakiness — Playwright cache + cold start skip + grep -F (#3074)"
    }
   ],
   "arquivos_mudados_7d": 386,
@@ -215,7 +215,7 @@
    },
    {
     "arquivo": "supabase/MIGRATIONS_SYNC_LOG.md",
-    "mudancas": 21
+    "mudancas": 22
    },
    {
     "arquivo": "auditoria-supabase/RELATORIO_AUDITORIA_SUPABASE.md",
@@ -286,22 +286,22 @@
     "mudancas": 6
    },
    {
-    "arquivo": "audit/supabase-reference-catalog.temporary.json",
-    "mudancas": 6
-   },
-   {
     "arquivo": "docs/estado/PENDENCIAS.md",
     "mudancas": 6
    },
    {
     "arquivo": "e2e/flows/magazine-publish-smoke.spec.ts",
     "mudancas": 6
+   },
+   {
+    "arquivo": "tests/config/playwright-config-smoke.test.ts",
+    "mudancas": 6
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 345
+    "commits": 343
    },
    {
     "autor": "Joaquim Ataides",
@@ -309,7 +309,7 @@
    },
    {
     "autor": "github-actions[bot]",
-    "commits": 23
+    "commits": 24
    },
    {
     "autor": "Claude",
