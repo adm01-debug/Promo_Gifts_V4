@@ -241,6 +241,7 @@ describe('sanitizeBaselineForReplay', () => {
     expect(delivered).toContain("cron.schedule('image-dimensions-backfill'");
     expect(delivered).toContain("'generate-blurhashes'");
     expect(delivered).toContain('cron.alter_job(job_id := v_id, active := false)');
+    expect(delivered).toContain('ALTER PUBLICATION supabase_realtime ADD TABLE auth.users');
     expect(delivered).toContain('cron.unschedule(v_id)');
     expect(delivered).not.toContain('UPDATE cron.job');
   });

@@ -119,6 +119,21 @@ BEGIN
     END IF;
     PERFORM cron.alter_job(job_id := v_id, active := false);
   END IF;
+  -- O dump do baseline não preserva a associação de tabelas de auth à
+  -- publication. Em produção, auth.users ainda pertencia à supabase_realtime
+  -- na versão do baseline; 20261101140001 remove essa exposição e exige a
+  -- associação como pré-condição.
+  IF to_regclass('auth.users') IS NOT NULL
+     AND EXISTS (SELECT 1 FROM pg_publication WHERE pubname = 'supabase_realtime')
+     AND NOT EXISTS (
+       SELECT 1
+       FROM pg_publication_tables
+       WHERE pubname = 'supabase_realtime'
+         AND schemaname = 'auth'
+         AND tablename = 'users'
+     ) THEN
+    ALTER PUBLICATION supabase_realtime ADD TABLE auth.users;
+  END IF;
 END
 $seed$;
 `;
