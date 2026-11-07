@@ -14,6 +14,12 @@ on:
       - 'src/components/**'
       - 'src/utils/**'
       - 'src/pages/**'
+      - '!src/**/__tests__/**'
+      - '!src/**/*.test.*'
+      - '!src/**/*.spec.*'
+      - 'index.html'
+      - 'tailwind.config.*'
+      - 'postcss.config.*'
       - '.github/workflows/e2e-focused.yml'
   schedule:
     # E89 — segunda-feira 02:00 UTC
@@ -53,6 +59,7 @@ jobs:
     timeout-minutes: 20
     strategy:
       fail-fast: false
+      max-parallel: 1
       matrix:
         # E159: suites com toMatchSnapshot/toHaveScreenshot movidas para
         # nightly-full.yml (pdf-dialog, color-swatch, magazine-header, dialogs).

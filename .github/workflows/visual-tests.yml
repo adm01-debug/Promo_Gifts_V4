@@ -6,8 +6,13 @@ on:
     branches: [main]
     paths:
       - 'src/**'
+      - '!src/**/*.test.*'
+      - '!src/**/*.spec.*'
       - 'public/**'
       - 'e2e/**'
+      - 'index.html'
+      - 'tailwind.config.*'
+      - 'postcss.config.*'
       - 'package.json'
       - 'package-lock.json'
       - '.github/workflows/visual-tests.yml'
@@ -15,8 +20,13 @@ on:
     branches: [main]
     paths:
       - 'src/**'
+      - '!src/**/*.test.*'
+      - '!src/**/*.spec.*'
       - 'public/**'
       - 'e2e/**'
+      - 'index.html'
+      - 'tailwind.config.*'
+      - 'postcss.config.*'
       - 'package.json'
       - 'package-lock.json'
       - '.github/workflows/visual-tests.yml'
@@ -41,6 +51,7 @@ jobs:
       contents: read  # E60: somente-leitura — baselines são atualizados via _update-snapshots.yml (E59)
     strategy:
       fail-fast: false
+      max-parallel: 1
       matrix:
         shardIndex: [1, 2]
         shardTotal: [2]
