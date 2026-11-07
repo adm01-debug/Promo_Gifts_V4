@@ -40,6 +40,39 @@ const generalRegressionDedicatedSpecs = isGeneralRegression
 // A suíte valida a tela pública de autenticação e não deve herdar storageState.
 const publicOnlySpecs = [/[\\/]auth-debug-removal\.spec\.ts$/];
 
+// O workflow geral valida apenas o núcleo transversal. Suítes visuais, de
+// carga e de domínio têm workflows próprios (stock, cart, quotes, catalog,
+// flows etc.) e continuam usando o catálogo completo quando esta flag não
+// está ativa. Isso evita executar a mesma suíte em contextos incompatíveis.
+const generalPublicSpecs = [
+  /[\\/]auth-debug-removal\.spec\.ts$/,
+  /[\\/]auth-guard-redirect\.spec\.ts$/,
+  /[\\/]auth-legal-pages\.spec\.ts$/,
+  /[\\/]auth\.spec\.ts$/,
+  /[\\/]login\.spec\.ts$/,
+  /[\\/]protected-routes\.spec\.ts$/,
+  /[\\/]routes[\\/]public[\\/]login\.spec\.ts$/,
+  /[\\/]routes[\\/]public[\\/]reset-password\.spec\.ts$/,
+  /[\\/]spa-rewrite\.spec\.ts$/,
+];
+
+const generalAuthedSpecs = [
+  /[\\/]actions-order\.spec\.ts$/,
+  /[\\/]carts-module\.spec\.ts$/,
+  /[\\/]catalog\.spec\.ts$/,
+  /[\\/]collections-module\.spec\.ts$/,
+  /[\\/]dashboard-modules\.spec\.ts$/,
+  /[\\/]favorites-module\.spec\.ts$/,
+  /[\\/]navigation\.spec\.ts$/,
+  /[\\/]products-module\.spec\.ts$/,
+  /[\\/]quote-creation-module\.spec\.ts$/,
+  /[\\/]reports-bi-module\.spec\.ts$/,
+  /[\\/]sidebar-logo\.spec\.ts$/,
+  /[\\/]stock-module\.spec\.ts$/,
+  /[\\/]tools-module\.spec\.ts$/,
+  /[\\/]ui-navigation-rbac\.spec\.ts$/,
+];
+
 /**
  * Playwright Configuration
  * Suporta múltiplos fluxos: público, autenticado e mobile.
@@ -63,7 +96,7 @@ export default defineConfig({
   },
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 1 : 0,
+  retries: isGeneralRegression ? 0 : process.env.CI ? 1 : 0,
   // E21: CI usa 2 workers (mede flakiness em 3 runs nightly; specs que precisam
   // serialização — chromium-smoke — definem workers:1 no projeto). Localmente
   // Playwright determina o número ideal de workers automaticamente.
@@ -96,6 +129,7 @@ export default defineConfig({
     // 2. Projetos Públicos (sem storageState)
     {
       name: 'chromium-public',
+      testMatch: isGeneralRegression ? generalPublicSpecs : '**/*.spec.ts',
       use: {
         ...devices['Desktop Chrome'],
         viewport: { width: 1280, height: 720 },
@@ -122,6 +156,7 @@ export default defineConfig({
     // 3. Projetos Autenticados (reaproveita login do setup)
     {
       name: 'chromium-authed',
+      testMatch: isGeneralRegression ? generalAuthedSpecs : '**/*.spec.ts',
       use: {
         ...devices['Desktop Chrome'],
         viewport: { width: 1280, height: 720 },
