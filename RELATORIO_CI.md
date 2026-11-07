@@ -326,4 +326,69 @@ Zero mudanças de schema em toda a série de sessões desta task. REGRA #8/E056 
 | CI Security & Drift Checks | ❌ (advisory) | chromium-authed flakiness + `SUPABASE_SERVICE_ROLE_KEY` ausente | #13 |
 | Uptime Monitor | ❌ | sonda de produção intermitente | #21 |
 
-**Required check Gate Final:** confirmação via Gate Final do merge deste PR (#3150).
+**Required check Gate Final:** ⏳ pendente no momento do registro.
+
+---
+
+## 13. Prova Final — Sessão 2026-11-07 (HEAD `b5f7d2e29e0b`)
+
+> **Sessão:** https://claude.ai/code/session_01RfQzo7S3K6o49UBUDoCtUe  
+> **Data/hora de confirmação:** 2026-11-07T15:10:21Z
+
+### Gate Final - Deploy Ready — CONFIRMADO ✅
+
+| Run | SHA | attempt | Job ID | conclusion | completed_at |
+|---|---|---|---|---|---|
+| [#42380435725](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42380435725) | `b5f7d2e29e0b` | **2** | [128439787966](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42380435725/job/128439787966) | ✅ **success** | 2026-11-07T15:10:21Z |
+
+> **Causa da falha no attempt 1** (job 128431389039): `InternalError: error creating tlog entry - (500) unexpected result from transparency log` — Sigstore/Rekor 500 transiente no step "Attest build provenance (E99)". Zero código modificado. Fix: `rerun_failed_jobs` → attempt 2 passou sem alteração.
+
+### Tabela de prova por workflow
+
+| Workflow com falha (HEAD `b5f7d2e29e0b`) | Required? | Link da execução | conclusion | PENDENCIAS.md |
+|---|---|---|---|---|
+| **Gate Final - Deploy Ready** | ✅ Sim | [run #42380435725 attempt 2](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42380435725) | ✅ **success** (15:10:21Z) | — |
+| db-schema-drift-check | ❌ Não | [run #42075701349](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42075701349) | ❌ failure | **#1** — `local_only=1141; remote_only=674` — REGRA #8, requer dono |
+| Kit Coverage — Integration | ❌ Não | [run #42019342856](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42019342856) | ❌ failure | **#3** — 56% < 70%; dados null no banco de produção |
+| E2E · Swatch QuickView | ❌ Não | [run #41876981212](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41876981212) | ❌ failure | **#6** — `E2E_USER_*` ausentes em Secrets |
+| Nightly Full CI | ❌ Não | [run #42005666457](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42005666457) | ❌ failure | **#7** — derivado de #6 |
+| E2E — Quotes Matrix | ❌ Não | [run #42044024144](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42044024144) | ❌ failure | **#9** — snapshot visual 5px — requer dono |
+| CI Security & Drift Checks | ❌ Não (advisory) | [run #42086074688](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42086074688) | ❌ failure | **#13** — chromium-authed flakiness + `SUPABASE_SERVICE_ROLE_KEY` ausente |
+| Uptime Monitor | ❌ Não | [run #42377833970](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42377833970) | ❌ failure | **#21** — sonda de produção intermitente |
+
+### Comparação Baseline × Final
+
+| Métrica | Baseline (início da sessão) | Final (HEAD `b5f7d2e29e0b`) | Variação |
+|---|---|---|---|
+| npm ci | ✅ EXIT=0 | ✅ EXIT=0 | = |
+| npm run build | ✅ EXIT=0 — 10.20s | ✅ EXIT=0 (CI verde) | = |
+| npx tsc --noEmit | ✅ EXIT=0 | ✅ EXIT=0 (CI verde) | = |
+| npm run test:ci-core | ✅ 957 testes / 41 arquivos | ✅ 957 testes (CI verde) | = |
+| **Gate Final (required)** | ⚠️ failure (Sigstore 500 transiente) | ✅ **success** attempt 2 | 🟢 **RESOLVIDO** |
+| Workflows required em falha | 1 (Gate Final attempt 1) | 0 | 🟢 **ZERO falhas required** |
+| Workflows não-required em falha | 7 (todos documentados PENDENCIAS.md) | 7 (inalterados, sem regressão) | = |
+| Mudanças de schema (banco) | 0 | 0 | = (REGRA #8/E056 intacta) |
+
+### Workflows antes verdes — confirmação de não-regressão
+
+| Workflow | Estado anterior | Estado atual | Evidência |
+|---|---|---|---|
+| Gate Final (SHA `823822b0` — 2026-11-05) | ✅ success | ✅ success (attempt 2 SHA `b5f7d2e29e0b`) | run [42380435725](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42380435725) job [128439787966](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42380435725/job/128439787966) |
+| ssot-gate | ✅ success | ✅ success (attempt 2) | Todos os 18 jobs do attempt 2 success/skipped |
+| static-gates | ✅ success | ✅ success (attempt 2) | idem |
+| unit-tests | ✅ success | ✅ success (attempt 2) | idem |
+| e2e-smoke | ✅ success | ✅ success (attempt 2) | idem |
+| database-integrity | ✅ success | ✅ success (attempt 2) | idem |
+| build (Gate 6) | ⚠️ failure (Sigstore 500) | ✅ **success** (attempt 2) | job [128438996962](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42380435725/job/128438996962) completou 15:06:59Z |
+
+### Banco de dados canônico (`doufsxqlfjyuvxuezpln`)
+
+**Zero mudanças de schema** em toda a série de sessões. REGRA #8/E056 intacta:
+- Nenhum DDL via `execute_sql`
+- Nenhum `deploy_edge_function` via MCP direto
+- Nenhum `supabase db push`
+- Banco idêntico ao estado pré-sessão
+
+### Conclusão
+
+**O único required check do repositório (Gate Final - Deploy Ready) está ✅ success no HEAD `b5f7d2e29e0b`.** Todos os 7 workflows não-required em falha estão documentados em PENDENCIAS.md com causa exata e bloqueio de negócio/infraestrutura identificado — nenhum é regressão desta sessão. Zero mudanças de schema. Zero regressões em workflows anteriormente verdes.
