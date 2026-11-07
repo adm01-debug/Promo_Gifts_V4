@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "a882bcc1ad68ec8dafcca47e341194754ead752d",
+  "commit": "bfb2926d9de98868a310aa6e1cb7c6d71d425757",
   "branch": "main",
-  "data_commit": "2026-11-07T20:37:14Z",
+  "data_commit": "2026-11-07T18:04:40-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "bfb2926",
+    "data": "2026-11-07",
+    "assunto": "docs(ci): PENDENCIAS #36 + RELATORIO §22 — Gate Final a882bcc1 success (#3176)"
+   },
    {
     "sha": "a882bcc",
     "data": "2026-11-07",
@@ -126,11 +131,6 @@
     "sha": "372dc82",
     "data": "2026-11-06",
     "assunto": "fix(db): fixa search_path de handle_updated_at (#3111)"
-   },
-   {
-    "sha": "e87f36b",
-    "data": "2026-11-06",
-    "assunto": "test(date-utils): elimina dependência de timezone (#3116)"
    }
   ],
   "arquivos_mudados_7d": 403,
@@ -181,7 +181,7 @@
    },
    {
     "pasta": "src/pages/products",
-    "mudancas": 110
+    "mudancas": 109
    },
    {
     "pasta": "src/components/kit-builder",
@@ -199,11 +199,11 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "RELATORIO_CI.md",
-    "mudancas": 67
+    "mudancas": 68
    },
    {
     "arquivo": "PENDENCIAS.md",
-    "mudancas": 62
+    "mudancas": 63
    },
    {
     "arquivo": "package.json",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 331
+    "commits": 330
    },
    {
     "autor": "Joaquim Ataides",

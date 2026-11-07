@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "a882bcc1ad68ec8dafcca47e341194754ead752d",
+  "sha": "bfb2926d9de98868a310aa6e1cb7c6d71d425757",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-07 20:47 UTC",
+  "generated_at": "2026-11-07 21:10 UTC",
   "files_total": 9099,
   "code_files": 7844,
   "code_lines": 1051314
@@ -483022,10 +483022,20 @@
   }
  },
  "git": {
-  "sha": "a882bcc1ad68ec8dafcca47e341194754ead752d",
+  "sha": "bfb2926d9de98868a310aa6e1cb7c6d71d425757",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "bfb2926",
+    "date": "2026-11-07",
+    "author": "adm01-debug",
+    "subject": "docs(ci): PENDENCIAS #36 + RELATORIO §22 — Gate Final a882bcc1 success (#3176)",
+    "files": [
+     "PENDENCIAS.md",
+     "RELATORIO_CI.md"
+    ]
+   },
    {
     "sha": "a882bcc",
     "date": "2026-11-07",
@@ -483325,29 +483335,20 @@
     "files": [
      "e2e/fixtures/auth.setup.ts"
     ]
-   },
-   {
-    "sha": "bcdefb4",
-    "date": "2026-11-05",
-    "author": "adm01-debug",
-    "subject": "chore(regras): adiciona nota de cold-start PostgREST no CI",
-    "files": [
-     "docs/contexto/regras/manual/regras.md"
-    ]
    }
   ],
   "hot_files": [
    [
     "RELATORIO_CI.md",
-    5
+    6
+   ],
+   [
+    "PENDENCIAS.md",
+    4
    ],
    [
     ".github/workflows/replenishment-quality.yml",
     4
-   ],
-   [
-    "PENDENCIAS.md",
-    3
    ],
    [
     "e2e/flows/magazine-publish-smoke.spec.ts",
