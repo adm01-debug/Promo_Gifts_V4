@@ -501,11 +501,11 @@ Zero mudanças de schema em toda a série de sessões desta task. REGRA #8/E056 
 
 ---
 
-## §17 — Estado Final (2026-11-07T17:16Z)
+## §17 — Estado Final (2026-11-07T18:20Z — atualizado com item #34 e novo main HEAD)
 
 ### Inventário COMPLETO de workflows em falha/action_required descobertos nesta sessão
 
-> **Nota:** Itens #1–#25 cobertos nas seções §1–§15 (linhas explícitas abaixo). Itens #26–#33 novos nesta sessão.
+> **Nota:** Itens #1–#25 cobertos nas seções §1–§15 (linhas explícitas abaixo). Itens #26–#34 novos nesta sessão.
 
 | # | Workflow | Branch / SHA | Conclusion | Required? | PENDENCIAS | Motivo do bloqueio |
 |---|---|---|---|---|---|---|
@@ -542,24 +542,26 @@ Zero mudanças de schema em toda a série de sessões desta task. REGRA #8/E056 
 | 31 | 20x action_required | branch `release-please--branches--main--components--gifts-store` | action_required | NÃO (NÃO é main) | #31 | Aguardam aprovação de environment protection — branch release-please, não main |
 | 32 | 3x E2E/quality | branches de outros agentes | ❌ failure | NÃO | #32 | Fora do escopo — branches de outros agentes (codex/, devin/) |
 | 33 | Uptime Monitor | main | ❌ failure | NÃO | #33 | Falha transiente de sonda de infra — não é CI gate |
+| 34 | Vercel "Deployment was blocked" | PR #3160 / SHA `337f4aee9` | ❌ commit status failure | NÃO (não é required check) | #34 | PR #3160 é draft — Vercel bloqueia preview deploys em draft PRs por design; basta converter para ready-for-review quando items #28/#29 forem resolvidos |
 
-### Required checks em main HEAD `787f8438` (2026-11-07T17:35Z — estado verificado)
+### Required checks em main HEAD `df81a741` (2026-11-07T18:16Z — PR #3161 mergeada pelo dono)
 
 | Required check | Status | Run / Evidência |
 |---|---|---|
-| Gate Final - Deploy Ready | ✅ **success** | run [#42394358194](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42394358194) — completed 17:43Z (SHA `787f8438`) |
-| Gate Final - Deploy Ready (SHA `9739e654`, anterior) | ✅ **success** | run [#42392250972](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42392250972) (17:16:29Z) — 17 success + 1 skipped |
+| Gate Final - Deploy Ready | ✅ **success** | run [#42394358194](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42394358194) — completed 17:43Z (SHA `787f8438`, parent de `df81a741`) |
+| Gate Final - Deploy Ready (SHA `df81a741`) | ⏳ in_progress | run iniciado 18:16Z (PR #3161 mergeada pelo dono) — CI ainda rodando |
 | Compare GitHub × Canonical | ❌ failure (pré-existente) | run [#42394606339](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42394606339) (SHA `787f8438`) — 27 funções driftadas; PENDENCIAS #29 |
-| Analyze (javascript-typescript) | ✅ success | SHA `787f8438` — sem mudança de código nesta PR |
+| Analyze (javascript-typescript) | ✅ success | SHA `787f8438` — sem mudança de código desta sessão |
 | Gate E23 - Secret Scan (gitleaks) | ✅ success | SHA `787f8438` — sem segredos em diff |
 | Assert Gate Final is required on main | ✅ success | — |
 
-> **Gate Final confirmado:** Run #42394358194 (SHA `787f8438`) completou às 17:43Z com `conclusion=success`.
+> **Gate Final confirmado no SHA `787f8438`:** Run #42394358194 completou às 17:43Z com `conclusion=success`. O SHA `df81a741` (PR #3161 do dono, 18:16Z) está com CI em progresso — não introduzido por esta sessão.
 
-### Anti-regressão final (2026-11-07T17:35Z)
+### Anti-regressão final (2026-11-07T18:20Z)
 
 - **Gate Final (SHA `9739e654`):** ✅ success — run [#42392250972](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42392250972) (17:16:29Z)
 - **Gate Final (SHA `787f8438`):** ✅ success — run [#42394358194](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42394358194) (completed 17:43Z)
+- **SHA `df81a741` (PR #3161 do dono, 18:16Z):** CI em progresso — não alterado por esta sessão; Gate Final da sessão anterior (`787f8438`) permanece ✅
 - **Compare GitHub × Canonical:** ❌ failure pré-existente; deploy run #42394305679 cancelled pelo dono; 27 slugs documentados em PENDENCIAS #29 com passos exatos para o dono
 - **Gate Final em PR #3160:** ❌ bloqueado por Gate E40 (REGRA #8) — documentado PENDENCIAS #28
 - **Sem nova falha required introduzida** por esta sessão nos commits desta branch

@@ -590,3 +590,17 @@ SECURITY DEFINER sem "pg_temp" no SET search_path em função "public.fn_get_rup
 **Causa:** Monitor externo de uptime — executa a cada 30 min. Falhas pontuais são transientes (timeout de rede, indisponibilidade momentânea do Supabase ou Vercel). Não é um gate de CI nem bloqueia deploys.  
 **Required check:** NÃO.  
 **Por que não corrijo:** Falha transiente externa — sem ação de código necessária. Se persistir, indica instabilidade de infra, não bug de código.
+
+---
+
+## 34. Vercel "Deployment was blocked" na PR #3160 (draft PR — esperado)
+
+**PR:** [#3160](https://github.com/adm01-debug/Promo_Gifts_V4/pull/3160) — draft  
+**SHA afetado:** `337f4aee9e4b7d6bf3db2347a2a602dda5f5b705` (branch `claude/fix-ci-workflows-261107-1540`)  
+**Status:** Vercel commit status `failure` — `"Deployment was blocked"` — reportado em 2026-11-07T18:12:42Z  
+**Detalhes:** https://vercel.com/juca1/promo-gifts-v4/9hCSgFVP1s4ubKyCccgtC8CdVyyL  
+**Causa:** O projeto Vercel `prj_9UfugNYCuboH2R0XB04Jv8PpjDpZ` está configurado para **não realizar preview deploys em draft PRs** — comportamento padrão e intencional. O status "Deployment was blocked" é emitido pelo `vercel[bot]` como commit status (não é um GitHub Actions check). Assim que a PR sair do estado draft, o Vercel fará o deploy normalmente.  
+**Required check:** NÃO — `Vercel` não consta em `.github/required-checks.json` (os 5 required checks são: Gate Final, Compare GitHub × Canonical, Analyze, Gate E23 Gitleaks, Assert Gate Final). Não bloqueia merge.  
+**É uma falha corrigível de código?** NÃO — é comportamento configurado do Vercel para PRs draft. Para obter preview deploy, basta converter a PR de draft para ready-for-review. Enquanto a PR estiver bloqueada pelos itens #28 e #29 (Gate E40 e 27 EFs driftadas), ela deve permanecer draft.  
+**Por que não corrijo:** Design intencional. A PR permanece draft até que os itens #28 e #29 sejam resolvidos pelo dono.  
+**O que o dono precisa fazer:** Nada neste momento. Quando items #28 e #29 forem resolvidos e a PR estiver pronta para merge, converter de draft para ready-for-review ativa o deploy preview.
