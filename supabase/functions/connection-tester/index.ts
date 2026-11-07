@@ -3,7 +3,7 @@ import { safeErrorResponse } from "../_shared/error-response.ts";
 // connection-tester: pings external systems to verify connectivity. Admin-only.
 // Reads credentials from `integration_credentials` (DB-first) with env fallback.
 // Core ping/persistence logic lives in `_shared/connection-test-runner.ts`.
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.4";
+import { createClient } from "npm:@supabase/supabase-js@2.49.4";
 import { z } from "https://deno.land/x/zod@v3.23.8/mod.ts";
 import { runConnectionTest } from "../_shared/connection-test-runner.ts";
 
