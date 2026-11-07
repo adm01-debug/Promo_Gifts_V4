@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "test(auth): estabilizar callback SSO na suíte completa (#3133)",
    "fix(ci): evitar paridade de reposição em diffs unitários (#3135)",
    "fix(health-check): tolera cold start do PostgREST (#3128)",
    "fix(ci): reduzir pressão dos E2E no Supabase (#3130)",
-   "fix(ci/catalog): estabilizar auditorias E2E e restaurar cores na lista (#3120)",
-   "docs(db): registra aplicação da migration 20261101201000 (#3121)"
+   "fix(ci/catalog): estabilizar auditorias E2E e restaurar cores na lista (#3120)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

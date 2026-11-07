@@ -9300,7 +9300,7 @@
   {
    "arquivo": "src/pages/__tests__/SSOCallbackPage.race.test.tsx",
    "tipo": "unit",
-   "linhas": 112,
+   "linhas": 134,
    "testa": [
     "src/pages/auth/SSOCallbackPage.tsx"
    ],
@@ -9309,7 +9309,7 @@
   {
    "arquivo": "src/pages/__tests__/SSOCallbackPage.test.tsx",
    "tipo": "unit",
-   "linhas": 207,
+   "linhas": 229,
    "testa": [
     "src/pages/auth/SSOCallbackPage.tsx"
    ],

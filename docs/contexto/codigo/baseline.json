@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "a23cb8ed7b11fee786908b4ff13600720f0f0ac0",
+  "commit": "21e52c08d6c8cc1c5f91e3033793fea094479f61",
   "branch": "main",
-  "data_commit": "2026-11-07T08:49:15-03:00",
+  "data_commit": "2026-11-07T09:13:02-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "21e52c0",
+    "data": "2026-11-07",
+    "assunto": "test(auth): estabilizar callback SSO na suíte completa (#3133)"
+   },
    {
     "sha": "a23cb8e",
     "data": "2026-11-07",
@@ -126,14 +131,9 @@
     "sha": "7f5632b",
     "data": "2026-11-05",
     "assunto": "chore(docs): registra item #13 — CI Security & Drift step 28 E2E chromium-authed (#3080)"
-   },
-   {
-    "sha": "3654bd1",
-    "data": "2026-11-05",
-    "assunto": "chore(docs): atualiza RELATORIO_CI e PENDENCIAS após PR #3078 mergeada (#3079)"
    }
   ],
-  "arquivos_mudados_7d": 401,
+  "arquivos_mudados_7d": 403,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -266,12 +266,12 @@
     "mudancas": 7
    },
    {
-    "arquivo": ".github/workflows/schema-snapshot-export.yml",
+    "arquivo": "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
     "mudancas": 7
    },
    {
-    "arquivo": "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
-    "mudancas": 7
+    "arquivo": ".github/workflows/schema-snapshot-export.yml",
+    "mudancas": 6
    },
    {
     "arquivo": "analise-prs/baseline/lint.txt",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 339
+    "commits": 338
    },
    {
     "autor": "Joaquim Ataides",
@@ -324,7 +324,7 @@
  "contagens": {
   "arquivos_total": 9174,
   "arquivos_codigo": 4614,
-  "linhas_codigo": 883598,
+  "linhas_codigo": 883642,
   "rotas": 138,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -1884,7 +1884,7 @@
   },
   "src/pages": {
    "arquivos": 345,
-   "linhas": 81474
+   "linhas": 81518
   },
   "src/routes": {
    "arquivos": 14,
