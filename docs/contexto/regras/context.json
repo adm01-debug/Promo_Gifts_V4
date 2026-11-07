@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "787f8438dd9217c02e829c7be1032c8c2a657361",
+  "sha": "df81a741a72bff72b3e7dee72508b53ff2a013b0",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-07 17:43 UTC",
+  "generated_at": "2026-11-07 18:44 UTC",
   "files_total": 9098,
   "code_files": 7842,
-  "code_lines": 1051072
+  "code_lines": 1051076
  },
  "version": "1.3.2",
- "facts_hash": "fe2317999b0eb7b5",
+ "facts_hash": "c0a3baa5fd0a03b1",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -139184,7 +139184,7 @@
   {
    "module": "src/pages",
    "files": 345,
-   "lines": 81543,
+   "lines": 81547,
    "tables": [
     "ai_insights_cache",
     "ai_usage_events",
@@ -430535,8 +430535,11 @@
   },
   "src/pages/magazine/components/__tests__/EditorHero.test.tsx": {
    "path": "src/pages/magazine/components/__tests__/EditorHero.test.tsx",
-   "lines": 223,
+   "lines": 227,
    "is_test": true,
+   "rule_comments": [
+    "mínimo explícito o flex item do h1 pode colapsar para 0px e ficar"
+   ],
    "doc": "EditorHero — testes de regressão. Garante que a mini-preview (`TemplateThumbnail`, agora deletado do repo) não volta a ser importada/renderizada — nem no hero, nem no popover \"Trocar template\". Qualquer reintrodução quebraria a compilação (arquivo removido) e, na renderização, este teste verifica qu …",
    "tests": [
     "EditorHero — sem mini preview",
@@ -482896,10 +482899,20 @@
   }
  },
  "git": {
-  "sha": "787f8438dd9217c02e829c7be1032c8c2a657361",
+  "sha": "df81a741a72bff72b3e7dee72508b53ff2a013b0",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "df81a74",
+    "date": "2026-11-07",
+    "author": "adm01-debug",
+    "subject": "fix(magazine): impedir colapso do título em lg (#3161)",
+    "files": [
+     "src/pages/magazine/components/EditorHero.tsx",
+     "src/pages/magazine/components/__tests__/EditorHero.test.tsx"
+    ]
+   },
    {
     "sha": "787f843",
     "date": "2026-11-07",
@@ -483190,22 +483203,12 @@
     "files": [
      "RELATORIO_CI.md"
     ]
-   },
-   {
-    "sha": "210ce9a",
-    "date": "2026-11-05",
-    "author": "adm01-debug",
-    "subject": "docs: RELATORIO_CI.md HEAD 84245872 + PENDENCIAS.md item #19 sentinel advisory (#3087)",
-    "files": [
-     "PENDENCIAS.md",
-     "RELATORIO_CI.md"
-    ]
    }
   ],
   "hot_files": [
    [
     "RELATORIO_CI.md",
-    8
+    7
    ],
    [
     ".github/workflows/replenishment-quality.yml",
@@ -483213,7 +483216,7 @@
    ],
    [
     "PENDENCIAS.md",
-    4
+    3
    ],
    [
     "e2e/fixtures/auth.setup.ts",
@@ -483234,6 +483237,14 @@
    [
     ".github/workflows/schema-snapshot-export.yml",
     2
+   ],
+   [
+    "src/pages/magazine/components/EditorHero.tsx",
+    1
+   ],
+   [
+    "src/pages/magazine/components/__tests__/EditorHero.test.tsx",
+    1
    ],
    [
     ".env.e2e.example",
@@ -483273,14 +483284,6 @@
    ],
    [
     "src/pages/quotes/QuotesDashboardPage.tsx",
-    1
-   ],
-   [
-    "src/hooks/products/__tests__/useProductsColorsBatch.aggregation.test.tsx",
-    1
-   ],
-   [
-    "src/hooks/products/useProductsColorsBatch.ts",
     1
    ]
   ]

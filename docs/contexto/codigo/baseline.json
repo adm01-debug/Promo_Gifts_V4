@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "787f8438dd9217c02e829c7be1032c8c2a657361",
+  "commit": "df81a741a72bff72b3e7dee72508b53ff2a013b0",
   "branch": "main",
-  "data_commit": "2026-11-07T14:03:05-03:00",
+  "data_commit": "2026-11-07T15:16:12-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "df81a74",
+    "data": "2026-11-07",
+    "assunto": "fix(magazine): impedir colapso do título em lg (#3161)"
+   },
    {
     "sha": "787f843",
     "data": "2026-11-07",
@@ -126,14 +131,9 @@
     "sha": "bcdefb4",
     "data": "2026-11-05",
     "assunto": "chore(regras): adiciona nota de cold-start PostgREST no CI"
-   },
-   {
-    "sha": "a064d6f",
-    "data": "2026-11-05",
-    "assunto": "docs: RELATORIO_CI.md — SHA 823822b0 + vitest PENDENCIAS #20 + run 42125946413"
    }
   ],
-  "arquivos_mudados_7d": 407,
+  "arquivos_mudados_7d": 408,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -153,7 +153,7 @@
    },
    {
     "pasta": "src/pages/magazine",
-    "mudancas": 185
+    "mudancas": 187
    },
    {
     "pasta": "src/components/quotes",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 337
+    "commits": 336
    },
    {
     "autor": "Joaquim Ataides",
@@ -324,7 +324,7 @@
  "contagens": {
   "arquivos_total": 9175,
   "arquivos_codigo": 4615,
-  "linhas_codigo": 883996,
+  "linhas_codigo": 884000,
   "rotas": 138,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -1884,7 +1884,7 @@
   },
   "src/pages": {
    "arquivos": 345,
-   "linhas": 81543
+   "linhas": 81547
   },
   "src/routes": {
    "arquivos": 14,

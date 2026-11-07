@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "fix(magazine): impedir colapso do título em lg (#3161)",
    "Merge pull request #3154 from adm01-debug/claude/fix-dashboard-title-loading-261107-0100",
    "fix(e2e): adiciona role seller ao helper de auth (#3145)",
    "fix(ci): testar gates E2E no artefato de produção (#3142)",
-   "Merge branch 'main' into claude/fix-dashboard-title-loading-261107-0100",
-   "docs(ci): §13 prova final Gate Final success SHA b5f7d2e29e0b (2026-11-07) (#3158)"
+   "Merge branch 'main' into claude/fix-dashboard-title-loading-261107-0100"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",

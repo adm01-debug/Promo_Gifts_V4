@@ -9569,7 +9569,7 @@
   {
    "arquivo": "src/pages/magazine/components/__tests__/EditorHero.test.tsx",
    "tipo": "unit",
-   "linhas": 223,
+   "linhas": 227,
    "testa": [
     "src/pages/magazine/components/EditorHero.tsx",
     "src/types/magazine.ts"
