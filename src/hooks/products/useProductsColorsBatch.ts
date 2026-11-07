@@ -80,11 +80,14 @@ export function useProductsColorsBatch(productIds: string[]) {
     [productIds],
   );
 
-  // ⚠️ PERF-2026-08-19: queryKey estável SEM incluir todos os IDs (causava
-  // cache miss a cada re-render quando a lista de IDs mudava — virtualização
-  // e load-more recriam o array). Mantém uma única chave para o módulo, e o
-  // resultado do useMemo abaixo filtra apenas os IDs solicitados no momento.
-  const queryKey = useMemo(() => ['products-colors-batch', 'module'] as const, []);
+  // IDs fazem parte da chave para que filtros/paginação executem o queryFn ao
+  // introduzir produtos novos. O hash estrutural do React Query mantém a chave
+  // estável quando o array é recriado com o mesmo conteúdo; o cache global abaixo
+  // garante que apenas IDs ainda ausentes consultem o banco.
+  const queryKey = useMemo(
+    () => ['products-colors-batch', 'module', stableIds] as const,
+    [stableIds],
+  );
 
   const enabled = stableIds.length > 0;
 
