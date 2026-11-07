@@ -18,7 +18,7 @@ on:
       - '!src/**/*.test.*'
       - '!src/**/*.spec.*'
       - '.github/workflows/e2e-focused.yml'
-      - 'scripts/ci/e2e-relevance.mjs'
+      - '.github/scripts/e2e-relevance.mjs'
   schedule:
     # E89 — segunda-feira 02:00 UTC
     - cron: '0 2 * * 1'  # E89 — segunda 02:00 UTC

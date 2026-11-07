@@ -40,7 +40,7 @@ jobs:
           CHANGED_FILES: ${{ steps.filter.outputs.all_files }}
         run: |
           if [[ "${{ github.event_name }}" == "pull_request" || "${{ github.event_name }}" == "push" ]]; then
-            node scripts/ci/e2e-relevance.mjs >> "$GITHUB_OUTPUT"
+            node .github/scripts/e2e-relevance.mjs >> "$GITHUB_OUTPUT"
           else
             echo "relevant=true" >> "$GITHUB_OUTPUT"
           fi
