@@ -125,6 +125,7 @@ export function VirtualizedNoveltyGrid({
       data-testid="novelty-list-wrapper"
       role="list"
       aria-label="Grade de novidades"
+      className="min-h-[200px]"
     >
       <div
         style={{

@@ -165,6 +165,9 @@ export function OptimizedImage({
       setIsLoaded(false);
     } else {
       setFallbackStage(2);
+      // Sem isso o <img> fica permanentemente em opacity-0 quando a imagem
+      // falha em todos os estágios (o ícone de erro é renderizado no lugar).
+      setIsLoaded(true);
     }
     onErrorProp?.(e);
   };

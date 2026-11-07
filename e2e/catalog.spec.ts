@@ -23,7 +23,7 @@ test.describe("Catalog & Filters", () => {
     // Open categories section (click only if not already expanded)
     const categoryTrigger = page.locator('[data-testid="filter-section-trigger-categorias"]');
     await expect(categoryTrigger).toBeVisible();
-    const isOpen = await categoryTrigger.getAttribute('aria-expanded');
+    const isOpen = await categoryTrigger.getAttribute('data-state-open');
     if (isOpen !== 'true') {
       await categoryTrigger.click();
     }
@@ -35,11 +35,12 @@ test.describe("Catalog & Filters", () => {
 
     // Apply price filter
     const priceTrigger = page.locator('[data-testid="filter-section-trigger-preco"]');
-    const isPriceOpen = await priceTrigger.getAttribute('aria-expanded');
+    const isPriceOpen = await priceTrigger.getAttribute('data-state-open');
     if (isPriceOpen !== 'true') {
       await priceTrigger.click();
     }
-    await page.locator('input[placeholder="Ex: 0"]').first().fill("50");
+    // O input de mínimo não tem placeholder (só o de máximo tem "Sem limite").
+    await page.locator('input[type="number"]').first().fill("50");
     await page.locator('input[placeholder="Sem limite"]').first().fill("200");
 
     // Wait for network/results update
