@@ -40,29 +40,7 @@ jobs:
           CHANGED_FILES: ${{ steps.filter.outputs.all_files }}
         run: |
           if [[ "${{ github.event_name }}" == "pull_request" || "${{ github.event_name }}" == "push" ]]; then
-            node --input-type=module <<'NODE'
-            import { appendFileSync } from 'node:fs';
-
-            const files = JSON.parse(process.env.CHANGED_FILES || '[]');
-            const deliveryUnit = 'src/pages/__tests__/QuoteBuilderDeliveryTooltip.test.tsx';
-            const isSrcUnit = (file) =>
-              file.startsWith('src/') &&
-              (file.includes('/__tests__/') || /\.(?:test|spec)\.[^/]+$/.test(file));
-            const isRuntime = (file) => {
-              if (file === deliveryUnit) return true;
-              if (isSrcUnit(file)) return false;
-              return (
-                file.startsWith('src/') ||
-                file.startsWith('e2e/') ||
-                file.startsWith('tests/') ||
-                file.startsWith('public/') ||
-                file.startsWith('.github/actions/e2e-setup/') ||
-                ['package.json', 'package-lock.json', '.nvmrc'].includes(file) ||
-                /^(?:playwright|vite)\.config\./.test(file)
-              );
-            };
-            appendFileSync(process.env.GITHUB_OUTPUT, `relevant=${files.some(isRuntime)}\n`);
-            NODE
+            node scripts/ci/e2e-relevance.mjs >> "$GITHUB_OUTPUT"
           else
             echo "relevant=true" >> "$GITHUB_OUTPUT"
           fi

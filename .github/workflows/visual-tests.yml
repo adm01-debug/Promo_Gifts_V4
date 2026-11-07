@@ -14,6 +14,7 @@ on:
       - 'package.json'
       - 'package-lock.json'
       - '.github/workflows/visual-tests.yml'
+      - 'scripts/ci/e2e-relevance.mjs'
   pull_request:
     branches: [main]
     paths:
@@ -26,6 +27,7 @@ on:
       - 'package.json'
       - 'package-lock.json'
       - '.github/workflows/visual-tests.yml'
+      - 'scripts/ci/e2e-relevance.mjs'
 
 permissions:
   contents: read

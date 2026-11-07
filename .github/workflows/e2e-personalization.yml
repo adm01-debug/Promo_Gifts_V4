@@ -15,6 +15,7 @@ on:
       - 'playwright.config.*'
       - 'vite.config.*'
       - '.github/workflows/e2e-personalization.yml'
+      - 'scripts/ci/e2e-relevance.mjs'
   pull_request:
     branches: [main]
     paths:  # E14: evitar CI em PRs doc-only
@@ -29,6 +30,7 @@ on:
       - 'playwright.config.*'
       - 'vite.config.*'
       - '.github/workflows/e2e-personalization.yml'
+      - 'scripts/ci/e2e-relevance.mjs'
   workflow_dispatch:
 
 concurrency:
