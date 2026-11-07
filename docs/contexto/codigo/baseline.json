@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "ed1c7ccf591aeb2e9a98f1db819b8417fb051f38",
+  "commit": "a23cb8ed7b11fee786908b4ff13600720f0f0ac0",
   "branch": "main",
-  "data_commit": "2026-11-07T08:15:20-03:00",
+  "data_commit": "2026-11-07T08:49:15-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "a23cb8e",
+    "data": "2026-11-07",
+    "assunto": "fix(ci): evitar paridade de reposição em diffs unitários (#3135)"
+   },
    {
     "sha": "ed1c7cc",
     "data": "2026-11-07",
@@ -126,11 +131,6 @@
     "sha": "3654bd1",
     "data": "2026-11-05",
     "assunto": "chore(docs): atualiza RELATORIO_CI e PENDENCIAS após PR #3078 mergeada (#3079)"
-   },
-   {
-    "sha": "7f254f7",
-    "data": "2026-11-05",
-    "assunto": "fix(migrations-log): remove 8 entradas duplicadas no MIGRATIONS_SYNC_LOG.md (#3078)"
    }
   ],
   "arquivos_mudados_7d": 401,
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 340
+    "commits": 339
    },
    {
     "autor": "Joaquim Ataides",

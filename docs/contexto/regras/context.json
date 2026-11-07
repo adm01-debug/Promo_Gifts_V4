@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "ed1c7ccf591aeb2e9a98f1db819b8417fb051f38",
+  "sha": "a23cb8ed7b11fee786908b4ff13600720f0f0ac0",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-07 11:19 UTC",
+  "generated_at": "2026-11-07 11:59 UTC",
   "files_total": 9097,
   "code_files": 7841,
   "code_lines": 1050674
@@ -482801,10 +482801,19 @@
   }
  },
  "git": {
-  "sha": "ed1c7ccf591aeb2e9a98f1db819b8417fb051f38",
+  "sha": "a23cb8ed7b11fee786908b4ff13600720f0f0ac0",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "a23cb8e",
+    "date": "2026-11-07",
+    "author": "adm01-debug",
+    "subject": "fix(ci): evitar paridade de reposição em diffs unitários (#3135)",
+    "files": [
+     ".github/workflows/replenishment-quality.yml"
+    ]
+   },
    {
     "sha": "ed1c7cc",
     "date": "2026-11-07",
@@ -483098,33 +483107,24 @@
      "RELATORIO_CI.md",
      "e2e/flows/magazine-preview-sticky-smoke.spec.ts"
     ]
-   },
-   {
-    "sha": "3383990",
-    "date": "2026-11-05",
-    "author": "adm01-debug",
-    "subject": "fix(ci): ripgrep ausente + 2 mocks desatualizados",
-    "files": [
-     ".github/workflows/ci-security-drift.yml",
-     "PENDENCIAS.md",
-     "RELATORIO_CI.md",
-     "src/hooks/stock/__tests__/useRuptureAlerts.test.tsx",
-     "tests/components/kit-builder/KitMakerLanding.test.tsx"
-    ]
    }
   ],
   "hot_files": [
    [
     "RELATORIO_CI.md",
-    15
+    14
    ],
    [
     "PENDENCIAS.md",
-    11
+    10
    ],
    [
     "supabase/MIGRATIONS_SYNC_LOG.md",
     3
+   ],
+   [
+    ".github/workflows/replenishment-quality.yml",
+    2
    ],
    [
     ".github/workflows/deploy-gates.yml",
@@ -483176,10 +483176,6 @@
    ],
    [
     ".github/workflows/visual-tests.yml",
-    1
-   ],
-   [
-    ".github/workflows/replenishment-quality.yml",
     1
    ],
    [

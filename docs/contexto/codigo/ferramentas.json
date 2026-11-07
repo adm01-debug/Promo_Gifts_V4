@@ -2808,6 +2808,7 @@
     "main"
    ],
    "jobs": [
+    "relevance",
     "audit"
    ],
    "permissoes": [
