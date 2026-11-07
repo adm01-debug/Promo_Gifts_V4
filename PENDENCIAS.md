@@ -467,16 +467,61 @@ Step 8 "Ledger parity (repo x canonical)": local_only=1141; remote_only=674
 ## 29. Compare GitHub × Canonical ❌ (required check — drift de edge functions em main)
 
 **Workflow:** `edge-functions-drift-check.yml`  
-**Run ID:** [42393271130](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42393271130) (2026-11-07T16:58Z, SHA `9739e654` = HEAD atual de main)  
-**Erro exato:**
+**Run ID mais recente:** [42394606339](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42394606339) (2026-11-07T17:17Z, SHA `787f8438` = main atual)  
+**Run anterior confirmado (SHA `9739e654`):** [42393271130](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42393271130) (2026-11-07T16:58Z)  
+**Erro exato (artefato drift-report.csv, run 42394606339):**
 ```
-Drift detectado entre GitHub e canônico. conteúdo: 27 função(ões), missing: false, orphans: false.
+Drift detectado entre GitHub e canônico.
+27 funções com status=DRIFT | has_missing=false | has_orphans=false
+Todas as funções existem em ambos (GitHub e Supabase), apenas conteúdo diverge.
 ```
-**Causa:** 27 edge functions no Supabase têm conteúdo diferente do repo no GitHub. Nenhuma função ausente ou órfã — apenas divergência de conteúdo. Esta falha estava presente antes desta sessão (também em SHA `3b2deef1`, run #128461358905).  
+**27 funções driftadas (slugs exatos do drift-report.csv):**
+1. ai-recommendations
+2. bitrix-sync
+3. cnpj-lookup
+4. collections-watcher
+5. connections-auto-test
+6. crm-db-bridge
+7. e2e-cleanup
+8. ema-pipeline-health
+9. favorites-watcher
+10. generate-ad-image
+11. generate-ad-prompt
+12. generate-mockup
+13. log-login-attempt
+14. magazine-import-local
+15. magic-up-score
+16. mcp-keys-issue
+17. mcp-keys-revoke
+18. migrate-helper
+19. product-webhook
+20. quote-sync-promo-champions
+21. receive-crm-callback
+22. secrets-manager
+23. simulation-orchestrator
+24. visual-search
+25. webhook-dispatcher
+26. webhook-inbound
+27. word-magic
+
+**Causa:** 27 edge functions no Supabase canônico (`doufsxqlfjyuvxuezpln`) têm conteúdo diferente do código no GitHub. Falha pré-existente — confirmada em múltiplos SHAs (`3b2deef1`, `9739e654`, `787f8438`).  
 **Required check:** SIM — "Compare GitHub × Canonical" é um dos 5 required checks em `main`.  
-**Ação tomada:** `deploy-edge-functions.yml` despachado via `workflow_dispatch` em 2026-11-07T17:02Z (run [42394305679](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42394305679)). Run anterior em `waiting` (42379524030, SHA `0549ea39`, desde 14:00) cancelado para evitar conflito.  
-**Por que ainda não resolvido:** O ambiente `production` em `deploy-edge-functions.yml` exige aprovação manual do dono antes do deploy executar. O run está em `pending`/`waiting`.  
-**O que o dono precisa fazer:** Aprovar o run [42394305679](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42394305679) no GitHub Actions → Environments → production para que o deploy execute e sincronize as 27 funções. Após o deploy, re-rodar `edge-functions-drift-check.yml` em main.
+**Ação tomada (CANCELLED pelo dono):** `deploy-edge-functions.yml` despachado via `workflow_dispatch` em 2026-11-07T17:02Z (run [42394305679](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42394305679)) — **cancelado pelo dono antes de executar o deploy**. Run anterior em `waiting` (42379524030, SHA `0549ea39`, desde 14:00) também cancelado.  
+**Por que ainda não resolvido:** Dois caminhos possíveis, ambos exigem ação do dono:
+
+**Opção A — Deploy GitHub → Supabase (recomendar):**
+1. Despachar `.github/workflows/deploy-edge-functions.yml` via `workflow_dispatch` **sem** `function_name` (deploya todas as 27)
+2. Aprovar o ambiente `production` quando o run entrar em `waiting`
+3. Após o deploy, re-rodar `edge-functions-drift-check.yml` em main para confirmar conclusion=success
+
+**Opção B — Sincronização Supabase → GitHub (alternativa):**
+Para cada slug da lista acima, executar:
+```bash
+supabase functions download <slug> --project-ref doufsxqlfjyuvxuezpln
+```
+Requer CLI com `SUPABASE_ACCESS_TOKEN` e `SUPABASE_DB_PASSWORD` configurados, ou MCP com `get_edge_function` apontado para `doufsxqlfjyuvxuezpln` (MCP `GESTÃO DE PRODUTOS` tem apenas 3 tools — sem `get_edge_function`).
+
+**Bloqueio técnico desta sessão:** MCP `GESTÃO DE PRODUTOS` não tem `get_edge_function`; dispatch de deploy requer aprovação `production` pelo dono; tentativa anterior (run #42394305679) foi cancelada pelo dono.
 
 ---
 

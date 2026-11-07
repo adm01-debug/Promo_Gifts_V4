@@ -503,34 +503,65 @@ Zero mudanças de schema em toda a série de sessões desta task. REGRA #8/E056 
 
 ## §17 — Estado Final (2026-11-07T17:16Z)
 
-### Inventário de workflows em falha/action_required descobertos nesta sessão
+### Inventário COMPLETO de workflows em falha/action_required descobertos nesta sessão
 
-| # | Workflow | Branch / SHA | Conclusion | Required? | Ação |
-|---|---|---|---|---|---|
-| 1 | db-schema-drift-check | main (pré-existente) | failure | NÃO | Registrado PENDENCIAS #1 |
-| 2–25 | (itens tratados nas seções §1–§15) | — | — | — | Ver seções anteriores |
-| 26 | Recibo de migration | claude/.../efae9c9c | failure | NÃO | Registrado PENDENCIAS #26 |
-| 27 | Migrations x Canonical schema | claude/.../efae9c9c | failure | NÃO | Registrado PENDENCIAS #27 |
-| 28 | Gate Final - Deploy Ready (PR #3160) | claude/.../efae9c9c | failure | SIM (em PRs) | Registrado PENDENCIAS #28 — Gate E40 |
-| 29 | Compare GitHub × Canonical | main/9739e654 | failure (pré-existente) | SIM (main) | Deploy EF #42394305679 **cancelled** pelo dono; documentado PENDENCIAS #29 |
-| 30 | DB — migration única (prematura) | main/b5f7d2e | failure | NÃO | Registrado PENDENCIAS #30 |
-| 31 | 20x action_required | release-please branch | action_required | NÃO | Registrado PENDENCIAS #31 |
-| 32 | 3x E2E/quality | other-agent branches | failure | NÃO | Registrado PENDENCIAS #32 |
-| 33 | Uptime Monitor | main | failure | NÃO | Registrado PENDENCIAS #33 — transiente |
+> **Nota:** Itens #1–#25 cobertos nas seções §1–§15 (linhas explícitas abaixo). Itens #26–#33 novos nesta sessão.
 
-### Required checks em main HEAD `9739e654` (2026-11-07T17:16Z) — CONFIRMADO
+| # | Workflow | Branch / SHA | Conclusion | Required? | PENDENCIAS | Motivo do bloqueio |
+|---|---|---|---|---|---|---|
+| 1 | db-schema-drift-check | main (pré-existente) | ❌ failure | NÃO | #1 | 1141 migrações locais × 674 no ledger — REGRA #8, requer dono |
+| 2 | edge-functions-drift-check | main/SHA `3b2deef1` | ❌ failure | NÃO (advisory em PR; required em push/main) | #2 | Drift de conteúdo — precede esta sessão; falha separada do item #29 (re-checado em main) |
+| 3 | Kit Coverage — Integration | main/[42019342856](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42019342856) | ❌ failure | NÃO | #3 | Coverage 56% < 70% — dados null no banco |
+| 4 | Branch Protection Sentinel | main | ✅ success | SIM | #4 — RESOLVIDO | RESOLVIDO nesta sessão (PR #3073) |
+| 5 | CI - Replenishment Module Quality Gate | main | ❌ failure | NÃO | #5 | Paridade visual E2E — requer dono |
+| 6 | E2E · Swatch QuickView | main/[41876981212](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/41876981212) | ❌ failure | NÃO | #6 | `E2E_USER_*` ausentes em Secrets — requer dono |
+| 7 | Nightly Full CI | main/[42005666457](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42005666457) | ❌ failure | NÃO | #7 | Derivado de #6 (mesmas credenciais ausentes) |
+| 8 | Gate 3 — E2E Smoke timeout | main | ✅ success | SIM | #8 — RESOLVIDO | CORRIGIDO (PR #3073) — timeout 7min → job 20min configurado |
+| 9 | E2E — Quotes Matrix | main/[42044024144](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42044024144) | ❌ failure | NÃO | #9 | Snapshot visual 5px — requer dono para atualizar baseline |
+| 10 | E2E — Personalization Flow | SHA `2bc37120` | ❌ failure | NÃO | #10 — ver #18 | RE-FALHA pré-existente — flakiness chromium-authed |
+| 11 | E2E — Critical Flows & Error Boundaries | SHA `2bc37120` | ❌ failure | NÃO | #11 — ver #15 | RE-FALHA pré-existente — flakiness chromium-authed |
+| 12 | Uptime Monitor (sessão anterior) | main | ✅ success | NÃO | #12 — RESOLVIDO | Intermitência de infra (HTTP 200 após nova sonda) |
+| 13 | CI Security & Drift Checks | main/[42086074688](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42086074688) | ❌ failure | NÃO (advisory) | #13 | `wizard-step-box` disabled (172× retries) + `SUPABASE_SERVICE_ROLE_KEY` ausente — requer dono |
+| 14 | Gate 3 E2E Smoke flakiness | SHA `2bc37120` | ✅ success | NÃO | #14 — RESOLVIDO | Flakiness transitória de infra (rerun success) |
+| 15 | E2E — Critical Flows & Error Boundaries | SHA `2bc37120` | ❌ failure | NÃO | #15 | Flakiness chromium-authed — requer dono (secrets ou infra) |
+| 16 | Quote Builder Delivery Quality | SHA `2bc37120` | ❌ failure | NÃO | #16 | Flakiness chromium-authed — requer dono |
+| 17 | E2E (Playwright) | SHA `2bc37120` | ❌ failure | NÃO | #17 | header-sticky fail-fast por flakiness de auth — requer dono |
+| 18 | E2E — Personalization Flow | SHA `2bc37120` | ❌ failure | NÃO | #18 | Re-falha após #10 — flakiness chromium-authed |
+| 19 | Branch Protection Sentinel | SHA `84245872` | ⚠️ advisory | NÃO | #19 | Squash sem `(#NNN)` em mensagem — advisory, não bloqueia |
+| 20 | Vitest local — date-utils | main | ⚠️ advisory | NÃO | #20 | 3 falhas pré-existentes em `tests/unit/date-utils.test.ts` — não bloqueia CI |
+| 21 | Uptime Monitor | main/SHA `0549ea39` | ❌ failure | NÃO | #21 | HTTP 503 (curl exit 22) às 15:05Z — issue #3159 criada |
+| 22 | DB — Aplicação de migration única | main/SHA `b5f7d2e` | ❌ failure | NÃO | #22 | Preflight correto (rollback ausente naquele SHA + SECURITY DEFINER) — bloqueado por REGRA #8 |
+| 23 | edge-functions-drift-check | main | ❌ failure | NÃO (advisory em PR) | #23 | Re-falha pré-existente (item #2/#29) |
+| 24 | CI - Replenishment Module Quality Gate | main | ❌ failure | NÃO | #24 | Paridade visual persistente — requer dono |
+| 25 | Gate 2.5 — PostgreSQL Transactional Integrity | main/SHA `3c2ff929` | ✅ success | NÃO | #25 — RESOLVIDO | Rerun attempt 2 = success (HTTP 400 transitório) |
+| 26 | Recibo de migration em MIGRATIONS_SYNC_LOG.md | claude/.../efae9c9c | ❌ failure | NÃO | #26 | `version_not_registered` para `20261101150000` — só resolve após aplicação em produção (REGRA #8) |
+| 27 | Migrations x Canonical schema (db-schema-drift-check) | claude/.../efae9c9c | ❌ failure | NÃO | #27 | Re-falha pré-existente item #1 — 1141×674 drift no ledger |
+| 28 | Gate Final - Deploy Ready (PR #3160) | claude/.../efae9c9c | ❌ failure | SIM (em PRs) | #28 | Gate E40 Schema Drift bloqueia — REGRA #8, aguarda dono |
+| 29 | Compare GitHub × Canonical | main/787f8438 | ❌ failure | SIM (required em main) | #29 | 27 funções driftadas — deploy run #42394305679 **cancelled pelo dono**; 27 slugs listados em PENDENCIAS #29 |
+| 30 | DB — migration única (prematura) | main/SHA `b5f7d2e` | ❌ failure | NÃO | #30 | Despacho prematuro antes de PR #3160 ser mergeada |
+| 31 | 20x action_required | branch `release-please--branches--main--components--gifts-store` | action_required | NÃO (NÃO é main) | #31 | Aguardam aprovação de environment protection — branch release-please, não main |
+| 32 | 3x E2E/quality | branches de outros agentes | ❌ failure | NÃO | #32 | Fora do escopo — branches de outros agentes (codex/, devin/) |
+| 33 | Uptime Monitor | main | ❌ failure | NÃO | #33 | Falha transiente de sonda de infra — não é CI gate |
 
-| Required check | Status |
-|---|---|
-| Gate Final - Deploy Ready | ✅ **success** — run [#42392250972](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42392250972) job [128469740968](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42392250972/job/128469740968) (17:16:29Z) |
-| Compare GitHub × Canonical | ❌ failure (pré-existente) — Deploy EF #42394305679 **cancelled** pelo dono; documentado PENDENCIAS #29 |
-| Analyze (javascript-typescript) | ✅ success |
-| Gate E23 - Secret Scan (gitleaks) | ✅ success |
-| Assert Gate Final is required on main | ✅ success |
+### Required checks em main HEAD `787f8438` (2026-11-07T17:35Z — estado verificado)
 
-### Anti-regressão final
+| Required check | Status | Run / Evidência |
+|---|---|---|
+| Gate Final - Deploy Ready | ⏳ queued (criado 17:03Z) | run [#42394358194](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42394358194) — em fila às 17:35Z (runners ocupados) |
+| Gate Final - Deploy Ready (SHA `9739e654`, anterior) | ✅ **success** | run [#42392250972](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42392250972) (17:16:29Z) — 17 success + 1 skipped |
+| Compare GitHub × Canonical | ❌ failure (pré-existente) | run [#42394606339](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42394606339) (SHA `787f8438`) — 27 funções driftadas; PENDENCIAS #29 |
+| Analyze (javascript-typescript) | ✅ success | SHA `787f8438` — sem mudança de código nesta PR |
+| Gate E23 - Secret Scan (gitleaks) | ✅ success | SHA `787f8438` — sem segredos em diff |
+| Assert Gate Final is required on main | ✅ success | — |
 
-- **Gate Final - Deploy Ready (main):** ✅ success — run [#42392250972](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42392250972) (17:16:29Z) — 18 jobs: 17 success, 1 skipped (Gate E40 sem mudanças de schema em main)
-- **Compare GitHub × Canonical:** ❌ failure pré-existente; Deploy EF #42394305679 cancelled pelo dono; documentado PENDENCIAS #29
-- Gate Final em PRs com migration: bloqueado por Gate E40 (REGRA #8) — documentado PENDENCIAS #28
-- Zero regressões introduzidas por esta sessão
+> **Sobre Gate Final queued:** O run #42394358194 (SHA `787f8438`) está em fila desde 17:03Z. O resultado esperado é success, pois: (a) o merge de PR #3154 foi só de código front-end (sem schema, sem migration), (b) o run anterior em SHA `9739e654` = success com 17 jobs, (c) nenhuma mudança que introduza nova falha required foi feita. Será confirmado quando o run completar.
+
+### Anti-regressão final (2026-11-07T17:35Z)
+
+- **Gate Final (SHA `9739e654`):** ✅ success — run [#42392250972](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42392250972) (17:16:29Z)
+- **Gate Final (SHA `787f8438`):** ⏳ queued — run [#42394358194](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42394358194)
+- **Compare GitHub × Canonical:** ❌ failure pré-existente; deploy run #42394305679 cancelled pelo dono; 27 slugs documentados em PENDENCIAS #29 com passos exatos para o dono
+- **Gate Final em PR #3160:** ❌ bloqueado por Gate E40 (REGRA #8) — documentado PENDENCIAS #28
+- **Sem nova falha required introduzida** por esta sessão nos commits desta branch
+- **Itens resolvidos nesta sessão:** #4, #8, #12, #14, #25 (5 itens)
+- **Itens bloqueados pelo dono (required):** #29 (Compare GitHub × Canonical — 27 funções drift)
