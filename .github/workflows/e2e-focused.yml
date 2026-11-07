@@ -14,6 +14,9 @@ on:
       - 'src/components/**'
       - 'src/utils/**'
       - 'src/pages/**'
+      - '!src/**/__tests__/**'
+      - '!src/**/*.test.*'
+      - '!src/**/*.spec.*'
       - '.github/workflows/e2e-focused.yml'
   schedule:
     # E89 — segunda-feira 02:00 UTC
@@ -53,6 +56,9 @@ jobs:
     timeout-minutes: 20
     strategy:
       fail-fast: false
+      # As suites públicas ainda consultam o catálogo real. Evita três cargas
+      # concorrentes contra PostgREST durante picos de CI.
+      max-parallel: 1
       matrix:
         # E159: suites com toMatchSnapshot/toHaveScreenshot movidas para
         # nightly-full.yml (pdf-dialog, color-swatch, magazine-header, dialogs).

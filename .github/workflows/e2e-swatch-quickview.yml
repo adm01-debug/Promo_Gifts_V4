@@ -11,6 +11,9 @@ on:
     branches: [main]
     paths:  # E14: evitar CI em PRs doc-only
       - 'src/**'
+      - '!src/**/__tests__/**'
+      - '!src/**/*.test.*'
+      - '!src/**/*.spec.*'
       - 'e2e/**'
       - 'public/**'
       - 'package*.json'
@@ -47,6 +50,9 @@ jobs:
     continue-on-error: ${{ matrix.browser == 'webkit' }}
     strategy:
       fail-fast: false
+      # Cada job usa o mesmo projeto Supabase de produção. Serializar evita
+      # rajadas simultâneas de Auth/PostgREST vindas dos três navegadores.
+      max-parallel: 1
       matrix:
         browser: [chromium, firefox, webkit]
     steps:
@@ -74,7 +80,8 @@ jobs:
             e2e/catalog/swatch-quickview-list-table.spec.ts \
             e2e/catalog/swatch-quickview-v2-list-table.spec.ts \
             e2e/catalog/swatch-picker-v2-focus-and-quickview.spec.ts \
-            --project=${{ matrix.browser }}-authed
+            --project=${{ matrix.browser }}-authed \
+            --no-deps
       - name: Check min tests executed  # E42
         if: always()
         uses: ./.github/actions/check-min-tests

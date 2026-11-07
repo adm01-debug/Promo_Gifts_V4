@@ -2,10 +2,26 @@ name: Quote Builder Delivery Quality
 on:
   push:
     branches: [ main ]
+    paths:
+      - 'src/**'
+      - '!src/**/__tests__/**'
+      - '!src/**/*.test.*'
+      - '!src/**/*.spec.*'
+      - 'src/pages/__tests__/QuoteBuilderDeliveryTooltip.test.tsx'
+      - 'tests/**'
+      - 'e2e/**'
+      - 'package*.json'
+      - '.nvmrc'
+      - 'vite.config.*'
+      - '.github/workflows/delivery-quality.yml'
   pull_request:
     branches: [ main ]
     paths:  # E14: evitar CI em PRs doc-only
       - 'src/**'
+      - '!src/**/__tests__/**'
+      - '!src/**/*.test.*'
+      - '!src/**/*.spec.*'
+      - 'src/pages/__tests__/QuoteBuilderDeliveryTooltip.test.tsx'
       - 'tests/**'
       - 'e2e/**'
       - 'package*.json'

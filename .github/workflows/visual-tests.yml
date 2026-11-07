@@ -6,6 +6,9 @@ on:
     branches: [main]
     paths:
       - 'src/**'
+      - '!src/**/__tests__/**'
+      - '!src/**/*.test.*'
+      - '!src/**/*.spec.*'
       - 'public/**'
       - 'e2e/**'
       - 'package.json'
@@ -15,6 +18,9 @@ on:
     branches: [main]
     paths:
       - 'src/**'
+      - '!src/**/__tests__/**'
+      - '!src/**/*.test.*'
+      - '!src/**/*.spec.*'
       - 'public/**'
       - 'e2e/**'
       - 'package.json'
@@ -41,6 +47,8 @@ jobs:
       contents: read  # E60: somente-leitura — baselines são atualizados via _update-snapshots.yml (E59)
     strategy:
       fail-fast: false
+      # Os dois shards autenticados compartilham o Supabase de produção.
+      max-parallel: 1
       matrix:
         shardIndex: [1, 2]
         shardTotal: [2]
