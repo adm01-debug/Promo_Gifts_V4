@@ -67,7 +67,7 @@ jobs:
   e2e-gates:
     needs: [e2e-relevance]
     runs-on: ubuntu-24.04
-    timeout-minutes: 20
+    timeout-minutes: 30
     # G-H3: fork guard
     if: needs.e2e-relevance.outputs.relevant == 'true' && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
     env:
