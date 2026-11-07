@@ -25,6 +25,7 @@
  */
 
 import process from "node:process";
+import { pathToFileURL } from "node:url";
 
 const SUPABASE_URL = (process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || "").replace(/\/+$/, "");
 const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_TEST_BYPASS_TOKEN;
@@ -36,14 +37,11 @@ const DRY_RUN = !SUPABASE_URL || !SERVICE_ROLE_KEY || process.env.DRY_RUN !== '0
 
 // E38 — bloqueia execução live contra projeto canônico de produção sem gating explícito
 const CANONICAL_PROJECT = 'doufsxqlfjyuvxuezpln';
-if (!DRY_RUN && SUPABASE_URL.includes(CANONICAL_PROJECT) && process.env.ALLOW_PROD_LOAD !== '1') {
-  console.error('[fuzz-testing] BLOQUEADO: URL aponta para o projeto canônico de produção.');
-  console.error('  Defina ALLOW_PROD_LOAD=1 somente em dispatch gated.');
-  process.exit(1);
-}
 
-if (DRY_RUN) {
-  console.log("⚠️  Credenciais ausentes ou DRY_RUN ≠ 0 — modo dry-run: gerando e validando payloads sem HTTP.");
+function validateExecutionTarget() {
+  if (!DRY_RUN && SUPABASE_URL.includes(CANONICAL_PROJECT) && process.env.ALLOW_PROD_LOAD !== '1') {
+    throw new Error('[fuzz-testing] BLOQUEADO: produção exige ALLOW_PROD_LOAD=1 em dispatch gated.');
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -144,7 +142,8 @@ const UUID_CORPUS = [
 function missingFieldsMatrix(basePayload) {
   const keys = Object.keys(basePayload);
   return keys.map((k) => {
-    const { [k]: _removed, ...rest } = basePayload;
+    const rest = { ...basePayload };
+    delete rest[k];
     return rest;
   });
 }
@@ -435,15 +434,31 @@ const FUNCTION_SPECS = [
 
 const STACK_TRACE_RE = /\bat\s+\w[\w.]*\s+\(|TypeError:|ReferenceError:|SyntaxError:/;
 
+export function serializeFuzzPayload(payload, isRaw = false) {
+  if (isRaw) {
+    const rawBody = typeof payload === "string" ? payload : payload?.rawBody;
+    if (typeof rawBody !== "string") {
+      throw new TypeError(`rawBody deve ser string; recebido ${typeof rawBody}`);
+    }
+    return rawBody;
+  }
+
+  if (payload == null) return "";
+  const serialized = JSON.stringify(payload);
+  if (typeof serialized !== "string") {
+    throw new TypeError(`payload não serializável: ${typeof payload}`);
+  }
+  JSON.parse(serialized);
+  return serialized;
+}
+
 async function execRequest(url, body, isRaw, authToken) {
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), TIMEOUT_MS);
   try {
     const headers = { "Content-Type": "application/json" };
     if (authToken) headers["Authorization"] = `Bearer ${authToken}`;
-    const bodyStr = isRaw
-      ? (typeof body === "string" ? body : (body?.rawBody ?? ""))
-      : body == null ? "" : JSON.stringify(body);
+    const bodyStr = serializeFuzzPayload(body, isRaw);
     const resp = await fetch(url, {
       method: "POST",
       headers,
@@ -464,6 +479,10 @@ async function execRequest(url, body, isRaw, authToken) {
 // ---------------------------------------------------------------------------
 
 async function runFuzz() {
+  validateExecutionTarget();
+  if (DRY_RUN) {
+    console.log("⚠️  Credenciais ausentes ou DRY_RUN ≠ 0 — modo dry-run: gerando e validando payloads sem HTTP.");
+  }
   console.log("🚀 Fuzz Testing — Iniciando bateria exaustiva...");
   console.log(`   Modo: ${DRY_RUN ? "DRY-RUN (sem HTTP)" : "LIVE (HTTP real)"}`);
   console.log(`   Funções alvo: ${FUNCTION_SPECS.length} | Concorrência: ${CONCURRENCY}`);
@@ -480,6 +499,14 @@ async function runFuzz() {
     const payloads = [...spec.gen(), ...MALFORMED_JSON_STRINGS.map(s => ({ rawBody: s }))];
     totalPayloads += payloads.length;
     console.log(`\n📦 [${spec.name}] — ${payloads.length} payloads`);
+    payloads.forEach((payload, index) => {
+      const isRaw = payload && typeof payload === "object" && "rawBody" in payload;
+      try {
+        serializeFuzzPayload(payload, isRaw);
+      } catch (error) {
+        throw new TypeError(`[${spec.name}] payload ${index} inválido: ${error.message}`);
+      }
+    });
     if (DRY_RUN) return { fn: spec.name, crashes: 0, timeouts: 0, stackLeaks: 0, issues: [] };
 
     const url = `${SUPABASE_URL}/functions/v1/${spec.endpoint}`;
@@ -549,7 +576,10 @@ async function runFuzz() {
   }
 }
 
-runFuzz().catch(err => {
-  console.error("❌ Erro fatal:", err.message);
-  process.exit(1);
-});
+const isMain = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
+if (isMain) {
+  runFuzz().catch(err => {
+    console.error("❌ Erro fatal:", err.message);
+    process.exit(1);
+  });
+}
