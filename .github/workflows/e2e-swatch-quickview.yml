@@ -19,6 +19,7 @@ on:
       - 'playwright.config.*'
       - 'vite.config.*'
       - '.github/workflows/e2e-swatch-quickview.yml'
+      - '.github/scripts/e2e-relevance.mjs'
   pull_request:
     branches: [main]
     paths:  # E14: evitar CI em PRs doc-only
@@ -33,6 +34,7 @@ on:
       - 'playwright.config.*'
       - 'vite.config.*'
       - '.github/workflows/e2e-swatch-quickview.yml'
+      - '.github/scripts/e2e-relevance.mjs'
 
 concurrency:
   group: e2e-swatch-quickview-${{ github.ref }}
@@ -49,6 +51,7 @@ env:
 
 permissions:
   contents: read
+  pull-requests: read
 
 
 defaults:
@@ -56,8 +59,13 @@ defaults:
     shell: bash
 
 jobs:
+  e2e-relevance:
+    uses: ./.github/workflows/_e2e-relevance.yml
+
   swatch-quickview:
     name: ${{ matrix.browser }} • swatch→QV
+    needs: [e2e-relevance]
+    if: needs.e2e-relevance.outputs.relevant == 'true'
     timeout-minutes: 90
     runs-on: ubuntu-24.04
     # webkit runners são sistematicamente preemptados por shutdown signal de infraestrutura

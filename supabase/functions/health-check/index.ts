@@ -19,8 +19,8 @@ interface HealthChecker {
   check(): Promise<CheckResult>;
 }
 
-// Per-check timeout: gate is 500ms total; cap each probe to keep the worst case bounded.
-const PROBE_TIMEOUT_MS = 1500;
+// Absorb observed 2–4s PostgREST cold starts without exceeding the 30s uptime probe budget.
+const PROBE_TIMEOUT_MS = 5000;
 // Vault credential lookup timeout: if getCredential() hangs, bail fast so curl --max-time 30 isn't hit.
 const CREDENTIAL_TIMEOUT_MS = 5000;
 
@@ -191,7 +191,7 @@ Deno.serve(async (req) => {
   const corsHeaders = {
     ...buildPublicCorsHeaders(),
     "Content-Type": "application/json",
-    "X-Health-Version": "1.3.1",
+    "X-Health-Version": "1.3.2",
   };
 
   const start = Date.now();

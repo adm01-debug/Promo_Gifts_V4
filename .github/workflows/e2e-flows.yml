@@ -19,6 +19,7 @@ on:
       - 'playwright.config.*'
       - 'vite.config.*'
       - '.github/workflows/e2e-flows.yml'
+      - '.github/scripts/e2e-relevance.mjs'
   pull_request:
     branches: [main]
     paths:  # E14: evitar CI em PRs doc-only
@@ -33,6 +34,7 @@ on:
       - 'playwright.config.*'
       - 'vite.config.*'
       - '.github/workflows/e2e-flows.yml'
+      - '.github/scripts/e2e-relevance.mjs'
   workflow_dispatch:
 
 concurrency:
@@ -47,6 +49,7 @@ env:
   VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_tjH5qAbZ0e5HTTd872NijQ_s9m6JvYU' }}
 permissions:
   contents: read
+  pull-requests: read
 
 
 defaults:
@@ -54,8 +57,13 @@ defaults:
     shell: bash
 
 jobs:
+  e2e-relevance:
+    uses: ./.github/workflows/_e2e-relevance.yml
+
   e2e-error-boundaries:
     name: E2E — Error Boundaries (sem auth)
+    needs: [e2e-relevance]
+    if: needs.e2e-relevance.outputs.relevant == 'true'
     runs-on: ubuntu-24.04
     timeout-minutes: 20
 

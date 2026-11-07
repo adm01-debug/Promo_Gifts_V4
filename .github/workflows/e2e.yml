@@ -20,9 +20,10 @@ on:
       - 'playwright.config.*'
       - 'vite.config.*'
       - '.github/workflows/e2e.yml'
+      - '.github/scripts/e2e-relevance.mjs'
   pull_request:
     branches: [main]
-    paths: # E14: evitar CI em PRs doc-only
+    paths:  # E14: evitar CI em PRs doc-only
       - 'src/**'
       - '!src/**/__tests__/**'
       - '!src/**/*.test.*'
@@ -34,10 +35,12 @@ on:
       - 'playwright.config.*'
       - 'vite.config.*'
       - '.github/workflows/e2e.yml'
+      - '.github/scripts/e2e-relevance.mjs'
   workflow_dispatch:
 
 permissions:
   contents: read
+  pull-requests: read
 
 concurrency:
   group: e2e-${{ github.ref }}
@@ -51,6 +54,9 @@ defaults:
 # E013: Determina quais projetos Playwright estão disponíveis com base nos secrets.
 # chromium-authed só entra na matrix quando has_e2e == 'true'.
 jobs:
+  e2e-relevance:
+    uses: ./.github/workflows/_e2e-relevance.yml
+
   secrets-check:
     uses: ./.github/workflows/_secrets-check.yml
     secrets: inherit
@@ -58,10 +64,11 @@ jobs:
   # ─── JOB 1: PRÉ-VÔOS (header-sticky + carrinhos URL-state) ──────────────────
   # Roda uma vez; se falhar, os shards não sobem (needs: e2e-gates).
   e2e-gates:
+    needs: [e2e-relevance]
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     # G-H3: fork guard
-    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    if: needs.e2e-relevance.outputs.relevant == 'true' && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
     env:
       CI: 'true'
       FORCE_COLOR: '0'
@@ -147,7 +154,7 @@ jobs:
     if: needs.e2e-gates.result == 'success'
     strategy:
       fail-fast: false
-      # Dois jobs de dois workers = no máximo quatro browsers simultâneos.
+      # Oito shards simultâneos saturavam Auth/PostgREST do projeto canônico.
       max-parallel: 2
       matrix:
         shard: [1, 2, 3, 4]
