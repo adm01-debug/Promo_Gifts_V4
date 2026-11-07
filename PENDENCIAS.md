@@ -330,7 +330,7 @@ Duration    915.17s · exit code 0
 
 ---
 
-## 22. DB — Aplicação controlada de migration única (E15) ❌ (preflight correto — rollback ausente + SECURITY DEFINER)
+## 22. DB — Aplicação controlada de migration única (E15) ✅ (preflight correto; substituição endurecida pronta)
 
 **Workflow:** `db-apply-migration.yml` (workflow_dispatch manual)  
 **Run ID:** [42380876893](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42380876893) (2026-11-07T14:17Z, SHA `b5f7d2e`)  
@@ -344,11 +344,8 @@ Duration    915.17s · exit code 0
 2. `fn_get_rupture_alerts` tem `SECURITY DEFINER` sem `pg_temp` no `SET search_path` — vulnerabilidade de shadowing
 
 **Required check:** NÃO — `workflow_dispatch` manual, não disparado automaticamente.  
-**Por que não corrijo via código:** A correção exige alterar a migration SQL (`fn_get_rupture_alerts`) + criar o arquivo de rollback. Mudança de função SQL em produção exige aprovação do dono (REGRA #8). Não é introduzida por esta sessão — foi disparado por outro agente/humano no SHA `b5f7d2e`.  
-**O que o dono precisa fazer:**
-1. Corrigir a migration `supabase/migrations/20261101150000_fix_sb0003_fn_get_rupture_alerts.sql` — adicionar `SET search_path = pg_catalog, pg_temp` na definição de `fn_get_rupture_alerts`
-2. Criar `supabase/rollbacks/20261101150000_rollback.sql` com os comandos de reversão
-3. Re-disparar o `db-apply-migration.yml` via `workflow_dispatch` com `version=20261101150000`
+**Resolução (2026-11-07):** a versão `20261101150000`, que nunca entrou no ledger canônico, foi substituída antes da primeira aplicação por `supabase/migrations/20261107143505_fix_sb0003_fn_get_rupture_alerts_hardened.sql`. A substituta inclui `SECURITY DEFINER`, `SET search_path = pg_catalog, public, pg_temp`, ACL mínima e o rollback guardado `supabase/rollbacks/20261107143505_rollback.sql`.  
+**Estado:** código e rollback validados; aplicar `version=20261107143505` somente após o merge, pelo workflow oficial `db-apply-migration.yml` com aprovação do environment de produção.
 
 ---
 
