@@ -19,7 +19,7 @@
 import { expect, type Page, type Request } from "@playwright/test";
 
 import { Sel } from "../fixtures/selectors";
-import { test } from "../fixtures/test-base";
+import { requireAuth, test } from "../fixtures/test-base";
 import { gotoAndSettle, waitForRouteIdle } from "./nav";
 import { clickTestId } from "./waits";
 
@@ -201,6 +201,20 @@ export async function loginAs(page: Page, role: Role = "user"): Promise<void> {
   if (process.env.E2E_MOCK_AUTH === "1") {
     test.skip(true, "E2E_MOCK_AUTH=1 — smoke público, teste autenticado ignorado");
     return;
+  }
+
+  // Projetos autenticados dependem do storageState produzido pelo auth.setup.
+  // Se o setup degradou para um estado vazio após indisponibilidade transitória
+  // do Supabase, não repita o mesmo login (até 150 s) em cada teste: requireAuth
+  // encerra o teste imediatamente. Projetos públicos continuam podendo exercer
+  // o login via UI sem depender desse arquivo compartilhado.
+  const projectName = test.info().project.name;
+  const usesSetupStorage =
+    projectName === "chromium-smoke" ||
+    projectName.endsWith("-authed") ||
+    projectName.startsWith("mobile-");
+  if (usesSetupStorage) {
+    requireAuth("Auth setup não produziu uma sessão utilizável");
   }
 
   const email = role === "dev" ? process.env.E2E_DEV_EMAIL :
