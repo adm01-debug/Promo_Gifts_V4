@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "bfb2926d9de98868a310aa6e1cb7c6d71d425757",
+  "commit": "be7688da2ab5508848747b10eaab99a31241467b",
   "branch": "main",
-  "data_commit": "2026-11-07T18:04:40-03:00",
+  "data_commit": "2026-11-07T18:53:41-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "be7688d",
+    "data": "2026-11-07",
+    "assunto": "docs(ci): RELATORIO §23 — baseline bfb2926d + tabela de prova completa 36 workflows (#3178)"
+   },
    {
     "sha": "bfb2926",
     "data": "2026-11-07",
@@ -126,11 +131,6 @@
     "sha": "5b0dab1",
     "data": "2026-11-06",
     "assunto": "docs(db): registra aplicação da migration 20261101201000 (#3121)"
-   },
-   {
-    "sha": "372dc82",
-    "data": "2026-11-06",
-    "assunto": "fix(db): fixa search_path de handle_updated_at (#3111)"
    }
   ],
   "arquivos_mudados_7d": 403,
@@ -199,7 +199,7 @@
   "arquivos_mais_mudados_90d": [
    {
     "arquivo": "RELATORIO_CI.md",
-    "mudancas": 68
+    "mudancas": 69
    },
    {
     "arquivo": "PENDENCIAS.md",
@@ -266,16 +266,16 @@
     "mudancas": 8
    },
    {
-    "arquivo": ".github/workflows/e2e-swatch-quickview.yml",
-    "mudancas": 7
-   },
-   {
     "arquivo": ".github/workflows/replenishment-quality.yml",
     "mudancas": 7
    },
    {
     "arquivo": "e2e/flows/magazine-preview-sticky-smoke.spec.ts",
     "mudancas": 7
+   },
+   {
+    "arquivo": ".github/workflows/e2e-swatch-quickview.yml",
+    "mudancas": 6
    },
    {
     "arquivo": "analise-prs/baseline/lint.txt",
@@ -286,22 +286,22 @@
     "mudancas": 6
    },
    {
-    "arquivo": ".github/workflows/ci-security-drift.yml",
-    "mudancas": 5
-   },
-   {
     "arquivo": ".github/workflows/ratchet-weekly.yml",
     "mudancas": 5
    },
    {
     "arquivo": ".github/workflows/schema-snapshot-export.yml",
     "mudancas": 5
+   },
+   {
+    "arquivo": "analise-branches/dossies/devin-probe-e184-legacy-refs.md",
+    "mudancas": 5
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 330
+    "commits": 329
    },
    {
     "autor": "Joaquim Ataides",

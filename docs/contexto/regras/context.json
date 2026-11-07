@@ -1,9 +1,9 @@
 {
  "meta": {
-  "sha": "bfb2926d9de98868a310aa6e1cb7c6d71d425757",
+  "sha": "be7688da2ab5508848747b10eaab99a31241467b",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-07 21:10 UTC",
+  "generated_at": "2026-11-07 21:55 UTC",
   "files_total": 9099,
   "code_files": 7844,
   "code_lines": 1051314
@@ -483022,10 +483022,19 @@
   }
  },
  "git": {
-  "sha": "bfb2926d9de98868a310aa6e1cb7c6d71d425757",
+  "sha": "be7688da2ab5508848747b10eaab99a31241467b",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "be7688d",
+    "date": "2026-11-07",
+    "author": "adm01-debug",
+    "subject": "docs(ci): RELATORIO §23 — baseline bfb2926d + tabela de prova completa 36 workflows (#3178)",
+    "files": [
+     "RELATORIO_CI.md"
+    ]
+   },
    {
     "sha": "bfb2926",
     "date": "2026-11-07",
@@ -483326,21 +483335,12 @@
     "files": [
      ".security/policies-baseline.json"
     ]
-   },
-   {
-    "sha": "e1705b3",
-    "date": "2026-11-06",
-    "author": "adm01-debug",
-    "subject": "fix(e2e): alinha timeout do setup de autenticação (#3102)",
-    "files": [
-     "e2e/fixtures/auth.setup.ts"
-    ]
    }
   ],
   "hot_files": [
    [
     "RELATORIO_CI.md",
-    6
+    7
    ],
    [
     "PENDENCIAS.md",
@@ -483353,10 +483353,6 @@
    [
     "e2e/flows/magazine-publish-smoke.spec.ts",
     3
-   ],
-   [
-    "e2e/fixtures/auth.setup.ts",
-    2
    ],
    [
     ".github/workflows/e2e-swatch-quickview.yml",
@@ -483416,6 +483412,10 @@
    ],
    [
     ".env.e2e.example",
+    1
+   ],
+   [
+    "e2e/fixtures/auth.setup.ts",
     1
    ]
   ]
