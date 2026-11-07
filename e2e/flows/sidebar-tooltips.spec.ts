@@ -9,12 +9,14 @@
  * frágil ao texto do link, e validamos a mensagem comparando o conteúdo
  * do `[role="tooltip"]` aberto.
  */
-import { test, expect } from "../fixtures/test-base";
+import { test, expect, requireAuth } from "../fixtures/test-base";
 import { loginAs } from "../helpers/auth";
 import { gotoAndSettle } from "../helpers/nav";
 
 test.describe("Sidebar — tooltips comerciais (hover/unhover)", () => {
   test.beforeEach(async ({ page }) => {
+    requireAuth();
+
     const vp = page.viewportSize();
     test.skip(
       vp !== null && vp.width < 768,
