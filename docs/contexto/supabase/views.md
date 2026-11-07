@@ -9398,8 +9398,8 @@ SELECT s.id AS supplier_id,
 | campo | valor |
 |---|---|
 | owner | postgres |
-| security_invoker | sim |
-| opções | security_invoker=true |
+| security_invoker | não |
+| opções | security_invoker=on |
 | depende de | information_schema.columns, pg_catalog.pg_policies |
 | populada | n/a |
 | comentário | View de saúde rápida para os checks adicionados durante a sessão de correção 2026-06-21/22. Complementa fn_run_smoke_tests(). NOTA: backup_tables_rls_locked usa RLS+policy check (não has_table_privilege que ignora RLS). |
@@ -9455,9 +9455,9 @@ UNION ALL
             WHEN (( SELECT count(*) AS count
                FROM pg_class c
                  JOIN pg_namespace n ON n.oid = c.relnamespace
-              WHERE n.nspname = 'public'::name AND (c.relname = ANY (ARRAY['_backup_stock_daily_summary_20260618'::name, '_bkp_kit_dims_20260619'::name, '_bkp_orphan_active_variants_20260619'::name])) AND c.relrowsecurity = true)) = 3 AND (( SELECT count(*) AS count
+              WHERE n.nspname = 'public'::name AND (c.relname = ANY (ARRAY['_bkp_kit_dims_20260619'::name, '_bkp_orphan_active_variants_20260619'::name])) AND c.relrowsecurity = true)) = 2 AND (( SELECT count(*) AS count
                FROM pg_policies
-              WHERE pg_policies.schemaname = 'public'::name AND (pg_policies.tablename = ANY (ARRAY['_backup_stock_daily_summary_20260618'::name, '_bkp_kit_dims_20260619'::name, '_bkp_orphan_active_variants_20260619'::name])) AND pg_policies.cmd = 'SELECT'::text AND (pg_policies.roles::text ~~* '%anon%'::text OR pg_policies.roles::text ~~* '%authenticated%'::text OR pg_policies.roles::text ~~* '%public%'::text))) = 0 AND NOT has_table_privilege('anon'::name, 'public._bkp_kit_dims_20260619'::text, 'SELECT'::text) AND NOT has_table_privilege('authenticated'::name, 'public._bkp_kit_dims_20260619'::text, 'SELECT'::text) THEN '✅ PASS'::text
+              WHERE pg_policies.schemaname = 'public'::name AND (pg_policies.tablename = ANY (ARRAY['_bkp_kit_dims_20260619'::name, '_bkp_orphan_active_variants_20260619'::name])) AND pg_policies.cmd = 'SELECT'::text AND (pg_policies.roles::text ~~* '%anon%'::text OR pg_policies.roles::text ~~* '%authenticated%'::text OR pg_policies.roles::text ~~* '%public%'::text))) = 0 AND NOT has_table_privilege('anon'::name, 'public._bkp_kit_dims_20260619'::text, 'SELECT'::text) AND NOT has_table_privilege('authenticated'::name, 'public._bkp_kit_dims_20260619'::text, 'SELECT'::text) THEN '✅ PASS'::text
             ELSE '❌ FAIL (RLS ou grant incorreto)'::text
         END AS result
 UNION ALL

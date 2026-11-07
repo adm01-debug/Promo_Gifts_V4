@@ -2,6 +2,12 @@
 
 Diff semântico gerado a cada coleta em que algo mudou.
 
+## 2026-11-07 01:53 UTC
+
+- **lints** adicionado (1): `view_security_definer:public.vw_system_health_quick`
+- **migrations** adicionado (1): `20261101201000_fix_health_view_backup_check`
+- **views** alterado (1): `public.vw_system_health_quick`
+
 ## 2026-11-07 00:48 UTC
 
 - **realtime** adicionado (1): `supabase_realtime_messages_publication:realtime.messages_2026_11_10`

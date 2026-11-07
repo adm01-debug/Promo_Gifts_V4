@@ -2578,6 +2578,7 @@ SQL em `migrations/<versao>_<nome>.sql`. Mudanças feitas pelo Dashboard/SQL Edi
 | 20261101194657 | [perf002_fn_drop_indexes_obfuscated](migrations/20261101194657_perf002_fn_drop_indexes_obfuscated.sql) | 1 |
 | 20261101194851 | [perf002_schedule_drop_indexes](migrations/20261101194851_perf002_schedule_drop_indexes.sql) | 1 |
 | 20261101194940 | [perf002_unschedule_cron](migrations/20261101194940_perf002_unschedule_cron.sql) | 1 |
+| 20261101201000 | [fix_health_view_backup_check](migrations/20261101201000_fix_health_view_backup_check.sql) | 1 |
 | 20261101202426 | [fix_auth001_revoke_execute_cleanup_sessions](migrations/20261101202426_fix_auth001_revoke_execute_cleanup_sessions.sql) | 1 |
 | 20261101202432 | [fix_perf002_recreate_captured_at_index](migrations/20261101202432_fix_perf002_recreate_captured_at_index.sql) | 1 |
 | 20261101202500 | [cron001_stagger_schedules_reduce_concurrent](migrations/20261101202500_cron001_stagger_schedules_reduce_concurrent.sql) | 1 |

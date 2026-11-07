@@ -30,12 +30,12 @@ Gerado automaticamente a cada 10 min pelo workflow `contexto.yml` (job `banco`) 
 | extensões | 18 |
 | cron jobs | 144 |
 | filas pgmq | 0 |
-| migrations | 2579 |
+| migrations | 2580 |
 | buckets | 11 |
 | edge functions | n/d |
 | webhooks | 0 |
-| lints ALTA | 9 |
-| lints total | 31 |
+| lints ALTA | 10 |
+| lints total | 32 |
 
 ## Estado das fontes do mapa de referências
 
@@ -88,3 +88,9 @@ Cada fonte é atualizada independentemente; referências anteriores não comprov
 | `manifest.json` | data UTC da coleta concluída, erros e seções reaproveitadas; usado pelo índice de contexto |
 | `CHANGELOG.md` | diff semântico a cada mudança |
 | `errors.md` | seções que falharam na última coleta |
+
+## ⚠️ Problemas na última coleta
+
+| seção | erro |
+|---|---|
+| cron_runs | canceling statement due to statement timeout |

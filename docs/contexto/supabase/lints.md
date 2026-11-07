@@ -13,6 +13,7 @@ Verificações objetivas feitas no catálogo. Um agente deve ler isto antes de p
 | ALTA | view_security_definer | public.v_system_health_dashboard | View em public sem security_invoker: executa como owner e ignora RLS das tabelas base. |
 | ALTA | view_security_definer | public.v_tabela_preco_gravacao_oficial_public | View em public sem security_invoker: executa como owner e ignora RLS das tabelas base. |
 | ALTA | view_security_definer | public.v_variant_sale_prices_public | View em public sem security_invoker: executa como owner e ignora RLS das tabelas base. |
+| ALTA | view_security_definer | public.vw_system_health_quick | View em public sem security_invoker: executa como owner e ignora RLS das tabelas base. |
 | BAIXA | extension_in_public | pg_repack | Extensão instalada no schema public (recomendado: schema extensions). |
 | BAIXA | extension_in_public | pgstattuple | Extensão instalada no schema public (recomendado: schema extensions). |
 | BAIXA | fk_without_index | public.stock_notes.stock_notes_created_by_fkey | FK sem índice nas colunas ['created_by']: joins e DELETE/UPDATE na tabela pai ficam lentos. |
