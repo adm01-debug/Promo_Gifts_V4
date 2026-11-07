@@ -73,7 +73,9 @@ jobs:
         env:
           E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
           E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
-        run: npx playwright test e2e/replenishment-stress.spec.ts --project=chromium-authed
+        # O spec compartilha a sessão autenticada e o mesmo servidor local.
+        # Serializar evita colisão no login/page.goto entre os três cenários.
+        run: npx playwright test e2e/replenishment-stress.spec.ts --project=chromium-authed --workers=1
 
       - name: E2E — Paridade visual /novidades vs /reposicao
         if: env.E2E_USER_EMAIL != ''
