@@ -153,8 +153,7 @@ export const ProductListItem = memo(
     const clearSelectedColor = useProductSelectionStore((st) => st.clearSelectedColor);
     const userSelectedColorName =
       useProductSelectionStore((st) => st.selectedColors[product.id]) ?? null;
-    const userSelectedVariantId =
-      useProductSelectionStore((st) => st.selectedVariantIds[product.id]) ?? null;
+    const userSelectedVariantId = useProductSelectionStore((st) => st.selectedVariantIds[product.id]) ?? null;
 
     // FIX-COLOR-SEL-02 (2026-06-21): busca dados reais da variante ao selecionar cor.
     // Dispara SOMENTE quando o usuário clicou numa bolinha (userSelectedColorName != null).
@@ -402,16 +401,13 @@ export const ProductListItem = memo(
       product.og_image_url ||
       product.images[0] ||
       null;
-    const rawImageUrl = useSwatchesV2
-      ? (swatchV2.displayImage ?? fallbackImageUrl)
-      : fallbackImageUrl;
+    const rawImageUrl = useSwatchesV2 ? (swatchV2.displayImage ?? fallbackImageUrl) : fallbackImageUrl;
     const thumbUrl = rawImageUrl ? getCdnUrl(rawImageUrl, 'card') : '/placeholder.svg';
 
     const colorStock = resolveColorStock(product, activeColorFilter, userSelectedColorName);
     // FIX-COLOR-SEL-02: liveStockQty supera resolveColorStock quando disponível —
     // dado real do BD vs cache que pode estar sem stock por falta de hydration anterior.
-    const fallbackStock =
-      liveStockQty !== null ? liveStockQty : (colorStock?.stock ?? product.stock);
+    const fallbackStock = liveStockQty !== null ? liveStockQty : (colorStock?.stock ?? product.stock);
     const displayStock = useSwatchesV2 ? swatchV2.displayStock : fallbackStock;
     const displayStatus = useSwatchesV2
       ? getCatalogStockStatus(swatchV2.displayStock, undefined, product.minQuantity)
