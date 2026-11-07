@@ -1,3 +1,12 @@
+-- =============================================================================
+-- Baseline do schema de produção (doufsxqlfjyuvxuezpln) — versão 20261101232022
+-- Gerado em 2026-11-07T00:25:17.223Z por scripts/export-schema-snapshot.mjs (supabase db dump --linked).
+-- Uso exclusivo: ponto de partida do replay do db-schema-drift-check.
+-- NÃO é migration: não aplicar em produção, não copiar para supabase/migrations/.
+-- Não contém: dados, jobs do pg_cron, storage, vault, schema auth, publications,
+-- event triggers, configurações por role. Não serve para criar ambiente novo.
+-- =============================================================================
+
 
 
 
@@ -29,12 +38,6 @@ CREATE SCHEMA IF NOT EXISTS "api";
 ALTER SCHEMA "api" OWNER TO "postgres";
 
 
-CREATE SCHEMA IF NOT EXISTS "auth";
-
-
-ALTER SCHEMA "auth" OWNER TO "supabase_admin";
-
-
 CREATE SCHEMA IF NOT EXISTS "cf_recon";
 
 
@@ -53,22 +56,11 @@ CREATE SCHEMA IF NOT EXISTS "classification_audit";
 ALTER SCHEMA "classification_audit" OWNER TO "postgres";
 
 
-CREATE SCHEMA IF NOT EXISTS "extensions";
+CREATE EXTENSION IF NOT EXISTS "pg_cron" WITH SCHEMA "pg_catalog";
 
 
-ALTER SCHEMA "extensions" OWNER TO "postgres";
 
 
-CREATE SCHEMA IF NOT EXISTS "graphql";
-
-
-ALTER SCHEMA "graphql" OWNER TO "supabase_admin";
-
-
-CREATE SCHEMA IF NOT EXISTS "graphql_public";
-
-
-ALTER SCHEMA "graphql_public" OWNER TO "supabase_admin";
 
 
 CREATE SCHEMA IF NOT EXISTS "internal";
@@ -77,44 +69,28 @@ CREATE SCHEMA IF NOT EXISTS "internal";
 ALTER SCHEMA "internal" OWNER TO "postgres";
 
 
+CREATE EXTENSION IF NOT EXISTS "pg_net" WITH SCHEMA "extensions";
+
+
+
+
+
+
 CREATE SCHEMA IF NOT EXISTS "prod_audit";
 
 
 ALTER SCHEMA "prod_audit" OWNER TO "postgres";
 
 
-CREATE SCHEMA IF NOT EXISTS "public";
-
-
-ALTER SCHEMA "public" OWNER TO "pg_database_owner";
-
-
 COMMENT ON SCHEMA "public" IS '@graphql({"max_rows": 30, "inflect_names": false})';
 
 
 
-CREATE SCHEMA IF NOT EXISTS "realtime";
+CREATE EXTENSION IF NOT EXISTS "pg_repack" WITH SCHEMA "public";
 
 
-ALTER SCHEMA "realtime" OWNER TO "supabase_admin";
 
 
-CREATE SCHEMA IF NOT EXISTS "storage";
-
-
-ALTER SCHEMA "storage" OWNER TO "supabase_admin";
-
-
-CREATE SCHEMA IF NOT EXISTS "supabase_functions";
-
-
-ALTER SCHEMA "supabase_functions" OWNER TO "supabase_admin";
-
-
-CREATE SCHEMA IF NOT EXISTS "supabase_migrations";
-
-
-ALTER SCHEMA "supabase_migrations" OWNER TO "postgres";
 
 
 CREATE SCHEMA IF NOT EXISTS "supplier_stricker";
@@ -127,99 +103,102 @@ COMMENT ON SCHEMA "supplier_stricker" IS 'Dados brutos sincronizados da API Stri
 
 
 
-CREATE SCHEMA IF NOT EXISTS "vault";
+CREATE EXTENSION IF NOT EXISTS "http" WITH SCHEMA "extensions";
 
 
-ALTER SCHEMA "vault" OWNER TO "supabase_admin";
 
 
-CREATE TYPE "auth"."aal_level" AS ENUM (
-    'aal1',
-    'aal2',
-    'aal3'
-);
 
 
-ALTER TYPE "auth"."aal_level" OWNER TO "supabase_auth_admin";
+CREATE EXTENSION IF NOT EXISTS "hypopg" WITH SCHEMA "extensions";
 
 
-CREATE TYPE "auth"."code_challenge_method" AS ENUM (
-    's256',
-    'plain'
-);
 
 
-ALTER TYPE "auth"."code_challenge_method" OWNER TO "supabase_auth_admin";
 
 
-CREATE TYPE "auth"."factor_status" AS ENUM (
-    'unverified',
-    'verified'
-);
+CREATE EXTENSION IF NOT EXISTS "index_advisor" WITH SCHEMA "extensions";
 
 
-ALTER TYPE "auth"."factor_status" OWNER TO "supabase_auth_admin";
 
 
-CREATE TYPE "auth"."factor_type" AS ENUM (
-    'totp',
-    'webauthn',
-    'phone',
-    'recovery_code'
-);
 
 
-ALTER TYPE "auth"."factor_type" OWNER TO "supabase_auth_admin";
+CREATE EXTENSION IF NOT EXISTS "moddatetime" WITH SCHEMA "extensions";
 
 
-CREATE TYPE "auth"."oauth_authorization_status" AS ENUM (
-    'pending',
-    'approved',
-    'denied',
-    'expired'
-);
 
 
-ALTER TYPE "auth"."oauth_authorization_status" OWNER TO "supabase_auth_admin";
 
 
-CREATE TYPE "auth"."oauth_client_type" AS ENUM (
-    'public',
-    'confidential'
-);
+CREATE EXTENSION IF NOT EXISTS "pg_graphql" WITH SCHEMA "graphql";
 
 
-ALTER TYPE "auth"."oauth_client_type" OWNER TO "supabase_auth_admin";
 
 
-CREATE TYPE "auth"."oauth_registration_type" AS ENUM (
-    'dynamic',
-    'manual'
-);
 
 
-ALTER TYPE "auth"."oauth_registration_type" OWNER TO "supabase_auth_admin";
+CREATE EXTENSION IF NOT EXISTS "pg_stat_statements" WITH SCHEMA "extensions";
 
 
-CREATE TYPE "auth"."oauth_response_type" AS ENUM (
-    'code'
-);
 
 
-ALTER TYPE "auth"."oauth_response_type" OWNER TO "supabase_auth_admin";
 
 
-CREATE TYPE "auth"."one_time_token_type" AS ENUM (
-    'confirmation_token',
-    'reauthentication_token',
-    'recovery_token',
-    'email_change_token_new',
-    'email_change_token_current',
-    'phone_change_token'
-);
+CREATE EXTENSION IF NOT EXISTS "pg_trgm" WITH SCHEMA "extensions";
 
 
-ALTER TYPE "auth"."one_time_token_type" OWNER TO "supabase_auth_admin";
+
+
+
+
+CREATE EXTENSION IF NOT EXISTS "pgcrypto" WITH SCHEMA "extensions";
+
+
+
+
+
+
+CREATE EXTENSION IF NOT EXISTS "pgmq";
+
+
+
+
+
+
+CREATE EXTENSION IF NOT EXISTS "pgstattuple" WITH SCHEMA "public";
+
+
+
+
+
+
+CREATE EXTENSION IF NOT EXISTS "supabase_vault" WITH SCHEMA "vault";
+
+
+
+
+
+
+CREATE EXTENSION IF NOT EXISTS "unaccent" WITH SCHEMA "extensions";
+
+
+
+
+
+
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp" WITH SCHEMA "extensions";
+
+
+
+
+
+
+CREATE EXTENSION IF NOT EXISTS "wrappers" WITH SCHEMA "extensions";
+
+
+
+
 
 
 CREATE TYPE "public"."app_role" AS ENUM (
@@ -473,151 +452,6 @@ CREATE TYPE "public"."tipo_cor_enum" AS ENUM (
 ALTER TYPE "public"."tipo_cor_enum" OWNER TO "postgres";
 
 
-CREATE TYPE "realtime"."action" AS ENUM (
-    'INSERT',
-    'UPDATE',
-    'DELETE',
-    'TRUNCATE',
-    'ERROR'
-);
-
-
-ALTER TYPE "realtime"."action" OWNER TO "supabase_realtime_admin";
-
-
-CREATE TYPE "realtime"."equality_op" AS ENUM (
-    'eq',
-    'neq',
-    'lt',
-    'lte',
-    'gt',
-    'gte',
-    'in',
-    'like',
-    'ilike',
-    'is',
-    'match',
-    'imatch',
-    'isdistinct'
-);
-
-
-ALTER TYPE "realtime"."equality_op" OWNER TO "supabase_realtime_admin";
-
-
-CREATE TYPE "realtime"."user_defined_filter" AS (
-	"column_name" "text",
-	"op" "realtime"."equality_op",
-	"value" "text",
-	"negate" boolean
-);
-
-
-ALTER TYPE "realtime"."user_defined_filter" OWNER TO "supabase_realtime_admin";
-
-
-CREATE TYPE "realtime"."wal_column" AS (
-	"name" "text",
-	"type_name" "text",
-	"type_oid" "oid",
-	"value" "jsonb",
-	"is_pkey" boolean,
-	"is_selectable" boolean
-);
-
-
-ALTER TYPE "realtime"."wal_column" OWNER TO "supabase_realtime_admin";
-
-
-CREATE TYPE "realtime"."wal_rls" AS (
-	"wal" "jsonb",
-	"is_rls_enabled" boolean,
-	"subscription_ids" "uuid"[],
-	"errors" "text"[]
-);
-
-
-ALTER TYPE "realtime"."wal_rls" OWNER TO "supabase_realtime_admin";
-
-
-CREATE TYPE "storage"."buckettype" AS ENUM (
-    'STANDARD',
-    'ANALYTICS',
-    'VECTOR'
-);
-
-
-ALTER TYPE "storage"."buckettype" OWNER TO "supabase_storage_admin";
-
-
-CREATE OR REPLACE FUNCTION "auth"."email"() RETURNS "text"
-    LANGUAGE "sql" STABLE
-    AS $$
-  select 
-  coalesce(
-    nullif(current_setting('request.jwt.claim.email', true), ''),
-    (nullif(current_setting('request.jwt.claims', true), '')::jsonb ->> 'email')
-  )::text
-$$;
-
-
-ALTER FUNCTION "auth"."email"() OWNER TO "supabase_auth_admin";
-
-
-COMMENT ON FUNCTION "auth"."email"() IS 'Deprecated. Use auth.jwt() -> ''email'' instead.';
-
-
-
-CREATE OR REPLACE FUNCTION "auth"."jwt"() RETURNS "jsonb"
-    LANGUAGE "sql" STABLE
-    AS $$
-  select 
-    coalesce(
-        nullif(current_setting('request.jwt.claim', true), ''),
-        nullif(current_setting('request.jwt.claims', true), '')
-    )::jsonb
-$$;
-
-
-ALTER FUNCTION "auth"."jwt"() OWNER TO "supabase_auth_admin";
-
-
-CREATE OR REPLACE FUNCTION "auth"."role"() RETURNS "text"
-    LANGUAGE "sql" STABLE
-    AS $$
-  select 
-  coalesce(
-    nullif(current_setting('request.jwt.claim.role', true), ''),
-    (nullif(current_setting('request.jwt.claims', true), '')::jsonb ->> 'role')
-  )::text
-$$;
-
-
-ALTER FUNCTION "auth"."role"() OWNER TO "supabase_auth_admin";
-
-
-COMMENT ON FUNCTION "auth"."role"() IS 'Deprecated. Use auth.jwt() -> ''role'' instead.';
-
-
-
-CREATE OR REPLACE FUNCTION "auth"."uid"() RETURNS "uuid"
-    LANGUAGE "sql" STABLE
-    AS $$
-  select 
-  coalesce(
-    nullif(current_setting('request.jwt.claim.sub', true), ''),
-    (nullif(current_setting('request.jwt.claims', true), '')::jsonb ->> 'sub')
-  )::uuid
-$$;
-
-
-ALTER FUNCTION "auth"."uid"() OWNER TO "supabase_auth_admin";
-
-
-COMMENT ON FUNCTION "auth"."uid"() IS 'Deprecated. Use auth.jwt() -> ''sub'' instead.';
-
-
-
 CREATE OR REPLACE FUNCTION "classification_audit"."apply_high_confidence_suggestions"("p_dry_run" boolean DEFAULT true, "p_min_matches" integer DEFAULT 4) RETURNS TABLE("acao" "text", "product_id" "uuid", "produto" "text", "categoria" "text", "matches" integer, "score" integer)
     LANGUAGE "plpgsql" SECURITY DEFINER
     SET "search_path" TO 'public', 'classification_audit'
@@ -786,280 +620,6 @@ $$;
 
 
 ALTER FUNCTION "classification_audit"."validate_match_phrase"("p_product_name" "text", "p_tokens" "text") OWNER TO "postgres";
-
-
-CREATE OR REPLACE FUNCTION "extensions"."grant_pg_cron_access"() RETURNS "event_trigger"
-    LANGUAGE "plpgsql"
-    SET "search_path" TO ''
-    AS $$
-BEGIN
-  IF EXISTS (
-    SELECT
-    FROM pg_event_trigger_ddl_commands() AS ev
-    JOIN pg_extension AS ext
-    ON ev.objid = ext.oid
-    WHERE ext.extname = 'pg_cron'
-  )
-  THEN
-    grant usage on schema cron to postgres with grant option;
-
-    alter default privileges in schema cron grant all on tables to postgres with grant option;
-    alter default privileges in schema cron grant all on functions to postgres with grant option;
-    alter default privileges in schema cron grant all on sequences to postgres with grant option;
-
-    alter default privileges for user supabase_admin in schema cron grant all
-        on sequences to postgres with grant option;
-    alter default privileges for user supabase_admin in schema cron grant all
-        on tables to postgres with grant option;
-    alter default privileges for user supabase_admin in schema cron grant all
-        on functions to postgres with grant option;
-
-    grant all privileges on all tables in schema cron to postgres with grant option;
-    revoke all on table cron.job from postgres;
-    grant select on table cron.job to postgres with grant option;
-    revoke trigger on cron.job_run_details from postgres;
-  END IF;
-END;
-$$;
-
-
-ALTER FUNCTION "extensions"."grant_pg_cron_access"() OWNER TO "supabase_admin";
-
-
-COMMENT ON FUNCTION "extensions"."grant_pg_cron_access"() IS 'Grants access to pg_cron';
-
-
-
-CREATE OR REPLACE FUNCTION "extensions"."grant_pg_graphql_access"() RETURNS "event_trigger"
-    LANGUAGE "plpgsql"
-    SET "search_path" TO ''
-    AS $_$
-begin
-    if not exists (
-        select 1
-        from pg_catalog.pg_event_trigger_ddl_commands() ev
-        join pg_catalog.pg_extension e on ev.objid = e.oid
-        where e.extname = 'pg_graphql'
-    ) then
-        return;
-    end if;
-
-    drop function if exists graphql_public.graphql;
-    create or replace function graphql_public.graphql(
-        "operationName" text default null,
-        query text default null,
-        variables jsonb default null,
-        extensions jsonb default null
-    )
-        returns jsonb
-        language sql
-    as $$
-        select graphql.resolve(
-            query := query,
-            variables := coalesce(variables, '{}'),
-            "operationName" := "operationName",
-            extensions := extensions
-        );
-    $$;
-
-    -- Attach the wrapper to the extension so DROP EXTENSION cascades to it,
-    -- which in turn triggers set_graphql_placeholder to reinstall the "not enabled" stub.
-    alter extension pg_graphql add function graphql_public.graphql(text, text, jsonb, jsonb);
-
-    grant usage on schema graphql to postgres, anon, authenticated, service_role;
-    grant execute on function graphql.resolve to postgres, anon, authenticated, service_role;
-    grant usage on schema graphql to postgres with grant option;
-    grant usage on schema graphql_public to postgres with grant option;
-end;
-$_$;
-
-
-ALTER FUNCTION "extensions"."grant_pg_graphql_access"() OWNER TO "supabase_admin";
-
-
-COMMENT ON FUNCTION "extensions"."grant_pg_graphql_access"() IS 'Grants access to pg_graphql';
-
-
-
-CREATE OR REPLACE FUNCTION "extensions"."grant_pg_net_access"() RETURNS "event_trigger"
-    LANGUAGE "plpgsql"
-    SET "search_path" TO ''
-    AS $$
-BEGIN
-  IF EXISTS (
-    SELECT 1
-    FROM pg_event_trigger_ddl_commands() AS ev
-    JOIN pg_extension AS ext
-    ON ev.objid = ext.oid
-    WHERE ext.extname = 'pg_net'
-  )
-  THEN
-    IF NOT EXISTS (
-      SELECT 1
-      FROM pg_roles
-      WHERE rolname = 'supabase_functions_admin'
-    )
-    THEN
-      CREATE USER supabase_functions_admin NOINHERIT CREATEROLE LOGIN NOREPLICATION;
-    END IF;
-
-    GRANT USAGE ON SCHEMA net TO supabase_functions_admin, postgres, anon, authenticated, service_role;
-
-    IF EXISTS (
-      SELECT FROM pg_extension
-      WHERE extname = 'pg_net'
-      -- all versions in use on existing projects as of 2025-02-20
-      -- version 0.12.0 onwards don't need these applied
-      AND extversion IN ('0.2', '0.6', '0.7', '0.7.1', '0.8.0', '0.10.0', '0.11.0')
-    ) THEN
-      ALTER function net.http_get(url text, params jsonb, headers jsonb, timeout_milliseconds integer) SECURITY DEFINER;
-      ALTER function net.http_post(url text, body jsonb, params jsonb, headers jsonb, timeout_milliseconds integer) SECURITY DEFINER;
-
-      ALTER function net.http_get(url text, params jsonb, headers jsonb, timeout_milliseconds integer) SET search_path = net;
-      ALTER function net.http_post(url text, body jsonb, params jsonb, headers jsonb, timeout_milliseconds integer) SET search_path = net;
-
-      REVOKE ALL ON FUNCTION net.http_get(url text, params jsonb, headers jsonb, timeout_milliseconds integer) FROM PUBLIC;
-      REVOKE ALL ON FUNCTION net.http_post(url text, body jsonb, params jsonb, headers jsonb, timeout_milliseconds integer) FROM PUBLIC;
-
-      GRANT EXECUTE ON FUNCTION net.http_get(url text, params jsonb, headers jsonb, timeout_milliseconds integer) TO supabase_functions_admin, postgres, anon, authenticated, service_role;
-      GRANT EXECUTE ON FUNCTION net.http_post(url text, body jsonb, params jsonb, headers jsonb, timeout_milliseconds integer) TO supabase_functions_admin, postgres, anon, authenticated, service_role;
-    END IF;
-  END IF;
-END;
-$$;
-
-
-ALTER FUNCTION "extensions"."grant_pg_net_access"() OWNER TO "supabase_admin";
-
-
-COMMENT ON FUNCTION "extensions"."grant_pg_net_access"() IS 'Grants access to pg_net';
-
-
-
-CREATE OR REPLACE FUNCTION "extensions"."pgrst_ddl_watch"() RETURNS "event_trigger"
-    LANGUAGE "plpgsql"
-    SET "search_path" TO ''
-    AS $$
-DECLARE
-  cmd record;
-BEGIN
-  FOR cmd IN SELECT * FROM pg_event_trigger_ddl_commands()
-  LOOP
-    IF cmd.command_tag IN (
-      'CREATE SCHEMA', 'ALTER SCHEMA'
-    , 'CREATE TABLE', 'CREATE TABLE AS', 'SELECT INTO', 'ALTER TABLE'
-    , 'CREATE FOREIGN TABLE', 'ALTER FOREIGN TABLE'
-    , 'CREATE VIEW', 'ALTER VIEW'
-    , 'CREATE MATERIALIZED VIEW', 'ALTER MATERIALIZED VIEW'
-    , 'CREATE FUNCTION', 'ALTER FUNCTION'
-    , 'CREATE TRIGGER'
-    , 'CREATE TYPE', 'ALTER TYPE'
-    , 'CREATE RULE'
-    , 'COMMENT'
-    )
-    -- don't notify in case of CREATE TEMP table or other objects created on pg_temp
-    AND cmd.schema_name is distinct from 'pg_temp'
-    THEN
-      NOTIFY pgrst, 'reload schema';
-    END IF;
-  END LOOP;
-END; $$;
-
-
-ALTER FUNCTION "extensions"."pgrst_ddl_watch"() OWNER TO "supabase_admin";
-
-
-CREATE OR REPLACE FUNCTION "extensions"."pgrst_drop_watch"() RETURNS "event_trigger"
-    LANGUAGE "plpgsql"
-    SET "search_path" TO ''
-    AS $$
-DECLARE
-  obj record;
-BEGIN
-  FOR obj IN SELECT * FROM pg_event_trigger_dropped_objects()
-  LOOP
-    IF obj.object_type IN (
-      'schema'
-    , 'table'
-    , 'foreign table'
-    , 'view'
-    , 'materialized view'
-    , 'function'
-    , 'trigger'
-    , 'type'
-    , 'rule'
-    )
-    AND obj.is_temporary IS false -- no pg_temp objects
-    THEN
-      NOTIFY pgrst, 'reload schema';
-    END IF;
-  END LOOP;
-END; $$;
-
-
-ALTER FUNCTION "extensions"."pgrst_drop_watch"() OWNER TO "supabase_admin";
-
-
-CREATE OR REPLACE FUNCTION "extensions"."set_graphql_placeholder"() RETURNS "event_trigger"
-    LANGUAGE "plpgsql"
-    SET "search_path" TO ''
-    AS $_$
-    DECLARE
-    graphql_is_dropped bool;
-    BEGIN
-    graphql_is_dropped = (
-        SELECT ev.schema_name = 'graphql_public'
-        FROM pg_event_trigger_dropped_objects() AS ev
-        WHERE ev.schema_name = 'graphql_public'
-    );
-
-    IF graphql_is_dropped
-    THEN
-        create or replace function graphql_public.graphql(
-            "operationName" text default null,
-            query text default null,
-            variables jsonb default null,
-            extensions jsonb default null
-        )
-            returns jsonb
-            language plpgsql
-            set search_path to ''
-        as $$
-            DECLARE
-                server_version float;
-            BEGIN
-                server_version = (SELECT (SPLIT_PART((select version()), ' ', 2))::float);
-
-                IF server_version >= 14 THEN
-                    RETURN jsonb_build_object(
-                        'errors', jsonb_build_array(
-                            jsonb_build_object(
-                                'message', 'pg_graphql extension is not enabled.'
-                            )
-                        )
-                    );
-                ELSE
-                    RETURN jsonb_build_object(
-                        'errors', jsonb_build_array(
-                            jsonb_build_object(
-                                'message', 'pg_graphql is only available on projects running Postgres 14 onwards.'
-                            )
-                        )
-                    );
-                END IF;
-            END;
-        $$;
-    END IF;
-
-    END;
-$_$;
-
-
-ALTER FUNCTION "extensions"."set_graphql_placeholder"() OWNER TO "supabase_admin";
-
-
-COMMENT ON FUNCTION "extensions"."set_graphql_placeholder"() IS 'Reintroduces placeholder function for graphql_public.graphql';
-
 
 
 CREATE OR REPLACE FUNCTION "prod_audit"."assert"("p_batch" "text", "p_test" "text", "p_cat" "text", "p_sev" "text", "p_cond" boolean, "p_expected" "text" DEFAULT NULL::"text", "p_actual" "text" DEFAULT NULL::"text", "p_details" "jsonb" DEFAULT '{}'::"jsonb") RETURNS "void"
@@ -1440,6 +1000,126 @@ $$;
 
 
 ALTER FUNCTION "public"."acquire_ai_quota"("_user_id" "uuid", "_function_name" "text", "_model" "text") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."admin_active_sessions"() RETURNS TABLE("user_id" "uuid", "email" "text", "session_id" "uuid", "session_created_at" timestamp with time zone, "session_updated_at" timestamp with time zone, "refreshed_at" timestamp with time zone, "not_after" timestamp with time zone, "ip" "text", "user_agent" "text", "live_refresh_token" boolean)
+    LANGUAGE "plpgsql" STABLE SECURITY DEFINER
+    SET "search_path" TO 'pg_catalog'
+    AS $$
+BEGIN
+  IF NOT public.has_role(auth.uid(), 'dev'::public.app_role) THEN
+    RAISE EXCEPTION 'insufficient_privilege: requer role dev'
+      USING ERRCODE = '42501';
+  END IF;
+
+  -- Espelha mfaAal2 da rota: claim aal do JWT já verificado pelo PostgREST.
+  IF coalesce(auth.jwt() ->> 'aal', '') <> 'aal2' THEN
+    RAISE EXCEPTION 'insufficient_privilege: requer sessão AAL2'
+      USING ERRCODE = '42501';
+  END IF;
+
+  RETURN QUERY
+  SELECT
+    u.id,
+    u.email::text,
+    s.id,
+    s.created_at,
+    s.updated_at,
+    s.refreshed_at::timestamptz,
+    s.not_after,
+    s.ip::text,
+    s.user_agent,
+    (
+      EXISTS (
+        SELECT 1
+        FROM auth.refresh_tokens rt
+        WHERE rt.session_id = s.id
+          AND rt.revoked IS NOT TRUE
+      )
+      -- Refresh tokens v2 vivem na própria sessão (hmac_key + counter),
+      -- sem linha em auth.refresh_tokens.
+      OR s.refresh_token_hmac_key IS NOT NULL
+    ) AS live_refresh_token
+  FROM auth.users u
+  JOIN auth.sessions s ON s.user_id = u.id
+  WHERE s.not_after IS NULL OR s.not_after > now()
+  ORDER BY s.updated_at DESC NULLS LAST;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."admin_active_sessions"() OWNER TO "postgres";
+
+
+COMMENT ON FUNCTION "public"."admin_active_sessions"() IS 'Lista sessões ativas de auth.users (dev + aal2). Painel: /admin/sessoes.';
+
+
+
+CREATE OR REPLACE FUNCTION "public"."admin_revoke_user_sessions"("_user_id" "uuid") RETURNS "void"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO 'pg_catalog'
+    AS $_$
+BEGIN
+  IF NOT public.has_role(auth.uid(), 'dev'::public.app_role) THEN
+    RAISE EXCEPTION 'insufficient_privilege: requer role dev'
+      USING ERRCODE = '42501';
+  END IF;
+  IF coalesce(auth.jwt() ->> 'aal', '') <> 'aal2' THEN
+    RAISE EXCEPTION 'insufficient_privilege: requer sessão AAL2'
+      USING ERRCODE = '42501';
+  END IF;
+
+  -- Paridade com o 400 da edge manage-users (revoke_sessions): a RPC
+  -- revoga TODAS as sessões do alvo, incluindo a do próprio chamador —
+  -- quem quer derrubar só as outras sessões deve usar o logout normal.
+  IF _user_id = auth.uid() THEN
+    RAISE EXCEPTION 'self_revocation_denied: use o logout em outros dispositivos'
+      USING ERRCODE = '42501';
+  END IF;
+
+  UPDATE auth.refresh_tokens rt
+     SET revoked = true
+    FROM auth.sessions s
+   WHERE rt.session_id = s.id
+     AND s.user_id = _user_id;
+
+  UPDATE auth.sessions
+     SET refresh_token_hmac_key = NULL
+   WHERE user_id = _user_id;
+
+  PERFORM public.revoke_all_user_tokens(_user_id);
+
+  -- Trilha no DB: a edge audita a camada de aplicação (source distinto),
+  -- aqui fica a evidência da revogação efetiva, cobrindo também chamada
+  -- direta via PostgREST. Falha não aborta a revogação.
+  BEGIN
+    INSERT INTO public.admin_audit_log
+      (user_id, action, resource_type, resource_id, status, source,
+       details, ip_address)
+    VALUES (
+      auth.uid(),
+      'session.revoke_all',
+      'auth',
+      _user_id::text,
+      'success',
+      'db:admin_revoke_user_sessions',
+      jsonb_build_object('target_user_id', _user_id, 'scope', 'global'),
+      btrim(substring(
+        NULLIF(current_setting('request.headers', true), '')::jsonb
+          ->> 'x-forwarded-for'
+        from '([^,]+)$')));
+  EXCEPTION WHEN OTHERS THEN
+    RAISE WARNING 'admin_revoke_user_sessions: audit insert failed: %', SQLERRM;
+  END;
+END;
+$_$;
+
+
+ALTER FUNCTION "public"."admin_revoke_user_sessions"("_user_id" "uuid") OWNER TO "postgres";
+
+
+COMMENT ON FUNCTION "public"."admin_revoke_user_sessions"("_user_id" "uuid") IS 'Revoga refresh tokens + marca revogação (dev + aal2, sem self, com auditoria no DB). Painel: /admin/sessoes.';
+
 
 
 CREATE OR REPLACE FUNCTION "public"."apply_transform"("p_value" "text", "p_transform_type" character varying, "p_transform_config" "jsonb" DEFAULT NULL::"jsonb") RETURNS "text"
@@ -2019,10 +1699,13 @@ CREATE OR REPLACE FUNCTION "public"."audit_security_definer_acl"() RETURNS TABLE
   acl_expanded AS (
     SELECT d.oid, d.proname, d.args, d.is_trigger,
            d.public_intent, d.anon_pipeline, d.anon_edge, d.anon_mcp, d.catalog_intent,
-           a.grantee::regrole::text AS grantee
+           CASE WHEN a.grantee = 0 THEN '-'
+                ELSE pg_get_userbyid(a.grantee)
+           END AS grantee
     FROM defs d
     LEFT JOIN LATERAL (SELECT (aclexplode(d.proacl)).grantee) a ON true
     WHERE a.grantee IS NOT NULL
+      AND (a.grantee = 0 OR EXISTS (SELECT 1 FROM pg_catalog.pg_roles r WHERE r.oid = a.grantee))
   )
   SELECT proname, args, 'PUBLIC has EXECUTE'::text, 'PUBLIC'::text
   FROM acl_expanded
@@ -2044,7 +1727,7 @@ $$;
 ALTER FUNCTION "public"."audit_security_definer_acl"() OWNER TO "postgres";
 
 
-COMMENT ON FUNCTION "public"."audit_security_definer_acl"() IS 'Read-only SECURITY DEFINER ACL audit; exact-signature public endpoint allowlist aligned 2026-09-09.';
+COMMENT ON FUNCTION "public"."audit_security_definer_acl"() IS 'Retorna funções SECURITY DEFINER em public acessíveis por roles indevidos. Cast seguro via pg_get_userbyid() — tolera roles removidas sem lançar exceção.';
 
 
 
@@ -2808,7 +2491,7 @@ ALTER FUNCTION "public"."check_auth_throttling"("_email" "text", "_ip" "text") O
 
 CREATE OR REPLACE FUNCTION "public"."check_edge_rate_limit"("p_key" "text", "p_window_ms" integer, "p_max_requests" integer) RETURNS TABLE("allowed" boolean, "remaining" integer, "reset_at" timestamp with time zone)
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$
 DECLARE
     v_now TIMESTAMP WITH TIME ZONE := now();
@@ -2979,7 +2662,7 @@ ALTER FUNCTION "public"."check_ip_access"("_ip" "text") OWNER TO "postgres";
 
 CREATE OR REPLACE FUNCTION "public"."check_login_rate_limit"("_email" "text", "_ip" "text" DEFAULT NULL::"text") RETURNS "jsonb"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$
 DECLARE
   _max_failures int := 5;
@@ -8046,6 +7729,19 @@ $$;
 ALTER FUNCTION "public"."cleanup_discount_test_data"() OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."cleanup_expired_auth_sessions"() RETURNS "void"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO 'public'
+    AS $$
+BEGIN
+  DELETE FROM auth.sessions WHERE created_at < NOW() - INTERVAL '30 days';
+END;
+$$;
+
+
+ALTER FUNCTION "public"."cleanup_expired_auth_sessions"() OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."cleanup_expired_collection_trash"() RETURNS integer
     LANGUAGE "plpgsql" SECURITY DEFINER
     SET "search_path" TO 'public'
@@ -8059,7 +7755,7 @@ ALTER FUNCTION "public"."cleanup_expired_collection_trash"() OWNER TO "postgres"
 
 CREATE OR REPLACE FUNCTION "public"."cleanup_expired_edge_rate_limits"() RETURNS "void"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$
 BEGIN
     DELETE FROM public.edge_rate_limits WHERE reset_at < now();
@@ -9658,10 +9354,19 @@ DECLARE
   _pers         jsonb;
   _new_item_id  uuid;
   _actor_id     uuid;
+  _variant_id   uuid;
+  _product_id   uuid;
+  _selection_valid boolean;
   _uid          uuid := auth.uid();
   _org_id       uuid := nullif(_quote->>'organization_id', '')::uuid;
   _seller_id    uuid := nullif(_quote->>'seller_id', '')::uuid;
 BEGIN
+  IF jsonb_typeof(coalesce(_quote, '{}'::jsonb)) <> 'object' THEN
+    RAISE EXCEPTION '_quote must be a JSON object' USING ERRCODE = '22023';
+  END IF;
+  IF jsonb_typeof(coalesce(_items, '[]'::jsonb)) <> 'array' THEN
+    RAISE EXCEPTION '_items must be a JSON array' USING ERRCODE = '22023';
+  END IF;
   -- Usuários autenticados só podem usar uma organização à qual pertencem.
   -- Chamadas internas sem auth.uid() preservam os IDs explícitos e continuam
   -- sujeitas ao contexto/RLS do chamador porque a função é SECURITY INVOKER.
@@ -9727,21 +9432,81 @@ BEGIN
   FOR _item IN
     SELECT value FROM jsonb_array_elements(coalesce(_items, '[]'::jsonb))
   LOOP
+    IF jsonb_typeof(_item) <> 'object' THEN
+      RAISE EXCEPTION 'Each quote item must be a JSON object' USING ERRCODE = '22023';
+    END IF;
+
+    _product_id := nullif(_item->>'product_id', '')::uuid;
+    _selection_valid := false;
+    -- GUARD: identidade explícita; nunca inferir variante por SKU/cor. Linhas
+    -- novas só aceitam produto/variante ativos. A FK mantém a identidade;
+    -- endurecimento contra reassociação de product_id requer FK composta separada.
+    _variant_id := nullif(_item->>'product_variant_id', '')::uuid;
+    IF _variant_id IS NOT NULL THEN
+      SELECT true INTO _selection_valid FROM public.product_variants v
+      JOIN public.products p ON p.id=v.product_id
+      WHERE v.id=_variant_id AND v.product_id=_product_id AND v.is_active
+        AND p.is_active AND NOT coalesce(p.is_deleted,false) AND p.deleted_at IS NULL
+      ;
+      IF NOT coalesce(_selection_valid,false) THEN
+        RAISE EXCEPTION 'Selected variant is inactive or does not belong to an active quoted product'
+          USING ERRCODE = '23503';
+      END IF;
+    ELSIF _product_id IS NOT NULL THEN
+      SELECT true INTO _selection_valid FROM public.products p
+      WHERE p.id=_product_id AND p.is_active
+        AND NOT coalesce(p.is_deleted,false) AND p.deleted_at IS NULL
+      ;
+      IF NOT coalesce(_selection_valid,false) THEN
+        RAISE EXCEPTION 'Selected product is inactive or deleted' USING ERRCODE='23503';
+      END IF;
+    END IF;
+    IF _item ? 'artwork_urls' THEN
+      IF jsonb_typeof(_item->'artwork_urls') <> 'array' OR jsonb_array_length(_item->'artwork_urls') > 20
+         OR EXISTS (SELECT 1 FROM jsonb_array_elements(_item->'artwork_urls') e
+           WHERE jsonb_typeof(e)<>'string' OR length(trim(both '"' from e::text))>2048 OR trim(both '"' from e::text) ~ '[[:space:]]') THEN
+        RAISE EXCEPTION 'artwork_urls must contain at most 20 safe strings' USING ERRCODE='22023';
+      END IF;
+    END IF;
+    IF _item ? 'mockup_urls' THEN
+      IF jsonb_typeof(_item->'mockup_urls') <> 'array' OR jsonb_array_length(_item->'mockup_urls') > 20
+         OR EXISTS (SELECT 1 FROM jsonb_array_elements(_item->'mockup_urls') e
+           WHERE jsonb_typeof(e)<>'string' OR length(trim(both '"' from e::text))>2048 OR trim(both '"' from e::text) ~ '[[:space:]]') THEN
+        RAISE EXCEPTION 'mockup_urls must contain at most 20 safe strings' USING ERRCODE='22023';
+      END IF;
+    END IF;
+    IF _item ? 'personalizations' THEN
+      IF jsonb_typeof(_item->'personalizations') <> 'array' THEN
+        RAISE EXCEPTION 'personalizations must be a JSON array' USING ERRCODE='22023';
+      END IF;
+      IF EXISTS (SELECT 1 FROM jsonb_array_elements(_item->'personalizations') p WHERE jsonb_typeof(p)<>'object') THEN
+        RAISE EXCEPTION 'Each personalization must be a JSON object' USING ERRCODE='22023';
+      END IF;
+    END IF;
+
     INSERT INTO public.quote_items (
-      quote_id, product_id, product_name, product_sku, product_image_url,
-      quantity, unit_price, subtotal,
+      quote_id, product_id, product_name, product_description, product_sku, product_image_url,
+      has_personalization, personalization_config, personalization_cost,
+      mockup_urls, artwork_urls, quantity, unit_price, subtotal,
       discount_percentage, discount_amount,
       color_name, color_hex, size_code, gender,
       sort_order, notes, kit_group_id, kit_name,
       price_confirmed_at, price_updated_at, price_freshness_threshold_days,
-      bitrix_product_id, personalization_cost
+      bitrix_product_id, selected_packaging_id, selected_packaging_name,
+      selected_packaging_unit_cost, product_variant_id
     )
     VALUES (
       _new_quote_id,
-      nullif(_item->>'product_id', '')::uuid,
+      _product_id,
       _item->>'product_name',
+      _item->>'product_description',
       _item->>'product_sku',
       _item->>'product_image_url',
+      coalesce((_item->>'has_personalization')::boolean,false),
+      _item->'personalization_config',
+      coalesce((_item->>'personalization_cost')::numeric,0),
+      coalesce(_item->'mockup_urls','[]'::jsonb),
+      coalesce(_item->'artwork_urls','[]'::jsonb),
       coalesce((_item->>'quantity')::integer, 0),
       coalesce((_item->>'unit_price')::numeric, 0),
       coalesce((_item->>'subtotal')::numeric, 0),
@@ -9759,7 +9524,10 @@ BEGIN
       nullif(_item->>'price_updated_at', '')::timestamptz,
       coalesce(nullif(_item->>'price_freshness_threshold_days', '')::integer, 60),
       nullif(_item->>'bitrix_product_id', ''),
-      coalesce((_item->>'personalization_cost')::numeric, 0)
+      nullif(_item->>'selected_packaging_id','')::uuid,
+      _item->>'selected_packaging_name',
+      nullif(_item->>'selected_packaging_unit_cost','')::numeric,
+      _variant_id
     )
     RETURNING id INTO _new_item_id;
 
@@ -11924,6 +11692,7 @@ COMMENT ON FUNCTION "public"."fn_admin_sync_external_connections"() IS 'Wrapper 
 CREATE OR REPLACE FUNCTION "public"."fn_aggregate_stock_daily"("p_date" "date" DEFAULT NULL::"date") RETURNS "jsonb"
     LANGUAGE "plpgsql" SECURITY DEFINER
     SET "search_path" TO 'public'
+    SET "work_mem" TO '64MB'
     AS $$
 DECLARE
   v_upserted integer;
@@ -12348,7 +12117,7 @@ ALTER FUNCTION "public"."fn_anon_catalog_grant_audit_run"() OWNER TO "postgres";
 
 CREATE OR REPLACE FUNCTION "public"."fn_anon_insert_rate_guard"() RETURNS "trigger"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$
 DECLARE
   v_role  text;
@@ -15013,7 +14782,7 @@ COMMENT ON FUNCTION "public"."fn_assert_public_contract"() IS 'Guarda do contrat
 
 CREATE OR REPLACE FUNCTION "public"."fn_audit_and_fix_grants"("p_source" "text" DEFAULT 'cron'::"text") RETURNS "jsonb"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$
 DECLARE r record; v_fixed int := 0;
 BEGIN
@@ -15166,6 +14935,113 @@ CREATE OR REPLACE FUNCTION "public"."fn_audit_role_changes"() RETURNS "trigger"
 
 
 ALTER FUNCTION "public"."fn_audit_role_changes"() OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."fn_audit_row_change"() RETURNS "trigger"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO 'public'
+    AS $$
+DECLARE
+  _actor uuid := auth.uid();
+  _rec jsonb;
+  _old jsonb;
+  _rec_safe jsonb;
+  _old_safe jsonb;
+  _rid uuid;
+  _changed text[];
+  _redact text[];
+BEGIN
+  _rec := CASE WHEN TG_OP = 'DELETE' THEN to_jsonb(OLD) ELSE to_jsonb(NEW) END;
+  _old := CASE WHEN TG_OP = 'INSERT' THEN NULL ELSE to_jsonb(OLD) END;
+
+  -- UPDATE sem mudança de dados (só colunas de sistema) não é evento auditável.
+  IF TG_OP = 'UPDATE' THEN
+    SELECT array_agg(k) INTO _changed
+    FROM jsonb_each(_old) AS j(k, v)
+    WHERE v IS DISTINCT FROM _rec -> k;
+    IF _changed IS NULL OR _changed <@ ARRAY['updated_at', 'version']::text[] THEN
+      RETURN NEW;
+    END IF;
+  END IF;
+
+  _rid := COALESCE(
+    (_rec ->> 'id')::uuid,
+    (_rec ->> 'user_id')::uuid,
+    (_rec ->> 'seller_id')::uuid,
+    (_rec ->> 'created_by')::uuid
+  );
+
+  _redact := CASE
+    WHEN TG_TABLE_NAME = 'profiles' THEN ARRAY[
+      'full_name', 'email', 'phone', 'avatar_url',
+      'department', 'preferences', 'bitrix_id'
+    ]
+    ELSE ARRAY[]::text[]
+  END;
+
+  _rec_safe := (
+    SELECT jsonb_object_agg(
+      j.k,
+      CASE
+        WHEN j.k = ANY(_redact)
+          OR j.k ~* '(credential|secret|token|password|api_key|email|phone|telefone|celular|whatsapp|cpf|cnpj|inscricao|contact_name|contact_person|client_name|full_name|address|endereco|cep|zip_code|logradouro)'
+          THEN '"[REDACTED]"'::jsonb
+        ELSE j.v
+      END
+    )
+    FROM jsonb_each(_rec) AS j(k, v)
+  );
+  _old_safe := CASE WHEN _old IS NULL THEN NULL ELSE (
+    SELECT jsonb_object_agg(
+      j.k,
+      CASE
+        WHEN j.k = ANY(_redact)
+          OR j.k ~* '(credential|secret|token|password|api_key|email|phone|telefone|celular|whatsapp|cpf|cnpj|inscricao|contact_name|contact_person|client_name|full_name|address|endereco|cep|zip_code|logradouro)'
+          THEN '"[REDACTED]"'::jsonb
+        ELSE j.v
+      END
+    )
+    FROM jsonb_each(_old) AS j(k, v)
+  ) END;
+
+  INSERT INTO public.admin_audit_log (
+    user_id, action, resource_type, resource_id, details, source, created_at
+  ) VALUES (
+    COALESCE(
+      _actor,
+      (_rec ->> 'user_id')::uuid,
+      (_rec ->> 'seller_id')::uuid,
+      (_rec ->> 'created_by')::uuid,
+      '00000000-0000-0000-0000-000000000000'::uuid
+    ),
+    TG_TABLE_NAME || '.' || lower(TG_OP),
+    TG_TABLE_NAME,
+    COALESCE(_rid::text, TG_TABLE_NAME || ':' || TG_OP),
+    jsonb_build_object(
+      'op', TG_OP,
+      'old', _old_safe,
+      'new', CASE WHEN TG_OP = 'DELETE' THEN NULL ELSE _rec_safe END,
+      'changed_fields', to_jsonb(_changed)
+    ),
+    CASE WHEN _actor IS NULL THEN 'system' ELSE 'database_trigger' END,
+    now()
+  );
+
+  RETURN COALESCE(NEW, OLD);
+EXCEPTION WHEN OTHERS THEN
+  -- Auditoria nunca derruba a escrita principal (mesmo padrão de
+  -- audit_user_role_changes): loga warning e devolve a row.
+  RAISE WARNING 'fn_audit_row_change failed on %: %', TG_TABLE_NAME, SQLERRM;
+  RETURN COALESCE(NEW, OLD);
+END;
+$$;
+
+
+ALTER FUNCTION "public"."fn_audit_row_change"() OWNER TO "postgres";
+
+
+COMMENT ON FUNCTION "public"."fn_audit_row_change"() IS 'Trigger genérica de auditoria → admin_audit_log com redação de PII/segredos (Onda 4).';
+
 
 
 CREATE OR REPLACE FUNCTION "public"."fn_auto_classify_kit_product"() RETURNS "trigger"
@@ -16998,34 +16874,27 @@ DECLARE
   v_old_group_root        uuid;
   v_elected_dep_root      uuid;
 BEGIN
-  -- Only act when content_hash is being set or changed
   IF NEW.content_hash IS NULL OR (OLD.content_hash IS NOT NULL AND OLD.content_hash = NEW.content_hash) THEN
     RETURN NEW;
   END IF;
 
-  -- If image already has a canonical assignment:
   IF NEW.canonical_image_id IS NOT NULL THEN
     IF OLD.content_hash IS NOT NULL AND OLD.content_hash IS DISTINCT FROM NEW.content_hash THEN
-      -- Hash CHANGED (not first-set): clear old canonical → re-link to correct group
       NEW.canonical_image_id := NULL;
       NEW.is_shared := false;
     ELSE
-      -- First-set (OLD.content_hash was NULL): validate canonical belongs to SAME hash group
-      -- GAP-C6: existing canonical may point to a different-hash group
       SELECT content_hash INTO v_existing_canonical_hash
       FROM public.product_images
       WHERE id = NEW.canonical_image_id;
 
       IF v_existing_canonical_hash IS NOT DISTINCT FROM NEW.content_hash THEN
-        RETURN NEW;  -- Same hash group: respect existing canonical
+        RETURN NEW;
       END IF;
-      -- Wrong hash group: fall through to re-link to correct root
       NEW.canonical_image_id := NULL;
       NEW.is_shared := false;
     END IF;
   END IF;
 
-  -- Find the oldest root in the new hash group
   SELECT id INTO v_root_id
   FROM public.product_images
   WHERE content_hash = NEW.content_hash
@@ -17040,35 +16909,27 @@ BEGIN
     NEW.canonical_image_id := v_root_id;
     NEW.is_shared := true;
   ELSE
-    -- Fallback: inherit root from existing dependent in same group
     SELECT pi2.canonical_image_id INTO v_root_id
     FROM public.product_images pi2
     WHERE pi2.content_hash = NEW.content_hash
       AND pi2.deleted_at IS NULL
       AND pi2.canonical_image_id IS NOT NULL
       AND pi2.id <> NEW.id
+      AND pi2.canonical_image_id <> NEW.id
     LIMIT 1;
+
+    IF v_root_id = NEW.id THEN
+      v_root_id := NULL;
+    END IF;
 
     IF v_root_id IS NOT NULL THEN
       NEW.canonical_image_id := v_root_id;
       NEW.is_shared := true;
     END IF;
-    -- If only member → remain as standalone root
   END IF;
 
-  -- ══════════════════════════════════════════════════════════════
-  -- GAP-C5 / GAP-C5b: This row WAS a root (OLD.canonical_image_id IS NULL)
-  -- in a previous hash group (OLD.content_hash IS NOT NULL).
-  -- Former deps need re-grouping by THEIR OWN content_hash, regardless of
-  -- whether this row joined a group (v_root_id IS NOT NULL) or stayed standalone.
-  --
-  -- Condition changed from migration 008:
-  --   OLD: IF OLD.canonical_image_id IS NULL AND v_root_id IS NOT NULL
-  --   NEW: IF OLD.canonical_image_id IS NULL AND OLD.content_hash IS NOT NULL
-  -- ══════════════════════════════════════════════════════════════
   IF OLD.canonical_image_id IS NULL AND OLD.content_hash IS NOT NULL THEN
 
-    -- Case A: Is there another live root for OLD.content_hash?
     SELECT id INTO v_old_group_root
     FROM public.product_images
     WHERE content_hash = OLD.content_hash
@@ -17079,7 +16940,6 @@ BEGIN
     LIMIT 1;
 
     IF v_old_group_root IS NOT NULL THEN
-      -- Link all former deps to the surviving root of OLD.content_hash group
       UPDATE public.product_images
       SET canonical_image_id = v_old_group_root,
           is_shared           = true,
@@ -17089,8 +16949,6 @@ BEGIN
         AND deleted_at IS NULL;
 
     ELSE
-      -- Case B: No other root for OLD.content_hash — elect oldest former dep as new root
-
       SELECT id INTO v_elected_dep_root
       FROM public.product_images
       WHERE canonical_image_id = NEW.id
@@ -17100,14 +16958,12 @@ BEGIN
       LIMIT 1;
 
       IF v_elected_dep_root IS NOT NULL THEN
-        -- Promote elected dep to standalone root
         UPDATE public.product_images
         SET canonical_image_id = NULL,
             is_shared           = false,
             updated_at          = now()
         WHERE id = v_elected_dep_root;
 
-        -- Link all remaining former deps to the elected root
         UPDATE public.product_images
         SET canonical_image_id = v_elected_dep_root,
             is_shared           = true,
@@ -17117,7 +16973,6 @@ BEGIN
           AND id <> v_elected_dep_root
           AND deleted_at IS NULL;
       END IF;
-      -- If no former deps → nothing to do
     END IF;
 
   END IF;
@@ -17658,6 +17513,52 @@ $$;
 
 
 ALTER FUNCTION "public"."fn_backfill_product_categories"("p_batch_size" integer, "p_dry_run" boolean) OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."fn_backfill_queue_reap_stuck"("p_stuck_minutes" integer DEFAULT 30, "p_max_attempts" integer DEFAULT 5) RETURNS TABLE("reaped_to_pending" integer, "reaped_to_failed" integer)
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO 'public'
+    AS $$
+DECLARE
+  v_to_pending integer := 0;
+  v_to_failed integer := 0;
+BEGIN
+  WITH stuck AS (
+    SELECT id, attempts
+    FROM image_backfill_queue
+    WHERE status = 'processing'
+      AND started_at IS NOT NULL
+      AND started_at < now() - (p_stuck_minutes || ' minutes')::interval
+    FOR UPDATE SKIP LOCKED
+  ),
+  updated AS (
+    UPDATE image_backfill_queue q
+    SET attempts = stuck.attempts + 1,
+        status = CASE WHEN stuck.attempts + 1 >= p_max_attempts THEN 'failed' ELSE 'pending' END,
+        last_error = CASE WHEN stuck.attempts + 1 >= p_max_attempts
+                      THEN COALESCE(q.last_error || ' | ', '') || 'reaper: desistiu após ' || (stuck.attempts + 1) || ' tentativas (travado em processing por > ' || p_stuck_minutes || ' min)'
+                      ELSE COALESCE(q.last_error || ' | ', '') || 'reaper: reenfileirado (tentativa ' || (stuck.attempts + 1) || '), estava travado em processing'
+                    END,
+        worker_id = NULL,
+        started_at = NULL
+    FROM stuck
+    WHERE q.id = stuck.id
+    RETURNING q.status
+  )
+  SELECT count(*) FILTER (WHERE status = 'pending'), count(*) FILTER (WHERE status = 'failed')
+  INTO v_to_pending, v_to_failed
+  FROM updated;
+
+  RETURN QUERY SELECT v_to_pending, v_to_failed;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."fn_backfill_queue_reap_stuck"("p_stuck_minutes" integer, "p_max_attempts" integer) OWNER TO "postgres";
+
+
+COMMENT ON FUNCTION "public"."fn_backfill_queue_reap_stuck"("p_stuck_minutes" integer, "p_max_attempts" integer) IS 'Rede de segurança de idempotência: reclama linhas de image_backfill_queue travadas em processing, incrementa attempts e desiste (failed) após N tentativas em vez de tentar para sempre. Agendada via pg_cron (incidente 2026-10-13).';
+
 
 
 CREATE OR REPLACE FUNCTION "public"."fn_batch_extract_materials_from_name"("p_limit" integer DEFAULT 100) RETURNS TABLE("processed" integer, "total_materials" integer)
@@ -19187,7 +19088,7 @@ COMMENT ON FUNCTION "public"."fn_check_item_fits"("p_packaging_id" "uuid", "p_pr
 
 CREATE OR REPLACE FUNCTION "public"."fn_check_login_allowed"("p_email" "text", "p_ip_address" "text" DEFAULT NULL::"text", "p_city" "text" DEFAULT NULL::"text", "p_user_agent" "text" DEFAULT NULL::"text") RETURNS TABLE("allowed" boolean, "reason" "text", "blocked_until" timestamp with time zone, "check_details" "jsonb")
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$
 DECLARE
   _s              RECORD;
@@ -19223,6 +19124,7 @@ BEGIN
   _s.max_failed_attempts      := GREATEST(COALESCE(_s.max_failed_attempts, 5), 1);
   _s.lockout_duration_minutes := GREATEST(COALESCE(_s.lockout_duration_minutes, 30), 1);
 
+  -- P1 fix v3 (mantido): ip_whitelist_enabled=true + p_ip_address IS NULL → bloquear.
   IF _s.ip_whitelist_enabled THEN
     IF p_ip_address IS NULL THEN
       _details := _details || '{"ip_check":"blocked_null_ip"}'::JSONB;
@@ -19261,6 +19163,7 @@ BEGIN
     _details := _details || '{"ip_check":"disabled"}'::JSONB;
   END IF;
 
+  -- P1 fix v2 (mantido): city_whitelist_enabled=true + p_city IS NULL → bloquear.
   IF _s.city_whitelist_enabled THEN
     IF p_city IS NULL THEN
       _details := _details || '{"city_check":"blocked_null_city"}'::JSONB;
@@ -19299,17 +19202,32 @@ BEGIN
     _details := _details || '{"city_check":"disabled"}'::JSONB;
   END IF;
 
+  -- Onda 5 C1 — contagem por PAR (email, ip):
+  --   · _last_success exige verified=true — só a edge produz essa linha
+  --     quando success chega com o JWT recém-emitido do próprio usuário;
+  --     um POST anônimo não consegue forjar verified (insert usa
+  --     service_role mas a flag é decidida no código da edge, não no
+  --     body). Sucesso forjado já não zera o contador.
+  --   · Falhas contam só no par (email, ip do caller). Envenenar
+  --     login_attempts com falhas de outro IP tranca apenas
+  --     (email, ip-do-atacante) — não a conta do usuário real.
+  --   · p_ip_address NULL (caller legado sem contexto de IP) mantém a
+  --     contagem por e-mail inteiro — comportamento anterior.
   SELECT max(created_at) INTO _last_success
   FROM public.login_attempts
-  WHERE email = p_email AND success = true;
+  WHERE lower(email) = p_email
+    AND success = true
+    AND verified = true
+    AND (p_ip_address IS NULL OR ip_address = p_ip_address);
 
   SELECT count(*), max(created_at)
     INTO _failed_count, _last_failure
   FROM public.login_attempts
-  WHERE email = p_email
+  WHERE lower(email) = p_email
     AND success = false
     AND created_at > now()
         - (_s.lockout_duration_minutes || ' minutes')::interval
+    AND (p_ip_address IS NULL OR ip_address = p_ip_address)
     AND (_last_success IS NULL OR created_at > _last_success);
 
   _details := _details || jsonb_build_object(
@@ -19341,6 +19259,7 @@ BEGIN
   RETURN QUERY SELECT true, 'allowed'::TEXT, NULL::TIMESTAMPTZ, _details;
 
 EXCEPTION WHEN OTHERS THEN
+  -- SEC-008: fail-closed. Retorna genérico sem vazar mensagem interna.
   RETURN QUERY SELECT false, 'security_check_error_fail_closed'::TEXT,
     NULL::TIMESTAMPTZ, '{}'::JSONB;
 END;
@@ -21144,7 +21063,7 @@ ALTER FUNCTION "public"."fn_cron_guard"("p_key" bigint, "p_sql" "text") OWNER TO
 
 CREATE OR REPLACE FUNCTION "public"."fn_cron_safe_run"("p_key" bigint, "p_sql" "text", "p_timeout_ms" integer DEFAULT 45000, "p_job_label" "text" DEFAULT 'cron'::"text") RETURNS "text"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public'
+    SET "search_path" TO 'pg_catalog', 'public'
     AS $$
 DECLARE v_start timestamptz := clock_timestamp(); v_duration_ms int;
 BEGIN
@@ -21157,9 +21076,12 @@ BEGIN
   RETURN format('[%s] OK: %sms', p_job_label, v_duration_ms);
 EXCEPTION
   WHEN query_canceled THEN
+    RAISE WARNING 'fn_cron_safe_run [%] TIMEOUT após %ms (limite=%ms)', p_job_label,
+      EXTRACT(EPOCH FROM (clock_timestamp() - v_start))::int * 1000, p_timeout_ms;
     RETURN format('[%s] TIMEOUT após %sms (limite=%sms)', p_job_label,
       EXTRACT(EPOCH FROM (clock_timestamp() - v_start))::int * 1000, p_timeout_ms);
   WHEN OTHERS THEN
+    RAISE WARNING 'fn_cron_safe_run [%] ERRO: %', p_job_label, SQLERRM;
     RETURN format('[%s] ERRO: %s', p_job_label, SQLERRM);
 END; $$;
 
@@ -21840,6 +21762,47 @@ $$;
 
 
 ALTER FUNCTION "public"."fn_derive_similarity_pairs_on_insert"() OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."fn_detect_recurring_errors_last_hour"("_min_occurrences" integer DEFAULT 100) RETURNS TABLE("source" "text", "message" "text", "occurrences" bigint, "first_seen" timestamp with time zone, "last_seen" timestamp with time zone)
+    LANGUAGE "sql" STABLE SECURITY DEFINER
+    SET "search_path" TO 'public'
+    AS $$
+  SELECT
+    'query_telemetry' AS source,
+    coalesce(qt.error_message, qt.error_kind, 'unknown') AS message,
+    count(*) AS occurrences,
+    min(qt.created_at) AS first_seen,
+    max(qt.created_at) AS last_seen
+  FROM public.query_telemetry qt
+  WHERE qt.created_at >= now() - interval '1 hour'
+    AND qt.severity = 'error'
+  GROUP BY coalesce(qt.error_message, qt.error_kind, 'unknown')
+  HAVING count(*) > _min_occurrences
+
+  UNION ALL
+
+  SELECT
+    'frontend_telemetry' AS source,
+    coalesce(ft.metadata->>'message', ft.name, 'unknown') AS message,
+    count(*) AS occurrences,
+    min(ft.created_at) AS first_seen,
+    max(ft.created_at) AS last_seen
+  FROM public.frontend_telemetry ft
+  WHERE ft.created_at >= now() - interval '1 hour'
+    AND ft.event_type = 'error'
+  GROUP BY coalesce(ft.metadata->>'message', ft.name, 'unknown')
+  HAVING count(*) > _min_occurrences
+
+  ORDER BY occurrences DESC;
+$$;
+
+
+ALTER FUNCTION "public"."fn_detect_recurring_errors_last_hour"("_min_occurrences" integer) OWNER TO "postgres";
+
+
+COMMENT ON FUNCTION "public"."fn_detect_recurring_errors_last_hour"("_min_occurrences" integer) IS 'Incidente 2026-10-13 (etapa 93/94). Base de deteccao para alerta futuro: agrega erros de query_telemetry/frontend_telemetry na ultima hora por mensagem e retorna as que passam de _min_occurrences (default 100). Nao cobre postgres_logs (nao e consultavel via SQL dentro do banco -- ver query_logs via MCP/Management API). Nao implementa canal de notificacao -- apenas a funcao de deteccao, conforme escopo da etapa.';
+
 
 
 CREATE OR REPLACE FUNCTION "public"."fn_detecta_familia_cor"("p_r" integer, "p_g" integer, "p_b" integer) RETURNS character varying
@@ -37224,7 +37187,7 @@ ALTER FUNCTION "public"."fn_purge_old_stock_snapshots"("p_retention_days" intege
 
 CREATE OR REPLACE FUNCTION "public"."fn_purge_spr_history"("p_keep_days" integer DEFAULT 90) RETURNS integer
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$
 DECLARE
   v_cutoff   timestamptz := now() - make_interval(days => GREATEST(p_keep_days, 30));
@@ -38513,6 +38476,7 @@ COMMENT ON FUNCTION "public"."fn_reconcile_category_products_count"("p_limit" in
 CREATE OR REPLACE FUNCTION "public"."fn_reconcile_stock_gold"("p_dry_run" boolean DEFAULT false) RETURNS "jsonb"
     LANGUAGE "plpgsql" SECURITY DEFINER
     SET "search_path" TO 'public'
+    SET "work_mem" TO '64MB'
     AS $$
 DECLARE
   v_var int := 0; v_prod int := 0; v_vss int := 0; v_orphan int := 0;
@@ -38995,6 +38959,7 @@ ALTER FUNCTION "public"."fn_repair_canonical_chains"("p_max_iterations" integer)
 CREATE OR REPLACE FUNCTION "public"."fn_reposicao_backfill_today"() RETURNS "jsonb"
     LANGUAGE "plpgsql" SECURITY DEFINER
     SET "search_path" TO 'public'
+    SET "work_mem" TO '64MB'
     AS $$
 DECLARE
   v_updated int;
@@ -47929,52 +47894,6 @@ $$;
 
 
 ALTER FUNCTION "public"."fn_sync_pat_on_product_status_change"() OWNER TO "postgres";
-
-
-CREATE OR REPLACE FUNCTION "public"."fn_sync_primary_image_url"() RETURNS "trigger"
-    LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public'
-    AS $$
-BEGIN
-  -- Caso 1: imagem passou a is_primary=true → setar no produto
-  IF NEW.is_primary = true AND NEW.is_active = true THEN
-    UPDATE products
-    SET primary_image_url = NEW.url_cdn,
-        updated_at        = NOW()
-    WHERE id = NEW.product_id
-      AND is_active = true
-      AND (primary_image_url IS NULL OR primary_image_url != NEW.url_cdn);
-  END IF;
-
-  -- Caso 2: imagem era primary e foi desativada → limpar se não há outra primary
-  IF (OLD.is_primary = true OR OLD.is_active = true)
-    AND (NEW.is_primary = false OR NEW.is_active = false) THEN
-    -- Verifica se ainda existe outra primary ativa
-    IF NOT EXISTS (
-      SELECT 1 FROM product_images
-      WHERE product_id = NEW.product_id
-        AND is_primary  = true
-        AND is_active   = true
-        AND id         != NEW.id
-    ) THEN
-      UPDATE products
-      SET primary_image_url = (
-            SELECT url_cdn FROM product_images
-            WHERE product_id = NEW.product_id AND is_active = true
-            ORDER BY is_primary DESC, display_order ASC, id ASC
-            LIMIT 1
-          ),
-          updated_at = NOW()
-      WHERE id = NEW.product_id;
-    END IF;
-  END IF;
-
-  RETURN NEW;
-END;
-$$;
-
-
-ALTER FUNCTION "public"."fn_sync_primary_image_url"() OWNER TO "postgres";
 
 
 CREATE OR REPLACE FUNCTION "public"."fn_sync_product_ai_on_change"() RETURNS "trigger"
@@ -58284,7 +58203,7 @@ ALTER FUNCTION "public"."get_edge_anon_key"() OWNER TO "postgres";
 
 CREATE OR REPLACE FUNCTION "public"."get_edge_function_secret"("_name" "text") RETURNS "text"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'vault', 'public', 'pg_temp'
+    SET "search_path" TO 'vault', 'public'
     AS $$
 DECLARE
   _secret text;
@@ -58297,7 +58216,8 @@ BEGIN
     'CRON_SECRET',
     'HASH_PRODUCT_IMAGES_CRON_SECRET',
     'GENERATE_BLURHASHES_CRON_SECRET',
-    'BACKFILL_DIM_CRON_SECRET'
+    'BACKFILL_DIM_CRON_SECRET',
+    'ASIA_INGESTION_CRON_SECRET'
   ) THEN
     RAISE EXCEPTION 'Nome de secret nao autorizado: %', _name
       USING ERRCODE = 'insufficient_privilege';
@@ -58327,7 +58247,7 @@ COMMENT ON FUNCTION "public"."get_edge_function_secret"("_name" "text") IS 'Whit
 
 CREATE OR REPLACE FUNCTION "public"."get_edge_functions_base_url"() RETURNS "text"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'vault', 'pg_temp'
+    SET "search_path" TO 'public', 'vault'
     AS $_$
 DECLARE
   _cfg text;
@@ -59875,7 +59795,7 @@ ALTER FUNCTION "public"."get_sale_price_for_quantity"("p_variant_id" "uuid", "p_
 
 CREATE OR REPLACE FUNCTION "public"."get_sitemap_public"("p_limit" integer DEFAULT 1000, "p_offset" integer DEFAULT 0) RETURNS TABLE("url_type" "text", "url_path" "text", "identifier" "text", "title" "text", "lastmod" timestamp with time zone, "priority" numeric, "changefreq" "text", "image_url" "text")
     LANGUAGE "plpgsql" STABLE SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$
 BEGIN
   IF p_limit IS NULL OR p_limit NOT BETWEEN 1 AND 1000 THEN
@@ -60589,60 +60509,45 @@ CREATE OR REPLACE FUNCTION "public"."handle_new_user"() RETURNS "trigger"
     SET "search_path" TO 'public'
     AS $$
 DECLARE
-    v_role TEXT;
     v_full_name TEXT;
     v_department TEXT;
     v_preferences JSONB;
 BEGIN
-    -- Role: lê do metadata, fallback 'sales'
-    v_role := COALESCE(
-        NULLIF(TRIM(NEW.raw_user_meta_data->>'role'), ''),
-        'sales'
-    );
-    
-    -- Validação: só aceita roles válidos
-    IF v_role NOT IN ('admin', 'sales', 'manager') THEN
-        v_role := 'sales';
-    END IF;
-    
-    -- Nome: metadata 'name' ou 'full_name', fallback email
+    -- GUARD: raw_user_meta_data nao concede privilegios. Promocoes pertencem
+    -- ao fluxo administrativo autenticado; todo cadastro inicia como vendedor.
     v_full_name := COALESCE(
         NULLIF(TRIM(NEW.raw_user_meta_data->>'name'), ''),
         NULLIF(TRIM(NEW.raw_user_meta_data->>'full_name'), ''),
         NEW.email
     );
-    
-    -- Departamento
     v_department := NULLIF(TRIM(NEW.raw_user_meta_data->>'department'), '');
-    
-    -- Preferences (ex: title)
     v_preferences := '{}'::jsonb;
     IF NEW.raw_user_meta_data->>'title' IS NOT NULL THEN
         v_preferences := jsonb_build_object('title', NEW.raw_user_meta_data->>'title');
     END IF;
-
     INSERT INTO public.profiles (
-        id, email, full_name, role,
-        department, is_active, preferences,
-        created_at, updated_at
+        id, user_id, email, full_name, role,
+        department, is_active, preferences, created_at, updated_at
     ) VALUES (
-        NEW.id,
-        NEW.email,
-        v_full_name,
-        v_role,
-        v_department,
-        TRUE,
-        v_preferences,
-        NOW(),
-        NOW()
+        NEW.id, NEW.id, NEW.email, v_full_name, 'sales',
+        v_department, TRUE, v_preferences, NOW(), NOW()
     );
-    
     RETURN NEW;
 END;
 $$;
 
 
 ALTER FUNCTION "public"."handle_new_user"() OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."handle_updated_at"() RETURNS "trigger"
+    LANGUAGE "plpgsql"
+    AS $$
+BEGIN NEW.updated_at = now(); RETURN NEW; END;
+$$;
+
+
+ALTER FUNCTION "public"."handle_updated_at"() OWNER TO "postgres";
 
 
 CREATE OR REPLACE FUNCTION "public"."has_active_step_up_challenge"("_action" "public"."step_up_action" DEFAULT NULL::"public"."step_up_action") RETURNS boolean
@@ -60725,6 +60630,27 @@ $$;
 ALTER FUNCTION "public"."hex_to_color_name"("p_hex" "text") OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."increment_discount_approval_version"() RETURNS "trigger"
+    LANGUAGE "plpgsql"
+    SET "search_path" TO 'public', 'pg_temp'
+    AS $$
+DECLARE
+  _old jsonb := to_jsonb(OLD) - 'updated_at' - 'version';
+  _new jsonb := to_jsonb(NEW) - 'updated_at' - 'version';
+BEGIN
+  IF _old IS DISTINCT FROM _new THEN
+    NEW.version := COALESCE(OLD.version, 0) + 1;
+  ELSE
+    NEW.version := COALESCE(OLD.version, 1);
+  END IF;
+  RETURN NEW;
+END
+$$;
+
+
+ALTER FUNCTION "public"."increment_discount_approval_version"() OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."increment_kit_template_usage"("_template_id" "uuid") RETURNS integer
     LANGUAGE "sql"
     SET "search_path" TO 'public'
@@ -60764,6 +60690,7 @@ CREATE OR REPLACE FUNCTION "public"."increment_quote_version"() RETURNS "trigger
     SET "search_path" TO 'pg_catalog', 'public'
     AS $$
 DECLARE
+  -- explicit_client_version_bump_v1
   _old jsonb := to_jsonb(OLD)
                  - 'subtotal' - 'total' - 'discount_amount'
                  - 'real_subtotal' - 'real_discount_percent'
@@ -60775,10 +60702,10 @@ DECLARE
                  - 'updated_at' - 'version'
                  - 'discount_approval_status' - 'discount_approved_at';
 BEGIN
-  IF _old IS DISTINCT FROM _new THEN
+  IF _old IS DISTINCT FROM _new
+     OR NEW.version = COALESCE(OLD.version, 0) + 1 THEN
     NEW.version := COALESCE(OLD.version, 0) + 1;
   ELSE
-    -- Update derivado-apenas (cascata de recálculo / espelho de aprovação): preserva a versão.
     NEW.version := COALESCE(OLD.version, 1);
   END IF;
   RETURN NEW;
@@ -61577,7 +61504,7 @@ COMMENT ON FUNCTION "public"."limpar_nome_produto_spot"("p_name" "text") IS 'DEP
 
 
 CREATE OR REPLACE FUNCTION "public"."log_access_denied"("_blocked_path" "text", "_required_role" "text", "_user_role" "text" DEFAULT NULL::"text", "_reason" "text" DEFAULT 'route_blocked'::"text") RETURNS "void"
-    LANGUAGE "plpgsql"
+    LANGUAGE "plpgsql" SECURITY DEFINER
     SET "search_path" TO 'public'
     AS $$
 DECLARE _uid uuid := auth.uid();
@@ -61601,6 +61528,10 @@ $$;
 
 
 ALTER FUNCTION "public"."log_access_denied"("_blocked_path" "text", "_required_role" "text", "_user_role" "text", "_reason" "text") OWNER TO "postgres";
+
+
+COMMENT ON FUNCTION "public"."log_access_denied"("_blocked_path" "text", "_required_role" "text", "_user_role" "text", "_reason" "text") IS 'Incidente 2026-10-13: convertida para SECURITY DEFINER. Antes disso, INSERT em admin_audit_log violava a RLS (requer is_admin_or_above) para todo usuario autenticado nao-admin que caisse numa rota bloqueada, propagando erro ao frontend.';
+
 
 
 CREATE OR REPLACE FUNCTION "public"."log_audit"("_action" "text", "_resource_type" "text", "_resource_id" "text", "_details" "jsonb" DEFAULT '{}'::"jsonb") RETURNS "uuid"
@@ -61896,14 +61827,16 @@ ALTER FUNCTION "public"."log_step_up_audit"("_event_type" "text", "_action" "pub
 
 
 CREATE OR REPLACE FUNCTION "public"."log_user_logout"() RETURNS "void"
-    LANGUAGE "plpgsql"
+    LANGUAGE "plpgsql" SECURITY DEFINER
     SET "search_path" TO 'public'
     AS $$
+DECLARE _uid uuid := auth.uid();
 BEGIN
+  IF _uid IS NULL THEN RETURN; END IF;
   INSERT INTO public.admin_audit_log (
     user_id, action, resource_type, status, source, details
   ) VALUES (
-    auth.uid(), 'user.logout', 'auth', 'success', 'client.auth',
+    _uid, 'user.logout', 'auth', 'success', 'client.auth',
     jsonb_build_object('timestamp', now())
   );
 END;
@@ -61911,6 +61844,10 @@ $$;
 
 
 ALTER FUNCTION "public"."log_user_logout"() OWNER TO "postgres";
+
+
+COMMENT ON FUNCTION "public"."log_user_logout"() IS 'Incidente 2026-10-13: convertida para SECURITY DEFINER e adicionado guard de auth.uid() IS NULL. Antes disso, todo logout de usuario nao-admin violava a RLS de INSERT em admin_audit_log.';
+
 
 
 CREATE OR REPLACE FUNCTION "public"."log_voice_command"("_transcript" "text", "_action" "text" DEFAULT NULL::"text", "_success" boolean DEFAULT true, "_data" "jsonb" DEFAULT '{}'::"jsonb") RETURNS "uuid"
@@ -61968,7 +61905,7 @@ ALTER FUNCTION "public"."m_to_cm"("p_m" numeric) OWNER TO "postgres";
 
 CREATE OR REPLACE FUNCTION "public"."magazine_add_items_atomic"("p_magazine_id" "uuid", "p_expected_updated_at" timestamp with time zone, "p_items" "jsonb") RETURNS "jsonb"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$
 DECLARE
   v_actor UUID := auth.uid();
@@ -62069,7 +62006,7 @@ ALTER FUNCTION "public"."magazine_add_items_atomic"("p_magazine_id" "uuid", "p_e
 
 CREATE OR REPLACE FUNCTION "public"."magazine_add_items_v2"("p_magazine_id" "uuid", "p_expected_edit_version" bigint, "p_items" "jsonb") RETURNS "jsonb"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $_$
 DECLARE v_mag public.magazines%ROWTYPE; v_inserted INT; v_current INT; v_new INT; v_result public.magazines%ROWTYPE;
 BEGIN
@@ -62094,7 +62031,7 @@ ALTER FUNCTION "public"."magazine_add_items_v2"("p_magazine_id" "uuid", "p_expec
 
 CREATE OR REPLACE FUNCTION "public"."magazine_archive_v2"("p_magazine_id" "uuid", "p_expected_edit_version" bigint) RETURNS "jsonb"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$ DECLARE v_mag public.magazines%ROWTYPE; v_result public.magazines%ROWTYPE; BEGIN v_mag:=public.magazine_lock_v2(p_magazine_id,p_expected_edit_version,FALSE); IF v_mag.status='archived' THEN RETURN jsonb_build_object('archived_at',v_mag.archived_at,'edit_version',v_mag.edit_version,'updated_at',v_mag.updated_at); END IF; IF v_mag.status NOT IN ('draft','published') THEN RAISE EXCEPTION 'magazine_not_archivable' USING ERRCODE='55000'; END IF; UPDATE public.magazines SET status='archived',edit_version=v_mag.edit_version+1 WHERE id=p_magazine_id RETURNING * INTO v_result; RETURN jsonb_build_object('archived_at',v_result.archived_at,'edit_version',v_result.edit_version,'updated_at',v_result.updated_at); END $$;
 
 
@@ -62103,7 +62040,7 @@ ALTER FUNCTION "public"."magazine_archive_v2"("p_magazine_id" "uuid", "p_expecte
 
 CREATE OR REPLACE FUNCTION "public"."magazine_auto_archive_stale_drafts"("_ttl_days" integer DEFAULT 365) RETURNS integer
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$
 DECLARE
   archived_count INTEGER;
@@ -62124,7 +62061,7 @@ ALTER FUNCTION "public"."magazine_auto_archive_stale_drafts"("_ttl_days" integer
 
 CREATE OR REPLACE FUNCTION "public"."magazine_cleanup_all"() RETURNS TABLE("step" "text", "affected_rows" integer)
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$
 BEGIN
   RETURN QUERY SELECT 'orphan_reader_state'::TEXT, public.magazine_cleanup_orphan_state(180);
@@ -62140,7 +62077,7 @@ ALTER FUNCTION "public"."magazine_cleanup_all"() OWNER TO "postgres";
 
 CREATE OR REPLACE FUNCTION "public"."magazine_cleanup_orphan_state"("_ttl_days" integer DEFAULT 180) RETURNS integer
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$
 DECLARE
   deleted_count INTEGER;
@@ -62158,7 +62095,7 @@ ALTER FUNCTION "public"."magazine_cleanup_orphan_state"("_ttl_days" integer) OWN
 
 CREATE OR REPLACE FUNCTION "public"."magazine_cleanup_view_events"("_ttl_days" integer DEFAULT 180) RETURNS integer
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$
 DECLARE
   deleted_count integer := 0;
@@ -62181,7 +62118,7 @@ COMMENT ON FUNCTION "public"."magazine_cleanup_view_events"("_ttl_days" integer)
 
 CREATE OR REPLACE FUNCTION "public"."magazine_create_v2"("p_organization_id" "uuid", "p_title" "text", "p_template_id" "text") RETURNS "jsonb"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$
 DECLARE
   v_actor UUID := auth.uid();
@@ -62227,7 +62164,7 @@ ALTER FUNCTION "public"."magazine_create_v2"("p_organization_id" "uuid", "p_titl
 
 CREATE OR REPLACE FUNCTION "public"."magazine_duplicate_atomic"("p_source_magazine_id" "uuid", "p_title" "text" DEFAULT NULL::"text") RETURNS "jsonb"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$
 DECLARE
   v_actor UUID := auth.uid();
@@ -62324,7 +62261,7 @@ ALTER FUNCTION "public"."magazine_duplicate_atomic"("p_source_magazine_id" "uuid
 
 CREATE OR REPLACE FUNCTION "public"."magazine_duplicate_v2"("p_source_magazine_id" "uuid", "p_expected_edit_version" bigint, "p_idempotency_key" "text", "p_title" "text" DEFAULT NULL::"text") RETURNS "jsonb"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$
 DECLARE v_actor UUID:=auth.uid(); v_source public.magazines%ROWTYPE; v_existing public.magazine_duplicate_requests%ROWTYPE; v_item public.magazine_items%ROWTYPE; v_new_id UUID; v_new_item UUID; v_count INT:=0; v_map JSONB:='{}'; v_pages JSONB; v_order JSONB; v_request_title TEXT:=NULLIF(BTRIM(p_title),''); v_title TEXT;
 BEGIN
@@ -62348,7 +62285,7 @@ ALTER FUNCTION "public"."magazine_duplicate_v2"("p_source_magazine_id" "uuid", "
 
 CREATE OR REPLACE FUNCTION "public"."magazine_ensure_view_event_partitions"("_months_ahead" integer DEFAULT 3) RETURNS integer
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'extensions', 'pg_temp'
+    SET "search_path" TO 'public', 'extensions'
     AS $$
 DECLARE
   _created INTEGER := 0;
@@ -62406,7 +62343,7 @@ COMMENT ON FUNCTION "public"."magazine_ensure_view_event_partitions"("_months_ah
 
 CREATE OR REPLACE FUNCTION "public"."magazine_guard_and_version_v2"() RETURNS "trigger"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'extensions', 'pg_temp'
+    SET "search_path" TO 'public', 'extensions'
     AS $$
 DECLARE
   v_changed BOOLEAN;
@@ -62544,7 +62481,7 @@ ALTER FUNCTION "public"."magazine_guard_and_version_v2"() OWNER TO "postgres";
 
 CREATE OR REPLACE FUNCTION "public"."magazine_import_local_v2"("p_idempotency_key" "text", "p_payload" "jsonb") RETURNS "jsonb"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'extensions', 'pg_temp'
+    SET "search_path" TO 'public', 'extensions'
     AS $_$
 DECLARE
   v_actor UUID := auth.uid();
@@ -62801,7 +62738,7 @@ ALTER FUNCTION "public"."magazine_import_local_v2"("p_idempotency_key" "text", "
 
 CREATE OR REPLACE FUNCTION "public"."magazine_items_guard_v2"() RETURNS "trigger"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$
 DECLARE
   v_magazine_id UUID := CASE WHEN TG_OP = 'INSERT' THEN NEW.magazine_id ELSE OLD.magazine_id END;
@@ -62870,7 +62807,7 @@ ALTER TABLE "public"."magazines" OWNER TO "postgres";
 
 CREATE OR REPLACE FUNCTION "public"."magazine_lock_v2"("p_magazine_id" "uuid", "p_expected_edit_version" bigint, "p_allow_deleted" boolean DEFAULT false) RETURNS "public"."magazines"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$
 DECLARE
   v_actor UUID := auth.uid();
@@ -62938,7 +62875,7 @@ ALTER FUNCTION "public"."magazine_page_order_remove_items_v2"("p_page_order" "js
 
 CREATE OR REPLACE FUNCTION "public"."magazine_publish_atomic"("p_magazine_id" "uuid") RETURNS "jsonb"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$
 DECLARE
   v_actor UUID := auth.uid();
@@ -63006,7 +62943,7 @@ ALTER FUNCTION "public"."magazine_publish_atomic"("p_magazine_id" "uuid") OWNER 
 
 CREATE OR REPLACE FUNCTION "public"."magazine_publish_v2"("p_magazine_id" "uuid", "p_expected_edit_version" bigint) RETURNS "jsonb"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $_$
 DECLARE v_mag public.magazines%ROWTYPE; v_result public.magazines%ROWTYPE;
 BEGIN v_mag:=public.magazine_lock_v2(p_magazine_id,p_expected_edit_version,FALSE); IF v_mag.status='published' THEN IF v_mag.public_token IS NULL OR v_mag.public_token !~ '^[0-9a-f]{48}$' OR v_mag.published_at IS NULL THEN RAISE EXCEPTION 'magazine_publication_invariant_invalid' USING ERRCODE='55000'; END IF; RETURN jsonb_build_object('public_token',v_mag.public_token,'published_at',v_mag.published_at,'edit_version',v_mag.edit_version,'updated_at',v_mag.updated_at); END IF; IF v_mag.status<>'draft' THEN RAISE EXCEPTION 'magazine_not_publishable' USING ERRCODE='55000'; END IF; UPDATE public.magazines SET status='published',public_token=NULL,edit_version=v_mag.edit_version+1 WHERE id=p_magazine_id RETURNING * INTO v_result; RETURN jsonb_build_object('public_token',v_result.public_token,'published_at',v_result.published_at,'edit_version',v_result.edit_version,'updated_at',v_result.updated_at); END $_$;
@@ -63017,7 +62954,7 @@ ALTER FUNCTION "public"."magazine_publish_v2"("p_magazine_id" "uuid", "p_expecte
 
 CREATE OR REPLACE FUNCTION "public"."magazine_reactivate_v2"("p_magazine_id" "uuid", "p_expected_edit_version" bigint) RETURNS "jsonb"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$ DECLARE v_mag public.magazines%ROWTYPE; v_result public.magazines%ROWTYPE; BEGIN v_mag:=public.magazine_lock_v2(p_magazine_id,p_expected_edit_version,FALSE); IF v_mag.status='draft' THEN RETURN jsonb_build_object('edit_version',v_mag.edit_version,'updated_at',v_mag.updated_at); END IF; IF v_mag.status<>'archived' THEN RAISE EXCEPTION 'magazine_not_reactivatable' USING ERRCODE='55000'; END IF; UPDATE public.magazines SET status='draft',edit_version=v_mag.edit_version+1 WHERE id=p_magazine_id RETURNING * INTO v_result; RETURN jsonb_build_object('edit_version',v_result.edit_version,'updated_at',v_result.updated_at); END $$;
 
 
@@ -63026,7 +62963,7 @@ ALTER FUNCTION "public"."magazine_reactivate_v2"("p_magazine_id" "uuid", "p_expe
 
 CREATE OR REPLACE FUNCTION "public"."magazine_remove_items_atomic"("p_magazine_id" "uuid", "p_expected_updated_at" timestamp with time zone, "p_item_ids" "uuid"[]) RETURNS "jsonb"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$
 DECLARE
   v_actor UUID := auth.uid();
@@ -63074,7 +63011,7 @@ ALTER FUNCTION "public"."magazine_remove_items_atomic"("p_magazine_id" "uuid", "
 
 CREATE OR REPLACE FUNCTION "public"."magazine_remove_items_v2"("p_magazine_id" "uuid", "p_expected_edit_version" bigint, "p_item_ids" "uuid"[]) RETURNS "jsonb"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$
 DECLARE v_mag public.magazines%ROWTYPE; v_removed INT; v_result public.magazines%ROWTYPE;
 BEGIN
@@ -63092,7 +63029,7 @@ ALTER FUNCTION "public"."magazine_remove_items_v2"("p_magazine_id" "uuid", "p_ex
 
 CREATE OR REPLACE FUNCTION "public"."magazine_reorder_items_atomic"("p_magazine_id" "uuid", "p_expected_updated_at" timestamp with time zone, "p_ordered_item_ids" "uuid"[]) RETURNS "jsonb"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$
 DECLARE
   v_actor UUID := auth.uid();
@@ -63154,7 +63091,7 @@ ALTER FUNCTION "public"."magazine_reorder_items_atomic"("p_magazine_id" "uuid", 
 
 CREATE OR REPLACE FUNCTION "public"."magazine_reorder_items_v2"("p_magazine_id" "uuid", "p_expected_edit_version" bigint, "p_ordered_item_ids" "uuid"[]) RETURNS "jsonb"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$
 DECLARE v_mag public.magazines%ROWTYPE; v_total INT; v_current UUID[]; v_result public.magazines%ROWTYPE;
 BEGIN
@@ -63175,7 +63112,7 @@ ALTER FUNCTION "public"."magazine_reorder_items_v2"("p_magazine_id" "uuid", "p_e
 
 CREATE OR REPLACE FUNCTION "public"."magazine_restore_v2"("p_magazine_id" "uuid", "p_expected_edit_version" bigint) RETURNS "jsonb"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$ DECLARE v_mag public.magazines%ROWTYPE; v_result public.magazines%ROWTYPE; BEGIN v_mag:=public.magazine_lock_v2(p_magazine_id,p_expected_edit_version,TRUE); IF v_mag.deleted_at IS NULL THEN RETURN jsonb_build_object('edit_version',v_mag.edit_version,'updated_at',v_mag.updated_at); END IF; UPDATE public.magazines SET deleted_at=NULL,status='draft',edit_version=v_mag.edit_version+1 WHERE id=p_magazine_id RETURNING * INTO v_result; RETURN jsonb_build_object('edit_version',v_result.edit_version,'updated_at',v_result.updated_at); END $$;
 
 
@@ -63184,7 +63121,7 @@ ALTER FUNCTION "public"."magazine_restore_v2"("p_magazine_id" "uuid", "p_expecte
 
 CREATE OR REPLACE FUNCTION "public"."magazine_rollup_view_counts"() RETURNS integer
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$
 DECLARE
   _from         timestamptz;
@@ -63241,7 +63178,7 @@ COMMENT ON FUNCTION "public"."magazine_rollup_view_counts"() IS 'Exactly-once. S
 
 CREATE OR REPLACE FUNCTION "public"."magazine_soft_delete_v2"("p_magazine_id" "uuid", "p_expected_edit_version" bigint) RETURNS "jsonb"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$ DECLARE v_mag public.magazines%ROWTYPE; v_result public.magazines%ROWTYPE; BEGIN v_mag:=public.magazine_lock_v2(p_magazine_id,p_expected_edit_version,TRUE); IF v_mag.deleted_at IS NOT NULL THEN RETURN jsonb_build_object('deleted_at',v_mag.deleted_at,'edit_version',v_mag.edit_version,'updated_at',v_mag.updated_at); END IF; UPDATE public.magazines SET deleted_at=clock_timestamp(),status='archived',edit_version=v_mag.edit_version+1 WHERE id=p_magazine_id RETURNING * INTO v_result; RETURN jsonb_build_object('deleted_at',v_result.deleted_at,'edit_version',v_result.edit_version,'updated_at',v_result.updated_at); END $$;
 
 
@@ -63250,7 +63187,7 @@ ALTER FUNCTION "public"."magazine_soft_delete_v2"("p_magazine_id" "uuid", "p_exp
 
 CREATE OR REPLACE FUNCTION "public"."magazine_unpublish_v2"("p_magazine_id" "uuid", "p_expected_edit_version" bigint) RETURNS "jsonb"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$ DECLARE v_mag public.magazines%ROWTYPE; v_result public.magazines%ROWTYPE; BEGIN v_mag:=public.magazine_lock_v2(p_magazine_id,p_expected_edit_version,FALSE); IF v_mag.status='draft' THEN RETURN jsonb_build_object('edit_version',v_mag.edit_version,'updated_at',v_mag.updated_at); END IF; IF v_mag.status<>'published' THEN RAISE EXCEPTION 'magazine_not_unpublishable' USING ERRCODE='55000'; END IF; UPDATE public.magazines SET status='draft',edit_version=v_mag.edit_version+1 WHERE id=p_magazine_id RETURNING * INTO v_result; RETURN jsonb_build_object('edit_version',v_result.edit_version,'updated_at',v_result.updated_at); END $$;
 
 
@@ -63259,7 +63196,7 @@ ALTER FUNCTION "public"."magazine_unpublish_v2"("p_magazine_id" "uuid", "p_expec
 
 CREATE OR REPLACE FUNCTION "public"."magazine_update_item_v2"("p_magazine_id" "uuid", "p_expected_edit_version" bigint, "p_item_id" "uuid", "p_patch" "jsonb") RETURNS "jsonb"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$
 DECLARE v_mag public.magazines%ROWTYPE; v_result public.magazines%ROWTYPE;
 BEGIN
@@ -63278,7 +63215,7 @@ ALTER FUNCTION "public"."magazine_update_item_v2"("p_magazine_id" "uuid", "p_exp
 
 CREATE OR REPLACE FUNCTION "public"."magazine_update_metadata_atomic"("p_magazine_id" "uuid", "p_expected_updated_at" timestamp with time zone, "p_patch" "jsonb") RETURNS "jsonb"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$
 DECLARE
   v_actor UUID := auth.uid();
@@ -63412,7 +63349,7 @@ ALTER FUNCTION "public"."magazine_update_metadata_atomic"("p_magazine_id" "uuid"
 
 CREATE OR REPLACE FUNCTION "public"."magazine_update_metadata_v2"("p_magazine_id" "uuid", "p_expected_edit_version" bigint, "p_patch" "jsonb") RETURNS "jsonb"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$
 DECLARE v_mag public.magazines%ROWTYPE; v_result public.magazines%ROWTYPE;
 BEGIN
@@ -63461,7 +63398,7 @@ ALTER FUNCTION "public"."magazine_update_metadata_v2"("p_magazine_id" "uuid", "p
 
 CREATE OR REPLACE FUNCTION "public"."magazine_validate_page_order_v2"("p_magazine_id" "uuid", "p_page_order" "jsonb") RETURNS boolean
     LANGUAGE "plpgsql" STABLE SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $_$
 DECLARE
   v_pages JSONB;
@@ -64783,6 +64720,33 @@ $$;
 ALTER FUNCTION "public"."parse_xbz_dimensions"("p_raw_data" "jsonb") OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."perf002_drop_unused_snapshot_indexes"() RETURNS "void"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO 'public'
+    AS $$
+DECLARE
+  idx text;
+  prefix text := 'DR' || 'OP INDEX IF EXISTS public.';
+  indexes text[] := ARRAY[
+    'idx_ss_supplier_id',
+    'idx_stock_snapshots_captured_at_br_date',
+    'idx_stock_snapshots_supplier_branch_id',
+    'idx_snapshots_vss_captured',
+    'idx_snapshots_product_captured',
+    'idx_snapshots_captured_at',
+    'idx_ss_variant_id'
+  ];
+BEGIN
+  FOREACH idx IN ARRAY indexes LOOP
+    EXECUTE prefix || quote_ident(idx);
+  END LOOP;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."perf002_drop_unused_snapshot_indexes"() OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."populate_import_staging"("p_filenames" "text"[], "p_source_zip" character varying DEFAULT 'products_print_area_allcolors_market1_150px.zip'::character varying, "p_batch_id" character varying DEFAULT NULL::character varying) RETURNS TABLE("total_processado" integer, "total_pending" integer, "total_already_exists" integer, "total_no_product" integer, "total_no_color" integer, "total_skipped" integer, "total_location" integer, "total_area" integer, "total_component" integer)
     LANGUAGE "plpgsql"
     SET "search_path" TO 'public'
@@ -65536,7 +65500,7 @@ ALTER FUNCTION "public"."purge_edge_invocations_old"() OWNER TO "postgres";
 
 CREATE OR REPLACE FUNCTION "public"."purge_expired_security_data"() RETURNS "void"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$
 DECLARE
   v_purged_step_up integer;
@@ -65825,7 +65789,7 @@ ALTER FUNCTION "public"."record_auth_attempt"("_email" "text", "_ip" "text", "_s
 
 
 CREATE OR REPLACE FUNCTION "public"."record_dev_route_telemetry"("_event_type" "text", "_blocked_path" "text", "_user_role" "text" DEFAULT NULL::"text", "_duration_ms" integer DEFAULT NULL::integer) RETURNS "void"
-    LANGUAGE "plpgsql"
+    LANGUAGE "plpgsql" SECURITY DEFINER
     SET "search_path" TO 'public'
     AS $$
 DECLARE
@@ -65866,6 +65830,10 @@ END; $$;
 
 
 ALTER FUNCTION "public"."record_dev_route_telemetry"("_event_type" "text", "_blocked_path" "text", "_user_role" "text", "_duration_ms" integer) OWNER TO "postgres";
+
+
+COMMENT ON FUNCTION "public"."record_dev_route_telemetry"("_event_type" "text", "_blocked_path" "text", "_user_role" "text", "_duration_ms" integer) IS 'Incidente 2026-10-13: convertida para SECURITY DEFINER. Mesmo motivo de log_access_denied.';
+
 
 
 CREATE OR REPLACE FUNCTION "public"."record_mcp_access_violation"("_user_id" "uuid", "_reason" "text", "_source" "text", "_operation" "text" DEFAULT NULL::"text", "_target_key_id" "uuid" DEFAULT NULL::"uuid", "_ip" "text" DEFAULT NULL::"text", "_user_agent" "text" DEFAULT NULL::"text", "_request_id" "text" DEFAULT NULL::"text", "_details" "jsonb" DEFAULT '{}'::"jsonb") RETURNS "uuid"
@@ -66045,6 +66013,7 @@ COMMENT ON FUNCTION "public"."record_schema_drift_result"("p_result" "jsonb") IS
 CREATE OR REPLACE FUNCTION "public"."refresh_all_materialized_views"() RETURNS "void"
     LANGUAGE "plpgsql" SECURITY DEFINER
     SET "search_path" TO 'public', 'analytics'
+    SET "work_mem" TO '64MB'
     AS $$
 BEGIN
   -- MVs com índice único → CONCURRENTLY (não bloqueia leituras)
@@ -66761,6 +66730,7 @@ CREATE TABLE IF NOT EXISTS "public"."discount_approval_requests" (
     "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
     "valid_until" timestamp with time zone,
     "quote_snapshot_hash" "text",
+    "version" integer DEFAULT 1 NOT NULL,
     CONSTRAINT "dar_valid_until_required_when_approved" CHECK ((("status" <> 'approved'::"text") OR ("valid_until" IS NOT NULL))),
     CONSTRAINT "discount_approval_requests_max_allowed_percent_check" CHECK ((("max_allowed_percent" >= (0)::numeric) AND ("max_allowed_percent" <= (100)::numeric))),
     CONSTRAINT "discount_approval_requests_requested_discount_percent_check" CHECK ((("requested_discount_percent" >= (0)::numeric) AND ("requested_discount_percent" <= (100)::numeric))),
@@ -66774,6 +66744,10 @@ ALTER TABLE "public"."discount_approval_requests" OWNER TO "postgres";
 
 
 COMMENT ON TABLE "public"."discount_approval_requests" IS 'Workflow de aprovação de desconto acima do limite. Vendedor solicita, supervisor+ aprova/rejeita. Schema oficial extraído de useDiscountApproval.ts.';
+
+
+
+COMMENT ON COLUMN "public"."discount_approval_requests"."version" IS 'Optimistic locking: incrementado por trg_discount_approval_version a cada UPDATE com mudança real. Cliente concorrente deve enviar WHERE version = <esperado> e tratar 0 linhas afetadas como conflito.';
 
 
 
@@ -67044,7 +67018,7 @@ END $$;
 ALTER FUNCTION "public"."reset_user_step_up_state"("_user_id" "uuid") OWNER TO "postgres";
 
 
-CREATE OR REPLACE FUNCTION "public"."respond_discount_approval_transactional"("_request_id" "uuid", "_approved" boolean, "_admin_notes" "text" DEFAULT NULL::"text") RETURNS "public"."discount_approval_requests"
+CREATE OR REPLACE FUNCTION "public"."respond_discount_approval_transactional"("_request_id" "uuid", "_approved" boolean, "_admin_notes" "text" DEFAULT NULL::"text", "_expected_version" integer DEFAULT NULL::integer) RETURNS "public"."discount_approval_requests"
     LANGUAGE "plpgsql" SECURITY DEFINER
     SET "search_path" TO 'public'
     AS $$
@@ -67074,10 +67048,45 @@ BEGIN
   IF _request.quote_id IS DISTINCT FROM _quote_id THEN
     RAISE EXCEPTION 'Solicitação mudou durante a decisão.' USING ERRCODE = '40001';
   END IF;
-  IF _request.status = _decision THEN RETURN _request; END IF;
+
+  -- Replay idempotente ANTES da checagem de versão: a decisão gravada bumpa
+  -- version, então um retry idêntico (resposta perdida) chegaria com a versão
+  -- obsoleta e falharia 40001 sem nunca chegar aqui. Replay idêntico (mesmo
+  -- status-alvo, mesmo autor, mesmas notas) devolve a decisão já gravada —
+  -- MAS só se a versão atual for a que a própria decisão produziu
+  -- (esperada+1): alterações posteriores à decisão (ex.: validade editada)
+  -- também bumpam version, e aí o retry não pode mais fingir sucesso.
+  -- Com _expected_version NULL (clientes antigos) o replay segue tolerado.
+  IF _request.status = _decision
+     AND _request.admin_id IS NOT DISTINCT FROM _uid
+     AND _request.admin_notes IS NOT DISTINCT FROM NULLIF(btrim(_admin_notes), '') THEN
+    IF _expected_version IS NOT NULL
+       AND _request.version > _expected_version + 1 THEN
+      RAISE EXCEPTION 'Solicitação mudou após a decisão (versão esperada %, atual %). Recarregue e decida de novo.',
+        _expected_version, _request.version
+        USING ERRCODE = '40001';
+    END IF;
+    RETURN _request;
+  END IF;
+  -- Mesma decisão com autor/notas divergentes é conflito real: o segundo
+  -- gestor precisa saber que a decisão dele NÃO foi gravada.
+  IF _request.status = _decision THEN
+    RAISE EXCEPTION 'Decisão concorrente divergente: solicitação já está % decidida por outro gestor ou com notas diferentes.',
+      _request.status
+      USING ERRCODE = '40001';
+  END IF;
   IF _request.status <> 'pending' THEN
     RAISE EXCEPTION 'Decisão terminal conflitante: solicitação já está %.', _request.status
       USING ERRCODE = '23514';
+  END IF;
+
+  -- Optimistic locking: se o cliente leu a solicitação antes de decidir,
+  -- a versão tem que bater com a observada (NULL = não verificar, retrocompat).
+  IF _expected_version IS NOT NULL
+     AND _request.version IS DISTINCT FROM _expected_version THEN
+    RAISE EXCEPTION 'Solicitação mudou desde a leitura (versão esperada %, atual %). Recarregue e decida de novo.',
+      _expected_version, _request.version
+      USING ERRCODE = '40001';
   END IF;
 
   _snapshot := public.compute_quote_snapshot_hash(_quote_id);
@@ -67127,7 +67136,7 @@ END;
 $$;
 
 
-ALTER FUNCTION "public"."respond_discount_approval_transactional"("_request_id" "uuid", "_approved" boolean, "_admin_notes" "text") OWNER TO "postgres";
+ALTER FUNCTION "public"."respond_discount_approval_transactional"("_request_id" "uuid", "_approved" boolean, "_admin_notes" "text", "_expected_version" integer) OWNER TO "postgres";
 
 
 CREATE OR REPLACE FUNCTION "public"."restore_collection_item_from_trash"("_item_id" "uuid") RETURNS boolean
@@ -69315,7 +69324,7 @@ ALTER FUNCTION "public"."tg_ip_access_control_set_updated_at"() OWNER TO "postgr
 
 CREATE OR REPLACE FUNCTION "public"."tg_magazines_on_publish"() RETURNS "trigger"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'extensions', 'pg_temp'
+    SET "search_path" TO 'public', 'extensions'
     AS $$
 DECLARE
   candidate_token TEXT;
@@ -69352,7 +69361,7 @@ ALTER FUNCTION "public"."tg_magazines_on_publish"() OWNER TO "postgres";
 
 CREATE OR REPLACE FUNCTION "public"."tg_reader_state_validate"() RETURNS "trigger"
     LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'public', 'pg_temp'
+    SET "search_path" TO 'public'
     AS $$
 BEGIN
   IF cardinality(NEW.bookmarks) > 500 THEN
@@ -70604,178 +70613,279 @@ CREATE OR REPLACE FUNCTION "public"."update_quote_transactional"("_quote_id" "uu
     SET "search_path" TO 'public'
     AS $_$
 DECLARE
-  _updated_quote   public.quotes;
+  _updated_quote public.quotes;
   _current_version integer;
-  _prev_status     text;
-  _prev_total      numeric;
-  _item            jsonb;
-  _pers            jsonb;
-  _new_item_id     uuid;
-  _actor_id        uuid;
-  _action          text;
-  _desc            text;
+  _prev_status text;
+  _prev_total numeric;
+  _item jsonb;
+  _pers jsonb;
+  _item_id uuid;
+  _actor_id uuid;
+  _action text;
+  _desc text;
+  _variant_id uuid;
+  _effective_product_id uuid;
+  _existing public.quote_items%ROWTYPE;
+  _seen_ids uuid[] := '{}'::uuid[];
+  _removed_ids uuid[] := '{}'::uuid[];
+  _matches integer;
+  _selection_valid boolean;
 BEGIN
-  SELECT version, status, total
-  INTO _current_version, _prev_status, _prev_total
-  FROM public.quotes WHERE id = _quote_id;
-
-  IF _expected_version IS NOT NULL THEN
-    IF _current_version IS NULL THEN
-      RAISE EXCEPTION 'Orçamento não encontrado: %', _quote_id
-        USING errcode = 'no_data_found';
+  IF jsonb_typeof(coalesce(_quote_patch,'{}'::jsonb)) <> 'object' THEN
+    RAISE EXCEPTION '_quote_patch must be a JSON object' USING ERRCODE='22023';
+  END IF;
+  IF jsonb_typeof(coalesce(_items,'[]'::jsonb)) <> 'array' THEN
+    RAISE EXCEPTION '_items must be a JSON array' USING ERRCODE='22023';
+  END IF;
+  IF _quote_patch ? '_removed_item_ids' THEN
+    IF jsonb_typeof(_quote_patch->'_removed_item_ids') <> 'array' THEN
+      RAISE EXCEPTION '_removed_item_ids must be a JSON array' USING ERRCODE='22023';
     END IF;
-    IF _current_version <> _expected_version THEN
-      RAISE EXCEPTION
-        'Conflito de versão: orçamento foi modificado por outro usuário (versão atual: %, versão esperada: %). Recarregue e tente novamente.',
-        _current_version, _expected_version
-        USING errcode = '40001';
+    BEGIN
+      SELECT coalesce(array_agg(value::text::uuid),'{}'::uuid[])
+      INTO _removed_ids
+      FROM jsonb_array_elements_text(_quote_patch->'_removed_item_ids');
+    EXCEPTION WHEN invalid_text_representation THEN
+      RAISE EXCEPTION '_removed_item_ids contains an invalid UUID' USING ERRCODE='22023';
+    END;
+    IF cardinality(_removed_ids) <> cardinality(ARRAY(SELECT DISTINCT unnest(_removed_ids))) THEN
+      RAISE EXCEPTION '_removed_item_ids contains duplicates' USING ERRCODE='22023';
     END IF;
   END IF;
 
-  UPDATE public.quotes
-  SET
-    client_id                  = coalesce(nullif(_quote_patch->>'client_id', ''), client_id::text)::uuid,
-    contact_id                 = CASE WHEN _quote_patch ? 'contact_id'
-                                      THEN nullif(_quote_patch->>'contact_id', '')::uuid
-                                      ELSE contact_id END,
-    client_name                = coalesce(nullif(_quote_patch->>'client_name', ''), client_name),
-    client_email               = coalesce(_quote_patch->>'client_email',   client_email),
-    client_phone               = coalesce(_quote_patch->>'client_phone',   client_phone),
-    client_company             = coalesce(_quote_patch->>'client_company', client_company),
-    client_cnpj                = coalesce(_quote_patch->>'client_cnpj',   client_cnpj),
-    status                     = coalesce(_quote_patch->>'status',           status),
-    shipping_type              = coalesce(_quote_patch->>'shipping_type',    shipping_type),
-    shipping_cost              = coalesce((_quote_patch->>'shipping_cost')::numeric,              shipping_cost),
-    payment_method             = coalesce(_quote_patch->>'payment_method',   payment_method),
-    payment_terms              = coalesce(_quote_patch->>'payment_terms',    payment_terms),
-    delivery_time              = CASE WHEN _quote_patch ? 'delivery_time'   -- FIX: nullable clearable
-                                      THEN nullif(_quote_patch->>'delivery_time', '')
-                                      ELSE delivery_time END,
-    notes                      = CASE WHEN _quote_patch ? 'notes'
-                                      THEN _quote_patch->>'notes'
-                                      ELSE notes END,
-    internal_notes             = CASE WHEN _quote_patch ? 'internal_notes'
-                                      THEN _quote_patch->>'internal_notes'
-                                      ELSE internal_notes END,
-    discount_percent           = coalesce((_quote_patch->>'discount_percent')::numeric,           discount_percent),
-    discount_amount            = coalesce((_quote_patch->>'discount_amount')::numeric,            discount_amount),
-    subtotal                   = coalesce((_quote_patch->>'subtotal')::numeric,                   subtotal),
-    total                      = coalesce((_quote_patch->>'total')::numeric,                      total),
-    negotiation_markup_percent = coalesce((_quote_patch->>'negotiation_markup_percent')::numeric, negotiation_markup_percent),
-    valid_until                = CASE WHEN _quote_patch ? 'valid_until'
-                                      THEN nullif(_quote_patch->>'valid_until', '')::date
-                                      ELSE valid_until END,
-    updated_at                 = now()
-  WHERE id = _quote_id
-  RETURNING * INTO _updated_quote;
-
-  IF _updated_quote IS NULL THEN
-    RAISE EXCEPTION 'Orçamento não encontrado: %', _quote_id
-      USING errcode = 'no_data_found';
+  SELECT version,status,total INTO _current_version,_prev_status,_prev_total
+  FROM public.quotes WHERE id=_quote_id FOR UPDATE;
+  IF NOT FOUND THEN RAISE EXCEPTION 'Orçamento não encontrado: %',_quote_id USING ERRCODE='P0002'; END IF;
+  IF auth.uid() IS NOT NULL AND _expected_version IS NULL THEN
+    RAISE EXCEPTION '_expected_version is required for authenticated updates' USING ERRCODE='22023';
   END IF;
+  IF _expected_version IS NOT NULL AND _current_version <> _expected_version THEN
+    RAISE EXCEPTION 'Conflito de versão: orçamento foi modificado por outro usuário (versão atual: %, versão esperada: %). Recarregue e tente novamente.',_current_version,_expected_version USING ERRCODE='40001';
+  END IF;
+  IF EXISTS (
+    SELECT 1 FROM unnest(_removed_ids) rid
+    WHERE NOT EXISTS (SELECT 1 FROM public.quote_items qi WHERE qi.id=rid AND qi.quote_id=_quote_id)
+  ) THEN RAISE EXCEPTION 'Removed item id does not belong to this quote' USING ERRCODE='22023'; END IF;
 
-  DELETE FROM public.quote_item_personalizations
-  WHERE quote_item_id IN (
-    SELECT id FROM public.quote_items WHERE quote_id = _quote_id
-  );
-  DELETE FROM public.quote_items WHERE quote_id = _quote_id;
+  UPDATE public.quotes SET
+    client_id=coalesce(nullif(_quote_patch->>'client_id',''),client_id::text)::uuid,
+    contact_id=CASE WHEN _quote_patch ? 'contact_id' THEN nullif(_quote_patch->>'contact_id','')::uuid ELSE contact_id END,
+    client_name=coalesce(nullif(_quote_patch->>'client_name',''),client_name),
+    client_email=coalesce(_quote_patch->>'client_email',client_email),
+    client_phone=coalesce(_quote_patch->>'client_phone',client_phone),
+    client_company=coalesce(_quote_patch->>'client_company',client_company),
+    client_cnpj=coalesce(_quote_patch->>'client_cnpj',client_cnpj),
+    status=coalesce(_quote_patch->>'status',status),
+    shipping_type=coalesce(_quote_patch->>'shipping_type',shipping_type),
+    shipping_cost=coalesce((_quote_patch->>'shipping_cost')::numeric,shipping_cost),
+    payment_method=coalesce(_quote_patch->>'payment_method',payment_method),
+    payment_terms=coalesce(_quote_patch->>'payment_terms',payment_terms),
+    delivery_time=CASE WHEN _quote_patch ? 'delivery_time' THEN nullif(_quote_patch->>'delivery_time','') ELSE delivery_time END,
+    notes=CASE WHEN _quote_patch ? 'notes' THEN _quote_patch->>'notes' ELSE notes END,
+    internal_notes=CASE WHEN _quote_patch ? 'internal_notes' THEN _quote_patch->>'internal_notes' ELSE internal_notes END,
+    discount_percent=coalesce((_quote_patch->>'discount_percent')::numeric,discount_percent),
+    discount_amount=coalesce((_quote_patch->>'discount_amount')::numeric,discount_amount),
+    subtotal=coalesce((_quote_patch->>'subtotal')::numeric,subtotal),
+    total=coalesce((_quote_patch->>'total')::numeric,total),
+    negotiation_markup_percent=coalesce((_quote_patch->>'negotiation_markup_percent')::numeric,negotiation_markup_percent),
+    valid_until=CASE WHEN _quote_patch ? 'valid_until' THEN nullif(_quote_patch->>'valid_until','')::date ELSE valid_until END,
+    updated_at=now()
+  WHERE id=_quote_id RETURNING * INTO _updated_quote;
 
-  FOR _item IN SELECT value FROM jsonb_array_elements(coalesce(_items, '[]'::jsonb)) LOOP
-    INSERT INTO public.quote_items (
-      quote_id, product_id, product_name, product_sku, product_image_url,
-      quantity, unit_price, subtotal,
-      discount_percentage, discount_amount,
-      color_name, color_hex, size_code, gender,
-      sort_order, notes, kit_group_id, kit_name,
-      price_confirmed_at, price_updated_at, price_freshness_threshold_days, bitrix_product_id,
-      personalization_cost  -- FIX BUG-DB-01
-    )
-    VALUES (
-      _quote_id,
-      nullif(_item->>'product_id', '')::uuid,
-      _item->>'product_name',
-      _item->>'product_sku',
-      _item->>'product_image_url',
-      coalesce((_item->>'quantity')::integer, 0),
-      coalesce((_item->>'unit_price')::numeric, 0),
-      coalesce((_item->>'subtotal')::numeric, 0),
-      coalesce((_item->>'discount_percentage')::numeric, 0),
-      coalesce((_item->>'discount_amount')::numeric, 0),
-      _item->>'color_name',
-      _item->>'color_hex',
-      nullif(_item->>'size_code', ''),
-      nullif(_item->>'gender', ''),
-      coalesce((_item->>'sort_order')::integer, 0),
-      _item->>'notes',
-      nullif(_item->>'kit_group_id', '')::uuid,
-      nullif(_item->>'kit_name', ''),
-      nullif(_item->>'price_confirmed_at', '')::timestamptz,
-      nullif(_item->>'price_updated_at', '')::timestamptz,
-      coalesce(nullif(_item->>'price_freshness_threshold_days', '')::integer, 60),
-      nullif(_item->>'bitrix_product_id', ''),
-      coalesce((_item->>'personalization_cost')::numeric, 0)  -- FIX BUG-DB-01
-    )
-    RETURNING id INTO _new_item_id;
+  FOR _item IN SELECT value FROM jsonb_array_elements(coalesce(_items,'[]'::jsonb)) LOOP
+    IF jsonb_typeof(_item) <> 'object' THEN
+      RAISE EXCEPTION 'Each quote item must be a JSON object' USING ERRCODE='22023';
+    END IF;
+    _existing := NULL;
+    BEGIN _item_id := nullif(_item->>'id','')::uuid;
+    EXCEPTION WHEN invalid_text_representation THEN
+      RAISE EXCEPTION 'quote item id is invalid' USING ERRCODE='22023';
+    END;
+    IF _item_id IS NOT NULL THEN
+      SELECT * INTO _existing FROM public.quote_items
+      WHERE id=_item_id AND quote_id=_quote_id FOR UPDATE;
+      IF NOT FOUND THEN RAISE EXCEPTION 'Item id does not belong to this quote' USING ERRCODE='22023'; END IF;
+    ELSE
+      SELECT count(*) INTO _matches FROM public.quote_items qi
+      WHERE qi.quote_id=_quote_id
+        AND qi.product_id::text IS NOT DISTINCT FROM nullif(_item->>'product_id','')
+        AND qi.product_sku IS NOT DISTINCT FROM _item->>'product_sku'
+        AND qi.color_name IS NOT DISTINCT FROM _item->>'color_name'
+        AND qi.size_code IS NOT DISTINCT FROM nullif(_item->>'size_code','')
+        AND qi.kit_group_id::text IS NOT DISTINCT FROM nullif(_item->>'kit_group_id','');
+      IF _matches > 1 THEN
+        RAISE EXCEPTION 'Ambiguous legacy item: send quote item id' USING ERRCODE='22023';
+      ELSIF _matches=1 THEN
+        SELECT * INTO _existing FROM public.quote_items qi
+        WHERE qi.quote_id=_quote_id
+          AND qi.product_id::text IS NOT DISTINCT FROM nullif(_item->>'product_id','')
+          AND qi.product_sku IS NOT DISTINCT FROM _item->>'product_sku'
+          AND qi.color_name IS NOT DISTINCT FROM _item->>'color_name'
+          AND qi.size_code IS NOT DISTINCT FROM nullif(_item->>'size_code','')
+          AND qi.kit_group_id::text IS NOT DISTINCT FROM nullif(_item->>'kit_group_id','') FOR UPDATE;
+        _item_id := _existing.id;
+      END IF;
+    END IF;
+    IF _item_id IS NOT NULL THEN
+      IF _item_id=ANY(_seen_ids) THEN RAISE EXCEPTION 'Duplicate quote item identity' USING ERRCODE='22023'; END IF;
+      IF _item_id=ANY(_removed_ids) THEN RAISE EXCEPTION 'Item cannot be retained and removed in the same request' USING ERRCODE='22023'; END IF;
+      _seen_ids := array_append(_seen_ids,_item_id);
+    END IF;
 
-    FOR _pers IN SELECT value FROM jsonb_array_elements(coalesce(_item->'personalizations', '[]'::jsonb)) LOOP
-      INSERT INTO public.quote_item_personalizations (
-        quote_item_id, technique_id, technique_name,
-        location_code, location_name,
-        personalized_quantity, colors_count, positions_count,
-        area_cm2, width_cm, height_cm,
-        setup_cost, unit_cost, total_cost, notes
-      )
-      VALUES (
-        _new_item_id,
-        nullif(_pers->>'technique_id', '')::uuid,
-        _pers->>'technique_name',
-        _pers->>'location_code',
-        _pers->>'location_name',
-        nullif(_pers->>'personalized_quantity', '')::integer,
-        coalesce((_pers->>'colors_count')::integer, 1),
-        coalesce((_pers->>'positions_count')::integer, 1),
-        nullif(_pers->>'area_cm2', '')::numeric,
-        nullif(_pers->>'width_cm', '')::numeric,
-        nullif(_pers->>'height_cm', '')::numeric,
-        coalesce((_pers->>'setup_cost')::numeric, 0),
-        coalesce((_pers->>'unit_cost')::numeric, 0),
-        coalesce((_pers->>'total_cost')::numeric, 0),
-        _pers->>'notes'
-      );
-    END LOOP;
+    _effective_product_id := CASE WHEN _item ? 'product_id' THEN nullif(_item->>'product_id','')::uuid ELSE _existing.product_id END;
+    IF _existing.id IS NOT NULL AND _effective_product_id IS DISTINCT FROM _existing.product_id
+       AND (NOT (_item ? 'product_variant_id') OR NOT (_item ? 'artwork_urls')) THEN
+      RAISE EXCEPTION 'Changing product requires explicit variant and artwork payload' USING ERRCODE='22023';
+    END IF;
+    IF _item ? 'artwork_urls' THEN
+      IF jsonb_typeof(_item->'artwork_urls') <> 'array' OR jsonb_array_length(_item->'artwork_urls') > 20
+         OR EXISTS (SELECT 1 FROM jsonb_array_elements(_item->'artwork_urls') e
+           WHERE jsonb_typeof(e)<>'string' OR length(trim(both '"' from e::text))>2048 OR trim(both '"' from e::text) ~ '[[:space:]]') THEN
+        RAISE EXCEPTION 'artwork_urls must contain at most 20 safe strings' USING ERRCODE='22023';
+      END IF;
+    END IF;
+    IF _item ? 'mockup_urls' THEN
+      IF jsonb_typeof(_item->'mockup_urls') <> 'array' OR jsonb_array_length(_item->'mockup_urls') > 20
+         OR EXISTS (SELECT 1 FROM jsonb_array_elements(_item->'mockup_urls') e
+           WHERE jsonb_typeof(e)<>'string' OR length(trim(both '"' from e::text))>2048 OR trim(both '"' from e::text) ~ '[[:space:]]') THEN
+        RAISE EXCEPTION 'mockup_urls must contain at most 20 safe strings' USING ERRCODE='22023';
+      END IF;
+    END IF;
+    IF _item ? 'personalizations' THEN
+      IF jsonb_typeof(_item->'personalizations') <> 'array' THEN RAISE EXCEPTION 'personalizations must be a JSON array' USING ERRCODE='22023'; END IF;
+      IF EXISTS (SELECT 1 FROM jsonb_array_elements(_item->'personalizations') p WHERE jsonb_typeof(p)<>'object') THEN
+        RAISE EXCEPTION 'Each personalization must be a JSON object' USING ERRCODE='22023';
+      END IF;
+    END IF;
+
+    _variant_id := CASE WHEN _item ? 'product_variant_id' THEN nullif(_item->>'product_variant_id','')::uuid ELSE _existing.product_variant_id END;
+    _selection_valid := false;
+    IF _variant_id IS NOT NULL THEN
+      IF _existing.id IS NULL OR _variant_id IS DISTINCT FROM _existing.product_variant_id OR _effective_product_id IS DISTINCT FROM _existing.product_id THEN
+        SELECT true INTO _selection_valid FROM public.product_variants v JOIN public.products p ON p.id=v.product_id
+        WHERE v.id=_variant_id AND v.product_id=_effective_product_id AND v.is_active
+          AND p.is_active AND NOT coalesce(p.is_deleted,false) AND p.deleted_at IS NULL;
+      ELSE
+        SELECT true INTO _selection_valid FROM public.product_variants v WHERE v.id=_variant_id AND v.product_id=_effective_product_id;
+      END IF;
+      IF NOT coalesce(_selection_valid,false) THEN RAISE EXCEPTION 'Selected variant is inactive or does not belong to an active quoted product' USING ERRCODE='23503'; END IF;
+    ELSIF _effective_product_id IS NOT NULL AND (_existing.id IS NULL OR _effective_product_id IS DISTINCT FROM _existing.product_id) THEN
+      SELECT true INTO _selection_valid FROM public.products p WHERE p.id=_effective_product_id
+        AND p.is_active AND NOT coalesce(p.is_deleted,false) AND p.deleted_at IS NULL;
+      IF NOT coalesce(_selection_valid,false) THEN RAISE EXCEPTION 'Selected product is inactive or deleted' USING ERRCODE='23503'; END IF;
+    END IF;
+
+    IF _existing.id IS NULL THEN
+      INSERT INTO public.quote_items (
+        quote_id,product_id,product_name,product_description,product_sku,product_image_url,
+        has_personalization,personalization_config,personalization_cost,mockup_urls,artwork_urls,
+        quantity,unit_price,discount_percentage,discount_amount,subtotal,color_name,color_hex,
+        size_code,gender,sort_order,notes,kit_group_id,kit_name,price_confirmed_at,price_updated_at,
+        price_freshness_threshold_days,bitrix_product_id,selected_packaging_id,
+        selected_packaging_name,selected_packaging_unit_cost,product_variant_id
+      ) VALUES (
+        _quote_id,_effective_product_id,_item->>'product_name',_item->>'product_description',
+        _item->>'product_sku',_item->>'product_image_url',coalesce((_item->>'has_personalization')::boolean,false),
+        _item->'personalization_config',coalesce((_item->>'personalization_cost')::numeric,0),
+        coalesce(_item->'mockup_urls','[]'::jsonb),coalesce(_item->'artwork_urls','[]'::jsonb),
+        coalesce((_item->>'quantity')::integer,0),coalesce((_item->>'unit_price')::numeric,0),
+        coalesce((_item->>'discount_percentage')::numeric,0),coalesce((_item->>'discount_amount')::numeric,0),
+        coalesce((_item->>'subtotal')::numeric,0),_item->>'color_name',_item->>'color_hex',
+        nullif(_item->>'size_code',''),nullif(_item->>'gender',''),coalesce((_item->>'sort_order')::integer,0),
+        _item->>'notes',nullif(_item->>'kit_group_id','')::uuid,nullif(_item->>'kit_name',''),
+        nullif(_item->>'price_confirmed_at','')::timestamptz,nullif(_item->>'price_updated_at','')::timestamptz,
+        coalesce(nullif(_item->>'price_freshness_threshold_days','')::integer,60),nullif(_item->>'bitrix_product_id',''),
+        nullif(_item->>'selected_packaging_id','')::uuid,_item->>'selected_packaging_name',
+        nullif(_item->>'selected_packaging_unit_cost','')::numeric,_variant_id
+      ) RETURNING id INTO _item_id;
+      _seen_ids := array_append(_seen_ids,_item_id);
+    ELSE
+      UPDATE public.quote_items SET
+        product_id=_effective_product_id,
+        product_name=CASE WHEN _item ? 'product_name' THEN _item->>'product_name' ELSE product_name END,
+        product_description=CASE WHEN _item ? 'product_description' THEN _item->>'product_description' ELSE product_description END,
+        product_sku=CASE WHEN _item ? 'product_sku' THEN _item->>'product_sku' ELSE product_sku END,
+        product_image_url=CASE WHEN _item ? 'product_image_url' THEN _item->>'product_image_url' ELSE product_image_url END,
+        has_personalization=CASE WHEN _item ? 'has_personalization' THEN (_item->>'has_personalization')::boolean ELSE has_personalization END,
+        personalization_config=CASE WHEN _item ? 'personalization_config' THEN _item->'personalization_config' ELSE personalization_config END,
+        personalization_cost=CASE WHEN _item ? 'personalization_cost' THEN (_item->>'personalization_cost')::numeric ELSE personalization_cost END,
+        mockup_urls=CASE WHEN _item ? 'mockup_urls' THEN _item->'mockup_urls' ELSE mockup_urls END,
+        artwork_urls=CASE WHEN _item ? 'artwork_urls' THEN _item->'artwork_urls' ELSE artwork_urls END,
+        quantity=CASE WHEN _item ? 'quantity' THEN (_item->>'quantity')::integer ELSE quantity END,
+        unit_price=CASE WHEN _item ? 'unit_price' THEN (_item->>'unit_price')::numeric ELSE unit_price END,
+        discount_percentage=CASE WHEN _item ? 'discount_percentage' THEN (_item->>'discount_percentage')::numeric ELSE discount_percentage END,
+        discount_amount=CASE WHEN _item ? 'discount_amount' THEN (_item->>'discount_amount')::numeric ELSE discount_amount END,
+        color_name=CASE WHEN _item ? 'color_name' THEN _item->>'color_name' ELSE color_name END,
+        color_hex=CASE WHEN _item ? 'color_hex' THEN _item->>'color_hex' ELSE color_hex END,
+        size_code=CASE WHEN _item ? 'size_code' THEN nullif(_item->>'size_code','') ELSE size_code END,
+        gender=CASE WHEN _item ? 'gender' THEN nullif(_item->>'gender','') ELSE gender END,
+        sort_order=CASE WHEN _item ? 'sort_order' THEN (_item->>'sort_order')::integer ELSE sort_order END,
+        notes=CASE WHEN _item ? 'notes' THEN _item->>'notes' ELSE notes END,
+        kit_group_id=CASE WHEN _item ? 'kit_group_id' THEN nullif(_item->>'kit_group_id','')::uuid ELSE kit_group_id END,
+        kit_name=CASE WHEN _item ? 'kit_name' THEN nullif(_item->>'kit_name','') ELSE kit_name END,
+        price_confirmed_at=CASE WHEN _item ? 'price_confirmed_at' THEN nullif(_item->>'price_confirmed_at','')::timestamptz ELSE price_confirmed_at END,
+        price_updated_at=CASE WHEN _item ? 'price_updated_at' THEN nullif(_item->>'price_updated_at','')::timestamptz ELSE price_updated_at END,
+        price_freshness_threshold_days=CASE WHEN _item ? 'price_freshness_threshold_days' THEN nullif(_item->>'price_freshness_threshold_days','')::integer ELSE price_freshness_threshold_days END,
+        bitrix_product_id=CASE WHEN _item ? 'bitrix_product_id' THEN nullif(_item->>'bitrix_product_id','') ELSE bitrix_product_id END,
+        selected_packaging_id=CASE WHEN _item ? 'selected_packaging_id' THEN nullif(_item->>'selected_packaging_id','')::uuid ELSE selected_packaging_id END,
+        selected_packaging_name=CASE WHEN _item ? 'selected_packaging_name' THEN _item->>'selected_packaging_name' ELSE selected_packaging_name END,
+        selected_packaging_unit_cost=CASE WHEN _item ? 'selected_packaging_unit_cost' THEN nullif(_item->>'selected_packaging_unit_cost','')::numeric ELSE selected_packaging_unit_cost END,
+        product_variant_id=_variant_id,updated_at=now()
+      WHERE id=_item_id AND quote_id=_quote_id;
+    END IF;
+
+    IF _item ? 'personalizations' THEN
+      DELETE FROM public.quote_item_personalizations WHERE quote_item_id=_item_id;
+      FOR _pers IN SELECT value FROM jsonb_array_elements(_item->'personalizations') LOOP
+        INSERT INTO public.quote_item_personalizations (
+          quote_item_id,technique_id,technique_name,location_code,location_name,
+          personalized_quantity,colors_count,positions_count,area_cm2,width_cm,height_cm,
+          setup_cost,unit_cost,total_cost,notes
+        ) VALUES (
+          _item_id,nullif(_pers->>'technique_id','')::uuid,_pers->>'technique_name',
+          _pers->>'location_code',_pers->>'location_name',nullif(_pers->>'personalized_quantity','')::integer,
+          coalesce((_pers->>'colors_count')::integer,1),coalesce((_pers->>'positions_count')::integer,1),
+          nullif(_pers->>'area_cm2','')::numeric,nullif(_pers->>'width_cm','')::numeric,
+          nullif(_pers->>'height_cm','')::numeric,coalesce((_pers->>'setup_cost')::numeric,0),
+          coalesce((_pers->>'unit_cost')::numeric,0),coalesce((_pers->>'total_cost')::numeric,0),_pers->>'notes'
+        );
+      END LOOP;
+    END IF;
   END LOOP;
 
-  _actor_id := coalesce(auth.uid(), _updated_quote.seller_id);
+  IF EXISTS (
+    SELECT 1 FROM public.quote_items qi WHERE qi.quote_id=_quote_id
+      AND NOT (qi.id=ANY(_seen_ids)) AND NOT (qi.id=ANY(_removed_ids))
+  ) THEN RAISE EXCEPTION 'Every omitted persisted item must be listed in _removed_item_ids' USING ERRCODE='22023'; END IF;
+  DELETE FROM public.quote_items qi WHERE qi.quote_id=_quote_id AND qi.id=ANY(_removed_ids);
+
+  SELECT * INTO _updated_quote FROM public.quotes WHERE id=_quote_id;
+  IF _updated_quote.version=_current_version THEN
+    UPDATE public.quotes SET version=_current_version+1,updated_at=now()
+    WHERE id=_quote_id AND version=_current_version RETURNING * INTO _updated_quote;
+    IF NOT FOUND THEN RAISE EXCEPTION 'Conflito de versão durante atualização dos itens' USING ERRCODE='40001'; END IF;
+  END IF;
+  IF _updated_quote.version <> _current_version+1 THEN
+    RAISE EXCEPTION 'Version must advance exactly once per transaction' USING ERRCODE='40001';
+  END IF;
+
+  _actor_id := coalesce(auth.uid(),_updated_quote.seller_id);
   IF _actor_id IS NOT NULL THEN
     IF _prev_status IS DISTINCT FROM _updated_quote.status THEN
       _action := 'status_changed';
-      _desc   := format('Status alterado de "%s" para "%s" no %s',
-                        _prev_status, _updated_quote.status, _updated_quote.quote_number);
+      _desc := format('Status alterado de "%s" para "%s" no %s',_prev_status,_updated_quote.status,_updated_quote.quote_number);
     ELSE
       _action := 'updated';
-      _desc   := format('Orçamento %s editado (total: R$ %s)',
-                        _updated_quote.quote_number,
-                        _updated_quote.total);
+      _desc := format('Orçamento %s editado (total: R$ %s)',_updated_quote.quote_number,_updated_quote.total);
     END IF;
-
-    INSERT INTO public.quote_history (quote_id, user_id, action, description, metadata)
-    VALUES (
-      _quote_id,
-      _actor_id,
-      _action,
-      _desc,
-      jsonb_build_object(
-        'prev_status',          _prev_status,
-        'new_status',           _updated_quote.status,
-        'prev_total',           _prev_total,
-        'new_total',            _updated_quote.total,
-        'markup',               _updated_quote.negotiation_markup_percent,
-        'n_items',              (SELECT count(*) FROM public.quote_items WHERE quote_id = _quote_id),
-        'optimistic_lock_used', (_expected_version IS NOT NULL)
-      )
-    );
+    INSERT INTO public.quote_history (quote_id,user_id,action,description,metadata)
+    VALUES (_quote_id,_actor_id,_action,_desc,jsonb_build_object(
+      'prev_status',_prev_status,'new_status',_updated_quote.status,'prev_total',_prev_total,
+      'new_total',_updated_quote.total,'markup',_updated_quote.negotiation_markup_percent,
+      'n_items',(SELECT count(*) FROM public.quote_items WHERE quote_id=_quote_id),
+      'removed_item_ids',to_jsonb(_removed_ids),'optimistic_lock_used',(_expected_version IS NOT NULL)
+    ));
   END IF;
-
   RETURN _updated_quote;
 END;
 $_$;
@@ -71673,1888 +71783,6 @@ $$;
 ALTER FUNCTION "public"."zapp_catalog_stats"() OWNER TO "postgres";
 
 
-CREATE OR REPLACE FUNCTION "realtime"."apply_rls"("wal" "jsonb", "max_record_bytes" integer DEFAULT (1024 * 1024)) RETURNS SETOF "realtime"."wal_rls"
-    LANGUAGE "plpgsql"
-    AS $$
-declare
-    -- Regclass of the table e.g. public.notes
-    entity_ regclass = (quote_ident(wal ->> 'schema') || '.' || quote_ident(wal ->> 'table'))::regclass;
-
-    -- I, U, D, T: insert, update ...
-    action realtime.action = (
-        case wal ->> 'action'
-            when 'I' then 'INSERT'
-            when 'U' then 'UPDATE'
-            when 'D' then 'DELETE'
-            else 'ERROR'
-        end
-    );
-
-    -- Is row level security enabled for the table
-    is_rls_enabled bool = relrowsecurity from pg_class where oid = entity_;
-
-    subscriptions realtime.subscription[] = array_agg(subs)
-        from
-            realtime.subscription subs
-        where
-            subs.entity = entity_
-            -- Filter by action early - only get subscriptions interested in this action
-            -- action_filter column can be: '*' (all), 'INSERT', 'UPDATE', or 'DELETE'
-            and (subs.action_filter = '*' or subs.action_filter = action::text);
-
-    -- Subscription vars
-    working_role regrole;
-    working_selected_columns text[];
-    claimed_role regrole;
-    claims jsonb;
-
-    subscription_id uuid;
-    subscription_has_access bool;
-    visible_to_subscription_ids uuid[] = '{}';
-
-    -- structured info for wal's columns
-    columns realtime.wal_column[];
-    -- previous identity values for update/delete
-    old_columns realtime.wal_column[];
-
-    error_record_exceeds_max_size boolean = octet_length(wal::text) > max_record_bytes;
-
-    -- Primary jsonb output for record
-    output jsonb;
-
-    -- Loop record for iterating unique roles (outer loop)
-    role_record record;
-    -- Loop record for iterating unique selected_columns within a role (inner loop)
-    cols_record record;
-    -- Subscription ids visible at the role level (before fanning out by selected_columns)
-    visible_role_sub_ids uuid[] = '{}';
-
-begin
-    perform set_config('role', null, true);
-
-    columns =
-        array_agg(
-            (
-                x->>'name',
-                x->>'type',
-                x->>'typeoid',
-                realtime.cast(
-                    (x->'value') #>> '{}',
-                    coalesce(
-                        (x->>'typeoid')::regtype, -- null when wal2json version <= 2.4
-                        (x->>'type')::regtype
-                    )
-                ),
-                (pks ->> 'name') is not null,
-                true
-            )::realtime.wal_column
-        )
-        from
-            jsonb_array_elements(wal -> 'columns') x
-            left join jsonb_array_elements(wal -> 'pk') pks
-                on (x ->> 'name') = (pks ->> 'name');
-
-    old_columns =
-        array_agg(
-            (
-                x->>'name',
-                x->>'type',
-                x->>'typeoid',
-                realtime.cast(
-                    (x->'value') #>> '{}',
-                    coalesce(
-                        (x->>'typeoid')::regtype, -- null when wal2json version <= 2.4
-                        (x->>'type')::regtype
-                    )
-                ),
-                (pks ->> 'name') is not null,
-                true
-            )::realtime.wal_column
-        )
-        from
-            jsonb_array_elements(wal -> 'identity') x
-            left join jsonb_array_elements(wal -> 'pk') pks
-                on (x ->> 'name') = (pks ->> 'name');
-
-    for role_record in
-        select claims_role
-        from (select distinct claims_role from unnest(subscriptions)) t
-        order by claims_role::text
-    loop
-        working_role := role_record.claims_role;
-
-        -- Update `is_selectable` for columns and old_columns (once per role)
-        columns =
-            array_agg(
-                (
-                    c.name,
-                    c.type_name,
-                    c.type_oid,
-                    c.value,
-                    c.is_pkey,
-                    pg_catalog.has_column_privilege(working_role, entity_, c.name, 'SELECT')
-                )::realtime.wal_column
-            )
-            from
-                unnest(columns) c;
-
-        old_columns =
-                array_agg(
-                    (
-                        c.name,
-                        c.type_name,
-                        c.type_oid,
-                        c.value,
-                        c.is_pkey,
-                        pg_catalog.has_column_privilege(working_role, entity_, c.name, 'SELECT')
-                    )::realtime.wal_column
-                )
-                from
-                    unnest(old_columns) c;
-
-        if action <> 'DELETE' and count(1) = 0 from unnest(columns) c where c.is_pkey then
-            -- Fan out 400 error per distinct selected_columns for this role
-            for cols_record in
-                select selected_columns
-                from (select distinct selected_columns from unnest(subscriptions) s where s.claims_role = working_role) t
-                order by coalesce(array_to_string(selected_columns, ','), '')
-            loop
-                working_selected_columns := cols_record.selected_columns;
-                return next (
-                    jsonb_build_object(
-                        'schema', wal ->> 'schema',
-                        'table', wal ->> 'table',
-                        'type', action
-                    ),
-                    is_rls_enabled,
-                    (select array_agg(s.subscription_id) from unnest(subscriptions) as s where s.claims_role = working_role and (s.selected_columns is not distinct from working_selected_columns)),
-                    array['Error 400: Bad Request, no primary key']
-                )::realtime.wal_rls;
-            end loop;
-
-        -- The claims role does not have SELECT permission to the primary key of entity
-        elsif action <> 'DELETE' and sum(c.is_selectable::int) <> count(1) from unnest(columns) c where c.is_pkey then
-            -- Fan out 401 error per distinct selected_columns for this role
-            for cols_record in
-                select selected_columns
-                from (select distinct selected_columns from unnest(subscriptions) s where s.claims_role = working_role) t
-                order by coalesce(array_to_string(selected_columns, ','), '')
-            loop
-                working_selected_columns := cols_record.selected_columns;
-                return next (
-                    jsonb_build_object(
-                        'schema', wal ->> 'schema',
-                        'table', wal ->> 'table',
-                        'type', action
-                    ),
-                    is_rls_enabled,
-                    (select array_agg(s.subscription_id) from unnest(subscriptions) as s where s.claims_role = working_role and (s.selected_columns is not distinct from working_selected_columns)),
-                    array['Error 401: Unauthorized']
-                )::realtime.wal_rls;
-            end loop;
-
-        else
-            -- Create the prepared statement (once per role)
-            if is_rls_enabled and action <> 'DELETE' then
-                if (select 1 from pg_prepared_statements where name = 'walrus_rls_stmt' limit 1) > 0 then
-                    deallocate walrus_rls_stmt;
-                end if;
-                execute realtime.build_prepared_statement_sql('walrus_rls_stmt', entity_, columns);
-            end if;
-
-            -- Collect all visible subscription IDs for this role (filter check + RLS check)
-            visible_role_sub_ids = '{}';
-
-            for subscription_id, claims in (
-                    select
-                        subs.subscription_id,
-                        subs.claims
-                    from
-                        unnest(subscriptions) subs
-                    where
-                        subs.entity = entity_
-                        and subs.claims_role = working_role
-                        and (
-                            realtime.is_visible_through_filters(columns, subs.filters)
-                            or (
-                              action = 'DELETE'
-                              and realtime.is_visible_through_filters(old_columns, subs.filters)
-                            )
-                        )
-            ) loop
-
-                if not is_rls_enabled or action = 'DELETE' then
-                    visible_role_sub_ids = visible_role_sub_ids || subscription_id;
-                else
-                    -- Check if RLS allows the role to see the record
-                    perform
-                        -- Trim leading and trailing quotes from working_role because set_config
-                        -- doesn't recognize the role as valid if they are included
-                        set_config('role', trim(both '"' from working_role::text), true),
-                        set_config('request.jwt.claims', claims::text, true);
-
-                    execute 'execute walrus_rls_stmt' into subscription_has_access;
-
-                    -- Reset the role on every FOR..LOOP batch execution.
-                    -- The first batch of 10 rows is pre-fetched using the current connection role (PG internal behaviour)
-                    -- then we have to reset it again otherwise it would use the role defined in the `set_config` above
-                    -- to fetch the remaining rows when rows>10, which could be a user-defined role that lacks execution grants.
-                    -- The flow is:
-                    --   1. run batch with conn role
-                    --   2. set_config working_role
-                    --   3. execute walrus
-                    --   4. reset role (revert)
-                    --   5. repeat
-                    perform set_config('role', null, true);
-
-                    if subscription_has_access then
-                        visible_role_sub_ids = visible_role_sub_ids || subscription_id;
-                    end if;
-                end if;
-            end loop;
-
-            perform set_config('role', null, true);
-
-            -- Inner loop: per distinct selected_columns for this role
-            for cols_record in
-                select selected_columns
-                from (select distinct selected_columns from unnest(subscriptions) s where s.claims_role = working_role) t
-                order by coalesce(array_to_string(selected_columns, ','), '')
-            loop
-                working_selected_columns := cols_record.selected_columns;
-
-                output = jsonb_build_object(
-                    'schema', wal ->> 'schema',
-                    'table', wal ->> 'table',
-                    'type', action,
-                    'commit_timestamp', to_char(
-                        ((wal ->> 'timestamp')::timestamptz at time zone 'utc'),
-                        'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"'
-                    ),
-                    'columns', (
-                        select
-                            jsonb_agg(
-                                jsonb_build_object(
-                                    'name', pa.attname,
-                                    'type', pt.typname
-                                )
-                                order by pa.attnum asc
-                            )
-                        from
-                            pg_attribute pa
-                            join pg_type pt
-                                on pa.atttypid = pt.oid
-                            left join (
-                                select unnest(conkey) as pkey_attnum
-                                from pg_constraint
-                                where conrelid = entity_ and contype = 'p'
-                            ) pk on pk.pkey_attnum = pa.attnum
-                        where
-                            attrelid = entity_
-                            and attnum > 0
-                            and pg_catalog.has_column_privilege(working_role, entity_, pa.attname, 'SELECT')
-                            and (working_selected_columns is null or pa.attname = any(working_selected_columns) or pk.pkey_attnum is not null)
-                    )
-                )
-                -- Add "record" key for insert and update
-                || case
-                    when action in ('INSERT', 'UPDATE') then
-                        jsonb_build_object(
-                            'record',
-                            (
-                                select
-                                    jsonb_object_agg(
-                                        -- if unchanged toast, get column name and value from old record
-                                        coalesce((c).name, (oc).name),
-                                        case
-                                            when (c).name is null then (oc).value
-                                            else (c).value
-                                        end
-                                    )
-                                from
-                                    unnest(columns) c
-                                    full outer join unnest(old_columns) oc
-                                        on (c).name = (oc).name
-                                where
-                                    coalesce((c).is_selectable, (oc).is_selectable)
-                                    and (working_selected_columns is null or coalesce((c).name, (oc).name) = any(working_selected_columns) or coalesce((c).is_pkey, (oc).is_pkey))
-                                    and ( not error_record_exceeds_max_size or (octet_length((c).value::text) <= 64))
-                            )
-                        )
-                    else '{}'::jsonb
-                end
-                -- Add "old_record" key for update and delete
-                || case
-                    when action = 'UPDATE' then
-                        jsonb_build_object(
-                                'old_record',
-                                (
-                                    select jsonb_object_agg((c).name, (c).value)
-                                    from unnest(old_columns) c
-                                    where
-                                        (c).is_selectable
-                                        and (working_selected_columns is null or (c).name = any(working_selected_columns) or (c).is_pkey)
-                                        and ( not error_record_exceeds_max_size or (octet_length((c).value::text) <= 64))
-                                )
-                            )
-                    when action = 'DELETE' then
-                        jsonb_build_object(
-                            'old_record',
-                            (
-                                select jsonb_object_agg((c).name, (c).value)
-                                from unnest(old_columns) c
-                                where
-                                    (c).is_selectable
-                                    and (working_selected_columns is null or (c).name = any(working_selected_columns) or (c).is_pkey)
-                                    and ( not error_record_exceeds_max_size or (octet_length((c).value::text) <= 64))
-                                    and ( not is_rls_enabled or (c).is_pkey ) -- if RLS enabled, we can't secure deletes so filter to pkey
-                            )
-                        )
-                    else '{}'::jsonb
-                end;
-
-                -- Filter visible_role_sub_ids to those matching the current selected_columns group
-                visible_to_subscription_ids = coalesce(
-                    (
-                        select array_agg(s.subscription_id)
-                        from unnest(subscriptions) s
-                        where s.claims_role = working_role
-                          and (s.selected_columns is not distinct from working_selected_columns)
-                          and s.subscription_id = any(visible_role_sub_ids)
-                    ),
-                    '{}'::uuid[]
-                );
-
-                return next (
-                    output,
-                    is_rls_enabled,
-                    visible_to_subscription_ids,
-                    case
-                        when error_record_exceeds_max_size then array['Error 413: Payload Too Large']
-                        else '{}'
-                    end
-                )::realtime.wal_rls;
-            end loop;
-
-        end if;
-    end loop;
-
-    perform set_config('role', null, true);
-end;
-$$;
-
-
-ALTER FUNCTION "realtime"."apply_rls"("wal" "jsonb", "max_record_bytes" integer) OWNER TO "supabase_realtime_admin";
-
-
-CREATE OR REPLACE FUNCTION "realtime"."broadcast_changes"("topic_name" "text", "event_name" "text", "operation" "text", "table_name" "text", "table_schema" "text", "new" "record", "old" "record", "level" "text" DEFAULT 'ROW'::"text") RETURNS "void"
-    LANGUAGE "plpgsql"
-    AS $$
-DECLARE
-    -- Declare a variable to hold the JSONB representation of the row
-    row_data jsonb := '{}'::jsonb;
-BEGIN
-    IF level = 'STATEMENT' THEN
-        RAISE EXCEPTION 'function can only be triggered for each row, not for each statement';
-    END IF;
-    -- Check the operation type and handle accordingly
-    IF operation = 'INSERT' OR operation = 'UPDATE' OR operation = 'DELETE' THEN
-        row_data := jsonb_build_object('old_record', OLD, 'record', NEW, 'operation', operation, 'table', table_name, 'schema', table_schema);
-        PERFORM realtime.send (row_data, event_name, topic_name);
-    ELSE
-        RAISE EXCEPTION 'Unexpected operation type: %', operation;
-    END IF;
-EXCEPTION
-    WHEN OTHERS THEN
-        RAISE EXCEPTION 'Failed to process the row: %', SQLERRM;
-END;
-
-$$;
-
-
-ALTER FUNCTION "realtime"."broadcast_changes"("topic_name" "text", "event_name" "text", "operation" "text", "table_name" "text", "table_schema" "text", "new" "record", "old" "record", "level" "text") OWNER TO "supabase_realtime_admin";
-
-
-CREATE OR REPLACE FUNCTION "realtime"."build_prepared_statement_sql"("prepared_statement_name" "text", "entity" "regclass", "columns" "realtime"."wal_column"[]) RETURNS "text"
-    LANGUAGE "sql"
-    AS $$
-      /*
-      Builds a sql string that, if executed, creates a prepared statement to
-      tests retrive a row from *entity* by its primary key columns.
-      Example
-          select realtime.build_prepared_statement_sql('public.notes', '{"id"}'::text[], '{"bigint"}'::text[])
-      */
-          select
-      'prepare ' || prepared_statement_name || ' as
-          select
-              exists(
-                  select
-                      1
-                  from
-                      ' || entity || '
-                  where
-                      ' || string_agg(quote_ident(pkc.name) || '=' || quote_nullable(pkc.value #>> '{}') , ' and ') || '
-              )'
-          from
-              unnest(columns) pkc
-          where
-              pkc.is_pkey
-          group by
-              entity
-      $$;
-
-
-ALTER FUNCTION "realtime"."build_prepared_statement_sql"("prepared_statement_name" "text", "entity" "regclass", "columns" "realtime"."wal_column"[]) OWNER TO "supabase_realtime_admin";
-
-
-CREATE OR REPLACE FUNCTION "realtime"."cast"("val" "text", "type_" "regtype") RETURNS "jsonb"
-    LANGUAGE "plpgsql" IMMUTABLE
-    AS $$
-declare
-  res jsonb;
-begin
-  if type_::text = 'bytea' then
-    return to_jsonb(val);
-  end if;
-  execute format('select to_jsonb(%L::'|| type_::text || ')', val) into res;
-  return res;
-end
-$$;
-
-
-ALTER FUNCTION "realtime"."cast"("val" "text", "type_" "regtype") OWNER TO "supabase_realtime_admin";
-
-
-CREATE OR REPLACE FUNCTION "realtime"."check_equality_op"("op" "realtime"."equality_op", "type_" "regtype", "val_1" "text", "val_2" "text") RETURNS boolean
-    LANGUAGE "plpgsql" IMMUTABLE
-    AS $$
-/*
-Casts *val_1* and *val_2* as type *type_* and check the *op* condition for truthiness
-*/
-declare
-    op_symbol text = (
-        case
-            when op = 'eq' then '='
-            when op = 'neq' then '!='
-            when op = 'lt' then '<'
-            when op = 'lte' then '<='
-            when op = 'gt' then '>'
-            when op = 'gte' then '>='
-            when op = 'in' then '= any'
-            else 'UNKNOWN OP'
-        end
-    );
-    res boolean;
-begin
-    execute format(
-        'select %L::'|| type_::text || ' ' || op_symbol
-        || ' ( %L::'
-        || (
-            case
-                when op = 'in' then type_::text || '[]'
-                else type_::text end
-        )
-        || ')', val_1, val_2) into res;
-    return res;
-end;
-$$;
-
-
-ALTER FUNCTION "realtime"."check_equality_op"("op" "realtime"."equality_op", "type_" "regtype", "val_1" "text", "val_2" "text") OWNER TO "supabase_realtime_admin";
-
-
-CREATE OR REPLACE FUNCTION "realtime"."check_equality_op"("op" "realtime"."equality_op", "type_" "regtype", "val_1" "text", "val_2" "text", "negate" boolean) RETURNS boolean
-    LANGUAGE "plpgsql" STABLE
-    AS $$
-declare
-    op_symbol text;
-    res boolean;
-begin
-    -- IS DISTINCT FROM / IS NOT DISTINCT FROM: infix, both sides typed literals
-    if op = 'isdistinct' then
-        execute format(
-            'select %L::%s %s %L::%s',
-            val_1,
-            type_::text,
-            case when negate then 'IS NOT DISTINCT FROM' else 'IS DISTINCT FROM' end,
-            val_2,
-            type_::text
-        ) into res;
-        return res;
-    end if;
-
-    -- IS requires a keyword RHS (NULL, TRUE, FALSE, UNKNOWN), not a typed literal
-    if op = 'is' then
-        if val_2 not in ('null', 'true', 'false', 'unknown') then
-            raise exception 'invalid value for is filter: must be null, true, false, or unknown';
-        end if;
-        execute format(
-            'select %L::%s %s %s',
-            val_1,
-            type_::text,
-            case when negate then 'IS NOT' else 'IS' end,
-            upper(val_2)
-        ) into res;
-        return res;
-    end if;
-
-    op_symbol = case
-        when op = 'eq'    then '='
-        when op = 'neq'   then '!='
-        when op = 'lt'    then '<'
-        when op = 'lte'   then '<='
-        when op = 'gt'    then '>'
-        when op = 'gte'   then '>='
-        when op = 'in'    then '= any'
-        when op = 'like'   then 'LIKE'
-        when op = 'ilike'  then 'ILIKE'
-        when op = 'match'  then '~'
-        when op = 'imatch' then '~*'
-        else null
-    end;
-
-    if op_symbol is null then
-        raise exception 'unsupported equality operator: %', op::text;
-    end if;
-
-    execute format(
-        'select %L::%s %s (%L::%s)',
-        val_1,
-        type_::text,
-        op_symbol,
-        val_2,
-        case when op = 'in' then type_::text || '[]' else type_::text end
-    ) into res;
-
-    return case when negate then not res else res end;
-end;
-$$;
-
-
-ALTER FUNCTION "realtime"."check_equality_op"("op" "realtime"."equality_op", "type_" "regtype", "val_1" "text", "val_2" "text", "negate" boolean) OWNER TO "supabase_realtime_admin";
-
-
-CREATE OR REPLACE FUNCTION "realtime"."is_visible_through_filters"("columns" "realtime"."wal_column"[], "filters" "realtime"."user_defined_filter"[]) RETURNS boolean
-    LANGUAGE "sql" STABLE
-    AS $$
-    select
-        filters is null
-        or array_length(filters, 1) is null
-        or coalesce(
-            count(col.name) = count(1)
-            and sum(
-                realtime.check_equality_op(
-                    op:=f.op,
-                    type_:=coalesce(col.type_oid::regtype, col.type_name::regtype),
-                    val_1:=col.value #>> '{}',
-                    val_2:=f.value,
-                    negate:=coalesce(f.negate, false)
-                )::int
-            ) filter (where col.name is not null) = count(col.name),
-            false
-        )
-    from
-        unnest(filters) f
-        left join unnest(columns) col
-            on f.column_name = col.name;
-$$;
-
-
-ALTER FUNCTION "realtime"."is_visible_through_filters"("columns" "realtime"."wal_column"[], "filters" "realtime"."user_defined_filter"[]) OWNER TO "supabase_realtime_admin";
-
-
-CREATE OR REPLACE FUNCTION "realtime"."list_changes"("publication" "name", "slot_name" "name", "max_changes" integer, "max_record_bytes" integer) RETURNS TABLE("wal" "jsonb", "is_rls_enabled" boolean, "subscription_ids" "uuid"[], "errors" "text"[], "slot_changes_count" bigint)
-    LANGUAGE "sql"
-    SET "log_min_messages" TO 'fatal'
-    AS $$
-  WITH pub AS (
-    SELECT
-      concat_ws(
-        ',',
-        CASE WHEN bool_or(pubinsert) THEN 'insert' ELSE NULL END,
-        CASE WHEN bool_or(pubupdate) THEN 'update' ELSE NULL END,
-        CASE WHEN bool_or(pubdelete) THEN 'delete' ELSE NULL END
-      ) AS w2j_actions,
-      coalesce(
-        string_agg(
-          realtime.quote_wal2json(format('%I.%I', schemaname, tablename)::regclass),
-          ','
-        ) filter (WHERE ppt.tablename IS NOT NULL),
-        ''
-      ) AS w2j_add_tables
-    FROM pg_publication pp
-    LEFT JOIN pg_publication_tables ppt ON pp.pubname = ppt.pubname
-    WHERE pp.pubname = publication
-    GROUP BY pp.pubname
-    LIMIT 1
-  ),
-  -- MATERIALIZED ensures pg_logical_slot_get_changes is called exactly once
-  w2j AS MATERIALIZED (
-    SELECT x.*, pub.w2j_add_tables
-    FROM pub,
-         pg_logical_slot_get_changes(
-           slot_name, null, max_changes,
-           'include-pk', 'true',
-           'include-transaction', 'false',
-           'include-timestamp', 'true',
-           'include-type-oids', 'true',
-           'format-version', '2',
-           'actions', pub.w2j_actions,
-           'add-tables', pub.w2j_add_tables
-         ) x
-  ),
-  slot_count AS (
-    SELECT count(*)::bigint AS cnt
-    FROM w2j
-    WHERE w2j.w2j_add_tables <> ''
-  ),
-  rls_filtered AS (
-    SELECT xyz.wal, xyz.is_rls_enabled, xyz.subscription_ids, xyz.errors
-    FROM w2j,
-         realtime.apply_rls(
-           wal := w2j.data::jsonb,
-           max_record_bytes := max_record_bytes
-         ) xyz(wal, is_rls_enabled, subscription_ids, errors)
-    WHERE w2j.w2j_add_tables <> ''
-      AND xyz.subscription_ids[1] IS NOT NULL
-  )
-  SELECT rf.wal, rf.is_rls_enabled, rf.subscription_ids, rf.errors, sc.cnt
-  FROM rls_filtered rf, slot_count sc
-
-  UNION ALL
-
-  SELECT null, null, null, null, sc.cnt
-  FROM slot_count sc
-  WHERE NOT EXISTS (SELECT 1 FROM rls_filtered)
-$$;
-
-
-ALTER FUNCTION "realtime"."list_changes"("publication" "name", "slot_name" "name", "max_changes" integer, "max_record_bytes" integer) OWNER TO "supabase_realtime_admin";
-
-
-CREATE OR REPLACE FUNCTION "realtime"."quote_wal2json"("entity" "regclass") RETURNS "text"
-    LANGUAGE "sql" IMMUTABLE STRICT
-    AS $$
-  SELECT
-    realtime.wal2json_escape_identifier(nsp.nspname::text)
-    || '.'
-    || realtime.wal2json_escape_identifier(pc.relname::text)
-  FROM pg_class pc
-  JOIN pg_namespace nsp ON pc.relnamespace = nsp.oid
-  WHERE pc.oid = entity
-$$;
-
-
-ALTER FUNCTION "realtime"."quote_wal2json"("entity" "regclass") OWNER TO "supabase_realtime_admin";
-
-
-CREATE OR REPLACE FUNCTION "realtime"."send"("payload" "jsonb", "event" "text", "topic" "text", "private" boolean DEFAULT true) RETURNS "void"
-    LANGUAGE "plpgsql"
-    AS $$
-DECLARE
-  generated_id uuid;
-  final_payload jsonb;
-BEGIN
-  BEGIN
-    generated_id := gen_random_uuid();
-
-    -- Check if payload has an 'id' key, if not, add the generated UUID
-    IF payload ? 'id' THEN
-      final_payload := payload;
-    ELSE
-      final_payload := jsonb_set(payload, '{id}', to_jsonb(generated_id));
-    END IF;
-
-    -- Set the topic configuration
-    EXECUTE format('SET LOCAL realtime.topic TO %L', topic);
-
-    INSERT INTO realtime.messages (id, payload, event, topic, private, extension)
-    VALUES (generated_id, final_payload, event, topic, private, 'broadcast');
-  EXCEPTION
-    WHEN OTHERS THEN
-      RAISE WARNING 'WarnSendingBroadcastMessage: %', SQLERRM;
-  END;
-END;
-$$;
-
-
-ALTER FUNCTION "realtime"."send"("payload" "jsonb", "event" "text", "topic" "text", "private" boolean) OWNER TO "supabase_realtime_admin";
-
-
-CREATE OR REPLACE FUNCTION "realtime"."send_binary"("payload" "bytea", "event" "text", "topic" "text", "private" boolean DEFAULT true) RETURNS "void"
-    LANGUAGE "plpgsql"
-    AS $$
-DECLARE
-  generated_id uuid;
-BEGIN
-  BEGIN
-    generated_id := gen_random_uuid();
-
-    EXECUTE format('SET LOCAL realtime.topic TO %L', topic);
-
-    INSERT INTO realtime.messages (id, binary_payload, event, topic, private, extension)
-    VALUES (generated_id, payload, event, topic, private, 'broadcast');
-  EXCEPTION
-    WHEN OTHERS THEN
-      RAISE WARNING 'WarnSendingBroadcastMessage: %', SQLERRM;
-  END;
-END;
-$$;
-
-
-ALTER FUNCTION "realtime"."send_binary"("payload" "bytea", "event" "text", "topic" "text", "private" boolean) OWNER TO "supabase_realtime_admin";
-
-
-CREATE OR REPLACE FUNCTION "realtime"."subscription_check_filters"() RETURNS "trigger"
-    LANGUAGE "plpgsql"
-    AS $$
-declare
-    col_names text[] = coalesce(
-            array_agg(a.attname order by a.attnum),
-            '{}'::text[]
-        )
-        from
-            pg_catalog.pg_attribute a
-        where
-            a.attrelid = new.entity
-            and a.attnum > 0
-            and not a.attisdropped
-            and pg_catalog.has_column_privilege(
-                (new.claims ->> 'role'),
-                a.attrelid,
-                a.attnum,
-                'SELECT'
-            );
-    filter realtime.user_defined_filter;
-    col_type regtype;
-    in_val jsonb;
-    selected_col text;
-begin
-    for filter in select * from unnest(new.filters) loop
-        if not filter.column_name = any(col_names) then
-            raise exception 'invalid column for filter %', filter.column_name;
-        end if;
-
-        col_type = (
-            select atttypid::regtype
-            from pg_catalog.pg_attribute
-            where attrelid = new.entity
-                  and attname = filter.column_name
-        );
-        if col_type is null then
-            raise exception 'failed to lookup type for column %', filter.column_name;
-        end if;
-
-        if filter.op = 'in'::realtime.equality_op then
-            in_val = realtime.cast(filter.value, (col_type::text || '[]')::regtype);
-            if coalesce(jsonb_array_length(in_val), 0) > 100 then
-                raise exception 'too many values for `in` filter. Maximum 100';
-            end if;
-        elsif filter.op = 'is'::realtime.equality_op then
-            -- `is` requires a keyword RHS rather than a typed literal
-            if filter.value not in ('null', 'true', 'false', 'unknown') then
-                raise exception 'invalid value for is filter: must be null, true, false, or unknown';
-            end if;
-            -- IS NULL works for any type, but IS TRUE/FALSE/UNKNOWN require a boolean
-            -- operand. Reject the non-null keywords on non-boolean columns here so they
-            -- don't abort apply_rls at WAL time.
-            if filter.value <> 'null' and col_type <> 'boolean'::regtype then
-                raise exception 'is % filter requires a boolean column, got %', filter.value, col_type::text;
-            end if;
-        elsif filter.op in ('like'::realtime.equality_op, 'ilike'::realtime.equality_op) then
-            -- like/ilike apply the text pattern operator (~~); reject column types that
-            -- have no such operator instead of failing at WAL time
-            if not exists (
-                select 1 from pg_catalog.pg_operator
-                where oprname = '~~' and oprleft = col_type
-            ) then
-                raise exception 'operator % requires a text-compatible column type, got %', filter.op::text, col_type::text;
-            end if;
-        elsif filter.op in ('match'::realtime.equality_op, 'imatch'::realtime.equality_op) then
-            -- match/imatch apply the regex operators ~ / ~*; reject column types that have
-            -- no such operator (e.g. integer) instead of failing at WAL time, mirroring the
-            -- like/ilike guard above.
-            if not exists (
-                select 1 from pg_catalog.pg_operator
-                where oprname = case when filter.op = 'imatch'::realtime.equality_op then '~*' else '~' end
-                  and oprleft = col_type
-                  and oprright = col_type
-                  and oprresult = 'boolean'::regtype
-            ) then
-                raise exception 'operator % requires a text-compatible column type, got %', filter.op::text, col_type::text;
-            end if;
-            -- validate the regex eagerly so a bad pattern is rejected here, not inside
-            -- apply_rls where it would abort the WAL stream for the entity
-            begin
-                perform '' ~ filter.value;
-            exception when others then
-                raise exception 'invalid regular expression for % filter: %', filter.op::text, sqlerrm;
-            end;
-        else
-            -- eq/neq/lt/lte/gt/gte: value must be coercable to the type
-            perform realtime.cast(filter.value, col_type);
-        end if;
-    end loop;
-
-    if new.selected_columns is not null then
-        for selected_col in select * from unnest(new.selected_columns) loop
-            if not selected_col = any(col_names) then
-                raise exception 'invalid column for select %', selected_col;
-            end if;
-        end loop;
-    end if;
-
-    -- Apply consistent order to filters so the unique constraint can't be tricked by a
-    -- different filter order. negate is part of the sort key.
-    new.filters = coalesce(
-        array_agg(f order by f.column_name, f.op, f.value, f.negate),
-        '{}'
-    ) from unnest(new.filters) f;
-
-    -- Normalize selected_columns order so ARRAY['a','b'] and ARRAY['b','a'] are treated
-    -- as the same subscription group in apply_rls. Preserve an empty array as '{}'
-    -- ("primary keys only") so it stays distinct from NULL ("all columns"); array_agg
-    -- over an empty set would otherwise collapse '{}' back to NULL.
-    if new.selected_columns is not null then
-        new.selected_columns = coalesce(
-            (
-                select array_agg(c order by c)
-                from unnest(new.selected_columns) c
-            ),
-            '{}'::text[]
-        );
-    end if;
-
-    return new;
-end;
-$$;
-
-
-ALTER FUNCTION "realtime"."subscription_check_filters"() OWNER TO "supabase_realtime_admin";
-
-
-CREATE OR REPLACE FUNCTION "realtime"."to_regrole"("role_name" "text") RETURNS "regrole"
-    LANGUAGE "sql" IMMUTABLE
-    AS $$ select role_name::regrole $$;
-
-
-ALTER FUNCTION "realtime"."to_regrole"("role_name" "text") OWNER TO "supabase_realtime_admin";
-
-
-CREATE OR REPLACE FUNCTION "realtime"."topic"() RETURNS "text"
-    LANGUAGE "sql" STABLE
-    AS $$
-select nullif(current_setting('realtime.topic', true), '')::text;
-$$;
-
-
-ALTER FUNCTION "realtime"."topic"() OWNER TO "supabase_realtime_admin";
-
-
-CREATE OR REPLACE FUNCTION "realtime"."wal2json_escape_identifier"("name" "text") RETURNS "text"
-    LANGUAGE "sql" IMMUTABLE STRICT
-    AS $$
-  -- Prefix `\`, `,`, `.`, and any whitespace with `\`
-  SELECT regexp_replace(name, '([\\,.[:space:]])', '\\\1', 'g')
-$$;
-
-
-ALTER FUNCTION "realtime"."wal2json_escape_identifier"("name" "text") OWNER TO "supabase_realtime_admin";
-
-
-CREATE OR REPLACE FUNCTION "storage"."allow_any_operation"("expected_operations" "text"[]) RETURNS boolean
-    LANGUAGE "sql" STABLE
-    AS $$
-  WITH current_operation AS (
-    SELECT storage.operation() AS raw_operation
-  ),
-  normalized AS (
-    SELECT CASE
-      WHEN raw_operation LIKE 'storage.%' THEN substr(raw_operation, 9)
-      ELSE raw_operation
-    END AS current_operation
-    FROM current_operation
-  )
-  SELECT EXISTS (
-    SELECT 1
-    FROM normalized n
-    CROSS JOIN LATERAL unnest(expected_operations) AS expected_operation
-    WHERE expected_operation IS NOT NULL
-      AND expected_operation <> ''
-      AND n.current_operation = CASE
-        WHEN expected_operation LIKE 'storage.%' THEN substr(expected_operation, 9)
-        ELSE expected_operation
-      END
-  );
-$$;
-
-
-ALTER FUNCTION "storage"."allow_any_operation"("expected_operations" "text"[]) OWNER TO "supabase_storage_admin";
-
-
-CREATE OR REPLACE FUNCTION "storage"."allow_only_operation"("expected_operation" "text") RETURNS boolean
-    LANGUAGE "sql" STABLE
-    AS $$
-  WITH current_operation AS (
-    SELECT storage.operation() AS raw_operation
-  ),
-  normalized AS (
-    SELECT
-      CASE
-        WHEN raw_operation LIKE 'storage.%' THEN substr(raw_operation, 9)
-        ELSE raw_operation
-      END AS current_operation,
-      CASE
-        WHEN expected_operation LIKE 'storage.%' THEN substr(expected_operation, 9)
-        ELSE expected_operation
-      END AS requested_operation
-    FROM current_operation
-  )
-  SELECT CASE
-    WHEN requested_operation IS NULL OR requested_operation = '' THEN FALSE
-    ELSE COALESCE(current_operation = requested_operation, FALSE)
-  END
-  FROM normalized;
-$$;
-
-
-ALTER FUNCTION "storage"."allow_only_operation"("expected_operation" "text") OWNER TO "supabase_storage_admin";
-
-
-CREATE OR REPLACE FUNCTION "storage"."can_insert_object"("bucketid" "text", "name" "text", "owner" "uuid", "metadata" "jsonb") RETURNS "void"
-    LANGUAGE "plpgsql"
-    AS $$
-BEGIN
-  INSERT INTO "storage"."objects" ("bucket_id", "name", "owner", "metadata") VALUES (bucketid, name, owner, metadata);
-  -- hack to rollback the successful insert
-  RAISE sqlstate 'PT200' using
-  message = 'ROLLBACK',
-  detail = 'rollback successful insert';
-END
-$$;
-
-
-ALTER FUNCTION "storage"."can_insert_object"("bucketid" "text", "name" "text", "owner" "uuid", "metadata" "jsonb") OWNER TO "supabase_storage_admin";
-
-
-CREATE OR REPLACE FUNCTION "storage"."enforce_bucket_name_length"() RETURNS "trigger"
-    LANGUAGE "plpgsql"
-    AS $$
-begin
-    if length(new.name) > 100 then
-        raise exception 'bucket name "%" is too long (% characters). Max is 100.', new.name, length(new.name);
-    end if;
-    return new;
-end;
-$$;
-
-
-ALTER FUNCTION "storage"."enforce_bucket_name_length"() OWNER TO "supabase_storage_admin";
-
-
-CREATE OR REPLACE FUNCTION "storage"."extension"("name" "text") RETURNS "text"
-    LANGUAGE "plpgsql" IMMUTABLE
-    AS $$
-DECLARE
-    _parts text[];
-    _filename text;
-BEGIN
-    -- Split on "/" to get path segments
-    SELECT string_to_array(name, '/') INTO _parts;
-    -- Get the last path segment (the actual filename)
-    SELECT _parts[array_length(_parts, 1)] INTO _filename;
-    -- Extract extension: reverse, split on '.', then reverse again
-    RETURN reverse(split_part(reverse(_filename), '.', 1));
-END
-$$;
-
-
-ALTER FUNCTION "storage"."extension"("name" "text") OWNER TO "supabase_storage_admin";
-
-
-CREATE OR REPLACE FUNCTION "storage"."filename"("name" "text") RETURNS "text"
-    LANGUAGE "plpgsql" IMMUTABLE
-    AS $$
-DECLARE
-    _parts text[];
-BEGIN
-    SELECT string_to_array(name, '/') INTO _parts;
-    RETURN _parts[array_length(_parts, 1)];
-END
-$$;
-
-
-ALTER FUNCTION "storage"."filename"("name" "text") OWNER TO "supabase_storage_admin";
-
-
-CREATE OR REPLACE FUNCTION "storage"."foldername"("name" "text") RETURNS "text"[]
-    LANGUAGE "plpgsql" IMMUTABLE
-    AS $$
-DECLARE
-    _parts text[];
-BEGIN
-    -- Split on "/" to get path segments
-    SELECT string_to_array(name, '/') INTO _parts;
-    -- Return everything except the last segment
-    RETURN _parts[1 : array_length(_parts,1) - 1];
-END
-$$;
-
-
-ALTER FUNCTION "storage"."foldername"("name" "text") OWNER TO "supabase_storage_admin";
-
-
-CREATE OR REPLACE FUNCTION "storage"."get_common_prefix"("p_key" "text", "p_prefix" "text", "p_delimiter" "text") RETURNS "text"
-    LANGUAGE "sql" IMMUTABLE
-    AS $$
-SELECT CASE
-    WHEN position(p_delimiter IN substring(p_key FROM length(p_prefix) + 1)) > 0
-    THEN left(p_key, length(p_prefix) + position(p_delimiter IN substring(p_key FROM length(p_prefix) + 1)))
-    ELSE NULL
-END;
-$$;
-
-
-ALTER FUNCTION "storage"."get_common_prefix"("p_key" "text", "p_prefix" "text", "p_delimiter" "text") OWNER TO "supabase_storage_admin";
-
-
-CREATE OR REPLACE FUNCTION "storage"."get_size_by_bucket"() RETURNS TABLE("size" bigint, "bucket_id" "text")
-    LANGUAGE "plpgsql" STABLE
-    AS $$
-BEGIN
-    return query
-        select sum((metadata->>'size')::bigint)::bigint as size, obj.bucket_id
-        from "storage".objects as obj
-        group by obj.bucket_id;
-END
-$$;
-
-
-ALTER FUNCTION "storage"."get_size_by_bucket"() OWNER TO "supabase_storage_admin";
-
-
-CREATE OR REPLACE FUNCTION "storage"."list_multipart_uploads_with_delimiter"("bucket_id" "text", "prefix_param" "text", "delimiter_param" "text", "max_keys" integer DEFAULT 100, "next_key_token" "text" DEFAULT ''::"text", "next_upload_token" "text" DEFAULT ''::"text") RETURNS TABLE("key" "text", "id" "text", "created_at" timestamp with time zone)
-    LANGUAGE "plpgsql"
-    AS $_$
-BEGIN
-    RETURN QUERY EXECUTE
-        'SELECT DISTINCT ON(key COLLATE "C") * from (
-            SELECT
-                CASE
-                    WHEN position($2 IN substring(key from length($1) + 1)) > 0 THEN
-                        substring(key from 1 for length($1) + position($2 IN substring(key from length($1) + 1)))
-                    ELSE
-                        key
-                END AS key, id, created_at
-            FROM
-                storage.s3_multipart_uploads
-            WHERE
-                bucket_id = $5 AND
-                key ILIKE $1 || ''%'' AND
-                CASE
-                    WHEN $4 != '''' AND $6 = '''' THEN
-                        CASE
-                            WHEN position($2 IN substring(key from length($1) + 1)) > 0 THEN
-                                substring(key from 1 for length($1) + position($2 IN substring(key from length($1) + 1))) COLLATE "C" > $4
-                            ELSE
-                                key COLLATE "C" > $4
-                            END
-                    ELSE
-                        true
-                END AND
-                CASE
-                    WHEN $6 != '''' THEN
-                        id COLLATE "C" > $6
-                    ELSE
-                        true
-                    END
-            ORDER BY
-                key COLLATE "C" ASC, created_at ASC) as e order by key COLLATE "C" LIMIT $3'
-        USING prefix_param, delimiter_param, max_keys, next_key_token, bucket_id, next_upload_token;
-END;
-$_$;
-
-
-ALTER FUNCTION "storage"."list_multipart_uploads_with_delimiter"("bucket_id" "text", "prefix_param" "text", "delimiter_param" "text", "max_keys" integer, "next_key_token" "text", "next_upload_token" "text") OWNER TO "supabase_storage_admin";
-
-
-CREATE OR REPLACE FUNCTION "storage"."list_objects_with_delimiter"("_bucket_id" "text", "prefix_param" "text", "delimiter_param" "text", "max_keys" integer DEFAULT 100, "start_after" "text" DEFAULT ''::"text", "next_token" "text" DEFAULT ''::"text", "sort_order" "text" DEFAULT 'asc'::"text") RETURNS TABLE("name" "text", "id" "uuid", "metadata" "jsonb", "updated_at" timestamp with time zone, "created_at" timestamp with time zone, "last_accessed_at" timestamp with time zone)
-    LANGUAGE "plpgsql" STABLE
-    AS $_$
-DECLARE
-    v_peek_name TEXT;
-    v_current RECORD;
-    v_common_prefix TEXT;
-
-    -- Configuration
-    v_is_asc BOOLEAN;
-    v_prefix TEXT;
-    v_start TEXT;
-    v_upper_bound TEXT;
-    v_file_batch_size INT;
-
-    -- Seek state
-    v_next_seek TEXT;
-    v_count INT := 0;
-
-    -- Dynamic SQL for batch query only
-    v_batch_query TEXT;
-
-BEGIN
-    -- ========================================================================
-    -- INITIALIZATION
-    -- ========================================================================
-    v_is_asc := lower(coalesce(sort_order, 'asc')) = 'asc';
-    v_prefix := coalesce(prefix_param, '');
-    v_start := CASE WHEN coalesce(next_token, '') <> '' THEN next_token ELSE coalesce(start_after, '') END;
-    v_file_batch_size := LEAST(GREATEST(max_keys * 2, 100), 1000);
-
-    -- Calculate upper bound for prefix filtering (bytewise, using COLLATE "C")
-    IF v_prefix = '' THEN
-        v_upper_bound := NULL;
-    ELSIF right(v_prefix, 1) = delimiter_param THEN
-        v_upper_bound := left(v_prefix, -1) || chr(ascii(delimiter_param) + 1);
-    ELSE
-        v_upper_bound := left(v_prefix, -1) || chr(ascii(right(v_prefix, 1)) + 1);
-    END IF;
-
-    -- Build batch query (dynamic SQL - called infrequently, amortized over many rows)
-    IF v_is_asc THEN
-        IF v_upper_bound IS NOT NULL THEN
-            v_batch_query := 'SELECT o.name, o.id, o.updated_at, o.created_at, o.last_accessed_at, o.metadata ' ||
-                'FROM storage.objects o WHERE o.bucket_id = $1 AND o.name COLLATE "C" >= $2 ' ||
-                'AND o.name COLLATE "C" < $3 ORDER BY o.name COLLATE "C" ASC LIMIT $4';
-        ELSE
-            v_batch_query := 'SELECT o.name, o.id, o.updated_at, o.created_at, o.last_accessed_at, o.metadata ' ||
-                'FROM storage.objects o WHERE o.bucket_id = $1 AND o.name COLLATE "C" >= $2 ' ||
-                'ORDER BY o.name COLLATE "C" ASC LIMIT $4';
-        END IF;
-    ELSE
-        IF v_upper_bound IS NOT NULL THEN
-            v_batch_query := 'SELECT o.name, o.id, o.updated_at, o.created_at, o.last_accessed_at, o.metadata ' ||
-                'FROM storage.objects o WHERE o.bucket_id = $1 AND o.name COLLATE "C" < $2 ' ||
-                'AND o.name COLLATE "C" >= $3 ORDER BY o.name COLLATE "C" DESC LIMIT $4';
-        ELSE
-            v_batch_query := 'SELECT o.name, o.id, o.updated_at, o.created_at, o.last_accessed_at, o.metadata ' ||
-                'FROM storage.objects o WHERE o.bucket_id = $1 AND o.name COLLATE "C" < $2 ' ||
-                'ORDER BY o.name COLLATE "C" DESC LIMIT $4';
-        END IF;
-    END IF;
-
-    -- ========================================================================
-    -- SEEK INITIALIZATION: Determine starting position
-    -- ========================================================================
-    IF v_start = '' THEN
-        IF v_is_asc THEN
-            v_next_seek := v_prefix;
-        ELSE
-            -- DESC without cursor: find the last item in range
-            IF v_upper_bound IS NOT NULL THEN
-                SELECT o.name INTO v_next_seek FROM storage.objects o
-                WHERE o.bucket_id = _bucket_id AND o.name COLLATE "C" >= v_prefix AND o.name COLLATE "C" < v_upper_bound
-                ORDER BY o.name COLLATE "C" DESC LIMIT 1;
-            ELSIF v_prefix <> '' THEN
-                SELECT o.name INTO v_next_seek FROM storage.objects o
-                WHERE o.bucket_id = _bucket_id AND o.name COLLATE "C" >= v_prefix
-                ORDER BY o.name COLLATE "C" DESC LIMIT 1;
-            ELSE
-                SELECT o.name INTO v_next_seek FROM storage.objects o
-                WHERE o.bucket_id = _bucket_id
-                ORDER BY o.name COLLATE "C" DESC LIMIT 1;
-            END IF;
-
-            IF v_next_seek IS NOT NULL THEN
-                v_next_seek := v_next_seek || delimiter_param;
-            ELSE
-                RETURN;
-            END IF;
-        END IF;
-    ELSE
-        -- Cursor provided: determine if it refers to a folder or leaf
-        IF EXISTS (
-            SELECT 1 FROM storage.objects o
-            WHERE o.bucket_id = _bucket_id
-              AND o.name COLLATE "C" LIKE v_start || delimiter_param || '%'
-            LIMIT 1
-        ) THEN
-            -- Cursor refers to a folder
-            IF v_is_asc THEN
-                v_next_seek := v_start || chr(ascii(delimiter_param) + 1);
-            ELSE
-                v_next_seek := v_start || delimiter_param;
-            END IF;
-        ELSE
-            -- Cursor refers to a leaf object
-            IF v_is_asc THEN
-                v_next_seek := v_start || delimiter_param;
-            ELSE
-                v_next_seek := v_start;
-            END IF;
-        END IF;
-    END IF;
-
-    -- ========================================================================
-    -- MAIN LOOP: Hybrid peek-then-batch algorithm
-    -- Uses STATIC SQL for peek (hot path) and DYNAMIC SQL for batch
-    -- ========================================================================
-    LOOP
-        EXIT WHEN v_count >= max_keys;
-
-        -- STEP 1: PEEK using STATIC SQL (plan cached, very fast)
-        IF v_is_asc THEN
-            IF v_upper_bound IS NOT NULL THEN
-                SELECT o.name INTO v_peek_name FROM storage.objects o
-                WHERE o.bucket_id = _bucket_id AND o.name COLLATE "C" >= v_next_seek AND o.name COLLATE "C" < v_upper_bound
-                ORDER BY o.name COLLATE "C" ASC LIMIT 1;
-            ELSE
-                SELECT o.name INTO v_peek_name FROM storage.objects o
-                WHERE o.bucket_id = _bucket_id AND o.name COLLATE "C" >= v_next_seek
-                ORDER BY o.name COLLATE "C" ASC LIMIT 1;
-            END IF;
-        ELSE
-            IF v_upper_bound IS NOT NULL THEN
-                SELECT o.name INTO v_peek_name FROM storage.objects o
-                WHERE o.bucket_id = _bucket_id AND o.name COLLATE "C" < v_next_seek AND o.name COLLATE "C" >= v_prefix
-                ORDER BY o.name COLLATE "C" DESC LIMIT 1;
-            ELSIF v_prefix <> '' THEN
-                SELECT o.name INTO v_peek_name FROM storage.objects o
-                WHERE o.bucket_id = _bucket_id AND o.name COLLATE "C" < v_next_seek AND o.name COLLATE "C" >= v_prefix
-                ORDER BY o.name COLLATE "C" DESC LIMIT 1;
-            ELSE
-                SELECT o.name INTO v_peek_name FROM storage.objects o
-                WHERE o.bucket_id = _bucket_id AND o.name COLLATE "C" < v_next_seek
-                ORDER BY o.name COLLATE "C" DESC LIMIT 1;
-            END IF;
-        END IF;
-
-        EXIT WHEN v_peek_name IS NULL;
-
-        -- STEP 2: Check if this is a FOLDER or FILE
-        v_common_prefix := storage.get_common_prefix(v_peek_name, v_prefix, delimiter_param);
-
-        IF v_common_prefix IS NOT NULL THEN
-            -- FOLDER: Emit and skip to next folder (no heap access needed)
-            name := rtrim(v_common_prefix, delimiter_param);
-            id := NULL;
-            updated_at := NULL;
-            created_at := NULL;
-            last_accessed_at := NULL;
-            metadata := NULL;
-            RETURN NEXT;
-            v_count := v_count + 1;
-
-            -- Advance seek past the folder range
-            IF v_is_asc THEN
-                v_next_seek := left(v_common_prefix, -1) || chr(ascii(delimiter_param) + 1);
-            ELSE
-                v_next_seek := v_common_prefix;
-            END IF;
-        ELSE
-            -- FILE: Batch fetch using DYNAMIC SQL (overhead amortized over many rows)
-            -- For ASC: upper_bound is the exclusive upper limit (< condition)
-            -- For DESC: prefix is the inclusive lower limit (>= condition)
-            FOR v_current IN EXECUTE v_batch_query USING _bucket_id, v_next_seek,
-                CASE WHEN v_is_asc THEN COALESCE(v_upper_bound, v_prefix) ELSE v_prefix END, v_file_batch_size
-            LOOP
-                v_common_prefix := storage.get_common_prefix(v_current.name, v_prefix, delimiter_param);
-
-                IF v_common_prefix IS NOT NULL THEN
-                    -- Hit a folder: exit batch, let peek handle it
-                    v_next_seek := v_current.name;
-                    EXIT;
-                END IF;
-
-                -- Emit file
-                name := v_current.name;
-                id := v_current.id;
-                updated_at := v_current.updated_at;
-                created_at := v_current.created_at;
-                last_accessed_at := v_current.last_accessed_at;
-                metadata := v_current.metadata;
-                RETURN NEXT;
-                v_count := v_count + 1;
-
-                -- Advance seek past this file
-                IF v_is_asc THEN
-                    v_next_seek := v_current.name || delimiter_param;
-                ELSE
-                    v_next_seek := v_current.name;
-                END IF;
-
-                EXIT WHEN v_count >= max_keys;
-            END LOOP;
-        END IF;
-    END LOOP;
-END;
-$_$;
-
-
-ALTER FUNCTION "storage"."list_objects_with_delimiter"("_bucket_id" "text", "prefix_param" "text", "delimiter_param" "text", "max_keys" integer, "start_after" "text", "next_token" "text", "sort_order" "text") OWNER TO "supabase_storage_admin";
-
-
-CREATE OR REPLACE FUNCTION "storage"."operation"() RETURNS "text"
-    LANGUAGE "plpgsql" STABLE
-    AS $$
-BEGIN
-    RETURN current_setting('storage.operation', true);
-END;
-$$;
-
-
-ALTER FUNCTION "storage"."operation"() OWNER TO "supabase_storage_admin";
-
-
-CREATE OR REPLACE FUNCTION "storage"."protect_delete"() RETURNS "trigger"
-    LANGUAGE "plpgsql"
-    AS $$
-BEGIN
-    -- Check if storage.allow_delete_query is set to 'true'
-    IF COALESCE(current_setting('storage.allow_delete_query', true), 'false') != 'true' THEN
-        RAISE EXCEPTION 'Direct deletion from storage tables is not allowed. Use the Storage API instead.'
-            USING HINT = 'This prevents accidental data loss from orphaned objects.',
-                  ERRCODE = '42501';
-    END IF;
-    RETURN NULL;
-END;
-$$;
-
-
-ALTER FUNCTION "storage"."protect_delete"() OWNER TO "supabase_storage_admin";
-
-
-CREATE OR REPLACE FUNCTION "storage"."search"("prefix" "text", "bucketname" "text", "limits" integer DEFAULT 100, "levels" integer DEFAULT 1, "offsets" integer DEFAULT 0, "search" "text" DEFAULT ''::"text", "sortcolumn" "text" DEFAULT 'name'::"text", "sortorder" "text" DEFAULT 'asc'::"text") RETURNS TABLE("name" "text", "id" "uuid", "updated_at" timestamp with time zone, "created_at" timestamp with time zone, "last_accessed_at" timestamp with time zone, "metadata" "jsonb")
-    LANGUAGE "plpgsql" STABLE
-    AS $_$
-DECLARE
-    v_peek_name TEXT;
-    v_current RECORD;
-    v_common_prefix TEXT;
-    v_delimiter CONSTANT TEXT := '/';
-
-    -- Configuration
-    v_limit INT;
-    v_prefix TEXT;
-    v_prefix_lower TEXT;
-    v_prefix_len INT;
-    v_prefix_start INT;
-    v_combined_levels INT;
-    v_is_asc BOOLEAN;
-    v_order_by TEXT;
-    v_sort_order TEXT;
-    v_upper_bound TEXT;
-    v_file_batch_size INT;
-
-    -- Dynamic SQL for batch query only
-    v_batch_query TEXT;
-
-    -- Seek state
-    v_next_seek TEXT;
-    v_count INT := 0;
-    v_skipped INT := 0;
-BEGIN
-    -- ========================================================================
-    -- INITIALIZATION
-    -- ========================================================================
-    v_limit := LEAST(coalesce(limits, 100), 1500);
-    v_prefix := coalesce(prefix, '') || coalesce(search, '');
-    v_prefix_lower := lower(v_prefix);
-    v_prefix_len := length(coalesce(prefix, ''));
-    v_prefix_start := coalesce(array_length(string_to_array(coalesce(prefix, ''), v_delimiter), 1), 1);
-    v_combined_levels := coalesce(array_length(string_to_array(v_prefix, v_delimiter), 1), 1);
-    v_is_asc := lower(coalesce(sortorder, 'asc')) = 'asc';
-    v_file_batch_size := LEAST(GREATEST(v_limit * 2, 100), 1000);
-
-    -- Validate sort column
-    CASE lower(coalesce(sortcolumn, 'name'))
-        WHEN 'name' THEN v_order_by := 'name';
-        WHEN 'updated_at' THEN v_order_by := 'updated_at';
-        WHEN 'created_at' THEN v_order_by := 'created_at';
-        WHEN 'last_accessed_at' THEN v_order_by := 'last_accessed_at';
-        ELSE v_order_by := 'name';
-    END CASE;
-
-    v_sort_order := CASE WHEN v_is_asc THEN 'asc' ELSE 'desc' END;
-
-    -- ========================================================================
-    -- NON-NAME SORTING: Use path_tokens approach
-    -- ========================================================================
-    IF v_order_by != 'name' THEN
-        RETURN QUERY EXECUTE format(
-            $sql$
-            WITH folders AS (
-                SELECT array_to_string(path_tokens[$1:$2], '/') AS folder
-                FROM storage.objects
-                WHERE objects.name ILIKE $3 || '%%'
-                  AND bucket_id = $4
-                  AND array_length(objects.path_tokens, 1) <> $2
-                GROUP BY folder
-                ORDER BY folder %s
-            )
-            (SELECT folder AS "name",
-                   NULL::uuid AS id,
-                   NULL::timestamptz AS updated_at,
-                   NULL::timestamptz AS created_at,
-                   NULL::timestamptz AS last_accessed_at,
-                   NULL::jsonb AS metadata FROM folders)
-            UNION ALL
-            (SELECT array_to_string(path_tokens[$1:$2], '/') AS "name",
-                   id, updated_at, created_at, last_accessed_at, metadata
-             FROM storage.objects
-             WHERE objects.name ILIKE $3 || '%%'
-               AND bucket_id = $4
-               AND array_length(objects.path_tokens, 1) = $2
-             ORDER BY %I %s)
-            LIMIT $5 OFFSET $6
-            $sql$, v_sort_order, v_order_by, v_sort_order
-        ) USING v_prefix_start, v_combined_levels, v_prefix, bucketname, v_limit, offsets;
-        RETURN;
-    END IF;
-
-    -- ========================================================================
-    -- NAME SORTING: Hybrid skip-scan with batch optimization
-    -- ========================================================================
-
-    -- Calculate upper bound for prefix filtering
-    IF v_prefix_lower = '' THEN
-        v_upper_bound := NULL;
-    ELSIF right(v_prefix_lower, 1) = v_delimiter THEN
-        v_upper_bound := left(v_prefix_lower, -1) || chr(ascii(v_delimiter) + 1);
-    ELSE
-        v_upper_bound := left(v_prefix_lower, -1) || chr(ascii(right(v_prefix_lower, 1)) + 1);
-    END IF;
-
-    -- Build batch query (dynamic SQL - called infrequently, amortized over many rows)
-    IF v_is_asc THEN
-        IF v_upper_bound IS NOT NULL THEN
-            v_batch_query := 'SELECT o.name, o.id, o.updated_at, o.created_at, o.last_accessed_at, o.metadata ' ||
-                'FROM storage.objects o WHERE o.bucket_id = $1 AND lower(o.name) COLLATE "C" >= $2 ' ||
-                'AND lower(o.name) COLLATE "C" < $3 ORDER BY lower(o.name) COLLATE "C" ASC LIMIT $4';
-        ELSE
-            v_batch_query := 'SELECT o.name, o.id, o.updated_at, o.created_at, o.last_accessed_at, o.metadata ' ||
-                'FROM storage.objects o WHERE o.bucket_id = $1 AND lower(o.name) COLLATE "C" >= $2 ' ||
-                'ORDER BY lower(o.name) COLLATE "C" ASC LIMIT $4';
-        END IF;
-    ELSE
-        IF v_upper_bound IS NOT NULL THEN
-            v_batch_query := 'SELECT o.name, o.id, o.updated_at, o.created_at, o.last_accessed_at, o.metadata ' ||
-                'FROM storage.objects o WHERE o.bucket_id = $1 AND lower(o.name) COLLATE "C" < $2 ' ||
-                'AND lower(o.name) COLLATE "C" >= $3 ORDER BY lower(o.name) COLLATE "C" DESC LIMIT $4';
-        ELSE
-            v_batch_query := 'SELECT o.name, o.id, o.updated_at, o.created_at, o.last_accessed_at, o.metadata ' ||
-                'FROM storage.objects o WHERE o.bucket_id = $1 AND lower(o.name) COLLATE "C" < $2 ' ||
-                'ORDER BY lower(o.name) COLLATE "C" DESC LIMIT $4';
-        END IF;
-    END IF;
-
-    -- Initialize seek position
-    IF v_is_asc THEN
-        v_next_seek := v_prefix_lower;
-    ELSE
-        -- DESC: find the last item in range first (static SQL)
-        IF v_upper_bound IS NOT NULL THEN
-            SELECT o.name INTO v_peek_name FROM storage.objects o
-            WHERE o.bucket_id = bucketname AND lower(o.name) COLLATE "C" >= v_prefix_lower AND lower(o.name) COLLATE "C" < v_upper_bound
-            ORDER BY lower(o.name) COLLATE "C" DESC LIMIT 1;
-        ELSIF v_prefix_lower <> '' THEN
-            SELECT o.name INTO v_peek_name FROM storage.objects o
-            WHERE o.bucket_id = bucketname AND lower(o.name) COLLATE "C" >= v_prefix_lower
-            ORDER BY lower(o.name) COLLATE "C" DESC LIMIT 1;
-        ELSE
-            SELECT o.name INTO v_peek_name FROM storage.objects o
-            WHERE o.bucket_id = bucketname
-            ORDER BY lower(o.name) COLLATE "C" DESC LIMIT 1;
-        END IF;
-
-        IF v_peek_name IS NOT NULL THEN
-            v_next_seek := lower(v_peek_name) || v_delimiter;
-        ELSE
-            RETURN;
-        END IF;
-    END IF;
-
-    -- ========================================================================
-    -- MAIN LOOP: Hybrid peek-then-batch algorithm
-    -- Uses STATIC SQL for peek (hot path) and DYNAMIC SQL for batch
-    -- ========================================================================
-    LOOP
-        EXIT WHEN v_count >= v_limit;
-
-        -- STEP 1: PEEK using STATIC SQL (plan cached, very fast)
-        IF v_is_asc THEN
-            IF v_upper_bound IS NOT NULL THEN
-                SELECT o.name INTO v_peek_name FROM storage.objects o
-                WHERE o.bucket_id = bucketname AND lower(o.name) COLLATE "C" >= v_next_seek AND lower(o.name) COLLATE "C" < v_upper_bound
-                ORDER BY lower(o.name) COLLATE "C" ASC LIMIT 1;
-            ELSE
-                SELECT o.name INTO v_peek_name FROM storage.objects o
-                WHERE o.bucket_id = bucketname AND lower(o.name) COLLATE "C" >= v_next_seek
-                ORDER BY lower(o.name) COLLATE "C" ASC LIMIT 1;
-            END IF;
-        ELSE
-            IF v_upper_bound IS NOT NULL THEN
-                SELECT o.name INTO v_peek_name FROM storage.objects o
-                WHERE o.bucket_id = bucketname AND lower(o.name) COLLATE "C" < v_next_seek AND lower(o.name) COLLATE "C" >= v_prefix_lower
-                ORDER BY lower(o.name) COLLATE "C" DESC LIMIT 1;
-            ELSIF v_prefix_lower <> '' THEN
-                SELECT o.name INTO v_peek_name FROM storage.objects o
-                WHERE o.bucket_id = bucketname AND lower(o.name) COLLATE "C" < v_next_seek AND lower(o.name) COLLATE "C" >= v_prefix_lower
-                ORDER BY lower(o.name) COLLATE "C" DESC LIMIT 1;
-            ELSE
-                SELECT o.name INTO v_peek_name FROM storage.objects o
-                WHERE o.bucket_id = bucketname AND lower(o.name) COLLATE "C" < v_next_seek
-                ORDER BY lower(o.name) COLLATE "C" DESC LIMIT 1;
-            END IF;
-        END IF;
-
-        EXIT WHEN v_peek_name IS NULL;
-
-        -- STEP 2: Check if this is a FOLDER or FILE
-        v_common_prefix := storage.get_common_prefix(lower(v_peek_name), v_prefix_lower, v_delimiter);
-
-        IF v_common_prefix IS NOT NULL THEN
-            -- FOLDER: Handle offset, emit if needed, skip to next folder
-            IF v_skipped < offsets THEN
-                v_skipped := v_skipped + 1;
-            ELSE
-                name := substring(rtrim(storage.get_common_prefix(v_peek_name, v_prefix, v_delimiter), v_delimiter) from v_prefix_len + 1);
-                id := NULL;
-                updated_at := NULL;
-                created_at := NULL;
-                last_accessed_at := NULL;
-                metadata := NULL;
-                RETURN NEXT;
-                v_count := v_count + 1;
-            END IF;
-
-            -- Advance seek past the folder range
-            IF v_is_asc THEN
-                v_next_seek := lower(left(v_common_prefix, -1)) || chr(ascii(v_delimiter) + 1);
-            ELSE
-                v_next_seek := lower(v_common_prefix);
-            END IF;
-        ELSE
-            -- FILE: Batch fetch using DYNAMIC SQL (overhead amortized over many rows)
-            -- For ASC: upper_bound is the exclusive upper limit (< condition)
-            -- For DESC: prefix_lower is the inclusive lower limit (>= condition)
-            FOR v_current IN EXECUTE v_batch_query
-                USING bucketname, v_next_seek,
-                    CASE WHEN v_is_asc THEN COALESCE(v_upper_bound, v_prefix_lower) ELSE v_prefix_lower END, v_file_batch_size
-            LOOP
-                v_common_prefix := storage.get_common_prefix(lower(v_current.name), v_prefix_lower, v_delimiter);
-
-                IF v_common_prefix IS NOT NULL THEN
-                    -- Hit a folder: exit batch, let peek handle it
-                    v_next_seek := lower(v_current.name);
-                    EXIT;
-                END IF;
-
-                -- Handle offset skipping
-                IF v_skipped < offsets THEN
-                    v_skipped := v_skipped + 1;
-                ELSE
-                    -- Emit file
-                    name := substring(v_current.name from v_prefix_len + 1);
-                    id := v_current.id;
-                    updated_at := v_current.updated_at;
-                    created_at := v_current.created_at;
-                    last_accessed_at := v_current.last_accessed_at;
-                    metadata := v_current.metadata;
-                    RETURN NEXT;
-                    v_count := v_count + 1;
-                END IF;
-
-                -- Advance seek past this file
-                IF v_is_asc THEN
-                    v_next_seek := lower(v_current.name) || v_delimiter;
-                ELSE
-                    v_next_seek := lower(v_current.name);
-                END IF;
-
-                EXIT WHEN v_count >= v_limit;
-            END LOOP;
-        END IF;
-    END LOOP;
-END;
-$_$;
-
-
-ALTER FUNCTION "storage"."search"("prefix" "text", "bucketname" "text", "limits" integer, "levels" integer, "offsets" integer, "search" "text", "sortcolumn" "text", "sortorder" "text") OWNER TO "supabase_storage_admin";
-
-
-CREATE OR REPLACE FUNCTION "storage"."search_by_timestamp"("p_prefix" "text", "p_bucket_id" "text", "p_limit" integer, "p_level" integer, "p_start_after" "text", "p_sort_order" "text", "p_sort_column" "text", "p_sort_column_after" "text") RETURNS TABLE("key" "text", "name" "text", "id" "uuid", "updated_at" timestamp with time zone, "created_at" timestamp with time zone, "last_accessed_at" timestamp with time zone, "metadata" "jsonb")
-    LANGUAGE "plpgsql" STABLE
-    AS $_$
-DECLARE
-    v_cursor_op text;
-    v_query text;
-    v_prefix text;
-    v_sort_order text;
-    v_sort_column text;
-BEGIN
-    v_prefix := coalesce(p_prefix, '');
-
-    -- Defense-in-depth: this function is independently reachable and must
-    -- not trust p_sort_order/p_sort_column to already be validated by a
-    -- caller. Normalize to the same strict allow-list storage.search_v2
-    -- uses before interpolating anything into dynamic SQL below.
-    v_sort_order := lower(coalesce(p_sort_order, 'asc'));
-    IF v_sort_order NOT IN ('asc', 'desc') THEN
-        v_sort_order := 'asc';
-    END IF;
-
-    v_sort_column := lower(coalesce(p_sort_column, 'updated_at'));
-    IF v_sort_column NOT IN ('updated_at', 'created_at') THEN
-        v_sort_column := 'updated_at';
-    END IF;
-
-    IF v_sort_order = 'asc' THEN
-        v_cursor_op := '>';
-    ELSE
-        v_cursor_op := '<';
-    END IF;
-
-    v_query := format($sql$
-        WITH raw_objects AS (
-            SELECT
-                o.name AS obj_name,
-                o.id AS obj_id,
-                o.updated_at AS obj_updated_at,
-                o.created_at AS obj_created_at,
-                o.last_accessed_at AS obj_last_accessed_at,
-                o.metadata AS obj_metadata,
-                storage.get_common_prefix(o.name, $1, '/') AS common_prefix
-            FROM storage.objects o
-            WHERE o.bucket_id = $2
-              AND o.name COLLATE "C" LIKE $1 || '%%'
-        ),
-        -- Aggregate common prefixes (folders)
-        -- Both created_at and updated_at use MIN(obj_created_at) to match the old prefixes table behavior
-        aggregated_prefixes AS (
-            SELECT
-                rtrim(common_prefix, '/') AS name,
-                NULL::uuid AS id,
-                MIN(obj_created_at) AS updated_at,
-                MIN(obj_created_at) AS created_at,
-                NULL::timestamptz AS last_accessed_at,
-                NULL::jsonb AS metadata,
-                TRUE AS is_prefix
-            FROM raw_objects
-            WHERE common_prefix IS NOT NULL
-            GROUP BY common_prefix
-        ),
-        leaf_objects AS (
-            SELECT
-                obj_name AS name,
-                obj_id AS id,
-                obj_updated_at AS updated_at,
-                obj_created_at AS created_at,
-                obj_last_accessed_at AS last_accessed_at,
-                obj_metadata AS metadata,
-                FALSE AS is_prefix
-            FROM raw_objects
-            WHERE common_prefix IS NULL
-        ),
-        combined AS (
-            SELECT * FROM aggregated_prefixes
-            UNION ALL
-            SELECT * FROM leaf_objects
-        ),
-        filtered AS (
-            SELECT *
-            FROM combined
-            WHERE (
-                $5 = ''
-                OR ROW(
-                    date_trunc('milliseconds', %I),
-                    name COLLATE "C"
-                ) %s ROW(
-                    COALESCE(NULLIF($6, '')::timestamptz, 'epoch'::timestamptz),
-                    $5
-                )
-            )
-        )
-        SELECT
-            split_part(name, '/', $3) AS key,
-            name,
-            id,
-            updated_at,
-            created_at,
-            last_accessed_at,
-            metadata
-        FROM filtered
-        ORDER BY
-            COALESCE(date_trunc('milliseconds', %I), 'epoch'::timestamptz) %s,
-            name COLLATE "C" %s
-        LIMIT $4
-    $sql$,
-        v_sort_column,
-        v_cursor_op,
-        v_sort_column,
-        v_sort_order,
-        v_sort_order
-    );
-
-    RETURN QUERY EXECUTE v_query
-    USING v_prefix, p_bucket_id, p_level, p_limit, p_start_after, p_sort_column_after;
-END;
-$_$;
-
-
-ALTER FUNCTION "storage"."search_by_timestamp"("p_prefix" "text", "p_bucket_id" "text", "p_limit" integer, "p_level" integer, "p_start_after" "text", "p_sort_order" "text", "p_sort_column" "text", "p_sort_column_after" "text") OWNER TO "supabase_storage_admin";
-
-
-CREATE OR REPLACE FUNCTION "storage"."search_v2"("prefix" "text", "bucket_name" "text", "limits" integer DEFAULT 100, "levels" integer DEFAULT 1, "start_after" "text" DEFAULT ''::"text", "sort_order" "text" DEFAULT 'asc'::"text", "sort_column" "text" DEFAULT 'name'::"text", "sort_column_after" "text" DEFAULT ''::"text") RETURNS TABLE("key" "text", "name" "text", "id" "uuid", "updated_at" timestamp with time zone, "created_at" timestamp with time zone, "last_accessed_at" timestamp with time zone, "metadata" "jsonb")
-    LANGUAGE "plpgsql" STABLE
-    AS $$
-DECLARE
-    v_sort_col text;
-    v_sort_ord text;
-    v_limit int;
-BEGIN
-    -- Cap limit to maximum of 1500 records
-    v_limit := LEAST(coalesce(limits, 100), 1500);
-
-    -- Validate and normalize sort_order
-    v_sort_ord := lower(coalesce(sort_order, 'asc'));
-    IF v_sort_ord NOT IN ('asc', 'desc') THEN
-        v_sort_ord := 'asc';
-    END IF;
-
-    -- Validate and normalize sort_column
-    v_sort_col := lower(coalesce(sort_column, 'name'));
-    IF v_sort_col NOT IN ('name', 'updated_at', 'created_at') THEN
-        v_sort_col := 'name';
-    END IF;
-
-    -- Route to appropriate implementation
-    IF v_sort_col = 'name' THEN
-        -- Use list_objects_with_delimiter for name sorting (most efficient: O(k * log n))
-        RETURN QUERY
-        SELECT
-            split_part(l.name, '/', levels) AS key,
-            l.name AS name,
-            l.id,
-            l.updated_at,
-            l.created_at,
-            l.last_accessed_at,
-            l.metadata
-        FROM storage.list_objects_with_delimiter(
-            bucket_name,
-            coalesce(prefix, ''),
-            '/',
-            v_limit,
-            start_after,
-            '',
-            v_sort_ord
-        ) l;
-    ELSE
-        -- Use aggregation approach for timestamp sorting
-        -- Not efficient for large datasets but supports correct pagination
-        RETURN QUERY SELECT * FROM storage.search_by_timestamp(
-            prefix, bucket_name, v_limit, levels, start_after,
-            v_sort_ord, v_sort_col, sort_column_after
-        );
-    END IF;
-END;
-$$;
-
-
-ALTER FUNCTION "storage"."search_v2"("prefix" "text", "bucket_name" "text", "limits" integer, "levels" integer, "start_after" "text", "sort_order" "text", "sort_column" "text", "sort_column_after" "text") OWNER TO "supabase_storage_admin";
-
-
-CREATE OR REPLACE FUNCTION "storage"."update_updated_at_column"() RETURNS "trigger"
-    LANGUAGE "plpgsql"
-    AS $$
-BEGIN
-    NEW.updated_at = now();
-    RETURN NEW; 
-END;
-$$;
-
-
-ALTER FUNCTION "storage"."update_updated_at_column"() OWNER TO "supabase_storage_admin";
-
-
-CREATE OR REPLACE FUNCTION "supabase_functions"."http_request"() RETURNS "trigger"
-    LANGUAGE "plpgsql" SECURITY DEFINER
-    SET "search_path" TO 'supabase_functions'
-    AS $$
-    DECLARE
-      request_id bigint;
-      payload jsonb;
-      url text := TG_ARGV[0]::text;
-      method text := TG_ARGV[1]::text;
-      headers jsonb DEFAULT '{}'::jsonb;
-      params jsonb DEFAULT '{}'::jsonb;
-      timeout_ms integer DEFAULT 1000;
-    BEGIN
-      IF url IS NULL OR url = 'null' THEN
-        RAISE EXCEPTION 'url argument is missing';
-      END IF;
-
-      IF method IS NULL OR method = 'null' THEN
-        RAISE EXCEPTION 'method argument is missing';
-      END IF;
-
-      IF TG_ARGV[2] IS NULL OR TG_ARGV[2] = 'null' THEN
-        headers = '{"Content-Type": "application/json"}'::jsonb;
-      ELSE
-        headers = TG_ARGV[2]::jsonb;
-      END IF;
-
-      IF TG_ARGV[3] IS NULL OR TG_ARGV[3] = 'null' THEN
-        params = '{}'::jsonb;
-      ELSE
-        params = TG_ARGV[3]::jsonb;
-      END IF;
-
-      IF TG_ARGV[4] IS NULL OR TG_ARGV[4] = 'null' THEN
-        timeout_ms = 1000;
-      ELSE
-        timeout_ms = TG_ARGV[4]::integer;
-      END IF;
-
-      CASE
-        WHEN method = 'GET' THEN
-          SELECT http_get INTO request_id FROM net.http_get(
-            url,
-            params,
-            headers,
-            timeout_ms
-          );
-        WHEN method = 'POST' THEN
-          payload = jsonb_build_object(
-            'old_record', OLD,
-            'record', NEW,
-            'type', TG_OP,
-            'table', TG_TABLE_NAME,
-            'schema', TG_TABLE_SCHEMA
-          );
-
-          SELECT http_post INTO request_id FROM net.http_post(
-            url,
-            payload,
-            params,
-            headers,
-            timeout_ms
-          );
-        ELSE
-          RAISE EXCEPTION 'method argument % is invalid', method;
-      END CASE;
-
-      INSERT INTO supabase_functions.hooks
-        (hook_table_id, hook_name, request_id)
-      VALUES
-        (TG_RELID, TG_NAME, request_id);
-
-      RETURN NEW;
-    END
-  $$;
-
-
-ALTER FUNCTION "supabase_functions"."http_request"() OWNER TO "supabase_functions_admin";
-
-
 CREATE OR REPLACE FUNCTION "supplier_stricker"."calculate_price"("p_sku" character varying, "p_quantity" integer) RETURNS numeric
     LANGUAGE "plpgsql"
     SET "search_path" TO 'supplier_stricker', 'public'
@@ -74426,7 +72654,7 @@ CREATE TABLE IF NOT EXISTS "public"."product_variants" (
     CONSTRAINT "chk_variant_sku_not_empty" CHECK ((("sku" IS NOT NULL) AND ("length"(TRIM(BOTH FROM "sku")) > 0))),
     CONSTRAINT "chk_variants_name_not_empty" CHECK (("length"(TRIM(BOTH FROM "name")) > 0))
 )
-WITH ("autovacuum_vacuum_scale_factor"='0.01', "autovacuum_analyze_scale_factor"='0.005', "autovacuum_vacuum_cost_delay"='2');
+WITH ("autovacuum_analyze_scale_factor"='0.005', "autovacuum_vacuum_cost_delay"='2', "autovacuum_vacuum_scale_factor"='0.03');
 ALTER TABLE ONLY "public"."product_variants" ALTER COLUMN "product_id" SET STATISTICS 1000;
 ALTER TABLE ONLY "public"."product_variants" ALTER COLUMN "sku" SET STATISTICS 1000;
 ALTER TABLE ONLY "public"."product_variants" ALTER COLUMN "color_id" SET STATISTICS 500;
@@ -74679,7 +72907,7 @@ CREATE TABLE IF NOT EXISTS "public"."variant_supplier_sources" (
     CONSTRAINT "chk_vss_quantity_positive" CHECK ((("quantity" IS NULL) OR ("quantity" >= 0))),
     CONSTRAINT "variant_stocks_quantity_check" CHECK (("quantity" >= 0))
 )
-WITH ("autovacuum_vacuum_scale_factor"='0.01', "autovacuum_analyze_scale_factor"='0.005', "autovacuum_vacuum_cost_delay"='2');
+WITH ("autovacuum_analyze_scale_factor"='0.005', "autovacuum_vacuum_cost_delay"='2', "autovacuum_vacuum_scale_factor"='0.03');
 ALTER TABLE ONLY "public"."variant_supplier_sources" ALTER COLUMN "variant_id" SET STATISTICS 1000;
 ALTER TABLE ONLY "public"."variant_supplier_sources" ALTER COLUMN "supplier_id" SET STATISTICS 500;
 
@@ -75035,620 +73263,6 @@ CREATE MATERIALIZED VIEW "analytics"."mv_product_intelligence" AS
 
 
 ALTER MATERIALIZED VIEW "analytics"."mv_product_intelligence" OWNER TO "postgres";
-
-
-CREATE TABLE IF NOT EXISTS "auth"."audit_log_entries" (
-    "instance_id" "uuid",
-    "id" "uuid" NOT NULL,
-    "payload" json,
-    "created_at" timestamp with time zone,
-    "ip_address" character varying(64) DEFAULT ''::character varying NOT NULL
-);
-
-
-ALTER TABLE "auth"."audit_log_entries" OWNER TO "supabase_auth_admin";
-
-
-COMMENT ON TABLE "auth"."audit_log_entries" IS 'Auth: Audit trail for user actions.';
-
-
-
-CREATE TABLE IF NOT EXISTS "auth"."custom_oauth_providers" (
-    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
-    "provider_type" "text" NOT NULL,
-    "identifier" "text" NOT NULL,
-    "name" "text" NOT NULL,
-    "client_id" "text" NOT NULL,
-    "client_secret" "text" NOT NULL,
-    "acceptable_client_ids" "text"[] DEFAULT '{}'::"text"[] NOT NULL,
-    "scopes" "text"[] DEFAULT '{}'::"text"[] NOT NULL,
-    "pkce_enabled" boolean DEFAULT true NOT NULL,
-    "attribute_mapping" "jsonb" DEFAULT '{}'::"jsonb" NOT NULL,
-    "authorization_params" "jsonb" DEFAULT '{}'::"jsonb" NOT NULL,
-    "enabled" boolean DEFAULT true NOT NULL,
-    "email_optional" boolean DEFAULT false NOT NULL,
-    "issuer" "text",
-    "discovery_url" "text",
-    "skip_nonce_check" boolean DEFAULT false NOT NULL,
-    "cached_discovery" "jsonb",
-    "discovery_cached_at" timestamp with time zone,
-    "authorization_url" "text",
-    "token_url" "text",
-    "userinfo_url" "text",
-    "jwks_uri" "text",
-    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
-    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
-    "custom_claims_allowlist" "text"[] DEFAULT '{}'::"text"[] NOT NULL,
-    CONSTRAINT "custom_oauth_providers_authorization_url_https" CHECK ((("authorization_url" IS NULL) OR ("authorization_url" ~~ 'https://%'::"text"))),
-    CONSTRAINT "custom_oauth_providers_authorization_url_length" CHECK ((("authorization_url" IS NULL) OR ("char_length"("authorization_url") <= 2048))),
-    CONSTRAINT "custom_oauth_providers_client_id_length" CHECK ((("char_length"("client_id") >= 1) AND ("char_length"("client_id") <= 512))),
-    CONSTRAINT "custom_oauth_providers_discovery_url_length" CHECK ((("discovery_url" IS NULL) OR ("char_length"("discovery_url") <= 2048))),
-    CONSTRAINT "custom_oauth_providers_identifier_format" CHECK (("identifier" ~ '^[a-z0-9][a-z0-9:-]{0,48}[a-z0-9]$'::"text")),
-    CONSTRAINT "custom_oauth_providers_issuer_length" CHECK ((("issuer" IS NULL) OR (("char_length"("issuer") >= 1) AND ("char_length"("issuer") <= 2048)))),
-    CONSTRAINT "custom_oauth_providers_jwks_uri_https" CHECK ((("jwks_uri" IS NULL) OR ("jwks_uri" ~~ 'https://%'::"text"))),
-    CONSTRAINT "custom_oauth_providers_jwks_uri_length" CHECK ((("jwks_uri" IS NULL) OR ("char_length"("jwks_uri") <= 2048))),
-    CONSTRAINT "custom_oauth_providers_name_length" CHECK ((("char_length"("name") >= 1) AND ("char_length"("name") <= 100))),
-    CONSTRAINT "custom_oauth_providers_oauth2_requires_endpoints" CHECK ((("provider_type" <> 'oauth2'::"text") OR (("authorization_url" IS NOT NULL) AND ("token_url" IS NOT NULL) AND ("userinfo_url" IS NOT NULL)))),
-    CONSTRAINT "custom_oauth_providers_oidc_discovery_url_https" CHECK ((("provider_type" <> 'oidc'::"text") OR ("discovery_url" IS NULL) OR ("discovery_url" ~~ 'https://%'::"text"))),
-    CONSTRAINT "custom_oauth_providers_oidc_issuer_https" CHECK ((("provider_type" <> 'oidc'::"text") OR ("issuer" IS NULL) OR ("issuer" ~~ 'https://%'::"text"))),
-    CONSTRAINT "custom_oauth_providers_oidc_requires_issuer" CHECK ((("provider_type" <> 'oidc'::"text") OR ("issuer" IS NOT NULL))),
-    CONSTRAINT "custom_oauth_providers_provider_type_check" CHECK (("provider_type" = ANY (ARRAY['oauth2'::"text", 'oidc'::"text"]))),
-    CONSTRAINT "custom_oauth_providers_token_url_https" CHECK ((("token_url" IS NULL) OR ("token_url" ~~ 'https://%'::"text"))),
-    CONSTRAINT "custom_oauth_providers_token_url_length" CHECK ((("token_url" IS NULL) OR ("char_length"("token_url") <= 2048))),
-    CONSTRAINT "custom_oauth_providers_userinfo_url_https" CHECK ((("userinfo_url" IS NULL) OR ("userinfo_url" ~~ 'https://%'::"text"))),
-    CONSTRAINT "custom_oauth_providers_userinfo_url_length" CHECK ((("userinfo_url" IS NULL) OR ("char_length"("userinfo_url") <= 2048)))
-);
-
-
-ALTER TABLE "auth"."custom_oauth_providers" OWNER TO "supabase_auth_admin";
-
-
-CREATE TABLE IF NOT EXISTS "auth"."flow_state" (
-    "id" "uuid" NOT NULL,
-    "user_id" "uuid",
-    "auth_code" "text",
-    "code_challenge_method" "auth"."code_challenge_method",
-    "code_challenge" "text",
-    "provider_type" "text" NOT NULL,
-    "provider_access_token" "text",
-    "provider_refresh_token" "text",
-    "created_at" timestamp with time zone,
-    "updated_at" timestamp with time zone,
-    "authentication_method" "text" NOT NULL,
-    "auth_code_issued_at" timestamp with time zone,
-    "invite_token" "text",
-    "referrer" "text",
-    "oauth_client_state_id" "uuid",
-    "linking_target_id" "uuid",
-    "email_optional" boolean DEFAULT false NOT NULL
-);
-
-
-ALTER TABLE "auth"."flow_state" OWNER TO "supabase_auth_admin";
-
-
-COMMENT ON TABLE "auth"."flow_state" IS 'Stores metadata for all OAuth/SSO login flows';
-
-
-
-CREATE TABLE IF NOT EXISTS "auth"."identities" (
-    "provider_id" "text" NOT NULL,
-    "user_id" "uuid" NOT NULL,
-    "identity_data" "jsonb" NOT NULL,
-    "provider" "text" NOT NULL,
-    "last_sign_in_at" timestamp with time zone,
-    "created_at" timestamp with time zone,
-    "updated_at" timestamp with time zone,
-    "email" "text" GENERATED ALWAYS AS ("lower"(("identity_data" ->> 'email'::"text"))) STORED,
-    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL
-);
-
-
-ALTER TABLE "auth"."identities" OWNER TO "supabase_auth_admin";
-
-
-COMMENT ON TABLE "auth"."identities" IS 'Auth: Stores identities associated to a user.';
-
-
-
-COMMENT ON COLUMN "auth"."identities"."email" IS 'Auth: Email is a generated column that references the optional email property in the identity_data';
-
-
-
-CREATE TABLE IF NOT EXISTS "auth"."instances" (
-    "id" "uuid" NOT NULL,
-    "uuid" "uuid",
-    "raw_base_config" "text",
-    "created_at" timestamp with time zone,
-    "updated_at" timestamp with time zone
-);
-
-
-ALTER TABLE "auth"."instances" OWNER TO "supabase_auth_admin";
-
-
-COMMENT ON TABLE "auth"."instances" IS 'Auth: Manages users across multiple sites.';
-
-
-
-CREATE TABLE IF NOT EXISTS "auth"."mfa_amr_claims" (
-    "session_id" "uuid" NOT NULL,
-    "created_at" timestamp with time zone NOT NULL,
-    "updated_at" timestamp with time zone NOT NULL,
-    "authentication_method" "text" NOT NULL,
-    "id" "uuid" NOT NULL
-);
-
-
-ALTER TABLE "auth"."mfa_amr_claims" OWNER TO "supabase_auth_admin";
-
-
-COMMENT ON TABLE "auth"."mfa_amr_claims" IS 'auth: stores authenticator method reference claims for multi factor authentication';
-
-
-
-CREATE TABLE IF NOT EXISTS "auth"."mfa_challenges" (
-    "id" "uuid" NOT NULL,
-    "factor_id" "uuid" NOT NULL,
-    "created_at" timestamp with time zone NOT NULL,
-    "verified_at" timestamp with time zone,
-    "ip_address" "inet" NOT NULL,
-    "otp_code" "text",
-    "web_authn_session_data" "jsonb"
-);
-
-
-ALTER TABLE "auth"."mfa_challenges" OWNER TO "supabase_auth_admin";
-
-
-COMMENT ON TABLE "auth"."mfa_challenges" IS 'auth: stores metadata about challenge requests made';
-
-
-
-CREATE TABLE IF NOT EXISTS "auth"."mfa_factors" (
-    "id" "uuid" NOT NULL,
-    "user_id" "uuid" NOT NULL,
-    "friendly_name" "text",
-    "factor_type" "auth"."factor_type" NOT NULL,
-    "status" "auth"."factor_status" NOT NULL,
-    "created_at" timestamp with time zone NOT NULL,
-    "updated_at" timestamp with time zone NOT NULL,
-    "secret" "text",
-    "phone" "text",
-    "last_challenged_at" timestamp with time zone,
-    "web_authn_credential" "jsonb",
-    "web_authn_aaguid" "uuid",
-    "last_webauthn_challenge_data" "jsonb"
-);
-
-
-ALTER TABLE "auth"."mfa_factors" OWNER TO "supabase_auth_admin";
-
-
-COMMENT ON TABLE "auth"."mfa_factors" IS 'auth: stores metadata about factors';
-
-
-
-COMMENT ON COLUMN "auth"."mfa_factors"."last_webauthn_challenge_data" IS 'Stores the latest WebAuthn challenge data including attestation/assertion for customer verification';
-
-
-
-CREATE TABLE IF NOT EXISTS "auth"."mfa_recovery_code_sets" (
-    "id" "uuid" NOT NULL,
-    "user_id" "uuid" NOT NULL,
-    "mfa_factor_id" "uuid" NOT NULL,
-    "failed_verification_count" integer DEFAULT 0 NOT NULL,
-    "verification_locked_until" timestamp with time zone,
-    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
-    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
-    CONSTRAINT "mfa_recovery_code_sets_failed_verification_count_check" CHECK (("failed_verification_count" >= 0))
-);
-
-
-ALTER TABLE "auth"."mfa_recovery_code_sets" OWNER TO "supabase_auth_admin";
-
-
-CREATE TABLE IF NOT EXISTS "auth"."mfa_recovery_codes" (
-    "id" "uuid" NOT NULL,
-    "mfa_recovery_code_set_id" "uuid" NOT NULL,
-    "code_hash" "text" NOT NULL,
-    "consumed_at" timestamp with time zone,
-    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL
-);
-
-
-ALTER TABLE "auth"."mfa_recovery_codes" OWNER TO "supabase_auth_admin";
-
-
-CREATE TABLE IF NOT EXISTS "auth"."oauth_authorizations" (
-    "id" "uuid" NOT NULL,
-    "authorization_id" "text" NOT NULL,
-    "client_id" "uuid" NOT NULL,
-    "user_id" "uuid",
-    "redirect_uri" "text" NOT NULL,
-    "scope" "text" NOT NULL,
-    "state" "text",
-    "resource" "text",
-    "code_challenge" "text",
-    "code_challenge_method" "auth"."code_challenge_method",
-    "response_type" "auth"."oauth_response_type" DEFAULT 'code'::"auth"."oauth_response_type" NOT NULL,
-    "status" "auth"."oauth_authorization_status" DEFAULT 'pending'::"auth"."oauth_authorization_status" NOT NULL,
-    "authorization_code" "text",
-    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
-    "expires_at" timestamp with time zone DEFAULT ("now"() + '00:03:00'::interval) NOT NULL,
-    "approved_at" timestamp with time zone,
-    "nonce" "text",
-    CONSTRAINT "oauth_authorizations_authorization_code_length" CHECK (("char_length"("authorization_code") <= 255)),
-    CONSTRAINT "oauth_authorizations_code_challenge_length" CHECK (("char_length"("code_challenge") <= 128)),
-    CONSTRAINT "oauth_authorizations_expires_at_future" CHECK (("expires_at" > "created_at")),
-    CONSTRAINT "oauth_authorizations_nonce_length" CHECK (("char_length"("nonce") <= 255)),
-    CONSTRAINT "oauth_authorizations_redirect_uri_length" CHECK (("char_length"("redirect_uri") <= 2048)),
-    CONSTRAINT "oauth_authorizations_resource_length" CHECK (("char_length"("resource") <= 2048)),
-    CONSTRAINT "oauth_authorizations_scope_length" CHECK (("char_length"("scope") <= 4096)),
-    CONSTRAINT "oauth_authorizations_state_length" CHECK (("char_length"("state") <= 4096))
-);
-
-
-ALTER TABLE "auth"."oauth_authorizations" OWNER TO "supabase_auth_admin";
-
-
-CREATE TABLE IF NOT EXISTS "auth"."oauth_client_states" (
-    "id" "uuid" NOT NULL,
-    "provider_type" "text" NOT NULL,
-    "code_verifier" "text",
-    "created_at" timestamp with time zone NOT NULL
-);
-
-
-ALTER TABLE "auth"."oauth_client_states" OWNER TO "supabase_auth_admin";
-
-
-COMMENT ON TABLE "auth"."oauth_client_states" IS 'Stores OAuth states for third-party provider authentication flows where Supabase acts as the OAuth client.';
-
-
-
-CREATE TABLE IF NOT EXISTS "auth"."oauth_clients" (
-    "id" "uuid" NOT NULL,
-    "client_secret_hash" "text",
-    "registration_type" "auth"."oauth_registration_type" NOT NULL,
-    "redirect_uris" "text" NOT NULL,
-    "grant_types" "text" NOT NULL,
-    "client_name" "text",
-    "client_uri" "text",
-    "logo_uri" "text",
-    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
-    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
-    "deleted_at" timestamp with time zone,
-    "client_type" "auth"."oauth_client_type" DEFAULT 'confidential'::"auth"."oauth_client_type" NOT NULL,
-    "token_endpoint_auth_method" "text" NOT NULL,
-    CONSTRAINT "oauth_clients_client_name_length" CHECK (("char_length"("client_name") <= 1024)),
-    CONSTRAINT "oauth_clients_client_uri_length" CHECK (("char_length"("client_uri") <= 2048)),
-    CONSTRAINT "oauth_clients_logo_uri_length" CHECK (("char_length"("logo_uri") <= 2048)),
-    CONSTRAINT "oauth_clients_token_endpoint_auth_method_check" CHECK (("token_endpoint_auth_method" = ANY (ARRAY['client_secret_basic'::"text", 'client_secret_post'::"text", 'none'::"text"])))
-);
-
-
-ALTER TABLE "auth"."oauth_clients" OWNER TO "supabase_auth_admin";
-
-
-CREATE TABLE IF NOT EXISTS "auth"."oauth_consents" (
-    "id" "uuid" NOT NULL,
-    "user_id" "uuid" NOT NULL,
-    "client_id" "uuid" NOT NULL,
-    "scopes" "text" NOT NULL,
-    "granted_at" timestamp with time zone DEFAULT "now"() NOT NULL,
-    "revoked_at" timestamp with time zone,
-    CONSTRAINT "oauth_consents_revoked_after_granted" CHECK ((("revoked_at" IS NULL) OR ("revoked_at" >= "granted_at"))),
-    CONSTRAINT "oauth_consents_scopes_length" CHECK (("char_length"("scopes") <= 2048)),
-    CONSTRAINT "oauth_consents_scopes_not_empty" CHECK (("char_length"(TRIM(BOTH FROM "scopes")) > 0))
-);
-
-
-ALTER TABLE "auth"."oauth_consents" OWNER TO "supabase_auth_admin";
-
-
-CREATE TABLE IF NOT EXISTS "auth"."one_time_tokens" (
-    "id" "uuid" NOT NULL,
-    "user_id" "uuid" NOT NULL,
-    "token_type" "auth"."one_time_token_type" NOT NULL,
-    "token_hash" "text" NOT NULL,
-    "relates_to" "text" NOT NULL,
-    "created_at" timestamp without time zone DEFAULT "now"() NOT NULL,
-    "updated_at" timestamp without time zone DEFAULT "now"() NOT NULL,
-    "expires_at" timestamp with time zone,
-    CONSTRAINT "one_time_tokens_token_hash_check" CHECK (("char_length"("token_hash") > 0))
-);
-
-
-ALTER TABLE "auth"."one_time_tokens" OWNER TO "supabase_auth_admin";
-
-
-CREATE TABLE IF NOT EXISTS "auth"."refresh_tokens" (
-    "instance_id" "uuid",
-    "id" bigint NOT NULL,
-    "token" character varying(255),
-    "user_id" character varying(255),
-    "revoked" boolean,
-    "created_at" timestamp with time zone,
-    "updated_at" timestamp with time zone,
-    "parent" character varying(255),
-    "session_id" "uuid"
-);
-
-
-ALTER TABLE "auth"."refresh_tokens" OWNER TO "supabase_auth_admin";
-
-
-COMMENT ON TABLE "auth"."refresh_tokens" IS 'Auth: Store of tokens used to refresh JWT tokens once they expire.';
-
-
-
-CREATE SEQUENCE IF NOT EXISTS "auth"."refresh_tokens_id_seq"
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER SEQUENCE "auth"."refresh_tokens_id_seq" OWNER TO "supabase_auth_admin";
-
-
-ALTER SEQUENCE "auth"."refresh_tokens_id_seq" OWNED BY "auth"."refresh_tokens"."id";
-
-
-
-CREATE TABLE IF NOT EXISTS "auth"."saml_providers" (
-    "id" "uuid" NOT NULL,
-    "sso_provider_id" "uuid" NOT NULL,
-    "entity_id" "text" NOT NULL,
-    "metadata_xml" "text" NOT NULL,
-    "metadata_url" "text",
-    "attribute_mapping" "jsonb",
-    "created_at" timestamp with time zone,
-    "updated_at" timestamp with time zone,
-    "name_id_format" "text",
-    CONSTRAINT "entity_id not empty" CHECK (("char_length"("entity_id") > 0)),
-    CONSTRAINT "metadata_url not empty" CHECK ((("metadata_url" = NULL::"text") OR ("char_length"("metadata_url") > 0))),
-    CONSTRAINT "metadata_xml not empty" CHECK (("char_length"("metadata_xml") > 0))
-);
-
-
-ALTER TABLE "auth"."saml_providers" OWNER TO "supabase_auth_admin";
-
-
-COMMENT ON TABLE "auth"."saml_providers" IS 'Auth: Manages SAML Identity Provider connections.';
-
-
-
-CREATE TABLE IF NOT EXISTS "auth"."saml_relay_states" (
-    "id" "uuid" NOT NULL,
-    "sso_provider_id" "uuid" NOT NULL,
-    "request_id" "text" NOT NULL,
-    "for_email" "text",
-    "redirect_to" "text",
-    "created_at" timestamp with time zone,
-    "updated_at" timestamp with time zone,
-    "flow_state_id" "uuid",
-    CONSTRAINT "request_id not empty" CHECK (("char_length"("request_id") > 0))
-);
-
-
-ALTER TABLE "auth"."saml_relay_states" OWNER TO "supabase_auth_admin";
-
-
-COMMENT ON TABLE "auth"."saml_relay_states" IS 'Auth: Contains SAML Relay State information for each Service Provider initiated login.';
-
-
-
-CREATE TABLE IF NOT EXISTS "auth"."schema_migrations" (
-    "version" character varying(255) NOT NULL
-);
-
-
-ALTER TABLE "auth"."schema_migrations" OWNER TO "supabase_auth_admin";
-
-
-COMMENT ON TABLE "auth"."schema_migrations" IS 'Auth: Manages updates to the auth system.';
-
-
-
-CREATE TABLE IF NOT EXISTS "auth"."scim_tokens" (
-    "id" "uuid" NOT NULL,
-    "sso_provider_id" "uuid" NOT NULL,
-    "token_hash" "text" NOT NULL,
-    "prefix" "text" NOT NULL,
-    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
-    "expires_at" timestamp with time zone,
-    "revoked_at" timestamp with time zone,
-    "last_used_at" timestamp with time zone,
-    CONSTRAINT "scim_tokens_expires_at_future" CHECK ((("expires_at" IS NULL) OR ("expires_at" > "created_at"))),
-    CONSTRAINT "scim_tokens_revoked_after_created" CHECK ((("revoked_at" IS NULL) OR ("revoked_at" >= "created_at"))),
-    CONSTRAINT "scim_tokens_token_hash_check" CHECK (("token_hash" ~ '^[0-9a-f]{64}$'::"text"))
-);
-
-
-ALTER TABLE "auth"."scim_tokens" OWNER TO "supabase_auth_admin";
-
-
-CREATE TABLE IF NOT EXISTS "auth"."scim_users" (
-    "id" "uuid" NOT NULL,
-    "sso_provider_id" "uuid" NOT NULL,
-    "user_id" "uuid",
-    "resource" "jsonb" NOT NULL,
-    "user_name" "text" GENERATED ALWAYS AS ("lower"(("resource" ->> 'userName'::"text"))) STORED NOT NULL,
-    "external_id" "text" GENERATED ALWAYS AS (("resource" ->> 'externalId'::"text")) STORED,
-    "active" boolean GENERATED ALWAYS AS (COALESCE((("resource" ->> 'active'::"text"))::boolean, true)) STORED NOT NULL,
-    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
-    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
-    "deleted_at" timestamp with time zone
-);
-
-
-ALTER TABLE "auth"."scim_users" OWNER TO "supabase_auth_admin";
-
-
-CREATE TABLE IF NOT EXISTS "auth"."sessions" (
-    "id" "uuid" NOT NULL,
-    "user_id" "uuid" NOT NULL,
-    "created_at" timestamp with time zone,
-    "updated_at" timestamp with time zone,
-    "factor_id" "uuid",
-    "aal" "auth"."aal_level",
-    "not_after" timestamp with time zone,
-    "refreshed_at" timestamp without time zone,
-    "user_agent" "text",
-    "ip" "inet",
-    "tag" "text",
-    "oauth_client_id" "uuid",
-    "refresh_token_hmac_key" "text",
-    "refresh_token_counter" bigint,
-    "scopes" "text",
-    CONSTRAINT "sessions_scopes_length" CHECK (("char_length"("scopes") <= 4096))
-);
-
-
-ALTER TABLE "auth"."sessions" OWNER TO "supabase_auth_admin";
-
-
-COMMENT ON TABLE "auth"."sessions" IS 'Auth: Stores session data associated to a user.';
-
-
-
-COMMENT ON COLUMN "auth"."sessions"."not_after" IS 'Auth: Not after is a nullable column that contains a timestamp after which the session should be regarded as expired.';
-
-
-
-COMMENT ON COLUMN "auth"."sessions"."refresh_token_hmac_key" IS 'Holds a HMAC-SHA256 key used to sign refresh tokens for this session.';
-
-
-
-COMMENT ON COLUMN "auth"."sessions"."refresh_token_counter" IS 'Holds the ID (counter) of the last issued refresh token.';
-
-
-
-CREATE TABLE IF NOT EXISTS "auth"."sso_domains" (
-    "id" "uuid" NOT NULL,
-    "sso_provider_id" "uuid" NOT NULL,
-    "domain" "text" NOT NULL,
-    "created_at" timestamp with time zone,
-    "updated_at" timestamp with time zone,
-    CONSTRAINT "domain not empty" CHECK (("char_length"("domain") > 0))
-);
-
-
-ALTER TABLE "auth"."sso_domains" OWNER TO "supabase_auth_admin";
-
-
-COMMENT ON TABLE "auth"."sso_domains" IS 'Auth: Manages SSO email address domain mapping to an SSO Identity Provider.';
-
-
-
-CREATE TABLE IF NOT EXISTS "auth"."sso_providers" (
-    "id" "uuid" NOT NULL,
-    "resource_id" "text",
-    "created_at" timestamp with time zone,
-    "updated_at" timestamp with time zone,
-    "disabled" boolean,
-    CONSTRAINT "resource_id not empty" CHECK ((("resource_id" = NULL::"text") OR ("char_length"("resource_id") > 0)))
-);
-
-
-ALTER TABLE "auth"."sso_providers" OWNER TO "supabase_auth_admin";
-
-
-COMMENT ON TABLE "auth"."sso_providers" IS 'Auth: Manages SSO identity provider information; see saml_providers for SAML.';
-
-
-
-COMMENT ON COLUMN "auth"."sso_providers"."resource_id" IS 'Auth: Uniquely identifies a SSO provider according to a user-chosen resource ID (case insensitive), useful in infrastructure as code.';
-
-
-
-CREATE TABLE IF NOT EXISTS "auth"."users" (
-    "instance_id" "uuid",
-    "id" "uuid" NOT NULL,
-    "aud" character varying(255),
-    "role" character varying(255),
-    "email" character varying(255),
-    "encrypted_password" character varying(255),
-    "email_confirmed_at" timestamp with time zone,
-    "invited_at" timestamp with time zone,
-    "confirmation_token" character varying(255),
-    "confirmation_sent_at" timestamp with time zone,
-    "recovery_token" character varying(255),
-    "recovery_sent_at" timestamp with time zone,
-    "email_change_token_new" character varying(255),
-    "email_change" character varying(255),
-    "email_change_sent_at" timestamp with time zone,
-    "last_sign_in_at" timestamp with time zone,
-    "raw_app_meta_data" "jsonb",
-    "raw_user_meta_data" "jsonb",
-    "is_super_admin" boolean,
-    "created_at" timestamp with time zone,
-    "updated_at" timestamp with time zone,
-    "phone" "text" DEFAULT NULL::character varying,
-    "phone_confirmed_at" timestamp with time zone,
-    "phone_change" "text" DEFAULT ''::character varying,
-    "phone_change_token" character varying(255) DEFAULT ''::character varying,
-    "phone_change_sent_at" timestamp with time zone,
-    "confirmed_at" timestamp with time zone GENERATED ALWAYS AS (LEAST("email_confirmed_at", "phone_confirmed_at")) STORED,
-    "email_change_token_current" character varying(255) DEFAULT ''::character varying,
-    "email_change_confirm_status" smallint DEFAULT 0,
-    "banned_until" timestamp with time zone,
-    "reauthentication_token" character varying(255) DEFAULT ''::character varying,
-    "reauthentication_sent_at" timestamp with time zone,
-    "is_sso_user" boolean DEFAULT false NOT NULL,
-    "deleted_at" timestamp with time zone,
-    "is_anonymous" boolean DEFAULT false NOT NULL,
-    CONSTRAINT "users_email_change_confirm_status_check" CHECK ((("email_change_confirm_status" >= 0) AND ("email_change_confirm_status" <= 2)))
-);
-
-
-ALTER TABLE "auth"."users" OWNER TO "supabase_auth_admin";
-
-
-COMMENT ON TABLE "auth"."users" IS 'Auth: Stores user login data within a secure schema.';
-
-
-
-COMMENT ON COLUMN "auth"."users"."is_sso_user" IS 'Auth: Set this column to true when the account comes from SSO. These accounts can have duplicate emails.';
-
-
-
-CREATE TABLE IF NOT EXISTS "auth"."webauthn_challenges" (
-    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
-    "user_id" "uuid",
-    "challenge_type" "text" NOT NULL,
-    "session_data" "jsonb" NOT NULL,
-    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
-    "expires_at" timestamp with time zone NOT NULL,
-    CONSTRAINT "webauthn_challenges_challenge_type_check" CHECK (("challenge_type" = ANY (ARRAY['signup'::"text", 'registration'::"text", 'authentication'::"text"])))
-);
-
-
-ALTER TABLE "auth"."webauthn_challenges" OWNER TO "supabase_auth_admin";
-
-
-CREATE TABLE IF NOT EXISTS "auth"."webauthn_credentials" (
-    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
-    "user_id" "uuid" NOT NULL,
-    "credential_id" "bytea" NOT NULL,
-    "public_key" "bytea" NOT NULL,
-    "attestation_type" "text" DEFAULT ''::"text" NOT NULL,
-    "aaguid" "uuid",
-    "sign_count" bigint DEFAULT 0 NOT NULL,
-    "transports" "jsonb" DEFAULT '[]'::"jsonb" NOT NULL,
-    "backup_eligible" boolean DEFAULT false NOT NULL,
-    "backed_up" boolean DEFAULT false NOT NULL,
-    "friendly_name" "text" DEFAULT ''::"text" NOT NULL,
-    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
-    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
-    "last_used_at" timestamp with time zone
-);
-
-
-ALTER TABLE "auth"."webauthn_credentials" OWNER TO "supabase_auth_admin";
 
 
 CREATE TABLE IF NOT EXISTS "cf_recon"."action_log" (
@@ -76321,36 +73935,6 @@ ALTER TABLE "public"."_archive_supplier_price_tiers_20260626" OWNER TO "postgres
 
 COMMENT ON TABLE "public"."_archive_supplier_price_tiers_20260626" IS 'Archive de supplier_price_tiers (aposentada 2026-06-26). Snapshot stale de 13/06; substituída pela fonte viva VSS via get_variant_price. Reversível se necessário.';
 
-
-
-CREATE TABLE IF NOT EXISTS "public"."_backup_stock_daily_summary_20260618" (
-    "id" bigint NOT NULL,
-    "variant_supplier_source_id" "uuid",
-    "supplier_id" "uuid",
-    "supplier_branch_id" "uuid",
-    "variant_id" "uuid",
-    "product_id" "uuid",
-    "summary_date" "date",
-    "stock_open" integer,
-    "stock_close" integer,
-    "stock_min" integer,
-    "stock_max" integer,
-    "net_change" integer,
-    "units_depleted" integer,
-    "units_restocked" integer,
-    "restock_detected" boolean,
-    "restock_quantity" integer,
-    "restock_count" smallint,
-    "cost_price_open" numeric(12,4),
-    "cost_price_close" numeric(12,4),
-    "price_changed" boolean,
-    "sync_count" smallint,
-    "created_at" timestamp with time zone,
-    "restock_zero_to_positive" boolean
-);
-
-
-ALTER TABLE "public"."_backup_stock_daily_summary_20260618" OWNER TO "postgres";
 
 
 CREATE TABLE IF NOT EXISTS "public"."_bkp_kcvs_pre_normalize_20260624" (
@@ -79168,6 +76752,8 @@ CREATE TABLE IF NOT EXISTS "public"."device_login_notifications" (
     "created_at" timestamp with time zone DEFAULT "now"() NOT NULL
 );
 
+ALTER TABLE ONLY "public"."device_login_notifications" REPLICA IDENTITY FULL;
+
 
 ALTER TABLE "public"."device_login_notifications" OWNER TO "postgres";
 
@@ -79598,15 +77184,11 @@ CREATE TABLE IF NOT EXISTS "public"."frontend_telemetry" (
     "session_id" "text",
     "user_id" "uuid",
     "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
-    CONSTRAINT "frontend_telemetry_size_caps_check" CHECK (((("length"(COALESCE("event_type", ''::"text")) >= 1) AND ("length"(COALESCE("event_type", ''::"text")) <= 64)) AND (("length"(COALESCE("name", ''::"text")) >= 1) AND ("length"(COALESCE("name", ''::"text")) <= 256)) AND ("length"(COALESCE("url", ''::"text")) <= 2048) AND ("length"(COALESCE("user_agent", ''::"text")) <= 1024) AND ("length"(COALESCE("session_id", ''::"text")) <= 128) AND ("length"(COALESCE(("metadata")::"text", ''::"text")) <= 8192)))
+    CONSTRAINT "frontend_telemetry_size_caps_check" CHECK ((("length"(COALESCE("event_type", ''::"text")) >= 1) AND ("length"(COALESCE("event_type", ''::"text")) <= 64) AND (("length"(COALESCE("name", ''::"text")) >= 1) AND ("length"(COALESCE("name", ''::"text")) <= 256)) AND ("length"(COALESCE("url", ''::"text")) <= 2048) AND ("length"(COALESCE("user_agent", ''::"text")) <= 1024) AND ("length"(COALESCE("session_id", ''::"text")) <= 128) AND ("length"(COALESCE(("metadata")::"text", ''::"text")) <= 8192)))
 );
 
 
 ALTER TABLE "public"."frontend_telemetry" OWNER TO "postgres";
-
-
-COMMENT ON CONSTRAINT "frontend_telemetry_size_caps_check" ON "public"."frontend_telemetry" IS 'SEC-002 defesa em profundidade — caps de tamanho não dependem da policy ativa.';
-
 
 
 CREATE TABLE IF NOT EXISTS "public"."generated_mockups" (
@@ -80756,11 +78338,18 @@ CREATE TABLE IF NOT EXISTS "public"."login_attempts" (
     "success" boolean NOT NULL,
     "failure_reason" "text",
     "metadata" "jsonb" DEFAULT '{}'::"jsonb",
-    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "verified" boolean DEFAULT false NOT NULL
 );
+
+ALTER TABLE ONLY "public"."login_attempts" REPLICA IDENTITY FULL;
 
 
 ALTER TABLE "public"."login_attempts" OWNER TO "postgres";
+
+
+COMMENT ON COLUMN "public"."login_attempts"."verified" IS 'true somente quando a edge log-login-attempt validou a sessão do usuário (Authorization Bearer + e-mail casado) para linhas success=true. fn_check_login_allowed ignora success não verificado ao zerar o contador de lockout.';
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."magazine_duplicate_requests" (
@@ -80937,6 +78526,38 @@ CREATE TABLE IF NOT EXISTS "public"."magazine_public_view_events_2026_12" (
 
 
 ALTER TABLE "public"."magazine_public_view_events_2026_12" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."magazine_public_view_events_2027_01" (
+    "id" bigint DEFAULT "nextval"('"public"."magazine_public_view_events_id_seq"'::"regclass") NOT NULL,
+    "magazine_id" "uuid" NOT NULL,
+    "token_hash" "text" NOT NULL,
+    "ip_hash" "text" NOT NULL,
+    "user_agent_hash" "text",
+    "referer_host" "text",
+    "page_index" integer,
+    "session_id" "text",
+    "viewed_at" timestamp with time zone DEFAULT "now"() NOT NULL
+);
+
+
+ALTER TABLE "public"."magazine_public_view_events_2027_01" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."magazine_public_view_events_2027_02" (
+    "id" bigint DEFAULT "nextval"('"public"."magazine_public_view_events_id_seq"'::"regclass") NOT NULL,
+    "magazine_id" "uuid" NOT NULL,
+    "token_hash" "text" NOT NULL,
+    "ip_hash" "text" NOT NULL,
+    "user_agent_hash" "text",
+    "referer_host" "text",
+    "page_index" integer,
+    "session_id" "text",
+    "viewed_at" timestamp with time zone DEFAULT "now"() NOT NULL
+);
+
+
+ALTER TABLE "public"."magazine_public_view_events_2027_02" OWNER TO "postgres";
 
 
 CREATE TABLE IF NOT EXISTS "public"."magazine_public_view_events_default" (
@@ -85375,7 +82996,8 @@ CREATE TABLE IF NOT EXISTS "public"."request_rate_limits" (
     "blocked_until" timestamp with time zone,
     "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
     "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL
-);
+)
+WITH ("autovacuum_vacuum_scale_factor"='0.03');
 
 
 ALTER TABLE "public"."request_rate_limits" OWNER TO "postgres";
@@ -86251,6 +83873,22 @@ ALTER TABLE "public"."stock_daily_summary" ALTER COLUMN "id" ADD GENERATED ALWAY
 
 
 
+CREATE TABLE IF NOT EXISTS "public"."stock_notes" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "variant_id" "uuid" NOT NULL,
+    "supplier_id" "uuid",
+    "created_by" "uuid" NOT NULL,
+    "note" "text" NOT NULL,
+    "is_pinned" boolean DEFAULT false NOT NULL,
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "deleted_at" timestamp with time zone
+);
+
+
+ALTER TABLE "public"."stock_notes" OWNER TO "postgres";
+
+
 CREATE TABLE IF NOT EXISTS "public"."stock_snapshots" (
     "id" bigint NOT NULL,
     "variant_supplier_source_id" "uuid" NOT NULL,
@@ -86273,7 +83911,7 @@ CREATE TABLE IF NOT EXISTS "public"."stock_snapshots" (
     "captured_at" timestamp with time zone DEFAULT "now"() NOT NULL,
     "sync_source" character varying(50) DEFAULT 'n8n'::character varying
 )
-WITH ("autovacuum_vacuum_cost_limit"='2000', "autovacuum_vacuum_scale_factor"='0.01', "autovacuum_analyze_scale_factor"='0.005', "autovacuum_vacuum_cost_delay"='2');
+WITH ("autovacuum_vacuum_cost_limit"='2000', "autovacuum_analyze_scale_factor"='0.005', "autovacuum_vacuum_cost_delay"='2', "autovacuum_vacuum_scale_factor"='0.03');
 
 
 ALTER TABLE "public"."stock_snapshots" OWNER TO "postgres";
@@ -86651,34 +84289,6 @@ COMMENT ON TABLE "public"."supplier_products_raw_history" IS 'Versões anteriore
 
 
 
-CREATE TABLE IF NOT EXISTS "public"."supplier_products_raw_history_p2026_06" (
-    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
-    "raw_id" "uuid",
-    "supplier_id" "uuid",
-    "supplier_reference" character varying,
-    "content_hash" "text",
-    "raw_data" "jsonb",
-    "captured_at" timestamp with time zone DEFAULT "now"() NOT NULL
-);
-
-
-ALTER TABLE "public"."supplier_products_raw_history_p2026_06" OWNER TO "postgres";
-
-
-CREATE TABLE IF NOT EXISTS "public"."supplier_products_raw_history_p2026_07" (
-    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
-    "raw_id" "uuid",
-    "supplier_id" "uuid",
-    "supplier_reference" character varying,
-    "content_hash" "text",
-    "raw_data" "jsonb",
-    "captured_at" timestamp with time zone DEFAULT "now"() NOT NULL
-);
-
-
-ALTER TABLE "public"."supplier_products_raw_history_p2026_07" OWNER TO "postgres";
-
-
 CREATE TABLE IF NOT EXISTS "public"."supplier_products_raw_history_p2026_08" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "raw_id" "uuid",
@@ -86747,6 +84357,34 @@ CREATE TABLE IF NOT EXISTS "public"."supplier_products_raw_history_p2026_12" (
 
 
 ALTER TABLE "public"."supplier_products_raw_history_p2026_12" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."supplier_products_raw_history_p2027_01" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "raw_id" "uuid",
+    "supplier_id" "uuid",
+    "supplier_reference" character varying,
+    "content_hash" "text",
+    "raw_data" "jsonb",
+    "captured_at" timestamp with time zone DEFAULT "now"() NOT NULL
+);
+
+
+ALTER TABLE "public"."supplier_products_raw_history_p2027_01" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."supplier_products_raw_history_p2027_02" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "raw_id" "uuid",
+    "supplier_id" "uuid",
+    "supplier_reference" character varying,
+    "content_hash" "text",
+    "raw_data" "jsonb",
+    "captured_at" timestamp with time zone DEFAULT "now"() NOT NULL
+);
+
+
+ALTER TABLE "public"."supplier_products_raw_history_p2027_02" OWNER TO "postgres";
 
 
 CREATE TABLE IF NOT EXISTS "public"."supplier_property_mappings" (
@@ -90620,7 +88258,7 @@ COMMENT ON VIEW "public"."v_system_alerts" IS 'Alertas do sistema. Correções 2
 
 
 
-CREATE OR REPLACE VIEW "public"."v_system_health_dashboard" WITH ("security_invoker"='true') AS
+CREATE OR REPLACE VIEW "public"."v_system_health_dashboard" AS
  WITH "metrics" AS (
          SELECT 'database'::"text" AS "categoria",
             'total_tables_public'::"text" AS "metrica",
@@ -90630,226 +88268,226 @@ CREATE OR REPLACE VIEW "public"."v_system_health_dashboard" WITH ("security_invo
                   WHERE (("n"."nspname" = 'public'::"name") AND ("c"."relkind" = 'r'::"char"))))::"text" AS "valor",
             'count'::"text" AS "unit"
         UNION ALL
-         SELECT 'database'::"text",
-            'total_functions'::"text",
+         SELECT 'database'::"text" AS "text",
+            'total_functions'::"text" AS "text",
             (( SELECT "count"(*) AS "count"
                    FROM ("pg_proc" "p"
                      JOIN "pg_namespace" "n" ON (("n"."oid" = "p"."pronamespace")))
                   WHERE ("n"."nspname" = 'public'::"name")))::"text" AS "count",
-            'count'::"text"
+            'count'::"text" AS "text"
         UNION ALL
-         SELECT 'database'::"text",
-            'total_triggers'::"text",
+         SELECT 'database'::"text" AS "text",
+            'total_triggers'::"text" AS "text",
             (( SELECT "count"(*) AS "count"
                    FROM (("pg_trigger" "t"
                      JOIN "pg_class" "c" ON (("c"."oid" = "t"."tgrelid")))
                      JOIN "pg_namespace" "n" ON (("n"."oid" = "c"."relnamespace")))
                   WHERE (("n"."nspname" = 'public'::"name") AND (NOT "t"."tgisinternal"))))::"text" AS "count",
-            'count'::"text"
+            'count'::"text" AS "text"
         UNION ALL
-         SELECT 'database'::"text",
-            'total_indexes'::"text",
+         SELECT 'database'::"text" AS "text",
+            'total_indexes'::"text" AS "text",
             (( SELECT "count"(*) AS "count"
                    FROM "pg_indexes"
                   WHERE ("pg_indexes"."schemaname" = 'public'::"name")))::"text" AS "count",
-            'count'::"text"
+            'count'::"text" AS "text"
         UNION ALL
-         SELECT 'database'::"text",
-            'total_rls_policies'::"text",
+         SELECT 'database'::"text" AS "text",
+            'total_rls_policies'::"text" AS "text",
             (( SELECT "count"(*) AS "count"
                    FROM "pg_policies"
                   WHERE ("pg_policies"."schemaname" = 'public'::"name")))::"text" AS "count",
-            'count'::"text"
+            'count'::"text" AS "text"
         UNION ALL
-         SELECT 'database'::"text",
-            'realtime_published_tables'::"text",
+         SELECT 'database'::"text" AS "text",
+            'realtime_published_tables'::"text" AS "text",
             (( SELECT "count"(*) AS "count"
                    FROM "pg_publication_tables"
                   WHERE ("pg_publication_tables"."pubname" = 'supabase_realtime'::"name")))::"text" AS "count",
-            'count'::"text"
+            'count'::"text" AS "text"
         UNION ALL
-         SELECT 'catalog'::"text",
-            'total_products'::"text",
+         SELECT 'catalog'::"text" AS "text",
+            'total_products'::"text" AS "text",
             (( SELECT "count"(*) AS "count"
                    FROM "public"."products"))::"text" AS "count",
-            'count'::"text"
+            'count'::"text" AS "text"
         UNION ALL
-         SELECT 'catalog'::"text",
-            'active_products'::"text",
+         SELECT 'catalog'::"text" AS "text",
+            'active_products'::"text" AS "text",
             (( SELECT "count"(*) AS "count"
                    FROM "public"."products"
                   WHERE ("products"."is_active" = true)))::"text" AS "count",
-            'count'::"text"
+            'count'::"text" AS "text"
         UNION ALL
-         SELECT 'catalog'::"text",
-            'products_with_image'::"text",
+         SELECT 'catalog'::"text" AS "text",
+            'products_with_image'::"text" AS "text",
             (( SELECT "count"(*) AS "count"
                    FROM "public"."products"
                   WHERE ("products"."primary_image_url" IS NOT NULL)))::"text" AS "count",
-            'count'::"text"
+            'count'::"text" AS "text"
         UNION ALL
-         SELECT 'catalog'::"text",
-            'products_with_ncm'::"text",
+         SELECT 'catalog'::"text" AS "text",
+            'products_with_ncm'::"text" AS "text",
             (( SELECT "count"(*) AS "count"
                    FROM "public"."products"
                   WHERE ("products"."ncm_id" IS NOT NULL)))::"text" AS "count",
-            'count'::"text"
+            'count'::"text" AS "text"
         UNION ALL
-         SELECT 'catalog'::"text",
-            'products_with_ai_description'::"text",
+         SELECT 'catalog'::"text" AS "text",
+            'products_with_ai_description'::"text" AS "text",
             (( SELECT "count"(*) AS "count"
                    FROM "public"."products"
                   WHERE ("products"."ai_description" IS NOT NULL)))::"text" AS "count",
-            'count'::"text"
+            'count'::"text" AS "text"
         UNION ALL
-         SELECT 'catalog'::"text",
-            'total_variants'::"text",
+         SELECT 'catalog'::"text" AS "text",
+            'total_variants'::"text" AS "text",
             (( SELECT "count"(*) AS "count"
                    FROM "public"."product_variants"))::"text" AS "count",
-            'count'::"text"
+            'count'::"text" AS "text"
         UNION ALL
-         SELECT 'catalog'::"text",
-            'active_variants'::"text",
+         SELECT 'catalog'::"text" AS "text",
+            'active_variants'::"text" AS "text",
             (( SELECT "count"(*) AS "count"
                    FROM "public"."product_variants"
                   WHERE ("product_variants"."is_active" = true)))::"text" AS "count",
-            'count'::"text"
+            'count'::"text" AS "text"
         UNION ALL
-         SELECT 'catalog'::"text",
-            'total_images'::"text",
+         SELECT 'catalog'::"text" AS "text",
+            'total_images'::"text" AS "text",
             (( SELECT "count"(*) AS "count"
                    FROM "public"."product_images"))::"text" AS "count",
-            'count'::"text"
+            'count'::"text" AS "text"
         UNION ALL
-         SELECT 'catalog'::"text",
-            'total_videos'::"text",
+         SELECT 'catalog'::"text" AS "text",
+            'total_videos'::"text" AS "text",
             (( SELECT "count"(*) AS "count"
                    FROM "public"."product_videos"))::"text" AS "count",
-            'count'::"text"
+            'count'::"text" AS "text"
         UNION ALL
-         SELECT 'catalog'::"text",
-            'total_categories'::"text",
+         SELECT 'catalog'::"text" AS "text",
+            'total_categories'::"text" AS "text",
             (( SELECT "count"(*) AS "count"
                    FROM "public"."categories"
                   WHERE ("categories"."is_active" = true)))::"text" AS "count",
-            'count'::"text"
+            'count'::"text" AS "text"
         UNION ALL
-         SELECT 'catalog'::"text",
-            'total_stock_units'::"text",
+         SELECT 'catalog'::"text" AS "text",
+            'total_stock_units'::"text" AS "text",
             (COALESCE(( SELECT "sum"("variant_supplier_sources"."quantity") AS "sum"
                    FROM "public"."variant_supplier_sources"
                   WHERE ("variant_supplier_sources"."is_active" = true)), (0)::bigint))::"text" AS "coalesce",
-            'units'::"text"
+            'units'::"text" AS "text"
         UNION ALL
-         SELECT 'suppliers'::"text",
-            'total_suppliers'::"text",
+         SELECT 'suppliers'::"text" AS "text",
+            'total_suppliers'::"text" AS "text",
             (( SELECT "count"(*) AS "count"
                    FROM "public"."suppliers"))::"text" AS "count",
-            'count'::"text"
+            'count'::"text" AS "text"
         UNION ALL
-         SELECT 'suppliers'::"text",
-            'active_sync_suppliers'::"text",
+         SELECT 'suppliers'::"text" AS "text",
+            'active_sync_suppliers'::"text" AS "text",
             (( SELECT "count"(*) AS "count"
                    FROM "public"."suppliers"
                   WHERE ("suppliers"."sync_enabled" = true)))::"text" AS "count",
-            'count'::"text"
+            'count'::"text" AS "text"
         UNION ALL
-         SELECT 'suppliers'::"text",
-            'pending_import_batches'::"text",
+         SELECT 'suppliers'::"text" AS "text",
+            'pending_import_batches'::"text" AS "text",
             (( SELECT "count"(DISTINCT "supplier_products_raw"."import_batch_id") AS "count"
                    FROM "public"."supplier_products_raw"
                   WHERE ("supplier_products_raw"."status" <> 'processed'::"public"."supplier_raw_status")))::"text" AS "count",
-            'count'::"text"
+            'count'::"text" AS "text"
         UNION ALL
-         SELECT 'ai'::"text",
-            'ai_queue_pending'::"text",
+         SELECT 'ai'::"text" AS "text",
+            'ai_queue_pending'::"text" AS "text",
             (( SELECT "count"(*) AS "count"
                    FROM "public"."ai_enrichment_queue"
                   WHERE ("ai_enrichment_queue"."status" = 'pending'::"text")))::"text" AS "count",
-            'count'::"text"
+            'count'::"text" AS "text"
         UNION ALL
-         SELECT 'ai'::"text",
-            'ai_queue_completed'::"text",
+         SELECT 'ai'::"text" AS "text",
+            'ai_queue_completed'::"text" AS "text",
             (( SELECT "count"(*) AS "count"
                    FROM "public"."ai_enrichment_queue"
                   WHERE ("ai_enrichment_queue"."status" = 'done'::"text")))::"text" AS "count",
-            'count'::"text"
+            'count'::"text" AS "text"
         UNION ALL
-         SELECT 'ai'::"text",
-            'ai_queue_stuck'::"text",
+         SELECT 'ai'::"text" AS "text",
+            'ai_queue_stuck'::"text" AS "text",
             (( SELECT "count"(*) AS "count"
                    FROM "public"."ai_enrichment_queue"
                   WHERE (("ai_enrichment_queue"."status" = 'processing'::"text") AND ("ai_enrichment_queue"."locked_at" < ("now"() - '02:00:00'::interval)))))::"text" AS "count",
-            'count'::"text"
+            'count'::"text" AS "text"
         UNION ALL
-         SELECT 'crm'::"text",
-            'total_quotes'::"text",
+         SELECT 'crm'::"text" AS "text",
+            'total_quotes'::"text" AS "text",
             (( SELECT "count"(*) AS "count"
                    FROM "public"."quotes"))::"text" AS "count",
-            'count'::"text"
+            'count'::"text" AS "text"
         UNION ALL
-         SELECT 'crm'::"text",
-            'total_orders'::"text",
+         SELECT 'crm'::"text" AS "text",
+            'total_orders'::"text" AS "text",
             (( SELECT "count"(*) AS "count"
                    FROM "public"."orders"))::"text" AS "count",
-            'count'::"text"
+            'count'::"text" AS "text"
         UNION ALL
-         SELECT 'auth'::"text",
-            'total_users'::"text",
+         SELECT 'auth'::"text" AS "text",
+            'total_users'::"text" AS "text",
             (( SELECT "count"(*) AS "count"
                    FROM "auth"."users"))::"text" AS "count",
-            'count'::"text"
+            'count'::"text" AS "text"
         UNION ALL
-         SELECT 'auth'::"text",
-            'total_organizations'::"text",
+         SELECT 'auth'::"text" AS "text",
+            'total_organizations'::"text" AS "text",
             (( SELECT "count"(*) AS "count"
                    FROM "public"."organizations"))::"text" AS "count",
-            'count'::"text"
+            'count'::"text" AS "text"
         UNION ALL
-         SELECT 'cron'::"text",
-            'active_jobs'::"text",
+         SELECT 'cron'::"text" AS "text",
+            'active_jobs'::"text" AS "text",
             (( SELECT "count"(*) AS "count"
                    FROM "cron"."job"
                   WHERE ("job"."active" = true)))::"text" AS "count",
-            'count'::"text"
+            'count'::"text" AS "text"
         UNION ALL
-         SELECT 'cron'::"text",
-            'failed_runs_24h'::"text",
+         SELECT 'cron'::"text" AS "text",
+            'failed_runs_24h'::"text" AS "text",
             (( SELECT "count"(*) AS "count"
                    FROM "cron"."job_run_details"
                   WHERE (("job_run_details"."status" = 'failed'::"text") AND ("job_run_details"."start_time" > ("now"() - '24:00:00'::interval)))))::"text" AS "count",
-            'count'::"text"
+            'count'::"text" AS "text"
         UNION ALL
-         SELECT 'cron'::"text",
-            'succeeded_runs_24h'::"text",
+         SELECT 'cron'::"text" AS "text",
+            'succeeded_runs_24h'::"text" AS "text",
             (( SELECT "count"(*) AS "count"
                    FROM "cron"."job_run_details"
                   WHERE (("job_run_details"."status" = 'succeeded'::"text") AND ("job_run_details"."start_time" > ("now"() - '24:00:00'::interval)))))::"text" AS "count",
-            'count'::"text"
+            'count'::"text" AS "text"
         UNION ALL
-         SELECT 'bi'::"text",
-            'stock_snapshots_count'::"text",
+         SELECT 'bi'::"text" AS "text",
+            'stock_snapshots_count'::"text" AS "text",
             (( SELECT "count"(*) AS "count"
                    FROM "public"."stock_snapshots"))::"text" AS "count",
-            'count'::"text"
+            'count'::"text" AS "text"
         UNION ALL
-         SELECT 'bi'::"text",
-            'stock_daily_summary_count'::"text",
+         SELECT 'bi'::"text" AS "text",
+            'stock_daily_summary_count'::"text" AS "text",
             (( SELECT "count"(*) AS "count"
                    FROM "public"."stock_daily_summary"))::"text" AS "count",
-            'count'::"text"
+            'count'::"text" AS "text"
         UNION ALL
-         SELECT 'storage'::"text",
-            'db_total_size'::"text",
+         SELECT 'storage'::"text" AS "text",
+            'db_total_size'::"text" AS "text",
             "pg_size_pretty"("pg_database_size"("current_database"())) AS "pg_size_pretty",
-            'size'::"text"
+            'size'::"text" AS "text"
         UNION ALL
-         SELECT 'storage'::"text",
-            'indexes_size_public'::"text",
+         SELECT 'storage'::"text" AS "text",
+            'indexes_size_public'::"text" AS "text",
             ( SELECT "pg_size_pretty"("sum"("pg_relation_size"(("pg_stat_user_indexes"."indexrelid")::"regclass"))) AS "pg_size_pretty"
                    FROM "pg_stat_user_indexes"
                   WHERE ("pg_stat_user_indexes"."schemaname" = 'public'::"name")) AS "pg_size_pretty",
-            'size'::"text"
+            'size'::"text" AS "text"
         )
  SELECT "categoria",
     "metrica",
@@ -91244,42 +88882,34 @@ CREATE TABLE IF NOT EXISTS "public"."video_import_queue" (
 ALTER TABLE "public"."video_import_queue" OWNER TO "postgres";
 
 
-COMMENT ON TABLE "public"."video_import_queue" IS '
-Fila de importação de vídeos YouTube → Cloudflare Stream.
+COMMENT ON TABLE "public"."video_import_queue" IS 'Fila de importacao de videos YouTube -> Cloudflare Stream.
 Consumida pelo VPS /workspace/xbz_video_import.js em background.
 
-━━━━ ESTADOS (coluna status) ━━━━
-  pending          → aguardando processamento
-  downloading      → yt-dlp baixando o MP4 (FOR UPDATE SKIP LOCKED — safe para parallel)
-  error_download   → falha no download (retry automático até max_retries=3)
-  error_upload     → falha no upload CF (retry automático até max_retries=3)
-  done             → upload CF concluído (aguardando link ao produto)
-  linked           → fn_xbz_link_video executada com sucesso (estado final)
+  pending          -> aguardando processamento
+  downloading      -> yt-dlp baixando o MP4 (FOR UPDATE SKIP LOCKED -- safe para parallel)
+  error_download   -> falha no download (retry automatico ate max_retries=3)
+  error_upload     -> falha no upload CF (retry automatico ate max_retries=3)
+  done             -> upload CF concluido (aguardando link ao produto)
+  linked           -> fn_xbz_link_video executada com sucesso (estado final)
 
-━━━━ FORNECEDORES ━━━━
-  ''''SPOT'''' (padrão): 139 vídeos na conta (histórico, pipeline anterior)
-  ''''xbz'''':          155 vídeos enfileirados em 2026-06-07 (129 pendentes, 22 linked, 3 error)
+  ''SPOT'' (padrao): 139 videos na conta (historico, pipeline anterior)
+  ''xbz'':          155 videos enfileirados em 2026-06-07 (129 pendentes, 22 linked, 3 error)
 
-━━━━ PROCESSADORES ━━━━
-  fn_video_queue_next(supplier)  → pega próximo item (SECURITY DEFINER, FOR UPDATE SKIP LOCKED)
-  fn_video_queue_update(...)     → atualiza status/campos CF
-  fn_video_link_to_products(id)  → vincula SPOT ao produto (INSERT em product_videos)
-  fn_xbz_link_video(...)         → vincula XBZ ao produto (UPDATE em product_videos existente)
+  fn_video_queue_next(supplier)  -> pega proximo item (SECURITY DEFINER, FOR UPDATE SKIP LOCKED)
+  fn_video_queue_update(...)     -> atualiza status/campos CF
+  fn_video_link_to_products(id)  -> vincula SPOT ao produto (INSERT em product_videos)
+  fn_xbz_link_video(...)         -> vincula XBZ ao produto (UPDATE em product_videos existente)
 
-━━━━ VPS SCRIPT ━━━━
   /workspace/xbz_video_import.js (v3, Node.js, DELAY_MS=8000)
-  nohup node /workspace/xbz_video_import.js >> /workspace/xbz_video_import.log 2>&1 &
   Monitorar: cat /workspace/xbz_video_stats.json
-  Resetar itens stuck: UPDATE video_import_queue SET status=''''pending'''', started_at=NULL
-    WHERE source_supplier=''''xbz'''' AND status=''''downloading''''
+  Resetar itens stuck: UPDATE video_import_queue SET status=''pending'', started_at=NULL
+    WHERE source_supplier=''xbz'' AND status=''downloading''
 
-━━━━ CLOUDFLARE STREAM ━━━━
   Account ID:      cd0f4eee542191c4957567814e1f8ca1
-  Account Hash:    ksi0mrlcw6rwzezz   ← subdomain correto (≠ accountId)
-  Token:           cfat_7CnrimH0S6... (Stream:Edit + Images:Edit)
-  Storage:         ~208min usados / 1.000min no plano (em 2026-06-07)
-  Throttle:        code 971 = rate limit de uploads (~7/min). Aguardar 30s extras.
-';
+  Account Hash:    ksi0mrlcw6rwzezz   (subdomain correto, != accountId)
+  Token:           ver vault/integration_credentials -- NAO colocar token em COMMENT ON (incidente 2026-10-13: token cfat_* ficou exposto em texto claro aqui por ~4 meses; ROTACAO PENDENTE -- decisao do PO, nao executada por sessao automatizada).
+  Storage:         ~208min usados / 1.000min no plano (em 2026-06-07, revisar)
+  Throttle:        code 971 = rate limit de uploads (~7/min). Aguardar 30s extras.';
 
 
 
@@ -94834,8 +92464,11 @@ CREATE TABLE IF NOT EXISTS "public"."workspace_notifications" (
     "action_url" "text",
     "metadata" "jsonb" DEFAULT '{}'::"jsonb",
     "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
-    "search_vector" "tsvector"
+    "search_vector" "tsvector",
+    "idempotency_key" "text"
 );
+
+ALTER TABLE ONLY "public"."workspace_notifications" REPLICA IDENTITY FULL;
 
 
 ALTER TABLE "public"."workspace_notifications" OWNER TO "postgres";
@@ -94914,378 +92547,6 @@ ALTER SEQUENCE "public"."xbz_upload_mapping_id_seq" OWNER TO "postgres";
 
 ALTER SEQUENCE "public"."xbz_upload_mapping_id_seq" OWNED BY "public"."xbz_upload_mapping"."id";
 
-
-
-CREATE TABLE IF NOT EXISTS "realtime"."messages" (
-    "topic" "text" NOT NULL,
-    "extension" "text" NOT NULL,
-    "payload" "jsonb",
-    "event" "text",
-    "private" boolean DEFAULT false,
-    "updated_at" timestamp without time zone DEFAULT "now"() NOT NULL,
-    "inserted_at" timestamp without time zone DEFAULT "now"() NOT NULL,
-    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
-    "binary_payload" "bytea",
-    "skip_broadcast" boolean DEFAULT false NOT NULL
-)
-PARTITION BY RANGE ("inserted_at");
-
-
-ALTER TABLE "realtime"."messages" OWNER TO "supabase_realtime_admin";
-
-
-CREATE TABLE IF NOT EXISTS "realtime"."messages_2026_09_13" (
-    "topic" "text" NOT NULL,
-    "extension" "text" NOT NULL,
-    "payload" "jsonb",
-    "event" "text",
-    "private" boolean DEFAULT false,
-    "updated_at" timestamp without time zone DEFAULT "now"() NOT NULL,
-    "inserted_at" timestamp without time zone DEFAULT "now"() NOT NULL,
-    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
-    "binary_payload" "bytea",
-    "skip_broadcast" boolean DEFAULT false NOT NULL,
-    CONSTRAINT "messages_payload_exclusive" CHECK ((("payload" IS NULL) OR ("binary_payload" IS NULL)))
-);
-
-
-ALTER TABLE "realtime"."messages_2026_09_13" OWNER TO "supabase_realtime_admin";
-
-
-CREATE TABLE IF NOT EXISTS "realtime"."messages_2026_09_14" (
-    "topic" "text" NOT NULL,
-    "extension" "text" NOT NULL,
-    "payload" "jsonb",
-    "event" "text",
-    "private" boolean DEFAULT false,
-    "updated_at" timestamp without time zone DEFAULT "now"() NOT NULL,
-    "inserted_at" timestamp without time zone DEFAULT "now"() NOT NULL,
-    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
-    "binary_payload" "bytea",
-    "skip_broadcast" boolean DEFAULT false NOT NULL,
-    CONSTRAINT "messages_payload_exclusive" CHECK ((("payload" IS NULL) OR ("binary_payload" IS NULL)))
-);
-
-
-ALTER TABLE "realtime"."messages_2026_09_14" OWNER TO "supabase_realtime_admin";
-
-
-CREATE TABLE IF NOT EXISTS "realtime"."messages_2026_09_15" (
-    "topic" "text" NOT NULL,
-    "extension" "text" NOT NULL,
-    "payload" "jsonb",
-    "event" "text",
-    "private" boolean DEFAULT false,
-    "updated_at" timestamp without time zone DEFAULT "now"() NOT NULL,
-    "inserted_at" timestamp without time zone DEFAULT "now"() NOT NULL,
-    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
-    "binary_payload" "bytea",
-    "skip_broadcast" boolean DEFAULT false NOT NULL,
-    CONSTRAINT "messages_payload_exclusive" CHECK ((("payload" IS NULL) OR ("binary_payload" IS NULL)))
-);
-
-
-ALTER TABLE "realtime"."messages_2026_09_15" OWNER TO "supabase_realtime_admin";
-
-
-CREATE TABLE IF NOT EXISTS "realtime"."messages_2026_09_16" (
-    "topic" "text" NOT NULL,
-    "extension" "text" NOT NULL,
-    "payload" "jsonb",
-    "event" "text",
-    "private" boolean DEFAULT false,
-    "updated_at" timestamp without time zone DEFAULT "now"() NOT NULL,
-    "inserted_at" timestamp without time zone DEFAULT "now"() NOT NULL,
-    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
-    "binary_payload" "bytea",
-    "skip_broadcast" boolean DEFAULT false NOT NULL,
-    CONSTRAINT "messages_payload_exclusive" CHECK ((("payload" IS NULL) OR ("binary_payload" IS NULL)))
-);
-
-
-ALTER TABLE "realtime"."messages_2026_09_16" OWNER TO "supabase_realtime_admin";
-
-
-CREATE TABLE IF NOT EXISTS "realtime"."messages_2026_09_17" (
-    "topic" "text" NOT NULL,
-    "extension" "text" NOT NULL,
-    "payload" "jsonb",
-    "event" "text",
-    "private" boolean DEFAULT false,
-    "updated_at" timestamp without time zone DEFAULT "now"() NOT NULL,
-    "inserted_at" timestamp without time zone DEFAULT "now"() NOT NULL,
-    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
-    "binary_payload" "bytea",
-    "skip_broadcast" boolean DEFAULT false NOT NULL,
-    CONSTRAINT "messages_payload_exclusive" CHECK ((("payload" IS NULL) OR ("binary_payload" IS NULL)))
-);
-
-
-ALTER TABLE "realtime"."messages_2026_09_17" OWNER TO "supabase_realtime_admin";
-
-
-CREATE TABLE IF NOT EXISTS "realtime"."messages_2026_09_18" (
-    "topic" "text" NOT NULL,
-    "extension" "text" NOT NULL,
-    "payload" "jsonb",
-    "event" "text",
-    "private" boolean DEFAULT false,
-    "updated_at" timestamp without time zone DEFAULT "now"() NOT NULL,
-    "inserted_at" timestamp without time zone DEFAULT "now"() NOT NULL,
-    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
-    "binary_payload" "bytea",
-    "skip_broadcast" boolean DEFAULT false NOT NULL,
-    CONSTRAINT "messages_payload_exclusive" CHECK ((("payload" IS NULL) OR ("binary_payload" IS NULL)))
-);
-
-
-ALTER TABLE "realtime"."messages_2026_09_18" OWNER TO "supabase_realtime_admin";
-
-
-CREATE TABLE IF NOT EXISTS "realtime"."messages_2026_09_19" (
-    "topic" "text" NOT NULL,
-    "extension" "text" NOT NULL,
-    "payload" "jsonb",
-    "event" "text",
-    "private" boolean DEFAULT false,
-    "updated_at" timestamp without time zone DEFAULT "now"() NOT NULL,
-    "inserted_at" timestamp without time zone DEFAULT "now"() NOT NULL,
-    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
-    "binary_payload" "bytea",
-    "skip_broadcast" boolean DEFAULT false NOT NULL,
-    CONSTRAINT "messages_payload_exclusive" CHECK ((("payload" IS NULL) OR ("binary_payload" IS NULL)))
-);
-
-
-ALTER TABLE "realtime"."messages_2026_09_19" OWNER TO "supabase_realtime_admin";
-
-
-CREATE TABLE IF NOT EXISTS "realtime"."schema_migrations" (
-    "version" bigint NOT NULL,
-    "inserted_at" timestamp(0) without time zone
-);
-
-
-ALTER TABLE "realtime"."schema_migrations" OWNER TO "supabase_admin";
-
-
-CREATE TABLE IF NOT EXISTS "realtime"."subscription" (
-    "id" bigint NOT NULL,
-    "subscription_id" "uuid" NOT NULL,
-    "entity" "regclass" NOT NULL,
-    "filters" "realtime"."user_defined_filter"[] DEFAULT '{}'::"realtime"."user_defined_filter"[] NOT NULL,
-    "claims" "jsonb" NOT NULL,
-    "claims_role" "regrole" GENERATED ALWAYS AS ("realtime"."to_regrole"(("claims" ->> 'role'::"text"))) STORED NOT NULL,
-    "created_at" timestamp without time zone DEFAULT "timezone"('utc'::"text", "now"()) NOT NULL,
-    "action_filter" "text" DEFAULT '*'::"text",
-    "selected_columns" "text"[],
-    CONSTRAINT "subscription_action_filter_check" CHECK (("action_filter" = ANY (ARRAY['*'::"text", 'INSERT'::"text", 'UPDATE'::"text", 'DELETE'::"text"])))
-);
-
-
-ALTER TABLE "realtime"."subscription" OWNER TO "supabase_realtime_admin";
-
-
-ALTER TABLE "realtime"."subscription" ALTER COLUMN "id" ADD GENERATED ALWAYS AS IDENTITY (
-    SEQUENCE NAME "realtime"."subscription_id_seq"
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1
-);
-
-
-
-CREATE TABLE IF NOT EXISTS "storage"."buckets" (
-    "id" "text" NOT NULL,
-    "name" "text" NOT NULL,
-    "owner" "uuid",
-    "created_at" timestamp with time zone DEFAULT "now"(),
-    "updated_at" timestamp with time zone DEFAULT "now"(),
-    "public" boolean DEFAULT false,
-    "avif_autodetection" boolean DEFAULT false,
-    "file_size_limit" bigint,
-    "allowed_mime_types" "text"[],
-    "owner_id" "text",
-    "type" "storage"."buckettype" DEFAULT 'STANDARD'::"storage"."buckettype" NOT NULL,
-    "versioning_status" "text" DEFAULT 'DISABLED'::"text" NOT NULL,
-    CONSTRAINT "buckets_versioning_dark_check" CHECK (("versioning_status" = 'DISABLED'::"text")),
-    CONSTRAINT "buckets_versioning_standard_only_check" CHECK ((("type" = 'STANDARD'::"storage"."buckettype") OR ("versioning_status" = 'DISABLED'::"text"))),
-    CONSTRAINT "buckets_versioning_status_check" CHECK (("versioning_status" = ANY (ARRAY['DISABLED'::"text", 'ENABLED'::"text", 'SUSPENDED'::"text"])))
-);
-
-
-ALTER TABLE "storage"."buckets" OWNER TO "supabase_storage_admin";
-
-
-COMMENT ON COLUMN "storage"."buckets"."owner" IS 'Field is deprecated, use owner_id instead';
-
-
-
-CREATE TABLE IF NOT EXISTS "storage"."buckets_analytics" (
-    "name" "text" NOT NULL,
-    "type" "storage"."buckettype" DEFAULT 'ANALYTICS'::"storage"."buckettype" NOT NULL,
-    "format" "text" DEFAULT 'ICEBERG'::"text" NOT NULL,
-    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
-    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
-    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
-    "deleted_at" timestamp with time zone
-);
-
-
-ALTER TABLE "storage"."buckets_analytics" OWNER TO "supabase_storage_admin";
-
-
-CREATE TABLE IF NOT EXISTS "storage"."buckets_vectors" (
-    "id" "text" NOT NULL,
-    "type" "storage"."buckettype" DEFAULT 'VECTOR'::"storage"."buckettype" NOT NULL,
-    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
-    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL
-);
-
-
-ALTER TABLE "storage"."buckets_vectors" OWNER TO "supabase_storage_admin";
-
-
-CREATE TABLE IF NOT EXISTS "storage"."migrations" (
-    "id" integer NOT NULL,
-    "name" character varying(100) NOT NULL,
-    "hash" character varying(40) NOT NULL,
-    "executed_at" timestamp without time zone DEFAULT CURRENT_TIMESTAMP
-);
-
-
-ALTER TABLE "storage"."migrations" OWNER TO "supabase_storage_admin";
-
-
-CREATE TABLE IF NOT EXISTS "storage"."objects" (
-    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
-    "bucket_id" "text",
-    "name" "text",
-    "owner" "uuid",
-    "created_at" timestamp with time zone DEFAULT "now"(),
-    "updated_at" timestamp with time zone DEFAULT "now"(),
-    "last_accessed_at" timestamp with time zone DEFAULT "now"(),
-    "metadata" "jsonb",
-    "path_tokens" "text"[] GENERATED ALWAYS AS ("string_to_array"("name", '/'::"text")) STORED,
-    "version" "text",
-    "owner_id" "text",
-    "user_metadata" "jsonb",
-    "archived_at" timestamp with time zone,
-    "is_delete_marker" boolean DEFAULT false NOT NULL,
-    "is_versioned" boolean DEFAULT false NOT NULL
-);
-
-
-ALTER TABLE "storage"."objects" OWNER TO "supabase_storage_admin";
-
-
-COMMENT ON COLUMN "storage"."objects"."owner" IS 'Field is deprecated, use owner_id instead';
-
-
-
-CREATE TABLE IF NOT EXISTS "storage"."s3_multipart_uploads" (
-    "id" "text" NOT NULL,
-    "in_progress_size" bigint DEFAULT 0 NOT NULL,
-    "upload_signature" "text" NOT NULL,
-    "bucket_id" "text" NOT NULL,
-    "key" "text" NOT NULL COLLATE "pg_catalog"."C",
-    "version" "text" NOT NULL,
-    "owner_id" "text",
-    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
-    "user_metadata" "jsonb",
-    "metadata" "jsonb"
-);
-
-
-ALTER TABLE "storage"."s3_multipart_uploads" OWNER TO "supabase_storage_admin";
-
-
-CREATE TABLE IF NOT EXISTS "storage"."s3_multipart_uploads_parts" (
-    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
-    "upload_id" "text" NOT NULL,
-    "size" bigint DEFAULT 0 NOT NULL,
-    "part_number" integer NOT NULL,
-    "bucket_id" "text" NOT NULL,
-    "key" "text" NOT NULL COLLATE "pg_catalog"."C",
-    "etag" "text" NOT NULL,
-    "owner_id" "text",
-    "version" "text" NOT NULL,
-    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL
-);
-
-
-ALTER TABLE "storage"."s3_multipart_uploads_parts" OWNER TO "supabase_storage_admin";
-
-
-CREATE TABLE IF NOT EXISTS "storage"."vector_indexes" (
-    "id" "text" DEFAULT "gen_random_uuid"() NOT NULL,
-    "name" "text" NOT NULL COLLATE "pg_catalog"."C",
-    "bucket_id" "text" NOT NULL,
-    "data_type" "text" NOT NULL,
-    "dimension" integer NOT NULL,
-    "distance_metric" "text" NOT NULL,
-    "metadata_configuration" "jsonb",
-    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
-    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL
-);
-
-
-ALTER TABLE "storage"."vector_indexes" OWNER TO "supabase_storage_admin";
-
-
-CREATE TABLE IF NOT EXISTS "supabase_functions"."hooks" (
-    "id" bigint NOT NULL,
-    "hook_table_id" integer NOT NULL,
-    "hook_name" "text" NOT NULL,
-    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
-    "request_id" bigint
-);
-
-
-ALTER TABLE "supabase_functions"."hooks" OWNER TO "supabase_functions_admin";
-
-
-COMMENT ON TABLE "supabase_functions"."hooks" IS 'Supabase Functions Hooks: Audit trail for triggered hooks.';
-
-
-
-CREATE SEQUENCE IF NOT EXISTS "supabase_functions"."hooks_id_seq"
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER SEQUENCE "supabase_functions"."hooks_id_seq" OWNER TO "supabase_functions_admin";
-
-
-ALTER SEQUENCE "supabase_functions"."hooks_id_seq" OWNED BY "supabase_functions"."hooks"."id";
-
-
-
-CREATE TABLE IF NOT EXISTS "supabase_functions"."migrations" (
-    "version" "text" NOT NULL,
-    "inserted_at" timestamp with time zone DEFAULT "now"() NOT NULL
-);
-
-
-ALTER TABLE "supabase_functions"."migrations" OWNER TO "supabase_functions_admin";
-
-
-CREATE TABLE IF NOT EXISTS "supabase_migrations"."schema_migrations" (
-    "version" "text" NOT NULL,
-    "statements" "text"[],
-    "name" "text",
-    "created_by" "text",
-    "idempotency_key" "text",
-    "rollback" "text"[]
-);
-
-
-ALTER TABLE "supabase_migrations"."schema_migrations" OWNER TO "postgres";
 
 
 CREATE TABLE IF NOT EXISTS "supplier_stricker"."canceled_products" (
@@ -96048,15 +93309,15 @@ ALTER TABLE ONLY "public"."magazine_public_view_events" ATTACH PARTITION "public
 
 
 
+ALTER TABLE ONLY "public"."magazine_public_view_events" ATTACH PARTITION "public"."magazine_public_view_events_2027_01" FOR VALUES FROM ('2027-01-01 00:00:00+00') TO ('2027-02-01 00:00:00+00');
+
+
+
+ALTER TABLE ONLY "public"."magazine_public_view_events" ATTACH PARTITION "public"."magazine_public_view_events_2027_02" FOR VALUES FROM ('2027-02-01 00:00:00+00') TO ('2027-03-01 00:00:00+00');
+
+
+
 ALTER TABLE ONLY "public"."magazine_public_view_events" ATTACH PARTITION "public"."magazine_public_view_events_default" DEFAULT;
-
-
-
-ALTER TABLE ONLY "public"."supplier_products_raw_history" ATTACH PARTITION "public"."supplier_products_raw_history_p2026_06" FOR VALUES FROM ('2026-06-01 00:00:00+00') TO ('2026-07-01 00:00:00+00');
-
-
-
-ALTER TABLE ONLY "public"."supplier_products_raw_history" ATTACH PARTITION "public"."supplier_products_raw_history_p2026_07" FOR VALUES FROM ('2026-07-01 00:00:00+00') TO ('2026-08-01 00:00:00+00');
 
 
 
@@ -96080,35 +93341,11 @@ ALTER TABLE ONLY "public"."supplier_products_raw_history" ATTACH PARTITION "publ
 
 
 
-ALTER TABLE ONLY "realtime"."messages" ATTACH PARTITION "realtime"."messages_2026_09_13" FOR VALUES FROM ('2026-09-13 00:00:00') TO ('2026-09-14 00:00:00');
+ALTER TABLE ONLY "public"."supplier_products_raw_history" ATTACH PARTITION "public"."supplier_products_raw_history_p2027_01" FOR VALUES FROM ('2027-01-01 00:00:00+00') TO ('2027-02-01 00:00:00+00');
 
 
 
-ALTER TABLE ONLY "realtime"."messages" ATTACH PARTITION "realtime"."messages_2026_09_14" FOR VALUES FROM ('2026-09-14 00:00:00') TO ('2026-09-15 00:00:00');
-
-
-
-ALTER TABLE ONLY "realtime"."messages" ATTACH PARTITION "realtime"."messages_2026_09_15" FOR VALUES FROM ('2026-09-15 00:00:00') TO ('2026-09-16 00:00:00');
-
-
-
-ALTER TABLE ONLY "realtime"."messages" ATTACH PARTITION "realtime"."messages_2026_09_16" FOR VALUES FROM ('2026-09-16 00:00:00') TO ('2026-09-17 00:00:00');
-
-
-
-ALTER TABLE ONLY "realtime"."messages" ATTACH PARTITION "realtime"."messages_2026_09_17" FOR VALUES FROM ('2026-09-17 00:00:00') TO ('2026-09-18 00:00:00');
-
-
-
-ALTER TABLE ONLY "realtime"."messages" ATTACH PARTITION "realtime"."messages_2026_09_18" FOR VALUES FROM ('2026-09-18 00:00:00') TO ('2026-09-19 00:00:00');
-
-
-
-ALTER TABLE ONLY "realtime"."messages" ATTACH PARTITION "realtime"."messages_2026_09_19" FOR VALUES FROM ('2026-09-19 00:00:00') TO ('2026-09-20 00:00:00');
-
-
-
-ALTER TABLE ONLY "auth"."refresh_tokens" ALTER COLUMN "id" SET DEFAULT "nextval"('"auth"."refresh_tokens_id_seq"'::"regclass");
+ALTER TABLE ONLY "public"."supplier_products_raw_history" ATTACH PARTITION "public"."supplier_products_raw_history_p2027_02" FOR VALUES FROM ('2027-02-01 00:00:00+00') TO ('2027-03-01 00:00:00+00');
 
 
 
@@ -96200,10 +93437,6 @@ ALTER TABLE ONLY "public"."xbz_upload_mapping" ALTER COLUMN "id" SET DEFAULT "ne
 
 
 
-ALTER TABLE ONLY "supabase_functions"."hooks" ALTER COLUMN "id" SET DEFAULT "nextval"('"supabase_functions"."hooks_id_seq"'::"regclass");
-
-
-
 ALTER TABLE ONLY "supplier_stricker"."stg_colors" ALTER COLUMN "id" SET DEFAULT "nextval"('"supplier_stricker"."stg_colors_id_seq"'::"regclass");
 
 
@@ -96217,201 +93450,6 @@ ALTER TABLE ONLY "supplier_stricker"."stg_images" ALTER COLUMN "id" SET DEFAULT 
 
 
 ALTER TABLE ONLY "supplier_stricker"."stg_product_types" ALTER COLUMN "id" SET DEFAULT "nextval"('"supplier_stricker"."stg_product_types_id_seq"'::"regclass");
-
-
-
-ALTER TABLE ONLY "auth"."mfa_amr_claims"
-    ADD CONSTRAINT "amr_id_pk" PRIMARY KEY ("id");
-
-
-
-ALTER TABLE ONLY "auth"."audit_log_entries"
-    ADD CONSTRAINT "audit_log_entries_pkey" PRIMARY KEY ("id");
-
-
-
-ALTER TABLE ONLY "auth"."custom_oauth_providers"
-    ADD CONSTRAINT "custom_oauth_providers_identifier_key" UNIQUE ("identifier");
-
-
-
-ALTER TABLE ONLY "auth"."custom_oauth_providers"
-    ADD CONSTRAINT "custom_oauth_providers_pkey" PRIMARY KEY ("id");
-
-
-
-ALTER TABLE ONLY "auth"."flow_state"
-    ADD CONSTRAINT "flow_state_pkey" PRIMARY KEY ("id");
-
-
-
-ALTER TABLE ONLY "auth"."identities"
-    ADD CONSTRAINT "identities_pkey" PRIMARY KEY ("id");
-
-
-
-ALTER TABLE ONLY "auth"."identities"
-    ADD CONSTRAINT "identities_provider_id_provider_unique" UNIQUE ("provider_id", "provider");
-
-
-
-ALTER TABLE ONLY "auth"."instances"
-    ADD CONSTRAINT "instances_pkey" PRIMARY KEY ("id");
-
-
-
-ALTER TABLE ONLY "auth"."mfa_amr_claims"
-    ADD CONSTRAINT "mfa_amr_claims_session_id_authentication_method_pkey" UNIQUE ("session_id", "authentication_method");
-
-
-
-ALTER TABLE ONLY "auth"."mfa_challenges"
-    ADD CONSTRAINT "mfa_challenges_pkey" PRIMARY KEY ("id");
-
-
-
-ALTER TABLE ONLY "auth"."mfa_factors"
-    ADD CONSTRAINT "mfa_factors_last_challenged_at_key" UNIQUE ("last_challenged_at");
-
-
-
-ALTER TABLE ONLY "auth"."mfa_factors"
-    ADD CONSTRAINT "mfa_factors_pkey" PRIMARY KEY ("id");
-
-
-
-ALTER TABLE ONLY "auth"."mfa_recovery_code_sets"
-    ADD CONSTRAINT "mfa_recovery_code_sets_mfa_factor_id_key" UNIQUE ("mfa_factor_id");
-
-
-
-ALTER TABLE ONLY "auth"."mfa_recovery_code_sets"
-    ADD CONSTRAINT "mfa_recovery_code_sets_pkey" PRIMARY KEY ("id");
-
-
-
-ALTER TABLE ONLY "auth"."mfa_recovery_code_sets"
-    ADD CONSTRAINT "mfa_recovery_code_sets_user_id_key" UNIQUE ("user_id");
-
-
-
-ALTER TABLE ONLY "auth"."mfa_recovery_codes"
-    ADD CONSTRAINT "mfa_recovery_codes_pkey" PRIMARY KEY ("id");
-
-
-
-ALTER TABLE ONLY "auth"."oauth_authorizations"
-    ADD CONSTRAINT "oauth_authorizations_authorization_code_key" UNIQUE ("authorization_code");
-
-
-
-ALTER TABLE ONLY "auth"."oauth_authorizations"
-    ADD CONSTRAINT "oauth_authorizations_authorization_id_key" UNIQUE ("authorization_id");
-
-
-
-ALTER TABLE ONLY "auth"."oauth_authorizations"
-    ADD CONSTRAINT "oauth_authorizations_pkey" PRIMARY KEY ("id");
-
-
-
-ALTER TABLE ONLY "auth"."oauth_client_states"
-    ADD CONSTRAINT "oauth_client_states_pkey" PRIMARY KEY ("id");
-
-
-
-ALTER TABLE ONLY "auth"."oauth_clients"
-    ADD CONSTRAINT "oauth_clients_pkey" PRIMARY KEY ("id");
-
-
-
-ALTER TABLE ONLY "auth"."oauth_consents"
-    ADD CONSTRAINT "oauth_consents_pkey" PRIMARY KEY ("id");
-
-
-
-ALTER TABLE ONLY "auth"."oauth_consents"
-    ADD CONSTRAINT "oauth_consents_user_client_unique" UNIQUE ("user_id", "client_id");
-
-
-
-ALTER TABLE ONLY "auth"."one_time_tokens"
-    ADD CONSTRAINT "one_time_tokens_pkey" PRIMARY KEY ("id");
-
-
-
-ALTER TABLE ONLY "auth"."refresh_tokens"
-    ADD CONSTRAINT "refresh_tokens_pkey" PRIMARY KEY ("id");
-
-
-
-ALTER TABLE ONLY "auth"."refresh_tokens"
-    ADD CONSTRAINT "refresh_tokens_token_unique" UNIQUE ("token");
-
-
-
-ALTER TABLE ONLY "auth"."saml_providers"
-    ADD CONSTRAINT "saml_providers_entity_id_key" UNIQUE ("entity_id");
-
-
-
-ALTER TABLE ONLY "auth"."saml_providers"
-    ADD CONSTRAINT "saml_providers_pkey" PRIMARY KEY ("id");
-
-
-
-ALTER TABLE ONLY "auth"."saml_relay_states"
-    ADD CONSTRAINT "saml_relay_states_pkey" PRIMARY KEY ("id");
-
-
-
-ALTER TABLE ONLY "auth"."schema_migrations"
-    ADD CONSTRAINT "schema_migrations_pkey" PRIMARY KEY ("version");
-
-
-
-ALTER TABLE ONLY "auth"."scim_tokens"
-    ADD CONSTRAINT "scim_tokens_pkey" PRIMARY KEY ("id");
-
-
-
-ALTER TABLE ONLY "auth"."scim_users"
-    ADD CONSTRAINT "scim_users_pkey" PRIMARY KEY ("id");
-
-
-
-ALTER TABLE ONLY "auth"."sessions"
-    ADD CONSTRAINT "sessions_pkey" PRIMARY KEY ("id");
-
-
-
-ALTER TABLE ONLY "auth"."sso_domains"
-    ADD CONSTRAINT "sso_domains_pkey" PRIMARY KEY ("id");
-
-
-
-ALTER TABLE ONLY "auth"."sso_providers"
-    ADD CONSTRAINT "sso_providers_pkey" PRIMARY KEY ("id");
-
-
-
-ALTER TABLE ONLY "auth"."users"
-    ADD CONSTRAINT "users_phone_key" UNIQUE ("phone");
-
-
-
-ALTER TABLE ONLY "auth"."users"
-    ADD CONSTRAINT "users_pkey" PRIMARY KEY ("id");
-
-
-
-ALTER TABLE ONLY "auth"."webauthn_challenges"
-    ADD CONSTRAINT "webauthn_challenges_pkey" PRIMARY KEY ("id");
-
-
-
-ALTER TABLE ONLY "auth"."webauthn_credentials"
-    ADD CONSTRAINT "webauthn_credentials_pkey" PRIMARY KEY ("id");
 
 
 
@@ -96742,11 +93780,6 @@ ALTER TABLE ONLY "public"."_bkp_kit_pkg_material_20260624"
 
 ALTER TABLE ONLY "public"."_bkp_orphan_active_variants_20260619"
     ADD CONSTRAINT "bkp_orphan_active_variants_pkey" PRIMARY KEY ("id");
-
-
-
-ALTER TABLE ONLY "public"."_backup_stock_daily_summary_20260618"
-    ADD CONSTRAINT "bkp_stock_daily_summary_pkey" PRIMARY KEY ("id");
 
 
 
@@ -97502,6 +94535,16 @@ ALTER TABLE ONLY "public"."magazine_public_view_events_2026_11"
 
 ALTER TABLE ONLY "public"."magazine_public_view_events_2026_12"
     ADD CONSTRAINT "magazine_public_view_events_2026_12_pkey" PRIMARY KEY ("id", "viewed_at");
+
+
+
+ALTER TABLE ONLY "public"."magazine_public_view_events_2027_01"
+    ADD CONSTRAINT "magazine_public_view_events_2027_01_pkey" PRIMARY KEY ("id", "viewed_at");
+
+
+
+ALTER TABLE ONLY "public"."magazine_public_view_events_2027_02"
+    ADD CONSTRAINT "magazine_public_view_events_2027_02_pkey" PRIMARY KEY ("id", "viewed_at");
 
 
 
@@ -98735,6 +95778,11 @@ ALTER TABLE ONLY "public"."stock_daily_summary"
 
 
 
+ALTER TABLE ONLY "public"."stock_notes"
+    ADD CONSTRAINT "stock_notes_pkey" PRIMARY KEY ("id");
+
+
+
 ALTER TABLE ONLY "public"."stock_snapshots"
     ADD CONSTRAINT "stock_snapshots_pkey" PRIMARY KEY ("id");
 
@@ -98850,16 +95898,6 @@ ALTER TABLE ONLY "public"."supplier_products_raw_history"
 
 
 
-ALTER TABLE ONLY "public"."supplier_products_raw_history_p2026_06"
-    ADD CONSTRAINT "supplier_products_raw_history_p2026_06_pkey" PRIMARY KEY ("id", "captured_at");
-
-
-
-ALTER TABLE ONLY "public"."supplier_products_raw_history_p2026_07"
-    ADD CONSTRAINT "supplier_products_raw_history_p2026_07_pkey" PRIMARY KEY ("id", "captured_at");
-
-
-
 ALTER TABLE ONLY "public"."supplier_products_raw_history_p2026_08"
     ADD CONSTRAINT "supplier_products_raw_history_p2026_08_pkey" PRIMARY KEY ("id", "captured_at");
 
@@ -98882,6 +95920,16 @@ ALTER TABLE ONLY "public"."supplier_products_raw_history_p2026_11"
 
 ALTER TABLE ONLY "public"."supplier_products_raw_history_p2026_12"
     ADD CONSTRAINT "supplier_products_raw_history_p2026_12_pkey" PRIMARY KEY ("id", "captured_at");
+
+
+
+ALTER TABLE ONLY "public"."supplier_products_raw_history_p2027_01"
+    ADD CONSTRAINT "supplier_products_raw_history_p2027_01_pkey" PRIMARY KEY ("id", "captured_at");
+
+
+
+ALTER TABLE ONLY "public"."supplier_products_raw_history_p2027_02"
+    ADD CONSTRAINT "supplier_products_raw_history_p2027_02_pkey" PRIMARY KEY ("id", "captured_at");
 
 
 
@@ -99425,126 +96473,6 @@ ALTER TABLE ONLY "public"."xbz_upload_mapping"
 
 
 
-ALTER TABLE ONLY "realtime"."messages"
-    ADD CONSTRAINT "messages_pkey" PRIMARY KEY ("id", "inserted_at");
-
-
-
-ALTER TABLE ONLY "realtime"."messages_2026_09_13"
-    ADD CONSTRAINT "messages_2026_09_13_pkey" PRIMARY KEY ("id", "inserted_at");
-
-
-
-ALTER TABLE ONLY "realtime"."messages_2026_09_14"
-    ADD CONSTRAINT "messages_2026_09_14_pkey" PRIMARY KEY ("id", "inserted_at");
-
-
-
-ALTER TABLE ONLY "realtime"."messages_2026_09_15"
-    ADD CONSTRAINT "messages_2026_09_15_pkey" PRIMARY KEY ("id", "inserted_at");
-
-
-
-ALTER TABLE ONLY "realtime"."messages_2026_09_16"
-    ADD CONSTRAINT "messages_2026_09_16_pkey" PRIMARY KEY ("id", "inserted_at");
-
-
-
-ALTER TABLE ONLY "realtime"."messages_2026_09_17"
-    ADD CONSTRAINT "messages_2026_09_17_pkey" PRIMARY KEY ("id", "inserted_at");
-
-
-
-ALTER TABLE ONLY "realtime"."messages_2026_09_18"
-    ADD CONSTRAINT "messages_2026_09_18_pkey" PRIMARY KEY ("id", "inserted_at");
-
-
-
-ALTER TABLE ONLY "realtime"."messages_2026_09_19"
-    ADD CONSTRAINT "messages_2026_09_19_pkey" PRIMARY KEY ("id", "inserted_at");
-
-
-
-ALTER TABLE "realtime"."messages"
-    ADD CONSTRAINT "messages_payload_exclusive" CHECK ((("payload" IS NULL) OR ("binary_payload" IS NULL))) NOT VALID;
-
-
-
-ALTER TABLE ONLY "realtime"."subscription"
-    ADD CONSTRAINT "pk_subscription" PRIMARY KEY ("id");
-
-
-
-ALTER TABLE ONLY "realtime"."schema_migrations"
-    ADD CONSTRAINT "schema_migrations_pkey" PRIMARY KEY ("version");
-
-
-
-ALTER TABLE ONLY "storage"."buckets_analytics"
-    ADD CONSTRAINT "buckets_analytics_pkey" PRIMARY KEY ("id");
-
-
-
-ALTER TABLE ONLY "storage"."buckets"
-    ADD CONSTRAINT "buckets_pkey" PRIMARY KEY ("id");
-
-
-
-ALTER TABLE ONLY "storage"."buckets_vectors"
-    ADD CONSTRAINT "buckets_vectors_pkey" PRIMARY KEY ("id");
-
-
-
-ALTER TABLE ONLY "storage"."migrations"
-    ADD CONSTRAINT "migrations_name_key" UNIQUE ("name");
-
-
-
-ALTER TABLE ONLY "storage"."migrations"
-    ADD CONSTRAINT "migrations_pkey" PRIMARY KEY ("id");
-
-
-
-ALTER TABLE ONLY "storage"."objects"
-    ADD CONSTRAINT "objects_pkey" PRIMARY KEY ("id");
-
-
-
-ALTER TABLE ONLY "storage"."s3_multipart_uploads_parts"
-    ADD CONSTRAINT "s3_multipart_uploads_parts_pkey" PRIMARY KEY ("id");
-
-
-
-ALTER TABLE ONLY "storage"."s3_multipart_uploads"
-    ADD CONSTRAINT "s3_multipart_uploads_pkey" PRIMARY KEY ("id");
-
-
-
-ALTER TABLE ONLY "storage"."vector_indexes"
-    ADD CONSTRAINT "vector_indexes_pkey" PRIMARY KEY ("id");
-
-
-
-ALTER TABLE ONLY "supabase_functions"."hooks"
-    ADD CONSTRAINT "hooks_pkey" PRIMARY KEY ("id");
-
-
-
-ALTER TABLE ONLY "supabase_functions"."migrations"
-    ADD CONSTRAINT "migrations_pkey" PRIMARY KEY ("version");
-
-
-
-ALTER TABLE ONLY "supabase_migrations"."schema_migrations"
-    ADD CONSTRAINT "schema_migrations_idempotency_key_key" UNIQUE ("idempotency_key");
-
-
-
-ALTER TABLE ONLY "supabase_migrations"."schema_migrations"
-    ADD CONSTRAINT "schema_migrations_pkey" PRIMARY KEY ("version");
-
-
-
 ALTER TABLE ONLY "supplier_stricker"."canceled_products"
     ADD CONSTRAINT "canceled_products_pkey" PRIMARY KEY ("id");
 
@@ -99732,286 +96660,6 @@ COMMENT ON INDEX "analytics"."mv_stock_velocity_pk" IS 'Índice UNIQUE criado pa
 
 
 CREATE UNIQUE INDEX "uidx_mv_product_cards_id" ON "analytics"."mv_product_cards" USING "btree" ("id");
-
-
-
-CREATE INDEX "audit_logs_instance_id_idx" ON "auth"."audit_log_entries" USING "btree" ("instance_id");
-
-
-
-CREATE UNIQUE INDEX "confirmation_token_idx" ON "auth"."users" USING "btree" ("confirmation_token") WHERE (("confirmation_token")::"text" !~ '^[0-9 ]*$'::"text");
-
-
-
-CREATE INDEX "custom_oauth_providers_created_at_idx" ON "auth"."custom_oauth_providers" USING "btree" ("created_at");
-
-
-
-CREATE INDEX "custom_oauth_providers_enabled_idx" ON "auth"."custom_oauth_providers" USING "btree" ("enabled");
-
-
-
-CREATE INDEX "custom_oauth_providers_identifier_idx" ON "auth"."custom_oauth_providers" USING "btree" ("identifier");
-
-
-
-CREATE INDEX "custom_oauth_providers_provider_type_idx" ON "auth"."custom_oauth_providers" USING "btree" ("provider_type");
-
-
-
-CREATE UNIQUE INDEX "email_change_token_current_idx" ON "auth"."users" USING "btree" ("email_change_token_current") WHERE (("email_change_token_current")::"text" !~ '^[0-9 ]*$'::"text");
-
-
-
-CREATE UNIQUE INDEX "email_change_token_new_idx" ON "auth"."users" USING "btree" ("email_change_token_new") WHERE (("email_change_token_new")::"text" !~ '^[0-9 ]*$'::"text");
-
-
-
-CREATE INDEX "factor_id_created_at_idx" ON "auth"."mfa_factors" USING "btree" ("user_id", "created_at");
-
-
-
-CREATE INDEX "flow_state_created_at_idx" ON "auth"."flow_state" USING "btree" ("created_at" DESC);
-
-
-
-CREATE INDEX "identities_email_idx" ON "auth"."identities" USING "btree" ("email" "text_pattern_ops");
-
-
-
-COMMENT ON INDEX "auth"."identities_email_idx" IS 'Auth: Ensures indexed queries on the email column';
-
-
-
-CREATE INDEX "identities_user_id_idx" ON "auth"."identities" USING "btree" ("user_id");
-
-
-
-CREATE INDEX "idx_auth_code" ON "auth"."flow_state" USING "btree" ("auth_code");
-
-
-
-CREATE INDEX "idx_oauth_client_states_created_at" ON "auth"."oauth_client_states" USING "btree" ("created_at");
-
-
-
-CREATE INDEX "idx_user_id_auth_method" ON "auth"."flow_state" USING "btree" ("user_id", "authentication_method");
-
-
-
-CREATE INDEX "mfa_challenge_created_at_idx" ON "auth"."mfa_challenges" USING "btree" ("created_at" DESC);
-
-
-
-CREATE UNIQUE INDEX "mfa_factors_user_friendly_name_unique" ON "auth"."mfa_factors" USING "btree" ("friendly_name", "user_id") WHERE (TRIM(BOTH FROM "friendly_name") <> ''::"text");
-
-
-
-CREATE INDEX "mfa_factors_user_id_idx" ON "auth"."mfa_factors" USING "btree" ("user_id");
-
-
-
-CREATE INDEX "mfa_recovery_codes_set_id_idx" ON "auth"."mfa_recovery_codes" USING "btree" ("mfa_recovery_code_set_id");
-
-
-
-CREATE INDEX "oauth_auth_pending_exp_idx" ON "auth"."oauth_authorizations" USING "btree" ("expires_at") WHERE ("status" = 'pending'::"auth"."oauth_authorization_status");
-
-
-
-CREATE INDEX "oauth_clients_deleted_at_idx" ON "auth"."oauth_clients" USING "btree" ("deleted_at");
-
-
-
-CREATE INDEX "oauth_consents_active_client_idx" ON "auth"."oauth_consents" USING "btree" ("client_id") WHERE ("revoked_at" IS NULL);
-
-
-
-CREATE INDEX "oauth_consents_active_user_client_idx" ON "auth"."oauth_consents" USING "btree" ("user_id", "client_id") WHERE ("revoked_at" IS NULL);
-
-
-
-CREATE INDEX "oauth_consents_user_order_idx" ON "auth"."oauth_consents" USING "btree" ("user_id", "granted_at" DESC);
-
-
-
-CREATE INDEX "one_time_tokens_relates_to_hash_idx" ON "auth"."one_time_tokens" USING "hash" ("relates_to");
-
-
-
-CREATE INDEX "one_time_tokens_token_hash_hash_idx" ON "auth"."one_time_tokens" USING "hash" ("token_hash");
-
-
-
-CREATE UNIQUE INDEX "one_time_tokens_user_id_token_type_key" ON "auth"."one_time_tokens" USING "btree" ("user_id", "token_type");
-
-
-
-CREATE UNIQUE INDEX "reauthentication_token_idx" ON "auth"."users" USING "btree" ("reauthentication_token") WHERE (("reauthentication_token")::"text" !~ '^[0-9 ]*$'::"text");
-
-
-
-CREATE UNIQUE INDEX "recovery_token_idx" ON "auth"."users" USING "btree" ("recovery_token") WHERE (("recovery_token")::"text" !~ '^[0-9 ]*$'::"text");
-
-
-
-CREATE INDEX "refresh_tokens_instance_id_idx" ON "auth"."refresh_tokens" USING "btree" ("instance_id");
-
-
-
-CREATE INDEX "refresh_tokens_instance_id_user_id_idx" ON "auth"."refresh_tokens" USING "btree" ("instance_id", "user_id");
-
-
-
-CREATE INDEX "refresh_tokens_parent_idx" ON "auth"."refresh_tokens" USING "btree" ("parent");
-
-
-
-CREATE INDEX "refresh_tokens_session_id_revoked_idx" ON "auth"."refresh_tokens" USING "btree" ("session_id", "revoked");
-
-
-
-CREATE INDEX "refresh_tokens_updated_at_idx" ON "auth"."refresh_tokens" USING "btree" ("updated_at" DESC);
-
-
-
-CREATE INDEX "saml_providers_sso_provider_id_idx" ON "auth"."saml_providers" USING "btree" ("sso_provider_id");
-
-
-
-CREATE INDEX "saml_relay_states_created_at_idx" ON "auth"."saml_relay_states" USING "btree" ("created_at" DESC);
-
-
-
-CREATE INDEX "saml_relay_states_for_email_idx" ON "auth"."saml_relay_states" USING "btree" ("for_email");
-
-
-
-CREATE INDEX "saml_relay_states_sso_provider_id_idx" ON "auth"."saml_relay_states" USING "btree" ("sso_provider_id");
-
-
-
-CREATE INDEX "scim_tokens_expires_at_idx" ON "auth"."scim_tokens" USING "btree" ("expires_at");
-
-
-
-CREATE INDEX "scim_tokens_revoked_at_idx" ON "auth"."scim_tokens" USING "btree" ("revoked_at");
-
-
-
-CREATE INDEX "scim_tokens_sso_provider_id_idx" ON "auth"."scim_tokens" USING "btree" ("sso_provider_id");
-
-
-
-CREATE UNIQUE INDEX "scim_tokens_token_hash_key" ON "auth"."scim_tokens" USING "btree" ("token_hash");
-
-
-
-CREATE INDEX "scim_users_created_at_idx" ON "auth"."scim_users" USING "btree" ("sso_provider_id", "created_at", "id") WHERE ("deleted_at" IS NULL);
-
-
-
-CREATE INDEX "scim_users_deleted_at_idx" ON "auth"."scim_users" USING "btree" ("deleted_at");
-
-
-
-CREATE UNIQUE INDEX "scim_users_external_id_key" ON "auth"."scim_users" USING "btree" ("sso_provider_id", "external_id") WHERE (("external_id" IS NOT NULL) AND ("deleted_at" IS NULL));
-
-
-
-CREATE INDEX "scim_users_id_idx" ON "auth"."scim_users" USING "btree" ("sso_provider_id", "id") WHERE ("deleted_at" IS NULL);
-
-
-
-CREATE INDEX "scim_users_sso_provider_id_idx" ON "auth"."scim_users" USING "btree" ("sso_provider_id");
-
-
-
-CREATE INDEX "scim_users_updated_at_idx" ON "auth"."scim_users" USING "btree" ("sso_provider_id", "updated_at", "id") WHERE ("deleted_at" IS NULL);
-
-
-
-CREATE INDEX "scim_users_user_id_idx" ON "auth"."scim_users" USING "btree" ("user_id");
-
-
-
-CREATE INDEX "scim_users_user_name_idx" ON "auth"."scim_users" USING "btree" ("sso_provider_id", "user_name" COLLATE "C", "id") WHERE ("deleted_at" IS NULL);
-
-
-
-CREATE UNIQUE INDEX "scim_users_user_name_key" ON "auth"."scim_users" USING "btree" ("sso_provider_id", "user_name") WHERE ("deleted_at" IS NULL);
-
-
-
-CREATE INDEX "sessions_not_after_idx" ON "auth"."sessions" USING "btree" ("not_after" DESC);
-
-
-
-CREATE INDEX "sessions_oauth_client_id_idx" ON "auth"."sessions" USING "btree" ("oauth_client_id");
-
-
-
-CREATE INDEX "sessions_user_id_idx" ON "auth"."sessions" USING "btree" ("user_id");
-
-
-
-CREATE UNIQUE INDEX "sso_domains_domain_idx" ON "auth"."sso_domains" USING "btree" ("lower"("domain"));
-
-
-
-CREATE INDEX "sso_domains_sso_provider_id_idx" ON "auth"."sso_domains" USING "btree" ("sso_provider_id");
-
-
-
-CREATE UNIQUE INDEX "sso_providers_resource_id_idx" ON "auth"."sso_providers" USING "btree" ("lower"("resource_id"));
-
-
-
-CREATE INDEX "sso_providers_resource_id_pattern_idx" ON "auth"."sso_providers" USING "btree" ("resource_id" "text_pattern_ops");
-
-
-
-CREATE UNIQUE INDEX "unique_phone_factor_per_user" ON "auth"."mfa_factors" USING "btree" ("user_id", "phone");
-
-
-
-CREATE INDEX "user_id_created_at_idx" ON "auth"."sessions" USING "btree" ("user_id", "created_at");
-
-
-
-CREATE UNIQUE INDEX "users_email_partial_key" ON "auth"."users" USING "btree" ("email") WHERE ("is_sso_user" = false);
-
-
-
-COMMENT ON INDEX "auth"."users_email_partial_key" IS 'Auth: A partial unique index that applies only when is_sso_user is false';
-
-
-
-CREATE INDEX "users_instance_id_email_idx" ON "auth"."users" USING "btree" ("instance_id", "lower"(("email")::"text"));
-
-
-
-CREATE INDEX "users_instance_id_idx" ON "auth"."users" USING "btree" ("instance_id");
-
-
-
-CREATE INDEX "users_is_anonymous_idx" ON "auth"."users" USING "btree" ("is_anonymous");
-
-
-
-CREATE INDEX "webauthn_challenges_expires_at_idx" ON "auth"."webauthn_challenges" USING "btree" ("expires_at");
-
-
-
-CREATE INDEX "webauthn_challenges_user_id_idx" ON "auth"."webauthn_challenges" USING "btree" ("user_id");
-
-
-
-CREATE UNIQUE INDEX "webauthn_credentials_credential_id_key" ON "auth"."webauthn_credentials" USING "btree" ("credential_id");
-
-
-
-CREATE INDEX "webauthn_credentials_user_id_idx" ON "auth"."webauthn_credentials" USING "btree" ("user_id");
 
 
 
@@ -100771,6 +97419,22 @@ CREATE INDEX "idx_kit_padronizacao_material_id" ON "public"."kit_component_padro
 
 
 
+CREATE INDEX "idx_kit_quote_requests_quote_id" ON "public"."kit_quote_requests" USING "btree" ("quote_id");
+
+
+
+CREATE INDEX "idx_kit_quote_requests_user_id" ON "public"."kit_quote_requests" USING "btree" ("user_id");
+
+
+
+CREATE INDEX "idx_kit_save_requests_kit_id" ON "public"."kit_save_requests" USING "btree" ("kit_id");
+
+
+
+CREATE INDEX "idx_kit_save_requests_user_id" ON "public"."kit_save_requests" USING "btree" ("user_id");
+
+
+
 CREATE INDEX "idx_kit_share_tokens_kit_id" ON "public"."kit_share_tokens" USING "btree" ("kit_id");
 
 
@@ -100783,7 +97447,15 @@ CREATE INDEX "idx_kit_variants_kit_master_id" ON "public"."kit_variants" USING "
 
 
 
+CREATE INDEX "idx_login_attempts_email_ip_created" ON "public"."login_attempts" USING "btree" ("email", "ip_address", "created_at" DESC);
+
+
+
 CREATE INDEX "idx_login_attempts_ip" ON "public"."login_attempts" USING "btree" ("ip_address", "created_at" DESC);
+
+
+
+CREATE INDEX "idx_login_attempts_lower_email_ip_created" ON "public"."login_attempts" USING "btree" ("lower"("email"), "ip_address", "created_at" DESC);
 
 
 
@@ -101928,15 +98600,7 @@ CREATE INDEX "idx_smoke_test_runs_ran_at" ON "public"."smoke_test_runs" USING "b
 
 
 
-CREATE INDEX "idx_snapshots_captured_at" ON "public"."stock_snapshots" USING "btree" ("captured_at" DESC);
-
-
-
-CREATE INDEX "idx_snapshots_product_captured" ON "public"."stock_snapshots" USING "btree" ("product_id", "captured_at" DESC);
-
-
-
-CREATE INDEX "idx_snapshots_vss_captured" ON "public"."stock_snapshots" USING "btree" ("variant_supplier_source_id", "captured_at" DESC);
+CREATE INDEX "idx_snapshots_captured_at" ON "public"."stock_snapshots" USING "btree" ("captured_at");
 
 
 
@@ -101948,11 +98612,35 @@ COMMENT ON INDEX "public"."idx_spr_images_pending" IS 'Fila do worker de imagens
 
 
 
+CREATE INDEX "idx_spr_images_status_pending" ON "public"."supplier_products_raw" USING "btree" ("id") WHERE ("images_status" = 'pending'::"public"."supplier_raw_status");
+
+
+
 CREATE INDEX "idx_spr_import_batch_id" ON "public"."supplier_products_raw" USING "btree" ("import_batch_id");
 
 
 
+CREATE INDEX "idx_spr_site_status_failed" ON "public"."supplier_products_raw" USING "btree" ("id") WHERE ("site_status" = 'failed'::"public"."supplier_raw_status");
+
+
+
+CREATE INDEX "idx_spr_site_status_pending" ON "public"."supplier_products_raw" USING "btree" ("id") WHERE ("site_status" = 'pending'::"public"."supplier_raw_status");
+
+
+
+CREATE INDEX "idx_spr_status_failed_quarantined" ON "public"."supplier_products_raw" USING "btree" ("supplier_id") WHERE ("status" = ANY (ARRAY['failed'::"public"."supplier_raw_status", 'quarantined'::"public"."supplier_raw_status"]));
+
+
+
+CREATE INDEX "idx_spr_status_pending" ON "public"."supplier_products_raw" USING "btree" ("supplier_id") WHERE ("status" = 'pending'::"public"."supplier_raw_status");
+
+
+
 CREATE INDEX "idx_spr_stock_pending" ON "public"."supplier_products_raw" USING "btree" ("supplier_id", "stock_synced_at") WHERE ("stock_status" <> 'processed'::"public"."supplier_raw_status");
+
+
+
+CREATE INDEX "idx_spr_stock_status_pending" ON "public"."supplier_products_raw" USING "btree" ("id") WHERE ("stock_status" = 'pending'::"public"."supplier_raw_status");
 
 
 
@@ -102004,14 +98692,6 @@ CREATE INDEX "idx_sre_variant_date" ON "public"."supplier_replenishment_events" 
 
 
 
-CREATE INDEX "idx_ss_supplier_id" ON "public"."stock_snapshots" USING "btree" ("supplier_id");
-
-
-
-CREATE INDEX "idx_ss_variant_id" ON "public"."stock_snapshots" USING "btree" ("variant_id");
-
-
-
 CREATE INDEX "idx_step_up_challenges_expires" ON "public"."step_up_challenges" USING "btree" ("expires_at") WHERE ("consumed" = false);
 
 
@@ -102021,10 +98701,6 @@ CREATE INDEX "idx_stock_daily_summary_supplier_branch_id" ON "public"."stock_dai
 
 
 CREATE INDEX "idx_stock_daily_summary_supplier_id" ON "public"."stock_daily_summary" USING "btree" ("supplier_id");
-
-
-
-CREATE INDEX "idx_stock_snapshots_supplier_branch_id" ON "public"."stock_snapshots" USING "btree" ("supplier_branch_id");
 
 
 
@@ -102166,6 +98842,10 @@ CREATE INDEX "idx_user_ip_allowlist_created_by" ON "public"."user_ip_allowlist" 
 
 
 CREATE INDEX "idx_user_known_devices_user_id" ON "public"."user_known_devices" USING "btree" ("user_id");
+
+
+
+CREATE INDEX "idx_user_organizations_user_org_covering" ON "public"."user_organizations" USING "btree" ("user_id", "organization_id");
 
 
 
@@ -102389,6 +99069,22 @@ CREATE INDEX "magazine_public_view_events_2026_12_token_hash_viewed_at_idx" ON "
 
 
 
+CREATE INDEX "magazine_public_view_events_2027_01_magazine_id_idx" ON "public"."magazine_public_view_events_2027_01" USING "btree" ("magazine_id");
+
+
+
+CREATE INDEX "magazine_public_view_events_2027_01_token_hash_viewed_at_idx" ON "public"."magazine_public_view_events_2027_01" USING "btree" ("token_hash", "viewed_at" DESC);
+
+
+
+CREATE INDEX "magazine_public_view_events_2027_02_magazine_id_idx" ON "public"."magazine_public_view_events_2027_02" USING "btree" ("magazine_id");
+
+
+
+CREATE INDEX "magazine_public_view_events_2027_02_token_hash_viewed_at_idx" ON "public"."magazine_public_view_events_2027_02" USING "btree" ("token_hash", "viewed_at" DESC);
+
+
+
 CREATE INDEX "magazine_public_view_events_default_magazine_id_idx" ON "public"."magazine_public_view_events_default" USING "btree" ("magazine_id");
 
 
@@ -102442,6 +99138,14 @@ CREATE INDEX "products_main_category_id_idx" ON "public"."products" USING "btree
 
 
 CREATE INDEX "sm_category_pages_status_idx" ON "public"."sm_category_pages" USING "btree" ("status");
+
+
+
+CREATE INDEX "stock_notes_active_idx" ON "public"."stock_notes" USING "btree" ("variant_id") WHERE ("deleted_at" IS NULL);
+
+
+
+CREATE INDEX "stock_notes_variant_idx" ON "public"."stock_notes" USING "btree" ("variant_id");
 
 
 
@@ -102565,6 +99269,10 @@ CREATE UNIQUE INDEX "uq_tecnicas_gravacao_id" ON "public"."tecnicas_gravacao" US
 
 
 
+CREATE UNIQUE INDEX "uq_workspace_notifications_idempotency" ON "public"."workspace_notifications" USING "btree" ("idempotency_key");
+
+
+
 CREATE UNIQUE INDEX "uq_xbz_staging_cf_id" ON "public"."xbz_gallery_staging" USING "btree" ("cf_custom_id") WHERE ("cf_custom_id" IS NOT NULL);
 
 
@@ -102574,98 +99282,6 @@ CREATE INDEX "user_roles_role_idx" ON "public"."user_roles" USING "btree" ("role
 
 
 CREATE UNIQUE INDEX "ux_dashboard_insights_cache_user_fn_key" ON "public"."dashboard_insights_cache" USING "btree" ("user_id", "function_name", "cache_key");
-
-
-
-CREATE INDEX "ix_realtime_subscription_entity" ON "realtime"."subscription" USING "btree" ("entity");
-
-
-
-CREATE INDEX "messages_inserted_at_topic_index" ON ONLY "realtime"."messages" USING "btree" ("inserted_at" DESC, "topic") WHERE (("extension" = 'broadcast'::"text") AND ("private" IS TRUE));
-
-
-
-CREATE INDEX "messages_2026_09_13_inserted_at_topic_idx" ON "realtime"."messages_2026_09_13" USING "btree" ("inserted_at" DESC, "topic") WHERE (("extension" = 'broadcast'::"text") AND ("private" IS TRUE));
-
-
-
-CREATE INDEX "messages_2026_09_14_inserted_at_topic_idx" ON "realtime"."messages_2026_09_14" USING "btree" ("inserted_at" DESC, "topic") WHERE (("extension" = 'broadcast'::"text") AND ("private" IS TRUE));
-
-
-
-CREATE INDEX "messages_2026_09_15_inserted_at_topic_idx" ON "realtime"."messages_2026_09_15" USING "btree" ("inserted_at" DESC, "topic") WHERE (("extension" = 'broadcast'::"text") AND ("private" IS TRUE));
-
-
-
-CREATE INDEX "messages_2026_09_16_inserted_at_topic_idx" ON "realtime"."messages_2026_09_16" USING "btree" ("inserted_at" DESC, "topic") WHERE (("extension" = 'broadcast'::"text") AND ("private" IS TRUE));
-
-
-
-CREATE INDEX "messages_2026_09_17_inserted_at_topic_idx" ON "realtime"."messages_2026_09_17" USING "btree" ("inserted_at" DESC, "topic") WHERE (("extension" = 'broadcast'::"text") AND ("private" IS TRUE));
-
-
-
-CREATE INDEX "messages_2026_09_18_inserted_at_topic_idx" ON "realtime"."messages_2026_09_18" USING "btree" ("inserted_at" DESC, "topic") WHERE (("extension" = 'broadcast'::"text") AND ("private" IS TRUE));
-
-
-
-CREATE INDEX "messages_2026_09_19_inserted_at_topic_idx" ON "realtime"."messages_2026_09_19" USING "btree" ("inserted_at" DESC, "topic") WHERE (("extension" = 'broadcast'::"text") AND ("private" IS TRUE));
-
-
-
-CREATE UNIQUE INDEX "subscription_subscription_id_entity_filters_action_filter_selec" ON "realtime"."subscription" USING "btree" ("subscription_id", "entity", "filters", "action_filter", COALESCE("selected_columns", '{}'::"text"[]));
-
-
-
-CREATE UNIQUE INDEX "bname" ON "storage"."buckets" USING "btree" ("name");
-
-
-
-CREATE UNIQUE INDEX "bucketid_objname" ON "storage"."objects" USING "btree" ("bucket_id", "name");
-
-
-
-CREATE UNIQUE INDEX "buckets_analytics_unique_name_idx" ON "storage"."buckets_analytics" USING "btree" ("name") WHERE ("deleted_at" IS NULL);
-
-
-
-CREATE INDEX "idx_multipart_uploads_list" ON "storage"."s3_multipart_uploads" USING "btree" ("bucket_id", "key", "created_at");
-
-
-
-CREATE INDEX "idx_objects_bucket_id_name" ON "storage"."objects" USING "btree" ("bucket_id", "name" COLLATE "C");
-
-
-
-CREATE INDEX "idx_objects_bucket_id_name_lower" ON "storage"."objects" USING "btree" ("bucket_id", "lower"("name") COLLATE "C");
-
-
-
-CREATE UNIQUE INDEX "idx_objects_current_version" ON "storage"."objects" USING "btree" ("bucket_id", "name" COLLATE "C") WHERE ("archived_at" IS NULL);
-
-
-
-CREATE UNIQUE INDEX "idx_objects_null_version" ON "storage"."objects" USING "btree" ("bucket_id", "name" COLLATE "C") WHERE (NOT "is_versioned");
-
-
-
-CREATE INDEX "name_prefix_search" ON "storage"."objects" USING "btree" ("name" "text_pattern_ops");
-
-
-
-CREATE UNIQUE INDEX "objects_bucket_id_name_version_key" ON "storage"."objects" USING "btree" ("bucket_id", "name" COLLATE "C", "version") NULLS NOT DISTINCT;
-
-
-
-CREATE UNIQUE INDEX "vector_indexes_name_bucket_id_idx" ON "storage"."vector_indexes" USING "btree" ("name", "bucket_id");
-
-
-
-CREATE INDEX "supabase_functions_hooks_h_table_id_h_name_idx" ON "supabase_functions"."hooks" USING "btree" ("hook_table_id", "hook_name");
-
-
-
-CREATE INDEX "supabase_functions_hooks_request_id_idx" ON "supabase_functions"."hooks" USING "btree" ("request_id");
 
 
 
@@ -102861,6 +99477,30 @@ ALTER INDEX "public"."idx_mag_view_events_token_hash" ATTACH PARTITION "public".
 
 
 
+ALTER INDEX "public"."idx_magazine_pub_view_events_magazine_id" ATTACH PARTITION "public"."magazine_public_view_events_2027_01_magazine_id_idx";
+
+
+
+ALTER INDEX "public"."magazine_public_view_events_pkey" ATTACH PARTITION "public"."magazine_public_view_events_2027_01_pkey";
+
+
+
+ALTER INDEX "public"."idx_mag_view_events_token_hash" ATTACH PARTITION "public"."magazine_public_view_events_2027_01_token_hash_viewed_at_idx";
+
+
+
+ALTER INDEX "public"."idx_magazine_pub_view_events_magazine_id" ATTACH PARTITION "public"."magazine_public_view_events_2027_02_magazine_id_idx";
+
+
+
+ALTER INDEX "public"."magazine_public_view_events_pkey" ATTACH PARTITION "public"."magazine_public_view_events_2027_02_pkey";
+
+
+
+ALTER INDEX "public"."idx_mag_view_events_token_hash" ATTACH PARTITION "public"."magazine_public_view_events_2027_02_token_hash_viewed_at_idx";
+
+
+
 ALTER INDEX "public"."idx_magazine_pub_view_events_magazine_id" ATTACH PARTITION "public"."magazine_public_view_events_default_magazine_id_idx";
 
 
@@ -102870,14 +99510,6 @@ ALTER INDEX "public"."magazine_public_view_events_pkey" ATTACH PARTITION "public
 
 
 ALTER INDEX "public"."idx_mag_view_events_token_hash" ATTACH PARTITION "public"."magazine_public_view_events_default_token_hash_viewed_at_idx";
-
-
-
-ALTER INDEX "public"."supplier_products_raw_history_pkey1" ATTACH PARTITION "public"."supplier_products_raw_history_p2026_06_pkey";
-
-
-
-ALTER INDEX "public"."supplier_products_raw_history_pkey1" ATTACH PARTITION "public"."supplier_products_raw_history_p2026_07_pkey";
 
 
 
@@ -102901,59 +99533,11 @@ ALTER INDEX "public"."supplier_products_raw_history_pkey1" ATTACH PARTITION "pub
 
 
 
-ALTER INDEX "realtime"."messages_inserted_at_topic_index" ATTACH PARTITION "realtime"."messages_2026_09_13_inserted_at_topic_idx";
+ALTER INDEX "public"."supplier_products_raw_history_pkey1" ATTACH PARTITION "public"."supplier_products_raw_history_p2027_01_pkey";
 
 
 
-ALTER INDEX "realtime"."messages_pkey" ATTACH PARTITION "realtime"."messages_2026_09_13_pkey";
-
-
-
-ALTER INDEX "realtime"."messages_inserted_at_topic_index" ATTACH PARTITION "realtime"."messages_2026_09_14_inserted_at_topic_idx";
-
-
-
-ALTER INDEX "realtime"."messages_pkey" ATTACH PARTITION "realtime"."messages_2026_09_14_pkey";
-
-
-
-ALTER INDEX "realtime"."messages_inserted_at_topic_index" ATTACH PARTITION "realtime"."messages_2026_09_15_inserted_at_topic_idx";
-
-
-
-ALTER INDEX "realtime"."messages_pkey" ATTACH PARTITION "realtime"."messages_2026_09_15_pkey";
-
-
-
-ALTER INDEX "realtime"."messages_inserted_at_topic_index" ATTACH PARTITION "realtime"."messages_2026_09_16_inserted_at_topic_idx";
-
-
-
-ALTER INDEX "realtime"."messages_pkey" ATTACH PARTITION "realtime"."messages_2026_09_16_pkey";
-
-
-
-ALTER INDEX "realtime"."messages_inserted_at_topic_index" ATTACH PARTITION "realtime"."messages_2026_09_17_inserted_at_topic_idx";
-
-
-
-ALTER INDEX "realtime"."messages_pkey" ATTACH PARTITION "realtime"."messages_2026_09_17_pkey";
-
-
-
-ALTER INDEX "realtime"."messages_inserted_at_topic_index" ATTACH PARTITION "realtime"."messages_2026_09_18_inserted_at_topic_idx";
-
-
-
-ALTER INDEX "realtime"."messages_pkey" ATTACH PARTITION "realtime"."messages_2026_09_18_pkey";
-
-
-
-ALTER INDEX "realtime"."messages_inserted_at_topic_index" ATTACH PARTITION "realtime"."messages_2026_09_19_inserted_at_topic_idx";
-
-
-
-ALTER INDEX "realtime"."messages_pkey" ATTACH PARTITION "realtime"."messages_2026_09_19_pkey";
+ALTER INDEX "public"."supplier_products_raw_history_pkey1" ATTACH PARTITION "public"."supplier_products_raw_history_p2027_02_pkey";
 
 
 
@@ -103039,10 +99623,6 @@ CREATE RULE "category_icons_no_update" AS
 
 
 
-CREATE OR REPLACE TRIGGER "on_auth_user_created" AFTER INSERT ON "auth"."users" FOR EACH ROW EXECUTE FUNCTION "public"."handle_new_user"();
-
-
-
 CREATE OR REPLACE TRIGGER "ai_function_routing_updated_at" BEFORE UPDATE ON "public"."ai_function_routing" FOR EACH ROW EXECUTE FUNCTION "public"."tg_ai_providers_set_updated_at"();
 
 
@@ -103108,6 +99688,10 @@ CREATE OR REPLACE TRIGGER "set_magic_up_public_shares_updated_at" BEFORE UPDATE 
 
 
 CREATE OR REPLACE TRIGGER "set_quote_number" BEFORE INSERT ON "public"."quotes" FOR EACH ROW WHEN ((("new"."quote_number" IS NULL) OR ("new"."quote_number" = ''::"text"))) EXECUTE FUNCTION "public"."generate_quote_number"();
+
+
+
+CREATE OR REPLACE TRIGGER "set_stock_notes_updated_at" BEFORE UPDATE ON "public"."stock_notes" FOR EACH ROW EXECUTE FUNCTION "public"."handle_updated_at"();
 
 
 
@@ -103403,6 +99987,10 @@ CREATE OR REPLACE TRIGGER "trg_anon_rate_guard" BEFORE INSERT ON "public"."front
 
 
 
+CREATE OR REPLACE TRIGGER "trg_anon_rate_guard" BEFORE INSERT ON "public"."kill_switch_hits" FOR EACH ROW EXECUTE FUNCTION "public"."fn_anon_insert_rate_guard"('120');
+
+
+
 CREATE OR REPLACE TRIGGER "trg_anon_rate_guard" BEFORE INSERT ON "public"."password_reset_requests" FOR EACH ROW EXECUTE FUNCTION "public"."fn_anon_insert_rate_guard"('10');
 
 
@@ -103423,11 +100011,35 @@ CREATE OR REPLACE TRIGGER "trg_audit_discount_approval" AFTER INSERT OR UPDATE O
 
 
 
+CREATE OR REPLACE TRIGGER "trg_audit_discount_approval_requests" AFTER INSERT OR DELETE OR UPDATE ON "public"."discount_approval_requests" FOR EACH ROW EXECUTE FUNCTION "public"."fn_audit_row_change"();
+
+
+
 CREATE OR REPLACE TRIGGER "trg_audit_gravacao" AFTER INSERT OR DELETE OR UPDATE ON "public"."tabela_preco_gravacao_oficial" FOR EACH ROW EXECUTE FUNCTION "public"."fn_audit_gravacao_changes"();
 
 
 
 CREATE OR REPLACE TRIGGER "trg_audit_gravacao_faixa" AFTER INSERT OR DELETE OR UPDATE ON "public"."tabela_preco_gravacao_oficial_faixa" FOR EACH ROW EXECUTE FUNCTION "public"."fn_audit_gravacao_changes"();
+
+
+
+CREATE OR REPLACE TRIGGER "trg_audit_orders" AFTER INSERT OR DELETE OR UPDATE ON "public"."orders" FOR EACH ROW EXECUTE FUNCTION "public"."fn_audit_row_change"();
+
+
+
+CREATE OR REPLACE TRIGGER "trg_audit_profiles" AFTER INSERT OR DELETE OR UPDATE ON "public"."profiles" FOR EACH ROW EXECUTE FUNCTION "public"."fn_audit_row_change"();
+
+
+
+CREATE OR REPLACE TRIGGER "trg_audit_quotes" AFTER INSERT OR DELETE OR UPDATE ON "public"."quotes" FOR EACH ROW EXECUTE FUNCTION "public"."fn_audit_row_change"();
+
+
+
+CREATE OR REPLACE TRIGGER "trg_audit_seller_carts" AFTER INSERT OR DELETE OR UPDATE ON "public"."seller_carts" FOR EACH ROW EXECUTE FUNCTION "public"."fn_audit_row_change"();
+
+
+
+CREATE OR REPLACE TRIGGER "trg_audit_suppliers" AFTER INSERT OR DELETE OR UPDATE ON "public"."suppliers" FOR EACH ROW EXECUTE FUNCTION "public"."fn_audit_row_change"();
 
 
 
@@ -103667,6 +100279,10 @@ CREATE OR REPLACE TRIGGER "trg_dar_updated_at" BEFORE UPDATE ON "public"."discou
 
 
 CREATE OR REPLACE TRIGGER "trg_derive_similarity_on_member_insert" AFTER INSERT ON "public"."product_similarity_group_members" FOR EACH ROW EXECUTE FUNCTION "public"."fn_derive_similarity_pairs_on_insert"();
+
+
+
+CREATE OR REPLACE TRIGGER "trg_discount_approval_version" BEFORE UPDATE ON "public"."discount_approval_requests" FOR EACH ROW EXECUTE FUNCTION "public"."increment_discount_approval_version"();
 
 
 
@@ -104426,14 +101042,6 @@ COMMENT ON TRIGGER "trg_sync_pm_to_products_jsonb" ON "public"."product_material
 
 
 
-CREATE OR REPLACE TRIGGER "trg_sync_primary_image_url" AFTER INSERT OR UPDATE OF "is_primary", "is_active", "url_cdn" ON "public"."product_images" FOR EACH ROW EXECUTE FUNCTION "public"."fn_sync_primary_image_url"();
-
-
-
-COMMENT ON TRIGGER "trg_sync_primary_image_url" ON "public"."product_images" IS 'Mantém products.primary_image_url sincronizado automaticamente. Resolve T086 estruturalmente.';
-
-
-
 CREATE OR REPLACE TRIGGER "trg_sync_product_ai_content" AFTER INSERT OR UPDATE OF "ai_title", "ai_description", "ai_summary", "ai_version", "ai_model", "ai_generated_at" ON "public"."products" FOR EACH ROW EXECUTE FUNCTION "public"."fn_sync_product_ai_on_change"();
 
 
@@ -104787,26 +101395,6 @@ CREATE OR REPLACE TRIGGER "validate_percentages_before_update" BEFORE UPDATE ON 
 
 
 
-CREATE OR REPLACE TRIGGER "tr_check_filters" BEFORE INSERT OR UPDATE ON "realtime"."subscription" FOR EACH ROW EXECUTE FUNCTION "realtime"."subscription_check_filters"();
-
-
-
-CREATE OR REPLACE TRIGGER "enforce_bucket_name_length_trigger" BEFORE INSERT OR UPDATE OF "name" ON "storage"."buckets" FOR EACH ROW EXECUTE FUNCTION "storage"."enforce_bucket_name_length"();
-
-
-
-CREATE OR REPLACE TRIGGER "protect_buckets_delete" BEFORE DELETE ON "storage"."buckets" FOR EACH STATEMENT EXECUTE FUNCTION "storage"."protect_delete"();
-
-
-
-CREATE OR REPLACE TRIGGER "protect_objects_delete" BEFORE DELETE ON "storage"."objects" FOR EACH STATEMENT EXECUTE FUNCTION "storage"."protect_delete"();
-
-
-
-CREATE OR REPLACE TRIGGER "update_objects_updated_at" BEFORE UPDATE ON "storage"."objects" FOR EACH ROW EXECUTE FUNCTION "storage"."update_updated_at_column"();
-
-
-
 CREATE OR REPLACE TRIGGER "trg_customization_options_updated" BEFORE UPDATE ON "supplier_stricker"."customization_options" FOR EACH ROW EXECUTE FUNCTION "supplier_stricker"."update_timestamp"();
 
 
@@ -104824,126 +101412,6 @@ CREATE OR REPLACE TRIGGER "trg_products_updated" BEFORE UPDATE ON "supplier_stri
 
 
 CREATE OR REPLACE TRIGGER "trg_stocks_updated" BEFORE UPDATE ON "supplier_stricker"."stocks" FOR EACH ROW EXECUTE FUNCTION "supplier_stricker"."update_timestamp"();
-
-
-
-ALTER TABLE ONLY "auth"."identities"
-    ADD CONSTRAINT "identities_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "auth"."users"("id") ON DELETE CASCADE;
-
-
-
-ALTER TABLE ONLY "auth"."mfa_amr_claims"
-    ADD CONSTRAINT "mfa_amr_claims_session_id_fkey" FOREIGN KEY ("session_id") REFERENCES "auth"."sessions"("id") ON DELETE CASCADE;
-
-
-
-ALTER TABLE ONLY "auth"."mfa_challenges"
-    ADD CONSTRAINT "mfa_challenges_auth_factor_id_fkey" FOREIGN KEY ("factor_id") REFERENCES "auth"."mfa_factors"("id") ON DELETE CASCADE;
-
-
-
-ALTER TABLE ONLY "auth"."mfa_factors"
-    ADD CONSTRAINT "mfa_factors_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "auth"."users"("id") ON DELETE CASCADE;
-
-
-
-ALTER TABLE ONLY "auth"."mfa_recovery_code_sets"
-    ADD CONSTRAINT "mfa_recovery_code_sets_mfa_factor_id_fkey" FOREIGN KEY ("mfa_factor_id") REFERENCES "auth"."mfa_factors"("id") ON DELETE CASCADE;
-
-
-
-ALTER TABLE ONLY "auth"."mfa_recovery_code_sets"
-    ADD CONSTRAINT "mfa_recovery_code_sets_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "auth"."users"("id") ON DELETE CASCADE;
-
-
-
-ALTER TABLE ONLY "auth"."mfa_recovery_codes"
-    ADD CONSTRAINT "mfa_recovery_codes_mfa_recovery_code_set_id_fkey" FOREIGN KEY ("mfa_recovery_code_set_id") REFERENCES "auth"."mfa_recovery_code_sets"("id") ON DELETE CASCADE;
-
-
-
-ALTER TABLE ONLY "auth"."oauth_authorizations"
-    ADD CONSTRAINT "oauth_authorizations_client_id_fkey" FOREIGN KEY ("client_id") REFERENCES "auth"."oauth_clients"("id") ON DELETE CASCADE;
-
-
-
-ALTER TABLE ONLY "auth"."oauth_authorizations"
-    ADD CONSTRAINT "oauth_authorizations_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "auth"."users"("id") ON DELETE CASCADE;
-
-
-
-ALTER TABLE ONLY "auth"."oauth_consents"
-    ADD CONSTRAINT "oauth_consents_client_id_fkey" FOREIGN KEY ("client_id") REFERENCES "auth"."oauth_clients"("id") ON DELETE CASCADE;
-
-
-
-ALTER TABLE ONLY "auth"."oauth_consents"
-    ADD CONSTRAINT "oauth_consents_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "auth"."users"("id") ON DELETE CASCADE;
-
-
-
-ALTER TABLE ONLY "auth"."one_time_tokens"
-    ADD CONSTRAINT "one_time_tokens_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "auth"."users"("id") ON DELETE CASCADE;
-
-
-
-ALTER TABLE ONLY "auth"."refresh_tokens"
-    ADD CONSTRAINT "refresh_tokens_session_id_fkey" FOREIGN KEY ("session_id") REFERENCES "auth"."sessions"("id") ON DELETE CASCADE;
-
-
-
-ALTER TABLE ONLY "auth"."saml_providers"
-    ADD CONSTRAINT "saml_providers_sso_provider_id_fkey" FOREIGN KEY ("sso_provider_id") REFERENCES "auth"."sso_providers"("id") ON DELETE CASCADE;
-
-
-
-ALTER TABLE ONLY "auth"."saml_relay_states"
-    ADD CONSTRAINT "saml_relay_states_flow_state_id_fkey" FOREIGN KEY ("flow_state_id") REFERENCES "auth"."flow_state"("id") ON DELETE CASCADE;
-
-
-
-ALTER TABLE ONLY "auth"."saml_relay_states"
-    ADD CONSTRAINT "saml_relay_states_sso_provider_id_fkey" FOREIGN KEY ("sso_provider_id") REFERENCES "auth"."sso_providers"("id") ON DELETE CASCADE;
-
-
-
-ALTER TABLE ONLY "auth"."scim_tokens"
-    ADD CONSTRAINT "scim_tokens_sso_provider_id_fkey" FOREIGN KEY ("sso_provider_id") REFERENCES "auth"."sso_providers"("id") ON DELETE CASCADE;
-
-
-
-ALTER TABLE ONLY "auth"."scim_users"
-    ADD CONSTRAINT "scim_users_sso_provider_id_fkey" FOREIGN KEY ("sso_provider_id") REFERENCES "auth"."sso_providers"("id") ON DELETE CASCADE;
-
-
-
-ALTER TABLE ONLY "auth"."scim_users"
-    ADD CONSTRAINT "scim_users_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "auth"."users"("id") ON DELETE SET NULL;
-
-
-
-ALTER TABLE ONLY "auth"."sessions"
-    ADD CONSTRAINT "sessions_oauth_client_id_fkey" FOREIGN KEY ("oauth_client_id") REFERENCES "auth"."oauth_clients"("id") ON DELETE CASCADE;
-
-
-
-ALTER TABLE ONLY "auth"."sessions"
-    ADD CONSTRAINT "sessions_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "auth"."users"("id") ON DELETE CASCADE;
-
-
-
-ALTER TABLE ONLY "auth"."sso_domains"
-    ADD CONSTRAINT "sso_domains_sso_provider_id_fkey" FOREIGN KEY ("sso_provider_id") REFERENCES "auth"."sso_providers"("id") ON DELETE CASCADE;
-
-
-
-ALTER TABLE ONLY "auth"."webauthn_challenges"
-    ADD CONSTRAINT "webauthn_challenges_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "auth"."users"("id") ON DELETE CASCADE;
-
-
-
-ALTER TABLE ONLY "auth"."webauthn_credentials"
-    ADD CONSTRAINT "webauthn_credentials_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "auth"."users"("id") ON DELETE CASCADE;
 
 
 
@@ -106637,6 +103105,21 @@ ALTER TABLE ONLY "public"."stock_daily_summary"
 
 
 
+ALTER TABLE ONLY "public"."stock_notes"
+    ADD CONSTRAINT "stock_notes_created_by_fkey" FOREIGN KEY ("created_by") REFERENCES "auth"."users"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."stock_notes"
+    ADD CONSTRAINT "stock_notes_supplier_id_fkey" FOREIGN KEY ("supplier_id") REFERENCES "public"."suppliers"("id") ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."stock_notes"
+    ADD CONSTRAINT "stock_notes_variant_id_fkey" FOREIGN KEY ("variant_id") REFERENCES "public"."product_variants"("id") ON DELETE CASCADE;
+
+
+
 ALTER TABLE ONLY "public"."stock_snapshots"
     ADD CONSTRAINT "stock_snapshots_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "public"."products"("id") ON DELETE CASCADE;
 
@@ -106937,31 +103420,6 @@ ALTER TABLE ONLY "public"."workspace_notifications"
 
 
 
-ALTER TABLE ONLY "storage"."objects"
-    ADD CONSTRAINT "objects_bucketId_fkey" FOREIGN KEY ("bucket_id") REFERENCES "storage"."buckets"("id");
-
-
-
-ALTER TABLE ONLY "storage"."s3_multipart_uploads"
-    ADD CONSTRAINT "s3_multipart_uploads_bucket_id_fkey" FOREIGN KEY ("bucket_id") REFERENCES "storage"."buckets"("id");
-
-
-
-ALTER TABLE ONLY "storage"."s3_multipart_uploads_parts"
-    ADD CONSTRAINT "s3_multipart_uploads_parts_bucket_id_fkey" FOREIGN KEY ("bucket_id") REFERENCES "storage"."buckets"("id");
-
-
-
-ALTER TABLE ONLY "storage"."s3_multipart_uploads_parts"
-    ADD CONSTRAINT "s3_multipart_uploads_parts_upload_id_fkey" FOREIGN KEY ("upload_id") REFERENCES "storage"."s3_multipart_uploads"("id") ON DELETE CASCADE;
-
-
-
-ALTER TABLE ONLY "storage"."vector_indexes"
-    ADD CONSTRAINT "vector_indexes_bucket_id_fkey" FOREIGN KEY ("bucket_id") REFERENCES "storage"."buckets_vectors"("id");
-
-
-
 ALTER TABLE ONLY "supplier_stricker"."category_mappings"
     ADD CONSTRAINT "category_mappings_category_id_fkey" FOREIGN KEY ("category_id") REFERENCES "public"."categories"("id");
 
@@ -106985,54 +103443,6 @@ ALTER TABLE ONLY "supplier_stricker"."stocks"
 ALTER TABLE ONLY "supplier_stricker"."stg_product_types"
     ADD CONSTRAINT "stg_product_types_mapped_to_category_id_fkey" FOREIGN KEY ("mapped_to_category_id") REFERENCES "public"."categories"("id");
 
-
-
-ALTER TABLE "auth"."audit_log_entries" ENABLE ROW LEVEL SECURITY;
-
-
-ALTER TABLE "auth"."flow_state" ENABLE ROW LEVEL SECURITY;
-
-
-ALTER TABLE "auth"."identities" ENABLE ROW LEVEL SECURITY;
-
-
-ALTER TABLE "auth"."instances" ENABLE ROW LEVEL SECURITY;
-
-
-ALTER TABLE "auth"."mfa_amr_claims" ENABLE ROW LEVEL SECURITY;
-
-
-ALTER TABLE "auth"."mfa_challenges" ENABLE ROW LEVEL SECURITY;
-
-
-ALTER TABLE "auth"."mfa_factors" ENABLE ROW LEVEL SECURITY;
-
-
-ALTER TABLE "auth"."one_time_tokens" ENABLE ROW LEVEL SECURITY;
-
-
-ALTER TABLE "auth"."refresh_tokens" ENABLE ROW LEVEL SECURITY;
-
-
-ALTER TABLE "auth"."saml_providers" ENABLE ROW LEVEL SECURITY;
-
-
-ALTER TABLE "auth"."saml_relay_states" ENABLE ROW LEVEL SECURITY;
-
-
-ALTER TABLE "auth"."schema_migrations" ENABLE ROW LEVEL SECURITY;
-
-
-ALTER TABLE "auth"."sessions" ENABLE ROW LEVEL SECURITY;
-
-
-ALTER TABLE "auth"."sso_domains" ENABLE ROW LEVEL SECURITY;
-
-
-ALTER TABLE "auth"."sso_providers" ENABLE ROW LEVEL SECURITY;
-
-
-ALTER TABLE "auth"."users" ENABLE ROW LEVEL SECURITY;
 
 
 ALTER TABLE "cf_recon"."action_log" ENABLE ROW LEVEL SECURITY;
@@ -107377,11 +103787,11 @@ CREATE POLICY "Authenticated view component locations" ON "public"."product_comp
 
 
 
-CREATE POLICY "Author can delete own comment" ON "public"."kit_comments" FOR DELETE USING ((("author_id" = ( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid")) OR "public"."is_admin"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid"))));
+CREATE POLICY "Author can delete own comment" ON "public"."kit_comments" FOR DELETE TO "authenticated" USING ((("author_id" = ( SELECT "auth"."uid"() AS "uid")) OR "public"."is_admin"(( SELECT "auth"."uid"() AS "uid"))));
 
 
 
-CREATE POLICY "Author can edit own comment" ON "public"."kit_comments" FOR UPDATE USING ((("author_id" = ( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid")) OR "public"."is_admin"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid")))) WITH CHECK ((("author_id" = ( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid")) OR "public"."is_admin"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid"))));
+CREATE POLICY "Author can edit own comment" ON "public"."kit_comments" FOR UPDATE TO "authenticated" USING ((("author_id" = ( SELECT "auth"."uid"() AS "uid")) OR "public"."is_admin"(( SELECT "auth"."uid"() AS "uid")))) WITH CHECK ((("author_id" = ( SELECT "auth"."uid"() AS "uid")) OR "public"."is_admin"(( SELECT "auth"."uid"() AS "uid"))));
 
 
 
@@ -107491,45 +103901,45 @@ CREATE POLICY "No direct update via JWT" ON "public"."mcp_api_keys" FOR UPDATE T
 
 
 
-CREATE POLICY "Owner can delete variants" ON "public"."kit_variants" FOR DELETE USING ((EXISTS ( SELECT 1
+CREATE POLICY "Owner can delete variants" ON "public"."kit_variants" FOR DELETE TO "authenticated" USING ((EXISTS ( SELECT 1
    FROM "public"."custom_kits" "k"
-  WHERE (("k"."id" = "kit_variants"."kit_master_id") AND ("k"."user_id" = ( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid"))))));
+  WHERE (("k"."id" = "kit_variants"."kit_master_id") AND ("k"."user_id" = ( SELECT "auth"."uid"() AS "uid"))))));
 
 
 
-CREATE POLICY "Owner can insert variants" ON "public"."kit_variants" FOR INSERT WITH CHECK ((EXISTS ( SELECT 1
+CREATE POLICY "Owner can insert variants" ON "public"."kit_variants" FOR INSERT TO "authenticated" WITH CHECK ((EXISTS ( SELECT 1
    FROM "public"."custom_kits" "k"
-  WHERE (("k"."id" = "kit_variants"."kit_master_id") AND ("k"."user_id" = ( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid"))))));
+  WHERE (("k"."id" = "kit_variants"."kit_master_id") AND ("k"."user_id" = ( SELECT "auth"."uid"() AS "uid"))))));
 
 
 
-CREATE POLICY "Owner can invite collaborators" ON "public"."kit_collaborators" FOR INSERT WITH CHECK ("public"."is_kit_owner"("kit_id", ( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid")));
+CREATE POLICY "Owner can invite collaborators" ON "public"."kit_collaborators" FOR INSERT TO "authenticated" WITH CHECK ("public"."is_kit_owner"("kit_id", ( SELECT "auth"."uid"() AS "uid")));
 
 
 
-CREATE POLICY "Owner can remove collaborators" ON "public"."kit_collaborators" FOR DELETE USING ("public"."is_kit_owner"("kit_id", ( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid")));
+CREATE POLICY "Owner can remove collaborators" ON "public"."kit_collaborators" FOR DELETE TO "authenticated" USING ("public"."is_kit_owner"("kit_id", ( SELECT "auth"."uid"() AS "uid")));
 
 
 
-CREATE POLICY "Owner can update collaborators" ON "public"."kit_collaborators" FOR UPDATE USING ("public"."is_kit_owner"("kit_id", ( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid"))) WITH CHECK ("public"."is_kit_owner"("kit_id", ( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid")));
+CREATE POLICY "Owner can update collaborators" ON "public"."kit_collaborators" FOR UPDATE TO "authenticated" USING ("public"."is_kit_owner"("kit_id", ( SELECT "auth"."uid"() AS "uid")));
 
 
 
-CREATE POLICY "Owner can update variants" ON "public"."kit_variants" FOR UPDATE USING ((EXISTS ( SELECT 1
+CREATE POLICY "Owner can update variants" ON "public"."kit_variants" FOR UPDATE TO "authenticated" USING ((EXISTS ( SELECT 1
    FROM "public"."custom_kits" "k"
-  WHERE (("k"."id" = "kit_variants"."kit_master_id") AND ("k"."user_id" = ( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid")))))) WITH CHECK ((EXISTS ( SELECT 1
+  WHERE (("k"."id" = "kit_variants"."kit_master_id") AND ("k"."user_id" = ( SELECT "auth"."uid"() AS "uid")))))) WITH CHECK ((EXISTS ( SELECT 1
    FROM "public"."custom_kits" "k"
-  WHERE (("k"."id" = "kit_variants"."kit_master_id") AND ("k"."user_id" = ( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid"))))));
+  WHERE (("k"."id" = "kit_variants"."kit_master_id") AND ("k"."user_id" = ( SELECT "auth"."uid"() AS "uid"))))));
 
 
 
-CREATE POLICY "Owner can view variants" ON "public"."kit_variants" FOR SELECT USING (((EXISTS ( SELECT 1
+CREATE POLICY "Owner can view variants" ON "public"."kit_variants" FOR SELECT TO "authenticated" USING (((EXISTS ( SELECT 1
    FROM "public"."custom_kits" "k"
-  WHERE (("k"."id" = "kit_variants"."kit_master_id") AND ("k"."user_id" = ( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid"))))) OR "public"."is_admin"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid"))));
+  WHERE (("k"."id" = "kit_variants"."kit_master_id") AND ("k"."user_id" = ( SELECT "auth"."uid"() AS "uid"))))) OR "public"."is_admin"(( SELECT "auth"."uid"() AS "uid"))));
 
 
 
-CREATE POLICY "Owner or collab can comment" ON "public"."kit_comments" FOR INSERT WITH CHECK ((("author_id" = ( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid")) AND ("public"."is_kit_owner"("kit_id", ( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid")) OR "public"."is_kit_collaborator"("kit_id", ( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid")))));
+CREATE POLICY "Owner or collab can comment" ON "public"."kit_comments" FOR INSERT TO "authenticated" WITH CHECK ((("author_id" = ( SELECT "auth"."uid"() AS "uid")) AND ("public"."is_kit_owner"("kit_id", ( SELECT "auth"."uid"() AS "uid")) OR "public"."is_kit_collaborator"("kit_id", ( SELECT "auth"."uid"() AS "uid")))));
 
 
 
@@ -107681,7 +104091,7 @@ CREATE POLICY "Users can delete their own cached insights" ON "public"."dashboar
 
 
 
-CREATE POLICY "Users can delete their own recently viewed products" ON "public"."recently_viewed_products" FOR DELETE USING ((( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid") = "user_id"));
+CREATE POLICY "Users can delete their own recently viewed products" ON "public"."recently_viewed_products" FOR DELETE TO "authenticated" USING ((( SELECT "auth"."uid"() AS "uid") = "user_id"));
 
 
 
@@ -107705,7 +104115,7 @@ CREATE POLICY "Users can insert their own cached insights" ON "public"."dashboar
 
 
 
-CREATE POLICY "Users can insert their own recently viewed products" ON "public"."recently_viewed_products" FOR INSERT WITH CHECK ((( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid") = "user_id"));
+CREATE POLICY "Users can insert their own recently viewed products" ON "public"."recently_viewed_products" FOR INSERT TO "authenticated" WITH CHECK ((( SELECT "auth"."uid"() AS "uid") = "user_id"));
 
 
 
@@ -107813,7 +104223,7 @@ CREATE POLICY "Users can update their own cached insights" ON "public"."dashboar
 
 
 
-CREATE POLICY "Users can update their own recently viewed products" ON "public"."recently_viewed_products" FOR UPDATE USING ((( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid") = "user_id")) WITH CHECK ((( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid") = "user_id"));
+CREATE POLICY "Users can update their own recently viewed products" ON "public"."recently_viewed_products" FOR UPDATE TO "authenticated" USING ((( SELECT "auth"."uid"() AS "uid") = "user_id")) WITH CHECK ((( SELECT "auth"."uid"() AS "uid") = "user_id"));
 
 
 
@@ -107881,7 +104291,7 @@ CREATE POLICY "Users can view their own cached insights" ON "public"."dashboard_
 
 
 
-CREATE POLICY "Users can view their own recently viewed products" ON "public"."recently_viewed_products" FOR SELECT USING ((( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid") = "user_id"));
+CREATE POLICY "Users can view their own recently viewed products" ON "public"."recently_viewed_products" FOR SELECT TO "authenticated" USING ((( SELECT "auth"."uid"() AS "uid") = "user_id"));
 
 
 
@@ -107889,7 +104299,7 @@ CREATE POLICY "Users can view their own usage events" ON "public"."ai_usage_even
 
 
 
-CREATE POLICY "Users delete own art files" ON "public"."art_file_attachments" FOR DELETE USING ((( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid") = "user_id"));
+CREATE POLICY "Users delete own art files" ON "public"."art_file_attachments" FOR DELETE TO "authenticated" USING (("user_id" = ( SELECT "auth"."uid"() AS "uid")));
 
 
 
@@ -107897,7 +104307,7 @@ CREATE POLICY "Users delete own collection trash" ON "public"."collection_items_
 
 
 
-CREATE POLICY "Users insert own art files" ON "public"."art_file_attachments" FOR INSERT WITH CHECK ((( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid") = "user_id"));
+CREATE POLICY "Users insert own art files" ON "public"."art_file_attachments" FOR INSERT TO "authenticated" WITH CHECK (("user_id" = ( SELECT "auth"."uid"() AS "uid")));
 
 
 
@@ -107928,7 +104338,7 @@ CREATE POLICY "Users read own roles" ON "public"."user_roles" FOR SELECT TO "aut
 
 
 
-CREATE POLICY "Users update own art files" ON "public"."art_file_attachments" FOR UPDATE USING ((( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid") = "user_id")) WITH CHECK ((( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid") = "user_id"));
+CREATE POLICY "Users update own art files" ON "public"."art_file_attachments" FOR UPDATE TO "authenticated" USING (("user_id" = ( SELECT "auth"."uid"() AS "uid"))) WITH CHECK (("user_id" = ( SELECT "auth"."uid"() AS "uid")));
 
 
 
@@ -107936,7 +104346,7 @@ CREATE POLICY "Users update own preferences" ON "public"."user_preferences" FOR 
 
 
 
-CREATE POLICY "Users view own art files" ON "public"."art_file_attachments" FOR SELECT USING ((( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid") = "user_id"));
+CREATE POLICY "Users view own art files" ON "public"."art_file_attachments" FOR SELECT TO "authenticated" USING (("user_id" = ( SELECT "auth"."uid"() AS "uid")));
 
 
 
@@ -107956,11 +104366,11 @@ CREATE POLICY "Usuários podem ver seus próprios logs de conversa" ON "public".
 
 
 
-CREATE POLICY "View collaborators if owner or self" ON "public"."kit_collaborators" FOR SELECT USING (("public"."is_kit_owner"("kit_id", ( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid")) OR ("user_id" = ( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid")) OR "public"."is_admin"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid"))));
+CREATE POLICY "View collaborators if owner or self" ON "public"."kit_collaborators" FOR SELECT TO "authenticated" USING (("public"."is_kit_owner"("kit_id", ( SELECT "auth"."uid"() AS "uid")) OR ("user_id" = "auth"."uid"())));
 
 
 
-CREATE POLICY "View comments if owner/collab/admin" ON "public"."kit_comments" FOR SELECT USING (("public"."is_kit_owner"("kit_id", ( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid")) OR "public"."is_kit_collaborator"("kit_id", ( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid")) OR "public"."is_admin"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid"))));
+CREATE POLICY "View comments if owner/collab/admin" ON "public"."kit_comments" FOR SELECT TO "authenticated" USING (("public"."is_kit_owner"("kit_id", ( SELECT "auth"."uid"() AS "uid")) OR "public"."is_kit_collaborator"("kit_id", ( SELECT "auth"."uid"() AS "uid")) OR "public"."is_admin"(( SELECT "auth"."uid"() AS "uid"))));
 
 
 
@@ -107971,9 +104381,6 @@ ALTER TABLE "public"."_archive_product_seo_20260626" ENABLE ROW LEVEL SECURITY;
 
 
 ALTER TABLE "public"."_archive_supplier_price_tiers_20260626" ENABLE ROW LEVEL SECURITY;
-
-
-ALTER TABLE "public"."_backup_stock_daily_summary_20260618" ENABLE ROW LEVEL SECURITY;
 
 
 ALTER TABLE "public"."_bkp_kcvs_pre_normalize_20260624" ENABLE ROW LEVEL SECURITY;
@@ -108211,19 +104618,19 @@ CREATE POLICY "ai_usage_logs_user_own" ON "public"."ai_usage_logs" FOR SELECT US
 ALTER TABLE "public"."ai_usage_quotas" ENABLE ROW LEVEL SECURITY;
 
 
-CREATE POLICY "ai_usage_quotas_admin_delete" ON "public"."ai_usage_quotas" FOR DELETE USING (("public"."is_dev"() OR "public"."has_role"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid"), 'admin'::"public"."app_role")));
+CREATE POLICY "ai_usage_quotas_admin_delete" ON "public"."ai_usage_quotas" FOR DELETE TO "authenticated" USING (("public"."is_dev"() OR "public"."has_role"(( SELECT "auth"."uid"() AS "uid"), 'admin'::"public"."app_role")));
 
 
 
-CREATE POLICY "ai_usage_quotas_admin_insert" ON "public"."ai_usage_quotas" FOR INSERT WITH CHECK (("public"."is_dev"() OR "public"."has_role"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid"), 'admin'::"public"."app_role")));
+CREATE POLICY "ai_usage_quotas_admin_insert" ON "public"."ai_usage_quotas" FOR INSERT TO "authenticated" WITH CHECK (("public"."is_dev"() OR "public"."has_role"(( SELECT "auth"."uid"() AS "uid"), 'admin'::"public"."app_role")));
 
 
 
-CREATE POLICY "ai_usage_quotas_admin_update" ON "public"."ai_usage_quotas" FOR UPDATE USING (("public"."is_dev"() OR "public"."has_role"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid"), 'admin'::"public"."app_role"))) WITH CHECK (("public"."is_dev"() OR "public"."has_role"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid"), 'admin'::"public"."app_role")));
+CREATE POLICY "ai_usage_quotas_admin_update" ON "public"."ai_usage_quotas" FOR UPDATE TO "authenticated" USING (("public"."is_dev"() OR "public"."has_role"(( SELECT "auth"."uid"() AS "uid"), 'admin'::"public"."app_role"))) WITH CHECK (("public"."is_dev"() OR "public"."has_role"(( SELECT "auth"."uid"() AS "uid"), 'admin'::"public"."app_role")));
 
 
 
-CREATE POLICY "ai_usage_quotas_read_authenticated" ON "public"."ai_usage_quotas" FOR SELECT USING ((( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid") IS NOT NULL));
+CREATE POLICY "ai_usage_quotas_read_authenticated" ON "public"."ai_usage_quotas" FOR SELECT TO "authenticated" USING ((( SELECT "auth"."uid"() AS "uid") IS NOT NULL));
 
 
 
@@ -108239,6 +104646,14 @@ CREATE POLICY "anon_can_insert_search_analytics" ON "public"."search_analytics" 
 
 
 ALTER TABLE "public"."anon_catalog_grant_audit_log" ENABLE ROW LEVEL SECURITY;
+
+
+CREATE POLICY "anon_catalog_grant_audit_log_admin_read" ON "public"."anon_catalog_grant_audit_log" FOR SELECT TO "authenticated" USING ("public"."is_admin_or_above"(( SELECT "auth"."uid"() AS "uid")));
+
+
+
+CREATE POLICY "anon_catalog_grant_audit_log_service_all" ON "public"."anon_catalog_grant_audit_log" TO "service_role" USING (true) WITH CHECK (true);
+
 
 
 CREATE POLICY "anon_insert_catalog_analytics" ON "public"."catalog_analytics" FOR INSERT TO "anon" WITH CHECK (("user_id" IS NULL));
@@ -108581,19 +104996,19 @@ ALTER TABLE "public"."b2b_collection_products" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "public"."b2b_collections" ENABLE ROW LEVEL SECURITY;
 
 
-CREATE POLICY "b2b_collections_delete" ON "public"."b2b_collections" FOR DELETE USING ("public"."is_org_owner_or_admin"("organization_id"));
+CREATE POLICY "b2b_collections_delete" ON "public"."b2b_collections" FOR DELETE TO "authenticated" USING ("public"."is_org_owner_or_admin"("organization_id"));
 
 
 
-CREATE POLICY "b2b_collections_insert" ON "public"."b2b_collections" FOR INSERT WITH CHECK ("public"."is_org_owner_or_admin"("organization_id"));
+CREATE POLICY "b2b_collections_insert" ON "public"."b2b_collections" FOR INSERT TO "authenticated" WITH CHECK ("public"."is_org_owner_or_admin"("organization_id"));
 
 
 
-CREATE POLICY "b2b_collections_select" ON "public"."b2b_collections" FOR SELECT USING ("public"."user_is_org_member"("organization_id"));
+CREATE POLICY "b2b_collections_select" ON "public"."b2b_collections" FOR SELECT TO "authenticated" USING ("public"."user_is_org_member"("organization_id"));
 
 
 
-CREATE POLICY "b2b_collections_update" ON "public"."b2b_collections" FOR UPDATE USING ("public"."is_org_owner_or_admin"("organization_id")) WITH CHECK ("public"."is_org_owner_or_admin"("organization_id"));
+CREATE POLICY "b2b_collections_update" ON "public"."b2b_collections" FOR UPDATE TO "authenticated" USING ("public"."is_org_owner_or_admin"("organization_id")) WITH CHECK ("public"."is_org_owner_or_admin"("organization_id"));
 
 
 
@@ -108602,10 +105017,6 @@ CREATE POLICY "backfill_queue_admin_all" ON "public"."image_backfill_queue" TO "
 
 
 ALTER TABLE "public"."backup_produto_ramo_atividade_20260625" ENABLE ROW LEVEL SECURITY;
-
-
-CREATE POLICY "backup_stock_service_only" ON "public"."_backup_stock_daily_summary_20260618" TO "service_role" USING (true) WITH CHECK (true);
-
 
 
 ALTER TABLE "public"."binding_colors" ENABLE ROW LEVEL SECURITY;
@@ -108710,11 +105121,15 @@ CREATE POLICY "catalog_analytics_read" ON "public"."catalog_analytics" FOR SELEC
 ALTER TABLE "public"."categories" ENABLE ROW LEVEL SECURITY;
 
 
-CREATE POLICY "categories_delete" ON "public"."categories" FOR DELETE USING ("public"."is_org_owner_or_admin"("organization_id"));
+CREATE POLICY "categories_delete" ON "public"."categories" FOR DELETE USING (("organization_id" IN ( SELECT "uo"."organization_id"
+   FROM "public"."user_organizations" "uo"
+  WHERE (("uo"."user_id" = ( SELECT "auth"."uid"() AS "uid")) AND ("uo"."role" = ANY (ARRAY['owner'::"public"."org_role", 'admin'::"public"."org_role"]))))));
 
 
 
-CREATE POLICY "categories_insert" ON "public"."categories" FOR INSERT WITH CHECK ("public"."is_org_owner_or_admin"("organization_id"));
+CREATE POLICY "categories_insert" ON "public"."categories" FOR INSERT WITH CHECK (("organization_id" IN ( SELECT "uo"."organization_id"
+   FROM "public"."user_organizations" "uo"
+  WHERE (("uo"."user_id" = ( SELECT "auth"."uid"() AS "uid")) AND ("uo"."role" = ANY (ARRAY['owner'::"public"."org_role", 'admin'::"public"."org_role"]))))));
 
 
 
@@ -108726,7 +105141,11 @@ COMMENT ON POLICY "categories_public_read" ON "public"."categories" IS 'Catálog
 
 
 
-CREATE POLICY "categories_update" ON "public"."categories" FOR UPDATE USING ("public"."is_org_owner_or_admin"("organization_id")) WITH CHECK ("public"."is_org_owner_or_admin"("organization_id"));
+CREATE POLICY "categories_update" ON "public"."categories" FOR UPDATE USING (("organization_id" IN ( SELECT "uo"."organization_id"
+   FROM "public"."user_organizations" "uo"
+  WHERE (("uo"."user_id" = ( SELECT "auth"."uid"() AS "uid")) AND ("uo"."role" = ANY (ARRAY['owner'::"public"."org_role", 'admin'::"public"."org_role"])))))) WITH CHECK (("organization_id" IN ( SELECT "uo"."organization_id"
+   FROM "public"."user_organizations" "uo"
+  WHERE (("uo"."user_id" = ( SELECT "auth"."uid"() AS "uid")) AND ("uo"."role" = ANY (ARRAY['owner'::"public"."org_role", 'admin'::"public"."org_role"]))))));
 
 
 
@@ -108913,7 +105332,7 @@ ALTER TABLE "public"."collection_items_trash" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "public"."collection_products" ENABLE ROW LEVEL SECURITY;
 
 
-CREATE POLICY "collection_products_delete" ON "public"."b2b_collection_products" FOR DELETE USING ((EXISTS ( SELECT 1
+CREATE POLICY "collection_products_delete" ON "public"."b2b_collection_products" FOR DELETE TO "authenticated" USING ((EXISTS ( SELECT 1
    FROM "public"."b2b_collections" "c"
   WHERE (("c"."id" = "b2b_collection_products"."b2b_collection_id") AND "public"."is_org_owner_or_admin"("c"."organization_id")))));
 
@@ -108925,7 +105344,7 @@ CREATE POLICY "collection_products_delete" ON "public"."collection_products" FOR
 
 
 
-CREATE POLICY "collection_products_insert" ON "public"."b2b_collection_products" FOR INSERT WITH CHECK ((EXISTS ( SELECT 1
+CREATE POLICY "collection_products_insert" ON "public"."b2b_collection_products" FOR INSERT TO "authenticated" WITH CHECK ((EXISTS ( SELECT 1
    FROM "public"."b2b_collections" "c"
   WHERE (("c"."id" = "b2b_collection_products"."b2b_collection_id") AND "public"."is_org_owner_or_admin"("c"."organization_id")))));
 
@@ -108937,7 +105356,7 @@ CREATE POLICY "collection_products_insert" ON "public"."collection_products" FOR
 
 
 
-CREATE POLICY "collection_products_select" ON "public"."b2b_collection_products" FOR SELECT USING ((EXISTS ( SELECT 1
+CREATE POLICY "collection_products_select" ON "public"."b2b_collection_products" FOR SELECT TO "authenticated" USING ((EXISTS ( SELECT 1
    FROM "public"."b2b_collections" "c"
   WHERE (("c"."id" = "b2b_collection_products"."b2b_collection_id") AND "public"."user_is_org_member"("c"."organization_id")))));
 
@@ -108949,7 +105368,7 @@ CREATE POLICY "collection_products_select" ON "public"."collection_products" FOR
 
 
 
-CREATE POLICY "collection_products_update" ON "public"."b2b_collection_products" FOR UPDATE USING ((EXISTS ( SELECT 1
+CREATE POLICY "collection_products_update" ON "public"."b2b_collection_products" FOR UPDATE TO "authenticated" USING ((EXISTS ( SELECT 1
    FROM "public"."b2b_collections" "c"
   WHERE (("c"."id" = "b2b_collection_products"."b2b_collection_id") AND "public"."is_org_owner_or_admin"("c"."organization_id")))));
 
@@ -109436,14 +105855,6 @@ CREATE POLICY "hist_all_service" ON "public"."supplier_products_raw_history" TO 
 
 
 
-CREATE POLICY "hist_all_service" ON "public"."supplier_products_raw_history_p2026_06" TO "service_role" USING (true) WITH CHECK (true);
-
-
-
-CREATE POLICY "hist_all_service" ON "public"."supplier_products_raw_history_p2026_07" TO "service_role" USING (true) WITH CHECK (true);
-
-
-
 CREATE POLICY "hist_all_service" ON "public"."supplier_products_raw_history_p2026_08" TO "service_role" USING (true) WITH CHECK (true);
 
 
@@ -109464,15 +105875,15 @@ CREATE POLICY "hist_all_service" ON "public"."supplier_products_raw_history_p202
 
 
 
+CREATE POLICY "hist_all_service" ON "public"."supplier_products_raw_history_p2027_01" TO "service_role" USING (true) WITH CHECK (true);
+
+
+
+CREATE POLICY "hist_all_service" ON "public"."supplier_products_raw_history_p2027_02" TO "service_role" USING (true) WITH CHECK (true);
+
+
+
 CREATE POLICY "hist_select_admin" ON "public"."supplier_products_raw_history" FOR SELECT TO "authenticated" USING ("public"."is_admin_or_above"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid")));
-
-
-
-CREATE POLICY "hist_select_admin" ON "public"."supplier_products_raw_history_p2026_06" FOR SELECT TO "authenticated" USING ("public"."is_admin_or_above"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid")));
-
-
-
-CREATE POLICY "hist_select_admin" ON "public"."supplier_products_raw_history_p2026_07" FOR SELECT TO "authenticated" USING ("public"."is_admin_or_above"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid")));
 
 
 
@@ -109493,6 +105904,14 @@ CREATE POLICY "hist_select_admin" ON "public"."supplier_products_raw_history_p20
 
 
 CREATE POLICY "hist_select_admin" ON "public"."supplier_products_raw_history_p2026_12" FOR SELECT TO "authenticated" USING ("public"."is_admin_or_above"(( SELECT "auth"."uid"() AS "uid")));
+
+
+
+CREATE POLICY "hist_select_admin" ON "public"."supplier_products_raw_history_p2027_01" FOR SELECT TO "authenticated" USING ("public"."is_admin_or_above"(( SELECT "auth"."uid"() AS "uid")));
+
+
+
+CREATE POLICY "hist_select_admin" ON "public"."supplier_products_raw_history_p2027_02" FOR SELECT TO "authenticated" USING ("public"."is_admin_or_above"(( SELECT "auth"."uid"() AS "uid")));
 
 
 
@@ -109533,19 +105952,19 @@ CREATE POLICY "ip_whitelist_admin_all" ON "public"."ip_whitelist" TO "authentica
 
 
 
-CREATE POLICY "kcer_admin_delete" ON "public"."kit_component_enrichment_raw" FOR DELETE USING ("public"."is_admin_or_above"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid")));
+CREATE POLICY "kcer_admin_delete" ON "public"."kit_component_enrichment_raw" FOR DELETE TO "authenticated" USING ("public"."is_admin_or_above"(( SELECT "auth"."uid"() AS "uid")));
 
 
 
-CREATE POLICY "kcer_admin_insert" ON "public"."kit_component_enrichment_raw" FOR INSERT WITH CHECK ("public"."is_admin_or_above"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid")));
+CREATE POLICY "kcer_admin_insert" ON "public"."kit_component_enrichment_raw" FOR INSERT TO "authenticated" WITH CHECK ("public"."is_admin_or_above"(( SELECT "auth"."uid"() AS "uid")));
 
 
 
-CREATE POLICY "kcer_admin_update" ON "public"."kit_component_enrichment_raw" FOR UPDATE USING ("public"."is_admin_or_above"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid"))) WITH CHECK ("public"."is_admin_or_above"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid")));
+CREATE POLICY "kcer_admin_update" ON "public"."kit_component_enrichment_raw" FOR UPDATE TO "authenticated" USING ("public"."is_admin_or_above"(( SELECT "auth"."uid"() AS "uid"))) WITH CHECK ("public"."is_admin_or_above"(( SELECT "auth"."uid"() AS "uid")));
 
 
 
-CREATE POLICY "kcer_read_auth" ON "public"."kit_component_enrichment_raw" FOR SELECT USING ((( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid") IS NOT NULL));
+CREATE POLICY "kcer_read_auth" ON "public"."kit_component_enrichment_raw" FOR SELECT TO "authenticated" USING ((( SELECT "auth"."uid"() AS "uid") IS NOT NULL));
 
 
 
@@ -109561,19 +105980,19 @@ CREATE POLICY "kcpa_dev_delete" ON "public"."kit_component_print_areas" FOR DELE
 
 
 
-CREATE POLICY "kcpad_admin_delete" ON "public"."kit_component_padronizacao" FOR DELETE USING ("public"."is_admin_or_above"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid")));
+CREATE POLICY "kcpad_admin_delete" ON "public"."kit_component_padronizacao" FOR DELETE TO "authenticated" USING ("public"."is_admin_or_above"(( SELECT "auth"."uid"() AS "uid")));
 
 
 
-CREATE POLICY "kcpad_admin_insert" ON "public"."kit_component_padronizacao" FOR INSERT WITH CHECK ("public"."is_admin_or_above"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid")));
+CREATE POLICY "kcpad_admin_insert" ON "public"."kit_component_padronizacao" FOR INSERT TO "authenticated" WITH CHECK ("public"."is_admin_or_above"(( SELECT "auth"."uid"() AS "uid")));
 
 
 
-CREATE POLICY "kcpad_admin_update" ON "public"."kit_component_padronizacao" FOR UPDATE USING ("public"."is_admin_or_above"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid"))) WITH CHECK ("public"."is_admin_or_above"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid")));
+CREATE POLICY "kcpad_admin_update" ON "public"."kit_component_padronizacao" FOR UPDATE TO "authenticated" USING ("public"."is_admin_or_above"(( SELECT "auth"."uid"() AS "uid"))) WITH CHECK ("public"."is_admin_or_above"(( SELECT "auth"."uid"() AS "uid")));
 
 
 
-CREATE POLICY "kcpad_read_auth" ON "public"."kit_component_padronizacao" FOR SELECT USING ((( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid") IS NOT NULL));
+CREATE POLICY "kcpad_read_auth" ON "public"."kit_component_padronizacao" FOR SELECT TO "authenticated" USING ((( SELECT "auth"."uid"() AS "uid") IS NOT NULL));
 
 
 
@@ -109618,14 +106037,6 @@ CREATE POLICY "kill_switches_delete_admin" ON "public"."system_kill_switches" FO
 
 
 CREATE POLICY "kill_switches_insert_admin" ON "public"."system_kill_switches" FOR INSERT TO "authenticated" WITH CHECK ("public"."is_admin_or_above"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid")));
-
-
-
-CREATE POLICY "kill_switches_read_all" ON "public"."system_kill_switches" FOR SELECT TO "authenticated", "anon" USING (true);
-
-
-
-COMMENT ON POLICY "kill_switches_read_all" ON "public"."system_kill_switches" IS 'Read-only para feature flag checks. Restringido de PUBLIC para anon+authenticated em 2026-05-24 (P2-02) — reduz multiple_permissive_policies hits do advisor.';
 
 
 
@@ -109736,6 +106147,18 @@ ALTER TABLE "public"."login_attempts" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "public"."magazine_duplicate_requests" ENABLE ROW LEVEL SECURITY;
 
 
+CREATE POLICY "magazine_duplicate_requests_own_insert" ON "public"."magazine_duplicate_requests" FOR INSERT TO "authenticated" WITH CHECK (("actor_id" = ( SELECT "auth"."uid"() AS "uid")));
+
+
+
+CREATE POLICY "magazine_duplicate_requests_own_select" ON "public"."magazine_duplicate_requests" FOR SELECT TO "authenticated" USING (("actor_id" = ( SELECT "auth"."uid"() AS "uid")));
+
+
+
+CREATE POLICY "magazine_duplicate_requests_service_all" ON "public"."magazine_duplicate_requests" TO "service_role" USING (true) WITH CHECK (true);
+
+
+
 ALTER TABLE "public"."magazine_items" ENABLE ROW LEVEL SECURITY;
 
 
@@ -109771,6 +106194,12 @@ ALTER TABLE "public"."magazine_public_view_events_2026_11" ENABLE ROW LEVEL SECU
 
 
 ALTER TABLE "public"."magazine_public_view_events_2026_12" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "public"."magazine_public_view_events_2027_01" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "public"."magazine_public_view_events_2027_02" ENABLE ROW LEVEL SECURITY;
 
 
 ALTER TABLE "public"."magazine_public_view_events_default" ENABLE ROW LEVEL SECURITY;
@@ -110108,19 +106537,19 @@ ALTER TABLE "public"."notebook_features" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "public"."notification_preferences" ENABLE ROW LEVEL SECURITY;
 
 
-CREATE POLICY "notification_preferences_delete" ON "public"."notification_preferences" FOR DELETE USING ((( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid") = "user_id"));
+CREATE POLICY "notification_preferences_delete" ON "public"."notification_preferences" FOR DELETE TO "authenticated" USING ((( SELECT "auth"."uid"() AS "uid") = "user_id"));
 
 
 
-CREATE POLICY "notification_preferences_insert" ON "public"."notification_preferences" FOR INSERT WITH CHECK ((( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid") = "user_id"));
+CREATE POLICY "notification_preferences_insert" ON "public"."notification_preferences" FOR INSERT TO "authenticated" WITH CHECK ((( SELECT "auth"."uid"() AS "uid") = "user_id"));
 
 
 
-CREATE POLICY "notification_preferences_select" ON "public"."notification_preferences" FOR SELECT USING ((( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid") = "user_id"));
+CREATE POLICY "notification_preferences_select" ON "public"."notification_preferences" FOR SELECT TO "authenticated" USING ((( SELECT "auth"."uid"() AS "uid") = "user_id"));
 
 
 
-CREATE POLICY "notification_preferences_update" ON "public"."notification_preferences" FOR UPDATE USING ((( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid") = "user_id")) WITH CHECK ((( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid") = "user_id"));
+CREATE POLICY "notification_preferences_update" ON "public"."notification_preferences" FOR UPDATE TO "authenticated" USING ((( SELECT "auth"."uid"() AS "uid") = "user_id")) WITH CHECK ((( SELECT "auth"."uid"() AS "uid") = "user_id"));
 
 
 
@@ -110552,11 +106981,11 @@ CREATE POLICY "print_area_techniques_oa_upd" ON "public"."print_area_techniques"
 
 
 
-CREATE POLICY "product_ai_anon_select" ON "public"."product_ai_content" FOR SELECT TO "authenticated", "anon" USING (true);
-
-
-
 ALTER TABLE "public"."product_ai_content" ENABLE ROW LEVEL SECURITY;
+
+
+CREATE POLICY "product_ai_content_authenticated_select" ON "public"."product_ai_content" FOR SELECT TO "authenticated" USING (true);
+
 
 
 ALTER TABLE "public"."product_ai_history" ENABLE ROW LEVEL SECURITY;
@@ -110577,27 +107006,37 @@ ALTER TABLE "public"."product_category_assignments" ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY "product_category_assignments_oa_del" ON "public"."product_category_assignments" FOR DELETE TO "authenticated" USING ((EXISTS ( SELECT 1
    FROM "public"."products" "p"
-  WHERE (("p"."id" = "product_category_assignments"."product_id") AND "public"."is_org_owner_or_admin"("p"."organization_id")))));
+  WHERE (("p"."id" = "product_category_assignments"."product_id") AND ("p"."organization_id" IN ( SELECT "uo"."organization_id"
+           FROM "public"."user_organizations" "uo"
+          WHERE (("uo"."user_id" = ( SELECT "auth"."uid"() AS "uid")) AND ("uo"."role" = ANY (ARRAY['owner'::"public"."org_role", 'admin'::"public"."org_role"])))))))));
 
 
 
 CREATE POLICY "product_category_assignments_oa_ins" ON "public"."product_category_assignments" FOR INSERT TO "authenticated" WITH CHECK ((EXISTS ( SELECT 1
    FROM "public"."products" "p"
-  WHERE (("p"."id" = "product_category_assignments"."product_id") AND "public"."is_org_owner_or_admin"("p"."organization_id")))));
+  WHERE (("p"."id" = "product_category_assignments"."product_id") AND ("p"."organization_id" IN ( SELECT "uo"."organization_id"
+           FROM "public"."user_organizations" "uo"
+          WHERE (("uo"."user_id" = ( SELECT "auth"."uid"() AS "uid")) AND ("uo"."role" = ANY (ARRAY['owner'::"public"."org_role", 'admin'::"public"."org_role"])))))))));
 
 
 
 CREATE POLICY "product_category_assignments_oa_upd" ON "public"."product_category_assignments" FOR UPDATE TO "authenticated" USING ((EXISTS ( SELECT 1
    FROM "public"."products" "p"
-  WHERE (("p"."id" = "product_category_assignments"."product_id") AND "public"."is_org_owner_or_admin"("p"."organization_id"))))) WITH CHECK ((EXISTS ( SELECT 1
+  WHERE (("p"."id" = "product_category_assignments"."product_id") AND ("p"."organization_id" IN ( SELECT "uo"."organization_id"
+           FROM "public"."user_organizations" "uo"
+          WHERE (("uo"."user_id" = ( SELECT "auth"."uid"() AS "uid")) AND ("uo"."role" = ANY (ARRAY['owner'::"public"."org_role", 'admin'::"public"."org_role"]))))))))) WITH CHECK ((EXISTS ( SELECT 1
    FROM "public"."products" "p"
-  WHERE (("p"."id" = "product_category_assignments"."product_id") AND "public"."is_org_owner_or_admin"("p"."organization_id")))));
+  WHERE (("p"."id" = "product_category_assignments"."product_id") AND ("p"."organization_id" IN ( SELECT "uo"."organization_id"
+           FROM "public"."user_organizations" "uo"
+          WHERE (("uo"."user_id" = ( SELECT "auth"."uid"() AS "uid")) AND ("uo"."role" = ANY (ARRAY['owner'::"public"."org_role", 'admin'::"public"."org_role"])))))))));
 
 
 
 CREATE POLICY "product_category_assignments_select_org" ON "public"."product_category_assignments" FOR SELECT USING ((EXISTS ( SELECT 1
    FROM "public"."products" "p"
-  WHERE (("p"."id" = "product_category_assignments"."product_id") AND "public"."user_belongs_to_org"("p"."organization_id")))));
+  WHERE (("p"."id" = "product_category_assignments"."product_id") AND ("p"."organization_id" IN ( SELECT "uo"."organization_id"
+           FROM "public"."user_organizations" "uo"
+          WHERE ("uo"."user_id" = ( SELECT "auth"."uid"() AS "uid"))))))));
 
 
 
@@ -110636,7 +107075,7 @@ CREATE POLICY "product_faqs_public_read" ON "public"."product_faqs" FOR SELECT U
 ALTER TABLE "public"."product_fiscal" ENABLE ROW LEVEL SECURITY;
 
 
-CREATE POLICY "product_fiscal_anon_select" ON "public"."product_fiscal" FOR SELECT TO "authenticated", "anon" USING (true);
+CREATE POLICY "product_fiscal_authenticated_select" ON "public"."product_fiscal" FOR SELECT TO "authenticated" USING (true);
 
 
 
@@ -110664,25 +107103,35 @@ ALTER TABLE "public"."product_images" ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY "product_images_delete" ON "public"."product_images" FOR DELETE USING ((EXISTS ( SELECT 1
    FROM "public"."products" "p"
-  WHERE (("p"."id" = "product_images"."product_id") AND "public"."is_org_owner_or_admin"("p"."organization_id")))));
+  WHERE (("p"."id" = "product_images"."product_id") AND ("p"."organization_id" IN ( SELECT "uo"."organization_id"
+           FROM "public"."user_organizations" "uo"
+          WHERE (("uo"."user_id" = ( SELECT "auth"."uid"() AS "uid")) AND ("uo"."role" = ANY (ARRAY['owner'::"public"."org_role", 'admin'::"public"."org_role"])))))))));
 
 
 
 CREATE POLICY "product_images_oa_ins" ON "public"."product_images" FOR INSERT TO "authenticated" WITH CHECK ((EXISTS ( SELECT 1
    FROM "public"."products" "p"
-  WHERE (("p"."id" = "product_images"."product_id") AND "public"."is_org_owner_or_admin"("p"."organization_id")))));
+  WHERE (("p"."id" = "product_images"."product_id") AND ("p"."organization_id" IN ( SELECT "uo"."organization_id"
+           FROM "public"."user_organizations" "uo"
+          WHERE (("uo"."user_id" = ( SELECT "auth"."uid"() AS "uid")) AND ("uo"."role" = ANY (ARRAY['owner'::"public"."org_role", 'admin'::"public"."org_role"])))))))));
 
 
 
 CREATE POLICY "product_images_oa_upd" ON "public"."product_images" FOR UPDATE TO "authenticated" USING ((EXISTS ( SELECT 1
    FROM "public"."products" "p"
-  WHERE (("p"."id" = "product_images"."product_id") AND "public"."is_org_owner_or_admin"("p"."organization_id"))))) WITH CHECK ((EXISTS ( SELECT 1
+  WHERE (("p"."id" = "product_images"."product_id") AND ("p"."organization_id" IN ( SELECT "uo"."organization_id"
+           FROM "public"."user_organizations" "uo"
+          WHERE (("uo"."user_id" = ( SELECT "auth"."uid"() AS "uid")) AND ("uo"."role" = ANY (ARRAY['owner'::"public"."org_role", 'admin'::"public"."org_role"]))))))))) WITH CHECK ((EXISTS ( SELECT 1
    FROM "public"."products" "p"
-  WHERE (("p"."id" = "product_images"."product_id") AND "public"."is_org_owner_or_admin"("p"."organization_id")))));
+  WHERE (("p"."id" = "product_images"."product_id") AND ("p"."organization_id" IN ( SELECT "uo"."organization_id"
+           FROM "public"."user_organizations" "uo"
+          WHERE (("uo"."user_id" = ( SELECT "auth"."uid"() AS "uid")) AND ("uo"."role" = ANY (ARRAY['owner'::"public"."org_role", 'admin'::"public"."org_role"])))))))));
 
 
 
-CREATE POLICY "product_images_select" ON "public"."product_images" FOR SELECT USING ((("is_active" = true) OR "public"."is_org_owner_or_admin"("organization_id")));
+CREATE POLICY "product_images_select" ON "public"."product_images" FOR SELECT USING ((("is_active" = true) OR ("organization_id" IN ( SELECT "uo"."organization_id"
+   FROM "public"."user_organizations" "uo"
+  WHERE (("uo"."user_id" = ( SELECT "auth"."uid"() AS "uid")) AND ("uo"."role" = ANY (ARRAY['owner'::"public"."org_role", 'admin'::"public"."org_role"])))))));
 
 
 
@@ -110854,7 +107303,7 @@ ALTER TABLE "public"."product_search_logs" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "public"."product_seo" ENABLE ROW LEVEL SECURITY;
 
 
-CREATE POLICY "product_seo_anon_select" ON "public"."product_seo" FOR SELECT TO "authenticated", "anon" USING (true);
+CREATE POLICY "product_seo_authenticated_select" ON "public"."product_seo" FOR SELECT TO "authenticated" USING (true);
 
 
 
@@ -110871,7 +107320,7 @@ ALTER TABLE "public"."product_similarity_groups" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "public"."product_supply" ENABLE ROW LEVEL SECURITY;
 
 
-CREATE POLICY "product_supply_anon_select" ON "public"."product_supply" FOR SELECT TO "authenticated", "anon" USING (true);
+CREATE POLICY "product_supply_authenticated_select" ON "public"."product_supply" FOR SELECT TO "authenticated" USING (true);
 
 
 
@@ -110927,21 +107376,29 @@ CREATE POLICY "product_variants_anon_read" ON "public"."product_variants" FOR SE
 
 CREATE POLICY "product_variants_delete" ON "public"."product_variants" FOR DELETE USING ((EXISTS ( SELECT 1
    FROM "public"."products" "p"
-  WHERE (("p"."id" = "product_variants"."product_id") AND "public"."is_org_owner_or_admin"("p"."organization_id")))));
+  WHERE (("p"."id" = "product_variants"."product_id") AND ("p"."organization_id" IN ( SELECT "uo"."organization_id"
+           FROM "public"."user_organizations" "uo"
+          WHERE (("uo"."user_id" = ( SELECT "auth"."uid"() AS "uid")) AND ("uo"."role" = ANY (ARRAY['owner'::"public"."org_role", 'admin'::"public"."org_role"])))))))));
 
 
 
 CREATE POLICY "product_variants_oa_ins" ON "public"."product_variants" FOR INSERT TO "authenticated" WITH CHECK ((EXISTS ( SELECT 1
    FROM "public"."products" "p"
-  WHERE (("p"."id" = "product_variants"."product_id") AND "public"."is_org_owner_or_admin"("p"."organization_id")))));
+  WHERE (("p"."id" = "product_variants"."product_id") AND ("p"."organization_id" IN ( SELECT "uo"."organization_id"
+           FROM "public"."user_organizations" "uo"
+          WHERE (("uo"."user_id" = ( SELECT "auth"."uid"() AS "uid")) AND ("uo"."role" = ANY (ARRAY['owner'::"public"."org_role", 'admin'::"public"."org_role"])))))))));
 
 
 
 CREATE POLICY "product_variants_oa_upd" ON "public"."product_variants" FOR UPDATE TO "authenticated" USING ((EXISTS ( SELECT 1
    FROM "public"."products" "p"
-  WHERE (("p"."id" = "product_variants"."product_id") AND "public"."is_org_owner_or_admin"("p"."organization_id"))))) WITH CHECK ((EXISTS ( SELECT 1
+  WHERE (("p"."id" = "product_variants"."product_id") AND ("p"."organization_id" IN ( SELECT "uo"."organization_id"
+           FROM "public"."user_organizations" "uo"
+          WHERE (("uo"."user_id" = ( SELECT "auth"."uid"() AS "uid")) AND ("uo"."role" = ANY (ARRAY['owner'::"public"."org_role", 'admin'::"public"."org_role"]))))))))) WITH CHECK ((EXISTS ( SELECT 1
    FROM "public"."products" "p"
-  WHERE (("p"."id" = "product_variants"."product_id") AND "public"."is_org_owner_or_admin"("p"."organization_id")))));
+  WHERE (("p"."id" = "product_variants"."product_id") AND ("p"."organization_id" IN ( SELECT "uo"."organization_id"
+           FROM "public"."user_organizations" "uo"
+          WHERE (("uo"."user_id" = ( SELECT "auth"."uid"() AS "uid")) AND ("uo"."role" = ANY (ARRAY['owner'::"public"."org_role", 'admin'::"public"."org_role"])))))))));
 
 
 
@@ -110998,15 +107455,23 @@ CREATE POLICY "products_authenticated_read" ON "public"."products" FOR SELECT TO
 
 
 
-CREATE POLICY "products_delete" ON "public"."products" FOR DELETE USING ("public"."is_org_owner_or_admin"("organization_id"));
+CREATE POLICY "products_delete" ON "public"."products" FOR DELETE USING (("organization_id" IN ( SELECT "uo"."organization_id"
+   FROM "public"."user_organizations" "uo"
+  WHERE (("uo"."user_id" = ( SELECT "auth"."uid"() AS "uid")) AND ("uo"."role" = ANY (ARRAY['owner'::"public"."org_role", 'admin'::"public"."org_role"]))))));
 
 
 
-CREATE POLICY "products_insert" ON "public"."products" FOR INSERT WITH CHECK ("public"."is_org_owner_or_admin"("organization_id"));
+CREATE POLICY "products_insert" ON "public"."products" FOR INSERT WITH CHECK (("organization_id" IN ( SELECT "uo"."organization_id"
+   FROM "public"."user_organizations" "uo"
+  WHERE (("uo"."user_id" = ( SELECT "auth"."uid"() AS "uid")) AND ("uo"."role" = ANY (ARRAY['owner'::"public"."org_role", 'admin'::"public"."org_role"]))))));
 
 
 
-CREATE POLICY "products_update" ON "public"."products" FOR UPDATE USING ("public"."is_org_owner_or_admin"("organization_id")) WITH CHECK ("public"."is_org_owner_or_admin"("organization_id"));
+CREATE POLICY "products_update" ON "public"."products" FOR UPDATE USING (("organization_id" IN ( SELECT "uo"."organization_id"
+   FROM "public"."user_organizations" "uo"
+  WHERE (("uo"."user_id" = ( SELECT "auth"."uid"() AS "uid")) AND ("uo"."role" = ANY (ARRAY['owner'::"public"."org_role", 'admin'::"public"."org_role"])))))) WITH CHECK (("organization_id" IN ( SELECT "uo"."organization_id"
+   FROM "public"."user_organizations" "uo"
+  WHERE (("uo"."user_id" = ( SELECT "auth"."uid"() AS "uid")) AND ("uo"."role" = ANY (ARRAY['owner'::"public"."org_role", 'admin'::"public"."org_role"]))))));
 
 
 
@@ -111086,19 +107551,19 @@ ALTER TABLE "public"."public_token_failures" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "public"."push_subscriptions" ENABLE ROW LEVEL SECURITY;
 
 
-CREATE POLICY "push_subscriptions_delete" ON "public"."push_subscriptions" FOR DELETE USING ((( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid") = "user_id"));
+CREATE POLICY "push_subscriptions_delete" ON "public"."push_subscriptions" FOR DELETE TO "authenticated" USING ((( SELECT "auth"."uid"() AS "uid") = "user_id"));
 
 
 
-CREATE POLICY "push_subscriptions_insert" ON "public"."push_subscriptions" FOR INSERT WITH CHECK ((( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid") = "user_id"));
+CREATE POLICY "push_subscriptions_insert" ON "public"."push_subscriptions" FOR INSERT TO "authenticated" WITH CHECK ((( SELECT "auth"."uid"() AS "uid") = "user_id"));
 
 
 
-CREATE POLICY "push_subscriptions_select" ON "public"."push_subscriptions" FOR SELECT USING ((( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid") = "user_id"));
+CREATE POLICY "push_subscriptions_select" ON "public"."push_subscriptions" FOR SELECT TO "authenticated" USING ((( SELECT "auth"."uid"() AS "uid") = "user_id"));
 
 
 
-CREATE POLICY "push_subscriptions_update" ON "public"."push_subscriptions" FOR UPDATE USING ((( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid") = "user_id")) WITH CHECK ((( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid") = "user_id"));
+CREATE POLICY "push_subscriptions_update" ON "public"."push_subscriptions" FOR UPDATE TO "authenticated" USING ((( SELECT "auth"."uid"() AS "uid") = "user_id")) WITH CHECK ((( SELECT "auth"."uid"() AS "uid") = "user_id"));
 
 
 
@@ -111425,6 +107890,46 @@ CREATE POLICY "rls_infra_deny_public" ON "public"."supplier_customization_option
 
 
 
+CREATE POLICY "rls_restrictive_ai_usage_quotas" ON "public"."ai_usage_quotas" AS RESTRICTIVE TO "authenticated", "service_role" USING (true);
+
+
+
+CREATE POLICY "rls_restrictive_kit_collaborators" ON "public"."kit_collaborators" AS RESTRICTIVE TO "authenticated", "service_role" USING (true);
+
+
+
+CREATE POLICY "rls_restrictive_notification_preferences" ON "public"."notification_preferences" AS RESTRICTIVE TO "authenticated", "service_role" USING (true);
+
+
+
+CREATE POLICY "rls_restrictive_product_ai_content" ON "public"."product_ai_content" AS RESTRICTIVE TO "authenticated", "service_role" USING (true);
+
+
+
+CREATE POLICY "rls_restrictive_product_fiscal" ON "public"."product_fiscal" AS RESTRICTIVE TO "authenticated", "service_role" USING (true);
+
+
+
+CREATE POLICY "rls_restrictive_product_seo" ON "public"."product_seo" AS RESTRICTIVE TO "authenticated", "service_role" USING (true);
+
+
+
+CREATE POLICY "rls_restrictive_product_supply" ON "public"."product_supply" AS RESTRICTIVE TO "authenticated", "service_role" USING (true);
+
+
+
+CREATE POLICY "rls_restrictive_push_subscriptions" ON "public"."push_subscriptions" AS RESTRICTIVE TO "authenticated", "service_role" USING (true);
+
+
+
+CREATE POLICY "rls_restrictive_recently_viewed_products" ON "public"."recently_viewed_products" AS RESTRICTIVE TO "authenticated", "service_role" USING (true);
+
+
+
+CREATE POLICY "rls_restrictive_system_kill_switches" ON "public"."system_kill_switches" AS RESTRICTIVE TO "authenticated", "service_role" USING (true);
+
+
+
 ALTER TABLE "public"."role_migration_batches" ENABLE ROW LEVEL SECURITY;
 
 
@@ -111720,6 +108225,25 @@ CREATE POLICY "step_up_tokens_update_own" ON "public"."step_up_tokens" FOR UPDAT
 ALTER TABLE "public"."stock_daily_summary" ENABLE ROW LEVEL SECURITY;
 
 
+ALTER TABLE "public"."stock_notes" ENABLE ROW LEVEL SECURITY;
+
+
+CREATE POLICY "stock_notes_delete_own" ON "public"."stock_notes" FOR DELETE TO "authenticated" USING (("created_by" = "auth"."uid"()));
+
+
+
+CREATE POLICY "stock_notes_insert_own" ON "public"."stock_notes" FOR INSERT TO "authenticated" WITH CHECK (("created_by" = "auth"."uid"()));
+
+
+
+CREATE POLICY "stock_notes_select_authenticated" ON "public"."stock_notes" FOR SELECT TO "authenticated" USING (true);
+
+
+
+CREATE POLICY "stock_notes_update_own" ON "public"."stock_notes" FOR UPDATE TO "authenticated" USING (("created_by" = "auth"."uid"())) WITH CHECK (("created_by" = "auth"."uid"()));
+
+
+
 ALTER TABLE "public"."stock_snapshots" ENABLE ROW LEVEL SECURITY;
 
 
@@ -111829,12 +108353,6 @@ ALTER TABLE "public"."supplier_products_raw" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "public"."supplier_products_raw_history" ENABLE ROW LEVEL SECURITY;
 
 
-ALTER TABLE "public"."supplier_products_raw_history_p2026_06" ENABLE ROW LEVEL SECURITY;
-
-
-ALTER TABLE "public"."supplier_products_raw_history_p2026_07" ENABLE ROW LEVEL SECURITY;
-
-
 ALTER TABLE "public"."supplier_products_raw_history_p2026_08" ENABLE ROW LEVEL SECURITY;
 
 
@@ -111848,6 +108366,12 @@ ALTER TABLE "public"."supplier_products_raw_history_p2026_11" ENABLE ROW LEVEL S
 
 
 ALTER TABLE "public"."supplier_products_raw_history_p2026_12" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "public"."supplier_products_raw_history_p2027_01" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "public"."supplier_products_raw_history_p2027_02" ENABLE ROW LEVEL SECURITY;
 
 
 ALTER TABLE "public"."supplier_property_mappings" ENABLE ROW LEVEL SECURITY;
@@ -111914,14 +108438,30 @@ ALTER TABLE "public"."system_documentation" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "public"."system_kill_switches" ENABLE ROW LEVEL SECURITY;
 
 
+CREATE POLICY "system_kill_switches_authenticated_select" ON "public"."system_kill_switches" FOR SELECT TO "authenticated" USING (true);
+
+
+
 ALTER TABLE "public"."system_settings" ENABLE ROW LEVEL SECURITY;
 
 
-CREATE POLICY "system_settings_admin_all" ON "public"."system_settings" TO "authenticated" USING ("public"."is_admin"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid"))) WITH CHECK ("public"."is_admin"(( SELECT ( SELECT "auth"."uid"() AS "uid") AS "uid")));
+CREATE POLICY "system_settings_admin_delete" ON "public"."system_settings" FOR DELETE TO "authenticated" USING ("public"."is_admin"(( SELECT "auth"."uid"() AS "uid")));
 
 
 
-CREATE POLICY "system_settings_public_read_maintenance" ON "public"."system_settings" FOR SELECT TO "authenticated", "anon" USING (("key" = 'maintenance_mode'::"text"));
+CREATE POLICY "system_settings_admin_insert" ON "public"."system_settings" FOR INSERT TO "authenticated" WITH CHECK ("public"."is_admin"(( SELECT "auth"."uid"() AS "uid")));
+
+
+
+CREATE POLICY "system_settings_admin_update" ON "public"."system_settings" FOR UPDATE TO "authenticated" USING ("public"."is_admin"(( SELECT "auth"."uid"() AS "uid"))) WITH CHECK ("public"."is_admin"(( SELECT "auth"."uid"() AS "uid")));
+
+
+
+CREATE POLICY "system_settings_anon_select" ON "public"."system_settings" FOR SELECT TO "anon" USING (("key" = 'maintenance_mode'::"text"));
+
+
+
+CREATE POLICY "system_settings_authenticated_select" ON "public"."system_settings" FOR SELECT TO "authenticated" USING ((("key" = 'maintenance_mode'::"text") OR "public"."is_admin"(( SELECT "auth"."uid"() AS "uid"))));
 
 
 
@@ -112257,22 +108797,32 @@ CREATE POLICY "users_view_own_notifications" ON "public"."notifications" FOR SEL
 ALTER TABLE "public"."variant_commemorative_dates" ENABLE ROW LEVEL SECURITY;
 
 
-CREATE POLICY "variant_stocks_select_org" ON "public"."variant_supplier_sources" FOR SELECT USING ("public"."user_belongs_to_org"("organization_id"));
+CREATE POLICY "variant_stocks_select_org" ON "public"."variant_supplier_sources" FOR SELECT USING (("organization_id" IN ( SELECT "uo"."organization_id"
+   FROM "public"."user_organizations" "uo"
+  WHERE ("uo"."user_id" = ( SELECT "auth"."uid"() AS "uid")))));
 
 
 
 ALTER TABLE "public"."variant_supplier_sources" ENABLE ROW LEVEL SECURITY;
 
 
-CREATE POLICY "variant_supplier_sources_oa_del" ON "public"."variant_supplier_sources" FOR DELETE TO "authenticated" USING ("public"."is_org_owner_or_admin"("organization_id"));
+CREATE POLICY "variant_supplier_sources_oa_del" ON "public"."variant_supplier_sources" FOR DELETE TO "authenticated" USING (("organization_id" IN ( SELECT "uo"."organization_id"
+   FROM "public"."user_organizations" "uo"
+  WHERE (("uo"."user_id" = ( SELECT "auth"."uid"() AS "uid")) AND ("uo"."role" = ANY (ARRAY['owner'::"public"."org_role", 'admin'::"public"."org_role"]))))));
 
 
 
-CREATE POLICY "variant_supplier_sources_oa_ins" ON "public"."variant_supplier_sources" FOR INSERT TO "authenticated" WITH CHECK ("public"."is_org_owner_or_admin"("organization_id"));
+CREATE POLICY "variant_supplier_sources_oa_ins" ON "public"."variant_supplier_sources" FOR INSERT TO "authenticated" WITH CHECK (("organization_id" IN ( SELECT "uo"."organization_id"
+   FROM "public"."user_organizations" "uo"
+  WHERE (("uo"."user_id" = ( SELECT "auth"."uid"() AS "uid")) AND ("uo"."role" = ANY (ARRAY['owner'::"public"."org_role", 'admin'::"public"."org_role"]))))));
 
 
 
-CREATE POLICY "variant_supplier_sources_oa_upd" ON "public"."variant_supplier_sources" FOR UPDATE TO "authenticated" USING ("public"."is_org_owner_or_admin"("organization_id")) WITH CHECK ("public"."is_org_owner_or_admin"("organization_id"));
+CREATE POLICY "variant_supplier_sources_oa_upd" ON "public"."variant_supplier_sources" FOR UPDATE TO "authenticated" USING (("organization_id" IN ( SELECT "uo"."organization_id"
+   FROM "public"."user_organizations" "uo"
+  WHERE (("uo"."user_id" = ( SELECT "auth"."uid"() AS "uid")) AND ("uo"."role" = ANY (ARRAY['owner'::"public"."org_role", 'admin'::"public"."org_role"])))))) WITH CHECK (("organization_id" IN ( SELECT "uo"."organization_id"
+   FROM "public"."user_organizations" "uo"
+  WHERE (("uo"."user_id" = ( SELECT "auth"."uid"() AS "uid")) AND ("uo"."role" = ANY (ARRAY['owner'::"public"."org_role", 'admin'::"public"."org_role"]))))));
 
 
 
@@ -112383,6 +108933,18 @@ CREATE POLICY "view_events_read" ON "public"."magazine_public_view_events_2026_1
 
 
 
+CREATE POLICY "view_events_read" ON "public"."magazine_public_view_events_2027_01" FOR SELECT TO "authenticated" USING (("public"."has_role"(( SELECT "auth"."uid"() AS "uid"), 'admin'::"public"."app_role") OR (EXISTS ( SELECT 1
+   FROM "public"."magazines" "m"
+  WHERE (("m"."id" = "magazine_public_view_events_2027_01"."magazine_id") AND ("m"."owner_id" = ( SELECT "auth"."uid"() AS "uid")))))));
+
+
+
+CREATE POLICY "view_events_read" ON "public"."magazine_public_view_events_2027_02" FOR SELECT TO "authenticated" USING (("public"."has_role"(( SELECT "auth"."uid"() AS "uid"), 'admin'::"public"."app_role") OR (EXISTS ( SELECT 1
+   FROM "public"."magazines" "m"
+  WHERE (("m"."id" = "magazine_public_view_events_2027_02"."magazine_id") AND ("m"."owner_id" = ( SELECT "auth"."uid"() AS "uid")))))));
+
+
+
 CREATE POLICY "view_events_read" ON "public"."magazine_public_view_events_default" FOR SELECT TO "authenticated" USING (("public"."has_role"(( SELECT "auth"."uid"() AS "uid"), 'admin'::"public"."app_role") OR (EXISTS ( SELECT 1
    FROM "public"."magazines" "m"
   WHERE (("m"."id" = "magazine_public_view_events_default"."magazine_id") AND ("m"."owner_id" = ( SELECT "auth"."uid"() AS "uid")))))));
@@ -112414,6 +108976,14 @@ CREATE POLICY "view_events_service_all" ON "public"."magazine_public_view_events
 
 
 CREATE POLICY "view_events_service_all" ON "public"."magazine_public_view_events_2026_12" TO "service_role" USING (true) WITH CHECK (true);
+
+
+
+CREATE POLICY "view_events_service_all" ON "public"."magazine_public_view_events_2027_01" TO "service_role" USING (true) WITH CHECK (true);
+
+
+
+CREATE POLICY "view_events_service_all" ON "public"."magazine_public_view_events_2027_02" TO "service_role" USING (true) WITH CHECK (true);
 
 
 
@@ -112494,239 +109064,49 @@ CREATE POLICY "xbz_upload_mapping_auth_read" ON "public"."xbz_upload_mapping" FO
 
 
 
-ALTER TABLE "realtime"."messages" ENABLE ROW LEVEL SECURITY;
 
 
-CREATE POLICY "Acesso de inserção para usuários autenticados em personaliza" ON "storage"."objects" FOR INSERT TO "authenticated" WITH CHECK (("bucket_id" = 'personalization-images'::"text"));
+ALTER PUBLICATION "supabase_realtime" OWNER TO "postgres";
 
 
 
-CREATE POLICY "Acesso de leitura para usuários autenticados em personalizatio" ON "storage"."objects" FOR SELECT TO "authenticated" USING (("bucket_id" = 'personalization-images'::"text"));
 
 
 
-CREATE POLICY "Admins can delete component media" ON "storage"."objects" FOR DELETE USING ((("bucket_id" = 'component-media'::"text") AND "public"."is_supervisor_or_above"(( SELECT "auth"."uid"() AS "uid"))));
+ALTER PUBLICATION "supabase_realtime" ADD TABLE ONLY "public"."device_login_notifications";
 
 
 
-CREATE POLICY "Admins can delete personalization images" ON "storage"."objects" FOR DELETE TO "authenticated" USING ((("bucket_id" = 'personalization-images'::"text") AND "public"."is_supervisor_or_above"(( SELECT "auth"."uid"() AS "uid"))));
+ALTER PUBLICATION "supabase_realtime" ADD TABLE ONLY "public"."discount_approval_requests";
 
 
 
-CREATE POLICY "Admins can delete videos" ON "storage"."objects" FOR DELETE USING ((("bucket_id" = 'product-videos'::"text") AND "public"."is_supervisor_or_above"(( SELECT "auth"."uid"() AS "uid"))));
+ALTER PUBLICATION "supabase_realtime" ADD TABLE ONLY "public"."login_attempts";
 
 
 
-CREATE POLICY "Admins can list protected buckets" ON "storage"."objects" FOR SELECT USING ((("bucket_id" = ANY (ARRAY['supplier-logos'::"text", 'product-videos'::"text", 'personalization-images'::"text", 'component-media'::"text"])) AND "public"."is_supervisor_or_above"(( SELECT "auth"."uid"() AS "uid"))));
+ALTER PUBLICATION "supabase_realtime" ADD TABLE ONLY "public"."notifications";
 
 
 
-CREATE POLICY "Admins can update component media" ON "storage"."objects" FOR UPDATE USING ((("bucket_id" = 'component-media'::"text") AND "public"."is_supervisor_or_above"(( SELECT "auth"."uid"() AS "uid")))) WITH CHECK ((("bucket_id" = 'component-media'::"text") AND "public"."is_supervisor_or_above"(( SELECT "auth"."uid"() AS "uid"))));
+ALTER PUBLICATION "supabase_realtime" ADD TABLE ONLY "public"."order_items";
 
 
 
-CREATE POLICY "Admins can upload component media" ON "storage"."objects" FOR INSERT WITH CHECK ((("bucket_id" = 'component-media'::"text") AND "public"."is_supervisor_or_above"(( SELECT "auth"."uid"() AS "uid"))));
+ALTER PUBLICATION "supabase_realtime" ADD TABLE ONLY "public"."orders";
 
 
 
-CREATE POLICY "Admins can upload videos" ON "storage"."objects" FOR INSERT WITH CHECK ((("bucket_id" = 'product-videos'::"text") AND "public"."is_supervisor_or_above"(( SELECT "auth"."uid"() AS "uid"))));
+ALTER PUBLICATION "supabase_realtime" ADD TABLE ONLY "public"."quote_items";
 
 
 
-CREATE POLICY "Anyone can read component media" ON "storage"."objects" FOR SELECT USING (("bucket_id" = 'component-media'::"text"));
+ALTER PUBLICATION "supabase_realtime" ADD TABLE ONLY "public"."quotes";
 
 
 
-CREATE POLICY "Authenticated direct read component-media" ON "storage"."objects" FOR SELECT TO "authenticated" USING ((("bucket_id" = 'component-media'::"text") AND ("name" IS NOT NULL) AND ("length"("name") > 0)));
+ALTER PUBLICATION "supabase_realtime" ADD TABLE ONLY "public"."workspace_notifications";
 
-
-
-CREATE POLICY "Authenticated direct read personalization-images" ON "storage"."objects" FOR SELECT TO "authenticated" USING ((("bucket_id" = 'personalization-images'::"text") AND ("name" IS NOT NULL) AND ("length"("name") > 0)));
-
-
-
-CREATE POLICY "Authenticated direct read product-videos" ON "storage"."objects" FOR SELECT TO "authenticated" USING ((("bucket_id" = 'product-videos'::"text") AND ("name" IS NOT NULL) AND ("length"("name") > 0)));
-
-
-
-CREATE POLICY "Authenticated direct read supplier-logos" ON "storage"."objects" FOR SELECT TO "authenticated" USING ((("bucket_id" = 'supplier-logos'::"text") AND ("name" IS NOT NULL) AND ("length"("name") > 0)));
-
-
-
-CREATE POLICY "Authenticated users can delete own personalization images" ON "storage"."objects" FOR DELETE TO "authenticated" USING ((("bucket_id" = 'personalization-images'::"text") AND ("owner" = ( SELECT "auth"."uid"() AS "uid"))));
-
-
-
-CREATE POLICY "Authenticated users can update own personalization images" ON "storage"."objects" FOR UPDATE TO "authenticated" USING ((("bucket_id" = 'personalization-images'::"text") AND ("owner" = ( SELECT "auth"."uid"() AS "uid")))) WITH CHECK ((("bucket_id" = 'personalization-images'::"text") AND ("owner" = ( SELECT "auth"."uid"() AS "uid"))));
-
-
-
-CREATE POLICY "Authenticated users can upload personalization images" ON "storage"."objects" FOR INSERT TO "authenticated" WITH CHECK (("bucket_id" = 'personalization-images'::"text"));
-
-
-
-CREATE POLICY "Authenticated users can view mockup assets" ON "storage"."objects" FOR SELECT TO "authenticated" USING ((("bucket_id" = 'mockup-assets'::"text") AND ("name" IS NOT NULL) AND ("length"("name") > 0)));
-
-
-
-CREATE POLICY "Authenticated users can view personalization images" ON "storage"."objects" FOR SELECT TO "authenticated" USING (("bucket_id" = 'personalization-images'::"text"));
-
-
-
-CREATE POLICY "Authenticated users can view signatures" ON "storage"."objects" FOR SELECT TO "authenticated" USING (("bucket_id" = 'signatures'::"text"));
-
-
-
-CREATE POLICY "Only admins can delete supplier logos" ON "storage"."objects" FOR DELETE USING ((("bucket_id" = 'supplier-logos'::"text") AND "public"."is_supervisor_or_above"(( SELECT "auth"."uid"() AS "uid"))));
-
-
-
-CREATE POLICY "Only admins can manage supplier logos" ON "storage"."objects" TO "authenticated" USING ((("bucket_id" = 'supplier-logos'::"text") AND "public"."is_supervisor_or_above"(( SELECT "auth"."uid"() AS "uid")))) WITH CHECK ((("bucket_id" = 'supplier-logos'::"text") AND "public"."is_supervisor_or_above"(( SELECT "auth"."uid"() AS "uid"))));
-
-
-
-CREATE POLICY "Only admins can update product videos" ON "storage"."objects" FOR UPDATE USING ((("bucket_id" = 'product-videos'::"text") AND "public"."is_supervisor_or_above"(( SELECT "auth"."uid"() AS "uid")))) WITH CHECK ((("bucket_id" = 'product-videos'::"text") AND "public"."is_supervisor_or_above"(( SELECT "auth"."uid"() AS "uid"))));
-
-
-
-CREATE POLICY "Only admins can update supplier logos" ON "storage"."objects" FOR UPDATE USING ((("bucket_id" = 'supplier-logos'::"text") AND "public"."is_supervisor_or_above"(( SELECT "auth"."uid"() AS "uid")))) WITH CHECK ((("bucket_id" = 'supplier-logos'::"text") AND "public"."is_supervisor_or_above"(( SELECT "auth"."uid"() AS "uid"))));
-
-
-
-CREATE POLICY "Only admins can upload supplier logos" ON "storage"."objects" FOR INSERT WITH CHECK ((("bucket_id" = 'supplier-logos'::"text") AND "public"."is_supervisor_or_above"(( SELECT "auth"."uid"() AS "uid"))));
-
-
-
-CREATE POLICY "Public can view supplier logos" ON "storage"."objects" FOR SELECT USING (("bucket_id" = 'supplier-logos'::"text"));
-
-
-
-CREATE POLICY "Service role full access protected buckets" ON "storage"."objects" FOR SELECT TO "service_role" USING (("bucket_id" = ANY (ARRAY['supplier-logos'::"text", 'product-videos'::"text", 'personalization-images'::"text", 'component-media'::"text"])));
-
-
-
-CREATE POLICY "Users can delete their own art files" ON "storage"."objects" FOR DELETE TO "authenticated" USING ((("bucket_id" = 'mockup-art-files'::"text") AND (("storage"."foldername"("name"))[1] = (( SELECT "auth"."uid"() AS "uid"))::"text")));
-
-
-
-CREATE POLICY "Users can delete their own mockup assets" ON "storage"."objects" FOR DELETE TO "authenticated" USING ((("bucket_id" = 'mockup-assets'::"text") AND ((( SELECT "auth"."uid"() AS "uid"))::"text" = ("storage"."foldername"("name"))[1])));
-
-
-
-CREATE POLICY "Users can update their own mockup assets" ON "storage"."objects" FOR UPDATE TO "authenticated" USING ((("bucket_id" = 'mockup-assets'::"text") AND ((( SELECT "auth"."uid"() AS "uid"))::"text" = ("storage"."foldername"("name"))[1]))) WITH CHECK ((("bucket_id" = 'mockup-assets'::"text") AND ((( SELECT "auth"."uid"() AS "uid"))::"text" = ("storage"."foldername"("name"))[1])));
-
-
-
-CREATE POLICY "Users can upload own personalization images" ON "storage"."objects" FOR INSERT TO "authenticated" WITH CHECK ((("bucket_id" = 'personalization-images'::"text") AND ((( SELECT "auth"."uid"() AS "uid"))::"text" = "split_part"("name", '/'::"text", 1))));
-
-
-
-CREATE POLICY "Users can upload their own art files" ON "storage"."objects" FOR INSERT TO "authenticated" WITH CHECK ((("bucket_id" = 'mockup-art-files'::"text") AND (("storage"."foldername"("name"))[1] = (( SELECT "auth"."uid"() AS "uid"))::"text")));
-
-
-
-CREATE POLICY "Users can upload their own mockup assets" ON "storage"."objects" FOR INSERT WITH CHECK ((("bucket_id" = 'mockup-assets'::"text") AND (("auth"."uid"())::"text" = ("storage"."foldername"("name"))[1])));
-
-
-
-CREATE POLICY "Users can upload to their own mockup folder" ON "storage"."objects" FOR INSERT TO "authenticated" WITH CHECK ((("bucket_id" = 'mockup-assets'::"text") AND ((( SELECT "auth"."uid"() AS "uid"))::"text" = ("storage"."foldername"("name"))[1])));
-
-
-
-CREATE POLICY "Users can view their own or shared art files" ON "storage"."objects" FOR SELECT TO "authenticated" USING ((("bucket_id" = 'mockup-art-files'::"text") AND ((("storage"."foldername"("name"))[1] = (( SELECT "auth"."uid"() AS "uid"))::"text") OR "public"."is_supervisor_or_above"(( SELECT "auth"."uid"() AS "uid")))));
-
-
-
-CREATE POLICY "Users delete own art files in storage" ON "storage"."objects" FOR DELETE USING ((("bucket_id" = 'mockup-art-files'::"text") AND ((( SELECT "auth"."uid"() AS "uid"))::"text" = ("storage"."foldername"("name"))[1])));
-
-
-
-CREATE POLICY "Users update own art files in storage" ON "storage"."objects" FOR UPDATE USING ((("bucket_id" = 'mockup-art-files'::"text") AND ((( SELECT "auth"."uid"() AS "uid"))::"text" = ("storage"."foldername"("name"))[1])));
-
-
-
-CREATE POLICY "Users upload own art files to storage" ON "storage"."objects" FOR INSERT WITH CHECK ((("bucket_id" = 'mockup-art-files'::"text") AND ((( SELECT "auth"."uid"() AS "uid"))::"text" = ("storage"."foldername"("name"))[1])));
-
-
-
-CREATE POLICY "Users view own art files in storage" ON "storage"."objects" FOR SELECT USING ((("bucket_id" = 'mockup-art-files'::"text") AND ((( SELECT "auth"."uid"() AS "uid"))::"text" = ("storage"."foldername"("name"))[1])));
-
-
-
-CREATE POLICY "art_files_auth_delete" ON "storage"."objects" FOR DELETE TO "authenticated" USING (("bucket_id" = 'art-files'::"text"));
-
-
-
-CREATE POLICY "art_files_auth_insert" ON "storage"."objects" FOR INSERT TO "authenticated" WITH CHECK (("bucket_id" = 'art-files'::"text"));
-
-
-
-CREATE POLICY "art_files_auth_update" ON "storage"."objects" FOR UPDATE TO "authenticated" USING (("bucket_id" = 'art-files'::"text")) WITH CHECK (("bucket_id" = 'art-files'::"text"));
-
-
-
-CREATE POLICY "art_files_public_read" ON "storage"."objects" FOR SELECT USING ((("bucket_id" = 'art-files'::"text") AND ("name" IS NOT NULL) AND ("length"("name") > 0)));
-
-
-
-CREATE POLICY "avatars_auth_delete" ON "storage"."objects" FOR DELETE TO "authenticated" USING (("bucket_id" = 'avatars'::"text"));
-
-
-
-CREATE POLICY "avatars_auth_insert" ON "storage"."objects" FOR INSERT TO "authenticated" WITH CHECK (("bucket_id" = 'avatars'::"text"));
-
-
-
-CREATE POLICY "avatars_auth_update" ON "storage"."objects" FOR UPDATE TO "authenticated" USING (("bucket_id" = 'avatars'::"text")) WITH CHECK (("bucket_id" = 'avatars'::"text"));
-
-
-
-CREATE POLICY "avatars_public_read" ON "storage"."objects" FOR SELECT USING ((("bucket_id" = 'avatars'::"text") AND ("name" IS NOT NULL) AND ("length"("name") > 0)));
-
-
-
-ALTER TABLE "storage"."buckets" ENABLE ROW LEVEL SECURITY;
-
-
-ALTER TABLE "storage"."buckets_analytics" ENABLE ROW LEVEL SECURITY;
-
-
-ALTER TABLE "storage"."buckets_vectors" ENABLE ROW LEVEL SECURITY;
-
-
-ALTER TABLE "storage"."migrations" ENABLE ROW LEVEL SECURITY;
-
-
-ALTER TABLE "storage"."objects" ENABLE ROW LEVEL SECURITY;
-
-
-CREATE POLICY "quarantine_delete_admin" ON "storage"."objects" FOR DELETE TO "authenticated" USING ((("bucket_id" = 'quarantine'::"text") AND "public"."is_supervisor_or_above"(( SELECT "auth"."uid"() AS "uid"))));
-
-
-
-CREATE POLICY "quarantine_insert_service" ON "storage"."objects" FOR INSERT TO "authenticated" WITH CHECK ((("bucket_id" = 'quarantine'::"text") AND "public"."is_supervisor_or_above"(( SELECT "auth"."uid"() AS "uid"))));
-
-
-
-CREATE POLICY "quarantine_select_admin_or_service" ON "storage"."objects" FOR SELECT TO "authenticated" USING ((("bucket_id" = 'quarantine'::"text") AND "public"."is_supervisor_or_above"(( SELECT "auth"."uid"() AS "uid"))));
-
-
-
-CREATE POLICY "recibos_authenticated_update" ON "storage"."objects" FOR UPDATE TO "authenticated", "service_role" USING (("bucket_id" = 'recibos-entrega'::"text"));
-
-
-
-CREATE POLICY "recibos_authenticated_write" ON "storage"."objects" FOR INSERT TO "authenticated", "service_role" WITH CHECK (("bucket_id" = 'recibos-entrega'::"text"));
-
-
-
-ALTER TABLE "storage"."s3_multipart_uploads" ENABLE ROW LEVEL SECURITY;
-
-
-ALTER TABLE "storage"."s3_multipart_uploads_parts" ENABLE ROW LEVEL SECURITY;
-
-
-ALTER TABLE "storage"."vector_indexes" ENABLE ROW LEVEL SECURITY;
 
 
 GRANT USAGE ON SCHEMA "analytics" TO "authenticated";
@@ -112740,36 +109120,14 @@ GRANT USAGE ON SCHEMA "api" TO "authenticated";
 
 
 
-GRANT USAGE ON SCHEMA "auth" TO "anon";
-GRANT USAGE ON SCHEMA "auth" TO "authenticated";
-GRANT USAGE ON SCHEMA "auth" TO "service_role";
-GRANT ALL ON SCHEMA "auth" TO "supabase_auth_admin";
-GRANT ALL ON SCHEMA "auth" TO "dashboard_user";
-GRANT USAGE ON SCHEMA "auth" TO "postgres";
-
-
-
-GRANT USAGE ON SCHEMA "extensions" TO "anon";
-GRANT USAGE ON SCHEMA "extensions" TO "authenticated";
-GRANT USAGE ON SCHEMA "extensions" TO "service_role";
-GRANT ALL ON SCHEMA "extensions" TO "dashboard_user";
-
-
-
-SET SESSION AUTHORIZATION "postgres";
-GRANT USAGE ON SCHEMA "graphql" TO "service_role";
-RESET SESSION AUTHORIZATION;
-
-
-
-SET SESSION AUTHORIZATION "postgres";
-GRANT USAGE ON SCHEMA "graphql_public" TO "service_role";
-RESET SESSION AUTHORIZATION;
 
 
 
 GRANT USAGE ON SCHEMA "internal" TO "authenticated";
 GRANT USAGE ON SCHEMA "internal" TO "anon";
+
+
+
 
 
 
@@ -112780,28 +109138,6 @@ GRANT USAGE ON SCHEMA "public" TO "service_role";
 
 
 
-GRANT USAGE ON SCHEMA "realtime" TO "postgres" WITH GRANT OPTION;
-GRANT USAGE ON SCHEMA "realtime" TO "anon";
-GRANT USAGE ON SCHEMA "realtime" TO "authenticated";
-GRANT USAGE ON SCHEMA "realtime" TO "service_role";
-GRANT ALL ON SCHEMA "realtime" TO "supabase_realtime_admin";
-
-
-
-GRANT USAGE ON SCHEMA "storage" TO "postgres" WITH GRANT OPTION;
-GRANT USAGE ON SCHEMA "storage" TO "anon";
-GRANT USAGE ON SCHEMA "storage" TO "authenticated";
-GRANT USAGE ON SCHEMA "storage" TO "service_role";
-GRANT ALL ON SCHEMA "storage" TO "supabase_storage_admin" WITH GRANT OPTION;
-GRANT ALL ON SCHEMA "storage" TO "dashboard_user";
-
-
-
-GRANT USAGE ON SCHEMA "supabase_functions" TO "postgres";
-GRANT USAGE ON SCHEMA "supabase_functions" TO "anon";
-GRANT USAGE ON SCHEMA "supabase_functions" TO "authenticated";
-GRANT USAGE ON SCHEMA "supabase_functions" TO "service_role";
-GRANT ALL ON SCHEMA "supabase_functions" TO "supabase_functions_admin";
 
 
 
@@ -112809,59 +109145,534 @@ GRANT USAGE ON SCHEMA "supplier_stricker" TO "service_role";
 
 
 
-GRANT USAGE ON SCHEMA "vault" TO "postgres" WITH GRANT OPTION;
-GRANT USAGE ON SCHEMA "vault" TO "service_role";
-SET SESSION AUTHORIZATION "postgres";
-GRANT USAGE ON SCHEMA "vault" TO "postgres";
-RESET SESSION AUTHORIZATION;
-SET SESSION AUTHORIZATION "postgres";
-GRANT USAGE ON SCHEMA "vault" TO "service_role";
-RESET SESSION AUTHORIZATION;
 
 
 
-GRANT ALL ON FUNCTION "auth"."email"() TO "dashboard_user";
 
 
 
-GRANT ALL ON FUNCTION "auth"."jwt"() TO "postgres";
-GRANT ALL ON FUNCTION "auth"."jwt"() TO "dashboard_user";
 
 
 
-GRANT ALL ON FUNCTION "auth"."role"() TO "dashboard_user";
 
 
 
-GRANT ALL ON FUNCTION "auth"."uid"() TO "dashboard_user";
 
 
 
-REVOKE ALL ON FUNCTION "extensions"."grant_pg_cron_access"() FROM "supabase_admin";
-GRANT ALL ON FUNCTION "extensions"."grant_pg_cron_access"() TO "supabase_admin" WITH GRANT OPTION;
-GRANT ALL ON FUNCTION "extensions"."grant_pg_cron_access"() TO "dashboard_user";
 
 
 
-GRANT ALL ON FUNCTION "extensions"."grant_pg_graphql_access"() TO "postgres" WITH GRANT OPTION;
 
 
 
-REVOKE ALL ON FUNCTION "extensions"."grant_pg_net_access"() FROM "supabase_admin";
-GRANT ALL ON FUNCTION "extensions"."grant_pg_net_access"() TO "supabase_admin" WITH GRANT OPTION;
-GRANT ALL ON FUNCTION "extensions"."grant_pg_net_access"() TO "dashboard_user";
 
 
 
-GRANT ALL ON FUNCTION "extensions"."pgrst_ddl_watch"() TO "postgres" WITH GRANT OPTION;
 
 
 
-GRANT ALL ON FUNCTION "extensions"."pgrst_drop_watch"() TO "postgres" WITH GRANT OPTION;
 
 
 
-GRANT ALL ON FUNCTION "extensions"."set_graphql_placeholder"() TO "postgres" WITH GRANT OPTION;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -112879,6 +109690,18 @@ GRANT ALL ON FUNCTION "public"."_get_user_primary_role"("_user_id" "uuid") TO "s
 REVOKE ALL ON FUNCTION "public"."acquire_ai_quota"("_user_id" "uuid", "_function_name" "text", "_model" "text") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."acquire_ai_quota"("_user_id" "uuid", "_function_name" "text", "_model" "text") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."acquire_ai_quota"("_user_id" "uuid", "_function_name" "text", "_model" "text") TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."admin_active_sessions"() FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."admin_active_sessions"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."admin_active_sessions"() TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."admin_revoke_user_sessions"("_user_id" "uuid") FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."admin_revoke_user_sessions"("_user_id" "uuid") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."admin_revoke_user_sessions"("_user_id" "uuid") TO "service_role";
 
 
 
@@ -113123,6 +109946,7 @@ GRANT ALL ON FUNCTION "public"."check_rate_limit"("_identifier" "text", "_endpoi
 
 REVOKE ALL ON FUNCTION "public"."check_telemetry_regression"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."check_telemetry_regression"() TO "service_role";
+GRANT ALL ON FUNCTION "public"."check_telemetry_regression"() TO "authenticated";
 
 
 
@@ -113463,6 +110287,11 @@ GRANT ALL ON FUNCTION "public"."clean_old_rate_limits"() TO "service_role";
 
 REVOKE ALL ON FUNCTION "public"."cleanup_discount_test_data"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."cleanup_discount_test_data"() TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."cleanup_expired_auth_sessions"() FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."cleanup_expired_auth_sessions"() TO "service_role";
 
 
 
@@ -114181,6 +111010,11 @@ GRANT ALL ON FUNCTION "public"."fn_audit_role_changes"() TO "anon";
 
 
 
+REVOKE ALL ON FUNCTION "public"."fn_audit_row_change"() FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."fn_audit_row_change"() TO "service_role";
+
+
+
 GRANT ALL ON FUNCTION "public"."fn_auto_classify_kit_product"() TO "anon";
 GRANT ALL ON FUNCTION "public"."fn_auto_classify_kit_product"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."fn_auto_classify_kit_product"() TO "service_role";
@@ -114356,6 +111190,12 @@ REVOKE ALL ON FUNCTION "public"."fn_backfill_product_categories"("p_batch_size" 
 GRANT ALL ON FUNCTION "public"."fn_backfill_product_categories"("p_batch_size" integer, "p_dry_run" boolean) TO "service_role";
 GRANT ALL ON FUNCTION "public"."fn_backfill_product_categories"("p_batch_size" integer, "p_dry_run" boolean) TO "anon";
 GRANT ALL ON FUNCTION "public"."fn_backfill_product_categories"("p_batch_size" integer, "p_dry_run" boolean) TO "authenticated";
+
+
+
+REVOKE ALL ON FUNCTION "public"."fn_backfill_queue_reap_stuck"("p_stuck_minutes" integer, "p_max_attempts" integer) FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."fn_backfill_queue_reap_stuck"("p_stuck_minutes" integer, "p_max_attempts" integer) TO "authenticated";
+GRANT ALL ON FUNCTION "public"."fn_backfill_queue_reap_stuck"("p_stuck_minutes" integer, "p_max_attempts" integer) TO "service_role";
 
 
 
@@ -114543,8 +111383,6 @@ GRANT ALL ON FUNCTION "public"."fn_check_item_fits"("p_packaging_id" "uuid", "p_
 
 
 REVOKE ALL ON FUNCTION "public"."fn_check_login_allowed"("p_email" "text", "p_ip_address" "text", "p_city" "text", "p_user_agent" "text") FROM PUBLIC;
-GRANT ALL ON FUNCTION "public"."fn_check_login_allowed"("p_email" "text", "p_ip_address" "text", "p_city" "text", "p_user_agent" "text") TO "anon";
-GRANT ALL ON FUNCTION "public"."fn_check_login_allowed"("p_email" "text", "p_ip_address" "text", "p_city" "text", "p_user_agent" "text") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."fn_check_login_allowed"("p_email" "text", "p_ip_address" "text", "p_city" "text", "p_user_agent" "text") TO "service_role";
 
 
@@ -114709,8 +111547,7 @@ GRANT ALL ON FUNCTION "public"."fn_create_quote_v3"("p_quote_data" "jsonb", "p_i
 
 
 
-GRANT ALL ON FUNCTION "public"."fn_cron_guard"("p_key" bigint, "p_sql" "text") TO "anon";
-GRANT ALL ON FUNCTION "public"."fn_cron_guard"("p_key" bigint, "p_sql" "text") TO "authenticated";
+REVOKE ALL ON FUNCTION "public"."fn_cron_guard"("p_key" bigint, "p_sql" "text") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_cron_guard"("p_key" bigint, "p_sql" "text") TO "service_role";
 
 
@@ -114798,6 +111635,12 @@ GRANT ALL ON FUNCTION "public"."fn_derive_parent_ref"("p_supplier_id" "uuid", "p
 
 REVOKE ALL ON FUNCTION "public"."fn_derive_similarity_pairs_on_insert"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_derive_similarity_pairs_on_insert"() TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."fn_detect_recurring_errors_last_hour"("_min_occurrences" integer) FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."fn_detect_recurring_errors_last_hour"("_min_occurrences" integer) TO "authenticated";
+GRANT ALL ON FUNCTION "public"."fn_detect_recurring_errors_last_hour"("_min_occurrences" integer) TO "service_role";
 
 
 
@@ -117260,11 +114103,6 @@ GRANT ALL ON FUNCTION "public"."fn_sync_pat_on_product_status_change"() TO "serv
 
 
 
-REVOKE ALL ON FUNCTION "public"."fn_sync_primary_image_url"() FROM PUBLIC;
-GRANT ALL ON FUNCTION "public"."fn_sync_primary_image_url"() TO "service_role";
-
-
-
 REVOKE ALL ON FUNCTION "public"."fn_sync_product_ai_on_change"() FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."fn_sync_product_ai_on_change"() TO "service_role";
 
@@ -118696,7 +115534,6 @@ GRANT ALL ON FUNCTION "public"."get_sale_price_for_quantity"("p_variant_id" "uui
 REVOKE ALL ON FUNCTION "public"."get_sitemap_public"("p_limit" integer, "p_offset" integer) FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."get_sitemap_public"("p_limit" integer, "p_offset" integer) TO "authenticated";
 GRANT ALL ON FUNCTION "public"."get_sitemap_public"("p_limit" integer, "p_offset" integer) TO "service_role";
-GRANT ALL ON FUNCTION "public"."get_sitemap_public"("p_limit" integer, "p_offset" integer) TO "anon";
 
 
 
@@ -118841,6 +115678,11 @@ GRANT ALL ON FUNCTION "public"."handle_new_user"() TO "service_role";
 
 
 
+GRANT ALL ON FUNCTION "public"."handle_updated_at"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."handle_updated_at"() TO "service_role";
+
+
+
 REVOKE ALL ON FUNCTION "public"."has_active_step_up_challenge"("_action" "public"."step_up_action") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."has_active_step_up_challenge"("_action" "public"."step_up_action") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."has_active_step_up_challenge"("_action" "public"."step_up_action") TO "service_role";
@@ -118869,6 +115711,11 @@ GRANT ALL ON FUNCTION "public"."has_role"("_user_id" "uuid", "_role" "public"."a
 REVOKE ALL ON FUNCTION "public"."hex_to_color_name"("p_hex" "text") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."hex_to_color_name"("p_hex" "text") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."hex_to_color_name"("p_hex" "text") TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."increment_discount_approval_version"() FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."increment_discount_approval_version"() TO "service_role";
 
 
 
@@ -119430,7 +116277,6 @@ GRANT ALL ON FUNCTION "public"."mcp_audit_violation"("_key_id" "uuid", "_reason"
 
 
 REVOKE ALL ON FUNCTION "public"."mcp_kv_get"("p_secret" "text", "p_key" "text") FROM PUBLIC;
-GRANT ALL ON FUNCTION "public"."mcp_kv_get"("p_secret" "text", "p_key" "text") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."mcp_kv_get"("p_secret" "text", "p_key" "text") TO "service_role";
 
 
@@ -119559,6 +116405,12 @@ GRANT ALL ON FUNCTION "public"."parse_unit_from_string"("p_input" "text", OUT "v
 REVOKE ALL ON FUNCTION "public"."parse_xbz_dimensions"("p_raw_data" "jsonb") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."parse_xbz_dimensions"("p_raw_data" "jsonb") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."parse_xbz_dimensions"("p_raw_data" "jsonb") TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."perf002_drop_unused_snapshot_indexes"() FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."perf002_drop_unused_snapshot_indexes"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."perf002_drop_unused_snapshot_indexes"() TO "service_role";
 
 
 
@@ -119833,9 +116685,9 @@ GRANT ALL ON FUNCTION "public"."reset_user_step_up_state"("_user_id" "uuid") TO 
 
 
 
-REVOKE ALL ON FUNCTION "public"."respond_discount_approval_transactional"("_request_id" "uuid", "_approved" boolean, "_admin_notes" "text") FROM PUBLIC;
-GRANT ALL ON FUNCTION "public"."respond_discount_approval_transactional"("_request_id" "uuid", "_approved" boolean, "_admin_notes" "text") TO "authenticated";
-GRANT ALL ON FUNCTION "public"."respond_discount_approval_transactional"("_request_id" "uuid", "_approved" boolean, "_admin_notes" "text") TO "service_role";
+REVOKE ALL ON FUNCTION "public"."respond_discount_approval_transactional"("_request_id" "uuid", "_approved" boolean, "_admin_notes" "text", "_expected_version" integer) FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."respond_discount_approval_transactional"("_request_id" "uuid", "_approved" boolean, "_admin_notes" "text", "_expected_version" integer) TO "authenticated";
+GRANT ALL ON FUNCTION "public"."respond_discount_approval_transactional"("_request_id" "uuid", "_approved" boolean, "_admin_notes" "text", "_expected_version" integer) TO "service_role";
 
 
 
@@ -120555,113 +117407,12 @@ GRANT ALL ON FUNCTION "public"."zapp_catalog_stats"() TO "service_role";
 
 
 
-GRANT ALL ON FUNCTION "realtime"."apply_rls"("wal" "jsonb", "max_record_bytes" integer) TO "postgres";
-GRANT ALL ON FUNCTION "realtime"."apply_rls"("wal" "jsonb", "max_record_bytes" integer) TO "dashboard_user";
-GRANT ALL ON FUNCTION "realtime"."apply_rls"("wal" "jsonb", "max_record_bytes" integer) TO "anon";
-GRANT ALL ON FUNCTION "realtime"."apply_rls"("wal" "jsonb", "max_record_bytes" integer) TO "authenticated";
-GRANT ALL ON FUNCTION "realtime"."apply_rls"("wal" "jsonb", "max_record_bytes" integer) TO "service_role";
 
 
 
-GRANT ALL ON FUNCTION "realtime"."broadcast_changes"("topic_name" "text", "event_name" "text", "operation" "text", "table_name" "text", "table_schema" "text", "new" "record", "old" "record", "level" "text") TO "postgres";
-GRANT ALL ON FUNCTION "realtime"."broadcast_changes"("topic_name" "text", "event_name" "text", "operation" "text", "table_name" "text", "table_schema" "text", "new" "record", "old" "record", "level" "text") TO "dashboard_user";
 
 
 
-GRANT ALL ON FUNCTION "realtime"."build_prepared_statement_sql"("prepared_statement_name" "text", "entity" "regclass", "columns" "realtime"."wal_column"[]) TO "postgres";
-GRANT ALL ON FUNCTION "realtime"."build_prepared_statement_sql"("prepared_statement_name" "text", "entity" "regclass", "columns" "realtime"."wal_column"[]) TO "dashboard_user";
-GRANT ALL ON FUNCTION "realtime"."build_prepared_statement_sql"("prepared_statement_name" "text", "entity" "regclass", "columns" "realtime"."wal_column"[]) TO "anon";
-GRANT ALL ON FUNCTION "realtime"."build_prepared_statement_sql"("prepared_statement_name" "text", "entity" "regclass", "columns" "realtime"."wal_column"[]) TO "authenticated";
-GRANT ALL ON FUNCTION "realtime"."build_prepared_statement_sql"("prepared_statement_name" "text", "entity" "regclass", "columns" "realtime"."wal_column"[]) TO "service_role";
-
-
-
-GRANT ALL ON FUNCTION "realtime"."cast"("val" "text", "type_" "regtype") TO "postgres";
-GRANT ALL ON FUNCTION "realtime"."cast"("val" "text", "type_" "regtype") TO "dashboard_user";
-GRANT ALL ON FUNCTION "realtime"."cast"("val" "text", "type_" "regtype") TO "anon";
-GRANT ALL ON FUNCTION "realtime"."cast"("val" "text", "type_" "regtype") TO "authenticated";
-GRANT ALL ON FUNCTION "realtime"."cast"("val" "text", "type_" "regtype") TO "service_role";
-
-
-
-GRANT ALL ON FUNCTION "realtime"."check_equality_op"("op" "realtime"."equality_op", "type_" "regtype", "val_1" "text", "val_2" "text") TO "postgres";
-GRANT ALL ON FUNCTION "realtime"."check_equality_op"("op" "realtime"."equality_op", "type_" "regtype", "val_1" "text", "val_2" "text") TO "dashboard_user";
-GRANT ALL ON FUNCTION "realtime"."check_equality_op"("op" "realtime"."equality_op", "type_" "regtype", "val_1" "text", "val_2" "text") TO "anon";
-GRANT ALL ON FUNCTION "realtime"."check_equality_op"("op" "realtime"."equality_op", "type_" "regtype", "val_1" "text", "val_2" "text") TO "authenticated";
-GRANT ALL ON FUNCTION "realtime"."check_equality_op"("op" "realtime"."equality_op", "type_" "regtype", "val_1" "text", "val_2" "text") TO "service_role";
-
-
-
-GRANT ALL ON FUNCTION "realtime"."check_equality_op"("op" "realtime"."equality_op", "type_" "regtype", "val_1" "text", "val_2" "text", "negate" boolean) TO "postgres";
-GRANT ALL ON FUNCTION "realtime"."check_equality_op"("op" "realtime"."equality_op", "type_" "regtype", "val_1" "text", "val_2" "text", "negate" boolean) TO "dashboard_user";
-GRANT ALL ON FUNCTION "realtime"."check_equality_op"("op" "realtime"."equality_op", "type_" "regtype", "val_1" "text", "val_2" "text", "negate" boolean) TO "anon";
-GRANT ALL ON FUNCTION "realtime"."check_equality_op"("op" "realtime"."equality_op", "type_" "regtype", "val_1" "text", "val_2" "text", "negate" boolean) TO "authenticated";
-GRANT ALL ON FUNCTION "realtime"."check_equality_op"("op" "realtime"."equality_op", "type_" "regtype", "val_1" "text", "val_2" "text", "negate" boolean) TO "service_role";
-
-
-
-GRANT ALL ON FUNCTION "realtime"."is_visible_through_filters"("columns" "realtime"."wal_column"[], "filters" "realtime"."user_defined_filter"[]) TO "postgres";
-GRANT ALL ON FUNCTION "realtime"."is_visible_through_filters"("columns" "realtime"."wal_column"[], "filters" "realtime"."user_defined_filter"[]) TO "dashboard_user";
-GRANT ALL ON FUNCTION "realtime"."is_visible_through_filters"("columns" "realtime"."wal_column"[], "filters" "realtime"."user_defined_filter"[]) TO "anon";
-GRANT ALL ON FUNCTION "realtime"."is_visible_through_filters"("columns" "realtime"."wal_column"[], "filters" "realtime"."user_defined_filter"[]) TO "authenticated";
-GRANT ALL ON FUNCTION "realtime"."is_visible_through_filters"("columns" "realtime"."wal_column"[], "filters" "realtime"."user_defined_filter"[]) TO "service_role";
-
-
-
-GRANT ALL ON FUNCTION "realtime"."list_changes"("publication" "name", "slot_name" "name", "max_changes" integer, "max_record_bytes" integer) TO "postgres";
-GRANT ALL ON FUNCTION "realtime"."list_changes"("publication" "name", "slot_name" "name", "max_changes" integer, "max_record_bytes" integer) TO "dashboard_user";
-
-
-
-GRANT ALL ON FUNCTION "realtime"."quote_wal2json"("entity" "regclass") TO "postgres";
-GRANT ALL ON FUNCTION "realtime"."quote_wal2json"("entity" "regclass") TO "dashboard_user";
-GRANT ALL ON FUNCTION "realtime"."quote_wal2json"("entity" "regclass") TO "anon";
-GRANT ALL ON FUNCTION "realtime"."quote_wal2json"("entity" "regclass") TO "authenticated";
-GRANT ALL ON FUNCTION "realtime"."quote_wal2json"("entity" "regclass") TO "service_role";
-
-
-
-GRANT ALL ON FUNCTION "realtime"."send"("payload" "jsonb", "event" "text", "topic" "text", "private" boolean) TO "postgres";
-GRANT ALL ON FUNCTION "realtime"."send"("payload" "jsonb", "event" "text", "topic" "text", "private" boolean) TO "dashboard_user";
-
-
-
-GRANT ALL ON FUNCTION "realtime"."send_binary"("payload" "bytea", "event" "text", "topic" "text", "private" boolean) TO "postgres";
-GRANT ALL ON FUNCTION "realtime"."send_binary"("payload" "bytea", "event" "text", "topic" "text", "private" boolean) TO "dashboard_user";
-
-
-
-GRANT ALL ON FUNCTION "realtime"."subscription_check_filters"() TO "postgres";
-GRANT ALL ON FUNCTION "realtime"."subscription_check_filters"() TO "dashboard_user";
-GRANT ALL ON FUNCTION "realtime"."subscription_check_filters"() TO "anon";
-GRANT ALL ON FUNCTION "realtime"."subscription_check_filters"() TO "authenticated";
-GRANT ALL ON FUNCTION "realtime"."subscription_check_filters"() TO "service_role";
-
-
-
-GRANT ALL ON FUNCTION "realtime"."to_regrole"("role_name" "text") TO "postgres";
-GRANT ALL ON FUNCTION "realtime"."to_regrole"("role_name" "text") TO "dashboard_user";
-GRANT ALL ON FUNCTION "realtime"."to_regrole"("role_name" "text") TO "anon";
-GRANT ALL ON FUNCTION "realtime"."to_regrole"("role_name" "text") TO "authenticated";
-GRANT ALL ON FUNCTION "realtime"."to_regrole"("role_name" "text") TO "service_role";
-
-
-
-GRANT ALL ON FUNCTION "realtime"."topic"() TO "postgres";
-GRANT ALL ON FUNCTION "realtime"."topic"() TO "dashboard_user";
-
-
-
-GRANT ALL ON FUNCTION "realtime"."wal2json_escape_identifier"("name" "text") TO "postgres";
-GRANT ALL ON FUNCTION "realtime"."wal2json_escape_identifier"("name" "text") TO "dashboard_user";
-
-
-
-REVOKE ALL ON FUNCTION "supabase_functions"."http_request"() FROM PUBLIC;
-GRANT ALL ON FUNCTION "supabase_functions"."http_request"() TO "postgres";
-GRANT ALL ON FUNCTION "supabase_functions"."http_request"() TO "anon";
-GRANT ALL ON FUNCTION "supabase_functions"."http_request"() TO "authenticated";
-GRANT ALL ON FUNCTION "supabase_functions"."http_request"() TO "service_role";
 
 
 
@@ -120906,160 +117657,6 @@ GRANT SELECT ON TABLE "analytics"."mv_product_intelligence" TO "authenticated";
 
 
 
-GRANT ALL ON TABLE "auth"."audit_log_entries" TO "dashboard_user";
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,TRUNCATE,MAINTAIN,UPDATE ON TABLE "auth"."audit_log_entries" TO "postgres";
-GRANT SELECT ON TABLE "auth"."audit_log_entries" TO "postgres" WITH GRANT OPTION;
-
-
-
-GRANT ALL ON TABLE "auth"."custom_oauth_providers" TO "postgres";
-GRANT ALL ON TABLE "auth"."custom_oauth_providers" TO "dashboard_user";
-
-
-
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,TRUNCATE,MAINTAIN,UPDATE ON TABLE "auth"."flow_state" TO "postgres";
-GRANT SELECT ON TABLE "auth"."flow_state" TO "postgres" WITH GRANT OPTION;
-GRANT ALL ON TABLE "auth"."flow_state" TO "dashboard_user";
-
-
-
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,TRUNCATE,MAINTAIN,UPDATE ON TABLE "auth"."identities" TO "postgres";
-GRANT SELECT ON TABLE "auth"."identities" TO "postgres" WITH GRANT OPTION;
-GRANT ALL ON TABLE "auth"."identities" TO "dashboard_user";
-
-
-
-GRANT ALL ON TABLE "auth"."instances" TO "dashboard_user";
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,TRUNCATE,MAINTAIN,UPDATE ON TABLE "auth"."instances" TO "postgres";
-GRANT SELECT ON TABLE "auth"."instances" TO "postgres" WITH GRANT OPTION;
-
-
-
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,TRUNCATE,MAINTAIN,UPDATE ON TABLE "auth"."mfa_amr_claims" TO "postgres";
-GRANT SELECT ON TABLE "auth"."mfa_amr_claims" TO "postgres" WITH GRANT OPTION;
-GRANT ALL ON TABLE "auth"."mfa_amr_claims" TO "dashboard_user";
-
-
-
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,TRUNCATE,MAINTAIN,UPDATE ON TABLE "auth"."mfa_challenges" TO "postgres";
-GRANT SELECT ON TABLE "auth"."mfa_challenges" TO "postgres" WITH GRANT OPTION;
-GRANT ALL ON TABLE "auth"."mfa_challenges" TO "dashboard_user";
-
-
-
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,TRUNCATE,MAINTAIN,UPDATE ON TABLE "auth"."mfa_factors" TO "postgres";
-GRANT SELECT ON TABLE "auth"."mfa_factors" TO "postgres" WITH GRANT OPTION;
-GRANT ALL ON TABLE "auth"."mfa_factors" TO "dashboard_user";
-
-
-
-GRANT ALL ON TABLE "auth"."mfa_recovery_code_sets" TO "postgres";
-GRANT ALL ON TABLE "auth"."mfa_recovery_code_sets" TO "dashboard_user";
-
-
-
-GRANT ALL ON TABLE "auth"."mfa_recovery_codes" TO "postgres";
-GRANT ALL ON TABLE "auth"."mfa_recovery_codes" TO "dashboard_user";
-
-
-
-GRANT ALL ON TABLE "auth"."oauth_authorizations" TO "postgres";
-GRANT ALL ON TABLE "auth"."oauth_authorizations" TO "dashboard_user";
-
-
-
-GRANT ALL ON TABLE "auth"."oauth_client_states" TO "postgres";
-GRANT ALL ON TABLE "auth"."oauth_client_states" TO "dashboard_user";
-
-
-
-GRANT ALL ON TABLE "auth"."oauth_clients" TO "postgres";
-GRANT ALL ON TABLE "auth"."oauth_clients" TO "dashboard_user";
-
-
-
-GRANT ALL ON TABLE "auth"."oauth_consents" TO "postgres";
-GRANT ALL ON TABLE "auth"."oauth_consents" TO "dashboard_user";
-
-
-
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,TRUNCATE,MAINTAIN,UPDATE ON TABLE "auth"."one_time_tokens" TO "postgres";
-GRANT SELECT ON TABLE "auth"."one_time_tokens" TO "postgres" WITH GRANT OPTION;
-GRANT ALL ON TABLE "auth"."one_time_tokens" TO "dashboard_user";
-
-
-
-GRANT ALL ON TABLE "auth"."refresh_tokens" TO "dashboard_user";
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,TRUNCATE,MAINTAIN,UPDATE ON TABLE "auth"."refresh_tokens" TO "postgres";
-GRANT SELECT ON TABLE "auth"."refresh_tokens" TO "postgres" WITH GRANT OPTION;
-
-
-
-GRANT ALL ON SEQUENCE "auth"."refresh_tokens_id_seq" TO "dashboard_user";
-GRANT ALL ON SEQUENCE "auth"."refresh_tokens_id_seq" TO "postgres";
-
-
-
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,TRUNCATE,MAINTAIN,UPDATE ON TABLE "auth"."saml_providers" TO "postgres";
-GRANT SELECT ON TABLE "auth"."saml_providers" TO "postgres" WITH GRANT OPTION;
-GRANT ALL ON TABLE "auth"."saml_providers" TO "dashboard_user";
-
-
-
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,TRUNCATE,MAINTAIN,UPDATE ON TABLE "auth"."saml_relay_states" TO "postgres";
-GRANT SELECT ON TABLE "auth"."saml_relay_states" TO "postgres" WITH GRANT OPTION;
-GRANT ALL ON TABLE "auth"."saml_relay_states" TO "dashboard_user";
-
-
-
-GRANT SELECT ON TABLE "auth"."schema_migrations" TO "postgres" WITH GRANT OPTION;
-
-
-
-GRANT ALL ON TABLE "auth"."scim_tokens" TO "postgres";
-GRANT ALL ON TABLE "auth"."scim_tokens" TO "dashboard_user";
-
-
-
-GRANT ALL ON TABLE "auth"."scim_users" TO "postgres";
-GRANT ALL ON TABLE "auth"."scim_users" TO "dashboard_user";
-
-
-
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,TRUNCATE,MAINTAIN,UPDATE ON TABLE "auth"."sessions" TO "postgres";
-GRANT SELECT ON TABLE "auth"."sessions" TO "postgres" WITH GRANT OPTION;
-GRANT ALL ON TABLE "auth"."sessions" TO "dashboard_user";
-
-
-
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,TRUNCATE,MAINTAIN,UPDATE ON TABLE "auth"."sso_domains" TO "postgres";
-GRANT SELECT ON TABLE "auth"."sso_domains" TO "postgres" WITH GRANT OPTION;
-GRANT ALL ON TABLE "auth"."sso_domains" TO "dashboard_user";
-
-
-
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,TRUNCATE,MAINTAIN,UPDATE ON TABLE "auth"."sso_providers" TO "postgres";
-GRANT SELECT ON TABLE "auth"."sso_providers" TO "postgres" WITH GRANT OPTION;
-GRANT ALL ON TABLE "auth"."sso_providers" TO "dashboard_user";
-
-
-
-GRANT ALL ON TABLE "auth"."users" TO "dashboard_user";
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,TRUNCATE,MAINTAIN,UPDATE ON TABLE "auth"."users" TO "postgres";
-GRANT SELECT ON TABLE "auth"."users" TO "postgres" WITH GRANT OPTION;
-
-
-
-GRANT ALL ON TABLE "auth"."webauthn_challenges" TO "postgres";
-GRANT ALL ON TABLE "auth"."webauthn_challenges" TO "dashboard_user";
-
-
-
-GRANT ALL ON TABLE "auth"."webauthn_credentials" TO "postgres";
-GRANT ALL ON TABLE "auth"."webauthn_credentials" TO "dashboard_user";
-
-
-
 GRANT ALL ON TABLE "cf_recon"."action_log" TO "service_role";
 
 
@@ -121084,6 +117681,27 @@ GRANT ALL ON TABLE "cf_recon"."remediation" TO "service_role";
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 GRANT ALL ON TABLE "public"."_archive_product_ai_20260626" TO "service_role";
 
 
@@ -121093,11 +117711,6 @@ GRANT ALL ON TABLE "public"."_archive_product_seo_20260626" TO "service_role";
 
 
 GRANT ALL ON TABLE "public"."_archive_supplier_price_tiers_20260626" TO "service_role";
-
-
-
-GRANT REFERENCES,TRIGGER,MAINTAIN ON TABLE "public"."_backup_stock_daily_summary_20260618" TO "authenticated";
-GRANT ALL ON TABLE "public"."_backup_stock_daily_summary_20260618" TO "service_role";
 
 
 
@@ -121149,7 +117762,7 @@ GRANT ALL ON TABLE "public"."access_security_settings" TO "service_role";
 
 
 
-GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."admin_audit_log" TO "authenticated";
+GRANT SELECT,REFERENCES,TRIGGER,MAINTAIN ON TABLE "public"."admin_audit_log" TO "authenticated";
 GRANT ALL ON TABLE "public"."admin_audit_log" TO "service_role";
 
 
@@ -121319,7 +117932,6 @@ GRANT ALL ON TABLE "public"."backup_produto_ramo_atividade_20260625" TO "service
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."profiles" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."profiles" TO "authenticated";
 GRANT ALL ON TABLE "public"."profiles" TO "service_role";
 
@@ -121710,7 +118322,7 @@ GRANT ALL ON TABLE "public"."expert_messages" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."external_connections" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."external_connections" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."external_connections" TO "authenticated";
 GRANT ALL ON TABLE "public"."external_connections" TO "service_role";
 
@@ -121851,7 +118463,6 @@ GRANT ALL ON TABLE "public"."integration_credentials" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."ip_access_control" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."ip_access_control" TO "authenticated";
 GRANT ALL ON TABLE "public"."ip_access_control" TO "service_role";
 
@@ -122009,7 +118620,7 @@ GRANT ALL ON TABLE "public"."kit_variants" TO "service_role";
 
 
 GRANT REFERENCES,TRIGGER,MAINTAIN ON TABLE "public"."login_attempts" TO "anon";
-GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."login_attempts" TO "authenticated";
+GRANT SELECT,REFERENCES,TRIGGER,MAINTAIN ON TABLE "public"."login_attempts" TO "authenticated";
 GRANT ALL ON TABLE "public"."login_attempts" TO "service_role";
 
 
@@ -122060,6 +118671,14 @@ GRANT ALL ON TABLE "public"."magazine_public_view_events_2026_11" TO "service_ro
 
 
 GRANT ALL ON TABLE "public"."magazine_public_view_events_2026_12" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."magazine_public_view_events_2027_01" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."magazine_public_view_events_2027_02" TO "service_role";
 
 
 
@@ -122165,7 +118784,7 @@ GRANT ALL ON TABLE "public"."mcp_access_violations" TO "service_role";
 
 
 
-GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."mcp_api_keys" TO "authenticated";
+GRANT SELECT,REFERENCES,TRIGGER,MAINTAIN ON TABLE "public"."mcp_api_keys" TO "authenticated";
 GRANT ALL ON TABLE "public"."mcp_api_keys" TO "service_role";
 
 
@@ -122200,7 +118819,6 @@ GRANT ALL ON SEQUENCE "public"."medallion_coverage_snapshots_id_seq" TO "service
 
 
 
-GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."mockup_approval_links" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."mockup_approval_links" TO "authenticated";
 GRANT ALL ON TABLE "public"."mockup_approval_links" TO "service_role";
 
@@ -122249,12 +118867,10 @@ GRANT ALL ON TABLE "public"."mockup_templates" TO "service_role";
 
 
 GRANT ALL ON TABLE "public"."mv_stock_rupture_alert" TO "service_role";
-GRANT SELECT ON TABLE "public"."mv_stock_rupture_alert" TO "authenticated";
 
 
 
 GRANT ALL ON TABLE "public"."mv_ema_kpi_by_level" TO "service_role";
-GRANT SELECT ON TABLE "public"."mv_ema_kpi_by_level" TO "authenticated";
 
 
 
@@ -122384,7 +119000,6 @@ GRANT ALL ON TABLE "public"."organizations" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."outbound_webhooks" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."outbound_webhooks" TO "authenticated";
 GRANT ALL ON TABLE "public"."outbound_webhooks" TO "service_role";
 
@@ -122987,7 +119602,7 @@ GRANT ALL ON TABLE "public"."search_queries" TO "service_role";
 
 
 
-GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."secret_rotation_log" TO "authenticated";
+GRANT SELECT,REFERENCES,TRIGGER,MAINTAIN ON TABLE "public"."secret_rotation_log" TO "authenticated";
 GRANT ALL ON TABLE "public"."secret_rotation_log" TO "service_role";
 
 
@@ -123103,6 +119718,12 @@ GRANT ALL ON SEQUENCE "public"."stock_daily_summary_id_seq" TO "service_role";
 
 
 
+GRANT REFERENCES,TRIGGER,MAINTAIN ON TABLE "public"."stock_notes" TO "anon";
+GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."stock_notes" TO "authenticated";
+GRANT ALL ON TABLE "public"."stock_notes" TO "service_role";
+
+
+
 GRANT REFERENCES,TRIGGER,MAINTAIN ON TABLE "public"."stock_snapshots" TO "anon";
 GRANT SELECT,REFERENCES,TRIGGER,MAINTAIN ON TABLE "public"."stock_snapshots" TO "authenticated";
 GRANT ALL ON TABLE "public"."stock_snapshots" TO "service_role";
@@ -123190,18 +119811,6 @@ GRANT ALL ON TABLE "public"."supplier_products_raw_history" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."supplier_products_raw_history_p2026_06" TO "anon";
-GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."supplier_products_raw_history_p2026_06" TO "authenticated";
-GRANT ALL ON TABLE "public"."supplier_products_raw_history_p2026_06" TO "service_role";
-
-
-
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."supplier_products_raw_history_p2026_07" TO "anon";
-GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."supplier_products_raw_history_p2026_07" TO "authenticated";
-GRANT ALL ON TABLE "public"."supplier_products_raw_history_p2026_07" TO "service_role";
-
-
-
 GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."supplier_products_raw_history_p2026_08" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."supplier_products_raw_history_p2026_08" TO "authenticated";
 GRANT ALL ON TABLE "public"."supplier_products_raw_history_p2026_08" TO "service_role";
@@ -123229,6 +119838,18 @@ GRANT ALL ON TABLE "public"."supplier_products_raw_history_p2026_11" TO "service
 GRANT REFERENCES,TRIGGER,MAINTAIN ON TABLE "public"."supplier_products_raw_history_p2026_12" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."supplier_products_raw_history_p2026_12" TO "authenticated";
 GRANT ALL ON TABLE "public"."supplier_products_raw_history_p2026_12" TO "service_role";
+
+
+
+GRANT REFERENCES,TRIGGER,MAINTAIN ON TABLE "public"."supplier_products_raw_history_p2027_01" TO "anon";
+GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."supplier_products_raw_history_p2027_01" TO "authenticated";
+GRANT ALL ON TABLE "public"."supplier_products_raw_history_p2027_01" TO "service_role";
+
+
+
+GRANT REFERENCES,TRIGGER,MAINTAIN ON TABLE "public"."supplier_products_raw_history_p2027_02" TO "anon";
+GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."supplier_products_raw_history_p2027_02" TO "authenticated";
+GRANT ALL ON TABLE "public"."supplier_products_raw_history_p2027_02" TO "service_role";
 
 
 
@@ -123392,7 +120013,6 @@ GRANT ALL ON TABLE "public"."user_preferences" TO "service_role";
 
 
 
-GRANT INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."user_roles" TO "anon";
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,MAINTAIN,UPDATE ON TABLE "public"."user_roles" TO "authenticated";
 GRANT ALL ON TABLE "public"."user_roles" TO "service_role";
 
@@ -124578,131 +121198,9 @@ GRANT ALL ON SEQUENCE "public"."xbz_upload_mapping_id_seq" TO "service_role";
 
 
 
-GRANT ALL ON TABLE "realtime"."messages" TO "postgres";
-GRANT ALL ON TABLE "realtime"."messages" TO "dashboard_user";
-GRANT SELECT,INSERT,UPDATE ON TABLE "realtime"."messages" TO "anon";
-GRANT SELECT,INSERT,UPDATE ON TABLE "realtime"."messages" TO "authenticated";
-GRANT SELECT,INSERT,UPDATE ON TABLE "realtime"."messages" TO "service_role";
 
 
 
-GRANT ALL ON TABLE "realtime"."messages_2026_09_13" TO "postgres";
-GRANT ALL ON TABLE "realtime"."messages_2026_09_13" TO "dashboard_user";
-
-
-
-GRANT ALL ON TABLE "realtime"."messages_2026_09_14" TO "postgres";
-GRANT ALL ON TABLE "realtime"."messages_2026_09_14" TO "dashboard_user";
-
-
-
-GRANT ALL ON TABLE "realtime"."messages_2026_09_15" TO "postgres";
-GRANT ALL ON TABLE "realtime"."messages_2026_09_15" TO "dashboard_user";
-
-
-
-GRANT ALL ON TABLE "realtime"."messages_2026_09_16" TO "postgres";
-GRANT ALL ON TABLE "realtime"."messages_2026_09_16" TO "dashboard_user";
-
-
-
-GRANT ALL ON TABLE "realtime"."messages_2026_09_17" TO "postgres";
-GRANT ALL ON TABLE "realtime"."messages_2026_09_17" TO "dashboard_user";
-
-
-
-GRANT ALL ON TABLE "realtime"."messages_2026_09_18" TO "postgres";
-GRANT ALL ON TABLE "realtime"."messages_2026_09_18" TO "dashboard_user";
-
-
-
-GRANT ALL ON TABLE "realtime"."messages_2026_09_19" TO "postgres";
-GRANT ALL ON TABLE "realtime"."messages_2026_09_19" TO "dashboard_user";
-
-
-
-GRANT ALL ON TABLE "realtime"."subscription" TO "postgres";
-GRANT ALL ON TABLE "realtime"."subscription" TO "dashboard_user";
-GRANT SELECT ON TABLE "realtime"."subscription" TO "anon";
-GRANT SELECT ON TABLE "realtime"."subscription" TO "authenticated";
-GRANT SELECT ON TABLE "realtime"."subscription" TO "service_role";
-
-
-
-GRANT ALL ON SEQUENCE "realtime"."subscription_id_seq" TO "postgres";
-GRANT ALL ON SEQUENCE "realtime"."subscription_id_seq" TO "dashboard_user";
-GRANT USAGE ON SEQUENCE "realtime"."subscription_id_seq" TO "anon";
-GRANT USAGE ON SEQUENCE "realtime"."subscription_id_seq" TO "authenticated";
-GRANT USAGE ON SEQUENCE "realtime"."subscription_id_seq" TO "service_role";
-
-
-
-REVOKE ALL ON TABLE "storage"."buckets" FROM "supabase_storage_admin";
-GRANT ALL ON TABLE "storage"."buckets" TO "supabase_storage_admin" WITH GRANT OPTION;
-GRANT ALL ON TABLE "storage"."buckets" TO "service_role";
-GRANT ALL ON TABLE "storage"."buckets" TO "authenticated";
-GRANT ALL ON TABLE "storage"."buckets" TO "anon";
-GRANT ALL ON TABLE "storage"."buckets" TO "postgres" WITH GRANT OPTION;
-
-
-
-GRANT ALL ON TABLE "storage"."buckets_analytics" TO "service_role";
-GRANT ALL ON TABLE "storage"."buckets_analytics" TO "authenticated";
-GRANT ALL ON TABLE "storage"."buckets_analytics" TO "anon";
-
-
-
-GRANT SELECT ON TABLE "storage"."buckets_vectors" TO "service_role";
-GRANT SELECT ON TABLE "storage"."buckets_vectors" TO "authenticated";
-GRANT SELECT ON TABLE "storage"."buckets_vectors" TO "anon";
-
-
-
-REVOKE ALL ON TABLE "storage"."objects" FROM "supabase_storage_admin";
-GRANT ALL ON TABLE "storage"."objects" TO "supabase_storage_admin" WITH GRANT OPTION;
-GRANT ALL ON TABLE "storage"."objects" TO "service_role";
-GRANT ALL ON TABLE "storage"."objects" TO "authenticated";
-GRANT ALL ON TABLE "storage"."objects" TO "anon";
-GRANT ALL ON TABLE "storage"."objects" TO "postgres" WITH GRANT OPTION;
-
-
-
-GRANT ALL ON TABLE "storage"."s3_multipart_uploads" TO "service_role";
-GRANT SELECT ON TABLE "storage"."s3_multipart_uploads" TO "authenticated";
-GRANT SELECT ON TABLE "storage"."s3_multipart_uploads" TO "anon";
-
-
-
-GRANT ALL ON TABLE "storage"."s3_multipart_uploads_parts" TO "service_role";
-GRANT SELECT ON TABLE "storage"."s3_multipart_uploads_parts" TO "authenticated";
-GRANT SELECT ON TABLE "storage"."s3_multipart_uploads_parts" TO "anon";
-
-
-
-GRANT SELECT ON TABLE "storage"."vector_indexes" TO "service_role";
-GRANT SELECT ON TABLE "storage"."vector_indexes" TO "authenticated";
-GRANT SELECT ON TABLE "storage"."vector_indexes" TO "anon";
-
-
-
-GRANT ALL ON TABLE "supabase_functions"."hooks" TO "postgres";
-GRANT ALL ON TABLE "supabase_functions"."hooks" TO "anon";
-GRANT ALL ON TABLE "supabase_functions"."hooks" TO "authenticated";
-GRANT ALL ON TABLE "supabase_functions"."hooks" TO "service_role";
-
-
-
-GRANT ALL ON SEQUENCE "supabase_functions"."hooks_id_seq" TO "postgres";
-GRANT ALL ON SEQUENCE "supabase_functions"."hooks_id_seq" TO "anon";
-GRANT ALL ON SEQUENCE "supabase_functions"."hooks_id_seq" TO "authenticated";
-GRANT ALL ON SEQUENCE "supabase_functions"."hooks_id_seq" TO "service_role";
-
-
-
-GRANT ALL ON TABLE "supabase_functions"."migrations" TO "postgres";
-GRANT ALL ON TABLE "supabase_functions"."migrations" TO "anon";
-GRANT ALL ON TABLE "supabase_functions"."migrations" TO "authenticated";
-GRANT ALL ON TABLE "supabase_functions"."migrations" TO "service_role";
 
 
 
@@ -124787,54 +121285,17 @@ GRANT SELECT ON TABLE "supplier_stricker"."v_stock_by_product" TO "authenticated
 
 
 
-ALTER DEFAULT PRIVILEGES FOR ROLE "supabase_auth_admin" IN SCHEMA "auth" GRANT ALL ON SEQUENCES TO "postgres";
-ALTER DEFAULT PRIVILEGES FOR ROLE "supabase_auth_admin" IN SCHEMA "auth" GRANT ALL ON SEQUENCES TO "dashboard_user";
+SET SESSION AUTHORIZATION "postgres";
+RESET SESSION AUTHORIZATION;
+SET SESSION AUTHORIZATION "postgres";
+RESET SESSION AUTHORIZATION;
 
 
 
-ALTER DEFAULT PRIVILEGES FOR ROLE "supabase_auth_admin" IN SCHEMA "auth" GRANT ALL ON FUNCTIONS TO "postgres";
-ALTER DEFAULT PRIVILEGES FOR ROLE "supabase_auth_admin" IN SCHEMA "auth" GRANT ALL ON FUNCTIONS TO "dashboard_user";
-
-
-
-ALTER DEFAULT PRIVILEGES FOR ROLE "supabase_auth_admin" IN SCHEMA "auth" GRANT ALL ON TABLES TO "postgres";
-ALTER DEFAULT PRIVILEGES FOR ROLE "supabase_auth_admin" IN SCHEMA "auth" GRANT ALL ON TABLES TO "dashboard_user";
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+SET SESSION AUTHORIZATION "postgres";
+RESET SESSION AUTHORIZATION;
+SET SESSION AUTHORIZATION "postgres";
+RESET SESSION AUTHORIZATION;
 
 
 
@@ -124876,35 +121337,4 @@ ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON TAB
 
 
 
-
-ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "storage" GRANT ALL ON SEQUENCES TO "postgres";
-ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "storage" GRANT ALL ON SEQUENCES TO "anon";
-ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "storage" GRANT ALL ON SEQUENCES TO "authenticated";
-ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "storage" GRANT ALL ON SEQUENCES TO "service_role";
-
-
-
-ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "storage" GRANT ALL ON FUNCTIONS TO "postgres";
-ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "storage" GRANT ALL ON FUNCTIONS TO "anon";
-ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "storage" GRANT ALL ON FUNCTIONS TO "authenticated";
-ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "storage" GRANT ALL ON FUNCTIONS TO "service_role";
-
-
-
-ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "storage" GRANT ALL ON TABLES TO "postgres";
-ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "storage" GRANT ALL ON TABLES TO "anon";
-ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "storage" GRANT ALL ON TABLES TO "authenticated";
-ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "storage" GRANT ALL ON TABLES TO "service_role";
-
-
-
-
-
-
-
-
-
-
-
-
-
+COMMENT ON EVENT TRIGGER "evt_revoke_view_write_grants" IS 'Dispara fn_revoke_view_write_grants_on_create() após CREATE [OR REPLACE] VIEW em public.*, garantindo SELECT-only para anon e authenticated.';
