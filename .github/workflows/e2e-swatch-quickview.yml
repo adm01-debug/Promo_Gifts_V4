@@ -7,6 +7,18 @@ name: E2E • Swatch QuickView (Lista + Tabela)
 on:
   push:
     branches: [main]
+    paths:
+      - 'src/**'
+      - '!src/**/__tests__/**'
+      - '!src/**/*.test.*'
+      - '!src/**/*.spec.*'
+      - 'e2e/**'
+      - 'public/**'
+      - 'package*.json'
+      - '.nvmrc'
+      - 'playwright.config.*'
+      - 'vite.config.*'
+      - '.github/workflows/e2e-swatch-quickview.yml'
   pull_request:
     branches: [main]
     paths:  # E14: evitar CI em PRs doc-only

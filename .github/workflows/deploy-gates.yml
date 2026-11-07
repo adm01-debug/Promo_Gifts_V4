@@ -122,10 +122,10 @@ jobs:
           else
             echo "docs_only=false" >> "$GITHUB_OUTPUT"
           fi
-          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
-            echo "e2e_relevant=${{ steps.filter.outputs.e2e }}" >> "$GITHUB_OUTPUT"
-          else
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
             echo "e2e_relevant=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "e2e_relevant=${{ steps.filter.outputs.e2e }}" >> "$GITHUB_OUTPUT"
           fi
 
   # ============================================================
