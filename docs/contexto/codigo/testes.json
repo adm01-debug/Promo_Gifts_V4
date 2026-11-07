@@ -18031,7 +18031,7 @@
   {
    "arquivo": "tests/unit/date-utils.test.ts",
    "tipo": "unit",
-   "linhas": 441,
+   "linhas": 444,
    "testa": [
     "src/lib/date-utils.ts"
    ],

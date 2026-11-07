@@ -2,11 +2,16 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "cf98610c4feccc35fabe4b7e49af36b12c42bc2c",
+  "commit": "e87f36b910d322e58fd902e0231108a9d81359df",
   "branch": "main",
-  "data_commit": "2026-11-06T21:38:37-03:00",
+  "data_commit": "2026-11-06T21:54:01-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "ultimos_commits": [
+   {
+    "sha": "e87f36b",
+    "data": "2026-11-06",
+    "assunto": "test(date-utils): elimina dependência de timezone (#3116)"
+   },
    {
     "sha": "cf98610",
     "data": "2026-11-06",
@@ -126,14 +131,9 @@
     "sha": "3383990",
     "data": "2026-11-05",
     "assunto": "fix(ci): ripgrep ausente + 2 mocks desatualizados"
-   },
-   {
-    "sha": "7486a58",
-    "data": "2026-11-05",
-    "assunto": "fix(e2e): aumentar timeouts para auth real em CI (smoke + magazine + all-features) (#3072)"
    }
   ],
-  "arquivos_mudados_7d": 383,
+  "arquivos_mudados_7d": 384,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/admin",
@@ -301,7 +301,7 @@
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 347
+    "commits": 346
    },
    {
     "autor": "Joaquim Ataides",
@@ -324,7 +324,7 @@
  "contagens": {
   "arquivos_total": 9169,
   "arquivos_codigo": 4612,
-  "linhas_codigo": 883219,
+  "linhas_codigo": 883222,
   "rotas": 138,
   "rotas_http_backend": 13,
   "vistas_por_id": 0,
@@ -2176,7 +2176,7 @@
   },
   "tests/unit": {
    "arquivos": 31,
-   "linhas": 5482
+   "linhas": 5485
   },
   "tests/utils": {
    "arquivos": 21,

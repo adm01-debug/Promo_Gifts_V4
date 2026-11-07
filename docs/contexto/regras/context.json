@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "cf98610c4feccc35fabe4b7e49af36b12c42bc2c",
+  "sha": "e87f36b910d322e58fd902e0231108a9d81359df",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
-  "generated_at": "2026-11-07 00:39 UTC",
+  "generated_at": "2026-11-07 00:55 UTC",
   "files_total": 9092,
   "code_files": 7837,
-  "code_lines": 1050284
+  "code_lines": 1050287
  },
  "version": "1.3.2",
- "facts_hash": "a7947f77b2b8dc4c",
+ "facts_hash": "87373dc630828fb6",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -140340,7 +140340,7 @@
   {
    "module": "tests",
    "files": 812,
-   "lines": 124282,
+   "lines": 124285,
    "tables": [
     "bot_detection_log",
     "companies",
@@ -269672,7 +269672,7 @@
    },
    {
     "file": "tests/unit/date-utils.test.ts",
-    "name": "returns dd/MM/yyyy HH:mm for ISO string (BRT)"
+    "name": "returns dd/MM/yyyy HH:mm for ISO string"
    },
    {
     "file": "tests/unit/date-utils.test.ts",
@@ -481007,7 +481007,7 @@
   },
   "tests/unit/date-utils.test.ts": {
    "path": "tests/unit/date-utils.test.ts",
-   "lines": 441,
+   "lines": 444,
    "is_test": true,
    "params": [
     {
@@ -481029,7 +481029,7 @@
     "returns single-digit days zero-padded",
     "formatDateTime",
     "returns dd/MM/yyyy HH:mm for Date object",
-    "returns dd/MM/yyyy HH:mm for ISO string (BRT)",
+    "returns dd/MM/yyyy HH:mm for ISO string",
     "returns dd/MM/yyyy HH:mm for timestamp",
     "formatTime",
     "returns HH:mm for Date object",
@@ -482741,10 +482741,19 @@
   }
  },
  "git": {
-  "sha": "cf98610c4feccc35fabe4b7e49af36b12c42bc2c",
+  "sha": "e87f36b910d322e58fd902e0231108a9d81359df",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Gifts_V4",
   "commits": [
+   {
+    "sha": "e87f36b",
+    "date": "2026-11-06",
+    "author": "adm01-debug",
+    "subject": "test(date-utils): elimina dependência de timezone (#3116)",
+    "files": [
+     "tests/unit/date-utils.test.ts"
+    ]
+   },
    {
     "sha": "cf98610",
     "date": "2026-11-06",
@@ -483033,16 +483042,6 @@
      "supabase/migrations/20261104100000_partitions_supplier_products_raw_history_2027.sql",
      "supabase/rollbacks/20261104100000_rollback.sql"
     ]
-   },
-   {
-    "sha": "943892e",
-    "date": "2026-11-04",
-    "author": "adm01-debug",
-    "subject": "chore: adiciona rollback files para migrations 20261101201000 e 20261101202000",
-    "files": [
-     "supabase/rollbacks/20261101201000_rollback.sql",
-     "supabase/rollbacks/20261101202000_rollback.sql"
-    ]
    }
   ],
   "hot_files": [
@@ -483077,6 +483076,10 @@
    [
     "e2e/flows/20-all-features-smoke.spec.ts",
     2
+   ],
+   [
+    "tests/unit/date-utils.test.ts",
+    1
    ],
    [
     "scripts/migration-ledger-remote-only-allowlist.json",
@@ -483120,10 +483123,6 @@
    ],
    [
     "e2e/smoke.spec.ts",
-    1
-   ],
-   [
-    ".soft-delete-baseline.json",
     1
    ]
   ]

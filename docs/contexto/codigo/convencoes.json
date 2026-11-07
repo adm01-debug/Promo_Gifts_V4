@@ -61,11 +61,11 @@
  "commits": {
   "convencao": "commitlint",
   "exemplos": [
+   "test(date-utils): elimina dependência de timezone (#3116)",
    "fix(ci): publish recovery snapshot atomically (#3115)",
    "fix(ci): reconcile E40 ledger and forced rotation (#3113)",
    "chore(security): sincroniza baseline de policies RLS (#3110)",
-   "fix(e2e): alinha timeout do setup de autenticação (#3102)",
-   "chore(regras): adiciona nota de cold-start PostgREST no CI"
+   "fix(e2e): alinha timeout do setup de autenticação (#3102)"
   ]
  },
  "pr_template": ".github/PULL_REQUEST_TEMPLATE.md",
