@@ -56,22 +56,7 @@ const generalPublicSpecs = [
   /[\\/]spa-rewrite\.spec\.ts$/,
 ];
 
-const generalAuthedSpecs = [
-  /[\\/]actions-order\.spec\.ts$/,
-  /[\\/]carts-module\.spec\.ts$/,
-  /[\\/]catalog\.spec\.ts$/,
-  /[\\/]collections-module\.spec\.ts$/,
-  /[\\/]dashboard-modules\.spec\.ts$/,
-  /[\\/]favorites-module\.spec\.ts$/,
-  /[\\/]navigation\.spec\.ts$/,
-  /[\\/]products-module\.spec\.ts$/,
-  /[\\/]quote-creation-module\.spec\.ts$/,
-  /[\\/]reports-bi-module\.spec\.ts$/,
-  /[\\/]sidebar-logo\.spec\.ts$/,
-  /[\\/]stock-module\.spec\.ts$/,
-  /[\\/]tools-module\.spec\.ts$/,
-  /[\\/]ui-navigation-rbac\.spec\.ts$/,
-];
+const generalAuthedSpecs = [/[\\/]actions-order\.spec\.ts$/, /[\\/]sidebar-logo\.spec\.ts$/];
 
 /**
  * Playwright Configuration
