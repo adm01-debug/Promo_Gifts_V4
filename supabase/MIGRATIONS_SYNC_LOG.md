@@ -800,6 +800,7 @@ da execução e consulta read-only ao catálogo/ledger, sem reaplicar SQL.
 | `20261027140000` | `e63a43b30c5bce7d3e1e7f6f6829fc692e4b95b5a229b07b24c353ac97fc07cf` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-10-27 13:58:20 UTC | job post-check da run 40512572184 confirmou a version no ledger | aplicada |
 | `20261027160000` | `c20b8190eee43e9a40fe8cc084040f25c94d1c1ef59335efda3da8d39ac6e8d6` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-10-28 10:13:23 UTC | job post-check da run 40670021078 confirmou a version no ledger | aplicada |
 | `20261027180000` | `1b47a1d2eadd49608f36331d6be6e93e7478022ed97cbbbae9617e455bcb38a4` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por @adm01-debug) | E15 | 2026-11-01 14:24:36 UTC | job post-check da run 40670992687 confirmou a version no ledger | aplicada |
+| `20261101201000` | `c7c34b95fd0a194b315a90ddf95d1823dff3ad1918b4dad64bbe9f0fececbf17` | — | GitHub Actions (db-apply-migration.yml, disparado por adm01-debug, aprovado por ti@promobrindes.com.br) | E15 | 2026-11-07 01:45:37 UTC | job post-check da run 41841468881 confirmou a version no ledger | aplicada |
 
 ### Evidências do recibo `20260922170000`
 
@@ -1714,3 +1715,9 @@ Após VACUUM ANALYZE executado pelos jobs temporários `vacuum-snapshots-now` e
 | version | arquivo | status |
 |---|---|---|
 | `20261101201000` | fix_health_view_backup_check | pendente — aplicar via `db-apply-migration.yml` após aprovação do dono (regra 8: DDL em produção). Remove a tabela apagada `_backup_stock_daily_summary_20260618` da checagem `backup_tables_rls_locked`. |
+
+## 2026-11-06 — Hardening de `public.handle_updated_at()`
+
+| version | arquivo | status |
+|---|---|---|
+| `20261106232045` | `fix_handle_updated_at_search_path` | pendente — fixa `search_path = public`; aplicar via `db-apply-migration.yml` após merge da PR |
