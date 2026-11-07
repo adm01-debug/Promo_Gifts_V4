@@ -14,7 +14,11 @@ on:
       - 'src/components/**'
       - 'src/utils/**'
       - 'src/pages/**'
+      - '!src/**/__tests__/**'
+      - '!src/**/*.test.*'
+      - '!src/**/*.spec.*'
       - '.github/workflows/e2e-focused.yml'
+      - '.github/scripts/e2e-relevance.mjs'
   schedule:
     # E89 — segunda-feira 02:00 UTC
     - cron: '0 2 * * 1'  # E89 — segunda 02:00 UTC
@@ -28,6 +32,7 @@ on:
 # R1 — permissões mínimas
 permissions:
   contents: read
+  pull-requests: read
 
 # R2 — PRs cancelam; schedule e dispatch não
 concurrency:
@@ -39,6 +44,9 @@ defaults:
     shell: bash
 
 jobs:
+  e2e-relevance:
+    uses: ./.github/workflows/_e2e-relevance.yml
+
   secrets_check:
     uses: ./.github/workflows/_secrets-check.yml
     secrets: inherit
@@ -47,12 +55,16 @@ jobs:
 
   e2e_focused:
     name: E2E Focused · ${{ matrix.suite }}
-    needs: [secrets_check]
+    needs: [e2e-relevance, secrets_check]
+    if: needs.e2e-relevance.outputs.relevant == 'true'
     runs-on: ubuntu-24.04
     # R3 — timeout por job
     timeout-minutes: 20
     strategy:
       fail-fast: false
+      # As suites públicas ainda consultam o catálogo real. Evita três cargas
+      # concorrentes contra PostgREST durante picos de CI.
+      max-parallel: 1
       matrix:
         # E159: suites com toMatchSnapshot/toHaveScreenshot movidas para
         # nightly-full.yml (pdf-dialog, color-swatch, magazine-header, dialogs).
