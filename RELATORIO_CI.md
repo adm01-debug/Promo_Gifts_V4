@@ -819,3 +819,84 @@ Attempt 1 falhou com 4 testes E2E (documentados em PENDENCIAS.md #36). Attempt 2
 | Gate E23 Gitleaks | ✅ success (required) | ✅ success (run #42411938040) | ✅ |
 | Gate 6 Build | ✅ success | ✅ success (run #42411938040) | ✅ |
 | Gate 3 E2E Smoke | ✅ success (SHA `1a47c6972c`) | ✅ success via bypass docs-only (SHA `a882bcc1`) | ✅ |
+
+---
+
+## §23 — Sessão 2026-11-07 (continuação pós-compactação) — SHA `bfb2926d`
+
+**Data:** 2026-11-07  
+**SHA main no início da sessão:** `bfb2926d9de98868a310aa6e1cb7c6d71d425757`  
+**Propósito:** Continuação da sessão anterior após compactação de contexto. Registro de baseline local + tabela de prova completa para todos os workflows em falha/action_required listados na fila do GitHub Actions.
+
+### Baseline local (SHA `bfb2926d`)
+
+Executado no container da sessão em 2026-11-07:
+
+| Comando | Saída | Exit |
+|---|---|---|
+| `npm run build` | Vite build OK — `built in 18.86s` | ✅ 0 |
+| `npm run lint:baseline` | `0 erros, 0 warnings` — baseline gate: 0 regressões | ✅ 0 |
+| `npx tsc --noEmit` | Sem erros TypeScript | ✅ 0 |
+| `vitest run` | `26114 passed \| 1132 skipped \| 24 todo` — **0 failed** | ✅ 0 |
+
+### Gate Final (SHA `bfb2926d`)
+
+**Run Deploy Gates [#42414106157](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42414106157) — `conclusion: success`** em SHA `bfb2926d`:
+- Gate Final - Deploy Ready: ✅ `conclusion: success`
+- Required check "Gate E23 - Secret Scan (gitleaks)": ✅ success
+- Required check "Assert Gate Final is required on main": ✅ success
+- Required check "Analyze (javascript-typescript)" (CodeQL): ✅ success
+- Required check "Compare GitHub × Canonical": ❌ failure — PENDENCIAS #29 (pré-existente, requer dono)
+
+### Comparação Baseline × Final (SHA `bfb2926d`)
+
+| Métrica | SHA anterior (`a882bcc1`) | SHA atual (`bfb2926d`) | Variação |
+|---|---|---|---|
+| npm run build | ✅ Gate 6 success | ✅ exit 0, 18.86s | = |
+| npm run lint:baseline | ✅ 0 erros | ✅ 0 erros, 0 warnings | = |
+| npx tsc --noEmit | ✅ | ✅ exit 0 | = |
+| vitest run | ✅ Gate 2 success | ✅ 26114 passed, 0 failed | = |
+| Gate Final (required) | ✅ run #42411938040 (`a882bcc1`) | ✅ run #42414106157 (`bfb2926d`) | ✅ sem regressão |
+| Required checks em falha | 1 (#29 — Compare GitHub × Canonical) | 1 (inalterado — PENDENCIAS #29) | = |
+| Mudanças de schema | 0 | 0 | = (REGRA #8 intacta) |
+| Mudanças de código da aplicação | 0 | 0 | = — docs-only |
+
+**Nenhuma regressão introduzida por esta sessão.** Mudanças desta sessão em main: docs-only (RELATORIO_CI.md).
+
+### Tabela de prova completa — todos os workflows em falha/action_required (SHA `bfb2926d`)
+
+Baseada em PENDENCIAS.md lida de main (`bfb2926d`) via `github_get_file` em 2026-11-07.  
+Itens onde `conclusion=success` via fix de código: nenhum nesta sessão (todos requerem ação do dono per REGRA #8 ou são pré-existentes não acionáveis).
+
+| # | Workflow | Âmbito | Link run | Required? | Conclusão | PENDENCIAS / resolução |
+|---|---|---|---|---|---|---|
+| 1 | `db-schema-drift-check` | main (pré-existente) | [#42075701349](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42075701349) | ❌ | ❌ failure | **#1** — drift `local_only=1141; remote_only=674`; REGRA #8, requer dono |
+| 2/#29 | `edge-functions-drift-check` | main | [#42394606339](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42394606339) | ✅ required | ❌ failure | **#2/#29** — 27 funções driftadas; `deploy-edge-functions.yml` + approve production; requer dono |
+| 3 | `kit-coverage-integration` | main | [#42019342856](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42019342856) | ❌ | ❌ failure | **#3** — cobertura 56% < 70%; dados null no banco; requer dono |
+| 5/#24 | `ci-replenishment-quality` | main | [#42367402274](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42367402274) | ❌ | ❌ failure | **#5/#24** — paridade visual E2E; requer dono |
+| 6 | `e2e-swatch-quickview` | main | [#42326885938](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42326885938) | ❌ | ❌ failure | **#6** — `E2E_USER_EMAIL`/`E2E_USER_PASSWORD` ausentes em Secrets; requer dono |
+| 7 | `nightly-full-ci` | main | [#42005666457](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42005666457) | ❌ | ❌ failure | **#7** — derivado de #6 |
+| 9 | `e2e-view-no-presentation-mode` | main | [#42044024144](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42044024144) | ❌ | ❌ failure | **#9** — snapshot visual 5px diff; requer dono |
+| 13 | `ci-security-drift` | main | [#42380435647](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42380435647) | ❌ | ❌ failure | **#13** — `SUPABASE_SERVICE_ROLE_KEY` ausente; requer dono |
+| 15 | `e2e-flows` | main | [#42097626080](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42097626080) | ❌ | ❌ failure | **#15** — `E2E_USER_*` ausentes; derivado de #6 |
+| 16 | `quote-builder-delivery-quality` | main | [#42097626084](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42097626084) | ❌ | ❌ failure | **#16** — `E2E_USER_*` ausentes; derivado de #6 |
+| 17 | `e2e.yml` | main | [#42097626344](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42097626344) | ❌ | ❌ failure | **#17** — `E2E_USER_*` ausentes; derivado de #6 |
+| 18 | `e2e-personalization-flow` | main | [#42097626111](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42097626111) | ❌ | ❌ failure | **#18** — `E2E_USER_*` ausentes; derivado de #6 |
+| 19 | `branch-protection-sentinel` | main | [#42110094646](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42110094646) | ❌ advisory | ❌ failure | **#19** — alerta `required-checks.json`; pré-existente; advisory |
+| 21 | `uptime-monitor` | main | [#42377833970](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42377833970) | ❌ | ❌ failure | **#21** — HTTP 404 endpoint; pré-existente |
+| 22/#30 | `db-apply-migration` | main | [#42380876893](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42380876893) | ❌ | ❌ failure | **#22/#30** — SECURITY DEFINER sem pg_temp; rollback ausente; REGRA #8; requer dono |
+| 26 | `migrations-sync-log-gate` | main | [#42389264565](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42389264565) | ❌ | ❌ failure | **#26** — migration sem recibo; aguarda #28 e #22; requer dono |
+| 27 | `db-schema-drift-check` | main | [#42075701349](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42075701349) | ❌ | ❌ failure | **#27** — mesmo drift de #1 (pré-existente) |
+| 28 | Gate Final (PR #3160) | PR #3160 | [#42398544261](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42398544261) | ✅ (PRs) | ❌ failure | **#28** — Gate E40 + Gate 1.13.3; REGRA #8; requer dono |
+| 31 | 20x `action_required` | branch release-please | — | ❌ | action_required | **#31** — NÃO é main; branch release-please |
+| 32 | Falhas de outros agentes | branches alheias | — | ❌ | ❌ failure | **#32** — branches de codex/devin; NÃO é main |
+| 33 | `uptime-monitor` transitório | main | [#42391882717](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42391882717) | ❌ | ❌ failure | **#33** — falha transitória; pré-existente |
+| 34 | Vercel bloqueado | PR #3160 | — | ❌ | ❌ failure | **#34** — PR em draft; aguarda merge do #3160 |
+| 35 | `magazine-tests-ok` | main `df81a741` | [#42400439388](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42400439388) | ❌ | ❌ failure | **#35** — introduzido por PR #3161 do dono; requer dono |
+| 36 | Gate 3 E2E Smoke (attempt 1) | main `3093c4a247` | [#42410375374](https://github.com/adm01-debug/Promo_Gifts_V4/actions/runs/42410375374) | ✅ required | ❌ failure (attempt 1) | **#36** — 4 testes E2E flaky auth; superado por Gate Final success em `a882bcc1` e `bfb2926d` |
+
+### Ações pendentes do dono (REGRA #8 — não executáveis sem aprovação)
+
+1. Adicionar `E2E_USER_EMAIL`, `E2E_USER_PASSWORD`, `SUPABASE_SERVICE_ROLE_KEY` em Secrets (fecha #6, #7, #13, #15, #16, #17, #18, #36)
+2. Dispatch `deploy-edge-functions.yml` → approve environment `production` (fecha #2/#29 — required check)
+3. Dispatch `db-apply-migration.yml` com `version=20261101150000` após merge do PR #3160 (fecha #22/#26/#28/#30)
